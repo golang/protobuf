@@ -1,0 +1,209 @@
+// Go support for Protocol Buffers - Google's data interchange format
+//
+// Copyright 2010 Google Inc.  All rights reserved.
+// http://code.google.com/p/goprotobuf/
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//     * Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above
+// copyright notice, this list of conditions and the following disclaimer
+// in the documentation and/or other materials provided with the
+// distribution.
+//     * Neither the name of Google Inc. nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+// A feature-rich test file for the protocol compiler and libraries.
+
+syntax = "proto2";
+
+package test_proto;
+
+enum FOO { FOO1 = 1; };
+
+message GoEnum {
+  required FOO foo = 1;
+}
+
+message GoTestField {
+  required string Label = 1;
+  required string Type = 2;
+}
+
+message GoTest {
+  // An enum, for completeness.
+  enum KIND {
+    VOID = 0;
+
+    // Basic types
+    BOOL = 1;
+    BYTES = 2;
+    FINGERPRINT = 3;
+    FLOAT = 4;
+    INT = 5;
+    STRING = 6;
+    TIME = 7;
+
+    // Groupings
+    TUPLE = 8;
+    ARRAY = 9;
+    MAP = 10;
+
+    // Table types
+    TABLE = 11;
+
+    // Functions
+    FUNCTION = 12;  // last tag
+  };
+
+  // Some typical parameters
+  required int32 Kind = 1;
+  optional string Table = 2;
+  optional int32 Param = 3;
+
+  // Required, repeated and optional foreign fields.
+  required GoTestField RequiredField = 4;
+  repeated GoTestField RepeatedField = 5;
+  optional GoTestField OptionalField = 6;
+
+  // Required fields of all basic types
+  required bool F_Bool_required = 10;
+  required int32 F_Int32_required = 11;
+  required int64 F_Int64_required = 12;
+  required fixed32 F_Fixed32_required = 13;
+  required fixed64 F_Fixed64_required = 14;
+  required uint32 F_Uint32_required = 15;
+  required uint64 F_Uint64_required = 16;
+  required float F_Float_required = 17;
+  required double F_Double_required = 18;
+  required string F_String_required = 19;
+  required bytes F_Bytes_required = 101;
+  required sint32 F_Sint32_required = 102;
+  required sint64 F_Sint64_required = 103;
+
+  // Repeated fields of all basic types
+  repeated bool F_Bool_repeated = 20;
+  repeated int32 F_Int32_repeated = 21;
+  repeated int64 F_Int64_repeated = 22;
+  repeated fixed32 F_Fixed32_repeated = 23;
+  repeated fixed64 F_Fixed64_repeated = 24;
+  repeated uint32 F_Uint32_repeated = 25;
+  repeated uint64 F_Uint64_repeated = 26;
+  repeated float F_Float_repeated = 27;
+  repeated double F_Double_repeated = 28;
+  repeated string F_String_repeated = 29;
+  repeated bytes F_Bytes_repeated = 201;
+  repeated sint32 F_Sint32_repeated = 202;
+  repeated sint64 F_Sint64_repeated = 203;
+
+  // Optional fields of all basic types
+  optional bool F_Bool_optional = 30;
+  optional int32 F_Int32_optional = 31;
+  optional int64 F_Int64_optional = 32;
+  optional fixed32 F_Fixed32_optional = 33;
+  optional fixed64 F_Fixed64_optional = 34;
+  optional uint32 F_Uint32_optional = 35;
+  optional uint64 F_Uint64_optional = 36;
+  optional float F_Float_optional = 37;
+  optional double F_Double_optional = 38;
+  optional string F_String_optional = 39;
+  optional bytes F_Bytes_optional = 301;
+  optional sint32 F_Sint32_optional = 302;
+  optional sint64 F_Sint64_optional = 303;
+
+  // Default-valued fields of all basic types
+  optional bool F_Bool_defaulted = 40 [default=true];
+  optional int32 F_Int32_defaulted = 41 [default=32];
+  optional int64 F_Int64_defaulted = 42 [default=64];
+  optional fixed32 F_Fixed32_defaulted = 43 [default=320];
+  optional fixed64 F_Fixed64_defaulted = 44 [default=640];
+  optional uint32 F_Uint32_defaulted = 45 [default=3200];
+  optional uint64 F_Uint64_defaulted = 46 [default=6400];
+  optional float F_Float_defaulted = 47 [default=314159.];
+  optional double F_Double_defaulted = 48 [default=271828.];
+  optional string F_String_defaulted = 49 [default="hello, \"world!\"\n"];
+  optional bytes F_Bytes_defaulted = 401 [default="Bignose"];
+  optional sint32 F_Sint32_defaulted = 402 [default = -32];
+  optional sint64 F_Sint64_defaulted = 403 [default = -64];
+
+  // Required, repeated, and optional groups.
+  required group RequiredGroup = 70 {
+    required string RequiredField = 71;
+  };
+
+  repeated group RepeatedGroup = 80 {
+    required string RequiredField = 81;
+  };
+
+  optional group OptionalGroup = 90 {
+    required string RequiredField = 91;
+  };
+};
+
+// For testing skipping of unrecognized fields.
+// Numbers are all big, larger than tag numbers in GoTestField,
+// the message used in the corresponding test.
+message GoSkipTest {
+  required int32 skip_int32 = 11;
+  required fixed32 skip_fixed32 = 12;
+  required fixed64 skip_fixed64 = 13;
+  required string skip_string = 14;
+  required group SkipGroup = 15 {
+    required int32 group_int32 = 16;
+    required string group_string = 17;
+  }
+}
+
+// Smaller tests for ASCII formatting.
+
+message InnerMessage {
+  required string host = 1;
+  optional int32 port = 2 [default=4000];
+  optional bool connected = 3;
+}
+
+message OtherMessage {
+  optional int64 key = 1;
+  optional bytes value = 2;
+  optional float weight = 3;
+  optional InnerMessage inner = 4;
+}
+
+message MyMessage {
+  required int32 count = 1;
+  optional string name = 2;
+  optional string quote = 3;
+  repeated string pet = 4;
+  optional InnerMessage inner = 5;
+  repeated OtherMessage others = 6;
+
+  enum Color {
+    RED = 0;
+    GREEN = 1;
+    BLUE = 2;
+  };
+  optional Color bikeshed = 7;
+}
+
+message MessageList {
+  repeated group Message = 1 {
+    required string name = 2;
+    required int32 count = 3;
+  };
+};

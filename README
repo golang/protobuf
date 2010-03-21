@@ -1,0 +1,160 @@
+Go support for Protocol Buffers - Google's data interchange format
+Copyright 2010 Google Inc.
+http://code.google.com/p/goprotobuf/
+
+This software implements Go bindings for protocol buffers.  For
+information about protocol buffers themselves, see
+	http://code.google.com/apis/protocolbuffers/
+To use this software, you must first install the standard C++
+implementation of protocol buffers from
+	http://code.google.com/p/protobuf/
+And of course you must also install the Go compiler and tools from
+	http://code.google.com/p/go/
+See
+	http://golang.org/doc/install.html
+for details or, if you are using gccgo, follow the instructions at
+	http://golang.org/doc/gccgo_install.html
+
+This software has two parts: a 'protocol compiler plugin' that
+generates Go source files that, once compiled, can access and manage
+protocol buffers; and a library that implements run-time support for
+encoding (marshaling), decoding (unmarshaling), and accessing protocol
+buffers.
+
+There is no support for RPC in Go using protocol buffers.  It may come
+once a standard RPC protocol develops for protobufs.
+
+Extensions are not supported by the plugin in this release, although
+they are in the library.  The work will be completed soon.
+
+There are no insertion points in the plugin.
+
+To install this code:
+
+The simplest way is to run goinstall.
+
+	# Grab the code from the repository and install the proto package.
+	goinstall goprotobuf.googlecode.com/hg/proto
+
+	# Compile and install the compiler plugin
+	cd $GOROOT/src/pkg/goprotobuf.googlecode.com/hg/compiler
+	make install
+
+The compiler plugin, protoc-gen-go, will be installed in $GOBIN,
+defaulting to $HOME/bin.  It must be in your $PATH for the protocol
+compiler, protoc, to find it.
+
+Once the software is installed, there are two steps to using it.
+First you must compile the protocol buffer definitions and then import
+them, with the support library, into your program.
+
+To compile the protocol buffer definition, write a Makefile in the
+style shown in the commentin the file Make.protobuf.  If your Makefile
+includes Make.protobuf, the rest should follow automatically.  The
+generated code can be compiled separately or as part of a normal Go
+package.
+
+The generated files will be suffixed .pb.go.  See the Test code below
+for an example using such a file.
+
+
+
+The package comment for the proto library contains text describing
+the interface provided in Go for protocol buffers. Here is an edited
+version.
+
+==========
+
+The proto package converts data structures to and from the
+wire format of protocol buffers.  It works in concert with the
+Go source code generated for .proto files by the protocol compiler.
+
+A summary of the properties of the protocol buffer interface
+for a protocol buffer variable v:
+
+  - Names are turned from camel_case to CamelCase for export.
+  - There are no methods on v to set and get fields; just treat
+  	them as structure fields.
+  - The zero value for a struct is its correct initialization state.
+	All desired fields must be set before marshaling.
+  - A Reset() method will restore a protobuf struct to its zero state.
+  - Each type T has a method NewT() to create a new instance. It
+	is equivalent to new(T).
+  - Non-repeated fields are pointers to the values; nil means unset.
+	That is, optional or required field int32 f becomes F *int32.
+  - Repeated fields are slices.
+  - Helper functions are available to simplify the getting and setting of fields:
+  	foo.String = proto.String("hello") // set field
+  	s := proto.GetString(foo.String)  // get field
+  - Constants are defined to hold the default values of all fields that
+	have them.  They have the form Default_StructName_FieldName.
+  - Enums are given type names and maps between names to values,
+  	plus a helper function to create values.  Enum values are prefixed
+  	with the enum's type name.
+  - Nested groups and enums have type names prefixed with the name of
+  	the surrounding message type.
+  - Marshal and Unmarshal are functions to encode and decode the wire format.
+
+Consider file test.proto, containing
+
+	package example;
+	
+	enum FOO { X = 17; };
+	
+	message Test {
+	  required string label = 1;
+	  optional int32 type = 2 [default=77];
+	  repeated int64 reps = 3;
+	  optional group OptionalGroup = 4 {
+	    required string RequiredField = 5;
+	  };
+	}
+
+To build a package from test.proto and some other Go files, write a
+Makefile like this:
+
+	include $(GOROOT)/src/Make.$(GOARCH)
+
+	TARG=path/to/example
+	GOFILES=\
+		test.pb.go\
+		other.go
+
+	include $(GOROOT)/src/Make.pkg
+	include $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/Make.protobuf
+
+
+To create and play with a Test object from the example package,
+
+	package main
+
+	import (
+		"log"
+
+		"goprotobuf.googlecode.com/hg/proto"
+		"path/to/example"
+	)
+
+	func main() {
+		test := &example.Test {
+			Label: proto.String("hello"),
+			Type: proto.Int32(17),
+			Optionalgroup: &example.Test_OptionalGroup {
+				RequiredField: proto.String("good bye"),
+			},
+		}
+		data, err := proto.Marshal(test)
+		if err != nil {
+			log.Exit("marshaling error:", err)
+		}
+		newTest := example.NewTest()
+		err = proto.Unmarshal(data, newTest)
+		if err != nil {
+			log.Exit("unmarshaling error:", err)
+		}
+		// Now test and newTest contain the same data.
+		if proto.GetString(test.Label) != proto.GetString(newTest.Label) {
+			log.Exit("data mismatch %q %q", proto.GetString(test.Label), proto.GetString(newTest.Label))
+		}
+		// etc.
+	}
