@@ -1,0 +1,11 @@
+# This is a list of contributors to the Go protobuf repository.
+
+# Names should be added to this file like so:
+#     Name <email address>
+
+# Please keep the list sorted.
+
+
+David Symonds <dsymonds@golang.org>
+Ken Thompson <ken@golang.org>
+Rob Pike <r@golang.org>
