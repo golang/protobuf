@@ -57,7 +57,14 @@ package.
 The generated files will be suffixed .pb.go.  See the Test code below
 for an example using such a file.
 
+This repository uses the same code review mechanism as Go, so
+if you wish to submit changes add the equivalent of these two lines
+to $GOROOT/src/pkg/goprotobuf.googlecode.com/hg/.hg/hgrc
 
+	[extensions]
+	codereview = $GOROOT/lib/codereview/codereview.py
+
+*where $GOROOT is the expanded text, such as /usr/foo/go*.
 
 The package comment for the proto library contains text describing
 the interface provided in Go for protocol buffers. Here is an edited

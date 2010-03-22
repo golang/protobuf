@@ -36,17 +36,23 @@ all:	install
 
 install:
 	cd proto && make install
+	cd compiler/descriptor && make install
+	cd compiler/plugin && make install
 	cd compiler && make install
 
 clean:
 	cd proto && make clean
 	cd compiler && make clean
+	cd compiler/descriptor && make clean
+	cd compiler/plugin && make clean
 	cd compiler/testdata && make clean
 	cd compiler/descriptor && make clean
 	cd compiler/plugin && make clean
 
 nuke:
 	cd proto && make nuke
+	cd compiler/descriptor && make nuke
+	cd compiler/plugin && make nuke
 	cd compiler && make nuke
 	cd compiler/testdata && make nuke
 	cd compiler/descriptor && make nuke
