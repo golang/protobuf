@@ -508,7 +508,7 @@ var enumValueMaps = make(map[string]map[string]int32)
 // maps into the global table to aid parsing ASCII protocol buffers.
 func RegisterEnum(typeName string, nameMap map[int32]string, valueMap map[string]int32) {
 	if _, ok := enumNameMaps[typeName]; ok {
-		panicln("proto: duplicate enum registered: ", typeName)
+		panic("proto: duplicate enum registered: " + typeName)
 	}
 	enumNameMaps[typeName] = nameMap
 	enumValueMaps[typeName] = valueMap
