@@ -458,7 +458,6 @@ func (g *Generator) BuildTypeNameMap() {
 func (g *Generator) objectNamed(typeName string) Object {
 	f, ok := g.typeNameToObject[typeName]
 	if !ok {
-panicln()
 		g.fail("can't find object with type", typeName)
 	}
 	return f
