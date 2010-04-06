@@ -37,7 +37,6 @@
 	That may change.
 
 	Not supported yet:
-		Extensions
 		Services
 */
 
@@ -114,9 +113,10 @@ func (c *common) packageName() string { return uniquePackageOf(c.file) }
 type Descriptor struct {
 	common
 	*descriptor.DescriptorProto
-	parent   *Descriptor   // The containing message, if any.
-	nested   []*Descriptor // Inner messages, if any.
-	typename []string      // Cached typename vector.
+	parent   *Descriptor            // The containing message, if any.
+	nested   []*Descriptor          // Inner messages, if any.
+	ext      []*ExtensionDescriptor // Extensions, if any.
+	typename []string               // Cached typename vector.
 }
 
 // Return the elements of the dotted type name.  The package name is not part
@@ -188,12 +188,36 @@ func (e *EnumDescriptor) integerValueAsString(name string) string {
 	return ""
 }
 
+// An extension. If it's at top level, its parent will be nil. Otherwise it will be
+// the descriptor of the message in which it is defined.
+type ExtensionDescriptor struct {
+	common
+	*descriptor.FieldDescriptorProto
+	parent   *Descriptor // The containing message, if any.
+}
+
+// Return the elements of the dotted type name.
+func (e *ExtensionDescriptor) typeName() (s []string) {
+	name := proto.GetString(e.Name)
+	if e.parent == nil {
+		s = make([]string, 2)
+		s[0] = "E"  // top-level extension namespace
+	} else {
+		pname := e.parent.typeName()
+		s = make([]string, len(pname)+1)
+		copy(s, pname)
+	}
+	s[len(s)-1] = name
+	return s
+}
+
 // A file. Includes slices of all the messages and enums defined within it.
 // Those slices are constructed by WrapTypes.
 type FileDescriptor struct {
 	*descriptor.FileDescriptorProto
-	desc []*Descriptor     // All the messages defined in this file.
-	enum []*EnumDescriptor // All the enums defined in this file.
+	desc []*Descriptor           // All the messages defined in this file.
+	enum []*EnumDescriptor       // All the enums defined in this file.
+	ext  []*ExtensionDescriptor  // All the top-level extensions defined in this file.
 }
 
 // The package name we'll use in the generated code to refer to this file.
@@ -202,6 +226,20 @@ func (d *FileDescriptor) packageName() string { return uniquePackageOf(d.FileDes
 // The package named defined in the input for this file, possibly dotted.
 func (d *FileDescriptor) originalPackageName() string {
 	return proto.GetString(d.Package)
+}
+
+// Whether the proto library needs importing.
+// This will be true if there are any enums or any extensions, or any messages with extension ranges.
+func (d *FileDescriptor) needProtoImport() bool {
+	if len(d.enum) > 0 || len(d.ext) > 0 {
+		return true
+	}
+	for _, desc := range d.desc {
+		if len(desc.ext) > 0 || len(desc.ExtensionRange) > 0 {
+			return true
+		}
+	}
+	return false
 }
 
 // Simplify some things by abstracting the abilities shared by enums and messages.
@@ -308,15 +346,12 @@ AllFiles:
 			break
 		}
 		// Install it.
-		if pkg != truePkg {
-			log.Stderr("renaming duplicate imported package named", truePkg, "to", pkg)
-		}
 		inUse[pkg] = true
 		uniquePackageName[f.FileDescriptorProto] = strings.Map(DotToUnderscore, pkg)
 	}
 }
 
-// Walk the incoming data, wrapping DescriptorProtos and EnumDescriptorProtos
+// Walk the incoming data, wrapping DescriptorProtos, EnumDescriptorProtos and FileDescriptorProtos
 // into file-referenced objects within the Generator.  Also create the list of files
 // to generate
 func (g *Generator) WrapTypes() {
@@ -330,10 +365,12 @@ func (g *Generator) WrapTypes() {
 		descs := WrapDescriptors(f)
 		g.BuildNestedDescriptors(descs)
 		enums := WrapEnumDescriptors(f, descs)
+		exts := WrapExtensions(f)
 		g.allFiles[i] = &FileDescriptor{
 			FileDescriptorProto: f,
 			desc:                descs,
 			enum:                enums,
+			ext:                 exts,
 		}
 	}
 
@@ -373,13 +410,20 @@ func (g *Generator) BuildNestedDescriptors(descs []*Descriptor) {
 
 // Construct the Descriptor and add it to the slice
 func AddDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto) []*Descriptor {
+	d := &Descriptor{common{file: file}, desc, parent, nil, nil, nil}
+
+	d.ext = make([]*ExtensionDescriptor, len(desc.Extension))
+	for i, field := range desc.Extension {
+		d.ext[i] = &ExtensionDescriptor{common{file: file}, field, d}
+	}
+
 	if len(sl) == cap(sl) {
 		nsl := make([]*Descriptor, len(sl), 2*len(sl))
 		copy(nsl, sl)
 		sl = nsl
 	}
 	sl = sl[0 : len(sl)+1]
-	sl[len(sl)-1] = &Descriptor{common{file: file}, desc, parent, nil, nil}
+	sl[len(sl)-1] = d
 	return sl
 }
 
@@ -433,6 +477,15 @@ func WrapEnumDescriptorsInMessage(sl []*EnumDescriptor, desc *Descriptor, file *
 	}
 	for _, nested := range desc.nested {
 		sl = WrapEnumDescriptorsInMessage(sl, nested, file)
+	}
+	return sl
+}
+
+// Return a slice of all the top-level ExtensionDescriptors defined within this file.
+func WrapExtensions(file *descriptor.FileDescriptorProto) []*ExtensionDescriptor {
+	sl := make([]*ExtensionDescriptor, len(file.Extension))
+	for i, field := range file.Extension {
+		sl[i] = &ExtensionDescriptor{common{file: file}, field, nil}
 	}
 	return sl
 }
@@ -525,6 +578,9 @@ func (g *Generator) Generate(file *FileDescriptor) {
 	for _, desc := range g.file.desc {
 		g.GenerateMessage(desc)
 	}
+	for _, ext := range g.file.ext {
+		g.GenerateExtension(ext)
+	}
 	g.GenerateInitFunction()
 }
 
@@ -539,7 +595,7 @@ func (g *Generator) GenerateHeader() {
 
 // Generate the header, including package definition and imports
 func (g *Generator) GenerateImports() {
-	if len(g.file.enum) > 0 {
+	if g.file.needProtoImport() {
 		g.p(`import "goprotobuf.googlecode.com/hg/proto"`)
 	}
 	for _, s := range g.file.Dependency {
@@ -763,6 +819,9 @@ func (g *Generator) GenerateMessage(message *Descriptor) {
 		tag := g.GoTag(field, wiretype)
 		g.p(fieldname, "\t", typename, "\t", tag)
 	}
+	if len(message.ExtensionRange) > 0 {
+		g.p("XXX_extensions\t\tmap[int32][]byte")
+	}
 	g.p("XXX_unrecognized\t[]byte")
 	g.out()
 	g.p("}")
@@ -778,6 +837,34 @@ func (g *Generator) GenerateMessage(message *Descriptor) {
 	g.p("return new(", ccTypeName, ")")
 	g.out()
 	g.p("}")
+
+	// Extension support methods
+	if len(message.ExtensionRange) > 0 {
+		g.p()
+		g.p("var extRange_", ccTypeName, " = []proto.ExtensionRange{")
+		g.in()
+		for _, r := range message.ExtensionRange {
+			end := fmt.Sprint(*r.End - 1)  // make range inclusive on both ends
+			g.p("proto.ExtensionRange{", r.Start, ", ", end, "},")
+		}
+		g.out()
+		g.p("}")
+		g.p("func (*", ccTypeName, ") ExtensionRangeArray() []proto.ExtensionRange {")
+		g.in()
+		g.p("return extRange_", ccTypeName)
+		g.out()
+		g.p("}")
+		g.p("func (this *", ccTypeName, ") ExtensionMap() map[int32][]byte {")
+		g.in()
+		g.p("if this.XXX_extensions == nil {")
+		g.in()
+		g.p("this.XXX_extensions = make(map[int32][]byte)")
+		g.out()
+		g.p("}")
+		g.p("return this.XXX_extensions")
+		g.out()
+		g.p("}")
+	}
 
 	// Default constants
 	for _, field := range message.Field {
@@ -798,7 +885,7 @@ func (g *Generator) GenerateMessage(message *Descriptor) {
 		case typename == "[]byte":
 			def = "[]byte(" + Quote(def) + ")"
 			kind = "var "
-		case 	*field.Type == descriptor.FieldDescriptorProto_TYPE_ENUM:
+		case *field.Type == descriptor.FieldDescriptorProto_TYPE_ENUM:
 			// Must be an enum.  Need to construct the prefixed name.
 			obj := g.objectNamed(proto.GetString(field.TypeName))
 			enum, ok := obj.(*EnumDescriptor)
@@ -810,6 +897,37 @@ func (g *Generator) GenerateMessage(message *Descriptor) {
 		}
 		g.p(kind, fieldname, " ", typename, " = ", def)
 	}
+	g.p()
+
+	for _, ext := range message.ext {
+		g.GenerateExtension(ext)
+	}
+}
+
+// Generate the extension descriptor for this ExtensionDescriptor.
+func (g *Generator) GenerateExtension(ext *ExtensionDescriptor) {
+	// The full type name
+	typeName := ext.typeName()
+	// Each scope of the extension is individually CamelCased, and all are joined with "_".
+	for i, s := range typeName {
+		typeName[i] = CamelCase(s)
+	}
+	ccTypeName := strings.Join(typeName, "_")
+
+	extendedType := "*" + g.TypeName(g.objectNamed(*ext.Extendee))
+	field := ext.FieldDescriptorProto
+	fieldType, wireType := g.GoType(ext.parent, field)
+	tag := g.GoTag(field, wireType)
+
+	g.p("var ", ccTypeName, " = &proto.ExtensionDesc{")
+	g.in()
+	g.p("ExtendedType: (", extendedType, ")(nil),")
+	g.p("ExtensionType: (", fieldType, ")(nil),")
+	g.p("Field: ", field.Number, ",")
+	g.p("Tag: ", tag, ",")
+
+	g.out()
+	g.p("}")
 	g.p()
 }
 

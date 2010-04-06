@@ -37,9 +37,10 @@ all:
 include $(GOROOT)/src/Make.common
 include $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/Make.protobuf
 
-CLEANFILES+=*.pb.go
+CLEANFILES+=*.pb.go extension_test
 
-test:	golden testbuild
+test:	golden testbuild extension_test
+	./extension_test
 	@echo PASS
 
 golden:
@@ -51,6 +52,9 @@ nuke:	clean
 testbuild:	main.$O
 	$(LD) -L. main.$O
 
+extension_test:	extension_test.$O
+	$(LD) -L. -o $@ $< 
+
 multi.a: multi3.pb.$O multi2.pb.$O multi1.pb.$O
 	rm -f multi.a
 	$(QUOTED_GOBIN)/gopack grc $@ $<
@@ -61,3 +65,4 @@ multi.a: multi3.pb.$O multi2.pb.$O multi1.pb.$O
 test.pb.go:	imp.pb.go
 multi1.pb.go:	multi2.pb.go multi3.pb.go
 main.$O: imp.pb.$O test.pb.$O multi.a
+extension_test.$O: extension_base.pb.$O extension_user.pb.$O
