@@ -84,6 +84,7 @@ const Default_Request_Hat HatType = HatType_FEDORA
 
 type Reply struct {
 	Found	[]*Reply_Entry	"PB(bytes,1,rep,name=found)"
+	XXX_extensions		map[int32][]byte
 	XXX_unrecognized	[]byte
 }
 func (this *Reply) Reset() {
@@ -91,6 +92,19 @@ func (this *Reply) Reset() {
 }
 func NewReply() *Reply {
 	return new(Reply)
+}
+
+var extRange_Reply = []proto.ExtensionRange{
+	proto.ExtensionRange{100, 536870911},
+}
+func (*Reply) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_Reply
+}
+func (this *Reply) ExtensionMap() map[int32][]byte {
+	if this.XXX_extensions == nil {
+		this.XXX_extensions = make(map[int32][]byte)
+	}
+	return this.XXX_extensions
 }
 
 type Reply_Entry struct {
@@ -115,6 +129,20 @@ func (this *ReplyExtensions) Reset() {
 }
 func NewReplyExtensions() *ReplyExtensions {
 	return new(ReplyExtensions)
+}
+
+var ReplyExtensions_Time = &proto.ExtensionDesc{
+	ExtendedType: (*Reply)(nil),
+	ExtensionType: (*float64)(nil),
+	Field: 101,
+	Tag: "PB(fixed64,101,opt,name=time)",
+}
+
+var E_Tag = &proto.ExtensionDesc{
+	ExtendedType: (*Reply)(nil),
+	ExtensionType: (*string)(nil),
+	Field: 103,
+	Tag: "PB(bytes,103,opt,name=tag)",
 }
 
 func init() {

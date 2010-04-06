@@ -29,52 +29,45 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package my.test;  // dotted package name
+import "extension_base.proto";
 
-import "imp.proto";
+package extension_user;
 
-enum HatType {
-  // deliberately skipping 0
-  FEDORA = 1;
-  FEZ = 2;
+message UserMessage {
+  optional string name = 1;
+  optional string rank = 2;
 }
 
-enum Days {
-  MONDAY = 1;
-  TUESDAY = 2;
-  LUNDI = 1;  // same value as MONDAY
+// Extend with a message
+extend extension_base.BaseMessage {
+  optional UserMessage user_message = 5;
 }
 
-message Request {
-  enum Color {
-    RED = 0;
-    GREEN = 1;
-    BLUE = 2;
+// Extend with some primitive types
+extend extension_base.BaseMessage {
+  optional int32 width = 6;
+  optional int64 area = 7;
+}
+
+// Extend inside the scope of another type
+message LoudMessage {
+  extend extension_base.BaseMessage {
+    optional uint32 volume = 8;
   }
-  repeated int64 key = 1;
-  optional imp.ImportedMessage imported_message = 2;
-  optional Color hue = 3;
-  optional HatType hat = 4 [default=FEDORA];
-  optional imp.ImportedMessage.Owner owner = 6;
-}
-
-message Reply {
-  message Entry {
-    required int64 key_that_needs_1234camel_CasIng = 1;
-    optional int64 value = 2 [default=7];
-    optional int64 _my_field_name_2 = 3;
-  }
-  repeated Entry found = 1;
   extensions 100 to max;
 }
 
-message ReplyExtensions {
-  extend Reply {
-    optional double time = 101;
+// Extend inside the scope of another type, using a message.
+message LoginMessage {
+  extend extension_base.BaseMessage {
+    required UserMessage user_message = 16;
   }
 }
 
-// top-level extension
-extend Reply {
-  optional string tag = 103;
+// An extension of an extension
+message Announcement {
+  optional string words = 1;
+  extend LoudMessage {
+    optional Announcement loud_ext = 100;
+  }
 }

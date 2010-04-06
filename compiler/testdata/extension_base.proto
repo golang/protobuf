@@ -29,52 +29,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package my.test;  // dotted package name
+package extension_base;
 
-import "imp.proto";
-
-enum HatType {
-  // deliberately skipping 0
-  FEDORA = 1;
-  FEZ = 2;
-}
-
-enum Days {
-  MONDAY = 1;
-  TUESDAY = 2;
-  LUNDI = 1;  // same value as MONDAY
-}
-
-message Request {
-  enum Color {
-    RED = 0;
-    GREEN = 1;
-    BLUE = 2;
-  }
-  repeated int64 key = 1;
-  optional imp.ImportedMessage imported_message = 2;
-  optional Color hue = 3;
-  optional HatType hat = 4 [default=FEDORA];
-  optional imp.ImportedMessage.Owner owner = 6;
-}
-
-message Reply {
-  message Entry {
-    required int64 key_that_needs_1234camel_CasIng = 1;
-    optional int64 value = 2 [default=7];
-    optional int64 _my_field_name_2 = 3;
-  }
-  repeated Entry found = 1;
-  extensions 100 to max;
-}
-
-message ReplyExtensions {
-  extend Reply {
-    optional double time = 101;
-  }
-}
-
-// top-level extension
-extend Reply {
-  optional string tag = 103;
+message BaseMessage {
+  optional int32 height = 1;
+  extensions 4 to 9;
+  extensions 16 to max;
 }

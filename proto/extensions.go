@@ -128,7 +128,7 @@ func GetExtension(extended extendableProto, extension *ExtensionDesc) (interface
 	return unsafe.Unreflect(t, base), nil
 }
 
-// TODO(: (needed for repeated extensions)
+// TODO: (needed for repeated extensions)
 //   - ExtensionSize
 //   - AddExtension
 
