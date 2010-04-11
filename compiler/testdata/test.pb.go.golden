@@ -131,7 +131,7 @@ func NewReplyExtensions() *ReplyExtensions {
 	return new(ReplyExtensions)
 }
 
-var ReplyExtensions_Time = &proto.ExtensionDesc{
+var E_ReplyExtensions_Time = &proto.ExtensionDesc{
 	ExtendedType: (*Reply)(nil),
 	ExtensionType: (*float64)(nil),
 	Field: 101,

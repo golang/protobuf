@@ -47,8 +47,7 @@ func TestSingleFieldExtension(t *testing.T) {
 
 	// Use extension within scope of another type.
 	vol := proto.Uint32(11)
-	t.Logf("bm: %T, user.LoudMessage_Volume: %T", bm, user.LoudMessage_Volume)
-	err := proto.SetExtension(bm, user.LoudMessage_Volume, vol)
+	err := proto.SetExtension(bm, user.E_LoudMessage_Volume, vol)
 	if err != nil {
 		t.Fatal("Failed setting extension:", err)
 	}
@@ -60,18 +59,18 @@ func TestSingleFieldExtension(t *testing.T) {
 	if err := proto.Unmarshal(buf, bm_new); err != nil {
 		t.Fatal("Failed decoding message with extension:", err)
 	}
-	if !proto.HasExtension(bm_new, user.LoudMessage_Volume) {
+	if !proto.HasExtension(bm_new, user.E_LoudMessage_Volume) {
 		t.Fatal("Decoded message didn't contain extension.")
 	}
-	vol_out, err := proto.GetExtension(bm_new, user.LoudMessage_Volume)
+	vol_out, err := proto.GetExtension(bm_new, user.E_LoudMessage_Volume)
 	if err != nil {
 		t.Fatal("Failed getting extension:", err)
 	}
 	if v := vol_out.(*uint32); *v != *vol {
 		t.Errorf("vol_out = %v, expected %v", *v, *vol)
 	}
-	proto.ClearExtension(bm_new, user.LoudMessage_Volume)
-	if proto.HasExtension(bm_new, user.LoudMessage_Volume) {
+	proto.ClearExtension(bm_new, user.E_LoudMessage_Volume)
+	if proto.HasExtension(bm_new, user.E_LoudMessage_Volume) {
 		t.Fatal("Failed clearing extension.")
 	}
 }
@@ -85,7 +84,7 @@ func TestMessageExtension(t *testing.T) {
 		Name: proto.String("Dave"),
 		Rank: proto.String("Major"),
 	}
-	err := proto.SetExtension(bm, user.LoginMessage_UserMessage, um)
+	err := proto.SetExtension(bm, user.E_LoginMessage_UserMessage, um)
 	if err != nil {
 		t.Fatal("Failed setting extension:", err)
 	}
@@ -97,10 +96,10 @@ func TestMessageExtension(t *testing.T) {
 	if err := proto.Unmarshal(buf, bm_new); err != nil {
 		t.Fatal("Failed decoding message with extension:", err)
 	}
-	if !proto.HasExtension(bm_new, user.LoginMessage_UserMessage) {
+	if !proto.HasExtension(bm_new, user.E_LoginMessage_UserMessage) {
 		t.Fatal("Decoded message didn't contain extension.")
 	}
-	um_out, err := proto.GetExtension(bm_new, user.LoginMessage_UserMessage)
+	um_out, err := proto.GetExtension(bm_new, user.E_LoginMessage_UserMessage)
 	if err != nil {
 		t.Fatal("Failed getting extension:", err)
 	}
@@ -110,8 +109,8 @@ func TestMessageExtension(t *testing.T) {
 	if r := um_out.(*user.UserMessage).Rank; *r != *um.Rank {
 		t.Errorf("um_out.Rank = %q, expected %q", *r, *um.Rank)
 	}
-	proto.ClearExtension(bm_new, user.LoginMessage_UserMessage)
-	if proto.HasExtension(bm_new, user.LoginMessage_UserMessage) {
+	proto.ClearExtension(bm_new, user.E_LoginMessage_UserMessage)
+	if proto.HasExtension(bm_new, user.E_LoginMessage_UserMessage) {
 		t.Fatal("Failed clearing extension.")
 	}
 }

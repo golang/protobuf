@@ -58,6 +58,11 @@
 	  	with the enum's type name.
 	  - Nested groups and enums have type names prefixed with the name of
 	  	the surrounding message type.
+	  - Extensions are given descriptor names that start with E_,
+		followed by an underscore-delimited list of the nested messages
+		that contain it (if any) followed by the CamelCased name of the
+		extension field itself.  HasExtension, ClearExtension, GetExtension
+		and SetExtension are functions for manipulating extensions.
 	  - Marshal and Unmarshal are functions to encode and decode the wire format.
 
 	The simplest way to describe this is to see an example.
