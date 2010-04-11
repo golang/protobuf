@@ -200,8 +200,8 @@ type ExtensionDescriptor struct {
 func (e *ExtensionDescriptor) typeName() (s []string) {
 	name := proto.GetString(e.Name)
 	if e.parent == nil {
-		s = make([]string, 2)
-		s[0] = "E"  // top-level extension namespace
+		// top-level extension
+		s = make([]string, 1)
 	} else {
 		pname := e.parent.typeName()
 		s = make([]string, len(pname)+1)
@@ -908,11 +908,11 @@ func (g *Generator) GenerateMessage(message *Descriptor) {
 func (g *Generator) GenerateExtension(ext *ExtensionDescriptor) {
 	// The full type name
 	typeName := ext.typeName()
-	// Each scope of the extension is individually CamelCased, and all are joined with "_".
+	// Each scope of the extension is individually CamelCased, and all are joined with "_" with a "E_" prefix.
 	for i, s := range typeName {
 		typeName[i] = CamelCase(s)
 	}
-	ccTypeName := strings.Join(typeName, "_")
+	ccTypeName := "E_" + strings.Join(typeName, "_")
 
 	extendedType := "*" + g.TypeName(g.objectNamed(*ext.Extendee))
 	field := ext.FieldDescriptorProto
