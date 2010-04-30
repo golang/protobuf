@@ -35,6 +35,8 @@ TARG=goprotobuf.googlecode.com/hg/compiler/plugin
 GOFILES=\
 	plugin.pb.go\
 
+DEPS=../../proto ../descriptor
+
 include $(GOROOT)/src/Make.pkg
 
 # Not stored here, but plugin.proto is in http://code.google.com/p/protobuf
