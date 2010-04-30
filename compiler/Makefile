@@ -36,7 +36,7 @@ TARG=protoc-gen-go
 GOFILES=\
 	main.go\
 
-DEPS=descriptor plugin
+DEPS=generator descriptor plugin
 
 include $(GOROOT)/src/Make.cmd
 
