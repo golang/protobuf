@@ -16,3 +16,4 @@ core
 _obj
 _test
 compiler/protoc-gen-go
+compiler/testdata/extension_test

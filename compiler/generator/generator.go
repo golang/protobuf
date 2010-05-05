@@ -251,7 +251,7 @@ func uniquePackageOf(fd *descriptor.FileDescriptorProto) string {
 
 // Generator is the type whose methods generate the output, stored in the associated response structure.
 type Generator struct {
-	bytes.Buffer
+	*bytes.Buffer
 
 	Request  *plugin.CodeGeneratorRequest  // The input.
 	Response *plugin.CodeGeneratorResponse // The output.
@@ -260,6 +260,7 @@ type Generator struct {
 	allFiles         []*FileDescriptor // All files in the tree
 	genFiles         []*FileDescriptor // Those files we will generate output for.
 	file             *FileDescriptor   // The file we are compiling now.
+	usedPackages     map[string]bool   // Names of packages used in current file.
 	typeNameToObject map[string]Object // Key is a fully-qualified name in input syntax.
 	indent           string
 }
@@ -267,6 +268,7 @@ type Generator struct {
 // New creates a new generator and allocates the request and response protobufs.
 func New() *Generator {
 	g := new(Generator)
+	g.Buffer = new(bytes.Buffer)
 	g.Request = plugin.NewCodeGeneratorRequest()
 	g.Response = plugin.NewCodeGeneratorResponse()
 	return g
@@ -573,8 +575,8 @@ func (g *Generator) FileOf(fd *descriptor.FileDescriptorProto) *FileDescriptor {
 // supposed to generate.
 func (g *Generator) generate(file *FileDescriptor) {
 	g.file = g.FileOf(file.FileDescriptorProto)
-	g.generateHeader()
-	g.generateImports()
+	g.usedPackages = make(map[string]bool)
+
 	for _, enum := range g.file.enum {
 		g.generateEnum(enum)
 	}
@@ -585,6 +587,13 @@ func (g *Generator) generate(file *FileDescriptor) {
 		g.generateExtension(ext)
 	}
 	g.generateInitFunction()
+
+	// Generate header and imports last, though they appear first in the output.
+	rem := g.Buffer
+	g.Buffer = new(bytes.Buffer)
+	g.generateHeader()
+	g.generateImports()
+	g.Write(rem.Bytes())
 }
 
 // Generate the header, including package definition and imports
@@ -609,7 +618,11 @@ func (g *Generator) generateImports() {
 				if strings.HasSuffix(filename, ".go") {
 					filename = filename[0:len(filename)-3]
 				}
-				g.P("import ", fd.PackageName(), " ", Quote(filename))
+				if _, ok := g.usedPackages[fd.PackageName()]; ok {
+					g.P("import ", fd.PackageName(), " ", Quote(filename))
+				} else {
+					log.Stderr("protoc-gen-go: discarding unused import: ", filename)
+				}
 				break
 			}
 		}
@@ -814,6 +827,12 @@ func (g *Generator) GoType(message *Descriptor, field *descriptor.FieldDescripto
 	return
 }
 
+func (g *Generator) RecordTypeUse(t string) {
+	if obj, ok := g.typeNameToObject[t]; ok {
+		g.usedPackages[obj.PackageName()] = true
+	}
+}
+
 // Generate the type and default constant definitions for this Descriptor.
 func (g *Generator) generateMessage(message *Descriptor) {
 	// The full type name
@@ -828,6 +847,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		typename, wiretype := g.GoType(message, field)
 		tag := g.goTag(field, wiretype)
 		g.P(fieldname, "\t", typename, "\t", tag)
+		g.RecordTypeUse(proto.GetString(field.TypeName))
 	}
 	if len(message.ExtensionRange) > 0 {
 		g.P("XXX_extensions\t\tmap[int32][]byte")
@@ -927,6 +947,7 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	field := ext.FieldDescriptorProto
 	fieldType, wireType := g.GoType(ext.parent, field)
 	tag := g.goTag(field, wireType)
+	g.RecordTypeUse(*ext.Extendee)
 
 	g.P("var ", ccTypeName, " = &proto.ExtensionDesc{")
 	g.In()
