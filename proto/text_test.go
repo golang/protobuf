@@ -41,17 +41,17 @@ import (
 func newTestMessage() *MyMessage {
 	return &MyMessage{
 		Count: Int32(42),
-		Name: String("Dave"),
+		Name:  String("Dave"),
 		Quote: String(`"I didn't want to go."`),
-		Pet: []string{"bunny", "kitty", "horsey"},
+		Pet:   []string{"bunny", "kitty", "horsey"},
 		Inner: &InnerMessage{
-			Host: String("footrest.syd"),
-			Port: Int32(7001),
+			Host:      String("footrest.syd"),
+			Port:      Int32(7001),
 			Connected: Bool(true),
 		},
 		Others: []*OtherMessage{
 			&OtherMessage{
-				Key: Int64(0xdeadbeef),
+				Key:   Int64(0xdeadbeef),
 				Value: []byte{1, 65, 7, 12},
 			},
 			&OtherMessage{
