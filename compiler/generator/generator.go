@@ -1042,30 +1042,65 @@ func (g *Generator) generateEnumRegistration(enum *EnumDescriptor) {
 
 // And now lots of helper functions.
 
-// CamelCase returns the CamelCased name.  Given foo_bar_Baz, the result is FooBar_Baz.
-func CamelCase(name string) string {
-	elems := strings.Split(name, "_", 0)
-	for i, e := range elems {
-		if e == "" {
-			elems[i] = "_"
+// Is c an ASCII lower-case letter?
+func isASCIILower(c byte) bool {
+	return 'a' <= c && c <= 'z'
+}
+
+// Is c an ASCII digit?
+func isASCIIDigit(c byte) bool {
+	return '0' <= c && c <= '9'
+}
+
+// CamelCase returns the CamelCased name.
+// If there is an interior underscore followed by a lower case letter,
+// drop the underscore and convert the letter to upper case.
+// There is a remote possibility of this rewrite causing a name collision,
+// but it's so remote we're prepared to pretend it's nonexistent - since the
+// C++ generator lowercases names, it's extremely unlikely to have two fields
+// with different capitalizations.
+// In short, _my_field_name_2 becomes XMyFieldName2.
+func CamelCase(s string) string {
+	if s == "" {
+		return ""
+	}
+	t := make([]byte, 0, 32)
+	oneC := make([]byte, 1)
+	i := 0
+	if s[0] == '_' {
+		// Need a capital letter; drop the '_'.
+		oneC[0] = 'X'
+		t = bytes.Add(t, oneC)
+		i++
+	}
+	// Invariant: if the next letter is lower case, it must be converted
+	// to upper case.
+	// That is, we process a word at a time, where words are marked by _ or
+	// upper case letter. Digits are treated as words.
+	for ; i < len(s); i++ {
+		c := s[i]
+		oneC[0] = c
+		if c == '_' && i+1 < len(s) && isASCIILower(s[i+1]) {
+			continue // Skip the underscore in s.
+		}
+		if isASCIIDigit(c) {
+			t = bytes.Add(t, oneC)
 			continue
 		}
-		runes := []int(e)
-		if unicode.IsLower(runes[0]) {
-			runes[0] = unicode.ToUpper(runes[0])
-			elems[i] = string(runes)
-		} else {
-			if i > 0 {
-				elems[i] = "_" + e
-			}
+		// Assume we have a letter now - if not, it's a bogus identifier.
+		// The next word is a sequence of characters that must start upper case.
+		if isASCIILower(c) {
+			oneC[0] ^= ' ' // Make it a capital letter.
+		}
+		t = bytes.Add(t, oneC) // Guaranteed not lower case.
+		// Accept lower case sequence that follows.
+		for i+1 < len(s) && isASCIILower(s[i+1]) {
+			i++
+			oneC[0] = s[i]
+			t = bytes.Add(t, oneC)
 		}
 	}
-	s := strings.Join(elems, "")
-	// Name must not begin with an underscore.
-	if len(s) > 0 && s[0] == '_' {
-		s = "X" + s[1:]
-	}
-	return s
+	return string(t)
 }
 
 // CamelCaseSlice is like CamelCase, but the argument is a slice of strings to
