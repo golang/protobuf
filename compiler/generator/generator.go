@@ -42,7 +42,6 @@ import (
 	"log"
 	"os"
 	"strings"
-	"unicode"
 
 	"goprotobuf.googlecode.com/hg/proto"
 	plugin "goprotobuf.googlecode.com/hg/compiler/plugin"
@@ -658,7 +657,7 @@ func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later.
-	g.P("import " + g.ProtoPkg + " " + Quote(g.ImportPrefix+"net/proto2/go/proto"))
+	g.P("import " + g.ProtoPkg + " " + Quote(g.ImportPrefix+"goprotobuf.googlecode.com/hg/proto"))
 	for _, s := range g.file.Dependency {
 		// Need to find the descriptor for this file
 		for _, fd := range g.allFiles {
