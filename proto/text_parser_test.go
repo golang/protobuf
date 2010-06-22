@@ -132,6 +132,20 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		},
 	},
 
+	// Repeated message with/without colon and <>/{}
+	UnmarshalTextTest{
+		in: `count:42 others:{} others{} others:<> others:{}`,
+		out: &MyMessage{
+			Count: Int32(42),
+			Others: []*OtherMessage{
+				&OtherMessage{},
+				&OtherMessage{},
+				&OtherMessage{},
+				&OtherMessage{},
+			},
+		},
+	},
+
 	// Missing colon for inner message
 	UnmarshalTextTest{
 		in: `count:42 inner < host: "cauchy.syd" >`,
