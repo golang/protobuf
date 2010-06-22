@@ -3,8 +3,11 @@
 
 package my_test
 
-import "goprotobuf.googlecode.com/hg/proto"
+import proto "goprotobuf.googlecode.com/hg/proto"
 import imp "imp.pb"
+
+// Reference proto import to suppress error if it's not otherwise used.
+var _ = proto.GetString
 
 type HatType int32
 const (
@@ -108,7 +111,7 @@ func (this *Reply) ExtensionMap() map[int32][]byte {
 }
 
 type Reply_Entry struct {
-	KeyThatNeeds_1234camel_CasIng	*int64	"PB(varint,1,req,name=key_that_needs_1234camel_CasIng)"
+	KeyThatNeeds_1234Camel_CasIng	*int64	"PB(varint,1,req,name=key_that_needs_1234camel_CasIng)"
 	Value	*int64	"PB(varint,2,opt,name=value,def=7)"
 	XMyFieldName_2	*int64	"PB(varint,3,opt,name=_my_field_name_2)"
 	XXX_unrecognized	[]byte

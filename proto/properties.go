@@ -229,6 +229,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	case *reflect.PtrType:
 		switch t2 := t1.Elem().(type) {
 		default:
+		BadType:
 			fmt.Fprintf(os.Stderr, "proto: no encoder function for %T -> %T\n", t1, t2)
 			break
 		case *reflect.BoolType:
@@ -236,26 +237,36 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 			p.dec = (*Buffer).dec_bool
 			p.alignof = unsafe.Alignof(vbool)
 			p.sizeof = unsafe.Sizeof(vbool)
-		case *reflect.Int32Type, *reflect.Uint32Type:
-			p.enc = (*Buffer).enc_int32
-			p.dec = (*Buffer).dec_int32
-			p.alignof = unsafe.Alignof(vint32)
-			p.sizeof = unsafe.Sizeof(vint32)
-		case *reflect.Int64Type, *reflect.Uint64Type:
-			p.enc = (*Buffer).enc_int64
-			p.dec = (*Buffer).dec_int64
-			p.alignof = unsafe.Alignof(vint64)
-			p.sizeof = unsafe.Sizeof(vint64)
-		case *reflect.Float32Type:
-			p.enc = (*Buffer).enc_int32 // can just treat them as bits
-			p.dec = (*Buffer).dec_int32
-			p.alignof = unsafe.Alignof(vfloat32)
-			p.sizeof = unsafe.Sizeof(vfloat32)
-		case *reflect.Float64Type:
-			p.enc = (*Buffer).enc_int64 // can just treat them as bits
-			p.dec = (*Buffer).dec_int64
-			p.alignof = unsafe.Alignof(vfloat64)
-			p.sizeof = unsafe.Sizeof(vfloat64)
+		case *reflect.IntType, *reflect.UintType:
+			switch t2.Bits() {
+			case 32:
+				p.enc = (*Buffer).enc_int32
+				p.dec = (*Buffer).dec_int32
+				p.alignof = unsafe.Alignof(vint32)
+				p.sizeof = unsafe.Sizeof(vint32)
+			case 64:
+				p.enc = (*Buffer).enc_int64
+				p.dec = (*Buffer).dec_int64
+				p.alignof = unsafe.Alignof(vint64)
+				p.sizeof = unsafe.Sizeof(vint64)
+			default:
+				goto BadType
+			}
+		case *reflect.FloatType:
+			switch t2.Bits() {
+			case 32:
+				p.enc = (*Buffer).enc_int32 // can just treat them as bits
+				p.dec = (*Buffer).dec_int32
+				p.alignof = unsafe.Alignof(vfloat32)
+				p.sizeof = unsafe.Sizeof(vfloat32)
+			case 64:
+				p.enc = (*Buffer).enc_int64 // can just treat them as bits
+				p.dec = (*Buffer).dec_int64
+				p.alignof = unsafe.Alignof(vfloat64)
+				p.sizeof = unsafe.Sizeof(vfloat64)
+			default:
+				goto BadType
+			}
 		case *reflect.StringType:
 			p.enc = (*Buffer).enc_string
 			p.dec = (*Buffer).dec_string
@@ -275,38 +286,51 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	case *reflect.SliceType:
 		switch t2 := t1.Elem().(type) {
 		default:
-			fmt.Fprintf(os.Stderr, "proto: no oenc for %T -> %T\n", t1, t2)
+		BadSliceType:
+			fmt.Fprintf(os.Stderr, "proto: no slice oenc for %T = []%T\n", t1, t2)
 			break
-		case *reflect.Uint8Type:
-			p.enc = (*Buffer).enc_slice_byte
-			p.dec = (*Buffer).dec_slice_byte
-			p.alignof = unsafe.Alignof(vbyte)
-			p.sizeof = startSize * unsafe.Sizeof(vbyte)
 		case *reflect.BoolType:
 			p.enc = (*Buffer).enc_slice_bool
 			p.dec = (*Buffer).dec_slice_bool
 			p.alignof = unsafe.Alignof(vbool)
 			p.sizeof = startSize * unsafe.Sizeof(vbool)
-		case *reflect.Int32Type, *reflect.Uint32Type:
-			p.enc = (*Buffer).enc_slice_int32
-			p.dec = (*Buffer).dec_slice_int32
-			p.alignof = unsafe.Alignof(vint32)
-			p.sizeof = startSize * unsafe.Sizeof(vint32)
-		case *reflect.Int64Type, *reflect.Uint64Type:
-			p.enc = (*Buffer).enc_slice_int64
-			p.dec = (*Buffer).dec_slice_int64
-			p.alignof = unsafe.Alignof(vint64)
-			p.sizeof = startSize * unsafe.Sizeof(vint64)
-		case *reflect.Float32Type:
-			p.enc = (*Buffer).enc_slice_int32 // can just treat them as bits
-			p.dec = (*Buffer).dec_slice_int32
-			p.alignof = unsafe.Alignof(vfloat32)
-			p.sizeof = startSize * unsafe.Sizeof(vfloat32)
-		case *reflect.Float64Type:
-			p.enc = (*Buffer).enc_slice_int64 // can just treat them as bits
-			p.dec = (*Buffer).dec_slice_int64
-			p.alignof = unsafe.Alignof(vfloat64)
-			p.sizeof = startSize * unsafe.Sizeof(vfloat64)
+		case *reflect.IntType, *reflect.UintType:
+			switch t2.Bits() {
+			case 32:
+				p.enc = (*Buffer).enc_slice_int32
+				p.dec = (*Buffer).dec_slice_int32
+				p.alignof = unsafe.Alignof(vint32)
+				p.sizeof = startSize * unsafe.Sizeof(vint32)
+			case 64:
+				p.enc = (*Buffer).enc_slice_int64
+				p.dec = (*Buffer).dec_slice_int64
+				p.alignof = unsafe.Alignof(vint64)
+				p.sizeof = startSize * unsafe.Sizeof(vint64)
+			case 8:
+				if t2.Kind() == reflect.Uint8 {
+					p.enc = (*Buffer).enc_slice_byte
+					p.dec = (*Buffer).dec_slice_byte
+					p.alignof = unsafe.Alignof(vbyte)
+					p.sizeof = startSize * unsafe.Sizeof(vbyte)
+				}
+			default:
+				goto BadSliceType
+			}
+		case *reflect.FloatType:
+			switch t2.Bits() {
+			case 32:
+				p.enc = (*Buffer).enc_slice_int32 // can just treat them as bits
+				p.dec = (*Buffer).dec_slice_int32
+				p.alignof = unsafe.Alignof(vfloat32)
+				p.sizeof = startSize * unsafe.Sizeof(vfloat32)
+			case 64:
+				p.enc = (*Buffer).enc_slice_int64 // can just treat them as bits
+				p.dec = (*Buffer).dec_slice_int64
+				p.alignof = unsafe.Alignof(vfloat64)
+				p.sizeof = startSize * unsafe.Sizeof(vfloat64)
+			default:
+				goto BadSliceType
+			}
 		case *reflect.StringType:
 			p.enc = (*Buffer).enc_slice_string
 			p.dec = (*Buffer).dec_slice_string
@@ -315,7 +339,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 		case *reflect.PtrType:
 			switch t3 := t2.Elem().(type) {
 			default:
-				fmt.Fprintf(os.Stderr, "proto: no oenc for %T -> %T -> %T\n", t1, t2, t3)
+				fmt.Fprintf(os.Stderr, "proto: no ptr oenc for %T -> %T -> %T\n", t1, t2, t3)
 				break
 			case *reflect.StructType:
 				p.stype = t2
@@ -329,11 +353,11 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 				p.sizeof = startSize * unsafe.Sizeof(vslice)
 			}
 		case *reflect.SliceType:
-			switch t3 := t2.Elem().(type) {
+			switch t2.Elem().Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "proto: no oenc for %T -> %T -> %T\n", t1, t2, t3)
+				fmt.Fprintf(os.Stderr, "proto: no slice elem oenc for %T -> %T -> %T\n", t1, t2, t2.Elem())
 				break
-			case *reflect.Uint8Type:
+			case reflect.Uint8:
 				p.enc = (*Buffer).enc_slice_slice_byte
 				p.dec = (*Buffer).dec_slice_slice_byte
 				p.alignof = unsafe.Alignof(vslice)
