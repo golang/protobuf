@@ -304,13 +304,16 @@ func (p *textParser) readStruct(sv *reflect.StructValue, terminator string) *Par
 				// those three become *T, *string and []T respectively, so we can check for
 				// this field being a pointer to a non-string.
 				typ := st.Field(fi).Type
-				pt, ok := typ.(*reflect.PtrType)
-				if !ok {
-					break
-				}
-				_, ok = pt.Elem().(*reflect.StringType)
-				if ok {
-					break
+				if pt, ok := typ.(*reflect.PtrType); ok {
+					// *T or *string
+					if _, ok := pt.Elem().(*reflect.StringType); ok {
+						break
+					}
+				} else if st, ok := typ.(*reflect.SliceType); ok {
+					// []T or []*T
+					if _, ok := st.Elem().(*reflect.PtrType); !ok {
+						break
+					}
 				}
 				needColon = false
 			}
