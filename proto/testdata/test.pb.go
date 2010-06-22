@@ -3,7 +3,10 @@
 
 package test_proto
 
-import "goprotobuf.googlecode.com/hg/proto"
+import proto "goprotobuf.googlecode.com/hg/proto"
+
+// Reference proto import to suppress error if it's not otherwise used.
+var _ = proto.GetString
 
 type FOO int32
 const (

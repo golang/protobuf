@@ -354,7 +354,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 	switch fv := v.(type) {
 	case *reflect.SliceValue:
 		at := v.Type().(*reflect.SliceType)
-		if _, ok := at.Elem().(*reflect.Uint8Type); ok {
+		if at.Elem().Kind() == reflect.Uint8 {
 			// Special case for []byte
 			if tok.value[0] != '"' {
 				// Deliberately written out here, as the error after
@@ -386,38 +386,36 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			fv.Set(false)
 			return nil
 		}
-	case *reflect.Float32Value:
-		if f, err := strconv.Atof32(tok.value); err == nil {
+	case *reflect.FloatValue:
+		if f, err := strconv.AtofN(tok.value, fv.Type().Bits()); err == nil {
 			fv.Set(f)
 			return nil
 		}
-	case *reflect.Float64Value:
-		if f, err := strconv.Atof64(tok.value); err == nil {
-			fv.Set(f)
+	case *reflect.IntValue:
+		switch fv.Type().Bits() {
+		case 32:
+			if x, err := strconv.Atoi64(tok.value); err == nil && minInt32 <= x && x <= maxInt32 {
+				fv.Set(x)
+				return nil
+			}
+			if len(props.Enum) == 0 {
+				break
+			}
+			m, ok := enumValueMaps[props.Enum]
+			if !ok {
+				break
+			}
+			x, ok := m[tok.value]
+			if !ok {
+				break
+			}
+			fv.Set(int64(x))
 			return nil
-		}
-	case *reflect.Int32Value:
-		if x, err := strconv.Atoi64(tok.value); err == nil && minInt32 <= x && x <= maxInt32 {
-			fv.Set(int32(x))
-			return nil
-		}
-		if len(props.Enum) == 0 {
-			break
-		}
-		m, ok := enumValueMaps[props.Enum]
-		if !ok {
-			break
-		}
-		x, ok := m[tok.value]
-		if !ok {
-			break
-		}
-		fv.Set(x)
-		return nil
-	case *reflect.Int64Value:
-		if x, err := strconv.Atoi64(tok.value); err == nil {
-			fv.Set(x)
-			return nil
+		case 64:
+			if x, err := strconv.Atoi64(tok.value); err == nil {
+				fv.Set(x)
+				return nil
+			}
 		}
 	case *reflect.PtrValue:
 		// A basic field (indirected through pointer), or a repeated message/group
@@ -440,15 +438,18 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			return p.error("expected '{' or '<', found %q", tok.value)
 		}
 		return p.readStruct(fv, terminator)
-	case *reflect.Uint32Value:
-		if x, err := strconv.Atoui64(tok.value); err == nil && x <= maxUint32 {
-			fv.Set(uint32(x))
-			return nil
-		}
-	case *reflect.Uint64Value:
-		if x, err := strconv.Atoui64(tok.value); err == nil {
-			fv.Set(x)
-			return nil
+	case *reflect.UintValue:
+		switch fv.Type().Bits() {
+		case 32:
+			if x, err := strconv.Atoui64(tok.value); err == nil && x <= maxUint32 {
+				fv.Set(uint64(x))
+				return nil
+			}
+		case 64:
+			if x, err := strconv.Atoui64(tok.value); err == nil {
+				fv.Set(x)
+				return nil
+			}
 		}
 	}
 	return p.error("invalid %v: %v", v.Type(), tok.value)

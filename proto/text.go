@@ -137,15 +137,15 @@ func writeStruct(w *textWriter, sv *reflect.StructValue) {
 }
 
 func tryWriteEnum(w *textWriter, enum string, v reflect.Value) bool {
-	val, ok := reflect.Indirect(v).(*reflect.Int32Value)
-	if !ok {
+	v = reflect.Indirect(v)
+	if v.Type().Kind() != reflect.Int32 {
 		return false
 	}
 	m, ok := enumNameMaps[enum]
 	if !ok {
 		return false
 	}
-	str, ok := m[val.Get()]
+	str, ok := m[int32(v.(*reflect.IntValue).Get())]
 	if !ok {
 		return false
 	}
@@ -161,10 +161,10 @@ func writeAny(w *textWriter, v reflect.Value) {
 	switch val := v.(type) {
 	case *reflect.SliceValue:
 		// Should only be a []byte; repeated fields are handled in writeStruct.
-		// TODO: Handle other cases cleaner.
+		// TODO: Handle other cases more cleanly.
 		bytes := make([]byte, val.Len())
 		for i := 0; i < val.Len(); i++ {
-			bytes[i] = val.Elem(i).(*reflect.Uint8Value).Get()
+			bytes[i] = byte(val.Elem(i).(*reflect.UintValue).Get())
 		}
 		// TODO: Should be strconv.QuoteC, which doesn't exist yet
 		fmt.Fprint(w, strconv.Quote(string(bytes)))
