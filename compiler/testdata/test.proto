@@ -64,6 +64,10 @@ message Reply {
     required int64 key_that_needs_1234camel_CasIng = 1;
     optional int64 value = 2 [default=7];
     optional int64 _my_field_name_2 = 3;
+    enum Game {
+      FOOTBALL = 1;
+      TENNIS = 2;
+    }
   }
   repeated Entry found = 1;
   extensions 100 to max;

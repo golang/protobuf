@@ -480,22 +480,15 @@ func addEnumDescriptor(sl []*EnumDescriptor, desc *descriptor.EnumDescriptorProt
 // Return a slice of all the EnumDescriptors defined within this file
 func wrapEnumDescriptors(file *descriptor.FileDescriptorProto, descs []*Descriptor) []*EnumDescriptor {
 	sl := make([]*EnumDescriptor, 0, len(file.EnumType)+10)
+	// Top-level enums.
 	for _, enum := range file.EnumType {
 		sl = addEnumDescriptor(sl, enum, nil, file)
 	}
+	// Enums within messages. Enums within embedded messages appear in the outer-most message.
 	for _, nested := range descs {
-		sl = wrapEnumDescriptorsInMessage(sl, nested, file)
-	}
-	return sl
-}
-
-// Wrap this EnumDescriptor, recursively
-func wrapEnumDescriptorsInMessage(sl []*EnumDescriptor, desc *Descriptor, file *descriptor.FileDescriptorProto) []*EnumDescriptor {
-	for _, enum := range desc.EnumType {
-		sl = addEnumDescriptor(sl, enum, desc, file)
-	}
-	for _, nested := range desc.nested {
-		sl = wrapEnumDescriptorsInMessage(sl, nested, file)
+		for _, enum := range nested.EnumType {
+			sl = addEnumDescriptor(sl, enum, nested, file)
+		}
 	}
 	return sl
 }

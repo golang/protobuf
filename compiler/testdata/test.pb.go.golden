@@ -69,6 +69,24 @@ func NewRequest_Color(x int32) *Request_Color {
 	return &e
 }
 
+type Reply_Entry_Game int32
+const (
+	Reply_Entry_FOOTBALL = 1
+	Reply_Entry_TENNIS = 2
+)
+var Reply_Entry_Game_name = map[int32] string {
+	1: "FOOTBALL",
+	2: "TENNIS",
+}
+var Reply_Entry_Game_value = map[string] int32 {
+	"FOOTBALL": 1,
+	"TENNIS": 2,
+}
+func NewReply_Entry_Game(x int32) *Reply_Entry_Game {
+	e := Reply_Entry_Game(x)
+	return &e
+}
+
 type Request struct {
 	Key	[]int64	"PB(varint,1,rep,name=key)"
 	ImportedMessage	*imp.ImportedMessage	"PB(bytes,2,opt,name=imported_message)"
@@ -152,4 +170,5 @@ func init() {
 	proto.RegisterEnum("my_test.HatType", HatType_name, HatType_value)
 	proto.RegisterEnum("my_test.Days", Days_name, Days_value)
 	proto.RegisterEnum("my_test.Request_Color", Request_Color_name, Request_Color_value)
+	proto.RegisterEnum("my_test.Reply_Entry_Game", Reply_Entry_Game_name, Reply_Entry_Game_value)
 }
