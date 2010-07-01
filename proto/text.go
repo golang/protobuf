@@ -56,7 +56,7 @@ type textWriter struct {
 func (w *textWriter) Write(p []byte) (n int, err os.Error) {
 	n, err = len(p), nil
 
-	frags := strings.Split(string(p), "\n", 0)
+	frags := strings.Split(string(p), "\n", -1)
 	if w.compact {
 		w.writer.Write([]byte(strings.Join(frags, " ")))
 		return

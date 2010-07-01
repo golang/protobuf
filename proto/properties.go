@@ -141,7 +141,7 @@ func (p *Properties) String() string {
 // Parse populates p by parsing a string in the "PB(...)" struct tag style.
 func (p *Properties) Parse(s string) {
 	// "bytes,49,opt,def=hello!,name=foo"
-	fields := strings.Split(s, ",", 0) // breaks def=, but handled below.
+	fields := strings.Split(s, ",", -1) // breaks def=, but handled below.
 	if len(fields) < 2 {
 		fmt.Fprintf(os.Stderr, "proto: tag has too few fields: %q\n", s)
 		return
