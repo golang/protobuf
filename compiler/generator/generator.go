@@ -292,7 +292,7 @@ func (g *Generator) Fail(msgs ...string) {
 // It then sets file name mappings defined by those entries.
 func (g *Generator) CommandLineParameters(parameter string) {
 	g.Param = make(map[string]string)
-	for _, p := range strings.Split(parameter, ",", 0) {
+	for _, p := range strings.Split(parameter, ",", -1) {
 		if i := strings.Index(p, "="); i < 0 {
 			g.Param[p] = ""
 		} else {
