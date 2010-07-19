@@ -41,6 +41,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"strings"
 
 	"goprotobuf.googlecode.com/hg/proto"
@@ -975,7 +976,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 				log.Stderr("don't know how to generate constant for", fieldname)
 				continue
 			}
-			def = enum.prefix() + def
+			def = g.DefaultPackageName(enum) + enum.prefix() + def
 		}
 		g.P(kind, fieldname, " ", typename, " = ", def)
 	}
@@ -1107,8 +1108,9 @@ func Quote(s string) string { return fmt.Sprintf("%q", s) }
 
 // Given a .proto file name, return the output name for the generated Go program.
 func goFileName(name string) string {
-	if strings.HasSuffix(name, ".proto") {
-		name = name[0 : len(name)-6]
+	ext := path.Ext(name)
+	if ext == ".proto" || ext == ".protodevel" {
+		name = name[0 : len(name)-len(ext)]
 	}
 	return name + ".pb.go"
 }
