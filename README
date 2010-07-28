@@ -82,8 +82,6 @@ for a protocol buffer variable v:
   - The zero value for a struct is its correct initialization state.
 	All desired fields must be set before marshaling.
   - A Reset() method will restore a protobuf struct to its zero state.
-  - Each type T has a method NewT() to create a new instance. It
-	is equivalent to new(T).
   - Non-repeated fields are pointers to the values; nil means unset.
 	That is, optional or required field int32 f becomes F *int32.
   - Repeated fields are slices.
@@ -151,7 +149,7 @@ To create and play with a Test object from the example package,
 		if err != nil {
 			log.Exit("marshaling error:", err)
 		}
-		newTest := example.NewTest()
+		newTest := &example.Test()
 		err = proto.Unmarshal(data, newTest)
 		if err != nil {
 			log.Exit("unmarshaling error:", err)

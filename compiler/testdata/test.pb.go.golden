@@ -98,9 +98,6 @@ type Request struct {
 func (this *Request) Reset() {
 	*this = Request{}
 }
-func NewRequest() *Request {
-	return new(Request)
-}
 const Default_Request_Hat HatType = HatType_FEDORA
 
 type Reply struct {
@@ -110,9 +107,6 @@ type Reply struct {
 }
 func (this *Reply) Reset() {
 	*this = Reply{}
-}
-func NewReply() *Reply {
-	return new(Reply)
 }
 
 var extRange_Reply = []proto.ExtensionRange{
@@ -137,9 +131,6 @@ type Reply_Entry struct {
 func (this *Reply_Entry) Reset() {
 	*this = Reply_Entry{}
 }
-func NewReply_Entry() *Reply_Entry {
-	return new(Reply_Entry)
-}
 const Default_Reply_Entry_Value int64 = 7
 
 type ReplyExtensions struct {
@@ -147,9 +138,6 @@ type ReplyExtensions struct {
 }
 func (this *ReplyExtensions) Reset() {
 	*this = ReplyExtensions{}
-}
-func NewReplyExtensions() *ReplyExtensions {
-	return new(ReplyExtensions)
 }
 
 var E_ReplyExtensions_Time = &proto.ExtensionDesc{

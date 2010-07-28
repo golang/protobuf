@@ -39,6 +39,6 @@ import (
 )
 
 func main() {
-	_ = my_test.NewRequest()
-	_ = multitest.NewMulti1()
+	_ = &my_test.Request{}
+	_ = &multitest.Multi1{}
 }

@@ -333,6 +333,7 @@ func (p *Buffer) Unmarshal(pb interface{}) os.Error {
 func (o *Buffer) unmarshalType(t *reflect.PtrType, is_group bool, base uintptr) os.Error {
 	st := t.Elem().(*reflect.StructType)
 	prop := GetProperties(st)
+	required, reqFields := prop.reqCount, uint64(0)
 	sbase := getsbase(prop) // scratch area for data items
 
 	var err os.Error
@@ -367,19 +368,41 @@ func (o *Buffer) unmarshalType(t *reflect.PtrType, is_group bool, base uintptr) 
 		}
 		p := prop.Prop[fieldnum]
 
-		if p.dec != nil {
-			if wire != WireStartGroup && wire != p.WireType {
-				err = ErrWrongType
-				continue
-			}
-			err = p.dec(o, p, base, sbase)
+		if p.dec == nil {
+			fmt.Fprintf(os.Stderr, "no protobuf decoder for %s.%s\n", t, st.Field(fieldnum).Name)
 			continue
 		}
-
-		fmt.Fprintf(os.Stderr, "no protobuf decoder for %s.%s\n", t, st.Field(fieldnum).Name)
+		if wire != WireStartGroup && wire != p.WireType {
+			err = ErrWrongType
+			continue
+		}
+		err = p.dec(o, p, base, sbase)
+		if err == nil && p.Required {
+			// Successfully decoded a required field.
+			if tag <= 64 {
+				// use bitmap for fields 1-64 to catch field reuse.
+				var mask uint64 = 1 << uint64(tag-1)
+				if reqFields&mask == 0 {
+					// new required field
+					reqFields |= mask
+					required--
+				}
+			} else {
+				// This is imprecise. It can be fooled by a required field
+				// with a tag > 64 that is encoded twice; that's very rare.
+				// A fully correct implementation would require allocating
+				// a data structure, which we would like to avoid.
+				required--
+			}
+		}
 	}
-	if err == nil && is_group {
-		return io.ErrUnexpectedEOF
+	if err == nil {
+		if is_group {
+			return io.ErrUnexpectedEOF
+		}
+		if required > 0 {
+			return ErrRequiredNotSet
+		}
 	}
 	return err
 }

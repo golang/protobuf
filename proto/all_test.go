@@ -68,7 +68,7 @@ func equalbytes(b1, b2 []byte, t *testing.T) {
 }
 
 func initGoTestField() *GoTestField {
-	f := NewGoTestField()
+	f := new(GoTestField)
 	f.Label = String("label")
 	f.Type = String("type")
 	return f
@@ -78,25 +78,25 @@ func initGoTestField() *GoTestField {
 // (It's remarkable that required, optional, and repeated all have
 // 8 letters.)
 func initGoTest_RequiredGroup() *GoTest_RequiredGroup {
-	f := NewGoTest_RequiredGroup()
-	f.RequiredField = String("required")
-	return f
+	return &GoTest_RequiredGroup{
+		RequiredField: String("required"),
+	}
 }
 
 func initGoTest_OptionalGroup() *GoTest_OptionalGroup {
-	f := NewGoTest_OptionalGroup()
-	f.RequiredField = String("optional")
-	return f
+	return &GoTest_OptionalGroup{
+		RequiredField: String("optional"),
+	}
 }
 
 func initGoTest_RepeatedGroup() *GoTest_RepeatedGroup {
-	f := NewGoTest_RepeatedGroup()
-	f.RequiredField = String("repeated")
-	return f
+	return &GoTest_RepeatedGroup{
+		RequiredField: String("repeated"),
+	}
 }
 
 func initGoTest(setdefaults bool) *GoTest {
-	pb := NewGoTest()
+	pb := new(GoTest)
 	if setdefaults {
 		pb.F_BoolDefaulted = Bool(Default_GoTest_F_BoolDefaulted)
 		pb.F_Int32Defaulted = Int32(Default_GoTest_F_Int32Defaulted)
@@ -302,7 +302,7 @@ func overify(t *testing.T, pb *GoTest, expected string) {
 	}
 
 	// Now test Unmarshal by recreating the original buffer.
-	pbd := NewGoTest()
+	pbd := new(GoTest)
 	err = o.Unmarshal(pbd)
 	if err != nil {
 		t.Fatalf("overify unmarshal err = %v", err)
@@ -426,7 +426,7 @@ func TestStringPrimitives(t *testing.T) {
 // Do we catch the "required bit not set" case?
 func TestRequiredBit(t *testing.T) {
 	o := old()
-	pb := NewGoTest()
+	pb := new(GoTest)
 	if o.Marshal(pb) != ErrRequiredNotSet {
 		t.Errorf("did not catch missing required fields")
 	}
@@ -781,24 +781,25 @@ func TestSkippingUnrecognizedFields(t *testing.T) {
 	o.Marshal(pb)
 
 	// Now new a GoSkipTest record.
-	skipgroup := NewGoSkipTest_SkipGroup()
-	skipgroup.GroupInt32 = Int32(75)
-	skipgroup.GroupString = String("wxyz")
-	skip := NewGoSkipTest()
-	skip.SkipInt32 = Int32(32)
-	skip.SkipFixed32 = Uint32(3232)
-	skip.SkipFixed64 = Uint64(6464)
-	skip.SkipString = String("skipper")
-	skip.Skipgroup = skipgroup
+	skip := &GoSkipTest{
+		SkipInt32:   Int32(32),
+		SkipFixed32: Uint32(3232),
+		SkipFixed64: Uint64(6464),
+		SkipString:  String("skipper"),
+		Skipgroup: &GoSkipTest_SkipGroup{
+			GroupInt32:  Int32(75),
+			GroupString: String("wxyz"),
+		},
+	}
 
 	// Marshal it into same buffer.
 	o.Marshal(skip)
 
-	pbd := NewGoTestField()
+	pbd := new(GoTestField)
 	o.Unmarshal(pbd)
 
 	// The __unrecognized field should be a marshaling of GoSkipTest
-	skipd := NewGoSkipTest()
+	skipd := new(GoSkipTest)
 
 	o.SetBuf(pbd.XXX_unrecognized)
 	o.Unmarshal(skipd)
@@ -876,7 +877,7 @@ func TestBigRepeated(t *testing.T) {
 	buf, _ := Marshal(pb)
 
 	// Now test Unmarshal by recreating the original buffer.
-	pbd := NewGoTest()
+	pbd := new(GoTest)
 	Unmarshal(buf, pbd)
 
 	// Check the checkable values
@@ -961,13 +962,16 @@ func TestTypeMismatch(t *testing.T) {
 }
 
 func TestProto1RepeatedGroup(t *testing.T) {
-	pb := NewMessageList()
-
-	pb.Message = make([]*MessageList_Message, 2)
-	pb.Message[0] = NewMessageList_Message()
-	pb.Message[0].Name = String("blah")
-	pb.Message[0].Count = Int32(7)
-	// NOTE: pb.Message[1] is a nil
+	pb := &MessageList{
+		Message: []*MessageList_Message{
+			&MessageList_Message{
+				Name:  String("blah"),
+				Count: Int32(7),
+			},
+			// NOTE: pb.Message[1] is a nil
+			nil,
+		},
+	}
 
 	o := old()
 	if err := o.Marshal(pb); err != ErrRepeatedHasNil {
@@ -992,6 +996,24 @@ func TestEnum(t *testing.T) {
 	}
 	if *pb1.Foo != FOO_FOO1 {
 		t.Errorf("expected 7 but got ", *pb1.Foo)
+	}
+}
+
+// Verify that absent required fields cause Marshal/Unmarshal to return errors.
+func TestRequiredFieldEnforcement(t *testing.T) {
+	pb := new(GoTestField)
+	_, err := Marshal(pb)
+	if err == nil || err != ErrRequiredNotSet {
+		t.Errorf("marshal: expected %q, got %q", ErrRequiredNotSet, err)
+	}
+
+	// A slightly sneaky, yet valid, proto. It encodes the same required field twice,
+	// so simply counting the required fields is insufficient.
+	// field 1, encoding 2, value "hi"
+	buf := []byte("\x0A\x02hi\x0A\x02hi")
+	err = Unmarshal(buf, pb)
+	if err == nil || err != ErrRequiredNotSet {
+		t.Errorf("unmarshal: expected %q, got %q", ErrRequiredNotSet, err)
 	}
 }
 
@@ -1030,7 +1052,7 @@ func BenchmarkUnmarshal(b *testing.B) {
 	for i := 0; i < N; i++ {
 		pb.F_Int32Repeated[i] = int32(i)
 	}
-	pbd := NewGoTest()
+	pbd := new(GoTest)
 	p := NewBuffer(nil)
 	p.Marshal(pb)
 	p2 := NewBuffer(nil)

@@ -45,7 +45,9 @@ import (
 
 // ErrRequiredNotSet is the error returned if Marshal is called with
 // a protocol buffer struct whose required fields have not
-// all been initialized.
+// all been initialized. It is also the error returned if Unmarshal is
+// called with an encoded protocol buffer that does not include all the
+// required fields.
 var ErrRequiredNotSet = os.NewError("required fields not set")
 
 // ErrRepeatedHasNil is the error returned if Marshal is called with
