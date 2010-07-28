@@ -102,9 +102,6 @@ type GoEnum struct {
 func (this *GoEnum) Reset() {
 	*this = GoEnum{}
 }
-func NewGoEnum() *GoEnum {
-	return new(GoEnum)
-}
 
 type GoTestField struct {
 	Label	*string	"PB(bytes,1,req)"
@@ -113,9 +110,6 @@ type GoTestField struct {
 }
 func (this *GoTestField) Reset() {
 	*this = GoTestField{}
-}
-func NewGoTestField() *GoTestField {
-	return new(GoTestField)
 }
 
 type GoTest struct {
@@ -185,9 +179,6 @@ type GoTest struct {
 func (this *GoTest) Reset() {
 	*this = GoTest{}
 }
-func NewGoTest() *GoTest {
-	return new(GoTest)
-}
 const Default_GoTest_F_BoolDefaulted bool = true
 const Default_GoTest_F_Int32Defaulted int32 = 32
 const Default_GoTest_F_Int64Defaulted int64 = 64
@@ -209,9 +200,6 @@ type GoTest_RequiredGroup struct {
 func (this *GoTest_RequiredGroup) Reset() {
 	*this = GoTest_RequiredGroup{}
 }
-func NewGoTest_RequiredGroup() *GoTest_RequiredGroup {
-	return new(GoTest_RequiredGroup)
-}
 
 type GoTest_RepeatedGroup struct {
 	RequiredField	*string	"PB(bytes,81,req)"
@@ -220,9 +208,6 @@ type GoTest_RepeatedGroup struct {
 func (this *GoTest_RepeatedGroup) Reset() {
 	*this = GoTest_RepeatedGroup{}
 }
-func NewGoTest_RepeatedGroup() *GoTest_RepeatedGroup {
-	return new(GoTest_RepeatedGroup)
-}
 
 type GoTest_OptionalGroup struct {
 	RequiredField	*string	"PB(bytes,91,req)"
@@ -230,9 +215,6 @@ type GoTest_OptionalGroup struct {
 }
 func (this *GoTest_OptionalGroup) Reset() {
 	*this = GoTest_OptionalGroup{}
-}
-func NewGoTest_OptionalGroup() *GoTest_OptionalGroup {
-	return new(GoTest_OptionalGroup)
 }
 
 type GoSkipTest struct {
@@ -246,9 +228,6 @@ type GoSkipTest struct {
 func (this *GoSkipTest) Reset() {
 	*this = GoSkipTest{}
 }
-func NewGoSkipTest() *GoSkipTest {
-	return new(GoSkipTest)
-}
 
 type GoSkipTest_SkipGroup struct {
 	GroupInt32	*int32	"PB(varint,16,req,name=group_int32)"
@@ -257,9 +236,6 @@ type GoSkipTest_SkipGroup struct {
 }
 func (this *GoSkipTest_SkipGroup) Reset() {
 	*this = GoSkipTest_SkipGroup{}
-}
-func NewGoSkipTest_SkipGroup() *GoSkipTest_SkipGroup {
-	return new(GoSkipTest_SkipGroup)
 }
 
 type InnerMessage struct {
@@ -270,9 +246,6 @@ type InnerMessage struct {
 }
 func (this *InnerMessage) Reset() {
 	*this = InnerMessage{}
-}
-func NewInnerMessage() *InnerMessage {
-	return new(InnerMessage)
 }
 const Default_InnerMessage_Port int32 = 4000
 
@@ -285,9 +258,6 @@ type OtherMessage struct {
 }
 func (this *OtherMessage) Reset() {
 	*this = OtherMessage{}
-}
-func NewOtherMessage() *OtherMessage {
-	return new(OtherMessage)
 }
 
 type MyMessage struct {
@@ -303,9 +273,6 @@ type MyMessage struct {
 func (this *MyMessage) Reset() {
 	*this = MyMessage{}
 }
-func NewMyMessage() *MyMessage {
-	return new(MyMessage)
-}
 
 type MessageList struct {
 	Message	[]*MessageList_Message	"PB(group,1,rep,name=message)"
@@ -313,9 +280,6 @@ type MessageList struct {
 }
 func (this *MessageList) Reset() {
 	*this = MessageList{}
-}
-func NewMessageList() *MessageList {
-	return new(MessageList)
 }
 
 type MessageList_Message struct {
@@ -325,9 +289,6 @@ type MessageList_Message struct {
 }
 func (this *MessageList_Message) Reset() {
 	*this = MessageList_Message{}
-}
-func NewMessageList_Message() *MessageList_Message {
-	return new(MessageList_Message)
 }
 
 func init() {

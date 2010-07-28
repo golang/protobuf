@@ -909,15 +909,10 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.Out()
 	g.P("}")
 
-	// Reset and New functions
+	// Reset function
 	g.P("func (this *", ccTypeName, ") Reset() {")
 	g.In()
 	g.P("*this = ", ccTypeName, "{}")
-	g.Out()
-	g.P("}")
-	g.P("func New", ccTypeName, "() *", ccTypeName, " {")
-	g.In()
-	g.P("return new(", ccTypeName, ")")
 	g.Out()
 	g.P("}")
 
