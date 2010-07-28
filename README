@@ -149,7 +149,7 @@ To create and play with a Test object from the example package,
 		if err != nil {
 			log.Exit("marshaling error:", err)
 		}
-		newTest := &example.Test()
+		newTest := &example.Test{}
 		err = proto.Unmarshal(data, newTest)
 		if err != nil {
 			log.Exit("unmarshaling error:", err)
