@@ -30,7 +30,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-include $(GOROOT)/src/Make.$(GOARCH)
+include $(GOROOT)/src/Make.inc
 include $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/Make.protobuf
 
 TARG=test_proto
