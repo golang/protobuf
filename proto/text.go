@@ -189,6 +189,10 @@ func writeAny(w *textWriter, v reflect.Value) {
 }
 
 func marshalText(w io.Writer, pb interface{}, compact bool) {
+	if pb == nil {
+		w.Write([]byte("<nil>"))
+		return
+	}
 	aw := new(textWriter)
 	aw.writer = w
 	aw.complete = true
