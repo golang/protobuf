@@ -39,6 +39,7 @@ package proto_test
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"testing"
 
 	. "goprotobuf.googlecode.com/hg/proto"
@@ -185,7 +186,6 @@ func fail(msg string, b *bytes.Buffer, s string, t *testing.T) {
 	fmt.Printf("\n")
 
 	t.Fail()
-
 
 	//	t.Errorf("%s: \ngood: %s\nbad: %x", msg, s, b.Bytes())
 	// Print the output in a partially-decoded format; can
@@ -1014,6 +1014,48 @@ func TestRequiredFieldEnforcement(t *testing.T) {
 	err = Unmarshal(buf, pb)
 	if err == nil || err != ErrRequiredNotSet {
 		t.Errorf("unmarshal: expected %q, got %q", ErrRequiredNotSet, err)
+	}
+}
+
+// A type that implements the Marshaler interface, but is not nillable.
+type nonNillableInt uint64
+
+func (nni nonNillableInt) Marshal() ([]byte, os.Error) {
+	return EncodeVarint(uint64(nni)), nil
+}
+
+type NNIMessage struct {
+	nni nonNillableInt
+}
+
+// A type that implements the Marshaler interface and is nillable.
+type nillableMessage struct {
+	x uint64
+}
+
+func (nm *nillableMessage) Marshal() ([]byte, os.Error) {
+	return EncodeVarint(nm.x), nil
+}
+
+type NMMessage struct {
+	nm *nillableMessage
+}
+
+// Verify a type that uses the Marshaler interface, but has a nil pointer.
+func TestNilMarshaler(t *testing.T) {
+	// Try a struct with a Marshaler field that is nil.
+	// It should be directly marshable.
+	nmm := new(NMMessage)
+	if _, err := Marshal(nmm); err != nil {
+		t.Error("unexpected error marshaling nmm: ", err)
+	}
+
+	// Try a struct with a Marshaler field that is not nillable.
+	nnim := new(NNIMessage)
+	nnim.nni = 7
+	var _ Marshaler = nnim.nni // verify it is truly a Marshaler
+	if _, err := Marshal(nnim); err != nil {
+		t.Error("unexpected error marshaling nnim: ", err)
 	}
 }
 
