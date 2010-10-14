@@ -153,16 +153,16 @@
 			}
 			data, err := proto.Marshal(test)
 			if err != nil {
-				log.Exit("marshaling error:", err)
+				log.Exitln("marshaling error:", err)
 			}
 			newTest := example.NewTest()
 			err = proto.Unmarshal(data, newTest)
 			if err != nil {
-				log.Exit("unmarshaling error:", err)
+				log.Exitln("unmarshaling error:", err)
 			}
 			// Now test and newTest contain the same data.
 			if proto.GetString(test.Label) != proto.GetString(newTest.Label) {
-				log.Exit("data mismatch %q %q", proto.GetString(test.Label), proto.GetString(newTest.Label))
+				log.Exitf("data mismatch %q %q", proto.GetString(test.Label), proto.GetString(newTest.Label))
 			}
 			// etc.
 		}
