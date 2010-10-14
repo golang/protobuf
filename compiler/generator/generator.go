@@ -275,7 +275,7 @@ func New() *Generator {
 // Error reports a problem, including an os.Error, and exits the program.
 func (g *Generator) Error(err os.Error, msgs ...string) {
 	s := strings.Join(msgs, " ") + ":" + err.String()
-	log.Stderr("protoc-gen-go: error: ", s)
+	log.Println("protoc-gen-go: error:", s)
 	g.Response.Error = proto.String(s)
 	os.Exit(1)
 }
@@ -283,7 +283,7 @@ func (g *Generator) Error(err os.Error, msgs ...string) {
 // Fail reports a problem and exits the program.
 func (g *Generator) Fail(msgs ...string) {
 	s := strings.Join(msgs, " ")
-	log.Stderr("protoc-gen-go: error: ", s)
+	log.Println("protoc-gen-go: error:", s)
 	g.Response.Error = proto.String(s)
 	os.Exit(1)
 }
@@ -671,7 +671,7 @@ func (g *Generator) generateImports() {
 				if _, ok := g.usedPackages[fd.PackageName()]; ok {
 					g.P("import ", fd.PackageName(), " ", Quote(filename))
 				} else {
-					log.Stderr("protoc-gen-go: discarding unused import: ", filename)
+					log.Println("protoc-gen-go: discarding unused import:", filename)
 				}
 				break
 			}
@@ -968,7 +968,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			obj := g.ObjectNamed(proto.GetString(field.TypeName))
 			enum, ok := obj.(*EnumDescriptor)
 			if !ok {
-				log.Stderr("don't know how to generate constant for", fieldname)
+				log.Println("don't know how to generate constant for", fieldname)
 				continue
 			}
 			def = g.DefaultPackageName(enum) + enum.prefix() + def
