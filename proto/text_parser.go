@@ -254,11 +254,9 @@ func (p *textParser) missingRequiredFieldError(sv *reflect.StructValue) *ParseEr
 // Returns the index in the struct for the named field, as well as the parsed tag properties.
 func structFieldByName(st *reflect.StructType, name string) (int, *Properties, bool) {
 	sprops := GetProperties(st)
-	for i := 0; i < st.NumField(); i++ {
-		props := sprops.Prop[i]
-		if props.OrigName == name {
-			return i, props, true
-		}
+	i, ok := sprops.origNames[name]
+	if ok {
+		return i, sprops.Prop[i], true
 	}
 	return -1, nil, false
 }
@@ -370,15 +368,17 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			return nil
 		}
 		// Repeated field. May already exist.
-		cnt := fv.Len()
-		nav := reflect.MakeSlice(at, cnt, cnt+1)
-		reflect.ArrayCopy(nav, fv)
-		fv.Set(nav)
-		fv.SetLen(cnt + 1)
+		flen := fv.Len()
+		if flen == fv.Cap() {
+			nav := reflect.MakeSlice(at, flen, 2*flen+1)
+			reflect.ArrayCopy(nav, fv)
+			fv.Set(nav)
+		}
+		fv.SetLen(flen + 1)
 
 		// Read one.
 		p.back()
-		return p.readAny(fv.Elem(cnt), nil) // TODO: pass properties?
+		return p.readAny(fv.Elem(flen), nil) // TODO: pass properties?
 	case *reflect.BoolValue:
 		// Either "true", "false", 1 or 0.
 		switch tok.value {

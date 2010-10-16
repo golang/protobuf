@@ -256,3 +256,27 @@ func TestUnmarshalText(t *testing.T) {
 		}
 	}
 }
+
+var benchInput string
+
+func init() {
+	benchInput = "count: 4\n"
+	for i := 0; i < 1000; i++ {
+		benchInput += "pet: \"fido\"\n"
+	}
+
+	// Check it is valid input.
+	pb := new(MyMessage)
+	err := UnmarshalText(benchInput, pb)
+	if err != nil {
+		panic("Bad benchmark input: " + err.String())
+	}
+}
+
+func BenchmarkUnmarshalText(b *testing.B) {
+	pb := new(MyMessage)
+	for i := 0; i < b.N; i++ {
+		UnmarshalText(benchInput, pb)
+	}
+	b.SetBytes(int64(len(benchInput)))
+}

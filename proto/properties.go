@@ -78,10 +78,11 @@ type valueDecoder func(o *Buffer) (x uint64, err os.Error)
 
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
-	Prop     []*Properties // properties for each field
-	reqCount int           // required count
-	tags     map[int]int   // map from proto tag to struct field number
-	nscratch uintptr       // size of scratch space
+	Prop      []*Properties  // properties for each field
+	reqCount  int            // required count
+	tags      map[int]int    // map from proto tag to struct field number
+	origNames map[string]int // map from original name to struct field number
+	nscratch  uintptr        // size of scratch space
 }
 
 // Properties represents the protocol-specific behavior of a single struct field.
@@ -411,6 +412,7 @@ func GetProperties(t *reflect.StructType) *StructProperties {
 
 	// build properties
 	prop.Prop = make([]*Properties, t.NumField())
+	prop.origNames = make(map[string]int)
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		p := new(Properties)
@@ -423,6 +425,7 @@ func GetProperties(t *reflect.StructType) *StructProperties {
 			p.sizeof = unsafe.Sizeof(vmap)
 		}
 		prop.Prop[i] = p
+		prop.origNames[p.OrigName] = i
 		if debug {
 			print(i, " ", f.Name, " ", t.String(), " ")
 			if p.Tag > 0 {
