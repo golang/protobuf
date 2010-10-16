@@ -42,6 +42,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 
 	"goprotobuf.googlecode.com/hg/proto"
@@ -332,9 +333,9 @@ var pkgNamesInUse = make(map[string]bool)
 // Pkg is the candidate name.  If f is nil, it's a builtin package like "proto" and
 // has no file descriptor.
 func RegisterUniquePackageName(pkg string, f *FileDescriptor) string {
-	for pkgNamesInUse[pkg] {
+	for i, orig := 1, pkg; pkgNamesInUse[pkg]; i++ {
 		// It's a duplicate; must rename.
-		pkg += "X"
+		pkg = orig + strconv.Itoa(i)
 	}
 	// Install it.
 	pkgNamesInUse[pkg] = true
