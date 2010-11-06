@@ -43,8 +43,6 @@
 	  - The zero value for a struct is its correct initialization state.
 		All desired fields must be set before marshaling.
 	  - A Reset() method will restore a protobuf struct to its zero state.
-	  - Each type T has a method NewT() to create a new instance. It
-		is equivalent to new(T).
 	  - Non-repeated fields are pointers to the values; nil means unset.
 		That is, optional or required field int32 f becomes F *int32.
 	  - Repeated fields are slices.
@@ -112,9 +110,6 @@
 		func (this *Test) Reset() {
 			*this = Test{}
 		}
-		func NewTest() *Test {
-			return new(Test)
-		}
 		const Default_Test_Type int32 = 77
 
 		type Test_OptionalGroup struct {
@@ -123,9 +118,6 @@
 		}
 		func (this *Test_OptionalGroup) Reset() {
 			*this = Test_OptionalGroup{}
-		}
-		func NewTest_OptionalGroup() *Test_OptionalGroup {
-			return new(Test_OptionalGroup)
 		}
 
 		func init() {
@@ -144,25 +136,25 @@
 		)
 
 		func main() {
-			test := &example.Test {
+			test := &example.Test{
 				Label: proto.String("hello"),
 				Type: proto.Int32(17),
-				Optionalgroup: &example.Test_OptionalGroup {
+				Optionalgroup: &example.Test_OptionalGroup{
 					RequiredField: proto.String("good bye"),
 				},
 			}
 			data, err := proto.Marshal(test)
 			if err != nil {
-				log.Exitln("marshaling error:", err)
+				log.Exit("marshaling error:", err)
 			}
-			newTest := example.NewTest()
+			newTest := new(example.Test)
 			err = proto.Unmarshal(data, newTest)
 			if err != nil {
-				log.Exitln("unmarshaling error:", err)
+				log.Exit("unmarshaling error:", err)
 			}
 			// Now test and newTest contain the same data.
 			if proto.GetString(test.Label) != proto.GetString(newTest.Label) {
-				log.Exitf("data mismatch %q %q", proto.GetString(test.Label), proto.GetString(newTest.Label))
+				log.Exit("data mismatch %q %q", proto.GetString(test.Label), proto.GetString(newTest.Label))
 			}
 			// etc.
 		}
