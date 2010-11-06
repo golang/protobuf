@@ -71,14 +71,7 @@ var plugins []Plugin
 // RegisterPlugin installs a (second-order) plugin to be run when the Go output is generated.
 // It is typically called during initialization.
 func RegisterPlugin(p Plugin) {
-	n := len(plugins)
-	if cap(plugins) == n {
-		nplugins := make([]Plugin, n, n+10) // very unlikely to need more than this
-		copy(nplugins, plugins)
-		plugins = nplugins
-	}
-	plugins = plugins[0 : n+1]
-	plugins[n] = p
+	plugins = append(plugins, p)
 }
 
 // Each type we import as a protocol buffer (other than FileDescriptorProto) needs
@@ -438,14 +431,7 @@ func addDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *D
 		d.ext[i] = &ExtensionDescriptor{common{File: file}, field, d}
 	}
 
-	if len(sl) == cap(sl) {
-		nsl := make([]*Descriptor, len(sl), 2*len(sl))
-		copy(nsl, sl)
-		sl = nsl
-	}
-	sl = sl[0 : len(sl)+1]
-	sl[len(sl)-1] = d
-	return sl
+	return append(sl, d)
 }
 
 // Return a slice of all the Descriptors defined within this file
@@ -469,14 +455,7 @@ func wrapThisDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, pare
 
 // Construct the EnumDescriptor and add it to the slice
 func addEnumDescriptor(sl []*EnumDescriptor, desc *descriptor.EnumDescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto) []*EnumDescriptor {
-	if len(sl) == cap(sl) {
-		nsl := make([]*EnumDescriptor, len(sl), 2*len(sl))
-		copy(nsl, sl)
-		sl = nsl
-	}
-	sl = sl[0 : len(sl)+1]
-	sl[len(sl)-1] = &EnumDescriptor{common{File: file}, desc, parent, nil}
-	return sl
+	return append(sl, &EnumDescriptor{common{File: file}, desc, parent, nil})
 }
 
 // Return a slice of all the EnumDescriptors defined within this file

@@ -42,8 +42,9 @@ import (
 )
 
 func TestSingleFieldExtension(t *testing.T) {
-	bm := &base.BaseMessage{}
-	bm.Height = proto.Int32(178)
+	bm := &base.BaseMessage{
+		Height: proto.Int32(178),
+	}
 
 	// Use extension within scope of another type.
 	vol := proto.Uint32(11)
@@ -55,7 +56,7 @@ func TestSingleFieldExtension(t *testing.T) {
 	if err != nil {
 		t.Fatal("Failed encoding message with extension:", err)
 	}
-	bm_new := &base.BaseMessage{}
+	bm_new := new(base.BaseMessage)
 	if err := proto.Unmarshal(buf, bm_new); err != nil {
 		t.Fatal("Failed decoding message with extension:", err)
 	}
@@ -76,8 +77,9 @@ func TestSingleFieldExtension(t *testing.T) {
 }
 
 func TestMessageExtension(t *testing.T) {
-	bm := &base.BaseMessage{}
-	bm.Height = proto.Int32(179)
+	bm := &base.BaseMessage{
+		Height: proto.Int32(179),
+	}
 
 	// Use extension that is itself a message.
 	um := &user.UserMessage{
@@ -92,7 +94,7 @@ func TestMessageExtension(t *testing.T) {
 	if err != nil {
 		t.Fatal("Failed encoding message with extension:", err)
 	}
-	bm_new := &base.BaseMessage{}
+	bm_new := new(base.BaseMessage)
 	if err := proto.Unmarshal(buf, bm_new); err != nil {
 		t.Fatal("Failed decoding message with extension:", err)
 	}
@@ -116,8 +118,9 @@ func TestMessageExtension(t *testing.T) {
 }
 
 func TestTopLevelExtension(t *testing.T) {
-	bm := &base.BaseMessage{}
-	bm.Height = proto.Int32(179)
+	bm := &base.BaseMessage{
+		Height: proto.Int32(179),
+	}
 
 	width := proto.Int32(17)
 	err := proto.SetExtension(bm, user.E_Width, width)
@@ -128,7 +131,7 @@ func TestTopLevelExtension(t *testing.T) {
 	if err != nil {
 		t.Fatal("Failed encoding message with extension:", err)
 	}
-	bm_new := &base.BaseMessage{}
+	bm_new := new(base.BaseMessage)
 	if err := proto.Unmarshal(buf, bm_new); err != nil {
 		t.Fatal("Failed decoding message with extension:", err)
 	}
