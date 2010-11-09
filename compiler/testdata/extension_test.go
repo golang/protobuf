@@ -34,6 +34,7 @@
 package main
 
 import (
+	"regexp"
 	"testing"
 
 	"goprotobuf.googlecode.com/hg/proto"
@@ -153,9 +154,9 @@ func TestTopLevelExtension(t *testing.T) {
 
 func main() {
 	// simpler than rigging up gotest
-	testing.Main([]testing.Test{
-		testing.Test{"TestSingleFieldExtension", TestSingleFieldExtension},
-		testing.Test{"TestMessageExtension", TestMessageExtension},
-		testing.Test{"TestTopLevelExtension", TestTopLevelExtension},
+	testing.Main(regexp.MatchString, []testing.InternalTest{
+		{"TestSingleFieldExtension", TestSingleFieldExtension},
+		{"TestMessageExtension", TestMessageExtension},
+		{"TestTopLevelExtension", TestTopLevelExtension},
 	})
 }
