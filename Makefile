@@ -40,6 +40,10 @@ install:
 	cd compiler/plugin && make install
 	cd compiler && make install
 
+test:
+	cd proto && make test
+	cd compiler && make test
+
 clean:
 	cd proto && make clean
 	cd compiler && make clean
