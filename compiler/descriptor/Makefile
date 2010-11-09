@@ -41,7 +41,6 @@ include $(GOROOT)/src/Make.pkg
 
 # Not stored here, but descriptor.proto is in http://code.google.com/p/protobuf
 # at protobuf-2.3.0/src/google/protobuf/descriptor.proto
-# Also we need to fix an import.
 regenerate:
 	echo WARNING! THIS RULE IS PROBABLY NOT RIGHT FOR YOUR INSTALLATION
 	cd $(HOME)/protobuf-2.3.0/src && \

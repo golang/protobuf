@@ -3,7 +3,11 @@
 
 package google_protobuf_compiler
 
+import proto "goprotobuf.googlecode.com/hg/proto"
 import google_protobuf "goprotobuf.googlecode.com/hg/compiler/descriptor"
+
+// Reference proto import to suppress error if it's not otherwise used.
+var _ = proto.GetString
 
 type CodeGeneratorRequest struct {
 	FileToGenerate	[]string	"PB(bytes,1,rep,name=file_to_generate)"
@@ -14,9 +18,6 @@ type CodeGeneratorRequest struct {
 func (this *CodeGeneratorRequest) Reset() {
 	*this = CodeGeneratorRequest{}
 }
-func NewCodeGeneratorRequest() *CodeGeneratorRequest {
-	return new(CodeGeneratorRequest)
-}
 
 type CodeGeneratorResponse struct {
 	Error	*string	"PB(bytes,1,opt,name=error)"
@@ -25,9 +26,6 @@ type CodeGeneratorResponse struct {
 }
 func (this *CodeGeneratorResponse) Reset() {
 	*this = CodeGeneratorResponse{}
-}
-func NewCodeGeneratorResponse() *CodeGeneratorResponse {
-	return new(CodeGeneratorResponse)
 }
 
 type CodeGeneratorResponse_File struct {
@@ -38,9 +36,6 @@ type CodeGeneratorResponse_File struct {
 }
 func (this *CodeGeneratorResponse_File) Reset() {
 	*this = CodeGeneratorResponse_File{}
-}
-func NewCodeGeneratorResponse_File() *CodeGeneratorResponse_File {
-	return new(CodeGeneratorResponse_File)
 }
 
 func init() {
