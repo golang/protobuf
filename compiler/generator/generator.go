@@ -261,8 +261,8 @@ type Generator struct {
 func New() *Generator {
 	g := new(Generator)
 	g.Buffer = new(bytes.Buffer)
-	g.Request = plugin.NewCodeGeneratorRequest()
-	g.Response = plugin.NewCodeGeneratorResponse()
+	g.Request = new(plugin.CodeGeneratorRequest)
+	g.Response = new(plugin.CodeGeneratorResponse)
 	return g
 }
 
@@ -564,7 +564,7 @@ func (g *Generator) GenerateAllFiles() {
 	for i, file := range g.genFiles {
 		g.Reset()
 		g.generate(file)
-		g.Response.File[i] = plugin.NewCodeGeneratorResponse_File()
+		g.Response.File[i] = new(plugin.CodeGeneratorResponse_File)
 		g.Response.File[i].Name = proto.String(goFileName(*file.Name))
 		g.Response.File[i].Content = proto.String(g.String())
 	}
