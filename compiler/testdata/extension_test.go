@@ -34,6 +34,7 @@
 package main
 
 import (
+	"bytes"
 	"regexp"
 	"testing"
 
@@ -149,6 +150,47 @@ func TestTopLevelExtension(t *testing.T) {
 	proto.ClearExtension(bm_new, user.E_Width)
 	if proto.HasExtension(bm_new, user.E_Width) {
 		t.Fatal("Failed clearing extension.")
+	}
+}
+
+func TestMessageSetWireFormat(t *testing.T) {
+	osm := new(base.OldStyleMessage)
+	osp := &user.OldStyleParcel{
+		Name:   proto.String("Dave"),
+		Height: proto.Int32(178),
+	}
+
+	err := proto.SetExtension(osm, user.E_OldStyleParcel_MessageSetExtension, osp)
+	if err != nil {
+		t.Fatal("Failed setting extension:", err)
+	}
+
+	buf, err := proto.Marshal(osm)
+	if err != nil {
+		t.Fatal("Failed encoding message:", err)
+	}
+
+	// Data generated from Python implementation.
+	expected := []byte{
+		11, 16, 209, 15, 26, 9, 10, 4, 68, 97, 118, 101, 16, 178, 1, 12,
+	}
+
+	if !bytes.Equal(expected, buf) {
+		t.Errorf("Encoding mismatch.\nwant %+v\n got %+v", expected, buf)
+	}
+
+	// Check that it is restored correctly.
+	osm = new(base.OldStyleMessage)
+	if err := proto.Unmarshal(buf, osm); err != nil {
+		t.Fatal("Failed decoding message:", err)
+	}
+	osp_out, err := proto.GetExtension(osm, user.E_OldStyleParcel_MessageSetExtension)
+	if err != nil {
+		t.Fatal("Failed getting extension:", err)
+	}
+	osp = osp_out.(*user.OldStyleParcel)
+	if *osp.Name != "Dave" || *osp.Height != 178 {
+		t.Errorf("Retrieved extension from decoded message is not correct: %+v", osp)
 	}
 }
 

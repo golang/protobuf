@@ -630,8 +630,9 @@ func (g *Generator) generateHeader() {
 func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
-	// reference it later.
+	// reference it later. The same argument applies to the os package.
 	g.P("import " + g.ProtoPkg + " " + Quote(g.ImportPrefix+"goprotobuf.googlecode.com/hg/proto"))
+	g.P(`import "os"`)
 	for _, s := range g.file.Dependency {
 		// Need to find the descriptor for this file
 		for _, fd := range g.allFiles {
@@ -663,8 +664,9 @@ func (g *Generator) generateImports() {
 		p.GenerateImports(g.file)
 		g.P()
 	}
-	g.P("// Reference proto import to suppress error if it's not otherwise used.")
+	g.P("// Reference proto & os imports to suppress error if it's not otherwise used.")
 	g.P("var _ = ", g.ProtoPkg, ".GetString")
+	g.P("var _ os.Error")
 	g.P()
 }
 
@@ -898,6 +900,24 @@ func (g *Generator) generateMessage(message *Descriptor) {
 
 	// Extension support methods
 	if len(message.ExtensionRange) > 0 {
+		// message_set_wire_format only makes sense when extensions are defined.
+		if opts := message.Options; opts != nil && proto.GetBool(opts.MessageSetWireFormat) {
+			g.P()
+			g.P("func (this *", ccTypeName, ") Marshal() ([]byte, os.Error) {")
+			g.In()
+			g.P("return ", g.ProtoPkg, ".MarshalMessageSet(this.ExtensionMap())")
+			g.Out()
+			g.P("}")
+			g.P("func (this *", ccTypeName, ") Unmarshal(buf []byte) os.Error {")
+			g.In()
+			g.P("return ", g.ProtoPkg, ".UnmarshalMessageSet(buf, this.ExtensionMap())")
+			g.Out()
+			g.P("}")
+			g.P("// ensure ", ccTypeName, " satisfies proto.Marshaler and proto.Unmarshaler")
+			g.P("var _ ", g.ProtoPkg, ".Marshaler = (*", ccTypeName, ")(nil)")
+			g.P("var _ ", g.ProtoPkg, ".Unmarshaler = (*", ccTypeName, ")(nil)")
+		}
+
 		g.P()
 		g.P("var extRange_", ccTypeName, " = []", g.ProtoPkg, ".ExtensionRange{")
 		g.In()

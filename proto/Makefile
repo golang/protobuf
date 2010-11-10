@@ -38,6 +38,7 @@ GOFILES=\
 	decode.go\
 	extensions.go\
 	lib.go\
+	message_set.go\
 	properties.go\
 	text.go\
 	text_parser.go\

@@ -71,3 +71,13 @@ message Announcement {
     optional Announcement loud_ext = 100;
   }
 }
+
+// Something that can be put in a message set.
+message OldStyleParcel {
+  extend extension_base.OldStyleMessage {
+    optional OldStyleParcel message_set_extension = 2001;
+  }
+
+  required string name = 1;
+  optional int32 height = 2;
+}

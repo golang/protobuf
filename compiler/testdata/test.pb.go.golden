@@ -4,10 +4,12 @@
 package my_test
 
 import proto "goprotobuf.googlecode.com/hg/proto"
+import "os"
 import imp "imp.pb"
 
-// Reference proto import to suppress error if it's not otherwise used.
+// Reference proto & os imports to suppress error if it's not otherwise used.
 var _ = proto.GetString
+var _ os.Error
 
 type HatType int32
 const (

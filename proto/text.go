@@ -33,7 +33,7 @@ package proto
 
 // Functions for writing the Text protocol buffer format.
 // TODO:
-//	- groups.
+//	- Message sets, groups.
 
 import (
 	"bytes"
