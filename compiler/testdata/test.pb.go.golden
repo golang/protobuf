@@ -149,6 +149,37 @@ var E_ReplyExtensions_Time = &proto.ExtensionDesc{
 	Tag: "PB(fixed64,101,opt,name=time)",
 }
 
+type OldReply struct {
+	XXX_extensions		map[int32][]byte
+	XXX_unrecognized	[]byte
+}
+func (this *OldReply) Reset() {
+	*this = OldReply{}
+}
+
+func (this *OldReply) Marshal() ([]byte, os.Error) {
+	return proto.MarshalMessageSet(this.ExtensionMap())
+}
+func (this *OldReply) Unmarshal(buf []byte) os.Error {
+	return proto.UnmarshalMessageSet(buf, this.ExtensionMap())
+}
+// ensure OldReply satisfies proto.Marshaler and proto.Unmarshaler
+var _ proto.Marshaler = (*OldReply)(nil)
+var _ proto.Unmarshaler = (*OldReply)(nil)
+
+var extRange_OldReply = []proto.ExtensionRange{
+	proto.ExtensionRange{100, 536870911},
+}
+func (*OldReply) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_OldReply
+}
+func (this *OldReply) ExtensionMap() map[int32][]byte {
+	if this.XXX_extensions == nil {
+		this.XXX_extensions = make(map[int32][]byte)
+	}
+	return this.XXX_extensions
+}
+
 var E_Tag = &proto.ExtensionDesc{
 	ExtendedType: (*Reply)(nil),
 	ExtensionType: (*string)(nil),

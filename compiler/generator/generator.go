@@ -46,7 +46,7 @@ import (
 	"strings"
 
 	"goprotobuf.googlecode.com/hg/proto"
-	plugin "goprotobuf.googlecode.com/hg/compiler/plugin"
+	plugin     "goprotobuf.googlecode.com/hg/compiler/plugin"
 	descriptor "goprotobuf.googlecode.com/hg/compiler/descriptor"
 )
 

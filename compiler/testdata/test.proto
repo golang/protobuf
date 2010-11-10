@@ -83,3 +83,10 @@ message ReplyExtensions {
 extend Reply {
   optional string tag = 103;
 }
+
+message OldReply {
+  // Extensions will be encoded in MessageSet wire format.
+  option message_set_wire_format = true;
+  extensions 100 to max;
+}
+
