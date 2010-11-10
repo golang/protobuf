@@ -61,6 +61,8 @@ var ErrNil = os.NewError("marshal called with nil")
 // Those that take integer types all accept uint64 and are
 // therefore of type valueEncoder.
 
+const maxVarintBytes = 10 // maximum length of a varint
+
 // EncodeVarint returns the varint encoding of x.
 // This is the format for the
 // int32, int64, uint32, uint64, bool, and enum
@@ -68,7 +70,7 @@ var ErrNil = os.NewError("marshal called with nil")
 // Not used by the package itself, but helpful to clients
 // wishing to use the same encoding.
 func EncodeVarint(x uint64) []byte {
-	var buf [16]byte
+	var buf [maxVarintBytes]byte
 	var n int
 	for n = 0; x > 127; n++ {
 		buf[n] = 0x80 | uint8(x&0x7F)
@@ -79,31 +81,27 @@ func EncodeVarint(x uint64) []byte {
 	return buf[0:n]
 }
 
+var emptyBytes [maxVarintBytes]byte
+
 // EncodeVarint writes a varint-encoded integer to the Buffer.
 // This is the format for the
 // int32, int64, uint32, uint64, bool, and enum
 // protocol buffer types.
 func (p *Buffer) EncodeVarint(x uint64) os.Error {
 	l := len(p.buf)
-	c := cap(p.buf)
-	if l+10 > c {
-		c += c/2 + 10
-		obuf := make([]byte, c)
-		copy(obuf, p.buf)
-		p.buf = obuf
+	if l+maxVarintBytes > cap(p.buf) { // not necessary except for performance
+		p.buf = append(p.buf, emptyBytes[:]...)
+	} else {
+		p.buf = p.buf[:l+maxVarintBytes]
 	}
-	p.buf = p.buf[0:c]
 
-	for {
-		if x < 1<<7 {
-			break
-		}
+	for x >= 1<<7 {
 		p.buf[l] = uint8(x&0x7f | 0x80)
 		l++
 		x >>= 7
 	}
 	p.buf[l] = uint8(x)
-	p.buf = p.buf[0 : l+1]
+	p.buf = p.buf[:l+1]
 	return nil
 }
 
@@ -111,15 +109,13 @@ func (p *Buffer) EncodeVarint(x uint64) os.Error {
 // This is the format for the
 // fixed64, sfixed64, and double protocol buffer types.
 func (p *Buffer) EncodeFixed64(x uint64) os.Error {
+	const fixed64Bytes = 8
 	l := len(p.buf)
-	c := cap(p.buf)
-	if l+8 > c {
-		c += c/2 + 8
-		obuf := make([]byte, c)
-		copy(obuf, p.buf)
-		p.buf = obuf
+	if l+fixed64Bytes > cap(p.buf) { // not necessary except for performance
+		p.buf = append(p.buf, emptyBytes[:fixed64Bytes]...)
+	} else {
+		p.buf = p.buf[:l+fixed64Bytes]
 	}
-	p.buf = p.buf[0 : l+8]
 
 	p.buf[l] = uint8(x)
 	p.buf[l+1] = uint8(x >> 8)
@@ -136,15 +132,13 @@ func (p *Buffer) EncodeFixed64(x uint64) os.Error {
 // This is the format for the
 // fixed32, sfixed32, and float protocol buffer types.
 func (p *Buffer) EncodeFixed32(x uint64) os.Error {
+	const fixed32Bytes = 4
 	l := len(p.buf)
-	c := cap(p.buf)
-	if l+4 > c {
-		c += c/2 + 4
-		obuf := make([]byte, c)
-		copy(obuf, p.buf)
-		p.buf = obuf
+	if l+fixed32Bytes > cap(p.buf) { // not necessary except for performance
+		p.buf = append(p.buf, emptyBytes[:fixed32Bytes]...)
+	} else {
+		p.buf = p.buf[:l+fixed32Bytes]
 	}
-	p.buf = p.buf[0 : l+4]
 
 	p.buf[l] = uint8(x)
 	p.buf[l+1] = uint8(x >> 8)
