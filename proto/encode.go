@@ -367,23 +367,6 @@ func (o *Buffer) enc_slice_byte(p *Properties, base uintptr) os.Error {
 	if s == nil {
 		return ErrNil
 	}
-	// TODO: remove this block and fix tests
-	if !p.Required {
-		l := len(s)
-		// check default
-		if l > 0 && l == len(p.Default) {
-			same := true
-			for i := 0; i < len(p.Default); i++ {
-				if p.Default[i] != s[i] {
-					same = false
-					break
-				}
-			}
-			if same {
-				return ErrNil
-			}
-		}
-	}
 	o.buf = bytes.Add(o.buf, p.tagcode)
 	o.EncodeRawBytes(s)
 	return nil
