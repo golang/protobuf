@@ -772,6 +772,59 @@ func TestEncodeDecode5(t *testing.T) {
 
 }
 
+// Test that we can encode empty bytes fields.
+func TestEncodeDecodeBytes1(t *testing.T) {
+	pb := initGoTest(false)
+
+	// Create our bytes
+	pb.F_BytesRequired = []byte{}
+	pb.F_BytesRepeated = [][]byte{ []byte{} }
+	pb.F_BytesOptional = []byte{}
+
+	d, err := Marshal(pb)
+	if err != nil {
+		t.Errorf(err.String())
+	}
+
+	pbd := new(GoTest)
+	if err := Unmarshal(d, pbd); err != nil {
+		t.Errorf(err.String())
+	}
+
+	if pbd.F_BytesRequired == nil || len(pbd.F_BytesRequired) != 0 {
+		t.Errorf("required empty bytes field is incorrect")
+	}
+	if pbd.F_BytesRepeated == nil || len(pbd.F_BytesRepeated) == 1 && pbd.F_BytesRepeated[0] == nil {
+		t.Errorf("repeated empty bytes field is incorrect")
+	}
+	if pbd.F_BytesOptional == nil || len(pbd.F_BytesOptional) != 0 {
+		t.Errorf("optional empty bytes field is incorrect")
+	}
+}
+
+// Test that we encode nil-valued fields of a repeated bytes field correctly.
+// Since entries in a repeated field cannot be nil, nil must mean empty value.
+func TestEncodeDecodeBytes2(t *testing.T) {
+	pb := initGoTest(false)
+
+	// Create our bytes
+	pb.F_BytesRepeated = [][]byte{ nil }
+
+	d, err := Marshal(pb)
+	if err != nil  {
+		t.Errorf(err.String())
+	}
+
+	pbd := new(GoTest)
+	if err := Unmarshal(d, pbd); err != nil {
+		t.Errorf(err.String())
+	}
+
+	if len(pbd.F_BytesRepeated) != 1 || pbd.F_BytesRepeated[0] == nil {
+		t.Errorf("Unexpected value for repeated bytes field")
+	}
+}
+
 // All required fields set, defaults provided, all repeated fields given two values.
 func TestSkippingUnrecognizedFields(t *testing.T) {
 	o := old()

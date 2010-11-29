@@ -364,14 +364,14 @@ func (o *Buffer) enc_slice_bool(p *Properties, base uintptr) os.Error {
 // Encode a slice of bytes ([]byte).
 func (o *Buffer) enc_slice_byte(p *Properties, base uintptr) os.Error {
 	s := *(*[]uint8)(unsafe.Pointer(base + p.offset))
-	// if the field is required, we must send something, even if it's an empty array.
+	if s == nil {
+		return ErrNil
+	}
+	// TODO: remove this block and fix tests
 	if !p.Required {
 		l := len(s)
-		if l == 0 {
-			return ErrNil
-		}
 		// check default
-		if l == len(p.Default) {
+		if l > 0 && l == len(p.Default) {
 			same := true
 			for i := 0; i < len(p.Default); i++ {
 				if p.Default[i] != s[i] {

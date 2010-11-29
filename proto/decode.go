@@ -479,10 +479,7 @@ func (o *Buffer) dec_slice_byte(p *Properties, base uintptr, sbase uintptr) os.E
 	if err != nil {
 		return err
 	}
-	lb := len(b)
-	if lb == 0 {
-		return nil
-	}
+
 	x := (*[]uint8)(unsafe.Pointer(base + p.offset))
 
 	y := *x
@@ -494,6 +491,7 @@ func (o *Buffer) dec_slice_byte(p *Properties, base uintptr, sbase uintptr) os.E
 	}
 
 	l := len(y)
+	lb := len(b)
 	if l+lb > c {
 		// incremental growth is max(len(slice)*1.5, len(slice)+len(bytes))
 		g := l * 3 / 2
