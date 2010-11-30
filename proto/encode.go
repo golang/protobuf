@@ -48,7 +48,13 @@ import (
 // all been initialized. It is also the error returned if Unmarshal is
 // called with an encoded protocol buffer that does not include all the
 // required fields.
-var ErrRequiredNotSet = os.NewError("required fields not set")
+type ErrRequiredNotSet struct {
+	t reflect.Type
+}
+
+func (e *ErrRequiredNotSet) String() string {
+	return "required fields not set in " + e.t.String()
+}
 
 // ErrRepeatedHasNil is the error returned if Marshal is called with
 // a protocol buffer struct with a repeated field containing a nil element.
@@ -361,6 +367,24 @@ func (o *Buffer) enc_slice_bool(p *Properties, base uintptr) os.Error {
 	return nil
 }
 
+// Encode a slice of bools ([]bool) in packed format.
+func (o *Buffer) enc_slice_packed_bool(p *Properties, base uintptr) os.Error {
+	s := *(*[]uint8)(unsafe.Pointer(base + p.offset))
+	l := len(s)
+	if l == 0 {
+		return ErrNil
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(l)) // each bool takes exactly one byte
+	for _, x := range s {
+		if x != 0 {
+			x = 1
+		}
+		p.valEnc(o, uint64(x))
+	}
+	return nil
+}
+
 // Encode a slice of bytes ([]byte).
 func (o *Buffer) enc_slice_byte(p *Properties, base uintptr) os.Error {
 	s := *(*[]uint8)(unsafe.Pointer(base + p.offset))
@@ -387,6 +411,25 @@ func (o *Buffer) enc_slice_int32(p *Properties, base uintptr) os.Error {
 	return nil
 }
 
+// Encode a slice of int32s ([]int32) in packed format.
+func (o *Buffer) enc_slice_packed_int32(p *Properties, base uintptr) os.Error {
+	s := *(*[]uint32)(unsafe.Pointer(base + p.offset))
+	l := len(s)
+	if l == 0 {
+		return ErrNil
+	}
+	// TODO: Reuse a Buffer.
+	buf := NewBuffer(nil)
+	for i := 0; i < l; i++ {
+		p.valEnc(buf, uint64(s[i]))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+	return nil
+}
+
 // Encode a slice of int64s ([]int64).
 func (o *Buffer) enc_slice_int64(p *Properties, base uintptr) os.Error {
 	s := *(*[]uint64)(unsafe.Pointer(base + p.offset))
@@ -399,6 +442,25 @@ func (o *Buffer) enc_slice_int64(p *Properties, base uintptr) os.Error {
 		x := s[i]
 		p.valEnc(o, uint64(x))
 	}
+	return nil
+}
+
+// Encode a slice of int64s ([]int64) in packed format.
+func (o *Buffer) enc_slice_packed_int64(p *Properties, base uintptr) os.Error {
+	s := *(*[]uint64)(unsafe.Pointer(base + p.offset))
+	l := len(s)
+	if l == 0 {
+		return ErrNil
+	}
+	// TODO: Reuse a Buffer.
+	buf := NewBuffer(nil)
+	for i := 0; i < l; i++ {
+		p.valEnc(buf, s[i])
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
 	return nil
 }
 
@@ -535,7 +597,7 @@ func (o *Buffer) enc_struct(t *reflect.StructType, base uintptr) os.Error {
 	}
 	// See if we encoded all required fields.
 	if required > 0 {
-		return ErrRequiredNotSet
+		return &ErrRequiredNotSet{t}
 	}
 
 	return nil

@@ -40,6 +40,8 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"reflect"
+	"strings"
 	"testing"
 
 	. "goprotobuf.googlecode.com/hg/proto"
@@ -427,8 +429,11 @@ func TestStringPrimitives(t *testing.T) {
 func TestRequiredBit(t *testing.T) {
 	o := old()
 	pb := new(GoTest)
-	if o.Marshal(pb) != ErrRequiredNotSet {
-		t.Errorf("did not catch missing required fields")
+	err := o.Marshal(pb)
+	if err == nil {
+		t.Error("did not catch missing required fields")
+	} else if strings.Index(err.String(), "GoTest") < 0 {
+		t.Error("wrong error type:", err)
 	}
 }
 
@@ -747,10 +752,10 @@ func TestEncodeDecode5(t *testing.T) {
 			"ea0106"+"7361696c6f72"+ // field 29, encoding 2, string "sailor"
 			"ca0c03"+"626967"+ // field 201, encoding 2, string "big"
 			"ca0c04"+"6e6f7365"+ // field 201, encoding 2, string "nose"
-			"d00c40"+ // field 202, encoding 0, value 64
-			"d00c3f"+ // field 202, encoding 0, value 63
-			"d80c8001"+ // field 203, encoding 0, value 128
-			"d80c7f"+ // field 203, encoding 0, value 127
+			"d00c40"+ // field 202, encoding 0, value 32
+			"d00c3f"+ // field 202, encoding 0, value -32
+			"d80c8001"+ // field 203, encoding 0, value 64
+			"d80c7f"+ // field 203, encoding 0, value -64
 			"c00201"+ // field 40, encoding 0, value 1
 			"c80220"+ // field 41, encoding 0, value 32
 			"d00240"+ // field 42, encoding 0, value 64
@@ -776,13 +781,68 @@ func TestEncodeDecode5(t *testing.T) {
 
 }
 
+// All required fields set, all packed repeated fields given two values.
+func TestEncodeDecode6(t *testing.T) {
+	pb := initGoTest(false)
+	pb.F_BoolRepeatedPacked = []bool{false, true}
+	pb.F_Int32RepeatedPacked = []int32{32, 33}
+	pb.F_Int64RepeatedPacked = []int64{64, 65}
+	pb.F_Fixed32RepeatedPacked = []uint32{3232, 3333}
+	pb.F_Fixed64RepeatedPacked = []uint64{6464, 6565}
+	pb.F_Uint32RepeatedPacked = []uint32{323232, 333333}
+	pb.F_Uint64RepeatedPacked = []uint64{646464, 656565}
+	pb.F_FloatRepeatedPacked = []float32{32., 33.}
+	pb.F_DoubleRepeatedPacked = []float64{64., 65.}
+	pb.F_Sint32RepeatedPacked = []int32{32, -32}
+	pb.F_Sint64RepeatedPacked = []int64{64, -64}
+
+	overify(t, pb,
+		"0807"+ // field 1, encoding 0, value 7
+			"220d"+"0a056c6162656c120474797065"+ // field 4, encoding 2 (GoTestField)
+			"5001"+ // field 10, encoding 0, value 1
+			"5803"+ // field 11, encoding 0, value 3
+			"6006"+ // field 12, encoding 0, value 6
+			"6d20000000"+ // field 13, encoding 5, value 32
+			"714000000000000000"+ // field 14, encoding 1, value 64
+			"78a019"+ // field 15, encoding 0, value 3232
+			"8001c032"+ // field 16, encoding 0, value 6464
+			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
+			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
+			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
+			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
+			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
+			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
+			"9203020001"+ // field 50, encoding 2, 2 bytes, value 0, value 1
+			"9a03022021"+ // field 51, encoding 2, 2 bytes, value 32, value 33
+			"a203024041"+ // field 52, encoding 2, 2 bytes, value 64, value 65
+			"aa0308"+ // field 53, encoding 2, 8 bytes
+			"a00c0000050d0000"+ // value 3232, value 3333
+			"b20310"+ // field 54, encoding 2, 16 bytes
+			"4019000000000000a519000000000000"+ // value 6464, value 6565
+			"ba0306"+ // field 55, encoding 2, 6 bytes
+			"a0dd1395ac14"+ // value 323232, value 333333
+			"c20306"+ // field 56, encoding 2, 6 bytes
+			"c0ba27b58928"+ // value 646464, value 656565
+			"ca0308"+ // field 57, encoding 2, 8 bytes
+			"0000004200000442"+ // value 32.0, value 33.0
+			"d20310"+ // field 58, encoding 2, 16 bytes
+			"00000000000050400000000000405040"+ // value 64.0, value 65.0
+			"b21f02"+ // field 502, encoding 2, 2 bytes
+			"403f"+ // value 32, value -32
+			"ba1f03"+ // field 503, encoding 2, 3 bytes
+			"80017f"+ // value 64, value -64
+			"b304"+ // start group field 70 level 1
+			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
+			"b404") // end group field 70 level 1
+}
+
 // Test that we can encode empty bytes fields.
 func TestEncodeDecodeBytes1(t *testing.T) {
 	pb := initGoTest(false)
 
 	// Create our bytes
 	pb.F_BytesRequired = []byte{}
-	pb.F_BytesRepeated = [][]byte{ []byte{} }
+	pb.F_BytesRepeated = [][]byte{[]byte{}}
 	pb.F_BytesOptional = []byte{}
 
 	d, err := Marshal(pb)
@@ -812,10 +872,10 @@ func TestEncodeDecodeBytes2(t *testing.T) {
 	pb := initGoTest(false)
 
 	// Create our bytes
-	pb.F_BytesRepeated = [][]byte{ nil }
+	pb.F_BytesRepeated = [][]byte{nil}
 
 	d, err := Marshal(pb)
-	if err != nil  {
+	if err != nil {
 		t.Errorf(err.String())
 	}
 
@@ -1018,6 +1078,35 @@ func TestTypeMismatch(t *testing.T) {
 	}
 }
 
+func encodeDecode(t *testing.T, in, out interface{}, msg string) {
+	buf, err := Marshal(in)
+	if err != nil {
+		t.Fatalf("failed marshaling %v: %v", msg, err)
+	}
+	if err := Unmarshal(buf, out); err != nil {
+		t.Fatalf("failed unmarshaling %v: %v", msg, err)
+	}
+}
+
+func TestPackedNonPackedDecoderSwitching(t *testing.T) {
+	np, p := new(NonPackedTest), new(PackedTest)
+
+	// non-packed -> packed
+	np.A = []int32{0, 1, 1, 2, 3, 5}
+	encodeDecode(t, np, p, "non-packed -> packed")
+	if !reflect.DeepEqual(np.A, p.B) {
+		t.Errorf("failed non-packed -> packed; np.A=%+v, p.B=%+v", np.A, p.B)
+	}
+
+	// packed -> non-packed
+	np.Reset()
+	p.B = []int32{3, 1, 4, 1, 5, 9}
+	encodeDecode(t, p, np, "packed -> non-packed")
+	if !reflect.DeepEqual(p.B, np.A) {
+		t.Errorf("failed packed -> non-packed; p.B=%+v, np.A=%+v", p.B, np.A)
+	}
+}
+
 func TestProto1RepeatedGroup(t *testing.T) {
 	pb := &MessageList{
 		Message: []*MessageList_Message{
@@ -1060,8 +1149,10 @@ func TestEnum(t *testing.T) {
 func TestRequiredFieldEnforcement(t *testing.T) {
 	pb := new(GoTestField)
 	_, err := Marshal(pb)
-	if err == nil || err != ErrRequiredNotSet {
-		t.Errorf("marshal: expected %q, got %q", ErrRequiredNotSet, err)
+	if err == nil {
+		t.Error("marshal: expected error, got nil")
+	} else if strings.Index(err.String(), "GoTestField") < 0 {
+		t.Errorf("marshal: bad error type: %v", err)
 	}
 
 	// A slightly sneaky, yet valid, proto. It encodes the same required field twice,
@@ -1069,8 +1160,10 @@ func TestRequiredFieldEnforcement(t *testing.T) {
 	// field 1, encoding 2, value "hi"
 	buf := []byte("\x0A\x02hi\x0A\x02hi")
 	err = Unmarshal(buf, pb)
-	if err == nil || err != ErrRequiredNotSet {
-		t.Errorf("unmarshal: expected %q, got %q", ErrRequiredNotSet, err)
+	if err == nil {
+		t.Error("unmarshal: expected error, got nil")
+	} else if strings.Index(err.String(), "GoTestField") < 0 {
+		t.Errorf("unmarshal: bad error type: %v", err)
 	}
 }
 

@@ -95,6 +95,7 @@ type Properties struct {
 	Required   bool
 	Optional   bool
 	Repeated   bool
+	Packed     bool   // relevant for repeated primitives only
 	Enum       string // set for enum types only
 	Default    string // default value
 	def_uint64 uint64
@@ -111,6 +112,9 @@ type Properties struct {
 	scratch uintptr
 	sizeof  int // calculations of scratch space
 	alignof int
+
+	// If this is a packable field, this will be the decoder for the packed version of the field.
+	packedDec decoder
 }
 
 // String formats the properties in the "PB(...)" struct tag style.
@@ -126,6 +130,9 @@ func (p *Properties) String() string {
 	}
 	if p.Repeated {
 		s += ",rep"
+	}
+	if p.Packed {
+		s += ",packed"
 	}
 	if p.OrigName != p.Name {
 		s += ",name=" + p.OrigName
@@ -193,6 +200,8 @@ func (p *Properties) Parse(s string) {
 			p.Optional = true
 		case f == "rep":
 			p.Repeated = true
+		case f == "packed":
+			p.Packed = true
 		case len(f) >= 5 && f[0:5] == "name=":
 			p.OrigName = f[5:len(f)]
 		case len(f) >= 5 && f[0:5] == "enum=":
@@ -291,20 +300,35 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 			fmt.Fprintf(os.Stderr, "proto: no slice oenc for %T = []%T\n", t1, t2)
 			break
 		case *reflect.BoolType:
-			p.enc = (*Buffer).enc_slice_bool
+			if p.Packed {
+				p.enc = (*Buffer).enc_slice_packed_bool
+			} else {
+				p.enc = (*Buffer).enc_slice_bool
+			}
 			p.dec = (*Buffer).dec_slice_bool
+			p.packedDec = (*Buffer).dec_slice_packed_bool
 			p.alignof = unsafe.Alignof(vbool)
 			p.sizeof = startSize * unsafe.Sizeof(vbool)
 		case *reflect.IntType, *reflect.UintType:
 			switch t2.Bits() {
 			case 32:
-				p.enc = (*Buffer).enc_slice_int32
+				if p.Packed {
+					p.enc = (*Buffer).enc_slice_packed_int32
+				} else {
+					p.enc = (*Buffer).enc_slice_int32
+				}
 				p.dec = (*Buffer).dec_slice_int32
+				p.packedDec = (*Buffer).dec_slice_packed_int32
 				p.alignof = unsafe.Alignof(vint32)
 				p.sizeof = startSize * unsafe.Sizeof(vint32)
 			case 64:
-				p.enc = (*Buffer).enc_slice_int64
+				if p.Packed {
+					p.enc = (*Buffer).enc_slice_packed_int64
+				} else {
+					p.enc = (*Buffer).enc_slice_int64
+				}
 				p.dec = (*Buffer).dec_slice_int64
+				p.packedDec = (*Buffer).dec_slice_packed_int64
 				p.alignof = unsafe.Alignof(vint64)
 				p.sizeof = startSize * unsafe.Sizeof(vint64)
 			case 8:
@@ -320,13 +344,25 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 		case *reflect.FloatType:
 			switch t2.Bits() {
 			case 32:
-				p.enc = (*Buffer).enc_slice_int32 // can just treat them as bits
+				// can just treat them as bits
+				if p.Packed {
+					p.enc = (*Buffer).enc_slice_packed_int32
+				} else {
+					p.enc = (*Buffer).enc_slice_int32
+				}
 				p.dec = (*Buffer).dec_slice_int32
+				p.packedDec = (*Buffer).dec_slice_packed_int32
 				p.alignof = unsafe.Alignof(vfloat32)
 				p.sizeof = startSize * unsafe.Sizeof(vfloat32)
 			case 64:
-				p.enc = (*Buffer).enc_slice_int64 // can just treat them as bits
+				// can just treat them as bits
+				if p.Packed {
+					p.enc = (*Buffer).enc_slice_packed_int64
+				} else {
+					p.enc = (*Buffer).enc_slice_int64
+				}
 				p.dec = (*Buffer).dec_slice_int64
+				p.packedDec = (*Buffer).dec_slice_packed_int64
 				p.alignof = unsafe.Alignof(vfloat64)
 				p.sizeof = startSize * unsafe.Sizeof(vfloat64)
 			default:
@@ -368,7 +404,11 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	}
 
 	// precalculate tag code
-	x := p.Tag<<3 | p.WireType
+	wire := p.WireType
+	if p.Packed {
+		wire = WireBytes
+	}
+	x := p.Tag<<3 | wire
 	i := 0
 	for i = 0; x > 127; i++ {
 		p.tagbuf[i] = 0x80 | uint8(x&0x7F)
