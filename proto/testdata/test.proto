@@ -142,6 +142,19 @@ message GoTest {
   optional sint32 F_Sint32_defaulted = 402 [default = -32];
   optional sint64 F_Sint64_defaulted = 403 [default = -64];
 
+  // Packed repeated fields (no string or bytes).
+  repeated bool F_Bool_repeated_packed = 50 [packed=true];
+  repeated int32 F_Int32_repeated_packed = 51 [packed=true];
+  repeated int64 F_Int64_repeated_packed = 52 [packed=true];
+  repeated fixed32 F_Fixed32_repeated_packed = 53 [packed=true];
+  repeated fixed64 F_Fixed64_repeated_packed = 54 [packed=true];
+  repeated uint32 F_Uint32_repeated_packed = 55 [packed=true];
+  repeated uint64 F_Uint64_repeated_packed = 56 [packed=true];
+  repeated float F_Float_repeated_packed = 57 [packed=true];
+  repeated double F_Double_repeated_packed = 58 [packed=true];
+  repeated sint32 F_Sint32_repeated_packed = 502 [packed=true];
+  repeated sint64 F_Sint64_repeated_packed = 503 [packed=true];
+
   // Required, repeated, and optional groups.
   required group RequiredGroup = 70 {
     required string RequiredField = 71;
@@ -168,6 +181,16 @@ message GoSkipTest {
     required int32 group_int32 = 16;
     required string group_string = 17;
   }
+}
+
+// For testing packed/non-packed decoder switching.
+// A serialized instance of one should be deserializable as the other.
+message NonPackedTest {
+  repeated int32 a = 1;
+}
+
+message PackedTest {
+  repeated int32 b = 1 [packed=true];
 }
 
 // Smaller tests for ASCII formatting.

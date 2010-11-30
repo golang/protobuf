@@ -104,6 +104,7 @@ const Default_Request_Hat HatType = HatType_FEDORA
 
 type Reply struct {
 	Found	[]*Reply_Entry	"PB(bytes,1,rep,name=found)"
+	CompactKeys	[]int32	"PB(varint,2,rep,packed,name=compact_keys)"
 	XXX_extensions		map[int32][]byte
 	XXX_unrecognized	[]byte
 }

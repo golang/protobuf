@@ -372,11 +372,17 @@ func (o *Buffer) unmarshalType(t *reflect.PtrType, is_group bool, base uintptr) 
 			fmt.Fprintf(os.Stderr, "no protobuf decoder for %s.%s\n", t, st.Field(fieldnum).Name)
 			continue
 		}
+		dec := p.dec
 		if wire != WireStartGroup && wire != p.WireType {
-			err = ErrWrongType
-			continue
+			if wire == WireBytes && p.packedDec != nil {
+				// a packable field
+				dec = p.packedDec
+			} else {
+				err = ErrWrongType
+				continue
+			}
 		}
-		err = p.dec(o, p, base, sbase)
+		err = dec(o, p, base, sbase)
 		if err == nil && p.Required {
 			// Successfully decoded a required field.
 			if tag <= 64 {
@@ -401,7 +407,7 @@ func (o *Buffer) unmarshalType(t *reflect.PtrType, is_group bool, base uintptr) 
 			return io.ErrUnexpectedEOF
 		}
 		if required > 0 {
-			return ErrRequiredNotSet
+			return &ErrRequiredNotSet{st}
 		}
 	}
 	return err
@@ -413,6 +419,17 @@ func initSlice(pslice unsafe.Pointer, base uintptr) {
 	sp.Data = base
 	sp.Len = 0
 	sp.Cap = startSize
+}
+
+// Make *pslice have base address base, length 0, and capacity max(startSize, n).
+func initSlicen(pslice unsafe.Pointer, base uintptr, n int) {
+	if n < startSize {
+		n = startSize
+	}
+	sp := (*reflect.SliceHeader)(pslice)
+	sp.Data = base
+	sp.Len = 0
+	sp.Cap = n
 }
 
 // Individual type decoders
@@ -483,30 +500,12 @@ func (o *Buffer) dec_slice_byte(p *Properties, base uintptr, sbase uintptr) os.E
 	x := (*[]uint8)(unsafe.Pointer(base + p.offset))
 
 	y := *x
-	c := cap(y)
-	if c == 0 {
+	if cap(y) == 0 {
 		initSlice(unsafe.Pointer(x), sbase+p.scratch)
 		y = *x
-		c = cap(y)
 	}
 
-	l := len(y)
-	lb := len(b)
-	if l+lb > c {
-		// incremental growth is max(len(slice)*1.5, len(slice)+len(bytes))
-		g := l * 3 / 2
-		if l+lb > g {
-			g = l + lb
-		}
-		z := make([]uint8, l, g)
-		copy(z, y)
-		y = z
-	}
-
-	y = y[0 : l+lb]
-	copy(y[l:l+lb], b)
-
-	*x = y
+	*x = append(y, b...)
 	return nil
 }
 
@@ -519,21 +518,42 @@ func (o *Buffer) dec_slice_bool(p *Properties, base uintptr, sbase uintptr) os.E
 	x := (*[]bool)(unsafe.Pointer(base + p.offset))
 
 	y := *x
-	c := cap(y)
-	if c == 0 {
+	if cap(y) == 0 {
 		initSlice(unsafe.Pointer(x), sbase+p.scratch)
 		y = *x
-		c = cap(y)
 	}
-	l := len(y)
-	if l >= c {
-		g := l * 3 / 2
-		z := make([]bool, l, g)
-		copy(z, y)
-		y = z
+
+	*x = append(y, u != 0)
+	return nil
+}
+
+// Decode a slice of bools ([]bool) in packed format.
+func (o *Buffer) dec_slice_packed_bool(p *Properties, base uintptr, sbase uintptr) os.Error {
+	x := (*[]bool)(unsafe.Pointer(base + p.offset))
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
 	}
-	y = y[0 : l+1]
-	y[l] = u != 0
+	nb := int(nn) // number of bytes of encoded bools
+
+	y := *x
+	if cap(y) == 0 {
+		// Packed fields are usually only encoded once,
+		// so this branch is almost always executed.
+		// The append in the loop below takes care of other cases.
+		initSlicen(unsafe.Pointer(x), sbase+p.scratch, nb)
+		y = *x
+	}
+
+	for i := 0; i < nb; i++ {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		y = append(y, u != 0)
+	}
+
 	*x = y
 	return nil
 }
@@ -547,21 +567,43 @@ func (o *Buffer) dec_slice_int32(p *Properties, base uintptr, sbase uintptr) os.
 	x := (*[]int32)(unsafe.Pointer(base + p.offset))
 
 	y := *x
-	c := cap(y)
-	if c == 0 {
+	if cap(y) == 0 {
 		initSlice(unsafe.Pointer(x), sbase+p.scratch)
 		y = *x
-		c = cap(y)
 	}
-	l := len(y)
-	if l >= c {
-		g := l * 3 / 2
-		z := make([]int32, l, g)
-		copy(z, y)
-		y = z
+
+	*x = append(y, int32(u))
+	return nil
+}
+
+// Decode a slice of int32s ([]int32) in packed format.
+func (o *Buffer) dec_slice_packed_int32(p *Properties, base uintptr, sbase uintptr) os.Error {
+	x := (*[]int32)(unsafe.Pointer(base + p.offset))
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
 	}
-	y = y[0 : l+1]
-	y[l] = int32(u)
+	nb := int(nn) // number of bytes of encoded int32s
+
+	y := *x
+	if cap(y) == 0 {
+		// Packed fields are usually only encoded once,
+		// so this branch is almost always executed.
+		// The append in the loop below takes care of other cases.
+		initSlicen(unsafe.Pointer(x), sbase+p.scratch, nb)
+		y = *x
+	}
+
+	fin := o.index + nb
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		y = append(y, int32(u))
+	}
+
 	*x = y
 	return nil
 }
@@ -575,21 +617,43 @@ func (o *Buffer) dec_slice_int64(p *Properties, base uintptr, sbase uintptr) os.
 	x := (*[]int64)(unsafe.Pointer(base + p.offset))
 
 	y := *x
-	c := cap(y)
-	if c == 0 {
+	if cap(y) == 0 {
 		initSlice(unsafe.Pointer(x), sbase+p.scratch)
 		y = *x
-		c = cap(y)
 	}
-	l := len(y)
-	if l >= c {
-		g := l * 3 / 2
-		z := make([]int64, l, g)
-		copy(z, y)
-		y = z
+
+	*x = append(y, int64(u))
+	return nil
+}
+
+// Decode a slice of int64s ([]int64) in packed format.
+func (o *Buffer) dec_slice_packed_int64(p *Properties, base uintptr, sbase uintptr) os.Error {
+	x := (*[]int64)(unsafe.Pointer(base + p.offset))
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
 	}
-	y = y[0 : l+1]
-	y[l] = int64(u)
+	nb := int(nn) // number of bytes of encoded int64s
+
+	y := *x
+	if cap(y) == 0 {
+		// Packed fields are usually only encoded once,
+		// so this branch is almost always executed.
+		// The append in the loop below takes care of other cases.
+		initSlicen(unsafe.Pointer(x), sbase+p.scratch, nb)
+		y = *x
+	}
+
+	fin := o.index + nb
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		y = append(y, int64(u))
+	}
+
 	*x = y
 	return nil
 }
@@ -603,22 +667,12 @@ func (o *Buffer) dec_slice_string(p *Properties, base uintptr, sbase uintptr) os
 	x := (*[]string)(unsafe.Pointer(base + p.offset))
 
 	y := *x
-	c := cap(y)
-	if c == 0 {
+	if cap(y) == 0 {
 		initSlice(unsafe.Pointer(x), sbase+p.scratch)
 		y = *x
-		c = cap(y)
 	}
-	l := len(y)
-	if l >= c {
-		g := l * 3 / 2
-		z := make([]string, l, g)
-		copy(z, y)
-		y = z
-	}
-	y = y[0 : l+1]
-	y[l] = s
-	*x = y
+
+	*x = append(y, s)
 	return nil
 }
 
@@ -631,22 +685,12 @@ func (o *Buffer) dec_slice_slice_byte(p *Properties, base uintptr, sbase uintptr
 	x := (*[][]byte)(unsafe.Pointer(base + p.offset))
 
 	y := *x
-	c := cap(y)
-	if c == 0 {
+	if cap(y) == 0 {
 		initSlice(unsafe.Pointer(x), sbase+p.scratch)
 		y = *x
-		c = cap(y)
 	}
-	l := len(y)
-	if l >= c {
-		g := l * 3 / 2
-		z := make([][]byte, l, g)
-		copy(z, y)
-		y = z
-	}
-	y = y[0 : l+1]
-	y[l] = b
-	*x = y
+
+	*x = append(y, b)
 	return nil
 }
 
@@ -709,28 +753,16 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr, sb
 
 	x := (*[]*struct{})(unsafe.Pointer(base + p.offset))
 	y := *x
-	c := cap(y)
-	if c == 0 {
+	if cap(y) == 0 {
 		initSlice(unsafe.Pointer(x), sbase+p.scratch)
 		y = *x
-		c = cap(y)
 	}
-
-	l := len(y)
-	if l >= c {
-		// Create a new slice with 1.5X the capacity.
-		g := l * 3 / 2
-		z := make([]*struct{}, l, g)
-		copy(z, y)
-		y = z
-	}
-	y = y[0 : l+1]
-	*x = y
 
 	typ := p.stype.Elem().(*reflect.StructType)
 	structv := unsafe.New(typ)
 	bas := uintptr(structv)
-	y[l] = (*struct{})(structv)
+	y = append(y, (*struct{})(structv))
+	*x = y
 
 	if is_group {
 		err := o.unmarshalType(p.stype, is_group, bas)
@@ -743,7 +775,7 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr, sb
 	}
 
 	// If the object can unmarshal itself, let it.
-	iv := unsafe.Unreflect(p.stype, unsafe.Pointer(&y[l]))
+	iv := unsafe.Unreflect(p.stype, unsafe.Pointer(&y[len(y)-1]))
 	if u, ok := iv.(Unmarshaler); ok {
 		return u.Unmarshal(raw)
 	}

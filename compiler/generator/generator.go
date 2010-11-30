@@ -720,6 +720,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 //	wire encoding
 //	protocol tag number
 //	opt,req,rep for optional, required, or repeated
+//	packed whether the encoding is "packed" (optional; repeated primitives only)
 //	name= the original declared name
 //	enum= the name of the enum type if it is an enum-typed field.
 //	def= string representation of the default value, if any.
@@ -766,16 +767,21 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 		obj := g.ObjectNamed(proto.GetString(field.TypeName))
 		enum = ",enum=" + obj.PackageName() + "." + CamelCaseSlice(obj.TypeName())
 	}
+	packed := ""
+	if field.Options != nil && proto.GetBool(field.Options.Packed) {
+		packed = ",packed"
+	}
 	name := proto.GetString(field.Name)
 	if name == CamelCase(name) {
 		name = ""
 	} else {
 		name = ",name=" + name
 	}
-	return Quote(fmt.Sprintf("PB(%s,%d,%s%s%s%s)",
+	return Quote(fmt.Sprintf("PB(%s,%d,%s%s%s%s%s)",
 		wiretype,
 		proto.GetInt32(field.Number),
 		optrepreq,
+		packed,
 		name,
 		enum,
 		defaultValue))

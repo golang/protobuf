@@ -70,6 +70,7 @@ message Reply {
     }
   }
   repeated Entry found = 1;
+  repeated int32 compact_keys = 2 [packed=true];
   extensions 100 to max;
 }
 

@@ -173,6 +173,17 @@ type GoTest struct {
 	F_BytesDefaulted	[]byte	"PB(bytes,401,opt,name=F_Bytes_defaulted,def=Bignose)"
 	F_Sint32Defaulted	*int32	"PB(zigzag32,402,opt,name=F_Sint32_defaulted,def=-32)"
 	F_Sint64Defaulted	*int64	"PB(zigzag64,403,opt,name=F_Sint64_defaulted,def=-64)"
+	F_BoolRepeatedPacked	[]bool	"PB(varint,50,rep,packed,name=F_Bool_repeated_packed)"
+	F_Int32RepeatedPacked	[]int32	"PB(varint,51,rep,packed,name=F_Int32_repeated_packed)"
+	F_Int64RepeatedPacked	[]int64	"PB(varint,52,rep,packed,name=F_Int64_repeated_packed)"
+	F_Fixed32RepeatedPacked	[]uint32	"PB(fixed32,53,rep,packed,name=F_Fixed32_repeated_packed)"
+	F_Fixed64RepeatedPacked	[]uint64	"PB(fixed64,54,rep,packed,name=F_Fixed64_repeated_packed)"
+	F_Uint32RepeatedPacked	[]uint32	"PB(varint,55,rep,packed,name=F_Uint32_repeated_packed)"
+	F_Uint64RepeatedPacked	[]uint64	"PB(varint,56,rep,packed,name=F_Uint64_repeated_packed)"
+	F_FloatRepeatedPacked	[]float32	"PB(fixed32,57,rep,packed,name=F_Float_repeated_packed)"
+	F_DoubleRepeatedPacked	[]float64	"PB(fixed64,58,rep,packed,name=F_Double_repeated_packed)"
+	F_Sint32RepeatedPacked	[]int32	"PB(zigzag32,502,rep,packed,name=F_Sint32_repeated_packed)"
+	F_Sint64RepeatedPacked	[]int64	"PB(zigzag64,503,rep,packed,name=F_Sint64_repeated_packed)"
 	Requiredgroup	*GoTest_RequiredGroup	"PB(group,70,req,name=requiredgroup)"
 	Repeatedgroup	[]*GoTest_RepeatedGroup	"PB(group,80,rep,name=repeatedgroup)"
 	Optionalgroup	*GoTest_OptionalGroup	"PB(group,90,opt,name=optionalgroup)"
@@ -238,6 +249,22 @@ type GoSkipTest_SkipGroup struct {
 }
 func (this *GoSkipTest_SkipGroup) Reset() {
 	*this = GoSkipTest_SkipGroup{}
+}
+
+type NonPackedTest struct {
+	A	[]int32	"PB(varint,1,rep,name=a)"
+	XXX_unrecognized	[]byte
+}
+func (this *NonPackedTest) Reset() {
+	*this = NonPackedTest{}
+}
+
+type PackedTest struct {
+	B	[]int32	"PB(varint,1,rep,packed,name=b)"
+	XXX_unrecognized	[]byte
+}
+func (this *PackedTest) Reset() {
+	*this = PackedTest{}
 }
 
 type InnerMessage struct {
