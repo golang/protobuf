@@ -36,7 +36,6 @@ package proto
  */
 
 import (
-	"bytes"
 	"os"
 	"reflect"
 	"runtime"
@@ -175,7 +174,7 @@ func (p *Buffer) EncodeZigzag32(x uint64) os.Error {
 func (p *Buffer) EncodeRawBytes(b []byte) os.Error {
 	lb := len(b)
 	p.EncodeVarint(uint64(lb))
-	p.buf = bytes.Add(p.buf, b)
+	p.buf = append(p.buf, b...)
 	return nil
 }
 
@@ -219,7 +218,7 @@ func (p *Buffer) Marshal(pb interface{}) os.Error {
 		if err != nil {
 			return err
 		}
-		p.buf = bytes.Add(p.buf, data)
+		p.buf = append(p.buf, data...)
 		return nil
 	}
 
@@ -249,7 +248,7 @@ func (o *Buffer) enc_bool(p *Properties, base uintptr) os.Error {
 	if x != 0 {
 		x = 1
 	}
-	o.buf = bytes.Add(o.buf, p.tagcode)
+	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, uint64(x))
 	return nil
 }
@@ -261,7 +260,7 @@ func (o *Buffer) enc_int32(p *Properties, base uintptr) os.Error {
 		return ErrNil
 	}
 	x := *v
-	o.buf = bytes.Add(o.buf, p.tagcode)
+	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, uint64(x))
 	return nil
 }
@@ -273,7 +272,7 @@ func (o *Buffer) enc_int64(p *Properties, base uintptr) os.Error {
 		return ErrNil
 	}
 	x := *v
-	o.buf = bytes.Add(o.buf, p.tagcode)
+	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, uint64(x))
 	return nil
 }
@@ -285,7 +284,7 @@ func (o *Buffer) enc_string(p *Properties, base uintptr) os.Error {
 		return ErrNil
 	}
 	x := *v
-	o.buf = bytes.Add(o.buf, p.tagcode)
+	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeStringBytes(x)
 	return nil
 }
@@ -302,7 +301,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base uintptr) os.Error {
 		if err != nil {
 			return err
 		}
-		o.buf = bytes.Add(o.buf, p.tagcode)
+		o.buf = append(o.buf, p.tagcode...)
 		o.EncodeRawBytes(data)
 		return nil
 	}
@@ -326,7 +325,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base uintptr) os.Error {
 		o.buffree(nbuf)
 		return err
 	}
-	o.buf = bytes.Add(o.buf, p.tagcode)
+	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeRawBytes(nbuf)
 	o.buffree(nbuf)
 	return nil
@@ -358,7 +357,7 @@ func (o *Buffer) enc_slice_bool(p *Properties, base uintptr) os.Error {
 		return ErrNil
 	}
 	for _, x := range s {
-		o.buf = bytes.Add(o.buf, p.tagcode)
+		o.buf = append(o.buf, p.tagcode...)
 		if x != 0 {
 			x = 1
 		}
@@ -391,7 +390,7 @@ func (o *Buffer) enc_slice_byte(p *Properties, base uintptr) os.Error {
 	if s == nil {
 		return ErrNil
 	}
-	o.buf = bytes.Add(o.buf, p.tagcode)
+	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeRawBytes(s)
 	return nil
 }
@@ -404,7 +403,7 @@ func (o *Buffer) enc_slice_int32(p *Properties, base uintptr) os.Error {
 		return ErrNil
 	}
 	for i := 0; i < l; i++ {
-		o.buf = bytes.Add(o.buf, p.tagcode)
+		o.buf = append(o.buf, p.tagcode...)
 		x := s[i]
 		p.valEnc(o, uint64(x))
 	}
@@ -438,7 +437,7 @@ func (o *Buffer) enc_slice_int64(p *Properties, base uintptr) os.Error {
 		return ErrNil
 	}
 	for i := 0; i < l; i++ {
-		o.buf = bytes.Add(o.buf, p.tagcode)
+		o.buf = append(o.buf, p.tagcode...)
 		x := s[i]
 		p.valEnc(o, uint64(x))
 	}
@@ -472,7 +471,7 @@ func (o *Buffer) enc_slice_slice_byte(p *Properties, base uintptr) os.Error {
 		return ErrNil
 	}
 	for i := 0; i < l; i++ {
-		o.buf = bytes.Add(o.buf, p.tagcode)
+		o.buf = append(o.buf, p.tagcode...)
 		s := ss[i]
 		o.EncodeRawBytes(s)
 	}
@@ -484,7 +483,7 @@ func (o *Buffer) enc_slice_string(p *Properties, base uintptr) os.Error {
 	ss := *(*[]string)(unsafe.Pointer(base + p.offset))
 	l := len(ss)
 	for i := 0; i < l; i++ {
-		o.buf = bytes.Add(o.buf, p.tagcode)
+		o.buf = append(o.buf, p.tagcode...)
 		s := ss[i]
 		o.EncodeStringBytes(s)
 	}
@@ -513,7 +512,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) os.Error 
 			if err != nil {
 				return err
 			}
-			o.buf = bytes.Add(o.buf, p.tagcode)
+			o.buf = append(o.buf, p.tagcode...)
 			o.EncodeRawBytes(data)
 			continue
 		}
@@ -533,7 +532,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) os.Error 
 			}
 			return err
 		}
-		o.buf = bytes.Add(o.buf, p.tagcode)
+		o.buf = append(o.buf, p.tagcode...)
 		o.EncodeRawBytes(nbuf)
 
 		o.buffree(nbuf)
@@ -574,7 +573,7 @@ func (o *Buffer) enc_slice_struct_group(p *Properties, base uintptr) os.Error {
 func (o *Buffer) enc_map(p *Properties, base uintptr) os.Error {
 	v := *(*map[int32][]byte)(unsafe.Pointer(base + p.offset))
 	for _, b := range v {
-		o.buf = bytes.Add(o.buf, b)
+		o.buf = append(o.buf, b...)
 	}
 	return nil
 }
