@@ -1059,12 +1059,10 @@ func CamelCase(s string) string {
 		return ""
 	}
 	t := make([]byte, 0, 32)
-	oneC := make([]byte, 1)
 	i := 0
 	if s[0] == '_' {
 		// Need a capital letter; drop the '_'.
-		oneC[0] = 'X'
-		t = bytes.Add(t, oneC)
+		t = append(t, 'X')
 		i++
 	}
 	// Invariant: if the next letter is lower case, it must be converted
@@ -1073,25 +1071,23 @@ func CamelCase(s string) string {
 	// upper case letter. Digits are treated as words.
 	for ; i < len(s); i++ {
 		c := s[i]
-		oneC[0] = c
 		if c == '_' && i+1 < len(s) && isASCIILower(s[i+1]) {
 			continue // Skip the underscore in s.
 		}
 		if isASCIIDigit(c) {
-			t = bytes.Add(t, oneC)
+			t = append(t, c)
 			continue
 		}
 		// Assume we have a letter now - if not, it's a bogus identifier.
 		// The next word is a sequence of characters that must start upper case.
 		if isASCIILower(c) {
-			oneC[0] ^= ' ' // Make it a capital letter.
+			c ^= ' ' // Make it a capital letter.
 		}
-		t = bytes.Add(t, oneC) // Guaranteed not lower case.
+		t = append(t, c) // Guaranteed not lower case.
 		// Accept lower case sequence that follows.
 		for i+1 < len(s) && isASCIILower(s[i+1]) {
 			i++
-			oneC[0] = s[i]
-			t = bytes.Add(t, oneC)
+			t = append(t, s[i])
 		}
 	}
 	return string(t)

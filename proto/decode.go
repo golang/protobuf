@@ -36,7 +36,6 @@ package proto
  */
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -240,7 +239,7 @@ func (o *Buffer) skipAndSave(t *reflect.StructType, tag, wire int, base uintptr)
 
 	o.buf = *ptr
 	o.EncodeVarint(uint64(tag<<3 | wire))
-	*ptr = bytes.Add(o.buf, obuf[oi:o.index])
+	*ptr = append(o.buf, obuf[oi:o.index]...)
 
 	o.buf = obuf
 
@@ -359,7 +358,7 @@ func (o *Buffer) unmarshalType(t *reflect.PtrType, is_group bool, base uintptr) 
 			iv := unsafe.Unreflect(t, unsafe.Pointer(&o.ptr))
 			if e, ok := iv.(extendableProto); ok && isExtensionField(e, int32(tag)) {
 				if err = o.skip(st, tag, wire); err == nil {
-					e.ExtensionMap()[int32(tag)] = bytes.Add(nil, o.buf[oi:o.index])
+					e.ExtensionMap()[int32(tag)] = append([]byte(nil), o.buf[oi:o.index]...)
 				}
 				continue
 			}
