@@ -371,7 +371,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 		flen := fv.Len()
 		if flen == fv.Cap() {
 			nav := reflect.MakeSlice(at, flen, 2*flen+1)
-			reflect.ArrayCopy(nav, fv)
+			reflect.Copy(nav, fv)
 			fv.Set(nav)
 		}
 		fv.SetLen(flen + 1)
