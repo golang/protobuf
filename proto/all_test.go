@@ -1134,14 +1134,14 @@ func TestEnum(t *testing.T) {
 	pb.Foo = NewFOO(FOO_FOO1)
 	o := old()
 	if err := o.Marshal(pb); err != nil {
-		t.Fatalf("error encoding enum:", err)
+		t.Fatal("error encoding enum:", err)
 	}
 	pb1 := new(GoEnum)
 	if err := o.Unmarshal(pb1); err != nil {
-		t.Fatalf("error decoding enum:", err)
+		t.Fatal("error decoding enum:", err)
 	}
 	if *pb1.Foo != FOO_FOO1 {
-		t.Errorf("expected 7 but got ", *pb1.Foo)
+		t.Error("expected 7 but got ", *pb1.Foo)
 	}
 }
 
