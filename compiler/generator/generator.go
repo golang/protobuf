@@ -632,6 +632,7 @@ func (g *Generator) generateImports() {
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the os package.
 	g.P("import " + g.ProtoPkg + " " + Quote(g.ImportPrefix+"goprotobuf.googlecode.com/hg/proto"))
+	g.P(`import "math"`)
 	g.P(`import "os"`)
 	for _, s := range g.file.Dependency {
 		// Need to find the descriptor for this file
@@ -664,8 +665,9 @@ func (g *Generator) generateImports() {
 		p.GenerateImports(g.file)
 		g.P()
 	}
-	g.P("// Reference proto & os imports to suppress error if it's not otherwise used.")
+	g.P("// Reference proto, math & os imports to suppress error if they are not otherwise used.")
 	g.P("var _ = ", g.ProtoPkg, ".GetString")
+	g.P("var _ = math.Inf")
 	g.P("var _ os.Error")
 	g.P()
 }
@@ -968,6 +970,20 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			def = Quote(def)
 		case typename == "[]byte":
 			def = "[]byte(" + Quote(def) + ")"
+			kind = "var "
+		case def == "inf", def == "-inf", def == "nan":
+			// These names are known to, and defined by, the protocol language.
+			switch def {
+			case "inf":
+				def = "math.Inf(1)"
+			case "-inf":
+				def = "math.Inf(-1)"
+			case "nan":
+				def = "math.NaN()"
+			}
+			if *field.Type == descriptor.FieldDescriptorProto_TYPE_FLOAT {
+				def = "float32(" + def + ")"
+			}
 			kind = "var "
 		case *field.Type == descriptor.FieldDescriptorProto_TYPE_ENUM:
 			// Must be an enum.  Need to construct the prefixed name.
