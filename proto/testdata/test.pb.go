@@ -4,10 +4,12 @@
 package test_proto
 
 import proto "goprotobuf.googlecode.com/hg/proto"
+import "math"
 import "os"
 
-// Reference proto & os imports to suppress error if it's not otherwise used.
+// Reference proto, math & os imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
+var _ = math.Inf
 var _ os.Error
 
 type FOO int32
