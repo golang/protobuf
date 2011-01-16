@@ -4,11 +4,13 @@
 package my_test
 
 import proto "goprotobuf.googlecode.com/hg/proto"
+import "math"
 import "os"
 import imp "imp.pb"
 
-// Reference proto & os imports to suppress error if it's not otherwise used.
+// Reference proto, math & os imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
+var _ = math.Inf
 var _ os.Error
 
 type HatType int32
@@ -95,12 +97,14 @@ type Request struct {
 	Hue	*Request_Color	"PB(varint,3,opt,name=hue,enum=my_test.Request_Color)"
 	Hat	*HatType	"PB(varint,4,opt,name=hat,enum=my_test.HatType,def=1)"
 	Owner	*imp.ImportedMessage_Owner	"PB(varint,6,opt,name=owner,enum=imp.ImportedMessage_Owner)"
+	Deadline	*float32	"PB(fixed32,7,opt,name=deadline,def=inf)"
 	XXX_unrecognized	[]byte
 }
 func (this *Request) Reset() {
 	*this = Request{}
 }
 const Default_Request_Hat HatType = HatType_FEDORA
+var Default_Request_Deadline float32 = float32(math.Inf(1))
 
 type Reply struct {
 	Found	[]*Reply_Entry	"PB(bytes,1,rep,name=found)"
