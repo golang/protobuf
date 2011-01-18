@@ -4,9 +4,13 @@
 package google_protobuf
 
 import proto "goprotobuf.googlecode.com/hg/proto"
+import "math"
+import "os"
 
-// Reference proto import to suppress error if it's not otherwise used.
+// Reference proto, math & os imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
+var _ = math.Inf
+var _ os.Error
 
 type FieldDescriptorProto_Type int32
 const (
@@ -149,6 +153,7 @@ type FileDescriptorProto struct {
 	Name	*string	"PB(bytes,1,opt,name=name)"
 	Package	*string	"PB(bytes,2,opt,name=package)"
 	Dependency	[]string	"PB(bytes,3,rep,name=dependency)"
+	PublicDependency	[]int32	"PB(varint,10,rep,name=public_dependency)"
 	MessageType	[]*DescriptorProto	"PB(bytes,4,rep,name=message_type)"
 	EnumType	[]*EnumDescriptorProto	"PB(bytes,5,rep,name=enum_type)"
 	Service	[]*ServiceDescriptorProto	"PB(bytes,6,rep,name=service)"
@@ -450,8 +455,8 @@ func (this *SourceCodeInfo) Reset() {
 }
 
 type SourceCodeInfo_Location struct {
-	Path	[]int32	"PB(varint,1,rep,name=path)"
-	Span	[]int32	"PB(varint,2,rep,name=span)"
+	Path	[]int32	"PB(varint,1,rep,packed,name=path)"
+	Span	[]int32	"PB(varint,2,rep,packed,name=span)"
 	XXX_unrecognized	[]byte
 }
 func (this *SourceCodeInfo_Location) Reset() {

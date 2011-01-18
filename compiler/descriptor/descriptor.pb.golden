@@ -3,7 +3,14 @@
 
 package google_protobuf
 
-import "goprotobuf.googlecode.com/hg/proto"
+import proto "goprotobuf.googlecode.com/hg/proto"
+import "math"
+import "os"
+
+// Reference proto, math & os imports to suppress error if they are not otherwise used.
+var _ = proto.GetString
+var _ = math.Inf
+var _ os.Error
 
 type FieldDescriptorProto_Type int32
 const (
@@ -141,26 +148,22 @@ type FileDescriptorSet struct {
 func (this *FileDescriptorSet) Reset() {
 	*this = FileDescriptorSet{}
 }
-func NewFileDescriptorSet() *FileDescriptorSet {
-	return new(FileDescriptorSet)
-}
 
 type FileDescriptorProto struct {
 	Name	*string	"PB(bytes,1,opt,name=name)"
 	Package	*string	"PB(bytes,2,opt,name=package)"
 	Dependency	[]string	"PB(bytes,3,rep,name=dependency)"
+	PublicDependency	[]int32	"PB(varint,10,rep,name=public_dependency)"
 	MessageType	[]*DescriptorProto	"PB(bytes,4,rep,name=message_type)"
 	EnumType	[]*EnumDescriptorProto	"PB(bytes,5,rep,name=enum_type)"
 	Service	[]*ServiceDescriptorProto	"PB(bytes,6,rep,name=service)"
 	Extension	[]*FieldDescriptorProto	"PB(bytes,7,rep,name=extension)"
 	Options	*FileOptions	"PB(bytes,8,opt,name=options)"
+	SourceCodeInfo	*SourceCodeInfo	"PB(bytes,9,opt,name=source_code_info)"
 	XXX_unrecognized	[]byte
 }
 func (this *FileDescriptorProto) Reset() {
 	*this = FileDescriptorProto{}
-}
-func NewFileDescriptorProto() *FileDescriptorProto {
-	return new(FileDescriptorProto)
 }
 
 type DescriptorProto struct {
@@ -176,9 +179,6 @@ type DescriptorProto struct {
 func (this *DescriptorProto) Reset() {
 	*this = DescriptorProto{}
 }
-func NewDescriptorProto() *DescriptorProto {
-	return new(DescriptorProto)
-}
 
 type DescriptorProto_ExtensionRange struct {
 	Start	*int32	"PB(varint,1,opt,name=start)"
@@ -187,9 +187,6 @@ type DescriptorProto_ExtensionRange struct {
 }
 func (this *DescriptorProto_ExtensionRange) Reset() {
 	*this = DescriptorProto_ExtensionRange{}
-}
-func NewDescriptorProto_ExtensionRange() *DescriptorProto_ExtensionRange {
-	return new(DescriptorProto_ExtensionRange)
 }
 
 type FieldDescriptorProto struct {
@@ -206,9 +203,6 @@ type FieldDescriptorProto struct {
 func (this *FieldDescriptorProto) Reset() {
 	*this = FieldDescriptorProto{}
 }
-func NewFieldDescriptorProto() *FieldDescriptorProto {
-	return new(FieldDescriptorProto)
-}
 
 type EnumDescriptorProto struct {
 	Name	*string	"PB(bytes,1,opt,name=name)"
@@ -218,9 +212,6 @@ type EnumDescriptorProto struct {
 }
 func (this *EnumDescriptorProto) Reset() {
 	*this = EnumDescriptorProto{}
-}
-func NewEnumDescriptorProto() *EnumDescriptorProto {
-	return new(EnumDescriptorProto)
 }
 
 type EnumValueDescriptorProto struct {
@@ -232,9 +223,6 @@ type EnumValueDescriptorProto struct {
 func (this *EnumValueDescriptorProto) Reset() {
 	*this = EnumValueDescriptorProto{}
 }
-func NewEnumValueDescriptorProto() *EnumValueDescriptorProto {
-	return new(EnumValueDescriptorProto)
-}
 
 type ServiceDescriptorProto struct {
 	Name	*string	"PB(bytes,1,opt,name=name)"
@@ -244,9 +232,6 @@ type ServiceDescriptorProto struct {
 }
 func (this *ServiceDescriptorProto) Reset() {
 	*this = ServiceDescriptorProto{}
-}
-func NewServiceDescriptorProto() *ServiceDescriptorProto {
-	return new(ServiceDescriptorProto)
 }
 
 type MethodDescriptorProto struct {
@@ -259,44 +244,65 @@ type MethodDescriptorProto struct {
 func (this *MethodDescriptorProto) Reset() {
 	*this = MethodDescriptorProto{}
 }
-func NewMethodDescriptorProto() *MethodDescriptorProto {
-	return new(MethodDescriptorProto)
-}
 
 type FileOptions struct {
 	JavaPackage	*string	"PB(bytes,1,opt,name=java_package)"
 	JavaOuterClassname	*string	"PB(bytes,8,opt,name=java_outer_classname)"
 	JavaMultipleFiles	*bool	"PB(varint,10,opt,name=java_multiple_files,def=0)"
+	JavaGenerateEqualsAndHash	*bool	"PB(varint,20,opt,name=java_generate_equals_and_hash,def=0)"
 	OptimizeFor	*FileOptions_OptimizeMode	"PB(varint,9,opt,name=optimize_for,enum=google_protobuf.FileOptions_OptimizeMode,def=1)"
-	CcGenericServices	*bool	"PB(varint,16,opt,name=cc_generic_services,def=1)"
-	JavaGenericServices	*bool	"PB(varint,17,opt,name=java_generic_services,def=1)"
-	PyGenericServices	*bool	"PB(varint,18,opt,name=py_generic_services,def=1)"
+	CcGenericServices	*bool	"PB(varint,16,opt,name=cc_generic_services,def=0)"
+	JavaGenericServices	*bool	"PB(varint,17,opt,name=java_generic_services,def=0)"
+	PyGenericServices	*bool	"PB(varint,18,opt,name=py_generic_services,def=0)"
 	UninterpretedOption	[]*UninterpretedOption	"PB(bytes,999,rep,name=uninterpreted_option)"
+	XXX_extensions		map[int32][]byte
 	XXX_unrecognized	[]byte
 }
 func (this *FileOptions) Reset() {
 	*this = FileOptions{}
 }
-func NewFileOptions() *FileOptions {
-	return new(FileOptions)
+
+var extRange_FileOptions = []proto.ExtensionRange{
+	proto.ExtensionRange{1000, 536870911},
+}
+func (*FileOptions) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_FileOptions
+}
+func (this *FileOptions) ExtensionMap() map[int32][]byte {
+	if this.XXX_extensions == nil {
+		this.XXX_extensions = make(map[int32][]byte)
+	}
+	return this.XXX_extensions
 }
 const Default_FileOptions_JavaMultipleFiles bool = false
+const Default_FileOptions_JavaGenerateEqualsAndHash bool = false
 const Default_FileOptions_OptimizeFor FileOptions_OptimizeMode = FileOptions_SPEED
-const Default_FileOptions_CcGenericServices bool = true
-const Default_FileOptions_JavaGenericServices bool = true
-const Default_FileOptions_PyGenericServices bool = true
+const Default_FileOptions_CcGenericServices bool = false
+const Default_FileOptions_JavaGenericServices bool = false
+const Default_FileOptions_PyGenericServices bool = false
 
 type MessageOptions struct {
 	MessageSetWireFormat	*bool	"PB(varint,1,opt,name=message_set_wire_format,def=0)"
 	NoStandardDescriptorAccessor	*bool	"PB(varint,2,opt,name=no_standard_descriptor_accessor,def=0)"
 	UninterpretedOption	[]*UninterpretedOption	"PB(bytes,999,rep,name=uninterpreted_option)"
+	XXX_extensions		map[int32][]byte
 	XXX_unrecognized	[]byte
 }
 func (this *MessageOptions) Reset() {
 	*this = MessageOptions{}
 }
-func NewMessageOptions() *MessageOptions {
-	return new(MessageOptions)
+
+var extRange_MessageOptions = []proto.ExtensionRange{
+	proto.ExtensionRange{1000, 536870911},
+}
+func (*MessageOptions) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_MessageOptions
+}
+func (this *MessageOptions) ExtensionMap() map[int32][]byte {
+	if this.XXX_extensions == nil {
+		this.XXX_extensions = make(map[int32][]byte)
+	}
+	return this.XXX_extensions
 }
 const Default_MessageOptions_MessageSetWireFormat bool = false
 const Default_MessageOptions_NoStandardDescriptorAccessor bool = false
@@ -307,59 +313,114 @@ type FieldOptions struct {
 	Deprecated	*bool	"PB(varint,3,opt,name=deprecated,def=0)"
 	ExperimentalMapKey	*string	"PB(bytes,9,opt,name=experimental_map_key)"
 	UninterpretedOption	[]*UninterpretedOption	"PB(bytes,999,rep,name=uninterpreted_option)"
+	XXX_extensions		map[int32][]byte
 	XXX_unrecognized	[]byte
 }
 func (this *FieldOptions) Reset() {
 	*this = FieldOptions{}
 }
-func NewFieldOptions() *FieldOptions {
-	return new(FieldOptions)
+
+var extRange_FieldOptions = []proto.ExtensionRange{
+	proto.ExtensionRange{1000, 536870911},
+}
+func (*FieldOptions) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_FieldOptions
+}
+func (this *FieldOptions) ExtensionMap() map[int32][]byte {
+	if this.XXX_extensions == nil {
+		this.XXX_extensions = make(map[int32][]byte)
+	}
+	return this.XXX_extensions
 }
 const Default_FieldOptions_Ctype FieldOptions_CType = FieldOptions_STRING
 const Default_FieldOptions_Deprecated bool = false
 
 type EnumOptions struct {
 	UninterpretedOption	[]*UninterpretedOption	"PB(bytes,999,rep,name=uninterpreted_option)"
+	XXX_extensions		map[int32][]byte
 	XXX_unrecognized	[]byte
 }
 func (this *EnumOptions) Reset() {
 	*this = EnumOptions{}
 }
-func NewEnumOptions() *EnumOptions {
-	return new(EnumOptions)
+
+var extRange_EnumOptions = []proto.ExtensionRange{
+	proto.ExtensionRange{1000, 536870911},
+}
+func (*EnumOptions) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_EnumOptions
+}
+func (this *EnumOptions) ExtensionMap() map[int32][]byte {
+	if this.XXX_extensions == nil {
+		this.XXX_extensions = make(map[int32][]byte)
+	}
+	return this.XXX_extensions
 }
 
 type EnumValueOptions struct {
 	UninterpretedOption	[]*UninterpretedOption	"PB(bytes,999,rep,name=uninterpreted_option)"
+	XXX_extensions		map[int32][]byte
 	XXX_unrecognized	[]byte
 }
 func (this *EnumValueOptions) Reset() {
 	*this = EnumValueOptions{}
 }
-func NewEnumValueOptions() *EnumValueOptions {
-	return new(EnumValueOptions)
+
+var extRange_EnumValueOptions = []proto.ExtensionRange{
+	proto.ExtensionRange{1000, 536870911},
+}
+func (*EnumValueOptions) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_EnumValueOptions
+}
+func (this *EnumValueOptions) ExtensionMap() map[int32][]byte {
+	if this.XXX_extensions == nil {
+		this.XXX_extensions = make(map[int32][]byte)
+	}
+	return this.XXX_extensions
 }
 
 type ServiceOptions struct {
 	UninterpretedOption	[]*UninterpretedOption	"PB(bytes,999,rep,name=uninterpreted_option)"
+	XXX_extensions		map[int32][]byte
 	XXX_unrecognized	[]byte
 }
 func (this *ServiceOptions) Reset() {
 	*this = ServiceOptions{}
 }
-func NewServiceOptions() *ServiceOptions {
-	return new(ServiceOptions)
+
+var extRange_ServiceOptions = []proto.ExtensionRange{
+	proto.ExtensionRange{1000, 536870911},
+}
+func (*ServiceOptions) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_ServiceOptions
+}
+func (this *ServiceOptions) ExtensionMap() map[int32][]byte {
+	if this.XXX_extensions == nil {
+		this.XXX_extensions = make(map[int32][]byte)
+	}
+	return this.XXX_extensions
 }
 
 type MethodOptions struct {
 	UninterpretedOption	[]*UninterpretedOption	"PB(bytes,999,rep,name=uninterpreted_option)"
+	XXX_extensions		map[int32][]byte
 	XXX_unrecognized	[]byte
 }
 func (this *MethodOptions) Reset() {
 	*this = MethodOptions{}
 }
-func NewMethodOptions() *MethodOptions {
-	return new(MethodOptions)
+
+var extRange_MethodOptions = []proto.ExtensionRange{
+	proto.ExtensionRange{1000, 536870911},
+}
+func (*MethodOptions) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_MethodOptions
+}
+func (this *MethodOptions) ExtensionMap() map[int32][]byte {
+	if this.XXX_extensions == nil {
+		this.XXX_extensions = make(map[int32][]byte)
+	}
+	return this.XXX_extensions
 }
 
 type UninterpretedOption struct {
@@ -369,13 +430,11 @@ type UninterpretedOption struct {
 	NegativeIntValue	*int64	"PB(varint,5,opt,name=negative_int_value)"
 	DoubleValue	*float64	"PB(fixed64,6,opt,name=double_value)"
 	StringValue	[]byte	"PB(bytes,7,opt,name=string_value)"
+	AggregateValue	*string	"PB(bytes,8,opt,name=aggregate_value)"
 	XXX_unrecognized	[]byte
 }
 func (this *UninterpretedOption) Reset() {
 	*this = UninterpretedOption{}
-}
-func NewUninterpretedOption() *UninterpretedOption {
-	return new(UninterpretedOption)
 }
 
 type UninterpretedOption_NamePart struct {
@@ -386,8 +445,22 @@ type UninterpretedOption_NamePart struct {
 func (this *UninterpretedOption_NamePart) Reset() {
 	*this = UninterpretedOption_NamePart{}
 }
-func NewUninterpretedOption_NamePart() *UninterpretedOption_NamePart {
-	return new(UninterpretedOption_NamePart)
+
+type SourceCodeInfo struct {
+	Location	[]*SourceCodeInfo_Location	"PB(bytes,1,rep,name=location)"
+	XXX_unrecognized	[]byte
+}
+func (this *SourceCodeInfo) Reset() {
+	*this = SourceCodeInfo{}
+}
+
+type SourceCodeInfo_Location struct {
+	Path	[]int32	"PB(varint,1,rep,packed,name=path)"
+	Span	[]int32	"PB(varint,2,rep,packed,name=span)"
+	XXX_unrecognized	[]byte
+}
+func (this *SourceCodeInfo_Location) Reset() {
+	*this = SourceCodeInfo_Location{}
 }
 
 func init() {

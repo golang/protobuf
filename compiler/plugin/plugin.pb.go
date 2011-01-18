@@ -4,10 +4,14 @@
 package google_protobuf_compiler
 
 import proto "goprotobuf.googlecode.com/hg/proto"
+import "math"
+import "os"
 import google_protobuf "goprotobuf.googlecode.com/hg/compiler/descriptor"
 
-// Reference proto import to suppress error if it's not otherwise used.
+// Reference proto, math & os imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
+var _ = math.Inf
+var _ os.Error
 
 type CodeGeneratorRequest struct {
 	FileToGenerate	[]string	"PB(bytes,1,rep,name=file_to_generate)"
