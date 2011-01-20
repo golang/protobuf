@@ -13,6 +13,7 @@ var _ = proto.GetString
 var _ = math.Inf
 var _ os.Error
 
+
 type HatType int32
 const (
 	HatType_FEDORA = 1

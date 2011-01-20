@@ -12,6 +12,7 @@ var _ = proto.GetString
 var _ = math.Inf
 var _ os.Error
 
+
 type FOO int32
 const (
 	FOO_FOO1 = 1

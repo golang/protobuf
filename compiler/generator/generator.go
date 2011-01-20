@@ -200,6 +200,10 @@ type FileDescriptor struct {
 	desc []*Descriptor          // All the messages defined in this file.
 	enum []*EnumDescriptor      // All the enums defined in this file.
 	ext  []*ExtensionDescriptor // All the top-level extensions defined in this file.
+
+	// The full list of symbols that are exported.
+	// This is used for supporting public imports.
+	exported []Symbol
 }
 
 // PackageName is the package name we'll use in the generated code to refer to this file.
@@ -215,6 +219,60 @@ func (d *FileDescriptor) originalPackageName() string {
 	}
 	// Use the file base name.
 	return BaseName(proto.GetString(d.Name))
+}
+
+func (d *FileDescriptor) addExport(symbol Symbol) {
+	d.exported = append(d.exported, symbol)
+}
+
+// Symbol is an interface representing an exported Go symbol.
+type Symbol interface {
+	// GenerateAlias should generate an appropriate alias
+	// for the symbol from the named package.
+	GenerateAlias(g *Generator, pkg string)
+}
+
+type messageSymbol struct {
+	sym                         string
+	hasExtensions, isMessageSet bool
+}
+
+func (ms messageSymbol) GenerateAlias(g *Generator, pkg string) {
+	remoteSym := pkg + "." + ms.sym
+
+	g.P("type ", ms.sym, " ", remoteSym)
+	g.P("func (this *", ms.sym, ") Reset() { (*", remoteSym, ")(this).Reset() }")
+	if ms.hasExtensions {
+		g.P("func (*", ms.sym, ") ExtensionRangeArray() []", g.ProtoPkg, ".ExtensionRange ",
+			"{ return (*", remoteSym, ")(nil).ExtensionRangeArray() }")
+		g.P("func (this *", ms.sym, ") ExtensionMap() map[int32][]byte ",
+			"{ return (*", remoteSym, ")(this).ExtensionMap() }")
+		if ms.isMessageSet {
+			g.P("func (this *", ms.sym, ") Marshal() ([]byte, os.Error) ",
+				"{ return (*", remoteSym, ")(this).Marshal() }")
+			g.P("func (this *", ms.sym, ") Unmarshal(buf []byte) os.Error ",
+				"{ return (*", remoteSym, ")(this).Unmarshal(buf) }")
+		}
+	}
+}
+
+type enumSymbol string
+
+func (es enumSymbol) GenerateAlias(g *Generator, pkg string) {
+	s := string(es)
+	g.P("type ", s, " ", pkg, ".", s)
+	g.P("var ", s, "_name = ", pkg, ".", s, "_name")
+	g.P("var ", s, "_value = ", pkg, ".", s, "_value")
+	g.P("func New", s, "(x int32) *", s, " { e := ", s, "(x); return &e }")
+}
+
+type constOrVarSymbol struct {
+	sym string
+	typ string // either "const" or "var"
+}
+
+func (cs constOrVarSymbol) GenerateAlias(g *Generator, pkg string) {
+	g.P(cs.typ, " ", cs.sym, " = ", pkg, ".", cs.sym)
 }
 
 // Object is an interface abstracting the abilities shared by enums and messages.
@@ -560,13 +618,24 @@ func (g *Generator) GenerateAllFiles() {
 	for _, p := range plugins {
 		p.Init(g)
 	}
-	// Generate the output.
-	for i, file := range g.genFiles {
+	// Generate the output. The generator runs for every file, even the files
+	// that we don't generate output for, so that we can collate the full list
+	// of exported symbols to support public imports.
+	genFileMap := make(map[*FileDescriptor]bool, len(g.genFiles))
+	for _, file := range g.genFiles {
+		genFileMap[file] = true
+	}
+	i := 0
+	for _, file := range g.allFiles {
 		g.Reset()
 		g.generate(file)
+		if _, ok := genFileMap[file]; !ok {
+			continue
+		}
 		g.Response.File[i] = new(plugin.CodeGeneratorResponse_File)
 		g.Response.File[i].Name = proto.String(goFileName(*file.Name))
 		g.Response.File[i].Content = proto.String(g.String())
+		i++
 	}
 }
 
@@ -626,6 +695,15 @@ func (g *Generator) generateHeader() {
 	g.P()
 }
 
+func (g *Generator) fileByName(filename string) *FileDescriptor {
+	for _, fd := range g.allFiles {
+		if proto.GetString(fd.Name) == filename {
+			return fd
+		}
+	}
+	return nil
+}
+
 // Generate the header, including package definition and imports
 func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
@@ -635,28 +713,23 @@ func (g *Generator) generateImports() {
 	g.P(`import "math"`)
 	g.P(`import "os"`)
 	for _, s := range g.file.Dependency {
-		// Need to find the descriptor for this file
-		for _, fd := range g.allFiles {
-			// Do not import our own package.
-			if fd.PackageName() == g.packageName {
-				continue
-			}
-			if proto.GetString(fd.Name) == s {
-				filename := goFileName(s)
-				if substitution, ok := g.ImportMap[s]; ok {
-					filename = substitution
-				}
-				filename = g.ImportPrefix + filename
-				if strings.HasSuffix(filename, ".go") {
-					filename = filename[0 : len(filename)-3]
-				}
-				if _, ok := g.usedPackages[fd.PackageName()]; ok {
-					g.P("import ", fd.PackageName(), " ", Quote(filename))
-				} else {
-					log.Println("protoc-gen-go: discarding unused import:", filename)
-				}
-				break
-			}
+		fd := g.fileByName(s)
+		// Do not import our own package.
+		if fd.PackageName() == g.packageName {
+			continue
+		}
+		filename := goFileName(s)
+		if substitution, ok := g.ImportMap[s]; ok {
+			filename = substitution
+		}
+		filename = g.ImportPrefix + filename
+		if strings.HasSuffix(filename, ".go") {
+			filename = filename[0 : len(filename)-3]
+		}
+		if _, ok := g.usedPackages[fd.PackageName()]; ok {
+			g.P("import ", fd.PackageName(), " ", Quote(filename))
+		} else {
+			log.Println("protoc-gen-go: discarding unused import:", filename)
 		}
 	}
 	g.P()
@@ -670,6 +743,16 @@ func (g *Generator) generateImports() {
 	g.P("var _ = math.Inf")
 	g.P("var _ os.Error")
 	g.P()
+
+	// Symbols from public imports.
+	for _, index := range g.file.PublicDependency {
+		fd := g.fileByName(g.file.Dependency[index])
+		g.P("// Types from public import ", *fd.Name)
+		for _, sym := range fd.exported {
+			sym.GenerateAlias(g, fd.PackageName())
+		}
+	}
+	g.P()
 }
 
 // Generate the enum definitions for this EnumDescriptor.
@@ -680,10 +763,13 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	ccTypeName := CamelCaseSlice(typeName)
 	ccPrefix := enum.prefix()
 	g.P("type ", ccTypeName, " int32")
+	g.file.addExport(enumSymbol(ccTypeName))
 	g.P("const (")
 	g.In()
 	for _, e := range enum.Value {
-		g.P(ccPrefix+*e.Name, " = ", e.Number)
+		name := ccPrefix + *e.Name
+		g.P(name, " = ", e.Number)
+		g.file.addExport(constOrVarSymbol{name, "const"})
 	}
 	g.Out()
 	g.P(")")
@@ -907,9 +993,12 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.P("}")
 
 	// Extension support methods
+	var hasExtensions, isMessageSet bool
 	if len(message.ExtensionRange) > 0 {
+		hasExtensions = true
 		// message_set_wire_format only makes sense when extensions are defined.
 		if opts := message.Options; opts != nil && proto.GetBool(opts.MessageSetWireFormat) {
+			isMessageSet = true
 			g.P()
 			g.P("func (this *", ccTypeName, ") Marshal() ([]byte, os.Error) {")
 			g.In()
@@ -951,6 +1040,8 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.Out()
 		g.P("}")
 	}
+
+	g.file.addExport(messageSymbol{ccTypeName, hasExtensions, isMessageSet})
 
 	// Default constants
 	for _, field := range message.Field {
@@ -996,6 +1087,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			def = g.DefaultPackageName(enum) + enum.prefix() + def
 		}
 		g.P(kind, fieldname, " ", typename, " = ", def)
+		g.file.addExport(constOrVarSymbol{fieldname, kind})
 	}
 	g.P()
 
@@ -1029,6 +1121,8 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	g.Out()
 	g.P("}")
 	g.P()
+
+	g.file.addExport(constOrVarSymbol{ccTypeName, "var"})
 }
 
 func (g *Generator) generateInitFunction() {
