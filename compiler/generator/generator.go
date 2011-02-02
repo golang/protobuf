@@ -164,7 +164,7 @@ func (e *EnumDescriptor) integerValueAsString(name string) string {
 			return fmt.Sprint(proto.GetInt32(c.Number))
 		}
 	}
-	log.Exit("cannot find value for enum constant")
+	log.Fatal("cannot find value for enum constant")
 	return ""
 }
 
@@ -288,7 +288,7 @@ type Object interface {
 func uniquePackageOf(fd *descriptor.FileDescriptorProto) string {
 	s, ok := uniquePackageName[fd]
 	if !ok {
-		log.Exit("internal error: no package name defined for", proto.GetString(fd.Name))
+		log.Fatal("internal error: no package name defined for", proto.GetString(fd.Name))
 	}
 	return s
 }
