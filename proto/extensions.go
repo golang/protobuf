@@ -145,7 +145,7 @@ func SetExtension(extended extendableProto, extension *ExtensionDesc, value inte
 
 	p := NewBuffer(nil)
 	v := reflect.NewValue(value)
-	if err := props.enc(p, props, v.Addr()); err != nil {
+	if err := props.enc(p, props, v.UnsafeAddr()); err != nil {
 		return err
 	}
 	extended.ExtensionMap()[extension.Field] = p.buf
