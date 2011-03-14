@@ -213,8 +213,7 @@ func (d *FileDescriptor) PackageName() string { return uniquePackageOf(d.FileDes
 // If the file does not define a package, use the base of the file name.
 func (d *FileDescriptor) originalPackageName() string {
 	// Does the file have a package clause?
-	pkg := proto.GetString(d.Package)
-	if pkg != "" {
+	if pkg := proto.GetString(d.Package); pkg != "" {
 		return pkg
 	}
 	// Use the file base name.
@@ -408,6 +407,7 @@ func (g *Generator) SetPackageNames() {
 	// Register the proto package name.  It might collide with the
 	// name of a package we import.
 	g.ProtoPkg = RegisterUniquePackageName("proto", nil)
+	// Verify that we are generating output for a single package.
 	for _, f := range g.genFiles {
 		thisPkg := f.originalPackageName()
 		if thisPkg != pkg {
@@ -423,7 +423,13 @@ AllFiles:
 				continue AllFiles
 			}
 		}
-		RegisterUniquePackageName(f.originalPackageName(), f)
+		// The file is a dependency, so we want to ignore its go_package option
+		// because that is only relevant for its specific generated output.
+		pkg := proto.GetString(f.Package)
+		if pkg == "" {
+			pkg = BaseName(*f.Name)
+		}
+		RegisterUniquePackageName(pkg, f)
 	}
 }
 
@@ -889,7 +895,7 @@ func needsStar(typ descriptor.FieldDescriptorProto_Type) bool {
 
 // TypeName is the printed name appropriate for an item. If the object is in the current file,
 // TypeName drops the package name and underscores the rest.
-// Otherwise the object is from another package; and the result is  the underscored
+// Otherwise the object is from another package; and the result is the underscored
 // package name followed by the item name.
 // The result always has an initial capital.
 func (g *Generator) TypeName(obj Object) string {
