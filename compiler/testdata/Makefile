@@ -35,7 +35,7 @@ all:
 	@echo run make test
 
 include $(GOROOT)/src/Make.common
-include $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/Make.protobuf
+include ../../Make.protobuf
 
 CLEANFILES+=*.pb.go extension_test
 

@@ -31,7 +31,7 @@
 
 
 include $(GOROOT)/src/Make.inc
-include $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/Make.protobuf
+include ../../Make.protobuf
 
 TARG=test_proto
 GOFILES=\
