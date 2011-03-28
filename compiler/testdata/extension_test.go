@@ -200,5 +200,6 @@ func main() {
 		{"TestSingleFieldExtension", TestSingleFieldExtension},
 		{"TestMessageExtension", TestMessageExtension},
 		{"TestTopLevelExtension", TestTopLevelExtension},
-	})
+	},
+		[]testing.InternalBenchmark{})
 }
