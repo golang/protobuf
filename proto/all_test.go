@@ -29,10 +29,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// We need to compile the .pb.gos, which import this package, so
-// to run the test we must make install here and then make in the
-// testdata directory.
-// gotest: make install && cd testdata && make nuke && make
 
 package proto_test
 
