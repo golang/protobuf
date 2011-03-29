@@ -44,3 +44,13 @@ GOFILES=\
 	text_parser.go\
 
 include $(GOROOT)/src/Make.pkg
+
+# We need to compile the .pb.gos, which import this package, so
+# to run the test we must make install here and then make in the
+# testdata directory.
+test: compile-test-pbs
+
+testshort: compile-test-pbs
+
+compile-test-pbs:
+	make install && cd testdata && make nuke && make
