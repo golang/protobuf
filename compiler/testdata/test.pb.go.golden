@@ -19,17 +19,20 @@ const (
 	HatType_FEDORA = 1
 	HatType_FEZ = 2
 )
-var HatType_name = map[int32] string {
+var HatType_name = map[int32]string{
 	1: "FEDORA",
 	2: "FEZ",
 }
-var HatType_value = map[string] int32 {
+var HatType_value = map[string]int32{
 	"FEDORA": 1,
 	"FEZ": 2,
 }
 func NewHatType(x int32) *HatType {
 	e := HatType(x)
 	return &e
+}
+func (x HatType) String() string {
+	return proto.EnumName(HatType_name, int32(x))
 }
 
 type Days int32
@@ -38,12 +41,12 @@ const (
 	Days_TUESDAY = 2
 	Days_LUNDI = 1
 )
-var Days_name = map[int32] string {
+var Days_name = map[int32]string{
 	1: "MONDAY",
 	2: "TUESDAY",
 	// Duplicate value: 1: "LUNDI",
 }
-var Days_value = map[string] int32 {
+var Days_value = map[string]int32{
 	"MONDAY": 1,
 	"TUESDAY": 2,
 	"LUNDI": 1,
@@ -52,6 +55,9 @@ func NewDays(x int32) *Days {
 	e := Days(x)
 	return &e
 }
+func (x Days) String() string {
+	return proto.EnumName(Days_name, int32(x))
+}
 
 type Request_Color int32
 const (
@@ -59,12 +65,12 @@ const (
 	Request_GREEN = 1
 	Request_BLUE = 2
 )
-var Request_Color_name = map[int32] string {
+var Request_Color_name = map[int32]string{
 	0: "RED",
 	1: "GREEN",
 	2: "BLUE",
 }
-var Request_Color_value = map[string] int32 {
+var Request_Color_value = map[string]int32{
 	"RED": 0,
 	"GREEN": 1,
 	"BLUE": 2,
@@ -73,23 +79,29 @@ func NewRequest_Color(x int32) *Request_Color {
 	e := Request_Color(x)
 	return &e
 }
+func (x Request_Color) String() string {
+	return proto.EnumName(Request_Color_name, int32(x))
+}
 
 type Reply_Entry_Game int32
 const (
 	Reply_Entry_FOOTBALL = 1
 	Reply_Entry_TENNIS = 2
 )
-var Reply_Entry_Game_name = map[int32] string {
+var Reply_Entry_Game_name = map[int32]string{
 	1: "FOOTBALL",
 	2: "TENNIS",
 }
-var Reply_Entry_Game_value = map[string] int32 {
+var Reply_Entry_Game_value = map[string]int32{
 	"FOOTBALL": 1,
 	"TENNIS": 2,
 }
 func NewReply_Entry_Game(x int32) *Reply_Entry_Game {
 	e := Reply_Entry_Game(x)
 	return &e
+}
+func (x Reply_Entry_Game) String() string {
+	return proto.EnumName(Reply_Entry_Game_name, int32(x))
 }
 
 type Request struct {

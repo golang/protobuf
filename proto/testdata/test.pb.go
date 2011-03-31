@@ -17,15 +17,18 @@ type FOO int32
 const (
 	FOO_FOO1 = 1
 )
-var FOO_name = map[int32] string {
+var FOO_name = map[int32]string{
 	1: "FOO1",
 }
-var FOO_value = map[string] int32 {
+var FOO_value = map[string]int32{
 	"FOO1": 1,
 }
 func NewFOO(x int32) *FOO {
 	e := FOO(x)
 	return &e
+}
+func (x FOO) String() string {
+	return proto.EnumName(FOO_name, int32(x))
 }
 
 type GoTest_KIND int32
@@ -44,7 +47,7 @@ const (
 	GoTest_TABLE = 11
 	GoTest_FUNCTION = 12
 )
-var GoTest_KIND_name = map[int32] string {
+var GoTest_KIND_name = map[int32]string{
 	0: "VOID",
 	1: "BOOL",
 	2: "BYTES",
@@ -59,7 +62,7 @@ var GoTest_KIND_name = map[int32] string {
 	11: "TABLE",
 	12: "FUNCTION",
 }
-var GoTest_KIND_value = map[string] int32 {
+var GoTest_KIND_value = map[string]int32{
 	"VOID": 0,
 	"BOOL": 1,
 	"BYTES": 2,
@@ -78,6 +81,9 @@ func NewGoTest_KIND(x int32) *GoTest_KIND {
 	e := GoTest_KIND(x)
 	return &e
 }
+func (x GoTest_KIND) String() string {
+	return proto.EnumName(GoTest_KIND_name, int32(x))
+}
 
 type MyMessage_Color int32
 const (
@@ -85,12 +91,12 @@ const (
 	MyMessage_GREEN = 1
 	MyMessage_BLUE = 2
 )
-var MyMessage_Color_name = map[int32] string {
+var MyMessage_Color_name = map[int32]string{
 	0: "RED",
 	1: "GREEN",
 	2: "BLUE",
 }
-var MyMessage_Color_value = map[string] int32 {
+var MyMessage_Color_value = map[string]int32{
 	"RED": 0,
 	"GREEN": 1,
 	"BLUE": 2,
@@ -98,6 +104,9 @@ var MyMessage_Color_value = map[string] int32 {
 func NewMyMessage_Color(x int32) *MyMessage_Color {
 	e := MyMessage_Color(x)
 	return &e
+}
+func (x MyMessage_Color) String() string {
+	return proto.EnumName(MyMessage_Color_name, int32(x))
 }
 
 type GoEnum struct {
