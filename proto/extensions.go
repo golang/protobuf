@@ -63,9 +63,9 @@ type ExtensionDesc struct {
 	Tag           string      // PB(...) tag style
 }
 
-// Return true iff the given field number is in an extension range.
-func isExtensionField(extended extendableProto, field int32) bool {
-	for _, er := range extended.ExtensionRangeArray() {
+// isExtensionField returns true iff the given field number is in an extension range.
+func isExtensionField(pb extendableProto, field int32) bool {
+	for _, er := range pb.ExtensionRangeArray() {
 		if er.Start <= field && field <= er.End {
 			return true
 		}
@@ -73,35 +73,40 @@ func isExtensionField(extended extendableProto, field int32) bool {
 	return false
 }
 
-func checkExtensionTypes(extended extendableProto, extension *ExtensionDesc) os.Error {
+// checkExtensionTypes checks that the given extension is valid for pb.
+func checkExtensionTypes(pb extendableProto, extension *ExtensionDesc) os.Error {
 	// Check the extended type.
-	if a, b := reflect.Typeof(extended), reflect.Typeof(extension.ExtendedType); a != b {
+	if a, b := reflect.Typeof(pb), reflect.Typeof(extension.ExtendedType); a != b {
 		return os.NewError("bad extended type; " + b.String() + " does not extend " + a.String())
 	}
 	// Check the range.
-	if !isExtensionField(extended, extension.Field) {
+	if !isExtensionField(pb, extension.Field) {
 		return os.NewError("bad extension number; not in declared ranges")
 	}
 	return nil
 }
 
-func HasExtension(extended extendableProto, extension *ExtensionDesc) bool {
+// HasExtension returns whether the given extension is present in pb.
+func HasExtension(pb extendableProto, extension *ExtensionDesc) bool {
 	// TODO: Check types, field numbers, etc.?
-	_, ok := extended.ExtensionMap()[extension.Field]
+	_, ok := pb.ExtensionMap()[extension.Field]
 	return ok
 }
 
-func ClearExtension(extended extendableProto, extension *ExtensionDesc) {
+// ClearExtension removes the given extension from pb.
+func ClearExtension(pb extendableProto, extension *ExtensionDesc) {
 	// TODO: Check types, field numbers, etc.?
-	extended.ExtensionMap()[extension.Field] = nil, false
+	pb.ExtensionMap()[extension.Field] = nil, false
 }
 
-func GetExtension(extended extendableProto, extension *ExtensionDesc) (interface{}, os.Error) {
-	if err := checkExtensionTypes(extended, extension); err != nil {
+// GetExtension parses and returns the given extension of pb.
+// If the extension is not present it returns (nil, nil).
+func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, os.Error) {
+	if err := checkExtensionTypes(pb, extension); err != nil {
 		return nil, err
 	}
 
-	b, ok := extended.ExtensionMap()[extension.Field]
+	b, ok := pb.ExtensionMap()[extension.Field]
 	if !ok {
 		return nil, nil // not an error
 	}
@@ -128,12 +133,31 @@ func GetExtension(extended extendableProto, extension *ExtensionDesc) (interface
 	return unsafe.Unreflect(t, base), nil
 }
 
+// GetExtensions returns a slice of the extensions present in pb that are also listed in es.
+// The returned slice has the same length as es; missing extensions will appear as nil elements.
+func GetExtensions(pb interface{}, es []*ExtensionDesc) (extensions []interface{}, err os.Error) {
+	epb, ok := pb.(extendableProto)
+	if !ok {
+		err = os.NewError("not an extendable proto")
+		return
+	}
+	extensions = make([]interface{}, len(es))
+	for i, e := range es {
+		extensions[i], err = GetExtension(epb, e)
+		if err != nil {
+			return
+		}
+	}
+	return
+}
+
 // TODO: (needed for repeated extensions)
 //   - ExtensionSize
 //   - AddExtension
 
-func SetExtension(extended extendableProto, extension *ExtensionDesc, value interface{}) os.Error {
-	if err := checkExtensionTypes(extended, extension); err != nil {
+// SetExtension sets the specified extension of pb to the specified value.
+func SetExtension(pb extendableProto, extension *ExtensionDesc, value interface{}) os.Error {
+	if err := checkExtensionTypes(pb, extension); err != nil {
 		return err
 	}
 	if reflect.Typeof(extension.ExtensionType) != reflect.Typeof(value) {
@@ -148,6 +172,6 @@ func SetExtension(extended extendableProto, extension *ExtensionDesc, value inte
 	if err := props.enc(p, props, v.UnsafeAddr()); err != nil {
 		return err
 	}
-	extended.ExtensionMap()[extension.Field] = p.buf
+	pb.ExtensionMap()[extension.Field] = p.buf
 	return nil
 }

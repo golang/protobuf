@@ -779,7 +779,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	}
 	g.Out()
 	g.P(")")
-	g.P("var ", ccTypeName, "_name = map[int32] string {")
+	g.P("var ", ccTypeName, "_name = map[int32]string{")
 	g.In()
 	generated := make(map[int32]bool) // avoid duplicate values
 	for _, e := range enum.Value {
@@ -792,19 +792,27 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	}
 	g.Out()
 	g.P("}")
-	g.P("var ", ccTypeName, "_value = map[string] int32 {")
+	g.P("var ", ccTypeName, "_value = map[string]int32{")
 	g.In()
 	for _, e := range enum.Value {
 		g.P(Quote(*e.Name), ": ", e.Number, ",")
 	}
 	g.Out()
 	g.P("}")
+
 	g.P("func New", ccTypeName, "(x int32) *", ccTypeName, " {")
 	g.In()
 	g.P("e := ", ccTypeName, "(x)")
 	g.P("return &e")
 	g.Out()
 	g.P("}")
+
+	g.P("func (x ", ccTypeName, ") String() string {")
+	g.In()
+	g.P("return ", g.ProtoPkg, ".EnumName(", ccTypeName, "_name, int32(x))")
+	g.Out()
+	g.P("}")
+
 	g.P()
 }
 
