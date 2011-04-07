@@ -39,6 +39,9 @@ package generator
 import (
 	"bytes"
 	"fmt"
+	"go/parser"
+	"go/printer"
+	"go/token"
 	"log"
 	"os"
 	"path"
@@ -690,6 +693,19 @@ func (g *Generator) generate(file *FileDescriptor) {
 	g.generateHeader()
 	g.generateImports()
 	g.Write(rem.Bytes())
+
+	// Reformat generated code.
+	fset := token.NewFileSet()
+	ast, err := parser.ParseFile(fset, "", g, parser.ParseComments)
+	if err != nil {
+		g.Fail("bad Go source code was generated:", err.String())
+		return
+	}
+	g.Reset()
+	_, err = (&printer.Config{printer.TabIndent, 8}).Fprint(g, fset, ast)
+	if err != nil {
+		g.Fail("generated Go source code could not be reformatted:", err.String())
+	}
 }
 
 // Generate the header, including package definition and imports
