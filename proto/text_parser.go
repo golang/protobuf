@@ -228,18 +228,12 @@ func (p *textParser) next() *token {
 	return &p.cur
 }
 
-type nillable interface {
-	IsNil() bool
-}
-
 // Return an error indicating which required field was not set.
-func (p *textParser) missingRequiredFieldError(sv *reflect.StructValue) *ParseError {
-	st := sv.Type().(*reflect.StructType)
+func (p *textParser) missingRequiredFieldError(sv reflect.Value) *ParseError {
+	st := sv.Type()
 	sprops := GetProperties(st)
 	for i := 0; i < st.NumField(); i++ {
-		// All protocol buffer fields are nillable, but let's be careful.
-		nfv, ok := sv.Field(i).(nillable)
-		if !ok || !nfv.IsNil() {
+		if !isNil(sv.Field(i)) {
 			continue
 		}
 
@@ -252,7 +246,7 @@ func (p *textParser) missingRequiredFieldError(sv *reflect.StructValue) *ParseEr
 }
 
 // Returns the index in the struct for the named field, as well as the parsed tag properties.
-func structFieldByName(st *reflect.StructType, name string) (int, *Properties, bool) {
+func structFieldByName(st reflect.Type, name string) (int, *Properties, bool) {
 	sprops := GetProperties(st)
 	i, ok := sprops.origNames[name]
 	if ok {
@@ -261,8 +255,8 @@ func structFieldByName(st *reflect.StructType, name string) (int, *Properties, b
 	return -1, nil, false
 }
 
-func (p *textParser) readStruct(sv *reflect.StructValue, terminator string) *ParseError {
-	st := sv.Type().(*reflect.StructType)
+func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError {
+	st := sv.Type()
 	reqCount := GetProperties(st).reqCount
 	// A struct is a sequence of "name: value", terminated by one of
 	// '>' or '}', or the end of the input.
@@ -281,10 +275,8 @@ func (p *textParser) readStruct(sv *reflect.StructValue, terminator string) *Par
 		}
 
 		// Check that it's not already set if it's not a repeated field.
-		if !props.Repeated {
-			if nfv, ok := sv.Field(fi).(nillable); ok && !nfv.IsNil() {
-				return p.error("non-repeated field %q was repeated", tok.value)
-			}
+		if !props.Repeated && !isNil(sv.Field(fi)) {
+			return p.error("non-repeated field %q was repeated", tok.value)
 		}
 
 		tok = p.next()
@@ -302,14 +294,14 @@ func (p *textParser) readStruct(sv *reflect.StructValue, terminator string) *Par
 				// those three become *T, *string and []T respectively, so we can check for
 				// this field being a pointer to a non-string.
 				typ := st.Field(fi).Type
-				if pt, ok := typ.(*reflect.PtrType); ok {
+				if pt := typ; pt.Kind() == reflect.Ptr {
 					// *T or *string
-					if _, ok := pt.Elem().(*reflect.StringType); ok {
+					if pt.Elem().Kind() == reflect.String {
 						break
 					}
-				} else if st, ok := typ.(*reflect.SliceType); ok {
+				} else if st := typ; st.Kind() == reflect.Slice {
 					// []T or []*T
-					if _, ok := st.Elem().(*reflect.PtrType); !ok {
+					if st.Elem().Kind() != reflect.Ptr {
 						break
 					}
 				}
@@ -352,9 +344,9 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 		return p.error("unexpected EOF")
 	}
 
-	switch fv := v.(type) {
-	case *reflect.SliceValue:
-		at := v.Type().(*reflect.SliceType)
+	switch fv := v; fv.Kind() {
+	case reflect.Slice:
+		at := v.Type()
 		if at.Elem().Kind() == reflect.Uint8 {
 			// Special case for []byte
 			if tok.value[0] != '"' {
@@ -364,7 +356,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 				return p.error("invalid string: %v", tok.value)
 			}
 			bytes := []byte(tok.unquoted)
-			fv.Set(reflect.NewValue(bytes).(*reflect.SliceValue))
+			fv.Set(reflect.NewValue(bytes))
 			return nil
 		}
 		// Repeated field. May already exist.
@@ -378,27 +370,27 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 
 		// Read one.
 		p.back()
-		return p.readAny(fv.Elem(flen), nil) // TODO: pass properties?
-	case *reflect.BoolValue:
+		return p.readAny(fv.Index(flen), nil) // TODO: pass properties?
+	case reflect.Bool:
 		// Either "true", "false", 1 or 0.
 		switch tok.value {
 		case "true", "1":
-			fv.Set(true)
+			fv.SetBool(true)
 			return nil
 		case "false", "0":
-			fv.Set(false)
+			fv.SetBool(false)
 			return nil
 		}
-	case *reflect.FloatValue:
+	case reflect.Float32, reflect.Float64:
 		if f, err := strconv.AtofN(tok.value, fv.Type().Bits()); err == nil {
-			fv.Set(f)
+			fv.SetFloat(f)
 			return nil
 		}
-	case *reflect.IntValue:
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		switch fv.Type().Bits() {
 		case 32:
 			if x, err := strconv.Atoi64(tok.value); err == nil && minInt32 <= x && x <= maxInt32 {
-				fv.Set(x)
+				fv.SetInt(x)
 				return nil
 			}
 			if len(props.Enum) == 0 {
@@ -412,25 +404,25 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			if !ok {
 				break
 			}
-			fv.Set(int64(x))
+			fv.SetInt(int64(x))
 			return nil
 		case 64:
 			if x, err := strconv.Atoi64(tok.value); err == nil {
-				fv.Set(x)
+				fv.SetInt(x)
 				return nil
 			}
 		}
-	case *reflect.PtrValue:
+	case reflect.Ptr:
 		// A basic field (indirected through pointer), or a repeated message/group
 		p.back()
-		fv.PointTo(reflect.MakeZero(fv.Type().(*reflect.PtrType).Elem()))
+		fv.Set(reflect.Zero(fv.Type().Elem()).Addr())
 		return p.readAny(fv.Elem(), props)
-	case *reflect.StringValue:
+	case reflect.String:
 		if tok.value[0] == '"' {
-			fv.Set(tok.unquoted)
+			fv.SetString(tok.unquoted)
 			return nil
 		}
-	case *reflect.StructValue:
+	case reflect.Struct:
 		var terminator string
 		switch tok.value {
 		case "{":
@@ -441,16 +433,16 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			return p.error("expected '{' or '<', found %q", tok.value)
 		}
 		return p.readStruct(fv, terminator)
-	case *reflect.UintValue:
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
 		switch fv.Type().Bits() {
 		case 32:
 			if x, err := strconv.Atoui64(tok.value); err == nil && x <= maxUint32 {
-				fv.Set(uint64(x))
+				fv.SetUint(uint64(x))
 				return nil
 			}
 		case 64:
 			if x, err := strconv.Atoui64(tok.value); err == nil {
-				fv.Set(x)
+				fv.SetUint(x)
 				return nil
 			}
 		}
@@ -462,12 +454,13 @@ var notPtrStruct os.Error = &ParseError{"destination is not a pointer to a struc
 
 // UnmarshalText reads a protobuffer in Text format.
 func UnmarshalText(s string, pb interface{}) os.Error {
-	pv, ok := reflect.NewValue(pb).(*reflect.PtrValue)
+	pv := reflect.NewValue(pb)
+	ok := pv.Kind() == reflect.Ptr
 	if !ok {
 		return notPtrStruct
 	}
-	sv, ok := pv.Elem().(*reflect.StructValue)
-	if !ok {
+	sv := pv.Elem()
+	if sv.Kind() != reflect.Struct {
 		return notPtrStruct
 	}
 	if pe := newTextParser(s).readStruct(sv, ""); pe != nil {

@@ -115,13 +115,13 @@ func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, os
 	_, n := DecodeVarint(b)
 	o := NewBuffer(b[n:])
 
-	t := reflect.Typeof(extension.ExtensionType).(*reflect.PtrType)
+	t := reflect.Typeof(extension.ExtensionType)
 	props := &Properties{}
 	props.Init(t, "irrelevant_name", extension.Tag, 0)
 
 	base := unsafe.New(t)
 	var sbase uintptr
-	if _, ok := t.Elem().(*reflect.StructType); ok {
+	if t.Elem().Kind() == reflect.Struct {
 		// props.dec will be dec_struct_message, which does not refer to sbase.
 		*(*unsafe.Pointer)(base) = unsafe.New(t.Elem())
 	} else {
