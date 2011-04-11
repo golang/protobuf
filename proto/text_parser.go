@@ -386,31 +386,28 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			fv.SetFloat(f)
 			return nil
 		}
-	case reflect.Int32, reflect.Int64:
-		switch fv.Type().Bits() {
-		case 32:
-			if x, err := strconv.Atoi64(tok.value); err == nil && minInt32 <= x && x <= maxInt32 {
-				fv.SetInt(x)
-				return nil
-			}
-			if len(props.Enum) == 0 {
-				break
-			}
-			m, ok := enumValueMaps[props.Enum]
-			if !ok {
-				break
-			}
-			x, ok := m[tok.value]
-			if !ok {
-				break
-			}
-			fv.SetInt(int64(x))
+	case reflect.Int32:
+		if x, err := strconv.Atoi64(tok.value); err == nil && minInt32 <= x && x <= maxInt32 {
+			fv.SetInt(x)
 			return nil
-		case 64:
-			if x, err := strconv.Atoi64(tok.value); err == nil {
-				fv.SetInt(x)
-				return nil
-			}
+		}
+		if len(props.Enum) == 0 {
+			break
+		}
+		m, ok := enumValueMaps[props.Enum]
+		if !ok {
+			break
+		}
+		x, ok := m[tok.value]
+		if !ok {
+			break
+		}
+		fv.SetInt(int64(x))
+		return nil
+	case reflect.Int64:
+		if x, err := strconv.Atoi64(tok.value); err == nil {
+			fv.SetInt(x)
+			return nil
 		}
 	case reflect.Ptr:
 		// A basic field (indirected through pointer), or a repeated message/group
@@ -433,18 +430,15 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			return p.error("expected '{' or '<', found %q", tok.value)
 		}
 		return p.readStruct(fv, terminator)
-	case reflect.Uint32, reflect.Uint64:
-		switch fv.Type().Bits() {
-		case 32:
-			if x, err := strconv.Atoui64(tok.value); err == nil && x <= maxUint32 {
-				fv.SetUint(uint64(x))
-				return nil
-			}
-		case 64:
-			if x, err := strconv.Atoui64(tok.value); err == nil {
-				fv.SetUint(x)
-				return nil
-			}
+	case reflect.Uint32:
+		if x, err := strconv.Atoui64(tok.value); err == nil && x <= maxUint32 {
+			fv.SetUint(uint64(x))
+			return nil
+		}
+	case reflect.Uint64:
+		if x, err := strconv.Atoui64(tok.value); err == nil {
+			fv.SetUint(x)
+			return nil
 		}
 	}
 	return p.error("invalid %v: %v", v.Type(), tok.value)
