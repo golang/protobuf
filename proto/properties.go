@@ -39,7 +39,6 @@ import (
 	"fmt"
 	"os"
 	"reflect"
-	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -105,7 +104,7 @@ type Properties struct {
 	offset  uintptr
 	tagcode []byte // encoding of EncodeVarint((Tag<<3)|WireType)
 	tagbuf  [8]byte
-	stype   *reflect.PtrType
+	stype   reflect.Type
 
 	dec     decoder
 	valDec  valueDecoder // set for bool and numeric types only
@@ -231,23 +230,23 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	p.enc = nil
 	p.dec = nil
 
-	switch t1 := typ.(type) {
+	switch t1 := typ; t1.Kind() {
 	default:
 		fmt.Fprintf(os.Stderr, "proto: no coders for %T\n", t1)
 		break
 
-	case *reflect.PtrType:
-		switch t2 := t1.Elem().(type) {
+	case reflect.Ptr:
+		switch t2 := t1.Elem(); t2.Kind() {
 		default:
 		BadType:
 			fmt.Fprintf(os.Stderr, "proto: no encoder function for %T -> %T\n", t1, t2)
 			break
-		case *reflect.BoolType:
+		case reflect.Bool:
 			p.enc = (*Buffer).enc_bool
 			p.dec = (*Buffer).dec_bool
 			p.alignof = unsafe.Alignof(vbool)
 			p.sizeof = unsafe.Sizeof(vbool)
-		case *reflect.IntType, *reflect.UintType:
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
 			switch t2.Bits() {
 			case 32:
 				p.enc = (*Buffer).enc_int32
@@ -262,7 +261,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 			default:
 				goto BadType
 			}
-		case *reflect.FloatType:
+		case reflect.Float32, reflect.Float64:
 			switch t2.Bits() {
 			case 32:
 				p.enc = (*Buffer).enc_int32 // can just treat them as bits
@@ -277,12 +276,12 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 			default:
 				goto BadType
 			}
-		case *reflect.StringType:
+		case reflect.String:
 			p.enc = (*Buffer).enc_string
 			p.dec = (*Buffer).dec_string
 			p.alignof = unsafe.Alignof(vstring)
 			p.sizeof = unsafe.Sizeof(vstring) + startSize*unsafe.Sizeof(vbyte)
-		case *reflect.StructType:
+		case reflect.Struct:
 			p.stype = t1
 			if p.Wire == "bytes" {
 				p.enc = (*Buffer).enc_struct_message
@@ -293,13 +292,13 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 			}
 		}
 
-	case *reflect.SliceType:
-		switch t2 := t1.Elem().(type) {
+	case reflect.Slice:
+		switch t2 := t1.Elem(); t2.Kind() {
 		default:
 		BadSliceType:
 			fmt.Fprintf(os.Stderr, "proto: no slice oenc for %T = []%T\n", t1, t2)
 			break
-		case *reflect.BoolType:
+		case reflect.Bool:
 			if p.Packed {
 				p.enc = (*Buffer).enc_slice_packed_bool
 			} else {
@@ -309,7 +308,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 			p.packedDec = (*Buffer).dec_slice_packed_bool
 			p.alignof = unsafe.Alignof(vbool)
 			p.sizeof = startSize * unsafe.Sizeof(vbool)
-		case *reflect.IntType, *reflect.UintType:
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
 			switch t2.Bits() {
 			case 32:
 				if p.Packed {
@@ -341,7 +340,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 			default:
 				goto BadSliceType
 			}
-		case *reflect.FloatType:
+		case reflect.Float32, reflect.Float64:
 			switch t2.Bits() {
 			case 32:
 				// can just treat them as bits
@@ -368,17 +367,17 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 			default:
 				goto BadSliceType
 			}
-		case *reflect.StringType:
+		case reflect.String:
 			p.enc = (*Buffer).enc_slice_string
 			p.dec = (*Buffer).dec_slice_string
 			p.alignof = unsafe.Alignof(vstring)
 			p.sizeof = startSize * unsafe.Sizeof(vstring)
-		case *reflect.PtrType:
-			switch t3 := t2.Elem().(type) {
+		case reflect.Ptr:
+			switch t3 := t2.Elem(); t3.Kind() {
 			default:
 				fmt.Fprintf(os.Stderr, "proto: no ptr oenc for %T -> %T -> %T\n", t1, t2, t3)
 				break
-			case *reflect.StructType:
+			case reflect.Struct:
 				p.stype = t2
 				p.enc = (*Buffer).enc_slice_struct_group
 				p.dec = (*Buffer).dec_slice_struct_group
@@ -389,7 +388,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 				p.alignof = unsafe.Alignof(vslice)
 				p.sizeof = startSize * unsafe.Sizeof(vslice)
 			}
-		case *reflect.SliceType:
+		case reflect.Slice:
 			switch t2.Elem().Kind() {
 			default:
 				fmt.Fprintf(os.Stderr, "proto: no slice elem oenc for %T -> %T -> %T\n", t1, t2, t2.Elem())
@@ -435,11 +434,11 @@ func (p *Properties) Init(typ reflect.Type, name, tag string, offset uintptr) {
 
 var (
 	mutex         sync.Mutex
-	propertiesMap = make(map[*reflect.StructType]*StructProperties)
+	propertiesMap = make(map[reflect.Type]*StructProperties)
 )
 
 // GetProperties returns the list of properties for the type represented by t.
-func GetProperties(t *reflect.StructType) *StructProperties {
+func GetProperties(t reflect.Type) *StructProperties {
 	mutex.Lock()
 	if prop, ok := propertiesMap[t]; ok {
 		mutex.Unlock()
@@ -514,7 +513,7 @@ func align(o uintptr, s int) uintptr {
 
 // Return the field index of the named field.
 // Returns nil if there is no such field.
-func fieldIndex(t *reflect.StructType, name string) []int {
+func fieldIndex(t reflect.Type, name string) []int {
 	if field, ok := t.FieldByName(name); ok {
 		return field.Index
 	}
@@ -522,7 +521,7 @@ func fieldIndex(t *reflect.StructType, name string) []int {
 }
 
 // Return the Properties object for the x[0]'th field of the structure.
-func propByIndex(t *reflect.StructType, x []int) *Properties {
+func propByIndex(t reflect.Type, x []int) *Properties {
 	if len(x) != 1 {
 		fmt.Fprintf(os.Stderr, "proto: field index dimension %d (not 1) for type %s\n", len(x), t)
 		return nil
@@ -533,7 +532,7 @@ func propByIndex(t *reflect.StructType, x []int) *Properties {
 
 // Get the address and type of a pointer to the structure from an interface.
 // unsafe.Reflect can do this, but does multiple mallocs.
-func getbase(pb interface{}) (t *reflect.PtrType, b uintptr, err os.Error) {
+func getbase(pb interface{}) (t reflect.Type, b uintptr, err os.Error) {
 	// get pointer
 	x := *(*[2]uintptr)(unsafe.Pointer(&pb))
 	b = x[1]
@@ -543,8 +542,7 @@ func getbase(pb interface{}) (t *reflect.PtrType, b uintptr, err os.Error) {
 	}
 
 	// get the reflect type of the struct.
-	t1 := unsafe.Typeof(pb).(*runtime.PtrType)
-	t = (*reflect.PtrType)(unsafe.Pointer(t1))
+	t = reflect.Typeof(pb)
 	return
 }
 

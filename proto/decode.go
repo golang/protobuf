@@ -211,7 +211,7 @@ func (p *Buffer) DecodeStringBytes() (s string, err os.Error) {
 // Skip the next item in the buffer. Its wire type is decoded and presented as an argument.
 // If the protocol buffer has extensions, and the field matches, add it as an extension.
 // Otherwise, if the XXX_unrecognized field exists, append the skipped data there.
-func (o *Buffer) skipAndSave(t *reflect.StructType, tag, wire int, base uintptr) os.Error {
+func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base uintptr) os.Error {
 
 	oi := o.index
 
@@ -247,7 +247,7 @@ func (o *Buffer) skipAndSave(t *reflect.StructType, tag, wire int, base uintptr)
 }
 
 // Skip the next item in the buffer. Its wire type is decoded and presented as an argument.
-func (o *Buffer) skip(t *reflect.StructType, tag, wire int) os.Error {
+func (o *Buffer) skip(t reflect.Type, tag, wire int) os.Error {
 
 	var u uint64
 	var err os.Error
@@ -329,8 +329,8 @@ func (p *Buffer) Unmarshal(pb interface{}) os.Error {
 }
 
 // unmarshalType does the work of unmarshaling a structure.
-func (o *Buffer) unmarshalType(t *reflect.PtrType, is_group bool, base uintptr) os.Error {
-	st := t.Elem().(*reflect.StructType)
+func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) os.Error {
+	st := t.Elem()
 	prop := GetProperties(st)
 	required, reqFields := prop.reqCount, uint64(0)
 	sbase := getsbase(prop) // scratch area for data items
@@ -696,7 +696,7 @@ func (o *Buffer) dec_slice_slice_byte(p *Properties, base uintptr, sbase uintptr
 // Decode a group.
 func (o *Buffer) dec_struct_group(p *Properties, base uintptr, sbase uintptr) os.Error {
 	ptr := (**struct{})(unsafe.Pointer(base + p.offset))
-	typ := p.stype.Elem().(*reflect.StructType)
+	typ := p.stype.Elem()
 	structv := unsafe.New(typ)
 	bas := uintptr(structv)
 	*ptr = (*struct{})(structv)
@@ -714,7 +714,7 @@ func (o *Buffer) dec_struct_message(p *Properties, base uintptr, sbase uintptr) 
 	}
 
 	ptr := (**struct{})(unsafe.Pointer(base + p.offset))
-	typ := p.stype.Elem().(*reflect.StructType)
+	typ := p.stype.Elem()
 	structv := unsafe.New(typ)
 	bas := uintptr(structv)
 	*ptr = (*struct{})(structv)
@@ -757,7 +757,7 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr, sb
 		y = *x
 	}
 
-	typ := p.stype.Elem().(*reflect.StructType)
+	typ := p.stype.Elem()
 	structv := unsafe.New(typ)
 	bas := uintptr(structv)
 	y = append(y, (*struct{})(structv))

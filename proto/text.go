@@ -90,8 +90,8 @@ func (w *textWriter) unindent() {
 	}
 }
 
-func writeStruct(w *textWriter, sv *reflect.StructValue) {
-	st := sv.Type().(*reflect.StructType)
+func writeStruct(w *textWriter, sv reflect.Value) {
+	st := sv.Type()
 	sprops := GetProperties(st)
 	for i := 0; i < sv.NumField(); i++ {
 		if strings.HasPrefix(st.Field(i).Name, "XXX_") {
@@ -99,26 +99,26 @@ func writeStruct(w *textWriter, sv *reflect.StructValue) {
 		}
 		props := sprops.Prop[i]
 		fv := sv.Field(i)
-		if pv, ok := fv.(*reflect.PtrValue); ok && pv.IsNil() {
+		if pv := fv; pv.Kind() == reflect.Ptr && pv.IsNil() {
 			// Field not filled in. This could be an optional field or
 			// a required field that wasn't filled in. Either way, there
 			// isn't anything we can show for it.
 			continue
 		}
-		if av, ok := fv.(*reflect.SliceValue); ok && av.IsNil() {
+		if av := fv; av.Kind() == reflect.Slice && av.IsNil() {
 			// Repeated field that is empty, or a bytes field that is unused.
 			continue
 		}
 
 		if props.Repeated {
-			if av, ok := fv.(*reflect.SliceValue); ok {
+			if av := fv; av.Kind() == reflect.Slice {
 				// Repeated field.
 				for j := 0; j < av.Len(); j++ {
 					fmt.Fprintf(w, "%v:", props.OrigName)
 					if !w.compact {
 						w.Write([]byte{' '})
 					}
-					writeAny(w, av.Elem(j))
+					writeAny(w, av.Index(j))
 					fmt.Fprint(w, "\n")
 				}
 				continue
@@ -145,7 +145,7 @@ func tryWriteEnum(w *textWriter, enum string, v reflect.Value) bool {
 	if !ok {
 		return false
 	}
-	str, ok := m[int32(v.(*reflect.IntValue).Get())]
+	str, ok := m[int32(v.Int())]
 	if !ok {
 		return false
 	}
@@ -158,20 +158,20 @@ func writeAny(w *textWriter, v reflect.Value) {
 
 	// We don't attempt to serialise every possible value type; only those
 	// that can occur in protocol buffers, plus a few extra that were easy.
-	switch val := v.(type) {
-	case *reflect.SliceValue:
+	switch val := v; val.Kind() {
+	case reflect.Slice:
 		// Should only be a []byte; repeated fields are handled in writeStruct.
 		// TODO: Handle other cases more cleanly.
 		bytes := make([]byte, val.Len())
 		for i := 0; i < val.Len(); i++ {
-			bytes[i] = byte(val.Elem(i).(*reflect.UintValue).Get())
+			bytes[i] = byte(val.Index(i).Uint())
 		}
 		// TODO: Should be strconv.QuoteC, which doesn't exist yet
 		fmt.Fprint(w, strconv.Quote(string(bytes)))
-	case *reflect.StringValue:
+	case reflect.String:
 		// TODO: Should be strconv.QuoteC, which doesn't exist yet
-		fmt.Fprint(w, strconv.Quote(val.Get()))
-	case *reflect.StructValue:
+		fmt.Fprint(w, strconv.Quote(val.String()))
+	case reflect.Struct:
 		// Required/optional group/message.
 		// TODO: groups use { } instead of < >, and no colon.
 		if !w.compact {
@@ -202,7 +202,7 @@ func marshalText(w io.Writer, pb interface{}, compact bool) {
 	// We should normally be passed a struct, or a pointer to a struct,
 	// and we don't want the outer < and > in that case.
 	v = reflect.Indirect(v)
-	if sv, ok := v.(*reflect.StructValue); ok {
+	if sv := v; sv.Kind() == reflect.Struct {
 		writeStruct(aw, sv)
 	} else {
 		writeAny(aw, v)

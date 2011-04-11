@@ -226,7 +226,7 @@ func (p *Buffer) Marshal(pb interface{}) os.Error {
 
 	t, b, err := getbase(pb)
 	if err == nil {
-		err = p.enc_struct(t.Elem().(*reflect.StructType), b)
+		err = p.enc_struct(t.Elem(), b)
 	}
 
 	mstat = runtime.MemStats.Mallocs - mstat
@@ -289,12 +289,21 @@ func (o *Buffer) enc_string(p *Properties, base uintptr) os.Error {
 	return nil
 }
 
+// All protocol buffer fields are nillable, but be careful.
+func isNil(v reflect.Value) bool {
+	switch v.Kind() {
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
+		return v.IsNil()
+	}
+	return false
+}
+
 // Encode a message struct.
 func (o *Buffer) enc_struct_message(p *Properties, base uintptr) os.Error {
 	// Can the object marshal itself?
 	iv := unsafe.Unreflect(p.stype, unsafe.Pointer(base+p.offset))
 	if m, ok := iv.(Marshaler); ok {
-		if n, ok := reflect.NewValue(iv).(nillable); ok && n.IsNil() {
+		if isNil(reflect.NewValue(iv)) {
 			return ErrNil
 		}
 		data, err := m.Marshal()
@@ -316,7 +325,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base uintptr) os.Error {
 	o.buf = o.bufalloc()
 
 	b := uintptr(unsafe.Pointer(v))
-	typ := p.stype.Elem().(*reflect.StructType)
+	typ := p.stype.Elem()
 	err := o.enc_struct(typ, b)
 
 	nbuf := o.buf
@@ -340,7 +349,7 @@ func (o *Buffer) enc_struct_group(p *Properties, base uintptr) os.Error {
 
 	o.EncodeVarint(uint64((p.Tag << 3) | WireStartGroup))
 	b := uintptr(unsafe.Pointer(v))
-	typ := p.stype.Elem().(*reflect.StructType)
+	typ := p.stype.Elem()
 	err := o.enc_struct(typ, b)
 	if err != nil {
 		return err
@@ -494,7 +503,7 @@ func (o *Buffer) enc_slice_string(p *Properties, base uintptr) os.Error {
 func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) os.Error {
 	s := *(*[]*struct{})(unsafe.Pointer(base + p.offset))
 	l := len(s)
-	typ := p.stype.Elem().(*reflect.StructType)
+	typ := p.stype.Elem()
 
 	for i := 0; i < l; i++ {
 		v := s[i]
@@ -505,7 +514,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) os.Error 
 		// Can the object marshal itself?
 		iv := unsafe.Unreflect(p.stype, unsafe.Pointer(&s[i]))
 		if m, ok := iv.(Marshaler); ok {
-			if n, ok := reflect.NewValue(iv).(nillable); ok && n.IsNil() {
+			if reflect.NewValue(iv).IsNil() {
 				return ErrNil
 			}
 			data, err := m.Marshal()
@@ -544,7 +553,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) os.Error 
 func (o *Buffer) enc_slice_struct_group(p *Properties, base uintptr) os.Error {
 	s := *(*[]*struct{})(unsafe.Pointer(base + p.offset))
 	l := len(s)
-	typ := p.stype.Elem().(*reflect.StructType)
+	typ := p.stype.Elem()
 
 	for i := 0; i < l; i++ {
 		v := s[i]
@@ -579,7 +588,7 @@ func (o *Buffer) enc_map(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a struct.
-func (o *Buffer) enc_struct(t *reflect.StructType, base uintptr) os.Error {
+func (o *Buffer) enc_struct(t reflect.Type, base uintptr) os.Error {
 	prop := GetProperties(t)
 	required := prop.reqCount
 	for _, p := range prop.Prop {
