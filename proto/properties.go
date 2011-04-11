@@ -238,7 +238,6 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
 		default:
-		BadType:
 			fmt.Fprintf(os.Stderr, "proto: no encoder function for %T -> %T\n", t1, t2)
 			break
 		case reflect.Bool:
@@ -246,36 +245,26 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 			p.dec = (*Buffer).dec_bool
 			p.alignof = unsafe.Alignof(vbool)
 			p.sizeof = unsafe.Sizeof(vbool)
-		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
-			switch t2.Bits() {
-			case 32:
-				p.enc = (*Buffer).enc_int32
-				p.dec = (*Buffer).dec_int32
-				p.alignof = unsafe.Alignof(vint32)
-				p.sizeof = unsafe.Sizeof(vint32)
-			case 64:
-				p.enc = (*Buffer).enc_int64
-				p.dec = (*Buffer).dec_int64
-				p.alignof = unsafe.Alignof(vint64)
-				p.sizeof = unsafe.Sizeof(vint64)
-			default:
-				goto BadType
-			}
-		case reflect.Float32, reflect.Float64:
-			switch t2.Bits() {
-			case 32:
-				p.enc = (*Buffer).enc_int32 // can just treat them as bits
-				p.dec = (*Buffer).dec_int32
-				p.alignof = unsafe.Alignof(vfloat32)
-				p.sizeof = unsafe.Sizeof(vfloat32)
-			case 64:
-				p.enc = (*Buffer).enc_int64 // can just treat them as bits
-				p.dec = (*Buffer).dec_int64
-				p.alignof = unsafe.Alignof(vfloat64)
-				p.sizeof = unsafe.Sizeof(vfloat64)
-			default:
-				goto BadType
-			}
+		case reflect.Int32, reflect.Uint32:
+			p.enc = (*Buffer).enc_int32
+			p.dec = (*Buffer).dec_int32
+			p.alignof = unsafe.Alignof(vint32)
+			p.sizeof = unsafe.Sizeof(vint32)
+		case reflect.Int64, reflect.Uint64:
+			p.enc = (*Buffer).enc_int64
+			p.dec = (*Buffer).dec_int64
+			p.alignof = unsafe.Alignof(vint64)
+			p.sizeof = unsafe.Sizeof(vint64)
+		case reflect.Float32:
+			p.enc = (*Buffer).enc_int32 // can just treat them as bits
+			p.dec = (*Buffer).dec_int32
+			p.alignof = unsafe.Alignof(vfloat32)
+			p.sizeof = unsafe.Sizeof(vfloat32)
+		case reflect.Float64:
+			p.enc = (*Buffer).enc_int64 // can just treat them as bits
+			p.dec = (*Buffer).dec_int64
+			p.alignof = unsafe.Alignof(vfloat64)
+			p.sizeof = unsafe.Sizeof(vfloat64)
 		case reflect.String:
 			p.enc = (*Buffer).enc_string
 			p.dec = (*Buffer).dec_string
