@@ -386,7 +386,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			fv.SetFloat(f)
 			return nil
 		}
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+	case reflect.Int32, reflect.Int64:
 		switch fv.Type().Bits() {
 		case 32:
 			if x, err := strconv.Atoi64(tok.value); err == nil && minInt32 <= x && x <= maxInt32 {
@@ -433,7 +433,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			return p.error("expected '{' or '<', found %q", tok.value)
 		}
 		return p.readStruct(fv, terminator)
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+	case reflect.Uint32, reflect.Uint64:
 		switch fv.Type().Bits() {
 		case 32:
 			if x, err := strconv.Atoui64(tok.value); err == nil && x <= maxUint32 {

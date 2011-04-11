@@ -99,13 +99,13 @@ func writeStruct(w *textWriter, sv reflect.Value) {
 		}
 		props := sprops.Prop[i]
 		fv := sv.Field(i)
-		if pv := fv; pv.Kind() == reflect.Ptr && pv.IsNil() {
+		if fv.Kind() == reflect.Ptr && fv.IsNil() {
 			// Field not filled in. This could be an optional field or
 			// a required field that wasn't filled in. Either way, there
 			// isn't anything we can show for it.
 			continue
 		}
-		if av := fv; av.Kind() == reflect.Slice && av.IsNil() {
+		if fv.Kind() == reflect.Slice && fv.IsNil() {
 			// Repeated field that is empty, or a bytes field that is unused.
 			continue
 		}

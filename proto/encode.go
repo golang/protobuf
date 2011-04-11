@@ -292,7 +292,7 @@ func (o *Buffer) enc_string(p *Properties, base uintptr) os.Error {
 // All protocol buffer fields are nillable, but be careful.
 func isNil(v reflect.Value) bool {
 	switch v.Kind() {
-	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
+	case reflect.Map, reflect.Ptr, reflect.Slice:
 		return v.IsNil()
 	}
 	return false
