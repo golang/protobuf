@@ -35,29 +35,29 @@ include $(GOROOT)/src/Make.inc
 all:	install
 
 install:
-	cd proto && make install
-	cd compiler/descriptor && make install
-	cd compiler/plugin && make install
-	cd compiler && make install
+	cd proto && gomake install
+	cd compiler/descriptor && gomake install
+	cd compiler/plugin && gomake install
+	cd compiler && gomake install
 
 test:
-	cd proto && make test
-	cd compiler && make test
+	cd proto && gomake test
+	cd compiler && gomake test
 
 clean:
-	cd proto && make clean
-	cd compiler && make clean
-	cd compiler/descriptor && make clean
-	cd compiler/plugin && make clean
-	cd compiler/testdata && make clean
-	cd compiler/descriptor && make clean
-	cd compiler/plugin && make clean
+	cd proto && gomake clean
+	cd compiler && gomake clean
+	cd compiler/descriptor && gomake clean
+	cd compiler/plugin && gomake clean
+	cd compiler/testdata && gomake clean
+	cd compiler/descriptor && gomake clean
+	cd compiler/plugin && gomake clean
 
 nuke:
-	cd proto && make nuke
-	cd compiler/descriptor && make nuke
-	cd compiler/plugin && make nuke
-	cd compiler && make nuke
-	cd compiler/testdata && make nuke
-	cd compiler/descriptor && make nuke
-	cd compiler/plugin && make nuke
+	cd proto && gomake nuke
+	cd compiler/descriptor && gomake nuke
+	cd compiler/plugin && gomake nuke
+	cd compiler && gomake nuke
+	cd compiler/testdata && gomake nuke
+	cd compiler/descriptor && gomake nuke
+	cd compiler/plugin && gomake nuke
