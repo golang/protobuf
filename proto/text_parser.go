@@ -88,7 +88,7 @@ func newTextParser(s string) *textParser {
 	return p
 }
 
-func (p *textParser) error(format string, a ...interface{}) *ParseError {
+func (p *textParser) errorf(format string, a ...interface{}) *ParseError {
 	pe := &ParseError{fmt.Sprintf(format, a...), p.cur.line, p.cur.offset}
 	p.cur.err = pe
 	p.done = true
@@ -168,13 +168,13 @@ func (p *textParser) advance() {
 			i++
 		}
 		if i >= len(p.s) || p.s[i] != '"' {
-			p.error("unmatched quote")
+			p.errorf("unmatched quote")
 			return
 		}
 		// TODO: Should be UnquoteC.
 		unq, err := strconv.Unquote(p.s[0 : i+1])
 		if err != nil {
-			p.error("invalid quoted string %v", p.s[0:i+1])
+			p.errorf("invalid quoted string %v", p.s[0:i+1])
 			return
 		}
 		p.cur.value, p.s = p.s[0:i+1], p.s[i+1:len(p.s)]
@@ -185,7 +185,7 @@ func (p *textParser) advance() {
 			i++
 		}
 		if i == 0 {
-			p.error("unexpected byte %#x", p.s[0])
+			p.errorf("unexpected byte %#x", p.s[0])
 			return
 		}
 		p.cur.value, p.s = p.s[0:i], p.s[i:len(p.s)]
@@ -239,10 +239,10 @@ func (p *textParser) missingRequiredFieldError(sv reflect.Value) *ParseError {
 
 		props := sprops.Prop[i]
 		if props.Required {
-			return p.error("message %v missing required field %q", st, props.OrigName)
+			return p.errorf("message %v missing required field %q", st, props.OrigName)
 		}
 	}
-	return p.error("message %v missing required field", st) // should not happen
+	return p.errorf("message %v missing required field", st) // should not happen
 }
 
 // Returns the index in the struct for the named field, as well as the parsed tag properties.
@@ -271,12 +271,12 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError
 
 		fi, props, ok := structFieldByName(st, tok.value)
 		if !ok {
-			return p.error("unknown field name %q in %v", tok.value, st)
+			return p.errorf("unknown field name %q in %v", tok.value, st)
 		}
 
 		// Check that it's not already set if it's not a repeated field.
 		if !props.Repeated && !isNil(sv.Field(fi)) {
-			return p.error("non-repeated field %q was repeated", tok.value)
+			return p.errorf("non-repeated field %q was repeated", tok.value)
 		}
 
 		tok = p.next()
@@ -308,7 +308,7 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError
 				needColon = false
 			}
 			if needColon {
-				return p.error("expected ':', found %q", tok.value)
+				return p.errorf("expected ':', found %q", tok.value)
 			}
 			p.back()
 		}
@@ -341,7 +341,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 		return tok.err
 	}
 	if tok.value == "" {
-		return p.error("unexpected EOF")
+		return p.errorf("unexpected EOF")
 	}
 
 	switch fv := v; fv.Kind() {
@@ -353,7 +353,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 				// Deliberately written out here, as the error after
 				// this switch statement would write "invalid []byte: ...",
 				// which is not as user-friendly.
-				return p.error("invalid string: %v", tok.value)
+				return p.errorf("invalid string: %v", tok.value)
 			}
 			bytes := []byte(tok.unquoted)
 			fv.Set(reflect.NewValue(bytes))
@@ -427,7 +427,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 		case "<":
 			terminator = ">"
 		default:
-			return p.error("expected '{' or '<', found %q", tok.value)
+			return p.errorf("expected '{' or '<', found %q", tok.value)
 		}
 		return p.readStruct(fv, terminator)
 	case reflect.Uint32:
@@ -441,7 +441,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			return nil
 		}
 	}
-	return p.error("invalid %v: %v", v.Type(), tok.value)
+	return p.errorf("invalid %v: %v", v.Type(), tok.value)
 }
 
 var notPtrStruct os.Error = &ParseError{"destination is not a pointer to a struct", 0, 0}
