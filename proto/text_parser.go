@@ -294,14 +294,14 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError
 				// those three become *T, *string and []T respectively, so we can check for
 				// this field being a pointer to a non-string.
 				typ := st.Field(fi).Type
-				if pt := typ; pt.Kind() == reflect.Ptr {
+				if typ.Kind() == reflect.Ptr {
 					// *T or *string
-					if pt.Elem().Kind() == reflect.String {
+					if typ.Elem().Kind() == reflect.String {
 						break
 					}
-				} else if st := typ; st.Kind() == reflect.Slice {
+				} else if typ.Kind() == reflect.Slice {
 					// []T or []*T
-					if st.Elem().Kind() != reflect.Ptr {
+					if typ.Elem().Kind() != reflect.Ptr {
 						break
 					}
 				}
@@ -448,16 +448,11 @@ var notPtrStruct os.Error = &ParseError{"destination is not a pointer to a struc
 
 // UnmarshalText reads a protobuffer in Text format.
 func UnmarshalText(s string, pb interface{}) os.Error {
-	pv := reflect.NewValue(pb)
-	ok := pv.Kind() == reflect.Ptr
-	if !ok {
+	v := reflect.NewValue(pb)
+	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct {
 		return notPtrStruct
 	}
-	sv := pv.Elem()
-	if sv.Kind() != reflect.Struct {
-		return notPtrStruct
-	}
-	if pe := newTextParser(s).readStruct(sv, ""); pe != nil {
+	if pe := newTextParser(s).readStruct(v.Elem(), ""); pe != nil {
 		return pe
 	}
 	return nil

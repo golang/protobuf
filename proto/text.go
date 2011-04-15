@@ -202,8 +202,8 @@ func marshalText(w io.Writer, pb interface{}, compact bool) {
 	// We should normally be passed a struct, or a pointer to a struct,
 	// and we don't want the outer < and > in that case.
 	v = reflect.Indirect(v)
-	if sv := v; sv.Kind() == reflect.Struct {
-		writeStruct(aw, sv)
+	if v.Kind() == reflect.Struct {
+		writeStruct(aw, v)
 	} else {
 		writeAny(aw, v)
 	}
