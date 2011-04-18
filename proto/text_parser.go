@@ -412,7 +412,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 	case reflect.Ptr:
 		// A basic field (indirected through pointer), or a repeated message/group
 		p.back()
-		fv.Set(reflect.Zero(fv.Type().Elem()).Addr())
+		fv.Set(reflect.New(fv.Type().Elem()))
 		return p.readAny(fv.Elem(), props)
 	case reflect.String:
 		if tok.value[0] == '"' {

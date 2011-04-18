@@ -169,9 +169,24 @@ func SetExtension(pb extendableProto, extension *ExtensionDesc, value interface{
 
 	p := NewBuffer(nil)
 	v := reflect.NewValue(value)
-	if err := props.enc(p, props, v.UnsafeAddr()); err != nil {
+	if err := props.enc(p, props, unsafeAddr(v)); err != nil {
 		return err
 	}
 	pb.ExtensionMap()[extension.Field] = p.buf
 	return nil
+}
+
+// SetExtension assumes it can call UnsafeAddr on any Value
+// in order to get a pointer it can copy data from.
+// Values that have just been created and do not point
+// into existing structs or slices cannot be addressed,
+// so simulate it by returning a pointer to a copy.
+// Each call allocates once.
+func unsafeAddr(v reflect.Value) uintptr {
+	if v.CanAddr() {
+		return v.UnsafeAddr()
+	}
+	x := reflect.New(v.Type()).Elem()
+	x.Set(v)
+	return x.UnsafeAddr()
 }
