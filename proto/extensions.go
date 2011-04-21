@@ -160,7 +160,8 @@ func SetExtension(pb extendableProto, extension *ExtensionDesc, value interface{
 	if err := checkExtensionTypes(pb, extension); err != nil {
 		return err
 	}
-	if reflect.Typeof(extension.ExtensionType) != reflect.Typeof(value) {
+	typ := reflect.Typeof(extension.ExtensionType)
+	if typ != reflect.Typeof(value) {
 		return os.NewError("bad extension value type")
 	}
 
@@ -168,25 +169,13 @@ func SetExtension(pb extendableProto, extension *ExtensionDesc, value interface{
 	props.Init(reflect.Typeof(extension.ExtensionType), "unknown_name", extension.Tag, 0)
 
 	p := NewBuffer(nil)
-	v := reflect.NewValue(value)
-	if err := props.enc(p, props, unsafeAddr(v)); err != nil {
+	// The encoder must be passed a pointer to value.
+	// Allocate a copy of value so that we can use its address.
+	x := reflect.New(typ)
+	x.Elem().Set(reflect.NewValue(value))
+	if err := props.enc(p, props, x.Pointer()); err != nil {
 		return err
 	}
 	pb.ExtensionMap()[extension.Field] = p.buf
 	return nil
-}
-
-// SetExtension assumes it can call UnsafeAddr on any Value
-// in order to get a pointer it can copy data from.
-// Values that have just been created and do not point
-// into existing structs or slices cannot be addressed,
-// so simulate it by returning a pointer to a copy.
-// Each call allocates once.
-func unsafeAddr(v reflect.Value) uintptr {
-	if v.CanAddr() {
-		return v.UnsafeAddr()
-	}
-	x := reflect.New(v.Type()).Elem()
-	x.Set(v)
-	return x.UnsafeAddr()
 }
