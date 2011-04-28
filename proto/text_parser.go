@@ -356,7 +356,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 				return p.errorf("invalid string: %v", tok.value)
 			}
 			bytes := []byte(tok.unquoted)
-			fv.Set(reflect.NewValue(bytes))
+			fv.Set(reflect.ValueOf(bytes))
 			return nil
 		}
 		// Repeated field. May already exist.
@@ -448,7 +448,7 @@ var notPtrStruct os.Error = &ParseError{"destination is not a pointer to a struc
 
 // UnmarshalText reads a protobuffer in Text format.
 func UnmarshalText(s string, pb interface{}) os.Error {
-	v := reflect.NewValue(pb)
+	v := reflect.ValueOf(pb)
 	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct {
 		return notPtrStruct
 	}

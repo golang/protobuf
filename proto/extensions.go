@@ -76,7 +76,7 @@ func isExtensionField(pb extendableProto, field int32) bool {
 // checkExtensionTypes checks that the given extension is valid for pb.
 func checkExtensionTypes(pb extendableProto, extension *ExtensionDesc) os.Error {
 	// Check the extended type.
-	if a, b := reflect.Typeof(pb), reflect.Typeof(extension.ExtendedType); a != b {
+	if a, b := reflect.TypeOf(pb), reflect.TypeOf(extension.ExtendedType); a != b {
 		return os.NewError("bad extended type; " + b.String() + " does not extend " + a.String())
 	}
 	// Check the range.
@@ -115,7 +115,7 @@ func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, os
 	_, n := DecodeVarint(b)
 	o := NewBuffer(b[n:])
 
-	t := reflect.Typeof(extension.ExtensionType)
+	t := reflect.TypeOf(extension.ExtensionType)
 	props := &Properties{}
 	props.Init(t, "irrelevant_name", extension.Tag, 0)
 
@@ -160,19 +160,19 @@ func SetExtension(pb extendableProto, extension *ExtensionDesc, value interface{
 	if err := checkExtensionTypes(pb, extension); err != nil {
 		return err
 	}
-	typ := reflect.Typeof(extension.ExtensionType)
-	if typ != reflect.Typeof(value) {
+	typ := reflect.TypeOf(extension.ExtensionType)
+	if typ != reflect.TypeOf(value) {
 		return os.NewError("bad extension value type")
 	}
 
 	props := new(Properties)
-	props.Init(reflect.Typeof(extension.ExtensionType), "unknown_name", extension.Tag, 0)
+	props.Init(reflect.TypeOf(extension.ExtensionType), "unknown_name", extension.Tag, 0)
 
 	p := NewBuffer(nil)
 	// The encoder must be passed a pointer to value.
 	// Allocate a copy of value so that we can use its address.
 	x := reflect.New(typ)
-	x.Elem().Set(reflect.NewValue(value))
+	x.Elem().Set(reflect.ValueOf(value))
 	if err := props.enc(p, props, x.Pointer()); err != nil {
 		return err
 	}

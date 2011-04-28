@@ -531,7 +531,7 @@ func getbase(pb interface{}) (t reflect.Type, b uintptr, err os.Error) {
 	}
 
 	// get the reflect type of the struct.
-	t = reflect.Typeof(pb)
+	t = reflect.TypeOf(pb)
 	return
 }
 
