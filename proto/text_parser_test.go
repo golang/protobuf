@@ -46,7 +46,7 @@ type UnmarshalTextTest struct {
 
 var unMarshalTextTests = []UnmarshalTextTest{
 	// Basic
-	UnmarshalTextTest{
+	{
 		in: " count:42\n  name:\"Dave\" ",
 		out: &MyMessage{
 			Count: Int32(42),
@@ -55,7 +55,7 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	},
 
 	// Empty quoted string
-	UnmarshalTextTest{
+	{
 		in: `count:42 name:""`,
 		out: &MyMessage{
 			Count: Int32(42),
@@ -64,7 +64,7 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	},
 
 	// Quoted string concatenation
-	UnmarshalTextTest{
+	{
 		in: `count:42 name: "My name is "` + "\n" + `"elsewhere"`,
 		out: &MyMessage{
 			Count: Int32(42),
@@ -73,49 +73,49 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	},
 
 	// Bad quoted string
-	UnmarshalTextTest{
+	{
 		in:    `inner: < host: "\0" >` + "\n",
 		error: `line 1.15: invalid quoted string "\0"`,
 	},
 
 	// Number too large for int64
-	UnmarshalTextTest{
+	{
 		in:    "count: 123456789012345678901",
 		error: "line 1.7: invalid int32: 123456789012345678901",
 	},
 
 	// Number too large for int32
-	UnmarshalTextTest{
+	{
 		in:    "count: 1234567890123",
 		error: "line 1.7: invalid int32: 1234567890123",
 	},
 
 	// Number too large for float32
-	UnmarshalTextTest{
+	{
 		in:    "others:< weight: 12345678901234567890123456789012345678901234567890 >",
 		error: "line 1.17: invalid float32: 12345678901234567890123456789012345678901234567890",
 	},
 
 	// Number posing as a quoted string
-	UnmarshalTextTest{
+	{
 		in:    `inner: < host: 12 >` + "\n",
 		error: `line 1.15: invalid string: 12`,
 	},
 
 	// Quoted string posing as int32
-	UnmarshalTextTest{
+	{
 		in:    `count: "12"`,
 		error: `line 1.7: invalid int32: "12"`,
 	},
 
 	// Quoted string posing a float32
-	UnmarshalTextTest{
+	{
 		in:    `others:< weight: "17.4" >`,
 		error: `line 1.17: invalid float32: "17.4"`,
 	},
 
 	// Enum
-	UnmarshalTextTest{
+	{
 		in: `count:42 bikeshed: BLUE`,
 		out: &MyMessage{
 			Count:    Int32(42),
@@ -124,7 +124,7 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	},
 
 	// Repeated field
-	UnmarshalTextTest{
+	{
 		in: `count:42 pet: "horsey" pet:"bunny"`,
 		out: &MyMessage{
 			Count: Int32(42),
@@ -133,7 +133,7 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	},
 
 	// Repeated message with/without colon and <>/{}
-	UnmarshalTextTest{
+	{
 		in: `count:42 others:{} others{} others:<> others:{}`,
 		out: &MyMessage{
 			Count: Int32(42),
@@ -147,7 +147,7 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	},
 
 	// Missing colon for inner message
-	UnmarshalTextTest{
+	{
 		in: `count:42 inner < host: "cauchy.syd" >`,
 		out: &MyMessage{
 			Count: Int32(42),
@@ -158,31 +158,42 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	},
 
 	// Missing colon for string field
-	UnmarshalTextTest{
+	{
 		in:    `name "Dave"`,
 		error: `line 1.5: expected ':', found "\"Dave\""`,
 	},
 
 	// Missing colon for int32 field
-	UnmarshalTextTest{
+	{
 		in:    `count 42`,
 		error: `line 1.6: expected ':', found "42"`,
 	},
 
 	// Missing required field
-	UnmarshalTextTest{
+	{
 		in:    ``,
 		error: `line 1.0: message test_proto.MyMessage missing required field "count"`,
 	},
 
 	// Repeated non-repeated field
-	UnmarshalTextTest{
+	{
 		in:    `name: "Rob" name: "Russ"`,
 		error: `line 1.12: non-repeated field "name" was repeated`,
 	},
 
+	// Group
+	{
+		in: `count: 17 SomeGroup { group_field: 12 }`,
+		out: &MyMessage{
+			Count: Int32(17),
+			Somegroup: &MyMessage_SomeGroup{
+				GroupField: Int32(12),
+			},
+		},
+	},
+
 	// Big all-in-one
-	UnmarshalTextTest{
+	{
 		in: "count:42  # Meaning\n" +
 			`name:"Dave" ` +
 			`quote:"\"I didn't want to go.\"" ` +

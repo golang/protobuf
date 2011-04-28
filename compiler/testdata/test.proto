@@ -58,6 +58,9 @@ message Request {
   optional HatType hat = 4 [default=FEDORA];
   optional imp.ImportedMessage.Owner owner = 6;
   optional float deadline = 7 [default=inf];
+  optional group SomeGroup = 8 {
+    optional int32 group_field = 9;
+  }
 }
 
 message Reply {

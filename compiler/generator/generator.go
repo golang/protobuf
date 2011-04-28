@@ -49,7 +49,7 @@ import (
 	"strings"
 
 	"goprotobuf.googlecode.com/hg/proto"
-	plugin     "goprotobuf.googlecode.com/hg/compiler/plugin"
+	plugin "goprotobuf.googlecode.com/hg/compiler/plugin"
 	descriptor "goprotobuf.googlecode.com/hg/compiler/descriptor"
 )
 
@@ -890,7 +890,17 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 		packed = ",packed"
 	}
 	name := proto.GetString(field.Name)
-	if name == CamelCase(name) {
+	if *field.Type == descriptor.FieldDescriptorProto_TYPE_GROUP {
+		// We must use the type name for groups instead of
+		// the field name to preserve capitalization.
+		// type_name in FieldDescriptorProto is fully-qualified,
+		// but we only want the local part.
+		name = *field.TypeName
+		if i := strings.LastIndex(name, "."); i >= 0 {
+			name = name[i+1:]
+		}
+		name = ",name=" + name
+	} else if name == CamelCase(name) {
 		name = ""
 	} else {
 		name = ",name=" + name
@@ -1140,6 +1150,10 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	fieldType, wireType := g.GoType(ext.parent, field)
 	tag := g.goTag(field, wireType)
 	g.RecordTypeUse(*ext.Extendee)
+	if n := ext.FieldDescriptorProto.TypeName; n != nil {
+		// foreign extension type
+		g.RecordTypeUse(*n)
+	}
 
 	g.P("var ", ccTypeName, " = &", g.ProtoPkg, ".ExtensionDesc{")
 	g.In()

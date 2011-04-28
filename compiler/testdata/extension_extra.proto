@@ -1,6 +1,6 @@
 // Go support for Protocol Buffers - Google's data interchange format
 //
-// Copyright 2010 Google Inc.  All rights reserved.
+// Copyright 2011 Google Inc.  All rights reserved.
 // http://code.google.com/p/goprotobuf/
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,61 +29,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import "extension_base.proto";
-import "extension_extra.proto";
+syntax = "proto2";
 
-package extension_user;
+package extension_extra;
 
-message UserMessage {
-  optional string name = 1;
-  optional string rank = 2;
-}
-
-// Extend with a message
-extend extension_base.BaseMessage {
-  optional UserMessage user_message = 5;
-}
-
-// Extend with a foreign message
-extend extension_base.BaseMessage {
-  optional extension_extra.ExtraMessage extra_message = 9;
-}
-
-// Extend with some primitive types
-extend extension_base.BaseMessage {
-  optional int32 width = 6;
-  optional int64 area = 7;
-}
-
-// Extend inside the scope of another type
-message LoudMessage {
-  extend extension_base.BaseMessage {
-    optional uint32 volume = 8;
-  }
-  extensions 100 to max;
-}
-
-// Extend inside the scope of another type, using a message.
-message LoginMessage {
-  extend extension_base.BaseMessage {
-    required UserMessage user_message = 16;
-  }
-}
-
-// An extension of an extension
-message Announcement {
-  optional string words = 1;
-  extend LoudMessage {
-    optional Announcement loud_ext = 100;
-  }
-}
-
-// Something that can be put in a message set.
-message OldStyleParcel {
-  extend extension_base.OldStyleMessage {
-    optional OldStyleParcel message_set_extension = 2001;
-  }
-
-  required string name = 1;
-  optional int32 height = 2;
+message ExtraMessage {
+  optional int32 width = 1;
 }

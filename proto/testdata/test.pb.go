@@ -207,9 +207,9 @@ type GoTest struct {
 	F_DoubleRepeatedPacked	[]float64		"PB(fixed64,58,rep,packed,name=F_Double_repeated_packed)"
 	F_Sint32RepeatedPacked	[]int32			"PB(zigzag32,502,rep,packed,name=F_Sint32_repeated_packed)"
 	F_Sint64RepeatedPacked	[]int64			"PB(zigzag64,503,rep,packed,name=F_Sint64_repeated_packed)"
-	Requiredgroup		*GoTest_RequiredGroup	"PB(group,70,req,name=requiredgroup)"
-	Repeatedgroup		[]*GoTest_RepeatedGroup	"PB(group,80,rep,name=repeatedgroup)"
-	Optionalgroup		*GoTest_OptionalGroup	"PB(group,90,opt,name=optionalgroup)"
+	Requiredgroup		*GoTest_RequiredGroup	"PB(group,70,req,name=RequiredGroup)"
+	Repeatedgroup		[]*GoTest_RepeatedGroup	"PB(group,80,rep,name=RepeatedGroup)"
+	Optionalgroup		*GoTest_OptionalGroup	"PB(group,90,opt,name=OptionalGroup)"
 	XXX_unrecognized	[]byte
 }
 
@@ -265,7 +265,7 @@ type GoSkipTest struct {
 	SkipFixed32		*uint32			"PB(fixed32,12,req,name=skip_fixed32)"
 	SkipFixed64		*uint64			"PB(fixed64,13,req,name=skip_fixed64)"
 	SkipString		*string			"PB(bytes,14,req,name=skip_string)"
-	Skipgroup		*GoSkipTest_SkipGroup	"PB(group,15,req,name=skipgroup)"
+	Skipgroup		*GoSkipTest_SkipGroup	"PB(group,15,req,name=SkipGroup)"
 	XXX_unrecognized	[]byte
 }
 
@@ -334,6 +334,7 @@ type MyMessage struct {
 	Inner			*InnerMessage		"PB(bytes,5,opt,name=inner)"
 	Others			[]*OtherMessage		"PB(bytes,6,rep,name=others)"
 	Bikeshed		*MyMessage_Color	"PB(varint,7,opt,name=bikeshed,enum=test_proto.MyMessage_Color)"
+	Somegroup		*MyMessage_SomeGroup	"PB(group,8,opt,name=SomeGroup)"
 	XXX_unrecognized	[]byte
 }
 
@@ -341,8 +342,17 @@ func (this *MyMessage) Reset() {
 	*this = MyMessage{}
 }
 
+type MyMessage_SomeGroup struct {
+	GroupField		*int32	"PB(varint,9,opt,name=group_field)"
+	XXX_unrecognized	[]byte
+}
+
+func (this *MyMessage_SomeGroup) Reset() {
+	*this = MyMessage_SomeGroup{}
+}
+
 type MessageList struct {
-	Message			[]*MessageList_Message	"PB(group,1,rep,name=message)"
+	Message			[]*MessageList_Message	"PB(group,1,rep,name=Message)"
 	XXX_unrecognized	[]byte
 }
 
