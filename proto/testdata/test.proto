@@ -222,6 +222,10 @@ message MyMessage {
     BLUE = 2;
   };
   optional Color bikeshed = 7;
+
+  optional group SomeGroup = 8 {
+    optional int32 group_field = 9;
+  }
 }
 
 message MessageList {

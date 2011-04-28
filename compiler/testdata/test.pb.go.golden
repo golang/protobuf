@@ -123,6 +123,7 @@ type Request struct {
 	Hat			*HatType			"PB(varint,4,opt,name=hat,enum=my_test.HatType,def=1)"
 	Owner			*imp.ImportedMessage_Owner	"PB(varint,6,opt,name=owner,enum=imp.ImportedMessage_Owner)"
 	Deadline		*float32			"PB(fixed32,7,opt,name=deadline,def=inf)"
+	Somegroup		*Request_SomeGroup		"PB(group,8,opt,name=SomeGroup)"
 	XXX_unrecognized	[]byte
 }
 
@@ -133,6 +134,15 @@ func (this *Request) Reset() {
 const Default_Request_Hat HatType = HatType_FEDORA
 
 var Default_Request_Deadline float32 = float32(math.Inf(1))
+
+type Request_SomeGroup struct {
+	GroupField		*int32	"PB(varint,9,opt,name=group_field)"
+	XXX_unrecognized	[]byte
+}
+
+func (this *Request_SomeGroup) Reset() {
+	*this = Request_SomeGroup{}
+}
 
 type Reply struct {
 	Found			[]*Reply_Entry	"PB(bytes,1,rep,name=found)"

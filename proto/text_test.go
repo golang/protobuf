@@ -63,6 +63,9 @@ func newTestMessage() *MyMessage {
 			},
 		},
 		Bikeshed: NewMyMessage_Color(MyMessage_BLUE),
+		Somegroup: &MyMessage_SomeGroup{
+			GroupField: Int32(8),
+		},
 	}
 }
 
@@ -89,6 +92,9 @@ others: <
   >
 >
 bikeshed: BLUE
+SomeGroup {
+  group_field: 8
+}
 `
 
 func TestMarshalTextFull(t *testing.T) {
@@ -111,7 +117,10 @@ func compact(src string) string {
 			space = true
 			continue
 		}
-		if j > 0 && (dst[j-1] == ':' || dst[j-1] == '<') {
+		if j > 0 && (dst[j-1] == ':' || dst[j-1] == '<' || dst[j-1] == '{') {
+			space = false
+		}
+		if c == '{' {
 			space = false
 		}
 		if space {

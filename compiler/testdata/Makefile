@@ -65,4 +65,4 @@ multi.a: multi3.pb.$O multi2.pb.$O multi1.pb.$O
 test.pb.go:	imp.pb.go
 multi1.pb.go:	multi2.pb.go multi3.pb.go
 main.$O: imp.pb.$O test.pb.$O multi.a
-extension_test.$O: extension_base.pb.$O extension_user.pb.$O
+extension_test.$O: extension_base.pb.$O extension_extra.pb.$O extension_user.pb.$O

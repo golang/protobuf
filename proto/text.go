@@ -32,8 +32,7 @@
 package proto
 
 // Functions for writing the Text protocol buffer format.
-// TODO:
-//	- Message sets, groups.
+// TODO: message sets, extensions.
 
 import (
 	"bytes"
@@ -51,6 +50,8 @@ type textWriter struct {
 	complete     bool // if the current position is a complete line
 	compact      bool // whether to write out as a one-liner
 	writer       io.Writer
+
+	c [1]byte // scratch
 }
 
 func (w *textWriter) Write(p []byte) (n int, err os.Error) {
@@ -80,6 +81,12 @@ func (w *textWriter) Write(p []byte) (n int, err os.Error) {
 	return
 }
 
+func (w *textWriter) WriteByte(c byte) os.Error {
+	w.c[0] = c
+	_, err := w.Write(w.c[:])
+	return err
+}
+
 func (w *textWriter) indent() { w.indent_level++ }
 
 func (w *textWriter) unindent() {
@@ -87,6 +94,13 @@ func (w *textWriter) unindent() {
 		fmt.Fprintln(os.Stderr, "proto: textWriter unindented too far!")
 	} else {
 		w.indent_level--
+	}
+}
+
+func writeName(w *textWriter, props *Properties) {
+	io.WriteString(w, props.OrigName)
+	if props.Wire != "group" {
+		w.WriteByte(':')
 	}
 }
 
@@ -114,23 +128,23 @@ func writeStruct(w *textWriter, sv reflect.Value) {
 			if av := fv; av.Kind() == reflect.Slice {
 				// Repeated field.
 				for j := 0; j < av.Len(); j++ {
-					fmt.Fprintf(w, "%v:", props.OrigName)
+					writeName(w, props)
 					if !w.compact {
-						w.Write([]byte{' '})
+						w.WriteByte(' ')
 					}
-					writeAny(w, av.Index(j))
+					writeAny(w, av.Index(j), props)
 					fmt.Fprint(w, "\n")
 				}
 				continue
 			}
 		}
 
-		fmt.Fprintf(w, "%v:", props.OrigName)
+		writeName(w, props)
 		if !w.compact {
-			w.Write([]byte{' '})
+			w.WriteByte(' ')
 		}
 		if len(props.Enum) == 0 || !tryWriteEnum(w, props.Enum, fv) {
-			writeAny(w, fv)
+			writeAny(w, fv, props)
 		}
 		fmt.Fprint(w, "\n")
 	}
@@ -153,7 +167,7 @@ func tryWriteEnum(w *textWriter, enum string, v reflect.Value) bool {
 	return true
 }
 
-func writeAny(w *textWriter, v reflect.Value) {
+func writeAny(w *textWriter, v reflect.Value, props *Properties) {
 	v = reflect.Indirect(v)
 
 	// We don't attempt to serialise every possible value type; only those
@@ -173,16 +187,18 @@ func writeAny(w *textWriter, v reflect.Value) {
 		fmt.Fprint(w, strconv.Quote(val.String()))
 	case reflect.Struct:
 		// Required/optional group/message.
-		// TODO: groups use { } instead of < >, and no colon.
+		var bra, ket byte = '<', '>'
+		if props != nil && props.Wire == "group" {
+			bra, ket = '{', '}'
+		}
+		w.WriteByte(bra)
 		if !w.compact {
-			fmt.Fprint(w, "<\n")
-		} else {
-			fmt.Fprint(w, "<")
+			w.WriteByte('\n')
 		}
 		w.indent()
 		writeStruct(w, val)
 		w.unindent()
-		fmt.Fprint(w, ">")
+		w.WriteByte(ket)
 	default:
 		fmt.Fprint(w, val.Interface())
 	}
@@ -205,7 +221,7 @@ func marshalText(w io.Writer, pb interface{}, compact bool) {
 	if v.Kind() == reflect.Struct {
 		writeStruct(aw, v)
 	} else {
-		writeAny(aw, v)
+		writeAny(aw, v, nil)
 	}
 }
 

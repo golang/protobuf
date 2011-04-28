@@ -32,8 +32,7 @@
 package proto
 
 // Functions for parsing the Text protocol buffer format.
-// TODO:
-//     - message sets, groups.
+// TODO: message sets, extensions.
 
 import (
 	"fmt"
