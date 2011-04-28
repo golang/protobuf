@@ -198,7 +198,7 @@ func marshalText(w io.Writer, pb interface{}, compact bool) {
 	aw.complete = true
 	aw.compact = compact
 
-	v := reflect.NewValue(pb)
+	v := reflect.ValueOf(pb)
 	// We should normally be passed a struct, or a pointer to a struct,
 	// and we don't want the outer < and > in that case.
 	v = reflect.Indirect(v)

@@ -303,7 +303,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base uintptr) os.Error {
 	// Can the object marshal itself?
 	iv := unsafe.Unreflect(p.stype, unsafe.Pointer(base+p.offset))
 	if m, ok := iv.(Marshaler); ok {
-		if isNil(reflect.NewValue(iv)) {
+		if isNil(reflect.ValueOf(iv)) {
 			return ErrNil
 		}
 		data, err := m.Marshal()
@@ -514,7 +514,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) os.Error 
 		// Can the object marshal itself?
 		iv := unsafe.Unreflect(p.stype, unsafe.Pointer(&s[i]))
 		if m, ok := iv.(Marshaler); ok {
-			if reflect.NewValue(iv).IsNil() {
+			if reflect.ValueOf(iv).IsNil() {
 				return ErrNil
 			}
 			data, err := m.Marshal()
