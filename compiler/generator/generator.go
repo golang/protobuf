@@ -751,7 +751,10 @@ func (g *Generator) generateImports() {
 		if _, ok := g.usedPackages[fd.PackageName()]; ok {
 			g.P("import ", fd.PackageName(), " ", Quote(filename))
 		} else {
-			log.Println("protoc-gen-go: discarding unused import:", filename)
+			// TODO: Re-enable this when we are more feature-complete.
+			// For instance, some protos use foreign field extensions, which we don't support.
+			// Until then, this is just annoying spam.
+			//log.Printf("protoc-gen-go: discarding unused import from %v: %v", *g.file.Name, s)
 		}
 	}
 	g.P()
