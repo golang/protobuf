@@ -195,6 +195,17 @@ func (e *ExtensionDescriptor) TypeName() (s []string) {
 	return s
 }
 
+// DescName returns the variable name used for the generated descriptor.
+func (e *ExtensionDescriptor) DescName() string {
+	// The full type name.
+	typeName := e.TypeName()
+	// Each scope of the extension is individually CamelCased, and all are joined with "_" with an "E_" prefix.
+	for i, s := range typeName {
+		typeName[i] = CamelCase(s)
+	}
+	return "E_" + strings.Join(typeName, "_")
+}
+
 // FileDescriptor describes an protocol buffer descriptor file (.proto).
 // It includes slices of all the messages and enums defined within it.
 // Those slices are constructed by WrapTypes.
@@ -244,6 +255,7 @@ func (ms messageSymbol) GenerateAlias(g *Generator, pkg string) {
 
 	g.P("type ", ms.sym, " ", remoteSym)
 	g.P("func (this *", ms.sym, ") Reset() { (*", remoteSym, ")(this).Reset() }")
+	g.P("func (this *", ms.sym, ") String() string { return (*", remoteSym, ")(this).String() }")
 	if ms.hasExtensions {
 		g.P("func (*", ms.sym, ") ExtensionRangeArray() []", g.ProtoPkg, ".ExtensionRange ",
 			"{ return (*", remoteSym, ")(nil).ExtensionRangeArray() }")
@@ -892,7 +904,8 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 	if field.Options != nil && proto.GetBool(field.Options.Packed) {
 		packed = ",packed"
 	}
-	name := proto.GetString(field.Name)
+	fieldName := proto.GetString(field.Name)
+	name := fieldName
 	if *field.Type == descriptor.FieldDescriptorProto_TYPE_GROUP {
 		// We must use the type name for groups instead of
 		// the field name to preserve capitalization.
@@ -902,8 +915,8 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 		if i := strings.LastIndex(name, "."); i >= 0 {
 			name = name[i+1:]
 		}
-		name = ",name=" + name
-	} else if name == CamelCase(name) {
+	}
+	if name == CamelCase(fieldName) {
 		name = ""
 	} else {
 		name = ",name=" + name
@@ -1028,12 +1041,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.Out()
 	g.P("}")
 
-	// Reset function
-	g.P("func (this *", ccTypeName, ") Reset() {")
-	g.In()
-	g.P("*this = ", ccTypeName, "{}")
-	g.Out()
-	g.P("}")
+	// Reset and String functions
+	g.P("func (this *", ccTypeName, ") Reset() { *this = ", ccTypeName, "{} }")
+	g.P("func (this *", ccTypeName, ") String() string { return ", g.ProtoPkg, ".CompactTextString(this) }")
 
 	// Extension support methods
 	var hasExtensions, isMessageSet bool
@@ -1140,13 +1150,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 }
 
 func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
-	// The full type name
-	typeName := ext.TypeName()
-	// Each scope of the extension is individually CamelCased, and all are joined with "_" with an "E_" prefix.
-	for i, s := range typeName {
-		typeName[i] = CamelCase(s)
-	}
-	ccTypeName := "E_" + strings.Join(typeName, "_")
+	ccTypeName := ext.DescName()
 
 	extendedType := "*" + g.TypeName(g.ObjectNamed(*ext.Extendee))
 	field := ext.FieldDescriptorProto
@@ -1163,6 +1167,7 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	g.P("ExtendedType: (", extendedType, ")(nil),")
 	g.P("ExtensionType: (", fieldType, ")(nil),")
 	g.P("Field: ", field.Number, ",")
+	g.P(`Name: "`, g.packageName, ".", *field.Name, `",`)
 	g.P("Tag: ", tag, ",")
 
 	g.Out()
@@ -1178,6 +1183,14 @@ func (g *Generator) generateInitFunction() {
 	for _, enum := range g.file.enum {
 		g.generateEnumRegistration(enum)
 	}
+	for _, d := range g.file.desc {
+		for _, ext := range d.ext {
+			g.generateExtensionRegistration(ext)
+		}
+	}
+	for _, ext := range g.file.ext {
+		g.generateExtensionRegistration(ext)
+	}
 	g.Out()
 	g.P("}")
 }
@@ -1189,6 +1202,10 @@ func (g *Generator) generateEnumRegistration(enum *EnumDescriptor) {
 	// The full type name, CamelCased.
 	ccTypeName := CamelCaseSlice(typeName)
 	g.P(g.ProtoPkg+".RegisterEnum(", Quote(pkg+ccTypeName), ", ", ccTypeName+"_name, ", ccTypeName+"_value)")
+}
+
+func (g *Generator) generateExtensionRegistration(ext *ExtensionDescriptor) {
+	g.P(g.ProtoPkg+".RegisterExtension(", ext.DescName(), ")")
 }
 
 // And now lots of helper functions.

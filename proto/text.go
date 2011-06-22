@@ -31,25 +31,26 @@
 
 package proto
 
-// Functions for writing the Text protocol buffer format.
-// TODO: message sets, extensions.
+// Functions for writing the text protocol buffer format.
+// TODO: message sets.
 
 import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
 )
 
-// An io.Writer wrapper that tracks its indentation level.
+// textWriter is an io.Writer that tracks its indentation level.
 type textWriter struct {
-	indent_level int
-	complete     bool // if the current position is a complete line
-	compact      bool // whether to write out as a one-liner
-	writer       io.Writer
+	ind      int
+	complete bool // if the current position is a complete line
+	compact  bool // whether to write out as a one-liner
+	writer   io.Writer
 
 	c [1]byte // scratch
 }
@@ -63,15 +64,15 @@ func (w *textWriter) Write(p []byte) (n int, err os.Error) {
 		return
 	}
 
-	for i := 0; i < len(frags); i++ {
+	for i, frag := range frags {
 		if w.complete {
-			for j := 0; j < w.indent_level; j++ {
+			for j := 0; j < w.ind; j++ {
 				w.writer.Write([]byte{' ', ' '})
 			}
 			w.complete = false
 		}
 
-		w.writer.Write([]byte(frags[i]))
+		w.writer.Write([]byte(frag))
 		if i+1 < len(frags) {
 			w.writer.Write([]byte{'\n'})
 		}
@@ -87,14 +88,14 @@ func (w *textWriter) WriteByte(c byte) os.Error {
 	return err
 }
 
-func (w *textWriter) indent() { w.indent_level++ }
+func (w *textWriter) indent() { w.ind++ }
 
 func (w *textWriter) unindent() {
-	if w.indent_level == 0 {
-		fmt.Fprintln(os.Stderr, "proto: textWriter unindented too far!")
-	} else {
-		w.indent_level--
+	if w.ind == 0 {
+		log.Printf("proto: textWriter unindented too far!")
+		return
 	}
+	w.ind--
 }
 
 func writeName(w *textWriter, props *Properties) {
@@ -103,6 +104,8 @@ func writeName(w *textWriter, props *Properties) {
 		w.WriteByte(':')
 	}
 }
+
+var extendableProtoType = reflect.TypeOf((*extendableProto)(nil)).Elem()
 
 func writeStruct(w *textWriter, sv reflect.Value) {
 	st := sv.Type()
@@ -125,15 +128,15 @@ func writeStruct(w *textWriter, sv reflect.Value) {
 		}
 
 		if props.Repeated {
-			if av := fv; av.Kind() == reflect.Slice {
+			if fv.Kind() == reflect.Slice {
 				// Repeated field.
-				for j := 0; j < av.Len(); j++ {
+				for j := 0; j < fv.Len(); j++ {
 					writeName(w, props)
 					if !w.compact {
 						w.WriteByte(' ')
 					}
-					writeAny(w, av.Index(j), props)
-					fmt.Fprint(w, "\n")
+					writeAny(w, fv.Index(j), props)
+					w.WriteByte('\n')
 				}
 				continue
 			}
@@ -143,13 +146,23 @@ func writeStruct(w *textWriter, sv reflect.Value) {
 		if !w.compact {
 			w.WriteByte(' ')
 		}
-		if len(props.Enum) == 0 || !tryWriteEnum(w, props.Enum, fv) {
+		if props.Enum != "" && tryWriteEnum(w, props.Enum, fv) {
+			// Enum written.
+		} else {
 			writeAny(w, fv, props)
 		}
-		fmt.Fprint(w, "\n")
+		w.WriteByte('\n')
+	}
+
+	// Extensions.
+	pv := sv.Addr()
+	if pv.Type().Implements(extendableProtoType) {
+		writeExtensions(w, pv)
 	}
 }
 
+// tryWriteEnum attempts to write an enum value as a symbolic constant.
+// If the enum is unregistered, nothing is written and false is returned.
 func tryWriteEnum(w *textWriter, enum string, v reflect.Value) bool {
 	v = reflect.Indirect(v)
 	if v.Type().Kind() != reflect.Int32 {
@@ -167,24 +180,20 @@ func tryWriteEnum(w *textWriter, enum string, v reflect.Value) bool {
 	return true
 }
 
+// writeAny writes an arbitrary field.
 func writeAny(w *textWriter, v reflect.Value, props *Properties) {
 	v = reflect.Indirect(v)
 
 	// We don't attempt to serialise every possible value type; only those
 	// that can occur in protocol buffers, plus a few extra that were easy.
-	switch val := v; val.Kind() {
+	switch v.Kind() {
 	case reflect.Slice:
 		// Should only be a []byte; repeated fields are handled in writeStruct.
-		// TODO: Handle other cases more cleanly.
-		bytes := make([]byte, val.Len())
-		for i := 0; i < val.Len(); i++ {
-			bytes[i] = byte(val.Index(i).Uint())
-		}
-		// TODO: Should be strconv.QuoteC, which doesn't exist yet
-		fmt.Fprint(w, strconv.Quote(string(bytes)))
+		// TODO: Should be strconv.QuoteToASCII, which should be released after 2011-06-20.
+		fmt.Fprint(w, strconv.Quote(string(v.Interface().([]byte))))
 	case reflect.String:
-		// TODO: Should be strconv.QuoteC, which doesn't exist yet
-		fmt.Fprint(w, strconv.Quote(val.String()))
+		// TODO: Should be strconv.QuoteToASCII, which should be released after 2011-06-20.
+		fmt.Fprint(w, strconv.Quote(v.String()))
 	case reflect.Struct:
 		// Required/optional group/message.
 		var bra, ket byte = '<', '>'
@@ -196,11 +205,42 @@ func writeAny(w *textWriter, v reflect.Value, props *Properties) {
 			w.WriteByte('\n')
 		}
 		w.indent()
-		writeStruct(w, val)
+		writeStruct(w, v)
 		w.unindent()
 		w.WriteByte(ket)
 	default:
-		fmt.Fprint(w, val.Interface())
+		fmt.Fprint(w, v.Interface())
+	}
+}
+
+// writeExtensions writes all the extensions in pv.
+// pv is assumed to be a pointer to a protocol message struct that is extendable.
+func writeExtensions(w *textWriter, pv reflect.Value) {
+	emap := extensionMaps[pv.Type().Elem()]
+	ep := pv.Interface().(extendableProto)
+	for extNum := range ep.ExtensionMap() {
+		var desc *ExtensionDesc
+		if emap != nil {
+			desc = emap[extNum]
+		}
+		if desc == nil {
+			// TODO: Handle printing unknown extensions.
+			fmt.Fprintln(os.Stderr, "proto: unknown extension: ", extNum)
+			continue
+		}
+
+		pb, err := GetExtension(ep, desc)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "proto: failed getting extension: ", err)
+			continue
+		}
+
+		fmt.Fprintf(w, "[%s]:", desc.Name)
+		if !w.compact {
+			w.WriteByte(' ')
+		}
+		writeAny(w, reflect.ValueOf(pb), nil)
+		w.WriteByte('\n')
 	}
 }
 
@@ -225,12 +265,12 @@ func marshalText(w io.Writer, pb interface{}, compact bool) {
 	}
 }
 
-// MarshalText writes a given protobuffer in Text format.
-// Non-protobuffers can also be written, but their formatting is not guaranteed.
+// MarshalText writes a given protocol buffer in text format.
+// Values that are not protocol buffers can also be written, but their formatting is not guaranteed.
 func MarshalText(w io.Writer, pb interface{}) { marshalText(w, pb, false) }
 
-// CompactText writes a given protobuffer in compact Text format (one line).
-// Non-protobuffers can also be written, but their formatting is not guaranteed.
+// CompactText writes a given protocl buffer in compact text format (one line).
+// Values that are not protocol buffers can also be written, but their formatting is not guaranteed.
 func CompactText(w io.Writer, pb interface{}) { marshalText(w, pb, true) }
 
 // CompactTextString is the same as CompactText, but returns the string directly.
