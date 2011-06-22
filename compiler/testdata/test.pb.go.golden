@@ -17,17 +17,17 @@ var _ os.Error
 type HatType int32
 
 const (
-	HatType_FEDORA	= 1
-	HatType_FEZ	= 2
+	HatType_FEDORA = 1
+	HatType_FEZ    = 2
 )
 
 var HatType_name = map[int32]string{
-	1:	"FEDORA",
-	2:	"FEZ",
+	1: "FEDORA",
+	2: "FEZ",
 }
 var HatType_value = map[string]int32{
-	"FEDORA":	1,
-	"FEZ":		2,
+	"FEDORA": 1,
+	"FEZ":    2,
 }
 
 func NewHatType(x int32) *HatType {
@@ -41,20 +41,20 @@ func (x HatType) String() string {
 type Days int32
 
 const (
-	Days_MONDAY	= 1
-	Days_TUESDAY	= 2
-	Days_LUNDI	= 1
+	Days_MONDAY  = 1
+	Days_TUESDAY = 2
+	Days_LUNDI   = 1
 )
 
 var Days_name = map[int32]string{
-	1:	"MONDAY",
-	2:	"TUESDAY",
+	1: "MONDAY",
+	2: "TUESDAY",
 	// Duplicate value: 1: "LUNDI",
 }
 var Days_value = map[string]int32{
-	"MONDAY":	1,
-	"TUESDAY":	2,
-	"LUNDI":	1,
+	"MONDAY":  1,
+	"TUESDAY": 2,
+	"LUNDI":   1,
 }
 
 func NewDays(x int32) *Days {
@@ -68,20 +68,20 @@ func (x Days) String() string {
 type Request_Color int32
 
 const (
-	Request_RED	= 0
-	Request_GREEN	= 1
-	Request_BLUE	= 2
+	Request_RED   = 0
+	Request_GREEN = 1
+	Request_BLUE  = 2
 )
 
 var Request_Color_name = map[int32]string{
-	0:	"RED",
-	1:	"GREEN",
-	2:	"BLUE",
+	0: "RED",
+	1: "GREEN",
+	2: "BLUE",
 }
 var Request_Color_value = map[string]int32{
-	"RED":		0,
-	"GREEN":	1,
-	"BLUE":		2,
+	"RED":   0,
+	"GREEN": 1,
+	"BLUE":  2,
 }
 
 func NewRequest_Color(x int32) *Request_Color {
@@ -95,17 +95,17 @@ func (x Request_Color) String() string {
 type Reply_Entry_Game int32
 
 const (
-	Reply_Entry_FOOTBALL	= 1
-	Reply_Entry_TENNIS	= 2
+	Reply_Entry_FOOTBALL = 1
+	Reply_Entry_TENNIS   = 2
 )
 
 var Reply_Entry_Game_name = map[int32]string{
-	1:	"FOOTBALL",
-	2:	"TENNIS",
+	1: "FOOTBALL",
+	2: "TENNIS",
 }
 var Reply_Entry_Game_value = map[string]int32{
-	"FOOTBALL":	1,
-	"TENNIS":	2,
+	"FOOTBALL": 1,
+	"TENNIS":   2,
 }
 
 func NewReply_Entry_Game(x int32) *Reply_Entry_Game {
@@ -117,43 +117,40 @@ func (x Reply_Entry_Game) String() string {
 }
 
 type Request struct {
-	Key			[]int64				"PB(varint,1,rep,name=key)"
-	ImportedMessage		*imp.ImportedMessage		"PB(bytes,2,opt,name=imported_message)"
-	Hue			*Request_Color			"PB(varint,3,opt,name=hue,enum=my_test.Request_Color)"
-	Hat			*HatType			"PB(varint,4,opt,name=hat,enum=my_test.HatType,def=1)"
-	Owner			*imp.ImportedMessage_Owner	"PB(varint,6,opt,name=owner,enum=imp.ImportedMessage_Owner)"
-	Deadline		*float32			"PB(fixed32,7,opt,name=deadline,def=inf)"
-	Somegroup		*Request_SomeGroup		"PB(group,8,opt,name=SomeGroup)"
-	XXX_unrecognized	[]byte
+	Key              []int64                    "PB(varint,1,rep,name=key)"
+	ImportedMessage  *imp.ImportedMessage       "PB(bytes,2,opt,name=imported_message)"
+	Hue              *Request_Color             "PB(varint,3,opt,name=hue,enum=my_test.Request_Color)"
+	Hat              *HatType                   "PB(varint,4,opt,name=hat,enum=my_test.HatType,def=1)"
+	Owner            *imp.ImportedMessage_Owner "PB(varint,6,opt,name=owner,enum=imp.ImportedMessage_Owner)"
+	Deadline         *float32                   "PB(fixed32,7,opt,name=deadline,def=inf)"
+	Somegroup        *Request_SomeGroup         "PB(group,8,opt,name=SomeGroup)"
+	XXX_unrecognized []byte
 }
 
-func (this *Request) Reset() {
-	*this = Request{}
-}
+func (this *Request) Reset()         { *this = Request{} }
+func (this *Request) String() string { return proto.CompactTextString(this) }
 
 const Default_Request_Hat HatType = HatType_FEDORA
 
 var Default_Request_Deadline float32 = float32(math.Inf(1))
 
 type Request_SomeGroup struct {
-	GroupField		*int32	"PB(varint,9,opt,name=group_field)"
-	XXX_unrecognized	[]byte
+	GroupField       *int32 "PB(varint,9,opt,name=group_field)"
+	XXX_unrecognized []byte
 }
 
-func (this *Request_SomeGroup) Reset() {
-	*this = Request_SomeGroup{}
-}
+func (this *Request_SomeGroup) Reset()         { *this = Request_SomeGroup{} }
+func (this *Request_SomeGroup) String() string { return proto.CompactTextString(this) }
 
 type Reply struct {
-	Found			[]*Reply_Entry	"PB(bytes,1,rep,name=found)"
-	CompactKeys		[]int32		"PB(varint,2,rep,packed,name=compact_keys)"
-	XXX_extensions		map[int32][]byte
-	XXX_unrecognized	[]byte
+	Found            []*Reply_Entry "PB(bytes,1,rep,name=found)"
+	CompactKeys      []int32        "PB(varint,2,rep,packed,name=compact_keys)"
+	XXX_extensions   map[int32][]byte
+	XXX_unrecognized []byte
 }
 
-func (this *Reply) Reset() {
-	*this = Reply{}
-}
+func (this *Reply) Reset()         { *this = Reply{} }
+func (this *Reply) String() string { return proto.CompactTextString(this) }
 
 var extRange_Reply = []proto.ExtensionRange{
 	proto.ExtensionRange{100, 536870911},
@@ -170,15 +167,14 @@ func (this *Reply) ExtensionMap() map[int32][]byte {
 }
 
 type Reply_Entry struct {
-	KeyThatNeeds_1234Camel_CasIng	*int64	"PB(varint,1,req,name=key_that_needs_1234camel_CasIng)"
-	Value				*int64	"PB(varint,2,opt,name=value,def=7)"
-	XMyFieldName_2			*int64	"PB(varint,3,opt,name=_my_field_name_2)"
-	XXX_unrecognized		[]byte
+	KeyThatNeeds_1234Camel_CasIng *int64 "PB(varint,1,req,name=key_that_needs_1234camel_CasIng)"
+	Value                         *int64 "PB(varint,2,opt,name=value,def=7)"
+	XMyFieldName_2                *int64 "PB(varint,3,opt,name=_my_field_name_2)"
+	XXX_unrecognized              []byte
 }
 
-func (this *Reply_Entry) Reset() {
-	*this = Reply_Entry{}
-}
+func (this *Reply_Entry) Reset()         { *this = Reply_Entry{} }
+func (this *Reply_Entry) String() string { return proto.CompactTextString(this) }
 
 const Default_Reply_Entry_Value int64 = 7
 
@@ -186,25 +182,24 @@ type ReplyExtensions struct {
 	XXX_unrecognized []byte
 }
 
-func (this *ReplyExtensions) Reset() {
-	*this = ReplyExtensions{}
-}
+func (this *ReplyExtensions) Reset()         { *this = ReplyExtensions{} }
+func (this *ReplyExtensions) String() string { return proto.CompactTextString(this) }
 
 var E_ReplyExtensions_Time = &proto.ExtensionDesc{
-	ExtendedType:	(*Reply)(nil),
-	ExtensionType:	(*float64)(nil),
-	Field:		101,
-	Tag:		"PB(fixed64,101,opt,name=time)",
+	ExtendedType:  (*Reply)(nil),
+	ExtensionType: (*float64)(nil),
+	Field:         101,
+	Name:          "my_test.time",
+	Tag:           "PB(fixed64,101,opt,name=time)",
 }
 
 type OldReply struct {
-	XXX_extensions		map[int32][]byte
-	XXX_unrecognized	[]byte
+	XXX_extensions   map[int32][]byte
+	XXX_unrecognized []byte
 }
 
-func (this *OldReply) Reset() {
-	*this = OldReply{}
-}
+func (this *OldReply) Reset()         { *this = OldReply{} }
+func (this *OldReply) String() string { return proto.CompactTextString(this) }
 
 func (this *OldReply) Marshal() ([]byte, os.Error) {
 	return proto.MarshalMessageSet(this.ExtensionMap())
@@ -231,10 +226,11 @@ func (this *OldReply) ExtensionMap() map[int32][]byte {
 }
 
 var E_Tag = &proto.ExtensionDesc{
-	ExtendedType:	(*Reply)(nil),
-	ExtensionType:	(*string)(nil),
-	Field:		103,
-	Tag:		"PB(bytes,103,opt,name=tag)",
+	ExtendedType:  (*Reply)(nil),
+	ExtensionType: (*string)(nil),
+	Field:         103,
+	Name:          "my_test.tag",
+	Tag:           "PB(bytes,103,opt,name=tag)",
 }
 
 func init() {
@@ -242,4 +238,6 @@ func init() {
 	proto.RegisterEnum("my_test.Days", Days_name, Days_value)
 	proto.RegisterEnum("my_test.Request_Color", Request_Color_name, Request_Color_value)
 	proto.RegisterEnum("my_test.Reply_Entry_Game", Reply_Entry_Game_name, Reply_Entry_Game_value)
+	proto.RegisterExtension(E_ReplyExtensions_Time)
+	proto.RegisterExtension(E_Tag)
 }

@@ -45,7 +45,7 @@ test:	golden testbuild extension_test
 
 golden:
 	$(QUOTED_GOBIN)/gomake -B test.pb.go
-	diff test.pb.go test.pb.go.golden
+	diff -w test.pb.go test.pb.go.golden
 
 nuke:	clean
 

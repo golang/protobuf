@@ -39,7 +39,7 @@ import (
 )
 
 func newTestMessage() *MyMessage {
-	return &MyMessage{
+	msg := &MyMessage{
 		Count: Int32(42),
 		Name:  String("Dave"),
 		Quote: String(`"I didn't want to go."`),
@@ -67,6 +67,13 @@ func newTestMessage() *MyMessage {
 			GroupField: Int32(8),
 		},
 	}
+	ext := &Ext{
+		Data: String("Big gobs for big rats"),
+	}
+	if err := SetExtension(msg, E_Ext_More, ext); err != nil {
+		panic(err)
+	}
+	return msg
 }
 
 const text = `count: 42
@@ -95,6 +102,9 @@ bikeshed: BLUE
 SomeGroup {
   group_field: 8
 }
+[test_proto.more]: <
+  data: "Big gobs for big rats"
+>
 `
 
 func TestMarshalTextFull(t *testing.T) {
@@ -107,7 +117,7 @@ func TestMarshalTextFull(t *testing.T) {
 }
 
 func compact(src string) string {
-	// ,s/[ \n]+/ /g; s/ $//;
+	// s/[ \n]+/ /g; s/ $//;
 	dst := make([]byte, len(src))
 	space := false
 	j := 0

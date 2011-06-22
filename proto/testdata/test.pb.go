@@ -123,9 +123,8 @@ type GoEnum struct {
 	XXX_unrecognized	[]byte
 }
 
-func (this *GoEnum) Reset() {
-	*this = GoEnum{}
-}
+func (this *GoEnum) Reset()		{ *this = GoEnum{} }
+func (this *GoEnum) String() string	{ return proto.CompactTextString(this) }
 
 type GoTestField struct {
 	Label			*string	"PB(bytes,1,req)"
@@ -133,9 +132,8 @@ type GoTestField struct {
 	XXX_unrecognized	[]byte
 }
 
-func (this *GoTestField) Reset() {
-	*this = GoTestField{}
-}
+func (this *GoTestField) Reset()		{ *this = GoTestField{} }
+func (this *GoTestField) String() string	{ return proto.CompactTextString(this) }
 
 type GoTest struct {
 	Kind			*int32			"PB(varint,1,req)"
@@ -213,9 +211,8 @@ type GoTest struct {
 	XXX_unrecognized	[]byte
 }
 
-func (this *GoTest) Reset() {
-	*this = GoTest{}
-}
+func (this *GoTest) Reset()		{ *this = GoTest{} }
+func (this *GoTest) String() string	{ return proto.CompactTextString(this) }
 
 const Default_GoTest_F_BoolDefaulted bool = true
 const Default_GoTest_F_Int32Defaulted int32 = 32
@@ -238,27 +235,24 @@ type GoTest_RequiredGroup struct {
 	XXX_unrecognized	[]byte
 }
 
-func (this *GoTest_RequiredGroup) Reset() {
-	*this = GoTest_RequiredGroup{}
-}
+func (this *GoTest_RequiredGroup) Reset()		{ *this = GoTest_RequiredGroup{} }
+func (this *GoTest_RequiredGroup) String() string	{ return proto.CompactTextString(this) }
 
 type GoTest_RepeatedGroup struct {
 	RequiredField		*string	"PB(bytes,81,req)"
 	XXX_unrecognized	[]byte
 }
 
-func (this *GoTest_RepeatedGroup) Reset() {
-	*this = GoTest_RepeatedGroup{}
-}
+func (this *GoTest_RepeatedGroup) Reset()		{ *this = GoTest_RepeatedGroup{} }
+func (this *GoTest_RepeatedGroup) String() string	{ return proto.CompactTextString(this) }
 
 type GoTest_OptionalGroup struct {
 	RequiredField		*string	"PB(bytes,91,req)"
 	XXX_unrecognized	[]byte
 }
 
-func (this *GoTest_OptionalGroup) Reset() {
-	*this = GoTest_OptionalGroup{}
-}
+func (this *GoTest_OptionalGroup) Reset()		{ *this = GoTest_OptionalGroup{} }
+func (this *GoTest_OptionalGroup) String() string	{ return proto.CompactTextString(this) }
 
 type GoSkipTest struct {
 	SkipInt32		*int32			"PB(varint,11,req,name=skip_int32)"
@@ -269,9 +263,8 @@ type GoSkipTest struct {
 	XXX_unrecognized	[]byte
 }
 
-func (this *GoSkipTest) Reset() {
-	*this = GoSkipTest{}
-}
+func (this *GoSkipTest) Reset()		{ *this = GoSkipTest{} }
+func (this *GoSkipTest) String() string	{ return proto.CompactTextString(this) }
 
 type GoSkipTest_SkipGroup struct {
 	GroupInt32		*int32	"PB(varint,16,req,name=group_int32)"
@@ -279,27 +272,24 @@ type GoSkipTest_SkipGroup struct {
 	XXX_unrecognized	[]byte
 }
 
-func (this *GoSkipTest_SkipGroup) Reset() {
-	*this = GoSkipTest_SkipGroup{}
-}
+func (this *GoSkipTest_SkipGroup) Reset()		{ *this = GoSkipTest_SkipGroup{} }
+func (this *GoSkipTest_SkipGroup) String() string	{ return proto.CompactTextString(this) }
 
 type NonPackedTest struct {
 	A			[]int32	"PB(varint,1,rep,name=a)"
 	XXX_unrecognized	[]byte
 }
 
-func (this *NonPackedTest) Reset() {
-	*this = NonPackedTest{}
-}
+func (this *NonPackedTest) Reset()		{ *this = NonPackedTest{} }
+func (this *NonPackedTest) String() string	{ return proto.CompactTextString(this) }
 
 type PackedTest struct {
 	B			[]int32	"PB(varint,1,rep,packed,name=b)"
 	XXX_unrecognized	[]byte
 }
 
-func (this *PackedTest) Reset() {
-	*this = PackedTest{}
-}
+func (this *PackedTest) Reset()		{ *this = PackedTest{} }
+func (this *PackedTest) String() string	{ return proto.CompactTextString(this) }
 
 type InnerMessage struct {
 	Host			*string	"PB(bytes,1,req,name=host)"
@@ -308,9 +298,8 @@ type InnerMessage struct {
 	XXX_unrecognized	[]byte
 }
 
-func (this *InnerMessage) Reset() {
-	*this = InnerMessage{}
-}
+func (this *InnerMessage) Reset()		{ *this = InnerMessage{} }
+func (this *InnerMessage) String() string	{ return proto.CompactTextString(this) }
 
 const Default_InnerMessage_Port int32 = 4000
 
@@ -322,9 +311,8 @@ type OtherMessage struct {
 	XXX_unrecognized	[]byte
 }
 
-func (this *OtherMessage) Reset() {
-	*this = OtherMessage{}
-}
+func (this *OtherMessage) Reset()		{ *this = OtherMessage{} }
+func (this *OtherMessage) String() string	{ return proto.CompactTextString(this) }
 
 type MyMessage struct {
 	Count			*int32			"PB(varint,1,req,name=count)"
@@ -335,11 +323,25 @@ type MyMessage struct {
 	Others			[]*OtherMessage		"PB(bytes,6,rep,name=others)"
 	Bikeshed		*MyMessage_Color	"PB(varint,7,opt,name=bikeshed,enum=test_proto.MyMessage_Color)"
 	Somegroup		*MyMessage_SomeGroup	"PB(group,8,opt,name=SomeGroup)"
+	XXX_extensions		map[int32][]byte
 	XXX_unrecognized	[]byte
 }
 
-func (this *MyMessage) Reset() {
-	*this = MyMessage{}
+func (this *MyMessage) Reset()		{ *this = MyMessage{} }
+func (this *MyMessage) String() string	{ return proto.CompactTextString(this) }
+
+var extRange_MyMessage = []proto.ExtensionRange{
+	proto.ExtensionRange{100, 536870911},
+}
+
+func (*MyMessage) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_MyMessage
+}
+func (this *MyMessage) ExtensionMap() map[int32][]byte {
+	if this.XXX_extensions == nil {
+		this.XXX_extensions = make(map[int32][]byte)
+	}
+	return this.XXX_extensions
 }
 
 type MyMessage_SomeGroup struct {
@@ -347,18 +349,32 @@ type MyMessage_SomeGroup struct {
 	XXX_unrecognized	[]byte
 }
 
-func (this *MyMessage_SomeGroup) Reset() {
-	*this = MyMessage_SomeGroup{}
-}
+func (this *MyMessage_SomeGroup) Reset()		{ *this = MyMessage_SomeGroup{} }
+func (this *MyMessage_SomeGroup) String() string	{ return proto.CompactTextString(this) }
 
-type MessageList struct {
-	Message			[]*MessageList_Message	"PB(group,1,rep,name=Message)"
+type Ext struct {
+	Data			*string	"PB(bytes,1,opt,name=data)"
 	XXX_unrecognized	[]byte
 }
 
-func (this *MessageList) Reset() {
-	*this = MessageList{}
+func (this *Ext) Reset()		{ *this = Ext{} }
+func (this *Ext) String() string	{ return proto.CompactTextString(this) }
+
+var E_Ext_More = &proto.ExtensionDesc{
+	ExtendedType:	(*MyMessage)(nil),
+	ExtensionType:	(*Ext)(nil),
+	Field:		103,
+	Name:		"test_proto.more",
+	Tag:		"PB(bytes,103,opt,name=more)",
 }
+
+type MessageList struct {
+	Message			[]*MessageList_Message	"PB(group,1,rep)"
+	XXX_unrecognized	[]byte
+}
+
+func (this *MessageList) Reset()		{ *this = MessageList{} }
+func (this *MessageList) String() string	{ return proto.CompactTextString(this) }
 
 type MessageList_Message struct {
 	Name			*string	"PB(bytes,2,req,name=name)"
@@ -366,12 +382,12 @@ type MessageList_Message struct {
 	XXX_unrecognized	[]byte
 }
 
-func (this *MessageList_Message) Reset() {
-	*this = MessageList_Message{}
-}
+func (this *MessageList_Message) Reset()		{ *this = MessageList_Message{} }
+func (this *MessageList_Message) String() string	{ return proto.CompactTextString(this) }
 
 func init() {
 	proto.RegisterEnum("test_proto.FOO", FOO_name, FOO_value)
 	proto.RegisterEnum("test_proto.GoTest_KIND", GoTest_KIND_name, GoTest_KIND_value)
 	proto.RegisterEnum("test_proto.MyMessage_Color", MyMessage_Color_name, MyMessage_Color_value)
+	proto.RegisterExtension(E_Ext_More)
 }

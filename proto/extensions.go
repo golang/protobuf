@@ -39,6 +39,7 @@ package proto
 import (
 	"os"
 	"reflect"
+	"strconv"
 	"unsafe"
 )
 
@@ -60,6 +61,7 @@ type ExtensionDesc struct {
 	ExtendedType  interface{} // nil pointer to the type that is being extended
 	ExtensionType interface{} // nil pointer to the extension type
 	Field         int32       // field number
+	Name          string      // fully-qualified name of extension
 	Tag           string      // PB(...) tag style
 }
 
@@ -178,4 +180,23 @@ func SetExtension(pb extendableProto, extension *ExtensionDesc, value interface{
 	}
 	pb.ExtensionMap()[extension.Field] = p.buf
 	return nil
+}
+
+// A global registry of extensions.
+// The generated code will register the generated descriptors by calling RegisterExtension.
+
+var extensionMaps = make(map[reflect.Type]map[int32]*ExtensionDesc)
+
+// RegisterExtension is called from the generated code.
+func RegisterExtension(desc *ExtensionDesc) {
+	st := reflect.TypeOf(desc.ExtendedType).Elem()
+	m := extensionMaps[st]
+	if m == nil {
+		m = make(map[int32]*ExtensionDesc)
+		extensionMaps[st] = m
+	}
+	if _, ok := m[desc.Field]; ok {
+		panic("proto: duplicate extension registered: " + st.String() + " " + strconv.Itoa(int(desc.Field)))
+	}
+	m[desc.Field] = desc
 }

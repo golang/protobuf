@@ -1141,6 +1141,13 @@ func TestEnum(t *testing.T) {
 	}
 }
 
+// Enum types have String methods. Check that enum fields can be printed.
+// We don't care what the value actually is, just as long as it doesn't crash.
+func TestPrintingNilEnumFields(t *testing.T) {
+	pb := new(GoEnum)
+	fmt.Sprintf("%+v", pb)
+}
+
 // Verify that absent required fields cause Marshal/Unmarshal to return errors.
 func TestRequiredFieldEnforcement(t *testing.T) {
 	pb := new(GoTestField)

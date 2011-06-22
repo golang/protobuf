@@ -94,11 +94,7 @@ var emptyBytes [maxVarintBytes]byte
 // protocol buffer types.
 func (p *Buffer) EncodeVarint(x uint64) os.Error {
 	l := len(p.buf)
-	if l+maxVarintBytes > cap(p.buf) { // not necessary except for performance
-		p.buf = append(p.buf, emptyBytes[:]...)
-	} else {
-		p.buf = p.buf[:l+maxVarintBytes]
-	}
+	p.buf = append(p.buf, emptyBytes[:]...)
 
 	for x >= 1<<7 {
 		p.buf[l] = uint8(x&0x7f | 0x80)
@@ -116,11 +112,7 @@ func (p *Buffer) EncodeVarint(x uint64) os.Error {
 func (p *Buffer) EncodeFixed64(x uint64) os.Error {
 	const fixed64Bytes = 8
 	l := len(p.buf)
-	if l+fixed64Bytes > cap(p.buf) { // not necessary except for performance
-		p.buf = append(p.buf, emptyBytes[:fixed64Bytes]...)
-	} else {
-		p.buf = p.buf[:l+fixed64Bytes]
-	}
+	p.buf = append(p.buf, emptyBytes[:fixed64Bytes]...)
 
 	p.buf[l] = uint8(x)
 	p.buf[l+1] = uint8(x >> 8)
@@ -139,11 +131,7 @@ func (p *Buffer) EncodeFixed64(x uint64) os.Error {
 func (p *Buffer) EncodeFixed32(x uint64) os.Error {
 	const fixed32Bytes = 4
 	l := len(p.buf)
-	if l+fixed32Bytes > cap(p.buf) { // not necessary except for performance
-		p.buf = append(p.buf, emptyBytes[:fixed32Bytes]...)
-	} else {
-		p.buf = p.buf[:l+fixed32Bytes]
-	}
+	p.buf = append(p.buf, emptyBytes[:fixed32Bytes]...)
 
 	p.buf[l] = uint8(x)
 	p.buf[l+1] = uint8(x >> 8)
