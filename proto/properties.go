@@ -109,8 +109,8 @@ type Properties struct {
 	dec     decoder
 	valDec  valueDecoder // set for bool and numeric types only
 	scratch uintptr
-	sizeof  int // calculations of scratch space
-	alignof int
+	sizeof  uintptr // calculations of scratch space
+	alignof uintptr
 
 	// If this is a packable field, this will be the decoder for the packed version of the field.
 	packedDec decoder
@@ -216,6 +216,10 @@ func (p *Properties) Parse(s string) {
 	}
 }
 
+func logNoSliceEnc(t1, t2 reflect.Type) {
+	fmt.Fprintf(os.Stderr, "proto: no slice oenc for %T = []%T\n", t1, t2)
+}
+
 // Initialize the fields for encoding and decoding.
 func (p *Properties) setEncAndDec(typ reflect.Type) {
 	var vbool bool
@@ -284,8 +288,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	case reflect.Slice:
 		switch t2 := t1.Elem(); t2.Kind() {
 		default:
-		BadSliceType:
-			fmt.Fprintf(os.Stderr, "proto: no slice oenc for %T = []%T\n", t1, t2)
+			logNoSliceEnc(t1, t2)
 			break
 		case reflect.Bool:
 			if p.Packed {
@@ -327,7 +330,8 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 					p.sizeof = startSize * unsafe.Sizeof(vbyte)
 				}
 			default:
-				goto BadSliceType
+				logNoSliceEnc(t1, t2)
+				break
 			}
 		case reflect.Float32, reflect.Float64:
 			switch t2.Bits() {
@@ -354,7 +358,8 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 				p.alignof = unsafe.Alignof(vfloat64)
 				p.sizeof = startSize * unsafe.Sizeof(vfloat64)
 			default:
-				goto BadSliceType
+				logNoSliceEnc(t1, t2)
+				break
 			}
 		case reflect.String:
 			p.enc = (*Buffer).enc_slice_string
@@ -478,7 +483,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 		}
 		scratch = align(scratch, p.alignof)
 		p.scratch = scratch
-		scratch += uintptr(p.sizeof)
+		scratch += p.sizeof
 		prop.tags[p.Tag] = i
 	}
 	prop.reqCount = reqCount
@@ -491,7 +496,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 
 // Alignment of the data in the scratch area.  It doesn't have to be
 // exact, just conservative.  Returns the first number >= o that divides s.
-func align(o uintptr, s int) uintptr {
+func align(o uintptr, s uintptr) uintptr {
 	if s != 0 {
 		for o%uintptr(s) != 0 {
 			o++
