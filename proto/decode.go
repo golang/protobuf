@@ -420,17 +420,6 @@ func initSlice(pslice unsafe.Pointer, base uintptr) {
 	sp.Cap = startSize
 }
 
-// Make *pslice have base address base, length 0, and capacity max(startSize, n).
-func initSlicen(pslice unsafe.Pointer, base uintptr, n int) {
-	if n < startSize {
-		n = startSize
-	}
-	sp := (*reflect.SliceHeader)(pslice)
-	sp.Data = base
-	sp.Len = 0
-	sp.Cap = n
-}
-
 // Individual type decoders
 // For each,
 //	u is the decoded value,
@@ -538,10 +527,7 @@ func (o *Buffer) dec_slice_packed_bool(p *Properties, base uintptr, sbase uintpt
 
 	y := *x
 	if cap(y) == 0 {
-		// Packed fields are usually only encoded once,
-		// so this branch is almost always executed.
-		// The append in the loop below takes care of other cases.
-		initSlicen(unsafe.Pointer(x), sbase+p.scratch, nb)
+		initSlice(unsafe.Pointer(x), sbase+p.scratch)
 		y = *x
 	}
 
@@ -587,10 +573,7 @@ func (o *Buffer) dec_slice_packed_int32(p *Properties, base uintptr, sbase uintp
 
 	y := *x
 	if cap(y) == 0 {
-		// Packed fields are usually only encoded once,
-		// so this branch is almost always executed.
-		// The append in the loop below takes care of other cases.
-		initSlicen(unsafe.Pointer(x), sbase+p.scratch, nb)
+		initSlice(unsafe.Pointer(x), sbase+p.scratch)
 		y = *x
 	}
 
@@ -637,10 +620,7 @@ func (o *Buffer) dec_slice_packed_int64(p *Properties, base uintptr, sbase uintp
 
 	y := *x
 	if cap(y) == 0 {
-		// Packed fields are usually only encoded once,
-		// so this branch is almost always executed.
-		// The append in the loop below takes care of other cases.
-		initSlicen(unsafe.Pointer(x), sbase+p.scratch, nb)
+		initSlice(unsafe.Pointer(x), sbase+p.scratch)
 		y = *x
 	}
 
