@@ -109,8 +109,8 @@ type Properties struct {
 	dec     decoder
 	valDec  valueDecoder // set for bool and numeric types only
 	scratch uintptr
-	sizeof  uintptr // calculations of scratch space
-	alignof uintptr
+	sizeof  int // calculations of scratch space
+	alignof int
 
 	// If this is a packable field, this will be the decoder for the packed version of the field.
 	packedDec decoder
@@ -483,7 +483,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 		}
 		scratch = align(scratch, p.alignof)
 		p.scratch = scratch
-		scratch += p.sizeof
+		scratch += uintptr(p.sizeof)
 		prop.tags[p.Tag] = i
 	}
 	prop.reqCount = reqCount
@@ -496,7 +496,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 
 // Alignment of the data in the scratch area.  It doesn't have to be
 // exact, just conservative.  Returns the first number >= o that divides s.
-func align(o uintptr, s uintptr) uintptr {
+func align(o uintptr, s int) uintptr {
 	if s != 0 {
 		for o%uintptr(s) != 0 {
 			o++
