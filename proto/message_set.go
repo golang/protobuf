@@ -58,17 +58,17 @@ var ErrNoMessageTypeId = os.NewError("proto does not have a message type ID")
 // When a proto1 proto has a field that looks like:
 //   optional message<MessageSet> info = 3;
 // the protocol compiler produces a field in the generated struct that looks like:
-//   Info *_proto_.MessageSet  "PB(bytes,3,opt,name=info)"
+//   Info *_proto_.MessageSet  `protobuf:"bytes,3,opt,name=info"`
 // The package is automatically inserted so there is no need for that proto file to
 // import this package.
 
 type _MessageSet_Item struct {
-	TypeId  *int32 "PB(varint,2,req,name=type_id)"
-	Message []byte "PB(bytes,3,req,name=message)"
+	TypeId  *int32 `protobuf:"varint,2,req,name=type_id"`
+	Message []byte `protobuf:"bytes,3,req,name=message"`
 }
 
 type MessageSet struct {
-	Item             []*_MessageSet_Item "PB(group,1,rep)"
+	Item             []*_MessageSet_Item `protobuf:"group,1,rep"`
 	XXX_unrecognized *bytes.Buffer
 	// TODO: caching?
 }

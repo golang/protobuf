@@ -13,34 +13,35 @@ var _ = proto.GetString
 var _ = math.Inf
 var _ os.Error
 
+
 type CodeGeneratorRequest struct {
-	FileToGenerate	[]string	"PB(bytes,1,rep,name=file_to_generate)"
-	Parameter	*string	"PB(bytes,2,opt,name=parameter)"
-	ProtoFile	[]*google_protobuf.FileDescriptorProto	"PB(bytes,15,rep,name=proto_file)"
+	FileToGenerate		[]string				`protobuf:"bytes,1,rep,name=file_to_generate"`
+	Parameter		*string					`protobuf:"bytes,2,opt,name=parameter"`
+	ProtoFile		[]*google_protobuf.FileDescriptorProto	`protobuf:"bytes,15,rep,name=proto_file"`
 	XXX_unrecognized	[]byte
 }
-func (this *CodeGeneratorRequest) Reset() {
-	*this = CodeGeneratorRequest{}
-}
+
+func (this *CodeGeneratorRequest) Reset()		{ *this = CodeGeneratorRequest{} }
+func (this *CodeGeneratorRequest) String() string	{ return proto.CompactTextString(this) }
 
 type CodeGeneratorResponse struct {
-	Error	*string	"PB(bytes,1,opt,name=error)"
-	File	[]*CodeGeneratorResponse_File	"PB(bytes,15,rep,name=file)"
+	Error			*string				`protobuf:"bytes,1,opt,name=error"`
+	File			[]*CodeGeneratorResponse_File	`protobuf:"bytes,15,rep,name=file"`
 	XXX_unrecognized	[]byte
-}
-func (this *CodeGeneratorResponse) Reset() {
-	*this = CodeGeneratorResponse{}
 }
 
+func (this *CodeGeneratorResponse) Reset()		{ *this = CodeGeneratorResponse{} }
+func (this *CodeGeneratorResponse) String() string	{ return proto.CompactTextString(this) }
+
 type CodeGeneratorResponse_File struct {
-	Name	*string	"PB(bytes,1,opt,name=name)"
-	InsertionPoint	*string	"PB(bytes,2,opt,name=insertion_point)"
-	Content	*string	"PB(bytes,15,opt,name=content)"
+	Name			*string	`protobuf:"bytes,1,opt,name=name"`
+	InsertionPoint		*string	`protobuf:"bytes,2,opt,name=insertion_point"`
+	Content			*string	`protobuf:"bytes,15,opt,name=content"`
 	XXX_unrecognized	[]byte
 }
-func (this *CodeGeneratorResponse_File) Reset() {
-	*this = CodeGeneratorResponse_File{}
-}
+
+func (this *CodeGeneratorResponse_File) Reset()		{ *this = CodeGeneratorResponse_File{} }
+func (this *CodeGeneratorResponse_File) String() string	{ return proto.CompactTextString(this) }
 
 func init() {
 }

@@ -62,7 +62,7 @@ type ExtensionDesc struct {
 	ExtensionType interface{} // nil pointer to the extension type
 	Field         int32       // field number
 	Name          string      // fully-qualified name of extension
-	Tag           string      // PB(...) tag style
+	Tag           string      // protobuf tag style
 }
 
 // isExtensionField returns true iff the given field number is in an extension range.

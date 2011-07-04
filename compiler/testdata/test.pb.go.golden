@@ -117,13 +117,13 @@ func (x Reply_Entry_Game) String() string {
 }
 
 type Request struct {
-	Key              []int64                    "PB(varint,1,rep,name=key)"
-	ImportedMessage  *imp.ImportedMessage       "PB(bytes,2,opt,name=imported_message)"
-	Hue              *Request_Color             "PB(varint,3,opt,name=hue,enum=my_test.Request_Color)"
-	Hat              *HatType                   "PB(varint,4,opt,name=hat,enum=my_test.HatType,def=1)"
-	Owner            *imp.ImportedMessage_Owner "PB(varint,6,opt,name=owner,enum=imp.ImportedMessage_Owner)"
-	Deadline         *float32                   "PB(fixed32,7,opt,name=deadline,def=inf)"
-	Somegroup        *Request_SomeGroup         "PB(group,8,opt,name=SomeGroup)"
+	Key              []int64                    `protobuf:"varint,1,rep,name=key"`
+	ImportedMessage  *imp.ImportedMessage       `protobuf:"bytes,2,opt,name=imported_message"`
+	Hue              *Request_Color             `protobuf:"varint,3,opt,name=hue,enum=my_test.Request_Color"`
+	Hat              *HatType                   `protobuf:"varint,4,opt,name=hat,enum=my_test.HatType,def=1"`
+	Owner            *imp.ImportedMessage_Owner `protobuf:"varint,6,opt,name=owner,enum=imp.ImportedMessage_Owner"`
+	Deadline         *float32                   `protobuf:"fixed32,7,opt,name=deadline,def=inf"`
+	Somegroup        *Request_SomeGroup         `protobuf:"group,8,opt,name=SomeGroup"`
 	XXX_unrecognized []byte
 }
 
@@ -135,7 +135,7 @@ const Default_Request_Hat HatType = HatType_FEDORA
 var Default_Request_Deadline float32 = float32(math.Inf(1))
 
 type Request_SomeGroup struct {
-	GroupField       *int32 "PB(varint,9,opt,name=group_field)"
+	GroupField       *int32 `protobuf:"varint,9,opt,name=group_field"`
 	XXX_unrecognized []byte
 }
 
@@ -143,8 +143,8 @@ func (this *Request_SomeGroup) Reset()         { *this = Request_SomeGroup{} }
 func (this *Request_SomeGroup) String() string { return proto.CompactTextString(this) }
 
 type Reply struct {
-	Found            []*Reply_Entry "PB(bytes,1,rep,name=found)"
-	CompactKeys      []int32        "PB(varint,2,rep,packed,name=compact_keys)"
+	Found            []*Reply_Entry `protobuf:"bytes,1,rep,name=found"`
+	CompactKeys      []int32        `protobuf:"varint,2,rep,packed,name=compact_keys"`
 	XXX_extensions   map[int32][]byte
 	XXX_unrecognized []byte
 }
@@ -167,9 +167,9 @@ func (this *Reply) ExtensionMap() map[int32][]byte {
 }
 
 type Reply_Entry struct {
-	KeyThatNeeds_1234Camel_CasIng *int64 "PB(varint,1,req,name=key_that_needs_1234camel_CasIng)"
-	Value                         *int64 "PB(varint,2,opt,name=value,def=7)"
-	XMyFieldName_2                *int64 "PB(varint,3,opt,name=_my_field_name_2)"
+	KeyThatNeeds_1234Camel_CasIng *int64 `protobuf:"varint,1,req,name=key_that_needs_1234camel_CasIng"`
+	Value                         *int64 `protobuf:"varint,2,opt,name=value,def=7"`
+	XMyFieldName_2                *int64 `protobuf:"varint,3,opt,name=_my_field_name_2"`
 	XXX_unrecognized              []byte
 }
 
@@ -190,7 +190,7 @@ var E_ReplyExtensions_Time = &proto.ExtensionDesc{
 	ExtensionType: (*float64)(nil),
 	Field:         101,
 	Name:          "my_test.time",
-	Tag:           "PB(fixed64,101,opt,name=time)",
+	Tag:           "fixed64,101,opt,name=time",
 }
 
 type OldReply struct {
@@ -230,7 +230,7 @@ var E_Tag = &proto.ExtensionDesc{
 	ExtensionType: (*string)(nil),
 	Field:         103,
 	Name:          "my_test.tag",
-	Tag:           "PB(bytes,103,opt,name=tag)",
+	Tag:           "bytes,103,opt,name=tag",
 }
 
 func init() {

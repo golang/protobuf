@@ -101,10 +101,10 @@
 		}
 
 		type Test struct {
-			Label	*string	"PB(bytes,1,req,name=label)"
-			Type	*int32	"PB(varint,2,opt,name=type,def=77)"
-			Reps	[]int64	"PB(varint,3,rep,name=reps)"
-			Optionalgroup	*Test_OptionalGroup	"PB(group,4,opt,name=optionalgroup)"
+			Label	*string	`protobuf:"bytes,1,req,name=label"`
+			Type	*int32	`protobuf:"varint,2,opt,name=type,def=77"`
+			Reps	[]int64	`protobuf:"varint,3,rep,name=reps"`
+			Optionalgroup	*Test_OptionalGroup	`protobuf:"group,4,opt,name=optionalgroup"`
 			XXX_unrecognized []byte
 		}
 		func (this *Test) Reset() {
@@ -113,7 +113,7 @@
 		const Default_Test_Type int32 = 77
 
 		type Test_OptionalGroup struct {
-			RequiredField	*string	"PB(bytes,5,req)"
+			RequiredField	*string	`protobuf:"bytes,5,req"`
 			XXX_unrecognized []byte
 		}
 		func (this *Test_OptionalGroup) Reset() {

@@ -359,7 +359,7 @@ func (g *Generator) Fail(msgs ...string) {
 // It then sets file name mappings defined by those entries.
 func (g *Generator) CommandLineParameters(parameter string) {
 	g.Param = make(map[string]string)
-	for _, p := range strings.Split(parameter, ",", -1) {
+	for _, p := range strings.Split(parameter, ",") {
 		if i := strings.Index(p, "="); i < 0 {
 			g.Param[p] = ""
 		} else {
@@ -847,7 +847,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	g.P()
 }
 
-// The tag is a string like "PB(varint,2,opt,name=fieldname,def=7)" that
+// The tag is a string like "varint,2,opt,name=fieldname,def=7" that
 // identifies details of the field for the protocol buffer marshaling and unmarshaling
 // code.  The fields are:
 //	wire encoding
@@ -921,7 +921,7 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 	} else {
 		name = ",name=" + name
 	}
-	return Quote(fmt.Sprintf("PB(%s,%d,%s%s%s%s%s)",
+	return Quote(fmt.Sprintf("%s,%d,%s%s%s%s%s",
 		wiretype,
 		proto.GetInt32(field.Number),
 		optrepreq,
@@ -1030,7 +1030,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	for _, field := range message.Field {
 		fieldname := CamelCase(*field.Name)
 		typename, wiretype := g.GoType(message, field)
-		tag := g.goTag(field, wiretype)
+		tag := "`protobuf:" + g.goTag(field, wiretype) + "`"
 		g.P(fieldname, "\t", typename, "\t", tag)
 		g.RecordTypeUse(proto.GetString(field.TypeName))
 	}
