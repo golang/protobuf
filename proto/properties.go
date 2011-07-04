@@ -116,7 +116,7 @@ type Properties struct {
 	packedDec decoder
 }
 
-// String formats the properties in the "PB(...)" struct tag style.
+// String formats the properties in the protobuf struct field tag style.
 func (p *Properties) String() string {
 	s := p.Wire
 	s = ","
@@ -145,10 +145,10 @@ func (p *Properties) String() string {
 	return s
 }
 
-// Parse populates p by parsing a string in the "PB(...)" struct tag style.
+// Parse populates p by parsing a string in the protobuf struct field tag style.
 func (p *Properties) Parse(s string) {
 	// "bytes,49,opt,def=hello!,name=foo"
-	fields := strings.Split(s, ",", -1) // breaks def=, but handled below.
+	fields := strings.Split(s, ",") // breaks def=, but handled below.
 	if len(fields) < 2 {
 		fmt.Fprintf(os.Stderr, "proto: tag has too few fields: %q\n", s)
 		return
@@ -411,18 +411,17 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	p.tagcode = p.tagbuf[0 : i+1]
 }
 
-// Init populates the properties from a protocol buffer struct field.
+// Init populates the properties from a protocol buffer struct tag.
 func (p *Properties) Init(typ reflect.Type, name, tag string, offset uintptr) {
-	// "PB(bytes,49,opt,def=hello!)"
-	// TODO: should not assume the only thing is PB(...)
+	// "bytes,49,opt,def=hello!"
 	p.Name = name
 	p.OrigName = name
 	p.offset = offset
 
-	if len(tag) < 4 || tag[0:3] != "PB(" || tag[len(tag)-1] != ')' {
+	if tag == "" {
 		return
 	}
-	p.Parse(tag[3 : len(tag)-1])
+	p.Parse(tag)
 	p.setEncAndDec(typ)
 }
 
@@ -449,7 +448,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		p := new(Properties)
-		p.Init(f.Type, f.Name, f.Tag, f.Offset)
+		p.Init(f.Type, f.Name, f.Tag.Get("protobuf"), f.Offset)
 		if f.Name == "XXX_extensions" { // special case
 			var vmap map[int32][]byte
 			p.enc = (*Buffer).enc_map
