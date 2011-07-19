@@ -46,6 +46,7 @@ test:
 
 clean:
 	cd proto && gomake clean
+	cd proto/testdata && gomake clean
 	cd compiler && gomake clean
 	cd compiler/descriptor && gomake clean
 	cd compiler/plugin && gomake clean
@@ -55,6 +56,7 @@ clean:
 
 nuke:
 	cd proto && gomake nuke
+	cd proto/testdata && gomake nuke
 	cd compiler/descriptor && gomake nuke
 	cd compiler/plugin && gomake nuke
 	cd compiler && gomake nuke
