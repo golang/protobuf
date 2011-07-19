@@ -33,44 +33,46 @@ package proto_test
 
 import (
 	"bytes"
-	. "goprotobuf.googlecode.com/hg/proto"
-	. "./testdata/_obj/test_proto"
 	"testing"
+
+	"goprotobuf.googlecode.com/hg/proto"
+
+	pb "./testdata/_obj/test_proto"
 )
 
-func newTestMessage() *MyMessage {
-	msg := &MyMessage{
-		Count: Int32(42),
-		Name:  String("Dave"),
-		Quote: String(`"I didn't want to go."`),
+func newTestMessage() *pb.MyMessage {
+	msg := &pb.MyMessage{
+		Count: proto.Int32(42),
+		Name:  proto.String("Dave"),
+		Quote: proto.String(`"I didn't want to go."`),
 		Pet:   []string{"bunny", "kitty", "horsey"},
-		Inner: &InnerMessage{
-			Host:      String("footrest.syd"),
-			Port:      Int32(7001),
-			Connected: Bool(true),
+		Inner: &pb.InnerMessage{
+			Host:      proto.String("footrest.syd"),
+			Port:      proto.Int32(7001),
+			Connected: proto.Bool(true),
 		},
-		Others: []*OtherMessage{
-			&OtherMessage{
-				Key:   Int64(0xdeadbeef),
+		Others: []*pb.OtherMessage{
+			&pb.OtherMessage{
+				Key:   proto.Int64(0xdeadbeef),
 				Value: []byte{1, 65, 7, 12},
 			},
-			&OtherMessage{
-				Weight: Float32(6.022),
-				Inner: &InnerMessage{
-					Host: String("lesha.mtv"),
-					Port: Int32(8002),
+			&pb.OtherMessage{
+				Weight: proto.Float32(6.022),
+				Inner: &pb.InnerMessage{
+					Host: proto.String("lesha.mtv"),
+					Port: proto.Int32(8002),
 				},
 			},
 		},
-		Bikeshed: NewMyMessage_Color(MyMessage_BLUE),
-		Somegroup: &MyMessage_SomeGroup{
-			GroupField: Int32(8),
+		Bikeshed: pb.NewMyMessage_Color(pb.MyMessage_BLUE),
+		Somegroup: &pb.MyMessage_SomeGroup{
+			GroupField: proto.Int32(8),
 		},
 	}
-	ext := &Ext{
-		Data: String("Big gobs for big rats"),
+	ext := &pb.Ext{
+		Data: proto.String("Big gobs for big rats"),
 	}
-	if err := SetExtension(msg, E_Ext_More, ext); err != nil {
+	if err := proto.SetExtension(msg, pb.E_Ext_More, ext); err != nil {
 		panic(err)
 	}
 	return msg
@@ -109,7 +111,7 @@ SomeGroup {
 
 func TestMarshalTextFull(t *testing.T) {
 	buf := new(bytes.Buffer)
-	MarshalText(buf, newTestMessage())
+	proto.MarshalText(buf, newTestMessage())
 	s := buf.String()
 	if s != text {
 		t.Errorf("Got:\n===\n%v===\nExpected:\n===\n%v===\n", s, text)
@@ -151,7 +153,7 @@ func compact(src string) string {
 var compactText = compact(text)
 
 func TestCompactText(t *testing.T) {
-	s := CompactTextString(newTestMessage())
+	s := proto.CompactTextString(newTestMessage())
 	if s != compactText {
 		t.Errorf("Got:\n===\n%v===\nExpected:\n===\n%v===\n", s, compactText)
 	}
