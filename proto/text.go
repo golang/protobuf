@@ -127,19 +127,17 @@ func writeStruct(w *textWriter, sv reflect.Value) {
 			continue
 		}
 
-		if props.Repeated {
-			if fv.Kind() == reflect.Slice {
-				// Repeated field.
-				for j := 0; j < fv.Len(); j++ {
-					writeName(w, props)
-					if !w.compact {
-						w.WriteByte(' ')
-					}
-					writeAny(w, fv.Index(j), props)
-					w.WriteByte('\n')
+		if props.Repeated && fv.Kind() == reflect.Slice {
+			// Repeated field.
+			for j := 0; j < fv.Len(); j++ {
+				writeName(w, props)
+				if !w.compact {
+					w.WriteByte(' ')
 				}
-				continue
+				writeAny(w, fv.Index(j), props)
+				w.WriteByte('\n')
 			}
+			continue
 		}
 
 		writeName(w, props)
