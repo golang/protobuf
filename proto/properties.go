@@ -523,7 +523,7 @@ func propByIndex(t reflect.Type, x []int) *Properties {
 	return prop.Prop[x[0]]
 }
 
-// Get the address and type of a pointer to the structure from an interface.
+// Get the address and type of a pointer to a struct from an interface.
 // unsafe.Reflect can do this, but does multiple mallocs.
 func getbase(pb interface{}) (t reflect.Type, b uintptr, err os.Error) {
 	// get pointer

@@ -1212,6 +1212,15 @@ func TestNilMarshaler(t *testing.T) {
 	}
 }
 
+// Check that passing a struct to Marshal returns a good error,
+// rather than panicking.
+func TestStructMarshaling(t *testing.T) {
+	_, err := Marshal(OtherMessage{})
+	if err != ErrNotPtr {
+		t.Errorf("got %v, expected %v", err, ErrNotPtr)
+	}
+}
+
 func BenchmarkMarshal(b *testing.B) {
 	b.StopTimer()
 

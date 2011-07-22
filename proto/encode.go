@@ -52,15 +52,20 @@ type ErrRequiredNotSet struct {
 }
 
 func (e *ErrRequiredNotSet) String() string {
-	return "required fields not set in " + e.t.String()
+	return "proto: required fields not set in " + e.t.String()
 }
 
-// ErrRepeatedHasNil is the error returned if Marshal is called with
-// a protocol buffer struct with a repeated field containing a nil element.
-var ErrRepeatedHasNil = os.NewError("repeated field has nil")
+var (
+	// ErrRepeatedHasNil is the error returned if Marshal is called with
+	// a struct with a repeated field containing a nil element.
+	ErrRepeatedHasNil = os.NewError("proto: repeated field has nil")
 
-// ErrNil is the error returned if Marshal is called with nil.
-var ErrNil = os.NewError("marshal called with nil")
+	// ErrNil is the error returned if Marshal is called with nil.
+	ErrNil = os.NewError("proto: Marshal called with nil")
+
+	// ErrNotPtr is the error returned if Marshal is called with a non-pointer.
+	ErrNotPtr = os.NewError("proto: Marshal called with a non-pointer")
+)
 
 // The fundamental encoders that put bytes on the wire.
 // Those that take integer types all accept uint64 and are
@@ -213,6 +218,9 @@ func (p *Buffer) Marshal(pb interface{}) os.Error {
 	mstat := runtime.MemStats.Mallocs
 
 	t, b, err := getbase(pb)
+	if t.Kind() != reflect.Ptr {
+		return ErrNotPtr
+	}
 	if err == nil {
 		err = p.enc_struct(t.Elem(), b)
 	}
