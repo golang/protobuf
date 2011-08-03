@@ -53,7 +53,7 @@
 		have them.  They have the form Default_StructName_FieldName.
 	  - Enums are given type names and maps between names to values,
 	  	plus a helper function to create values.  Enum values are prefixed
-	  	with the enum's type name.
+	  	with the enum's type name. Enum types have a String method.
 	  - Nested groups and enums have type names prefixed with the name of
 	  	the surrounding message type.
 	  - Extensions are given descriptor names that start with E_,
@@ -98,6 +98,9 @@
 		func NewFOO(x int32) *FOO {
 			e := FOO(x)
 			return &e
+		}
+		func (x FOO) String() string {
+			return proto.EnumName(FOO_name, int32(x))
 		}
 
 		type Test struct {
