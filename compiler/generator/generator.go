@@ -85,11 +85,13 @@ func RegisterPlugin(p Plugin) {
 
 // The file and package name method are common to messages and enums.
 type common struct {
-	File *descriptor.FileDescriptorProto // File this object comes from.
+	file *descriptor.FileDescriptorProto // File this object comes from.
 }
 
 // PackageName is name in the package clause in the generated file.
-func (c *common) PackageName() string { return uniquePackageOf(c.File) }
+func (c *common) PackageName() string { return uniquePackageOf(c.file) }
+
+func (c *common) File() *descriptor.FileDescriptorProto { return c.file }
 
 // Descriptor represents a protocol buffer message.
 type Descriptor struct {
@@ -171,7 +173,7 @@ func (e *EnumDescriptor) integerValueAsString(name string) string {
 	return ""
 }
 
-// ExtensionDescriptor desribes an extension. If it's at top level, its parent will be nil.
+// ExtensionDescriptor describes an extension. If it's at top level, its parent will be nil.
 // Otherwise it will be the descriptor of the message in which it is defined.
 type ExtensionDescriptor struct {
 	common
@@ -206,6 +208,14 @@ func (e *ExtensionDescriptor) DescName() string {
 	return "E_" + strings.Join(typeName, "_")
 }
 
+// ImportedDescriptor describes a type that has been publicly imported from another file.
+type ImportedDescriptor struct {
+	common
+	o Object
+}
+
+func (id *ImportedDescriptor) TypeName() []string { return id.o.TypeName() }
+
 // FileDescriptor describes an protocol buffer descriptor file (.proto).
 // It includes slices of all the messages and enums defined within it.
 // Those slices are constructed by WrapTypes.
@@ -214,6 +224,7 @@ type FileDescriptor struct {
 	desc []*Descriptor          // All the messages defined in this file.
 	enum []*EnumDescriptor      // All the enums defined in this file.
 	ext  []*ExtensionDescriptor // All the top-level extensions defined in this file.
+	imp  []*ImportedDescriptor  // All types defined in files publicly imported by this file.
 
 	// The full list of symbols that are exported.
 	// This is used for supporting public imports.
@@ -289,14 +300,15 @@ func (cs constOrVarSymbol) GenerateAlias(g *Generator, pkg string) {
 	g.P(cs.typ, " ", cs.sym, " = ", pkg, ".", cs.sym)
 }
 
-// Object is an interface abstracting the abilities shared by enums and messages.
+// Object is an interface abstracting the abilities shared by enums, messages, extensions and imported objects.
 type Object interface {
 	PackageName() string // The name we use in our output (a_b_c), possibly renamed for uniqueness.
 	TypeName() []string
+	File() *descriptor.FileDescriptorProto
 }
 
 // Each package name we generate must be unique. The package we're generating
-// gets its own name but every other package must have a unqiue name that does
+// gets its own name but every other package must have a unique name that does
 // not conflict in the code we generate.  These names are chosen globally (although
 // they don't have to be, it simplifies things to do them globally).
 func uniquePackageOf(fd *descriptor.FileDescriptorProto) string {
@@ -461,11 +473,13 @@ func (g *Generator) WrapTypes() {
 		g.buildNestedDescriptors(descs)
 		enums := wrapEnumDescriptors(f, descs)
 		exts := wrapExtensions(f)
+		imps := wrapImported(f, g)
 		g.allFiles[i] = &FileDescriptor{
 			FileDescriptorProto: f,
 			desc:                descs,
 			enum:                enums,
 			ext:                 exts,
+			imp:                 imps,
 		}
 	}
 
@@ -505,11 +519,11 @@ func (g *Generator) buildNestedDescriptors(descs []*Descriptor) {
 
 // Construct the Descriptor and add it to the slice
 func addDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto) []*Descriptor {
-	d := &Descriptor{common{File: file}, desc, parent, nil, nil, nil}
+	d := &Descriptor{common{file}, desc, parent, nil, nil, nil}
 
 	d.ext = make([]*ExtensionDescriptor, len(desc.Extension))
 	for i, field := range desc.Extension {
-		d.ext[i] = &ExtensionDescriptor{common{File: file}, field, d}
+		d.ext[i] = &ExtensionDescriptor{common{file}, field, d}
 	}
 
 	return append(sl, d)
@@ -536,7 +550,7 @@ func wrapThisDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, pare
 
 // Construct the EnumDescriptor and add it to the slice
 func addEnumDescriptor(sl []*EnumDescriptor, desc *descriptor.EnumDescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto) []*EnumDescriptor {
-	return append(sl, &EnumDescriptor{common{File: file}, desc, parent, nil})
+	return append(sl, &EnumDescriptor{common{file}, desc, parent, nil})
 }
 
 // Return a slice of all the EnumDescriptors defined within this file
@@ -559,9 +573,26 @@ func wrapEnumDescriptors(file *descriptor.FileDescriptorProto, descs []*Descript
 func wrapExtensions(file *descriptor.FileDescriptorProto) []*ExtensionDescriptor {
 	sl := make([]*ExtensionDescriptor, len(file.Extension))
 	for i, field := range file.Extension {
-		sl[i] = &ExtensionDescriptor{common{File: file}, field, nil}
+		sl[i] = &ExtensionDescriptor{common{file}, field, nil}
 	}
 	return sl
+}
+
+// Return a slice of all the types that are publicly imported into this file.
+func wrapImported(file *descriptor.FileDescriptorProto, g *Generator) (sl []*ImportedDescriptor) {
+	for _, index := range file.PublicDependency {
+		df := g.fileByName(file.Dependency[index])
+		for _, d := range df.desc {
+			sl = append(sl, &ImportedDescriptor{common{file}, d})
+		}
+		for _, e := range df.enum {
+			sl = append(sl, &ImportedDescriptor{common{file}, e})
+		}
+		for _, ext := range df.ext {
+			sl = append(sl, &ImportedDescriptor{common{file}, ext})
+		}
+	}
+	return
 }
 
 // BuildTypeNameMap builds the map from fully qualified type names to objects.
@@ -591,11 +622,44 @@ func (g *Generator) BuildTypeNameMap() {
 // ObjectNamed, given a fully-qualified input type name as it appears in the input data,
 // returns the descriptor for the message or enum with that name.
 func (g *Generator) ObjectNamed(typeName string) Object {
-	f, ok := g.typeNameToObject[typeName]
+	o, ok := g.typeNameToObject[typeName]
 	if !ok {
 		g.Fail("can't find object with type", typeName)
 	}
-	return f
+
+	// If the file of this object isn't a direct dependency of the current file,
+	// or in the current file, then this object has been publicly imported into
+	// a dependency of the current file.
+	// We should return the ImportedDescriptor object for it instead.
+	direct := *o.File().Name == *g.file.Name
+	if !direct {
+		for _, dep := range g.file.Dependency {
+			if *g.fileByName(dep).Name == *o.File().Name {
+				direct = true
+				break
+			}
+		}
+	}
+	if !direct {
+		found := false
+	Loop:
+		for _, dep := range g.file.Dependency {
+			df := g.fileByName(*g.fileByName(dep).Name)
+			for _, td := range df.imp {
+				if td.o == o {
+					// Found it!
+					o = td
+					found = true
+					break Loop
+				}
+			}
+		}
+		if !found {
+			log.Printf("protoc-gen-go: WARNING: failed finding publicly imported dependency for %v, used in %v", typeName, *g.file.Name)
+		}
+	}
+
+	return o
 }
 
 // P prints the arguments to the generated output.  It handles strings and int32s, plus
@@ -687,6 +751,9 @@ func (g *Generator) generate(file *FileDescriptor) {
 	g.file = g.FileOf(file.FileDescriptorProto)
 	g.usedPackages = make(map[string]bool)
 
+	for _, td := range g.file.imp {
+		g.generateImported(td)
+	}
 	for _, enum := range g.file.enum {
 		g.generateEnum(enum)
 	}
@@ -769,6 +836,7 @@ func (g *Generator) generateImports() {
 			// For instance, some protos use foreign field extensions, which we don't support.
 			// Until then, this is just annoying spam.
 			//log.Printf("protoc-gen-go: discarding unused import from %v: %v", *g.file.Name, s)
+			g.P("// discarding unused import ", fd.PackageName(), " ", Quote(filename))
 		}
 	}
 	g.P()
@@ -784,14 +852,37 @@ func (g *Generator) generateImports() {
 	g.P()
 
 	// Symbols from public imports.
+Loop:
 	for _, index := range g.file.PublicDependency {
-		fd := g.fileByName(g.file.Dependency[index])
+		// Don't generate aliases for public imports of files
+		// that we are generating code for, since those symbols
+		// will already be in this package.
+		filename := g.file.Dependency[index]
+		for _, fd := range g.genFiles {
+			if proto.GetString(fd.Name) == filename {
+				g.P("// Ignoring public import ", filename)
+				continue Loop
+			}
+		}
+
+		fd := g.fileByName(filename)
+
 		g.P("// Types from public import ", *fd.Name)
 		for _, sym := range fd.exported {
 			sym.GenerateAlias(g, fd.PackageName())
 		}
 	}
 	g.P()
+}
+
+func (g *Generator) generateImported(id *ImportedDescriptor) {
+	tn := id.TypeName()
+	sn := tn[len(tn)-1]
+	g.P("// ", sn, " from public import ", *id.File().Name)
+	g.usedPackages[id.o.PackageName()] = true
+	g.P()
+
+	// TODO: Move the public import symbol generation into here.
 }
 
 // Generate the enum definitions for this EnumDescriptor.
@@ -899,8 +990,14 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 	}
 	enum := ""
 	if *field.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
+		// We avoid using obj.PackageName(), because we want to use the
+		// original (proto-world) package name.
 		obj := g.ObjectNamed(proto.GetString(field.TypeName))
-		enum = ",enum=" + obj.PackageName() + "." + CamelCaseSlice(obj.TypeName())
+		enum = ",enum="
+		if pkg := proto.GetString(obj.File().Package); pkg != "" {
+			enum += pkg + "."
+		}
+		enum += CamelCaseSlice(obj.TypeName())
 	}
 	packed := ""
 	if field.Options != nil && proto.GetBool(field.Options.Packed) {
@@ -1016,6 +1113,8 @@ func (g *Generator) GoType(message *Descriptor, field *descriptor.FieldDescripto
 
 func (g *Generator) RecordTypeUse(t string) {
 	if obj, ok := g.typeNameToObject[t]; ok {
+		// Call ObjectNamed to get the true object to record the use.
+		obj = g.ObjectNamed(t)
 		g.usedPackages[obj.PackageName()] = true
 	}
 }
@@ -1198,7 +1297,11 @@ func (g *Generator) generateInitFunction() {
 }
 
 func (g *Generator) generateEnumRegistration(enum *EnumDescriptor) {
-	pkg := g.packageName + "." // We always print the full package name here.
+	// // We always print the full (proto-world) package name here.
+	pkg := proto.GetString(enum.File().Package)
+	if pkg != "" {
+		pkg += "."
+	}
 	// The full type name
 	typeName := enum.TypeName()
 	// The full type name, CamelCased.

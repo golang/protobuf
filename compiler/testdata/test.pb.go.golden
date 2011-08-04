@@ -6,7 +6,8 @@ package my_test
 import proto "goprotobuf.googlecode.com/hg/proto"
 import "math"
 import "os"
-import imp "imp.pb"
+import imp1 "imp.pb"
+// discarding unused import multitest2 "multi1.pb"
 
 // Reference proto, math & os imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
@@ -116,13 +117,13 @@ func (x Reply_Entry_Game) String() string {
 }
 
 type Request struct {
-	Key              []int64                    `protobuf:"varint,1,rep,name=key"`
-	ImportedMessage  *imp.ImportedMessage       `protobuf:"bytes,2,opt,name=imported_message"`
-	Hue              *Request_Color             `protobuf:"varint,3,opt,name=hue,enum=my_test.Request_Color"`
-	Hat              *HatType                   `protobuf:"varint,4,opt,name=hat,enum=my_test.HatType,def=1"`
-	Owner            *imp.ImportedMessage_Owner `protobuf:"varint,6,opt,name=owner,enum=imp.ImportedMessage_Owner"`
-	Deadline         *float32                   `protobuf:"fixed32,7,opt,name=deadline,def=inf"`
-	Somegroup        *Request_SomeGroup         `protobuf:"group,8,opt,name=SomeGroup"`
+	Key              []int64                     `protobuf:"varint,1,rep,name=key"`
+	ImportedMessage  *imp1.ImportedMessage       `protobuf:"bytes,2,opt,name=imported_message"`
+	Hue              *Request_Color              `protobuf:"varint,3,opt,name=hue,enum=my.test.Request_Color"`
+	Hat              *HatType                    `protobuf:"varint,4,opt,name=hat,enum=my.test.HatType,def=1"`
+	Owner            *imp1.ImportedMessage_Owner `protobuf:"varint,6,opt,name=owner,enum=imp.ImportedMessage_Owner"`
+	Deadline         *float32                    `protobuf:"fixed32,7,opt,name=deadline,def=inf"`
+	Somegroup        *Request_SomeGroup          `protobuf:"group,8,opt,name=SomeGroup"`
 	XXX_unrecognized []byte
 }
 
@@ -233,10 +234,10 @@ var E_Tag = &proto.ExtensionDesc{
 }
 
 func init() {
-	proto.RegisterEnum("my_test.HatType", HatType_name, HatType_value)
-	proto.RegisterEnum("my_test.Days", Days_name, Days_value)
-	proto.RegisterEnum("my_test.Request_Color", Request_Color_name, Request_Color_value)
-	proto.RegisterEnum("my_test.Reply_Entry_Game", Reply_Entry_Game_name, Reply_Entry_Game_value)
+	proto.RegisterEnum("my.test.HatType", HatType_name, HatType_value)
+	proto.RegisterEnum("my.test.Days", Days_name, Days_value)
+	proto.RegisterEnum("my.test.Request_Color", Request_Color_name, Request_Color_value)
+	proto.RegisterEnum("my.test.Reply_Entry_Game", Reply_Entry_Game_name, Reply_Entry_Game_value)
 	proto.RegisterExtension(E_ReplyExtensions_Time)
 	proto.RegisterExtension(E_Tag)
 }
