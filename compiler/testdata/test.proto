@@ -61,6 +61,10 @@ message Request {
   optional group SomeGroup = 8 {
     optional int32 group_field = 9;
   }
+
+  // This foreign message type is in imp2.proto,
+  // which is publicly imported by imp.proto.
+  // optional imp.PubliclyImportedMessage pub = 10;
 }
 
 message Reply {
