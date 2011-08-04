@@ -226,9 +226,10 @@ type FileDescriptor struct {
 	ext  []*ExtensionDescriptor // All the top-level extensions defined in this file.
 	imp  []*ImportedDescriptor  // All types defined in files publicly imported by this file.
 
-	// The full list of symbols that are exported.
+	// The full list of symbols that are exported,
+	// as a map from the exported object to its symbols.
 	// This is used for supporting public imports.
-	exported []Symbol
+	exported map[Object][]Symbol
 }
 
 // PackageName is the package name we'll use in the generated code to refer to this file.
@@ -245,8 +246,8 @@ func (d *FileDescriptor) originalPackageName() string {
 	return BaseName(proto.GetString(d.Name))
 }
 
-func (d *FileDescriptor) addExport(symbol Symbol) {
-	d.exported = append(d.exported, symbol)
+func (d *FileDescriptor) addExport(obj Object, symbol Symbol) {
+	d.exported[obj] = append(d.exported[obj], symbol)
 }
 
 // Symbol is an interface representing an exported Go symbol.
@@ -480,6 +481,7 @@ func (g *Generator) WrapTypes() {
 			enum:                enums,
 			ext:                 exts,
 			imp:                 imps,
+			exported:            make(map[Object][]Symbol),
 		}
 	}
 
@@ -850,39 +852,32 @@ func (g *Generator) generateImports() {
 	g.P("var _ = math.Inf")
 	g.P("var _ os.Error")
 	g.P()
-
-	// Symbols from public imports.
-Loop:
-	for _, index := range g.file.PublicDependency {
-		// Don't generate aliases for public imports of files
-		// that we are generating code for, since those symbols
-		// will already be in this package.
-		filename := g.file.Dependency[index]
-		for _, fd := range g.genFiles {
-			if proto.GetString(fd.Name) == filename {
-				g.P("// Ignoring public import ", filename)
-				continue Loop
-			}
-		}
-
-		fd := g.fileByName(filename)
-
-		g.P("// Types from public import ", *fd.Name)
-		for _, sym := range fd.exported {
-			sym.GenerateAlias(g, fd.PackageName())
-		}
-	}
-	g.P()
 }
 
 func (g *Generator) generateImported(id *ImportedDescriptor) {
+	// Don't generate public import symbols for files that we are generating
+	// code for, since those symbols will already be in this package.
+	// We can't simply avoid creating the ImportedDescriptor objects,
+	// because g.genFiles isn't populated at that stage.
 	tn := id.TypeName()
 	sn := tn[len(tn)-1]
-	g.P("// ", sn, " from public import ", *id.File().Name)
-	g.usedPackages[id.o.PackageName()] = true
-	g.P()
+	df := g.FileOf(id.o.File())
+	filename := *df.Name
+	for _, fd := range g.genFiles {
+		if *fd.Name == filename {
+			g.P("// Ignoring public import of ", sn, " from ", filename)
+			g.P()
+			return
+		}
+	}
+	g.P("// ", sn, " from public import ", filename)
+	g.usedPackages[df.PackageName()] = true
 
-	// TODO: Move the public import symbol generation into here.
+	for _, sym := range df.exported[id.o] {
+		sym.GenerateAlias(g, df.PackageName())
+	}
+
+	g.P()
 }
 
 // Generate the enum definitions for this EnumDescriptor.
@@ -893,13 +888,13 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	ccTypeName := CamelCaseSlice(typeName)
 	ccPrefix := enum.prefix()
 	g.P("type ", ccTypeName, " int32")
-	g.file.addExport(enumSymbol(ccTypeName))
+	g.file.addExport(enum, enumSymbol(ccTypeName))
 	g.P("const (")
 	g.In()
 	for _, e := range enum.Value {
 		name := ccPrefix + *e.Name
 		g.P(name, " = ", e.Number)
-		g.file.addExport(constOrVarSymbol{name, "const"})
+		g.file.addExport(enum, constOrVarSymbol{name, "const"})
 	}
 	g.Out()
 	g.P(")")
@@ -1131,7 +1126,8 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	for _, field := range message.Field {
 		fieldname := CamelCase(*field.Name)
 		typename, wiretype := g.GoType(message, field)
-		tag := "`protobuf:" + g.goTag(field, wiretype) + "`"
+		jsonName := *field.Name
+		tag := fmt.Sprintf("`protobuf:%s json:%q`", g.goTag(field, wiretype), jsonName)
 		g.P(fieldname, "\t", typename, "\t", tag)
 		g.RecordTypeUse(proto.GetString(field.TypeName))
 	}
@@ -1195,7 +1191,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.P("}")
 	}
 
-	g.file.addExport(messageSymbol{ccTypeName, hasExtensions, isMessageSet})
+	g.file.addExport(message, messageSymbol{ccTypeName, hasExtensions, isMessageSet})
 
 	// Default constants
 	for _, field := range message.Field {
@@ -1241,7 +1237,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			def = g.DefaultPackageName(enum) + enum.prefix() + def
 		}
 		g.P(kind, fieldname, " ", typename, " = ", def)
-		g.file.addExport(constOrVarSymbol{fieldname, kind})
+		g.file.addExport(message, constOrVarSymbol{fieldname, kind})
 	}
 	g.P()
 
@@ -1275,7 +1271,7 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	g.P("}")
 	g.P()
 
-	g.file.addExport(constOrVarSymbol{ccTypeName, "var"})
+	g.file.addExport(ext, constOrVarSymbol{ccTypeName, "var"})
 }
 
 func (g *Generator) generateInitFunction() {
