@@ -785,7 +785,7 @@ func (g *Generator) generate(file *FileDescriptor) {
 		return
 	}
 	g.Reset()
-	_, err = (&printer.Config{printer.TabIndent, 8}).Fprint(g, fset, ast)
+	_, err = (&printer.Config{printer.TabIndent | printer.UseSpaces, 8}).Fprint(g, fset, ast)
 	if err != nil {
 		g.Fail("generated Go source code could not be reformatted:", err.String())
 	}
