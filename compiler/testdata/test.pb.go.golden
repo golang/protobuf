@@ -145,7 +145,7 @@ func (this *Request_SomeGroup) String() string { return proto.CompactTextString(
 type Reply struct {
 	Found            []*Reply_Entry `protobuf:"bytes,1,rep,name=found" json:"found"`
 	CompactKeys      []int32        `protobuf:"varint,2,rep,packed,name=compact_keys" json:"compact_keys"`
-	XXX_extensions   map[int32][]byte
+	XXX_extensions   map[int32]proto.Extension
 	XXX_unrecognized []byte
 }
 
@@ -153,15 +153,15 @@ func (this *Reply) Reset()         { *this = Reply{} }
 func (this *Reply) String() string { return proto.CompactTextString(this) }
 
 var extRange_Reply = []proto.ExtensionRange{
-	proto.ExtensionRange{100, 536870911},
+	{100, 536870911},
 }
 
 func (*Reply) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_Reply
 }
-func (this *Reply) ExtensionMap() map[int32][]byte {
+func (this *Reply) ExtensionMap() map[int32]proto.Extension {
 	if this.XXX_extensions == nil {
-		this.XXX_extensions = make(map[int32][]byte)
+		this.XXX_extensions = make(map[int32]proto.Extension)
 	}
 	return this.XXX_extensions
 }
@@ -189,12 +189,12 @@ var E_ReplyExtensions_Time = &proto.ExtensionDesc{
 	ExtendedType:  (*Reply)(nil),
 	ExtensionType: (*float64)(nil),
 	Field:         101,
-	Name:          "my_test.time",
+	Name:          "my_test.ReplyExtensions.time",
 	Tag:           "fixed64,101,opt,name=time",
 }
 
 type OldReply struct {
-	XXX_extensions   map[int32][]byte
+	XXX_extensions   map[int32]proto.Extension
 	XXX_unrecognized []byte
 }
 
@@ -212,15 +212,15 @@ var _ proto.Marshaler = (*OldReply)(nil)
 var _ proto.Unmarshaler = (*OldReply)(nil)
 
 var extRange_OldReply = []proto.ExtensionRange{
-	proto.ExtensionRange{100, 536870911},
+	{100, 536870911},
 }
 
 func (*OldReply) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OldReply
 }
-func (this *OldReply) ExtensionMap() map[int32][]byte {
+func (this *OldReply) ExtensionMap() map[int32]proto.Extension {
 	if this.XXX_extensions == nil {
-		this.XXX_extensions = make(map[int32][]byte)
+		this.XXX_extensions = make(map[int32]proto.Extension)
 	}
 	return this.XXX_extensions
 }

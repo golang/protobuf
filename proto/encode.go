@@ -576,9 +576,12 @@ func (o *Buffer) enc_slice_struct_group(p *Properties, base uintptr) os.Error {
 
 // Encode an extension map.
 func (o *Buffer) enc_map(p *Properties, base uintptr) os.Error {
-	v := *(*map[int32][]byte)(unsafe.Pointer(base + p.offset))
-	for _, b := range v {
-		o.buf = append(o.buf, b...)
+	v := *(*map[int32]Extension)(unsafe.Pointer(base + p.offset))
+	if err := encodeExtensionMap(v); err != nil {
+		return err
+	}
+	for _, e := range v {
+		o.buf = append(o.buf, e.enc...)
 	}
 	return nil
 }

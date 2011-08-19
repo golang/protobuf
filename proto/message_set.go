@@ -38,6 +38,7 @@ package proto
 import (
 	"bytes"
 	"os"
+	"reflect"
 )
 
 // ErrNoMessageTypeId occurs when a protocol buffer does not have a message type ID.
@@ -145,16 +146,20 @@ func skipVarint(buf []byte) []byte {
 
 // MarshalMessageSet encodes the extension map represented by m in the message set wire format.
 // It is called by generated Marshal methods on protocol buffer messages with the message_set_wire_format option.
-func MarshalMessageSet(m map[int32][]byte) ([]byte, os.Error) {
+func MarshalMessageSet(m map[int32]Extension) ([]byte, os.Error) {
+	if err := encodeExtensionMap(m); err != nil {
+		return nil, err
+	}
+
 	ms := &MessageSet{Item: make([]*_MessageSet_Item, len(m))}
 	i := 0
-	for k, v := range m {
+	for k, e := range m {
 		// Remove the wire type and field number varint, as well as the length varint.
-		v = skipVarint(skipVarint(v))
+		msg := skipVarint(skipVarint(e.enc))
 
 		ms.Item[i] = &_MessageSet_Item{
 			TypeId:  Int32(k),
-			Message: v,
+			Message: msg,
 		}
 		i++
 	}
@@ -163,7 +168,7 @@ func MarshalMessageSet(m map[int32][]byte) ([]byte, os.Error) {
 
 // UnmarshalMessageSet decodes the extension map encoded in buf in the message set wire format.
 // It is called by generated Unmarshal methods on protocol buffer messages with the message_set_wire_format option.
-func UnmarshalMessageSet(buf []byte, m map[int32][]byte) os.Error {
+func UnmarshalMessageSet(buf []byte, m map[int32]Extension) os.Error {
 	ms := new(MessageSet)
 	if err := Unmarshal(buf, ms); err != nil {
 		return err
@@ -174,7 +179,24 @@ func UnmarshalMessageSet(buf []byte, m map[int32][]byte) os.Error {
 		b = append(b, EncodeVarint(uint64(len(item.Message)))...)
 		b = append(b, item.Message...)
 
-		m[*item.TypeId] = b
+		m[*item.TypeId] = Extension{enc: b}
 	}
 	return nil
+}
+
+// A global registry of types that can be used in a MessageSet.
+
+var messageSetMap = make(map[int32]messageSetDesc)
+
+type messageSetDesc struct {
+	t    reflect.Type // pointer to struct
+	name string
+}
+
+// RegisterMessageSetType is called from the generated code.
+func RegisterMessageSetType(i messageTypeIder, name string) {
+	messageSetMap[i.MessageTypeId()] = messageSetDesc{
+		t:    reflect.TypeOf(i),
+		name: name,
+	}
 }

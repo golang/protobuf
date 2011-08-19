@@ -33,6 +33,7 @@ package proto_test
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 
 	"goprotobuf.googlecode.com/hg/proto"
@@ -68,6 +69,9 @@ func newTestMessage() *pb.MyMessage {
 		Somegroup: &pb.MyMessage_SomeGroup{
 			GroupField: proto.Int32(8),
 		},
+		// One normally wouldn't do this.
+		// This is an undeclared tag 13, as a varint (wire type 0) with value 4.
+		XXX_unrecognized: []byte{13<<3 | 0, 4},
 	}
 	ext := &pb.Ext{
 		Data: proto.String("Big gobs for big rats"),
@@ -75,6 +79,19 @@ func newTestMessage() *pb.MyMessage {
 	if err := proto.SetExtension(msg, pb.E_Ext_More, ext); err != nil {
 		panic(err)
 	}
+
+	// Add an unknown extension. We marshal a pb.Ext, and fake the ID.
+	b, err := proto.Marshal(&pb.Ext{Data: proto.String("3G skiing")})
+	if err != nil {
+		panic(err)
+	}
+	b = append(proto.EncodeVarint(104<<3|proto.WireBytes), b...)
+	proto.SetRawExtension(msg, 104, b)
+
+	// Extensions can be plain fields, too, so let's test that.
+	b = append(proto.EncodeVarint(105<<3|proto.WireVarint), 19)
+	proto.SetRawExtension(msg, 105, b)
+
 	return msg
 }
 
@@ -104,9 +121,15 @@ bikeshed: BLUE
 SomeGroup {
   group_field: 8
 }
-[test_proto.more]: <
+/* 2 unknown bytes */
+tag13: 4
+[test_proto.Ext.more]: <
   data: "Big gobs for big rats"
 >
+/* 13 unknown bytes */
+tag104: "\t3G skiing"
+/* 3 unknown bytes */
+tag105: 19
 `
 
 func TestMarshalTextFull(t *testing.T) {
@@ -121,9 +144,22 @@ func TestMarshalTextFull(t *testing.T) {
 func compact(src string) string {
 	// s/[ \n]+/ /g; s/ $//;
 	dst := make([]byte, len(src))
-	space := false
+	space, comment := false, false
 	j := 0
 	for i := 0; i < len(src); i++ {
+		if strings.HasPrefix(src[i:], "/*") {
+			comment = true
+			i++
+			continue
+		}
+		if comment && strings.HasPrefix(src[i:], "*/") {
+			comment = false
+			i++
+			continue
+		}
+		if comment {
+			continue
+		}
 		c := src[i]
 		if c == ' ' || c == '\n' {
 			space = true
@@ -158,3 +194,5 @@ func TestCompactText(t *testing.T) {
 		t.Errorf("Got:\n===\n%v===\nExpected:\n===\n%v===\n", s, compactText)
 	}
 }
+
+

@@ -32,7 +32,6 @@
 package proto
 
 // Functions for writing the text protocol buffer format.
-// TODO: message sets.
 
 import (
 	"bytes"
@@ -41,6 +40,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -105,17 +105,33 @@ func writeName(w *textWriter, props *Properties) {
 	}
 }
 
-var extendableProtoType = reflect.TypeOf((*extendableProto)(nil)).Elem()
+var (
+	messageSetType      = reflect.TypeOf((*MessageSet)(nil)).Elem()
+	extendableProtoType = reflect.TypeOf((*extendableProto)(nil)).Elem()
+)
 
 func writeStruct(w *textWriter, sv reflect.Value) {
+	if sv.Type() == messageSetType {
+		writeMessageSet(w, sv.Addr().Interface().(*MessageSet))
+		return
+	}
+
 	st := sv.Type()
 	sprops := GetProperties(st)
 	for i := 0; i < sv.NumField(); i++ {
-		if strings.HasPrefix(st.Field(i).Name, "XXX_") {
+		fv := sv.Field(i)
+		if name := st.Field(i).Name; strings.HasPrefix(name, "XXX_") {
+			// There's only two XXX_ fields:
+			//   XXX_unrecognized []byte
+			//   XXX_extensions   map[int32]proto.Extension
+			// The first is handled here;
+			// the second is handled at the bottom of this function.
+			if name == "XXX_unrecognized" && !fv.IsNil() {
+				writeUnknownStruct(w, fv.Interface().([]byte))
+			}
 			continue
 		}
 		props := sprops.Prop[i]
-		fv := sv.Field(i)
 		if fv.Kind() == reflect.Ptr && fv.IsNil() {
 			// Field not filled in. This could be an optional field or
 			// a required field that wasn't filled in. Either way, there
@@ -152,7 +168,7 @@ func writeStruct(w *textWriter, sv reflect.Value) {
 		w.WriteByte('\n')
 	}
 
-	// Extensions.
+	// Extensions (the XXX_extensions field).
 	pv := sv.Addr()
 	if pv.Type().Implements(extendableProtoType) {
 		writeExtensions(w, pv)
@@ -211,19 +227,121 @@ func writeAny(w *textWriter, v reflect.Value, props *Properties) {
 	}
 }
 
+func writeMessageSet(w *textWriter, ms *MessageSet) {
+	for _, item := range ms.Item {
+		id := *item.TypeId
+		if msd, ok := messageSetMap[id]; ok {
+			// Known message set type.
+			fmt.Fprintf(w, "[%s]: <\n", msd.name)
+			w.indent()
+
+			pb := reflect.New(msd.t.Elem())
+			if err := Unmarshal(item.Message, pb.Interface()); err != nil {
+				fmt.Fprintf(w, "/* bad message: %v */\n", err)
+			} else {
+				writeStruct(w, pb.Elem())
+			}
+		} else {
+			// Unknown type.
+			fmt.Fprintf(w, "[%d]: <\n", id)
+			w.indent()
+			writeUnknownStruct(w, item.Message)
+		}
+		w.unindent()
+		w.Write([]byte(">\n"))
+	}
+}
+
+func writeUnknownStruct(w *textWriter, data []byte) {
+	if !w.compact {
+		fmt.Fprintf(w, "/* %d unknown bytes */\n", len(data))
+	}
+	b := NewBuffer(data)
+	for b.index < len(b.buf) {
+		x, err := b.DecodeVarint()
+		if err != nil {
+			fmt.Fprintf(w, "/* %v */\n", err)
+			return
+		}
+		wire, tag := x&7, x>>3
+		if wire == WireEndGroup {
+			w.unindent()
+			w.Write([]byte("}\n"))
+			continue
+		}
+		fmt.Fprintf(w, "tag%d", tag)
+		if wire != WireStartGroup {
+			w.WriteByte(':')
+		}
+		if !w.compact || wire == WireStartGroup {
+			w.WriteByte(' ')
+		}
+		switch wire {
+		case WireBytes:
+			buf, err := b.DecodeRawBytes(false)
+			if err == nil {
+				fmt.Fprintf(w, "%q", buf)
+			} else {
+				fmt.Fprintf(w, "/* %v */", err)
+			}
+		case WireFixed32:
+			x, err := b.DecodeFixed32()
+			writeUnknownInt(w, x, err)
+		case WireFixed64:
+			x, err := b.DecodeFixed64()
+			writeUnknownInt(w, x, err)
+		case WireStartGroup:
+			fmt.Fprint(w, "{")
+			w.indent()
+		case WireVarint:
+			x, err := b.DecodeVarint()
+			writeUnknownInt(w, x, err)
+		default:
+			fmt.Fprintf(w, "/* unknown wire type %d */", wire)
+		}
+		w.WriteByte('\n')
+	}
+}
+
+func writeUnknownInt(w *textWriter, x uint64, err os.Error) {
+	if err == nil {
+		fmt.Fprint(w, x)
+	} else {
+		fmt.Fprintf(w, "/* %v */", err)
+	}
+}
+
+type int32Slice []int32
+
+func (s int32Slice) Len() int           { return len(s) }
+func (s int32Slice) Less(i, j int) bool { return s[i] < s[j] }
+func (s int32Slice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+
 // writeExtensions writes all the extensions in pv.
 // pv is assumed to be a pointer to a protocol message struct that is extendable.
 func writeExtensions(w *textWriter, pv reflect.Value) {
 	emap := extensionMaps[pv.Type().Elem()]
 	ep := pv.Interface().(extendableProto)
-	for extNum := range ep.ExtensionMap() {
+
+	// Order the extensions by ID.
+	// This isn't strictly necessary, but it will give us
+	// canonical output, which will also make testing easier.
+	m := ep.ExtensionMap()
+	ids := make([]int32, 0, len(m))
+	for id := range m {
+		ids = append(ids, id)
+	}
+	sort.Sort(int32Slice(ids))
+
+	for _, extNum := range ids {
+		ext := m[extNum]
 		var desc *ExtensionDesc
 		if emap != nil {
 			desc = emap[extNum]
 		}
 		if desc == nil {
-			// TODO: Handle printing unknown extensions.
-			fmt.Fprintln(os.Stderr, "proto: unknown extension: ", extNum)
+			// Unknown extension.
+			writeUnknownStruct(w, ext.enc)
 			continue
 		}
 
