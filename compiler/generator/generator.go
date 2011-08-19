@@ -271,7 +271,7 @@ func (ms messageSymbol) GenerateAlias(g *Generator, pkg string) {
 	if ms.hasExtensions {
 		g.P("func (*", ms.sym, ") ExtensionRangeArray() []", g.ProtoPkg, ".ExtensionRange ",
 			"{ return (*", remoteSym, ")(nil).ExtensionRangeArray() }")
-		g.P("func (this *", ms.sym, ") ExtensionMap() map[int32][]byte ",
+		g.P("func (this *", ms.sym, ") ExtensionMap() map[int32]", g.ProtoPkg, ".Extension ",
 			"{ return (*", remoteSym, ")(this).ExtensionMap() }")
 		if ms.isMessageSet {
 			g.P("func (this *", ms.sym, ") Marshal() ([]byte, os.Error) ",
@@ -1132,7 +1132,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.RecordTypeUse(proto.GetString(field.TypeName))
 	}
 	if len(message.ExtensionRange) > 0 {
-		g.P("XXX_extensions\t\tmap[int32][]byte")
+		g.P("XXX_extensions\t\tmap[int32]", g.ProtoPkg, ".Extension")
 	}
 	g.P("XXX_unrecognized\t[]byte")
 	g.Out()
@@ -1170,7 +1170,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.In()
 		for _, r := range message.ExtensionRange {
 			end := fmt.Sprint(*r.End - 1) // make range inclusive on both ends
-			g.P(g.ProtoPkg+".ExtensionRange{", r.Start, ", ", end, "},")
+			g.P("{", r.Start, ", ", end, "},")
 		}
 		g.Out()
 		g.P("}")
@@ -1179,11 +1179,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.P("return extRange_", ccTypeName)
 		g.Out()
 		g.P("}")
-		g.P("func (this *", ccTypeName, ") ExtensionMap() map[int32][]byte {")
+		g.P("func (this *", ccTypeName, ") ExtensionMap() map[int32]", g.ProtoPkg, ".Extension {")
 		g.In()
 		g.P("if this.XXX_extensions == nil {")
 		g.In()
-		g.P("this.XXX_extensions = make(map[int32][]byte)")
+		g.P("this.XXX_extensions = make(map[int32]", g.ProtoPkg, ".Extension)")
 		g.Out()
 		g.P("}")
 		g.P("return this.XXX_extensions")
@@ -1264,7 +1264,7 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	g.P("ExtendedType: (", extendedType, ")(nil),")
 	g.P("ExtensionType: (", fieldType, ")(nil),")
 	g.P("Field: ", field.Number, ",")
-	g.P(`Name: "`, g.packageName, ".", *field.Name, `",`)
+	g.P(`Name: "`, g.packageName, ".", strings.Join(ext.TypeName(), "."), `",`)
 	g.P("Tag: ", tag, ",")
 
 	g.Out()
