@@ -1,0 +1,148 @@
+// Go support for Protocol Buffers - Google's data interchange format
+//
+// Copyright 2011 Google Inc.  All rights reserved.
+// http://code.google.com/p/goprotobuf/
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//     * Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above
+// copyright notice, this list of conditions and the following disclaimer
+// in the documentation and/or other materials provided with the
+// distribution.
+//     * Neither the name of Google Inc. nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+// Protocol buffer comparison.
+// TODO: MessageSet and RawMessage.
+
+package proto
+
+import (
+	"bytes"
+	"log"
+	"reflect"
+	"strings"
+)
+
+/*
+Equal returns true iff protocol buffers a and b are equal.
+The arguments must both be protocol buffer structs,
+or both be pointers to protocol buffer structs.
+
+Equality is defined in this way:
+  - Two messages are equal iff they are the same type,
+    corresponding fields are equal, unknown field sets
+    are equal, and extensions sets are equal.
+  - Two set scalar fields are equal iff their values are equal.
+  - Two repeated fields are equal iff their lengths are the same,
+    and their corresponding elements are equal.
+  - Two unset fields are equal.
+  - Two unknown field sets are equal if their current
+    encoded state is equal. (TODO)
+  - Two extension sets are equal iff they have corresponding
+    elements that are pairwise equal. (TODO)
+  - Every other combination of things are not equal.
+
+The return value is undefined if a and b are not protocol buffers.
+*/
+func Equal(a, b interface{}) bool {
+	v1, v2 := reflect.ValueOf(a), reflect.ValueOf(b)
+	if v1.Type() != v2.Type() {
+		return false
+	}
+	if v1.Kind() == reflect.Ptr {
+		v1, v2 = v1.Elem(), v2.Elem()
+	}
+	if v1.Kind() != reflect.Struct {
+		return false
+	}
+	return equalStruct(v1, v2)
+}
+
+// v1 and v2 are known to have the same type.
+func equalStruct(v1, v2 reflect.Value) bool {
+	for i := 0; i < v1.NumField(); i++ {
+		f := v1.Type().Field(i)
+		if strings.HasPrefix(f.Name, "XXX_") {
+			continue
+		}
+		f1, f2 := v1.Field(i), v2.Field(i)
+		if f.Type.Kind() == reflect.Ptr {
+			if n1, n2 := f1.IsNil(), f2.IsNil(); n1 && n2 {
+				// both unset
+				continue
+			} else if n1 != n2 {
+				// set/unset mismatch
+				return false
+			}
+			f1, f2 = f1.Elem(), f2.Elem()
+		}
+		if !equalAny(f1, f2) {
+			return false
+		}
+	}
+
+	// TODO: Deal with XXX_unrecognized and XXX_extensions.
+
+	return true
+}
+
+// v1 and v2 are known to have the same type.
+func equalAny(v1, v2 reflect.Value) bool {
+	switch v1.Kind() {
+	case reflect.Bool:
+		return v1.Bool() == v2.Bool()
+	case reflect.Float32, reflect.Float64:
+		return v1.Float() == v2.Float()
+	case reflect.Int32, reflect.Int64:
+		return v1.Int() == v2.Int()
+	case reflect.Ptr:
+		return equalAny(v1.Elem(), v2.Elem())
+	case reflect.Slice:
+		if n1, n2 := v1.IsNil(), v2.IsNil(); n1 && n2 {
+			return true
+		} else if n1 != n2 {
+			return false
+		}
+		if v1.Len() != v2.Len() {
+			return false
+		}
+		// short circuit: []byte
+		if v1.Type().Elem().Kind() == reflect.Uint8 {
+			return bytes.Equal(v1.Interface().([]byte), v2.Interface().([]byte))
+		}
+		for i := 0; i < v1.Len(); i++ {
+			if !equalAny(v1.Index(i), v2.Index(i)) {
+				return false
+			}
+		}
+		return true
+	case reflect.String:
+		return v1.Interface().(string) == v2.Interface().(string)
+	case reflect.Struct:
+		return equalStruct(v1, v2)
+	case reflect.Uint32, reflect.Uint64:
+		return v1.Uint() == v2.Uint()
+	}
+
+	// unknown type, so not a protocol buffer
+	log.Printf("proto: don't know how to compare %v", v1)
+	return false
+}

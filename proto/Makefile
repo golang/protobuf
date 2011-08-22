@@ -34,8 +34,9 @@ include $(GOROOT)/src/Make.inc
 
 TARG=goprotobuf.googlecode.com/hg/proto
 GOFILES=\
-	encode.go\
 	decode.go\
+	encode.go\
+	equal.go\
 	extensions.go\
 	lib.go\
 	message_set.go\
