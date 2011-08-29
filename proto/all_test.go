@@ -35,6 +35,7 @@ package proto_test
 import (
 	"bytes"
 	"fmt"
+	"math"
 	"os"
 	"reflect"
 	"strings"
@@ -1218,6 +1219,68 @@ func TestStructMarshaling(t *testing.T) {
 	_, err := Marshal(OtherMessage{})
 	if err != ErrNotPtr {
 		t.Errorf("got %v, expected %v", err, ErrNotPtr)
+	}
+}
+
+func TestAllSetDefaults(t *testing.T) {
+	// Exercise SetDefaults with all scalar field types.
+	m := &Defaults{
+		// NaN != NaN, so override that here.
+		F_Nan: Float32(1.7),
+	}
+	expected := &Defaults{
+		F_Bool:    Bool(true),
+		F_Int32:   Int32(32),
+		F_Int64:   Int64(64),
+		F_Fixed32: Uint32(320),
+		F_Fixed64: Uint64(640),
+		F_Uint32:  Uint32(3200),
+		F_Uint64:  Uint64(6400),
+		F_Float:   Float32(314159),
+		F_Double:  Float64(271828),
+		F_String:  String(`hello, "world!"` + "\n"),
+		F_Bytes:   []byte("Bignose"),
+		F_Sint32:  Int32(-32),
+		F_Sint64:  Int64(-64),
+		F_Enum:    NewDefaults_Color(Defaults_GREEN),
+		F_Pinf:    Float32(float32(math.Inf(1))),
+		F_Ninf:    Float32(float32(math.Inf(-1))),
+		F_Nan:     Float32(1.7),
+	}
+	SetDefaults(m)
+	if !Equal(m, expected) {
+		t.Errorf(" got %v\nwant %v", m, expected)
+	}
+}
+
+func TestSetDefaultsWithSetField(t *testing.T) {
+	// Check that a set value is not overridden.
+	m := &Defaults{
+		F_Int32: Int32(12),
+	}
+	SetDefaults(m)
+	if v := GetInt32(m.F_Int32); v != 12 {
+		t.Errorf("m.FInt32 = %v, want 12", v)
+	}
+}
+
+func TestSetDefaultsWithSubMessage(t *testing.T) {
+	m := &OtherMessage{
+		Key: Int64(123),
+		Inner: &InnerMessage{
+			Host: String("gopher"),
+		},
+	}
+	expected := &OtherMessage{
+		Key: Int64(123),
+		Inner: &InnerMessage{
+			Host: String("gopher"),
+			Port: Int32(4000),
+		},
+	}
+	SetDefaults(m)
+	if !Equal(m, expected) {
+		t.Errorf(" got %v\nwant %v", m, expected)
 	}
 }
 

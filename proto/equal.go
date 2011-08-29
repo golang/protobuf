@@ -51,6 +51,8 @@ Equality is defined in this way:
     corresponding fields are equal, unknown field sets
     are equal, and extensions sets are equal.
   - Two set scalar fields are equal iff their values are equal.
+    If the fields are of a floating-point type, remember that
+    NaN != x for all x, including NaN.
   - Two repeated fields are equal iff their lengths are the same,
     and their corresponding elements are equal.
   - Two unset fields are equal.
