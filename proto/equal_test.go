@@ -49,7 +49,7 @@ var EqualTests = []struct {
 	{"equal empty", &pb.GoEnum{}, &pb.GoEnum{}, true},
 
 	{"one set field, one unset field", &pb.GoTestField{Label: String("foo")}, &pb.GoTestField{}, false},
-	{"one set field zero, one unset field", &pb.GoTest{Kind: Int32(0)}, &pb.GoTest{}, false},
+	{"one set field zero, one unset field", &pb.GoTest{Param: Int32(0)}, &pb.GoTest{}, false},
 	{"different set fields", &pb.GoTestField{Label: String("foo")}, &pb.GoTestField{Label: String("bar")}, false},
 	{"equal set", &pb.GoTestField{Label: String("foo")}, &pb.GoTestField{Label: String("foo")}, true},
 

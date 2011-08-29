@@ -112,7 +112,7 @@ func initGoTest(setdefaults bool) *GoTest {
 		pb.F_Sint64Defaulted = Int64(Default_GoTest_F_Sint64Defaulted)
 	}
 
-	pb.Kind = Int32(GoTest_TIME)
+	pb.Kind = NewGoTest_KIND(GoTest_TIME)
 	pb.RequiredField = initGoTestField()
 	pb.F_BoolRequired = Bool(true)
 	pb.F_Int32Required = Int32(3)
