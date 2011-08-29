@@ -26,8 +26,8 @@ func (this *PubliclyImportedMessage) String() string {
 type ImportedMessage_Owner int32
 
 const (
-	ImportedMessage_DAVE = 1
-	ImportedMessage_MIKE = 2
+	ImportedMessage_DAVE ImportedMessage_Owner = 1
+	ImportedMessage_MIKE ImportedMessage_Owner = 2
 )
 
 var ImportedMessage_Owner_name = map[int32]string{
@@ -39,7 +39,7 @@ var ImportedMessage_Owner_value = map[string]int32{
 	"MIKE": 2,
 }
 
-func NewImportedMessage_Owner(x int32) *ImportedMessage_Owner {
+func NewImportedMessage_Owner(x ImportedMessage_Owner) *ImportedMessage_Owner {
 	e := ImportedMessage_Owner(x)
 	return &e
 }

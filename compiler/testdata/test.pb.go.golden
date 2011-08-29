@@ -17,8 +17,8 @@ var _ os.Error
 type HatType int32
 
 const (
-	HatType_FEDORA = 1
-	HatType_FEZ    = 2
+	HatType_FEDORA HatType = 1
+	HatType_FEZ    HatType = 2
 )
 
 var HatType_name = map[int32]string{
@@ -30,7 +30,7 @@ var HatType_value = map[string]int32{
 	"FEZ":    2,
 }
 
-func NewHatType(x int32) *HatType {
+func NewHatType(x HatType) *HatType {
 	e := HatType(x)
 	return &e
 }
@@ -41,9 +41,9 @@ func (x HatType) String() string {
 type Days int32
 
 const (
-	Days_MONDAY  = 1
-	Days_TUESDAY = 2
-	Days_LUNDI   = 1
+	Days_MONDAY  Days = 1
+	Days_TUESDAY Days = 2
+	Days_LUNDI   Days = 1
 )
 
 var Days_name = map[int32]string{
@@ -57,7 +57,7 @@ var Days_value = map[string]int32{
 	"LUNDI":   1,
 }
 
-func NewDays(x int32) *Days {
+func NewDays(x Days) *Days {
 	e := Days(x)
 	return &e
 }
@@ -68,9 +68,9 @@ func (x Days) String() string {
 type Request_Color int32
 
 const (
-	Request_RED   = 0
-	Request_GREEN = 1
-	Request_BLUE  = 2
+	Request_RED   Request_Color = 0
+	Request_GREEN Request_Color = 1
+	Request_BLUE  Request_Color = 2
 )
 
 var Request_Color_name = map[int32]string{
@@ -84,7 +84,7 @@ var Request_Color_value = map[string]int32{
 	"BLUE":  2,
 }
 
-func NewRequest_Color(x int32) *Request_Color {
+func NewRequest_Color(x Request_Color) *Request_Color {
 	e := Request_Color(x)
 	return &e
 }
@@ -95,8 +95,8 @@ func (x Request_Color) String() string {
 type Reply_Entry_Game int32
 
 const (
-	Reply_Entry_FOOTBALL = 1
-	Reply_Entry_TENNIS   = 2
+	Reply_Entry_FOOTBALL Reply_Entry_Game = 1
+	Reply_Entry_TENNIS   Reply_Entry_Game = 2
 )
 
 var Reply_Entry_Game_name = map[int32]string{
@@ -108,7 +108,7 @@ var Reply_Entry_Game_value = map[string]int32{
 	"TENNIS":   2,
 }
 
-func NewReply_Entry_Game(x int32) *Reply_Entry_Game {
+func NewReply_Entry_Game(x Reply_Entry_Game) *Reply_Entry_Game {
 	e := Reply_Entry_Game(x)
 	return &e
 }

@@ -73,7 +73,7 @@ message GoTest {
   };
 
   // Some typical parameters
-  required int32 Kind = 1;
+  required KIND Kind = 1;
   optional string Table = 2;
   optional int32 Param = 3;
 

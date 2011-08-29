@@ -289,7 +289,7 @@ func (es enumSymbol) GenerateAlias(g *Generator, pkg string) {
 	g.P("type ", s, " ", pkg, ".", s)
 	g.P("var ", s, "_name = ", pkg, ".", s, "_name")
 	g.P("var ", s, "_value = ", pkg, ".", s, "_value")
-	g.P("func New", s, "(x int32) *", s, " { e := ", s, "(x); return &e }")
+	g.P("func New", s, "(x ", s, ") *", s, " { e := ", s, "(x); return &e }")
 }
 
 type constOrVarSymbol struct {
@@ -893,7 +893,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	g.In()
 	for _, e := range enum.Value {
 		name := ccPrefix + *e.Name
-		g.P(name, " = ", e.Number)
+		g.P(name, " ", ccTypeName, " = ", e.Number)
 		g.file.addExport(enum, constOrVarSymbol{name, "const"})
 	}
 	g.Out()
@@ -919,7 +919,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	g.Out()
 	g.P("}")
 
-	g.P("func New", ccTypeName, "(x int32) *", ccTypeName, " {")
+	g.P("func New", ccTypeName, "(x ", ccTypeName, ") *", ccTypeName, " {")
 	g.In()
 	g.P("e := ", ccTypeName, "(x)")
 	g.P("return &e")
