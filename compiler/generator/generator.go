@@ -968,10 +968,7 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 			}
 		case descriptor.FieldDescriptorProto_TYPE_STRING,
 			descriptor.FieldDescriptorProto_TYPE_BYTES:
-			// Protect frogs.
-			defaultValue = Quote(defaultValue)
-			// Don't need the quotes
-			defaultValue = defaultValue[1 : len(defaultValue)-1]
+			// Nothing to do. Quoting is done for the whole tag.
 		case descriptor.FieldDescriptorProto_TYPE_ENUM:
 			// For enums we need to provide the integer constant.
 			obj := g.ObjectNamed(proto.GetString(field.TypeName))

@@ -242,5 +242,35 @@ message MessageList {
   repeated group Message = 1 {
     required string name = 2;
     required int32 count = 3;
-  };
-};
+  }
+}
+
+message Defaults {
+  enum Color {
+    RED = 0;
+    GREEN = 1;
+    BLUE = 2;
+  }
+
+  // Default-valued fields of all basic types.
+  // Same as GoTest, but copied here to make testing easier.
+  optional bool F_Bool = 1 [default=true];
+  optional int32 F_Int32 = 2 [default=32];
+  optional int64 F_Int64 = 3 [default=64];
+  optional fixed32 F_Fixed32 = 4 [default=320];
+  optional fixed64 F_Fixed64 = 5 [default=640];
+  optional uint32 F_Uint32 = 6 [default=3200];
+  optional uint64 F_Uint64 = 7 [default=6400];
+  optional float F_Float = 8 [default=314159.];
+  optional double F_Double = 9 [default=271828.];
+  optional string F_String = 10 [default="hello, \"world!\"\n"];
+  optional bytes F_Bytes = 11 [default="Bignose"];
+  optional sint32 F_Sint32 = 12 [default=-32];
+  optional sint64 F_Sint64 = 13 [default=-64];
+  optional Color F_Enum = 14 [default=GREEN];
+
+  // More fields with crazy defaults.
+  optional float F_Pinf = 15 [default=inf];
+  optional float F_Ninf = 16 [default=-inf];
+  optional float F_Nan = 17 [default=nan];
+}
