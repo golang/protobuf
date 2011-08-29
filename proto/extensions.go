@@ -257,3 +257,10 @@ func RegisterExtension(desc *ExtensionDesc) {
 	}
 	m[desc.Field] = desc
 }
+
+// RegisteredExtensions returns a map of the registered extensions of a
+// protocol buffer struct, indexed by the extension number.
+// The argument pb should be a nil pointer to the struct type.
+func RegisteredExtensions(pb interface{}) map[int32]*ExtensionDesc {
+	return extensionMaps[reflect.TypeOf(pb).Elem()]
+}
