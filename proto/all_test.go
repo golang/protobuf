@@ -839,7 +839,7 @@ func TestEncodeDecodeBytes1(t *testing.T) {
 
 	// Create our bytes
 	pb.F_BytesRequired = []byte{}
-	pb.F_BytesRepeated = [][]byte{[]byte{}}
+	pb.F_BytesRepeated = [][]byte{{}}
 	pb.F_BytesOptional = []byte{}
 
 	d, err := Marshal(pb)
@@ -1292,11 +1292,14 @@ func BenchmarkMarshal(b *testing.B) {
 	// Create an array
 	const N = 1000 // Internally the library starts much smaller.
 	pb.F_Int32Repeated = make([]int32, N)
+	pb.F_DoubleRepeated = make([]float64, N)
 
 	// Fill in the array with some values.
 	for i := 0; i < N; i++ {
 		pb.F_Int32Repeated[i] = int32(i)
+		pb.F_DoubleRepeated[i] = float64(i)
 	}
+
 	p := NewBuffer(nil)
 
 	b.StartTimer()
