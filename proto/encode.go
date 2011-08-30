@@ -91,23 +91,16 @@ func EncodeVarint(x uint64) []byte {
 	return buf[0:n]
 }
 
-var emptyBytes [maxVarintBytes]byte
-
 // EncodeVarint writes a varint-encoded integer to the Buffer.
 // This is the format for the
 // int32, int64, uint32, uint64, bool, and enum
 // protocol buffer types.
 func (p *Buffer) EncodeVarint(x uint64) os.Error {
-	l := len(p.buf)
-	p.buf = append(p.buf, emptyBytes[:]...)
-
 	for x >= 1<<7 {
-		p.buf[l] = uint8(x&0x7f | 0x80)
-		l++
+		p.buf = append(p.buf, uint8(x&0x7f|0x80))
 		x >>= 7
 	}
-	p.buf[l] = uint8(x)
-	p.buf = p.buf[:l+1]
+	p.buf = append(p.buf, uint8(x))
 	return nil
 }
 
@@ -115,18 +108,15 @@ func (p *Buffer) EncodeVarint(x uint64) os.Error {
 // This is the format for the
 // fixed64, sfixed64, and double protocol buffer types.
 func (p *Buffer) EncodeFixed64(x uint64) os.Error {
-	const fixed64Bytes = 8
-	l := len(p.buf)
-	p.buf = append(p.buf, emptyBytes[:fixed64Bytes]...)
-
-	p.buf[l] = uint8(x)
-	p.buf[l+1] = uint8(x >> 8)
-	p.buf[l+2] = uint8(x >> 16)
-	p.buf[l+3] = uint8(x >> 24)
-	p.buf[l+4] = uint8(x >> 32)
-	p.buf[l+5] = uint8(x >> 40)
-	p.buf[l+6] = uint8(x >> 48)
-	p.buf[l+7] = uint8(x >> 56)
+	p.buf = append(p.buf,
+		uint8(x),
+		uint8(x>>8),
+		uint8(x>>16),
+		uint8(x>>24),
+		uint8(x>>32),
+		uint8(x>>40),
+		uint8(x>>48),
+		uint8(x>>56))
 	return nil
 }
 
@@ -134,14 +124,11 @@ func (p *Buffer) EncodeFixed64(x uint64) os.Error {
 // This is the format for the
 // fixed32, sfixed32, and float protocol buffer types.
 func (p *Buffer) EncodeFixed32(x uint64) os.Error {
-	const fixed32Bytes = 4
-	l := len(p.buf)
-	p.buf = append(p.buf, emptyBytes[:fixed32Bytes]...)
-
-	p.buf[l] = uint8(x)
-	p.buf[l+1] = uint8(x >> 8)
-	p.buf[l+2] = uint8(x >> 16)
-	p.buf[l+3] = uint8(x >> 24)
+	p.buf = append(p.buf,
+		uint8(x),
+		uint8(x>>8),
+		uint8(x>>16),
+		uint8(x>>24))
 	return nil
 }
 
