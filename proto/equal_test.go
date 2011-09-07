@@ -32,11 +32,47 @@
 package proto_test
 
 import (
+	"log"
 	"testing"
 
 	. "goprotobuf.googlecode.com/hg/proto"
 	pb "./testdata/_obj/test_proto"
 )
+
+// Four identical base messages.
+// The init function adds extensions to some of them.
+var messageWithoutExtension = &pb.MyMessage{Count: Int32(7)}
+var messageWithExtension1a = &pb.MyMessage{Count: Int32(7)}
+var messageWithExtension1b = &pb.MyMessage{Count: Int32(7)}
+var messageWithExtension2 = &pb.MyMessage{Count: Int32(7)}
+
+func init() {
+	ext1 := &pb.Ext{Data: String("Kirk")}
+	ext2 := &pb.Ext{Data: String("Picard")}
+
+	// messageWithExtension1a has ext1, but never marshals it.
+	if err := SetExtension(messageWithExtension1a, pb.E_Ext_More, ext1); err != nil {
+		log.Panicf("SetExtension on 1a failed: %v", err)
+	}
+
+	// messageWithExtension1b is the unmarshaled form of messageWithExtension1a.
+	if err := SetExtension(messageWithExtension1b, pb.E_Ext_More, ext1); err != nil {
+		log.Panicf("SetExtension on 1b failed: %v", err)
+	}
+	buf, err := Marshal(messageWithExtension1b)
+	if err != nil {
+		log.Panicf("Marshal of 1b failed: %v", err)
+	}
+	messageWithExtension1b.Reset()
+	if err := Unmarshal(buf, messageWithExtension1b); err != nil {
+		log.Panicf("Unmarshal of 1b failed: %v", err)
+	}
+
+	// messageWithExtension2 has ext2.
+	if err := SetExtension(messageWithExtension2, pb.E_Ext_More, ext2); err != nil {
+		log.Panicf("SetExtension on 2 failed: %v", err)
+	}
+}
 
 var EqualTests = []struct {
 	desc string
@@ -70,6 +106,10 @@ var EqualTests = []struct {
 		&pb.GoTest{RequiredField: &pb.GoTestField{Label: String("wow")}},
 		true,
 	},
+
+	{"extension vs. no extension", messageWithoutExtension, messageWithExtension1a, false},
+	{"extension vs. same extension", messageWithExtension1a, messageWithExtension1b, true},
+	{"extension vs. different extension", messageWithExtension1a, messageWithExtension2, false},
 }
 
 func TestEqual(t *testing.T) {

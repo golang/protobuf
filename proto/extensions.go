@@ -176,9 +176,24 @@ func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, os
 		return e.value, nil
 	}
 
+	v, err := decodeExtension(e.enc, extension)
+	if err != nil {
+		return nil, err
+	}
+
+	// Remember the decoded version and drop the encoded version.
+	// That way it is safe to mutate what we return.
+	e.value = v
+	e.desc = extension
+	e.enc = nil
+	return e.value, nil
+}
+
+// decodeExtension decodes an extension encoded in b.
+func decodeExtension(b []byte, extension *ExtensionDesc) (interface{}, os.Error) {
 	// Discard wire type and field number varint. It isn't needed.
-	_, n := DecodeVarint(e.enc)
-	o := NewBuffer(e.enc[n:])
+	_, n := DecodeVarint(b)
+	o := NewBuffer(b[n:])
 
 	t := reflect.TypeOf(extension.ExtensionType)
 	props := &Properties{}
@@ -195,12 +210,7 @@ func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, os
 	if err := props.dec(o, props, uintptr(base), sbase); err != nil {
 		return nil, err
 	}
-	// Remember the decoded version and drop the encoded version.
-	// That way it is safe to mutate what we return.
-	e.value = unsafe.Unreflect(t, base)
-	e.desc = extension
-	e.enc = nil
-	return e.value, nil
+	return unsafe.Unreflect(t, base), nil
 }
 
 // GetExtensions returns a slice of the extensions present in pb that are also listed in es.
