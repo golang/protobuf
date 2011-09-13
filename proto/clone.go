@@ -1,0 +1,121 @@
+// Go support for Protocol Buffers - Google's data interchange format
+//
+// Copyright 2011 Google Inc.  All rights reserved.
+// http://code.google.com/p/goprotobuf/
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//     * Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above
+// copyright notice, this list of conditions and the following disclaimer
+// in the documentation and/or other materials provided with the
+// distribution.
+//     * Neither the name of Google Inc. nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+// Protocol buffer deep copy.
+// TODO: MessageSet and RawMessage.
+
+package proto
+
+import (
+	"log"
+	"reflect"
+	"strings"
+)
+
+// Clone returns a deep copy of a protocol buffer.
+// pb must be a pointer to a protocol buffer struct.
+func Clone(pb interface{}) interface{} {
+	in := reflect.ValueOf(pb)
+	if in.Kind() != reflect.Ptr || in.Elem().Kind() != reflect.Struct {
+		return nil
+	}
+
+	out := reflect.New(in.Type().Elem())
+	copyStruct(out.Elem(), in.Elem())
+	return out.Interface()
+}
+
+func copyStruct(out, in reflect.Value) {
+	for i := 0; i < in.NumField(); i++ {
+		f := in.Type().Field(i)
+		if strings.HasPrefix(f.Name, "XXX_") {
+			continue
+		}
+		copyAny(out.Field(i), in.Field(i))
+	}
+
+	if emIn := in.FieldByName("XXX_extensions"); emIn.IsValid() {
+		emOut := out.FieldByName("XXX_extensions")
+		copyExtension(emOut.Interface().(map[int32]Extension), emIn.Interface().(map[int32]Extension))
+	}
+
+	// TODO: Deal with XXX_unrecognized.
+}
+
+func copyAny(out, in reflect.Value) {
+	switch in.Kind() {
+	case reflect.Bool, reflect.Float32, reflect.Float64, reflect.Int32, reflect.Int64,
+		reflect.String, reflect.Uint32, reflect.Uint64:
+		out.Set(in)
+	case reflect.Ptr:
+		if in.IsNil() {
+			return
+		}
+		out.Set(reflect.New(in.Type().Elem()))
+		copyAny(out.Elem(), in.Elem())
+	case reflect.Slice:
+		if in.IsNil() {
+			return
+		}
+		n := in.Len()
+		out.Set(reflect.MakeSlice(in.Type(), n, n))
+		switch in.Type().Elem().Kind() {
+		case reflect.Bool, reflect.Float32, reflect.Float64, reflect.Int32, reflect.Int64,
+			reflect.String, reflect.Uint32, reflect.Uint64, reflect.Uint8:
+			reflect.Copy(out, in)
+		default:
+			for i := 0; i < n; i++ {
+				copyAny(out.Index(i), in.Index(i))
+			}
+		}
+	case reflect.Struct:
+		copyStruct(out, in)
+	default:
+		// unknown type, so not a protocol buffer
+		log.Printf("proto: don't know how to copy %v", in)
+	}
+}
+
+func copyExtension(out, in map[int32]Extension) {
+	for extNum, eIn := range in {
+		eOut := Extension{desc: eIn.desc}
+		if eIn.value != nil {
+			eOut.value = reflect.Zero(reflect.TypeOf(eIn.value))
+			copyAny(reflect.ValueOf(eOut.value), reflect.ValueOf(eIn.value))
+		}
+		if eIn.enc != nil {
+			eOut.enc = make([]byte, len(eIn.enc))
+			copy(eOut.enc, eIn.enc)
+		}
+
+		out[extNum] = eOut
+	}
+}

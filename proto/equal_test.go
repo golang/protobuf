@@ -107,6 +107,13 @@ var EqualTests = []struct {
 		true,
 	},
 
+	{
+		"repeated bytes",
+		&pb.MyMessage{RepBytes: [][]byte{[]byte("sham"), []byte("wow")}},
+		&pb.MyMessage{RepBytes: [][]byte{[]byte("sham"), []byte("wow")}},
+		true,
+	},
+
 	{"extension vs. no extension", messageWithoutExtension, messageWithExtension1a, false},
 	{"extension vs. same extension", messageWithExtension1a, messageWithExtension1b, true},
 	{"extension vs. different extension", messageWithExtension1a, messageWithExtension2, false},
