@@ -227,6 +227,9 @@ message MyMessage {
     optional int32 group_field = 9;
   }
 
+  // This field becomes [][]byte in the generated code.
+  repeated bytes rep_bytes = 10;
+
   extensions 100 to max;
 }
 
