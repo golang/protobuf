@@ -108,7 +108,7 @@ inner: <
 >
 others: <
   key: 3735928559
-  value: "\x01A\a\f"
+  value: "\001A\007\014"
 >
 others: <
   weight: 6.022
@@ -191,7 +191,34 @@ var compactText = compact(text)
 func TestCompactText(t *testing.T) {
 	s := proto.CompactTextString(newTestMessage())
 	if s != compactText {
-		t.Errorf("Got:\n===\n%v===\nExpected:\n===\n%v===\n", s, compactText)
+		t.Errorf("Got:\n===\n%v===\nExpected:\n===\n%v\n===\n", s, compactText)
+	}
+}
+
+func TestStringEscaping(t *testing.T) {
+	testCases := []struct {
+		in  *pb.Strings
+		out string
+	}{
+		{
+			// Test data from C++ test (TextFormatTest.StringEscape).
+			// Single divergence: we don't escape apostrophes.
+			&pb.Strings{StringField: proto.String("\"A string with ' characters \n and \r newlines and \t tabs and \001 slashes \\ and  multiple   spaces")},
+			"string_field: \"\\\"A string with ' characters \\n and \\r newlines and \\t tabs and \\001 slashes \\\\ and  multiple   spaces\"\n",
+		},
+		{
+			// Test data from the same C++ test.
+			&pb.Strings{StringField: proto.String("\350\260\267\346\255\214")},
+			"string_field: \"\\350\\260\\267\\346\\255\\214\"\n",
+		},
+	}
+
+	for i, tc := range testCases {
+		var buf bytes.Buffer
+		proto.MarshalText(&buf, tc.in)
+		if s := buf.String(); s != tc.out {
+			t.Errorf("#%d: Got:\n%s\nExpected:\n%s\n", i, s, tc.out)
+		}
 	}
 }
 
