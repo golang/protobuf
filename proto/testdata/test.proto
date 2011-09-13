@@ -248,6 +248,11 @@ message MessageList {
   }
 }
 
+message Strings {
+  optional string string_field = 1;
+  optional bytes bytes_field = 2;
+}
+
 message Defaults {
   enum Color {
     RED = 0;

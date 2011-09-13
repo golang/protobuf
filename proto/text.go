@@ -41,7 +41,6 @@ import (
 	"os"
 	"reflect"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -203,11 +202,9 @@ func writeAny(w *textWriter, v reflect.Value, props *Properties) {
 	switch v.Kind() {
 	case reflect.Slice:
 		// Should only be a []byte; repeated fields are handled in writeStruct.
-		// TODO: Should be strconv.QuoteToASCII, which should be released after 2011-06-20.
-		fmt.Fprint(w, strconv.Quote(string(v.Interface().([]byte))))
+		writeString(w, string(v.Interface().([]byte)))
 	case reflect.String:
-		// TODO: Should be strconv.QuoteToASCII, which should be released after 2011-06-20.
-		fmt.Fprint(w, strconv.Quote(v.String()))
+		writeString(w, v.String())
 	case reflect.Struct:
 		// Required/optional group/message.
 		var bra, ket byte = '<', '>'
@@ -225,6 +222,47 @@ func writeAny(w *textWriter, v reflect.Value, props *Properties) {
 	default:
 		fmt.Fprint(w, v.Interface())
 	}
+}
+
+// equivalent to C's isprint.
+func isprint(c byte) bool {
+	return c >= 0x20 && c < 0x7f
+}
+
+// writeString writes a string in the protocol buffer text format.
+// It is similar to strconv.Quote except we don't use Go escape sequences,
+// we treat the string as a byte sequence, and we use octal escapes.
+// These differences are to maintain interoperability with the other
+// languages' implementations of the text format.
+func writeString(w *textWriter, s string) {
+	w.WriteByte('"')
+
+	// Loop over the bytes, not the runes.
+	for i := 0; i < len(s); i++ {
+		// Divergence from C++: we don't escape apostrophes.
+		// There's no need to escape them, and the C++ parser
+		// copes with a naked apostrophe.
+		switch c := s[i]; c {
+		case '\n':
+			w.Write([]byte{'\\', 'n'})
+		case '\r':
+			w.Write([]byte{'\\', 'r'})
+		case '\t':
+			w.Write([]byte{'\\', 't'})
+		case '"':
+			w.Write([]byte{'\\', '"'})
+		case '\\':
+			w.Write([]byte{'\\', '\\'})
+		default:
+			if isprint(c) {
+				w.WriteByte(c)
+			} else {
+				fmt.Fprintf(w, "\\%03o", c)
+			}
+		}
+	}
+
+	w.WriteByte('"')
 }
 
 func writeMessageSet(w *textWriter, ms *MessageSet) {
