@@ -62,9 +62,9 @@ func copyStruct(out, in reflect.Value) {
 		copyAny(out.Field(i), in.Field(i))
 	}
 
-	if emIn := in.FieldByName("XXX_extensions"); emIn.IsValid() {
-		emOut := out.FieldByName("XXX_extensions")
-		copyExtension(emOut.Interface().(map[int32]Extension), emIn.Interface().(map[int32]Extension))
+	if emIn, ok := in.Addr().Interface().(extendableProto); ok {
+		emOut := out.Addr().Interface().(extendableProto)
+		copyExtension(emOut.ExtensionMap(), emIn.ExtensionMap())
 	}
 
 	// TODO: Deal with XXX_unrecognized.
@@ -108,8 +108,9 @@ func copyExtension(out, in map[int32]Extension) {
 	for extNum, eIn := range in {
 		eOut := Extension{desc: eIn.desc}
 		if eIn.value != nil {
-			eOut.value = reflect.Zero(reflect.TypeOf(eIn.value))
-			copyAny(reflect.ValueOf(eOut.value), reflect.ValueOf(eIn.value))
+			v := reflect.New(reflect.TypeOf(eIn.value)).Elem()
+			copyAny(v, reflect.ValueOf(eIn.value))
+			eOut.value = v.Interface()
 		}
 		if eIn.enc != nil {
 			eOut.enc = make([]byte, len(eIn.enc))

@@ -32,6 +32,7 @@
 package proto_test
 
 import (
+	"log"
 	"testing"
 
 	"goprotobuf.googlecode.com/hg/proto"
@@ -54,6 +55,15 @@ var cloneTestMessage = &pb.MyMessage{
 		},
 	},
 	RepBytes: [][]byte{[]byte("sham"), []byte("wow")},
+}
+
+func init() {
+	ext := &pb.Ext{
+		Data: proto.String("extension"),
+	}
+	if err := proto.SetExtension(cloneTestMessage, pb.E_Ext_More, ext); err != nil {
+		log.Fatalf("SetExtension: %v", err)
+	}
 }
 
 func TestClone(t *testing.T) {
