@@ -1284,6 +1284,23 @@ func TestSetDefaultsWithSubMessage(t *testing.T) {
 	}
 }
 
+func TestMaximumTagNumber(t *testing.T) {
+	m := &MaxTag{
+		LastField: String("natural goat essence"),
+	}
+	buf, err := Marshal(m)
+	if err != nil {
+		t.Fatalf("proto.Marshal failed: %v", err)
+	}
+	m2 := new(MaxTag)
+	if err := Unmarshal(buf, m2); err != nil {
+		t.Fatalf("proto.Unmarshal failed: %v", err)
+	}
+	if got, want := GetString(m2.LastField), *m.LastField; got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
 func BenchmarkMarshal(b *testing.B) {
 	b.StopTimer()
 

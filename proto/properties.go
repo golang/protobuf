@@ -401,7 +401,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	if p.Packed {
 		wire = WireBytes
 	}
-	x := p.Tag<<3 | wire
+	x := uint32(p.Tag)<<3 | uint32(wire)
 	i := 0
 	for i = 0; x > 127; i++ {
 		p.tagbuf[i] = 0x80 | uint8(x&0x7F)

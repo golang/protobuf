@@ -167,7 +167,7 @@ message GoTest {
   optional group OptionalGroup = 90 {
     required string RequiredField = 91;
   };
-};
+}
 
 // For testing skipping of unrecognized fields.
 // Numbers are all big, larger than tag numbers in GoTestField,
@@ -191,6 +191,11 @@ message NonPackedTest {
 
 message PackedTest {
   repeated int32 b = 1 [packed=true];
+}
+
+message MaxTag {
+  // Maximum possible tag number.
+  optional string last_field = 536870911;
 }
 
 // Smaller tests for ASCII formatting.
