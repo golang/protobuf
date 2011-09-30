@@ -35,6 +35,7 @@ package proto_test
 import (
 	"bytes"
 	"fmt"
+	"json"
 	"math"
 	"os"
 	"reflect"
@@ -1298,6 +1299,26 @@ func TestMaximumTagNumber(t *testing.T) {
 	}
 	if got, want := GetString(m2.LastField), *m.LastField; got != want {
 		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+func TestJSON(t *testing.T) {
+	m := &MyMessage{
+		Count: Int32(4),
+		Pet:   []string{"bunny", "kitty"},
+		Inner: &InnerMessage{
+			Host: String("cauchy"),
+		},
+	}
+	const expected = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"}}`
+
+	b, err := json.Marshal(m)
+	if err != nil {
+		t.Fatalf("json.Marshal failed: %v", err)
+	}
+	s := string(b)
+	if s != expected {
+		t.Errorf("got  %s\nwant %s", s, expected)
 	}
 }
 

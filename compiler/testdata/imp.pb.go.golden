@@ -48,9 +48,9 @@ func (x ImportedMessage_Owner) String() string {
 }
 
 type ImportedMessage struct {
-	Field            *int64 `protobuf:"varint,1,req,name=field" json:"field"`
-	XXX_extensions   map[int32][]byte
-	XXX_unrecognized []byte
+	Field            *int64           `protobuf:"varint,1,req,name=field" json:"field,omitempty"`
+	XXX_extensions   map[int32][]byte `json:",omitempty"`
+	XXX_unrecognized []byte           `json:",omitempty"`
 }
 
 func (this *ImportedMessage) Reset()         { *this = ImportedMessage{} }
@@ -71,8 +71,8 @@ func (this *ImportedMessage) ExtensionMap() map[int32][]byte {
 }
 
 type ImportedExtendable struct {
-	XXX_extensions   map[int32][]byte
-	XXX_unrecognized []byte
+	XXX_extensions   map[int32][]byte `json:",omitempty"`
+	XXX_unrecognized []byte           `json:",omitempty"`
 }
 
 func (this *ImportedExtendable) Reset()         { *this = ImportedExtendable{} }
