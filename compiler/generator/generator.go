@@ -735,7 +735,6 @@ func (g *Generator) runPlugins(file *FileDescriptor) {
 	}
 }
 
-
 // FileOf return the FileDescriptor for this FileDescriptorProto.
 func (g *Generator) FileOf(fd *descriptor.FileDescriptorProto) *FileDescriptor {
 	for _, file := range g.allFiles {
@@ -1124,14 +1123,15 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		fieldname := CamelCase(*field.Name)
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
-		tag := fmt.Sprintf("`protobuf:%s json:%q`", g.goTag(field, wiretype), jsonName)
+		tag := fmt.Sprintf("`protobuf:%s json:%q`", g.goTag(field, wiretype), jsonName+",omitempty")
 		g.P(fieldname, "\t", typename, "\t", tag)
 		g.RecordTypeUse(proto.GetString(field.TypeName))
 	}
+	// TODO: Use `json:"-"` for these XXX_ fields when that makes it into a Go release.
 	if len(message.ExtensionRange) > 0 {
-		g.P("XXX_extensions\t\tmap[int32]", g.ProtoPkg, ".Extension")
+		g.P("XXX_extensions\t\tmap[int32]", g.ProtoPkg, ".Extension `json:\",omitempty\"`")
 	}
-	g.P("XXX_unrecognized\t[]byte")
+	g.P("XXX_unrecognized\t[]byte `json:\",omitempty\"`")
 	g.Out()
 	g.P("}")
 
