@@ -39,6 +39,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -81,8 +82,18 @@ type StructProperties struct {
 	reqCount  int            // required count
 	tags      map[int]int    // map from proto tag to struct field number
 	origNames map[string]int // map from original name to struct field number
+	order     []int          // list of struct field numbers in tag order
 	nscratch  uintptr        // size of scratch space
 }
+
+// Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
+// See encoder.go, (*Buffer).enc_struct.
+
+func (sp *StructProperties) Len() int { return len(sp.order) }
+func (sp *StructProperties) Less(i, j int) bool {
+	return sp.Prop[sp.order[i]].Tag < sp.Prop[sp.order[j]].Tag
+}
+func (sp *StructProperties) Swap(i, j int) { sp.order[i], sp.order[j] = sp.order[j], sp.order[i] }
 
 // Properties represents the protocol-specific behavior of a single struct field.
 type Properties struct {
@@ -444,7 +455,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 
 	// build properties
 	prop.Prop = make([]*Properties, t.NumField())
-	prop.origNames = make(map[string]int)
+	prop.order = make([]int, t.NumField())
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		p := new(Properties)
@@ -457,7 +468,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 			p.sizeof = unsafe.Sizeof(vmap)
 		}
 		prop.Prop[i] = p
-		prop.origNames[p.OrigName] = i
+		prop.order[i] = i
 		if debug {
 			print(i, " ", f.Name, " ", t.String(), " ")
 			if p.Tag > 0 {
@@ -470,12 +481,16 @@ func GetProperties(t reflect.Type) *StructProperties {
 		}
 	}
 
+	// Re-order prop.order.
+	sort.Sort(prop)
+
 	// build required counts
 	// build scratch offsets
 	// build tags
 	reqCount := 0
 	scratch := uintptr(0)
 	prop.tags = make(map[int]int)
+	prop.origNames = make(map[string]int)
 	for i, p := range prop.Prop {
 		if p.Required {
 			reqCount++
@@ -484,6 +499,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 		p.scratch = scratch
 		scratch += p.sizeof
 		prop.tags[p.Tag] = i
+		prop.origNames[p.OrigName] = i
 	}
 	prop.reqCount = reqCount
 	prop.nscratch = scratch
