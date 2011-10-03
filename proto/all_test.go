@@ -518,12 +518,12 @@ func TestEncodeDecode1(t *testing.T) {
 			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
 			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
 			"9a0106"+"737472696e67"+ // field 19, encoding 2, string "string"
-			"aa0605"+"6279746573"+ // field 101, encoding 2, string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
 			"b304"+ // field 70, encoding 3, start group
 			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
-			"b404") // field 70, encoding 4, end group
+			"b404"+ // field 70, encoding 4, end group
+			"aa0605"+"6279746573"+ // field 101, encoding 2, string "bytes"
+			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
+			"b8067f") // field 103, encoding 0, 0x7f zigzag64
 }
 
 // All required fields set, defaults provided.
@@ -542,9 +542,6 @@ func TestEncodeDecode2(t *testing.T) {
 			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
 			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
 			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
-			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
 			"c00201"+ // field 40, encoding 0, value 1
 			"c80220"+ // field 41, encoding 0, value 32
 			"d00240"+ // field 42, encoding 0, value 64
@@ -555,12 +552,15 @@ func TestEncodeDecode2(t *testing.T) {
 			"fd02e0659948"+ // field 47, encoding 5, value 314159.0
 			"81030000000050971041"+ // field 48, encoding 1, value 271828.0
 			"8a0310"+"68656c6c6f2c2022776f726c6421220a"+ // field 49, encoding 2 string "hello, \"world!\"\n"
-			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
-			"90193f"+ // field 402, encoding 0, value 63
-			"98197f"+ // field 403, encoding 0, value 127
 			"b304"+ // start group field 70 level 1
 			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
-			"b404") // end group field 70 level 1
+			"b404"+ // end group field 70 level 1
+			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
+			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
+			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
+			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
+			"90193f"+ // field 402, encoding 0, value 63
+			"98197f") // field 403, encoding 0, value 127
 
 }
 
@@ -594,9 +594,6 @@ func TestEncodeDecode3(t *testing.T) {
 			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
 			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
 			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
-			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
 			"c00201"+ // field 40, encoding 0, value 1
 			"c80220"+ // field 41, encoding 0, value 32
 			"d00240"+ // field 42, encoding 0, value 64
@@ -607,12 +604,15 @@ func TestEncodeDecode3(t *testing.T) {
 			"fd02e0659948"+ // field 47, encoding 5, value 314159.0
 			"81030000000050971041"+ // field 48, encoding 1, value 271828.0
 			"8a0310"+"68656c6c6f2c2022776f726c6421220a"+ // field 49, encoding 2 string "hello, \"world!\"\n"
-			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
-			"90193f"+ // field 402, encoding 0, value 63
-			"98197f"+ // field 403, encoding 0, value 127
 			"b304"+ // start group field 70 level 1
 			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
-			"b404") // end group field 70 level 1
+			"b404"+ // end group field 70 level 1
+			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
+			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
+			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
+			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
+			"90193f"+ // field 402, encoding 0, value 63
+			"98197f") // field 403, encoding 0, value 127
 
 }
 
@@ -653,9 +653,6 @@ func TestEncodeDecode4(t *testing.T) {
 			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
 			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
 			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
-			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
 			"f00101"+ // field 30, encoding 0, value 1
 			"f80120"+ // field 31, encoding 0, value 32
 			"800240"+ // field 32, encoding 0, value 64
@@ -666,9 +663,6 @@ func TestEncodeDecode4(t *testing.T) {
 			"ad0200000042"+ // field 37, encoding 5, value 32.0
 			"b1020000000000005040"+ // field 38, encoding 1, value 64.0
 			"ba0205"+"68656c6c6f"+ // field 39, encoding 2, string "hello"
-			"ea1207"+"4269676e6f7365"+ // field 301, encoding 2, string "Bignose"
-			"f0123f"+ // field 302, encoding 0, value 63
-			"f8127f"+ // field 303, encoding 0, value 127
 			"c00201"+ // field 40, encoding 0, value 1
 			"c80220"+ // field 41, encoding 0, value 32
 			"d00240"+ // field 42, encoding 0, value 64
@@ -679,15 +673,21 @@ func TestEncodeDecode4(t *testing.T) {
 			"fd02e0659948"+ // field 47, encoding 5, value 314159.0
 			"81030000000050971041"+ // field 48, encoding 1, value 271828.0
 			"8a0310"+"68656c6c6f2c2022776f726c6421220a"+ // field 49, encoding 2 string "hello, \"world!\"\n"
-			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
-			"90193f"+ // field 402, encoding 0, value 63
-			"98197f"+ // field 403, encoding 0, value 127
 			"b304"+ // start group field 70 level 1
 			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
 			"b404"+ // end group field 70 level 1
 			"d305"+ // start group field 90 level 1
 			"da0508"+"6f7074696f6e616c"+ // field 91, encoding 2, string "optional"
-			"d405") // end group field 90 level 1
+			"d405"+ // end group field 90 level 1
+			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
+			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
+			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
+			"ea1207"+"4269676e6f7365"+ // field 301, encoding 2, string "Bignose"
+			"f0123f"+ // field 302, encoding 0, value 63
+			"f8127f"+ // field 303, encoding 0, value 127
+			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
+			"90193f"+ // field 402, encoding 0, value 63
+			"98197f") // field 403, encoding 0, value 127
 
 }
 
@@ -725,9 +725,6 @@ func TestEncodeDecode5(t *testing.T) {
 			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
 			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
 			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
-			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
 			"a00100"+ // field 20, encoding 0, value 0
 			"a00101"+ // field 20, encoding 0, value 1
 			"a80120"+ // field 21, encoding 0, value 32
@@ -748,12 +745,6 @@ func TestEncodeDecode5(t *testing.T) {
 			"e1010000000000405040"+ // field 28, encoding 1, value 65.0
 			"ea0105"+"68656c6c6f"+ // field 29, encoding 2, string "hello"
 			"ea0106"+"7361696c6f72"+ // field 29, encoding 2, string "sailor"
-			"ca0c03"+"626967"+ // field 201, encoding 2, string "big"
-			"ca0c04"+"6e6f7365"+ // field 201, encoding 2, string "nose"
-			"d00c40"+ // field 202, encoding 0, value 32
-			"d00c3f"+ // field 202, encoding 0, value -32
-			"d80c8001"+ // field 203, encoding 0, value 64
-			"d80c7f"+ // field 203, encoding 0, value -64
 			"c00201"+ // field 40, encoding 0, value 1
 			"c80220"+ // field 41, encoding 0, value 32
 			"d00240"+ // field 42, encoding 0, value 64
@@ -764,9 +755,6 @@ func TestEncodeDecode5(t *testing.T) {
 			"fd02e0659948"+ // field 47, encoding 5, value 314159.0
 			"81030000000050971041"+ // field 48, encoding 1, value 271828.0
 			"8a0310"+"68656c6c6f2c2022776f726c6421220a"+ // field 49, encoding 2 string "hello, \"world!\"\n"
-			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
-			"90193f"+ // field 402, encoding 0, value 63
-			"98197f"+ // field 403, encoding 0, value 127
 			"b304"+ // start group field 70 level 1
 			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
 			"b404"+ // end group field 70 level 1
@@ -775,7 +763,19 @@ func TestEncodeDecode5(t *testing.T) {
 			"8405"+ // end group field 80 level 1
 			"8305"+ // start group field 80 level 1
 			"8a0508"+"7265706561746564"+ // field 81, encoding 2, string "repeated"
-			"8405") // end group field 80 level 1
+			"8405"+ // end group field 80 level 1
+			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
+			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
+			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
+			"ca0c03"+"626967"+ // field 201, encoding 2, string "big"
+			"ca0c04"+"6e6f7365"+ // field 201, encoding 2, string "nose"
+			"d00c40"+ // field 202, encoding 0, value 32
+			"d00c3f"+ // field 202, encoding 0, value -32
+			"d80c8001"+ // field 203, encoding 0, value 64
+			"d80c7f"+ // field 203, encoding 0, value -64
+			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
+			"90193f"+ // field 402, encoding 0, value 63
+			"98197f") // field 403, encoding 0, value 127
 
 }
 
@@ -807,9 +807,6 @@ func TestEncodeDecode6(t *testing.T) {
 			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
 			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
 			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
-			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
 			"9203020001"+ // field 50, encoding 2, 2 bytes, value 0, value 1
 			"9a03022021"+ // field 51, encoding 2, 2 bytes, value 32, value 33
 			"a203024041"+ // field 52, encoding 2, 2 bytes, value 64, value 65
@@ -825,13 +822,16 @@ func TestEncodeDecode6(t *testing.T) {
 			"0000004200000442"+ // value 32.0, value 33.0
 			"d20310"+ // field 58, encoding 2, 16 bytes
 			"00000000000050400000000000405040"+ // value 64.0, value 65.0
+			"b304"+ // start group field 70 level 1
+			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
+			"b404"+ // end group field 70 level 1
+			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
+			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
+			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
 			"b21f02"+ // field 502, encoding 2, 2 bytes
 			"403f"+ // value 32, value -32
 			"ba1f03"+ // field 503, encoding 2, 3 bytes
-			"80017f"+ // value 64, value -64
-			"b304"+ // start group field 70 level 1
-			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
-			"b404") // end group field 70 level 1
+			"80017f") // value 64, value -64
 }
 
 // Test that we can encode empty bytes fields.

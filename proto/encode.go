@@ -577,7 +577,11 @@ func (o *Buffer) enc_map(p *Properties, base uintptr) os.Error {
 func (o *Buffer) enc_struct(t reflect.Type, base uintptr) os.Error {
 	prop := GetProperties(t)
 	required := prop.reqCount
-	for _, p := range prop.Prop {
+	// Encode fields in tag order so that decoders may use optimizations
+	// that depend on the ordering.
+	// http://code.google.com/apis/protocolbuffers/docs/encoding.html#order
+	for _, i := range prop.order {
+		p := prop.Prop[i]
 		if p.enc != nil {
 			err := p.enc(o, p, base)
 			if err != nil {
