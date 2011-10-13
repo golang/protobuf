@@ -287,3 +287,10 @@ message Defaults {
   optional float F_Ninf = 16 [default=-inf];
   optional float F_Nan = 17 [default=nan];
 }
+
+message RepeatedEnum {
+  enum Color {
+    RED = 1;
+  }
+  repeated Color color = 1;
+}

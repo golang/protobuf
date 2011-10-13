@@ -369,7 +369,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 
 		// Read one.
 		p.back()
-		return p.readAny(fv.Index(flen), nil) // TODO: pass properties?
+		return p.readAny(fv.Index(flen), props)
 	case reflect.Bool:
 		// Either "true", "false", 1 or 0.
 		switch tok.value {
