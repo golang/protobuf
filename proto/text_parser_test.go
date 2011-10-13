@@ -252,9 +252,8 @@ func TestUnmarshalText(t *testing.T) {
 			if err != nil {
 				t.Errorf("Test %d: Unexpected error: %v", i, err)
 			} else if !reflect.DeepEqual(pb, test.out) {
-				t.Errorf("Test %d: Incorrect populated \n"+
-					"Have: %v\nWant: %v",
-					i, CompactTextString(pb), CompactTextString(test.out))
+				t.Errorf("Test %d: Incorrect populated \nHave: %v\nWant: %v",
+					i, pb, test.out)
 			}
 		} else {
 			// We do expect failure.
@@ -265,6 +264,20 @@ func TestUnmarshalText(t *testing.T) {
 					i, err.String(), test.error)
 			}
 		}
+	}
+}
+
+// Regression test; this caused a panic.
+func TestRepeatedEnum(t *testing.T) {
+	pb := new(RepeatedEnum)
+	if err := UnmarshalText("color: RED", pb); err != nil {
+		t.Fatal(err)
+	}
+	exp := &RepeatedEnum{
+		Color: []RepeatedEnum_Color{RepeatedEnum_RED},
+	}
+	if !reflect.DeepEqual(pb, exp) {
+		t.Errorf("Incorrect populated \nHave: %v\nWant: %v", pb, exp)
 	}
 }
 
