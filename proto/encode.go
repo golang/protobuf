@@ -217,12 +217,12 @@ func (p *Buffer) Marshal(pb interface{}) os.Error {
 
 // Encode a bool.
 func (o *Buffer) enc_bool(p *Properties, base uintptr) os.Error {
-	v := *(**uint8)(unsafe.Pointer(base + p.offset))
+	v := *(**bool)(unsafe.Pointer(base + p.offset))
 	if v == nil {
 		return ErrNil
 	}
-	x := *v
-	if x != 0 {
+	x := 0
+	if *v {
 		x = 1
 	}
 	o.buf = append(o.buf, p.tagcode...)
@@ -232,7 +232,7 @@ func (o *Buffer) enc_bool(p *Properties, base uintptr) os.Error {
 
 // Encode an int32.
 func (o *Buffer) enc_int32(p *Properties, base uintptr) os.Error {
-	v := *(**uint32)(unsafe.Pointer(base + p.offset))
+	v := *(**int32)(unsafe.Pointer(base + p.offset))
 	if v == nil {
 		return ErrNil
 	}
@@ -244,7 +244,7 @@ func (o *Buffer) enc_int32(p *Properties, base uintptr) os.Error {
 
 // Encode an int64.
 func (o *Buffer) enc_int64(p *Properties, base uintptr) os.Error {
-	v := *(**uint64)(unsafe.Pointer(base + p.offset))
+	v := *(**int64)(unsafe.Pointer(base + p.offset))
 	if v == nil {
 		return ErrNil
 	}
