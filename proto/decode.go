@@ -411,21 +411,14 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) os.E
 	return err
 }
 
-// Make *pslice have base address base, length 0, and capacity startSize.
-func initSlice(pslice unsafe.Pointer, base uintptr) {
-	sp := (*reflect.SliceHeader)(pslice)
-	sp.Data = base
-	sp.Len = 0
-	sp.Cap = startSize
-}
-
 // Individual type decoders
 // For each,
 //	u is the decoded value,
 //	v is a pointer to the field (pointer) in the struct
 
 // Sizes of the pools to allocate inside the Buffer.
-// The goal is modest amortization and allocation on at lest 16-byte boundaries.
+// The goal is modest amortization and allocation
+// on at least 16-byte boundaries.
 const (
 	boolPoolSize = 16
 	int32PoolSize = 8
@@ -499,7 +492,6 @@ func (o *Buffer) dec_slice_byte(p *Properties, base uintptr) os.Error {
 	if err != nil {
 		return err
 	}
-
 	v := (*[]byte)(unsafe.Pointer(base + p.offset))
 	*v = b
 	return nil
