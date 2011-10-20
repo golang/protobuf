@@ -31,7 +31,6 @@
 
 package proto
 
-
 /*
  * Types and routines for supporting protocol buffer extensions.
  */
@@ -200,14 +199,11 @@ func decodeExtension(b []byte, extension *ExtensionDesc) (interface{}, os.Error)
 	props.Init(t, "irrelevant_name", extension.Tag, 0)
 
 	base := unsafe.New(t)
-	var sbase uintptr
 	if t.Elem().Kind() == reflect.Struct {
-		// props.dec will be dec_struct_message, which does not refer to sbase.
+		// props.dec will be dec_struct_message.
 		*(*unsafe.Pointer)(base) = unsafe.New(t.Elem())
-	} else {
-		sbase = uintptr(unsafe.New(t.Elem()))
 	}
-	if err := props.dec(o, props, uintptr(base), sbase); err != nil {
+	if err := props.dec(o, props, uintptr(base)); err != nil {
 		return nil, err
 	}
 	return unsafe.Unreflect(t, base), nil
