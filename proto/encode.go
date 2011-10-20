@@ -202,9 +202,6 @@ func (p *Buffer) Marshal(pb interface{}) os.Error {
 	mstat := runtime.MemStats.Mallocs
 
 	t, b, err := getbase(pb)
-	if t.Kind() != reflect.Ptr {
-		return ErrNotPtr
-	}
 	if err == nil {
 		err = p.enc_struct(t.Elem(), b)
 	}
