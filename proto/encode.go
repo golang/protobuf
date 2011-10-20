@@ -152,8 +152,7 @@ func (p *Buffer) EncodeZigzag32(x uint64) os.Error {
 // This is the format used for the bytes protocol buffer
 // type and for embedded messages.
 func (p *Buffer) EncodeRawBytes(b []byte) os.Error {
-	lb := len(b)
-	p.EncodeVarint(uint64(lb))
+	p.EncodeVarint(uint64(len(b)))
 	p.buf = append(p.buf, b...)
 	return nil
 }
@@ -161,10 +160,8 @@ func (p *Buffer) EncodeRawBytes(b []byte) os.Error {
 // EncodeStringBytes writes an encoded string to the Buffer.
 // This is the format used for the proto2 string type.
 func (p *Buffer) EncodeStringBytes(s string) os.Error {
-
-	// this works because strings and slices are the same.
-	y := *(*[]byte)(unsafe.Pointer(&s))
-	p.EncodeRawBytes(y)
+	p.EncodeVarint(uint64(len(s)))
+	p.buf = append(p.buf, s...)
 	return nil
 }
 

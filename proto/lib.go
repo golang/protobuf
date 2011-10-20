@@ -198,7 +198,11 @@ type Buffer struct {
 	index     int        // write point
 	freelist  [10][]byte // list of available buffers
 	nfreelist int        // number of free buffers
-	ptr       uintptr    // scratch area for pointers
+	ptr uintptr // used to avoid a heap allocation.
+	// pools of basic types to amortize allocation.
+	bools []bool
+	int32s []int32
+	int64s []int64
 }
 
 // NewBuffer allocates a new Buffer and initializes its internal data to

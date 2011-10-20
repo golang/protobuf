@@ -333,7 +333,6 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) os.E
 	st := t.Elem()
 	prop := GetProperties(st)
 	required, reqFields := prop.reqCount, uint64(0)
-	sbase := getsbase(prop) // scratch area for data items
 
 	var err os.Error
 	for err == nil && o.index < len(o.buf) {
@@ -354,7 +353,7 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) os.E
 		fieldnum, ok := prop.tags[tag]
 		if !ok {
 			// Maybe it's an extension?
-			o.ptr = base
+			o.ptr = base // copy the address here to avoid a heap allocation.
 			iv := unsafe.Unreflect(t, unsafe.Pointer(&o.ptr))
 			if e, ok := iv.(extendableProto); ok && isExtensionField(e, int32(tag)) {
 				if err = o.skip(st, tag, wire); err == nil {
@@ -381,7 +380,7 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) os.E
 				continue
 			}
 		}
-		err = dec(o, p, base, sbase)
+		err = dec(o, p, base)
 		if err == nil && p.Required {
 			// Successfully decoded a required field.
 			if tag <= 64 {
@@ -424,100 +423,102 @@ func initSlice(pslice unsafe.Pointer, base uintptr) {
 // For each,
 //	u is the decoded value,
 //	v is a pointer to the field (pointer) in the struct
-//	x is a pointer to the preallocated scratch space to hold the decoded value.
+
+// Sizes of the pools to allocate inside the Buffer.
+// The goal is modest amortization and allocation on at lest 16-byte boundaries.
+const (
+	boolPoolSize = 16
+	int32PoolSize = 8
+	int64PoolSize = 4
+)
 
 // Decode a bool.
-func (o *Buffer) dec_bool(p *Properties, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_bool(p *Properties, base uintptr) os.Error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
 	}
-	v := (**uint8)(unsafe.Pointer(base + p.offset))
-	x := (*uint8)(unsafe.Pointer(sbase + p.scratch))
-	*x = uint8(u)
-	*v = x
+	if len(o.bools) == 0 {
+		o.bools = make([]bool, boolPoolSize)
+	}
+	o.bools[0] = u != 0
+	v := (**bool)(unsafe.Pointer(base + p.offset))
+	*v = &o.bools[0]
+	o.bools = o.bools[1:]
 	return nil
 }
 
 // Decode an int32.
-func (o *Buffer) dec_int32(p *Properties, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_int32(p *Properties, base uintptr) os.Error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
 	}
+	if len(o.int32s) == 0 {
+		o.int32s = make([]int32, int32PoolSize)
+	}
+	o.int32s[0] = int32(u)
 	v := (**int32)(unsafe.Pointer(base + p.offset))
-	x := (*int32)(unsafe.Pointer(sbase + p.scratch))
-	*x = int32(u)
-	*v = x
+	*v = &o.int32s[0]
+	o.int32s = o.int32s[1:]
 	return nil
 }
 
 // Decode an int64.
-func (o *Buffer) dec_int64(p *Properties, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_int64(p *Properties, base uintptr) os.Error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
 	}
+	if len(o.int64s) == 0 {
+		o.int64s = make([]int64, int64PoolSize)
+	}
+	o.int64s[0] = int64(u)
 	v := (**int64)(unsafe.Pointer(base + p.offset))
-	x := (*int64)(unsafe.Pointer(sbase + p.scratch))
-	*x = int64(u)
-	*v = x
+	*v = &o.int64s[0]
+	o.int64s = o.int64s[1:]
 	return nil
 }
 
 // Decode a string.
-func (o *Buffer) dec_string(p *Properties, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_string(p *Properties, base uintptr) os.Error {
 	s, err := o.DecodeStringBytes()
 	if err != nil {
 		return err
 	}
+	sp := new(string)
+	*sp = s
 	v := (**string)(unsafe.Pointer(base + p.offset))
-	x := (*string)(unsafe.Pointer(sbase + p.scratch))
-	*x = s
-	*v = x
+	*v = sp
 	return nil
 }
 
 // Decode a slice of bytes ([]byte).
-func (o *Buffer) dec_slice_byte(p *Properties, base uintptr, sbase uintptr) os.Error {
-	b, err := o.DecodeRawBytes(false)
+func (o *Buffer) dec_slice_byte(p *Properties, base uintptr) os.Error {
+	b, err := o.DecodeRawBytes(true)
 	if err != nil {
 		return err
 	}
 
-	x := (*[]uint8)(unsafe.Pointer(base + p.offset))
-
-	y := *x
-	if cap(y) == 0 {
-		initSlice(unsafe.Pointer(x), sbase+p.scratch)
-		y = *x
-	}
-
-	*x = append(y, b...)
+	v := (*[]byte)(unsafe.Pointer(base + p.offset))
+	*v = b
 	return nil
 }
 
 // Decode a slice of bools ([]bool).
-func (o *Buffer) dec_slice_bool(p *Properties, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_slice_bool(p *Properties, base uintptr) os.Error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
 	}
-	x := (*[]bool)(unsafe.Pointer(base + p.offset))
-
-	y := *x
-	if cap(y) == 0 {
-		initSlice(unsafe.Pointer(x), sbase+p.scratch)
-		y = *x
-	}
-
-	*x = append(y, u != 0)
+	v := (*[]bool)(unsafe.Pointer(base + p.offset))
+	*v = append(*v, u != 0)
 	return nil
 }
 
 // Decode a slice of bools ([]bool) in packed format.
-func (o *Buffer) dec_slice_packed_bool(p *Properties, base uintptr, sbase uintptr) os.Error {
-	x := (*[]bool)(unsafe.Pointer(base + p.offset))
+func (o *Buffer) dec_slice_packed_bool(p *Properties, base uintptr) os.Error {
+	v := (*[]bool)(unsafe.Pointer(base + p.offset))
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -525,12 +526,7 @@ func (o *Buffer) dec_slice_packed_bool(p *Properties, base uintptr, sbase uintpt
 	}
 	nb := int(nn) // number of bytes of encoded bools
 
-	y := *x
-	if cap(y) == 0 {
-		initSlice(unsafe.Pointer(x), sbase+p.scratch)
-		y = *x
-	}
-
+	y := *v
 	for i := 0; i < nb; i++ {
 		u, err := p.valDec(o)
 		if err != nil {
@@ -539,31 +535,24 @@ func (o *Buffer) dec_slice_packed_bool(p *Properties, base uintptr, sbase uintpt
 		y = append(y, u != 0)
 	}
 
-	*x = y
+	*v = y
 	return nil
 }
 
 // Decode a slice of int32s ([]int32).
-func (o *Buffer) dec_slice_int32(p *Properties, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_slice_int32(p *Properties, base uintptr) os.Error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
 	}
-	x := (*[]int32)(unsafe.Pointer(base + p.offset))
-
-	y := *x
-	if cap(y) == 0 {
-		initSlice(unsafe.Pointer(x), sbase+p.scratch)
-		y = *x
-	}
-
-	*x = append(y, int32(u))
+	v := (*[]int32)(unsafe.Pointer(base + p.offset))
+	*v = append(*v, int32(u))
 	return nil
 }
 
 // Decode a slice of int32s ([]int32) in packed format.
-func (o *Buffer) dec_slice_packed_int32(p *Properties, base uintptr, sbase uintptr) os.Error {
-	x := (*[]int32)(unsafe.Pointer(base + p.offset))
+func (o *Buffer) dec_slice_packed_int32(p *Properties, base uintptr) os.Error {
+	v := (*[]int32)(unsafe.Pointer(base + p.offset))
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -571,11 +560,7 @@ func (o *Buffer) dec_slice_packed_int32(p *Properties, base uintptr, sbase uintp
 	}
 	nb := int(nn) // number of bytes of encoded int32s
 
-	y := *x
-	if cap(y) == 0 {
-		initSlice(unsafe.Pointer(x), sbase+p.scratch)
-		y = *x
-	}
+	y := *v
 
 	fin := o.index + nb
 	for o.index < fin {
@@ -586,31 +571,26 @@ func (o *Buffer) dec_slice_packed_int32(p *Properties, base uintptr, sbase uintp
 		y = append(y, int32(u))
 	}
 
-	*x = y
+	*v = y
 	return nil
 }
 
 // Decode a slice of int64s ([]int64).
-func (o *Buffer) dec_slice_int64(p *Properties, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_slice_int64(p *Properties, base uintptr) os.Error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
 	}
-	x := (*[]int64)(unsafe.Pointer(base + p.offset))
+	v := (*[]int64)(unsafe.Pointer(base + p.offset))
 
-	y := *x
-	if cap(y) == 0 {
-		initSlice(unsafe.Pointer(x), sbase+p.scratch)
-		y = *x
-	}
-
-	*x = append(y, int64(u))
+	y := *v
+	*v = append(y, int64(u))
 	return nil
 }
 
 // Decode a slice of int64s ([]int64) in packed format.
-func (o *Buffer) dec_slice_packed_int64(p *Properties, base uintptr, sbase uintptr) os.Error {
-	x := (*[]int64)(unsafe.Pointer(base + p.offset))
+func (o *Buffer) dec_slice_packed_int64(p *Properties, base uintptr) os.Error {
+	v := (*[]int64)(unsafe.Pointer(base + p.offset))
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -618,12 +598,7 @@ func (o *Buffer) dec_slice_packed_int64(p *Properties, base uintptr, sbase uintp
 	}
 	nb := int(nn) // number of bytes of encoded int64s
 
-	y := *x
-	if cap(y) == 0 {
-		initSlice(unsafe.Pointer(x), sbase+p.scratch)
-		y = *x
-	}
-
+	y := *v
 	fin := o.index + nb
 	for o.index < fin {
 		u, err := p.valDec(o)
@@ -633,48 +608,38 @@ func (o *Buffer) dec_slice_packed_int64(p *Properties, base uintptr, sbase uintp
 		y = append(y, int64(u))
 	}
 
-	*x = y
+	*v = y
 	return nil
 }
 
 // Decode a slice of strings ([]string).
-func (o *Buffer) dec_slice_string(p *Properties, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_slice_string(p *Properties, base uintptr) os.Error {
 	s, err := o.DecodeStringBytes()
 	if err != nil {
 		return err
 	}
-	x := (*[]string)(unsafe.Pointer(base + p.offset))
+	v := (*[]string)(unsafe.Pointer(base + p.offset))
 
-	y := *x
-	if cap(y) == 0 {
-		initSlice(unsafe.Pointer(x), sbase+p.scratch)
-		y = *x
-	}
-
-	*x = append(y, s)
+	y := *v
+	*v = append(y, s)
 	return nil
 }
 
 // Decode a slice of slice of bytes ([][]byte).
-func (o *Buffer) dec_slice_slice_byte(p *Properties, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_slice_slice_byte(p *Properties, base uintptr) os.Error {
 	b, err := o.DecodeRawBytes(true)
 	if err != nil {
 		return err
 	}
-	x := (*[][]byte)(unsafe.Pointer(base + p.offset))
+	v := (*[][]byte)(unsafe.Pointer(base + p.offset))
 
-	y := *x
-	if cap(y) == 0 {
-		initSlice(unsafe.Pointer(x), sbase+p.scratch)
-		y = *x
-	}
-
-	*x = append(y, b)
+	y := *v
+	*v = append(y, b)
 	return nil
 }
 
 // Decode a group.
-func (o *Buffer) dec_struct_group(p *Properties, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_struct_group(p *Properties, base uintptr) os.Error {
 	ptr := (**struct{})(unsafe.Pointer(base + p.offset))
 	typ := p.stype.Elem()
 	structv := unsafe.New(typ)
@@ -687,7 +652,7 @@ func (o *Buffer) dec_struct_group(p *Properties, base uintptr, sbase uintptr) os
 }
 
 // Decode an embedded message.
-func (o *Buffer) dec_struct_message(p *Properties, base uintptr, sbase uintptr) (err os.Error) {
+func (o *Buffer) dec_struct_message(p *Properties, base uintptr) (err os.Error) {
 	raw, e := o.DecodeRawBytes(false)
 	if e != nil {
 		return e
@@ -718,30 +683,26 @@ func (o *Buffer) dec_struct_message(p *Properties, base uintptr, sbase uintptr) 
 }
 
 // Decode a slice of embedded messages.
-func (o *Buffer) dec_slice_struct_message(p *Properties, base uintptr, sbase uintptr) os.Error {
-	return o.dec_slice_struct(p, false, base, sbase)
+func (o *Buffer) dec_slice_struct_message(p *Properties, base uintptr) os.Error {
+	return o.dec_slice_struct(p, false, base)
 }
 
 // Decode a slice of embedded groups.
-func (o *Buffer) dec_slice_struct_group(p *Properties, base uintptr, sbase uintptr) os.Error {
-	return o.dec_slice_struct(p, true, base, sbase)
+func (o *Buffer) dec_slice_struct_group(p *Properties, base uintptr) os.Error {
+	return o.dec_slice_struct(p, true, base)
 }
 
 // Decode a slice of structs ([]*struct).
-func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr, sbase uintptr) os.Error {
+func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) os.Error {
 
-	x := (*[]*struct{})(unsafe.Pointer(base + p.offset))
-	y := *x
-	if cap(y) == 0 {
-		initSlice(unsafe.Pointer(x), sbase+p.scratch)
-		y = *x
-	}
+	v := (*[]*struct{})(unsafe.Pointer(base + p.offset))
+	y := *v
 
 	typ := p.stype.Elem()
 	structv := unsafe.New(typ)
 	bas := uintptr(structv)
 	y = append(y, (*struct{})(structv))
-	*x = y
+	*v = y
 
 	if is_group {
 		err := o.unmarshalType(p.stype, is_group, bas)
