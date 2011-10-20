@@ -39,7 +39,6 @@ import (
 	"os"
 	"reflect"
 	"strconv"
-	"unsafe"
 )
 
 // ExtensionRange represents a range of message extensions for a protocol buffer.
@@ -198,15 +197,15 @@ func decodeExtension(b []byte, extension *ExtensionDesc) (interface{}, os.Error)
 	props := &Properties{}
 	props.Init(t, "irrelevant_name", extension.Tag, 0)
 
-	base := unsafe.New(t)
-	if t.Elem().Kind() == reflect.Struct {
-		// props.dec will be dec_struct_message.
-		*(*unsafe.Pointer)(base) = unsafe.New(t.Elem())
-	}
-	if err := props.dec(o, props, uintptr(base)); err != nil {
+	// t is a pointer, likely to a struct.
+	// Allocate a "field" to store the pointer itself; the
+	// struct pointer will be stored here. We pass
+	// the address of this field to props.dec.
+	value := reflect.New(t).Elem()
+	if err := props.dec(o, props, value.UnsafeAddr()); err != nil {
 		return nil, err
 	}
-	return unsafe.Unreflect(t, base), nil
+	return value.Interface(), nil
 }
 
 // GetExtensions returns a slice of the extensions present in pb that are also listed in es.
