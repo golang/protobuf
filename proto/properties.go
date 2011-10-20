@@ -43,7 +43,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"unsafe"
 )
 
 const debug bool = false
@@ -116,8 +115,8 @@ type Properties struct {
 	tagbuf  [8]byte
 	stype   reflect.Type
 
-	dec    decoder
-	valDec valueDecoder // set for bool and numeric types only
+	dec     decoder
+	valDec  valueDecoder // set for bool and numeric types only
 
 	// If this is a packable field, this will be the decoder for the packed version of the field.
 	packedDec decoder
@@ -477,18 +476,20 @@ func propByIndex(t reflect.Type, x []int) *Properties {
 }
 
 // Get the address and type of a pointer to a struct from an interface.
-// unsafe.Reflect can do this, but does multiple mallocs.
 func getbase(pb interface{}) (t reflect.Type, b uintptr, err os.Error) {
-	// get pointer
-	x := *(*[2]uintptr)(unsafe.Pointer(&pb))
-	b = x[1]
-	if b == 0 {
+	if pb == nil {
 		err = ErrNil
 		return
 	}
-
-	// get the reflect type of the struct.
+	// get the reflect type of the pointer to the struct.
 	t = reflect.TypeOf(pb)
+	if t.Kind() != reflect.Ptr {
+		err = ErrNotPtr
+		return
+	}
+	// get the address of the struct.
+	value := reflect.ValueOf(pb)
+	b = value.Pointer()
 	return
 }
 
