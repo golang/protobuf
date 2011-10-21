@@ -115,8 +115,8 @@ type Properties struct {
 	tagbuf  [8]byte
 	stype   reflect.Type
 
-	dec     decoder
-	valDec  valueDecoder // set for bool and numeric types only
+	dec    decoder
+	valDec valueDecoder // set for bool and numeric types only
 
 	// If this is a packable field, this will be the decoder for the packed version of the field.
 	packedDec decoder

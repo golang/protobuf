@@ -420,7 +420,7 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) os.E
 // The goal is modest amortization and allocation
 // on at least 16-byte boundaries.
 const (
-	boolPoolSize = 16
+	boolPoolSize  = 16
 	int32PoolSize = 8
 	int64PoolSize = 4
 )
