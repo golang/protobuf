@@ -1123,7 +1123,6 @@ func TestProto1RepeatedGroup(t *testing.T) {
 	}
 }
 
-
 // Test that enums work.  Checks for a bug introduced by making enums
 // named types instead of int32: newInt32FromUint64 would crash with
 // a type mismatch in reflect.PointTo.
