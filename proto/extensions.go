@@ -149,7 +149,7 @@ func HasExtension(pb extendableProto, extension *ExtensionDesc) bool {
 // ClearExtension removes the given extension from pb.
 func ClearExtension(pb extendableProto, extension *ExtensionDesc) {
 	// TODO: Check types, field numbers, etc.?
-	pb.ExtensionMap()[extension.Field] = Extension{}, false
+	delete(pb.ExtensionMap(), extension.Field)
 }
 
 // GetExtension parses and returns the given extension of pb.
