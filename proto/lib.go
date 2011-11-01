@@ -558,9 +558,9 @@ func SetDefaults(pb interface{}) {
 func setDefaults(v reflect.Value, recur, zeros bool) {
 	v = v.Elem()
 
-	defaultMu.Lock()
+	defaultMu.RLock()
 	dm, ok := defaults[v.Type()]
-	defaultMu.Unlock()
+	defaultMu.RUnlock()
 	if !ok {
 		dm = buildDefaultMessage(v.Type())
 		defaultMu.Lock()
@@ -664,7 +664,7 @@ func setDefaults(v reflect.Value, recur, zeros bool) {
 var (
 	// defaults maps a protocol buffer struct type to a slice of the fields,
 	// with its scalar fields set to their proto-declared non-zero default values.
-	defaultMu sync.Mutex
+	defaultMu sync.RWMutex
 	defaults  = make(map[reflect.Type]defaultMessage)
 
 	int32PtrType = reflect.TypeOf((*int32)(nil))
