@@ -37,13 +37,13 @@ package proto
 
 import (
 	"bytes"
-	"os"
+	"errors"
 	"reflect"
 )
 
 // ErrNoMessageTypeId occurs when a protocol buffer does not have a message type ID.
 // A message type ID is required for storing a protocol buffer in a message set.
-var ErrNoMessageTypeId = os.NewError("proto does not have a message type ID")
+var ErrNoMessageTypeId = errors.New("proto does not have a message type ID")
 
 // The first two types (_MessageSet_Item and MessageSet)
 // model what the protocol compiler produces for the following protocol message:
@@ -101,7 +101,7 @@ func (ms *MessageSet) Has(pb interface{}) bool {
 	return false
 }
 
-func (ms *MessageSet) Unmarshal(pb interface{}) os.Error {
+func (ms *MessageSet) Unmarshal(pb interface{}) error {
 	if item := ms.find(pb); item != nil {
 		return Unmarshal(item.Message, pb)
 	}
@@ -111,7 +111,7 @@ func (ms *MessageSet) Unmarshal(pb interface{}) os.Error {
 	return nil // TODO: return error instead?
 }
 
-func (ms *MessageSet) Marshal(pb interface{}) os.Error {
+func (ms *MessageSet) Marshal(pb interface{}) error {
 	msg, err := Marshal(pb)
 	if err != nil {
 		return err
@@ -146,7 +146,7 @@ func skipVarint(buf []byte) []byte {
 
 // MarshalMessageSet encodes the extension map represented by m in the message set wire format.
 // It is called by generated Marshal methods on protocol buffer messages with the message_set_wire_format option.
-func MarshalMessageSet(m map[int32]Extension) ([]byte, os.Error) {
+func MarshalMessageSet(m map[int32]Extension) ([]byte, error) {
 	if err := encodeExtensionMap(m); err != nil {
 		return nil, err
 	}
@@ -168,7 +168,7 @@ func MarshalMessageSet(m map[int32]Extension) ([]byte, os.Error) {
 
 // UnmarshalMessageSet decodes the extension map encoded in buf in the message set wire format.
 // It is called by generated Unmarshal methods on protocol buffer messages with the message_set_wire_format option.
-func UnmarshalMessageSet(buf []byte, m map[int32]Extension) os.Error {
+func UnmarshalMessageSet(buf []byte, m map[int32]Extension) error {
 	ms := new(MessageSet)
 	if err := Unmarshal(buf, ms); err != nil {
 		return err

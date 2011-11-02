@@ -5,12 +5,10 @@ package google_protobuf
 
 import proto "goprotobuf.googlecode.com/hg/proto"
 import "math"
-import "os"
 
 // Reference proto, math & os imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
 var _ = math.Inf
-var _ os.Error
 
 
 type FieldDescriptorProto_Type int32

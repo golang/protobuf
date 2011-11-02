@@ -8,10 +8,9 @@ import "math"
 import "os"
 import imp1 "imp2.pb"
 
-// Reference proto, math & os imports to suppress error if they are not otherwise used.
+// Reference proto & math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
 var _ = math.Inf
-var _ os.Error
 
 // Types from public import imp2.proto
 type PubliclyImportedMessage imp1.PubliclyImportedMessage
@@ -78,10 +77,10 @@ type ImportedExtendable struct {
 func (this *ImportedExtendable) Reset()         { *this = ImportedExtendable{} }
 func (this *ImportedExtendable) String() string { return proto.CompactTextString(this) }
 
-func (this *ImportedExtendable) Marshal() ([]byte, os.Error) {
+func (this *ImportedExtendable) Marshal() ([]byte, error) {
 	return proto.MarshalMessageSet(this.ExtensionMap())
 }
-func (this *ImportedExtendable) Unmarshal(buf []byte) os.Error {
+func (this *ImportedExtendable) Unmarshal(buf []byte) error {
 	return proto.UnmarshalMessageSet(buf, this.ExtensionMap())
 }
 // ensure ImportedExtendable satisfies proto.Marshaler and proto.Unmarshaler

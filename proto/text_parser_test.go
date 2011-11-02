@@ -259,9 +259,9 @@ func TestUnmarshalText(t *testing.T) {
 			// We do expect failure.
 			if err == nil {
 				t.Errorf("Test %d: Didn't get expected error: %v", i, test.error)
-			} else if err.String() != test.error {
+			} else if err.Error() != test.error {
 				t.Errorf("Test %d: Incorrect error.\nHave: %v\nWant: %v",
-					i, err.String(), test.error)
+					i, err, test.error)
 			}
 		}
 	}
@@ -293,7 +293,7 @@ func init() {
 	pb := new(MyMessage)
 	err := UnmarshalText(benchInput, pb)
 	if err != nil {
-		panic("Bad benchmark input: " + err.String())
+		panic("Bad benchmark input: " + err.Error())
 	}
 }
 

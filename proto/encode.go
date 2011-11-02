@@ -36,7 +36,7 @@ package proto
  */
 
 import (
-	"os"
+	"errors"
 	"reflect"
 	"runtime"
 	"unsafe"
@@ -51,20 +51,20 @@ type ErrRequiredNotSet struct {
 	t reflect.Type
 }
 
-func (e *ErrRequiredNotSet) String() string {
+func (e *ErrRequiredNotSet) Error() string {
 	return "proto: required fields not set in " + e.t.String()
 }
 
 var (
 	// ErrRepeatedHasNil is the error returned if Marshal is called with
 	// a struct with a repeated field containing a nil element.
-	ErrRepeatedHasNil = os.NewError("proto: repeated field has nil")
+	ErrRepeatedHasNil = errors.New("proto: repeated field has nil")
 
 	// ErrNil is the error returned if Marshal is called with nil.
-	ErrNil = os.NewError("proto: Marshal called with nil")
+	ErrNil = errors.New("proto: Marshal called with nil")
 
 	// ErrNotPtr is the error returned if Marshal is called with a non-pointer.
-	ErrNotPtr = os.NewError("proto: Marshal called with a non-pointer")
+	ErrNotPtr = errors.New("proto: Marshal called with a non-pointer")
 )
 
 // The fundamental encoders that put bytes on the wire.
@@ -95,7 +95,7 @@ func EncodeVarint(x uint64) []byte {
 // This is the format for the
 // int32, int64, uint32, uint64, bool, and enum
 // protocol buffer types.
-func (p *Buffer) EncodeVarint(x uint64) os.Error {
+func (p *Buffer) EncodeVarint(x uint64) error {
 	for x >= 1<<7 {
 		p.buf = append(p.buf, uint8(x&0x7f|0x80))
 		x >>= 7
@@ -107,7 +107,7 @@ func (p *Buffer) EncodeVarint(x uint64) os.Error {
 // EncodeFixed64 writes a 64-bit integer to the Buffer.
 // This is the format for the
 // fixed64, sfixed64, and double protocol buffer types.
-func (p *Buffer) EncodeFixed64(x uint64) os.Error {
+func (p *Buffer) EncodeFixed64(x uint64) error {
 	p.buf = append(p.buf,
 		uint8(x),
 		uint8(x>>8),
@@ -123,7 +123,7 @@ func (p *Buffer) EncodeFixed64(x uint64) os.Error {
 // EncodeFixed32 writes a 32-bit integer to the Buffer.
 // This is the format for the
 // fixed32, sfixed32, and float protocol buffer types.
-func (p *Buffer) EncodeFixed32(x uint64) os.Error {
+func (p *Buffer) EncodeFixed32(x uint64) error {
 	p.buf = append(p.buf,
 		uint8(x),
 		uint8(x>>8),
@@ -135,7 +135,7 @@ func (p *Buffer) EncodeFixed32(x uint64) os.Error {
 // EncodeZigzag64 writes a zigzag-encoded 64-bit integer
 // to the Buffer.
 // This is the format used for the sint64 protocol buffer type.
-func (p *Buffer) EncodeZigzag64(x uint64) os.Error {
+func (p *Buffer) EncodeZigzag64(x uint64) error {
 	// use signed number to get arithmetic right shift.
 	return p.EncodeVarint(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
@@ -143,7 +143,7 @@ func (p *Buffer) EncodeZigzag64(x uint64) os.Error {
 // EncodeZigzag32 writes a zigzag-encoded 32-bit integer
 // to the Buffer.
 // This is the format used for the sint32 protocol buffer type.
-func (p *Buffer) EncodeZigzag32(x uint64) os.Error {
+func (p *Buffer) EncodeZigzag32(x uint64) error {
 	// use signed number to get arithmetic right shift.
 	return p.EncodeVarint(uint64((uint32(x) << 1) ^ uint32((int32(x) >> 31))))
 }
@@ -151,7 +151,7 @@ func (p *Buffer) EncodeZigzag32(x uint64) os.Error {
 // EncodeRawBytes writes a count-delimited byte buffer to the Buffer.
 // This is the format used for the bytes protocol buffer
 // type and for embedded messages.
-func (p *Buffer) EncodeRawBytes(b []byte) os.Error {
+func (p *Buffer) EncodeRawBytes(b []byte) error {
 	p.EncodeVarint(uint64(len(b)))
 	p.buf = append(p.buf, b...)
 	return nil
@@ -159,7 +159,7 @@ func (p *Buffer) EncodeRawBytes(b []byte) os.Error {
 
 // EncodeStringBytes writes an encoded string to the Buffer.
 // This is the format used for the proto2 string type.
-func (p *Buffer) EncodeStringBytes(s string) os.Error {
+func (p *Buffer) EncodeStringBytes(s string) error {
 	p.EncodeVarint(uint64(len(s)))
 	p.buf = append(p.buf, s...)
 	return nil
@@ -167,12 +167,12 @@ func (p *Buffer) EncodeStringBytes(s string) os.Error {
 
 // Marshaler is the interface representing objects that can marshal themselves.
 type Marshaler interface {
-	Marshal() ([]byte, os.Error)
+	Marshal() ([]byte, error)
 }
 
 // Marshal takes the protocol buffer struct represented by pb
 // and encodes it into the wire format, returning the data.
-func Marshal(pb interface{}) ([]byte, os.Error) {
+func Marshal(pb interface{}) ([]byte, error) {
 	// Can the object marshal itself?
 	if m, ok := pb.(Marshaler); ok {
 		return m.Marshal()
@@ -188,7 +188,7 @@ func Marshal(pb interface{}) ([]byte, os.Error) {
 // Marshal takes the protocol buffer struct represented by pb
 // and encodes it into the wire format, writing the result to the
 // Buffer.
-func (p *Buffer) Marshal(pb interface{}) os.Error {
+func (p *Buffer) Marshal(pb interface{}) error {
 	// Can the object marshal itself?
 	if m, ok := pb.(Marshaler); ok {
 		data, err := m.Marshal()
@@ -216,7 +216,7 @@ func (p *Buffer) Marshal(pb interface{}) os.Error {
 // Individual type encoders.
 
 // Encode a bool.
-func (o *Buffer) enc_bool(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_bool(p *Properties, base uintptr) error {
 	v := *(**bool)(unsafe.Pointer(base + p.offset))
 	if v == nil {
 		return ErrNil
@@ -231,7 +231,7 @@ func (o *Buffer) enc_bool(p *Properties, base uintptr) os.Error {
 }
 
 // Encode an int32.
-func (o *Buffer) enc_int32(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_int32(p *Properties, base uintptr) error {
 	v := *(**int32)(unsafe.Pointer(base + p.offset))
 	if v == nil {
 		return ErrNil
@@ -243,7 +243,7 @@ func (o *Buffer) enc_int32(p *Properties, base uintptr) os.Error {
 }
 
 // Encode an int64.
-func (o *Buffer) enc_int64(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_int64(p *Properties, base uintptr) error {
 	v := *(**int64)(unsafe.Pointer(base + p.offset))
 	if v == nil {
 		return ErrNil
@@ -255,7 +255,7 @@ func (o *Buffer) enc_int64(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a string.
-func (o *Buffer) enc_string(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_string(p *Properties, base uintptr) error {
 	v := *(**string)(unsafe.Pointer(base + p.offset))
 	if v == nil {
 		return ErrNil
@@ -276,7 +276,7 @@ func isNil(v reflect.Value) bool {
 }
 
 // Encode a message struct.
-func (o *Buffer) enc_struct_message(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_struct_message(p *Properties, base uintptr) error {
 	// Can the object marshal itself?
 	iv := unsafe.Unreflect(p.stype, unsafe.Pointer(base+p.offset))
 	if m, ok := iv.(Marshaler); ok {
@@ -318,7 +318,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a group struct.
-func (o *Buffer) enc_struct_group(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_struct_group(p *Properties, base uintptr) error {
 	v := *(**struct{})(unsafe.Pointer(base + p.offset))
 	if v == nil {
 		return ErrNil
@@ -336,7 +336,7 @@ func (o *Buffer) enc_struct_group(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a slice of bools ([]bool).
-func (o *Buffer) enc_slice_bool(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_bool(p *Properties, base uintptr) error {
 	s := *(*[]uint8)(unsafe.Pointer(base + p.offset))
 	l := len(s)
 	if l == 0 {
@@ -353,7 +353,7 @@ func (o *Buffer) enc_slice_bool(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a slice of bools ([]bool) in packed format.
-func (o *Buffer) enc_slice_packed_bool(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_packed_bool(p *Properties, base uintptr) error {
 	s := *(*[]uint8)(unsafe.Pointer(base + p.offset))
 	l := len(s)
 	if l == 0 {
@@ -371,7 +371,7 @@ func (o *Buffer) enc_slice_packed_bool(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a slice of bytes ([]byte).
-func (o *Buffer) enc_slice_byte(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_byte(p *Properties, base uintptr) error {
 	s := *(*[]uint8)(unsafe.Pointer(base + p.offset))
 	if s == nil {
 		return ErrNil
@@ -382,7 +382,7 @@ func (o *Buffer) enc_slice_byte(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a slice of int32s ([]int32).
-func (o *Buffer) enc_slice_int32(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_int32(p *Properties, base uintptr) error {
 	s := *(*[]uint32)(unsafe.Pointer(base + p.offset))
 	l := len(s)
 	if l == 0 {
@@ -397,7 +397,7 @@ func (o *Buffer) enc_slice_int32(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a slice of int32s ([]int32) in packed format.
-func (o *Buffer) enc_slice_packed_int32(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_packed_int32(p *Properties, base uintptr) error {
 	s := *(*[]uint32)(unsafe.Pointer(base + p.offset))
 	l := len(s)
 	if l == 0 {
@@ -416,7 +416,7 @@ func (o *Buffer) enc_slice_packed_int32(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a slice of int64s ([]int64).
-func (o *Buffer) enc_slice_int64(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_int64(p *Properties, base uintptr) error {
 	s := *(*[]uint64)(unsafe.Pointer(base + p.offset))
 	l := len(s)
 	if l == 0 {
@@ -431,7 +431,7 @@ func (o *Buffer) enc_slice_int64(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a slice of int64s ([]int64) in packed format.
-func (o *Buffer) enc_slice_packed_int64(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_packed_int64(p *Properties, base uintptr) error {
 	s := *(*[]uint64)(unsafe.Pointer(base + p.offset))
 	l := len(s)
 	if l == 0 {
@@ -450,7 +450,7 @@ func (o *Buffer) enc_slice_packed_int64(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a slice of slice of bytes ([][]byte).
-func (o *Buffer) enc_slice_slice_byte(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_slice_byte(p *Properties, base uintptr) error {
 	ss := *(*[][]uint8)(unsafe.Pointer(base + p.offset))
 	l := len(ss)
 	if l == 0 {
@@ -465,7 +465,7 @@ func (o *Buffer) enc_slice_slice_byte(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a slice of strings ([]string).
-func (o *Buffer) enc_slice_string(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_string(p *Properties, base uintptr) error {
 	ss := *(*[]string)(unsafe.Pointer(base + p.offset))
 	l := len(ss)
 	for i := 0; i < l; i++ {
@@ -477,7 +477,7 @@ func (o *Buffer) enc_slice_string(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a slice of message structs ([]*struct).
-func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) error {
 	s := *(*[]*struct{})(unsafe.Pointer(base + p.offset))
 	l := len(s)
 	typ := p.stype.Elem()
@@ -527,7 +527,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) os.Error 
 }
 
 // Encode a slice of group structs ([]*struct).
-func (o *Buffer) enc_slice_struct_group(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_slice_struct_group(p *Properties, base uintptr) error {
 	s := *(*[]*struct{})(unsafe.Pointer(base + p.offset))
 	l := len(s)
 	typ := p.stype.Elem()
@@ -556,7 +556,7 @@ func (o *Buffer) enc_slice_struct_group(p *Properties, base uintptr) os.Error {
 }
 
 // Encode an extension map.
-func (o *Buffer) enc_map(p *Properties, base uintptr) os.Error {
+func (o *Buffer) enc_map(p *Properties, base uintptr) error {
 	v := *(*map[int32]Extension)(unsafe.Pointer(base + p.offset))
 	if err := encodeExtensionMap(v); err != nil {
 		return err
@@ -568,7 +568,7 @@ func (o *Buffer) enc_map(p *Properties, base uintptr) os.Error {
 }
 
 // Encode a struct.
-func (o *Buffer) enc_struct(t reflect.Type, base uintptr) os.Error {
+func (o *Buffer) enc_struct(t reflect.Type, base uintptr) error {
 	prop := GetProperties(t)
 	required := prop.reqCount
 	// Encode fields in tag order so that decoders may use optimizations
