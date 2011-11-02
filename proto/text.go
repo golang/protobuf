@@ -54,7 +54,7 @@ type textWriter struct {
 	c [1]byte // scratch
 }
 
-func (w *textWriter) Write(p []byte) (n int, err os.Error) {
+func (w *textWriter) Write(p []byte) (n int, err error) {
 	n, err = len(p), nil
 
 	frags := strings.Split(string(p), "\n")
@@ -81,7 +81,7 @@ func (w *textWriter) Write(p []byte) (n int, err os.Error) {
 	return
 }
 
-func (w *textWriter) WriteByte(c byte) os.Error {
+func (w *textWriter) WriteByte(c byte) error {
 	w.c[0] = c
 	_, err := w.Write(w.c[:])
 	return err
@@ -341,7 +341,7 @@ func writeUnknownStruct(w *textWriter, data []byte) {
 	}
 }
 
-func writeUnknownInt(w *textWriter, x uint64, err os.Error) {
+func writeUnknownInt(w *textWriter, x uint64, err error) {
 	if err == nil {
 		fmt.Fprint(w, x)
 	} else {

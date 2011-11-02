@@ -62,18 +62,18 @@ const startSize = 10 // initial slice/string sizes
 // Encoders are defined in encoder.go
 // An encoder outputs the full representation of a field, including its
 // tag and encoder type.
-type encoder func(p *Buffer, prop *Properties, base uintptr) os.Error
+type encoder func(p *Buffer, prop *Properties, base uintptr) error
 
 // A valueEncoder encodes a single integer in a particular encoding.
-type valueEncoder func(o *Buffer, x uint64) os.Error
+type valueEncoder func(o *Buffer, x uint64) error
 
 // Decoders are defined in decode.go
 // A decoder creates a value from its wire representation.
 // Unrecognized subelements are saved in unrec.
-type decoder func(p *Buffer, prop *Properties, base uintptr) os.Error
+type decoder func(p *Buffer, prop *Properties, base uintptr) error
 
 // A valueDecoder decodes a single integer in a particular encoding.
-type valueDecoder func(o *Buffer) (x uint64, err os.Error)
+type valueDecoder func(o *Buffer) (x uint64, err error)
 
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
@@ -190,7 +190,7 @@ func (p *Properties) Parse(s string) {
 		return
 	}
 
-	var err os.Error
+	var err error
 	p.Tag, err = strconv.Atoi(fields[1])
 	if err != nil {
 		return
@@ -476,7 +476,7 @@ func propByIndex(t reflect.Type, x []int) *Properties {
 }
 
 // Get the address and type of a pointer to a struct from an interface.
-func getbase(pb interface{}) (t reflect.Type, b uintptr, err os.Error) {
+func getbase(pb interface{}) (t reflect.Type, b uintptr, err error) {
 	if pb == nil {
 		err = ErrNil
 		return

@@ -274,9 +274,9 @@ func (ms messageSymbol) GenerateAlias(g *Generator, pkg string) {
 		g.P("func (this *", ms.sym, ") ExtensionMap() map[int32]", g.ProtoPkg, ".Extension ",
 			"{ return (*", remoteSym, ")(this).ExtensionMap() }")
 		if ms.isMessageSet {
-			g.P("func (this *", ms.sym, ") Marshal() ([]byte, os.Error) ",
+			g.P("func (this *", ms.sym, ") Marshal() ([]byte, error) ",
 				"{ return (*", remoteSym, ")(this).Marshal() }")
-			g.P("func (this *", ms.sym, ") Unmarshal(buf []byte) os.Error ",
+			g.P("func (this *", ms.sym, ") Unmarshal(buf []byte) error ",
 				"{ return (*", remoteSym, ")(this).Unmarshal(buf) }")
 		}
 	}
@@ -351,9 +351,9 @@ func New() *Generator {
 	return g
 }
 
-// Error reports a problem, including an os.Error, and exits the program.
-func (g *Generator) Error(err os.Error, msgs ...string) {
-	s := strings.Join(msgs, " ") + ":" + err.String()
+// Error reports a problem, including an error, and exits the program.
+func (g *Generator) Error(err error, msgs ...string) {
+	s := strings.Join(msgs, " ") + ":" + err.Error()
 	log.Println("protoc-gen-go: error:", s)
 	g.Response.Error = proto.String(s)
 	os.Exit(1)
@@ -780,13 +780,13 @@ func (g *Generator) generate(file *FileDescriptor) {
 	fset := token.NewFileSet()
 	ast, err := parser.ParseFile(fset, "", g, parser.ParseComments)
 	if err != nil {
-		g.Fail("bad Go source code was generated:", err.String())
+		g.Fail("bad Go source code was generated:", err.Error())
 		return
 	}
 	g.Reset()
 	_, err = (&printer.Config{printer.TabIndent | printer.UseSpaces, 8}).Fprint(g, fset, ast)
 	if err != nil {
-		g.Fail("generated Go source code could not be reformatted:", err.String())
+		g.Fail("generated Go source code could not be reformatted:", err.Error())
 	}
 }
 
@@ -812,10 +812,10 @@ func (g *Generator) fileByName(filename string) *FileDescriptor {
 func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
-	// reference it later. The same argument applies to the os package.
+	// reference it later. The same argument applies to the math package,
+	// for handling bit patterns for floating-point numbers.
 	g.P("import " + g.ProtoPkg + " " + Quote(g.ImportPrefix+"goprotobuf.googlecode.com/hg/proto"))
 	g.P(`import "math"`)
-	g.P(`import "os"`)
 	for _, s := range g.file.Dependency {
 		fd := g.fileByName(s)
 		// Do not import our own package.
@@ -846,10 +846,9 @@ func (g *Generator) generateImports() {
 		p.GenerateImports(g.file)
 		g.P()
 	}
-	g.P("// Reference proto, math & os imports to suppress error if they are not otherwise used.")
+	g.P("// Reference proto & math imports to suppress error if they are not otherwise used.")
 	g.P("var _ = ", g.ProtoPkg, ".GetString")
 	g.P("var _ = math.Inf")
-	g.P("var _ os.Error")
 	g.P()
 }
 
@@ -1147,12 +1146,12 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		if opts := message.Options; opts != nil && proto.GetBool(opts.MessageSetWireFormat) {
 			isMessageSet = true
 			g.P()
-			g.P("func (this *", ccTypeName, ") Marshal() ([]byte, os.Error) {")
+			g.P("func (this *", ccTypeName, ") Marshal() ([]byte, error) {")
 			g.In()
 			g.P("return ", g.ProtoPkg, ".MarshalMessageSet(this.ExtensionMap())")
 			g.Out()
 			g.P("}")
-			g.P("func (this *", ccTypeName, ") Unmarshal(buf []byte) os.Error {")
+			g.P("func (this *", ccTypeName, ") Unmarshal(buf []byte) error {")
 			g.In()
 			g.P("return ", g.ProtoPkg, ".UnmarshalMessageSet(buf, this.ExtensionMap())")
 			g.Out()

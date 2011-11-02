@@ -5,43 +5,42 @@ package google_protobuf_compiler
 
 import proto "goprotobuf.googlecode.com/hg/proto"
 import "math"
-import "os"
+
 import google_protobuf "goprotobuf.googlecode.com/hg/compiler/descriptor"
 
 // Reference proto, math & os imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
 var _ = math.Inf
-var _ os.Error
-
+var _ error
 
 type CodeGeneratorRequest struct {
-	FileToGenerate		[]string				`protobuf:"bytes,1,rep,name=file_to_generate"`
-	Parameter		*string					`protobuf:"bytes,2,opt,name=parameter"`
-	ProtoFile		[]*google_protobuf.FileDescriptorProto	`protobuf:"bytes,15,rep,name=proto_file"`
-	XXX_unrecognized	[]byte
+	FileToGenerate   []string                               `protobuf:"bytes,1,rep,name=file_to_generate"`
+	Parameter        *string                                `protobuf:"bytes,2,opt,name=parameter"`
+	ProtoFile        []*google_protobuf.FileDescriptorProto `protobuf:"bytes,15,rep,name=proto_file"`
+	XXX_unrecognized []byte
 }
 
-func (this *CodeGeneratorRequest) Reset()		{ *this = CodeGeneratorRequest{} }
-func (this *CodeGeneratorRequest) String() string	{ return proto.CompactTextString(this) }
+func (this *CodeGeneratorRequest) Reset()         { *this = CodeGeneratorRequest{} }
+func (this *CodeGeneratorRequest) String() string { return proto.CompactTextString(this) }
 
 type CodeGeneratorResponse struct {
-	Error			*string				`protobuf:"bytes,1,opt,name=error"`
-	File			[]*CodeGeneratorResponse_File	`protobuf:"bytes,15,rep,name=file"`
-	XXX_unrecognized	[]byte
+	Error            *string                       `protobuf:"bytes,1,opt,name=error"`
+	File             []*CodeGeneratorResponse_File `protobuf:"bytes,15,rep,name=file"`
+	XXX_unrecognized []byte
 }
 
-func (this *CodeGeneratorResponse) Reset()		{ *this = CodeGeneratorResponse{} }
-func (this *CodeGeneratorResponse) String() string	{ return proto.CompactTextString(this) }
+func (this *CodeGeneratorResponse) Reset()         { *this = CodeGeneratorResponse{} }
+func (this *CodeGeneratorResponse) String() string { return proto.CompactTextString(this) }
 
 type CodeGeneratorResponse_File struct {
-	Name			*string	`protobuf:"bytes,1,opt,name=name"`
-	InsertionPoint		*string	`protobuf:"bytes,2,opt,name=insertion_point"`
-	Content			*string	`protobuf:"bytes,15,opt,name=content"`
-	XXX_unrecognized	[]byte
+	Name             *string `protobuf:"bytes,1,opt,name=name"`
+	InsertionPoint   *string `protobuf:"bytes,2,opt,name=insertion_point"`
+	Content          *string `protobuf:"bytes,15,opt,name=content"`
+	XXX_unrecognized []byte
 }
 
-func (this *CodeGeneratorResponse_File) Reset()		{ *this = CodeGeneratorResponse_File{} }
-func (this *CodeGeneratorResponse_File) String() string	{ return proto.CompactTextString(this) }
+func (this *CodeGeneratorResponse_File) Reset()         { *this = CodeGeneratorResponse_File{} }
+func (this *CodeGeneratorResponse_File) String() string { return proto.CompactTextString(this) }
 
 func init() {
 }

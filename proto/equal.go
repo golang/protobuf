@@ -37,7 +37,6 @@ package proto
 import (
 	"bytes"
 	"log"
-	"os"
 	"reflect"
 	"strings"
 )
@@ -190,7 +189,7 @@ func equalExtensions(base reflect.Type, em1, em2 map[int32]Extension) bool {
 			log.Printf("proto: don't know how to compare extension %d of %v", extNum, base)
 			continue
 		}
-		var err os.Error
+		var err error
 		if m1 == nil {
 			m1, err = decodeExtension(e1.enc, desc)
 		}

@@ -5,14 +5,12 @@ package my_test
 
 import proto "goprotobuf.googlecode.com/hg/proto"
 import "math"
-import "os"
 import imp1 "imp.pb"
 // discarding unused import multitest2 "multi1.pb"
 
-// Reference proto, math & os imports to suppress error if they are not otherwise used.
+// Reference proto & math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
 var _ = math.Inf
-var _ os.Error
 
 type HatType int32
 
@@ -201,10 +199,10 @@ type OldReply struct {
 func (this *OldReply) Reset()         { *this = OldReply{} }
 func (this *OldReply) String() string { return proto.CompactTextString(this) }
 
-func (this *OldReply) Marshal() ([]byte, os.Error) {
+func (this *OldReply) Marshal() ([]byte, error) {
 	return proto.MarshalMessageSet(this.ExtensionMap())
 }
-func (this *OldReply) Unmarshal(buf []byte) os.Error {
+func (this *OldReply) Unmarshal(buf []byte) error {
 	return proto.UnmarshalMessageSet(buf, this.ExtensionMap())
 }
 // ensure OldReply satisfies proto.Marshaler and proto.Unmarshaler

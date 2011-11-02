@@ -36,6 +36,7 @@ package proto
  */
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -47,7 +48,7 @@ import (
 // ErrWrongType occurs when the wire encoding for the field disagrees with
 // that specified in the type being decoded.  This is usually caused by attempting
 // to convert an encoded protocol buffer into a struct of the wrong type.
-var ErrWrongType = os.NewError("field/encoding mismatch: wrong type for field")
+var ErrWrongType = errors.New("field/encoding mismatch: wrong type for field")
 
 // The fundamental decoders that interpret bytes on the wire.
 // Those that take integer types all return uint64 and are
@@ -79,7 +80,7 @@ func DecodeVarint(buf []byte) (x uint64, n int) {
 // This is the format for the
 // int32, int64, uint32, uint64, bool, and enum
 // protocol buffer types.
-func (p *Buffer) DecodeVarint() (x uint64, err os.Error) {
+func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	// x, err already 0
 
 	i := p.index
@@ -104,7 +105,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err os.Error) {
 // DecodeFixed64 reads a 64-bit integer from the Buffer.
 // This is the format for the
 // fixed64, sfixed64, and double protocol buffer types.
-func (p *Buffer) DecodeFixed64() (x uint64, err os.Error) {
+func (p *Buffer) DecodeFixed64() (x uint64, err error) {
 	// x, err already 0
 	i := p.index + 8
 	if i > len(p.buf) {
@@ -127,7 +128,7 @@ func (p *Buffer) DecodeFixed64() (x uint64, err os.Error) {
 // DecodeFixed32 reads a 32-bit integer from the Buffer.
 // This is the format for the
 // fixed32, sfixed32, and float protocol buffer types.
-func (p *Buffer) DecodeFixed32() (x uint64, err os.Error) {
+func (p *Buffer) DecodeFixed32() (x uint64, err error) {
 	// x, err already 0
 	i := p.index + 4
 	if i > len(p.buf) {
@@ -146,7 +147,7 @@ func (p *Buffer) DecodeFixed32() (x uint64, err os.Error) {
 // DecodeZigzag64 reads a zigzag-encoded 64-bit integer
 // from the Buffer.
 // This is the format used for the sint64 protocol buffer type.
-func (p *Buffer) DecodeZigzag64() (x uint64, err os.Error) {
+func (p *Buffer) DecodeZigzag64() (x uint64, err error) {
 	x, err = p.DecodeVarint()
 	if err != nil {
 		return
@@ -158,7 +159,7 @@ func (p *Buffer) DecodeZigzag64() (x uint64, err os.Error) {
 // DecodeZigzag32 reads a zigzag-encoded 32-bit integer
 // from  the Buffer.
 // This is the format used for the sint32 protocol buffer type.
-func (p *Buffer) DecodeZigzag32() (x uint64, err os.Error) {
+func (p *Buffer) DecodeZigzag32() (x uint64, err error) {
 	x, err = p.DecodeVarint()
 	if err != nil {
 		return
@@ -173,7 +174,7 @@ func (p *Buffer) DecodeZigzag32() (x uint64, err os.Error) {
 // DecodeRawBytes reads a count-delimited byte buffer from the Buffer.
 // This is the format used for the bytes protocol buffer
 // type and for embedded messages.
-func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err os.Error) {
+func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 	n, err := p.DecodeVarint()
 	if err != nil {
 		return
@@ -200,7 +201,7 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err os.Error) {
 
 // DecodeStringBytes reads an encoded string from the Buffer.
 // This is the format used for the proto2 string type.
-func (p *Buffer) DecodeStringBytes() (s string, err os.Error) {
+func (p *Buffer) DecodeStringBytes() (s string, err error) {
 	buf, err := p.DecodeRawBytes(false)
 	if err != nil {
 		return
@@ -211,7 +212,7 @@ func (p *Buffer) DecodeStringBytes() (s string, err os.Error) {
 // Skip the next item in the buffer. Its wire type is decoded and presented as an argument.
 // If the protocol buffer has extensions, and the field matches, add it as an extension.
 // Otherwise, if the XXX_unrecognized field exists, append the skipped data there.
-func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base uintptr) os.Error {
+func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base uintptr) error {
 
 	oi := o.index
 
@@ -247,10 +248,10 @@ func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base uintptr) os.Err
 }
 
 // Skip the next item in the buffer. Its wire type is decoded and presented as an argument.
-func (o *Buffer) skip(t reflect.Type, tag, wire int) os.Error {
+func (o *Buffer) skip(t reflect.Type, tag, wire int) error {
 
 	var u uint64
-	var err os.Error
+	var err error
 
 	switch wire {
 	case WireVarint:
@@ -285,13 +286,13 @@ func (o *Buffer) skip(t reflect.Type, tag, wire int) os.Error {
 
 // Unmarshaler is the interface representing objects that can unmarshal themselves.
 type Unmarshaler interface {
-	Unmarshal([]byte) os.Error
+	Unmarshal([]byte) error
 }
 
 // Unmarshal parses the protocol buffer representation in buf and places the
 // decoded result in pb.  If the struct underlying pb does not match
 // the data in buf, the results can be unpredictable.
-func Unmarshal(buf []byte, pb interface{}) os.Error {
+func Unmarshal(buf []byte, pb interface{}) error {
 	// If the object can unmarshal itself, let it.
 	if u, ok := pb.(Unmarshaler); ok {
 		return u.Unmarshal(buf)
@@ -304,7 +305,7 @@ func Unmarshal(buf []byte, pb interface{}) os.Error {
 // Buffer and places the decoded result in pb.  If the struct
 // underlying pb does not match the data in the buffer, the results can be
 // unpredictable.
-func (p *Buffer) Unmarshal(pb interface{}) os.Error {
+func (p *Buffer) Unmarshal(pb interface{}) error {
 	// If the object can unmarshal itself, let it.
 	if u, ok := pb.(Unmarshaler); ok {
 		err := u.Unmarshal(p.buf[p.index:])
@@ -329,12 +330,12 @@ func (p *Buffer) Unmarshal(pb interface{}) os.Error {
 }
 
 // unmarshalType does the work of unmarshaling a structure.
-func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) os.Error {
+func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) error {
 	st := t.Elem()
 	prop := GetProperties(st)
 	required, reqFields := prop.reqCount, uint64(0)
 
-	var err os.Error
+	var err error
 	for err == nil && o.index < len(o.buf) {
 		oi := o.index
 		var u uint64
@@ -426,7 +427,7 @@ const (
 )
 
 // Decode a bool.
-func (o *Buffer) dec_bool(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_bool(p *Properties, base uintptr) error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
@@ -442,7 +443,7 @@ func (o *Buffer) dec_bool(p *Properties, base uintptr) os.Error {
 }
 
 // Decode an int32.
-func (o *Buffer) dec_int32(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_int32(p *Properties, base uintptr) error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
@@ -458,7 +459,7 @@ func (o *Buffer) dec_int32(p *Properties, base uintptr) os.Error {
 }
 
 // Decode an int64.
-func (o *Buffer) dec_int64(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_int64(p *Properties, base uintptr) error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
@@ -474,7 +475,7 @@ func (o *Buffer) dec_int64(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a string.
-func (o *Buffer) dec_string(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_string(p *Properties, base uintptr) error {
 	s, err := o.DecodeStringBytes()
 	if err != nil {
 		return err
@@ -487,7 +488,7 @@ func (o *Buffer) dec_string(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a slice of bytes ([]byte).
-func (o *Buffer) dec_slice_byte(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_byte(p *Properties, base uintptr) error {
 	b, err := o.DecodeRawBytes(true)
 	if err != nil {
 		return err
@@ -498,7 +499,7 @@ func (o *Buffer) dec_slice_byte(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a slice of bools ([]bool).
-func (o *Buffer) dec_slice_bool(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_bool(p *Properties, base uintptr) error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
@@ -509,7 +510,7 @@ func (o *Buffer) dec_slice_bool(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a slice of bools ([]bool) in packed format.
-func (o *Buffer) dec_slice_packed_bool(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_packed_bool(p *Properties, base uintptr) error {
 	v := (*[]bool)(unsafe.Pointer(base + p.offset))
 
 	nn, err := o.DecodeVarint()
@@ -532,7 +533,7 @@ func (o *Buffer) dec_slice_packed_bool(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a slice of int32s ([]int32).
-func (o *Buffer) dec_slice_int32(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_int32(p *Properties, base uintptr) error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
@@ -543,7 +544,7 @@ func (o *Buffer) dec_slice_int32(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a slice of int32s ([]int32) in packed format.
-func (o *Buffer) dec_slice_packed_int32(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_packed_int32(p *Properties, base uintptr) error {
 	v := (*[]int32)(unsafe.Pointer(base + p.offset))
 
 	nn, err := o.DecodeVarint()
@@ -568,7 +569,7 @@ func (o *Buffer) dec_slice_packed_int32(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a slice of int64s ([]int64).
-func (o *Buffer) dec_slice_int64(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_int64(p *Properties, base uintptr) error {
 	u, err := p.valDec(o)
 	if err != nil {
 		return err
@@ -581,7 +582,7 @@ func (o *Buffer) dec_slice_int64(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a slice of int64s ([]int64) in packed format.
-func (o *Buffer) dec_slice_packed_int64(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_packed_int64(p *Properties, base uintptr) error {
 	v := (*[]int64)(unsafe.Pointer(base + p.offset))
 
 	nn, err := o.DecodeVarint()
@@ -605,7 +606,7 @@ func (o *Buffer) dec_slice_packed_int64(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a slice of strings ([]string).
-func (o *Buffer) dec_slice_string(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_string(p *Properties, base uintptr) error {
 	s, err := o.DecodeStringBytes()
 	if err != nil {
 		return err
@@ -618,7 +619,7 @@ func (o *Buffer) dec_slice_string(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a slice of slice of bytes ([][]byte).
-func (o *Buffer) dec_slice_slice_byte(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_slice_byte(p *Properties, base uintptr) error {
 	b, err := o.DecodeRawBytes(true)
 	if err != nil {
 		return err
@@ -631,7 +632,7 @@ func (o *Buffer) dec_slice_slice_byte(p *Properties, base uintptr) os.Error {
 }
 
 // Decode a group.
-func (o *Buffer) dec_struct_group(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_struct_group(p *Properties, base uintptr) error {
 	ptr := (**struct{})(unsafe.Pointer(base + p.offset))
 	typ := p.stype.Elem()
 	structv := unsafe.New(typ)
@@ -644,7 +645,7 @@ func (o *Buffer) dec_struct_group(p *Properties, base uintptr) os.Error {
 }
 
 // Decode an embedded message.
-func (o *Buffer) dec_struct_message(p *Properties, base uintptr) (err os.Error) {
+func (o *Buffer) dec_struct_message(p *Properties, base uintptr) (err error) {
 	raw, e := o.DecodeRawBytes(false)
 	if e != nil {
 		return e
@@ -675,17 +676,17 @@ func (o *Buffer) dec_struct_message(p *Properties, base uintptr) (err os.Error) 
 }
 
 // Decode a slice of embedded messages.
-func (o *Buffer) dec_slice_struct_message(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_struct_message(p *Properties, base uintptr) error {
 	return o.dec_slice_struct(p, false, base)
 }
 
 // Decode a slice of embedded groups.
-func (o *Buffer) dec_slice_struct_group(p *Properties, base uintptr) os.Error {
+func (o *Buffer) dec_slice_struct_group(p *Properties, base uintptr) error {
 	return o.dec_slice_struct(p, true, base)
 }
 
 // Decode a slice of structs ([]*struct).
-func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) os.Error {
+func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) error {
 
 	v := (*[]*struct{})(unsafe.Pointer(base + p.offset))
 	y := *v

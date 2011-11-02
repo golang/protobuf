@@ -36,19 +36,18 @@ package proto
 
 import (
 	"fmt"
-	"os"
 	"reflect"
 	"strconv"
 )
 
-// ParseError satisfies the os.Error interface.
+// ParseError satisfies the error interface.
 type ParseError struct {
 	Message string
 	Line    int // 1-based line number
 	Offset  int // 0-based byte offset from start of input
 }
 
-func (p *ParseError) String() string {
+func (p *ParseError) Error() string {
 	if p.Line == 1 {
 		// show offset only for first line
 		return fmt.Sprintf("line 1.%d: %v", p.Offset, p.Message)
@@ -443,10 +442,10 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 	return p.errorf("invalid %v: %v", v.Type(), tok.value)
 }
 
-var notPtrStruct os.Error = &ParseError{"destination is not a pointer to a struct", 0, 0}
+var notPtrStruct error = &ParseError{"destination is not a pointer to a struct", 0, 0}
 
 // UnmarshalText reads a protobuffer in Text format.
-func UnmarshalText(s string, pb interface{}) os.Error {
+func UnmarshalText(s string, pb interface{}) error {
 	v := reflect.ValueOf(pb)
 	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct {
 		return notPtrStruct
