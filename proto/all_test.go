@@ -34,15 +34,15 @@ package proto_test
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
-	"json"
 	"math"
 	"reflect"
 	"strings"
 	"testing"
 
-	. "goprotobuf.googlecode.com/hg/proto"
 	. "./testdata/_obj/test_proto"
+	. "goprotobuf.googlecode.com/hg/proto"
 )
 
 var globalO *Buffer
