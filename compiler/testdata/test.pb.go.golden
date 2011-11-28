@@ -8,7 +8,7 @@ import "math"
 import imp1 "imp.pb"
 // discarding unused import multitest2 "multi1.pb"
 
-// Reference proto & math imports to suppress error if they are not otherwise used.
+// Reference proto and math imports to suppress error if they are not otherwise used.
 var _ = proto.GetString
 var _ = math.Inf
 

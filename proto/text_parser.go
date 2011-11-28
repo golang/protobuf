@@ -40,7 +40,6 @@ import (
 	"strconv"
 )
 
-// ParseError satisfies the error interface.
 type ParseError struct {
 	Message string
 	Line    int // 1-based line number

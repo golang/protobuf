@@ -48,9 +48,9 @@ import (
 	"strconv"
 	"strings"
 
-	"goprotobuf.googlecode.com/hg/proto"
-	plugin "goprotobuf.googlecode.com/hg/compiler/plugin"
 	descriptor "goprotobuf.googlecode.com/hg/compiler/descriptor"
+	plugin "goprotobuf.googlecode.com/hg/compiler/plugin"
+	"goprotobuf.googlecode.com/hg/proto"
 )
 
 // A Plugin provides functionality to add to the output during Go code generation,
@@ -784,7 +784,7 @@ func (g *Generator) generate(file *FileDescriptor) {
 		return
 	}
 	g.Reset()
-	_, err = (&printer.Config{printer.TabIndent | printer.UseSpaces, 8}).Fprint(g, fset, ast)
+	err = (&printer.Config{printer.TabIndent | printer.UseSpaces, 8}).Fprint(g, fset, ast)
 	if err != nil {
 		g.Fail("generated Go source code could not be reformatted:", err.Error())
 	}
@@ -846,7 +846,7 @@ func (g *Generator) generateImports() {
 		p.GenerateImports(g.file)
 		g.P()
 	}
-	g.P("// Reference proto & math imports to suppress error if they are not otherwise used.")
+	g.P("// Reference proto and math imports to suppress error if they are not otherwise used.")
 	g.P("var _ = ", g.ProtoPkg, ".GetString")
 	g.P("var _ = math.Inf")
 	g.P()

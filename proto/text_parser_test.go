@@ -32,16 +32,16 @@
 package proto_test
 
 import (
-	. "goprotobuf.googlecode.com/hg/proto"
 	. "./testdata/_obj/test_proto"
+	. "goprotobuf.googlecode.com/hg/proto"
 	"reflect"
 	"testing"
 )
 
 type UnmarshalTextTest struct {
-	in    string
-	error string // if "", no error expected
-	out   *MyMessage
+	in  string
+	err string // if "", no error expected
+	out *MyMessage
 }
 
 var unMarshalTextTests = []UnmarshalTextTest{
@@ -74,44 +74,44 @@ var unMarshalTextTests = []UnmarshalTextTest{
 
 	// Bad quoted string
 	{
-		in:    `inner: < host: "\0" >` + "\n",
-		error: `line 1.15: invalid quoted string "\0"`,
+		in:  `inner: < host: "\0" >` + "\n",
+		err: `line 1.15: invalid quoted string "\0"`,
 	},
 
 	// Number too large for int64
 	{
-		in:    "count: 123456789012345678901",
-		error: "line 1.7: invalid int32: 123456789012345678901",
+		in:  "count: 123456789012345678901",
+		err: "line 1.7: invalid int32: 123456789012345678901",
 	},
 
 	// Number too large for int32
 	{
-		in:    "count: 1234567890123",
-		error: "line 1.7: invalid int32: 1234567890123",
+		in:  "count: 1234567890123",
+		err: "line 1.7: invalid int32: 1234567890123",
 	},
 
 	// Number too large for float32
 	{
-		in:    "others:< weight: 12345678901234567890123456789012345678901234567890 >",
-		error: "line 1.17: invalid float32: 12345678901234567890123456789012345678901234567890",
+		in:  "others:< weight: 12345678901234567890123456789012345678901234567890 >",
+		err: "line 1.17: invalid float32: 12345678901234567890123456789012345678901234567890",
 	},
 
 	// Number posing as a quoted string
 	{
-		in:    `inner: < host: 12 >` + "\n",
-		error: `line 1.15: invalid string: 12`,
+		in:  `inner: < host: 12 >` + "\n",
+		err: `line 1.15: invalid string: 12`,
 	},
 
 	// Quoted string posing as int32
 	{
-		in:    `count: "12"`,
-		error: `line 1.7: invalid int32: "12"`,
+		in:  `count: "12"`,
+		err: `line 1.7: invalid int32: "12"`,
 	},
 
 	// Quoted string posing a float32
 	{
-		in:    `others:< weight: "17.4" >`,
-		error: `line 1.17: invalid float32: "17.4"`,
+		in:  `others:< weight: "17.4" >`,
+		err: `line 1.17: invalid float32: "17.4"`,
 	},
 
 	// Enum
@@ -159,26 +159,26 @@ var unMarshalTextTests = []UnmarshalTextTest{
 
 	// Missing colon for string field
 	{
-		in:    `name "Dave"`,
-		error: `line 1.5: expected ':', found "\"Dave\""`,
+		in:  `name "Dave"`,
+		err: `line 1.5: expected ':', found "\"Dave\""`,
 	},
 
 	// Missing colon for int32 field
 	{
-		in:    `count 42`,
-		error: `line 1.6: expected ':', found "42"`,
+		in:  `count 42`,
+		err: `line 1.6: expected ':', found "42"`,
 	},
 
 	// Missing required field
 	{
-		in:    ``,
-		error: `line 1.0: message test_proto.MyMessage missing required field "count"`,
+		in:  ``,
+		err: `line 1.0: message test_proto.MyMessage missing required field "count"`,
 	},
 
 	// Repeated non-repeated field
 	{
-		in:    `name: "Rob" name: "Russ"`,
-		error: `line 1.12: non-repeated field "name" was repeated`,
+		in:  `name: "Rob" name: "Russ"`,
+		err: `line 1.12: non-repeated field "name" was repeated`,
 	},
 
 	// Group
@@ -247,7 +247,7 @@ func TestUnmarshalText(t *testing.T) {
 	for i, test := range unMarshalTextTests {
 		pb := new(MyMessage)
 		err := UnmarshalText(test.in, pb)
-		if test.error == "" {
+		if test.err == "" {
 			// We don't expect failure.
 			if err != nil {
 				t.Errorf("Test %d: Unexpected error: %v", i, err)
@@ -258,10 +258,10 @@ func TestUnmarshalText(t *testing.T) {
 		} else {
 			// We do expect failure.
 			if err == nil {
-				t.Errorf("Test %d: Didn't get expected error: %v", i, test.error)
-			} else if err.Error() != test.error {
+				t.Errorf("Test %d: Didn't get expected error: %v", i, test.err)
+			} else if err.Error() != test.err {
 				t.Errorf("Test %d: Incorrect error.\nHave: %v\nWant: %v",
-					i, err, test.error)
+					i, err.Error(), test.err)
 			}
 		}
 	}
