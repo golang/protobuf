@@ -32,7 +32,7 @@
 package proto
 
 // Functions for parsing the Text protocol buffer format.
-// TODO: message sets, extensions.
+// TODO: message sets.
 
 import (
 	"fmt"
@@ -151,7 +151,7 @@ func (p *textParser) advance() {
 	p.cur.offset, p.cur.line = p.offset, p.line
 	p.cur.unquoted = ""
 	switch p.s[0] {
-	case '<', '>', '{', '}', ':':
+	case '<', '>', '{', '}', ':', '[', ']':
 		// Single symbol
 		p.cur.value, p.s = p.s[0:1], p.s[1:len(p.s)]
 	case '"':
@@ -252,11 +252,50 @@ func structFieldByName(st reflect.Type, name string) (int, *Properties, bool) {
 	return -1, nil, false
 }
 
+// Consume a ':' from the input stream (if the next token is a colon),
+// returning an error if a colon is needed but not present.
+func (p *textParser) checkForColon(props *Properties, typ reflect.Type) *ParseError {
+	tok := p.next()
+	if tok.err != nil {
+		return tok.err
+	}
+	if tok.value != ":" {
+		// Colon is optional when the field is a group or message.
+		needColon := true
+		switch props.Wire {
+		case "group":
+			needColon = false
+		case "bytes":
+			// A "bytes" field is either a message, a string, or a repeated field;
+			// those three become *T, *string and []T respectively, so we can check for
+			// this field being a pointer to a non-string.
+			if typ.Kind() == reflect.Ptr {
+				// *T or *string
+				if typ.Elem().Kind() == reflect.String {
+					break
+				}
+			} else if typ.Kind() == reflect.Slice {
+				// []T or []*T
+				if typ.Elem().Kind() != reflect.Ptr {
+					break
+				}
+			}
+			needColon = false
+		}
+		if needColon {
+			return p.errorf("expected ':', found %q", tok.value)
+		}
+		p.back()
+	}
+	return nil
+}
+
 func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError {
 	st := sv.Type()
 	reqCount := GetProperties(st).reqCount
 	// A struct is a sequence of "name: value", terminated by one of
-	// '>' or '}', or the end of the input.
+	// '>' or '}', or the end of the input.  A name may also be
+	// "[extension]".
 	for {
 		tok := p.next()
 		if tok.err != nil {
@@ -265,58 +304,76 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError
 		if tok.value == terminator {
 			break
 		}
-
-		fi, props, ok := structFieldByName(st, tok.value)
-		if !ok {
-			return p.errorf("unknown field name %q in %v", tok.value, st)
-		}
-
-		// Check that it's not already set if it's not a repeated field.
-		if !props.Repeated && !isNil(sv.Field(fi)) {
-			return p.errorf("non-repeated field %q was repeated", tok.value)
-		}
-
-		tok = p.next()
-		if tok.err != nil {
-			return tok.err
-		}
-		if tok.value != ":" {
-			// Colon is optional when the field is a group or message.
-			needColon := true
-			switch props.Wire {
-			case "group":
-				needColon = false
-			case "bytes":
-				// A "bytes" field is either a message, a string, or a repeated field;
-				// those three become *T, *string and []T respectively, so we can check for
-				// this field being a pointer to a non-string.
-				typ := st.Field(fi).Type
-				if typ.Kind() == reflect.Ptr {
-					// *T or *string
-					if typ.Elem().Kind() == reflect.String {
-						break
-					}
-				} else if typ.Kind() == reflect.Slice {
-					// []T or []*T
-					if typ.Elem().Kind() != reflect.Ptr {
-						break
-					}
+		if tok.value == "[" {
+			// Looks like an extension.
+			//
+			// TODO: Check whether we need to handle
+			// namespace rooted names (e.g. ".something.Foo").
+			tok = p.next()
+			if tok.err != nil {
+				return tok.err
+			}
+			var desc *ExtensionDesc
+			// This could be faster, but it's functional.
+			// TODO: Do something smarter than a linear scan.
+			for _, d := range RegisteredExtensions(reflect.New(st).Interface()) {
+				if d.Name == tok.value {
+					desc = d
+					break
 				}
-				needColon = false
 			}
-			if needColon {
-				return p.errorf("expected ':', found %q", tok.value)
+			if desc == nil {
+				return p.errorf("unrecognized extension %q", tok.value)
 			}
-			p.back()
-		}
+			// Check the extension terminator.
+			tok = p.next()
+			if tok.err != nil {
+				return tok.err
+			}
+			if tok.value != "]" {
+				return p.errorf("unrecognized extension terminator %q", tok.value)
+			}
 
-		// Parse into the field.
-		if err := p.readAny(sv.Field(fi), props); err != nil {
-			return err
-		}
+			props := &Properties{}
+			props.Parse(desc.Tag)
 
-		if props.Required {
-			reqCount--
+			typ := reflect.TypeOf(desc.ExtensionType)
+			if err := p.checkForColon(props, typ); err != nil {
+				return err
+			}
+
+			// Read the extension structure, and set it in
+			// the value we're constructing.
+			ext := reflect.New(typ).Elem()
+			if err := p.readAny(ext, props); err != nil {
+				return err
+			}
+			SetExtension(sv.Addr().Interface().(extendableProto),
+				desc, ext.Interface())
+		} else {
+			// This is a normal, non-extension field.
+			fi, props, ok := structFieldByName(st, tok.value)
+			if !ok {
+				return p.errorf("unknown field name %q in %v", tok.value, st)
+			}
+
+			// Check that it's not already set if it's not a repeated field.
+			if !props.Repeated && !isNil(sv.Field(fi)) {
+				return p.errorf("non-repeated field %q was repeated", tok.value)
+			}
+
+			if err := p.checkForColon(props, st.Field(fi).Type); err != nil {
+				return err
+			}
+
+			// Parse into the field.
+			if err := p.readAny(sv.Field(fi), props); err != nil {
+				return err
+			}
+
+			if props.Required {
+				reqCount--
+			}
 		}
 	}
 

@@ -44,6 +44,25 @@ type UnmarshalTextTest struct {
 	out *MyMessage
 }
 
+func buildExtStructTest(text string) UnmarshalTextTest {
+	msg := &MyMessage{
+		Count: Int32(42),
+	}
+	SetExtension(msg, E_Ext_More, &Ext{
+		Data: String("Hello, world!"),
+	})
+	return UnmarshalTextTest{in: text, out: msg}
+}
+
+func buildExtDataTest(text string) UnmarshalTextTest {
+	msg := &MyMessage{
+		Count: Int32(42),
+	}
+	SetExtension(msg, E_Ext_Text, String("Hello, world!"))
+	SetExtension(msg, E_Ext_Number, Int32(1729))
+	return UnmarshalTextTest{in: text, out: msg}
+}
+
 var unMarshalTextTests = []UnmarshalTextTest{
 	// Basic
 	{
@@ -191,6 +210,11 @@ var unMarshalTextTests = []UnmarshalTextTest{
 			},
 		},
 	},
+
+	// Extension
+	buildExtStructTest(`count: 42 [test_proto.Ext.more]:<data:"Hello, world!" >`),
+	buildExtStructTest(`count: 42 [test_proto.Ext.more] {data:"Hello, world!"}`),
+	buildExtDataTest(`count: 42 [test_proto.Ext.text]:"Hello, world!" [test_proto.Ext.number]:1729`),
 
 	// Big all-in-one
 	{
