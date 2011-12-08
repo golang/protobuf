@@ -383,12 +383,6 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError
 	return nil
 }
 
-const (
-	minInt32  = -1 << 31
-	maxInt32  = 1<<31 - 1
-	maxUint32 = 1<<32 - 1
-)
-
 func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 	tok := p.next()
 	if tok.err != nil {
@@ -436,12 +430,12 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			return nil
 		}
 	case reflect.Float32, reflect.Float64:
-		if f, err := strconv.AtofN(tok.value, fv.Type().Bits()); err == nil {
+		if f, err := strconv.ParseFloat(tok.value, fv.Type().Bits()); err == nil {
 			fv.SetFloat(f)
 			return nil
 		}
 	case reflect.Int32:
-		if x, err := strconv.Atoi64(tok.value); err == nil && minInt32 <= x && x <= maxInt32 {
+		if x, err := strconv.ParseInt(tok.value, 10, 32); err == nil {
 			fv.SetInt(x)
 			return nil
 		}
@@ -459,7 +453,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 		fv.SetInt(int64(x))
 		return nil
 	case reflect.Int64:
-		if x, err := strconv.Atoi64(tok.value); err == nil {
+		if x, err := strconv.ParseInt(tok.value, 10, 64); err == nil {
 			fv.SetInt(x)
 			return nil
 		}
@@ -485,12 +479,12 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 		}
 		return p.readStruct(fv, terminator)
 	case reflect.Uint32:
-		if x, err := strconv.Atoui64(tok.value); err == nil && x <= maxUint32 {
+		if x, err := strconv.ParseUint(tok.value, 10, 32); err == nil {
 			fv.SetUint(uint64(x))
 			return nil
 		}
 	case reflect.Uint64:
-		if x, err := strconv.Atoui64(tok.value); err == nil {
+		if x, err := strconv.ParseUint(tok.value, 10, 64); err == nil {
 			fv.SetUint(x)
 			return nil
 		}
