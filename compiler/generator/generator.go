@@ -1402,12 +1402,12 @@ func isRepeated(field *descriptor.FieldDescriptorProto) bool {
 // which can be dotted in the input .proto file.  It maps dots to underscores.
 // Because we also get here from package names generated from file names, it also maps
 // minus signs to underscores.
-func DotToUnderscore(rune int) int {
-	switch rune {
+func DotToUnderscore(r rune) rune {
+	switch r {
 	case '.', '-':
 		return '_'
 	}
-	return rune
+	return r
 }
 
 // BaseName returns the last path element of the name, with the last dotted suffix removed.

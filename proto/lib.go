@@ -709,35 +709,35 @@ func buildDefaultMessage(t reflect.Type) (dm defaultMessage) {
 		// a scalar field: either *T or []byte
 		switch ft.Elem().Kind() {
 		case reflect.Bool:
-			x, err := strconv.Atob(prop.Default)
+			x, err := strconv.ParseBool(prop.Default)
 			if err != nil {
 				log.Printf("proto: bad default bool %q: %v", prop.Default, err)
 				continue
 			}
 			sf.value = x
 		case reflect.Float32:
-			x, err := strconv.Atof32(prop.Default)
+			x, err := strconv.ParseFloat(prop.Default, 32)
 			if err != nil {
 				log.Printf("proto: bad default float32 %q: %v", prop.Default, err)
 				continue
 			}
-			sf.value = x
+			sf.value = float32(x)
 		case reflect.Float64:
-			x, err := strconv.Atof64(prop.Default)
+			x, err := strconv.ParseFloat(prop.Default, 64)
 			if err != nil {
 				log.Printf("proto: bad default float64 %q: %v", prop.Default, err)
 				continue
 			}
 			sf.value = x
 		case reflect.Int32:
-			x, err := strconv.Atoi64(prop.Default)
+			x, err := strconv.ParseInt(prop.Default, 10, 32)
 			if err != nil {
 				log.Printf("proto: bad default int32 %q: %v", prop.Default, err)
 				continue
 			}
 			sf.value = int32(x)
 		case reflect.Int64:
-			x, err := strconv.Atoi64(prop.Default)
+			x, err := strconv.ParseInt(prop.Default, 10, 64)
 			if err != nil {
 				log.Printf("proto: bad default int64 %q: %v", prop.Default, err)
 				continue
@@ -749,14 +749,14 @@ func buildDefaultMessage(t reflect.Type) (dm defaultMessage) {
 			// []byte (not *uint8)
 			sf.value = []byte(prop.Default)
 		case reflect.Uint32:
-			x, err := strconv.Atoui64(prop.Default)
+			x, err := strconv.ParseUint(prop.Default, 10, 32)
 			if err != nil {
 				log.Printf("proto: bad default uint32 %q: %v", prop.Default, err)
 				continue
 			}
 			sf.value = uint32(x)
 		case reflect.Uint64:
-			x, err := strconv.Atoui64(prop.Default)
+			x, err := strconv.ParseUint(prop.Default, 10, 64)
 			if err != nil {
 				log.Printf("proto: bad default uint64 %q: %v", prop.Default, err)
 				continue
