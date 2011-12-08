@@ -241,6 +241,8 @@ message MyMessage {
 message Ext {
   extend MyMessage {
     optional Ext more = 103;
+    optional string text = 104;
+    optional int32 number = 105;
   }
 
   optional string data = 1;

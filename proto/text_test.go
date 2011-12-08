@@ -85,12 +85,12 @@ func newTestMessage() *pb.MyMessage {
 	if err != nil {
 		panic(err)
 	}
-	b = append(proto.EncodeVarint(104<<3|proto.WireBytes), b...)
-	proto.SetRawExtension(msg, 104, b)
+	b = append(proto.EncodeVarint(201<<3|proto.WireBytes), b...)
+	proto.SetRawExtension(msg, 201, b)
 
 	// Extensions can be plain fields, too, so let's test that.
-	b = append(proto.EncodeVarint(105<<3|proto.WireVarint), 19)
-	proto.SetRawExtension(msg, 105, b)
+	b = append(proto.EncodeVarint(202<<3|proto.WireVarint), 19)
+	proto.SetRawExtension(msg, 202, b)
 
 	return msg
 }
@@ -127,9 +127,9 @@ tag13: 4
   data: "Big gobs for big rats"
 >
 /* 13 unknown bytes */
-tag104: "\t3G skiing"
+tag201: "\t3G skiing"
 /* 3 unknown bytes */
-tag105: 19
+tag202: 19
 `
 
 func TestMarshalTextFull(t *testing.T) {
