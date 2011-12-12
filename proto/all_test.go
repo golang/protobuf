@@ -1279,7 +1279,7 @@ func TestSetDefaultsWithSubMessage(t *testing.T) {
 	}
 	SetDefaults(m)
 	if !Equal(m, expected) {
-		t.Errorf(" got %v\nwant %v", m, expected)
+		t.Errorf("\n got %v\nwant %v", m, expected)
 	}
 }
 

@@ -657,7 +657,11 @@ func setDefaults(v reflect.Value, recur, zeros bool) {
 	}
 
 	for _, ni := range dm.nested {
-		setDefaults(v.Field(ni), recur, zeros)
+		f := v.Field(ni)
+		if f.IsNil() {
+			continue
+		}
+		setDefaults(f, recur, zeros)
 	}
 }
 
