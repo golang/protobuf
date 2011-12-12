@@ -288,6 +288,13 @@ message Defaults {
   optional float F_Pinf = 15 [default=inf];
   optional float F_Ninf = 16 [default=-inf];
   optional float F_Nan = 17 [default=nan];
+
+  // Sub-message.
+  optional SubDefaults sub = 18;
+}
+
+message SubDefaults {
+  optional int64 n = 1 [default=7];
 }
 
 message RepeatedEnum {
