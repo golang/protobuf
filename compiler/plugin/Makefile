@@ -31,7 +31,7 @@
 
 include $(GOROOT)/src/Make.inc
 
-TARG=goprotobuf.googlecode.com/hg/compiler/plugin
+TARG=code.google.com/p/goprotobuf/compiler/plugin
 GOFILES=\
 	plugin.pb.go\
 
@@ -47,7 +47,7 @@ regenerate:
 	cd $(HOME)/protobuf-2.3.0/src && \
 	protoc --go_out=. ./google/protobuf/compiler/plugin.proto && \
 	cat ./google/protobuf/compiler/plugin.pb.go | \
-		sed '/^import/s;google/protobuf/descriptor.pb;goprotobuf.googlecode.com/hg/compiler/descriptor;' >$(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/compiler/plugin/plugin.pb.go
+		sed '/^import/s;google/protobuf/descriptor.pb;code.google.com/p/goprotobuf/compiler/descriptor;' >$(GOROOT)/src/pkg/code.google.com/p/goprotobuf/compiler/plugin/plugin.pb.go
 
 restore:
 	cp plugin.pb.golden plugin.pb.go

@@ -83,7 +83,7 @@
 
 		package example
 
-		import "goprotobuf.googlecode.com/hg/proto"
+		import "code.google.com/p/goprotobuf/proto"
 
 		type FOO int32
 		const (
@@ -134,7 +134,7 @@
 		import (
 			"log"
 
-			"goprotobuf.googlecode.com/hg/proto"
+			"code.google.com/p/goprotobuf/proto"
 			"./example.pb"
 		)
 

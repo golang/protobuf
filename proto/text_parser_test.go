@@ -33,7 +33,7 @@ package proto_test
 
 import (
 	. "./testdata/_obj/test_proto"
-	. "goprotobuf.googlecode.com/hg/proto"
+	. "code.google.com/p/goprotobuf/proto"
 	"reflect"
 	"testing"
 )

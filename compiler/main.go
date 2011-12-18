@@ -43,8 +43,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"goprotobuf.googlecode.com/hg/proto"
-	"goprotobuf.googlecode.com/hg/compiler/generator"
+	"code.google.com/p/goprotobuf/compiler/generator"
+	"code.google.com/p/goprotobuf/proto"
 )
 
 func main() {

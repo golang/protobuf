@@ -31,7 +31,7 @@
 
 include $(GOROOT)/src/Make.inc
 
-TARG=goprotobuf.googlecode.com/hg/compiler/descriptor
+TARG=code.google.com/p/goprotobuf/compiler/descriptor
 GOFILES=\
 	descriptor.pb.go\
 

@@ -32,7 +32,7 @@
 
 include $(GOROOT)/src/Make.inc
 
-TARG=goprotobuf.googlecode.com/hg/proto
+TARG=code.google.com/p/goprotobuf/proto
 GOFILES=\
 	clone.go\
 	decode.go\

@@ -29,7 +29,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 package proto_test
 
 import (
@@ -42,7 +41,7 @@ import (
 	"testing"
 
 	. "./testdata/_obj/test_proto"
-	. "goprotobuf.googlecode.com/hg/proto"
+	. "code.google.com/p/goprotobuf/proto"
 )
 
 var globalO *Buffer
