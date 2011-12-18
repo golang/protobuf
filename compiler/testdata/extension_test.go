@@ -38,7 +38,7 @@ import (
 	"regexp"
 	"testing"
 
-	"goprotobuf.googlecode.com/hg/proto"
+	"code.google.com/p/goprotobuf/proto"
 	base "extension_base.pb"
 	user "extension_user.pb"
 )

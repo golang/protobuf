@@ -48,9 +48,9 @@ import (
 	"strconv"
 	"strings"
 
-	descriptor "goprotobuf.googlecode.com/hg/compiler/descriptor"
-	plugin "goprotobuf.googlecode.com/hg/compiler/plugin"
-	"goprotobuf.googlecode.com/hg/proto"
+	descriptor "code.google.com/p/goprotobuf/compiler/descriptor"
+	plugin "code.google.com/p/goprotobuf/compiler/plugin"
+	"code.google.com/p/goprotobuf/proto"
 )
 
 // A Plugin provides functionality to add to the output during Go code generation,
@@ -403,6 +403,7 @@ func (g *Generator) DefaultPackageName(obj Object) string {
 
 // For each input file, the unique package name to use, underscored.
 var uniquePackageName = make(map[*descriptor.FileDescriptorProto]string)
+
 // Package names already registered.  Key is the name from the .proto file;
 // value is the name that appears in the generated code.
 var pkgNamesInUse = make(map[string]bool)
@@ -814,7 +815,7 @@ func (g *Generator) generateImports() {
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the math package,
 	// for handling bit patterns for floating-point numbers.
-	g.P("import " + g.ProtoPkg + " " + Quote(g.ImportPrefix+"goprotobuf.googlecode.com/hg/proto"))
+	g.P("import " + g.ProtoPkg + " " + Quote(g.ImportPrefix+"code.google.com/p/goprotobuf/proto"))
 	g.P(`import "math"`)
 	for _, s := range g.file.Dependency {
 		fd := g.fileByName(s)

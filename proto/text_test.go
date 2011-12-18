@@ -36,7 +36,7 @@ import (
 	"strings"
 	"testing"
 
-	"goprotobuf.googlecode.com/hg/proto"
+	"code.google.com/p/goprotobuf/proto"
 
 	pb "./testdata/_obj/test_proto"
 )
