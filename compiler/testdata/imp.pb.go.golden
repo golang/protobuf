@@ -3,7 +3,7 @@
 
 package imp
 
-import proto "goprotobuf.googlecode.com/hg/proto"
+import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 import "os"
 import imp1 "imp2.pb"

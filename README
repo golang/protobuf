@@ -31,10 +31,10 @@ To install this code:
 The simplest way is to run goinstall.
 
 	# Grab the code from the repository and install the proto package.
-	goinstall goprotobuf.googlecode.com/hg/proto
+	goinstall code.google.com/p/goprotobuf/proto
 
 	# Compile and install the compiler plugin
-	cd $GOROOT/src/pkg/goprotobuf.googlecode.com/hg/compiler
+	cd $GOROOT/src/pkg/code.google.com/p/goprotobuf/compiler
 	make install
 
 The compiler plugin, protoc-gen-go, will be installed in $GOBIN,
@@ -56,7 +56,7 @@ for an example using such a file.
 
 This repository uses the same code review mechanism as Go, so
 if you wish to submit changes add the equivalent of these two lines
-to $GOROOT/src/pkg/goprotobuf.googlecode.com/hg/.hg/hgrc
+to $GOROOT/src/pkg/code.google.com/p/goprotobuf/.hg/hgrc
 
 	[extensions]
 	codereview = $GOROOT/lib/codereview/codereview.py
@@ -123,7 +123,7 @@ Makefile like this:
 		other.go
 
 	include $(GOROOT)/src/Make.pkg
-	include $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/Make.protobuf
+	include $(GOROOT)/src/pkg/code.google.com/p/goprotobuf/Make.protobuf
 
 
 To create and play with a Test object from the example package,
@@ -133,7 +133,7 @@ To create and play with a Test object from the example package,
 	import (
 		"log"
 
-		"goprotobuf.googlecode.com/hg/proto"
+		"code.google.com/p/goprotobuf/proto"
 		"path/to/example"
 	)
 
