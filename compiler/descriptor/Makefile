@@ -45,7 +45,7 @@ regenerate:
 	echo WARNING! THIS RULE IS PROBABLY NOT RIGHT FOR YOUR INSTALLATION
 	cd $(HOME)/protobuf-2.3.0/src && \
 	protoc --go_out=. ./google/protobuf/descriptor.proto && \
-	cp ./google/protobuf/descriptor.pb.go $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/compiler/descriptor/descriptor.pb.go
+	cp ./google/protobuf/descriptor.pb.go $(GOROOT)/src/pkg/code.google.com/p/goprotobuf/compiler/descriptor/descriptor.pb.go
 
 restore:
 	cp descriptor.pb.golden descriptor.pb.go

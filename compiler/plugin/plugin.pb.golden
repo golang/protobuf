@@ -3,10 +3,10 @@
 
 package google_protobuf_compiler
 
-import proto "goprotobuf.googlecode.com/hg/proto"
+import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 import "os"
-import google_protobuf "goprotobuf.googlecode.com/hg/compiler/descriptor"
+import google_protobuf "code.google.com/p/goprotobuf/compiler/descriptor"
 
 // Reference proto, math & os imports to suppress error if they are not otherwise used.
 var _ = proto.GetString

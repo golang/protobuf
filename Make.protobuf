@@ -39,7 +39,7 @@
 #		myproto.pb.go
 #
 #	include $(GOROOT)/src/Make.pkg
-#	include $(GOROOT)/src/pkg/goprotobuf.googlecode.com/hg/Make.protobuf
+#	include $(GOROOT)/src/pkg/code.google.com/p/goprotobuf/Make.protobuf
 
 %.pb.go:	%.proto
 	protoc --go_out=. $<

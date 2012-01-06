@@ -3,9 +3,10 @@
 
 package my_test
 
-import proto "goprotobuf.googlecode.com/hg/proto"
+import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 import imp1 "imp.pb"
+
 // discarding unused import multitest2 "multi1.pb"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
@@ -205,6 +206,7 @@ func (this *OldReply) Marshal() ([]byte, error) {
 func (this *OldReply) Unmarshal(buf []byte) error {
 	return proto.UnmarshalMessageSet(buf, this.ExtensionMap())
 }
+
 // ensure OldReply satisfies proto.Marshaler and proto.Unmarshaler
 var _ proto.Marshaler = (*OldReply)(nil)
 var _ proto.Unmarshaler = (*OldReply)(nil)
