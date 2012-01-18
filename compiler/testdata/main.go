@@ -34,8 +34,8 @@
 package main
 
 import (
-	"./test.pb"
 	"./multi1.pb"
+	"./test.pb"
 )
 
 func main() {

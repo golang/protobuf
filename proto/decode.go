@@ -181,9 +181,11 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 	}
 
 	nb := int(n)
+	if nb < 0 {
+		return nil, fmt.Errorf("proto: bad byte length %d", nb)
+	}
 	if p.index+nb > len(p.buf) {
-		err = io.ErrUnexpectedEOF
-		return
+		return nil, io.ErrUnexpectedEOF
 	}
 
 	if !alloc {
@@ -279,7 +281,7 @@ func (o *Buffer) skip(t reflect.Type, tag, wire int) error {
 			}
 		}
 	default:
-		fmt.Fprintf(os.Stderr, "proto: can't skip wire type %d for %s\n", wire, t)
+		err = fmt.Errorf("proto: can't skip unknown wire type %d for %s", wire, t)
 	}
 	return err
 }
