@@ -36,9 +36,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"math/rand"
 	"reflect"
+	"runtime/debug"
 	"strings"
 	"testing"
+	"time"
 
 	. "./testdata/_obj/test_proto"
 	. "code.google.com/p/goprotobuf/proto"
@@ -1317,6 +1320,49 @@ func TestJSON(t *testing.T) {
 	if s != expected {
 		t.Errorf("got  %s\nwant %s", s, expected)
 	}
+}
+
+func TestBadWireType(t *testing.T) {
+	b := []byte{7<<3 | 6} // field 7, wire type 6
+	pb := new(OtherMessage)
+	if err := Unmarshal(b, pb); err == nil {
+		t.Errorf("Unmarshal did not fail")
+	} else if !strings.Contains(err.Error(), "unknown wire type") {
+		t.Errorf("wrong error: %v", err)
+	}
+}
+
+func TestBytesWithInvalidLength(t *testing.T) {
+	// If a byte sequence has an invalid (negative) length, Unmarshal should not panic.
+	b := []byte{2<<3 | WireBytes, 0xff, 0xff, 0xff, 0xff, 0xff, 0}
+	Unmarshal(b, new(MyMessage))
+}
+
+func TestUnmarshalFuzz(t *testing.T) {
+	const N = 1000
+	seed := time.Now().UnixNano()
+	t.Logf("RNG seed is %d", seed)
+	rng := rand.New(rand.NewSource(seed))
+	buf := make([]byte, 20)
+	for i := 0; i < N; i++ {
+		for j := range buf {
+			buf[j] = byte(rng.Intn(256))
+		}
+		fuzzUnmarshal(t, buf)
+	}
+}
+
+func fuzzUnmarshal(t *testing.T, data []byte) {
+	defer func() {
+		if e := recover(); e != nil {
+			t.Errorf("These bytes caused a panic: %+v", data)
+			t.Logf("Stack:\n%s", debug.Stack())
+			t.FailNow()
+		}
+	}()
+
+	pb := new(MyMessage)
+	Unmarshal(data, pb)
 }
 
 func BenchmarkMarshal(b *testing.B) {
