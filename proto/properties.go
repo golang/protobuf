@@ -153,7 +153,7 @@ func (p *Properties) String() string {
 
 // Parse populates p by parsing a string in the protobuf struct field tag style.
 func (p *Properties) Parse(s string) {
-	// "bytes,49,opt,def=hello!,name=foo"
+	// "bytes,49,opt,name=foo,def=hello!"
 	fields := strings.Split(s, ",") // breaks def=, but handled below.
 	if len(fields) < 2 {
 		fmt.Fprintf(os.Stderr, "proto: tag has too few fields: %q\n", s)
@@ -207,11 +207,11 @@ func (p *Properties) Parse(s string) {
 			p.Repeated = true
 		case f == "packed":
 			p.Packed = true
-		case len(f) >= 5 && f[0:5] == "name=":
+		case strings.HasPrefix(f, "name="):
 			p.OrigName = f[5:len(f)]
-		case len(f) >= 5 && f[0:5] == "enum=":
+		case strings.HasPrefix(f, "enum="):
 			p.Enum = f[5:len(f)]
-		case len(f) >= 4 && f[0:4] == "def=":
+		case strings.HasPrefix(f, "def="):
 			p.Default = f[4:len(f)] // rest of string
 			if i+1 < len(fields) {
 				// Commas aren't escaped, and def is always last.
