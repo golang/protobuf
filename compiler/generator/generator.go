@@ -1256,12 +1256,21 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 		g.RecordTypeUse(*n)
 	}
 
+	typeName := ext.TypeName()
+
+	// Special case for proto2 message sets: If this extension is extending
+	// proto2_bridge.MessageSet, and its final name component is "message_set_extension",
+	// then drop that last component.
+	if extendedType == "*proto2_bridge.MessageSet" && typeName[len(typeName)-1] == "message_set_extension" {
+		typeName = typeName[:len(typeName)-1]
+	}
+
 	g.P("var ", ccTypeName, " = &", g.ProtoPkg, ".ExtensionDesc{")
 	g.In()
 	g.P("ExtendedType: (", extendedType, ")(nil),")
 	g.P("ExtensionType: (", fieldType, ")(nil),")
 	g.P("Field: ", field.Number, ",")
-	g.P(`Name: "`, g.packageName, ".", strings.Join(ext.TypeName(), "."), `",`)
+	g.P(`Name: "`, g.packageName, ".", strings.Join(typeName, "."), `",`)
 	g.P("Tag: ", tag, ",")
 
 	g.Out()

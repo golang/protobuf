@@ -32,10 +32,11 @@
 package proto_test
 
 import (
-	. "./testdata/_obj/test_proto"
-	. "code.google.com/p/goprotobuf/proto"
 	"reflect"
 	"testing"
+
+	. "./testdata/_obj/test_proto"
+	. "code.google.com/p/goprotobuf/proto"
 )
 
 type UnmarshalTextTest struct {
