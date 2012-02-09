@@ -38,7 +38,6 @@ package proto
 import (
 	"errors"
 	"reflect"
-	"runtime"
 	"unsafe"
 )
 
@@ -199,15 +198,11 @@ func (p *Buffer) Marshal(pb interface{}) error {
 		return nil
 	}
 
-	mstat := runtime.MemStats.Mallocs
-
 	t, b, err := getbase(pb)
 	if err == nil {
 		err = p.enc_struct(t.Elem(), b)
 	}
 
-	mstat = runtime.MemStats.Mallocs - mstat
-	stats.Emalloc += mstat
 	stats.Encode++
 
 	return err

@@ -41,7 +41,6 @@ import (
 	"io"
 	"os"
 	"reflect"
-	"runtime"
 	"unsafe"
 )
 
@@ -315,8 +314,6 @@ func (p *Buffer) Unmarshal(pb interface{}) error {
 		return err
 	}
 
-	mstat := runtime.MemStats.Mallocs
-
 	typ, base, err := getbase(pb)
 	if err != nil {
 		return err
@@ -324,8 +321,6 @@ func (p *Buffer) Unmarshal(pb interface{}) error {
 
 	err = p.unmarshalType(typ, false, base)
 
-	mstat = runtime.MemStats.Mallocs - mstat
-	stats.Dmalloc += mstat
 	stats.Decode++
 
 	return err
