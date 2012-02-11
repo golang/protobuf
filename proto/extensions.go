@@ -62,7 +62,7 @@ type ExtensionDesc struct {
 	ExtendedType  interface{} // nil pointer to the type that is being extended
 	ExtensionType interface{} // nil pointer to the extension type
 	Field         int32       // field number
-	Name          string      // fully-qualified name of extension
+	Name          string      // fully-qualified name of extension, for text formatting
 	Tag           string      // protobuf tag style
 }
 
