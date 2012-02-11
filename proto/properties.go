@@ -443,6 +443,11 @@ func GetProperties(t reflect.Type) *StructProperties {
 	prop.tags = make(map[int]int)
 	prop.origNames = make(map[string]int)
 	for i, p := range prop.Prop {
+		if strings.HasPrefix(p.Name, "XXX_") {
+			// Internal fields should not appear in tags/origNames maps.
+			// They are handled specially when encoding and decoding.
+			continue
+		}
 		if p.Required {
 			reqCount++
 		}

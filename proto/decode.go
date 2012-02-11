@@ -348,6 +348,9 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) erro
 			return ErrWrongType
 		}
 		tag := int(u >> 3)
+		if tag <= 0 {
+			return fmt.Errorf("proto: illegal tag %d", tag)
+		}
 		fieldnum, ok := prop.tags[tag]
 		if !ok {
 			// Maybe it's an extension?
@@ -365,7 +368,7 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) erro
 		p := prop.Prop[fieldnum]
 
 		if p.dec == nil {
-			fmt.Fprintf(os.Stderr, "no protobuf decoder for %s.%s\n", t, st.Field(fieldnum).Name)
+			fmt.Fprintf(os.Stderr, "proto: no protobuf decoder for %s.%s\n", t, st.Field(fieldnum).Name)
 			continue
 		}
 		dec := p.dec
