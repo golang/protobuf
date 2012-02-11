@@ -176,6 +176,7 @@ type FileDescriptorProto struct {
 	Package          *string                   `protobuf:"bytes,2,opt,name=package"`
 	Dependency       []string                  `protobuf:"bytes,3,rep,name=dependency"`
 	PublicDependency []int32                   `protobuf:"varint,10,rep,name=public_dependency"`
+	WeakDependency   []int32                   `protobuf:"varint,11,rep,name=weak_dependency" json:"weak_dependency,omitempty"`
 	MessageType      []*DescriptorProto        `protobuf:"bytes,4,rep,name=message_type"`
 	EnumType         []*EnumDescriptorProto    `protobuf:"bytes,5,rep,name=enum_type"`
 	Service          []*ServiceDescriptorProto `protobuf:"bytes,6,rep,name=service"`
@@ -361,6 +362,8 @@ const Default_FieldOptions_Ctype FieldOptions_CType = FieldOptions_STRING
 const Default_FieldOptions_Deprecated bool = false
 
 type EnumOptions struct {
+	Proto1Name          *string                `protobuf:"bytes,1,opt,name=proto1_name" json:"proto1_name,omitempty"`
+	AllowAlias          *bool                  `protobuf:"varint,2,opt,name=allow_alias,def=1" json:"allow_alias,omitempty"`
 	UninterpretedOption []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option"`
 	XXX_extensions      map[int32][]byte
 	XXX_unrecognized    []byte
@@ -382,6 +385,8 @@ func (this *EnumOptions) ExtensionMap() map[int32][]byte {
 	}
 	return this.XXX_extensions
 }
+
+const Default_EnumOptions_AllowAlias bool = true
 
 type EnumValueOptions struct {
 	UninterpretedOption []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option"`
