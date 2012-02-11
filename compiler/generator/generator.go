@@ -1265,12 +1265,19 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 		typeName = typeName[:len(typeName)-1]
 	}
 
+	// For text formatting, the package must be exactly what the .proto file declares,
+	// ignoring overrides such as the go_package option, and with no dot/underscore mapping.
+	extName := strings.Join(typeName, ".")
+	if g.file.Package != nil {
+		extName = *g.file.Package + "." + extName
+	}
+
 	g.P("var ", ccTypeName, " = &", g.ProtoPkg, ".ExtensionDesc{")
 	g.In()
 	g.P("ExtendedType: (", extendedType, ")(nil),")
 	g.P("ExtensionType: (", fieldType, ")(nil),")
 	g.P("Field: ", field.Number, ",")
-	g.P(`Name: "`, g.packageName, ".", strings.Join(typeName, "."), `",`)
+	g.P(`Name: "`, extName, `",`)
 	g.P("Tag: ", tag, ",")
 
 	g.Out()
