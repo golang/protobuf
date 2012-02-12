@@ -1125,6 +1125,17 @@ func (g *Generator) RecordTypeUse(t string) {
 	}
 }
 
+// Method names that may be generated.  Fields with these names get an
+// underscore appended.
+var methodNames = [...]string{
+	"Reset",
+	"String",
+	"Marshal",
+	"Unmarshal",
+	"ExtensionRangeArray",
+	"ExtensionMap",
+}
+
 // Generate the type and default constant definitions for this Descriptor.
 func (g *Generator) generateMessage(message *Descriptor) {
 	// The full type name
@@ -1132,6 +1143,10 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	// The full type name, CamelCased.
 	ccTypeName := CamelCaseSlice(typeName)
 
+	usedNames := make(map[string]bool)
+	for _, n := range methodNames {
+		usedNames[n] = true
+	}
 	g.P("type ", ccTypeName, " struct {")
 	g.In()
 	for _, field := range message.Field {
@@ -1142,6 +1157,10 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			continue
 		}
 		fieldname := CamelCase(*field.Name)
+		for usedNames[fieldname] {
+			fieldname += "_"
+		}
+		usedNames[fieldname] = true
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
 		tag := fmt.Sprintf("`protobuf:%s json:%q`", g.goTag(field, wiretype), jsonName+",omitempty")

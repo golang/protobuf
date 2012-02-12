@@ -123,6 +123,7 @@ type Request struct {
 	Owner            *imp1.ImportedMessage_Owner `protobuf:"varint,6,opt,name=owner,enum=imp.ImportedMessage_Owner" json:"owner,omitempty"`
 	Deadline         *float32                    `protobuf:"fixed32,7,opt,name=deadline,def=inf" json:"deadline,omitempty"`
 	Somegroup        *Request_SomeGroup          `protobuf:"group,8,opt,name=SomeGroup" json:"somegroup,omitempty"`
+	Reset_           *int32                      `protobuf:"varint,12,opt,name=reset" json:"reset,omitempty"`
 	XXX_unrecognized []byte                      `json:",omitempty"`
 }
 
