@@ -809,6 +809,16 @@ func (g *Generator) fileByName(filename string) *FileDescriptor {
 	return nil
 }
 
+// weak returns whether the ith import of the current file is a weak import.
+func (g *Generator) weak(i int32) bool {
+	for _, j := range g.file.WeakDependency {
+		if j == i {
+			return true
+		}
+	}
+	return false
+}
+
 // Generate the header, including package definition and imports
 func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
@@ -817,7 +827,7 @@ func (g *Generator) generateImports() {
 	// for handling bit patterns for floating-point numbers.
 	g.P("import " + g.ProtoPkg + " " + Quote(g.ImportPrefix+"code.google.com/p/goprotobuf/proto"))
 	g.P(`import "math"`)
-	for _, s := range g.file.Dependency {
+	for i, s := range g.file.Dependency {
 		fd := g.fileByName(s)
 		// Do not import our own package.
 		if fd.PackageName() == g.packageName {
@@ -830,6 +840,11 @@ func (g *Generator) generateImports() {
 		filename = g.ImportPrefix + filename
 		if strings.HasSuffix(filename, ".go") {
 			filename = filename[0 : len(filename)-3]
+		}
+		// Skip weak imports.
+		if g.weak(int32(i)) {
+			g.P("// skipping weak import ", fd.PackageName(), " ", Quote(filename))
+			continue
 		}
 		if _, ok := g.usedPackages[fd.PackageName()]; ok {
 			g.P("import ", fd.PackageName(), " ", Quote(filename))
@@ -1120,6 +1135,12 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.P("type ", ccTypeName, " struct {")
 	g.In()
 	for _, field := range message.Field {
+		// TODO: One day we may need to generate RawMessage fields for weak fields;
+		// for now it is sufficient to skip them.
+		if field.Options != nil && proto.GetBool(field.Options.Weak) {
+			g.P("// skipping weak field ", *field.Name)
+			continue
+		}
 		fieldname := CamelCase(*field.Name)
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name

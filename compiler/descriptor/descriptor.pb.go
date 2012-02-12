@@ -336,6 +336,7 @@ type FieldOptions struct {
 	Packed              *bool                  `protobuf:"varint,2,opt,name=packed"`
 	Deprecated          *bool                  `protobuf:"varint,3,opt,name=deprecated,def=0"`
 	ExperimentalMapKey  *string                `protobuf:"bytes,9,opt,name=experimental_map_key"`
+	Weak                *bool                  `protobuf:"varint,10,opt,name=weak,def=0" json:"weak,omitempty"`
 	UninterpretedOption []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option"`
 	XXX_extensions      map[int32][]byte
 	XXX_unrecognized    []byte
