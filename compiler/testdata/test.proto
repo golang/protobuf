@@ -66,6 +66,8 @@ message Request {
   // which is publicly imported by imp.proto.
   // optional imp.PubliclyImportedMessage pub = 10;
 
+
+  optional int32 reset = 12;
 }
 
 message Reply {
