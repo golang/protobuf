@@ -65,6 +65,7 @@ message Request {
   // This foreign message type is in imp2.proto,
   // which is publicly imported by imp.proto.
   // optional imp.PubliclyImportedMessage pub = 10;
+
 }
 
 message Reply {
