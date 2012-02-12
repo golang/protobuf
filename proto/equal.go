@@ -54,7 +54,8 @@ Equality is defined in this way:
     If the fields are of a floating-point type, remember that
     NaN != x for all x, including NaN.
   - Two repeated fields are equal iff their lengths are the same,
-    and their corresponding elements are equal.
+    and their corresponding elements are equal (a "bytes" field,
+    although represented by []byte, is not a repeated field)
   - Two unset fields are equal.
   - Two unknown field sets are equal if their current
     encoded state is equal. (TODO)
@@ -125,17 +126,16 @@ func equalAny(v1, v2 reflect.Value) bool {
 	case reflect.Ptr:
 		return equalAny(v1.Elem(), v2.Elem())
 	case reflect.Slice:
-		if n1, n2 := v1.IsNil(), v2.IsNil(); n1 && n2 {
-			return true
-		} else if n1 != n2 {
-			return false
+		if v1.Type().Elem().Kind() == reflect.Uint8 {
+			// short circuit: []byte
+			if v1.IsNil() != v2.IsNil() {
+				return false
+			}
+			return bytes.Equal(v1.Interface().([]byte), v2.Interface().([]byte))
 		}
+
 		if v1.Len() != v2.Len() {
 			return false
-		}
-		// short circuit: []byte
-		if v1.Type().Elem().Kind() == reflect.Uint8 {
-			return bytes.Equal(v1.Interface().([]byte), v2.Interface().([]byte))
 		}
 		for i := 0; i < v1.Len(); i++ {
 			if !equalAny(v1.Index(i), v2.Index(i)) {
