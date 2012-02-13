@@ -273,7 +273,7 @@ func isNil(v reflect.Value) bool {
 // Encode a message struct.
 func (o *Buffer) enc_struct_message(p *Properties, base uintptr) error {
 	// Can the object marshal itself?
-	iv := unsafe.Unreflect(p.stype, unsafe.Pointer(base+p.offset))
+	iv := reflect.NewAt(p.stype, unsafe.Pointer(base+p.offset)).Elem().Interface()
 	if m, ok := iv.(Marshaler); ok {
 		if isNil(reflect.ValueOf(iv)) {
 			return ErrNil
@@ -484,7 +484,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) error {
 		}
 
 		// Can the object marshal itself?
-		iv := unsafe.Unreflect(p.stype, unsafe.Pointer(&s[i]))
+		iv := reflect.NewAt(p.stype, unsafe.Pointer(&s[i])).Elem().Interface()
 		if m, ok := iv.(Marshaler); ok {
 			if isNil(reflect.ValueOf(iv)) {
 				return ErrNil

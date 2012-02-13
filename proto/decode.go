@@ -355,7 +355,7 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) erro
 		if !ok {
 			// Maybe it's an extension?
 			o.ptr = base // copy the address here to avoid a heap allocation.
-			iv := unsafe.Unreflect(t, unsafe.Pointer(&o.ptr))
+			iv := reflect.NewAt(t, unsafe.Pointer(&o.ptr)).Elem().Interface()
 			if e, ok := iv.(extendableProto); ok && isExtensionField(e, int32(tag)) {
 				if err = o.skip(st, tag, wire); err == nil {
 					e.ExtensionMap()[int32(tag)] = Extension{enc: append([]byte(nil), o.buf[oi:o.index]...)}
@@ -635,8 +635,8 @@ func (o *Buffer) dec_slice_slice_byte(p *Properties, base uintptr) error {
 func (o *Buffer) dec_struct_group(p *Properties, base uintptr) error {
 	ptr := (**struct{})(unsafe.Pointer(base + p.offset))
 	typ := p.stype.Elem()
-	structv := unsafe.New(typ)
-	bas := uintptr(structv)
+	bas := reflect.New(typ).Pointer()
+	structv := unsafe.Pointer(bas)
 	*ptr = (*struct{})(structv)
 
 	err := o.unmarshalType(p.stype, true, bas)
@@ -653,12 +653,12 @@ func (o *Buffer) dec_struct_message(p *Properties, base uintptr) (err error) {
 
 	ptr := (**struct{})(unsafe.Pointer(base + p.offset))
 	typ := p.stype.Elem()
-	structv := unsafe.New(typ)
-	bas := uintptr(structv)
+	bas := reflect.New(typ).Pointer()
+	structv := unsafe.Pointer(bas)
 	*ptr = (*struct{})(structv)
 
 	// If the object can unmarshal itself, let it.
-	iv := unsafe.Unreflect(p.stype, unsafe.Pointer(ptr))
+	iv := reflect.NewAt(p.stype, unsafe.Pointer(ptr)).Elem().Interface()
 	if u, ok := iv.(Unmarshaler); ok {
 		return u.Unmarshal(raw)
 	}
@@ -692,8 +692,8 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) er
 	y := *v
 
 	typ := p.stype.Elem()
-	structv := unsafe.New(typ)
-	bas := uintptr(structv)
+	bas := reflect.New(typ).Pointer()
+	structv := unsafe.Pointer(bas)
 	y = append(y, (*struct{})(structv))
 	*v = y
 
@@ -708,7 +708,7 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) er
 	}
 
 	// If the object can unmarshal itself, let it.
-	iv := unsafe.Unreflect(p.stype, unsafe.Pointer(&y[len(y)-1]))
+	iv := reflect.NewAt(p.stype, unsafe.Pointer(&y[len(y)-1])).Elem().Interface()
 	if u, ok := iv.(Unmarshaler); ok {
 		return u.Unmarshal(raw)
 	}
