@@ -35,8 +35,8 @@ import (
 	"log"
 	"testing"
 
-	pb "./testdata/_obj/test_proto"
 	. "code.google.com/p/goprotobuf/proto"
+	pb "code.google.com/p/goprotobuf/proto/testdata"
 )
 
 // Four identical base messages.

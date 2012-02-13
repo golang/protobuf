@@ -30,36 +30,19 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-include $(GOROOT)/src/Make.inc
-
 all:	install
 
 install:
-	cd proto && gomake install
-	cd compiler/descriptor && gomake install
-	cd compiler/plugin && gomake install
-	cd compiler && gomake install
+	go install ./proto
+	go install ./protoc-gen-go
 
 test:
-	cd proto && gomake test
-	cd compiler && gomake test
+	go test ./proto
+	echo compiler tests are disabled
+	# cd protoc-gen-go && go test
 
 clean:
-	cd proto && gomake clean
-	cd proto/testdata && gomake clean
-	cd compiler && gomake clean
-	cd compiler/descriptor && gomake clean
-	cd compiler/plugin && gomake clean
-	cd compiler/testdata && gomake clean
-	cd compiler/descriptor && gomake clean
-	cd compiler/plugin && gomake clean
+	go clean ./...
 
 nuke:
-	cd proto && gomake nuke
-	cd proto/testdata && gomake nuke
-	cd compiler/descriptor && gomake nuke
-	cd compiler/plugin && gomake nuke
-	cd compiler && gomake nuke
-	cd compiler/testdata && gomake nuke
-	cd compiler/descriptor && gomake nuke
-	cd compiler/plugin && gomake nuke
+	go clean -i ./...

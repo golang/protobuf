@@ -35,8 +35,8 @@ import (
 	"reflect"
 	"testing"
 
-	. "./testdata/_obj/test_proto"
 	. "code.google.com/p/goprotobuf/proto"
+	. "code.google.com/p/goprotobuf/proto/testdata"
 )
 
 type UnmarshalTextTest struct {
@@ -192,7 +192,7 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	// Missing required field
 	{
 		in:  ``,
-		err: `line 1.0: message test_proto.MyMessage missing required field "count"`,
+		err: `line 1.0: message testdata.MyMessage missing required field "count"`,
 	},
 
 	// Repeated non-repeated field
@@ -213,9 +213,9 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	},
 
 	// Extension
-	buildExtStructTest(`count: 42 [test_proto.Ext.more]:<data:"Hello, world!" >`),
-	buildExtStructTest(`count: 42 [test_proto.Ext.more] {data:"Hello, world!"}`),
-	buildExtDataTest(`count: 42 [test_proto.Ext.text]:"Hello, world!" [test_proto.Ext.number]:1729`),
+	buildExtStructTest(`count: 42 [testdata.Ext.more]:<data:"Hello, world!" >`),
+	buildExtStructTest(`count: 42 [testdata.Ext.more] {data:"Hello, world!"}`),
+	buildExtDataTest(`count: 42 [testdata.Ext.text]:"Hello, world!" [testdata.Ext.number]:1729`),
 
 	// Big all-in-one
 	{

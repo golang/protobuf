@@ -29,16 +29,46 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-include $(GOROOT)/src/Make.inc
-
-TARG=protoc-gen-go
-GOFILES=\
-	main.go\
-
-DEPS=generator descriptor plugin
-
-include $(GOROOT)/src/Make.cmd
+all: test
 
 test:
-	cd testdata && make test
+	echo protoc-gen-go tests are disabled
+	true
+
+#include $(GOROOT)/src/Make.inc
+
+#all:
+#	@echo run make test
+
+#include $(GOROOT)/src/Make.common
+#include ../../Make.protobuf
+
+#CLEANFILES+=*.pb.go extension_test
+
+#test:	golden testbuild extension_test
+#	./extension_test
+#	@echo PASS
+
+#golden:
+#	$(QUOTED_GOBIN)/gomake -B test.pb.go
+#	diff -w test.pb.go test.pb.go.golden
+
+#nuke:	clean
+
+#testbuild:	main.$O
+#	$(LD) -L. main.$O
+
+#extension_test:	extension_test.$O
+#	$(LD) -L. -o $@ $< 
+
+#multi.a: multi3.pb.$O multi2.pb.$O multi1.pb.$O
+#	rm -f multi.a
+#	$(QUOTED_GOBIN)/gopack grc $@ $<
+
+#%.$O:	%.go
+#	$(QUOTED_GOBIN)/$(GC) -I . -o $@ $<
+
+#test.pb.go:	imp.pb.go
+#multi1.pb.go:	multi2.pb.go multi3.pb.go
+#main.$O: imp.pb.$O test.pb.$O multi.a
+#extension_test.$O: extension_base.pb.$O extension_extra.pb.$O extension_user.pb.$O

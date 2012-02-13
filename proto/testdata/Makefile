@@ -30,21 +30,18 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-include $(GOROOT)/src/Make.inc
 include ../../Make.protobuf
 
-TARG=test_proto
-GOFILES=\
-	test.pb.go\
+all:	regenerate
 
-include $(GOROOT)/src/Make.pkg
-
-CLEANFILES+=test.pb.go
-
-# These rules are just aids to development. Not needed for testing.
 regenerate:
-	rm test.pb.go
+	rm -f test.pb.go
 	make test.pb.go
+	
+# The following rules are just aids to development. Not needed for typical testing.
+
+diff:	regenerate
+	hg diff test.pb.go
 
 restore:
 	cp test.pb.go.golden test.pb.go

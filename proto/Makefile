@@ -29,30 +29,12 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+install:
+	go install
 
-include $(GOROOT)/src/Make.inc
+test: install generate-test-pbs
+	go test
 
-TARG=code.google.com/p/goprotobuf/proto
-GOFILES=\
-	clone.go\
-	decode.go\
-	encode.go\
-	equal.go\
-	extensions.go\
-	lib.go\
-	message_set.go\
-	properties.go\
-	text.go\
-	text_parser.go\
 
-include $(GOROOT)/src/Make.pkg
-
-# We need to compile the .pb.gos, which import this package, so
-# to run the test we must make install here and then make in the
-# testdata directory.
-test: compile-test-pbs
-
-testshort: compile-test-pbs
-
-compile-test-pbs:
-	make install && cd testdata && make nuke && make
+generate-test-pbs:
+	make install && cd testdata && make
