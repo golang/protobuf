@@ -38,7 +38,7 @@ import (
 
 	"code.google.com/p/goprotobuf/proto"
 
-	pb "./testdata/_obj/test_proto"
+	pb "code.google.com/p/goprotobuf/proto/testdata"
 )
 
 func newTestMessage() *pb.MyMessage {
@@ -123,7 +123,7 @@ SomeGroup {
 }
 /* 2 unknown bytes */
 tag13: 4
-[test_proto.Ext.more]: <
+[testdata.Ext.more]: <
   data: "Big gobs for big rats"
 >
 /* 13 unknown bytes */

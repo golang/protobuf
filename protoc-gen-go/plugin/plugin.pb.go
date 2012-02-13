@@ -6,7 +6,7 @@ package google_protobuf_compiler
 import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
-import google_protobuf "code.google.com/p/goprotobuf/compiler/descriptor"
+import google_protobuf "code.google.com/p/goprotobuf/protoc-gen-go/descriptor"
 
 // Reference proto, math & os imports to suppress error if they are not otherwise used.
 var _ = proto.GetString

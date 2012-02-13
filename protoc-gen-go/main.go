@@ -1,6 +1,6 @@
 // Go support for Protocol Buffers - Google's data interchange format
 //
-// Copyright 2011 Google Inc.  All rights reserved.
+// Copyright 2010 Google Inc.  All rights reserved.
 // http://code.google.com/p/goprotobuf/
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,52 +29,61 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package proto_test
+/*
+	A plugin for the Google protocol buffer compiler to generate Go code.
+
+	This plugin takes no options and the protocol buffer file syntax does
+	not yet define any options for Go, so program does no option evaluation.
+	That may change.
+*/
+
+package main
 
 import (
-	"log"
-	"testing"
+	"io/ioutil"
+	"os"
 
 	"code.google.com/p/goprotobuf/proto"
-
-	pb "code.google.com/p/goprotobuf/proto/testdata"
+	"code.google.com/p/goprotobuf/protoc-gen-go/generator"
 )
 
-var cloneTestMessage = &pb.MyMessage{
-	Count: proto.Int32(42),
-	Name:  proto.String("Dave"),
-	Pet:   []string{"bunny", "kitty", "horsey"},
-	Inner: &pb.InnerMessage{
-		Host:      proto.String("niles"),
-		Port:      proto.Int32(9099),
-		Connected: proto.Bool(true),
-	},
-	Others: []*pb.OtherMessage{
-		&pb.OtherMessage{
-			Value: []byte("some bytes"),
-		},
-	},
-	RepBytes: [][]byte{[]byte("sham"), []byte("wow")},
-}
+func main() {
+	// Begin by allocating a generator. The request and response structures are stored there
+	// so we can do error handling easily - the response structure contains the field to
+	// report failure.
+	g := generator.New()
 
-func init() {
-	ext := &pb.Ext{
-		Data: proto.String("extension"),
-	}
-	if err := proto.SetExtension(cloneTestMessage, pb.E_Ext_More, ext); err != nil {
-		log.Fatalf("SetExtension: %v", err)
-	}
-}
-
-func TestClone(t *testing.T) {
-	m := proto.Clone(cloneTestMessage).(*pb.MyMessage)
-	if !proto.Equal(m, cloneTestMessage) {
-		t.Errorf("Clone(%v) = %v", cloneTestMessage, m)
+	data, err := ioutil.ReadAll(os.Stdin)
+	if err != nil {
+		g.Error(err, "reading input")
 	}
 
-	// Verify it was a deep copy.
-	*m.Inner.Port++
-	if proto.Equal(m, cloneTestMessage) {
-		t.Error("Mutating clone changed the original")
+	if err := proto.Unmarshal(data, g.Request); err != nil {
+		g.Error(err, "parsing input proto")
+	}
+
+	if len(g.Request.FileToGenerate) == 0 {
+		g.Fail("no files to generate")
+	}
+
+	g.CommandLineParameters(proto.GetString(g.Request.Parameter))
+
+	// Create a wrapped version of the Descriptors and EnumDescriptors that
+	// point to the file that defines them.
+	g.WrapTypes()
+
+	g.SetPackageNames()
+	g.BuildTypeNameMap()
+
+	g.GenerateAllFiles()
+
+	// Send back the results.
+	data, err = proto.Marshal(g.Response)
+	if err != nil {
+		g.Error(err, "failed to marshal output proto")
+	}
+	_, err = os.Stdout.Write(data)
+	if err != nil {
+		g.Error(err, "failed to write output proto")
 	}
 }

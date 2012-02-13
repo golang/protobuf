@@ -33,12 +33,6 @@
 # (Google protocol buffer descriptions).
 # Typical use if myproto.proto is a file in package mypackage in this directory:
 #
-#	include $(GOROOT)/src/Make.inc
-#	TARG=mypackage
-#	GOFILES=\
-#		myproto.pb.go
-#
-#	include $(GOROOT)/src/Make.pkg
 #	include $(GOROOT)/src/pkg/code.google.com/p/goprotobuf/Make.protobuf
 
 %.pb.go:	%.proto

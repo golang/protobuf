@@ -48,9 +48,9 @@ import (
 	"strconv"
 	"strings"
 
-	descriptor "code.google.com/p/goprotobuf/compiler/descriptor"
-	plugin "code.google.com/p/goprotobuf/compiler/plugin"
 	"code.google.com/p/goprotobuf/proto"
+	descriptor "code.google.com/p/goprotobuf/protoc-gen-go/descriptor"
+	plugin "code.google.com/p/goprotobuf/protoc-gen-go/plugin"
 )
 
 // A Plugin provides functionality to add to the output during Go code generation,
