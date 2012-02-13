@@ -39,6 +39,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"testing"
 )
 
@@ -71,9 +72,11 @@ func TestGolden(t *testing.T) {
 	// Compute the original checksum.
 	goldenSum := sum(t, "test.pb.go")
 	// Run the proto compiler.
-	run(t, "protoc", "--go_out=.", "test.proto")
+	run(t, "protoc", "--go_out="+os.TempDir(), "test.proto")
+	newFile := filepath.Join(os.TempDir(), "test.pb.go")
+	defer os.Remove(newFile)
 	// Compute the new checksum.
-	newSum := sum(t, "test.pb.go")
+	newSum := sum(t, newFile)
 	// Verify
 	if newSum != goldenSum {
 		run(t, "hg", "diff", "test.pb.go")
