@@ -5,7 +5,6 @@ package my_test
 
 import proto "code.google.com/p/goprotobuf/proto"
 import "math"
-import imp1 "imp.pb"
 
 // discarding unused import multitest2 "multi1.pb"
 
@@ -116,15 +115,13 @@ func (x Reply_Entry_Game) String() string {
 }
 
 type Request struct {
-	Key              []int64                     `protobuf:"varint,1,rep,name=key" json:"key,omitempty"`
-	ImportedMessage  *imp1.ImportedMessage       `protobuf:"bytes,2,opt,name=imported_message" json:"imported_message,omitempty"`
-	Hue              *Request_Color              `protobuf:"varint,3,opt,name=hue,enum=my.test.Request_Color" json:"hue,omitempty"`
-	Hat              *HatType                    `protobuf:"varint,4,opt,name=hat,enum=my.test.HatType,def=1" json:"hat,omitempty"`
-	Owner            *imp1.ImportedMessage_Owner `protobuf:"varint,6,opt,name=owner,enum=imp.ImportedMessage_Owner" json:"owner,omitempty"`
-	Deadline         *float32                    `protobuf:"fixed32,7,opt,name=deadline,def=inf" json:"deadline,omitempty"`
-	Somegroup        *Request_SomeGroup          `protobuf:"group,8,opt,name=SomeGroup" json:"somegroup,omitempty"`
-	Reset_           *int32                      `protobuf:"varint,12,opt,name=reset" json:"reset,omitempty"`
-	XXX_unrecognized []byte                      `json:",omitempty"`
+	Key              []int64            `protobuf:"varint,1,rep,name=key" json:"key,omitempty"`
+	Hue              *Request_Color     `protobuf:"varint,3,opt,name=hue,enum=my.test.Request_Color" json:"hue,omitempty"`
+	Hat              *HatType           `protobuf:"varint,4,opt,name=hat,enum=my.test.HatType,def=1" json:"hat,omitempty"`
+	Deadline         *float32           `protobuf:"fixed32,7,opt,name=deadline,def=inf" json:"deadline,omitempty"`
+	Somegroup        *Request_SomeGroup `protobuf:"group,8,opt,name=SomeGroup" json:"somegroup,omitempty"`
+	Reset_           *int32             `protobuf:"varint,12,opt,name=reset" json:"reset,omitempty"`
+	XXX_unrecognized []byte             `json:",omitempty"`
 }
 
 func (this *Request) Reset()         { *this = Request{} }
