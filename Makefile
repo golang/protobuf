@@ -38,8 +38,7 @@ install:
 
 test:
 	go test ./proto
-	echo compiler tests are disabled
-	# cd protoc-gen-go && go test
+	go test ./protoc-gen-go/testdata
 
 clean:
 	go clean ./...
