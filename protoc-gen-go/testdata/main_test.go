@@ -31,14 +31,16 @@
 
 // A simple binary to link together the protocol buffers in this test.
 
-package main
+package testdata
 
 import (
-	"./multi1.pb"
-	"./test.pb"
+	"testing"
+
+	//	"./multi1.pb"
+	"code.google.com/p/goprotobuf/protoc-gen-go/testdata/my_test"
 )
 
-func main() {
+func TestLink(t *testing.T) {
 	_ = &my_test.Request{}
-	_ = &multitest.Multi1{}
+	//	_ = &multitest.Multi1{}
 }

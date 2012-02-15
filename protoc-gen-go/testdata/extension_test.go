@@ -31,7 +31,9 @@
 
 // Test that we can use protocol buffers that use extensions.
 
-package main
+package testdata
+
+/*
 
 import (
 	"bytes"
@@ -204,3 +206,5 @@ func main() {
 		[]testing.InternalBenchmark{},
 		[]testing.InternalExample{})
 }
+
+*/
