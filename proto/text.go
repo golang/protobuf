@@ -423,6 +423,13 @@ func marshalText(w io.Writer, pb interface{}, compact bool) {
 // Values that are not protocol buffers can also be written, but their formatting is not guaranteed.
 func MarshalText(w io.Writer, pb interface{}) { marshalText(w, pb, false) }
 
+// MarshalTextString is the same as MarshalText, but returns the string directly.
+func MarshalTextString(pb interface{}) string {
+	var buf bytes.Buffer
+	marshalText(&buf, pb, false)
+	return buf.String()
+}
+
 // CompactText writes a given protocl buffer in compact text format (one line).
 // Values that are not protocol buffers can also be written, but their formatting is not guaranteed.
 func CompactText(w io.Writer, pb interface{}) { marshalText(w, pb, true) }
