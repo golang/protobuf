@@ -108,12 +108,14 @@ type Properties struct {
 	Default    string // default value
 	def_uint64 uint64
 
-	enc     encoder
-	valEnc  valueEncoder // set for bool and numeric types only
-	offset  uintptr
-	tagcode []byte // encoding of EncodeVarint((Tag<<3)|WireType)
-	tagbuf  [8]byte
-	stype   reflect.Type
+	enc           encoder
+	valEnc        valueEncoder // set for bool and numeric types only
+	offset        uintptr
+	tagcode       []byte // encoding of EncodeVarint((Tag<<3)|WireType)
+	tagbuf        [8]byte
+	stype         reflect.Type
+	isMarshaler   bool
+	isUnmarshaler bool
 
 	dec    decoder
 	valDec valueDecoder // set for bool and numeric types only
@@ -261,6 +263,8 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 			p.dec = (*Buffer).dec_string
 		case reflect.Struct:
 			p.stype = t1
+			p.isMarshaler = isMarshaler(t1)
+			p.isUnmarshaler = isUnmarshaler(t1)
 			if p.Wire == "bytes" {
 				p.enc = (*Buffer).enc_struct_message
 				p.dec = (*Buffer).dec_struct_message
@@ -344,6 +348,8 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 				break
 			case reflect.Struct:
 				p.stype = t2
+				p.isMarshaler = isMarshaler(t2)
+				p.isUnmarshaler = isUnmarshaler(t2)
 				p.enc = (*Buffer).enc_slice_struct_group
 				p.dec = (*Buffer).dec_slice_struct_group
 				if p.Wire == "bytes" {
@@ -376,6 +382,33 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	}
 	p.tagbuf[i] = uint8(x)
 	p.tagcode = p.tagbuf[0 : i+1]
+}
+
+var (
+	marshalerType   = reflect.TypeOf((*Marshaler)(nil)).Elem()
+	unmarshalerType = reflect.TypeOf((*Unmarshaler)(nil)).Elem()
+)
+
+// isMarshaler reports whether type t implements Marshaler.
+func isMarshaler(t reflect.Type) bool {
+	// We're checking for (likely) pointer-receiver methods
+	// so if t is not a pointer, something is very wrong.
+	// The calls above only invoke isMarshaler on pointer types.
+	if t.Kind() != reflect.Ptr {
+		panic("proto: misuse of isMarshaler")
+	}
+	return t.Implements(marshalerType)
+}
+
+// isUnmarshaler reports whether type t implements Unmarshaler.
+func isUnmarshaler(t reflect.Type) bool {
+	// We're checking for (likely) pointer-receiver methods
+	// so if t is not a pointer, something is very wrong.
+	// The calls above only invoke isUnmarshaler on pointer types.
+	if t.Kind() != reflect.Ptr {
+		panic("proto: misuse of isUnmarshaler")
+	}
+	return t.Implements(unmarshalerType)
 }
 
 // Init populates the properties from a protocol buffer struct tag.

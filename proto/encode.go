@@ -272,12 +272,16 @@ func isNil(v reflect.Value) bool {
 
 // Encode a message struct.
 func (o *Buffer) enc_struct_message(p *Properties, base uintptr) error {
+	structp := *(*unsafe.Pointer)(unsafe.Pointer(base + p.offset))
+	if structp == nil {
+		return ErrNil
+	}
+
+	typ := p.stype.Elem()
+
 	// Can the object marshal itself?
-	iv := reflect.NewAt(p.stype, unsafe.Pointer(base+p.offset)).Elem().Interface()
-	if m, ok := iv.(Marshaler); ok {
-		if isNil(reflect.ValueOf(iv)) {
-			return ErrNil
-		}
+	if p.isMarshaler {
+		m := reflect.NewAt(typ, structp).Interface().(Marshaler)
 		data, err := m.Marshal()
 		if err != nil {
 			return err
@@ -286,19 +290,13 @@ func (o *Buffer) enc_struct_message(p *Properties, base uintptr) error {
 		o.EncodeRawBytes(data)
 		return nil
 	}
-	v := *(**struct{})(unsafe.Pointer(base + p.offset))
-	if v == nil {
-		return ErrNil
-	}
 
 	// need the length before we can write out the message itself,
 	// so marshal into a separate byte buffer first.
 	obuf := o.buf
 	o.buf = o.bufalloc()
 
-	b := uintptr(unsafe.Pointer(v))
-	typ := p.stype.Elem()
-	err := o.enc_struct(typ, b)
+	err := o.enc_struct(typ, uintptr(structp))
 
 	nbuf := o.buf
 	o.buf = obuf
@@ -473,22 +471,19 @@ func (o *Buffer) enc_slice_string(p *Properties, base uintptr) error {
 
 // Encode a slice of message structs ([]*struct).
 func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) error {
-	s := *(*[]*struct{})(unsafe.Pointer(base + p.offset))
+	s := *(*[]unsafe.Pointer)(unsafe.Pointer(base + p.offset))
 	l := len(s)
 	typ := p.stype.Elem()
 
 	for i := 0; i < l; i++ {
-		v := s[i]
-		if v == nil {
+		structp := s[i]
+		if structp == nil {
 			return ErrRepeatedHasNil
 		}
 
 		// Can the object marshal itself?
-		iv := reflect.NewAt(p.stype, unsafe.Pointer(&s[i])).Elem().Interface()
-		if m, ok := iv.(Marshaler); ok {
-			if isNil(reflect.ValueOf(iv)) {
-				return ErrNil
-			}
+		if p.isMarshaler {
+			m := reflect.NewAt(typ, structp).Interface().(Marshaler)
 			data, err := m.Marshal()
 			if err != nil {
 				return err
@@ -501,8 +496,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) error {
 		obuf := o.buf
 		o.buf = o.bufalloc()
 
-		b := uintptr(unsafe.Pointer(v))
-		err := o.enc_struct(typ, b)
+		err := o.enc_struct(typ, uintptr(structp))
 
 		nbuf := o.buf
 		o.buf = obuf
