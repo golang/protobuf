@@ -354,8 +354,7 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) erro
 		fieldnum, ok := prop.tags[tag]
 		if !ok {
 			// Maybe it's an extension?
-			o.ptr = base // copy the address here to avoid a heap allocation.
-			iv := reflect.NewAt(t, unsafe.Pointer(&o.ptr)).Elem().Interface()
+			iv := reflect.NewAt(st, unsafe.Pointer(base)).Interface()
 			if e, ok := iv.(extendableProto); ok && isExtensionField(e, int32(tag)) {
 				if err = o.skip(st, tag, wire); err == nil {
 					e.ExtensionMap()[int32(tag)] = Extension{enc: append([]byte(nil), o.buf[oi:o.index]...)}
@@ -654,13 +653,13 @@ func (o *Buffer) dec_struct_message(p *Properties, base uintptr) (err error) {
 	ptr := (**struct{})(unsafe.Pointer(base + p.offset))
 	typ := p.stype.Elem()
 	bas := reflect.New(typ).Pointer()
-	structv := unsafe.Pointer(bas)
-	*ptr = (*struct{})(structv)
+	structp := unsafe.Pointer(bas)
+	*ptr = (*struct{})(structp)
 
 	// If the object can unmarshal itself, let it.
-	iv := reflect.NewAt(p.stype, unsafe.Pointer(ptr)).Elem().Interface()
-	if u, ok := iv.(Unmarshaler); ok {
-		return u.Unmarshal(raw)
+	if p.isMarshaler {
+		iv := reflect.NewAt(p.stype.Elem(), structp).Interface()
+		return iv.(Unmarshaler).Unmarshal(raw)
 	}
 
 	obuf := o.buf
@@ -693,8 +692,8 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) er
 
 	typ := p.stype.Elem()
 	bas := reflect.New(typ).Pointer()
-	structv := unsafe.Pointer(bas)
-	y = append(y, (*struct{})(structv))
+	structp := unsafe.Pointer(bas)
+	y = append(y, (*struct{})(structp))
 	*v = y
 
 	if is_group {
@@ -708,9 +707,9 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) er
 	}
 
 	// If the object can unmarshal itself, let it.
-	iv := reflect.NewAt(p.stype, unsafe.Pointer(&y[len(y)-1])).Elem().Interface()
-	if u, ok := iv.(Unmarshaler); ok {
-		return u.Unmarshal(raw)
+	if p.isUnmarshaler {
+		iv := reflect.NewAt(typ, structp).Interface()
+		return iv.(Unmarshaler).Unmarshal(raw)
 	}
 
 	obuf := o.buf

@@ -198,7 +198,6 @@ type Buffer struct {
 	index     int        // write point
 	freelist  [10][]byte // list of available buffers
 	nfreelist int        // number of free buffers
-	ptr       uintptr    // used to avoid a heap allocation.
 	// pools of basic types to amortize allocation.
 	bools  []bool
 	int32s []int32
