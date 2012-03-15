@@ -35,8 +35,8 @@ import (
 	"reflect"
 	"testing"
 
+	. "./testdata"
 	. "code.google.com/p/goprotobuf/proto"
-	. "code.google.com/p/goprotobuf/proto/testdata"
 )
 
 type UnmarshalTextTest struct {
