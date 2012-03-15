@@ -38,7 +38,7 @@ install:
 
 test:
 	go test ./proto
-	go test ./protoc-gen-go/testdata
+	make -C protoc-gen-go/testdata test
 
 clean:
 	go clean ./...

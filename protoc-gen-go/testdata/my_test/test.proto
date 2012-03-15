@@ -32,7 +32,7 @@
 package my.test;  // dotted package name
 
 //import "imp.proto";
-import "multi1.proto";  // unused import
+import "multi/multi1.proto";  // unused import
 
 enum HatType {
   // deliberately skipping 0
