@@ -29,29 +29,20 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-all: test
+all:
+	@echo run make test
 
-test:
-	echo protoc-gen-go tests are disabled
-	true
+include ../../Make.protobuf
 
-#include $(GOROOT)/src/Make.inc
-
-#all:
-#	@echo run make test
-
-#include $(GOROOT)/src/Make.common
-#include ../../Make.protobuf
-
-#CLEANFILES+=*.pb.go extension_test
+test:	golden
 
 #test:	golden testbuild extension_test
 #	./extension_test
 #	@echo PASS
 
-#golden:
-#	$(QUOTED_GOBIN)/gomake -B test.pb.go
-#	diff -w test.pb.go test.pb.go.golden
+golden:
+	make -B my_test/test.pb.go
+	diff -w my_test/test.pb.go my_test/test.pb.go.golden
 
 #nuke:	clean
 
