@@ -36,11 +36,11 @@ package testdata
 import (
 	"testing"
 
-	//	"./multi1.pb"
-	"code.google.com/p/goprotobuf/protoc-gen-go/testdata/my_test"
+	"./multi"
+	"./my_test"
 )
 
 func TestLink(t *testing.T) {
+	_ = &multi.Multi1{}
 	_ = &my_test.Request{}
-	//	_ = &multitest.Multi1{}
 }

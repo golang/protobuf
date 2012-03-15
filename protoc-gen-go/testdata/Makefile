@@ -34,7 +34,7 @@ all:
 
 include ../../Make.protobuf
 
-test:	golden
+test:	golden testbuild
 
 #test:	golden testbuild extension_test
 #	./extension_test
@@ -44,10 +44,14 @@ golden:
 	make -B my_test/test.pb.go
 	diff -w my_test/test.pb.go my_test/test.pb.go.golden
 
-#nuke:	clean
+nuke:	clean
 
-#testbuild:	main.$O
-#	$(LD) -L. main.$O
+testbuild:	buildprotos
+	go test
+
+buildprotos:
+	# Invoke protoc once to generate three independent .pb.go files in the same package.
+	protoc --go_out=. multi/multi{1,2,3}.proto
 
 #extension_test:	extension_test.$O
 #	$(LD) -L. -o $@ $< 
@@ -55,9 +59,6 @@ golden:
 #multi.a: multi3.pb.$O multi2.pb.$O multi1.pb.$O
 #	rm -f multi.a
 #	$(QUOTED_GOBIN)/gopack grc $@ $<
-
-#%.$O:	%.go
-#	$(QUOTED_GOBIN)/$(GC) -I . -o $@ $<
 
 #test.pb.go:	imp.pb.go
 #multi1.pb.go:	multi2.pb.go multi3.pb.go
