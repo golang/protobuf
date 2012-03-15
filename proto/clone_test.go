@@ -37,7 +37,7 @@ import (
 
 	"code.google.com/p/goprotobuf/proto"
 
-	pb "code.google.com/p/goprotobuf/proto/testdata"
+	pb "./testdata"
 )
 
 var cloneTestMessage = &pb.MyMessage{
