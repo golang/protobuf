@@ -408,10 +408,16 @@ func marshalText(w io.Writer, pb interface{}, compact bool) {
 	aw.complete = true
 	aw.compact = compact
 
+	// Reject non-pointer inputs (it's a bad practice to pass potentially large protos around by value).
 	v := reflect.ValueOf(pb)
-	// We should normally be passed a struct, or a pointer to a struct,
-	// and we don't want the outer < and > in that case.
+	if v.Kind() != reflect.Ptr {
+		w.Write([]byte("<struct-by-value>"))
+		return
+	}
+
+	// Dereference the received pointer so we don't have outer < and >.
 	v = reflect.Indirect(v)
+
 	if v.Kind() == reflect.Struct {
 		writeStruct(aw, v)
 	} else {
