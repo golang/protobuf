@@ -53,11 +53,11 @@ func newTestMessage() *pb.MyMessage {
 			Connected: proto.Bool(true),
 		},
 		Others: []*pb.OtherMessage{
-			&pb.OtherMessage{
+			{
 				Key:   proto.Int64(0xdeadbeef),
 				Value: []byte{1, 65, 7, 12},
 			},
-			&pb.OtherMessage{
+			{
 				Weight: proto.Float32(6.022),
 				Inner: &pb.InnerMessage{
 					Host: proto.String("lesha.mtv"),
@@ -219,5 +219,14 @@ func TestStringEscaping(t *testing.T) {
 		if s := buf.String(); s != tc.out {
 			t.Errorf("#%d: Got:\n%s\nExpected:\n%s\n", i, s, tc.out)
 		}
+	}
+}
+
+func TestNonPtrMessage(t *testing.T) {
+	// Ensure we don't panic when we pass a non-pointer to MarshalText.
+	var buf bytes.Buffer
+	proto.MarshalText(&buf, pb.MyMessage{})
+	if s := buf.String(); s != "<struct-by-value>" {
+		t.Errorf("got: %q, want %q", s, "<struct-by-value>")
 	}
 }
