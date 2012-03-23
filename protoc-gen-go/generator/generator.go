@@ -1167,11 +1167,10 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.P(fieldname, "\t", typename, "\t", tag)
 		g.RecordTypeUse(proto.GetString(field.TypeName))
 	}
-	// TODO: Use `json:"-"` for these XXX_ fields when that makes it into a Go release.
 	if len(message.ExtensionRange) > 0 {
-		g.P("XXX_extensions\t\tmap[int32]", g.ProtoPkg, ".Extension `json:\",omitempty\"`")
+		g.P("XXX_extensions\t\tmap[int32]", g.ProtoPkg, ".Extension `json:\"-\"`")
 	}
-	g.P("XXX_unrecognized\t[]byte `json:\",omitempty\"`")
+	g.P("XXX_unrecognized\t[]byte `json:\"-\"`")
 	g.Out()
 	g.P("}")
 

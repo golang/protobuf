@@ -121,7 +121,7 @@ type Request struct {
 	Deadline         *float32           `protobuf:"fixed32,7,opt,name=deadline,def=inf" json:"deadline,omitempty"`
 	Somegroup        *Request_SomeGroup `protobuf:"group,8,opt,name=SomeGroup" json:"somegroup,omitempty"`
 	Reset_           *int32             `protobuf:"varint,12,opt,name=reset" json:"reset,omitempty"`
-	XXX_unrecognized []byte             `json:",omitempty"`
+	XXX_unrecognized []byte             `json:"-"`
 }
 
 func (this *Request) Reset()         { *this = Request{} }
@@ -133,7 +133,7 @@ var Default_Request_Deadline float32 = float32(math.Inf(1))
 
 type Request_SomeGroup struct {
 	GroupField       *int32 `protobuf:"varint,9,opt,name=group_field" json:"group_field,omitempty"`
-	XXX_unrecognized []byte `json:",omitempty"`
+	XXX_unrecognized []byte `json:"-"`
 }
 
 func (this *Request_SomeGroup) Reset()         { *this = Request_SomeGroup{} }
@@ -142,8 +142,8 @@ func (this *Request_SomeGroup) String() string { return proto.CompactTextString(
 type Reply struct {
 	Found            []*Reply_Entry            `protobuf:"bytes,1,rep,name=found" json:"found,omitempty"`
 	CompactKeys      []int32                   `protobuf:"varint,2,rep,packed,name=compact_keys" json:"compact_keys,omitempty"`
-	XXX_extensions   map[int32]proto.Extension `json:",omitempty"`
-	XXX_unrecognized []byte                    `json:",omitempty"`
+	XXX_extensions   map[int32]proto.Extension `json:"-"`
+	XXX_unrecognized []byte                    `json:"-"`
 }
 
 func (this *Reply) Reset()         { *this = Reply{} }
@@ -167,7 +167,7 @@ type Reply_Entry struct {
 	KeyThatNeeds_1234Camel_CasIng *int64 `protobuf:"varint,1,req,name=key_that_needs_1234camel_CasIng" json:"key_that_needs_1234camel_CasIng,omitempty"`
 	Value                         *int64 `protobuf:"varint,2,opt,name=value,def=7" json:"value,omitempty"`
 	XMyFieldName_2                *int64 `protobuf:"varint,3,opt,name=_my_field_name_2" json:"_my_field_name_2,omitempty"`
-	XXX_unrecognized              []byte `json:",omitempty"`
+	XXX_unrecognized              []byte `json:"-"`
 }
 
 func (this *Reply_Entry) Reset()         { *this = Reply_Entry{} }
@@ -176,7 +176,7 @@ func (this *Reply_Entry) String() string { return proto.CompactTextString(this) 
 const Default_Reply_Entry_Value int64 = 7
 
 type ReplyExtensions struct {
-	XXX_unrecognized []byte `json:",omitempty"`
+	XXX_unrecognized []byte `json:"-"`
 }
 
 func (this *ReplyExtensions) Reset()         { *this = ReplyExtensions{} }
@@ -191,8 +191,8 @@ var E_ReplyExtensions_Time = &proto.ExtensionDesc{
 }
 
 type OldReply struct {
-	XXX_extensions   map[int32]proto.Extension `json:",omitempty"`
-	XXX_unrecognized []byte                    `json:",omitempty"`
+	XXX_extensions   map[int32]proto.Extension `json:"-"`
+	XXX_unrecognized []byte                    `json:"-"`
 }
 
 func (this *OldReply) Reset()         { *this = OldReply{} }
