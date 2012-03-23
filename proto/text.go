@@ -463,7 +463,7 @@ func CompactText(w io.Writer, pb interface{}) { marshalText(w, pb, true) }
 
 // CompactTextString is the same as CompactText, but returns the string directly.
 func CompactTextString(pb interface{}) string {
-	buf := new(bytes.Buffer)
-	marshalText(buf, pb, true)
+	var buf bytes.Buffer
+	marshalText(&buf, pb, true)
 	return buf.String()
 }
