@@ -92,6 +92,15 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		},
 	},
 
+	// Quoted string with escaped apostrophe
+	{
+		in: `count:42 name: "HOLIDAY - New Year\'s Day"`,
+		out: &MyMessage{
+			Count: Int32(42),
+			Name:  String("HOLIDAY - New Year's Day"),
+		},
+	},
+
 	// Bad quoted string
 	{
 		in:  `inner: < host: "\0" >` + "\n",

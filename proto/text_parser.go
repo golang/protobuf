@@ -38,6 +38,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 type ParseError struct {
@@ -168,8 +169,7 @@ func (p *textParser) advance() {
 			p.errorf("unmatched quote")
 			return
 		}
-		// TODO: Should be UnquoteC.
-		unq, err := strconv.Unquote(p.s[0 : i+1])
+		unq, err := unquoteC(p.s[0 : i+1])
 		if err != nil {
 			p.errorf("invalid quoted string %v", p.s[0:i+1])
 			return
@@ -188,6 +188,14 @@ func (p *textParser) advance() {
 		p.cur.value, p.s = p.s[0:i], p.s[i:len(p.s)]
 	}
 	p.offset += len(p.cur.value)
+}
+
+func unquoteC(s string) (string, error) {
+	// A notable divergence between quoted string literals in Go
+	// and what is acceptable for text format protocol buffers:
+	// the former considers \' invalid, but the latter considers it valid.
+	s = strings.Replace(s, `\'`, "'", -1)
+	return strconv.Unquote(s)
 }
 
 // Back off the parser by one token. Can only be done between calls to next().
