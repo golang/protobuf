@@ -109,6 +109,11 @@ var (
 	extendableProtoType = reflect.TypeOf((*extendableProto)(nil)).Elem()
 )
 
+// raw is the interface satisfied by RawMessage.
+type raw interface {
+	Bytes() []byte
+}
+
 func writeStruct(w *textWriter, sv reflect.Value) {
 	if sv.Type() == messageSetType {
 		writeMessageSet(w, sv.Addr().Interface().(*MessageSet))
@@ -159,6 +164,10 @@ func writeStruct(w *textWriter, sv reflect.Value) {
 		if !w.compact {
 			w.WriteByte(' ')
 		}
+		if b, ok := fv.Interface().(raw); ok {
+			writeRaw(w, b.Bytes())
+			continue
+		}
 		if props.Enum != "" && tryWriteEnum(w, props.Enum, fv) {
 			// Enum written.
 		} else {
@@ -172,6 +181,18 @@ func writeStruct(w *textWriter, sv reflect.Value) {
 	if pv.Type().Implements(extendableProtoType) {
 		writeExtensions(w, pv)
 	}
+}
+
+// writeRaw writes an uninterpreted raw message.
+func writeRaw(w *textWriter, b []byte) {
+	w.WriteByte('<')
+	if !w.compact {
+		w.WriteByte('\n')
+	}
+	w.indent()
+	writeUnknownStruct(w, b)
+	w.unindent()
+	w.WriteByte('>')
 }
 
 // tryWriteEnum attempts to write an enum value as a symbolic constant.
