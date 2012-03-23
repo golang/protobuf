@@ -1150,12 +1150,6 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.P("type ", ccTypeName, " struct {")
 	g.In()
 	for _, field := range message.Field {
-		// TODO: One day we may need to generate RawMessage fields for weak fields;
-		// for now it is sufficient to skip them.
-		if field.Options != nil && proto.GetBool(field.Options.Weak) {
-			g.P("// skipping weak field ", *field.Name)
-			continue
-		}
 		fieldname := CamelCase(*field.Name)
 		for usedNames[fieldname] {
 			fieldname += "_"
@@ -1163,6 +1157,10 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		usedNames[fieldname] = true
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
+		// This is a hack that is going away. TODO: remove this.
+		if field.Options != nil && proto.GetBool(field.Options.Weak) {
+			typename = "[]byte"
+		}
 		tag := fmt.Sprintf("`protobuf:%s json:%q`", g.goTag(field, wiretype), jsonName+",omitempty")
 		g.P(fieldname, "\t", typename, "\t", tag)
 		g.RecordTypeUse(proto.GetString(field.TypeName))
