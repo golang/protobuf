@@ -62,8 +62,8 @@ var (
 	// ErrNil is the error returned if Marshal is called with nil.
 	ErrNil = errors.New("proto: Marshal called with nil")
 
-	// ErrNotPtr is the error returned if Marshal is called with a non-pointer.
-	ErrNotPtr = errors.New("proto: Marshal called with a non-pointer")
+	// ErrNotPtr is the error returned if Marshal is called with something other than a pointer to a struct.
+	ErrNotPtr = errors.New("proto: Marshal called with something other than a pointer to a struct")
 )
 
 // The fundamental encoders that put bytes on the wire.

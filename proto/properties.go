@@ -521,7 +521,7 @@ func getbase(pb interface{}) (t reflect.Type, b uintptr, err error) {
 	}
 	// get the reflect type of the pointer to the struct.
 	t = reflect.TypeOf(pb)
-	if t.Kind() != reflect.Ptr {
+	if t.Kind() != reflect.Ptr || t.Elem().Kind() != reflect.Struct {
 		err = ErrNotPtr
 		return
 	}

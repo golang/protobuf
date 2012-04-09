@@ -1214,12 +1214,19 @@ func TestNilMarshaler(t *testing.T) {
 	}
 }
 
-// Check that passing a struct to Marshal returns a good error,
-// rather than panicking.
-func TestStructMarshaling(t *testing.T) {
-	_, err := Marshal(OtherMessage{})
-	if err != ErrNotPtr {
-		t.Errorf("got %v, expected %v", err, ErrNotPtr)
+// Check that passing things other than pointer to struct to Marshal
+// returns a good error, rather than panicking.
+func TestStructTyping(t *testing.T) {
+	om := &OtherMessage{}
+	bad := [...]interface{}{*om, &om}
+	for _, pb := range bad {
+		_, err := Marshal(pb)
+		if err != ErrNotPtr {
+			t.Errorf("marshaling %T: got %v, expected %v", pb, err, ErrNotPtr)
+		}
+		if err := Unmarshal([]byte{}, pb); err != ErrNotPtr {
+			t.Errorf("unmarshaling %T: got %v, expected %v", pb, err, ErrNotPtr)
+		}
 	}
 }
 
