@@ -64,6 +64,16 @@ func buildExtDataTest(text string) UnmarshalTextTest {
 	return UnmarshalTextTest{in: text, out: msg}
 }
 
+func buildExtRepStringTest(text string) UnmarshalTextTest {
+	msg := &MyMessage{
+		Count: Int32(42),
+	}
+	if err := SetExtension(msg, E_Greeting, []string{"bula", "hola"}); err != nil {
+		panic(err)
+	}
+	return UnmarshalTextTest{in: text, out: msg}
+}
+
 var unMarshalTextTests = []UnmarshalTextTest{
 	// Basic
 	{
@@ -225,6 +235,7 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	buildExtStructTest(`count: 42 [testdata.Ext.more]:<data:"Hello, world!" >`),
 	buildExtStructTest(`count: 42 [testdata.Ext.more] {data:"Hello, world!"}`),
 	buildExtDataTest(`count: 42 [testdata.Ext.text]:"Hello, world!" [testdata.Ext.number]:1729`),
+	buildExtRepStringTest(`count: 42 [testdata.greeting]:"bula" [testdata.greeting]:"hola"`),
 
 	// Big all-in-one
 	{

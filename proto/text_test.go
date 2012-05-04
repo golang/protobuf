@@ -79,6 +79,10 @@ func newTestMessage() *pb.MyMessage {
 	if err := proto.SetExtension(msg, pb.E_Ext_More, ext); err != nil {
 		panic(err)
 	}
+	greetings := []string{"adg", "easy", "cow"}
+	if err := proto.SetExtension(msg, pb.E_Greeting, greetings); err != nil {
+		panic(err)
+	}
 
 	// Add an unknown extension. We marshal a pb.Ext, and fake the ID.
 	b, err := proto.Marshal(&pb.Ext{Data: proto.String("3G skiing")})
@@ -126,6 +130,9 @@ tag13: 4
 [testdata.Ext.more]: <
   data: "Big gobs for big rats"
 >
+[testdata.greeting]: "adg"
+[testdata.greeting]: "easy"
+[testdata.greeting]: "cow"
 /* 13 unknown bytes */
 tag201: "\t3G skiing"
 /* 3 unknown bytes */

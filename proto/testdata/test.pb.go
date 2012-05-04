@@ -165,7 +165,7 @@ func (x RepeatedEnum_Color) String() string {
 
 type GoEnum struct {
 	Foo              *FOO   `protobuf:"varint,1,req,name=foo,enum=testdata.FOO" json:"foo,omitempty"`
-	XXX_unrecognized []byte `json:",omitempty"`
+	XXX_unrecognized []byte `json:"-"`
 }
 
 func (this *GoEnum) Reset()         { *this = GoEnum{} }
@@ -174,7 +174,7 @@ func (this *GoEnum) String() string { return proto.CompactTextString(this) }
 type GoTestField struct {
 	Label            *string `protobuf:"bytes,1,req" json:"Label,omitempty"`
 	Type             *string `protobuf:"bytes,2,req" json:"Type,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *GoTestField) Reset()         { *this = GoTestField{} }
@@ -253,7 +253,7 @@ type GoTest struct {
 	Requiredgroup           *GoTest_RequiredGroup   `protobuf:"group,70,req,name=RequiredGroup" json:"requiredgroup,omitempty"`
 	Repeatedgroup           []*GoTest_RepeatedGroup `protobuf:"group,80,rep,name=RepeatedGroup" json:"repeatedgroup,omitempty"`
 	Optionalgroup           *GoTest_OptionalGroup   `protobuf:"group,90,opt,name=OptionalGroup" json:"optionalgroup,omitempty"`
-	XXX_unrecognized        []byte                  `json:",omitempty"`
+	XXX_unrecognized        []byte                  `json:"-"`
 }
 
 func (this *GoTest) Reset()         { *this = GoTest{} }
@@ -277,7 +277,7 @@ const Default_GoTest_F_Sint64Defaulted int64 = -64
 
 type GoTest_RequiredGroup struct {
 	RequiredField    *string `protobuf:"bytes,71,req" json:"RequiredField,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *GoTest_RequiredGroup) Reset()         { *this = GoTest_RequiredGroup{} }
@@ -285,7 +285,7 @@ func (this *GoTest_RequiredGroup) String() string { return proto.CompactTextStri
 
 type GoTest_RepeatedGroup struct {
 	RequiredField    *string `protobuf:"bytes,81,req" json:"RequiredField,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *GoTest_RepeatedGroup) Reset()         { *this = GoTest_RepeatedGroup{} }
@@ -293,7 +293,7 @@ func (this *GoTest_RepeatedGroup) String() string { return proto.CompactTextStri
 
 type GoTest_OptionalGroup struct {
 	RequiredField    *string `protobuf:"bytes,91,req" json:"RequiredField,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *GoTest_OptionalGroup) Reset()         { *this = GoTest_OptionalGroup{} }
@@ -305,7 +305,7 @@ type GoSkipTest struct {
 	SkipFixed64      *uint64               `protobuf:"fixed64,13,req,name=skip_fixed64" json:"skip_fixed64,omitempty"`
 	SkipString       *string               `protobuf:"bytes,14,req,name=skip_string" json:"skip_string,omitempty"`
 	Skipgroup        *GoSkipTest_SkipGroup `protobuf:"group,15,req,name=SkipGroup" json:"skipgroup,omitempty"`
-	XXX_unrecognized []byte                `json:",omitempty"`
+	XXX_unrecognized []byte                `json:"-"`
 }
 
 func (this *GoSkipTest) Reset()         { *this = GoSkipTest{} }
@@ -314,7 +314,7 @@ func (this *GoSkipTest) String() string { return proto.CompactTextString(this) }
 type GoSkipTest_SkipGroup struct {
 	GroupInt32       *int32  `protobuf:"varint,16,req,name=group_int32" json:"group_int32,omitempty"`
 	GroupString      *string `protobuf:"bytes,17,req,name=group_string" json:"group_string,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *GoSkipTest_SkipGroup) Reset()         { *this = GoSkipTest_SkipGroup{} }
@@ -322,7 +322,7 @@ func (this *GoSkipTest_SkipGroup) String() string { return proto.CompactTextStri
 
 type NonPackedTest struct {
 	A                []int32 `protobuf:"varint,1,rep,name=a" json:"a,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *NonPackedTest) Reset()         { *this = NonPackedTest{} }
@@ -330,7 +330,7 @@ func (this *NonPackedTest) String() string { return proto.CompactTextString(this
 
 type PackedTest struct {
 	B                []int32 `protobuf:"varint,1,rep,packed,name=b" json:"b,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *PackedTest) Reset()         { *this = PackedTest{} }
@@ -338,7 +338,7 @@ func (this *PackedTest) String() string { return proto.CompactTextString(this) }
 
 type MaxTag struct {
 	LastField        *string `protobuf:"bytes,536870911,opt,name=last_field" json:"last_field,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *MaxTag) Reset()         { *this = MaxTag{} }
@@ -348,7 +348,7 @@ type InnerMessage struct {
 	Host             *string `protobuf:"bytes,1,req,name=host" json:"host,omitempty"`
 	Port             *int32  `protobuf:"varint,2,opt,name=port,def=4000" json:"port,omitempty"`
 	Connected        *bool   `protobuf:"varint,3,opt,name=connected" json:"connected,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *InnerMessage) Reset()         { *this = InnerMessage{} }
@@ -361,7 +361,7 @@ type OtherMessage struct {
 	Value            []byte        `protobuf:"bytes,2,opt,name=value" json:"value,omitempty"`
 	Weight           *float32      `protobuf:"fixed32,3,opt,name=weight" json:"weight,omitempty"`
 	Inner            *InnerMessage `protobuf:"bytes,4,opt,name=inner" json:"inner,omitempty"`
-	XXX_unrecognized []byte        `json:",omitempty"`
+	XXX_unrecognized []byte        `json:"-"`
 }
 
 func (this *OtherMessage) Reset()         { *this = OtherMessage{} }
@@ -377,8 +377,8 @@ type MyMessage struct {
 	Bikeshed         *MyMessage_Color          `protobuf:"varint,7,opt,name=bikeshed,enum=testdata.MyMessage_Color" json:"bikeshed,omitempty"`
 	Somegroup        *MyMessage_SomeGroup      `protobuf:"group,8,opt,name=SomeGroup" json:"somegroup,omitempty"`
 	RepBytes         [][]byte                  `protobuf:"bytes,10,rep,name=rep_bytes" json:"rep_bytes,omitempty"`
-	XXX_extensions   map[int32]proto.Extension `json:",omitempty"`
-	XXX_unrecognized []byte                    `json:",omitempty"`
+	XXX_extensions   map[int32]proto.Extension `json:"-"`
+	XXX_unrecognized []byte                    `json:"-"`
 }
 
 func (this *MyMessage) Reset()         { *this = MyMessage{} }
@@ -400,7 +400,7 @@ func (this *MyMessage) ExtensionMap() map[int32]proto.Extension {
 
 type MyMessage_SomeGroup struct {
 	GroupField       *int32 `protobuf:"varint,9,opt,name=group_field" json:"group_field,omitempty"`
-	XXX_unrecognized []byte `json:",omitempty"`
+	XXX_unrecognized []byte `json:"-"`
 }
 
 func (this *MyMessage_SomeGroup) Reset()         { *this = MyMessage_SomeGroup{} }
@@ -408,7 +408,7 @@ func (this *MyMessage_SomeGroup) String() string { return proto.CompactTextStrin
 
 type Ext struct {
 	Data             *string `protobuf:"bytes,1,opt,name=data" json:"data,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *Ext) Reset()         { *this = Ext{} }
@@ -440,7 +440,7 @@ var E_Ext_Number = &proto.ExtensionDesc{
 
 type MessageList struct {
 	Message          []*MessageList_Message `protobuf:"group,1,rep" json:"message,omitempty"`
-	XXX_unrecognized []byte                 `json:",omitempty"`
+	XXX_unrecognized []byte                 `json:"-"`
 }
 
 func (this *MessageList) Reset()         { *this = MessageList{} }
@@ -449,7 +449,7 @@ func (this *MessageList) String() string { return proto.CompactTextString(this) 
 type MessageList_Message struct {
 	Name             *string `protobuf:"bytes,2,req,name=name" json:"name,omitempty"`
 	Count            *int32  `protobuf:"varint,3,req,name=count" json:"count,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *MessageList_Message) Reset()         { *this = MessageList_Message{} }
@@ -458,7 +458,7 @@ func (this *MessageList_Message) String() string { return proto.CompactTextStrin
 type Strings struct {
 	StringField      *string `protobuf:"bytes,1,opt,name=string_field" json:"string_field,omitempty"`
 	BytesField       []byte  `protobuf:"bytes,2,opt,name=bytes_field" json:"bytes_field,omitempty"`
-	XXX_unrecognized []byte  `json:",omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (this *Strings) Reset()         { *this = Strings{} }
@@ -483,7 +483,7 @@ type Defaults struct {
 	F_Ninf           *float32        `protobuf:"fixed32,16,opt,def=-inf" json:"F_Ninf,omitempty"`
 	F_Nan            *float32        `protobuf:"fixed32,17,opt,def=nan" json:"F_Nan,omitempty"`
 	Sub              *SubDefaults    `protobuf:"bytes,18,opt,name=sub" json:"sub,omitempty"`
-	XXX_unrecognized []byte          `json:",omitempty"`
+	XXX_unrecognized []byte          `json:"-"`
 }
 
 func (this *Defaults) Reset()         { *this = Defaults{} }
@@ -512,7 +512,7 @@ var Default_Defaults_F_Nan float32 = float32(math.NaN())
 
 type SubDefaults struct {
 	N                *int64 `protobuf:"varint,1,opt,name=n,def=7" json:"n,omitempty"`
-	XXX_unrecognized []byte `json:",omitempty"`
+	XXX_unrecognized []byte `json:"-"`
 }
 
 func (this *SubDefaults) Reset()         { *this = SubDefaults{} }
@@ -522,11 +522,19 @@ const Default_SubDefaults_N int64 = 7
 
 type RepeatedEnum struct {
 	Color            []RepeatedEnum_Color `protobuf:"varint,1,rep,name=color,enum=testdata.RepeatedEnum_Color" json:"color,omitempty"`
-	XXX_unrecognized []byte               `json:",omitempty"`
+	XXX_unrecognized []byte               `json:"-"`
 }
 
 func (this *RepeatedEnum) Reset()         { *this = RepeatedEnum{} }
 func (this *RepeatedEnum) String() string { return proto.CompactTextString(this) }
+
+var E_Greeting = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessage)(nil),
+	ExtensionType: ([]string)(nil),
+	Field:         106,
+	Name:          "testdata.greeting",
+	Tag:           "bytes,106,rep,name=greeting",
+}
 
 func init() {
 	proto.RegisterEnum("testdata.FOO", FOO_name, FOO_value)
@@ -537,4 +545,5 @@ func init() {
 	proto.RegisterExtension(E_Ext_More)
 	proto.RegisterExtension(E_Ext_Text)
 	proto.RegisterExtension(E_Ext_Number)
+	proto.RegisterExtension(E_Greeting)
 }

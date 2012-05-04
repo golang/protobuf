@@ -357,7 +357,9 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) erro
 			iv := reflect.NewAt(st, unsafe.Pointer(base)).Interface()
 			if e, ok := iv.(extendableProto); ok && isExtensionField(e, int32(tag)) {
 				if err = o.skip(st, tag, wire); err == nil {
-					e.ExtensionMap()[int32(tag)] = Extension{enc: append([]byte(nil), o.buf[oi:o.index]...)}
+					ext := e.ExtensionMap()[int32(tag)] // may be missing
+					ext.enc = append(ext.enc, o.buf[oi:o.index]...)
+					e.ExtensionMap()[int32(tag)] = ext
 				}
 				continue
 			}

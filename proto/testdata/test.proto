@@ -248,6 +248,10 @@ message Ext {
   optional string data = 1;
 }
 
+extend MyMessage {
+  repeated string greeting = 106;
+}
+
 message MessageList {
   repeated group Message = 1 {
     required string name = 2;

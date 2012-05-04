@@ -66,6 +66,11 @@ type ExtensionDesc struct {
 	Tag           string      // protobuf tag style
 }
 
+func (ed *ExtensionDesc) repeated() bool {
+	t := reflect.TypeOf(ed.ExtensionType)
+	return t.Kind() == reflect.Slice && t.Elem().Kind() != reflect.Uint8
+}
+
 /*
 Extension represents an extension in a message.
 
@@ -192,21 +197,33 @@ func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, er
 
 // decodeExtension decodes an extension encoded in b.
 func decodeExtension(b []byte, extension *ExtensionDesc) (interface{}, error) {
-	// Discard wire type and field number varint. It isn't needed.
-	_, n := DecodeVarint(b)
-	o := NewBuffer(b[n:])
+	o := NewBuffer(b)
 
 	t := reflect.TypeOf(extension.ExtensionType)
+	rep := extension.repeated()
+
 	props := &Properties{}
 	props.Init(t, "irrelevant_name", extension.Tag, 0)
 
-	// t is a pointer, likely to a struct.
-	// Allocate a "field" to store the pointer itself; the
-	// struct pointer will be stored here. We pass
+	// t is a pointer to a struct, pointer to basic type or a slice.
+	// Allocate a "field" to store the pointer/slice itself; the
+	// pointer/slice will be stored here. We pass
 	// the address of this field to props.dec.
 	value := reflect.New(t).Elem()
-	if err := props.dec(o, props, value.UnsafeAddr()); err != nil {
-		return nil, err
+
+	for {
+		// Discard wire type and field number varint. It isn't needed.
+		if _, err := o.DecodeVarint(); err != nil {
+			return nil, err
+		}
+
+		if err := props.dec(o, props, value.UnsafeAddr()); err != nil {
+			return nil, err
+		}
+
+		if !rep || o.index >= len(o.buf) {
+			break
+		}
 	}
 	return value.Interface(), nil
 }
@@ -228,10 +245,6 @@ func GetExtensions(pb interface{}, es []*ExtensionDesc) (extensions []interface{
 	}
 	return
 }
-
-// TODO: (needed for repeated extensions)
-//   - ExtensionSize
-//   - AddExtension
 
 // SetExtension sets the specified extension of pb to the specified value.
 func SetExtension(pb extendableProto, extension *ExtensionDesc, value interface{}) error {

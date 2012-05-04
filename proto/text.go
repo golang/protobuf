@@ -410,13 +410,25 @@ func writeExtensions(w *textWriter, pv reflect.Value) {
 			continue
 		}
 
-		fmt.Fprintf(w, "[%s]:", desc.Name)
-		if !w.compact {
-			w.WriteByte(' ')
+		// Repeated extensions will appear as a slice.
+		if !desc.repeated() {
+			writeExtension(w, desc.Name, pb)
+		} else {
+			v := reflect.ValueOf(pb)
+			for i := 0; i < v.Len(); i++ {
+				writeExtension(w, desc.Name, v.Index(i).Interface())
+			}
 		}
-		writeAny(w, reflect.ValueOf(pb), nil)
-		w.WriteByte('\n')
 	}
+}
+
+func writeExtension(w *textWriter, name string, pb interface{}) {
+	fmt.Fprintf(w, "[%s]:", name)
+	if !w.compact {
+		w.WriteByte(' ')
+	}
+	writeAny(w, reflect.ValueOf(pb), nil)
+	w.WriteByte('\n')
 }
 
 func marshalText(w io.Writer, pb interface{}, compact bool) {

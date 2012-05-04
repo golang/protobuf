@@ -70,6 +70,15 @@ message LoginMessage {
   }
 }
 
+// Extend with a repeated field
+extend extension_base.BaseMessage {
+  repeated Detail detail = 17;
+}
+
+message Detail {
+  optional string color = 1;
+}
+
 // An extension of an extension
 message Announcement {
   optional string words = 1;
