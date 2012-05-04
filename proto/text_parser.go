@@ -350,14 +350,33 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError
 				return err
 			}
 
+			rep := desc.repeated()
+
 			// Read the extension structure, and set it in
 			// the value we're constructing.
-			ext := reflect.New(typ).Elem()
+			var ext reflect.Value
+			if !rep {
+				ext = reflect.New(typ).Elem()
+			} else {
+				ext = reflect.New(typ.Elem()).Elem()
+			}
 			if err := p.readAny(ext, props); err != nil {
 				return err
 			}
-			SetExtension(sv.Addr().Interface().(extendableProto),
-				desc, ext.Interface())
+			ep := sv.Addr().Interface().(extendableProto)
+			if !rep {
+				SetExtension(ep, desc, ext.Interface())
+			} else {
+				old, err := GetExtension(ep, desc)
+				var sl reflect.Value
+				if err == nil {
+					sl = reflect.ValueOf(old) // existing slice
+				} else {
+					sl = reflect.MakeSlice(typ, 0, 1)
+				}
+				sl = reflect.Append(sl, ext)
+				SetExtension(ep, desc, sl.Interface())
+			}
 		} else {
 			// This is a normal, non-extension field.
 			fi, props, ok := structFieldByName(st, tok.value)
