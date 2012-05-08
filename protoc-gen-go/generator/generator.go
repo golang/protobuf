@@ -933,10 +933,19 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	g.Out()
 	g.P("}")
 
+	g.P("// New", ccTypeName, " is deprecated. Use x.Enum() instead.")
 	g.P("func New", ccTypeName, "(x ", ccTypeName, ") *", ccTypeName, " {")
 	g.In()
 	g.P("e := ", ccTypeName, "(x)")
 	g.P("return &e")
+	g.Out()
+	g.P("}")
+
+	g.P("func (x ", ccTypeName, ") Enum() *", ccTypeName, " {")
+	g.In()
+	g.P("p := new(", ccTypeName, ")")
+	g.P("*p = x")
+	g.P("return p")
 	g.Out()
 	g.P("}")
 

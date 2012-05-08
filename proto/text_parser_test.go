@@ -158,7 +158,7 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		in: `count:42 bikeshed: BLUE`,
 		out: &MyMessage{
 			Count:    Int32(42),
-			Bikeshed: NewMyMessage_Color(MyMessage_BLUE),
+			Bikeshed: MyMessage_BLUE.Enum(),
 		},
 	},
 

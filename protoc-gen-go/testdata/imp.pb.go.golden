@@ -38,9 +38,15 @@ var ImportedMessage_Owner_value = map[string]int32{
 	"MIKE": 2,
 }
 
+// NewImportedMessage_Owner is deprecated. Use x.Enum() instead.
 func NewImportedMessage_Owner(x ImportedMessage_Owner) *ImportedMessage_Owner {
 	e := ImportedMessage_Owner(x)
 	return &e
+}
+func (x ImportedMessage_Owner) Enum() *ImportedMessage_Owner {
+	p := new(ImportedMessage_Owner)
+	*p = x
+	return p
 }
 func (x ImportedMessage_Owner) String() string {
 	return proto.EnumName(ImportedMessage_Owner_name, int32(x))

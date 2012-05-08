@@ -115,7 +115,7 @@ func initGoTest(setdefaults bool) *GoTest {
 		pb.F_Sint64Defaulted = Int64(Default_GoTest_F_Sint64Defaulted)
 	}
 
-	pb.Kind = NewGoTest_KIND(GoTest_TIME)
+	pb.Kind = GoTest_TIME.Enum()
 	pb.RequiredField = initGoTestField()
 	pb.F_BoolRequired = Bool(true)
 	pb.F_Int32Required = Int32(3)
@@ -1129,7 +1129,7 @@ func TestProto1RepeatedGroup(t *testing.T) {
 // a type mismatch in reflect.PointTo.
 func TestEnum(t *testing.T) {
 	pb := new(GoEnum)
-	pb.Foo = NewFOO(FOO_FOO1)
+	pb.Foo = FOO_FOO1.Enum()
 	o := old()
 	if err := o.Marshal(pb); err != nil {
 		t.Fatal("error encoding enum:", err)
@@ -1250,7 +1250,7 @@ func TestAllSetDefaults(t *testing.T) {
 		F_Bytes:   []byte("Bignose"),
 		F_Sint32:  Int32(-32),
 		F_Sint64:  Int64(-64),
-		F_Enum:    NewDefaults_Color(Defaults_GREEN),
+		F_Enum:    Defaults_GREEN.Enum(),
 		F_Pinf:    Float32(float32(math.Inf(1))),
 		F_Ninf:    Float32(float32(math.Inf(-1))),
 		F_Nan:     Float32(1.7),

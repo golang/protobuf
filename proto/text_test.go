@@ -65,7 +65,7 @@ func newTestMessage() *pb.MyMessage {
 				},
 			},
 		},
-		Bikeshed: pb.NewMyMessage_Color(pb.MyMessage_BLUE),
+		Bikeshed: pb.MyMessage_BLUE.Enum(),
 		Somegroup: &pb.MyMessage_SomeGroup{
 			GroupField: proto.Int32(8),
 		},
