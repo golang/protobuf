@@ -23,9 +23,15 @@ var FOO_value = map[string]int32{
 	"FOO1": 1,
 }
 
+// NewFOO is deprecated. Use x.Enum() instead.
 func NewFOO(x FOO) *FOO {
 	e := FOO(x)
 	return &e
+}
+func (x FOO) Enum() *FOO {
+	p := new(FOO)
+	*p = x
+	return p
 }
 func (x FOO) String() string {
 	return proto.EnumName(FOO_name, int32(x))
@@ -80,9 +86,15 @@ var GoTest_KIND_value = map[string]int32{
 	"FUNCTION":    12,
 }
 
+// NewGoTest_KIND is deprecated. Use x.Enum() instead.
 func NewGoTest_KIND(x GoTest_KIND) *GoTest_KIND {
 	e := GoTest_KIND(x)
 	return &e
+}
+func (x GoTest_KIND) Enum() *GoTest_KIND {
+	p := new(GoTest_KIND)
+	*p = x
+	return p
 }
 func (x GoTest_KIND) String() string {
 	return proto.EnumName(GoTest_KIND_name, int32(x))
@@ -107,9 +119,15 @@ var MyMessage_Color_value = map[string]int32{
 	"BLUE":  2,
 }
 
+// NewMyMessage_Color is deprecated. Use x.Enum() instead.
 func NewMyMessage_Color(x MyMessage_Color) *MyMessage_Color {
 	e := MyMessage_Color(x)
 	return &e
+}
+func (x MyMessage_Color) Enum() *MyMessage_Color {
+	p := new(MyMessage_Color)
+	*p = x
+	return p
 }
 func (x MyMessage_Color) String() string {
 	return proto.EnumName(MyMessage_Color_name, int32(x))
@@ -134,9 +152,15 @@ var Defaults_Color_value = map[string]int32{
 	"BLUE":  2,
 }
 
+// NewDefaults_Color is deprecated. Use x.Enum() instead.
 func NewDefaults_Color(x Defaults_Color) *Defaults_Color {
 	e := Defaults_Color(x)
 	return &e
+}
+func (x Defaults_Color) Enum() *Defaults_Color {
+	p := new(Defaults_Color)
+	*p = x
+	return p
 }
 func (x Defaults_Color) String() string {
 	return proto.EnumName(Defaults_Color_name, int32(x))
@@ -155,9 +179,15 @@ var RepeatedEnum_Color_value = map[string]int32{
 	"RED": 1,
 }
 
+// NewRepeatedEnum_Color is deprecated. Use x.Enum() instead.
 func NewRepeatedEnum_Color(x RepeatedEnum_Color) *RepeatedEnum_Color {
 	e := RepeatedEnum_Color(x)
 	return &e
+}
+func (x RepeatedEnum_Color) Enum() *RepeatedEnum_Color {
+	p := new(RepeatedEnum_Color)
+	*p = x
+	return p
 }
 func (x RepeatedEnum_Color) String() string {
 	return proto.EnumName(RepeatedEnum_Color_name, int32(x))

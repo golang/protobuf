@@ -30,9 +30,9 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*
-	The proto package converts data structures to and from the
-	wire format of protocol buffers.  It works in concert with the
-	Go source code generated for .proto files by the protocol compiler.
+	Package proto converts data structures to and from the wire format of
+	protocol buffers.  It works in concert with the Go source code generated
+	for .proto files by the protocol compiler.
 
 	A summary of the properties of the protocol buffer interface
 	for a protocol buffer variable v:
@@ -51,9 +51,9 @@
 	  	s := proto.GetString(foo.String)  // get field
 	  - Constants are defined to hold the default values of all fields that
 		have them.  They have the form Default_StructName_FieldName.
-	  - Enums are given type names and maps between names to values,
-	  	plus a helper function to create values.  Enum values are prefixed
-	  	with the enum's type name. Enum types have a String method.
+	  - Enums are given type names and maps from names to values.
+		Enum values are prefixed with the enum's type name. Enum types have
+		a String method, and a Enum method to assist in message construction.
 	  - Nested groups and enums have type names prefixed with the name of
 	  	the surrounding message type.
 	  - Extensions are given descriptor names that start with E_,
@@ -76,7 +76,7 @@
 		  repeated int64 reps = 3;
 		  optional group OptionalGroup = 4 {
 		    required string RequiredField = 5;
-		  };
+		  }
 		}
 
 	The resulting file, test.pb.go, is:
@@ -87,41 +87,41 @@
 
 		type FOO int32
 		const (
-			FOO_X = 17
+			FOO_X FOO = 17
 		)
-		var FOO_name = map[int32] string {
+		var FOO_name = map[int32]string{
 			17: "X",
 		}
-		var FOO_value = map[string] int32 {
+		var FOO_value = map[string]int32{
 			"X": 17,
 		}
-		func NewFOO(x int32) *FOO {
-			e := FOO(x)
-			return &e
+
+		func (x FOO) Enum() *FOO {
+			p := new(FOO)
+			*p = x
+			return p
 		}
 		func (x FOO) String() string {
 			return proto.EnumName(FOO_name, int32(x))
 		}
 
 		type Test struct {
-			Label	*string	`protobuf:"bytes,1,req,name=label"`
-			Type	*int32	`protobuf:"varint,2,opt,name=type,def=77"`
-			Reps	[]int64	`protobuf:"varint,3,rep,name=reps"`
-			Optionalgroup	*Test_OptionalGroup	`protobuf:"group,4,opt,name=optionalgroup"`
-			XXX_unrecognized []byte
+			Label            *string             `protobuf:"bytes,1,req,name=label" json:"label,omitempty"`
+			Type             *int32              `protobuf:"varint,2,opt,name=type,def=77" json:"type,omitempty"`
+			Reps             []int64             `protobuf:"varint,3,rep,name=reps" json:"reps,omitempty"`
+			Optionalgroup    *Test_OptionalGroup `protobuf:"group,4,opt,name=OptionalGroup" json:"optionalgroup,omitempty"`
+			XXX_unrecognized []byte              `json:"-"`
 		}
-		func (this *Test) Reset() {
-			*this = Test{}
-		}
+		func (this *Test) Reset()         { *this = Test{} }
+		func (this *Test) String() string { return proto.CompactTextString(this) }
 		const Default_Test_Type int32 = 77
 
 		type Test_OptionalGroup struct {
-			RequiredField	*string	`protobuf:"bytes,5,req"`
-			XXX_unrecognized []byte
+			RequiredField    *string `protobuf:"bytes,5,req" json:"RequiredField,omitempty"`
+			XXX_unrecognized []byte  `json:"-"`
 		}
-		func (this *Test_OptionalGroup) Reset() {
-			*this = Test_OptionalGroup{}
-		}
+		func (this *Test_OptionalGroup) Reset()         { *this = Test_OptionalGroup{} }
+		func (this *Test_OptionalGroup) String() string { return proto.CompactTextString(this) }
 
 		func init() {
 			proto.RegisterEnum("example.FOO", FOO_name, FOO_value)
@@ -141,7 +141,7 @@
 		func main() {
 			test := &example.Test{
 				Label: proto.String("hello"),
-				Type: proto.Int32(17),
+				Type:  proto.Int32(17),
 				Optionalgroup: &example.Test_OptionalGroup{
 					RequiredField: proto.String("good bye"),
 				},
