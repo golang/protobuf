@@ -150,6 +150,7 @@ type Request struct {
 
 func (this *Request) Reset()         { *this = Request{} }
 func (this *Request) String() string { return proto.CompactTextString(this) }
+func (*Request) ProtoMessage()       {}
 
 const Default_Request_Hat HatType = HatType_FEDORA
 
@@ -162,6 +163,7 @@ type Request_SomeGroup struct {
 
 func (this *Request_SomeGroup) Reset()         { *this = Request_SomeGroup{} }
 func (this *Request_SomeGroup) String() string { return proto.CompactTextString(this) }
+func (*Request_SomeGroup) ProtoMessage()       {}
 
 type Reply struct {
 	Found            []*Reply_Entry            `protobuf:"bytes,1,rep,name=found" json:"found,omitempty"`
@@ -172,6 +174,7 @@ type Reply struct {
 
 func (this *Reply) Reset()         { *this = Reply{} }
 func (this *Reply) String() string { return proto.CompactTextString(this) }
+func (*Reply) ProtoMessage()       {}
 
 var extRange_Reply = []proto.ExtensionRange{
 	{100, 536870911},
@@ -196,6 +199,7 @@ type Reply_Entry struct {
 
 func (this *Reply_Entry) Reset()         { *this = Reply_Entry{} }
 func (this *Reply_Entry) String() string { return proto.CompactTextString(this) }
+func (*Reply_Entry) ProtoMessage()       {}
 
 const Default_Reply_Entry_Value int64 = 7
 
@@ -205,6 +209,7 @@ type ReplyExtensions struct {
 
 func (this *ReplyExtensions) Reset()         { *this = ReplyExtensions{} }
 func (this *ReplyExtensions) String() string { return proto.CompactTextString(this) }
+func (*ReplyExtensions) ProtoMessage()       {}
 
 var E_ReplyExtensions_Time = &proto.ExtensionDesc{
 	ExtendedType:  (*Reply)(nil),
@@ -221,6 +226,7 @@ type OldReply struct {
 
 func (this *OldReply) Reset()         { *this = OldReply{} }
 func (this *OldReply) String() string { return proto.CompactTextString(this) }
+func (*OldReply) ProtoMessage()       {}
 
 func (this *OldReply) Marshal() ([]byte, error) {
 	return proto.MarshalMessageSet(this.ExtensionMap())

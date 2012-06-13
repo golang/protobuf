@@ -170,6 +170,7 @@ type FileDescriptorSet struct {
 
 func (this *FileDescriptorSet) Reset()         { *this = FileDescriptorSet{} }
 func (this *FileDescriptorSet) String() string { return proto.CompactTextString(this) }
+func (*FileDescriptorSet) ProtoMessage()       {}
 
 type FileDescriptorProto struct {
 	Name             *string                   `protobuf:"bytes,1,opt,name=name"`
@@ -187,6 +188,7 @@ type FileDescriptorProto struct {
 
 func (this *FileDescriptorProto) Reset()         { *this = FileDescriptorProto{} }
 func (this *FileDescriptorProto) String() string { return proto.CompactTextString(this) }
+func (*FileDescriptorProto) ProtoMessage()       {}
 
 type DescriptorProto struct {
 	Name             *string                           `protobuf:"bytes,1,opt,name=name"`
@@ -201,6 +203,7 @@ type DescriptorProto struct {
 
 func (this *DescriptorProto) Reset()         { *this = DescriptorProto{} }
 func (this *DescriptorProto) String() string { return proto.CompactTextString(this) }
+func (*DescriptorProto) ProtoMessage()       {}
 
 type DescriptorProto_ExtensionRange struct {
 	Start            *int32 `protobuf:"varint,1,opt,name=start"`
@@ -210,6 +213,7 @@ type DescriptorProto_ExtensionRange struct {
 
 func (this *DescriptorProto_ExtensionRange) Reset()         { *this = DescriptorProto_ExtensionRange{} }
 func (this *DescriptorProto_ExtensionRange) String() string { return proto.CompactTextString(this) }
+func (*DescriptorProto_ExtensionRange) ProtoMessage()       {}
 
 type FieldDescriptorProto struct {
 	Name             *string                     `protobuf:"bytes,1,opt,name=name"`
@@ -225,6 +229,7 @@ type FieldDescriptorProto struct {
 
 func (this *FieldDescriptorProto) Reset()         { *this = FieldDescriptorProto{} }
 func (this *FieldDescriptorProto) String() string { return proto.CompactTextString(this) }
+func (*FieldDescriptorProto) ProtoMessage()       {}
 
 type EnumDescriptorProto struct {
 	Name             *string                     `protobuf:"bytes,1,opt,name=name"`
@@ -235,6 +240,7 @@ type EnumDescriptorProto struct {
 
 func (this *EnumDescriptorProto) Reset()         { *this = EnumDescriptorProto{} }
 func (this *EnumDescriptorProto) String() string { return proto.CompactTextString(this) }
+func (*EnumDescriptorProto) ProtoMessage()       {}
 
 type EnumValueDescriptorProto struct {
 	Name             *string           `protobuf:"bytes,1,opt,name=name"`
@@ -245,6 +251,7 @@ type EnumValueDescriptorProto struct {
 
 func (this *EnumValueDescriptorProto) Reset()         { *this = EnumValueDescriptorProto{} }
 func (this *EnumValueDescriptorProto) String() string { return proto.CompactTextString(this) }
+func (*EnumValueDescriptorProto) ProtoMessage()       {}
 
 type ServiceDescriptorProto struct {
 	Name             *string                  `protobuf:"bytes,1,opt,name=name"`
@@ -255,6 +262,7 @@ type ServiceDescriptorProto struct {
 
 func (this *ServiceDescriptorProto) Reset()         { *this = ServiceDescriptorProto{} }
 func (this *ServiceDescriptorProto) String() string { return proto.CompactTextString(this) }
+func (*ServiceDescriptorProto) ProtoMessage()       {}
 
 type MethodDescriptorProto struct {
 	Name             *string        `protobuf:"bytes,1,opt,name=name"`
@@ -266,6 +274,7 @@ type MethodDescriptorProto struct {
 
 func (this *MethodDescriptorProto) Reset()         { *this = MethodDescriptorProto{} }
 func (this *MethodDescriptorProto) String() string { return proto.CompactTextString(this) }
+func (*MethodDescriptorProto) ProtoMessage()       {}
 
 type FileOptions struct {
 	JavaPackage         *string                   `protobuf:"bytes,1,opt,name=java_package"`
@@ -282,6 +291,7 @@ type FileOptions struct {
 
 func (this *FileOptions) Reset()         { *this = FileOptions{} }
 func (this *FileOptions) String() string { return proto.CompactTextString(this) }
+func (*FileOptions) ProtoMessage()       {}
 
 var extRange_FileOptions = []proto.ExtensionRange{
 	proto.ExtensionRange{1000, 536870911},
@@ -313,6 +323,7 @@ type MessageOptions struct {
 
 func (this *MessageOptions) Reset()         { *this = MessageOptions{} }
 func (this *MessageOptions) String() string { return proto.CompactTextString(this) }
+func (*MessageOptions) ProtoMessage()       {}
 
 var extRange_MessageOptions = []proto.ExtensionRange{
 	proto.ExtensionRange{1000, 536870911},
@@ -344,6 +355,7 @@ type FieldOptions struct {
 
 func (this *FieldOptions) Reset()         { *this = FieldOptions{} }
 func (this *FieldOptions) String() string { return proto.CompactTextString(this) }
+func (*FieldOptions) ProtoMessage()       {}
 
 var extRange_FieldOptions = []proto.ExtensionRange{
 	proto.ExtensionRange{1000, 536870911},
@@ -372,6 +384,7 @@ type EnumOptions struct {
 
 func (this *EnumOptions) Reset()         { *this = EnumOptions{} }
 func (this *EnumOptions) String() string { return proto.CompactTextString(this) }
+func (*EnumOptions) ProtoMessage()       {}
 
 var extRange_EnumOptions = []proto.ExtensionRange{
 	proto.ExtensionRange{1000, 536870911},
@@ -397,6 +410,7 @@ type EnumValueOptions struct {
 
 func (this *EnumValueOptions) Reset()         { *this = EnumValueOptions{} }
 func (this *EnumValueOptions) String() string { return proto.CompactTextString(this) }
+func (*EnumValueOptions) ProtoMessage()       {}
 
 var extRange_EnumValueOptions = []proto.ExtensionRange{
 	proto.ExtensionRange{1000, 536870911},
@@ -420,6 +434,7 @@ type ServiceOptions struct {
 
 func (this *ServiceOptions) Reset()         { *this = ServiceOptions{} }
 func (this *ServiceOptions) String() string { return proto.CompactTextString(this) }
+func (*ServiceOptions) ProtoMessage()       {}
 
 var extRange_ServiceOptions = []proto.ExtensionRange{
 	proto.ExtensionRange{1000, 536870911},
@@ -443,6 +458,7 @@ type MethodOptions struct {
 
 func (this *MethodOptions) Reset()         { *this = MethodOptions{} }
 func (this *MethodOptions) String() string { return proto.CompactTextString(this) }
+func (*MethodOptions) ProtoMessage()       {}
 
 var extRange_MethodOptions = []proto.ExtensionRange{
 	proto.ExtensionRange{1000, 536870911},
@@ -470,6 +486,7 @@ type UninterpretedOption struct {
 
 func (this *UninterpretedOption) Reset()         { *this = UninterpretedOption{} }
 func (this *UninterpretedOption) String() string { return proto.CompactTextString(this) }
+func (*UninterpretedOption) ProtoMessage()       {}
 
 type UninterpretedOption_NamePart struct {
 	NamePart         *string `protobuf:"bytes,1,req,name=name_part"`
@@ -479,6 +496,7 @@ type UninterpretedOption_NamePart struct {
 
 func (this *UninterpretedOption_NamePart) Reset()         { *this = UninterpretedOption_NamePart{} }
 func (this *UninterpretedOption_NamePart) String() string { return proto.CompactTextString(this) }
+func (*UninterpretedOption_NamePart) ProtoMessage()       {}
 
 func init() {
 	proto.RegisterEnum("google_protobuf.FieldDescriptorProto_Type", FieldDescriptorProto_Type_name, FieldDescriptorProto_Type_value)

@@ -43,8 +43,7 @@ import (
 
 /*
 Equal returns true iff protocol buffers a and b are equal.
-The arguments must both be protocol buffer structs,
-or both be pointers to protocol buffer structs.
+The arguments must both be pointers to protocol buffer structs.
 
 Equality is defined in this way:
   - Two messages are equal iff they are the same type,
@@ -65,7 +64,7 @@ Equality is defined in this way:
 
 The return value is undefined if a and b are not protocol buffers.
 */
-func Equal(a, b interface{}) bool {
+func Equal(a, b Message) bool {
 	v1, v2 := reflect.ValueOf(a), reflect.ValueOf(b)
 	if v1.Type() != v2.Type() {
 		return false
@@ -182,7 +181,7 @@ func equalExtensions(base reflect.Type, em1, em2 map[int32]Extension) bool {
 
 		if m1 != nil && m2 != nil {
 			// Both are unencoded.
-			if !Equal(m1, m2) {
+			if !equalAny(reflect.ValueOf(m1), reflect.ValueOf(m2)) {
 				return false
 			}
 			continue
@@ -210,7 +209,7 @@ func equalExtensions(base reflect.Type, em1, em2 map[int32]Extension) bool {
 			log.Printf("proto: badly encoded extension %d of %v: %v", extNum, base, err)
 			return false
 		}
-		if !Equal(m1, m2) {
+		if !equalAny(reflect.ValueOf(m1), reflect.ValueOf(m2)) {
 			return false
 		}
 	}

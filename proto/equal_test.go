@@ -46,6 +46,10 @@ var messageWithExtension1a = &pb.MyMessage{Count: Int32(7)}
 var messageWithExtension1b = &pb.MyMessage{Count: Int32(7)}
 var messageWithExtension2 = &pb.MyMessage{Count: Int32(7)}
 
+// Two messages with non-message extensions.
+var messageWithInt32Extension1 = &pb.MyMessage{Count: Int32(8)}
+var messageWithInt32Extension2 = &pb.MyMessage{Count: Int32(8)}
+
 func init() {
 	ext1 := &pb.Ext{Data: String("Kirk")}
 	ext2 := &pb.Ext{Data: String("Picard")}
@@ -72,16 +76,21 @@ func init() {
 	if err := SetExtension(messageWithExtension2, pb.E_Ext_More, ext2); err != nil {
 		log.Panicf("SetExtension on 2 failed: %v", err)
 	}
+
+	if err := SetExtension(messageWithInt32Extension1, pb.E_Ext_Number, Int32(23)); err != nil {
+		log.Panicf("SetExtension on Int32-1 failed: %v", err)
+	}
+	if err := SetExtension(messageWithInt32Extension1, pb.E_Ext_Number, Int32(24)); err != nil {
+		log.Panicf("SetExtension on Int32-2 failed: %v", err)
+	}
 }
 
 var EqualTests = []struct {
 	desc string
-	a, b interface{}
+	a, b Message
 	exp  bool
 }{
 	{"different types", &pb.GoEnum{}, &pb.GoTestField{}, false},
-	{"one pointer, one value", &pb.GoEnum{}, pb.GoEnum{}, false},
-	{"non-protocol buffers", 7, 7, false},
 	{"equal empty", &pb.GoEnum{}, &pb.GoEnum{}, true},
 
 	{"one set field, one unset field", &pb.GoTestField{Label: String("foo")}, &pb.GoTestField{}, false},
@@ -123,6 +132,9 @@ var EqualTests = []struct {
 	{"extension vs. no extension", messageWithoutExtension, messageWithExtension1a, false},
 	{"extension vs. same extension", messageWithExtension1a, messageWithExtension1b, true},
 	{"extension vs. different extension", messageWithExtension1a, messageWithExtension2, false},
+
+	{"int32 extension vs. itself", messageWithInt32Extension1, messageWithInt32Extension1, true},
+	{"int32 extension vs. a different int32", messageWithInt32Extension1, messageWithInt32Extension2, false},
 }
 
 func TestEqual(t *testing.T) {

@@ -293,7 +293,7 @@ type Unmarshaler interface {
 // Unmarshal parses the protocol buffer representation in buf and places the
 // decoded result in pb.  If the struct underlying pb does not match
 // the data in buf, the results can be unpredictable.
-func Unmarshal(buf []byte, pb interface{}) error {
+func Unmarshal(buf []byte, pb Message) error {
 	// If the object can unmarshal itself, let it.
 	if u, ok := pb.(Unmarshaler); ok {
 		return u.Unmarshal(buf)
@@ -306,7 +306,7 @@ func Unmarshal(buf []byte, pb interface{}) error {
 // Buffer and places the decoded result in pb.  If the struct
 // underlying pb does not match the data in the buffer, the results can be
 // unpredictable.
-func (p *Buffer) Unmarshal(pb interface{}) error {
+func (p *Buffer) Unmarshal(pb Message) error {
 	// If the object can unmarshal itself, let it.
 	if u, ok := pb.(Unmarshaler); ok {
 		err := u.Unmarshal(p.buf[p.index:])
@@ -321,7 +321,9 @@ func (p *Buffer) Unmarshal(pb interface{}) error {
 
 	err = p.unmarshalType(typ, false, base)
 
-	stats.Decode++
+	if collectStats {
+		stats.Decode++
+	}
 
 	return err
 }

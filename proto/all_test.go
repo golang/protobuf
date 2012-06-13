@@ -1077,7 +1077,7 @@ func TestTypeMismatch(t *testing.T) {
 	}
 }
 
-func encodeDecode(t *testing.T, in, out interface{}, msg string) {
+func encodeDecode(t *testing.T, in, out Message, msg string) {
 	buf, err := Marshal(in)
 	if err != nil {
 		t.Fatalf("failed marshaling %v: %v", msg, err)
@@ -1183,6 +1183,10 @@ type NNIMessage struct {
 	nni nonNillableInt
 }
 
+func (*NNIMessage) Reset()         {}
+func (*NNIMessage) String() string { return "" }
+func (*NNIMessage) ProtoMessage()  {}
+
 // A type that implements the Marshaler interface and is nillable.
 type nillableMessage struct {
 	x uint64
@@ -1195,6 +1199,10 @@ func (nm *nillableMessage) Marshal() ([]byte, error) {
 type NMMessage struct {
 	nm *nillableMessage
 }
+
+func (*NMMessage) Reset()         {}
+func (*NMMessage) String() string { return "" }
+func (*NMMessage) ProtoMessage()  {}
 
 // Verify a type that uses the Marshaler interface, but has a nil pointer.
 func TestNilMarshaler(t *testing.T) {
@@ -1211,22 +1219,6 @@ func TestNilMarshaler(t *testing.T) {
 	var _ Marshaler = nnim.nni // verify it is truly a Marshaler
 	if _, err := Marshal(nnim); err != nil {
 		t.Error("unexpected error marshaling nnim: ", err)
-	}
-}
-
-// Check that passing things other than pointer to struct to Marshal
-// returns a good error, rather than panicking.
-func TestStructTyping(t *testing.T) {
-	om := &OtherMessage{}
-	bad := [...]interface{}{*om, &om}
-	for _, pb := range bad {
-		_, err := Marshal(pb)
-		if err != ErrNotPtr {
-			t.Errorf("marshaling %T: got %v, expected %v", pb, err, ErrNotPtr)
-		}
-		if err := Unmarshal([]byte{}, pb); err != ErrNotPtr {
-			t.Errorf("unmarshaling %T: got %v, expected %v", pb, err, ErrNotPtr)
-		}
 	}
 }
 

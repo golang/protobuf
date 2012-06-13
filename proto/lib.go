@@ -172,6 +172,13 @@ import (
 	"sync"
 )
 
+// Message is implemented by generated protocol buffer messages.
+type Message interface {
+	Reset()
+	String() string
+	ProtoMessage()
+}
+
 // Stats records allocation details about the protocol buffer encoders
 // and decoders.  Useful for tuning the library itself.
 type Stats struct {
@@ -182,6 +189,9 @@ type Stats struct {
 	Chit    uint64 // number of cache hits
 	Cmiss   uint64 // number of cache misses
 }
+
+// Set to true to enable stats collection.
+const collectStats = false
 
 var stats Stats
 
@@ -545,12 +555,8 @@ out:
 // SetDefaults sets unset protocol buffer fields to their default values.
 // It only modifies fields that are both unset and have defined defaults.
 // It recursively sets default values in any non-nil sub-messages.
-func SetDefaults(pb interface{}) {
-	v := reflect.ValueOf(pb)
-	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct {
-		log.Printf("proto: hit non-pointer-to-struct %v", v)
-	}
-	setDefaults(v, true, false)
+func SetDefaults(pb Message) {
+	setDefaults(reflect.ValueOf(pb), true, false)
 }
 
 // v is a pointer to a struct.

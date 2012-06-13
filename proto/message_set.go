@@ -74,13 +74,16 @@ type MessageSet struct {
 	// TODO: caching?
 }
 
+// Make sure MessageSet is a Message.
+var _ Message = (*MessageSet)(nil)
+
 // messageTypeIder is an interface satisfied by a protocol buffer type
 // that may be stored in a MessageSet.
 type messageTypeIder interface {
 	MessageTypeId() int32
 }
 
-func (ms *MessageSet) find(pb interface{}) *_MessageSet_Item {
+func (ms *MessageSet) find(pb Message) *_MessageSet_Item {
 	mti, ok := pb.(messageTypeIder)
 	if !ok {
 		return nil
@@ -94,14 +97,14 @@ func (ms *MessageSet) find(pb interface{}) *_MessageSet_Item {
 	return nil
 }
 
-func (ms *MessageSet) Has(pb interface{}) bool {
+func (ms *MessageSet) Has(pb Message) bool {
 	if ms.find(pb) != nil {
 		return true
 	}
 	return false
 }
 
-func (ms *MessageSet) Unmarshal(pb interface{}) error {
+func (ms *MessageSet) Unmarshal(pb Message) error {
 	if item := ms.find(pb); item != nil {
 		return Unmarshal(item.Message, pb)
 	}
@@ -111,7 +114,7 @@ func (ms *MessageSet) Unmarshal(pb interface{}) error {
 	return nil // TODO: return error instead?
 }
 
-func (ms *MessageSet) Marshal(pb interface{}) error {
+func (ms *MessageSet) Marshal(pb Message) error {
 	msg, err := Marshal(pb)
 	if err != nil {
 		return err
@@ -134,6 +137,10 @@ func (ms *MessageSet) Marshal(pb interface{}) error {
 	})
 	return nil
 }
+
+func (ms *MessageSet) Reset()         { *ms = MessageSet{} }
+func (ms *MessageSet) String() string { return CompactTextString(ms) }
+func (*MessageSet) ProtoMessage()     {}
 
 // Support for the message_set_wire_format message option.
 
