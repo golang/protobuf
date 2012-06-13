@@ -324,7 +324,7 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError
 			var desc *ExtensionDesc
 			// This could be faster, but it's functional.
 			// TODO: Do something smarter than a linear scan.
-			for _, d := range RegisteredExtensions(reflect.New(st).Interface()) {
+			for _, d := range RegisteredExtensions(reflect.New(st).Interface().(Message)) {
 				if d.Name == tok.value {
 					desc = d
 					break
@@ -519,14 +519,9 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 	return p.errorf("invalid %v: %v", v.Type(), tok.value)
 }
 
-var notPtrStruct error = &ParseError{"destination is not a pointer to a struct", 0, 0}
-
-// UnmarshalText reads a protobuffer in Text format.
-func UnmarshalText(s string, pb interface{}) error {
+// UnmarshalText reads a protocol buffer in Text format.
+func UnmarshalText(s string, pb Message) error {
 	v := reflect.ValueOf(pb)
-	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct {
-		return notPtrStruct
-	}
 	if pe := newTextParser(s).readStruct(v.Elem(), ""); pe != nil {
 		return pe
 	}

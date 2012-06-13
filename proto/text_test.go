@@ -228,12 +228,3 @@ func TestStringEscaping(t *testing.T) {
 		}
 	}
 }
-
-func TestNonPtrMessage(t *testing.T) {
-	// Ensure we don't panic when we pass a non-pointer to MarshalText.
-	var buf bytes.Buffer
-	proto.MarshalText(&buf, pb.MyMessage{})
-	if s := buf.String(); s != "<struct-by-value>" {
-		t.Errorf("got: %q, want %q", s, "<struct-by-value>")
-	}
-}

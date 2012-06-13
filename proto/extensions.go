@@ -52,6 +52,7 @@ type ExtensionRange struct {
 
 // extendableProto is an interface implemented by any protocol buffer that may be extended.
 type extendableProto interface {
+	Message
 	ExtensionRangeArray() []ExtensionRange
 	ExtensionMap() map[int32]Extension
 }
@@ -59,7 +60,7 @@ type extendableProto interface {
 // ExtensionDesc represents an extension specification.
 // Used in generated code from the protocol compiler.
 type ExtensionDesc struct {
-	ExtendedType  interface{} // nil pointer to the type that is being extended
+	ExtendedType  Message     // nil pointer to the type that is being extended
 	ExtensionType interface{} // nil pointer to the extension type
 	Field         int32       // field number
 	Name          string      // fully-qualified name of extension, for text formatting
@@ -230,7 +231,7 @@ func decodeExtension(b []byte, extension *ExtensionDesc) (interface{}, error) {
 
 // GetExtensions returns a slice of the extensions present in pb that are also listed in es.
 // The returned slice has the same length as es; missing extensions will appear as nil elements.
-func GetExtensions(pb interface{}, es []*ExtensionDesc) (extensions []interface{}, err error) {
+func GetExtensions(pb Message, es []*ExtensionDesc) (extensions []interface{}, err error) {
 	epb, ok := pb.(extendableProto)
 	if !ok {
 		err = errors.New("not an extendable proto")
@@ -282,6 +283,6 @@ func RegisterExtension(desc *ExtensionDesc) {
 // RegisteredExtensions returns a map of the registered extensions of a
 // protocol buffer struct, indexed by the extension number.
 // The argument pb should be a nil pointer to the struct type.
-func RegisteredExtensions(pb interface{}) map[int32]*ExtensionDesc {
+func RegisteredExtensions(pb Message) map[int32]*ExtensionDesc {
 	return extensionMaps[reflect.TypeOf(pb).Elem()]
 }

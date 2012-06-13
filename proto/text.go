@@ -295,7 +295,7 @@ func writeMessageSet(w *textWriter, ms *MessageSet) {
 			w.indent()
 
 			pb := reflect.New(msd.t.Elem())
-			if err := Unmarshal(item.Message, pb.Interface()); err != nil {
+			if err := Unmarshal(item.Message, pb.Interface().(Message)); err != nil {
 				fmt.Fprintf(w, "/* bad message: %v */\n", err)
 			} else {
 				writeStruct(w, pb.Elem())
@@ -431,7 +431,7 @@ func writeExtension(w *textWriter, name string, pb interface{}) {
 	w.WriteByte('\n')
 }
 
-func marshalText(w io.Writer, pb interface{}, compact bool) {
+func marshalText(w io.Writer, pb Message, compact bool) {
 	if pb == nil {
 		w.Write([]byte("<nil>"))
 		return
@@ -441,40 +441,26 @@ func marshalText(w io.Writer, pb interface{}, compact bool) {
 	aw.complete = true
 	aw.compact = compact
 
-	// Reject non-pointer inputs (it's a bad practice to pass potentially large protos around by value).
-	v := reflect.ValueOf(pb)
-	if v.Kind() != reflect.Ptr {
-		w.Write([]byte("<struct-by-value>"))
-		return
-	}
-
 	// Dereference the received pointer so we don't have outer < and >.
-	v = reflect.Indirect(v)
-
-	if v.Kind() == reflect.Struct {
-		writeStruct(aw, v)
-	} else {
-		writeAny(aw, v, nil)
-	}
+	v := reflect.Indirect(reflect.ValueOf(pb))
+	writeStruct(aw, v)
 }
 
 // MarshalText writes a given protocol buffer in text format.
-// Values that are not protocol buffers can also be written, but their formatting is not guaranteed.
-func MarshalText(w io.Writer, pb interface{}) { marshalText(w, pb, false) }
+func MarshalText(w io.Writer, pb Message) { marshalText(w, pb, false) }
 
 // MarshalTextString is the same as MarshalText, but returns the string directly.
-func MarshalTextString(pb interface{}) string {
+func MarshalTextString(pb Message) string {
 	var buf bytes.Buffer
 	marshalText(&buf, pb, false)
 	return buf.String()
 }
 
 // CompactText writes a given protocl buffer in compact text format (one line).
-// Values that are not protocol buffers can also be written, but their formatting is not guaranteed.
-func CompactText(w io.Writer, pb interface{}) { marshalText(w, pb, true) }
+func CompactText(w io.Writer, pb Message) { marshalText(w, pb, true) }
 
 // CompactTextString is the same as CompactText, but returns the string directly.
-func CompactTextString(pb interface{}) string {
+func CompactTextString(pb Message) string {
 	var buf bytes.Buffer
 	marshalText(&buf, pb, true)
 	return buf.String()

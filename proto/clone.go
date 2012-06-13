@@ -41,8 +41,7 @@ import (
 )
 
 // Clone returns a deep copy of a protocol buffer.
-// pb must be a pointer to a protocol buffer struct.
-func Clone(pb interface{}) interface{} {
+func Clone(pb Message) Message {
 	in := reflect.ValueOf(pb)
 	if in.Kind() != reflect.Ptr || in.Elem().Kind() != reflect.Struct {
 		return nil
@@ -50,7 +49,7 @@ func Clone(pb interface{}) interface{} {
 
 	out := reflect.New(in.Type().Elem())
 	copyStruct(out.Elem(), in.Elem())
-	return out.Interface()
+	return out.Interface().(Message)
 }
 
 func copyStruct(out, in reflect.Value) {

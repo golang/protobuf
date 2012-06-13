@@ -61,9 +61,6 @@ var (
 
 	// ErrNil is the error returned if Marshal is called with nil.
 	ErrNil = errors.New("proto: Marshal called with nil")
-
-	// ErrNotPtr is the error returned if Marshal is called with something other than a pointer to a struct.
-	ErrNotPtr = errors.New("proto: Marshal called with something other than a pointer to a struct")
 )
 
 // The fundamental encoders that put bytes on the wire.
@@ -169,9 +166,9 @@ type Marshaler interface {
 	Marshal() ([]byte, error)
 }
 
-// Marshal takes the protocol buffer struct represented by pb
+// Marshal takes the protocol buffer
 // and encodes it into the wire format, returning the data.
-func Marshal(pb interface{}) ([]byte, error) {
+func Marshal(pb Message) ([]byte, error) {
 	// Can the object marshal itself?
 	if m, ok := pb.(Marshaler); ok {
 		return m.Marshal()
@@ -184,10 +181,10 @@ func Marshal(pb interface{}) ([]byte, error) {
 	return p.buf, err
 }
 
-// Marshal takes the protocol buffer struct represented by pb
+// Marshal takes the protocol buffer
 // and encodes it into the wire format, writing the result to the
 // Buffer.
-func (p *Buffer) Marshal(pb interface{}) error {
+func (p *Buffer) Marshal(pb Message) error {
 	// Can the object marshal itself?
 	if m, ok := pb.(Marshaler); ok {
 		data, err := m.Marshal()
@@ -203,7 +200,9 @@ func (p *Buffer) Marshal(pb interface{}) error {
 		err = p.enc_struct(t.Elem(), b)
 	}
 
-	stats.Encode++
+	if collectStats {
+		stats.Encode++
+	}
 
 	return err
 }

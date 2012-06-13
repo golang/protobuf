@@ -200,6 +200,7 @@ type GoEnum struct {
 
 func (this *GoEnum) Reset()         { *this = GoEnum{} }
 func (this *GoEnum) String() string { return proto.CompactTextString(this) }
+func (*GoEnum) ProtoMessage()       {}
 
 type GoTestField struct {
 	Label            *string `protobuf:"bytes,1,req" json:"Label,omitempty"`
@@ -209,6 +210,7 @@ type GoTestField struct {
 
 func (this *GoTestField) Reset()         { *this = GoTestField{} }
 func (this *GoTestField) String() string { return proto.CompactTextString(this) }
+func (*GoTestField) ProtoMessage()       {}
 
 type GoTest struct {
 	Kind                    *GoTest_KIND            `protobuf:"varint,1,req,enum=testdata.GoTest_KIND" json:"Kind,omitempty"`
@@ -288,6 +290,7 @@ type GoTest struct {
 
 func (this *GoTest) Reset()         { *this = GoTest{} }
 func (this *GoTest) String() string { return proto.CompactTextString(this) }
+func (*GoTest) ProtoMessage()       {}
 
 const Default_GoTest_F_BoolDefaulted bool = true
 const Default_GoTest_F_Int32Defaulted int32 = 32
@@ -312,6 +315,7 @@ type GoTest_RequiredGroup struct {
 
 func (this *GoTest_RequiredGroup) Reset()         { *this = GoTest_RequiredGroup{} }
 func (this *GoTest_RequiredGroup) String() string { return proto.CompactTextString(this) }
+func (*GoTest_RequiredGroup) ProtoMessage()       {}
 
 type GoTest_RepeatedGroup struct {
 	RequiredField    *string `protobuf:"bytes,81,req" json:"RequiredField,omitempty"`
@@ -320,6 +324,7 @@ type GoTest_RepeatedGroup struct {
 
 func (this *GoTest_RepeatedGroup) Reset()         { *this = GoTest_RepeatedGroup{} }
 func (this *GoTest_RepeatedGroup) String() string { return proto.CompactTextString(this) }
+func (*GoTest_RepeatedGroup) ProtoMessage()       {}
 
 type GoTest_OptionalGroup struct {
 	RequiredField    *string `protobuf:"bytes,91,req" json:"RequiredField,omitempty"`
@@ -328,6 +333,7 @@ type GoTest_OptionalGroup struct {
 
 func (this *GoTest_OptionalGroup) Reset()         { *this = GoTest_OptionalGroup{} }
 func (this *GoTest_OptionalGroup) String() string { return proto.CompactTextString(this) }
+func (*GoTest_OptionalGroup) ProtoMessage()       {}
 
 type GoSkipTest struct {
 	SkipInt32        *int32                `protobuf:"varint,11,req,name=skip_int32" json:"skip_int32,omitempty"`
@@ -340,6 +346,7 @@ type GoSkipTest struct {
 
 func (this *GoSkipTest) Reset()         { *this = GoSkipTest{} }
 func (this *GoSkipTest) String() string { return proto.CompactTextString(this) }
+func (*GoSkipTest) ProtoMessage()       {}
 
 type GoSkipTest_SkipGroup struct {
 	GroupInt32       *int32  `protobuf:"varint,16,req,name=group_int32" json:"group_int32,omitempty"`
@@ -349,6 +356,7 @@ type GoSkipTest_SkipGroup struct {
 
 func (this *GoSkipTest_SkipGroup) Reset()         { *this = GoSkipTest_SkipGroup{} }
 func (this *GoSkipTest_SkipGroup) String() string { return proto.CompactTextString(this) }
+func (*GoSkipTest_SkipGroup) ProtoMessage()       {}
 
 type NonPackedTest struct {
 	A                []int32 `protobuf:"varint,1,rep,name=a" json:"a,omitempty"`
@@ -357,6 +365,7 @@ type NonPackedTest struct {
 
 func (this *NonPackedTest) Reset()         { *this = NonPackedTest{} }
 func (this *NonPackedTest) String() string { return proto.CompactTextString(this) }
+func (*NonPackedTest) ProtoMessage()       {}
 
 type PackedTest struct {
 	B                []int32 `protobuf:"varint,1,rep,packed,name=b" json:"b,omitempty"`
@@ -365,6 +374,7 @@ type PackedTest struct {
 
 func (this *PackedTest) Reset()         { *this = PackedTest{} }
 func (this *PackedTest) String() string { return proto.CompactTextString(this) }
+func (*PackedTest) ProtoMessage()       {}
 
 type MaxTag struct {
 	LastField        *string `protobuf:"bytes,536870911,opt,name=last_field" json:"last_field,omitempty"`
@@ -373,6 +383,7 @@ type MaxTag struct {
 
 func (this *MaxTag) Reset()         { *this = MaxTag{} }
 func (this *MaxTag) String() string { return proto.CompactTextString(this) }
+func (*MaxTag) ProtoMessage()       {}
 
 type InnerMessage struct {
 	Host             *string `protobuf:"bytes,1,req,name=host" json:"host,omitempty"`
@@ -383,6 +394,7 @@ type InnerMessage struct {
 
 func (this *InnerMessage) Reset()         { *this = InnerMessage{} }
 func (this *InnerMessage) String() string { return proto.CompactTextString(this) }
+func (*InnerMessage) ProtoMessage()       {}
 
 const Default_InnerMessage_Port int32 = 4000
 
@@ -396,6 +408,7 @@ type OtherMessage struct {
 
 func (this *OtherMessage) Reset()         { *this = OtherMessage{} }
 func (this *OtherMessage) String() string { return proto.CompactTextString(this) }
+func (*OtherMessage) ProtoMessage()       {}
 
 type MyMessage struct {
 	Count            *int32                    `protobuf:"varint,1,req,name=count" json:"count,omitempty"`
@@ -413,6 +426,7 @@ type MyMessage struct {
 
 func (this *MyMessage) Reset()         { *this = MyMessage{} }
 func (this *MyMessage) String() string { return proto.CompactTextString(this) }
+func (*MyMessage) ProtoMessage()       {}
 
 var extRange_MyMessage = []proto.ExtensionRange{
 	{100, 536870911},
@@ -435,6 +449,7 @@ type MyMessage_SomeGroup struct {
 
 func (this *MyMessage_SomeGroup) Reset()         { *this = MyMessage_SomeGroup{} }
 func (this *MyMessage_SomeGroup) String() string { return proto.CompactTextString(this) }
+func (*MyMessage_SomeGroup) ProtoMessage()       {}
 
 type Ext struct {
 	Data             *string `protobuf:"bytes,1,opt,name=data" json:"data,omitempty"`
@@ -443,6 +458,7 @@ type Ext struct {
 
 func (this *Ext) Reset()         { *this = Ext{} }
 func (this *Ext) String() string { return proto.CompactTextString(this) }
+func (*Ext) ProtoMessage()       {}
 
 var E_Ext_More = &proto.ExtensionDesc{
 	ExtendedType:  (*MyMessage)(nil),
@@ -475,6 +491,7 @@ type MessageList struct {
 
 func (this *MessageList) Reset()         { *this = MessageList{} }
 func (this *MessageList) String() string { return proto.CompactTextString(this) }
+func (*MessageList) ProtoMessage()       {}
 
 type MessageList_Message struct {
 	Name             *string `protobuf:"bytes,2,req,name=name" json:"name,omitempty"`
@@ -484,6 +501,7 @@ type MessageList_Message struct {
 
 func (this *MessageList_Message) Reset()         { *this = MessageList_Message{} }
 func (this *MessageList_Message) String() string { return proto.CompactTextString(this) }
+func (*MessageList_Message) ProtoMessage()       {}
 
 type Strings struct {
 	StringField      *string `protobuf:"bytes,1,opt,name=string_field" json:"string_field,omitempty"`
@@ -493,6 +511,7 @@ type Strings struct {
 
 func (this *Strings) Reset()         { *this = Strings{} }
 func (this *Strings) String() string { return proto.CompactTextString(this) }
+func (*Strings) ProtoMessage()       {}
 
 type Defaults struct {
 	F_Bool           *bool           `protobuf:"varint,1,opt,def=1" json:"F_Bool,omitempty"`
@@ -518,6 +537,7 @@ type Defaults struct {
 
 func (this *Defaults) Reset()         { *this = Defaults{} }
 func (this *Defaults) String() string { return proto.CompactTextString(this) }
+func (*Defaults) ProtoMessage()       {}
 
 const Default_Defaults_F_Bool bool = true
 const Default_Defaults_F_Int32 int32 = 32
@@ -547,6 +567,7 @@ type SubDefaults struct {
 
 func (this *SubDefaults) Reset()         { *this = SubDefaults{} }
 func (this *SubDefaults) String() string { return proto.CompactTextString(this) }
+func (*SubDefaults) ProtoMessage()       {}
 
 const Default_SubDefaults_N int64 = 7
 
@@ -557,6 +578,7 @@ type RepeatedEnum struct {
 
 func (this *RepeatedEnum) Reset()         { *this = RepeatedEnum{} }
 func (this *RepeatedEnum) String() string { return proto.CompactTextString(this) }
+func (*RepeatedEnum) ProtoMessage()       {}
 
 var E_Greeting = &proto.ExtensionDesc{
 	ExtendedType:  (*MyMessage)(nil),

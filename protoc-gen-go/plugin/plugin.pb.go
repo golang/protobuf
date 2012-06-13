@@ -22,6 +22,7 @@ type CodeGeneratorRequest struct {
 
 func (this *CodeGeneratorRequest) Reset()         { *this = CodeGeneratorRequest{} }
 func (this *CodeGeneratorRequest) String() string { return proto.CompactTextString(this) }
+func (*CodeGeneratorRequest) ProtoMessage()       {}
 
 type CodeGeneratorResponse struct {
 	Error            *string                       `protobuf:"bytes,1,opt,name=error"`
@@ -31,6 +32,7 @@ type CodeGeneratorResponse struct {
 
 func (this *CodeGeneratorResponse) Reset()         { *this = CodeGeneratorResponse{} }
 func (this *CodeGeneratorResponse) String() string { return proto.CompactTextString(this) }
+func (*CodeGeneratorResponse) ProtoMessage()       {}
 
 type CodeGeneratorResponse_File struct {
 	Name             *string `protobuf:"bytes,1,opt,name=name"`
@@ -41,6 +43,7 @@ type CodeGeneratorResponse_File struct {
 
 func (this *CodeGeneratorResponse_File) Reset()         { *this = CodeGeneratorResponse_File{} }
 func (this *CodeGeneratorResponse_File) String() string { return proto.CompactTextString(this) }
+func (*CodeGeneratorResponse_File) ProtoMessage()       {}
 
 func init() {
 }

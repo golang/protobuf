@@ -435,10 +435,14 @@ func GetProperties(t reflect.Type) *StructProperties {
 	mutex.Lock()
 	if prop, ok := propertiesMap[t]; ok {
 		mutex.Unlock()
-		stats.Chit++
+		if collectStats {
+			stats.Chit++
+		}
 		return prop
 	}
-	stats.Cmiss++
+	if collectStats {
+		stats.Cmiss++
+	}
 
 	prop := new(StructProperties)
 
@@ -514,17 +518,13 @@ func propByIndex(t reflect.Type, x []int) *Properties {
 }
 
 // Get the address and type of a pointer to a struct from an interface.
-func getbase(pb interface{}) (t reflect.Type, b uintptr, err error) {
+func getbase(pb Message) (t reflect.Type, b uintptr, err error) {
 	if pb == nil {
 		err = ErrNil
 		return
 	}
 	// get the reflect type of the pointer to the struct.
 	t = reflect.TypeOf(pb)
-	if t.Kind() != reflect.Ptr || t.Elem().Kind() != reflect.Struct {
-		err = ErrNotPtr
-		return
-	}
 	// get the address of the struct.
 	value := reflect.ValueOf(pb)
 	b = value.Pointer()

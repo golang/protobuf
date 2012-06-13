@@ -268,6 +268,7 @@ func (ms messageSymbol) GenerateAlias(g *Generator, pkg string) {
 	g.P("type ", ms.sym, " ", remoteSym)
 	g.P("func (this *", ms.sym, ") Reset() { (*", remoteSym, ")(this).Reset() }")
 	g.P("func (this *", ms.sym, ") String() string { return (*", remoteSym, ")(this).String() }")
+	g.P("func (*", ms.sym, ") ProtoMessage() {}")
 	if ms.hasExtensions {
 		g.P("func (*", ms.sym, ") ExtensionRangeArray() []", g.ProtoPkg, ".ExtensionRange ",
 			"{ return (*", remoteSym, ")(nil).ExtensionRangeArray() }")
@@ -1139,6 +1140,7 @@ func (g *Generator) RecordTypeUse(t string) {
 var methodNames = [...]string{
 	"Reset",
 	"String",
+	"ProtoMessage",
 	"Marshal",
 	"Unmarshal",
 	"ExtensionRangeArray",
@@ -1181,9 +1183,10 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.Out()
 	g.P("}")
 
-	// Reset and String functions
+	// Reset, String and ProtoMessage methods.
 	g.P("func (this *", ccTypeName, ") Reset() { *this = ", ccTypeName, "{} }")
 	g.P("func (this *", ccTypeName, ") String() string { return ", g.ProtoPkg, ".CompactTextString(this) }")
+	g.P("func (*", ccTypeName, ") ProtoMessage() {}")
 
 	// Extension support methods
 	var hasExtensions, isMessageSet bool
