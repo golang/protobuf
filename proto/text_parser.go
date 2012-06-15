@@ -462,7 +462,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 			return nil
 		}
 	case reflect.Int32:
-		if x, err := strconv.ParseInt(tok.value, 10, 32); err == nil {
+		if x, err := strconv.ParseInt(tok.value, 0, 32); err == nil {
 			fv.SetInt(x)
 			return nil
 		}
@@ -480,7 +480,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 		fv.SetInt(int64(x))
 		return nil
 	case reflect.Int64:
-		if x, err := strconv.ParseInt(tok.value, 10, 64); err == nil {
+		if x, err := strconv.ParseInt(tok.value, 0, 64); err == nil {
 			fv.SetInt(x)
 			return nil
 		}
@@ -506,12 +506,12 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 		}
 		return p.readStruct(fv, terminator)
 	case reflect.Uint32:
-		if x, err := strconv.ParseUint(tok.value, 10, 32); err == nil {
+		if x, err := strconv.ParseUint(tok.value, 0, 32); err == nil {
 			fv.SetUint(uint64(x))
 			return nil
 		}
 	case reflect.Uint64:
-		if x, err := strconv.ParseUint(tok.value, 10, 64); err == nil {
+		if x, err := strconv.ParseUint(tok.value, 0, 64); err == nil {
 			fv.SetUint(x)
 			return nil
 		}
