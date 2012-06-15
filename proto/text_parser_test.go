@@ -129,6 +129,22 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		err: "line 1.7: invalid int32: 1234567890123",
 	},
 
+	// Number in hexadecimal
+	{
+		in: "count: 0x2beef",
+		out: &MyMessage{
+			Count: Int32(0x2beef),
+		},
+	},
+
+	// Number in octal
+	{
+		in: "count: 024601",
+		out: &MyMessage{
+			Count: Int32(024601),
+		},
+	},
+
 	// Number too large for float32
 	{
 		in:  "others:< weight: 12345678901234567890123456789012345678901234567890 >",
