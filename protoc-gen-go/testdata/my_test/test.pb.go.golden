@@ -156,6 +156,41 @@ const Default_Request_Hat HatType = HatType_FEDORA
 
 var Default_Request_Deadline float32 = float32(math.Inf(1))
 
+func (this *Request) GetHue() Request_Color {
+	if this != nil && this.Hue != nil {
+		return *this.Hue
+	}
+	return 0
+}
+
+func (this *Request) GetHat() HatType {
+	if this != nil && this.Hat != nil {
+		return *this.Hat
+	}
+	return Default_Request_Hat
+}
+
+func (this *Request) GetDeadline() float32 {
+	if this != nil && this.Deadline != nil {
+		return *this.Deadline
+	}
+	return Default_Request_Deadline
+}
+
+func (this *Request) GetSomegroup() *Request_SomeGroup {
+	if this != nil {
+		return this.Somegroup
+	}
+	return nil
+}
+
+func (this *Request) GetReset_() int32 {
+	if this != nil && this.Reset_ != nil {
+		return *this.Reset_
+	}
+	return 0
+}
+
 type Request_SomeGroup struct {
 	GroupField       *int32 `protobuf:"varint,9,opt,name=group_field" json:"group_field,omitempty"`
 	XXX_unrecognized []byte `json:"-"`
@@ -164,6 +199,13 @@ type Request_SomeGroup struct {
 func (this *Request_SomeGroup) Reset()         { *this = Request_SomeGroup{} }
 func (this *Request_SomeGroup) String() string { return proto.CompactTextString(this) }
 func (*Request_SomeGroup) ProtoMessage()       {}
+
+func (this *Request_SomeGroup) GetGroupField() int32 {
+	if this != nil && this.GroupField != nil {
+		return *this.GroupField
+	}
+	return 0
+}
 
 type Reply struct {
 	Found            []*Reply_Entry            `protobuf:"bytes,1,rep,name=found" json:"found,omitempty"`
@@ -202,6 +244,27 @@ func (this *Reply_Entry) String() string { return proto.CompactTextString(this) 
 func (*Reply_Entry) ProtoMessage()       {}
 
 const Default_Reply_Entry_Value int64 = 7
+
+func (this *Reply_Entry) GetKeyThatNeeds_1234Camel_CasIng() int64 {
+	if this != nil && this.KeyThatNeeds_1234Camel_CasIng != nil {
+		return *this.KeyThatNeeds_1234Camel_CasIng
+	}
+	return 0
+}
+
+func (this *Reply_Entry) GetValue() int64 {
+	if this != nil && this.Value != nil {
+		return *this.Value
+	}
+	return Default_Reply_Entry_Value
+}
+
+func (this *Reply_Entry) GetXMyFieldName_2() int64 {
+	if this != nil && this.XMyFieldName_2 != nil {
+		return *this.XMyFieldName_2
+	}
+	return 0
+}
 
 type ReplyExtensions struct {
 	XXX_unrecognized []byte `json:"-"`
