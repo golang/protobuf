@@ -154,6 +154,19 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		},
 	},
 
+	// Floating point number with "f" suffix
+	{
+		in: "count: 4 others:< weight: 17.0f >",
+		out: &MyMessage{
+			Count: Int32(4),
+			Others: []*OtherMessage{
+				{
+					Weight: Float32(17),
+				},
+			},
+		},
+	},
+
 	// Number too large for float32
 	{
 		in:  "others:< weight: 12345678901234567890123456789012345678901234567890 >",
