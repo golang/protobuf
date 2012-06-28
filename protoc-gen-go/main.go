@@ -66,7 +66,7 @@ func main() {
 		g.Fail("no files to generate")
 	}
 
-	g.CommandLineParameters(proto.GetString(g.Request.Parameter))
+	g.CommandLineParameters(g.Request.GetParameter())
 
 	// Create a wrapped version of the Descriptors and EnumDescriptors that
 	// point to the file that defines them.

@@ -118,7 +118,7 @@ func (d *Descriptor) TypeName() []string {
 	s := make([]string, n, n)
 	for parent := d; parent != nil; parent = parent.parent {
 		n--
-		s[n] = proto.GetString(parent.Name)
+		s[n] = parent.GetName()
 	}
 	d.typename = s
 	return s
@@ -139,7 +139,7 @@ func (e *EnumDescriptor) TypeName() (s []string) {
 	if e.typename != nil {
 		return e.typename
 	}
-	name := proto.GetString(e.Name)
+	name := e.GetName()
 	if e.parent == nil {
 		s = make([]string, 1)
 	} else {
@@ -167,8 +167,8 @@ func (e *EnumDescriptor) prefix() string {
 // The integer value of the named constant in this enumerated type.
 func (e *EnumDescriptor) integerValueAsString(name string) string {
 	for _, c := range e.Value {
-		if proto.GetString(c.Name) == name {
-			return fmt.Sprint(proto.GetInt32(c.Number))
+		if c.GetName() == name {
+			return fmt.Sprint(c.GetNumber())
 		}
 	}
 	log.Fatal("cannot find value for enum constant")
@@ -186,7 +186,7 @@ type ExtensionDescriptor struct {
 // TypeName returns the elements of the dotted type name.
 // The package name is not part of this name.
 func (e *ExtensionDescriptor) TypeName() (s []string) {
-	name := proto.GetString(e.Name)
+	name := e.GetName()
 	if e.parent == nil {
 		// top-level extension
 		s = make([]string, 1)
@@ -245,11 +245,11 @@ func (d *FileDescriptor) PackageName() string { return uniquePackageOf(d.FileDes
 func (d *FileDescriptor) goPackageName() (name string, explicit bool) {
 
 	// Does the file have a package clause?
-	if pkg := proto.GetString(d.Package); pkg != "" {
+	if pkg := d.GetPackage(); pkg != "" {
 		return pkg, false
 	}
 	// Use the file base name.
-	return BaseName(proto.GetString(d.Name)), false
+	return BaseName(d.GetName()), false
 }
 
 func (d *FileDescriptor) addExport(obj Object, symbol Symbol) {
@@ -322,7 +322,7 @@ type Object interface {
 func uniquePackageOf(fd *descriptor.FileDescriptorProto) string {
 	s, ok := uniquePackageName[fd]
 	if !ok {
-		log.Fatal("internal error: no package name defined for", proto.GetString(fd.Name))
+		log.Fatal("internal error: no package name defined for", fd.GetName())
 	}
 	return s
 }
@@ -550,7 +550,7 @@ AllFiles:
 		}
 		// The file is a dependency, so we want to ignore its go_package option
 		// because that is only relevant for its specific generated output.
-		pkg := proto.GetString(f.Package)
+		pkg := f.GetPackage()
 		if pkg == "" {
 			pkg = BaseName(*f.Name)
 		}
@@ -585,7 +585,7 @@ FindFiles:
 	for i, fileName := range g.Request.FileToGenerate {
 		// Search the list.  This algorithm is n^2 but n is tiny.
 		for _, file := range g.allFiles {
-			if fileName == proto.GetString(file.Name) {
+			if fileName == file.GetName() {
 				g.genFiles[i] = file
 				continue FindFiles
 			}
@@ -608,7 +608,7 @@ func (g *Generator) buildNestedDescriptors(descs []*Descriptor) {
 				}
 			}
 			if n != len(desc.NestedType) {
-				g.Fail("internal error: nesting failure for", proto.GetString(desc.Name))
+				g.Fail("internal error: nesting failure for", desc.GetName())
 			}
 		}
 	}
@@ -701,7 +701,7 @@ func (g *Generator) BuildTypeNameMap() {
 		// The names in this loop are defined by the proto world, not us, so the
 		// package name may be empty.  If so, the dotted package name of X will
 		// be ".X"; otherwise it will be ".pkg.X".
-		dottedPkg := "." + proto.GetString(f.Package)
+		dottedPkg := "." + f.GetPackage()
 		if dottedPkg != "." {
 			dottedPkg += "."
 		}
@@ -837,7 +837,7 @@ func (g *Generator) FileOf(fd *descriptor.FileDescriptorProto) *FileDescriptor {
 			return file
 		}
 	}
-	g.Fail("could not find file in table:", proto.GetString(fd.Name))
+	g.Fail("could not find file in table:", fd.GetName())
 	return nil
 }
 
@@ -896,7 +896,7 @@ func (g *Generator) generateHeader() {
 
 func (g *Generator) fileByName(filename string) *FileDescriptor {
 	for _, fd := range g.allFiles {
-		if proto.GetString(fd.Name) == filename {
+		if fd.GetName() == filename {
 			return fd
 		}
 	}
@@ -1074,7 +1074,7 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 	case isRepeated(field):
 		optrepreq = "rep"
 	}
-	defaultValue := proto.GetString(field.DefaultValue)
+	defaultValue := field.GetDefaultValue()
 	if defaultValue != "" {
 		switch *field.Type {
 		case descriptor.FieldDescriptorProto_TYPE_BOOL:
@@ -1088,7 +1088,7 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 			// Nothing to do. Quoting is done for the whole tag.
 		case descriptor.FieldDescriptorProto_TYPE_ENUM:
 			// For enums we need to provide the integer constant.
-			obj := g.ObjectNamed(proto.GetString(field.TypeName))
+			obj := g.ObjectNamed(field.GetTypeName())
 			enum, ok := obj.(*EnumDescriptor)
 			if !ok {
 				g.Fail("enum type inconsistent for", CamelCaseSlice(obj.TypeName()))
@@ -1101,18 +1101,18 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 	if *field.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
 		// We avoid using obj.PackageName(), because we want to use the
 		// original (proto-world) package name.
-		obj := g.ObjectNamed(proto.GetString(field.TypeName))
+		obj := g.ObjectNamed(field.GetTypeName())
 		enum = ",enum="
-		if pkg := proto.GetString(obj.File().Package); pkg != "" {
+		if pkg := obj.File().GetPackage(); pkg != "" {
 			enum += pkg + "."
 		}
 		enum += CamelCaseSlice(obj.TypeName())
 	}
 	packed := ""
-	if field.Options != nil && proto.GetBool(field.Options.Packed) {
+	if field.Options != nil && field.Options.GetPacked() {
 		packed = ",packed"
 	}
-	fieldName := proto.GetString(field.Name)
+	fieldName := field.GetName()
 	name := fieldName
 	if *field.Type == descriptor.FieldDescriptorProto_TYPE_GROUP {
 		// We must use the type name for groups instead of
@@ -1131,7 +1131,7 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 	}
 	return Quote(fmt.Sprintf("%s,%d,%s%s%s%s%s",
 		wiretype,
-		proto.GetInt32(field.Number),
+		field.GetNumber(),
 		optrepreq,
 		packed,
 		name,
@@ -1191,15 +1191,15 @@ func (g *Generator) GoType(message *Descriptor, field *descriptor.FieldDescripto
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
 		typ, wire = "string", "bytes"
 	case descriptor.FieldDescriptorProto_TYPE_GROUP:
-		desc := g.ObjectNamed(proto.GetString(field.TypeName))
+		desc := g.ObjectNamed(field.GetTypeName())
 		typ, wire = "*"+g.TypeName(desc), "group"
 	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
-		desc := g.ObjectNamed(proto.GetString(field.TypeName))
+		desc := g.ObjectNamed(field.GetTypeName())
 		typ, wire = "*"+g.TypeName(desc), "bytes"
 	case descriptor.FieldDescriptorProto_TYPE_BYTES:
 		typ, wire = "[]byte", "bytes"
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
-		desc := g.ObjectNamed(proto.GetString(field.TypeName))
+		desc := g.ObjectNamed(field.GetTypeName())
 		typ, wire = g.TypeName(desc), "varint"
 	case descriptor.FieldDescriptorProto_TYPE_SFIXED32:
 		typ, wire = "int32", "fixed32"
@@ -1210,7 +1210,7 @@ func (g *Generator) GoType(message *Descriptor, field *descriptor.FieldDescripto
 	case descriptor.FieldDescriptorProto_TYPE_SINT64:
 		typ, wire = "int64", "zigzag64"
 	default:
-		g.Fail("unknown type for", proto.GetString(field.Name))
+		g.Fail("unknown type for", field.GetName())
 	}
 	if isRepeated(field) {
 		typ = "[]" + typ
@@ -1251,6 +1251,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	for _, n := range methodNames {
 		usedNames[n] = true
 	}
+	fieldNames := make(map[*descriptor.FieldDescriptorProto]string)
 	g.P("type ", ccTypeName, " struct {")
 	g.In()
 	for _, field := range message.Field {
@@ -1259,15 +1260,15 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			fieldname += "_"
 		}
 		usedNames[fieldname] = true
+		fieldNames[field] = fieldname
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
-		// This is a hack that is going away. TODO: remove this.
-		if field.Options != nil && proto.GetBool(field.Options.Weak) {
+		if field.Options != nil && field.Options.GetWeak() {
 			typename = "[]byte"
 		}
 		tag := fmt.Sprintf("`protobuf:%s json:%q`", g.goTag(field, wiretype), jsonName+",omitempty")
 		g.P(fieldname, "\t", typename, "\t", tag)
-		g.RecordTypeUse(proto.GetString(field.TypeName))
+		g.RecordTypeUse(field.GetTypeName())
 	}
 	if len(message.ExtensionRange) > 0 {
 		g.P("XXX_extensions\t\tmap[int32]", g.ProtoPkg, ".Extension `json:\"-\"`")
@@ -1286,7 +1287,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	if len(message.ExtensionRange) > 0 {
 		hasExtensions = true
 		// message_set_wire_format only makes sense when extensions are defined.
-		if opts := message.Options; opts != nil && proto.GetBool(opts.MessageSetWireFormat) {
+		if opts := message.Options; opts != nil && opts.GetMessageSetWireFormat() {
 			isMessageSet = true
 			g.P()
 			g.P("func (this *", ccTypeName, ") Marshal() ([]byte, error) {")
@@ -1333,12 +1334,14 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.file.addExport(message, messageSymbol{ccTypeName, hasExtensions, isMessageSet})
 
 	// Default constants
+	defNames := make(map[*descriptor.FieldDescriptorProto]string)
 	for _, field := range message.Field {
-		def := proto.GetString(field.DefaultValue)
+		def := field.GetDefaultValue()
 		if def == "" {
 			continue
 		}
 		fieldname := "Default_" + ccTypeName + "_" + CamelCase(*field.Name)
+		defNames[field] = fieldname
 		typename, _ := g.GoType(message, field)
 		if typename[0] == '*' {
 			typename = typename[1:]
@@ -1367,7 +1370,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			kind = "var "
 		case *field.Type == descriptor.FieldDescriptorProto_TYPE_ENUM:
 			// Must be an enum.  Need to construct the prefixed name.
-			obj := g.ObjectNamed(proto.GetString(field.TypeName))
+			obj := g.ObjectNamed(field.GetTypeName())
 			enum, ok := obj.(*EnumDescriptor)
 			if !ok {
 				log.Println("don't know how to generate constant for", fieldname)
@@ -1379,6 +1382,76 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.file.addExport(message, constOrVarSymbol{fieldname, kind})
 	}
 	g.P()
+
+	// Field getters
+	// TODO: Generate getters for publicly imported aliases, if required.
+	for _, field := range message.Field {
+		if isRepeated(field) {
+			continue
+		}
+		fname := fieldNames[field]
+		typename, _ := g.GoType(message, field)
+		if field.Options != nil && field.Options.GetWeak() {
+			// TODO: weak fields
+			continue
+		}
+		mname := "Get" + fname
+		star := ""
+		if needsStar(*field.Type) && typename[0] == '*' {
+			typename = typename[1:]
+			star = "*"
+		}
+		g.P("func (this *", ccTypeName, ") "+mname+"() "+typename+" {")
+		g.In()
+		def, hasDef := defNames[field]
+		typeDefaultIsNil := false // whether this field type's default value is a literal nil unless specified
+		switch *field.Type {
+		case descriptor.FieldDescriptorProto_TYPE_BYTES:
+			typeDefaultIsNil = !hasDef
+		case descriptor.FieldDescriptorProto_TYPE_GROUP, descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+			typeDefaultIsNil = true
+		}
+		if typeDefaultIsNil {
+			// A bytes field with no explicit default needs less generated code,
+			// as does a message or group field.
+			g.P("if this != nil {")
+			g.In()
+			g.P("return this." + fname)
+			g.Out()
+			g.P("}")
+			g.P("return nil")
+			g.Out()
+			g.P("}")
+			g.P()
+			continue
+		}
+		g.P("if this != nil && this." + fname + " != nil {")
+		g.In()
+		g.P("return " + star + "this." + fname)
+		g.Out()
+		g.P("}")
+		if hasDef {
+			if *field.Type != descriptor.FieldDescriptorProto_TYPE_BYTES {
+				g.P("return " + def)
+			} else {
+				// The default is a []byte var.
+				// Make a copy when returning it to be safe.
+				g.P("return append([]byte(nil), ", def, "...)")
+			}
+		} else {
+			switch *field.Type {
+			case descriptor.FieldDescriptorProto_TYPE_BOOL:
+				g.P("return false")
+			case descriptor.FieldDescriptorProto_TYPE_STRING:
+				g.P(`return ""`)
+			default:
+				g.P("return 0")
+			}
+		}
+		g.Out()
+		g.P("}")
+		g.P()
+	}
 
 	for _, ext := range message.ext {
 		g.generateExtension(ext)
@@ -1449,7 +1522,7 @@ func (g *Generator) generateInitFunction() {
 
 func (g *Generator) generateEnumRegistration(enum *EnumDescriptor) {
 	// // We always print the full (proto-world) package name here.
-	pkg := proto.GetString(enum.File().Package)
+	pkg := enum.File().GetPackage()
 	if pkg != "" {
 		pkg += "."
 	}
