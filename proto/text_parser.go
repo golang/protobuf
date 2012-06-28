@@ -155,17 +155,17 @@ func (p *textParser) advance() {
 	case '<', '>', '{', '}', ':', '[', ']':
 		// Single symbol
 		p.cur.value, p.s = p.s[0:1], p.s[1:len(p.s)]
-	case '"':
+	case '"', '\'':
 		// Quoted string
 		i := 1
-		for i < len(p.s) && p.s[i] != '"' && p.s[i] != '\n' {
+		for i < len(p.s) && p.s[i] != p.s[0] && p.s[i] != '\n' {
 			if p.s[i] == '\\' && i+1 < len(p.s) {
 				// skip escaped char
 				i++
 			}
 			i++
 		}
-		if i >= len(p.s) || p.s[i] != '"' {
+		if i >= len(p.s) || p.s[i] != p.s[0] {
 			p.errorf("unmatched quote")
 			return
 		}
@@ -190,7 +190,30 @@ func (p *textParser) advance() {
 	p.offset += len(p.cur.value)
 }
 
+// quoteSwap returns a single quote for a double quote, and vice versa.
+// It is intended to be used with strings.Map.
+func quoteSwap(r rune) rune {
+	switch r {
+	case '\'':
+		return '"'
+	case '"':
+		return '\''
+	}
+	return r
+}
+
 func unquoteC(s string) (string, error) {
+	// TODO: This is getting hacky. We should replace it work a self-contained parser.
+
+	// strconv.Unquote is for Go strings, but text format strings may use
+	// single *or* double quotes.
+	if s[0] == '\'' {
+		s = strings.Map(quoteSwap, s)
+		s, err := unquoteC(s)
+		s = strings.Map(quoteSwap, s)
+		return s, err
+	}
+
 	// A notable divergence between quoted string literals in Go
 	// and what is acceptable for text format protocol buffers:
 	// the former considers \' invalid, but the latter considers it valid.
@@ -424,7 +447,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 		at := v.Type()
 		if at.Elem().Kind() == reflect.Uint8 {
 			// Special case for []byte
-			if tok.value[0] != '"' {
+			if tok.value[0] != '"' && tok.value[0] != '\'' {
 				// Deliberately written out here, as the error after
 				// this switch statement would write "invalid []byte: ...",
 				// which is not as user-friendly.
@@ -490,7 +513,7 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 		fv.Set(reflect.New(fv.Type().Elem()))
 		return p.readAny(fv.Elem(), props)
 	case reflect.String:
-		if tok.value[0] == '"' {
+		if tok.value[0] == '"' || tok.value[0] == '\'' {
 			fv.SetString(tok.unquoted)
 			return nil
 		}

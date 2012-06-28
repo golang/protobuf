@@ -47,6 +47,8 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 
 	"code.google.com/p/goprotobuf/proto"
 	descriptor "code.google.com/p/goprotobuf/protoc-gen-go/descriptor"
@@ -235,15 +237,19 @@ type FileDescriptor struct {
 // PackageName is the package name we'll use in the generated code to refer to this file.
 func (d *FileDescriptor) PackageName() string { return uniquePackageOf(d.FileDescriptorProto) }
 
-// The package named defined in the input for this file, possibly dotted.
-// If the file does not define a package, use the base of the file name.
-func (d *FileDescriptor) originalPackageName() string {
+// goPackageName returns the Go package name to use in the
+// generated Go file.  The result explicit reports whether the name
+// came from an option go_package statement.  If explicit is false,
+// the name was derived from the protocol buffer's package statement
+// or the input file name.
+func (d *FileDescriptor) goPackageName() (name string, explicit bool) {
+
 	// Does the file have a package clause?
 	if pkg := proto.GetString(d.Package); pkg != "" {
-		return pkg
+		return pkg, false
 	}
 	// Use the file base name.
-	return BaseName(proto.GetString(d.Name))
+	return BaseName(proto.GetString(d.Name)), false
 }
 
 func (d *FileDescriptor) addExport(obj Object, symbol Symbol) {
@@ -328,9 +334,10 @@ type Generator struct {
 	Request  *plugin.CodeGeneratorRequest  // The input.
 	Response *plugin.CodeGeneratorResponse // The output.
 
-	Param        map[string]string // Command-line parameters.
-	ImportPrefix string            // String to prefix to imported package file names.
-	ImportMap    map[string]string // Mapping from import name to generated name
+	Param             map[string]string // Command-line parameters.
+	PackageImportPath string            // Go import path of the package we're generating code for
+	ImportPrefix      string            // String to prefix to imported package file names.
+	ImportMap         map[string]string // Mapping from import name to generated name
 
 	ProtoPkg string // The name under which we import the library's package proto.
 
@@ -383,10 +390,15 @@ func (g *Generator) CommandLineParameters(parameter string) {
 
 	g.ImportMap = make(map[string]string)
 	for k, v := range g.Param {
-		if k == "import_prefix" {
+		switch k {
+		case "import_prefix":
 			g.ImportPrefix = v
-		} else if len(k) > 0 && k[0] == 'M' {
-			g.ImportMap[k[1:]] = v
+		case "import_path", "go_import_path": // TODO: remove go_import_path
+			g.PackageImportPath = v
+		default:
+			if len(k) > 0 && k[0] == 'M' {
+				g.ImportMap[k[1:]] = v
+			}
 		}
 	}
 }
@@ -414,7 +426,7 @@ var pkgNamesInUse = make(map[string]bool)
 // has no file descriptor.
 func RegisterUniquePackageName(pkg string, f *FileDescriptor) string {
 	// Convert dots to underscores before finding a unique alias.
-	pkg = strings.Map(DotToUnderscore, pkg)
+	pkg = strings.Map(BadToUnderscore, pkg)
 
 	for i, orig := 1, pkg; pkgNamesInUse[pkg]; i++ {
 		// It's a duplicate; must rename.
@@ -428,24 +440,105 @@ func RegisterUniquePackageName(pkg string, f *FileDescriptor) string {
 	return pkg
 }
 
+var isGoKeyword = map[string]bool{
+	"break":       true,
+	"case":        true,
+	"chan":        true,
+	"const":       true,
+	"continue":    true,
+	"default":     true,
+	"else":        true,
+	"defer":       true,
+	"fallthrough": true,
+	"for":         true,
+	"func":        true,
+	"go":          true,
+	"goto":        true,
+	"if":          true,
+	"import":      true,
+	"interface":   true,
+	"map":         true,
+	"package":     true,
+	"range":       true,
+	"return":      true,
+	"select":      true,
+	"struct":      true,
+	"switch":      true,
+	"type":        true,
+	"var":         true,
+}
+
+// defaultGoPackage returns the package name to use,
+// derived from the import path of the package we're building code for.
+func (g *Generator) defaultGoPackage() string {
+	p := g.PackageImportPath
+	if i := strings.LastIndex(p, "/"); i >= 0 {
+		p = p[i+1:]
+	}
+	if p == "" {
+		return ""
+	}
+
+	p = strings.Map(BadToUnderscore, p)
+	// Identifier must not be keyword: insert _.
+	if isGoKeyword[p] {
+		p = "_" + p
+	}
+	// Identifier must not begin with digit: insert _.
+	if r, _ := utf8.DecodeRuneInString(p); unicode.IsDigit(r) {
+		p = "_" + p
+	}
+	return p
+}
+
 // SetPackageNames sets the package name for this run.
 // The package name must agree across all files being generated.
 // It also defines unique package names for all imported files.
 func (g *Generator) SetPackageNames() {
 	// Register the name for this package.  It will be the first name
 	// registered so is guaranteed to be unmodified.
-	pkg := g.genFiles[0].originalPackageName()
+	pkg, explicit := g.genFiles[0].goPackageName()
+
+	// Check all files for an explicit go_package option.
+	for _, f := range g.genFiles {
+		thisPkg, thisExplicit := f.goPackageName()
+		if thisExplicit {
+			if !explicit {
+				// Let this file's go_package option serve for all input files.
+				pkg, explicit = thisPkg, true
+			} else if thisPkg != pkg {
+				g.Fail("inconsistent package names:", thisPkg, pkg)
+			}
+		}
+	}
+
+	// If we don't have an explicit go_package option but we have an
+	// import path, use that.
+	if !explicit {
+		p := g.defaultGoPackage()
+		if p != "" {
+			pkg, explicit = p, true
+		}
+	}
+
+	// If there was no go_package and no import path to use,
+	// double-check that all the inputs have the same implicit
+	// Go package name.
+	if !explicit {
+		for _, f := range g.genFiles {
+			thisPkg, _ := f.goPackageName()
+			if thisPkg != pkg {
+				g.Fail("inconsistent package names:", thisPkg, pkg)
+			}
+		}
+	}
+
 	g.packageName = RegisterUniquePackageName(pkg, g.genFiles[0])
+
 	// Register the proto package name.  It might collide with the
 	// name of a package we import.
 	g.ProtoPkg = RegisterUniquePackageName("proto", nil)
-	// Verify that we are generating output for a single package.
-	for _, f := range g.genFiles {
-		thisPkg := f.originalPackageName()
-		if thisPkg != pkg {
-			g.Fail("inconsistent package names:", thisPkg, pkg)
-		}
-	}
+
 AllFiles:
 	for _, f := range g.allFiles {
 		for _, genf := range g.genFiles {
@@ -1464,16 +1557,14 @@ func isRepeated(field *descriptor.FieldDescriptorProto) bool {
 	return field.Label != nil && *field.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED
 }
 
-// DotToUnderscore is the mapping function used to generate Go names from package names,
-// which can be dotted in the input .proto file.  It maps dots to underscores.
-// Because we also get here from package names generated from file names, it also maps
-// minus signs to underscores.
-func DotToUnderscore(r rune) rune {
-	switch r {
-	case '.', '-':
-		return '_'
+// BadToUnderscore is the mapping function used to generate Go names from package names,
+// which can be dotted in the input .proto file.  It replaces non-identifier characters such as
+// dot or dash with underscore.
+func BadToUnderscore(r rune) rune {
+	if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_' {
+		return r
 	}
-	return r
+	return '_'
 }
 
 // BaseName returns the last path element of the name, with the last dotted suffix removed.

@@ -111,6 +111,15 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		},
 	},
 
+	// Quoted string with single quote
+	{
+		in: `count:42 name: 'Roger "The Ramster" Ramjet'`,
+		out: &MyMessage{
+			Count: Int32(42),
+			Name:  String(`Roger "The Ramster" Ramjet`),
+		},
+	},
+
 	// Bad quoted string
 	{
 		in:  `inner: < host: "\0" >` + "\n",
