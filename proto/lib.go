@@ -38,19 +38,25 @@
 	for a protocol buffer variable v:
 
 	  - Names are turned from camel_case to CamelCase for export.
-	  - There are no methods on v to set and get fields; just treat
+	  - There are no methods on v to set fields; just treat
 	  	them as structure fields.
+	  - There are getters that return a field's value if set,
+		and return the field's default value if unset.
+		The getters work even if the receiver is a nil message.
 	  - The zero value for a struct is its correct initialization state.
 		All desired fields must be set before marshaling.
 	  - A Reset() method will restore a protobuf struct to its zero state.
 	  - Non-repeated fields are pointers to the values; nil means unset.
 		That is, optional or required field int32 f becomes F *int32.
 	  - Repeated fields are slices.
-	  - Helper functions are available to simplify the getting and setting of fields:
-	  	foo.String = proto.String("hello") // set field
-	  	s := proto.GetString(foo.String)  // get field
+	  - Helper functions are available to aid the setting of fields.
+		Helpers for getting values are superseded by the
+		GetFoo methods and their use is deprecated.
+			msg.Foo = proto.String("hello") // set field
 	  - Constants are defined to hold the default values of all fields that
 		have them.  They have the form Default_StructName_FieldName.
+		Because the getter methods handle defaulted values,
+		direct use of these constants should be rare.
 	  - Enums are given type names and maps from names to values.
 		Enum values are prefixed with the enum's type name. Enum types have
 		a String method, and a Enum method to assist in message construction.
@@ -116,12 +122,40 @@
 		func (this *Test) String() string { return proto.CompactTextString(this) }
 		const Default_Test_Type int32 = 77
 
+		func (this *Test) GetLabel() string {
+			if this != nil && this.Label != nil {
+				return *this.Label
+			}
+			return ""
+		}
+
+		func (this *Test) GetType() int32 {
+			if this != nil && this.Type != nil {
+				return *this.Type
+			}
+			return Default_Test_Type
+		}
+
+		func (this *Test) GetOptionalgroup() *Test_OptionalGroup {
+			if this != nil {
+				return this.Optionalgroup
+			}
+			return nil
+		}
+
 		type Test_OptionalGroup struct {
 			RequiredField    *string `protobuf:"bytes,5,req" json:"RequiredField,omitempty"`
 			XXX_unrecognized []byte  `json:"-"`
 		}
 		func (this *Test_OptionalGroup) Reset()         { *this = Test_OptionalGroup{} }
 		func (this *Test_OptionalGroup) String() string { return proto.CompactTextString(this) }
+
+		func (this *Test_OptionalGroup) GetRequiredField() string {
+			if this != nil && this.RequiredField != nil {
+				return *this.RequiredField
+			}
+			return ""
+		}
 
 		func init() {
 			proto.RegisterEnum("example.FOO", FOO_name, FOO_value)
@@ -156,8 +190,8 @@
 				log.Fatal("unmarshaling error: ", err)
 			}
 			// Now test and newTest contain the same data.
-			if proto.GetString(test.Label) != proto.GetString(newTest.Label) {
-				log.Fatalf("data mismatch %q != %q", proto.GetString(test.Label), proto.GetString(newTest.Label))
+			if test.GetLabel() != newTest.GetLabel() {
+				log.Fatalf("data mismatch %q != %q", test.GetLabel(), newTest.GetLabel())
 			}
 			// etc.
 		}
