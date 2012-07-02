@@ -293,12 +293,32 @@ type Unmarshaler interface {
 // Unmarshal parses the protocol buffer representation in buf and places the
 // decoded result in pb.  If the struct underlying pb does not match
 // the data in buf, the results can be unpredictable.
+//
+// NOTE: As of 2012-06-29, Unmarshal does not and has never reset
+// the protocol message before unmarshaling, so reusing a message
+// for multiple unmarshals appends to repeated fields and so on.
+// We plan to change this, so that Unmarshal can be relied upon to
+// call pb.Reset before starting, as most callers expect.
+// Code that intends the appending behavior must switch to UnmarshalAppend.
 func Unmarshal(buf []byte, pb Message) error {
+	// TODO: Remove NOTE above and uncomment next line.
+	// pb.Reset()
+	return UnmarshalAppend(buf, pb)
+}
+
+// UnmarshalAppend parses the protocol buffer representation in buf and
+// writes the decoded result to pb.  If the struct underlying pb does not match
+// the data in buf, the results can be unpredictable.
+//
+// NOTE: As of 2012-06-29, Unmarshal and UnmarshalAppend are the same,
+// but we plan to change this, so that Unmarshal resets pb before unmarshaling,
+// while UnmarshalAppend does not.  (Right now both do not.)
+// Use UnmarshalAppend if you want to append to pb instead of replacing it.
+func UnmarshalAppend(buf []byte, pb Message) error {
 	// If the object can unmarshal itself, let it.
 	if u, ok := pb.(Unmarshaler); ok {
 		return u.Unmarshal(buf)
 	}
-
 	return NewBuffer(buf).Unmarshal(pb)
 }
 
