@@ -1259,7 +1259,7 @@ func TestSetDefaultsWithSetField(t *testing.T) {
 		F_Int32: Int32(12),
 	}
 	SetDefaults(m)
-	if v := GetInt32(m.F_Int32); v != 12 {
+	if v := m.GetF_Int32(); v != 12 {
 		t.Errorf("m.FInt32 = %v, want 12", v)
 	}
 }
@@ -1296,7 +1296,7 @@ func TestMaximumTagNumber(t *testing.T) {
 	if err := Unmarshal(buf, m2); err != nil {
 		t.Fatalf("proto.Unmarshal failed: %v", err)
 	}
-	if got, want := GetString(m2.LastField), *m.LastField; got != want {
+	if got, want := m2.GetLastField(), *m.LastField; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
 }

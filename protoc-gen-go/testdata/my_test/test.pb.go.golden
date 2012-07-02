@@ -9,7 +9,7 @@ import "math"
 // discarding unused import multi2 "multi/multi1.pb"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
-var _ = proto.GetString
+var _ = proto.Marshal
 var _ = math.Inf
 
 type HatType int32
@@ -28,11 +28,6 @@ var HatType_value = map[string]int32{
 	"FEZ":    2,
 }
 
-// NewHatType is deprecated. Use x.Enum() instead.
-func NewHatType(x HatType) *HatType {
-	e := HatType(x)
-	return &e
-}
 func (x HatType) Enum() *HatType {
 	p := new(HatType)
 	*p = x
@@ -61,11 +56,6 @@ var Days_value = map[string]int32{
 	"LUNDI":   1,
 }
 
-// NewDays is deprecated. Use x.Enum() instead.
-func NewDays(x Days) *Days {
-	e := Days(x)
-	return &e
-}
 func (x Days) Enum() *Days {
 	p := new(Days)
 	*p = x
@@ -94,11 +84,6 @@ var Request_Color_value = map[string]int32{
 	"BLUE":  2,
 }
 
-// NewRequest_Color is deprecated. Use x.Enum() instead.
-func NewRequest_Color(x Request_Color) *Request_Color {
-	e := Request_Color(x)
-	return &e
-}
 func (x Request_Color) Enum() *Request_Color {
 	p := new(Request_Color)
 	*p = x
@@ -124,11 +109,6 @@ var Reply_Entry_Game_value = map[string]int32{
 	"TENNIS":   2,
 }
 
-// NewReply_Entry_Game is deprecated. Use x.Enum() instead.
-func NewReply_Entry_Game(x Reply_Entry_Game) *Reply_Entry_Game {
-	e := Reply_Entry_Game(x)
-	return &e
-}
 func (x Reply_Entry_Game) Enum() *Reply_Entry_Game {
 	p := new(Reply_Entry_Game)
 	*p = x
