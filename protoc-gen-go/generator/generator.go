@@ -957,7 +957,7 @@ func (g *Generator) generateImports() {
 		g.P()
 	}
 	g.P("// Reference proto and math imports to suppress error if they are not otherwise used.")
-	g.P("var _ = ", g.ProtoPkg, ".GetString")
+	g.P("var _ = ", g.ProtoPkg, ".Marshal")
 	g.P("var _ = math.Inf")
 	g.P()
 }
@@ -1024,14 +1024,6 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	for _, e := range enum.Value {
 		g.P(Quote(*e.Name), ": ", e.Number, ",")
 	}
-	g.Out()
-	g.P("}")
-
-	g.P("// New", ccTypeName, " is deprecated. Use x.Enum() instead.")
-	g.P("func New", ccTypeName, "(x ", ccTypeName, ") *", ccTypeName, " {")
-	g.In()
-	g.P("e := ", ccTypeName, "(x)")
-	g.P("return &e")
 	g.Out()
 	g.P("}")
 

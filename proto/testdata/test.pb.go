@@ -7,7 +7,7 @@ import proto "code.google.com/p/goprotobuf/proto"
 import "math"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
-var _ = proto.GetString
+var _ = proto.Marshal
 var _ = math.Inf
 
 type FOO int32
@@ -23,11 +23,6 @@ var FOO_value = map[string]int32{
 	"FOO1": 1,
 }
 
-// NewFOO is deprecated. Use x.Enum() instead.
-func NewFOO(x FOO) *FOO {
-	e := FOO(x)
-	return &e
-}
 func (x FOO) Enum() *FOO {
 	p := new(FOO)
 	*p = x
@@ -86,11 +81,6 @@ var GoTest_KIND_value = map[string]int32{
 	"FUNCTION":    12,
 }
 
-// NewGoTest_KIND is deprecated. Use x.Enum() instead.
-func NewGoTest_KIND(x GoTest_KIND) *GoTest_KIND {
-	e := GoTest_KIND(x)
-	return &e
-}
 func (x GoTest_KIND) Enum() *GoTest_KIND {
 	p := new(GoTest_KIND)
 	*p = x
@@ -119,11 +109,6 @@ var MyMessage_Color_value = map[string]int32{
 	"BLUE":  2,
 }
 
-// NewMyMessage_Color is deprecated. Use x.Enum() instead.
-func NewMyMessage_Color(x MyMessage_Color) *MyMessage_Color {
-	e := MyMessage_Color(x)
-	return &e
-}
 func (x MyMessage_Color) Enum() *MyMessage_Color {
 	p := new(MyMessage_Color)
 	*p = x
@@ -152,11 +137,6 @@ var Defaults_Color_value = map[string]int32{
 	"BLUE":  2,
 }
 
-// NewDefaults_Color is deprecated. Use x.Enum() instead.
-func NewDefaults_Color(x Defaults_Color) *Defaults_Color {
-	e := Defaults_Color(x)
-	return &e
-}
 func (x Defaults_Color) Enum() *Defaults_Color {
 	p := new(Defaults_Color)
 	*p = x
@@ -179,11 +159,6 @@ var RepeatedEnum_Color_value = map[string]int32{
 	"RED": 1,
 }
 
-// NewRepeatedEnum_Color is deprecated. Use x.Enum() instead.
-func NewRepeatedEnum_Color(x RepeatedEnum_Color) *RepeatedEnum_Color {
-	e := RepeatedEnum_Color(x)
-	return &e
-}
 func (x RepeatedEnum_Color) Enum() *RepeatedEnum_Color {
 	p := new(RepeatedEnum_Color)
 	*p = x
@@ -202,6 +177,13 @@ func (this *GoEnum) Reset()         { *this = GoEnum{} }
 func (this *GoEnum) String() string { return proto.CompactTextString(this) }
 func (*GoEnum) ProtoMessage()       {}
 
+func (this *GoEnum) GetFoo() FOO {
+	if this != nil && this.Foo != nil {
+		return *this.Foo
+	}
+	return 0
+}
+
 type GoTestField struct {
 	Label            *string `protobuf:"bytes,1,req" json:"Label,omitempty"`
 	Type             *string `protobuf:"bytes,2,req" json:"Type,omitempty"`
@@ -211,6 +193,20 @@ type GoTestField struct {
 func (this *GoTestField) Reset()         { *this = GoTestField{} }
 func (this *GoTestField) String() string { return proto.CompactTextString(this) }
 func (*GoTestField) ProtoMessage()       {}
+
+func (this *GoTestField) GetLabel() string {
+	if this != nil && this.Label != nil {
+		return *this.Label
+	}
+	return ""
+}
+
+func (this *GoTestField) GetType() string {
+	if this != nil && this.Type != nil {
+		return *this.Type
+	}
+	return ""
+}
 
 type GoTest struct {
 	Kind                    *GoTest_KIND            `protobuf:"varint,1,req,enum=testdata.GoTest_KIND" json:"Kind,omitempty"`
@@ -308,6 +304,328 @@ var Default_GoTest_F_BytesDefaulted []byte = []byte("Bignose")
 const Default_GoTest_F_Sint32Defaulted int32 = -32
 const Default_GoTest_F_Sint64Defaulted int64 = -64
 
+func (this *GoTest) GetKind() GoTest_KIND {
+	if this != nil && this.Kind != nil {
+		return *this.Kind
+	}
+	return 0
+}
+
+func (this *GoTest) GetTable() string {
+	if this != nil && this.Table != nil {
+		return *this.Table
+	}
+	return ""
+}
+
+func (this *GoTest) GetParam() int32 {
+	if this != nil && this.Param != nil {
+		return *this.Param
+	}
+	return 0
+}
+
+func (this *GoTest) GetRequiredField() *GoTestField {
+	if this != nil {
+		return this.RequiredField
+	}
+	return nil
+}
+
+func (this *GoTest) GetOptionalField() *GoTestField {
+	if this != nil {
+		return this.OptionalField
+	}
+	return nil
+}
+
+func (this *GoTest) GetF_BoolRequired() bool {
+	if this != nil && this.F_BoolRequired != nil {
+		return *this.F_BoolRequired
+	}
+	return false
+}
+
+func (this *GoTest) GetF_Int32Required() int32 {
+	if this != nil && this.F_Int32Required != nil {
+		return *this.F_Int32Required
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Int64Required() int64 {
+	if this != nil && this.F_Int64Required != nil {
+		return *this.F_Int64Required
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Fixed32Required() uint32 {
+	if this != nil && this.F_Fixed32Required != nil {
+		return *this.F_Fixed32Required
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Fixed64Required() uint64 {
+	if this != nil && this.F_Fixed64Required != nil {
+		return *this.F_Fixed64Required
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Uint32Required() uint32 {
+	if this != nil && this.F_Uint32Required != nil {
+		return *this.F_Uint32Required
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Uint64Required() uint64 {
+	if this != nil && this.F_Uint64Required != nil {
+		return *this.F_Uint64Required
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_FloatRequired() float32 {
+	if this != nil && this.F_FloatRequired != nil {
+		return *this.F_FloatRequired
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_DoubleRequired() float64 {
+	if this != nil && this.F_DoubleRequired != nil {
+		return *this.F_DoubleRequired
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_StringRequired() string {
+	if this != nil && this.F_StringRequired != nil {
+		return *this.F_StringRequired
+	}
+	return ""
+}
+
+func (this *GoTest) GetF_BytesRequired() []byte {
+	if this != nil {
+		return this.F_BytesRequired
+	}
+	return nil
+}
+
+func (this *GoTest) GetF_Sint32Required() int32 {
+	if this != nil && this.F_Sint32Required != nil {
+		return *this.F_Sint32Required
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Sint64Required() int64 {
+	if this != nil && this.F_Sint64Required != nil {
+		return *this.F_Sint64Required
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_BoolOptional() bool {
+	if this != nil && this.F_BoolOptional != nil {
+		return *this.F_BoolOptional
+	}
+	return false
+}
+
+func (this *GoTest) GetF_Int32Optional() int32 {
+	if this != nil && this.F_Int32Optional != nil {
+		return *this.F_Int32Optional
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Int64Optional() int64 {
+	if this != nil && this.F_Int64Optional != nil {
+		return *this.F_Int64Optional
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Fixed32Optional() uint32 {
+	if this != nil && this.F_Fixed32Optional != nil {
+		return *this.F_Fixed32Optional
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Fixed64Optional() uint64 {
+	if this != nil && this.F_Fixed64Optional != nil {
+		return *this.F_Fixed64Optional
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Uint32Optional() uint32 {
+	if this != nil && this.F_Uint32Optional != nil {
+		return *this.F_Uint32Optional
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Uint64Optional() uint64 {
+	if this != nil && this.F_Uint64Optional != nil {
+		return *this.F_Uint64Optional
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_FloatOptional() float32 {
+	if this != nil && this.F_FloatOptional != nil {
+		return *this.F_FloatOptional
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_DoubleOptional() float64 {
+	if this != nil && this.F_DoubleOptional != nil {
+		return *this.F_DoubleOptional
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_StringOptional() string {
+	if this != nil && this.F_StringOptional != nil {
+		return *this.F_StringOptional
+	}
+	return ""
+}
+
+func (this *GoTest) GetF_BytesOptional() []byte {
+	if this != nil {
+		return this.F_BytesOptional
+	}
+	return nil
+}
+
+func (this *GoTest) GetF_Sint32Optional() int32 {
+	if this != nil && this.F_Sint32Optional != nil {
+		return *this.F_Sint32Optional
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_Sint64Optional() int64 {
+	if this != nil && this.F_Sint64Optional != nil {
+		return *this.F_Sint64Optional
+	}
+	return 0
+}
+
+func (this *GoTest) GetF_BoolDefaulted() bool {
+	if this != nil && this.F_BoolDefaulted != nil {
+		return *this.F_BoolDefaulted
+	}
+	return Default_GoTest_F_BoolDefaulted
+}
+
+func (this *GoTest) GetF_Int32Defaulted() int32 {
+	if this != nil && this.F_Int32Defaulted != nil {
+		return *this.F_Int32Defaulted
+	}
+	return Default_GoTest_F_Int32Defaulted
+}
+
+func (this *GoTest) GetF_Int64Defaulted() int64 {
+	if this != nil && this.F_Int64Defaulted != nil {
+		return *this.F_Int64Defaulted
+	}
+	return Default_GoTest_F_Int64Defaulted
+}
+
+func (this *GoTest) GetF_Fixed32Defaulted() uint32 {
+	if this != nil && this.F_Fixed32Defaulted != nil {
+		return *this.F_Fixed32Defaulted
+	}
+	return Default_GoTest_F_Fixed32Defaulted
+}
+
+func (this *GoTest) GetF_Fixed64Defaulted() uint64 {
+	if this != nil && this.F_Fixed64Defaulted != nil {
+		return *this.F_Fixed64Defaulted
+	}
+	return Default_GoTest_F_Fixed64Defaulted
+}
+
+func (this *GoTest) GetF_Uint32Defaulted() uint32 {
+	if this != nil && this.F_Uint32Defaulted != nil {
+		return *this.F_Uint32Defaulted
+	}
+	return Default_GoTest_F_Uint32Defaulted
+}
+
+func (this *GoTest) GetF_Uint64Defaulted() uint64 {
+	if this != nil && this.F_Uint64Defaulted != nil {
+		return *this.F_Uint64Defaulted
+	}
+	return Default_GoTest_F_Uint64Defaulted
+}
+
+func (this *GoTest) GetF_FloatDefaulted() float32 {
+	if this != nil && this.F_FloatDefaulted != nil {
+		return *this.F_FloatDefaulted
+	}
+	return Default_GoTest_F_FloatDefaulted
+}
+
+func (this *GoTest) GetF_DoubleDefaulted() float64 {
+	if this != nil && this.F_DoubleDefaulted != nil {
+		return *this.F_DoubleDefaulted
+	}
+	return Default_GoTest_F_DoubleDefaulted
+}
+
+func (this *GoTest) GetF_StringDefaulted() string {
+	if this != nil && this.F_StringDefaulted != nil {
+		return *this.F_StringDefaulted
+	}
+	return Default_GoTest_F_StringDefaulted
+}
+
+func (this *GoTest) GetF_BytesDefaulted() []byte {
+	if this != nil && this.F_BytesDefaulted != nil {
+		return this.F_BytesDefaulted
+	}
+	return append([]byte(nil), Default_GoTest_F_BytesDefaulted...)
+}
+
+func (this *GoTest) GetF_Sint32Defaulted() int32 {
+	if this != nil && this.F_Sint32Defaulted != nil {
+		return *this.F_Sint32Defaulted
+	}
+	return Default_GoTest_F_Sint32Defaulted
+}
+
+func (this *GoTest) GetF_Sint64Defaulted() int64 {
+	if this != nil && this.F_Sint64Defaulted != nil {
+		return *this.F_Sint64Defaulted
+	}
+	return Default_GoTest_F_Sint64Defaulted
+}
+
+func (this *GoTest) GetRequiredgroup() *GoTest_RequiredGroup {
+	if this != nil {
+		return this.Requiredgroup
+	}
+	return nil
+}
+
+func (this *GoTest) GetOptionalgroup() *GoTest_OptionalGroup {
+	if this != nil {
+		return this.Optionalgroup
+	}
+	return nil
+}
+
 type GoTest_RequiredGroup struct {
 	RequiredField    *string `protobuf:"bytes,71,req" json:"RequiredField,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
@@ -316,6 +634,13 @@ type GoTest_RequiredGroup struct {
 func (this *GoTest_RequiredGroup) Reset()         { *this = GoTest_RequiredGroup{} }
 func (this *GoTest_RequiredGroup) String() string { return proto.CompactTextString(this) }
 func (*GoTest_RequiredGroup) ProtoMessage()       {}
+
+func (this *GoTest_RequiredGroup) GetRequiredField() string {
+	if this != nil && this.RequiredField != nil {
+		return *this.RequiredField
+	}
+	return ""
+}
 
 type GoTest_RepeatedGroup struct {
 	RequiredField    *string `protobuf:"bytes,81,req" json:"RequiredField,omitempty"`
@@ -326,6 +651,13 @@ func (this *GoTest_RepeatedGroup) Reset()         { *this = GoTest_RepeatedGroup
 func (this *GoTest_RepeatedGroup) String() string { return proto.CompactTextString(this) }
 func (*GoTest_RepeatedGroup) ProtoMessage()       {}
 
+func (this *GoTest_RepeatedGroup) GetRequiredField() string {
+	if this != nil && this.RequiredField != nil {
+		return *this.RequiredField
+	}
+	return ""
+}
+
 type GoTest_OptionalGroup struct {
 	RequiredField    *string `protobuf:"bytes,91,req" json:"RequiredField,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
@@ -334,6 +666,13 @@ type GoTest_OptionalGroup struct {
 func (this *GoTest_OptionalGroup) Reset()         { *this = GoTest_OptionalGroup{} }
 func (this *GoTest_OptionalGroup) String() string { return proto.CompactTextString(this) }
 func (*GoTest_OptionalGroup) ProtoMessage()       {}
+
+func (this *GoTest_OptionalGroup) GetRequiredField() string {
+	if this != nil && this.RequiredField != nil {
+		return *this.RequiredField
+	}
+	return ""
+}
 
 type GoSkipTest struct {
 	SkipInt32        *int32                `protobuf:"varint,11,req,name=skip_int32" json:"skip_int32,omitempty"`
@@ -348,6 +687,41 @@ func (this *GoSkipTest) Reset()         { *this = GoSkipTest{} }
 func (this *GoSkipTest) String() string { return proto.CompactTextString(this) }
 func (*GoSkipTest) ProtoMessage()       {}
 
+func (this *GoSkipTest) GetSkipInt32() int32 {
+	if this != nil && this.SkipInt32 != nil {
+		return *this.SkipInt32
+	}
+	return 0
+}
+
+func (this *GoSkipTest) GetSkipFixed32() uint32 {
+	if this != nil && this.SkipFixed32 != nil {
+		return *this.SkipFixed32
+	}
+	return 0
+}
+
+func (this *GoSkipTest) GetSkipFixed64() uint64 {
+	if this != nil && this.SkipFixed64 != nil {
+		return *this.SkipFixed64
+	}
+	return 0
+}
+
+func (this *GoSkipTest) GetSkipString() string {
+	if this != nil && this.SkipString != nil {
+		return *this.SkipString
+	}
+	return ""
+}
+
+func (this *GoSkipTest) GetSkipgroup() *GoSkipTest_SkipGroup {
+	if this != nil {
+		return this.Skipgroup
+	}
+	return nil
+}
+
 type GoSkipTest_SkipGroup struct {
 	GroupInt32       *int32  `protobuf:"varint,16,req,name=group_int32" json:"group_int32,omitempty"`
 	GroupString      *string `protobuf:"bytes,17,req,name=group_string" json:"group_string,omitempty"`
@@ -357,6 +731,20 @@ type GoSkipTest_SkipGroup struct {
 func (this *GoSkipTest_SkipGroup) Reset()         { *this = GoSkipTest_SkipGroup{} }
 func (this *GoSkipTest_SkipGroup) String() string { return proto.CompactTextString(this) }
 func (*GoSkipTest_SkipGroup) ProtoMessage()       {}
+
+func (this *GoSkipTest_SkipGroup) GetGroupInt32() int32 {
+	if this != nil && this.GroupInt32 != nil {
+		return *this.GroupInt32
+	}
+	return 0
+}
+
+func (this *GoSkipTest_SkipGroup) GetGroupString() string {
+	if this != nil && this.GroupString != nil {
+		return *this.GroupString
+	}
+	return ""
+}
 
 type NonPackedTest struct {
 	A                []int32 `protobuf:"varint,1,rep,name=a" json:"a,omitempty"`
@@ -385,6 +773,13 @@ func (this *MaxTag) Reset()         { *this = MaxTag{} }
 func (this *MaxTag) String() string { return proto.CompactTextString(this) }
 func (*MaxTag) ProtoMessage()       {}
 
+func (this *MaxTag) GetLastField() string {
+	if this != nil && this.LastField != nil {
+		return *this.LastField
+	}
+	return ""
+}
+
 type InnerMessage struct {
 	Host             *string `protobuf:"bytes,1,req,name=host" json:"host,omitempty"`
 	Port             *int32  `protobuf:"varint,2,opt,name=port,def=4000" json:"port,omitempty"`
@@ -398,6 +793,27 @@ func (*InnerMessage) ProtoMessage()       {}
 
 const Default_InnerMessage_Port int32 = 4000
 
+func (this *InnerMessage) GetHost() string {
+	if this != nil && this.Host != nil {
+		return *this.Host
+	}
+	return ""
+}
+
+func (this *InnerMessage) GetPort() int32 {
+	if this != nil && this.Port != nil {
+		return *this.Port
+	}
+	return Default_InnerMessage_Port
+}
+
+func (this *InnerMessage) GetConnected() bool {
+	if this != nil && this.Connected != nil {
+		return *this.Connected
+	}
+	return false
+}
+
 type OtherMessage struct {
 	Key              *int64        `protobuf:"varint,1,opt,name=key" json:"key,omitempty"`
 	Value            []byte        `protobuf:"bytes,2,opt,name=value" json:"value,omitempty"`
@@ -409,6 +825,34 @@ type OtherMessage struct {
 func (this *OtherMessage) Reset()         { *this = OtherMessage{} }
 func (this *OtherMessage) String() string { return proto.CompactTextString(this) }
 func (*OtherMessage) ProtoMessage()       {}
+
+func (this *OtherMessage) GetKey() int64 {
+	if this != nil && this.Key != nil {
+		return *this.Key
+	}
+	return 0
+}
+
+func (this *OtherMessage) GetValue() []byte {
+	if this != nil {
+		return this.Value
+	}
+	return nil
+}
+
+func (this *OtherMessage) GetWeight() float32 {
+	if this != nil && this.Weight != nil {
+		return *this.Weight
+	}
+	return 0
+}
+
+func (this *OtherMessage) GetInner() *InnerMessage {
+	if this != nil {
+		return this.Inner
+	}
+	return nil
+}
 
 type MyMessage struct {
 	Count            *int32                    `protobuf:"varint,1,req,name=count" json:"count,omitempty"`
@@ -442,6 +886,48 @@ func (this *MyMessage) ExtensionMap() map[int32]proto.Extension {
 	return this.XXX_extensions
 }
 
+func (this *MyMessage) GetCount() int32 {
+	if this != nil && this.Count != nil {
+		return *this.Count
+	}
+	return 0
+}
+
+func (this *MyMessage) GetName() string {
+	if this != nil && this.Name != nil {
+		return *this.Name
+	}
+	return ""
+}
+
+func (this *MyMessage) GetQuote() string {
+	if this != nil && this.Quote != nil {
+		return *this.Quote
+	}
+	return ""
+}
+
+func (this *MyMessage) GetInner() *InnerMessage {
+	if this != nil {
+		return this.Inner
+	}
+	return nil
+}
+
+func (this *MyMessage) GetBikeshed() MyMessage_Color {
+	if this != nil && this.Bikeshed != nil {
+		return *this.Bikeshed
+	}
+	return 0
+}
+
+func (this *MyMessage) GetSomegroup() *MyMessage_SomeGroup {
+	if this != nil {
+		return this.Somegroup
+	}
+	return nil
+}
+
 type MyMessage_SomeGroup struct {
 	GroupField       *int32 `protobuf:"varint,9,opt,name=group_field" json:"group_field,omitempty"`
 	XXX_unrecognized []byte `json:"-"`
@@ -451,6 +937,13 @@ func (this *MyMessage_SomeGroup) Reset()         { *this = MyMessage_SomeGroup{}
 func (this *MyMessage_SomeGroup) String() string { return proto.CompactTextString(this) }
 func (*MyMessage_SomeGroup) ProtoMessage()       {}
 
+func (this *MyMessage_SomeGroup) GetGroupField() int32 {
+	if this != nil && this.GroupField != nil {
+		return *this.GroupField
+	}
+	return 0
+}
+
 type Ext struct {
 	Data             *string `protobuf:"bytes,1,opt,name=data" json:"data,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
@@ -459,6 +952,13 @@ type Ext struct {
 func (this *Ext) Reset()         { *this = Ext{} }
 func (this *Ext) String() string { return proto.CompactTextString(this) }
 func (*Ext) ProtoMessage()       {}
+
+func (this *Ext) GetData() string {
+	if this != nil && this.Data != nil {
+		return *this.Data
+	}
+	return ""
+}
 
 var E_Ext_More = &proto.ExtensionDesc{
 	ExtendedType:  (*MyMessage)(nil),
@@ -503,6 +1003,20 @@ func (this *MessageList_Message) Reset()         { *this = MessageList_Message{}
 func (this *MessageList_Message) String() string { return proto.CompactTextString(this) }
 func (*MessageList_Message) ProtoMessage()       {}
 
+func (this *MessageList_Message) GetName() string {
+	if this != nil && this.Name != nil {
+		return *this.Name
+	}
+	return ""
+}
+
+func (this *MessageList_Message) GetCount() int32 {
+	if this != nil && this.Count != nil {
+		return *this.Count
+	}
+	return 0
+}
+
 type Strings struct {
 	StringField      *string `protobuf:"bytes,1,opt,name=string_field" json:"string_field,omitempty"`
 	BytesField       []byte  `protobuf:"bytes,2,opt,name=bytes_field" json:"bytes_field,omitempty"`
@@ -512,6 +1026,20 @@ type Strings struct {
 func (this *Strings) Reset()         { *this = Strings{} }
 func (this *Strings) String() string { return proto.CompactTextString(this) }
 func (*Strings) ProtoMessage()       {}
+
+func (this *Strings) GetStringField() string {
+	if this != nil && this.StringField != nil {
+		return *this.StringField
+	}
+	return ""
+}
+
+func (this *Strings) GetBytesField() []byte {
+	if this != nil {
+		return this.BytesField
+	}
+	return nil
+}
 
 type Defaults struct {
 	F_Bool           *bool           `protobuf:"varint,1,opt,def=1" json:"F_Bool,omitempty"`
@@ -560,6 +1088,132 @@ var Default_Defaults_F_Pinf float32 = float32(math.Inf(1))
 var Default_Defaults_F_Ninf float32 = float32(math.Inf(-1))
 var Default_Defaults_F_Nan float32 = float32(math.NaN())
 
+func (this *Defaults) GetF_Bool() bool {
+	if this != nil && this.F_Bool != nil {
+		return *this.F_Bool
+	}
+	return Default_Defaults_F_Bool
+}
+
+func (this *Defaults) GetF_Int32() int32 {
+	if this != nil && this.F_Int32 != nil {
+		return *this.F_Int32
+	}
+	return Default_Defaults_F_Int32
+}
+
+func (this *Defaults) GetF_Int64() int64 {
+	if this != nil && this.F_Int64 != nil {
+		return *this.F_Int64
+	}
+	return Default_Defaults_F_Int64
+}
+
+func (this *Defaults) GetF_Fixed32() uint32 {
+	if this != nil && this.F_Fixed32 != nil {
+		return *this.F_Fixed32
+	}
+	return Default_Defaults_F_Fixed32
+}
+
+func (this *Defaults) GetF_Fixed64() uint64 {
+	if this != nil && this.F_Fixed64 != nil {
+		return *this.F_Fixed64
+	}
+	return Default_Defaults_F_Fixed64
+}
+
+func (this *Defaults) GetF_Uint32() uint32 {
+	if this != nil && this.F_Uint32 != nil {
+		return *this.F_Uint32
+	}
+	return Default_Defaults_F_Uint32
+}
+
+func (this *Defaults) GetF_Uint64() uint64 {
+	if this != nil && this.F_Uint64 != nil {
+		return *this.F_Uint64
+	}
+	return Default_Defaults_F_Uint64
+}
+
+func (this *Defaults) GetF_Float() float32 {
+	if this != nil && this.F_Float != nil {
+		return *this.F_Float
+	}
+	return Default_Defaults_F_Float
+}
+
+func (this *Defaults) GetF_Double() float64 {
+	if this != nil && this.F_Double != nil {
+		return *this.F_Double
+	}
+	return Default_Defaults_F_Double
+}
+
+func (this *Defaults) GetF_String() string {
+	if this != nil && this.F_String != nil {
+		return *this.F_String
+	}
+	return Default_Defaults_F_String
+}
+
+func (this *Defaults) GetF_Bytes() []byte {
+	if this != nil && this.F_Bytes != nil {
+		return this.F_Bytes
+	}
+	return append([]byte(nil), Default_Defaults_F_Bytes...)
+}
+
+func (this *Defaults) GetF_Sint32() int32 {
+	if this != nil && this.F_Sint32 != nil {
+		return *this.F_Sint32
+	}
+	return Default_Defaults_F_Sint32
+}
+
+func (this *Defaults) GetF_Sint64() int64 {
+	if this != nil && this.F_Sint64 != nil {
+		return *this.F_Sint64
+	}
+	return Default_Defaults_F_Sint64
+}
+
+func (this *Defaults) GetF_Enum() Defaults_Color {
+	if this != nil && this.F_Enum != nil {
+		return *this.F_Enum
+	}
+	return Default_Defaults_F_Enum
+}
+
+func (this *Defaults) GetF_Pinf() float32 {
+	if this != nil && this.F_Pinf != nil {
+		return *this.F_Pinf
+	}
+	return Default_Defaults_F_Pinf
+}
+
+func (this *Defaults) GetF_Ninf() float32 {
+	if this != nil && this.F_Ninf != nil {
+		return *this.F_Ninf
+	}
+	return Default_Defaults_F_Ninf
+}
+
+func (this *Defaults) GetF_Nan() float32 {
+	if this != nil && this.F_Nan != nil {
+		return *this.F_Nan
+	}
+	return Default_Defaults_F_Nan
+}
+
+func (this *Defaults) GetSub() *SubDefaults {
+	if this != nil {
+		return this.Sub
+	}
+	return nil
+}
+
 type SubDefaults struct {
 	N                *int64 `protobuf:"varint,1,opt,name=n,def=7" json:"n,omitempty"`
 	XXX_unrecognized []byte `json:"-"`
@@ -570,6 +1224,13 @@ func (this *SubDefaults) String() string { return proto.CompactTextString(this) 
 func (*SubDefaults) ProtoMessage()       {}
 
 const Default_SubDefaults_N int64 = 7
+
+func (this *SubDefaults) GetN() int64 {
+	if this != nil && this.N != nil {
+		return *this.N
+	}
+	return Default_SubDefaults_N
+}
 
 type RepeatedEnum struct {
 	Color            []RepeatedEnum_Color `protobuf:"varint,1,rep,name=color,enum=testdata.RepeatedEnum_Color" json:"color,omitempty"`
