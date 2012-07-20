@@ -1255,9 +1255,6 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		fieldNames[field] = fieldname
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
-		if field.Options != nil && field.Options.GetWeak() {
-			typename = "[]byte"
-		}
 		tag := fmt.Sprintf("`protobuf:%s json:%q`", g.goTag(field, wiretype), jsonName+",omitempty")
 		g.P(fieldname, "\t", typename, "\t", tag)
 		g.RecordTypeUse(field.GetTypeName())
@@ -1383,10 +1380,6 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		}
 		fname := fieldNames[field]
 		typename, _ := g.GoType(message, field)
-		if field.Options != nil && field.Options.GetWeak() {
-			// TODO: weak fields
-			continue
-		}
 		mname := "Get" + fname
 		star := ""
 		if needsStar(*field.Type) && typename[0] == '*' {
@@ -1448,6 +1441,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	for _, ext := range message.ext {
 		g.generateExtension(ext)
 	}
+
 }
 
 func (g *Generator) generateExtension(ext *ExtensionDescriptor) {

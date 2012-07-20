@@ -228,6 +228,8 @@ func logNoSliceEnc(t1, t2 reflect.Type) {
 	fmt.Fprintf(os.Stderr, "proto: no slice oenc for %T = []%T\n", t1, t2)
 }
 
+var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
+
 // Initialize the fields for encoding and decoding.
 func (p *Properties) setEncAndDec(typ reflect.Type) {
 	p.enc = nil
@@ -236,7 +238,6 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	switch t1 := typ; t1.Kind() {
 	default:
 		fmt.Fprintf(os.Stderr, "proto: no coders for %T\n", t1)
-		break
 
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
