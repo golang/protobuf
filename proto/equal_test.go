@@ -92,6 +92,10 @@ var EqualTests = []struct {
 }{
 	{"different types", &pb.GoEnum{}, &pb.GoTestField{}, false},
 	{"equal empty", &pb.GoEnum{}, &pb.GoEnum{}, true},
+	{"nil vs nil", nil, nil, true},
+	{"typed nil vs typed nil", (*pb.GoEnum)(nil), (*pb.GoEnum)(nil), true},
+	{"typed nil vs empty", (*pb.GoEnum)(nil), &pb.GoEnum{}, false},
+	{"different typed nil", (*pb.GoEnum)(nil), (*pb.GoTestField)(nil), false},
 
 	{"one set field, one unset field", &pb.GoTestField{Label: String("foo")}, &pb.GoTestField{}, false},
 	{"one set field zero, one unset field", &pb.GoTest{Param: Int32(0)}, &pb.GoTest{}, false},

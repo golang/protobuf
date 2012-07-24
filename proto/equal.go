@@ -65,11 +65,20 @@ Equality is defined in this way:
 The return value is undefined if a and b are not protocol buffers.
 */
 func Equal(a, b Message) bool {
+	if a == nil || b == nil {
+		return a == b
+	}
 	v1, v2 := reflect.ValueOf(a), reflect.ValueOf(b)
 	if v1.Type() != v2.Type() {
 		return false
 	}
 	if v1.Kind() == reflect.Ptr {
+		if v1.IsNil() {
+			return v2.IsNil()
+		}
+		if v2.IsNil() {
+			return false
+		}
 		v1, v2 = v1.Elem(), v2.Elem()
 	}
 	if v1.Kind() != reflect.Struct {
@@ -124,6 +133,11 @@ func equalStruct(v1, v2 reflect.Value) bool {
 
 // v1 and v2 are known to have the same type.
 func equalAny(v1, v2 reflect.Value) bool {
+	if v1.Type() == protoMessageType {
+		m1, _ := v1.Interface().(Message)
+		m2, _ := v2.Interface().(Message)
+		return Equal(m1, m2)
+	}
 	switch v1.Kind() {
 	case reflect.Bool:
 		return v1.Bool() == v2.Bool()
