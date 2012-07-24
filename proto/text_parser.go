@@ -416,8 +416,10 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError
 				return err
 			}
 
+			dst := sv.Field(fi)
+
 			// Parse into the field.
-			if err := p.readAny(sv.Field(fi), props); err != nil {
+			if err := p.readAny(dst, props); err != nil {
 				return err
 			}
 

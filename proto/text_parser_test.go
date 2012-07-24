@@ -359,7 +359,7 @@ func TestRepeatedEnum(t *testing.T) {
 	exp := &RepeatedEnum{
 		Color: []RepeatedEnum_Color{RepeatedEnum_RED},
 	}
-	if !reflect.DeepEqual(pb, exp) {
+	if !Equal(pb, exp) {
 		t.Errorf("Incorrect populated \nHave: %v\nWant: %v", pb, exp)
 	}
 }

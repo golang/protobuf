@@ -70,6 +70,10 @@ func copyStruct(out, in reflect.Value) {
 }
 
 func copyAny(out, in reflect.Value) {
+	if in.Type() == protoMessageType {
+		out.Set(reflect.ValueOf(Clone(in.Interface().(Message))))
+		return
+	}
 	switch in.Kind() {
 	case reflect.Bool, reflect.Float32, reflect.Float64, reflect.Int32, reflect.Int64,
 		reflect.String, reflect.Uint32, reflect.Uint64:
