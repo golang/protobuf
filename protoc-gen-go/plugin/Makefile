@@ -29,25 +29,15 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-include $(GOROOT)/src/Make.inc
-
-TARG=code.google.com/p/goprotobuf/compiler/plugin
-GOFILES=\
-	plugin.pb.go\
-
-DEPS=../../proto ../descriptor
-
-include $(GOROOT)/src/Make.pkg
-
 # Not stored here, but plugin.proto is in http://code.google.com/p/protobuf
 # at protobuf-2.3.0/src/google/protobuf/compiler/plugin.proto
 # Also we need to fix an import.
 regenerate:
 	echo WARNING! THIS RULE IS PROBABLY NOT RIGHT FOR YOUR INSTALLATION
-	cd $(HOME)/protobuf-2.3.0/src && \
+	cd $(HOME)/src/protobuf-2.3.0/src && \
 	protoc --go_out=. ./google/protobuf/compiler/plugin.proto && \
 	cat ./google/protobuf/compiler/plugin.pb.go | \
-		sed '/^import/s;google/protobuf/descriptor.pb;code.google.com/p/goprotobuf/compiler/descriptor;' >$(GOROOT)/src/pkg/code.google.com/p/goprotobuf/compiler/plugin/plugin.pb.go
+		sed '/^import/s;google/protobuf/descriptor.pb;code.google.com/p/goprotobuf/protoc-gen-go/descriptor;' >$(GOROOT)/src/pkg/code.google.com/p/goprotobuf/protoc-gen-go/plugin/plugin.pb.go
 
 restore:
 	cp plugin.pb.golden plugin.pb.go

@@ -29,23 +29,13 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-include $(GOROOT)/src/Make.inc
-
-TARG=code.google.com/p/goprotobuf/compiler/descriptor
-GOFILES=\
-	descriptor.pb.go\
-
-DEPS=../../proto
-
-include $(GOROOT)/src/Make.pkg
-
 # Not stored here, but descriptor.proto is in http://code.google.com/p/protobuf
 # at protobuf-2.3.0/src/google/protobuf/descriptor.proto
 regenerate:
 	echo WARNING! THIS RULE IS PROBABLY NOT RIGHT FOR YOUR INSTALLATION
-	cd $(HOME)/protobuf-2.3.0/src && \
+	cd $(HOME)/src/protobuf-2.3.0/src && \
 	protoc --go_out=. ./google/protobuf/descriptor.proto && \
-	cp ./google/protobuf/descriptor.pb.go $(GOROOT)/src/pkg/code.google.com/p/goprotobuf/compiler/descriptor/descriptor.pb.go
+	cp ./google/protobuf/descriptor.pb.go $(GOROOT)/src/pkg/code.google.com/p/goprotobuf/protoc-gen-go/descriptor/descriptor.pb.go
 
 restore:
 	cp descriptor.pb.golden descriptor.pb.go
