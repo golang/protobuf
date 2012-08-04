@@ -43,8 +43,8 @@ import (
 // Clone returns a deep copy of a protocol buffer.
 func Clone(pb Message) Message {
 	in := reflect.ValueOf(pb)
-	if in.Kind() != reflect.Ptr || in.Elem().Kind() != reflect.Struct {
-		return nil
+	if in.IsNil() {
+		return pb
 	}
 
 	out := reflect.New(in.Type().Elem())
@@ -66,12 +66,17 @@ func copyStruct(out, in reflect.Value) {
 		copyExtension(emOut.ExtensionMap(), emIn.ExtensionMap())
 	}
 
-	// TODO: Deal with XXX_unrecognized.
+	uin := in.FieldByName("XXX_unrecognized").Bytes()
+	if len(uin) > 0 {
+		out.FieldByName("XXX_unrecognized").SetBytes(append([]byte(nil), uin...))
+	}
 }
 
 func copyAny(out, in reflect.Value) {
 	if in.Type() == protoMessageType {
-		out.Set(reflect.ValueOf(Clone(in.Interface().(Message))))
+		if !in.IsNil() {
+			out.Set(reflect.ValueOf(Clone(in.Interface().(Message))))
+		}
 		return
 	}
 	switch in.Kind() {

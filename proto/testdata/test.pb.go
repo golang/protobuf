@@ -837,6 +837,78 @@ func (this *MaxTag) GetLastField() string {
 	return ""
 }
 
+type OldMessage struct {
+	Nested           *OldMessage_Nested `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
+	XXX_unrecognized []byte             `json:"-"`
+}
+
+func (this *OldMessage) Reset()         { *this = OldMessage{} }
+func (this *OldMessage) String() string { return proto.CompactTextString(this) }
+func (*OldMessage) ProtoMessage()       {}
+
+func (this *OldMessage) GetNested() *OldMessage_Nested {
+	if this != nil {
+		return this.Nested
+	}
+	return nil
+}
+
+type OldMessage_Nested struct {
+	Name             *string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
+}
+
+func (this *OldMessage_Nested) Reset()         { *this = OldMessage_Nested{} }
+func (this *OldMessage_Nested) String() string { return proto.CompactTextString(this) }
+func (*OldMessage_Nested) ProtoMessage()       {}
+
+func (this *OldMessage_Nested) GetName() string {
+	if this != nil && this.Name != nil {
+		return *this.Name
+	}
+	return ""
+}
+
+type NewMessage struct {
+	Nested           *NewMessage_Nested `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
+	XXX_unrecognized []byte             `json:"-"`
+}
+
+func (this *NewMessage) Reset()         { *this = NewMessage{} }
+func (this *NewMessage) String() string { return proto.CompactTextString(this) }
+func (*NewMessage) ProtoMessage()       {}
+
+func (this *NewMessage) GetNested() *NewMessage_Nested {
+	if this != nil {
+		return this.Nested
+	}
+	return nil
+}
+
+type NewMessage_Nested struct {
+	Name             *string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	FoodGroup        *string `protobuf:"bytes,2,opt,name=food_group" json:"food_group,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
+}
+
+func (this *NewMessage_Nested) Reset()         { *this = NewMessage_Nested{} }
+func (this *NewMessage_Nested) String() string { return proto.CompactTextString(this) }
+func (*NewMessage_Nested) ProtoMessage()       {}
+
+func (this *NewMessage_Nested) GetName() string {
+	if this != nil && this.Name != nil {
+		return *this.Name
+	}
+	return ""
+}
+
+func (this *NewMessage_Nested) GetFoodGroup() string {
+	if this != nil && this.FoodGroup != nil {
+		return *this.FoodGroup
+	}
+	return ""
+}
+
 type InnerMessage struct {
 	Host             *string `protobuf:"bytes,1,req,name=host" json:"host,omitempty"`
 	Port             *int32  `protobuf:"varint,2,opt,name=port,def=4000" json:"port,omitempty"`

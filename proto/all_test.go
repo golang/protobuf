@@ -940,6 +940,55 @@ func TestSkippingUnrecognizedFields(t *testing.T) {
 	}
 }
 
+// Check that unrecognized fields of a submessage are preserved.
+func TestSubmessageUnrecognizedFields(t *testing.T) {
+	nm := &NewMessage{
+		Nested: &NewMessage_Nested{
+			Name:      String("Nigel"),
+			FoodGroup: String("carbs"),
+		},
+	}
+	b, err := Marshal(nm)
+	if err != nil {
+		t.Fatalf("Marshal of NewMessage: %v", err)
+	}
+
+	// Unmarshal into an OldMessage.
+	om := new(OldMessage)
+	if err := Unmarshal(b, om); err != nil {
+		t.Fatalf("Unmarshal to OldMessage: %v", err)
+	}
+	exp := &OldMessage{
+		Nested: &OldMessage_Nested{
+			Name: String("Nigel"),
+			// normal protocol buffer users should not do this
+			XXX_unrecognized: []byte("\x12\x05carbs"),
+		},
+	}
+	if !Equal(om, exp) {
+		t.Errorf("om = %v, want %v", om, exp)
+	}
+
+	// Clone the OldMessage.
+	om = Clone(om).(*OldMessage)
+	if !Equal(om, exp) {
+		t.Errorf("Clone(om) = %v, want %v", om, exp)
+	}
+
+	// Marshal the OldMessage, then unmarshal it into an empty NewMessage.
+	if b, err = Marshal(om); err != nil {
+		t.Fatalf("Marshal of OldMessage: %v", err)
+	}
+	t.Logf("Marshal(%v) -> %q", om, b)
+	nm2 := new(NewMessage)
+	if err := Unmarshal(b, nm2); err != nil {
+		t.Fatalf("Unmarshal to NewMessage: %v", err)
+	}
+	if !Equal(nm, nm2) {
+		t.Errorf("NewMessage round-trip: %v => %v", nm, nm2)
+	}
+}
+
 // Check that we can grow an array (repeated field) to have many elements.
 // This test doesn't depend only on our encoding; for variety, it makes sure
 // we create, encode, and decode the correct contents explicitly.  It's therefore

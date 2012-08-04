@@ -198,6 +198,23 @@ message MaxTag {
   optional string last_field = 536870911;
 }
 
+message OldMessage {
+  message Nested {
+    optional string name = 1;
+  }
+  optional Nested nested = 1;
+}
+
+// NewMessage is wire compatible with OldMessage;
+// imagine it as a future version.
+message NewMessage {
+  message Nested {
+    optional string name = 1;
+    optional string food_group = 2;
+  }
+  optional Nested nested = 1;
+}
+
 // Smaller tests for ASCII formatting.
 
 message InnerMessage {
