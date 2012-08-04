@@ -78,3 +78,10 @@ func TestClone(t *testing.T) {
 		t.Error("Mutating clone changed the original")
 	}
 }
+
+func TestCloneNil(t *testing.T) {
+	var m *pb.MyMessage
+	if c := proto.Clone(m); !proto.Equal(m, c) {
+		t.Errorf("Clone(%v) = %v", m, c)
+	}
+}

@@ -36,7 +36,6 @@ package proto
  */
 
 import (
-	"bytes"
 	"errors"
 	"reflect"
 )
@@ -70,7 +69,7 @@ type _MessageSet_Item struct {
 
 type MessageSet struct {
 	Item             []*_MessageSet_Item `protobuf:"group,1,rep"`
-	XXX_unrecognized *bytes.Buffer
+	XXX_unrecognized []byte
 	// TODO: caching?
 }
 

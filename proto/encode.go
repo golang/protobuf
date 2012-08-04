@@ -580,5 +580,11 @@ func (o *Buffer) enc_struct(t reflect.Type, base uintptr) error {
 		return &ErrRequiredNotSet{t}
 	}
 
+	// Add unrecognized fields at the end.
+	v := *(*[]byte)(unsafe.Pointer(base + prop.unrecOffset))
+	if prop.unrecOffset > 0 && len(v) > 0 {
+		o.buf = append(o.buf, v...)
+	}
+
 	return nil
 }

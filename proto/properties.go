@@ -82,6 +82,8 @@ type StructProperties struct {
 	tags      map[int]int    // map from proto tag to struct field number
 	origNames map[string]int // map from original name to struct field number
 	order     []int          // list of struct field numbers in tag order
+
+	unrecOffset uintptr // offset of the XXX_unrecognized []byte field
 }
 
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
@@ -457,6 +459,9 @@ func GetProperties(t reflect.Type) *StructProperties {
 		if f.Name == "XXX_extensions" { // special case
 			p.enc = (*Buffer).enc_map
 			p.dec = nil // not needed
+		}
+		if f.Name == "XXX_unrecognized" { // special case
+			prop.unrecOffset = f.Offset
 		}
 		prop.Prop[i] = p
 		prop.order[i] = i
