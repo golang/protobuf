@@ -4,10 +4,12 @@
 package google_protobuf
 
 import proto "code.google.com/p/goprotobuf/proto"
+import "encoding/json"
 import "math"
 
-// Reference proto and math imports to suppress error if they are not otherwise used.
-var _ = proto.GetString
+// Reference proto, json, and math imports to suppress error if they are not otherwise used.
+var _ = proto.Marshal
+var _ = &json.SyntaxError{}
 var _ = math.Inf
 
 type FieldDescriptorProto_Type int32
@@ -74,11 +76,6 @@ var FieldDescriptorProto_Type_value = map[string]int32{
 	"TYPE_SINT64":   18,
 }
 
-// NewFieldDescriptorProto_Type is deprecated. Use x.Enum() instead.
-func NewFieldDescriptorProto_Type(x FieldDescriptorProto_Type) *FieldDescriptorProto_Type {
-	e := FieldDescriptorProto_Type(x)
-	return &e
-}
 func (x FieldDescriptorProto_Type) Enum() *FieldDescriptorProto_Type {
 	p := new(FieldDescriptorProto_Type)
 	*p = x
@@ -86,6 +83,17 @@ func (x FieldDescriptorProto_Type) Enum() *FieldDescriptorProto_Type {
 }
 func (x FieldDescriptorProto_Type) String() string {
 	return proto.EnumName(FieldDescriptorProto_Type_name, int32(x))
+}
+func (x FieldDescriptorProto_Type) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *FieldDescriptorProto_Type) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(FieldDescriptorProto_Type_value, data, "FieldDescriptorProto_Type")
+	if err != nil {
+		return err
+	}
+	*x = FieldDescriptorProto_Type(value)
+	return nil
 }
 
 type FieldDescriptorProto_Label int32
@@ -107,11 +115,6 @@ var FieldDescriptorProto_Label_value = map[string]int32{
 	"LABEL_REPEATED": 3,
 }
 
-// NewFieldDescriptorProto_Label is deprecated. Use x.Enum() instead.
-func NewFieldDescriptorProto_Label(x FieldDescriptorProto_Label) *FieldDescriptorProto_Label {
-	e := FieldDescriptorProto_Label(x)
-	return &e
-}
 func (x FieldDescriptorProto_Label) Enum() *FieldDescriptorProto_Label {
 	p := new(FieldDescriptorProto_Label)
 	*p = x
@@ -119,6 +122,17 @@ func (x FieldDescriptorProto_Label) Enum() *FieldDescriptorProto_Label {
 }
 func (x FieldDescriptorProto_Label) String() string {
 	return proto.EnumName(FieldDescriptorProto_Label_name, int32(x))
+}
+func (x FieldDescriptorProto_Label) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *FieldDescriptorProto_Label) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(FieldDescriptorProto_Label_value, data, "FieldDescriptorProto_Label")
+	if err != nil {
+		return err
+	}
+	*x = FieldDescriptorProto_Label(value)
+	return nil
 }
 
 type FileOptions_OptimizeMode int32
@@ -140,11 +154,6 @@ var FileOptions_OptimizeMode_value = map[string]int32{
 	"LITE_RUNTIME": 3,
 }
 
-// NewFileOptions_OptimizeMode is deprecated. Use x.Enum() instead.
-func NewFileOptions_OptimizeMode(x FileOptions_OptimizeMode) *FileOptions_OptimizeMode {
-	e := FileOptions_OptimizeMode(x)
-	return &e
-}
 func (x FileOptions_OptimizeMode) Enum() *FileOptions_OptimizeMode {
 	p := new(FileOptions_OptimizeMode)
 	*p = x
@@ -152,6 +161,17 @@ func (x FileOptions_OptimizeMode) Enum() *FileOptions_OptimizeMode {
 }
 func (x FileOptions_OptimizeMode) String() string {
 	return proto.EnumName(FileOptions_OptimizeMode_name, int32(x))
+}
+func (x FileOptions_OptimizeMode) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *FileOptions_OptimizeMode) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(FileOptions_OptimizeMode_value, data, "FileOptions_OptimizeMode")
+	if err != nil {
+		return err
+	}
+	*x = FileOptions_OptimizeMode(value)
+	return nil
 }
 
 type FieldOptions_CType int32
@@ -173,11 +193,6 @@ var FieldOptions_CType_value = map[string]int32{
 	"STRING_PIECE": 2,
 }
 
-// NewFieldOptions_CType is deprecated. Use x.Enum() instead.
-func NewFieldOptions_CType(x FieldOptions_CType) *FieldOptions_CType {
-	e := FieldOptions_CType(x)
-	return &e
-}
 func (x FieldOptions_CType) Enum() *FieldOptions_CType {
 	p := new(FieldOptions_CType)
 	*p = x
@@ -186,35 +201,16 @@ func (x FieldOptions_CType) Enum() *FieldOptions_CType {
 func (x FieldOptions_CType) String() string {
 	return proto.EnumName(FieldOptions_CType_name, int32(x))
 }
-
-type StreamOptions_TokenUnit int32
-
-const (
-	StreamOptions_MESSAGE StreamOptions_TokenUnit = 0
-	StreamOptions_BYTE    StreamOptions_TokenUnit = 1
-)
-
-var StreamOptions_TokenUnit_name = map[int32]string{
-	0: "MESSAGE",
-	1: "BYTE",
+func (x FieldOptions_CType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
 }
-var StreamOptions_TokenUnit_value = map[string]int32{
-	"MESSAGE": 0,
-	"BYTE":    1,
-}
-
-// NewStreamOptions_TokenUnit is deprecated. Use x.Enum() instead.
-func NewStreamOptions_TokenUnit(x StreamOptions_TokenUnit) *StreamOptions_TokenUnit {
-	e := StreamOptions_TokenUnit(x)
-	return &e
-}
-func (x StreamOptions_TokenUnit) Enum() *StreamOptions_TokenUnit {
-	p := new(StreamOptions_TokenUnit)
-	*p = x
-	return p
-}
-func (x StreamOptions_TokenUnit) String() string {
-	return proto.EnumName(StreamOptions_TokenUnit_name, int32(x))
+func (x *FieldOptions_CType) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(FieldOptions_CType_value, data, "FieldOptions_CType")
+	if err != nil {
+		return err
+	}
+	*x = FieldOptions_CType(value)
+	return nil
 }
 
 type FileDescriptorSet struct {
@@ -237,7 +233,6 @@ type FileDescriptorProto struct {
 	Service          []*ServiceDescriptorProto `protobuf:"bytes,6,rep,name=service" json:"service,omitempty"`
 	Extension        []*FieldDescriptorProto   `protobuf:"bytes,7,rep,name=extension" json:"extension,omitempty"`
 	Options          *FileOptions              `protobuf:"bytes,8,opt,name=options" json:"options,omitempty"`
-	SourceCodeInfo   *SourceCodeInfo           `protobuf:"bytes,9,opt,name=source_code_info" json:"source_code_info,omitempty"`
 	XXX_unrecognized []byte                    `json:"-"`
 }
 
@@ -262,13 +257,6 @@ func (this *FileDescriptorProto) GetPackage() string {
 func (this *FileDescriptorProto) GetOptions() *FileOptions {
 	if this != nil {
 		return this.Options
-	}
-	return nil
-}
-
-func (this *FileDescriptorProto) GetSourceCodeInfo() *SourceCodeInfo {
-	if this != nil {
-		return this.SourceCodeInfo
 	}
 	return nil
 }
@@ -329,8 +317,8 @@ func (this *DescriptorProto_ExtensionRange) GetEnd() int32 {
 type FieldDescriptorProto struct {
 	Name             *string                     `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	Number           *int32                      `protobuf:"varint,3,opt,name=number" json:"number,omitempty"`
-	Label            *FieldDescriptorProto_Label `protobuf:"varint,4,opt,name=label,enum=proto2.FieldDescriptorProto_Label" json:"label,omitempty"`
-	Type             *FieldDescriptorProto_Type  `protobuf:"varint,5,opt,name=type,enum=proto2.FieldDescriptorProto_Type" json:"type,omitempty"`
+	Label            *FieldDescriptorProto_Label `protobuf:"varint,4,opt,name=label,enum=google.protobuf.FieldDescriptorProto_Label" json:"label,omitempty"`
+	Type             *FieldDescriptorProto_Type  `protobuf:"varint,5,opt,name=type,enum=google.protobuf.FieldDescriptorProto_Type" json:"type,omitempty"`
 	TypeName         *string                     `protobuf:"bytes,6,opt,name=type_name" json:"type_name,omitempty"`
 	Extendee         *string                     `protobuf:"bytes,2,opt,name=extendee" json:"extendee,omitempty"`
 	DefaultValue     *string                     `protobuf:"bytes,7,opt,name=default_value" json:"default_value,omitempty"`
@@ -458,7 +446,6 @@ func (this *EnumValueDescriptorProto) GetOptions() *EnumValueOptions {
 type ServiceDescriptorProto struct {
 	Name             *string                  `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	Method           []*MethodDescriptorProto `protobuf:"bytes,2,rep,name=method" json:"method,omitempty"`
-	Stream           []*StreamDescriptorProto `protobuf:"bytes,4,rep,name=stream" json:"stream,omitempty"`
 	Options          *ServiceOptions          `protobuf:"bytes,3,opt,name=options" json:"options,omitempty"`
 	XXX_unrecognized []byte                   `json:"-"`
 }
@@ -521,59 +508,17 @@ func (this *MethodDescriptorProto) GetOptions() *MethodOptions {
 	return nil
 }
 
-type StreamDescriptorProto struct {
-	Name              *string        `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	ClientMessageType *string        `protobuf:"bytes,2,opt,name=client_message_type" json:"client_message_type,omitempty"`
-	ServerMessageType *string        `protobuf:"bytes,3,opt,name=server_message_type" json:"server_message_type,omitempty"`
-	Options           *StreamOptions `protobuf:"bytes,4,opt,name=options" json:"options,omitempty"`
-	XXX_unrecognized  []byte         `json:"-"`
-}
-
-func (this *StreamDescriptorProto) Reset()         { *this = StreamDescriptorProto{} }
-func (this *StreamDescriptorProto) String() string { return proto.CompactTextString(this) }
-func (*StreamDescriptorProto) ProtoMessage()       {}
-
-func (this *StreamDescriptorProto) GetName() string {
-	if this != nil && this.Name != nil {
-		return *this.Name
-	}
-	return ""
-}
-
-func (this *StreamDescriptorProto) GetClientMessageType() string {
-	if this != nil && this.ClientMessageType != nil {
-		return *this.ClientMessageType
-	}
-	return ""
-}
-
-func (this *StreamDescriptorProto) GetServerMessageType() string {
-	if this != nil && this.ServerMessageType != nil {
-		return *this.ServerMessageType
-	}
-	return ""
-}
-
-func (this *StreamDescriptorProto) GetOptions() *StreamOptions {
-	if this != nil {
-		return this.Options
-	}
-	return nil
-}
-
 type FileOptions struct {
-	JavaPackage               *string                   `protobuf:"bytes,1,opt,name=java_package" json:"java_package,omitempty"`
-	JavaOuterClassname        *string                   `protobuf:"bytes,8,opt,name=java_outer_classname" json:"java_outer_classname,omitempty"`
-	JavaMultipleFiles         *bool                     `protobuf:"varint,10,opt,name=java_multiple_files,def=0" json:"java_multiple_files,omitempty"`
-	JavaGenerateEqualsAndHash *bool                     `protobuf:"varint,20,opt,name=java_generate_equals_and_hash,def=0" json:"java_generate_equals_and_hash,omitempty"`
-	OptimizeFor               *FileOptions_OptimizeMode `protobuf:"varint,9,opt,name=optimize_for,enum=proto2.FileOptions_OptimizeMode,def=1" json:"optimize_for,omitempty"`
-	GoPackage                 *string                   `protobuf:"bytes,11,opt,name=go_package" json:"go_package,omitempty"`
-	CcGenericServices         *bool                     `protobuf:"varint,16,opt,name=cc_generic_services,def=0" json:"cc_generic_services,omitempty"`
-	JavaGenericServices       *bool                     `protobuf:"varint,17,opt,name=java_generic_services,def=0" json:"java_generic_services,omitempty"`
-	PyGenericServices         *bool                     `protobuf:"varint,18,opt,name=py_generic_services,def=0" json:"py_generic_services,omitempty"`
-	UninterpretedOption       []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
-	XXX_extensions            map[int32]proto.Extension `json:"-"`
-	XXX_unrecognized          []byte                    `json:"-"`
+	JavaPackage         *string                   `protobuf:"bytes,1,opt,name=java_package" json:"java_package,omitempty"`
+	JavaOuterClassname  *string                   `protobuf:"bytes,8,opt,name=java_outer_classname" json:"java_outer_classname,omitempty"`
+	JavaMultipleFiles   *bool                     `protobuf:"varint,10,opt,name=java_multiple_files,def=0" json:"java_multiple_files,omitempty"`
+	OptimizeFor         *FileOptions_OptimizeMode `protobuf:"varint,9,opt,name=optimize_for,enum=google.protobuf.FileOptions_OptimizeMode,def=1" json:"optimize_for,omitempty"`
+	CcGenericServices   *bool                     `protobuf:"varint,16,opt,name=cc_generic_services,def=1" json:"cc_generic_services,omitempty"`
+	JavaGenericServices *bool                     `protobuf:"varint,17,opt,name=java_generic_services,def=1" json:"java_generic_services,omitempty"`
+	PyGenericServices   *bool                     `protobuf:"varint,18,opt,name=py_generic_services,def=1" json:"py_generic_services,omitempty"`
+	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
+	XXX_extensions      map[int32]proto.Extension `json:"-"`
+	XXX_unrecognized    []byte                    `json:"-"`
 }
 
 func (this *FileOptions) Reset()         { *this = FileOptions{} }
@@ -595,11 +540,10 @@ func (this *FileOptions) ExtensionMap() map[int32]proto.Extension {
 }
 
 const Default_FileOptions_JavaMultipleFiles bool = false
-const Default_FileOptions_JavaGenerateEqualsAndHash bool = false
 const Default_FileOptions_OptimizeFor FileOptions_OptimizeMode = FileOptions_SPEED
-const Default_FileOptions_CcGenericServices bool = false
-const Default_FileOptions_JavaGenericServices bool = false
-const Default_FileOptions_PyGenericServices bool = false
+const Default_FileOptions_CcGenericServices bool = true
+const Default_FileOptions_JavaGenericServices bool = true
+const Default_FileOptions_PyGenericServices bool = true
 
 func (this *FileOptions) GetJavaPackage() string {
 	if this != nil && this.JavaPackage != nil {
@@ -622,25 +566,11 @@ func (this *FileOptions) GetJavaMultipleFiles() bool {
 	return Default_FileOptions_JavaMultipleFiles
 }
 
-func (this *FileOptions) GetJavaGenerateEqualsAndHash() bool {
-	if this != nil && this.JavaGenerateEqualsAndHash != nil {
-		return *this.JavaGenerateEqualsAndHash
-	}
-	return Default_FileOptions_JavaGenerateEqualsAndHash
-}
-
 func (this *FileOptions) GetOptimizeFor() FileOptions_OptimizeMode {
 	if this != nil && this.OptimizeFor != nil {
 		return *this.OptimizeFor
 	}
 	return Default_FileOptions_OptimizeFor
-}
-
-func (this *FileOptions) GetGoPackage() string {
-	if this != nil && this.GoPackage != nil {
-		return *this.GoPackage
-	}
-	return ""
 }
 
 func (this *FileOptions) GetCcGenericServices() bool {
@@ -708,12 +638,10 @@ func (this *MessageOptions) GetNoStandardDescriptorAccessor() bool {
 }
 
 type FieldOptions struct {
-	Ctype               *FieldOptions_CType       `protobuf:"varint,1,opt,name=ctype,enum=proto2.FieldOptions_CType,def=0" json:"ctype,omitempty"`
+	Ctype               *FieldOptions_CType       `protobuf:"varint,1,opt,name=ctype,enum=google.protobuf.FieldOptions_CType,def=0" json:"ctype,omitempty"`
 	Packed              *bool                     `protobuf:"varint,2,opt,name=packed" json:"packed,omitempty"`
-	Lazy                *bool                     `protobuf:"varint,5,opt,name=lazy,def=0" json:"lazy,omitempty"`
 	Deprecated          *bool                     `protobuf:"varint,3,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	ExperimentalMapKey  *string                   `protobuf:"bytes,9,opt,name=experimental_map_key" json:"experimental_map_key,omitempty"`
-	Weak                *bool                     `protobuf:"varint,10,opt,name=weak,def=0" json:"weak,omitempty"`
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
 	XXX_unrecognized    []byte                    `json:"-"`
@@ -738,9 +666,7 @@ func (this *FieldOptions) ExtensionMap() map[int32]proto.Extension {
 }
 
 const Default_FieldOptions_Ctype FieldOptions_CType = FieldOptions_STRING
-const Default_FieldOptions_Lazy bool = false
 const Default_FieldOptions_Deprecated bool = false
-const Default_FieldOptions_Weak bool = false
 
 func (this *FieldOptions) GetCtype() FieldOptions_CType {
 	if this != nil && this.Ctype != nil {
@@ -754,13 +680,6 @@ func (this *FieldOptions) GetPacked() bool {
 		return *this.Packed
 	}
 	return false
-}
-
-func (this *FieldOptions) GetLazy() bool {
-	if this != nil && this.Lazy != nil {
-		return *this.Lazy
-	}
-	return Default_FieldOptions_Lazy
 }
 
 func (this *FieldOptions) GetDeprecated() bool {
@@ -777,15 +696,7 @@ func (this *FieldOptions) GetExperimentalMapKey() string {
 	return ""
 }
 
-func (this *FieldOptions) GetWeak() bool {
-	if this != nil && this.Weak != nil {
-		return *this.Weak
-	}
-	return Default_FieldOptions_Weak
-}
-
 type EnumOptions struct {
-	AllowAlias          *bool                     `protobuf:"varint,2,opt,name=allow_alias,def=1" json:"allow_alias,omitempty"`
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
 	XXX_unrecognized    []byte                    `json:"-"`
@@ -807,15 +718,6 @@ func (this *EnumOptions) ExtensionMap() map[int32]proto.Extension {
 		this.XXX_extensions = make(map[int32]proto.Extension)
 	}
 	return this.XXX_extensions
-}
-
-const Default_EnumOptions_AllowAlias bool = true
-
-func (this *EnumOptions) GetAllowAlias() bool {
-	if this != nil && this.AllowAlias != nil {
-		return *this.AllowAlias
-	}
-	return Default_EnumOptions_AllowAlias
 }
 
 type EnumValueOptions struct {
@@ -890,30 +792,6 @@ func (this *MethodOptions) ExtensionMap() map[int32]proto.Extension {
 	return this.XXX_extensions
 }
 
-type StreamOptions struct {
-	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
-	XXX_extensions      map[int32]proto.Extension `json:"-"`
-	XXX_unrecognized    []byte                    `json:"-"`
-}
-
-func (this *StreamOptions) Reset()         { *this = StreamOptions{} }
-func (this *StreamOptions) String() string { return proto.CompactTextString(this) }
-func (*StreamOptions) ProtoMessage()       {}
-
-var extRange_StreamOptions = []proto.ExtensionRange{
-	{1000, 536870911},
-}
-
-func (*StreamOptions) ExtensionRangeArray() []proto.ExtensionRange {
-	return extRange_StreamOptions
-}
-func (this *StreamOptions) ExtensionMap() map[int32]proto.Extension {
-	if this.XXX_extensions == nil {
-		this.XXX_extensions = make(map[int32]proto.Extension)
-	}
-	return this.XXX_extensions
-}
-
 type UninterpretedOption struct {
 	Name             []*UninterpretedOption_NamePart `protobuf:"bytes,2,rep,name=name" json:"name,omitempty"`
 	IdentifierValue  *string                         `protobuf:"bytes,3,opt,name=identifier_value" json:"identifier_value,omitempty"`
@@ -921,7 +799,6 @@ type UninterpretedOption struct {
 	NegativeIntValue *int64                          `protobuf:"varint,5,opt,name=negative_int_value" json:"negative_int_value,omitempty"`
 	DoubleValue      *float64                        `protobuf:"fixed64,6,opt,name=double_value" json:"double_value,omitempty"`
 	StringValue      []byte                          `protobuf:"bytes,7,opt,name=string_value" json:"string_value,omitempty"`
-	AggregateValue   *string                         `protobuf:"bytes,8,opt,name=aggregate_value" json:"aggregate_value,omitempty"`
 	XXX_unrecognized []byte                          `json:"-"`
 }
 
@@ -964,13 +841,6 @@ func (this *UninterpretedOption) GetStringValue() []byte {
 	return nil
 }
 
-func (this *UninterpretedOption) GetAggregateValue() string {
-	if this != nil && this.AggregateValue != nil {
-		return *this.AggregateValue
-	}
-	return ""
-}
-
 type UninterpretedOption_NamePart struct {
 	NamePart         *string `protobuf:"bytes,1,req,name=name_part" json:"name_part,omitempty"`
 	IsExtension      *bool   `protobuf:"varint,2,req,name=is_extension" json:"is_extension,omitempty"`
@@ -995,29 +865,9 @@ func (this *UninterpretedOption_NamePart) GetIsExtension() bool {
 	return false
 }
 
-type SourceCodeInfo struct {
-	Location         []*SourceCodeInfo_Location `protobuf:"bytes,1,rep,name=location" json:"location,omitempty"`
-	XXX_unrecognized []byte                     `json:"-"`
-}
-
-func (this *SourceCodeInfo) Reset()         { *this = SourceCodeInfo{} }
-func (this *SourceCodeInfo) String() string { return proto.CompactTextString(this) }
-func (*SourceCodeInfo) ProtoMessage()       {}
-
-type SourceCodeInfo_Location struct {
-	Path             []int32 `protobuf:"varint,1,rep,packed,name=path" json:"path,omitempty"`
-	Span             []int32 `protobuf:"varint,2,rep,packed,name=span" json:"span,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
-}
-
-func (this *SourceCodeInfo_Location) Reset()         { *this = SourceCodeInfo_Location{} }
-func (this *SourceCodeInfo_Location) String() string { return proto.CompactTextString(this) }
-func (*SourceCodeInfo_Location) ProtoMessage()       {}
-
 func init() {
-	proto.RegisterEnum("google_protobuf.FieldDescriptorProto_Type", FieldDescriptorProto_Type_name, FieldDescriptorProto_Type_value)
-	proto.RegisterEnum("google_protobuf.FieldDescriptorProto_Label", FieldDescriptorProto_Label_name, FieldDescriptorProto_Label_value)
-	proto.RegisterEnum("google_protobuf.FileOptions_OptimizeMode", FileOptions_OptimizeMode_name, FileOptions_OptimizeMode_value)
-	proto.RegisterEnum("google_protobuf.FieldOptions_CType", FieldOptions_CType_name, FieldOptions_CType_value)
-	proto.RegisterEnum("google_protobuf.StreamOptions_TokenUnit", StreamOptions_TokenUnit_name, StreamOptions_TokenUnit_value)
+	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Type", FieldDescriptorProto_Type_name, FieldDescriptorProto_Type_value)
+	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Label", FieldDescriptorProto_Label_name, FieldDescriptorProto_Label_value)
+	proto.RegisterEnum("google.protobuf.FileOptions_OptimizeMode", FileOptions_OptimizeMode_name, FileOptions_OptimizeMode_value)
+	proto.RegisterEnum("google.protobuf.FieldOptions_CType", FieldOptions_CType_name, FieldOptions_CType_value)
 }

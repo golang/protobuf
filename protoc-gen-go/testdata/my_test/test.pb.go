@@ -4,12 +4,14 @@
 package my_test
 
 import proto "code.google.com/p/goprotobuf/proto"
+import "encoding/json"
 import "math"
 
 // discarding unused import multi2 "multi/multi1.pb"
 
-// Reference proto and math imports to suppress error if they are not otherwise used.
+// Reference proto, json, and math imports to suppress error if they are not otherwise used.
 var _ = proto.Marshal
+var _ = &json.SyntaxError{}
 var _ = math.Inf
 
 type HatType int32
@@ -35,6 +37,17 @@ func (x HatType) Enum() *HatType {
 }
 func (x HatType) String() string {
 	return proto.EnumName(HatType_name, int32(x))
+}
+func (x HatType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *HatType) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(HatType_value, data, "HatType")
+	if err != nil {
+		return err
+	}
+	*x = HatType(value)
+	return nil
 }
 
 type Days int32
@@ -64,6 +77,17 @@ func (x Days) Enum() *Days {
 func (x Days) String() string {
 	return proto.EnumName(Days_name, int32(x))
 }
+func (x Days) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *Days) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(Days_value, data, "Days")
+	if err != nil {
+		return err
+	}
+	*x = Days(value)
+	return nil
+}
 
 type Request_Color int32
 
@@ -92,6 +116,17 @@ func (x Request_Color) Enum() *Request_Color {
 func (x Request_Color) String() string {
 	return proto.EnumName(Request_Color_name, int32(x))
 }
+func (x Request_Color) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *Request_Color) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(Request_Color_value, data, "Request_Color")
+	if err != nil {
+		return err
+	}
+	*x = Request_Color(value)
+	return nil
+}
 
 type Reply_Entry_Game int32
 
@@ -116,6 +151,17 @@ func (x Reply_Entry_Game) Enum() *Reply_Entry_Game {
 }
 func (x Reply_Entry_Game) String() string {
 	return proto.EnumName(Reply_Entry_Game_name, int32(x))
+}
+func (x Reply_Entry_Game) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *Reply_Entry_Game) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(Reply_Entry_Game_value, data, "Reply_Entry_Game")
+	if err != nil {
+		return err
+	}
+	*x = Reply_Entry_Game(value)
+	return nil
 }
 
 type Request struct {

@@ -1308,8 +1308,9 @@ func TestJSON(t *testing.T) {
 		Inner: &InnerMessage{
 			Host: String("cauchy"),
 		},
+		Bikeshed: MyMessage_GREEN.Enum(),
 	}
-	const expected = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"}}`
+	const expected = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"},"bikeshed":"GREEN"}`
 
 	b, err := json.Marshal(m)
 	if err != nil {
@@ -1318,6 +1319,24 @@ func TestJSON(t *testing.T) {
 	s := string(b)
 	if s != expected {
 		t.Errorf("got  %s\nwant %s", s, expected)
+	}
+
+	received := new(MyMessage)
+	if err := json.Unmarshal(b, received); err != nil {
+		t.Fatalf("json.Unmarshal failed: %v", err)
+	}
+	if !Equal(received, m) {
+		t.Fatalf("got %s, want %s", received, m)
+	}
+
+	// Test unmarshalling of older json wire format.
+	const old = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"},"bikeshed":1}`
+	received.Reset()
+	if err := json.Unmarshal([]byte(old), received); err != nil {
+		t.Fatalf("json.Unmarshal failed: %v", err)
+	}
+	if !Equal(received, m) {
+		t.Fatalf("got %s, want %s", received, m)
 	}
 }
 

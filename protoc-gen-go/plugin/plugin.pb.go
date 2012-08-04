@@ -4,11 +4,13 @@
 package google_protobuf_compiler
 
 import proto "code.google.com/p/goprotobuf/proto"
+import "encoding/json"
 import "math"
 import google_protobuf "code.google.com/p/goprotobuf/protoc-gen-go/descriptor"
 
-// Reference proto and math imports to suppress error if they are not otherwise used.
-var _ = proto.GetString
+// Reference proto, json, and math imports to suppress error if they are not otherwise used.
+var _ = proto.Marshal
+var _ = &json.SyntaxError{}
 var _ = math.Inf
 
 type CodeGeneratorRequest struct {
