@@ -199,6 +199,7 @@
 package proto
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"reflect"
@@ -402,6 +403,35 @@ func EnumName(m map[int32]string, v int32) string {
 		return s
 	}
 	return "unknown_enum_" + strconv.Itoa(int(v))
+}
+
+// UnmarshalJSONEnum is a helper function to simplify recovering enum int values
+// from their JSON-encoded representation. Given a map from the enum's symbolic
+// names to its int values, and a byte buffer containing the JSON-encoded
+// value, it returns an int32 that can be cast to the enum type by the caller.
+//
+// The function can deal with older JSON representations, which represented
+// enums directly by their int32 values, or with newer representations, which
+// use the symbolic name as a string.
+func UnmarshalJSONEnum(m map[string]int32, data []byte, enumName string) (int32, error) {
+	if data[0] == '"' {
+		// New style: enums are strings.
+		var repr string
+		if err := json.Unmarshal(data, &repr); err != nil {
+			return -1, err
+		}
+		val, ok := m[repr]
+		if !ok {
+			return 0, fmt.Errorf("unrecognized enum %s value %q", enumName, repr)
+		}
+		return val, nil
+	}
+	// Old style: enums are ints.
+	var val int32
+	if err := json.Unmarshal(data, &val); err != nil {
+		return 0, fmt.Errorf("cannot unmarshal %#q into enum %s", data, enumName)
+	}
+	return val, nil
 }
 
 // DebugPrint dumps the encoded data in b in a debugging format with a header

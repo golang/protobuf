@@ -4,10 +4,12 @@
 package testdata
 
 import proto "code.google.com/p/goprotobuf/proto"
+import "encoding/json"
 import "math"
 
-// Reference proto and math imports to suppress error if they are not otherwise used.
+// Reference proto, json, and math imports to suppress error if they are not otherwise used.
 var _ = proto.Marshal
+var _ = &json.SyntaxError{}
 var _ = math.Inf
 
 type FOO int32
@@ -30,6 +32,17 @@ func (x FOO) Enum() *FOO {
 }
 func (x FOO) String() string {
 	return proto.EnumName(FOO_name, int32(x))
+}
+func (x FOO) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *FOO) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(FOO_value, data, "FOO")
+	if err != nil {
+		return err
+	}
+	*x = FOO(value)
+	return nil
 }
 
 type GoTest_KIND int32
@@ -89,6 +102,17 @@ func (x GoTest_KIND) Enum() *GoTest_KIND {
 func (x GoTest_KIND) String() string {
 	return proto.EnumName(GoTest_KIND_name, int32(x))
 }
+func (x GoTest_KIND) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *GoTest_KIND) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(GoTest_KIND_value, data, "GoTest_KIND")
+	if err != nil {
+		return err
+	}
+	*x = GoTest_KIND(value)
+	return nil
+}
 
 type MyMessage_Color int32
 
@@ -116,6 +140,17 @@ func (x MyMessage_Color) Enum() *MyMessage_Color {
 }
 func (x MyMessage_Color) String() string {
 	return proto.EnumName(MyMessage_Color_name, int32(x))
+}
+func (x MyMessage_Color) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *MyMessage_Color) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(MyMessage_Color_value, data, "MyMessage_Color")
+	if err != nil {
+		return err
+	}
+	*x = MyMessage_Color(value)
+	return nil
 }
 
 type Defaults_Color int32
@@ -145,6 +180,17 @@ func (x Defaults_Color) Enum() *Defaults_Color {
 func (x Defaults_Color) String() string {
 	return proto.EnumName(Defaults_Color_name, int32(x))
 }
+func (x Defaults_Color) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *Defaults_Color) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(Defaults_Color_value, data, "Defaults_Color")
+	if err != nil {
+		return err
+	}
+	*x = Defaults_Color(value)
+	return nil
+}
 
 type RepeatedEnum_Color int32
 
@@ -166,6 +212,17 @@ func (x RepeatedEnum_Color) Enum() *RepeatedEnum_Color {
 }
 func (x RepeatedEnum_Color) String() string {
 	return proto.EnumName(RepeatedEnum_Color_name, int32(x))
+}
+func (x RepeatedEnum_Color) MarshalJSON() ([]byte, error) {
+	return json.Marshal(x.String())
+}
+func (x *RepeatedEnum_Color) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(RepeatedEnum_Color_value, data, "RepeatedEnum_Color")
+	if err != nil {
+		return err
+	}
+	*x = RepeatedEnum_Color(value)
+	return nil
 }
 
 type GoEnum struct {
