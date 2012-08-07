@@ -167,7 +167,7 @@ To create and play with a Test object from the example package,
 		}
 		// Now test and newTest contain the same data.
 		if test.GetLabel() != newTest.GetLabel() {
-			log.Fatalf("data mismatch %q != %q", test.Get(Label), newTest.Get(Label))
+			log.Fatalf("data mismatch %q != %q", test.GetLabel(), newTest.GetLabel())
 		}
 		// etc.
 	}
