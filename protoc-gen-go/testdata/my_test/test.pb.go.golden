@@ -4,8 +4,8 @@
 package my_test
 
 import proto "code.google.com/p/goprotobuf/proto"
-import "encoding/json"
-import "math"
+import json "encoding/json"
+import math "math"
 
 // discarding unused import multi2 "multi/multi1.pb"
 

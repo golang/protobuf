@@ -276,9 +276,9 @@ func (ms messageSymbol) GenerateAlias(g *Generator, pkg string) {
 	g.P("func (this *", ms.sym, ") String() string { return (*", remoteSym, ")(this).String() }")
 	g.P("func (*", ms.sym, ") ProtoMessage() {}")
 	if ms.hasExtensions {
-		g.P("func (*", ms.sym, ") ExtensionRangeArray() []", g.ProtoPkg, ".ExtensionRange ",
+		g.P("func (*", ms.sym, ") ExtensionRangeArray() []", g.Pkg["proto"], ".ExtensionRange ",
 			"{ return (*", remoteSym, ")(nil).ExtensionRangeArray() }")
-		g.P("func (this *", ms.sym, ") ExtensionMap() map[int32]", g.ProtoPkg, ".Extension ",
+		g.P("func (this *", ms.sym, ") ExtensionMap() map[int32]", g.Pkg["proto"], ".Extension ",
 			"{ return (*", remoteSym, ")(this).ExtensionMap() }")
 		if ms.isMessageSet {
 			g.P("func (this *", ms.sym, ") Marshal() ([]byte, error) ",
@@ -339,7 +339,7 @@ type Generator struct {
 	ImportPrefix      string            // String to prefix to imported package file names.
 	ImportMap         map[string]string // Mapping from import name to generated name
 
-	ProtoPkg string // The name under which we import the library's package proto.
+	Pkg map[string]string // The names under which we import support packages
 
 	packageName      string            // What we're calling ourselves.
 	allFiles         []*FileDescriptor // All files in the tree
@@ -535,9 +535,13 @@ func (g *Generator) SetPackageNames() {
 
 	g.packageName = RegisterUniquePackageName(pkg, g.genFiles[0])
 
-	// Register the proto package name.  It might collide with the
+	// Register the support package names. They might collide with the
 	// name of a package we import.
-	g.ProtoPkg = RegisterUniquePackageName("proto", nil)
+	g.Pkg = map[string]string{
+		"json":  RegisterUniquePackageName("json", nil),
+		"math":  RegisterUniquePackageName("math", nil),
+		"proto": RegisterUniquePackageName("proto", nil),
+	}
 
 AllFiles:
 	for _, f := range g.allFiles {
@@ -918,11 +922,11 @@ func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the math package,
-	// for handling bit patterns for floating-point numbers.
-	g.P("import " + g.ProtoPkg + " " + Quote(g.ImportPrefix+"code.google.com/p/goprotobuf/proto"))
-	// TODO: Make json and math uniquely named.
-	g.P(`import "encoding/json"`)
-	g.P(`import "math"`)
+	// for handling bit patterns for floating-point numbers, and to the
+	// json package, for symbolic names of enum values for JSON marshaling.
+	g.P("import " + g.Pkg["proto"] + " " + Quote(g.ImportPrefix+"code.google.com/p/goprotobuf/proto"))
+	g.P("import " + g.Pkg["json"] + ` "encoding/json"`)
+	g.P("import " + g.Pkg["math"] + ` "math"`)
 	for i, s := range g.file.Dependency {
 		fd := g.fileByName(s)
 		// Do not import our own package.
@@ -959,7 +963,7 @@ func (g *Generator) generateImports() {
 		g.P()
 	}
 	g.P("// Reference proto, json, and math imports to suppress error if they are not otherwise used.")
-	g.P("var _ = ", g.ProtoPkg, ".Marshal")
+	g.P("var _ = ", g.Pkg["proto"], ".Marshal")
 	g.P("var _ = &json.SyntaxError{}")
 	g.P("var _ = math.Inf")
 	g.P()
@@ -1040,7 +1044,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 
 	g.P("func (x ", ccTypeName, ") String() string {")
 	g.In()
-	g.P("return ", g.ProtoPkg, ".EnumName(", ccTypeName, "_name, int32(x))")
+	g.P("return ", g.Pkg["proto"], ".EnumName(", ccTypeName, "_name, int32(x))")
 	g.Out()
 	g.P("}")
 
@@ -1052,7 +1056,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 
 	g.P("func (x *", ccTypeName, ") UnmarshalJSON(data []byte) error {")
 	g.In()
-	g.P("value, err := ", g.ProtoPkg, ".UnmarshalJSONEnum(", ccTypeName, `_value, data, "`, ccTypeName, `")`)
+	g.P("value, err := ", g.Pkg["proto"], ".UnmarshalJSONEnum(", ccTypeName, `_value, data, "`, ccTypeName, `")`)
 	g.P("if err != nil {")
 	g.In()
 	g.P("return err")
@@ -1282,7 +1286,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.RecordTypeUse(field.GetTypeName())
 	}
 	if len(message.ExtensionRange) > 0 {
-		g.P("XXX_extensions\t\tmap[int32]", g.ProtoPkg, ".Extension `json:\"-\"`")
+		g.P("XXX_extensions\t\tmap[int32]", g.Pkg["proto"], ".Extension `json:\"-\"`")
 	}
 	g.P("XXX_unrecognized\t[]byte `json:\"-\"`")
 	g.Out()
@@ -1290,7 +1294,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 
 	// Reset, String and ProtoMessage methods.
 	g.P("func (this *", ccTypeName, ") Reset() { *this = ", ccTypeName, "{} }")
-	g.P("func (this *", ccTypeName, ") String() string { return ", g.ProtoPkg, ".CompactTextString(this) }")
+	g.P("func (this *", ccTypeName, ") String() string { return ", g.Pkg["proto"], ".CompactTextString(this) }")
 	g.P("func (*", ccTypeName, ") ProtoMessage() {}")
 
 	// Extension support methods
@@ -1303,21 +1307,21 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			g.P()
 			g.P("func (this *", ccTypeName, ") Marshal() ([]byte, error) {")
 			g.In()
-			g.P("return ", g.ProtoPkg, ".MarshalMessageSet(this.ExtensionMap())")
+			g.P("return ", g.Pkg["proto"], ".MarshalMessageSet(this.ExtensionMap())")
 			g.Out()
 			g.P("}")
 			g.P("func (this *", ccTypeName, ") Unmarshal(buf []byte) error {")
 			g.In()
-			g.P("return ", g.ProtoPkg, ".UnmarshalMessageSet(buf, this.ExtensionMap())")
+			g.P("return ", g.Pkg["proto"], ".UnmarshalMessageSet(buf, this.ExtensionMap())")
 			g.Out()
 			g.P("}")
 			g.P("// ensure ", ccTypeName, " satisfies proto.Marshaler and proto.Unmarshaler")
-			g.P("var _ ", g.ProtoPkg, ".Marshaler = (*", ccTypeName, ")(nil)")
-			g.P("var _ ", g.ProtoPkg, ".Unmarshaler = (*", ccTypeName, ")(nil)")
+			g.P("var _ ", g.Pkg["proto"], ".Marshaler = (*", ccTypeName, ")(nil)")
+			g.P("var _ ", g.Pkg["proto"], ".Unmarshaler = (*", ccTypeName, ")(nil)")
 		}
 
 		g.P()
-		g.P("var extRange_", ccTypeName, " = []", g.ProtoPkg, ".ExtensionRange{")
+		g.P("var extRange_", ccTypeName, " = []", g.Pkg["proto"], ".ExtensionRange{")
 		g.In()
 		for _, r := range message.ExtensionRange {
 			end := fmt.Sprint(*r.End - 1) // make range inclusive on both ends
@@ -1325,16 +1329,16 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		}
 		g.Out()
 		g.P("}")
-		g.P("func (*", ccTypeName, ") ExtensionRangeArray() []", g.ProtoPkg, ".ExtensionRange {")
+		g.P("func (*", ccTypeName, ") ExtensionRangeArray() []", g.Pkg["proto"], ".ExtensionRange {")
 		g.In()
 		g.P("return extRange_", ccTypeName)
 		g.Out()
 		g.P("}")
-		g.P("func (this *", ccTypeName, ") ExtensionMap() map[int32]", g.ProtoPkg, ".Extension {")
+		g.P("func (this *", ccTypeName, ") ExtensionMap() map[int32]", g.Pkg["proto"], ".Extension {")
 		g.In()
 		g.P("if this.XXX_extensions == nil {")
 		g.In()
-		g.P("this.XXX_extensions = make(map[int32]", g.ProtoPkg, ".Extension)")
+		g.P("this.XXX_extensions = make(map[int32]", g.Pkg["proto"], ".Extension)")
 		g.Out()
 		g.P("}")
 		g.P("return this.XXX_extensions")
@@ -1495,7 +1499,7 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 		extName = *g.file.Package + "." + extName
 	}
 
-	g.P("var ", ccTypeName, " = &", g.ProtoPkg, ".ExtensionDesc{")
+	g.P("var ", ccTypeName, " = &", g.Pkg["proto"], ".ExtensionDesc{")
 	g.In()
 	g.P("ExtendedType: (", extendedType, ")(nil),")
 	g.P("ExtensionType: (", fieldType, ")(nil),")
@@ -1538,11 +1542,11 @@ func (g *Generator) generateEnumRegistration(enum *EnumDescriptor) {
 	typeName := enum.TypeName()
 	// The full type name, CamelCased.
 	ccTypeName := CamelCaseSlice(typeName)
-	g.P(g.ProtoPkg+".RegisterEnum(", Quote(pkg+ccTypeName), ", ", ccTypeName+"_name, ", ccTypeName+"_value)")
+	g.P(g.Pkg["proto"]+".RegisterEnum(", Quote(pkg+ccTypeName), ", ", ccTypeName+"_name, ", ccTypeName+"_value)")
 }
 
 func (g *Generator) generateExtensionRegistration(ext *ExtensionDescriptor) {
-	g.P(g.ProtoPkg+".RegisterExtension(", ext.DescName(), ")")
+	g.P(g.Pkg["proto"]+".RegisterExtension(", ext.DescName(), ")")
 }
 
 // And now lots of helper functions.
