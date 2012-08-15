@@ -393,7 +393,7 @@ func (g *Generator) CommandLineParameters(parameter string) {
 		switch k {
 		case "import_prefix":
 			g.ImportPrefix = v
-		case "import_path", "go_import_path": // TODO: remove go_import_path
+		case "import_path":
 			g.PackageImportPath = v
 		default:
 			if len(k) > 0 && k[0] == 'M' {
