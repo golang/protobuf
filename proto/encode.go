@@ -197,7 +197,7 @@ func (p *Buffer) Marshal(pb Message) error {
 
 	t, b, err := getbase(pb)
 	if err == nil {
-		err = p.enc_struct(t.Elem(), b)
+		err = p.enc_struct(t.Elem(), GetProperties(t.Elem()), b)
 	}
 
 	if collectStats {
@@ -295,7 +295,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base uintptr) error {
 	obuf := o.buf
 	o.buf = o.bufalloc()
 
-	err := o.enc_struct(typ, uintptr(structp))
+	err := o.enc_struct(typ, p.sprop, uintptr(structp))
 
 	nbuf := o.buf
 	o.buf = obuf
@@ -319,7 +319,7 @@ func (o *Buffer) enc_struct_group(p *Properties, base uintptr) error {
 	o.EncodeVarint(uint64((p.Tag << 3) | WireStartGroup))
 	b := uintptr(unsafe.Pointer(v))
 	typ := p.stype.Elem()
-	err := o.enc_struct(typ, b)
+	err := o.enc_struct(typ, p.sprop, b)
 	if err != nil {
 		return err
 	}
@@ -495,7 +495,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) error {
 		obuf := o.buf
 		o.buf = o.bufalloc()
 
-		err := o.enc_struct(typ, uintptr(structp))
+		err := o.enc_struct(typ, p.sprop, uintptr(structp))
 
 		nbuf := o.buf
 		o.buf = obuf
@@ -529,7 +529,7 @@ func (o *Buffer) enc_slice_struct_group(p *Properties, base uintptr) error {
 		o.EncodeVarint(uint64((p.Tag << 3) | WireStartGroup))
 
 		b := uintptr(unsafe.Pointer(v))
-		err := o.enc_struct(typ, b)
+		err := o.enc_struct(typ, p.sprop, b)
 
 		if err != nil {
 			if err == ErrNil {
@@ -556,8 +556,7 @@ func (o *Buffer) enc_map(p *Properties, base uintptr) error {
 }
 
 // Encode a struct.
-func (o *Buffer) enc_struct(t reflect.Type, base uintptr) error {
-	prop := GetProperties(t)
+func (o *Buffer) enc_struct(t reflect.Type, prop *StructProperties, base uintptr) error {
 	required := prop.reqCount
 	// Encode fields in tag order so that decoders may use optimizations
 	// that depend on the ordering.
