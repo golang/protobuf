@@ -1511,3 +1511,30 @@ func BenchmarkUnmarshal(b *testing.B) {
 		p2.Unmarshal(pbd)
 	}
 }
+
+func BenchmarkUnmarshalUnrecognizedFields(b *testing.B) {
+	b.StopTimer()
+	pb := initGoTestField()
+	skip := &GoSkipTest{
+		SkipInt32:   Int32(32),
+		SkipFixed32: Uint32(3232),
+		SkipFixed64: Uint64(6464),
+		SkipString:  String("skipper"),
+		Skipgroup: &GoSkipTest_SkipGroup{
+			GroupInt32:  Int32(75),
+			GroupString: String("wxyz"),
+		},
+	}
+
+	pbd := new(GoTestField)
+	p := NewBuffer(nil)
+	p.Marshal(pb)
+	p.Marshal(skip)
+	p2 := NewBuffer(nil)
+
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		p2.SetBuf(p.Bytes())
+		p2.Unmarshal(pbd)
+	}
+}

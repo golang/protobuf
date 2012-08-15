@@ -213,7 +213,7 @@ func (p *Buffer) DecodeStringBytes() (s string, err error) {
 // Skip the next item in the buffer. Its wire type is decoded and presented as an argument.
 // If the protocol buffer has extensions, and the field matches, add it as an extension.
 // Otherwise, if the XXX_unrecognized field exists, append the skipped data there.
-func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base uintptr) error {
+func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base, unrecOffset uintptr) error {
 
 	oi := o.index
 
@@ -222,13 +222,11 @@ func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base uintptr) error 
 		return err
 	}
 
-	x := fieldIndex(t, "XXX_unrecognized")
-	if x == nil {
+	if unrecOffset == 0 {
 		return nil
 	}
 
-	p := propByIndex(t, x)
-	ptr := (*[]byte)(unsafe.Pointer(base + p.offset))
+	ptr := (*[]byte)(unsafe.Pointer(base + unrecOffset))
 
 	if *ptr == nil {
 		// This is the first skipped element,
@@ -286,6 +284,8 @@ func (o *Buffer) skip(t reflect.Type, tag, wire int) error {
 }
 
 // Unmarshaler is the interface representing objects that can unmarshal themselves.
+// The argument points to data that may be overwritten, so implementations should
+// not keep references to the buffer.
 type Unmarshaler interface {
 	Unmarshal([]byte) error
 }
@@ -333,7 +333,7 @@ func (p *Buffer) Unmarshal(pb Message) error {
 		return err
 	}
 
-	err = p.unmarshalType(typ, false, base)
+	err = p.unmarshalType(typ, GetProperties(typ.Elem()), false, base)
 
 	if collectStats {
 		stats.Decode++
@@ -343,9 +343,8 @@ func (p *Buffer) Unmarshal(pb Message) error {
 }
 
 // unmarshalType does the work of unmarshaling a structure.
-func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) error {
+func (o *Buffer) unmarshalType(t reflect.Type, prop *StructProperties, is_group bool, base uintptr) error {
 	st := t.Elem()
-	prop := GetProperties(st)
 	required, reqFields := prop.reqCount, uint64(0)
 
 	var err error
@@ -379,7 +378,7 @@ func (o *Buffer) unmarshalType(t reflect.Type, is_group bool, base uintptr) erro
 				}
 				continue
 			}
-			err = o.skipAndSave(st, tag, wire, base)
+			err = o.skipAndSave(st, tag, wire, base, prop.unrecOffset)
 			continue
 		}
 		p := prop.Prop[fieldnum]
@@ -656,7 +655,7 @@ func (o *Buffer) dec_struct_group(p *Properties, base uintptr) error {
 	structv := unsafe.Pointer(bas)
 	*ptr = (*struct{})(structv)
 
-	err := o.unmarshalType(p.stype, true, bas)
+	err := o.unmarshalType(p.stype, p.sprop, true, bas)
 
 	return err
 }
@@ -685,7 +684,7 @@ func (o *Buffer) dec_struct_message(p *Properties, base uintptr) (err error) {
 	o.buf = raw
 	o.index = 0
 
-	err = o.unmarshalType(p.stype, false, bas)
+	err = o.unmarshalType(p.stype, p.sprop, false, bas)
 	o.buf = obuf
 	o.index = oi
 
@@ -715,11 +714,11 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) er
 	*v = y
 
 	if is_group {
-		err := o.unmarshalType(p.stype, is_group, bas)
+		err := o.unmarshalType(p.stype, p.sprop, is_group, bas)
 		return err
 	}
 
-	raw, err := o.DecodeRawBytes(true)
+	raw, err := o.DecodeRawBytes(false)
 	if err != nil {
 		return err
 	}
@@ -735,7 +734,7 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) er
 	o.buf = raw
 	o.index = 0
 
-	err = o.unmarshalType(p.stype, is_group, bas)
+	err = o.unmarshalType(p.stype, p.sprop, is_group, bas)
 
 	o.buf = obuf
 	o.index = oi

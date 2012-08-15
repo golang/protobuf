@@ -115,7 +115,8 @@ type Properties struct {
 	offset        uintptr
 	tagcode       []byte // encoding of EncodeVarint((Tag<<3)|WireType)
 	tagbuf        [8]byte
-	stype         reflect.Type
+	stype         reflect.Type      // set for struct types only
+	sprop         *StructProperties // set for struct types only
 	isMarshaler   bool
 	isUnmarshaler bool
 
@@ -233,7 +234,7 @@ func logNoSliceEnc(t1, t2 reflect.Type) {
 var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
 
 // Initialize the fields for encoding and decoding.
-func (p *Properties) setEncAndDec(typ reflect.Type) {
+func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
 	p.enc = nil
 	p.dec = nil
 
@@ -385,6 +386,14 @@ func (p *Properties) setEncAndDec(typ reflect.Type) {
 	}
 	p.tagbuf[i] = uint8(x)
 	p.tagcode = p.tagbuf[0 : i+1]
+
+	if p.stype != nil {
+		if lockGetProp {
+			p.sprop = GetProperties(p.stype.Elem())
+		} else {
+			p.sprop = getPropertiesLocked(p.stype.Elem())
+		}
+	}
 }
 
 var (
@@ -416,6 +425,10 @@ func isUnmarshaler(t reflect.Type) bool {
 
 // Init populates the properties from a protocol buffer struct tag.
 func (p *Properties) Init(typ reflect.Type, name, tag string, offset uintptr) {
+	p.init(typ, name, tag, offset, true)
+}
+
+func (p *Properties) init(typ reflect.Type, name, tag string, offset uintptr, lockGetProp bool) {
 	// "bytes,49,opt,def=hello!"
 	p.Name = name
 	p.OrigName = name
@@ -425,7 +438,7 @@ func (p *Properties) Init(typ reflect.Type, name, tag string, offset uintptr) {
 		return
 	}
 	p.Parse(tag)
-	p.setEncAndDec(typ)
+	p.setEncAndDec(typ, lockGetProp)
 }
 
 var (
@@ -436,8 +449,14 @@ var (
 // GetProperties returns the list of properties for the type represented by t.
 func GetProperties(t reflect.Type) *StructProperties {
 	mutex.Lock()
+	sprop := getPropertiesLocked(t)
+	mutex.Unlock()
+	return sprop
+}
+
+// getPropertiesLocked requires that mutex is held.
+func getPropertiesLocked(t reflect.Type) *StructProperties {
 	if prop, ok := propertiesMap[t]; ok {
-		mutex.Unlock()
 		if collectStats {
 			stats.Chit++
 		}
@@ -448,6 +467,8 @@ func GetProperties(t reflect.Type) *StructProperties {
 	}
 
 	prop := new(StructProperties)
+	// in case of recursive protos, fill this in now.
+	propertiesMap[t] = prop
 
 	// build properties
 	prop.Prop = make([]*Properties, t.NumField())
@@ -455,7 +476,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		p := new(Properties)
-		p.Init(f.Type, f.Name, f.Tag.Get("protobuf"), f.Offset)
+		p.init(f.Type, f.Name, f.Tag.Get("protobuf"), f.Offset, false)
 		if f.Name == "XXX_extensions" { // special case
 			p.enc = (*Buffer).enc_map
 			p.dec = nil // not needed
@@ -499,18 +520,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 	}
 	prop.reqCount = reqCount
 
-	propertiesMap[t] = prop
-	mutex.Unlock()
 	return prop
-}
-
-// Return the field index of the named field.
-// Returns nil if there is no such field.
-func fieldIndex(t reflect.Type, name string) []int {
-	if field, ok := t.FieldByName(name); ok {
-		return field.Index
-	}
-	return nil
 }
 
 // Return the Properties object for the x[0]'th field of the structure.
