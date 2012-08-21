@@ -75,11 +75,49 @@ type decoder func(p *Buffer, prop *Properties, base uintptr) error
 // A valueDecoder decodes a single integer in a particular encoding.
 type valueDecoder func(o *Buffer) (x uint64, err error)
 
+// tagMap is an optimization over map[int]int for typical protocol buffer
+// use-cases. Encoded protocol buffers are often in tag order with small tag
+// numbers.
+type tagMap struct {
+	fastTags []int
+	slowTags map[int]int
+}
+
+// tagMapFastLimit is the upper bound on the tag number that will be stored in
+// the tagMap slice rather than its map.
+const tagMapFastLimit = 1024
+
+func (p *tagMap) get(t int) (int, bool) {
+	if t > 0 && t < tagMapFastLimit {
+		if t >= len(p.fastTags) {
+			return 0, false
+		}
+		fi := p.fastTags[t]
+		return fi, fi >= 0
+	}
+	fi, ok := p.slowTags[t]
+	return fi, ok
+}
+
+func (p *tagMap) put(t int, fi int) {
+	if t > 0 && t < tagMapFastLimit {
+		for len(p.fastTags) < t+1 {
+			p.fastTags = append(p.fastTags, -1)
+		}
+		p.fastTags[t] = fi
+		return
+	}
+	if p.slowTags == nil {
+		p.slowTags = make(map[int]int)
+	}
+	p.slowTags[t] = fi
+}
+
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
 	Prop      []*Properties  // properties for each field
 	reqCount  int            // required count
-	tags      map[int]int    // map from proto tag to struct field number
+	tags      tagMap         // map from proto tag to struct field number
 	origNames map[string]int // map from original name to struct field number
 	order     []int          // list of struct field numbers in tag order
 
@@ -266,7 +304,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
 			p.enc = (*Buffer).enc_string
 			p.dec = (*Buffer).dec_string
 		case reflect.Struct:
-			p.stype = t1
+			p.stype = t1.Elem()
 			p.isMarshaler = isMarshaler(t1)
 			p.isUnmarshaler = isUnmarshaler(t1)
 			if p.Wire == "bytes" {
@@ -351,7 +389,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
 				fmt.Fprintf(os.Stderr, "proto: no ptr oenc for %T -> %T -> %T\n", t1, t2, t3)
 				break
 			case reflect.Struct:
-				p.stype = t2
+				p.stype = t2.Elem()
 				p.isMarshaler = isMarshaler(t2)
 				p.isUnmarshaler = isUnmarshaler(t2)
 				p.enc = (*Buffer).enc_slice_struct_group
@@ -389,9 +427,9 @@ func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
 
 	if p.stype != nil {
 		if lockGetProp {
-			p.sprop = GetProperties(p.stype.Elem())
+			p.sprop = GetProperties(p.stype)
 		} else {
-			p.sprop = getPropertiesLocked(p.stype.Elem())
+			p.sprop = getPropertiesLocked(p.stype)
 		}
 	}
 }
@@ -504,7 +542,6 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	// build required counts
 	// build tags
 	reqCount := 0
-	prop.tags = make(map[int]int)
 	prop.origNames = make(map[string]int)
 	for i, p := range prop.Prop {
 		if strings.HasPrefix(p.Name, "XXX_") {
@@ -515,7 +552,7 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 		if p.Required {
 			reqCount++
 		}
-		prop.tags[p.Tag] = i
+		prop.tags.put(p.Tag, i)
 		prop.origNames[p.OrigName] = i
 	}
 	prop.reqCount = reqCount
