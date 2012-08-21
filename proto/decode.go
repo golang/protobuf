@@ -333,7 +333,7 @@ func (p *Buffer) Unmarshal(pb Message) error {
 		return err
 	}
 
-	err = p.unmarshalType(typ, GetProperties(typ.Elem()), false, base)
+	err = p.unmarshalType(typ.Elem(), GetProperties(typ.Elem()), false, base)
 
 	if collectStats {
 		stats.Decode++
@@ -343,8 +343,7 @@ func (p *Buffer) Unmarshal(pb Message) error {
 }
 
 // unmarshalType does the work of unmarshaling a structure.
-func (o *Buffer) unmarshalType(t reflect.Type, prop *StructProperties, is_group bool, base uintptr) error {
-	st := t.Elem()
+func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group bool, base uintptr) error {
 	required, reqFields := prop.reqCount, uint64(0)
 
 	var err error
@@ -366,7 +365,7 @@ func (o *Buffer) unmarshalType(t reflect.Type, prop *StructProperties, is_group 
 		if tag <= 0 {
 			return fmt.Errorf("proto: illegal tag %d", tag)
 		}
-		fieldnum, ok := prop.tags[tag]
+		fieldnum, ok := prop.tags.get(tag)
 		if !ok {
 			// Maybe it's an extension?
 			iv := reflect.NewAt(st, unsafe.Pointer(base)).Interface()
@@ -384,7 +383,7 @@ func (o *Buffer) unmarshalType(t reflect.Type, prop *StructProperties, is_group 
 		p := prop.Prop[fieldnum]
 
 		if p.dec == nil {
-			fmt.Fprintf(os.Stderr, "proto: no protobuf decoder for %s.%s\n", t, st.Field(fieldnum).Name)
+			fmt.Fprintf(os.Stderr, "proto: no protobuf decoder for %s.%s\n", st, st.Field(fieldnum).Name)
 			continue
 		}
 		dec := p.dec
@@ -650,8 +649,7 @@ func (o *Buffer) dec_slice_slice_byte(p *Properties, base uintptr) error {
 // Decode a group.
 func (o *Buffer) dec_struct_group(p *Properties, base uintptr) error {
 	ptr := (**struct{})(unsafe.Pointer(base + p.offset))
-	typ := p.stype.Elem()
-	bas := reflect.New(typ).Pointer()
+	bas := reflect.New(p.stype).Pointer()
 	structv := unsafe.Pointer(bas)
 	*ptr = (*struct{})(structv)
 
@@ -668,14 +666,13 @@ func (o *Buffer) dec_struct_message(p *Properties, base uintptr) (err error) {
 	}
 
 	ptr := (**struct{})(unsafe.Pointer(base + p.offset))
-	typ := p.stype.Elem()
-	bas := reflect.New(typ).Pointer()
+	bas := reflect.New(p.stype).Pointer()
 	structp := unsafe.Pointer(bas)
 	*ptr = (*struct{})(structp)
 
 	// If the object can unmarshal itself, let it.
 	if p.isMarshaler {
-		iv := reflect.NewAt(p.stype.Elem(), structp).Interface()
+		iv := reflect.NewAt(p.stype, structp).Interface()
 		return iv.(Unmarshaler).Unmarshal(raw)
 	}
 
@@ -707,8 +704,7 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) er
 	v := (*[]*struct{})(unsafe.Pointer(base + p.offset))
 	y := *v
 
-	typ := p.stype.Elem()
-	bas := reflect.New(typ).Pointer()
+	bas := reflect.New(p.stype).Pointer()
 	structp := unsafe.Pointer(bas)
 	y = append(y, (*struct{})(structp))
 	*v = y
@@ -725,7 +721,7 @@ func (o *Buffer) dec_slice_struct(p *Properties, is_group bool, base uintptr) er
 
 	// If the object can unmarshal itself, let it.
 	if p.isUnmarshaler {
-		iv := reflect.NewAt(typ, structp).Interface()
+		iv := reflect.NewAt(p.stype, structp).Interface()
 		return iv.(Unmarshaler).Unmarshal(raw)
 	}
 

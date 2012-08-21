@@ -276,11 +276,9 @@ func (o *Buffer) enc_struct_message(p *Properties, base uintptr) error {
 		return ErrNil
 	}
 
-	typ := p.stype.Elem()
-
 	// Can the object marshal itself?
 	if p.isMarshaler {
-		m := reflect.NewAt(typ, structp).Interface().(Marshaler)
+		m := reflect.NewAt(p.stype, structp).Interface().(Marshaler)
 		data, err := m.Marshal()
 		if err != nil {
 			return err
@@ -295,7 +293,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base uintptr) error {
 	obuf := o.buf
 	o.buf = o.bufalloc()
 
-	err := o.enc_struct(typ, p.sprop, uintptr(structp))
+	err := o.enc_struct(p.stype, p.sprop, uintptr(structp))
 
 	nbuf := o.buf
 	o.buf = obuf
@@ -318,8 +316,7 @@ func (o *Buffer) enc_struct_group(p *Properties, base uintptr) error {
 
 	o.EncodeVarint(uint64((p.Tag << 3) | WireStartGroup))
 	b := uintptr(unsafe.Pointer(v))
-	typ := p.stype.Elem()
-	err := o.enc_struct(typ, p.sprop, b)
+	err := o.enc_struct(p.stype, p.sprop, b)
 	if err != nil {
 		return err
 	}
@@ -472,7 +469,6 @@ func (o *Buffer) enc_slice_string(p *Properties, base uintptr) error {
 func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) error {
 	s := *(*[]unsafe.Pointer)(unsafe.Pointer(base + p.offset))
 	l := len(s)
-	typ := p.stype.Elem()
 
 	for i := 0; i < l; i++ {
 		structp := s[i]
@@ -482,7 +478,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) error {
 
 		// Can the object marshal itself?
 		if p.isMarshaler {
-			m := reflect.NewAt(typ, structp).Interface().(Marshaler)
+			m := reflect.NewAt(p.stype, structp).Interface().(Marshaler)
 			data, err := m.Marshal()
 			if err != nil {
 				return err
@@ -495,7 +491,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) error {
 		obuf := o.buf
 		o.buf = o.bufalloc()
 
-		err := o.enc_struct(typ, p.sprop, uintptr(structp))
+		err := o.enc_struct(p.stype, p.sprop, uintptr(structp))
 
 		nbuf := o.buf
 		o.buf = obuf
@@ -518,7 +514,6 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base uintptr) error {
 func (o *Buffer) enc_slice_struct_group(p *Properties, base uintptr) error {
 	s := *(*[]*struct{})(unsafe.Pointer(base + p.offset))
 	l := len(s)
-	typ := p.stype.Elem()
 
 	for i := 0; i < l; i++ {
 		v := s[i]
@@ -529,7 +524,7 @@ func (o *Buffer) enc_slice_struct_group(p *Properties, base uintptr) error {
 		o.EncodeVarint(uint64((p.Tag << 3) | WireStartGroup))
 
 		b := uintptr(unsafe.Pointer(v))
-		err := o.enc_struct(typ, p.sprop, b)
+		err := o.enc_struct(p.stype, p.sprop, b)
 
 		if err != nil {
 			if err == ErrNil {
