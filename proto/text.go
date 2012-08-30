@@ -91,7 +91,7 @@ func (w *textWriter) indent() { w.ind++ }
 
 func (w *textWriter) unindent() {
 	if w.ind == 0 {
-		log.Printf("proto: textWriter unindented too far!")
+		log.Printf("proto: textWriter unindented too far")
 		return
 	}
 	w.ind--
@@ -456,7 +456,7 @@ func MarshalTextString(pb Message) string {
 	return buf.String()
 }
 
-// CompactText writes a given protocl buffer in compact text format (one line).
+// CompactText writes a given protocol buffer in compact text format (one line).
 func CompactText(w io.Writer, pb Message) { marshalText(w, pb, true) }
 
 // CompactTextString is the same as CompactText, but returns the string directly.

@@ -1221,6 +1221,14 @@ func TestRequiredFieldEnforcement(t *testing.T) {
 	}
 }
 
+func TestTypedNilMarshal(t *testing.T) {
+	// A typed nil should return ErrNil and not crash.
+	_, err := Marshal((*GoEnum)(nil))
+	if err != ErrNil {
+		t.Errorf("Marshal: got err %v, want ErrNil", err)
+	}
+}
+
 // A type that implements the Marshaler interface, but is not nillable.
 type nonNillableInt uint64
 
