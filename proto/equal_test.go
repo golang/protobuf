@@ -32,7 +32,6 @@
 package proto_test
 
 import (
-	"log"
 	"testing"
 
 	pb "./testdata"
@@ -56,32 +55,32 @@ func init() {
 
 	// messageWithExtension1a has ext1, but never marshals it.
 	if err := SetExtension(messageWithExtension1a, pb.E_Ext_More, ext1); err != nil {
-		log.Panicf("SetExtension on 1a failed: %v", err)
+		panic("SetExtension on 1a failed: " + err.Error())
 	}
 
 	// messageWithExtension1b is the unmarshaled form of messageWithExtension1a.
 	if err := SetExtension(messageWithExtension1b, pb.E_Ext_More, ext1); err != nil {
-		log.Panicf("SetExtension on 1b failed: %v", err)
+		panic("SetExtension on 1b failed: " + err.Error())
 	}
 	buf, err := Marshal(messageWithExtension1b)
 	if err != nil {
-		log.Panicf("Marshal of 1b failed: %v", err)
+		panic("Marshal of 1b failed: " + err.Error())
 	}
 	messageWithExtension1b.Reset()
 	if err := Unmarshal(buf, messageWithExtension1b); err != nil {
-		log.Panicf("Unmarshal of 1b failed: %v", err)
+		panic("Unmarshal of 1b failed: " + err.Error())
 	}
 
 	// messageWithExtension2 has ext2.
 	if err := SetExtension(messageWithExtension2, pb.E_Ext_More, ext2); err != nil {
-		log.Panicf("SetExtension on 2 failed: %v", err)
+		panic("SetExtension on 2 failed: " + err.Error())
 	}
 
 	if err := SetExtension(messageWithInt32Extension1, pb.E_Ext_Number, Int32(23)); err != nil {
-		log.Panicf("SetExtension on Int32-1 failed: %v", err)
+		panic("SetExtension on Int32-1 failed: " + err.Error())
 	}
 	if err := SetExtension(messageWithInt32Extension1, pb.E_Ext_Number, Int32(24)); err != nil {
-		log.Panicf("SetExtension on Int32-2 failed: %v", err)
+		panic("SetExtension on Int32-2 failed: " + err.Error())
 	}
 }
 

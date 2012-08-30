@@ -32,7 +32,6 @@
 package proto_test
 
 import (
-	"log"
 	"testing"
 
 	"code.google.com/p/goprotobuf/proto"
@@ -62,7 +61,7 @@ func init() {
 		Data: proto.String("extension"),
 	}
 	if err := proto.SetExtension(cloneTestMessage, pb.E_Ext_More, ext); err != nil {
-		log.Fatalf("SetExtension: %v", err)
+		panic("SetExtension: " + err.Error())
 	}
 }
 

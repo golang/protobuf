@@ -196,6 +196,9 @@ func (p *Buffer) Marshal(pb Message) error {
 	}
 
 	t, b, err := getbase(pb)
+	if b == 0 {
+		return ErrNil
+	}
 	if err == nil {
 		err = p.enc_struct(t.Elem(), GetProperties(t.Elem()), b)
 	}
