@@ -72,19 +72,16 @@ func (ed *ExtensionDesc) repeated() bool {
 	return t.Kind() == reflect.Slice && t.Elem().Kind() != reflect.Uint8
 }
 
-/*
-Extension represents an extension in a message.
-
-When an extension is stored in a message using SetExtension
-only desc and value are set. When the message is marshaled
-enc will be set to the encoded form of the message.
-
-When a message is unmarshaled and contains extensions, each
-extension will have only enc set. When such an extension is
-accessed using GetExtension (or GetExtensions) desc and value
-will be set.
-*/
+// Extension represents an extension in a message.
 type Extension struct {
+	// When an extension is stored in a message using SetExtension
+	// only desc and value are set. When the message is marshaled
+	// enc will be set to the encoded form of the message.
+	//
+	// When a message is unmarshaled and contains extensions, each
+	// extension will have only enc set. When such an extension is
+	// accessed using GetExtension (or GetExtensions) desc and value
+	// will be set.
 	desc  *ExtensionDesc
 	value interface{}
 	enc   []byte
@@ -163,6 +160,8 @@ func ClearExtension(pb extendableProto, extension *ExtensionDesc) {
 
 // GetExtension parses and returns the given extension of pb.
 // If the extension is not present it returns ErrMissingExtension.
+// If the returned extension is modified, SetExtension must be called
+// for the modifications to be reflected in pb.
 func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, error) {
 	if err := checkExtensionTypes(pb, extension); err != nil {
 		return nil, err
