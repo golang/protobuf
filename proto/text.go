@@ -105,8 +105,7 @@ func writeName(w *textWriter, props *Properties) {
 }
 
 var (
-	messageSetType      = reflect.TypeOf((*MessageSet)(nil)).Elem()
-	extendableProtoType = reflect.TypeOf((*extendableProto)(nil)).Elem()
+	messageSetType = reflect.TypeOf((*MessageSet)(nil)).Elem()
 )
 
 // raw is the interface satisfied by RawMessage.

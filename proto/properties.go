@@ -62,7 +62,7 @@ const startSize = 10 // initial slice/string sizes
 // Encoders are defined in encoder.go
 // An encoder outputs the full representation of a field, including its
 // tag and encoder type.
-type encoder func(p *Buffer, prop *Properties, base uintptr) error
+type encoder func(p *Buffer, prop *Properties, base structPointer) error
 
 // A valueEncoder encodes a single integer in a particular encoding.
 type valueEncoder func(o *Buffer, x uint64) error
@@ -70,7 +70,7 @@ type valueEncoder func(o *Buffer, x uint64) error
 // Decoders are defined in decode.go
 // A decoder creates a value from its wire representation.
 // Unrecognized subelements are saved in unrec.
-type decoder func(p *Buffer, prop *Properties, base uintptr) error
+type decoder func(p *Buffer, prop *Properties, base structPointer) error
 
 // A valueDecoder decodes a single integer in a particular encoding.
 type valueDecoder func(o *Buffer) (x uint64, err error)
@@ -115,13 +115,13 @@ func (p *tagMap) put(t int, fi int) {
 
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
-	Prop      []*Properties  // properties for each field
-	reqCount  int            // required count
-	tags      tagMap         // map from proto tag to struct field number
-	origNames map[string]int // map from original name to struct field number
-	order     []int          // list of struct field numbers in tag order
-
-	unrecOffset uintptr // offset of the XXX_unrecognized []byte field
+	Prop       []*Properties  // properties for each field
+	reqCount   int            // required count
+	tags       tagMap         // map from proto tag to struct field number
+	origNames  map[string]int // map from original name to struct field number
+	order      []int          // list of struct field numbers in tag order
+	unrecField field          // field id of the XXX_unrecognized []byte field
+	extendable bool           // is this an extendable proto
 }
 
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
@@ -150,7 +150,7 @@ type Properties struct {
 
 	enc           encoder
 	valEnc        valueEncoder // set for bool and numeric types only
-	offset        uintptr
+	field         field
 	tagcode       []byte // encoding of EncodeVarint((Tag<<3)|WireType)
 	tagbuf        [8]byte
 	stype         reflect.Type      // set for struct types only
@@ -462,16 +462,17 @@ func isUnmarshaler(t reflect.Type) bool {
 }
 
 // Init populates the properties from a protocol buffer struct tag.
-func (p *Properties) Init(typ reflect.Type, name, tag string, offset uintptr) {
-	p.init(typ, name, tag, offset, true)
+func (p *Properties) Init(typ reflect.Type, name, tag string, f *reflect.StructField) {
+	p.init(typ, name, tag, f, true)
 }
 
-func (p *Properties) init(typ reflect.Type, name, tag string, offset uintptr, lockGetProp bool) {
+func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructField, lockGetProp bool) {
 	// "bytes,49,opt,def=hello!"
 	p.Name = name
 	p.OrigName = name
-	p.offset = offset
-
+	if f != nil {
+		p.field = toField(f)
+	}
 	if tag == "" {
 		return
 	}
@@ -509,18 +510,20 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	propertiesMap[t] = prop
 
 	// build properties
+	prop.extendable = reflect.PtrTo(t).Implements(extendableProtoType)
+	prop.unrecField = invalidField
 	prop.Prop = make([]*Properties, t.NumField())
 	prop.order = make([]int, t.NumField())
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		p := new(Properties)
-		p.init(f.Type, f.Name, f.Tag.Get("protobuf"), f.Offset, false)
+		p.init(f.Type, f.Name, f.Tag.Get("protobuf"), &f, false)
 		if f.Name == "XXX_extensions" { // special case
 			p.enc = (*Buffer).enc_map
 			p.dec = nil // not needed
 		}
 		if f.Name == "XXX_unrecognized" { // special case
-			prop.unrecOffset = f.Offset
+			prop.unrecField = toField(&f)
 		}
 		prop.Prop[i] = p
 		prop.order[i] = i
@@ -571,7 +574,7 @@ func propByIndex(t reflect.Type, x []int) *Properties {
 }
 
 // Get the address and type of a pointer to a struct from an interface.
-func getbase(pb Message) (t reflect.Type, b uintptr, err error) {
+func getbase(pb Message) (t reflect.Type, b structPointer, err error) {
 	if pb == nil {
 		err = ErrNil
 		return
@@ -580,7 +583,7 @@ func getbase(pb Message) (t reflect.Type, b uintptr, err error) {
 	t = reflect.TypeOf(pb)
 	// get the address of the struct.
 	value := reflect.ValueOf(pb)
-	b = value.Pointer()
+	b = toStructPointer(value)
 	return
 }
 

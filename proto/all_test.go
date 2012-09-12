@@ -1470,50 +1470,74 @@ func fuzzUnmarshal(t *testing.T, data []byte) {
 	Unmarshal(data, pb)
 }
 
-func BenchmarkMarshal(b *testing.B) {
-	b.StopTimer()
-
+func benchmarkMsg(bytes bool) *GoTest {
 	pb := initGoTest(true)
-
-	// Create an array
-	const N = 1000 // Internally the library starts much smaller.
-	pb.F_Int32Repeated = make([]int32, N)
-	pb.F_DoubleRepeated = make([]float64, N)
-
-	// Fill in the array with some values.
-	for i := 0; i < N; i++ {
-		pb.F_Int32Repeated[i] = int32(i)
-		pb.F_DoubleRepeated[i] = float64(i)
+	if bytes {
+		buf := make([]byte, 4000)
+		for i := range buf {
+			buf[i] = byte(i)
+		}
+		pb.F_BytesDefaulted = buf
+	} else {
+		const N = 1000 // Internally the library starts much smaller.
+		pb.F_Int32Repeated = make([]int32, N)
+		pb.F_DoubleRepeated = make([]float64, N)
+		for i := 0; i < N; i++ {
+			pb.F_Int32Repeated[i] = int32(i)
+			pb.F_DoubleRepeated[i] = float64(i)
+		}
 	}
+	return pb
+}
 
+func BenchmarkMarshal(b *testing.B) {
+	pb := benchmarkMsg(false)
 	p := NewBuffer(nil)
 
-	b.StartTimer()
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		p.Reset()
 		p.Marshal(pb)
 	}
+	b.SetBytes(int64(len(p.Bytes())))
 }
 
 func BenchmarkUnmarshal(b *testing.B) {
-	b.StopTimer()
-
-	pb := initGoTest(true)
-
-	// Create an array
-	const N = 1000 // Internally the library starts much smaller.
-	pb.F_Int32Repeated = make([]int32, N)
-
-	// Fill in the array with some values.
-	for i := 0; i < N; i++ {
-		pb.F_Int32Repeated[i] = int32(i)
-	}
-	pbd := new(GoTest)
+	pb := benchmarkMsg(false)
 	p := NewBuffer(nil)
 	p.Marshal(pb)
+	b.SetBytes(int64(len(p.Bytes())))
 	p2 := NewBuffer(nil)
+	pbd := new(GoTest)
 
-	b.StartTimer()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		p2.SetBuf(p.Bytes())
+		p2.Unmarshal(pbd)
+	}
+}
+
+func BenchmarkMarshalBytes(b *testing.B) {
+	pb := benchmarkMsg(true)
+	p := NewBuffer(nil)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		p.Reset()
+		p.Marshal(pb)
+	}
+	b.SetBytes(int64(len(p.Bytes())))
+}
+
+func BenchmarkUnmarshalBytes(b *testing.B) {
+	pb := benchmarkMsg(true)
+	p := NewBuffer(nil)
+	p.Marshal(pb)
+	b.SetBytes(int64(len(p.Bytes())))
+	p2 := NewBuffer(nil)
+	pbd := new(GoTest)
+
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		p2.SetBuf(p.Bytes())
 		p2.Unmarshal(pbd)
