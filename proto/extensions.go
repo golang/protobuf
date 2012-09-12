@@ -57,6 +57,8 @@ type extendableProto interface {
 	ExtensionMap() map[int32]Extension
 }
 
+var extendableProtoType = reflect.TypeOf((*extendableProto)(nil)).Elem()
+
 // ExtensionDesc represents an extension specification.
 // Used in generated code from the protocol compiler.
 type ExtensionDesc struct {
@@ -129,14 +131,14 @@ func encodeExtensionMap(m map[int32]Extension) error {
 
 		et := reflect.TypeOf(e.desc.ExtensionType)
 		props := new(Properties)
-		props.Init(et, "unknown_name", e.desc.Tag, 0)
+		props.Init(et, "unknown_name", e.desc.Tag, nil)
 
 		p := NewBuffer(nil)
-		// The encoder must be passed a pointer to e.value.
-		// Allocate a copy of value so that we can use its address.
+		// If e.value has type T, the encoder expects a *struct{ X T }.
+		// Pass a *T with a zero field and hope it all works out.
 		x := reflect.New(et)
 		x.Elem().Set(reflect.ValueOf(e.value))
-		if err := props.enc(p, props, x.Pointer()); err != nil {
+		if err := props.enc(p, props, toStructPointer(x)); err != nil {
 			return err
 		}
 		e.enc = p.buf
@@ -203,12 +205,14 @@ func decodeExtension(b []byte, extension *ExtensionDesc) (interface{}, error) {
 	rep := extension.repeated()
 
 	props := &Properties{}
-	props.Init(t, "irrelevant_name", extension.Tag, 0)
+	props.Init(t, "irrelevant_name", extension.Tag, nil)
 
 	// t is a pointer to a struct, pointer to basic type or a slice.
 	// Allocate a "field" to store the pointer/slice itself; the
 	// pointer/slice will be stored here. We pass
 	// the address of this field to props.dec.
+	// This passes a zero field and a *t and lets props.dec
+	// interpret it as a *struct{ x t }.
 	value := reflect.New(t).Elem()
 
 	for {
@@ -217,7 +221,7 @@ func decodeExtension(b []byte, extension *ExtensionDesc) (interface{}, error) {
 			return nil, err
 		}
 
-		if err := props.dec(o, props, value.UnsafeAddr()); err != nil {
+		if err := props.dec(o, props, toStructPointer(value.Addr())); err != nil {
 			return nil, err
 		}
 
