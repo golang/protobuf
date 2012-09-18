@@ -56,7 +56,7 @@ func (e *ErrRequiredNotSet) Error() string {
 var (
 	// ErrRepeatedHasNil is the error returned if Marshal is called with
 	// a struct with a repeated field containing a nil element.
-	ErrRepeatedHasNil = errors.New("proto: repeated field has nil")
+	ErrRepeatedHasNil = errors.New("proto: repeated field has nil element")
 
 	// ErrNil is the error returned if Marshal is called with nil.
 	ErrNil = errors.New("proto: Marshal called with nil")
