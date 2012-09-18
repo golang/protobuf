@@ -1,6 +1,5 @@
-// Go support for Protocol Buffers - Google's data interchange format
 //
-// Copyright 2010 Google Inc.  All rights reserved.
+// Copyright 2012 Google Inc.  All rights reserved.
 // http://code.google.com/p/goprotobuf/
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,29 +30,6 @@
 
 package imp;
 
-import "imp2.proto";
-import "imp3.proto";
-
-message ImportedMessage {
-  required int64 field = 1;
-
-  // The forwarded getters for these fields are fiddly to get right.
-  optional ImportedMessage2 local_msg = 2;
-  optional ForeignImportedMessage foreign_msg = 3;  // in imp3.proto
-  optional Owner enum_field = 4;
-
-  enum Owner {
-    DAVE = 1;
-    MIKE = 2;
-  }
-
-  extensions 90 to 100;
-}
-
-message ImportedMessage2 {
-}
-
-message ImportedExtendable {
-  option message_set_wire_format = true;
-  extensions 100 to max;
+message ForeignImportedMessage {
+  optional string tuber = 1;
 }

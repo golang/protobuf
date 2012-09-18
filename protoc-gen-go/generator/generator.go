@@ -266,9 +266,17 @@ type Symbol interface {
 type messageSymbol struct {
 	sym                         string
 	hasExtensions, isMessageSet bool
+	getters                     []getterSymbol
 }
 
-func (ms messageSymbol) GenerateAlias(g *Generator, pkg string) {
+type getterSymbol struct {
+	name     string
+	typ      string
+	typeName string // canonical name in proto world; empty for proto.Message and similar
+	genType  bool   // whether typ is a generated type (message/group/enum)
+}
+
+func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 	remoteSym := pkg + "." + ms.sym
 
 	g.P("type ", ms.sym, " ", remoteSym)
@@ -285,6 +293,26 @@ func (ms messageSymbol) GenerateAlias(g *Generator, pkg string) {
 				"{ return (*", remoteSym, ")(this).Marshal() }")
 			g.P("func (this *", ms.sym, ") Unmarshal(buf []byte) error ",
 				"{ return (*", remoteSym, ")(this).Unmarshal(buf) }")
+		}
+	}
+	for _, get := range ms.getters {
+		typ := get.typ
+		val := "(*" + remoteSym + ")(this)." + get.name + "()"
+		if get.genType {
+			// typ will be "*pkg.T" (message/group) or "pkg.T" (enum).
+			// Drop the package qualifier since we have hoisted the type into this package.
+			star := typ[0] == '*'
+			typ = typ[strings.Index(typ, ".")+1:]
+			if star {
+				typ = "*" + typ
+			}
+			// Convert imported type into the forwarding type.
+			val = "(" + typ + ")(" + val + ")"
+		}
+
+		g.P("func (this *", ms.sym, ") ", get.name, "() ", typ, " { return ", val, " }")
+		if get.typeName != "" {
+			g.RecordTypeUse(get.typeName)
 		}
 	}
 }
@@ -1345,8 +1373,6 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.P("}")
 	}
 
-	g.file.addExport(message, messageSymbol{ccTypeName, hasExtensions, isMessageSet})
-
 	// Default constants
 	defNames := make(map[*descriptor.FieldDescriptorProto]string)
 	for _, field := range message.Field {
@@ -1398,7 +1424,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.P()
 
 	// Field getters
-	// TODO: Generate getters for publicly imported aliases, if required.
+	var getters []getterSymbol
 	for _, field := range message.Field {
 		if isRepeated(field) {
 			continue
@@ -1411,6 +1437,35 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			typename = typename[1:]
 			star = "*"
 		}
+
+		// Only export getter symbols for basic types,
+		// and for messages, groups and enums in the same package.
+		// Foreign types can't be hoisted through a public import because
+		// the importer may not already be importing the defining .proto.
+		// As an example, imagine we have an import tree like this:
+		//   A.proto -> B.proto -> C.proto
+		// If A publicly imports B, we need to generate the getters from B in A's output,
+		// but if one such getter returns something from C then we cannot do that
+		// because A is not importing C already.
+		var getter, genType bool
+		switch *field.Type {
+		case descriptor.FieldDescriptorProto_TYPE_GROUP, descriptor.FieldDescriptorProto_TYPE_MESSAGE,
+			descriptor.FieldDescriptorProto_TYPE_ENUM:
+			// Only export getter if its return type is in this package.
+			getter = g.ObjectNamed(field.GetTypeName()).PackageName() == message.PackageName()
+			genType = true
+		default:
+			getter = true
+		}
+		if getter {
+			getters = append(getters, getterSymbol{
+				name:     mname,
+				typ:      typename,
+				typeName: field.GetTypeName(),
+				genType:  genType,
+			})
+		}
+
 		g.P("func (this *", ccTypeName, ") "+mname+"() "+typename+" {")
 		g.In()
 		def, hasDef := defNames[field]
@@ -1462,6 +1517,8 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.P("}")
 		g.P()
 	}
+
+	g.file.addExport(message, &messageSymbol{ccTypeName, hasExtensions, isMessageSet, getters})
 
 	for _, ext := range message.ext {
 		g.generateExtension(ext)
