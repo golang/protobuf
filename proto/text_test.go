@@ -218,13 +218,30 @@ func TestStringEscaping(t *testing.T) {
 			&pb.Strings{StringField: proto.String("\350\260\267\346\255\214")},
 			"string_field: \"\\350\\260\\267\\346\\255\\214\"\n",
 		},
+		{
+			// Some UTF-8.
+			&pb.Strings{StringField: proto.String("\x00\x01\xff\x81")},
+			`string_field: "\000\001\377\201"` + "\n",
+		},
 	}
 
 	for i, tc := range testCases {
 		var buf bytes.Buffer
 		proto.MarshalText(&buf, tc.in)
-		if s := buf.String(); s != tc.out {
+		s := buf.String()
+		if s != tc.out {
 			t.Errorf("#%d: Got:\n%s\nExpected:\n%s\n", i, s, tc.out)
+			continue
+		}
+
+		// Check round-trip.
+		pb := new(pb.Strings)
+		if err := proto.UnmarshalText(s, pb); err != nil {
+			t.Errorf("#%d: UnmarshalText: %v", i, err)
+			continue
+		}
+		if !proto.Equal(pb, tc.in) {
+			t.Errorf("#%d: Round-trip failed:\nstart: %v\n  end: %v", i, tc.in, pb)
 		}
 	}
 }

@@ -120,6 +120,33 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		},
 	},
 
+	// Quoted string with all the accepted special characters from the C++ test
+	{
+		in: `count:42 name: ` + "\"\\\"A string with \\' characters \\n and \\r newlines and \\t tabs and \\001 slashes \\\\ and  multiple   spaces\"",
+		out: &MyMessage{
+			Count: Int32(42),
+			Name:  String("\"A string with ' characters \n and \r newlines and \t tabs and \001 slashes \\ and  multiple   spaces"),
+		},
+	},
+
+	// Quoted string with quoted backslash
+	{
+		in: `count:42 name: "\\'xyz"`,
+		out: &MyMessage{
+			Count: Int32(42),
+			Name:  String(`\'xyz`),
+		},
+	},
+
+	// Quoted string with UTF-8 bytes.
+	{
+		in: "count:42 name: '\303\277\302\201\xAB'",
+		out: &MyMessage{
+			Count: Int32(42),
+			Name:  String("\303\277\302\201\xAB"),
+		},
+	},
+
 	// Bad quoted string
 	{
 		in:  `inner: < host: "\0" >` + "\n",
