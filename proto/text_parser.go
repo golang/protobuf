@@ -35,10 +35,12 @@ package proto
 // TODO: message sets.
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
 type ParseError struct {
@@ -169,7 +171,7 @@ func (p *textParser) advance() {
 			p.errorf("unmatched quote")
 			return
 		}
-		unq, err := unquoteC(p.s[0 : i+1])
+		unq, err := unquoteC(p.s[1:i], rune(p.s[0]))
 		if err != nil {
 			p.errorf("invalid quoted string %v", p.s[0:i+1])
 			return
@@ -190,35 +192,131 @@ func (p *textParser) advance() {
 	p.offset += len(p.cur.value)
 }
 
-// quoteSwap returns a single quote for a double quote, and vice versa.
-// It is intended to be used with strings.Map.
-func quoteSwap(r rune) rune {
-	switch r {
-	case '\'':
-		return '"'
-	case '"':
-		return '\''
+var (
+	errBadUTF8 = errors.New("bad UTF-8")
+	errBadHex  = errors.New("bad hexadecimal")
+)
+
+func unquoteC(s string, quote rune) (string, error) {
+	// This is based on C++'s tokenizer.cc.
+	// Despite its name, this is *not* parsing C syntax.
+	// For instance, "\0" is an invalid quoted string.
+
+	// Avoid allocation in trivial cases.
+	simple := true
+	for _, r := range s {
+		if r == '\\' || r == quote {
+			simple = false
+			break
+		}
 	}
-	return r
+	if simple {
+		return s, nil
+	}
+
+	buf := make([]byte, 0, 3*len(s)/2)
+	for len(s) > 0 {
+		r, n := utf8.DecodeRuneInString(s)
+		if r == utf8.RuneError && n == 1 {
+			return "", errBadUTF8
+		}
+		s = s[n:]
+		if r != '\\' {
+			if r < utf8.RuneSelf {
+				buf = append(buf, byte(r))
+			} else {
+				buf = append(buf, string(r)...)
+			}
+			continue
+		}
+
+		ch, tail, err := unescape(s)
+		if err != nil {
+			return "", err
+		}
+		buf = append(buf, ch...)
+		s = tail
+	}
+	return string(buf), nil
 }
 
-func unquoteC(s string) (string, error) {
-	// TODO: This is getting hacky. We should replace it work a self-contained parser.
-
-	// strconv.Unquote is for Go strings, but text format strings may use
-	// single *or* double quotes.
-	if s[0] == '\'' {
-		s = strings.Map(quoteSwap, s)
-		s, err := unquoteC(s)
-		s = strings.Map(quoteSwap, s)
-		return s, err
+func unescape(s string) (ch string, tail string, err error) {
+	r, n := utf8.DecodeRuneInString(s)
+	if r == utf8.RuneError && n == 1 {
+		return "", "", errBadUTF8
 	}
+	s = s[n:]
+	switch r {
+	case 'a':
+		return "\a", s, nil
+	case 'b':
+		return "\b", s, nil
+	case 'f':
+		return "\f", s, nil
+	case 'n':
+		return "\n", s, nil
+	case 'r':
+		return "\r", s, nil
+	case 't':
+		return "\t", s, nil
+	case 'v':
+		return "\v", s, nil
+	case '?':
+		return "?", s, nil // trigraph workaround
+	case '\'', '"', '\\':
+		return string(r), s, nil
+	case '0', '1', '2', '3', '4', '5', '6', '7', 'x', 'X':
+		if len(s) < 2 {
+			return "", "", fmt.Errorf(`\%c requires 2 following digits`, r)
+		}
+		base := 8
+		ss := s[:2]
+		s = s[2:]
+		if r == 'x' || r == 'X' {
+			base = 16
+		} else {
+			ss = string(r) + ss
+		}
+		i, err := strconv.ParseUint(ss, base, 8)
+		if err != nil {
+			return "", "", err
+		}
+		return string([]byte{byte(i)}), s, nil
+	case 'u', 'U':
+		n := 4
+		if r == 'U' {
+			n = 8
+		}
+		if len(s) < n {
+			return "", "", fmt.Errorf(`\%c requires %d digits`, r, n)
+		}
 
-	// A notable divergence between quoted string literals in Go
-	// and what is acceptable for text format protocol buffers:
-	// the former considers \' invalid, but the latter considers it valid.
-	s = strings.Replace(s, `\'`, "'", -1)
-	return strconv.Unquote(s)
+		bs := make([]byte, n/2)
+		for i := 0; i < n; i += 2 {
+			a, ok1 := unhex(s[i])
+			b, ok2 := unhex(s[i+1])
+			if !ok1 || !ok2 {
+				return "", "", errBadHex
+			}
+			bs[i/2] = a<<4 | b
+		}
+		s = s[n:]
+		return string(bs), s, nil
+	}
+	return "", "", fmt.Errorf(`unknown escape \%c`, r)
+}
+
+// Adapted from src/pkg/strconv/quote.go.
+func unhex(b byte) (v byte, ok bool) {
+	switch {
+	case '0' <= b && b <= '9':
+		return b - '0', true
+	case 'a' <= b && b <= 'f':
+		return b - 'a' + 10, true
+	case 'A' <= b && b <= 'F':
+		return b - 'A' + 10, true
+	}
+	return 0, false
 }
 
 // Back off the parser by one token. Can only be done between calls to next().
