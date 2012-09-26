@@ -364,7 +364,7 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group
 		if tag <= 0 {
 			return fmt.Errorf("proto: illegal tag %d", tag)
 		}
-		fieldnum, ok := prop.tags.get(tag)
+		fieldnum, ok := prop.decoderTags.get(tag)
 		if !ok {
 			// Maybe it's an extension?
 			if prop.extendable {
