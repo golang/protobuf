@@ -114,14 +114,15 @@ func (p *tagMap) put(t int, fi int) {
 }
 
 // StructProperties represents properties for all the fields of a struct.
+// decoderTags and decoderOrigNames should only be used by the decoder.
 type StructProperties struct {
-	Prop       []*Properties  // properties for each field
-	reqCount   int            // required count
-	tags       tagMap         // map from proto tag to struct field number
-	origNames  map[string]int // map from original name to struct field number
-	order      []int          // list of struct field numbers in tag order
-	unrecField field          // field id of the XXX_unrecognized []byte field
-	extendable bool           // is this an extendable proto
+	Prop             []*Properties  // properties for each field
+	reqCount         int            // required count
+	decoderTags      tagMap         // map from proto tag to struct field number
+	decoderOrigNames map[string]int // map from original name to struct field number
+	order            []int          // list of struct field numbers in tag order
+	unrecField       field          // field id of the XXX_unrecognized []byte field
+	extendable       bool           // is this an extendable proto
 }
 
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
@@ -545,7 +546,7 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	// build required counts
 	// build tags
 	reqCount := 0
-	prop.origNames = make(map[string]int)
+	prop.decoderOrigNames = make(map[string]int)
 	for i, p := range prop.Prop {
 		if strings.HasPrefix(p.Name, "XXX_") {
 			// Internal fields should not appear in tags/origNames maps.
@@ -555,8 +556,8 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 		if p.Required {
 			reqCount++
 		}
-		prop.tags.put(p.Tag, i)
-		prop.origNames[p.OrigName] = i
+		prop.decoderTags.put(p.Tag, i)
+		prop.decoderOrigNames[p.OrigName] = i
 	}
 	prop.reqCount = reqCount
 

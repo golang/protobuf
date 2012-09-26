@@ -374,7 +374,7 @@ func (p *textParser) missingRequiredFieldError(sv reflect.Value) *ParseError {
 // Returns the index in the struct for the named field, as well as the parsed tag properties.
 func structFieldByName(st reflect.Type, name string) (int, *Properties, bool) {
 	sprops := GetProperties(st)
-	i, ok := sprops.origNames[name]
+	i, ok := sprops.decoderOrigNames[name]
 	if ok {
 		return i, sprops.Prop[i], true
 	}

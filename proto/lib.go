@@ -697,7 +697,7 @@ type scalarField struct {
 func buildDefaultMessage(t reflect.Type) (dm defaultMessage) {
 	sprop := GetProperties(t)
 	for _, prop := range sprop.Prop {
-		fi, ok := sprop.tags.get(prop.Tag)
+		fi, ok := sprop.decoderTags.get(prop.Tag)
 		if !ok {
 			// XXX_unrecognized
 			continue
