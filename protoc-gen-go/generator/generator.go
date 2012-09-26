@@ -103,6 +103,7 @@ type Descriptor struct {
 	nested   []*Descriptor          // Inner messages, if any.
 	ext      []*ExtensionDescriptor // Extensions, if any.
 	typename []string               // Cached typename vector.
+	index    int                    // If a top-level message, the index into message_type.
 }
 
 // TypeName returns the elements of the dotted type name.
@@ -645,8 +646,8 @@ func (g *Generator) buildNestedDescriptors(descs []*Descriptor) {
 }
 
 // Construct the Descriptor and add it to the slice
-func addDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto) []*Descriptor {
-	d := &Descriptor{common{file}, desc, parent, nil, nil, nil}
+func addDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto, index int) []*Descriptor {
+	d := &Descriptor{common{file}, desc, parent, nil, nil, nil, index}
 
 	d.ext = make([]*ExtensionDescriptor, len(desc.Extension))
 	for i, field := range desc.Extension {
@@ -659,18 +660,18 @@ func addDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *D
 // Return a slice of all the Descriptors defined within this file
 func wrapDescriptors(file *descriptor.FileDescriptorProto) []*Descriptor {
 	sl := make([]*Descriptor, 0, len(file.MessageType)+10)
-	for _, desc := range file.MessageType {
-		sl = wrapThisDescriptor(sl, desc, nil, file)
+	for i, desc := range file.MessageType {
+		sl = wrapThisDescriptor(sl, desc, nil, file, i)
 	}
 	return sl
 }
 
 // Wrap this Descriptor, recursively
-func wrapThisDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto) []*Descriptor {
-	sl = addDescriptor(sl, desc, parent, file)
+func wrapThisDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto, index int) []*Descriptor {
+	sl = addDescriptor(sl, desc, parent, file, index)
 	me := sl[len(sl)-1]
 	for _, nested := range desc.NestedType {
-		sl = wrapThisDescriptor(sl, nested, me, file)
+		sl = wrapThisDescriptor(sl, nested, me, file, 0)
 	}
 	return sl
 }
@@ -803,6 +804,8 @@ func (g *Generator) P(str ...interface{}) {
 			g.WriteString(fmt.Sprintf("%t", s))
 		case *bool:
 			g.WriteString(fmt.Sprintf("%t", *s))
+		case int:
+			g.WriteString(fmt.Sprintf("%d", s))
 		case *int32:
 			g.WriteString(fmt.Sprintf("%d", *s))
 		case float64:
@@ -1283,6 +1286,7 @@ var methodNames = [...]string{
 	"Unmarshal",
 	"ExtensionRangeArray",
 	"ExtensionMap",
+	"Descriptor",
 }
 
 // Generate the type and default constant definitions for this Descriptor.
