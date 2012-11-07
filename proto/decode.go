@@ -282,9 +282,11 @@ func (o *Buffer) skip(t reflect.Type, tag, wire int) error {
 	return err
 }
 
-// Unmarshaler is the interface representing objects that can unmarshal themselves.
-// The argument points to data that may be overwritten, so implementations should
-// not keep references to the buffer.
+// Unmarshaler is the interface representing objects that can
+// unmarshal themselves.  The method should reset the receiver before
+// decoding starts.  The argument points to data that may be
+// overwritten, so implementations should not keep references to the
+// buffer.
 type Unmarshaler interface {
 	Unmarshal([]byte) error
 }
