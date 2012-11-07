@@ -685,13 +685,10 @@ func (this *GoTest) GetOptionalgroup() *GoTest_OptionalGroup {
 }
 
 type GoTest_RequiredGroup struct {
-	RequiredField    *string `protobuf:"bytes,71,req" json:"RequiredField,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	RequiredField *string `protobuf:"bytes,71,req" json:"RequiredField,omitempty"`
 }
 
-func (this *GoTest_RequiredGroup) Reset()         { *this = GoTest_RequiredGroup{} }
-func (this *GoTest_RequiredGroup) String() string { return proto.CompactTextString(this) }
-func (*GoTest_RequiredGroup) ProtoMessage()       {}
+func (this *GoTest_RequiredGroup) Reset() { *this = GoTest_RequiredGroup{} }
 
 func (this *GoTest_RequiredGroup) GetRequiredField() string {
 	if this != nil && this.RequiredField != nil {
@@ -701,13 +698,10 @@ func (this *GoTest_RequiredGroup) GetRequiredField() string {
 }
 
 type GoTest_RepeatedGroup struct {
-	RequiredField    *string `protobuf:"bytes,81,req" json:"RequiredField,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	RequiredField *string `protobuf:"bytes,81,req" json:"RequiredField,omitempty"`
 }
 
-func (this *GoTest_RepeatedGroup) Reset()         { *this = GoTest_RepeatedGroup{} }
-func (this *GoTest_RepeatedGroup) String() string { return proto.CompactTextString(this) }
-func (*GoTest_RepeatedGroup) ProtoMessage()       {}
+func (this *GoTest_RepeatedGroup) Reset() { *this = GoTest_RepeatedGroup{} }
 
 func (this *GoTest_RepeatedGroup) GetRequiredField() string {
 	if this != nil && this.RequiredField != nil {
@@ -717,13 +711,10 @@ func (this *GoTest_RepeatedGroup) GetRequiredField() string {
 }
 
 type GoTest_OptionalGroup struct {
-	RequiredField    *string `protobuf:"bytes,91,req" json:"RequiredField,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	RequiredField *string `protobuf:"bytes,91,req" json:"RequiredField,omitempty"`
 }
 
-func (this *GoTest_OptionalGroup) Reset()         { *this = GoTest_OptionalGroup{} }
-func (this *GoTest_OptionalGroup) String() string { return proto.CompactTextString(this) }
-func (*GoTest_OptionalGroup) ProtoMessage()       {}
+func (this *GoTest_OptionalGroup) Reset() { *this = GoTest_OptionalGroup{} }
 
 func (this *GoTest_OptionalGroup) GetRequiredField() string {
 	if this != nil && this.RequiredField != nil {
@@ -781,14 +772,11 @@ func (this *GoSkipTest) GetSkipgroup() *GoSkipTest_SkipGroup {
 }
 
 type GoSkipTest_SkipGroup struct {
-	GroupInt32       *int32  `protobuf:"varint,16,req,name=group_int32" json:"group_int32,omitempty"`
-	GroupString      *string `protobuf:"bytes,17,req,name=group_string" json:"group_string,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	GroupInt32  *int32  `protobuf:"varint,16,req,name=group_int32" json:"group_int32,omitempty"`
+	GroupString *string `protobuf:"bytes,17,req,name=group_string" json:"group_string,omitempty"`
 }
 
-func (this *GoSkipTest_SkipGroup) Reset()         { *this = GoSkipTest_SkipGroup{} }
-func (this *GoSkipTest_SkipGroup) String() string { return proto.CompactTextString(this) }
-func (*GoSkipTest_SkipGroup) ProtoMessage()       {}
+func (this *GoSkipTest_SkipGroup) Reset() { *this = GoSkipTest_SkipGroup{} }
 
 func (this *GoSkipTest_SkipGroup) GetGroupInt32() int32 {
 	if this != nil && this.GroupInt32 != nil {
@@ -1059,13 +1047,10 @@ func (this *MyMessage) GetSomegroup() *MyMessage_SomeGroup {
 }
 
 type MyMessage_SomeGroup struct {
-	GroupField       *int32 `protobuf:"varint,9,opt,name=group_field" json:"group_field,omitempty"`
-	XXX_unrecognized []byte `json:"-"`
+	GroupField *int32 `protobuf:"varint,9,opt,name=group_field" json:"group_field,omitempty"`
 }
 
-func (this *MyMessage_SomeGroup) Reset()         { *this = MyMessage_SomeGroup{} }
-func (this *MyMessage_SomeGroup) String() string { return proto.CompactTextString(this) }
-func (*MyMessage_SomeGroup) ProtoMessage()       {}
+func (this *MyMessage_SomeGroup) Reset() { *this = MyMessage_SomeGroup{} }
 
 func (this *MyMessage_SomeGroup) GetGroupField() int32 {
 	if this != nil && this.GroupField != nil {
@@ -1124,14 +1109,11 @@ func (this *MessageList) String() string { return proto.CompactTextString(this) 
 func (*MessageList) ProtoMessage()       {}
 
 type MessageList_Message struct {
-	Name             *string `protobuf:"bytes,2,req,name=name" json:"name,omitempty"`
-	Count            *int32  `protobuf:"varint,3,req,name=count" json:"count,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	Name  *string `protobuf:"bytes,2,req,name=name" json:"name,omitempty"`
+	Count *int32  `protobuf:"varint,3,req,name=count" json:"count,omitempty"`
 }
 
-func (this *MessageList_Message) Reset()         { *this = MessageList_Message{} }
-func (this *MessageList_Message) String() string { return proto.CompactTextString(this) }
-func (*MessageList_Message) ProtoMessage()       {}
+func (this *MessageList_Message) Reset() { *this = MessageList_Message{} }
 
 func (this *MessageList_Message) GetName() string {
 	if this != nil && this.Name != nil {
@@ -1370,6 +1352,19 @@ type RepeatedEnum struct {
 func (this *RepeatedEnum) Reset()         { *this = RepeatedEnum{} }
 func (this *RepeatedEnum) String() string { return proto.CompactTextString(this) }
 func (*RepeatedEnum) ProtoMessage()       {}
+
+type MoreRepeated struct {
+	Bools            []bool   `protobuf:"varint,1,rep,name=bools" json:"bools,omitempty"`
+	BoolsPacked      []bool   `protobuf:"varint,2,rep,packed,name=bools_packed" json:"bools_packed,omitempty"`
+	Ints             []int32  `protobuf:"varint,3,rep,name=ints" json:"ints,omitempty"`
+	IntsPacked       []int32  `protobuf:"varint,4,rep,packed,name=ints_packed" json:"ints_packed,omitempty"`
+	Strings          []string `protobuf:"bytes,5,rep,name=strings" json:"strings,omitempty"`
+	XXX_unrecognized []byte   `json:"-"`
+}
+
+func (this *MoreRepeated) Reset()         { *this = MoreRepeated{} }
+func (this *MoreRepeated) String() string { return proto.CompactTextString(this) }
+func (*MoreRepeated) ProtoMessage()       {}
 
 var E_Greeting = &proto.ExtensionDesc{
 	ExtendedType:  (*MyMessage)(nil),

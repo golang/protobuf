@@ -324,3 +324,11 @@ message RepeatedEnum {
   }
   repeated Color color = 1;
 }
+
+message MoreRepeated {
+  repeated bool bools = 1;
+  repeated bool bools_packed = 2 [packed=true];
+  repeated int32 ints = 3;
+  repeated int32 ints_packed = 4 [packed=true];
+  repeated string strings = 5;
+}
