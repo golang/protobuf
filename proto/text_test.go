@@ -148,6 +148,15 @@ func TestMarshalTextFull(t *testing.T) {
 	}
 }
 
+func BenchmarkMarshalTextFull(b *testing.B) {
+	buf := new(bytes.Buffer)
+	m := newTestMessage()
+	for i := 0; i < b.N; i++ {
+		buf.Reset()
+		proto.MarshalText(buf, m)
+	}
+}
+
 func compact(src string) string {
 	// s/[ \n]+/ /g; s/ $//;
 	dst := make([]byte, len(src))
