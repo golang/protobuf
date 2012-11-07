@@ -66,7 +66,12 @@ func copyStruct(out, in reflect.Value) {
 		copyExtension(emOut.ExtensionMap(), emIn.ExtensionMap())
 	}
 
-	uin := in.FieldByName("XXX_unrecognized").Bytes()
+	// Groups don't have XXX_unrecognized fields.
+	uf := in.FieldByName("XXX_unrecognized")
+	if !uf.IsValid() {
+		return
+	}
+	uin := uf.Bytes()
 	if len(uin) > 0 {
 		out.FieldByName("XXX_unrecognized").SetBytes(append([]byte(nil), uin...))
 	}

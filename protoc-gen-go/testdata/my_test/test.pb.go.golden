@@ -219,13 +219,10 @@ func (this *Request) GetReset_() int32 {
 }
 
 type Request_SomeGroup struct {
-	GroupField       *int32 `protobuf:"varint,9,opt,name=group_field" json:"group_field,omitempty"`
-	XXX_unrecognized []byte `json:"-"`
+	GroupField *int32 `protobuf:"varint,9,opt,name=group_field" json:"group_field,omitempty"`
 }
 
-func (this *Request_SomeGroup) Reset()         { *this = Request_SomeGroup{} }
-func (this *Request_SomeGroup) String() string { return proto.CompactTextString(this) }
-func (*Request_SomeGroup) ProtoMessage()       {}
+func (this *Request_SomeGroup) Reset() { *this = Request_SomeGroup{} }
 
 func (this *Request_SomeGroup) GetGroupField() int32 {
 	if this != nil && this.GroupField != nil {

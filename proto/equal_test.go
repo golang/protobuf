@@ -138,6 +138,23 @@ var EqualTests = []struct {
 
 	{"int32 extension vs. itself", messageWithInt32Extension1, messageWithInt32Extension1, true},
 	{"int32 extension vs. a different int32", messageWithInt32Extension1, messageWithInt32Extension2, false},
+
+	{
+		"message with group",
+		&pb.MyMessage{
+			Count: Int32(1),
+			Somegroup: &pb.MyMessage_SomeGroup{
+				GroupField: Int32(5),
+			},
+		},
+		&pb.MyMessage{
+			Count: Int32(1),
+			Somegroup: &pb.MyMessage_SomeGroup{
+				GroupField: Int32(5),
+			},
+		},
+		true,
+	},
 }
 
 func TestEqual(t *testing.T) {
