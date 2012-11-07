@@ -44,46 +44,87 @@ import (
 	"strings"
 )
 
+var (
+	newline         = []byte("\n")
+	spaces          = []byte("                                        ")
+	gtNewline       = []byte(">\n")
+	endBraceNewline = []byte("}\n")
+	backslashN      = []byte{'\\', 'n'}
+	backslashR      = []byte{'\\', 'r'}
+	backslashT      = []byte{'\\', 't'}
+	backslashDQ     = []byte{'\\', '"'}
+	backslashBS     = []byte{'\\', '\\'}
+)
+
 // textWriter is an io.Writer that tracks its indentation level.
 type textWriter struct {
-	ind      int
-	complete bool // if the current position is a complete line
-	compact  bool // whether to write out as a one-liner
-	writer   io.Writer
+	ind       int
+	complete  bool // if the current position is a complete line
+	compact   bool // whether to write out as a one-liner
+	writer    io.Writer
+	writeByte func(byte) error // write a single byte to writer
+}
 
-	c [1]byte // scratch
+func (w *textWriter) WriteString(s string) (n int, err error) {
+	if !strings.Contains(s, "\n") {
+		if !w.compact && w.complete {
+			w.writeIndent()
+		}
+		w.complete = false
+		return io.WriteString(w.writer, s)
+	}
+	// WriteString is typically called without newlines, so this
+	// codepath and its copy are rare.  We copy to avoid
+	// duplicating all of Write's logic here.
+	return w.Write([]byte(s))
 }
 
 func (w *textWriter) Write(p []byte) (n int, err error) {
 	n, err = len(p), nil
 
-	frags := strings.Split(string(p), "\n")
+	newlines := bytes.Count(p, newline)
+	if newlines == 0 {
+		if !w.compact && w.complete {
+			w.writeIndent()
+		}
+		w.writer.Write(p)
+		w.complete = false
+		return
+	}
+
+	frags := bytes.SplitN(p, newline, newlines+1)
 	if w.compact {
-		w.writer.Write([]byte(strings.Join(frags, " ")))
+		for i, frag := range frags {
+			if i > 0 {
+				w.writeByte(' ')
+			}
+			w.writer.Write(frag)
+		}
 		return
 	}
 
 	for i, frag := range frags {
 		if w.complete {
-			for j := 0; j < w.ind; j++ {
-				w.writer.Write([]byte{' ', ' '})
-			}
-			w.complete = false
+			w.writeIndent()
 		}
-
-		w.writer.Write([]byte(frag))
+		w.writer.Write(frag)
 		if i+1 < len(frags) {
-			w.writer.Write([]byte{'\n'})
+			w.writeByte('\n')
 		}
 	}
 	w.complete = len(frags[len(frags)-1]) == 0
-
 	return
 }
 
 func (w *textWriter) WriteByte(c byte) error {
-	w.c[0] = c
-	_, err := w.Write(w.c[:])
+	if w.compact && c == '\n' {
+		c = ' '
+	}
+	if !w.compact && w.complete {
+		w.writeIndent()
+	}
+	err := w.writeByte(c)
+	w.complete = c == '\n'
 	return err
 }
 
@@ -255,8 +296,7 @@ func isprint(c byte) bool {
 // These differences are to maintain interoperability with the other
 // languages' implementations of the text format.
 func writeString(w *textWriter, s string) {
-	w.WriteByte('"')
-
+	w.WriteByte('"') // use WriteByte here to get any needed indent
 	// Loop over the bytes, not the runes.
 	for i := 0; i < len(s); i++ {
 		// Divergence from C++: we don't escape apostrophes.
@@ -264,24 +304,23 @@ func writeString(w *textWriter, s string) {
 		// copes with a naked apostrophe.
 		switch c := s[i]; c {
 		case '\n':
-			w.Write([]byte{'\\', 'n'})
+			w.writer.Write(backslashN)
 		case '\r':
-			w.Write([]byte{'\\', 'r'})
+			w.writer.Write(backslashR)
 		case '\t':
-			w.Write([]byte{'\\', 't'})
+			w.writer.Write(backslashT)
 		case '"':
-			w.Write([]byte{'\\', '"'})
+			w.writer.Write(backslashDQ)
 		case '\\':
-			w.Write([]byte{'\\', '\\'})
+			w.writer.Write(backslashBS)
 		default:
 			if isprint(c) {
-				w.WriteByte(c)
+				w.writeByte(c)
 			} else {
-				fmt.Fprintf(w, "\\%03o", c)
+				fmt.Fprintf(w.writer, "\\%03o", c)
 			}
 		}
 	}
-
 	w.WriteByte('"')
 }
 
@@ -306,7 +345,7 @@ func writeMessageSet(w *textWriter, ms *MessageSet) {
 			writeUnknownStruct(w, item.Message)
 		}
 		w.unindent()
-		w.Write([]byte(">\n"))
+		w.Write(gtNewline)
 	}
 }
 
@@ -324,7 +363,7 @@ func writeUnknownStruct(w *textWriter, data []byte) {
 		wire, tag := x&7, x>>3
 		if wire == WireEndGroup {
 			w.unindent()
-			w.Write([]byte("}\n"))
+			w.Write(endBraceNewline)
 			continue
 		}
 		fmt.Fprintf(w, "tag%d", tag)
@@ -349,7 +388,7 @@ func writeUnknownStruct(w *textWriter, data []byte) {
 			x, err := b.DecodeFixed64()
 			writeUnknownInt(w, x, err)
 		case WireStartGroup:
-			fmt.Fprint(w, "{")
+			w.WriteByte('{')
 			w.indent()
 		case WireVarint:
 			x, err := b.DecodeVarint()
@@ -430,6 +469,26 @@ func writeExtension(w *textWriter, name string, pb interface{}) {
 	w.WriteByte('\n')
 }
 
+func (w *textWriter) writeIndent() {
+	if !w.complete {
+		return
+	}
+	remain := w.ind * 2
+	for remain > 0 {
+		n := remain
+		if n > len(spaces) {
+			n = len(spaces)
+		}
+		w.writer.Write(spaces[:n])
+		remain -= n
+	}
+	w.complete = false
+}
+
+type byteWriter interface {
+	WriteByte(byte) error
+}
+
 func marshalText(w io.Writer, pb Message, compact bool) {
 	if pb == nil {
 		w.Write([]byte("<nil>"))
@@ -439,6 +498,19 @@ func marshalText(w io.Writer, pb Message, compact bool) {
 	aw.writer = w
 	aw.complete = true
 	aw.compact = compact
+
+	if bw, ok := w.(byteWriter); ok {
+		aw.writeByte = func(c byte) error {
+			return bw.WriteByte(c)
+		}
+	} else {
+		var scratch [1]byte
+		aw.writeByte = func(c byte) error {
+			scratch[0] = c
+			_, err := w.Write(scratch[:])
+			return err
+		}
+	}
 
 	// Dereference the received pointer so we don't have outer < and >.
 	v := reflect.Indirect(reflect.ValueOf(pb))
