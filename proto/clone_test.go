@@ -53,6 +53,9 @@ var cloneTestMessage = &pb.MyMessage{
 			Value: []byte("some bytes"),
 		},
 	},
+	Somegroup: &pb.MyMessage_SomeGroup{
+		GroupField: proto.Int32(6),
+	},
 	RepBytes: [][]byte{[]byte("sham"), []byte("wow")},
 }
 

@@ -126,7 +126,13 @@ func equalStruct(v1, v2 reflect.Value) bool {
 		}
 	}
 
-	u1 := v1.FieldByName("XXX_unrecognized").Bytes()
+	// Groups don't have XXX_unrecognized.
+	uf := v1.FieldByName("XXX_unrecognized")
+	if !uf.IsValid() {
+		return true
+	}
+
+	u1 := uf.Bytes()
 	u2 := v2.FieldByName("XXX_unrecognized").Bytes()
 	if !bytes.Equal(u1, u2) {
 		return false

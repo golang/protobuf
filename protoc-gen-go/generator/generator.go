@@ -104,6 +104,7 @@ type Descriptor struct {
 	ext      []*ExtensionDescriptor // Extensions, if any.
 	typename []string               // Cached typename vector.
 	index    int                    // If a top-level message, the index into message_type.
+	group    bool
 }
 
 // TypeName returns the elements of the dotted type name.
@@ -647,7 +648,23 @@ func (g *Generator) buildNestedDescriptors(descs []*Descriptor) {
 
 // Construct the Descriptor and add it to the slice
 func addDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto, index int) []*Descriptor {
-	d := &Descriptor{common{file}, desc, parent, nil, nil, nil, index}
+	d := &Descriptor{common{file}, desc, parent, nil, nil, nil, index, false}
+
+	// The only way to distinguish a group from a message is whether
+	// the containing message has a TYPE_GROUP field that matches.
+	if parent != nil {
+		parts := d.TypeName()
+		if file.Package != nil {
+			parts = append([]string{*file.Package}, parts...)
+		}
+		exp := "." + strings.Join(parts, ".")
+		for _, field := range parent.Field {
+			if field.GetType() == descriptor.FieldDescriptorProto_TYPE_GROUP && field.GetTypeName() == exp {
+				d.group = true
+				break
+			}
+		}
+	}
 
 	d.ext = make([]*ExtensionDescriptor, len(desc.Extension))
 	for i, field := range desc.Extension {
@@ -1303,6 +1320,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	fieldNames := make(map[*descriptor.FieldDescriptorProto]string)
 	g.P("type ", ccTypeName, " struct {")
 	g.In()
+
 	for _, field := range message.Field {
 		fieldname := CamelCase(*field.Name)
 		for usedNames[fieldname] {
@@ -1312,21 +1330,25 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		fieldNames[field] = fieldname
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
-		tag := fmt.Sprintf("`protobuf:%s json:%q`", g.goTag(field, wiretype), jsonName+",omitempty")
-		g.P(fieldname, "\t", typename, "\t", tag)
+		tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(field, wiretype), jsonName+",omitempty")
+		g.P(fieldname, "\t", typename, "\t`", tag, "`")
 		g.RecordTypeUse(field.GetTypeName())
 	}
 	if len(message.ExtensionRange) > 0 {
 		g.P("XXX_extensions\t\tmap[int32]", g.Pkg["proto"], ".Extension `json:\"-\"`")
 	}
-	g.P("XXX_unrecognized\t[]byte `json:\"-\"`")
+	if !message.group {
+		g.P("XXX_unrecognized\t[]byte `json:\"-\"`")
+	}
 	g.Out()
 	g.P("}")
 
 	// Reset, String and ProtoMessage methods.
 	g.P("func (this *", ccTypeName, ") Reset() { *this = ", ccTypeName, "{} }")
-	g.P("func (this *", ccTypeName, ") String() string { return ", g.Pkg["proto"], ".CompactTextString(this) }")
-	g.P("func (*", ccTypeName, ") ProtoMessage() {}")
+	if !message.group {
+		g.P("func (this *", ccTypeName, ") String() string { return ", g.Pkg["proto"], ".CompactTextString(this) }")
+		g.P("func (*", ccTypeName, ") ProtoMessage() {}")
+	}
 
 	// Extension support methods
 	var hasExtensions, isMessageSet bool
@@ -1443,7 +1465,8 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		}
 
 		// Only export getter symbols for basic types,
-		// and for messages, groups and enums in the same package.
+		// and for messages and enums in the same package.
+		// Groups are not exported.
 		// Foreign types can't be hoisted through a public import because
 		// the importer may not already be importing the defining .proto.
 		// As an example, imagine we have an import tree like this:
@@ -1453,8 +1476,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		// because A is not importing C already.
 		var getter, genType bool
 		switch *field.Type {
-		case descriptor.FieldDescriptorProto_TYPE_GROUP, descriptor.FieldDescriptorProto_TYPE_MESSAGE,
-			descriptor.FieldDescriptorProto_TYPE_ENUM:
+		case descriptor.FieldDescriptorProto_TYPE_GROUP:
+			getter = false
+		case descriptor.FieldDescriptorProto_TYPE_MESSAGE, descriptor.FieldDescriptorProto_TYPE_ENUM:
 			// Only export getter if its return type is in this package.
 			getter = g.ObjectNamed(field.GetTypeName()).PackageName() == message.PackageName()
 			genType = true
@@ -1522,7 +1546,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.P()
 	}
 
-	g.file.addExport(message, &messageSymbol{ccTypeName, hasExtensions, isMessageSet, getters})
+	if !message.group {
+		g.file.addExport(message, &messageSymbol{ccTypeName, hasExtensions, isMessageSet, getters})
+	}
 
 	for _, ext := range message.ext {
 		g.generateExtension(ext)
