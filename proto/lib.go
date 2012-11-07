@@ -787,7 +787,3 @@ func buildDefaultMessage(t reflect.Type) (dm defaultMessage) {
 
 	return dm
 }
-
-// Leave name around for transition.
-// Generated code still says 'var _ = proto.GetString'.
-var GetString struct{}
