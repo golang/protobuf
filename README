@@ -28,28 +28,23 @@ There are no insertion points in the plugin.
 
 To install this code:
 
-The simplest way is to run goinstall.
+The simplest way is to run go get.
 
 	# Grab the code from the repository and install the proto package.
-	goinstall code.google.com/p/goprotobuf/proto
-
-	# Compile and install the compiler plugin
-	cd $GOROOT/src/pkg/code.google.com/p/goprotobuf/compiler
-	make install
+	go get -u code.google.com/p/goprotobuf/{proto,protoc-gen-go}
 
 The compiler plugin, protoc-gen-go, will be installed in $GOBIN,
-defaulting to $HOME/bin.  It must be in your $PATH for the protocol
+defaulting to $GOPATH/bin.  It must be in your $PATH for the protocol
 compiler, protoc, to find it.
 
 Once the software is installed, there are two steps to using it.
 First you must compile the protocol buffer definitions and then import
 them, with the support library, into your program.
 
-To compile the protocol buffer definition, write a Makefile in the
-style shown in the comment in the file Make.protobuf.  If your Makefile
-includes Make.protobuf, the rest should follow automatically.  The
-generated code can be compiled separately or as part of a normal Go
-package.
+To compile the protocol buffer definition, run protoc with the --go_out
+parameter set to the directory you want to output the Go code to.
+
+	protoc --go_out=. *.proto
 
 The generated files will be suffixed .pb.go.  See the Test code below
 for an example using such a file.
