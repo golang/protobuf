@@ -1,5 +1,5 @@
 Go support for Protocol Buffers - Google's data interchange format
-Copyright 2010 Google Inc.
+Copyright 2010 The Go Authors.
 http://code.google.com/p/goprotobuf/
 
 This software implements Go bindings for protocol buffers.  For

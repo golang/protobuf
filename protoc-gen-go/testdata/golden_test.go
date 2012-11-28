@@ -1,6 +1,6 @@
 // Go support for Protocol Buffers - Google's data interchange format
 //
-// Copyright 2013 Google Inc.  All rights reserved.
+// Copyright 2012 The Go Authors.  All rights reserved.
 // http://code.google.com/p/goprotobuf/
 //
 // Redistribution and use in source and binary forms, with or without
