@@ -1,17 +1,3 @@
-# This is a list of contributors to the Go protobuf repository.
-
-# Names should be added to this file like so:
-#     Name <email address>
-
-# Please keep the list sorted.
-
-
-Dave Cheney <dave@cheney.net>
-David Symonds <dsymonds@golang.org>
-Jeff Hodges <jeff@somethingsimilar.com>
-Jonathan Hseu <jhseu@google.com>
-Ken Thompson <ken@golang.org>
-Mikkel Krautz <mikkel@krautz.dk> <krautz@gmail.com>
-Nigel Tao <nigeltao@golang.org>
-Rob Pike <r@golang.org>
-Russ Cox <rsc@golang.org>
+# This source code was written by the Go contributors.
+# The master list of contributors is in the main Go distribution,
+# visible at http://tip.golang.org/CONTRIBUTORS.
