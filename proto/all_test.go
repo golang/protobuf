@@ -1457,6 +1457,35 @@ func TestAppend(t *testing.T) {
 	}
 }
 
+func TestExtensionMarshalOrder(t *testing.T) {
+	m := &MyMessage{Count: Int32(123)}
+	if err := SetExtension(m, E_Ext_More, &Ext{Data: String("alpha")}); err != nil {
+		t.Fatalf("SetExtension: %v", err)
+	}
+	if err := SetExtension(m, E_Ext_Text, String("aleph")); err != nil {
+		t.Fatalf("SetExtension: %v", err)
+	}
+	if err := SetExtension(m, E_Ext_Number, Int32(1)); err != nil {
+		t.Fatalf("SetExtension: %v", err)
+	}
+
+	// Serialize m several times, and check we get the same bytes each time.
+	var orig []byte
+	for i := 0; i < 10; i++ {
+		b, err := Marshal(m)
+		if err != nil {
+			t.Fatalf("Marshal: %v", err)
+		}
+		if i == 0 {
+			orig = b
+			continue
+		}
+		if !bytes.Equal(b, orig) {
+			t.Errorf("Bytes differ on attempt #%d", i)
+		}
+	}
+}
+
 func fuzzUnmarshal(t *testing.T, data []byte) {
 	defer func() {
 		if e := recover(); e != nil {
