@@ -252,6 +252,8 @@ message MyMessage {
   // This field becomes [][]byte in the generated code.
   repeated bytes rep_bytes = 10;
 
+  optional double bigfloat = 11;
+
   extensions 100 to max;
 }
 
