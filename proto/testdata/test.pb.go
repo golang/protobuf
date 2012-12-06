@@ -982,6 +982,7 @@ type MyMessage struct {
 	Bikeshed         *MyMessage_Color          `protobuf:"varint,7,opt,name=bikeshed,enum=testdata.MyMessage_Color" json:"bikeshed,omitempty"`
 	Somegroup        *MyMessage_SomeGroup      `protobuf:"group,8,opt,name=SomeGroup" json:"somegroup,omitempty"`
 	RepBytes         [][]byte                  `protobuf:"bytes,10,rep,name=rep_bytes" json:"rep_bytes,omitempty"`
+	Bigfloat         *float64                  `protobuf:"fixed64,11,opt,name=bigfloat" json:"bigfloat,omitempty"`
 	XXX_extensions   map[int32]proto.Extension `json:"-"`
 	XXX_unrecognized []byte                    `json:"-"`
 }
@@ -1044,6 +1045,13 @@ func (this *MyMessage) GetSomegroup() *MyMessage_SomeGroup {
 		return this.Somegroup
 	}
 	return nil
+}
+
+func (this *MyMessage) GetBigfloat() float64 {
+	if this != nil && this.Bigfloat != nil {
+		return *this.Bigfloat
+	}
+	return 0
 }
 
 type MyMessage_SomeGroup struct {
