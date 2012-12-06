@@ -40,6 +40,8 @@ import (
 )
 
 var messageWithExtension1 = &pb.MyMessage{Count: Int32(7)}
+
+// messageWithExtension2 is in equal_test.go.
 var messageWithExtension3 = &pb.MyMessage{Count: Int32(8)}
 
 func init() {
