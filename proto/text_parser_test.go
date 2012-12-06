@@ -32,6 +32,7 @@
 package proto_test
 
 import (
+	"math"
 	"reflect"
 	"testing"
 
@@ -194,6 +195,24 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		},
 	},
 
+	// Floating point positive infinity
+	{
+		in: "count: 4 bigfloat: inf",
+		out: &MyMessage{
+			Count:    Int32(4),
+			Bigfloat: Float64(math.Inf(1)),
+		},
+	},
+
+	// Floating point negative infinity
+	{
+		in: "count: 4 bigfloat: -inf",
+		out: &MyMessage{
+			Count:    Int32(4),
+			Bigfloat: Float64(math.Inf(-1)),
+		},
+	},
+
 	// Number too large for float32
 	{
 		in:  "others:< weight: 12345678901234567890123456789012345678901234567890 >",
@@ -293,6 +312,23 @@ var unMarshalTextTests = []UnmarshalTextTest{
 			Somegroup: &MyMessage_SomeGroup{
 				GroupField: Int32(12),
 			},
+		},
+	},
+
+	// Semicolon between fields
+	{
+		in: `count:3;name:"Calvin"`,
+		out: &MyMessage{
+			Count: Int32(3),
+			Name:  String("Calvin"),
+		},
+	},
+	// Comma between fields
+	{
+		in: `count:4,name:"Ezekiel"`,
+		out: &MyMessage{
+			Count: Int32(4),
+			Name:  String("Ezekiel"),
 		},
 	},
 

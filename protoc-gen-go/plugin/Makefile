@@ -37,7 +37,7 @@ regenerate:
 	cd $(HOME)/src/protobuf-2.3.0/src && \
 	protoc --go_out=. ./google/protobuf/compiler/plugin.proto && \
 	cat ./google/protobuf/compiler/plugin.pb.go | \
-		sed '/^import/s;google/protobuf/descriptor.pb;code.google.com/p/goprotobuf/protoc-gen-go/descriptor;' >$(GOROOT)/src/pkg/code.google.com/p/goprotobuf/protoc-gen-go/plugin/plugin.pb.go
+		sed '/^import/s;google/protobuf/descriptor.pb;code.google.com/p/goprotobuf/protoc-gen-go/descriptor;' > $(GOPATH)/src/code.google.com/p/goprotobuf/protoc-gen-go/plugin/plugin.pb.go
 
 restore:
 	cp plugin.pb.golden plugin.pb.go
