@@ -233,7 +233,7 @@ type FileDescriptor struct {
 	// The full list of symbols that are exported,
 	// as a map from the exported object to its symbols.
 	// This is used for supporting public imports.
-	exported map[Object][]Symbol
+	exported map[Object][]symbol
 }
 
 // PackageName is the package name we'll use in the generated code to refer to this file.
@@ -251,15 +251,15 @@ func (d *FileDescriptor) goPackageName() (name string, explicit bool) {
 		return pkg, false
 	}
 	// Use the file base name.
-	return BaseName(d.GetName()), false
+	return baseName(d.GetName()), false
 }
 
-func (d *FileDescriptor) addExport(obj Object, symbol Symbol) {
-	d.exported[obj] = append(d.exported[obj], symbol)
+func (d *FileDescriptor) addExport(obj Object, sym symbol) {
+	d.exported[obj] = append(d.exported[obj], sym)
 }
 
-// Symbol is an interface representing an exported Go symbol.
-type Symbol interface {
+// symbol is an interface representing an exported Go symbol.
+type symbol interface {
 	// GenerateAlias should generate an appropriate alias
 	// for the symbol from the named package.
 	GenerateAlias(g *Generator, pkg string)
@@ -454,7 +454,7 @@ var pkgNamesInUse = make(map[string]bool)
 // has no file descriptor.
 func RegisterUniquePackageName(pkg string, f *FileDescriptor) string {
 	// Convert dots to underscores before finding a unique alias.
-	pkg = strings.Map(BadToUnderscore, pkg)
+	pkg = strings.Map(badToUnderscore, pkg)
 
 	for i, orig := 1, pkg; pkgNamesInUse[pkg]; i++ {
 		// It's a duplicate; must rename.
@@ -507,7 +507,7 @@ func (g *Generator) defaultGoPackage() string {
 		return ""
 	}
 
-	p = strings.Map(BadToUnderscore, p)
+	p = strings.Map(badToUnderscore, p)
 	// Identifier must not be keyword: insert _.
 	if isGoKeyword[p] {
 		p = "_" + p
@@ -584,7 +584,7 @@ AllFiles:
 		// because that is only relevant for its specific generated output.
 		pkg := f.GetPackage()
 		if pkg == "" {
-			pkg = BaseName(*f.Name)
+			pkg = baseName(*f.Name)
 		}
 		RegisterUniquePackageName(pkg, f)
 	}
@@ -608,7 +608,7 @@ func (g *Generator) WrapTypes() {
 			enum:                enums,
 			ext:                 exts,
 			imp:                 imps,
-			exported:            make(map[Object][]Symbol),
+			exported:            make(map[Object][]symbol),
 		}
 	}
 
@@ -971,7 +971,7 @@ func (g *Generator) generateImports() {
 	// reference it later. The same argument applies to the math package,
 	// for handling bit patterns for floating-point numbers, and to the
 	// json package, for symbolic names of enum values for JSON marshaling.
-	g.P("import " + g.Pkg["proto"] + " " + Quote(g.ImportPrefix+"code.google.com/p/goprotobuf/proto"))
+	g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"code.google.com/p/goprotobuf/proto"))
 	g.P("import " + g.Pkg["json"] + ` "encoding/json"`)
 	g.P("import " + g.Pkg["math"] + ` "math"`)
 	for i, s := range g.file.Dependency {
@@ -990,17 +990,17 @@ func (g *Generator) generateImports() {
 		}
 		// Skip weak imports.
 		if g.weak(int32(i)) {
-			g.P("// skipping weak import ", fd.PackageName(), " ", Quote(filename))
+			g.P("// skipping weak import ", fd.PackageName(), " ", strconv.Quote(filename))
 			continue
 		}
 		if _, ok := g.usedPackages[fd.PackageName()]; ok {
-			g.P("import ", fd.PackageName(), " ", Quote(filename))
+			g.P("import ", fd.PackageName(), " ", strconv.Quote(filename))
 		} else {
 			// TODO: Re-enable this when we are more feature-complete.
 			// For instance, some protos use foreign field extensions, which we don't support.
 			// Until then, this is just annoying spam.
 			//log.Printf("protoc-gen-go: discarding unused import from %v: %v", *g.file.Name, s)
-			g.P("// discarding unused import ", fd.PackageName(), " ", Quote(filename))
+			g.P("// discarding unused import ", fd.PackageName(), " ", strconv.Quote(filename))
 		}
 	}
 	g.P()
@@ -1068,7 +1068,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 		if _, present := generated[*e.Number]; present {
 			duplicate = "// Duplicate value: "
 		}
-		g.P(duplicate, e.Number, ": ", Quote(*e.Name), ",")
+		g.P(duplicate, e.Number, ": ", strconv.Quote(*e.Name), ",")
 		generated[*e.Number] = true
 	}
 	g.Out()
@@ -1076,7 +1076,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	g.P("var ", ccTypeName, "_value = map[string]int32{")
 	g.In()
 	for _, e := range enum.Value {
-		g.P(Quote(*e.Name), ": ", e.Number, ",")
+		g.P(strconv.Quote(*e.Name), ": ", e.Number, ",")
 	}
 	g.Out()
 	g.P("}")
@@ -1194,7 +1194,7 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 	} else {
 		name = ",name=" + name
 	}
-	return Quote(fmt.Sprintf("%s,%d,%s%s%s%s%s",
+	return strconv.Quote(fmt.Sprintf("%s,%d,%s%s%s%s%s",
 		wiretype,
 		field.GetNumber(),
 		optrepreq,
@@ -1416,9 +1416,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		switch {
 		case typename == "bool":
 		case typename == "string":
-			def = Quote(def)
+			def = strconv.Quote(def)
 		case typename == "[]byte":
-			def = "[]byte(" + Quote(def) + ")"
+			def = "[]byte(" + strconv.Quote(def) + ")"
 			kind = "var "
 		case def == "inf", def == "-inf", def == "nan":
 			// These names are known to, and defined by, the protocol language.
@@ -1628,7 +1628,7 @@ func (g *Generator) generateEnumRegistration(enum *EnumDescriptor) {
 	typeName := enum.TypeName()
 	// The full type name, CamelCased.
 	ccTypeName := CamelCaseSlice(typeName)
-	g.P(g.Pkg["proto"]+".RegisterEnum(", Quote(pkg+ccTypeName), ", ", ccTypeName+"_name, ", ccTypeName+"_value)")
+	g.P(g.Pkg["proto"]+".RegisterEnum(", strconv.Quote(pkg+ccTypeName), ", ", ccTypeName+"_name, ", ccTypeName+"_value)")
 }
 
 func (g *Generator) generateExtensionRegistration(ext *ExtensionDescriptor) {
@@ -1701,9 +1701,6 @@ func CamelCaseSlice(elem []string) string { return CamelCase(strings.Join(elem, 
 // dottedSlice turns a sliced name into a dotted name.
 func dottedSlice(elem []string) string { return strings.Join(elem, ".") }
 
-// Quote returns a Go-source quoted string representation of s.
-func Quote(s string) string { return fmt.Sprintf("%q", s) }
-
 // Given a .proto file name, return the output name for the generated Go program.
 func goFileName(name string) string {
 	ext := path.Ext(name)
@@ -1728,18 +1725,18 @@ func isRepeated(field *descriptor.FieldDescriptorProto) bool {
 	return field.Label != nil && *field.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED
 }
 
-// BadToUnderscore is the mapping function used to generate Go names from package names,
+// badToUnderscore is the mapping function used to generate Go names from package names,
 // which can be dotted in the input .proto file.  It replaces non-identifier characters such as
 // dot or dash with underscore.
-func BadToUnderscore(r rune) rune {
+func badToUnderscore(r rune) rune {
 	if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_' {
 		return r
 	}
 	return '_'
 }
 
-// BaseName returns the last path element of the name, with the last dotted suffix removed.
-func BaseName(name string) string {
+// baseName returns the last path element of the name, with the last dotted suffix removed.
+func baseName(name string) string {
 	// First, find the last element
 	if i := strings.LastIndex(name, "/"); i >= 0 {
 		name = name[i+1:]
