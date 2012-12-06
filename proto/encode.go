@@ -38,6 +38,7 @@ package proto
 import (
 	"errors"
 	"reflect"
+	"sort"
 )
 
 // ErrRequiredNotSet is the error returned if Marshal is called with
@@ -545,8 +546,23 @@ func (o *Buffer) enc_map(p *Properties, base structPointer) error {
 	if err := encodeExtensionMap(v); err != nil {
 		return err
 	}
-	for _, e := range v {
-		o.buf = append(o.buf, e.enc...)
+	// Fast-path for common cases: zero or one extensions.
+	if len(v) <= 1 {
+		for _, e := range v {
+			o.buf = append(o.buf, e.enc...)
+		}
+		return nil
+	}
+
+	// Sort keys to provide a deterministic encoding.
+	keys := make([]int, 0, len(v))
+	for k := range v {
+		keys = append(keys, int(k))
+	}
+	sort.Ints(keys)
+
+	for _, k := range keys {
+		o.buf = append(o.buf, v[int32(k)].enc...)
 	}
 	return nil
 }
