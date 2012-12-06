@@ -33,6 +33,8 @@ package proto_test
 
 import (
 	"bytes"
+	"errors"
+	"io/ioutil"
 	"strings"
 	"testing"
 
@@ -139,21 +141,31 @@ tag201: "\t3G skiing"
 tag202: 19
 `
 
-func TestMarshalTextFull(t *testing.T) {
+func TestMarshalText(t *testing.T) {
 	buf := new(bytes.Buffer)
-	proto.MarshalText(buf, newTestMessage())
+	if err := proto.MarshalText(buf, newTestMessage()); err != nil {
+		t.Fatalf("proto.MarshalText: %v", err)
+	}
 	s := buf.String()
 	if s != text {
 		t.Errorf("Got:\n===\n%v===\nExpected:\n===\n%v===\n", s, text)
 	}
 }
 
-func BenchmarkMarshalTextFull(b *testing.B) {
+func BenchmarkMarshalTextBuffered(b *testing.B) {
 	buf := new(bytes.Buffer)
 	m := newTestMessage()
 	for i := 0; i < b.N; i++ {
 		buf.Reset()
 		proto.MarshalText(buf, m)
+	}
+}
+
+func BenchmarkMarshalTextUnbuffered(b *testing.B) {
+	w := ioutil.Discard
+	m := newTestMessage()
+	for i := 0; i < b.N; i++ {
+		proto.MarshalText(w, m)
 	}
 }
 
@@ -236,7 +248,10 @@ func TestStringEscaping(t *testing.T) {
 
 	for i, tc := range testCases {
 		var buf bytes.Buffer
-		proto.MarshalText(&buf, tc.in)
+		if err := proto.MarshalText(&buf, tc.in); err != nil {
+			t.Errorf("proto.MarsalText: %v", err)
+			continue
+		}
 		s := buf.String()
 		if s != tc.out {
 			t.Errorf("#%d: Got:\n%s\nExpected:\n%s\n", i, s, tc.out)
@@ -251,6 +266,46 @@ func TestStringEscaping(t *testing.T) {
 		}
 		if !proto.Equal(pb, tc.in) {
 			t.Errorf("#%d: Round-trip failed:\nstart: %v\n  end: %v", i, tc.in, pb)
+		}
+	}
+}
+
+// A limitedWriter accepts some output before it fails.
+// This is a proxy for something like a nearly-full or imminently-failing disk,
+// or a network connection that is about to die.
+type limitedWriter struct {
+	b     bytes.Buffer
+	limit int
+}
+
+var outOfSpace = errors.New("insufficient space")
+
+func (w *limitedWriter) Write(p []byte) (n int, err error) {
+	var avail = w.limit - w.b.Len()
+	if avail <= 0 {
+		return 0, outOfSpace
+	}
+	if len(p) <= avail {
+		return w.b.Write(p)
+	}
+	n, _ = w.b.Write(p[:avail])
+	return n, outOfSpace
+}
+
+func TestMarshalTextFailing(t *testing.T) {
+	// Try lots of different sizes to exercise more error code-paths.
+	for lim := 0; lim < len(text); lim++ {
+		buf := new(limitedWriter)
+		buf.limit = lim
+		err := proto.MarshalText(buf, newTestMessage())
+		// We expect a certain error, but also some partial results in the buffer.
+		if err != outOfSpace {
+			t.Errorf("Got:\n===\n%v===\nExpected:\n===\n%v===\n", err, outOfSpace)
+		}
+		s := buf.b.String()
+		x := text[:buf.limit]
+		if s != x {
+			t.Errorf("Got:\n===\n%v===\nExpected:\n===\n%v===\n", s, x)
 		}
 	}
 }
