@@ -41,6 +41,7 @@ enum HatType {
 }
 
 enum Days {
+
   MONDAY = 1;
   TUESDAY = 2;
   LUNDI = 1;  // same value as MONDAY

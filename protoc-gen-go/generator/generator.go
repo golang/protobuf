@@ -929,7 +929,7 @@ func (g *Generator) generate(file *FileDescriptor) {
 		return
 	}
 	g.Reset()
-	err = (&printer.Config{printer.TabIndent | printer.UseSpaces, 8}).Fprint(g, fset, ast)
+	err = (&printer.Config{Mode: printer.TabIndent | printer.UseSpaces, Tabwidth: 8}).Fprint(g, fset, ast)
 	if err != nil {
 		g.Fail("generated Go source code could not be reformatted:", err.Error())
 	}
