@@ -39,6 +39,7 @@ import (
 	"errors"
 	"reflect"
 	"strconv"
+	"sync"
 )
 
 // ErrMissingExtension is the error returned by GetExtension if the named extension is not in the message.
@@ -117,6 +118,42 @@ func checkExtensionTypes(pb extendableProto, extension *ExtensionDesc) error {
 	return nil
 }
 
+// extPropKey is sufficient to uniquely identify an extension.
+type extPropKey struct {
+	base  reflect.Type
+	field int32
+}
+
+var extProp = struct {
+	sync.RWMutex
+	m map[extPropKey]*Properties
+}{
+	m: make(map[extPropKey]*Properties),
+}
+
+func extensionProperties(ed *ExtensionDesc) *Properties {
+	key := extPropKey{base: reflect.TypeOf(ed.ExtendedType), field: ed.Field}
+
+	extProp.RLock()
+	if prop, ok := extProp.m[key]; ok {
+		extProp.RUnlock()
+		return prop
+	}
+	extProp.RUnlock()
+
+	extProp.Lock()
+	defer extProp.Unlock()
+	// Check again.
+	if prop, ok := extProp.m[key]; ok {
+		return prop
+	}
+
+	prop := new(Properties)
+	prop.Init(reflect.TypeOf(ed.ExtensionType), "unknown_name", ed.Tag, nil)
+	extProp.m[key] = prop
+	return prop
+}
+
 // encodeExtensionMap encodes any unmarshaled (unencoded) extensions in m.
 func encodeExtensionMap(m map[int32]Extension) error {
 	for k, e := range m {
@@ -130,8 +167,7 @@ func encodeExtensionMap(m map[int32]Extension) error {
 		// the last time this function was called.
 
 		et := reflect.TypeOf(e.desc.ExtensionType)
-		props := new(Properties)
-		props.Init(et, "unknown_name", e.desc.Tag, nil)
+		props := extensionProperties(e.desc)
 
 		p := NewBuffer(nil)
 		// If e.value has type T, the encoder expects a *struct{ X T }.
@@ -204,8 +240,7 @@ func decodeExtension(b []byte, extension *ExtensionDesc) (interface{}, error) {
 	t := reflect.TypeOf(extension.ExtensionType)
 	rep := extension.repeated()
 
-	props := &Properties{}
-	props.Init(t, "irrelevant_name", extension.Tag, nil)
+	props := extensionProperties(extension)
 
 	// t is a pointer to a struct, pointer to basic type or a slice.
 	// Allocate a "field" to store the pointer/slice itself; the
