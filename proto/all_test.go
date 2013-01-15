@@ -1427,7 +1427,7 @@ func TestUnmarshalFuzz(t *testing.T) {
 	}
 }
 
-func TestAppend(t *testing.T) {
+func TestMerge(t *testing.T) {
 	pb := &MessageList{Message: []*MessageList_Message{{Name: String("x"), Count: Int32(1)}}}
 	data, err := Marshal(pb)
 	if err != nil {
@@ -1446,14 +1446,14 @@ func TestAppend(t *testing.T) {
 	}
 
 	pb2 := new(MessageList)
-	if err := UnmarshalAppend(data, pb2); err != nil {
-		t.Fatalf("first UnmarshalAppend: %v", err)
+	if err := UnmarshalMerge(data, pb2); err != nil {
+		t.Fatalf("first UnmarshalMerge: %v", err)
 	}
-	if err := UnmarshalAppend(data, pb2); err != nil {
-		t.Fatalf("second UnmarshalAppend: %v", err)
+	if err := UnmarshalMerge(data, pb2); err != nil {
+		t.Fatalf("second UnmarshalMerge: %v", err)
 	}
 	if len(pb2.Message) != 2 {
-		t.Errorf("two UnmarshalAppends produced %d Messages, want 2", len(pb2.Message))
+		t.Errorf("two UnmarshalMerges produced %d Messages, want 2", len(pb2.Message))
 	}
 }
 

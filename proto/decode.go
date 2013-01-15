@@ -296,20 +296,20 @@ type Unmarshaler interface {
 // the data in buf, the results can be unpredictable.
 //
 // Unmarshal resets pb before starting to unmarshal, so any
-// existing data in pb is always removed. Use UnmarshalAppend
+// existing data in pb is always removed. Use UnmarshalMerge
 // to preserve and append to existing data.
 func Unmarshal(buf []byte, pb Message) error {
 	pb.Reset()
-	return UnmarshalAppend(buf, pb)
+	return UnmarshalMerge(buf, pb)
 }
 
-// UnmarshalAppend parses the protocol buffer representation in buf and
+// UnmarshalMerge parses the protocol buffer representation in buf and
 // writes the decoded result to pb.  If the struct underlying pb does not match
 // the data in buf, the results can be unpredictable.
 //
-// UnmarshalAppend preserves and appends to existing data in pb.
+// UnmarshalMerge merges into existing data in pb.
 // Most code should use Unmarshal instead.
-func UnmarshalAppend(buf []byte, pb Message) error {
+func UnmarshalMerge(buf []byte, pb Message) error {
 	// If the object can unmarshal itself, let it.
 	if u, ok := pb.(Unmarshaler); ok {
 		return u.Unmarshal(buf)
