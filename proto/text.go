@@ -615,7 +615,8 @@ func (w *textWriter) writeIndent() {
 }
 
 func marshalText(w io.Writer, pb Message, compact bool) error {
-	if pb == nil {
+	val := reflect.ValueOf(pb)
+	if pb == nil || val.IsNil() {
 		w.Write([]byte("<nil>"))
 		return nil
 	}
@@ -632,7 +633,7 @@ func marshalText(w io.Writer, pb Message, compact bool) error {
 	}
 
 	// Dereference the received pointer so we don't have outer < and >.
-	v := reflect.Indirect(reflect.ValueOf(pb))
+	v := reflect.Indirect(val)
 	if err := writeStruct(aw, v); err != nil {
 		return err
 	}

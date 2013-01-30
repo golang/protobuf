@@ -152,6 +152,20 @@ func TestMarshalText(t *testing.T) {
 	}
 }
 
+func TestMarshalTextNil(t *testing.T) {
+	want := "<nil>"
+	tests := []proto.Message{nil, (*pb.MyMessage)(nil)}
+	for i, test := range tests {
+		buf := new(bytes.Buffer)
+		if err := proto.MarshalText(buf, test); err != nil {
+			t.Fatal(err)
+		}
+		if got := buf.String(); got != want {
+			t.Errorf("%d: got %q want %q", i, got, want)
+		}
+	}
+}
+
 func BenchmarkMarshalTextBuffered(b *testing.B) {
 	buf := new(bytes.Buffer)
 	m := newTestMessage()
