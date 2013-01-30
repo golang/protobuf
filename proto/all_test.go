@@ -1427,7 +1427,7 @@ func TestUnmarshalFuzz(t *testing.T) {
 	}
 }
 
-func TestMerge(t *testing.T) {
+func TestMergeMessages(t *testing.T) {
 	pb := &MessageList{Message: []*MessageList_Message{{Name: String("x"), Count: Int32(1)}}}
 	data, err := Marshal(pb)
 	if err != nil {
