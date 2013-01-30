@@ -183,6 +183,13 @@ const Default_Request_Hat HatType = HatType_FEDORA
 
 var Default_Request_Deadline float32 = float32(math.Inf(1))
 
+func (this *Request) GetKey() []int64 {
+	if this != nil {
+		return this.Key
+	}
+	return nil
+}
+
 func (this *Request) GetHue() Request_Color {
 	if this != nil && this.Hue != nil {
 		return *this.Hue
@@ -254,6 +261,20 @@ func (this *Reply) ExtensionMap() map[int32]proto.Extension {
 		this.XXX_extensions = make(map[int32]proto.Extension)
 	}
 	return this.XXX_extensions
+}
+
+func (this *Reply) GetFound() []*Reply_Entry {
+	if this != nil {
+		return this.Found
+	}
+	return nil
+}
+
+func (this *Reply) GetCompactKeys() []int32 {
+	if this != nil {
+		return this.CompactKeys
+	}
+	return nil
 }
 
 type Reply_Entry struct {

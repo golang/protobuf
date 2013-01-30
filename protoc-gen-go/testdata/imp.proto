@@ -42,6 +42,10 @@ message ImportedMessage {
   optional ForeignImportedMessage foreign_msg = 3;  // in imp3.proto
   optional Owner enum_field = 4;
 
+  repeated string name = 5;
+  repeated Owner boss = 6;
+  repeated ImportedMessage2 memo = 7;
+
   enum Owner {
     DAVE = 1;
     MIKE = 2;

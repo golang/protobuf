@@ -298,24 +298,60 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 		}
 	}
 	for _, get := range ms.getters {
+		if get.typeName != "" {
+			g.RecordTypeUse(get.typeName)
+		}
 		typ := get.typ
 		val := "(*" + remoteSym + ")(this)." + get.name + "()"
 		if get.genType {
 			// typ will be "*pkg.T" (message/group) or "pkg.T" (enum).
+			// Either of those might have a "[]" prefix if it is repeated.
 			// Drop the package qualifier since we have hoisted the type into this package.
+			rep := strings.HasPrefix(typ, "[]")
+			if rep {
+				typ = typ[2:]
+			}
 			star := typ[0] == '*'
 			typ = typ[strings.Index(typ, ".")+1:]
 			if star {
 				typ = "*" + typ
+			}
+			if rep {
+				// Go does not permit conversion between slice types where both
+				// element types are named. That means we need to generate a bit
+				// of code in this situation.
+				// typ is the element type.
+				// val is the expression to get the slice from the imported type.
+
+				ctyp := typ // conversion type expression; "Foo" or "(*Foo)"
+				if star {
+					ctyp = "(" + typ + ")"
+				}
+
+				g.P("func (this *", ms.sym, ") ", get.name, "() []", typ, " {")
+				g.In()
+				g.P("o := ", val)
+				g.P("if o == nil {")
+				g.In()
+				g.P("return nil")
+				g.Out()
+				g.P("}")
+				g.P("s := make([]", typ, ", len(o))")
+				g.P("for i, x := range o {")
+				g.In()
+				g.P("s[i] = ", ctyp, "(x)")
+				g.Out()
+				g.P("}")
+				g.P("return s")
+				g.Out()
+				g.P("}")
+				continue
 			}
 			// Convert imported type into the forwarding type.
 			val = "(" + typ + ")(" + val + ")"
 		}
 
 		g.P("func (this *", ms.sym, ") ", get.name, "() ", typ, " { return ", val, " }")
-		if get.typeName != "" {
-			g.RecordTypeUse(get.typeName)
-		}
 	}
 }
 
@@ -1011,8 +1047,8 @@ func (g *Generator) generateImports() {
 	}
 	g.P("// Reference proto, json, and math imports to suppress error if they are not otherwise used.")
 	g.P("var _ = ", g.Pkg["proto"], ".Marshal")
-	g.P("var _ = &json.SyntaxError{}")
-	g.P("var _ = math.Inf")
+	g.P("var _ = &", g.Pkg["json"], ".SyntaxError{}")
+	g.P("var _ = ", g.Pkg["math"], ".Inf")
 	g.P()
 }
 
@@ -1452,9 +1488,6 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	// Field getters
 	var getters []getterSymbol
 	for _, field := range message.Field {
-		if isRepeated(field) {
-			continue
-		}
 		fname := fieldNames[field]
 		typename, _ := g.GoType(message, field)
 		mname := "Get" + fname
@@ -1504,9 +1537,12 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		case descriptor.FieldDescriptorProto_TYPE_GROUP, descriptor.FieldDescriptorProto_TYPE_MESSAGE:
 			typeDefaultIsNil = true
 		}
+		if isRepeated(field) {
+			typeDefaultIsNil = true
+		}
 		if typeDefaultIsNil {
 			// A bytes field with no explicit default needs less generated code,
-			// as does a message or group field.
+			// as does a message or group field, or a repeated field.
 			g.P("if this != nil {")
 			g.In()
 			g.P("return this." + fname)
