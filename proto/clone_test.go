@@ -87,3 +87,94 @@ func TestCloneNil(t *testing.T) {
 		t.Errorf("Clone(%v) = %v", m, c)
 	}
 }
+
+var mergeTests = []struct {
+	src, dst, want proto.Message
+}{
+	{
+		src: &pb.MyMessage{
+			Count: proto.Int32(42),
+		},
+		dst: &pb.MyMessage{
+			Name: proto.String("Dave"),
+		},
+		want: &pb.MyMessage{
+			Count: proto.Int32(42),
+			Name:  proto.String("Dave"),
+		},
+	},
+	{
+		src: &pb.MyMessage{
+			Inner: &pb.InnerMessage{
+				Host:      proto.String("hey"),
+				Connected: proto.Bool(true),
+			},
+			Pet: []string{"horsey"},
+			Others: []*pb.OtherMessage{
+				&pb.OtherMessage{
+					Value: []byte("some bytes"),
+				},
+			},
+		},
+		dst: &pb.MyMessage{
+			Inner: &pb.InnerMessage{
+				Host: proto.String("niles"),
+				Port: proto.Int32(9099),
+			},
+			Pet: []string{"bunny", "kitty"},
+			Others: []*pb.OtherMessage{
+				&pb.OtherMessage{
+					Key: proto.Int64(31415926535),
+				},
+				&pb.OtherMessage{
+					// Explicitly test a src=nil field
+					Inner: nil,
+				},
+			},
+		},
+		want: &pb.MyMessage{
+			Inner: &pb.InnerMessage{
+				Host:      proto.String("hey"),
+				Connected: proto.Bool(true),
+				Port:      proto.Int32(9099),
+			},
+			Pet: []string{"bunny", "kitty", "horsey"},
+			Others: []*pb.OtherMessage{
+				&pb.OtherMessage{
+					Key: proto.Int64(31415926535),
+				},
+				&pb.OtherMessage{},
+				&pb.OtherMessage{
+					Value: []byte("some bytes"),
+				},
+			},
+		},
+	},
+	{
+		src: &pb.MyMessage{
+			RepBytes: [][]byte{[]byte("wow")},
+		},
+		dst: &pb.MyMessage{
+			Somegroup: &pb.MyMessage_SomeGroup{
+				GroupField: proto.Int32(6),
+			},
+			RepBytes: [][]byte{[]byte("sham")},
+		},
+		want: &pb.MyMessage{
+			Somegroup: &pb.MyMessage_SomeGroup{
+				GroupField: proto.Int32(6),
+			},
+			RepBytes: [][]byte{[]byte("sham"), []byte("wow")},
+		},
+	},
+}
+
+func TestMerge(t *testing.T) {
+	for _, m := range mergeTests {
+		got := proto.Clone(m.dst)
+		proto.Merge(got, m.src)
+		if !proto.Equal(got, m.want) {
+			t.Errorf("Merge(%v, %v)\n got %v\nwant %v\n", m.dst, m.src, got, m.want)
+		}
+	}
+}
