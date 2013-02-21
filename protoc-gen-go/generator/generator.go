@@ -103,7 +103,7 @@ type Descriptor struct {
 	nested   []*Descriptor          // Inner messages, if any.
 	ext      []*ExtensionDescriptor // Extensions, if any.
 	typename []string               // Cached typename vector.
-	index    int                    // If a top-level message, the index into message_type.
+	index    int                    // The index into the container, whether the file or another message.
 	group    bool
 }
 
@@ -684,7 +684,12 @@ func (g *Generator) buildNestedDescriptors(descs []*Descriptor) {
 
 // Construct the Descriptor and add it to the slice
 func addDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto, index int) []*Descriptor {
-	d := &Descriptor{common{file}, desc, parent, nil, nil, nil, index, false}
+	d := &Descriptor{
+		common:          common{file},
+		DescriptorProto: desc,
+		parent:          parent,
+		index:           index,
+	}
 
 	// The only way to distinguish a group from a message is whether
 	// the containing message has a TYPE_GROUP field that matches.
@@ -723,8 +728,8 @@ func wrapDescriptors(file *descriptor.FileDescriptorProto) []*Descriptor {
 func wrapThisDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto, index int) []*Descriptor {
 	sl = addDescriptor(sl, desc, parent, file, index)
 	me := sl[len(sl)-1]
-	for _, nested := range desc.NestedType {
-		sl = wrapThisDescriptor(sl, nested, me, file, 0)
+	for i, nested := range desc.NestedType {
+		sl = wrapThisDescriptor(sl, nested, me, file, i)
 	}
 	return sl
 }
