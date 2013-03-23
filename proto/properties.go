@@ -515,10 +515,13 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	prop.unrecField = invalidField
 	prop.Prop = make([]*Properties, t.NumField())
 	prop.order = make([]int, t.NumField())
+
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		p := new(Properties)
-		p.init(f.Type, f.Name, f.Tag.Get("protobuf"), &f, false)
+		name := f.Name
+		p.init(f.Type, name, f.Tag.Get("protobuf"), &f, false)
+
 		if f.Name == "XXX_extensions" { // special case
 			p.enc = (*Buffer).enc_map
 			p.dec = nil // not needed

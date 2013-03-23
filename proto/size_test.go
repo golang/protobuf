@@ -54,6 +54,7 @@ func init() {
 
 	// Force messageWithExtension3 to have the extension encoded.
 	Marshal(messageWithExtension3)
+
 }
 
 var SizeTests = []struct {

@@ -505,16 +505,17 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) *ParseError
 				return p.errorf("unknown field name %q in %v", tok.value, st)
 			}
 
+			dst := sv.Field(fi)
+			isDstNil := isNil(dst)
+
 			// Check that it's not already set if it's not a repeated field.
-			if !props.Repeated && !isNil(sv.Field(fi)) {
+			if !props.Repeated && !isDstNil {
 				return p.errorf("non-repeated field %q was repeated", tok.value)
 			}
 
 			if err := p.checkForColon(props, st.Field(fi).Type); err != nil {
 				return err
 			}
-
-			dst := sv.Field(fi)
 
 			// Parse into the field.
 			if err := p.readAny(dst, props); err != nil {
