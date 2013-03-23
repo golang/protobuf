@@ -219,9 +219,16 @@ type FileDescriptorSet struct {
 	XXX_unrecognized []byte                 `json:"-"`
 }
 
-func (this *FileDescriptorSet) Reset()         { *this = FileDescriptorSet{} }
-func (this *FileDescriptorSet) String() string { return proto.CompactTextString(this) }
-func (*FileDescriptorSet) ProtoMessage()       {}
+func (m *FileDescriptorSet) Reset()         { *m = FileDescriptorSet{} }
+func (m *FileDescriptorSet) String() string { return proto.CompactTextString(m) }
+func (*FileDescriptorSet) ProtoMessage()    {}
+
+func (m *FileDescriptorSet) GetFile() []*FileDescriptorProto {
+	if m != nil {
+		return m.File
+	}
+	return nil
+}
 
 type FileDescriptorProto struct {
 	Name             *string                   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
@@ -237,27 +244,76 @@ type FileDescriptorProto struct {
 	XXX_unrecognized []byte                    `json:"-"`
 }
 
-func (this *FileDescriptorProto) Reset()         { *this = FileDescriptorProto{} }
-func (this *FileDescriptorProto) String() string { return proto.CompactTextString(this) }
-func (*FileDescriptorProto) ProtoMessage()       {}
+func (m *FileDescriptorProto) Reset()         { *m = FileDescriptorProto{} }
+func (m *FileDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*FileDescriptorProto) ProtoMessage()    {}
 
-func (this *FileDescriptorProto) GetName() string {
-	if this != nil && this.Name != nil {
-		return *this.Name
+func (m *FileDescriptorProto) GetName() string {
+	if m != nil && m.Name != nil {
+		return *m.Name
 	}
 	return ""
 }
 
-func (this *FileDescriptorProto) GetPackage() string {
-	if this != nil && this.Package != nil {
-		return *this.Package
+func (m *FileDescriptorProto) GetPackage() string {
+	if m != nil && m.Package != nil {
+		return *m.Package
 	}
 	return ""
 }
 
-func (this *FileDescriptorProto) GetOptions() *FileOptions {
-	if this != nil {
-		return this.Options
+func (m *FileDescriptorProto) GetDependency() []string {
+	if m != nil {
+		return m.Dependency
+	}
+	return nil
+}
+
+func (m *FileDescriptorProto) GetPublicDependency() []int32 {
+	if m != nil {
+		return m.PublicDependency
+	}
+	return nil
+}
+
+func (m *FileDescriptorProto) GetWeakDependency() []int32 {
+	if m != nil {
+		return m.WeakDependency
+	}
+	return nil
+}
+
+func (m *FileDescriptorProto) GetMessageType() []*DescriptorProto {
+	if m != nil {
+		return m.MessageType
+	}
+	return nil
+}
+
+func (m *FileDescriptorProto) GetEnumType() []*EnumDescriptorProto {
+	if m != nil {
+		return m.EnumType
+	}
+	return nil
+}
+
+func (m *FileDescriptorProto) GetService() []*ServiceDescriptorProto {
+	if m != nil {
+		return m.Service
+	}
+	return nil
+}
+
+func (m *FileDescriptorProto) GetExtension() []*FieldDescriptorProto {
+	if m != nil {
+		return m.Extension
+	}
+	return nil
+}
+
+func (m *FileDescriptorProto) GetOptions() *FileOptions {
+	if m != nil {
+		return m.Options
 	}
 	return nil
 }
@@ -273,20 +329,55 @@ type DescriptorProto struct {
 	XXX_unrecognized []byte                            `json:"-"`
 }
 
-func (this *DescriptorProto) Reset()         { *this = DescriptorProto{} }
-func (this *DescriptorProto) String() string { return proto.CompactTextString(this) }
-func (*DescriptorProto) ProtoMessage()       {}
+func (m *DescriptorProto) Reset()         { *m = DescriptorProto{} }
+func (m *DescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*DescriptorProto) ProtoMessage()    {}
 
-func (this *DescriptorProto) GetName() string {
-	if this != nil && this.Name != nil {
-		return *this.Name
+func (m *DescriptorProto) GetName() string {
+	if m != nil && m.Name != nil {
+		return *m.Name
 	}
 	return ""
 }
 
-func (this *DescriptorProto) GetOptions() *MessageOptions {
-	if this != nil {
-		return this.Options
+func (m *DescriptorProto) GetField() []*FieldDescriptorProto {
+	if m != nil {
+		return m.Field
+	}
+	return nil
+}
+
+func (m *DescriptorProto) GetExtension() []*FieldDescriptorProto {
+	if m != nil {
+		return m.Extension
+	}
+	return nil
+}
+
+func (m *DescriptorProto) GetNestedType() []*DescriptorProto {
+	if m != nil {
+		return m.NestedType
+	}
+	return nil
+}
+
+func (m *DescriptorProto) GetEnumType() []*EnumDescriptorProto {
+	if m != nil {
+		return m.EnumType
+	}
+	return nil
+}
+
+func (m *DescriptorProto) GetExtensionRange() []*DescriptorProto_ExtensionRange {
+	if m != nil {
+		return m.ExtensionRange
+	}
+	return nil
+}
+
+func (m *DescriptorProto) GetOptions() *MessageOptions {
+	if m != nil {
+		return m.Options
 	}
 	return nil
 }
@@ -297,20 +388,20 @@ type DescriptorProto_ExtensionRange struct {
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (this *DescriptorProto_ExtensionRange) Reset()         { *this = DescriptorProto_ExtensionRange{} }
-func (this *DescriptorProto_ExtensionRange) String() string { return proto.CompactTextString(this) }
-func (*DescriptorProto_ExtensionRange) ProtoMessage()       {}
+func (m *DescriptorProto_ExtensionRange) Reset()         { *m = DescriptorProto_ExtensionRange{} }
+func (m *DescriptorProto_ExtensionRange) String() string { return proto.CompactTextString(m) }
+func (*DescriptorProto_ExtensionRange) ProtoMessage()    {}
 
-func (this *DescriptorProto_ExtensionRange) GetStart() int32 {
-	if this != nil && this.Start != nil {
-		return *this.Start
+func (m *DescriptorProto_ExtensionRange) GetStart() int32 {
+	if m != nil && m.Start != nil {
+		return *m.Start
 	}
 	return 0
 }
 
-func (this *DescriptorProto_ExtensionRange) GetEnd() int32 {
-	if this != nil && this.End != nil {
-		return *this.End
+func (m *DescriptorProto_ExtensionRange) GetEnd() int32 {
+	if m != nil && m.End != nil {
+		return *m.End
 	}
 	return 0
 }
@@ -327,62 +418,62 @@ type FieldDescriptorProto struct {
 	XXX_unrecognized []byte                      `json:"-"`
 }
 
-func (this *FieldDescriptorProto) Reset()         { *this = FieldDescriptorProto{} }
-func (this *FieldDescriptorProto) String() string { return proto.CompactTextString(this) }
-func (*FieldDescriptorProto) ProtoMessage()       {}
+func (m *FieldDescriptorProto) Reset()         { *m = FieldDescriptorProto{} }
+func (m *FieldDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*FieldDescriptorProto) ProtoMessage()    {}
 
-func (this *FieldDescriptorProto) GetName() string {
-	if this != nil && this.Name != nil {
-		return *this.Name
+func (m *FieldDescriptorProto) GetName() string {
+	if m != nil && m.Name != nil {
+		return *m.Name
 	}
 	return ""
 }
 
-func (this *FieldDescriptorProto) GetNumber() int32 {
-	if this != nil && this.Number != nil {
-		return *this.Number
+func (m *FieldDescriptorProto) GetNumber() int32 {
+	if m != nil && m.Number != nil {
+		return *m.Number
 	}
 	return 0
 }
 
-func (this *FieldDescriptorProto) GetLabel() FieldDescriptorProto_Label {
-	if this != nil && this.Label != nil {
-		return *this.Label
+func (m *FieldDescriptorProto) GetLabel() FieldDescriptorProto_Label {
+	if m != nil && m.Label != nil {
+		return *m.Label
 	}
 	return 0
 }
 
-func (this *FieldDescriptorProto) GetType() FieldDescriptorProto_Type {
-	if this != nil && this.Type != nil {
-		return *this.Type
+func (m *FieldDescriptorProto) GetType() FieldDescriptorProto_Type {
+	if m != nil && m.Type != nil {
+		return *m.Type
 	}
 	return 0
 }
 
-func (this *FieldDescriptorProto) GetTypeName() string {
-	if this != nil && this.TypeName != nil {
-		return *this.TypeName
+func (m *FieldDescriptorProto) GetTypeName() string {
+	if m != nil && m.TypeName != nil {
+		return *m.TypeName
 	}
 	return ""
 }
 
-func (this *FieldDescriptorProto) GetExtendee() string {
-	if this != nil && this.Extendee != nil {
-		return *this.Extendee
+func (m *FieldDescriptorProto) GetExtendee() string {
+	if m != nil && m.Extendee != nil {
+		return *m.Extendee
 	}
 	return ""
 }
 
-func (this *FieldDescriptorProto) GetDefaultValue() string {
-	if this != nil && this.DefaultValue != nil {
-		return *this.DefaultValue
+func (m *FieldDescriptorProto) GetDefaultValue() string {
+	if m != nil && m.DefaultValue != nil {
+		return *m.DefaultValue
 	}
 	return ""
 }
 
-func (this *FieldDescriptorProto) GetOptions() *FieldOptions {
-	if this != nil {
-		return this.Options
+func (m *FieldDescriptorProto) GetOptions() *FieldOptions {
+	if m != nil {
+		return m.Options
 	}
 	return nil
 }
@@ -394,20 +485,27 @@ type EnumDescriptorProto struct {
 	XXX_unrecognized []byte                      `json:"-"`
 }
 
-func (this *EnumDescriptorProto) Reset()         { *this = EnumDescriptorProto{} }
-func (this *EnumDescriptorProto) String() string { return proto.CompactTextString(this) }
-func (*EnumDescriptorProto) ProtoMessage()       {}
+func (m *EnumDescriptorProto) Reset()         { *m = EnumDescriptorProto{} }
+func (m *EnumDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*EnumDescriptorProto) ProtoMessage()    {}
 
-func (this *EnumDescriptorProto) GetName() string {
-	if this != nil && this.Name != nil {
-		return *this.Name
+func (m *EnumDescriptorProto) GetName() string {
+	if m != nil && m.Name != nil {
+		return *m.Name
 	}
 	return ""
 }
 
-func (this *EnumDescriptorProto) GetOptions() *EnumOptions {
-	if this != nil {
-		return this.Options
+func (m *EnumDescriptorProto) GetValue() []*EnumValueDescriptorProto {
+	if m != nil {
+		return m.Value
+	}
+	return nil
+}
+
+func (m *EnumDescriptorProto) GetOptions() *EnumOptions {
+	if m != nil {
+		return m.Options
 	}
 	return nil
 }
@@ -419,27 +517,27 @@ type EnumValueDescriptorProto struct {
 	XXX_unrecognized []byte            `json:"-"`
 }
 
-func (this *EnumValueDescriptorProto) Reset()         { *this = EnumValueDescriptorProto{} }
-func (this *EnumValueDescriptorProto) String() string { return proto.CompactTextString(this) }
-func (*EnumValueDescriptorProto) ProtoMessage()       {}
+func (m *EnumValueDescriptorProto) Reset()         { *m = EnumValueDescriptorProto{} }
+func (m *EnumValueDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*EnumValueDescriptorProto) ProtoMessage()    {}
 
-func (this *EnumValueDescriptorProto) GetName() string {
-	if this != nil && this.Name != nil {
-		return *this.Name
+func (m *EnumValueDescriptorProto) GetName() string {
+	if m != nil && m.Name != nil {
+		return *m.Name
 	}
 	return ""
 }
 
-func (this *EnumValueDescriptorProto) GetNumber() int32 {
-	if this != nil && this.Number != nil {
-		return *this.Number
+func (m *EnumValueDescriptorProto) GetNumber() int32 {
+	if m != nil && m.Number != nil {
+		return *m.Number
 	}
 	return 0
 }
 
-func (this *EnumValueDescriptorProto) GetOptions() *EnumValueOptions {
-	if this != nil {
-		return this.Options
+func (m *EnumValueDescriptorProto) GetOptions() *EnumValueOptions {
+	if m != nil {
+		return m.Options
 	}
 	return nil
 }
@@ -451,20 +549,27 @@ type ServiceDescriptorProto struct {
 	XXX_unrecognized []byte                   `json:"-"`
 }
 
-func (this *ServiceDescriptorProto) Reset()         { *this = ServiceDescriptorProto{} }
-func (this *ServiceDescriptorProto) String() string { return proto.CompactTextString(this) }
-func (*ServiceDescriptorProto) ProtoMessage()       {}
+func (m *ServiceDescriptorProto) Reset()         { *m = ServiceDescriptorProto{} }
+func (m *ServiceDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*ServiceDescriptorProto) ProtoMessage()    {}
 
-func (this *ServiceDescriptorProto) GetName() string {
-	if this != nil && this.Name != nil {
-		return *this.Name
+func (m *ServiceDescriptorProto) GetName() string {
+	if m != nil && m.Name != nil {
+		return *m.Name
 	}
 	return ""
 }
 
-func (this *ServiceDescriptorProto) GetOptions() *ServiceOptions {
-	if this != nil {
-		return this.Options
+func (m *ServiceDescriptorProto) GetMethod() []*MethodDescriptorProto {
+	if m != nil {
+		return m.Method
+	}
+	return nil
+}
+
+func (m *ServiceDescriptorProto) GetOptions() *ServiceOptions {
+	if m != nil {
+		return m.Options
 	}
 	return nil
 }
@@ -477,34 +582,34 @@ type MethodDescriptorProto struct {
 	XXX_unrecognized []byte         `json:"-"`
 }
 
-func (this *MethodDescriptorProto) Reset()         { *this = MethodDescriptorProto{} }
-func (this *MethodDescriptorProto) String() string { return proto.CompactTextString(this) }
-func (*MethodDescriptorProto) ProtoMessage()       {}
+func (m *MethodDescriptorProto) Reset()         { *m = MethodDescriptorProto{} }
+func (m *MethodDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*MethodDescriptorProto) ProtoMessage()    {}
 
-func (this *MethodDescriptorProto) GetName() string {
-	if this != nil && this.Name != nil {
-		return *this.Name
+func (m *MethodDescriptorProto) GetName() string {
+	if m != nil && m.Name != nil {
+		return *m.Name
 	}
 	return ""
 }
 
-func (this *MethodDescriptorProto) GetInputType() string {
-	if this != nil && this.InputType != nil {
-		return *this.InputType
+func (m *MethodDescriptorProto) GetInputType() string {
+	if m != nil && m.InputType != nil {
+		return *m.InputType
 	}
 	return ""
 }
 
-func (this *MethodDescriptorProto) GetOutputType() string {
-	if this != nil && this.OutputType != nil {
-		return *this.OutputType
+func (m *MethodDescriptorProto) GetOutputType() string {
+	if m != nil && m.OutputType != nil {
+		return *m.OutputType
 	}
 	return ""
 }
 
-func (this *MethodDescriptorProto) GetOptions() *MethodOptions {
-	if this != nil {
-		return this.Options
+func (m *MethodDescriptorProto) GetOptions() *MethodOptions {
+	if m != nil {
+		return m.Options
 	}
 	return nil
 }
@@ -522,9 +627,9 @@ type FileOptions struct {
 	XXX_unrecognized    []byte                    `json:"-"`
 }
 
-func (this *FileOptions) Reset()         { *this = FileOptions{} }
-func (this *FileOptions) String() string { return proto.CompactTextString(this) }
-func (*FileOptions) ProtoMessage()       {}
+func (m *FileOptions) Reset()         { *m = FileOptions{} }
+func (m *FileOptions) String() string { return proto.CompactTextString(m) }
+func (*FileOptions) ProtoMessage()    {}
 
 var extRange_FileOptions = []proto.ExtensionRange{
 	{1000, 536870911},
@@ -533,11 +638,11 @@ var extRange_FileOptions = []proto.ExtensionRange{
 func (*FileOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_FileOptions
 }
-func (this *FileOptions) ExtensionMap() map[int32]proto.Extension {
-	if this.XXX_extensions == nil {
-		this.XXX_extensions = make(map[int32]proto.Extension)
+func (m *FileOptions) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
 	}
-	return this.XXX_extensions
+	return m.XXX_extensions
 }
 
 const Default_FileOptions_JavaMultipleFiles bool = false
@@ -546,53 +651,60 @@ const Default_FileOptions_CcGenericServices bool = true
 const Default_FileOptions_JavaGenericServices bool = true
 const Default_FileOptions_PyGenericServices bool = true
 
-func (this *FileOptions) GetJavaPackage() string {
-	if this != nil && this.JavaPackage != nil {
-		return *this.JavaPackage
+func (m *FileOptions) GetJavaPackage() string {
+	if m != nil && m.JavaPackage != nil {
+		return *m.JavaPackage
 	}
 	return ""
 }
 
-func (this *FileOptions) GetJavaOuterClassname() string {
-	if this != nil && this.JavaOuterClassname != nil {
-		return *this.JavaOuterClassname
+func (m *FileOptions) GetJavaOuterClassname() string {
+	if m != nil && m.JavaOuterClassname != nil {
+		return *m.JavaOuterClassname
 	}
 	return ""
 }
 
-func (this *FileOptions) GetJavaMultipleFiles() bool {
-	if this != nil && this.JavaMultipleFiles != nil {
-		return *this.JavaMultipleFiles
+func (m *FileOptions) GetJavaMultipleFiles() bool {
+	if m != nil && m.JavaMultipleFiles != nil {
+		return *m.JavaMultipleFiles
 	}
 	return Default_FileOptions_JavaMultipleFiles
 }
 
-func (this *FileOptions) GetOptimizeFor() FileOptions_OptimizeMode {
-	if this != nil && this.OptimizeFor != nil {
-		return *this.OptimizeFor
+func (m *FileOptions) GetOptimizeFor() FileOptions_OptimizeMode {
+	if m != nil && m.OptimizeFor != nil {
+		return *m.OptimizeFor
 	}
 	return Default_FileOptions_OptimizeFor
 }
 
-func (this *FileOptions) GetCcGenericServices() bool {
-	if this != nil && this.CcGenericServices != nil {
-		return *this.CcGenericServices
+func (m *FileOptions) GetCcGenericServices() bool {
+	if m != nil && m.CcGenericServices != nil {
+		return *m.CcGenericServices
 	}
 	return Default_FileOptions_CcGenericServices
 }
 
-func (this *FileOptions) GetJavaGenericServices() bool {
-	if this != nil && this.JavaGenericServices != nil {
-		return *this.JavaGenericServices
+func (m *FileOptions) GetJavaGenericServices() bool {
+	if m != nil && m.JavaGenericServices != nil {
+		return *m.JavaGenericServices
 	}
 	return Default_FileOptions_JavaGenericServices
 }
 
-func (this *FileOptions) GetPyGenericServices() bool {
-	if this != nil && this.PyGenericServices != nil {
-		return *this.PyGenericServices
+func (m *FileOptions) GetPyGenericServices() bool {
+	if m != nil && m.PyGenericServices != nil {
+		return *m.PyGenericServices
 	}
 	return Default_FileOptions_PyGenericServices
+}
+
+func (m *FileOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if m != nil {
+		return m.UninterpretedOption
+	}
+	return nil
 }
 
 type MessageOptions struct {
@@ -603,9 +715,9 @@ type MessageOptions struct {
 	XXX_unrecognized             []byte                    `json:"-"`
 }
 
-func (this *MessageOptions) Reset()         { *this = MessageOptions{} }
-func (this *MessageOptions) String() string { return proto.CompactTextString(this) }
-func (*MessageOptions) ProtoMessage()       {}
+func (m *MessageOptions) Reset()         { *m = MessageOptions{} }
+func (m *MessageOptions) String() string { return proto.CompactTextString(m) }
+func (*MessageOptions) ProtoMessage()    {}
 
 var extRange_MessageOptions = []proto.ExtensionRange{
 	{1000, 536870911},
@@ -614,28 +726,35 @@ var extRange_MessageOptions = []proto.ExtensionRange{
 func (*MessageOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_MessageOptions
 }
-func (this *MessageOptions) ExtensionMap() map[int32]proto.Extension {
-	if this.XXX_extensions == nil {
-		this.XXX_extensions = make(map[int32]proto.Extension)
+func (m *MessageOptions) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
 	}
-	return this.XXX_extensions
+	return m.XXX_extensions
 }
 
 const Default_MessageOptions_MessageSetWireFormat bool = false
 const Default_MessageOptions_NoStandardDescriptorAccessor bool = false
 
-func (this *MessageOptions) GetMessageSetWireFormat() bool {
-	if this != nil && this.MessageSetWireFormat != nil {
-		return *this.MessageSetWireFormat
+func (m *MessageOptions) GetMessageSetWireFormat() bool {
+	if m != nil && m.MessageSetWireFormat != nil {
+		return *m.MessageSetWireFormat
 	}
 	return Default_MessageOptions_MessageSetWireFormat
 }
 
-func (this *MessageOptions) GetNoStandardDescriptorAccessor() bool {
-	if this != nil && this.NoStandardDescriptorAccessor != nil {
-		return *this.NoStandardDescriptorAccessor
+func (m *MessageOptions) GetNoStandardDescriptorAccessor() bool {
+	if m != nil && m.NoStandardDescriptorAccessor != nil {
+		return *m.NoStandardDescriptorAccessor
 	}
 	return Default_MessageOptions_NoStandardDescriptorAccessor
+}
+
+func (m *MessageOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if m != nil {
+		return m.UninterpretedOption
+	}
+	return nil
 }
 
 type FieldOptions struct {
@@ -648,9 +767,9 @@ type FieldOptions struct {
 	XXX_unrecognized    []byte                    `json:"-"`
 }
 
-func (this *FieldOptions) Reset()         { *this = FieldOptions{} }
-func (this *FieldOptions) String() string { return proto.CompactTextString(this) }
-func (*FieldOptions) ProtoMessage()       {}
+func (m *FieldOptions) Reset()         { *m = FieldOptions{} }
+func (m *FieldOptions) String() string { return proto.CompactTextString(m) }
+func (*FieldOptions) ProtoMessage()    {}
 
 var extRange_FieldOptions = []proto.ExtensionRange{
 	{1000, 536870911},
@@ -659,42 +778,49 @@ var extRange_FieldOptions = []proto.ExtensionRange{
 func (*FieldOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_FieldOptions
 }
-func (this *FieldOptions) ExtensionMap() map[int32]proto.Extension {
-	if this.XXX_extensions == nil {
-		this.XXX_extensions = make(map[int32]proto.Extension)
+func (m *FieldOptions) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
 	}
-	return this.XXX_extensions
+	return m.XXX_extensions
 }
 
 const Default_FieldOptions_Ctype FieldOptions_CType = FieldOptions_STRING
 const Default_FieldOptions_Deprecated bool = false
 
-func (this *FieldOptions) GetCtype() FieldOptions_CType {
-	if this != nil && this.Ctype != nil {
-		return *this.Ctype
+func (m *FieldOptions) GetCtype() FieldOptions_CType {
+	if m != nil && m.Ctype != nil {
+		return *m.Ctype
 	}
 	return Default_FieldOptions_Ctype
 }
 
-func (this *FieldOptions) GetPacked() bool {
-	if this != nil && this.Packed != nil {
-		return *this.Packed
+func (m *FieldOptions) GetPacked() bool {
+	if m != nil && m.Packed != nil {
+		return *m.Packed
 	}
 	return false
 }
 
-func (this *FieldOptions) GetDeprecated() bool {
-	if this != nil && this.Deprecated != nil {
-		return *this.Deprecated
+func (m *FieldOptions) GetDeprecated() bool {
+	if m != nil && m.Deprecated != nil {
+		return *m.Deprecated
 	}
 	return Default_FieldOptions_Deprecated
 }
 
-func (this *FieldOptions) GetExperimentalMapKey() string {
-	if this != nil && this.ExperimentalMapKey != nil {
-		return *this.ExperimentalMapKey
+func (m *FieldOptions) GetExperimentalMapKey() string {
+	if m != nil && m.ExperimentalMapKey != nil {
+		return *m.ExperimentalMapKey
 	}
 	return ""
+}
+
+func (m *FieldOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if m != nil {
+		return m.UninterpretedOption
+	}
+	return nil
 }
 
 type EnumOptions struct {
@@ -703,9 +829,9 @@ type EnumOptions struct {
 	XXX_unrecognized    []byte                    `json:"-"`
 }
 
-func (this *EnumOptions) Reset()         { *this = EnumOptions{} }
-func (this *EnumOptions) String() string { return proto.CompactTextString(this) }
-func (*EnumOptions) ProtoMessage()       {}
+func (m *EnumOptions) Reset()         { *m = EnumOptions{} }
+func (m *EnumOptions) String() string { return proto.CompactTextString(m) }
+func (*EnumOptions) ProtoMessage()    {}
 
 var extRange_EnumOptions = []proto.ExtensionRange{
 	{1000, 536870911},
@@ -714,11 +840,18 @@ var extRange_EnumOptions = []proto.ExtensionRange{
 func (*EnumOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_EnumOptions
 }
-func (this *EnumOptions) ExtensionMap() map[int32]proto.Extension {
-	if this.XXX_extensions == nil {
-		this.XXX_extensions = make(map[int32]proto.Extension)
+func (m *EnumOptions) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
 	}
-	return this.XXX_extensions
+	return m.XXX_extensions
+}
+
+func (m *EnumOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if m != nil {
+		return m.UninterpretedOption
+	}
+	return nil
 }
 
 type EnumValueOptions struct {
@@ -727,9 +860,9 @@ type EnumValueOptions struct {
 	XXX_unrecognized    []byte                    `json:"-"`
 }
 
-func (this *EnumValueOptions) Reset()         { *this = EnumValueOptions{} }
-func (this *EnumValueOptions) String() string { return proto.CompactTextString(this) }
-func (*EnumValueOptions) ProtoMessage()       {}
+func (m *EnumValueOptions) Reset()         { *m = EnumValueOptions{} }
+func (m *EnumValueOptions) String() string { return proto.CompactTextString(m) }
+func (*EnumValueOptions) ProtoMessage()    {}
 
 var extRange_EnumValueOptions = []proto.ExtensionRange{
 	{1000, 536870911},
@@ -738,11 +871,18 @@ var extRange_EnumValueOptions = []proto.ExtensionRange{
 func (*EnumValueOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_EnumValueOptions
 }
-func (this *EnumValueOptions) ExtensionMap() map[int32]proto.Extension {
-	if this.XXX_extensions == nil {
-		this.XXX_extensions = make(map[int32]proto.Extension)
+func (m *EnumValueOptions) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
 	}
-	return this.XXX_extensions
+	return m.XXX_extensions
+}
+
+func (m *EnumValueOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if m != nil {
+		return m.UninterpretedOption
+	}
+	return nil
 }
 
 type ServiceOptions struct {
@@ -751,9 +891,9 @@ type ServiceOptions struct {
 	XXX_unrecognized    []byte                    `json:"-"`
 }
 
-func (this *ServiceOptions) Reset()         { *this = ServiceOptions{} }
-func (this *ServiceOptions) String() string { return proto.CompactTextString(this) }
-func (*ServiceOptions) ProtoMessage()       {}
+func (m *ServiceOptions) Reset()         { *m = ServiceOptions{} }
+func (m *ServiceOptions) String() string { return proto.CompactTextString(m) }
+func (*ServiceOptions) ProtoMessage()    {}
 
 var extRange_ServiceOptions = []proto.ExtensionRange{
 	{1000, 536870911},
@@ -762,11 +902,18 @@ var extRange_ServiceOptions = []proto.ExtensionRange{
 func (*ServiceOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_ServiceOptions
 }
-func (this *ServiceOptions) ExtensionMap() map[int32]proto.Extension {
-	if this.XXX_extensions == nil {
-		this.XXX_extensions = make(map[int32]proto.Extension)
+func (m *ServiceOptions) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
 	}
-	return this.XXX_extensions
+	return m.XXX_extensions
+}
+
+func (m *ServiceOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if m != nil {
+		return m.UninterpretedOption
+	}
+	return nil
 }
 
 type MethodOptions struct {
@@ -775,9 +922,9 @@ type MethodOptions struct {
 	XXX_unrecognized    []byte                    `json:"-"`
 }
 
-func (this *MethodOptions) Reset()         { *this = MethodOptions{} }
-func (this *MethodOptions) String() string { return proto.CompactTextString(this) }
-func (*MethodOptions) ProtoMessage()       {}
+func (m *MethodOptions) Reset()         { *m = MethodOptions{} }
+func (m *MethodOptions) String() string { return proto.CompactTextString(m) }
+func (*MethodOptions) ProtoMessage()    {}
 
 var extRange_MethodOptions = []proto.ExtensionRange{
 	{1000, 536870911},
@@ -786,11 +933,18 @@ var extRange_MethodOptions = []proto.ExtensionRange{
 func (*MethodOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_MethodOptions
 }
-func (this *MethodOptions) ExtensionMap() map[int32]proto.Extension {
-	if this.XXX_extensions == nil {
-		this.XXX_extensions = make(map[int32]proto.Extension)
+func (m *MethodOptions) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
 	}
-	return this.XXX_extensions
+	return m.XXX_extensions
+}
+
+func (m *MethodOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if m != nil {
+		return m.UninterpretedOption
+	}
+	return nil
 }
 
 type UninterpretedOption struct {
@@ -803,41 +957,48 @@ type UninterpretedOption struct {
 	XXX_unrecognized []byte                          `json:"-"`
 }
 
-func (this *UninterpretedOption) Reset()         { *this = UninterpretedOption{} }
-func (this *UninterpretedOption) String() string { return proto.CompactTextString(this) }
-func (*UninterpretedOption) ProtoMessage()       {}
+func (m *UninterpretedOption) Reset()         { *m = UninterpretedOption{} }
+func (m *UninterpretedOption) String() string { return proto.CompactTextString(m) }
+func (*UninterpretedOption) ProtoMessage()    {}
 
-func (this *UninterpretedOption) GetIdentifierValue() string {
-	if this != nil && this.IdentifierValue != nil {
-		return *this.IdentifierValue
+func (m *UninterpretedOption) GetName() []*UninterpretedOption_NamePart {
+	if m != nil {
+		return m.Name
+	}
+	return nil
+}
+
+func (m *UninterpretedOption) GetIdentifierValue() string {
+	if m != nil && m.IdentifierValue != nil {
+		return *m.IdentifierValue
 	}
 	return ""
 }
 
-func (this *UninterpretedOption) GetPositiveIntValue() uint64 {
-	if this != nil && this.PositiveIntValue != nil {
-		return *this.PositiveIntValue
+func (m *UninterpretedOption) GetPositiveIntValue() uint64 {
+	if m != nil && m.PositiveIntValue != nil {
+		return *m.PositiveIntValue
 	}
 	return 0
 }
 
-func (this *UninterpretedOption) GetNegativeIntValue() int64 {
-	if this != nil && this.NegativeIntValue != nil {
-		return *this.NegativeIntValue
+func (m *UninterpretedOption) GetNegativeIntValue() int64 {
+	if m != nil && m.NegativeIntValue != nil {
+		return *m.NegativeIntValue
 	}
 	return 0
 }
 
-func (this *UninterpretedOption) GetDoubleValue() float64 {
-	if this != nil && this.DoubleValue != nil {
-		return *this.DoubleValue
+func (m *UninterpretedOption) GetDoubleValue() float64 {
+	if m != nil && m.DoubleValue != nil {
+		return *m.DoubleValue
 	}
 	return 0
 }
 
-func (this *UninterpretedOption) GetStringValue() []byte {
-	if this != nil {
-		return this.StringValue
+func (m *UninterpretedOption) GetStringValue() []byte {
+	if m != nil {
+		return m.StringValue
 	}
 	return nil
 }
@@ -848,20 +1009,20 @@ type UninterpretedOption_NamePart struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (this *UninterpretedOption_NamePart) Reset()         { *this = UninterpretedOption_NamePart{} }
-func (this *UninterpretedOption_NamePart) String() string { return proto.CompactTextString(this) }
-func (*UninterpretedOption_NamePart) ProtoMessage()       {}
+func (m *UninterpretedOption_NamePart) Reset()         { *m = UninterpretedOption_NamePart{} }
+func (m *UninterpretedOption_NamePart) String() string { return proto.CompactTextString(m) }
+func (*UninterpretedOption_NamePart) ProtoMessage()    {}
 
-func (this *UninterpretedOption_NamePart) GetNamePart() string {
-	if this != nil && this.NamePart != nil {
-		return *this.NamePart
+func (m *UninterpretedOption_NamePart) GetNamePart() string {
+	if m != nil && m.NamePart != nil {
+		return *m.NamePart
 	}
 	return ""
 }
 
-func (this *UninterpretedOption_NamePart) GetIsExtension() bool {
-	if this != nil && this.IsExtension != nil {
-		return *this.IsExtension
+func (m *UninterpretedOption_NamePart) GetIsExtension() bool {
+	if m != nil && m.IsExtension != nil {
+		return *m.IsExtension
 	}
 	return false
 }
