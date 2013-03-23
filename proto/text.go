@@ -183,8 +183,11 @@ func writeStruct(w *textWriter, sv reflect.Value) error {
 	sprops := GetProperties(st)
 	for i := 0; i < sv.NumField(); i++ {
 		fv := sv.Field(i)
-		if name := st.Field(i).Name; strings.HasPrefix(name, "XXX_") {
-			// There's only two XXX_ fields:
+		props := sprops.Prop[i]
+		name := st.Field(i).Name
+
+		if strings.HasPrefix(name, "XXX_") {
+			// There are two XXX_ fields:
 			//   XXX_unrecognized []byte
 			//   XXX_extensions   map[int32]proto.Extension
 			// The first is handled here;
@@ -196,7 +199,6 @@ func writeStruct(w *textWriter, sv reflect.Value) error {
 			}
 			continue
 		}
-		props := sprops.Prop[i]
 		if fv.Kind() == reflect.Ptr && fv.IsNil() {
 			// Field not filled in. This could be an optional field or
 			// a required field that wasn't filled in. Either way, there
@@ -464,7 +466,7 @@ func writeUnknownStruct(w *textWriter, data []byte) (err error) {
 			}
 			continue
 		}
-		if _, err := fmt.Fprintf(w, "tag%d", tag); err != nil {
+		if _, err := fmt.Fprint(w, tag); err != nil {
 			return err
 		}
 		if wire != WireStartGroup {

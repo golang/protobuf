@@ -334,3 +334,19 @@ message MoreRepeated {
   repeated int32 ints_packed = 4 [packed=true];
   repeated string strings = 5;
 }
+
+// GroupOld and GroupNew have the same wire format.
+// GroupNew has a new field inside a group.
+
+message GroupOld {
+  optional group G = 1 {
+    optional int32 x = 2;
+  }
+}
+
+message GroupNew {
+  optional group G = 1 {
+    optional int32 x = 2;
+    optional int32 y = 3;
+  }
+}

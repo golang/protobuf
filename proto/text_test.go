@@ -128,7 +128,7 @@ SomeGroup {
   group_field: 8
 }
 /* 2 unknown bytes */
-tag13: 4
+13: 4
 [testdata.Ext.more]: <
   data: "Big gobs for big rats"
 >
@@ -136,9 +136,9 @@ tag13: 4
 [testdata.greeting]: "easy"
 [testdata.greeting]: "cow"
 /* 13 unknown bytes */
-tag201: "\t3G skiing"
+201: "\t3G skiing"
 /* 3 unknown bytes */
-tag202: 19
+202: 19
 `
 
 func TestMarshalText(t *testing.T) {
