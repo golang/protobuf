@@ -282,19 +282,19 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 	remoteSym := pkg + "." + ms.sym
 
 	g.P("type ", ms.sym, " ", remoteSym)
-	g.P("func (this *", ms.sym, ") Reset() { (*", remoteSym, ")(this).Reset() }")
-	g.P("func (this *", ms.sym, ") String() string { return (*", remoteSym, ")(this).String() }")
+	g.P("func (m *", ms.sym, ") Reset() { (*", remoteSym, ")(m).Reset() }")
+	g.P("func (m *", ms.sym, ") String() string { return (*", remoteSym, ")(m).String() }")
 	g.P("func (*", ms.sym, ") ProtoMessage() {}")
 	if ms.hasExtensions {
 		g.P("func (*", ms.sym, ") ExtensionRangeArray() []", g.Pkg["proto"], ".ExtensionRange ",
 			"{ return (*", remoteSym, ")(nil).ExtensionRangeArray() }")
-		g.P("func (this *", ms.sym, ") ExtensionMap() map[int32]", g.Pkg["proto"], ".Extension ",
-			"{ return (*", remoteSym, ")(this).ExtensionMap() }")
+		g.P("func (m *", ms.sym, ") ExtensionMap() map[int32]", g.Pkg["proto"], ".Extension ",
+			"{ return (*", remoteSym, ")(m).ExtensionMap() }")
 		if ms.isMessageSet {
-			g.P("func (this *", ms.sym, ") Marshal() ([]byte, error) ",
-				"{ return (*", remoteSym, ")(this).Marshal() }")
-			g.P("func (this *", ms.sym, ") Unmarshal(buf []byte) error ",
-				"{ return (*", remoteSym, ")(this).Unmarshal(buf) }")
+			g.P("func (m *", ms.sym, ") Marshal() ([]byte, error) ",
+				"{ return (*", remoteSym, ")(m).Marshal() }")
+			g.P("func (m *", ms.sym, ") Unmarshal(buf []byte) error ",
+				"{ return (*", remoteSym, ")(m).Unmarshal(buf) }")
 		}
 	}
 	for _, get := range ms.getters {
@@ -302,7 +302,7 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 			g.RecordTypeUse(get.typeName)
 		}
 		typ := get.typ
-		val := "(*" + remoteSym + ")(this)." + get.name + "()"
+		val := "(*" + remoteSym + ")(m)." + get.name + "()"
 		if get.genType {
 			// typ will be "*pkg.T" (message/group) or "pkg.T" (enum).
 			// Either of those might have a "[]" prefix if it is repeated.
@@ -328,7 +328,7 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 					ctyp = "(" + typ + ")"
 				}
 
-				g.P("func (this *", ms.sym, ") ", get.name, "() []", typ, " {")
+				g.P("func (m *", ms.sym, ") ", get.name, "() []", typ, " {")
 				g.In()
 				g.P("o := ", val)
 				g.P("if o == nil {")
@@ -351,7 +351,7 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 			val = "(" + typ + ")(" + val + ")"
 		}
 
-		g.P("func (this *", ms.sym, ") ", get.name, "() ", typ, " { return ", val, " }")
+		g.P("func (m *", ms.sym, ") ", get.name, "() ", typ, " { return ", val, " }")
 	}
 }
 
@@ -1359,35 +1359,36 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		usedNames[n] = true
 	}
 	fieldNames := make(map[*descriptor.FieldDescriptorProto]string)
+	fieldGetterNames := make(map[*descriptor.FieldDescriptorProto]string)
 	g.P("type ", ccTypeName, " struct {")
 	g.In()
 
 	for _, field := range message.Field {
-		fieldname := CamelCase(*field.Name)
-		for usedNames[fieldname] {
-			fieldname += "_"
+		fieldName := CamelCase(*field.Name)
+		for usedNames[fieldName] {
+			fieldName += "_"
 		}
-		usedNames[fieldname] = true
-		fieldNames[field] = fieldname
+		fieldGetterName := fieldName
+		usedNames[fieldName] = true
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
 		tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(field, wiretype), jsonName+",omitempty")
-		g.P(fieldname, "\t", typename, "\t`", tag, "`")
+		fieldNames[field] = fieldName
+		fieldGetterNames[field] = fieldGetterName
+		g.P(fieldName, "\t", typename, "\t`", tag, "`")
 		g.RecordTypeUse(field.GetTypeName())
 	}
 	if len(message.ExtensionRange) > 0 {
 		g.P("XXX_extensions\t\tmap[int32]", g.Pkg["proto"], ".Extension `json:\"-\"`")
 	}
-	if !message.group {
-		g.P("XXX_unrecognized\t[]byte `json:\"-\"`")
-	}
+	g.P("XXX_unrecognized\t[]byte `json:\"-\"`")
 	g.Out()
 	g.P("}")
 
 	// Reset, String and ProtoMessage methods.
-	g.P("func (this *", ccTypeName, ") Reset() { *this = ", ccTypeName, "{} }")
+	g.P("func (m *", ccTypeName, ") Reset() { *m = ", ccTypeName, "{} }")
 	if !message.group {
-		g.P("func (this *", ccTypeName, ") String() string { return ", g.Pkg["proto"], ".CompactTextString(this) }")
+		g.P("func (m *", ccTypeName, ") String() string { return ", g.Pkg["proto"], ".CompactTextString(m) }")
 		g.P("func (*", ccTypeName, ") ProtoMessage() {}")
 	}
 
@@ -1399,14 +1400,14 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		if opts := message.Options; opts != nil && opts.GetMessageSetWireFormat() {
 			isMessageSet = true
 			g.P()
-			g.P("func (this *", ccTypeName, ") Marshal() ([]byte, error) {")
+			g.P("func (m *", ccTypeName, ") Marshal() ([]byte, error) {")
 			g.In()
-			g.P("return ", g.Pkg["proto"], ".MarshalMessageSet(this.ExtensionMap())")
+			g.P("return ", g.Pkg["proto"], ".MarshalMessageSet(m.ExtensionMap())")
 			g.Out()
 			g.P("}")
-			g.P("func (this *", ccTypeName, ") Unmarshal(buf []byte) error {")
+			g.P("func (m *", ccTypeName, ") Unmarshal(buf []byte) error {")
 			g.In()
-			g.P("return ", g.Pkg["proto"], ".UnmarshalMessageSet(buf, this.ExtensionMap())")
+			g.P("return ", g.Pkg["proto"], ".UnmarshalMessageSet(buf, m.ExtensionMap())")
 			g.Out()
 			g.P("}")
 			g.P("// ensure ", ccTypeName, " satisfies proto.Marshaler and proto.Unmarshaler")
@@ -1428,14 +1429,14 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.P("return extRange_", ccTypeName)
 		g.Out()
 		g.P("}")
-		g.P("func (this *", ccTypeName, ") ExtensionMap() map[int32]", g.Pkg["proto"], ".Extension {")
+		g.P("func (m *", ccTypeName, ") ExtensionMap() map[int32]", g.Pkg["proto"], ".Extension {")
 		g.In()
-		g.P("if this.XXX_extensions == nil {")
+		g.P("if m.XXX_extensions == nil {")
 		g.In()
-		g.P("this.XXX_extensions = make(map[int32]", g.Pkg["proto"], ".Extension)")
+		g.P("m.XXX_extensions = make(map[int32]", g.Pkg["proto"], ".Extension)")
 		g.Out()
 		g.P("}")
-		g.P("return this.XXX_extensions")
+		g.P("return m.XXX_extensions")
 		g.Out()
 		g.P("}")
 	}
@@ -1495,7 +1496,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	for _, field := range message.Field {
 		fname := fieldNames[field]
 		typename, _ := g.GoType(message, field)
-		mname := "Get" + fname
+		mname := "Get" + fieldGetterNames[field]
 		star := ""
 		if needsStar(*field.Type) && typename[0] == '*' {
 			typename = typename[1:]
@@ -1532,7 +1533,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			})
 		}
 
-		g.P("func (this *", ccTypeName, ") "+mname+"() "+typename+" {")
+		g.P("func (m *", ccTypeName, ") "+mname+"() "+typename+" {")
 		g.In()
 		def, hasDef := defNames[field]
 		typeDefaultIsNil := false // whether this field type's default value is a literal nil unless specified
@@ -1548,9 +1549,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		if typeDefaultIsNil {
 			// A bytes field with no explicit default needs less generated code,
 			// as does a message or group field, or a repeated field.
-			g.P("if this != nil {")
+			g.P("if m != nil {")
 			g.In()
-			g.P("return this." + fname)
+			g.P("return m." + fname)
 			g.Out()
 			g.P("}")
 			g.P("return nil")
@@ -1559,9 +1560,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			g.P()
 			continue
 		}
-		g.P("if this != nil && this." + fname + " != nil {")
+		g.P("if m != nil && m." + fname + " != nil {")
 		g.In()
-		g.P("return " + star + "this." + fname)
+		g.P("return " + star + "m." + fname)
 		g.Out()
 		g.P("}")
 		if hasDef {

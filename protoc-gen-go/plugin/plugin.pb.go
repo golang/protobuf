@@ -21,15 +21,29 @@ type CodeGeneratorRequest struct {
 	XXX_unrecognized []byte                                 `json:"-"`
 }
 
-func (this *CodeGeneratorRequest) Reset()         { *this = CodeGeneratorRequest{} }
-func (this *CodeGeneratorRequest) String() string { return proto.CompactTextString(this) }
-func (*CodeGeneratorRequest) ProtoMessage()       {}
+func (m *CodeGeneratorRequest) Reset()         { *m = CodeGeneratorRequest{} }
+func (m *CodeGeneratorRequest) String() string { return proto.CompactTextString(m) }
+func (*CodeGeneratorRequest) ProtoMessage()    {}
 
-func (this *CodeGeneratorRequest) GetParameter() string {
-	if this != nil && this.Parameter != nil {
-		return *this.Parameter
+func (m *CodeGeneratorRequest) GetFileToGenerate() []string {
+	if m != nil {
+		return m.FileToGenerate
+	}
+	return nil
+}
+
+func (m *CodeGeneratorRequest) GetParameter() string {
+	if m != nil && m.Parameter != nil {
+		return *m.Parameter
 	}
 	return ""
+}
+
+func (m *CodeGeneratorRequest) GetProtoFile() []*google_protobuf.FileDescriptorProto {
+	if m != nil {
+		return m.ProtoFile
+	}
+	return nil
 }
 
 type CodeGeneratorResponse struct {
@@ -38,15 +52,22 @@ type CodeGeneratorResponse struct {
 	XXX_unrecognized []byte                        `json:"-"`
 }
 
-func (this *CodeGeneratorResponse) Reset()         { *this = CodeGeneratorResponse{} }
-func (this *CodeGeneratorResponse) String() string { return proto.CompactTextString(this) }
-func (*CodeGeneratorResponse) ProtoMessage()       {}
+func (m *CodeGeneratorResponse) Reset()         { *m = CodeGeneratorResponse{} }
+func (m *CodeGeneratorResponse) String() string { return proto.CompactTextString(m) }
+func (*CodeGeneratorResponse) ProtoMessage()    {}
 
-func (this *CodeGeneratorResponse) GetError() string {
-	if this != nil && this.Error != nil {
-		return *this.Error
+func (m *CodeGeneratorResponse) GetError() string {
+	if m != nil && m.Error != nil {
+		return *m.Error
 	}
 	return ""
+}
+
+func (m *CodeGeneratorResponse) GetFile() []*CodeGeneratorResponse_File {
+	if m != nil {
+		return m.File
+	}
+	return nil
 }
 
 type CodeGeneratorResponse_File struct {
@@ -56,27 +77,27 @@ type CodeGeneratorResponse_File struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (this *CodeGeneratorResponse_File) Reset()         { *this = CodeGeneratorResponse_File{} }
-func (this *CodeGeneratorResponse_File) String() string { return proto.CompactTextString(this) }
-func (*CodeGeneratorResponse_File) ProtoMessage()       {}
+func (m *CodeGeneratorResponse_File) Reset()         { *m = CodeGeneratorResponse_File{} }
+func (m *CodeGeneratorResponse_File) String() string { return proto.CompactTextString(m) }
+func (*CodeGeneratorResponse_File) ProtoMessage()    {}
 
-func (this *CodeGeneratorResponse_File) GetName() string {
-	if this != nil && this.Name != nil {
-		return *this.Name
+func (m *CodeGeneratorResponse_File) GetName() string {
+	if m != nil && m.Name != nil {
+		return *m.Name
 	}
 	return ""
 }
 
-func (this *CodeGeneratorResponse_File) GetInsertionPoint() string {
-	if this != nil && this.InsertionPoint != nil {
-		return *this.InsertionPoint
+func (m *CodeGeneratorResponse_File) GetInsertionPoint() string {
+	if m != nil && m.InsertionPoint != nil {
+		return *m.InsertionPoint
 	}
 	return ""
 }
 
-func (this *CodeGeneratorResponse_File) GetContent() string {
-	if this != nil && this.Content != nil {
-		return *this.Content
+func (m *CodeGeneratorResponse_File) GetContent() string {
+	if m != nil && m.Content != nil {
+		return *m.Content
 	}
 	return ""
 }
