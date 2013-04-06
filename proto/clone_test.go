@@ -49,7 +49,7 @@ var cloneTestMessage = &pb.MyMessage{
 		Connected: proto.Bool(true),
 	},
 	Others: []*pb.OtherMessage{
-		&pb.OtherMessage{
+		{
 			Value: []byte("some bytes"),
 		},
 	},
@@ -111,7 +111,7 @@ var mergeTests = []struct {
 			},
 			Pet: []string{"horsey"},
 			Others: []*pb.OtherMessage{
-				&pb.OtherMessage{
+				{
 					Value: []byte("some bytes"),
 				},
 			},
@@ -123,10 +123,10 @@ var mergeTests = []struct {
 			},
 			Pet: []string{"bunny", "kitty"},
 			Others: []*pb.OtherMessage{
-				&pb.OtherMessage{
+				{
 					Key: proto.Int64(31415926535),
 				},
-				&pb.OtherMessage{
+				{
 					// Explicitly test a src=nil field
 					Inner: nil,
 				},
@@ -140,11 +140,11 @@ var mergeTests = []struct {
 			},
 			Pet: []string{"bunny", "kitty", "horsey"},
 			Others: []*pb.OtherMessage{
-				&pb.OtherMessage{
+				{
 					Key: proto.Int64(31415926535),
 				},
-				&pb.OtherMessage{},
-				&pb.OtherMessage{
+				{},
+				{
 					Value: []byte("some bytes"),
 				},
 			},
