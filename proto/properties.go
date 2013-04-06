@@ -252,14 +252,14 @@ func (p *Properties) Parse(s string) {
 		case f == "packed":
 			p.Packed = true
 		case strings.HasPrefix(f, "name="):
-			p.OrigName = f[5:len(f)]
+			p.OrigName = f[5:]
 		case strings.HasPrefix(f, "enum="):
-			p.Enum = f[5:len(f)]
+			p.Enum = f[5:]
 		case strings.HasPrefix(f, "def="):
-			p.Default = f[4:len(f)] // rest of string
+			p.Default = f[4:] // rest of string
 			if i+1 < len(fields) {
 				// Commas aren't escaped, and def is always last.
-				p.Default += "," + strings.Join(fields[i+1:len(fields)], ",")
+				p.Default += "," + strings.Join(fields[i+1:], ",")
 				break
 			}
 		}

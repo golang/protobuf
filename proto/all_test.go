@@ -1158,7 +1158,7 @@ func TestPackedNonPackedDecoderSwitching(t *testing.T) {
 func TestProto1RepeatedGroup(t *testing.T) {
 	pb := &MessageList{
 		Message: []*MessageList_Message{
-			&MessageList_Message{
+			{
 				Name:  String("blah"),
 				Count: Int32(7),
 			},
