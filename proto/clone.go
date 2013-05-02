@@ -88,7 +88,6 @@ func mergeStruct(out, in reflect.Value) {
 		mergeExtension(emOut.ExtensionMap(), emIn.ExtensionMap())
 	}
 
-	// Groups don't have XXX_unrecognized fields.
 	uf := in.FieldByName("XXX_unrecognized")
 	if !uf.IsValid() {
 		return

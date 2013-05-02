@@ -1387,10 +1387,8 @@ func (g *Generator) generateMessage(message *Descriptor) {
 
 	// Reset, String and ProtoMessage methods.
 	g.P("func (m *", ccTypeName, ") Reset() { *m = ", ccTypeName, "{} }")
-	if !message.group {
-		g.P("func (m *", ccTypeName, ") String() string { return ", g.Pkg["proto"], ".CompactTextString(m) }")
-		g.P("func (*", ccTypeName, ") ProtoMessage() {}")
-	}
+	g.P("func (m *", ccTypeName, ") String() string { return ", g.Pkg["proto"], ".CompactTextString(m) }")
+	g.P("func (*", ccTypeName, ") ProtoMessage() {}")
 
 	// Extension support methods
 	var hasExtensions, isMessageSet bool

@@ -92,7 +92,6 @@ func sizeStruct(x reflect.Value) (n int) {
 		}
 	}
 
-	// Groups don't have XXX_unrecognized fields.
 	if uf := x.FieldByName("XXX_unrecognized"); uf.IsValid() {
 		n += uf.Len()
 	}
