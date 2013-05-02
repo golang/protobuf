@@ -230,7 +230,9 @@ type Request_SomeGroup struct {
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (m *Request_SomeGroup) Reset() { *m = Request_SomeGroup{} }
+func (m *Request_SomeGroup) Reset()         { *m = Request_SomeGroup{} }
+func (m *Request_SomeGroup) String() string { return proto.CompactTextString(m) }
+func (*Request_SomeGroup) ProtoMessage()    {}
 
 func (m *Request_SomeGroup) GetGroupField() int32 {
 	if m != nil && m.GroupField != nil {

@@ -871,7 +871,9 @@ type GoTest_RequiredGroup struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *GoTest_RequiredGroup) Reset() { *m = GoTest_RequiredGroup{} }
+func (m *GoTest_RequiredGroup) Reset()         { *m = GoTest_RequiredGroup{} }
+func (m *GoTest_RequiredGroup) String() string { return proto.CompactTextString(m) }
+func (*GoTest_RequiredGroup) ProtoMessage()    {}
 
 func (m *GoTest_RequiredGroup) GetRequiredField() string {
 	if m != nil && m.RequiredField != nil {
@@ -885,7 +887,9 @@ type GoTest_RepeatedGroup struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *GoTest_RepeatedGroup) Reset() { *m = GoTest_RepeatedGroup{} }
+func (m *GoTest_RepeatedGroup) Reset()         { *m = GoTest_RepeatedGroup{} }
+func (m *GoTest_RepeatedGroup) String() string { return proto.CompactTextString(m) }
+func (*GoTest_RepeatedGroup) ProtoMessage()    {}
 
 func (m *GoTest_RepeatedGroup) GetRequiredField() string {
 	if m != nil && m.RequiredField != nil {
@@ -899,7 +903,9 @@ type GoTest_OptionalGroup struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *GoTest_OptionalGroup) Reset() { *m = GoTest_OptionalGroup{} }
+func (m *GoTest_OptionalGroup) Reset()         { *m = GoTest_OptionalGroup{} }
+func (m *GoTest_OptionalGroup) String() string { return proto.CompactTextString(m) }
+func (*GoTest_OptionalGroup) ProtoMessage()    {}
 
 func (m *GoTest_OptionalGroup) GetRequiredField() string {
 	if m != nil && m.RequiredField != nil {
@@ -962,7 +968,9 @@ type GoSkipTest_SkipGroup struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *GoSkipTest_SkipGroup) Reset() { *m = GoSkipTest_SkipGroup{} }
+func (m *GoSkipTest_SkipGroup) Reset()         { *m = GoSkipTest_SkipGroup{} }
+func (m *GoSkipTest_SkipGroup) String() string { return proto.CompactTextString(m) }
+func (*GoSkipTest_SkipGroup) ProtoMessage()    {}
 
 func (m *GoSkipTest_SkipGroup) GetGroupInt32() int32 {
 	if m != nil && m.GroupInt32 != nil {
@@ -1280,7 +1288,9 @@ type MyMessage_SomeGroup struct {
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (m *MyMessage_SomeGroup) Reset() { *m = MyMessage_SomeGroup{} }
+func (m *MyMessage_SomeGroup) Reset()         { *m = MyMessage_SomeGroup{} }
+func (m *MyMessage_SomeGroup) String() string { return proto.CompactTextString(m) }
+func (*MyMessage_SomeGroup) ProtoMessage()    {}
 
 func (m *MyMessage_SomeGroup) GetGroupField() int32 {
 	if m != nil && m.GroupField != nil {
@@ -1351,7 +1361,9 @@ type MessageList_Message struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *MessageList_Message) Reset() { *m = MessageList_Message{} }
+func (m *MessageList_Message) Reset()         { *m = MessageList_Message{} }
+func (m *MessageList_Message) String() string { return proto.CompactTextString(m) }
+func (*MessageList_Message) ProtoMessage()    {}
 
 func (m *MessageList_Message) GetName() string {
 	if m != nil && m.Name != nil {
@@ -1644,6 +1656,78 @@ func (m *MoreRepeated) GetStrings() []string {
 		return m.Strings
 	}
 	return nil
+}
+
+type GroupOld struct {
+	G                *GroupOld_G `protobuf:"group,1,opt" json:"g,omitempty"`
+	XXX_unrecognized []byte      `json:"-"`
+}
+
+func (m *GroupOld) Reset()         { *m = GroupOld{} }
+func (m *GroupOld) String() string { return proto.CompactTextString(m) }
+func (*GroupOld) ProtoMessage()    {}
+
+func (m *GroupOld) GetG() *GroupOld_G {
+	if m != nil {
+		return m.G
+	}
+	return nil
+}
+
+type GroupOld_G struct {
+	X                *int32 `protobuf:"varint,2,opt,name=x" json:"x,omitempty"`
+	XXX_unrecognized []byte `json:"-"`
+}
+
+func (m *GroupOld_G) Reset()         { *m = GroupOld_G{} }
+func (m *GroupOld_G) String() string { return proto.CompactTextString(m) }
+func (*GroupOld_G) ProtoMessage()    {}
+
+func (m *GroupOld_G) GetX() int32 {
+	if m != nil && m.X != nil {
+		return *m.X
+	}
+	return 0
+}
+
+type GroupNew struct {
+	G                *GroupNew_G `protobuf:"group,1,opt" json:"g,omitempty"`
+	XXX_unrecognized []byte      `json:"-"`
+}
+
+func (m *GroupNew) Reset()         { *m = GroupNew{} }
+func (m *GroupNew) String() string { return proto.CompactTextString(m) }
+func (*GroupNew) ProtoMessage()    {}
+
+func (m *GroupNew) GetG() *GroupNew_G {
+	if m != nil {
+		return m.G
+	}
+	return nil
+}
+
+type GroupNew_G struct {
+	X                *int32 `protobuf:"varint,2,opt,name=x" json:"x,omitempty"`
+	Y                *int32 `protobuf:"varint,3,opt,name=y" json:"y,omitempty"`
+	XXX_unrecognized []byte `json:"-"`
+}
+
+func (m *GroupNew_G) Reset()         { *m = GroupNew_G{} }
+func (m *GroupNew_G) String() string { return proto.CompactTextString(m) }
+func (*GroupNew_G) ProtoMessage()    {}
+
+func (m *GroupNew_G) GetX() int32 {
+	if m != nil && m.X != nil {
+		return *m.X
+	}
+	return 0
+}
+
+func (m *GroupNew_G) GetY() int32 {
+	if m != nil && m.Y != nil {
+		return *m.Y
+	}
+	return 0
 }
 
 var E_Greeting = &proto.ExtensionDesc{
