@@ -166,6 +166,16 @@ func TestMarshalTextNil(t *testing.T) {
 	}
 }
 
+func TestMarshalTextUnknownEnum(t *testing.T) {
+	// The Color enum only specifies values 0-2.
+	m := &pb.MyMessage{Bikeshed: pb.MyMessage_Color(3).Enum()}
+	got := m.String()
+	const want = `bikeshed:3 `
+	if got != want {
+		t.Errorf("\n got %q\nwant %q", got, want)
+	}
+}
+
 func BenchmarkMarshalTextBuffered(b *testing.B) {
 	buf := new(bytes.Buffer)
 	m := newTestMessage()

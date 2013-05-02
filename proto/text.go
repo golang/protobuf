@@ -246,18 +246,9 @@ func writeStruct(w *textWriter, sv reflect.Value) error {
 			continue
 		}
 
-		var written bool
-		var err error
-		if props.Enum != "" {
-			written, err = tryWriteEnum(w, props.Enum, fv)
-			if err != nil {
-				return err
-			}
-		}
-		if !written {
-			if err := writeAny(w, fv, props); err != nil {
-				return err
-			}
+		// Enums have a String method, so writeAny will work fine.
+		if err := writeAny(w, fv, props); err != nil {
+			return err
 		}
 
 		if err := w.WriteByte('\n'); err != nil {
@@ -295,25 +286,6 @@ func writeRaw(w *textWriter, b []byte) error {
 		return err
 	}
 	return nil
-}
-
-// tryWriteEnum attempts to write an enum value as a symbolic constant.
-// If the enum is unregistered, nothing is written and false is returned.
-func tryWriteEnum(w *textWriter, enum string, v reflect.Value) (bool, error) {
-	v = reflect.Indirect(v)
-	if v.Type().Kind() != reflect.Int32 {
-		return false, nil
-	}
-	m, ok := enumNameMaps[enum]
-	if !ok {
-		return false, nil
-	}
-	str, ok := m[int32(v.Int())]
-	if !ok {
-		return false, nil
-	}
-	_, err := fmt.Fprintf(w, str)
-	return true, err
 }
 
 // writeAny writes an arbitrary field.

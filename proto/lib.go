@@ -409,7 +409,7 @@ func EnumName(m map[int32]string, v int32) string {
 	if ok {
 		return s
 	}
-	return "unknown_enum_" + strconv.Itoa(int(v))
+	return strconv.Itoa(int(v))
 }
 
 // UnmarshalJSONEnum is a helper function to simplify recovering enum int values
