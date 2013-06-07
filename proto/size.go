@@ -100,14 +100,6 @@ func sizeStruct(x reflect.Value) (n int) {
 }
 
 func sizeField(x reflect.Value, prop *Properties) (n int) {
-	// Handle easy ones first.
-	switch prop.WireType {
-	case WireFixed64:
-		return 8
-	case WireFixed32:
-		return 4
-	}
-
 	if x.Type().Kind() == reflect.Slice {
 		n := x.Len()
 		et := x.Type().Elem()
@@ -125,14 +117,27 @@ func sizeField(x reflect.Value, prop *Properties) (n int) {
 			nb = len(prop.tagcode) + sizeVarint(uint64(n))
 		}
 
-		if et.Kind() == reflect.Bool {
-			// []bool is easy to compute: each element requires one byte.
+		// []bool and repeated fixed integer types are easy.
+		switch {
+		case et.Kind() == reflect.Bool:
 			return nb + n
+		case prop.WireType == WireFixed64:
+			return nb + n*8
+		case prop.WireType == WireFixed32:
+			return nb + n*4
 		}
 		for i := 0; i < n; i++ {
 			nb += sizeField(x.Index(i), prop)
 		}
 		return nb
+	}
+
+	// easy scalars
+	switch prop.WireType {
+	case WireFixed64:
+		return 8
+	case WireFixed32:
+		return 4
 	}
 
 	switch x.Kind() {
