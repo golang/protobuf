@@ -333,6 +333,7 @@ message MoreRepeated {
   repeated int32 ints = 3;
   repeated int32 ints_packed = 4 [packed=true];
   repeated string strings = 5;
+  repeated fixed32 fixeds = 6;
 }
 
 // GroupOld and GroupNew have the same wire format.
