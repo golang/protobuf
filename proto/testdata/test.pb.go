@@ -1616,6 +1616,7 @@ type MoreRepeated struct {
 	Ints             []int32  `protobuf:"varint,3,rep,name=ints" json:"ints,omitempty"`
 	IntsPacked       []int32  `protobuf:"varint,4,rep,packed,name=ints_packed" json:"ints_packed,omitempty"`
 	Strings          []string `protobuf:"bytes,5,rep,name=strings" json:"strings,omitempty"`
+	Fixeds           []uint32 `protobuf:"fixed32,6,rep,name=fixeds" json:"fixeds,omitempty"`
 	XXX_unrecognized []byte   `json:"-"`
 }
 
@@ -1654,6 +1655,13 @@ func (m *MoreRepeated) GetIntsPacked() []int32 {
 func (m *MoreRepeated) GetStrings() []string {
 	if m != nil {
 		return m.Strings
+	}
+	return nil
+}
+
+func (m *MoreRepeated) GetFixeds() []uint32 {
+	if m != nil {
+		return m.Fixeds
 	}
 	return nil
 }
@@ -1726,6 +1734,22 @@ func (m *GroupNew_G) GetX() int32 {
 func (m *GroupNew_G) GetY() int32 {
 	if m != nil && m.Y != nil {
 		return *m.Y
+	}
+	return 0
+}
+
+type FloatingPoint struct {
+	F                *float64 `protobuf:"fixed64,1,req,name=f" json:"f,omitempty"`
+	XXX_unrecognized []byte   `json:"-"`
+}
+
+func (m *FloatingPoint) Reset()         { *m = FloatingPoint{} }
+func (m *FloatingPoint) String() string { return proto.CompactTextString(m) }
+func (*FloatingPoint) ProtoMessage()    {}
+
+func (m *FloatingPoint) GetF() float64 {
+	if m != nil && m.F != nil {
+		return *m.F
 	}
 	return 0
 }
