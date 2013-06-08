@@ -1339,6 +1339,48 @@ var E_Ext_Number = &proto.ExtensionDesc{
 	Tag:           "varint,105,opt,name=number",
 }
 
+type MyMessageSet struct {
+	XXX_extensions   map[int32]proto.Extension `json:"-"`
+	XXX_unrecognized []byte                    `json:"-"`
+}
+
+func (m *MyMessageSet) Reset()         { *m = MyMessageSet{} }
+func (m *MyMessageSet) String() string { return proto.CompactTextString(m) }
+func (*MyMessageSet) ProtoMessage()    {}
+
+func (m *MyMessageSet) Marshal() ([]byte, error) {
+	return proto.MarshalMessageSet(m.ExtensionMap())
+}
+func (m *MyMessageSet) Unmarshal(buf []byte) error {
+	return proto.UnmarshalMessageSet(buf, m.ExtensionMap())
+}
+
+// ensure MyMessageSet satisfies proto.Marshaler and proto.Unmarshaler
+var _ proto.Marshaler = (*MyMessageSet)(nil)
+var _ proto.Unmarshaler = (*MyMessageSet)(nil)
+
+var extRange_MyMessageSet = []proto.ExtensionRange{
+	{100, 536870911},
+}
+
+func (*MyMessageSet) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_MyMessageSet
+}
+func (m *MyMessageSet) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
+	}
+	return m.XXX_extensions
+}
+
+type Empty struct {
+	XXX_unrecognized []byte `json:"-"`
+}
+
+func (m *Empty) Reset()         { *m = Empty{} }
+func (m *Empty) String() string { return proto.CompactTextString(m) }
+func (*Empty) ProtoMessage()    {}
+
 type MessageList struct {
 	Message          []*MessageList_Message `protobuf:"group,1,rep" json:"message,omitempty"`
 	XXX_unrecognized []byte                 `json:"-"`
@@ -1762,6 +1804,406 @@ var E_Greeting = &proto.ExtensionDesc{
 	Tag:           "bytes,106,rep,name=greeting",
 }
 
+var E_X201 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         201,
+	Name:          "testdata.x201",
+	Tag:           "bytes,201,opt,name=x201",
+}
+
+var E_X202 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         202,
+	Name:          "testdata.x202",
+	Tag:           "bytes,202,opt,name=x202",
+}
+
+var E_X203 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         203,
+	Name:          "testdata.x203",
+	Tag:           "bytes,203,opt,name=x203",
+}
+
+var E_X204 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         204,
+	Name:          "testdata.x204",
+	Tag:           "bytes,204,opt,name=x204",
+}
+
+var E_X205 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         205,
+	Name:          "testdata.x205",
+	Tag:           "bytes,205,opt,name=x205",
+}
+
+var E_X206 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         206,
+	Name:          "testdata.x206",
+	Tag:           "bytes,206,opt,name=x206",
+}
+
+var E_X207 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         207,
+	Name:          "testdata.x207",
+	Tag:           "bytes,207,opt,name=x207",
+}
+
+var E_X208 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         208,
+	Name:          "testdata.x208",
+	Tag:           "bytes,208,opt,name=x208",
+}
+
+var E_X209 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         209,
+	Name:          "testdata.x209",
+	Tag:           "bytes,209,opt,name=x209",
+}
+
+var E_X210 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         210,
+	Name:          "testdata.x210",
+	Tag:           "bytes,210,opt,name=x210",
+}
+
+var E_X211 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         211,
+	Name:          "testdata.x211",
+	Tag:           "bytes,211,opt,name=x211",
+}
+
+var E_X212 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         212,
+	Name:          "testdata.x212",
+	Tag:           "bytes,212,opt,name=x212",
+}
+
+var E_X213 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         213,
+	Name:          "testdata.x213",
+	Tag:           "bytes,213,opt,name=x213",
+}
+
+var E_X214 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         214,
+	Name:          "testdata.x214",
+	Tag:           "bytes,214,opt,name=x214",
+}
+
+var E_X215 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         215,
+	Name:          "testdata.x215",
+	Tag:           "bytes,215,opt,name=x215",
+}
+
+var E_X216 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         216,
+	Name:          "testdata.x216",
+	Tag:           "bytes,216,opt,name=x216",
+}
+
+var E_X217 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         217,
+	Name:          "testdata.x217",
+	Tag:           "bytes,217,opt,name=x217",
+}
+
+var E_X218 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         218,
+	Name:          "testdata.x218",
+	Tag:           "bytes,218,opt,name=x218",
+}
+
+var E_X219 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         219,
+	Name:          "testdata.x219",
+	Tag:           "bytes,219,opt,name=x219",
+}
+
+var E_X220 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         220,
+	Name:          "testdata.x220",
+	Tag:           "bytes,220,opt,name=x220",
+}
+
+var E_X221 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         221,
+	Name:          "testdata.x221",
+	Tag:           "bytes,221,opt,name=x221",
+}
+
+var E_X222 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         222,
+	Name:          "testdata.x222",
+	Tag:           "bytes,222,opt,name=x222",
+}
+
+var E_X223 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         223,
+	Name:          "testdata.x223",
+	Tag:           "bytes,223,opt,name=x223",
+}
+
+var E_X224 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         224,
+	Name:          "testdata.x224",
+	Tag:           "bytes,224,opt,name=x224",
+}
+
+var E_X225 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         225,
+	Name:          "testdata.x225",
+	Tag:           "bytes,225,opt,name=x225",
+}
+
+var E_X226 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         226,
+	Name:          "testdata.x226",
+	Tag:           "bytes,226,opt,name=x226",
+}
+
+var E_X227 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         227,
+	Name:          "testdata.x227",
+	Tag:           "bytes,227,opt,name=x227",
+}
+
+var E_X228 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         228,
+	Name:          "testdata.x228",
+	Tag:           "bytes,228,opt,name=x228",
+}
+
+var E_X229 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         229,
+	Name:          "testdata.x229",
+	Tag:           "bytes,229,opt,name=x229",
+}
+
+var E_X230 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         230,
+	Name:          "testdata.x230",
+	Tag:           "bytes,230,opt,name=x230",
+}
+
+var E_X231 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         231,
+	Name:          "testdata.x231",
+	Tag:           "bytes,231,opt,name=x231",
+}
+
+var E_X232 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         232,
+	Name:          "testdata.x232",
+	Tag:           "bytes,232,opt,name=x232",
+}
+
+var E_X233 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         233,
+	Name:          "testdata.x233",
+	Tag:           "bytes,233,opt,name=x233",
+}
+
+var E_X234 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         234,
+	Name:          "testdata.x234",
+	Tag:           "bytes,234,opt,name=x234",
+}
+
+var E_X235 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         235,
+	Name:          "testdata.x235",
+	Tag:           "bytes,235,opt,name=x235",
+}
+
+var E_X236 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         236,
+	Name:          "testdata.x236",
+	Tag:           "bytes,236,opt,name=x236",
+}
+
+var E_X237 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         237,
+	Name:          "testdata.x237",
+	Tag:           "bytes,237,opt,name=x237",
+}
+
+var E_X238 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         238,
+	Name:          "testdata.x238",
+	Tag:           "bytes,238,opt,name=x238",
+}
+
+var E_X239 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         239,
+	Name:          "testdata.x239",
+	Tag:           "bytes,239,opt,name=x239",
+}
+
+var E_X240 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         240,
+	Name:          "testdata.x240",
+	Tag:           "bytes,240,opt,name=x240",
+}
+
+var E_X241 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         241,
+	Name:          "testdata.x241",
+	Tag:           "bytes,241,opt,name=x241",
+}
+
+var E_X242 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         242,
+	Name:          "testdata.x242",
+	Tag:           "bytes,242,opt,name=x242",
+}
+
+var E_X243 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         243,
+	Name:          "testdata.x243",
+	Tag:           "bytes,243,opt,name=x243",
+}
+
+var E_X244 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         244,
+	Name:          "testdata.x244",
+	Tag:           "bytes,244,opt,name=x244",
+}
+
+var E_X245 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         245,
+	Name:          "testdata.x245",
+	Tag:           "bytes,245,opt,name=x245",
+}
+
+var E_X246 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         246,
+	Name:          "testdata.x246",
+	Tag:           "bytes,246,opt,name=x246",
+}
+
+var E_X247 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         247,
+	Name:          "testdata.x247",
+	Tag:           "bytes,247,opt,name=x247",
+}
+
+var E_X248 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         248,
+	Name:          "testdata.x248",
+	Tag:           "bytes,248,opt,name=x248",
+}
+
+var E_X249 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         249,
+	Name:          "testdata.x249",
+	Tag:           "bytes,249,opt,name=x249",
+}
+
+var E_X250 = &proto.ExtensionDesc{
+	ExtendedType:  (*MyMessageSet)(nil),
+	ExtensionType: (*Empty)(nil),
+	Field:         250,
+	Name:          "testdata.x250",
+	Tag:           "bytes,250,opt,name=x250",
+}
+
 func init() {
 	proto.RegisterEnum("testdata.FOO", FOO_name, FOO_value)
 	proto.RegisterEnum("testdata.GoTest_KIND", GoTest_KIND_name, GoTest_KIND_value)
@@ -1772,4 +2214,54 @@ func init() {
 	proto.RegisterExtension(E_Ext_Text)
 	proto.RegisterExtension(E_Ext_Number)
 	proto.RegisterExtension(E_Greeting)
+	proto.RegisterExtension(E_X201)
+	proto.RegisterExtension(E_X202)
+	proto.RegisterExtension(E_X203)
+	proto.RegisterExtension(E_X204)
+	proto.RegisterExtension(E_X205)
+	proto.RegisterExtension(E_X206)
+	proto.RegisterExtension(E_X207)
+	proto.RegisterExtension(E_X208)
+	proto.RegisterExtension(E_X209)
+	proto.RegisterExtension(E_X210)
+	proto.RegisterExtension(E_X211)
+	proto.RegisterExtension(E_X212)
+	proto.RegisterExtension(E_X213)
+	proto.RegisterExtension(E_X214)
+	proto.RegisterExtension(E_X215)
+	proto.RegisterExtension(E_X216)
+	proto.RegisterExtension(E_X217)
+	proto.RegisterExtension(E_X218)
+	proto.RegisterExtension(E_X219)
+	proto.RegisterExtension(E_X220)
+	proto.RegisterExtension(E_X221)
+	proto.RegisterExtension(E_X222)
+	proto.RegisterExtension(E_X223)
+	proto.RegisterExtension(E_X224)
+	proto.RegisterExtension(E_X225)
+	proto.RegisterExtension(E_X226)
+	proto.RegisterExtension(E_X227)
+	proto.RegisterExtension(E_X228)
+	proto.RegisterExtension(E_X229)
+	proto.RegisterExtension(E_X230)
+	proto.RegisterExtension(E_X231)
+	proto.RegisterExtension(E_X232)
+	proto.RegisterExtension(E_X233)
+	proto.RegisterExtension(E_X234)
+	proto.RegisterExtension(E_X235)
+	proto.RegisterExtension(E_X236)
+	proto.RegisterExtension(E_X237)
+	proto.RegisterExtension(E_X238)
+	proto.RegisterExtension(E_X239)
+	proto.RegisterExtension(E_X240)
+	proto.RegisterExtension(E_X241)
+	proto.RegisterExtension(E_X242)
+	proto.RegisterExtension(E_X243)
+	proto.RegisterExtension(E_X244)
+	proto.RegisterExtension(E_X245)
+	proto.RegisterExtension(E_X246)
+	proto.RegisterExtension(E_X247)
+	proto.RegisterExtension(E_X248)
+	proto.RegisterExtension(E_X249)
+	proto.RegisterExtension(E_X250)
 }
