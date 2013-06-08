@@ -351,3 +351,7 @@ message GroupNew {
     optional int32 y = 3;
   }
 }
+
+message FloatingPoint {
+  required double f = 1;
+}

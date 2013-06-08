@@ -39,6 +39,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"os"
 	"reflect"
 	"sort"
@@ -55,6 +56,9 @@ var (
 	backslashT      = []byte{'\\', 't'}
 	backslashDQ     = []byte{'\\', '"'}
 	backslashBS     = []byte{'\\', '\\'}
+	posInf          = []byte("inf")
+	negInf          = []byte("-inf")
+	nan             = []byte("nan")
 )
 
 type writer interface {
@@ -292,8 +296,27 @@ func writeRaw(w *textWriter, b []byte) error {
 func writeAny(w *textWriter, v reflect.Value, props *Properties) error {
 	v = reflect.Indirect(v)
 
+	// Floats have special cases.
+	if v.Kind() == reflect.Float32 || v.Kind() == reflect.Float64 {
+		x := v.Float()
+		var b []byte
+		switch {
+		case math.IsInf(x, 1):
+			b = posInf
+		case math.IsInf(x, -1):
+			b = negInf
+		case math.IsNaN(x):
+			b = nan
+		}
+		if b != nil {
+			_, err := w.Write(b)
+			return err
+		}
+		// Other values are handled below.
+	}
+
 	// We don't attempt to serialise every possible value type; only those
-	// that can occur in protocol buffers, plus a few extra that were easy.
+	// that can occur in protocol buffers.
 	switch v.Kind() {
 	case reflect.Slice:
 		// Should only be a []byte; repeated fields are handled in writeStruct.

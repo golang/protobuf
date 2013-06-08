@@ -35,6 +35,7 @@ import (
 	"bytes"
 	"errors"
 	"io/ioutil"
+	"math"
 	"strings"
 	"testing"
 
@@ -330,6 +331,27 @@ func TestMarshalTextFailing(t *testing.T) {
 		x := text[:buf.limit]
 		if s != x {
 			t.Errorf("Got:\n===\n%v===\nExpected:\n===\n%v===\n", s, x)
+		}
+	}
+}
+
+func TestFloats(t *testing.T) {
+	tests := []struct {
+		f    float64
+		want string
+	}{
+		{0, "0"},
+		{4.7, "4.7"},
+		{math.Inf(1), "inf"},
+		{math.Inf(-1), "-inf"},
+		{math.NaN(), "nan"},
+	}
+	for _, test := range tests {
+		msg := &pb.FloatingPoint{F: &test.f}
+		got := strings.TrimSpace(msg.String())
+		want := `f:` + test.want
+		if got != want {
+			t.Errorf("f=%f: got %q, want %q", test.f, got, want)
 		}
 	}
 }
