@@ -1458,7 +1458,7 @@ func TestMergeMessages(t *testing.T) {
 }
 
 func TestExtensionMarshalOrder(t *testing.T) {
-	m := &MyMessage{Count: Int32(123)}
+	m := &MyMessage{Count: Int(123)}
 	if err := SetExtension(m, E_Ext_More, &Ext{Data: String("alpha")}); err != nil {
 		t.Fatalf("SetExtension: %v", err)
 	}
@@ -1471,7 +1471,7 @@ func TestExtensionMarshalOrder(t *testing.T) {
 
 	// Serialize m several times, and check we get the same bytes each time.
 	var orig []byte
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		b, err := Marshal(m)
 		if err != nil {
 			t.Fatalf("Marshal: %v", err)
@@ -1482,6 +1482,97 @@ func TestExtensionMarshalOrder(t *testing.T) {
 		}
 		if !bytes.Equal(b, orig) {
 			t.Errorf("Bytes differ on attempt #%d", i)
+		}
+	}
+}
+
+// Many extensions, because small maps might not iterate differently on each iteration.
+var exts = []*ExtensionDesc{
+	E_X201,
+	E_X202,
+	E_X203,
+	E_X204,
+	E_X205,
+	E_X206,
+	E_X207,
+	E_X208,
+	E_X209,
+	E_X210,
+	E_X211,
+	E_X212,
+	E_X213,
+	E_X214,
+	E_X215,
+	E_X216,
+	E_X217,
+	E_X218,
+	E_X219,
+	E_X220,
+	E_X221,
+	E_X222,
+	E_X223,
+	E_X224,
+	E_X225,
+	E_X226,
+	E_X227,
+	E_X228,
+	E_X229,
+	E_X230,
+	E_X231,
+	E_X232,
+	E_X233,
+	E_X234,
+	E_X235,
+	E_X236,
+	E_X237,
+	E_X238,
+	E_X239,
+	E_X240,
+	E_X241,
+	E_X242,
+	E_X243,
+	E_X244,
+	E_X245,
+	E_X246,
+	E_X247,
+	E_X248,
+	E_X249,
+	E_X250,
+}
+
+func TestMessageSetMarshalOrder(t *testing.T) {
+	m := &MyMessageSet{}
+	for _, x := range exts {
+		if err := SetExtension(m, x, &Empty{}); err != nil {
+			t.Fatalf("SetExtension: %v", err)
+		}
+	}
+
+	buf, err := Marshal(m)
+	if err != nil {
+		t.Fatalf("Marshal: %v", err)
+	}
+
+	// Serialize m several times, and check we get the same bytes each time.
+	for i := 0; i < 10; i++ {
+		b1, err := Marshal(m)
+		if err != nil {
+			t.Fatalf("Marshal: %v", err)
+		}
+		if !bytes.Equal(b1, buf) {
+			t.Errorf("Bytes differ on re-Marshal #%d", i)
+		}
+
+		m2 := &MyMessageSet{}
+		if err := Unmarshal(buf, m2); err != nil {
+			t.Errorf("Unmarshal: %v", err)
+		}
+		b2, err := Marshal(m2)
+		if err != nil {
+			t.Errorf("re-Marshal: %v", err)
+		}
+		if !bytes.Equal(b2, buf) {
+			t.Errorf("Bytes differ on round-trip #%d", i)
 		}
 	}
 }

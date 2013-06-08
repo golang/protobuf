@@ -38,6 +38,7 @@ package proto
 import (
 	"errors"
 	"reflect"
+	"sort"
 )
 
 // ErrNoMessageTypeId occurs when a protocol buffer does not have a message type ID.
@@ -157,17 +158,24 @@ func MarshalMessageSet(m map[int32]Extension) ([]byte, error) {
 		return nil, err
 	}
 
-	ms := &MessageSet{Item: make([]*_MessageSet_Item, len(m))}
-	i := 0
-	for k, e := range m {
+	// Sort extension IDs to provide a deterministic encoding.
+	// See also enc_map in encode.go.
+	ids := make([]int, 0, len(m))
+	for id := range m {
+		ids = append(ids, int(id))
+	}
+	sort.Ints(ids)
+
+	ms := &MessageSet{Item: make([]*_MessageSet_Item, 0, len(m))}
+	for _, id := range ids {
+		e := m[int32(id)]
 		// Remove the wire type and field number varint, as well as the length varint.
 		msg := skipVarint(skipVarint(e.enc))
 
-		ms.Item[i] = &_MessageSet_Item{
-			TypeId:  Int32(k),
+		ms.Item = append(ms.Item, &_MessageSet_Item{
+			TypeId:  Int32(int32(id)),
 			Message: msg,
-		}
-		i++
+		})
 	}
 	return Marshal(ms)
 }
