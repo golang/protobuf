@@ -1709,7 +1709,7 @@ func (m *MoreRepeated) GetFixeds() []uint32 {
 }
 
 type GroupOld struct {
-	G                *GroupOld_G `protobuf:"group,1,opt" json:"g,omitempty"`
+	G                *GroupOld_G `protobuf:"group,101,opt" json:"g,omitempty"`
 	XXX_unrecognized []byte      `json:"-"`
 }
 
@@ -1741,7 +1741,7 @@ func (m *GroupOld_G) GetX() int32 {
 }
 
 type GroupNew struct {
-	G                *GroupNew_G `protobuf:"group,1,opt" json:"g,omitempty"`
+	G                *GroupNew_G `protobuf:"group,101,opt" json:"g,omitempty"`
 	XXX_unrecognized []byte      `json:"-"`
 }
 
