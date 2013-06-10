@@ -401,13 +401,13 @@ message MoreRepeated {
 // GroupNew has a new field inside a group.
 
 message GroupOld {
-  optional group G = 1 {
+  optional group G = 101 {
     optional int32 x = 2;
   }
 }
 
 message GroupNew {
-  optional group G = 1 {
+  optional group G = 101 {
     optional int32 x = 2;
     optional int32 y = 3;
   }

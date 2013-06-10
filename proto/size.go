@@ -156,6 +156,10 @@ func sizeField(x reflect.Value, prop *Properties) (n int) {
 		return sizeVarint(uint64(n)) + n
 	case reflect.Struct:
 		nb := sizeStruct(x)
+		if prop.Wire == "group" {
+			// Groups have start and end tags instead of a start tag and a length.
+			return nb + len(prop.tagcode)
+		}
 		return sizeVarint(uint64(nb)) + nb
 	case reflect.Uint32, reflect.Uint64:
 		if prop.Wire == "varint" {
