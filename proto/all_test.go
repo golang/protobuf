@@ -1577,6 +1577,49 @@ func TestMessageSetMarshalOrder(t *testing.T) {
 	}
 }
 
+func TestUnmarshalMergesMessages(t *testing.T) {
+	// If a nested message occurs twice in the input,
+	// the fields should be merged when decoding.
+	a := &OtherMessage{
+		Key: Int64(123),
+		Inner: &InnerMessage{
+			Host: String("polhode"),
+			Port: Int32(1234),
+		},
+	}
+	aData, err := Marshal(a)
+	if err != nil {
+		t.Fatalf("Marshal(a): %v", err)
+	}
+	b := &OtherMessage{
+		Weight: Float32(1.2),
+		Inner: &InnerMessage{
+			Host:      String("herpolhode"),
+			Connected: Bool(true),
+		},
+	}
+	bData, err := Marshal(b)
+	if err != nil {
+		t.Fatalf("Marshal(b): %v", err)
+	}
+	want := &OtherMessage{
+		Key:    Int64(123),
+		Weight: Float32(1.2),
+		Inner: &InnerMessage{
+			Host:      String("herpolhode"),
+			Port:      Int32(1234),
+			Connected: Bool(true),
+		},
+	}
+	got := new(OtherMessage)
+	if err := Unmarshal(append(aData, bData...), got); err != nil {
+		t.Fatalf("Unmarshal: %v", err)
+	}
+	if !Equal(got, want) {
+		t.Errorf("\n got %v\nwant %v", got, want)
+	}
+}
+
 func fuzzUnmarshal(t *testing.T, data []byte) {
 	defer func() {
 		if e := recover(); e != nil {
