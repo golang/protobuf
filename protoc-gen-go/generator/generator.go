@@ -866,6 +866,8 @@ func (g *Generator) P(str ...interface{}) {
 			g.WriteString(fmt.Sprintf("%d", s))
 		case *int32:
 			g.WriteString(fmt.Sprintf("%d", *s))
+		case *int64:
+			g.WriteString(fmt.Sprintf("%d", *s))
 		case float64:
 			g.WriteString(fmt.Sprintf("%g", s))
 		case *float64:

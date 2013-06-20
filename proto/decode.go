@@ -621,8 +621,12 @@ func (o *Buffer) dec_slice_slice_byte(p *Properties, base structPointer) error {
 
 // Decode a group.
 func (o *Buffer) dec_struct_group(p *Properties, base structPointer) error {
-	bas := toStructPointer(reflect.New(p.stype))
-	structPointer_SetStructPointer(base, p.field, bas)
+	bas := structPointer_GetStructPointer(base, p.field)
+	if structPointer_IsNil(bas) {
+		// allocate new nested message
+		bas = toStructPointer(reflect.New(p.stype))
+		structPointer_SetStructPointer(base, p.field, bas)
+	}
 	return o.unmarshalType(p.stype, p.sprop, true, bas)
 }
 
@@ -633,13 +637,16 @@ func (o *Buffer) dec_struct_message(p *Properties, base structPointer) (err erro
 		return e
 	}
 
-	v := reflect.New(p.stype)
-	bas := toStructPointer(v)
-	structPointer_SetStructPointer(base, p.field, bas)
+	bas := structPointer_GetStructPointer(base, p.field)
+	if structPointer_IsNil(bas) {
+		// allocate new nested message
+		bas = toStructPointer(reflect.New(p.stype))
+		structPointer_SetStructPointer(base, p.field, bas)
+	}
 
 	// If the object can unmarshal itself, let it.
 	if p.isMarshaler {
-		iv := v.Interface()
+		iv := structPointer_Interface(bas, p.stype)
 		return iv.(Unmarshaler).Unmarshal(raw)
 	}
 
