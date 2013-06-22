@@ -1620,6 +1620,27 @@ func TestUnmarshalMergesMessages(t *testing.T) {
 	}
 }
 
+func TestEncodingSizes(t *testing.T) {
+	tests := []struct {
+		m Message
+		n int
+	}{
+		{&Defaults{F_Int32: Int32(math.MaxInt32)}, 6},
+		{&Defaults{F_Int32: Int32(math.MinInt32)}, 6},
+		{&Defaults{F_Uint32: Uint32(math.MaxUint32)}, 6},
+	}
+	for _, test := range tests {
+		b, err := Marshal(test.m)
+		if err != nil {
+			t.Errorf("Marshal(%v): %v", test.m, err)
+			continue
+		}
+		if len(b) != test.n {
+			t.Errorf("Marshal(%v) yielded %d bytes, want %d bytes", test.m, len(b), test.n)
+		}
+	}
+}
+
 func fuzzUnmarshal(t *testing.T, data []byte) {
 	defer func() {
 		if e := recover(); e != nil {

@@ -235,7 +235,7 @@ func (o *Buffer) enc_int32(p *Properties, base structPointer) error {
 	}
 	x := word32_Get(v)
 	o.buf = append(o.buf, p.tagcode...)
-	p.valEnc(o, uint64(int32(x)))
+	p.valEnc(o, uint64(x))
 	return nil
 }
 
