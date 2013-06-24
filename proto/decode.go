@@ -645,7 +645,7 @@ func (o *Buffer) dec_struct_message(p *Properties, base structPointer) (err erro
 	}
 
 	// If the object can unmarshal itself, let it.
-	if p.isMarshaler {
+	if p.isUnmarshaler {
 		iv := structPointer_Interface(bas, p.stype)
 		return iv.(Unmarshaler).Unmarshal(raw)
 	}
