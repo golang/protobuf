@@ -1657,6 +1657,7 @@ type MoreRepeated struct {
 	BoolsPacked      []bool   `protobuf:"varint,2,rep,packed,name=bools_packed" json:"bools_packed,omitempty"`
 	Ints             []int32  `protobuf:"varint,3,rep,name=ints" json:"ints,omitempty"`
 	IntsPacked       []int32  `protobuf:"varint,4,rep,packed,name=ints_packed" json:"ints_packed,omitempty"`
+	Int64SPacked     []int64  `protobuf:"varint,7,rep,packed,name=int64s_packed" json:"int64s_packed,omitempty"`
 	Strings          []string `protobuf:"bytes,5,rep,name=strings" json:"strings,omitempty"`
 	Fixeds           []uint32 `protobuf:"fixed32,6,rep,name=fixeds" json:"fixeds,omitempty"`
 	XXX_unrecognized []byte   `json:"-"`
@@ -1690,6 +1691,13 @@ func (m *MoreRepeated) GetInts() []int32 {
 func (m *MoreRepeated) GetIntsPacked() []int32 {
 	if m != nil {
 		return m.IntsPacked
+	}
+	return nil
+}
+
+func (m *MoreRepeated) GetInt64SPacked() []int64 {
+	if m != nil {
+		return m.Int64SPacked
 	}
 	return nil
 }

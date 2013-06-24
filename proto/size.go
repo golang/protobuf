@@ -108,26 +108,27 @@ func sizeField(x reflect.Value, prop *Properties) (n int) {
 			return len(prop.tagcode) + sizeVarint(uint64(n)) + n
 		}
 
-		// Non-packed repeated fields have a per-element header of the tagcode.
-		// Packed repeated fields only have a single header: the tag code plus a varint of the number of bytes.
 		var nb int
-		if !prop.Packed {
-			nb = len(prop.tagcode) * n
-		} else {
-			nb = len(prop.tagcode) + sizeVarint(uint64(n))
-		}
 
 		// []bool and repeated fixed integer types are easy.
 		switch {
 		case et.Kind() == reflect.Bool:
-			return nb + n
+			nb += n
 		case prop.WireType == WireFixed64:
-			return nb + n*8
+			nb += n * 8
 		case prop.WireType == WireFixed32:
-			return nb + n*4
+			nb += n * 4
+		default:
+			for i := 0; i < n; i++ {
+				nb += sizeField(x.Index(i), prop)
+			}
 		}
-		for i := 0; i < n; i++ {
-			nb += sizeField(x.Index(i), prop)
+		// Non-packed repeated fields have a per-element header of the tagcode.
+		// Packed repeated fields only have a single header: the tag code plus a varint of the number of bytes.
+		if !prop.Packed {
+			nb += len(prop.tagcode) * n
+		} else {
+			nb += len(prop.tagcode) + sizeVarint(uint64(nb))
 		}
 		return nb
 	}
