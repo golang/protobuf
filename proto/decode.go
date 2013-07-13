@@ -48,6 +48,9 @@ import (
 // to convert an encoded protocol buffer into a struct of the wrong type.
 var ErrWrongType = errors.New("field/encoding mismatch: wrong type for field")
 
+// errOverflow is returned when an integer is too large to be represented.
+var errOverflow = errors.New("proto: integer overflow")
+
 // The fundamental decoders that interpret bytes on the wire.
 // Those that take integer types all return uint64 and are
 // therefore of type valueDecoder.
@@ -60,7 +63,7 @@ var ErrWrongType = errors.New("field/encoding mismatch: wrong type for field")
 // protocol buffer types.
 func DecodeVarint(buf []byte) (x uint64, n int) {
 	// x, n already 0
-	for shift := uint(0); ; shift += 7 {
+	for shift := uint(0); shift < 64; shift += 7 {
 		if n >= len(buf) {
 			return 0, 0
 		}
@@ -68,10 +71,12 @@ func DecodeVarint(buf []byte) (x uint64, n int) {
 		n++
 		x |= (b & 0x7F) << shift
 		if (b & 0x80) == 0 {
-			break
+			return x, n
 		}
 	}
-	return x, n
+
+	// The number is too large to represent in a 64-bit value.
+	return 0, 0
 }
 
 // DecodeVarint reads a varint-encoded integer from the Buffer.
@@ -84,7 +89,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	i := p.index
 	l := len(p.buf)
 
-	for shift := uint(0); ; shift += 7 {
+	for shift := uint(0); shift < 64; shift += 7 {
 		if i >= l {
 			err = io.ErrUnexpectedEOF
 			return
@@ -93,10 +98,13 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 		i++
 		x |= (uint64(b) & 0x7F) << shift
 		if b < 0x80 {
-			break
+			p.index = i
+			return
 		}
 	}
-	p.index = i
+
+	// The number is too large to represent in a 64-bit value.
+	err = errOverflow
 	return
 }
 
@@ -106,7 +114,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 func (p *Buffer) DecodeFixed64() (x uint64, err error) {
 	// x, err already 0
 	i := p.index + 8
-	if i > len(p.buf) {
+	if i < 0 || i > len(p.buf) {
 		err = io.ErrUnexpectedEOF
 		return
 	}
@@ -129,7 +137,7 @@ func (p *Buffer) DecodeFixed64() (x uint64, err error) {
 func (p *Buffer) DecodeFixed32() (x uint64, err error) {
 	// x, err already 0
 	i := p.index + 4
-	if i > len(p.buf) {
+	if i < 0 || i > len(p.buf) {
 		err = io.ErrUnexpectedEOF
 		return
 	}
@@ -182,13 +190,14 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 	if nb < 0 {
 		return nil, fmt.Errorf("proto: bad byte length %d", nb)
 	}
-	if p.index+nb > len(p.buf) {
+	end := p.index + nb
+	if end < p.index || end > len(p.buf) {
 		return nil, io.ErrUnexpectedEOF
 	}
 
 	if !alloc {
 		// todo: check if can get more uses of alloc=false
-		buf = p.buf[p.index : p.index+nb]
+		buf = p.buf[p.index:end]
 		p.index += nb
 		return
 	}
@@ -213,7 +222,6 @@ func (p *Buffer) DecodeStringBytes() (s string, err error) {
 // If the protocol buffer has extensions, and the field matches, add it as an extension.
 // Otherwise, if the XXX_unrecognized field exists, append the skipped data there.
 func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base structPointer, unrecField field) error {
-
 	oi := o.index
 
 	err := o.skip(t, tag, wire)
@@ -555,6 +563,9 @@ func (o *Buffer) dec_slice_packed_int32(p *Properties, base structPointer) error
 	nb := int(nn) // number of bytes of encoded int32s
 
 	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
 	for o.index < fin {
 		u, err := p.valDec(o)
 		if err != nil {
@@ -587,6 +598,9 @@ func (o *Buffer) dec_slice_packed_int64(p *Properties, base structPointer) error
 	nb := int(nn) // number of bytes of encoded int64s
 
 	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
 	for o.index < fin {
 		u, err := p.valDec(o)
 		if err != nil {
