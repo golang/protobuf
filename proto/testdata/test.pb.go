@@ -1187,6 +1187,7 @@ type MyMessage struct {
 	Pet              []string                  `protobuf:"bytes,4,rep,name=pet" json:"pet,omitempty"`
 	Inner            *InnerMessage             `protobuf:"bytes,5,opt,name=inner" json:"inner,omitempty"`
 	Others           []*OtherMessage           `protobuf:"bytes,6,rep,name=others" json:"others,omitempty"`
+	RepInner         []*InnerMessage           `protobuf:"bytes,12,rep,name=rep_inner" json:"rep_inner,omitempty"`
 	Bikeshed         *MyMessage_Color          `protobuf:"varint,7,opt,name=bikeshed,enum=testdata.MyMessage_Color" json:"bikeshed,omitempty"`
 	Somegroup        *MyMessage_SomeGroup      `protobuf:"group,8,opt,name=SomeGroup" json:"somegroup,omitempty"`
 	RepBytes         [][]byte                  `protobuf:"bytes,10,rep,name=rep_bytes" json:"rep_bytes,omitempty"`
@@ -1251,6 +1252,13 @@ func (m *MyMessage) GetInner() *InnerMessage {
 func (m *MyMessage) GetOthers() []*OtherMessage {
 	if m != nil {
 		return m.Others
+	}
+	return nil
+}
+
+func (m *MyMessage) GetRepInner() []*InnerMessage {
+	if m != nil {
+		return m.RepInner
 	}
 	return nil
 }
