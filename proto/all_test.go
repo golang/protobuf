@@ -1341,6 +1341,21 @@ func TestSetDefaultsWithSubMessage(t *testing.T) {
 	}
 }
 
+func TestSetDefaultsWithRepeatedSubMessage(t *testing.T) {
+	m := &MyMessage{
+		RepInner: []*InnerMessage{{}},
+	}
+	expected := &MyMessage{
+		RepInner: []*InnerMessage{{
+			Port: Int32(4000),
+		}},
+	}
+	SetDefaults(m)
+	if !Equal(m, expected) {
+		t.Errorf("\n got %v\nwant %v", m, expected)
+	}
+}
+
 func TestMaximumTagNumber(t *testing.T) {
 	m := &MaxTag{
 		LastField: String("natural goat essence"),

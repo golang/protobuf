@@ -237,6 +237,7 @@ message MyMessage {
   repeated string pet = 4;
   optional InnerMessage inner = 5;
   repeated OtherMessage others = 6;
+  repeated InnerMessage rep_inner = 12;
 
   enum Color {
     RED = 0;

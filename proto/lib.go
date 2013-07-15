@@ -668,7 +668,18 @@ func setDefaults(v reflect.Value, recur, zeros bool) {
 		if f.IsNil() {
 			continue
 		}
-		setDefaults(f, recur, zeros)
+		// f is *T or []*T
+		if f.Kind() == reflect.Ptr {
+			setDefaults(f, recur, zeros)
+		} else {
+			for i := 0; i < f.Len(); i++ {
+				e := f.Index(i)
+				if e.IsNil() {
+					continue
+				}
+				setDefaults(e, recur, zeros)
+			}
+		}
 	}
 }
 
@@ -693,6 +704,10 @@ type scalarField struct {
 	value interface{}  // the proto-declared default value, or nil
 }
 
+func ptrToStruct(t reflect.Type) bool {
+	return t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Struct
+}
+
 // t is a struct type.
 func buildDefaultMessage(t reflect.Type) (dm defaultMessage) {
 	sprop := GetProperties(t)
@@ -705,7 +720,7 @@ func buildDefaultMessage(t reflect.Type) (dm defaultMessage) {
 		ft := t.Field(fi).Type
 
 		// nested messages
-		if ft.Kind() == reflect.Ptr && ft.Elem().Kind() == reflect.Struct {
+		if ptrToStruct(ft) || (ft.Kind() == reflect.Slice && ptrToStruct(ft.Elem())) {
 			dm.nested = append(dm.nested, fi)
 			continue
 		}
