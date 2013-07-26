@@ -241,6 +241,7 @@ type FileDescriptorProto struct {
 	Service          []*ServiceDescriptorProto `protobuf:"bytes,6,rep,name=service" json:"service,omitempty"`
 	Extension        []*FieldDescriptorProto   `protobuf:"bytes,7,rep,name=extension" json:"extension,omitempty"`
 	Options          *FileOptions              `protobuf:"bytes,8,opt,name=options" json:"options,omitempty"`
+	SourceCodeInfo   *SourceCodeInfo           `protobuf:"bytes,9,opt,name=source_code_info" json:"source_code_info,omitempty"`
 	XXX_unrecognized []byte                    `json:"-"`
 }
 
@@ -314,6 +315,13 @@ func (m *FileDescriptorProto) GetExtension() []*FieldDescriptorProto {
 func (m *FileDescriptorProto) GetOptions() *FileOptions {
 	if m != nil {
 		return m.Options
+	}
+	return nil
+}
+
+func (m *FileDescriptorProto) GetSourceCodeInfo() *SourceCodeInfo {
+	if m != nil {
+		return m.SourceCodeInfo
 	}
 	return nil
 }
@@ -615,16 +623,18 @@ func (m *MethodDescriptorProto) GetOptions() *MethodOptions {
 }
 
 type FileOptions struct {
-	JavaPackage         *string                   `protobuf:"bytes,1,opt,name=java_package" json:"java_package,omitempty"`
-	JavaOuterClassname  *string                   `protobuf:"bytes,8,opt,name=java_outer_classname" json:"java_outer_classname,omitempty"`
-	JavaMultipleFiles   *bool                     `protobuf:"varint,10,opt,name=java_multiple_files,def=0" json:"java_multiple_files,omitempty"`
-	OptimizeFor         *FileOptions_OptimizeMode `protobuf:"varint,9,opt,name=optimize_for,enum=google.protobuf.FileOptions_OptimizeMode,def=1" json:"optimize_for,omitempty"`
-	CcGenericServices   *bool                     `protobuf:"varint,16,opt,name=cc_generic_services,def=1" json:"cc_generic_services,omitempty"`
-	JavaGenericServices *bool                     `protobuf:"varint,17,opt,name=java_generic_services,def=1" json:"java_generic_services,omitempty"`
-	PyGenericServices   *bool                     `protobuf:"varint,18,opt,name=py_generic_services,def=1" json:"py_generic_services,omitempty"`
-	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
-	XXX_extensions      map[int32]proto.Extension `json:"-"`
-	XXX_unrecognized    []byte                    `json:"-"`
+	JavaPackage               *string                   `protobuf:"bytes,1,opt,name=java_package" json:"java_package,omitempty"`
+	JavaOuterClassname        *string                   `protobuf:"bytes,8,opt,name=java_outer_classname" json:"java_outer_classname,omitempty"`
+	JavaMultipleFiles         *bool                     `protobuf:"varint,10,opt,name=java_multiple_files,def=0" json:"java_multiple_files,omitempty"`
+	JavaGenerateEqualsAndHash *bool                     `protobuf:"varint,20,opt,name=java_generate_equals_and_hash,def=0" json:"java_generate_equals_and_hash,omitempty"`
+	OptimizeFor               *FileOptions_OptimizeMode `protobuf:"varint,9,opt,name=optimize_for,enum=google.protobuf.FileOptions_OptimizeMode,def=1" json:"optimize_for,omitempty"`
+	GoPackage                 *string                   `protobuf:"bytes,11,opt,name=go_package" json:"go_package,omitempty"`
+	CcGenericServices         *bool                     `protobuf:"varint,16,opt,name=cc_generic_services,def=0" json:"cc_generic_services,omitempty"`
+	JavaGenericServices       *bool                     `protobuf:"varint,17,opt,name=java_generic_services,def=0" json:"java_generic_services,omitempty"`
+	PyGenericServices         *bool                     `protobuf:"varint,18,opt,name=py_generic_services,def=0" json:"py_generic_services,omitempty"`
+	UninterpretedOption       []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
+	XXX_extensions            map[int32]proto.Extension `json:"-"`
+	XXX_unrecognized          []byte                    `json:"-"`
 }
 
 func (m *FileOptions) Reset()         { *m = FileOptions{} }
@@ -646,10 +656,11 @@ func (m *FileOptions) ExtensionMap() map[int32]proto.Extension {
 }
 
 const Default_FileOptions_JavaMultipleFiles bool = false
+const Default_FileOptions_JavaGenerateEqualsAndHash bool = false
 const Default_FileOptions_OptimizeFor FileOptions_OptimizeMode = FileOptions_SPEED
-const Default_FileOptions_CcGenericServices bool = true
-const Default_FileOptions_JavaGenericServices bool = true
-const Default_FileOptions_PyGenericServices bool = true
+const Default_FileOptions_CcGenericServices bool = false
+const Default_FileOptions_JavaGenericServices bool = false
+const Default_FileOptions_PyGenericServices bool = false
 
 func (m *FileOptions) GetJavaPackage() string {
 	if m != nil && m.JavaPackage != nil {
@@ -672,11 +683,25 @@ func (m *FileOptions) GetJavaMultipleFiles() bool {
 	return Default_FileOptions_JavaMultipleFiles
 }
 
+func (m *FileOptions) GetJavaGenerateEqualsAndHash() bool {
+	if m != nil && m.JavaGenerateEqualsAndHash != nil {
+		return *m.JavaGenerateEqualsAndHash
+	}
+	return Default_FileOptions_JavaGenerateEqualsAndHash
+}
+
 func (m *FileOptions) GetOptimizeFor() FileOptions_OptimizeMode {
 	if m != nil && m.OptimizeFor != nil {
 		return *m.OptimizeFor
 	}
 	return Default_FileOptions_OptimizeFor
+}
+
+func (m *FileOptions) GetGoPackage() string {
+	if m != nil && m.GoPackage != nil {
+		return *m.GoPackage
+	}
+	return ""
 }
 
 func (m *FileOptions) GetCcGenericServices() bool {
@@ -760,8 +785,10 @@ func (m *MessageOptions) GetUninterpretedOption() []*UninterpretedOption {
 type FieldOptions struct {
 	Ctype               *FieldOptions_CType       `protobuf:"varint,1,opt,name=ctype,enum=google.protobuf.FieldOptions_CType,def=0" json:"ctype,omitempty"`
 	Packed              *bool                     `protobuf:"varint,2,opt,name=packed" json:"packed,omitempty"`
+	Lazy                *bool                     `protobuf:"varint,5,opt,name=lazy,def=0" json:"lazy,omitempty"`
 	Deprecated          *bool                     `protobuf:"varint,3,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	ExperimentalMapKey  *string                   `protobuf:"bytes,9,opt,name=experimental_map_key" json:"experimental_map_key,omitempty"`
+	Weak                *bool                     `protobuf:"varint,10,opt,name=weak,def=0" json:"weak,omitempty"`
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
 	XXX_unrecognized    []byte                    `json:"-"`
@@ -786,7 +813,9 @@ func (m *FieldOptions) ExtensionMap() map[int32]proto.Extension {
 }
 
 const Default_FieldOptions_Ctype FieldOptions_CType = FieldOptions_STRING
+const Default_FieldOptions_Lazy bool = false
 const Default_FieldOptions_Deprecated bool = false
+const Default_FieldOptions_Weak bool = false
 
 func (m *FieldOptions) GetCtype() FieldOptions_CType {
 	if m != nil && m.Ctype != nil {
@@ -800,6 +829,13 @@ func (m *FieldOptions) GetPacked() bool {
 		return *m.Packed
 	}
 	return false
+}
+
+func (m *FieldOptions) GetLazy() bool {
+	if m != nil && m.Lazy != nil {
+		return *m.Lazy
+	}
+	return Default_FieldOptions_Lazy
 }
 
 func (m *FieldOptions) GetDeprecated() bool {
@@ -816,6 +852,13 @@ func (m *FieldOptions) GetExperimentalMapKey() string {
 	return ""
 }
 
+func (m *FieldOptions) GetWeak() bool {
+	if m != nil && m.Weak != nil {
+		return *m.Weak
+	}
+	return Default_FieldOptions_Weak
+}
+
 func (m *FieldOptions) GetUninterpretedOption() []*UninterpretedOption {
 	if m != nil {
 		return m.UninterpretedOption
@@ -824,6 +867,7 @@ func (m *FieldOptions) GetUninterpretedOption() []*UninterpretedOption {
 }
 
 type EnumOptions struct {
+	AllowAlias          *bool                     `protobuf:"varint,2,opt,name=allow_alias,def=1" json:"allow_alias,omitempty"`
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
 	XXX_unrecognized    []byte                    `json:"-"`
@@ -845,6 +889,15 @@ func (m *EnumOptions) ExtensionMap() map[int32]proto.Extension {
 		m.XXX_extensions = make(map[int32]proto.Extension)
 	}
 	return m.XXX_extensions
+}
+
+const Default_EnumOptions_AllowAlias bool = true
+
+func (m *EnumOptions) GetAllowAlias() bool {
+	if m != nil && m.AllowAlias != nil {
+		return *m.AllowAlias
+	}
+	return Default_EnumOptions_AllowAlias
 }
 
 func (m *EnumOptions) GetUninterpretedOption() []*UninterpretedOption {
@@ -954,6 +1007,7 @@ type UninterpretedOption struct {
 	NegativeIntValue *int64                          `protobuf:"varint,5,opt,name=negative_int_value" json:"negative_int_value,omitempty"`
 	DoubleValue      *float64                        `protobuf:"fixed64,6,opt,name=double_value" json:"double_value,omitempty"`
 	StringValue      []byte                          `protobuf:"bytes,7,opt,name=string_value" json:"string_value,omitempty"`
+	AggregateValue   *string                         `protobuf:"bytes,8,opt,name=aggregate_value" json:"aggregate_value,omitempty"`
 	XXX_unrecognized []byte                          `json:"-"`
 }
 
@@ -1003,6 +1057,13 @@ func (m *UninterpretedOption) GetStringValue() []byte {
 	return nil
 }
 
+func (m *UninterpretedOption) GetAggregateValue() string {
+	if m != nil && m.AggregateValue != nil {
+		return *m.AggregateValue
+	}
+	return ""
+}
+
 type UninterpretedOption_NamePart struct {
 	NamePart         *string `protobuf:"bytes,1,req,name=name_part" json:"name_part,omitempty"`
 	IsExtension      *bool   `protobuf:"varint,2,req,name=is_extension" json:"is_extension,omitempty"`
@@ -1025,6 +1086,62 @@ func (m *UninterpretedOption_NamePart) GetIsExtension() bool {
 		return *m.IsExtension
 	}
 	return false
+}
+
+type SourceCodeInfo struct {
+	Location         []*SourceCodeInfo_Location `protobuf:"bytes,1,rep,name=location" json:"location,omitempty"`
+	XXX_unrecognized []byte                     `json:"-"`
+}
+
+func (m *SourceCodeInfo) Reset()         { *m = SourceCodeInfo{} }
+func (m *SourceCodeInfo) String() string { return proto.CompactTextString(m) }
+func (*SourceCodeInfo) ProtoMessage()    {}
+
+func (m *SourceCodeInfo) GetLocation() []*SourceCodeInfo_Location {
+	if m != nil {
+		return m.Location
+	}
+	return nil
+}
+
+type SourceCodeInfo_Location struct {
+	Path             []int32 `protobuf:"varint,1,rep,packed,name=path" json:"path,omitempty"`
+	Span             []int32 `protobuf:"varint,2,rep,packed,name=span" json:"span,omitempty"`
+	LeadingComments  *string `protobuf:"bytes,3,opt,name=leading_comments" json:"leading_comments,omitempty"`
+	TrailingComments *string `protobuf:"bytes,4,opt,name=trailing_comments" json:"trailing_comments,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
+}
+
+func (m *SourceCodeInfo_Location) Reset()         { *m = SourceCodeInfo_Location{} }
+func (m *SourceCodeInfo_Location) String() string { return proto.CompactTextString(m) }
+func (*SourceCodeInfo_Location) ProtoMessage()    {}
+
+func (m *SourceCodeInfo_Location) GetPath() []int32 {
+	if m != nil {
+		return m.Path
+	}
+	return nil
+}
+
+func (m *SourceCodeInfo_Location) GetSpan() []int32 {
+	if m != nil {
+		return m.Span
+	}
+	return nil
+}
+
+func (m *SourceCodeInfo_Location) GetLeadingComments() string {
+	if m != nil && m.LeadingComments != nil {
+		return *m.LeadingComments
+	}
+	return ""
+}
+
+func (m *SourceCodeInfo_Location) GetTrailingComments() string {
+	if m != nil && m.TrailingComments != nil {
+		return *m.TrailingComments
+	}
+	return ""
 }
 
 func init() {

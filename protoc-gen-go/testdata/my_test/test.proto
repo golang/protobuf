@@ -41,6 +41,7 @@ enum HatType {
 }
 
 enum Days {
+  option allow_alias = true;
 
   MONDAY = 1;
   TUESDAY = 2;

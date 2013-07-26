@@ -351,7 +351,7 @@ var _ proto.Marshaler = (*OldReply)(nil)
 var _ proto.Unmarshaler = (*OldReply)(nil)
 
 var extRange_OldReply = []proto.ExtensionRange{
-	{100, 536870911},
+	{100, 2147483646},
 }
 
 func (*OldReply) ExtensionRangeArray() []proto.ExtensionRange {
