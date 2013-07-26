@@ -40,6 +40,7 @@ enum HatType {
   FEZ = 2;
 }
 
+// This enum represents days of the week.
 enum Days {
   option allow_alias = true;
 
@@ -48,6 +49,7 @@ enum Days {
   LUNDI = 1;  // same value as MONDAY
 }
 
+// This is a message that might be sent somewhere.
 message Request {
   enum Color {
     RED = 0;

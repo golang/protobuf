@@ -18,6 +18,7 @@ var _ = math.Inf
 type HatType int32
 
 const (
+	// deliberately skipping 0
 	HatType_FEDORA HatType = 1
 	HatType_FEZ    HatType = 2
 )
@@ -51,6 +52,7 @@ func (x *HatType) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// This enum represents days of the week.
 type Days int32
 
 const (
@@ -165,10 +167,13 @@ func (x *Reply_Entry_Game) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// This is a message that might be sent somewhere.
 type Request struct {
-	Key              []int64            `protobuf:"varint,1,rep,name=key" json:"key,omitempty"`
-	Hue              *Request_Color     `protobuf:"varint,3,opt,name=hue,enum=my.test.Request_Color" json:"hue,omitempty"`
-	Hat              *HatType           `protobuf:"varint,4,opt,name=hat,enum=my.test.HatType,def=1" json:"hat,omitempty"`
+	Key []int64 `protobuf:"varint,1,rep,name=key" json:"key,omitempty"`
+	//  optional imp.ImportedMessage imported_message = 2;
+	Hue *Request_Color `protobuf:"varint,3,opt,name=hue,enum=my.test.Request_Color" json:"hue,omitempty"`
+	Hat *HatType       `protobuf:"varint,4,opt,name=hat,enum=my.test.HatType,def=1" json:"hat,omitempty"`
+	//  optional imp.ImportedMessage.Owner owner = 6;
 	Deadline         *float32           `protobuf:"fixed32,7,opt,name=deadline,def=inf" json:"deadline,omitempty"`
 	Somegroup        *Request_SomeGroup `protobuf:"group,8,opt,name=SomeGroup" json:"somegroup,omitempty"`
 	Reset_           *int32             `protobuf:"varint,12,opt,name=reset" json:"reset,omitempty"`

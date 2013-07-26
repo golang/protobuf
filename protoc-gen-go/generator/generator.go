@@ -104,6 +104,7 @@ type Descriptor struct {
 	ext      []*ExtensionDescriptor // Extensions, if any.
 	typename []string               // Cached typename vector.
 	index    int                    // The index into the container, whether the file or another message.
+	path     string                 // The SourceCodeInfo path as comma-separated integers.
 	group    bool
 }
 
@@ -133,6 +134,7 @@ type EnumDescriptor struct {
 	*descriptor.EnumDescriptorProto
 	parent   *Descriptor // The containing message, if any.
 	typename []string    // Cached typename vector.
+	path     string      // The SourceCodeInfo path as comma-separated integers.
 }
 
 // TypeName returns the elements of the dotted type name.
@@ -230,6 +232,9 @@ type FileDescriptor struct {
 	ext  []*ExtensionDescriptor // All the top-level extensions defined in this file.
 	imp  []*ImportedDescriptor  // All types defined in files publicly imported by this file.
 
+	// Comments, stored as a map of path (comma-separated integers) to the comment.
+	comments map[string]*descriptor.SourceCodeInfo_Location
+
 	// The full list of symbols that are exported,
 	// as a map from the exported object to its symbols.
 	// This is used for supporting public imports.
@@ -245,6 +250,12 @@ func (d *FileDescriptor) PackageName() string { return uniquePackageOf(d.FileDes
 // the name was derived from the protocol buffer's package statement
 // or the input file name.
 func (d *FileDescriptor) goPackageName() (name string, explicit bool) {
+	// Does the file have a "go_package" option?
+	if opts := d.Options; opts != nil {
+		if pkg := opts.GetGoPackage(); pkg != "" {
+			return pkg, true
+		}
+	}
 
 	// Does the file have a package clause?
 	if pkg := d.GetPackage(); pkg != "" {
@@ -638,7 +649,7 @@ func (g *Generator) WrapTypes() {
 		enums := wrapEnumDescriptors(f, descs)
 		exts := wrapExtensions(f)
 		imps := wrapImported(f, g)
-		g.allFiles[i] = &FileDescriptor{
+		fd := &FileDescriptor{
 			FileDescriptorProto: f,
 			desc:                descs,
 			enum:                enums,
@@ -646,6 +657,8 @@ func (g *Generator) WrapTypes() {
 			imp:                 imps,
 			exported:            make(map[Object][]symbol),
 		}
+		extractComments(fd)
+		g.allFiles[i] = fd
 	}
 
 	g.genFiles = make([]*FileDescriptor, len(g.Request.FileToGenerate))
@@ -682,13 +695,18 @@ func (g *Generator) buildNestedDescriptors(descs []*Descriptor) {
 	}
 }
 
-// Construct the Descriptor and add it to the slice
-func addDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto, index int) []*Descriptor {
+// Construct the Descriptor
+func newDescriptor(desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto, index int) *Descriptor {
 	d := &Descriptor{
 		common:          common{file},
 		DescriptorProto: desc,
 		parent:          parent,
 		index:           index,
+	}
+	if parent == nil {
+		d.path = fmt.Sprintf("%d,%d", messagePath, index)
+	} else {
+		d.path = fmt.Sprintf("%s,%d,%d", parent.path, messageMessagePath, index)
 	}
 
 	// The only way to distinguish a group from a message is whether
@@ -712,7 +730,7 @@ func addDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *D
 		d.ext[i] = &ExtensionDescriptor{common{file}, field, d}
 	}
 
-	return append(sl, d)
+	return d
 }
 
 // Return a slice of all the Descriptors defined within this file
@@ -726,7 +744,7 @@ func wrapDescriptors(file *descriptor.FileDescriptorProto) []*Descriptor {
 
 // Wrap this Descriptor, recursively
 func wrapThisDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto, index int) []*Descriptor {
-	sl = addDescriptor(sl, desc, parent, file, index)
+	sl = append(sl, newDescriptor(desc, parent, file, index))
 	me := sl[len(sl)-1]
 	for i, nested := range desc.NestedType {
 		sl = wrapThisDescriptor(sl, nested, me, file, i)
@@ -734,22 +752,32 @@ func wrapThisDescriptor(sl []*Descriptor, desc *descriptor.DescriptorProto, pare
 	return sl
 }
 
-// Construct the EnumDescriptor and add it to the slice
-func addEnumDescriptor(sl []*EnumDescriptor, desc *descriptor.EnumDescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto) []*EnumDescriptor {
-	return append(sl, &EnumDescriptor{common{file}, desc, parent, nil})
+// Construct the EnumDescriptor
+func newEnumDescriptor(desc *descriptor.EnumDescriptorProto, parent *Descriptor, file *descriptor.FileDescriptorProto, index int) *EnumDescriptor {
+	ed := &EnumDescriptor{
+		common:              common{file},
+		EnumDescriptorProto: desc,
+		parent:              parent,
+	}
+	if parent == nil {
+		ed.path = fmt.Sprintf("%d,%d", enumPath, index)
+	} else {
+		ed.path = fmt.Sprintf("%s,%d,%d", parent.path, messageEnumPath, index)
+	}
+	return ed
 }
 
 // Return a slice of all the EnumDescriptors defined within this file
 func wrapEnumDescriptors(file *descriptor.FileDescriptorProto, descs []*Descriptor) []*EnumDescriptor {
 	sl := make([]*EnumDescriptor, 0, len(file.EnumType)+10)
 	// Top-level enums.
-	for _, enum := range file.EnumType {
-		sl = addEnumDescriptor(sl, enum, nil, file)
+	for i, enum := range file.EnumType {
+		sl = append(sl, newEnumDescriptor(enum, nil, file, i))
 	}
 	// Enums within messages. Enums within embedded messages appear in the outer-most message.
 	for _, nested := range descs {
-		for _, enum := range nested.EnumType {
-			sl = addEnumDescriptor(sl, enum, nested, file)
+		for i, enum := range nested.EnumType {
+			sl = append(sl, newEnumDescriptor(enum, nested, file, i))
 		}
 	}
 	return sl
@@ -779,6 +807,20 @@ func wrapImported(file *descriptor.FileDescriptorProto, g *Generator) (sl []*Imp
 		}
 	}
 	return
+}
+
+func extractComments(file *FileDescriptor) {
+	file.comments = make(map[string]*descriptor.SourceCodeInfo_Location)
+	for _, loc := range file.GetSourceCodeInfo().GetLocation() {
+		if loc.LeadingComments == nil {
+			continue
+		}
+		var p []string
+		for _, n := range loc.Path {
+			p = append(p, strconv.Itoa(int(n)))
+		}
+		file.comments[strings.Join(p, ",")] = loc
+	}
 }
 
 // BuildTypeNameMap builds the map from fully qualified type names to objects.
@@ -988,6 +1030,18 @@ func (g *Generator) generateHeader() {
 	g.P()
 }
 
+// PrintComments prints any comments from the source .proto file.
+// The path is a comma-separated list of integers.
+// See descriptor.proto for its format.
+func (g *Generator) PrintComments(path string) {
+	if loc, ok := g.file.comments[path]; ok {
+		text := strings.TrimSuffix(loc.GetLeadingComments(), "\n")
+		for _, line := range strings.Split(text, "\n") {
+			g.P("// ", strings.TrimPrefix(line, " "))
+		}
+	}
+}
+
 func (g *Generator) fileByName(filename string) *FileDescriptor {
 	for _, fd := range g.allFiles {
 		if fd.GetName() == filename {
@@ -1092,11 +1146,15 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	// The full type name, CamelCased.
 	ccTypeName := CamelCaseSlice(typeName)
 	ccPrefix := enum.prefix()
+
+	g.PrintComments(enum.path)
 	g.P("type ", ccTypeName, " int32")
 	g.file.addExport(enum, enumSymbol(ccTypeName))
 	g.P("const (")
 	g.In()
-	for _, e := range enum.Value {
+	for i, e := range enum.Value {
+		g.PrintComments(fmt.Sprintf("%s,%d,%d", enum.path, enumValuePath, i))
+
 		name := ccPrefix + *e.Name
 		g.P(name, " ", ccTypeName, " = ", e.Number)
 		g.file.addExport(enum, constOrVarSymbol{name, "const"})
@@ -1362,10 +1420,14 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	}
 	fieldNames := make(map[*descriptor.FieldDescriptorProto]string)
 	fieldGetterNames := make(map[*descriptor.FieldDescriptorProto]string)
+
+	g.PrintComments(message.path)
 	g.P("type ", ccTypeName, " struct {")
 	g.In()
 
-	for _, field := range message.Field {
+	for i, field := range message.Field {
+		g.PrintComments(fmt.Sprintf("%s,%d,%d", message.path, messageFieldPath, i))
+
 		fieldName := CamelCase(*field.Name)
 		for usedNames[fieldName] {
 			fieldName += "_"
@@ -1789,3 +1851,23 @@ func baseName(name string) string {
 	}
 	return name
 }
+
+// The SourceCodeInfo message describes the location of elements of a parsed
+// .proto file by way of a "path", which is a sequence of integers that
+// describe the route from a FileDescriptorProto to the relevant submessage.
+// The path alternates between a field number of a repeated field, and an index
+// into that repeated field. The constants below define the field numbers that
+// are used.
+//
+// See descriptor.proto for more information about this.
+const (
+	// tag numbers in FileDescriptorProto
+	messagePath = 4 // message_type
+	enumPath    = 5 // enum_type
+	// tag numbers in DescriptorProto
+	messageFieldPath   = 2 // field
+	messageMessagePath = 3 // nested_type
+	messageEnumPath    = 4 // enum_type
+	// tag numbers in EnumDescriptorProto
+	enumValuePath = 2 // value
+)
