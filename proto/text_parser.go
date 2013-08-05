@@ -658,8 +658,10 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) *ParseError {
 	return p.errorf("invalid %v: %v", v.Type(), tok.value)
 }
 
-// UnmarshalText reads a protocol buffer in Text format.
+// UnmarshalText reads a protocol buffer in Text format. UnmarshalText resets pb
+// before starting to unmarshal, so any existing data in pb is always removed.
 func UnmarshalText(s string, pb Message) error {
+	pb.Reset()
 	v := reflect.ValueOf(pb)
 	if pe := newTextParser(s).readStruct(v.Elem(), ""); pe != nil {
 		return pe
