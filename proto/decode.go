@@ -353,6 +353,7 @@ func (p *Buffer) Unmarshal(pb Message) error {
 
 // unmarshalType does the work of unmarshaling a structure.
 func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group bool, base structPointer) error {
+	var state errorState
 	required, reqFields := prop.reqCount, uint64(0)
 
 	var err error
@@ -406,7 +407,10 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group
 				continue
 			}
 		}
-		err = dec(o, p, base)
+		decErr := dec(o, p, base)
+		if decErr != nil && !state.shouldContinue(decErr, p) {
+			err = decErr
+		}
 		if err == nil && p.Required {
 			// Successfully decoded a required field.
 			if tag <= 64 {
@@ -430,8 +434,14 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group
 		if is_group {
 			return io.ErrUnexpectedEOF
 		}
+		if state.err != nil {
+			return state.err
+		}
 		if required > 0 {
-			return &ErrRequiredNotSet{st}
+			// Not enough information to determine the exact field. If we use extra
+			// CPU, we could determine the field only if the missing required field
+			// has a tag <= 64 and we check reqFields.
+			return &ErrRequiredNotSet{"{Unknown}"}
 		}
 	}
 	return err
