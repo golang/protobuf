@@ -46,7 +46,7 @@ import (
 // ErrWrongType occurs when the wire encoding for the field disagrees with
 // that specified in the type being decoded.  This is usually caused by attempting
 // to convert an encoded protocol buffer into a struct of the wrong type.
-var ErrWrongType = errors.New("field/encoding mismatch: wrong type for field")
+var ErrWrongType = errors.New("proto: field/encoding mismatch: wrong type for field")
 
 // errOverflow is returned when an integer is too large to be represented.
 var errOverflow = errors.New("proto: integer overflow")
