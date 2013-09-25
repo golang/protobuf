@@ -587,11 +587,13 @@ func (o *Buffer) enc_struct(t reflect.Type, prop *StructProperties, base structP
 		p := prop.Prop[i]
 		if p.enc != nil {
 			err := p.enc(o, p, base)
-			if err != nil && !state.shouldContinue(err, p) {
-				if err != ErrNil {
+			if err != nil {
+				if err == ErrNil {
+					if p.Required && state.err == nil {
+						state.err = &ErrRequiredNotSet{p.Name}
+					}
+				} else if !state.shouldContinue(err, p) {
 					return err
-				} else if p.Required && state.err == nil {
-					state.err = &ErrRequiredNotSet{p.Name}
 				}
 			}
 		}
