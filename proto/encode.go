@@ -42,20 +42,20 @@ import (
 	"sort"
 )
 
-// ErrRequiredNotSet is the error returned if Marshal is called with
+// RequiredNotSetError is the error returned if Marshal is called with
 // a protocol buffer struct whose required fields have not
 // all been initialized. It is also the error returned if Unmarshal is
 // called with an encoded protocol buffer that does not include all the
 // required fields.
 //
-// When printed, ErrRequiredNotSet reports the first unset required field in a
+// When printed, RequiredNotSetError reports the first unset required field in a
 // message. If the field cannot be precisely determined, it is reported as
 // "{Unknown}".
-type ErrRequiredNotSet struct {
+type RequiredNotSetError struct {
 	field string
 }
 
-func (e *ErrRequiredNotSet) Error() string {
+func (e *RequiredNotSetError) Error() string {
 	return fmt.Sprintf("proto: required field %q not set", e.field)
 }
 
@@ -590,7 +590,7 @@ func (o *Buffer) enc_struct(t reflect.Type, prop *StructProperties, base structP
 			if err != nil {
 				if err == ErrNil {
 					if p.Required && state.err == nil {
-						state.err = &ErrRequiredNotSet{p.Name}
+						state.err = &RequiredNotSetError{p.Name}
 					}
 				} else if !state.shouldContinue(err, p) {
 					return err
@@ -617,7 +617,7 @@ type errorState struct {
 }
 
 // shouldContinue reports whether encoding should continue upon encountering the
-// given error. If the error is ErrRequiredNotSet, shouldContinue returns true
+// given error. If the error is RequiredNotSetError, shouldContinue returns true
 // and, if this is the first appearance of that error, remembers it for future
 // reporting.
 //
@@ -625,13 +625,13 @@ type errorState struct {
 // field with the error.
 func (s *errorState) shouldContinue(err error, prop *Properties) bool {
 	// Ignore unset required fields.
-	reqNotSet, ok := err.(*ErrRequiredNotSet)
+	reqNotSet, ok := err.(*RequiredNotSetError)
 	if !ok {
 		return false
 	}
 	if s.err == nil {
 		if prop != nil {
-			err = &ErrRequiredNotSet{prop.Name + "." + reqNotSet.field}
+			err = &RequiredNotSetError{prop.Name + "." + reqNotSet.field}
 		}
 		s.err = err
 	}

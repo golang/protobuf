@@ -1670,7 +1670,7 @@ func TestEncodingSizes(t *testing.T) {
 	}
 }
 
-func TestErrRequiredNotSet(t *testing.T) {
+func TestRequiredNotSetError(t *testing.T) {
 	pb := initGoTest(false)
 	pb.RequiredField.Label = nil
 	pb.F_Int32Required = nil
@@ -1695,8 +1695,8 @@ func TestErrRequiredNotSet(t *testing.T) {
 
 	o := old()
 	bytes, err := Marshal(pb)
-	if _, ok := err.(*ErrRequiredNotSet); !ok {
-		fmt.Printf("marshal-1 err = %v, want *ErrRequiredNotSet", err)
+	if _, ok := err.(*RequiredNotSetError); !ok {
+		fmt.Printf("marshal-1 err = %v, want *RequiredNotSetError", err)
 		o.DebugPrint("", bytes)
 		t.Fatalf("expected = %s", expected)
 	}
@@ -1711,8 +1711,8 @@ func TestErrRequiredNotSet(t *testing.T) {
 	// Now test Unmarshal by recreating the original buffer.
 	pbd := new(GoTest)
 	err = Unmarshal(bytes, pbd)
-	if _, ok := err.(*ErrRequiredNotSet); !ok {
-		t.Fatalf("unmarshal err = %v, want *ErrRequiredNotSet", err)
+	if _, ok := err.(*RequiredNotSetError); !ok {
+		t.Fatalf("unmarshal err = %v, want *RequiredNotSetError", err)
 		o.DebugPrint("", bytes)
 		t.Fatalf("string = %s", expected)
 	}
@@ -1720,8 +1720,8 @@ func TestErrRequiredNotSet(t *testing.T) {
 		t.Errorf("unmarshal wrong err msg: %v", err)
 	}
 	bytes, err = Marshal(pbd)
-	if _, ok := err.(*ErrRequiredNotSet); !ok {
-		t.Errorf("marshal-2 err = %v, want *ErrRequiredNotSet", err)
+	if _, ok := err.(*RequiredNotSetError); !ok {
+		t.Errorf("marshal-2 err = %v, want *RequiredNotSetError", err)
 		o.DebugPrint("", bytes)
 		t.Fatalf("string = %s", expected)
 	}
