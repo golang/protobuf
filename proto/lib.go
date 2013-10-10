@@ -223,6 +223,7 @@ type Stats struct {
 	Decode  uint64 // number of decodes
 	Chit    uint64 // number of cache hits
 	Cmiss   uint64 // number of cache misses
+	Size    uint64 // number of sizes
 }
 
 // Set to true to enable stats collection.
