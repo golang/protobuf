@@ -1382,7 +1382,7 @@ func TestJSON(t *testing.T) {
 		},
 		Bikeshed: MyMessage_GREEN.Enum(),
 	}
-	const expected = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"},"bikeshed":"GREEN"}`
+	const expected = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"},"bikeshed":1}`
 
 	b, err := json.Marshal(m)
 	if err != nil {
@@ -1401,8 +1401,8 @@ func TestJSON(t *testing.T) {
 		t.Fatalf("got %s, want %s", received, m)
 	}
 
-	// Test unmarshalling of older json wire format.
-	const old = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"},"bikeshed":1}`
+	// Test unmarshalling of JSON with symbolic enum name.
+	const old = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"},"bikeshed":"GREEN"}`
 	received.Reset()
 	if err := json.Unmarshal([]byte(old), received); err != nil {
 		t.Fatalf("json.Unmarshal failed: %v", err)
