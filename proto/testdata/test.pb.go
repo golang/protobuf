@@ -2,6 +2,38 @@
 // source: test.proto
 // DO NOT EDIT!
 
+/*
+Package testdata is a generated protocol buffer package.
+
+It is generated from these files:
+	test.proto
+
+It has these top-level messages:
+	GoEnum
+	GoTestField
+	GoTest
+	GoSkipTest
+	NonPackedTest
+	PackedTest
+	MaxTag
+	OldMessage
+	NewMessage
+	InnerMessage
+	OtherMessage
+	MyMessage
+	Ext
+	MyMessageSet
+	Empty
+	MessageList
+	Strings
+	Defaults
+	SubDefaults
+	RepeatedEnum
+	MoreRepeated
+	GroupOld
+	GroupNew
+	FloatingPoint
+*/
 package testdata
 
 import proto "code.google.com/p/goprotobuf/proto"

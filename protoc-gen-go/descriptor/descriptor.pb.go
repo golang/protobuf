@@ -2,6 +2,31 @@
 // source: google/protobuf/descriptor.proto
 // DO NOT EDIT!
 
+/*
+Package google_protobuf is a generated protocol buffer package.
+
+It is generated from these files:
+	google/protobuf/descriptor.proto
+
+It has these top-level messages:
+	FileDescriptorSet
+	FileDescriptorProto
+	DescriptorProto
+	FieldDescriptorProto
+	EnumDescriptorProto
+	EnumValueDescriptorProto
+	ServiceDescriptorProto
+	MethodDescriptorProto
+	FileOptions
+	MessageOptions
+	FieldOptions
+	EnumOptions
+	EnumValueOptions
+	ServiceOptions
+	MethodOptions
+	UninterpretedOption
+	SourceCodeInfo
+*/
 package google_protobuf
 
 import proto "code.google.com/p/goprotobuf/proto"

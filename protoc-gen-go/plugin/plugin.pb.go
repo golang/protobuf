@@ -2,6 +2,16 @@
 // source: google/protobuf/compiler/plugin.proto
 // DO NOT EDIT!
 
+/*
+Package google_protobuf_compiler is a generated protocol buffer package.
+
+It is generated from these files:
+	google/protobuf/compiler/plugin.proto
+
+It has these top-level messages:
+	CodeGeneratorRequest
+	CodeGeneratorResponse
+*/
 package google_protobuf_compiler
 
 import proto "code.google.com/p/goprotobuf/proto"
