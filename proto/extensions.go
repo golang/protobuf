@@ -222,8 +222,6 @@ func ClearExtension(pb extendableProto, extension *ExtensionDesc) {
 
 // GetExtension parses and returns the given extension of pb.
 // If the extension is not present it returns ErrMissingExtension.
-// If the returned extension is modified, SetExtension must be called
-// for the modifications to be reflected in pb.
 func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, error) {
 	if err := checkExtensionTypes(pb, extension); err != nil {
 		return nil, err
