@@ -2,6 +2,18 @@
 // source: my_test/test.proto
 // DO NOT EDIT!
 
+/*
+Package my_test is a generated protocol buffer package.
+
+It is generated from these files:
+	my_test/test.proto
+
+It has these top-level messages:
+	Request
+	Reply
+	ReplyExtensions
+	OldReply
+*/
 package my_test
 
 import proto "code.google.com/p/goprotobuf/proto"
