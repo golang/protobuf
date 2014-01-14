@@ -235,12 +235,6 @@ func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base structPointer, 
 
 	ptr := structPointer_Bytes(base, unrecField)
 
-	if *ptr == nil {
-		// This is the first skipped element,
-		// allocate a new buffer.
-		*ptr = o.bufalloc()
-	}
-
 	// Add the skipped field to struct field
 	obuf := o.buf
 
