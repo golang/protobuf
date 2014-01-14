@@ -221,6 +221,10 @@ func Marshal(pb Message) ([]byte, error) {
 	if err != nil && !state.shouldContinue(err, nil) {
 		return nil, err
 	}
+	if p.buf == nil && err == nil {
+		// Return a non-nil slice on success.
+		return []byte{}, nil
+	}
 	return p.buf, err
 }
 
