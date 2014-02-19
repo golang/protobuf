@@ -44,6 +44,26 @@ import (
 	pb "./testdata"
 )
 
+// textMessage implements the methods that allow it to marshal and unmarshal
+// itself as text.
+type textMessage struct {
+}
+
+func (*textMessage) MarshalText() ([]byte, error) {
+	return []byte("custom"), nil
+}
+
+func (*textMessage) UnmarshalText(bytes []byte) error {
+	if string(bytes) != "custom" {
+		return errors.New("expected 'custom'")
+	}
+	return nil
+}
+
+func (*textMessage) Reset()         {}
+func (*textMessage) String() string { return "" }
+func (*textMessage) ProtoMessage()  {}
+
 func newTestMessage() *pb.MyMessage {
 	msg := &pb.MyMessage{
 		Count: proto.Int32(42),
@@ -153,6 +173,16 @@ func TestMarshalText(t *testing.T) {
 	}
 }
 
+func TestMarshalTextCustomMessage(t *testing.T) {
+	buf := new(bytes.Buffer)
+	if err := proto.MarshalText(buf, &textMessage{}); err != nil {
+		t.Fatalf("proto.MarshalText: %v", err)
+	}
+	s := buf.String()
+	if s != "custom" {
+		t.Errorf("Got %q, expected %q", s, "custom")
+	}
+}
 func TestMarshalTextNil(t *testing.T) {
 	want := "<nil>"
 	tests := []proto.Message{nil, (*pb.MyMessage)(nil)}

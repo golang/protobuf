@@ -413,6 +413,16 @@ func TestUnmarshalText(t *testing.T) {
 	}
 }
 
+func TestUnmarshalTextCustomMessage(t *testing.T) {
+	msg := &textMessage{}
+	if err := UnmarshalText("custom", msg); err != nil {
+		t.Errorf("Unexpected error from custom unmarshal: %v", err)
+	}
+	if UnmarshalText("not custom", msg) == nil {
+		t.Errorf("Didn't get expected error from custom unmarshal")
+	}
+}
+
 // Regression test; this caused a panic.
 func TestRepeatedEnum(t *testing.T) {
 	pb := new(RepeatedEnum)
