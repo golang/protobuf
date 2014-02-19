@@ -311,6 +311,7 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 		}
 	}
 	for _, get := range ms.getters {
+
 		if get.typeName != "" {
 			g.RecordTypeUse(get.typeName)
 		}
@@ -366,6 +367,7 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 
 		g.P("func (m *", ms.sym, ") ", get.name, "() ", typ, " { return ", val, " }")
 	}
+
 }
 
 type enumSymbol string
@@ -1042,6 +1044,17 @@ func (g *Generator) generateHeader() {
 		g.P("/*")
 		g.P("Package ", name, " is a generated protocol buffer package.")
 		g.P()
+		if loc, ok := g.file.comments[strconv.Itoa(packagePath)]; ok {
+			// not using g.PrintComments because this is a /* */ comment block.
+			text := strings.TrimSuffix(loc.GetLeadingComments(), "\n")
+			for _, line := range strings.Split(text, "\n") {
+				line = strings.TrimPrefix(line, " ")
+				// ensure we don't escape from the block comment
+				line = strings.Replace(line, "*/", "* /", -1)
+				g.P(line)
+			}
+			g.P()
+		}
 		g.P("It is generated from these files:")
 		for _, f := range g.genFiles {
 			g.P("\t", f.Name)
@@ -1715,7 +1728,8 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	}
 
 	if !message.group {
-		g.file.addExport(message, &messageSymbol{ccTypeName, hasExtensions, isMessageSet, getters})
+		ms := &messageSymbol{sym: ccTypeName, hasExtensions: hasExtensions, isMessageSet: isMessageSet, getters: getters}
+		g.file.addExport(message, ms)
 	}
 
 	for _, ext := range message.ext {
@@ -1926,6 +1940,7 @@ func baseName(name string) string {
 // See descriptor.proto for more information about this.
 const (
 	// tag numbers in FileDescriptorProto
+	packagePath = 2 // package
 	messagePath = 4 // message_type
 	enumPath    = 5 // enum_type
 	// tag numbers in DescriptorProto
