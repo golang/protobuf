@@ -622,7 +622,6 @@ func (g *Generator) SetPackageNames() {
 	// Register the support package names. They might collide with the
 	// name of a package we import.
 	g.Pkg = map[string]string{
-		"json":  RegisterUniquePackageName("json", nil),
 		"math":  RegisterUniquePackageName("math", nil),
 		"proto": RegisterUniquePackageName("proto", nil),
 	}
@@ -1110,10 +1109,8 @@ func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the math package,
-	// for handling bit patterns for floating-point numbers, and to the
-	// json package, for symbolic names of enum values for JSON marshaling.
+	// for handling bit patterns for floating-point numbers.
 	g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"code.google.com/p/goprotobuf/proto"))
-	g.P("import " + g.Pkg["json"] + ` "encoding/json"`)
 	g.P("import " + g.Pkg["math"] + ` "math"`)
 	for i, s := range g.file.Dependency {
 		fd := g.fileByName(s)
@@ -1150,9 +1147,8 @@ func (g *Generator) generateImports() {
 		p.GenerateImports(g.file)
 		g.P()
 	}
-	g.P("// Reference proto, json, and math imports to suppress error if they are not otherwise used.")
+	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ = ", g.Pkg["proto"], ".Marshal")
-	g.P("var _ = &", g.Pkg["json"], ".SyntaxError{}")
 	g.P("var _ = ", g.Pkg["math"], ".Inf")
 	g.P()
 }
