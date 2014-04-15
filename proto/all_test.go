@@ -34,6 +34,7 @@ package proto_test
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"math/rand"
@@ -390,6 +391,63 @@ func TestNumericPrimitives(t *testing.T) {
 		}
 		if x != uint64(i64) {
 			t.Fatal("zigzag64 decode fail:", i64, x)
+		}
+	}
+}
+
+// fakeMarshaler is a simple struct implementing Marshaler and Message interfaces.
+type fakeMarshaler struct {
+	b   []byte
+	err error
+}
+
+func (f fakeMarshaler) Marshal() ([]byte, error) {
+	return f.b, f.err
+}
+
+func (f fakeMarshaler) String() string {
+	return fmt.Sprintf("Bytes: %v Error: %v", f.b, f.err)
+}
+
+func (f fakeMarshaler) ProtoMessage() {}
+
+func (f fakeMarshaler) Reset() {}
+
+// Simple tests for proto messages that implement the Marshaler interface.
+func TestMarshalerEncoding(t *testing.T) {
+	tests := []struct {
+		name    string
+		m       Message
+		want    []byte
+		wantErr error
+	}{
+		{
+			name: "Marshaler that fails",
+			m: fakeMarshaler{
+				err: errors.New("some marshal err"),
+				b:   []byte{5, 6, 7},
+			},
+			// Since there's an error, nothing should be written to buffer.
+			want:    nil,
+			wantErr: errors.New("some marshal err"),
+		},
+		{
+			name: "Marshaler that succeeds",
+			m: fakeMarshaler{
+				b: []byte{0, 1, 2, 3, 4, 127, 255},
+			},
+			want:    []byte{0, 1, 2, 3, 4, 127, 255},
+			wantErr: nil,
+		},
+	}
+	for _, test := range tests {
+		b := NewBuffer(nil)
+		err := b.Marshal(test.m)
+		if !reflect.DeepEqual(test.wantErr, err) {
+			t.Errorf("%s: got err %v wanted %v", test.name, err, test.wantErr)
+		}
+		if !reflect.DeepEqual(test.want, b.Bytes()) {
+			t.Errorf("%s: got bytes %v wanted %v", test.name, b.Bytes(), test.want)
 		}
 	}
 }
