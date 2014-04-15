@@ -232,7 +232,16 @@ func writeStruct(w *textWriter, sv reflect.Value) error {
 						return err
 					}
 				}
-				if err := writeAny(w, fv.Index(j), props); err != nil {
+				v := fv.Index(j)
+				if v.Kind() == reflect.Ptr && v.IsNil() {
+					// A nil message in a repeated field is not valid,
+					// but we can handle that more gracefully than panicking.
+					if _, err := w.Write([]byte("<nil>\n")); err != nil {
+						return err
+					}
+					continue
+				}
+				if err := writeAny(w, v, props); err != nil {
 					return err
 				}
 				if err := w.WriteByte('\n'); err != nil {
