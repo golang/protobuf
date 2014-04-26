@@ -167,6 +167,12 @@ var mergeTests = []struct {
 			RepBytes: [][]byte{[]byte("sham"), []byte("wow")},
 		},
 	},
+	// Check that a scalar bytes field replaces rather than appends.
+	{
+		src:  &pb.OtherMessage{Value: []byte("foo")},
+		dst:  &pb.OtherMessage{Value: []byte("bar")},
+		want: &pb.OtherMessage{Value: []byte("foo")},
+	},
 }
 
 func TestMerge(t *testing.T) {
