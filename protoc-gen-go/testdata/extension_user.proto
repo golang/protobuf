@@ -66,7 +66,7 @@ message LoudMessage {
 // Extend inside the scope of another type, using a message.
 message LoginMessage {
   extend extension_base.BaseMessage {
-    required UserMessage user_message = 16;
+    optional UserMessage user_message = 16;
   }
 }
 
