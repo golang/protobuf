@@ -300,6 +300,9 @@ func GetExtensions(pb Message, es []*ExtensionDesc) (extensions []interface{}, e
 	extensions = make([]interface{}, len(es))
 	for i, e := range es {
 		extensions[i], err = GetExtension(epb, e)
+		if err == ErrMissingExtension {
+			err = nil
+		}
 		if err != nil {
 			return
 		}
