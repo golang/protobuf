@@ -127,7 +127,7 @@ func (ms *MessageSet) Marshal(pb Message) error {
 
 	mti, ok := pb.(messageTypeIder)
 	if !ok {
-		return ErrWrongType // TODO: custom error?
+		return ErrNoMessageTypeId
 	}
 
 	mtid := mti.MessageTypeId()

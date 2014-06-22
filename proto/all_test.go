@@ -1174,13 +1174,10 @@ func TestTypeMismatch(t *testing.T) {
 	// Now Unmarshal it to the wrong type.
 	pb2 := initGoTestField()
 	err := o.Unmarshal(pb2)
-	switch err {
-	case ErrWrongType:
-		// fine
-	case nil:
-		t.Error("expected wrong type error, got no error")
-	default:
-		t.Error("expected wrong type error, got", err)
+	if err == nil {
+		t.Error("expected error, got no error")
+	} else if !strings.Contains(err.Error(), "bad wiretype") {
+		t.Error("expected bad wiretype error, got", err)
 	}
 }
 
