@@ -65,8 +65,10 @@ var SizeTests = []struct {
 	// Basic types.
 	{"bool", &pb.Defaults{F_Bool: Bool(true)}},
 	{"int32", &pb.Defaults{F_Int32: Int32(12)}},
+	{"negative int32", &pb.Defaults{F_Int32: Int32(-1)}},
 	{"small int64", &pb.Defaults{F_Int64: Int64(1)}},
 	{"big int64", &pb.Defaults{F_Int64: Int64(1 << 20)}},
+	{"negative int64", &pb.Defaults{F_Int64: Int64(-1)}},
 	{"fixed32", &pb.Defaults{F_Fixed32: Uint32(71)}},
 	{"fixed64", &pb.Defaults{F_Fixed64: Uint64(72)}},
 	{"uint32", &pb.Defaults{F_Uint32: Uint32(123)}},

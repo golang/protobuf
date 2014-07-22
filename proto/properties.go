@@ -308,18 +308,22 @@ func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
 			p.enc = (*Buffer).enc_bool
 			p.dec = (*Buffer).dec_bool
 			p.size = size_bool
-		case reflect.Int32, reflect.Uint32:
+		case reflect.Int32:
 			p.enc = (*Buffer).enc_int32
 			p.dec = (*Buffer).dec_int32
 			p.size = size_int32
+		case reflect.Uint32:
+			p.enc = (*Buffer).enc_uint32
+			p.dec = (*Buffer).dec_int32 // can reuse
+			p.size = size_uint32
 		case reflect.Int64, reflect.Uint64:
 			p.enc = (*Buffer).enc_int64
 			p.dec = (*Buffer).dec_int64
 			p.size = size_int64
 		case reflect.Float32:
-			p.enc = (*Buffer).enc_int32 // can just treat them as bits
+			p.enc = (*Buffer).enc_uint32 // can just treat them as bits
 			p.dec = (*Buffer).dec_int32
-			p.size = size_int32
+			p.size = size_uint32
 		case reflect.Float64:
 			p.enc = (*Buffer).enc_int64 // can just treat them as bits
 			p.dec = (*Buffer).dec_int64

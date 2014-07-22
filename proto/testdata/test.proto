@@ -203,6 +203,8 @@ message OldMessage {
     optional string name = 1;
   }
   optional Nested nested = 1;
+
+  optional int32 num = 2;
 }
 
 // NewMessage is wire compatible with OldMessage;
@@ -213,6 +215,9 @@ message NewMessage {
     optional string food_group = 2;
   }
   optional Nested nested = 1;
+
+  // This is an int32 in OldMessage.
+  optional int64 num = 2;
 }
 
 // Smaller tests for ASCII formatting.

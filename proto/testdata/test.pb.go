@@ -1070,6 +1070,7 @@ func (m *MaxTag) GetLastField() string {
 
 type OldMessage struct {
 	Nested           *OldMessage_Nested `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
+	Num              *int32             `protobuf:"varint,2,opt,name=num" json:"num,omitempty"`
 	XXX_unrecognized []byte             `json:"-"`
 }
 
@@ -1082,6 +1083,13 @@ func (m *OldMessage) GetNested() *OldMessage_Nested {
 		return m.Nested
 	}
 	return nil
+}
+
+func (m *OldMessage) GetNum() int32 {
+	if m != nil && m.Num != nil {
+		return *m.Num
+	}
+	return 0
 }
 
 type OldMessage_Nested struct {
@@ -1103,8 +1111,10 @@ func (m *OldMessage_Nested) GetName() string {
 // NewMessage is wire compatible with OldMessage;
 // imagine it as a future version.
 type NewMessage struct {
-	Nested           *NewMessage_Nested `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
-	XXX_unrecognized []byte             `json:"-"`
+	Nested *NewMessage_Nested `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
+	// This is an int32 in OldMessage.
+	Num              *int64 `protobuf:"varint,2,opt,name=num" json:"num,omitempty"`
+	XXX_unrecognized []byte `json:"-"`
 }
 
 func (m *NewMessage) Reset()         { *m = NewMessage{} }
@@ -1116,6 +1126,13 @@ func (m *NewMessage) GetNested() *NewMessage_Nested {
 		return m.Nested
 	}
 	return nil
+}
+
+func (m *NewMessage) GetNum() int64 {
+	if m != nil && m.Num != nil {
+		return *m.Num
+	}
+	return 0
 }
 
 type NewMessage_Nested struct {

@@ -312,13 +312,37 @@ func (o *Buffer) enc_int32(p *Properties, base structPointer) error {
 	if word32_IsNil(v) {
 		return ErrNil
 	}
-	x := word32_Get(v)
+	x := int32(word32_Get(v)) // permit sign extension to use full 64-bit range
 	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, uint64(x))
 	return nil
 }
 
 func size_int32(p *Properties, base structPointer) (n int) {
+	v := structPointer_Word32(base, p.field)
+	if word32_IsNil(v) {
+		return 0
+	}
+	x := int32(word32_Get(v)) // permit sign extension to use full 64-bit range
+	n += len(p.tagcode)
+	n += p.valSize(uint64(x))
+	return
+}
+
+// Encode a uint32.
+// Exactly the same as int32, except for no sign extension.
+func (o *Buffer) enc_uint32(p *Properties, base structPointer) error {
+	v := structPointer_Word32(base, p.field)
+	if word32_IsNil(v) {
+		return ErrNil
+	}
+	x := word32_Get(v)
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(x))
+	return nil
+}
+
+func size_uint32(p *Properties, base structPointer) (n int) {
 	v := structPointer_Word32(base, p.field)
 	if word32_IsNil(v) {
 		return 0

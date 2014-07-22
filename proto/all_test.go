@@ -1047,6 +1047,35 @@ func TestSubmessageUnrecognizedFields(t *testing.T) {
 	}
 }
 
+// Check that an int32 field can be upgraded to an int64 field.
+func TestNegativeInt32(t *testing.T) {
+	om := &OldMessage{
+		Num: Int32(-1),
+	}
+	b, err := Marshal(om)
+	if err != nil {
+		t.Fatalf("Marshal of OldMessage: %v", err)
+	}
+
+	// Check the size. It should be 11 bytes;
+	// 1 for the field/wire type, and 10 for the negative number.
+	if len(b) != 11 {
+		t.Errorf("%v marshaled as %q, wanted 11 bytes", om, b)
+	}
+
+	// Unmarshal into a NewMessage.
+	nm := new(NewMessage)
+	if err := Unmarshal(b, nm); err != nil {
+		t.Fatalf("Unmarshal to NewMessage: %v", err)
+	}
+	want := &NewMessage{
+		Num: Int64(-1),
+	}
+	if !Equal(nm, want) {
+		t.Errorf("nm = %v, want %v", nm, want)
+	}
+}
+
 // Check that we can grow an array (repeated field) to have many elements.
 // This test doesn't depend only on our encoding; for variety, it makes sure
 // we create, encode, and decode the correct contents explicitly.  It's therefore
@@ -1710,7 +1739,8 @@ func TestEncodingSizes(t *testing.T) {
 		n int
 	}{
 		{&Defaults{F_Int32: Int32(math.MaxInt32)}, 6},
-		{&Defaults{F_Int32: Int32(math.MinInt32)}, 6},
+		{&Defaults{F_Int32: Int32(math.MinInt32)}, 11},
+		{&Defaults{F_Uint32: Uint32(uint32(math.MaxInt32) + 1)}, 6},
 		{&Defaults{F_Uint32: Uint32(math.MaxUint32)}, 6},
 	}
 	for _, test := range tests {
