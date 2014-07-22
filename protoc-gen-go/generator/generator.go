@@ -377,7 +377,9 @@ func (es enumSymbol) GenerateAlias(g *Generator, pkg string) {
 	g.P("type ", s, " ", pkg, ".", s)
 	g.P("var ", s, "_name = ", pkg, ".", s, "_name")
 	g.P("var ", s, "_value = ", pkg, ".", s, "_value")
-	g.P("func New", s, "(x ", s, ") *", s, " { e := ", s, "(x); return &e }")
+	g.P("func (x ", s, ") Enum() *", s, "{ return (*", s, ")((", pkg, ".", s, ")(x).Enum()) }")
+	g.P("func (x ", s, ") String() string { return (", pkg, ".", s, ")(x).String() }")
+	g.P("func (x *", s, ") UnmarshalJSON(data []byte) error { return (*", pkg, ".", s, ")(x).UnmarshalJSON(data) }")
 }
 
 type constOrVarSymbol struct {
