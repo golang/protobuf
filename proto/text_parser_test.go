@@ -156,8 +156,8 @@ var unMarshalTextTests = []UnmarshalTextTest{
 
 	// Number too large for int64
 	{
-		in:  "count: 123456789012345678901",
-		err: "line 1.7: invalid int32: 123456789012345678901",
+		in:  "count: 1 others { key: 123456789012345678901 }",
+		err: "line 1.23: invalid int64: 123456789012345678901",
 	},
 
 	// Number too large for int32
