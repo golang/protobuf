@@ -188,12 +188,25 @@ func UnmarshalMessageSet(buf []byte, m map[int32]Extension) error {
 		return err
 	}
 	for _, item := range ms.Item {
-		// restore wire type and field number varint, plus length varint.
-		b := EncodeVarint(uint64(*item.TypeId)<<3 | WireBytes)
-		b = append(b, EncodeVarint(uint64(len(item.Message)))...)
-		b = append(b, item.Message...)
+		id := *item.TypeId
+		msg := item.Message
 
-		m[*item.TypeId] = Extension{enc: b}
+		// Restore wire type and field number varint, plus length varint.
+		// Be careful to preserve duplicate items.
+		b := EncodeVarint(uint64(id)<<3 | WireBytes)
+		if ext, ok := m[id]; ok {
+			// Existing data; rip off the tag and length varint
+			// so we join the new data correctly.
+			// We can assume that ext.enc is set because we are unmarshaling.
+			o := ext.enc[len(b):]   // skip wire type and field number
+			_, n := DecodeVarint(o) // calculate length of length varint
+			o = o[n:]               // skip length varint
+			msg = append(o, msg...) // join old data and new data
+		}
+		b = append(b, EncodeVarint(uint64(len(msg)))...)
+		b = append(b, msg...)
+
+		m[id] = Extension{enc: b}
 	}
 	return nil
 }
