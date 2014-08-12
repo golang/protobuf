@@ -667,7 +667,7 @@ func buildDefaultMessage(t reflect.Type) (dm defaultMessage) {
 		}
 
 		// scalar fields without defaults
-		if prop.Default == "" {
+		if !prop.HasDefault {
 			dm.scalars = append(dm.scalars, sf)
 			continue
 		}

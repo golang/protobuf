@@ -145,17 +145,19 @@ func (sp *StructProperties) Swap(i, j int) { sp.order[i], sp.order[j] = sp.order
 
 // Properties represents the protocol-specific behavior of a single struct field.
 type Properties struct {
-	Name       string // name of the field, for error messages
-	OrigName   string // original name before protocol compiler (always set)
-	Wire       string
-	WireType   int
-	Tag        int
-	Required   bool
-	Optional   bool
-	Repeated   bool
-	Packed     bool   // relevant for repeated primitives only
-	Enum       string // set for enum types only
+	Name     string // name of the field, for error messages
+	OrigName string // original name before protocol compiler (always set)
+	Wire     string
+	WireType int
+	Tag      int
+	Required bool
+	Optional bool
+	Repeated bool
+	Packed   bool   // relevant for repeated primitives only
+	Enum     string // set for enum types only
+
 	Default    string // default value
+	HasDefault bool   // whether an explicit default was provided
 	def_uint64 uint64
 
 	enc           encoder
@@ -201,7 +203,7 @@ func (p *Properties) String() string {
 	if len(p.Enum) > 0 {
 		s += ",enum=" + p.Enum
 	}
-	if len(p.Default) > 0 {
+	if p.HasDefault {
 		s += ",def=" + p.Default
 	}
 	return s
@@ -273,6 +275,7 @@ func (p *Properties) Parse(s string) {
 		case strings.HasPrefix(f, "enum="):
 			p.Enum = f[5:]
 		case strings.HasPrefix(f, "def="):
+			p.HasDefault = true
 			p.Default = f[4:] // rest of string
 			if i+1 < len(fields) {
 				// Commas aren't escaped, and def is always last.

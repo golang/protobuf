@@ -1278,8 +1278,10 @@ func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype strin
 	case isRepeated(field):
 		optrepreq = "rep"
 	}
-	defaultValue := field.GetDefaultValue()
-	if defaultValue != "" {
+	var defaultValue string
+	if dv := field.DefaultValue; dv != nil { // set means an explicit default
+		defaultValue = *dv
+		// Some types need tweaking.
 		switch *field.Type {
 		case descriptor.FieldDescriptorProto_TYPE_BOOL:
 			if defaultValue == "true" {
