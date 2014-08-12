@@ -85,7 +85,7 @@ var SizeTests = []struct {
 	{"empty repeated bool", &pb.MoreRepeated{Bools: []bool{}}},
 	{"repeated bool", &pb.MoreRepeated{Bools: []bool{false, true, true, false}}},
 	{"packed repeated bool", &pb.MoreRepeated{BoolsPacked: []bool{false, true, true, false, true, true, true}}},
-	{"repeated int32", &pb.MoreRepeated{Ints: []int32{1, 12203, 1729}}},
+	{"repeated int32", &pb.MoreRepeated{Ints: []int32{1, 12203, 1729, -1}}},
 	{"repeated int32 packed", &pb.MoreRepeated{IntsPacked: []int32{1, 12203, 1729}}},
 	{"repeated int64 packed", &pb.MoreRepeated{Int64SPacked: []int64{
 		// Need enough large numbers to verify that the header is counting the number of bytes
