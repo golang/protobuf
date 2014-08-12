@@ -365,48 +365,50 @@ func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
 			}
 			p.dec = (*Buffer).dec_slice_bool
 			p.packedDec = (*Buffer).dec_slice_packed_bool
-		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
-			switch t2.Bits() {
-			case 32:
-				if p.Packed {
-					p.enc = (*Buffer).enc_slice_packed_int32
-					p.size = size_slice_packed_int32
-				} else {
-					p.enc = (*Buffer).enc_slice_int32
-					p.size = size_slice_int32
-				}
-				p.dec = (*Buffer).dec_slice_int32
-				p.packedDec = (*Buffer).dec_slice_packed_int32
-			case 64:
-				if p.Packed {
-					p.enc = (*Buffer).enc_slice_packed_int64
-					p.size = size_slice_packed_int64
-				} else {
-					p.enc = (*Buffer).enc_slice_int64
-					p.size = size_slice_int64
-				}
-				p.dec = (*Buffer).dec_slice_int64
-				p.packedDec = (*Buffer).dec_slice_packed_int64
-			case 8:
-				if t2.Kind() == reflect.Uint8 {
-					p.enc = (*Buffer).enc_slice_byte
-					p.dec = (*Buffer).dec_slice_byte
-					p.size = size_slice_byte
-				}
-			default:
-				logNoSliceEnc(t1, t2)
-				break
+		case reflect.Int32:
+			if p.Packed {
+				p.enc = (*Buffer).enc_slice_packed_int32
+				p.size = size_slice_packed_int32
+			} else {
+				p.enc = (*Buffer).enc_slice_int32
+				p.size = size_slice_int32
 			}
+			p.dec = (*Buffer).dec_slice_int32
+			p.packedDec = (*Buffer).dec_slice_packed_int32
+		case reflect.Uint32:
+			if p.Packed {
+				p.enc = (*Buffer).enc_slice_packed_uint32
+				p.size = size_slice_packed_uint32
+			} else {
+				p.enc = (*Buffer).enc_slice_uint32
+				p.size = size_slice_uint32
+			}
+			p.dec = (*Buffer).dec_slice_int32
+			p.packedDec = (*Buffer).dec_slice_packed_int32
+		case reflect.Int64, reflect.Uint64:
+			if p.Packed {
+				p.enc = (*Buffer).enc_slice_packed_int64
+				p.size = size_slice_packed_int64
+			} else {
+				p.enc = (*Buffer).enc_slice_int64
+				p.size = size_slice_int64
+			}
+			p.dec = (*Buffer).dec_slice_int64
+			p.packedDec = (*Buffer).dec_slice_packed_int64
+		case reflect.Uint8:
+			p.enc = (*Buffer).enc_slice_byte
+			p.dec = (*Buffer).dec_slice_byte
+			p.size = size_slice_byte
 		case reflect.Float32, reflect.Float64:
 			switch t2.Bits() {
 			case 32:
 				// can just treat them as bits
 				if p.Packed {
-					p.enc = (*Buffer).enc_slice_packed_int32
-					p.size = size_slice_packed_int32
+					p.enc = (*Buffer).enc_slice_packed_uint32
+					p.size = size_slice_packed_uint32
 				} else {
-					p.enc = (*Buffer).enc_slice_int32
-					p.size = size_slice_int32
+					p.enc = (*Buffer).enc_slice_uint32
+					p.size = size_slice_uint32
 				}
 				p.dec = (*Buffer).dec_slice_int32
 				p.packedDec = (*Buffer).dec_slice_packed_int32
