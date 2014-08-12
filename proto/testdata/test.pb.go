@@ -1529,8 +1529,10 @@ type Defaults struct {
 	F_Ninf *float32 `protobuf:"fixed32,16,opt,def=-inf" json:"F_Ninf,omitempty"`
 	F_Nan  *float32 `protobuf:"fixed32,17,opt,def=nan" json:"F_Nan,omitempty"`
 	// Sub-message.
-	Sub              *SubDefaults `protobuf:"bytes,18,opt,name=sub" json:"sub,omitempty"`
-	XXX_unrecognized []byte       `json:"-"`
+	Sub *SubDefaults `protobuf:"bytes,18,opt,name=sub" json:"sub,omitempty"`
+	// Redundant but explicit defaults.
+	StrZero          *string `protobuf:"bytes,19,opt,name=str_zero,def=" json:"str_zero,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (m *Defaults) Reset()         { *m = Defaults{} }
@@ -1682,6 +1684,13 @@ func (m *Defaults) GetSub() *SubDefaults {
 		return m.Sub
 	}
 	return nil
+}
+
+func (m *Defaults) GetStrZero() string {
+	if m != nil && m.StrZero != nil {
+		return *m.StrZero
+	}
+	return ""
 }
 
 type SubDefaults struct {

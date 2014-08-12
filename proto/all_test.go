@@ -1387,10 +1387,11 @@ func TestAllSetDefaults(t *testing.T) {
 		F_Pinf:    Float32(float32(math.Inf(1))),
 		F_Ninf:    Float32(float32(math.Inf(-1))),
 		F_Nan:     Float32(1.7),
+		StrZero:   String(""),
 	}
 	SetDefaults(m)
 	if !Equal(m, expected) {
-		t.Errorf(" got %v\nwant %v", m, expected)
+		t.Errorf("SetDefaults failed\n got %v\nwant %v", m, expected)
 	}
 }
 
