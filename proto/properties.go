@@ -538,7 +538,11 @@ var (
 )
 
 // GetProperties returns the list of properties for the type represented by t.
+// t must represent a generated struct type of a protocol message.
 func GetProperties(t reflect.Type) *StructProperties {
+	if t.Kind() != reflect.Struct {
+		panic("proto: type must have kind struct")
+	}
 	mutex.Lock()
 	sprop := getPropertiesLocked(t)
 	mutex.Unlock()
