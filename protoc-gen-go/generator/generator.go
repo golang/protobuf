@@ -160,13 +160,12 @@ func (e *EnumDescriptor) TypeName() (s []string) {
 // Everything but the last element of the full type name, CamelCased.
 // The values of type Foo.Bar are call Foo_value1... not Foo_Bar_value1... .
 func (e *EnumDescriptor) prefix() string {
-	typeName := e.TypeName()
-	ccPrefix := CamelCaseSlice(typeName[0:len(typeName)-1]) + "_"
 	if e.parent == nil {
 		// If the enum is not part of a message, the prefix is just the type name.
-		ccPrefix = CamelCase(*e.Name) + "_"
+		return CamelCase(*e.Name) + "_"
 	}
-	return ccPrefix
+	typeName := e.TypeName()
+	return CamelCaseSlice(typeName[0:len(typeName)-1]) + "_"
 }
 
 // The integer value of the named constant in this enumerated type.
