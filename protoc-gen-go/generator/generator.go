@@ -51,7 +51,8 @@ import (
 	"unicode/utf8"
 
 	"code.google.com/p/goprotobuf/proto"
-	descriptor "code.google.com/p/goprotobuf/protoc-gen-go/descriptor"
+
+	"code.google.com/p/goprotobuf/protoc-gen-go/descriptor"
 	plugin "code.google.com/p/goprotobuf/protoc-gen-go/plugin"
 )
 

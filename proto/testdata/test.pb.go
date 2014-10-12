@@ -1416,6 +1416,12 @@ func (m *MyMessageSet) Marshal() ([]byte, error) {
 func (m *MyMessageSet) Unmarshal(buf []byte) error {
 	return proto.UnmarshalMessageSet(buf, m.ExtensionMap())
 }
+func (m *MyMessageSet) MarshalJSON() ([]byte, error) {
+	return proto.MarshalMessageSetJSON(m.XXX_extensions)
+}
+func (m *MyMessageSet) UnmarshalJSON(buf []byte) error {
+	return proto.UnmarshalMessageSetJSON(buf, m.XXX_extensions)
+}
 
 // ensure MyMessageSet satisfies proto.Marshaler and proto.Unmarshaler
 var _ proto.Marshaler = (*MyMessageSet)(nil)
