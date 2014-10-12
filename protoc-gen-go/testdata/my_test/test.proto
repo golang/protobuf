@@ -90,15 +90,30 @@ message Reply {
   extensions 100 to max;
 }
 
+message OtherBase {
+  optional string name = 1;
+  extensions 100 to max;
+}
+
 message ReplyExtensions {
   extend Reply {
     optional double time = 101;
+    optional ReplyExtensions carrot = 105;
   }
+  extend OtherBase {
+    optional ReplyExtensions donut = 101;
+  }
+}
+
+message OtherReplyExtensions {
+  optional int32 key = 1;
 }
 
 // top-level extension
 extend Reply {
   optional string tag = 103;
+  optional OtherReplyExtensions donut = 106;
+//  optional imp.ImportedMessage elephant = 107;  // extend with message from another file.
 }
 
 message OldReply {

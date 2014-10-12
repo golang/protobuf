@@ -11,7 +11,9 @@ It is generated from these files:
 It has these top-level messages:
 	Request
 	Reply
+	OtherBase
 	ReplyExtensions
+	OtherReplyExtensions
 	OldReply
 */
 package my_test
@@ -317,6 +319,37 @@ func (m *Reply_Entry) GetXMyFieldName_2() int64 {
 	return 0
 }
 
+type OtherBase struct {
+	Name             *string                   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	XXX_extensions   map[int32]proto.Extension `json:"-"`
+	XXX_unrecognized []byte                    `json:"-"`
+}
+
+func (m *OtherBase) Reset()         { *m = OtherBase{} }
+func (m *OtherBase) String() string { return proto.CompactTextString(m) }
+func (*OtherBase) ProtoMessage()    {}
+
+var extRange_OtherBase = []proto.ExtensionRange{
+	{100, 536870911},
+}
+
+func (*OtherBase) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_OtherBase
+}
+func (m *OtherBase) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
+	}
+	return m.XXX_extensions
+}
+
+func (m *OtherBase) GetName() string {
+	if m != nil && m.Name != nil {
+		return *m.Name
+	}
+	return ""
+}
+
 type ReplyExtensions struct {
 	XXX_unrecognized []byte `json:"-"`
 }
@@ -331,6 +364,38 @@ var E_ReplyExtensions_Time = &proto.ExtensionDesc{
 	Field:         101,
 	Name:          "my.test.ReplyExtensions.time",
 	Tag:           "fixed64,101,opt,name=time",
+}
+
+var E_ReplyExtensions_Carrot = &proto.ExtensionDesc{
+	ExtendedType:  (*Reply)(nil),
+	ExtensionType: (*ReplyExtensions)(nil),
+	Field:         105,
+	Name:          "my.test.ReplyExtensions.carrot",
+	Tag:           "bytes,105,opt,name=carrot",
+}
+
+var E_ReplyExtensions_Donut = &proto.ExtensionDesc{
+	ExtendedType:  (*OtherBase)(nil),
+	ExtensionType: (*ReplyExtensions)(nil),
+	Field:         101,
+	Name:          "my.test.ReplyExtensions.donut",
+	Tag:           "bytes,101,opt,name=donut",
+}
+
+type OtherReplyExtensions struct {
+	Key              *int32 `protobuf:"varint,1,opt,name=key" json:"key,omitempty"`
+	XXX_unrecognized []byte `json:"-"`
+}
+
+func (m *OtherReplyExtensions) Reset()         { *m = OtherReplyExtensions{} }
+func (m *OtherReplyExtensions) String() string { return proto.CompactTextString(m) }
+func (*OtherReplyExtensions) ProtoMessage()    {}
+
+func (m *OtherReplyExtensions) GetKey() int32 {
+	if m != nil && m.Key != nil {
+		return *m.Key
+	}
+	return 0
 }
 
 type OldReply struct {
@@ -375,11 +440,22 @@ var E_Tag = &proto.ExtensionDesc{
 	Tag:           "bytes,103,opt,name=tag",
 }
 
+var E_Donut = &proto.ExtensionDesc{
+	ExtendedType:  (*Reply)(nil),
+	ExtensionType: (*OtherReplyExtensions)(nil),
+	Field:         106,
+	Name:          "my.test.donut",
+	Tag:           "bytes,106,opt,name=donut",
+}
+
 func init() {
 	proto.RegisterEnum("my.test.HatType", HatType_name, HatType_value)
 	proto.RegisterEnum("my.test.Days", Days_name, Days_value)
 	proto.RegisterEnum("my.test.Request_Color", Request_Color_name, Request_Color_value)
 	proto.RegisterEnum("my.test.Reply_Entry_Game", Reply_Entry_Game_name, Reply_Entry_Game_value)
 	proto.RegisterExtension(E_ReplyExtensions_Time)
+	proto.RegisterExtension(E_ReplyExtensions_Carrot)
+	proto.RegisterExtension(E_ReplyExtensions_Donut)
 	proto.RegisterExtension(E_Tag)
+	proto.RegisterExtension(E_Donut)
 }
