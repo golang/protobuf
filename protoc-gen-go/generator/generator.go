@@ -1523,6 +1523,16 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			g.P("return ", g.Pkg["proto"], ".UnmarshalMessageSet(buf, m.ExtensionMap())")
 			g.Out()
 			g.P("}")
+			g.P("func (m *", ccTypeName, ") MarshalJSON() ([]byte, error) {")
+			g.In()
+			g.P("return ", g.Pkg["proto"], ".MarshalMessageSetJSON(m.XXX_extensions)")
+			g.Out()
+			g.P("}")
+			g.P("func (m *", ccTypeName, ") UnmarshalJSON(buf []byte) error {")
+			g.In()
+			g.P("return ", g.Pkg["proto"], ".UnmarshalMessageSetJSON(buf, m.XXX_extensions)")
+			g.Out()
+			g.P("}")
 			g.P("// ensure ", ccTypeName, " satisfies proto.Marshaler and proto.Unmarshaler")
 			g.P("var _ ", g.Pkg["proto"], ".Marshaler = (*", ccTypeName, ")(nil)")
 			g.P("var _ ", g.Pkg["proto"], ".Unmarshaler = (*", ccTypeName, ")(nil)")
@@ -1757,8 +1767,10 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	// Special case for proto2 message sets: If this extension is extending
 	// proto2_bridge.MessageSet, and its final name component is "message_set_extension",
 	// then drop that last component.
+	mset := false
 	if extendedType == "*proto2_bridge.MessageSet" && typeName[len(typeName)-1] == "message_set_extension" {
 		typeName = typeName[:len(typeName)-1]
+		mset = true
 	}
 
 	// For text formatting, the package must be exactly what the .proto file declares,
@@ -1779,6 +1791,15 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	g.Out()
 	g.P("}")
 	g.P()
+
+	if mset {
+		// Generate a bit more code to register with message_set.go.
+		g.P("func init() { ")
+		g.In()
+		g.P(g.Pkg["proto"], ".RegisterMessageSetType((", fieldType, ")(nil), ", field.Number, ", \"", extName, "\")")
+		g.Out()
+		g.P("}")
+	}
 
 	g.file.addExport(ext, constOrVarSymbol{ccTypeName, "var", ""})
 }

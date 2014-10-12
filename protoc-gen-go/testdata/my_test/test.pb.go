@@ -413,6 +413,12 @@ func (m *OldReply) Marshal() ([]byte, error) {
 func (m *OldReply) Unmarshal(buf []byte) error {
 	return proto.UnmarshalMessageSet(buf, m.ExtensionMap())
 }
+func (m *OldReply) MarshalJSON() ([]byte, error) {
+	return proto.MarshalMessageSetJSON(m.XXX_extensions)
+}
+func (m *OldReply) UnmarshalJSON(buf []byte) error {
+	return proto.UnmarshalMessageSetJSON(buf, m.XXX_extensions)
+}
 
 // ensure OldReply satisfies proto.Marshaler and proto.Unmarshaler
 var _ proto.Marshaler = (*OldReply)(nil)
