@@ -57,7 +57,7 @@ Equality is defined in this way:
     although represented by []byte, is not a repeated field)
   - Two unset fields are equal.
   - Two unknown field sets are equal if their current
-    encoded state is equal. (TODO)
+    encoded state is equal.
   - Two extension sets are equal iff they have corresponding
     elements that are pairwise equal.
   - Every other combination of things are not equal.

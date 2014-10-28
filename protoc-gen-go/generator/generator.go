@@ -242,6 +242,7 @@ type FileDescriptor struct {
 	exported map[Object][]symbol
 
 	index int // The index of this file in the list of files to generate code for
+
 }
 
 // PackageName is the package name we'll use in the generated code to refer to this file.
@@ -1268,7 +1269,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 //	def= string representation of the default value, if any.
 // The default value must be in a representation that can be used at run-time
 // to generate the default value. Thus bools become 0 and 1, for instance.
-func (g *Generator) goTag(field *descriptor.FieldDescriptorProto, wiretype string) string {
+func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptorProto, wiretype string) string {
 	optrepreq := ""
 	switch {
 	case isOptional(field):
@@ -1488,7 +1489,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		usedNames[fieldName] = true
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
-		tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(field, wiretype), jsonName+",omitempty")
+		tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(message, field, wiretype), jsonName+",omitempty")
 		fieldNames[field] = fieldName
 		fieldGetterNames[field] = fieldGetterName
 		g.P(fieldName, "\t", typename, "\t`", tag, "`")
@@ -1753,10 +1754,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	ccTypeName := ext.DescName()
 
-	extendedType := "*" + g.TypeName(g.ObjectNamed(*ext.Extendee))
+	extDesc := g.ObjectNamed(*ext.Extendee).(*Descriptor)
+	extendedType := "*" + g.TypeName(extDesc)
 	field := ext.FieldDescriptorProto
 	fieldType, wireType := g.GoType(ext.parent, field)
-	tag := g.goTag(field, wireType)
+	tag := g.goTag(extDesc, field, wireType)
 	g.RecordTypeUse(*ext.Extendee)
 	if n := ext.FieldDescriptorProto.TypeName; n != nil {
 		// foreign extension type
