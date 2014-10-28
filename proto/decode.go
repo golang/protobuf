@@ -362,7 +362,7 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group
 		}
 		tag := int(u >> 3)
 		if tag <= 0 {
-			return fmt.Errorf("proto: %s: illegal tag %d", st, tag)
+			return fmt.Errorf("proto: %s: illegal tag %d (wire type %d)", st, tag, wire)
 		}
 		fieldnum, ok := prop.decoderTags.get(tag)
 		if !ok {
