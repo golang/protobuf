@@ -79,6 +79,22 @@ func TestClone(t *testing.T) {
 	if proto.Equal(m, cloneTestMessage) {
 		t.Error("Mutating clone changed the original")
 	}
+	// Byte fields and repeated fields should be copied.
+	if &m.Pet[0] == &cloneTestMessage.Pet[0] {
+		t.Error("Pet: repeated field not copied")
+	}
+	if &m.Others[0] == &cloneTestMessage.Others[0] {
+		t.Error("Others: repeated field not copied")
+	}
+	if &m.Others[0].Value[0] == &cloneTestMessage.Others[0].Value[0] {
+		t.Error("Others[0].Value: bytes field not copied")
+	}
+	if &m.RepBytes[0] == &cloneTestMessage.RepBytes[0] {
+		t.Error("RepBytes: repeated field not copied")
+	}
+	if &m.RepBytes[0][0] == &cloneTestMessage.RepBytes[0][0] {
+		t.Error("RepBytes[0]: bytes field not copied")
+	}
 }
 
 func TestCloneNil(t *testing.T) {
