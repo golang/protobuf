@@ -125,6 +125,12 @@ func mergeAny(out, in reflect.Value) {
 		if in.IsNil() {
 			return
 		}
+		if in.Type().Elem().Kind() == reflect.Uint8 {
+			// []byte is a scalar bytes field, not a repeated field.
+			// Make a deep copy.
+			out.SetBytes(append([]byte(nil), in.Bytes()...))
+			return
+		}
 		n := in.Len()
 		if out.IsNil() {
 			out.Set(reflect.MakeSlice(in.Type(), 0, n))
@@ -133,9 +139,6 @@ func mergeAny(out, in reflect.Value) {
 		case reflect.Bool, reflect.Float32, reflect.Float64, reflect.Int32, reflect.Int64,
 			reflect.String, reflect.Uint32, reflect.Uint64:
 			out.Set(reflect.AppendSlice(out, in))
-		case reflect.Uint8:
-			// []byte is a scalar bytes field.
-			out.Set(in)
 		default:
 			for i := 0; i < n; i++ {
 				x := reflect.Indirect(reflect.New(in.Type().Elem()))

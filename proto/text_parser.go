@@ -430,6 +430,7 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 	st := sv.Type()
 	reqCount := GetProperties(st).reqCount
 	var reqFieldErr error
+	fieldSet := make(map[string]bool)
 	// A struct is a sequence of "name: value", terminated by one of
 	// '>' or '}', or the end of the input.  A name may also be
 	// "[extension]".
@@ -511,17 +512,17 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 			}
 		} else {
 			// This is a normal, non-extension field.
-			fi, props, ok := structFieldByName(st, tok.value)
+			name := tok.value
+			fi, props, ok := structFieldByName(st, name)
 			if !ok {
-				return p.errorf("unknown field name %q in %v", tok.value, st)
+				return p.errorf("unknown field name %q in %v", name, st)
 			}
 
 			dst := sv.Field(fi)
-			isDstNil := isNil(dst)
 
 			// Check that it's not already set if it's not a repeated field.
-			if !props.Repeated && !isDstNil {
-				return p.errorf("non-repeated field %q was repeated", tok.value)
+			if !props.Repeated && fieldSet[name] {
+				return p.errorf("non-repeated field %q was repeated", name)
 			}
 
 			if err := p.checkForColon(props, st.Field(fi).Type); err != nil {
@@ -529,6 +530,7 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 			}
 
 			// Parse into the field.
+			fieldSet[name] = true
 			if err := p.readAny(dst, props); err != nil {
 				if _, ok := err.(*RequiredNotSetError); !ok {
 					return err
