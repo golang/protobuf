@@ -58,3 +58,37 @@ func TestGetExtensionsWithMissingExtensions(t *testing.T) {
 		t.Errorf("ext2 in returned extensions: %T %v", exts[1], exts[1])
 	}
 }
+
+func TestGetExtensionStability(t *testing.T) {
+	check := func(m *pb.MyMessage) bool {
+		ext1, err := proto.GetExtension(m, pb.E_Ext_More)
+		if err != nil {
+			t.Fatalf("GetExtension() failed: %s", err)
+		}
+		ext2, err := proto.GetExtension(m, pb.E_Ext_More)
+		if err != nil {
+			t.Fatalf("GetExtension() failed: %s", err)
+		}
+		return ext1 == ext2
+	}
+	msg := &pb.MyMessage{Count: proto.Int32(4)}
+	ext0 := &pb.Ext{}
+	if err := proto.SetExtension(msg, pb.E_Ext_More, ext0); err != nil {
+		t.Fatalf("Could not set ext1: %s", ext0)
+	}
+	if !check(msg) {
+		t.Errorf("GetExtension() not stable before marshaling")
+	}
+	bb, err := proto.Marshal(msg)
+	if err != nil {
+		t.Fatalf("Marshal() failed: %s", err)
+	}
+	msg1 := &pb.MyMessage{}
+	err = proto.Unmarshal(bb, msg1)
+	if err != nil {
+		t.Fatalf("Unmarshal() failed: %s", err)
+	}
+	if !check(msg1) {
+		t.Errorf("GetExtension() not stable after unmarshaling")
+	}
+}
