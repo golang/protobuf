@@ -227,7 +227,8 @@ func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, er
 		return nil, err
 	}
 
-	e, ok := pb.ExtensionMap()[extension.Field]
+	emap := pb.ExtensionMap()
+	e, ok := emap[extension.Field]
 	if !ok {
 		return nil, ErrMissingExtension
 	}
@@ -252,6 +253,7 @@ func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, er
 	e.value = v
 	e.desc = extension
 	e.enc = nil
+	emap[extension.Field] = e
 	return e.value, nil
 }
 
