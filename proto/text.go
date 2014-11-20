@@ -36,6 +36,7 @@ package proto
 import (
 	"bufio"
 	"bytes"
+	"encoding"
 	"fmt"
 	"io"
 	"log"
@@ -72,13 +73,6 @@ type textWriter struct {
 	complete bool // if the current position is a complete line
 	compact  bool // whether to write out as a one-liner
 	w        writer
-}
-
-// textMarshaler is implemented by Messages that can marshal themsleves.
-// It is identical to encoding.TextMarshaler, introduced in go 1.2,
-// which will eventually replace it.
-type textMarshaler interface {
-	MarshalText() (text []byte, err error)
 }
 
 func (w *textWriter) WriteString(s string) (n int, err error) {
@@ -358,7 +352,7 @@ func writeAny(w *textWriter, v reflect.Value, props *Properties) error {
 			}
 		}
 		w.indent()
-		if tm, ok := v.Interface().(textMarshaler); ok {
+		if tm, ok := v.Interface().(encoding.TextMarshaler); ok {
 			text, err := tm.MarshalText()
 			if err != nil {
 				return err
@@ -653,7 +647,7 @@ func marshalText(w io.Writer, pb Message, compact bool) error {
 		compact:  compact,
 	}
 
-	if tm, ok := pb.(textMarshaler); ok {
+	if tm, ok := pb.(encoding.TextMarshaler); ok {
 		text, err := tm.MarshalText()
 		if err != nil {
 			return err
