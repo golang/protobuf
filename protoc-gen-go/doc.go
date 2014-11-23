@@ -45,7 +45,7 @@
 	the library.
 
 	See the README and documentation for protocol buffers to learn more:
-		http://code.google.com/p/protobuf/
+		https://developers.google.com/protocol-buffers/
 
 */
 package documentation

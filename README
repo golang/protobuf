@@ -6,16 +6,16 @@ This package and the code it generates requires at least Go 1.2.
 
 This software implements Go bindings for protocol buffers.  For
 information about protocol buffers themselves, see
-	http://code.google.com/apis/protocolbuffers/
+	https://developers.google.com/protocol-buffers/
 To use this software, you must first install the standard C++
 implementation of protocol buffers from
-	http://code.google.com/p/protobuf/
+	https://developers.google.com/protocol-buffers/
 And of course you must also install the Go compiler and tools from
-	http://code.google.com/p/go/
+	https://golang.org/
 See
-	http://golang.org/doc/install.html
+	https://golang.org/doc/install
 for details or, if you are using gccgo, follow the instructions at
-	http://golang.org/doc/gccgo_install.html
+	https://golang.org/doc/install/gccgo
 
 This software has two parts: a 'protocol compiler plugin' that
 generates Go source files that, once compiled, can access and manage

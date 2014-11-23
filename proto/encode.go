@@ -950,7 +950,7 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 	var state errorState
 	// Encode fields in tag order so that decoders may use optimizations
 	// that depend on the ordering.
-	// http://code.google.com/apis/protocolbuffers/docs/encoding.html#order
+	// https://developers.google.com/protocol-buffers/docs/encoding#order
 	for _, i := range prop.order {
 		p := prop.Prop[i]
 		if p.enc != nil {
