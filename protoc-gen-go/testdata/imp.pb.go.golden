@@ -4,7 +4,7 @@
 
 package imp
 
-import proto "code.google.com/p/goprotobuf/proto"
+import proto "github.com/golang/protobuf/proto"
 import "math"
 import "os"
 import imp1 "imp2.pb"

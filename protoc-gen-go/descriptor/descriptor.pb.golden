@@ -4,7 +4,7 @@
 
 package google_protobuf
 
-import proto "code.google.com/p/goprotobuf/proto"
+import proto "github.com/golang/protobuf/proto"
 import "math"
 
 // Reference proto and math imports to suppress error if they are not otherwise used.
