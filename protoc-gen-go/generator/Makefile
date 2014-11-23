@@ -1,7 +1,7 @@
 # Go support for Protocol Buffers - Google's data interchange format
 #
 # Copyright 2010 The Go Authors.  All rights reserved.
-# http://code.google.com/p/goprotobuf/
+# https://github.com/golang/protobuf
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -31,7 +31,7 @@
 
 include $(GOROOT)/src/Make.inc
 
-TARG=code.google.com/p/goprotobuf/compiler/generator
+TARG=github.com/golang/protobuf/compiler/generator
 GOFILES=\
 	generator.go\
 

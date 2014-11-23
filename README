@@ -1,8 +1,8 @@
 Go support for Protocol Buffers - Google's data interchange format
 Copyright 2010 The Go Authors.
-http://code.google.com/p/goprotobuf/
+https://github.com/golang/protobuf
 
-This package and the code it generates requires at least Go 1.1.
+This package and the code it generates requires at least Go 1.2.
 
 This software implements Go bindings for protocol buffers.  For
 information about protocol buffers themselves, see
@@ -33,7 +33,7 @@ To install this code:
 The simplest way is to run go get.
 
 	# Grab the code from the repository and install the proto package.
-	go get -u code.google.com/p/goprotobuf/{proto,protoc-gen-go}
+	go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 
 The compiler plugin, protoc-gen-go, will be installed in $GOBIN,
 defaulting to $GOPATH/bin.  It must be in your $PATH for the protocol
@@ -51,14 +51,6 @@ parameter set to the directory you want to output the Go code to.
 The generated files will be suffixed .pb.go.  See the Test code below
 for an example using such a file.
 
-This repository uses the same code review mechanism as Go, so
-if you wish to submit changes add the equivalent of these two lines
-to $GOROOT/src/pkg/code.google.com/p/goprotobuf/.hg/hgrc
-
-	[extensions]
-	codereview = $GOROOT/lib/codereview/codereview.py
-
-*where $GOROOT is the expanded text, such as /usr/foo/go*.
 
 The package comment for the proto library contains text describing
 the interface provided in Go for protocol buffers. Here is an edited
@@ -131,7 +123,7 @@ Makefile like this:
 		other.go
 
 	include $(GOROOT)/src/Make.pkg
-	include $(GOROOT)/src/pkg/code.google.com/p/goprotobuf/Make.protobuf
+	include $(GOROOT)/src/pkg/github.com/golang/protobuf/Make.protobuf
 
 
 To create and play with a Test object from the example package,
@@ -141,7 +133,7 @@ To create and play with a Test object from the example package,
 	import (
 		"log"
 
-		"code.google.com/p/goprotobuf/proto"
+		"github.com/golang/protobuf/proto"
 		"path/to/example"
 	)
 
