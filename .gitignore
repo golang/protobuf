@@ -1,7 +1,4 @@
-syntax:glob
 .DS_Store
-.git
-.gitignore
 *.[568ao]
 *.pb.go
 *.ao
