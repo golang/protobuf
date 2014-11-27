@@ -13,6 +13,7 @@ It has these top-level messages:
 	FileDescriptorProto
 	DescriptorProto
 	FieldDescriptorProto
+	OneofDescriptorProto
 	EnumDescriptorProto
 	EnumValueDescriptorProto
 	ServiceDescriptorProto
@@ -272,11 +273,14 @@ type FileDescriptorProto struct {
 	Extension   []*FieldDescriptorProto   `protobuf:"bytes,7,rep,name=extension" json:"extension,omitempty"`
 	Options     *FileOptions              `protobuf:"bytes,8,opt,name=options" json:"options,omitempty"`
 	// This field contains optional information about the original source code.
-	// You may safely remove this entire field whithout harming runtime
+	// You may safely remove this entire field without harming runtime
 	// functionality of the descriptors -- the information is needed only by
 	// development tools.
-	SourceCodeInfo   *SourceCodeInfo `protobuf:"bytes,9,opt,name=source_code_info" json:"source_code_info,omitempty"`
-	XXX_unrecognized []byte          `json:"-"`
+	SourceCodeInfo *SourceCodeInfo `protobuf:"bytes,9,opt,name=source_code_info" json:"source_code_info,omitempty"`
+	// The syntax of the proto file.
+	// The supported values are "proto2" and "proto3".
+	Syntax           *string `protobuf:"bytes,12,opt,name=syntax" json:"syntax,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (m *FileDescriptorProto) Reset()         { *m = FileDescriptorProto{} }
@@ -360,6 +364,13 @@ func (m *FileDescriptorProto) GetSourceCodeInfo() *SourceCodeInfo {
 	return nil
 }
 
+func (m *FileDescriptorProto) GetSyntax() string {
+	if m != nil && m.Syntax != nil {
+		return *m.Syntax
+	}
+	return ""
+}
+
 // Describes a message type.
 type DescriptorProto struct {
 	Name             *string                           `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
@@ -368,6 +379,7 @@ type DescriptorProto struct {
 	NestedType       []*DescriptorProto                `protobuf:"bytes,3,rep,name=nested_type" json:"nested_type,omitempty"`
 	EnumType         []*EnumDescriptorProto            `protobuf:"bytes,4,rep,name=enum_type" json:"enum_type,omitempty"`
 	ExtensionRange   []*DescriptorProto_ExtensionRange `protobuf:"bytes,5,rep,name=extension_range" json:"extension_range,omitempty"`
+	OneofDecl        []*OneofDescriptorProto           `protobuf:"bytes,8,rep,name=oneof_decl" json:"oneof_decl,omitempty"`
 	Options          *MessageOptions                   `protobuf:"bytes,7,opt,name=options" json:"options,omitempty"`
 	XXX_unrecognized []byte                            `json:"-"`
 }
@@ -418,6 +430,13 @@ func (m *DescriptorProto) GetExtensionRange() []*DescriptorProto_ExtensionRange 
 	return nil
 }
 
+func (m *DescriptorProto) GetOneofDecl() []*OneofDescriptorProto {
+	if m != nil {
+		return m.OneofDecl
+	}
+	return nil
+}
+
 func (m *DescriptorProto) GetOptions() *MessageOptions {
 	if m != nil {
 		return m.Options
@@ -455,7 +474,7 @@ type FieldDescriptorProto struct {
 	Number *int32                      `protobuf:"varint,3,opt,name=number" json:"number,omitempty"`
 	Label  *FieldDescriptorProto_Label `protobuf:"varint,4,opt,name=label,enum=google.protobuf.FieldDescriptorProto_Label" json:"label,omitempty"`
 	// If type_name is set, this need not be set.  If both this and type_name
-	// are set, this must be either TYPE_ENUM or TYPE_MESSAGE.
+	// are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.
 	Type *FieldDescriptorProto_Type `protobuf:"varint,5,opt,name=type,enum=google.protobuf.FieldDescriptorProto_Type" json:"type,omitempty"`
 	// For message and enum types, this is the name of the type.  If the name
 	// starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
@@ -471,7 +490,12 @@ type FieldDescriptorProto struct {
 	// For strings, contains the default text contents (not escaped in any way).
 	// For bytes, contains the C escaped value.  All bytes >= 128 are escaped.
 	// TODO(kenton):  Base-64 encode?
-	DefaultValue     *string       `protobuf:"bytes,7,opt,name=default_value" json:"default_value,omitempty"`
+	DefaultValue *string `protobuf:"bytes,7,opt,name=default_value" json:"default_value,omitempty"`
+	// If set, gives the index of a oneof in the containing type's oneof_decl
+	// list.  This field is a member of that oneof.  Extensions of a oneof should
+	// not set this since the oneof to which they belong will be inferred based
+	// on the extension range containing the extension's field number.
+	OneofIndex       *int32        `protobuf:"varint,9,opt,name=oneof_index" json:"oneof_index,omitempty"`
 	Options          *FieldOptions `protobuf:"bytes,8,opt,name=options" json:"options,omitempty"`
 	XXX_unrecognized []byte        `json:"-"`
 }
@@ -529,11 +553,35 @@ func (m *FieldDescriptorProto) GetDefaultValue() string {
 	return ""
 }
 
+func (m *FieldDescriptorProto) GetOneofIndex() int32 {
+	if m != nil && m.OneofIndex != nil {
+		return *m.OneofIndex
+	}
+	return 0
+}
+
 func (m *FieldDescriptorProto) GetOptions() *FieldOptions {
 	if m != nil {
 		return m.Options
 	}
 	return nil
+}
+
+// Describes a oneof.
+type OneofDescriptorProto struct {
+	Name             *string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
+}
+
+func (m *OneofDescriptorProto) Reset()         { *m = OneofDescriptorProto{} }
+func (m *OneofDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*OneofDescriptorProto) ProtoMessage()    {}
+
+func (m *OneofDescriptorProto) GetName() string {
+	if m != nil && m.Name != nil {
+		return *m.Name
+	}
+	return ""
 }
 
 // Describes an enum type.
@@ -640,15 +688,22 @@ type MethodDescriptorProto struct {
 	Name *string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	// Input and output type names.  These are resolved in the same way as
 	// FieldDescriptorProto.type_name, but must refer to a message type.
-	InputType        *string        `protobuf:"bytes,2,opt,name=input_type" json:"input_type,omitempty"`
-	OutputType       *string        `protobuf:"bytes,3,opt,name=output_type" json:"output_type,omitempty"`
-	Options          *MethodOptions `protobuf:"bytes,4,opt,name=options" json:"options,omitempty"`
-	XXX_unrecognized []byte         `json:"-"`
+	InputType  *string        `protobuf:"bytes,2,opt,name=input_type" json:"input_type,omitempty"`
+	OutputType *string        `protobuf:"bytes,3,opt,name=output_type" json:"output_type,omitempty"`
+	Options    *MethodOptions `protobuf:"bytes,4,opt,name=options" json:"options,omitempty"`
+	// Identifies if client streams multiple client messages
+	ClientStreaming *bool `protobuf:"varint,5,opt,name=client_streaming,def=0" json:"client_streaming,omitempty"`
+	// Identifies if server streams multiple server messages
+	ServerStreaming  *bool  `protobuf:"varint,6,opt,name=server_streaming,def=0" json:"server_streaming,omitempty"`
+	XXX_unrecognized []byte `json:"-"`
 }
 
 func (m *MethodDescriptorProto) Reset()         { *m = MethodDescriptorProto{} }
 func (m *MethodDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*MethodDescriptorProto) ProtoMessage()    {}
+
+const Default_MethodDescriptorProto_ClientStreaming bool = false
+const Default_MethodDescriptorProto_ServerStreaming bool = false
 
 func (m *MethodDescriptorProto) GetName() string {
 	if m != nil && m.Name != nil {
@@ -678,6 +733,20 @@ func (m *MethodDescriptorProto) GetOptions() *MethodOptions {
 	return nil
 }
 
+func (m *MethodDescriptorProto) GetClientStreaming() bool {
+	if m != nil && m.ClientStreaming != nil {
+		return *m.ClientStreaming
+	}
+	return Default_MethodDescriptorProto_ClientStreaming
+}
+
+func (m *MethodDescriptorProto) GetServerStreaming() bool {
+	if m != nil && m.ServerStreaming != nil {
+		return *m.ServerStreaming
+	}
+	return Default_MethodDescriptorProto_ServerStreaming
+}
+
 type FileOptions struct {
 	// Sets the Java package where classes generated from this .proto will be
 	// placed.  By default, the proto package is used, but this is often
@@ -698,19 +767,35 @@ type FileOptions struct {
 	// top-level extensions defined in the file.
 	JavaMultipleFiles *bool `protobuf:"varint,10,opt,name=java_multiple_files,def=0" json:"java_multiple_files,omitempty"`
 	// If set true, then the Java code generator will generate equals() and
-	// hashCode() methods for all messages defined in the .proto file. This is
-	// purely a speed optimization, as the AbstractMessage base class includes
-	// reflection-based implementations of these methods.
-	JavaGenerateEqualsAndHash *bool                     `protobuf:"varint,20,opt,name=java_generate_equals_and_hash,def=0" json:"java_generate_equals_and_hash,omitempty"`
-	OptimizeFor               *FileOptions_OptimizeMode `protobuf:"varint,9,opt,name=optimize_for,enum=google.protobuf.FileOptions_OptimizeMode,def=1" json:"optimize_for,omitempty"`
+	// hashCode() methods for all messages defined in the .proto file.
+	// - In the full runtime, this is purely a speed optimization, as the
+	// AbstractMessage base class includes reflection-based implementations of
+	// these methods.
+	// - In the lite runtime, setting this option changes the semantics of
+	// equals() and hashCode() to more closely match those of the full runtime;
+	// the generated methods compute their results based on field values rather
+	// than object identity. (Implementations should not assume that hashcodes
+	// will be consistent across runtimes or versions of the protocol compiler.)
+	JavaGenerateEqualsAndHash *bool `protobuf:"varint,20,opt,name=java_generate_equals_and_hash,def=0" json:"java_generate_equals_and_hash,omitempty"`
+	// If set true, then the Java2 code generator will generate code that
+	// throws an exception whenever an attempt is made to assign a non-UTF-8
+	// byte sequence to a string field.
+	// Message reflection will do the same.
+	// However, an extension field still accepts non-UTF-8 byte sequences.
+	// This option has no effect on when used with the lite runtime.
+	JavaStringCheckUtf8 *bool                     `protobuf:"varint,27,opt,name=java_string_check_utf8,def=0" json:"java_string_check_utf8,omitempty"`
+	OptimizeFor         *FileOptions_OptimizeMode `protobuf:"varint,9,opt,name=optimize_for,enum=google.protobuf.FileOptions_OptimizeMode,def=1" json:"optimize_for,omitempty"`
 	// Sets the Go package where structs generated from this .proto will be
-	// placed.  There is no default.
+	// placed. If omitted, the Go package will be derived from the following:
+	//   - The basename of the package import path, if provided.
+	//   - Otherwise, the package statement in the .proto file, if present.
+	//   - Otherwise, the basename of the .proto file, without extension.
 	GoPackage *string `protobuf:"bytes,11,opt,name=go_package" json:"go_package,omitempty"`
 	// Should generic services be generated in each language?  "Generic" services
 	// are not specific to any particular RPC system.  They are generated by the
 	// main code generators in each language (without additional plugins).
 	// Generic services were the only kind of service generation supported by
-	// early versions of proto2.
+	// early versions of google.protobuf.
 	//
 	// Generic services are now considered deprecated in favor of using plugins
 	// that generate code specific to your particular RPC system.  Therefore,
@@ -719,6 +804,14 @@ type FileOptions struct {
 	CcGenericServices   *bool `protobuf:"varint,16,opt,name=cc_generic_services,def=0" json:"cc_generic_services,omitempty"`
 	JavaGenericServices *bool `protobuf:"varint,17,opt,name=java_generic_services,def=0" json:"java_generic_services,omitempty"`
 	PyGenericServices   *bool `protobuf:"varint,18,opt,name=py_generic_services,def=0" json:"py_generic_services,omitempty"`
+	// Is this file deprecated?
+	// Depending on the target platform, this can emit Deprecated annotations
+	// for everything in the file, or it will be completely ignored; in the very
+	// least, this is a formalization for deprecating files.
+	Deprecated *bool `protobuf:"varint,23,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
+	// Enables the use of arenas for the proto messages in this file. This applies
+	// only to generated classes for C++.
+	CcEnableArenas *bool `protobuf:"varint,31,opt,name=cc_enable_arenas,def=0" json:"cc_enable_arenas,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
@@ -745,10 +838,13 @@ func (m *FileOptions) ExtensionMap() map[int32]proto.Extension {
 
 const Default_FileOptions_JavaMultipleFiles bool = false
 const Default_FileOptions_JavaGenerateEqualsAndHash bool = false
+const Default_FileOptions_JavaStringCheckUtf8 bool = false
 const Default_FileOptions_OptimizeFor FileOptions_OptimizeMode = FileOptions_SPEED
 const Default_FileOptions_CcGenericServices bool = false
 const Default_FileOptions_JavaGenericServices bool = false
 const Default_FileOptions_PyGenericServices bool = false
+const Default_FileOptions_Deprecated bool = false
+const Default_FileOptions_CcEnableArenas bool = false
 
 func (m *FileOptions) GetJavaPackage() string {
 	if m != nil && m.JavaPackage != nil {
@@ -776,6 +872,13 @@ func (m *FileOptions) GetJavaGenerateEqualsAndHash() bool {
 		return *m.JavaGenerateEqualsAndHash
 	}
 	return Default_FileOptions_JavaGenerateEqualsAndHash
+}
+
+func (m *FileOptions) GetJavaStringCheckUtf8() bool {
+	if m != nil && m.JavaStringCheckUtf8 != nil {
+		return *m.JavaStringCheckUtf8
+	}
+	return Default_FileOptions_JavaStringCheckUtf8
 }
 
 func (m *FileOptions) GetOptimizeFor() FileOptions_OptimizeMode {
@@ -813,6 +916,20 @@ func (m *FileOptions) GetPyGenericServices() bool {
 	return Default_FileOptions_PyGenericServices
 }
 
+func (m *FileOptions) GetDeprecated() bool {
+	if m != nil && m.Deprecated != nil {
+		return *m.Deprecated
+	}
+	return Default_FileOptions_Deprecated
+}
+
+func (m *FileOptions) GetCcEnableArenas() bool {
+	if m != nil && m.CcEnableArenas != nil {
+		return *m.CcEnableArenas
+	}
+	return Default_FileOptions_CcEnableArenas
+}
+
 func (m *FileOptions) GetUninterpretedOption() []*UninterpretedOption {
 	if m != nil {
 		return m.UninterpretedOption
@@ -844,6 +961,33 @@ type MessageOptions struct {
 	// conflict with a field of the same name.  This is meant to make migration
 	// from proto1 easier; new code should avoid fields named "descriptor".
 	NoStandardDescriptorAccessor *bool `protobuf:"varint,2,opt,name=no_standard_descriptor_accessor,def=0" json:"no_standard_descriptor_accessor,omitempty"`
+	// Is this message deprecated?
+	// Depending on the target platform, this can emit Deprecated annotations
+	// for the message, or it will be completely ignored; in the very least,
+	// this is a formalization for deprecating messages.
+	Deprecated *bool `protobuf:"varint,3,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
+	// Whether the message is an automatically generated map entry type for the
+	// maps field.
+	//
+	// For maps fields:
+	//     map<KeyType, ValueType> map_field = 1;
+	// The parsed descriptor looks like:
+	//     message MapFieldEntry {
+	//         option map_entry = true;
+	//         optional KeyType key = 1;
+	//         optional ValueType value = 2;
+	//     }
+	//     repeated MapFieldEntry map_field = 1;
+	//
+	// Implementations may choose not to generate the map_entry=true message, but
+	// use a native map in the target language to hold the keys and values.
+	// The reflection APIs in such implementions still need to work as
+	// if the field is a repeated message field.
+	//
+	// NOTE: Do not set the option in .proto files. Always use the maps syntax
+	// instead. The option should only be implicitly set by the proto compiler
+	// parser.
+	MapEntry *bool `protobuf:"varint,7,opt,name=map_entry" json:"map_entry,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
@@ -870,6 +1014,7 @@ func (m *MessageOptions) ExtensionMap() map[int32]proto.Extension {
 
 const Default_MessageOptions_MessageSetWireFormat bool = false
 const Default_MessageOptions_NoStandardDescriptorAccessor bool = false
+const Default_MessageOptions_Deprecated bool = false
 
 func (m *MessageOptions) GetMessageSetWireFormat() bool {
 	if m != nil && m.MessageSetWireFormat != nil {
@@ -883,6 +1028,20 @@ func (m *MessageOptions) GetNoStandardDescriptorAccessor() bool {
 		return *m.NoStandardDescriptorAccessor
 	}
 	return Default_MessageOptions_NoStandardDescriptorAccessor
+}
+
+func (m *MessageOptions) GetDeprecated() bool {
+	if m != nil && m.Deprecated != nil {
+		return *m.Deprecated
+	}
+	return Default_MessageOptions_Deprecated
+}
+
+func (m *MessageOptions) GetMapEntry() bool {
+	if m != nil && m.MapEntry != nil {
+		return *m.MapEntry
+	}
+	return false
 }
 
 func (m *MessageOptions) GetUninterpretedOption() []*UninterpretedOption {
@@ -937,19 +1096,6 @@ type FieldOptions struct {
 	// for accessors, or it will be completely ignored; in the very least, this
 	// is a formalization for deprecating fields.
 	Deprecated *bool `protobuf:"varint,3,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
-	// EXPERIMENTAL.  DO NOT USE.
-	// For "map" fields, the name of the field in the enclosed type that
-	// is the key for this map.  For example, suppose we have:
-	//   message Item {
-	//     required string name = 1;
-	//     required string value = 2;
-	//   }
-	//   message Config {
-	//     repeated Item items = 1 [experimental_map_key="name"];
-	//   }
-	// In this situation, the map key for Item will be set to "name".
-	// TODO: Fully-implement this, then remove the "experimental_" prefix.
-	ExperimentalMapKey *string `protobuf:"bytes,9,opt,name=experimental_map_key" json:"experimental_map_key,omitempty"`
 	// For Google-internal migration only. Do not use.
 	Weak *bool `protobuf:"varint,10,opt,name=weak,def=0" json:"weak,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
@@ -1009,13 +1155,6 @@ func (m *FieldOptions) GetDeprecated() bool {
 	return Default_FieldOptions_Deprecated
 }
 
-func (m *FieldOptions) GetExperimentalMapKey() string {
-	if m != nil && m.ExperimentalMapKey != nil {
-		return *m.ExperimentalMapKey
-	}
-	return ""
-}
-
 func (m *FieldOptions) GetWeak() bool {
 	if m != nil && m.Weak != nil {
 		return *m.Weak
@@ -1031,9 +1170,14 @@ func (m *FieldOptions) GetUninterpretedOption() []*UninterpretedOption {
 }
 
 type EnumOptions struct {
-	// Set this option to false to disallow mapping different tag names to a same
+	// Set this option to true to allow mapping different tag names to the same
 	// value.
-	AllowAlias *bool `protobuf:"varint,2,opt,name=allow_alias,def=1" json:"allow_alias,omitempty"`
+	AllowAlias *bool `protobuf:"varint,2,opt,name=allow_alias" json:"allow_alias,omitempty"`
+	// Is this enum deprecated?
+	// Depending on the target platform, this can emit Deprecated annotations
+	// for the enum, or it will be completely ignored; in the very least, this
+	// is a formalization for deprecating enums.
+	Deprecated *bool `protobuf:"varint,3,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
@@ -1058,13 +1202,20 @@ func (m *EnumOptions) ExtensionMap() map[int32]proto.Extension {
 	return m.XXX_extensions
 }
 
-const Default_EnumOptions_AllowAlias bool = true
+const Default_EnumOptions_Deprecated bool = false
 
 func (m *EnumOptions) GetAllowAlias() bool {
 	if m != nil && m.AllowAlias != nil {
 		return *m.AllowAlias
 	}
-	return Default_EnumOptions_AllowAlias
+	return false
+}
+
+func (m *EnumOptions) GetDeprecated() bool {
+	if m != nil && m.Deprecated != nil {
+		return *m.Deprecated
+	}
+	return Default_EnumOptions_Deprecated
 }
 
 func (m *EnumOptions) GetUninterpretedOption() []*UninterpretedOption {
@@ -1075,6 +1226,11 @@ func (m *EnumOptions) GetUninterpretedOption() []*UninterpretedOption {
 }
 
 type EnumValueOptions struct {
+	// Is this enum value deprecated?
+	// Depending on the target platform, this can emit Deprecated annotations
+	// for the enum value, or it will be completely ignored; in the very least,
+	// this is a formalization for deprecating enum values.
+	Deprecated *bool `protobuf:"varint,1,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
@@ -1099,6 +1255,15 @@ func (m *EnumValueOptions) ExtensionMap() map[int32]proto.Extension {
 	return m.XXX_extensions
 }
 
+const Default_EnumValueOptions_Deprecated bool = false
+
+func (m *EnumValueOptions) GetDeprecated() bool {
+	if m != nil && m.Deprecated != nil {
+		return *m.Deprecated
+	}
+	return Default_EnumValueOptions_Deprecated
+}
+
 func (m *EnumValueOptions) GetUninterpretedOption() []*UninterpretedOption {
 	if m != nil {
 		return m.UninterpretedOption
@@ -1107,6 +1272,11 @@ func (m *EnumValueOptions) GetUninterpretedOption() []*UninterpretedOption {
 }
 
 type ServiceOptions struct {
+	// Is this service deprecated?
+	// Depending on the target platform, this can emit Deprecated annotations
+	// for the service, or it will be completely ignored; in the very least,
+	// this is a formalization for deprecating services.
+	Deprecated *bool `protobuf:"varint,33,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
@@ -1131,6 +1301,15 @@ func (m *ServiceOptions) ExtensionMap() map[int32]proto.Extension {
 	return m.XXX_extensions
 }
 
+const Default_ServiceOptions_Deprecated bool = false
+
+func (m *ServiceOptions) GetDeprecated() bool {
+	if m != nil && m.Deprecated != nil {
+		return *m.Deprecated
+	}
+	return Default_ServiceOptions_Deprecated
+}
+
 func (m *ServiceOptions) GetUninterpretedOption() []*UninterpretedOption {
 	if m != nil {
 		return m.UninterpretedOption
@@ -1139,6 +1318,11 @@ func (m *ServiceOptions) GetUninterpretedOption() []*UninterpretedOption {
 }
 
 type MethodOptions struct {
+	// Is this method deprecated?
+	// Depending on the target platform, this can emit Deprecated annotations
+	// for the method, or it will be completely ignored; in the very least,
+	// this is a formalization for deprecating methods.
+	Deprecated *bool `protobuf:"varint,33,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
@@ -1161,6 +1345,15 @@ func (m *MethodOptions) ExtensionMap() map[int32]proto.Extension {
 		m.XXX_extensions = make(map[int32]proto.Extension)
 	}
 	return m.XXX_extensions
+}
+
+const Default_MethodOptions_Deprecated bool = false
+
+func (m *MethodOptions) GetDeprecated() bool {
+	if m != nil && m.Deprecated != nil {
+		return *m.Deprecated
+	}
+	return Default_MethodOptions_Deprecated
 }
 
 func (m *MethodOptions) GetUninterpretedOption() []*UninterpretedOption {
