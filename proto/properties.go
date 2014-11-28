@@ -155,6 +155,7 @@ type Properties struct {
 	Repeated bool
 	Packed   bool   // relevant for repeated primitives only
 	Enum     string // set for enum types only
+	proto3   bool   // whether this is known to be a proto3 field; set for []byte only
 
 	Default    string // default value
 	HasDefault bool   // whether an explicit default was provided
@@ -199,6 +200,9 @@ func (p *Properties) String() string {
 	}
 	if p.OrigName != p.Name {
 		s += ",name=" + p.OrigName
+	}
+	if p.proto3 {
+		s += ",proto3"
 	}
 	if len(p.Enum) > 0 {
 		s += ",enum=" + p.Enum
@@ -274,6 +278,8 @@ func (p *Properties) Parse(s string) {
 			p.OrigName = f[5:]
 		case strings.HasPrefix(f, "enum="):
 			p.Enum = f[5:]
+		case f == "proto3":
+			p.proto3 = true
 		case strings.HasPrefix(f, "def="):
 			p.HasDefault = true
 			p.Default = f[4:] // rest of string
@@ -301,6 +307,37 @@ func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
 	switch t1 := typ; t1.Kind() {
 	default:
 		fmt.Fprintf(os.Stderr, "proto: no coders for %v\n", t1)
+
+	// proto3 scalar types
+
+	case reflect.Bool:
+		p.enc = (*Buffer).enc_proto3_bool
+		p.dec = (*Buffer).dec_proto3_bool
+		p.size = size_proto3_bool
+	case reflect.Int32:
+		p.enc = (*Buffer).enc_proto3_int32
+		p.dec = (*Buffer).dec_proto3_int32
+		p.size = size_proto3_int32
+	case reflect.Uint32:
+		p.enc = (*Buffer).enc_proto3_uint32
+		p.dec = (*Buffer).dec_proto3_int32 // can reuse
+		p.size = size_proto3_uint32
+	case reflect.Int64, reflect.Uint64:
+		p.enc = (*Buffer).enc_proto3_int64
+		p.dec = (*Buffer).dec_proto3_int64
+		p.size = size_proto3_int64
+	case reflect.Float32:
+		p.enc = (*Buffer).enc_proto3_uint32 // can just treat them as bits
+		p.dec = (*Buffer).dec_proto3_int32
+		p.size = size_proto3_uint32
+	case reflect.Float64:
+		p.enc = (*Buffer).enc_proto3_int64 // can just treat them as bits
+		p.dec = (*Buffer).dec_proto3_int64
+		p.size = size_proto3_int64
+	case reflect.String:
+		p.enc = (*Buffer).enc_proto3_string
+		p.dec = (*Buffer).dec_proto3_string
+		p.size = size_proto3_string
 
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
@@ -399,6 +436,10 @@ func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
 			p.enc = (*Buffer).enc_slice_byte
 			p.dec = (*Buffer).dec_slice_byte
 			p.size = size_slice_byte
+			if p.proto3 {
+				p.enc = (*Buffer).enc_proto3_slice_byte
+				p.size = size_proto3_slice_byte
+			}
 		case reflect.Float32, reflect.Float64:
 			switch t2.Bits() {
 			case 32:

@@ -35,6 +35,7 @@ import (
 	"log"
 	"testing"
 
+	proto3pb "./proto3_proto"
 	pb "./testdata"
 	. "github.com/golang/protobuf/proto"
 )
@@ -102,6 +103,16 @@ var SizeTests = []struct {
 	{"unrecognized", &pb.MoreRepeated{XXX_unrecognized: []byte{13<<3 | 0, 4}}},
 	{"extension (unencoded)", messageWithExtension1},
 	{"extension (encoded)", messageWithExtension3},
+	// proto3 message
+	{"proto3 empty", &proto3pb.Message{}},
+	{"proto3 bool", &proto3pb.Message{TrueScotsman: true}},
+	{"proto3 int64", &proto3pb.Message{ResultCount: 1}},
+	{"proto3 uint32", &proto3pb.Message{HeightInCm: 123}},
+	{"proto3 float", &proto3pb.Message{Score: 12.6}},
+	{"proto3 string", &proto3pb.Message{Name: "Snezana"}},
+	{"proto3 bytes", &proto3pb.Message{Data: []byte("wowsa")}},
+	{"proto3 bytes, empty", &proto3pb.Message{Data: []byte{}}},
+	{"proto3 enum", &proto3pb.Message{Hilarity: proto3pb.Message_PUNS}},
 }
 
 func TestSize(t *testing.T) {

@@ -465,6 +465,15 @@ func (o *Buffer) dec_bool(p *Properties, base structPointer) error {
 	return nil
 }
 
+func (o *Buffer) dec_proto3_bool(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	*structPointer_BoolVal(base, p.field) = u != 0
+	return nil
+}
+
 // Decode an int32.
 func (o *Buffer) dec_int32(p *Properties, base structPointer) error {
 	u, err := p.valDec(o)
@@ -472,6 +481,15 @@ func (o *Buffer) dec_int32(p *Properties, base structPointer) error {
 		return err
 	}
 	word32_Set(structPointer_Word32(base, p.field), o, uint32(u))
+	return nil
+}
+
+func (o *Buffer) dec_proto3_int32(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	word32Val_Set(structPointer_Word32Val(base, p.field), uint32(u))
 	return nil
 }
 
@@ -485,6 +503,15 @@ func (o *Buffer) dec_int64(p *Properties, base structPointer) error {
 	return nil
 }
 
+func (o *Buffer) dec_proto3_int64(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	word64Val_Set(structPointer_Word64Val(base, p.field), o, u)
+	return nil
+}
+
 // Decode a string.
 func (o *Buffer) dec_string(p *Properties, base structPointer) error {
 	s, err := o.DecodeStringBytes()
@@ -494,6 +521,15 @@ func (o *Buffer) dec_string(p *Properties, base structPointer) error {
 	sp := new(string)
 	*sp = s
 	*structPointer_String(base, p.field) = sp
+	return nil
+}
+
+func (o *Buffer) dec_proto3_string(p *Properties, base structPointer) error {
+	s, err := o.DecodeStringBytes()
+	if err != nil {
+		return err
+	}
+	*structPointer_StringVal(base, p.field) = s
 	return nil
 }
 

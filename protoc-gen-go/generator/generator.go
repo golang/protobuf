@@ -96,6 +96,12 @@ func (c *common) PackageName() string { return uniquePackageOf(c.file) }
 
 func (c *common) File() *descriptor.FileDescriptorProto { return c.file }
 
+func fileIsProto3(file *descriptor.FileDescriptorProto) bool {
+	return file.GetSyntax() == "proto3"
+}
+
+func (c *common) proto3() bool { return fileIsProto3(c.file) }
+
 // Descriptor represents a protocol buffer message.
 type Descriptor struct {
 	common
@@ -243,6 +249,7 @@ type FileDescriptor struct {
 
 	index int // The index of this file in the list of files to generate code for
 
+	proto3 bool // whether to generate proto3 code for this file
 }
 
 // PackageName is the package name we'll use in the generated code to refer to this file.
@@ -668,6 +675,7 @@ func (g *Generator) WrapTypes() {
 			ext:                 exts,
 			imp:                 imps,
 			exported:            make(map[Object][]symbol),
+			proto3:              fileIsProto3(f),
 		}
 		extractComments(fd)
 		g.allFiles[i] = fd
@@ -1116,7 +1124,9 @@ func (g *Generator) generateImports() {
 	// reference it later. The same argument applies to the math package,
 	// for handling bit patterns for floating-point numbers.
 	g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"github.com/golang/protobuf/proto"))
-	g.P("import " + g.Pkg["math"] + ` "math"`)
+	if !g.file.proto3 {
+		g.P("import " + g.Pkg["math"] + ` "math"`)
+	}
 	for i, s := range g.file.Dependency {
 		fd := g.fileByName(s)
 		// Do not import our own package.
@@ -1154,7 +1164,9 @@ func (g *Generator) generateImports() {
 	}
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ = ", g.Pkg["proto"], ".Marshal")
-	g.P("var _ = ", g.Pkg["math"], ".Inf")
+	if !g.file.proto3 {
+		g.P("var _ = ", g.Pkg["math"], ".Inf")
+	}
 	g.P()
 }
 
@@ -1227,13 +1239,15 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	g.Out()
 	g.P("}")
 
-	g.P("func (x ", ccTypeName, ") Enum() *", ccTypeName, " {")
-	g.In()
-	g.P("p := new(", ccTypeName, ")")
-	g.P("*p = x")
-	g.P("return p")
-	g.Out()
-	g.P("}")
+	if !enum.proto3() {
+		g.P("func (x ", ccTypeName, ") Enum() *", ccTypeName, " {")
+		g.In()
+		g.P("p := new(", ccTypeName, ")")
+		g.P("*p = x")
+		g.P("return p")
+		g.Out()
+		g.P("}")
+	}
 
 	g.P("func (x ", ccTypeName, ") String() string {")
 	g.In()
@@ -1241,18 +1255,20 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	g.Out()
 	g.P("}")
 
-	g.P("func (x *", ccTypeName, ") UnmarshalJSON(data []byte) error {")
-	g.In()
-	g.P("value, err := ", g.Pkg["proto"], ".UnmarshalJSONEnum(", ccTypeName, `_value, data, "`, ccTypeName, `")`)
-	g.P("if err != nil {")
-	g.In()
-	g.P("return err")
-	g.Out()
-	g.P("}")
-	g.P("*x = ", ccTypeName, "(value)")
-	g.P("return nil")
-	g.Out()
-	g.P("}")
+	if !enum.proto3() {
+		g.P("func (x *", ccTypeName, ") UnmarshalJSON(data []byte) error {")
+		g.In()
+		g.P("value, err := ", g.Pkg["proto"], ".UnmarshalJSONEnum(", ccTypeName, `_value, data, "`, ccTypeName, `")`)
+		g.P("if err != nil {")
+		g.In()
+		g.P("return err")
+		g.Out()
+		g.P("}")
+		g.P("*x = ", ccTypeName, "(value)")
+		g.P("return nil")
+		g.Out()
+		g.P("}")
+	}
 
 	g.P()
 }
@@ -1266,6 +1282,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 //	packed whether the encoding is "packed" (optional; repeated primitives only)
 //	name= the original declared name
 //	enum= the name of the enum type if it is an enum-typed field.
+//	proto3 if this field is in a proto3 message
 //	def= string representation of the default value, if any.
 // The default value must be in a representation that can be used at run-time
 // to generate the default value. Thus bools become 0 and 1, for instance.
@@ -1347,6 +1364,13 @@ func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptor
 		name = ""
 	} else {
 		name = ",name=" + name
+	}
+	if message.proto3() {
+		// We only need the extra tag for []byte fields;
+		// no need to add noise for the others.
+		if *field.Type == descriptor.FieldDescriptorProto_TYPE_BYTES {
+			name += ",proto3"
+		}
 	}
 	return strconv.Quote(fmt.Sprintf("%s,%d,%s%s%s%s%s",
 		wiretype,
@@ -1433,6 +1457,8 @@ func (g *Generator) GoType(message *Descriptor, field *descriptor.FieldDescripto
 	}
 	if isRepeated(field) {
 		typ = "[]" + typ
+	} else if message != nil && message.proto3() {
+		return
 	} else if needsStar(*field.Type) {
 		typ = "*" + typ
 	}
@@ -1498,7 +1524,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	if len(message.ExtensionRange) > 0 {
 		g.P("XXX_extensions\t\tmap[int32]", g.Pkg["proto"], ".Extension `json:\"-\"`")
 	}
-	g.P("XXX_unrecognized\t[]byte `json:\"-\"`")
+	if !message.proto3() {
+		g.P("XXX_unrecognized\t[]byte `json:\"-\"`")
+	}
 	g.Out()
 	g.P("}")
 
@@ -1632,6 +1660,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		if needsStar(*field.Type) && typename[0] == '*' {
 			typename = typename[1:]
 			star = "*"
+		}
+
+		// In proto3, only generate getters for message fields.
+		if message.proto3() && *field.Type != descriptor.FieldDescriptorProto_TYPE_MESSAGE {
+			continue
 		}
 
 		// Only export getter symbols for basic types,
