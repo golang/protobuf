@@ -114,6 +114,11 @@ func structPointer_Bool(p structPointer, f field) **bool {
 	return structPointer_ifield(p, f).(**bool)
 }
 
+// BoolVal returns the address of a bool field in the struct.
+func structPointer_BoolVal(p structPointer, f field) *bool {
+	return structPointer_ifield(p, f).(*bool)
+}
+
 // BoolSlice returns the address of a []bool field in the struct.
 func structPointer_BoolSlice(p structPointer, f field) *[]bool {
 	return structPointer_ifield(p, f).(*[]bool)
@@ -122,6 +127,11 @@ func structPointer_BoolSlice(p structPointer, f field) *[]bool {
 // String returns the address of a *string field in the struct.
 func structPointer_String(p structPointer, f field) **string {
 	return structPointer_ifield(p, f).(**string)
+}
+
+// StringVal returns the address of a string field in the struct.
+func structPointer_StringVal(p structPointer, f field) *string {
+	return structPointer_ifield(p, f).(*string)
 }
 
 // StringSlice returns the address of a []string field in the struct.
@@ -235,6 +245,49 @@ func structPointer_Word32(p structPointer, f field) word32 {
 	return word32{structPointer_field(p, f)}
 }
 
+// A word32Val represents a field of type int32, uint32, float32, or enum.
+// That is, v.Type() is int32, uint32, float32, or enum and v is assignable.
+type word32Val struct {
+	v reflect.Value
+}
+
+// Set sets *p to x.
+func word32Val_Set(p word32Val, x uint32) {
+	switch p.v.Type() {
+	case int32Type:
+		p.v.SetInt(int64(x))
+		return
+	case uint32Type:
+		p.v.SetUint(uint64(x))
+		return
+	case float32Type:
+		p.v.SetFloat(float64(math.Float32frombits(x)))
+		return
+	}
+
+	// must be enum
+	p.v.SetInt(int64(int32(x)))
+}
+
+// Get gets the bits pointed at by p, as a uint32.
+func word32Val_Get(p word32Val) uint32 {
+	elem := p.v
+	switch elem.Kind() {
+	case reflect.Int32:
+		return uint32(elem.Int())
+	case reflect.Uint32:
+		return uint32(elem.Uint())
+	case reflect.Float32:
+		return math.Float32bits(float32(elem.Float()))
+	}
+	panic("unreachable")
+}
+
+// Word32Val returns a reference to a int32, uint32, float32, or enum field in the struct.
+func structPointer_Word32Val(p structPointer, f field) word32Val {
+	return word32Val{structPointer_field(p, f)}
+}
+
 // A word32Slice is a slice of 32-bit values.
 // That is, v.Type() is []int32, []uint32, []float32, or []enum.
 type word32Slice struct {
@@ -337,6 +390,43 @@ func word64_Get(p word64) uint64 {
 
 func structPointer_Word64(p structPointer, f field) word64 {
 	return word64{structPointer_field(p, f)}
+}
+
+// word64Val is like word32Val but for 64-bit values.
+type word64Val struct {
+	v reflect.Value
+}
+
+func word64Val_Set(p word64Val, o *Buffer, x uint64) {
+	switch p.v.Type() {
+	case int64Type:
+		p.v.SetInt(int64(x))
+		return
+	case uint64Type:
+		p.v.SetUint(x)
+		return
+	case float64Type:
+		p.v.SetFloat(math.Float64frombits(x))
+		return
+	}
+	panic("unreachable")
+}
+
+func word64Val_Get(p word64Val) uint64 {
+	elem := p.v
+	switch elem.Kind() {
+	case reflect.Int64:
+		return uint64(elem.Int())
+	case reflect.Uint64:
+		return elem.Uint()
+	case reflect.Float64:
+		return math.Float64bits(elem.Float())
+	}
+	panic("unreachable")
+}
+
+func structPointer_Word64Val(p structPointer, f field) word64Val {
+	return word64Val{structPointer_field(p, f)}
 }
 
 type word64Slice struct {

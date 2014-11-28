@@ -41,6 +41,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
+	proto3pb "./proto3_proto"
 	pb "./testdata"
 )
 
@@ -404,5 +405,25 @@ Message <nil>
 `
 	if s := proto.MarshalTextString(m); s != want {
 		t.Errorf(" got: %s\nwant: %s", s, want)
+	}
+}
+
+func TestProto3Text(t *testing.T) {
+	tests := []struct {
+		m    proto.Message
+		want string
+	}{
+		// zero message
+		{&proto3pb.Message{}, ``},
+		// zero message except for an empty byte slice
+		{&proto3pb.Message{Data: []byte{}}, ``},
+		// trivial case
+		{&proto3pb.Message{Name: "Rob", HeightInCm: 175}, `name:"Rob" height_in_cm:175`},
+	}
+	for _, test := range tests {
+		got := strings.TrimSpace(test.m.String())
+		if got != test.want {
+			t.Errorf("\n got %s\nwant %s", got, test.want)
+		}
 	}
 }

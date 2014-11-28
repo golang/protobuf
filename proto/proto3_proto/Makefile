@@ -1,6 +1,6 @@
 # Go support for Protocol Buffers - Google's data interchange format
 #
-# Copyright 2010 The Go Authors.  All rights reserved.
+# Copyright 2014 The Go Authors.  All rights reserved.
 # https://github.com/golang/protobuf
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,24 +30,15 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-all:	install
+include ../../Make.protobuf
 
-install:
-	go install ./proto
-	go install ./protoc-gen-go
-
-test:
-	go test ./proto
-	make -C protoc-gen-go/testdata test
-
-clean:
-	go clean ./...
-
-nuke:
-	go clean -i ./...
+all:	regenerate
 
 regenerate:
-	make -C protoc-gen-go/descriptor regenerate
-	make -C protoc-gen-go/plugin regenerate
-	make -C proto/testdata regenerate
-	make -C proto/proto3_proto regenerate
+	rm -f proto3.pb.go
+	make proto3.pb.go
+
+# The following rules are just aids to development. Not needed for typical testing.
+
+diff:	regenerate
+	git diff proto3.pb.go

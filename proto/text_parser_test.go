@@ -36,6 +36,7 @@ import (
 	"reflect"
 	"testing"
 
+	proto3pb "./proto3_proto"
 	. "./testdata"
 	. "github.com/golang/protobuf/proto"
 )
@@ -440,6 +441,21 @@ func TestRepeatedEnum(t *testing.T) {
 	}
 	if !Equal(pb, exp) {
 		t.Errorf("Incorrect populated \nHave: %v\nWant: %v", pb, exp)
+	}
+}
+
+func TestProto3TextParsing(t *testing.T) {
+	m := new(proto3pb.Message)
+	const in = `name: "Wallace" true_scotsman: true`
+	want := &proto3pb.Message{
+		Name:         "Wallace",
+		TrueScotsman: true,
+	}
+	if err := UnmarshalText(in, m); err != nil {
+		t.Fatal(err)
+	}
+	if !Equal(m, want) {
+		t.Errorf("\n got %v\nwant %v", m, want)
 	}
 }
 
