@@ -155,6 +155,31 @@ var EqualTests = []struct {
 		},
 		true,
 	},
+
+	{
+		"map same",
+		&pb.MessageWithMap{NameMapping: map[int32]string{1: "Ken"}},
+		&pb.MessageWithMap{NameMapping: map[int32]string{1: "Ken"}},
+		true,
+	},
+	{
+		"map different entry",
+		&pb.MessageWithMap{NameMapping: map[int32]string{1: "Ken"}},
+		&pb.MessageWithMap{NameMapping: map[int32]string{2: "Rob"}},
+		false,
+	},
+	{
+		"map different key only",
+		&pb.MessageWithMap{NameMapping: map[int32]string{1: "Ken"}},
+		&pb.MessageWithMap{NameMapping: map[int32]string{2: "Ken"}},
+		false,
+	},
+	{
+		"map different value only",
+		&pb.MessageWithMap{NameMapping: map[int32]string{1: "Ken"}},
+		&pb.MessageWithMap{NameMapping: map[int32]string{1: "Rob"}},
+		false,
+	},
 }
 
 func TestEqual(t *testing.T) {

@@ -1069,6 +1069,104 @@ func size_map(p *Properties, base structPointer) int {
 	return sizeExtensionMap(v)
 }
 
+// Encode a map field.
+func (o *Buffer) enc_new_map(p *Properties, base structPointer) error {
+	var state errorState // XXX: or do we need to plumb this through?
+
+	/*
+		A map defined as
+			map<key_type, value_type> map_field = N;
+		is encoded in the same way as
+			message MapFieldEntry {
+				key_type key = 1;
+				value_type value = 2;
+			}
+			repeated MapFieldEntry map_field = N;
+	*/
+
+	v := structPointer_Map(base, p.field, p.mtype).Elem() // map[K]V
+	if v.Len() == 0 {
+		return nil
+	}
+
+	keycopy, valcopy, keybase, valbase := mapEncodeScratch(p.mtype)
+
+	enc := func() error {
+		if err := p.mkeyprop.enc(o, p.mkeyprop, keybase); err != nil {
+			return err
+		}
+		if err := p.mvalprop.enc(o, p.mvalprop, valbase); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	for _, key := range v.MapKeys() {
+		val := v.MapIndex(key)
+
+		keycopy.Set(key)
+		valcopy.Set(val)
+
+		o.buf = append(o.buf, p.tagcode...)
+		if err := o.enc_len_thing(enc, &state); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func size_new_map(p *Properties, base structPointer) int {
+	v := structPointer_Map(base, p.field, p.mtype).Elem() // map[K]V
+
+	keycopy, valcopy, keybase, valbase := mapEncodeScratch(p.mtype)
+
+	n := 0
+	for _, key := range v.MapKeys() {
+		val := v.MapIndex(key)
+		keycopy.Set(key)
+		valcopy.Set(val)
+
+		// Tag codes are two bytes per map entry.
+		n += 2
+		n += p.mkeyprop.size(p.mkeyprop, keybase)
+		n += p.mvalprop.size(p.mvalprop, valbase)
+	}
+	return n
+}
+
+// mapEncodeScratch returns a new reflect.Value matching the map's value type,
+// and a structPointer suitable for passing to an encoder or sizer.
+func mapEncodeScratch(mapType reflect.Type) (keycopy, valcopy reflect.Value, keybase, valbase structPointer) {
+	// Prepare addressable doubly-indirect placeholders for the key and value types.
+	// This is needed because the element-type encoders expect **T, but the map iteration produces T.
+
+	keycopy = reflect.New(mapType.Key()).Elem()                 // addressable K
+	keyptr := reflect.New(reflect.PtrTo(keycopy.Type())).Elem() // addressable *K
+	keyptr.Set(keycopy.Addr())                                  //
+	keybase = toStructPointer(keyptr.Addr())                    // **K
+
+	// Value types are more varied and require special handling.
+	switch mapType.Elem().Kind() {
+	case reflect.Slice:
+		// []byte
+		var dummy []byte
+		valcopy = reflect.ValueOf(&dummy).Elem() // addressable []byte
+		valbase = toStructPointer(valcopy.Addr())
+	case reflect.Ptr:
+		// message; the generated field type is map[K]*Msg (so V is *Msg),
+		// so we only need one level of indirection.
+		valcopy = reflect.New(mapType.Elem()).Elem() // addressable V
+		valbase = toStructPointer(valcopy.Addr())
+	default:
+		// everything else
+		valcopy = reflect.New(mapType.Elem()).Elem()                // addressable V
+		valptr := reflect.New(reflect.PtrTo(valcopy.Type())).Elem() // addressable *V
+		valptr.Set(valcopy.Addr())                                  //
+		valbase = toStructPointer(valptr.Addr())                    // **V
+	}
+	return
+}
+
 // Encode a struct.
 func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 	var state errorState
@@ -1123,10 +1221,15 @@ var zeroes [20]byte // longer than any conceivable sizeVarint
 
 // Encode a struct, preceded by its encoded length (as a varint).
 func (o *Buffer) enc_len_struct(prop *StructProperties, base structPointer, state *errorState) error {
+	return o.enc_len_thing(func() error { return o.enc_struct(prop, base) }, state)
+}
+
+// Encode something, preceded by its encoded length (as a varint).
+func (o *Buffer) enc_len_thing(enc func() error, state *errorState) error {
 	iLen := len(o.buf)
 	o.buf = append(o.buf, 0, 0, 0, 0) // reserve four bytes for length
 	iMsg := len(o.buf)
-	err := o.enc_struct(prop, base)
+	err := enc()
 	if err != nil && !state.shouldContinue(err, nil) {
 		return err
 	}

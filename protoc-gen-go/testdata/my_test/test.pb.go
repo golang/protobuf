@@ -174,10 +174,14 @@ type Request struct {
 	Hue *Request_Color `protobuf:"varint,3,opt,name=hue,enum=my.test.Request_Color" json:"hue,omitempty"`
 	Hat *HatType       `protobuf:"varint,4,opt,name=hat,enum=my.test.HatType,def=1" json:"hat,omitempty"`
 	//  optional imp.ImportedMessage.Owner owner = 6;
-	Deadline         *float32           `protobuf:"fixed32,7,opt,name=deadline,def=inf" json:"deadline,omitempty"`
-	Somegroup        *Request_SomeGroup `protobuf:"group,8,opt,name=SomeGroup" json:"somegroup,omitempty"`
-	Reset_           *int32             `protobuf:"varint,12,opt,name=reset" json:"reset,omitempty"`
-	XXX_unrecognized []byte             `json:"-"`
+	Deadline  *float32           `protobuf:"fixed32,7,opt,name=deadline,def=inf" json:"deadline,omitempty"`
+	Somegroup *Request_SomeGroup `protobuf:"group,8,opt,name=SomeGroup" json:"somegroup,omitempty"`
+	// This is a map field. It will generate map[int32]string.
+	NameMapping map[int32]string `protobuf:"bytes,14,rep,name=name_mapping" json:"name_mapping,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// This is a map field whose value type is a message.
+	MsgMapping       map[int64]*Reply `protobuf:"bytes,15,rep,name=msg_mapping" json:"msg_mapping,omitempty" protobuf_key:"zigzag64,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Reset_           *int32           `protobuf:"varint,12,opt,name=reset" json:"reset,omitempty"`
+	XXX_unrecognized []byte           `json:"-"`
 }
 
 func (m *Request) Reset()         { *m = Request{} }
@@ -219,6 +223,20 @@ func (m *Request) GetDeadline() float32 {
 func (m *Request) GetSomegroup() *Request_SomeGroup {
 	if m != nil {
 		return m.Somegroup
+	}
+	return nil
+}
+
+func (m *Request) GetNameMapping() map[int32]string {
+	if m != nil {
+		return m.NameMapping
+	}
+	return nil
+}
+
+func (m *Request) GetMsgMapping() map[int64]*Reply {
+	if m != nil {
+		return m.MsgMapping
 	}
 	return nil
 }

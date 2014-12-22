@@ -459,6 +459,31 @@ func TestProto3TextParsing(t *testing.T) {
 	}
 }
 
+func TestMapParsing(t *testing.T) {
+	m := new(MessageWithMap)
+	const in = `name_mapping:<key:1234 value:"Feist"> name_mapping:<key:1 value:"Beatles">` +
+		`msg_mapping:<key:-4 value:<f: 2.0>>` +
+		`byte_mapping:<key:true value:"so be it">`
+	want := &MessageWithMap{
+		NameMapping: map[int32]string{
+			1:    "Beatles",
+			1234: "Feist",
+		},
+		MsgMapping: map[int64]*FloatingPoint{
+			-4: {F: Float64(2.0)},
+		},
+		ByteMapping: map[bool][]byte{
+			true: []byte("so be it"),
+		},
+	}
+	if err := UnmarshalText(in, m); err != nil {
+		t.Fatal(err)
+	}
+	if !Equal(m, want) {
+		t.Errorf("\n got %v\nwant %v", m, want)
+	}
+}
+
 var benchInput string
 
 func init() {
