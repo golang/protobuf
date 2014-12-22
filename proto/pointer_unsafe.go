@@ -130,6 +130,11 @@ func structPointer_ExtMap(p structPointer, f field) *map[int32]Extension {
 	return (*map[int32]Extension)(unsafe.Pointer(uintptr(p) + uintptr(f)))
 }
 
+// Map returns the reflect.Value for the address of a map field in the struct.
+func structPointer_Map(p structPointer, f field, typ reflect.Type) reflect.Value {
+	return reflect.NewAt(typ, unsafe.Pointer(uintptr(p)+uintptr(f)))
+}
+
 // SetStructPointer writes a *struct field in the struct.
 func structPointer_SetStructPointer(p structPointer, f field, q structPointer) {
 	*(*structPointer)(unsafe.Pointer(uintptr(p) + uintptr(f))) = q

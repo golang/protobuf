@@ -244,6 +244,70 @@ func writeStruct(w *textWriter, sv reflect.Value) error {
 			}
 			continue
 		}
+		if fv.Kind() == reflect.Map {
+			// Map fields are rendered as a repeated struct with key/value fields.
+			keys := fv.MapKeys() // TODO: should we sort these for deterministic output?
+			for _, key := range keys {
+				val := fv.MapIndex(key)
+				if err := writeName(w, props); err != nil {
+					return err
+				}
+				if !w.compact {
+					if err := w.WriteByte(' '); err != nil {
+						return err
+					}
+				}
+				// open struct
+				if err := w.WriteByte('<'); err != nil {
+					return err
+				}
+				if !w.compact {
+					if err := w.WriteByte('\n'); err != nil {
+						return err
+					}
+				}
+				w.indent()
+				// key
+				if _, err := w.WriteString("key:"); err != nil {
+					return err
+				}
+				if !w.compact {
+					if err := w.WriteByte(' '); err != nil {
+						return err
+					}
+				}
+				if err := writeAny(w, key, props.mkeyprop); err != nil {
+					return err
+				}
+				if err := w.WriteByte('\n'); err != nil {
+					return err
+				}
+				// value
+				if _, err := w.WriteString("value:"); err != nil {
+					return err
+				}
+				if !w.compact {
+					if err := w.WriteByte(' '); err != nil {
+						return err
+					}
+				}
+				if err := writeAny(w, val, props.mvalprop); err != nil {
+					return err
+				}
+				if err := w.WriteByte('\n'); err != nil {
+					return err
+				}
+				// close struct
+				w.unindent()
+				if err := w.WriteByte('>'); err != nil {
+					return err
+				}
+				if err := w.WriteByte('\n'); err != nil {
+					return err
+				}
+			}
+			continue
+		}
 		if props.proto3 && fv.Kind() == reflect.Slice && fv.Len() == 0 {
 			// empty bytes field
 			continue

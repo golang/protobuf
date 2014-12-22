@@ -419,6 +419,13 @@ func TestProto3Text(t *testing.T) {
 		{&proto3pb.Message{Data: []byte{}}, ``},
 		// trivial case
 		{&proto3pb.Message{Name: "Rob", HeightInCm: 175}, `name:"Rob" height_in_cm:175`},
+		// empty map
+		{&pb.MessageWithMap{}, ``},
+		// non-empty map; current map format is the same as a repeated struct
+		{
+			&pb.MessageWithMap{NameMapping: map[int32]string{1234: "Feist"}},
+			`name_mapping:<key:1234 value:"Feist" >`,
+		},
 	}
 	for _, test := range tests {
 		got := strings.TrimSpace(test.m.String())

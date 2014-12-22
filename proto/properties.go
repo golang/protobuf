@@ -171,6 +171,10 @@ type Properties struct {
 	isMarshaler   bool
 	isUnmarshaler bool
 
+	mtype    reflect.Type // set for map types only
+	mkeyprop *Properties  // set for map types only
+	mvalprop *Properties  // set for map types only
+
 	size    sizer
 	valSize valueSizer // set for bool and numeric types only
 
@@ -299,7 +303,7 @@ func logNoSliceEnc(t1, t2 reflect.Type) {
 var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
 
 // Initialize the fields for encoding and decoding.
-func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
+func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lockGetProp bool) {
 	p.enc = nil
 	p.dec = nil
 	p.size = nil
@@ -342,7 +346,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
 		default:
-			fmt.Fprintf(os.Stderr, "proto: no encoder function for %T -> %T\n", t1, t2)
+			fmt.Fprintf(os.Stderr, "proto: no encoder function for %v -> %v\n", t1, t2)
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_bool
@@ -502,6 +506,23 @@ func (p *Properties) setEncAndDec(typ reflect.Type, lockGetProp bool) {
 				p.size = size_slice_slice_byte
 			}
 		}
+
+	case reflect.Map:
+		p.enc = (*Buffer).enc_new_map
+		p.dec = (*Buffer).dec_new_map
+		p.size = size_new_map
+
+		p.mtype = t1
+		p.mkeyprop = &Properties{}
+		p.mkeyprop.init(reflect.PtrTo(p.mtype.Key()), "Key", f.Tag.Get("protobuf_key"), nil, lockGetProp)
+		p.mvalprop = &Properties{}
+		vtype := p.mtype.Elem()
+		if vtype.Kind() != reflect.Ptr && vtype.Kind() != reflect.Slice {
+			// The value type is not a message (*T) or bytes ([]byte),
+			// so we need encoders for the pointer to this type.
+			vtype = reflect.PtrTo(vtype)
+		}
+		p.mvalprop.init(vtype, "Value", f.Tag.Get("protobuf_val"), nil, lockGetProp)
 	}
 
 	// precalculate tag code
@@ -570,7 +591,7 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 		return
 	}
 	p.Parse(tag)
-	p.setEncAndDec(typ, lockGetProp)
+	p.setEncAndDec(typ, f, lockGetProp)
 }
 
 var (

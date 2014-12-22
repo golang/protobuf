@@ -72,6 +72,11 @@ message Request {
 //  optional imp.PubliclyImportedEnum pub_enum = 13 [default=HAIR];
 
 
+  // This is a map field. It will generate map[int32]string.
+  map<int32, string> name_mapping = 14;
+  // This is a map field whose value type is a message.
+  map<sint64, Reply> msg_mapping = 15;
+
   optional int32 reset = 12;
 }
 
