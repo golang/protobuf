@@ -323,9 +323,7 @@ func Float64(v float64) *float64 {
 // Uint32 is a helper routine that allocates a new uint32 value
 // to store v and returns a pointer to it.
 func Uint32(v uint32) *uint32 {
-	p := new(uint32)
-	*p = v
-	return p
+	return &v
 }
 
 // Uint64 is a helper routine that allocates a new uint64 value
