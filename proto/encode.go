@@ -1101,7 +1101,9 @@ func (o *Buffer) enc_new_map(p *Properties, base structPointer) error {
 		return nil
 	}
 
-	for _, key := range v.MapKeys() {
+	keys := v.MapKeys()
+	sort.Sort(mapKeys(keys))
+	for _, key := range keys {
 		val := v.MapIndex(key)
 
 		keycopy.Set(key)

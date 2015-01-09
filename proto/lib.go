@@ -736,3 +736,16 @@ func buildDefaultMessage(t reflect.Type) (dm defaultMessage) {
 
 	return dm
 }
+
+// Map fields may have key types of non-float scalars, strings and enums.
+// The easiest way to sort them in some deterministic order is to use fmt.
+// If this turns out to be inefficient we can always consider other options,
+// such as doing a Schwartzian transform.
+
+type mapKeys []reflect.Value
+
+func (s mapKeys) Len() int      { return len(s) }
+func (s mapKeys) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
+func (s mapKeys) Less(i, j int) bool {
+	return fmt.Sprint(s[i].Interface()) < fmt.Sprint(s[j].Interface())
+}
