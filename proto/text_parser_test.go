@@ -463,6 +463,7 @@ func TestMapParsing(t *testing.T) {
 	m := new(MessageWithMap)
 	const in = `name_mapping:<key:1234 value:"Feist"> name_mapping:<key:1 value:"Beatles">` +
 		`msg_mapping:<key:-4 value:<f: 2.0>>` +
+		`msg_mapping<key:-2 value<f: 4.0>>` + // no colon after "value"
 		`byte_mapping:<key:true value:"so be it">`
 	want := &MessageWithMap{
 		NameMapping: map[int32]string{
@@ -471,6 +472,7 @@ func TestMapParsing(t *testing.T) {
 		},
 		MsgMapping: map[int64]*FloatingPoint{
 			-4: {F: Float64(2.0)},
+			-2: {F: Float64(4.0)},
 		},
 		ByteMapping: map[bool][]byte{
 			true: []byte("so be it"),
