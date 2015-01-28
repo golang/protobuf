@@ -570,7 +570,7 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 				if err := p.consumeToken("value"); err != nil {
 					return err
 				}
-				if err := p.consumeToken(":"); err != nil {
+				if err := p.checkForColon(props.mvalprop, dst.Type().Elem()); err != nil {
 					return err
 				}
 				if err := p.readAny(val, props.mvalprop); err != nil {

@@ -102,12 +102,6 @@ func fileIsProto3(file *descriptor.FileDescriptorProto) bool {
 
 func (c *common) proto3() bool { return fileIsProto3(c.file) }
 
-func fileUsesMaps(file *descriptor.FileDescriptorProto) bool {
-	return true
-}
-
-func (c *common) usesMaps() bool { return fileUsesMaps(c.file) }
-
 // Descriptor represents a protocol buffer message.
 type Descriptor struct {
 	common
@@ -1018,7 +1012,7 @@ func (g *Generator) generate(file *FileDescriptor) {
 	}
 	for _, desc := range g.file.desc {
 		// Don't generate virtual messages for maps.
-		if desc.GetOptions().GetMapEntry() && desc.usesMaps() {
+		if desc.GetOptions().GetMapEntry() {
 			continue
 		}
 		g.generateMessage(desc)
@@ -1530,7 +1524,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 
 		if *field.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE {
 			desc := g.ObjectNamed(field.GetTypeName())
-			if d, ok := desc.(*Descriptor); ok && d.GetOptions().GetMapEntry() && d.usesMaps() {
+			if d, ok := desc.(*Descriptor); ok && d.GetOptions().GetMapEntry() {
 				// Figure out the Go types and tags for the key and value types.
 				keyField, valField := d.Field[0], d.Field[1]
 				keyType, keyWire := g.GoType(d, keyField)
