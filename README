@@ -112,19 +112,10 @@ Consider file test.proto, containing
 	  }
 	}
 
-To build a package from test.proto and some other Go files, write a
-Makefile like this:
+To build a package from test.proto, write a Makefile like this:
 
-	include $(GOROOT)/src/Make.$(GOARCH)
-
-	TARG=path/to/example
-	GOFILES=\
-		test.pb.go\
-		other.go
-
-	include $(GOROOT)/src/Make.pkg
-	include $(GOROOT)/src/pkg/github.com/golang/protobuf/Make.protobuf
-
+	test.pb.go: test.proto
+		protoc --go_out=. $<
 
 To create and play with a Test object from the example package,
 
