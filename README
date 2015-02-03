@@ -112,11 +112,6 @@ Consider file test.proto, containing
 	  }
 	}
 
-To build a package from test.proto, write a Makefile like this:
-
-	test.pb.go: test.proto
-		protoc --go_out=. $<
-
 To create and play with a Test object from the example package,
 
 	package main
