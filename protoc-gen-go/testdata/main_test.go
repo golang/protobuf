@@ -36,11 +36,11 @@ package testdata
 import (
 	"testing"
 
-	"./multi"
-	"./my_test"
+	multipb "./multi"
+	mytestpb "./my_test"
 )
 
 func TestLink(t *testing.T) {
-	_ = &multi.Multi1{}
-	_ = &my_test.Request{}
+	_ = &multipb.Multi1{}
+	_ = &mytestpb.Request{}
 }
