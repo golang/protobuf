@@ -39,7 +39,7 @@
 
 	  - Names are turned from camel_case to CamelCase for export.
 	  - There are no methods on v to set fields; just treat
-	  	them as structure fields.
+		them as structure fields.
 	  - There are getters that return a field's value if set,
 		and return the field's default value if unset.
 		The getters work even if the receiver is a nil message.
@@ -50,17 +50,16 @@
 		That is, optional or required field int32 f becomes F *int32.
 	  - Repeated fields are slices.
 	  - Helper functions are available to aid the setting of fields.
-		Helpers for getting values are superseded by the
-		GetFoo methods and their use is deprecated.
-			msg.Foo = proto.String("hello") // set field
+		msg.Foo = proto.String("hello") // set field
 	  - Constants are defined to hold the default values of all fields that
 		have them.  They have the form Default_StructName_FieldName.
 		Because the getter methods handle defaulted values,
 		direct use of these constants should be rare.
 	  - Enums are given type names and maps from names to values.
-		Enum values are prefixed with the enum's type name. Enum types have
-		a String method, and a Enum method to assist in message construction.
-	  - Nested groups and enums have type names prefixed with the name of
+		Enum values are prefixed by the enclosing message's name, or by the
+		enum's type name if it is a top-level enum. Enum types have a String
+		method, and a Enum method to assist in message construction.
+	  - Nested messages, groups and enums have type names prefixed with the name of
 	  	the surrounding message type.
 	  - Extensions are given descriptor names that start with E_,
 		followed by an underscore-delimited list of the nested messages
@@ -74,7 +73,7 @@
 
 		package example;
 
-		enum FOO { X = 17; };
+		enum FOO { X = 17; }
 
 		message Test {
 		  required string label = 1;
@@ -89,7 +88,8 @@
 
 		package example
 
-		import "github.com/golang/protobuf/proto"
+		import proto "github.com/golang/protobuf/proto"
+		import math "math"
 
 		type FOO int32
 		const (
@@ -110,6 +110,14 @@
 		func (x FOO) String() string {
 			return proto.EnumName(FOO_name, int32(x))
 		}
+		func (x *FOO) UnmarshalJSON(data []byte) error {
+			value, err := proto.UnmarshalJSONEnum(FOO_value, data)
+			if err != nil {
+				return err
+			}
+			*x = FOO(value)
+			return nil
+		}
 
 		type Test struct {
 			Label            *string             `protobuf:"bytes,1,req,name=label" json:"label,omitempty"`
@@ -118,41 +126,41 @@
 			Optionalgroup    *Test_OptionalGroup `protobuf:"group,4,opt,name=OptionalGroup" json:"optionalgroup,omitempty"`
 			XXX_unrecognized []byte              `json:"-"`
 		}
-		func (this *Test) Reset()         { *this = Test{} }
-		func (this *Test) String() string { return proto.CompactTextString(this) }
+		func (m *Test) Reset()         { *m = Test{} }
+		func (m *Test) String() string { return proto.CompactTextString(m) }
+		func (*Test) ProtoMessage()    {}
 		const Default_Test_Type int32 = 77
 
-		func (this *Test) GetLabel() string {
-			if this != nil && this.Label != nil {
-				return *this.Label
+		func (m *Test) GetLabel() string {
+			if m != nil && m.Label != nil {
+				return *m.Label
 			}
 			return ""
 		}
 
-		func (this *Test) GetType() int32 {
-			if this != nil && this.Type != nil {
-				return *this.Type
+		func (m *Test) GetType() int32 {
+			if m != nil && m.Type != nil {
+				return *m.Type
 			}
 			return Default_Test_Type
 		}
 
-		func (this *Test) GetOptionalgroup() *Test_OptionalGroup {
-			if this != nil {
-				return this.Optionalgroup
+		func (m *Test) GetOptionalgroup() *Test_OptionalGroup {
+			if m != nil {
+				return m.Optionalgroup
 			}
 			return nil
 		}
 
 		type Test_OptionalGroup struct {
-			RequiredField    *string `protobuf:"bytes,5,req" json:"RequiredField,omitempty"`
-			XXX_unrecognized []byte  `json:"-"`
+			RequiredField *string `protobuf:"bytes,5,req" json:"RequiredField,omitempty"`
 		}
-		func (this *Test_OptionalGroup) Reset()         { *this = Test_OptionalGroup{} }
-		func (this *Test_OptionalGroup) String() string { return proto.CompactTextString(this) }
+		func (m *Test_OptionalGroup) Reset()         { *m = Test_OptionalGroup{} }
+		func (m *Test_OptionalGroup) String() string { return proto.CompactTextString(m) }
 
-		func (this *Test_OptionalGroup) GetRequiredField() string {
-			if this != nil && this.RequiredField != nil {
-				return *this.RequiredField
+		func (m *Test_OptionalGroup) GetRequiredField() string {
+			if m != nil && m.RequiredField != nil {
+				return *m.RequiredField
 			}
 			return ""
 		}
@@ -169,14 +177,14 @@
 			"log"
 
 			"github.com/golang/protobuf/proto"
-			"./example.pb"
+			pb "./example.pb"
 		)
 
 		func main() {
-			test := &example.Test{
+			test := &pb.Test{
 				Label: proto.String("hello"),
 				Type:  proto.Int32(17),
-				Optionalgroup: &example.Test_OptionalGroup{
+				Optionalgroup: &pb.Test_OptionalGroup{
 					RequiredField: proto.String("good bye"),
 				},
 			}
@@ -184,7 +192,7 @@
 			if err != nil {
 				log.Fatal("marshaling error: ", err)
 			}
-			newTest := new(example.Test)
+			newTest := &pb.Test{}
 			err = proto.Unmarshal(data, newTest)
 			if err != nil {
 				log.Fatal("unmarshaling error: ", err)
