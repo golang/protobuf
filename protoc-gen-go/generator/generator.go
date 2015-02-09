@@ -484,17 +484,35 @@ func (g *Generator) CommandLineParameters(parameter string) {
 	}
 
 	g.ImportMap = make(map[string]string)
+	pluginList := "" // Default list of plugin names to enable (empty means all).
 	for k, v := range g.Param {
 		switch k {
 		case "import_prefix":
 			g.ImportPrefix = v
 		case "import_path":
 			g.PackageImportPath = v
+		case "plugins":
+			pluginList = v
 		default:
 			if len(k) > 0 && k[0] == 'M' {
 				g.ImportMap[k[1:]] = v
 			}
 		}
+	}
+
+	if pluginList != "" {
+		// Amend the set of plugins.
+		enabled := make(map[string]bool)
+		for _, name := range strings.Split(pluginList, "+") {
+			enabled[name] = true
+		}
+		var nplugins []Plugin
+		for _, p := range plugins {
+			if enabled[p.Name()] {
+				nplugins = append(nplugins, p)
+			}
+		}
+		plugins = nplugins
 	}
 }
 
