@@ -33,7 +33,7 @@
 
 syntax = "proto2";
 
-package testdata;
+package test_proto;
 
 enum FOO { FOO1 = 1; };
 

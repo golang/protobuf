@@ -484,7 +484,7 @@ func (g *Generator) CommandLineParameters(parameter string) {
 	}
 
 	g.ImportMap = make(map[string]string)
-	pluginList := "" // Default list of plugin names to enable (empty means all).
+	pluginList := "none" // Default list of plugin names to enable (empty means all).
 	for k, v := range g.Param {
 		switch k {
 		case "import_prefix":
