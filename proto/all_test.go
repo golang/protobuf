@@ -1252,7 +1252,8 @@ func TestProto1RepeatedGroup(t *testing.T) {
 	}
 
 	o := old()
-	if err := o.Marshal(pb); err != ErrRepeatedHasNil {
+	err := o.Marshal(pb)
+	if err == nil || !strings.Contains(err.Error(), "repeated field Message has nil") {
 		t.Fatalf("unexpected or no error when marshaling: %v", err)
 	}
 }
