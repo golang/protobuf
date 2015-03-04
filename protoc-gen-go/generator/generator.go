@@ -379,16 +379,21 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 
 }
 
-type enumSymbol string
+type enumSymbol struct {
+	name   string
+	proto3 bool // Whether this came from a proto3 file.
+}
 
 func (es enumSymbol) GenerateAlias(g *Generator, pkg string) {
-	s := string(es)
+	s := es.name
 	g.P("type ", s, " ", pkg, ".", s)
 	g.P("var ", s, "_name = ", pkg, ".", s, "_name")
 	g.P("var ", s, "_value = ", pkg, ".", s, "_value")
-	g.P("func (x ", s, ") Enum() *", s, "{ return (*", s, ")((", pkg, ".", s, ")(x).Enum()) }")
 	g.P("func (x ", s, ") String() string { return (", pkg, ".", s, ")(x).String() }")
-	g.P("func (x *", s, ") UnmarshalJSON(data []byte) error { return (*", pkg, ".", s, ")(x).UnmarshalJSON(data) }")
+	if !es.proto3 {
+		g.P("func (x ", s, ") Enum() *", s, "{ return (*", s, ")((", pkg, ".", s, ")(x).Enum()) }")
+		g.P("func (x *", s, ") UnmarshalJSON(data []byte) error { return (*", pkg, ".", s, ")(x).UnmarshalJSON(data) }")
+	}
 }
 
 type constOrVarSymbol struct {
@@ -1228,7 +1233,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 
 	g.PrintComments(enum.path)
 	g.P("type ", ccTypeName, " int32")
-	g.file.addExport(enum, enumSymbol(ccTypeName))
+	g.file.addExport(enum, enumSymbol{ccTypeName, enum.proto3()})
 	g.P("const (")
 	g.In()
 	for i, e := range enum.Value {
