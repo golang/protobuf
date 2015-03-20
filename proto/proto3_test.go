@@ -34,8 +34,8 @@ package proto_test
 import (
 	"testing"
 
-	pb "./proto3_proto"
 	"github.com/golang/protobuf/proto"
+	pb "github.com/golang/protobuf/proto/proto3_proto"
 )
 
 func TestProto3ZeroValues(t *testing.T) {

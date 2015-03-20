@@ -50,4 +50,3 @@ regenerate:
 	make -C protoc-gen-go/descriptor regenerate
 	make -C protoc-gen-go/plugin regenerate
 	make -C proto/testdata regenerate
-	make -C proto/proto3_proto regenerate
