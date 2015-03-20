@@ -31,6 +31,8 @@
 
 syntax = "proto3";
 
+import "testdata/test.proto";
+
 package proto3_proto;
 
 message Message {
@@ -51,6 +53,10 @@ message Message {
 
   repeated uint64 key = 5;
   Nested nested = 6;
+
+  map<string, Nested> terrain = 10;
+  testdata.SubDefaults proto2_field = 11;
+  map<string, testdata.SubDefaults> proto2_value = 13;
 }
 
 message Nested {

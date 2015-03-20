@@ -1442,6 +1442,17 @@ func TestSetDefaultsWithRepeatedSubMessage(t *testing.T) {
 	}
 }
 
+func TestSetDefaultWithRepeatedNonMessage(t *testing.T) {
+	m := &MyMessage{
+		Pet: []string{"turtle", "wombat"},
+	}
+	expected := Clone(m)
+	SetDefaults(m)
+	if !Equal(m, expected) {
+		t.Errorf("\n got %v\nwant %v", m, expected)
+	}
+}
+
 func TestMaximumTagNumber(t *testing.T) {
 	m := &MaxTag{
 		LastField: String("natural goat essence"),
