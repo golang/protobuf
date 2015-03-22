@@ -62,3 +62,7 @@ message Message {
 message Nested {
   string bunny = 1;
 }
+
+message MessageWithMap {
+  map<bool, bytes> byte_mapping = 1;
+}
