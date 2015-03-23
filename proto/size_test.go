@@ -33,6 +33,7 @@ package proto_test
 
 import (
 	"log"
+	"strings"
 	"testing"
 
 	. "github.com/golang/protobuf/proto"
@@ -119,6 +120,10 @@ var SizeTests = []struct {
 	{"map field with message", &pb.MessageWithMap{MsgMapping: map[int64]*pb.FloatingPoint{0x7001: &pb.FloatingPoint{F: Float64(2.0)}}}},
 	{"map field with bytes", &pb.MessageWithMap{ByteMapping: map[bool][]byte{true: []byte("this time for sure")}}},
 	{"map field with empty bytes", &pb.MessageWithMap{ByteMapping: map[bool][]byte{true: []byte{}}}},
+
+	{"map field with big entry", &pb.MessageWithMap{NameMapping: map[int32]string{8: strings.Repeat("x", 125)}}},
+	{"map field with big key and val", &pb.MessageWithMap{StrToStr: map[string]string{strings.Repeat("x", 70): strings.Repeat("y", 70)}}},
+	{"map field with big numeric key", &pb.MessageWithMap{NameMapping: map[int32]string{0xf00d: "om nom nom"}}},
 }
 
 func TestSize(t *testing.T) {
