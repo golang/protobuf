@@ -278,7 +278,7 @@ func (g *grpc) generateClientMethod(servName, fullServName, serviceDescVar strin
 	g.P("if err != nil { return nil, err }")
 	g.P("x := &", streamType, "{stream}")
 	if !method.GetClientStreaming() {
-		g.P("if err := x.ClientStream.SendProto(in); err != nil { return nil, err }")
+		g.P("if err := x.ClientStream.SendMsg(in); err != nil { return nil, err }")
 		g.P("if err := x.ClientStream.CloseSend(); err != nil { return nil, err }")
 	}
 	g.P("return x, nil")
@@ -311,14 +311,14 @@ func (g *grpc) generateClientMethod(servName, fullServName, serviceDescVar strin
 
 	if genSend {
 		g.P("func (x *", streamType, ") Send(m *", inType, ") error {")
-		g.P("return x.ClientStream.SendProto(m)")
+		g.P("return x.ClientStream.SendMsg(m)")
 		g.P("}")
 		g.P()
 	}
 	if genRecv {
 		g.P("func (x *", streamType, ") Recv() (*", outType, ", error) {")
 		g.P("m := new(", outType, ")")
-		g.P("if err := x.ClientStream.RecvProto(m); err != nil { return nil, err }")
+		g.P("if err := x.ClientStream.RecvMsg(m); err != nil { return nil, err }")
 		g.P("return m, nil")
 		g.P("}")
 		g.P()
@@ -327,7 +327,7 @@ func (g *grpc) generateClientMethod(servName, fullServName, serviceDescVar strin
 		g.P("func (x *", streamType, ") CloseAndRecv() (*", outType, ", error) {")
 		g.P("if err := x.ClientStream.CloseSend(); err != nil { return nil, err }")
 		g.P("m := new(", outType, ")")
-		g.P("if err := x.ClientStream.RecvProto(m); err != nil { return nil, err }")
+		g.P("if err := x.ClientStream.RecvMsg(m); err != nil { return nil, err }")
 		g.P("return m, nil")
 		g.P("}")
 		g.P()
@@ -365,7 +365,7 @@ func (g *grpc) generateServerMethod(servName string, method *pb.MethodDescriptor
 	outType := g.typeName(method.GetOutputType())
 
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
-		g.P("func ", hname, "(srv interface{}, ctx ", contextPkg, ".Context, buf []byte) (", g.gen.Pkg["proto"], ".Message, error) {")
+		g.P("func ", hname, "(srv interface{}, ctx ", contextPkg, ".Context, buf []byte) (interface{}, error) {")
 		g.P("in := new(", inType, ")")
 		g.P("if err := ", g.gen.Pkg["proto"], ".Unmarshal(buf, in); err != nil { return nil, err }")
 		g.P("out, err := srv.(", servName, "Server).", methName, "(ctx, in)")
@@ -379,7 +379,7 @@ func (g *grpc) generateServerMethod(servName string, method *pb.MethodDescriptor
 	g.P("func ", hname, "(srv interface{}, stream ", grpcPkg, ".ServerStream) error {")
 	if !method.GetClientStreaming() {
 		g.P("m := new(", inType, ")")
-		g.P("if err := stream.RecvProto(m); err != nil { return err }")
+		g.P("if err := stream.RecvMsg(m); err != nil { return err }")
 		g.P("return srv.(", servName, "Server).", methName, "(m, &", streamType, "{stream})")
 	} else {
 		g.P("return srv.(", servName, "Server).", methName, "(&", streamType, "{stream})")
@@ -413,20 +413,20 @@ func (g *grpc) generateServerMethod(servName string, method *pb.MethodDescriptor
 
 	if genSend {
 		g.P("func (x *", streamType, ") Send(m *", outType, ") error {")
-		g.P("return x.ServerStream.SendProto(m)")
+		g.P("return x.ServerStream.SendMsg(m)")
 		g.P("}")
 		g.P()
 	}
 	if genSendAndClose {
 		g.P("func (x *", streamType, ") SendAndClose(m *", outType, ") error {")
-		g.P("return x.ServerStream.SendProto(m)")
+		g.P("return x.ServerStream.SendMsg(m)")
 		g.P("}")
 		g.P()
 	}
 	if genRecv {
 		g.P("func (x *", streamType, ") Recv() (*", inType, ", error) {")
 		g.P("m := new(", inType, ")")
-		g.P("if err := x.ServerStream.RecvProto(m); err != nil { return nil, err }")
+		g.P("if err := x.ServerStream.RecvMsg(m); err != nil { return nil, err }")
 		g.P("return m, nil")
 		g.P("}")
 		g.P()
