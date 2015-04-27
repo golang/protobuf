@@ -365,9 +365,9 @@ func (g *grpc) generateServerMethod(servName string, method *pb.MethodDescriptor
 	outType := g.typeName(method.GetOutputType())
 
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
-		g.P("func ", hname, "(srv interface{}, ctx ", contextPkg, ".Context, buf []byte) (interface{}, error) {")
+		g.P("func ", hname, "(srv interface{}, ctx ", contextPkg, ".Context, codec ", grpcPkg, ".Codec, buf []byte) (interface{}, error) {")
 		g.P("in := new(", inType, ")")
-		g.P("if err := ", g.gen.Pkg["proto"], ".Unmarshal(buf, in); err != nil { return nil, err }")
+		g.P("if err := codec.Unmarshal(buf, in); err != nil { return nil, err }")
 		g.P("out, err := srv.(", servName, "Server).", methName, "(ctx, in)")
 		g.P("if err != nil { return nil, err }")
 		g.P("return out, nil")
