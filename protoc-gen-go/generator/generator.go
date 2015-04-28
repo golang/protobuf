@@ -546,10 +546,6 @@ func RegisterUniquePackageName(pkg string, f *FileDescriptor) string {
 	// Convert dots to underscores before finding a unique alias.
 	pkg = strings.Map(badToUnderscore, pkg)
 
-	for i, orig := 1, pkg; pkgNamesInUse[pkg]; i++ {
-		// It's a duplicate; must rename.
-		pkg = orig + strconv.Itoa(i)
-	}
 	// Install it.
 	pkgNamesInUse[pkg] = true
 	if f != nil {
@@ -1154,13 +1150,25 @@ func (g *Generator) generateImports() {
 	if !g.file.proto3 {
 		g.P("import " + g.Pkg["math"] + ` "math"`)
 	}
+
+	// Track imported packages
+	imported := make(map[string]bool)
+
 	for i, s := range g.file.Dependency {
 		fd := g.fileByName(s)
 		// Do not import our own package.
 		if fd.PackageName() == g.packageName {
 			continue
 		}
-		filename := goFileName(s)
+
+		// Skip duplicated imports
+		if imported[fd.PackageName()] {
+			continue
+		}
+		imported[fd.PackageName()] = true
+
+		// Import the package name, rather than the file name
+		filename := goFileDir(s)
 		if substitution, ok := g.ImportMap[s]; ok {
 			filename = substitution
 		}
@@ -2005,6 +2013,11 @@ func goFileName(name string) string {
 		name = name[0 : len(name)-len(ext)]
 	}
 	return name + ".pb.go"
+}
+
+// Given a .proto file name, return the directory
+func goFileDir(name string) string {
+	return path.Dir(name)
 }
 
 // Is this field optional?
