@@ -3,7 +3,7 @@
 // DO NOT EDIT!
 
 /*
-Package google_protobuf is a generated protocol buffer package.
+Package protobuf is a generated protocol buffer package.
 
 It is generated from these files:
 	google/protobuf/descriptor.proto
@@ -492,9 +492,7 @@ type FieldDescriptorProto struct {
 	// TODO(kenton):  Base-64 encode?
 	DefaultValue *string `protobuf:"bytes,7,opt,name=default_value" json:"default_value,omitempty"`
 	// If set, gives the index of a oneof in the containing type's oneof_decl
-	// list.  This field is a member of that oneof.  Extensions of a oneof should
-	// not set this since the oneof to which they belong will be inferred based
-	// on the extension range containing the extension's field number.
+	// list.  This field is a member of that oneof.
 	OneofIndex       *int32        `protobuf:"varint,9,opt,name=oneof_index" json:"oneof_index,omitempty"`
 	Options          *FieldOptions `protobuf:"bytes,8,opt,name=options" json:"options,omitempty"`
 	XXX_unrecognized []byte        `json:"-"`
@@ -812,6 +810,9 @@ type FileOptions struct {
 	// Enables the use of arenas for the proto messages in this file. This applies
 	// only to generated classes for C++.
 	CcEnableArenas *bool `protobuf:"varint,31,opt,name=cc_enable_arenas,def=0" json:"cc_enable_arenas,omitempty"`
+	// Sets the objective c class prefix which is prepended to all objective c
+	// generated classes from this .proto. There is no default.
+	ObjcClassPrefix *string `protobuf:"bytes,36,opt,name=objc_class_prefix" json:"objc_class_prefix,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
@@ -928,6 +929,13 @@ func (m *FileOptions) GetCcEnableArenas() bool {
 		return *m.CcEnableArenas
 	}
 	return Default_FileOptions_CcEnableArenas
+}
+
+func (m *FileOptions) GetObjcClassPrefix() string {
+	if m != nil && m.ObjcClassPrefix != nil {
+		return *m.ObjcClassPrefix
+	}
+	return ""
 }
 
 func (m *FileOptions) GetUninterpretedOption() []*UninterpretedOption {
@@ -1563,6 +1571,11 @@ type SourceCodeInfo_Location struct {
 	// A series of line comments appearing on consecutive lines, with no other
 	// tokens appearing on those lines, will be treated as a single comment.
 	//
+	// leading_detached_comments will keep paragraphs of comments that appear
+	// before (but not connected to) the current element. Each paragraph,
+	// separated by empty lines, will be one comment element in the repeated
+	// field.
+	//
 	// Only the comment content is provided; comment markers (e.g. //) are
 	// stripped out.  For block comments, leading whitespace and an asterisk
 	// will be stripped from the beginning of each line other than the first.
@@ -1583,6 +1596,12 @@ type SourceCodeInfo_Location struct {
 	//   // Another line attached to qux.
 	//   optional double qux = 4;
 	//
+	//   // Detached comment for corge. This is not leading or trailing comments
+	//   // to qux or corge because there are blank lines separating it from
+	//   // both.
+	//
+	//   // Detached comment for corge paragraph 2.
+	//
 	//   optional string corge = 5;
 	//   /* Block comment attached
 	//    * to corge.  Leading asterisks
@@ -1590,9 +1609,12 @@ type SourceCodeInfo_Location struct {
 	//   /* Block comment attached to
 	//    * grault. */
 	//   optional int32 grault = 6;
-	LeadingComments  *string `protobuf:"bytes,3,opt,name=leading_comments" json:"leading_comments,omitempty"`
-	TrailingComments *string `protobuf:"bytes,4,opt,name=trailing_comments" json:"trailing_comments,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	//
+	//   // ignored detached comments.
+	LeadingComments         *string  `protobuf:"bytes,3,opt,name=leading_comments" json:"leading_comments,omitempty"`
+	TrailingComments        *string  `protobuf:"bytes,4,opt,name=trailing_comments" json:"trailing_comments,omitempty"`
+	LeadingDetachedComments []string `protobuf:"bytes,6,rep,name=leading_detached_comments" json:"leading_detached_comments,omitempty"`
+	XXX_unrecognized        []byte   `json:"-"`
 }
 
 func (m *SourceCodeInfo_Location) Reset()         { *m = SourceCodeInfo_Location{} }
@@ -1625,6 +1647,13 @@ func (m *SourceCodeInfo_Location) GetTrailingComments() string {
 		return *m.TrailingComments
 	}
 	return ""
+}
+
+func (m *SourceCodeInfo_Location) GetLeadingDetachedComments() []string {
+	if m != nil {
+		return m.LeadingDetachedComments
+	}
+	return nil
 }
 
 func init() {
