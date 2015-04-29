@@ -35,9 +35,9 @@
 regenerate:
 	echo WARNING! THIS RULE IS PROBABLY NOT RIGHT FOR YOUR INSTALLATION
 	cd $(HOME)/src/protobuf/src && \
-	protoc --go_out=. ./google/protobuf/compiler/plugin.proto && \
-	cat ./google/protobuf/compiler/plugin.pb.go | \
-		sed '/^import/s;google/protobuf/descriptor.pb;github.com/golang/protobuf/protoc-gen-go/descriptor;' > $(GOPATH)/src/github.com/golang/protobuf/protoc-gen-go/plugin/plugin.pb.go
+	protoc --go_out=Mgoogle/protobuf/descriptor.proto=github.com/golang/protobuf/protoc-gen-go/descriptor:. \
+	  ./google/protobuf/compiler/plugin.proto && \
+	cat ./google/protobuf/compiler/plugin.pb.go > $(GOPATH)/src/github.com/golang/protobuf/protoc-gen-go/plugin/plugin.pb.go
 
 restore:
 	cp plugin.pb.golden plugin.pb.go

@@ -23,7 +23,7 @@ package my_test
 import proto "github.com/golang/protobuf/proto"
 import math "math"
 
-// discarding unused import multitest2 "multi/multi1.pb"
+// discarding unused import multitest2 "multi"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
