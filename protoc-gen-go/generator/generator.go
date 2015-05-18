@@ -1554,8 +1554,13 @@ func (g *Generator) generateMessage(message *Descriptor) {
 				keyTag, valTag := g.goTag(d, keyField, keyWire), g.goTag(d, valField, valWire)
 
 				// We don't use stars, except for message-typed values.
+				// Message and enum types are the only two possibly foreign types used in maps,
+				// so record their use. They are not permitted as map keys.
 				keyType = strings.TrimPrefix(keyType, "*")
 				switch *valField.Type {
+				case descriptor.FieldDescriptorProto_TYPE_ENUM:
+					valType = strings.TrimPrefix(valType, "*")
+					g.RecordTypeUse(valField.GetTypeName())
 				case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
 					g.RecordTypeUse(valField.GetTypeName())
 				default:
