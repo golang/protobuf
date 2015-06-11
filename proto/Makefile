@@ -35,7 +35,6 @@ install:
 test: install generate-test-pbs
 	go test
 
-
 generate-test-pbs:
 	make install
 	make -C test_proto

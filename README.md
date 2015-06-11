@@ -114,9 +114,9 @@ Consider file test.proto, containing
 ```proto
 	syntax = "proto2";
 	package example;
-	
+
 	enum FOO { X = 17; };
-	
+
 	message Test {
 	  required string label = 1;
 	  optional int32 type = 2 [default=77];
