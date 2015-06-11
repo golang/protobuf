@@ -1,0 +1,7 @@
+language: go
+
+script:
+  - make install
+  # Either `make regenerate` does not change any files or it does, in which case we print the diff and fail.
+  - (make regenerate && git ls-files --modified --deleted --others --exclude-standard | diff /dev/null -) || (git add -A && git diff -u HEAD && false)
+  - make test

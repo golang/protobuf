@@ -237,6 +237,45 @@ func (x *FieldOptions_CType) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+type FieldOptions_JSType int32
+
+const (
+	// Use the default type.
+	FieldOptions_JS_NORMAL FieldOptions_JSType = 0
+	// Use JavaScript strings.
+	FieldOptions_JS_STRING FieldOptions_JSType = 1
+	// Use JavaScript numbers.
+	FieldOptions_JS_NUMBER FieldOptions_JSType = 2
+)
+
+var FieldOptions_JSType_name = map[int32]string{
+	0: "JS_NORMAL",
+	1: "JS_STRING",
+	2: "JS_NUMBER",
+}
+var FieldOptions_JSType_value = map[string]int32{
+	"JS_NORMAL": 0,
+	"JS_STRING": 1,
+	"JS_NUMBER": 2,
+}
+
+func (x FieldOptions_JSType) Enum() *FieldOptions_JSType {
+	p := new(FieldOptions_JSType)
+	*p = x
+	return p
+}
+func (x FieldOptions_JSType) String() string {
+	return proto.EnumName(FieldOptions_JSType_name, int32(x))
+}
+func (x *FieldOptions_JSType) UnmarshalJSON(data []byte) error {
+	value, err := proto.UnmarshalJSONEnum(FieldOptions_JSType_value, data, "FieldOptions_JSType")
+	if err != nil {
+		return err
+	}
+	*x = FieldOptions_JSType(value)
+	return nil
+}
+
 // The protocol compiler can output a FileDescriptorSet containing the .proto
 // files it parses.
 type FileDescriptorSet struct {
@@ -373,15 +412,19 @@ func (m *FileDescriptorProto) GetSyntax() string {
 
 // Describes a message type.
 type DescriptorProto struct {
-	Name             *string                           `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	Field            []*FieldDescriptorProto           `protobuf:"bytes,2,rep,name=field" json:"field,omitempty"`
-	Extension        []*FieldDescriptorProto           `protobuf:"bytes,6,rep,name=extension" json:"extension,omitempty"`
-	NestedType       []*DescriptorProto                `protobuf:"bytes,3,rep,name=nested_type" json:"nested_type,omitempty"`
-	EnumType         []*EnumDescriptorProto            `protobuf:"bytes,4,rep,name=enum_type" json:"enum_type,omitempty"`
-	ExtensionRange   []*DescriptorProto_ExtensionRange `protobuf:"bytes,5,rep,name=extension_range" json:"extension_range,omitempty"`
-	OneofDecl        []*OneofDescriptorProto           `protobuf:"bytes,8,rep,name=oneof_decl" json:"oneof_decl,omitempty"`
-	Options          *MessageOptions                   `protobuf:"bytes,7,opt,name=options" json:"options,omitempty"`
-	XXX_unrecognized []byte                            `json:"-"`
+	Name           *string                           `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Field          []*FieldDescriptorProto           `protobuf:"bytes,2,rep,name=field" json:"field,omitempty"`
+	Extension      []*FieldDescriptorProto           `protobuf:"bytes,6,rep,name=extension" json:"extension,omitempty"`
+	NestedType     []*DescriptorProto                `protobuf:"bytes,3,rep,name=nested_type" json:"nested_type,omitempty"`
+	EnumType       []*EnumDescriptorProto            `protobuf:"bytes,4,rep,name=enum_type" json:"enum_type,omitempty"`
+	ExtensionRange []*DescriptorProto_ExtensionRange `protobuf:"bytes,5,rep,name=extension_range" json:"extension_range,omitempty"`
+	OneofDecl      []*OneofDescriptorProto           `protobuf:"bytes,8,rep,name=oneof_decl" json:"oneof_decl,omitempty"`
+	Options        *MessageOptions                   `protobuf:"bytes,7,opt,name=options" json:"options,omitempty"`
+	ReservedRange  []*DescriptorProto_ReservedRange  `protobuf:"bytes,9,rep,name=reserved_range" json:"reserved_range,omitempty"`
+	// Reserved field names, which may not be used by fields in the same message.
+	// A given name may only be reserved once.
+	ReservedName     []string `protobuf:"bytes,10,rep,name=reserved_name" json:"reserved_name,omitempty"`
+	XXX_unrecognized []byte   `json:"-"`
 }
 
 func (m *DescriptorProto) Reset()         { *m = DescriptorProto{} }
@@ -444,6 +487,20 @@ func (m *DescriptorProto) GetOptions() *MessageOptions {
 	return nil
 }
 
+func (m *DescriptorProto) GetReservedRange() []*DescriptorProto_ReservedRange {
+	if m != nil {
+		return m.ReservedRange
+	}
+	return nil
+}
+
+func (m *DescriptorProto) GetReservedName() []string {
+	if m != nil {
+		return m.ReservedName
+	}
+	return nil
+}
+
 type DescriptorProto_ExtensionRange struct {
 	Start            *int32 `protobuf:"varint,1,opt,name=start" json:"start,omitempty"`
 	End              *int32 `protobuf:"varint,2,opt,name=end" json:"end,omitempty"`
@@ -462,6 +519,33 @@ func (m *DescriptorProto_ExtensionRange) GetStart() int32 {
 }
 
 func (m *DescriptorProto_ExtensionRange) GetEnd() int32 {
+	if m != nil && m.End != nil {
+		return *m.End
+	}
+	return 0
+}
+
+// Range of reserved tag numbers. Reserved tag numbers may not be used by
+// fields or extension ranges in the same message. Reserved ranges may
+// not overlap.
+type DescriptorProto_ReservedRange struct {
+	Start            *int32 `protobuf:"varint,1,opt,name=start" json:"start,omitempty"`
+	End              *int32 `protobuf:"varint,2,opt,name=end" json:"end,omitempty"`
+	XXX_unrecognized []byte `json:"-"`
+}
+
+func (m *DescriptorProto_ReservedRange) Reset()         { *m = DescriptorProto_ReservedRange{} }
+func (m *DescriptorProto_ReservedRange) String() string { return proto.CompactTextString(m) }
+func (*DescriptorProto_ReservedRange) ProtoMessage()    {}
+
+func (m *DescriptorProto_ReservedRange) GetStart() int32 {
+	if m != nil && m.Start != nil {
+		return *m.Start
+	}
+	return 0
+}
+
+func (m *DescriptorProto_ReservedRange) GetEnd() int32 {
 	if m != nil && m.End != nil {
 		return *m.End
 	}
@@ -492,9 +576,7 @@ type FieldDescriptorProto struct {
 	// TODO(kenton):  Base-64 encode?
 	DefaultValue *string `protobuf:"bytes,7,opt,name=default_value" json:"default_value,omitempty"`
 	// If set, gives the index of a oneof in the containing type's oneof_decl
-	// list.  This field is a member of that oneof.  Extensions of a oneof should
-	// not set this since the oneof to which they belong will be inferred based
-	// on the extension range containing the extension's field number.
+	// list.  This field is a member of that oneof.
 	OneofIndex       *int32        `protobuf:"varint,9,opt,name=oneof_index" json:"oneof_index,omitempty"`
 	Options          *FieldOptions `protobuf:"bytes,8,opt,name=options" json:"options,omitempty"`
 	XXX_unrecognized []byte        `json:"-"`
@@ -812,6 +894,11 @@ type FileOptions struct {
 	// Enables the use of arenas for the proto messages in this file. This applies
 	// only to generated classes for C++.
 	CcEnableArenas *bool `protobuf:"varint,31,opt,name=cc_enable_arenas,def=0" json:"cc_enable_arenas,omitempty"`
+	// Sets the objective c class prefix which is prepended to all objective c
+	// generated classes from this .proto. There is no default.
+	ObjcClassPrefix *string `protobuf:"bytes,36,opt,name=objc_class_prefix" json:"objc_class_prefix,omitempty"`
+	// Namespace for generated classes; defaults to the package.
+	CsharpNamespace *string `protobuf:"bytes,37,opt,name=csharp_namespace" json:"csharp_namespace,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
 	UninterpretedOption []*UninterpretedOption    `protobuf:"bytes,999,rep,name=uninterpreted_option" json:"uninterpreted_option,omitempty"`
 	XXX_extensions      map[int32]proto.Extension `json:"-"`
@@ -928,6 +1015,20 @@ func (m *FileOptions) GetCcEnableArenas() bool {
 		return *m.CcEnableArenas
 	}
 	return Default_FileOptions_CcEnableArenas
+}
+
+func (m *FileOptions) GetObjcClassPrefix() string {
+	if m != nil && m.ObjcClassPrefix != nil {
+		return *m.ObjcClassPrefix
+	}
+	return ""
+}
+
+func (m *FileOptions) GetCsharpNamespace() string {
+	if m != nil && m.CsharpNamespace != nil {
+		return *m.CsharpNamespace
+	}
+	return ""
 }
 
 func (m *FileOptions) GetUninterpretedOption() []*UninterpretedOption {
@@ -1060,8 +1161,19 @@ type FieldOptions struct {
 	// The packed option can be enabled for repeated primitive fields to enable
 	// a more efficient representation on the wire. Rather than repeatedly
 	// writing the tag and type for each element, the entire array is encoded as
-	// a single length-delimited blob.
+	// a single length-delimited blob. In proto3, only explicit setting it to
+	// false will avoid using packed encoding.
 	Packed *bool `protobuf:"varint,2,opt,name=packed" json:"packed,omitempty"`
+	// The jstype option determines the JavaScript type used for values of the
+	// field.  The option is permitted only for 64 bit integral and fixed types
+	// (int64, uint64, sint64, fixed64, sfixed64).  By default these types are
+	// represented as JavaScript strings.  This avoids loss of precision that can
+	// happen when a large value is converted to a floating point JavaScript
+	// numbers.  Specifying JS_NUMBER for the jstype causes the generated
+	// JavaScript code to use the JavaScript "number" type instead of strings.
+	// This option is an enum to permit additional types to be added,
+	// e.g. goog.math.Integer.
+	Jstype *FieldOptions_JSType `protobuf:"varint,6,opt,name=jstype,enum=google.protobuf.FieldOptions_JSType,def=0" json:"jstype,omitempty"`
 	// Should this field be parsed lazily?  Lazy applies only to message-type
 	// fields.  It means that when the outer message is initially parsed, the
 	// inner message's contents will not be parsed but instead stored in encoded
@@ -1123,6 +1235,7 @@ func (m *FieldOptions) ExtensionMap() map[int32]proto.Extension {
 }
 
 const Default_FieldOptions_Ctype FieldOptions_CType = FieldOptions_STRING
+const Default_FieldOptions_Jstype FieldOptions_JSType = FieldOptions_JS_NORMAL
 const Default_FieldOptions_Lazy bool = false
 const Default_FieldOptions_Deprecated bool = false
 const Default_FieldOptions_Weak bool = false
@@ -1139,6 +1252,13 @@ func (m *FieldOptions) GetPacked() bool {
 		return *m.Packed
 	}
 	return false
+}
+
+func (m *FieldOptions) GetJstype() FieldOptions_JSType {
+	if m != nil && m.Jstype != nil {
+		return *m.Jstype
+	}
+	return Default_FieldOptions_Jstype
 }
 
 func (m *FieldOptions) GetLazy() bool {
@@ -1563,6 +1683,11 @@ type SourceCodeInfo_Location struct {
 	// A series of line comments appearing on consecutive lines, with no other
 	// tokens appearing on those lines, will be treated as a single comment.
 	//
+	// leading_detached_comments will keep paragraphs of comments that appear
+	// before (but not connected to) the current element. Each paragraph,
+	// separated by empty lines, will be one comment element in the repeated
+	// field.
+	//
 	// Only the comment content is provided; comment markers (e.g. //) are
 	// stripped out.  For block comments, leading whitespace and an asterisk
 	// will be stripped from the beginning of each line other than the first.
@@ -1583,6 +1708,12 @@ type SourceCodeInfo_Location struct {
 	//   // Another line attached to qux.
 	//   optional double qux = 4;
 	//
+	//   // Detached comment for corge. This is not leading or trailing comments
+	//   // to qux or corge because there are blank lines separating it from
+	//   // both.
+	//
+	//   // Detached comment for corge paragraph 2.
+	//
 	//   optional string corge = 5;
 	//   /* Block comment attached
 	//    * to corge.  Leading asterisks
@@ -1590,9 +1721,12 @@ type SourceCodeInfo_Location struct {
 	//   /* Block comment attached to
 	//    * grault. */
 	//   optional int32 grault = 6;
-	LeadingComments  *string `protobuf:"bytes,3,opt,name=leading_comments" json:"leading_comments,omitempty"`
-	TrailingComments *string `protobuf:"bytes,4,opt,name=trailing_comments" json:"trailing_comments,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	//
+	//   // ignored detached comments.
+	LeadingComments         *string  `protobuf:"bytes,3,opt,name=leading_comments" json:"leading_comments,omitempty"`
+	TrailingComments        *string  `protobuf:"bytes,4,opt,name=trailing_comments" json:"trailing_comments,omitempty"`
+	LeadingDetachedComments []string `protobuf:"bytes,6,rep,name=leading_detached_comments" json:"leading_detached_comments,omitempty"`
+	XXX_unrecognized        []byte   `json:"-"`
 }
 
 func (m *SourceCodeInfo_Location) Reset()         { *m = SourceCodeInfo_Location{} }
@@ -1627,9 +1761,17 @@ func (m *SourceCodeInfo_Location) GetTrailingComments() string {
 	return ""
 }
 
+func (m *SourceCodeInfo_Location) GetLeadingDetachedComments() []string {
+	if m != nil {
+		return m.LeadingDetachedComments
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Type", FieldDescriptorProto_Type_name, FieldDescriptorProto_Type_value)
 	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Label", FieldDescriptorProto_Label_name, FieldDescriptorProto_Label_value)
 	proto.RegisterEnum("google.protobuf.FileOptions_OptimizeMode", FileOptions_OptimizeMode_name, FileOptions_OptimizeMode_value)
 	proto.RegisterEnum("google.protobuf.FieldOptions_CType", FieldOptions_CType_name, FieldOptions_CType_value)
+	proto.RegisterEnum("google.protobuf.FieldOptions_JSType", FieldOptions_JSType_name, FieldOptions_JSType_value)
 }
