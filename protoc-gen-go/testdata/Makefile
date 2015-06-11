@@ -58,6 +58,8 @@ testbuild:	regenerate
 regenerate:
 	# Invoke protoc once to generate three independent .pb.go files in the same package.
 	protoc --go_out=. multi/multi{1,2,3}.proto
+	# Invoke protoc once to generate two independent .pb.go files in different packages.
+	protoc --go_out=. $(shell find . -name *.proto -type f)
 
 #extension_test:	extension_test.$O
 #	$(LD) -L. -o $@ $<
