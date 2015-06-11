@@ -32,11 +32,13 @@
 # Not stored here, but descriptor.proto is in https://github.com/google/protobuf/
 # at src/google/protobuf/descriptor.proto
 regenerate:
-	echo WARNING! THIS RULE IS PROBABLY NOT RIGHT FOR YOUR INSTALLATION
+	@echo WARNING! THIS RULE IS PROBABLY NOT RIGHT FOR YOUR INSTALLATION
+	# The below `.bak` is a dirty hack to work around an incompatability between
+	# GNU sed and BSD sed. See http://stackoverflow.com/questions/5694228
 	cd $(HOME)/src/protobuf/src && \
 	protoc --go_out=. ./google/protobuf/descriptor.proto && \
-	sed -i 's,^package google_protobuf,package descriptor,' google/protobuf/descriptor.pb.go && \
-	cp ./google/protobuf/descriptor.pb.go $(GOPATH)/src/github.com/golang/protobuf/protoc-gen-go/descriptor/descriptor.pb.go
+	sed -i.bak 's,^package google_protobuf,package descriptor,' google/protobuf/descriptor.pb.go
+	cp $(HOME)/src/protobuf/src/google/protobuf/descriptor.pb.go descriptor.pb.go
 
 restore:
 	cp descriptor.pb.golden descriptor.pb.go
