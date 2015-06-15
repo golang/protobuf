@@ -41,7 +41,6 @@ import (
 	"io"
 	"log"
 	"math"
-	"os"
 	"reflect"
 	"sort"
 	"strings"
@@ -669,10 +668,7 @@ func writeExtensions(w *textWriter, pv reflect.Value) error {
 
 		pb, err := GetExtension(ep, desc)
 		if err != nil {
-			if _, err := fmt.Fprintln(os.Stderr, "proto: failed getting extension: ", err); err != nil {
-				return err
-			}
-			continue
+			return fmt.Errorf("failed getting extension: %v", err)
 		}
 
 		// Repeated extensions will appear as a slice.
