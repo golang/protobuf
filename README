@@ -146,3 +146,10 @@ To create and play with a Test object from the example package,
 		}
 		// etc.
 	}
+
+gRPC Support
+============
+
+To generate code from .protos with gRPC support, you'll need to explicitly enable the grpc plugin:
+
+    protoc --go_out=plugins=grpc:. path/to/thing.proto
