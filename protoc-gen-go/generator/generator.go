@@ -1848,8 +1848,16 @@ func (g *Generator) generateMessage(message *Descriptor) {
 func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	ccTypeName := ext.DescName()
 
-	extDesc := g.ObjectNamed(*ext.Extendee).(*Descriptor)
-	extendedType := "*" + g.TypeName(extDesc)
+	extObj := g.ObjectNamed(*ext.Extendee)
+	var extDesc *Descriptor
+	if id, ok := extObj.(*ImportedDescriptor); ok {
+		// This is extending a publicly imported message.
+		// We need the underlying type for goTag.
+		extDesc = id.o.(*Descriptor)
+	} else {
+		extDesc = extObj.(*Descriptor)
+	}
+	extendedType := "*" + g.TypeName(extObj) // always use the original
 	field := ext.FieldDescriptorProto
 	fieldType, wireType := g.GoType(ext.parent, field)
 	tag := g.goTag(extDesc, field, wireType)
