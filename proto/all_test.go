@@ -36,6 +36,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"math"
 	"math/rand"
 	"reflect"
@@ -1281,7 +1282,7 @@ func TestEnum(t *testing.T) {
 // We don't care what the value actually is, just as long as it doesn't crash.
 func TestPrintingNilEnumFields(t *testing.T) {
 	pb := new(GoEnum)
-	fmt.Sprintf("%+v", pb)
+	fmt.Fprintf(ioutil.Discard, "%+v", pb)
 }
 
 // Verify that absent required fields cause Marshal/Unmarshal to return errors.
