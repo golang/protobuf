@@ -52,6 +52,10 @@ testbuild:	regenerate
 regenerate:
 	# Invoke protoc once to generate three independent .pb.go files in the same package.
 	protoc --go_out=. multifile/multi{1,2,3}.proto
+	# Invoke protoc multiple times to build packages that are interdependent.
+	for dir in $(sort $(dir $(shell find multipkg -name '*.proto'))); do \
+	  protoc --go_out=. $$dir/*.proto; \
+	done
 
 #extension_test:	extension_test.$O
 #	$(LD) -L. -o $@ $<
