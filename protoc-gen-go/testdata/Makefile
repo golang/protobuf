@@ -47,11 +47,11 @@ golden:
 nuke:	clean
 
 testbuild:	regenerate
-	go test
+	go test ./...
 
 regenerate:
 	# Invoke protoc once to generate three independent .pb.go files in the same package.
-	protoc --go_out=. multi/multi{1,2,3}.proto
+	protoc --go_out=. multifile/multi{1,2,3}.proto
 
 #extension_test:	extension_test.$O
 #	$(LD) -L. -o $@ $<

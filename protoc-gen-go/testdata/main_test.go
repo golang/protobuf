@@ -36,7 +36,7 @@ package testdata
 import (
 	"testing"
 
-	multipb "./multi"
+	multipb "./multifile"
 	mytestpb "./my_test"
 )
 
