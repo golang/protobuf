@@ -794,3 +794,20 @@ func (s mapKeys) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
 func (s mapKeys) Less(i, j int) bool {
 	return fmt.Sprint(s[i].Interface()) < fmt.Sprint(s[j].Interface())
 }
+
+// isProto3Zero reports whether v is a zero proto3 value.
+func isProto3Zero(v reflect.Value) bool {
+	switch v.Kind() {
+	case reflect.Bool:
+		return !v.Bool()
+	case reflect.Int32, reflect.Int64:
+		return v.Int() == 0
+	case reflect.Uint32, reflect.Uint64:
+		return v.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return v.Float() == 0
+	case reflect.String:
+		return v.String() == ""
+	}
+	return false
+}
