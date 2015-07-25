@@ -245,7 +245,7 @@ func writeStruct(w *textWriter, sv reflect.Value) error {
 		}
 		if fv.Kind() == reflect.Map {
 			// Map fields are rendered as a repeated struct with key/value fields.
-			keys := fv.MapKeys() // TODO: should we sort these for deterministic output?
+			keys := fv.MapKeys()
 			sort.Sort(mapKeys(keys))
 			for _, key := range keys {
 				val := fv.MapIndex(key)
