@@ -529,7 +529,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base structPointer) error {
 		}
 		o.buf = append(o.buf, p.tagcode...)
 		o.EncodeRawBytes(data)
-		return nil
+		return state.err
 	}
 
 	o.buf = append(o.buf, p.tagcode...)
