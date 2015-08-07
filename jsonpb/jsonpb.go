@@ -207,7 +207,7 @@ func (m *Marshaller) marshalValue(out *errWriter, v reflect.Value,
 	}
 
 	// Handle maps.
-	// NOTE: Since Go randomizes map iteration, we sort keys for stable output.
+	// Since Go randomizes map iteration, we sort keys for stable output.
 	if v.Kind() == reflect.Map {
 		out.write(`{`)
 		keys := v.MapKeys()
@@ -320,7 +320,17 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 				if err := unmarshalValue(target.Field(i), valueForField); err != nil {
 					return err
 				}
+				delete(jsonFields, fieldName)
 			}
+		}
+		if len(jsonFields) > 0 {
+			// Pick any field to be the scapegoat.
+			var f string
+			for fname := range jsonFields {
+				f = fname
+				break
+			}
+			return fmt.Errorf("unknown field %q in %v", f, targetType)
 		}
 		return nil
 	}
@@ -389,6 +399,7 @@ type hasUnmarshalJSON interface {
 
 // parseFieldOptions returns the field name and if it should be omited.
 func parseFieldOptions(f reflect.StructField) (string, bool) {
+	// TODO: Do this without using the "json" field tag.
 	name := f.Name
 	omitEmpty := false
 	tag := f.Tag.Get("json")
