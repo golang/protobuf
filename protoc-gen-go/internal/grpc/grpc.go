@@ -98,6 +98,13 @@ func (g *grpc) P(args ...interface{}) { g.gen.P(args...) }
 
 // Generate generates code for the services in the given file.
 func (g *grpc) Generate(file *generator.FileDescriptor) {
+	if len(file.FileDescriptorProto.Service) == 0 {
+		return
+	}
+	g.P("// Reference imports to suppress errors if they are not otherwise used.")
+	g.P("var _ ", contextPkg, ".Context")
+	g.P("var _ ", grpcPkg, ".ClientConn")
+	g.P()
 	for i, service := range file.FileDescriptorProto.Service {
 		g.generateService(file, service, i)
 	}
@@ -112,10 +119,6 @@ func (g *grpc) GenerateImports(file *generator.FileDescriptor) {
 	g.P(contextPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, contextPkgPath)))
 	g.P(grpcPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, grpcPkgPath)))
 	g.P(")")
-	g.P()
-	g.P("// Reference imports to suppress errors if they are not otherwise used.")
-	g.P("var _ ", contextPkg, ".Context")
-	g.P("var _ ", grpcPkg, ".ClientConn")
 	g.P()
 }
 
