@@ -96,20 +96,17 @@ func (m *Marshaller) marshalObject(out *errWriter, v proto.Message, indent strin
 	for i := 0; i < s.NumField(); i++ {
 		value := s.Field(i)
 		valueField := s.Type().Field(i)
-		fieldName, omitFieldIfNil := parseFieldOptions(valueField)
-
-		// Fields which should not be serialized will specify a json tag with '-'
-		// TODO: proto3 objects should have default values omitted.
-		if fieldName == "-" {
+		if strings.HasPrefix(valueField.Name, "XXX_") {
 			continue
-		} else if omitFieldIfNil {
-			// IsNil will panic on most value kinds.
-			skip := false
-			switch value.Kind() {
-			case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
-				skip = value.IsNil()
-			}
-			if skip {
+		}
+		fieldName := jsonFieldName(valueField)
+
+		// TODO: proto3 objects should have default values omitted.
+
+		// IsNil will panic on most value kinds.
+		switch value.Kind() {
+		case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
+			if value.IsNil() {
 				continue
 			}
 		}
@@ -309,12 +306,11 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 		}
 
 		for i := 0; i < target.NumField(); i++ {
-			fieldName, _ := parseFieldOptions(target.Type().Field(i))
-
-			// Fields which should not be serialized will specify a json tag with '-'
-			if fieldName == "-" {
+			ft := target.Type().Field(i)
+			if strings.HasPrefix(ft.Name, "XXX_") {
 				continue
 			}
+			fieldName := jsonFieldName(ft)
 
 			if valueForField, ok := jsonFields[fieldName]; ok {
 				if err := unmarshalValue(target.Field(i), valueForField); err != nil {
@@ -397,21 +393,11 @@ type hasUnmarshalJSON interface {
 	UnmarshalJSON(data []byte) error
 }
 
-// parseFieldOptions returns the field name and if it should be omited.
-func parseFieldOptions(f reflect.StructField) (string, bool) {
-	// TODO: Do this without using the "json" field tag.
-	name := f.Name
-	omitEmpty := false
-	tag := f.Tag.Get("json")
-	tagParts := strings.Split(tag, ",")
-	for i := range tagParts {
-		if tagParts[i] == "omitempty" || tagParts[i] == "" {
-			omitEmpty = true
-		} else {
-			name = tagParts[i]
-		}
-	}
-	return name, omitEmpty
+// jsonFieldName returns the field name to use.
+func jsonFieldName(f reflect.StructField) string {
+	var prop proto.Properties
+	prop.Init(f.Type, f.Name, f.Tag.Get("protobuf"), &f)
+	return prop.OrigName
 }
 
 // Writer wrapper inspired by https://blog.golang.org/errors-are-values
