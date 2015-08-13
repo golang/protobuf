@@ -37,6 +37,7 @@
 package generator
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"go/parser"
@@ -1064,10 +1065,18 @@ func (g *Generator) generate(file *FileDescriptor) {
 
 	// Reformat generated code.
 	fset := token.NewFileSet()
+	raw := g.Bytes()
 	ast, err := parser.ParseFile(fset, "", g, parser.ParseComments)
 	if err != nil {
-		g.Fail("bad Go source code was generated:", err.Error())
-		return
+		// Print out the bad code with line numbers.
+		// This should never happen in practice, but it can while changing generated code,
+		// so consider this a debugging aid.
+		var src bytes.Buffer
+		s := bufio.NewScanner(bytes.NewReader(raw))
+		for line := 1; s.Scan(); line++ {
+			fmt.Fprintf(&src, "%5d\t%s\n", line, s.Bytes())
+		}
+		g.Fail("bad Go source code was generated:", err.Error(), "\n"+src.String())
 	}
 	g.Reset()
 	err = (&printer.Config{Mode: printer.TabIndent | printer.UseSpaces, Tabwidth: 8}).Fprint(g, fset, ast)
