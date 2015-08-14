@@ -1173,7 +1173,7 @@ func (g *Generator) generateImports() {
 		if substitution, ok := g.ImportMap[s]; ok {
 			importPath = substitution
 		}
-		importPath = g.ImportPrefix + importPath
+		importPath = g.ImportPrefix + g.PackageImportPath + importPath
 		// Skip weak imports.
 		if g.weak(int32(i)) {
 			g.P("// skipping weak import ", fd.PackageName(), " ", strconv.Quote(importPath))
