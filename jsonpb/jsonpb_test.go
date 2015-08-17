@@ -39,9 +39,9 @@ import (
 )
 
 var (
-	marshaller = Marshaller{}
+	marshaler = Marshaler{}
 
-	marshallerAllOptions = Marshaller{
+	marshalerAllOptions = Marshaler{
 		EnumsAsString: true,
 		Indent:        "  ",
 	}
@@ -255,56 +255,56 @@ var (
 }`
 )
 
-var marshallingTests = []struct {
-	desc       string
-	marshaller Marshaller
-	pb         proto.Message
-	json       string
+var marshalingTests = []struct {
+	desc      string
+	marshaler Marshaler
+	pb        proto.Message
+	json      string
 }{
-	{"simple flat object", marshaller, simpleObject, simpleObjectJSON},
-	{"simple pretty object", marshallerAllOptions, simpleObject, simpleObjectPrettyJSON},
-	{"repeated fields flat object", marshaller, repeatsObject, repeatsObjectJSON},
-	{"repeated fields pretty object", marshallerAllOptions, repeatsObject, repeatsObjectPrettyJSON},
-	{"nested message/enum flat object", marshaller, complexObject, complexObjectJSON},
-	{"nested message/enum pretty object", marshallerAllOptions, complexObject, complexObjectPrettyJSON},
-	{"enum-string flat object", Marshaller{EnumsAsString: true},
+	{"simple flat object", marshaler, simpleObject, simpleObjectJSON},
+	{"simple pretty object", marshalerAllOptions, simpleObject, simpleObjectPrettyJSON},
+	{"repeated fields flat object", marshaler, repeatsObject, repeatsObjectJSON},
+	{"repeated fields pretty object", marshalerAllOptions, repeatsObject, repeatsObjectPrettyJSON},
+	{"nested message/enum flat object", marshaler, complexObject, complexObjectJSON},
+	{"nested message/enum pretty object", marshalerAllOptions, complexObject, complexObjectPrettyJSON},
+	{"enum-string flat object", Marshaler{EnumsAsString: true},
 		&pb.Widget{Color: pb.Widget_BLUE.Enum()}, `{"color":"BLUE"}`},
-	{"enum-value pretty object", Marshaller{Indent: " "},
+	{"enum-value pretty object", Marshaler{Indent: " "},
 		&pb.Widget{Color: pb.Widget_BLUE.Enum()}, colorPrettyJSON},
-	{"unknown enum value object", marshallerAllOptions,
+	{"unknown enum value object", marshalerAllOptions,
 		&pb.Widget{Color: pb.Widget_Color(1000).Enum(), RColor: []pb.Widget_Color{pb.Widget_RED}}, colorListPrettyJSON},
-	{"proto3 object with empty value", marshaller, &pb.Simple3{}, `{"dub":0}`},
-	{"map<int64, int32>", marshaller, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, `{"nummy":{"1":2,"3":4}}`},
-	{"map<int64, int32>", marshallerAllOptions, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, nummyPrettyJSON},
-	{"map<string, string>", marshaller,
+	{"proto3 object with empty value", marshaler, &pb.Simple3{}, `{"dub":0}`},
+	{"map<int64, int32>", marshaler, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, `{"nummy":{"1":2,"3":4}}`},
+	{"map<int64, int32>", marshalerAllOptions, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, nummyPrettyJSON},
+	{"map<string, string>", marshaler,
 		&pb.Mappy{Strry: map[string]string{`"one"`: "two", "three": "four"}},
 		`{"strry":{"\"one\"":"two","three":"four"}}`},
-	{"map<int32, Object>", marshaller,
+	{"map<int32, Object>", marshaler,
 		&pb.Mappy{Objjy: map[int32]*pb.Simple3{1: &pb.Simple3{Dub: 1}}}, `{"objjy":{"1":{"dub":1}}}`},
-	{"map<int32, Object>", marshallerAllOptions,
+	{"map<int32, Object>", marshalerAllOptions,
 		&pb.Mappy{Objjy: map[int32]*pb.Simple3{1: &pb.Simple3{Dub: 1}}}, objjyPrettyJSON},
-	{"map<int64, string>", marshaller, &pb.Mappy{Buggy: map[int64]string{1234: "yup"}},
+	{"map<int64, string>", marshaler, &pb.Mappy{Buggy: map[int64]string{1234: "yup"}},
 		`{"buggy":{"1234":"yup"}}`},
-	{"map<bool, bool>", marshaller, &pb.Mappy{Booly: map[bool]bool{false: true}}, `{"booly":{"false":true}}`},
-	{"proto2 map<int64, string>", marshaller, &pb.Maps{MInt64Str: map[int64]string{213: "cat"}},
+	{"map<bool, bool>", marshaler, &pb.Mappy{Booly: map[bool]bool{false: true}}, `{"booly":{"false":true}}`},
+	{"proto2 map<int64, string>", marshaler, &pb.Maps{MInt64Str: map[int64]string{213: "cat"}},
 		`{"m_int64_str":{"213":"cat"}}`},
-	{"proto2 map<bool, Object>", marshaller,
+	{"proto2 map<bool, Object>", marshaler,
 		&pb.Maps{MBoolSimple: map[bool]*pb.Simple{true: &pb.Simple{OInt32: proto.Int32(1)}}},
 		`{"m_bool_simple":{"true":{"o_int32":1}}}`},
 }
 
-func TestMarshalling(t *testing.T) {
-	for _, tt := range marshallingTests {
-		json, err := tt.marshaller.MarshalToString(tt.pb)
+func TestMarshaling(t *testing.T) {
+	for _, tt := range marshalingTests {
+		json, err := tt.marshaler.MarshalToString(tt.pb)
 		if err != nil {
-			t.Errorf("%s: marshalling error: %v", tt.desc, err)
+			t.Errorf("%s: marshaling error: %v", tt.desc, err)
 		} else if tt.json != json {
 			t.Errorf("%s: got [%v] want [%v]", tt.desc, json, tt.json)
 		}
 	}
 }
 
-var unmarshallingTests = []struct {
+var unmarshalingTests = []struct {
 	desc string
 	json string
 	pb   proto.Message
@@ -327,8 +327,8 @@ var unmarshallingTests = []struct {
 	{"map<int32, Object>", `{"objjy":{"1":{"dub":1}}}`, &pb.Mappy{Objjy: map[int32]*pb.Simple3{1: &pb.Simple3{Dub: 1}}}},
 }
 
-func TestUnmarshalling(t *testing.T) {
-	for _, tt := range unmarshallingTests {
+func TestUnmarshaling(t *testing.T) {
+	for _, tt := range unmarshalingTests {
 		// Make a new instance of the type of our expected object.
 		p := proto.Clone(tt.pb)
 		p.Reset()
@@ -348,7 +348,7 @@ func TestUnmarshalling(t *testing.T) {
 	}
 }
 
-var unmarshallingShouldError = []struct {
+var unmarshalingShouldError = []struct {
 	desc string
 	in   string
 }{
@@ -356,8 +356,8 @@ var unmarshallingShouldError = []struct {
 	{"gibberish", "{adskja123;l23=-="},
 }
 
-func TestUnmarshallingBadInput(t *testing.T) {
-	for _, tt := range unmarshallingShouldError {
+func TestUnmarshalingBadInput(t *testing.T) {
+	for _, tt := range unmarshalingShouldError {
 		obj := &pb.Simple{}
 		err := UnmarshalString(tt.in, obj)
 		if err == nil {

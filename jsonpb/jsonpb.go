@@ -30,7 +30,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*
-Package jsonpb provides marshalling/unmarshalling functionality between
+Package jsonpb provides marshaling/unmarshaling functionality between
 protocol buffer and JSON objects.
 
 Compared to encoding/json, this library:
@@ -56,9 +56,9 @@ var (
 	byteArrayType = reflect.TypeOf([]byte{})
 )
 
-// Marshaller is a configurable object for converting between
+// Marshaler is a configurable object for converting between
 // protocol buffer objects and a JSON representation for them
-type Marshaller struct {
+type Marshaler struct {
 	// Use string values for enums (as opposed to integer values)
 	EnumsAsString bool
 
@@ -70,13 +70,13 @@ type Marshaller struct {
 }
 
 // Marshal marshals a protocol buffer into JSON.
-func (m *Marshaller) Marshal(out io.Writer, pb proto.Message) error {
+func (m *Marshaler) Marshal(out io.Writer, pb proto.Message) error {
 	writer := &errWriter{writer: out}
 	return m.marshalObject(writer, pb, "")
 }
 
 // MarshalToString converts a protocol buffer object to JSON string.
-func (m *Marshaller) MarshalToString(pb proto.Message) (string, error) {
+func (m *Marshaler) MarshalToString(pb proto.Message) (string, error) {
 	var buf bytes.Buffer
 	if err := m.Marshal(&buf, pb); err != nil {
 		return "", err
@@ -85,7 +85,7 @@ func (m *Marshaller) MarshalToString(pb proto.Message) (string, error) {
 }
 
 // marshalObject writes a struct to the Writer.
-func (m *Marshaller) marshalObject(out *errWriter, v proto.Message, indent string) error {
+func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent string) error {
 	out.write("{")
 	if m.Indent != "" {
 		out.write("\n")
@@ -143,7 +143,7 @@ func (m *Marshaller) marshalObject(out *errWriter, v proto.Message, indent strin
 }
 
 // marshalValue writes the value to the Writer.
-func (m *Marshaller) marshalValue(out *errWriter, v reflect.Value,
+func (m *Marshaler) marshalValue(out *errWriter, v reflect.Value,
 	structField reflect.StructField, indent string) error {
 
 	var err error
@@ -272,7 +272,7 @@ func (m *Marshaller) marshalValue(out *errWriter, v reflect.Value,
 
 // Unmarshal unmarshals a JSON object stream into a protocol
 // buffer. This function is lenient and will decode any options
-// permutations of the related Marshaller.
+// permutations of the related Marshaler.
 func Unmarshal(r io.Reader, pb proto.Message) error {
 	inputValue := json.RawMessage{}
 	if err := json.NewDecoder(r).Decode(&inputValue); err != nil {
@@ -283,7 +283,7 @@ func Unmarshal(r io.Reader, pb proto.Message) error {
 
 // UnmarshalString will populate the fields of a protocol buffer based
 // on a JSON string. This function is lenient and will decode any options
-// permutations of the related Marshaller.
+// permutations of the related Marshaler.
 func UnmarshalString(str string, pb proto.Message) error {
 	return Unmarshal(bytes.NewReader([]byte(str)), pb)
 }
