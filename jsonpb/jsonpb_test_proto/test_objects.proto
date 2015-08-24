@@ -84,3 +84,10 @@ message Maps {
   map<int64, string> m_int64_str = 1;
   map<bool, Simple> m_bool_simple = 2;
 }
+
+message MsgWithOneof {
+  oneof union {
+    string title = 1;
+    int64 salary = 2;
+  }
+}

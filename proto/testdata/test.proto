@@ -478,3 +478,17 @@ message MessageWithMap {
   map<bool, bytes> byte_mapping = 3;
   map<string, string> str_to_str = 4;
 }
+
+message Communique {
+  optional bool make_me_cry = 1;
+
+  // This is a oneof, called "union".
+  oneof union {
+    int32 number = 5;
+    string name = 6;
+    bytes data = 7;
+    double temp_c = 8;
+    MyMessage.Color col = 9;
+    Strings msg = 10;
+  }
+}

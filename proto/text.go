@@ -322,6 +322,23 @@ func writeStruct(w *textWriter, sv reflect.Value) error {
 			}
 		}
 
+		if fv.Kind() == reflect.Interface {
+			// Check if it is a oneof.
+			if st.Field(i).Tag.Get("protobuf_oneof") != "" {
+				// fv is nil, or holds a pointer to generated struct.
+				// That generated struct has exactly one field,
+				// which has a protobuf struct tag.
+				if fv.IsNil() {
+					continue
+				}
+				inner := fv.Elem().Elem() // interface -> *T -> T
+				tag := inner.Type().Field(0).Tag.Get("protobuf")
+				props.Parse(tag) // Overwrite the outer props.
+				// Write the value in the oneof, not the oneof itself.
+				fv = inner.Field(0)
+			}
+		}
+
 		if err := writeName(w, props); err != nil {
 			return err
 		}

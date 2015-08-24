@@ -1958,6 +1958,58 @@ func TestMapFieldWithNil(t *testing.T) {
 	}
 }
 
+func TestOneof(t *testing.T) {
+	m := &Communique{}
+	b, err := Marshal(m)
+	if err != nil {
+		t.Fatalf("Marshal of empty message with oneof: %v", err)
+	}
+	if len(b) != 0 {
+		t.Errorf("Marshal of empty message yielded too many bytes: %v", b)
+	}
+
+	m = &Communique{
+		Union: &Communique_Name{"Barry"},
+	}
+
+	// Round-trip.
+	b, err = Marshal(m)
+	if err != nil {
+		t.Fatalf("Marshal of message with oneof: %v", err)
+	}
+	if len(b) != 7 { // name tag/wire (1) + name len (1) + name (5)
+		t.Errorf("Incorrect marshal of message with oneof: %v", b)
+	}
+	m.Reset()
+	if err := Unmarshal(b, m); err != nil {
+		t.Fatalf("Unmarshal of message with oneof: %v", err)
+	}
+	if x, ok := m.Union.(*Communique_Name); !ok || x.Name != "Barry" {
+		t.Errorf("After round trip, Union = %+v", m.Union)
+	}
+	if name := m.GetName(); name != "Barry" {
+		t.Errorf("After round trip, GetName = %q, want %q", name, "Barry")
+	}
+
+	// Let's try with a message in the oneof.
+	m.Union = &Communique_Msg{&Strings{StringField: String("deep deep string")}}
+	b, err = Marshal(m)
+	if err != nil {
+		t.Fatalf("Marshal of message with oneof set to message: %v", err)
+	}
+	if len(b) != 20 { // msg tag/wire (1) + msg len (1) + msg (1 + 1 + 16)
+		t.Errorf("Incorrect marshal of message with oneof set to message: %v", b)
+	}
+	m.Reset()
+	if err := Unmarshal(b, m); err != nil {
+		t.Fatalf("Unmarshal of message with oneof set to message: %v", err)
+	}
+	ss, ok := m.Union.(*Communique_Msg)
+	if !ok || ss.Msg.GetStringField() != "deep deep string" {
+		t.Errorf("After round trip with oneof set to message, Union = %+v", m.Union)
+	}
+}
+
 // Benchmarks
 
 func testMsg() *GoTest {

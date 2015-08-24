@@ -35,14 +35,17 @@ It has these top-level messages:
 	GroupNew
 	FloatingPoint
 	MessageWithMap
+	Communique
 */
 package testdata
 
 import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
 import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = fmt.Errorf
 var _ = math.Inf
 
 type FOO int32
@@ -1984,6 +1987,205 @@ func (m *MessageWithMap) GetStrToStr() map[string]string {
 		return m.StrToStr
 	}
 	return nil
+}
+
+type Communique struct {
+	MakeMeCry *bool `protobuf:"varint,1,opt,name=make_me_cry" json:"make_me_cry,omitempty"`
+	// This is a oneof, called "union".
+	//
+	// Types that are valid to be assigned to Union:
+	//	*Communique_Number
+	//	*Communique_Name
+	//	*Communique_Data
+	//	*Communique_TempC
+	//	*Communique_Col
+	//	*Communique_Msg
+	Union            isCommunique_Union `protobuf_oneof:"union"`
+	XXX_unrecognized []byte             `json:"-"`
+}
+
+func (m *Communique) Reset()         { *m = Communique{} }
+func (m *Communique) String() string { return proto.CompactTextString(m) }
+func (*Communique) ProtoMessage()    {}
+
+type isCommunique_Union interface {
+	isCommunique_Union()
+}
+
+type Communique_Number struct {
+	Number int32 `protobuf:"varint,5,opt,name=number"`
+}
+type Communique_Name struct {
+	Name string `protobuf:"bytes,6,opt,name=name"`
+}
+type Communique_Data struct {
+	Data []byte `protobuf:"bytes,7,opt,name=data"`
+}
+type Communique_TempC struct {
+	TempC float64 `protobuf:"fixed64,8,opt,name=temp_c"`
+}
+type Communique_Col struct {
+	Col MyMessage_Color `protobuf:"varint,9,opt,name=col,enum=testdata.MyMessage_Color"`
+}
+type Communique_Msg struct {
+	Msg *Strings `protobuf:"bytes,10,opt,name=msg"`
+}
+
+func (*Communique_Number) isCommunique_Union() {}
+func (*Communique_Name) isCommunique_Union()   {}
+func (*Communique_Data) isCommunique_Union()   {}
+func (*Communique_TempC) isCommunique_Union()  {}
+func (*Communique_Col) isCommunique_Union()    {}
+func (*Communique_Msg) isCommunique_Union()    {}
+
+func (m *Communique) GetUnion() isCommunique_Union {
+	if m != nil {
+		return m.Union
+	}
+	return nil
+}
+
+func (m *Communique) GetMakeMeCry() bool {
+	if m != nil && m.MakeMeCry != nil {
+		return *m.MakeMeCry
+	}
+	return false
+}
+
+func (m *Communique) GetNumber() int32 {
+	if x, ok := m.GetUnion().(*Communique_Number); ok {
+		return x.Number
+	}
+	return 0
+}
+
+func (m *Communique) GetName() string {
+	if x, ok := m.GetUnion().(*Communique_Name); ok {
+		return x.Name
+	}
+	return ""
+}
+
+func (m *Communique) GetData() []byte {
+	if x, ok := m.GetUnion().(*Communique_Data); ok {
+		return x.Data
+	}
+	return nil
+}
+
+func (m *Communique) GetTempC() float64 {
+	if x, ok := m.GetUnion().(*Communique_TempC); ok {
+		return x.TempC
+	}
+	return 0
+}
+
+func (m *Communique) GetCol() MyMessage_Color {
+	if x, ok := m.GetUnion().(*Communique_Col); ok {
+		return x.Col
+	}
+	return MyMessage_RED
+}
+
+func (m *Communique) GetMsg() *Strings {
+	if x, ok := m.GetUnion().(*Communique_Msg); ok {
+		return x.Msg
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*Communique) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), []interface{}) {
+	return _Communique_OneofMarshaler, _Communique_OneofUnmarshaler, []interface{}{
+		(*Communique_Number)(nil),
+		(*Communique_Name)(nil),
+		(*Communique_Data)(nil),
+		(*Communique_TempC)(nil),
+		(*Communique_Col)(nil),
+		(*Communique_Msg)(nil),
+	}
+}
+
+func _Communique_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*Communique)
+	// union
+	switch x := m.Union.(type) {
+	case *Communique_Number:
+		b.EncodeVarint(5<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.Number))
+	case *Communique_Name:
+		b.EncodeVarint(6<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.Name)
+	case *Communique_Data:
+		b.EncodeVarint(7<<3 | proto.WireBytes)
+		b.EncodeRawBytes(x.Data)
+	case *Communique_TempC:
+		b.EncodeVarint(8<<3 | proto.WireFixed64)
+		b.EncodeFixed64(math.Float64bits(x.TempC))
+	case *Communique_Col:
+		b.EncodeVarint(9<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.Col))
+	case *Communique_Msg:
+		b.EncodeVarint(10<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Msg); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("Communique.Union has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _Communique_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*Communique)
+	switch tag {
+	case 5: // union.number
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.Union = &Communique_Number{int32(x)}
+		return true, err
+	case 6: // union.name
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Union = &Communique_Name{x}
+		return true, err
+	case 7: // union.data
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeRawBytes(true)
+		m.Union = &Communique_Data{x}
+		return true, err
+	case 8: // union.temp_c
+		if wire != proto.WireFixed64 {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeFixed64()
+		m.Union = &Communique_TempC{math.Float64frombits(x)}
+		return true, err
+	case 9: // union.col
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.Union = &Communique_Col{MyMessage_Color(x)}
+		return true, err
+	case 10: // union.msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Strings)
+		err := b.DecodeMessage(msg)
+		m.Union = &Communique_Msg{msg}
+		return true, err
+	default:
+		return false, nil
+	}
 }
 
 var E_Greeting = &proto.ExtensionDesc{

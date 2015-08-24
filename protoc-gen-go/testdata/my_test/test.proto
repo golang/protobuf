@@ -130,3 +130,25 @@ message OldReply {
   extensions 100 to max;
 }
 
+message Communique {
+  optional bool make_me_cry = 1;
+
+  // This is a oneof, called "union".
+  oneof union {
+    int32 number = 5;
+    string name = 6;
+    bytes data = 7;
+    double temp_c = 8;
+    float height = 9;
+    Days today = 10;
+    bool maybe = 11;
+    sint32 delta = 12;  // name will conflict with Delta below
+    Reply msg = 13;
+    group SomeGroup = 14 {
+      optional string member = 15;
+    }
+  }
+
+  message Delta {}
+}
+

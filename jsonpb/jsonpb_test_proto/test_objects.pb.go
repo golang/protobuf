@@ -5,10 +5,12 @@
 package jsonpb
 
 import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
 import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = fmt.Errorf
 var _ = math.Inf
 
 type Widget_Color int32
@@ -320,6 +322,100 @@ func (m *Maps) GetMBoolSimple() map[bool]*Simple {
 		return m.MBoolSimple
 	}
 	return nil
+}
+
+type MsgWithOneof struct {
+	// Types that are valid to be assigned to Union:
+	//	*MsgWithOneof_Title
+	//	*MsgWithOneof_Salary
+	Union            isMsgWithOneof_Union `protobuf_oneof:"union"`
+	XXX_unrecognized []byte               `json:"-"`
+}
+
+func (m *MsgWithOneof) Reset()         { *m = MsgWithOneof{} }
+func (m *MsgWithOneof) String() string { return proto.CompactTextString(m) }
+func (*MsgWithOneof) ProtoMessage()    {}
+
+type isMsgWithOneof_Union interface {
+	isMsgWithOneof_Union()
+}
+
+type MsgWithOneof_Title struct {
+	Title string `protobuf:"bytes,1,opt,name=title"`
+}
+type MsgWithOneof_Salary struct {
+	Salary int64 `protobuf:"varint,2,opt,name=salary"`
+}
+
+func (*MsgWithOneof_Title) isMsgWithOneof_Union()  {}
+func (*MsgWithOneof_Salary) isMsgWithOneof_Union() {}
+
+func (m *MsgWithOneof) GetUnion() isMsgWithOneof_Union {
+	if m != nil {
+		return m.Union
+	}
+	return nil
+}
+
+func (m *MsgWithOneof) GetTitle() string {
+	if x, ok := m.GetUnion().(*MsgWithOneof_Title); ok {
+		return x.Title
+	}
+	return ""
+}
+
+func (m *MsgWithOneof) GetSalary() int64 {
+	if x, ok := m.GetUnion().(*MsgWithOneof_Salary); ok {
+		return x.Salary
+	}
+	return 0
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*MsgWithOneof) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), []interface{}) {
+	return _MsgWithOneof_OneofMarshaler, _MsgWithOneof_OneofUnmarshaler, []interface{}{
+		(*MsgWithOneof_Title)(nil),
+		(*MsgWithOneof_Salary)(nil),
+	}
+}
+
+func _MsgWithOneof_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*MsgWithOneof)
+	// union
+	switch x := m.Union.(type) {
+	case *MsgWithOneof_Title:
+		b.EncodeVarint(1<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.Title)
+	case *MsgWithOneof_Salary:
+		b.EncodeVarint(2<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.Salary))
+	case nil:
+	default:
+		return fmt.Errorf("MsgWithOneof.Union has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _MsgWithOneof_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*MsgWithOneof)
+	switch tag {
+	case 1: // union.title
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Union = &MsgWithOneof_Title{x}
+		return true, err
+	case 2: // union.salary
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.Union = &MsgWithOneof_Salary{int64(x)}
+		return true, err
+	default:
+		return false, nil
+	}
 }
 
 func init() {

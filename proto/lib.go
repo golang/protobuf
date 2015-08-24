@@ -66,6 +66,8 @@ for a protocol buffer variable v:
 	that contain it (if any) followed by the CamelCased name of the
 	extension field itself.  HasExtension, ClearExtension, GetExtension
 	and SetExtension are functions for manipulating extensions.
+  - Oneof field sets are given a single field in their message,
+	with distinguished wrapper types for each possible field value.
   - Marshal and Unmarshal are functions to encode and decode the wire format.
 
 The simplest way to describe this is to see an example.
