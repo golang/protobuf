@@ -51,5 +51,6 @@ nuke:
 regenerate:
 	make -C protoc-gen-go/descriptor regenerate
 	make -C protoc-gen-go/plugin regenerate
+	make -C protoc-gen-go/testdata regenerate
 	make -C proto/testdata regenerate
 	make -C jsonpb/jsonpb_test_proto regenerate

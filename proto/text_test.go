@@ -208,6 +208,28 @@ func TestMarshalTextUnknownEnum(t *testing.T) {
 	}
 }
 
+func TestTextOneof(t *testing.T) {
+	tests := []struct {
+		m    proto.Message
+		want string
+	}{
+		// zero message
+		{&pb.Communique{}, ``},
+		// scalar field
+		{&pb.Communique{Union: &pb.Communique_Number{4}}, `number:4`},
+		// message field
+		{&pb.Communique{Union: &pb.Communique_Msg{
+			&pb.Strings{StringField: proto.String("why hello!")},
+		}}, `msg:<string_field:"why hello!" >`},
+	}
+	for _, test := range tests {
+		got := strings.TrimSpace(test.m.String())
+		if got != test.want {
+			t.Errorf("\n got %s\nwant %s", got, test.want)
+		}
+	}
+}
+
 func BenchmarkMarshalTextBuffered(b *testing.B) {
 	buf := new(bytes.Buffer)
 	m := newTestMessage()

@@ -17,16 +17,19 @@ It has these top-level messages:
 	ReplyExtensions
 	OtherReplyExtensions
 	OldReply
+	Communique
 */
 package my_test
 
 import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
 import math "math"
 
 // discarding unused import multitest2 "multi"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = fmt.Errorf
 var _ = math.Inf
 
 type HatType int32
@@ -457,6 +460,329 @@ func (m *OldReply) ExtensionMap() map[int32]proto.Extension {
 	}
 	return m.XXX_extensions
 }
+
+type Communique struct {
+	MakeMeCry *bool `protobuf:"varint,1,opt,name=make_me_cry" json:"make_me_cry,omitempty"`
+	// This is a oneof, called "union".
+	//
+	// Types that are valid to be assigned to Union:
+	//	*Communique_Number
+	//	*Communique_Name
+	//	*Communique_Data
+	//	*Communique_TempC
+	//	*Communique_Height
+	//	*Communique_Today
+	//	*Communique_Maybe
+	//	*Communique_Delta_
+	//	*Communique_Msg
+	//	*Communique_Somegroup
+	Union            isCommunique_Union `protobuf_oneof:"union"`
+	XXX_unrecognized []byte             `json:"-"`
+}
+
+func (m *Communique) Reset()         { *m = Communique{} }
+func (m *Communique) String() string { return proto.CompactTextString(m) }
+func (*Communique) ProtoMessage()    {}
+
+type isCommunique_Union interface {
+	isCommunique_Union()
+}
+
+type Communique_Number struct {
+	Number int32 `protobuf:"varint,5,opt,name=number"`
+}
+type Communique_Name struct {
+	Name string `protobuf:"bytes,6,opt,name=name"`
+}
+type Communique_Data struct {
+	Data []byte `protobuf:"bytes,7,opt,name=data"`
+}
+type Communique_TempC struct {
+	TempC float64 `protobuf:"fixed64,8,opt,name=temp_c"`
+}
+type Communique_Height struct {
+	Height float32 `protobuf:"fixed32,9,opt,name=height"`
+}
+type Communique_Today struct {
+	Today Days `protobuf:"varint,10,opt,name=today,enum=my.test.Days"`
+}
+type Communique_Maybe struct {
+	Maybe bool `protobuf:"varint,11,opt,name=maybe"`
+}
+type Communique_Delta_ struct {
+	Delta int32 `protobuf:"zigzag32,12,opt,name=delta"`
+}
+type Communique_Msg struct {
+	Msg *Reply `protobuf:"bytes,13,opt,name=msg"`
+}
+type Communique_Somegroup struct {
+	Somegroup *Communique_SomeGroup `protobuf:"group,14,opt,name=SomeGroup"`
+}
+
+func (*Communique_Number) isCommunique_Union()    {}
+func (*Communique_Name) isCommunique_Union()      {}
+func (*Communique_Data) isCommunique_Union()      {}
+func (*Communique_TempC) isCommunique_Union()     {}
+func (*Communique_Height) isCommunique_Union()    {}
+func (*Communique_Today) isCommunique_Union()     {}
+func (*Communique_Maybe) isCommunique_Union()     {}
+func (*Communique_Delta_) isCommunique_Union()    {}
+func (*Communique_Msg) isCommunique_Union()       {}
+func (*Communique_Somegroup) isCommunique_Union() {}
+
+func (m *Communique) GetUnion() isCommunique_Union {
+	if m != nil {
+		return m.Union
+	}
+	return nil
+}
+
+func (m *Communique) GetMakeMeCry() bool {
+	if m != nil && m.MakeMeCry != nil {
+		return *m.MakeMeCry
+	}
+	return false
+}
+
+func (m *Communique) GetNumber() int32 {
+	if x, ok := m.GetUnion().(*Communique_Number); ok {
+		return x.Number
+	}
+	return 0
+}
+
+func (m *Communique) GetName() string {
+	if x, ok := m.GetUnion().(*Communique_Name); ok {
+		return x.Name
+	}
+	return ""
+}
+
+func (m *Communique) GetData() []byte {
+	if x, ok := m.GetUnion().(*Communique_Data); ok {
+		return x.Data
+	}
+	return nil
+}
+
+func (m *Communique) GetTempC() float64 {
+	if x, ok := m.GetUnion().(*Communique_TempC); ok {
+		return x.TempC
+	}
+	return 0
+}
+
+func (m *Communique) GetHeight() float32 {
+	if x, ok := m.GetUnion().(*Communique_Height); ok {
+		return x.Height
+	}
+	return 0
+}
+
+func (m *Communique) GetToday() Days {
+	if x, ok := m.GetUnion().(*Communique_Today); ok {
+		return x.Today
+	}
+	return Days_MONDAY
+}
+
+func (m *Communique) GetMaybe() bool {
+	if x, ok := m.GetUnion().(*Communique_Maybe); ok {
+		return x.Maybe
+	}
+	return false
+}
+
+func (m *Communique) GetDelta() int32 {
+	if x, ok := m.GetUnion().(*Communique_Delta_); ok {
+		return x.Delta
+	}
+	return 0
+}
+
+func (m *Communique) GetMsg() *Reply {
+	if x, ok := m.GetUnion().(*Communique_Msg); ok {
+		return x.Msg
+	}
+	return nil
+}
+
+func (m *Communique) GetSomegroup() *Communique_SomeGroup {
+	if x, ok := m.GetUnion().(*Communique_Somegroup); ok {
+		return x.Somegroup
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*Communique) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), []interface{}) {
+	return _Communique_OneofMarshaler, _Communique_OneofUnmarshaler, []interface{}{
+		(*Communique_Number)(nil),
+		(*Communique_Name)(nil),
+		(*Communique_Data)(nil),
+		(*Communique_TempC)(nil),
+		(*Communique_Height)(nil),
+		(*Communique_Today)(nil),
+		(*Communique_Maybe)(nil),
+		(*Communique_Delta_)(nil),
+		(*Communique_Msg)(nil),
+		(*Communique_Somegroup)(nil),
+	}
+}
+
+func _Communique_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*Communique)
+	// union
+	switch x := m.Union.(type) {
+	case *Communique_Number:
+		b.EncodeVarint(5<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.Number))
+	case *Communique_Name:
+		b.EncodeVarint(6<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.Name)
+	case *Communique_Data:
+		b.EncodeVarint(7<<3 | proto.WireBytes)
+		b.EncodeRawBytes(x.Data)
+	case *Communique_TempC:
+		b.EncodeVarint(8<<3 | proto.WireFixed64)
+		b.EncodeFixed64(math.Float64bits(x.TempC))
+	case *Communique_Height:
+		b.EncodeVarint(9<<3 | proto.WireFixed32)
+		b.EncodeFixed32(uint64(math.Float32bits(x.Height)))
+	case *Communique_Today:
+		b.EncodeVarint(10<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.Today))
+	case *Communique_Maybe:
+		t := uint64(0)
+		if x.Maybe {
+			t = 1
+		}
+		b.EncodeVarint(11<<3 | proto.WireVarint)
+		b.EncodeVarint(t)
+	case *Communique_Delta_:
+		b.EncodeVarint(12<<3 | proto.WireVarint)
+		b.EncodeZigzag32(uint64(x.Delta))
+	case *Communique_Msg:
+		b.EncodeVarint(13<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Msg); err != nil {
+			return err
+		}
+	case *Communique_Somegroup:
+		b.EncodeVarint(14<<3 | proto.WireStartGroup)
+		if err := b.Marshal(x.Somegroup); err != nil {
+			return err
+		}
+		b.EncodeVarint(14<<3 | proto.WireEndGroup)
+	case nil:
+	default:
+		return fmt.Errorf("Communique.Union has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _Communique_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*Communique)
+	switch tag {
+	case 5: // union.number
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.Union = &Communique_Number{int32(x)}
+		return true, err
+	case 6: // union.name
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Union = &Communique_Name{x}
+		return true, err
+	case 7: // union.data
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeRawBytes(true)
+		m.Union = &Communique_Data{x}
+		return true, err
+	case 8: // union.temp_c
+		if wire != proto.WireFixed64 {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeFixed64()
+		m.Union = &Communique_TempC{math.Float64frombits(x)}
+		return true, err
+	case 9: // union.height
+		if wire != proto.WireFixed32 {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeFixed32()
+		m.Union = &Communique_Height{math.Float32frombits(uint32(x))}
+		return true, err
+	case 10: // union.today
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.Union = &Communique_Today{Days(x)}
+		return true, err
+	case 11: // union.maybe
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.Union = &Communique_Maybe{x != 0}
+		return true, err
+	case 12: // union.delta
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeZigzag32()
+		m.Union = &Communique_Delta_{int32(x)}
+		return true, err
+	case 13: // union.msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Reply)
+		err := b.DecodeMessage(msg)
+		m.Union = &Communique_Msg{msg}
+		return true, err
+	case 14: // union.somegroup
+		if wire != proto.WireStartGroup {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Communique_SomeGroup)
+		err := b.DecodeGroup(msg)
+		m.Union = &Communique_Somegroup{msg}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+type Communique_SomeGroup struct {
+	Member           *string `protobuf:"bytes,15,opt,name=member" json:"member,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
+}
+
+func (m *Communique_SomeGroup) Reset()         { *m = Communique_SomeGroup{} }
+func (m *Communique_SomeGroup) String() string { return proto.CompactTextString(m) }
+func (*Communique_SomeGroup) ProtoMessage()    {}
+
+func (m *Communique_SomeGroup) GetMember() string {
+	if m != nil && m.Member != nil {
+		return *m.Member
+	}
+	return ""
+}
+
+type Communique_Delta struct {
+	XXX_unrecognized []byte `json:"-"`
+}
+
+func (m *Communique_Delta) Reset()         { *m = Communique_Delta{} }
+func (m *Communique_Delta) String() string { return proto.CompactTextString(m) }
+func (*Communique_Delta) ProtoMessage()    {}
 
 var E_Tag = &proto.ExtensionDesc{
 	ExtendedType:  (*Reply)(nil),

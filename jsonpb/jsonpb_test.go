@@ -32,6 +32,7 @@
 package jsonpb
 
 import (
+	"reflect"
 	"testing"
 
 	pb "github.com/golang/protobuf/jsonpb/jsonpb_test_proto"
@@ -291,6 +292,8 @@ var marshalingTests = []struct {
 	{"proto2 map<bool, Object>", marshaler,
 		&pb.Maps{MBoolSimple: map[bool]*pb.Simple{true: &pb.Simple{OInt32: proto.Int32(1)}}},
 		`{"m_bool_simple":{"true":{"o_int32":1}}}`},
+	{"oneof, not set", marshaler, &pb.MsgWithOneof{}, `{}`},
+	{"oneof, set", marshaler, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_Title{"Grand Poobah"}}, `{"title":"Grand Poobah"}`},
 }
 
 func TestMarshaling(t *testing.T) {
@@ -325,13 +328,13 @@ var unmarshalingTests = []struct {
 	{"map<int64, int32>", `{"nummy":{"1":2,"3":4}}`, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}},
 	{"map<string, string>", `{"strry":{"\"one\"":"two","three":"four"}}`, &pb.Mappy{Strry: map[string]string{`"one"`: "two", "three": "four"}}},
 	{"map<int32, Object>", `{"objjy":{"1":{"dub":1}}}`, &pb.Mappy{Objjy: map[int32]*pb.Simple3{1: &pb.Simple3{Dub: 1}}}},
+	{"oneof", `{"salary":31000}`, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_Salary{31000}}},
 }
 
 func TestUnmarshaling(t *testing.T) {
 	for _, tt := range unmarshalingTests {
 		// Make a new instance of the type of our expected object.
-		p := proto.Clone(tt.pb)
-		p.Reset()
+		p := reflect.New(reflect.TypeOf(tt.pb).Elem()).Interface().(proto.Message)
 
 		err := UnmarshalString(tt.json, p)
 		if err != nil {

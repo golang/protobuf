@@ -84,6 +84,12 @@ type decoder func(p *Buffer, prop *Properties, base structPointer) error
 // A valueDecoder decodes a single integer in a particular encoding.
 type valueDecoder func(o *Buffer) (x uint64, err error)
 
+// A oneofMarshaler does the marshaling for all oneof fields in a message.
+type oneofMarshaler func(Message, *Buffer) error
+
+// A oneofUnmarshaler does the unmarshaling for a oneof field in a message.
+type oneofUnmarshaler func(Message, int, int, *Buffer) (bool, error)
+
 // tagMap is an optimization over map[int]int for typical protocol buffer
 // use-cases. Encoded protocol buffers are often in tag order with small tag
 // numbers.
@@ -132,6 +138,11 @@ type StructProperties struct {
 	order            []int          // list of struct field numbers in tag order
 	unrecField       field          // field id of the XXX_unrecognized []byte field
 	extendable       bool           // is this an extendable proto
+
+	oneofMarshaler   oneofMarshaler
+	oneofUnmarshaler oneofUnmarshaler
+	stype            reflect.Type
+	oneofTypes       []interface{}
 }
 
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
@@ -665,6 +676,7 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 		if f.Name == "XXX_unrecognized" { // special case
 			prop.unrecField = toField(&f)
 		}
+		oneof := f.Tag.Get("protobuf_oneof") != "" // special case
 		prop.Prop[i] = p
 		prop.order[i] = i
 		if debug {
@@ -674,13 +686,21 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 			}
 			print("\n")
 		}
-		if p.enc == nil && !strings.HasPrefix(f.Name, "XXX_") {
+		if p.enc == nil && !strings.HasPrefix(f.Name, "XXX_") && !oneof {
 			fmt.Fprintln(os.Stderr, "proto: no encoder for", f.Name, f.Type.String(), "[GetProperties]")
 		}
 	}
 
 	// Re-order prop.order.
 	sort.Sort(prop)
+
+	type oneofMessage interface {
+		XXX_OneofFuncs() (func(Message, *Buffer) error, func(Message, int, int, *Buffer) (bool, error), []interface{})
+	}
+	if om, ok := reflect.Zero(reflect.PtrTo(t)).Interface().(oneofMessage); ok {
+		prop.oneofMarshaler, prop.oneofUnmarshaler, prop.oneofTypes = om.XXX_OneofFuncs()
+		prop.stype = t
+	}
 
 	// build required counts
 	// build tags
