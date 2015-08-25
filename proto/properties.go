@@ -142,7 +142,17 @@ type StructProperties struct {
 	oneofMarshaler   oneofMarshaler
 	oneofUnmarshaler oneofUnmarshaler
 	stype            reflect.Type
-	oneofTypes       []interface{}
+
+	// OneofTypes contains information about the oneof fields in this message.
+	// It is keyed by the original name of a field.
+	OneofTypes map[string]*OneofProperties
+}
+
+// OneofProperties represents information about a specific field in a oneof.
+type OneofProperties struct {
+	Type  reflect.Type // pointer to generated struct type for this oneof field
+	Field int          // struct field number of the containing oneof in the message
+	Prop  *Properties
 }
 
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
@@ -698,8 +708,35 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 		XXX_OneofFuncs() (func(Message, *Buffer) error, func(Message, int, int, *Buffer) (bool, error), []interface{})
 	}
 	if om, ok := reflect.Zero(reflect.PtrTo(t)).Interface().(oneofMessage); ok {
-		prop.oneofMarshaler, prop.oneofUnmarshaler, prop.oneofTypes = om.XXX_OneofFuncs()
+		var oots []interface{}
+		prop.oneofMarshaler, prop.oneofUnmarshaler, oots = om.XXX_OneofFuncs()
 		prop.stype = t
+
+		// Interpret oneof metadata.
+		prop.OneofTypes = make(map[string]*OneofProperties)
+		for _, oot := range oots {
+			oop := &OneofProperties{
+				Type: reflect.ValueOf(oot).Type(), // *T
+				Prop: new(Properties),
+			}
+			sft := oop.Type.Elem().Field(0)
+			oop.Prop.Name = sft.Name
+			oop.Prop.Parse(sft.Tag.Get("protobuf"))
+			// There will be exactly one interface field that
+			// this new value is assignable to.
+			for i := 0; i < t.NumField(); i++ {
+				f := t.Field(i)
+				if f.Type.Kind() != reflect.Interface {
+					continue
+				}
+				if !oop.Type.AssignableTo(f.Type) {
+					continue
+				}
+				oop.Field = i
+				break
+			}
+			prop.OneofTypes[oop.Prop.OrigName] = oop
+		}
 	}
 
 	// build required counts
