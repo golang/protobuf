@@ -332,41 +332,15 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 			}
 		}
 		// Check for any oneof fields.
-		// This might be slow; we can optimise it if it becomes a problem.
-		type oneofMessage interface {
-			XXX_OneofFuncs() (func(proto.Message, *proto.Buffer) error, func(proto.Message, int, int, *proto.Buffer) (bool, error), []interface{})
-		}
-		var oneofTypes []interface{}
-		if om, ok := reflect.Zero(reflect.PtrTo(targetType)).Interface().(oneofMessage); ok {
-			_, _, oneofTypes = om.XXX_OneofFuncs()
-		}
+		sprops := proto.GetProperties(targetType)
 		for fname, raw := range jsonFields {
-			for _, oot := range oneofTypes {
-				sp := reflect.ValueOf(oot).Type() // *T
-				var props proto.Properties
-				props.Parse(sp.Elem().Field(0).Tag.Get("protobuf"))
-				if props.OrigName != fname {
-					continue
-				}
-				nv := reflect.New(sp.Elem())
-				// There will be exactly one interface field that
-				// this new value is assignable to.
-				for i := 0; i < targetType.NumField(); i++ {
-					f := targetType.Field(i)
-					if f.Type.Kind() != reflect.Interface {
-						continue
-					}
-					if !nv.Type().AssignableTo(f.Type) {
-						continue
-					}
-					target.Field(i).Set(nv)
-					break
-				}
+			if oop, ok := sprops.OneofTypes[fname]; ok {
+				nv := reflect.New(oop.Type.Elem())
+				target.Field(oop.Field).Set(nv)
 				if err := unmarshalValue(nv.Elem().Field(0), raw); err != nil {
 					return err
 				}
 				delete(jsonFields, fname)
-				break
 			}
 		}
 		if len(jsonFields) > 0 {
