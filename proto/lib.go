@@ -462,7 +462,6 @@ out:
 				break out
 			}
 			fmt.Printf("%3d: t=%3d fix64 %d\n", index, tag, u)
-			break
 
 		case WireVarint:
 			u, err = p.DecodeVarint()
@@ -473,19 +472,11 @@ out:
 			fmt.Printf("%3d: t=%3d varint %d\n", index, tag, u)
 
 		case WireStartGroup:
-			if err != nil {
-				fmt.Printf("%3d: t=%3d start err %v\n", index, tag, err)
-				break out
-			}
 			fmt.Printf("%3d: t=%3d start\n", index, tag)
 			depth++
 
 		case WireEndGroup:
 			depth--
-			if err != nil {
-				fmt.Printf("%3d: t=%3d end err %v\n", index, tag, err)
-				break out
-			}
 			fmt.Printf("%3d: t=%3d end\n", index, tag)
 		}
 	}
