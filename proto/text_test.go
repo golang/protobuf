@@ -221,6 +221,8 @@ func TestTextOneof(t *testing.T) {
 		{&pb.Communique{Union: &pb.Communique_Msg{
 			&pb.Strings{StringField: proto.String("why hello!")},
 		}}, `msg:<string_field:"why hello!" >`},
+		// bad oneof (should not panic)
+		{&pb.Communique{Union: &pb.Communique_Msg{nil}}, `msg:/* nil */`},
 	}
 	for _, test := range tests {
 		got := strings.TrimSpace(test.m.String())

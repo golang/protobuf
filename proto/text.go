@@ -37,6 +37,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -336,6 +337,15 @@ func writeStruct(w *textWriter, sv reflect.Value) error {
 				props.Parse(tag) // Overwrite the outer props.
 				// Write the value in the oneof, not the oneof itself.
 				fv = inner.Field(0)
+
+				// Special case to cope with malformed messages gracefully:
+				// If the value in the oneof is a nil pointer, don't panic
+				// in writeAny.
+				if fv.Kind() == reflect.Ptr && fv.IsNil() {
+					// Use errors.New so writeAny won't render quotes.
+					msg := errors.New("/* nil */")
+					fv = reflect.ValueOf(&msg).Elem()
+				}
 			}
 		}
 
