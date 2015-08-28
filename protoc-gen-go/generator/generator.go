@@ -1417,11 +1417,7 @@ func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptor
 			name = name[i+1:]
 		}
 	}
-	if name == CamelCase(fieldName) {
-		name = ""
-	} else {
-		name = ",name=" + name
-	}
+	name = ",name=" + name
 	if message.proto3() {
 		// We only need the extra tag for []byte fields;
 		// no need to add noise for the others.
