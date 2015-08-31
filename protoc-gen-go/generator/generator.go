@@ -1646,13 +1646,13 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			for {
 				ok := true
 				for _, desc := range message.nested {
-					if strings.Join(desc.TypeName(), "_") == tname {
+					if CamelCaseSlice(desc.TypeName()) == tname {
 						ok = false
 						break
 					}
 				}
 				for _, enum := range message.enums {
-					if strings.Join(enum.TypeName(), "_") == tname {
+					if CamelCaseSlice(enum.TypeName()) == tname {
 						ok = false
 						break
 					}
