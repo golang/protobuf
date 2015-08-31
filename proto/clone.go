@@ -125,7 +125,11 @@ func mergeAny(out, in reflect.Value, viaPtr bool, prop *Properties) {
 		if in.IsNil() {
 			return
 		}
-		out.Set(reflect.New(in.Elem().Elem().Type())) // interface -> *T -> T -> new(T)
+		// Allocate destination if it is not set, or set to a different type.
+		// Otherwise we will merge as normal.
+		if out.IsNil() || out.Elem().Type() != in.Elem().Type() {
+			out.Set(reflect.New(in.Elem().Elem().Type())) // interface -> *T -> T -> new(T)
+		}
 		mergeAny(out.Elem(), in.Elem(), false, nil)
 	case reflect.Map:
 		if in.Len() == 0 {
