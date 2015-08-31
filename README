@@ -2,7 +2,7 @@ Go support for Protocol Buffers - Google's data interchange format
 Copyright 2010 The Go Authors.
 https://github.com/golang/protobuf
 
-This package and the code it generates requires at least Go 1.2.
+This package and the code it generates requires at least Go 1.4.
 
 This software implements Go bindings for protocol buffers.  For
 information about protocol buffers themselves, see
@@ -95,6 +95,8 @@ for a protocol buffer variable v:
 	that contain it (if any) followed by the CamelCased name of the
 	extension field itself.  HasExtension, ClearExtension, GetExtension
 	and SetExtension are functions for manipulating extensions.
+  - Oneof field sets are given a single field in their message,
+	with distinguished wrapper types for each possible field value.
   - Marshal and Unmarshal are functions to encode and decode the wire format.
 
 Consider file test.proto, containing
