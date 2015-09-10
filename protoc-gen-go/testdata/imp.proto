@@ -48,6 +48,8 @@ message ImportedMessage {
   repeated Owner boss = 6;
   repeated ImportedMessage2 memo = 7;
 
+  map<string, ImportedMessage2> msg_map = 8;
+
   enum Owner {
     DAVE = 1;
     MIKE = 2;

@@ -304,8 +304,8 @@ func (m *GoEnum) GetFoo() FOO {
 }
 
 type GoTestField struct {
-	Label            *string `protobuf:"bytes,1,req" json:"Label,omitempty"`
-	Type             *string `protobuf:"bytes,2,req" json:"Type,omitempty"`
+	Label            *string `protobuf:"bytes,1,req,name=Label" json:"Label,omitempty"`
+	Type             *string `protobuf:"bytes,2,req,name=Type" json:"Type,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -329,13 +329,13 @@ func (m *GoTestField) GetType() string {
 
 type GoTest struct {
 	// Some typical parameters
-	Kind  *GoTest_KIND `protobuf:"varint,1,req,enum=testdata.GoTest_KIND" json:"Kind,omitempty"`
-	Table *string      `protobuf:"bytes,2,opt" json:"Table,omitempty"`
-	Param *int32       `protobuf:"varint,3,opt" json:"Param,omitempty"`
+	Kind  *GoTest_KIND `protobuf:"varint,1,req,name=Kind,enum=testdata.GoTest_KIND" json:"Kind,omitempty"`
+	Table *string      `protobuf:"bytes,2,opt,name=Table" json:"Table,omitempty"`
+	Param *int32       `protobuf:"varint,3,opt,name=Param" json:"Param,omitempty"`
 	// Required, repeated and optional foreign fields.
-	RequiredField *GoTestField   `protobuf:"bytes,4,req" json:"RequiredField,omitempty"`
-	RepeatedField []*GoTestField `protobuf:"bytes,5,rep" json:"RepeatedField,omitempty"`
-	OptionalField *GoTestField   `protobuf:"bytes,6,opt" json:"OptionalField,omitempty"`
+	RequiredField *GoTestField   `protobuf:"bytes,4,req,name=RequiredField" json:"RequiredField,omitempty"`
+	RepeatedField []*GoTestField `protobuf:"bytes,5,rep,name=RepeatedField" json:"RepeatedField,omitempty"`
+	OptionalField *GoTestField   `protobuf:"bytes,6,opt,name=OptionalField" json:"OptionalField,omitempty"`
 	// Required fields of all basic types
 	F_BoolRequired    *bool    `protobuf:"varint,10,req,name=F_Bool_required" json:"F_Bool_required,omitempty"`
 	F_Int32Required   *int32   `protobuf:"varint,11,req,name=F_Int32_required" json:"F_Int32_required,omitempty"`
@@ -936,7 +936,7 @@ func (m *GoTest) GetOptionalgroup() *GoTest_OptionalGroup {
 
 // Required, repeated, and optional groups.
 type GoTest_RequiredGroup struct {
-	RequiredField    *string `protobuf:"bytes,71,req" json:"RequiredField,omitempty"`
+	RequiredField    *string `protobuf:"bytes,71,req,name=RequiredField" json:"RequiredField,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -952,7 +952,7 @@ func (m *GoTest_RequiredGroup) GetRequiredField() string {
 }
 
 type GoTest_RepeatedGroup struct {
-	RequiredField    *string `protobuf:"bytes,81,req" json:"RequiredField,omitempty"`
+	RequiredField    *string `protobuf:"bytes,81,req,name=RequiredField" json:"RequiredField,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -968,7 +968,7 @@ func (m *GoTest_RepeatedGroup) GetRequiredField() string {
 }
 
 type GoTest_OptionalGroup struct {
-	RequiredField    *string `protobuf:"bytes,91,req" json:"RequiredField,omitempty"`
+	RequiredField    *string `protobuf:"bytes,91,req,name=RequiredField" json:"RequiredField,omitempty"`
 	XXX_unrecognized []byte  `json:"-"`
 }
 
@@ -1514,7 +1514,7 @@ func (m *Empty) String() string { return proto.CompactTextString(m) }
 func (*Empty) ProtoMessage()    {}
 
 type MessageList struct {
-	Message          []*MessageList_Message `protobuf:"group,1,rep" json:"message,omitempty"`
+	Message          []*MessageList_Message `protobuf:"group,1,rep,name=Message" json:"message,omitempty"`
 	XXX_unrecognized []byte                 `json:"-"`
 }
 
@@ -1580,24 +1580,24 @@ func (m *Strings) GetBytesField() []byte {
 type Defaults struct {
 	// Default-valued fields of all basic types.
 	// Same as GoTest, but copied here to make testing easier.
-	F_Bool    *bool           `protobuf:"varint,1,opt,def=1" json:"F_Bool,omitempty"`
-	F_Int32   *int32          `protobuf:"varint,2,opt,def=32" json:"F_Int32,omitempty"`
-	F_Int64   *int64          `protobuf:"varint,3,opt,def=64" json:"F_Int64,omitempty"`
-	F_Fixed32 *uint32         `protobuf:"fixed32,4,opt,def=320" json:"F_Fixed32,omitempty"`
-	F_Fixed64 *uint64         `protobuf:"fixed64,5,opt,def=640" json:"F_Fixed64,omitempty"`
-	F_Uint32  *uint32         `protobuf:"varint,6,opt,def=3200" json:"F_Uint32,omitempty"`
-	F_Uint64  *uint64         `protobuf:"varint,7,opt,def=6400" json:"F_Uint64,omitempty"`
-	F_Float   *float32        `protobuf:"fixed32,8,opt,def=314159" json:"F_Float,omitempty"`
-	F_Double  *float64        `protobuf:"fixed64,9,opt,def=271828" json:"F_Double,omitempty"`
-	F_String  *string         `protobuf:"bytes,10,opt,def=hello, \"world!\"\n" json:"F_String,omitempty"`
-	F_Bytes   []byte          `protobuf:"bytes,11,opt,def=Bignose" json:"F_Bytes,omitempty"`
-	F_Sint32  *int32          `protobuf:"zigzag32,12,opt,def=-32" json:"F_Sint32,omitempty"`
-	F_Sint64  *int64          `protobuf:"zigzag64,13,opt,def=-64" json:"F_Sint64,omitempty"`
-	F_Enum    *Defaults_Color `protobuf:"varint,14,opt,enum=testdata.Defaults_Color,def=1" json:"F_Enum,omitempty"`
+	F_Bool    *bool           `protobuf:"varint,1,opt,name=F_Bool,def=1" json:"F_Bool,omitempty"`
+	F_Int32   *int32          `protobuf:"varint,2,opt,name=F_Int32,def=32" json:"F_Int32,omitempty"`
+	F_Int64   *int64          `protobuf:"varint,3,opt,name=F_Int64,def=64" json:"F_Int64,omitempty"`
+	F_Fixed32 *uint32         `protobuf:"fixed32,4,opt,name=F_Fixed32,def=320" json:"F_Fixed32,omitempty"`
+	F_Fixed64 *uint64         `protobuf:"fixed64,5,opt,name=F_Fixed64,def=640" json:"F_Fixed64,omitempty"`
+	F_Uint32  *uint32         `protobuf:"varint,6,opt,name=F_Uint32,def=3200" json:"F_Uint32,omitempty"`
+	F_Uint64  *uint64         `protobuf:"varint,7,opt,name=F_Uint64,def=6400" json:"F_Uint64,omitempty"`
+	F_Float   *float32        `protobuf:"fixed32,8,opt,name=F_Float,def=314159" json:"F_Float,omitempty"`
+	F_Double  *float64        `protobuf:"fixed64,9,opt,name=F_Double,def=271828" json:"F_Double,omitempty"`
+	F_String  *string         `protobuf:"bytes,10,opt,name=F_String,def=hello, \"world!\"\n" json:"F_String,omitempty"`
+	F_Bytes   []byte          `protobuf:"bytes,11,opt,name=F_Bytes,def=Bignose" json:"F_Bytes,omitempty"`
+	F_Sint32  *int32          `protobuf:"zigzag32,12,opt,name=F_Sint32,def=-32" json:"F_Sint32,omitempty"`
+	F_Sint64  *int64          `protobuf:"zigzag64,13,opt,name=F_Sint64,def=-64" json:"F_Sint64,omitempty"`
+	F_Enum    *Defaults_Color `protobuf:"varint,14,opt,name=F_Enum,enum=testdata.Defaults_Color,def=1" json:"F_Enum,omitempty"`
 	// More fields with crazy defaults.
-	F_Pinf *float32 `protobuf:"fixed32,15,opt,def=inf" json:"F_Pinf,omitempty"`
-	F_Ninf *float32 `protobuf:"fixed32,16,opt,def=-inf" json:"F_Ninf,omitempty"`
-	F_Nan  *float32 `protobuf:"fixed32,17,opt,def=nan" json:"F_Nan,omitempty"`
+	F_Pinf *float32 `protobuf:"fixed32,15,opt,name=F_Pinf,def=inf" json:"F_Pinf,omitempty"`
+	F_Ninf *float32 `protobuf:"fixed32,16,opt,name=F_Ninf,def=-inf" json:"F_Ninf,omitempty"`
+	F_Nan  *float32 `protobuf:"fixed32,17,opt,name=F_Nan,def=nan" json:"F_Nan,omitempty"`
 	// Sub-message.
 	Sub *SubDefaults `protobuf:"bytes,18,opt,name=sub" json:"sub,omitempty"`
 	// Redundant but explicit defaults.
@@ -1862,7 +1862,7 @@ func (m *MoreRepeated) GetFixeds() []uint32 {
 }
 
 type GroupOld struct {
-	G                *GroupOld_G `protobuf:"group,101,opt" json:"g,omitempty"`
+	G                *GroupOld_G `protobuf:"group,101,opt,name=G" json:"g,omitempty"`
 	XXX_unrecognized []byte      `json:"-"`
 }
 
@@ -1894,7 +1894,7 @@ func (m *GroupOld_G) GetX() int32 {
 }
 
 type GroupNew struct {
-	G                *GroupNew_G `protobuf:"group,101,opt" json:"g,omitempty"`
+	G                *GroupNew_G `protobuf:"group,101,opt,name=G" json:"g,omitempty"`
 	XXX_unrecognized []byte      `json:"-"`
 }
 
@@ -2013,22 +2013,22 @@ type isCommunique_Union interface {
 }
 
 type Communique_Number struct {
-	Number int32 `protobuf:"varint,5,opt,name=number"`
+	Number int32 `protobuf:"varint,5,opt,name=number,oneof"`
 }
 type Communique_Name struct {
-	Name string `protobuf:"bytes,6,opt,name=name"`
+	Name string `protobuf:"bytes,6,opt,name=name,oneof"`
 }
 type Communique_Data struct {
-	Data []byte `protobuf:"bytes,7,opt,name=data"`
+	Data []byte `protobuf:"bytes,7,opt,name=data,oneof"`
 }
 type Communique_TempC struct {
-	TempC float64 `protobuf:"fixed64,8,opt,name=temp_c"`
+	TempC float64 `protobuf:"fixed64,8,opt,name=temp_c,oneof"`
 }
 type Communique_Col struct {
-	Col MyMessage_Color `protobuf:"varint,9,opt,name=col,enum=testdata.MyMessage_Color"`
+	Col MyMessage_Color `protobuf:"varint,9,opt,name=col,enum=testdata.MyMessage_Color,oneof"`
 }
 type Communique_Msg struct {
-	Msg *Strings `protobuf:"bytes,10,opt,name=msg"`
+	Msg *Strings `protobuf:"bytes,10,opt,name=msg,oneof"`
 }
 
 func (*Communique_Number) isCommunique_Union() {}

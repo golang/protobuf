@@ -341,10 +341,10 @@ type isMsgWithOneof_Union interface {
 }
 
 type MsgWithOneof_Title struct {
-	Title string `protobuf:"bytes,1,opt,name=title"`
+	Title string `protobuf:"bytes,1,opt,name=title,oneof"`
 }
 type MsgWithOneof_Salary struct {
-	Salary int64 `protobuf:"varint,2,opt,name=salary"`
+	Salary int64 `protobuf:"varint,2,opt,name=salary,oneof"`
 }
 
 func (*MsgWithOneof_Title) isMsgWithOneof_Union()  {}

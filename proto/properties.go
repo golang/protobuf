@@ -177,6 +177,7 @@ type Properties struct {
 	Packed   bool   // relevant for repeated primitives only
 	Enum     string // set for enum types only
 	proto3   bool   // whether this is known to be a proto3 field; set for []byte only
+	oneof    bool   // whether this is a oneof field
 
 	Default    string // default value
 	HasDefault bool   // whether an explicit default was provided
@@ -228,6 +229,9 @@ func (p *Properties) String() string {
 	}
 	if p.proto3 {
 		s += ",proto3"
+	}
+	if p.oneof {
+		s += ",oneof"
 	}
 	if len(p.Enum) > 0 {
 		s += ",enum=" + p.Enum
@@ -305,6 +309,8 @@ func (p *Properties) Parse(s string) {
 			p.Enum = f[5:]
 		case f == "proto3":
 			p.proto3 = true
+		case f == "oneof":
+			p.oneof = true
 		case strings.HasPrefix(f, "def="):
 			p.HasDefault = true
 			p.Default = f[4:] // rest of string

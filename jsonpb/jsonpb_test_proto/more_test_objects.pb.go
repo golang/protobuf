@@ -12,6 +12,11 @@ It is generated from these files:
 It has these top-level messages:
 	Simple3
 	Mappy
+	Simple
+	Repeats
+	Widget
+	Maps
+	MsgWithOneof
 */
 package jsonpb
 
