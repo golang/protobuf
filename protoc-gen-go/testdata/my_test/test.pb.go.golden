@@ -489,34 +489,34 @@ type isCommunique_Union interface {
 }
 
 type Communique_Number struct {
-	Number int32 `protobuf:"varint,5,opt,name=number"`
+	Number int32 `protobuf:"varint,5,opt,name=number,oneof"`
 }
 type Communique_Name struct {
-	Name string `protobuf:"bytes,6,opt,name=name"`
+	Name string `protobuf:"bytes,6,opt,name=name,oneof"`
 }
 type Communique_Data struct {
-	Data []byte `protobuf:"bytes,7,opt,name=data"`
+	Data []byte `protobuf:"bytes,7,opt,name=data,oneof"`
 }
 type Communique_TempC struct {
-	TempC float64 `protobuf:"fixed64,8,opt,name=temp_c"`
+	TempC float64 `protobuf:"fixed64,8,opt,name=temp_c,oneof"`
 }
 type Communique_Height struct {
-	Height float32 `protobuf:"fixed32,9,opt,name=height"`
+	Height float32 `protobuf:"fixed32,9,opt,name=height,oneof"`
 }
 type Communique_Today struct {
-	Today Days `protobuf:"varint,10,opt,name=today,enum=my.test.Days"`
+	Today Days `protobuf:"varint,10,opt,name=today,enum=my.test.Days,oneof"`
 }
 type Communique_Maybe struct {
-	Maybe bool `protobuf:"varint,11,opt,name=maybe"`
+	Maybe bool `protobuf:"varint,11,opt,name=maybe,oneof"`
 }
 type Communique_Delta_ struct {
-	Delta int32 `protobuf:"zigzag32,12,opt,name=delta"`
+	Delta int32 `protobuf:"zigzag32,12,opt,name=delta,oneof"`
 }
 type Communique_Msg struct {
-	Msg *Reply `protobuf:"bytes,13,opt,name=msg"`
+	Msg *Reply `protobuf:"bytes,13,opt,name=msg,oneof"`
 }
 type Communique_Somegroup struct {
-	Somegroup *Communique_SomeGroup `protobuf:"group,14,opt,name=SomeGroup"`
+	Somegroup *Communique_SomeGroup `protobuf:"group,14,opt,name=SomeGroup,oneof"`
 }
 
 func (*Communique_Number) isCommunique_Union()    {}

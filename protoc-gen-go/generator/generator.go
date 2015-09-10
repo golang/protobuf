@@ -303,7 +303,7 @@ type getterSymbol struct {
 	name     string
 	typ      string
 	typeName string // canonical name in proto world; empty for proto.Message and similar
-	genType  bool   // whether typ is a generated type (message/group/enum)
+	genType  bool   // whether typ contains a generated type (message/group/enum)
 }
 
 func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
@@ -333,15 +333,19 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 		typ := get.typ
 		val := "(*" + remoteSym + ")(m)." + get.name + "()"
 		if get.genType {
-			// typ will be "*pkg.T" (message/group) or "pkg.T" (enum).
-			// Either of those might have a "[]" prefix if it is repeated.
-			// Drop the package qualifier since we have hoisted the type into this package.
+			// typ will be "*pkg.T" (message/group) or "pkg.T" (enum)
+			// or "map[t]*pkg.T" (map to message/enum).
+			// The first two of those might have a "[]" prefix if it is repeated.
+			// Drop any package qualifier since we have hoisted the type into this package.
 			rep := strings.HasPrefix(typ, "[]")
 			if rep {
 				typ = typ[2:]
 			}
+			isMap := strings.HasPrefix(typ, "map[")
 			star := typ[0] == '*'
-			typ = typ[strings.Index(typ, ".")+1:]
+			if !isMap { // map types handled lower down
+				typ = typ[strings.Index(typ, ".")+1:]
+			}
 			if star {
 				typ = "*" + typ
 			}
@@ -373,6 +377,30 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 				g.P("}")
 				g.P("return s")
 				g.Out()
+				g.P("}")
+				continue
+			}
+			if isMap {
+				// Split map[keyTyp]valTyp.
+				bra, ket := strings.Index(typ, "["), strings.Index(typ, "]")
+				keyTyp, valTyp := typ[bra+1:ket], typ[ket+1:]
+				// Drop any package qualifier.
+				// Only the value type may be foreign.
+				star := valTyp[0] == '*'
+				valTyp = valTyp[strings.Index(valTyp, ".")+1:]
+				if star {
+					valTyp = "*" + valTyp
+				}
+
+				typ := "map[" + keyTyp + "]" + valTyp
+				g.P("func (m *", ms.sym, ") ", get.name, "() ", typ, " {")
+				g.P("o := ", val)
+				g.P("if o == nil { return nil }")
+				g.P("s := make(", typ, ", len(o))")
+				g.P("for k, v := range o {")
+				g.P("s[k] = (", valTyp, ")(v)")
+				g.P("}")
+				g.P("return s")
 				g.P("}")
 				continue
 			}
@@ -863,6 +891,9 @@ func wrapImported(file *descriptor.FileDescriptorProto, g *Generator) (sl []*Imp
 	for _, index := range file.PublicDependency {
 		df := g.fileByName(file.Dependency[index])
 		for _, d := range df.desc {
+			if d.GetOptions().GetMapEntry() {
+				continue
+			}
 			sl = append(sl, &ImportedDescriptor{common{file}, d})
 		}
 		for _, e := range df.enum {
@@ -1433,13 +1464,18 @@ func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptor
 			name += ",proto3"
 		}
 	}
-	return strconv.Quote(fmt.Sprintf("%s,%d,%s%s%s%s%s",
+	oneof := ""
+	if field.OneofIndex != nil {
+		oneof = ",oneof"
+	}
+	return strconv.Quote(fmt.Sprintf("%s,%d,%s%s%s%s%s%s",
 		wiretype,
 		field.GetNumber(),
 		optrepreq,
 		packed,
 		name,
 		enum,
+		oneof,
 		defaultValue))
 }
 

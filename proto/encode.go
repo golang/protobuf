@@ -332,7 +332,7 @@ func size_bool(p *Properties, base structPointer) int {
 
 func size_proto3_bool(p *Properties, base structPointer) int {
 	v := *structPointer_BoolVal(base, p.field)
-	if !v {
+	if !v && !p.oneof {
 		return 0
 	}
 	return len(p.tagcode) + 1 // each bool takes exactly one byte
@@ -375,7 +375,7 @@ func size_int32(p *Properties, base structPointer) (n int) {
 func size_proto3_int32(p *Properties, base structPointer) (n int) {
 	v := structPointer_Word32Val(base, p.field)
 	x := int32(word32Val_Get(v)) // permit sign extension to use full 64-bit range
-	if x == 0 {
+	if x == 0 && !p.oneof {
 		return 0
 	}
 	n += len(p.tagcode)
@@ -421,7 +421,7 @@ func size_uint32(p *Properties, base structPointer) (n int) {
 func size_proto3_uint32(p *Properties, base structPointer) (n int) {
 	v := structPointer_Word32Val(base, p.field)
 	x := word32Val_Get(v)
-	if x == 0 {
+	if x == 0 && !p.oneof {
 		return 0
 	}
 	n += len(p.tagcode)
@@ -466,7 +466,7 @@ func size_int64(p *Properties, base structPointer) (n int) {
 func size_proto3_int64(p *Properties, base structPointer) (n int) {
 	v := structPointer_Word64Val(base, p.field)
 	x := word64Val_Get(v)
-	if x == 0 {
+	if x == 0 && !p.oneof {
 		return 0
 	}
 	n += len(p.tagcode)
@@ -509,7 +509,7 @@ func size_string(p *Properties, base structPointer) (n int) {
 
 func size_proto3_string(p *Properties, base structPointer) (n int) {
 	v := *structPointer_StringVal(base, p.field)
-	if v == "" {
+	if v == "" && !p.oneof {
 		return 0
 	}
 	n += len(p.tagcode)
@@ -681,7 +681,7 @@ func (o *Buffer) enc_proto3_slice_byte(p *Properties, base structPointer) error 
 
 func size_slice_byte(p *Properties, base structPointer) (n int) {
 	s := *structPointer_Bytes(base, p.field)
-	if s == nil {
+	if s == nil && !p.oneof {
 		return 0
 	}
 	n += len(p.tagcode)
@@ -691,7 +691,7 @@ func size_slice_byte(p *Properties, base structPointer) (n int) {
 
 func size_proto3_slice_byte(p *Properties, base structPointer) (n int) {
 	s := *structPointer_Bytes(base, p.field)
-	if len(s) == 0 {
+	if len(s) == 0 && !p.oneof {
 		return 0
 	}
 	n += len(p.tagcode)
