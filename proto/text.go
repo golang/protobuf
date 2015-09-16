@@ -334,7 +334,8 @@ func writeStruct(w *textWriter, sv reflect.Value) error {
 				}
 				inner := fv.Elem().Elem() // interface -> *T -> T
 				tag := inner.Type().Field(0).Tag.Get("protobuf")
-				props.Parse(tag) // Overwrite the outer props.
+				props = new(Properties) // Overwrite the outer props var, but not its pointee.
+				props.Parse(tag)
 				// Write the value in the oneof, not the oneof itself.
 				fv = inner.Field(0)
 
