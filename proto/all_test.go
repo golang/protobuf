@@ -2010,6 +2010,19 @@ func TestOneof(t *testing.T) {
 	}
 }
 
+func TestInefficientPackedBool(t *testing.T) {
+	// https://github.com/golang/protobuf/issues/76
+	inp := []byte{
+		0x12, 0x02, // 0x12 = 2<<3|2; 2 bytes
+		// Usually a bool should take a single byte,
+		// but it is permitted to be any varint.
+		0xb9, 0x30,
+	}
+	if err := Unmarshal(inp, new(MoreRepeated)); err != nil {
+		t.Error(err)
+	}
+}
+
 // Benchmarks
 
 func testMsg() *GoTest {
