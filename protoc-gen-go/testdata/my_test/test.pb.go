@@ -184,9 +184,11 @@ type Request struct {
 	// This is a map field. It will generate map[int32]string.
 	NameMapping map[int32]string `protobuf:"bytes,14,rep,name=name_mapping" json:"name_mapping,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// This is a map field whose value type is a message.
-	MsgMapping       map[int64]*Reply `protobuf:"bytes,15,rep,name=msg_mapping" json:"msg_mapping,omitempty" protobuf_key:"zigzag64,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	Reset_           *int32           `protobuf:"varint,12,opt,name=reset" json:"reset,omitempty"`
-	XXX_unrecognized []byte           `json:"-"`
+	MsgMapping map[int64]*Reply `protobuf:"bytes,15,rep,name=msg_mapping" json:"msg_mapping,omitempty" protobuf_key:"zigzag64,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Reset_     *int32           `protobuf:"varint,12,opt,name=reset" json:"reset,omitempty"`
+	// This field should not conflict with any getters.
+	GetKey_          *string `protobuf:"bytes,16,opt,name=get_key" json:"get_key,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
 }
 
 func (m *Request) Reset()         { *m = Request{} }
@@ -251,6 +253,13 @@ func (m *Request) GetReset_() int32 {
 		return *m.Reset_
 	}
 	return 0
+}
+
+func (m *Request) GetGetKey_() string {
+	if m != nil && m.GetKey_ != nil {
+		return *m.GetKey_
+	}
+	return ""
 }
 
 type Request_SomeGroup struct {

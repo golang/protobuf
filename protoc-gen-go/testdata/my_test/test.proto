@@ -81,6 +81,8 @@ message Request {
   map<sint64, Reply> msg_mapping = 15;
 
   optional int32 reset = 12;
+  // This field should not conflict with any getters.
+  optional string get_key = 16;
 }
 
 message Reply {
