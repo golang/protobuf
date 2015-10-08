@@ -256,6 +256,15 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		},
 	},
 
+	// Repeated field with list notation
+	{
+		in: `count:42 pet: ["horsey", "bunny"]`,
+		out: &MyMessage{
+			Count: Int32(42),
+			Pet:   []string{"horsey", "bunny"},
+		},
+	},
+
 	// Repeated message with/without colon and <>/{}
 	{
 		in: `count:42 others:{} others{} others:<> others:{}`,
