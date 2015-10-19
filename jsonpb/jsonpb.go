@@ -62,8 +62,7 @@ type Marshaler struct {
 	// Whether to render enum values as integers, as opposed to string values.
 	EnumsAsInts bool
 
-	// Use string values for enums (as opposed to integer values)
-	// This is DEPRECATED and will become the default.
+	// EnumsAsString is DEPRECATED and does nothing.
 	EnumsAsString bool
 
 	// A string to indent each level by. The presence of this field will
@@ -192,7 +191,7 @@ func (m *Marshaler) marshalValue(out *errWriter, v reflect.Value,
 
 	// Handle enumerations.
 	protoInfo := structField.Tag.Get("protobuf")
-	if m.EnumsAsString && !m.EnumsAsInts && strings.Contains(protoInfo, ",enum=") {
+	if !m.EnumsAsInts && strings.Contains(protoInfo, ",enum=") {
 		// Unknown enum values will are stringified by the proto library as their
 		// value. Such values should _not_ be quoted or they will be interpreted
 		// as an enum string instead of their value.
