@@ -803,3 +803,9 @@ func RegisterEnum(typeName string, unusedNameMap map[int32]string, valueMap map[
 	}
 	enumValueMaps[typeName] = valueMap
 }
+
+// EnumValueMap returns the mapping from names to integers of the
+// enum type enumType, or a nil if not found.
+func EnumValueMap(enumType string) map[string]int32 {
+	return enumValueMaps[enumType]
+}
