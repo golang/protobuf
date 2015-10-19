@@ -44,8 +44,7 @@ var (
 	marshaler = Marshaler{}
 
 	marshalerAllOptions = Marshaler{
-		EnumsAsString: true,
-		Indent:        "  ",
+		Indent: "  ",
 	}
 
 	simpleObject = &pb.Simple{
@@ -182,8 +181,8 @@ var (
 		RRepeats: []*pb.Repeats{innerRepeats, innerRepeats2},
 	}
 
-	complexObjectJSON = `{"color":1,` +
-		`"r_color":[0,1,2],` +
+	complexObjectJSON = `{"color":"GREEN",` +
+		`"r_color":["RED","GREEN","BLUE"],` +
 		`"simple":{"o_int32":-32},` +
 		`"r_simple":[{"o_int32":-32},{"o_int64":"25"}],` +
 		`"repeats":{"r_string":["roses","red"]},` +
@@ -269,7 +268,7 @@ var marshalingTests = []struct {
 	{"repeated fields pretty object", marshalerAllOptions, repeatsObject, repeatsObjectPrettyJSON},
 	{"nested message/enum flat object", marshaler, complexObject, complexObjectJSON},
 	{"nested message/enum pretty object", marshalerAllOptions, complexObject, complexObjectPrettyJSON},
-	{"enum-string flat object", Marshaler{EnumsAsString: true},
+	{"enum-string flat object", Marshaler{},
 		&pb.Widget{Color: pb.Widget_BLUE.Enum()}, `{"color":"BLUE"}`},
 	{"enum-value pretty object", Marshaler{EnumsAsInts: true, Indent: " "},
 		&pb.Widget{Color: pb.Widget_BLUE.Enum()}, colorPrettyJSON},
