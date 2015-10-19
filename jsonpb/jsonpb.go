@@ -297,7 +297,7 @@ func Unmarshal(r io.Reader, pb proto.Message) error {
 // on a JSON string. This function is lenient and will decode any options
 // permutations of the related Marshaler.
 func UnmarshalString(str string, pb proto.Message) error {
-	return Unmarshal(bytes.NewReader([]byte(str)), pb)
+	return Unmarshal(strings.NewReader(str), pb)
 }
 
 // unmarshalValue converts/copies a value into the target.
@@ -317,6 +317,7 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 			return err
 		}
 
+		sprops := proto.GetProperties(targetType)
 		for i := 0; i < target.NumField(); i++ {
 			ft := target.Type().Field(i)
 			if strings.HasPrefix(ft.Name, "XXX_") {
@@ -324,15 +325,40 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 			}
 			fieldName := jsonFieldName(ft)
 
-			if valueForField, ok := jsonFields[fieldName]; ok {
-				if err := unmarshalValue(target.Field(i), valueForField); err != nil {
-					return err
+			valueForField, ok := jsonFields[fieldName]
+			if !ok {
+				continue
+			}
+			delete(jsonFields, fieldName)
+
+			// Handle enums, which have an underlying type of int32,
+			// and may appear as strings. We do this while handling
+			// the struct so we have access to the enum info.
+			// The case of an enum appearing as a number is handled
+			// by the recursive call to unmarshalValue.
+			if enum := sprops.Prop[i].Enum; valueForField[0] == '"' && enum != "" {
+				vmap := proto.EnumValueMap(enum)
+				// Don't need to do unquoting; valid enum names
+				// are from a limited character set.
+				s := valueForField[1 : len(valueForField)-1]
+				n, ok := vmap[string(s)]
+				if !ok {
+					return fmt.Errorf("unknown value %q for enum %s", s, enum)
 				}
-				delete(jsonFields, fieldName)
+				f := target.Field(i)
+				if f.Kind() == reflect.Ptr { // proto2
+					f.Set(reflect.New(f.Type().Elem()))
+					f = f.Elem()
+				}
+				f.SetInt(int64(n))
+				continue
+			}
+
+			if err := unmarshalValue(target.Field(i), valueForField); err != nil {
+				return err
 			}
 		}
 		// Check for any oneof fields.
-		sprops := proto.GetProperties(targetType)
 		for fname, raw := range jsonFields {
 			if oop, ok := sprops.OneofTypes[fname]; ok {
 				nv := reflect.New(oop.Type.Elem())
@@ -410,11 +436,6 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 
 	// Use the encoding/json for parsing other value types.
 	return json.Unmarshal(inputValue, target.Addr().Interface())
-}
-
-// hasUnmarshalJSON is a interface implemented by protocol buffer enums.
-type hasUnmarshalJSON interface {
-	UnmarshalJSON(data []byte) error
 }
 
 // jsonFieldName returns the field name to use.
