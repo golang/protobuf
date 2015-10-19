@@ -271,7 +271,7 @@ var marshalingTests = []struct {
 	{"nested message/enum pretty object", marshalerAllOptions, complexObject, complexObjectPrettyJSON},
 	{"enum-string flat object", Marshaler{EnumsAsString: true},
 		&pb.Widget{Color: pb.Widget_BLUE.Enum()}, `{"color":"BLUE"}`},
-	{"enum-value pretty object", Marshaler{Indent: " "},
+	{"enum-value pretty object", Marshaler{EnumsAsInts: true, Indent: " "},
 		&pb.Widget{Color: pb.Widget_BLUE.Enum()}, colorPrettyJSON},
 	{"unknown enum value object", marshalerAllOptions,
 		&pb.Widget{Color: pb.Widget_Color(1000).Enum(), RColor: []pb.Widget_Color{pb.Widget_RED}}, colorListPrettyJSON},

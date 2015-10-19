@@ -35,7 +35,7 @@ protocol buffer and JSON objects.
 
 Compared to encoding/json, this library:
  - encodes int64, uint64 as strings
- - optionally encodes enums as strings
+ - optionally encodes enums as integers
 */
 package jsonpb
 
@@ -59,7 +59,11 @@ var (
 // Marshaler is a configurable object for converting between
 // protocol buffer objects and a JSON representation for them
 type Marshaler struct {
+	// Whether to render enum values as integers, as opposed to string values.
+	EnumsAsInts bool
+
 	// Use string values for enums (as opposed to integer values)
+	// This is DEPRECATED and will become the default.
 	EnumsAsString bool
 
 	// A string to indent each level by. The presence of this field will
@@ -188,9 +192,9 @@ func (m *Marshaler) marshalValue(out *errWriter, v reflect.Value,
 
 	// Handle enumerations.
 	protoInfo := structField.Tag.Get("protobuf")
-	if m.EnumsAsString && strings.Contains(protoInfo, ",enum=") {
+	if m.EnumsAsString && !m.EnumsAsInts && strings.Contains(protoInfo, ",enum=") {
 		// Unknown enum values will are stringified by the proto library as their
-		// value. Such values should _not_ be quoted or they will be intrepreted
+		// value. Such values should _not_ be quoted or they will be interpreted
 		// as an enum string instead of their value.
 		enumStr := v.Interface().(fmt.Stringer).String()
 		var valStr string
