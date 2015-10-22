@@ -62,9 +62,6 @@ type Marshaler struct {
 	// Whether to render enum values as integers, as opposed to string values.
 	EnumsAsInts bool
 
-	// EnumsAsString is DEPRECATED and does nothing.
-	EnumsAsString bool
-
 	// A string to indent each level by. The presence of this field will
 	// also cause a space to appear between the field separator and
 	// value, and for newlines to be appear between fields and array
