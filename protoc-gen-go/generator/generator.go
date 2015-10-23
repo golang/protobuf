@@ -292,6 +292,7 @@ type symbol interface {
 type messageSymbol struct {
 	sym                         string
 	hasExtensions, isMessageSet bool
+	hasOneof                    bool
 	getters                     []getterSymbol
 }
 
@@ -320,6 +321,32 @@ func (ms *messageSymbol) GenerateAlias(g *Generator, pkg string) {
 			g.P("func (m *", ms.sym, ") Unmarshal(buf []byte) error ",
 				"{ return (*", remoteSym, ")(m).Unmarshal(buf) }")
 		}
+	}
+	if ms.hasOneof {
+		// Oneofs and public imports do not mix well.
+		// We can make them work okay for the binary format,
+		// but they're going to break weirdly for text/JSON.
+		enc := "_" + ms.sym + "_OneofMarshaler"
+		dec := "_" + ms.sym + "_OneofUnmarshaler"
+		encSig := "(msg " + g.Pkg["proto"] + ".Message, b *" + g.Pkg["proto"] + ".Buffer) error"
+		decSig := "(msg " + g.Pkg["proto"] + ".Message, tag, wire int, b *" + g.Pkg["proto"] + ".Buffer) (bool, error)"
+		g.P("func (m *", ms.sym, ") XXX_OneofFuncs() (func", encSig, ", func", decSig, ", []interface{}) {")
+		g.P("return ", enc, ", ", dec, ", nil")
+		g.P("}")
+
+		g.P("func ", enc, encSig, " {")
+		g.P("m := msg.(*", ms.sym, ")")
+		g.P("m0 := (*", remoteSym, ")(m)")
+		g.P("enc, _, _ := m0.XXX_OneofFuncs()")
+		g.P("return enc(m0, b)")
+		g.P("}")
+
+		g.P("func ", dec, decSig, " {")
+		g.P("m := msg.(*", ms.sym, ")")
+		g.P("m0 := (*", remoteSym, ")(m)")
+		g.P("_, dec, _ := m0.XXX_OneofFuncs()")
+		g.P("return dec(m0, tag, wire, b)")
+		g.P("}")
 	}
 	for _, get := range ms.getters {
 
@@ -2057,7 +2084,13 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	}
 
 	if !message.group {
-		ms := &messageSymbol{sym: ccTypeName, hasExtensions: hasExtensions, isMessageSet: isMessageSet, getters: getters}
+		ms := &messageSymbol{
+			sym:           ccTypeName,
+			hasExtensions: hasExtensions,
+			isMessageSet:  isMessageSet,
+			hasOneof:      len(message.OneofDecl) > 0,
+			getters:       getters,
+		}
 		g.file.addExport(message, ms)
 	}
 
