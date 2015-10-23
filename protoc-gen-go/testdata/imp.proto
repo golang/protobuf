@@ -43,6 +43,9 @@ message ImportedMessage {
   optional ImportedMessage2 local_msg = 2;
   optional ForeignImportedMessage foreign_msg = 3;  // in imp3.proto
   optional Owner enum_field = 4;
+  oneof union {
+    int32 state = 9;
+  }
 
   repeated string name = 5;
   repeated Owner boss = 6;
