@@ -1,4 +1,4 @@
-Go support for Protocol Buffers - Google's data interchange format
+# Go support for Protocol Buffers - Google's data interchange format
 Copyright 2010 The Go Authors.
 https://github.com/golang/protobuf
 
@@ -7,15 +7,25 @@ This package and the code it generates requires at least Go 1.4.
 This software implements Go bindings for protocol buffers.  For
 information about protocol buffers themselves, see
 	https://developers.google.com/protocol-buffers/
+
+## Installation
+
+### Install the standard C++ implementation of protocol buffers
+
 To use this software, you must first install the standard C++
 implementation of protocol buffers from
 	https://developers.google.com/protocol-buffers/
+
+### Install the Go compiler and tools
+
 And of course you must also install the Go compiler and tools from
 	https://golang.org/
 See
 	https://golang.org/doc/install
 for details or, if you are using gccgo, follow the instructions at
 	https://golang.org/doc/install/gccgo
+
+### Install the Go protobuf packages
 
 This software has two parts: a 'protocol compiler plugin' that
 generates Go source files that, once compiled, can access and manage
@@ -39,6 +49,8 @@ The compiler plugin, protoc-gen-go, will be installed in $GOBIN,
 defaulting to $GOPATH/bin.  It must be in your $PATH for the protocol
 compiler, protoc, to find it.
 
+## Using protocol buffers with Go
+
 Once the software is installed, there are two steps to using it.
 First you must compile the protocol buffer definitions and then import
 them, with the support library, into your program.
@@ -56,7 +68,7 @@ The package comment for the proto library contains text describing
 the interface provided in Go for protocol buffers. Here is an edited
 version.
 
-==========
+----------
 
 The proto package converts data structures to and from the
 wire format of protocol buffers.  It works in concert with the
@@ -150,8 +162,8 @@ To create and play with a Test object from the example package,
 	}
 
 
-gRPC Support
-============
+## gRPC Support
+===============
 If a proto file specifies RPC services, protoc-gen-go can be instructed to
 generate code compatible with gRPC (http://www.grpc.io/). To do this, pass
 the `plugins` parameter to protoc-gen-go; the usual way is to insert it into
