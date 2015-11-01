@@ -1665,7 +1665,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		ns := allocNames(base, "Get"+base)
 		fieldName, fieldGetterName := ns[0], ns[1]
 		typename, wiretype := g.GoType(message, field)
-		jsonName := *field.Name
+		jsonName := LowerCamelCase(*field.Name)
 		tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(message, field, wiretype), jsonName+",omitempty")
 
 		fieldNames[field] = fieldName
@@ -2410,9 +2410,28 @@ func isASCIILower(c byte) bool {
 	return 'a' <= c && c <= 'z'
 }
 
+// Is c an ASCII upper-case letter?
+func isASCIIUpper(c byte) bool {
+	return 'A' <= c && c <= 'Z'
+}
+
 // Is c an ASCII digit?
 func isASCIIDigit(c byte) bool {
 	return '0' <= c && c <= '9'
+}
+
+// LowerCamelCase(s) returns CamelCase(s), but with the first character forced to lower-case.
+// This is used by JSON field names in protobuf3 JSON encoding, for example.
+func LowerCamelCase(s string) string {
+	s = CamelCase(s)
+	if len(s) > 0 {
+		c := s[0]
+		if isASCIIUpper(c) {
+			c ^= ' ' // Make it a lower-case letter.
+			s = string(c) + s[1:]
+		}
+	}
+	return s
 }
 
 // CamelCase returns the CamelCased name.
