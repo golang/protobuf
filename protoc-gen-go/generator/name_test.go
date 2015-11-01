@@ -54,3 +54,23 @@ func TestCamelCase(t *testing.T) {
 		}
 	}
 }
+
+func TestLowerCamelCase(t *testing.T) {
+	tests := []struct {
+		in, want string
+	}{
+		{"one", "one"},
+		{"one_two", "oneTwo"},
+		{"_my_field_name_2", "xMyFieldName_2"},
+		{"Something_Capped", "something_Capped"},
+		{"my_Name", "my_Name"},
+		{"OneTwo", "oneTwo"},
+		{"_", "x"},
+		{"_a_", "xA_"},
+	}
+	for _, tc := range tests {
+		if got := LowerCamelCase(tc.in); got != tc.want {
+			t.Errorf("LowerCamelCase(%q) = %q, want %q", tc.in, got, tc.want)
+		}
+	}
+}
