@@ -29,18 +29,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// A simple binary to link together the protocol buffers in this test.
+syntax = "proto2";
 
-package testdata
+import "multifile/multi2.proto";
+import "multifile/multi3.proto";
 
-import (
-	"testing"
+package multitest;
 
-	multipb "./multifile"
-	mytestpb "./my_test"
-)
-
-func TestLink(t *testing.T) {
-	_ = &multipb.Multi1{}
-	_ = &mytestpb.Request{}
+message Multi1 {
+  required Multi2 multi2 = 1;
+  optional Multi2.Color color = 2;
+  optional Multi3.HatType hat_type = 3;
 }
+

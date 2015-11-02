@@ -29,18 +29,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// A simple binary to link together the protocol buffers in this test.
+syntax = "proto2";
 
-package testdata
+package foo;
 
-import (
-	"testing"
-
-	multipb "./multifile"
-	mytestpb "./my_test"
-)
-
-func TestLink(t *testing.T) {
-	_ = &multipb.Multi1{}
-	_ = &mytestpb.Request{}
-}
+message Foo {}

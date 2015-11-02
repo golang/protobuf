@@ -25,7 +25,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 
-// discarding unused import multitest2 "multi"
+// discarding unused import multitest2 "multifile"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
