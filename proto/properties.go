@@ -37,6 +37,7 @@ package proto
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"reflect"
 	"sort"
@@ -808,4 +809,19 @@ func RegisterEnum(typeName string, unusedNameMap map[int32]string, valueMap map[
 // enum type enumType, or a nil if not found.
 func EnumValueMap(enumType string) map[string]int32 {
 	return enumValueMaps[enumType]
+}
+
+// A registry of all linked message types.
+// The key is a fully-qualified proto name ("pkg.Message").
+var protoTypes = make(map[string]reflect.Type)
+
+// RegisterType is called from generated code and maps from the fully qualified
+// proto name to the type (pointer to struct) of the protocol buffer.
+func RegisterType(x interface{}, name string) {
+	if _, ok := protoTypes[name]; ok {
+		// TODO: Some day, make this a panic.
+		log.Printf("proto: duplicate proto type registered: %s", name)
+		return
+	}
+	protoTypes[name] = reflect.TypeOf(x)
 }

@@ -2304,6 +2304,12 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.generateExtension(ext)
 	}
 
+	fullName := strings.Join(message.TypeName(), ".")
+	if g.file.Package != nil {
+		fullName = *g.file.Package + "." + fullName
+	}
+
+	g.addInitf("%s.RegisterType((*%s)(nil), %q)", g.Pkg["proto"], ccTypeName, fullName)
 }
 
 func (g *Generator) generateExtension(ext *ExtensionDescriptor) {

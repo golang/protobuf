@@ -810,6 +810,17 @@ var E_Donut = &proto.ExtensionDesc{
 }
 
 func init() {
+	proto.RegisterType((*Request)(nil), "my.test.Request")
+	proto.RegisterType((*Request_SomeGroup)(nil), "my.test.Request.SomeGroup")
+	proto.RegisterType((*Reply)(nil), "my.test.Reply")
+	proto.RegisterType((*Reply_Entry)(nil), "my.test.Reply.Entry")
+	proto.RegisterType((*OtherBase)(nil), "my.test.OtherBase")
+	proto.RegisterType((*ReplyExtensions)(nil), "my.test.ReplyExtensions")
+	proto.RegisterType((*OtherReplyExtensions)(nil), "my.test.OtherReplyExtensions")
+	proto.RegisterType((*OldReply)(nil), "my.test.OldReply")
+	proto.RegisterType((*Communique)(nil), "my.test.Communique")
+	proto.RegisterType((*Communique_SomeGroup)(nil), "my.test.Communique.SomeGroup")
+	proto.RegisterType((*Communique_Delta)(nil), "my.test.Communique.Delta")
 	proto.RegisterEnum("my.test.HatType", HatType_name, HatType_value)
 	proto.RegisterEnum("my.test.Days", Days_name, Days_value)
 	proto.RegisterEnum("my.test.Request_Color", Request_Color_name, Request_Color_value)
