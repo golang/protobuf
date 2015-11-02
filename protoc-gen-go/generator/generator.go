@@ -500,14 +500,16 @@ type Generator struct {
 
 	Pkg map[string]string // The names under which we import support packages
 
-	packageName      string            // What we're calling ourselves.
-	allFiles         []*FileDescriptor // All files in the tree
-	genFiles         []*FileDescriptor // Those files we will generate output for.
-	file             *FileDescriptor   // The file we are compiling now.
-	usedPackages     map[string]bool   // Names of packages used in current file.
-	typeNameToObject map[string]Object // Key is a fully-qualified name in input syntax.
-	init             []string          // Lines to emit in the init function.
+	packageName      string                     // What we're calling ourselves.
+	allFiles         []*FileDescriptor          // All files in the tree
+	allFilesByName   map[string]*FileDescriptor // All files by filename.
+	genFiles         []*FileDescriptor          // Those files we will generate output for.
+	file             *FileDescriptor            // The file we are compiling now.
+	usedPackages     map[string]bool            // Names of packages used in current file.
+	typeNameToObject map[string]Object          // Key is a fully-qualified name in input syntax.
+	init             []string                   // Lines to emit in the init function.
 	indent           string
+	writeOutput      bool
 }
 
 // New creates a new generator and allocates the request and response protobufs.
@@ -743,6 +745,7 @@ AllFiles:
 // It also creates the list of files to generate and so should be called before GenerateAllFiles.
 func (g *Generator) WrapTypes() {
 	g.allFiles = make([]*FileDescriptor, len(g.Request.ProtoFile))
+	g.allFilesByName = make(map[string]*FileDescriptor, len(g.allFiles))
 	for i, f := range g.Request.ProtoFile {
 		// We must wrap the descriptors before we wrap the enums
 		descs := wrapDescriptors(f)
@@ -750,18 +753,20 @@ func (g *Generator) WrapTypes() {
 		enums := wrapEnumDescriptors(f, descs)
 		g.buildNestedEnums(descs, enums)
 		exts := wrapExtensions(f)
-		imps := wrapImported(f, g)
 		fd := &FileDescriptor{
 			FileDescriptorProto: f,
 			desc:                descs,
 			enum:                enums,
 			ext:                 exts,
-			imp:                 imps,
 			exported:            make(map[Object][]symbol),
 			proto3:              fileIsProto3(f),
 		}
 		extractComments(fd)
 		g.allFiles[i] = fd
+		g.allFilesByName[f.GetName()] = fd
+	}
+	for _, fd := range g.allFiles {
+		fd.imp = wrapImported(fd.FileDescriptorProto, g)
 	}
 
 	g.genFiles = make([]*FileDescriptor, len(g.Request.FileToGenerate))
@@ -1013,6 +1018,9 @@ func (g *Generator) ObjectNamed(typeName string) Object {
 // P prints the arguments to the generated output.  It handles strings and int32s, plus
 // handling indirections because they may be *string, etc.
 func (g *Generator) P(str ...interface{}) {
+	if !g.writeOutput {
+		return
+	}
 	g.WriteString(g.indent)
 	for _, v := range str {
 		switch s := v.(type) {
@@ -1021,19 +1029,19 @@ func (g *Generator) P(str ...interface{}) {
 		case *string:
 			g.WriteString(*s)
 		case bool:
-			g.WriteString(fmt.Sprintf("%t", s))
+			fmt.Fprintf(g, "%t", s)
 		case *bool:
-			g.WriteString(fmt.Sprintf("%t", *s))
+			fmt.Fprintf(g, "%t", *s)
 		case int:
-			g.WriteString(fmt.Sprintf("%d", s))
+			fmt.Fprintf(g, "%d", s)
 		case *int32:
-			g.WriteString(fmt.Sprintf("%d", *s))
+			fmt.Fprintf(g, "%d", *s)
 		case *int64:
-			g.WriteString(fmt.Sprintf("%d", *s))
+			fmt.Fprintf(g, "%d", *s)
 		case float64:
-			g.WriteString(fmt.Sprintf("%g", s))
+			fmt.Fprintf(g, "%g", s)
 		case *float64:
-			g.WriteString(fmt.Sprintf("%g", *s))
+			fmt.Fprintf(g, "%g", *s)
 		default:
 			g.Fail(fmt.Sprintf("unknown type in printer: %T", v))
 		}
@@ -1073,8 +1081,9 @@ func (g *Generator) GenerateAllFiles() {
 	i := 0
 	for _, file := range g.allFiles {
 		g.Reset()
+		g.writeOutput = genFileMap[file]
 		g.generate(file)
-		if _, ok := genFileMap[file]; !ok {
+		if !g.writeOutput {
 			continue
 		}
 		g.Response.File[i] = new(plugin.CodeGeneratorResponse_File)
@@ -1134,6 +1143,9 @@ func (g *Generator) generate(file *FileDescriptor) {
 	g.Buffer = new(bytes.Buffer)
 	g.generateHeader()
 	g.generateImports()
+	if !g.writeOutput {
+		return
+	}
 	g.Write(rem.Bytes())
 
 	// Reformat generated code.
@@ -1211,6 +1223,9 @@ func (g *Generator) generateHeader() {
 // It returns an indication of whether any comments were printed.
 // See descriptor.proto for its format.
 func (g *Generator) PrintComments(path string) bool {
+	if !g.writeOutput {
+		return false
+	}
 	if loc, ok := g.file.comments[path]; ok {
 		text := strings.TrimSuffix(loc.GetLeadingComments(), "\n")
 		for _, line := range strings.Split(text, "\n") {
@@ -1222,12 +1237,7 @@ func (g *Generator) PrintComments(path string) bool {
 }
 
 func (g *Generator) fileByName(filename string) *FileDescriptor {
-	for _, fd := range g.allFiles {
-		if fd.GetName() == filename {
-			return fd
-		}
-	}
-	return nil
+	return g.allFilesByName[filename]
 }
 
 // weak returns whether the ith import of the current file is a weak import.
