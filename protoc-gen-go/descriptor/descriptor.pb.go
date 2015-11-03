@@ -497,7 +497,12 @@ type FieldDescriptorProto struct {
 	// list.  This field is a member of that oneof.  Extensions of a oneof should
 	// not set this since the oneof to which they belong will be inferred based
 	// on the extension range containing the extension's field number.
-	OneofIndex       *int32        `protobuf:"varint,9,opt,name=oneof_index" json:"oneof_index,omitempty"`
+	OneofIndex *int32 `protobuf:"varint,9,opt,name=oneof_index" json:"oneof_index,omitempty"`
+	// JSON name of this field. The value is set by protocol compiler. If the
+	// user has set a "json_name" option on this field, that option's value
+	// will be used. Otherwise, it's deduced from the field's name by converting
+	// it to camelCase.
+	JsonName         *string       `protobuf:"bytes,10,opt,name=json_name" json:"json_name,omitempty"`
 	Options          *FieldOptions `protobuf:"bytes,8,opt,name=options" json:"options,omitempty"`
 	XXX_unrecognized []byte        `json:"-"`
 }
@@ -560,6 +565,13 @@ func (m *FieldDescriptorProto) GetOneofIndex() int32 {
 		return *m.OneofIndex
 	}
 	return 0
+}
+
+func (m *FieldDescriptorProto) GetJsonName() string {
+	if m != nil && m.JsonName != nil {
+		return *m.JsonName
+	}
+	return ""
 }
 
 func (m *FieldDescriptorProto) GetOptions() *FieldOptions {
