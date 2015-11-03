@@ -770,17 +770,12 @@ func (g *Generator) WrapTypes() {
 	}
 
 	g.genFiles = make([]*FileDescriptor, len(g.Request.FileToGenerate))
-FindFiles:
 	for i, fileName := range g.Request.FileToGenerate {
-		// Search the list.  This algorithm is n^2 but n is tiny.
-		for _, file := range g.allFiles {
-			if fileName == file.GetName() {
-				g.genFiles[i] = file
-				file.index = i
-				continue FindFiles
-			}
+		g.genFiles[i] = g.allFilesByName[fileName]
+		if g.genFiles[i] == nil {
+			g.Fail("could not find file named", fileName)
 		}
-		g.Fail("could not find file named", fileName)
+		g.genFiles[i].index = i
 	}
 	g.Response.File = make([]*plugin.CodeGeneratorResponse_File, len(g.genFiles))
 }
