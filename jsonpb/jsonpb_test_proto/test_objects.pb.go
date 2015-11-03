@@ -418,6 +418,86 @@ func _MsgWithOneof_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.B
 	}
 }
 
+type Real struct {
+	Value            *float64                  `protobuf:"fixed64,1,opt,name=value" json:"value,omitempty"`
+	XXX_extensions   map[int32]proto.Extension `json:"-"`
+	XXX_unrecognized []byte                    `json:"-"`
+}
+
+func (m *Real) Reset()         { *m = Real{} }
+func (m *Real) String() string { return proto.CompactTextString(m) }
+func (*Real) ProtoMessage()    {}
+
+var extRange_Real = []proto.ExtensionRange{
+	{100, 536870911},
+}
+
+func (*Real) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_Real
+}
+func (m *Real) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
+	}
+	return m.XXX_extensions
+}
+
+func (m *Real) GetValue() float64 {
+	if m != nil && m.Value != nil {
+		return *m.Value
+	}
+	return 0
+}
+
+type Complex struct {
+	Imaginary        *float64                  `protobuf:"fixed64,1,opt,name=imaginary" json:"imaginary,omitempty"`
+	XXX_extensions   map[int32]proto.Extension `json:"-"`
+	XXX_unrecognized []byte                    `json:"-"`
+}
+
+func (m *Complex) Reset()         { *m = Complex{} }
+func (m *Complex) String() string { return proto.CompactTextString(m) }
+func (*Complex) ProtoMessage()    {}
+
+var extRange_Complex = []proto.ExtensionRange{
+	{100, 536870911},
+}
+
+func (*Complex) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_Complex
+}
+func (m *Complex) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
+	}
+	return m.XXX_extensions
+}
+
+func (m *Complex) GetImaginary() float64 {
+	if m != nil && m.Imaginary != nil {
+		return *m.Imaginary
+	}
+	return 0
+}
+
+var E_Complex_RealExtension = &proto.ExtensionDesc{
+	ExtendedType:  (*Real)(nil),
+	ExtensionType: (*Complex)(nil),
+	Field:         123,
+	Name:          "jsonpb.Complex.real_extension",
+	Tag:           "bytes,123,opt,name=real_extension",
+}
+
+var E_Name = &proto.ExtensionDesc{
+	ExtendedType:  (*Real)(nil),
+	ExtensionType: (*string)(nil),
+	Field:         124,
+	Name:          "jsonpb.name",
+	Tag:           "bytes,124,opt,name=name",
+}
+
 func init() {
 	proto.RegisterEnum("jsonpb.Widget_Color", Widget_Color_name, Widget_Color_value)
+	proto.RegisterExtension(E_Complex_RealExtension)
+	proto.RegisterExtension(E_Name)
 }
