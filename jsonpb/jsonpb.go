@@ -84,6 +84,13 @@ func (m *Marshaler) MarshalToString(pb proto.Message) (string, error) {
 	return buf.String(), nil
 }
 
+type int32Slice []int32
+
+// For sorting extensions ids to ensure stable output.
+func (s int32Slice) Len() int           { return len(s) }
+func (s int32Slice) Less(i, j int) bool { return s[i] < s[j] }
+func (s int32Slice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+
 // marshalObject writes a struct to the Writer.
 func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent string) error {
 	out.write("{")
@@ -92,14 +99,13 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent string
 	}
 
 	s := reflect.ValueOf(v).Elem()
-	writeBeforeField := ""
+	firstField := true
 	for i := 0; i < s.NumField(); i++ {
 		value := s.Field(i)
 		valueField := s.Type().Field(i)
 		if strings.HasPrefix(valueField.Name, "XXX_") {
 			continue
 		}
-		fieldName := jsonFieldName(valueField)
 
 		// TODO: proto3 objects should have default values omitted.
 
@@ -117,33 +123,50 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent string
 			sv := value.Elem().Elem() // interface -> *T -> T
 			value = sv.Field(0)
 			valueField = sv.Type().Field(0)
-
-			var p proto.Properties
-			p.Parse(sv.Type().Field(0).Tag.Get("protobuf"))
-			fieldName = p.OrigName
 		}
-
-		out.write(writeBeforeField)
-		if m.Indent != "" {
-			out.write(indent)
-			out.write(m.Indent)
+		prop := jsonProperties(valueField)
+		if !firstField {
+			m.writeSep(out)
 		}
-		out.write(`"`)
-		out.write(fieldName)
-		out.write(`":`)
-		if m.Indent != "" {
-			out.write(" ")
-		}
-
-		if err := m.marshalValue(out, value, valueField, indent); err != nil {
+		if err := m.marshalField(out, prop, value, indent); err != nil {
 			return err
 		}
+		firstField = false
+	}
 
-		if m.Indent != "" {
-			writeBeforeField = ",\n"
-		} else {
-			writeBeforeField = ","
+	// Handle proto2 extensions.
+	if ep, ok := v.(extendableProto); ok {
+		extensions := proto.RegisteredExtensions(v)
+		extensionMap := ep.ExtensionMap()
+		// Sort extensions for stable output.
+		ids := make([]int32, 0, len(extensionMap))
+		for id := range extensionMap {
+			ids = append(ids, id)
 		}
+		sort.Sort(int32Slice(ids))
+		for _, id := range ids {
+			desc := extensions[id]
+			if desc == nil {
+				// unknown extension
+				continue
+			}
+			ext, extErr := proto.GetExtension(ep, desc)
+			if extErr != nil {
+				return extErr
+			}
+			value := reflect.ValueOf(ext)
+			var prop proto.Properties
+			prop.Parse(desc.Tag)
+			prop.OrigName = fmt.Sprintf("[%s]", desc.Name)
+			if !firstField {
+				m.writeSep(out)
+			}
+			if err := m.marshalField(out, &prop, value, indent); err != nil {
+				return err
+			}
+			firstField = false
+		}
+
 	}
 
 	if m.Indent != "" {
@@ -154,9 +177,34 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent string
 	return out.err
 }
 
+func (m *Marshaler) writeSep(out *errWriter) {
+	if m.Indent != "" {
+		out.write(",\n")
+	} else {
+		out.write(",")
+	}
+}
+
+// marshalField writes field description and value to the Writer.
+func (m *Marshaler) marshalField(out *errWriter, prop *proto.Properties, v reflect.Value, indent string) error {
+	if m.Indent != "" {
+		out.write(indent)
+		out.write(m.Indent)
+	}
+	out.write(`"`)
+	out.write(prop.OrigName)
+	out.write(`":`)
+	if m.Indent != "" {
+		out.write(" ")
+	}
+	if err := m.marshalValue(out, prop, v, indent); err != nil {
+		return err
+	}
+	return nil
+}
+
 // marshalValue writes the value to the Writer.
-func (m *Marshaler) marshalValue(out *errWriter, v reflect.Value,
-	structField reflect.StructField, indent string) error {
+func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v reflect.Value, indent string) error {
 
 	var err error
 	v = reflect.Indirect(v)
@@ -174,7 +222,7 @@ func (m *Marshaler) marshalValue(out *errWriter, v reflect.Value,
 				out.write(m.Indent)
 				out.write(m.Indent)
 			}
-			m.marshalValue(out, sliceVal, structField, indent+m.Indent)
+			m.marshalValue(out, prop, sliceVal, indent+m.Indent)
 			comma = ","
 		}
 		if m.Indent != "" {
@@ -187,8 +235,7 @@ func (m *Marshaler) marshalValue(out *errWriter, v reflect.Value,
 	}
 
 	// Handle enumerations.
-	protoInfo := structField.Tag.Get("protobuf")
-	if !m.EnumsAsInts && strings.Contains(protoInfo, ",enum=") {
+	if !m.EnumsAsInts && prop.Enum != "" {
 		// Unknown enum values will are stringified by the proto library as their
 		// value. Such values should _not_ be quoted or they will be interpreted
 		// as an enum string instead of their value.
@@ -253,7 +300,7 @@ func (m *Marshaler) marshalValue(out *errWriter, v reflect.Value,
 				out.write(` `)
 			}
 
-			if err := m.marshalValue(out, v.MapIndex(k), structField, indent+m.Indent); err != nil {
+			if err := m.marshalValue(out, prop, v.MapIndex(k), indent+m.Indent); err != nil {
 				return err
 			}
 		}
@@ -323,7 +370,7 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 			if strings.HasPrefix(ft.Name, "XXX_") {
 				continue
 			}
-			fieldName := jsonFieldName(ft)
+			fieldName := jsonProperties(ft).OrigName
 
 			valueForField, ok := jsonFields[fieldName]
 			if !ok {
@@ -438,11 +485,18 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 	return json.Unmarshal(inputValue, target.Addr().Interface())
 }
 
-// jsonFieldName returns the field name to use.
-func jsonFieldName(f reflect.StructField) string {
+// jsonProperties returns parsed proto.Properties for the field.
+func jsonProperties(f reflect.StructField) *proto.Properties {
 	var prop proto.Properties
 	prop.Init(f.Type, f.Name, f.Tag.Get("protobuf"), &f)
-	return prop.OrigName
+	return &prop
+}
+
+// extendableProto is an interface implemented by any protocol buffer that may be extended.
+type extendableProto interface {
+	proto.Message
+	ExtensionRangeArray() []proto.ExtensionRange
+	ExtensionMap() map[int32]proto.Extension
 }
 
 // Writer wrapper inspired by https://blog.golang.org/errors-are-values

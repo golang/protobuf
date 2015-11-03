@@ -254,7 +254,24 @@ var (
     }
   }
 }`
+	realNumber     = &pb.Real{Value: proto.Float64(3.14159265359)}
+	realNumberName = "Pi"
+	complexNumber  = &pb.Complex{Imaginary: proto.Float64(0.5772156649)}
+	realNumberJSON = `{` +
+		`"value":3.14159265359,` +
+		`"[jsonpb.Complex.real_extension]":{"imaginary":0.5772156649},` +
+		`"[jsonpb.name]":"Pi"` +
+		`}`
 )
+
+func init() {
+	if err := proto.SetExtension(realNumber, pb.E_Name, &realNumberName); err != nil {
+		panic(err)
+	}
+	if err := proto.SetExtension(realNumber, pb.E_Complex_RealExtension, complexNumber); err != nil {
+		panic(err)
+	}
+}
 
 var marshalingTests = []struct {
 	desc      string
@@ -294,6 +311,7 @@ var marshalingTests = []struct {
 		`{"m_bool_simple":{"true":{"o_int32":1}}}`},
 	{"oneof, not set", marshaler, &pb.MsgWithOneof{}, `{}`},
 	{"oneof, set", marshaler, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_Title{"Grand Poobah"}}, `{"title":"Grand Poobah"}`},
+	{"proto2 extension", marshaler, realNumber, realNumberJSON},
 }
 
 func TestMarshaling(t *testing.T) {

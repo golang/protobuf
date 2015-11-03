@@ -91,3 +91,20 @@ message MsgWithOneof {
     int64 salary = 2;
   }
 }
+
+message Real {
+  optional double value = 1;
+  extensions 100 to max;
+}
+
+extend Real {
+  optional string name = 124;
+}
+
+message Complex {
+  extend Real {
+    optional Complex real_extension = 123;
+  }
+  optional double imaginary = 1;
+  extensions 100 to max;
+}

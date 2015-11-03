@@ -17,6 +17,8 @@ It has these top-level messages:
 	Widget
 	Maps
 	MsgWithOneof
+	Real
+	Complex
 */
 package jsonpb
 
