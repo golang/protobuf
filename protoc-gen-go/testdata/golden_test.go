@@ -73,7 +73,7 @@ func TestGolden(t *testing.T) {
 	// Compute the original checksum.
 	goldenSum := sum(t, "my_test/test.pb.go")
 	// Run the proto compiler.
-	run(t, "protoc", "--go_out="+os.TempDir(), "my_test/test.proto")
+	run(t, "protoc", "--go_out=Mmulti/multi1.proto=github.com/golang/protobuf/protoc-gen-go/testdata/multi:"+os.TempDir(), "my_test/test.proto")
 	newFile := filepath.Join(os.TempDir(), "my_test/test.pb.go")
 	defer os.Remove(newFile)
 	// Compute the new checksum.

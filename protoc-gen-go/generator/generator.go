@@ -1271,15 +1271,14 @@ func (g *Generator) generateImports() {
 			g.P("// skipping weak import ", fd.PackageName(), " ", strconv.Quote(importPath))
 			continue
 		}
-		if _, ok := g.usedPackages[fd.PackageName()]; ok {
-			g.P("import ", fd.PackageName(), " ", strconv.Quote(importPath))
-		} else {
-			// TODO: Re-enable this when we are more feature-complete.
-			// For instance, some protos use foreign field extensions, which we don't support.
-			// Until then, this is just annoying spam.
-			//log.Printf("protoc-gen-go: discarding unused import from %v: %v", *g.file.Name, s)
-			g.P("// discarding unused import ", fd.PackageName(), " ", strconv.Quote(importPath))
+		// We need to import all the dependencies, even if we don't reference them,
+		// because other code and tools depend on having the full transitive closure
+		// of protocol buffer types in the binary.
+		pname := fd.PackageName()
+		if _, ok := g.usedPackages[pname]; !ok {
+			pname = "_"
 		}
+		g.P("import ", pname, " ", strconv.Quote(importPath))
 	}
 	g.P()
 	// TODO: may need to worry about uniqueness across plugins

@@ -36,8 +36,8 @@ package testdata
 import (
 	"testing"
 
-	multipb "./multi"
 	mytestpb "./my_test"
+	multipb "github.com/golang/protobuf/protoc-gen-go/testdata/multi"
 )
 
 func TestLink(t *testing.T) {
