@@ -40,6 +40,9 @@ test:	golden testbuild
 #	./extension_test
 #	@echo PASS
 
+my_test/test.pb.go: my_test/test.proto
+	protoc --go_out=Mmulti/multi1.proto=github.com/golang/protobuf/protoc-gen-go/testdata/multi:. $<
+
 golden:
 	make -B my_test/test.pb.go
 	diff -w my_test/test.pb.go my_test/test.pb.go.golden
