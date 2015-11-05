@@ -7,15 +7,24 @@ This package and the code it generates requires at least Go 1.4.
 This software implements Go bindings for protocol buffers.  For
 information about protocol buffers themselves, see
 	https://developers.google.com/protocol-buffers/
-To use this software, you must first install the standard C++
-implementation of protocol buffers from
+
+## Installation ##
+
+To use this software, you must:
+- Install the standard C++ implementation of protocol buffers from
 	https://developers.google.com/protocol-buffers/
-And of course you must also install the Go compiler and tools from
+- Of course, install the Go compiler and tools from
 	https://golang.org/
-See
+  See
 	https://golang.org/doc/install
-for details or, if you are using gccgo, follow the instructions at
+  for details or, if you are using gccgo, follow the instructions at
 	https://golang.org/doc/install/gccgo
+- Grab the code from the repository and install the proto package.
+  The simplest way is to run
+	go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+  The compiler plugin, protoc-gen-go, will be installed in $GOBIN,
+  defaulting to $GOPATH/bin.  It must be in your $PATH for the protocol
+  compiler, protoc, to find it.
 
 This software has two parts: a 'protocol compiler plugin' that
 generates Go source files that, once compiled, can access and manage
@@ -28,16 +37,8 @@ See the note at the bottom of this file for details.
 
 There are no insertion points in the plugin.
 
-To install this code:
 
-The simplest way is to run go get.
-
-	# Grab the code from the repository and install the proto package.
-	go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
-
-The compiler plugin, protoc-gen-go, will be installed in $GOBIN,
-defaulting to $GOPATH/bin.  It must be in your $PATH for the protocol
-compiler, protoc, to find it.
+## Using protocol buffers with Go ##
 
 Once the software is installed, there are two steps to using it.
 First you must compile the protocol buffer definitions and then import
