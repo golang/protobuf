@@ -1266,6 +1266,11 @@ func (g *Generator) generateImports() {
 			importPath = substitution
 		}
 		importPath = g.ImportPrefix + importPath
+		// If we know the import path for our own file, and if that
+		// matches the import path for this dependency, skip.
+		if g.PackageImportPath != "" && g.PackageImportPath == importPath {
+			continue
+		}
 		// Skip weak imports.
 		if g.weak(int32(i)) {
 			g.P("// skipping weak import ", fd.PackageName(), " ", strconv.Quote(importPath))
