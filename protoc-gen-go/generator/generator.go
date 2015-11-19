@@ -1677,6 +1677,12 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		// in the proto file, meaning that a change in the field
 		// ordering can change generated Method/Field names.
 		base := CamelCase(*field.Name)
+
+		// generate IDs in Go-style
+		if strings.HasSuffix(base, "Id") {
+			base = base[:len(base)-2] + "ID"
+		}
+
 		ns := allocNames(base, "Get"+base)
 		fieldName, fieldGetterName := ns[0], ns[1]
 		typename, wiretype := g.GoType(message, field)
