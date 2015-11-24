@@ -151,6 +151,28 @@ To create and play with a Test object from the example package,
 	}
 
 
+Parameters
+==========
+
+To pass extra parameters to the plugin, use a comma-separated
+parameter list separated from the output directory by a colon:
+
+
+	protoc --go_out=plugins=grpc,import_path=mypackage:. *.proto
+
+
+- `import_prefix=xxx` - a prefix that is added onto the beginning of
+  all imports. Useful for things like generating protos in a
+  subdirectory, or regenerating vendored protobufs in-place.
+- `import_path=foo/bar` - used as the package if no input files
+  declare `go_package`. If it contains slashes, everything up to the
+  rightmost slash is ignored.
+- `plugins=plugin1+plugin2` - specifies the list of sub-plugins to
+  load. The only plugin in this repo is `grpc`.
+- `Mfoo/bar.proto=quux/shme` - declares that foo/bar.proto is
+  associated with Go package quux/shme.  This is subject to the
+  import_prefix parameter.
+
 gRPC Support
 ============
 If a proto file specifies RPC services, protoc-gen-go can be instructed to
