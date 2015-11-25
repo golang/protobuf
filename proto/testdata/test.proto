@@ -233,6 +233,8 @@ message OtherMessage {
   optional bytes value = 2;
   optional float weight = 3;
   optional InnerMessage inner = 4;
+
+  extensions 100 to max;
 }
 
 message MyMessage {
@@ -275,6 +277,17 @@ message Ext {
 
 extend MyMessage {
   repeated string greeting = 106;
+}
+
+message ComplexExtension {
+  optional int32 first = 1;
+  optional int32 second = 2;
+  repeated int32 third = 3;
+}
+
+extend OtherMessage {
+  optional ComplexExtension complex = 200;
+  repeated ComplexExtension r_complex = 201;
 }
 
 message DefaultsMessage {
