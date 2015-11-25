@@ -22,6 +22,7 @@ It has these top-level messages:
 	OtherMessage
 	MyMessage
 	Ext
+	ComplexExtension
 	DefaultsMessage
 	MyMessageSet
 	Empty
@@ -1235,16 +1236,31 @@ func (m *InnerMessage) GetConnected() bool {
 }
 
 type OtherMessage struct {
-	Key              *int64        `protobuf:"varint,1,opt,name=key" json:"key,omitempty"`
-	Value            []byte        `protobuf:"bytes,2,opt,name=value" json:"value,omitempty"`
-	Weight           *float32      `protobuf:"fixed32,3,opt,name=weight" json:"weight,omitempty"`
-	Inner            *InnerMessage `protobuf:"bytes,4,opt,name=inner" json:"inner,omitempty"`
-	XXX_unrecognized []byte        `json:"-"`
+	Key              *int64                    `protobuf:"varint,1,opt,name=key" json:"key,omitempty"`
+	Value            []byte                    `protobuf:"bytes,2,opt,name=value" json:"value,omitempty"`
+	Weight           *float32                  `protobuf:"fixed32,3,opt,name=weight" json:"weight,omitempty"`
+	Inner            *InnerMessage             `protobuf:"bytes,4,opt,name=inner" json:"inner,omitempty"`
+	XXX_extensions   map[int32]proto.Extension `json:"-"`
+	XXX_unrecognized []byte                    `json:"-"`
 }
 
 func (m *OtherMessage) Reset()         { *m = OtherMessage{} }
 func (m *OtherMessage) String() string { return proto.CompactTextString(m) }
 func (*OtherMessage) ProtoMessage()    {}
+
+var extRange_OtherMessage = []proto.ExtensionRange{
+	{100, 536870911},
+}
+
+func (*OtherMessage) ExtensionRangeArray() []proto.ExtensionRange {
+	return extRange_OtherMessage
+}
+func (m *OtherMessage) ExtensionMap() map[int32]proto.Extension {
+	if m.XXX_extensions == nil {
+		m.XXX_extensions = make(map[int32]proto.Extension)
+	}
+	return m.XXX_extensions
+}
 
 func (m *OtherMessage) GetKey() int64 {
 	if m != nil && m.Key != nil {
@@ -1440,6 +1456,38 @@ var E_Ext_Number = &proto.ExtensionDesc{
 	Field:         105,
 	Name:          "testdata.Ext.number",
 	Tag:           "varint,105,opt,name=number",
+}
+
+type ComplexExtension struct {
+	First            *int32  `protobuf:"varint,1,opt,name=first" json:"first,omitempty"`
+	Second           *int32  `protobuf:"varint,2,opt,name=second" json:"second,omitempty"`
+	Third            []int32 `protobuf:"varint,3,rep,name=third" json:"third,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
+}
+
+func (m *ComplexExtension) Reset()         { *m = ComplexExtension{} }
+func (m *ComplexExtension) String() string { return proto.CompactTextString(m) }
+func (*ComplexExtension) ProtoMessage()    {}
+
+func (m *ComplexExtension) GetFirst() int32 {
+	if m != nil && m.First != nil {
+		return *m.First
+	}
+	return 0
+}
+
+func (m *ComplexExtension) GetSecond() int32 {
+	if m != nil && m.Second != nil {
+		return *m.Second
+	}
+	return 0
+}
+
+func (m *ComplexExtension) GetThird() []int32 {
+	if m != nil {
+		return m.Third
+	}
+	return nil
 }
 
 type DefaultsMessage struct {
@@ -2196,6 +2244,22 @@ var E_Greeting = &proto.ExtensionDesc{
 	Tag:           "bytes,106,rep,name=greeting",
 }
 
+var E_Complex = &proto.ExtensionDesc{
+	ExtendedType:  (*OtherMessage)(nil),
+	ExtensionType: (*ComplexExtension)(nil),
+	Field:         200,
+	Name:          "testdata.complex",
+	Tag:           "bytes,200,opt,name=complex",
+}
+
+var E_RComplex = &proto.ExtensionDesc{
+	ExtendedType:  (*OtherMessage)(nil),
+	ExtensionType: ([]*ComplexExtension)(nil),
+	Field:         201,
+	Name:          "testdata.r_complex",
+	Tag:           "bytes,201,rep,name=r_complex",
+}
+
 var E_NoDefaultDouble = &proto.ExtensionDesc{
 	ExtendedType:  (*DefaultsMessage)(nil),
 	ExtensionType: (*float64)(nil),
@@ -2863,6 +2927,8 @@ func init() {
 	proto.RegisterExtension(E_Ext_Text)
 	proto.RegisterExtension(E_Ext_Number)
 	proto.RegisterExtension(E_Greeting)
+	proto.RegisterExtension(E_Complex)
+	proto.RegisterExtension(E_RComplex)
 	proto.RegisterExtension(E_NoDefaultDouble)
 	proto.RegisterExtension(E_NoDefaultFloat)
 	proto.RegisterExtension(E_NoDefaultInt32)
