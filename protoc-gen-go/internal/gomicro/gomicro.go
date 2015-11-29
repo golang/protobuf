@@ -14,8 +14,8 @@ import (
 // relative to the import_prefix of the generator.Generator.
 const (
 	contextPkgPath = "golang.org/x/net/context"
-	gomicroPkgPath = "github.com/micro/go-micro"
 	clientPkgPath  = "github.com/micro/go-micro/client"
+	serverPkgPath  = "github.com/micro/go-micro/server"
 )
 
 func init() {
@@ -23,7 +23,7 @@ func init() {
 }
 
 // gomicro is an implementation of the Go protocol buffer compiler's
-// plugin architecture.  It generates bindings for gRPC support.
+// plugin architecture.  It generates bindings for go-micro support.
 type gomicro struct {
 	gen *generator.Generator
 }
@@ -38,7 +38,7 @@ func (g *gomicro) Name() string {
 // if the name is used by other packages.
 var (
 	contextPkg string
-	gomicroPkg string
+	serverPkg  string
 	clientPkg  string
 )
 
@@ -46,7 +46,7 @@ var (
 func (g *gomicro) Init(gen *generator.Generator) {
 	g.gen = gen
 	contextPkg = generator.RegisterUniquePackageName("context", nil)
-	gomicroPkg = generator.RegisterUniquePackageName("gomicro", nil)
+	serverPkg = generator.RegisterUniquePackageName("server", nil)
 	clientPkg = generator.RegisterUniquePackageName("client", nil)
 }
 
@@ -86,7 +86,6 @@ func (g *gomicro) GenerateImports(file *generator.FileDescriptor) {
 	}
 	g.P("import (")
 	g.P(contextPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, contextPkgPath)))
-	//	g.P(gomicroPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, gomicroPkgPath)))
 	g.P(clientPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, clientPkgPath)))
 	g.P(")")
 	g.P()
@@ -168,7 +167,7 @@ func (g *gomicro) generateService(file *generator.FileDescriptor, service *pb.Se
 		g.P()
 
 		// Server registration.
-		g.P("func Register", servName, "Server(s *", gomicroPkg, ".Server, srv ", serverType, ") {")
+		g.P("func Register", servName, "Server(s *", serverPkg, ".Server, srv ", serverType, ") {")
 		g.P("s.RegisterService(&", serviceDescVar, `, srv)`)
 		g.P("}")
 		g.P()
@@ -181,10 +180,10 @@ func (g *gomicro) generateService(file *generator.FileDescriptor, service *pb.Se
 		}
 
 		// Service descriptor.
-		g.P("var ", serviceDescVar, " = ", gomicroPkg, ".ServiceDesc {")
+		g.P("var ", serviceDescVar, " = ", serverPkg, ".ServiceDesc {")
 		g.P("ServiceName: ", strconv.Quote(fullServName), ",")
 		g.P("HandlerType: (*", serverType, ")(nil),")
-		g.P("Methods: []", gomicroPkg, ".MethodDesc{")
+		g.P("Methods: []", serverPkg, ".MethodDesc{")
 		for i, method := range service.Method {
 			if method.GetServerStreaming() || method.GetClientStreaming() {
 				continue
@@ -195,7 +194,7 @@ func (g *gomicro) generateService(file *generator.FileDescriptor, service *pb.Se
 			g.P("},")
 		}
 		g.P("},")
-		g.P("Streams: []", gomicroPkg, ".StreamDesc{")
+		g.P("Streams: []", serverPkg, ".StreamDesc{")
 		for i, method := range service.Method {
 			if !method.GetServerStreaming() && !method.GetClientStreaming() {
 				continue
@@ -331,7 +330,7 @@ func (g *gomicro) generateServerMethod(servName string, method *pb.MethodDescrip
 		return hname
 	}
 	streamType := unexport(servName) + methName + "Server"
-	g.P("func ", hname, "(srv interface{}, stream ", gomicroPkg, ".ServerStream) error {")
+	g.P("func ", hname, "(srv interface{}, stream ", serverPkg, ".ServerStream) error {")
 	if !method.GetClientStreaming() {
 		g.P("m := new(", inType, ")")
 		g.P("if err := stream.RecvMsg(m); err != nil { return err }")
@@ -357,12 +356,12 @@ func (g *gomicro) generateServerMethod(servName string, method *pb.MethodDescrip
 	if genRecv {
 		g.P("Recv() (*", inType, ", error)")
 	}
-	g.P(gomicroPkg, ".ServerStream")
+	g.P(serverPkg, ".ServerStream")
 	g.P("}")
 	g.P()
 
 	g.P("type ", streamType, " struct {")
-	g.P(gomicroPkg, ".ServerStream")
+	g.P(serverPkg, ".ServerStream")
 	g.P("}")
 	g.P()
 
