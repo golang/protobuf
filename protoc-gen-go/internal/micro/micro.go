@@ -1,4 +1,4 @@
-package gomicro
+package micro
 
 import (
 	"fmt"
@@ -19,18 +19,18 @@ const (
 )
 
 func init() {
-	generator.RegisterPlugin(new(gomicro))
+	generator.RegisterPlugin(new(micro))
 }
 
-// gomicro is an implementation of the Go protocol buffer compiler's
+// micro is an implementation of the Go protocol buffer compiler's
 // plugin architecture.  It generates bindings for go-micro support.
-type gomicro struct {
+type micro struct {
 	gen *generator.Generator
 }
 
-// Name returns the name of this plugin, "gomicro".
-func (g *gomicro) Name() string {
-	return "gomicro"
+// Name returns the name of this plugin, "micro".
+func (g *micro) Name() string {
+	return "micro"
 }
 
 // The names for packages imported in the generated code.
@@ -38,41 +38,42 @@ func (g *gomicro) Name() string {
 // if the name is used by other packages.
 var (
 	contextPkg string
-	serverPkg  string
 	clientPkg  string
+	serverPkg  string
 )
 
 // Init initializes the plugin.
-func (g *gomicro) Init(gen *generator.Generator) {
+func (g *micro) Init(gen *generator.Generator) {
 	g.gen = gen
 	contextPkg = generator.RegisterUniquePackageName("context", nil)
-	serverPkg = generator.RegisterUniquePackageName("server", nil)
 	clientPkg = generator.RegisterUniquePackageName("client", nil)
+	serverPkg = generator.RegisterUniquePackageName("server", nil)
 }
 
 // Given a type name defined in a .proto, return its object.
 // Also record that we're using it, to guarantee the associated import.
-func (g *gomicro) objectNamed(name string) generator.Object {
+func (g *micro) objectNamed(name string) generator.Object {
 	g.gen.RecordTypeUse(name)
 	return g.gen.ObjectNamed(name)
 }
 
 // Given a type name defined in a .proto, return its name as we will print it.
-func (g *gomicro) typeName(str string) string {
+func (g *micro) typeName(str string) string {
 	return g.gen.TypeName(g.objectNamed(str))
 }
 
 // P forwards to g.gen.P.
-func (g *gomicro) P(args ...interface{}) { g.gen.P(args...) }
+func (g *micro) P(args ...interface{}) { g.gen.P(args...) }
 
 // Generate generates code for the services in the given file.
-func (g *gomicro) Generate(file *generator.FileDescriptor) {
+func (g *micro) Generate(file *generator.FileDescriptor) {
 	if len(file.FileDescriptorProto.Service) == 0 {
 		return
 	}
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", clientPkg, ".Option")
+	g.P("var _ ", serverPkg, ".Option")
 	g.P()
 	for i, service := range file.FileDescriptorProto.Service {
 		g.generateService(file, service, i)
@@ -80,13 +81,14 @@ func (g *gomicro) Generate(file *generator.FileDescriptor) {
 }
 
 // GenerateImports generates the import declaration for this file.
-func (g *gomicro) GenerateImports(file *generator.FileDescriptor) {
+func (g *micro) GenerateImports(file *generator.FileDescriptor) {
 	if len(file.FileDescriptorProto.Service) == 0 {
 		return
 	}
 	g.P("import (")
 	g.P(contextPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, contextPkgPath)))
 	g.P(clientPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, clientPkgPath)))
+	g.P(serverPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, serverPkgPath)))
 	g.P(")")
 	g.P()
 }
@@ -99,7 +101,7 @@ var reservedClientName = map[string]bool{
 func unexport(s string) string { return strings.ToLower(s[:1]) + s[1:] }
 
 // generateService generates all the code for the named service.
-func (g *gomicro) generateService(file *generator.FileDescriptor, service *pb.ServiceDescriptorProto, index int) {
+func (g *micro) generateService(file *generator.FileDescriptor, service *pb.ServiceDescriptorProto, index int) {
 	path := fmt.Sprintf("6,%d", index) // 6 means service.
 
 	origServName := service.GetName()
@@ -217,7 +219,7 @@ func (g *gomicro) generateService(file *generator.FileDescriptor, service *pb.Se
 }
 
 // generateClientSignature returns the client-side signature for a method.
-func (g *gomicro) generateClientSignature(servName string, method *pb.MethodDescriptorProto) string {
+func (g *micro) generateClientSignature(servName string, method *pb.MethodDescriptorProto) string {
 	origMethName := method.GetName()
 	methName := generator.CamelCase(origMethName)
 	if reservedClientName[methName] {
@@ -231,7 +233,7 @@ func (g *gomicro) generateClientSignature(servName string, method *pb.MethodDesc
 	return fmt.Sprintf("%s(ctx %s.Context%s) (%s, error)", methName, contextPkg, reqArg, respName)
 }
 
-func (g *gomicro) generateClientMethod(reqServ, servName, serviceDescVar string, method *pb.MethodDescriptorProto, descExpr string) {
+func (g *micro) generateClientMethod(reqServ, servName, serviceDescVar string, method *pb.MethodDescriptorProto, descExpr string) {
 	reqMethod := fmt.Sprintf("%s.%s", servName, method.GetName())
 	methName := generator.CamelCase(method.GetName())
 	//	inType := g.typeName(method.GetInputType())
@@ -289,7 +291,7 @@ func (g *gomicro) generateClientMethod(reqServ, servName, serviceDescVar string,
 }
 
 // generateServerSignature returns the server-side signature for a method.
-func (g *gomicro) generateServerSignature(servName string, method *pb.MethodDescriptorProto) string {
+func (g *micro) generateServerSignature(servName string, method *pb.MethodDescriptorProto) string {
 	origMethName := method.GetName()
 	methName := generator.CamelCase(origMethName)
 	if reservedClientName[methName] {
@@ -312,7 +314,7 @@ func (g *gomicro) generateServerSignature(servName string, method *pb.MethodDesc
 	return methName + "(" + strings.Join(reqArgs, ", ") + ") " + ret
 }
 
-func (g *gomicro) generateServerMethod(servName string, method *pb.MethodDescriptorProto) string {
+func (g *micro) generateServerMethod(servName string, method *pb.MethodDescriptorProto) string {
 	methName := generator.CamelCase(method.GetName())
 	hname := fmt.Sprintf("_%s_%s_Handler", servName, methName)
 	inType := g.typeName(method.GetInputType())
