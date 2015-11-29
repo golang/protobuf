@@ -131,9 +131,12 @@ func (g *micro) generateService(file *generator.FileDescriptor, service *pb.Serv
 	g.P()
 
 	// NewClient factory.
-	g.P("func New", servName, "Client (opts ...", clientPkg, ".Option) ", servName, "Client {")
+	g.P("func New", servName, "Client (c ", clientPkg, ".Client) ", servName, "Client {")
+	g.P("if c == nil {")
+	g.P("c = ", clientPkg, ".NewClient()")
+	g.P("}")
 	g.P("return &", unexport(servName), "Client{")
-	g.P("c: ", clientPkg, ".NewClient(opts...),")
+	g.P("c: c,")
 	g.P("}")
 	g.P("}")
 	g.P()
