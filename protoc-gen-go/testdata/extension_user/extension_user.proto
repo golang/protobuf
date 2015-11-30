@@ -31,40 +31,70 @@
 
 syntax = "proto2";
 
-package imp;
+import "extension_base/extension_base.proto";
+import "extension_extra/extension_extra.proto";
 
-import "imp2.proto";
-import "imp3.proto";
+package extension_user;
 
-message ImportedMessage {
-  required int64 field = 1;
-
-  // The forwarded getters for these fields are fiddly to get right.
-  optional ImportedMessage2 local_msg = 2;
-  optional ForeignImportedMessage foreign_msg = 3;  // in imp3.proto
-  optional Owner enum_field = 4;
-  oneof union {
-    int32 state = 9;
-  }
-
-  repeated string name = 5;
-  repeated Owner boss = 6;
-  repeated ImportedMessage2 memo = 7;
-
-  map<string, ImportedMessage2> msg_map = 8;
-
-  enum Owner {
-    DAVE = 1;
-    MIKE = 2;
-  }
-
-  extensions 90 to 100;
+message UserMessage {
+  optional string name = 1;
+  optional string rank = 2;
 }
 
-message ImportedMessage2 {
+// Extend with a message
+extend extension_base.BaseMessage {
+  optional UserMessage user_message = 5;
 }
 
-message ImportedExtendable {
-  option message_set_wire_format = true;
+// Extend with a foreign message
+extend extension_base.BaseMessage {
+  optional extension_extra.ExtraMessage extra_message = 9;
+}
+
+// Extend with some primitive types
+extend extension_base.BaseMessage {
+  optional int32 width = 6;
+  optional int64 area = 7;
+}
+
+// Extend inside the scope of another type
+message LoudMessage {
+  extend extension_base.BaseMessage {
+    optional uint32 volume = 8;
+  }
   extensions 100 to max;
+}
+
+// Extend inside the scope of another type, using a message.
+message LoginMessage {
+  extend extension_base.BaseMessage {
+    optional UserMessage user_message = 16;
+  }
+}
+
+// Extend with a repeated field
+extend extension_base.BaseMessage {
+  repeated Detail detail = 17;
+}
+
+message Detail {
+  optional string color = 1;
+}
+
+// An extension of an extension
+message Announcement {
+  optional string words = 1;
+  extend LoudMessage {
+    optional Announcement loud_ext = 100;
+  }
+}
+
+// Something that can be put in a message set.
+message OldStyleParcel {
+  extend extension_base.OldStyleMessage {
+    optional OldStyleParcel message_set_extension = 2001;
+  }
+
+  required string name = 1;
+  optional int32 height = 2;
 }

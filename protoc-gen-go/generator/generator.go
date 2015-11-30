@@ -501,7 +501,6 @@ type Generator struct {
 
 	Pkg map[string]string // The names under which we import support packages
 
-	packageName      string                     // What we're calling ourselves.
 	allFiles         []*FileDescriptor          // All files in the tree
 	allFilesByName   map[string]*FileDescriptor // All files by filename.
 	genFiles         []*FileDescriptor          // Those files we will generate output for.
@@ -587,7 +586,7 @@ func (g *Generator) CommandLineParameters(parameter string) {
 // Otherwise it returns the empty string.
 func (g *Generator) DefaultPackageName(obj Object) string {
 	pkg := obj.PackageName()
-	if pkg == g.packageName {
+	if pkg == uniquePackageName[g.file.FileDescriptorProto] {
 		return ""
 	}
 	return pkg + "."
@@ -674,45 +673,49 @@ func (g *Generator) defaultGoPackage() string {
 // The package name must agree across all files being generated.
 // It also defines unique package names for all imported files.
 func (g *Generator) SetPackageNames() {
-	// Register the name for this package.  It will be the first name
-	// registered so is guaranteed to be unmodified.
-	pkg, explicit := g.genFiles[0].goPackageName()
+	pkgAliases := make(map[string]string)
 
-	// Check all files for an explicit go_package option.
 	for _, f := range g.genFiles {
-		thisPkg, thisExplicit := f.goPackageName()
-		if thisExplicit {
-			if !explicit {
-				// Let this file's go_package option serve for all input files.
-				pkg, explicit = thisPkg, true
-			} else if thisPkg != pkg {
-				g.Fail("inconsistent package names:", thisPkg, pkg)
+		var thisPkgCanon string
+
+		// Does the file have a "go_package" option?
+		if opts := f.Options; opts != nil {
+			thisPkgCanon = opts.GetGoPackage()
+		}
+
+		// If we don't have an explicit "go_package" option but we have an
+		// import path, use that.
+		if thisPkgCanon == "" {
+			thisPkgCanon = g.defaultGoPackage()
+		}
+
+		// Does the file have a package clause?
+		if pkg := f.GetPackage(); pkg != "" {
+			if thisPkgCanon == "" {
+				thisPkgCanon = pkg
+			} else {
+				// have we seen this package clause before?
+				if thisPkgOtherCanon, ok := pkgAliases[pkg]; ok {
+					// did we decide the canonical package was the same?
+					if thisPkgCanon != thisPkgOtherCanon {
+						g.Fail("inconsistent package names:", thisPkgCanon, thisPkgOtherCanon)
+					}
+				} else {
+					pkgAliases[pkg] = thisPkgCanon
+				}
 			}
 		}
-	}
 
-	// If we don't have an explicit go_package option but we have an
-	// import path, use that.
-	if !explicit {
-		p := g.defaultGoPackage()
-		if p != "" {
-			pkg, explicit = p, true
+		// We still haven't figured out this file's package, use the base name.
+		if thisPkgCanon == "" {
+			thisPkgCanon = baseName(f.GetName())
 		}
-	}
 
-	// If there was no go_package and no import path to use,
-	// double-check that all the inputs have the same implicit
-	// Go package name.
-	if !explicit {
-		for _, f := range g.genFiles {
-			thisPkg, _ := f.goPackageName()
-			if thisPkg != pkg {
-				g.Fail("inconsistent package names:", thisPkg, pkg)
-			}
-		}
+		// no renaming here
+		thisPkgCanon = strings.Map(badToUnderscore, thisPkgCanon)
+		uniquePackageName[f.FileDescriptorProto] = thisPkgCanon
+		pkgNamesInUse[thisPkgCanon] = true
 	}
-
-	g.packageName = RegisterUniquePackageName(pkg, g.genFiles[0])
 
 	// Register the support package names. They might collide with the
 	// name of a package we import.
@@ -727,7 +730,6 @@ AllFiles:
 		for _, genf := range g.genFiles {
 			if f == genf {
 				// In this package already.
-				uniquePackageName[f.FileDescriptorProto] = g.packageName
 				continue AllFiles
 			}
 		}
@@ -1259,7 +1261,7 @@ func (g *Generator) generateImports() {
 	for i, s := range g.file.Dependency {
 		fd := g.fileByName(s)
 		// Do not import our own package.
-		if fd.PackageName() == g.packageName {
+		if fd.PackageName() == uniquePackageName[g.file.FileDescriptorProto] {
 			continue
 		}
 		filename := goFileName(s)
