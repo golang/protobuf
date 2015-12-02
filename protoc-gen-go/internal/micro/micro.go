@@ -157,26 +157,25 @@ func (g *micro) generateService(file *generator.FileDescriptor, service *pb.Serv
 		g.generateClientMethod(serviceName, servName, serviceDescVar, method, descExpr)
 	}
 
-	/*
-		g.P("// Server API for ", servName, " service")
-		g.P()
+	g.P("// Server API for ", servName, " service")
+	g.P()
 
-		// Server interface.
-		serverType := servName + "Server"
-		g.P("type ", serverType, " interface {")
-		for i, method := range service.Method {
-			g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
-			g.P(g.generateServerSignature(servName, method))
-		}
-		g.P("}")
-		g.P()
+	// Server interface.
+	serverType := servName + "Server"
+	g.P("type ", serverType, " interface {")
+	for i, method := range service.Method {
+		g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
+		g.P(g.generateServerSignature(servName, method))
+	}
+	g.P("}")
+	g.P()
+	// Server registration.
+	g.P("func Register", servName, "Server(s ", serverPkg, ".Server, srv ", serverType, ") {")
+	g.P("s.Handle(s.NewHandler(srv))")
+	g.P("}")
+	g.P()
 
-		// Server registration.
-		g.P("func Register", servName, "Server(s *", serverPkg, ".Server, srv ", serverType, ") {")
-		g.P("s.RegisterService(&", serviceDescVar, `, srv)`)
-		g.P("}")
-		g.P()
-
+/*
 		// Server handler implementations.
 		var handlerNames []string
 		for _, method := range service.Method {
@@ -303,15 +302,18 @@ func (g *micro) generateServerSignature(servName string, method *pb.MethodDescri
 
 	var reqArgs []string
 	ret := "error"
-	if !method.GetServerStreaming() && !method.GetClientStreaming() {
-		reqArgs = append(reqArgs, contextPkg+".Context")
-		ret = "(*" + g.typeName(method.GetOutputType()) + ", error)"
-	}
-	if !method.GetClientStreaming() {
+	reqArgs = append(reqArgs, contextPkg+".Context")
+
+//	if !method.GetServerStreaming() && !method.GetClientStreaming() {
+//		ret = "(*" + g.typeName(method.GetOutputType()) + ", error)"
+//	}
+	if !method.GetClientStreaming() && !method.GetServerStreaming() {
 		reqArgs = append(reqArgs, "*"+g.typeName(method.GetInputType()))
+		reqArgs = append(reqArgs, "*"+g.typeName(method.GetOutputType()))
 	}
 	if method.GetServerStreaming() || method.GetClientStreaming() {
-		reqArgs = append(reqArgs, servName+"_"+generator.CamelCase(origMethName)+"Server")
+	//	reqArgs = append(reqArgs, servName+"_"+generator.CamelCase(origMethName)+"Server")
+		reqArgs = append(reqArgs, "func(*"+g.typeName(method.GetOutputType())+") error")
 	}
 
 	return methName + "(" + strings.Join(reqArgs, ", ") + ") " + ret
