@@ -258,27 +258,6 @@ type FileDescriptor struct {
 // PackageName is the package name we'll use in the generated code to refer to this file.
 func (d *FileDescriptor) PackageName() string { return uniquePackageOf(d.FileDescriptorProto) }
 
-// goPackageName returns the Go package name to use in the
-// generated Go file.  The result explicit reports whether the name
-// came from an option go_package statement.  If explicit is false,
-// the name was derived from the protocol buffer's package statement
-// or the input file name.
-func (d *FileDescriptor) goPackageName() (name string, explicit bool) {
-	// Does the file have a "go_package" option?
-	if opts := d.Options; opts != nil {
-		if pkg := opts.GetGoPackage(); pkg != "" {
-			return pkg, true
-		}
-	}
-
-	// Does the file have a package clause?
-	if pkg := d.GetPackage(); pkg != "" {
-		return pkg, false
-	}
-	// Use the file base name.
-	return baseName(d.GetName()), false
-}
-
 func (d *FileDescriptor) addExport(obj Object, sym symbol) {
 	d.exported[obj] = append(d.exported[obj], sym)
 }
@@ -496,6 +475,60 @@ func uniquePackageOf(fd *descriptor.FileDescriptorProto) string {
 	return s
 }
 
+// PackageMapper provides a single point at which to intercept and
+// modify the package structure of generated code. It maps .proto file
+// inputs to output paths and packages, and allows modification of the
+// import path for the "proto" helper package.
+type PackageMapper interface {
+	// StandardPackage remaps the import package name for standard
+	// helper packages. Currently used for the "proto" helper package,
+	// and by the grpc plugin for the "context" and "grpc" packages.
+	StandardPackage(packagePath string) string
+	// Given a FileDescriptor, return the output name for the generated Go program.
+	GoFileName(fd *FileDescriptor) string
+	// Given a FileDescriptor, return the desired declared Go package
+	// name. Explicit denotes whether "go_package" was declared.
+	GoPackage(fd *FileDescriptor) (packageName string, explicit bool)
+}
+
+// defaultMapper is the default PackageMapper.
+type defaultMapper struct {
+	g *Generator
+}
+
+// By default, standard packages simply have the import_prefix
+// prepended.
+func (m *defaultMapper) StandardPackage(packagePath string) string {
+	return path.Join(m.g.ImportPrefix, packagePath)
+}
+
+// Default output filenames use the path and base filename from the
+// input file.
+func (m *defaultMapper) GoFileName(fd *FileDescriptor) string {
+	name := fd.GetName()
+	ext := path.Ext(name)
+	if ext == ".proto" || ext == ".protodevel" {
+		name = name[0 : len(name)-len(ext)]
+	}
+	return name + ".pb.go"
+}
+
+// By default, the go package declared by a generated file is taken
+// from the go_package, the package, or the name of the file (minus
+// extension).
+func (m *defaultMapper) GoPackage(fd *FileDescriptor) (string, bool) {
+	// Does the file have a "go_package" option?
+	if pkg := fd.Options.GetGoPackage(); pkg != "" {
+		return pkg, true
+	}
+	// Does the file have a package clause?
+	if pkg := fd.GetPackage(); pkg != "" {
+		return pkg, false
+	}
+	// Use the file base name.
+	return baseName(fd.GetName()), false
+}
+
 // Generator is the type whose methods generate the output, stored in the associated response structure.
 type Generator struct {
 	*bytes.Buffer
@@ -507,6 +540,7 @@ type Generator struct {
 	PackageImportPath string            // Go import path of the package we're generating code for
 	ImportPrefix      string            // String to prefix to imported package file names.
 	ImportMap         map[string]string // Mapping from import name to generated name
+	Mapper            PackageMapper     // Configuration for paths
 
 	Pkg map[string]string // The names under which we import support packages
 
@@ -528,6 +562,7 @@ func New() *Generator {
 	g.Buffer = new(bytes.Buffer)
 	g.Request = new(plugin.CodeGeneratorRequest)
 	g.Response = new(plugin.CodeGeneratorResponse)
+	g.Mapper = &defaultMapper{g: g}
 	return g
 }
 
@@ -685,11 +720,11 @@ func (g *Generator) defaultGoPackage() string {
 func (g *Generator) SetPackageNames() {
 	// Register the name for this package.  It will be the first name
 	// registered so is guaranteed to be unmodified.
-	pkg, explicit := g.genFiles[0].goPackageName()
+	pkg, explicit := g.Mapper.GoPackage(g.genFiles[0])
 
 	// Check all files for an explicit go_package option.
 	for _, f := range g.genFiles {
-		thisPkg, thisExplicit := f.goPackageName()
+		thisPkg, thisExplicit := g.Mapper.GoPackage(f)
 		if thisExplicit {
 			if !explicit {
 				// Let this file's go_package option serve for all input files.
@@ -714,7 +749,7 @@ func (g *Generator) SetPackageNames() {
 	// Go package name.
 	if !explicit {
 		for _, f := range g.genFiles {
-			thisPkg, _ := f.goPackageName()
+			thisPkg, _ := g.Mapper.GoPackage(f)
 			if thisPkg != pkg {
 				g.Fail("inconsistent package names:", thisPkg, pkg)
 			}
@@ -1092,7 +1127,7 @@ func (g *Generator) GenerateAllFiles() {
 			continue
 		}
 		g.Response.File[i] = new(plugin.CodeGeneratorResponse_File)
-		g.Response.File[i].Name = proto.String(goFileName(*file.Name))
+		g.Response.File[i].Name = proto.String(g.Mapper.GoFileName(file))
 		g.Response.File[i].Content = proto.String(g.String())
 		i++
 	}
@@ -1262,7 +1297,7 @@ func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the fmt and math packages.
-	g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"github.com/golang/protobuf/proto"))
+	g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.Mapper.StandardPackage("github.com/golang/protobuf/proto")))
 	g.P("import " + g.Pkg["fmt"] + ` "fmt"`)
 	g.P("import " + g.Pkg["math"] + ` "math"`)
 	for i, s := range g.file.Dependency {
@@ -1271,7 +1306,7 @@ func (g *Generator) generateImports() {
 		if fd.PackageName() == g.packageName {
 			continue
 		}
-		filename := goFileName(s)
+		filename := g.Mapper.GoFileName(fd)
 		// By default, import path is the dirname of the Go filename.
 		importPath := path.Dir(filename)
 		if substitution, ok := g.ImportMap[s]; ok {
@@ -2630,15 +2665,6 @@ func CamelCaseSlice(elem []string) string { return CamelCase(strings.Join(elem, 
 
 // dottedSlice turns a sliced name into a dotted name.
 func dottedSlice(elem []string) string { return strings.Join(elem, ".") }
-
-// Given a .proto file name, return the output name for the generated Go program.
-func goFileName(name string) string {
-	ext := path.Ext(name)
-	if ext == ".proto" || ext == ".protodevel" {
-		name = name[0 : len(name)-len(ext)]
-	}
-	return name + ".pb.go"
-}
 
 // Is this field optional?
 func isOptional(field *descriptor.FieldDescriptorProto) bool {
