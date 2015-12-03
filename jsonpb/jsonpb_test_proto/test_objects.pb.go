@@ -378,8 +378,8 @@ func (m *MsgWithOneof) GetSalary() int64 {
 }
 
 // XXX_OneofFuncs is for the internal use of the proto package.
-func (*MsgWithOneof) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), []interface{}) {
-	return _MsgWithOneof_OneofMarshaler, _MsgWithOneof_OneofUnmarshaler, []interface{}{
+func (*MsgWithOneof) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _MsgWithOneof_OneofMarshaler, _MsgWithOneof_OneofUnmarshaler, _MsgWithOneof_OneofSizer, []interface{}{
 		(*MsgWithOneof_Title)(nil),
 		(*MsgWithOneof_Salary)(nil),
 	}
@@ -422,6 +422,24 @@ func _MsgWithOneof_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.B
 	default:
 		return false, nil
 	}
+}
+
+func _MsgWithOneof_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*MsgWithOneof)
+	// union
+	switch x := m.Union.(type) {
+	case *MsgWithOneof_Title:
+		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(len(x.Title)))
+		n += len(x.Title)
+	case *MsgWithOneof_Salary:
+		n += proto.SizeVarint(2<<3 | proto.WireVarint)
+		n += proto.SizeVarint(uint64(x.Salary))
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
 }
 
 type Real struct {
