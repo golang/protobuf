@@ -86,9 +86,9 @@ func (g *micro) GenerateImports(file *generator.FileDescriptor) {
 		return
 	}
 	g.P("import (")
-	g.P(contextPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, contextPkgPath)))
 	g.P(clientPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, clientPkgPath)))
 	g.P(serverPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, serverPkgPath)))
+	g.P(contextPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, contextPkgPath)))
 	g.P(")")
 	g.P()
 }
