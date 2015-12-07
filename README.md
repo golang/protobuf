@@ -151,8 +151,7 @@ To create and play with a Test object from the example package,
 	}
 
 
-Parameters
-==========
+## Parameters ##
 
 To pass extra parameters to the plugin, use a comma-separated
 parameter list separated from the output directory by a colon:
@@ -173,8 +172,8 @@ parameter list separated from the output directory by a colon:
   associated with Go package quux/shme.  This is subject to the
   import_prefix parameter.
 
-gRPC Support
-============
+## gRPC Support ##
+
 If a proto file specifies RPC services, protoc-gen-go can be instructed to
 generate code compatible with gRPC (http://www.grpc.io/). To do this, pass
 the `plugins` parameter to protoc-gen-go; the usual way is to insert it into
