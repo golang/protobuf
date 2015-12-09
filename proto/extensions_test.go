@@ -32,6 +32,7 @@
 package proto_test
 
 import (
+	"bytes"
 	"fmt"
 	"reflect"
 	"testing"
@@ -289,4 +290,141 @@ func TestNilExtension(t *testing.T) {
 	}
 	// Note: if the behavior of Marshal is ever changed to ignore nil extensions, update
 	// this test to verify that E_Ext_Text is properly propagated through marshal->unmarshal.
+}
+
+func TestMarshalUnmarshalRepeatedExtension(t *testing.T) {
+	// Add a repeated extension to the result.
+	tests := []struct {
+		name string
+		ext  []*pb.ComplexExtension
+	}{
+		{
+			"two fields",
+			[]*pb.ComplexExtension{
+				{First: proto.Int32(7)},
+				{Second: proto.Int32(11)},
+			},
+		},
+		{
+			"repeated field",
+			[]*pb.ComplexExtension{
+				{Third: []int32{1000}},
+				{Third: []int32{2000}},
+			},
+		},
+		{
+			"two fields and repeated field",
+			[]*pb.ComplexExtension{
+				{Third: []int32{1000}},
+				{First: proto.Int32(9)},
+				{Second: proto.Int32(21)},
+				{Third: []int32{2000}},
+			},
+		},
+	}
+	for _, test := range tests {
+		// Marshal message with a repeated extension.
+		msg1 := new(pb.OtherMessage)
+		err := proto.SetExtension(msg1, pb.E_RComplex, test.ext)
+		if err != nil {
+			t.Fatalf("[%s] Error setting extension: %v", test.name, err)
+		}
+		b, err := proto.Marshal(msg1)
+		if err != nil {
+			t.Fatalf("[%s] Error marshaling message: %v", test.name, err)
+		}
+
+		// Unmarshal and read the merged proto.
+		msg2 := new(pb.OtherMessage)
+		err = proto.Unmarshal(b, msg2)
+		if err != nil {
+			t.Fatalf("[%s] Error unmarshaling message: %v", test.name, err)
+		}
+		e, err := proto.GetExtension(msg2, pb.E_RComplex)
+		if err != nil {
+			t.Fatalf("[%s] Error getting extension: %v", test.name, err)
+		}
+		ext := e.([]*pb.ComplexExtension)
+		if ext == nil {
+			t.Fatalf("[%s] Invalid extension", test.name)
+		}
+		if !reflect.DeepEqual(ext, test.ext) {
+			t.Errorf("[%s] Wrong value for ComplexExtension: got: %v want: %v\n", test.name, ext, test.ext)
+		}
+	}
+}
+
+func TestUnmarshalRepeatingNonRepeatedExtension(t *testing.T) {
+	// We may see multiple instances of the same extension in the wire
+	// format. For example, the proto compiler may encode custom options in
+	// this way. Here, we verify that we merge the extensions together.
+	tests := []struct {
+		name string
+		ext  []*pb.ComplexExtension
+	}{
+		{
+			"two fields",
+			[]*pb.ComplexExtension{
+				{First: proto.Int32(7)},
+				{Second: proto.Int32(11)},
+			},
+		},
+		{
+			"repeated field",
+			[]*pb.ComplexExtension{
+				{Third: []int32{1000}},
+				{Third: []int32{2000}},
+			},
+		},
+		{
+			"two fields and repeated field",
+			[]*pb.ComplexExtension{
+				{Third: []int32{1000}},
+				{First: proto.Int32(9)},
+				{Second: proto.Int32(21)},
+				{Third: []int32{2000}},
+			},
+		},
+	}
+	for _, test := range tests {
+		var buf bytes.Buffer
+		var want pb.ComplexExtension
+
+		// Generate a serialized representation of a repeated extension
+		// by catenating bytes together.
+		for i, e := range test.ext {
+			// Merge to create the wanted proto.
+			proto.Merge(&want, e)
+
+			// serialize the message
+			msg := new(pb.OtherMessage)
+			err := proto.SetExtension(msg, pb.E_Complex, e)
+			if err != nil {
+				t.Fatalf("[%s] Error setting extension %d: %v", test.name, i, err)
+			}
+			b, err := proto.Marshal(msg)
+			if err != nil {
+				t.Fatalf("[%s] Error marshaling message %d: %v", test.name, i, err)
+			}
+			buf.Write(b)
+		}
+
+		// Unmarshal and read the merged proto.
+		msg2 := new(pb.OtherMessage)
+		err := proto.Unmarshal(buf.Bytes(), msg2)
+		if err != nil {
+			t.Fatalf("[%s] Error unmarshaling message: %v", test.name, err)
+		}
+		e, err := proto.GetExtension(msg2, pb.E_Complex)
+		if err != nil {
+			t.Fatalf("[%s] Error getting extension: %v", test.name, err)
+		}
+		ext := e.(*pb.ComplexExtension)
+		if ext == nil {
+			t.Fatalf("[%s] Invalid extension", test.name)
+		}
+		if !reflect.DeepEqual(*ext, want) {
+			t.Errorf("[%s] Wrong value for ComplexExtension: got: %s want: %s\n", test.name, ext, want)
+		}
+	}
 }

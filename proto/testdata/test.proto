@@ -233,6 +233,8 @@ message OtherMessage {
   optional bytes value = 2;
   optional float weight = 3;
   optional InnerMessage inner = 4;
+
+  extensions 100 to max;
 }
 
 message MyMessage {
@@ -275,6 +277,17 @@ message Ext {
 
 extend MyMessage {
   repeated string greeting = 106;
+}
+
+message ComplexExtension {
+  optional int32 first = 1;
+  optional int32 second = 2;
+  repeated int32 third = 3;
+}
+
+extend OtherMessage {
+  optional ComplexExtension complex = 200;
+  repeated ComplexExtension r_complex = 201;
 }
 
 message DefaultsMessage {
@@ -477,6 +490,34 @@ message MessageWithMap {
   map<sint64, FloatingPoint> msg_mapping = 2;
   map<bool, bytes> byte_mapping = 3;
   map<string, string> str_to_str = 4;
+}
+
+message Oneof {
+  oneof union {
+    bool F_Bool = 1;
+    int32 F_Int32 = 2;
+    int64 F_Int64 = 3;
+    fixed32 F_Fixed32 = 4;
+    fixed64 F_Fixed64 = 5;
+    uint32 F_Uint32 = 6;
+    uint64 F_Uint64 = 7;
+    float F_Float = 8;
+    double F_Double = 9;
+    string F_String = 10;
+    bytes F_Bytes = 11;
+    sint32 F_Sint32 = 12;
+    sint64 F_Sint64 = 13;
+    MyMessage.Color F_Enum = 14;
+    GoTestField F_Message = 15;
+    group F_Group = 16 {
+      optional int32 x = 17;
+    }
+    int32 F_Largest_Tag = 536870911;
+  }
+
+  oneof tormato {
+    int32 value = 100;
+  }
 }
 
 message Communique {

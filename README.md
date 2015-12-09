@@ -1,4 +1,6 @@
-Go support for Protocol Buffers - Google's data interchange format
+# Go support for Protocol Buffers
+
+Google's data interchange format.
 Copyright 2010 The Go Authors.
 https://github.com/golang/protobuf
 
@@ -20,8 +22,7 @@ To use this software, you must:
   for details or, if you are using gccgo, follow the instructions at
 	https://golang.org/doc/install/gccgo
 - Grab the code from the repository and install the proto package.
-  The simplest way is to run
-	go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+  The simplest way is to run `go get -u github.com/golang/protobuf/{proto,protoc-gen-go}`.
   The compiler plugin, protoc-gen-go, will be installed in $GOBIN,
   defaulting to $GOPATH/bin.  It must be in your $PATH for the protocol
   compiler, protoc, to find it.
@@ -102,6 +103,7 @@ for a protocol buffer variable v:
 
 Consider file test.proto, containing
 
+```proto
 	package example;
 	
 	enum FOO { X = 17; };
@@ -114,9 +116,11 @@ Consider file test.proto, containing
 	    required string RequiredField = 5;
 	  }
 	}
+```
 
 To create and play with a Test object from the example package,
 
+```go
 	package main
 
 	import (
@@ -149,10 +153,31 @@ To create and play with a Test object from the example package,
 		}
 		// etc.
 	}
+```
+
+## Parameters ##
+
+To pass extra parameters to the plugin, use a comma-separated
+parameter list separated from the output directory by a colon:
 
 
-gRPC Support
-============
+	protoc --go_out=plugins=grpc,import_path=mypackage:. *.proto
+
+
+- `import_prefix=xxx` - a prefix that is added onto the beginning of
+  all imports. Useful for things like generating protos in a
+  subdirectory, or regenerating vendored protobufs in-place.
+- `import_path=foo/bar` - used as the package if no input files
+  declare `go_package`. If it contains slashes, everything up to the
+  rightmost slash is ignored.
+- `plugins=plugin1+plugin2` - specifies the list of sub-plugins to
+  load. The only plugin in this repo is `grpc`.
+- `Mfoo/bar.proto=quux/shme` - declares that foo/bar.proto is
+  associated with Go package quux/shme.  This is subject to the
+  import_prefix parameter.
+
+## gRPC Support ##
+
 If a proto file specifies RPC services, protoc-gen-go can be instructed to
 generate code compatible with gRPC (http://www.grpc.io/). To do this, pass
 the `plugins` parameter to protoc-gen-go; the usual way is to insert it into
@@ -160,8 +185,8 @@ the --go_out argument to protoc:
 
 	protoc --go_out=plugins=grpc:. *.proto
 
-Micro Support
-============
+## Micro Support ##
+
 If a proto file specifies RPC services, protoc-gen-go can be instructed to
 generate code compatible with Micro (https://micro.github.io/micro). To do this, pass
 the `plugins` parameter to protoc-gen-go; the usual way is to insert it into
