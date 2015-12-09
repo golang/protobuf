@@ -185,8 +185,8 @@ the --go_out argument to protoc:
 
 	protoc --go_out=plugins=grpc:. *.proto
 
-Micro Support
-============
+## Micro Support ##
+
 If a proto file specifies RPC services, protoc-gen-go can be instructed to
 generate code compatible with Micro (https://micro.github.io/micro). To do this, pass
 the `plugins` parameter to protoc-gen-go; the usual way is to insert it into
