@@ -623,8 +623,8 @@ func (m *Communique) GetSomegroup() *Communique_SomeGroup {
 }
 
 // XXX_OneofFuncs is for the internal use of the proto package.
-func (*Communique) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), []interface{}) {
-	return _Communique_OneofMarshaler, _Communique_OneofUnmarshaler, []interface{}{
+func (*Communique) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _Communique_OneofMarshaler, _Communique_OneofUnmarshaler, _Communique_OneofSizer, []interface{}{
 		(*Communique_Number)(nil),
 		(*Communique_Name)(nil),
 		(*Communique_Data)(nil),
@@ -766,6 +766,52 @@ func _Communique_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buf
 	default:
 		return false, nil
 	}
+}
+
+func _Communique_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*Communique)
+	// union
+	switch x := m.Union.(type) {
+	case *Communique_Number:
+		n += proto.SizeVarint(5<<3 | proto.WireVarint)
+		n += proto.SizeVarint(uint64(x.Number))
+	case *Communique_Name:
+		n += proto.SizeVarint(6<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(len(x.Name)))
+		n += len(x.Name)
+	case *Communique_Data:
+		n += proto.SizeVarint(7<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(len(x.Data)))
+		n += len(x.Data)
+	case *Communique_TempC:
+		n += proto.SizeVarint(8<<3 | proto.WireFixed64)
+		n += 8
+	case *Communique_Height:
+		n += proto.SizeVarint(9<<3 | proto.WireFixed32)
+		n += 4
+	case *Communique_Today:
+		n += proto.SizeVarint(10<<3 | proto.WireVarint)
+		n += proto.SizeVarint(uint64(x.Today))
+	case *Communique_Maybe:
+		n += proto.SizeVarint(11<<3 | proto.WireVarint)
+		n += 1
+	case *Communique_Delta_:
+		n += proto.SizeVarint(12<<3 | proto.WireVarint)
+		n += proto.SizeVarint(uint64((uint32(x.Delta) << 1) ^ uint32((int32(x.Delta) >> 31))))
+	case *Communique_Msg:
+		s := proto.Size(x.Msg)
+		n += proto.SizeVarint(13<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Communique_Somegroup:
+		n += proto.SizeVarint(14<<3 | proto.WireStartGroup)
+		n += proto.Size(x.Somegroup)
+		n += proto.SizeVarint(14<<3 | proto.WireEndGroup)
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
 }
 
 type Communique_SomeGroup struct {
