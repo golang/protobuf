@@ -237,7 +237,7 @@ func (g *micro) generateClientSignature(servName string, method *pb.MethodDescri
 	if method.GetServerStreaming() {
 		respName = servName + "_" + generator.CamelCase(origMethName) + "Client"
 	}
-	return fmt.Sprintf("%s(ctx %s.Context%s) (%s, error)", methName, contextPkg, reqArg, respName)
+	return fmt.Sprintf("%s(ctx %s.Context%s, opts ...%s.CallOption) (%s, error)", methName, contextPkg, reqArg, clientPkg, respName)
 }
 
 func (g *micro) generateClientMethod(reqServ, servName, serviceDescVar string, method *pb.MethodDescriptorProto, descExpr string) {
@@ -251,7 +251,7 @@ func (g *micro) generateClientMethod(reqServ, servName, serviceDescVar string, m
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
 		g.P("out := new(", outType, ")")
 		// TODO: Pass descExpr to Invoke.
-		g.P("err := ", `c.c.Call(ctx, req, out)`)
+		g.P("err := ", `c.c.Call(ctx, req, out, opts...)`)
 		g.P("if err != nil { return nil, err }")
 		g.P("return out, nil")
 		g.P("}")
@@ -260,7 +260,7 @@ func (g *micro) generateClientMethod(reqServ, servName, serviceDescVar string, m
 	}
 	streamType := unexport(servName) + methName + "Client"
 	g.P("outCh := make(chan *", outType, ")")
-	g.P("stream, err := c.c.Stream(ctx, req, outCh)")
+	g.P("stream, err := c.c.Stream(ctx, req, outCh, opts...)")
 	g.P("if err != nil { return nil, err }")
 	g.P("return &", streamType, "{stream, outCh}, nil")
 	g.P("}")
