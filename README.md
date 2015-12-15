@@ -172,6 +172,7 @@ parameter list separated from the output directory by a colon:
   rightmost slash is ignored.
 - `plugins=plugin1+plugin2` - specifies the list of sub-plugins to
   load. The only plugin in this repo is `grpc`.
+- `package_comments=false` - will disable package comments in the generated go files
 - `Mfoo/bar.proto=quux/shme` - declares that foo/bar.proto is
   associated with Go package quux/shme.  This is subject to the
   import_prefix parameter.
