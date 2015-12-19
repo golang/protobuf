@@ -176,12 +176,12 @@ func (g *micro) generateService(file *generator.FileDescriptor, service *pb.Serv
 	g.P()
 	// Server registration.
 	g.P("func Register", servName, "Handler(s ", serverPkg, ".Server, hdlr ", serverType, ") {")
-	g.P("s.Handle(s.NewHandler(&", unexport(servName), "Handler{hdlr}))")
+	g.P("s.Handle(s.NewHandler(&", servName, "{hdlr}))")
 	g.P("}")
 	g.P()
 
 	// Handler type
-	g.P("type ", unexport(servName), "Handler struct {")
+	g.P("type ", servName, " struct {")
 	g.P(serverType)
 	g.P("}")
 	g.P()
@@ -355,14 +355,14 @@ func (g *micro) generateServerMethod(servName string, method *pb.MethodDescripto
 	outType := g.typeName(method.GetOutputType())
 
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
-		g.P("func (h *", unexport(servName), "Handler)", methName, "(ctx ", contextPkg, ".Context, in *", inType, ", out *", outType, ") error {")
+		g.P("func (h *", servName, ") ", methName, "(ctx ", contextPkg, ".Context, in *", inType, ", out *", outType, ") error {")
 		g.P("return h.", serveType, ".", methName, "(ctx, in, out)")
 		g.P("}")
 		g.P()
 		return hname
 	}
 	streamType := unexport(servName) + methName + "Stream"
-	g.P("func (h *", unexport(servName), "Handler)", methName, "(ctx ", contextPkg, ".Context, stream server.Streamer) error {")
+	g.P("func (h *", servName, ") ", methName, "(ctx ", contextPkg, ".Context, stream server.Streamer) error {")
 	if !method.GetClientStreaming() {
 		g.P("m := new(", inType, ")")
 		g.P("if err := stream.Recv(m); err != nil { return err }")
