@@ -35,6 +35,7 @@ import (
 	"testing"
 
 	. "github.com/golang/protobuf/proto"
+	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
 	pb "github.com/golang/protobuf/proto/testdata"
 )
 
@@ -131,6 +132,8 @@ var EqualTests = []struct {
 		&pb.MyMessage{RepBytes: [][]byte{[]byte("sham"), []byte("wow")}},
 		true,
 	},
+	// In proto3, []byte{} and []byte(nil) are equal.
+	{"proto3 bytes, empty vs nil", &proto3pb.Message{Data: []byte{}}, &proto3pb.Message{Data: nil}, true},
 
 	{"extension vs. no extension", messageWithoutExtension, messageWithExtension1a, false},
 	{"extension vs. same extension", messageWithExtension1a, messageWithExtension1b, true},
