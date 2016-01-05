@@ -101,6 +101,12 @@ for a protocol buffer variable v:
 	with distinguished wrapper types for each possible field value.
   - Marshal and Unmarshal are functions to encode and decode the wire format.
 
+When the .proto file specifies `syntax="proto3"`, there are some differences:
+
+  - Non-repeated fields of non-message type are values instead of pointers.
+  - Getters are only generated for message and oneof fields.
+  - Enum types do not get an Enum method.
+
 Consider file test.proto, containing
 
 ```proto
