@@ -30,12 +30,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*
-Package jsonpb provides marshaling/unmarshaling functionality between
-protocol buffer and JSON objects.
+Package jsonpb provides marshaling and unmarshaling between protocol buffers and JSON.
+It follows the specification at https://developers.google.com/protocol-buffers/docs/proto3#json.
 
-Compared to encoding/json, this library:
- - encodes int64, uint64 as strings
- - optionally encodes enums as integers
+This package produces a different output than the standard "encoding/json" package,
+which does not operate correctly on protocol buffers.
 */
 package jsonpb
 

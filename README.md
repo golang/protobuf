@@ -140,6 +140,7 @@ To create and play with a Test object from the example package,
 		test := &example.Test {
 			Label: proto.String("hello"),
 			Type:  proto.Int32(17),
+			Reps:  []int64{1, 2, 3},
 			Optionalgroup: &example.Test_OptionalGroup {
 				RequiredField: proto.String("good bye"),
 			},
