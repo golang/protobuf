@@ -95,9 +95,34 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		},
 	},
 
-	// Quoted string concatenation
+	// Quoted string concatenation with double quotes
 	{
 		in: `count:42 name: "My name is "` + "\n" + `"elsewhere"`,
+		out: &MyMessage{
+			Count: Int32(42),
+			Name:  String("My name is elsewhere"),
+		},
+	},
+
+	// Quoted string concatenation with single quotes
+	{
+		in: "count:42 name: 'My name is '\n'elsewhere'",
+		out: &MyMessage{
+			Count: Int32(42),
+			Name:  String("My name is elsewhere"),
+		},
+	},
+
+	// Quoted string concatenations with mixed quotes
+	{
+		in: "count:42 name: 'My name is '\n\"elsewhere\"",
+		out: &MyMessage{
+			Count: Int32(42),
+			Name:  String("My name is elsewhere"),
+		},
+	},
+	{
+		in: "count:42 name: \"My name is \"\n'elsewhere'",
 		out: &MyMessage{
 			Count: Int32(42),
 			Name:  String("My name is elsewhere"),
