@@ -69,6 +69,9 @@ type Marshaler struct {
 	// value, and for newlines to be appear between fields and array
 	// elements.
 	Indent string
+
+	// Whether to use the original (.proto) name for fields.
+	OrigName bool
 }
 
 // Marshal marshals a protocol buffer into JSON.
@@ -149,7 +152,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent string
 			value = sv.Field(0)
 			valueField = sv.Type().Field(0)
 		}
-		prop := jsonProperties(valueField)
+		prop := jsonProperties(valueField, m.OrigName)
 		if !firstField {
 			m.writeSep(out)
 		}
@@ -182,7 +185,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent string
 			value := reflect.ValueOf(ext)
 			var prop proto.Properties
 			prop.Parse(desc.Tag)
-			prop.OrigName = fmt.Sprintf("[%s]", desc.Name)
+			prop.JSONName = fmt.Sprintf("[%s]", desc.Name)
 			if !firstField {
 				m.writeSep(out)
 			}
@@ -217,7 +220,7 @@ func (m *Marshaler) marshalField(out *errWriter, prop *proto.Properties, v refle
 		out.write(m.Indent)
 	}
 	out.write(`"`)
-	out.write(prop.OrigName)
+	out.write(prop.JSONName)
 	out.write(`":`)
 	if m.Indent != "" {
 		out.write(" ")
@@ -395,13 +398,24 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 			if strings.HasPrefix(ft.Name, "XXX_") {
 				continue
 			}
-			fieldName := jsonProperties(ft).OrigName
+			// Be liberal in what names we accept; both orig_name and camelName are okay.
+			fieldNames := acceptedJSONFieldNames(ft)
 
-			valueForField, ok := jsonFields[fieldName]
-			if !ok {
+			vOrig, okOrig := jsonFields[fieldNames.orig]
+			vCamel, okCamel := jsonFields[fieldNames.camel]
+			if !okOrig && !okCamel {
 				continue
 			}
-			delete(jsonFields, fieldName)
+			// If, for some reason, both are present in the data, favour the camelName.
+			var valueForField json.RawMessage
+			if okOrig {
+				valueForField = vOrig
+				delete(jsonFields, fieldNames.orig)
+			}
+			if okCamel {
+				valueForField = vCamel
+				delete(jsonFields, fieldNames.camel)
+			}
 
 			// Handle enums, which have an underlying type of int32,
 			// and may appear as strings. We do this while handling
@@ -510,11 +524,28 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 	return json.Unmarshal(inputValue, target.Addr().Interface())
 }
 
-// jsonProperties returns parsed proto.Properties for the field.
-func jsonProperties(f reflect.StructField) *proto.Properties {
+// jsonProperties returns parsed proto.Properties for the field and corrects JSONName attribute.
+func jsonProperties(f reflect.StructField, origName bool) *proto.Properties {
 	var prop proto.Properties
 	prop.Init(f.Type, f.Name, f.Tag.Get("protobuf"), &f)
+	if origName || prop.JSONName == "" {
+		prop.JSONName = prop.OrigName
+	}
 	return &prop
+}
+
+type fieldNames struct {
+	orig, camel string
+}
+
+func acceptedJSONFieldNames(f reflect.StructField) fieldNames {
+	var prop proto.Properties
+	prop.Init(f.Type, f.Name, f.Tag.Get("protobuf"), &f)
+	opts := fieldNames{orig: prop.OrigName, camel: prop.OrigName}
+	if prop.JSONName != "" {
+		opts.camel = prop.JSONName
+	}
+	return opts
 }
 
 // extendableProto is an interface implemented by any protocol buffer that may be extended.
