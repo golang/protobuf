@@ -12,6 +12,9 @@ PROTO_FILES='
   any.proto
   duration.proto
   empty.proto
+  struct.proto
+  timestamp.proto
+  wrappers.proto
 '
 
 function die() {
@@ -41,7 +44,7 @@ git clone -q $UPSTREAM $tmpdir
 declare -A filename_map
 for f in $(cd $PKG && find * -name '*.proto'); do
   echo -n 1>&2 "looking for latest version of $f... "
-  up=$(cd $tmpdir/$UPSTREAM_SUBDIR && find * -name $(basename $f))
+  up=$(cd $tmpdir/$UPSTREAM_SUBDIR && find * -name $(basename $f) | grep -v /testdata/)
   echo 1>&2 $up
   if [ $(echo $up | wc -w) != "1" ]; then
     die "not exactly one match"
@@ -56,6 +59,8 @@ for up in "${!filename_map[@]}"; do
     # Adjust proto package.
     # TODO(dsymonds): Upstream the go_package option instead.
     sed '/^package /a option go_package = "'${shortname}'";' |
+    # Unfortunately "package struct" doesn't work.
+    sed '/option go_package/s,"struct","structpb",' |
     cat > $PKG/$f
 done
 
