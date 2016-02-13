@@ -1517,6 +1517,11 @@ func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptor
 			name = name[i+1:]
 		}
 	}
+	if json := field.GetJsonName(); json != "" && json != name {
+		// TODO: escaping might be needed, in which case
+		// perhaps this should be in its own "json" tag.
+		name += ",json=" + json
+	}
 	name = ",name=" + name
 	if message.proto3() {
 		// We only need the extra tag for []byte fields;
@@ -2541,7 +2546,9 @@ func (g *Generator) generateFileDescriptor(file *FileDescriptor) {
 	w.Close()
 	b = buf.Bytes()
 
-	g.P("var fileDescriptor", file.index, " = []byte{")
+	v := fmt.Sprintf("fileDescriptor%d", file.index)
+	g.P()
+	g.P("var ", v, " = []byte{")
 	g.In()
 	g.P("// ", len(b), " bytes of a gzipped FileDescriptorProto")
 	for len(b) > 0 {

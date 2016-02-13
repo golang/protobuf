@@ -62,31 +62,31 @@ var (
 	}
 
 	simpleObjectJSON = `{` +
-		`"o_bool":true,` +
-		`"o_int32":-32,` +
-		`"o_int64":"-6400000000",` +
-		`"o_uint32":32,` +
-		`"o_uint64":"6400000000",` +
-		`"o_sint32":-13,` +
-		`"o_sint64":"-2600000000",` +
-		`"o_float":3.14,` +
-		`"o_double":6.02214179e+23,` +
-		`"o_string":"hello \"there\"",` +
-		`"o_bytes":"YmVlcCBib29w"` +
+		`"oBool":true,` +
+		`"oInt32":-32,` +
+		`"oInt64":"-6400000000",` +
+		`"oUint32":32,` +
+		`"oUint64":"6400000000",` +
+		`"oSint32":-13,` +
+		`"oSint64":"-2600000000",` +
+		`"oFloat":3.14,` +
+		`"oDouble":6.02214179e+23,` +
+		`"oString":"hello \"there\"",` +
+		`"oBytes":"YmVlcCBib29w"` +
 		`}`
 
 	simpleObjectPrettyJSON = `{
-  "o_bool": true,
-  "o_int32": -32,
-  "o_int64": "-6400000000",
-  "o_uint32": 32,
-  "o_uint64": "6400000000",
-  "o_sint32": -13,
-  "o_sint64": "-2600000000",
-  "o_float": 3.14,
-  "o_double": 6.02214179e+23,
-  "o_string": "hello \"there\"",
-  "o_bytes": "YmVlcCBib29w"
+  "oBool": true,
+  "oInt32": -32,
+  "oInt64": "-6400000000",
+  "oUint32": 32,
+  "oUint64": "6400000000",
+  "oSint32": -13,
+  "oSint64": "-2600000000",
+  "oFloat": 3.14,
+  "oDouble": 6.02214179e+23,
+  "oString": "hello \"there\"",
+  "oBytes": "YmVlcCBib29w"
 }`
 
 	repeatsObject = &pb.Repeats{
@@ -104,65 +104,65 @@ var (
 	}
 
 	repeatsObjectJSON = `{` +
-		`"r_bool":[true,false,true],` +
-		`"r_int32":[-3,-4,-5],` +
-		`"r_int64":["-123456789","-987654321"],` +
-		`"r_uint32":[1,2,3],` +
-		`"r_uint64":["6789012345","3456789012"],` +
-		`"r_sint32":[-1,-2,-3],` +
-		`"r_sint64":["-6789012345","-3456789012"],` +
-		`"r_float":[3.14,6.28],` +
-		`"r_double":[2.99792458e+08,6.62606957e-34],` +
-		`"r_string":["happy","days"],` +
-		`"r_bytes":["c2tpdHRsZXM=","bSZtJ3M="]` +
+		`"rBool":[true,false,true],` +
+		`"rInt32":[-3,-4,-5],` +
+		`"rInt64":["-123456789","-987654321"],` +
+		`"rUint32":[1,2,3],` +
+		`"rUint64":["6789012345","3456789012"],` +
+		`"rSint32":[-1,-2,-3],` +
+		`"rSint64":["-6789012345","-3456789012"],` +
+		`"rFloat":[3.14,6.28],` +
+		`"rDouble":[2.99792458e+08,6.62606957e-34],` +
+		`"rString":["happy","days"],` +
+		`"rBytes":["c2tpdHRsZXM=","bSZtJ3M="]` +
 		`}`
 
 	repeatsObjectPrettyJSON = `{
-  "r_bool": [
+  "rBool": [
     true,
     false,
     true
   ],
-  "r_int32": [
+  "rInt32": [
     -3,
     -4,
     -5
   ],
-  "r_int64": [
+  "rInt64": [
     "-123456789",
     "-987654321"
   ],
-  "r_uint32": [
+  "rUint32": [
     1,
     2,
     3
   ],
-  "r_uint64": [
+  "rUint64": [
     "6789012345",
     "3456789012"
   ],
-  "r_sint32": [
+  "rSint32": [
     -1,
     -2,
     -3
   ],
-  "r_sint64": [
+  "rSint64": [
     "-6789012345",
     "-3456789012"
   ],
-  "r_float": [
+  "rFloat": [
     3.14,
     6.28
   ],
-  "r_double": [
+  "rDouble": [
     2.99792458e+08,
     6.62606957e-34
   ],
-  "r_string": [
+  "rString": [
     "happy",
     "days"
   ],
-  "r_bytes": [
+  "rBytes": [
     "c2tpdHRsZXM=",
     "bSZtJ3M="
   ]
@@ -182,46 +182,46 @@ var (
 	}
 
 	complexObjectJSON = `{"color":"GREEN",` +
-		`"r_color":["RED","GREEN","BLUE"],` +
-		`"simple":{"o_int32":-32},` +
-		`"r_simple":[{"o_int32":-32},{"o_int64":"25"}],` +
-		`"repeats":{"r_string":["roses","red"]},` +
-		`"r_repeats":[{"r_string":["roses","red"]},{"r_string":["violets","blue"]}]` +
+		`"rColor":["RED","GREEN","BLUE"],` +
+		`"simple":{"oInt32":-32},` +
+		`"rSimple":[{"oInt32":-32},{"oInt64":"25"}],` +
+		`"repeats":{"rString":["roses","red"]},` +
+		`"rRepeats":[{"rString":["roses","red"]},{"rString":["violets","blue"]}]` +
 		`}`
 
 	complexObjectPrettyJSON = `{
   "color": "GREEN",
-  "r_color": [
+  "rColor": [
     "RED",
     "GREEN",
     "BLUE"
   ],
   "simple": {
-    "o_int32": -32
+    "oInt32": -32
   },
-  "r_simple": [
+  "rSimple": [
     {
-      "o_int32": -32
+      "oInt32": -32
     },
     {
-      "o_int64": "25"
+      "oInt64": "25"
     }
   ],
   "repeats": {
-    "r_string": [
+    "rString": [
       "roses",
       "red"
     ]
   },
-  "r_repeats": [
+  "rRepeats": [
     {
-      "r_string": [
+      "rString": [
         "roses",
         "red"
       ]
     },
     {
-      "r_string": [
+      "rString": [
         "violets",
         "blue"
       ]
@@ -235,7 +235,7 @@ var (
 
 	colorListPrettyJSON = `{
   "color": 1000,
-  "r_color": [
+  "rColor": [
     "RED"
   ]
 }`
@@ -291,7 +291,8 @@ var marshalingTests = []struct {
 		&pb.Widget{Color: pb.Widget_BLUE.Enum()}, colorPrettyJSON},
 	{"unknown enum value object", marshalerAllOptions,
 		&pb.Widget{Color: pb.Widget_Color(1000).Enum(), RColor: []pb.Widget_Color{pb.Widget_RED}}, colorListPrettyJSON},
-	{"proto3 object with empty value", marshaler, &pb.Simple3{}, `{"dub":0}`},
+	{"empty value", marshaler, &pb.Simple3{}, `{}`},
+	{"empty value emitted", Marshaler{EmitDefaults: true}, &pb.Simple3{}, `{"dub":0}`},
 	{"map<int64, int32>", marshaler, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, `{"nummy":{"1":2,"3":4}}`},
 	{"map<int64, int32>", marshalerAllOptions, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, nummyPrettyJSON},
 	{"map<string, string>", marshaler,
@@ -305,12 +306,14 @@ var marshalingTests = []struct {
 		`{"buggy":{"1234":"yup"}}`},
 	{"map<bool, bool>", marshaler, &pb.Mappy{Booly: map[bool]bool{false: true}}, `{"booly":{"false":true}}`},
 	{"proto2 map<int64, string>", marshaler, &pb.Maps{MInt64Str: map[int64]string{213: "cat"}},
-		`{"m_int64_str":{"213":"cat"}}`},
+		`{"mInt64Str":{"213":"cat"}}`},
 	{"proto2 map<bool, Object>", marshaler,
 		&pb.Maps{MBoolSimple: map[bool]*pb.Simple{true: &pb.Simple{OInt32: proto.Int32(1)}}},
-		`{"m_bool_simple":{"true":{"o_int32":1}}}`},
+		`{"mBoolSimple":{"true":{"oInt32":1}}}`},
 	{"oneof, not set", marshaler, &pb.MsgWithOneof{}, `{}`},
 	{"oneof, set", marshaler, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_Title{"Grand Poobah"}}, `{"title":"Grand Poobah"}`},
+	{"force orig_name", Marshaler{OrigName: true}, &pb.Simple{OInt32: proto.Int32(4)},
+		`{"o_int32":4}`},
 	{"proto2 extension", marshaler, realNumber, realNumberJSON},
 }
 
@@ -343,12 +346,14 @@ var unmarshalingTests = []struct {
 	{"unknown enum value object",
 		"{\n  \"color\": 1000,\n  \"r_color\": [\n    \"RED\"\n  ]\n}",
 		&pb.Widget{Color: pb.Widget_Color(1000).Enum(), RColor: []pb.Widget_Color{pb.Widget_RED}}},
-	{"unquoted int64 object", `{"o_int64":-314}`, &pb.Simple{OInt64: proto.Int64(-314)}},
-	{"unquoted uint64 object", `{"o_uint64":123}`, &pb.Simple{OUint64: proto.Uint64(123)}},
+	{"unquoted int64 object", `{"oInt64":-314}`, &pb.Simple{OInt64: proto.Int64(-314)}},
+	{"unquoted uint64 object", `{"oUint64":123}`, &pb.Simple{OUint64: proto.Uint64(123)}},
 	{"map<int64, int32>", `{"nummy":{"1":2,"3":4}}`, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}},
 	{"map<string, string>", `{"strry":{"\"one\"":"two","three":"four"}}`, &pb.Mappy{Strry: map[string]string{`"one"`: "two", "three": "four"}}},
 	{"map<int32, Object>", `{"objjy":{"1":{"dub":1}}}`, &pb.Mappy{Objjy: map[int32]*pb.Simple3{1: &pb.Simple3{Dub: 1}}}},
 	{"oneof", `{"salary":31000}`, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_Salary{31000}}},
+	{"orig_name input", `{"o_bool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
+	{"camelName input", `{"oBool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
 }
 
 func TestUnmarshaling(t *testing.T) {
