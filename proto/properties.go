@@ -844,3 +844,14 @@ func MessageName(x Message) string { return revProtoTypes[reflect.TypeOf(x)] }
 
 // MessageType returns the message type (pointer to struct) for a named message.
 func MessageType(name string) reflect.Type { return protoTypes[name] }
+
+// Visit all registed message by callback
+func VisitMessage(callback func(string, reflect.Type) bool) {
+
+	for name, rtype := range protoTypes {
+		if !callback(name, rtype) {
+			return
+		}
+	}
+
+}
