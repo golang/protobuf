@@ -15,6 +15,7 @@ PROTO_FILES='
   struct.proto
   timestamp.proto
   wrappers.proto
+  descriptor.proto
 '
 
 function die() {
@@ -58,6 +59,7 @@ for up in "${!filename_map[@]}"; do
   cat $tmpdir/$UPSTREAM_SUBDIR/$up |
     # Adjust proto package.
     # TODO(dsymonds): Upstream the go_package option instead.
+    grep -v '^\s*option\s\+go_package' |
     sed '/^package /a option go_package = "'${shortname}'";' |
     # Unfortunately "package struct" doesn't work.
     sed '/option go_package/s,"struct","structpb",' |
