@@ -29,7 +29,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package types
+package ptypes
 
 import (
 	"math"
@@ -37,7 +37,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
-	durpb "github.com/golang/protobuf/types/duration"
+	durpb "github.com/golang/protobuf/ptypes/duration"
 )
 
 const (
@@ -87,24 +87,24 @@ var durationTests = []struct {
 
 func TestValidateDuration(t *testing.T) {
 	for _, test := range durationTests {
-		err := ValidateDuration(test.proto)
+		err := validateDuration(test.proto)
 		gotValid := (err == nil)
 		if gotValid != test.isValid {
-			t.Errorf("ValidateDuration(%v) = %t, want %t", test.proto, gotValid, test.isValid)
+			t.Errorf("validateDuration(%v) = %t, want %t", test.proto, gotValid, test.isValid)
 		}
 	}
 }
 
-func TestDurationFromProto(t *testing.T) {
+func TestDuration(t *testing.T) {
 	for _, test := range durationTests {
-		got, err := DurationFromProto(test.proto)
+		got, err := Duration(test.proto)
 		gotOK := (err == nil)
 		wantOK := test.isValid && test.inRange
 		if gotOK != wantOK {
-			t.Errorf("DurationFromProto(%v) ok = %t, want %t", test.proto, gotOK, wantOK)
+			t.Errorf("Duration(%v) ok = %t, want %t", test.proto, gotOK, wantOK)
 		}
 		if err == nil && got != test.dur {
-			t.Errorf("DurationFromProto(%v) = %v, want %v", test.proto, got, test.dur)
+			t.Errorf("Duration(%v) = %v, want %v", test.proto, got, test.dur)
 		}
 	}
 }

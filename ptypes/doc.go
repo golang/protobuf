@@ -30,6 +30,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*
-Package types contains code for interacting with well-known types.
+Package ptypes contains code for interacting with well-known types.
 */
-package types
+package ptypes
