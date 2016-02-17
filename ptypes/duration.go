@@ -29,7 +29,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package types
+package ptypes
 
 // This file implements conversions between google.protobuf.Duration
 // and time.Duration.
@@ -39,7 +39,7 @@ import (
 	"fmt"
 	"time"
 
-	durpb "github.com/golang/protobuf/types/duration"
+	durpb "github.com/golang/protobuf/ptypes/duration"
 )
 
 const (
@@ -49,11 +49,11 @@ const (
 	minSeconds = -maxSeconds
 )
 
-// ValidateDuration determines whether the durpb.Duration is valid according to the
+// validateDuration determines whether the durpb.Duration is valid according to the
 // definition in google/protobuf/duration.proto. A valid durpb.Duration
 // may still be too large to fit into a time.Duration (the range of durpb.Duration
 // is about 10,000 years, and the range of time.Duration is about 290).
-func ValidateDuration(d *durpb.Duration) error {
+func validateDuration(d *durpb.Duration) error {
 	if d == nil {
 		return errors.New("duration: nil Duration")
 	}
@@ -70,11 +70,11 @@ func ValidateDuration(d *durpb.Duration) error {
 	return nil
 }
 
-// DurationFromProto attempts to convert a durpb.Duration to a time.Duration. DurationFromProto
+// Duration converts a durpb.Duration to a time.Duration. Duration
 // returns an error if the durpb.Duration is invalid or is too large to be
 // represented in a time.Duration.
-func DurationFromProto(p *durpb.Duration) (time.Duration, error) {
-	if err := ValidateDuration(p); err != nil {
+func Duration(p *durpb.Duration) (time.Duration, error) {
+	if err := validateDuration(p); err != nil {
 		return 0, err
 	}
 	d := time.Duration(p.Seconds) * time.Second

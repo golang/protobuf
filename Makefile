@@ -33,11 +33,11 @@
 all:	install
 
 install:
-	go install ./proto ./jsonpb ./types
+	go install ./proto ./jsonpb ./ptypes
 	go install ./protoc-gen-go
 
 test:
-	go test ./proto ./jsonpb ./types
+	go test ./proto ./jsonpb ./ptypes
 	make -C protoc-gen-go/testdata test
 
 clean:
