@@ -5,7 +5,7 @@
 # see https://github.com/golang/protobuf for instructions.
 # You also need Go and Git installed.
 
-PKG=github.com/golang/protobuf/types
+PKG=github.com/golang/protobuf/ptypes
 UPSTREAM=https://github.com/google/protobuf
 UPSTREAM_SUBDIR=src/google/protobuf
 PROTO_FILES='

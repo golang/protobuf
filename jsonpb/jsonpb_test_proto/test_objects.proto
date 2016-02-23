@@ -31,6 +31,9 @@
 
 syntax = "proto2";
 
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
 package jsonpb;
 
 // Test message for holding primitive types.
@@ -107,4 +110,9 @@ message Complex {
   }
   optional double imaginary = 1;
   extensions 100 to max;
+}
+
+message KnownTypes {
+  optional google.protobuf.Duration dur = 1;
+  optional google.protobuf.Timestamp ts = 2;
 }
