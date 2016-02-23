@@ -35,9 +35,12 @@ import (
 	"reflect"
 	"testing"
 
-	pb "github.com/golang/protobuf/jsonpb/jsonpb_test_proto"
 	"github.com/golang/protobuf/proto"
+
+	pb "github.com/golang/protobuf/jsonpb/jsonpb_test_proto"
 	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
+	durpb "github.com/golang/protobuf/ptypes/duration"
+	tspb "github.com/golang/protobuf/ptypes/timestamp"
 )
 
 var (
@@ -315,6 +318,9 @@ var marshalingTests = []struct {
 	{"force orig_name", Marshaler{OrigName: true}, &pb.Simple{OInt32: proto.Int32(4)},
 		`{"o_int32":4}`},
 	{"proto2 extension", marshaler, realNumber, realNumberJSON},
+
+	{"Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}, `{"dur":"3.000s"}`},
+	{"Timestamp", marshaler, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 14e8, Nanos: 21e6}}, `{"ts":"2014-05-13T16:53:20.021Z"}`},
 }
 
 func TestMarshaling(t *testing.T) {
@@ -354,6 +360,9 @@ var unmarshalingTests = []struct {
 	{"oneof", `{"salary":31000}`, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_Salary{31000}}},
 	{"orig_name input", `{"o_bool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
 	{"camelName input", `{"oBool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
+
+	{"Duration", `{"dur":"3.000s"}`, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}},
+	{"Timestamp", `{"ts":"2014-05-13T16:53:20.021Z"}`, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 14e8, Nanos: 21e6}}},
 }
 
 func TestUnmarshaling(t *testing.T) {
@@ -363,7 +372,7 @@ func TestUnmarshaling(t *testing.T) {
 
 		err := UnmarshalString(tt.json, p)
 		if err != nil {
-			t.Error(err)
+			t.Errorf("%s: %v", tt.desc, err)
 			continue
 		}
 

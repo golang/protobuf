@@ -47,6 +47,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/golang/protobuf/proto"
 )
@@ -98,12 +99,47 @@ func (s int32Slice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 
 // marshalObject writes a struct to the Writer.
 func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent string) error {
+	s := reflect.ValueOf(v).Elem()
+
+	// Handle well-known types.
+	type wkt interface {
+		XXX_WellKnownType() string
+	}
+	if wkt, ok := v.(wkt); ok {
+		switch wkt.XXX_WellKnownType() {
+		case "Duration":
+			// "Generated output always contains 3, 6, or 9 fractional digits,
+			//  depending on required precision."
+			s, ns := s.Field(0).Int(), s.Field(1).Int()
+			d := time.Duration(s)*time.Second + time.Duration(ns)*time.Nanosecond
+			x := fmt.Sprintf("%.9f", d.Seconds())
+			x = strings.TrimSuffix(x, "000")
+			x = strings.TrimSuffix(x, "000")
+			out.write(`"`)
+			out.write(x)
+			out.write(`s"`)
+			return out.err
+		case "Timestamp":
+			// "RFC 3339, where generated output will always be Z-normalized
+			//  and uses 3, 6 or 9 fractional digits."
+			s, ns := s.Field(0).Int(), s.Field(1).Int()
+			t := time.Unix(s, ns).UTC()
+			// time.RFC3339Nano isn't exactly right (we need to get 3/6/9 fractional digits).
+			x := t.Format("2006-01-02T15:04:05.000000000")
+			x = strings.TrimSuffix(x, "000")
+			x = strings.TrimSuffix(x, "000")
+			out.write(`"`)
+			out.write(x)
+			out.write(`Z"`)
+			return out.err
+		}
+	}
+
 	out.write("{")
 	if m.Indent != "" {
 		out.write("\n")
 	}
 
-	s := reflect.ValueOf(v).Elem()
 	firstField := true
 	for i := 0; i < s.NumField(); i++ {
 		value := s.Field(i)
@@ -383,6 +419,45 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 	if targetType.Kind() == reflect.Ptr {
 		target.Set(reflect.New(targetType.Elem()))
 		return unmarshalValue(target.Elem(), inputValue)
+	}
+
+	// Handle well-known types.
+	type wkt interface {
+		XXX_WellKnownType() string
+	}
+	if wkt, ok := target.Addr().Interface().(wkt); ok {
+		switch wkt.XXX_WellKnownType() {
+		case "Duration":
+			unq, err := strconv.Unquote(string(inputValue))
+			if err != nil {
+				return err
+			}
+			d, err := time.ParseDuration(unq)
+			if err != nil {
+				return fmt.Errorf("bad Duration: %v", err)
+			}
+			ns := d.Nanoseconds()
+			s := ns / 1e9
+			ns %= 1e9
+			target.Field(0).SetInt(s)
+			target.Field(1).SetInt(ns)
+			return nil
+		case "Timestamp":
+			unq, err := strconv.Unquote(string(inputValue))
+			if err != nil {
+				return err
+			}
+			t, err := time.Parse(time.RFC3339Nano, unq)
+			if err != nil {
+				return fmt.Errorf("bad Timestamp: %v", err)
+			}
+			ns := t.UnixNano()
+			s := ns / 1e9
+			ns %= 1e9
+			target.Field(0).SetInt(s)
+			target.Field(1).SetInt(ns)
+			return nil
+		}
 	}
 
 	// Handle nested messages.

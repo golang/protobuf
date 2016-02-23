@@ -19,6 +19,7 @@ It has these top-level messages:
 	MsgWithOneof
 	Real
 	Complex
+	KnownTypes
 */
 package jsonpb
 
