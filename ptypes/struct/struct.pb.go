@@ -68,6 +68,7 @@ func (m *Struct) Reset()                    { *m = Struct{} }
 func (m *Struct) String() string            { return proto.CompactTextString(m) }
 func (*Struct) ProtoMessage()               {}
 func (*Struct) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (*Struct) XXX_WellKnownType() string   { return "Struct" }
 
 func (m *Struct) GetFields() map[string]*Value {
 	if m != nil {
@@ -99,6 +100,7 @@ func (m *Value) Reset()                    { *m = Value{} }
 func (m *Value) String() string            { return proto.CompactTextString(m) }
 func (*Value) ProtoMessage()               {}
 func (*Value) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (*Value) XXX_WellKnownType() string   { return "Value" }
 
 type isValue_Kind interface {
 	isValue_Kind()
@@ -326,6 +328,7 @@ func (m *ListValue) Reset()                    { *m = ListValue{} }
 func (m *ListValue) String() string            { return proto.CompactTextString(m) }
 func (*ListValue) ProtoMessage()               {}
 func (*ListValue) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+func (*ListValue) XXX_WellKnownType() string   { return "ListValue" }
 
 func (m *ListValue) GetValues() []*Value {
 	if m != nil {

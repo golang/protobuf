@@ -1655,8 +1655,23 @@ var methodNames = [...]string{
 // Names of messages in the `google.protobuf` package for which
 // we will generate XXX_WellKnownType methods.
 var wellKnownTypes = map[string]bool{
+	"Any":       true,
 	"Duration":  true,
+	"Empty":     true,
+	"Struct":    true,
 	"Timestamp": true,
+
+	"Value":       true,
+	"ListValue":   true,
+	"DoubleValue": true,
+	"FloatValue":  true,
+	"Int64Value":  true,
+	"UInt64Value": true,
+	"Int32Value":  true,
+	"UInt32Value": true,
+	"BoolValue":   true,
+	"StringValue": true,
+	"BytesValue":  true,
 }
 
 // Generate the type and default constant definitions for this Descriptor.
