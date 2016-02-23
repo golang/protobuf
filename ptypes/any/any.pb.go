@@ -88,6 +88,7 @@ func (m *Any) Reset()                    { *m = Any{} }
 func (m *Any) String() string            { return proto.CompactTextString(m) }
 func (*Any) ProtoMessage()               {}
 func (*Any) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (*Any) XXX_WellKnownType() string   { return "Any" }
 
 func init() {
 	proto.RegisterType((*Any)(nil), "google.protobuf.Any")
