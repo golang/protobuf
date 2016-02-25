@@ -50,6 +50,7 @@ func (x NullValue) String() string {
 	return proto.EnumName(NullValue_name, int32(x))
 }
 func (NullValue) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (NullValue) XXX_WellKnownType() string       { return "NullValue" }
 
 // `Struct` represents a structured data value, consisting of fields
 // which map to dynamically typed values. In some languages, `Struct`
