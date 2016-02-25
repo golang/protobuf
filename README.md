@@ -182,6 +182,8 @@ parameter list separated from the output directory by a colon:
 - `Mfoo/bar.proto=quux/shme` - declares that foo/bar.proto is
   associated with Go package quux/shme.  This is subject to the
   import_prefix parameter.
+- `package=mypackage` - an explicit package name that will override
+  `go_package` in the generated files.
 
 ## gRPC Support ##
 

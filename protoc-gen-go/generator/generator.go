@@ -513,6 +513,7 @@ type Generator struct {
 	PackageImportPath string            // Go import path of the package we're generating code for
 	ImportPrefix      string            // String to prefix to imported package file names.
 	ImportMap         map[string]string // Mapping from import name to generated name
+	ForcedPackageName string            // Forced declared package for generated files.
 
 	Pkg map[string]string // The names under which we import support packages
 
@@ -574,6 +575,8 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			g.PackageImportPath = v
 		case "plugins":
 			pluginList = v
+		case "package":
+			g.ForcedPackageName = v
 		default:
 			if len(k) > 0 && k[0] == 'M' {
 				g.ImportMap[k[1:]] = v
@@ -691,38 +694,45 @@ func (g *Generator) defaultGoPackage() string {
 func (g *Generator) SetPackageNames() {
 	// Register the name for this package.  It will be the first name
 	// registered so is guaranteed to be unmodified.
-	pkg, explicit := g.genFiles[0].goPackageName()
+	pkg := ""
 
-	// Check all files for an explicit go_package option.
-	for _, f := range g.genFiles {
-		thisPkg, thisExplicit := f.goPackageName()
-		if thisExplicit {
-			if !explicit {
-				// Let this file's go_package option serve for all input files.
-				pkg, explicit = thisPkg, true
-			} else if thisPkg != pkg {
-				g.Fail("inconsistent package names:", thisPkg, pkg)
+	if g.ForcedPackageName != "" {
+		pkg = g.ForcedPackageName
+	} else {
+		var explicit bool
+		pkg, explicit = g.genFiles[0].goPackageName()
+
+		// Check all files for an explicit go_package option.
+		for _, f := range g.genFiles {
+			thisPkg, thisExplicit := f.goPackageName()
+			if thisExplicit {
+				if !explicit {
+					// Let this file's go_package option serve for all input files.
+					pkg, explicit = thisPkg, true
+				} else if thisPkg != pkg {
+					g.Fail("inconsistent package names:", thisPkg, pkg)
+				}
 			}
 		}
-	}
 
-	// If we don't have an explicit go_package option but we have an
-	// import path, use that.
-	if !explicit {
-		p := g.defaultGoPackage()
-		if p != "" {
-			pkg, explicit = p, true
+		// If we don't have an explicit go_package option but we have an
+		// import path, use that.
+		if !explicit {
+			p := g.defaultGoPackage()
+			if p != "" {
+				pkg, explicit = p, true
+			}
 		}
-	}
 
-	// If there was no go_package and no import path to use,
-	// double-check that all the inputs have the same implicit
-	// Go package name.
-	if !explicit {
-		for _, f := range g.genFiles {
-			thisPkg, _ := f.goPackageName()
-			if thisPkg != pkg {
-				g.Fail("inconsistent package names:", thisPkg, pkg)
+		// If there was no go_package and no import path to use,
+		// double-check that all the inputs have the same implicit
+		// Go package name.
+		if !explicit {
+			for _, f := range g.genFiles {
+				thisPkg, _ := f.goPackageName()
+				if thisPkg != pkg {
+					g.Fail("inconsistent package names:", thisPkg, pkg)
+				}
 			}
 		}
 	}
