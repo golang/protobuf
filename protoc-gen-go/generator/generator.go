@@ -1426,6 +1426,9 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	}
 	indexes = append(indexes, strconv.Itoa(enum.index))
 	g.P("func (", ccTypeName, ") EnumDescriptor() ([]byte, []int) { return fileDescriptor", g.file.index, ", []int{", strings.Join(indexes, ", "), "} }")
+	if enum.file.GetPackage() == "google.protobuf" && enum.GetName() == "NullValue" {
+		g.P("func (", ccTypeName, `) XXX_WellKnownType() string { return "`, enum.GetName(), `" }`)
+	}
 
 	g.P()
 }
@@ -1652,6 +1655,28 @@ var methodNames = [...]string{
 	"Descriptor",
 }
 
+// Names of messages in the `google.protobuf` package for which
+// we will generate XXX_WellKnownType methods.
+var wellKnownTypes = map[string]bool{
+	"Any":       true,
+	"Duration":  true,
+	"Empty":     true,
+	"Struct":    true,
+	"Timestamp": true,
+
+	"Value":       true,
+	"ListValue":   true,
+	"DoubleValue": true,
+	"FloatValue":  true,
+	"Int64Value":  true,
+	"UInt64Value": true,
+	"Int32Value":  true,
+	"UInt32Value": true,
+	"BoolValue":   true,
+	"StringValue": true,
+	"BytesValue":  true,
+}
+
 // Generate the type and default constant definitions for this Descriptor.
 func (g *Generator) generateMessage(message *Descriptor) {
 	// The full type name
@@ -1839,6 +1864,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			indexes = append([]string{strconv.Itoa(m.index)}, indexes...)
 		}
 		g.P("func (*", ccTypeName, ") Descriptor() ([]byte, []int) { return fileDescriptor", g.file.index, ", []int{", strings.Join(indexes, ", "), "} }")
+	}
+	// TODO: Revisit the decision to use a XXX_WellKnownType method
+	// if we change proto.MessageName to work with multiple equivalents.
+	if message.file.GetPackage() == "google.protobuf" && wellKnownTypes[message.GetName()] {
+		g.P("func (*", ccTypeName, `) XXX_WellKnownType() string { return "`, message.GetName(), `" }`)
 	}
 
 	// Extension support methods
