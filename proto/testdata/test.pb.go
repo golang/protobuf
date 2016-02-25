@@ -957,9 +957,10 @@ type GoTest_RequiredGroup struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *GoTest_RequiredGroup) Reset()         { *m = GoTest_RequiredGroup{} }
-func (m *GoTest_RequiredGroup) String() string { return proto.CompactTextString(m) }
-func (*GoTest_RequiredGroup) ProtoMessage()    {}
+func (m *GoTest_RequiredGroup) Reset()                    { *m = GoTest_RequiredGroup{} }
+func (m *GoTest_RequiredGroup) String() string            { return proto.CompactTextString(m) }
+func (*GoTest_RequiredGroup) ProtoMessage()               {}
+func (*GoTest_RequiredGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2, 0} }
 
 func (m *GoTest_RequiredGroup) GetRequiredField() string {
 	if m != nil && m.RequiredField != nil {
@@ -973,9 +974,10 @@ type GoTest_RepeatedGroup struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *GoTest_RepeatedGroup) Reset()         { *m = GoTest_RepeatedGroup{} }
-func (m *GoTest_RepeatedGroup) String() string { return proto.CompactTextString(m) }
-func (*GoTest_RepeatedGroup) ProtoMessage()    {}
+func (m *GoTest_RepeatedGroup) Reset()                    { *m = GoTest_RepeatedGroup{} }
+func (m *GoTest_RepeatedGroup) String() string            { return proto.CompactTextString(m) }
+func (*GoTest_RepeatedGroup) ProtoMessage()               {}
+func (*GoTest_RepeatedGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2, 1} }
 
 func (m *GoTest_RepeatedGroup) GetRequiredField() string {
 	if m != nil && m.RequiredField != nil {
@@ -989,9 +991,10 @@ type GoTest_OptionalGroup struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *GoTest_OptionalGroup) Reset()         { *m = GoTest_OptionalGroup{} }
-func (m *GoTest_OptionalGroup) String() string { return proto.CompactTextString(m) }
-func (*GoTest_OptionalGroup) ProtoMessage()    {}
+func (m *GoTest_OptionalGroup) Reset()                    { *m = GoTest_OptionalGroup{} }
+func (m *GoTest_OptionalGroup) String() string            { return proto.CompactTextString(m) }
+func (*GoTest_OptionalGroup) ProtoMessage()               {}
+func (*GoTest_OptionalGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2, 2} }
 
 func (m *GoTest_OptionalGroup) GetRequiredField() string {
 	if m != nil && m.RequiredField != nil {
@@ -1058,9 +1061,10 @@ type GoSkipTest_SkipGroup struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *GoSkipTest_SkipGroup) Reset()         { *m = GoSkipTest_SkipGroup{} }
-func (m *GoSkipTest_SkipGroup) String() string { return proto.CompactTextString(m) }
-func (*GoSkipTest_SkipGroup) ProtoMessage()    {}
+func (m *GoSkipTest_SkipGroup) Reset()                    { *m = GoSkipTest_SkipGroup{} }
+func (m *GoSkipTest_SkipGroup) String() string            { return proto.CompactTextString(m) }
+func (*GoSkipTest_SkipGroup) ProtoMessage()               {}
+func (*GoSkipTest_SkipGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3, 0} }
 
 func (m *GoSkipTest_SkipGroup) GetGroupInt32() int32 {
 	if m != nil && m.GroupInt32 != nil {
@@ -1434,9 +1438,10 @@ type MyMessage_SomeGroup struct {
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (m *MyMessage_SomeGroup) Reset()         { *m = MyMessage_SomeGroup{} }
-func (m *MyMessage_SomeGroup) String() string { return proto.CompactTextString(m) }
-func (*MyMessage_SomeGroup) ProtoMessage()    {}
+func (m *MyMessage_SomeGroup) Reset()                    { *m = MyMessage_SomeGroup{} }
+func (m *MyMessage_SomeGroup) String() string            { return proto.CompactTextString(m) }
+func (*MyMessage_SomeGroup) ProtoMessage()               {}
+func (*MyMessage_SomeGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{11, 0} }
 
 func (m *MyMessage_SomeGroup) GetGroupField() int32 {
 	if m != nil && m.GroupField != nil {
@@ -1616,9 +1621,10 @@ type MessageList_Message struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *MessageList_Message) Reset()         { *m = MessageList_Message{} }
-func (m *MessageList_Message) String() string { return proto.CompactTextString(m) }
-func (*MessageList_Message) ProtoMessage()    {}
+func (m *MessageList_Message) Reset()                    { *m = MessageList_Message{} }
+func (m *MessageList_Message) String() string            { return proto.CompactTextString(m) }
+func (*MessageList_Message) ProtoMessage()               {}
+func (*MessageList_Message) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{17, 0} }
 
 func (m *MessageList_Message) GetName() string {
 	if m != nil && m.Name != nil {
@@ -1969,9 +1975,10 @@ type GroupOld_G struct {
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (m *GroupOld_G) Reset()         { *m = GroupOld_G{} }
-func (m *GroupOld_G) String() string { return proto.CompactTextString(m) }
-func (*GroupOld_G) ProtoMessage()    {}
+func (m *GroupOld_G) Reset()                    { *m = GroupOld_G{} }
+func (m *GroupOld_G) String() string            { return proto.CompactTextString(m) }
+func (*GroupOld_G) ProtoMessage()               {}
+func (*GroupOld_G) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23, 0} }
 
 func (m *GroupOld_G) GetX() int32 {
 	if m != nil && m.X != nil {
@@ -2003,9 +2010,10 @@ type GroupNew_G struct {
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (m *GroupNew_G) Reset()         { *m = GroupNew_G{} }
-func (m *GroupNew_G) String() string { return proto.CompactTextString(m) }
-func (*GroupNew_G) ProtoMessage()    {}
+func (m *GroupNew_G) Reset()                    { *m = GroupNew_G{} }
+func (m *GroupNew_G) String() string            { return proto.CompactTextString(m) }
+func (*GroupNew_G) ProtoMessage()               {}
+func (*GroupNew_G) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{24, 0} }
 
 func (m *GroupNew_G) GetX() int32 {
 	if m != nil && m.X != nil {
@@ -2651,9 +2659,10 @@ type Oneof_F_Group struct {
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (m *Oneof_F_Group) Reset()         { *m = Oneof_F_Group{} }
-func (m *Oneof_F_Group) String() string { return proto.CompactTextString(m) }
-func (*Oneof_F_Group) ProtoMessage()    {}
+func (m *Oneof_F_Group) Reset()                    { *m = Oneof_F_Group{} }
+func (m *Oneof_F_Group) String() string            { return proto.CompactTextString(m) }
+func (*Oneof_F_Group) ProtoMessage()               {}
+func (*Oneof_F_Group) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{27, 0} }
 
 func (m *Oneof_F_Group) GetX() int32 {
 	if m != nil && m.X != nil {
