@@ -1426,6 +1426,9 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	}
 	indexes = append(indexes, strconv.Itoa(enum.index))
 	g.P("func (", ccTypeName, ") EnumDescriptor() ([]byte, []int) { return fileDescriptor", g.file.index, ", []int{", strings.Join(indexes, ", "), "} }")
+	if enum.file.GetPackage() == "google.protobuf" && enum.GetName() == "NullValue" {
+		g.P("func (", ccTypeName, `) XXX_WellKnownType() string { return "`, enum.GetName(), `" }`)
+	}
 
 	g.P()
 }
