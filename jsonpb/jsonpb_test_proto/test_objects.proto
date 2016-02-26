@@ -32,6 +32,7 @@
 syntax = "proto2";
 
 import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
@@ -115,6 +116,7 @@ message Complex {
 
 message KnownTypes {
   optional google.protobuf.Duration dur = 1;
+  optional google.protobuf.Struct st = 12;
   optional google.protobuf.Timestamp ts = 2;
 
   optional google.protobuf.DoubleValue dbl = 3;
