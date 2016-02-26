@@ -41,6 +41,7 @@ package jsonpb
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"reflect"
@@ -125,6 +126,10 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent string
 			out.write(x)
 			out.write(`s"`)
 			return out.err
+		case "Struct":
+			// Let marshalValue handle the `fields` map.
+			// TODO: pass the correct Properties if needed.
+			return m.marshalValue(out, &proto.Properties{}, s.Field(0), indent)
 		case "Timestamp":
 			// "RFC 3339, where generated output will always be Z-normalized
 			//  and uses 3, 6 or 9 fractional digits."
@@ -138,6 +143,17 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent string
 			out.write(x)
 			out.write(`Z"`)
 			return out.err
+		case "Value":
+			// Value has a single oneof.
+			kind := s.Field(0)
+			if kind.IsNil() {
+				// "absence of any variant indicates an error"
+				return errors.New("nil Value")
+			}
+			// oneof -> *T -> T -> T.F
+			x := kind.Elem().Elem().Field(0)
+			// TODO: pass the correct Properties if needed.
+			return m.marshalValue(out, &proto.Properties{}, x, indent)
 		}
 	}
 
@@ -302,6 +318,19 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 		}
 		out.write("]")
 		return out.err
+	}
+
+	// Handle well-known types.
+	// Most are handled up in marshalObject (because 99% are messages).
+	type wkt interface {
+		XXX_WellKnownType() string
+	}
+	if wkt, ok := v.Interface().(wkt); ok {
+		switch wkt.XXX_WellKnownType() {
+		case "NullValue":
+			out.write("null")
+			return out.err
+		}
 	}
 
 	// Handle enumerations.

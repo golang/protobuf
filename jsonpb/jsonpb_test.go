@@ -40,6 +40,7 @@ import (
 	pb "github.com/golang/protobuf/jsonpb/jsonpb_test_proto"
 	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
 	durpb "github.com/golang/protobuf/ptypes/duration"
+	stpb "github.com/golang/protobuf/ptypes/struct"
 	tspb "github.com/golang/protobuf/ptypes/timestamp"
 	wpb "github.com/golang/protobuf/ptypes/wrappers"
 )
@@ -321,6 +322,12 @@ var marshalingTests = []struct {
 	{"proto2 extension", marshaler, realNumber, realNumberJSON},
 
 	{"Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}, `{"dur":"3.000s"}`},
+	{"Struct", marshaler, &pb.KnownTypes{St: &stpb.Struct{
+		Fields: map[string]*stpb.Value{
+			"one": &stpb.Value{Kind: &stpb.Value_StringValue{"loneliest number"}},
+			"two": &stpb.Value{Kind: &stpb.Value_NullValue{stpb.NullValue_NULL_VALUE}},
+		},
+	}}, `{"st":{"one":"loneliest number","two":null}}`},
 	{"Timestamp", marshaler, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 14e8, Nanos: 21e6}}, `{"ts":"2014-05-13T16:53:20.021Z"}`},
 
 	{"DoubleValue", marshaler, &pb.KnownTypes{Dbl: &wpb.DoubleValue{Value: 1.2}}, `{"dbl":1.2}`},
