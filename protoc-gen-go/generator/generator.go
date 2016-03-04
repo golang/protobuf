@@ -264,6 +264,31 @@ type FileDescriptor struct {
 // PackageName is the package name we'll use in the generated code to refer to this file.
 func (d *FileDescriptor) PackageName() string { return uniquePackageOf(d.FileDescriptorProto) }
 
+// goPackageOption interprets the file's go_package option.
+// If there is no go_package, it returns ("", "", false).
+// If there's a simple name, it returns ("", pkg, true).
+// If the option implies an import path, it returns (impPath, pkg, true).
+func (d *FileDescriptor) goPackageOption() (impPath, pkg string, ok bool) {
+	pkg = d.GetOptions().GetGoPackage()
+	if pkg == "" {
+		return
+	}
+	ok = true
+	// The presence of a slash implies there's an import path.
+	slash := strings.LastIndexByte(pkg, '/')
+	if slash < 0 {
+		return
+	}
+	impPath, pkg = pkg, pkg[slash+1:]
+	// A semicolon-delimited suffix overrides the package name.
+	sc := strings.IndexByte(impPath, ';')
+	if sc < 0 {
+		return
+	}
+	impPath, pkg = impPath[:sc], impPath[sc+1:]
+	return
+}
+
 // goPackageName returns the Go package name to use in the
 // generated Go file.  The result explicit reports whether the name
 // came from an option go_package statement.  If explicit is false,
@@ -271,10 +296,8 @@ func (d *FileDescriptor) PackageName() string { return uniquePackageOf(d.FileDes
 // or the input file name.
 func (d *FileDescriptor) goPackageName() (name string, explicit bool) {
 	// Does the file have a "go_package" option?
-	if opts := d.Options; opts != nil {
-		if pkg := opts.GetGoPackage(); pkg != "" {
-			return pkg, true
-		}
+	if _, pkg, ok := d.goPackageOption(); ok {
+		return pkg, true
 	}
 
 	// Does the file have a package clause?
@@ -283,6 +306,26 @@ func (d *FileDescriptor) goPackageName() (name string, explicit bool) {
 	}
 	// Use the file base name.
 	return baseName(d.GetName()), false
+}
+
+// goFileName returns the output name for the generated Go file.
+func (d *FileDescriptor) goFileName() string {
+	name := *d.Name
+	if ext := path.Ext(name); ext == ".proto" || ext == ".protodevel" {
+		name = name[:len(name)-len(ext)]
+	}
+	name += ".pb.go"
+
+	// Does the file have a "go_package" option?
+	// If it does, it may override the filename.
+	if impPath, _, ok := d.goPackageOption(); ok && impPath != "" {
+		// Replace the existing dirname with the declared import path.
+		_, name = path.Split(name)
+		name = path.Join(impPath, name)
+		return name
+	}
+
+	return name
 }
 
 func (d *FileDescriptor) addExport(obj Object, sym symbol) {
@@ -512,7 +555,7 @@ type Generator struct {
 	Param             map[string]string // Command-line parameters.
 	PackageImportPath string            // Go import path of the package we're generating code for
 	ImportPrefix      string            // String to prefix to imported package file names.
-	ImportMap         map[string]string // Mapping from import name to generated name
+	ImportMap         map[string]string // Mapping from .proto file name to import path
 
 	Pkg map[string]string // The names under which we import support packages
 
@@ -1098,7 +1141,7 @@ func (g *Generator) GenerateAllFiles() {
 			continue
 		}
 		g.Response.File[i] = new(plugin.CodeGeneratorResponse_File)
-		g.Response.File[i].Name = proto.String(goFileName(*file.Name))
+		g.Response.File[i].Name = proto.String(file.goFileName())
 		g.Response.File[i].Content = proto.String(g.String())
 		i++
 	}
@@ -1285,7 +1328,7 @@ func (g *Generator) generateImports() {
 		if fd.PackageName() == g.packageName {
 			continue
 		}
-		filename := goFileName(s)
+		filename := fd.goFileName()
 		// By default, import path is the dirname of the Go filename.
 		importPath := path.Dir(filename)
 		if substitution, ok := g.ImportMap[s]; ok {
@@ -2678,15 +2721,6 @@ func CamelCaseSlice(elem []string) string { return CamelCase(strings.Join(elem, 
 
 // dottedSlice turns a sliced name into a dotted name.
 func dottedSlice(elem []string) string { return strings.Join(elem, ".") }
-
-// Given a .proto file name, return the output name for the generated Go program.
-func goFileName(name string) string {
-	ext := path.Ext(name)
-	if ext == ".proto" || ext == ".protodevel" {
-		name = name[0 : len(name)-len(ext)]
-	}
-	return name + ".pb.go"
-}
 
 // Is this field optional?
 func isOptional(field *descriptor.FieldDescriptorProto) bool {
