@@ -1958,6 +1958,40 @@ func TestMapFieldWithNil(t *testing.T) {
 	}
 }
 
+func TestDecodeMapFieldMissingKey(t *testing.T) {
+	b := []byte{
+		0x0A, 0x03, // message, tag 1 (name_mapping), of length 3 bytes
+		// no key
+		0x12, 0x01, 0x6D, // string value of length 1 byte, value "m"
+	}
+	got := &MessageWithMap{}
+	err := Unmarshal(b, got)
+	if err != nil {
+		t.Fatalf("failed to marshal map with missing key: %v", err)
+	}
+	want := &MessageWithMap{NameMapping: map[int32]string{0: "m"}}
+	if !Equal(got, want) {
+		t.Errorf("Unmarshaled map with no key was not as expected. got: %v, want %v", got, want)
+	}
+}
+
+func TestDecodeMapFieldMissingValue(t *testing.T) {
+	b := []byte{
+		0x0A, 0x02, // message, tag 1 (name_mapping), of length 2 bytes
+		0x08, 0x01, // varint key, value 1
+		// no value
+	}
+	got := &MessageWithMap{}
+	err := Unmarshal(b, got)
+	if err != nil {
+		t.Fatalf("failed to marshal map with missing value: %v", err)
+	}
+	want := &MessageWithMap{NameMapping: map[int32]string{1: ""}}
+	if !Equal(got, want) {
+		t.Errorf("Unmarshaled map with no value was not as expected. got: %v, want %v", got, want)
+	}
+}
+
 func TestOneof(t *testing.T) {
 	m := &Communique{}
 	b, err := Marshal(m)
