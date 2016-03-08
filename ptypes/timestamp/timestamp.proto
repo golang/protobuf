@@ -31,7 +31,7 @@
 syntax = "proto3";
 
 package google.protobuf;
-option go_package = "timestamp";
+option go_package = "github.com/golang/protobuf/ptypes/timestamp";
 
 option csharp_namespace = "Google.Protobuf.WellKnownTypes";
 option cc_enable_arenas = true;

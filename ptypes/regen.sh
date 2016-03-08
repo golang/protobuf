@@ -1,9 +1,11 @@
-#!/bin/bash -e
+#!/bin/bash
 #
 # This script fetches and rebuilds the "well-known types" protocol buffers.
 # To run this you will need protoc and goprotobuf installed;
 # see https://github.com/golang/protobuf for instructions.
 # You also need Go and Git installed.
+
+set -Ee
 
 PKG=github.com/golang/protobuf/ptypes
 UPSTREAM=https://github.com/google/protobuf
@@ -22,6 +24,26 @@ function die() {
   exit 1
 }
 
+function which_sed() {
+  local uname_s="$(uname -s)"
+  case "${uname_s}" in
+    Darwin)
+      if ! which gsed > /dev/null; then
+        die "must install gsed on a mac, try brew install gnu-sed"
+      fi
+      echo "gsed"
+      ;;
+    Linux)
+      if ! which sed > /dev/null; then
+        die "cannot find sed"
+      fi
+      echo "sed"
+      ;;
+    *)
+      die "unknown result from uname -s: ${uname_s}"
+  esac
+}
+
 # Sanity check that the right tools are accessible.
 for tool in go git protoc protoc-gen-go; do
   q=$(which $tool) || die "didn't find $tool"
@@ -34,7 +56,7 @@ trap 'rm -rf $tmpdir' EXIT
 echo -n 1>&2 "finding package dir... "
 pkgdir=$(go list -f '{{.Dir}}' $PKG)
 echo 1>&2 $pkgdir
-base=$(echo $pkgdir | sed "s,/$PKG\$,,")
+base=$(echo $pkgdir | $(which_sed) "s,/$PKG\$,,")
 echo 1>&2 "base: $base"
 cd $base
 
@@ -54,18 +76,23 @@ done
 # Pass 2: copy files, making necessary adjustments.
 for up in "${!filename_map[@]}"; do
   f=${filename_map[$up]}
-  shortname=$(basename $f | sed 's,\.proto$,,')
+  shortname=$(basename $f | $(which_sed) 's,\.proto$,,')
   cat $tmpdir/$UPSTREAM_SUBDIR/$up |
     # Adjust proto package.
     # TODO(dsymonds): Upstream the go_package option instead.
-    sed '/^package /a option go_package = "'${shortname}'";' |
+    $(which_sed) '/^package /a option go_package = "'github.com\/golang\/protobuf\/ptypes\/${shortname}'";' |
     # Unfortunately "package struct" doesn't work.
-    sed '/option go_package/s,"struct","structpb",' |
+    $(which_sed) '/option go_package/s,struct",struct;structpb",' |
     cat > $PKG/$f
 done
 
 # Run protoc once per package.
-for dir in $(find $PKG -name '*.proto' | xargs dirname | sort | uniq); do
+#
+# dirname does not work with multiple arguments on Darwin, so we run the risk
+# of protoc being invoked multiple times per directory, which isn't an issue here
+# and also does not happen
+for file in $(find $PKG -name '*.proto'); do
+  dir=$(dirname $file)
   echo 1>&2 "* $dir"
   protoc --go_out=. $dir/*.proto
 done
