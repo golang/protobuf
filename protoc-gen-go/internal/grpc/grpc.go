@@ -44,6 +44,12 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/generator"
 )
 
+// generatedCodeVersion indicates a version of the generated code.
+// It is incremented whenever an incompatibility between the generated code and
+// the grpc package is introduced; the generated code references
+// a constant, grpc.SupportPackageIsVersionN (where N is generatedCodeVersion).
+const generatedCodeVersion = 1
+
 // Paths for packages used by code generated in this file,
 // relative to the import_prefix of the generator.Generator.
 const (
@@ -101,10 +107,18 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	if len(file.FileDescriptorProto.Service) == 0 {
 		return
 	}
+
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConn")
 	g.P()
+
+	// Assert version compatibility.
+	g.P("// This is a compile-time assertion to ensure that this generated file")
+	g.P("// is compatible with the grpc package it is being compiled against.")
+	g.P("const _ = ", grpcPkg, ".SupportPackageIsVersion", generatedCodeVersion)
+	g.P()
+
 	for i, service := range file.FileDescriptorProto.Service {
 		g.generateService(file, service, i)
 	}
