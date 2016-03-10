@@ -428,15 +428,23 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 	return out.err
 }
 
+// UnmarshalNext unmarshals the next protocol buffer from a JSON object stream.
+// This function is lenient and will decode any options permutations of the
+// related Marshaler.
+func UnmarshalNext(dec *json.Decoder, pb proto.Message) error {
+	inputValue := json.RawMessage{}
+	if err := dec.Decode(&inputValue); err != nil {
+		return err
+	}
+	return unmarshalValue(reflect.ValueOf(pb).Elem(), inputValue)
+}
+
 // Unmarshal unmarshals a JSON object stream into a protocol
 // buffer. This function is lenient and will decode any options
 // permutations of the related Marshaler.
 func Unmarshal(r io.Reader, pb proto.Message) error {
-	inputValue := json.RawMessage{}
-	if err := json.NewDecoder(r).Decode(&inputValue); err != nil {
-		return err
-	}
-	return unmarshalValue(reflect.ValueOf(pb).Elem(), inputValue)
+	dec := json.NewDecoder(r)
+	return UnmarshalNext(dec, pb)
 }
 
 // UnmarshalString will populate the fields of a protocol buffer based
