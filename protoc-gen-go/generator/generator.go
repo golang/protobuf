@@ -275,7 +275,7 @@ func (d *FileDescriptor) goPackageOption() (impPath, pkg string, ok bool) {
 	}
 	ok = true
 	// The presence of a slash implies there's an import path.
-	slash := strings.LastIndexByte(pkg, '/')
+	slash := strings.LastIndex(pkg, "/")
 	if slash < 0 {
 		return
 	}
