@@ -57,10 +57,10 @@ for up in "${!filename_map[@]}"; do
   shortname=$(basename $f | sed 's,\.proto$,,')
   cat $tmpdir/$UPSTREAM_SUBDIR/$up |
     # Adjust proto package.
-    # TODO(dsymonds): Upstream the go_package option instead.
-    sed '/^package /a option go_package = "'${shortname}'";' |
-    # Unfortunately "package struct" doesn't work.
-    sed '/option go_package/s,"struct","structpb",' |
+    # TODO(dsymonds): Remove when the right go_package options are upstream.
+    sed '/^package /a option go_package = "github.com\/golang\/protobuf\/ptypes\/'${shortname}'";' |
+    # Unfortunately "package struct" and "package type" don't work.
+    sed '/option go_package/s,struct",struct;structpb",' |
     cat > $PKG/$f
 done
 

@@ -275,7 +275,7 @@ func (d *FileDescriptor) goPackageOption() (impPath, pkg string, ok bool) {
 	}
 	ok = true
 	// The presence of a slash implies there's an import path.
-	slash := strings.LastIndexByte(pkg, '/')
+	slash := strings.LastIndex(pkg, "/")
 	if slash < 0 {
 		return
 	}
@@ -803,9 +803,9 @@ AllFiles:
 // and FileDescriptorProtos into file-referenced objects within the Generator.
 // It also creates the list of files to generate and so should be called before GenerateAllFiles.
 func (g *Generator) WrapTypes() {
-	g.allFiles = make([]*FileDescriptor, len(g.Request.ProtoFile))
+	g.allFiles = make([]*FileDescriptor, 0, len(g.Request.ProtoFile))
 	g.allFilesByName = make(map[string]*FileDescriptor, len(g.allFiles))
-	for i, f := range g.Request.ProtoFile {
+	for _, f := range g.Request.ProtoFile {
 		// We must wrap the descriptors before we wrap the enums
 		descs := wrapDescriptors(f)
 		g.buildNestedDescriptors(descs)
@@ -821,22 +821,22 @@ func (g *Generator) WrapTypes() {
 			proto3:              fileIsProto3(f),
 		}
 		extractComments(fd)
-		g.allFiles[i] = fd
+		g.allFiles = append(g.allFiles, fd)
 		g.allFilesByName[f.GetName()] = fd
 	}
 	for _, fd := range g.allFiles {
 		fd.imp = wrapImported(fd.FileDescriptorProto, g)
 	}
 
-	g.genFiles = make([]*FileDescriptor, len(g.Request.FileToGenerate))
-	for i, fileName := range g.Request.FileToGenerate {
-		g.genFiles[i] = g.allFilesByName[fileName]
-		if g.genFiles[i] == nil {
+	g.genFiles = make([]*FileDescriptor, 0, len(g.Request.FileToGenerate))
+	for _, fileName := range g.Request.FileToGenerate {
+		fd := g.allFilesByName[fileName]
+		if fd == nil {
 			g.Fail("could not find file named", fileName)
 		}
-		g.genFiles[i].index = i
+		fd.index = len(g.genFiles)
+		g.genFiles = append(g.genFiles, fd)
 	}
-	g.Response.File = make([]*plugin.CodeGeneratorResponse_File, len(g.genFiles))
 }
 
 // Scan the descriptors in this file.  For each one, build the slice of nested descriptors
@@ -900,9 +900,8 @@ func newDescriptor(desc *descriptor.DescriptorProto, parent *Descriptor, file *d
 		}
 	}
 
-	d.ext = make([]*ExtensionDescriptor, len(desc.Extension))
-	for i, field := range desc.Extension {
-		d.ext[i] = &ExtensionDescriptor{common{file}, field, d}
+	for _, field := range desc.Extension {
+		d.ext = append(d.ext, &ExtensionDescriptor{common{file}, field, d})
 	}
 
 	return d
@@ -961,9 +960,9 @@ func wrapEnumDescriptors(file *descriptor.FileDescriptorProto, descs []*Descript
 
 // Return a slice of all the top-level ExtensionDescriptors defined within this file.
 func wrapExtensions(file *descriptor.FileDescriptorProto) []*ExtensionDescriptor {
-	sl := make([]*ExtensionDescriptor, len(file.Extension))
-	for i, field := range file.Extension {
-		sl[i] = &ExtensionDescriptor{common{file}, field, nil}
+	var sl []*ExtensionDescriptor
+	for _, field := range file.Extension {
+		sl = append(sl, &ExtensionDescriptor{common{file}, field, nil})
 	}
 	return sl
 }
@@ -1132,7 +1131,6 @@ func (g *Generator) GenerateAllFiles() {
 	for _, file := range g.genFiles {
 		genFileMap[file] = true
 	}
-	i := 0
 	for _, file := range g.allFiles {
 		g.Reset()
 		g.writeOutput = genFileMap[file]
@@ -1140,10 +1138,10 @@ func (g *Generator) GenerateAllFiles() {
 		if !g.writeOutput {
 			continue
 		}
-		g.Response.File[i] = new(plugin.CodeGeneratorResponse_File)
-		g.Response.File[i].Name = proto.String(file.goFileName())
-		g.Response.File[i].Content = proto.String(g.String())
-		i++
+		g.Response.File = append(g.Response.File, &plugin.CodeGeneratorResponse_File{
+			Name:    proto.String(file.goFileName()),
+			Content: proto.String(g.String()),
+		})
 	}
 }
 
