@@ -517,29 +517,38 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 			return err
 		}
 
+		consumeField := func(prop *proto.Properties) (json.RawMessage, bool) {
+			// Be liberal in what names we accept; both orig_name and camelName are okay.
+			fieldNames := acceptedJSONFieldNames(prop)
+
+			vOrig, okOrig := jsonFields[fieldNames.orig]
+			vCamel, okCamel := jsonFields[fieldNames.camel]
+			if !okOrig && !okCamel {
+				return nil, false
+			}
+			// If, for some reason, both are present in the data, favour the camelName.
+			var raw json.RawMessage
+			if okOrig {
+				raw = vOrig
+				delete(jsonFields, fieldNames.orig)
+			}
+			if okCamel {
+				raw = vCamel
+				delete(jsonFields, fieldNames.camel)
+			}
+			return raw, true
+		}
+
 		sprops := proto.GetProperties(targetType)
 		for i := 0; i < target.NumField(); i++ {
 			ft := target.Type().Field(i)
 			if strings.HasPrefix(ft.Name, "XXX_") {
 				continue
 			}
-			// Be liberal in what names we accept; both orig_name and camelName are okay.
-			fieldNames := acceptedJSONFieldNames(ft)
 
-			vOrig, okOrig := jsonFields[fieldNames.orig]
-			vCamel, okCamel := jsonFields[fieldNames.camel]
-			if !okOrig && !okCamel {
+			valueForField, ok := consumeField(sprops.Prop[i])
+			if !ok {
 				continue
-			}
-			// If, for some reason, both are present in the data, favour the camelName.
-			var valueForField json.RawMessage
-			if okOrig {
-				valueForField = vOrig
-				delete(jsonFields, fieldNames.orig)
-			}
-			if okCamel {
-				valueForField = vCamel
-				delete(jsonFields, fieldNames.camel)
 			}
 
 			// Handle enums, which have an underlying type of int32,
@@ -570,14 +579,17 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 			}
 		}
 		// Check for any oneof fields.
-		for fname, raw := range jsonFields {
-			if oop, ok := sprops.OneofTypes[fname]; ok {
+		if len(jsonFields) > 0 {
+			for _, oop := range sprops.OneofTypes {
+				raw, ok := consumeField(oop.Prop)
+				if !ok {
+					continue
+				}
 				nv := reflect.New(oop.Type.Elem())
 				target.Field(oop.Field).Set(nv)
 				if err := unmarshalValue(nv.Elem().Field(0), raw); err != nil {
 					return err
 				}
-				delete(jsonFields, fname)
 			}
 		}
 		if len(jsonFields) > 0 {
@@ -663,9 +675,7 @@ type fieldNames struct {
 	orig, camel string
 }
 
-func acceptedJSONFieldNames(f reflect.StructField) fieldNames {
-	var prop proto.Properties
-	prop.Init(f.Type, f.Name, f.Tag.Get("protobuf"), &f)
+func acceptedJSONFieldNames(prop *proto.Properties) fieldNames {
 	opts := fieldNames{orig: prop.OrigName, camel: prop.OrigName}
 	if prop.JSONName != "" {
 		opts.camel = prop.JSONName
