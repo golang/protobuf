@@ -32,6 +32,9 @@
 package jsonpb
 
 import (
+	"bytes"
+	"encoding/json"
+	"io"
 	"reflect"
 	"testing"
 
@@ -376,6 +379,8 @@ var unmarshalingTests = []struct {
 	{"map<string, string>", `{"strry":{"\"one\"":"two","three":"four"}}`, &pb.Mappy{Strry: map[string]string{`"one"`: "two", "three": "four"}}},
 	{"map<int32, Object>", `{"objjy":{"1":{"dub":1}}}`, &pb.Mappy{Objjy: map[int32]*pb.Simple3{1: &pb.Simple3{Dub: 1}}}},
 	{"oneof", `{"salary":31000}`, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_Salary{31000}}},
+	{"oneof spec name", `{"country":"Australia"}`, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_Country{"Australia"}}},
+	{"oneof orig_name", `{"Country":"Australia"}`, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_Country{"Australia"}}},
 	{"orig_name input", `{"o_bool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
 	{"camelName input", `{"oBool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
 
@@ -412,6 +417,39 @@ func TestUnmarshaling(t *testing.T) {
 		if string(exp) != string(act) {
 			t.Errorf("%s: got [%s] want [%s]", tt.desc, act, exp)
 		}
+	}
+}
+
+func TestUnmarshalNext(t *testing.T) {
+	// Create a buffer with many concatenated JSON objects.
+	var b bytes.Buffer
+	for _, tt := range unmarshalingTests {
+		b.WriteString(tt.json)
+	}
+
+	dec := json.NewDecoder(&b)
+	for _, tt := range unmarshalingTests {
+		// Make a new instance of the type of our expected object.
+		p := reflect.New(reflect.TypeOf(tt.pb).Elem()).Interface().(proto.Message)
+
+		err := UnmarshalNext(dec, p)
+		if err != nil {
+			t.Errorf("%s: %v", tt.desc, err)
+			continue
+		}
+
+		// For easier diffs, compare text strings of the protos.
+		exp := proto.MarshalTextString(tt.pb)
+		act := proto.MarshalTextString(p)
+		if string(exp) != string(act) {
+			t.Errorf("%s: got [%s] want [%s]", tt.desc, act, exp)
+		}
+	}
+
+	p := &pb.Simple{}
+	err := UnmarshalNext(dec, p)
+	if err != io.EOF {
+		t.Errorf("eof: got %v, expected io.EOF", err)
 	}
 }
 
