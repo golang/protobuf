@@ -191,3 +191,10 @@ the `plugins` parameter to protoc-gen-go; the usual way is to insert it into
 the --go_out argument to protoc:
 
 	protoc --go_out=plugins=grpc:. *.proto
+
+## Plugins ##
+
+Additional plugins can be registered with `generator.RegisterPlugin`
+and activated using the `plugins=` parameter. However, the API between
+generator and plugins and the non-exported structure of the generated
+code are considered an internal interface, and can change at any time.
