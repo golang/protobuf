@@ -1329,9 +1329,18 @@ func TestRequiredFieldEnforcement(t *testing.T) {
 
 func TestTypedNilMarshal(t *testing.T) {
 	// A typed nil should return ErrNil and not crash.
-	_, err := Marshal((*GoEnum)(nil))
-	if err != ErrNil {
-		t.Errorf("Marshal: got err %v, want ErrNil", err)
+	{
+		var m *GoEnum
+		if _, err := Marshal(m); err != ErrNil {
+			t.Errorf("Marshal(%#v): got %v, want ErrNil", m, err)
+		}
+	}
+
+	{
+		m := &Communique{Union: &Communique_Msg{nil}}
+		if _, err := Marshal(m); err == nil || err == ErrNil {
+			t.Errorf("Marshal(%#v): got %v, want errOneofHasNil", m, err)
+		}
 	}
 }
 
