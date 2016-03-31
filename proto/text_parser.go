@@ -663,7 +663,8 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 				return err
 			}
 			reqFieldErr = err
-		} else if props.Required {
+		}
+		if props.Required {
 			reqCount--
 		}
 

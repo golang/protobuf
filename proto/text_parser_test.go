@@ -336,6 +336,16 @@ var unMarshalTextTests = []UnmarshalTextTest{
 		},
 	},
 
+	// Missing required field in a required submessage
+	{
+		in:  `count: 42 we_must_go_deeper < leo_finally_won_an_oscar <> >`,
+		err: `proto: required field "testdata.InnerMessage.host" not set`,
+		out: &MyMessage{
+			Count:          Int32(42),
+			WeMustGoDeeper: &RequiredInnerMessage{LeoFinallyWonAnOscar: &InnerMessage{}},
+		},
+	},
+
 	// Repeated non-repeated field
 	{
 		in:  `name: "Rob" name: "Russ"`,
