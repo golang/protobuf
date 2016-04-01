@@ -1,0 +1,15 @@
+language: go
+
+go:
+  - 1.4
+  - 1.5
+  - 1.6
+
+install:
+  - export GOPATH="$HOME/gopath"
+  - mkdir -p "$GOPATH/src/github.com/golang"
+  - mv "$TRAVIS_BUILD_DIR" "$GOPATH/src/github.com/golang/protobuf"
+  - go get -v -t -d github.com/golang/protobuf/...
+
+script:
+  - go test -v github.com/golang/protobuf/...
