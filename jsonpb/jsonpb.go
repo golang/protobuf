@@ -574,6 +574,42 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 				continue
 			}
 
+			// Handle repeated enums. If parsing an individual elements fails, then
+			// the corresponding entry in the slice will end up as the default value.
+			prop := sprops.Prop[i]
+			if prop.Enum != "" && prop.Repeated {
+				var slc []json.RawMessage
+				if err := json.Unmarshal(valueForField, &slc); err != nil {
+					return err
+				}
+
+				field := target.Field(i)
+				lenslc := len(slc)
+				field.Set(reflect.MakeSlice(field.Type(), lenslc, lenslc))
+
+				vmap := proto.EnumValueMap(prop.Enum)
+				for j := 0; j < lenslc; j++ {
+					rawValue := slc[j]
+
+					// Handle the case where we have the string representation.
+					lenRv := len(rawValue)
+					if lenRv > 2 && rawValue[0] == '"' && rawValue[lenRv-1] == '"' {
+						valueNoQuotes := string(rawValue[1 : lenRv-1])
+						n, ok := vmap[valueNoQuotes]
+						if ok {
+							field.Index(j).SetInt(int64(n))
+							continue
+						}
+					}
+
+					// Let a recursive call handle integer enum values.
+					if err := unmarshalValue(field.Index(j), rawValue); err != nil {
+						return err
+					}
+				}
+				continue
+			}
+
 			if err := unmarshalValue(target.Field(i), valueForField); err != nil {
 				return err
 			}
