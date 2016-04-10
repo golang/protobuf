@@ -577,15 +577,17 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 			// The case of an enum appearing as a number is handled
 			// by the recursive call to unmarshalValue.
 			if enum := sprops.Prop[i].Enum; valueForField[0] == '"' && enum != "" {
-				err := resolveEnumFromString(enum, string(valueForField), target.Field(i))
+				err := resolveEnumFromString(
+					enum, string(valueForField), target.Field(i))
 				if err != nil {
 					return err
 				}
 				continue
 			}
 
-			// Handle repeated enums. If parsing an individual elements fails, then
-			// the corresponding entry in the slice will end up as the default value.
+			// Handle repeated enums. Similarly to single enums, we parse them here
+			// while handling the struct to take advantage of still having access to
+			// the enum info.
 			prop := sprops.Prop[i]
 			if prop.Enum != "" && prop.Repeated {
 				var slc []json.RawMessage
@@ -603,7 +605,8 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 					// Handle the case where we have the string representation.
 					lenRv := len(rawValue)
 					if lenRv > 2 && rawValue[0] == '"' && rawValue[lenRv-1] == '"' {
-						err := resolveEnumFromString(prop.Enum, string(rawValue), field.Index(j))
+						err := resolveEnumFromString(
+							prop.Enum, string(rawValue), field.Index(j))
 						if err != nil {
 							return err
 						}
