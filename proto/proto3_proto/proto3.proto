@@ -46,6 +46,7 @@ message Message {
 
   string name = 1;
   Humour hilarity = 2;
+  repeated Humour rhilarity = 16;
   uint32 height_in_cm = 3;
   bytes data = 4;
   int64 result_count = 7;

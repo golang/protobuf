@@ -370,6 +370,8 @@ var unmarshalingTests = []struct {
 	{"enum-value object", "{\n \"color\": 2\n}", &pb.Widget{Color: pb.Widget_BLUE.Enum()}},
 	{"proto3 enum string", `{"hilarity":"PUNS"}`, &proto3pb.Message{Hilarity: proto3pb.Message_PUNS}},
 	{"proto3 enum value", `{"hilarity":1}`, &proto3pb.Message{Hilarity: proto3pb.Message_PUNS}},
+	{"proto3 repeated string", `{"rhilarity": ["PUNS", "SLAPSTICK"]}`, &proto3pb.Message{Rhilarity: []proto3pb.Message_Humour{proto3pb.Message_PUNS, proto3pb.Message_SLAPSTICK}}},
+	{"proto3 repeated value", `{"rhilarity": [1, 2]}`, &proto3pb.Message{Rhilarity: []proto3pb.Message_Humour{proto3pb.Message_PUNS, proto3pb.Message_SLAPSTICK}}},
 	{"unknown enum value object",
 		"{\n  \"color\": 1000,\n  \"r_color\": [\n    \"RED\"\n  ]\n}",
 		&pb.Widget{Color: pb.Widget_Color(1000).Enum(), RColor: []pb.Widget_Color{pb.Widget_RED}}},
