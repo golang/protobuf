@@ -454,6 +454,26 @@ func UnmarshalString(str string, pb proto.Message) error {
 	return Unmarshal(strings.NewReader(str), pb)
 }
 
+// resolveEnumFromString attempts to get an enum value for a string
+// representation of the enum value. If successful, assigns a value to the
+// supplied field.
+func resolveEnumFromString(enum string, value string, field reflect.Value) error {
+	vmap := proto.EnumValueMap(enum)
+	// Don't need to do unquoting; valid enum names
+	// are from a limited character set.
+	s := value[1 : len(value)-1]
+	n, ok := vmap[string(s)]
+	if !ok {
+		return fmt.Errorf("unknown value %q for enum %s", s, enum)
+	}
+	if field.Kind() == reflect.Ptr { // proto2
+		field.Set(reflect.New(field.Type().Elem()))
+		field = field.Elem()
+	}
+	field.SetInt(int64(n))
+	return nil
+}
+
 // unmarshalValue converts/copies a value into the target.
 func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 	targetType := target.Type()
@@ -557,20 +577,10 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 			// The case of an enum appearing as a number is handled
 			// by the recursive call to unmarshalValue.
 			if enum := sprops.Prop[i].Enum; valueForField[0] == '"' && enum != "" {
-				vmap := proto.EnumValueMap(enum)
-				// Don't need to do unquoting; valid enum names
-				// are from a limited character set.
-				s := valueForField[1 : len(valueForField)-1]
-				n, ok := vmap[string(s)]
-				if !ok {
-					return fmt.Errorf("unknown value %q for enum %s", s, enum)
+				err := resolveEnumFromString(enum, string(valueForField), target.Field(i))
+				if err != nil {
+					return err
 				}
-				f := target.Field(i)
-				if f.Kind() == reflect.Ptr { // proto2
-					f.Set(reflect.New(f.Type().Elem()))
-					f = f.Elem()
-				}
-				f.SetInt(int64(n))
 				continue
 			}
 
@@ -587,19 +597,17 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 				lenslc := len(slc)
 				field.Set(reflect.MakeSlice(field.Type(), lenslc, lenslc))
 
-				vmap := proto.EnumValueMap(prop.Enum)
 				for j := 0; j < lenslc; j++ {
 					rawValue := slc[j]
 
 					// Handle the case where we have the string representation.
 					lenRv := len(rawValue)
 					if lenRv > 2 && rawValue[0] == '"' && rawValue[lenRv-1] == '"' {
-						valueNoQuotes := string(rawValue[1 : lenRv-1])
-						n, ok := vmap[valueNoQuotes]
-						if ok {
-							field.Index(j).SetInt(int64(n))
-							continue
+						err := resolveEnumFromString(prop.Enum, string(rawValue), field.Index(j))
+						if err != nil {
+							return err
 						}
+						continue
 					}
 
 					// Let a recursive call handle integer enum values.
