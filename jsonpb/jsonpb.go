@@ -76,6 +76,11 @@ type Marshaler struct {
 	OrigName bool
 }
 
+type Unmarshaler struct {
+	// Whether to ignore unknown fields when parsing JSON.
+	Lenient bool
+}
+
 // Marshal marshals a protocol buffer into JSON.
 func (m *Marshaler) Marshal(out io.Writer, pb proto.Message) error {
 	writer := &errWriter{writer: out}
@@ -432,11 +437,16 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 // This function is lenient and will decode any options permutations of the
 // related Marshaler.
 func UnmarshalNext(dec *json.Decoder, pb proto.Message) error {
+	unmarshaler := new(Unmarshaler)
+	return unmarshaler.UnmarshalNext(dec, pb)
+}
+
+func (u *Unmarshaler) UnmarshalNext(dec *json.Decoder, pb proto.Message) error {
 	inputValue := json.RawMessage{}
 	if err := dec.Decode(&inputValue); err != nil {
 		return err
 	}
-	return unmarshalValue(reflect.ValueOf(pb).Elem(), inputValue)
+	return u.unmarshalValue(reflect.ValueOf(pb).Elem(), inputValue)
 }
 
 // Unmarshal unmarshals a JSON object stream into a protocol
@@ -447,6 +457,11 @@ func Unmarshal(r io.Reader, pb proto.Message) error {
 	return UnmarshalNext(dec, pb)
 }
 
+func (u *Unmarshaler) Unmarshal(r io.Reader, pb proto.Message) error {
+	dec := json.NewDecoder(r)
+	return u.UnmarshalNext(dec, pb)
+}
+
 // UnmarshalString will populate the fields of a protocol buffer based
 // on a JSON string. This function is lenient and will decode any options
 // permutations of the related Marshaler.
@@ -454,14 +469,18 @@ func UnmarshalString(str string, pb proto.Message) error {
 	return Unmarshal(strings.NewReader(str), pb)
 }
 
+func (u *Unmarshaler) UnmarshalString(str string, pb proto.Message) error {
+	return u.Unmarshal(strings.NewReader(str), pb)
+}
+
 // unmarshalValue converts/copies a value into the target.
-func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
+func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 	targetType := target.Type()
 
 	// Allocate memory for pointer fields.
 	if targetType.Kind() == reflect.Ptr {
 		target.Set(reflect.New(targetType.Elem()))
-		return unmarshalValue(target.Elem(), inputValue)
+		return u.unmarshalValue(target.Elem(), inputValue)
 	}
 
 	// Handle well-known types.
@@ -476,7 +495,7 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 			//  as the wrapped primitive type, except that null is allowed."
 			// encoding/json will turn JSON `null` into Go `nil`,
 			// so we don't have to do any extra work.
-			return unmarshalValue(target.Field(0), inputValue)
+			return u.unmarshalValue(target.Field(0), inputValue)
 		case "Duration":
 			unq, err := strconv.Unquote(string(inputValue))
 			if err != nil {
@@ -574,7 +593,7 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 				continue
 			}
 
-			if err := unmarshalValue(target.Field(i), valueForField); err != nil {
+			if err := u.unmarshalValue(target.Field(i), valueForField); err != nil {
 				return err
 			}
 		}
@@ -587,12 +606,12 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 				}
 				nv := reflect.New(oop.Type.Elem())
 				target.Field(oop.Field).Set(nv)
-				if err := unmarshalValue(nv.Elem().Field(0), raw); err != nil {
+				if err := u.unmarshalValue(nv.Elem().Field(0), raw); err != nil {
 					return err
 				}
 			}
 		}
-		if len(jsonFields) > 0 {
+		if len(jsonFields) > 0 && !u.Lenient {
 			// Pick any field to be the scapegoat.
 			var f string
 			for fname := range jsonFields {
@@ -613,7 +632,7 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 		len := len(slc)
 		target.Set(reflect.MakeSlice(targetType, len, len))
 		for i := 0; i < len; i++ {
-			if err := unmarshalValue(target.Index(i), slc[i]); err != nil {
+			if err := u.unmarshalValue(target.Index(i), slc[i]); err != nil {
 				return err
 			}
 		}
@@ -635,14 +654,14 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage) error {
 				k = reflect.ValueOf(ks)
 			} else {
 				k = reflect.New(targetType.Key()).Elem()
-				if err := unmarshalValue(k, json.RawMessage(ks)); err != nil {
+				if err := u.unmarshalValue(k, json.RawMessage(ks)); err != nil {
 					return err
 				}
 			}
 
 			// Unmarshal map value.
 			v := reflect.New(targetType.Elem()).Elem()
-			if err := unmarshalValue(v, raw); err != nil {
+			if err := u.unmarshalValue(v, raw); err != nil {
 				return err
 			}
 			target.SetMapIndex(k, v)
