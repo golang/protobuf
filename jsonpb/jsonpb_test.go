@@ -471,3 +471,31 @@ func TestUnmarshalingBadInput(t *testing.T) {
 		}
 	}
 }
+
+var unmarshalingExtraFields = []struct {
+	desc string
+	in   string
+	pb   proto.Message
+}{
+	{"an unknown field", `{"oBoo1": true}`, new(pb.Simple)},
+}
+
+func TestUnmarshalingExtraFields(t *testing.T) {
+	for _, tt := range unmarshalingExtraFields {
+		unmarshaler := &Unmarshaler{Lenient: false}
+		err := unmarshaler.UnmarshalString(tt.in, tt.pb)
+		if err == nil {
+			t.Errorf("an error was expected when parsing %q instead of an object: %v", tt.desc, err)
+		}
+	}
+}
+
+func TestUnmarshalingExtraFieldsOkIfLenient(t *testing.T) {
+	for _, tt := range unmarshalingExtraFields {
+		unmarshaler := &Unmarshaler{Lenient: true}
+		err := unmarshaler.UnmarshalString(tt.in, tt.pb)
+		if err != nil {
+			t.Errorf("an error was not expected when parsing %q instead of an object: %v", tt.desc, err)
+		}
+	}
+}
