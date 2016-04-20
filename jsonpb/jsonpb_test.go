@@ -42,6 +42,7 @@ import (
 
 	pb "github.com/golang/protobuf/jsonpb/jsonpb_test_proto"
 	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
+	anypb "github.com/golang/protobuf/ptypes/any"
 	durpb "github.com/golang/protobuf/ptypes/duration"
 	stpb "github.com/golang/protobuf/ptypes/struct"
 	tspb "github.com/golang/protobuf/ptypes/timestamp"
@@ -339,6 +340,21 @@ var marshalingTests = []struct {
 		`{"o_int32":4}`},
 	{"proto2 extension", marshaler, realNumber, realNumberJSON},
 
+	{"Any with message", marshaler, &pb.KnownTypes{An: &anypb.Any{
+		TypeUrl: "something.example.com/jsonpb.Simple",
+		Value: []byte{
+			// &pb.Simple{OBool:true}
+			1 << 3, 1,
+		},
+	}}, `{"an":{"@type":"something.example.com/jsonpb.Simple","oBool":true}}`},
+	{"Any with WKT", marshaler, &pb.KnownTypes{An: &anypb.Any{
+		TypeUrl: "type.googleapis.com/google.protobuf.Duration",
+		Value: []byte{
+			// &durpb.Duration{Seconds: 1, Nanos: 212000000 }
+			1 << 3, 1, // seconds
+			2 << 3, 0x80, 0xba, 0x8b, 0x65, // nanos
+		},
+	}}, `{"an":{"@type":"type.googleapis.com/google.protobuf.Duration","value":"1.212s"}}`},
 	{"Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}, `{"dur":"3.000s"}`},
 	{"Struct", marshaler, &pb.KnownTypes{St: &stpb.Struct{
 		Fields: map[string]*stpb.Value{
