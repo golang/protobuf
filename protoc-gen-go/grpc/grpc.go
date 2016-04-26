@@ -389,7 +389,7 @@ func (g *grpc) generateServerMethod(servName, fullServName string, method *pb.Me
 		g.P("in := new(", inType, ")")
 		g.P("if err := dec(in); err != nil { return nil, err }")
 		g.P("if interceptor == nil { return srv.(", servName, "Server).", methName, "(ctx, in) }")
-		g.P("info := &grpc.UnaryServerInfo{")
+		g.P("info := &", grpcPkg, ".UnaryServerInfo{")
 		g.P("Server: srv,")
 		g.P("FullMethod: ", strconv.Quote(fmt.Sprintf("/%s/%s", fullServName, methName)), ",")
 		g.P("}")
