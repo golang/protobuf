@@ -92,8 +92,12 @@ type Extension struct {
 }
 
 // SetRawExtension is for testing only.
-func SetRawExtension(base extendableProto, id int32, b []byte) {
-	base.ExtensionMap()[id] = Extension{enc: b}
+func SetRawExtension(base Message, id int32, b []byte) {
+	epb, ok := base.(extendableProto)
+	if !ok {
+		return
+	}
+	epb.ExtensionMap()[id] = Extension{enc: b}
 }
 
 // isExtensionField returns true iff the given field number is in an extension range.
@@ -209,26 +213,39 @@ func sizeExtensionMap(m map[int32]Extension) (n int) {
 }
 
 // HasExtension returns whether the given extension is present in pb.
-func HasExtension(pb extendableProto, extension *ExtensionDesc) bool {
+func HasExtension(pb Message, extension *ExtensionDesc) bool {
 	// TODO: Check types, field numbers, etc.?
-	_, ok := pb.ExtensionMap()[extension.Field]
+	epb, ok := pb.(extendableProto)
+	if !ok {
+		return false
+	}
+	_, ok = epb.ExtensionMap()[extension.Field]
 	return ok
 }
 
 // ClearExtension removes the given extension from pb.
-func ClearExtension(pb extendableProto, extension *ExtensionDesc) {
+func ClearExtension(pb Message, extension *ExtensionDesc) {
+	epb, ok := pb.(extendableProto)
+	if !ok {
+		return
+	}
 	// TODO: Check types, field numbers, etc.?
-	delete(pb.ExtensionMap(), extension.Field)
+	delete(epb.ExtensionMap(), extension.Field)
 }
 
 // GetExtension parses and returns the given extension of pb.
 // If the extension is not present and has no default value it returns ErrMissingExtension.
-func GetExtension(pb extendableProto, extension *ExtensionDesc) (interface{}, error) {
-	if err := checkExtensionTypes(pb, extension); err != nil {
+func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
+	epb, ok := pb.(extendableProto)
+	if !ok {
+		return nil, errors.New("proto: not an extendable proto")
+	}
+
+	if err := checkExtensionTypes(epb, extension); err != nil {
 		return nil, err
 	}
 
-	emap := pb.ExtensionMap()
+	emap := epb.ExtensionMap()
 	e, ok := emap[extension.Field]
 	if !ok {
 		// defaultExtensionValue returns the default value or
@@ -334,8 +351,7 @@ func decodeExtension(b []byte, extension *ExtensionDesc) (interface{}, error) {
 func GetExtensions(pb Message, es []*ExtensionDesc) (extensions []interface{}, err error) {
 	epb, ok := pb.(extendableProto)
 	if !ok {
-		err = errors.New("proto: not an extendable proto")
-		return
+		return nil, errors.New("proto: not an extendable proto")
 	}
 	extensions = make([]interface{}, len(es))
 	for i, e := range es {
@@ -351,8 +367,12 @@ func GetExtensions(pb Message, es []*ExtensionDesc) (extensions []interface{}, e
 }
 
 // SetExtension sets the specified extension of pb to the specified value.
-func SetExtension(pb extendableProto, extension *ExtensionDesc, value interface{}) error {
-	if err := checkExtensionTypes(pb, extension); err != nil {
+func SetExtension(pb Message, extension *ExtensionDesc, value interface{}) error {
+	epb, ok := pb.(extendableProto)
+	if !ok {
+		return errors.New("proto: not an extendable proto")
+	}
+	if err := checkExtensionTypes(epb, extension); err != nil {
 		return err
 	}
 	typ := reflect.TypeOf(extension.ExtensionType)
@@ -368,8 +388,20 @@ func SetExtension(pb extendableProto, extension *ExtensionDesc, value interface{
 		return fmt.Errorf("proto: SetExtension called with nil value of type %T", value)
 	}
 
-	pb.ExtensionMap()[extension.Field] = Extension{desc: extension, value: value}
+	epb.ExtensionMap()[extension.Field] = Extension{desc: extension, value: value}
 	return nil
+}
+
+// ClearAllExtensions clears all extensions from pb.
+func ClearAllExtensions(pb Message) {
+	epb, ok := pb.(extendableProto)
+	if !ok {
+		return
+	}
+	m := epb.ExtensionMap()
+	for k := range m {
+		delete(m, k)
+	}
 }
 
 // A global registry of extensions.
