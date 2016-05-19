@@ -29,6 +29,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+// This package having both internal and external tests triggers a surprising
+// bug in gccgo (see https://github.com/golang/go/issues/15738), so don't
+// compile the internal tests with gccgo:
+// +build !gccgo
+
 package proto
 
 import (
