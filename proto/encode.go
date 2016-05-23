@@ -1073,10 +1073,25 @@ func size_slice_struct_group(p *Properties, base structPointer) (n int) {
 
 // Encode an extension map.
 func (o *Buffer) enc_map(p *Properties, base structPointer) error {
-	v := *structPointer_ExtMap(base, p.field)
-	if err := encodeExtensionMap(v); err != nil {
+	exts := structPointer_ExtMap(base, p.field)
+	if err := encodeExtensionsMap(*exts); err != nil {
 		return err
 	}
+
+	return o.enc_map_body(*exts)
+}
+
+func (o *Buffer) enc_exts(p *Properties, base structPointer) error {
+	exts := structPointer_Extensions(base, p.field)
+	if err := encodeExtensions(exts); err != nil {
+		return err
+	}
+	v, _ := exts.extensionsRead()
+
+	return o.enc_map_body(v)
+}
+
+func (o *Buffer) enc_map_body(v map[int32]Extension) error {
 	// Fast-path for common cases: zero or one extensions.
 	if len(v) <= 1 {
 		for _, e := range v {
@@ -1099,8 +1114,13 @@ func (o *Buffer) enc_map(p *Properties, base structPointer) error {
 }
 
 func size_map(p *Properties, base structPointer) int {
-	v := *structPointer_ExtMap(base, p.field)
-	return sizeExtensionMap(v)
+	v := structPointer_ExtMap(base, p.field)
+	return extensionsMapSize(*v)
+}
+
+func size_exts(p *Properties, base structPointer) int {
+	v := structPointer_Extensions(base, p.field)
+	return extensionsSize(v)
 }
 
 // Encode a map field.
