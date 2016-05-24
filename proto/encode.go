@@ -1149,7 +1149,7 @@ func (o *Buffer) enc_new_map(p *Properties, base structPointer) error {
 		if err := p.mkeyprop.enc(o, p.mkeyprop, keybase); err != nil {
 			return err
 		}
-		if err := p.mvalprop.enc(o, p.mvalprop, valbase); err != nil {
+		if err := p.mvalprop.enc(o, p.mvalprop, valbase); err != nil && err != ErrNil {
 			return err
 		}
 		return nil
@@ -1158,11 +1158,6 @@ func (o *Buffer) enc_new_map(p *Properties, base structPointer) error {
 	// Don't sort map keys. It is not required by the spec, and C++ doesn't do it.
 	for _, key := range v.MapKeys() {
 		val := v.MapIndex(key)
-
-		// The only illegal map entry values are nil message pointers.
-		if val.Kind() == reflect.Ptr && val.IsNil() {
-			return errors.New("proto: map has nil element")
-		}
 
 		keycopy.Set(key)
 		valcopy.Set(val)
