@@ -1956,14 +1956,54 @@ func TestMapFieldRoundTrips(t *testing.T) {
 }
 
 func TestMapFieldWithNil(t *testing.T) {
-	m := &MessageWithMap{
+	m1 := &MessageWithMap{
 		MsgMapping: map[int64]*FloatingPoint{
 			1: nil,
 		},
 	}
-	b, err := Marshal(m)
-	if err == nil {
-		t.Fatalf("Marshal of bad map should have failed, got these bytes: %v", b)
+	b, err := Marshal(m1)
+	if err != nil {
+		t.Fatalf("Marshal: %v", err)
+	}
+	m2 := new(MessageWithMap)
+	if err := Unmarshal(b, m2); err != nil {
+		t.Fatalf("Unmarshal: %v, got these bytes: %v", err, b)
+	}
+	if v, ok := m2.MsgMapping[1]; !ok {
+		t.Error("msg_mapping[1] not present")
+	} else if v != nil {
+		t.Errorf("msg_mapping[1] not nil: %v", v)
+	}
+}
+
+func TestMapFieldWithNilBytes(t *testing.T) {
+	m1 := &MessageWithMap{
+		ByteMapping: map[bool][]byte{
+			false: []byte{},
+			true:  nil,
+		},
+	}
+	n := Size(m1)
+	b, err := Marshal(m1)
+	if err != nil {
+		t.Fatalf("Marshal: %v", err)
+	}
+	if n != len(b) {
+		t.Errorf("Size(m1) = %d; want len(Marshal(m1)) = %d", n, len(b))
+	}
+	m2 := new(MessageWithMap)
+	if err := Unmarshal(b, m2); err != nil {
+		t.Fatalf("Unmarshal: %v, got these bytes: %v", err, b)
+	}
+	if v, ok := m2.ByteMapping[false]; !ok {
+		t.Error("byte_mapping[false] not present")
+	} else if len(v) != 0 {
+		t.Errorf("byte_mapping[false] not empty: %#v", v)
+	}
+	if v, ok := m2.ByteMapping[true]; !ok {
+		t.Error("byte_mapping[true] not present")
+	} else if len(v) != 0 {
+		t.Errorf("byte_mapping[true] not empty: %#v", v)
 	}
 }
 
