@@ -282,6 +282,21 @@ func init() {
 	}
 }
 
+// Bytes is used to test that []byte type aliases are serialized to base64.
+type Byte byte
+
+// Bytes is used to test that []byte type aliases are serialized to base64.
+type Bytes []Byte
+
+// BytesMessage is used to test that []byte type aliases are serialized to base64.
+type BytesMessage struct {
+	Bytes Bytes `protobuf:"bytes,1,opt,name=bytes,json=bytes" json:"bytes,omitempty"`
+}
+
+func (*BytesMessage) Reset()         {}
+func (*BytesMessage) String() string { return "" }
+func (*BytesMessage) ProtoMessage()  {}
+
 var marshalingTests = []struct {
 	desc      string
 	marshaler Marshaler
@@ -373,6 +388,7 @@ var marshalingTests = []struct {
 	{"BoolValue", marshaler, &pb.KnownTypes{Bool: &wpb.BoolValue{Value: true}}, `{"bool":true}`},
 	{"StringValue", marshaler, &pb.KnownTypes{Str: &wpb.StringValue{Value: "plush"}}, `{"str":"plush"}`},
 	{"BytesValue", marshaler, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}, `{"bytes":"d293"}`},
+	{"BytesMessageValue", marshaler, &BytesMessage{Bytes: []Byte("wow")}, `{"bytes":"d293"}`},
 }
 
 func TestMarshaling(t *testing.T) {
@@ -445,6 +461,7 @@ var unmarshalingTests = []struct {
 	{"BoolValue", `{"bool":true}`, &pb.KnownTypes{Bool: &wpb.BoolValue{Value: true}}},
 	{"StringValue", `{"str":"plush"}`, &pb.KnownTypes{Str: &wpb.StringValue{Value: "plush"}}},
 	{"BytesValue", `{"bytes":"d293"}`, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}},
+	{"BytesMessageValue", `{"bytes":"d293"}`, &BytesMessage{Bytes: []Byte("wow")}},
 	// `null` is also a permissible value. Let's just test one.
 	{"null DoubleValue", `{"dbl":null}`, &pb.KnownTypes{Dbl: &wpb.DoubleValue{}}},
 }
