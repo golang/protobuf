@@ -128,6 +128,13 @@ func equalStruct(v1, v2 reflect.Value) bool {
 		}
 	}
 
+	if em1 := v1.FieldByName("XXX_extensions"); em1.IsValid() {
+		em2 := v2.FieldByName("XXX_extensions")
+		if !equalExtMap(v1.Type(), em1.Interface().(map[int32]Extension), em2.Interface().(map[int32]Extension)) {
+			return false
+		}
+	}
+
 	uf := v1.FieldByName("XXX_unrecognized")
 	if !uf.IsValid() {
 		return true
@@ -227,6 +234,10 @@ func equalAny(v1, v2 reflect.Value, prop *Properties) bool {
 func equalExtensions(base reflect.Type, x1, x2 XXX_InternalExtensions) bool {
 	em1, _ := x1.extensionsRead()
 	em2, _ := x2.extensionsRead()
+	return equalExtMap(base, em1, em2)
+}
+
+func equalExtMap(base reflect.Type, em1, em2 map[int32]Extension) bool {
 	if len(em1) != len(em2) {
 		return false
 	}
