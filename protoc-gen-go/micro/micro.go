@@ -175,8 +175,8 @@ func (g *micro) generateService(file *generator.FileDescriptor, service *pb.Serv
 	g.P("}")
 	g.P()
 	// Server registration.
-	g.P("func Register", servName, "Handler(s ", serverPkg, ".Server, hdlr ", serverType, ") {")
-	g.P("s.Handle(s.NewHandler(&", servName, "{hdlr}))")
+	g.P("func Register", servName, "Handler(s ", serverPkg, ".Server, hdlr ", serverType, ", opts ...", serverPkg, ".HandlerOption) {")
+	g.P("s.Handle(s.NewHandler(&", servName, "{hdlr}, opts...))")
 	g.P("}")
 	g.P()
 
