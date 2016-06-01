@@ -513,7 +513,7 @@ func (tm *TextMarshaler) writeAny(w *textWriter, v reflect.Value, props *Propert
 	switch v.Kind() {
 	case reflect.Slice:
 		// Should only be a []byte; repeated fields are handled in writeStruct.
-		if err := writeString(w, string(v.Interface().([]byte))); err != nil {
+		if err := writeString(w, string(v.Bytes())); err != nil {
 			return err
 		}
 	case reflect.String:

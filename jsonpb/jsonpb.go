@@ -53,10 +53,6 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
-var (
-	byteArrayType = reflect.TypeOf([]byte{})
-)
-
 // Marshaler is a configurable object for converting between
 // protocol buffer objects and a JSON representation for them.
 type Marshaler struct {
@@ -374,7 +370,7 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 	v = reflect.Indirect(v)
 
 	// Handle repeated elements.
-	if v.Type() != byteArrayType && v.Kind() == reflect.Slice {
+	if v.Kind() == reflect.Slice && v.Type().Elem().Kind() != reflect.Uint8 {
 		out.write("[")
 		comma := ""
 		for i := 0; i < v.Len(); i++ {
@@ -684,7 +680,7 @@ func unmarshalValue(target reflect.Value, inputValue json.RawMessage, prop *prot
 	}
 
 	// Handle arrays (which aren't encoded bytes)
-	if targetType != byteArrayType && targetType.Kind() == reflect.Slice {
+	if targetType.Kind() == reflect.Slice && targetType.Elem().Kind() != reflect.Uint8 {
 		var slc []json.RawMessage
 		if err := json.Unmarshal(inputValue, &slc); err != nil {
 			return err
