@@ -382,7 +382,9 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 				out.write(m.Indent)
 				out.write(m.Indent)
 			}
-			m.marshalValue(out, prop, sliceVal, indent+m.Indent)
+			if err := m.marshalValue(out, prop, sliceVal, indent+m.Indent); err != nil {
+				return err
+			}
 			comma = ","
 		}
 		if m.Indent != "" {
