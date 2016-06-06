@@ -24,7 +24,9 @@ var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
-const _ = proto.ProtoPackageIsVersion1
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 // A generic empty message that you can re-use to avoid defining duplicated
 // empty messages in your APIs. A typical example is to use it as the request
@@ -46,6 +48,10 @@ func (*Empty) XXX_WellKnownType() string   { return "Empty" }
 
 func init() {
 	proto.RegisterType((*Empty)(nil), "google.protobuf.Empty")
+}
+
+func init() {
+	proto.RegisterFile("github.com/golang/protobuf/ptypes/empty/empty.proto", fileDescriptor0)
 }
 
 var fileDescriptor0 = []byte{

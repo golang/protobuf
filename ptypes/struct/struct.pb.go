@@ -26,7 +26,9 @@ var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
-const _ = proto.ProtoPackageIsVersion1
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 // `NullValue` is a singleton enumeration to represent the null value for the
 // `Value` type union.
@@ -343,6 +345,10 @@ func init() {
 	proto.RegisterType((*Value)(nil), "google.protobuf.Value")
 	proto.RegisterType((*ListValue)(nil), "google.protobuf.ListValue")
 	proto.RegisterEnum("google.protobuf.NullValue", NullValue_name, NullValue_value)
+}
+
+func init() {
+	proto.RegisterFile("github.com/golang/protobuf/ptypes/struct/struct.proto", fileDescriptor0)
 }
 
 var fileDescriptor0 = []byte{
