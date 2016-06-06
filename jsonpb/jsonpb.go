@@ -313,8 +313,14 @@ func (m *Marshaler) marshalAny(out *errWriter, any proto.Message, indent string)
 			return err
 		}
 		m.writeSep(out)
-		out.write(`"value":`)
-		if err := m.marshalObject(out, msg, indent, ""); err != nil {
+		if m.Indent != "" {
+			out.write(indent)
+			out.write(m.Indent)
+			out.write(`"value": `)
+		} else {
+			out.write(`"value":`)
+		}
+		if err := m.marshalObject(out, msg, indent+m.Indent, ""); err != nil {
 			return err
 		}
 		if m.Indent != "" {
