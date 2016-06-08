@@ -28,8 +28,36 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// `Any` contains an arbitrary serialized message along with a URL
-// that describes the type of the serialized message.
+// `Any` contains an arbitrary serialized protocol buffer message along with a
+// URL that describes the type of the serialized message.
+//
+// Protobuf library provides support to pack/unpack Any values in the form
+// of utility functions or additional generated methods of the Any type.
+//
+// Example 1: Pack and unpack a message in C++.
+//
+//     Foo foo = ...;
+//     Any any;
+//     any.PackFrom(foo);
+//     ...
+//     if (any.UnpackTo(&foo)) {
+//       ...
+//     }
+//
+// Example 2: Pack and unpack a message in Java.
+//
+//     Foo foo = ...;
+//     Any any = Any.pack(foo);
+//     ...
+//     if (any.is(Foo.class)) {
+//       foo = any.unpack(Foo.class);
+//     }
+//
+// The pack methods provided by protobuf library will by default use
+// 'type.googleapis.com/full.type.name' as the type URL and the unpack
+// methods only use the fully qualified type name after the last '/'
+// in the type URL, for example "foo.bar.com/x/y.z" will yield type
+// name "y.z".
 //
 //
 // JSON
@@ -62,7 +90,7 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 //
 type Any struct {
 	// A URL/resource name whose content describes the type of the
-	// serialized message.
+	// serialized protocol buffer message.
 	//
 	// For URLs which use the schema `http`, `https`, or no schema, the
 	// following restrictions and interpretations apply:
@@ -70,6 +98,8 @@ type Any struct {
 	// * If no schema is provided, `https` is assumed.
 	// * The last segment of the URL's path must represent the fully
 	//   qualified name of the type (as in `path/google.protobuf.Duration`).
+	//   The name should be in a canonical form (e.g., leading "." is
+	//   not accepted).
 	// * An HTTP GET on the URL must yield a [google.protobuf.Type][]
 	//   value in binary format, or produce an error.
 	// * Applications are allowed to cache lookup results based on the
@@ -82,7 +112,7 @@ type Any struct {
 	// used with implementation specific semantics.
 	//
 	TypeUrl string `protobuf:"bytes,1,opt,name=type_url,json=typeUrl" json:"type_url,omitempty"`
-	// Must be valid serialized data of the above specified type.
+	// Must be a valid serialized protocol buffer of the above specified type.
 	Value []byte `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
