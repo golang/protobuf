@@ -264,6 +264,11 @@ type FileDescriptor struct {
 // PackageName is the package name we'll use in the generated code to refer to this file.
 func (d *FileDescriptor) PackageName() string { return uniquePackageOf(d.FileDescriptorProto) }
 
+// VarName is the variable name we'll use in the generated code to refer
+// to the compressed bytes of this descriptor. It is not exported, so
+// it is only valid inside the generated package.
+func (d *FileDescriptor) VarName() string { return fmt.Sprintf("fileDescriptor%d", d.index) }
+
 // goPackageOption interprets the file's go_package option.
 // If there is no go_package, it returns ("", "", false).
 // If there's a simple name, it returns ("", pkg, true).
@@ -1466,7 +1471,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 		indexes = append([]string{strconv.Itoa(m.index)}, indexes...)
 	}
 	indexes = append(indexes, strconv.Itoa(enum.index))
-	g.P("func (", ccTypeName, ") EnumDescriptor() ([]byte, []int) { return fileDescriptor", g.file.index, ", []int{", strings.Join(indexes, ", "), "} }")
+	g.P("func (", ccTypeName, ") EnumDescriptor() ([]byte, []int) { return ", g.file.VarName(), ", []int{", strings.Join(indexes, ", "), "} }")
 	if enum.file.GetPackage() == "google.protobuf" && enum.GetName() == "NullValue" {
 		g.P("func (", ccTypeName, `) XXX_WellKnownType() string { return "`, enum.GetName(), `" }`)
 	}
@@ -1903,7 +1908,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	for m := message; m != nil; m = m.parent {
 		indexes = append([]string{strconv.Itoa(m.index)}, indexes...)
 	}
-	g.P("func (*", ccTypeName, ") Descriptor() ([]byte, []int) { return fileDescriptor", g.file.index, ", []int{", strings.Join(indexes, ", "), "} }")
+	g.P("func (*", ccTypeName, ") Descriptor() ([]byte, []int) { return ", g.file.VarName(), ", []int{", strings.Join(indexes, ", "), "} }")
 	// TODO: Revisit the decision to use a XXX_WellKnownType method
 	// if we change proto.MessageName to work with multiple equivalents.
 	if message.file.GetPackage() == "google.protobuf" && wellKnownTypes[message.GetName()] {
@@ -2605,8 +2610,9 @@ func (g *Generator) generateFileDescriptor(file *FileDescriptor) {
 	w.Close()
 	b = buf.Bytes()
 
-	v := fmt.Sprintf("fileDescriptor%d", file.index)
+	v := file.VarName()
 	g.P()
+	g.P("func init() { ", g.Pkg["proto"], ".RegisterFile(", strconv.Quote(*file.Name), ", ", v, ") }")
 	g.P("var ", v, " = []byte{")
 	g.In()
 	g.P("// ", len(b), " bytes of a gzipped FileDescriptorProto")
