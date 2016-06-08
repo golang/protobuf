@@ -51,17 +51,11 @@ for f in $(cd $PKG && find * -name '*.proto'); do
   fi
   filename_map[$up]=$f
 done
-# Pass 2: copy files, making necessary adjustments.
+# Pass 2: copy files
 for up in "${!filename_map[@]}"; do
   f=${filename_map[$up]}
   shortname=$(basename $f | sed 's,\.proto$,,')
-  cat $tmpdir/$UPSTREAM_SUBDIR/$up |
-    # Adjust proto package.
-    # TODO(dsymonds): Remove when the right go_package options are upstream.
-    sed '/^package /a option go_package = "github.com\/golang\/protobuf\/ptypes\/'${shortname}'";' |
-    # Unfortunately "package struct" and "package type" don't work.
-    sed '/option go_package/s,struct",struct;structpb",' |
-    cat > $PKG/$f
+  cp $tmpdir/$UPSTREAM_SUBDIR/$up $PKG/$f
 done
 
 # Run protoc once per package.

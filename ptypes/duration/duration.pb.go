@@ -69,6 +69,7 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 //       end.nanos -= 1000000000;
 //     }
 //
+//
 type Duration struct {
 	// Signed seconds of the span of time. Must be from -315,576,000,000
 	// to +315,576,000,000 inclusive.
