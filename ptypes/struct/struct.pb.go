@@ -63,7 +63,7 @@ func (NullValue) XXX_WellKnownType() string       { return "NullValue" }
 //
 // The JSON representation for `Struct` is JSON object.
 type Struct struct {
-	// Map of dynamically typed values.
+	// Unordered map of dynamically typed values.
 	Fields map[string]*Value `protobuf:"bytes,1,rep,name=fields" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 }
 
