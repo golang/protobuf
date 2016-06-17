@@ -66,6 +66,7 @@ message Message {
 
 message Nested {
   string bunny = 1;
+  bool cute = 2;
 }
 
 message MessageWithMap {
