@@ -488,6 +488,7 @@ message GroupNew {
 
 message FloatingPoint {
   required double f = 1;
+  optional bool exact = 2;
 }
 
 message MessageWithMap {
