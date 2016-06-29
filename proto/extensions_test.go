@@ -101,6 +101,14 @@ func TestExtensionDescsWithMissingExtensions(t *testing.T) {
 	}
 }
 
+func TestExtensionDescsWithEmptyProto(t *testing.T) {
+	msg := &pb.MyMessage{Count: proto.Int32(0)}
+	_, err := proto.ExtensionDescs(msg)
+	if err != nil {
+		t.Fatalf("proto.ExtensionDescs: got error %v", err)
+	}
+}
+
 type ExtensionDescSlice []*proto.ExtensionDesc
 
 func (s ExtensionDescSlice) Len() int           { return len(s) }
