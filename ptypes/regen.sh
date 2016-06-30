@@ -6,7 +6,7 @@
 
 set -Ee
 
-PKG=github.com/gogo/protobuf/ptypes
+PKG=github.com/golang/protobuf/ptypes
 UPSTREAM=https://github.com/google/protobuf
 UPSTREAM_SUBDIR=src/google/protobuf
 
@@ -22,10 +22,10 @@ for tool in go git protoc protoc-gen-go; do
 done
 
 # Can be use for tests of regen2.sh
-# tmpdir=/tmp/upstream
-tmpdir=$(mktemp -d -t regen-wkt.XXXXXX)
-git clone -q $UPSTREAM $tmpdir
-trap 'rm -rf $tmpdir' EXIT
+tmpdir=/tmp/upstream
+#tmpdir=$(mktemp -d -t regen-wkt.XXXXXX)
+#git clone -q $UPSTREAM $tmpdir
+#trap 'rm -rf $tmpdir' EXIT
 
 # Jump to the working directory
 pushd $GOPATH/src/$PKG &>/dev/null
@@ -34,7 +34,6 @@ pushd $GOPATH/src/$PKG &>/dev/null
 for F in $(find . -name '*.proto'); do
 
   inst=$(find $tmpdir/$UPSTREAM_SUBDIR -name $(basename $F) -and -not -path "*/testdata/*"  -print)
-
   if [ $(echo "$inst" | wc -l) -ne 1 ] ; then
     die "Did not find exactly one instance of '$F' in '$tmpdir/$UPSTREAM_SUBDIR'!"
   fi
@@ -44,7 +43,11 @@ done
 # Pass 2: copy and modify
 # We are sure the upstream is in valid state as per pass 1
 for F in $(find . -name '*.proto'); do
-  shortname=$(expr $(basename $F) : '\(.*\)\.proto')
+  shortname=$(expr "$F" : '.*/\(.*\)\.proto')
+
+  echo $shortname
+  fn="$tmpdir/$UPSTREAM_SUBDIR/$shortname.proto"
+  echo $fn
 
   # Unfortunately "package struct" doesn't work.
   # Handle the special case here instead of passing all files through sed
@@ -53,9 +56,9 @@ for F in $(find . -name '*.proto'); do
     shortname="structpb"
   fi
 
-  fn="$tmpdir/$UPSTREAM_SUBDIR/$(basename $F)"
-  # Upstream now seems to have to go_package option
-  sed -e "s/^\(option go_package\).*=.*/\1 = \"$shortname\";/" "$fn" > $F
+  # Upstream now seems to have the go_package option
+  # We just ensure it is correctly named
+  sed -e "s@^\(option go_package\).*=.*@\1 = \"$PKG/$shortname\";@" "$fn" > $F
 done
 
 # Compile
