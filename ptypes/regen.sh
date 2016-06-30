@@ -1,21 +1,14 @@
-#!/bin/bash -e
-#
+#!/bin/bash
 # This script fetches and rebuilds the "well-known types" protocol buffers.
 # To run this you will need protoc and goprotobuf installed;
 # see https://github.com/golang/protobuf for instructions.
 # You also need Go and Git installed.
 
-PKG=github.com/golang/protobuf/ptypes
+set -Ee
+
+PKG=github.com/gogo/protobuf/ptypes
 UPSTREAM=https://github.com/google/protobuf
 UPSTREAM_SUBDIR=src/google/protobuf
-PROTO_FILES='
-  any.proto
-  duration.proto
-  empty.proto
-  struct.proto
-  timestamp.proto
-  wrappers.proto
-'
 
 function die() {
   echo 1>&2 $*
@@ -28,39 +21,52 @@ for tool in go git protoc protoc-gen-go; do
   echo 1>&2 "$tool: $q"
 done
 
+# Can be use for tests of regen2.sh
+# tmpdir=/tmp/upstream
 tmpdir=$(mktemp -d -t regen-wkt.XXXXXX)
+git clone -q $UPSTREAM $tmpdir
 trap 'rm -rf $tmpdir' EXIT
 
-echo -n 1>&2 "finding package dir... "
-pkgdir=$(go list -f '{{.Dir}}' $PKG)
-echo 1>&2 $pkgdir
-base=$(echo $pkgdir | sed "s,/$PKG\$,,")
-echo 1>&2 "base: $base"
-cd $base
+# Jump to the working directory
+pushd $GOPATH/src/$PKG &>/dev/null
 
-echo 1>&2 "fetching latest protos... "
-git clone -q $UPSTREAM $tmpdir
-# Pass 1: build mapping from upstream filename to our filename.
-declare -A filename_map
-for f in $(cd $PKG && find * -name '*.proto'); do
-  echo -n 1>&2 "looking for latest version of $f... "
-  up=$(cd $tmpdir/$UPSTREAM_SUBDIR && find * -name $(basename $f) | grep -v /testdata/)
-  echo 1>&2 $up
-  if [ $(echo $up | wc -w) != "1" ]; then
-    die "not exactly one match"
+# Pass 1: sanitizing
+for F in $(find . -name '*.proto'); do
+
+  inst=$(find $tmpdir/$UPSTREAM_SUBDIR -name $(basename $F) -and -not -path "*/testdata/*"  -print)
+
+  if [ $(echo "$inst" | wc -l) -ne 1 ] ; then
+    die "Did not find exactly one instance of '$F' in '$tmpdir/$UPSTREAM_SUBDIR'!"
   fi
-  filename_map[$up]=$f
-done
-# Pass 2: copy files
-for up in "${!filename_map[@]}"; do
-  f=${filename_map[$up]}
-  shortname=$(basename $f | sed 's,\.proto$,,')
-  cp $tmpdir/$UPSTREAM_SUBDIR/$up $PKG/$f
+
 done
 
-# Run protoc once per package.
-for dir in $(find $PKG -name '*.proto' | xargs dirname | sort | uniq); do
-  echo 1>&2 "* $dir"
-  protoc --go_out=. $dir/*.proto
+# Pass 2: copy and modify
+# We are sure the upstream is in valid state as per pass 1
+for F in $(find . -name '*.proto'); do
+  shortname=$(expr $(basename $F) : '\(.*\)\.proto')
+
+  # Unfortunately "package struct" doesn't work.
+  # Handle the special case here instead of passing all files through sed
+  # a second time
+  if [ $shortname == "struct" ] ; then
+    shortname="structpb"
+  fi
+
+  fn="$tmpdir/$UPSTREAM_SUBDIR/$(basename $F)"
+  # Upstream now seems to have to go_package option
+  sed -e "s/^\(option go_package\).*=.*/\1 = \"$shortname\";/" "$fn" > $F
 done
-echo 1>&2 "All OK"
+
+# Compile
+for dir in $(find . -name '*.proto' -exec dirname {} \; | sort -u); do
+  echo -en "* $dir... " 1>&2
+  protoc --go_out=. $dir/*.proto
+  if [ $? -ne 0 ]; then
+    die "Error creating output files"
+  fi
+  echo "...Success!" 1>&2
+done
+
+# Jump back to the original directory
+popd &>/dev/null
