@@ -12,9 +12,9 @@
 # in the weirdest of circumstances
 set -Ee
 
-PKG=github.com/golang/protobuf/ptypes
-UPSTREAM=https://github.com/google/protobuf
-UPSTREAM_SUBDIR=src/google/protobuf
+PKG=${PTYPES_REGEN_PKG:-github.com/golang/protobuf/ptypes}
+UPSTREAM=${PTYPES_REGEN_UPSTREAM:-https://github.com/google/protobuf}
+UPSTREAM_SUBDIR=${PTYPES_REGEN_UPSTREAM_SUBDIR:-src/google/protobuf}
 
 
 function die() {
