@@ -12,10 +12,11 @@
 # in the weirdest of circumstances
 set -Ee
 
+# Take the PTYPES_REGEN_* environment variables as values
+# If absent or empty, take the respective default values
 PKG=${PTYPES_REGEN_PKG:-github.com/golang/protobuf/ptypes}
 UPSTREAM=${PTYPES_REGEN_UPSTREAM:-https://github.com/google/protobuf}
 UPSTREAM_SUBDIR=${PTYPES_REGEN_UPSTREAM_SUBDIR:-src/google/protobuf}
-
 
 function die() {
   echo 1>&2 $*
@@ -28,8 +29,11 @@ for tool in go git protoc protoc-gen-go find; do
   echo 1>&2 "$tool: $q"
 done
 
-# Can be use for tests of regen2.sh
-#tmpdir=/tmp/upstream
+# Can be used for tests of regen.sh
+# point it to a clone of upstream
+# tmpdir=/tmp/upstream
+
+# If you use the tmpdir from above, comment out the following 3 lines
 tmpdir=$(mktemp -d -t regen-wkt.XXXXXX)
 git clone $UPSTREAM $tmpdir
 trap 'rm -rf $tmpdir' EXIT
@@ -40,12 +44,14 @@ trap 'rm -rf $tmpdir' EXIT
 # * protoc will not find the data necessary to import
 # TODO: this is arguable. Maybe we should just have a basepath.
 pushd $GOPATH/src/$PKG &>/dev/null
-# Jump back to the original directory
+# Jump back to the original directory on exit
 trap 'popd &>/dev/null' EXIT
 
 # Pass 1: sanitizing
 for F in $(find . -type f -name '*.proto'); do
 
+  # Find all instances of the _filename_ in
+  # the upstream sources
   count=$(find $tmpdir/$UPSTREAM_SUBDIR \
     -type f -name $(expr "$F" : '.*/\(.*\.proto\)') \
     -and -not -path "*/testdata/*" | wc -l)
@@ -70,10 +76,11 @@ done
 # Compile
 for dir in $(find . -type f -name *.proto -exec dirname {} \; | sort -u); do
   echo -en "* $dir... " 1>&2
+  # As we are using long package names, the generated files will be written
+  # to a complete path, so we set the output directory to the source dir
   protoc --go_out=$GOPATH/src $dir/*.proto
   if [ $? -ne 0 ]; then
     die "Error creating output files"
   fi
   echo "...Success!" 1>&2
 done
-
