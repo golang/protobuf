@@ -68,7 +68,7 @@ for F in $(find . -name '*.proto'); do
 done
 
 # Compile
-for dir in $(find -type f -name *.proto -exec dirname {} \; | sort -u); do
+for dir in $(find . -type f -name *.proto -exec dirname {} \; | sort -u); do
   echo -en "* $dir... " 1>&2
   protoc --go_out=$GOPATH/src $dir/*.proto
   if [ $? -ne 0 ]; then
