@@ -1551,8 +1551,31 @@ func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptor
 		enum += CamelCaseSlice(obj.TypeName())
 	}
 	packed := ""
-	if field.Options != nil && field.Options.GetPacked() {
-		packed = ",packed"
+	// In proto3, repeated fields of scalar numeric types use packed encoding by default.
+	if message.proto3() && isRepeated(field) {
+		fieldType := field.GetType()
+		if fieldType == descriptor.FieldDescriptorProto_TYPE_BOOL ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_INT32 ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_UINT32 ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_SINT32 ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_FIXED32 ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_SFIXED32 ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_INT64 ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_UINT64 ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_SINT64 ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_FIXED64 ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_SFIXED64 ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_FLOAT ||
+			fieldType == descriptor.FieldDescriptorProto_TYPE_DOUBLE {
+			packed = ",packed"
+		}
+	}
+	if field.Options != nil {
+		if field.Options.GetPacked() {
+			packed = ",packed"
+		} else {
+			packed = ""
+		}
 	}
 	fieldName := field.GetName()
 	name := fieldName
