@@ -44,6 +44,9 @@ import (
 	"unicode/utf8"
 )
 
+// Error string emitted when deserializing Any and fields are already set
+const anyRepeatedlyUnpacked = "Any message unpacked multiple times, or %q already set"
+
 type ParseError struct {
 	Message string
 	Line    int // 1-based line number
@@ -508,8 +511,16 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 				if err != nil {
 					return p.errorf("failed to marshal message of type %q: %v", messageName, err)
 				}
+				if fieldSet["type_url"] {
+					return p.errorf(anyRepeatedlyUnpacked, "type_url")
+				}
+				if fieldSet["value"] {
+					return p.errorf(anyRepeatedlyUnpacked, "value")
+				}
 				sv.FieldByName("TypeUrl").SetString(extName)
 				sv.FieldByName("Value").SetBytes(b)
+				fieldSet["type_url"] = true
+				fieldSet["value"] = true
 				continue
 			}
 
