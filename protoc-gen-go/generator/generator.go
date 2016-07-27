@@ -1551,7 +1551,11 @@ func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptor
 		enum += CamelCaseSlice(obj.TypeName())
 	}
 	packed := ""
-	if field.Options != nil && field.Options.GetPacked() {
+	if (field.Options != nil && field.Options.GetPacked()) ||
+		// Per https://developers.google.com/protocol-buffers/docs/proto3#simple:
+		// "In proto3, repeated fields of scalar numeric types use packed encoding by default."
+		(message.proto3() && (field.Options == nil || field.Options.Packed == nil) &&
+			isRepeated(field) && isScalar(field)) {
 		packed = ",packed"
 	}
 	fieldName := field.GetName()
@@ -2730,6 +2734,32 @@ func isRequired(field *descriptor.FieldDescriptorProto) bool {
 // Is this field repeated?
 func isRepeated(field *descriptor.FieldDescriptorProto) bool {
 	return field.Label != nil && *field.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED
+}
+
+// Is this field a scalar numeric type?
+func isScalar(field *descriptor.FieldDescriptorProto) bool {
+	if field.Type == nil {
+		return false
+	}
+	switch *field.Type {
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE,
+		descriptor.FieldDescriptorProto_TYPE_FLOAT,
+		descriptor.FieldDescriptorProto_TYPE_INT64,
+		descriptor.FieldDescriptorProto_TYPE_UINT64,
+		descriptor.FieldDescriptorProto_TYPE_INT32,
+		descriptor.FieldDescriptorProto_TYPE_FIXED64,
+		descriptor.FieldDescriptorProto_TYPE_FIXED32,
+		descriptor.FieldDescriptorProto_TYPE_BOOL,
+		descriptor.FieldDescriptorProto_TYPE_UINT32,
+		descriptor.FieldDescriptorProto_TYPE_ENUM,
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32,
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64,
+		descriptor.FieldDescriptorProto_TYPE_SINT32,
+		descriptor.FieldDescriptorProto_TYPE_SINT64:
+		return true
+	default:
+		return false
+	}
 }
 
 // badToUnderscore is the mapping function used to generate Go names from package names,
