@@ -51,6 +51,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes/struct"
 )
 
 // Marshaler is a configurable object for converting between
@@ -576,12 +577,68 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	if wkt, ok := target.Addr().Interface().(wkt); ok {
 		switch wkt.XXX_WellKnownType() {
 		case "DoubleValue", "FloatValue", "Int64Value", "UInt64Value",
-			"Int32Value", "UInt32Value", "BoolValue", "StringValue", "BytesValue":
+			"Int32Value", "UInt32Value", "BoolValue", "StringValue", "BytesValue",
+			"ListValue":
 			// "Wrappers use the same representation in JSON
 			//  as the wrapped primitive type, except that null is allowed."
 			// encoding/json will turn JSON `null` into Go `nil`,
 			// so we don't have to do any extra work.
 			return u.unmarshalValue(target.Field(0), inputValue, prop)
+
+		case "Value":
+			var jsonValue interface{}
+			if err := json.Unmarshal(inputValue, &jsonValue); err != nil {
+				return err
+			}
+			var val interface{}
+
+			switch v := jsonValue.(type) {
+			case nil:
+				val = &structpb.Value_NullValue{}
+			case bool:
+				val = &structpb.Value_BoolValue{
+					BoolValue: v,
+				}
+			case string:
+				val = &structpb.Value_StringValue{
+					StringValue: v,
+				}
+			case float64:
+				val = &structpb.Value_NumberValue{
+					NumberValue: v,
+				}
+			case map[string]interface{}:
+				structValue := reflect.ValueOf(&structpb.Struct{}).Elem()
+				u.unmarshalValue(structValue, inputValue, prop)
+
+				val = &structpb.Value_StructValue{
+					StructValue: structValue.Addr().Interface().(*structpb.Struct),
+				}
+			default:
+				return fmt.Errorf("Invalid struct field type: %T", jsonValue)
+			}
+
+			target.Field(0).Set(reflect.ValueOf(val))
+			return nil
+		case "Struct":
+			var jsonFields map[string]json.RawMessage
+			if err := json.Unmarshal(inputValue, &jsonFields); err != nil {
+				return err
+			}
+
+			target.Field(0).Set(reflect.MakeMap(target.Field(0).Type()))
+
+			for k, rawMessage := range jsonFields {
+				v := reflect.ValueOf(&structpb.Value{}).Elem()
+
+				if err := u.unmarshalValue(v, rawMessage, &proto.Properties{}); err != nil {
+					return err
+				}
+
+				target.Field(0).SetMapIndex(reflect.ValueOf(k), v.Addr())
+			}
+
+			return nil
 		case "Any":
 			return fmt.Errorf("unmarshaling Any not supported yet")
 		case "Duration":
