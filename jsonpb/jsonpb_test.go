@@ -464,7 +464,7 @@ var unmarshalingTests = []struct {
 	{"orig_name input", Unmarshaler{}, `{"o_bool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
 	{"camelName input", Unmarshaler{}, `{"oBool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
 
-	{"Struct", Unmarshaler{}, `{"st":{"string":"hello world","double":42,"null":null,"bool":true,"struct":{"hello": "world"}}}`, &pb.KnownTypes{
+	{"Struct", Unmarshaler{}, `{"st":{"string":"hello world","double":42,"null":null,"bool":true,"struct":{"hello": "world"},"list":[1,2,4]}}`, &pb.KnownTypes{
 		St: &stpb.Struct{
 			Fields: map[string]*stpb.Value{
 				"string": &stpb.Value{Kind: &stpb.Value_StringValue{StringValue: "hello world"}},
@@ -475,6 +475,15 @@ var unmarshalingTests = []struct {
 					StructValue: &stpb.Struct{
 						Fields: map[string]*stpb.Value{
 							"hello": &stpb.Value{&stpb.Value_StringValue{"world"}},
+						},
+					},
+				}},
+				"list": &stpb.Value{&stpb.Value_ListValue{
+					ListValue: &stpb.ListValue{
+						Values: []*stpb.Value{
+							&stpb.Value{&stpb.Value_NumberValue{1}},
+							&stpb.Value{&stpb.Value_NumberValue{2}},
+							&stpb.Value{&stpb.Value_NumberValue{4}},
 						},
 					},
 				}},

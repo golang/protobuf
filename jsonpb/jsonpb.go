@@ -614,12 +614,21 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				val = &structpb.Value_StructValue{
 					StructValue: structValue.Addr().Interface().(*structpb.Struct),
 				}
+
+			case []interface{}:
+				listValue := reflect.ValueOf(&structpb.ListValue{}).Elem()
+				u.unmarshalValue(listValue, inputValue, prop)
+
+				val = &structpb.Value_ListValue{
+					ListValue: listValue.Addr().Interface().(*structpb.ListValue),
+				}
 			default:
 				return fmt.Errorf("Invalid struct field type: %T", jsonValue)
 			}
 
 			target.Field(0).Set(reflect.ValueOf(val))
 			return nil
+
 		case "Struct":
 			var jsonFields map[string]json.RawMessage
 			if err := json.Unmarshal(inputValue, &jsonFields); err != nil {
