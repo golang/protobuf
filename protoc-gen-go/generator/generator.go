@@ -1453,7 +1453,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 	if !enum.proto3() {
 		g.P("func (x *", ccTypeName, ") UnmarshalJSON(data []byte) error {")
 		g.In()
-		g.P("value, err := ", g.Pkg["proto"], ".UnmarshalJSONEnum(", ccTypeName, `_value, data, "`, ccTypeName, `")`)
+		g.P("value, err := ", g.Pkg["proto"], ".UnmarshalJSONEnum(", ccTypeName, "_name, ", ccTypeName, `_value, data, "`, ccTypeName, `")`)
 		g.P("if err != nil {")
 		g.In()
 		g.P("return err")

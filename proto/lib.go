@@ -421,14 +421,14 @@ func EnumName(m map[int32]string, v int32) string {
 // value, it returns an int32 that can be cast to the enum type by the caller.
 //
 // The function can deal with both JSON representations, numeric and symbolic.
-func UnmarshalJSONEnum(m map[string]int32, data []byte, enumName string) (int32, error) {
+func UnmarshalJSONEnum(names map[int32]string, values map[string]int32, data []byte, enumName string) (int32, error) {
 	if data[0] == '"' {
 		// New style: enums are strings.
 		var repr string
 		if err := json.Unmarshal(data, &repr); err != nil {
 			return -1, err
 		}
-		val, ok := m[repr]
+		val, ok := values[repr]
 		if !ok {
 			return 0, fmt.Errorf("unrecognized enum %s value %q", enumName, repr)
 		}
@@ -438,6 +438,9 @@ func UnmarshalJSONEnum(m map[string]int32, data []byte, enumName string) (int32,
 	var val int32
 	if err := json.Unmarshal(data, &val); err != nil {
 		return 0, fmt.Errorf("cannot unmarshal %#q into enum %s", data, enumName)
+	}
+	if _, ok := names[val]; !ok {
+		return 0, fmt.Errorf("unrecognized enum %s key %d", enumName, val)
 	}
 	return val, nil
 }
