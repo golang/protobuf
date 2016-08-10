@@ -127,7 +127,7 @@ func (x FieldDescriptorProto_Type) String() string {
 	return proto.EnumName(FieldDescriptorProto_Type_name, int32(x))
 }
 func (x *FieldDescriptorProto_Type) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(FieldDescriptorProto_Type_value, data, "FieldDescriptorProto_Type")
+	value, err := proto.UnmarshalJSONEnum(FieldDescriptorProto_Type_name, FieldDescriptorProto_Type_value, data, "FieldDescriptorProto_Type")
 	if err != nil {
 		return err
 	}
@@ -165,7 +165,7 @@ func (x FieldDescriptorProto_Label) String() string {
 	return proto.EnumName(FieldDescriptorProto_Label_name, int32(x))
 }
 func (x *FieldDescriptorProto_Label) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(FieldDescriptorProto_Label_value, data, "FieldDescriptorProto_Label")
+	value, err := proto.UnmarshalJSONEnum(FieldDescriptorProto_Label_name, FieldDescriptorProto_Label_value, data, "FieldDescriptorProto_Label")
 	if err != nil {
 		return err
 	}
@@ -206,7 +206,7 @@ func (x FileOptions_OptimizeMode) String() string {
 	return proto.EnumName(FileOptions_OptimizeMode_name, int32(x))
 }
 func (x *FileOptions_OptimizeMode) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(FileOptions_OptimizeMode_value, data, "FileOptions_OptimizeMode")
+	value, err := proto.UnmarshalJSONEnum(FileOptions_OptimizeMode_name, FileOptions_OptimizeMode_value, data, "FileOptions_OptimizeMode")
 	if err != nil {
 		return err
 	}
@@ -244,7 +244,7 @@ func (x FieldOptions_CType) String() string {
 	return proto.EnumName(FieldOptions_CType_name, int32(x))
 }
 func (x *FieldOptions_CType) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(FieldOptions_CType_value, data, "FieldOptions_CType")
+	value, err := proto.UnmarshalJSONEnum(FieldOptions_CType_name, FieldOptions_CType_value, data, "FieldOptions_CType")
 	if err != nil {
 		return err
 	}
@@ -284,7 +284,7 @@ func (x FieldOptions_JSType) String() string {
 	return proto.EnumName(FieldOptions_JSType_name, int32(x))
 }
 func (x *FieldOptions_JSType) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(FieldOptions_JSType_value, data, "FieldOptions_JSType")
+	value, err := proto.UnmarshalJSONEnum(FieldOptions_JSType_name, FieldOptions_JSType_value, data, "FieldOptions_JSType")
 	if err != nil {
 		return err
 	}
