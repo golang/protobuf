@@ -1,6 +1,6 @@
 # Go support for Protocol Buffers - Google's data interchange format
 #
-# Copyright 2010 The Go Authors.  All rights reserved.
+# Copyright 2016 The Go Authors.  All rights reserved.
 # https://github.com/golang/protobuf
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,27 +29,5 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-all:	install
-
-install:
-	go install ./proto ./jsonpb ./ptypes
-	go install ./protoc-gen-go
-
-test:
-	go test ./proto ./jsonpb ./ptypes
-	make -C protoc-gen-go/testdata test
-
-clean:
-	go clean ./...
-
-nuke:
-	go clean -i ./...
-
 regenerate:
-	make -C protoc-gen-go/descriptor regenerate
-	make -C protoc-gen-go/plugin regenerate
-	make -C protoc-gen-go/testdata regenerate
-	make -C proto/testdata regenerate
-	make -C jsonpb/jsonpb_test_proto regenerate
-	make -C _conformance regenerate
+	protoc --go_out=Mgoogle/protobuf/any.proto=github.com/golang/protobuf/ptypes/any,Mgoogle/protobuf/duration.proto=github.com/golang/protobuf/ptypes/duration,Mgoogle/protobuf/struct.proto=github.com/golang/protobuf/ptypes/struct,Mgoogle/protobuf/timestamp.proto=github.com/golang/protobuf/ptypes/timestamp,Mgoogle/protobuf/wrappers.proto=github.com/golang/protobuf/ptypes/wrappers,Mgoogle/protobuf/field_mask.proto=google.golang.org/genproto/protobuf:. conformance_proto/conformance.proto
