@@ -1,5 +1,5 @@
 # File used to build with bazel.io
-workspace(name = "com_google_golang_protobuf")
+workspace(name = "com_github_golang_protobuf")
 
 git_repository(
     name = "io_bazel_rules_go",
