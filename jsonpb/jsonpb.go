@@ -608,11 +608,8 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			if err != nil {
 				return fmt.Errorf("bad Timestamp: %v", err)
 			}
-			ns := t.UnixNano()
-			s := ns / 1e9
-			ns %= 1e9
-			target.Field(0).SetInt(s)
-			target.Field(1).SetInt(ns)
+			target.Field(0).SetInt(int64(t.Unix()))
+			target.Field(1).SetInt(int64(t.Nanosecond()))
 			return nil
 		}
 	}
