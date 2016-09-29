@@ -180,7 +180,7 @@ func logNoSliceEnc(t1, t2 reflect.Type) {
 var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
 
 // Initialize the fields for encoding and decoding.
-func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetProp bool) {
+func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	p.enc = nil
 
 	switch t1 := typ; t1.Kind() {
@@ -286,7 +286,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetPro
 
 		p.mtype = t1
 		p.mkeyprop = &Properties{}
-		p.mkeyprop.init(reflect.PtrTo(p.mtype.Key()), "Key", f.Tag.Get("protobuf_key"), nil, lockGetProp)
+		p.mkeyprop.init(reflect.PtrTo(p.mtype.Key()), "Key", f.Tag.Get("protobuf_key"), nil)
 		p.mvalprop = &Properties{}
 		vtype := p.mtype.Elem()
 		if vtype.Kind() != reflect.Ptr && vtype.Kind() != reflect.Slice {
@@ -294,7 +294,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetPro
 			// so we need encoders for the pointer to this type.
 			vtype = reflect.PtrTo(vtype)
 		}
-		p.mvalprop.init(vtype, "Value", f.Tag.Get("protobuf_val"), nil, lockGetProp)
+		p.mvalprop.init(vtype, "Value", f.Tag.Get("protobuf_val"), nil)
 	}
 
 	// precalculate tag code
@@ -309,11 +309,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetPro
 	p.tagcode = p.tagbuf[0 : i+1]
 
 	if p.stype != nil {
-		if lockGetProp {
-			p.sprop = GetProperties(p.stype)
-		} else {
-			p.sprop = getPropertiesLocked(p.stype)
-		}
+		p.sprop = getPropertiesLocked(p.stype)
 	}
 }
 
@@ -327,11 +323,7 @@ func isMarshaler(t reflect.Type) bool {
 }
 
 // Init populates the properties from a protocol buffer struct tag.
-func (p *Properties) Init(typ reflect.Type, name, tag string, f *reflect.StructField) {
-	p.init(typ, name, tag, f, true)
-}
-
-func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructField, lockGetProp bool) (bool, error) {
+func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructField) (bool, error) {
 	// "bytes,49,opt,def=hello!"
 
 	// skip fields without protobuf tags
@@ -349,7 +341,7 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 		return skip, err
 	}
 
-	p.setEnc(typ, f, lockGetProp)
+	p.setEnc(typ, f)
 
 	return false, nil
 }
@@ -408,7 +400,7 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 		p := &prop.Prop[i]
 		name := f.Name
 
-		skip, err := p.init(f.Type, name, f.Tag.Get("protobuf"), &f, false)
+		skip, err := p.init(f.Type, name, f.Tag.Get("protobuf"), &f)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error preparing field %q of type %q: %v\n", name, t.Name(), err)
 			continue
