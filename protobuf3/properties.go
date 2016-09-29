@@ -218,7 +218,7 @@ func logNoSliceEnc(t1, t2 reflect.Type) {
 var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
 
 // Initialize the fields for encoding and decoding.
-func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lockGetProp bool) {
+func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetProp bool) {
 	p.enc = nil
 
 	switch t1 := typ; t1.Kind() {
@@ -388,7 +388,9 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 	if skip || err != nil {
 		return skip, err
 	}
-	p.setEncAndDec(typ, f, lockGetProp)
+
+	p.setEnc(typ, f, lockGetProp)
+
 	return false, nil
 }
 
