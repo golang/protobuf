@@ -76,44 +76,6 @@ type decoder func(p *Buffer, prop *Properties, base structPointer) error
 // A valueDecoder decodes a single integer in a particular encoding.
 type valueDecoder func(o *Buffer) (x uint64, err error)
 
-// tagMap is an optimization over map[int]int for typical protocol buffer
-// use-cases. Encoded protocol buffers are often in tag order with small tag
-// numbers.
-type tagMap struct {
-	fastTags []int
-	slowTags map[int]int
-}
-
-// tagMapFastLimit is the upper bound on the tag number that will be stored in
-// the tagMap slice rather than its map.
-const tagMapFastLimit = 1024
-
-func (p *tagMap) get(t int) (int, bool) {
-	if t > 0 && t < tagMapFastLimit {
-		if t >= len(p.fastTags) {
-			return 0, false
-		}
-		fi := p.fastTags[t]
-		return fi, fi >= 0
-	}
-	fi, ok := p.slowTags[t]
-	return fi, ok
-}
-
-func (p *tagMap) put(t int, fi int) {
-	if t > 0 && t < tagMapFastLimit {
-		for len(p.fastTags) < t+1 {
-			p.fastTags = append(p.fastTags, -1)
-		}
-		p.fastTags[t] = fi
-		return
-	}
-	if p.slowTags == nil {
-		p.slowTags = make(map[int]int)
-	}
-	p.slowTags[t] = fi
-}
-
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
 	Prop  []Properties // properties for each field, indexed by reflection's field number. Fields which are not encoded in protobuf have incomplete Properties
