@@ -188,7 +188,7 @@ func (o *Buffer) Marshal(pb Message) error {
 func (o *Buffer) enc_ptr_bool(p *Properties, base structPointer) error {
 	v := *structPointer_Bool(base, p.field)
 	if v == nil {
-		return ErrNil
+		return nil
 	}
 	x := 0
 	if *v {
@@ -203,7 +203,7 @@ func (o *Buffer) enc_ptr_bool(p *Properties, base structPointer) error {
 func (o *Buffer) enc_bool(p *Properties, base structPointer) error {
 	v := *structPointer_BoolVal(base, p.field)
 	if !v {
-		return ErrNil
+		return nil
 	}
 	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, 1)
@@ -214,7 +214,7 @@ func (o *Buffer) enc_bool(p *Properties, base structPointer) error {
 func (o *Buffer) enc_ptr_int32(p *Properties, base structPointer) error {
 	v := structPointer_Word32(base, p.field)
 	if word32_IsNil(v) {
-		return ErrNil
+		return nil
 	}
 	x := int32(word32_Get(v)) // permit sign extension to use full 64-bit range
 	o.buf = append(o.buf, p.tagcode...)
@@ -227,7 +227,7 @@ func (o *Buffer) enc_int32(p *Properties, base structPointer) error {
 	v := structPointer_Word32Val(base, p.field)
 	x := int32(word32Val_Get(v)) // permit sign extension to use full 64-bit range
 	if x == 0 {
-		return ErrNil
+		return nil
 	}
 	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, uint64(x))
@@ -239,7 +239,7 @@ func (o *Buffer) enc_int32(p *Properties, base structPointer) error {
 func (o *Buffer) enc_ptr_uint32(p *Properties, base structPointer) error {
 	v := structPointer_Word32(base, p.field)
 	if word32_IsNil(v) {
-		return ErrNil
+		return nil
 	}
 	x := word32_Get(v)
 	o.buf = append(o.buf, p.tagcode...)
@@ -252,7 +252,7 @@ func (o *Buffer) enc_uint32(p *Properties, base structPointer) error {
 	v := structPointer_Word32Val(base, p.field)
 	x := word32Val_Get(v)
 	if x == 0 {
-		return ErrNil
+		return nil
 	}
 	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, uint64(x))
@@ -263,7 +263,7 @@ func (o *Buffer) enc_uint32(p *Properties, base structPointer) error {
 func (o *Buffer) enc_ptr_int64(p *Properties, base structPointer) error {
 	v := structPointer_Word64(base, p.field)
 	if word64_IsNil(v) {
-		return ErrNil
+		return nil
 	}
 	x := word64_Get(v)
 	o.buf = append(o.buf, p.tagcode...)
@@ -276,7 +276,7 @@ func (o *Buffer) enc_int64(p *Properties, base structPointer) error {
 	v := structPointer_Word64Val(base, p.field)
 	x := word64Val_Get(v)
 	if x == 0 {
-		return ErrNil
+		return nil
 	}
 	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, x)
@@ -287,7 +287,7 @@ func (o *Buffer) enc_int64(p *Properties, base structPointer) error {
 func (o *Buffer) enc_ptr_string(p *Properties, base structPointer) error {
 	v := *structPointer_String(base, p.field)
 	if v == nil {
-		return ErrNil
+		return nil
 	}
 	x := *v
 	o.buf = append(o.buf, p.tagcode...)
@@ -332,7 +332,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base structPointer) error {
 func (o *Buffer) enc_ptr_struct_message(p *Properties, base structPointer) error {
 	structp := structPointer_GetStructPointer(base, p.field)
 	if structPointer_IsNil(structp) {
-		return ErrNil
+		return nil
 	}
 
 	// Can the object marshal itself?
@@ -356,7 +356,7 @@ func (o *Buffer) enc_slice_packed_bool(p *Properties, base structPointer) error 
 	s := *structPointer_BoolSlice(base, p.field)
 	l := len(s)
 	if l == 0 {
-		return ErrNil
+		return nil
 	}
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(l)) // each bool takes exactly one byte
@@ -374,7 +374,7 @@ func (o *Buffer) enc_slice_packed_bool(p *Properties, base structPointer) error 
 func (o *Buffer) enc_slice_byte(p *Properties, base structPointer) error {
 	s := *structPointer_Bytes(base, p.field)
 	if len(s) == 0 {
-		return ErrNil
+		return nil
 	}
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeRawBytes(s)
@@ -386,7 +386,7 @@ func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) error
 	s := structPointer_Word32Slice(base, p.field)
 	l := s.Len()
 	if l == 0 {
-		return ErrNil
+		return nil
 	}
 	// TODO: Reuse a Buffer.
 	buf := NewBuffer(nil)
@@ -407,7 +407,7 @@ func (o *Buffer) enc_slice_packed_uint32(p *Properties, base structPointer) erro
 	s := structPointer_Word32Slice(base, p.field)
 	l := s.Len()
 	if l == 0 {
-		return ErrNil
+		return nil
 	}
 	// TODO: Reuse a Buffer.
 	buf := NewBuffer(nil)
@@ -426,7 +426,7 @@ func (o *Buffer) enc_slice_packed_int64(p *Properties, base structPointer) error
 	s := structPointer_Word64Slice(base, p.field)
 	l := s.Len()
 	if l == 0 {
-		return ErrNil
+		return nil
 	}
 	// TODO: Reuse a Buffer.
 	buf := NewBuffer(nil)
@@ -445,7 +445,7 @@ func (o *Buffer) enc_slice_slice_byte(p *Properties, base structPointer) error {
 	ss := *structPointer_BytesSlice(base, p.field)
 	l := len(ss)
 	if l == 0 {
-		return ErrNil
+		return nil
 	}
 	for i := 0; i < l; i++ {
 		o.buf = append(o.buf, p.tagcode...)
@@ -491,9 +491,6 @@ func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base structPointer)
 		o.buf = append(o.buf, p.tagcode...)
 		err := o.enc_len_struct(p.sprop, structp)
 		if err != nil {
-			if err == ErrNil {
-				return errRepeatedHasNil
-			}
 			return err
 		}
 	}
@@ -523,9 +520,6 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) err
 		o.buf = append(o.buf, p.tagcode...)
 		err := o.enc_len_struct(p.sprop, structp)
 		if err != nil {
-			if err == ErrNil {
-				return errRepeatedHasNil
-			}
 			return err
 		}
 	}
@@ -556,7 +550,7 @@ func (o *Buffer) enc_new_map(p *Properties, base structPointer) error {
 		if err := p.mkeyprop.enc(o, p.mkeyprop, keybase); err != nil {
 			return err
 		}
-		if err := p.mvalprop.enc(o, p.mvalprop, valbase); err != nil && err != ErrNil {
+		if err := p.mvalprop.enc(o, p.mvalprop, valbase); err != nil {
 			return err
 		}
 		return nil
@@ -620,9 +614,7 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 		if p.enc != nil {
 			err := p.enc(o, p, base)
 			if err != nil {
-				if err == ErrNil {
-					// all fields are optional in protobuf v3
-				} else if err == errRepeatedHasNil {
+				if err == errRepeatedHasNil {
 					// Give more context to nil values in repeated fields.
 					return errors.New("repeated field " + p.Name + " has nil element")
 				} else {
