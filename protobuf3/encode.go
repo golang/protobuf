@@ -157,14 +157,9 @@ func Marshal(pb Message) ([]byte, error) {
 // Marshal takes the protocol buffer
 // and encodes it into the wire format, writing the result to the
 // Buffer.
-func (p *Buffer) Marshal(pb Message) error {
-	return p.encode(GetProperties(reflect.TypeOf(pb)), pb)
-}
-
-// encode it given it's properties
-func (o *Buffer) encode(p *StructProperties, it interface{}) error {
+func (o *Buffer) Marshal(pb Message) error {
 	// Can it marshal itself?
-	if m, ok := it.(Marshaler); ok {
+	if m, ok := pb.(Marshaler); ok {
 		data, err := m.MarshalProtobuf3()
 		if err != nil {
 			return err
@@ -173,9 +168,21 @@ func (o *Buffer) encode(p *StructProperties, it interface{}) error {
 		return nil
 	}
 
-	// examine Properties and marshal it accordingly
+	// unpack the interface and sanity check
+	if pb == nil {
+		return ErrNil // don't pass in nil interfaces. we need types
+	}
+	v := reflect.ValueOf(pb)
+	t := v.Type()
+	if t.Kind() != reflect.Ptr || t.Elem().Kind() != reflect.Struct {
+		return fmt.Errorf("protobuf3: can't Marshal(%s): not a *struct", t)
+	}
+	base := toStructPointer(v)
+	if structPointer_IsNil(base) {
+		return ErrNil // don't pass in nil pointers. we need values
+	}
 
-	return nil
+	return o.enc_struct(GetProperties(t.Elem()), base)
 }
 
 // Individual type encoders.
