@@ -231,7 +231,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetPro
 		case reflect.String:
 			p.enc = (*Buffer).enc_ptr_string
 		case reflect.Struct:
-			p.stype = t1.Elem()
+			p.stype = t2
 			p.isMarshaler = isMarshaler(t1)
 			p.enc = (*Buffer).enc_ptr_struct_message
 		}
