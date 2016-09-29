@@ -311,6 +311,28 @@ func isNil(v reflect.Value) bool {
 	return false
 }
 
+// Encode an message struct field of a message struct.
+func (o *Buffer) enc_struct_message(p *Properties, base structPointer) error {
+	structp := structPointer_GetStructVal(base, p.field)
+	// note struct is embedded in base, so pointer cannot be nil
+
+	// Can the object marshal itself?
+	if p.isMarshaler {
+		m := structPointer_Interface(structp, p.stype).(Marshaler)
+		data, err := m.MarshalProtobuf3()
+		if err != nil {
+			return err
+		}
+		o.buf = append(o.buf, p.tagcode...)
+		o.EncodeRawBytes(data)
+		return nil
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	return o.enc_len_struct(p.sprop, structp)
+
+}
+
 // Encode a *message struct.
 func (o *Buffer) enc_ptr_struct_message(p *Properties, base structPointer) error {
 	structp := structPointer_GetStructPointer(base, p.field)

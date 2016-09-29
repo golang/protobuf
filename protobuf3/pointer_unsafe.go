@@ -135,6 +135,11 @@ func structPointer_GetStructPointer(p structPointer, f field) structPointer {
 	return *(*structPointer)(unsafe.Pointer(uintptr(p) + uintptr(f)))
 }
 
+// GetStructVal returns the address of a struct field in the outer struct.
+func structPointer_GetStructVal(p structPointer, f field) structPointer {
+	return structPointer(unsafe.Pointer(uintptr(p) + uintptr(f)))
+}
+
 // StructPointerSlice the address of a []*struct field in the struct.
 func structPointer_StructPointerSlice(p structPointer, f field) *structPointerSlice {
 	return (*structPointerSlice)(unsafe.Pointer(uintptr(p) + uintptr(f)))
