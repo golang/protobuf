@@ -233,8 +233,7 @@ func (p *Buffer) EncodeMessage(pb Message) error {
 		return ErrNil
 	}
 	if err == nil {
-		var state errorState
-		err = p.enc_len_struct(GetProperties(t.Elem()), base, &state)
+		err = p.enc_len_struct(GetProperties(t.Elem()), base)
 	}
 	return err
 }
@@ -528,7 +527,6 @@ func isNil(v reflect.Value) bool {
 
 // Encode a message struct.
 func (o *Buffer) enc_struct_message(p *Properties, base structPointer) error {
-	var state errorState
 	structp := structPointer_GetStructPointer(base, p.field)
 	if structPointer_IsNil(structp) {
 		return ErrNil
@@ -543,11 +541,11 @@ func (o *Buffer) enc_struct_message(p *Properties, base structPointer) error {
 		}
 		o.buf = append(o.buf, p.tagcode...)
 		o.EncodeRawBytes(data)
-		return state.err
+		return nil
 	}
 
 	o.buf = append(o.buf, p.tagcode...)
-	return o.enc_len_struct(p.sprop, structp, &state)
+	return o.enc_len_struct(p.sprop, structp)
 }
 
 func size_struct_message(p *Properties, base structPointer) int {
@@ -831,7 +829,6 @@ func size_slice_string(p *Properties, base structPointer) (n int) {
 
 // Encode a slice of message structs ([]*struct).
 func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) error {
-	var state errorState
 	s := structPointer_StructPointerSlice(base, p.field)
 	l := s.Len()
 
@@ -854,7 +851,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) err
 		}
 
 		o.buf = append(o.buf, p.tagcode...)
-		err := o.enc_len_struct(p.sprop, structp, &state)
+		err := o.enc_len_struct(p.sprop, structp)
 		if err != nil {
 			if err == ErrNil {
 				return errRepeatedHasNil
@@ -862,7 +859,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) err
 			return err
 		}
 	}
-	return state.err
+	return nil
 }
 
 func size_slice_struct_message(p *Properties, base structPointer) (n int) {
@@ -893,8 +890,6 @@ func size_slice_struct_message(p *Properties, base structPointer) (n int) {
 
 // Encode a map field.
 func (o *Buffer) enc_new_map(p *Properties, base structPointer) error {
-	var state errorState // XXX: or do we need to plumb this through?
-
 	/*
 		A map defined as
 			map<key_type, value_type> map_field = N;
@@ -931,7 +926,7 @@ func (o *Buffer) enc_new_map(p *Properties, base structPointer) error {
 		valcopy.Set(val)
 
 		o.buf = append(o.buf, p.tagcode...)
-		if err := o.enc_len_thing(enc, &state); err != nil {
+		if err := o.enc_len_thing(enc); err != nil {
 			return err
 		}
 	}
@@ -994,7 +989,6 @@ func mapEncodeScratch(mapType reflect.Type) (keycopy, valcopy reflect.Value, key
 
 // Encode a struct.
 func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
-	var state errorState
 	// Encode fields in tag order so that decoders may use optimizations
 	// that depend on the ordering.
 	// https://developers.google.com/protocol-buffers/docs/encoding#order
@@ -1026,7 +1020,7 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 		}
 	}
 
-	return state.err
+	return nil
 }
 
 func size_struct(prop *StructProperties, base structPointer) (n int) {
@@ -1049,12 +1043,12 @@ func size_struct(prop *StructProperties, base structPointer) (n int) {
 var zeroes [20]byte // longer than any conceivable sizeVarint
 
 // Encode a struct, preceded by its encoded length (as a varint).
-func (o *Buffer) enc_len_struct(prop *StructProperties, base structPointer, state *errorState) error {
-	return o.enc_len_thing(func() error { return o.enc_struct(prop, base) }, state)
+func (o *Buffer) enc_len_struct(prop *StructProperties, base structPointer) error {
+	return o.enc_len_thing(func() error { return o.enc_struct(prop, base) })
 }
 
 // Encode something, preceded by its encoded length (as a varint).
-func (o *Buffer) enc_len_thing(enc func() error, state *errorState) error {
+func (o *Buffer) enc_len_thing(enc func() error) error {
 	iLen := len(o.buf)
 	o.buf = append(o.buf, 0, 0, 0, 0) // reserve four bytes for length
 	iMsg := len(o.buf)
@@ -1078,11 +1072,5 @@ func (o *Buffer) enc_len_thing(enc func() error, state *errorState) error {
 	o.buf = o.buf[:iLen]
 	o.EncodeVarint(uint64(lMsg))
 	o.buf = o.buf[:len(o.buf)+lMsg]
-	return state.err
-}
-
-// errorState maintains the first error that occurs and updates that error
-// with additional context.
-type errorState struct {
-	err error
+	return nil
 }
