@@ -217,73 +217,28 @@ func Marshal(pb Message) ([]byte, error) {
 	return p.buf, nil
 }
 
-// EncodeMessage writes the protocol buffer to the Buffer,
-// prefixed by a varint-encoded length.
-func (p *Buffer) EncodeMessage(pb Message) error {
-	t, base, err := getbase(pb)
-	if structPointer_IsNil(base) {
-		return ErrNil
-	}
-	if err == nil {
-		err = p.enc_len_struct(GetProperties(t.Elem()), base)
-	}
-	return err
-}
-
 // Marshal takes the protocol buffer
 // and encodes it into the wire format, writing the result to the
 // Buffer.
 func (p *Buffer) Marshal(pb Message) error {
-	// Can the object marshal itself?
-	if m, ok := pb.(Marshaler); ok {
+	return p.encode(GetProperties(reflect.TypeOf(pb)), pb)
+}
+
+// encode it given it's properties
+func (o *Buffer) encode(p *StructProperties, it interface{}) error {
+	// Can it marshal itself?
+	if m, ok := it.(Marshaler); ok {
 		data, err := m.MarshalProtobuf3()
 		if err != nil {
 			return err
 		}
-		p.buf = append(p.buf, data...)
+		o.buf = append(o.buf, data...)
 		return nil
 	}
 
-	t, base, err := getbase(pb)
-	if structPointer_IsNil(base) {
-		return ErrNil
-	}
-	if err == nil {
-		err = p.enc_struct(GetProperties(t.Elem()), base)
-	}
+	// examine Properties and marshal it accordingly
 
-	if collectStats {
-		stats.Encode++
-	}
-
-	if len(p.buf) > maxMarshalSize {
-		return ErrTooLarge
-	}
-	return err
-}
-
-// Size returns the encoded size of a protocol buffer.
-func Size(pb Message) (n int) {
-	// Can the object marshal itself?  If so, Size is slow.
-	// TODO: add Size to Marshaler, or add a Sizer interface.
-	if m, ok := pb.(Marshaler); ok {
-		b, _ := m.MarshalProtobuf3()
-		return len(b)
-	}
-
-	t, base, err := getbase(pb)
-	if structPointer_IsNil(base) {
-		return 0
-	}
-	if err == nil {
-		n = size_struct(GetProperties(t.Elem()), base)
-	}
-
-	if collectStats {
-		stats.Size++
-	}
-
-	return
+	return nil
 }
 
 // Individual type encoders.

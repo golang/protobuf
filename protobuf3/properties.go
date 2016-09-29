@@ -335,6 +335,12 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 		p.enc = (*Buffer).enc_proto3_string
 		p.size = size_proto3_string
 
+	case reflect.Struct:
+		p.stype = t1
+		p.isMarshaler = isMarshaler(t1)
+		p.enc = (*Buffer).enc_struct_message
+		p.size = size_struct_message
+
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
 		default:
@@ -470,12 +476,6 @@ var (
 
 // isMarshaler reports whether type t implements Marshaler.
 func isMarshaler(t reflect.Type) bool {
-	// We're checking for (likely) pointer-receiver methods
-	// so if t is not a pointer, something is very wrong.
-	// The calls above only invoke isMarshaler on pointer types.
-	if t.Kind() != reflect.Ptr {
-		panic("proto: misuse of isMarshaler")
-	}
 	return t.Implements(marshalerType)
 }
 
@@ -506,7 +506,13 @@ var (
 // GetProperties returns the list of properties for the type represented by t.
 // t must represent a generated struct type of a protocol message.
 func GetProperties(t reflect.Type) *StructProperties {
-	if t.Kind() != reflect.Struct {
+	k := t.Kind()
+	// accept a pointer-to-struct as well (but just one level)
+	if k == reflect.Ptr {
+		t = t.Elem()
+		k = t.Kind()
+	}
+	if k != reflect.Struct {
 		panic("proto: type must have kind struct")
 	}
 
