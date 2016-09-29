@@ -29,14 +29,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package proto_test
+package protobuf3_test
 
 import (
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	pb "github.com/golang/protobuf/proto/proto3_proto"
-	tpb "github.com/golang/protobuf/proto/testdata"
+	"github.com/mistsys/protobuf3/proto"
+	pb "github.com/mistsys/protobuf3/proto/proto3_proto"
+	"github.com/mistsys/protobuf3/protobuf3"
 )
 
 func TestProto3ZeroValues(t *testing.T) {
@@ -48,9 +48,9 @@ func TestProto3ZeroValues(t *testing.T) {
 		{"empty bytes field", &pb.Message{Data: []byte{}}},
 	}
 	for _, test := range tests {
-		b, err := proto.Marshal(test.m)
+		b, err := protobuf3.Marshal(test.m)
 		if err != nil {
-			t.Errorf("%s: proto.Marshal: %v", test.desc, err)
+			t.Errorf("%s: protobuf3.Marshal: %v", test.desc, err)
 			continue
 		}
 		if len(b) > 0 {
@@ -76,9 +76,9 @@ func TestRoundTripProto3(t *testing.T) {
 	}
 	t.Logf(" m: %v", m)
 
-	b, err := proto.Marshal(m)
+	b, err := protobuf3.Marshal(m)
 	if err != nil {
-		t.Fatalf("proto.Marshal: %v", err)
+		t.Fatalf("protobuf3.Marshal: %v", err)
 	}
 	t.Logf(" b: %q", b)
 
