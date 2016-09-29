@@ -136,11 +136,9 @@ func (p *tagMap) put(t int, fi int) {
 // decoderTags and decoderOrigNames should only be used by the decoder.
 type StructProperties struct {
 	Prop             []*Properties  // properties for each field
-	reqCount         int            // required count
 	decoderTags      tagMap         // map from proto tag to struct field number
 	decoderOrigNames map[string]int // map from original name to struct field number
 	order            []int          // list of struct field numbers in tag order
-	unrecField       field          // field id of the XXX_unrecognized []byte field
 
 	oneofMarshaler   oneofMarshaler
 	oneofUnmarshaler oneofUnmarshaler
@@ -172,12 +170,9 @@ func (sp *StructProperties) Swap(i, j int) { sp.order[i], sp.order[j] = sp.order
 type Properties struct {
 	Name     string // name of the field, for error messages
 	OrigName string // original name before protocol compiler (always set)
-	JSONName string // name to use for JSON; determined by protoc
 	Wire     string
 	WireType int
 	Tag      int
-	Required bool
-	Optional bool
 	Repeated bool
 	Enum     string // set for enum types only
 	oneof    bool   // whether this is a oneof field
@@ -208,20 +203,12 @@ func (p *Properties) String() string {
 	s := p.Wire
 	s = ","
 	s += strconv.Itoa(p.Tag)
-	if p.Required {
-		s += ",req"
-	}
-	if p.Optional {
-		s += ",opt"
-	}
+	s += ",opt" // all protobuf v3 fields are optional
 	if p.Repeated {
 		s += ",rep"
 	}
-	s += ",packed"
+	s += ",packed" // we pack all fields
 	s += ",name=" + p.OrigName
-	if p.JSONName != p.OrigName {
-		s += ",json=" + p.JSONName
-	}
 	s += ",proto3"
 	if p.oneof {
 		s += ",oneof"
@@ -283,18 +270,14 @@ func (p *Properties) Parse(s string) {
 	for i := 2; i < len(fields); i++ {
 		f := fields[i]
 		switch {
-		case f == "req":
-			p.Required = true
 		case f == "opt":
-			p.Optional = true
+			// ok
 		case f == "rep":
 			p.Repeated = true
 		case f == "packed":
 			// ok
 		case strings.HasPrefix(f, "name="):
 			p.OrigName = f[5:]
-		case strings.HasPrefix(f, "json="):
-			p.JSONName = f[5:]
 		case strings.HasPrefix(f, "enum="):
 			p.Enum = f[5:]
 		case f == "proto3":
@@ -562,7 +545,6 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	propertiesMap[t] = prop
 
 	// build properties
-	prop.unrecField = invalidField
 	prop.Prop = make([]*Properties, t.NumField())
 	prop.order = make([]int, t.NumField())
 
@@ -631,7 +613,6 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 
 	// build required counts
 	// build tags
-	reqCount := 0
 	prop.decoderOrigNames = make(map[string]int)
 	for i, p := range prop.Prop {
 		if strings.HasPrefix(p.Name, "XXX_") {
@@ -639,13 +620,9 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 			// They are handled specially when encoding and decoding.
 			continue
 		}
-		if p.Required {
-			reqCount++
-		}
 		prop.decoderTags.put(p.Tag, i)
 		prop.decoderOrigNames[p.OrigName] = i
 	}
-	prop.reqCount = reqCount
 
 	return prop
 }

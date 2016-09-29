@@ -37,26 +37,8 @@ package protobuf3
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 )
-
-// RequiredNotSetError is the error returned if Marshal is called with
-// a protocol buffer struct whose required fields have not
-// all been initialized. It is also the error returned if Unmarshal is
-// called with an encoded protocol buffer that does not include all the
-// required fields.
-//
-// When printed, RequiredNotSetError reports the first unset required field in a
-// message. If the field cannot be precisely determined, it is reported as
-// "{Unknown}".
-type RequiredNotSetError struct {
-	field string
-}
-
-func (e *RequiredNotSetError) Error() string {
-	return fmt.Sprintf("proto: required field %q not set", e.field)
-}
 
 var (
 	// errRepeatedHasNil is the error returned if Marshal is called with
@@ -1022,11 +1004,7 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 		if p.enc != nil {
 			err := p.enc(o, p, base)
 			if err != nil {
-				if err == ErrNil {
-					if p.Required && state.err == nil {
-						state.err = &RequiredNotSetError{p.Name}
-					}
-				} else if err == errRepeatedHasNil {
+				if err == errRepeatedHasNil {
 					// Give more context to nil values in repeated fields.
 					return errors.New("repeated field " + p.OrigName + " has nil element")
 				} else if !state.shouldContinue(err, p) {
@@ -1049,17 +1027,6 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 		}
 	}
 
-	// Add unrecognized fields at the end.
-	if prop.unrecField.IsValid() {
-		v := *structPointer_Bytes(base, prop.unrecField)
-		if len(o.buf)+len(v) > maxMarshalSize {
-			return ErrTooLarge
-		}
-		if len(v) > 0 {
-			o.buf = append(o.buf, v...)
-		}
-	}
-
 	return state.err
 }
 
@@ -1069,12 +1036,6 @@ func size_struct(prop *StructProperties, base structPointer) (n int) {
 		if p.size != nil {
 			n += p.size(p, base)
 		}
-	}
-
-	// Add unrecognized fields at the end.
-	if prop.unrecField.IsValid() {
-		v := *structPointer_Bytes(base, prop.unrecField)
-		n += len(v)
 	}
 
 	// Factor in any oneof fields.
@@ -1128,23 +1089,10 @@ type errorState struct {
 }
 
 // shouldContinue reports whether encoding should continue upon encountering the
-// given error. If the error is RequiredNotSetError, shouldContinue returns true
-// and, if this is the first appearance of that error, remembers it for future
-// reporting.
+// given error.
 //
 // If prop is not nil, it may update any error with additional context about the
 // field with the error.
 func (s *errorState) shouldContinue(err error, prop *Properties) bool {
-	// Ignore unset required fields.
-	reqNotSet, ok := err.(*RequiredNotSetError)
-	if !ok {
-		return false
-	}
-	if s.err == nil {
-		if prop != nil {
-			err = &RequiredNotSetError{prop.Name + "." + reqNotSet.field}
-		}
-		s.err = err
-	}
-	return true
+	return false
 }
