@@ -215,8 +215,7 @@ func Marshal(pb Message) ([]byte, error) {
 	}
 	p := NewBuffer(nil)
 	err := p.Marshal(pb)
-	var state errorState
-	if err != nil && !state.shouldContinue(err, nil) {
+	if err != nil {
 		return nil, err
 	}
 	if p.buf == nil && err == nil {
@@ -539,7 +538,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base structPointer) error {
 	if p.isMarshaler {
 		m := structPointer_Interface(structp, p.stype).(Marshaler)
 		data, err := m.Marshal()
-		if err != nil && !state.shouldContinue(err, nil) {
+		if err != nil {
 			return err
 		}
 		o.buf = append(o.buf, p.tagcode...)
@@ -846,7 +845,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) err
 		if p.isMarshaler {
 			m := structPointer_Interface(structp, p.stype).(Marshaler)
 			data, err := m.Marshal()
-			if err != nil && !state.shouldContinue(err, nil) {
+			if err != nil {
 				return err
 			}
 			o.buf = append(o.buf, p.tagcode...)
@@ -856,7 +855,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) err
 
 		o.buf = append(o.buf, p.tagcode...)
 		err := o.enc_len_struct(p.sprop, structp, &state)
-		if err != nil && !state.shouldContinue(err, nil) {
+		if err != nil {
 			if err == ErrNil {
 				return errRepeatedHasNil
 			}
@@ -1007,7 +1006,7 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 				if err == errRepeatedHasNil {
 					// Give more context to nil values in repeated fields.
 					return errors.New("repeated field " + p.OrigName + " has nil element")
-				} else if !state.shouldContinue(err, p) {
+				} else {
 					return err
 				}
 			}
@@ -1060,7 +1059,7 @@ func (o *Buffer) enc_len_thing(enc func() error, state *errorState) error {
 	o.buf = append(o.buf, 0, 0, 0, 0) // reserve four bytes for length
 	iMsg := len(o.buf)
 	err := enc()
-	if err != nil && !state.shouldContinue(err, nil) {
+	if err != nil {
 		return err
 	}
 	lMsg := len(o.buf) - iMsg
@@ -1086,13 +1085,4 @@ func (o *Buffer) enc_len_thing(enc func() error, state *errorState) error {
 // with additional context.
 type errorState struct {
 	err error
-}
-
-// shouldContinue reports whether encoding should continue upon encountering the
-// given error.
-//
-// If prop is not nil, it may update any error with additional context about the
-// field with the error.
-func (s *errorState) shouldContinue(err error, prop *Properties) bool {
-	return false
 }
