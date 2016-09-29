@@ -251,18 +251,12 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetPro
 			p.enc = (*Buffer).enc_slice_packed_int64
 		case reflect.Uint8:
 			p.enc = (*Buffer).enc_slice_byte
-		case reflect.Float32, reflect.Float64:
-			switch t2.Bits() {
-			case 32:
-				// can just treat them as bits
-				p.enc = (*Buffer).enc_slice_packed_uint32
-			case 64:
-				// can just treat them as bits
-				p.enc = (*Buffer).enc_slice_packed_int64
-			default:
-				logNoSliceEnc(t1, t2)
-				break
-			}
+		case reflect.Float32:
+			// can just treat them as bits
+			p.enc = (*Buffer).enc_slice_packed_uint32
+		case reflect.Float64:
+			// can just treat them as bits
+			p.enc = (*Buffer).enc_slice_packed_int64
 		case reflect.String:
 			p.enc = (*Buffer).enc_slice_string
 		case reflect.Struct:
