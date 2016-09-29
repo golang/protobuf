@@ -96,6 +96,7 @@ type Properties struct {
 	Wire     string
 	Tag      uint32
 	Repeated bool
+	WireType byte
 
 	enc         encoder
 	valEnc      valueEncoder // set for bool and numeric types only
@@ -137,16 +138,21 @@ func (p *Properties) Parse(s string) (bool, error) {
 	switch p.Wire {
 	case "varint":
 		p.valEnc = (*Buffer).EncodeVarint
+		p.WireType = WireVarint
 	case "fixed32":
 		p.valEnc = (*Buffer).EncodeFixed32
+		p.WireType = WireFixed32
 	case "fixed64":
 		p.valEnc = (*Buffer).EncodeFixed64
+		p.WireType = WireFixed64
 	case "zigzag32":
 		p.valEnc = (*Buffer).EncodeZigzag32
+		p.WireType = WireVarint
 	case "zigzag64":
 		p.valEnc = (*Buffer).EncodeZigzag64
 	case "bytes":
 		// no numeric converter for non-numeric types
+		p.WireType = WireBytes
 	case "skip":
 		// used to mark fields which should be skipped by the protobuf encoder
 		return true, nil
@@ -298,8 +304,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	}
 
 	// precalculate tag code
-	wire := WireBytes
-	x := uint32(p.Tag)<<3 | uint32(wire)
+	x := p.Tag<<3 | uint32(p.WireType)
 	i := 0
 	for i = 0; x > 127; i++ {
 		p.tagbuf[i] = 0x80 | uint8(x&0x7F)
