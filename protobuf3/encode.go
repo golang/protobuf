@@ -126,18 +126,16 @@ func (p *Buffer) EncodeZigzag32(x uint64) {
 // EncodeRawBytes writes a count-delimited byte buffer to the Buffer.
 // This is the format used for the bytes protocol buffer
 // type and for embedded messages.
-func (p *Buffer) EncodeRawBytes(b []byte) error {
+func (p *Buffer) EncodeRawBytes(b []byte) {
 	p.EncodeVarint(uint64(len(b)))
 	p.buf = append(p.buf, b...)
-	return nil
 }
 
 // EncodeStringBytes writes an encoded string to the Buffer.
 // This is the format used for the proto2 string type.
-func (p *Buffer) EncodeStringBytes(s string) error {
+func (p *Buffer) EncodeStringBytes(s string) {
 	p.EncodeVarint(uint64(len(s)))
 	p.buf = append(p.buf, s...)
-	return nil
 }
 
 // Marshaler is the interface representing objects that can marshal themselves.
