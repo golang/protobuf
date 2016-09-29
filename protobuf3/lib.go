@@ -276,9 +276,7 @@ import (
 
 // Message is implemented by generated protocol buffer messages.
 type Message interface {
-	Reset()
-	String() string
-	ProtoMessage()
+	ProtoMessage() // dummy method exists only to indicate that the struct's fields ought to be decorated with protobuf="wiretype,id" tags
 }
 
 // Stats records allocation details about the protocol buffer encoders
