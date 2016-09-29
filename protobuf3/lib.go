@@ -104,7 +104,7 @@ out:
 			break out
 		}
 		tag := op >> 3
-		wire := op & 7
+		wire := WireType(op) & 7
 
 		switch wire {
 		default:

@@ -49,13 +49,25 @@ const debug bool = false
 
 // Constants that identify the encoding of a value on the wire.
 const (
-	WireVarint     = 0
-	WireFixed64    = 1
-	WireBytes      = 2
-	WireStartGroup = 3
-	WireEndGroup   = 4
-	WireFixed32    = 5
+	WireVarint     = WireType(0)
+	WireFixed64    = WireType(1)
+	WireBytes      = WireType(2)
+	WireStartGroup = WireType(3)
+	WireEndGroup   = WireType(4)
+	WireFixed32    = WireType(5)
 )
+
+type WireType byte
+
+// mapping from WireType to string
+var wireTypeNames = []string{WireVarint: "varint", WireFixed64: "fixed64", WireBytes: "bytes", WireStartGroup: "start-group", WireEndGroup: "end-group", WireFixed32: "fixed32"}
+
+func (wt WireType) String() string {
+	if int(wt) < len(wireTypeNames) {
+		return wireTypeNames[wt]
+	}
+	return fmt.Sprintf("WireType(%d)", byte(wt))
+}
 
 const startSize = 10 // initial slice/string sizes
 
@@ -96,7 +108,7 @@ type Properties struct {
 	Wire     string
 	Tag      uint32
 	Repeated bool
-	WireType byte
+	WireType WireType
 
 	enc         encoder
 	valEnc      valueEncoder // set for bool and numeric types only
