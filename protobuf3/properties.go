@@ -567,41 +567,6 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	// Re-order prop.order.
 	sort.Sort(prop)
 
-	type oneofMessage interface {
-		XXX_OneofFuncs() (func(Message, *Buffer) error, func(Message, int, int, *Buffer) (bool, error), func(Message) int, []interface{})
-	}
-	if om, ok := reflect.Zero(reflect.PtrTo(t)).Interface().(oneofMessage); ok {
-		var oots []interface{}
-		prop.oneofMarshaler, prop.oneofUnmarshaler, prop.oneofSizer, oots = om.XXX_OneofFuncs()
-		prop.stype = t
-
-		// Interpret oneof metadata.
-		prop.OneofTypes = make(map[string]*OneofProperties)
-		for _, oot := range oots {
-			oop := &OneofProperties{
-				Type: reflect.ValueOf(oot).Type(), // *T
-				Prop: new(Properties),
-			}
-			sft := oop.Type.Elem().Field(0)
-			oop.Prop.Name = sft.Name
-			oop.Prop.Parse(sft.Tag.Get("protobuf"))
-			// There will be exactly one interface field that
-			// this new value is assignable to.
-			for i := 0; i < t.NumField(); i++ {
-				f := t.Field(i)
-				if f.Type.Kind() != reflect.Interface {
-					continue
-				}
-				if !oop.Type.AssignableTo(f.Type) {
-					continue
-				}
-				oop.Field = i
-				break
-			}
-			prop.OneofTypes[oop.Prop.OrigName] = oop
-		}
-	}
-
 	// build required counts
 	// build tags
 	prop.decoderOrigNames = make(map[string]int)
