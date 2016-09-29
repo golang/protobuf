@@ -1,4 +1,27 @@
-# Go support for Protocol Buffers
+# Simplified and enhanced Go support for Protocol Buffer v3 encoding
+
+Derived from the canonical google github.com/golang/protobuf, with
+the encoder rewritten to:
+
+- Support arrays, not just slices
+- Support struct fields, not just pointers-to-struct 
+- Support custom marshalers better by encoding the key and only needed the value
+  from the custom marshaler.
+- Support ignored (not marshaled) fields
+- Only support protobuf v3
+
+and whatever else I may find useful along the way.
+
+This fork stems from trying to encode deeply nested data which has heretofore
+been marshaled into JSON. The JSON marshalers, it turns out, permit many more
+of the data structures which Go has, and which we used, than golang/protobuf
+could handle.
+
+Modifications are Copyright 2016 Mist Systems.
+
+Original README.md follows
+
+---------------------------------------------------------------------------
 
 Google's data interchange format.
 Copyright 2010 The Go Authors.
