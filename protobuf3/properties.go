@@ -132,17 +132,9 @@ func (sp *StructProperties) Swap(i, j int) { sp.order[i], sp.order[j] = sp.order
 // Properties represents the protocol-specific behavior of a single struct field.
 type Properties struct {
 	Name     string // name of the field, for error messages
-	OrigName string // original name before protocol compiler (always set)
 	Wire     string
-	WireType int
 	Tag      int
 	Repeated bool
-	Enum     string // set for enum types only
-	oneof    bool   // whether this is a oneof field
-
-	Default    string // default value
-	HasDefault bool   // whether an explicit default was provided
-	def_uint64 uint64
 
 	enc         encoder
 	valEnc      valueEncoder // set for bool and numeric types only
@@ -168,87 +160,55 @@ func (p *Properties) String() string {
 		s += ",rep"
 	}
 	s += ",packed" // we pack all fields
-	s += ",name=" + p.OrigName
 	s += ",proto3"
-	if p.oneof {
-		s += ",oneof"
-	}
-	if len(p.Enum) > 0 {
-		s += ",enum=" + p.Enum
-	}
-	if p.HasDefault {
-		s += ",def=" + p.Default
-	}
+
 	return s
 }
 
 // Parse populates p by parsing a string in the protobuf struct field tag style.
-func (p *Properties) Parse(s string) {
-	// "bytes,49,opt,name=foo,def=hello!"
-	fields := strings.Split(s, ",") // breaks def=, but handled below.
-	if len(fields) < 2 {
-		fmt.Fprintf(os.Stderr, "proto: tag has too few fields: %q\n", s)
-		return
+func (p *Properties) Parse(s string) (bool, error) {
+	// "bytes,49,rep,..."
+	fields := strings.Split(s, ",")
+	if len(fields) < 1 {
+		return true, fmt.Errorf("protobuf3: tag of %q has too few fields: %q", p.Name, s)
 	}
 
 	p.Wire = fields[0]
 	switch p.Wire {
 	case "varint":
-		p.WireType = WireVarint
 		p.valEnc = (*Buffer).EncodeVarint
 	case "fixed32":
-		p.WireType = WireFixed32
 		p.valEnc = (*Buffer).EncodeFixed32
 	case "fixed64":
-		p.WireType = WireFixed64
 		p.valEnc = (*Buffer).EncodeFixed64
 	case "zigzag32":
-		p.WireType = WireVarint
 		p.valEnc = (*Buffer).EncodeZigzag32
 	case "zigzag64":
-		p.WireType = WireVarint
 		p.valEnc = (*Buffer).EncodeZigzag64
-	case "bytes", "group":
-		p.WireType = WireBytes
+	case "bytes":
 		// no numeric converter for non-numeric types
+	case "skip":
+		// used to mark fields which should be skipped by the protobuf encoder
+		return true, nil
 	default:
-		fmt.Fprintf(os.Stderr, "proto: tag has unknown wire type: %q\n", s)
-		return
+		return false, fmt.Errorf("protobuf3: tag of %q has unknown wire type: %q", p.Name, s)
 	}
 
 	var err error
 	p.Tag, err = strconv.Atoi(fields[1])
 	if err != nil {
-		return
+		return false, fmt.Errorf("protobuf3: tag id of %q invalid: %s: %s", p.Name, s, err.Error())
 	}
 
 	for i := 2; i < len(fields); i++ {
 		f := fields[i]
-		switch {
-		case f == "opt":
-			// ok
-		case f == "rep":
+		switch f {
+		case "rep":
 			p.Repeated = true
-		case f == "packed":
-			// ok
-		case strings.HasPrefix(f, "name="):
-			p.OrigName = f[5:]
-		case strings.HasPrefix(f, "enum="):
-			p.Enum = f[5:]
-		case f == "proto3":
-			// ok
-		case f == "oneof":
-			p.oneof = true
-		case strings.HasPrefix(f, "def="):
-			p.HasDefault = true
-			p.Default = f[4:] // rest of string
-			if i+1 < len(fields) {
-				// Commas aren't escaped, and def is always last.
-				p.Default += "," + strings.Join(fields[i+1:], ",")
-				break
-			}
 		}
 	}
+
+	return false, nil
 }
 
 func logNoSliceEnc(t1, t2 reflect.Type) {
@@ -411,18 +371,25 @@ func (p *Properties) Init(typ reflect.Type, name, tag string, f *reflect.StructF
 	p.init(typ, name, tag, f, true)
 }
 
-func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructField, lockGetProp bool) {
+func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructField, lockGetProp bool) (bool, error) {
 	// "bytes,49,opt,def=hello!"
+
+	// skip fields without protobuf tags
+	if tag == "" {
+		return true, nil
+	}
+
 	p.Name = name
-	p.OrigName = name
 	if f != nil {
 		p.field = toField(f)
 	}
-	if tag == "" {
-		return
+
+	skip, err := p.Parse(tag)
+	if skip || err != nil {
+		return skip, err
 	}
-	p.Parse(tag)
 	p.setEncAndDec(typ, f, lockGetProp)
+	return false, nil
 }
 
 var (
@@ -469,22 +436,29 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	propertiesMap[t] = prop
 
 	// build properties
-	prop.Prop = make([]*Properties, t.NumField())
-	prop.order = make([]int, t.NumField())
+	nf := t.NumField()
+	prop.Prop = make([]Properties, nf)
+	prop.order = make([]int, nf)
 
-	for i := 0; i < t.NumField(); i++ {
+	j := 0
+	for i := 0; i < nf; i++ {
 		f := t.Field(i)
-		p := new(Properties)
+		p := &prop.Prop[i]
 		name := f.Name
-		p.init(f.Type, name, f.Tag.Get("protobuf"), &f, false)
 
-		oneof := f.Tag.Get("protobuf_oneof") // special case
-		if oneof != "" {
-			// Oneof fields don't use the traditional protobuf tag.
-			p.OrigName = oneof
+		skip, err := p.init(f.Type, name, f.Tag.Get("protobuf"), &f, false)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error preparing field %q of type %q: %v\n", name, t.Name(), err)
+			continue
 		}
-		prop.Prop[i] = p
-		prop.order[i] = i
+		if skip {
+			// silently skip this field. It's not part of the protobuf encoding of this struct
+			continue
+		}
+
+		prop.order[j] = i
+		j++
+
 		if debug {
 			print(i, " ", f.Name, " ", t.String(), " ")
 			if p.Tag > 0 {
@@ -492,10 +466,14 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 			}
 			print("\n")
 		}
-		if p.enc == nil && oneof == "" {
+
+		if p.enc == nil {
 			fmt.Fprintln(os.Stderr, "proto: no encoder for", f.Name, f.Type.String(), "[GetProperties]")
 		}
 	}
+
+	// slice off any unused indexes
+	prop.order = prop.order[:j]
 
 	// Re-order prop.order.
 	sort.Sort(prop)
@@ -510,7 +488,7 @@ func propByIndex(t reflect.Type, x []int) *Properties {
 		return nil
 	}
 	prop := GetProperties(t)
-	return prop.Prop[x[0]]
+	return &prop.Prop[x[0]]
 }
 
 // Get the address and type of a pointer to a struct from an interface.

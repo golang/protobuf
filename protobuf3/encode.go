@@ -619,13 +619,13 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 	// that depend on the ordering.
 	// https://developers.google.com/protocol-buffers/docs/encoding#order
 	for _, i := range prop.order {
-		p := prop.Prop[i]
+		p := &prop.Prop[i]
 		if p.enc != nil {
 			err := p.enc(o, p, base)
 			if err != nil {
 				if err == errRepeatedHasNil {
 					// Give more context to nil values in repeated fields.
-					return errors.New("repeated field " + p.OrigName + " has nil element")
+					return errors.New("repeated field " + p.Name + " has nil element")
 				} else {
 					return err
 				}
