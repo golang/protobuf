@@ -66,7 +66,7 @@ const startSize = 10 // initial slice/string sizes
 type encoder func(p *Buffer, prop *Properties, base structPointer) error
 
 // A valueEncoder encodes a single integer in a particular encoding.
-type valueEncoder func(o *Buffer, x uint64) error
+type valueEncoder func(o *Buffer, x uint64)
 
 // Decoders are defined in decode.go
 // A decoder creates a value from its wire representation.

@@ -61,13 +61,12 @@ var (
 // This is the format for the
 // int32, int64, uint32, uint64, bool, and enum
 // protocol buffer types.
-func (p *Buffer) EncodeVarint(x uint64) error {
+func (p *Buffer) EncodeVarint(x uint64) {
 	for x >= 1<<7 {
 		p.buf = append(p.buf, uint8(x&0x7f|0x80))
 		x >>= 7
 	}
 	p.buf = append(p.buf, uint8(x))
-	return nil
 }
 
 // SizeVarint returns the varint encoding size of an integer.
@@ -85,7 +84,7 @@ func SizeVarint(x uint64) (n int) {
 // EncodeFixed64 writes a 64-bit integer to the Buffer.
 // This is the format for the
 // fixed64, sfixed64, and double protocol buffer types.
-func (p *Buffer) EncodeFixed64(x uint64) error {
+func (p *Buffer) EncodeFixed64(x uint64) {
 	p.buf = append(p.buf,
 		uint8(x),
 		uint8(x>>8),
@@ -95,35 +94,33 @@ func (p *Buffer) EncodeFixed64(x uint64) error {
 		uint8(x>>40),
 		uint8(x>>48),
 		uint8(x>>56))
-	return nil
 }
 
 // EncodeFixed32 writes a 32-bit integer to the Buffer.
 // This is the format for the
 // fixed32, sfixed32, and float protocol buffer types.
-func (p *Buffer) EncodeFixed32(x uint64) error {
+func (p *Buffer) EncodeFixed32(x uint64) {
 	p.buf = append(p.buf,
 		uint8(x),
 		uint8(x>>8),
 		uint8(x>>16),
 		uint8(x>>24))
-	return nil
 }
 
 // EncodeZigzag64 writes a zigzag-encoded 64-bit integer
 // to the Buffer.
 // This is the format used for the sint64 protocol buffer type.
-func (p *Buffer) EncodeZigzag64(x uint64) error {
+func (p *Buffer) EncodeZigzag64(x uint64) {
 	// use signed number to get arithmetic right shift.
-	return p.EncodeVarint(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+	p.EncodeVarint(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
 
 // EncodeZigzag32 writes a zigzag-encoded 32-bit integer
 // to the Buffer.
 // This is the format used for the sint32 protocol buffer type.
-func (p *Buffer) EncodeZigzag32(x uint64) error {
+func (p *Buffer) EncodeZigzag32(x uint64) {
 	// use signed number to get arithmetic right shift.
-	return p.EncodeVarint(uint64((uint32(x) << 1) ^ uint32((int32(x) >> 31))))
+	p.EncodeVarint(uint64((uint32(x) << 1) ^ uint32((int32(x) >> 31))))
 }
 
 // EncodeRawBytes writes a count-delimited byte buffer to the Buffer.
