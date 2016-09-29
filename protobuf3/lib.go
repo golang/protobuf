@@ -262,7 +262,7 @@ To create and play with a Test object:
 		// etc.
 	}
 */
-package proto
+package protobuf3
 
 import (
 	"encoding/json"

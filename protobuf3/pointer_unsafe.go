@@ -33,7 +33,7 @@
 
 // This file contains the implementation of the proto field accesses using package unsafe.
 
-package proto
+package protobuf3
 
 import (
 	"reflect"
