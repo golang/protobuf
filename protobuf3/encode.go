@@ -44,10 +44,10 @@ import (
 var (
 	// errRepeatedHasNil is the error returned if Marshal is called with
 	// a struct with a repeated field containing a nil element.
-	errRepeatedHasNil = errors.New("proto: repeated field has nil element")
+	errRepeatedHasNil = errors.New("protobuf3: repeated field has nil element")
 
 	// ErrNil is the error returned if Marshal is called with nil.
-	ErrNil = errors.New("proto: Marshal called with nil")
+	ErrNil = errors.New("protobuf3: Marshal called with nil")
 )
 
 // The fundamental encoders that put bytes on the wire.

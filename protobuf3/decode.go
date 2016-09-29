@@ -42,7 +42,7 @@ import (
 )
 
 // errOverflow is returned when an integer is too large to be represented.
-var errOverflow = errors.New("proto: integer overflow")
+var errOverflow = errors.New("protobuf3: integer overflow")
 
 // The fundamental decoders that interpret bytes on the wire.
 // Those that take integer types all return uint64 and are
@@ -181,7 +181,7 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 
 	nb := int(n)
 	if nb < 0 {
-		return nil, fmt.Errorf("proto: bad byte length %d", nb)
+		return nil, fmt.Errorf("protobuf3: bad byte length %d", nb)
 	}
 	end := p.index + nb
 	if end < p.index || end > len(p.buf) {

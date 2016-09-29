@@ -180,10 +180,6 @@ func (p *Properties) Parse(s string) (bool, error) {
 	return false, nil
 }
 
-func logNoSliceEnc(t1, t2 reflect.Type) {
-	fmt.Fprintf(os.Stderr, "proto: no slice oenc for %T = []%T\n", t1, t2)
-}
-
 var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
 
 // Initialize the fields for encoding and decoding.
@@ -193,7 +189,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 
 	switch t1 := typ; t1.Kind() {
 	default:
-		fmt.Fprintf(os.Stderr, "proto: no coders for %v\n", t1)
+		fmt.Fprintf(os.Stderr, "protobuf3: no coders for %v\n", t1)
 
 	// proto3 scalar types
 
@@ -220,7 +216,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
 		default:
-			fmt.Fprintf(os.Stderr, "proto: no encoder function for %v -> %v\n", t1, t2)
+			fmt.Fprintf(os.Stderr, "protobuf3: no encoder function for %v -> %v\n", t1, t2)
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_ptr_bool
@@ -245,7 +241,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	case reflect.Slice:
 		switch t2 := t1.Elem(); t2.Kind() {
 		default:
-			logNoSliceEnc(t1, t2)
+			fmt.Fprintf(os.Stderr, "protobuf3: no slice oenc for %T = []%T\n", t1, t2)
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_slice_packed_bool
@@ -278,7 +274,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		case reflect.Ptr:
 			switch t3 := t2.Elem(); t3.Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "proto: no ptr oenc for %T -> %T -> %T\n", t1, t2, t3)
+				fmt.Fprintf(os.Stderr, "protobuf3: no ptr oenc for %T -> %T -> %T\n", t1, t2, t3)
 				break
 			case reflect.Struct:
 				p.stype = t3
@@ -288,7 +284,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		case reflect.Slice:
 			switch t2.Elem().Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "proto: no slice elem oenc for %T -> %T -> %T\n", t1, t2, t2.Elem())
+				fmt.Fprintf(os.Stderr, "protobuf3: no slice elem oenc for %T -> %T -> %T\n", t1, t2, t2.Elem())
 				break
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_slice_slice_byte
@@ -302,6 +298,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		p.mkeyprop = &Properties{}
 		p.mkeyprop.init(reflect.PtrTo(p.mtype.Key()), "Key", f.Tag.Get("protobuf_key"), nil)
 		p.mvalprop = &Properties{}
+
 		vtype := p.mtype.Elem()
 		if vtype.Kind() != reflect.Ptr && vtype.Kind() != reflect.Slice {
 			// The value type is not a message (*T) or bytes ([]byte),
@@ -374,7 +371,7 @@ func GetProperties(t reflect.Type) *StructProperties {
 		k = t.Kind()
 	}
 	if k != reflect.Struct {
-		panic("proto: type must have kind struct")
+		panic("protobuf3: type must have kind struct")
 	}
 
 	// Most calls to GetProperties in a long-running program will be
@@ -435,7 +432,7 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 		}
 
 		if p.enc == nil {
-			fmt.Fprintln(os.Stderr, "proto: no encoder for", f.Name, f.Type.String(), "[GetProperties]")
+			fmt.Fprintln(os.Stderr, "protobuf3: no encoder for", f.Name, f.Type.String(), "[GetProperties]")
 		}
 	}
 
