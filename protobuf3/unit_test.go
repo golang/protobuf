@@ -80,7 +80,11 @@ func TestRoundTripProto3(t *testing.T) {
 	if err != nil {
 		t.Fatalf("protobuf3.Marshal: %v", err)
 	}
-	t.Logf(" b: %q", b)
+	t.Logf(" b: % x", b)
+
+	// also log the correct answer
+	c, err := proto.Marshal(m)
+	t.Logf(" c: % x", c)
 
 	m2 := new(pb.Message)
 	if err := proto.Unmarshal(b, m2); err != nil {
