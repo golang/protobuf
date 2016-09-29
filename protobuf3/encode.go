@@ -37,6 +37,7 @@ package protobuf3
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 )
 
@@ -623,7 +624,9 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 		if p.enc != nil {
 			err := p.enc(o, p, base)
 			if err != nil {
-				if err == errRepeatedHasNil {
+				if err == ErrNil {
+					// all fields are optional in protobuf v3
+				} else if err == errRepeatedHasNil {
 					// Give more context to nil values in repeated fields.
 					return errors.New("repeated field " + p.Name + " has nil element")
 				} else {
