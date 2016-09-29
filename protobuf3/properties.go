@@ -434,35 +434,3 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 
 	return prop
 }
-
-// Return the Properties object for the x[0]'th field of the structure.
-func propByIndex(t reflect.Type, x []int) *Properties {
-	if len(x) != 1 {
-		fmt.Fprintf(os.Stderr, "proto: field index dimension %d (not 1) for type %s\n", len(x), t)
-		return nil
-	}
-	prop := GetProperties(t)
-	return &prop.Prop[x[0]]
-}
-
-// Get the address and type of a pointer to a struct from an interface.
-func getbase(pb Message) (t reflect.Type, b structPointer, err error) {
-	if pb == nil {
-		err = ErrNil
-		return
-	}
-	// get the reflect type of the pointer to the struct.
-	t = reflect.TypeOf(pb)
-	if t.Kind() != reflect.Ptr {
-		// create the pointer we need
-		t = reflect.PtrTo(t)
-		value := reflect.ValueOf(pb)
-		// hmmm. stuck.
-		_ = value
-	} else {
-		// get the address of the struct.
-		value := reflect.ValueOf(pb)
-		b = toStructPointer(value)
-	}
-	return
-}
