@@ -39,7 +39,6 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"sort"
 )
 
 // RequiredNotSetError is the error returned if Marshal is called with
@@ -591,35 +590,6 @@ func size_struct_message(p *Properties, base structPointer) int {
 	return n0 + n1 + n2
 }
 
-// Encode a group struct.
-func (o *Buffer) enc_struct_group(p *Properties, base structPointer) error {
-	var state errorState
-	b := structPointer_GetStructPointer(base, p.field)
-	if structPointer_IsNil(b) {
-		return ErrNil
-	}
-
-	o.EncodeVarint(uint64((p.Tag << 3) | WireStartGroup))
-	err := o.enc_struct(p.sprop, b)
-	if err != nil && !state.shouldContinue(err, nil) {
-		return err
-	}
-	o.EncodeVarint(uint64((p.Tag << 3) | WireEndGroup))
-	return state.err
-}
-
-func size_struct_group(p *Properties, base structPointer) (n int) {
-	b := structPointer_GetStructPointer(base, p.field)
-	if structPointer_IsNil(b) {
-		return 0
-	}
-
-	n += sizeVarint(uint64((p.Tag << 3) | WireStartGroup))
-	n += size_struct(p.sprop, b)
-	n += sizeVarint(uint64((p.Tag << 3) | WireEndGroup))
-	return
-}
-
 // Encode a slice of bools ([]bool).
 func (o *Buffer) enc_slice_bool(p *Properties, base structPointer) error {
 	s := *structPointer_BoolSlice(base, p.field)
@@ -719,35 +689,6 @@ func size_proto3_slice_byte(p *Properties, base structPointer) (n int) {
 	return
 }
 
-// Encode a slice of int32s ([]int32).
-func (o *Buffer) enc_slice_int32(p *Properties, base structPointer) error {
-	s := structPointer_Word32Slice(base, p.field)
-	l := s.Len()
-	if l == 0 {
-		return ErrNil
-	}
-	for i := 0; i < l; i++ {
-		o.buf = append(o.buf, p.tagcode...)
-		x := int32(s.Index(i)) // permit sign extension to use full 64-bit range
-		p.valEnc(o, uint64(x))
-	}
-	return nil
-}
-
-func size_slice_int32(p *Properties, base structPointer) (n int) {
-	s := structPointer_Word32Slice(base, p.field)
-	l := s.Len()
-	if l == 0 {
-		return 0
-	}
-	for i := 0; i < l; i++ {
-		n += len(p.tagcode)
-		x := int32(s.Index(i)) // permit sign extension to use full 64-bit range
-		n += p.valSize(uint64(x))
-	}
-	return
-}
-
 // Encode a slice of int32s ([]int32) in packed format.
 func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) error {
 	s := structPointer_Word32Slice(base, p.field)
@@ -786,36 +727,6 @@ func size_slice_packed_int32(p *Properties, base structPointer) (n int) {
 	return
 }
 
-// Encode a slice of uint32s ([]uint32).
-// Exactly the same as int32, except for no sign extension.
-func (o *Buffer) enc_slice_uint32(p *Properties, base structPointer) error {
-	s := structPointer_Word32Slice(base, p.field)
-	l := s.Len()
-	if l == 0 {
-		return ErrNil
-	}
-	for i := 0; i < l; i++ {
-		o.buf = append(o.buf, p.tagcode...)
-		x := s.Index(i)
-		p.valEnc(o, uint64(x))
-	}
-	return nil
-}
-
-func size_slice_uint32(p *Properties, base structPointer) (n int) {
-	s := structPointer_Word32Slice(base, p.field)
-	l := s.Len()
-	if l == 0 {
-		return 0
-	}
-	for i := 0; i < l; i++ {
-		n += len(p.tagcode)
-		x := s.Index(i)
-		n += p.valSize(uint64(x))
-	}
-	return
-}
-
 // Encode a slice of uint32s ([]uint32) in packed format.
 // Exactly the same as int32, except for no sign extension.
 func (o *Buffer) enc_slice_packed_uint32(p *Properties, base structPointer) error {
@@ -850,33 +761,6 @@ func size_slice_packed_uint32(p *Properties, base structPointer) (n int) {
 	n += len(p.tagcode)
 	n += sizeVarint(uint64(bufSize))
 	n += bufSize
-	return
-}
-
-// Encode a slice of int64s ([]int64).
-func (o *Buffer) enc_slice_int64(p *Properties, base structPointer) error {
-	s := structPointer_Word64Slice(base, p.field)
-	l := s.Len()
-	if l == 0 {
-		return ErrNil
-	}
-	for i := 0; i < l; i++ {
-		o.buf = append(o.buf, p.tagcode...)
-		p.valEnc(o, s.Index(i))
-	}
-	return nil
-}
-
-func size_slice_int64(p *Properties, base structPointer) (n int) {
-	s := structPointer_Word64Slice(base, p.field)
-	l := s.Len()
-	if l == 0 {
-		return 0
-	}
-	for i := 0; i < l; i++ {
-		n += len(p.tagcode)
-		n += p.valSize(s.Index(i))
-	}
 	return
 }
 
@@ -1024,103 +908,6 @@ func size_slice_struct_message(p *Properties, base structPointer) (n int) {
 		n += n0 + n1
 	}
 	return
-}
-
-// Encode a slice of group structs ([]*struct).
-func (o *Buffer) enc_slice_struct_group(p *Properties, base structPointer) error {
-	var state errorState
-	s := structPointer_StructPointerSlice(base, p.field)
-	l := s.Len()
-
-	for i := 0; i < l; i++ {
-		b := s.Index(i)
-		if structPointer_IsNil(b) {
-			return errRepeatedHasNil
-		}
-
-		o.EncodeVarint(uint64((p.Tag << 3) | WireStartGroup))
-
-		err := o.enc_struct(p.sprop, b)
-
-		if err != nil && !state.shouldContinue(err, nil) {
-			if err == ErrNil {
-				return errRepeatedHasNil
-			}
-			return err
-		}
-
-		o.EncodeVarint(uint64((p.Tag << 3) | WireEndGroup))
-	}
-	return state.err
-}
-
-func size_slice_struct_group(p *Properties, base structPointer) (n int) {
-	s := structPointer_StructPointerSlice(base, p.field)
-	l := s.Len()
-
-	n += l * sizeVarint(uint64((p.Tag<<3)|WireStartGroup))
-	n += l * sizeVarint(uint64((p.Tag<<3)|WireEndGroup))
-	for i := 0; i < l; i++ {
-		b := s.Index(i)
-		if structPointer_IsNil(b) {
-			return // return size up to this point
-		}
-
-		n += size_struct(p.sprop, b)
-	}
-	return
-}
-
-// Encode an extension map.
-func (o *Buffer) enc_map(p *Properties, base structPointer) error {
-	exts := structPointer_ExtMap(base, p.field)
-	if err := encodeExtensionsMap(*exts); err != nil {
-		return err
-	}
-
-	return o.enc_map_body(*exts)
-}
-
-func (o *Buffer) enc_exts(p *Properties, base structPointer) error {
-	exts := structPointer_Extensions(base, p.field)
-	if err := encodeExtensions(exts); err != nil {
-		return err
-	}
-	v, _ := exts.extensionsRead()
-
-	return o.enc_map_body(v)
-}
-
-func (o *Buffer) enc_map_body(v map[int32]Extension) error {
-	// Fast-path for common cases: zero or one extensions.
-	if len(v) <= 1 {
-		for _, e := range v {
-			o.buf = append(o.buf, e.enc...)
-		}
-		return nil
-	}
-
-	// Sort keys to provide a deterministic encoding.
-	keys := make([]int, 0, len(v))
-	for k := range v {
-		keys = append(keys, int(k))
-	}
-	sort.Ints(keys)
-
-	for _, k := range keys {
-		o.buf = append(o.buf, v[int32(k)].enc...)
-	}
-	return nil
-}
-
-func size_map(p *Properties, base structPointer) int {
-	v := structPointer_ExtMap(base, p.field)
-	return extensionsMapSize(*v)
-}
-
-func size_exts(p *Properties, base structPointer) int {
-	v := structPointer_Extensions(base, p.field)
-	return extensionsSize(v)
 }
 
 // Encode a map field.

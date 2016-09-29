@@ -125,15 +125,6 @@ func structPointer_StringSlice(p structPointer, f field) *[]string {
 	return (*[]string)(unsafe.Pointer(uintptr(p) + uintptr(f)))
 }
 
-// ExtMap returns the address of an extension map field in the struct.
-func structPointer_Extensions(p structPointer, f field) *XXX_InternalExtensions {
-	return (*XXX_InternalExtensions)(unsafe.Pointer(uintptr(p) + uintptr(f)))
-}
-
-func structPointer_ExtMap(p structPointer, f field) *map[int32]Extension {
-	return (*map[int32]Extension)(unsafe.Pointer(uintptr(p) + uintptr(f)))
-}
-
 // NewAt returns the reflect.Value for a pointer to a field in the struct.
 func structPointer_NewAt(p structPointer, f field, typ reflect.Type) reflect.Value {
 	return reflect.NewAt(typ, unsafe.Pointer(uintptr(p)+uintptr(f)))

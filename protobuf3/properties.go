@@ -141,7 +141,6 @@ type StructProperties struct {
 	decoderOrigNames map[string]int // map from original name to struct field number
 	order            []int          // list of struct field numbers in tag order
 	unrecField       field          // field id of the XXX_unrecognized []byte field
-	extendable       bool           // is this an extendable proto
 
 	oneofMarshaler   oneofMarshaler
 	oneofUnmarshaler oneofUnmarshaler
@@ -180,24 +179,21 @@ type Properties struct {
 	Required bool
 	Optional bool
 	Repeated bool
-	Packed   bool   // relevant for repeated primitives only
 	Enum     string // set for enum types only
-	proto3   bool   // whether this is known to be a proto3 field; set for []byte only
 	oneof    bool   // whether this is a oneof field
 
 	Default    string // default value
 	HasDefault bool   // whether an explicit default was provided
 	def_uint64 uint64
 
-	enc           encoder
-	valEnc        valueEncoder // set for bool and numeric types only
-	field         field
-	tagcode       []byte // encoding of EncodeVarint((Tag<<3)|WireType)
-	tagbuf        [8]byte
-	stype         reflect.Type      // set for struct types only
-	sprop         *StructProperties // set for struct types only
-	isMarshaler   bool
-	isUnmarshaler bool
+	enc         encoder
+	valEnc      valueEncoder // set for bool and numeric types only
+	field       field
+	tagcode     []byte // encoding of EncodeVarint((Tag<<3)|WireType)
+	tagbuf      [8]byte
+	stype       reflect.Type      // set for struct types only
+	sprop       *StructProperties // set for struct types only
+	isMarshaler bool
 
 	mtype    reflect.Type // set for map types only
 	mkeyprop *Properties  // set for map types only
@@ -205,12 +201,6 @@ type Properties struct {
 
 	size    sizer
 	valSize valueSizer // set for bool and numeric types only
-
-	dec    decoder
-	valDec valueDecoder // set for bool and numeric types only
-
-	// If this is a packable field, this will be the decoder for the packed version of the field.
-	packedDec decoder
 }
 
 // String formats the properties in the protobuf struct field tag style.
@@ -227,16 +217,12 @@ func (p *Properties) String() string {
 	if p.Repeated {
 		s += ",rep"
 	}
-	if p.Packed {
-		s += ",packed"
-	}
+	s += ",packed"
 	s += ",name=" + p.OrigName
 	if p.JSONName != p.OrigName {
 		s += ",json=" + p.JSONName
 	}
-	if p.proto3 {
-		s += ",proto3"
-	}
+	s += ",proto3"
 	if p.oneof {
 		s += ",oneof"
 	}
@@ -263,27 +249,22 @@ func (p *Properties) Parse(s string) {
 	case "varint":
 		p.WireType = WireVarint
 		p.valEnc = (*Buffer).EncodeVarint
-		p.valDec = (*Buffer).DecodeVarint
 		p.valSize = sizeVarint
 	case "fixed32":
 		p.WireType = WireFixed32
 		p.valEnc = (*Buffer).EncodeFixed32
-		p.valDec = (*Buffer).DecodeFixed32
 		p.valSize = sizeFixed32
 	case "fixed64":
 		p.WireType = WireFixed64
 		p.valEnc = (*Buffer).EncodeFixed64
-		p.valDec = (*Buffer).DecodeFixed64
 		p.valSize = sizeFixed64
 	case "zigzag32":
 		p.WireType = WireVarint
 		p.valEnc = (*Buffer).EncodeZigzag32
-		p.valDec = (*Buffer).DecodeZigzag32
 		p.valSize = sizeZigzag32
 	case "zigzag64":
 		p.WireType = WireVarint
 		p.valEnc = (*Buffer).EncodeZigzag64
-		p.valDec = (*Buffer).DecodeZigzag64
 		p.valSize = sizeZigzag64
 	case "bytes", "group":
 		p.WireType = WireBytes
@@ -309,7 +290,7 @@ func (p *Properties) Parse(s string) {
 		case f == "rep":
 			p.Repeated = true
 		case f == "packed":
-			p.Packed = true
+			// ok
 		case strings.HasPrefix(f, "name="):
 			p.OrigName = f[5:]
 		case strings.HasPrefix(f, "json="):
@@ -317,7 +298,7 @@ func (p *Properties) Parse(s string) {
 		case strings.HasPrefix(f, "enum="):
 			p.Enum = f[5:]
 		case f == "proto3":
-			p.proto3 = true
+			// ok
 		case f == "oneof":
 			p.oneof = true
 		case strings.HasPrefix(f, "def="):
@@ -341,7 +322,6 @@ var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
 // Initialize the fields for encoding and decoding.
 func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lockGetProp bool) {
 	p.enc = nil
-	p.dec = nil
 	p.size = nil
 
 	switch t1 := typ; t1.Kind() {
@@ -352,31 +332,24 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 
 	case reflect.Bool:
 		p.enc = (*Buffer).enc_proto3_bool
-		p.dec = (*Buffer).dec_proto3_bool
 		p.size = size_proto3_bool
 	case reflect.Int32:
 		p.enc = (*Buffer).enc_proto3_int32
-		p.dec = (*Buffer).dec_proto3_int32
 		p.size = size_proto3_int32
 	case reflect.Uint32:
 		p.enc = (*Buffer).enc_proto3_uint32
-		p.dec = (*Buffer).dec_proto3_int32 // can reuse
 		p.size = size_proto3_uint32
 	case reflect.Int64, reflect.Uint64:
 		p.enc = (*Buffer).enc_proto3_int64
-		p.dec = (*Buffer).dec_proto3_int64
 		p.size = size_proto3_int64
 	case reflect.Float32:
 		p.enc = (*Buffer).enc_proto3_uint32 // can just treat them as bits
-		p.dec = (*Buffer).dec_proto3_int32
 		p.size = size_proto3_uint32
 	case reflect.Float64:
 		p.enc = (*Buffer).enc_proto3_int64 // can just treat them as bits
-		p.dec = (*Buffer).dec_proto3_int64
 		p.size = size_proto3_int64
 	case reflect.String:
 		p.enc = (*Buffer).enc_proto3_string
-		p.dec = (*Buffer).dec_proto3_string
 		p.size = size_proto3_string
 
 	case reflect.Ptr:
@@ -386,45 +359,30 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_bool
-			p.dec = (*Buffer).dec_bool
 			p.size = size_bool
 		case reflect.Int32:
 			p.enc = (*Buffer).enc_int32
-			p.dec = (*Buffer).dec_int32
 			p.size = size_int32
 		case reflect.Uint32:
 			p.enc = (*Buffer).enc_uint32
-			p.dec = (*Buffer).dec_int32 // can reuse
 			p.size = size_uint32
 		case reflect.Int64, reflect.Uint64:
 			p.enc = (*Buffer).enc_int64
-			p.dec = (*Buffer).dec_int64
 			p.size = size_int64
 		case reflect.Float32:
 			p.enc = (*Buffer).enc_uint32 // can just treat them as bits
-			p.dec = (*Buffer).dec_int32
 			p.size = size_uint32
 		case reflect.Float64:
 			p.enc = (*Buffer).enc_int64 // can just treat them as bits
-			p.dec = (*Buffer).dec_int64
 			p.size = size_int64
 		case reflect.String:
 			p.enc = (*Buffer).enc_string
-			p.dec = (*Buffer).dec_string
 			p.size = size_string
 		case reflect.Struct:
 			p.stype = t1.Elem()
 			p.isMarshaler = isMarshaler(t1)
-			p.isUnmarshaler = isUnmarshaler(t1)
-			if p.Wire == "bytes" {
-				p.enc = (*Buffer).enc_struct_message
-				p.dec = (*Buffer).dec_struct_message
-				p.size = size_struct_message
-			} else {
-				p.enc = (*Buffer).enc_struct_group
-				p.dec = (*Buffer).dec_struct_group
-				p.size = size_struct_group
-			}
+			p.enc = (*Buffer).enc_struct_message
+			p.size = size_struct_message
 		}
 
 	case reflect.Slice:
@@ -433,85 +391,36 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 			logNoSliceEnc(t1, t2)
 			break
 		case reflect.Bool:
-			if p.Packed {
-				p.enc = (*Buffer).enc_slice_packed_bool
-				p.size = size_slice_packed_bool
-			} else {
-				p.enc = (*Buffer).enc_slice_bool
-				p.size = size_slice_bool
-			}
-			p.dec = (*Buffer).dec_slice_bool
-			p.packedDec = (*Buffer).dec_slice_packed_bool
+			p.enc = (*Buffer).enc_slice_packed_bool
+			p.size = size_slice_packed_bool
 		case reflect.Int32:
-			if p.Packed {
-				p.enc = (*Buffer).enc_slice_packed_int32
-				p.size = size_slice_packed_int32
-			} else {
-				p.enc = (*Buffer).enc_slice_int32
-				p.size = size_slice_int32
-			}
-			p.dec = (*Buffer).dec_slice_int32
-			p.packedDec = (*Buffer).dec_slice_packed_int32
+			p.enc = (*Buffer).enc_slice_packed_int32
+			p.size = size_slice_packed_int32
 		case reflect.Uint32:
-			if p.Packed {
-				p.enc = (*Buffer).enc_slice_packed_uint32
-				p.size = size_slice_packed_uint32
-			} else {
-				p.enc = (*Buffer).enc_slice_uint32
-				p.size = size_slice_uint32
-			}
-			p.dec = (*Buffer).dec_slice_int32
-			p.packedDec = (*Buffer).dec_slice_packed_int32
+			p.enc = (*Buffer).enc_slice_packed_uint32
+			p.size = size_slice_packed_uint32
 		case reflect.Int64, reflect.Uint64:
-			if p.Packed {
-				p.enc = (*Buffer).enc_slice_packed_int64
-				p.size = size_slice_packed_int64
-			} else {
-				p.enc = (*Buffer).enc_slice_int64
-				p.size = size_slice_int64
-			}
-			p.dec = (*Buffer).dec_slice_int64
-			p.packedDec = (*Buffer).dec_slice_packed_int64
+			p.enc = (*Buffer).enc_slice_packed_int64
+			p.size = size_slice_packed_int64
 		case reflect.Uint8:
-			p.dec = (*Buffer).dec_slice_byte
-			if p.proto3 {
-				p.enc = (*Buffer).enc_proto3_slice_byte
-				p.size = size_proto3_slice_byte
-			} else {
-				p.enc = (*Buffer).enc_slice_byte
-				p.size = size_slice_byte
-			}
+			p.enc = (*Buffer).enc_proto3_slice_byte
+			p.size = size_proto3_slice_byte
 		case reflect.Float32, reflect.Float64:
 			switch t2.Bits() {
 			case 32:
 				// can just treat them as bits
-				if p.Packed {
-					p.enc = (*Buffer).enc_slice_packed_uint32
-					p.size = size_slice_packed_uint32
-				} else {
-					p.enc = (*Buffer).enc_slice_uint32
-					p.size = size_slice_uint32
-				}
-				p.dec = (*Buffer).dec_slice_int32
-				p.packedDec = (*Buffer).dec_slice_packed_int32
+				p.enc = (*Buffer).enc_slice_packed_uint32
+				p.size = size_slice_packed_uint32
 			case 64:
 				// can just treat them as bits
-				if p.Packed {
-					p.enc = (*Buffer).enc_slice_packed_int64
-					p.size = size_slice_packed_int64
-				} else {
-					p.enc = (*Buffer).enc_slice_int64
-					p.size = size_slice_int64
-				}
-				p.dec = (*Buffer).dec_slice_int64
-				p.packedDec = (*Buffer).dec_slice_packed_int64
+				p.enc = (*Buffer).enc_slice_packed_int64
+				p.size = size_slice_packed_int64
 			default:
 				logNoSliceEnc(t1, t2)
 				break
 			}
 		case reflect.String:
 			p.enc = (*Buffer).enc_slice_string
-			p.dec = (*Buffer).dec_slice_string
 			p.size = size_slice_string
 		case reflect.Ptr:
 			switch t3 := t2.Elem(); t3.Kind() {
@@ -521,16 +430,8 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 			case reflect.Struct:
 				p.stype = t2.Elem()
 				p.isMarshaler = isMarshaler(t2)
-				p.isUnmarshaler = isUnmarshaler(t2)
-				if p.Wire == "bytes" {
-					p.enc = (*Buffer).enc_slice_struct_message
-					p.dec = (*Buffer).dec_slice_struct_message
-					p.size = size_slice_struct_message
-				} else {
-					p.enc = (*Buffer).enc_slice_struct_group
-					p.dec = (*Buffer).dec_slice_struct_group
-					p.size = size_slice_struct_group
-				}
+				p.enc = (*Buffer).enc_slice_struct_message
+				p.size = size_slice_struct_message
 			}
 		case reflect.Slice:
 			switch t2.Elem().Kind() {
@@ -539,14 +440,12 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 				break
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_slice_slice_byte
-				p.dec = (*Buffer).dec_slice_slice_byte
 				p.size = size_slice_slice_byte
 			}
 		}
 
 	case reflect.Map:
 		p.enc = (*Buffer).enc_new_map
-		p.dec = (*Buffer).dec_new_map
 		p.size = size_new_map
 
 		p.mtype = t1
@@ -563,10 +462,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 	}
 
 	// precalculate tag code
-	wire := p.WireType
-	if p.Packed {
-		wire = WireBytes
-	}
+	wire := WireBytes
 	x := uint32(p.Tag)<<3 | uint32(wire)
 	i := 0
 	for i = 0; x > 127; i++ {
@@ -586,8 +482,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 }
 
 var (
-	marshalerType   = reflect.TypeOf((*Marshaler)(nil)).Elem()
-	unmarshalerType = reflect.TypeOf((*Unmarshaler)(nil)).Elem()
+	marshalerType = reflect.TypeOf((*Marshaler)(nil)).Elem()
 )
 
 // isMarshaler reports whether type t implements Marshaler.
@@ -599,17 +494,6 @@ func isMarshaler(t reflect.Type) bool {
 		panic("proto: misuse of isMarshaler")
 	}
 	return t.Implements(marshalerType)
-}
-
-// isUnmarshaler reports whether type t implements Unmarshaler.
-func isUnmarshaler(t reflect.Type) bool {
-	// We're checking for (likely) pointer-receiver methods
-	// so if t is not a pointer, something is very wrong.
-	// The calls above only invoke isUnmarshaler on pointer types.
-	if t.Kind() != reflect.Ptr {
-		panic("proto: misuse of isUnmarshaler")
-	}
-	return t.Implements(unmarshalerType)
 }
 
 // Init populates the properties from a protocol buffer struct tag.
@@ -678,8 +562,6 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	propertiesMap[t] = prop
 
 	// build properties
-	prop.extendable = reflect.PtrTo(t).Implements(extendableProtoType) ||
-		reflect.PtrTo(t).Implements(extendableProtoV1Type)
 	prop.unrecField = invalidField
 	prop.Prop = make([]*Properties, t.NumField())
 	prop.order = make([]int, t.NumField())
@@ -690,17 +572,6 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 		name := f.Name
 		p.init(f.Type, name, f.Tag.Get("protobuf"), &f, false)
 
-		if f.Name == "XXX_InternalExtensions" { // special case
-			p.enc = (*Buffer).enc_exts
-			p.dec = nil // not needed
-			p.size = size_exts
-		} else if f.Name == "XXX_extensions" { // special case
-			p.enc = (*Buffer).enc_map
-			p.dec = nil // not needed
-			p.size = size_map
-		} else if f.Name == "XXX_unrecognized" { // special case
-			prop.unrecField = toField(&f)
-		}
 		oneof := f.Tag.Get("protobuf_oneof") // special case
 		if oneof != "" {
 			// Oneof fields don't use the traditional protobuf tag.
