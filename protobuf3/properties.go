@@ -95,7 +95,7 @@ func (sp *StructProperties) Swap(i, j int) { sp.order[i], sp.order[j] = sp.order
 type Properties struct {
 	Name     string // name of the field, for error messages
 	Wire     string
-	Tag      int
+	Tag      uint32
 	Repeated bool
 
 	enc         encoder
@@ -116,7 +116,7 @@ type Properties struct {
 func (p *Properties) String() string {
 	s := p.Wire
 	s = ","
-	s += strconv.Itoa(p.Tag)
+	s += strconv.FormatUint(uint64(p.Tag), 10)
 	s += ",opt" // all protobuf v3 fields are optional
 	if p.Repeated {
 		s += ",rep"
@@ -155,11 +155,14 @@ func (p *Properties) Parse(s string) (bool, error) {
 		return false, fmt.Errorf("protobuf3: tag of %q has unknown wire type: %q", p.Name, s)
 	}
 
-	var err error
-	p.Tag, err = strconv.Atoi(fields[1])
+	tag, err := strconv.Atoi(fields[1])
 	if err != nil {
 		return false, fmt.Errorf("protobuf3: tag id of %q invalid: %s: %s", p.Name, s, err.Error())
 	}
+	if tag <= 0 { // catch any negative or 0 values
+		return false, fmt.Errorf("protobuf3: tag id of %q out of range: %s", p.Name, s)
+	}
+	p.Tag = uint32(tag)
 
 	for i := 2; i < len(fields); i++ {
 		f := fields[i]
