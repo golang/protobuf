@@ -39,15 +39,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"reflect"
 )
 
 // errOverflow is returned when an integer is too large to be represented.
 var errOverflow = errors.New("proto: integer overflow")
-
-// ErrInternalBadWireType is returned by generated code when an incorrect
-// wire type is encountered. It does not get returned to user code.
-var ErrInternalBadWireType = errors.New("proto: internal error: bad wiretype for oneof")
 
 // The fundamental decoders that interpret bytes on the wire.
 // Those that take integer types all return uint64 and are
@@ -204,80 +199,4 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 	copy(buf, p.buf[p.index:])
 	p.index += nb
 	return
-}
-
-// DecodeStringBytes reads an encoded string from the Buffer.
-// This is the format used for the proto2 string type.
-func (p *Buffer) DecodeStringBytes() (s string, err error) {
-	buf, err := p.DecodeRawBytes(false)
-	if err != nil {
-		return
-	}
-	return string(buf), nil
-}
-
-// Skip the next item in the buffer. Its wire type is decoded and presented as an argument.
-// If the protocol buffer has extensions, and the field matches, add it as an extension.
-// Otherwise, if the XXX_unrecognized field exists, append the skipped data there.
-func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base structPointer, unrecField field) error {
-	oi := o.index
-
-	err := o.skip(t, tag, wire)
-	if err != nil {
-		return err
-	}
-
-	if !unrecField.IsValid() {
-		return nil
-	}
-
-	ptr := structPointer_Bytes(base, unrecField)
-
-	// Add the skipped field to struct field
-	obuf := o.buf
-
-	o.buf = *ptr
-	o.EncodeVarint(uint64(tag<<3 | wire))
-	*ptr = append(o.buf, obuf[oi:o.index]...)
-
-	o.buf = obuf
-
-	return nil
-}
-
-// Skip the next item in the buffer. Its wire type is decoded and presented as an argument.
-func (o *Buffer) skip(t reflect.Type, tag, wire int) error {
-
-	var u uint64
-	var err error
-
-	switch wire {
-	case WireVarint:
-		_, err = o.DecodeVarint()
-	case WireFixed64:
-		_, err = o.DecodeFixed64()
-	case WireBytes:
-		_, err = o.DecodeRawBytes(false)
-	case WireFixed32:
-		_, err = o.DecodeFixed32()
-	case WireStartGroup:
-		for {
-			u, err = o.DecodeVarint()
-			if err != nil {
-				break
-			}
-			fwire := int(u & 0x7)
-			if fwire == WireEndGroup {
-				break
-			}
-			ftag := int(u >> 3)
-			err = o.skip(t, ftag, fwire)
-			if err != nil {
-				break
-			}
-		}
-	default:
-		err = fmt.Errorf("proto: can't skip unknown wire type %d for %s", wire, t)
-	}
-	return err
 }
