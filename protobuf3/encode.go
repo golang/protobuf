@@ -46,10 +46,6 @@ var (
 	// a struct with a repeated field containing a nil element.
 	errRepeatedHasNil = errors.New("proto: repeated field has nil element")
 
-	// errOneofHasNil is the error returned if Marshal is called with
-	// a struct with a oneof field containing a nil element.
-	errOneofHasNil = errors.New("proto: oneof field has nil value")
-
 	// ErrNil is the error returned if Marshal is called with nil.
 	ErrNil = errors.New("proto: Marshal called with nil")
 )
