@@ -203,7 +203,7 @@ func sizeStringBytes(s string) int {
 
 // Marshaler is the interface representing objects that can marshal themselves.
 type Marshaler interface {
-	Marshal() ([]byte, error)
+	MarshalProtobuf3() ([]byte, error)
 }
 
 // Marshal takes the protocol buffer
@@ -211,7 +211,7 @@ type Marshaler interface {
 func Marshal(pb Message) ([]byte, error) {
 	// Can the object marshal itself?
 	if m, ok := pb.(Marshaler); ok {
-		return m.Marshal()
+		return m.MarshalProtobuf3()
 	}
 	p := NewBuffer(nil)
 	err := p.Marshal(pb)
@@ -244,7 +244,7 @@ func (p *Buffer) EncodeMessage(pb Message) error {
 func (p *Buffer) Marshal(pb Message) error {
 	// Can the object marshal itself?
 	if m, ok := pb.(Marshaler); ok {
-		data, err := m.Marshal()
+		data, err := m.MarshalProtobuf3()
 		if err != nil {
 			return err
 		}
@@ -275,7 +275,7 @@ func Size(pb Message) (n int) {
 	// Can the object marshal itself?  If so, Size is slow.
 	// TODO: add Size to Marshaler, or add a Sizer interface.
 	if m, ok := pb.(Marshaler); ok {
-		b, _ := m.Marshal()
+		b, _ := m.MarshalProtobuf3()
 		return len(b)
 	}
 
@@ -535,7 +535,7 @@ func (o *Buffer) enc_struct_message(p *Properties, base structPointer) error {
 	// Can the object marshal itself?
 	if p.isMarshaler {
 		m := structPointer_Interface(structp, p.stype).(Marshaler)
-		data, err := m.Marshal()
+		data, err := m.MarshalProtobuf3()
 		if err != nil {
 			return err
 		}
@@ -557,7 +557,7 @@ func size_struct_message(p *Properties, base structPointer) int {
 	// Can the object marshal itself?
 	if p.isMarshaler {
 		m := structPointer_Interface(structp, p.stype).(Marshaler)
-		data, _ := m.Marshal()
+		data, _ := m.MarshalProtobuf3()
 		n0 := len(p.tagcode)
 		n1 := sizeRawBytes(data)
 		return n0 + n1
@@ -841,7 +841,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) err
 		// Can the object marshal itself?
 		if p.isMarshaler {
 			m := structPointer_Interface(structp, p.stype).(Marshaler)
-			data, err := m.Marshal()
+			data, err := m.MarshalProtobuf3()
 			if err != nil {
 				return err
 			}
@@ -875,7 +875,7 @@ func size_slice_struct_message(p *Properties, base structPointer) (n int) {
 		// Can the object marshal itself?
 		if p.isMarshaler {
 			m := structPointer_Interface(structp, p.stype).(Marshaler)
-			data, _ := m.Marshal()
+			data, _ := m.MarshalProtobuf3()
 			n += len(p.tagcode)
 			n += sizeRawBytes(data)
 			continue
