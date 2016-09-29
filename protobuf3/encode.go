@@ -356,24 +356,6 @@ func (o *Buffer) enc_ptr_struct_message(p *Properties, base structPointer) error
 	return o.enc_len_struct(p.sprop, structp)
 }
 
-// Encode a slice of bools ([]bool).
-func (o *Buffer) enc_slice_bool(p *Properties, base structPointer) error {
-	s := *structPointer_BoolSlice(base, p.field)
-	l := len(s)
-	if l == 0 {
-		return ErrNil
-	}
-	for _, x := range s {
-		o.buf = append(o.buf, p.tagcode...)
-		v := uint64(0)
-		if x {
-			v = 1
-		}
-		p.valEnc(o, v)
-	}
-	return nil
-}
-
 // Encode a slice of bools ([]bool) in packed format.
 func (o *Buffer) enc_slice_packed_bool(p *Properties, base structPointer) error {
 	s := *structPointer_BoolSlice(base, p.field)
