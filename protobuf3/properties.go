@@ -68,10 +68,6 @@ type encoder func(p *Buffer, prop *Properties, base structPointer) error
 // A valueEncoder encodes a single integer in a particular encoding.
 type valueEncoder func(o *Buffer, x uint64) error
 
-// A valueSizer returns the encoded size of a single integer in a particular
-// encoding.
-type valueSizer func(x uint64) int
-
 // Decoders are defined in decode.go
 // A decoder creates a value from its wire representation.
 // Unrecognized subelements are saved in unrec.
@@ -188,8 +184,6 @@ type Properties struct {
 	mtype    reflect.Type // set for map types only
 	mkeyprop *Properties  // set for map types only
 	mvalprop *Properties  // set for map types only
-
-	valSize valueSizer // set for bool and numeric types only
 }
 
 // String formats the properties in the protobuf struct field tag style.
@@ -230,23 +224,18 @@ func (p *Properties) Parse(s string) {
 	case "varint":
 		p.WireType = WireVarint
 		p.valEnc = (*Buffer).EncodeVarint
-		p.valSize = sizeVarint
 	case "fixed32":
 		p.WireType = WireFixed32
 		p.valEnc = (*Buffer).EncodeFixed32
-		p.valSize = sizeFixed32
 	case "fixed64":
 		p.WireType = WireFixed64
 		p.valEnc = (*Buffer).EncodeFixed64
-		p.valSize = sizeFixed64
 	case "zigzag32":
 		p.WireType = WireVarint
 		p.valEnc = (*Buffer).EncodeZigzag32
-		p.valSize = sizeZigzag32
 	case "zigzag64":
 		p.WireType = WireVarint
 		p.valEnc = (*Buffer).EncodeZigzag64
-		p.valSize = sizeZigzag64
 	case "bytes", "group":
 		p.WireType = WireBytes
 		// no numeric converter for non-numeric types
