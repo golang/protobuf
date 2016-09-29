@@ -63,10 +63,6 @@ var (
 
 const maxVarintBytes = 10 // maximum length of a varint
 
-// maxMarshalSize is the largest allowed size of an encoded protobuf,
-// since C++ and Java use signed int32s for the size.
-const maxMarshalSize = 1<<31 - 1
-
 // EncodeVarint returns the varint encoding of x.
 // This is the format for the
 // int32, int64, uint32, uint64, bool, and enum
@@ -663,9 +659,6 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 				} else {
 					return err
 				}
-			}
-			if len(o.buf) > maxMarshalSize {
-				return ErrTooLarge
 			}
 		}
 	}
