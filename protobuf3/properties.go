@@ -188,6 +188,7 @@ var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
 // Initialize the fields for encoding and decoding.
 func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	p.enc = nil
+	wire := p.WireType
 
 	switch t1 := typ; t1.Kind() {
 	default:
@@ -247,20 +248,26 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_slice_packed_bool
+			wire = WireBytes // packed=true is implied in protobuf v3
 		case reflect.Int32:
 			p.enc = (*Buffer).enc_slice_packed_int32
+			wire = WireBytes // packed=true...
 		case reflect.Uint32:
 			p.enc = (*Buffer).enc_slice_packed_uint32
+			wire = WireBytes // packed=true...
 		case reflect.Int64, reflect.Uint64:
 			p.enc = (*Buffer).enc_slice_packed_int64
+			wire = WireBytes // packed=true...
 		case reflect.Uint8:
 			p.enc = (*Buffer).enc_slice_byte
 		case reflect.Float32:
 			// can just treat them as bits
 			p.enc = (*Buffer).enc_slice_packed_uint32
+			wire = WireBytes // packed=true...
 		case reflect.Float64:
 			// can just treat them as bits
 			p.enc = (*Buffer).enc_slice_packed_int64
+			wire = WireBytes // packed=true...
 		case reflect.String:
 			p.enc = (*Buffer).enc_slice_string
 		case reflect.Struct:
@@ -304,7 +311,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	}
 
 	// precalculate tag code
-	x := p.Tag<<3 | uint32(p.WireType)
+	x := p.Tag<<3 | uint32(wire)
 	i := 0
 	for i = 0; x > 127; i++ {
 		p.tagbuf[i] = 0x80 | uint8(x&0x7F)
