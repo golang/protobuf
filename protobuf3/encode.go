@@ -57,26 +57,6 @@ var (
 // Those that take integer types all accept uint64 and are
 // therefore of type valueEncoder.
 
-const maxVarintBytes = 10 // maximum length of a varint
-
-// EncodeVarint returns the varint encoding of x.
-// This is the format for the
-// int32, int64, uint32, uint64, bool, and enum
-// protocol buffer types.
-// Not used by the package itself, but helpful to clients
-// wishing to use the same encoding.
-func EncodeVarint(x uint64) []byte {
-	var buf [maxVarintBytes]byte
-	var n int
-	for n = 0; x > 127; n++ {
-		buf[n] = 0x80 | uint8(x&0x7F)
-		x >>= 7
-	}
-	buf[n] = uint8(x)
-	n++
-	return buf[0:n]
-}
-
 // EncodeVarint writes a varint-encoded integer to the Buffer.
 // This is the format for the
 // int32, int64, uint32, uint64, bool, and enum
