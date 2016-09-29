@@ -159,7 +159,6 @@ func (p *Properties) String() string {
 	if p.Repeated {
 		s += ",rep"
 	}
-	s += ",packed" // we pack all fields
 	s += ",proto3"
 
 	return s
