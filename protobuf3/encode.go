@@ -91,11 +91,7 @@ func (p *Buffer) EncodeVarint(x uint64) error {
 }
 
 // SizeVarint returns the varint encoding size of an integer.
-func SizeVarint(x uint64) int {
-	return sizeVarint(x)
-}
-
-func sizeVarint(x uint64) (n int) {
+func SizeVarint(x uint64) (n int) {
 	for {
 		n++
 		x >>= 7
@@ -636,7 +632,7 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 	return nil
 }
 
-var zeroes [20]byte // longer than any conceivable sizeVarint
+var zeroes [20]byte // longer than any conceivable SizeVarint
 
 // Encode a struct, preceded by its encoded length (as a varint).
 func (o *Buffer) enc_len_struct(prop *StructProperties, base structPointer) error {
@@ -653,7 +649,7 @@ func (o *Buffer) enc_len_thing(enc func() error) error {
 		return err
 	}
 	lMsg := len(o.buf) - iMsg
-	lLen := sizeVarint(uint64(lMsg))
+	lLen := SizeVarint(uint64(lMsg))
 	switch x := lLen - (iMsg - iLen); {
 	case x > 0: // actual length is x bytes larger than the space we reserved
 		// Move msg x bytes right.
