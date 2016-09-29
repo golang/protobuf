@@ -281,17 +281,3 @@ func (o *Buffer) skip(t reflect.Type, tag, wire int) error {
 	}
 	return err
 }
-
-// Individual type decoders
-// For each,
-//	u is the decoded value,
-//	v is a pointer to the field (pointer) in the struct
-
-// Sizes of the pools to allocate inside the Buffer.
-// The goal is modest amortization and allocation
-// on at least 16-byte boundaries.
-const (
-	boolPoolSize   = 16
-	uint32PoolSize = 8
-	uint64PoolSize = 4
-)

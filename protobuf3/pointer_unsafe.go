@@ -130,11 +130,6 @@ func structPointer_NewAt(p structPointer, f field, typ reflect.Type) reflect.Val
 	return reflect.NewAt(typ, unsafe.Pointer(uintptr(p)+uintptr(f)))
 }
 
-// SetStructPointer writes a *struct field in the struct.
-func structPointer_SetStructPointer(p structPointer, f field, q structPointer) {
-	*(*structPointer)(unsafe.Pointer(uintptr(p) + uintptr(f))) = q
-}
-
 // GetStructPointer reads a *struct field in the struct.
 func structPointer_GetStructPointer(p structPointer, f field) structPointer {
 	return *(*structPointer)(unsafe.Pointer(uintptr(p) + uintptr(f)))
@@ -160,16 +155,6 @@ func word32_IsNil(p word32) bool {
 	return *p == nil
 }
 
-// Set sets *v to point at a newly allocated word set to x.
-func word32_Set(p word32, o *Buffer, x uint32) {
-	if len(o.uint32s) == 0 {
-		o.uint32s = make([]uint32, uint32PoolSize)
-	}
-	o.uint32s[0] = x
-	*p = &o.uint32s[0]
-	o.uint32s = o.uint32s[1:]
-}
-
 // Get gets the value pointed at by *v.
 func word32_Get(p word32) uint32 {
 	return **p
@@ -182,11 +167,6 @@ func structPointer_Word32(p structPointer, f field) word32 {
 
 // A word32Val is the address of a 32-bit value field.
 type word32Val *uint32
-
-// Set sets *p to x.
-func word32Val_Set(p word32Val, x uint32) {
-	*p = x
-}
 
 // Get gets the value pointed at by p.
 func word32Val_Get(p word32Val) uint32 {
@@ -213,15 +193,6 @@ func structPointer_Word32Slice(p structPointer, f field) *word32Slice {
 // word64 is like word32 but for 64-bit values.
 type word64 **uint64
 
-func word64_Set(p word64, o *Buffer, x uint64) {
-	if len(o.uint64s) == 0 {
-		o.uint64s = make([]uint64, uint64PoolSize)
-	}
-	o.uint64s[0] = x
-	*p = &o.uint64s[0]
-	o.uint64s = o.uint64s[1:]
-}
-
 func word64_IsNil(p word64) bool {
 	return *p == nil
 }
@@ -236,10 +207,6 @@ func structPointer_Word64(p structPointer, f field) word64 {
 
 // word64Val is like word32Val but for 64-bit values.
 type word64Val *uint64
-
-func word64Val_Set(p word64Val, o *Buffer, x uint64) {
-	*p = x
-}
 
 func word64Val_Get(p word64Val) uint64 {
 	return *p

@@ -287,17 +287,6 @@ type Message interface {
 type Buffer struct {
 	buf   []byte // encode/decode byte stream
 	index int    // read point
-
-	// pools of basic types to amortize allocation.
-	bools   []bool
-	uint32s []uint32
-	uint64s []uint64
-
-	// extra pools, only used with pointer_reflect.go
-	int32s   []int32
-	int64s   []int64
-	float32s []float32
-	float64s []float64
 }
 
 // NewBuffer allocates a new Buffer and initializes its internal data to
