@@ -209,20 +209,12 @@ type Marshaler interface {
 // Marshal takes the protocol buffer
 // and encodes it into the wire format, returning the data.
 func Marshal(pb Message) ([]byte, error) {
-	// Can the object marshal itself?
-	if m, ok := pb.(Marshaler); ok {
-		return m.MarshalProtobuf3()
-	}
 	p := NewBuffer(nil)
 	err := p.Marshal(pb)
 	if err != nil {
 		return nil, err
 	}
-	if p.buf == nil && err == nil {
-		// Return a non-nil slice on success.
-		return []byte{}, nil
-	}
-	return p.buf, err
+	return p.buf, nil
 }
 
 // EncodeMessage writes the protocol buffer to the Buffer,

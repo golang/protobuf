@@ -645,9 +645,17 @@ func getbase(pb Message) (t reflect.Type, b structPointer, err error) {
 	}
 	// get the reflect type of the pointer to the struct.
 	t = reflect.TypeOf(pb)
-	// get the address of the struct.
-	value := reflect.ValueOf(pb)
-	b = toStructPointer(value)
+	if t.Kind() != reflect.Ptr {
+		// create the pointer we need
+		t = reflect.PtrTo(t)
+		value := reflect.ValueOf(pb)
+		// hmmm. stuck.
+		_ = value
+	} else {
+		// get the address of the struct.
+		value := reflect.ValueOf(pb)
+		b = toStructPointer(value)
+	}
 	return
 }
 
