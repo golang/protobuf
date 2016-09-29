@@ -180,8 +180,8 @@ func (o *Buffer) encode(p *StructProperties, it interface{}) error {
 
 // Individual type encoders.
 
-// Encode a bool.
-func (o *Buffer) enc_bool(p *Properties, base structPointer) error {
+// Encode a *bool.
+func (o *Buffer) enc_ptr_bool(p *Properties, base structPointer) error {
 	v := *structPointer_Bool(base, p.field)
 	if v == nil {
 		return ErrNil
@@ -195,7 +195,8 @@ func (o *Buffer) enc_bool(p *Properties, base structPointer) error {
 	return nil
 }
 
-func (o *Buffer) enc_proto3_bool(p *Properties, base structPointer) error {
+// Encode a bool.
+func (o *Buffer) enc_bool(p *Properties, base structPointer) error {
 	v := *structPointer_BoolVal(base, p.field)
 	if !v {
 		return ErrNil
@@ -205,8 +206,8 @@ func (o *Buffer) enc_proto3_bool(p *Properties, base structPointer) error {
 	return nil
 }
 
-// Encode an int32.
-func (o *Buffer) enc_int32(p *Properties, base structPointer) error {
+// Encode an *int32.
+func (o *Buffer) enc_ptr_int32(p *Properties, base structPointer) error {
 	v := structPointer_Word32(base, p.field)
 	if word32_IsNil(v) {
 		return ErrNil
@@ -217,7 +218,8 @@ func (o *Buffer) enc_int32(p *Properties, base structPointer) error {
 	return nil
 }
 
-func (o *Buffer) enc_proto3_int32(p *Properties, base structPointer) error {
+// Encode an int32.
+func (o *Buffer) enc_int32(p *Properties, base structPointer) error {
 	v := structPointer_Word32Val(base, p.field)
 	x := int32(word32Val_Get(v)) // permit sign extension to use full 64-bit range
 	if x == 0 {
@@ -228,9 +230,9 @@ func (o *Buffer) enc_proto3_int32(p *Properties, base structPointer) error {
 	return nil
 }
 
-// Encode a uint32.
+// Encode a *uint32.
 // Exactly the same as int32, except for no sign extension.
-func (o *Buffer) enc_uint32(p *Properties, base structPointer) error {
+func (o *Buffer) enc_ptr_uint32(p *Properties, base structPointer) error {
 	v := structPointer_Word32(base, p.field)
 	if word32_IsNil(v) {
 		return ErrNil
@@ -241,7 +243,8 @@ func (o *Buffer) enc_uint32(p *Properties, base structPointer) error {
 	return nil
 }
 
-func (o *Buffer) enc_proto3_uint32(p *Properties, base structPointer) error {
+// Encode a uint32.
+func (o *Buffer) enc_uint32(p *Properties, base structPointer) error {
 	v := structPointer_Word32Val(base, p.field)
 	x := word32Val_Get(v)
 	if x == 0 {
@@ -252,8 +255,8 @@ func (o *Buffer) enc_proto3_uint32(p *Properties, base structPointer) error {
 	return nil
 }
 
-// Encode an int64.
-func (o *Buffer) enc_int64(p *Properties, base structPointer) error {
+// Encode an *int64.
+func (o *Buffer) enc_ptr_int64(p *Properties, base structPointer) error {
 	v := structPointer_Word64(base, p.field)
 	if word64_IsNil(v) {
 		return ErrNil
@@ -264,7 +267,8 @@ func (o *Buffer) enc_int64(p *Properties, base structPointer) error {
 	return nil
 }
 
-func (o *Buffer) enc_proto3_int64(p *Properties, base structPointer) error {
+// Encode an int64.
+func (o *Buffer) enc_int64(p *Properties, base structPointer) error {
 	v := structPointer_Word64Val(base, p.field)
 	x := word64Val_Get(v)
 	if x == 0 {
@@ -275,8 +279,8 @@ func (o *Buffer) enc_proto3_int64(p *Properties, base structPointer) error {
 	return nil
 }
 
-// Encode a string.
-func (o *Buffer) enc_string(p *Properties, base structPointer) error {
+// Encode a *string.
+func (o *Buffer) enc_ptr_string(p *Properties, base structPointer) error {
 	v := *structPointer_String(base, p.field)
 	if v == nil {
 		return ErrNil
@@ -287,7 +291,8 @@ func (o *Buffer) enc_string(p *Properties, base structPointer) error {
 	return nil
 }
 
-func (o *Buffer) enc_proto3_string(p *Properties, base structPointer) error {
+// Encode a string.
+func (o *Buffer) enc_string(p *Properties, base structPointer) error {
 	v := *structPointer_StringVal(base, p.field)
 	if v == "" {
 		return ErrNil
@@ -306,8 +311,8 @@ func isNil(v reflect.Value) bool {
 	return false
 }
 
-// Encode a message struct.
-func (o *Buffer) enc_struct_message(p *Properties, base structPointer) error {
+// Encode a *message struct.
+func (o *Buffer) enc_ptr_struct_message(p *Properties, base structPointer) error {
 	structp := structPointer_GetStructPointer(base, p.field)
 	if structPointer_IsNil(structp) {
 		return ErrNil
@@ -368,16 +373,6 @@ func (o *Buffer) enc_slice_packed_bool(p *Properties, base structPointer) error 
 
 // Encode a slice of bytes ([]byte).
 func (o *Buffer) enc_slice_byte(p *Properties, base structPointer) error {
-	s := *structPointer_Bytes(base, p.field)
-	if s == nil {
-		return ErrNil
-	}
-	o.buf = append(o.buf, p.tagcode...)
-	o.EncodeRawBytes(s)
-	return nil
-}
-
-func (o *Buffer) enc_proto3_slice_byte(p *Properties, base structPointer) error {
 	s := *structPointer_Bytes(base, p.field)
 	if len(s) == 0 {
 		return ErrNil

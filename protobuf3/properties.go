@@ -192,19 +192,19 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetPro
 	// proto3 scalar types
 
 	case reflect.Bool:
-		p.enc = (*Buffer).enc_proto3_bool
+		p.enc = (*Buffer).enc_bool
 	case reflect.Int32:
-		p.enc = (*Buffer).enc_proto3_int32
+		p.enc = (*Buffer).enc_int32
 	case reflect.Uint32:
-		p.enc = (*Buffer).enc_proto3_uint32
+		p.enc = (*Buffer).enc_uint32
 	case reflect.Int64, reflect.Uint64:
-		p.enc = (*Buffer).enc_proto3_int64
+		p.enc = (*Buffer).enc_int64
 	case reflect.Float32:
-		p.enc = (*Buffer).enc_proto3_uint32 // can just treat them as bits
+		p.enc = (*Buffer).enc_uint32 // can just treat them as bits
 	case reflect.Float64:
-		p.enc = (*Buffer).enc_proto3_int64 // can just treat them as bits
+		p.enc = (*Buffer).enc_int64 // can just treat them as bits
 	case reflect.String:
-		p.enc = (*Buffer).enc_proto3_string
+		p.enc = (*Buffer).enc_string
 
 	case reflect.Struct:
 		p.stype = t1
@@ -217,23 +217,23 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetPro
 			fmt.Fprintf(os.Stderr, "proto: no encoder function for %v -> %v\n", t1, t2)
 			break
 		case reflect.Bool:
-			p.enc = (*Buffer).enc_bool
+			p.enc = (*Buffer).enc_ptr_bool
 		case reflect.Int32:
-			p.enc = (*Buffer).enc_int32
+			p.enc = (*Buffer).enc_ptr_int32
 		case reflect.Uint32:
-			p.enc = (*Buffer).enc_uint32
+			p.enc = (*Buffer).enc_ptr_uint32
 		case reflect.Int64, reflect.Uint64:
-			p.enc = (*Buffer).enc_int64
+			p.enc = (*Buffer).enc_ptr_int64
 		case reflect.Float32:
-			p.enc = (*Buffer).enc_uint32 // can just treat them as bits
+			p.enc = (*Buffer).enc_ptr_uint32 // can just treat them as bits
 		case reflect.Float64:
-			p.enc = (*Buffer).enc_int64 // can just treat them as bits
+			p.enc = (*Buffer).enc_ptr_int64 // can just treat them as bits
 		case reflect.String:
-			p.enc = (*Buffer).enc_string
+			p.enc = (*Buffer).enc_ptr_string
 		case reflect.Struct:
 			p.stype = t1.Elem()
 			p.isMarshaler = isMarshaler(t1)
-			p.enc = (*Buffer).enc_struct_message
+			p.enc = (*Buffer).enc_ptr_struct_message
 		}
 
 	case reflect.Slice:
@@ -250,7 +250,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetPro
 		case reflect.Int64, reflect.Uint64:
 			p.enc = (*Buffer).enc_slice_packed_int64
 		case reflect.Uint8:
-			p.enc = (*Buffer).enc_proto3_slice_byte
+			p.enc = (*Buffer).enc_slice_byte
 		case reflect.Float32, reflect.Float64:
 			switch t2.Bits() {
 			case 32:
