@@ -124,12 +124,9 @@ func (p *tagMap) put(t int, fi int) {
 }
 
 // StructProperties represents properties for all the fields of a struct.
-// decoderTags and decoderOrigNames should only be used by the decoder.
 type StructProperties struct {
-	Prop             []*Properties  // properties for each field
-	decoderTags      tagMap         // map from proto tag to struct field number
-	decoderOrigNames map[string]int // map from original name to struct field number
-	order            []int          // list of struct field numbers in tag order
+	Prop  []*Properties // properties for each field
+	order []int         // list of struct field numbers in tag order
 
 	oneofMarshaler   oneofMarshaler
 	oneofUnmarshaler oneofUnmarshaler
@@ -527,14 +524,6 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 
 	// Re-order prop.order.
 	sort.Sort(prop)
-
-	// build required counts
-	// build tags
-	prop.decoderOrigNames = make(map[string]int)
-	for i, p := range prop.Prop {
-		prop.decoderTags.put(p.Tag, i)
-		prop.decoderOrigNames[p.OrigName] = i
-	}
 
 	return prop
 }

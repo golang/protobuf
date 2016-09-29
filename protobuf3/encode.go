@@ -51,10 +51,6 @@ var (
 
 	// ErrNil is the error returned if Marshal is called with nil.
 	ErrNil = errors.New("proto: Marshal called with nil")
-
-	// ErrTooLarge is the error returned if Marshal is called with a
-	// message that encodes to >2GB.
-	ErrTooLarge = errors.New("proto: message encodes to over 2 GB")
 )
 
 // The fundamental encoders that put bytes on the wire.
@@ -126,10 +122,6 @@ func (p *Buffer) EncodeFixed64(x uint64) error {
 	return nil
 }
 
-func sizeFixed64(x uint64) int {
-	return 8
-}
-
 // EncodeFixed32 writes a 32-bit integer to the Buffer.
 // This is the format for the
 // fixed32, sfixed32, and float protocol buffer types.
@@ -142,10 +134,6 @@ func (p *Buffer) EncodeFixed32(x uint64) error {
 	return nil
 }
 
-func sizeFixed32(x uint64) int {
-	return 4
-}
-
 // EncodeZigzag64 writes a zigzag-encoded 64-bit integer
 // to the Buffer.
 // This is the format used for the sint64 protocol buffer type.
@@ -154,20 +142,12 @@ func (p *Buffer) EncodeZigzag64(x uint64) error {
 	return p.EncodeVarint(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
 
-func sizeZigzag64(x uint64) int {
-	return sizeVarint(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-
 // EncodeZigzag32 writes a zigzag-encoded 32-bit integer
 // to the Buffer.
 // This is the format used for the sint32 protocol buffer type.
 func (p *Buffer) EncodeZigzag32(x uint64) error {
 	// use signed number to get arithmetic right shift.
 	return p.EncodeVarint(uint64((uint32(x) << 1) ^ uint32((int32(x) >> 31))))
-}
-
-func sizeZigzag32(x uint64) int {
-	return sizeVarint(uint64((uint32(x) << 1) ^ uint32((int32(x) >> 31))))
 }
 
 // EncodeRawBytes writes a count-delimited byte buffer to the Buffer.
@@ -179,22 +159,12 @@ func (p *Buffer) EncodeRawBytes(b []byte) error {
 	return nil
 }
 
-func sizeRawBytes(b []byte) int {
-	return sizeVarint(uint64(len(b))) +
-		len(b)
-}
-
 // EncodeStringBytes writes an encoded string to the Buffer.
 // This is the format used for the proto2 string type.
 func (p *Buffer) EncodeStringBytes(s string) error {
 	p.EncodeVarint(uint64(len(s)))
 	p.buf = append(p.buf, s...)
 	return nil
-}
-
-func sizeStringBytes(s string) int {
-	return sizeVarint(uint64(len(s))) +
-		len(s)
 }
 
 // Marshaler is the interface representing objects that can marshal themselves.
