@@ -107,7 +107,6 @@ type Properties struct {
 	Name     string // name of the field, for error messages
 	Wire     string
 	Tag      uint32
-	Repeated bool
 	WireType WireType
 
 	enc         encoder
@@ -126,28 +125,25 @@ type Properties struct {
 
 // String formats the properties in the protobuf struct field tag style.
 func (p *Properties) String() string {
-	s := p.Wire
-	s += ","
-	s += strconv.FormatUint(uint64(p.Tag), 10)
-	s += ",opt" // all protobuf v3 fields are optional
-	if p.Repeated {
-		s += ",rep"
-	}
-	s += ",proto3"
-
-	return s
+	return p.Wire
 }
 
 // Parse populates p by parsing a string in the protobuf struct field tag style.
 func (p *Properties) Parse(s string) (bool, error) {
+	p.Wire = s
+
 	// "bytes,49,rep,..."
 	fields := strings.Split(s, ",")
-	if len(fields) < 1 {
+
+	if len(fields) < 2 {
+		if len(fields) > 0 && fields[0] == "skip" {
+			// `protobuf="skip"` is used to mark fields which should be skipped by the protobuf encoder
+			return true, nil
+		}
 		return true, fmt.Errorf("protobuf3: tag of %q has too few fields: %q", p.Name, s)
 	}
 
-	p.Wire = fields[0]
-	switch p.Wire {
+	switch fields[0] {
 	case "varint":
 		p.valEnc = (*Buffer).EncodeVarint
 		p.WireType = WireVarint
@@ -165,9 +161,6 @@ func (p *Properties) Parse(s string) (bool, error) {
 	case "bytes":
 		// no numeric converter for non-numeric types
 		p.WireType = WireBytes
-	case "skip":
-		// used to mark fields which should be skipped by the protobuf encoder
-		return true, nil
 	default:
 		return false, fmt.Errorf("protobuf3: tag of %q has unknown wire type: %q", p.Name, s)
 	}
@@ -181,12 +174,8 @@ func (p *Properties) Parse(s string) (bool, error) {
 	}
 	p.Tag = uint32(tag)
 
-	for _, f := range fields[2:] {
-		switch f {
-		case "rep":
-			p.Repeated = true
-		}
-	}
+	// and we don't care about any other fields
+	// (if you don't mark slices/arrays/maps with ",rep" that's your own problem; this encoder always repeats those types)
 
 	return false, nil
 }
