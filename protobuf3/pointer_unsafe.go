@@ -135,7 +135,7 @@ func structPointer_GetStructPointer(p structPointer, f field) structPointer {
 	return *(*structPointer)(unsafe.Pointer(uintptr(p) + uintptr(f)))
 }
 
-// GetStructVal returns the address of a struct field in the outer struct.
+// GetStructVal returns the address of an inner struct field in the [outer] struct.
 func structPointer_GetStructVal(p structPointer, f field) structPointer {
 	return structPointer(unsafe.Pointer(uintptr(p) + uintptr(f)))
 }
