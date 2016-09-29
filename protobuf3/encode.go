@@ -470,8 +470,8 @@ func (o *Buffer) enc_slice_string(p *Properties, base structPointer) error {
 	return nil
 }
 
-// Encode a slice of message structs ([]*struct).
-func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) error {
+// Encode a slice of *message structs ([]*struct).
+func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base structPointer) error {
 	s := structPointer_StructPointerSlice(base, p.field)
 	l := s.Len()
 
