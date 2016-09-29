@@ -568,7 +568,7 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 			}
 			print("\n")
 		}
-		if p.enc == nil && !strings.HasPrefix(f.Name, "XXX_") && oneof == "" {
+		if p.enc == nil && oneof == "" {
 			fmt.Fprintln(os.Stderr, "proto: no encoder for", f.Name, f.Type.String(), "[GetProperties]")
 		}
 	}
@@ -615,11 +615,6 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	// build tags
 	prop.decoderOrigNames = make(map[string]int)
 	for i, p := range prop.Prop {
-		if strings.HasPrefix(p.Name, "XXX_") {
-			// Internal fields should not appear in tags/origNames maps.
-			// They are handled specially when encoding and decoding.
-			continue
-		}
 		prop.decoderTags.put(p.Tag, i)
 		prop.decoderOrigNames[p.OrigName] = i
 	}
@@ -701,12 +696,6 @@ func RegisterType(x Message, name string) {
 
 // MessageName returns the fully-qualified proto name for the given message type.
 func MessageName(x Message) string {
-	type xname interface {
-		XXX_MessageName() string
-	}
-	if m, ok := x.(xname); ok {
-		return m.XXX_MessageName()
-	}
 	return revProtoTypes[reflect.TypeOf(x)]
 }
 
