@@ -302,20 +302,11 @@ func (o *Buffer) enc_ptr_string(p *Properties, base structPointer) error {
 func (o *Buffer) enc_string(p *Properties, base structPointer) error {
 	v := *structPointer_StringVal(base, p.field)
 	if v == "" {
-		return ErrNil
+		return nil
 	}
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeStringBytes(v)
 	return nil
-}
-
-// All protocol buffer fields are nillable, but be careful.
-func isNil(v reflect.Value) bool {
-	switch v.Kind() {
-	case reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
-		return v.IsNil()
-	}
-	return false
 }
 
 // Encode an message struct field of a message struct.
