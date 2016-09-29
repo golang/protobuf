@@ -265,7 +265,6 @@ To create and play with a Test object:
 package protobuf3
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"reflect"
@@ -301,113 +300,8 @@ func (p *Buffer) Reset() {
 	p.index = 0        // for reading
 }
 
-// SetBuf replaces the internal buffer with the slice,
-// ready for unmarshaling the contents of the slice.
-func (p *Buffer) SetBuf(s []byte) {
-	p.buf = s
-	p.index = 0
-}
-
 // Bytes returns the contents of the Buffer.
 func (p *Buffer) Bytes() []byte { return p.buf }
-
-/*
- * Helper routines for simplifying the creation of optional fields of basic type.
- */
-
-// Bool is a helper routine that allocates a new bool value
-// to store v and returns a pointer to it.
-func Bool(v bool) *bool {
-	return &v
-}
-
-// Int32 is a helper routine that allocates a new int32 value
-// to store v and returns a pointer to it.
-func Int32(v int32) *int32 {
-	return &v
-}
-
-// Int is a helper routine that allocates a new int32 value
-// to store v and returns a pointer to it, but unlike Int32
-// its argument value is an int.
-func Int(v int) *int32 {
-	p := new(int32)
-	*p = int32(v)
-	return p
-}
-
-// Int64 is a helper routine that allocates a new int64 value
-// to store v and returns a pointer to it.
-func Int64(v int64) *int64 {
-	return &v
-}
-
-// Float32 is a helper routine that allocates a new float32 value
-// to store v and returns a pointer to it.
-func Float32(v float32) *float32 {
-	return &v
-}
-
-// Float64 is a helper routine that allocates a new float64 value
-// to store v and returns a pointer to it.
-func Float64(v float64) *float64 {
-	return &v
-}
-
-// Uint32 is a helper routine that allocates a new uint32 value
-// to store v and returns a pointer to it.
-func Uint32(v uint32) *uint32 {
-	return &v
-}
-
-// Uint64 is a helper routine that allocates a new uint64 value
-// to store v and returns a pointer to it.
-func Uint64(v uint64) *uint64 {
-	return &v
-}
-
-// String is a helper routine that allocates a new string value
-// to store v and returns a pointer to it.
-func String(v string) *string {
-	return &v
-}
-
-// EnumName is a helper function to simplify printing protocol buffer enums
-// by name.  Given an enum map and a value, it returns a useful string.
-func EnumName(m map[int32]string, v int32) string {
-	s, ok := m[v]
-	if ok {
-		return s
-	}
-	return strconv.Itoa(int(v))
-}
-
-// UnmarshalJSONEnum is a helper function to simplify recovering enum int values
-// from their JSON-encoded representation. Given a map from the enum's symbolic
-// names to its int values, and a byte buffer containing the JSON-encoded
-// value, it returns an int32 that can be cast to the enum type by the caller.
-//
-// The function can deal with both JSON representations, numeric and symbolic.
-func UnmarshalJSONEnum(m map[string]int32, data []byte, enumName string) (int32, error) {
-	if data[0] == '"' {
-		// New style: enums are strings.
-		var repr string
-		if err := json.Unmarshal(data, &repr); err != nil {
-			return -1, err
-		}
-		val, ok := m[repr]
-		if !ok {
-			return 0, fmt.Errorf("unrecognized enum %s value %q", enumName, repr)
-		}
-		return val, nil
-	}
-	// Old style: enums are ints.
-	var val int32
-	if err := json.Unmarshal(data, &val); err != nil {
-		return 0, fmt.Errorf("cannot unmarshal %#q into enum %s", data, enumName)
-	}
-	return val, nil
-}
 
 // DebugPrint dumps the encoded data in b in a debugging format with a header
 // including the string s. Used in testing but made available for general debugging.
