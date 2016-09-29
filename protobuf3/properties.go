@@ -115,7 +115,7 @@ type Properties struct {
 // String formats the properties in the protobuf struct field tag style.
 func (p *Properties) String() string {
 	s := p.Wire
-	s = ","
+	s += ","
 	s += strconv.FormatUint(uint64(p.Tag), 10)
 	s += ",opt" // all protobuf v3 fields are optional
 	if p.Repeated {
@@ -164,8 +164,7 @@ func (p *Properties) Parse(s string) (bool, error) {
 	}
 	p.Tag = uint32(tag)
 
-	for i := 2; i < len(fields); i++ {
-		f := fields[i]
+	for _, f := range fields[2:] {
 		switch f {
 		case "rep":
 			p.Repeated = true
