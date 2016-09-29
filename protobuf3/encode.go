@@ -633,16 +633,6 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 		}
 	}
 
-	// Do oneof fields.
-	if prop.oneofMarshaler != nil {
-		m := structPointer_Interface(base, prop.stype).(Message)
-		if err := prop.oneofMarshaler(m, o); err == ErrNil {
-			return errOneofHasNil
-		} else if err != nil {
-			return err
-		}
-	}
-
 	return nil
 }
 

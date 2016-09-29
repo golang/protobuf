@@ -76,15 +76,6 @@ type decoder func(p *Buffer, prop *Properties, base structPointer) error
 // A valueDecoder decodes a single integer in a particular encoding.
 type valueDecoder func(o *Buffer) (x uint64, err error)
 
-// A oneofMarshaler does the marshaling for all oneof fields in a message.
-type oneofMarshaler func(Message, *Buffer) error
-
-// A oneofUnmarshaler does the unmarshaling for a oneof field in a message.
-type oneofUnmarshaler func(Message, int, int, *Buffer) (bool, error)
-
-// A oneofSizer does the sizing for all oneof fields in a message.
-type oneofSizer func(Message) int
-
 // tagMap is an optimization over map[int]int for typical protocol buffer
 // use-cases. Encoded protocol buffers are often in tag order with small tag
 // numbers.
@@ -125,24 +116,8 @@ func (p *tagMap) put(t int, fi int) {
 
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
-	Prop  []*Properties // properties for each field
-	order []int         // list of struct field numbers in tag order
-
-	oneofMarshaler   oneofMarshaler
-	oneofUnmarshaler oneofUnmarshaler
-	oneofSizer       oneofSizer
-	stype            reflect.Type
-
-	// OneofTypes contains information about the oneof fields in this message.
-	// It is keyed by the original name of a field.
-	OneofTypes map[string]*OneofProperties
-}
-
-// OneofProperties represents information about a specific field in a oneof.
-type OneofProperties struct {
-	Type  reflect.Type // pointer to generated struct type for this oneof field
-	Field int          // struct field number of the containing oneof in the message
-	Prop  *Properties
+	Prop  []Properties // properties for each field, indexed by reflection's field number. Fields which are not encoded in protobuf have incomplete Properties
+	order []int        // list of struct field numbers in tag order, indexed 0 to N-1 by the number of fields to encode in protobuf. value indexes into .Prop[]
 }
 
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
