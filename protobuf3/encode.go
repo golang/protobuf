@@ -505,6 +505,38 @@ func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base structPointer)
 	return nil
 }
 
+// Encode a slice of message structs ([]struct).
+func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) error {
+	s := structPointer_StructSlice(base, p.field)
+	l := s.Len() // note this is the byte size of the slice's array, not # of elements
+
+	for i := uintptr(0); i < l; i += p.stype.Size() {
+		structp := s.Index(i)
+
+		// Can the object marshal itself?
+		if p.isMarshaler {
+			m := structPointer_Interface(structp, p.stype).(Marshaler)
+			data, err := m.MarshalProtobuf3()
+			if err != nil {
+				return err
+			}
+			o.buf = append(o.buf, p.tagcode...)
+			o.EncodeRawBytes(data)
+			continue
+		}
+
+		o.buf = append(o.buf, p.tagcode...)
+		err := o.enc_len_struct(p.sprop, structp)
+		if err != nil {
+			if err == ErrNil {
+				return errRepeatedHasNil
+			}
+			return err
+		}
+	}
+	return nil
+}
+
 // Encode a map field.
 func (o *Buffer) enc_new_map(p *Properties, base structPointer) error {
 	/*

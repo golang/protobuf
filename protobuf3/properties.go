@@ -265,6 +265,10 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, lockGetPro
 			}
 		case reflect.String:
 			p.enc = (*Buffer).enc_slice_string
+		case reflect.Struct:
+			p.stype = t2
+			p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
+			p.enc = (*Buffer).enc_slice_struct_message
 		case reflect.Ptr:
 			switch t3 := t2.Elem(); t3.Kind() {
 			default:

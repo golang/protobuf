@@ -151,6 +151,17 @@ type structPointerSlice []structPointer
 func (v *structPointerSlice) Len() int                  { return len(*v) }
 func (v *structPointerSlice) Index(i int) structPointer { return (*v)[i] }
 
+// StructSlice the address of a []struct field in the struct.
+func structPointer_StructSlice(p structPointer, f field) *structSlice {
+	return (*structSlice)(unsafe.Pointer(uintptr(p) + uintptr(f)))
+}
+
+// A structSlice represents a slice of structs (themselves submessages or groups).
+type structSlice []byte
+
+func (s *structSlice) Len() uintptr                  { return uintptr(len(*s)) }                        // NOTE WELL returns byte length, not elements!
+func (s *structSlice) Index(i uintptr) structPointer { return structPointer(unsafe.Pointer(&(*s)[i])) } // NOTE WELL pass in byte index, not element!
+
 // A word32 is the address of a "pointer to 32-bit value" field.
 type word32 **uint32
 
