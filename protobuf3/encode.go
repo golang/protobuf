@@ -268,22 +268,6 @@ func (o *Buffer) enc_proto3_bool(p *Properties, base structPointer) error {
 	return nil
 }
 
-func size_bool(p *Properties, base structPointer) int {
-	v := *structPointer_Bool(base, p.field)
-	if v == nil {
-		return 0
-	}
-	return len(p.tagcode) + 1 // each bool takes exactly one byte
-}
-
-func size_proto3_bool(p *Properties, base structPointer) int {
-	v := *structPointer_BoolVal(base, p.field)
-	if !v && !p.oneof {
-		return 0
-	}
-	return len(p.tagcode) + 1 // each bool takes exactly one byte
-}
-
 // Encode an int32.
 func (o *Buffer) enc_int32(p *Properties, base structPointer) error {
 	v := structPointer_Word32(base, p.field)
@@ -305,28 +289,6 @@ func (o *Buffer) enc_proto3_int32(p *Properties, base structPointer) error {
 	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, uint64(x))
 	return nil
-}
-
-func size_int32(p *Properties, base structPointer) (n int) {
-	v := structPointer_Word32(base, p.field)
-	if word32_IsNil(v) {
-		return 0
-	}
-	x := int32(word32_Get(v)) // permit sign extension to use full 64-bit range
-	n += len(p.tagcode)
-	n += p.valSize(uint64(x))
-	return
-}
-
-func size_proto3_int32(p *Properties, base structPointer) (n int) {
-	v := structPointer_Word32Val(base, p.field)
-	x := int32(word32Val_Get(v)) // permit sign extension to use full 64-bit range
-	if x == 0 && !p.oneof {
-		return 0
-	}
-	n += len(p.tagcode)
-	n += p.valSize(uint64(x))
-	return
 }
 
 // Encode a uint32.
@@ -353,28 +315,6 @@ func (o *Buffer) enc_proto3_uint32(p *Properties, base structPointer) error {
 	return nil
 }
 
-func size_uint32(p *Properties, base structPointer) (n int) {
-	v := structPointer_Word32(base, p.field)
-	if word32_IsNil(v) {
-		return 0
-	}
-	x := word32_Get(v)
-	n += len(p.tagcode)
-	n += p.valSize(uint64(x))
-	return
-}
-
-func size_proto3_uint32(p *Properties, base structPointer) (n int) {
-	v := structPointer_Word32Val(base, p.field)
-	x := word32Val_Get(v)
-	if x == 0 && !p.oneof {
-		return 0
-	}
-	n += len(p.tagcode)
-	n += p.valSize(uint64(x))
-	return
-}
-
 // Encode an int64.
 func (o *Buffer) enc_int64(p *Properties, base structPointer) error {
 	v := structPointer_Word64(base, p.field)
@@ -398,28 +338,6 @@ func (o *Buffer) enc_proto3_int64(p *Properties, base structPointer) error {
 	return nil
 }
 
-func size_int64(p *Properties, base structPointer) (n int) {
-	v := structPointer_Word64(base, p.field)
-	if word64_IsNil(v) {
-		return 0
-	}
-	x := word64_Get(v)
-	n += len(p.tagcode)
-	n += p.valSize(x)
-	return
-}
-
-func size_proto3_int64(p *Properties, base structPointer) (n int) {
-	v := structPointer_Word64Val(base, p.field)
-	x := word64Val_Get(v)
-	if x == 0 && !p.oneof {
-		return 0
-	}
-	n += len(p.tagcode)
-	n += p.valSize(x)
-	return
-}
-
 // Encode a string.
 func (o *Buffer) enc_string(p *Properties, base structPointer) error {
 	v := *structPointer_String(base, p.field)
@@ -440,27 +358,6 @@ func (o *Buffer) enc_proto3_string(p *Properties, base structPointer) error {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeStringBytes(v)
 	return nil
-}
-
-func size_string(p *Properties, base structPointer) (n int) {
-	v := *structPointer_String(base, p.field)
-	if v == nil {
-		return 0
-	}
-	x := *v
-	n += len(p.tagcode)
-	n += sizeStringBytes(x)
-	return
-}
-
-func size_proto3_string(p *Properties, base structPointer) (n int) {
-	v := *structPointer_StringVal(base, p.field)
-	if v == "" && !p.oneof {
-		return 0
-	}
-	n += len(p.tagcode)
-	n += sizeStringBytes(v)
-	return
 }
 
 // All protocol buffer fields are nillable, but be careful.
@@ -495,27 +392,6 @@ func (o *Buffer) enc_struct_message(p *Properties, base structPointer) error {
 	return o.enc_len_struct(p.sprop, structp)
 }
 
-func size_struct_message(p *Properties, base structPointer) int {
-	structp := structPointer_GetStructPointer(base, p.field)
-	if structPointer_IsNil(structp) {
-		return 0
-	}
-
-	// Can the object marshal itself?
-	if p.isMarshaler {
-		m := structPointer_Interface(structp, p.stype).(Marshaler)
-		data, _ := m.MarshalProtobuf3()
-		n0 := len(p.tagcode)
-		n1 := sizeRawBytes(data)
-		return n0 + n1
-	}
-
-	n0 := len(p.tagcode)
-	n1 := size_struct(p.sprop, structp)
-	n2 := sizeVarint(uint64(n1)) // size of encoded length
-	return n0 + n1 + n2
-}
-
 // Encode a slice of bools ([]bool).
 func (o *Buffer) enc_slice_bool(p *Properties, base structPointer) error {
 	s := *structPointer_BoolSlice(base, p.field)
@@ -532,15 +408,6 @@ func (o *Buffer) enc_slice_bool(p *Properties, base structPointer) error {
 		p.valEnc(o, v)
 	}
 	return nil
-}
-
-func size_slice_bool(p *Properties, base structPointer) int {
-	s := *structPointer_BoolSlice(base, p.field)
-	l := len(s)
-	if l == 0 {
-		return 0
-	}
-	return l * (len(p.tagcode) + 1) // each bool takes exactly one byte
 }
 
 // Encode a slice of bools ([]bool) in packed format.
@@ -560,18 +427,6 @@ func (o *Buffer) enc_slice_packed_bool(p *Properties, base structPointer) error 
 		p.valEnc(o, v)
 	}
 	return nil
-}
-
-func size_slice_packed_bool(p *Properties, base structPointer) (n int) {
-	s := *structPointer_BoolSlice(base, p.field)
-	l := len(s)
-	if l == 0 {
-		return 0
-	}
-	n += len(p.tagcode)
-	n += sizeVarint(uint64(l))
-	n += l // each bool takes exactly one byte
-	return
 }
 
 // Encode a slice of bytes ([]byte).
@@ -595,26 +450,6 @@ func (o *Buffer) enc_proto3_slice_byte(p *Properties, base structPointer) error 
 	return nil
 }
 
-func size_slice_byte(p *Properties, base structPointer) (n int) {
-	s := *structPointer_Bytes(base, p.field)
-	if s == nil && !p.oneof {
-		return 0
-	}
-	n += len(p.tagcode)
-	n += sizeRawBytes(s)
-	return
-}
-
-func size_proto3_slice_byte(p *Properties, base structPointer) (n int) {
-	s := *structPointer_Bytes(base, p.field)
-	if len(s) == 0 && !p.oneof {
-		return 0
-	}
-	n += len(p.tagcode)
-	n += sizeRawBytes(s)
-	return
-}
-
 // Encode a slice of int32s ([]int32) in packed format.
 func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) error {
 	s := structPointer_Word32Slice(base, p.field)
@@ -633,24 +468,6 @@ func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) error
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
 	return nil
-}
-
-func size_slice_packed_int32(p *Properties, base structPointer) (n int) {
-	s := structPointer_Word32Slice(base, p.field)
-	l := s.Len()
-	if l == 0 {
-		return 0
-	}
-	var bufSize int
-	for i := 0; i < l; i++ {
-		x := int32(s.Index(i)) // permit sign extension to use full 64-bit range
-		bufSize += p.valSize(uint64(x))
-	}
-
-	n += len(p.tagcode)
-	n += sizeVarint(uint64(bufSize))
-	n += bufSize
-	return
 }
 
 // Encode a slice of uint32s ([]uint32) in packed format.
@@ -673,23 +490,6 @@ func (o *Buffer) enc_slice_packed_uint32(p *Properties, base structPointer) erro
 	return nil
 }
 
-func size_slice_packed_uint32(p *Properties, base structPointer) (n int) {
-	s := structPointer_Word32Slice(base, p.field)
-	l := s.Len()
-	if l == 0 {
-		return 0
-	}
-	var bufSize int
-	for i := 0; i < l; i++ {
-		bufSize += p.valSize(uint64(s.Index(i)))
-	}
-
-	n += len(p.tagcode)
-	n += sizeVarint(uint64(bufSize))
-	n += bufSize
-	return
-}
-
 // Encode a slice of int64s ([]int64) in packed format.
 func (o *Buffer) enc_slice_packed_int64(p *Properties, base structPointer) error {
 	s := structPointer_Word64Slice(base, p.field)
@@ -709,23 +509,6 @@ func (o *Buffer) enc_slice_packed_int64(p *Properties, base structPointer) error
 	return nil
 }
 
-func size_slice_packed_int64(p *Properties, base structPointer) (n int) {
-	s := structPointer_Word64Slice(base, p.field)
-	l := s.Len()
-	if l == 0 {
-		return 0
-	}
-	var bufSize int
-	for i := 0; i < l; i++ {
-		bufSize += p.valSize(s.Index(i))
-	}
-
-	n += len(p.tagcode)
-	n += sizeVarint(uint64(bufSize))
-	n += bufSize
-	return
-}
-
 // Encode a slice of slice of bytes ([][]byte).
 func (o *Buffer) enc_slice_slice_byte(p *Properties, base structPointer) error {
 	ss := *structPointer_BytesSlice(base, p.field)
@@ -740,19 +523,6 @@ func (o *Buffer) enc_slice_slice_byte(p *Properties, base structPointer) error {
 	return nil
 }
 
-func size_slice_slice_byte(p *Properties, base structPointer) (n int) {
-	ss := *structPointer_BytesSlice(base, p.field)
-	l := len(ss)
-	if l == 0 {
-		return 0
-	}
-	n += l * len(p.tagcode)
-	for i := 0; i < l; i++ {
-		n += sizeRawBytes(ss[i])
-	}
-	return
-}
-
 // Encode a slice of strings ([]string).
 func (o *Buffer) enc_slice_string(p *Properties, base structPointer) error {
 	ss := *structPointer_StringSlice(base, p.field)
@@ -762,16 +532,6 @@ func (o *Buffer) enc_slice_string(p *Properties, base structPointer) error {
 		o.EncodeStringBytes(ss[i])
 	}
 	return nil
-}
-
-func size_slice_string(p *Properties, base structPointer) (n int) {
-	ss := *structPointer_StringSlice(base, p.field)
-	l := len(ss)
-	n += l * len(p.tagcode)
-	for i := 0; i < l; i++ {
-		n += sizeStringBytes(ss[i])
-	}
-	return
 }
 
 // Encode a slice of message structs ([]*struct).
@@ -807,32 +567,6 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) err
 		}
 	}
 	return nil
-}
-
-func size_slice_struct_message(p *Properties, base structPointer) (n int) {
-	s := structPointer_StructPointerSlice(base, p.field)
-	l := s.Len()
-	n += l * len(p.tagcode)
-	for i := 0; i < l; i++ {
-		structp := s.Index(i)
-		if structPointer_IsNil(structp) {
-			return // return the size up to this point
-		}
-
-		// Can the object marshal itself?
-		if p.isMarshaler {
-			m := structPointer_Interface(structp, p.stype).(Marshaler)
-			data, _ := m.MarshalProtobuf3()
-			n += len(p.tagcode)
-			n += sizeRawBytes(data)
-			continue
-		}
-
-		n0 := size_struct(p.sprop, structp)
-		n1 := sizeVarint(uint64(n0)) // size of encoded length
-		n += n0 + n1
-	}
-	return
 }
 
 // Encode a map field.
@@ -878,27 +612,6 @@ func (o *Buffer) enc_new_map(p *Properties, base structPointer) error {
 		}
 	}
 	return nil
-}
-
-func size_new_map(p *Properties, base structPointer) int {
-	v := structPointer_NewAt(base, p.field, p.mtype).Elem() // map[K]V
-
-	keycopy, valcopy, keybase, valbase := mapEncodeScratch(p.mtype)
-
-	n := 0
-	for _, key := range v.MapKeys() {
-		val := v.MapIndex(key)
-		keycopy.Set(key)
-		valcopy.Set(val)
-
-		// Tag codes for key and val are the responsibility of the sub-sizer.
-		keysize := p.mkeyprop.size(p.mkeyprop, keybase)
-		valsize := p.mvalprop.size(p.mvalprop, valbase)
-		entry := keysize + valsize
-		// Add on tag code and length of map entry itself.
-		n += len(p.tagcode) + sizeVarint(uint64(entry)) + entry
-	}
-	return n
 }
 
 // mapEncodeScratch returns a new reflect.Value matching the map's value type,
@@ -968,23 +681,6 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 	}
 
 	return nil
-}
-
-func size_struct(prop *StructProperties, base structPointer) (n int) {
-	for _, i := range prop.order {
-		p := prop.Prop[i]
-		if p.size != nil {
-			n += p.size(p, base)
-		}
-	}
-
-	// Factor in any oneof fields.
-	if prop.oneofSizer != nil {
-		m := structPointer_Interface(base, prop.stype).(Message)
-		n += prop.oneofSizer(m)
-	}
-
-	return
 }
 
 var zeroes [20]byte // longer than any conceivable sizeVarint

@@ -68,11 +68,6 @@ type encoder func(p *Buffer, prop *Properties, base structPointer) error
 // A valueEncoder encodes a single integer in a particular encoding.
 type valueEncoder func(o *Buffer, x uint64) error
 
-// Sizers are defined in encode.go
-// A sizer returns the encoded size of a field, including its tag and encoder
-// type.
-type sizer func(prop *Properties, base structPointer) int
-
 // A valueSizer returns the encoded size of a single integer in a particular
 // encoding.
 type valueSizer func(x uint64) int
@@ -194,7 +189,6 @@ type Properties struct {
 	mkeyprop *Properties  // set for map types only
 	mvalprop *Properties  // set for map types only
 
-	size    sizer
 	valSize valueSizer // set for bool and numeric types only
 }
 
@@ -305,7 +299,6 @@ var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
 // Initialize the fields for encoding and decoding.
 func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lockGetProp bool) {
 	p.enc = nil
-	p.size = nil
 
 	switch t1 := typ; t1.Kind() {
 	default:
@@ -315,31 +308,23 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 
 	case reflect.Bool:
 		p.enc = (*Buffer).enc_proto3_bool
-		p.size = size_proto3_bool
 	case reflect.Int32:
 		p.enc = (*Buffer).enc_proto3_int32
-		p.size = size_proto3_int32
 	case reflect.Uint32:
 		p.enc = (*Buffer).enc_proto3_uint32
-		p.size = size_proto3_uint32
 	case reflect.Int64, reflect.Uint64:
 		p.enc = (*Buffer).enc_proto3_int64
-		p.size = size_proto3_int64
 	case reflect.Float32:
 		p.enc = (*Buffer).enc_proto3_uint32 // can just treat them as bits
-		p.size = size_proto3_uint32
 	case reflect.Float64:
 		p.enc = (*Buffer).enc_proto3_int64 // can just treat them as bits
-		p.size = size_proto3_int64
 	case reflect.String:
 		p.enc = (*Buffer).enc_proto3_string
-		p.size = size_proto3_string
 
 	case reflect.Struct:
 		p.stype = t1
 		p.isMarshaler = isMarshaler(t1)
 		p.enc = (*Buffer).enc_struct_message
-		p.size = size_struct_message
 
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
@@ -348,30 +333,22 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_bool
-			p.size = size_bool
 		case reflect.Int32:
 			p.enc = (*Buffer).enc_int32
-			p.size = size_int32
 		case reflect.Uint32:
 			p.enc = (*Buffer).enc_uint32
-			p.size = size_uint32
 		case reflect.Int64, reflect.Uint64:
 			p.enc = (*Buffer).enc_int64
-			p.size = size_int64
 		case reflect.Float32:
 			p.enc = (*Buffer).enc_uint32 // can just treat them as bits
-			p.size = size_uint32
 		case reflect.Float64:
 			p.enc = (*Buffer).enc_int64 // can just treat them as bits
-			p.size = size_int64
 		case reflect.String:
 			p.enc = (*Buffer).enc_string
-			p.size = size_string
 		case reflect.Struct:
 			p.stype = t1.Elem()
 			p.isMarshaler = isMarshaler(t1)
 			p.enc = (*Buffer).enc_struct_message
-			p.size = size_struct_message
 		}
 
 	case reflect.Slice:
@@ -381,36 +358,28 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_slice_packed_bool
-			p.size = size_slice_packed_bool
 		case reflect.Int32:
 			p.enc = (*Buffer).enc_slice_packed_int32
-			p.size = size_slice_packed_int32
 		case reflect.Uint32:
 			p.enc = (*Buffer).enc_slice_packed_uint32
-			p.size = size_slice_packed_uint32
 		case reflect.Int64, reflect.Uint64:
 			p.enc = (*Buffer).enc_slice_packed_int64
-			p.size = size_slice_packed_int64
 		case reflect.Uint8:
 			p.enc = (*Buffer).enc_proto3_slice_byte
-			p.size = size_proto3_slice_byte
 		case reflect.Float32, reflect.Float64:
 			switch t2.Bits() {
 			case 32:
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_slice_packed_uint32
-				p.size = size_slice_packed_uint32
 			case 64:
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_slice_packed_int64
-				p.size = size_slice_packed_int64
 			default:
 				logNoSliceEnc(t1, t2)
 				break
 			}
 		case reflect.String:
 			p.enc = (*Buffer).enc_slice_string
-			p.size = size_slice_string
 		case reflect.Ptr:
 			switch t3 := t2.Elem(); t3.Kind() {
 			default:
@@ -420,7 +389,6 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 				p.stype = t2.Elem()
 				p.isMarshaler = isMarshaler(t2)
 				p.enc = (*Buffer).enc_slice_struct_message
-				p.size = size_slice_struct_message
 			}
 		case reflect.Slice:
 			switch t2.Elem().Kind() {
@@ -429,13 +397,11 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 				break
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_slice_slice_byte
-				p.size = size_slice_slice_byte
 			}
 		}
 
 	case reflect.Map:
 		p.enc = (*Buffer).enc_new_map
-		p.size = size_new_map
 
 		p.mtype = t1
 		p.mkeyprop = &Properties{}
