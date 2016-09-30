@@ -39,6 +39,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"unsafe"
 )
 
 var (
@@ -581,9 +582,40 @@ func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base structPointer)
 func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) error {
 	s := structPointer_StructSlice(base, p.field)
 	l := s.Len() // note this is the byte size of the slice's array, not # of elements
+	sz := p.stype.Size()
 
-	for i := uintptr(0); i < l; i += p.stype.Size() {
+	for i := uintptr(0); i < l; i += sz {
 		structp := s.Index(i)
+
+		// Can the object marshal itself?
+		if p.isMarshaler {
+			m := structPointer_Interface(structp, p.stype).(Marshaler)
+			data, err := m.MarshalProtobuf3()
+			if err != nil {
+				return err
+			}
+			o.buf = append(o.buf, p.tagcode...)
+			o.EncodeRawBytes(data)
+			continue
+		}
+
+		o.buf = append(o.buf, p.tagcode...)
+		err := o.enc_len_struct(p.sprop, structp)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Encode an array of message structs ([n]struct).
+func (o *Buffer) enc_array_struct_message(p *Properties, base structPointer) error {
+	l := p.length // note this is the byte size of the slice's array, not # of elements
+	s := structPointer_StructArray(base, p.field, l)
+	sz := p.stype.Size()
+
+	for i := uintptr(0); i < uintptr(l); i += sz {
+		structp := structPointer(unsafe.Pointer(&s[i]))
 
 		// Can the object marshal itself?
 		if p.isMarshaler {

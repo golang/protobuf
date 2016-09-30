@@ -328,11 +328,11 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 				wire = WireBytes // packed=true...
 			case reflect.String:
 				p.enc = (*Buffer).enc_array_string
+			case reflect.Struct:
+				p.stype = t2
+				p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
+				p.enc = (*Buffer).enc_array_struct_message
 				/*
-					case reflect.Struct:
-						p.stype = t2
-						p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
-						p.enc = (*Buffer).enc_array_struct_message
 					case reflect.Ptr:
 						switch t3 := t2.Elem(); t3.Kind() {
 						default:

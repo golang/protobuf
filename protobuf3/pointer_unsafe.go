@@ -169,9 +169,14 @@ type structPointerSlice []structPointer
 func (v *structPointerSlice) Len() int                  { return len(*v) }
 func (v *structPointerSlice) Index(i int) structPointer { return (*v)[i] }
 
-// StructSlice the address of a []struct field in the struct.
+// StructSlice returns the address of a []struct field in the struct.
 func structPointer_StructSlice(p structPointer, f field) *structSlice {
 	return (*structSlice)(unsafe.Pointer(uintptr(p) + uintptr(f)))
+}
+
+// StructArray returns a slice pointing to a n-byte [n/sizeof_struct]struct field in the struct.
+func structPointer_StructArray(p structPointer, f field, n int) []byte {
+	return ((*[maxLen]byte)(unsafe.Pointer(uintptr(p) + uintptr(f))))[0:n:n]
 }
 
 // A structSlice represents a slice of structs (themselves submessages or groups).
