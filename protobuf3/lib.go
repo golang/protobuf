@@ -74,6 +74,7 @@ func (p *Buffer) Reset() {
 }
 
 // save the first error; toss the rest
+// note: works correctly when arg err is nil
 func (p *Buffer) noteError(err error) {
 	if p.err == nil {
 		p.err = err
