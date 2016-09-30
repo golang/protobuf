@@ -206,3 +206,66 @@ func BenchmarkOldBytesMsg(b *testing.B) {
 		proto.Marshal(&m)
 	}
 }
+
+func BenchmarkNestedPtrStructMsg(b *testing.B) {
+	// note: value is chosen so it can be compared with the equivalent non-pointer nesting
+	m := NestedPtrStructMsg{
+		first:  &InnerMsg{0x11},
+		second: &InnerMsg{0x22},
+		many:   []*InnerMsg{&InnerMsg{0x33}},
+		more:   []*InnerMsg{&InnerMsg{0x44}, &InnerMsg{0x55}, &InnerMsg{0x66}},
+	}
+
+	_, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		protobuf3.Marshal(&m)
+	}
+}
+
+func BenchmarkOldNestedPtrStructMsg(b *testing.B) {
+	m := NestedPtrStructMsg{
+		first:  &InnerMsg{0x11},
+		second: &InnerMsg{0x22},
+		many:   []*InnerMsg{&InnerMsg{0x33}},
+		more:   []*InnerMsg{&InnerMsg{0x44}, &InnerMsg{0x55}, &InnerMsg{0x66}},
+	}
+
+	_, err := proto.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		proto.Marshal(&m)
+	}
+}
+
+func BenchmarkNestedStructMsg(b *testing.B) {
+	// note: value matches that of NestedPtrStructMsg above, for comparison between the
+	// pointer-to-nested-struct and embedded-nested-struct cases
+	m := NestedStructMsg{
+		first:  InnerMsg{0x11},
+		second: InnerMsg{0x22},
+		many:   []InnerMsg{InnerMsg{0x33}},
+		more:   [3]InnerMsg{InnerMsg{0x44}, InnerMsg{0x55}, InnerMsg{0x66}},
+	}
+
+	_, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		protobuf3.Marshal(&m)
+	}
+}
