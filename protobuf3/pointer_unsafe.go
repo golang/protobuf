@@ -158,9 +158,14 @@ func structPointer_GetStructVal(p structPointer, f field) structPointer {
 	return structPointer(unsafe.Pointer(uintptr(p) + uintptr(f)))
 }
 
-// StructPointerSlice the address of a []*struct field in the struct.
+// StructPointerSlice returns the address of a []*struct field in the struct.
 func structPointer_StructPointerSlice(p structPointer, f field) *structPointerSlice {
 	return (*structPointerSlice)(unsafe.Pointer(uintptr(p) + uintptr(f)))
+}
+
+// StructPointerArray returns a slice pointing to an address of a [n]*struct field in the struct.
+func structPointer_StructPointerArray(p structPointer, f field, n int) []structPointer {
+	return ((*[maxLen / 8]structPointer)(unsafe.Pointer(uintptr(p) + uintptr(f))))[0:n:n]
 }
 
 // A structPointerSlice represents a slice of pointers to structs (themselves submessages or groups).
@@ -175,7 +180,7 @@ func structPointer_StructSlice(p structPointer, f field) *structSlice {
 }
 
 // StructArray returns a slice pointing to a n-byte [n/sizeof_struct]struct field in the struct.
-func structPointer_StructArray(p structPointer, f field, n int) []byte {
+func structPointer_StructArray(p structPointer, f field, n uintptr) []byte {
 	return ((*[maxLen]byte)(unsafe.Pointer(uintptr(p) + uintptr(f))))[0:n:n]
 }
 

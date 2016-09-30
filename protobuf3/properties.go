@@ -332,18 +332,16 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 				p.stype = t2
 				p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
 				p.enc = (*Buffer).enc_array_struct_message
-				/*
-					case reflect.Ptr:
-						switch t3 := t2.Elem(); t3.Kind() {
-						default:
-							fmt.Fprintf(os.Stderr, "protobuf3: no ptr oenc for %T -> %T -> %T\n", t1, t2, t3)
-							break
-						case reflect.Struct:
-							p.stype = t3
-							p.isMarshaler = isMarshaler(t2)
-							p.enc = (*Buffer).enc_array_ptr_struct_message
-						}
-				*/
+			case reflect.Ptr:
+				switch t3 := t2.Elem(); t3.Kind() {
+				default:
+					fmt.Fprintf(os.Stderr, "protobuf3: no ptr oenc for %T -> %T -> %T\n", t1, t2, t3)
+					break
+				case reflect.Struct:
+					p.stype = t3
+					p.isMarshaler = isMarshaler(t2)
+					p.enc = (*Buffer).enc_array_ptr_struct_message
+				}
 			}
 		}
 

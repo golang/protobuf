@@ -578,6 +578,37 @@ func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base structPointer)
 	return nil
 }
 
+// Encode an array of *message structs ([n]*struct).
+func (o *Buffer) enc_array_ptr_struct_message(p *Properties, base structPointer) error {
+	l := p.length
+	s := structPointer_StructPointerArray(base, p.field, l)
+
+	for _, structp := range s {
+		if structPointer_IsNil(structp) {
+			return errRepeatedHasNil
+		}
+
+		// Can the object marshal itself?
+		if p.isMarshaler {
+			m := structPointer_Interface(structp, p.stype).(Marshaler)
+			data, err := m.MarshalProtobuf3()
+			if err != nil {
+				return err
+			}
+			o.buf = append(o.buf, p.tagcode...)
+			o.EncodeRawBytes(data)
+			continue
+		}
+
+		o.buf = append(o.buf, p.tagcode...)
+		err := o.enc_len_struct(p.sprop, structp)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Encode a slice of message structs ([]struct).
 func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) error {
 	s := structPointer_StructSlice(base, p.field)
@@ -610,11 +641,11 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) err
 
 // Encode an array of message structs ([n]struct).
 func (o *Buffer) enc_array_struct_message(p *Properties, base structPointer) error {
-	l := p.length // note this is the byte size of the slice's array, not # of elements
-	s := structPointer_StructArray(base, p.field, l)
 	sz := p.stype.Size()
+	l := uintptr(p.length) * sz // note this is the byte size of the slice's array, not # of elements
+	s := structPointer_StructArray(base, p.field, l)
 
-	for i := uintptr(0); i < uintptr(l); i += sz {
+	for i := uintptr(0); i < l; i += sz {
 		structp := structPointer(unsafe.Pointer(&s[i]))
 
 		// Can the object marshal itself?
