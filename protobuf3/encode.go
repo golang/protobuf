@@ -370,12 +370,36 @@ func (o *Buffer) enc_slice_packed_bool(p *Properties, base structPointer) error 
 	return nil
 }
 
+// Encode an array of bools ([N]bool) in packed format.
+func (o *Buffer) enc_array_packed_bool(p *Properties, base structPointer) error {
+	s := structPointer_BoolArray(base, p.field, p.length)
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(p.length)) // each bool takes exactly one byte
+	for _, x := range s {
+		v := uint64(0)
+		if x {
+			v = 1
+		}
+		p.valEnc(o, v)
+	}
+	return nil
+}
+
 // Encode a slice of bytes ([]byte).
 func (o *Buffer) enc_slice_byte(p *Properties, base structPointer) error {
 	s := *structPointer_Bytes(base, p.field)
 	if len(s) == 0 {
 		return nil
 	}
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeRawBytes(s)
+	return nil
+}
+
+// Encode an array of bytes ([n]byte).
+func (o *Buffer) enc_array_byte(p *Properties, base structPointer) error {
+	l := p.length
+	s := structPointer_ByteArray(base, p.field, l)
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeRawBytes(s)
 	return nil
@@ -393,6 +417,21 @@ func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) error
 	for i := 0; i < l; i++ {
 		x := int32(s.Index(i)) // permit sign extension to use full 64-bit range
 		p.valEnc(buf, uint64(x))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+	return nil
+}
+
+// Encode an array of int32s ([length]int32) in packed format.
+func (o *Buffer) enc_array_packed_int32(p *Properties, base structPointer) error {
+	l := p.length
+	s := structPointer_Word32Array(base, p.field, l)
+	buf := NewBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, uint64(int32(x))) // permit sign extension to use full 64-bit range
 	}
 
 	o.buf = append(o.buf, p.tagcode...)
@@ -421,6 +460,21 @@ func (o *Buffer) enc_slice_packed_uint32(p *Properties, base structPointer) erro
 	return nil
 }
 
+// Encode an array of uint32s ([length]uint32) in packed format.
+func (o *Buffer) enc_array_packed_uint32(p *Properties, base structPointer) error {
+	l := p.length
+	s := structPointer_Word32Array(base, p.field, l)
+	buf := NewBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, uint64(x))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+	return nil
+}
+
 // Encode a slice of int64s ([]int64) in packed format.
 func (o *Buffer) enc_slice_packed_int64(p *Properties, base structPointer) error {
 	s := structPointer_Word64Slice(base, p.field)
@@ -432,6 +486,21 @@ func (o *Buffer) enc_slice_packed_int64(p *Properties, base structPointer) error
 	buf := NewBuffer(nil)
 	for i := 0; i < l; i++ {
 		p.valEnc(buf, s.Index(i))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+	return nil
+}
+
+// Encode an array of int64s ([n]int64) in packed format.
+func (o *Buffer) enc_array_packed_int64(p *Properties, base structPointer) error {
+	l := p.length
+	s := structPointer_Word64Array(base, p.field, l)
+	buf := NewBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, x)
 	}
 
 	o.buf = append(o.buf, p.tagcode...)
@@ -461,6 +530,17 @@ func (o *Buffer) enc_slice_string(p *Properties, base structPointer) error {
 	for i := 0; i < l; i++ {
 		o.buf = append(o.buf, p.tagcode...)
 		o.EncodeStringBytes(ss[i])
+	}
+	return nil
+}
+
+// Encode an array of strings ([n]string).
+func (o *Buffer) enc_array_string(p *Properties, base structPointer) error {
+	l := p.length
+	s := structPointer_StringArray(base, p.field, l)
+	for _, x := range s {
+		o.buf = append(o.buf, p.tagcode...)
+		o.EncodeStringBytes(x)
 	}
 	return nil
 }
@@ -659,5 +739,10 @@ func (o *Buffer) enc_len_thing(enc func() error) error {
 	o.buf = o.buf[:iLen]
 	o.EncodeVarint(uint64(lMsg))
 	o.buf = o.buf[:len(o.buf)+lMsg]
+	return nil
+}
+
+// dummy no-op encoder used for encoding 0-length array types
+func (o *Buffer) enc_nothing(p *Properties, base structPointer) error {
 	return nil
 }

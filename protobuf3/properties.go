@@ -121,6 +121,8 @@ type Properties struct {
 	mtype    reflect.Type // set for map types only
 	mkeyprop *Properties  // set for map types only
 	mvalprop *Properties  // set for map types only
+
+	length int // set for array types only
 }
 
 // String formats the properties in the protobuf struct field tag style.
@@ -288,6 +290,60 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 				break
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_slice_slice_byte
+			}
+		}
+
+	case reflect.Array:
+		p.length = t1.Len()
+		if p.length == 0 {
+			// save checking the array length at encode-time by doing it now
+			// a zero-length array will always encode as nothing
+			p.enc = (*Buffer).enc_nothing
+		} else {
+			switch t2 := t1.Elem(); t2.Kind() {
+			default:
+				fmt.Fprintf(os.Stderr, "protobuf3: no array oenc for %T = %T\n", t1, t2)
+				break
+			case reflect.Bool:
+				p.enc = (*Buffer).enc_array_packed_bool
+				wire = WireBytes // packed=true is implied in protobuf v3
+			case reflect.Int32:
+				p.enc = (*Buffer).enc_array_packed_int32
+				wire = WireBytes // packed=true...
+			case reflect.Uint32:
+				p.enc = (*Buffer).enc_array_packed_uint32
+				wire = WireBytes // packed=true...
+			case reflect.Int64, reflect.Uint64:
+				p.enc = (*Buffer).enc_array_packed_int64
+				wire = WireBytes // packed=true...
+			case reflect.Uint8:
+				p.enc = (*Buffer).enc_array_byte
+			case reflect.Float32:
+				// can just treat them as bits
+				p.enc = (*Buffer).enc_array_packed_uint32
+				wire = WireBytes // packed=true...
+			case reflect.Float64:
+				// can just treat them as bits
+				p.enc = (*Buffer).enc_array_packed_int64
+				wire = WireBytes // packed=true...
+			case reflect.String:
+				p.enc = (*Buffer).enc_array_string
+				/*
+					case reflect.Struct:
+						p.stype = t2
+						p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
+						p.enc = (*Buffer).enc_array_struct_message
+					case reflect.Ptr:
+						switch t3 := t2.Elem(); t3.Kind() {
+						default:
+							fmt.Fprintf(os.Stderr, "protobuf3: no ptr oenc for %T -> %T -> %T\n", t1, t2, t3)
+							break
+						case reflect.Struct:
+							p.stype = t3
+							p.isMarshaler = isMarshaler(t2)
+							p.enc = (*Buffer).enc_array_ptr_struct_message
+						}
+				*/
 			}
 		}
 

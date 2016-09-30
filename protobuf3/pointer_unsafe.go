@@ -90,6 +90,11 @@ func structPointer_Bytes(p structPointer, f field) *[]byte {
 	return (*[]byte)(unsafe.Pointer(uintptr(p) + uintptr(f)))
 }
 
+// Bytes returns a slice pointing to a [n]byte field in the struct.
+func structPointer_ByteArray(p structPointer, f field, n int) []byte {
+	return ((*[maxLen]byte)(unsafe.Pointer(uintptr(p) + uintptr(f))))[0:n:n]
+}
+
 // BytesSlice returns the address of a [][]byte field in the struct.
 func structPointer_BytesSlice(p structPointer, f field) *[][]byte {
 	return (*[][]byte)(unsafe.Pointer(uintptr(p) + uintptr(f)))
@@ -110,6 +115,14 @@ func structPointer_BoolSlice(p structPointer, f field) *[]bool {
 	return (*[]bool)(unsafe.Pointer(uintptr(p) + uintptr(f)))
 }
 
+// maxLen is the maximum length possible for a byte array type
+const maxLen = 1<<50 - 1 // experiments with go1.7 on amd64 show any larger size causes the compiler to error
+
+// BoolArray returns a slice referencing the of a [n]bool field in the struct.
+func structPointer_BoolArray(p structPointer, f field, n int) []bool {
+	return ((*[maxLen]bool)(unsafe.Pointer(uintptr(p) + uintptr(f))))[0:n:n]
+}
+
 // String returns the address of a *string field in the struct.
 func structPointer_String(p structPointer, f field) **string {
 	return (**string)(unsafe.Pointer(uintptr(p) + uintptr(f)))
@@ -123,6 +136,11 @@ func structPointer_StringVal(p structPointer, f field) *string {
 // StringSlice returns the address of a []string field in the struct.
 func structPointer_StringSlice(p structPointer, f field) *[]string {
 	return (*[]string)(unsafe.Pointer(uintptr(p) + uintptr(f)))
+}
+
+// StringArray returns a slice point to an array of [n]string field in the struct.
+func structPointer_StringArray(p structPointer, f field, n int) []string {
+	return ((*[maxLen / 8 / 3]string)(unsafe.Pointer(uintptr(p) + uintptr(f))))[0:n:n]
 }
 
 // NewAt returns the reflect.Value for a pointer to a field in the struct.
@@ -204,6 +222,11 @@ func structPointer_Word32Slice(p structPointer, f field) *word32Slice {
 	return (*word32Slice)(unsafe.Pointer(uintptr(p) + uintptr(f)))
 }
 
+// Word32Array returns a slice []uint32 pointing to an array of [n]int32, [n]uint32, [n]float32, or [n]enum field in the struct.
+func structPointer_Word32Array(p structPointer, f field, n int) []uint32 {
+	return ((*[maxLen / 4]uint32)(unsafe.Pointer(uintptr(p) + uintptr(f))))[0:n:n]
+}
+
 // word64 is like word32 but for 64-bit values.
 type word64 **uint64
 
@@ -238,4 +261,9 @@ func (v *word64Slice) Index(i int) uint64 { return (*v)[i] }
 
 func structPointer_Word64Slice(p structPointer, f field) *word64Slice {
 	return (*word64Slice)(unsafe.Pointer(uintptr(p) + uintptr(f)))
+}
+
+// Word64Array returns a slice []uint64 pointing to an array of [n]int64, [n]uint64, or [n]float64 field in the struct.
+func structPointer_Word64Array(p structPointer, f field, n int) []uint64 {
+	return ((*[maxLen / 8]uint64)(unsafe.Pointer(uintptr(p) + uintptr(f))))[0:n:n]
 }
