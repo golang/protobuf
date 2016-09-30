@@ -57,6 +57,7 @@ type Message interface {
 type Buffer struct {
 	buf   []byte // encode/decode byte stream
 	index int    // read point
+	err   error  // nil, or the first error which happened during operation
 }
 
 // NewBuffer allocates a new Buffer and initializes its internal data to
@@ -69,6 +70,14 @@ func NewBuffer(e []byte) *Buffer {
 func (p *Buffer) Reset() {
 	p.buf = p.buf[0:0] // for reading/writing
 	p.index = 0        // for reading
+	p.err = nil
+}
+
+// save the first error; toss the rest
+func (p *Buffer) noteError(err error) {
+	if p.err == nil {
+		p.err = err
+	}
 }
 
 // Bytes returns the contents of the Buffer.

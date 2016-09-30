@@ -69,23 +69,13 @@ func (wt WireType) String() string {
 	return fmt.Sprintf("WireType(%d)", byte(wt))
 }
 
-const startSize = 10 // initial slice/string sizes
-
 // Encoders are defined in encode.go
 // An encoder outputs the full representation of a field, including its
 // tag and encoder type.
-type encoder func(p *Buffer, prop *Properties, base structPointer) error
+type encoder func(p *Buffer, prop *Properties, base structPointer)
 
 // A valueEncoder encodes a single integer in a particular encoding.
 type valueEncoder func(o *Buffer, x uint64)
-
-// Decoders are defined in decode.go
-// A decoder creates a value from its wire representation.
-// Unrecognized subelements are saved in unrec.
-type decoder func(p *Buffer, prop *Properties, base structPointer) error
-
-// A valueDecoder decodes a single integer in a particular encoding.
-type valueDecoder func(o *Buffer) (x uint64, err error)
 
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
@@ -95,7 +85,6 @@ type StructProperties struct {
 
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
 // See encode.go, (*Buffer).enc_struct.
-
 func (sp *StructProperties) Len() int { return len(sp.order) }
 func (sp *StructProperties) Less(i, j int) bool {
 	return sp.Prop[sp.order[i]].Tag < sp.Prop[sp.order[j]].Tag
