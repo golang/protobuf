@@ -29,7 +29,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package proto_test
+package protobuf3_test
 
 import (
 	"bytes"
@@ -44,8 +44,8 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/golang/protobuf/proto"
-	. "github.com/golang/protobuf/proto/testdata"
+	. "github.com/mistsys/protobuf3/proto"
+	. "github.com/mistsys/protobuf3/proto/testdata"
 )
 
 var globalO *Buffer
