@@ -35,10 +35,12 @@ import (
 	"bytes"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/mistsys/protobuf3/proto"
 	pb "github.com/mistsys/protobuf3/proto/proto3_proto"
 	"github.com/mistsys/protobuf3/protobuf3"
+	"github.com/mistsys/protobuf3/ptypes/timestamp"
 )
 
 func TestProto3ZeroValues(t *testing.T) {
@@ -562,6 +564,35 @@ func TestIntMsg(t *testing.T) {
 		u8:  4,
 		i16: -4,
 		u16: 5,
+	}
+
+	check(&m, &o, t)
+}
+
+type TimeMsg struct {
+	tm time.Time `protobuf:"bytes,1"`
+}
+
+func (*TimeMsg) ProtoMessage() {}
+
+type OldTimeMsg struct {
+	tm *timestamp.Timestamp `protobuf:"bytes,1"`
+}
+
+func (*OldTimeMsg) ProtoMessage()    {}
+func (m *OldTimeMsg) String() string { return fmt.Sprintf("%+v", *m) }
+func (m *OldTimeMsg) Reset()         { *m = OldTimeMsg{} }
+
+func TestTimeMsg(t *testing.T) {
+	m := TimeMsg{
+		tm: time.Unix(112233, 445566),
+	}
+
+	o := OldTimeMsg{
+		tm: &timestamp.Timestamp{
+			Seconds: 112233,
+			Nanos:   445566,
+		},
 	}
 
 	check(&m, &o, t)

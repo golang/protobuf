@@ -43,6 +43,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 const debug bool = false
@@ -442,6 +443,20 @@ var (
 	propertiesMu  sync.RWMutex
 	propertiesMap = make(map[reflect.Type]*StructProperties)
 )
+
+func init() {
+	// synthesize a StructProperties for time.Time which will encode it
+	// to the same as the standard protobuf3 Timestamp type.
+	propertiesMap[reflect.TypeOf(time.Time{})] = &StructProperties{
+		Prop: []Properties{
+			Properties{
+				Name: "time.Time",
+				enc:  (*Buffer).enc_time_Time,
+			},
+		},
+		order: []int{0},
+	}
+}
 
 // GetProperties returns the list of properties for the type represented by t.
 // t must represent a generated struct type of a protocol message.

@@ -39,6 +39,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"time"
 	"unsafe"
 )
 
@@ -908,4 +909,20 @@ func (o *Buffer) enc_len_thing(enc func()) {
 // dummy no-op encoder used for encoding 0-length array types
 func (o *Buffer) enc_nothing(p *Properties, base structPointer) {
 	return
+}
+
+// custom encoder for time.Time, encpding it into the protobuf3 standard Timestamp
+func (o *Buffer) enc_time_Time(p *Properties, base structPointer) {
+	t := (*time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+
+	// protobuf Timestamp uses its own encoding, different from time.Time
+	// we have to convert.
+	// don't blame me, the algo comes from ptypes/timestamp.go
+	secs := t.Unix()
+	nanos := int32(t.Sub(time.Unix(secs, 0))) // abuses the implementation detail that time.Duration is in nanoseconds
+
+	o.buf = append(o.buf, 1<<3|byte(WireVarint))
+	o.EncodeVarint(uint64(secs))
+	o.buf = append(o.buf, 2<<3|byte(WireVarint))
+	o.EncodeVarint(uint64(nanos))
 }
