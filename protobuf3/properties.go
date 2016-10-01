@@ -127,8 +127,8 @@ func (p *Properties) Parse(s string) (bool, error) {
 	fields := strings.Split(s, ",")
 
 	if len(fields) < 2 {
-		if len(fields) > 0 && fields[0] == "skip" {
-			// `protobuf="skip"` is used to mark fields which should be skipped by the protobuf encoder
+		if len(fields) > 0 && fields[0] == "-" {
+			// `protobuf="-"` is used to mark fields which should be skipped by the protobuf encoder (this is same mark as is used by the std encoding/json package)
 			return true, nil
 		}
 		return true, fmt.Errorf("protobuf3: tag of %q has too few fields: %q", p.Name, s)
