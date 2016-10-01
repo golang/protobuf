@@ -253,6 +253,24 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_slice_packed_bool
 			wire = WireBytes // packed=true is implied in protobuf v3
+		case reflect.Int:
+			p.enc = (*Buffer).enc_slice_packed_int
+			wire = WireBytes // packed=true...
+		case reflect.Uint:
+			p.enc = (*Buffer).enc_slice_packed_uint
+			wire = WireBytes // packed=true...
+		case reflect.Int8:
+			p.enc = (*Buffer).enc_slice_packed_int8
+			wire = WireBytes // packed=true...
+		case reflect.Uint8:
+			p.enc = (*Buffer).enc_slice_byte
+			wire = WireBytes // packed=true... even for integers
+		case reflect.Int16:
+			p.enc = (*Buffer).enc_slice_packed_int16
+			wire = WireBytes // packed=true...
+		case reflect.Uint16:
+			p.enc = (*Buffer).enc_slice_packed_uint16
+			wire = WireBytes // packed=true...
 		case reflect.Int32:
 			p.enc = (*Buffer).enc_slice_packed_int32
 			wire = WireBytes // packed=true...
@@ -262,8 +280,6 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		case reflect.Int64, reflect.Uint64:
 			p.enc = (*Buffer).enc_slice_packed_int64
 			wire = WireBytes // packed=true...
-		case reflect.Uint8:
-			p.enc = (*Buffer).enc_slice_byte
 		case reflect.Float32:
 			// can just treat them as bits
 			p.enc = (*Buffer).enc_slice_packed_uint32

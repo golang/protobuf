@@ -449,6 +449,91 @@ func (o *Buffer) enc_array_byte(p *Properties, base structPointer) {
 	o.EncodeRawBytes(s)
 }
 
+// Encode a slice of int ([]int) in packed format.
+func (o *Buffer) enc_slice_packed_int(p *Properties, base structPointer) {
+	s := *(*[]int)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	l := len(s)
+	if l == 0 {
+		return
+	}
+	buf := NewBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, uint64(x))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+}
+
+// Encode a slice of uint ([]uint) in packed format.
+func (o *Buffer) enc_slice_packed_uint(p *Properties, base structPointer) {
+	s := *(*[]uint)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	l := len(s)
+	if l == 0 {
+		return
+	}
+	buf := NewBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, uint64(x))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+}
+
+// Encode a slice of int8s ([]int8) in packed format.
+func (o *Buffer) enc_slice_packed_int8(p *Properties, base structPointer) {
+	s := *(*[]int8)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	l := len(s)
+	if l == 0 {
+		return
+	}
+	buf := NewBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, uint64(x))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+}
+
+// Encode a slice of int16s ([]int16) in packed format.
+func (o *Buffer) enc_slice_packed_int16(p *Properties, base structPointer) {
+	s := *(*[]int16)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	l := len(s)
+	if l == 0 {
+		return
+	}
+	buf := NewBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, uint64(x))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+}
+
+// Encode a slice of uint16s ([]uint16) in packed format.
+func (o *Buffer) enc_slice_packed_uint16(p *Properties, base structPointer) {
+	s := *(*[]uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	l := len(s)
+	if l == 0 {
+		return
+	}
+	buf := NewBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, uint64(x))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+}
+
 // Encode a slice of int32s ([]int32) in packed format.
 func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) {
 	s := *(*[]int32)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
