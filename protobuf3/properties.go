@@ -409,7 +409,7 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 
 	p.Name = name
 	if f != nil {
-		p.field = toField(f)
+		p.field = field(f.Offset)
 	}
 
 	skip, err := p.Parse(tag)
