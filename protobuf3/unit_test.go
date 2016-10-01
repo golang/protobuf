@@ -519,3 +519,50 @@ func TestMapMsg(t *testing.T) {
 
 	t.Errorf("Marshal(%T) different", m)
 }
+
+type IntMsg struct {
+	i   int    `protobuf:"varint,1"`
+	u   uint   `protobuf:"varint,2"`
+	i8  int8   `protobuf:"varint,3"`
+	u8  uint8  `protobuf:"varint,4"`
+	i16 int16  `protobuf:"varint,5"`
+	u16 uint16 `protobuf:"varint,6"`
+}
+
+func (*IntMsg) ProtoMessage() {}
+
+// same fields, but using types the old package can use
+type OldIntMsg struct {
+	i   int32  `protobuf:"varint,1"`
+	u   uint32 `protobuf:"varint,2"`
+	i8  int32  `protobuf:"varint,3"`
+	u8  uint32 `protobuf:"varint,4"`
+	i16 int32  `protobuf:"varint,5"`
+	u16 uint32 `protobuf:"varint,6"`
+}
+
+func (*OldIntMsg) ProtoMessage()    {}
+func (m *OldIntMsg) String() string { return fmt.Sprintf("%+v", *m) }
+func (m *OldIntMsg) Reset()         { *m = OldIntMsg{} }
+
+func TestIntMsg(t *testing.T) {
+	m := IntMsg{
+		i:   -1,
+		u:   2,
+		i8:  -3,
+		u8:  4,
+		i16: -4,
+		u16: 5,
+	}
+
+	o := OldIntMsg{
+		i:   -1,
+		u:   2,
+		i8:  -3,
+		u8:  4,
+		i16: -4,
+		u16: 5,
+	}
+
+	check(&m, &o, t)
+}

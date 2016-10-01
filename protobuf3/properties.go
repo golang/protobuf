@@ -190,6 +190,18 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 
 	case reflect.Bool:
 		p.enc = (*Buffer).enc_bool
+	case reflect.Int:
+		p.enc = (*Buffer).enc_int
+	case reflect.Uint:
+		p.enc = (*Buffer).enc_uint
+	case reflect.Int8:
+		p.enc = (*Buffer).enc_int8
+	case reflect.Uint8:
+		p.enc = (*Buffer).enc_uint8
+	case reflect.Int16:
+		p.enc = (*Buffer).enc_int16
+	case reflect.Uint16:
+		p.enc = (*Buffer).enc_uint16
 	case reflect.Int32:
 		p.enc = (*Buffer).enc_int32
 	case reflect.Uint32:

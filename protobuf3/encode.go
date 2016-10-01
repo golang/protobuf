@@ -211,6 +211,66 @@ func (o *Buffer) enc_bool(p *Properties, base structPointer) {
 	p.valEnc(o, 1)
 }
 
+// Encode an int
+func (o *Buffer) enc_int(p *Properties, base structPointer) {
+	x := *(*int)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	if x == 0 {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(x))
+}
+
+// Encode a uint
+func (o *Buffer) enc_uint(p *Properties, base structPointer) {
+	x := *(*uint)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	if x == 0 {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(x))
+}
+
+// Encode an int8
+func (o *Buffer) enc_int8(p *Properties, base structPointer) {
+	x := *(*int8)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	if x == 0 {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(x))
+}
+
+// Encode a uint8
+func (o *Buffer) enc_uint8(p *Properties, base structPointer) {
+	x := *(*uint8)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	if x == 0 {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(x))
+}
+
+// Encode an int16
+func (o *Buffer) enc_int16(p *Properties, base structPointer) {
+	x := *(*int16)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	if x == 0 {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(x))
+}
+
+// Encode a uint16
+func (o *Buffer) enc_uint16(p *Properties, base structPointer) {
+	x := *(*uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	if x == 0 {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(x))
+}
+
 // Encode an *int32.
 func (o *Buffer) enc_ptr_int32(p *Properties, base structPointer) {
 	v := structPointer_Word32(base, p.field)
