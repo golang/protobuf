@@ -475,7 +475,7 @@ func TestRecursiveTypeMsg(t *testing.T) {
 }
 
 type MapMsg struct {
-	m map[string]int32 `protobuf:"bytes,1" protobuf_key:"bytes,1" protobuf_val:"varint,2"`
+	m map[string]int32 `protobuf:"bytes,3" protobuf_key:"bytes,1" protobuf_val:"varint,2"`
 }
 
 func (*MapMsg) ProtoMessage()    {}
@@ -484,8 +484,38 @@ func (m *MapMsg) Reset()         { *m = MapMsg{} }
 
 func TestMapMsg(t *testing.T) {
 	m := MapMsg{
-		m: map[string]int32{"123": 123, "abc": 456},
+		m: map[string]int32{"123": 123, "abc": 124},
 	}
 
-	check(&m, &m, t)
+	// note we can't just use check() because the encodihg depends on the map's iteration order,
+	// and that is random. So we allow for either result when verifying
+
+	b, err := protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	c, err := proto.Marshal(&m)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	t.Logf("b = % x", b)
+	t.Logf("c = % x", c)
+
+	if bytes.Equal(b, c) {
+		return
+	}
+
+	// OK, they didn't match, but if we swap the two fields then do they match?
+	// the values of the two fields were chosen so they both encoded to the same length, so swappihg the order of the encoding is easy
+	ll := len(b) / 2
+	b = append(b[ll:], b[:ll]...)
+	if bytes.Equal(b, c) {
+		return
+	}
+
+	t.Errorf("Marshal(%T) different", m)
 }
