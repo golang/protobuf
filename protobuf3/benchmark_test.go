@@ -269,3 +269,43 @@ func BenchmarkNestedStructMsg(b *testing.B) {
 		protobuf3.Marshal(&m)
 	}
 }
+
+func BenchmarkMapMsg(b *testing.B) {
+	m := MapMsg{
+		m: map[string]int32{
+			"Nic":     0,
+			"Michele": 1,
+		},
+	}
+
+	_, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		protobuf3.Marshal(&m)
+	}
+}
+
+func BenchmarkOldMapMsg(b *testing.B) {
+	m := MapMsg{
+		m: map[string]int32{
+			"Nic":     0,
+			"Michele": 1,
+		},
+	}
+
+	_, err := proto.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		proto.Marshal(&m)
+	}
+}

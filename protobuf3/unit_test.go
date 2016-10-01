@@ -471,3 +471,19 @@ func TestRecursiveTypeMsg(t *testing.T) {
 
 	check(&m, &m, t)
 }
+
+type MapMsg struct {
+	m map[string]int32 `protobuf:"bytes,1" protobuf_key:"bytes,1" protobuf_val:"varint,2"`
+}
+
+func (*MapMsg) ProtoMessage()    {}
+func (m *MapMsg) String() string { return fmt.Sprintf("%+v", *m) }
+func (m *MapMsg) Reset()         { *m = MapMsg{} }
+
+func TestMapMsg(t *testing.T) {
+	m := MapMsg{
+		m: map[string]int32{"123": 123, "abc": 456},
+	}
+
+	check(&m, &m, t)
+}
