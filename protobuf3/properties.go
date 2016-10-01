@@ -184,7 +184,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 
 	switch t1 := typ; t1.Kind() {
 	default:
-		fmt.Fprintf(os.Stderr, "protobuf3: no coders for %v\n", t1)
+		fmt.Fprintf(os.Stderr, "protobuf3: no coders for %s\n", t1.Name())
 
 	// proto3 scalar types
 
@@ -223,7 +223,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
 		default:
-			fmt.Fprintf(os.Stderr, "protobuf3: no encoder function for %v -> %v\n", t1, t2)
+			fmt.Fprintf(os.Stderr, "protobuf3: no encoder function for %s -> %s\n", t1.Name(), t2.Name())
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_ptr_bool
@@ -248,7 +248,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	case reflect.Slice:
 		switch t2 := t1.Elem(); t2.Kind() {
 		default:
-			fmt.Fprintf(os.Stderr, "protobuf3: no slice oenc for %T = []%T\n", t1, t2)
+			fmt.Fprintf(os.Stderr, "protobuf3: no slice oenc for %s = []%s\n", t1.Name(), t2.Name())
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_slice_packed_bool
@@ -297,7 +297,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		case reflect.Ptr:
 			switch t3 := t2.Elem(); t3.Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no ptr oenc for %T -> %T -> %T\n", t1, t2, t3)
+				fmt.Fprintf(os.Stderr, "protobuf3: no ptr oenc for %s -> %s -> %s\n", t1.Name(), t2.Name(), t3.Name())
 				break
 			case reflect.Struct:
 				p.stype = t3
@@ -307,7 +307,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		case reflect.Slice:
 			switch t2.Elem().Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no slice elem oenc for %T -> %T -> %T\n", t1, t2, t2.Elem())
+				fmt.Fprintf(os.Stderr, "protobuf3: no slice elem oenc for %s -> %s -> %s\n", t1.Name(), t2.Name(), t2.Elem().Name())
 				break
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_slice_slice_byte
@@ -323,7 +323,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		} else {
 			switch t2 := t1.Elem(); t2.Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no array oenc for %T = %T\n", t1, t2)
+				fmt.Fprintf(os.Stderr, "protobuf3: no array oenc for %s = %s\n", t1.Name(), t2.Name())
 				break
 			case reflect.Bool:
 				p.enc = (*Buffer).enc_array_packed_bool
@@ -356,7 +356,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 			case reflect.Ptr:
 				switch t3 := t2.Elem(); t3.Kind() {
 				default:
-					fmt.Fprintf(os.Stderr, "protobuf3: no ptr oenc for %T -> %T -> %T\n", t1, t2, t3)
+					fmt.Fprintf(os.Stderr, "protobuf3: no ptr oenc for %s -> %s -> %s\n", t1.Name(), t2.Name(), t3.Name())
 					break
 				case reflect.Struct:
 					p.stype = t3
