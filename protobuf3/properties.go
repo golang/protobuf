@@ -447,6 +447,9 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	prop.Prop = make([]Properties, nf)
 	prop.order = make([]int, nf)
 
+	// sanity check for duplicate tags, since some of us are hand editing the tags
+	seen := make(map[uint32]struct{})
+
 	j := 0
 	for i := 0; i < nf; i++ {
 		f := t.Field(i)
@@ -462,6 +465,10 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 			// silently skip this field. It's not part of the protobuf encoding of this struct
 			continue
 		}
+		if _, ok := seen[p.Tag]; ok {
+			panic(fmt.Sprintf("protobuf3: duplicate tag %d on %s.%s", p.Tag, t.Name(), t.Name))
+		}
+		seen[p.Tag] = struct{}{}
 
 		prop.order[j] = i
 		j++
