@@ -47,6 +47,10 @@ import (
 
 const debug bool = false
 
+// XXXHack enables a backwards compatability hack to match the canonical golang.go/protobuf error behavior for fields whose names start with XXX_
+// This isn't needed unless you are dealing with old protobuf v2 generated types like some unit tests do
+var XXXHack = false
+
 // Constants that identify the encoding of a value on the wire.
 const (
 	WireVarint     = WireType(0)
@@ -379,9 +383,16 @@ func isMarshaler(t reflect.Type) bool {
 func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructField) (bool, error) {
 	// "bytes,49,opt,def=hello!"
 
-	// skip fields without protobuf tags
+	// fields without a protobuf tag are an error
 	if tag == "" {
-		return true, nil
+		// backwards compatability HACK. canonical golang.org/protobuf ignores errors on fields with names that start with XXX_
+		// we must do the same to pass their unit tests
+		if XXXHack && strings.HasPrefix(name, "XXX_") {
+			return true, nil
+		}
+		err := fmt.Errorf("protobuf3: %s (%s) lacks a protobuf tag. Mark it with `protobuf:\"-\"` to suppress this error", name, typ.Name())
+		fmt.Fprintln(os.Stderr, err) // print the error too
+		return true, err
 	}
 
 	p.Name = name

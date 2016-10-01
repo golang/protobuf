@@ -49,6 +49,7 @@ func TestProto3ZeroValues(t *testing.T) {
 		{"zero message", &pb.Message{}},
 		{"empty bytes field", &pb.Message{Data: []byte{}}},
 	}
+	protobuf3.XXXHack = true
 	for _, test := range tests {
 		b, err := protobuf3.Marshal(test.m)
 		if err != nil {
@@ -59,6 +60,7 @@ func TestProto3ZeroValues(t *testing.T) {
 			t.Errorf("%s: Encoding is non-empty: %q", test.desc, b)
 		}
 	}
+	protobuf3.XXXHack = false
 }
 
 func TestRoundTripProto3(t *testing.T) {
