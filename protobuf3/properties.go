@@ -469,7 +469,7 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 
 		skip, err := p.init(f.Type, name, f.Tag.Get("protobuf"), &f)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error preparing field %q of type %q: %v\n", name, t.Name(), err)
+			fmt.Fprintf(os.Stderr, "protobuf3: Error preparing field %q of type %q: %v\n", name, t.Name(), err)
 			continue
 		}
 		if skip {
@@ -477,7 +477,11 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 			continue
 		}
 		if _, ok := seen[p.Tag]; ok {
-			panic(fmt.Sprintf("protobuf3: duplicate tag %d on %s.%s", p.Tag, t.Name(), t.Name))
+			sname := t.Name()
+			if sname == "" {
+				sname = "<anonymous struct>"
+			}
+			panic(fmt.Sprintf("protobuf3: duplicate tag %d on %s.%s", p.Tag, sname, name))
 		}
 		seen[p.Tag] = struct{}{}
 
