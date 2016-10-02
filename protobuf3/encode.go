@@ -353,45 +353,51 @@ func (o *Buffer) enc_string(p *Properties, base structPointer) {
 	o.EncodeStringBytes(x)
 }
 
+// Encode an message struct field which implements the Marshaler interface
+func (o *Buffer) enc_marshaler(p *Properties, base structPointer) {
+	ptr := (unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	// note *ptr is embedded in base, so pointer cannot be nil
+
+	m := reflect.NewAt(p.stype, ptr).Interface().(Marshaler)
+	data, err := m.MarshalProtobuf3()
+	if err != nil {
+		o.noteError(err)
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeRawBytes(data)
+}
+
 // Encode an message struct field of a message struct.
 func (o *Buffer) enc_struct_message(p *Properties, base structPointer) {
 	structp := (structPointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
 	// note struct is embedded in base, so pointer cannot be nil
 
-	// Can the object marshal itself?
-	if p.isMarshaler {
-		m := reflect.NewAt(p.stype, unsafe.Pointer(structp)).Interface().(Marshaler)
-		data, err := m.MarshalProtobuf3()
-		if err != nil {
-			o.noteError(err)
-			return
-		}
-		o.buf = append(o.buf, p.tagcode...)
-		o.EncodeRawBytes(data)
+	o.buf = append(o.buf, p.tagcode...)
+	o.enc_len_struct(p.sprop, structp)
+}
+
+// Encode a *Marshaler.
+func (o *Buffer) enc_ptr_marshaler(p *Properties, base structPointer) {
+	ptr := *(*unsafe.Pointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	if ptr == nil {
 		return
 	}
 
+	m := reflect.NewAt(p.stype, ptr).Interface().(Marshaler)
+	data, err := m.MarshalProtobuf3()
+	if err != nil {
+		o.noteError(err)
+		return
+	}
 	o.buf = append(o.buf, p.tagcode...)
-	o.enc_len_struct(p.sprop, structp)
+	o.EncodeRawBytes(data)
 }
 
 // Encode a *message struct.
 func (o *Buffer) enc_ptr_struct_message(p *Properties, base structPointer) {
 	structp := *(*structPointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
 	if structp == nil {
-		return
-	}
-
-	// Can the object marshal itself?
-	if p.isMarshaler {
-		m := reflect.NewAt(p.stype, unsafe.Pointer(structp)).Interface().(Marshaler)
-		data, err := m.MarshalProtobuf3()
-		if err != nil {
-			o.noteError(err)
-			return
-		}
-		o.buf = append(o.buf, p.tagcode...)
-		o.EncodeRawBytes(data)
 		return
 	}
 

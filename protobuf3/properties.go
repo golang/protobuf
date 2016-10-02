@@ -219,7 +219,11 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	case reflect.Struct:
 		p.stype = t1
 		p.isMarshaler = isMarshaler(reflect.PtrTo(t1))
-		p.enc = (*Buffer).enc_struct_message
+		if p.isMarshaler {
+			p.enc = (*Buffer).enc_marshaler
+		} else {
+			p.enc = (*Buffer).enc_struct_message
+		}
 
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
@@ -243,10 +247,23 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		case reflect.Struct:
 			p.stype = t2
 			p.isMarshaler = isMarshaler(t1)
-			p.enc = (*Buffer).enc_ptr_struct_message
+			if p.isMarshaler {
+				p.enc = (*Buffer).enc_ptr_marshaler
+			} else {
+				p.enc = (*Buffer).enc_ptr_struct_message
+			}
 		}
 
 	case reflect.Slice:
+		// can the slice marshal itself?
+		if isMarshaler(reflect.PtrTo(typ)) {
+			fmt.Printf("reflect.Slice: typ = %q has a custom Marshaler\n", typ.Name())
+			p.isMarshaler = true
+			p.stype = typ
+			p.enc = (*Buffer).enc_marshaler
+			break
+		}
+
 		switch t2 := t1.Elem(); t2.Kind() {
 		default:
 			fmt.Fprintf(os.Stderr, "protobuf3: no slice oenc for %s = []%s\n", t1.Name(), t2.Name())
