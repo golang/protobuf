@@ -44,6 +44,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"reflect"
 	"sort"
 	"strconv"
@@ -372,7 +373,6 @@ func (m *Marshaler) marshalField(out *errWriter, prop *proto.Properties, v refle
 
 // marshalValue writes the value to the Writer.
 func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v reflect.Value, indent string) error {
-
 	var err error
 	v = reflect.Indirect(v)
 
@@ -493,6 +493,19 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 		}
 		out.write(`}`)
 		return out.err
+	}
+
+	if v.Kind() == reflect.Float64 || v.Kind() == reflect.Float32 {
+		if math.IsNaN(v.Float()) {
+			out.write(`"NaN"`)
+			return out.err
+		} else if math.IsInf(v.Float(), 1) {
+			out.write(`"Infinity"`)
+			return out.err
+		} else if math.IsInf(v.Float(), -1) {
+			out.write(`"-Infinity"`)
+			return out.err
+		}
 	}
 
 	// Default handling defers to the encoding/json library.
@@ -825,11 +838,97 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		return nil
 	}
 
-	// 64-bit integers can be encoded as strings. In this case we drop
+	// Integers can be encoded as strings. In this case we drop
 	// the quotes and proceed as normal.
-	isNum := targetType.Kind() == reflect.Int64 || targetType.Kind() == reflect.Uint64
-	if isNum && strings.HasPrefix(string(inputValue), `"`) {
+	isInt := targetType.Kind() == reflect.Int64 || targetType.Kind() == reflect.Uint64 || target.Kind() == reflect.Int32 || target.Kind() == reflect.Uint32
+	if isInt && strings.HasPrefix(string(inputValue), `"`) {
 		inputValue = inputValue[1 : len(inputValue)-1]
+	}
+
+	// Floats have additional possible string values, Infinity, -Infinity, NaN -- handle those.
+	isFloat := targetType.Kind() == reflect.Float64 || targetType.Kind() == reflect.Float32
+	if isFloat && strings.HasPrefix(string(inputValue), `"`) {
+		reflectValueNaNFloat := map[reflect.Kind]reflect.Value{
+			reflect.Float32: reflect.ValueOf(float32(math.NaN())),
+			reflect.Float64: reflect.ValueOf(float64(math.NaN())),
+		}
+
+		reflectValuePosInfinityFloat := map[reflect.Kind]reflect.Value{
+			reflect.Float32: reflect.ValueOf(float32(math.Inf(1))),
+			reflect.Float64: reflect.ValueOf(float64(math.Inf(1))),
+		}
+
+		reflectValueNegInfinityFloat := map[reflect.Kind]reflect.Value{
+			reflect.Float32: reflect.ValueOf(float32(math.Inf(-1))),
+			reflect.Float64: reflect.ValueOf(float64(math.Inf(-1))),
+		}
+
+		switch string(inputValue) {
+		case `"NaN"`:
+			target.Set(reflectValueNaNFloat[targetType.Kind()])
+			return nil
+
+		case `"Infinity"`:
+			target.Set(reflectValuePosInfinityFloat[targetType.Kind()])
+			return nil
+
+		case `"-Infinity"`:
+			target.Set(reflectValueNegInfinityFloat[targetType.Kind()])
+			return nil
+
+		default:
+			inputValue = inputValue[1 : len(inputValue)-1]
+		}
+	}
+
+	if isInt || isFloat {
+		/*
+			var tmp float64
+			if err := json.Unmarshal(inputValue, &tmp); err != nil {
+				return err
+			}
+
+			switch targetType.Kind() {
+			case reflect.Uint32:
+				target.Set(reflect.ValueOf(uint32(tmp)))
+
+			case reflect.Uint64:
+				target.Set(reflect.ValueOf(uint64(tmp)))
+
+			case reflect.Int32:
+				target.Set(reflect.ValueOf(int32(tmp)))
+
+			case reflect.Int64:
+				target.Set(reflect.ValueOf(int64(tmp)))
+
+			case reflect.Float32:
+				target.Set(reflect.ValueOf(float32(tmp)))
+
+			case reflect.Float64:
+				target.Set(reflect.ValueOf(float64(tmp)))
+			}*/
+
+		var tmp float64
+		if err := json.Unmarshal(inputValue, &tmp); err != nil {
+			return err
+		}
+
+		if isInt && math.Floor(tmp) != tmp {
+			return errors.New("bad int: Has decimal.")
+		}
+
+		if targetType.Kind() == reflect.Int32 {
+			if tmp > math.MaxInt32 || tmp < math.MinInt32 {
+				return errors.New("bad int32: Out of bounds.")
+			}
+		} else if targetType.Kind() == reflect.Uint32 {
+			if tmp > math.MaxUint32 || tmp < 0 {
+				return errors.New("bad uint32: Out of bounds.")
+			}
+		}
+
+		target.Set(reflect.ValueOf(tmp).Convert(targetType))
+		return nil
 	}
 
 	// Use the encoding/json for parsing other value types.
