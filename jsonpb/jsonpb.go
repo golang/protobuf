@@ -882,32 +882,6 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	}
 
 	if isInt || isFloat {
-		/*
-			var tmp float64
-			if err := json.Unmarshal(inputValue, &tmp); err != nil {
-				return err
-			}
-
-			switch targetType.Kind() {
-			case reflect.Uint32:
-				target.Set(reflect.ValueOf(uint32(tmp)))
-
-			case reflect.Uint64:
-				target.Set(reflect.ValueOf(uint64(tmp)))
-
-			case reflect.Int32:
-				target.Set(reflect.ValueOf(int32(tmp)))
-
-			case reflect.Int64:
-				target.Set(reflect.ValueOf(int64(tmp)))
-
-			case reflect.Float32:
-				target.Set(reflect.ValueOf(float32(tmp)))
-
-			case reflect.Float64:
-				target.Set(reflect.ValueOf(float64(tmp)))
-			}*/
-
 		var tmp float64
 		if err := json.Unmarshal(inputValue, &tmp); err != nil {
 			return err
