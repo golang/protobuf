@@ -128,6 +128,8 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			out.write(x)
 			out.write(`s"`)
 			return out.err
+		case "ListValue":
+			return m.marshalValue(out, &proto.Properties{}, s.Field(0), indent)
 		case "Struct":
 			// Let marshalValue handle the `fields` map.
 			// TODO: pass the correct Properties if needed.
@@ -590,14 +592,27 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	if wkt, ok := target.Addr().Interface().(wkt); ok {
 		switch wkt.XXX_WellKnownType() {
 		case "DoubleValue", "FloatValue", "Int64Value", "UInt64Value",
-			"Int32Value", "UInt32Value", "BoolValue", "StringValue", "BytesValue",
-			"ListValue":
+			"Int32Value", "UInt32Value", "BoolValue", "StringValue", "BytesValue":
 			// "Wrappers use the same representation in JSON
 			//  as the wrapped primitive type, except that null is allowed."
 			// encoding/json will turn JSON `null` into Go `nil`,
 			// so we don't have to do any extra work.
 			return u.unmarshalValue(target.Field(0), inputValue, prop)
+		case "ListValue":
+			var jsonValues []json.RawMessage
+			if err := json.Unmarshal(inputValue, &jsonValues); err != nil {
+				return err
+			}
 
+			listValue := target.Field(0)
+			listValue.Set(reflect.MakeSlice(listValue.Type(), len(jsonValues), len(jsonValues)))
+
+			for i, v := range jsonValues {
+				if err := u.unmarshalValue(listValue.Index(i), v, prop); err != nil {
+					return err
+				}
+			}
+			return nil
 		case "Value":
 			var jsonValue interface{}
 			if err := json.Unmarshal(inputValue, &jsonValue); err != nil {
@@ -641,7 +656,6 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 
 			target.Field(0).Set(reflect.ValueOf(val))
 			return nil
-
 		case "Struct":
 			var jsonFields map[string]json.RawMessage
 			if err := json.Unmarshal(inputValue, &jsonFields); err != nil {
