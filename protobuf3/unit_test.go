@@ -410,6 +410,7 @@ type NestedPtrStructMsg struct {
 	second *InnerMsg   `protobuf:"bytes,2"`
 	many   []*InnerMsg `protobuf:"bytes,3"`
 	more   []*InnerMsg `protobuf:"bytes,4"`
+	some   []*InnerMsg `protobuf:"bytes,5"`
 }
 
 func (*NestedPtrStructMsg) ProtoMessage()    {}
@@ -432,10 +433,11 @@ func TestNestedPtrStructMsg(t *testing.T) {
 }
 
 type NestedStructMsg struct {
-	first  InnerMsg    `protobuf:"bytes,1"`
-	second InnerMsg    `protobuf:"bytes,2"`
-	many   []InnerMsg  `protobuf:"bytes,3"`
-	more   [3]InnerMsg `protobuf:"bytes,4"`
+	first  InnerMsg     `protobuf:"bytes,1"`
+	second InnerMsg     `protobuf:"bytes,2"`
+	many   []InnerMsg   `protobuf:"bytes,3"`
+	more   [3]InnerMsg  `protobuf:"bytes,4"`
+	some   [1]*InnerMsg `protobuf:"bytes,5"`
 }
 
 func (*NestedStructMsg) ProtoMessage() {}
@@ -446,6 +448,7 @@ func TestNestedStructMsg(t *testing.T) {
 		second: InnerMsg{0x22},
 		many:   []InnerMsg{InnerMsg{0x33}},
 		more:   [3]InnerMsg{InnerMsg{0x44}, InnerMsg{0x55}, InnerMsg{0x66}},
+		some:   [1]*InnerMsg{&InnerMsg{0x77}},
 	}
 
 	m := NestedPtrStructMsg{
@@ -453,6 +456,7 @@ func TestNestedStructMsg(t *testing.T) {
 		second: &InnerMsg{0x22},
 		many:   []*InnerMsg{&InnerMsg{0x33}},
 		more:   []*InnerMsg{&InnerMsg{0x44}, &InnerMsg{0x55}, &InnerMsg{0x66}},
+		some:   []*InnerMsg{&InnerMsg{0x77}},
 	}
 
 	check(&m, &m, t)
