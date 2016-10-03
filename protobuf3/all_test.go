@@ -150,6 +150,10 @@ func TestNumericPrimitives(t *testing.T) {
 	for i := uint64(0); i < 1e6; i += 111 {
 		o := old()
 		o.EncodeVarint(i)
+		y, n := DecodeVarint(o.Bytes())
+		if y != i || n != len(o.Bytes()) {
+			t.Fatal("DecodeVarint(EncodeVarint(x))!=x")
+		}
 		x, e := o.DecodeVarint()
 		if e != nil {
 			t.Fatal("DecodeVarint")
