@@ -42,7 +42,10 @@ emits would be.
 */
 package protobuf3
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+)
 
 // Message is implemented by generated protocol buffer messages.
 type Message interface {
@@ -86,21 +89,17 @@ func (p *Buffer) Bytes() []byte { return p.buf }
 
 // DebugPrint dumps the encoded data in b in a debugging format with a header
 // including the string s. Used in testing but made available for general debugging.
-func (p *Buffer) DebugPrint(s string, b []byte) {
+func DebugPrint(b []byte) string {
 	var u uint64
-
-	obuf := p.buf
-	index := p.index
-	p.buf = b
-	p.index = 0
+	p := NewBuffer(b)
 	depth := 0
 
-	fmt.Printf("\n--- %s ---\n", s)
+	var out bytes.Buffer
 
 out:
 	for {
 		for i := 0; i < depth; i++ {
-			fmt.Print("  ")
+			out.WriteString(" ")
 		}
 
 		index := p.index
@@ -110,7 +109,7 @@ out:
 
 		op, err := p.DecodeVarint()
 		if err != nil {
-			fmt.Printf("%3d: fetching op err %v\n", index, err)
+			out.WriteString(fmt.Sprintf("%3d: fetching op err %v\n", index, err))
 			break out
 		}
 		tag := op >> 3
@@ -118,8 +117,7 @@ out:
 
 		switch wire {
 		default:
-			fmt.Printf("%3d: t=%3d unknown wire=%d\n",
-				index, tag, wire)
+			out.WriteString(fmt.Sprintf("%3d: t=%3d, unknown wire=%d\n", index, tag, wire))
 			break out
 
 		case WireBytes:
@@ -129,61 +127,60 @@ out:
 			if err != nil {
 				break out
 			}
-			fmt.Printf("%3d: t=%3d bytes [%d]", index, tag, len(r))
-			if len(r) <= 6 {
+			out.WriteString(fmt.Sprintf("%3d: t=%3d, bytes [%d]", index, tag, len(r)))
+			if len(r) <= 8 {
 				for i := 0; i < len(r); i++ {
-					fmt.Printf(" %.2x", r[i])
+					out.WriteString(fmt.Sprintf(" %.2x", r[i]))
 				}
 			} else {
-				for i := 0; i < 3; i++ {
-					fmt.Printf(" %.2x", r[i])
+				for i := 0; i < 4; i++ {
+					out.WriteString(fmt.Sprintf(" %.2x", r[i]))
 				}
-				fmt.Printf(" ..")
-				for i := len(r) - 3; i < len(r); i++ {
-					fmt.Printf(" %.2x", r[i])
+				out.WriteString(fmt.Sprintf(" .."))
+				for i := len(r) - 4; i < len(r); i++ {
+					out.WriteString(fmt.Sprintf(" %.2x", r[i]))
 				}
 			}
-			fmt.Printf("\n")
+			out.WriteString(fmt.Sprintf("\n"))
 
 		case WireFixed32:
 			u, err = p.DecodeFixed32()
 			if err != nil {
-				fmt.Printf("%3d: t=%3d fix32 err %v\n", index, tag, err)
+				out.WriteString(fmt.Sprintf("%3d: t=%3d, fix32 err %v\n", index, tag, err))
 				break out
 			}
-			fmt.Printf("%3d: t=%3d fix32 %d\n", index, tag, u)
+			out.WriteString(fmt.Sprintf("%3d: t=%3d, fix32 %d\n", index, tag, u))
 
 		case WireFixed64:
 			u, err = p.DecodeFixed64()
 			if err != nil {
-				fmt.Printf("%3d: t=%3d fix64 err %v\n", index, tag, err)
+				out.WriteString(fmt.Sprintf("%3d: t=%3d, fix64 err %v\n", index, tag, err))
 				break out
 			}
-			fmt.Printf("%3d: t=%3d fix64 %d\n", index, tag, u)
+			out.WriteString(fmt.Sprintf("%3d: t=%3d, fix64 %d\n", index, tag, u))
 
 		case WireVarint:
 			u, err = p.DecodeVarint()
 			if err != nil {
-				fmt.Printf("%3d: t=%3d varint err %v\n", index, tag, err)
+				out.WriteString(fmt.Sprintf("%3d: t=%3d, varint err %v\n", index, tag, err))
 				break out
 			}
-			fmt.Printf("%3d: t=%3d varint %d\n", index, tag, u)
+			out.WriteString(fmt.Sprintf("%3d: t=%3d, varint %d\n", index, tag, u))
 
 		case WireStartGroup:
-			fmt.Printf("%3d: t=%3d start\n", index, tag)
+			out.WriteString(fmt.Sprintf("%3d: t=%3d, start\n", index, tag))
 			depth++
 
 		case WireEndGroup:
 			depth--
-			fmt.Printf("%3d: t=%3d end\n", index, tag)
+			out.WriteString(fmt.Sprintf("%3d: t=%3d, end\n", index, tag))
 		}
 	}
 
 	if depth != 0 {
-		fmt.Printf("%3d: start-end not balanced %d\n", p.index, depth)
+		out.WriteString(fmt.Sprintf("%3d: start-end not balanced %d\n", p.index, depth))
 	}
-	fmt.Printf("\n")
+	out.WriteString(fmt.Sprintf("\n"))
 
-	p.buf = obuf
-	p.index = index
+	return out.String()
 }
