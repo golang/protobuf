@@ -315,6 +315,7 @@ func TestFixedArrayMsg(t *testing.T) {
 		sf64: []float64{32, 33, 34, 35, 36, 37},
 	}
 
+	check(&m, &m, t)
 	check(&a, &m, t)
 }
 
@@ -335,6 +336,7 @@ func TestVarArrayMsg(t *testing.T) {
 		sb:   []bool{true, false, true, false, true},
 	}
 
+	check(&m, &m, t)
 	check(&a, &m, t)
 }
 
@@ -363,6 +365,7 @@ func TestByteArrayMsg(t *testing.T) {
 		sb: []byte{0, 1, 2},
 	}
 
+	check(&m, &m, t)
 	check(&a, &m, t)
 }
 
@@ -452,6 +455,7 @@ func TestNestedStructMsg(t *testing.T) {
 		more:   []*InnerMsg{&InnerMsg{0x44}, &InnerMsg{0x55}, &InnerMsg{0x66}},
 	}
 
+	check(&m, &m, t)
 	check(&a, &m, t)
 }
 
@@ -569,6 +573,7 @@ func TestIntMsg(t *testing.T) {
 		u16: 5,
 	}
 
+	check(&o, &o, t)
 	check(&m, &o, t)
 }
 
@@ -598,6 +603,7 @@ func TestTimeMsg(t *testing.T) {
 		},
 	}
 
+	check(&o, &o, t)
 	check(&m, &o, t)
 }
 
