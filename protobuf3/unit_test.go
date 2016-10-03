@@ -597,3 +597,57 @@ func TestTimeMsg(t *testing.T) {
 
 	check(&m, &o, t)
 }
+
+type CustomMsg struct {
+	Slice CustomSlice `protobuf:"bytes,1"`
+}
+
+func (*CustomMsg) ProtoMessage() {}
+
+type CustomSlice [][]uint32
+
+func (s *CustomSlice) MarshalProtobuf3() ([]byte, error) {
+	var buf, tmp protobuf3.Buffer
+	for i, ss := range *s {
+		tmp.Reset()
+		for _, x := range ss {
+			tmp.EncodeVarint(uint64(x))
+		}
+		buf.EncodeVarint(uint64(i+1)<<3 + uint64(protobuf3.WireBytes))
+		buf.EncodeRawBytes(tmp.Bytes())
+	}
+	return buf.Bytes(), nil
+}
+
+type EquivToCustomMsg struct {
+	Custom *EquivCustomSlices `protobuf:"bytes,1"`
+}
+
+type EquivCustomSlices struct {
+	Slice1 []uint32 `protobuf:"varint,1,packed"`
+	Slice2 []uint32 `protobuf:"varint,2,packed"`
+}
+
+func (*EquivToCustomMsg) ProtoMessage()    {}
+func (m *EquivToCustomMsg) String() string { return fmt.Sprintf("%+v", *m) }
+func (m *EquivToCustomMsg) Reset()         { *m = EquivToCustomMsg{} }
+
+func (*EquivCustomSlices) ProtoMessage()    {}
+func (m *EquivCustomSlices) String() string { return fmt.Sprintf("%+v", *m) }
+func (m *EquivCustomSlices) Reset()         { *m = EquivCustomSlices{} }
+
+func TestCustomMsg(t *testing.T) {
+	m := CustomMsg{
+		Slice: CustomSlice{[]uint32{1, 2}, []uint32{3, 4, 5}},
+	}
+
+	o := EquivToCustomMsg{
+		Custom: &EquivCustomSlices{
+			Slice1: []uint32{1, 2},
+			Slice2: []uint32{3, 4, 5},
+		},
+	}
+
+	check(&o, &o, t)
+	check(&m, &o, t)
+}

@@ -183,6 +183,8 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	p.enc = nil
 	wire := p.WireType
 
+	need_sprop := false
+
 	switch t1 := typ; t1.Kind() {
 	default:
 		fmt.Fprintf(os.Stderr, "protobuf3: no coders for %s\n", t1.Name())
@@ -218,6 +220,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 
 	case reflect.Struct:
 		p.stype = t1
+		need_sprop = true
 		p.isMarshaler = isMarshaler(reflect.PtrTo(t1))
 		if p.isMarshaler {
 			p.enc = (*Buffer).enc_marshaler
@@ -246,6 +249,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 			p.enc = (*Buffer).enc_ptr_string
 		case reflect.Struct:
 			p.stype = t2
+			need_sprop = true
 			p.isMarshaler = isMarshaler(t1)
 			if p.isMarshaler {
 				p.enc = (*Buffer).enc_ptr_marshaler
@@ -257,7 +261,6 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	case reflect.Slice:
 		// can the slice marshal itself?
 		if isMarshaler(reflect.PtrTo(typ)) {
-			fmt.Printf("reflect.Slice: typ = %q has a custom Marshaler\n", typ.Name())
 			p.isMarshaler = true
 			p.stype = typ
 			p.enc = (*Buffer).enc_marshaler
@@ -310,6 +313,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 			p.enc = (*Buffer).enc_slice_string
 		case reflect.Struct:
 			p.stype = t2
+			need_sprop = true
 			p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
 			p.enc = (*Buffer).enc_slice_struct_message
 		case reflect.Ptr:
@@ -319,6 +323,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 				break
 			case reflect.Struct:
 				p.stype = t3
+				need_sprop = true
 				p.isMarshaler = isMarshaler(t2)
 				p.enc = (*Buffer).enc_slice_ptr_struct_message
 			}
@@ -369,6 +374,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 				p.enc = (*Buffer).enc_array_string
 			case reflect.Struct:
 				p.stype = t2
+				need_sprop = true
 				p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
 				p.enc = (*Buffer).enc_array_struct_message
 			case reflect.Ptr:
@@ -378,6 +384,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 					break
 				case reflect.Struct:
 					p.stype = t3
+					need_sprop = true
 					p.isMarshaler = isMarshaler(t2)
 					p.enc = (*Buffer).enc_array_ptr_struct_message
 				}
@@ -411,7 +418,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	p.tagbuf[i] = uint8(x)
 	p.tagcode = p.tagbuf[0 : i+1]
 
-	if p.stype != nil {
+	if need_sprop {
 		p.sprop = getPropertiesLocked(p.stype)
 	}
 }
