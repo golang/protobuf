@@ -234,6 +234,7 @@ func BenchmarkOldNestedPtrStructMsg(b *testing.B) {
 		second: &InnerMsg{0x22},
 		many:   []*InnerMsg{&InnerMsg{0x33}},
 		more:   []*InnerMsg{&InnerMsg{0x44}, &InnerMsg{0x55}, &InnerMsg{0x66}},
+		some:   []*InnerMsg{&InnerMsg{0x77}},
 	}
 
 	_, err := proto.Marshal(&m)
@@ -256,6 +257,7 @@ func BenchmarkNestedStructMsg(b *testing.B) {
 		second: InnerMsg{0x22},
 		many:   []InnerMsg{InnerMsg{0x33}},
 		more:   [3]InnerMsg{InnerMsg{0x44}, InnerMsg{0x55}, InnerMsg{0x66}},
+		some:   [1]*InnerMsg{&InnerMsg{0x77}},
 	}
 
 	_, err := protobuf3.Marshal(&m)
