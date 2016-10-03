@@ -217,8 +217,9 @@ func (m *BytesMsg) String() string { return fmt.Sprintf("%+v", *m) }
 func (m *BytesMsg) Reset()         { *m = BytesMsg{} }
 
 type BytesArrayMsg struct {
-	ss [2]string `protobuf:"bytes,3"`
-	sb [3]byte   `protobuf:"bytes,11"`
+	ss      [2]string `protobuf:"bytes,3"`
+	sb      [3]byte   `protobuf:"bytes,11"`
+	skipped int32     `protobuf:"-"`
 }
 
 func (*BytesArrayMsg) ProtoMessage() {}
@@ -356,8 +357,9 @@ func TestZigZagArrayMsg(t *testing.T) {
 
 func TestByteArrayMsg(t *testing.T) {
 	a := BytesArrayMsg{
-		ss: [2]string{"hello", "world"},
-		sb: [3]byte{0, 1, 2},
+		ss:      [2]string{"hello", "world"},
+		sb:      [3]byte{0, 1, 2},
+		skipped: 99,
 	}
 
 	m := BytesMsg{
