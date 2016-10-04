@@ -294,10 +294,10 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 		p.AsProtobuf = uint64_encoder_txt
 	case reflect.Float32:
 		p.enc = (*Buffer).enc_uint32 // can just treat them as bits
-		p.AsProtobuf = "float32"
+		p.AsProtobuf = "float"
 	case reflect.Float64:
 		p.enc = (*Buffer).enc_int64 // can just treat them as bits
-		p.AsProtobuf = "float64"
+		p.AsProtobuf = "double"
 	case reflect.String:
 		p.enc = (*Buffer).enc_string
 		p.AsProtobuf = "string"
@@ -335,10 +335,10 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 			p.AsProtobuf = uint64_encoder_txt
 		case reflect.Float32:
 			p.enc = (*Buffer).enc_ptr_uint32 // can just treat them as bits
-			p.AsProtobuf = "float32"
+			p.AsProtobuf = "float"
 		case reflect.Float64:
 			p.enc = (*Buffer).enc_ptr_int64 // can just treat them as bits
-			p.AsProtobuf = "float64"
+			p.AsProtobuf = "double"
 		case reflect.String:
 			p.enc = (*Buffer).enc_ptr_string
 			p.AsProtobuf = "string"
@@ -412,12 +412,12 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 			// can just treat them as bits
 			p.enc = (*Buffer).enc_slice_packed_uint32
 			wire = WireBytes // packed=true...
-			p.AsProtobuf = "repeated float32"
+			p.AsProtobuf = "repeated float"
 		case reflect.Float64:
 			// can just treat them as bits
 			p.enc = (*Buffer).enc_slice_packed_int64
 			wire = WireBytes // packed=true...
-			p.AsProtobuf = "repeated float64"
+			p.AsProtobuf = "repeated double"
 		case reflect.String:
 			p.enc = (*Buffer).enc_slice_string
 			p.AsProtobuf = "repeated string"
@@ -488,12 +488,12 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_array_packed_uint32
 				wire = WireBytes // packed=true...
-				p.AsProtobuf = "repeated float32"
+				p.AsProtobuf = "repeated float"
 			case reflect.Float64:
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_array_packed_int64
 				wire = WireBytes // packed=true...
-				p.AsProtobuf = "repeated float64"
+				p.AsProtobuf = "repeated double"
 			case reflect.String:
 				p.enc = (*Buffer).enc_array_string
 				p.AsProtobuf = "repeated string"
