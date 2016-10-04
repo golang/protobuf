@@ -109,6 +109,11 @@ func (sp *StructProperties) Protobuf(t reflect.Type) string {
 	return strings.Join(lines, "\n")
 }
 
+// returns the type expressed in protobuf v3 format, suitable for feeding back into the protobuf compiler.
+func Protobuf(t reflect.Type) string {
+	return GetProperties(t).Protobuf(t)
+}
+
 // Properties represents the protocol-specific behavior of a single struct field.
 type Properties struct {
 	Name     string // name of the field, for error messages
