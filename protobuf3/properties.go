@@ -96,10 +96,21 @@ func (sp *StructProperties) Less(i, j int) bool {
 }
 func (sp *StructProperties) Swap(i, j int) { sp.order[i], sp.order[j] = sp.order[j], sp.order[i] }
 
+// returns the properties into protobuf v3 format, suitable for feeding back into the protobuf compiler.
+func (sp *StructProperties) Protobuf(t reflect.Type) string {
+	lines := []string{fmt.Sprintf("message %s {", t.Name())}
+	for i := range sp.Prop {
+		lines = append(lines, fmt.Sprintf("  %s = %d;", sp.Prop[i].Protobuf, sp.Prop[i].Tag))
+	}
+	lines = append(lines, "}")
+	return strings.Join(lines, "\n")
+}
+
 // Properties represents the protocol-specific behavior of a single struct field.
 type Properties struct {
 	Name     string // name of the field, for error messages
 	Wire     string
+	Protobuf string // protobuf v3 type for this field (or something equivalent, since we can't figure it out perfectly from the Go field type and tags)
 	Tag      uint32
 	WireType WireType
 
@@ -130,8 +141,20 @@ func (p *Properties) String() string {
 	return fmt.Sprintf("%s %s", p.Wire, p.Name)
 }
 
+// IntEncoder enumerates the different ways of encoding integers in Protobuf v3
+type IntEncoder int
+
+const (
+	UnknownEncoder IntEncoder = iota // make the zero-value be different from any valid value so I can tell it is not set
+	VarintEncoder
+	Fixed32Encoder
+	Fixed64Encoder
+	Zigzag32Encoder
+	Zigzag64Encoder
+)
+
 // Parse populates p by parsing a string in the protobuf struct field tag style.
-func (p *Properties) Parse(s string) (bool, error) {
+func (p *Properties) Parse(s string) (IntEncoder, bool, error) {
 	p.Wire = s
 
 	// "bytes,49,rep,..."
@@ -140,55 +163,82 @@ func (p *Properties) Parse(s string) (bool, error) {
 	if len(fields) < 2 {
 		if len(fields) > 0 && fields[0] == "-" {
 			// `protobuf="-"` is used to mark fields which should be skipped by the protobuf encoder (this is same mark as is used by the std encoding/json package)
-			return true, nil
+			return 0, true, nil
 		}
-		return true, fmt.Errorf("protobuf3: tag of %q has too few fields: %q", p.Name, s)
+		return 0, true, fmt.Errorf("protobuf3: tag of %q has too few fields: %q", p.Name, s)
 	}
 
+	var enc IntEncoder
 	switch fields[0] {
 	case "varint":
 		p.valEnc = (*Buffer).EncodeVarint
 		p.WireType = WireVarint
+		enc = VarintEncoder
 	case "fixed32":
 		p.valEnc = (*Buffer).EncodeFixed32
 		p.WireType = WireFixed32
+		enc = Fixed32Encoder
 	case "fixed64":
 		p.valEnc = (*Buffer).EncodeFixed64
 		p.WireType = WireFixed64
+		enc = Fixed64Encoder
 	case "zigzag32":
 		p.valEnc = (*Buffer).EncodeZigzag32
 		p.WireType = WireVarint
+		enc = Zigzag32Encoder
 	case "zigzag64":
 		p.valEnc = (*Buffer).EncodeZigzag64
 		p.WireType = WireVarint
+		enc = Zigzag64Encoder
 	case "bytes":
 		// no numeric converter for non-numeric types
 		p.WireType = WireBytes
 	default:
-		return false, fmt.Errorf("protobuf3: tag of %q has unknown wire type: %q", p.Name, s)
+		return 0, false, fmt.Errorf("protobuf3: tag of %q has unknown wire type: %q", p.Name, s)
 	}
 
 	tag, err := strconv.Atoi(fields[1])
 	if err != nil {
-		return false, fmt.Errorf("protobuf3: tag id of %q invalid: %s: %s", p.Name, s, err.Error())
+		return 0, false, fmt.Errorf("protobuf3: tag id of %q invalid: %s: %s", p.Name, s, err.Error())
 	}
 	if tag <= 0 { // catch any negative or 0 values
-		return false, fmt.Errorf("protobuf3: tag id of %q out of range: %s", p.Name, s)
+		return 0, false, fmt.Errorf("protobuf3: tag id of %q out of range: %s", p.Name, s)
 	}
 	p.Tag = uint32(tag)
 
 	// and we don't care about any other fields
 	// (if you don't mark slices/arrays/maps with ",rep" that's your own problem; this encoder always repeats those types)
 
-	return false, nil
+	return enc, false, nil
 }
 
 // Initialize the fields for encoding and decoding.
-func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
+func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encoder IntEncoder) {
 	p.enc = nil
 	wire := p.WireType
 
 	need_sprop := false
+
+	// since so many cases need it, decode int_encoder into a  string now
+	var int32_encoder_txt, uint32_encoder_txt,
+		int64_encoder_txt, uint64_encoder_txt string
+	switch int_encoder {
+	case VarintEncoder:
+		uint32_encoder_txt = "uint32"
+		int32_encoder_txt = uint32_encoder_txt[1:] // strip the 'u' off
+		uint64_encoder_txt = "uint64"
+		int64_encoder_txt = uint64_encoder_txt[1:] // strip the 'u' off
+	case Fixed32Encoder:
+		uint32_encoder_txt = "fixed32"
+		int32_encoder_txt = uint32_encoder_txt
+	case Fixed64Encoder:
+		uint64_encoder_txt = "fixed64"
+		int64_encoder_txt = uint64_encoder_txt
+	case Zigzag32Encoder:
+		int32_encoder_txt = "sint32"
+	case Zigzag64Encoder:
+		int64_encoder_txt = "sint64"
+	}
 
 	switch t1 := typ; t1.Kind() {
 	default:
@@ -198,30 +248,46 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 
 	case reflect.Bool:
 		p.enc = (*Buffer).enc_bool
+		p.Protobuf = "bool"
 	case reflect.Int:
 		p.enc = (*Buffer).enc_int
+		p.Protobuf = int32_encoder_txt
 	case reflect.Uint:
 		p.enc = (*Buffer).enc_uint
+		p.Protobuf = uint32_encoder_txt
 	case reflect.Int8:
 		p.enc = (*Buffer).enc_int8
+		p.Protobuf = int32_encoder_txt
 	case reflect.Uint8:
 		p.enc = (*Buffer).enc_uint8
+		p.Protobuf = uint32_encoder_txt
 	case reflect.Int16:
 		p.enc = (*Buffer).enc_int16
+		p.Protobuf = int32_encoder_txt
 	case reflect.Uint16:
 		p.enc = (*Buffer).enc_uint16
+		p.Protobuf = uint32_encoder_txt
 	case reflect.Int32:
 		p.enc = (*Buffer).enc_int32
+		p.Protobuf = int32_encoder_txt
 	case reflect.Uint32:
 		p.enc = (*Buffer).enc_uint32
-	case reflect.Int64, reflect.Uint64:
+		p.Protobuf = uint32_encoder_txt
+	case reflect.Int64:
 		p.enc = (*Buffer).enc_int64
+		p.Protobuf = int64_encoder_txt
+	case reflect.Uint64:
+		p.enc = (*Buffer).enc_int64
+		p.Protobuf = uint64_encoder_txt
 	case reflect.Float32:
 		p.enc = (*Buffer).enc_uint32 // can just treat them as bits
+		p.Protobuf = "float32"
 	case reflect.Float64:
 		p.enc = (*Buffer).enc_int64 // can just treat them as bits
+		p.Protobuf = "float64"
 	case reflect.String:
 		p.enc = (*Buffer).enc_string
+		p.Protobuf = "string"
 
 	case reflect.Struct:
 		p.stype = t1
@@ -232,6 +298,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		} else {
 			p.enc = (*Buffer).enc_struct_message
 		}
+		p.Protobuf = p.Name
 
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
@@ -240,18 +307,28 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_ptr_bool
+			p.Protobuf = "bool"
 		case reflect.Int32:
 			p.enc = (*Buffer).enc_ptr_int32
+			p.Protobuf = int32_encoder_txt
 		case reflect.Uint32:
 			p.enc = (*Buffer).enc_ptr_uint32
-		case reflect.Int64, reflect.Uint64:
+			p.Protobuf = uint32_encoder_txt
+		case reflect.Int64:
 			p.enc = (*Buffer).enc_ptr_int64
+			p.Protobuf = int64_encoder_txt
+		case reflect.Uint64:
+			p.enc = (*Buffer).enc_ptr_int64
+			p.Protobuf = uint64_encoder_txt
 		case reflect.Float32:
 			p.enc = (*Buffer).enc_ptr_uint32 // can just treat them as bits
+			p.Protobuf = "float32"
 		case reflect.Float64:
 			p.enc = (*Buffer).enc_ptr_int64 // can just treat them as bits
+			p.Protobuf = "float64"
 		case reflect.String:
 			p.enc = (*Buffer).enc_ptr_string
+			p.Protobuf = "string"
 		case reflect.Struct:
 			p.stype = t2
 			need_sprop = true
@@ -261,6 +338,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 			} else {
 				p.enc = (*Buffer).enc_ptr_struct_message
 			}
+			p.Protobuf = p.Name
 		}
 
 	case reflect.Slice:
@@ -269,6 +347,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 			p.isMarshaler = true
 			p.stype = typ
 			p.enc = (*Buffer).enc_marshaler
+			p.Protobuf = "repeated " + p.Name
 			break
 		}
 
@@ -279,48 +358,62 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_slice_packed_bool
 			wire = WireBytes // packed=true is implied in protobuf v3
+			p.Protobuf = "repeated bool"
 		case reflect.Int:
 			p.enc = (*Buffer).enc_slice_packed_int
 			wire = WireBytes // packed=true...
+			p.Protobuf = "repeated " + int32_encoder_txt
 		case reflect.Uint:
 			p.enc = (*Buffer).enc_slice_packed_uint
 			wire = WireBytes // packed=true...
+			p.Protobuf = "repeated " + uint32_encoder_txt
 		case reflect.Int8:
 			p.enc = (*Buffer).enc_slice_packed_int8
 			wire = WireBytes // packed=true...
+			p.Protobuf = "repeated " + int32_encoder_txt
 		case reflect.Uint8:
 			p.enc = (*Buffer).enc_slice_byte
 			wire = WireBytes // packed=true... even for integers
+			p.Protobuf = "bytes"
 		case reflect.Int16:
 			p.enc = (*Buffer).enc_slice_packed_int16
 			wire = WireBytes // packed=true...
+			p.Protobuf = "repeated " + int32_encoder_txt
 		case reflect.Uint16:
 			p.enc = (*Buffer).enc_slice_packed_uint16
 			wire = WireBytes // packed=true...
+			p.Protobuf = "repeated " + uint32_encoder_txt
 		case reflect.Int32:
 			p.enc = (*Buffer).enc_slice_packed_int32
 			wire = WireBytes // packed=true...
+			p.Protobuf = "repeated " + int32_encoder_txt
 		case reflect.Uint32:
 			p.enc = (*Buffer).enc_slice_packed_uint32
 			wire = WireBytes // packed=true...
+			p.Protobuf = "repeated " + uint32_encoder_txt
 		case reflect.Int64, reflect.Uint64:
 			p.enc = (*Buffer).enc_slice_packed_int64
 			wire = WireBytes // packed=true...
+			p.Protobuf = "repeated " + int64_encoder_txt
 		case reflect.Float32:
 			// can just treat them as bits
 			p.enc = (*Buffer).enc_slice_packed_uint32
 			wire = WireBytes // packed=true...
+			p.Protobuf = "repeated float32"
 		case reflect.Float64:
 			// can just treat them as bits
 			p.enc = (*Buffer).enc_slice_packed_int64
 			wire = WireBytes // packed=true...
+			p.Protobuf = "repeated float64"
 		case reflect.String:
 			p.enc = (*Buffer).enc_slice_string
+			p.Protobuf = "repeated string"
 		case reflect.Struct:
 			p.stype = t2
 			need_sprop = true
 			p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
 			p.enc = (*Buffer).enc_slice_struct_message
+			p.Protobuf = "repeated " + p.Name
 		case reflect.Ptr:
 			switch t3 := t2.Elem(); t3.Kind() {
 			default:
@@ -331,6 +424,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 				need_sprop = true
 				p.isMarshaler = isMarshaler(t2)
 				p.enc = (*Buffer).enc_slice_ptr_struct_message
+				p.Protobuf = "repeated " + p.Name
 			}
 		case reflect.Slice:
 			switch t2.Elem().Kind() {
@@ -339,6 +433,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 				break
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_slice_slice_byte
+				p.Protobuf = "repeated bytes"
 			}
 		}
 
@@ -356,32 +451,45 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 			case reflect.Bool:
 				p.enc = (*Buffer).enc_array_packed_bool
 				wire = WireBytes // packed=true is implied in protobuf v3
+				p.Protobuf = "repeated bool"
 			case reflect.Int32:
 				p.enc = (*Buffer).enc_array_packed_int32
 				wire = WireBytes // packed=true...
+				p.Protobuf = "repeated " + int32_encoder_txt
 			case reflect.Uint32:
 				p.enc = (*Buffer).enc_array_packed_uint32
 				wire = WireBytes // packed=true...
-			case reflect.Int64, reflect.Uint64:
+				p.Protobuf = "repeated " + uint32_encoder_txt
+			case reflect.Int64:
 				p.enc = (*Buffer).enc_array_packed_int64
 				wire = WireBytes // packed=true...
+				p.Protobuf = "repeated " + int64_encoder_txt
+			case reflect.Uint64:
+				p.enc = (*Buffer).enc_array_packed_int64
+				wire = WireBytes // packed=true...
+				p.Protobuf = "repeated " + uint64_encoder_txt
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_array_byte
+				p.Protobuf = "bytes"
 			case reflect.Float32:
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_array_packed_uint32
 				wire = WireBytes // packed=true...
+				p.Protobuf = "repeated float32"
 			case reflect.Float64:
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_array_packed_int64
 				wire = WireBytes // packed=true...
+				p.Protobuf = "repeated float64"
 			case reflect.String:
 				p.enc = (*Buffer).enc_array_string
+				p.Protobuf = "repeated string"
 			case reflect.Struct:
 				p.stype = t2
 				need_sprop = true
 				p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
 				p.enc = (*Buffer).enc_array_struct_message
+				p.Protobuf = "repeated " + p.Name
 			case reflect.Ptr:
 				switch t3 := t2.Elem(); t3.Kind() {
 				default:
@@ -392,6 +500,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 					need_sprop = true
 					p.isMarshaler = isMarshaler(t2)
 					p.enc = (*Buffer).enc_array_ptr_struct_message
+					p.Protobuf = "repeated " + p.Name
 				}
 			}
 		}
@@ -411,6 +520,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 			vtype = reflect.PtrTo(vtype)
 		}
 		p.mvalprop.init(vtype, "Value", f.Tag.Get("protobuf_val"), nil)
+		p.Protobuf = fmt.Sprintf("map<%s,%s>", p.mtype.Key().Name(), vtype.Name()) // TODO finish this
 	}
 
 	// precalculate tag code
@@ -458,12 +568,12 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 		p.field = field(f.Offset)
 	}
 
-	skip, err := p.Parse(tag)
+	intencoder, skip, err := p.Parse(tag)
 	if skip || err != nil {
 		return skip, err
 	}
 
-	p.setEnc(typ, f)
+	p.setEnc(typ, f, intencoder)
 
 	return false, nil
 }
