@@ -160,6 +160,7 @@ func (p *Properties) Parse(s string) (bool, error) {
 		p.WireType = WireVarint
 	case "zigzag64":
 		p.valEnc = (*Buffer).EncodeZigzag64
+		p.WireType = WireVarint
 	case "bytes":
 		// no numeric converter for non-numeric types
 		p.WireType = WireBytes
