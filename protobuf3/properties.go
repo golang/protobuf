@@ -183,8 +183,6 @@ func (p *Properties) Parse(s string) (bool, error) {
 	return false, nil
 }
 
-var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
-
 // Initialize the fields for encoding and decoding.
 func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField) {
 	p.enc = nil
