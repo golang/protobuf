@@ -242,11 +242,11 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 		uint64_encoder_txt = "uint64"
 		int64_encoder_txt = uint64_encoder_txt[1:] // strip the 'u' off
 	case Fixed32Encoder:
-		uint32_encoder_txt = "fixed32"
-		int32_encoder_txt = uint32_encoder_txt
+		int32_encoder_txt = "sfixed32"
+		uint32_encoder_txt = int32_encoder_txt[1:] // strip the 's' off
 	case Fixed64Encoder:
-		uint64_encoder_txt = "fixed64"
-		int64_encoder_txt = uint64_encoder_txt
+		int64_encoder_txt = "sfixed64"
+		uint64_encoder_txt = int64_encoder_txt[1:] // strip the 's' off
 	case Zigzag32Encoder:
 		int32_encoder_txt = "sint32"
 	case Zigzag64Encoder:
