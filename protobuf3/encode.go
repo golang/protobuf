@@ -740,14 +740,24 @@ func (o *Buffer) enc_array_ptr_struct_message(p *Properties, base structPointer)
 
 // Encode a slice of message structs ([]struct).
 func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) {
-	s := *(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
-	n := len(s) // note this is the byte size of the slice's array, not # of elements
-	sz := int(p.stype.Size())
+	s := *(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) // note this could just as well be (*[]int) or anything
+	n := len(s)                                                       // note this is the # of elements, not the # of bytes, because of the way a Slice is built in the runtime (go1.7) as { start *T, len, cap int }
+	if n == 0 {
+		// no elements to encode. we have to treat this as a special case because &s[0] would cause a panic since it would be returning a pointer to something past the end of the underlying array
+		return
+	}
+	enc_struct_messages(o, p, structPointer(unsafe.Pointer(&s[0])), n)
+}
+
+// utility function to encode a series of 'n' struct messages in a line in memory (from a slice or from an array)
+func enc_struct_messages(o *Buffer, p *Properties, base structPointer, n int) {
+	sz := p.stype.Size()  // size of one struct
+	nb := uintptr(n) * sz // # of bytes used by the array of structs
 
 	// Can the object marshal itself?
 	if p.isMarshaler {
-		for i := 0; i < n; i += sz {
-			structp := unsafe.Pointer(&s[i])
+		for i := uintptr(0); i < nb; i += sz {
+			structp := unsafe.Pointer(uintptr(base) + i)
 
 			m := reflect.NewAt(p.stype, structp).Interface().(Marshaler)
 			data, err := m.MarshalProtobuf3()
@@ -761,8 +771,8 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) {
 		return
 	}
 
-	for i := 0; i < n; i += sz {
-		structp := structPointer(unsafe.Pointer(&s[i]))
+	for i := uintptr(0); i < nb; i += sz {
+		structp := structPointer(unsafe.Pointer(uintptr(base) + i))
 
 		o.buf = append(o.buf, p.tagcode...)
 		o.enc_len_struct(p.sprop, structp)
@@ -771,33 +781,7 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) {
 
 // Encode an array of message structs ([n]struct).
 func (o *Buffer) enc_array_struct_message(p *Properties, base structPointer) {
-	sz := p.stype.Size()
-	n := uintptr(p.length) * sz // note this is the byte size of the slice's array, not # of elements
-	s := ((*[maxLen]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
-
-	// Can the object marshal itself?
-	if p.isMarshaler {
-		for i := uintptr(0); i < n; i += sz {
-			structp := structPointer(unsafe.Pointer(&s[i]))
-
-			m := reflect.NewAt(p.stype, unsafe.Pointer(structp)).Interface().(Marshaler)
-			data, err := m.MarshalProtobuf3()
-			if err != nil {
-				o.noteError(err)
-				return
-			}
-			o.buf = append(o.buf, p.tagcode...)
-			o.EncodeRawBytes(data)
-		}
-		return
-	}
-
-	for i := uintptr(0); i < n; i += sz {
-		structp := structPointer(unsafe.Pointer(&s[i]))
-
-		o.buf = append(o.buf, p.tagcode...)
-		o.enc_len_struct(p.sprop, structp)
-	}
+	enc_struct_messages(o, p, structPointer(unsafe.Pointer(uintptr(base)+uintptr(p.field))), p.length)
 }
 
 // Encode a map field.
