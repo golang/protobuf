@@ -121,7 +121,13 @@ type Properties struct {
 
 // String formats the properties in the protobuf struct field tag style.
 func (p *Properties) String() string {
-	return p.Wire
+	if p.stype != nil {
+		return fmt.Sprintf("%s %s (%s)", p.Wire, p.Name, p.stype.Name())
+	}
+	if p.mtype != nil {
+		return fmt.Sprintf("%s %s (%s)", p.Wire, p.Name, p.mtype.Name())
+	}
+	return fmt.Sprintf("%s %s", p.Wire, p.Name)
 }
 
 // Parse populates p by parsing a string in the protobuf struct field tag style.
