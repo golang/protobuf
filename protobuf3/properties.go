@@ -100,7 +100,10 @@ func (sp *StructProperties) Swap(i, j int) { sp.order[i], sp.order[j] = sp.order
 func (sp *StructProperties) Protobuf(t reflect.Type) string {
 	lines := []string{fmt.Sprintf("message %s {", t.Name())}
 	for i := range sp.Prop {
-		lines = append(lines, fmt.Sprintf("  %s = %d;", sp.Prop[i].Protobuf, sp.Prop[i].Tag))
+		pp := &sp.Prop[i]
+		if pp.Wire != "-" {
+			lines = append(lines, fmt.Sprintf("  %s %s = %d;", pp.Protobuf, pp.Name, pp.Tag))
+		}
 	}
 	lines = append(lines, "}")
 	return strings.Join(lines, "\n")
@@ -139,6 +142,11 @@ func (p *Properties) String() string {
 		return fmt.Sprintf("%s %s (%s)", p.Wire, p.Name, p.mtype.Name())
 	}
 	return fmt.Sprintf("%s %s", p.Wire, p.Name)
+}
+
+// returns the inner type, or nil
+func (p *Properties) Subtype() reflect.Type {
+	return p.stype
 }
 
 // IntEncoder enumerates the different ways of encoding integers in Protobuf v3
@@ -298,7 +306,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 		} else {
 			p.enc = (*Buffer).enc_struct_message
 		}
-		p.Protobuf = p.Name
+		p.Protobuf = p.stype.Name()
 
 	case reflect.Ptr:
 		switch t2 := t1.Elem(); t2.Kind() {
@@ -338,7 +346,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 			} else {
 				p.enc = (*Buffer).enc_ptr_struct_message
 			}
-			p.Protobuf = p.Name
+			p.Protobuf = p.stype.Name()
 		}
 
 	case reflect.Slice:
@@ -347,7 +355,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 			p.isMarshaler = true
 			p.stype = typ
 			p.enc = (*Buffer).enc_marshaler
-			p.Protobuf = "repeated " + p.Name
+			p.Protobuf = "repeated " + p.stype.Name()
 			break
 		}
 
@@ -413,7 +421,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 			need_sprop = true
 			p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
 			p.enc = (*Buffer).enc_slice_struct_message
-			p.Protobuf = "repeated " + p.Name
+			p.Protobuf = "repeated " + p.stype.Name()
 		case reflect.Ptr:
 			switch t3 := t2.Elem(); t3.Kind() {
 			default:
@@ -424,7 +432,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 				need_sprop = true
 				p.isMarshaler = isMarshaler(t2)
 				p.enc = (*Buffer).enc_slice_ptr_struct_message
-				p.Protobuf = "repeated " + p.Name
+				p.Protobuf = "repeated " + p.stype.Name()
 			}
 		case reflect.Slice:
 			switch t2.Elem().Kind() {
@@ -489,7 +497,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 				need_sprop = true
 				p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
 				p.enc = (*Buffer).enc_array_struct_message
-				p.Protobuf = "repeated " + p.Name
+				p.Protobuf = "repeated " + p.stype.Name()
 			case reflect.Ptr:
 				switch t3 := t2.Elem(); t3.Kind() {
 				default:
@@ -500,7 +508,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 					need_sprop = true
 					p.isMarshaler = isMarshaler(t2)
 					p.enc = (*Buffer).enc_array_ptr_struct_message
-					p.Protobuf = "repeated " + p.Name
+					p.Protobuf = "repeated " + p.stype.Name()
 				}
 			}
 		}
