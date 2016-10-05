@@ -633,7 +633,7 @@ func (p *Properties) stypeAsProtobuf() string {
 	// special case for time.Time (any other future special cases)
 	switch p.sprop {
 	case time_Time_sprop:
-		return "google.proto.Timestamp"
+		return "google.protobuf.Timestamp"
 	}
 
 	// if the Go type is named, use the name of the go type
