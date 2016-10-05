@@ -44,6 +44,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unicode"
+	"unicode/utf8"
 )
 
 const debug bool = false
@@ -102,11 +104,56 @@ func (sp *StructProperties) asProtobuf(t reflect.Type, tname string) string {
 	for i := range sp.Prop {
 		pp := &sp.Prop[i]
 		if pp.Wire != "-" {
-			lines = append(lines, fmt.Sprintf("  %s %s = %d;", pp.asProtobuf, pp.Name, pp.Tag))
+			lines = append(lines, fmt.Sprintf("  %s %s = %d;", pp.asProtobuf, pp.protobufFieldName(), pp.Tag))
 		}
 	}
 	lines = append(lines, "}")
 	return strings.Join(lines, "\n")
+}
+
+// return the name of this field in protobuf
+func (p *Properties) protobufFieldName() string {
+
+	// PS I tried doing things like lowercasing and inserting a '_' before each group of uppercase chars.
+	// It didn't do well with field names our software was using. Yet
+
+	// To make people who use other langauges happy it would be nice if our field names were like most and were lowercase.
+	// (In addition, since we use the name of fields with anonymous types as the name of the anonmymous types, we need to
+	// alter those fields (or the type's name) so there isn't a collision.)
+	// Converting "XxxYYzz" to "xxx_yyy_zz" seems to be reasonable for most fields names.
+	// If the name already has any '_' it then I just lowercase it without inserting any more.
+	// And finally I let the "name=" tag override this so we can hand fix up the odd names which don't convert nicely.
+
+	for _, t := range strings.Split(p.Wire, ",") {
+		if strings.HasPrefix(t, "name=") {
+			return t[5:]
+		}
+	}
+
+	n := p.Name
+	if strings.IndexRune(n, '_') >= 0 {
+		return strings.ToLower(n)
+	}
+
+	buf := make([]byte, 2*len(n)+4) // 2x is enough for every 2nd rune to be a '_'. +4 is enough room for anything EncodeRune() might emit
+	j := 0
+	prev_was_upper := true // initial condition happens to prevent the 1st rune (which is almost certainly uppercase) from getting prefixed with _
+	for _, r := range n {
+		if unicode.IsUpper(r) {
+			// lowercase r, and prepend a '_' if this is a good place to break up the name
+			if !prev_was_upper {
+				buf[j] = '_'
+				j++
+			}
+			r = unicode.ToLower(r)
+			prev_was_upper = true
+		} else if unicode.IsLower(r) {
+			prev_was_upper = false
+		} // else leave prev_was_upper alone. This rule handles some edge condition names better ("L2TP" for instance, which otherwise would be named "l2_tp")
+		j += utf8.EncodeRune(buf[j:], r)
+	}
+
+	return string(buf[:j])
 }
 
 // returns the type expressed in protobuf v3 format, suitable for feeding back into the protobuf compiler.
@@ -162,7 +209,7 @@ func AsProtobufFull(t reflect.Type) string {
 			body = append(body, "") // put a blank line between each message definition
 			body = append(body, AsProtobuf(t))
 
-			// add to todo any new non-anonymous types used by its fields
+			// add to todo any new, non-anonymous types used by struct t's fields
 			p := GetProperties(t)
 			for i := range p.Prop {
 				pp := &p.Prop[i]
@@ -172,7 +219,7 @@ func AsProtobufFull(t reflect.Type) string {
 						// it's a new type for us
 						switch {
 						case pp.isMarshaler:
-							// we can't define a custom type
+							// we can't define a custom type. remind the human to do it.
 							headers = append(headers, fmt.Sprintf("// TODO insert definition of custom marshaling type %s here", tt.Name()))
 							done[tt] = struct{}{} // and don't bother with the
 						case tt == time_type:
@@ -644,11 +691,16 @@ func (p *Properties) stypeAsProtobuf() string {
 		return n
 	}
 	// the struct has no typename. It is an anonymous type in Go. The equivalent in Protobuf is
-	// a a nested type. We use the name of the field as the name of the type, since the name of
-	// the field ought to be unique within the enclosing struct type.
+	// a a nested type. It would be nice to use the name of the field as the name of the type,
+	// since the name of the field ought to be unique within the enclosing struct type. However
+	// protoc 3.0.2 cannot handle a field and a type having the same name. So we need to make up
+	// a reasonable name for this type. I didn't like the result of appending "_msg" or other
+	// 'uniquifier' to p.Name. So instead I've done the non-Go thing and made fields be lowercase,
+	// thus reserving uppercase names for types, and thus avoiding any collisions.
+	name := p.Name
 
-	lines := []string{p.sprop.asProtobuf(p.stype, p.Name)}
-	lines = append(lines, p.Name)
+	lines := []string{p.sprop.asProtobuf(p.stype, name)}
+	lines = append(lines, name)
 	str := strings.Join(lines, "\n")
 	// indent str two spaces to the right. we have to do this as a search step rather than as part of Join()
 	// because the strings lines are already multi-line strings. (The other solutions are to indent as a
