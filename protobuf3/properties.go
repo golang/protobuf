@@ -214,20 +214,23 @@ func AsProtobufFull(t reflect.Type) string {
 			for i := range p.Prop {
 				pp := &p.Prop[i]
 				tt := pp.Subtype()
-				if tt != nil && tt.Kind() == reflect.Struct && tt.Name() != "" {
+				if tt != nil && tt.Name() != "" {
 					if _, ok := done[tt]; !ok {
 						// it's a new type for us
 						switch {
 						case pp.isMarshaler:
-							// we can't define a custom type. remind the human to do it.
-							headers = append(headers, fmt.Sprintf("// TODO insert definition of custom marshaling type %s here", tt.Name()))
+							// we can't define a custom type automatically. remind the human to do it.
+							headers = append(headers, fmt.Sprintf("// TODO insert definition of type %s here", tt.Name()))
 							done[tt] = struct{}{} // and don't bother with the
-						case tt == time_type:
-							// the timestamp type gets defined by an import
-							headers = append(headers, `import "google/protobuf/timestamp.proto";`)
-							done[tt] = struct{}{}
-						default:
-							todo[tt] = struct{}{}
+						case tt.Kind() == reflect.Struct:
+							switch {
+							case tt == time_type:
+								// the timestamp type gets defined by an import
+								headers = append(headers, `import "google/protobuf/timestamp.proto";`)
+								done[tt] = struct{}{}
+							default:
+								todo[tt] = struct{}{}
+							}
 						}
 					}
 				}
