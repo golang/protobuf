@@ -54,6 +54,12 @@ const debug bool = false
 // This isn't needed unless you are dealing with old protobuf v2 generated types like some unit tests do
 var XXXHack = false
 
+// interface implemented by custom marshalers which return the protobuf v3 type equivalent to what the MarshalProtobuf3() method
+// encodes. This is optional, but useful when using AsProtobufFull() against types implementing Marshaler.
+type AsProtobuf3er interface {
+	AsProtobuf3() string
+}
+
 // Constants that identify the encoding of a value on the wire.
 const (
 	WireVarint     = WireType(0)
@@ -220,12 +226,18 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 				tt := pp.Subtype()
 				if tt != nil && tt.Name() != "" {
 					if _, ok := done[tt]; !ok {
-						// it's a new type for us
+						// it's a new type of field
 						switch {
 						case pp.isMarshaler:
-							// we can't define a custom type automatically. remind the human to do it.
-							headers = append(headers, fmt.Sprintf("// TODO insert definition of type %s here", tt.Name()))
-							done[tt] = struct{}{} // and don't bother with the
+							// we can't define a custom type automatically. see if it can tell us, and otherwise remind the human to do it.
+							it := reflect.New(tt).Interface()
+							if ap3, ok := it.(AsProtobuf3er); ok {
+								body = append(body, "") // put a blank line between each message definition
+								body = append(body, ap3.AsProtobuf3())
+							} else {
+								headers = append(headers, fmt.Sprintf("// TODO supply the definition of message %s", tt.Name()))
+							}
+							done[tt] = struct{}{}
 						case tt.Kind() == reflect.Struct:
 							switch {
 							case tt == time_type:
@@ -233,6 +245,8 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 								headers = append(headers, `import "google/protobuf/timestamp.proto";`)
 								done[tt] = struct{}{}
 							default:
+								// put this new type in the todo table if it isn't already there
+								// (the duplicate insert when it is already present is a no-op)
 								todo[tt] = struct{}{}
 							}
 						}
