@@ -196,7 +196,7 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 	}
 	if pkgpath != "" {
 		headers = append(headers, fmt.Sprintf("package %s;", pkg))
-		headers = append(headers, fmt.Sprintf(`option go_package = "%s";`, pkgpath))
+		//headers = append(headers, fmt.Sprintf(`option go_package = "%s";`, pkgpath))
 	}
 
 	time_type := reflect.TypeOf(time.Time{})
