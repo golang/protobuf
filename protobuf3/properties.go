@@ -585,7 +585,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 			vtype = reflect.PtrTo(vtype)
 		}
 		p.mvalprop.init(vtype, "Value", f.Tag.Get("protobuf_val"), nil)
-		p.asProtobuf = fmt.Sprintf("map<%s,%s>", p.mtype.Key().Name(), vtype.Name()) // TODO finish this
+		p.asProtobuf = fmt.Sprintf("map<%s, %s>", p.mkeyprop.asProtobuf, p.mvalprop.asProtobuf)
 	}
 
 	// precalculate tag code
