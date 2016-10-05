@@ -177,7 +177,7 @@ func AsProtobufFull(t reflect.Type) string {
 							done[tt] = struct{}{} // and don't bother with the
 						case tt == time_type:
 							// the timestamp type gets defined by an import
-							headers = append(headers, `import "timestamp.proto"`)
+							headers = append(headers, `import "google/protobuf/timestamp.proto";`)
 							done[tt] = struct{}{}
 						default:
 							todo[tt] = struct{}{}
@@ -630,6 +630,15 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 // using p.Name, p.stype and p.sprop, figure out the right name for the type of field p.
 // if the name of the type is known, use that. Otherwise build a nested type and use it.
 func (p *Properties) stypeAsProtobuf() string {
+	// special case for time.Time (any other future special cases)
+	switch p.sprop {
+	case time_Time_sprop:
+		return "google.proto.Timestamp"
+	}
+
+	// if the Go type is named, use the name of the go type
+	// (even if it is in a different package than the enclosing type? that can cause collisions.
+	//  for now the humans can sort those out after protoc errors on the duplicate records)
 	n := p.stype.Name()
 	if n != "" {
 		return n
@@ -694,18 +703,20 @@ var (
 	propertiesMap = make(map[reflect.Type]*StructProperties)
 )
 
-func init() {
-	// synthesize a StructProperties for time.Time which will encode it
-	// to the same as the standard protobuf3 Timestamp type.
-	propertiesMap[reflect.TypeOf(time.Time{})] = &StructProperties{
-		Prop: []Properties{
-			Properties{
-				Name: "time.Time",
-				enc:  (*Buffer).enc_time_Time,
-			},
+// synthesize a StructProperties for time.Time which will encode it
+// to the same as the standard protobuf3 Timestamp type.
+var time_Time_sprop = &StructProperties{
+	Prop: []Properties{
+		// we need just one made-up field with a .enc() method which we've hooked into
+		Properties{
+			enc: (*Buffer).enc_time_Time,
 		},
-		order: []int{0},
-	}
+	},
+	order: []int{0},
+}
+
+func init() {
+	propertiesMap[reflect.TypeOf(time.Time{})] = time_Time_sprop
 }
 
 // GetProperties returns the list of properties for the type represented by t.
