@@ -143,7 +143,7 @@ func AsProtobufFull(t reflect.Type) string {
 	}
 	if pkgpath != "" {
 		headers = append(headers, fmt.Sprintf("package %s;", pkg))
-		headers = append(headers, fmt.Sprintf(`option go_package "%s";`, pkgpath))
+		headers = append(headers, fmt.Sprintf(`option go_package = "%s";`, pkgpath))
 	}
 
 	// kick things off with the top level struct
