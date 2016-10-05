@@ -166,8 +166,8 @@ func AsProtobuf(t reflect.Type) string {
 }
 
 // returns the type expressed in protobuf v3 format, including all dependent types and imports
-func AsProtobufFull(t reflect.Type) string {
-	// dig down through any pointer types
+func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
+	// dig down through any pointer types on the first type, since we'll use that one to determine the package
 	for t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
@@ -193,9 +193,13 @@ func AsProtobufFull(t reflect.Type) string {
 		headers = append(headers, fmt.Sprintf(`option go_package = "%s";`, pkgpath))
 	}
 
-	// kick things off with the top level struct
-	todo[t] = struct{}{}
 	time_type := reflect.TypeOf(time.Time{})
+
+	// place all the given types in the todo table
+	todo[t] = struct{}{}
+	for _, t := range more {
+		todo[t] = struct{}{}
+	}
 
 	// and lather/rinse/repeat until we're done with all the types
 	var body []string
