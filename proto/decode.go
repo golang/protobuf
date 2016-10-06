@@ -340,6 +340,8 @@ func (p *Buffer) DecodeGroup(pb Message) error {
 // Buffer and places the decoded result in pb.  If the struct
 // underlying pb does not match the data in the buffer, the results can be
 // unpredictable.
+//
+// Unlike proto.Unmarshal, this does not reset pb before starting to unmarshal.
 func (p *Buffer) Unmarshal(pb Message) error {
 	// If the object can unmarshal itself, let it.
 	if u, ok := pb.(Unmarshaler); ok {
