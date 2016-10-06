@@ -44,5 +44,7 @@ type structPointer unsafe.Pointer
 // In this implementation, a field is identified by its byte offset from the start of the struct.
 type field uintptr
 
-// maxLen is the maximum length possible for a byte array type
-const maxLen = 1<<50 - 1 // experiments with go1.7 on amd64 show any larger size causes the compiler to error
+// maxLen is the maximum length possible for a byte array. On a 64-bit target this is (1<<50)-1. On a 32-bit target it is (1<<31)-1
+// The tricky part is figuring out in a constant what flavor of target we are on. I could sure use a ?: here. It would be more
+// clear than using &^uint(0) to truncate (or not) the upper 32 bits of a constant.
+const maxLen = int((1 << (31 + (((50-31)<<32)&uint64(^uint(0)))>>32)) - 1) // experiments with go1.7 on amd64 show any larger size causes the compiler to error
