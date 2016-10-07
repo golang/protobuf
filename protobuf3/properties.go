@@ -179,7 +179,7 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 	}
 
 	todo := make(map[reflect.Type]struct{})
-	done := make(map[reflect.Type]struct{})
+	discovered := make(map[reflect.Type]struct{})
 
 	pkgpath := t.PkgPath()
 	slash := strings.LastIndexByte(pkgpath, '/')
@@ -201,23 +201,21 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 
 	time_type := reflect.TypeOf(time.Time{})
 
-	// place all the given types in the todo table
+	// place all the arguments in the todo table to start things off
 	todo[t] = struct{}{}
 	for _, t := range more {
+		if t.Kind() == reflect.Ptr {
+			t = t.Elem()
+		}
 		todo[t] = struct{}{}
 	}
 
-	// and lather/rinse/repeat until we're done with all the types
-	var body []string
+	// and lather/rinse/repeat until we've discovered all the types
 	for len(todo) != 0 {
 		for t := range todo {
-			// move t from todo to done
+			// move t from todo to discovered
 			delete(todo, t)
-			done[t] = struct{}{}
-
-			// capture its definition
-			body = append(body, "") // put a blank line between each message definition
-			body = append(body, AsProtobuf(t))
+			discovered[t] = struct{}{}
 
 			// add to todo any new, non-anonymous types used by struct t's fields
 			p := GetProperties(t)
@@ -225,25 +223,17 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 				pp := &p.Prop[i]
 				tt := pp.Subtype()
 				if tt != nil && tt.Name() != "" {
-					if _, ok := done[tt]; !ok {
+					if _, ok := discovered[tt]; !ok {
 						// it's a new type of field
 						switch {
 						case pp.isMarshaler:
-							// we can't define a custom type automatically. see if it can tell us, and otherwise remind the human to do it.
-							it := reflect.New(tt).Interface()
-							if ap3, ok := it.(AsProtobuf3er); ok {
-								body = append(body, "") // put a blank line between each message definition
-								body = append(body, ap3.AsProtobuf3())
-							} else {
-								headers = append(headers, fmt.Sprintf("// TODO supply the definition of message %s", tt.Name()))
-							}
-							done[tt] = struct{}{}
+							// we can't recurse further into a custom type
+							discovered[tt] = struct{}{}
 						case tt.Kind() == reflect.Struct:
 							switch {
 							case tt == time_type:
-								// the timestamp type gets defined by an import
-								headers = append(headers, `import "google/protobuf/timestamp.proto";`)
-								done[tt] = struct{}{}
+								// the timestamp type gets defined by an import of timestamp.proto
+								discovered[tt] = struct{}{}
 							default:
 								// put this new type in the todo table if it isn't already there
 								// (the duplicate insert when it is already present is a no-op)
@@ -259,10 +249,52 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 		}
 	}
 
+	// now that the types we need have all been discovered, sort their names and generate the .proto source
+	// the reason we do this in 2 passes is so that the output is consistent from run to run, and diff'able
+	// across runs with incremental differences.
+
+	ordered := make(Types, 0, len(discovered))
+	for t := range discovered {
+		ordered = append(ordered, t)
+	}
+	sort.Sort(ordered)
+
+	var body []string
+	for _, t := range ordered {
+		// generate type t's protobuf definition
+
+		switch {
+		case t == time_type:
+			// the timestamp type gets defined by an import
+			headers = append(headers, `import "google/protobuf/timestamp.proto";`)
+
+		case isMarshaler(reflect.PtrTo(t)):
+			// we can't define a custom type automatically. see if it can tell us, and otherwise remind the human to do it.
+			it := reflect.New(t).Interface()
+			if aper, ok := it.(AsProtobuf3er); ok {
+				body = append(body, "") // put a blank line between each message definition
+				body = append(body, aper.AsProtobuf3())
+			} else {
+				headers = append(headers, fmt.Sprintf("// TODO supply the definition of message %s", t.Name()))
+			}
+
+		default:
+			// save t's definition
+			body = append(body, "") // put a blank line between each message definition
+			body = append(body, AsProtobuf(t))
+		}
+	}
+
 	headers = append(headers, "")
 
 	return strings.Join(append(headers, body...), "\n")
 }
+
+type Types []reflect.Type
+
+func (ts Types) Len() int           { return len(ts) }
+func (ts Types) Swap(i, j int)      { ts[i], ts[j] = ts[j], ts[i] }
+func (ts Types) Less(i, j int) bool { return ts[i].Name() < ts[j].Name() } // sort types by their names
 
 // Properties represents the protocol-specific behavior of a single struct field.
 type Properties struct {
