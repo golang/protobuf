@@ -670,3 +670,36 @@ func TestCustomMsg(t *testing.T) {
 	check(&o, &o, t)
 	check(&m, &o, t)
 }
+
+type SliceMarshalerMsg struct {
+	Slice []TestMarshaler `protobuf:"bytes,1"`
+}
+
+func (*SliceMarshalerMsg) ProtoMessage() {}
+
+type TestMarshaler [4]byte
+
+func (t *TestMarshaler) MarshalProtobuf3() ([]byte, error) {
+	return t[:], nil
+}
+
+type EquivSliceMarshalerMsg struct {
+	Slice [][]byte `protobuf:"bytes,1"`
+}
+
+func (*EquivSliceMarshalerMsg) ProtoMessage()    {}
+func (m *EquivSliceMarshalerMsg) String() string { return fmt.Sprintf("%+v", *m) }
+func (m *EquivSliceMarshalerMsg) Reset()         { *m = EquivSliceMarshalerMsg{} }
+
+func TestSliceMarshlerMsg(t *testing.T) {
+	m := SliceMarshalerMsg{
+		Slice: []TestMarshaler{[4]byte{1, 2, 3, 4}, [4]byte{5, 6, 7, 8}},
+	}
+
+	o := EquivSliceMarshalerMsg{
+		Slice: [][]byte{[]byte{1, 2, 3, 4}, []byte{5, 6, 7, 8}},
+	}
+
+	check(&o, &o, t)
+	check(&m, &o, t)
+}

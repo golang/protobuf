@@ -773,6 +773,34 @@ func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) {
 	enc_struct_messages(o, p, structPointer(unsafe.Pointer(&s[0])), n)
 }
 
+// Encode a slice of Marshalers ([]T, where T implements Marshaler)
+func (o *Buffer) enc_slice_marshaler(p *Properties, base structPointer) {
+	s := *(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) // note this could just as well be (*[]int) or anything
+	n := len(s)                                                       // note this is the # of elements, not the # of bytes, because of the way a Slice is built in the runtime (go1.7) as { start *T, len, cap int }
+	if n == 0 {
+		// no elements to encode. we have to treat this as a special case because &s[0] would cause a panic since it would be returning a pointer to something past the end of the underlying array
+		return
+	}
+
+	base = structPointer(unsafe.Pointer(&s[0]))
+	sz := p.stype.Size()  // size of one struct
+	nb := uintptr(n) * sz // # of bytes used by the array of structs
+
+	// the slice's elements marshal themselves
+	for i := uintptr(0); i < nb; i += sz {
+		structp := unsafe.Pointer(uintptr(base) + i)
+
+		m := reflect.NewAt(p.stype, structp).Interface().(Marshaler)
+		data, err := m.MarshalProtobuf3()
+		if err != nil {
+			o.noteError(err)
+			return
+		}
+		o.buf = append(o.buf, p.tagcode...)
+		o.EncodeRawBytes(data)
+	}
+}
+
 // utility function to encode a series of 'n' struct messages in a line in memory (from a slice or from an array)
 func enc_struct_messages(o *Buffer, p *Properties, base structPointer, n int) {
 	sz := p.stype.Size()  // size of one struct
