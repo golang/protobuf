@@ -61,20 +61,44 @@ var (
 // int32, int64, uint32, uint64, bool, and enum
 // protocol buffer types.
 func (p *Buffer) EncodeVarint(x uint64) {
-	for x >= 1<<7 {
-		p.buf = append(p.buf, uint8(x&0x7f|0x80))
-		x >>= 7
+	if x>>32 == 0 {
+		// use 32-bit math. this is measureably faster on 32-bit targets
+		// probably because the >>7 on a uint64 is messy
+		x32 := uint32(x)
+		for x32 >= 1<<7 {
+			p.buf = append(p.buf, uint8(x32&0x7f|0x80))
+			x32 >>= 7
+		}
+		p.buf = append(p.buf, uint8(x32))
+	} else {
+		for x >= 1<<7 {
+			p.buf = append(p.buf, uint8(x&0x7f|0x80))
+			x >>= 7
+		}
+		p.buf = append(p.buf, uint8(x))
 	}
-	p.buf = append(p.buf, uint8(x))
 }
 
 // SizeVarint returns the varint encoding size of an integer.
 func SizeVarint(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
+	if x>>32 == 0 {
+		// use 32-bit math. this is measureably faster on 32-bit targets
+		// probably because the >>7 on a uint64 is messy
+		x32 := uint32(x)
+		for {
+			n++
+			x32 >>= 7
+			if x32 == 0 {
+				break
+			}
+		}
+	} else {
+		for {
+			n++
+			x >>= 7
+			if x == 0 {
+				break
+			}
 		}
 	}
 	return n
