@@ -58,10 +58,18 @@ const debug bool = false
 // This isn't needed unless you are dealing with old protobuf v2 generated types like some unit tests do
 var XXXHack = false
 
-// interface implemented by custom marshalers which return the protobuf v3 type equivalent to what the MarshalProtobuf3() method
+// MakeFieldName is a pointer to a function which returns what should be the name of field f in the protobuf definition of type t.
+// You can replace this with your own function before calling AsProtobuf[Full]() to control the field names yourself.
+var MakeFieldName func(f string, t reflect.Type) string = MakeLowercaseFieldName
+
+// MakeTypeName is a pointer to a function which returns what should be the name of the protobuf message of type t, which is the type
+// of a field named f.
+var MakeTypeName func(t reflect.Type, f string) string = MakeUppercaseTypeName
+
+// AsProtobuf3er is the interface which returns the protobuf v3 type equivalent to what the MarshalProtobuf3() method
 // encodes. This is optional, but useful when using AsProtobufFull() against types implementing Marshaler.
 type AsProtobuf3er interface {
-	AsProtobuf3() string
+	AsProtobuf3(typename string) string
 }
 
 // Constants that identify the encoding of a value on the wire.
@@ -114,7 +122,7 @@ func (sp *StructProperties) asProtobuf(t reflect.Type, tname string) string {
 	for i := range sp.Prop {
 		pp := &sp.Prop[i]
 		if pp.Wire != "-" {
-			lines = append(lines, fmt.Sprintf("  %s %s = %d;", pp.asProtobuf, pp.protobufFieldName(), pp.Tag))
+			lines = append(lines, fmt.Sprintf("  %s %s = %d;", pp.asProtobuf, pp.protobufFieldName(t), pp.Tag))
 		}
 	}
 	lines = append(lines, "}")
@@ -122,33 +130,33 @@ func (sp *StructProperties) asProtobuf(t reflect.Type, tname string) string {
 }
 
 // return the name of this field in protobuf
-func (p *Properties) protobufFieldName() string {
-
-	// PS I tried doing things like lowercasing and inserting a '_' before each group of uppercase chars.
-	// It didn't do well with field names our software was using. Yet
-
-	// To make people who use other langauges happy it would be nice if our field names were like most and were lowercase.
-	// (In addition, since we use the name of fields with anonymous types as the name of the anonmymous types, we need to
-	// alter those fields (or the type's name) so there isn't a collision.)
-	// Converting "XxxYYzz" to "xxx_yyy_zz" seems to be reasonable for most fields names.
-	// If the name already has any '_' it then I just lowercase it without inserting any more.
-	// And finally I let the "name=" tag override this so we can hand fix up the odd names which don't convert nicely.
-
+func (p *Properties) protobufFieldName(struct_type reflect.Type) string {
+	// the "name=" tag overrides any computed field name. That lets us automate any manual fixup of names we might need.
 	for _, t := range strings.Split(p.Wire, ",") {
 		if strings.HasPrefix(t, "name=") {
 			return t[5:]
 		}
 	}
 
-	n := p.Name
-	if strings.IndexRune(n, '_') >= 0 {
-		return strings.ToLower(n)
+	return MakeFieldName(p.Name, struct_type)
+}
+
+// MakeLowercaseFieldName returns a reasonable lowercase field name
+func MakeLowercaseFieldName(f string, t reflect.Type) string {
+	// To make people who use other langauges happy it would be nice if our field names were like most and were lowercase.
+	// (In addition, since we use the name of fields with anonymous types as the name of the anonmymous types, we need to
+	// alter those fields (or the type's name) so there isn't a collision.)
+	// Converting "XxxYYzz" to "xxx_yyy_zz" seems to be reasonable for most fields names.
+	// If the name already has any '_' it then I just lowercase it without inserting any more.
+
+	if strings.IndexRune(f, '_') >= 0 {
+		return strings.ToLower(f)
 	}
 
-	buf := make([]byte, 2*len(n)+4) // 2x is enough for every 2nd rune to be a '_'. +4 is enough room for anything EncodeRune() might emit
+	buf := make([]byte, 2*len(f)+4) // 2x is enough for every 2nd rune to be a '_'. +4 is enough room for anything EncodeRune() might emit
 	j := 0
 	prev_was_upper := true // initial condition happens to prevent the 1st rune (which is almost certainly uppercase) from getting prefixed with _
-	for _, r := range n {
+	for _, r := range f {
 		if unicode.IsUpper(r) {
 			// lowercase r, and prepend a '_' if this is a good place to break up the name
 			if !prev_was_upper {
@@ -164,6 +172,9 @@ func (p *Properties) protobufFieldName() string {
 	}
 
 	return string(buf[:j])
+
+	// PS I tried doing things like lowercasing and inserting a '_' before each group of uppercase chars.
+	// It didn't do well with field names our software was using. Yet
 }
 
 // returns the type expressed in protobuf v3 format, suitable for feeding back into the protobuf compiler.
@@ -277,7 +288,7 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 			it := reflect.New(t).Interface()
 			if aper, ok := it.(AsProtobuf3er); ok {
 				body = append(body, "") // put a blank line between each message definition
-				body = append(body, aper.AsProtobuf3())
+				body = append(body, aper.AsProtobuf3(MakeTypeName(t, "")))
 			} else {
 				headers = append(headers, fmt.Sprintf("// TODO supply the definition of message %s", t.Name()))
 			}
@@ -750,10 +761,39 @@ func (p *Properties) stypeAsProtobuf() string {
 		return "google.protobuf.Timestamp"
 	}
 
+	name := MakeTypeName(p.stype, p.Name)
+
+	if p.stype.Name() == "" {
+		// p.stype is an anonymous type. define it inline with the enclosing message
+		// we want the type definition to preceed the type's name, so that in the end it
+		// formats something like:
+		//   message Outer {
+		//    `message Inner { ... }
+		//     Inner' inner = 1;
+		//   }
+		// where the section in `' is the string we need to generate.
+		lines := []string{p.sprop.asProtobuf(p.stype, name)}
+		lines = append(lines, name)
+		str := strings.Join(lines, "\n")
+		// indent str two spaces to the right. we have to do this as a search step rather than as part of Join()
+		// because the strings lines are already multi-line strings. (The other solutions are to indent as a
+		// reformatting step at the end, or to store Properties.asProtobuf as []string and never loose the LFs.
+		// The latter makes asProtobuf expensive for all the simple types. Reformatting needs to work on all fields.
+		// So the "nasty" approach here is, AFAICS, for the best.
+		name = strings.Replace(str, "\n", "\n  ", -1)
+	}
+
+	return name
+}
+
+// MakeUppercaseTypeName makes an uppercase message type name for type t, which is the type of a field named f.
+// Since the field is visible to us it is public, and thus it is uppercase. And since the type is similarly visible
+// it is almost certainly uppercased too. So there isn't much to do except pick whichever is appropriate.
+func MakeUppercaseTypeName(t reflect.Type, f string) string {
 	// if the Go type is named, use the name of the go type
 	// (even if it is in a different package than the enclosing type? that can cause collisions.
 	//  for now the humans can sort those out after protoc errors on the duplicate records)
-	n := p.stype.Name()
+	n := t.Name()
 	if n != "" {
 		return n
 	}
@@ -764,17 +804,7 @@ func (p *Properties) stypeAsProtobuf() string {
 	// a reasonable name for this type. I didn't like the result of appending "_msg" or other
 	// 'uniquifier' to p.Name. So instead I've done the non-Go thing and made fields be lowercase,
 	// thus reserving uppercase names for types, and thus avoiding any collisions.
-	name := p.Name
-
-	lines := []string{p.sprop.asProtobuf(p.stype, name)}
-	lines = append(lines, name)
-	str := strings.Join(lines, "\n")
-	// indent str two spaces to the right. we have to do this as a search step rather than as part of Join()
-	// because the strings lines are already multi-line strings. (The other solutions are to indent as a
-	// reformatting step at the end, or to store Properties.asProtobuf as []string and never loose the LFs.
-	// The latter makes asProtobuf expensive for all the simple types. Reformatting needs to work on all fields.
-	// So the "nasty" approach here is, AFAICS, for the best.
-	return strings.Replace(str, "\n", "\n  ", -1)
+	return f
 }
 
 var (
