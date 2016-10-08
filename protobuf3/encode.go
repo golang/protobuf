@@ -392,6 +392,9 @@ func (o *Buffer) enc_marshaler(p *Properties, base structPointer) {
 		o.noteError(err)
 		return
 	}
+	if data == nil {
+		return
+	}
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeRawBytes(data)
 }
@@ -416,6 +419,9 @@ func (o *Buffer) enc_ptr_marshaler(p *Properties, base structPointer) {
 	data, err := m.MarshalProtobuf3()
 	if err != nil {
 		o.noteError(err)
+		return
+	}
+	if data == nil {
 		return
 	}
 	o.buf = append(o.buf, p.tagcode...)
@@ -713,6 +719,7 @@ func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base structPointer)
 				o.noteError(err)
 				return
 			}
+			// note in a slice we always encode the data, even if it is nil, in order to preserve indexing of the slice
 			o.buf = append(o.buf, p.tagcode...)
 			o.EncodeRawBytes(data)
 		}
@@ -749,6 +756,7 @@ func (o *Buffer) enc_array_ptr_struct_message(p *Properties, base structPointer)
 				o.noteError(err)
 				return
 			}
+			// note in an array we always encode the data, even if it is nil, in order to preserve indexing of the array
 			o.buf = append(o.buf, p.tagcode...)
 			o.EncodeRawBytes(data)
 		}
@@ -800,6 +808,7 @@ func (o *Buffer) enc_slice_marshaler(p *Properties, base structPointer) {
 			o.noteError(err)
 			return
 		}
+		// note in a slice we always encode the data, even if it is nil, in order to preserve indexing of the slice
 		o.buf = append(o.buf, p.tagcode...)
 		o.EncodeRawBytes(data)
 	}
@@ -821,6 +830,7 @@ func enc_struct_messages(o *Buffer, p *Properties, base structPointer, n int) {
 				o.noteError(err)
 				return
 			}
+			// note in a slice we always encode the data, even if it is nil, in order to preserve indexing of the slice
 			o.buf = append(o.buf, p.tagcode...)
 			o.EncodeRawBytes(data)
 		}
