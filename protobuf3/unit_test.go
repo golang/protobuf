@@ -1,5 +1,9 @@
 // Go support for Protocol Buffers - Google's data interchange format
 //
+// Copyright 2016 Mist Systems. All rights reserved.
+//
+// This code is derived from earlier code which was itself:
+//
 // Copyright 2014 The Go Authors.  All rights reserved.
 // https://github.com/golang/protobuf
 //
