@@ -509,7 +509,17 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 		p.asProtobuf = p.stypeAsProtobuf()
 
 	case reflect.Ptr:
-		switch t2 := t1.Elem(); t2.Kind() {
+		t2 := t1.Elem()
+		// can the target of the pointer marshal itself?
+		if isMarshaler(t1) {
+			p.stype = t2
+			p.isMarshaler = true
+			p.enc = (*Buffer).enc_ptr_marshaler
+			p.asProtobuf = p.stypeAsProtobuf()
+			break
+		}
+
+		switch t2.Kind() {
 		default:
 			fmt.Fprintf(os.Stderr, "protobuf3: no encoder function for %s -> %s\n", t1.Name(), t2.Name())
 			break
@@ -547,6 +557,7 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 				p.enc = (*Buffer).enc_ptr_struct_message
 			}
 			p.asProtobuf = p.stypeAsProtobuf()
+			// what about *Array types?
 		}
 
 	case reflect.Slice:
