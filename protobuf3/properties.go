@@ -69,7 +69,7 @@ var MakeTypeName func(t reflect.Type, f string) string = MakeUppercaseTypeName
 // AsProtobuf3er is the interface which returns the protobuf v3 type equivalent to what the MarshalProtobuf3() method
 // encodes. This is optional, but useful when using AsProtobufFull() against types implementing Marshaler.
 type AsProtobuf3er interface {
-	AsProtobuf3(typename string) string
+	AsProtobuf3() (name string, definition string)
 }
 
 // Constants that identify the encoding of a value on the wire.
@@ -287,8 +287,11 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 			// we can't define a custom type automatically. see if it can tell us, and otherwise remind the human to do it.
 			it := reflect.New(t).Interface()
 			if aper, ok := it.(AsProtobuf3er); ok {
-				body = append(body, "") // put a blank line between each message definition
-				body = append(body, aper.AsProtobuf3(MakeTypeName(t, "")))
+				_, definition := aper.AsProtobuf3()
+				if definition != "" {
+					body = append(body, "") // put a blank line between each message definition
+					body = append(body, definition)
+				} // else the type doesn't need any additional definition (its name was sufficient)
 			} else {
 				headers = append(headers, fmt.Sprintf("// TODO supply the definition of message %s", t.Name()))
 			}
@@ -667,6 +670,15 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 		}
 
 	case reflect.Array:
+		// can the array marshal itself?
+		if isMarshaler(reflect.PtrTo(t1)) {
+			p.isMarshaler = true
+			p.stype = t1
+			p.enc = (*Buffer).enc_marshaler
+			p.asProtobuf = p.stypeAsProtobuf()
+			break
+		}
+
 		p.length = t1.Len()
 		if p.length == 0 {
 			// save checking the array length at encode-time by doing it now
@@ -801,13 +813,25 @@ func (p *Properties) stypeAsProtobuf() string {
 // Since the field is visible to us it is public, and thus it is uppercase. And since the type is similarly visible
 // it is almost certainly uppercased too. So there isn't much to do except pick whichever is appropriate.
 func MakeUppercaseTypeName(t reflect.Type, f string) string {
-	// if the Go type is named, use the name of the go type
+	// if the type implements AsProtobuf3er and returns a type name, use that
+	if reflect.PtrTo(t).Implements(asprotobuffer3Type) {
+		it := reflect.NewAt(t, nil).Interface()
+		if aper, ok := it.(AsProtobuf3er); ok {
+			n, _ := aper.AsProtobuf3()
+			if n != "" {
+				return n
+			}
+		}
+	}
+
+	// if the Go type is named, a good start is to use the name of the go type
 	// (even if it is in a different package than the enclosing type? that can cause collisions.
 	//  for now the humans can sort those out after protoc errors on the duplicate records)
 	n := t.Name()
 	if n != "" {
 		return n
 	}
+
 	// the struct has no typename. It is an anonymous type in Go. The equivalent in Protobuf is
 	// a a nested type. It would be nice to use the name of the field as the name of the type,
 	// since the name of the field ought to be unique within the enclosing struct type. However
@@ -819,7 +843,8 @@ func MakeUppercaseTypeName(t reflect.Type, f string) string {
 }
 
 var (
-	marshalerType = reflect.TypeOf((*Marshaler)(nil)).Elem()
+	marshalerType      = reflect.TypeOf((*Marshaler)(nil)).Elem()
+	asprotobuffer3Type = reflect.TypeOf((*AsProtobuf3er)(nil)).Elem()
 )
 
 // isMarshaler reports whether type t implements Marshaler.
