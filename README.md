@@ -6,9 +6,11 @@ the encoder rewritten to:
 - Support arrays, not just slices
 - Support struct fields, not just pointers-to-struct 
 - Support custom marshalers better by encoding the key and only needed the value
-  from the custom marshaler.
+  from the custom marshaler. And support slices of marshalers, as well as slices
+  that can marshal themselves.
 - Support ignored (not marshaled) fields
 - Only support protobuf v3
+- Generate .proto files from the go struct definitions.
 
 and whatever else I may find useful along the way.
 
