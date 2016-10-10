@@ -44,6 +44,8 @@ var (
 	msgBlackhole   = new(tpb.Message)
 )
 
+// BenchmarkVarint32ArraySmall shows the performance on an array of small int32 fields (1 and
+// 2 bytes long).
 func BenchmarkVarint32ArraySmall(b *testing.B) {
 	for i := uint(1); i <= 10; i++ {
 		dist := genInt32Dist([7]int{0, 3, 1}, 1<<i)
@@ -67,6 +69,8 @@ func BenchmarkVarint32ArraySmall(b *testing.B) {
 	}
 }
 
+// BenchmarkVarint32ArrayLarge shows the performance on an array of large int32 fields (3 and
+// 4 bytes long, with a small number of 1, 2, 5 and 10 byte long versions).
 func BenchmarkVarint32ArrayLarge(b *testing.B) {
 	for i := uint(1); i <= 10; i++ {
 		dist := genInt32Dist([7]int{0, 1, 2, 4, 8, 1, 1}, 1<<i)
@@ -90,6 +94,8 @@ func BenchmarkVarint32ArrayLarge(b *testing.B) {
 	}
 }
 
+// BenchmarkVarint64ArraySmall shows the performance on an array of small int64 fields (1 and
+// 2 bytes long).
 func BenchmarkVarint64ArraySmall(b *testing.B) {
 	for i := uint(1); i <= 10; i++ {
 		dist := genUint64Dist([11]int{0, 3, 1}, 1<<i)
@@ -113,6 +119,8 @@ func BenchmarkVarint64ArraySmall(b *testing.B) {
 	}
 }
 
+// BenchmarkVarint64ArrayLarge shows the performance on an array of large int64 fields (6, 7,
+// and 8 bytes long with a small number of the other sizes).
 func BenchmarkVarint64ArrayLarge(b *testing.B) {
 	for i := uint(1); i <= 10; i++ {
 		dist := genUint64Dist([11]int{0, 1, 1, 2, 4, 8, 16, 32, 16, 1, 1}, 1<<i)
@@ -133,6 +141,38 @@ func BenchmarkVarint64ArrayLarge(b *testing.B) {
 				}
 			}
 		})
+	}
+}
+
+// BenchmarkVarint64ArrayMixed shows the performance of lots of small messages, each
+// containing a small number of large (3, 4, and 5 byte) repeated int64s.
+func BenchmarkVarint64ArrayMixed(b *testing.B) {
+	for i := uint(1); i <= 1<<5; i <<= 1 {
+		dist := genUint64Dist([11]int{0, 0, 0, 4, 6, 4, 0, 0, 0, 0, 0}, int(i))
+		// number of sub fields
+		for k := uint(1); k <= 1<<10; k <<= 2 {
+			msg := &tpb.Message{}
+			for m := uint(0); m < k; m++ {
+				msg.Children = append(msg.Children, &tpb.Message{
+					Key: dist,
+				})
+			}
+			raw, err := proto.Marshal(msg)
+			if err != nil {
+				b.Error("wrong encode", err)
+			}
+			b.Run(fmt.Sprintf("Fields%vLen%v", k, i), func(b *testing.B) {
+				scratchBuf := proto.NewBuffer(nil)
+				b.ResetTimer()
+				for k := 0; k < b.N; k++ {
+					scratchBuf.SetBuf(raw)
+					msgBlackhole.Reset()
+					if err := scratchBuf.Unmarshal(msgBlackhole); err != nil {
+						b.Error("wrong decode", err)
+					}
+				}
+			})
+		}
 	}
 }
 
