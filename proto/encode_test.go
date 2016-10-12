@@ -37,7 +37,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	tpb "github.com/golang/protobuf/proto/proto3_proto"
-	"google3/net/proto2/go/ptypes"
+	"github.com/golang/protobuf/ptypes"
 )
 
 var (
