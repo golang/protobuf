@@ -204,3 +204,48 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 	p.index = end
 	return
 }
+
+// SkipVarint skips over a varint-encoded integer from the Buffer.
+// Functionally it is identical to calling DecodeVarint and ignoring the
+// value returned. In practice it runs much faster.
+func (p *Buffer) SkipVarint() error {
+	i := p.index
+	l := len(p.buf)
+
+	for shift := uint(0); shift < 64; shift += 7 {
+		if i >= l {
+			return io.ErrUnexpectedEOF
+		}
+		b := p.buf[i]
+		i++
+		if b < 0x80 {
+			p.index = i
+			return nil
+		}
+	}
+
+	// The number is too large to represent in a 64-bit value.
+	return errOverflow
+}
+
+// SkipRawBytes skips over a count-delimited byte buffer from the Buffer.
+// Functionally it is identical to calling DecodeRawBytes(false) and ignoring
+// the value returned.
+func (p *Buffer) SkipRawBytes() error {
+	n, err := p.DecodeVarint()
+	if err != nil {
+		return err
+	}
+
+	nb := int(n)
+	if nb < 0 || uint64(nb) != n {
+		return fmt.Errorf("protobuf3: bad byte length %d", n)
+	}
+	end := p.index + nb
+	if end < p.index || end > len(p.buf) {
+		return io.ErrUnexpectedEOF
+	}
+
+	p.index = end
+	return nil
+}

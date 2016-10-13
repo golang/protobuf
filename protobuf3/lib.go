@@ -44,7 +44,9 @@ package protobuf3
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
+	"io"
 )
 
 // Message is implemented by generated protocol buffer messages.
@@ -86,6 +88,92 @@ func (p *Buffer) noteError(err error) {
 
 // Bytes returns the contents of the Buffer.
 func (p *Buffer) Bytes() []byte { return p.buf }
+
+// Rewind resets the read point to the start of the buffer.
+func (p *Buffer) Rewind() {
+	p.index = 0
+}
+
+// Find scans forward starting at 'offset', stopping and returning the next item which has id 'id'.
+// The entire item is returned, including the 'tag' header and any varint byte length in the case of WireBytes.
+// This way the item is itself a valid protobuf message.
+func (p *Buffer) Find(id uint) ([]byte, WireType, error) {
+	for p.index < len(p.buf) {
+		start := p.index
+		vi, err := p.DecodeVarint()
+		if err != nil {
+			fmt.Printf("DecodeVarint of id at %d failed: %v\n", start, err)
+			return nil, 0, err
+		}
+		wt := WireType(vi & 3)
+		if vi>>3 == uint64(id) {
+			switch wt {
+			case WireBytes:
+				var bytes []byte
+				bytes, err = p.DecodeRawBytes(false)
+				if err != nil {
+					fmt.Printf("DecodeRawBytes at %d failed: %v\n", start, err)
+				}
+				return bytes, WireBytes, err
+
+			case WireVarint:
+				err = p.SkipVarint()
+				return p.buf[start:p.index:p.index], WireVarint, err
+
+			case WireFixed32:
+				p.index += 4
+				if p.index > len(p.buf) {
+					err = io.ErrUnexpectedEOF
+					p.index = len(p.buf)
+				}
+				return p.buf[start:p.index:p.index], WireFixed32, err
+
+			case WireFixed64:
+				p.index += 8
+				if p.index > len(p.buf) {
+					err = io.ErrUnexpectedEOF
+					p.index = len(p.buf)
+				}
+				return p.buf[start:p.index:p.index], WireFixed64, err
+			}
+		} else {
+			// skip over the ID's value
+			switch wt {
+			case WireBytes:
+				err = p.SkipRawBytes()
+				if err != nil {
+					return nil, 0, err
+				}
+
+			case WireVarint:
+				err = p.SkipVarint()
+				if err != nil {
+					return nil, 0, err
+				}
+
+			case WireFixed32:
+				p.index += 4
+				if p.index > len(p.buf) {
+					p.index = len(p.buf)
+					return nil, 0, io.ErrUnexpectedEOF
+				}
+
+			case WireFixed64:
+				p.index += 8
+				if p.index > len(p.buf) {
+					p.index = len(p.buf)
+					return nil, 0, io.ErrUnexpectedEOF
+				}
+			}
+		}
+	}
+
+	// nothing found
+	return nil, 0, ErrNotFound
+}
+
+// error returned by (*Buffer).Find when the id is not present in the buffer
+var ErrNotFound = errors.New("ID not found in protobuf buffer")
 
 // DebugPrint dumps the encoded data in b in a debugging format with a header
 // including the string s. Used in testing but made available for general debugging.
