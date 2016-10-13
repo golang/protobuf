@@ -97,12 +97,12 @@ func (p *Buffer) Rewind() {
 // Find scans forward starting at 'offset', stopping and returning the next item which has id 'id'.
 // The entire item is returned, including the 'tag' header and any varint byte length in the case of WireBytes.
 // This way the item is itself a valid protobuf message.
-func (p *Buffer) Find(id uint) ([]byte, WireType, error) {
+// If sorted is true then this function assumes the message's fields are sorted by id, and encountering any id > 'id' short circuits the search
+func (p *Buffer) Find(id uint, sorted bool) ([]byte, WireType, error) {
 	for p.index < len(p.buf) {
 		start := p.index
 		vi, err := p.DecodeVarint()
 		if err != nil {
-			fmt.Printf("DecodeVarint of id at %d failed: %v\n", start, err)
 			return nil, 0, err
 		}
 		wt := WireType(vi) & 7
@@ -110,9 +110,6 @@ func (p *Buffer) Find(id uint) ([]byte, WireType, error) {
 			switch wt {
 			case WireBytes:
 				err = p.SkipRawBytes()
-				if err != nil {
-					fmt.Printf("DecodeRawBytes at %d failed: %v\n", start, err)
-				}
 				return p.buf[start:p.index:p.index], WireBytes, err
 
 			case WireVarint:
@@ -135,6 +132,10 @@ func (p *Buffer) Find(id uint) ([]byte, WireType, error) {
 				}
 				return p.buf[start:p.index:p.index], WireFixed64, err
 			}
+		} else if sorted && vi>>3 > uint64(id) {
+			// we've advanced past the requested id, and we're assured the message is sorted by id
+			// so we can stop searching now
+			break
 		} else {
 			// skip over the ID's value
 			switch wt {
