@@ -167,7 +167,7 @@ func (p *Buffer) DecodeZigzag32() (x uint64, err error) {
 	if err != nil {
 		return
 	}
-	x = uint64((uint32(x) >> 1) ^ uint32((int32(x&1)<<31)>>31))
+	x = uint64((uint32(x) >> 1) ^ uint32(((int32(x)&1)<<31)>>31))
 	return
 }
 
@@ -184,8 +184,8 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 	}
 
 	nb := int(n)
-	if nb < 0 {
-		return nil, fmt.Errorf("protobuf3: bad byte length %d", nb)
+	if nb < 0 || uint64(nb) != n {
+		return nil, fmt.Errorf("protobuf3: bad byte length %d", n)
 	}
 	end := p.index + nb
 	if end < p.index || end > len(p.buf) {
@@ -195,12 +195,12 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 	if !alloc {
 		// todo: check if can get more uses of alloc=false
 		buf = p.buf[p.index:end]
-		p.index += nb
+		p.index = end
 		return
 	}
 
 	buf = make([]byte, nb)
 	copy(buf, p.buf[p.index:])
-	p.index += nb
+	p.index = end
 	return
 }
