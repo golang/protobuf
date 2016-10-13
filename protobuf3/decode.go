@@ -194,7 +194,7 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 
 	if !alloc {
 		// todo: check if can get more uses of alloc=false
-		buf = p.buf[p.index:end]
+		buf = p.buf[p.index:end:end]
 		p.index = end
 		return
 	}

@@ -98,23 +98,25 @@ func (p *Buffer) Rewind() {
 // The entire item is returned, including the 'tag' header and any varint byte length in the case of WireBytes.
 // This way the item is itself a valid protobuf message.
 // If sorted is true then this function assumes the message's fields are sorted by id, and encountering any id > 'id' short circuits the search
-func (p *Buffer) Find(id uint, sorted bool) ([]byte, WireType, error) {
+func (p *Buffer) Find(id uint, sorted bool) ([]byte, []byte, WireType, error) {
 	for p.index < len(p.buf) {
 		start := p.index
 		vi, err := p.DecodeVarint()
 		if err != nil {
-			return nil, 0, err
+			return nil, nil, 0, err
 		}
 		wt := WireType(vi) & 7
 		if vi>>3 == uint64(id) {
+			// it's a match. size the value and return
+			var val []byte
+			val_start := p.index // correct except in the case of WireBytes, where the value starts after the varint byte length
+
 			switch wt {
 			case WireBytes:
-				err = p.SkipRawBytes()
-				return p.buf[start:p.index:p.index], WireBytes, err
+				val, err = p.DecodeRawBytes(false)
 
 			case WireVarint:
 				err = p.SkipVarint()
-				return p.buf[start:p.index:p.index], WireVarint, err
 
 			case WireFixed32:
 				p.index += 4
@@ -122,7 +124,6 @@ func (p *Buffer) Find(id uint, sorted bool) ([]byte, WireType, error) {
 					err = io.ErrUnexpectedEOF
 					p.index = len(p.buf)
 				}
-				return p.buf[start:p.index:p.index], WireFixed32, err
 
 			case WireFixed64:
 				p.index += 8
@@ -130,8 +131,14 @@ func (p *Buffer) Find(id uint, sorted bool) ([]byte, WireType, error) {
 					err = io.ErrUnexpectedEOF
 					p.index = len(p.buf)
 				}
-				return p.buf[start:p.index:p.index], WireFixed64, err
 			}
+
+			if val == nil {
+				val = p.buf[val_start:p.index:p.index]
+			} // else val is already set up
+
+			return p.buf[start:p.index:p.index], val, wt, err
+
 		} else if sorted && vi>>3 > uint64(id) {
 			// we've advanced past the requested id, and we're assured the message is sorted by id
 			// so we can stop searching now
@@ -142,34 +149,34 @@ func (p *Buffer) Find(id uint, sorted bool) ([]byte, WireType, error) {
 			case WireBytes:
 				err = p.SkipRawBytes()
 				if err != nil {
-					return nil, 0, err
+					return nil, nil, 0, err
 				}
 
 			case WireVarint:
 				err = p.SkipVarint()
 				if err != nil {
-					return nil, 0, err
+					return nil, nil, 0, err
 				}
 
 			case WireFixed32:
 				p.index += 4
 				if p.index > len(p.buf) {
 					p.index = len(p.buf)
-					return nil, 0, io.ErrUnexpectedEOF
+					return nil, nil, 0, io.ErrUnexpectedEOF
 				}
 
 			case WireFixed64:
 				p.index += 8
 				if p.index > len(p.buf) {
 					p.index = len(p.buf)
-					return nil, 0, io.ErrUnexpectedEOF
+					return nil, nil, 0, io.ErrUnexpectedEOF
 				}
 			}
 		}
 	}
 
 	// nothing found
-	return nil, 0, ErrNotFound
+	return nil, nil, 0, ErrNotFound
 }
 
 // error returned by (*Buffer).Find when the id is not present in the buffer
