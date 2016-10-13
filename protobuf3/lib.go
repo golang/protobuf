@@ -105,16 +105,15 @@ func (p *Buffer) Find(id uint) ([]byte, WireType, error) {
 			fmt.Printf("DecodeVarint of id at %d failed: %v\n", start, err)
 			return nil, 0, err
 		}
-		wt := WireType(vi & 3)
+		wt := WireType(vi) & 7
 		if vi>>3 == uint64(id) {
 			switch wt {
 			case WireBytes:
-				var bytes []byte
-				bytes, err = p.DecodeRawBytes(false)
+				err = p.SkipRawBytes()
 				if err != nil {
 					fmt.Printf("DecodeRawBytes at %d failed: %v\n", start, err)
 				}
-				return bytes, WireBytes, err
+				return p.buf[start:p.index:p.index], WireBytes, err
 
 			case WireVarint:
 				err = p.SkipVarint()
