@@ -967,7 +967,7 @@ func (o *Buffer) enc_nothing(p *Properties, base structPointer) {
 	return
 }
 
-// custom encoder for time.Time, encpding it into the protobuf3 standard Timestamp
+// custom encoder for time.Time, encoding it into the protobuf3 standard Timestamp
 func (o *Buffer) enc_time_Time(p *Properties, base structPointer) {
 	t := (*time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
 
@@ -981,4 +981,71 @@ func (o *Buffer) enc_time_Time(p *Properties, base structPointer) {
 	o.EncodeVarint(uint64(secs))
 	o.buf = append(o.buf, 2<<3|byte(WireVarint))
 	o.EncodeVarint(uint64(nanos))
+}
+
+// custom encoder for time.Duration, encoding it into the protobuf3 standard Duration
+func (o *Buffer) enc_time_Duration(p *Properties, base structPointer) {
+	d := *(*time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	if d != 0 {
+		o.enc_Duration(p, d)
+	} // else we don't have to encode the zero value
+}
+
+// helper function to encode a time.Duration value
+func (o *Buffer) enc_Duration(p *Properties, d time.Duration) {
+	// protobuf Duration uses its own encoding, different from time.Duration
+	// we have to convert. protobuf Duration uses signed seconds and nanoseconds,
+	// where seconds and nanoseconds must have the same sign or be == 0.
+	//   message Duration
+	//     int64 seconds = 1;
+	//     int32 nanos = 2;
+	//   }
+	var nanos int64 = d.Nanoseconds()
+	secs := nanos / 1000000000 // note secs ends up with the same sign as nanos, or is 0
+	nanos -= secs * 1000000000 // note this preserves the sign of nanos (or sets it to 0)
+
+	// furthermore go time.Duration is not a struct, but protobuf Duration is a message,
+	// so we have to prepend the tag and length (we expect time.Duration to be sent as bytes,
+	// as a protobuf message always is)
+	o.buf = append(o.buf, p.tagcode...)
+	// the byte length cannot take more than 1 byte to encode as a varint because
+	// the greatest length of a protobuf Duration is two negative varint encoded uint64s,
+	// and their ID bytes, or 22 bytes.
+	o.buf = append(o.buf, 0) // placeholder for the length
+	body_start := len(o.buf)
+	if secs != 0 {
+		o.buf = append(o.buf, 1<<3|byte(WireVarint))
+		o.EncodeVarint(uint64(secs)) // NOTE WELL the duration.proto uses protobuf type 'int64' for seconds, not 'sint64'. So Varint is correct
+	}
+	if nanos != 0 {
+		o.buf = append(o.buf, 2<<3|byte(WireVarint))
+		o.EncodeVarint(uint64(nanos))
+	}
+	// go back and fill in the byte length
+	o.buf[body_start-1] = uint8(len(o.buf) - body_start)
+}
+
+// custom encoder for *time.Duration, ... protobuf Duration message
+func (o *Buffer) enc_ptr_time_Duration(p *Properties, base structPointer) {
+	d := *(**time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	if d != nil && *d != 0 {
+		o.enc_Duration(p, *d)
+	} // else we don't have to encode a zero value
+}
+
+// custom encoder for []time.Duration, ... repeated protobuf Duration messages
+func (o *Buffer) enc_slice_time_Duration(p *Properties, base structPointer) {
+	s := *(*[]time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	for _, d := range s {
+		o.enc_Duration(p, d)
+	}
+}
+
+// custom encoder for [N]time.Duration, ... repeated protobuf Duration messages
+func (o *Buffer) enc_array_time_Duration(p *Properties, base structPointer) {
+	n := p.length
+	s := ((*[maxLen / 8]time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+	for _, d := range s {
+		o.enc_Duration(p, d)
+	}
 }

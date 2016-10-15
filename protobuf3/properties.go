@@ -214,8 +214,6 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 		//headers = append(headers, fmt.Sprintf(`option go_package = "%s";`, pkgpath))
 	}
 
-	time_type := reflect.TypeOf(time.Time{})
-
 	// place all the arguments in the todo table to start things off
 	todo[t] = struct{}{}
 	for _, t := range more {
@@ -245,9 +243,9 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 							// we can't recurse further into a custom type
 							discovered[tt] = struct{}{}
 						case tt.Kind() == reflect.Struct:
-							switch {
-							case tt == time_type:
-								// the timestamp type gets defined by an import of timestamp.proto
+							switch tt {
+							case time_Time_type, time_Duration_type:
+								// the timestamp and duration types get defined by an import of timestamp.proto
 								discovered[tt] = struct{}{}
 							default:
 								// put this new type in the todo table if it isn't already there
@@ -279,9 +277,13 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 		// generate type t's protobuf definition
 
 		switch {
-		case t == time_type:
+		case t == time_Time_type:
 			// the timestamp type gets defined by an import
 			headers = append(headers, `import "google/protobuf/timestamp.proto";`)
+
+		case t == time_Duration_type:
+			// the duration type gets defined by an import
+			headers = append(headers, `import "google/protobuf/duration.proto";`)
 
 		case isMarshaler(reflect.PtrTo(t)):
 			// we can't define a custom type automatically. see if it can tell us, and otherwise remind the human to do it.
@@ -485,8 +487,16 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 		p.enc = (*Buffer).enc_uint32
 		p.asProtobuf = uint32_encoder_txt
 	case reflect.Int64:
-		p.enc = (*Buffer).enc_int64
-		p.asProtobuf = int64_encoder_txt
+		// this might be a time.Duration, or it might be an ordinary int64
+		// if the caller wants a time.Duration to be encoded as a protobuf Duration then the
+		// wiretype must be WireBytes. Otherwise they'll get the int64 encoding they've selected.
+		if p.WireType == WireBytes && t1 == time_Duration_type {
+			p.enc = (*Buffer).enc_time_Duration
+			p.asProtobuf = "google.protobuf.Duration"
+		} else {
+			p.enc = (*Buffer).enc_int64
+			p.asProtobuf = int64_encoder_txt
+		}
 	case reflect.Uint64:
 		p.enc = (*Buffer).enc_int64
 		p.asProtobuf = uint64_encoder_txt
@@ -536,8 +546,13 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 			p.enc = (*Buffer).enc_ptr_uint32
 			p.asProtobuf = uint32_encoder_txt
 		case reflect.Int64:
-			p.enc = (*Buffer).enc_ptr_int64
-			p.asProtobuf = int64_encoder_txt
+			if p.WireType == WireBytes && t2 == time_Duration_type {
+				p.enc = (*Buffer).enc_ptr_time_Duration
+				p.asProtobuf = "google.protobuf.Duration"
+			} else {
+				p.enc = (*Buffer).enc_ptr_int64
+				p.asProtobuf = int64_encoder_txt
+			}
 		case reflect.Uint64:
 			p.enc = (*Buffer).enc_ptr_int64
 			p.asProtobuf = uint64_encoder_txt
@@ -623,7 +638,16 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 			p.enc = (*Buffer).enc_slice_packed_uint32
 			wire = WireBytes // packed=true...
 			p.asProtobuf = "repeated " + uint32_encoder_txt
-		case reflect.Int64, reflect.Uint64:
+		case reflect.Int64:
+			if p.WireType == WireBytes && t2 == time_Duration_type {
+				p.enc = (*Buffer).enc_slice_time_Duration
+				p.asProtobuf = "repeated google.protobuf.Duration"
+			} else {
+				p.enc = (*Buffer).enc_slice_packed_int64
+				wire = WireBytes // packed=true...
+				p.asProtobuf = "repeated " + int64_encoder_txt
+			}
+		case reflect.Uint64:
 			p.enc = (*Buffer).enc_slice_packed_int64
 			wire = WireBytes // packed=true...
 			p.asProtobuf = "repeated " + int64_encoder_txt
@@ -702,9 +726,14 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + uint32_encoder_txt
 			case reflect.Int64:
-				p.enc = (*Buffer).enc_array_packed_int64
-				wire = WireBytes // packed=true...
-				p.asProtobuf = "repeated " + int64_encoder_txt
+				if p.WireType == WireBytes && t2 == time_Duration_type {
+					p.enc = (*Buffer).enc_array_time_Duration
+					p.asProtobuf = "repeated google.protobuf.Duration"
+				} else {
+					p.enc = (*Buffer).enc_array_packed_int64
+					wire = WireBytes // packed=true...
+					p.asProtobuf = "repeated " + int64_encoder_txt
+				}
 			case reflect.Uint64:
 				p.enc = (*Buffer).enc_array_packed_int64
 				wire = WireBytes // packed=true...
@@ -778,10 +807,11 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 // using p.Name, p.stype and p.sprop, figure out the right name for the type of field p.
 // if the name of the type is known, use that. Otherwise build a nested type and use it.
 func (p *Properties) stypeAsProtobuf() string {
-	// special case for time.Time (any other future special cases)
+	// special case for time.Time and time.Duration (any other future special cases)
 	switch p.sprop {
 	case time_Time_sprop:
 		return "google.protobuf.Timestamp"
+		// note: there is no time.Duration case here because only struct types set .stype, and time.Duration is an int64
 	}
 
 	name := MakeTypeName(p.stype, p.Name)
@@ -890,6 +920,7 @@ var (
 
 // synthesize a StructProperties for time.Time which will encode it
 // to the same as the standard protobuf3 Timestamp type.
+var time_Time_type = reflect.TypeOf(time.Time{})
 var time_Time_sprop = &StructProperties{
 	Prop: []Properties{
 		// we need just one made-up field with a .enc() method which we've hooked into
@@ -900,8 +931,12 @@ var time_Time_sprop = &StructProperties{
 	order: []int{0},
 }
 
+// similarly for time.Duration ... standard protobuf3 Duration type. Note that because
+// go time.Duration isn't a struct (it's a int64) there isn't a time_Duration_sprop at all.
+var time_Duration_type = reflect.TypeOf(time.Duration(0))
+
 func init() {
-	propertiesMap[reflect.TypeOf(time.Time{})] = time_Time_sprop
+	propertiesMap[time_Time_type] = time_Time_sprop
 }
 
 // GetProperties returns the list of properties for the type represented by t.

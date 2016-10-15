@@ -44,6 +44,7 @@ import (
 	"github.com/mistsys/protobuf3/proto"
 	pb "github.com/mistsys/protobuf3/proto/proto3_proto"
 	"github.com/mistsys/protobuf3/protobuf3"
+	"github.com/mistsys/protobuf3/ptypes/duration"
 	"github.com/mistsys/protobuf3/ptypes/timestamp"
 )
 
@@ -592,13 +593,24 @@ func TestIntMsg(t *testing.T) {
 }
 
 type TimeMsg struct {
-	tm time.Time `protobuf:"bytes,1"`
+	tm      time.Time        `protobuf:"bytes,1"`
+	dur     time.Duration    `protobuf:"bytes,26"`
+	dur2    *time.Duration   `protobuf:"bytes,46"`
+	dur3    []time.Duration  `protobuf:"bytes,64"`
+	dur4    [1]time.Duration `protobuf:"bytes,93"`
+	zero_d  time.Duration    `protobuf:"bytes,128"` // leave at the zero-value; it should encode to nothing
+	zero_d2 *time.Duration   `protobuf:"bytes,129"` // same
+	zero_d3 []time.Duration  `protobuf:"bytes,130"` // same
 }
 
 func (*TimeMsg) ProtoMessage() {}
 
 type OldTimeMsg struct {
-	tm *timestamp.Timestamp `protobuf:"bytes,1"`
+	tm   *timestamp.Timestamp `protobuf:"bytes,1"`
+	dur  *duration.Duration   `protobuf:"bytes,26"`
+	dur2 *duration.Duration   `protobuf:"bytes,46"`
+	dur3 []*duration.Duration `protobuf:"bytes,64"`
+	dur4 []*duration.Duration `protobuf:"bytes,93"`
 }
 
 func (*OldTimeMsg) ProtoMessage()    {}
@@ -606,8 +618,13 @@ func (m *OldTimeMsg) String() string { return fmt.Sprintf("%+v", *m) }
 func (m *OldTimeMsg) Reset()         { *m = OldTimeMsg{} }
 
 func TestTimeMsg(t *testing.T) {
+	d2 := -(time.Second + time.Millisecond)
 	m := TimeMsg{
-		tm: time.Unix(112233, 445566),
+		tm:   time.Unix(112233, 445566),
+		dur:  time.Second*10 + time.Microsecond,
+		dur2: &d2,
+		dur3: []time.Duration{15 * time.Second, 365 * 24 * time.Hour},
+		dur4: [1]time.Duration{time.Nanosecond},
 	}
 
 	o := OldTimeMsg{
@@ -615,6 +632,19 @@ func TestTimeMsg(t *testing.T) {
 			Seconds: 112233,
 			Nanos:   445566,
 		},
+		dur: &duration.Duration{
+			Seconds: 10,
+			Nanos:   1000,
+		},
+		dur2: &duration.Duration{
+			Seconds: -1,
+			Nanos:   -1000000,
+		},
+		dur3: []*duration.Duration{
+			&duration.Duration{Seconds: 15},
+			&duration.Duration{Seconds: 365 * 24 * 60 * 60},
+		},
+		dur4: []*duration.Duration{&duration.Duration{Nanos: 1}},
 	}
 
 	check(&o, &o, t)
