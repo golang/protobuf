@@ -54,7 +54,7 @@ import (
 
 const debug bool = false
 
-// XXXHack enables a backwards compatability hack to match the canonical golang.go/protobuf error behavior for fields whose names start with XXX_
+// XXXHack enables a backwards compatibility hack to match the canonical golang.go/protobuf error behavior for fields whose names start with XXX_
 // This isn't needed unless you are dealing with old protobuf v2 generated types like some unit tests do
 var XXXHack = false
 
@@ -858,7 +858,7 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 
 	// fields without a protobuf tag are an error
 	if tag == "" {
-		// backwards compatability HACK. canonical golang.org/protobuf ignores errors on fields with names that start with XXX_
+		// backwards compatibility HACK. canonical golang.org/protobuf ignores errors on fields with names that start with XXX_
 		// we must do the same to pass their unit tests
 		if XXXHack && strings.HasPrefix(name, "XXX_") {
 			return true, nil
