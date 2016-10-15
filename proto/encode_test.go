@@ -1,6 +1,6 @@
 // Go support for Protocol Buffers - Google's data interchange format
 //
-// Copyright 2014 The Go Authors.  All rights reserved.
+// Copyright 2010 The Go Authors.  All rights reserved.
 // https://github.com/golang/protobuf
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,50 +29,55 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-syntax = "proto3";
+package proto_test
 
-import "google/protobuf/any.proto";
-import "testdata/test.proto";
+import (
+	"strconv"
+	"testing"
 
-package proto3_proto;
+	"github.com/golang/protobuf/proto"
+	tpb "github.com/golang/protobuf/proto/proto3_proto"
+	"github.com/golang/protobuf/ptypes"
+)
 
-message Message {
-  enum Humour {
-    UNKNOWN = 0;
-    PUNS = 1;
-    SLAPSTICK = 2;
-    BILL_BAILEY = 3;
-  }
+var (
+	blackhole []byte
+)
 
-  string name = 1;
-  Humour hilarity = 2;
-  uint32 height_in_cm = 3;
-  bytes data = 4;
-  int64 result_count = 7;
-  bool true_scotsman = 8;
-  float score = 9;
-
-  repeated uint64 key = 5;
-  repeated int32 short_key = 19;
-  Nested nested = 6;
-  repeated Humour r_funny = 16;
-
-  map<string, Nested> terrain = 10;
-  testdata.SubDefaults proto2_field = 11;
-  map<string, testdata.SubDefaults> proto2_value = 13;
-
-  google.protobuf.Any anything = 14;
-  repeated google.protobuf.Any many_things = 15;
-
-  Message submessage = 17;
-  repeated Message children = 18;
+// BenchmarkAny creates increasingly large arbitrary Any messages.  The type is always the
+// same.
+func BenchmarkAny(b *testing.B) {
+	data := make([]byte, 1<<20)
+	quantum := 1 << 10
+	for i := uint(0); i <= 10; i++ {
+		b.Run(strconv.Itoa(quantum<<i), func(b *testing.B) {
+			for k := 0; k < b.N; k++ {
+				inner := &tpb.Message{
+					Data: data[:quantum<<i],
+				}
+				outer, err := ptypes.MarshalAny(inner)
+				if err != nil {
+					b.Error("wrong encode", err)
+				}
+				raw, err := proto.Marshal(&tpb.Message{
+					Anything: outer,
+				})
+				if err != nil {
+					b.Error("wrong encode", err)
+				}
+				blackhole = raw
+			}
+		})
+	}
 }
 
-message Nested {
-  string bunny = 1;
-  bool cute = 2;
-}
-
-message MessageWithMap {
-  map<bool, bytes> byte_mapping = 1;
+// BenchmarkEmpy measures the overhead of doing the minimal possible encode.
+func BenchmarkEmpy(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		raw, err := proto.Marshal(&tpb.Message{})
+		if err != nil {
+			b.Error("wrong encode", err)
+		}
+		blackhole = raw
+	}
 }

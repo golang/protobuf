@@ -108,7 +108,7 @@ var (
 		RSint32: []int32{-1, -2, -3},
 		RSint64: []int64{-6789012345, -3456789012},
 		RFloat:  []float32{3.14, 6.28},
-		RDouble: []float64{299792458, 6.62606957e-34},
+		RDouble: []float64{299792458 * 1e20, 6.62606957e-34},
 		RString: []string{"happy", "days"},
 		RBytes:  [][]byte{[]byte("skittles"), []byte("m&m's")},
 	}
@@ -122,7 +122,7 @@ var (
 		`"rSint32":[-1,-2,-3],` +
 		`"rSint64":["-6789012345","-3456789012"],` +
 		`"rFloat":[3.14,6.28],` +
-		`"rDouble":[2.99792458e+08,6.62606957e-34],` +
+		`"rDouble":[2.99792458e+28,6.62606957e-34],` +
 		`"rString":["happy","days"],` +
 		`"rBytes":["c2tpdHRsZXM=","bSZtJ3M="]` +
 		`}`
@@ -165,7 +165,7 @@ var (
     6.28
   ],
   "rDouble": [
-    2.99792458e+08,
+    2.99792458e+28,
     6.62606957e-34
   ],
   "rString": [
