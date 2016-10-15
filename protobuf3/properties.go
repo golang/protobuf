@@ -143,7 +143,7 @@ func (p *Properties) protobufFieldName(struct_type reflect.Type) string {
 
 // MakeLowercaseFieldName returns a reasonable lowercase field name
 func MakeLowercaseFieldName(f string, t reflect.Type) string {
-	// To make people who use other langauges happy it would be nice if our field names were like most and were lowercase.
+	// To make people who use other languages happy it would be nice if our field names were like most and were lowercase.
 	// (In addition, since we use the name of fields with anonymous types as the name of the anonmymous types, we need to
 	// alter those fields (or the type's name) so there isn't a collision.)
 	// Converting "XxxYYzz" to "xxx_yyy_zz" seems to be reasonable for most fields names.
@@ -814,7 +814,19 @@ func (p *Properties) stypeAsProtobuf() string {
 		// note: there is no time.Duration case here because only struct types set .stype, and time.Duration is an int64
 	}
 
-	name := MakeTypeName(p.stype, p.Name)
+	var name string
+
+	// if the stype implements AsProtobuf3er and returns a type name, use that
+	if reflect.PtrTo(p.stype).Implements(asprotobuffer3Type) {
+		it := reflect.NewAt(p.stype, nil).Interface()
+		if aper, ok := it.(AsProtobuf3er); ok {
+			name, _ = aper.AsProtobuf3() // note AsProtobuf3() might return name "" anyway
+		}
+	}
+
+	if name == "" {
+		name = MakeTypeName(p.stype, p.Name)
+	}
 
 	if p.stype.Name() == "" {
 		// p.stype is an anonymous type. define it inline with the enclosing message
@@ -843,17 +855,6 @@ func (p *Properties) stypeAsProtobuf() string {
 // Since the field is visible to us it is public, and thus it is uppercase. And since the type is similarly visible
 // it is almost certainly uppercased too. So there isn't much to do except pick whichever is appropriate.
 func MakeUppercaseTypeName(t reflect.Type, f string) string {
-	// if the type implements AsProtobuf3er and returns a type name, use that
-	if reflect.PtrTo(t).Implements(asprotobuffer3Type) {
-		it := reflect.NewAt(t, nil).Interface()
-		if aper, ok := it.(AsProtobuf3er); ok {
-			n, _ := aper.AsProtobuf3()
-			if n != "" {
-				return n
-			}
-		}
-	}
-
 	// if the Go type is named, a good start is to use the name of the go type
 	// (even if it is in a different package than the enclosing type? that can cause collisions.
 	//  for now the humans can sort those out after protoc errors on the duplicate records)
