@@ -15,6 +15,7 @@ It has these top-level messages:
 	SimpleNull3
 	Mappy
 	Simple
+	Specials
 	Repeats
 	Widget
 	Maps

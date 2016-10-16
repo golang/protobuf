@@ -44,6 +44,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"reflect"
 	"sort"
 	"strconv"
@@ -402,7 +403,6 @@ func (m *Marshaler) marshalField(out *errWriter, prop *proto.Properties, v refle
 
 // marshalValue writes the value to the Writer.
 func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v reflect.Value, indent string) error {
-
 	var err error
 	v = reflect.Indirect(v)
 
@@ -529,6 +529,24 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 		}
 		out.write(`}`)
 		return out.err
+	}
+
+	// Handle special cases for float, double.
+	if v.Kind() == reflect.Float32 || v.Kind() == reflect.Float64 {
+		f := v.Float()
+		var sval string
+		switch {
+		case math.IsInf(f, 1):
+			sval = `"Infinity"`
+		case math.IsInf(f, -1):
+			sval = `"-Infinity"`
+		case math.IsNaN(f):
+			sval = `"NaN"`
+		}
+		if sval != "" {
+			out.write(sval)
+			return out.err
+		}
 	}
 
 	// Default handling defers to the encoding/json library.

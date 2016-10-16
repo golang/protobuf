@@ -54,6 +54,13 @@ message Simple {
   optional bytes o_bytes = 11;
 }
 
+// Test message for holding special primitives.
+message Specials {
+    optional float o_nan = 1;
+    optional float o_pinf = 2;
+    optional float o_ninf = 3;
+}
+
 // Test message for holding repeated primitives.
 message Repeats {
   repeated bool r_bool = 1;

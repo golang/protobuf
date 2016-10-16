@@ -35,6 +35,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"math"
 	"reflect"
 	"strings"
 	"testing"
@@ -307,6 +308,17 @@ var (
     "value": "1.212s"
   }
 }`
+
+	specials = &pb.Specials{
+		ONan:  proto.Float32(float32(math.NaN())),
+		OPinf: proto.Float32(float32(math.Inf(1))),
+		ONinf: proto.Float32(float32(math.Inf(-1))),
+	}
+	specialsJSON = `{` +
+		`"oNan":"NaN",` +
+		`"oPinf":"Infinity",` +
+		`"oNinf":"-Infinity"` +
+		`}`
 )
 
 func init() {
@@ -326,6 +338,7 @@ var marshalingTests = []struct {
 }{
 	{"simple flat object", marshaler, simpleObject, simpleObjectJSON},
 	{"simple pretty object", marshalerAllOptions, simpleObject, simpleObjectPrettyJSON},
+	{"special fields object", marshaler, specials, specialsJSON},
 	{"repeated fields flat object", marshaler, repeatsObject, repeatsObjectJSON},
 	{"repeated fields pretty object", marshalerAllOptions, repeatsObject, repeatsObjectPrettyJSON},
 	{"nested message/enum flat object", marshaler, complexObject, complexObjectJSON},
