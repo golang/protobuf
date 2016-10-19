@@ -261,6 +261,26 @@ func TestFixedMsg(t *testing.T) {
 	}
 
 	check(&m, &m, t)
+
+	m = FixedMsg{
+		i32: -1,
+		u32: 2,
+		i64: -3,
+		u64: 4,
+		f32: -5.5,
+		f64: 6.6,
+
+		/*
+			pi32: &i32,
+			pu32: &u32,
+			pi64: &i64,
+			pu64: &u64,
+			pf32: &f32,
+			pf64: &f64,
+		*/
+	}
+	var mb, mc FixedMsg
+	uncheck(&m, &mb, &mc, t)
 }
 
 func TestVarMsg(t *testing.T) {
@@ -410,6 +430,31 @@ func check(mb protobuf3.Message, mc proto.Message, t *testing.T) {
 	if !bytes.Equal(b, c) {
 		t.Errorf("Marshal(%T) different", mb)
 	}
+}
+
+// check that protobuf3.Unmarshal(mb) works like proto.Unmarshal(mc)
+func uncheck(mi protobuf3.Message, mb protobuf3.Message, mc proto.Message, t *testing.T) {
+	pb, err := protobuf3.Marshal(mi)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	t.Logf("pb = % x", pb)
+
+	err = protobuf3.Unmarshal(pb, mb)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Logf("mb = %v", mb)
+
+	err = proto.Unmarshal(pb, mc)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Logf("mc = %v", mc)
 }
 
 type NestedPtrStructMsg struct {

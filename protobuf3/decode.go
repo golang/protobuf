@@ -43,6 +43,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
+	"reflect"
+	"sort"
 	"time"
 	"unsafe"
 )
@@ -342,6 +345,16 @@ func (p *Buffer) SkipVarint() error {
 	return errOverflow
 }
 
+// SkipFixed skips over n bytes. Useful for skipping over Fixed32 and Fixed64 with proper arguments
+func (p *Buffer) SkipFixed(n int) error {
+	p.index += n
+	if p.index > len(p.buf) {
+		p.index = len(p.buf)
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+
 // SkipRawBytes skips over a count-delimited byte buffer from the Buffer.
 // Functionally it is identical to calling DecodeRawBytes(false) and ignoring
 // the value returned.
@@ -362,6 +375,124 @@ func (p *Buffer) SkipRawBytes() error {
 
 	p.index = end
 	return nil
+}
+
+// Unmarshaler is the interface representing objects that can
+// unmarshal themselves.  The method should reset the receiver before
+// decoding starts.  The argument points to data that may be
+// overwritten, so implementations should not keep references to the
+// buffer.
+type Unmarshaler interface {
+	UnmarshalProtobuf3([]byte) error
+}
+
+// Unmarshal parses the protocol buffer representation in buf and
+// writes the decoded result to pb.  If the struct underlying pb does not match
+// the data in buf, the results can be unpredictable.
+//
+// Unmarshal merges into existing data in pb. If that's not what you wanted then
+// you ought to zero pb before calling Unmarshal. NOTE WELL this differs from the
+// behavior of the golang/proto.Unmarshal(), but matches the standard go encoding/json.Unmarshal()
+// Since we're used to json, and since having the caller do the zeroing is more efficient
+// (both because they know the type (making it more efficient for the CPU), and it avoids forcing
+// everyone to define a Reset() method for the Message interface (making it more efficient for
+// the developer, me!)), our Unmarshal() matches the behavior of encoding/json.Unmarshal()
+func Unmarshal(buf []byte, pb Message) error {
+	typ := reflect.TypeOf(pb)
+	// pb must be a pointer type, since it must be addressable so we can fill it in
+	if typ.Kind() != reflect.Ptr {
+		return ErrNotAddressable
+	}
+	return NewBuffer(buf).Unmarshal(pb)
+}
+
+// Unmarshal parses the protocol buffer representation in the
+// Buffer and places the decoded result in pb.  If the struct
+// underlying pb does not match the data in the buffer, the results can be
+// unpredictable.
+func (p *Buffer) Unmarshal(pb Message) error {
+	if pb == nil { // we need a non-nil interface or this won't work
+		return ErrNil // NOTE this could almost qualify for a panic(), because the calling code is clearly quite confused
+	}
+
+	// If the object can unmarshal itself, let it.
+	if u, ok := pb.(Unmarshaler); ok {
+		err := u.UnmarshalProtobuf3(p.buf[p.index:])
+		p.index = len(p.buf)
+		return err
+	}
+
+	// the caller already checked that pb is a pointer-to-struct type
+	t := reflect.TypeOf(pb).Elem()
+	base := structPointer(unsafe.Pointer(reflect.ValueOf(pb).Pointer()))
+
+	err := p.unmarshalType(t, GetProperties(t), base)
+
+	return err
+}
+
+// unmarshalType does the work of unmarshaling a structure.
+func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, base structPointer) error {
+	fmt.Printf("%v.unmarshalType(%v, %v, %v)\n", o, st, prop, base)
+	var err error
+	for err == nil && o.index < len(o.buf) {
+		var u uint64
+		u, err = o.DecodeVarint()
+		if err != nil {
+			break
+		}
+		wire := WireType(u & 0x7)
+		tag := int(u >> 3)
+		fmt.Printf("u = %d|%d (0x%x) @ o.index %d\n", tag, wire, u, o.index)
+		if tag <= 0 {
+			return fmt.Errorf("proto: %s: illegal tag %d (wire type %d)", st, tag, wire)
+		}
+		i := sort.Search(len(prop.order), func(i int) bool {
+			return prop.Prop[prop.order[i]].Tag >= uint32(tag)
+		})
+		fmt.Printf("i = %d (len(prop.order) = %d)\n", i, len(prop.order))
+		if i >= len(prop.order) || prop.Prop[prop.order[i]].Tag != uint32(tag) {
+			err = o.skip(st, wire)
+			continue
+		}
+		fieldnum := prop.order[i]
+		p := &prop.Prop[fieldnum]
+		fmt.Printf("fieldnum %d, field %v\n", fieldnum, *p)
+
+		if p.dec == nil {
+			fmt.Fprintf(os.Stderr, "proto: no protobuf decoder for %s.%s\n", st, st.Field(fieldnum).Name)
+			continue
+		}
+		dec := p.dec
+		if wire != p.WireType && wire != WireBytes { // packed encoding, which is used in protobuf v3, wraps repeated numeric types in WireBytes
+			err = fmt.Errorf("proto: bad wiretype for field %s.%s: got wiretype %d, want %d", st, st.Field(fieldnum).Name, wire, p.WireType)
+			continue
+		}
+		decErr := dec(o, p, base)
+		if decErr != nil {
+			err = decErr
+		}
+	}
+	return err
+}
+
+// Skip the next item in the buffer. Its wire type is decoded and presented as an argument.
+func (o *Buffer) skip(t reflect.Type, wire WireType) error {
+	var err error
+
+	switch wire {
+	case WireVarint:
+		err = o.SkipVarint()
+	case WireBytes:
+		err = o.SkipRawBytes()
+	case WireFixed64:
+		err = o.SkipFixed(8)
+	case WireFixed32:
+		err = o.SkipFixed(4)
+	default:
+		err = fmt.Errorf("proto: can't skip unknown wire type %d for %v", wire, t)
+	}
+	return err
 }
 
 // Individual type decoders
@@ -571,31 +702,36 @@ func (o *Buffer) dec_Duration(p *Properties) (time.Duration, error) {
 	if err != nil {
 		return 0, err
 	}
+	end := o.index + int(n)
 
-	if int(n) < 0 || int(n) > len(o.buf) {
+	if end < o.index || end > len(o.buf) {
 		return 0, io.ErrUnexpectedEOF
 	}
 
-	NewBuffer(o.buf[:n])
+	// restrict ourselves to p.index:end
+	oo := NewBuffer(o.buf[o.index:end:end])
 
 	var secs, nanos uint64
-	for len(o.buf) != 0 {
-		tag, err := o.DecodeVarint()
+	for oo.index < len(oo.buf) {
+		tag, err := oo.DecodeVarint()
 		if err != nil {
 			return 0, err
 		}
 		switch tag {
 		case 1<<3 | uint64(WireVarint): // seconds
-			secs, err = o.DecodeVarint()
+			secs, err = oo.DecodeVarint()
 		case 2<<3 | uint64(WireVarint): // nanoseconds
-			nanos, err = o.DecodeVarint()
+			nanos, err = oo.DecodeVarint()
 		default:
 			// do the protobuf thing and ignore unknown tags
+			oo.skip(nil, WireType(tag)&7)
 		}
 		if err != nil {
 			return 0, err
 		}
 	}
+
+	o.index = end
 
 	d := time.Duration(secs)*time.Second + time.Duration(nanos)*time.Nanosecond
 

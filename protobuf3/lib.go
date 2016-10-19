@@ -46,7 +46,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 )
 
 // Message is implemented by generated protocol buffer messages.
@@ -119,18 +118,10 @@ func (p *Buffer) Find(id uint, sorted bool) ([]byte, []byte, WireType, error) {
 				err = p.SkipVarint()
 
 			case WireFixed32:
-				p.index += 4
-				if p.index > len(p.buf) {
-					err = io.ErrUnexpectedEOF
-					p.index = len(p.buf)
-				}
+				err = p.SkipFixed(4)
 
 			case WireFixed64:
-				p.index += 8
-				if p.index > len(p.buf) {
-					err = io.ErrUnexpectedEOF
-					p.index = len(p.buf)
-				}
+				err = p.SkipFixed(8)
 			}
 
 			if val == nil {
@@ -148,29 +139,18 @@ func (p *Buffer) Find(id uint, sorted bool) ([]byte, []byte, WireType, error) {
 			switch wt {
 			case WireBytes:
 				err = p.SkipRawBytes()
-				if err != nil {
-					return nil, nil, 0, err
-				}
 
 			case WireVarint:
 				err = p.SkipVarint()
-				if err != nil {
-					return nil, nil, 0, err
-				}
 
 			case WireFixed32:
-				p.index += 4
-				if p.index > len(p.buf) {
-					p.index = len(p.buf)
-					return nil, nil, 0, io.ErrUnexpectedEOF
-				}
+				err = p.SkipFixed(4)
 
 			case WireFixed64:
-				p.index += 8
-				if p.index > len(p.buf) {
-					p.index = len(p.buf)
-					return nil, nil, 0, io.ErrUnexpectedEOF
-				}
+				err = p.SkipFixed(8)
+			}
+			if err != nil {
+				return nil, nil, 0, err
 			}
 		}
 	}

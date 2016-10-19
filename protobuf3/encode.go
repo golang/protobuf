@@ -53,7 +53,9 @@ var (
 	errRepeatedHasNil = errors.New("protobuf3: repeated field has nil element")
 
 	// ErrNil is the error returned if Marshal is called with nil.
-	ErrNil = errors.New("protobuf3: Marshal called with nil")
+	ErrNil = errors.New("protobuf3: [Un]Marshal called with nil")
+
+	ErrNotAddressable = errors.New("protobuf3: Unmarshal called with in-addressible (non pointer?) argument")
 )
 
 // The fundamental encoders that put bytes on the wire.

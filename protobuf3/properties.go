@@ -79,8 +79,8 @@ const (
 	WireVarint     = WireType(0)
 	WireFixed64    = WireType(1)
 	WireBytes      = WireType(2)
-	WireStartGroup = WireType(3)
-	WireEndGroup   = WireType(4)
+	WireStartGroup = WireType(3) // legacy from protobuf v2. Groups are not used in protobuf v3
+	WireEndGroup   = WireType(4) // legacy...
 	WireFixed32    = WireType(5)
 )
 
