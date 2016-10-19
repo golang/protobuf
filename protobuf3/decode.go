@@ -433,7 +433,6 @@ func (p *Buffer) Unmarshal(pb Message) error {
 
 // unmarshalType does the work of unmarshaling a structure.
 func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, base structPointer) error {
-	fmt.Printf("%v.unmarshalType(%v, %v, %v)\n", o, st, prop, base)
 	var err error
 	for err == nil && o.index < len(o.buf) {
 		var u uint64
@@ -443,21 +442,18 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, base str
 		}
 		wire := WireType(u & 0x7)
 		tag := int(u >> 3)
-		fmt.Printf("u = %d|%d (0x%x) @ o.index %d\n", tag, wire, u, o.index)
 		if tag <= 0 {
 			return fmt.Errorf("proto: %s: illegal tag %d (wire type %d)", st, tag, wire)
 		}
 		i := sort.Search(len(prop.order), func(i int) bool {
 			return prop.Prop[prop.order[i]].Tag >= uint32(tag)
 		})
-		fmt.Printf("i = %d (len(prop.order) = %d)\n", i, len(prop.order))
 		if i >= len(prop.order) || prop.Prop[prop.order[i]].Tag != uint32(tag) {
 			err = o.skip(st, wire)
 			continue
 		}
 		fieldnum := prop.order[i]
 		p := &prop.Prop[fieldnum]
-		fmt.Printf("fieldnum %d, field %v\n", fieldnum, *p)
 
 		if p.dec == nil {
 			fmt.Fprintf(os.Stderr, "proto: no protobuf decoder for %s.%s\n", st, st.Field(fieldnum).Name)
