@@ -339,14 +339,15 @@ type Properties struct {
 	Tag        uint32
 	WireType   WireType
 
-	enc         encoder
-	valEnc      valueEncoder // set for bool and numeric types only
-	field       field
-	tagcode     []byte // encoding of EncodeVarint((Tag<<3)|WireType)
-	tagbuf      [8]byte
-	stype       reflect.Type      // set for struct types only
-	sprop       *StructProperties // set for struct types only
-	isMarshaler bool
+	enc           encoder
+	valEnc        valueEncoder // set for bool and numeric types only
+	field         field
+	tagcode       []byte // encoding of EncodeVarint((Tag<<3)|WireType)
+	tagbuf        [8]byte
+	stype         reflect.Type      // set for struct types only
+	sprop         *StructProperties // set for struct types only
+	isMarshaler   bool
+	isUnmarshaler bool
 
 	mtype    reflect.Type // set for map types only
 	mkeyprop *Properties  // set for map types only
@@ -552,13 +553,22 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 	case reflect.Struct:
 		p.stype = t1
 		p.sprop = getPropertiesLocked(t1)
-		p.isMarshaler = isMarshaler(reflect.PtrTo(t1))
+		p.asProtobuf = p.stypeAsProtobuf()
+		t2 := reflect.PtrTo(t1)
+
+		p.isMarshaler = isMarshaler(t2)
 		if p.isMarshaler {
 			p.enc = (*Buffer).enc_marshaler
 		} else {
 			p.enc = (*Buffer).enc_struct_message
 		}
-		p.asProtobuf = p.stypeAsProtobuf()
+
+		p.isUnmarshaler = isUnmarshaler(t2)
+		if p.isUnmarshaler {
+			p.dec = (*Buffer).dec_unmarshaler
+		} else {
+			p.dec = (*Buffer).dec_struct_message
+		}
 
 	case reflect.Ptr:
 		t2 := t1.Elem()
@@ -923,12 +933,18 @@ func MakeUppercaseTypeName(t reflect.Type, f string) string {
 
 var (
 	marshalerType      = reflect.TypeOf((*Marshaler)(nil)).Elem()
+	unmarshalerType    = reflect.TypeOf((*Unmarshaler)(nil)).Elem()
 	asprotobuffer3Type = reflect.TypeOf((*AsProtobuf3er)(nil)).Elem()
 )
 
 // isMarshaler reports whether type t implements Marshaler.
 func isMarshaler(t reflect.Type) bool {
 	return t.Implements(marshalerType)
+}
+
+// isUnmarshaler reports whether type t implements Unmarshaler.
+func isUnmarshaler(t reflect.Type) bool {
+	return t.Implements(unmarshalerType)
 }
 
 // Init populates the properties from a protocol buffer struct tag.
@@ -975,6 +991,7 @@ var time_Time_sprop = &StructProperties{
 		// we need just one made-up field with a .enc() method which we've hooked into
 		Properties{
 			enc: (*Buffer).enc_time_Time,
+			dec: (*Buffer).dec_time_Time,
 		},
 	},
 	order: []int{0},

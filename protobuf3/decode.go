@@ -459,15 +459,11 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, base str
 			fmt.Fprintf(os.Stderr, "proto: no protobuf decoder for %s.%s\n", st, st.Field(fieldnum).Name)
 			continue
 		}
-		dec := p.dec
 		if wire != p.WireType && wire != WireBytes { // packed encoding, which is used in protobuf v3, wraps repeated numeric types in WireBytes
 			err = fmt.Errorf("proto: bad wiretype for field %s.%s: got wiretype %d, want %d", st, st.Field(fieldnum).Name, wire, p.WireType)
 			continue
 		}
-		decErr := dec(o, p, base)
-		if decErr != nil {
-			err = decErr
-		}
+		err = p.dec(o, p, base)
 	}
 	return err
 }
@@ -641,15 +637,45 @@ func (o *Buffer) dec_string(p *Properties, base structPointer) error {
 	return nil
 }
 
+// Decode an embedded message.
+func (o *Buffer) dec_struct_message(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes(false)
+	if err != nil {
+		return err
+	}
+
+	ptr := structPointer(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+
+	// swizzle around and reuse the buffer. less gc
+	obuf, oi := o.buf, o.index
+	o.buf, o.index = raw, 0
+
+	err = o.unmarshalType(p.stype, p.sprop, ptr)
+
+	o.buf, o.index = obuf, oi
+	return err
+}
+
+// Decode an embedded message that can unmarshal itself
+func (o *Buffer) dec_unmarshaler(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes(false)
+	if err != nil {
+		return err
+	}
+
+	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field))
+	iv := reflect.NewAt(p.stype, ptr).Interface()
+	return iv.(Unmarshaler).UnmarshalProtobuf3(raw)
+}
+
 // custom decoder for protobuf3 standard Timestamp, decoding it into the standard go time.Time
 func (o *Buffer) dec_time_Time(p *Properties, base structPointer) error {
+	fmt.Printf("%v.dec_time_Time(%v, %v)\n", o, p, base)
+	fmt.Printf("buf[%d:]= %x\n", o.index, o.buf[o.index:])
 	var secs, nanos uint64
-	for {
+	for o.index < len(o.buf) {
 		tag, err := o.DecodeVarint()
 		if err != nil {
-			if err == io.ErrUnexpectedEOF {
-				break
-			}
 			return err
 		}
 		switch tag {
@@ -659,15 +685,17 @@ func (o *Buffer) dec_time_Time(p *Properties, base structPointer) error {
 			nanos, err = o.DecodeVarint()
 		default:
 			// do the protobuf thing and ignore unknown tags
+			o.skip(nil, WireType(tag)&7)
 		}
 		if err != nil {
 			return err
 		}
 	}
+	fmt.Printf("secs %d, nanos %d\n", secs, nanos)
 
 	t := time.Unix(int64(secs), int64(nanos))
-
 	*(*time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = t
+
 	return nil
 }
 
@@ -683,17 +711,7 @@ func (o *Buffer) dec_time_Duration(p *Properties, base structPointer) error {
 
 // helper function to decode a protobuf3 Duration value into a time.Duration
 func (o *Buffer) dec_Duration(p *Properties) (time.Duration, error) {
-	// time.Duration is not a struct. it is a int64. So it does not translate
-	// readily to a protobuf message. We had to prepend the tag and length,
-	// and here we need to remove it.
-	tag, err := o.DecodeVarint()
-	if err != nil {
-		return 0, err
-	}
-	// sanity check that the tag's wiretype is bytes
-	if WireType(tag&7) != WireBytes {
-		return 0, fmt.Errorf("protobuf3: Wiretype not Bytes when decoding Duration tag 0x%x", tag)
-	}
+	// the tag has been decoded, but not the byte length
 	n, err := o.DecodeVarint()
 	if err != nil {
 		return 0, err
