@@ -577,32 +577,41 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 			break
 		case reflect.Bool:
 			p.enc = (*Buffer).enc_ptr_bool
+			p.dec = (*Buffer).dec_ptr_bool
 			p.asProtobuf = "bool"
 		case reflect.Int32:
 			p.enc = (*Buffer).enc_ptr_int32
+			p.dec = (*Buffer).dec_ptr_int32
 			p.asProtobuf = int32_encoder_txt
 		case reflect.Uint32:
 			p.enc = (*Buffer).enc_ptr_uint32
+			p.dec = (*Buffer).dec_ptr_int32
 			p.asProtobuf = uint32_encoder_txt
 		case reflect.Int64:
 			if p.WireType == WireBytes && t2 == time_Duration_type {
 				p.enc = (*Buffer).enc_ptr_time_Duration
+				p.dec = (*Buffer).dec_ptr_time_Duration
 				p.asProtobuf = "google.protobuf.Duration"
 			} else {
 				p.enc = (*Buffer).enc_ptr_int64
+				p.dec = (*Buffer).dec_ptr_int64
 				p.asProtobuf = int64_encoder_txt
 			}
 		case reflect.Uint64:
 			p.enc = (*Buffer).enc_ptr_int64
+			p.dec = (*Buffer).dec_ptr_int64
 			p.asProtobuf = uint64_encoder_txt
 		case reflect.Float32:
 			p.enc = (*Buffer).enc_ptr_uint32 // can just treat them as bits
+			p.dec = (*Buffer).dec_ptr_int32
 			p.asProtobuf = "float"
 		case reflect.Float64:
 			p.enc = (*Buffer).enc_ptr_int64 // can just treat them as bits
+			p.dec = (*Buffer).dec_ptr_int64
 			p.asProtobuf = "double"
 		case reflect.String:
 			p.enc = (*Buffer).enc_ptr_string
+			p.dec = (*Buffer).dec_ptr_string
 			p.asProtobuf = "string"
 		case reflect.Struct:
 			p.stype = t2

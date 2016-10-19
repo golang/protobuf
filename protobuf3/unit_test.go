@@ -270,14 +270,12 @@ func TestFixedMsg(t *testing.T) {
 		f32: -5.5,
 		f64: 6.6,
 
-		/*
-			pi32: &i32,
-			pu32: &u32,
-			pi64: &i64,
-			pu64: &u64,
-			pf32: &f32,
-			pf64: &f64,
-		*/
+		pi32: &i32,
+		pu32: &u32,
+		pi64: &i64,
+		pu64: &u64,
+		pf32: &f32,
+		pf64: &f64,
 	}
 	var mb, mc FixedMsg
 	uncheck(&m, &mb, &mc, t)
