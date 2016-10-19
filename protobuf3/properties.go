@@ -104,6 +104,14 @@ type encoder func(p *Buffer, prop *Properties, base structPointer)
 // A valueEncoder encodes a single integer in a particular encoding.
 type valueEncoder func(o *Buffer, x uint64)
 
+// Decoders are defined in decode.go
+// A decoder creates a value from its wire representation.
+// Unrecognized subelements are saved in unrec.
+type decoder func(p *Buffer, prop *Properties, base structPointer) error
+
+// A valueDecoder decodes a single integer in a particular encoding.
+type valueDecoder func(o *Buffer) (x uint64, err error)
+
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
 	Prop  []Properties // properties for each field, indexed by reflection's field number. Fields which are not encoded in protobuf have incomplete Properties
@@ -345,6 +353,9 @@ type Properties struct {
 	mvalprop *Properties  // set for map types only
 
 	length int // set for array types only
+
+	dec    decoder
+	valDec valueDecoder // set for bool and numeric types only
 }
 
 // String formats the properties in the protobuf struct field tag style.
@@ -394,22 +405,27 @@ func (p *Properties) Parse(s string) (IntEncoder, bool, error) {
 	switch fields[0] {
 	case "varint":
 		p.valEnc = (*Buffer).EncodeVarint
+		p.valDec = (*Buffer).DecodeVarint
 		p.WireType = WireVarint
 		enc = VarintEncoder
 	case "fixed32":
 		p.valEnc = (*Buffer).EncodeFixed32
+		p.valDec = (*Buffer).DecodeFixed32
 		p.WireType = WireFixed32
 		enc = Fixed32Encoder
 	case "fixed64":
 		p.valEnc = (*Buffer).EncodeFixed64
+		p.valDec = (*Buffer).DecodeFixed64
 		p.WireType = WireFixed64
 		enc = Fixed64Encoder
 	case "zigzag32":
 		p.valEnc = (*Buffer).EncodeZigzag32
+		p.valDec = (*Buffer).DecodeZigzag32
 		p.WireType = WireVarint
 		enc = Zigzag32Encoder
 	case "zigzag64":
 		p.valEnc = (*Buffer).EncodeZigzag64
+		p.valDec = (*Buffer).DecodeZigzag64
 		p.WireType = WireVarint
 		enc = Zigzag64Encoder
 	case "bytes":
@@ -435,8 +451,9 @@ func (p *Properties) Parse(s string) (IntEncoder, bool, error) {
 }
 
 // Initialize the fields for encoding and decoding.
-func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encoder IntEncoder) {
+func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_encoder IntEncoder) {
 	p.enc = nil
+	p.dec = nil
 	wire := p.WireType
 
 	// since so many cases need it, decode int_encoder into a  string now
@@ -468,30 +485,39 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 
 	case reflect.Bool:
 		p.enc = (*Buffer).enc_bool
+		p.dec = (*Buffer).dec_bool
 		p.asProtobuf = "bool"
 	case reflect.Int:
 		p.enc = (*Buffer).enc_int
+		p.dec = (*Buffer).dec_int
 		p.asProtobuf = int32_encoder_txt
 	case reflect.Uint:
 		p.enc = (*Buffer).enc_uint
+		p.dec = (*Buffer).dec_int // signness doesn't matter when decoding. either the top bit is set or it isn't
 		p.asProtobuf = uint32_encoder_txt
 	case reflect.Int8:
 		p.enc = (*Buffer).enc_int8
+		p.dec = (*Buffer).dec_int8
 		p.asProtobuf = int32_encoder_txt
 	case reflect.Uint8:
 		p.enc = (*Buffer).enc_uint8
+		p.dec = (*Buffer).dec_int8
 		p.asProtobuf = uint32_encoder_txt
 	case reflect.Int16:
 		p.enc = (*Buffer).enc_int16
+		p.dec = (*Buffer).dec_int16
 		p.asProtobuf = int32_encoder_txt
 	case reflect.Uint16:
 		p.enc = (*Buffer).enc_uint16
+		p.dec = (*Buffer).dec_int16
 		p.asProtobuf = uint32_encoder_txt
 	case reflect.Int32:
 		p.enc = (*Buffer).enc_int32
+		p.dec = (*Buffer).dec_int32
 		p.asProtobuf = int32_encoder_txt
 	case reflect.Uint32:
 		p.enc = (*Buffer).enc_uint32
+		p.dec = (*Buffer).dec_int32
 		p.asProtobuf = uint32_encoder_txt
 	case reflect.Int64:
 		// this might be a time.Duration, or it might be an ordinary int64
@@ -499,22 +525,28 @@ func (p *Properties) setEnc(typ reflect.Type, f *reflect.StructField, int_encode
 		// wiretype must be WireBytes. Otherwise they'll get the int64 encoding they've selected.
 		if p.WireType == WireBytes && t1 == time_Duration_type {
 			p.enc = (*Buffer).enc_time_Duration
+			p.dec = (*Buffer).dec_time_Duration
 			p.asProtobuf = "google.protobuf.Duration"
 		} else {
 			p.enc = (*Buffer).enc_int64
+			p.dec = (*Buffer).dec_int64
 			p.asProtobuf = int64_encoder_txt
 		}
 	case reflect.Uint64:
 		p.enc = (*Buffer).enc_int64
+		p.dec = (*Buffer).dec_int64
 		p.asProtobuf = uint64_encoder_txt
 	case reflect.Float32:
 		p.enc = (*Buffer).enc_uint32 // can just treat them as bits
+		p.dec = (*Buffer).dec_int32
 		p.asProtobuf = "float"
 	case reflect.Float64:
 		p.enc = (*Buffer).enc_int64 // can just treat them as bits
+		p.dec = (*Buffer).dec_int64
 		p.asProtobuf = "double"
 	case reflect.String:
 		p.enc = (*Buffer).enc_string
+		p.dec = (*Buffer).dec_string
 		p.asProtobuf = "string"
 
 	case reflect.Struct:
@@ -916,7 +948,7 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 		return skip, err
 	}
 
-	p.setEnc(typ, f, intencoder)
+	p.setEncAndDec(typ, f, intencoder)
 
 	return false, nil
 }

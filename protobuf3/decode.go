@@ -43,6 +43,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"time"
+	"unsafe"
 )
 
 // errOverflow is returned when an integer is too large to be represented.
@@ -307,6 +309,16 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 	return
 }
 
+// DecodeStringBytes reads an encoded string from the Buffer.
+// This is the format used for the proto3 string type.
+func (p *Buffer) DecodeStringBytes() (string, error) {
+	buf, err := p.DecodeRawBytes(false)
+	if err != nil {
+		return "", err
+	}
+	return string(buf), nil
+}
+
 // SkipVarint skips over a varint-encoded integer from the Buffer.
 // Functionally it is identical to calling DecodeVarint and ignoring the
 // value returned. In practice it runs much faster.
@@ -349,5 +361,253 @@ func (p *Buffer) SkipRawBytes() error {
 	}
 
 	p.index = end
+	return nil
+}
+
+// Individual type decoders
+// For each,
+//	u is the decoded value,
+//	v is a pointer to the field (pointer) in the struct
+
+// Decode a *bool.
+func (o *Buffer) dec_ptr_bool(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	x := u != 0
+	*(**bool)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = &x
+	return nil
+}
+
+// Decode a bool.
+func (o *Buffer) dec_bool(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	*(*bool)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = u != 0
+	return nil
+}
+
+// Decode an *int8.
+func (o *Buffer) dec_ptr_int8(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	x := uint8(u)
+	*(**uint8)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = &x
+	return nil
+}
+
+// Decode an int8.
+func (o *Buffer) dec_int8(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	*(*uint8)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = uint8(u)
+	return nil
+}
+
+// Decode an *int16.
+func (o *Buffer) dec_ptr_int16(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	x := uint16(u)
+	*(**uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = &x
+	return nil
+}
+
+// Decode an int16.
+func (o *Buffer) dec_int16(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	*(*uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = uint16(u)
+	return nil
+}
+
+// Decode an *int32.
+func (o *Buffer) dec_ptr_int32(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	x := uint32(u)
+	*(**uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = &x
+	return nil
+}
+
+// Decode an int32.
+func (o *Buffer) dec_int32(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	*(*uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = uint32(u)
+	return nil
+}
+
+// Decode an *int.
+func (o *Buffer) dec_ptr_int(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	x := uint(u)
+	*(**uint)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = &x
+	return nil
+}
+
+// Decode an int.
+func (o *Buffer) dec_int(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	*(*uint)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = uint(u)
+	return nil
+}
+
+// Decode an *int64.
+func (o *Buffer) dec_ptr_int64(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	*(**uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = &u
+	return nil
+}
+
+// Decode an int64.
+func (o *Buffer) dec_int64(p *Properties, base structPointer) error {
+	u, err := p.valDec(o)
+	if err != nil {
+		return err
+	}
+	*(*uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = u
+	return nil
+}
+
+// Decode a *string.
+func (o *Buffer) dec_ptr_string(p *Properties, base structPointer) error {
+	s, err := o.DecodeStringBytes()
+	if err != nil {
+		return err
+	}
+	*(**string)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = &s
+	return nil
+}
+
+// Decode a string.
+func (o *Buffer) dec_string(p *Properties, base structPointer) error {
+	s, err := o.DecodeStringBytes()
+	if err != nil {
+		return err
+	}
+	*(*string)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = s
+	return nil
+}
+
+// custom decoder for protobuf3 standard Timestamp, decoding it into the standard go time.Time
+func (o *Buffer) dec_time_Time(p *Properties, base structPointer) error {
+	var secs, nanos uint64
+	for {
+		tag, err := o.DecodeVarint()
+		if err != nil {
+			if err == io.ErrUnexpectedEOF {
+				break
+			}
+			return err
+		}
+		switch tag {
+		case 1<<3 | uint64(WireVarint): // seconds
+			secs, err = o.DecodeVarint()
+		case 2<<3 | uint64(WireVarint): // nanoseconds
+			nanos, err = o.DecodeVarint()
+		default:
+			// do the protobuf thing and ignore unknown tags
+		}
+		if err != nil {
+			return err
+		}
+	}
+
+	t := time.Unix(int64(secs), int64(nanos))
+
+	*(*time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = t
+	return nil
+}
+
+// custom decoder for protobuf3 standard Duration, decoding it into the go standard time.Duration
+func (o *Buffer) dec_time_Duration(p *Properties, base structPointer) error {
+	d, err := o.dec_Duration(p)
+	if err != nil {
+		return err
+	}
+	*(*time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = d
+	return nil
+}
+
+// helper function to decode a protobuf3 Duration value into a time.Duration
+func (o *Buffer) dec_Duration(p *Properties) (time.Duration, error) {
+	// time.Duration is not a struct. it is a int64. So it does not translate
+	// readily to a protobuf message. We had to prepend the tag and length,
+	// and here we need to remove it.
+	tag, err := o.DecodeVarint()
+	if err != nil {
+		return 0, err
+	}
+	// sanity check that the tag's wiretype is bytes
+	if WireType(tag&7) != WireBytes {
+		return 0, fmt.Errorf("protobuf3: Wiretype not Bytes when decoding Duration tag 0x%x", tag)
+	}
+	n, err := o.DecodeVarint()
+	if err != nil {
+		return 0, err
+	}
+
+	if int(n) < 0 || int(n) > len(o.buf) {
+		return 0, io.ErrUnexpectedEOF
+	}
+
+	NewBuffer(o.buf[:n])
+
+	var secs, nanos uint64
+	for len(o.buf) != 0 {
+		tag, err := o.DecodeVarint()
+		if err != nil {
+			return 0, err
+		}
+		switch tag {
+		case 1<<3 | uint64(WireVarint): // seconds
+			secs, err = o.DecodeVarint()
+		case 2<<3 | uint64(WireVarint): // nanoseconds
+			nanos, err = o.DecodeVarint()
+		default:
+			// do the protobuf thing and ignore unknown tags
+		}
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	d := time.Duration(secs)*time.Second + time.Duration(nanos)*time.Nanosecond
+
+	return d, nil
+}
+
+// custom encoder for *time.Duration, ... protobuf Duration message
+func (o *Buffer) dec_ptr_time_Duration(p *Properties, base structPointer) error {
+	d, err := o.dec_Duration(p)
+	if err != nil {
+		return err
+	}
+	*(**time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = &d
 	return nil
 }
