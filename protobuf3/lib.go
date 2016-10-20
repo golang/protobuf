@@ -93,6 +93,11 @@ func (p *Buffer) Rewind() {
 	p.index = 0
 }
 
+// returns true if we've decoded to the end of the buffer
+func (p *Buffer) EOF() bool {
+	return len(p.buf) == p.index
+}
+
 // Find scans forward starting at 'offset', stopping and returning the next item which has id 'id'.
 // The entire item is returned, including the 'tag' header and any varint byte length in the case of WireBytes.
 // This way the item is itself a valid protobuf message.
