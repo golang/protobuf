@@ -420,13 +420,13 @@ func (p *Buffer) Unmarshal(pb Message) error {
 	t := reflect.TypeOf(pb).Elem()
 	base := structPointer(unsafe.Pointer(reflect.ValueOf(pb).Pointer()))
 
-	err := p.unmarshalType(t, GetProperties(t), base)
+	err := p.unmarshal_struct(t, GetProperties(t), base)
 
 	return err
 }
 
-// unmarshalType does the work of unmarshaling a structure.
-func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, base structPointer) error {
+// unmarshal_struct does the work of unmarshaling a structure.
+func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base structPointer) error {
 	var err error
 	for err == nil && o.index < len(o.buf) {
 		var u uint64
@@ -645,7 +645,7 @@ func (o *Buffer) dec_struct_message(p *Properties, base structPointer) error {
 	obuf, oi := o.buf, o.index
 	o.buf, o.index = raw, 0
 
-	err = o.unmarshalType(p.stype, p.sprop, ptr)
+	err = o.unmarshal_struct(p.stype, p.sprop, ptr)
 
 	o.buf, o.index = obuf, oi
 	return err
