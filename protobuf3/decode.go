@@ -439,6 +439,7 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, base str
 		if tag <= 0 {
 			return fmt.Errorf("protobuf3: %s: illegal tag %d (wire type %d)", st, tag, wire)
 		}
+
 		i := sort.Search(len(prop.order), func(i int) bool {
 			return prop.Prop[prop.order[i]].Tag >= uint32(tag)
 		})
@@ -455,7 +456,7 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, base str
 		}
 		if wire != p.WireType && wire != WireBytes { // packed encoding, which is used in protobuf v3, wraps repeated numeric types in WireBytes
 			err = fmt.Errorf("protobuf3: bad wiretype for field %s.%s: got wiretype %d, want %d", st, st.Field(fieldnum).Name, wire, p.WireType)
-			continue
+			break
 		}
 		err = p.dec(o, p, base)
 	}
