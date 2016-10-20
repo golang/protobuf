@@ -623,6 +623,276 @@ func (o *Buffer) dec_string(p *Properties, base structPointer) error {
 	return nil
 }
 
+// Decode a slice of bytes ([]byte).
+func (o *Buffer) dec_slice_byte(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	copied := make([]byte, len(raw))
+	copy(copied, raw)
+
+	*(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = copied
+	return nil
+}
+
+// Decode a slice of bools ([]bool).
+func (o *Buffer) dec_slice_packed_bool(p *Properties, base structPointer) error {
+	v := (*[]bool)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded bools
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+
+	y := *v
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		y = append(y, u != 0)
+	}
+
+	*v = y
+	return nil
+}
+
+// Decode a slice of int8s ([]int8) in packed format.
+func (o *Buffer) dec_slice_packed_int8(p *Properties, base structPointer) error {
+	v := (*[]int8)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded int8s
+
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+	y := *v
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		y = append(y, int8(u))
+	}
+	*v = y
+	return nil
+}
+
+// Decode a slice of int16s ([]int16) in packed format.
+func (o *Buffer) dec_slice_packed_int16(p *Properties, base structPointer) error {
+	v := (*[]uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded int16s
+
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+	y := *v
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		y = append(y, uint16(u))
+	}
+	*v = y
+	return nil
+}
+
+// Decode a slice of int32s ([]int32) in packed format.
+func (o *Buffer) dec_slice_packed_int32(p *Properties, base structPointer) error {
+	v := (*[]uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded int32s
+
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+	y := *v
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		y = append(y, uint32(u))
+	}
+	*v = y
+	return nil
+}
+
+// Decode a slice of ints ([]int) in packed format.
+func (o *Buffer) dec_slice_packed_int(p *Properties, base structPointer) error {
+	v := (*[]uint)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded ints
+
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+	y := *v
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		y = append(y, uint(u))
+	}
+	*v = y
+	return nil
+}
+
+// Decode a slice of int64s ([]int64) in packed format.
+func (o *Buffer) dec_slice_packed_int64(p *Properties, base structPointer) error {
+	v := (*[]uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded int64s
+
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+	y := *v
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		y = append(y, u)
+	}
+	*v = y
+	return nil
+}
+
+// Decode a slice of strings ([]string).
+func (o *Buffer) dec_slice_string(p *Properties, base structPointer) error {
+	s, err := o.DecodeStringBytes()
+	if err != nil {
+		return err
+	}
+	v := (*[]string)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	*v = append(*v, s)
+	return nil
+}
+
+// Decode a slice of slice of bytes ([][]byte).
+func (o *Buffer) dec_slice_slice_byte(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	copied := make([]byte, len(raw))
+	copy(copied, raw)
+
+	v := (*[][]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	*v = append(*v, copied)
+	return nil
+}
+
+// Decode a map field.
+func (o *Buffer) dec_new_map(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+	oi := o.index       // index at the end of this map entry
+	o.index -= len(raw) // move buffer back to start of map entry
+
+	mptr := reflect.NewAt(p.mtype, unsafe.Pointer(uintptr(base)+uintptr(p.field))) // *map[K]V
+	if mptr.Elem().IsNil() {
+		mptr.Elem().Set(reflect.MakeMap(mptr.Type().Elem()))
+	}
+	v := mptr.Elem() // map[K]V
+
+	// Prepare addressable doubly-indirect placeholders for the key and value types.
+	// See enc_new_map for why.
+	keyptr := reflect.New(reflect.PtrTo(p.mtype.Key())).Elem()    // addressable *K
+	keybase := structPointer(unsafe.Pointer(keyptr.UnsafeAddr())) // **K
+
+	var valbase structPointer
+	var valptr reflect.Value
+	switch p.mtype.Elem().Kind() {
+	case reflect.Slice:
+		// []byte
+		var dummy []byte
+		valptr = reflect.ValueOf(&dummy)                          // *[]byte
+		valbase = structPointer(unsafe.Pointer(valptr.Pointer())) // *[]byte
+	case reflect.Ptr:
+		// message; valptr is **Msg; need to allocate the intermediate pointer
+		valptr = reflect.New(reflect.PtrTo(p.mtype.Elem())).Elem() // addressable *V
+		valptr.Set(reflect.New(valptr.Type().Elem()))
+		valbase = structPointer(unsafe.Pointer(valptr.Pointer()))
+	default:
+		// everything else
+		valptr = reflect.New(reflect.PtrTo(p.mtype.Elem())).Elem()   // addressable *V
+		valbase = structPointer(unsafe.Pointer(valptr.UnsafeAddr())) // **V
+	}
+
+	// Decode.
+	// This parses a restricted wire format, namely the encoding of a message
+	// with two fields. See enc_new_map for the format.
+	for o.index < oi {
+		// tagcode for key and value properties are always a single byte
+		// because they have tags 1 and 2.
+		tagcode := o.buf[o.index]
+		o.index++
+		switch tagcode {
+		case p.mkeyprop.tagcode[0]:
+			if err := p.mkeyprop.dec(o, p.mkeyprop, keybase); err != nil {
+				return err
+			}
+		case p.mvalprop.tagcode[0]:
+			if err := p.mvalprop.dec(o, p.mvalprop, valbase); err != nil {
+				return err
+			}
+		default:
+			// TODO: Should we silently skip this instead?
+			return fmt.Errorf("protobuf3: bad map data tag %d", raw[0])
+		}
+	}
+	keyelem, valelem := keyptr.Elem(), valptr.Elem()
+	if !keyelem.IsValid() {
+		keyelem = reflect.Zero(p.mtype.Key())
+	}
+	if !valelem.IsValid() {
+		valelem = reflect.Zero(p.mtype.Elem())
+	}
+
+	v.SetMapIndex(keyelem, valelem)
+	return nil
+}
+
 // Decode an embedded message.
 func (o *Buffer) dec_struct_message(p *Properties, base structPointer) error {
 	raw, err := o.DecodeRawBytes()
@@ -668,6 +938,69 @@ func (o *Buffer) dec_ptr_struct_message(p *Properties, base structPointer) error
 	return err
 }
 
+//  Decode into a slice of messages ([]struct)
+func (o *Buffer) dec_slice_struct_message(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	// build a reflect.Value of the slice
+	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field))
+	slice_type := reflect.SliceOf(p.stype)
+	slice := reflect.NewAt(slice_type, ptr)
+
+	// put a zero value at the end of the slice
+	slice.Set(reflect.Append(slice, reflect.Zero(p.stype)))
+
+	// and unmarshal into it
+	val := slice.Index(slice.Len() - 1)
+	if p.isMarshaler {
+		return val.Interface().(Marshaler).UnmarshalProtobuf3(raw)
+	}
+
+	pval := structPointer(unsafe.Pointer(val.UnsafeAddr()))
+
+	// unmarshal into pval
+	obuf, oi := o.buf, o.index
+	o.buf, o.index = raw, 0
+	err = o.unmarshal_struct(p.stype, p.sprop, pval)
+	o.buf, o.index = obuf, oi
+
+	return err
+}
+
+//  Decode into a slice of pointers to messages ([]*struct)
+func (o *Buffer) dec_slice_ptr_struct_message(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	// construct a new *struct
+	v := reflect.New(p.stype)
+	pv := structPointer(unsafe.Pointer(v.Pointer()))
+
+	// unmarshal into the new struct
+	if p.isMarshaler {
+		err = v.Interface().(Marshaler).UnmarshalProtobuf3(raw)
+	} else {
+		obuf, oi := o.buf, o.index
+		o.buf, o.index = raw, 0
+		err = o.unmarshal_struct(p.stype, p.sprop, pv)
+		o.buf, o.index = obuf, oi
+	}
+	if err != nil {
+		return err
+	}
+
+	// append pv to the slice []*struct
+	pslice := (*[]structPointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	*pslice = append(*pslice, pv)
+
+	return nil
+}
+
 // Decode an embedded message that can unmarshal itself
 func (o *Buffer) dec_marshaler(p *Properties, base structPointer) error {
 	raw, err := o.DecodeRawBytes()
@@ -710,8 +1043,10 @@ func (o *Buffer) dec_slice_marshaler(p *Properties, base structPointer) error {
 	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field))
 	slice_type := reflect.SliceOf(p.stype)
 	slice := reflect.NewAt(slice_type, ptr)
-	// put an empty value at the end of the slice
+
+	// put a zero value at the end of the slice
 	slice.Set(reflect.Append(slice, reflect.Zero(p.stype)))
+
 	// and unmarshal into it
 	val := slice.Index(slice.Len() - 1)
 	return val.Interface().(Marshaler).UnmarshalProtobuf3(raw)
@@ -827,12 +1162,38 @@ func (o *Buffer) dec_Duration(p *Properties) (time.Duration, error) {
 	return d, nil
 }
 
-// custom encoder for *time.Duration, ... protobuf Duration message
+// custom decoder for *time.Duration, ... protobuf Duration message
 func (o *Buffer) dec_ptr_time_Duration(p *Properties, base structPointer) error {
 	d, err := o.dec_Duration(p)
 	if err != nil {
 		return err
 	}
 	*(**time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = &d
+	return nil
+}
+
+// custom decode for []time.Duration
+func (o *Buffer) dec_slice_time_Duration(p *Properties, base structPointer) error {
+	v := (*[]time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded values
+
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+	y := *v
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		y = append(y, time.Duration(u))
+	}
+	*v = y
 	return nil
 }

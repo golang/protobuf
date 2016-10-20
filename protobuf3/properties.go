@@ -657,71 +657,87 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				break
 			case reflect.Bool:
 				p.enc = (*Buffer).enc_slice_packed_bool
+				p.dec = (*Buffer).dec_slice_packed_bool
 				wire = WireBytes // packed=true is implied in protobuf v3
 				p.asProtobuf = "repeated bool"
 			case reflect.Int:
 				p.enc = (*Buffer).enc_slice_packed_int
+				p.dec = (*Buffer).dec_slice_packed_int
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int32_encoder_txt
 			case reflect.Uint:
 				p.enc = (*Buffer).enc_slice_packed_uint
+				p.dec = (*Buffer).dec_slice_packed_int
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + uint32_encoder_txt
 			case reflect.Int8:
 				p.enc = (*Buffer).enc_slice_packed_int8
+				p.dec = (*Buffer).dec_slice_packed_int8
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int32_encoder_txt
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_slice_byte
+				p.dec = (*Buffer).dec_slice_byte
 				wire = WireBytes // packed=true... even for integers
 				p.asProtobuf = "bytes"
 			case reflect.Int16:
 				p.enc = (*Buffer).enc_slice_packed_int16
+				p.dec = (*Buffer).dec_slice_packed_int16
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int32_encoder_txt
 			case reflect.Uint16:
 				p.enc = (*Buffer).enc_slice_packed_uint16
+				p.dec = (*Buffer).dec_slice_packed_int16
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + uint32_encoder_txt
 			case reflect.Int32:
 				p.enc = (*Buffer).enc_slice_packed_int32
+				p.dec = (*Buffer).dec_slice_packed_int32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int32_encoder_txt
 			case reflect.Uint32:
 				p.enc = (*Buffer).enc_slice_packed_uint32
+				p.dec = (*Buffer).dec_slice_packed_int32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + uint32_encoder_txt
 			case reflect.Int64:
 				if p.WireType == WireBytes && t2 == time_Duration_type {
 					p.enc = (*Buffer).enc_slice_time_Duration
+					p.dec = (*Buffer).dec_slice_time_Duration
 					p.asProtobuf = "repeated google.protobuf.Duration"
 				} else {
 					p.enc = (*Buffer).enc_slice_packed_int64
+					p.dec = (*Buffer).dec_slice_packed_int64
 					wire = WireBytes // packed=true...
 					p.asProtobuf = "repeated " + int64_encoder_txt
 				}
 			case reflect.Uint64:
 				p.enc = (*Buffer).enc_slice_packed_int64
+				p.dec = (*Buffer).dec_slice_packed_int64
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int64_encoder_txt
 			case reflect.Float32:
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_slice_packed_uint32
+				p.dec = (*Buffer).dec_slice_packed_int32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated float"
 			case reflect.Float64:
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_slice_packed_int64
+				p.dec = (*Buffer).dec_slice_packed_int64
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated double"
 			case reflect.String:
 				p.enc = (*Buffer).enc_slice_string
+				p.dec = (*Buffer).dec_slice_string
 				p.asProtobuf = "repeated string"
 			case reflect.Struct:
 				p.stype = t2
 				p.sprop = getPropertiesLocked(t2)
 				p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
 				p.enc = (*Buffer).enc_slice_struct_message
+				p.dec = (*Buffer).dec_slice_struct_message
 				p.asProtobuf = "repeated " + p.stypeAsProtobuf()
 			case reflect.Ptr:
 				switch t3 := t2.Elem(); t3.Kind() {
@@ -733,6 +749,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 					p.sprop = getPropertiesLocked(t3)
 					p.isMarshaler = isMarshaler(t2)
 					p.enc = (*Buffer).enc_slice_ptr_struct_message
+					p.dec = (*Buffer).dec_slice_ptr_struct_message
 					p.asProtobuf = "repeated " + p.stypeAsProtobuf()
 				}
 			case reflect.Slice:
@@ -742,6 +759,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 					break
 				case reflect.Uint8:
 					p.enc = (*Buffer).enc_slice_slice_byte
+					p.dec = (*Buffer).dec_slice_slice_byte
 					p.asProtobuf = "repeated bytes"
 				}
 			}
