@@ -284,7 +284,8 @@ func (p *Buffer) DecodeZigzag32() (x uint64, err error) {
 // DecodeRawBytes reads a count-delimited byte buffer from the Buffer.
 // This is the format used for the bytes protocol buffer
 // type and for embedded messages.
-func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
+// The returned slice points to shared memory. Treat as read-only.
+func (p *Buffer) DecodeRawBytes() ([]byte, error) {
 	n, err := p.DecodeVarint()
 	if err != nil {
 		return nil, err
@@ -299,23 +300,16 @@ func (p *Buffer) DecodeRawBytes(alloc bool) (buf []byte, err error) {
 		return nil, io.ErrUnexpectedEOF
 	}
 
-	if !alloc {
-		// todo: check if can get more uses of alloc=false
-		buf = p.buf[p.index:end:end]
-		p.index = end
-		return
-	}
-
-	buf = make([]byte, nb)
-	copy(buf, p.buf[p.index:])
+	buf := p.buf[p.index:end:end]
 	p.index = end
-	return
+
+	return buf, nil
 }
 
 // DecodeStringBytes reads an encoded string from the Buffer.
 // This is the format used for the proto3 string type.
 func (p *Buffer) DecodeStringBytes() (string, error) {
-	buf, err := p.DecodeRawBytes(false)
+	buf, err := p.DecodeRawBytes()
 	if err != nil {
 		return "", err
 	}
@@ -356,7 +350,7 @@ func (p *Buffer) SkipFixed(n int) error {
 }
 
 // SkipRawBytes skips over a count-delimited byte buffer from the Buffer.
-// Functionally it is identical to calling DecodeRawBytes(false) and ignoring
+// Functionally it is identical to calling DecodeRawBytes() and ignoring
 // the value returned.
 func (p *Buffer) SkipRawBytes() error {
 	n, err := p.DecodeVarint()
@@ -639,7 +633,7 @@ func (o *Buffer) dec_string(p *Properties, base structPointer) error {
 
 // Decode an embedded message.
 func (o *Buffer) dec_struct_message(p *Properties, base structPointer) error {
-	raw, err := o.DecodeRawBytes(false)
+	raw, err := o.DecodeRawBytes()
 	if err != nil {
 		return err
 	}
@@ -658,7 +652,7 @@ func (o *Buffer) dec_struct_message(p *Properties, base structPointer) error {
 
 // Decode an embedded message that can unmarshal itself
 func (o *Buffer) dec_unmarshaler(p *Properties, base structPointer) error {
-	raw, err := o.DecodeRawBytes(false)
+	raw, err := o.DecodeRawBytes()
 	if err != nil {
 		return err
 	}

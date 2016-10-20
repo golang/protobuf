@@ -213,7 +213,7 @@ func TestBytesPrimitives(t *testing.T) {
 	o := old()
 	bytes := []byte{'n', 'o', 'w', ' ', 'i', 's', ' ', 't', 'h', 'e', ' ', 't', 'i', 'm', 'e'}
 	o.EncodeRawBytes(bytes)
-	decb, e := o.DecodeRawBytes(false)
+	decb, e := o.DecodeRawBytes()
 	if e != nil {
 		t.Error("DecodeRawBytes")
 	}
@@ -225,7 +225,9 @@ func TestStringPrimitives(t *testing.T) {
 	o := old()
 	s := "now is the time"
 	o.EncodeStringBytes(s)
-	decs, e := o.DecodeRawBytes(true)
+	decs_data, e := o.DecodeRawBytes()
+	decs := make([]byte, len(decs_data))
+	copy(decs, decs_data)
 	if e != nil {
 		t.Error("dec_string")
 	}

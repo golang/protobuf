@@ -112,7 +112,7 @@ func (p *Buffer) Find(id uint, sorted bool) ([]byte, []byte, WireType, error) {
 
 			switch wt {
 			case WireBytes:
-				val, err = p.DecodeRawBytes(false)
+				val, err = p.DecodeRawBytes()
 
 			case WireVarint:
 				err = p.SkipVarint()
@@ -198,7 +198,7 @@ out:
 		case WireBytes:
 			var r []byte
 
-			r, err = p.DecodeRawBytes(false)
+			r, err = p.DecodeRawBytes()
 			if err != nil {
 				break out
 			}
