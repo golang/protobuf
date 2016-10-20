@@ -670,9 +670,10 @@ func (m *OldTimeMsg) String() string { return fmt.Sprintf("%+v", *m) }
 func (m *OldTimeMsg) Reset()         { *m = OldTimeMsg{} }
 
 type DurationMsg struct {
-	tm   time.Time      `protobuf:"bytes,1"`
-	dur  time.Duration  `protobuf:"bytes,26"`
-	dur2 *time.Duration `protobuf:"bytes,46"`
+	tm   time.Time       `protobuf:"bytes,1"`
+	dur  time.Duration   `protobuf:"bytes,26"`
+	dur2 *time.Duration  `protobuf:"bytes,46"`
+	dur3 []time.Duration `protobuf:"bytes,64"`
 }
 
 func (*DurationMsg) ProtoMessage() {}
@@ -715,7 +716,7 @@ func TestTimeMsg(t *testing.T) {
 			tm:   time.Unix(1, 4).UTC(),
 			dur:  time.Second*10 + time.Microsecond,
 			dur2: &d2,
-			//dur3: []time.Duration{15 * time.Second, 365 * 24 * time.Hour},
+			dur3: []time.Duration{15 * time.Second, 365 * 24 * time.Hour},
 			//dur4: [1]time.Duration{time.Nanosecond},
 		}
 		var mb TimeMsg
@@ -726,6 +727,7 @@ func TestTimeMsg(t *testing.T) {
 		eq("tm", mb.tm, m.tm, t)
 		eq("dur", mb.dur, m.dur, t)
 		eq("dur2", *mb.dur2, *m.dur2, t)
+		eq("dur3", mb.dur3, m.dur3, t)
 	}
 }
 

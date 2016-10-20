@@ -1182,24 +1182,12 @@ func (o *Buffer) dec_ptr_time_Duration(p *Properties, base structPointer) error 
 func (o *Buffer) dec_slice_time_Duration(p *Properties, base structPointer) error {
 	v := (*[]time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
 
-	nn, err := o.DecodeVarint()
+	d, err := o.dec_Duration(p)
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded values
 
-	fin := o.index + nb
-	if fin < o.index {
-		return errOverflow
-	}
-	y := *v
-	for o.index < fin {
-		u, err := p.valDec(o)
-		if err != nil {
-			return err
-		}
-		y = append(y, time.Duration(u))
-	}
-	*v = y
+	*v = append(*v, d)
+
 	return nil
 }
