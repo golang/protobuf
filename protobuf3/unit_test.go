@@ -38,6 +38,7 @@ package protobuf3_test
 import (
 	"bytes"
 	"fmt"
+	"reflect"
 	"testing"
 	"time"
 
@@ -432,6 +433,8 @@ func check(mb protobuf3.Message, mc proto.Message, t *testing.T) {
 
 // check that protobuf3.Unmarshal(mb) works like proto.Unmarshal(mc)
 func uncheck(mi protobuf3.Message, mb protobuf3.Message, mc proto.Message, t *testing.T) {
+	t.Logf("mi = %v", mi)
+
 	pb, err := protobuf3.Marshal(mi)
 	if err != nil {
 		t.Error(err)
@@ -453,6 +456,12 @@ func uncheck(mi protobuf3.Message, mb protobuf3.Message, mc proto.Message, t *te
 		return
 	}
 	t.Logf("mc = %v", mc)
+}
+
+func eq(name string, x interface{}, y interface{}, t *testing.T) {
+	if !reflect.DeepEqual(x, y) {
+		t.Errorf("(%v) %v != (%v) %v", reflect.TypeOf(x), x, reflect.TypeOf(y), y)
+	}
 }
 
 type NestedPtrStructMsg struct {
@@ -670,38 +679,36 @@ func (*DurationMsg) ProtoMessage() {}
 
 func TestTimeMsg(t *testing.T) {
 	d2 := -(time.Second + time.Millisecond)
-	if false {
-		m := TimeMsg{
-			tm:   time.Unix(112233, 445566),
-			dur:  time.Second*10 + time.Microsecond,
-			dur2: &d2,
-			dur3: []time.Duration{15 * time.Second, 365 * 24 * time.Hour},
-			dur4: [1]time.Duration{time.Nanosecond},
-		}
-
-		o := OldTimeMsg{
-			tm: &timestamp.Timestamp{
-				Seconds: 112233,
-				Nanos:   445566,
-			},
-			dur: &duration.Duration{
-				Seconds: 10,
-				Nanos:   1000,
-			},
-			dur2: &duration.Duration{
-				Seconds: -1,
-				Nanos:   -1000000,
-			},
-			dur3: []*duration.Duration{
-				&duration.Duration{Seconds: 15},
-				&duration.Duration{Seconds: 365 * 24 * 60 * 60},
-			},
-			dur4: []*duration.Duration{&duration.Duration{Nanos: 1}},
-		}
-
-		check(&o, &o, t)
-		check(&m, &o, t)
+	m := TimeMsg{
+		tm:   time.Unix(112233, 445566),
+		dur:  time.Second*10 + time.Microsecond,
+		dur2: &d2,
+		dur3: []time.Duration{15 * time.Second, 365 * 24 * time.Hour},
+		dur4: [1]time.Duration{time.Nanosecond},
 	}
+
+	o := OldTimeMsg{
+		tm: &timestamp.Timestamp{
+			Seconds: 112233,
+			Nanos:   445566,
+		},
+		dur: &duration.Duration{
+			Seconds: 10,
+			Nanos:   1000,
+		},
+		dur2: &duration.Duration{
+			Seconds: -1,
+			Nanos:   -1000000,
+		},
+		dur3: []*duration.Duration{
+			&duration.Duration{Seconds: 15},
+			&duration.Duration{Seconds: 365 * 24 * 60 * 60},
+		},
+		dur4: []*duration.Duration{&duration.Duration{Nanos: 1}},
+	}
+
+	check(&o, &o, t)
+	check(&m, &o, t)
 
 	{
 		m := DurationMsg{
@@ -715,6 +722,10 @@ func TestTimeMsg(t *testing.T) {
 		var mc OldTimeMsg
 		uncheck(&m, &mb, &mc, t)
 		t.Logf("mb = %+v\n", mb)
+
+		eq("tm", mb.tm, m.tm, t)
+		eq("dur", mb.dur, m.dur, t)
+		eq("dur2", *mb.dur2, *m.dur2, t)
 	}
 }
 
