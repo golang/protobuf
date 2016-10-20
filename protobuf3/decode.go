@@ -697,8 +697,8 @@ func (o *Buffer) dec_time_Time(p *Properties, base structPointer) error {
 		}
 	}
 
-	t := time.Unix(int64(secs), int64(nanos))
-	*(*time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = t
+	// save whatever we got (which might even be the zero value)
+	*t = time.Unix(int64(secs), int64(nanos)).UTC() // time.Unix() returns local timezone, which we usually don't use
 
 	o.buf, o.index = obuf, oi
 	return nil

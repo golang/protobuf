@@ -680,7 +680,7 @@ func (*DurationMsg) ProtoMessage() {}
 func TestTimeMsg(t *testing.T) {
 	d2 := -(time.Second + time.Millisecond)
 	m := TimeMsg{
-		tm:   time.Unix(112233, 445566),
+		tm:   time.Unix(112233, 445566).UTC(),
 		dur:  time.Second*10 + time.Microsecond,
 		dur2: &d2,
 		dur3: []time.Duration{15 * time.Second, 365 * 24 * time.Hour},
@@ -712,7 +712,7 @@ func TestTimeMsg(t *testing.T) {
 
 	{
 		m := DurationMsg{
-			tm:   time.Unix(1, 4),
+			tm:   time.Unix(1, 4).UTC(),
 			dur:  time.Second*10 + time.Microsecond,
 			dur2: &d2,
 			//dur3: []time.Duration{15 * time.Second, 365 * 24 * time.Hour},
