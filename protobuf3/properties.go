@@ -629,13 +629,25 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 		case reflect.Struct:
 			p.stype = t2
 			p.sprop = getPropertiesLocked(t2)
+			p.asProtobuf = p.stypeAsProtobuf()
+
 			p.isMarshaler = isMarshaler(t1)
 			if p.isMarshaler {
 				p.enc = (*Buffer).enc_ptr_marshaler
 			} else {
 				p.enc = (*Buffer).enc_ptr_struct_message
 			}
-			p.asProtobuf = p.stypeAsProtobuf()
+
+			p.isUnmarshaler = isUnmarshaler(t1)
+			switch {
+			case p.isUnmarshaler:
+				p.dec = (*Buffer).dec_ptr_unmarshaler
+			case t2 == time_Time_type:
+				p.dec = (*Buffer).dec_ptr_time_Time
+			default:
+				p.dec = (*Buffer).dec_ptr_struct_message
+			}
+
 			// what about *Array types?
 		}
 

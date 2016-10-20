@@ -651,6 +651,32 @@ func (o *Buffer) dec_struct_message(p *Properties, base structPointer) error {
 	return err
 }
 
+// Decode a pointer to an embedded message.
+func (o *Buffer) dec_ptr_struct_message(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	pptr := (*structPointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	ptr := *pptr
+	var val reflect.Value
+	if ptr == nil {
+		val = reflect.New(p.stype)
+		ptr := structPointer(val.Pointer()) // Is this gc safe? it seems not to be to me, but I don't have a better solution, and it's what google's code does
+		*pptr = ptr
+	} // else the value is already allocated and we merge into it
+
+	// swizzle around and reuse the buffer. less gc
+	obuf, oi := o.buf, o.index
+	o.buf, o.index = raw, 0
+
+	err = o.unmarshal_struct(p.stype, p.sprop, ptr)
+
+	o.buf, o.index = obuf, oi
+	return err
+}
+
 // Decode an embedded message that can unmarshal itself
 func (o *Buffer) dec_unmarshaler(p *Properties, base structPointer) error {
 	raw, err := o.DecodeRawBytes()
@@ -663,8 +689,44 @@ func (o *Buffer) dec_unmarshaler(p *Properties, base structPointer) error {
 	return iv.(Unmarshaler).UnmarshalProtobuf3(raw)
 }
 
+// Decode a pointer to an embedded message that can unmarshal itself
+func (o *Buffer) dec_ptr_unmarshaler(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	pptr := (*unsafe.Pointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	var val reflect.Value
+	if *pptr == nil {
+		val = reflect.New(p.stype)
+		*pptr = unsafe.Pointer(val.Pointer()) // Is this gc safe? it seems not to be to me, but I don't have a better solution, and it's what google's code does
+	} else {
+		// else the value is already allocated and we merge into it
+		val = reflect.NewAt(p.stype, *pptr)
+	}
+	iv := val.Interface()
+	return iv.(Unmarshaler).UnmarshalProtobuf3(raw)
+}
+
 // custom decoder for protobuf3 standard Timestamp, decoding it into the standard go time.Time
 func (o *Buffer) dec_time_Time(p *Properties, base structPointer) error {
+	return o.decode_time_Time((*time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))
+}
+
+// custom decoder for pointer to time.Time
+func (o *Buffer) dec_ptr_time_Time(p *Properties, base structPointer) error {
+	pptr := (**time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+	ptr := *pptr
+	if ptr == nil {
+		ptr = new(time.Time)
+		*pptr = ptr
+	} // else overwwrite the existing time.Time like the protobuf standard says to do
+	return o.decode_time_Time(ptr)
+}
+
+// inner code for decoding protobuf3 standard Timestamp to time.Time
+func (o *Buffer) decode_time_Time(t *time.Time) error {
 	// first decode the byte length and limit our decoding to that (since messages are encoded in WireBytes)
 	buf, err := o.DecodeRawBytes()
 	if err != nil {
