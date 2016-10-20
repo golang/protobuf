@@ -371,15 +371,6 @@ func (p *Buffer) SkipRawBytes() error {
 	return nil
 }
 
-// Unmarshaler is the interface representing objects that can
-// unmarshal themselves.  The method should reset the receiver before
-// decoding starts.  The argument points to data that may be
-// overwritten, so implementations should not keep references to the
-// buffer.
-type Unmarshaler interface {
-	UnmarshalProtobuf3([]byte) error
-}
-
 // Unmarshal parses the protocol buffer representation in buf and
 // writes the decoded result to pb.  If the struct underlying pb does not match
 // the data in buf, the results can be unpredictable.
@@ -410,8 +401,8 @@ func (p *Buffer) Unmarshal(pb Message) error {
 	}
 
 	// If the object can unmarshal itself, let it.
-	if u, ok := pb.(Unmarshaler); ok {
-		err := u.UnmarshalProtobuf3(p.buf[p.index:])
+	if m, ok := pb.(Marshaler); ok {
+		err := m.UnmarshalProtobuf3(p.buf[p.index:])
 		p.index = len(p.buf)
 		return err
 	}
@@ -678,7 +669,7 @@ func (o *Buffer) dec_ptr_struct_message(p *Properties, base structPointer) error
 }
 
 // Decode an embedded message that can unmarshal itself
-func (o *Buffer) dec_unmarshaler(p *Properties, base structPointer) error {
+func (o *Buffer) dec_marshaler(p *Properties, base structPointer) error {
 	raw, err := o.DecodeRawBytes()
 	if err != nil {
 		return err
@@ -686,11 +677,11 @@ func (o *Buffer) dec_unmarshaler(p *Properties, base structPointer) error {
 
 	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field))
 	iv := reflect.NewAt(p.stype, ptr).Interface()
-	return iv.(Unmarshaler).UnmarshalProtobuf3(raw)
+	return iv.(Marshaler).UnmarshalProtobuf3(raw)
 }
 
 // Decode a pointer to an embedded message that can unmarshal itself
-func (o *Buffer) dec_ptr_unmarshaler(p *Properties, base structPointer) error {
+func (o *Buffer) dec_ptr_marshaler(p *Properties, base structPointer) error {
 	raw, err := o.DecodeRawBytes()
 	if err != nil {
 		return err
@@ -705,8 +696,25 @@ func (o *Buffer) dec_ptr_unmarshaler(p *Properties, base structPointer) error {
 		// else the value is already allocated and we merge into it
 		val = reflect.NewAt(p.stype, *pptr)
 	}
-	iv := val.Interface()
-	return iv.(Unmarshaler).UnmarshalProtobuf3(raw)
+	return val.Interface().(Marshaler).UnmarshalProtobuf3(raw)
+}
+
+// Decode into slice of things which can marshal themselves
+func (o *Buffer) dec_slice_marshaler(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	// build a reflect.Value of the slice
+	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field))
+	slice_type := reflect.SliceOf(p.stype)
+	slice := reflect.NewAt(slice_type, ptr)
+	// put an empty value at the end of the slice
+	slice.Set(reflect.Append(slice, reflect.Zero(p.stype)))
+	// and unmarshal into it
+	val := slice.Index(slice.Len() - 1)
+	return val.Interface().(Marshaler).UnmarshalProtobuf3(raw)
 }
 
 // custom decoder for protobuf3 standard Timestamp, decoding it into the standard go time.Time

@@ -167,9 +167,13 @@ func (p *Buffer) EncodeStringBytes(s string) {
 	p.buf = append(p.buf, s...)
 }
 
-// Marshaler is the interface representing objects that can marshal themselves.
+// Marshaler is the interface representing objects that can marshal and unmarshal themselves.
+// (note this is a single interface because dealing with types which only implement half the
+// operations creates too many edge cases, and so far I haven't had any cases where I didn't
+// have both a custom marshal and a custom unmarshal function)
 type Marshaler interface {
 	MarshalProtobuf3() ([]byte, error)
+	UnmarshalProtobuf3([]byte) error
 }
 
 // Marshal takes the protocol buffer

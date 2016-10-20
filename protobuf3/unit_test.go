@@ -750,6 +750,10 @@ func (s *CustomSlice) MarshalProtobuf3() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+func (s *CustomSlice) UnmarshalProtobuf3(data []byte) error {
+	return nil
+}
+
 type EquivToCustomMsg struct {
 	Custom *EquivCustomSlices `protobuf:"bytes,1"`
 }
@@ -793,6 +797,11 @@ type TestMarshaler [4]byte
 
 func (t *TestMarshaler) MarshalProtobuf3() ([]byte, error) {
 	return t[:], nil
+}
+
+func (t *TestMarshaler) UnmarshalProtobuf3(data []byte) error {
+	copy(t[:], data)
+	return nil
 }
 
 type EquivSliceMarshalerMsg struct {

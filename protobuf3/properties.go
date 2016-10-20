@@ -339,15 +339,14 @@ type Properties struct {
 	Tag        uint32
 	WireType   WireType
 
-	enc           encoder
-	valEnc        valueEncoder // set for bool and numeric types only
-	field         field
-	tagcode       []byte // encoding of EncodeVarint((Tag<<3)|WireType)
-	tagbuf        [8]byte
-	stype         reflect.Type      // set for struct types only
-	sprop         *StructProperties // set for struct types only
-	isMarshaler   bool
-	isUnmarshaler bool
+	enc         encoder
+	valEnc      valueEncoder // set for bool and numeric types only
+	field       field
+	tagcode     []byte // encoding of EncodeVarint((Tag<<3)|WireType)
+	tagbuf      [8]byte
+	stype       reflect.Type      // set for struct types only
+	sprop       *StructProperties // set for struct types only
+	isMarshaler bool
 
 	mtype    reflect.Type // set for map types only
 	mkeyprop *Properties  // set for map types only
@@ -557,19 +556,15 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 		t2 := reflect.PtrTo(t1)
 
 		p.isMarshaler = isMarshaler(t2)
-		if p.isMarshaler {
-			p.enc = (*Buffer).enc_marshaler
-		} else {
-			p.enc = (*Buffer).enc_struct_message
-		}
-
-		p.isUnmarshaler = isUnmarshaler(t2)
 		switch {
-		case p.isUnmarshaler:
-			p.dec = (*Buffer).dec_unmarshaler
+		case p.isMarshaler:
+			p.enc = (*Buffer).enc_marshaler
+			p.dec = (*Buffer).dec_marshaler
 		case t1 == time_Time_type:
-			p.dec = (*Buffer).dec_time_Time
+			p.enc = (*Buffer).enc_struct_message // time.Time encodes as a struct with 1 (made up) field
+			p.dec = (*Buffer).dec_time_Time      // but it decodes with a custom function
 		default:
+			p.enc = (*Buffer).enc_struct_message
 			p.dec = (*Buffer).dec_struct_message
 		}
 
@@ -580,6 +575,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 			p.stype = t2
 			p.isMarshaler = true
 			p.enc = (*Buffer).enc_ptr_marshaler
+			p.dec = (*Buffer).dec_ptr_marshaler
 			p.asProtobuf = p.stypeAsProtobuf()
 			break
 		}
@@ -630,18 +626,8 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 			p.stype = t2
 			p.sprop = getPropertiesLocked(t2)
 			p.asProtobuf = p.stypeAsProtobuf()
-
-			p.isMarshaler = isMarshaler(t1)
-			if p.isMarshaler {
-				p.enc = (*Buffer).enc_ptr_marshaler
-			} else {
-				p.enc = (*Buffer).enc_ptr_struct_message
-			}
-
-			p.isUnmarshaler = isUnmarshaler(t1)
+			p.enc = (*Buffer).enc_ptr_struct_message
 			switch {
-			case p.isUnmarshaler:
-				p.dec = (*Buffer).dec_ptr_unmarshaler
 			case t2 == time_Time_type:
 				p.dec = (*Buffer).dec_ptr_time_Time
 			default:
@@ -652,12 +638,13 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 		}
 
 	case reflect.Slice:
-		// can the slice marshal itself?
+		// can the entire slice marshal itself?
 		if isMarshaler(reflect.PtrTo(t1)) {
 			p.isMarshaler = true
 			p.stype = t1
 			p.enc = (*Buffer).enc_marshaler
-			p.asProtobuf = "repeated " + p.stypeAsProtobuf()
+			p.dec = (*Buffer).dec_marshaler
+			p.asProtobuf = p.stypeAsProtobuf() // if the type wants to pretends to be a 'repeated' type, it needs to say so in its type. we don't assume anything
 			break
 		}
 
@@ -667,6 +654,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 			p.isMarshaler = true
 			p.stype = t2
 			p.enc = (*Buffer).enc_slice_marshaler
+			p.dec = (*Buffer).dec_slice_marshaler
 			p.asProtobuf = "repeated " + p.stypeAsProtobuf()
 			break
 		}
@@ -772,6 +760,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 			p.isMarshaler = true
 			p.stype = t1
 			p.enc = (*Buffer).enc_marshaler
+			p.dec = (*Buffer).dec_marshaler
 			p.asProtobuf = p.stypeAsProtobuf()
 			break
 		}
@@ -948,18 +937,12 @@ func MakeUppercaseTypeName(t reflect.Type, f string) string {
 
 var (
 	marshalerType      = reflect.TypeOf((*Marshaler)(nil)).Elem()
-	unmarshalerType    = reflect.TypeOf((*Unmarshaler)(nil)).Elem()
 	asprotobuffer3Type = reflect.TypeOf((*AsProtobuf3er)(nil)).Elem()
 )
 
 // isMarshaler reports whether type t implements Marshaler.
 func isMarshaler(t reflect.Type) bool {
 	return t.Implements(marshalerType)
-}
-
-// isUnmarshaler reports whether type t implements Unmarshaler.
-func isUnmarshaler(t reflect.Type) bool {
-	return t.Implements(unmarshalerType)
 }
 
 // Init populates the properties from a protocol buffer struct tag.
