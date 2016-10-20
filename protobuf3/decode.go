@@ -443,7 +443,7 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, base str
 		wire := WireType(u & 0x7)
 		tag := int(u >> 3)
 		if tag <= 0 {
-			return fmt.Errorf("proto: %s: illegal tag %d (wire type %d)", st, tag, wire)
+			return fmt.Errorf("protobuf3: %s: illegal tag %d (wire type %d)", st, tag, wire)
 		}
 		i := sort.Search(len(prop.order), func(i int) bool {
 			return prop.Prop[prop.order[i]].Tag >= uint32(tag)
@@ -456,11 +456,11 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, base str
 		p := &prop.Prop[fieldnum]
 
 		if p.dec == nil {
-			fmt.Fprintf(os.Stderr, "proto: no protobuf decoder for %s.%s\n", st, st.Field(fieldnum).Name)
+			fmt.Fprintf(os.Stderr, "protobuf3: no protobuf decoder for %s.%s\n", st, st.Field(fieldnum).Name)
 			continue
 		}
 		if wire != p.WireType && wire != WireBytes { // packed encoding, which is used in protobuf v3, wraps repeated numeric types in WireBytes
-			err = fmt.Errorf("proto: bad wiretype for field %s.%s: got wiretype %d, want %d", st, st.Field(fieldnum).Name, wire, p.WireType)
+			err = fmt.Errorf("protobuf3: bad wiretype for field %s.%s: got wiretype %d, want %d", st, st.Field(fieldnum).Name, wire, p.WireType)
 			continue
 		}
 		err = p.dec(o, p, base)
@@ -482,7 +482,7 @@ func (o *Buffer) skip(t reflect.Type, wire WireType) error {
 	case WireFixed32:
 		err = o.SkipFixed(4)
 	default:
-		err = fmt.Errorf("proto: can't skip unknown wire type %d for %v", wire, t)
+		err = fmt.Errorf("protobuf3: can't skip unknown wire type %d for %v", wire, t)
 	}
 	return err
 }
