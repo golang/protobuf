@@ -665,12 +665,21 @@ func (o *Buffer) dec_unmarshaler(p *Properties, base structPointer) error {
 
 // custom decoder for protobuf3 standard Timestamp, decoding it into the standard go time.Time
 func (o *Buffer) dec_time_Time(p *Properties, base structPointer) error {
-	fmt.Printf("%v.dec_time_Time(%v, %v)\n", o, p, base)
-	fmt.Printf("buf[%d:]= %x\n", o.index, o.buf[o.index:])
+	// first decode the byte length and limit our decoding to that (since messages are encoded in WireBytes)
+	buf, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	// swizzle buf (saves gc pressure from a new Buffer)
+	obuf, oi := o.buf, o.index
+	o.buf, o.index = buf, 0
+
 	var secs, nanos uint64
 	for o.index < len(o.buf) {
 		tag, err := o.DecodeVarint()
 		if err != nil {
+			o.buf, o.index = obuf, oi
 			return err
 		}
 		switch tag {
@@ -683,14 +692,15 @@ func (o *Buffer) dec_time_Time(p *Properties, base structPointer) error {
 			o.skip(nil, WireType(tag)&7)
 		}
 		if err != nil {
+			o.buf, o.index = obuf, oi
 			return err
 		}
 	}
-	fmt.Printf("secs %d, nanos %d\n", secs, nanos)
 
 	t := time.Unix(int64(secs), int64(nanos))
 	*(*time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = t
 
+	o.buf, o.index = obuf, oi
 	return nil
 }
 

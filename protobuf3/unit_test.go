@@ -670,40 +670,42 @@ func (*DurationMsg) ProtoMessage() {}
 
 func TestTimeMsg(t *testing.T) {
 	d2 := -(time.Second + time.Millisecond)
-	m := TimeMsg{
-		tm:   time.Unix(112233, 445566),
-		dur:  time.Second*10 + time.Microsecond,
-		dur2: &d2,
-		dur3: []time.Duration{15 * time.Second, 365 * 24 * time.Hour},
-		dur4: [1]time.Duration{time.Nanosecond},
-	}
+	if false {
+		m := TimeMsg{
+			tm:   time.Unix(112233, 445566),
+			dur:  time.Second*10 + time.Microsecond,
+			dur2: &d2,
+			dur3: []time.Duration{15 * time.Second, 365 * 24 * time.Hour},
+			dur4: [1]time.Duration{time.Nanosecond},
+		}
 
-	o := OldTimeMsg{
-		tm: &timestamp.Timestamp{
-			Seconds: 112233,
-			Nanos:   445566,
-		},
-		dur: &duration.Duration{
-			Seconds: 10,
-			Nanos:   1000,
-		},
-		dur2: &duration.Duration{
-			Seconds: -1,
-			Nanos:   -1000000,
-		},
-		dur3: []*duration.Duration{
-			&duration.Duration{Seconds: 15},
-			&duration.Duration{Seconds: 365 * 24 * 60 * 60},
-		},
-		dur4: []*duration.Duration{&duration.Duration{Nanos: 1}},
-	}
+		o := OldTimeMsg{
+			tm: &timestamp.Timestamp{
+				Seconds: 112233,
+				Nanos:   445566,
+			},
+			dur: &duration.Duration{
+				Seconds: 10,
+				Nanos:   1000,
+			},
+			dur2: &duration.Duration{
+				Seconds: -1,
+				Nanos:   -1000000,
+			},
+			dur3: []*duration.Duration{
+				&duration.Duration{Seconds: 15},
+				&duration.Duration{Seconds: 365 * 24 * 60 * 60},
+			},
+			dur4: []*duration.Duration{&duration.Duration{Nanos: 1}},
+		}
 
-	check(&o, &o, t)
-	check(&m, &o, t)
+		check(&o, &o, t)
+		check(&m, &o, t)
+	}
 
 	{
 		m := DurationMsg{
-			tm:   time.Unix(112233, 445566),
+			tm:   time.Unix(1, 4),
 			dur:  time.Second*10 + time.Microsecond,
 			dur2: &d2,
 			//dur3: []time.Duration{15 * time.Second, 365 * 24 * time.Hour},

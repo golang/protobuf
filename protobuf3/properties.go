@@ -564,9 +564,12 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 		}
 
 		p.isUnmarshaler = isUnmarshaler(t2)
-		if p.isUnmarshaler {
+		switch {
+		case p.isUnmarshaler:
 			p.dec = (*Buffer).dec_unmarshaler
-		} else {
+		case t1 == time_Time_type:
+			p.dec = (*Buffer).dec_time_Time
+		default:
 			p.dec = (*Buffer).dec_struct_message
 		}
 
@@ -990,8 +993,10 @@ var time_Time_sprop = &StructProperties{
 	Prop: []Properties{
 		// we need just one made-up field with a .enc() method which we've hooked into
 		Properties{
-			enc: (*Buffer).enc_time_Time,
-			dec: (*Buffer).dec_time_Time,
+			Name:     "time.Time",
+			WireType: WireBytes,
+			enc:      (*Buffer).enc_time_Time,
+			// note: .dec isn't used
 		},
 	},
 	order: []int{0},
