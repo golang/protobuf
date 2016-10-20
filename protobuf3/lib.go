@@ -58,10 +58,15 @@ type Message interface {
 // reduce memory usage.  It is not necessary to use a Buffer;
 // the global functions Marshal and Unmarshal create a
 // temporary Buffer and are fine for most applications.
+// However if you are decoding objects with large []bytes, creating
+// your own Buffer and setting Immutable=true will result in the
+// decode []bytes references directly into the []byte passed to NewBuffer()
+// rather than being expensive copies.
 type Buffer struct {
-	buf   []byte // encode/decode byte stream
-	index int    // read point
-	err   error  // nil, or the first error which happened during operation
+	buf       []byte // encode/decode byte stream
+	index     int    // read point
+	Immutable bool   // true if we the caller promises the contents of buf[] are immutable, and thus we can retain references to it for types which decode into []byte
+	err       error  // nil, or the first error which happened during operation
 }
 
 // NewBuffer allocates a new Buffer and initializes its internal data to

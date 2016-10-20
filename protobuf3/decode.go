@@ -630,10 +630,13 @@ func (o *Buffer) dec_slice_byte(p *Properties, base structPointer) error {
 		return err
 	}
 
-	copied := make([]byte, len(raw))
-	copy(copied, raw)
+	if !o.Immutable {
+		copied := make([]byte, len(raw))
+		copy(copied, raw)
+		raw = copied
+	}
 
-	*(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = copied
+	*(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) = raw
 	return nil
 }
 
@@ -812,11 +815,14 @@ func (o *Buffer) dec_slice_slice_byte(p *Properties, base structPointer) error {
 		return err
 	}
 
-	copied := make([]byte, len(raw))
-	copy(copied, raw)
+	if !o.Immutable {
+		copied := make([]byte, len(raw))
+		copy(copied, raw)
+		raw = copied
+	}
 
 	v := (*[][]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
-	*v = append(*v, copied)
+	*v = append(*v, raw)
 	return nil
 }
 
