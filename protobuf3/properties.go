@@ -451,7 +451,7 @@ func (p *Properties) Parse(s string) (IntEncoder, bool, error) {
 }
 
 // Initialize the fields for encoding and decoding.
-func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_encoder IntEncoder) {
+func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_encoder IntEncoder) {
 	p.enc = nil
 	p.dec = nil
 	wire := p.WireType
@@ -477,350 +477,251 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 		int64_encoder_txt = "sint64"
 	}
 
-	switch t1 := typ; t1.Kind() {
-	default:
-		fmt.Fprintf(os.Stderr, "protobuf3: no coders for %s\n", t1.Name())
-
-	// proto3 scalar types
-
-	case reflect.Bool:
-		p.enc = (*Buffer).enc_bool
-		p.dec = (*Buffer).dec_bool
-		p.asProtobuf = "bool"
-	case reflect.Int:
-		p.enc = (*Buffer).enc_int
-		p.dec = (*Buffer).dec_int
-		p.asProtobuf = int32_encoder_txt
-	case reflect.Uint:
-		p.enc = (*Buffer).enc_uint
-		p.dec = (*Buffer).dec_int // signness doesn't matter when decoding. either the top bit is set or it isn't
-		p.asProtobuf = uint32_encoder_txt
-	case reflect.Int8:
-		p.enc = (*Buffer).enc_int8
-		p.dec = (*Buffer).dec_int8
-		p.asProtobuf = int32_encoder_txt
-	case reflect.Uint8:
-		p.enc = (*Buffer).enc_uint8
-		p.dec = (*Buffer).dec_int8
-		p.asProtobuf = uint32_encoder_txt
-	case reflect.Int16:
-		p.enc = (*Buffer).enc_int16
-		p.dec = (*Buffer).dec_int16
-		p.asProtobuf = int32_encoder_txt
-	case reflect.Uint16:
-		p.enc = (*Buffer).enc_uint16
-		p.dec = (*Buffer).dec_int16
-		p.asProtobuf = uint32_encoder_txt
-	case reflect.Int32:
-		p.enc = (*Buffer).enc_int32
-		p.dec = (*Buffer).dec_int32
-		p.asProtobuf = int32_encoder_txt
-	case reflect.Uint32:
-		p.enc = (*Buffer).enc_uint32
-		p.dec = (*Buffer).dec_int32
-		p.asProtobuf = uint32_encoder_txt
-	case reflect.Int64:
-		// this might be a time.Duration, or it might be an ordinary int64
-		// if the caller wants a time.Duration to be encoded as a protobuf Duration then the
-		// wiretype must be WireBytes. Otherwise they'll get the int64 encoding they've selected.
-		if p.WireType == WireBytes && t1 == time_Duration_type {
-			p.enc = (*Buffer).enc_time_Duration
-			p.dec = (*Buffer).dec_time_Duration
-			p.asProtobuf = "google.protobuf.Duration"
-		} else {
-			p.enc = (*Buffer).enc_int64
-			p.dec = (*Buffer).dec_int64
-			p.asProtobuf = int64_encoder_txt
-		}
-	case reflect.Uint64:
-		p.enc = (*Buffer).enc_int64
-		p.dec = (*Buffer).dec_int64
-		p.asProtobuf = uint64_encoder_txt
-	case reflect.Float32:
-		p.enc = (*Buffer).enc_uint32 // can just treat them as bits
-		p.dec = (*Buffer).dec_int32
-		p.asProtobuf = "float"
-	case reflect.Float64:
-		p.enc = (*Buffer).enc_int64 // can just treat them as bits
-		p.dec = (*Buffer).dec_int64
-		p.asProtobuf = "double"
-	case reflect.String:
-		p.enc = (*Buffer).enc_string
-		p.dec = (*Buffer).dec_string
-		p.asProtobuf = "string"
-
-	case reflect.Struct:
+	// can t1 marshal itself?
+	if isMarshaler(reflect.PtrTo(t1)) {
+		p.isMarshaler = true
 		p.stype = t1
-		p.sprop = getPropertiesLocked(t1)
+		p.enc = (*Buffer).enc_marshaler
+		p.dec = (*Buffer).dec_marshaler
 		p.asProtobuf = p.stypeAsProtobuf()
-		t2 := reflect.PtrTo(t1)
-
-		p.isMarshaler = isMarshaler(t2)
-		switch {
-		case p.isMarshaler:
-			p.enc = (*Buffer).enc_marshaler
-			p.dec = (*Buffer).dec_marshaler
-		case t1 == time_Time_type:
-			p.enc = (*Buffer).enc_struct_message // time.Time encodes as a struct with 1 (made up) field
-			p.dec = (*Buffer).dec_time_Time      // but it decodes with a custom function
+	} else {
+		switch t1.Kind() {
 		default:
-			p.enc = (*Buffer).enc_struct_message
-			p.dec = (*Buffer).dec_struct_message
-		}
+			fmt.Fprintf(os.Stderr, "protobuf3: no coders for %s\n", t1.Name())
 
-	case reflect.Ptr:
-		t2 := t1.Elem()
-		// can the target of the pointer marshal itself?
-		if isMarshaler(t1) {
-			p.stype = t2
-			p.isMarshaler = true
-			p.enc = (*Buffer).enc_ptr_marshaler
-			p.dec = (*Buffer).dec_ptr_marshaler
-			p.asProtobuf = p.stypeAsProtobuf()
-			break
-		}
+		// proto3 scalar types
 
-		switch t2.Kind() {
-		default:
-			fmt.Fprintf(os.Stderr, "protobuf3: no encoder function for %s -> %s\n", t1.Name(), t2.Name())
-			break
 		case reflect.Bool:
-			p.enc = (*Buffer).enc_ptr_bool
-			p.dec = (*Buffer).dec_ptr_bool
+			p.enc = (*Buffer).enc_bool
+			p.dec = (*Buffer).dec_bool
 			p.asProtobuf = "bool"
+		case reflect.Int:
+			p.enc = (*Buffer).enc_int
+			p.dec = (*Buffer).dec_int
+			p.asProtobuf = int32_encoder_txt
+		case reflect.Uint:
+			p.enc = (*Buffer).enc_uint
+			p.dec = (*Buffer).dec_int // signness doesn't matter when decoding. either the top bit is set or it isn't
+			p.asProtobuf = uint32_encoder_txt
+		case reflect.Int8:
+			p.enc = (*Buffer).enc_int8
+			p.dec = (*Buffer).dec_int8
+			p.asProtobuf = int32_encoder_txt
+		case reflect.Uint8:
+			p.enc = (*Buffer).enc_uint8
+			p.dec = (*Buffer).dec_int8
+			p.asProtobuf = uint32_encoder_txt
+		case reflect.Int16:
+			p.enc = (*Buffer).enc_int16
+			p.dec = (*Buffer).dec_int16
+			p.asProtobuf = int32_encoder_txt
+		case reflect.Uint16:
+			p.enc = (*Buffer).enc_uint16
+			p.dec = (*Buffer).dec_int16
+			p.asProtobuf = uint32_encoder_txt
 		case reflect.Int32:
-			p.enc = (*Buffer).enc_ptr_int32
-			p.dec = (*Buffer).dec_ptr_int32
+			p.enc = (*Buffer).enc_int32
+			p.dec = (*Buffer).dec_int32
 			p.asProtobuf = int32_encoder_txt
 		case reflect.Uint32:
-			p.enc = (*Buffer).enc_ptr_uint32
-			p.dec = (*Buffer).dec_ptr_int32
+			p.enc = (*Buffer).enc_uint32
+			p.dec = (*Buffer).dec_int32
 			p.asProtobuf = uint32_encoder_txt
 		case reflect.Int64:
-			if p.WireType == WireBytes && t2 == time_Duration_type {
-				p.enc = (*Buffer).enc_ptr_time_Duration
-				p.dec = (*Buffer).dec_ptr_time_Duration
+			// this might be a time.Duration, or it might be an ordinary int64
+			// if the caller wants a time.Duration to be encoded as a protobuf Duration then the
+			// wiretype must be WireBytes. Otherwise they'll get the int64 encoding they've selected.
+			if p.WireType == WireBytes && t1 == time_Duration_type {
+				p.enc = (*Buffer).enc_time_Duration
+				p.dec = (*Buffer).dec_time_Duration
 				p.asProtobuf = "google.protobuf.Duration"
 			} else {
-				p.enc = (*Buffer).enc_ptr_int64
-				p.dec = (*Buffer).dec_ptr_int64
+				p.enc = (*Buffer).enc_int64
+				p.dec = (*Buffer).dec_int64
 				p.asProtobuf = int64_encoder_txt
 			}
 		case reflect.Uint64:
-			p.enc = (*Buffer).enc_ptr_int64
-			p.dec = (*Buffer).dec_ptr_int64
+			p.enc = (*Buffer).enc_int64
+			p.dec = (*Buffer).dec_int64
 			p.asProtobuf = uint64_encoder_txt
 		case reflect.Float32:
-			p.enc = (*Buffer).enc_ptr_uint32 // can just treat them as bits
-			p.dec = (*Buffer).dec_ptr_int32
+			p.enc = (*Buffer).enc_uint32 // can just treat them as bits
+			p.dec = (*Buffer).dec_int32
 			p.asProtobuf = "float"
 		case reflect.Float64:
-			p.enc = (*Buffer).enc_ptr_int64 // can just treat them as bits
-			p.dec = (*Buffer).dec_ptr_int64
+			p.enc = (*Buffer).enc_int64 // can just treat them as bits
+			p.dec = (*Buffer).dec_int64
 			p.asProtobuf = "double"
 		case reflect.String:
-			p.enc = (*Buffer).enc_ptr_string
-			p.dec = (*Buffer).dec_ptr_string
+			p.enc = (*Buffer).enc_string
+			p.dec = (*Buffer).dec_string
 			p.asProtobuf = "string"
+
 		case reflect.Struct:
-			p.stype = t2
-			p.sprop = getPropertiesLocked(t2)
-			p.asProtobuf = p.stypeAsProtobuf()
-			p.enc = (*Buffer).enc_ptr_struct_message
-			switch {
-			case t2 == time_Time_type:
-				p.dec = (*Buffer).dec_ptr_time_Time
-			default:
-				p.dec = (*Buffer).dec_ptr_struct_message
-			}
-
-			// what about *Array types?
-		}
-
-	case reflect.Slice:
-		// can the entire slice marshal itself?
-		if isMarshaler(reflect.PtrTo(t1)) {
-			p.isMarshaler = true
 			p.stype = t1
-			p.enc = (*Buffer).enc_marshaler
-			p.dec = (*Buffer).dec_marshaler
-			p.asProtobuf = p.stypeAsProtobuf() // if the type wants to pretends to be a 'repeated' type, it needs to say so in its type. we don't assume anything
-			break
-		}
-
-		// can elements of the slice marshal themselves?
-		t2 := t1.Elem()
-		if isMarshaler(reflect.PtrTo(t2)) {
-			p.isMarshaler = true
-			p.stype = t2
-			p.enc = (*Buffer).enc_slice_marshaler
-			p.dec = (*Buffer).dec_slice_marshaler
-			p.asProtobuf = "repeated " + p.stypeAsProtobuf()
-			break
-		}
-
-		switch t2.Kind() {
-		default:
-			fmt.Fprintf(os.Stderr, "protobuf3: no slice oenc for %s = []%s\n", t1.Name(), t2.Name())
-			break
-		case reflect.Bool:
-			p.enc = (*Buffer).enc_slice_packed_bool
-			wire = WireBytes // packed=true is implied in protobuf v3
-			p.asProtobuf = "repeated bool"
-		case reflect.Int:
-			p.enc = (*Buffer).enc_slice_packed_int
-			wire = WireBytes // packed=true...
-			p.asProtobuf = "repeated " + int32_encoder_txt
-		case reflect.Uint:
-			p.enc = (*Buffer).enc_slice_packed_uint
-			wire = WireBytes // packed=true...
-			p.asProtobuf = "repeated " + uint32_encoder_txt
-		case reflect.Int8:
-			p.enc = (*Buffer).enc_slice_packed_int8
-			wire = WireBytes // packed=true...
-			p.asProtobuf = "repeated " + int32_encoder_txt
-		case reflect.Uint8:
-			p.enc = (*Buffer).enc_slice_byte
-			wire = WireBytes // packed=true... even for integers
-			p.asProtobuf = "bytes"
-		case reflect.Int16:
-			p.enc = (*Buffer).enc_slice_packed_int16
-			wire = WireBytes // packed=true...
-			p.asProtobuf = "repeated " + int32_encoder_txt
-		case reflect.Uint16:
-			p.enc = (*Buffer).enc_slice_packed_uint16
-			wire = WireBytes // packed=true...
-			p.asProtobuf = "repeated " + uint32_encoder_txt
-		case reflect.Int32:
-			p.enc = (*Buffer).enc_slice_packed_int32
-			wire = WireBytes // packed=true...
-			p.asProtobuf = "repeated " + int32_encoder_txt
-		case reflect.Uint32:
-			p.enc = (*Buffer).enc_slice_packed_uint32
-			wire = WireBytes // packed=true...
-			p.asProtobuf = "repeated " + uint32_encoder_txt
-		case reflect.Int64:
-			if p.WireType == WireBytes && t2 == time_Duration_type {
-				p.enc = (*Buffer).enc_slice_time_Duration
-				p.asProtobuf = "repeated google.protobuf.Duration"
-			} else {
-				p.enc = (*Buffer).enc_slice_packed_int64
-				wire = WireBytes // packed=true...
-				p.asProtobuf = "repeated " + int64_encoder_txt
+			p.sprop = getPropertiesLocked(t1)
+			p.asProtobuf = p.stypeAsProtobuf()
+			switch t1 {
+			case time_Time_type:
+				p.enc = (*Buffer).enc_struct_message // time.Time encodes as a struct with 1 (made up) field
+				p.dec = (*Buffer).dec_time_Time      // but it decodes with a custom function
+			default:
+				p.enc = (*Buffer).enc_struct_message
+				p.dec = (*Buffer).dec_struct_message
 			}
-		case reflect.Uint64:
-			p.enc = (*Buffer).enc_slice_packed_int64
-			wire = WireBytes // packed=true...
-			p.asProtobuf = "repeated " + int64_encoder_txt
-		case reflect.Float32:
-			// can just treat them as bits
-			p.enc = (*Buffer).enc_slice_packed_uint32
-			wire = WireBytes // packed=true...
-			p.asProtobuf = "repeated float"
-		case reflect.Float64:
-			// can just treat them as bits
-			p.enc = (*Buffer).enc_slice_packed_int64
-			wire = WireBytes // packed=true...
-			p.asProtobuf = "repeated double"
-		case reflect.String:
-			p.enc = (*Buffer).enc_slice_string
-			p.asProtobuf = "repeated string"
-		case reflect.Struct:
-			p.stype = t2
-			p.sprop = getPropertiesLocked(t2)
-			p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
-			p.enc = (*Buffer).enc_slice_struct_message
-			p.asProtobuf = "repeated " + p.stypeAsProtobuf()
+
 		case reflect.Ptr:
-			switch t3 := t2.Elem(); t3.Kind() {
-			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no ptr oenc for %s -> %s -> %s\n", t1.Name(), t2.Name(), t3.Name())
+			t2 := t1.Elem()
+			// can the target of the pointer marshal itself?
+			if isMarshaler(t1) {
+				p.stype = t2
+				p.isMarshaler = true
+				p.enc = (*Buffer).enc_ptr_marshaler
+				p.dec = (*Buffer).dec_ptr_marshaler
+				p.asProtobuf = p.stypeAsProtobuf()
 				break
-			case reflect.Struct:
-				p.stype = t3
-				p.sprop = getPropertiesLocked(t3)
-				p.isMarshaler = isMarshaler(t2)
-				p.enc = (*Buffer).enc_slice_ptr_struct_message
-				p.asProtobuf = "repeated " + p.stypeAsProtobuf()
 			}
-		case reflect.Slice:
-			switch t2.Elem().Kind() {
-			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no slice elem oenc for %s -> %s -> %s\n", t1.Name(), t2.Name(), t2.Elem().Name())
-				break
-			case reflect.Uint8:
-				p.enc = (*Buffer).enc_slice_slice_byte
-				p.asProtobuf = "repeated bytes"
-			}
-		}
 
-	case reflect.Array:
-		// can the array marshal itself?
-		if isMarshaler(reflect.PtrTo(t1)) {
-			p.isMarshaler = true
-			p.stype = t1
-			p.enc = (*Buffer).enc_marshaler
-			p.dec = (*Buffer).dec_marshaler
-			p.asProtobuf = p.stypeAsProtobuf()
-			break
-		}
-
-		p.length = t1.Len()
-		if p.length == 0 {
-			// save checking the array length at encode-time by doing it now
-			// a zero-length array will always encode as nothing
-			p.enc = (*Buffer).enc_nothing
-		} else {
-			switch t2 := t1.Elem(); t2.Kind() {
+			switch t2.Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no array oenc for %s = %s\n", t1.Name(), t2.Name())
+				fmt.Fprintf(os.Stderr, "protobuf3: no encoder function for %s -> %s\n", t1.Name(), t2.Name())
 				break
 			case reflect.Bool:
-				p.enc = (*Buffer).enc_array_packed_bool
+				p.enc = (*Buffer).enc_ptr_bool
+				p.dec = (*Buffer).dec_ptr_bool
+				p.asProtobuf = "bool"
+			case reflect.Int32:
+				p.enc = (*Buffer).enc_ptr_int32
+				p.dec = (*Buffer).dec_ptr_int32
+				p.asProtobuf = int32_encoder_txt
+			case reflect.Uint32:
+				p.enc = (*Buffer).enc_ptr_uint32
+				p.dec = (*Buffer).dec_ptr_int32
+				p.asProtobuf = uint32_encoder_txt
+			case reflect.Int64:
+				if p.WireType == WireBytes && t2 == time_Duration_type {
+					p.enc = (*Buffer).enc_ptr_time_Duration
+					p.dec = (*Buffer).dec_ptr_time_Duration
+					p.asProtobuf = "google.protobuf.Duration"
+				} else {
+					p.enc = (*Buffer).enc_ptr_int64
+					p.dec = (*Buffer).dec_ptr_int64
+					p.asProtobuf = int64_encoder_txt
+				}
+			case reflect.Uint64:
+				p.enc = (*Buffer).enc_ptr_int64
+				p.dec = (*Buffer).dec_ptr_int64
+				p.asProtobuf = uint64_encoder_txt
+			case reflect.Float32:
+				p.enc = (*Buffer).enc_ptr_uint32 // can just treat them as bits
+				p.dec = (*Buffer).dec_ptr_int32
+				p.asProtobuf = "float"
+			case reflect.Float64:
+				p.enc = (*Buffer).enc_ptr_int64 // can just treat them as bits
+				p.dec = (*Buffer).dec_ptr_int64
+				p.asProtobuf = "double"
+			case reflect.String:
+				p.enc = (*Buffer).enc_ptr_string
+				p.dec = (*Buffer).dec_ptr_string
+				p.asProtobuf = "string"
+			case reflect.Struct:
+				p.stype = t2
+				p.sprop = getPropertiesLocked(t2)
+				p.asProtobuf = p.stypeAsProtobuf()
+				p.enc = (*Buffer).enc_ptr_struct_message
+				switch {
+				case t2 == time_Time_type:
+					p.dec = (*Buffer).dec_ptr_time_Time
+				default:
+					p.dec = (*Buffer).dec_ptr_struct_message
+				}
+
+				// what about *Array types? Fill them in when we need them.
+			}
+
+		case reflect.Slice:
+			// can elements of the slice marshal themselves?
+			t2 := t1.Elem()
+			if isMarshaler(reflect.PtrTo(t2)) {
+				p.isMarshaler = true
+				p.stype = t2
+				p.enc = (*Buffer).enc_slice_marshaler
+				p.dec = (*Buffer).dec_slice_marshaler
+				p.asProtobuf = "repeated " + p.stypeAsProtobuf()
+				break
+			}
+
+			switch t2.Kind() {
+			default:
+				fmt.Fprintf(os.Stderr, "protobuf3: no slice oenc for %s = []%s\n", t1.Name(), t2.Name())
+				break
+			case reflect.Bool:
+				p.enc = (*Buffer).enc_slice_packed_bool
 				wire = WireBytes // packed=true is implied in protobuf v3
 				p.asProtobuf = "repeated bool"
+			case reflect.Int:
+				p.enc = (*Buffer).enc_slice_packed_int
+				wire = WireBytes // packed=true...
+				p.asProtobuf = "repeated " + int32_encoder_txt
+			case reflect.Uint:
+				p.enc = (*Buffer).enc_slice_packed_uint
+				wire = WireBytes // packed=true...
+				p.asProtobuf = "repeated " + uint32_encoder_txt
+			case reflect.Int8:
+				p.enc = (*Buffer).enc_slice_packed_int8
+				wire = WireBytes // packed=true...
+				p.asProtobuf = "repeated " + int32_encoder_txt
+			case reflect.Uint8:
+				p.enc = (*Buffer).enc_slice_byte
+				wire = WireBytes // packed=true... even for integers
+				p.asProtobuf = "bytes"
+			case reflect.Int16:
+				p.enc = (*Buffer).enc_slice_packed_int16
+				wire = WireBytes // packed=true...
+				p.asProtobuf = "repeated " + int32_encoder_txt
+			case reflect.Uint16:
+				p.enc = (*Buffer).enc_slice_packed_uint16
+				wire = WireBytes // packed=true...
+				p.asProtobuf = "repeated " + uint32_encoder_txt
 			case reflect.Int32:
-				p.enc = (*Buffer).enc_array_packed_int32
+				p.enc = (*Buffer).enc_slice_packed_int32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int32_encoder_txt
 			case reflect.Uint32:
-				p.enc = (*Buffer).enc_array_packed_uint32
+				p.enc = (*Buffer).enc_slice_packed_uint32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + uint32_encoder_txt
 			case reflect.Int64:
 				if p.WireType == WireBytes && t2 == time_Duration_type {
-					p.enc = (*Buffer).enc_array_time_Duration
+					p.enc = (*Buffer).enc_slice_time_Duration
 					p.asProtobuf = "repeated google.protobuf.Duration"
 				} else {
-					p.enc = (*Buffer).enc_array_packed_int64
+					p.enc = (*Buffer).enc_slice_packed_int64
 					wire = WireBytes // packed=true...
 					p.asProtobuf = "repeated " + int64_encoder_txt
 				}
 			case reflect.Uint64:
-				p.enc = (*Buffer).enc_array_packed_int64
+				p.enc = (*Buffer).enc_slice_packed_int64
 				wire = WireBytes // packed=true...
-				p.asProtobuf = "repeated " + uint64_encoder_txt
-			case reflect.Uint8:
-				p.enc = (*Buffer).enc_array_byte
-				p.asProtobuf = "bytes"
+				p.asProtobuf = "repeated " + int64_encoder_txt
 			case reflect.Float32:
 				// can just treat them as bits
-				p.enc = (*Buffer).enc_array_packed_uint32
+				p.enc = (*Buffer).enc_slice_packed_uint32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated float"
 			case reflect.Float64:
 				// can just treat them as bits
-				p.enc = (*Buffer).enc_array_packed_int64
+				p.enc = (*Buffer).enc_slice_packed_int64
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated double"
 			case reflect.String:
-				p.enc = (*Buffer).enc_array_string
+				p.enc = (*Buffer).enc_slice_string
 				p.asProtobuf = "repeated string"
 			case reflect.Struct:
 				p.stype = t2
 				p.sprop = getPropertiesLocked(t2)
 				p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
-				p.enc = (*Buffer).enc_array_struct_message
+				p.enc = (*Buffer).enc_slice_struct_message
 				p.asProtobuf = "repeated " + p.stypeAsProtobuf()
 			case reflect.Ptr:
 				switch t3 := t2.Elem(); t3.Kind() {
@@ -831,28 +732,110 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, int_
 					p.stype = t3
 					p.sprop = getPropertiesLocked(t3)
 					p.isMarshaler = isMarshaler(t2)
-					p.enc = (*Buffer).enc_array_ptr_struct_message
+					p.enc = (*Buffer).enc_slice_ptr_struct_message
 					p.asProtobuf = "repeated " + p.stypeAsProtobuf()
 				}
+			case reflect.Slice:
+				switch t2.Elem().Kind() {
+				default:
+					fmt.Fprintf(os.Stderr, "protobuf3: no slice elem oenc for %s -> %s -> %s\n", t1.Name(), t2.Name(), t2.Elem().Name())
+					break
+				case reflect.Uint8:
+					p.enc = (*Buffer).enc_slice_slice_byte
+					p.asProtobuf = "repeated bytes"
+				}
 			}
+
+		case reflect.Array:
+			p.length = t1.Len()
+			if p.length == 0 {
+				// save checking the array length at encode-time by doing it now
+				// a zero-length array will always encode as nothing
+				p.enc = (*Buffer).enc_nothing
+			} else {
+				switch t2 := t1.Elem(); t2.Kind() {
+				default:
+					fmt.Fprintf(os.Stderr, "protobuf3: no array oenc for %s = %s\n", t1.Name(), t2.Name())
+					break
+				case reflect.Bool:
+					p.enc = (*Buffer).enc_array_packed_bool
+					wire = WireBytes // packed=true is implied in protobuf v3
+					p.asProtobuf = "repeated bool"
+				case reflect.Int32:
+					p.enc = (*Buffer).enc_array_packed_int32
+					wire = WireBytes // packed=true...
+					p.asProtobuf = "repeated " + int32_encoder_txt
+				case reflect.Uint32:
+					p.enc = (*Buffer).enc_array_packed_uint32
+					wire = WireBytes // packed=true...
+					p.asProtobuf = "repeated " + uint32_encoder_txt
+				case reflect.Int64:
+					if p.WireType == WireBytes && t2 == time_Duration_type {
+						p.enc = (*Buffer).enc_array_time_Duration
+						p.asProtobuf = "repeated google.protobuf.Duration"
+					} else {
+						p.enc = (*Buffer).enc_array_packed_int64
+						wire = WireBytes // packed=true...
+						p.asProtobuf = "repeated " + int64_encoder_txt
+					}
+				case reflect.Uint64:
+					p.enc = (*Buffer).enc_array_packed_int64
+					wire = WireBytes // packed=true...
+					p.asProtobuf = "repeated " + uint64_encoder_txt
+				case reflect.Uint8:
+					p.enc = (*Buffer).enc_array_byte
+					p.asProtobuf = "bytes"
+				case reflect.Float32:
+					// can just treat them as bits
+					p.enc = (*Buffer).enc_array_packed_uint32
+					wire = WireBytes // packed=true...
+					p.asProtobuf = "repeated float"
+				case reflect.Float64:
+					// can just treat them as bits
+					p.enc = (*Buffer).enc_array_packed_int64
+					wire = WireBytes // packed=true...
+					p.asProtobuf = "repeated double"
+				case reflect.String:
+					p.enc = (*Buffer).enc_array_string
+					p.asProtobuf = "repeated string"
+				case reflect.Struct:
+					p.stype = t2
+					p.sprop = getPropertiesLocked(t2)
+					p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
+					p.enc = (*Buffer).enc_array_struct_message
+					p.asProtobuf = "repeated " + p.stypeAsProtobuf()
+				case reflect.Ptr:
+					switch t3 := t2.Elem(); t3.Kind() {
+					default:
+						fmt.Fprintf(os.Stderr, "protobuf3: no ptr oenc for %s -> %s -> %s\n", t1.Name(), t2.Name(), t3.Name())
+						break
+					case reflect.Struct:
+						p.stype = t3
+						p.sprop = getPropertiesLocked(t3)
+						p.isMarshaler = isMarshaler(t2)
+						p.enc = (*Buffer).enc_array_ptr_struct_message
+						p.asProtobuf = "repeated " + p.stypeAsProtobuf()
+					}
+				}
+			}
+
+		case reflect.Map:
+			p.enc = (*Buffer).enc_new_map
+
+			p.mtype = t1
+			p.mkeyprop = &Properties{}
+			p.mkeyprop.init(reflect.PtrTo(p.mtype.Key()), "Key", f.Tag.Get("protobuf_key"), nil)
+			p.mvalprop = &Properties{}
+
+			vtype := p.mtype.Elem()
+			if vtype.Kind() != reflect.Ptr && vtype.Kind() != reflect.Slice {
+				// The value type is not a message (*T) or bytes ([]byte),
+				// so we need encoders for the pointer to this type.
+				vtype = reflect.PtrTo(vtype)
+			}
+			p.mvalprop.init(vtype, "Value", f.Tag.Get("protobuf_val"), nil)
+			p.asProtobuf = fmt.Sprintf("map<%s, %s>", p.mkeyprop.asProtobuf, p.mvalprop.asProtobuf)
 		}
-
-	case reflect.Map:
-		p.enc = (*Buffer).enc_new_map
-
-		p.mtype = t1
-		p.mkeyprop = &Properties{}
-		p.mkeyprop.init(reflect.PtrTo(p.mtype.Key()), "Key", f.Tag.Get("protobuf_key"), nil)
-		p.mvalprop = &Properties{}
-
-		vtype := p.mtype.Elem()
-		if vtype.Kind() != reflect.Ptr && vtype.Kind() != reflect.Slice {
-			// The value type is not a message (*T) or bytes ([]byte),
-			// so we need encoders for the pointer to this type.
-			vtype = reflect.PtrTo(vtype)
-		}
-		p.mvalprop.init(vtype, "Value", f.Tag.Get("protobuf_val"), nil)
-		p.asProtobuf = fmt.Sprintf("map<%s, %s>", p.mkeyprop.asProtobuf, p.mvalprop.asProtobuf)
 	}
 
 	// precalculate tag code
