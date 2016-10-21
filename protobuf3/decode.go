@@ -485,7 +485,7 @@ func (o *Buffer) dec_ptr_bool(p *Properties, base unsafe.Pointer) error {
 		return err
 	}
 	x := u != 0
-	*(**bool)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = &x
+	*(**bool)(unsafe.Pointer(uintptr(base) + p.offset)) = &x
 	return nil
 }
 
@@ -495,7 +495,7 @@ func (o *Buffer) dec_bool(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	*(*bool)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = u != 0
+	*(*bool)(unsafe.Pointer(uintptr(base) + p.offset)) = u != 0
 	return nil
 }
 
@@ -506,7 +506,7 @@ func (o *Buffer) dec_ptr_int8(p *Properties, base unsafe.Pointer) error {
 		return err
 	}
 	x := uint8(u)
-	*(**uint8)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = &x
+	*(**uint8)(unsafe.Pointer(uintptr(base) + p.offset)) = &x
 	return nil
 }
 
@@ -516,7 +516,7 @@ func (o *Buffer) dec_int8(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	*(*uint8)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = uint8(u)
+	*(*uint8)(unsafe.Pointer(uintptr(base) + p.offset)) = uint8(u)
 	return nil
 }
 
@@ -527,7 +527,7 @@ func (o *Buffer) dec_ptr_int16(p *Properties, base unsafe.Pointer) error {
 		return err
 	}
 	x := uint16(u)
-	*(**uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = &x
+	*(**uint16)(unsafe.Pointer(uintptr(base) + p.offset)) = &x
 	return nil
 }
 
@@ -537,7 +537,7 @@ func (o *Buffer) dec_int16(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	*(*uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = uint16(u)
+	*(*uint16)(unsafe.Pointer(uintptr(base) + p.offset)) = uint16(u)
 	return nil
 }
 
@@ -548,7 +548,7 @@ func (o *Buffer) dec_ptr_int32(p *Properties, base unsafe.Pointer) error {
 		return err
 	}
 	x := uint32(u)
-	*(**uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = &x
+	*(**uint32)(unsafe.Pointer(uintptr(base) + p.offset)) = &x
 	return nil
 }
 
@@ -558,7 +558,7 @@ func (o *Buffer) dec_int32(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	*(*uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = uint32(u)
+	*(*uint32)(unsafe.Pointer(uintptr(base) + p.offset)) = uint32(u)
 	return nil
 }
 
@@ -569,7 +569,7 @@ func (o *Buffer) dec_ptr_int(p *Properties, base unsafe.Pointer) error {
 		return err
 	}
 	x := uint(u)
-	*(**uint)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = &x
+	*(**uint)(unsafe.Pointer(uintptr(base) + p.offset)) = &x
 	return nil
 }
 
@@ -579,7 +579,7 @@ func (o *Buffer) dec_int(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	*(*uint)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = uint(u)
+	*(*uint)(unsafe.Pointer(uintptr(base) + p.offset)) = uint(u)
 	return nil
 }
 
@@ -589,7 +589,7 @@ func (o *Buffer) dec_ptr_int64(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	*(**uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = &u
+	*(**uint64)(unsafe.Pointer(uintptr(base) + p.offset)) = &u
 	return nil
 }
 
@@ -599,7 +599,7 @@ func (o *Buffer) dec_int64(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	*(*uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = u
+	*(*uint64)(unsafe.Pointer(uintptr(base) + p.offset)) = u
 	return nil
 }
 
@@ -609,7 +609,7 @@ func (o *Buffer) dec_ptr_string(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	*(**string)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = &s
+	*(**string)(unsafe.Pointer(uintptr(base) + p.offset)) = &s
 	return nil
 }
 
@@ -619,7 +619,7 @@ func (o *Buffer) dec_string(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	*(*string)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = s
+	*(*string)(unsafe.Pointer(uintptr(base) + p.offset)) = s
 	return nil
 }
 
@@ -636,7 +636,7 @@ func (o *Buffer) dec_slice_byte(p *Properties, base unsafe.Pointer) error {
 		raw = copied
 	}
 
-	*(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = raw
+	*(*[]byte)(unsafe.Pointer(uintptr(base) + p.offset)) = raw
 	return nil
 }
 
@@ -653,7 +653,7 @@ func (o *Buffer) dec_array_byte(p *Properties, base unsafe.Pointer) error {
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
+	s := ((*[maxLen]byte)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
 
 	copy(s, raw)
 
@@ -662,7 +662,7 @@ func (o *Buffer) dec_array_byte(p *Properties, base unsafe.Pointer) error {
 
 // Decode a slice of bools ([]bool).
 func (o *Buffer) dec_slice_packed_bool(p *Properties, base unsafe.Pointer) error {
-	v := (*[]bool)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	v := (*[]bool)(unsafe.Pointer(uintptr(base) + p.offset))
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -695,7 +695,7 @@ func (o *Buffer) dec_array_packed_bool(p *Properties, base unsafe.Pointer) error
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen]bool)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
+	s := ((*[maxLen]bool)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -720,7 +720,7 @@ func (o *Buffer) dec_array_packed_bool(p *Properties, base unsafe.Pointer) error
 
 // Decode a slice of int8s ([]int8) in packed format.
 func (o *Buffer) dec_slice_packed_int8(p *Properties, base unsafe.Pointer) error {
-	v := (*[]int8)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	v := (*[]int8)(unsafe.Pointer(uintptr(base) + p.offset))
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -752,7 +752,7 @@ func (o *Buffer) dec_array_packed_int8(p *Properties, base unsafe.Pointer) error
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen]int8)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
+	s := ((*[maxLen]int8)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -779,7 +779,7 @@ func (o *Buffer) dec_array_packed_int8(p *Properties, base unsafe.Pointer) error
 
 // Decode a slice of int16s ([]int16) in packed format.
 func (o *Buffer) dec_slice_packed_int16(p *Properties, base unsafe.Pointer) error {
-	v := (*[]uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	v := (*[]uint16)(unsafe.Pointer(uintptr(base) + p.offset))
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -811,7 +811,7 @@ func (o *Buffer) dec_array_packed_int16(p *Properties, base unsafe.Pointer) erro
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen / 2]int16)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
+	s := ((*[maxLen / 2]int16)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -838,7 +838,7 @@ func (o *Buffer) dec_array_packed_int16(p *Properties, base unsafe.Pointer) erro
 
 // Decode a slice of int32s ([]int32) in packed format.
 func (o *Buffer) dec_slice_packed_int32(p *Properties, base unsafe.Pointer) error {
-	v := (*[]uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	v := (*[]uint32)(unsafe.Pointer(uintptr(base) + p.offset))
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -870,7 +870,7 @@ func (o *Buffer) dec_array_packed_int32(p *Properties, base unsafe.Pointer) erro
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen / 4]int32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
+	s := ((*[maxLen / 4]int32)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -897,7 +897,7 @@ func (o *Buffer) dec_array_packed_int32(p *Properties, base unsafe.Pointer) erro
 
 // Decode a slice of ints ([]int) in packed format.
 func (o *Buffer) dec_slice_packed_int(p *Properties, base unsafe.Pointer) error {
-	v := (*[]uint)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	v := (*[]uint)(unsafe.Pointer(uintptr(base) + p.offset))
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -923,7 +923,7 @@ func (o *Buffer) dec_slice_packed_int(p *Properties, base unsafe.Pointer) error 
 
 // Decode a slice of int64s ([]int64) in packed format.
 func (o *Buffer) dec_slice_packed_int64(p *Properties, base unsafe.Pointer) error {
-	v := (*[]uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	v := (*[]uint64)(unsafe.Pointer(uintptr(base) + p.offset))
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -955,7 +955,7 @@ func (o *Buffer) dec_array_packed_int64(p *Properties, base unsafe.Pointer) erro
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen / 8]int64)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
+	s := ((*[maxLen / 8]int64)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -986,7 +986,7 @@ func (o *Buffer) dec_slice_string(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	v := (*[]string)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	v := (*[]string)(unsafe.Pointer(uintptr(base) + p.offset))
 	*v = append(*v, s)
 	return nil
 }
@@ -994,7 +994,7 @@ func (o *Buffer) dec_slice_string(p *Properties, base unsafe.Pointer) error {
 // Decode an array of strings ([N]string).
 func (o *Buffer) dec_array_string(p *Properties, base unsafe.Pointer) error {
 	n := p.length
-	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.offset)) // address of 1st element of the array
+	ptr := unsafe.Pointer(uintptr(base) + p.offset) // address of 1st element of the array
 	s := ((*[maxLen / 8 / 2]string)(ptr))[0:n:n]
 
 	// the strings are encoded one at a time, each prefixed by a tag.
@@ -1026,7 +1026,7 @@ func (o *Buffer) dec_slice_slice_byte(p *Properties, base unsafe.Pointer) error 
 		raw = copied
 	}
 
-	v := (*[][]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	v := (*[][]byte)(unsafe.Pointer(uintptr(base) + p.offset))
 	*v = append(*v, raw)
 	return nil
 }
@@ -1040,7 +1040,7 @@ func (o *Buffer) dec_new_map(p *Properties, base unsafe.Pointer) error {
 	oi := o.index       // index at the end of this map entry
 	o.index -= len(raw) // move buffer back to start of map entry
 
-	mptr := reflect.NewAt(p.mtype, unsafe.Pointer(uintptr(base)+uintptr(p.offset))) // *map[K]V
+	mptr := reflect.NewAt(p.mtype, unsafe.Pointer(uintptr(base)+p.offset)) // *map[K]V
 	if mptr.Elem().IsNil() {
 		mptr.Elem().Set(reflect.MakeMap(mptr.Type().Elem()))
 	}
@@ -1111,7 +1111,7 @@ func (o *Buffer) dec_struct_message(p *Properties, base unsafe.Pointer) error {
 		return err
 	}
 
-	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.offset))
+	ptr := unsafe.Pointer(uintptr(base) + p.offset)
 
 	// swizzle around and reuse the buffer. less gc
 	obuf, oi := o.buf, o.index
@@ -1130,7 +1130,7 @@ func (o *Buffer) dec_ptr_struct_message(p *Properties, base unsafe.Pointer) erro
 		return err
 	}
 
-	pptr := (*unsafe.Pointer)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	pptr := (*unsafe.Pointer)(unsafe.Pointer(uintptr(base) + p.offset))
 	ptr := *pptr
 	var val reflect.Value
 	if ptr == nil {
@@ -1157,7 +1157,7 @@ func (o *Buffer) dec_slice_struct_message(p *Properties, base unsafe.Pointer) er
 	}
 
 	// build a reflect.Value of the slice
-	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.offset))
+	ptr := unsafe.Pointer(uintptr(base) + p.offset)
 	slice_type := reflect.SliceOf(p.stype)
 	slice := reflect.NewAt(slice_type, ptr).Elem()
 
@@ -1189,7 +1189,7 @@ func (o *Buffer) dec_array_struct_message(p *Properties, base unsafe.Pointer) er
 	}
 
 	// address of the start of the array
-	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.offset))
+	ptr := unsafe.Pointer(uintptr(base) + p.offset)
 	n := p.length
 	i := o.array_indexes[ptr]
 	if i < n {
@@ -1238,7 +1238,7 @@ func (o *Buffer) dec_slice_ptr_struct_message(p *Properties, base unsafe.Pointer
 	}
 
 	// append pv to the slice []*struct
-	pslice := (*[]unsafe.Pointer)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	pslice := (*[]unsafe.Pointer)(unsafe.Pointer(uintptr(base) + p.offset))
 	*pslice = append(*pslice, pv)
 
 	return nil
@@ -1269,7 +1269,7 @@ func (o *Buffer) dec_array_ptr_struct_message(p *Properties, base unsafe.Pointer
 	}
 
 	// address of the start of the array
-	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.offset))
+	ptr := unsafe.Pointer(uintptr(base) + p.offset)
 	n := p.length
 	i := o.array_indexes[ptr]
 	if i < n {
@@ -1289,7 +1289,7 @@ func (o *Buffer) dec_marshaler(p *Properties, base unsafe.Pointer) error {
 		return err
 	}
 
-	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.offset))
+	ptr := unsafe.Pointer(uintptr(base) + p.offset)
 	iv := reflect.NewAt(p.stype, ptr).Interface()
 	return iv.(Marshaler).UnmarshalProtobuf3(raw)
 }
@@ -1301,7 +1301,7 @@ func (o *Buffer) dec_ptr_marshaler(p *Properties, base unsafe.Pointer) error {
 		return err
 	}
 
-	pptr := (*unsafe.Pointer)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	pptr := (*unsafe.Pointer)(unsafe.Pointer(uintptr(base) + p.offset))
 	var val reflect.Value
 	if *pptr == nil {
 		val = reflect.New(p.stype)
@@ -1321,7 +1321,7 @@ func (o *Buffer) dec_slice_marshaler(p *Properties, base unsafe.Pointer) error {
 	}
 
 	// build a reflect.Value of the slice
-	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.offset))
+	ptr := unsafe.Pointer(uintptr(base) + p.offset)
 	slice_type := reflect.SliceOf(p.stype)
 	slice := reflect.NewAt(slice_type, ptr).Elem()
 
@@ -1340,7 +1340,7 @@ func (o *Buffer) dec_array_marshaler(p *Properties, base unsafe.Pointer) error {
 		return err
 	}
 
-	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.offset))
+	ptr := unsafe.Pointer(uintptr(base) + p.offset)
 	n := p.length
 	i := o.array_indexes[ptr]
 	if i < n {
@@ -1356,12 +1356,12 @@ func (o *Buffer) dec_array_marshaler(p *Properties, base unsafe.Pointer) error {
 
 // custom decoder for protobuf3 standard Timestamp, decoding it into the standard go time.Time
 func (o *Buffer) dec_time_Time(p *Properties, base unsafe.Pointer) error {
-	return o.decode_time_Time((*time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))
+	return o.decode_time_Time((*time.Time)(unsafe.Pointer(uintptr(base) + p.offset)))
 }
 
 // custom decoder for pointer to time.Time
 func (o *Buffer) dec_ptr_time_Time(p *Properties, base unsafe.Pointer) error {
-	pptr := (**time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	pptr := (**time.Time)(unsafe.Pointer(uintptr(base) + p.offset))
 	ptr := *pptr
 	if ptr == nil {
 		ptr = new(time.Time)
@@ -1417,7 +1417,7 @@ func (o *Buffer) dec_time_Duration(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	*(*time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = d
+	*(*time.Duration)(unsafe.Pointer(uintptr(base) + p.offset)) = d
 	return nil
 }
 
@@ -1470,13 +1470,13 @@ func (o *Buffer) dec_ptr_time_Duration(p *Properties, base unsafe.Pointer) error
 	if err != nil {
 		return err
 	}
-	*(**time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) = &d
+	*(**time.Duration)(unsafe.Pointer(uintptr(base) + p.offset)) = &d
 	return nil
 }
 
 // custom decode for []time.Duration
 func (o *Buffer) dec_slice_time_Duration(p *Properties, base unsafe.Pointer) error {
-	v := (*[]time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
+	v := (*[]time.Duration)(unsafe.Pointer(uintptr(base) + p.offset))
 
 	d, err := o.dec_Duration(p)
 	if err != nil {
@@ -1496,7 +1496,7 @@ func (o *Buffer) dec_array_time_Duration(p *Properties, base unsafe.Pointer) err
 		return err
 	}
 
-	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.offset)) // address of 1st element of the array
+	ptr := unsafe.Pointer(uintptr(base) + p.offset) // address of 1st element of the array
 	n := p.length
 	s := ((*[maxLen / 8]time.Duration)(ptr))[0:n:n]
 

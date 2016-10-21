@@ -772,6 +772,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 
 		case reflect.Array:
 			p.length = t1.Len()
+
 			if p.length == 0 {
 				// save checking the array length at encode-time by doing it now
 				// a zero-length array will always encode as nothing
