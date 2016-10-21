@@ -1135,7 +1135,7 @@ func (o *Buffer) dec_ptr_struct_message(p *Properties, base structPointer) error
 	var val reflect.Value
 	if ptr == nil {
 		val = reflect.New(p.stype)
-		ptr := structPointer(val.Pointer()) // Is this gc safe? it seems not to be to me, but I don't have a better solution, and it's what google's code does
+		ptr = structPointer(val.Pointer()) // Is this gc safe? it seems not to be to me, but I don't have a better solution, and it's what google's code does
 		*pptr = ptr
 	} // else the value is already allocated and we merge into it
 

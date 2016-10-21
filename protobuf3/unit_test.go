@@ -465,12 +465,14 @@ func uncheck(mi protobuf3.Message, mb protobuf3.Message, mc proto.Message, t *te
 	}
 	t.Logf("mb = %v", mb)
 
-	err = proto.Unmarshal(pb, mc)
-	if err != nil {
-		t.Error(err)
-		return
+	if mc != nil {
+		err = proto.Unmarshal(pb, mc)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		t.Logf("mc = %v", mc)
 	}
-	t.Logf("mc = %v", mc)
 }
 
 func eq(name string, x interface{}, y interface{}, t *testing.T) {
@@ -559,6 +561,10 @@ func TestRecursiveTypeMsg(t *testing.T) {
 	}
 
 	check(&m, &m, t)
+
+	var mb RecursiveTypeMsg
+	uncheck(&m, &mb, nil, t)
+	eq("mb", m, mb, t)
 }
 
 type MapMsg struct {
@@ -657,6 +663,12 @@ func TestIntMsg(t *testing.T) {
 
 	check(&o, &o, t)
 	check(&m, &o, t)
+
+	var mb IntMsg
+	var mc OldIntMsg
+	uncheck(&m, &mb, &mc, t)
+	eq("mb", m, mb, t)
+	eq("mc", o, mc, t)
 }
 
 type TimeMsg struct {
@@ -720,7 +732,8 @@ func TestTimeMsg(t *testing.T) {
 	var mb TimeMsg
 	var mc OldTimeMsg
 	uncheck(&m, &mb, &mc, t)
-	t.Logf("mb = %+v\n", mb)
+	eq("mb", m, mb, t)
+	eq("mc", o, mc, t)
 
 	eq("tm", mb.tm, m.tm, t)
 	eq("dur", mb.dur, m.dur, t)
