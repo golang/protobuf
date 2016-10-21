@@ -640,6 +640,26 @@ func (o *Buffer) dec_slice_byte(p *Properties, base structPointer) error {
 	return nil
 }
 
+// Decode an  array of bytes ([N]byte).
+func (o *Buffer) dec_array_byte(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	n := p.length
+	// NOTE WELL we assume packed bytes are encoded in one block. Thus we restart the decoding
+	// at index 0 in the array. Should this not be the case then we ought to restart at an
+	// index saved in a map of array->index in Buffer. However for all use cases we have that
+	// is useless extra work. Should we want to decode such a field someday we can either do
+	// the work, or decode into a []bool, which is always variable length.
+	s := ((*[maxLen]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+
+	copy(s, raw)
+
+	return nil
+}
+
 // Decode a slice of bools ([]bool).
 func (o *Buffer) dec_slice_packed_bool(p *Properties, base structPointer) error {
 	v := (*[]bool)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
@@ -664,6 +684,37 @@ func (o *Buffer) dec_slice_packed_bool(p *Properties, base structPointer) error 
 	}
 
 	*v = y
+	return nil
+}
+
+// Decode an array of bools ([N]bool).
+func (o *Buffer) dec_array_packed_bool(p *Properties, base structPointer) error {
+	n := p.length
+	// NOTE WELL we assume packed integers are encoded in one block. Thus we restart the decoding
+	// at index 0 in the array. Should this not be the case then we ought to restart at an
+	// index saved in a map of array->index in Buffer. However for all use cases we have that
+	// is useless extra work. Should we want to decode such a field someday we can either do
+	// the work, or decode into a []bool, which is always variable length.
+	s := ((*[maxLen]bool)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded bools
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		s = append(s, u != 0)
+	}
+
 	return nil
 }
 
@@ -693,6 +744,39 @@ func (o *Buffer) dec_slice_packed_int8(p *Properties, base structPointer) error 
 	return nil
 }
 
+// Decode an array of int8s ([N]int8).
+func (o *Buffer) dec_array_packed_int8(p *Properties, base structPointer) error {
+	n := p.length
+	// NOTE WELL we assume packed integers are encoded in one block. Thus we restart the decoding
+	// at index 0 in the array. Should this not be the case then we ought to restart at an
+	// index saved in a map of array->index in Buffer. However for all use cases we have that
+	// is useless extra work. Should we want to decode such a field someday we can either do
+	// the work, or decode into a []bool, which is always variable length.
+	s := ((*[maxLen]int8)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded bools
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		if len(s) < n {
+			s = append(s, int8(u))
+		}
+	}
+
+	return nil
+}
+
 // Decode a slice of int16s ([]int16) in packed format.
 func (o *Buffer) dec_slice_packed_int16(p *Properties, base structPointer) error {
 	v := (*[]uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
@@ -719,6 +803,39 @@ func (o *Buffer) dec_slice_packed_int16(p *Properties, base structPointer) error
 	return nil
 }
 
+// Decode an array of int16s ([N]int16).
+func (o *Buffer) dec_array_packed_int16(p *Properties, base structPointer) error {
+	n := p.length
+	// NOTE WELL we assume packed integers are encoded in one block. Thus we restart the decoding
+	// at index 0 in the array. Should this not be the case then we ought to restart at an
+	// index saved in a map of array->index in Buffer. However for all use cases we have that
+	// is useless extra work. Should we want to decode such a field someday we can either do
+	// the work, or decode into a []bool, which is always variable length.
+	s := ((*[maxLen / 2]int16)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded bools
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		if len(s) < n {
+			s = append(s, int16(u))
+		}
+	}
+
+	return nil
+}
+
 // Decode a slice of int32s ([]int32) in packed format.
 func (o *Buffer) dec_slice_packed_int32(p *Properties, base structPointer) error {
 	v := (*[]uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
@@ -742,6 +859,39 @@ func (o *Buffer) dec_slice_packed_int32(p *Properties, base structPointer) error
 		y = append(y, uint32(u))
 	}
 	*v = y
+	return nil
+}
+
+// Decode an array of int32s ([N]int32).
+func (o *Buffer) dec_array_packed_int32(p *Properties, base structPointer) error {
+	n := p.length
+	// NOTE WELL we assume packed integers are encoded in one block. Thus we restart the decoding
+	// at index 0 in the array. Should this not be the case then we ought to restart at an
+	// index saved in a map of array->index in Buffer. However for all use cases we have that
+	// is useless extra work. Should we want to decode such a field someday we can either do
+	// the work, or decode into a []bool, which is always variable length.
+	s := ((*[maxLen / 4]int32)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded bools
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		if len(s) < n {
+			s = append(s, int32(u))
+		}
+	}
+
 	return nil
 }
 
@@ -797,6 +947,39 @@ func (o *Buffer) dec_slice_packed_int64(p *Properties, base structPointer) error
 	return nil
 }
 
+// Decode an array of ints ([N]int).
+func (o *Buffer) dec_array_packed_int64(p *Properties, base structPointer) error {
+	n := p.length
+	// NOTE WELL we assume packed integers are encoded in one block. Thus we restart the decoding
+	// at index 0 in the array. Should this not be the case then we ought to restart at an
+	// index saved in a map of array->index in Buffer. However for all use cases we have that
+	// is useless extra work. Should we want to decode such a field someday we can either do
+	// the work, or decode into a []bool, which is always variable length.
+	s := ((*[maxLen / 8]int64)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+
+	nn, err := o.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	nb := int(nn) // number of bytes of encoded bools
+	fin := o.index + nb
+	if fin < o.index {
+		return errOverflow
+	}
+
+	for o.index < fin {
+		u, err := p.valDec(o)
+		if err != nil {
+			return err
+		}
+		if len(s) < n {
+			s = append(s, int64(u))
+		}
+	}
+
+	return nil
+}
+
 // Decode a slice of strings ([]string).
 func (o *Buffer) dec_slice_string(p *Properties, base structPointer) error {
 	s, err := o.DecodeStringBytes()
@@ -805,6 +988,28 @@ func (o *Buffer) dec_slice_string(p *Properties, base structPointer) error {
 	}
 	v := (*[]string)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
 	*v = append(*v, s)
+	return nil
+}
+
+// Decode an array of strings ([N]string).
+func (o *Buffer) dec_array_string(p *Properties, base structPointer) error {
+	n := p.length
+	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field)) // address of 1st element of the array
+	s := ((*[maxLen / 8 / 2]string)(ptr))[0:n:n]
+
+	// the strings are encoded one at a time, each prefixed by a tag.
+	str, err := o.DecodeStringBytes()
+	if err != nil {
+		return err
+	}
+
+	i := o.array_indexes[ptr]
+	if i < n {
+		s[i] = str
+		i++
+		o.saveIndex(ptr, i)
+	}
+
 	return nil
 }
 
@@ -944,7 +1149,7 @@ func (o *Buffer) dec_ptr_struct_message(p *Properties, base structPointer) error
 	return err
 }
 
-//  Decode into a slice of messages ([]struct)
+// Decode into a slice of messages ([]struct)
 func (o *Buffer) dec_slice_struct_message(p *Properties, base structPointer) error {
 	raw, err := o.DecodeRawBytes()
 	if err != nil {
@@ -976,7 +1181,39 @@ func (o *Buffer) dec_slice_struct_message(p *Properties, base structPointer) err
 	return err
 }
 
-//  Decode into a slice of pointers to messages ([]*struct)
+// Decode into an array of messages ([N]struct)
+func (o *Buffer) dec_array_struct_message(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	// address of the start of the array
+	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field))
+	n := p.length
+	i := o.array_indexes[ptr]
+	if i < n {
+		// address of element i
+		ptr_elem := unsafe.Pointer(uintptr(ptr) + uintptr(i)*p.stype.Size())
+
+		if p.isMarshaler {
+			err = reflect.NewAt(p.stype, ptr_elem).Interface().(Marshaler).UnmarshalProtobuf3(raw)
+		} else {
+			// unmarshal into pval
+			obuf, oi := o.buf, o.index
+			o.buf, o.index = raw, 0
+			err = o.unmarshal_struct(p.stype, p.sprop, structPointer(ptr_elem))
+			o.buf, o.index = obuf, oi
+		}
+
+		i++
+		o.saveIndex(ptr, i)
+	}
+
+	return err
+}
+
+// Decode into a slice of pointers to messages ([]*struct)
 func (o *Buffer) dec_slice_ptr_struct_message(p *Properties, base structPointer) error {
 	raw, err := o.DecodeRawBytes()
 	if err != nil {
@@ -1003,6 +1240,44 @@ func (o *Buffer) dec_slice_ptr_struct_message(p *Properties, base structPointer)
 	// append pv to the slice []*struct
 	pslice := (*[]structPointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
 	*pslice = append(*pslice, pv)
+
+	return nil
+}
+
+// Decode into a array of pointers to messages ([N]*struct)
+func (o *Buffer) dec_array_ptr_struct_message(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	// construct a new *struct
+	v := reflect.New(p.stype)
+	pv := structPointer(unsafe.Pointer(v.Pointer()))
+
+	// unmarshal into the new struct
+	if p.isMarshaler {
+		err = v.Interface().(Marshaler).UnmarshalProtobuf3(raw)
+	} else {
+		obuf, oi := o.buf, o.index
+		o.buf, o.index = raw, 0
+		err = o.unmarshal_struct(p.stype, p.sprop, pv)
+		o.buf, o.index = obuf, oi
+	}
+	if err != nil {
+		return err
+	}
+
+	// address of the start of the array
+	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field))
+	n := p.length
+	i := o.array_indexes[ptr]
+	if i < n {
+		// address of pointer i
+		*(*structPointer)(unsafe.Pointer(uintptr(ptr) + uintptr(i)*unsafe.Sizeof(unsafe.Pointer(nil)))) = pv
+		i++
+		o.saveIndex(ptr, i)
+	}
 
 	return nil
 }
@@ -1056,6 +1331,27 @@ func (o *Buffer) dec_slice_marshaler(p *Properties, base structPointer) error {
 	// and unmarshal into it
 	val := slice.Index(slice.Len() - 1)
 	return val.Interface().(Marshaler).UnmarshalProtobuf3(raw)
+}
+
+// Decode into an array of Marshalers ([N]T, where T implements Marshaler)
+func (o *Buffer) dec_array_marshaler(p *Properties, base structPointer) error {
+	raw, err := o.DecodeRawBytes()
+	if err != nil {
+		return err
+	}
+
+	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field))
+	n := p.length
+	i := o.array_indexes[ptr]
+	if i < n {
+		// address of element i
+		ptr_elem := unsafe.Pointer(uintptr(ptr) + uintptr(i)*p.stype.Size())
+		err = reflect.NewAt(p.stype, ptr_elem).Interface().(Marshaler).UnmarshalProtobuf3(raw)
+		i++
+		o.saveIndex(ptr, i)
+	}
+
+	return err
 }
 
 // custom decoder for protobuf3 standard Timestamp, decoding it into the standard go time.Time
@@ -1188,6 +1484,28 @@ func (o *Buffer) dec_slice_time_Duration(p *Properties, base structPointer) erro
 	}
 
 	*v = append(*v, d)
+
+	return nil
+}
+
+// custom decode for [N]time.Duration
+func (o *Buffer) dec_array_time_Duration(p *Properties, base structPointer) error {
+	// each Duration is encoded separately (since in protobuf they are a message with 2 fields)
+	d, err := o.dec_Duration(p)
+	if err != nil {
+		return err
+	}
+
+	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field)) // address of 1st element of the array
+	n := p.length
+	s := ((*[maxLen / 8]time.Duration)(ptr))[0:n:n]
+
+	i := o.array_indexes[ptr]
+	if i < n {
+		s[i] = d
+		i++
+		o.saveIndex(ptr, i)
+	}
 
 	return nil
 }

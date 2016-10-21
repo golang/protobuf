@@ -46,6 +46,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"unsafe"
 )
 
 // Message is implemented by generated protocol buffer messages.
@@ -63,10 +64,11 @@ type Message interface {
 // decode []bytes references directly into the []byte passed to NewBuffer()
 // rather than being expensive copies.
 type Buffer struct {
-	buf       []byte // encode/decode byte stream
-	index     int    // read point
-	Immutable bool   // true if we the caller promises the contents of buf[] are immutable, and thus we can retain references to it for types which decode into []byte
-	err       error  // nil, or the first error which happened during operation
+	buf           []byte                 // encode/decode byte stream
+	index         int                    // read point
+	Immutable     bool                   // true if we the caller promises the contents of buf[] are immutable, and thus we can retain references to it for types which decode into []byte
+	err           error                  // nil, or the first error which happened during operation
+	array_indexes map[unsafe.Pointer]int // map of base address of array -> index of next unfilled slot (or nil if never used)
 }
 
 // NewBuffer allocates a new Buffer and initializes its internal data to
@@ -80,6 +82,7 @@ func (p *Buffer) Reset() {
 	p.buf = p.buf[0:0] // for reading/writing
 	p.index = 0        // for reading
 	p.err = nil
+	p.array_indexes = nil
 }
 
 // save the first error; toss the rest
@@ -101,6 +104,15 @@ func (p *Buffer) Rewind() {
 // returns true if we've decoded to the end of the buffer
 func (p *Buffer) EOF() bool {
 	return len(p.buf) == p.index
+}
+
+// save our current position in decoding into an array
+func (p *Buffer) saveIndex(ptr unsafe.Pointer, idx int) {
+	if p.array_indexes == nil {
+		// the 1st time we need to allocate
+		p.array_indexes = make(map[unsafe.Pointer]int)
+	}
+	p.array_indexes[ptr] = idx
 }
 
 // Find scans forward starting at 'offset', stopping and returning the next item which has id 'id'.
