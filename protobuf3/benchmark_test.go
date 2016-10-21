@@ -205,14 +205,7 @@ func BenchmarkMarshalOldFixedMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkUnmarshalFixedMsg(b *testing.B) {
-	i32 := int32(-10)
-	u32 := uint32(11)
-	i64 := int64(-12)
-	u64 := uint64(13)
-	f32 := float32(-14.14)
-	f64 := float64(15.15)
-
+func BenchmarkUnmarshalFixedIntMsg(b *testing.B) {
 	m := FixedMsg{
 		i32: -1,
 		u32: 2,
@@ -221,13 +214,123 @@ func BenchmarkUnmarshalFixedMsg(b *testing.B) {
 		f32: -5.5,
 		f64: 6.6,
 
+		/*
+			si32: []int32{-1},
+			su32: []uint32{1, 2},
+			si64: []int64{-1, 3, -3},
+			su64: []uint64{1, 2, 3, 4},
+			sf32: []float32{-1.1, 2.2, -3.3, 4.4},
+			sf64: []float64{-1.1, 2.2, -3.3, 4.4},
+		*/
+	}
+
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m FixedMsg
+		protobuf3.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkUnmarshalOldFixedIntMsg(b *testing.B) {
+	m := FixedMsg{
+		i32: -1,
+		u32: 2,
+		i64: -3,
+		u64: 4,
+		f32: -5.5,
+		f64: 6.6,
+
+		/*
+			si32: []int32{-1},
+			su32: []uint32{1, 2},
+			si64: []int64{-1, 3, -3},
+			su64: []uint64{1, 2, 3, 4},
+			sf32: []float32{-1.1, 2.2, -3.3, 4.4},
+			sf64: []float64{-1.1, 2.2, -3.3, 4.4},
+		*/
+	}
+
+	pb, err := proto.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m FixedMsg
+		proto.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkUnmarshalFixedPtrIntMsg(b *testing.B) {
+	i32 := int32(-10)
+	u32 := uint32(11)
+	i64 := int64(-12)
+	u64 := uint64(13)
+	f32 := float32(-14.14)
+	f64 := float64(15.15)
+
+	m := FixedMsg{
 		pi32: &i32,
 		pu32: &u32,
 		pi64: &i64,
 		pu64: &u64,
 		pf32: &f32,
 		pf64: &f64,
+	}
 
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m FixedMsg
+		protobuf3.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkUnmarshalOldFixedPtrIntMsg(b *testing.B) {
+	i32 := int32(-10)
+	u32 := uint32(11)
+	i64 := int64(-12)
+	u64 := uint64(13)
+	f32 := float32(-14.14)
+	f64 := float64(15.15)
+
+	m := FixedMsg{
+		pi32: &i32,
+		pu32: &u32,
+		pi64: &i64,
+		pu64: &u64,
+		pf32: &f32,
+		pf64: &f64,
+	}
+
+	pb, err := proto.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m FixedMsg
+		proto.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkUnmarshalFixedSliceMsg(b *testing.B) {
+	m := FixedMsg{
 		si32: []int32{-1},
 		su32: []uint32{1, 2},
 		si64: []int64{-1, 3, -3},
@@ -249,29 +352,8 @@ func BenchmarkUnmarshalFixedMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkUnmarshalOldFixedMsg(b *testing.B) {
-	i32 := int32(-10)
-	u32 := uint32(11)
-	i64 := int64(-12)
-	u64 := uint64(13)
-	f32 := float32(-14.14)
-	f64 := float64(15.15)
-
+func BenchmarkUnmarshalOldFixedSliceMsg(b *testing.B) {
 	m := FixedMsg{
-		i32: -1,
-		u32: 2,
-		i64: -3,
-		u64: 4,
-		f32: -5.5,
-		f64: 6.6,
-
-		pi32: &i32,
-		pu32: &u32,
-		pi64: &i64,
-		pu64: &u64,
-		pf32: &f32,
-		pf64: &f64,
-
 		si32: []int32{-1},
 		su32: []uint32{1, 2},
 		si64: []int64{-1, 3, -3},
@@ -363,6 +445,78 @@ func BenchmarkMarshalOldVarMsg(b *testing.B) {
 	}
 }
 
+func BenchmarkUnmarshalVarMsg(b *testing.B) {
+	i32 := int32(-10)
+	u32 := uint32(11)
+	i64 := int64(-12)
+	u64 := uint64(13)
+
+	m := VarMsg{
+		i32: -1,
+		u32: 2,
+		i64: -3,
+		u64: 4,
+
+		pi32: &i32,
+		pu32: &u32,
+		pi64: &i64,
+		pu64: &u64,
+
+		si32: []int32{-1},
+		su32: []uint32{1, 2},
+		si64: []int64{-1, 3, -3},
+		su64: []uint64{1, 2, 3, 4},
+	}
+
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m VarMsg
+		protobuf3.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkUnmarshalOldVarMsg(b *testing.B) {
+	i32 := int32(-10)
+	u32 := uint32(11)
+	i64 := int64(-12)
+	u64 := uint64(13)
+
+	m := VarMsg{
+		i32: -1,
+		u32: 2,
+		i64: -3,
+		u64: 4,
+
+		pi32: &i32,
+		pu32: &u32,
+		pi64: &i64,
+		pu64: &u64,
+
+		si32: []int32{-1},
+		su32: []uint32{1, 2},
+		si64: []int64{-1, 3, -3},
+		su64: []uint64{1, 2, 3, 4},
+	}
+
+	pb, err := proto.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m VarMsg
+		proto.Unmarshal(pb, &m)
+	}
+}
+
 func BenchmarkMarshalBytesMsg(b *testing.B) {
 	s := "str"
 
@@ -404,6 +558,79 @@ func BenchmarkMarshalOldBytesMsg(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		proto.Marshal(&m)
+	}
+}
+
+func BenchmarkUnmarshalBytesMsg(b *testing.B) {
+	s := "str"
+
+	m := BytesMsg{
+		s:  "test1",
+		ps: &s,
+		ss: []string{"test3", "test4"},
+		sb: []byte{3, 2, 1, 0},
+	}
+
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m BytesMsg
+		protobuf3.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkUnmarshalImmutableBytesMsg(b *testing.B) {
+	s := "str"
+
+	m := BytesMsg{
+		s:  "test1",
+		ps: &s,
+		ss: []string{"test3", "test4"},
+		sb: []byte{3, 2, 1, 0},
+	}
+
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	buf := protobuf3.NewBuffer(pb)
+	buf.Immutable = true
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m BytesMsg
+		buf.Rewind()
+		buf.Unmarshal(&m)
+	}
+}
+
+func BenchmarkUnmarshalOldBytesMsg(b *testing.B) {
+	s := "str"
+
+	m := BytesMsg{
+		s:  "test1",
+		ps: &s,
+		ss: []string{"test3", "test4"},
+		sb: []byte{3, 2, 1, 0},
+	}
+
+	pb, err := proto.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m BytesMsg
+		proto.Unmarshal(pb, &m)
 	}
 }
 
@@ -509,5 +736,47 @@ func BenchmarkMarshalOldMapMsg(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		proto.Marshal(&m)
+	}
+}
+
+func BenchmarkUnmarshalMapMsg(b *testing.B) {
+	m := MapMsg{
+		m: map[string]int32{
+			"Nic":     0,
+			"Michele": 1,
+		},
+	}
+
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m MapMsg
+		protobuf3.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkUnmarshalOldMapMsg(b *testing.B) {
+	m := MapMsg{
+		m: map[string]int32{
+			"Nic":     0,
+			"Michele": 1,
+		},
+	}
+
+	pb, err := proto.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m MapMsg
+		proto.Unmarshal(pb, &m)
 	}
 }
