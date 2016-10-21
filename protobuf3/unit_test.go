@@ -751,6 +751,27 @@ func (s *CustomSlice) MarshalProtobuf3() ([]byte, error) {
 }
 
 func (s *CustomSlice) UnmarshalProtobuf3(data []byte) error {
+	buf := protobuf3.NewBuffer(data)
+	for !buf.EOF() {
+		err := buf.SkipVarint()
+		if err != nil {
+			return err
+		}
+		raw, err := buf.DecodeRawBytes()
+		if err != nil {
+			return err
+		}
+		tmp := protobuf3.NewBuffer(raw)
+		var row []uint32
+		for !tmp.EOF() {
+			v, err := tmp.DecodeVarint()
+			if err != nil {
+				return err
+			}
+			row = append(row, uint32(v))
+		}
+		*s = append(*s, row)
+	}
 	return nil
 }
 
@@ -785,6 +806,12 @@ func TestCustomMsg(t *testing.T) {
 
 	check(&o, &o, t)
 	check(&m, &o, t)
+
+	var mb CustomMsg
+	var mc EquivToCustomMsg
+	uncheck(&m, &mb, &mc, t)
+	eq("mb", m, mb, t)
+	eq("mc", o, mc, t)
 }
 
 type SliceMarshalerMsg struct {
