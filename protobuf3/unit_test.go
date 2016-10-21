@@ -265,36 +265,8 @@ func TestFixedMsg(t *testing.T) {
 
 	var mb, mc FixedMsg
 	uncheck(&m, &mb, &mc, t)
-
-	eq("i32", m.i32, mb.i32, t)
-	eq("i32", m.i32, mc.i32, t)
-	eq("u32", m.u32, mb.u32, t)
-	eq("u32", m.u32, mc.u32, t)
-
-	eq("i64", m.i64, mb.i64, t)
-	eq("i64", m.i64, mc.i64, t)
-	eq("u64", m.u64, mb.u64, t)
-	eq("u64", m.u64, mc.u64, t)
-
-	eq("f32", m.f32, mb.f32, t)
-	eq("f32", m.f32, mc.f32, t)
-	eq("f64", m.f64, mb.f64, t)
-	eq("f64", m.f64, mc.f64, t)
-
-	eq("pi32", m.pi32, mb.pi32, t)
-	eq("pi32", m.pi32, mc.pi32, t)
-	eq("pu32", m.pu32, mb.pu32, t)
-	eq("pu32", m.pu32, mc.pu32, t)
-
-	eq("pi64", m.pi64, mb.pi64, t)
-	eq("pi64", m.pi64, mc.pi64, t)
-	eq("pu64", m.pu64, mb.pu64, t)
-	eq("pu64", m.pu64, mc.pu64, t)
-
-	eq("pf32", m.pf32, mb.pf32, t)
-	eq("pf32", m.pf32, mc.pf32, t)
-	eq("pf64", m.pf64, mb.pf64, t)
-	eq("pf64", m.pf64, mc.pf64, t)
+	eq("mb", m, mb, t)
+	eq("mc", m, mc, t)
 }
 
 func TestVarMsg(t *testing.T) {
@@ -321,6 +293,10 @@ func TestVarMsg(t *testing.T) {
 	}
 
 	check(&m, &m, t)
+
+	var mb VarMsg
+	uncheck(&m, &mb, nil, t)
+	eq("mb", m, mb, t)
 }
 
 func TestBytesMsg(t *testing.T) {
@@ -334,6 +310,10 @@ func TestBytesMsg(t *testing.T) {
 	}
 
 	check(&m, &m, t)
+
+	var mb BytesMsg
+	uncheck(&m, &mb, nil, t)
+	eq("mb", m, mb, t)
 }
 
 func TestFixedArrayMsg(t *testing.T) {
@@ -357,6 +337,12 @@ func TestFixedArrayMsg(t *testing.T) {
 
 	check(&m, &m, t)
 	check(&a, &m, t)
+
+	var mb FixedArrayMsg
+	var mc FixedMsg
+	uncheck(&a, &mb, &mc, t)
+	eq("mb", a, mb, t)
+	eq("mc", m, mc, t)
 }
 
 func TestVarArrayMsg(t *testing.T) {
@@ -378,6 +364,12 @@ func TestVarArrayMsg(t *testing.T) {
 
 	check(&m, &m, t)
 	check(&a, &m, t)
+
+	var mb VarArrayMsg
+	var mc VarMsg
+	uncheck(&m, &mb, &mc, t)
+	eq("mb", a, mb, t)
+	eq("mc", m, mc, t)
 }
 
 func TestZigZagArrayMsg(t *testing.T) {
@@ -392,6 +384,12 @@ func TestZigZagArrayMsg(t *testing.T) {
 	}
 
 	check(&a, &m, t)
+
+	var mb ZigZagArrayMsg
+	var mc ZigZagMsg
+	uncheck(&a, &mb, &mc, t)
+	eq("mb", a, mb, t)
+	eq("mc", m, mc, t)
 }
 
 func TestByteArrayMsg(t *testing.T) {
@@ -408,6 +406,13 @@ func TestByteArrayMsg(t *testing.T) {
 
 	check(&m, &m, t)
 	check(&a, &m, t)
+
+	var mb BytesArrayMsg
+	var mc BytesMsg
+	a.skipped = 0 // it should not have been decoded
+	uncheck(&a, &mb, &mc, t)
+	eq("mb", a, mb, t)
+	eq("mc", m, mc, t)
 }
 
 func TestZeroMsgs(t *testing.T) {
@@ -477,7 +482,7 @@ func uncheck(mi protobuf3.Message, mb protobuf3.Message, mc proto.Message, t *te
 
 func eq(name string, x interface{}, y interface{}, t *testing.T) {
 	if !reflect.DeepEqual(x, y) {
-		t.Errorf("(%v) %v != (%v) %v", reflect.TypeOf(x), x, reflect.TypeOf(y), y)
+		t.Errorf("%s: (%v) %v != (%v) %v", name, reflect.TypeOf(x), x, reflect.TypeOf(y), y)
 	}
 }
 
@@ -506,6 +511,15 @@ func TestNestedPtrStructMsg(t *testing.T) {
 	}
 
 	check(&m, &m, t)
+
+	var mb, mc NestedPtrStructMsg
+	uncheck(&m, &mb, &mc, t)
+	eq("mb.first", m.first, mb.first, t)
+	eq("mc.first", m.first, mc.first, t)
+	eq("mb.second", m.second, mb.second, t)
+	eq("mc.second", m.second, mc.second, t)
+	eq("mb.many", m.many, mb.many, t)
+	eq("mc.many", m.many, mc.many, t)
 }
 
 type NestedStructMsg struct {
@@ -537,11 +551,17 @@ func TestNestedStructMsg(t *testing.T) {
 
 	check(&m, &m, t)
 	check(&a, &m, t)
+
+	var mb NestedStructMsg
+	var mc NestedPtrStructMsg
+	uncheck(&m, &mb, &mc, t)
+	eq("mb", a, mb, t)
+	eq("mc", m, mc, t)
 }
 
-func (*InnerMsg) ProtoMessage()    {}
-func (m *InnerMsg) String() string { return fmt.Sprintf("%+v", *m) }
-func (m *InnerMsg) Reset()         { *m = InnerMsg{} }
+func (*InnerMsg) ProtoMessage()     {}
+func (im *InnerMsg) String() string { return fmt.Sprintf("&InnerMsg{ %d }", im.i) }
+func (m *InnerMsg) Reset()          { *m = InnerMsg{} }
 
 type RecursiveTypeMsg struct {
 	// type-recursive pointer
@@ -613,6 +633,11 @@ func TestMapMsg(t *testing.T) {
 				t.Errorf("Marshal(%T) different", m)
 			}
 		}
+
+		var mb, mc MapMsg
+		uncheck(&m, &mb, &mc, t)
+		eq("mb", m, mb, t)
+		eq("mc", m, mc, t)
 	}
 
 }

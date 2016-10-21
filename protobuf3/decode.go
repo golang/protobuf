@@ -695,7 +695,7 @@ func (o *Buffer) dec_array_packed_bool(p *Properties, base unsafe.Pointer) error
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen]bool)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
+	s := ((*[maxLen]bool)(unsafe.Pointer(uintptr(base) + p.offset)))[0:0:n]
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -752,7 +752,7 @@ func (o *Buffer) dec_array_packed_int8(p *Properties, base unsafe.Pointer) error
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen]int8)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
+	s := ((*[maxLen]int8)(unsafe.Pointer(uintptr(base) + p.offset)))[0:0:n]
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -811,7 +811,7 @@ func (o *Buffer) dec_array_packed_int16(p *Properties, base unsafe.Pointer) erro
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen / 2]int16)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
+	s := ((*[maxLen / 2]int16)(unsafe.Pointer(uintptr(base) + p.offset)))[0:0:n]
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -870,7 +870,7 @@ func (o *Buffer) dec_array_packed_int32(p *Properties, base unsafe.Pointer) erro
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen / 4]int32)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
+	s := ((*[maxLen / 4]int32)(unsafe.Pointer(uintptr(base) + p.offset)))[0:0:n]
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
@@ -955,7 +955,7 @@ func (o *Buffer) dec_array_packed_int64(p *Properties, base unsafe.Pointer) erro
 	// index saved in a map of array->index in Buffer. However for all use cases we have that
 	// is useless extra work. Should we want to decode such a field someday we can either do
 	// the work, or decode into a []bool, which is always variable length.
-	s := ((*[maxLen / 8]int64)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
+	s := ((*[maxLen / 8]int64)(unsafe.Pointer(uintptr(base) + p.offset)))[0:0:n]
 
 	nn, err := o.DecodeVarint()
 	if err != nil {
