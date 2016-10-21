@@ -1159,7 +1159,7 @@ func (o *Buffer) dec_slice_struct_message(p *Properties, base structPointer) err
 	// build a reflect.Value of the slice
 	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field))
 	slice_type := reflect.SliceOf(p.stype)
-	slice := reflect.NewAt(slice_type, ptr)
+	slice := reflect.NewAt(slice_type, ptr).Elem()
 
 	// put a zero value at the end of the slice
 	slice.Set(reflect.Append(slice, reflect.Zero(p.stype)))
@@ -1167,7 +1167,7 @@ func (o *Buffer) dec_slice_struct_message(p *Properties, base structPointer) err
 	// and unmarshal into it
 	val := slice.Index(slice.Len() - 1)
 	if p.isMarshaler {
-		return val.Interface().(Marshaler).UnmarshalProtobuf3(raw)
+		return val.Addr().Interface().(Marshaler).UnmarshalProtobuf3(raw)
 	}
 
 	pval := structPointer(unsafe.Pointer(val.UnsafeAddr()))
@@ -1323,14 +1323,14 @@ func (o *Buffer) dec_slice_marshaler(p *Properties, base structPointer) error {
 	// build a reflect.Value of the slice
 	ptr := unsafe.Pointer(uintptr(base) + uintptr(p.field))
 	slice_type := reflect.SliceOf(p.stype)
-	slice := reflect.NewAt(slice_type, ptr)
+	slice := reflect.NewAt(slice_type, ptr).Elem()
 
 	// put a zero value at the end of the slice
 	slice.Set(reflect.Append(slice, reflect.Zero(p.stype)))
 
 	// and unmarshal into it
 	val := slice.Index(slice.Len() - 1)
-	return val.Interface().(Marshaler).UnmarshalProtobuf3(raw)
+	return val.Addr().Interface().(Marshaler).UnmarshalProtobuf3(raw)
 }
 
 // Decode into an array of Marshalers ([N]T, where T implements Marshaler)

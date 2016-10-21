@@ -850,4 +850,10 @@ func TestSliceMarshlerMsg(t *testing.T) {
 
 	check(&o, &o, t)
 	check(&m, &o, t)
+
+	var mb SliceMarshalerMsg
+	var mc EquivSliceMarshalerMsg
+	uncheck(&m, &mb, &mc, t)
+	eq("mb", m, mb, t)
+	eq("mc", o, mc, t)
 }
