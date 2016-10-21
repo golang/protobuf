@@ -67,18 +67,34 @@ var (
 // int32, int64, uint32, uint64, bool, and enum
 // protocol buffer types.
 func (p *Buffer) EncodeVarint(x uint64) {
+	x32 := uint32(x)
 	if x>>32 == 0 {
 		// use 32-bit math. this is measureably faster on 32-bit targets
 		// probably because the >>7 on a uint64 is messy
-		x32 := uint32(x)
+		if x32 < 1<<7 { // very common case of small positive ints
+			p.buf = append(p.buf, uint8(x32))
+			return
+		}
+		if x < 1<<14 {
+			p.buf = append(p.buf, uint8(x32)|0x80, uint8(x32>>7))
+			return
+		}
+		// we know x takes at least 3 bytes to encode, so we can lay down
+		// the first two immediately
+		p.buf = append(p.buf, uint8(x32)|0x80, uint8(x32>>7)|0x80)
+		x32 >>= 14
 		for x32 >= 1<<7 {
-			p.buf = append(p.buf, uint8(x32&0x7f|0x80))
+			p.buf = append(p.buf, uint8(x32)|0x80)
 			x32 >>= 7
 		}
 		p.buf = append(p.buf, uint8(x32))
 	} else {
+		// we know x takes at least 5 bytes to encode (since it is >= 1<<32)
+		// so we can lay down the first 4 bytes immediately
+		p.buf = append(p.buf, uint8(x32)|0x80, uint8(x32>>7)|0x80, uint8(x32>>14)|0x80, uint8(x32>>21)|0x80)
+		x >>= 28
 		for x >= 1<<7 {
-			p.buf = append(p.buf, uint8(x&0x7f|0x80))
+			p.buf = append(p.buf, uint8(x)|0x80)
 			x >>= 7
 		}
 		p.buf = append(p.buf, uint8(x))
