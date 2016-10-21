@@ -263,23 +263,38 @@ func TestFixedMsg(t *testing.T) {
 
 	check(&m, &m, t)
 
-	m = FixedMsg{
-		i32: -1,
-		u32: 2,
-		i64: -3,
-		u64: 4,
-		f32: -5.5,
-		f64: 6.6,
-
-		pi32: &i32,
-		pu32: &u32,
-		pi64: &i64,
-		pu64: &u64,
-		pf32: &f32,
-		pf64: &f64,
-	}
 	var mb, mc FixedMsg
 	uncheck(&m, &mb, &mc, t)
+
+	eq("i32", m.i32, mb.i32, t)
+	eq("i32", m.i32, mc.i32, t)
+	eq("u32", m.u32, mb.u32, t)
+	eq("u32", m.u32, mc.u32, t)
+
+	eq("i64", m.i64, mb.i64, t)
+	eq("i64", m.i64, mc.i64, t)
+	eq("u64", m.u64, mb.u64, t)
+	eq("u64", m.u64, mc.u64, t)
+
+	eq("f32", m.f32, mb.f32, t)
+	eq("f32", m.f32, mc.f32, t)
+	eq("f64", m.f64, mb.f64, t)
+	eq("f64", m.f64, mc.f64, t)
+
+	eq("pi32", m.pi32, mb.pi32, t)
+	eq("pi32", m.pi32, mc.pi32, t)
+	eq("pu32", m.pu32, mb.pu32, t)
+	eq("pu32", m.pu32, mc.pu32, t)
+
+	eq("pi64", m.pi64, mb.pi64, t)
+	eq("pi64", m.pi64, mc.pi64, t)
+	eq("pu64", m.pu64, mb.pu64, t)
+	eq("pu64", m.pu64, mc.pu64, t)
+
+	eq("pf32", m.pf32, mb.pf32, t)
+	eq("pf32", m.pf32, mc.pf32, t)
+	eq("pf64", m.pf64, mb.pf64, t)
+	eq("pf64", m.pf64, mc.pf64, t)
 }
 
 func TestVarMsg(t *testing.T) {
