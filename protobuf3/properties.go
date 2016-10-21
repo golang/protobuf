@@ -50,6 +50,7 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
+	"unsafe"
 )
 
 const debug bool = false
@@ -73,6 +74,11 @@ var MakePackageName func(pkgpath string) string = MakeSamePackageName
 type AsProtobuf3er interface {
 	AsProtobuf3() (name string, definition string)
 }
+
+// maxLen is the maximum length possible for a byte array. On a 64-bit target this is (1<<50)-1. On a 32-bit target it is (1<<31)-1
+// The tricky part is figuring out in a constant what flavor of target we are on. I could sure use a ?: here. It would be more
+// clear than using &^uint(0) to truncate (or not) the upper 32 bits of a constant.
+const maxLen = int((1 << (31 + (((50-31)<<32)&uint64(^uint(0)))>>32)) - 1) // experiments with go1.7 on amd64 show any larger size causes the compiler to error
 
 // Constants that identify the encoding of a value on the wire.
 const (
@@ -99,7 +105,7 @@ func (wt WireType) String() string {
 // Encoders are defined in encode.go
 // An encoder outputs the full representation of a field, including its
 // tag and encoder type.
-type encoder func(p *Buffer, prop *Properties, base structPointer)
+type encoder func(p *Buffer, prop *Properties, base unsafe.Pointer)
 
 // A valueEncoder encodes a single integer in a particular encoding.
 type valueEncoder func(o *Buffer, x uint64)
@@ -107,7 +113,7 @@ type valueEncoder func(o *Buffer, x uint64)
 // Decoders are defined in decode.go
 // A decoder creates a value from its wire representation.
 // Unrecognized subelements are saved in unrec.
-type decoder func(p *Buffer, prop *Properties, base structPointer) error
+type decoder func(p *Buffer, prop *Properties, base unsafe.Pointer) error
 
 // A valueDecoder decodes a single integer in a particular encoding.
 type valueDecoder func(o *Buffer) (x uint64, err error)
@@ -341,8 +347,8 @@ type Properties struct {
 
 	enc         encoder
 	valEnc      valueEncoder // set for bool and numeric types only
-	field       field
-	tagcode     []byte // encoding of EncodeVarint((Tag<<3)|WireType)
+	offset      uintptr      // byte offset of this field within the struct
+	tagcode     []byte       // encoding of EncodeVarint((Tag<<3)|WireType)
 	tagbuf      [8]byte
 	stype       reflect.Type      // set for struct types only
 	sprop       *StructProperties // set for struct types only
@@ -990,7 +996,7 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 
 	p.Name = name
 	if f != nil {
-		p.field = field(f.Offset)
+		p.offset = f.Offset
 	}
 
 	intencoder, skip, err := p.Parse(tag)

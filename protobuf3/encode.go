@@ -210,7 +210,7 @@ func (o *Buffer) Marshal(pb Message) error {
 	if t.Kind() != reflect.Ptr || t.Elem().Kind() != reflect.Struct {
 		return fmt.Errorf("protobuf3: can't Marshal(%s): not a *struct type", t)
 	}
-	base := structPointer(unsafe.Pointer(v.Pointer()))
+	base := unsafe.Pointer(v.Pointer())
 	if base == nil {
 		return ErrNil // don't pass in nil pointers. we need values
 	}
@@ -223,8 +223,8 @@ func (o *Buffer) Marshal(pb Message) error {
 // Individual type encoders.
 
 // Encode a *bool.
-func (o *Buffer) enc_ptr_bool(p *Properties, base structPointer) {
-	v := *(**bool)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_ptr_bool(p *Properties, base unsafe.Pointer) {
+	v := *(**bool)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if v == nil {
 		return
 	}
@@ -237,8 +237,8 @@ func (o *Buffer) enc_ptr_bool(p *Properties, base structPointer) {
 }
 
 // Encode a bool.
-func (o *Buffer) enc_bool(p *Properties, base structPointer) {
-	v := *(*bool)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_bool(p *Properties, base unsafe.Pointer) {
+	v := *(*bool)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if !v {
 		return
 	}
@@ -247,8 +247,8 @@ func (o *Buffer) enc_bool(p *Properties, base structPointer) {
 }
 
 // Encode an int
-func (o *Buffer) enc_int(p *Properties, base structPointer) {
-	x := *(*int)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_int(p *Properties, base unsafe.Pointer) {
+	x := *(*int)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if x == 0 {
 		return
 	}
@@ -257,8 +257,8 @@ func (o *Buffer) enc_int(p *Properties, base structPointer) {
 }
 
 // Encode a uint
-func (o *Buffer) enc_uint(p *Properties, base structPointer) {
-	x := *(*uint)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_uint(p *Properties, base unsafe.Pointer) {
+	x := *(*uint)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if x == 0 {
 		return
 	}
@@ -267,8 +267,8 @@ func (o *Buffer) enc_uint(p *Properties, base structPointer) {
 }
 
 // Encode an int8
-func (o *Buffer) enc_int8(p *Properties, base structPointer) {
-	x := *(*int8)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_int8(p *Properties, base unsafe.Pointer) {
+	x := *(*int8)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if x == 0 {
 		return
 	}
@@ -277,8 +277,8 @@ func (o *Buffer) enc_int8(p *Properties, base structPointer) {
 }
 
 // Encode a uint8
-func (o *Buffer) enc_uint8(p *Properties, base structPointer) {
-	x := *(*uint8)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_uint8(p *Properties, base unsafe.Pointer) {
+	x := *(*uint8)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if x == 0 {
 		return
 	}
@@ -287,8 +287,8 @@ func (o *Buffer) enc_uint8(p *Properties, base structPointer) {
 }
 
 // Encode an int16
-func (o *Buffer) enc_int16(p *Properties, base structPointer) {
-	x := *(*int16)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_int16(p *Properties, base unsafe.Pointer) {
+	x := *(*int16)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if x == 0 {
 		return
 	}
@@ -297,8 +297,8 @@ func (o *Buffer) enc_int16(p *Properties, base structPointer) {
 }
 
 // Encode a uint16
-func (o *Buffer) enc_uint16(p *Properties, base structPointer) {
-	x := *(*uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_uint16(p *Properties, base unsafe.Pointer) {
+	x := *(*uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if x == 0 {
 		return
 	}
@@ -307,8 +307,8 @@ func (o *Buffer) enc_uint16(p *Properties, base structPointer) {
 }
 
 // Encode an *int32.
-func (o *Buffer) enc_ptr_int32(p *Properties, base structPointer) {
-	v := *(**int32)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_ptr_int32(p *Properties, base unsafe.Pointer) {
+	v := *(**int32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if v == nil {
 		return
 	}
@@ -317,8 +317,8 @@ func (o *Buffer) enc_ptr_int32(p *Properties, base structPointer) {
 }
 
 // Encode an int32.
-func (o *Buffer) enc_int32(p *Properties, base structPointer) {
-	x := *(*int32)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_int32(p *Properties, base unsafe.Pointer) {
+	x := *(*int32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if x == 0 {
 		return
 	}
@@ -328,8 +328,8 @@ func (o *Buffer) enc_int32(p *Properties, base structPointer) {
 
 // Encode a *uint32.
 // Exactly the same as int32, except for no sign extension.
-func (o *Buffer) enc_ptr_uint32(p *Properties, base structPointer) {
-	v := *(**uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_ptr_uint32(p *Properties, base unsafe.Pointer) {
+	v := *(**uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if v == nil {
 		return
 	}
@@ -338,8 +338,8 @@ func (o *Buffer) enc_ptr_uint32(p *Properties, base structPointer) {
 }
 
 // Encode a uint32.
-func (o *Buffer) enc_uint32(p *Properties, base structPointer) {
-	x := *(*uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_uint32(p *Properties, base unsafe.Pointer) {
+	x := *(*uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if x == 0 {
 		return
 	}
@@ -348,8 +348,8 @@ func (o *Buffer) enc_uint32(p *Properties, base structPointer) {
 }
 
 // Encode an *int64.
-func (o *Buffer) enc_ptr_int64(p *Properties, base structPointer) {
-	v := *(**uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_ptr_int64(p *Properties, base unsafe.Pointer) {
+	v := *(**uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if v == nil {
 		return
 	}
@@ -358,8 +358,8 @@ func (o *Buffer) enc_ptr_int64(p *Properties, base structPointer) {
 }
 
 // Encode an int64.
-func (o *Buffer) enc_int64(p *Properties, base structPointer) {
-	x := *(*uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_int64(p *Properties, base unsafe.Pointer) {
+	x := *(*uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if x == 0 {
 		return
 	}
@@ -368,8 +368,8 @@ func (o *Buffer) enc_int64(p *Properties, base structPointer) {
 }
 
 // Encode a *string.
-func (o *Buffer) enc_ptr_string(p *Properties, base structPointer) {
-	v := *(**string)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_ptr_string(p *Properties, base unsafe.Pointer) {
+	v := *(**string)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if v == nil {
 		return
 	}
@@ -378,8 +378,8 @@ func (o *Buffer) enc_ptr_string(p *Properties, base structPointer) {
 }
 
 // Encode a string.
-func (o *Buffer) enc_string(p *Properties, base structPointer) {
-	x := *(*string)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_string(p *Properties, base unsafe.Pointer) {
+	x := *(*string)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if x == "" {
 		return
 	}
@@ -388,8 +388,8 @@ func (o *Buffer) enc_string(p *Properties, base structPointer) {
 }
 
 // Encode an message struct field which implements the Marshaler interface
-func (o *Buffer) enc_marshaler(p *Properties, base structPointer) {
-	ptr := (unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_marshaler(p *Properties, base unsafe.Pointer) {
+	ptr := (unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	// note *ptr is embedded in base, so pointer cannot be nil
 
 	m := reflect.NewAt(p.stype, ptr).Interface().(Marshaler)
@@ -406,8 +406,8 @@ func (o *Buffer) enc_marshaler(p *Properties, base structPointer) {
 }
 
 // Encode an message struct field of a message struct.
-func (o *Buffer) enc_struct_message(p *Properties, base structPointer) {
-	structp := (structPointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_struct_message(p *Properties, base unsafe.Pointer) {
+	structp := unsafe.Pointer(uintptr(base) + uintptr(p.offset))
 	// note struct is embedded in base, so pointer cannot be nil
 
 	o.buf = append(o.buf, p.tagcode...)
@@ -415,8 +415,8 @@ func (o *Buffer) enc_struct_message(p *Properties, base structPointer) {
 }
 
 // Encode a *Marshaler.
-func (o *Buffer) enc_ptr_marshaler(p *Properties, base structPointer) {
-	ptr := *(*unsafe.Pointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_ptr_marshaler(p *Properties, base unsafe.Pointer) {
+	ptr := *(*unsafe.Pointer)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if ptr == nil {
 		return
 	}
@@ -435,8 +435,8 @@ func (o *Buffer) enc_ptr_marshaler(p *Properties, base structPointer) {
 }
 
 // Encode a *message struct.
-func (o *Buffer) enc_ptr_struct_message(p *Properties, base structPointer) {
-	structp := *(*structPointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_ptr_struct_message(p *Properties, base unsafe.Pointer) {
+	structp := *(*unsafe.Pointer)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if structp == nil {
 		return
 	}
@@ -446,8 +446,8 @@ func (o *Buffer) enc_ptr_struct_message(p *Properties, base structPointer) {
 }
 
 // Encode a slice of bools ([]bool) in packed format.
-func (o *Buffer) enc_slice_packed_bool(p *Properties, base structPointer) {
-	s := *(*[]bool)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_packed_bool(p *Properties, base unsafe.Pointer) {
+	s := *(*[]bool)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	l := len(s)
 	if l == 0 {
 		return
@@ -464,9 +464,9 @@ func (o *Buffer) enc_slice_packed_bool(p *Properties, base structPointer) {
 }
 
 // Encode an array of bools ([N]bool) in packed format.
-func (o *Buffer) enc_array_packed_bool(p *Properties, base structPointer) {
+func (o *Buffer) enc_array_packed_bool(p *Properties, base unsafe.Pointer) {
 	n := p.length
-	s := ((*[maxLen]bool)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+	s := ((*[maxLen]bool)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(n)) // each bool takes exactly one byte
 	for _, x := range s {
@@ -479,8 +479,8 @@ func (o *Buffer) enc_array_packed_bool(p *Properties, base structPointer) {
 }
 
 // Encode a slice of bytes ([]byte).
-func (o *Buffer) enc_slice_byte(p *Properties, base structPointer) {
-	s := *(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_byte(p *Properties, base unsafe.Pointer) {
+	s := *(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if len(s) == 0 {
 		return
 	}
@@ -489,16 +489,16 @@ func (o *Buffer) enc_slice_byte(p *Properties, base structPointer) {
 }
 
 // Encode an array of bytes ([n]byte).
-func (o *Buffer) enc_array_byte(p *Properties, base structPointer) {
+func (o *Buffer) enc_array_byte(p *Properties, base unsafe.Pointer) {
 	n := p.length
-	s := ((*[maxLen]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+	s := ((*[maxLen]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeRawBytes(s)
 }
 
 // Encode a slice of int ([]int) in packed format.
-func (o *Buffer) enc_slice_packed_int(p *Properties, base structPointer) {
-	s := *(*[]int)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_packed_int(p *Properties, base unsafe.Pointer) {
+	s := *(*[]int)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	l := len(s)
 	if l == 0 {
 		return
@@ -514,8 +514,8 @@ func (o *Buffer) enc_slice_packed_int(p *Properties, base structPointer) {
 }
 
 // Encode a slice of uint ([]uint) in packed format.
-func (o *Buffer) enc_slice_packed_uint(p *Properties, base structPointer) {
-	s := *(*[]uint)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_packed_uint(p *Properties, base unsafe.Pointer) {
+	s := *(*[]uint)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	l := len(s)
 	if l == 0 {
 		return
@@ -531,8 +531,8 @@ func (o *Buffer) enc_slice_packed_uint(p *Properties, base structPointer) {
 }
 
 // Encode a slice of int8s ([]int8) in packed format.
-func (o *Buffer) enc_slice_packed_int8(p *Properties, base structPointer) {
-	s := *(*[]int8)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_packed_int8(p *Properties, base unsafe.Pointer) {
+	s := *(*[]int8)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	l := len(s)
 	if l == 0 {
 		return
@@ -548,8 +548,8 @@ func (o *Buffer) enc_slice_packed_int8(p *Properties, base structPointer) {
 }
 
 // Encode a slice of int16s ([]int16) in packed format.
-func (o *Buffer) enc_slice_packed_int16(p *Properties, base structPointer) {
-	s := *(*[]int16)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_packed_int16(p *Properties, base unsafe.Pointer) {
+	s := *(*[]int16)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	l := len(s)
 	if l == 0 {
 		return
@@ -565,8 +565,8 @@ func (o *Buffer) enc_slice_packed_int16(p *Properties, base structPointer) {
 }
 
 // Encode a slice of uint16s ([]uint16) in packed format.
-func (o *Buffer) enc_slice_packed_uint16(p *Properties, base structPointer) {
-	s := *(*[]uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_packed_uint16(p *Properties, base unsafe.Pointer) {
+	s := *(*[]uint16)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	l := len(s)
 	if l == 0 {
 		return
@@ -582,8 +582,8 @@ func (o *Buffer) enc_slice_packed_uint16(p *Properties, base structPointer) {
 }
 
 // Encode a slice of int32s ([]int32) in packed format.
-func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) {
-	s := *(*[]int32)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_packed_int32(p *Properties, base unsafe.Pointer) {
+	s := *(*[]int32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	l := len(s)
 	if l == 0 {
 		return
@@ -599,9 +599,9 @@ func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) {
 }
 
 // Encode an array of int32s ([length]int32) in packed format.
-func (o *Buffer) enc_array_packed_int32(p *Properties, base structPointer) {
+func (o *Buffer) enc_array_packed_int32(p *Properties, base unsafe.Pointer) {
 	n := p.length
-	s := ((*[maxLen / 4]int32)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+	s := ((*[maxLen / 4]int32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
 
 	buf := NewBuffer(nil)
 	for _, x := range s {
@@ -615,8 +615,8 @@ func (o *Buffer) enc_array_packed_int32(p *Properties, base structPointer) {
 
 // Encode a slice of uint32s ([]uint32) in packed format.
 // Exactly the same as int32, except for no sign extension.
-func (o *Buffer) enc_slice_packed_uint32(p *Properties, base structPointer) {
-	s := *(*[]uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_packed_uint32(p *Properties, base unsafe.Pointer) {
+	s := *(*[]uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	l := len(s)
 	if l == 0 {
 		return
@@ -632,9 +632,9 @@ func (o *Buffer) enc_slice_packed_uint32(p *Properties, base structPointer) {
 }
 
 // Encode an array of uint32s ([length]uint32) in packed format.
-func (o *Buffer) enc_array_packed_uint32(p *Properties, base structPointer) {
+func (o *Buffer) enc_array_packed_uint32(p *Properties, base unsafe.Pointer) {
 	n := p.length
-	s := ((*[maxLen / 4]uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+	s := ((*[maxLen / 4]uint32)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
 
 	buf := NewBuffer(nil)
 	for _, x := range s {
@@ -647,8 +647,8 @@ func (o *Buffer) enc_array_packed_uint32(p *Properties, base structPointer) {
 }
 
 // Encode a slice of int64s or uint64s ([](u)int64) in packed format.
-func (o *Buffer) enc_slice_packed_int64(p *Properties, base structPointer) {
-	s := *(*[]uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_packed_int64(p *Properties, base unsafe.Pointer) {
+	s := *(*[]uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	l := len(s)
 	if l == 0 {
 		return
@@ -664,9 +664,9 @@ func (o *Buffer) enc_slice_packed_int64(p *Properties, base structPointer) {
 }
 
 // Encode an array of int64s ([n]int64) in packed format.
-func (o *Buffer) enc_array_packed_int64(p *Properties, base structPointer) {
+func (o *Buffer) enc_array_packed_int64(p *Properties, base unsafe.Pointer) {
 	n := p.length
-	s := ((*[maxLen / 8]uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+	s := ((*[maxLen / 8]uint64)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
 
 	buf := NewBuffer(nil)
 	for _, x := range s {
@@ -679,8 +679,8 @@ func (o *Buffer) enc_array_packed_int64(p *Properties, base structPointer) {
 }
 
 // Encode a slice of slice of bytes ([][]byte).
-func (o *Buffer) enc_slice_slice_byte(p *Properties, base structPointer) {
-	ss := *(*[][]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_slice_byte(p *Properties, base unsafe.Pointer) {
+	ss := *(*[][]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	for _, s := range ss {
 		o.buf = append(o.buf, p.tagcode...)
 		o.EncodeRawBytes(s)
@@ -688,8 +688,8 @@ func (o *Buffer) enc_slice_slice_byte(p *Properties, base structPointer) {
 }
 
 // Encode a slice of strings ([]string).
-func (o *Buffer) enc_slice_string(p *Properties, base structPointer) {
-	ss := *(*[]string)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_string(p *Properties, base unsafe.Pointer) {
+	ss := *(*[]string)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	for _, x := range ss {
 		o.buf = append(o.buf, p.tagcode...)
 		o.EncodeStringBytes(x)
@@ -697,9 +697,9 @@ func (o *Buffer) enc_slice_string(p *Properties, base structPointer) {
 }
 
 // Encode an array of strings ([n]string).
-func (o *Buffer) enc_array_string(p *Properties, base structPointer) {
+func (o *Buffer) enc_array_string(p *Properties, base unsafe.Pointer) {
 	n := p.length
-	s := ((*[maxLen / 8 / 2]string)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+	s := ((*[maxLen / 8 / 2]string)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
 
 	for _, x := range s {
 		o.buf = append(o.buf, p.tagcode...)
@@ -708,8 +708,8 @@ func (o *Buffer) enc_array_string(p *Properties, base structPointer) {
 }
 
 // Encode a slice of *message structs ([]*struct).
-func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base structPointer) {
-	s := *(*[]structPointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base unsafe.Pointer) {
+	s := *(*[]unsafe.Pointer)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 
 	// Can the object marshal itself?
 	if p.isMarshaler {
@@ -744,9 +744,9 @@ func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base structPointer)
 }
 
 // Encode an array of *message structs ([n]*struct).
-func (o *Buffer) enc_array_ptr_struct_message(p *Properties, base structPointer) {
+func (o *Buffer) enc_array_ptr_struct_message(p *Properties, base unsafe.Pointer) {
 	n := p.length
-	s := ((*[maxLen / 8]structPointer)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+	s := ((*[maxLen / 8]unsafe.Pointer)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
 
 	// Can the object marshal itself?
 	if p.isMarshaler {
@@ -781,26 +781,26 @@ func (o *Buffer) enc_array_ptr_struct_message(p *Properties, base structPointer)
 }
 
 // Encode a slice of message structs ([]struct).
-func (o *Buffer) enc_slice_struct_message(p *Properties, base structPointer) {
-	s := *(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) // note this could just as well be (*[]int) or anything
-	n := len(s)                                                       // note this is the # of elements, not the # of bytes, because of the way a Slice is built in the runtime (go1.7) as { start *T, len, cap int }
+func (o *Buffer) enc_slice_struct_message(p *Properties, base unsafe.Pointer) {
+	s := *(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) // note this could just as well be (*[]int) or anything
+	n := len(s)                                                        // note this is the # of elements, not the # of bytes, because of the way a Slice is built in the runtime (go1.7) as { start *T, len, cap int }
 	if n == 0 {
 		// no elements to encode. we have to treat this as a special case because &s[0] would cause a panic since it would be returning a pointer to something past the end of the underlying array
 		return
 	}
-	enc_struct_messages(o, p, structPointer(unsafe.Pointer(&s[0])), n)
+	enc_struct_messages(o, p, unsafe.Pointer(&s[0]), n)
 }
 
 // Encode a slice of Marshalers ([]T, where T implements Marshaler)
-func (o *Buffer) enc_slice_marshaler(p *Properties, base structPointer) {
-	s := *(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.field))) // note this could just as well be (*[]int) or anything
-	n := len(s)                                                       // note this is the # of elements, not the # of bytes, because of the way a Slice is built in the runtime (go1.7) as { start *T, len, cap int }
+func (o *Buffer) enc_slice_marshaler(p *Properties, base unsafe.Pointer) {
+	s := *(*[]byte)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))) // note this could just as well be (*[]int) or anything
+	n := len(s)                                                        // note this is the # of elements, not the # of bytes, because of the way a Slice is built in the runtime (go1.7) as { start *T, len, cap int }
 	if n == 0 {
 		// no elements to encode. we have to treat this as a special case because &s[0] would cause a panic since it would be returning a pointer to something past the end of the underlying array
 		return
 	}
 
-	base = structPointer(unsafe.Pointer(&s[0]))
+	base = unsafe.Pointer(&s[0])
 	sz := p.stype.Size()  // size of one struct
 	nb := uintptr(n) * sz // # of bytes used by the array of structs
 
@@ -821,12 +821,12 @@ func (o *Buffer) enc_slice_marshaler(p *Properties, base structPointer) {
 }
 
 // Encode an array of Marshalers ([N]T, where T implements Marshaler)
-func (o *Buffer) enc_array_marshaler(p *Properties, base structPointer) {
-	enc_struct_messages(o, p, structPointer(unsafe.Pointer(uintptr(base)+uintptr(p.field))), p.length)
+func (o *Buffer) enc_array_marshaler(p *Properties, base unsafe.Pointer) {
+	enc_struct_messages(o, p, unsafe.Pointer(uintptr(base)+uintptr(p.offset)), p.length)
 }
 
 // utility function to encode a series of 'n' struct messages in a line in memory (from a slice or from an array)
-func enc_struct_messages(o *Buffer, p *Properties, base structPointer, n int) {
+func enc_struct_messages(o *Buffer, p *Properties, base unsafe.Pointer, n int) {
 	sz := p.stype.Size()  // size of one struct
 	nb := uintptr(n) * sz // # of bytes used by the array of structs
 
@@ -849,7 +849,7 @@ func enc_struct_messages(o *Buffer, p *Properties, base structPointer, n int) {
 	}
 
 	for i := uintptr(0); i < nb; i += sz {
-		structp := structPointer(unsafe.Pointer(uintptr(base) + i))
+		structp := unsafe.Pointer(uintptr(base) + i)
 
 		o.buf = append(o.buf, p.tagcode...)
 		o.enc_len_struct(p.sprop, structp)
@@ -857,12 +857,12 @@ func enc_struct_messages(o *Buffer, p *Properties, base structPointer, n int) {
 }
 
 // Encode an array of message structs ([n]struct).
-func (o *Buffer) enc_array_struct_message(p *Properties, base structPointer) {
-	enc_struct_messages(o, p, structPointer(unsafe.Pointer(uintptr(base)+uintptr(p.field))), p.length)
+func (o *Buffer) enc_array_struct_message(p *Properties, base unsafe.Pointer) {
+	enc_struct_messages(o, p, unsafe.Pointer(uintptr(base)+uintptr(p.offset)), p.length)
 }
 
 // Encode a map field.
-func (o *Buffer) enc_new_map(p *Properties, base structPointer) {
+func (o *Buffer) enc_new_map(p *Properties, base unsafe.Pointer) {
 	/*
 		A map defined as
 			map<key_type, value_type> map_field = N;
@@ -874,7 +874,7 @@ func (o *Buffer) enc_new_map(p *Properties, base structPointer) {
 			repeated MapFieldEntry map_field = N;
 	*/
 
-	v := reflect.NewAt(p.mtype, unsafe.Pointer(uintptr(base)+uintptr(p.field))).Elem() // map[K]V
+	v := reflect.NewAt(p.mtype, unsafe.Pointer(uintptr(base)+uintptr(p.offset))).Elem() // map[K]V
 	if v.Len() == 0 {
 		return
 	}
@@ -899,15 +899,15 @@ func (o *Buffer) enc_new_map(p *Properties, base structPointer) {
 }
 
 // mapEncodeScratch returns a new reflect.Value matching the map's value type,
-// and a structPointer suitable for passing to an encoder or sizer.
-func mapEncodeScratch(mapType reflect.Type) (keycopy, valcopy reflect.Value, keybase, valbase structPointer) {
+// and a unsafe.Pointer suitable for passing to an encoder or sizer.
+func mapEncodeScratch(mapType reflect.Type) (keycopy, valcopy reflect.Value, keybase, valbase unsafe.Pointer) {
 	// Prepare addressable doubly-indirect placeholders for the key and value types.
 	// This is needed because the element-type encoders expect **T, but the map iteration produces T.
 
-	keycopy = reflect.New(mapType.Key()).Elem()                      // addressable K
-	keyptr := reflect.New(reflect.PtrTo(keycopy.Type())).Elem()      // addressable *K
-	keyptr.Set(keycopy.Addr())                                       //
-	keybase = structPointer(unsafe.Pointer(keyptr.Addr().Pointer())) // **K
+	keycopy = reflect.New(mapType.Key()).Elem()                 // addressable K
+	keyptr := reflect.New(reflect.PtrTo(keycopy.Type())).Elem() // addressable *K
+	keyptr.Set(keycopy.Addr())                                  //
+	keybase = unsafe.Pointer(keyptr.UnsafeAddr())               // **K
 
 	// Value types are more varied and require special handling.
 	switch mapType.Elem().Kind() {
@@ -915,24 +915,24 @@ func mapEncodeScratch(mapType reflect.Type) (keycopy, valcopy reflect.Value, key
 		// []byte
 		var dummy []byte
 		valcopy = reflect.ValueOf(&dummy).Elem() // addressable []byte
-		valbase = structPointer(unsafe.Pointer(valcopy.Addr().Pointer()))
+		valbase = unsafe.Pointer(valcopy.UnsafeAddr())
 	case reflect.Ptr:
 		// message; the generated field type is map[K]*Msg (so V is *Msg),
 		// so we only need one level of indirection.
 		valcopy = reflect.New(mapType.Elem()).Elem() // addressable V
-		valbase = structPointer(unsafe.Pointer(valcopy.Addr().Pointer()))
+		valbase = unsafe.Pointer(valcopy.UnsafeAddr())
 	default:
 		// everything else
-		valcopy = reflect.New(mapType.Elem()).Elem()                     // addressable V
-		valptr := reflect.New(reflect.PtrTo(valcopy.Type())).Elem()      // addressable *V
-		valptr.Set(valcopy.Addr())                                       //
-		valbase = structPointer(unsafe.Pointer(valptr.Addr().Pointer())) // **V
+		valcopy = reflect.New(mapType.Elem()).Elem()                // addressable V
+		valptr := reflect.New(reflect.PtrTo(valcopy.Type())).Elem() // addressable *V
+		valptr.Set(valcopy.Addr())                                  //
+		valbase = unsafe.Pointer(valptr.UnsafeAddr())               // **V
 	}
 	return
 }
 
 // Encode a struct.
-func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) {
+func (o *Buffer) enc_struct(prop *StructProperties, base unsafe.Pointer) {
 	// Encode fields in tag order so that decoders may use optimizations
 	// that depend on the ordering.
 	// https://developers.google.com/protocol-buffers/docs/encoding#order
@@ -945,7 +945,7 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) {
 var zeroes [20]byte // longer than any conceivable SizeVarint
 
 // Encode a struct, preceded by its encoded length (as a varint).
-func (o *Buffer) enc_len_struct(prop *StructProperties, base structPointer) {
+func (o *Buffer) enc_len_struct(prop *StructProperties, base unsafe.Pointer) {
 	o.enc_len_thing(func() { o.enc_struct(prop, base) })
 }
 
@@ -974,13 +974,13 @@ func (o *Buffer) enc_len_thing(enc func()) {
 }
 
 // dummy no-op encoder used for encoding 0-length array types
-func (o *Buffer) enc_nothing(p *Properties, base structPointer) {
+func (o *Buffer) enc_nothing(p *Properties, base unsafe.Pointer) {
 	return
 }
 
 // custom encoder for time.Time, encoding it into the protobuf3 standard Timestamp
-func (o *Buffer) enc_time_Time(p *Properties, base structPointer) {
-	t := (*time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_time_Time(p *Properties, base unsafe.Pointer) {
+	t := (*time.Time)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 
 	// protobuf Timestamp uses its own encoding, different from time.Time
 	// we have to convert.
@@ -995,8 +995,8 @@ func (o *Buffer) enc_time_Time(p *Properties, base structPointer) {
 }
 
 // custom encoder for time.Duration, encoding it into the protobuf3 standard Duration
-func (o *Buffer) enc_time_Duration(p *Properties, base structPointer) {
-	d := *(*time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_time_Duration(p *Properties, base unsafe.Pointer) {
+	d := *(*time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if d != 0 {
 		o.enc_Duration(p, d)
 	} // else we don't have to encode the zero value
@@ -1037,25 +1037,25 @@ func (o *Buffer) enc_Duration(p *Properties, d time.Duration) {
 }
 
 // custom encoder for *time.Duration, ... protobuf Duration message
-func (o *Buffer) enc_ptr_time_Duration(p *Properties, base structPointer) {
-	d := *(**time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_ptr_time_Duration(p *Properties, base unsafe.Pointer) {
+	d := *(**time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	if d != nil && *d != 0 {
 		o.enc_Duration(p, *d)
 	} // else we don't have to encode a zero value
 }
 
 // custom encoder for []time.Duration, ... repeated protobuf Duration messages
-func (o *Buffer) enc_slice_time_Duration(p *Properties, base structPointer) {
-	s := *(*[]time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field)))
+func (o *Buffer) enc_slice_time_Duration(p *Properties, base unsafe.Pointer) {
+	s := *(*[]time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.offset)))
 	for _, d := range s {
 		o.enc_Duration(p, d)
 	}
 }
 
 // custom encoder for [N]time.Duration, ... repeated protobuf Duration messages
-func (o *Buffer) enc_array_time_Duration(p *Properties, base structPointer) {
+func (o *Buffer) enc_array_time_Duration(p *Properties, base unsafe.Pointer) {
 	n := p.length
-	s := ((*[maxLen / 8]time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.field))))[0:n:n]
+	s := ((*[maxLen / 8]time.Duration)(unsafe.Pointer(uintptr(base) + uintptr(p.offset))))[0:n:n]
 	for _, d := range s {
 		o.enc_Duration(p, d)
 	}
