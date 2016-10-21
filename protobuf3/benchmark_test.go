@@ -40,7 +40,86 @@ import (
 	"github.com/mistsys/protobuf3/protobuf3"
 )
 
-func BenchmarkFixedMsg(b *testing.B) {
+func BenchmarkEncodeSmallVarint(b *testing.B) {
+	buf := protobuf3.NewBuffer(make([]byte, 0, 2*128))
+	for i := 0; i < b.N; i++ {
+		buf.EncodeVarint(uint64(i & 16383)) // keep values under 2*7 bits
+		if i&127 == 127 {
+			buf.Reset() // don't keep growing, or it needs O(b.N) ram and we test realloc rather than EncodeVarint
+		}
+	}
+}
+
+func BenchmarkOldEncodeSmallVarint(b *testing.B) {
+	buf := proto.NewBuffer(make([]byte, 0, 2*128))
+	for i := 0; i < b.N; i++ {
+		buf.EncodeVarint(uint64(i & 16383))
+		if i&127 == 127 {
+			buf.Reset()
+		}
+	}
+}
+
+func BenchmarkEncodeVarint(b *testing.B) {
+	buf := protobuf3.NewBuffer(make([]byte, 0, 10*128))
+	for i := 0; i < b.N; i++ {
+		buf.EncodeVarint(uint64(i))
+		if i&127 == 127 {
+			buf.Reset() // don't keep growing, or it needs O(b.N) ram and we test realloc rather than EncodeVarint
+		}
+	}
+}
+
+func BenchmarkOldEncodeVarint(b *testing.B) {
+	buf := proto.NewBuffer(make([]byte, 0, 10*128))
+	for i := 0; i < b.N; i++ {
+		buf.EncodeVarint(uint64(i))
+		if i&127 == 127 {
+			buf.Reset()
+		}
+	}
+}
+
+func BenchmarkDecodeSmallVarint(b *testing.B) {
+	input := protobuf3.NewBuffer(nil)
+	for i := 0; i < 128; i++ {
+		input.EncodeVarint(uint64(i))
+	}
+	buf := proto.NewBuffer(input.Bytes())
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v, err := buf.DecodeVarint()
+		if err != nil {
+			b.Fatal(err)
+			return
+		}
+		if v == 127 {
+			// note: we could use buf.Rewind(), but that wouldn't be fair since proto package doesn't have such a method
+			buf = proto.NewBuffer(input.Bytes())
+		}
+	}
+}
+
+func BenchmarkOldDecodeSmallVarint(b *testing.B) {
+	input := proto.NewBuffer(nil)
+	for i := 0; i < 128; i++ {
+		input.EncodeVarint(uint64(i))
+	}
+	buf := proto.NewBuffer(input.Bytes())
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v, err := buf.DecodeVarint()
+		if err != nil {
+			b.Fatal(err)
+			return
+		}
+		if v == 127 {
+			buf = proto.NewBuffer(input.Bytes())
+		}
+	}
+}
+
+func BenchmarkMarshalFixedMsg(b *testing.B) {
 	i32 := int32(-10)
 	u32 := uint32(11)
 	i64 := int64(-12)
@@ -83,7 +162,7 @@ func BenchmarkFixedMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkOldFixedMsg(b *testing.B) {
+func BenchmarkMarshalOldFixedMsg(b *testing.B) {
 	i32 := int32(-10)
 	u32 := uint32(11)
 	i64 := int64(-12)
@@ -126,7 +205,95 @@ func BenchmarkOldFixedMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkVarMsg(b *testing.B) {
+func BenchmarkUnmarshalFixedMsg(b *testing.B) {
+	i32 := int32(-10)
+	u32 := uint32(11)
+	i64 := int64(-12)
+	u64 := uint64(13)
+	f32 := float32(-14.14)
+	f64 := float64(15.15)
+
+	m := FixedMsg{
+		i32: -1,
+		u32: 2,
+		i64: -3,
+		u64: 4,
+		f32: -5.5,
+		f64: 6.6,
+
+		pi32: &i32,
+		pu32: &u32,
+		pi64: &i64,
+		pu64: &u64,
+		pf32: &f32,
+		pf64: &f64,
+
+		si32: []int32{-1},
+		su32: []uint32{1, 2},
+		si64: []int64{-1, 3, -3},
+		su64: []uint64{1, 2, 3, 4},
+		sf32: []float32{-1.1, 2.2, -3.3, 4.4},
+		sf64: []float64{-1.1, 2.2, -3.3, 4.4},
+	}
+
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m FixedMsg
+		protobuf3.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkUnmarshalOldFixedMsg(b *testing.B) {
+	i32 := int32(-10)
+	u32 := uint32(11)
+	i64 := int64(-12)
+	u64 := uint64(13)
+	f32 := float32(-14.14)
+	f64 := float64(15.15)
+
+	m := FixedMsg{
+		i32: -1,
+		u32: 2,
+		i64: -3,
+		u64: 4,
+		f32: -5.5,
+		f64: 6.6,
+
+		pi32: &i32,
+		pu32: &u32,
+		pi64: &i64,
+		pu64: &u64,
+		pf32: &f32,
+		pf64: &f64,
+
+		si32: []int32{-1},
+		su32: []uint32{1, 2},
+		si64: []int64{-1, 3, -3},
+		su64: []uint64{1, 2, 3, 4},
+		sf32: []float32{-1.1, 2.2, -3.3, 4.4},
+		sf64: []float64{-1.1, 2.2, -3.3, 4.4},
+	}
+
+	pb, err := proto.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m FixedMsg
+		proto.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkMarshalVarMsg(b *testing.B) {
 	i32 := int32(-10)
 	u32 := uint32(11)
 	i64 := int64(-12)
@@ -161,7 +328,7 @@ func BenchmarkVarMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkOldVarMsg(b *testing.B) {
+func BenchmarkMarshalOldVarMsg(b *testing.B) {
 	i32 := int32(-10)
 	u32 := uint32(11)
 	i64 := int64(-12)
@@ -196,7 +363,7 @@ func BenchmarkOldVarMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkBytesMsg(b *testing.B) {
+func BenchmarkMarshalBytesMsg(b *testing.B) {
 	s := "str"
 
 	m := BytesMsg{
@@ -218,7 +385,7 @@ func BenchmarkBytesMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkOldBytesMsg(b *testing.B) {
+func BenchmarkMarshalOldBytesMsg(b *testing.B) {
 	s := "str"
 
 	m := BytesMsg{
@@ -240,7 +407,7 @@ func BenchmarkOldBytesMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkNestedPtrStructMsg(b *testing.B) {
+func BenchmarkMarshalNestedPtrStructMsg(b *testing.B) {
 	// note: value is chosen so it can be compared with the equivalent non-pointer nesting
 	m := NestedPtrStructMsg{
 		first:  &InnerMsg{0x11},
@@ -261,7 +428,7 @@ func BenchmarkNestedPtrStructMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkOldNestedPtrStructMsg(b *testing.B) {
+func BenchmarkMarshalOldNestedPtrStructMsg(b *testing.B) {
 	m := NestedPtrStructMsg{
 		first:  &InnerMsg{0x11},
 		second: &InnerMsg{0x22},
@@ -282,7 +449,7 @@ func BenchmarkOldNestedPtrStructMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkNestedStructMsg(b *testing.B) {
+func BenchmarkMarshalNestedStructMsg(b *testing.B) {
 	// note: value matches that of NestedPtrStructMsg above, for comparison between the
 	// pointer-to-nested-struct and embedded-nested-struct cases
 	m := NestedStructMsg{
@@ -305,7 +472,7 @@ func BenchmarkNestedStructMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkMapMsg(b *testing.B) {
+func BenchmarkMarshalMapMsg(b *testing.B) {
 	m := MapMsg{
 		m: map[string]int32{
 			"Nic":     0,
@@ -325,7 +492,7 @@ func BenchmarkMapMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkOldMapMsg(b *testing.B) {
+func BenchmarkMarshalOldMapMsg(b *testing.B) {
 	m := MapMsg{
 		m: map[string]int32{
 			"Nic":     0,
