@@ -820,6 +820,11 @@ func (o *Buffer) enc_slice_marshaler(p *Properties, base structPointer) {
 	}
 }
 
+// Encode an array of Marshalers ([N]T, where T implements Marshaler)
+func (o *Buffer) enc_array_marshaler(p *Properties, base structPointer) {
+	enc_struct_messages(o, p, structPointer(unsafe.Pointer(uintptr(base)+uintptr(p.field))), p.length)
+}
+
 // utility function to encode a series of 'n' struct messages in a line in memory (from a slice or from an array)
 func enc_struct_messages(o *Buffer, p *Properties, base structPointer, n int) {
 	sz := p.stype.Size()  // size of one struct
