@@ -51,7 +51,7 @@ import (
 
 // Message is implemented by generated protocol buffer messages.
 type Message interface {
-	ProtoMessage() // dummy method exists only to indicate that the struct's fields ought to be decorated with protobuf="wiretype,id" tags
+	// empty interface. As long as the fields are decorated with protobuf tags or the type implements Marshaler it's fine with us.
 }
 
 // A Buffer is a buffer manager for marshaling and unmarshaling

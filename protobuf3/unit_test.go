@@ -149,8 +149,6 @@ type FixedArrayMsg struct {
 	af64 [6]float64 `protobuf:"fixed64,29,packed"`
 }
 
-func (*FixedArrayMsg) ProtoMessage() {}
-
 // test message with varint encoded fields
 type VarMsg struct {
 	i32 int32  `protobuf:"varint,1"`
@@ -184,8 +182,6 @@ type VarArrayMsg struct {
 	ab   [5]bool   `protobuf:"varint,25,packed"`
 }
 
-func (*VarArrayMsg) ProtoMessage() {}
-
 // test message with zigzag encodings
 type ZigZagMsg struct {
 	i32 int32 `protobuf:"zigzag32,1"`
@@ -207,8 +203,6 @@ type ZigZagArrayMsg struct {
 	ai64 [2]int64 `protobuf:"zigzag64,22,packed"`
 }
 
-func (*ZigZagArrayMsg) ProtoMessage() {}
-
 // test message with bytes encoded fields
 type BytesMsg struct {
 	s  string   `protobuf:"bytes,1"`
@@ -227,8 +221,6 @@ type BytesArrayMsg struct {
 	sb      [3]byte   `protobuf:"bytes,11"`
 	skipped int32     `protobuf:"-"`
 }
-
-func (*BytesArrayMsg) ProtoMessage() {}
 
 func TestFixedMsg(t *testing.T) {
 	i32 := int32(-10)
@@ -530,8 +522,6 @@ type NestedStructMsg struct {
 	some   [1]*InnerMsg `protobuf:"bytes,5"`
 }
 
-func (*NestedStructMsg) ProtoMessage() {}
-
 func TestNestedStructMsg(t *testing.T) {
 	a := NestedStructMsg{
 		first:  InnerMsg{0x11},
@@ -651,8 +641,6 @@ type IntMsg struct {
 	u16 uint16 `protobuf:"varint,6"`
 }
 
-func (*IntMsg) ProtoMessage() {}
-
 // same fields, but using types the old package can use
 type OldIntMsg struct {
 	i   int32  `protobuf:"varint,1"`
@@ -706,8 +694,6 @@ type TimeMsg struct {
 	zero_d2 *time.Duration   `protobuf:"bytes,129"` // same
 	zero_d3 []time.Duration  `protobuf:"bytes,130"` // same
 }
-
-func (*TimeMsg) ProtoMessage() {}
 
 type OldTimeMsg struct {
 	tm   *timestamp.Timestamp `protobuf:"bytes,1"`
@@ -770,8 +756,6 @@ func TestTimeMsg(t *testing.T) {
 type CustomMsg struct {
 	Slice CustomSlice `protobuf:"bytes,1"`
 }
-
-func (*CustomMsg) ProtoMessage() {}
 
 type CustomSlice [][]uint32
 
@@ -855,8 +839,6 @@ func TestCustomMsg(t *testing.T) {
 type SliceMarshalerMsg struct {
 	Slice []TestMarshaler `protobuf:"bytes,1"`
 }
-
-func (*SliceMarshalerMsg) ProtoMessage() {}
 
 type TestMarshaler [4]byte
 
