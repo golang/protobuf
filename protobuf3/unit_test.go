@@ -877,3 +877,33 @@ func TestSliceMarshlerMsg(t *testing.T) {
 	eq("mb", m, mb, t)
 	eq("mc", o, mc, t)
 }
+
+type StructArrayMsg struct {
+	Str string `protobuf:"bytes,1"`
+	Sub struct {
+		Flos [3]float32 `protobuf:"fixed32,2"`
+		Num  uint32     `protobuf:"varint,3"`
+	} `protobuf:"bytes,2"`
+}
+
+func TestStructArrayMsg(t *testing.T) {
+	var m, m2 StructArrayMsg
+	m.Str = "hello"
+	m.Sub.Flos[0] = 1
+	m.Sub.Flos[1] = 2
+	m.Sub.Flos[2] = 3
+	m.Sub.Num = 4
+
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = protobuf3.Unmarshal(pb, &m2)
+	if err != nil {
+		t.Error(err)
+	}
+	if !reflect.DeepEqual(m, m2) {
+		t.Error("!=")
+	}
+}
