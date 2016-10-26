@@ -428,7 +428,7 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 		wire := WireType(u & 0x7)
 		tag := int(u >> 3)
 		if tag <= 0 {
-			return fmt.Errorf("protobuf3: %s: illegal tag %d (wire type %d)", st, tag, wire)
+			return fmt.Errorf("protobuf3: %s: illegal tag %d (wire type %d) at index %d of %d", st, tag, wire, o.index, len(o.buf))
 		}
 
 		i := sort.Search(len(prop.order), func(i int) bool {
