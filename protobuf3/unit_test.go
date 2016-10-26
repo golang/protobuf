@@ -884,25 +884,30 @@ type StructArrayMsg struct {
 		Flos [3]float32 `protobuf:"fixed32,2"`
 		Num  uint32     `protobuf:"varint,3"`
 	} `protobuf:"bytes,2"`
+	Str2 string `protobuf:"bytes,3"`
 }
 
 func TestStructArrayMsg(t *testing.T) {
 	var m, m2 StructArrayMsg
 	m.Str = "hello"
-	m.Sub.Flos[0] = 1
-	m.Sub.Flos[1] = 2
-	m.Sub.Flos[2] = 3
+	m.Sub.Flos[0] = 0
+	m.Sub.Flos[1] = 0
+	m.Sub.Flos[2] = 0
 	m.Sub.Num = 4
+	m.Str2 = "goodbye"
 
 	pb, err := protobuf3.Marshal(&m)
 	if err != nil {
 		t.Error(err)
 	}
+	t.Logf("StructArrayMsg = %+v\n", m)
+	t.Logf("StructArrayMsg = % x\n", pb)
 
 	err = protobuf3.Unmarshal(pb, &m2)
 	if err != nil {
 		t.Error(err)
 	}
+	t.Logf("StructArrayMsg = %+v\n", m2)
 	if !reflect.DeepEqual(m, m2) {
 		t.Error("!=")
 	}
