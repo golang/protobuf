@@ -592,7 +592,11 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 			props = oop.Prop
 			nv := reflect.New(oop.Type.Elem())
 			dst = nv.Elem().Field(0)
-			sv.Field(oop.Field).Set(nv)
+			field := sv.Field(oop.Field)
+			if !field.IsNil() {
+				return p.errorf("oneof field '%s' is already set", name)
+			}
+			field.Set(nv)
 		}
 		if !dst.IsValid() {
 			return p.errorf("unknown field name %q in %v", name, st)
