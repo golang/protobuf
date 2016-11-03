@@ -638,7 +638,7 @@ func TestOneofParsing(t *testing.T) {
 
 	const inOverwrite = `name:"Shrek" number:42`
 	m = new(Communique)
-	testErr := "line 1.13: oneof field 'number' is already set"
+	testErr := "line 1.13: field 'number' would overwrite already parsed oneof 'Union'"
 	if err := UnmarshalText(inOverwrite, m); err == nil {
 		t.Errorf("TestOneofParsing: Didn't get expected error: %v", testErr)
 	} else if err.Error() != testErr {
