@@ -594,7 +594,7 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 			dst = nv.Elem().Field(0)
 			field := sv.Field(oop.Field)
 			if !field.IsNil() {
-				return p.errorf("oneof field '%s' is already set", name)
+				return p.errorf("field '%s' would overwrite already parsed oneof '%s'", name, sv.Type().Field(oop.Field).Name)
 			}
 			field.Set(nv)
 		}

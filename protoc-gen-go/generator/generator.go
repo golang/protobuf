@@ -626,7 +626,6 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			}
 		}
 	}
-
 	if pluginList != "" {
 		// Amend the set of plugins.
 		enabled := make(map[string]bool)
@@ -1181,7 +1180,6 @@ func (g *Generator) generate(file *FileDescriptor) {
 		g.P("const _ = ", g.Pkg["proto"], ".ProtoPackageIsVersion", generatedCodeVersion, " // please upgrade the proto package")
 		g.P()
 	}
-
 	for _, td := range g.file.imp {
 		g.generateImported(td)
 	}
