@@ -635,6 +635,17 @@ func TestOneofParsing(t *testing.T) {
 	if !Equal(m, want) {
 		t.Errorf("\n got %v\nwant %v", m, want)
 	}
+
+	const inOverwrite = `name:"Shrek" number:42`
+	m = new(Communique)
+	testErr := "line 1.13: field 'number' would overwrite already parsed oneof 'Union'"
+	if err := UnmarshalText(inOverwrite, m); err == nil {
+		t.Errorf("TestOneofParsing: Didn't get expected error: %v", testErr)
+	} else if err.Error() != testErr {
+		t.Errorf("TestOneofParsing: Incorrect error.\nHave: %v\nWant: %v",
+			err.Error(), testErr)
+	}
+
 }
 
 var benchInput string
