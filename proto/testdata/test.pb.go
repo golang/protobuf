@@ -1527,6 +1527,7 @@ var E_Ext_More = &proto.ExtensionDesc{
 	Field:         103,
 	Name:          "testdata.Ext.more",
 	Tag:           "bytes,103,opt,name=more",
+	Filename:      "test.proto",
 }
 
 var E_Ext_Text = &proto.ExtensionDesc{
@@ -1535,6 +1536,7 @@ var E_Ext_Text = &proto.ExtensionDesc{
 	Field:         104,
 	Name:          "testdata.Ext.text",
 	Tag:           "bytes,104,opt,name=text",
+	Filename:      "test.proto",
 }
 
 var E_Ext_Number = &proto.ExtensionDesc{
@@ -1543,6 +1545,7 @@ var E_Ext_Number = &proto.ExtensionDesc{
 	Field:         105,
 	Name:          "testdata.Ext.number",
 	Tag:           "varint,105,opt,name=number",
+	Filename:      "test.proto",
 }
 
 type ComplexExtension struct {
@@ -2960,6 +2963,7 @@ var E_Greeting = &proto.ExtensionDesc{
 	Field:         106,
 	Name:          "testdata.greeting",
 	Tag:           "bytes,106,rep,name=greeting",
+	Filename:      "test.proto",
 }
 
 var E_Complex = &proto.ExtensionDesc{
@@ -2968,6 +2972,7 @@ var E_Complex = &proto.ExtensionDesc{
 	Field:         200,
 	Name:          "testdata.complex",
 	Tag:           "bytes,200,opt,name=complex",
+	Filename:      "test.proto",
 }
 
 var E_RComplex = &proto.ExtensionDesc{
@@ -2976,6 +2981,7 @@ var E_RComplex = &proto.ExtensionDesc{
 	Field:         201,
 	Name:          "testdata.r_complex",
 	Tag:           "bytes,201,rep,name=r_complex,json=rComplex",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultDouble = &proto.ExtensionDesc{
@@ -2984,6 +2990,7 @@ var E_NoDefaultDouble = &proto.ExtensionDesc{
 	Field:         101,
 	Name:          "testdata.no_default_double",
 	Tag:           "fixed64,101,opt,name=no_default_double,json=noDefaultDouble",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultFloat = &proto.ExtensionDesc{
@@ -2992,6 +2999,7 @@ var E_NoDefaultFloat = &proto.ExtensionDesc{
 	Field:         102,
 	Name:          "testdata.no_default_float",
 	Tag:           "fixed32,102,opt,name=no_default_float,json=noDefaultFloat",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultInt32 = &proto.ExtensionDesc{
@@ -3000,6 +3008,7 @@ var E_NoDefaultInt32 = &proto.ExtensionDesc{
 	Field:         103,
 	Name:          "testdata.no_default_int32",
 	Tag:           "varint,103,opt,name=no_default_int32,json=noDefaultInt32",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultInt64 = &proto.ExtensionDesc{
@@ -3008,6 +3017,7 @@ var E_NoDefaultInt64 = &proto.ExtensionDesc{
 	Field:         104,
 	Name:          "testdata.no_default_int64",
 	Tag:           "varint,104,opt,name=no_default_int64,json=noDefaultInt64",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultUint32 = &proto.ExtensionDesc{
@@ -3016,6 +3026,7 @@ var E_NoDefaultUint32 = &proto.ExtensionDesc{
 	Field:         105,
 	Name:          "testdata.no_default_uint32",
 	Tag:           "varint,105,opt,name=no_default_uint32,json=noDefaultUint32",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultUint64 = &proto.ExtensionDesc{
@@ -3024,6 +3035,7 @@ var E_NoDefaultUint64 = &proto.ExtensionDesc{
 	Field:         106,
 	Name:          "testdata.no_default_uint64",
 	Tag:           "varint,106,opt,name=no_default_uint64,json=noDefaultUint64",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultSint32 = &proto.ExtensionDesc{
@@ -3032,6 +3044,7 @@ var E_NoDefaultSint32 = &proto.ExtensionDesc{
 	Field:         107,
 	Name:          "testdata.no_default_sint32",
 	Tag:           "zigzag32,107,opt,name=no_default_sint32,json=noDefaultSint32",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultSint64 = &proto.ExtensionDesc{
@@ -3040,6 +3053,7 @@ var E_NoDefaultSint64 = &proto.ExtensionDesc{
 	Field:         108,
 	Name:          "testdata.no_default_sint64",
 	Tag:           "zigzag64,108,opt,name=no_default_sint64,json=noDefaultSint64",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultFixed32 = &proto.ExtensionDesc{
@@ -3048,6 +3062,7 @@ var E_NoDefaultFixed32 = &proto.ExtensionDesc{
 	Field:         109,
 	Name:          "testdata.no_default_fixed32",
 	Tag:           "fixed32,109,opt,name=no_default_fixed32,json=noDefaultFixed32",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultFixed64 = &proto.ExtensionDesc{
@@ -3056,6 +3071,7 @@ var E_NoDefaultFixed64 = &proto.ExtensionDesc{
 	Field:         110,
 	Name:          "testdata.no_default_fixed64",
 	Tag:           "fixed64,110,opt,name=no_default_fixed64,json=noDefaultFixed64",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultSfixed32 = &proto.ExtensionDesc{
@@ -3064,6 +3080,7 @@ var E_NoDefaultSfixed32 = &proto.ExtensionDesc{
 	Field:         111,
 	Name:          "testdata.no_default_sfixed32",
 	Tag:           "fixed32,111,opt,name=no_default_sfixed32,json=noDefaultSfixed32",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultSfixed64 = &proto.ExtensionDesc{
@@ -3072,6 +3089,7 @@ var E_NoDefaultSfixed64 = &proto.ExtensionDesc{
 	Field:         112,
 	Name:          "testdata.no_default_sfixed64",
 	Tag:           "fixed64,112,opt,name=no_default_sfixed64,json=noDefaultSfixed64",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultBool = &proto.ExtensionDesc{
@@ -3080,6 +3098,7 @@ var E_NoDefaultBool = &proto.ExtensionDesc{
 	Field:         113,
 	Name:          "testdata.no_default_bool",
 	Tag:           "varint,113,opt,name=no_default_bool,json=noDefaultBool",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultString = &proto.ExtensionDesc{
@@ -3088,6 +3107,7 @@ var E_NoDefaultString = &proto.ExtensionDesc{
 	Field:         114,
 	Name:          "testdata.no_default_string",
 	Tag:           "bytes,114,opt,name=no_default_string,json=noDefaultString",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultBytes = &proto.ExtensionDesc{
@@ -3096,6 +3116,7 @@ var E_NoDefaultBytes = &proto.ExtensionDesc{
 	Field:         115,
 	Name:          "testdata.no_default_bytes",
 	Tag:           "bytes,115,opt,name=no_default_bytes,json=noDefaultBytes",
+	Filename:      "test.proto",
 }
 
 var E_NoDefaultEnum = &proto.ExtensionDesc{
@@ -3104,6 +3125,7 @@ var E_NoDefaultEnum = &proto.ExtensionDesc{
 	Field:         116,
 	Name:          "testdata.no_default_enum",
 	Tag:           "varint,116,opt,name=no_default_enum,json=noDefaultEnum,enum=testdata.DefaultsMessage_DefaultsEnum",
+	Filename:      "test.proto",
 }
 
 var E_DefaultDouble = &proto.ExtensionDesc{
@@ -3112,6 +3134,7 @@ var E_DefaultDouble = &proto.ExtensionDesc{
 	Field:         201,
 	Name:          "testdata.default_double",
 	Tag:           "fixed64,201,opt,name=default_double,json=defaultDouble,def=3.1415",
+	Filename:      "test.proto",
 }
 
 var E_DefaultFloat = &proto.ExtensionDesc{
@@ -3120,6 +3143,7 @@ var E_DefaultFloat = &proto.ExtensionDesc{
 	Field:         202,
 	Name:          "testdata.default_float",
 	Tag:           "fixed32,202,opt,name=default_float,json=defaultFloat,def=3.14",
+	Filename:      "test.proto",
 }
 
 var E_DefaultInt32 = &proto.ExtensionDesc{
@@ -3128,6 +3152,7 @@ var E_DefaultInt32 = &proto.ExtensionDesc{
 	Field:         203,
 	Name:          "testdata.default_int32",
 	Tag:           "varint,203,opt,name=default_int32,json=defaultInt32,def=42",
+	Filename:      "test.proto",
 }
 
 var E_DefaultInt64 = &proto.ExtensionDesc{
@@ -3136,6 +3161,7 @@ var E_DefaultInt64 = &proto.ExtensionDesc{
 	Field:         204,
 	Name:          "testdata.default_int64",
 	Tag:           "varint,204,opt,name=default_int64,json=defaultInt64,def=43",
+	Filename:      "test.proto",
 }
 
 var E_DefaultUint32 = &proto.ExtensionDesc{
@@ -3144,6 +3170,7 @@ var E_DefaultUint32 = &proto.ExtensionDesc{
 	Field:         205,
 	Name:          "testdata.default_uint32",
 	Tag:           "varint,205,opt,name=default_uint32,json=defaultUint32,def=44",
+	Filename:      "test.proto",
 }
 
 var E_DefaultUint64 = &proto.ExtensionDesc{
@@ -3152,6 +3179,7 @@ var E_DefaultUint64 = &proto.ExtensionDesc{
 	Field:         206,
 	Name:          "testdata.default_uint64",
 	Tag:           "varint,206,opt,name=default_uint64,json=defaultUint64,def=45",
+	Filename:      "test.proto",
 }
 
 var E_DefaultSint32 = &proto.ExtensionDesc{
@@ -3160,6 +3188,7 @@ var E_DefaultSint32 = &proto.ExtensionDesc{
 	Field:         207,
 	Name:          "testdata.default_sint32",
 	Tag:           "zigzag32,207,opt,name=default_sint32,json=defaultSint32,def=46",
+	Filename:      "test.proto",
 }
 
 var E_DefaultSint64 = &proto.ExtensionDesc{
@@ -3168,6 +3197,7 @@ var E_DefaultSint64 = &proto.ExtensionDesc{
 	Field:         208,
 	Name:          "testdata.default_sint64",
 	Tag:           "zigzag64,208,opt,name=default_sint64,json=defaultSint64,def=47",
+	Filename:      "test.proto",
 }
 
 var E_DefaultFixed32 = &proto.ExtensionDesc{
@@ -3176,6 +3206,7 @@ var E_DefaultFixed32 = &proto.ExtensionDesc{
 	Field:         209,
 	Name:          "testdata.default_fixed32",
 	Tag:           "fixed32,209,opt,name=default_fixed32,json=defaultFixed32,def=48",
+	Filename:      "test.proto",
 }
 
 var E_DefaultFixed64 = &proto.ExtensionDesc{
@@ -3184,6 +3215,7 @@ var E_DefaultFixed64 = &proto.ExtensionDesc{
 	Field:         210,
 	Name:          "testdata.default_fixed64",
 	Tag:           "fixed64,210,opt,name=default_fixed64,json=defaultFixed64,def=49",
+	Filename:      "test.proto",
 }
 
 var E_DefaultSfixed32 = &proto.ExtensionDesc{
@@ -3192,6 +3224,7 @@ var E_DefaultSfixed32 = &proto.ExtensionDesc{
 	Field:         211,
 	Name:          "testdata.default_sfixed32",
 	Tag:           "fixed32,211,opt,name=default_sfixed32,json=defaultSfixed32,def=50",
+	Filename:      "test.proto",
 }
 
 var E_DefaultSfixed64 = &proto.ExtensionDesc{
@@ -3200,6 +3233,7 @@ var E_DefaultSfixed64 = &proto.ExtensionDesc{
 	Field:         212,
 	Name:          "testdata.default_sfixed64",
 	Tag:           "fixed64,212,opt,name=default_sfixed64,json=defaultSfixed64,def=51",
+	Filename:      "test.proto",
 }
 
 var E_DefaultBool = &proto.ExtensionDesc{
@@ -3208,6 +3242,7 @@ var E_DefaultBool = &proto.ExtensionDesc{
 	Field:         213,
 	Name:          "testdata.default_bool",
 	Tag:           "varint,213,opt,name=default_bool,json=defaultBool,def=1",
+	Filename:      "test.proto",
 }
 
 var E_DefaultString = &proto.ExtensionDesc{
@@ -3216,6 +3251,7 @@ var E_DefaultString = &proto.ExtensionDesc{
 	Field:         214,
 	Name:          "testdata.default_string",
 	Tag:           "bytes,214,opt,name=default_string,json=defaultString,def=Hello, string",
+	Filename:      "test.proto",
 }
 
 var E_DefaultBytes = &proto.ExtensionDesc{
@@ -3224,6 +3260,7 @@ var E_DefaultBytes = &proto.ExtensionDesc{
 	Field:         215,
 	Name:          "testdata.default_bytes",
 	Tag:           "bytes,215,opt,name=default_bytes,json=defaultBytes,def=Hello, bytes",
+	Filename:      "test.proto",
 }
 
 var E_DefaultEnum = &proto.ExtensionDesc{
@@ -3232,6 +3269,7 @@ var E_DefaultEnum = &proto.ExtensionDesc{
 	Field:         216,
 	Name:          "testdata.default_enum",
 	Tag:           "varint,216,opt,name=default_enum,json=defaultEnum,enum=testdata.DefaultsMessage_DefaultsEnum,def=1",
+	Filename:      "test.proto",
 }
 
 var E_X201 = &proto.ExtensionDesc{
@@ -3240,6 +3278,7 @@ var E_X201 = &proto.ExtensionDesc{
 	Field:         201,
 	Name:          "testdata.x201",
 	Tag:           "bytes,201,opt,name=x201",
+	Filename:      "test.proto",
 }
 
 var E_X202 = &proto.ExtensionDesc{
@@ -3248,6 +3287,7 @@ var E_X202 = &proto.ExtensionDesc{
 	Field:         202,
 	Name:          "testdata.x202",
 	Tag:           "bytes,202,opt,name=x202",
+	Filename:      "test.proto",
 }
 
 var E_X203 = &proto.ExtensionDesc{
@@ -3256,6 +3296,7 @@ var E_X203 = &proto.ExtensionDesc{
 	Field:         203,
 	Name:          "testdata.x203",
 	Tag:           "bytes,203,opt,name=x203",
+	Filename:      "test.proto",
 }
 
 var E_X204 = &proto.ExtensionDesc{
@@ -3264,6 +3305,7 @@ var E_X204 = &proto.ExtensionDesc{
 	Field:         204,
 	Name:          "testdata.x204",
 	Tag:           "bytes,204,opt,name=x204",
+	Filename:      "test.proto",
 }
 
 var E_X205 = &proto.ExtensionDesc{
@@ -3272,6 +3314,7 @@ var E_X205 = &proto.ExtensionDesc{
 	Field:         205,
 	Name:          "testdata.x205",
 	Tag:           "bytes,205,opt,name=x205",
+	Filename:      "test.proto",
 }
 
 var E_X206 = &proto.ExtensionDesc{
@@ -3280,6 +3323,7 @@ var E_X206 = &proto.ExtensionDesc{
 	Field:         206,
 	Name:          "testdata.x206",
 	Tag:           "bytes,206,opt,name=x206",
+	Filename:      "test.proto",
 }
 
 var E_X207 = &proto.ExtensionDesc{
@@ -3288,6 +3332,7 @@ var E_X207 = &proto.ExtensionDesc{
 	Field:         207,
 	Name:          "testdata.x207",
 	Tag:           "bytes,207,opt,name=x207",
+	Filename:      "test.proto",
 }
 
 var E_X208 = &proto.ExtensionDesc{
@@ -3296,6 +3341,7 @@ var E_X208 = &proto.ExtensionDesc{
 	Field:         208,
 	Name:          "testdata.x208",
 	Tag:           "bytes,208,opt,name=x208",
+	Filename:      "test.proto",
 }
 
 var E_X209 = &proto.ExtensionDesc{
@@ -3304,6 +3350,7 @@ var E_X209 = &proto.ExtensionDesc{
 	Field:         209,
 	Name:          "testdata.x209",
 	Tag:           "bytes,209,opt,name=x209",
+	Filename:      "test.proto",
 }
 
 var E_X210 = &proto.ExtensionDesc{
@@ -3312,6 +3359,7 @@ var E_X210 = &proto.ExtensionDesc{
 	Field:         210,
 	Name:          "testdata.x210",
 	Tag:           "bytes,210,opt,name=x210",
+	Filename:      "test.proto",
 }
 
 var E_X211 = &proto.ExtensionDesc{
@@ -3320,6 +3368,7 @@ var E_X211 = &proto.ExtensionDesc{
 	Field:         211,
 	Name:          "testdata.x211",
 	Tag:           "bytes,211,opt,name=x211",
+	Filename:      "test.proto",
 }
 
 var E_X212 = &proto.ExtensionDesc{
@@ -3328,6 +3377,7 @@ var E_X212 = &proto.ExtensionDesc{
 	Field:         212,
 	Name:          "testdata.x212",
 	Tag:           "bytes,212,opt,name=x212",
+	Filename:      "test.proto",
 }
 
 var E_X213 = &proto.ExtensionDesc{
@@ -3336,6 +3386,7 @@ var E_X213 = &proto.ExtensionDesc{
 	Field:         213,
 	Name:          "testdata.x213",
 	Tag:           "bytes,213,opt,name=x213",
+	Filename:      "test.proto",
 }
 
 var E_X214 = &proto.ExtensionDesc{
@@ -3344,6 +3395,7 @@ var E_X214 = &proto.ExtensionDesc{
 	Field:         214,
 	Name:          "testdata.x214",
 	Tag:           "bytes,214,opt,name=x214",
+	Filename:      "test.proto",
 }
 
 var E_X215 = &proto.ExtensionDesc{
@@ -3352,6 +3404,7 @@ var E_X215 = &proto.ExtensionDesc{
 	Field:         215,
 	Name:          "testdata.x215",
 	Tag:           "bytes,215,opt,name=x215",
+	Filename:      "test.proto",
 }
 
 var E_X216 = &proto.ExtensionDesc{
@@ -3360,6 +3413,7 @@ var E_X216 = &proto.ExtensionDesc{
 	Field:         216,
 	Name:          "testdata.x216",
 	Tag:           "bytes,216,opt,name=x216",
+	Filename:      "test.proto",
 }
 
 var E_X217 = &proto.ExtensionDesc{
@@ -3368,6 +3422,7 @@ var E_X217 = &proto.ExtensionDesc{
 	Field:         217,
 	Name:          "testdata.x217",
 	Tag:           "bytes,217,opt,name=x217",
+	Filename:      "test.proto",
 }
 
 var E_X218 = &proto.ExtensionDesc{
@@ -3376,6 +3431,7 @@ var E_X218 = &proto.ExtensionDesc{
 	Field:         218,
 	Name:          "testdata.x218",
 	Tag:           "bytes,218,opt,name=x218",
+	Filename:      "test.proto",
 }
 
 var E_X219 = &proto.ExtensionDesc{
@@ -3384,6 +3440,7 @@ var E_X219 = &proto.ExtensionDesc{
 	Field:         219,
 	Name:          "testdata.x219",
 	Tag:           "bytes,219,opt,name=x219",
+	Filename:      "test.proto",
 }
 
 var E_X220 = &proto.ExtensionDesc{
@@ -3392,6 +3449,7 @@ var E_X220 = &proto.ExtensionDesc{
 	Field:         220,
 	Name:          "testdata.x220",
 	Tag:           "bytes,220,opt,name=x220",
+	Filename:      "test.proto",
 }
 
 var E_X221 = &proto.ExtensionDesc{
@@ -3400,6 +3458,7 @@ var E_X221 = &proto.ExtensionDesc{
 	Field:         221,
 	Name:          "testdata.x221",
 	Tag:           "bytes,221,opt,name=x221",
+	Filename:      "test.proto",
 }
 
 var E_X222 = &proto.ExtensionDesc{
@@ -3408,6 +3467,7 @@ var E_X222 = &proto.ExtensionDesc{
 	Field:         222,
 	Name:          "testdata.x222",
 	Tag:           "bytes,222,opt,name=x222",
+	Filename:      "test.proto",
 }
 
 var E_X223 = &proto.ExtensionDesc{
@@ -3416,6 +3476,7 @@ var E_X223 = &proto.ExtensionDesc{
 	Field:         223,
 	Name:          "testdata.x223",
 	Tag:           "bytes,223,opt,name=x223",
+	Filename:      "test.proto",
 }
 
 var E_X224 = &proto.ExtensionDesc{
@@ -3424,6 +3485,7 @@ var E_X224 = &proto.ExtensionDesc{
 	Field:         224,
 	Name:          "testdata.x224",
 	Tag:           "bytes,224,opt,name=x224",
+	Filename:      "test.proto",
 }
 
 var E_X225 = &proto.ExtensionDesc{
@@ -3432,6 +3494,7 @@ var E_X225 = &proto.ExtensionDesc{
 	Field:         225,
 	Name:          "testdata.x225",
 	Tag:           "bytes,225,opt,name=x225",
+	Filename:      "test.proto",
 }
 
 var E_X226 = &proto.ExtensionDesc{
@@ -3440,6 +3503,7 @@ var E_X226 = &proto.ExtensionDesc{
 	Field:         226,
 	Name:          "testdata.x226",
 	Tag:           "bytes,226,opt,name=x226",
+	Filename:      "test.proto",
 }
 
 var E_X227 = &proto.ExtensionDesc{
@@ -3448,6 +3512,7 @@ var E_X227 = &proto.ExtensionDesc{
 	Field:         227,
 	Name:          "testdata.x227",
 	Tag:           "bytes,227,opt,name=x227",
+	Filename:      "test.proto",
 }
 
 var E_X228 = &proto.ExtensionDesc{
@@ -3456,6 +3521,7 @@ var E_X228 = &proto.ExtensionDesc{
 	Field:         228,
 	Name:          "testdata.x228",
 	Tag:           "bytes,228,opt,name=x228",
+	Filename:      "test.proto",
 }
 
 var E_X229 = &proto.ExtensionDesc{
@@ -3464,6 +3530,7 @@ var E_X229 = &proto.ExtensionDesc{
 	Field:         229,
 	Name:          "testdata.x229",
 	Tag:           "bytes,229,opt,name=x229",
+	Filename:      "test.proto",
 }
 
 var E_X230 = &proto.ExtensionDesc{
@@ -3472,6 +3539,7 @@ var E_X230 = &proto.ExtensionDesc{
 	Field:         230,
 	Name:          "testdata.x230",
 	Tag:           "bytes,230,opt,name=x230",
+	Filename:      "test.proto",
 }
 
 var E_X231 = &proto.ExtensionDesc{
@@ -3480,6 +3548,7 @@ var E_X231 = &proto.ExtensionDesc{
 	Field:         231,
 	Name:          "testdata.x231",
 	Tag:           "bytes,231,opt,name=x231",
+	Filename:      "test.proto",
 }
 
 var E_X232 = &proto.ExtensionDesc{
@@ -3488,6 +3557,7 @@ var E_X232 = &proto.ExtensionDesc{
 	Field:         232,
 	Name:          "testdata.x232",
 	Tag:           "bytes,232,opt,name=x232",
+	Filename:      "test.proto",
 }
 
 var E_X233 = &proto.ExtensionDesc{
@@ -3496,6 +3566,7 @@ var E_X233 = &proto.ExtensionDesc{
 	Field:         233,
 	Name:          "testdata.x233",
 	Tag:           "bytes,233,opt,name=x233",
+	Filename:      "test.proto",
 }
 
 var E_X234 = &proto.ExtensionDesc{
@@ -3504,6 +3575,7 @@ var E_X234 = &proto.ExtensionDesc{
 	Field:         234,
 	Name:          "testdata.x234",
 	Tag:           "bytes,234,opt,name=x234",
+	Filename:      "test.proto",
 }
 
 var E_X235 = &proto.ExtensionDesc{
@@ -3512,6 +3584,7 @@ var E_X235 = &proto.ExtensionDesc{
 	Field:         235,
 	Name:          "testdata.x235",
 	Tag:           "bytes,235,opt,name=x235",
+	Filename:      "test.proto",
 }
 
 var E_X236 = &proto.ExtensionDesc{
@@ -3520,6 +3593,7 @@ var E_X236 = &proto.ExtensionDesc{
 	Field:         236,
 	Name:          "testdata.x236",
 	Tag:           "bytes,236,opt,name=x236",
+	Filename:      "test.proto",
 }
 
 var E_X237 = &proto.ExtensionDesc{
@@ -3528,6 +3602,7 @@ var E_X237 = &proto.ExtensionDesc{
 	Field:         237,
 	Name:          "testdata.x237",
 	Tag:           "bytes,237,opt,name=x237",
+	Filename:      "test.proto",
 }
 
 var E_X238 = &proto.ExtensionDesc{
@@ -3536,6 +3611,7 @@ var E_X238 = &proto.ExtensionDesc{
 	Field:         238,
 	Name:          "testdata.x238",
 	Tag:           "bytes,238,opt,name=x238",
+	Filename:      "test.proto",
 }
 
 var E_X239 = &proto.ExtensionDesc{
@@ -3544,6 +3620,7 @@ var E_X239 = &proto.ExtensionDesc{
 	Field:         239,
 	Name:          "testdata.x239",
 	Tag:           "bytes,239,opt,name=x239",
+	Filename:      "test.proto",
 }
 
 var E_X240 = &proto.ExtensionDesc{
@@ -3552,6 +3629,7 @@ var E_X240 = &proto.ExtensionDesc{
 	Field:         240,
 	Name:          "testdata.x240",
 	Tag:           "bytes,240,opt,name=x240",
+	Filename:      "test.proto",
 }
 
 var E_X241 = &proto.ExtensionDesc{
@@ -3560,6 +3638,7 @@ var E_X241 = &proto.ExtensionDesc{
 	Field:         241,
 	Name:          "testdata.x241",
 	Tag:           "bytes,241,opt,name=x241",
+	Filename:      "test.proto",
 }
 
 var E_X242 = &proto.ExtensionDesc{
@@ -3568,6 +3647,7 @@ var E_X242 = &proto.ExtensionDesc{
 	Field:         242,
 	Name:          "testdata.x242",
 	Tag:           "bytes,242,opt,name=x242",
+	Filename:      "test.proto",
 }
 
 var E_X243 = &proto.ExtensionDesc{
@@ -3576,6 +3656,7 @@ var E_X243 = &proto.ExtensionDesc{
 	Field:         243,
 	Name:          "testdata.x243",
 	Tag:           "bytes,243,opt,name=x243",
+	Filename:      "test.proto",
 }
 
 var E_X244 = &proto.ExtensionDesc{
@@ -3584,6 +3665,7 @@ var E_X244 = &proto.ExtensionDesc{
 	Field:         244,
 	Name:          "testdata.x244",
 	Tag:           "bytes,244,opt,name=x244",
+	Filename:      "test.proto",
 }
 
 var E_X245 = &proto.ExtensionDesc{
@@ -3592,6 +3674,7 @@ var E_X245 = &proto.ExtensionDesc{
 	Field:         245,
 	Name:          "testdata.x245",
 	Tag:           "bytes,245,opt,name=x245",
+	Filename:      "test.proto",
 }
 
 var E_X246 = &proto.ExtensionDesc{
@@ -3600,6 +3683,7 @@ var E_X246 = &proto.ExtensionDesc{
 	Field:         246,
 	Name:          "testdata.x246",
 	Tag:           "bytes,246,opt,name=x246",
+	Filename:      "test.proto",
 }
 
 var E_X247 = &proto.ExtensionDesc{
@@ -3608,6 +3692,7 @@ var E_X247 = &proto.ExtensionDesc{
 	Field:         247,
 	Name:          "testdata.x247",
 	Tag:           "bytes,247,opt,name=x247",
+	Filename:      "test.proto",
 }
 
 var E_X248 = &proto.ExtensionDesc{
@@ -3616,6 +3701,7 @@ var E_X248 = &proto.ExtensionDesc{
 	Field:         248,
 	Name:          "testdata.x248",
 	Tag:           "bytes,248,opt,name=x248",
+	Filename:      "test.proto",
 }
 
 var E_X249 = &proto.ExtensionDesc{
@@ -3624,6 +3710,7 @@ var E_X249 = &proto.ExtensionDesc{
 	Field:         249,
 	Name:          "testdata.x249",
 	Tag:           "bytes,249,opt,name=x249",
+	Filename:      "test.proto",
 }
 
 var E_X250 = &proto.ExtensionDesc{
@@ -3632,6 +3719,7 @@ var E_X250 = &proto.ExtensionDesc{
 	Field:         250,
 	Name:          "testdata.x250",
 	Tag:           "bytes,250,opt,name=x250",
+	Filename:      "test.proto",
 }
 
 func init() {
