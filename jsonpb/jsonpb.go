@@ -585,7 +585,14 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		case "Any":
 			return fmt.Errorf("unmarshaling Any not supported yet")
 		case "Duration":
-			unq, err := strconv.Unquote(string(inputValue))
+			ivStr := string(inputValue)
+			if ivStr == "null" {
+				target.Field(0).SetInt(0)
+				target.Field(1).SetInt(0)
+				return nil
+			}
+
+			unq, err := strconv.Unquote(ivStr)
 			if err != nil {
 				return err
 			}
@@ -600,7 +607,14 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			target.Field(1).SetInt(ns)
 			return nil
 		case "Timestamp":
-			unq, err := strconv.Unquote(string(inputValue))
+			ivStr := string(inputValue)
+			if ivStr == "null" {
+				target.Field(0).SetInt(0)
+				target.Field(1).SetInt(0)
+				return nil
+			}
+
+			unq, err := strconv.Unquote(ivStr)
 			if err != nil {
 				return err
 			}
