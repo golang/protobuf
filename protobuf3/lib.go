@@ -225,7 +225,7 @@ out:
 				break out
 			}
 			out.WriteString(fmt.Sprintf("%3d: t=%3d, bytes [%d]", index, tag, len(r)))
-			if len(r) <= 8 {
+			if len(r) <= 16 {
 				for i := 0; i < len(r); i++ {
 					out.WriteString(fmt.Sprintf(" %.2x", r[i]))
 				}
