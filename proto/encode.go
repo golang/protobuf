@@ -1276,8 +1276,7 @@ func (o *Buffer) enc_struct(prop *StructProperties, base structPointer) error {
 }
 
 func size_struct(prop *StructProperties, base structPointer) (n int) {
-	for _, i := range prop.order {
-		p := prop.Prop[i]
+	for _, p := range prop.Prop {
 		if p.size != nil {
 			n += p.size(p, base)
 		}
