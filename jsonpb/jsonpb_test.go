@@ -401,6 +401,42 @@ var marshalingTests = []struct {
 	{"BoolValue", marshaler, &pb.KnownTypes{Bool: &wpb.BoolValue{Value: true}}, `{"bool":true}`},
 	{"StringValue", marshaler, &pb.KnownTypes{Str: &wpb.StringValue{Value: "plush"}}, `{"str":"plush"}`},
 	{"BytesValue", marshaler, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}, `{"bytes":"d293"}`},
+	{"ListValue nil", marshaler, &pb.KnownTypes{Listval: nil}, `{}`},
+	{"ListValue empty", marshaler,
+		&pb.KnownTypes{Listval: &stpb.ListValue{Values: make([]*stpb.Value, 0, 1)}},
+		`{"listval":[]}`},
+	{"ListValue length one", marshaler,
+		&pb.KnownTypes{Listval: &stpb.ListValue{Values: []*stpb.Value{
+			{Kind: &stpb.Value_NumberValue{NumberValue: 1}}}}},
+		`{"listval":[1]}`},
+	{"ListValue length two", marshaler,
+		&pb.KnownTypes{Listval: &stpb.ListValue{Values: []*stpb.Value{
+			{Kind: &stpb.Value_NumberValue{NumberValue: 1}},
+			{Kind: &stpb.Value_NumberValue{NumberValue: 2}},
+		}}},
+		`{"listval":[1,2]}`},
+	{"ListValue length two, different types", marshaler,
+		&pb.KnownTypes{Listval: &stpb.ListValue{Values: []*stpb.Value{
+			{Kind: &stpb.Value_NumberValue{NumberValue: 1}},
+			{Kind: &stpb.Value_StringValue{StringValue: "2"}},
+		}}},
+		`{"listval":[1,"2"]}`},
+	{"ListValue in a map", marshaler,
+		&pb.MsgWithListVal{Mapped: map[string]*stpb.ListValue{
+			"a": &stpb.ListValue{Values: []*stpb.Value{
+				{Kind: &stpb.Value_NumberValue{NumberValue: 1}},
+				{Kind: &stpb.Value_StringValue{StringValue: "2"}},
+			}}}},
+		`{"mapped":{"a":[1,"2"]}}`},
+	{"ListValue in repeated", marshaler,
+		&pb.MsgWithListVal{Repeated: []*stpb.ListValue{
+			{Values: []*stpb.Value{
+				{Kind: &stpb.Value_NumberValue{NumberValue: 1}},
+				{Kind: &stpb.Value_StringValue{StringValue: "2"}}}},
+			{Values: []*stpb.Value{
+				{Kind: &stpb.Value_NumberValue{NumberValue: 3}},
+			}}}},
+		`{"repeated":[[1,"2"],[3]]}`},
 }
 
 func TestMarshaling(t *testing.T) {
@@ -484,6 +520,68 @@ var unmarshalingTests = []struct {
 	{"BytesValue", Unmarshaler{}, `{"bytes":"d293"}`, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}},
 	// `null` is also a permissible value. Let's just test one.
 	{"null DoubleValue", Unmarshaler{}, `{"dbl":null}`, &pb.KnownTypes{Dbl: &wpb.DoubleValue{}}},
+
+	// Deserialize Value
+	{"Value: nil", Unmarshaler{}, `{"val":null}`, &pb.KnownTypes{
+		Val: &stpb.Value{Kind: &stpb.Value_NullValue{}}}},
+	{"Value: number", Unmarshaler{}, `{"val":1.5}`, &pb.KnownTypes{
+		Val: &stpb.Value{Kind: &stpb.Value_NumberValue{NumberValue: 1.5}}}},
+	{"Value: string", Unmarshaler{}, `{"val":"strstr"}`, &pb.KnownTypes{
+		Val: &stpb.Value{Kind: &stpb.Value_StringValue{StringValue: "strstr"}}}},
+	{"Value: bool", Unmarshaler{}, `{"val":true}`, &pb.KnownTypes{
+		Val: &stpb.Value{Kind: &stpb.Value_BoolValue{BoolValue: true}}}},
+	// struct value not implemented
+	{"Value: list", Unmarshaler{}, `{"val":[1]}`, &pb.KnownTypes{
+		Val: &stpb.Value{Kind: &stpb.Value_ListValue{ListValue: &stpb.ListValue{
+			Values: []*stpb.Value{
+				{Kind: &stpb.Value_NumberValue{NumberValue: 1}}}}}}}},
+	{"Value: nested list", Unmarshaler{}, `{"val":[1, "2", [3]]}`, &pb.KnownTypes{
+		Val: &stpb.Value{Kind: &stpb.Value_ListValue{ListValue: &stpb.ListValue{
+			Values: []*stpb.Value{
+				{Kind: &stpb.Value_NumberValue{NumberValue: 1}},
+				{Kind: &stpb.Value_StringValue{StringValue: "2"}},
+				{Kind: &stpb.Value_ListValue{ListValue: &stpb.ListValue{
+					Values: []*stpb.Value{
+						{Kind: &stpb.Value_NumberValue{NumberValue: 3}}}}}},
+			}}}}}},
+	// Deserialize ListValue
+	{"ListValue nil", Unmarshaler{}, `{}`, &pb.KnownTypes{Listval: nil}},
+	{"ListValue empty", Unmarshaler{},
+		`{"listval":[]}`,
+		&pb.KnownTypes{Listval: &stpb.ListValue{Values: make([]*stpb.Value, 0, 1)}}},
+	{"ListValue length one", Unmarshaler{},
+		`{"listval":[1]}`,
+		&pb.KnownTypes{Listval: &stpb.ListValue{Values: []*stpb.Value{
+			{Kind: &stpb.Value_NumberValue{NumberValue: 1}},
+		}}}},
+	{"ListValue length two", Unmarshaler{},
+		`{"listval":[1,2]}`,
+		&pb.KnownTypes{Listval: &stpb.ListValue{Values: []*stpb.Value{
+			{Kind: &stpb.Value_NumberValue{NumberValue: 1}},
+			{Kind: &stpb.Value_NumberValue{NumberValue: 2}},
+		}}}},
+	{"ListValue length two, different types", Unmarshaler{},
+		`{"listval":[1,"2"]}`,
+		&pb.KnownTypes{Listval: &stpb.ListValue{Values: []*stpb.Value{
+			{Kind: &stpb.Value_NumberValue{NumberValue: 1}},
+			{Kind: &stpb.Value_StringValue{StringValue: "2"}},
+		}}}},
+	{"ListValue in a map", Unmarshaler{},
+		`{"mapped":{"a":[1,"2"]}}`,
+		&pb.MsgWithListVal{Mapped: map[string]*stpb.ListValue{
+			"a": &stpb.ListValue{Values: []*stpb.Value{
+				{Kind: &stpb.Value_NumberValue{NumberValue: 1}},
+				{Kind: &stpb.Value_StringValue{StringValue: "2"}},
+			}}}}},
+	{"ListValue in repeated", Unmarshaler{},
+		`{"repeated":[[1,"2"],[3]]}`,
+		&pb.MsgWithListVal{Repeated: []*stpb.ListValue{
+			{Values: []*stpb.Value{
+				{Kind: &stpb.Value_NumberValue{NumberValue: 1}},
+				{Kind: &stpb.Value_StringValue{StringValue: "2"}}}},
+			{Values: []*stpb.Value{
+				{Kind: &stpb.Value_NumberValue{NumberValue: 3}},
+			}}}}},
 }
 
 func TestUnmarshaling(t *testing.T) {

@@ -117,6 +117,11 @@ message Complex {
   extensions 100 to max;
 }
 
+message MsgWithListVal {
+  map<string, google.protobuf.ListValue> mapped = 1;
+  repeated google.protobuf.ListValue repeated = 2;
+}
+
 message KnownTypes {
   optional google.protobuf.Any an = 14;
   optional google.protobuf.Duration dur = 1;
@@ -132,4 +137,6 @@ message KnownTypes {
   optional google.protobuf.BoolValue bool = 9;
   optional google.protobuf.StringValue str = 10;
   optional google.protobuf.BytesValue bytes = 11;
+  optional google.protobuf.ListValue listval = 15;
+  optional google.protobuf.Value val = 16;
 }
