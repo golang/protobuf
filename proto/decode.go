@@ -67,7 +67,7 @@ func DecodeVarint(buf []byte) (x uint64, n int) {
 		}
 		b := uint64(buf[n])
 		n++
-		x |= (b & 0x7F) << shift
+		x += (b & 0xFF) << shift
 		if (b & 0x80) == 0 {
 			return x, n
 		}
@@ -88,7 +88,7 @@ func (p *Buffer) decodeVarintSlow() (x uint64, err error) {
 		}
 		b := p.buf[i]
 		i++
-		x |= (uint64(b) & 0x7F) << shift
+		x += (uint64(b) & 0xFF) << shift
 		if b < 0x80 {
 			p.index = i
 			return
@@ -119,7 +119,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 
 	var b uint64
 	// we already checked the first byte
-	x = uint64(buf[i]) - 0x80
+	x = uint64(buf[i])
 	i++
 
 	b = uint64(buf[i])
@@ -128,7 +128,6 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b&0x80 == 0 {
 		goto done
 	}
-	x -= 0x80 << 7
 
 	b = uint64(buf[i])
 	i++
@@ -136,7 +135,6 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b&0x80 == 0 {
 		goto done
 	}
-	x -= 0x80 << 14
 
 	b = uint64(buf[i])
 	i++
@@ -144,7 +142,6 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b&0x80 == 0 {
 		goto done
 	}
-	x -= 0x80 << 21
 
 	b = uint64(buf[i])
 	i++
@@ -152,7 +149,6 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b&0x80 == 0 {
 		goto done
 	}
-	x -= 0x80 << 28
 
 	b = uint64(buf[i])
 	i++
@@ -160,7 +156,6 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b&0x80 == 0 {
 		goto done
 	}
-	x -= 0x80 << 35
 
 	b = uint64(buf[i])
 	i++
@@ -168,7 +163,6 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b&0x80 == 0 {
 		goto done
 	}
-	x -= 0x80 << 42
 
 	b = uint64(buf[i])
 	i++
@@ -176,7 +170,6 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b&0x80 == 0 {
 		goto done
 	}
-	x -= 0x80 << 49
 
 	b = uint64(buf[i])
 	i++
@@ -184,15 +177,12 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b&0x80 == 0 {
 		goto done
 	}
-	x -= 0x80 << 56
 
 	b = uint64(buf[i])
 	i++
-	x += b << 63
-	if b&0x80 == 0 {
+	if b == 0 { //max value of uint64 0xFFFFFFFFFFFFFFFF = varint [255 254 254 254 254 254 254 254 254 0]
 		goto done
 	}
-	// x -= 0x80 << 63 // Always zero.
 
 	return 0, errOverflow
 
