@@ -493,7 +493,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 	} else {
 		switch t1.Kind() {
 		default:
-			fmt.Fprintf(os.Stderr, "protobuf3: no coders for %s\n", t1.Name())
+			fmt.Fprintf(os.Stderr, "protobuf3: no encoder/decoder for %s\n", t1.Name())
 
 		// proto3 scalar types
 
@@ -659,7 +659,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 
 			switch t2.Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no slice encder for %s = []%s\n", t1.Name(), t2.Name())
+				fmt.Fprintf(os.Stderr, "protobuf3: no slice encoder for %s = []%s\n", t1.Name(), t2.Name())
 				break
 			case reflect.Bool:
 				p.enc = (*Buffer).enc_slice_packed_bool
