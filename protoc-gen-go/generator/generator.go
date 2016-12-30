@@ -650,6 +650,11 @@ func (g *Generator) DefaultPackageName(obj Object) string {
 	if pkg == g.packageName {
 		return ""
 	}
+
+	if obj.File().GetOptions().GetGoPackage() == g.file.GetOptions().GetGoPackage() {
+		return ""
+	}
+
 	return pkg + "."
 }
 
@@ -1329,6 +1334,11 @@ func (g *Generator) generateImports() {
 		if fd.PackageName() == g.packageName {
 			continue
 		}
+
+		if fd.GetOptions().GetGoPackage() == g.file.GetOptions().GetGoPackage() {
+			continue
+		}
+
 		filename := fd.goFileName()
 		// By default, import path is the dirname of the Go filename.
 		importPath := path.Dir(filename)
@@ -1348,6 +1358,7 @@ func (g *Generator) generateImports() {
 		if _, ok := g.usedPackages[pname]; !ok {
 			pname = "_"
 		}
+
 		g.P("import ", pname, " ", strconv.Quote(importPath))
 	}
 	g.P()
