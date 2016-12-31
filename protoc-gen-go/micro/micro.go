@@ -192,43 +192,6 @@ func (g *micro) generateService(file *generator.FileDescriptor, service *pb.Serv
 		hname := g.generateServerMethod(servName, method)
 		handlerNames = append(handlerNames, hname)
 	}
-
-	/*
-		// Service descriptor.
-		g.P("var ", serviceDescVar, " = ", serverPkg, ".ServiceDesc {")
-		g.P("ServiceName: ", strconv.Quote(fullServName), ",")
-		g.P("HandlerType: (*", serverType, ")(nil),")
-		g.P("Methods: []", serverPkg, ".MethodDesc{")
-		for i, method := range service.Method {
-			if method.GetServerStreaming() || method.GetClientStreaming() {
-				continue
-			}
-			g.P("{")
-			g.P("MethodName: ", strconv.Quote(method.GetName()), ",")
-			g.P("Handler: ", handlerNames[i], ",")
-			g.P("},")
-		}
-		g.P("},")
-		g.P("Streams: []", serverPkg, ".StreamDesc{")
-		for i, method := range service.Method {
-			if !method.GetServerStreaming() && !method.GetClientStreaming() {
-				continue
-			}
-			g.P("{")
-			g.P("StreamName: ", strconv.Quote(method.GetName()), ",")
-			g.P("Handler: ", handlerNames[i], ",")
-			if method.GetServerStreaming() {
-				g.P("ServerStreams: true,")
-			}
-			if method.GetClientStreaming() {
-				g.P("ClientStreams: true,")
-			}
-			g.P("},")
-		}
-		g.P("},")
-		g.P("}")
-		g.P()
-	*/
 }
 
 // generateClientSignature returns the client-side signature for a method.
@@ -283,7 +246,6 @@ func (g *micro) generateClientMethod(reqServ, servName, serviceDescVar string, m
 
 	genSend := method.GetClientStreaming()
 	genRecv := method.GetServerStreaming()
-	//genCloseAndRecv := !method.GetServerStreaming()
 
 	// Stream auxiliary types and methods.
 	g.P("type ", servName, "_", methName, "Client interface {")
@@ -392,7 +354,6 @@ func (g *micro) generateServerMethod(servName string, method *pb.MethodDescripto
 	g.P()
 
 	genSend := method.GetServerStreaming()
-	//	genSendAndClose := !method.GetServerStreaming()
 	genRecv := method.GetClientStreaming()
 
 	// Stream auxiliary types and methods.
@@ -404,14 +365,11 @@ func (g *micro) generateServerMethod(servName string, method *pb.MethodDescripto
 	if genSend {
 		g.P("Send(*", outType, ") error")
 	}
-	/*
-		if genSendAndClose {
-			g.P("SendAndClose(*", outType, ") error")
-		}
-	*/
+
 	if genRecv {
 		g.P("Recv() (*", inType, ", error)")
 	}
+
 	g.P("}")
 	g.P()
 
@@ -441,14 +399,7 @@ func (g *micro) generateServerMethod(servName string, method *pb.MethodDescripto
 		g.P("}")
 		g.P()
 	}
-	/*
-		if genSendAndClose {
-			g.P("func (x *", streamType, ") SendAndClose(m *", outType, ") error {")
-			g.P("return x.Streamer.SendR(m)")
-			g.P("}")
-			g.P()
-		}
-	*/
+
 	if genRecv {
 		g.P("func (x *", streamType, ") Recv() (*", inType, ", error) {")
 		g.P("m := new(", inType, ")")
