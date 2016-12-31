@@ -124,7 +124,7 @@ func (g *micro) generatePublisher() {
 
 	// publisher method
 	g.P("func (p *publisher) Publish(ctx ", contextPkg, ".Context, msg interface{}) error {")
-	g.P("return p.c.Publish(ctx, p.c.NewPublication(topic, msg))")
+	g.P("return p.c.Publish(ctx, p.c.NewPublication(p.topic, msg))")
 	g.P("}")
 	g.P()
 
