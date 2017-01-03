@@ -950,3 +950,25 @@ func TestStructArrayMsg(t *testing.T) {
 		t.Error("!=")
 	}
 }
+
+type BadZigZagTagMsg struct {
+	x int `protobuf:"zigzag,1"` // such an encoding does not exist (it's "zigzag32" and "zigzag64")
+}
+
+func TestBadZigZagTagMsg(t *testing.T) {
+	_, err := protobuf3.Marshal(&BadZigZagTagMsg{})
+	if err == nil {
+		t.Error("marshaling a BadZigZagTagMsg should have failed")
+	}
+}
+
+type MissingTagMsg struct {
+	x int32 // no protobuf tag
+}
+
+func TestMissingTagMsg(t *testing.T) {
+	_, err := protobuf3.Marshal(&MissingTagMsg{})
+	if err == nil {
+		t.Error("marshaling a MissingTagMsg should have failed")
+	}
+}

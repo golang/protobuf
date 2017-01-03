@@ -231,8 +231,12 @@ func (o *Buffer) Marshal(pb Message) error {
 		return ErrNil // don't pass in nil pointers. we need values
 	}
 
-	o.enc_struct(GetProperties(t.Elem()), base)
+	prop, err := GetProperties(t.Elem())
+	if err != nil {
+		return err
+	}
 
+	o.enc_struct(prop, base)
 	return o.err
 }
 

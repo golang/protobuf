@@ -411,9 +411,12 @@ func (p *Buffer) Unmarshal(pb Message) error {
 	t := reflect.TypeOf(pb).Elem()
 	base := unsafe.Pointer(reflect.ValueOf(pb).Pointer())
 
-	err := p.unmarshal_struct(t, GetProperties(t), base)
+	prop, err := GetProperties(t)
+	if err != nil {
+		return err
+	}
 
-	return err
+	return p.unmarshal_struct(t, prop, base)
 }
 
 // unmarshal_struct does the work of unmarshaling a structure.

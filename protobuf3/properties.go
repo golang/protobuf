@@ -199,7 +199,11 @@ func AsProtobuf(t reflect.Type) string {
 	for t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
-	return GetProperties(t).asProtobuf(t, t.Name())
+	prop, err := GetProperties(t)
+	if err != nil {
+		return "# " + err.Error() // cause an error in the protobuf compiler
+	}
+	return prop.asProtobuf(t, t.Name())
 }
 
 // given the full path of the package of the 1st type passed to AsProtobufFull(), return
@@ -231,6 +235,8 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 		`syntax = "proto3";`,
 		"",
 	}
+	var body []string
+
 	if pkgpath != "" {
 		headers = append(headers, fmt.Sprintf("package %s;", MakePackageName(pkgpath)))
 	} // else the type is synthesized and lacks a path; humans need to deal with the output (after all they caused this)
@@ -252,7 +258,11 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 			discovered[t] = struct{}{}
 
 			// add to todo any new, non-anonymous types used by struct t's fields
-			p := GetProperties(t)
+			p, err := GetProperties(t)
+			if err != nil {
+				body = append(body, "# "+err.Error()) // cause an error in the protobuf compiler
+				continue
+			}
 			for i := range p.Prop {
 				pp := &p.Prop[i]
 				tt := pp.Subtype()
@@ -293,7 +303,6 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 	}
 	sort.Sort(ordered)
 
-	var body []string
 	for _, t := range ordered {
 		// generate type t's protobuf definition
 
@@ -457,7 +466,8 @@ func (p *Properties) Parse(s string) (IntEncoder, bool, error) {
 }
 
 // Initialize the fields for encoding and decoding.
-func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_encoder IntEncoder) {
+func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_encoder IntEncoder) error {
+	var err error
 	p.enc = nil
 	p.dec = nil
 	wire := p.WireType
@@ -565,7 +575,10 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 
 		case reflect.Struct:
 			p.stype = t1
-			p.sprop = getPropertiesLocked(t1)
+			p.sprop, err = getPropertiesLocked(t1)
+			if err != nil {
+				return err
+			}
 			p.asProtobuf = p.stypeAsProtobuf()
 			switch t1 {
 			case time_Time_type:
@@ -632,7 +645,10 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				p.asProtobuf = "string"
 			case reflect.Struct:
 				p.stype = t2
-				p.sprop = getPropertiesLocked(t2)
+				p.sprop, err = getPropertiesLocked(t2)
+				if err != nil {
+					return err
+				}
 				p.asProtobuf = p.stypeAsProtobuf()
 				p.enc = (*Buffer).enc_ptr_struct_message
 				switch {
@@ -740,7 +756,10 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				p.asProtobuf = "repeated string"
 			case reflect.Struct:
 				p.stype = t2
-				p.sprop = getPropertiesLocked(t2)
+				p.sprop, err = getPropertiesLocked(t2)
+				if err != nil {
+					return err
+				}
 				p.isMarshaler = isMarshaler(reflect.PtrTo(t2))
 				p.enc = (*Buffer).enc_slice_struct_message
 				p.dec = (*Buffer).dec_slice_struct_message
@@ -752,7 +771,10 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 					break
 				case reflect.Struct:
 					p.stype = t3
-					p.sprop = getPropertiesLocked(t3)
+					p.sprop, err = getPropertiesLocked(t3)
+					if err != nil {
+						return err
+					}
 					p.isMarshaler = isMarshaler(t2)
 					p.enc = (*Buffer).enc_slice_ptr_struct_message
 					p.dec = (*Buffer).dec_slice_ptr_struct_message
@@ -850,7 +872,10 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				p.asProtobuf = "repeated string"
 			case reflect.Struct:
 				p.stype = t2
-				p.sprop = getPropertiesLocked(t2)
+				p.sprop, err = getPropertiesLocked(t2)
+				if err != nil {
+					return err
+				}
 				p.enc = (*Buffer).enc_array_struct_message
 				p.dec = (*Buffer).dec_array_struct_message
 				p.asProtobuf = "repeated " + p.stypeAsProtobuf()
@@ -861,7 +886,10 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 					break
 				case reflect.Struct:
 					p.stype = t3
-					p.sprop = getPropertiesLocked(t3)
+					p.sprop, err = getPropertiesLocked(t3)
+					if err != nil {
+						return err
+					}
 					p.isMarshaler = isMarshaler(t2)
 					p.enc = (*Buffer).enc_array_ptr_struct_message
 					p.dec = (*Buffer).dec_array_ptr_struct_message
@@ -898,6 +926,8 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 	}
 	p.tagbuf[i] = uint8(x)
 	p.tagcode = p.tagbuf[0 : i+1]
+
+	return nil
 }
 
 // using p.Name, p.stype and p.sprop, figure out the right name for the type of field p.
@@ -1005,9 +1035,7 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 		return skip, err
 	}
 
-	p.setEncAndDec(typ, f, intencoder)
-
-	return false, nil
+	return false, p.setEncAndDec(typ, f, intencoder)
 }
 
 var (
@@ -1041,7 +1069,7 @@ func init() {
 
 // GetProperties returns the list of properties for the type represented by t.
 // t must represent a generated struct type of a protocol message.
-func GetProperties(t reflect.Type) *StructProperties {
+func GetProperties(t reflect.Type) (*StructProperties, error) {
 	k := t.Kind()
 	// accept a pointer-to-struct as well (but just one level)
 	if k == reflect.Ptr {
@@ -1058,19 +1086,19 @@ func GetProperties(t reflect.Type) *StructProperties {
 	sprop, ok := propertiesMap[t]
 	propertiesMu.RUnlock()
 	if ok {
-		return sprop
+		return sprop, nil
 	}
 
 	propertiesMu.Lock()
-	sprop = getPropertiesLocked(t)
+	sprop, err := getPropertiesLocked(t)
 	propertiesMu.Unlock()
-	return sprop
+	return sprop, err
 }
 
 // getPropertiesLocked requires that propertiesMu is held.
-func getPropertiesLocked(t reflect.Type) *StructProperties {
+func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 	if prop, ok := propertiesMap[t]; ok {
-		return prop
+		return prop, nil
 	}
 
 	prop := new(StructProperties)
@@ -1093,8 +1121,9 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 
 		skip, err := p.init(f.Type, name, f.Tag.Get("protobuf"), &f)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "protobuf3: Error preparing field %q of type %q: %v\n", name, t.Name(), err)
-			continue
+			err := fmt.Errorf("protobuf3: Error preparing field %q of type %q: %v", name, t.Name(), err)
+			fmt.Fprintln(os.Stderr, err) // print the error too
+			return nil, err
 		}
 		if skip {
 			// silently skip this field. It's not part of the protobuf encoding of this struct
@@ -1105,7 +1134,9 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 			if sname == "" {
 				sname = "<anonymous struct>"
 			}
-			panic(fmt.Sprintf("protobuf3: duplicate tag %d on %s.%s", p.Tag, sname, name))
+			err := fmt.Errorf("protobuf3: Error duplicate tag id %d on %s.%s", p.Tag, sname, name)
+			fmt.Fprintln(os.Stderr, err) // print the error too
+			return nil, err
 		}
 		seen[p.Tag] = struct{}{}
 
@@ -1120,8 +1151,14 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 			print("\n")
 		}
 
-		if p.enc == nil {
-			fmt.Fprintln(os.Stderr, "protobuf3: no encoder for", f.Name, f.Type.String(), "[GetProperties]")
+		if p.enc == nil || p.dec == nil {
+			sname := t.Name()
+			if sname == "" {
+				sname = "<anonymous struct>"
+			}
+			err := fmt.Errorf("protobuf3: Error no encoder or decoder for field %q.%q of type %q", sname, name, f.Type.Name())
+			fmt.Fprintln(os.Stderr, err) // print the error too
+			return nil, err
 		}
 	}
 
@@ -1131,5 +1168,5 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 	// Re-order prop.order.
 	sort.Sort(prop)
 
-	return prop
+	return prop, nil
 }
