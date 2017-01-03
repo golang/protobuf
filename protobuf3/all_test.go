@@ -191,7 +191,11 @@ func TestNumericPrimitives(t *testing.T) {
 		if e != nil {
 			t.Fatal("DecodeZigzag32")
 		}
-		if x != uint64(uint32(i32)) {
+		// NOTE WELL google's DecodeZigzag32() returns a signed 32-bit inside an unsigned 64-bit (bits 32-63 are 0).
+		// My DecodeZigzag32() returns a signed 64-bit. So this comparison is slightly different than in the proto/all_test.go
+		// (mine is different because unlike google I might be casting the result to an 'int', as well as 'int32', and 'int'
+		// might turn out to be 64 bits)
+		if x != uint64(i32) {
 			t.Fatal("zigzag32 decode fail:", i32, x)
 		}
 

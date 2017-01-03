@@ -269,12 +269,17 @@ func (p *Buffer) DecodeZigzag64() (x uint64, err error) {
 // DecodeZigzag32 reads a zigzag-encoded 32-bit integer
 // from  the Buffer.
 // This is the format used for the sint32 protocol buffer type.
+// Since I might cast the result to 'int', I want this to return a signed
+// 64-bit value, rather than a signed 32-bit value embedded in an
+// unsigned 64-bit value. Hence the cast to int32 before extending
+// to uint64 which does not appear in the proto package.
 func (p *Buffer) DecodeZigzag32() (x uint64, err error) {
 	x, err = p.DecodeVarint()
 	if err != nil {
 		return
 	}
-	x = uint64((uint32(x) >> 1) ^ uint32(((int32(x)&1)<<31)>>31))
+	x32 := int32((uint32(x) >> 1) ^ uint32((int32(x&1)<<31)>>31))
+	x = uint64(x32)
 	return
 }
 
