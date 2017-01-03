@@ -291,6 +291,28 @@ func TestVarMsg(t *testing.T) {
 	eq("mb", m, mb, t)
 }
 
+func TestZigZagMsg(t *testing.T) {
+	i32 := int32(-10)
+	i64 := int64(-12)
+
+	m := ZigZagMsg{
+		i32: -1,
+		i64: -3,
+
+		pi32: &i32,
+		pi64: &i64,
+
+		si32: []int32{-1, 2, -3},
+		si64: []int64{-4, 5, -6},
+	}
+
+	check(&m, &m, t)
+
+	var mb ZigZagMsg
+	uncheck(&m, &mb, nil, t)
+	eq("mb", m, mb, t)
+}
+
 func TestBytesMsg(t *testing.T) {
 	s := "str"
 
