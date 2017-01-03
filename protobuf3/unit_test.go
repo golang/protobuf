@@ -61,11 +61,11 @@ func TestProto3ZeroValues(t *testing.T) {
 	for _, test := range tests {
 		b, err := protobuf3.Marshal(test.m)
 		if err != nil {
-			t.Errorf("%s: protobuf3.Marshal: %v", test.desc, err)
+			t.Errorf("ERROR %s: protobuf3.Marshal: %v", test.desc, err)
 			continue
 		}
 		if len(b) > 0 {
-			t.Errorf("%s: Encoding is non-empty: %q", test.desc, b)
+			t.Errorf("ERROR %s: Encoding is non-empty: %q", test.desc, b)
 		}
 	}
 	protobuf3.XXXHack = false
@@ -105,7 +105,7 @@ func TestRoundTripProto3(t *testing.T) {
 	t.Logf("m2: %v", m2)
 
 	if !proto.Equal(m, m2) {
-		t.Errorf("proto.Equal returned false:\n m: %v\nm2: %v", m, m2)
+		t.Errorf("ERROR proto.Equal returned false:\n m: %v\nm2: %v", m, m2)
 	}
 }
 
@@ -449,13 +449,13 @@ func check(mb protobuf3.Message, mc proto.Message, t *testing.T) {
 
 	b, err := protobuf3.Marshal(mb)
 	if err != nil {
-		t.Error(err)
+		t.Error("ERROR ", err)
 		return
 	}
 
 	c, err := proto.Marshal(mc)
 	if err != nil {
-		t.Error(err)
+		t.Error("ERROR ", err)
 		return
 	}
 
@@ -463,7 +463,7 @@ func check(mb protobuf3.Message, mc proto.Message, t *testing.T) {
 	t.Logf("c = % x", c)
 
 	if !bytes.Equal(b, c) {
-		t.Errorf("Marshal(%T) different", mb)
+		t.Errorf("ERROR Marshal(%T) different between proto and protobuf3", mb)
 	}
 }
 
@@ -474,7 +474,7 @@ func uncheck(mi protobuf3.Message, mb protobuf3.Message, mc proto.Message, t *te
 
 	pb, err := protobuf3.Marshal(mi)
 	if err != nil {
-		t.Error(err)
+		t.Error("ERROR ", err)
 		return
 	}
 
@@ -490,7 +490,7 @@ func uncheck(mi protobuf3.Message, mb protobuf3.Message, mc proto.Message, t *te
 	if mc != nil {
 		err = proto.Unmarshal(pb, mc)
 		if err != nil {
-			t.Error(err)
+			t.Error("ERROR ", err)
 			return
 		}
 		t.Logf("mc = %v", mc)
@@ -499,7 +499,7 @@ func uncheck(mi protobuf3.Message, mb protobuf3.Message, mc proto.Message, t *te
 
 func eq(name string, x interface{}, y interface{}, t *testing.T) {
 	if !reflect.DeepEqual(x, y) {
-		t.Errorf("%s: (%v) %v != (%v) %v", name, reflect.TypeOf(x), x, reflect.TypeOf(y), y)
+		t.Errorf("ERROR %s: (%v) %v != (%v) %v", name, reflect.TypeOf(x), x, reflect.TypeOf(y), y)
 	}
 }
 
@@ -626,13 +626,13 @@ func TestMapMsg(t *testing.T) {
 
 		b, err := protobuf3.Marshal(&m)
 		if err != nil {
-			t.Error(err)
+			t.Error("ERROR ", err)
 			return
 		}
 
 		c, err := proto.Marshal(&m)
 		if err != nil {
-			t.Error(err)
+			t.Error("ERROR ", err)
 			return
 		}
 
@@ -645,7 +645,7 @@ func TestMapMsg(t *testing.T) {
 			ll := len(b) / 2
 			b = append(b[ll:], b[:ll]...)
 			if !bytes.Equal(b, c) {
-				t.Errorf("Marshal(%T) different", m)
+				t.Errorf("ERROR Marshal(%T) different between proto and protobuf3", m)
 			}
 		}
 
@@ -936,18 +936,18 @@ func TestStructArrayMsg(t *testing.T) {
 
 	pb, err := protobuf3.Marshal(&m)
 	if err != nil {
-		t.Error(err)
+		t.Error("ERROR ", err)
 	}
 	t.Logf("StructArrayMsg = %+v\n", m)
 	t.Logf("StructArrayMsg = % x\n", pb)
 
 	err = protobuf3.Unmarshal(pb, &m2)
 	if err != nil {
-		t.Error(err)
+		t.Error("ERROR ", err)
 	}
 	t.Logf("StructArrayMsg = %+v\n", m2)
 	if !reflect.DeepEqual(m, m2) {
-		t.Error("!=")
+		t.Error("ERROR results are !=")
 	}
 }
 
@@ -958,7 +958,7 @@ type BadZigZagTagMsg struct {
 func TestBadZigZagTagMsg(t *testing.T) {
 	_, err := protobuf3.Marshal(&BadZigZagTagMsg{})
 	if err == nil {
-		t.Error("marshaling a BadZigZagTagMsg should have failed")
+		t.Error("ERROR marshaling a BadZigZagTagMsg should have failed")
 	}
 }
 
@@ -969,6 +969,6 @@ type MissingTagMsg struct {
 func TestMissingTagMsg(t *testing.T) {
 	_, err := protobuf3.Marshal(&MissingTagMsg{})
 	if err == nil {
-		t.Error("marshaling a MissingTagMsg should have failed")
+		t.Error("ERROR marshaling a MissingTagMsg should have failed")
 	}
 }
