@@ -632,6 +632,10 @@ func TestMapMsg(t *testing.T) {
 
 }
 
+// test encoding and decoding int and uint as zigzag and varint
+// (proto package doesn't support this, but we do, since an int encoded in
+// zigzag is always safe irrespective of the sizeof(int), as is a uint
+// encoded as a varint)
 type IntMsg struct {
 	i   int    `protobuf:"varint,1"`
 	u   uint   `protobuf:"varint,2"`
@@ -639,6 +643,8 @@ type IntMsg struct {
 	u8  uint8  `protobuf:"varint,4"`
 	i16 int16  `protobuf:"varint,5"`
 	u16 uint16 `protobuf:"varint,6"`
+	z32 int    `protobuf:"zigzag32,10"`
+	z64 int    `protobuf:"zigzag64,11"`
 }
 
 // same fields, but using types the old package can use
@@ -649,6 +655,8 @@ type OldIntMsg struct {
 	u8  uint32 `protobuf:"varint,4"`
 	i16 int32  `protobuf:"varint,5"`
 	u16 uint32 `protobuf:"varint,6"`
+	z32 int32  `protobuf:"zigzag32,10"`
+	z64 int64  `protobuf:"zigzag64,11"`
 }
 
 func (*OldIntMsg) ProtoMessage()    {}
@@ -663,6 +671,8 @@ func TestIntMsg(t *testing.T) {
 		u8:  4,
 		i16: -4,
 		u16: 5,
+		z32: 55,
+		z64: -5761760885135729648,
 	}
 
 	o := OldIntMsg{
@@ -672,6 +682,8 @@ func TestIntMsg(t *testing.T) {
 		u8:  4,
 		i16: -4,
 		u16: 5,
+		z32: 55,
+		z64: -5761760885135729648,
 	}
 
 	check(&o, &o, t)
