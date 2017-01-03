@@ -445,6 +445,8 @@ func TestZeroMsgs(t *testing.T) {
 
 // check that protobuf3.Marshal(mb) == proto.Marshal(mc)
 func check(mb protobuf3.Message, mc proto.Message, t *testing.T) {
+	t.Logf("check(%T,%T)", mb, mc)
+
 	b, err := protobuf3.Marshal(mb)
 	if err != nil {
 		t.Error(err)
@@ -467,6 +469,7 @@ func check(mb protobuf3.Message, mc proto.Message, t *testing.T) {
 
 // check that protobuf3.Unmarshal(mb) works like proto.Unmarshal(mc)
 func uncheck(mi protobuf3.Message, mb protobuf3.Message, mc proto.Message, t *testing.T) {
+	t.Logf("uncheck(%T,%T,%T)", mi, mb, mc)
 	t.Logf("mi = %v", mi)
 
 	pb, err := protobuf3.Marshal(mi)
@@ -657,7 +660,8 @@ func TestMapMsg(t *testing.T) {
 // test encoding and decoding int and uint as zigzag and varint
 // (proto package doesn't support this, but we do, since an int encoded in
 // zigzag is always safe irrespective of the sizeof(int), as is a uint
-// encoded as a varint)
+// encoded as a varint. int encoded as a varint, if the int is negative,
+// will not work if the encoder as 32-bit and the decoder 64-bit)
 type IntMsg struct {
 	i   int    `protobuf:"varint,1"`
 	u   uint   `protobuf:"varint,2"`
