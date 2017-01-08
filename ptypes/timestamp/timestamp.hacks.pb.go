@@ -331,3 +331,7 @@ func skipTimestamp(dAtA []byte) (n int, err error) {
 	}
 	panic("unreachable")
 }
+
+func (this *Timestamp) LogFields() map[string]string {
+	return map[string]string{}
+}
