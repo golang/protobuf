@@ -50,12 +50,12 @@ const debug bool = false
 
 // Constants that identify the encoding of a value on the wire.
 const (
-	WireVarint     = 0
-	WireFixed64    = 1
-	WireBytes      = 2
-	WireStartGroup = 3
-	WireEndGroup   = 4
-	WireFixed32    = 5
+	WireVarint = iota
+	WireFixed64
+	WireBytes
+	WireStartGroup
+	WireEndGroup
+	WireFixed32
 )
 
 const startSize = 10 // initial slice/string sizes
