@@ -124,7 +124,7 @@ func (g *micro) generatePublisher() {
 
 	// publisher method
 	g.P("func (p *publisher) Publish(ctx ", contextPkg, ".Context, msg interface{}, opts ...", clientPkg, ".PublishOption) error {")
-	g.P("return p.c.Publish(ctx, p.c.NewPublication(p.topic, msg))")
+	g.P("return p.c.Publish(ctx, p.c.NewPublication(p.topic, msg), opts...)")
 	g.P("}")
 	g.P()
 
@@ -145,7 +145,7 @@ func (g *micro) generateSubscriber() {
 
 	// subscriber func
 	g.P("func RegisterSubscriber(topic string, s ", serverPkg, ".Server, h interface{}, opts ...", serverPkg, ".SubscriberOption) error {")
-	g.P("return s.Subscribe(s.NewSubscriber(topic, h))")
+	g.P("return s.Subscribe(s.NewSubscriber(topic, h, opts...))")
 	g.P("}")
 	g.P()
 }
