@@ -726,9 +726,9 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		if err := json.Unmarshal(inputValue, &slc); err != nil {
 			return err
 		}
-		len := len(slc)
-		target.Set(reflect.MakeSlice(targetType, len, len))
-		for i := 0; i < len; i++ {
+		l := len(slc)
+		target.Set(reflect.MakeSlice(targetType, l, l))
+		for i := 0; i < l; i++ {
 			if err := u.unmarshalValue(target.Index(i), slc[i], prop); err != nil {
 				return err
 			}
