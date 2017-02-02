@@ -55,3 +55,7 @@ message Mappy {
   map<uint32, bool> u32booly = 9;
   map<uint64, bool> u64booly = 10;
 }
+
+message Slicy {
+  repeated string slicy = 1;
+}
