@@ -279,6 +279,7 @@ type Message interface {
 	Reset()
 	String() string
 	ProtoMessage()
+	Descriptor() ([]byte, []int)
 }
 
 // Stats records allocation details about the protocol buffer encoders
