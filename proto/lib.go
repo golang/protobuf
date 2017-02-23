@@ -344,6 +344,11 @@ func (p *Buffer) SetBuf(s []byte) {
 // Bytes returns the contents of the Buffer.
 func (p *Buffer) Bytes() []byte { return p.buf }
 
+// EOF returns true when there is no more data to read and decode.
+func (p *Buffer) EOF() bool {
+	return p.index >= len(p.buf)
+}
+
 /*
  * Helper routines for simplifying the creation of optional fields of basic type.
  */

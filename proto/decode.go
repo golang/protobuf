@@ -464,7 +464,7 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group
 	required, reqFields := prop.reqCount, uint64(0)
 
 	var err error
-	for err == nil && o.index < len(o.buf) {
+	for err == nil && !o.EOF() {
 		oi := o.index
 		var u uint64
 		u, err = o.DecodeVarint()
