@@ -388,11 +388,6 @@ func (p *Buffer) SkipRawBytes() error {
 // everyone to define a Reset() method for the Message interface (making it more efficient for
 // the developer, me!)), our Unmarshal() matches the behavior of encoding/json.Unmarshal()
 func Unmarshal(buf []byte, pb Message) error {
-	typ := reflect.TypeOf(pb)
-	// pb must be a pointer type, since it must be addressable so we can fill it in
-	if typ.Kind() != reflect.Ptr {
-		return ErrNotAddressable
-	}
 	return NewBuffer(buf).Unmarshal(pb)
 }
 
@@ -412,8 +407,17 @@ func (p *Buffer) Unmarshal(pb Message) error {
 		return err
 	}
 
+	// pb must be a pointer to a struct
+	t := reflect.TypeOf(pb)
+	if t.Kind() != reflect.Ptr {
+		return ErrNotPointerToStruct
+	}
+	t = t.Elem()
+	if t.Kind() != reflect.Struct {
+		return ErrNotPointerToStruct
+	}
+
 	// the caller already checked that pb is a pointer-to-struct type
-	t := reflect.TypeOf(pb).Elem()
 	base := unsafe.Pointer(reflect.ValueOf(pb).Pointer())
 
 	prop, err := GetProperties(t)

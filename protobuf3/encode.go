@@ -55,7 +55,7 @@ var (
 	// ErrNil is the error returned if Marshal is called with nil.
 	ErrNil = errors.New("protobuf3: [Un]Marshal called with nil")
 
-	ErrNotAddressable = errors.New("protobuf3: Unmarshal called with in-addressible (non pointer?) argument")
+	ErrNotPointerToStruct = errors.New("protobuf3: Unmarshal called with argument which is not a pointer to a struct")
 )
 
 // The fundamental encoders that put bytes on the wire.

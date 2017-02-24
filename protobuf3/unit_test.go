@@ -1008,3 +1008,28 @@ func TestMissingTagMsg(t *testing.T) {
 		t.Error("ERROR marshaling a MissingTagMsg should have failed")
 	}
 }
+
+// make sure we fail if someone passes in &(&msg)
+func TestPtoPtoS(t *testing.T) {
+	var msg = struct {
+		I int `protobuf:"varint,1"`
+	}{
+		I: 99,
+	}
+	data, err := protobuf3.Marshal(&msg)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	err = protobuf3.Unmarshal(data, &msg)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	ptr := &msg
+	err = protobuf3.Unmarshal(data, &ptr)
+	if err != protobuf3.ErrNotPointerToStruct {
+		t.Errorf("should have failed with ErrNotPointerToStruct. Got %v", err)
+	}
+}
