@@ -629,6 +629,63 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			target.Field(0).SetInt(int64(t.Unix()))
 			target.Field(1).SetInt(int64(t.Nanosecond()))
 			return nil
+		case "Struct":
+			// Let unmarshalValue handle the `fields` map.
+			// TODO: pass the correct Properties if needed.
+			return u.unmarshalValue(target.Field(0), inputValue, &proto.Properties{})
+		case "ListValue":
+			// Let unmarshalValue handle the `values` array.
+			// TODO: pass the correct Properties if needed.
+			return u.unmarshalValue(target.Field(0), inputValue, &proto.Properties{})
+		case "Value":
+			// Value is a single oneof.
+			sprops := proto.GetProperties(targetType)
+			switch inputValue[0] {
+			case '{':
+				p := sprops.OneofTypes["struct_value"]
+				nv := reflect.New(p.Type.Elem())
+				// TODO: pass the correct Properties if needed.
+				if err := u.unmarshalValue(nv.Elem().Field(0), inputValue, &proto.Properties{}); err != nil {
+					return fmt.Errorf("bad Value: %v", err)
+				}
+				target.Field(p.Field).Set(nv)
+			case '[':
+				p := sprops.OneofTypes["list_value"]
+				nv := reflect.New(p.Type.Elem())
+				// TODO: pass the correct Properties if needed.
+				if err := u.unmarshalValue(nv.Elem().Field(0), inputValue, &proto.Properties{}); err != nil {
+					return fmt.Errorf("bad Value: %v", err)
+				}
+				target.Field(p.Field).Set(nv)
+			default:
+				var value interface{}
+				if err := json.Unmarshal(inputValue, &value); err != nil {
+					return fmt.Errorf("bad Value: %v", err)
+				}
+				rv := reflect.ValueOf(value)
+				switch rv.Kind() {
+				case reflect.String:
+					p := sprops.OneofTypes["string_value"]
+					nv := reflect.New(p.Type.Elem())
+					nv.Elem().Field(0).SetString(rv.String())
+					target.Field(p.Field).Set(nv)
+				case reflect.Float64:
+					p := sprops.OneofTypes["number_value"]
+					nv := reflect.New(p.Type.Elem())
+					nv.Elem().Field(0).SetFloat(rv.Float())
+					target.Field(p.Field).Set(nv)
+				case reflect.Bool:
+					p := sprops.OneofTypes["bool_value"]
+					nv := reflect.New(p.Type.Elem())
+					nv.Elem().Field(0).SetBool(rv.Bool())
+					target.Field(p.Field).Set(nv)
+				default:
+					p := sprops.OneofTypes["null_value"]
+					nv := reflect.New(p.Type.Elem())
+					target.Field(p.Field).Set(nv)
+				}
+			}
+			return nil
 		}
 	}
 
