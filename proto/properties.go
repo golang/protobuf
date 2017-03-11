@@ -216,7 +216,7 @@ type Properties struct {
 // String formats the properties in the protobuf struct field tag style.
 func (p *Properties) String() string {
 	s := p.Wire
-	s = ","
+	s += ","
 	s += strconv.Itoa(p.Tag)
 	if p.Required {
 		s += ",req"
