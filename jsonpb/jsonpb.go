@@ -886,7 +886,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	if targetType.Kind() == reflect.Struct {
 		var jsonFields map[string]json.RawMessage
 		if err := json.Unmarshal(inputValue, &jsonFields); err != nil {
-			return err
+			return correctJsonType(err, targetType)
 		}
 
 		consumeField := func(prop *proto.Properties) (json.RawMessage, bool) {
@@ -924,7 +924,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			}
 
 			if err := u.unmarshalValue(target.Field(i), valueForField, sprops.Prop[i]); err != nil {
-				return err
+				return newFieldError(sprops.Prop[i].Name, err)
 			}
 		}
 		// Check for any oneof fields.
@@ -937,7 +937,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				nv := reflect.New(oop.Type.Elem())
 				target.Field(oop.Field).Set(nv)
 				if err := u.unmarshalValue(nv.Elem().Field(0), raw, oop.Prop); err != nil {
-					return err
+					return newFieldError(oop.Prop.Name, err)
 				}
 			}
 		}
@@ -953,22 +953,16 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 					delete(jsonFields, name)
 					nv := reflect.New(reflect.TypeOf(ext.ExtensionType).Elem())
 					if err := u.unmarshalValue(nv.Elem(), raw, nil); err != nil {
-						return err
+						return newFieldError(name, err)
 					}
 					if err := proto.SetExtension(ep, ext, nv.Interface()); err != nil {
-						return err
+						return newFieldError(name, err)
 					}
 				}
 			}
 		}
 		if !u.AllowUnknownFields && len(jsonFields) > 0 {
-			// Pick any field to be the scapegoat.
-			var f string
-			for fname := range jsonFields {
-				f = fname
-				break
-			}
-			return fmt.Errorf("unknown field %q in %v", f, targetType)
+			return getFieldMismatchError(jsonFields, sprops)
 		}
 		return nil
 	}
@@ -977,14 +971,14 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	if targetType.Kind() == reflect.Slice && targetType.Elem().Kind() != reflect.Uint8 {
 		var slc []json.RawMessage
 		if err := json.Unmarshal(inputValue, &slc); err != nil {
-			return err
+			return correctJsonType(err, targetType)
 		}
 		if slc != nil {
 			l := len(slc)
 			target.Set(reflect.MakeSlice(targetType, l, l))
 			for i := 0; i < l; i++ {
 				if err := u.unmarshalValue(target.Index(i), slc[i], prop); err != nil {
-					return err
+					return newFieldError(fmt.Sprintf("[%d]", i), err)
 				}
 			}
 		}
@@ -999,6 +993,12 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		}
 		if mp != nil {
 			target.Set(reflect.MakeMap(targetType))
+			if prop != nil {
+				// These could still be nil if the protobuf metadata is broken somehow.
+				// TODO: This won't work because the fields are unexported.
+				// We should probably just reparse them.
+				//keyprop, valprop = prop.mkeyprop, prop.mvalprop
+			}
 			for ks, raw := range mp {
 				// Unmarshal map key. The core json library already decoded the key into a
 				// string, so we handle that specially. Other types were quoted post-serialization.
@@ -1009,7 +1009,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 					k = reflect.New(targetType.Key()).Elem()
 					// TODO: pass the correct Properties if needed.
 					if err := u.unmarshalValue(k, json.RawMessage(ks), nil); err != nil {
-						return err
+						return newFieldError(fmt.Sprintf("['%s']", ks), newFieldError("key", err))
 					}
 				}
 
@@ -1017,7 +1017,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				v := reflect.New(targetType.Elem()).Elem()
 				// TODO: pass the correct Properties if needed.
 				if err := u.unmarshalValue(v, raw, nil); err != nil {
-					return err
+					return newFieldError(fmt.Sprintf("['%s']", ks), newFieldError("value", err))
 				}
 				target.SetMapIndex(k, v)
 			}

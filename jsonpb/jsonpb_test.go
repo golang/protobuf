@@ -1148,3 +1148,67 @@ func TestUnmarshalUnsetRequiredFields(t *testing.T) {
 		}
 	}
 }
+
+
+func TestUnmarshalReturnsUsefulErrors(t *testing.T) {
+	for _, entry := range []struct {
+		name          string
+		input         string
+		msg           proto.Message
+		expectedError string
+	}{
+		{
+			name:          "FindsErrorsInNested",
+			input:         `{"simple": {"oString": 3.1}}`,
+			msg:           &pb.Widget{},
+			expectedError: `unparsable field Simple.OString: json: cannot unmarshal number into Go value of type string`,
+		},
+		{
+			name:          "FindsErrorsInArrays",
+			input:         `{"rInt32": [2,5,1,"sdas",2.1]}`,
+			msg:           &pb.Repeats{},
+			expectedError: `unparsable field RInt32.[3]: json: cannot unmarshal string into Go value of type int32`,
+		},
+		{
+			name:          "FindErrorsInMapKeys",
+			input:         `{"mInt64Str": {"1": "something", "badKey": "foo"}}`,
+			msg:           &pb.Maps{},
+			expectedError: `unparsable field MInt64Str.['badKey'].key: invalid character 'b' looking for beginning of value`,
+		},
+		{
+			name:          "FindErrorsInMapValues",
+			input:         `{"mInt64Str": {"1": "something", "2": 4.2}}`,
+			msg:           &pb.Maps{},
+			expectedError: `unparsable field MInt64Str.['2'].value: json: cannot unmarshal number into Go value of type string`,
+		},
+		{
+			name:          "HandlesGoodFormattingOfInt64AsString",
+			input:         `{"oInt64": "should_be_int"}`,
+			msg:           &pb.Simple{},
+			expectedError: `unparsable field OInt64: invalid character 's' looking for beginning of value`,
+		},
+		{
+			name:          "RemapsRawMessageToRealArrayType",
+			input:         `{"rInt32": "not_an_array"}`,
+			msg:           &pb.Repeats{},
+			expectedError: `unparsable field RInt32: json: cannot unmarshal string into Go value of type []int32`,
+		},
+		{
+			name:          "UnknownFieldErrors",
+			input:         `{"simple": {"oString": "something", "unknownOne": 1, "unknownTwo": 21}}`,
+			msg:           &pb.Widget{},
+			expectedError: `unparsable field Simple: fields [unknownOne unknownTwo] do not exist in set of known fields [oBool oInt32 oInt64 oUint32 oUint64 oSint32 oSint64 oFloat oDouble oString oBytes]`,
+		},
+	} {
+		u := Unmarshaler{AllowUnknownFields: false}
+		err := u.Unmarshal(strings.NewReader(entry.input), entry.msg)
+		if err == nil {
+			t.Errorf("in %v there should have been an error", entry.name)
+			continue
+		}
+		if err.Error() != entry.expectedError {
+			t.Errorf("in %v expected error \n'%v'\n but got \n'%v'", entry.name, entry.expectedError, err)
+			continue
+		}
+	}
+}
