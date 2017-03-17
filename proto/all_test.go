@@ -141,130 +141,6 @@ func initGoTest(setdefaults bool) *GoTest {
 	return pb
 }
 
-func fail(msg string, b *bytes.Buffer, s string, t *testing.T) {
-	data := b.Bytes()
-	ld := len(data)
-	ls := len(s) / 2
-
-	fmt.Printf("fail %s ld=%d ls=%d\n", msg, ld, ls)
-
-	// find the interesting spot - n
-	n := ls
-	if ld < ls {
-		n = ld
-	}
-	j := 0
-	for i := 0; i < n; i++ {
-		bs := hex(s[j])*16 + hex(s[j+1])
-		j += 2
-		if data[i] == bs {
-			continue
-		}
-		n = i
-		break
-	}
-	l := n - 10
-	if l < 0 {
-		l = 0
-	}
-	h := n + 10
-
-	// find the interesting spot - n
-	fmt.Printf("is[%d]:", l)
-	for i := l; i < h; i++ {
-		if i >= ld {
-			fmt.Printf(" --")
-			continue
-		}
-		fmt.Printf(" %.2x", data[i])
-	}
-	fmt.Printf("\n")
-
-	fmt.Printf("sb[%d]:", l)
-	for i := l; i < h; i++ {
-		if i >= ls {
-			fmt.Printf(" --")
-			continue
-		}
-		bs := hex(s[j])*16 + hex(s[j+1])
-		j += 2
-		fmt.Printf(" %.2x", bs)
-	}
-	fmt.Printf("\n")
-
-	t.Fail()
-
-	//	t.Errorf("%s: \ngood: %s\nbad: %x", msg, s, b.Bytes())
-	// Print the output in a partially-decoded format; can
-	// be helpful when updating the test.  It produces the output
-	// that is pasted, with minor edits, into the argument to verify().
-	//	data := b.Bytes()
-	//	nesting := 0
-	//	for b.Len() > 0 {
-	//		start := len(data) - b.Len()
-	//		var u uint64
-	//		u, err := DecodeVarint(b)
-	//		if err != nil {
-	//			fmt.Printf("decode error on varint:", err)
-	//			return
-	//		}
-	//		wire := u & 0x7
-	//		tag := u >> 3
-	//		switch wire {
-	//		case WireVarint:
-	//			v, err := DecodeVarint(b)
-	//			if err != nil {
-	//				fmt.Printf("decode error on varint:", err)
-	//				return
-	//			}
-	//			fmt.Printf("\t\t\"%x\"  // field %d, encoding %d, value %d\n",
-	//				data[start:len(data)-b.Len()], tag, wire, v)
-	//		case WireFixed32:
-	//			v, err := DecodeFixed32(b)
-	//			if err != nil {
-	//				fmt.Printf("decode error on fixed32:", err)
-	//				return
-	//			}
-	//			fmt.Printf("\t\t\"%x\"  // field %d, encoding %d, value %d\n",
-	//				data[start:len(data)-b.Len()], tag, wire, v)
-	//		case WireFixed64:
-	//			v, err := DecodeFixed64(b)
-	//			if err != nil {
-	//				fmt.Printf("decode error on fixed64:", err)
-	//				return
-	//			}
-	//			fmt.Printf("\t\t\"%x\"  // field %d, encoding %d, value %d\n",
-	//				data[start:len(data)-b.Len()], tag, wire, v)
-	//		case WireBytes:
-	//			nb, err := DecodeVarint(b)
-	//			if err != nil {
-	//				fmt.Printf("decode error on bytes:", err)
-	//				return
-	//			}
-	//			after_tag := len(data) - b.Len()
-	//			str := make([]byte, nb)
-	//			_, err = b.Read(str)
-	//			if err != nil {
-	//				fmt.Printf("decode error on bytes:", err)
-	//				return
-	//			}
-	//			fmt.Printf("\t\t\"%x\" \"%x\"  // field %d, encoding %d (FIELD)\n",
-	//				data[start:after_tag], str, tag, wire)
-	//		case WireStartGroup:
-	//			nesting++
-	//			fmt.Printf("\t\t\"%x\"\t\t// start group field %d level %d\n",
-	//				data[start:len(data)-b.Len()], tag, nesting)
-	//		case WireEndGroup:
-	//			fmt.Printf("\t\t\"%x\"\t\t// end group field %d level %d\n",
-	//				data[start:len(data)-b.Len()], tag, nesting)
-	//			nesting--
-	//		default:
-	//			fmt.Printf("unrecognized wire type %d\n", wire)
-	//			return
-	//		}
-	//	}
-}
-
 func hex(c uint8) uint8 {
 	if '0' <= c && c <= '9' {
 		return c - '0'
@@ -1430,18 +1306,7 @@ func (*NNIMessage) Reset()         {}
 func (*NNIMessage) String() string { return "" }
 func (*NNIMessage) ProtoMessage()  {}
 
-// A type that implements the Marshaler interface and is nillable.
-type nillableMessage struct {
-	x uint64
-}
-
-func (nm *nillableMessage) Marshal() ([]byte, error) {
-	return EncodeVarint(nm.x), nil
-}
-
-type NMMessage struct {
-	nm *nillableMessage
-}
+type NMMessage struct {}
 
 func (*NMMessage) Reset()         {}
 func (*NMMessage) String() string { return "" }
@@ -2086,7 +1951,7 @@ func TestMapFieldRoundTrips(t *testing.T) {
 			8: "Dave",
 		},
 		MsgMapping: map[int64]*FloatingPoint{
-			0x7001: &FloatingPoint{F: Float64(2.0)},
+			0x7001: {F: Float64(2.0)},
 		},
 		ByteMapping: map[bool][]byte{
 			false: []byte("that's not right!"),
@@ -2131,7 +1996,7 @@ func TestMapFieldWithNil(t *testing.T) {
 func TestMapFieldWithNilBytes(t *testing.T) {
 	m1 := &MessageWithMap{
 		ByteMapping: map[bool][]byte{
-			false: []byte{},
+			false: {},
 			true:  nil,
 		},
 	}
