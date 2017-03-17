@@ -184,11 +184,9 @@ func (di *discardInfo) computeDiscardInfo() {
 				di := getDiscardInfo(tf)
 				dfi.discard = func(src pointer) {
 					sps := src.getPointerSlice()
-					if sps != nil {
-						for _, sp := range sps {
-							if !sp.isNil() {
-								di.discard(sp)
-							}
+					for _, sp := range sps {
+						if !sp.isNil() {
+							di.discard(sp)
 						}
 					}
 				}

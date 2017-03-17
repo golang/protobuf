@@ -400,7 +400,7 @@ func TestRequiredBit(t *testing.T) {
 	err := o.Marshal(pb)
 	if err == nil {
 		t.Error("did not catch missing required fields")
-	} else if strings.Index(err.Error(), "Kind") < 0 {
+	} else if !strings.Contains(err.Error(), "Kind") {
 		t.Error("wrong error type:", err)
 	}
 }
@@ -1087,13 +1087,10 @@ func TestBigRepeated(t *testing.T) {
 		if pbd.Repeatedgroup[i] == nil { // TODO: more checking?
 			t.Error("pbd.Repeatedgroup bad")
 		}
-		var x uint64
-		x = uint64(pbd.F_Sint64Repeated[i])
-		if x != i {
+		if x := uint64(pbd.F_Sint64Repeated[i]); x != i {
 			t.Error("pbd.F_Sint64Repeated bad", x, i)
 		}
-		x = uint64(pbd.F_Sint32Repeated[i])
-		if x != i {
+		if x := uint64(pbd.F_Sint32Repeated[i]); x != i {
 			t.Error("pbd.F_Sint32Repeated bad", x, i)
 		}
 		s := fmt.Sprint(i)
@@ -1101,39 +1098,31 @@ func TestBigRepeated(t *testing.T) {
 		if pbd.F_StringRepeated[i] != s {
 			t.Error("pbd.F_Sint32Repeated bad", pbd.F_StringRepeated[i], i)
 		}
-		x = uint64(pbd.F_DoubleRepeated[i])
-		if x != i {
+		if x := uint64(pbd.F_DoubleRepeated[i]); x != i {
 			t.Error("pbd.F_DoubleRepeated bad", x, i)
 		}
-		x = uint64(pbd.F_FloatRepeated[i])
-		if x != i {
+		if x := uint64(pbd.F_FloatRepeated[i]); x != i {
 			t.Error("pbd.F_FloatRepeated bad", x, i)
 		}
-		x = pbd.F_Uint64Repeated[i]
-		if x != i {
+		if x := pbd.F_Uint64Repeated[i]; x != i {
 			t.Error("pbd.F_Uint64Repeated bad", x, i)
 		}
-		x = uint64(pbd.F_Uint32Repeated[i])
-		if x != i {
+		if x := uint64(pbd.F_Uint32Repeated[i]); x != i {
 			t.Error("pbd.F_Uint32Repeated bad", x, i)
 		}
-		x = pbd.F_Fixed64Repeated[i]
-		if x != i {
+		if x := pbd.F_Fixed64Repeated[i]; x != i {
 			t.Error("pbd.F_Fixed64Repeated bad", x, i)
 		}
-		x = uint64(pbd.F_Fixed32Repeated[i])
-		if x != i {
+		if x := uint64(pbd.F_Fixed32Repeated[i]); x != i {
 			t.Error("pbd.F_Fixed32Repeated bad", x, i)
 		}
-		x = uint64(pbd.F_Int64Repeated[i])
-		if x != i {
+		if x := uint64(pbd.F_Int64Repeated[i]); x != i {
 			t.Error("pbd.F_Int64Repeated bad", x, i)
 		}
-		x = uint64(pbd.F_Int32Repeated[i])
-		if x != i {
+		if x := uint64(pbd.F_Int32Repeated[i]); x != i {
 			t.Error("pbd.F_Int32Repeated bad", x, i)
 		}
-		if pbd.F_BoolRepeated[i] != (i%2 == 0) {
+		if x := pbd.F_BoolRepeated[i]; x != (i%2 == 0) {
 			t.Error("pbd.F_BoolRepeated bad", x, i)
 		}
 		if pbd.RepeatedField[i] == nil { // TODO: more checking?
@@ -1833,7 +1822,7 @@ func TestRequiredNotSetError(t *testing.T) {
 		o.DebugPrint("", bytes)
 		t.Fatalf("expected = %s", expected)
 	}
-	if strings.Index(err.Error(), "RequiredField.Label") < 0 {
+	if !strings.Contains(err.Error(), "RequiredField.Label") {
 		t.Errorf("marshal-1 wrong err msg: %v", err)
 	}
 	if !equal(bytes, expected, t) {
@@ -1849,7 +1838,7 @@ func TestRequiredNotSetError(t *testing.T) {
 		o.DebugPrint("", bytes)
 		t.Fatalf("string = %s", expected)
 	}
-	if strings.Index(err.Error(), "RequiredField.Label") < 0 && strings.Index(err.Error(), "RequiredField.{Unknown}") < 0 {
+	if !strings.Contains(err.Error(), "RequiredField.Label") && !strings.Contains(err.Error(), "RequiredField.{Unknown}") {
 		t.Errorf("unmarshal wrong err msg: %v", err)
 	}
 	bytes, err = Marshal(pbd)
@@ -1858,7 +1847,7 @@ func TestRequiredNotSetError(t *testing.T) {
 		o.DebugPrint("", bytes)
 		t.Fatalf("string = %s", expected)
 	}
-	if strings.Index(err.Error(), "RequiredField.Label") < 0 {
+	if !strings.Contains(err.Error(), "RequiredField.Label") {
 		t.Errorf("marshal-2 wrong err msg: %v", err)
 	}
 	if !equal(bytes, expected, t) {

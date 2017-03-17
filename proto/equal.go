@@ -146,11 +146,7 @@ func equalStruct(v1, v2 reflect.Value) bool {
 
 	u1 := uf.Bytes()
 	u2 := v2.FieldByName("XXX_unrecognized").Bytes()
-	if !bytes.Equal(u1, u2) {
-		return false
-	}
-
-	return true
+	return bytes.Equal(u1, u2)
 }
 
 // v1 and v2 are known to have the same type.
