@@ -354,7 +354,7 @@ extend DefaultsMessage {
   optional sfixed32 default_sfixed32 = 211 [default = 50];
   optional sfixed64 default_sfixed64 = 212 [default = 51];
   optional bool default_bool = 213 [default = true];
-  optional string default_string = 214 [default = "Hello, string"];
+  optional string default_string = 214 [default = "Hello, string,def=foo"];
   optional bytes default_bytes = 215 [default = "Hello, bytes"];
   optional DefaultsMessage.DefaultsEnum default_enum = 216 [default = ONE];
 }

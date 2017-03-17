@@ -1775,9 +1775,9 @@ func (g *Generator) GoType(message *Descriptor, field *descriptor.FieldDescripto
 }
 
 func (g *Generator) RecordTypeUse(t string) {
-	if obj, ok := g.typeNameToObject[t]; ok {
+	if _, ok := g.typeNameToObject[t]; ok {
 		// Call ObjectNamed to get the true object to record the use.
-		obj = g.ObjectNamed(t)
+		obj := g.ObjectNamed(t)
 		g.usedPackages[obj.PackageName()] = true
 	}
 }

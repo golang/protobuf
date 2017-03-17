@@ -156,7 +156,7 @@ type Properties struct {
 // String formats the properties in the protobuf struct field tag style.
 func (p *Properties) String() string {
 	s := p.Wire
-	s = ","
+	s += ","
 	s += strconv.Itoa(p.Tag)
 	if p.Required {
 		s += ",req"
@@ -224,6 +224,7 @@ func (p *Properties) Parse(s string) {
 		return
 	}
 
+outer:
 	for i := 2; i < len(fields); i++ {
 		f := fields[i]
 		switch {
@@ -251,7 +252,7 @@ func (p *Properties) Parse(s string) {
 			if i+1 < len(fields) {
 				// Commas aren't escaped, and def is always last.
 				p.Default += "," + strings.Join(fields[i+1:], ",")
-				break
+				break outer
 			}
 		}
 	}
