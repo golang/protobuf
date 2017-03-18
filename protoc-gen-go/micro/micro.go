@@ -76,9 +76,6 @@ func (g *micro) Generate(file *generator.FileDescriptor) {
 	g.P("var _ ", serverPkg, ".Option")
 	g.P()
 
-	g.generatePublisher()
-	g.generateSubscriber()
-
 	for i, service := range file.FileDescriptorProto.Service {
 		g.generateService(file, service, i)
 	}
@@ -103,52 +100,6 @@ var reservedClientName = map[string]bool{
 }
 
 func unexport(s string) string { return strings.ToLower(s[:1]) + s[1:] }
-
-// generatePublisher generates the publisher interface
-func (g *micro) generatePublisher() {
-	g.P("// Publisher API")
-	g.P()
-
-	// publisher interface
-	g.P("type Publisher interface {")
-	g.P("Publish(ctx ", contextPkg, ".Context, msg interface{}, opts ...", clientPkg, ".PublishOption) error")
-	g.P("}")
-	g.P()
-
-	// publisher type
-	g.P("type publisher struct {")
-	g.P("c ", clientPkg, ".Client")
-	g.P("topic string")
-	g.P("}")
-	g.P()
-
-	// publisher method
-	g.P("func (p *publisher) Publish(ctx ", contextPkg, ".Context, msg interface{}, opts ...", clientPkg, ".PublishOption) error {")
-	g.P("return p.c.Publish(ctx, p.c.NewPublication(p.topic, msg), opts...)")
-	g.P("}")
-	g.P()
-
-	// publisher func
-	g.P("func NewPublisher(topic string, c ", clientPkg, ".Client) Publisher {")
-	g.P("if c == nil {")
-	g.P("c = ", clientPkg, ".NewClient()")
-	g.P("}")
-	g.P("return &publisher{c, topic}")
-	g.P("}")
-	g.P()
-}
-
-// generateSubscriber generates the subscriber interface
-func (g *micro) generateSubscriber() {
-	g.P("// Subscriber API")
-	g.P()
-
-	// subscriber func
-	g.P("func RegisterSubscriber(topic string, s ", serverPkg, ".Server, h interface{}, opts ...", serverPkg, ".SubscriberOption) error {")
-	g.P("return s.Subscribe(s.NewSubscriber(topic, h, opts...))")
-	g.P("}")
-	g.P()
-}
 
 // generateService generates all the code for the named service.
 func (g *micro) generateService(file *generator.FileDescriptor, service *pb.ServiceDescriptorProto, index int) {
