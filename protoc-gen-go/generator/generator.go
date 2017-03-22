@@ -1747,6 +1747,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	oneofTypeName := make(map[*descriptor.FieldDescriptorProto]string) // without star
 	oneofInsertPoints := make(map[int32]int)                           // oneof_index => offset of g.Buffer
 
+	messageIsBsonCompatible := g.IsMessageBsonCompatible(message)
+	messageIsBsonUpsertable := g.IsMessageBsonUpsertable(message)
+
 	g.PrintComments(message.path)
 	g.P("type ", ccTypeName, " struct {")
 	g.In()
@@ -1783,7 +1786,22 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		fieldName, fieldGetterName := ns[0], ns[1]
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
+
+		bsonTag := ""
+		bsonOverride := g.GetBsonTagForField(message, i)
+		if bsonOverride != "" {
+			bsonTag = bsonOverride
+		} else if messageIsBsonCompatible || messageIsBsonUpsertable {
+			bsonTag = LowerCamelCase(*field.Name)
+			if messageIsBsonUpsertable {
+				bsonTag += ",omitempty"
+			}
+		}
+
 		tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(message, field, wiretype), jsonName+",omitempty")
+		if bsonTag != "" {
+			tag += fmt.Sprintf(" bson:%q", bsonTag)
+		}
 
 		fieldNames[field] = fieldName
 		fieldGetterNames[field] = fieldGetterName
@@ -2497,6 +2515,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.P()
 	}
 
+	// Injections
+	g.P(g.GetGoInjectForMessage(message))
+
 	for _, ext := range message.ext {
 		g.generateExtension(ext)
 	}
@@ -2663,6 +2684,19 @@ func isASCIILower(c byte) bool {
 // Is c an ASCII digit?
 func isASCIIDigit(c byte) bool {
 	return '0' <= c && c <= '9'
+}
+
+func LowerCamelCase(s string) string {
+	if s == "" {
+		return ""
+	}
+
+	r := []byte(CamelCase(s))
+	// It can be assumed that the first character here is upper-case, convert it
+	// lower-case.
+	r[0] = r[0] | ('a' - 'A')
+
+	return string(r)
 }
 
 // CamelCase returns the CamelCased name.
