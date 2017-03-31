@@ -390,6 +390,24 @@ var marshalingTests = []struct {
 			"two": &stpb.Value{Kind: &stpb.Value_NullValue{stpb.NullValue_NULL_VALUE}},
 		},
 	}}, `{"st":{"one":"loneliest number","two":null}}`},
+	{"Struct with all known value types", marshaler, &pb.KnownTypes{St: &stpb.Struct{
+		Fields: map[string]*stpb.Value{
+			"null":   &stpb.Value{Kind: &stpb.Value_NullValue{stpb.NullValue_NULL_VALUE}},
+			"bool":   &stpb.Value{Kind: &stpb.Value_BoolValue{true}},
+			"number": &stpb.Value{Kind: &stpb.Value_NumberValue{1234}},
+			"string": &stpb.Value{Kind: &stpb.Value_StringValue{"string-value"}},
+			"list": &stpb.Value{Kind: &stpb.Value_ListValue{&stpb.ListValue{[]*stpb.Value{
+				&stpb.Value{Kind: &stpb.Value_StringValue{"string"}},
+				&stpb.Value{Kind: &stpb.Value_NumberValue{12345}},
+				&stpb.Value{Kind: &stpb.Value_NullValue{stpb.NullValue_NULL_VALUE}},
+			}}}},
+			"struct": &stpb.Value{Kind: &stpb.Value_StructValue{&stpb.Struct{
+				map[string]*stpb.Value{
+					"string": &stpb.Value{Kind: &stpb.Value_StringValue{"string-value"}},
+				},
+			}}},
+		},
+	}}, `{"st":{"bool":true,"list":["string",12345,null],"null":null,"number":1234,"string":"string-value","struct":{"string":"string-value"}}}`},
 	{"Timestamp", marshaler, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 14e8, Nanos: 21e6}}, `{"ts":"2014-05-13T16:53:20.021Z"}`},
 
 	{"DoubleValue", marshaler, &pb.KnownTypes{Dbl: &wpb.DoubleValue{Value: 1.2}}, `{"dbl":1.2}`},
@@ -468,6 +486,30 @@ var unmarshalingTests = []struct {
 
 	{"Duration", Unmarshaler{}, `{"dur":"3.000s"}`, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}},
 	{"null Duration", Unmarshaler{}, `{"dur":null}`, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 0}}},
+	{"Struct", Unmarshaler{}, `{"st":{"one":"loneliest number","two":null}}`, &pb.KnownTypes{St: &stpb.Struct{
+		Fields: map[string]*stpb.Value{
+			"one": &stpb.Value{Kind: &stpb.Value_StringValue{"loneliest number"}},
+			"two": &stpb.Value{Kind: &stpb.Value_NullValue{stpb.NullValue_NULL_VALUE}},
+		},
+	}}},
+	{"Struct with all known value types", Unmarshaler{}, `{"st":{"bool":true,"list":["string",12345,null],"null":null,"number":1234,"string":"string-value","struct":{"string":"string-value"}}}`, &pb.KnownTypes{St: &stpb.Struct{
+		Fields: map[string]*stpb.Value{
+			"null":   &stpb.Value{Kind: &stpb.Value_NullValue{stpb.NullValue_NULL_VALUE}},
+			"bool":   &stpb.Value{Kind: &stpb.Value_BoolValue{true}},
+			"number": &stpb.Value{Kind: &stpb.Value_NumberValue{1234}},
+			"string": &stpb.Value{Kind: &stpb.Value_StringValue{"string-value"}},
+			"list": &stpb.Value{Kind: &stpb.Value_ListValue{&stpb.ListValue{[]*stpb.Value{
+				&stpb.Value{Kind: &stpb.Value_StringValue{"string"}},
+				&stpb.Value{Kind: &stpb.Value_NumberValue{12345}},
+				&stpb.Value{Kind: &stpb.Value_NullValue{stpb.NullValue_NULL_VALUE}},
+			}}}},
+			"struct": &stpb.Value{Kind: &stpb.Value_StructValue{&stpb.Struct{
+				map[string]*stpb.Value{
+					"string": &stpb.Value{Kind: &stpb.Value_StringValue{"string-value"}},
+				},
+			}}},
+		},
+	}}},
 	{"Timestamp", Unmarshaler{}, `{"ts":"2014-05-13T16:53:20.021Z"}`, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 14e8, Nanos: 21e6}}},
 	{"PreEpochTimestamp", Unmarshaler{}, `{"ts":"1969-12-31T23:59:58.999999995Z"}`, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: -2, Nanos: 999999995}}},
 	{"ZeroTimeTimestamp", Unmarshaler{}, `{"ts":"0001-01-01T00:00:00Z"}`, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: -62135596800, Nanos: 0}}},
