@@ -154,6 +154,10 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			x := kind.Elem().Elem().Field(0)
 			// TODO: pass the correct Properties if needed.
 			return m.marshalValue(out, &proto.Properties{}, x, indent)
+		case "ListValue":
+			// Let marshalValue handle the `values` slice.
+			// TODO: pass the correct Properties if needed.
+			return m.marshalValue(out, &proto.Properties{}, s.Field(0), indent)
 		}
 	}
 
