@@ -51,6 +51,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+	structpb "github.com/golang/protobuf/ptypes/struct"
 )
 
 // Marshaler is a configurable object for converting between
@@ -154,6 +155,10 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			x := kind.Elem().Elem().Field(0)
 			// TODO: pass the correct Properties if needed.
 			return m.marshalValue(out, &proto.Properties{}, x, indent)
+		case "ListValue":
+			// ListValue has a single field for values
+			values := s.Field(0)
+			return m.marshalValue(out, &proto.Properties{}, values, indent)
 		}
 	}
 
@@ -558,6 +563,61 @@ func UnmarshalString(str string, pb proto.Message) error {
 	return new(Unmarshaler).Unmarshal(strings.NewReader(str), pb)
 }
 
+func (u *Unmarshaler) parseAsValueHelper(
+	target reflect.Value,
+	parsedJson interface{},
+	prop *proto.Properties) error {
+
+	kind := target.Elem().Field(0)
+	if parsedJson == nil {
+		kind.Set(reflect.ValueOf(&structpb.Value_NullValue{}))
+		return nil
+	}
+	switch t := parsedJson.(type) {
+	case float64:
+		kind.Set(reflect.ValueOf(
+			&structpb.Value_NumberValue{NumberValue: t}))
+		return nil
+	case string:
+		kind.Set(reflect.ValueOf(
+			&structpb.Value_StringValue{StringValue: t}))
+		return nil
+	case bool:
+		kind.Set(reflect.ValueOf(
+			&structpb.Value_BoolValue{BoolValue: t}))
+		return nil
+	case []interface{}:
+		values := &structpb.Value_ListValue{
+			ListValue: &structpb.ListValue{Values: make([]*structpb.Value, len(t))}}
+		for i, v := range t {
+			values.ListValue.Values[i] = &structpb.Value{}
+			err := u.parseAsValueHelper(
+				reflect.ValueOf(values.ListValue.Values[i]), v, prop)
+			if err != nil {
+				return err
+			}
+		}
+		kind.Set(reflect.ValueOf(values))
+		return nil
+	case map[string]interface{}:
+		return fmt.Errorf("unmarshaling Struct not supported yet")
+	}
+	return fmt.Errorf("Unsupported JSON type")
+}
+
+func (u *Unmarshaler) parseAsValue(
+	target reflect.Value,
+	inputValue json.RawMessage,
+	prop *proto.Properties) error {
+
+	// This implementation may deserialize the same string multiple times
+	var unmarshaledValue interface{}
+	if err := json.Unmarshal(inputValue, &unmarshaledValue); err != nil {
+		return err
+	}
+	return u.parseAsValueHelper(target, unmarshaledValue, prop)
+}
+
 // unmarshalValue converts/copies a value into the target.
 // prop may be nil.
 func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMessage, prop *proto.Properties) error {
@@ -624,6 +684,15 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			}
 			target.Field(0).SetInt(int64(t.Unix()))
 			target.Field(1).SetInt(int64(t.Nanosecond()))
+			return nil
+		case "Value":
+			return u.parseAsValue(target.Addr(), inputValue, prop)
+		case "ListValue":
+			wrapper := structpb.Value{}
+			if err := u.parseAsValue(reflect.ValueOf(&wrapper), inputValue, prop); err != nil {
+				return err
+			}
+			target.Set(reflect.ValueOf(*wrapper.GetListValue()))
 			return nil
 		}
 	}

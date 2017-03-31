@@ -36,7 +36,7 @@ package testdata
 import (
 	"testing"
 
-	mytestpb "./my_test"
+	mytestpb "github.com/golang/protobuf/protoc-gen-go/testdata/my_test"
 	multipb "github.com/golang/protobuf/protoc-gen-go/testdata/multi"
 )
 
