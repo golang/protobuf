@@ -204,8 +204,12 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 				if value.Float() == 0 {
 					continue
 				}
-			case reflect.String:
+			case reflect.String, reflect.Slice, reflect.Array:
 				if value.Len() == 0 {
+					continue
+				}
+			case reflect.Map:
+				if len(value.MapKeys()) == 0 {
 					continue
 				}
 			}
