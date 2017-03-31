@@ -44,6 +44,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"reflect"
 	"sort"
 	"strconv"
@@ -51,6 +52,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes/struct"
 )
 
 // Marshaler is a configurable object for converting between
@@ -126,6 +128,8 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			out.write(x)
 			out.write(`s"`)
 			return out.err
+		case "ListValue":
+			return m.marshalValue(out, &proto.Properties{}, s.Field(0), indent)
 		case "Struct":
 			// Let marshalValue handle the `fields` map.
 			// TODO: pass the correct Properties if needed.
@@ -371,7 +375,6 @@ func (m *Marshaler) marshalField(out *errWriter, prop *proto.Properties, v refle
 
 // marshalValue writes the value to the Writer.
 func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v reflect.Value, indent string) error {
-
 	var err error
 	v = reflect.Indirect(v)
 
@@ -494,6 +497,19 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 		return out.err
 	}
 
+	if v.Kind() == reflect.Float64 || v.Kind() == reflect.Float32 {
+		if math.IsNaN(v.Float()) {
+			out.write(`"NaN"`)
+			return out.err
+		} else if math.IsInf(v.Float(), 1) {
+			out.write(`"Infinity"`)
+			return out.err
+		} else if math.IsInf(v.Float(), -1) {
+			out.write(`"-Infinity"`)
+			return out.err
+		}
+	}
+
 	// Default handling defers to the encoding/json library.
 	b, err := json.Marshal(v.Interface())
 	if err != nil {
@@ -582,6 +598,83 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			// encoding/json will turn JSON `null` into Go `nil`,
 			// so we don't have to do any extra work.
 			return u.unmarshalValue(target.Field(0), inputValue, prop)
+		case "ListValue":
+			var jsonValues []json.RawMessage
+			if err := json.Unmarshal(inputValue, &jsonValues); err != nil {
+				return err
+			}
+
+			listValue := target.Field(0)
+			listValue.Set(reflect.MakeSlice(listValue.Type(), len(jsonValues), len(jsonValues)))
+
+			for i, v := range jsonValues {
+				if err := u.unmarshalValue(listValue.Index(i), v, prop); err != nil {
+					return err
+				}
+			}
+			return nil
+		case "Value":
+			var jsonValue interface{}
+			if err := json.Unmarshal(inputValue, &jsonValue); err != nil {
+				return err
+			}
+			var val interface{}
+
+			switch v := jsonValue.(type) {
+			case nil:
+				val = &structpb.Value_NullValue{}
+			case bool:
+				val = &structpb.Value_BoolValue{
+					BoolValue: v,
+				}
+			case string:
+				val = &structpb.Value_StringValue{
+					StringValue: v,
+				}
+			case float64:
+				val = &structpb.Value_NumberValue{
+					NumberValue: v,
+				}
+			case map[string]interface{}:
+				structValue := reflect.ValueOf(&structpb.Struct{}).Elem()
+				u.unmarshalValue(structValue, inputValue, prop)
+
+				val = &structpb.Value_StructValue{
+					StructValue: structValue.Addr().Interface().(*structpb.Struct),
+				}
+
+			case []interface{}:
+				listValue := reflect.ValueOf(&structpb.ListValue{}).Elem()
+				u.unmarshalValue(listValue, inputValue, prop)
+
+				val = &structpb.Value_ListValue{
+					ListValue: listValue.Addr().Interface().(*structpb.ListValue),
+				}
+			default:
+				return fmt.Errorf("Invalid struct field type: %T", jsonValue)
+			}
+
+			target.Field(0).Set(reflect.ValueOf(val))
+			return nil
+		case "Struct":
+			var jsonFields map[string]json.RawMessage
+			if err := json.Unmarshal(inputValue, &jsonFields); err != nil {
+				return err
+			}
+
+			target.Field(0).Set(reflect.MakeMap(target.Field(0).Type()))
+
+			for k, rawMessage := range jsonFields {
+				v := reflect.ValueOf(&structpb.Value{}).Elem()
+
+				if err := u.unmarshalValue(v, rawMessage, &proto.Properties{}); err != nil {
+					return err
+				}
+
+				target.Field(0).SetMapIndex(reflect.ValueOf(k), v.Addr())
+			}
+
+			return nil
 		case "Any":
 			return fmt.Errorf("unmarshaling Any not supported yet")
 		case "Duration":
@@ -773,11 +866,71 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		return nil
 	}
 
-	// 64-bit integers can be encoded as strings. In this case we drop
+	// Integers can be encoded as strings. In this case we drop
 	// the quotes and proceed as normal.
-	isNum := targetType.Kind() == reflect.Int64 || targetType.Kind() == reflect.Uint64
-	if isNum && strings.HasPrefix(string(inputValue), `"`) {
+	isInt := targetType.Kind() == reflect.Int64 || targetType.Kind() == reflect.Uint64 || target.Kind() == reflect.Int32 || target.Kind() == reflect.Uint32
+	if isInt && strings.HasPrefix(string(inputValue), `"`) {
 		inputValue = inputValue[1 : len(inputValue)-1]
+	}
+
+	// Floats have additional possible string values, Infinity, -Infinity, NaN -- handle those.
+	isFloat := targetType.Kind() == reflect.Float64 || targetType.Kind() == reflect.Float32
+	if isFloat && strings.HasPrefix(string(inputValue), `"`) {
+		reflectValueNaNFloat := map[reflect.Kind]reflect.Value{
+			reflect.Float32: reflect.ValueOf(float32(math.NaN())),
+			reflect.Float64: reflect.ValueOf(float64(math.NaN())),
+		}
+
+		reflectValuePosInfinityFloat := map[reflect.Kind]reflect.Value{
+			reflect.Float32: reflect.ValueOf(float32(math.Inf(1))),
+			reflect.Float64: reflect.ValueOf(float64(math.Inf(1))),
+		}
+
+		reflectValueNegInfinityFloat := map[reflect.Kind]reflect.Value{
+			reflect.Float32: reflect.ValueOf(float32(math.Inf(-1))),
+			reflect.Float64: reflect.ValueOf(float64(math.Inf(-1))),
+		}
+
+		switch string(inputValue) {
+		case `"NaN"`:
+			target.Set(reflectValueNaNFloat[targetType.Kind()])
+			return nil
+
+		case `"Infinity"`:
+			target.Set(reflectValuePosInfinityFloat[targetType.Kind()])
+			return nil
+
+		case `"-Infinity"`:
+			target.Set(reflectValueNegInfinityFloat[targetType.Kind()])
+			return nil
+
+		default:
+			inputValue = inputValue[1 : len(inputValue)-1]
+		}
+	}
+
+	if isInt || isFloat {
+		var tmp float64
+		if err := json.Unmarshal(inputValue, &tmp); err != nil {
+			return err
+		}
+
+		if isInt && math.Floor(tmp) != tmp {
+			return errors.New("bad int: Has decimal.")
+		}
+
+		if targetType.Kind() == reflect.Int32 {
+			if tmp > math.MaxInt32 || tmp < math.MinInt32 {
+				return errors.New("bad int32: Out of bounds.")
+			}
+		} else if targetType.Kind() == reflect.Uint32 {
+			if tmp > math.MaxUint32 || tmp < 0 {
+				return errors.New("bad uint32: Out of bounds.")
+			}
+		}
+
+		target.Set(reflect.ValueOf(tmp).Convert(targetType))
+		return nil
 	}
 
 	// Use the encoding/json for parsing other value types.
