@@ -558,6 +558,38 @@ func UnmarshalString(str string, pb proto.Message) error {
 	return new(Unmarshaler).Unmarshal(strings.NewReader(str), pb)
 }
 
+// unmarshalAny unmarshals a json-encoded Any.
+// It re-encodes the json-encoded Any into a binary proto, which users of the Any structure
+// expect to find in the Any Value field.
+func (u *Unmarshaler) unmarshalAny(typeUrl reflect.Value, value reflect.Value, inputValue json.RawMessage, prop *proto.Properties) error {
+	var a struct {
+		TypeUrl string `json:"@type"`
+	}
+	if err := json.Unmarshal([]byte(inputValue), &a); err != nil {
+		return err
+	}
+	typeUrl.SetString(a.TypeUrl)
+
+	slash := strings.LastIndex(a.TypeUrl, "/")
+	mname := a.TypeUrl[slash+1:]
+
+	mt := proto.MessageType(mname)
+	if mt == nil {
+		return fmt.Errorf("unknown message type %q", mname)
+	}
+
+	msg := reflect.New(mt.Elem()).Interface().(proto.Message)
+	if err := (&Unmarshaler{AllowUnknownFields: true}).Unmarshal(bytes.NewReader(inputValue), msg); err != nil {
+		return err
+	}
+	b, err := proto.Marshal(msg)
+	if err != nil {
+		return err
+	}
+	value.SetBytes(b)
+	return nil
+}
+
 // unmarshalValue converts/copies a value into the target.
 // prop may be nil.
 func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMessage, prop *proto.Properties) error {
@@ -583,7 +615,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			// so we don't have to do any extra work.
 			return u.unmarshalValue(target.Field(0), inputValue, prop)
 		case "Any":
-			return fmt.Errorf("unmarshaling Any not supported yet")
+			return u.unmarshalAny(target.Field(0), target.Field(1), inputValue, prop)
 		case "Duration":
 			ivStr := string(inputValue)
 			if ivStr == "null" {
