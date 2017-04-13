@@ -484,6 +484,7 @@ var unmarshalingTests = []struct {
 	{"BytesValue", Unmarshaler{}, `{"bytes":"d293"}`, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}},
 	// `null` is also a permissible value. Let's just test one.
 	{"null DoubleValue", Unmarshaler{}, `{"dbl":null}`, &pb.KnownTypes{Dbl: &wpb.DoubleValue{}}},
+	{"Any with message", Unmarshaler{}, anySimpleJSON, anySimple},
 }
 
 func TestUnmarshaling(t *testing.T) {
