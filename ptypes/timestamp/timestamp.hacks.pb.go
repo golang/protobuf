@@ -335,3 +335,6 @@ func skipTimestamp(dAtA []byte) (n int, err error) {
 func (this *Timestamp) LogFields() map[string]string {
 	return map[string]string{}
 }
+
+func (this *Timestamp) ExtractRequestFields(dst map[string]interface{}) {
+}
