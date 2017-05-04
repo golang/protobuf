@@ -120,17 +120,18 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 
 	if i >= len(buf) {
 		return 0, io.ErrUnexpectedEOF
-	} else if buf[i] < 0x80 {
+	}
+	b := uint64(buf[i])
+	if b < 0x80 {
 		p.index++
-		return uint64(buf[i]), nil
-	} else if len(buf)-i < 10 {
+		return b, nil
+	}
+	if len(buf)-i < 10 {
 		return p.decodeVarintSlow()
 	}
 
-	var b uint64
-
 	// we already checked the first byte
-	x = uint64(buf[i]) - 0x80
+	x = b - 0x80
 	i++
 
 	b = uint64(buf[i])
