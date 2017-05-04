@@ -85,7 +85,7 @@ func BenchmarkDecodeSmallVarint(b *testing.B) {
 	for i := 0; i < 128; i++ {
 		input.EncodeVarint(uint64(i))
 	}
-	buf := proto.NewBuffer(input.Bytes())
+	buf := protobuf3.NewBuffer(input.Bytes())
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		v, err := buf.DecodeVarint()
@@ -95,7 +95,7 @@ func BenchmarkDecodeSmallVarint(b *testing.B) {
 		}
 		if v == 127 {
 			// note: we could use buf.Rewind(), but that wouldn't be fair since proto package doesn't have such a method
-			buf = proto.NewBuffer(input.Bytes())
+			buf = protobuf3.NewBuffer(input.Bytes())
 		}
 	}
 }
