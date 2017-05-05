@@ -111,9 +111,8 @@ func (p *Buffer) decodeVarintSlow() (x uint64, err error) {
 }
 
 // DecodeVarint reads a varint-encoded integer from the Buffer.
-// This is the format for the
-// int32, int64, uint32, uint64, bool, and enum
-// protocol buffer types.
+// This is the format for the int32, int64, uint32, uint64, bool,
+// and enum protocol buffer types, as well as the tags.
 func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	i := p.index
 	buf := p.buf
@@ -225,14 +224,15 @@ func (p *Buffer) DecodeFixed64() (x uint64, err error) {
 	}
 	p.index = i
 
-	x = uint64(p.buf[i-8])
-	x |= uint64(p.buf[i-7]) << 8
-	x |= uint64(p.buf[i-6]) << 16
-	x |= uint64(p.buf[i-5]) << 24
-	x |= uint64(p.buf[i-4]) << 32
-	x |= uint64(p.buf[i-3]) << 40
-	x |= uint64(p.buf[i-2]) << 48
-	x |= uint64(p.buf[i-1]) << 56
+	buf := p.buf[i-8 : i]
+	x = uint64(buf[7]) << 56
+	x |= uint64(buf[0])
+	x |= uint64(buf[1]) << 8
+	x |= uint64(buf[2]) << 16
+	x |= uint64(buf[3]) << 24
+	x |= uint64(buf[4]) << 32
+	x |= uint64(buf[5]) << 40
+	x |= uint64(buf[6]) << 48
 	return
 }
 
@@ -248,10 +248,11 @@ func (p *Buffer) DecodeFixed32() (x uint64, err error) {
 	}
 	p.index = i
 
-	x = uint64(p.buf[i-4])
-	x |= uint64(p.buf[i-3]) << 8
-	x |= uint64(p.buf[i-2]) << 16
-	x |= uint64(p.buf[i-1]) << 24
+	buf := p.buf[i-4 : i]
+	x = uint64(buf[3]) << 24
+	x |= uint64(buf[0])
+	x |= uint64(buf[1]) << 8
+	x |= uint64(buf[2]) << 16
 	return
 }
 
