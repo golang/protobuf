@@ -65,10 +65,7 @@ var errOverflow = errors.New("protobuf3: integer overflow")
 // protocol buffer types.
 func DecodeVarint(buf []byte) (x uint64, n int) {
 	// x, n already 0
-	for shift := uint(0); shift < 64; shift += 7 {
-		if n >= len(buf) {
-			return 0, 0
-		}
+	for shift := uint(0); shift < 64 && n < len(buf); shift += 7 {
 		b := uint64(buf[n])
 		n++
 		x |= (b & 0x7F) << shift
@@ -77,7 +74,7 @@ func DecodeVarint(buf []byte) (x uint64, n int) {
 		}
 	}
 
-	// The number is too large to represent in a 64-bit value.
+	// The number is truncated in some way
 	return 0, 0
 }
 
@@ -116,91 +113,103 @@ func (p *Buffer) decodeVarintSlow() (x uint64, err error) {
 func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	i := p.index
 	buf := p.buf
+	var b uint64
 
 	if i >= len(buf) {
 		return 0, io.ErrUnexpectedEOF
 	}
-	b := uint64(buf[i])
-	if b < 0x80 {
-		p.index++
-		return b, nil
+
+	// most varints are 1 byte (because they are the protobuf tag, and most of those are 1 byte)
+	// so it pays to have a special case for those
+	x = uint64(buf[i])
+	i++
+	if x < 0x80 {
+		goto done
 	}
-	if len(buf)-i < 10 {
+
+	// the longest varint we'll successfully decode is 9 bytes. so if there are more than 9 bytes
+	// of buffer left we can decode it with fewer bounds checks
+	if len(buf)-i < 9 {
+		// there are fewer than 8 bytes left; use the slower, bounds-checking code
 		return p.decodeVarintSlow()
 	}
 
-	// we already checked the first byte
-	x = b - 0x80
-	i++
+	x -= 0x80
+
+	// note: the only way I've found to get go 1.8.1 to do bounds-check-elimination is to use constant indexes, which
+	// means paying the cost of slicing buf (which is two bounds checks). That, however, ends up costing more, and
+	// especially it impacts the performance of the most important 1 and 2-byte cases. So instead we leave the bounds
+	// checks and index by `i`
+	//_ = buf[i+8] // doesn't help (makes the code slower) in go 1.8.1
 
 	b = uint64(buf[i])
 	i++
-	x += b << 7
-	if b&0x80 == 0 {
+	x |= b << 7
+	if b < 0x80 {
 		goto done
 	}
 	x -= 0x80 << 7
 
 	b = uint64(buf[i])
 	i++
-	x += b << 14
-	if b&0x80 == 0 {
+	x |= b << 14
+	if b < 0x80 {
 		goto done
 	}
 	x -= 0x80 << 14
 
 	b = uint64(buf[i])
 	i++
-	x += b << 21
-	if b&0x80 == 0 {
+	x |= b << 21
+	if b < 0x80 {
 		goto done
 	}
 	x -= 0x80 << 21
 
 	b = uint64(buf[i])
 	i++
-	x += b << 28
-	if b&0x80 == 0 {
+	x |= b << 28
+	if b < 0x80 {
 		goto done
 	}
 	x -= 0x80 << 28
 
 	b = uint64(buf[i])
 	i++
-	x += b << 35
-	if b&0x80 == 0 {
+	x |= b << 35
+	if b < 0x80 {
 		goto done
 	}
 	x -= 0x80 << 35
 
 	b = uint64(buf[i])
 	i++
-	x += b << 42
-	if b&0x80 == 0 {
+	x |= b << 42
+	if b < 0x80 {
 		goto done
 	}
 	x -= 0x80 << 42
 
 	b = uint64(buf[i])
 	i++
-	x += b << 49
-	if b&0x80 == 0 {
+	x |= b << 49
+	if b < 0x80 {
 		goto done
 	}
 	x -= 0x80 << 49
 
 	b = uint64(buf[i])
 	i++
-	x += b << 56
-	if b&0x80 == 0 {
+	x |= b << 56
+	if b < 0x80 {
 		goto done
 	}
 	x -= 0x80 << 56
 
 	b = uint64(buf[i])
 	i++
-	x += b << 63
-	if b&0x80 == 0 {
+	x |= b << 63
+	if b < 0x80 {
 		goto done
 	}
 	// x -= 0x80 << 63 // Always zero.
