@@ -85,6 +85,7 @@ func BenchmarkDecodeSmallVarint(b *testing.B) {
 	for i := 0; i < 128; i++ {
 		input.EncodeVarint(uint64(i))
 	}
+	input.EncodeStringBytes("1234567890") // 10-byte string so we don't get near the end of the buffer and invoke the slow path
 	buf := protobuf3.NewBuffer(input.Bytes())
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -105,6 +106,7 @@ func BenchmarkOldDecodeSmallVarint(b *testing.B) {
 	for i := 0; i < 128; i++ {
 		input.EncodeVarint(uint64(i))
 	}
+	input.EncodeStringBytes("1234567890") // 10-byte string so we don't get near the end of the buffer and invoke the slow path
 	buf := proto.NewBuffer(input.Bytes())
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -124,6 +126,7 @@ func BenchmarkDecode2ByteVarint(b *testing.B) {
 	for i := 128; i < 128*128; i++ {
 		input.EncodeVarint(uint64(i))
 	}
+	input.EncodeStringBytes("1234567890") // 10-byte string so we don't get near the end of the buffer and invoke the slow path
 	buf := protobuf3.NewBuffer(input.Bytes())
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -144,6 +147,7 @@ func BenchmarkOldDecode2ByteVarint(b *testing.B) {
 	for i := 128; i < 128*128; i++ {
 		input.EncodeVarint(uint64(i))
 	}
+	input.EncodeStringBytes("1234567890") // 10-byte string so we don't get near the end of the buffer and invoke the slow path
 	buf := proto.NewBuffer(input.Bytes())
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -163,6 +167,7 @@ func BenchmarkDecode3ByteVarint(b *testing.B) {
 	for i := 128 * 128; i < 128*128+1000; i++ {
 		input.EncodeVarint(uint64(i))
 	}
+	input.EncodeStringBytes("1234567890") // 10-byte string so we don't get near the end of the buffer and invoke the slow path
 	buf := protobuf3.NewBuffer(input.Bytes())
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -183,6 +188,7 @@ func BenchmarkOldDecode3ByteVarint(b *testing.B) {
 	for i := 128 * 128; i < 128*128+1000; i++ {
 		input.EncodeVarint(uint64(i))
 	}
+	input.EncodeStringBytes("1234567890") // 10-byte string so we don't get near the end of the buffer and invoke the slow path
 	buf := proto.NewBuffer(input.Bytes())
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -203,6 +209,7 @@ func BenchmarkDecode9ByteVarint(b *testing.B) {
 	for i := start; i < start+1000; i++ {
 		input.EncodeVarint(uint64(i))
 	}
+	input.EncodeStringBytes("1234567890") // 10-byte string so we don't get near the end of the buffer and invoke the slow path
 	buf := protobuf3.NewBuffer(input.Bytes())
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -224,6 +231,7 @@ func BenchmarkOldDecode9ByteVarint(b *testing.B) {
 	for i := start; i < start+1000; i++ {
 		input.EncodeVarint(uint64(i))
 	}
+	input.EncodeStringBytes("1234567890") // 10-byte string so we don't get near the end of the buffer and invoke the slow path
 	buf := proto.NewBuffer(input.Bytes())
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
