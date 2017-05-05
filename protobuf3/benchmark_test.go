@@ -119,6 +119,125 @@ func BenchmarkOldDecodeSmallVarint(b *testing.B) {
 	}
 }
 
+func BenchmarkDecode2ByteVarint(b *testing.B) {
+	input := protobuf3.NewBuffer(nil)
+	for i := 128; i < 128*128; i++ {
+		input.EncodeVarint(uint64(i))
+	}
+	buf := protobuf3.NewBuffer(input.Bytes())
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v, err := buf.DecodeVarint()
+		if err != nil {
+			b.Fatal(err)
+			return
+		}
+		if v == 128*128-1 {
+			// note: we could use buf.Rewind(), but that wouldn't be fair since proto package doesn't have such a method
+			buf = protobuf3.NewBuffer(input.Bytes())
+		}
+	}
+}
+
+func BenchmarkOldDecode2ByteVarint(b *testing.B) {
+	input := proto.NewBuffer(nil)
+	for i := 128; i < 128*128; i++ {
+		input.EncodeVarint(uint64(i))
+	}
+	buf := proto.NewBuffer(input.Bytes())
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v, err := buf.DecodeVarint()
+		if err != nil {
+			b.Fatal(err)
+			return
+		}
+		if v == 128*128-1 {
+			buf = proto.NewBuffer(input.Bytes())
+		}
+	}
+}
+
+func BenchmarkDecode3ByteVarint(b *testing.B) {
+	input := protobuf3.NewBuffer(nil)
+	for i := 128 * 128; i < 128*128+1000; i++ {
+		input.EncodeVarint(uint64(i))
+	}
+	buf := protobuf3.NewBuffer(input.Bytes())
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v, err := buf.DecodeVarint()
+		if err != nil {
+			b.Fatal(err)
+			return
+		}
+		if v == 128*128+1000-1 {
+			// note: we could use buf.Rewind(), but that wouldn't be fair since proto package doesn't have such a method
+			buf = protobuf3.NewBuffer(input.Bytes())
+		}
+	}
+}
+
+func BenchmarkOldDecode3ByteVarint(b *testing.B) {
+	input := proto.NewBuffer(nil)
+	for i := 128 * 128; i < 128*128+1000; i++ {
+		input.EncodeVarint(uint64(i))
+	}
+	buf := proto.NewBuffer(input.Bytes())
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v, err := buf.DecodeVarint()
+		if err != nil {
+			b.Fatal(err)
+			return
+		}
+		if v == 128*128+1000-1 {
+			buf = proto.NewBuffer(input.Bytes())
+		}
+	}
+}
+
+func BenchmarkDecode9ByteVarint(b *testing.B) {
+	const start = 128 * 128 * 128 * 128 * 128 * 128 * 128 * 128
+	input := protobuf3.NewBuffer(nil)
+	for i := start; i < start+1000; i++ {
+		input.EncodeVarint(uint64(i))
+	}
+	buf := protobuf3.NewBuffer(input.Bytes())
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v, err := buf.DecodeVarint()
+		if err != nil {
+			b.Fatal(err)
+			return
+		}
+		if v == start+1000-1 {
+			// note: we could use buf.Rewind(), but that wouldn't be fair since proto package doesn't have such a method
+			buf = protobuf3.NewBuffer(input.Bytes())
+		}
+	}
+}
+
+func BenchmarkOldDecode9ByteVarint(b *testing.B) {
+	const start = 128 * 128 * 128 * 128 * 128 * 128 * 128 * 128
+	input := proto.NewBuffer(nil)
+	for i := start; i < start+1000; i++ {
+		input.EncodeVarint(uint64(i))
+	}
+	buf := proto.NewBuffer(input.Bytes())
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v, err := buf.DecodeVarint()
+		if err != nil {
+			b.Fatal(err)
+			return
+		}
+		if v == start+1000-1 {
+			buf = proto.NewBuffer(input.Bytes())
+		}
+	}
+}
+
 func BenchmarkMarshalFixedMsg(b *testing.B) {
 	i32 := int32(-10)
 	u32 := uint32(11)
