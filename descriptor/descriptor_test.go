@@ -20,6 +20,20 @@ func TestMessage(t *testing.T) {
 	}
 }
 
+func TestEnum(t *testing.T) {
+	var enum *protobuf.FieldDescriptorProto_Type
+	fd, ed := descriptor.ForEnum(enum)
+	if pkg, want := fd.GetPackage(), "google.protobuf"; pkg != want {
+		t.Errorf("descriptor.ForEnum(%T).GetPackage() = %q; want %q", enum, pkg, want)
+	}
+	if name, want := ed.GetName(), "Type"; name != want {
+		t.Errorf("descriptor.ForEnum(%T).GetName() = %q; want %q", enum, name, want)
+	}
+	if value, want := ed.GetValue()[0].GetName(), "TYPE_DOUBLE"; value != want {
+		t.Errorf("descriptor.ForEnum(%T).GetValue()[0].GetName() = %v; want %v", enum, value, want)
+	}
+}
+
 func Example_Options() {
 	var msg *tpb.MyMessageSet
 	_, md := descriptor.ForMessage(msg)
@@ -29,4 +43,15 @@ func Example_Options() {
 
 	// Output:
 	// MyMessageSet uses option message_set_wire_format.
+}
+
+func Example_EnumOptions() {
+	var enum *tpb.EnumAllowingAlias_NUMBER
+	_, ed := descriptor.ForEnum(enum)
+	if ed.GetOptions().GetAllowAlias() {
+		fmt.Printf("%v uses option allow_alias.\n", ed.GetName())
+	}
+
+	// Output:
+	// NUMBER uses option allow_alias.
 }

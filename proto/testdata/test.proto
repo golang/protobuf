@@ -546,3 +546,14 @@ message Communique {
     Strings msg = 10;
   }
 }
+
+message EnumAllowingAlias {
+  enum NUMBER {
+    option allow_alias = true;
+    ONE = 1;
+    ALSO_ONE = 1;
+    NOT_ONE = 2;
+  }
+
+  required NUMBER number = 1;
+}
