@@ -562,16 +562,17 @@ type Generator struct {
 
 	Pkg map[string]string // The names under which we import support packages
 
-	packageName      string                     // What we're calling ourselves.
-	allFiles         []*FileDescriptor          // All files in the tree
-	allFilesByName   map[string]*FileDescriptor // All files by filename.
-	genFiles         []*FileDescriptor          // Those files we will generate output for.
-	file             *FileDescriptor            // The file we are compiling now.
-	usedPackages     map[string]bool            // Names of packages used in current file.
-	typeNameToObject map[string]Object          // Key is a fully-qualified name in input syntax.
-	init             []string                   // Lines to emit in the init function.
-	indent           string
-	writeOutput      bool
+	packageName            string                     // What we're calling ourselves.
+	allFiles               []*FileDescriptor          // All files in the tree
+	allFilesByName         map[string]*FileDescriptor // All files by filename.
+	genFiles               []*FileDescriptor          // Those files we will generate output for.
+	file                   *FileDescriptor            // The file we are compiling now.
+	usedPackages           map[string]bool            // Names of packages used in current file.
+	typeNameToObject       map[string]Object          // Key is a fully-qualified name in input syntax.
+	init                   []string                   // Lines to emit in the init function.
+	indent                 string
+	writeOutput            bool
+	disablePackageComments bool
 }
 
 // New creates a new generator and allocates the request and response protobufs.
@@ -620,6 +621,12 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			g.PackageImportPath = v
 		case "plugins":
 			pluginList = v
+		case "package_comments":
+			packageComments, err := strconv.ParseBool(v)
+			if err != nil {
+				g.Error(err, "expected bool for package_comments")
+			}
+			g.disablePackageComments = !packageComments
 		default:
 			if len(k) > 0 && k[0] == 'M' {
 				g.ImportMap[k[1:]] = v
@@ -1244,7 +1251,7 @@ func (g *Generator) generateHeader() {
 
 	name := g.file.PackageName()
 
-	if g.file.index == 0 {
+	if g.file.index == 0 && !g.disablePackageComments {
 		// Generate package docs for the first file in the package.
 		g.P("/*")
 		g.P("Package ", name, " is a generated protocol buffer package.")
