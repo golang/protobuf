@@ -49,6 +49,9 @@
 package main
 
 import (
+	"encoding/base64"
+	"flag"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -56,7 +59,23 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/generator"
 )
 
+var (
+	versionBase64 = "dmVyc2lvbi1ub3Qtc2V0" // version-not-set
+	version, _    = base64.StdEncoding.DecodeString(versionBase64)
+)
+
+var (
+	versionShort = flag.Bool("v", false, "Show version details (same as --version).")
+	versionLong  = flag.Bool("version", false, "Show version details (same as -v).")
+)
+
 func main() {
+	flag.Parse()
+	if *versionShort || *versionLong {
+		fmt.Printf("%v: %v\n", os.Args[0], string(version))
+		os.Exit(0)
+	}
+
 	// Begin by allocating a generator. The request and response structures are stored there
 	// so we can do error handling easily - the response structure contains the field to
 	// report failure.
