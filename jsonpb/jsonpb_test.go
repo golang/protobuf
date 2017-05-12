@@ -635,3 +635,41 @@ func TestUnmarshalingBadInput(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkSimpleMarshalPB(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_, err := marshaler.MarshalToString(simpleObject)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+func BenchmarkSimpleMarshalJSON(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_, err := json.Marshal(simpleObject)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+func BenchmarkSimpleUnmarshalPB(b *testing.B) {
+	var so pb.Simple
+	for n := 0; n < b.N; n++ {
+		err := Unmarshal(strings.NewReader(simpleObjectJSON), &so)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+func BenchmarkSimpleUnmarshalJSON(b *testing.B) {
+	var so pb.Simple
+	payload := []byte(simpleObjectJSON)
+	for n := 0; n < b.N; n++ {
+		err := json.Unmarshal(payload, &so)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
