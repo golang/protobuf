@@ -354,6 +354,18 @@ func Bool(v bool) *bool {
 	return &v
 }
 
+// False is a helper routine that allocates a new bool value
+// of false and returns a pointer to it.
+func False() *bool {
+	return Bool(false)
+}
+
+// True is a helper routine that allocates a new bool value
+// of true and returns a pointer to it.
+func True() *bool {
+	return Bool(true)
+}
+
 // Int32 is a helper routine that allocates a new int32 value
 // to store v and returns a pointer to it.
 func Int32(v int32) *int32 {
