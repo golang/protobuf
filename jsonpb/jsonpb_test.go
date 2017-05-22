@@ -350,6 +350,8 @@ var marshalingTests = []struct {
 		`{"rFunny":[1,2]}`},
 	{"empty value", marshaler, &pb.Simple3{}, `{}`},
 	{"empty value emitted", Marshaler{EmitDefaults: true}, &pb.Simple3{}, `{"dub":0}`},
+	{"empty map<int64, int32>", marshaler, &pb.Mappy{Nummy: map[int64]int32{}}, `{}`},
+	{"empty repeated int32", marshaler, &pb.Repeats{RInt32: []int32{}}, `{}`},
 	{"map<int64, int32>", marshaler, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, `{"nummy":{"1":2,"3":4}}`},
 	{"map<int64, int32>", marshalerAllOptions, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, nummyPrettyJSON},
 	{"map<string, string>", marshaler,
