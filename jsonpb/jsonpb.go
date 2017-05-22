@@ -553,9 +553,6 @@ func (u *Unmarshaler) UnmarshalNext(dec *json.Decoder, pb proto.Message) error {
 	if err := dec.Decode(&inputValue); err != nil {
 		return err
 	}
-	if jsu, ok := pb.(JSONPBUnmarshaler); ok {
-		return jsu.UnmarshalJSONPB(u, []byte(inputValue))
-	}
 	return u.unmarshalValue(reflect.ValueOf(pb).Elem(), inputValue, nil)
 }
 
@@ -597,6 +594,10 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	if targetType.Kind() == reflect.Ptr {
 		target.Set(reflect.New(targetType.Elem()))
 		return u.unmarshalValue(target.Elem(), inputValue, prop)
+	}
+
+	if jsu, ok := target.Addr().Interface().(JSONPBUnmarshaler); ok {
+		return jsu.UnmarshalJSONPB(u, []byte(inputValue))
 	}
 
 	// Handle well-known types.
