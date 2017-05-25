@@ -350,6 +350,9 @@ var marshalingTests = []struct {
 		`{"rFunny":[1,2]}`},
 	{"empty value", marshaler, &pb.Simple3{}, `{}`},
 	{"empty value emitted", Marshaler{EmitDefaults: true}, &pb.Simple3{}, `{"dub":0}`},
+	{"empty repeated emitted", Marshaler{EmitDefaults: true}, &pb.SimpleSlice3{}, `{"slices":[]}`},
+	{"empty map emitted", Marshaler{EmitDefaults: true}, &pb.SimpleMap3{}, `{"stringy":{}}`},
+	{"nested struct null", Marshaler{EmitDefaults: true}, &pb.SimpleNull3{}, `{"simple":null}`},
 	{"map<int64, int32>", marshaler, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, `{"nummy":{"1":2,"3":4}}`},
 	{"map<int64, int32>", marshalerAllOptions, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, nummyPrettyJSON},
 	{"map<string, string>", marshaler,
@@ -436,6 +439,18 @@ func TestMarshaling(t *testing.T) {
 		} else if tt.json != json {
 			t.Errorf("%s: got [%v] want [%v]", tt.desc, json, tt.json)
 		}
+	}
+}
+
+func TestMarshalingWithJSONPBMarshaler(t *testing.T) {
+	rawJson := `{ "foo": "bar", "baz": [0, 1, 2, 3] }`
+	msg := dynamicMessage{rawJson: rawJson}
+	str, err := new(Marshaler).MarshalToString(&msg)
+	if err != nil {
+		t.Errorf("an unexpected error occurred when marshalling JSONPBMarshaler: %v", err)
+	}
+	if str != rawJson {
+		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, rawJson)
 	}
 }
 
@@ -634,4 +649,42 @@ func TestUnmarshalingBadInput(t *testing.T) {
 			t.Errorf("an error was expected when parsing %q instead of an object", tt.desc)
 		}
 	}
+}
+
+func TestUnmarshalWithJSONPBUnmarshaler(t *testing.T) {
+	rawJson := `{ "foo": "bar", "baz": [0, 1, 2, 3] }`
+	var msg dynamicMessage
+	err := Unmarshal(strings.NewReader(rawJson), &msg)
+	if err != nil {
+		t.Errorf("an unexpected error occurred when parsing into JSONPBUnmarshaler: %v", err)
+	}
+	if msg.rawJson != rawJson {
+		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", msg.rawJson, rawJson)
+	}
+}
+
+// dynamicMessage implements protobuf.Message but is not a normal generated message type.
+// It provides implementations of JSONPBMarshaler and JSONPBUnmarshaler for JSON support.
+type dynamicMessage struct {
+	rawJson string
+}
+
+func (m *dynamicMessage) Reset() {
+	m.rawJson = "{}"
+}
+
+func (m *dynamicMessage) String() string {
+	return m.rawJson
+}
+
+func (m *dynamicMessage) ProtoMessage() {
+}
+
+func (m *dynamicMessage) MarshalJSONPB(jm *Marshaler) ([]byte, error) {
+	return []byte(m.rawJson), nil
+}
+
+func (m *dynamicMessage) UnmarshalJSONPB(jum *Unmarshaler, json []byte) error {
+	m.rawJson = string(json)
+	return nil
 }

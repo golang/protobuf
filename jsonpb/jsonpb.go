@@ -74,6 +74,22 @@ type Marshaler struct {
 	OrigName bool
 }
 
+// JSONPBMarshaler is implemented by protobuf messages that customize the
+// way they are marshaled to JSON. Messages that implement this should
+// also implement JSONPBUnmarshaler so that the custom format can be
+// parsed.
+type JSONPBMarshaler interface {
+	MarshalJSONPB(*Marshaler) ([]byte, error)
+}
+
+// JSONPBUnmarshaler is implemented by protobuf messages that customize
+// the way they are unmarshaled from JSON. Messages that implement this
+// should also implement JSONPBMarshaler so that the custom format can be
+// produced.
+type JSONPBUnmarshaler interface {
+	UnmarshalJSONPB(*Unmarshaler, []byte) error
+}
+
 // Marshal marshals a protocol buffer into JSON.
 func (m *Marshaler) Marshal(out io.Writer, pb proto.Message) error {
 	writer := &errWriter{writer: out}
@@ -102,6 +118,15 @@ type wkt interface {
 
 // marshalObject writes a struct to the Writer.
 func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeURL string) error {
+	if jsm, ok := v.(JSONPBMarshaler); ok {
+		b, err := jsm.MarshalJSONPB(m)
+		if err != nil {
+			return err
+		}
+		out.write(string(b))
+		return out.err
+	}
+
 	s := reflect.ValueOf(v).Elem()
 
 	// Handle well-known types.
@@ -182,7 +207,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 
 		// IsNil will panic on most value kinds.
 		switch value.Kind() {
-		case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
+		case reflect.Chan, reflect.Func, reflect.Interface:
 			if value.IsNil() {
 				continue
 			}
@@ -208,6 +233,10 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 				}
 			case reflect.String:
 				if value.Len() == 0 {
+					continue
+				}
+			case reflect.Map, reflect.Ptr, reflect.Slice:
+				if value.IsNil() {
 					continue
 				}
 			}
@@ -376,6 +405,12 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 
 	var err error
 	v = reflect.Indirect(v)
+
+	// Handle nil pointer
+	if v.Kind() == reflect.Invalid {
+		out.write("null")
+		return out.err
+	}
 
 	// Handle repeated elements.
 	if v.Kind() == reflect.Slice && v.Type().Elem().Kind() != reflect.Uint8 {
@@ -569,6 +604,10 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	if targetType.Kind() == reflect.Ptr {
 		target.Set(reflect.New(targetType.Elem()))
 		return u.unmarshalValue(target.Elem(), inputValue, prop)
+	}
+
+	if jsu, ok := target.Addr().Interface().(JSONPBUnmarshaler); ok {
+		return jsu.UnmarshalJSONPB(u, []byte(inputValue))
 	}
 
 	// Handle well-known types.
