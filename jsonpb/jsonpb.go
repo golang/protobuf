@@ -531,7 +531,7 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 		return out.err
 	}
 
-	// Handle special cases for float, double.
+	// Handle non-finite floats, e.g. NaN, Infinity and -Infinity.
 	if v.Kind() == reflect.Float32 || v.Kind() == reflect.Float64 {
 		f := v.Float()
 		var sval string

@@ -15,7 +15,7 @@ It has these top-level messages:
 	SimpleNull3
 	Mappy
 	Simple
-	Specials
+	NonFinites
 	Repeats
 	Widget
 	Maps

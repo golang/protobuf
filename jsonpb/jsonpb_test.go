@@ -309,15 +309,21 @@ var (
   }
 }`
 
-	specials = &pb.Specials{
-		ONan:  proto.Float32(float32(math.NaN())),
-		OPinf: proto.Float32(float32(math.Inf(1))),
-		ONinf: proto.Float32(float32(math.Inf(-1))),
+	nonFinites = &pb.NonFinites{
+		FNan:  proto.Float32(float32(math.NaN())),
+		FPinf: proto.Float32(float32(math.Inf(1))),
+		FNinf: proto.Float32(float32(math.Inf(-1))),
+		DNan:  proto.Float64(float64(math.NaN())),
+		DPinf: proto.Float64(float64(math.Inf(1))),
+		DNinf: proto.Float64(float64(math.Inf(-1))),
 	}
-	specialsJSON = `{` +
-		`"oNan":"NaN",` +
-		`"oPinf":"Infinity",` +
-		`"oNinf":"-Infinity"` +
+	nonFinitesJSON = `{` +
+		`"fNan":"NaN",` +
+		`"fPinf":"Infinity",` +
+		`"fNinf":"-Infinity",` +
+		`"dNan":"NaN",` +
+		`"dPinf":"Infinity",` +
+		`"dNinf":"-Infinity"` +
 		`}`
 )
 
@@ -338,7 +344,7 @@ var marshalingTests = []struct {
 }{
 	{"simple flat object", marshaler, simpleObject, simpleObjectJSON},
 	{"simple pretty object", marshalerAllOptions, simpleObject, simpleObjectPrettyJSON},
-	{"special fields object", marshaler, specials, specialsJSON},
+	{"non-finite floats fields object", marshaler, nonFinites, nonFinitesJSON},
 	{"repeated fields flat object", marshaler, repeatsObject, repeatsObjectJSON},
 	{"repeated fields pretty object", marshalerAllOptions, repeatsObject, repeatsObjectPrettyJSON},
 	{"nested message/enum flat object", marshaler, complexObject, complexObjectJSON},
