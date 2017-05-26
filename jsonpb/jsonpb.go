@@ -624,7 +624,10 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			// so we don't have to do any extra work.
 			return u.unmarshalValue(target.Field(0), inputValue, prop)
 		case "Any":
-			var jsonFields map[string]json.RawMessage
+			// Use json.RawMessage pointer type instead of value to support pre-1.8 version.
+			// 1.8 changed RawMessage.MarshalJSON from pointer type to value type, see
+			// https://github.com/golang/go/issues/14493
+			var jsonFields map[string]*json.RawMessage
 			if err := json.Unmarshal(inputValue, &jsonFields); err != nil {
 				return err
 			}
@@ -635,7 +638,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			}
 
 			var turl string
-			if err := json.Unmarshal([]byte(val), &turl); err != nil {
+			if err := json.Unmarshal([]byte(*val), &turl); err != nil {
 				return fmt.Errorf("can't unmarshal Any's '@type': %q", val)
 			}
 			target.Field(0).SetString(turl)
@@ -656,7 +659,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 					return errors.New("Any JSON doesn't have 'value'")
 				}
 
-				if err := u.unmarshalValue(reflect.ValueOf(m).Elem(), val, nil); err != nil {
+				if err := u.unmarshalValue(reflect.ValueOf(m).Elem(), *val, nil); err != nil {
 					return fmt.Errorf("can't unmarshal Any's WKT: %v", err)
 				}
 			} else {
