@@ -77,7 +77,12 @@ type Marshaler struct {
 // JSONPBMarshaler is implemented by protobuf messages that customize the
 // way they are marshaled to JSON. Messages that implement this should
 // also implement JSONPBUnmarshaler so that the custom format can be
-// parsed.
+// parsed. If this method produces JSON other than an object (for example,
+// produces an encoded JSON string), the type must also implement another
+// method:
+//    XXX_CustomJSON() bool
+// If this method is implemented and returns true when invoked, then the
+// message is allowed to marshal itself to JSON types other than objects.
 type JSONPBMarshaler interface {
 	MarshalJSONPB(*Marshaler) ([]byte, error)
 }
@@ -85,7 +90,13 @@ type JSONPBMarshaler interface {
 // JSONPBUnmarshaler is implemented by protobuf messages that customize
 // the way they are unmarshaled from JSON. Messages that implement this
 // should also implement JSONPBMarshaler so that the custom format can be
-// produced.
+// produced. If this method expects to unmarshal itself from JSON other
+// than an object (for example, unmarshals from an encoded string), the
+// type must also implement another method:
+//    XXX_CustomJSON() bool
+// If this method is implemented and returns true when invoked, then the
+// message is allowed to unmarshal itself from JSON types other than
+// objects.
 type JSONPBUnmarshaler interface {
 	UnmarshalJSONPB(*Unmarshaler, []byte) error
 }
@@ -116,6 +127,14 @@ type wkt interface {
 	XXX_WellKnownType() string
 }
 
+// customJSON can be implemented by messages that have custom non-object JSON
+// representations. If the message implements this method and the method
+// returns true, the JSON representation will not be an object (for example,
+// the message marshals itself as a string).
+type customJSON interface {
+	XXX_CustomJSON() bool
+}
+
 // marshalObject writes a struct to the Writer.
 func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeURL string) error {
 	if jsm, ok := v.(JSONPBMarshaler); ok {
@@ -123,6 +142,28 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 		if err != nil {
 			return err
 		}
+		if typeURL != "" {
+			// we are marshaling this object to an Any type
+			var js interface{}
+			if err = json.Unmarshal(b, &js); err != nil {
+				return fmt.Errorf("Type %v produced invalid JSON: %v", reflect.TypeOf(v), err)
+			}
+			m, ok := js.(map[string]interface{});
+			if ok {
+				m["@type"] = typeURL
+			} else {
+				if cj, ok := v.(customJSON); !ok || !cj.XXX_CustomJSON() {
+					return fmt.Errorf("Type %v illegally produced JSON that is not an object", reflect.TypeOf(v))
+				}
+				m = map[string]interface{}{}
+				m["@type"] = typeURL
+				m["value"] = js
+			}
+			if b, err = json.Marshal(m); err != nil {
+				return err
+			}
+		}
+
 		out.write(string(b))
 		return out.err
 	}
@@ -441,9 +482,6 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 
 	// Handle well-known types.
 	// Most are handled up in marshalObject (because 99% are messages).
-	type wkt interface {
-		XXX_WellKnownType() string
-	}
 	if wkt, ok := v.Interface().(wkt); ok {
 		switch wkt.XXX_WellKnownType() {
 		case "NullValue":
@@ -611,9 +649,6 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	}
 
 	// Handle well-known types.
-	type wkt interface {
-		XXX_WellKnownType() string
-	}
 	if w, ok := target.Addr().Interface().(wkt); ok {
 		switch w.XXX_WellKnownType() {
 		case "DoubleValue", "FloatValue", "Int64Value", "UInt64Value",
@@ -633,13 +668,13 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			}
 
 			val, ok := jsonFields["@type"]
-			if !ok {
+			if !ok || val == nil {
 				return errors.New("Any JSON doesn't have '@type'")
 			}
 
 			var turl string
 			if err := json.Unmarshal([]byte(*val), &turl); err != nil {
-				return fmt.Errorf("can't unmarshal Any's '@type': %q", val)
+				return fmt.Errorf("can't unmarshal Any's '@type': %q", *val)
 			}
 			target.Field(0).SetString(turl)
 
@@ -653,14 +688,23 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			}
 
 			m := reflect.New(mt.Elem()).Interface().(proto.Message)
+			hasCustomJson := false
 			if _, ok := m.(wkt); ok {
+				hasCustomJson = true
+			} else if _, ok := m.(JSONPBUnmarshaler); ok {
+				// custom JSON unmarshallers may expect non-object JSON type
+				if cj, ok := m.(customJSON); ok && cj.XXX_CustomJSON() {
+					hasCustomJson = true
+				}
+			}
+			if hasCustomJson {
 				val, ok := jsonFields["value"]
 				if !ok {
 					return errors.New("Any JSON doesn't have 'value'")
 				}
 
 				if err := u.unmarshalValue(reflect.ValueOf(m).Elem(), *val, nil); err != nil {
-					return fmt.Errorf("can't unmarshal Any's WKT: %v", err)
+					return fmt.Errorf("can't unmarshal Any nested proto %v: %v", reflect.TypeOf(m), err)
 				}
 			} else {
 				delete(jsonFields, "@type")
@@ -670,13 +714,13 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				}
 
 				if err = u.unmarshalValue(reflect.ValueOf(m).Elem(), nestedProto, nil); err != nil {
-					return fmt.Errorf("can't unmarshal nested Any proto: %v", err)
+					return fmt.Errorf("can't unmarshal Any nested proto %v: %v", reflect.TypeOf(m), err)
 				}
 			}
 
 			b, err := proto.Marshal(m)
 			if err != nil {
-				return fmt.Errorf("can't marshal proto into Any.Value: %v", err)
+				return fmt.Errorf("can't marshal proto %v into Any.Value: %v", reflect.TypeOf(m), err)
 			}
 			target.Field(1).SetBytes(b)
 
