@@ -444,7 +444,7 @@ func TestMarshaling(t *testing.T) {
 	}
 }
 
-func TestMarshalingWithJSONPBMarshaler(t *testing.T) {
+func TestMarshalWithJSONPBMarshaler(t *testing.T) {
 	rawJson := `{ "foo": "bar", "baz": [0, 1, 2, 3] }`
 	msg := dynamicMessage{rawJson: rawJson}
 	str, err := new(Marshaler).MarshalToString(&msg)
@@ -456,7 +456,7 @@ func TestMarshalingWithJSONPBMarshaler(t *testing.T) {
 	}
 }
 
-func TestMarshalingToAnyWithJSONPBMarshaler(t *testing.T) {
+func TestMarshalToAnyWithJSONPBMarshaler(t *testing.T) {
 	msg := dynamicMessage{rawJson: `{ "foo": "bar", "baz": [0, 1, 2, 3] }`}
 	a, err := ptypes.MarshalAny(&msg)
 	if err != nil {
@@ -469,37 +469,6 @@ func TestMarshalingToAnyWithJSONPBMarshaler(t *testing.T) {
 	// after custom marshaling, it's round-tripped through JSON decoding/encoding already,
 	// so the keys are sorted, whitespace is compacted, and "@type" key has been added
 	expected := `{"@type":"type.googleapis.com/` + dynamicMessageName +`","baz":[0,1,2,3],"foo":"bar"}`
-	if str != expected {
-		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, expected)
-	}
-}
-
-func TestMarshalingToAnyWithJSONPBMarshalerCustomJSON(t *testing.T) {
-	// first try will fail because we're producing invalid JSON object
-	var msg proto.Message = &dynamicMessage{rawJson: `"fubar"`}
-	a, err := ptypes.MarshalAny(msg)
-	if err != nil {
-		t.Errorf("an unexpected error occurred when marshalling to Any: %v", err)
-	}
-	str, err := new(Marshaler).MarshalToString(a)
-	if err == nil || !strings.Contains(err.Error(), "illegally produced JSON that is not an object") {
-		t.Errorf(`expected error message "illegally produced JSON that is not an object" but instead got %v`, err)
-	}
-
-	// now we try, but with custom marshaling that allows non-object JSON type
-	msg = &dynamicMessageCustomJson{dynamicMessage{rawJson: `"fubar"`}}
-	a, err = ptypes.MarshalAny(msg)
-	if err != nil {
-		t.Errorf("an unexpected error occurred when marshalling to Any: %v", err)
-	}
-	str, err = new(Marshaler).MarshalToString(a)
-	if err != nil {
-		t.Errorf("an unexpected error occurred when marshalling Any to JSON: %v", err)
-	}
-
-	// after custom marshaling, it's round-tripped through JSON decoding/encoding already,
-	// so the keys are sorted, whitespace is compacted, and "@type" key has been added
-	expected := `{"@type":"type.googleapis.com/` + dynamicMessageCustomJsonName +`","value":"fubar"}`
 	if str != expected {
 		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, expected)
 	}
@@ -713,7 +682,7 @@ func TestUnmarshalWithJSONPBUnmarshaler(t *testing.T) {
 	}
 }
 
-func TestUnmarshalAnyWithJSONPBUnmarshaler(t *testing.T) {
+func TestUnmarshalFromAnyWithJSONPBUnmarshaler(t *testing.T) {
 	rawJson := `{ "@type": "blah.com/` + dynamicMessageName + `", "foo": "bar", "baz": [0, 1, 2, 3] }`
 	var a anypb.Any
 	if err := Unmarshal(strings.NewReader(rawJson), &a); err != nil {
@@ -732,33 +701,13 @@ func TestUnmarshalAnyWithJSONPBUnmarshaler(t *testing.T) {
 	}
 }
 
-func TestUnmarshalAnyWithJSONPBUnmarshalerCustomJSON(t *testing.T) {
-	// with custom JSON, we unmarshal contents at "value" key instead of whole JSON object
-	rawJson := `{ "@type": "blah.com/` + dynamicMessageCustomJsonName + `", "value": "fubar"}`
-	var a anypb.Any
-	if err := Unmarshal(strings.NewReader(rawJson), &a); err != nil {
-		t.Errorf("an unexpected error occurred when parsing into JSONPBUnmarshaler: %v", err)
-	}
-	var msg ptypes.DynamicAny
-	if err := ptypes.UnmarshalAny(&a, &msg); err != nil {
-		t.Errorf("an unexpected error occurred when parsing from Any type: %v", err)
-	}
-	dm := msg.Message.(*dynamicMessageCustomJson)
-	// when it gets to the custom unmarshal, it's round-tripped through JSON decoding/encoding
-	// already, so the keys are sorted, whitespace is compacted, and "@type" key has been removed
-	if dm.rawJson != `"fubar"` {
-		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", dm.rawJson, `"fubar"`)
-	}
-}
-
 const (
 	dynamicMessageName = "google.protobuf.jsonpb.testing.dynamicMessage"
 	dynamicMessageCustomJsonName = "google.protobuf.jsonpb.testing.dynamicMessageCustomJson"
 )
 func init() {
-	// we register the custom types below so that we can use them in Any types
+	// we register the custom type below so that we can use it in Any types
 	proto.RegisterType((*dynamicMessage)(nil), dynamicMessageName)
-	proto.RegisterType((*dynamicMessageCustomJson)(nil), dynamicMessageCustomJsonName)
 }
 
 // dynamicMessage implements protobuf.Message but is not a normal generated message type.
@@ -813,14 +762,4 @@ func (m *dynamicMessage) Unmarshal(b []byte) error {
 		m.rawJson = string(bb)
 	}
 	return nil
-}
-
-// dynamicMessageCustomJson is the same as dynamicMessage except it also provides
-// XXX_CustomJSON method, for marshaling to non-object JSON types.
-type dynamicMessageCustomJson struct {
-	dynamicMessage
-}
-
-func (m *dynamicMessageCustomJson) XXX_CustomJSON() bool {
-	return true
 }

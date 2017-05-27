@@ -77,12 +77,7 @@ type Marshaler struct {
 // JSONPBMarshaler is implemented by protobuf messages that customize the
 // way they are marshaled to JSON. Messages that implement this should
 // also implement JSONPBUnmarshaler so that the custom format can be
-// parsed. If this method produces JSON other than an object (for example,
-// produces an encoded JSON string), the type must also implement another
-// method:
-//    XXX_CustomJSON() bool
-// If this method is implemented and returns true when invoked, then the
-// message is allowed to marshal itself to JSON types other than objects.
+// parsed.
 type JSONPBMarshaler interface {
 	MarshalJSONPB(*Marshaler) ([]byte, error)
 }
@@ -90,13 +85,7 @@ type JSONPBMarshaler interface {
 // JSONPBUnmarshaler is implemented by protobuf messages that customize
 // the way they are unmarshaled from JSON. Messages that implement this
 // should also implement JSONPBMarshaler so that the custom format can be
-// produced. If this method expects to unmarshal itself from JSON other
-// than an object (for example, unmarshals from an encoded string), the
-// type must also implement another method:
-//    XXX_CustomJSON() bool
-// If this method is implemented and returns true when invoked, then the
-// message is allowed to unmarshal itself from JSON types other than
-// objects.
+// produced.
 type JSONPBUnmarshaler interface {
 	UnmarshalJSONPB(*Unmarshaler, []byte) error
 }
@@ -127,14 +116,6 @@ type wkt interface {
 	XXX_WellKnownType() string
 }
 
-// customJSON can be implemented by messages that have custom non-object JSON
-// representations. If the message implements this method and the method
-// returns true, the JSON representation will not be an object (for example,
-// the message marshals itself as a string).
-type customJSON interface {
-	XXX_CustomJSON() bool
-}
-
 // marshalObject writes a struct to the Writer.
 func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeURL string) error {
 	if jsm, ok := v.(JSONPBMarshaler); ok {
@@ -144,22 +125,16 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 		}
 		if typeURL != "" {
 			// we are marshaling this object to an Any type
-			var js interface{}
+			var js map[string]*json.RawMessage
 			if err = json.Unmarshal(b, &js); err != nil {
-				return fmt.Errorf("Type %v produced invalid JSON: %v", reflect.TypeOf(v), err)
+				return fmt.Errorf("type %v produced invalid JSON: %v", reflect.TypeOf(v), err)
 			}
-			m, ok := js.(map[string]interface{});
-			if ok {
-				m["@type"] = typeURL
-			} else {
-				if cj, ok := v.(customJSON); !ok || !cj.XXX_CustomJSON() {
-					return fmt.Errorf("Type %v illegally produced JSON that is not an object", reflect.TypeOf(v))
-				}
-				m = map[string]interface{}{}
-				m["@type"] = typeURL
-				m["value"] = js
+			turl, err := json.Marshal(typeURL)
+			if err != nil {
+				return fmt.Errorf("failed to marshal type URL %q to JSON: %v", typeURL, err)
 			}
-			if b, err = json.Marshal(m); err != nil {
+			js["@type"] = (*json.RawMessage)(&turl)
+			if b, err = json.Marshal(js); err != nil {
 				return err
 			}
 		}
@@ -688,16 +663,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			}
 
 			m := reflect.New(mt.Elem()).Interface().(proto.Message)
-			hasCustomJson := false
 			if _, ok := m.(wkt); ok {
-				hasCustomJson = true
-			} else if _, ok := m.(JSONPBUnmarshaler); ok {
-				// custom JSON unmarshallers may expect non-object JSON type
-				if cj, ok := m.(customJSON); ok && cj.XXX_CustomJSON() {
-					hasCustomJson = true
-				}
-			}
-			if hasCustomJson {
 				val, ok := jsonFields["value"]
 				if !ok {
 					return errors.New("Any JSON doesn't have 'value'")
