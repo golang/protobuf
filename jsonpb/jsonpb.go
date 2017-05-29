@@ -971,6 +971,20 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		inputValue = inputValue[1 : len(inputValue)-1]
 	}
 
+	// Non-finite numbers can be encoded as strings.
+	isFloat := targetType.Kind() == reflect.Float32 || targetType.Kind() == reflect.Float64
+	if isFloat {
+		nonFinite := map[string]float64{
+			`"NaN"`:       math.NaN(),
+			`"Infinity"`:  math.Inf(1),
+			`"-Infinity"`: math.Inf(-1),
+		}
+		if num, ok := nonFinite[string(inputValue)]; ok {
+			target.SetFloat(num)
+			return nil
+		}
+	}
+
 	// Use the encoding/json for parsing other value types.
 	return json.Unmarshal(inputValue, target.Addr().Interface())
 }
