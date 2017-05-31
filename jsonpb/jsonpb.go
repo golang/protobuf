@@ -127,7 +127,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			// we are marshaling this object to an Any type
 			var js map[string]*json.RawMessage
 			if err = json.Unmarshal(b, &js); err != nil {
-				return fmt.Errorf("type %v produced invalid JSON: %v", reflect.TypeOf(v), err)
+				return fmt.Errorf("type %T produced invalid JSON: %v", v, err)
 			}
 			turl, err := json.Marshal(typeURL)
 			if err != nil {
@@ -670,7 +670,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				}
 
 				if err := u.unmarshalValue(reflect.ValueOf(m).Elem(), *val, nil); err != nil {
-					return fmt.Errorf("can't unmarshal Any nested proto %v: %v", reflect.TypeOf(m), err)
+					return fmt.Errorf("can't unmarshal Any nested proto %T: %v", m, err)
 				}
 			} else {
 				delete(jsonFields, "@type")
@@ -680,13 +680,13 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				}
 
 				if err = u.unmarshalValue(reflect.ValueOf(m).Elem(), nestedProto, nil); err != nil {
-					return fmt.Errorf("can't unmarshal Any nested proto %v: %v", reflect.TypeOf(m), err)
+					return fmt.Errorf("can't unmarshal Any nested proto %T: %v", m, err)
 				}
 			}
 
 			b, err := proto.Marshal(m)
 			if err != nil {
-				return fmt.Errorf("can't marshal proto %v into Any.Value: %v", reflect.TypeOf(m), err)
+				return fmt.Errorf("can't marshal proto %T into Any.Value: %v", m, err)
 			}
 			target.Field(1).SetBytes(b)
 

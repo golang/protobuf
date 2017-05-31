@@ -34,7 +34,6 @@ package jsonpb
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"reflect"
 	"strings"
@@ -444,7 +443,7 @@ func TestMarshaling(t *testing.T) {
 	}
 }
 
-func TestMarshalWithJSONPBMarshaler(t *testing.T) {
+func TestMarshalJSONPBMarshaler(t *testing.T) {
 	rawJson := `{ "foo": "bar", "baz": [0, 1, 2, 3] }`
 	msg := dynamicMessage{rawJson: rawJson}
 	str, err := new(Marshaler).MarshalToString(&msg)
@@ -456,7 +455,7 @@ func TestMarshalWithJSONPBMarshaler(t *testing.T) {
 	}
 }
 
-func TestMarshalToAnyWithJSONPBMarshaler(t *testing.T) {
+func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
 	msg := dynamicMessage{rawJson: `{ "foo": "bar", "baz": [0, 1, 2, 3] }`}
 	a, err := ptypes.MarshalAny(&msg)
 	if err != nil {
@@ -671,7 +670,7 @@ func TestUnmarshalingBadInput(t *testing.T) {
 	}
 }
 
-func TestUnmarshalWithJSONPBUnmarshaler(t *testing.T) {
+func TestUnmarshalJSONPBUnmarshaler(t *testing.T) {
 	rawJson := `{ "foo": "bar", "baz": [0, 1, 2, 3] }`
 	var msg dynamicMessage
 	if err := Unmarshal(strings.NewReader(rawJson), &msg); err != nil {
@@ -682,28 +681,29 @@ func TestUnmarshalWithJSONPBUnmarshaler(t *testing.T) {
 	}
 }
 
-func TestUnmarshalFromAnyWithJSONPBUnmarshaler(t *testing.T) {
+func TestUnmarshalAnyJSONPBUnmarshaler(t *testing.T) {
 	rawJson := `{ "@type": "blah.com/` + dynamicMessageName + `", "foo": "bar", "baz": [0, 1, 2, 3] }`
-	var a anypb.Any
-	if err := Unmarshal(strings.NewReader(rawJson), &a); err != nil {
+	var got anypb.Any
+	if err := Unmarshal(strings.NewReader(rawJson), &got); err != nil {
 		t.Errorf("an unexpected error occurred when parsing into JSONPBUnmarshaler: %v", err)
 	}
-	var msg ptypes.DynamicAny
-	if err := ptypes.UnmarshalAny(&a, &msg); err != nil {
-		t.Errorf("an unexpected error occurred when parsing from Any type: %v", err)
+
+	dm := &dynamicMessage{rawJson: `{"baz":[0,1,2,3],"foo":"bar"}`}
+	var want anypb.Any
+	if b, err := proto.Marshal(dm); err != nil {
+		t.Errorf("an unexpected error occurred when marshaling message: %v", err)
+	} else {
+		want.TypeUrl = "blah.com/" + dynamicMessageName
+		want.Value = b
 	}
-	dm := msg.Message.(*dynamicMessage)
-	// when it gets to the custom unmarshal, it's round-tripped through JSON decoding/encoding
-	// already, so the keys are sorted, whitespace is compacted, and "@type" key has been removed
-	expected := `{"baz":[0,1,2,3],"foo":"bar"}`
-	if dm.rawJson != expected {
-		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", dm.rawJson, expected)
+
+	if !proto.Equal(&got, &want) {
+		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", got, want)
 	}
 }
 
 const (
 	dynamicMessageName = "google.protobuf.jsonpb.testing.dynamicMessage"
-	dynamicMessageCustomJsonName = "google.protobuf.jsonpb.testing.dynamicMessageCustomJson"
 )
 func init() {
 	// we register the custom type below so that we can use it in Any types
@@ -713,7 +713,7 @@ func init() {
 // dynamicMessage implements protobuf.Message but is not a normal generated message type.
 // It provides implementations of JSONPBMarshaler and JSONPBUnmarshaler for JSON support.
 type dynamicMessage struct {
-	rawJson string
+	rawJson string `protobuf:"bytes,1,opt,name=rawJson"`
 }
 
 func (m *dynamicMessage) Reset() {
@@ -733,33 +733,5 @@ func (m *dynamicMessage) MarshalJSONPB(jm *Marshaler) ([]byte, error) {
 
 func (m *dynamicMessage) UnmarshalJSONPB(jum *Unmarshaler, js []byte) error {
 	m.rawJson = string(js)
-	return nil
-}
-
-func (m *dynamicMessage) Marshal() ([]byte, error) {
-	var b proto.Buffer
-	// tag #1, wire type length-delimited
-	if err := b.EncodeVarint(uint64((1 << 3) | proto.WireBytes)); err != nil {
-		return nil, err
-	}
-	if err := b.EncodeRawBytes([]byte(m.rawJson)); err != nil {
-		return nil, err
-	}
-	return b.Bytes(), nil
-}
-
-func (m *dynamicMessage) Unmarshal(b []byte) error {
-	// really dumb unmarshalling, just for test
-	buf := proto.NewBuffer(b)
-	if tagAndWire, err := buf.DecodeVarint(); err != nil {
-		return err
-	} else if tagAndWire != uint64((1 << 3) | proto.WireBytes) {
-		return fmt.Errorf("Unknown tag/wire type: %x", tagAndWire)
-	}
-	if bb, err := buf.DecodeRawBytes(true); err != nil {
-		return err
-	} else {
-		m.rawJson = string(bb)
-	}
 	return nil
 }
