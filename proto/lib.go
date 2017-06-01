@@ -343,6 +343,23 @@ func (p *Buffer) SetBuf(s []byte) {
 // Bytes returns the contents of the Buffer.
 func (p *Buffer) Bytes() []byte { return p.buf }
 
+// EOF returns true when there is no more data to read and decode.
+func (p *Buffer) EOF() bool {
+	return p.index >= len(p.buf)
+}
+
+// ReaderIndex returns the current offset in Buffer for reading. Calls to the
+// various Decode* methods will read and decode data starting at this index in
+// the Buffer's underlying byte slice.
+func (p *Buffer) ReaderIndex() int { return p.index }
+
+// SetReaderIndex changes the current offset in Buffer for reading to the
+// given value. Subsequent calls to Decode* methods will read and decode data
+// starting at this index in the Buffer's underlying byte slice.
+func (p *Buffer) SetReaderIndex(index int) {
+	p.index = index
+}
+
 /*
  * Helper routines for simplifying the creation of optional fields of basic type.
  */
