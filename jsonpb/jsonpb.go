@@ -584,6 +584,10 @@ type Unmarshaler struct {
 	// Whether to allow messages to contain unknown fields, as opposed to
 	// failing to unmarshal.
 	AllowUnknownFields bool
+
+	// Whether or not we should try to convert json 0/1 integer bools to
+	// protobuf bools.
+	ConvertBools bool
 }
 
 // UnmarshalNext unmarshals the next protocol buffer from a JSON object stream.
@@ -981,6 +985,18 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		inputValue = inputValue[1 : len(inputValue)-1]
 	}
 
+	// If target type is bool and the value is 1 or 0, assume it was supposed to be a bool
+	if u.ConvertBools && targetType == reflect.TypeOf(true) {
+		// Use ascii values of 1 and 0 for efficiency
+		switch inputValue[0] {
+		case 49:
+			val := strconv.AppendBool([]byte{}, true)
+			return json.Unmarshal(val, target.Addr().Interface())
+		case 48:
+			val := strconv.AppendBool([]byte{}, false)
+			return json.Unmarshal(val, target.Addr().Interface())
+		}
+	}
 	// Use the encoding/json for parsing other value types.
 	return json.Unmarshal(inputValue, target.Addr().Interface())
 }
