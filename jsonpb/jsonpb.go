@@ -108,6 +108,12 @@ func (m *Marshaler) MarshalToString(pb proto.Message) (string, error) {
 
 type int32Slice []int32
 
+var nonFinite = map[string]float64{
+	`"NaN"`:       math.NaN(),
+	`"Infinity"`:  math.Inf(1),
+	`"-Infinity"`: math.Inf(-1),
+}
+
 // For sorting extensions ids to ensure stable output.
 func (s int32Slice) Len() int           { return len(s) }
 func (s int32Slice) Less(i, j int) bool { return s[i] < s[j] }
@@ -979,6 +985,15 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	isNum := targetType.Kind() == reflect.Int64 || targetType.Kind() == reflect.Uint64
 	if isNum && strings.HasPrefix(string(inputValue), `"`) {
 		inputValue = inputValue[1 : len(inputValue)-1]
+	}
+
+	// Non-finite numbers can be encoded as strings.
+	isFloat := targetType.Kind() == reflect.Float32 || targetType.Kind() == reflect.Float64
+	if isFloat {
+		if num, ok := nonFinite[string(inputValue)]; ok {
+			target.SetFloat(num)
+			return nil
+		}
 	}
 
 	// Use the encoding/json for parsing other value types.
