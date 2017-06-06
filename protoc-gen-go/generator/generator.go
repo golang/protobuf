@@ -321,15 +321,6 @@ func (d *FileDescriptor) goFileName() string {
 	}
 	name += ".pb.go"
 
-	// Does the file have a "go_package" option?
-	// If it does, it may override the filename.
-	if impPath, _, ok := d.goPackageOption(); ok && impPath != "" {
-		// Replace the existing dirname with the declared import path.
-		_, name = path.Split(name)
-		name = path.Join(impPath, name)
-		return name
-	}
-
 	return name
 }
 
@@ -1329,11 +1320,15 @@ func (g *Generator) generateImports() {
 			continue
 		}
 		filename := fd.goFileName()
-		// By default, import path is the dirname of the Go filename.
+		// By default, import path is the dirname of the Go filename. If an explicit
+		// mapping or a go_package declaration is available, use that instead.
 		importPath := path.Dir(filename)
 		if substitution, ok := g.ImportMap[s]; ok {
 			importPath = substitution
+		} else if impPath, _, ok := fd.goPackageOption(); ok && impPath != "" {
+			importPath = impPath
 		}
+
 		importPath = g.ImportPrefix + importPath
 		// Skip weak imports.
 		if g.weak(int32(i)) {
