@@ -266,7 +266,7 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 			for i := range p.Prop {
 				pp := &p.Prop[i]
 				tt := pp.Subtype()
-				if tt != nil && tt.Name() != "" {
+				if tt != nil {
 					if _, ok := discovered[tt]; !ok {
 						// it's a new type of field
 						switch {
@@ -299,7 +299,9 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 
 	ordered := make(Types, 0, len(discovered))
 	for t := range discovered {
-		ordered = append(ordered, t)
+		if t.Name() != "" { // skip anonymous types
+			ordered = append(ordered, t)
+		}
 	}
 	sort.Sort(ordered)
 
