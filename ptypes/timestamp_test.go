@@ -148,11 +148,9 @@ var compareTests = []struct {
 
 func TestCompare(t *testing.T) {
 	for _, tt := range compareTests {
-		cmp := Compare(&tspb.Timestamp{tt.aSeconds, tt.aNanos},
-										&tspb.Timestamp{tt.bSeconds, tt.bNanos})
+		cmp := Compare(&tspb.Timestamp{tt.aSeconds, tt.aNanos}, &tspb.Timestamp{tt.bSeconds, tt.bNanos})
 		if cmp != tt.i {
-			t.Errorf("Compare(Timestamp{%v, %v}, Timestamp{%v, %v}) = %v",
-								tt.aSeconds, tt.aNanos, tt.bSeconds, tt.bNanos, cmp)
+			t.Errorf("Compare(Timestamp{%v, %v}, Timestamp{%v, %v}) = %v", tt.aSeconds, tt.aNanos, tt.bSeconds, tt.bNanos, cmp)
 		}
 	}
 }
