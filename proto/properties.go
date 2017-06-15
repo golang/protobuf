@@ -826,8 +826,9 @@ func EnumValueMap(enumType string) map[string]int32 {
 // A registry of all linked message types.
 // The string is a fully-qualified proto name ("pkg.Message").
 var (
-	protoTypes    = make(map[string]reflect.Type)
-	revProtoTypes = make(map[reflect.Type]string)
+	protoTypes         = make(map[string]reflect.Type)
+	revProtoTypes      = make(map[reflect.Type]string)
+	registeredMessages = make(map[string]Message)
 )
 
 // RegisterType is called from generated code and maps from the fully qualified
@@ -841,6 +842,7 @@ func RegisterType(x Message, name string) {
 	t := reflect.TypeOf(x)
 	protoTypes[name] = t
 	revProtoTypes[t] = name
+	registeredMessages[name] = x
 }
 
 // MessageName returns the fully-qualified proto name for the given message type.
@@ -856,6 +858,9 @@ func MessageName(x Message) string {
 
 // MessageType returns the message type (pointer to struct) for a named message.
 func MessageType(name string) reflect.Type { return protoTypes[name] }
+
+// MessageRegistered returns the registered nil-value message (pointer to struct) for a named message.
+func MessageRegistered(name string) Message { return registeredMessages[name] }
 
 // A registry of all linked proto files.
 var (
