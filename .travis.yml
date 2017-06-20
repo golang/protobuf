@@ -1,0 +1,21 @@
+sudo: false
+language: go
+go:
+- 1.6.x
+- 1.7.x
+- 1.8.x
+
+branches:
+  except:
+    # Can't run following branch in 1.6.
+    - revert-275-go-context-stdlib
+
+install:
+  - curl -L https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip -o /tmp/protoc.zip
+  - unzip /tmp/protoc.zip -d /usr/local/protoc
+
+env:
+  - PATH=/usr/local/protoc/bin:$PATH
+
+script:
+  - make all test
