@@ -85,8 +85,7 @@ func validateTimestamp(ts *tspb.Timestamp) error {
 // locale. This may or may not be a meaningful time; many invalid Timestamps
 // do map to valid time.Times.
 //
-// A nil Timestamp returns an error. The first return value in that case is
-// undefined.
+// A nil Timestamp returns the UNIX epoch time (not Go's empty time).
 func Timestamp(ts *tspb.Timestamp) (time.Time, error) {
 	// Don't return the zero value on error, because corresponds to a valid
 	// timestamp. Instead return whatever time.Unix gives us.
@@ -126,9 +125,25 @@ func TimestampProto(t time.Time) (*tspb.Timestamp, error) {
 // TimestampString returns the RFC 3339 string for valid Timestamps. For invalid
 // Timestamps, it returns an error message in parentheses.
 func TimestampString(ts *tspb.Timestamp) string {
+	return TimestampFormat(ts, time.RFC3339Nano)
+}
+
+// TimestampFormat returns a string representation of a timestamp.
+// Format strings follow the same conventions as in Go's "time" package.
+// For invalid timestamps, this returns an error message in parentheses.
+func TimestampFormat(ts *tspb.Timestamp, format string) string {
 	t, err := Timestamp(ts)
 	if err != nil {
 		return fmt.Sprintf("(%v)", err)
 	}
-	return t.Format(time.RFC3339Nano)
+	return t.Format(format)
+}
+
+// TimestampNow returns a Timestamp with the current date and time.
+func TimestampNow() *tspb.Timestamp {
+	ts, err := TimestampProto(time.Now())
+	if err != nil {
+		panic("timestampVerify failed for built-in time.Now()")
+	}
+	return ts
 }

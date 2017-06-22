@@ -133,6 +133,35 @@ func TestTimestampString(t *testing.T) {
 	}
 }
 
+func TestTimestampFormat(t *testing.T) {
+	now := time.Now().UTC()
+	for _, test := range []struct {
+		format string
+		want   string
+	}{
+		{time.ANSIC, now.Format(time.ANSIC)},
+		{time.UnixDate, now.Format(time.UnixDate)},
+		{time.StampMilli, now.Format(time.StampMilli)},
+	} {
+		ts, err := TimestampProto(now)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got := TimestampFormat(ts, test.format); got != test.want {
+			t.Errorf("TimestampFormat(%v, %q) = %q, want %q", ts, test.format, got, test.want)
+		}
+	}
+}
+
+func TestTimestampNow(t *testing.T) {
+	now := time.Now()
+	nowts := TimestampNow()
+
+	if now.Unix() > nowts.Seconds {
+		t.Errorf("TimestampNow() returned timestamp older than time.Now()")
+	}
+}
+
 func utcDate(year, month, day int) time.Time {
 	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 }
