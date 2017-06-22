@@ -132,3 +132,20 @@ func TimestampString(ts *tspb.Timestamp) string {
 	}
 	return t.Format(time.RFC3339Nano)
 }
+
+// TimestampBefore returns true if i is before j.
+func TimestampBefore(i *tspb.Timestamp, j *tspb.Timestamp) bool {
+	if j == nil {
+		return false
+	}
+	if i == nil {
+		return true
+	}
+	if i.Seconds < j.Seconds {
+		return true
+	}
+	if i.Seconds > j.Seconds {
+		return false
+	}
+	return i.Nanos < j.Nanos
+}
