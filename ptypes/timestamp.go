@@ -132,3 +132,19 @@ func TimestampString(ts *tspb.Timestamp) string {
 	}
 	return t.Format(time.RFC3339Nano)
 }
+
+// Compare compares two timestamps logically.
+// Returns: -1 if a < b, 0 if a == b, and 1 if a > b
+func Compare(a, b *tspb.Timestamp) int {
+	if a.Seconds == b.Seconds {
+		if a.Nanos > b.Nanos {
+			return 1
+		} else if a.Nanos < b.Nanos {
+			return -1
+		}
+		return 0
+	} else if a.Seconds > b.Seconds {
+		return 1
+	}
+	return -1
+}

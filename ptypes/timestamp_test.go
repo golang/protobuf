@@ -133,6 +133,28 @@ func TestTimestampString(t *testing.T) {
 	}
 }
 
+var compareTests = []struct {
+	aSeconds, bSeconds int64
+	aNanos, bNanos     int32
+	i                  int
+} {
+	{60, 10, 10, 60, 1},
+	{10, 60, 60, 10, -1},
+	{60, 60, 10, 10, 0},
+	{500, 400, 300, 200, 1},
+	{200, 300, 400, 500, -1},
+	{0, 0, 0, 0, 0},
+}
+
+func TestCompare(t *testing.T) {
+	for _, tt := range compareTests {
+		cmp := Compare(&tspb.Timestamp{tt.aSeconds, tt.aNanos}, &tspb.Timestamp{tt.bSeconds, tt.bNanos})
+		if cmp != tt.i {
+			t.Errorf("Compare(Timestamp{%v, %v}, Timestamp{%v, %v}) = %v", tt.aSeconds, tt.aNanos, tt.bSeconds, tt.bNanos, cmp)
+		}
+	}
+}
+
 func utcDate(year, month, day int) time.Time {
 	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 }
