@@ -996,6 +996,20 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		}
 	}
 
+	// If target is a byteArray and inputValue is a JSON object,
+	// handle the target as if it was a json.RawMessage
+	// Note: { == 123, } == 125
+	if targetType.Kind() == reflect.Slice && targetType.Elem().Kind() == reflect.Uint8 &&
+		inputValue[0] == 123 && inputValue[len(inputValue)-1] == 125 {
+		var rawTarget json.RawMessage
+		if err := json.Unmarshal(inputValue, &rawTarget); err != nil {
+			return err
+		}
+
+		target.Set(reflect.ValueOf(rawTarget))
+		return nil
+	}
+
 	// Use the encoding/json for parsing other value types.
 	return json.Unmarshal(inputValue, target.Addr().Interface())
 }
