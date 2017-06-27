@@ -34,6 +34,7 @@ package proto_test
 import (
 	"bytes"
 	"fmt"
+	"math"
 	"reflect"
 	"sort"
 	"testing"
@@ -41,6 +42,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	pb "github.com/golang/protobuf/proto/testdata"
 	"golang.org/x/sync/errgroup"
+	"io"
 )
 
 func TestGetExtensionsWithMissingExtensions(t *testing.T) {
@@ -64,27 +66,40 @@ func TestGetExtensionsWithMissingExtensions(t *testing.T) {
 	}
 }
 
-func TestExtensionDescsWithMissingExtensions(t *testing.T) {
+func TestExtensionDescsWithUnrecognizedExtensions(t *testing.T) {
 	msg := &pb.MyMessage{Count: proto.Int32(0)}
-	extdesc1 := pb.E_Ext_More
 	if descs, err := proto.ExtensionDescs(msg); len(descs) != 0 || err != nil {
 		t.Errorf("proto.ExtensionDescs: got %d descs, error %v; want 0, nil", len(descs), err)
 	}
 
-	ext1 := &pb.Ext{}
-	if err := proto.SetExtension(msg, extdesc1, ext1); err != nil {
+	extdesc1 := pb.E_Ext_More
+	if err := proto.SetExtension(msg, extdesc1, &pb.Ext{}); err != nil {
 		t.Fatalf("Could not set ext1: %s", err)
 	}
-	extdesc2 := &proto.ExtensionDesc{
+	extdesc2 := pb.E_Ext_Number
+	if err := proto.SetExtension(msg, extdesc2, proto.Int32(int32(101))); err != nil {
+		t.Fatalf("Could not set ext2: %s", err)
+	}
+
+	unknownExtdesc1 := &proto.ExtensionDesc{
 		ExtendedType:  (*pb.MyMessage)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         123456789,
 		Name:          "a.b",
 		Tag:           "varint,123456789,opt",
 	}
-	ext2 := proto.Bool(false)
-	if err := proto.SetExtension(msg, extdesc2, ext2); err != nil {
-		t.Fatalf("Could not set ext2: %s", err)
+	if err := proto.SetExtension(msg, unknownExtdesc1, proto.Bool(true)); err != nil {
+		t.Fatalf("Could not set unknownExtdesc1: %s", err)
+	}
+	unknownExtdesc2 := &proto.ExtensionDesc{
+		ExtendedType:  (*pb.MyMessage)(nil),
+		ExtensionType: (*float64)(nil),
+		Field:         123456790,
+		Name:          "a.c",
+		Tag:           "fixed64,123456790,opt",
+	}
+	if err := proto.SetExtension(msg, unknownExtdesc2, proto.Float64(12.34)); err != nil {
+		t.Fatalf("Could not set unknownExtdesc2: %s", err)
 	}
 
 	b, err := proto.Marshal(msg)
@@ -100,9 +115,47 @@ func TestExtensionDescsWithMissingExtensions(t *testing.T) {
 		t.Fatalf("proto.ExtensionDescs: got error %v", err)
 	}
 	sortExtDescs(descs)
-	wantDescs := []*proto.ExtensionDesc{extdesc1, &proto.ExtensionDesc{Field: extdesc2.Field}}
+	wantDescs := []*proto.ExtensionDesc{extdesc1, extdesc2}
 	if !reflect.DeepEqual(descs, wantDescs) {
 		t.Errorf("proto.ExtensionDescs(msg) sorted extension ids: got %+v, want %+v", descs, wantDescs)
+	}
+
+	// make sure the unrecognized fields are serialized correctly
+	bb := proto.NewBuffer(msg.XXX_unrecognized)
+
+	// unrecognized extension #1
+	expectedTagAndWire := uint64((unknownExtdesc1.Field << 3) | proto.WireVarint)
+	if tagAndWire, err := bb.DecodeVarint(); err != nil {
+		t.Fatalf("Could not read unrecognized field tag and wire type: %v", err)
+	} else if tagAndWire != expectedTagAndWire {
+		t.Fatalf("Wrong tag and wire type: %d != %d", tagAndWire, expectedTagAndWire)
+	}
+	if val, err := bb.DecodeVarint(); err != nil {
+		t.Fatalf("Could not read unrecognized field value: %v", err)
+	} else if val != 1 /* varint value of bool "true" */ {
+		t.Fatalf("Wrong value for unrecognized extension 1: %d != 1", val)
+	}
+
+	// unrecognized extension #2
+	expectedTagAndWire = uint64((unknownExtdesc2.Field << 3) | proto.WireFixed64)
+	if tagAndWire, err := bb.DecodeVarint(); err != nil {
+		t.Fatalf("Could not read unrecognized field tag and wire type: %v", err)
+	} else if tagAndWire != expectedTagAndWire {
+		t.Fatalf("Wrong tag and wire type: %d != %d", tagAndWire, expectedTagAndWire)
+	}
+	if val, err := bb.DecodeFixed64(); err != nil {
+		t.Fatalf("Could not read unrecognized field value: %v", err)
+	} else if math.Float64frombits(val) != 12.34 {
+		t.Fatalf("Wrong value for unrecognized extension 1: %f != 12.34", math.Float64frombits(val))
+	}
+
+	// we should have reached EOF of the unknown fields
+	if _, err := bb.DecodeFixed32(); err != io.ErrUnexpectedEOF {
+		if err == nil {
+			t.Fatalf("Unexpected unrecognized data after expected extensions")
+		} else {
+			t.Fatalf("Unexpected error checking for buffer EOF: %v", err)
+		}
 	}
 }
 

@@ -462,6 +462,8 @@ func (p *Buffer) Unmarshal(pb Message) error {
 func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group bool, base structPointer) error {
 	var state errorState
 	required, reqFields := prop.reqCount, uint64(0)
+	var regExt map[int32]*ExtensionDesc
+	regExtInit := false
 
 	var err error
 	for err == nil && o.index < len(o.buf) {
@@ -492,11 +494,22 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group
 			// Maybe it's an extension?
 			if prop.extendable {
 				if e, _ := extendable(structPointer_Interface(base, st)); isExtensionField(e, int32(tag)) {
-					if err = o.skip(st, tag, wire); err == nil {
-						extmap := e.extensionsWrite()
-						ext := extmap[int32(tag)] // may be missing
-						ext.enc = append(ext.enc, o.buf[oi:o.index]...)
-						extmap[int32(tag)] = ext
+					if !regExtInit {
+						msgType := reflect.Zero(reflect.PtrTo(st)).Interface().(Message)
+						regExt = RegisteredExtensions(msgType)
+					}
+					extdesc := regExt[int32(tag)]
+					if extdesc == nil {
+						// unknown extension
+						err = o.skipAndSave(st, tag, wire, base, prop.unrecField)
+					} else {
+						if err = o.skip(st, tag, wire); err == nil {
+							extmap := e.extensionsWrite()
+							ext := extmap[int32(tag)] // may be missing
+							ext.enc = append(ext.enc, o.buf[oi:o.index]...)
+							ext.desc = extdesc
+							extmap[int32(tag)] = ext
+						}
 					}
 					continue
 				}
