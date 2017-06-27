@@ -49,6 +49,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 	"unicode/utf8"
 
@@ -2607,6 +2608,7 @@ func (g *Generator) generateFileDescriptor(file *FileDescriptor) {
 
 	var buf bytes.Buffer
 	w, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression)
+	w.Header.ModTime = time.Unix(0, 1) // consistent, non-zero val for time
 	w.Write(b)
 	w.Close()
 	b = buf.Bytes()
