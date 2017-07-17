@@ -74,11 +74,17 @@ regenerate:
 
 client-side:
 	protoc --go_out=plugins=grpc,mode=client:. mode/echo.proto
+	sed -i -e '/return.*fileDescriptor/d' mode/echo.pb.go
+	sed -i -e '/^var fileDescriptor/,/^}/d' mode/echo.pb.go
+	sed -i -e '/proto.RegisterFile.*fileDescriptor/d' mode/echo.pb.go
 	gofmt -w mode/echo.pb.go
 	diff -w mode/echo.pb.go mode/client.pb.go.golden
 
 server-side:
 	protoc --go_out=plugins=grpc,mode=server:. mode/echo.proto
+	sed -i -e '/return.*fileDescriptor/d' mode/echo.pb.go
+	sed -i -e '/^var fileDescriptor/,/^}/d' mode/echo.pb.go
+	sed -i -e '/proto.RegisterFile.*fileDescriptor/d' mode/echo.pb.go
 	gofmt -w mode/echo.pb.go
 	diff -w mode/echo.pb.go mode/server.pb.go.golden
 
