@@ -153,110 +153,114 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 		fullServName = pkg + "." + fullServName
 	}
 	servName := generator.CamelCase(origServName)
-
-	g.P()
-	g.P("// Client API for ", servName, " service")
-	g.P()
-
-	// Client interface.
-	g.P("type ", servName, "Client interface {")
-	for i, method := range service.Method {
-		g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
-		g.P(g.generateClientSignature(servName, method))
-	}
-	g.P("}")
-	g.P()
-
-	// Client structure.
-	g.P("type ", unexport(servName), "Client struct {")
-	g.P("cc *", grpcPkg, ".ClientConn")
-	g.P("}")
-	g.P()
-
-	// NewClient factory.
-	g.P("func New", servName, "Client (cc *", grpcPkg, ".ClientConn) ", servName, "Client {")
-	g.P("return &", unexport(servName), "Client{cc}")
-	g.P("}")
-	g.P()
-
-	var methodIndex, streamIndex int
 	serviceDescVar := "_" + servName + "_serviceDesc"
-	// Client method implementations.
-	for _, method := range service.Method {
-		var descExpr string
-		if !method.GetServerStreaming() && !method.GetClientStreaming() {
-			// Unary RPC method
-			descExpr = fmt.Sprintf("&%s.Methods[%d]", serviceDescVar, methodIndex)
-			methodIndex++
-		} else {
-			// Streaming RPC method
-			descExpr = fmt.Sprintf("&%s.Streams[%d]", serviceDescVar, streamIndex)
-			streamIndex++
+
+	g.P()
+	if file.IsClientMode() {
+		g.P("// Client API for ", servName, " service")
+		g.P()
+
+		// Client interface.
+		g.P("type ", servName, "Client interface {")
+		for i, method := range service.Method {
+			g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
+			g.P(g.generateClientSignature(servName, method))
 		}
-		g.generateClientMethod(servName, fullServName, serviceDescVar, method, descExpr)
-	}
+		g.P("}")
+		g.P()
 
-	g.P("// Server API for ", servName, " service")
-	g.P()
+		// Client structure.
+		g.P("type ", unexport(servName), "Client struct {")
+		g.P("cc *", grpcPkg, ".ClientConn")
+		g.P("}")
+		g.P()
 
-	// Server interface.
-	serverType := servName + "Server"
-	g.P("type ", serverType, " interface {")
-	for i, method := range service.Method {
-		g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
-		g.P(g.generateServerSignature(servName, method))
-	}
-	g.P("}")
-	g.P()
+		// NewClient factory.
+		g.P("func New", servName, "Client (cc *", grpcPkg, ".ClientConn) ", servName, "Client {")
+		g.P("return &", unexport(servName), "Client{cc}")
+		g.P("}")
+		g.P()
 
-	// Server registration.
-	g.P("func Register", servName, "Server(s *", grpcPkg, ".Server, srv ", serverType, ") {")
-	g.P("s.RegisterService(&", serviceDescVar, `, srv)`)
-	g.P("}")
-	g.P()
-
-	// Server handler implementations.
-	var handlerNames []string
-	for _, method := range service.Method {
-		hname := g.generateServerMethod(servName, fullServName, method)
-		handlerNames = append(handlerNames, hname)
-	}
-
-	// Service descriptor.
-	g.P("var ", serviceDescVar, " = ", grpcPkg, ".ServiceDesc {")
-	g.P("ServiceName: ", strconv.Quote(fullServName), ",")
-	g.P("HandlerType: (*", serverType, ")(nil),")
-	g.P("Methods: []", grpcPkg, ".MethodDesc{")
-	for i, method := range service.Method {
-		if method.GetServerStreaming() || method.GetClientStreaming() {
-			continue
+		var methodIndex, streamIndex int
+		// Client method implementations.
+		for _, method := range service.Method {
+			var descExpr string
+			if !method.GetServerStreaming() && !method.GetClientStreaming() {
+				// Unary RPC method
+				descExpr = fmt.Sprintf("&%s.Methods[%d]", serviceDescVar, methodIndex)
+				methodIndex++
+			} else {
+				// Streaming RPC method
+				descExpr = fmt.Sprintf("&%s.Streams[%d]", serviceDescVar, streamIndex)
+				streamIndex++
+			}
+			g.generateClientMethod(servName, fullServName, serviceDescVar, method, descExpr)
 		}
-		g.P("{")
-		g.P("MethodName: ", strconv.Quote(method.GetName()), ",")
-		g.P("Handler: ", handlerNames[i], ",")
+	}
+
+	if file.IsServerMode() {
+		g.P("// Server API for ", servName, " service")
+		g.P()
+
+		// Server interface.
+		serverType := servName + "Server"
+		g.P("type ", serverType, " interface {")
+		for i, method := range service.Method {
+			g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
+			g.P(g.generateServerSignature(servName, method))
+		}
+		g.P("}")
+		g.P()
+
+		// Server registration.
+		g.P("func Register", servName, "Server(s *", grpcPkg, ".Server, srv ", serverType, ") {")
+		g.P("s.RegisterService(&", serviceDescVar, `, srv)`)
+		g.P("}")
+		g.P()
+
+		// Server handler implementations.
+		var handlerNames []string
+		for _, method := range service.Method {
+			hname := g.generateServerMethod(servName, fullServName, method)
+			handlerNames = append(handlerNames, hname)
+		}
+
+		// Service descriptor.
+		g.P("var ", serviceDescVar, " = ", grpcPkg, ".ServiceDesc {")
+		g.P("ServiceName: ", strconv.Quote(fullServName), ",")
+		g.P("HandlerType: (*", serverType, ")(nil),")
+		g.P("Methods: []", grpcPkg, ".MethodDesc{")
+		for i, method := range service.Method {
+			if method.GetServerStreaming() || method.GetClientStreaming() {
+				continue
+			}
+			g.P("{")
+			g.P("MethodName: ", strconv.Quote(method.GetName()), ",")
+			g.P("Handler: ", handlerNames[i], ",")
+			g.P("},")
+		}
 		g.P("},")
-	}
-	g.P("},")
-	g.P("Streams: []", grpcPkg, ".StreamDesc{")
-	for i, method := range service.Method {
-		if !method.GetServerStreaming() && !method.GetClientStreaming() {
-			continue
-		}
-		g.P("{")
-		g.P("StreamName: ", strconv.Quote(method.GetName()), ",")
-		g.P("Handler: ", handlerNames[i], ",")
-		if method.GetServerStreaming() {
-			g.P("ServerStreams: true,")
-		}
-		if method.GetClientStreaming() {
-			g.P("ClientStreams: true,")
+		g.P("Streams: []", grpcPkg, ".StreamDesc{")
+		for i, method := range service.Method {
+			if !method.GetServerStreaming() && !method.GetClientStreaming() {
+				continue
+			}
+			g.P("{")
+			g.P("StreamName: ", strconv.Quote(method.GetName()), ",")
+			g.P("Handler: ", handlerNames[i], ",")
+			if method.GetServerStreaming() {
+				g.P("ServerStreams: true,")
+			}
+			if method.GetClientStreaming() {
+				g.P("ClientStreams: true,")
+			}
+			g.P("},")
 		}
 		g.P("},")
+		g.P("Metadata: \"", file.GetName(), "\",")
+		g.P("}")
+		g.P()
 	}
-	g.P("},")
-	g.P("Metadata: \"", file.GetName(), "\",")
-	g.P("}")
-	g.P()
 }
 
 // generateClientSignature returns the client-side signature for a method.
