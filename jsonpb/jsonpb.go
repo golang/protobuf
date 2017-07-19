@@ -632,6 +632,10 @@ func UnmarshalString(str string, pb proto.Message) error {
 	return new(Unmarshaler).Unmarshal(strings.NewReader(str), pb)
 }
 
+// Used in *Unmarshaler.unmarshalValue to communicate up a level of recursion
+// that unmarshaled pointer should be nil rather than pointer to empty value
+var nullWrapperError error = errors.New("Wrapper type is null")
+
 // unmarshalValue converts/copies a value into the target.
 // prop may be nil.
 func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMessage, prop *proto.Properties) error {
@@ -640,7 +644,15 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	// Allocate memory for pointer fields.
 	if targetType.Kind() == reflect.Ptr {
 		target.Set(reflect.New(targetType.Elem()))
-		return u.unmarshalValue(target.Elem(), inputValue, prop)
+		err := u.unmarshalValue(target.Elem(), inputValue, prop)
+
+		// Set to a zero (nil pointer) if wrapper type is nulled
+		if err == nullWrapperError {
+			target.Set(reflect.Zero(targetType))
+			return nil
+		}
+
+		return err
 	}
 
 	if jsu, ok := target.Addr().Interface().(JSONPBUnmarshaler); ok {
@@ -656,6 +668,10 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			//  as the wrapped primitive type, except that null is allowed."
 			// encoding/json will turn JSON `null` into Go `nil`,
 			// so we don't have to do any extra work.
+			if string(inputValue) == "null" {
+				// This needs to be a nil pointer rather than a value, so communicate that up a level of recursion
+				return nullWrapperError
+			}
 			return u.unmarshalValue(target.Field(0), inputValue, prop)
 		case "Any":
 			// Use json.RawMessage pointer type instead of value to support pre-1.8 version.
