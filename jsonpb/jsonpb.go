@@ -632,10 +632,6 @@ func UnmarshalString(str string, pb proto.Message) error {
 	return new(Unmarshaler).Unmarshal(strings.NewReader(str), pb)
 }
 
-// Used in *Unmarshaler.unmarshalValue to communicate up a level of recursion
-// that unmarshaled pointer should be nil rather than pointer to empty value
-var nullWrapperError error = errors.New("Wrapper type is null")
-
 // unmarshalValue converts/copies a value into the target.
 // prop may be nil.
 func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMessage, prop *proto.Properties) error {
@@ -644,34 +640,23 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	// Allocate memory for pointer fields.
 	if targetType.Kind() == reflect.Ptr {
 		target.Set(reflect.New(targetType.Elem()))
-		err := u.unmarshalValue(target.Elem(), inputValue, prop)
-
-		// Set to a zero (nil pointer) if wrapper type is nulled
-		if err == nullWrapperError {
+		if string(inputValue) == "null" && targetType != reflect.TypeOf(&stpb.Value{}) {
 			target.Set(reflect.Zero(targetType))
 			return nil
 		}
 
-		return err
+		return u.unmarshalValue(target.Elem(), inputValue, prop)
 	}
 
 	if jsu, ok := target.Addr().Interface().(JSONPBUnmarshaler); ok {
 		return jsu.UnmarshalJSONPB(u, []byte(inputValue))
 	}
 
-	// Handle well-known types.
+	// Handle well-known types that are not null => Go nil
 	if w, ok := target.Addr().Interface().(wkt); ok {
 		switch w.XXX_WellKnownType() {
 		case "DoubleValue", "FloatValue", "Int64Value", "UInt64Value",
 			"Int32Value", "UInt32Value", "BoolValue", "StringValue", "BytesValue":
-			// "Wrappers use the same representation in JSON
-			//  as the wrapped primitive type, except that null is allowed."
-			// encoding/json will turn JSON `null` into Go `nil`,
-			// so we don't have to do any extra work.
-			if string(inputValue) == "null" {
-				// This needs to be a nil pointer rather than a value, so communicate that up a level of recursion
-				return nullWrapperError
-			}
 			return u.unmarshalValue(target.Field(0), inputValue, prop)
 		case "Any":
 			// Use json.RawMessage pointer type instead of value to support pre-1.8 version.
@@ -733,20 +718,16 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			return nil
 		case "Duration":
 			ivStr := string(inputValue)
-			if ivStr == "null" {
-				target.Field(0).SetInt(0)
-				target.Field(1).SetInt(0)
-				return nil
-			}
-
 			unq, err := strconv.Unquote(ivStr)
 			if err != nil {
 				return err
 			}
+
 			d, err := time.ParseDuration(unq)
 			if err != nil {
 				return fmt.Errorf("bad Duration: %v", err)
 			}
+
 			ns := d.Nanoseconds()
 			s := ns / 1e9
 			ns %= 1e9
@@ -755,32 +736,25 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			return nil
 		case "Timestamp":
 			ivStr := string(inputValue)
-			if ivStr == "null" {
-				target.Field(0).SetInt(0)
-				target.Field(1).SetInt(0)
-				return nil
-			}
-
 			unq, err := strconv.Unquote(ivStr)
 			if err != nil {
 				return err
 			}
+
 			t, err := time.Parse(time.RFC3339Nano, unq)
 			if err != nil {
 				return fmt.Errorf("bad Timestamp: %v", err)
 			}
+
 			target.Field(0).SetInt(t.Unix())
 			target.Field(1).SetInt(int64(t.Nanosecond()))
 			return nil
 		case "Struct":
-			if string(inputValue) == "null" {
-				// Interpret a null struct as empty.
-				return nil
-			}
 			var m map[string]json.RawMessage
 			if err := json.Unmarshal(inputValue, &m); err != nil {
 				return fmt.Errorf("bad StructValue: %v", err)
 			}
+
 			target.Field(0).Set(reflect.ValueOf(map[string]*stpb.Value{}))
 			for k, jv := range m {
 				pv := &stpb.Value{}
@@ -791,14 +765,11 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			}
 			return nil
 		case "ListValue":
-			if string(inputValue) == "null" {
-				// Interpret a null ListValue as empty.
-				return nil
-			}
 			var s []json.RawMessage
 			if err := json.Unmarshal(inputValue, &s); err != nil {
 				return fmt.Errorf("bad ListValue: %v", err)
 			}
+
 			target.Field(0).Set(reflect.ValueOf(make([]*stpb.Value, len(s), len(s))))
 			for i, sv := range s {
 				if err := u.unmarshalValue(target.Field(0).Index(i), sv, prop); err != nil {
