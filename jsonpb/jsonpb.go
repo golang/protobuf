@@ -584,6 +584,20 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 	return out.err
 }
 
+// UnknownFieldError is an error if an unknown field was encountered
+// during unmarshaling.
+type UnknownFieldError struct {
+	// Field is the name of the JSON field.
+	Field string
+
+	// TargetType is the type attempted unmarshaled.
+	TargetType reflect.Type
+}
+
+func (u UnknownFieldError) Error() string {
+	return fmt.Sprintf("unknown field %q in %v", u.Field, u.TargetType)
+}
+
 // Unmarshaler is a configurable object for converting from a JSON
 // representation to a protocol buffer object.
 type Unmarshaler struct {
@@ -908,7 +922,10 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				f = fname
 				break
 			}
-			return fmt.Errorf("unknown field %q in %v", f, targetType)
+			return UnknownFieldError{
+				Field:      f,
+				TargetType: targetType,
+			}
 		}
 		return nil
 	}

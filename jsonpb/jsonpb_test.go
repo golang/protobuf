@@ -645,6 +645,29 @@ func TestUnmarshaling(t *testing.T) {
 	}
 }
 
+func TestUnmarshalDisallowingUnknownField(t *testing.T) {
+	u := Unmarshaler{AllowUnknownFields: false}
+	err := u.Unmarshal(strings.NewReader(`{"unknown": "foo"}`), simpleObject)
+	if err == nil {
+		t.Errorf("expected error, got nil")
+		return
+	}
+	fieldErr, ok := err.(UnknownFieldError)
+	if !ok {
+		t.Errorf("expected error to be UnknownFieldError, got %T", fieldErr)
+		return
+	}
+	if fieldErr.Field != "unknown" {
+		t.Errorf("expected field to be %q, got %q", "unknown", fieldErr.Field)
+		return
+	}
+	if fieldErr.TargetType.Name() != reflect.TypeOf(*simpleObject).Name() {
+		t.Errorf("expected target type to be %T, got %T",
+			reflect.TypeOf(*simpleObject), fieldErr.TargetType)
+		return
+	}
+}
+
 func TestUnmarshalNext(t *testing.T) {
 	// We only need to check against a few, not all of them.
 	tests := unmarshalingTests[:5]
