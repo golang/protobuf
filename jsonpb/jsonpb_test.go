@@ -613,7 +613,7 @@ var unmarshalingTests = []struct {
 	{"StringValue", Unmarshaler{}, `{"str":"plush"}`, &pb.KnownTypes{Str: &wpb.StringValue{Value: "plush"}}},
 	{"BytesValue", Unmarshaler{}, `{"bytes":"d293"}`, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}},
 
-	// ensure that `null` as a value ends up with a nil pointer instead of a [type]Value struct
+	// Ensure that `null` as a value ends up with a nil pointer instead of a [type]Value struct.
 	{"null DoubleValue", Unmarshaler{}, `{"dbl":null}`, &pb.KnownTypes{Dbl: nil}},
 	{"null FloatValue", Unmarshaler{}, `{"flt":null}`, &pb.KnownTypes{Flt: nil}},
 	{"null Int64Value", Unmarshaler{}, `{"i64":null}`, &pb.KnownTypes{I64: nil}},

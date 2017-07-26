@@ -639,11 +639,12 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 
 	// Allocate memory for pointer fields.
 	if targetType.Kind() == reflect.Ptr {
-		target.Set(reflect.New(targetType.Elem()))
+		// If input value is "null" and target is a pointer type, then the field should be treated as not set
+		// UNLESS it the target is structpb.Value, in which case it should be set to structpb.NullValue.
 		if string(inputValue) == "null" && targetType != reflect.TypeOf(&stpb.Value{}) {
-			target.Set(reflect.Zero(targetType))
 			return nil
 		}
+		target.Set(reflect.New(targetType.Elem()))
 
 		return u.unmarshalValue(target.Elem(), inputValue, prop)
 	}
@@ -652,7 +653,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		return jsu.UnmarshalJSONPB(u, []byte(inputValue))
 	}
 
-	// Handle well-known types that are not null => Go nil
+	// Handle well-known types that are not pointers.
 	if w, ok := target.Addr().Interface().(wkt); ok {
 		switch w.XXX_WellKnownType() {
 		case "DoubleValue", "FloatValue", "Int64Value", "UInt64Value",
@@ -717,8 +718,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 
 			return nil
 		case "Duration":
-			ivStr := string(inputValue)
-			unq, err := strconv.Unquote(ivStr)
+			unq, err := strconv.Unquote(string(inputValue))
 			if err != nil {
 				return err
 			}
@@ -735,8 +735,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			target.Field(1).SetInt(ns)
 			return nil
 		case "Timestamp":
-			ivStr := string(inputValue)
-			unq, err := strconv.Unquote(ivStr)
+			unq, err := strconv.Unquote(string(inputValue))
 			if err != nil {
 				return err
 			}
