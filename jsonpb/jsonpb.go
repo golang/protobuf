@@ -640,7 +640,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 	// Allocate memory for pointer fields.
 	if targetType.Kind() == reflect.Ptr {
 		// If input value is "null" and target is a pointer type, then the field should be treated as not set
-		// UNLESS it the target is structpb.Value, in which case it should be set to structpb.NullValue.
+		// UNLESS the target is structpb.Value, in which case it should be set to structpb.NullValue.
 		if string(inputValue) == "null" && targetType != reflect.TypeOf(&stpb.Value{}) {
 			return nil
 		}
