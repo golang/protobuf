@@ -553,12 +553,12 @@ var unmarshalingTests = []struct {
 	{"camelName input", Unmarshaler{}, `{"oBool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
 
 	{"Duration", Unmarshaler{}, `{"dur":"3.000s"}`, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}},
-	{"null Duration", Unmarshaler{}, `{"dur":null}`, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 0}}},
+	{"null Duration", Unmarshaler{}, `{"dur":null}`, &pb.KnownTypes{Dur: nil}},
 	{"Timestamp", Unmarshaler{}, `{"ts":"2014-05-13T16:53:20.021Z"}`, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 14e8, Nanos: 21e6}}},
 	{"PreEpochTimestamp", Unmarshaler{}, `{"ts":"1969-12-31T23:59:58.999999995Z"}`, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: -2, Nanos: 999999995}}},
 	{"ZeroTimeTimestamp", Unmarshaler{}, `{"ts":"0001-01-01T00:00:00Z"}`, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: -62135596800, Nanos: 0}}},
-	{"null Timestamp", Unmarshaler{}, `{"ts":null}`, &pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 0, Nanos: 0}}},
-	{"null Struct", Unmarshaler{}, `{"st": null}`, &pb.KnownTypes{St: &stpb.Struct{}}},
+	{"null Timestamp", Unmarshaler{}, `{"ts":null}`, &pb.KnownTypes{Ts: nil}},
+	{"null Struct", Unmarshaler{}, `{"st": null}`, &pb.KnownTypes{St: nil}},
 	{"empty Struct", Unmarshaler{}, `{"st": {}}`, &pb.KnownTypes{St: &stpb.Struct{}}},
 	{"basic Struct", Unmarshaler{}, `{"st": {"a": "x", "b": null, "c": 3, "d": true}}`, &pb.KnownTypes{St: &stpb.Struct{Fields: map[string]*stpb.Value{
 		"a": {Kind: &stpb.Value_StringValue{"x"}},
@@ -575,7 +575,7 @@ var unmarshalingTests = []struct {
 			}}}},
 		}}}},
 	}}}},
-	{"null ListValue", Unmarshaler{}, `{"lv": null}`, &pb.KnownTypes{Lv: &stpb.ListValue{}}},
+	{"null ListValue", Unmarshaler{}, `{"lv": null}`, &pb.KnownTypes{Lv: nil}},
 	{"empty ListValue", Unmarshaler{}, `{"lv": []}`, &pb.KnownTypes{Lv: &stpb.ListValue{}}},
 	{"basic ListValue", Unmarshaler{}, `{"lv": ["x", null, 3, true]}`, &pb.KnownTypes{Lv: &stpb.ListValue{Values: []*stpb.Value{
 		{Kind: &stpb.Value_StringValue{"x"}},
@@ -612,8 +612,17 @@ var unmarshalingTests = []struct {
 	{"BoolValue", Unmarshaler{}, `{"bool":true}`, &pb.KnownTypes{Bool: &wpb.BoolValue{Value: true}}},
 	{"StringValue", Unmarshaler{}, `{"str":"plush"}`, &pb.KnownTypes{Str: &wpb.StringValue{Value: "plush"}}},
 	{"BytesValue", Unmarshaler{}, `{"bytes":"d293"}`, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}},
-	// `null` is also a permissible value. Let's just test one.
-	{"null DoubleValue", Unmarshaler{}, `{"dbl":null}`, &pb.KnownTypes{Dbl: &wpb.DoubleValue{}}},
+
+	// Ensure that `null` as a value ends up with a nil pointer instead of a [type]Value struct.
+	{"null DoubleValue", Unmarshaler{}, `{"dbl":null}`, &pb.KnownTypes{Dbl: nil}},
+	{"null FloatValue", Unmarshaler{}, `{"flt":null}`, &pb.KnownTypes{Flt: nil}},
+	{"null Int64Value", Unmarshaler{}, `{"i64":null}`, &pb.KnownTypes{I64: nil}},
+	{"null UInt64Value", Unmarshaler{}, `{"u64":null}`, &pb.KnownTypes{U64: nil}},
+	{"null Int32Value", Unmarshaler{}, `{"i32":null}`, &pb.KnownTypes{I32: nil}},
+	{"null UInt32Value", Unmarshaler{}, `{"u32":null}`, &pb.KnownTypes{U32: nil}},
+	{"null BoolValue", Unmarshaler{}, `{"bool":null}`, &pb.KnownTypes{Bool: nil}},
+	{"null StringValue", Unmarshaler{}, `{"str":null}`, &pb.KnownTypes{Str: nil}},
+	{"null BytesValue", Unmarshaler{}, `{"bytes":null}`, &pb.KnownTypes{Bytes: nil}},
 }
 
 func TestUnmarshaling(t *testing.T) {
