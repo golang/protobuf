@@ -645,6 +645,26 @@ func TestUnmarshaling(t *testing.T) {
 	}
 }
 
+func TestUnmarshalNullArray(t *testing.T) {
+	var repeats pb.Repeats
+	if err := UnmarshalString(`{"rBool":null}`, &repeats); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(repeats, pb.Repeats{}) {
+		t.Errorf("got non-nil fields in [%#v]", repeats)
+	}
+}
+
+func TestUnmarshalNullObject(t *testing.T) {
+	var maps pb.Maps
+	if err := UnmarshalString(`{"mInt64Str":null}`, &maps); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(maps, pb.Maps{}) {
+		t.Errorf("got non-nil fields in [%#v]", maps)
+	}
+}
+
 func TestUnmarshalNext(t *testing.T) {
 	// We only need to check against a few, not all of them.
 	tests := unmarshalingTests[:5]
