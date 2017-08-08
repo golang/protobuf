@@ -1,21 +1,22 @@
-#!/bin/bash -e
-#
+#!/bin/bash
 # This script fetches and rebuilds the "well-known types" protocol buffers.
 # To run this you will need protoc and goprotobuf installed;
 # see https://github.com/golang/protobuf for instructions.
 # You also need Go and Git installed.
+#
+# This is a complete rewrite of the original regen.sh in order to address #196
+# and reduce the reliance on external tools (which might behave differently
+# from system to system) to the bare minimum.
 
-PKG=github.com/golang/protobuf/ptypes
-UPSTREAM=https://github.com/google/protobuf
-UPSTREAM_SUBDIR=src/google/protobuf
-PROTO_FILES='
-  any.proto
-  duration.proto
-  empty.proto
-  struct.proto
-  timestamp.proto
-  wrappers.proto
-'
+# Set here to make sure it gets acknowledged even
+# in the weirdest of circumstances
+set -Ee
+
+# Take the PTYPES_REGEN_* environment variables as values
+# If absent or empty, take the respective default values
+PKG=${PTYPES_REGEN_PKG:-github.com/golang/protobuf/ptypes}
+UPSTREAM=${PTYPES_REGEN_UPSTREAM:-https://github.com/google/protobuf}
+UPSTREAM_SUBDIR=${PTYPES_REGEN_UPSTREAM_SUBDIR:-src/google/protobuf}
 
 function die() {
   echo 1>&2 $*
@@ -23,44 +24,63 @@ function die() {
 }
 
 # Sanity check that the right tools are accessible.
-for tool in go git protoc protoc-gen-go; do
+for tool in go git protoc protoc-gen-go find; do
   q=$(which $tool) || die "didn't find $tool"
   echo 1>&2 "$tool: $q"
 done
 
+# Can be used for tests of regen.sh
+# point it to a clone of upstream
+# tmpdir=/tmp/upstream
+
+# If you use the tmpdir from above, comment out the following 3 lines
 tmpdir=$(mktemp -d -t regen-wkt.XXXXXX)
+git clone $UPSTREAM $tmpdir
 trap 'rm -rf $tmpdir' EXIT
 
-echo -n 1>&2 "finding package dir... "
-pkgdir=$(go list -f '{{.Dir}}' $PKG)
-echo 1>&2 $pkgdir
-base=$(echo $pkgdir | sed "s,/$PKG\$,,")
-echo 1>&2 "base: $base"
-cd $base
+# Jump to the working directory
+# It has to be $GOPATH/src/$PKG, because
+# * that is where the sources are supposed to be
+# * protoc will not find the data necessary to import
+# TODO: this is arguable. Maybe we should just have a basepath.
+pushd $GOPATH/src/$PKG &>/dev/null
+# Jump back to the original directory on exit
+trap 'popd &>/dev/null' EXIT
 
-echo 1>&2 "fetching latest protos... "
-git clone -q $UPSTREAM $tmpdir
-# Pass 1: build mapping from upstream filename to our filename.
-declare -A filename_map
-for f in $(cd $PKG && find * -name '*.proto'); do
-  echo -n 1>&2 "looking for latest version of $f... "
-  up=$(cd $tmpdir/$UPSTREAM_SUBDIR && find * -name $(basename $f) | grep -v /testdata/)
-  echo 1>&2 $up
-  if [ $(echo $up | wc -w) != "1" ]; then
-    die "not exactly one match"
+# Pass 1: sanitizing
+for F in $(find . -type f -name '*.proto'); do
+
+  # Find all instances of the _filename_ in
+  # the upstream sources
+  count=$(find $tmpdir/$UPSTREAM_SUBDIR \
+    -type f -name $(expr "$F" : '.*/\(.*\.proto\)') \
+    -and -not -path "*/testdata/*" | wc -l)
+
+  if [ $count -ne 1 ] ; then
+    die "Did not find exactly one instance of '$F' in '$tmpdir/$UPSTREAM_SUBDIR', found $count!"
   fi
-  filename_map[$up]=$f
-done
-# Pass 2: copy files
-for up in "${!filename_map[@]}"; do
-  f=${filename_map[$up]}
-  shortname=$(basename $f | sed 's,\.proto$,,')
-  cp $tmpdir/$UPSTREAM_SUBDIR/$up $PKG/$f
+
 done
 
-# Run protoc once per package.
-for dir in $(find $PKG -name '*.proto' | xargs dirname | sort | uniq); do
-  echo 1>&2 "* $dir"
-  protoc --go_out=. $dir/*.proto
+# Pass 2: copy the protofiles to their according location
+# We are sure the upstream is in valid state as per pass 1
+# Upstream now has the go_package option set, so no need for
+# mangling with names any more
+for F in $(find . -name '*.proto'); do
+  cp  "$tmpdir/$UPSTREAM_SUBDIR/$(expr "$F" : '.*/\(.*.proto\)')" $F
+  if [ $? -ne 0 ];then
+    die "Error while copying $F"
+  fi
 done
-echo 1>&2 "All OK"
+
+# Compile
+for dir in $(find . -type f -name *.proto -exec dirname {} \; | sort -u); do
+  echo -en "* $dir... " 1>&2
+  # As we are using long package names, the generated files will be written
+  # to a complete path, so we set the output directory to the source dir
+  protoc --go_out=$GOPATH/src $dir/*.proto
+  if [ $? -ne 0 ]; then
+    die "Error creating output files"
+  fi
+  echo "...Success!" 1>&2
+done
