@@ -919,11 +919,13 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		if err := json.Unmarshal(inputValue, &slc); err != nil {
 			return err
 		}
-		len := len(slc)
-		target.Set(reflect.MakeSlice(targetType, len, len))
-		for i := 0; i < len; i++ {
-			if err := u.unmarshalValue(target.Index(i), slc[i], prop); err != nil {
-				return err
+		if slc != nil {
+			l := len(slc)
+			target.Set(reflect.MakeSlice(targetType, l, l))
+			for i := 0; i < l; i++ {
+				if err := u.unmarshalValue(target.Index(i), slc[i], prop); err != nil {
+					return err
+				}
 			}
 		}
 		return nil
@@ -935,33 +937,35 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		if err := json.Unmarshal(inputValue, &mp); err != nil {
 			return err
 		}
-		target.Set(reflect.MakeMap(targetType))
-		var keyprop, valprop *proto.Properties
-		if prop != nil {
-			// These could still be nil if the protobuf metadata is broken somehow.
-			// TODO: This won't work because the fields are unexported.
-			// We should probably just reparse them.
-			//keyprop, valprop = prop.mkeyprop, prop.mvalprop
-		}
-		for ks, raw := range mp {
-			// Unmarshal map key. The core json library already decoded the key into a
-			// string, so we handle that specially. Other types were quoted post-serialization.
-			var k reflect.Value
-			if targetType.Key().Kind() == reflect.String {
-				k = reflect.ValueOf(ks)
-			} else {
-				k = reflect.New(targetType.Key()).Elem()
-				if err := u.unmarshalValue(k, json.RawMessage(ks), keyprop); err != nil {
+		if mp != nil {
+			target.Set(reflect.MakeMap(targetType))
+			var keyprop, valprop *proto.Properties
+			if prop != nil {
+				// These could still be nil if the protobuf metadata is broken somehow.
+				// TODO: This won't work because the fields are unexported.
+				// We should probably just reparse them.
+				//keyprop, valprop = prop.mkeyprop, prop.mvalprop
+			}
+			for ks, raw := range mp {
+				// Unmarshal map key. The core json library already decoded the key into a
+				// string, so we handle that specially. Other types were quoted post-serialization.
+				var k reflect.Value
+				if targetType.Key().Kind() == reflect.String {
+					k = reflect.ValueOf(ks)
+				} else {
+					k = reflect.New(targetType.Key()).Elem()
+					if err := u.unmarshalValue(k, json.RawMessage(ks), keyprop); err != nil {
+						return err
+					}
+				}
+
+				// Unmarshal map value.
+				v := reflect.New(targetType.Elem()).Elem()
+				if err := u.unmarshalValue(v, raw, valprop); err != nil {
 					return err
 				}
+				target.SetMapIndex(k, v)
 			}
-
-			// Unmarshal map value.
-			v := reflect.New(targetType.Elem()).Elem()
-			if err := u.unmarshalValue(v, raw, valprop); err != nil {
-				return err
-			}
-			target.SetMapIndex(k, v)
 		}
 		return nil
 	}
