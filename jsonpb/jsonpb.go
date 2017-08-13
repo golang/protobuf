@@ -73,7 +73,39 @@ type Marshaler struct {
 
 	// Whether to use the original (.proto) name for fields.
 	OrigName bool
+
+	// A custom URL resolver to use when marshaling Any messages to JSON.
+	// If unset, DefaultUrlResolver is used.
+	UrlResolver UrlResolver
 }
+
+// UrlResolver resolves a type URL into an instance of the associated message.
+// This is used for serializing and de-serializing Any messages to and from
+// JSON.
+type UrlResolver interface {
+	Resolve(typeUrl string) (proto.Message, error)
+}
+
+type defaultResolver struct{}
+
+func (defaultResolver) Resolve(typeUrl string) (proto.Message, error) {
+	// Only the part of typeUrl after the last slash is relevant.
+	mname := typeUrl
+	if slash := strings.LastIndex(mname, "/"); slash >= 0 {
+		mname = mname[slash+1:]
+	}
+	mt := proto.MessageType(mname)
+	if mt == nil {
+		return nil, fmt.Errorf("unknown message type %q", mname)
+	}
+	return reflect.New(mt.Elem()).Interface().(proto.Message), nil
+}
+
+// DefaultUrlResolver can resolve any generated protobuf message that is
+// registered via proto.RegisterType. The fully-qualified message name is first
+// extracted from the type URL (e.g. the last path element). The resolver then
+// invokes proto.MessageType(string) to create a message instance for that name.
+var DefaultUrlResolver UrlResolver = defaultResolver{}
 
 // JSONPBMarshaler is implemented by protobuf messages that customize the
 // way they are marshaled to JSON. Messages that implement this should
@@ -344,16 +376,15 @@ func (m *Marshaler) marshalAny(out *errWriter, any proto.Message, indent string)
 	turl := v.Field(0).String()
 	val := v.Field(1).Bytes()
 
-	// Only the part of type_url after the last slash is relevant.
-	mname := turl
-	if slash := strings.LastIndex(mname, "/"); slash >= 0 {
-		mname = mname[slash+1:]
+	resolver := m.UrlResolver
+	if resolver == nil {
+		resolver = DefaultUrlResolver
 	}
-	mt := proto.MessageType(mname)
-	if mt == nil {
-		return fmt.Errorf("unknown message type %q", mname)
+	msg, err := resolver.Resolve(turl)
+	if err != nil {
+		return err
 	}
-	msg := reflect.New(mt.Elem()).Interface().(proto.Message)
+
 	if err := proto.Unmarshal(val, msg); err != nil {
 		return err
 	}
@@ -590,6 +621,10 @@ type Unmarshaler struct {
 	// Whether to allow messages to contain unknown fields, as opposed to
 	// failing to unmarshal.
 	AllowUnknownFields bool
+
+	// A custom URL resolver to use when unmarshaling Any messages from JSON.
+	// If unset, DefaultUrlResolver is used.
+	UrlResolver UrlResolver
 }
 
 // UnmarshalNext unmarshals the next protocol buffer from a JSON object stream.
@@ -679,16 +714,15 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			}
 			target.Field(0).SetString(turl)
 
-			mname := turl
-			if slash := strings.LastIndex(mname, "/"); slash >= 0 {
-				mname = mname[slash+1:]
+			resolver := u.UrlResolver
+			if resolver == nil {
+				resolver = DefaultUrlResolver
 			}
-			mt := proto.MessageType(mname)
-			if mt == nil {
-				return fmt.Errorf("unknown message type %q", mname)
+			m, err := resolver.Resolve(turl)
+			if err != nil {
+				return err
 			}
 
-			m := reflect.New(mt.Elem()).Interface().(proto.Message)
 			if _, ok := m.(wkt); ok {
 				val, ok := jsonFields["value"]
 				if !ok {
