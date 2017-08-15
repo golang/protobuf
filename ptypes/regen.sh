@@ -8,14 +8,7 @@
 PKG=github.com/golang/protobuf/ptypes
 UPSTREAM=https://github.com/google/protobuf
 UPSTREAM_SUBDIR=src/google/protobuf
-PROTO_FILES='
-  any.proto
-  duration.proto
-  empty.proto
-  struct.proto
-  timestamp.proto
-  wrappers.proto
-'
+PROTO_FILES=(any duration empty struct timestamp wrappers)
 
 function die() {
   echo 1>&2 $*
@@ -36,14 +29,15 @@ pkgdir=$(go list -f '{{.Dir}}' $PKG)
 echo 1>&2 $pkgdir
 base=$(echo $pkgdir | sed "s,/$PKG\$,,")
 echo 1>&2 "base: $base"
-cd $base
+cd "$base"
 
 echo 1>&2 "fetching latest protos... "
 git clone -q $UPSTREAM $tmpdir
 
-for file in $PROTO_FILES; do
+for file in ${PROTO_FILES[@]}; do
   echo 1>&2 "* $file"
-  protoc --go_out=. -I$tmpdir/src $tmpdir/src/google/protobuf/$file || die
+  protoc --go_out=. -I$tmpdir/src $tmpdir/src/google/protobuf/$file.proto || die
+  cp $tmpdir/src/google/protobuf/$file.proto $PKG/$file
 done
 
 echo 1>&2 "All OK"
