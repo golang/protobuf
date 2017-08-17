@@ -37,6 +37,7 @@ import (
 	"io"
 	"math"
 	"reflect"
+	"sort"
 	"strings"
 	"testing"
 
@@ -662,6 +663,25 @@ func TestUnmarshalNullObject(t *testing.T) {
 	}
 	if !reflect.DeepEqual(maps, pb.Maps{}) {
 		t.Errorf("got non-nil fields in [%#v]", maps)
+	}
+}
+
+func TestUnmarshalAllowedUnknownFields(t *testing.T) {
+	var msg pb.Simple
+	var unknownFields []string
+	unmarshaler := &Unmarshaler{
+		AllowUnknownFields: true,
+		AllowedUnknownField: func(fname string) {
+			unknownFields = append(unknownFields, fname)
+		},
+	}
+	json := `{"oBool": true, "unknown-a": null, "unknown-b": null}`
+	if err := unmarshaler.Unmarshal(strings.NewReader(json), &msg); err != nil {
+		t.Fatal(err)
+	}
+	sort.Strings(unknownFields) // order of fields is unspecified
+	if want := []string{"unknown-a", "unknown-b"}; !reflect.DeepEqual(unknownFields, want) {
+		t.Errorf("got %v want %v", unknownFields, want)
 	}
 }
 
