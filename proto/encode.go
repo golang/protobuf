@@ -232,13 +232,21 @@ func Marshal(pb Message) ([]byte, error) {
 	if m, ok := pb.(Marshaler); ok {
 		return m.Marshal()
 	}
-	p := NewBuffer(nil)
-	err := p.Marshal(pb)
-	if p.buf == nil && err == nil {
+
+	buf := bufPool.Get().(*Buffer)
+	buf.Reset()
+	err := buf.Marshal(pb)
+	// We hold on to reference of the internal buffer and replace it with a nil
+	// slice so that our reference is not mutated subsequently.
+	bytes := buf.Bytes()
+	buf.SetBuf(nil)
+	bufPool.Put(buf)
+
+	if bytes == nil && err == nil {
 		// Return a non-nil slice on success.
 		return []byte{}, nil
 	}
-	return p.buf, err
+	return bytes, err
 }
 
 // EncodeMessage writes the protocol buffer to the Buffer,
@@ -748,8 +756,8 @@ func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) error
 	if l == 0 {
 		return ErrNil
 	}
-	// TODO: Reuse a Buffer.
-	buf := NewBuffer(nil)
+	buf := bufPool.Get().(*Buffer)
+	buf.Reset()
 	for i := 0; i < l; i++ {
 		x := int32(s.Index(i)) // permit sign extension to use full 64-bit range
 		p.valEnc(buf, uint64(x))
@@ -758,6 +766,7 @@ func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) error
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	bufPool.Put(buf)
 	return nil
 }
 
@@ -817,8 +826,8 @@ func (o *Buffer) enc_slice_packed_uint32(p *Properties, base structPointer) erro
 	if l == 0 {
 		return ErrNil
 	}
-	// TODO: Reuse a Buffer.
-	buf := NewBuffer(nil)
+	buf := bufPool.Get().(*Buffer)
+	buf.Reset()
 	for i := 0; i < l; i++ {
 		p.valEnc(buf, uint64(s.Index(i)))
 	}
@@ -826,6 +835,7 @@ func (o *Buffer) enc_slice_packed_uint32(p *Properties, base structPointer) erro
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	bufPool.Put(buf)
 	return nil
 }
 
@@ -880,8 +890,8 @@ func (o *Buffer) enc_slice_packed_int64(p *Properties, base structPointer) error
 	if l == 0 {
 		return ErrNil
 	}
-	// TODO: Reuse a Buffer.
-	buf := NewBuffer(nil)
+	buf := bufPool.Get().(*Buffer)
+	buf.Reset()
 	for i := 0; i < l; i++ {
 		p.valEnc(buf, s.Index(i))
 	}
@@ -889,6 +899,7 @@ func (o *Buffer) enc_slice_packed_int64(p *Properties, base structPointer) error
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	bufPool.Put(buf)
 	return nil
 }
 

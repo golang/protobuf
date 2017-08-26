@@ -343,6 +343,13 @@ func (p *Buffer) SetBuf(s []byte) {
 // Bytes returns the contents of the Buffer.
 func (p *Buffer) Bytes() []byte { return p.buf }
 
+// bufPool is a pool of temporary Buffers.
+var bufPool = sync.Pool{
+	New: func() interface{} {
+		return NewBuffer(nil)
+	},
+}
+
 /*
  * Helper routines for simplifying the creation of optional fields of basic type.
  */

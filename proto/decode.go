@@ -409,7 +409,17 @@ func UnmarshalMerge(buf []byte, pb Message) error {
 	if u, ok := pb.(Unmarshaler); ok {
 		return u.Unmarshal(buf)
 	}
-	return NewBuffer(buf).Unmarshal(pb)
+
+	b := bufPool.Get().(*Buffer)
+	b.Reset()
+	b.SetBuf(buf)
+	err := b.Unmarshal(pb)
+	// We swap out the internal buffer with a nil slice so that the user
+	// provided slice is not mutated subsequently.
+	b.SetBuf(nil)
+	bufPool.Put(b)
+
+	return err
 }
 
 // DecodeMessage reads a count-delimited message from the Buffer.
@@ -418,7 +428,15 @@ func (p *Buffer) DecodeMessage(pb Message) error {
 	if err != nil {
 		return err
 	}
-	return NewBuffer(enc).Unmarshal(pb)
+
+	buf := bufPool.Get().(*Buffer)
+	buf.Reset()
+	buf.SetBuf(enc)
+	err = buf.Unmarshal(pb)
+	buf.SetBuf(nil)
+	bufPool.Put(buf)
+
+	return err
 }
 
 // DecodeGroup reads a tag-delimited group from the Buffer.
