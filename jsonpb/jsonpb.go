@@ -590,6 +590,10 @@ type Unmarshaler struct {
 	// Whether to allow messages to contain unknown fields, as opposed to
 	// failing to unmarshal.
 	AllowUnknownFields bool
+
+	// If non-nil, AllowedUnknownField will be called for each unknown field
+	// encountered and allowed during the unmarshalling.
+	AllowedUnknownField func(fieldName string)
 }
 
 // UnmarshalNext unmarshals the next protocol buffer from a JSON object stream.
@@ -901,14 +905,21 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				}
 			}
 		}
-		if !u.AllowUnknownFields && len(jsonFields) > 0 {
-			// Pick any field to be the scapegoat.
-			var f string
-			for fname := range jsonFields {
-				f = fname
-				break
+		if len(jsonFields) > 0 {
+			if !u.AllowUnknownFields {
+				// Pick any field to be the scapegoat.
+				var f string
+				for fname := range jsonFields {
+					f = fname
+					break
+				}
+				return fmt.Errorf("unknown field %q in %v", f, targetType)
 			}
-			return fmt.Errorf("unknown field %q in %v", f, targetType)
+			if u.AllowedUnknownField != nil {
+				for fname := range jsonFields {
+					u.AllowedUnknownField(fname)
+				}
+			}
 		}
 		return nil
 	}
