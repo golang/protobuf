@@ -728,9 +728,9 @@ func (fn funcResolver) Resolve(turl string) (proto.Message, error) {
 }
 
 func TestAnyWithCustomResolver(t *testing.T) {
-	resolveCount := 0
+	var resolvedTypeUrls []string
 	resolver := funcResolver(func(turl string) (proto.Message, error) {
-		resolveCount++
+		resolvedTypeUrls = append(resolvedTypeUrls, turl)
 		return new(pb.Simple), nil
 	})
 	msg := &pb.Simple{
@@ -749,27 +749,31 @@ func TestAnyWithCustomResolver(t *testing.T) {
 		Value:   msgBytes,
 	}
 
-	m := Marshaler{UrlResolver: resolver}
+	m := Marshaler{AnyResolver: resolver}
 	js, err := m.MarshalToString(any)
 	if err != nil {
 		t.Errorf("an unexpected error occurred when marshaling any to JSON: %v", err)
 	}
-	if resolveCount != 1 {
+	if len(resolvedTypeUrls) != 1 {
 		t.Errorf("custom resolver was not invoked during marshaling")
+	} else if resolvedTypeUrls[0] != "https://foobar.com/some.random.MessageKind" {
+		t.Errorf("custom resolver was invoked with wrong URL: got %q, wanted %q", resolvedTypeUrls[0], "https://foobar.com/some.random.MessageKind")
 	}
 	wanted := `{"@type":"https://foobar.com/some.random.MessageKind","oBool":true,"oInt64":"1020304","oString":"foobar","oBytes":"AQIDBA=="}`
 	if js != wanted {
 		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", js, wanted)
 	}
 
-	u := Unmarshaler{UrlResolver: resolver}
+	u := Unmarshaler{AnyResolver: resolver}
 	roundTrip := &anypb.Any{}
 	err = u.Unmarshal(bytes.NewReader([]byte(js)), roundTrip)
 	if err != nil {
 		t.Errorf("an unexpected error occurred when unmarshaling any from JSON: %v", err)
 	}
-	if resolveCount != 2 {
-		t.Errorf("custom resolver was not invoked during unmarshaling")
+	if len(resolvedTypeUrls) != 2 {
+		t.Errorf("custom resolver was not invoked during marshaling")
+	} else if resolvedTypeUrls[1] != "https://foobar.com/some.random.MessageKind" {
+		t.Errorf("custom resolver was invoked with wrong URL: got %q, wanted %q", resolvedTypeUrls[1], "https://foobar.com/some.random.MessageKind")
 	}
 	if !proto.Equal(any, roundTrip) {
 		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", roundTrip, any)
