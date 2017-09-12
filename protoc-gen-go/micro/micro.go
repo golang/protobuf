@@ -6,14 +6,17 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/golang/protobuf/proto"
 	pb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/protoc-gen-go/generator"
+	options "google.golang.org/genproto/googleapis/api/annotations"
 )
 
 // Paths for packages used by code generated in this file,
 // relative to the import_prefix of the generator.Generator.
 const (
 	contextPkgPath = "golang.org/x/net/context"
+	apiPkgPath     = "github.com/micro/go-api"
 	clientPkgPath  = "github.com/micro/go-micro/client"
 	serverPkgPath  = "github.com/micro/go-micro/server"
 )
@@ -37,6 +40,7 @@ func (g *micro) Name() string {
 // They may vary from the final path component of the import path
 // if the name is used by other packages.
 var (
+	apiPkg     string
 	contextPkg string
 	clientPkg  string
 	serverPkg  string
@@ -45,6 +49,7 @@ var (
 // Init initializes the plugin.
 func (g *micro) Init(gen *generator.Generator) {
 	g.gen = gen
+	apiPkg = generator.RegisterUniquePackageName("api", nil)
 	contextPkg = generator.RegisterUniquePackageName("context", nil)
 	clientPkg = generator.RegisterUniquePackageName("client", nil)
 	serverPkg = generator.RegisterUniquePackageName("server", nil)
@@ -71,6 +76,7 @@ func (g *micro) Generate(file *generator.FileDescriptor) {
 		return
 	}
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
+	g.P("var _ ", apiPkg, ".Endpoint")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", clientPkg, ".Option")
 	g.P("var _ ", serverPkg, ".Option")
@@ -87,6 +93,7 @@ func (g *micro) GenerateImports(file *generator.FileDescriptor) {
 		return
 	}
 	g.P("import (")
+	g.P(apiPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, apiPkgPath)))
 	g.P(clientPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, clientPkgPath)))
 	g.P(serverPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, serverPkgPath)))
 	g.P(contextPkg, " ", strconv.Quote(path.Join(g.gen.ImportPrefix, contextPkgPath)))
@@ -177,7 +184,10 @@ func (g *micro) generateService(file *generator.FileDescriptor, service *pb.Serv
 	g.P()
 	// Server registration.
 	g.P("func Register", servName, "Handler(s ", serverPkg, ".Server, hdlr ", serverType, ", opts ...", serverPkg, ".HandlerOption) {")
-	g.P("s.Handle(s.NewHandler(&", servName, "{hdlr}, opts...))")
+	for _, method := range service.Method {
+		g.generateEndpoint(servName, method)
+		g.P("s.Handle(s.NewHandler(&", servName, "{hdlr}, opts...))")
+	}
 	g.P("}")
 	g.P()
 
@@ -193,6 +203,53 @@ func (g *micro) generateService(file *generator.FileDescriptor, service *pb.Serv
 		hname := g.generateServerMethod(servName, method)
 		handlerNames = append(handlerNames, hname)
 	}
+}
+
+// generateEndpoint creates the api endpoint
+func (g *micro) generateEndpoint(servName string, method *pb.MethodDescriptorProto) {
+	if method.Options == nil || !proto.HasExtension(method.Options, options.E_Http) {
+		return
+	}
+	// http rules
+	r, err := proto.GetExtension(method.Options, options.E_Http)
+	if err != nil {
+		return
+	}
+
+	rule := r.(*options.HttpRule)
+
+	var meth string
+	var path string
+
+	switch {
+	case len(rule.GetDelete()) > 0:
+		meth = "DELETE"
+		path = rule.GetDelete()
+	case len(rule.GetGet()) > 0:
+		meth = "GET"
+		path = rule.GetGet()
+	case len(rule.GetPatch()) > 0:
+		meth = "PATCH"
+		path = rule.GetPatch()
+	case len(rule.GetPost()) > 0:
+		meth = "POST"
+		path = rule.GetPost()
+	case len(rule.GetPut()) > 0:
+		meth = "PUT"
+		path = rule.GetPut()
+	}
+
+	if len(meth) == 0 || len(path) == 0 {
+		return
+	}
+
+	// TODO: process additional bindings
+	g.P("opts = append(opts, ", apiPkg, ".WithEndpoint(&", apiPkg, ".Endpoint{")
+	g.P("Name:", fmt.Sprintf(`"%s.%s",`, servName, method.GetName()))
+	g.P("Path:", fmt.Sprintf(`[]string{"%s"},`, path))
+	g.P("Method:", fmt.Sprintf(`[]string{"%s"},`, meth))
+	g.P("Handler:", apiPkg, ".Rpc,")
+	g.P("}))")
 }
 
 // generateClientSignature returns the client-side signature for a method.
