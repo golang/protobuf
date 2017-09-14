@@ -32,6 +32,7 @@
 package generator
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
@@ -80,6 +81,42 @@ func TestGoPackageOption(t *testing.T) {
 		if impPath != tc.impPath || pkg != tc.pkg || ok != tc.ok {
 			t.Errorf("go_package = %q => (%q, %q, %t), want (%q, %q, %t)", tc.in,
 				impPath, pkg, ok, tc.impPath, tc.pkg, tc.ok)
+		}
+	}
+}
+
+func TestUnescape(t *testing.T) {
+	tests := []struct {
+		in  string
+		out string
+		err string
+	}{
+		// successful cases, including all kinds of escapes
+		{"", "", ""},
+		{"foo bar baz frob nitz", "foo bar baz frob nitz", ""},
+		{"\\000\\001\\002\\003\\004\\005\\006\\007", string([]byte{0, 1, 2, 3, 4, 5, 6, 7}), ""},
+		{"\\a\\b\\f\\n\\r\\t\\v\\\\\\?\\'\\\"", "\a\b\f\n\r\t\v\\?'\"", ""},
+		{"\\x10\\x20\\x30\\x40\\x50\\x60\\x70\\x80", "\x10\x20\x30\x40\x50\x60\x70\x80", ""},
+		// malformed input cases
+		{"foo \\g bar", "", "invalid escape sequence"},
+		{"foo \\xg0 bar", "", "error decoding hex escape"},
+		{"foo \\008 bar", "", "error decoding octal escape"},
+		{"\\", "", "EOF"},
+		{"\\x", "", "EOF"},
+		{"\\xf", "", "EOF"},
+		{"\\0", "", "EOF"},
+		{"\\01", "", "EOF"},
+	}
+	for _, tc := range tests {
+		s, err := doUnescape(tc.in)
+		if tc.err != "" {
+			if err == nil {
+				t.Errorf("expecting error unescaping %q but it succeeded", tc.in)
+			} else if !strings.Contains(err.Error(), tc.err) {
+				t.Errorf("wrong error unescaping %q: want %q; got %q", tc.in, tc.err, err.Error())
+			}
+		} else if s != tc.out {
+			t.Errorf("wrong result unescaping %q: want %q; got %q", tc.in, tc.out, s)
 		}
 	}
 }

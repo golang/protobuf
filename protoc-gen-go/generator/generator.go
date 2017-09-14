@@ -44,6 +44,7 @@ import (
 	"go/parser"
 	"go/printer"
 	"go/token"
+	"io"
 	"log"
 	"os"
 	"path"
@@ -1984,7 +1985,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		case typename == "string":
 			def = strconv.Quote(def)
 		case typename == "[]byte":
-			def = "[]byte(" + strconv.Quote(def) + ")"
+			def = "[]byte(" + strconv.Quote(unescape(def)) + ")"
 			kind = "var "
 		case def == "inf", def == "-inf", def == "nan":
 			// These names are known to, and defined by, the protocol language.
@@ -2506,6 +2507,97 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	}
 
 	g.addInitf("%s.RegisterType((*%s)(nil), %q)", g.Pkg["proto"], ccTypeName, fullName)
+}
+
+func unescape(s string) string {
+	// NB: Sadly, we can't use strconv.Unquote because protoc will escape both
+	// single and double quotes, but strconv.Unquote only allows one or the
+	// other (based on actual surrounding quotes of its input argument).
+	s, err := doUnescape(s)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	return s
+}
+
+func doUnescape(s string) (string, error) {
+	// reverses the "C" escaping that protoc does for default values of bytes fields
+	buf := bytes.NewBuffer(make([]byte, 0, len(s)))
+	in := strings.NewReader(s)
+	for {
+		b, err := in.ReadByte()
+		if err == io.EOF {
+			// Done!
+			return buf.String(), nil
+		} else if err != nil {
+			return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
+		}
+		if b == '\\' {
+			b, err := in.ReadByte()
+			if err != nil {
+				return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
+			}
+			switch b {
+			case 'a':
+				buf.WriteByte('\a')
+			case 'b':
+				buf.WriteByte('\b')
+			case 'f':
+				buf.WriteByte('\f')
+			case 'n':
+				buf.WriteByte('\n')
+			case 'r':
+				buf.WriteByte('\r')
+			case 't':
+				buf.WriteByte('\t')
+			case 'v':
+				buf.WriteByte('\v')
+			case '\\':
+				buf.WriteByte('\\')
+			case '"':
+				buf.WriteByte('"')
+			case '\'':
+				buf.WriteByte('\'')
+			case '?':
+				buf.WriteByte('?')
+			case 'x':
+				h1, err := in.ReadByte()
+				if err != nil {
+					return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
+				}
+				h2, err := in.ReadByte()
+				if err != nil {
+					return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
+				}
+				c, err := strconv.ParseUint(string([]byte{h1, h2}), 16, 8)
+				if err != nil {
+					return "", fmt.Errorf("error decoding hex escape in constant bytes %q: %s", s, err)
+				}
+				buf.WriteByte(byte(c))
+			default:
+				if b >= '0' && b <= '7' {
+					o1 := b
+					o2, err := in.ReadByte()
+					if err != nil {
+						return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
+					}
+					o3, err := in.ReadByte()
+					if err != nil {
+						return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
+					}
+					c, err := strconv.ParseUint(string([]byte{o1, o2, o3}), 8, 8)
+					if err != nil {
+						return "", fmt.Errorf("error decoding octal escape in constant bytes %q: %s", s, err)
+					}
+					buf.WriteByte(byte(c))
+				} else {
+					return "", fmt.Errorf("invalid escape sequence in constant bytes %q", s)
+				}
+			}
+		} else {
+			buf.WriteByte(b)
+		}
+	}
 }
 
 func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
