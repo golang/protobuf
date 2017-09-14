@@ -44,7 +44,6 @@ import (
 	"go/parser"
 	"go/printer"
 	"go/token"
-	"io"
 	"log"
 	"os"
 	"path"
@@ -2509,60 +2508,43 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.addInitf("%s.RegisterType((*%s)(nil), %q)", g.Pkg["proto"], ccTypeName, fullName)
 }
 
-func unescape(s string) string {
-	// NB: Sadly, we can't use strconv.Unquote because protoc will escape both
-	// single and double quotes, but strconv.Unquote only allows one or the
-	// other (based on actual surrounding quotes of its input argument).
-	s, err := doUnescape(s)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	return s
-}
-
 var escapeChars = [256]byte{
 	'a': '\a', 'b': '\b', 'f': '\f', 'n': '\n', 'r': '\r', 't': '\t', 'v': '\v', '\\': '\\', '"': '"', '\'': '\'', '?': '?',
 }
 
-func doUnescape(s string) (string, error) {
-	// reverses the "C" escaping that protoc does for default values of bytes fields
+// unescape reverses the "C" escaping that protoc does for default values of bytes fields.
+func unescape(s string) string {
+	// NB: Sadly, we can't use strconv.Unquote because protoc will escape both
+	// single and double quotes, but strconv.Unquote only allows one or the
+	// other (based on actual surrounding quotes of its input argument).
+
 	var out []byte
 	for len(s) > 0 {
-		// regular character
-		if s[0] != '\\' {
+		// regular character, or too short to be valid escape
+		if s[0] != '\\' || len(s) < 2 {
 			out = append(out, s[0])
 			s = s[1:]
-			continue
-		}
-
-		if len(s) < 2 { // E.g., "\n"
-			return "", io.ErrUnexpectedEOF
-		}
-
-		// escape sequence
-		if c := escapeChars[s[1]]; c != 0 {
+		} else if c := escapeChars[s[1]]; c != 0 {
+			// escape sequence
 			out = append(out, c)
 			s = s[2:]
-			continue
-		}
-
-		// hex escape
-		if s[1] == 'x' || s[1] == 'X' {
-			if len(s) < 4 { // E.g., "\x00"
-				return "", io.ErrUnexpectedEOF
+		} else if s[1] == 'x' || s[1] == 'X' {
+			// hex escape, e.g. "\x80
+			if len(s) < 4 {
+				// too short to be valid
+				out = append(out, s[0], s[1])
+				s = s[2:]
+				continue
 			}
 			v, err := strconv.ParseUint(s[2:4], 16, 8)
 			if err != nil {
-				return "", err
+				out = append(out, s[0], s[1], s[2], s[3])
+			} else {
+				out = append(out, byte(v))
 			}
-			out = append(out, byte(v))
 			s = s[4:]
-			continue
-		}
-
-		// octal escape
-		if '0' <= s[1] && s[1] <= '7' {
-			// can vary from 1 to 3 octal digits. E.g., "\0" "\40" or "\164"
+		} else if '0' <= s[1] && s[1] <= '7' {
+			// octal escape, can vary from 1 to 3 octal digits; e.g., "\0" "\40" or "\164"
 			// so consume up to 2 more bytes or up to end-of-string
 			end := len(s) - 2
 			i := 0
@@ -2573,17 +2555,20 @@ func doUnescape(s string) (string, error) {
 			}
 			v, err := strconv.ParseUint(s[1:i+2], 8, 8)
 			if err != nil {
-				return "", err
+				out = append(out, s[0])
+				s = s[1:]
+			} else {
+				out = append(out, byte(v))
+				s = s[i+2:]
 			}
-			out = append(out, byte(v))
-			s = s[i+2:]
-			continue
+		} else {
+			// bad escape, just propagate the slash as-is
+			out = append(out, s[0])
+			s = s[1:]
 		}
-
-		return "", fmt.Errorf("invalid escape sequence: %q", s[:2])
 	}
 
-	return string(out), nil
+	return string(out)
 }
 
 func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
