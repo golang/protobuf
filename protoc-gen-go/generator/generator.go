@@ -2513,6 +2513,8 @@ var escapeChars = [256]byte{
 }
 
 // unescape reverses the "C" escaping that protoc does for default values of bytes fields.
+// It is best effort in that it effectively ignores malformed input. Seemingly invalid escape
+// sequences are conveyed, unmodified, into the decoded result.
 func unescape(s string) string {
 	// NB: Sadly, we can't use strconv.Unquote because protoc will escape both
 	// single and double quotes, but strconv.Unquote only allows one or the
@@ -2532,13 +2534,13 @@ func unescape(s string) string {
 			// hex escape, e.g. "\x80
 			if len(s) < 4 {
 				// too short to be valid
-				out = append(out, s[0], s[1])
+				out = append(out, s[:2]...)
 				s = s[2:]
 				continue
 			}
 			v, err := strconv.ParseUint(s[2:4], 16, 8)
 			if err != nil {
-				out = append(out, s[0], s[1], s[2], s[3])
+				out = append(out, s[:4]...)
 			} else {
 				out = append(out, byte(v))
 			}
@@ -2546,21 +2548,17 @@ func unescape(s string) string {
 		} else if '0' <= s[1] && s[1] <= '7' {
 			// octal escape, can vary from 1 to 3 octal digits; e.g., "\0" "\40" or "\164"
 			// so consume up to 2 more bytes or up to end-of-string
-			end := len(s) - 2
-			i := 0
-			for ; i < end && i < 2; i++ {
-				if s[i+2] < '0' || s[i+2] > '7' {
-					break
-				}
+			n := len(s[1:]) - len(strings.TrimLeft(s[1:], "01234567"))
+			if n > 3 {
+				n = 3
 			}
-			v, err := strconv.ParseUint(s[1:i+2], 8, 8)
+			v, err := strconv.ParseUint(s[1:1+n], 8, 8)
 			if err != nil {
-				out = append(out, s[0])
-				s = s[1:]
+				out = append(out, s[:1+n]...)
 			} else {
 				out = append(out, byte(v))
-				s = s[i+2:]
 			}
+			s = s[1+n:]
 		} else {
 			// bad escape, just propagate the slash as-is
 			out = append(out, s[0])
