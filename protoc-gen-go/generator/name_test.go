@@ -32,7 +32,6 @@
 package generator
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
@@ -87,36 +86,36 @@ func TestGoPackageOption(t *testing.T) {
 
 func TestUnescape(t *testing.T) {
 	tests := []struct {
-		in  string
-		out string
-		err string
+		in   string
+		out  string
+		fail bool
 	}{
 		// successful cases, including all kinds of escapes
-		{"", "", ""},
-		{"foo bar baz frob nitz", "foo bar baz frob nitz", ""},
-		{"\\000\\001\\002\\003\\004\\005\\006\\007", string([]byte{0, 1, 2, 3, 4, 5, 6, 7}), ""},
-		{"\\a\\b\\f\\n\\r\\t\\v\\\\\\?\\'\\\"", "\a\b\f\n\r\t\v\\?'\"", ""},
-		{"\\x10\\x20\\x30\\x40\\x50\\x60\\x70\\x80", "\x10\x20\x30\x40\x50\x60\x70\x80", ""},
+		{"", "", false},
+		{"foo bar baz frob nitz", "foo bar baz frob nitz", false},
+		{"\\000\\001\\002\\003\\004\\005\\006\\007", string([]byte{0, 1, 2, 3, 4, 5, 6, 7}), false},
+		{"\\a\\b\\f\\n\\r\\t\\v\\\\\\?\\'\\\"", "\a\b\f\n\r\t\v\\?'\"", false},
+		{"\\x10\\x20\\x30\\x40\\x50\\x60\\x70\\x80", "\x10\x20\x30\x40\x50\x60\x70\x80", false},
+		// variable length octal escapes
+		{"\\0\\018\\222\\377\\3\\04\\005\\6\\07", string([]byte{0, 1, '8', 0222, 255, 3, 4, 5, 6, 7}), false},
 		// malformed input cases
-		{"foo \\g bar", "", "invalid escape sequence"},
-		{"foo \\xg0 bar", "", "error decoding hex escape"},
-		{"foo \\008 bar", "", "error decoding octal escape"},
-		{"\\", "", "EOF"},
-		{"\\x", "", "EOF"},
-		{"\\xf", "", "EOF"},
-		{"\\0", "", "EOF"},
-		{"\\01", "", "EOF"},
+		{"foo \\g bar", "", true},
+		{"foo \\xg0 bar", "", true},
+		{"\\", "", true},
+		{"\\x", "", true},
+		{"\\xf", "", true},
+		{"\\777", "", true}, // overflows byte
 	}
 	for _, tc := range tests {
 		s, err := doUnescape(tc.in)
-		if tc.err != "" {
+		if tc.fail {
 			if err == nil {
-				t.Errorf("expecting error unescaping %q but it succeeded", tc.in)
-			} else if !strings.Contains(err.Error(), tc.err) {
-				t.Errorf("wrong error unescaping %q: want %q; got %q", tc.in, tc.err, err.Error())
+				t.Errorf("doUnescape(%q) should have failed but did not", tc.in)
 			}
+		} else if err != nil {
+			t.Errorf("doUnescape(%q) failed: %s", tc.in, err)
 		} else if s != tc.out {
-			t.Errorf("wrong result unescaping %q: want %q; got %q", tc.in, tc.out, s)
+			t.Errorf("doUnescape(%q) = %q; should have been %q", tc.in, s, tc.out)
 		}
 	}
 }

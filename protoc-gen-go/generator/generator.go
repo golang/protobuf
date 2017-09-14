@@ -2520,84 +2520,70 @@ func unescape(s string) string {
 	return s
 }
 
+var escapeChars = [256]byte{
+	'a': '\a', 'b': '\b', 'f': '\f', 'n': '\n', 'r': '\r', 't': '\t', 'v': '\v', '\\': '\\', '"': '"', '\'': '\'', '?': '?',
+}
+
 func doUnescape(s string) (string, error) {
 	// reverses the "C" escaping that protoc does for default values of bytes fields
-	buf := bytes.NewBuffer(make([]byte, 0, len(s)))
-	in := strings.NewReader(s)
-	for {
-		b, err := in.ReadByte()
-		if err == io.EOF {
-			// Done!
-			return buf.String(), nil
-		} else if err != nil {
-			return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
+	var out []byte
+	for len(s) > 0 {
+		// regular character
+		if s[0] != '\\' {
+			out = append(out, s[0])
+			s = s[1:]
+			continue
 		}
-		if b == '\\' {
-			b, err := in.ReadByte()
+
+		if len(s) < 2 { // E.g., "\n"
+			return "", io.ErrUnexpectedEOF
+		}
+
+		// escape sequence
+		if c := escapeChars[s[1]]; c != 0 {
+			out = append(out, c)
+			s = s[2:]
+			continue
+		}
+
+		// hex escape
+		if s[1] == 'x' || s[1] == 'X' {
+			if len(s) < 4 { // E.g., "\x00"
+				return "", io.ErrUnexpectedEOF
+			}
+			v, err := strconv.ParseUint(s[2:4], 16, 8)
 			if err != nil {
-				return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
+				return "", err
 			}
-			switch b {
-			case 'a':
-				buf.WriteByte('\a')
-			case 'b':
-				buf.WriteByte('\b')
-			case 'f':
-				buf.WriteByte('\f')
-			case 'n':
-				buf.WriteByte('\n')
-			case 'r':
-				buf.WriteByte('\r')
-			case 't':
-				buf.WriteByte('\t')
-			case 'v':
-				buf.WriteByte('\v')
-			case '\\':
-				buf.WriteByte('\\')
-			case '"':
-				buf.WriteByte('"')
-			case '\'':
-				buf.WriteByte('\'')
-			case '?':
-				buf.WriteByte('?')
-			case 'x':
-				h1, err := in.ReadByte()
-				if err != nil {
-					return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
-				}
-				h2, err := in.ReadByte()
-				if err != nil {
-					return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
-				}
-				c, err := strconv.ParseUint(string([]byte{h1, h2}), 16, 8)
-				if err != nil {
-					return "", fmt.Errorf("error decoding hex escape in constant bytes %q: %s", s, err)
-				}
-				buf.WriteByte(byte(c))
-			default:
-				if b >= '0' && b <= '7' {
-					o1 := b
-					o2, err := in.ReadByte()
-					if err != nil {
-						return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
-					}
-					o3, err := in.ReadByte()
-					if err != nil {
-						return "", fmt.Errorf("error decoding constant bytes %q: %s", s, err)
-					}
-					c, err := strconv.ParseUint(string([]byte{o1, o2, o3}), 8, 8)
-					if err != nil {
-						return "", fmt.Errorf("error decoding octal escape in constant bytes %q: %s", s, err)
-					}
-					buf.WriteByte(byte(c))
-				} else {
-					return "", fmt.Errorf("invalid escape sequence in constant bytes %q", s)
-				}
-			}
-		} else {
-			buf.WriteByte(b)
+			out = append(out, byte(v))
+			s = s[4:]
+			continue
 		}
+
+		// octal escape
+		if '0' <= s[1] && s[1] <= '7' {
+			// can vary from 1 to 3 octal digits. E.g., "\0" "\40" or "\164"
+			// so consume up to 2 more bytes or up to end-of-string
+			end := len(s) - 2
+			i := 0
+			for ; i < end && i < 2; i++ {
+				if s[i+2] < '0' || s[i+2] > '7' {
+					break
+				}
+			}
+			v, err := strconv.ParseUint(s[1:i+2], 8, 8)
+			if err != nil {
+				return "", err
+			}
+			out = append(out, byte(v))
+			s = s[i+2:]
+			continue
+		}
+
+		return "", fmt.Errorf("invalid escape sequence: %q", s[:2])
 	}
+
+	return string(out), nil
 }
 
 func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
