@@ -287,9 +287,7 @@ func (g *grpc) generateClientMethod(servName, fullServName, serviceDescVar strin
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
 		g.P("out := new(", outType, ")")
 		// TODO: Pass descExpr to Invoke.
-		g.P("err := ", grpcPkg, `.Invoke(ctx, "`, sname, `", in, out, c.cc, opts...)`)
-		g.P("if err != nil { return nil, err }")
-		g.P("return out, nil")
+		g.P("return out, ", grpcPkg, `.Invoke(ctx, "`, sname, `", in, out, c.cc, opts...)`)
 		g.P("}")
 		g.P()
 		return
