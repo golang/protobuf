@@ -439,7 +439,13 @@ func defaultExtensionValue(extension *ExtensionDesc) (interface{}, error) {
 
 // decodeExtension decodes an extension encoded in b.
 func decodeExtension(b []byte, extension *ExtensionDesc) (interface{}, error) {
-	o := NewBuffer(b)
+	o := bufPool.Get().(*Buffer)
+	o.SetBuf(b)
+	defer func() {
+		o.Reset()
+		bufPool.Put(o)
+	}()
+
 
 	t := reflect.TypeOf(extension.ExtensionType)
 
