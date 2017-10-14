@@ -296,23 +296,25 @@ func (d *FileDescriptor) goPackageOption() (impPath, pkg string, ok bool) {
 	return
 }
 
-// goPackageName returns the Go package name to use in the
-// generated Go file.  The result explicit reports whether the name
-// came from an option go_package statement.  If explicit is false,
-// the name was derived from the protocol buffer's package statement
+// goPackagePathAndName returns the Go import path and package name to use
+// in the generated Go file.  The result explicit reports whether the
+// package name came from an option go_package statement.  If explicit is
+// false, the name was derived from the protocol buffer's package statement
 // or the input file name.
-func (d *FileDescriptor) goPackageName() (name string, explicit bool) {
+func (d *FileDescriptor) goPackagePathAndName() (impPath, pkg string, explicit bool) {
 	// Does the file have a "go_package" option?
-	if _, pkg, ok := d.goPackageOption(); ok {
-		return pkg, true
+	if impPath, pkg, ok := d.goPackageOption(); ok {
+		return impPath, pkg, true
 	}
+
+	dir, base := splitName(d.GetName())
 
 	// Does the file have a package clause?
 	if pkg := d.GetPackage(); pkg != "" {
-		return pkg, false
+		return dir, pkg, false
 	}
-	// Use the file base name.
-	return baseName(d.GetName()), false
+	// Use the file name.
+	return dir, base, false
 }
 
 // goFileName returns the output name for the generated Go file.
@@ -747,15 +749,18 @@ func (g *Generator) defaultGoPackage() string {
 func (g *Generator) SetPackageNames() {
 	// Register the name for this package.  It will be the first name
 	// registered so is guaranteed to be unmodified.
-	pkg, explicit := g.genFiles[0].goPackageName()
+	impPath, pkg, explicit := g.genFiles[0].goPackagePathAndName()
 
 	// Check all files for an explicit go_package option.
 	for _, f := range g.genFiles {
-		thisPkg, thisExplicit := f.goPackageName()
+		thisImpPath, thisPkg, thisExplicit := f.goPackagePathAndName()
+		if thisImpPath != impPath {
+			g.Fail("inconsistent package paths:", thisImpPath, impPath)
+		}
 		if thisExplicit {
 			if !explicit {
 				// Let this file's go_package option serve for all input files.
-				pkg, explicit = thisPkg, true
+				impPath, pkg, explicit = thisImpPath, thisPkg, true
 			} else if thisPkg != pkg {
 				g.Fail("inconsistent package names:", thisPkg, pkg)
 			}
@@ -776,7 +781,7 @@ func (g *Generator) SetPackageNames() {
 	// Go package name.
 	if !explicit {
 		for _, f := range g.genFiles {
-			thisPkg, _ := f.goPackageName()
+			_, thisPkg, _ := f.goPackagePathAndName()
 			if thisPkg != pkg {
 				g.Fail("inconsistent package names:", thisPkg, pkg)
 			}
@@ -806,7 +811,7 @@ AllFiles:
 		// because that is only relevant for its specific generated output.
 		pkg := f.GetPackage()
 		if pkg == "" {
-			pkg = baseName(*f.Name)
+			_, pkg = splitName(*f.Name)
 		}
 		RegisterUniquePackageName(pkg, f)
 	}
@@ -3035,17 +3040,20 @@ func badToUnderscore(r rune) rune {
 	return '_'
 }
 
-// baseName returns the last path element of the name, with the last dotted suffix removed.
-func baseName(name string) string {
+// splitName splits the given path into its directory and base name. If the base
+// name includes an extension, it is removed before being returned.
+func splitName(name string) (dir, base string) {
+	base = name
 	// First, find the last element
-	if i := strings.LastIndex(name, "/"); i >= 0 {
-		name = name[i+1:]
+	if i := strings.LastIndex(base, "/"); i >= 0 {
+		dir = base[:i]
+		base = base[i+1:]
 	}
 	// Now drop the suffix
-	if i := strings.LastIndex(name, "."); i >= 0 {
-		name = name[0:i]
+	if i := strings.LastIndex(base, "."); i >= 0 {
+		base = base[:i]
 	}
-	return name
+	return dir, base
 }
 
 // The SourceCodeInfo message describes the location of elements of a parsed
