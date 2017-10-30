@@ -393,6 +393,7 @@ func (g *grpc) generateServerMethod(servName, fullServName string, method *pb.Me
 		g.P("info := &", grpcPkg, ".UnaryServerInfo{")
 		g.P("Server: srv,")
 		g.P("FullMethod: ", strconv.Quote(fmt.Sprintf("/%s/%s", fullServName, methName)), ",")
+		g.P("IdempotencyLevel: grpc.", method.GetOptions().GetIdempotencyLevel().String(), ",")
 		g.P("}")
 		g.P("handler := func(ctx ", contextPkg, ".Context, req interface{}) (interface{}, error) {")
 		g.P("return srv.(", servName, "Server).", methName, "(ctx, req.(*", inType, "))")
