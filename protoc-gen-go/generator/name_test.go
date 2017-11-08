@@ -86,8 +86,8 @@ func TestGoPackageOption(t *testing.T) {
 
 func TestUnescape(t *testing.T) {
 	tests := []struct {
-		in   string
-		out  string
+		in  string
+		out string
 	}{
 		// successful cases, including all kinds of escapes
 		{"", ""},

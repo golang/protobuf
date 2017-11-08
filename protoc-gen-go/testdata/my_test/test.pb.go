@@ -191,13 +191,32 @@ type Request struct {
 	MsgMapping map[int64]*Reply `protobuf:"bytes,15,rep,name=msg_mapping,json=msgMapping" json:"msg_mapping,omitempty" protobuf_key:"zigzag64,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	Reset_     *int32           `protobuf:"varint,12,opt,name=reset" json:"reset,omitempty"`
 	// This field should not conflict with any getters.
-	GetKey_          *string `protobuf:"bytes,16,opt,name=get_key,json=getKey" json:"get_key,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	GetKey_              *string  `protobuf:"bytes,16,opt,name=get_key,json=getKey" json:"get_key,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *Request) Reset()         { *m = Request{} }
 func (m *Request) String() string { return proto.CompactTextString(m) }
 func (*Request) ProtoMessage()    {}
+func (m *Request) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Request.Unmarshal(m, b)
+}
+func (m *Request) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Request.Marshal(b, m, deterministic)
+}
+func (dst *Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Request.Merge(dst, src)
+}
+func (m *Request) XXX_Size() int {
+	return xxx_messageInfo_Request.Size(m)
+}
+func (m *Request) XXX_DiscardUnknown() {
+	xxx_messageInfo_Request.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Request proto.InternalMessageInfo
 
 const Default_Request_Hat HatType = HatType_FEDORA
 
@@ -267,13 +286,32 @@ func (m *Request) GetGetKey_() string {
 }
 
 type Request_SomeGroup struct {
-	GroupField       *int32 `protobuf:"varint,9,opt,name=group_field,json=groupField" json:"group_field,omitempty"`
-	XXX_unrecognized []byte `json:"-"`
+	GroupField           *int32   `protobuf:"varint,9,opt,name=group_field,json=groupField" json:"group_field,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *Request_SomeGroup) Reset()         { *m = Request_SomeGroup{} }
 func (m *Request_SomeGroup) String() string { return proto.CompactTextString(m) }
 func (*Request_SomeGroup) ProtoMessage()    {}
+func (m *Request_SomeGroup) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Request_SomeGroup.Unmarshal(m, b)
+}
+func (m *Request_SomeGroup) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Request_SomeGroup.Marshal(b, m, deterministic)
+}
+func (dst *Request_SomeGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Request_SomeGroup.Merge(dst, src)
+}
+func (m *Request_SomeGroup) XXX_Size() int {
+	return xxx_messageInfo_Request_SomeGroup.Size(m)
+}
+func (m *Request_SomeGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_Request_SomeGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Request_SomeGroup proto.InternalMessageInfo
 
 func (m *Request_SomeGroup) GetGroupField() int32 {
 	if m != nil && m.GroupField != nil {
@@ -285,8 +323,10 @@ func (m *Request_SomeGroup) GetGroupField() int32 {
 type Reply struct {
 	Found                        []*Reply_Entry `protobuf:"bytes,1,rep,name=found" json:"found,omitempty"`
 	CompactKeys                  []int32        `protobuf:"varint,2,rep,packed,name=compact_keys,json=compactKeys" json:"compact_keys,omitempty"`
+	XXX_NoUnkeyedLiteral         struct{}       `json:"-"`
 	proto.XXX_InternalExtensions `json:"-"`
 	XXX_unrecognized             []byte `json:"-"`
+	XXX_sizecache                int32  `json:"-"`
 }
 
 func (m *Reply) Reset()         { *m = Reply{} }
@@ -300,6 +340,23 @@ var extRange_Reply = []proto.ExtensionRange{
 func (*Reply) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_Reply
 }
+func (m *Reply) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Reply.Unmarshal(m, b)
+}
+func (m *Reply) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Reply.Marshal(b, m, deterministic)
+}
+func (dst *Reply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Reply.Merge(dst, src)
+}
+func (m *Reply) XXX_Size() int {
+	return xxx_messageInfo_Reply.Size(m)
+}
+func (m *Reply) XXX_DiscardUnknown() {
+	xxx_messageInfo_Reply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Reply proto.InternalMessageInfo
 
 func (m *Reply) GetFound() []*Reply_Entry {
 	if m != nil {
@@ -316,15 +373,34 @@ func (m *Reply) GetCompactKeys() []int32 {
 }
 
 type Reply_Entry struct {
-	KeyThatNeeds_1234Camel_CasIng *int64 `protobuf:"varint,1,req,name=key_that_needs_1234camel_CasIng,json=keyThatNeeds1234camelCasIng" json:"key_that_needs_1234camel_CasIng,omitempty"`
-	Value                         *int64 `protobuf:"varint,2,opt,name=value,def=7" json:"value,omitempty"`
-	XMyFieldName_2                *int64 `protobuf:"varint,3,opt,name=_my_field_name_2,json=MyFieldName2" json:"_my_field_name_2,omitempty"`
-	XXX_unrecognized              []byte `json:"-"`
+	KeyThatNeeds_1234Camel_CasIng *int64   `protobuf:"varint,1,req,name=key_that_needs_1234camel_CasIng,json=keyThatNeeds1234camelCasIng" json:"key_that_needs_1234camel_CasIng,omitempty"`
+	Value                         *int64   `protobuf:"varint,2,opt,name=value,def=7" json:"value,omitempty"`
+	XMyFieldName_2                *int64   `protobuf:"varint,3,opt,name=_my_field_name_2,json=MyFieldName2" json:"_my_field_name_2,omitempty"`
+	XXX_NoUnkeyedLiteral          struct{} `json:"-"`
+	XXX_unrecognized              []byte   `json:"-"`
+	XXX_sizecache                 int32    `json:"-"`
 }
 
 func (m *Reply_Entry) Reset()         { *m = Reply_Entry{} }
 func (m *Reply_Entry) String() string { return proto.CompactTextString(m) }
 func (*Reply_Entry) ProtoMessage()    {}
+func (m *Reply_Entry) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Reply_Entry.Unmarshal(m, b)
+}
+func (m *Reply_Entry) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Reply_Entry.Marshal(b, m, deterministic)
+}
+func (dst *Reply_Entry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Reply_Entry.Merge(dst, src)
+}
+func (m *Reply_Entry) XXX_Size() int {
+	return xxx_messageInfo_Reply_Entry.Size(m)
+}
+func (m *Reply_Entry) XXX_DiscardUnknown() {
+	xxx_messageInfo_Reply_Entry.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Reply_Entry proto.InternalMessageInfo
 
 const Default_Reply_Entry_Value int64 = 7
 
@@ -350,9 +426,11 @@ func (m *Reply_Entry) GetXMyFieldName_2() int64 {
 }
 
 type OtherBase struct {
-	Name                         *string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                         *string  `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
 	proto.XXX_InternalExtensions `json:"-"`
 	XXX_unrecognized             []byte `json:"-"`
+	XXX_sizecache                int32  `json:"-"`
 }
 
 func (m *OtherBase) Reset()         { *m = OtherBase{} }
@@ -366,6 +444,23 @@ var extRange_OtherBase = []proto.ExtensionRange{
 func (*OtherBase) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OtherBase
 }
+func (m *OtherBase) Unmarshal(b []byte) error {
+	return xxx_messageInfo_OtherBase.Unmarshal(m, b)
+}
+func (m *OtherBase) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_OtherBase.Marshal(b, m, deterministic)
+}
+func (dst *OtherBase) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OtherBase.Merge(dst, src)
+}
+func (m *OtherBase) XXX_Size() int {
+	return xxx_messageInfo_OtherBase.Size(m)
+}
+func (m *OtherBase) XXX_DiscardUnknown() {
+	xxx_messageInfo_OtherBase.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_OtherBase proto.InternalMessageInfo
 
 func (m *OtherBase) GetName() string {
 	if m != nil && m.Name != nil {
@@ -375,12 +470,31 @@ func (m *OtherBase) GetName() string {
 }
 
 type ReplyExtensions struct {
-	XXX_unrecognized []byte `json:"-"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *ReplyExtensions) Reset()         { *m = ReplyExtensions{} }
 func (m *ReplyExtensions) String() string { return proto.CompactTextString(m) }
 func (*ReplyExtensions) ProtoMessage()    {}
+func (m *ReplyExtensions) Unmarshal(b []byte) error {
+	return xxx_messageInfo_ReplyExtensions.Unmarshal(m, b)
+}
+func (m *ReplyExtensions) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ReplyExtensions.Marshal(b, m, deterministic)
+}
+func (dst *ReplyExtensions) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ReplyExtensions.Merge(dst, src)
+}
+func (m *ReplyExtensions) XXX_Size() int {
+	return xxx_messageInfo_ReplyExtensions.Size(m)
+}
+func (m *ReplyExtensions) XXX_DiscardUnknown() {
+	xxx_messageInfo_ReplyExtensions.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ReplyExtensions proto.InternalMessageInfo
 
 var E_ReplyExtensions_Time = &proto.ExtensionDesc{
 	ExtendedType:  (*Reply)(nil),
@@ -410,13 +524,32 @@ var E_ReplyExtensions_Donut = &proto.ExtensionDesc{
 }
 
 type OtherReplyExtensions struct {
-	Key              *int32 `protobuf:"varint,1,opt,name=key" json:"key,omitempty"`
-	XXX_unrecognized []byte `json:"-"`
+	Key                  *int32   `protobuf:"varint,1,opt,name=key" json:"key,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *OtherReplyExtensions) Reset()         { *m = OtherReplyExtensions{} }
 func (m *OtherReplyExtensions) String() string { return proto.CompactTextString(m) }
 func (*OtherReplyExtensions) ProtoMessage()    {}
+func (m *OtherReplyExtensions) Unmarshal(b []byte) error {
+	return xxx_messageInfo_OtherReplyExtensions.Unmarshal(m, b)
+}
+func (m *OtherReplyExtensions) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_OtherReplyExtensions.Marshal(b, m, deterministic)
+}
+func (dst *OtherReplyExtensions) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OtherReplyExtensions.Merge(dst, src)
+}
+func (m *OtherReplyExtensions) XXX_Size() int {
+	return xxx_messageInfo_OtherReplyExtensions.Size(m)
+}
+func (m *OtherReplyExtensions) XXX_DiscardUnknown() {
+	xxx_messageInfo_OtherReplyExtensions.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_OtherReplyExtensions proto.InternalMessageInfo
 
 func (m *OtherReplyExtensions) GetKey() int32 {
 	if m != nil && m.Key != nil {
@@ -426,20 +559,16 @@ func (m *OtherReplyExtensions) GetKey() int32 {
 }
 
 type OldReply struct {
-	proto.XXX_InternalExtensions `json:"-"`
+	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
+	proto.XXX_InternalExtensions `protobuf_messageset:"1" json:"-"`
 	XXX_unrecognized             []byte `json:"-"`
+	XXX_sizecache                int32  `json:"-"`
 }
 
 func (m *OldReply) Reset()         { *m = OldReply{} }
 func (m *OldReply) String() string { return proto.CompactTextString(m) }
 func (*OldReply) ProtoMessage()    {}
 
-func (m *OldReply) Marshal() ([]byte, error) {
-	return proto.MarshalMessageSet(&m.XXX_InternalExtensions)
-}
-func (m *OldReply) Unmarshal(buf []byte) error {
-	return proto.UnmarshalMessageSet(buf, &m.XXX_InternalExtensions)
-}
 func (m *OldReply) MarshalJSON() ([]byte, error) {
 	return proto.MarshalMessageSetJSON(&m.XXX_InternalExtensions)
 }
@@ -447,8 +576,7 @@ func (m *OldReply) UnmarshalJSON(buf []byte) error {
 	return proto.UnmarshalMessageSetJSON(buf, &m.XXX_InternalExtensions)
 }
 
-// ensure OldReply satisfies proto.Marshaler and proto.Unmarshaler
-var _ proto.Marshaler = (*OldReply)(nil)
+// ensure OldReply satisfies proto.Unmarshaler
 var _ proto.Unmarshaler = (*OldReply)(nil)
 
 var extRange_OldReply = []proto.ExtensionRange{
@@ -458,6 +586,23 @@ var extRange_OldReply = []proto.ExtensionRange{
 func (*OldReply) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OldReply
 }
+func (m *OldReply) Unmarshal(b []byte) error {
+	return xxx_messageInfo_OldReply.Unmarshal(m, b)
+}
+func (m *OldReply) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_OldReply.Marshal(b, m, deterministic)
+}
+func (dst *OldReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OldReply.Merge(dst, src)
+}
+func (m *OldReply) XXX_Size() int {
+	return xxx_messageInfo_OldReply.Size(m)
+}
+func (m *OldReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_OldReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_OldReply proto.InternalMessageInfo
 
 type Communique struct {
 	MakeMeCry *bool `protobuf:"varint,1,opt,name=make_me_cry,json=makeMeCry" json:"make_me_cry,omitempty"`
@@ -474,13 +619,32 @@ type Communique struct {
 	//	*Communique_Delta_
 	//	*Communique_Msg
 	//	*Communique_Somegroup
-	Union            isCommunique_Union `protobuf_oneof:"union"`
-	XXX_unrecognized []byte             `json:"-"`
+	Union                isCommunique_Union `protobuf_oneof:"union"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
 }
 
 func (m *Communique) Reset()         { *m = Communique{} }
 func (m *Communique) String() string { return proto.CompactTextString(m) }
 func (*Communique) ProtoMessage()    {}
+func (m *Communique) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Communique.Unmarshal(m, b)
+}
+func (m *Communique) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Communique.Marshal(b, m, deterministic)
+}
+func (dst *Communique) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Communique.Merge(dst, src)
+}
+func (m *Communique) XXX_Size() int {
+	return xxx_messageInfo_Communique.Size(m)
+}
+func (m *Communique) XXX_DiscardUnknown() {
+	xxx_messageInfo_Communique.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Communique proto.InternalMessageInfo
 
 type isCommunique_Union interface {
 	isCommunique_Union()
@@ -805,13 +969,32 @@ func _Communique_OneofSizer(msg proto.Message) (n int) {
 }
 
 type Communique_SomeGroup struct {
-	Member           *string `protobuf:"bytes,15,opt,name=member" json:"member,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	Member               *string  `protobuf:"bytes,15,opt,name=member" json:"member,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *Communique_SomeGroup) Reset()         { *m = Communique_SomeGroup{} }
 func (m *Communique_SomeGroup) String() string { return proto.CompactTextString(m) }
 func (*Communique_SomeGroup) ProtoMessage()    {}
+func (m *Communique_SomeGroup) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Communique_SomeGroup.Unmarshal(m, b)
+}
+func (m *Communique_SomeGroup) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Communique_SomeGroup.Marshal(b, m, deterministic)
+}
+func (dst *Communique_SomeGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Communique_SomeGroup.Merge(dst, src)
+}
+func (m *Communique_SomeGroup) XXX_Size() int {
+	return xxx_messageInfo_Communique_SomeGroup.Size(m)
+}
+func (m *Communique_SomeGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_Communique_SomeGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Communique_SomeGroup proto.InternalMessageInfo
 
 func (m *Communique_SomeGroup) GetMember() string {
 	if m != nil && m.Member != nil {
@@ -821,12 +1004,31 @@ func (m *Communique_SomeGroup) GetMember() string {
 }
 
 type Communique_Delta struct {
-	XXX_unrecognized []byte `json:"-"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *Communique_Delta) Reset()         { *m = Communique_Delta{} }
 func (m *Communique_Delta) String() string { return proto.CompactTextString(m) }
 func (*Communique_Delta) ProtoMessage()    {}
+func (m *Communique_Delta) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Communique_Delta.Unmarshal(m, b)
+}
+func (m *Communique_Delta) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Communique_Delta.Marshal(b, m, deterministic)
+}
+func (dst *Communique_Delta) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Communique_Delta.Merge(dst, src)
+}
+func (m *Communique_Delta) XXX_Size() int {
+	return xxx_messageInfo_Communique_Delta.Size(m)
+}
+func (m *Communique_Delta) XXX_DiscardUnknown() {
+	xxx_messageInfo_Communique_Delta.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Communique_Delta proto.InternalMessageInfo
 
 var E_Tag = &proto.ExtensionDesc{
 	ExtendedType:  (*Reply)(nil),
@@ -848,6 +1050,8 @@ var E_Donut = &proto.ExtensionDesc{
 
 func init() {
 	proto.RegisterType((*Request)(nil), "my.test.Request")
+	proto.RegisterMapType((map[int64]*Reply)(nil), "my.test.Request.MsgMappingEntry")
+	proto.RegisterMapType((map[int32]string)(nil), "my.test.Request.NameMappingEntry")
 	proto.RegisterType((*Request_SomeGroup)(nil), "my.test.Request.SomeGroup")
 	proto.RegisterType((*Reply)(nil), "my.test.Reply")
 	proto.RegisterType((*Reply_Entry)(nil), "my.test.Reply.Entry")

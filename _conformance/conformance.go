@@ -95,19 +95,18 @@ var jsonMarshaler = jsonpb.Marshaler{
 
 func handle(req *pb.ConformanceRequest) *pb.ConformanceResponse {
 	var err error
-	var msg pb.TestAllTypes
+	var msg pb.TestAllTypesProto3
+	var msg1 pb.TestAllTypesProto2
+	var isProto3 bool = bool(req.MessageType == "protobuf_test_messages.proto3.TestAllTypesProto3")
 	switch p := req.Payload.(type) {
 	case *pb.ConformanceRequest_ProtobufPayload:
-		err = proto.Unmarshal(p.ProtobufPayload, &msg)
+		if isProto3 {
+			err = proto.Unmarshal(p.ProtobufPayload, &msg)
+		} else {
+			err = proto.Unmarshal(p.ProtobufPayload, &msg1)
+		}
 	case *pb.ConformanceRequest_JsonPayload:
 		err = jsonpb.UnmarshalString(p.JsonPayload, &msg)
-		if err != nil && err.Error() == "unmarshaling Any not supported yet" {
-			return &pb.ConformanceResponse{
-				Result: &pb.ConformanceResponse_Skipped{
-					Skipped: err.Error(),
-				},
-			}
-		}
 	default:
 		return &pb.ConformanceResponse{
 			Result: &pb.ConformanceResponse_RuntimeError{
@@ -124,7 +123,12 @@ func handle(req *pb.ConformanceRequest) *pb.ConformanceResponse {
 	}
 	switch req.RequestedOutputFormat {
 	case pb.WireFormat_PROTOBUF:
-		p, err := proto.Marshal(&msg)
+		var p []byte
+		if isProto3 {
+			p, err = proto.Marshal(&msg)
+		} else {
+			p, err = proto.Marshal(&msg1)
+		}
 		if err != nil {
 			return &pb.ConformanceResponse{
 				Result: &pb.ConformanceResponse_SerializeError{

@@ -56,24 +56,43 @@ func (Widget_Color) EnumDescriptor() ([]byte, []int) { return fileDescriptor1, [
 
 // Test message for holding primitive types.
 type Simple struct {
-	OBool            *bool    `protobuf:"varint,1,opt,name=o_bool,json=oBool" json:"o_bool,omitempty"`
-	OInt32           *int32   `protobuf:"varint,2,opt,name=o_int32,json=oInt32" json:"o_int32,omitempty"`
-	OInt64           *int64   `protobuf:"varint,3,opt,name=o_int64,json=oInt64" json:"o_int64,omitempty"`
-	OUint32          *uint32  `protobuf:"varint,4,opt,name=o_uint32,json=oUint32" json:"o_uint32,omitempty"`
-	OUint64          *uint64  `protobuf:"varint,5,opt,name=o_uint64,json=oUint64" json:"o_uint64,omitempty"`
-	OSint32          *int32   `protobuf:"zigzag32,6,opt,name=o_sint32,json=oSint32" json:"o_sint32,omitempty"`
-	OSint64          *int64   `protobuf:"zigzag64,7,opt,name=o_sint64,json=oSint64" json:"o_sint64,omitempty"`
-	OFloat           *float32 `protobuf:"fixed32,8,opt,name=o_float,json=oFloat" json:"o_float,omitempty"`
-	ODouble          *float64 `protobuf:"fixed64,9,opt,name=o_double,json=oDouble" json:"o_double,omitempty"`
-	OString          *string  `protobuf:"bytes,10,opt,name=o_string,json=oString" json:"o_string,omitempty"`
-	OBytes           []byte   `protobuf:"bytes,11,opt,name=o_bytes,json=oBytes" json:"o_bytes,omitempty"`
-	XXX_unrecognized []byte   `json:"-"`
+	OBool                *bool    `protobuf:"varint,1,opt,name=o_bool,json=oBool" json:"o_bool,omitempty"`
+	OInt32               *int32   `protobuf:"varint,2,opt,name=o_int32,json=oInt32" json:"o_int32,omitempty"`
+	OInt64               *int64   `protobuf:"varint,3,opt,name=o_int64,json=oInt64" json:"o_int64,omitempty"`
+	OUint32              *uint32  `protobuf:"varint,4,opt,name=o_uint32,json=oUint32" json:"o_uint32,omitempty"`
+	OUint64              *uint64  `protobuf:"varint,5,opt,name=o_uint64,json=oUint64" json:"o_uint64,omitempty"`
+	OSint32              *int32   `protobuf:"zigzag32,6,opt,name=o_sint32,json=oSint32" json:"o_sint32,omitempty"`
+	OSint64              *int64   `protobuf:"zigzag64,7,opt,name=o_sint64,json=oSint64" json:"o_sint64,omitempty"`
+	OFloat               *float32 `protobuf:"fixed32,8,opt,name=o_float,json=oFloat" json:"o_float,omitempty"`
+	ODouble              *float64 `protobuf:"fixed64,9,opt,name=o_double,json=oDouble" json:"o_double,omitempty"`
+	OString              *string  `protobuf:"bytes,10,opt,name=o_string,json=oString" json:"o_string,omitempty"`
+	OBytes               []byte   `protobuf:"bytes,11,opt,name=o_bytes,json=oBytes" json:"o_bytes,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *Simple) Reset()                    { *m = Simple{} }
 func (m *Simple) String() string            { return proto.CompactTextString(m) }
 func (*Simple) ProtoMessage()               {}
 func (*Simple) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
+func (m *Simple) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Simple.Unmarshal(m, b)
+}
+func (m *Simple) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Simple.Marshal(b, m, deterministic)
+}
+func (dst *Simple) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Simple.Merge(dst, src)
+}
+func (m *Simple) XXX_Size() int {
+	return xxx_messageInfo_Simple.Size(m)
+}
+func (m *Simple) XXX_DiscardUnknown() {
+	xxx_messageInfo_Simple.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Simple proto.InternalMessageInfo
 
 func (m *Simple) GetOBool() bool {
 	if m != nil && m.OBool != nil {
@@ -154,19 +173,38 @@ func (m *Simple) GetOBytes() []byte {
 
 // Test message for holding special non-finites primitives.
 type NonFinites struct {
-	FNan             *float32 `protobuf:"fixed32,1,opt,name=f_nan,json=fNan" json:"f_nan,omitempty"`
-	FPinf            *float32 `protobuf:"fixed32,2,opt,name=f_pinf,json=fPinf" json:"f_pinf,omitempty"`
-	FNinf            *float32 `protobuf:"fixed32,3,opt,name=f_ninf,json=fNinf" json:"f_ninf,omitempty"`
-	DNan             *float64 `protobuf:"fixed64,4,opt,name=d_nan,json=dNan" json:"d_nan,omitempty"`
-	DPinf            *float64 `protobuf:"fixed64,5,opt,name=d_pinf,json=dPinf" json:"d_pinf,omitempty"`
-	DNinf            *float64 `protobuf:"fixed64,6,opt,name=d_ninf,json=dNinf" json:"d_ninf,omitempty"`
-	XXX_unrecognized []byte   `json:"-"`
+	FNan                 *float32 `protobuf:"fixed32,1,opt,name=f_nan,json=fNan" json:"f_nan,omitempty"`
+	FPinf                *float32 `protobuf:"fixed32,2,opt,name=f_pinf,json=fPinf" json:"f_pinf,omitempty"`
+	FNinf                *float32 `protobuf:"fixed32,3,opt,name=f_ninf,json=fNinf" json:"f_ninf,omitempty"`
+	DNan                 *float64 `protobuf:"fixed64,4,opt,name=d_nan,json=dNan" json:"d_nan,omitempty"`
+	DPinf                *float64 `protobuf:"fixed64,5,opt,name=d_pinf,json=dPinf" json:"d_pinf,omitempty"`
+	DNinf                *float64 `protobuf:"fixed64,6,opt,name=d_ninf,json=dNinf" json:"d_ninf,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *NonFinites) Reset()                    { *m = NonFinites{} }
 func (m *NonFinites) String() string            { return proto.CompactTextString(m) }
 func (*NonFinites) ProtoMessage()               {}
 func (*NonFinites) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{1} }
+func (m *NonFinites) Unmarshal(b []byte) error {
+	return xxx_messageInfo_NonFinites.Unmarshal(m, b)
+}
+func (m *NonFinites) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NonFinites.Marshal(b, m, deterministic)
+}
+func (dst *NonFinites) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NonFinites.Merge(dst, src)
+}
+func (m *NonFinites) XXX_Size() int {
+	return xxx_messageInfo_NonFinites.Size(m)
+}
+func (m *NonFinites) XXX_DiscardUnknown() {
+	xxx_messageInfo_NonFinites.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NonFinites proto.InternalMessageInfo
 
 func (m *NonFinites) GetFNan() float32 {
 	if m != nil && m.FNan != nil {
@@ -212,24 +250,43 @@ func (m *NonFinites) GetDNinf() float64 {
 
 // Test message for holding repeated primitives.
 type Repeats struct {
-	RBool            []bool    `protobuf:"varint,1,rep,name=r_bool,json=rBool" json:"r_bool,omitempty"`
-	RInt32           []int32   `protobuf:"varint,2,rep,name=r_int32,json=rInt32" json:"r_int32,omitempty"`
-	RInt64           []int64   `protobuf:"varint,3,rep,name=r_int64,json=rInt64" json:"r_int64,omitempty"`
-	RUint32          []uint32  `protobuf:"varint,4,rep,name=r_uint32,json=rUint32" json:"r_uint32,omitempty"`
-	RUint64          []uint64  `protobuf:"varint,5,rep,name=r_uint64,json=rUint64" json:"r_uint64,omitempty"`
-	RSint32          []int32   `protobuf:"zigzag32,6,rep,name=r_sint32,json=rSint32" json:"r_sint32,omitempty"`
-	RSint64          []int64   `protobuf:"zigzag64,7,rep,name=r_sint64,json=rSint64" json:"r_sint64,omitempty"`
-	RFloat           []float32 `protobuf:"fixed32,8,rep,name=r_float,json=rFloat" json:"r_float,omitempty"`
-	RDouble          []float64 `protobuf:"fixed64,9,rep,name=r_double,json=rDouble" json:"r_double,omitempty"`
-	RString          []string  `protobuf:"bytes,10,rep,name=r_string,json=rString" json:"r_string,omitempty"`
-	RBytes           [][]byte  `protobuf:"bytes,11,rep,name=r_bytes,json=rBytes" json:"r_bytes,omitempty"`
-	XXX_unrecognized []byte    `json:"-"`
+	RBool                []bool    `protobuf:"varint,1,rep,name=r_bool,json=rBool" json:"r_bool,omitempty"`
+	RInt32               []int32   `protobuf:"varint,2,rep,name=r_int32,json=rInt32" json:"r_int32,omitempty"`
+	RInt64               []int64   `protobuf:"varint,3,rep,name=r_int64,json=rInt64" json:"r_int64,omitempty"`
+	RUint32              []uint32  `protobuf:"varint,4,rep,name=r_uint32,json=rUint32" json:"r_uint32,omitempty"`
+	RUint64              []uint64  `protobuf:"varint,5,rep,name=r_uint64,json=rUint64" json:"r_uint64,omitempty"`
+	RSint32              []int32   `protobuf:"zigzag32,6,rep,name=r_sint32,json=rSint32" json:"r_sint32,omitempty"`
+	RSint64              []int64   `protobuf:"zigzag64,7,rep,name=r_sint64,json=rSint64" json:"r_sint64,omitempty"`
+	RFloat               []float32 `protobuf:"fixed32,8,rep,name=r_float,json=rFloat" json:"r_float,omitempty"`
+	RDouble              []float64 `protobuf:"fixed64,9,rep,name=r_double,json=rDouble" json:"r_double,omitempty"`
+	RString              []string  `protobuf:"bytes,10,rep,name=r_string,json=rString" json:"r_string,omitempty"`
+	RBytes               [][]byte  `protobuf:"bytes,11,rep,name=r_bytes,json=rBytes" json:"r_bytes,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
 }
 
 func (m *Repeats) Reset()                    { *m = Repeats{} }
 func (m *Repeats) String() string            { return proto.CompactTextString(m) }
 func (*Repeats) ProtoMessage()               {}
 func (*Repeats) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{2} }
+func (m *Repeats) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Repeats.Unmarshal(m, b)
+}
+func (m *Repeats) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Repeats.Marshal(b, m, deterministic)
+}
+func (dst *Repeats) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Repeats.Merge(dst, src)
+}
+func (m *Repeats) XXX_Size() int {
+	return xxx_messageInfo_Repeats.Size(m)
+}
+func (m *Repeats) XXX_DiscardUnknown() {
+	xxx_messageInfo_Repeats.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Repeats proto.InternalMessageInfo
 
 func (m *Repeats) GetRBool() []bool {
 	if m != nil {
@@ -310,19 +367,38 @@ func (m *Repeats) GetRBytes() [][]byte {
 
 // Test message for holding enums and nested messages.
 type Widget struct {
-	Color            *Widget_Color  `protobuf:"varint,1,opt,name=color,enum=jsonpb.Widget_Color" json:"color,omitempty"`
-	RColor           []Widget_Color `protobuf:"varint,2,rep,name=r_color,json=rColor,enum=jsonpb.Widget_Color" json:"r_color,omitempty"`
-	Simple           *Simple        `protobuf:"bytes,10,opt,name=simple" json:"simple,omitempty"`
-	RSimple          []*Simple      `protobuf:"bytes,11,rep,name=r_simple,json=rSimple" json:"r_simple,omitempty"`
-	Repeats          *Repeats       `protobuf:"bytes,20,opt,name=repeats" json:"repeats,omitempty"`
-	RRepeats         []*Repeats     `protobuf:"bytes,21,rep,name=r_repeats,json=rRepeats" json:"r_repeats,omitempty"`
-	XXX_unrecognized []byte         `json:"-"`
+	Color                *Widget_Color  `protobuf:"varint,1,opt,name=color,enum=jsonpb.Widget_Color" json:"color,omitempty"`
+	RColor               []Widget_Color `protobuf:"varint,2,rep,name=r_color,json=rColor,enum=jsonpb.Widget_Color" json:"r_color,omitempty"`
+	Simple               *Simple        `protobuf:"bytes,10,opt,name=simple" json:"simple,omitempty"`
+	RSimple              []*Simple      `protobuf:"bytes,11,rep,name=r_simple,json=rSimple" json:"r_simple,omitempty"`
+	Repeats              *Repeats       `protobuf:"bytes,20,opt,name=repeats" json:"repeats,omitempty"`
+	RRepeats             []*Repeats     `protobuf:"bytes,21,rep,name=r_repeats,json=rRepeats" json:"r_repeats,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
 }
 
 func (m *Widget) Reset()                    { *m = Widget{} }
 func (m *Widget) String() string            { return proto.CompactTextString(m) }
 func (*Widget) ProtoMessage()               {}
 func (*Widget) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{3} }
+func (m *Widget) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Widget.Unmarshal(m, b)
+}
+func (m *Widget) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Widget.Marshal(b, m, deterministic)
+}
+func (dst *Widget) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Widget.Merge(dst, src)
+}
+func (m *Widget) XXX_Size() int {
+	return xxx_messageInfo_Widget.Size(m)
+}
+func (m *Widget) XXX_DiscardUnknown() {
+	xxx_messageInfo_Widget.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Widget proto.InternalMessageInfo
 
 func (m *Widget) GetColor() Widget_Color {
 	if m != nil && m.Color != nil {
@@ -367,15 +443,34 @@ func (m *Widget) GetRRepeats() []*Repeats {
 }
 
 type Maps struct {
-	MInt64Str        map[int64]string `protobuf:"bytes,1,rep,name=m_int64_str,json=mInt64Str" json:"m_int64_str,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	MBoolSimple      map[bool]*Simple `protobuf:"bytes,2,rep,name=m_bool_simple,json=mBoolSimple" json:"m_bool_simple,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	XXX_unrecognized []byte           `json:"-"`
+	MInt64Str            map[int64]string `protobuf:"bytes,1,rep,name=m_int64_str,json=mInt64Str" json:"m_int64_str,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	MBoolSimple          map[bool]*Simple `protobuf:"bytes,2,rep,name=m_bool_simple,json=mBoolSimple" json:"m_bool_simple,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
 }
 
 func (m *Maps) Reset()                    { *m = Maps{} }
 func (m *Maps) String() string            { return proto.CompactTextString(m) }
 func (*Maps) ProtoMessage()               {}
 func (*Maps) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{4} }
+func (m *Maps) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Maps.Unmarshal(m, b)
+}
+func (m *Maps) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Maps.Marshal(b, m, deterministic)
+}
+func (dst *Maps) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Maps.Merge(dst, src)
+}
+func (m *Maps) XXX_Size() int {
+	return xxx_messageInfo_Maps.Size(m)
+}
+func (m *Maps) XXX_DiscardUnknown() {
+	xxx_messageInfo_Maps.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Maps proto.InternalMessageInfo
 
 func (m *Maps) GetMInt64Str() map[int64]string {
 	if m != nil {
@@ -397,14 +492,33 @@ type MsgWithOneof struct {
 	//	*MsgWithOneof_Salary
 	//	*MsgWithOneof_Country
 	//	*MsgWithOneof_HomeAddress
-	Union            isMsgWithOneof_Union `protobuf_oneof:"union"`
-	XXX_unrecognized []byte               `json:"-"`
+	Union                isMsgWithOneof_Union `protobuf_oneof:"union"`
+	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
+	XXX_unrecognized     []byte               `json:"-"`
+	XXX_sizecache        int32                `json:"-"`
 }
 
 func (m *MsgWithOneof) Reset()                    { *m = MsgWithOneof{} }
 func (m *MsgWithOneof) String() string            { return proto.CompactTextString(m) }
 func (*MsgWithOneof) ProtoMessage()               {}
 func (*MsgWithOneof) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{5} }
+func (m *MsgWithOneof) Unmarshal(b []byte) error {
+	return xxx_messageInfo_MsgWithOneof.Unmarshal(m, b)
+}
+func (m *MsgWithOneof) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MsgWithOneof.Marshal(b, m, deterministic)
+}
+func (dst *MsgWithOneof) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithOneof.Merge(dst, src)
+}
+func (m *MsgWithOneof) XXX_Size() int {
+	return xxx_messageInfo_MsgWithOneof.Size(m)
+}
+func (m *MsgWithOneof) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithOneof.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgWithOneof proto.InternalMessageInfo
 
 type isMsgWithOneof_Union interface {
 	isMsgWithOneof_Union()
@@ -417,7 +531,7 @@ type MsgWithOneof_Salary struct {
 	Salary int64 `protobuf:"varint,2,opt,name=salary,oneof"`
 }
 type MsgWithOneof_Country struct {
-	Country string `protobuf:"bytes,3,opt,name=Country,oneof"`
+	Country string `protobuf:"bytes,3,opt,name=Country,json=country,oneof"`
 }
 type MsgWithOneof_HomeAddress struct {
 	HomeAddress string `protobuf:"bytes,4,opt,name=home_address,json=homeAddress,oneof"`
@@ -560,8 +674,10 @@ func _MsgWithOneof_OneofSizer(msg proto.Message) (n int) {
 
 type Real struct {
 	Value                        *float64 `protobuf:"fixed64,1,opt,name=value" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
 	proto.XXX_InternalExtensions `json:"-"`
 	XXX_unrecognized             []byte `json:"-"`
+	XXX_sizecache                int32  `json:"-"`
 }
 
 func (m *Real) Reset()                    { *m = Real{} }
@@ -576,6 +692,23 @@ var extRange_Real = []proto.ExtensionRange{
 func (*Real) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_Real
 }
+func (m *Real) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Real.Unmarshal(m, b)
+}
+func (m *Real) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Real.Marshal(b, m, deterministic)
+}
+func (dst *Real) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Real.Merge(dst, src)
+}
+func (m *Real) XXX_Size() int {
+	return xxx_messageInfo_Real.Size(m)
+}
+func (m *Real) XXX_DiscardUnknown() {
+	xxx_messageInfo_Real.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Real proto.InternalMessageInfo
 
 func (m *Real) GetValue() float64 {
 	if m != nil && m.Value != nil {
@@ -586,8 +719,10 @@ func (m *Real) GetValue() float64 {
 
 type Complex struct {
 	Imaginary                    *float64 `protobuf:"fixed64,1,opt,name=imaginary" json:"imaginary,omitempty"`
+	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
 	proto.XXX_InternalExtensions `json:"-"`
 	XXX_unrecognized             []byte `json:"-"`
+	XXX_sizecache                int32  `json:"-"`
 }
 
 func (m *Complex) Reset()                    { *m = Complex{} }
@@ -602,6 +737,23 @@ var extRange_Complex = []proto.ExtensionRange{
 func (*Complex) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_Complex
 }
+func (m *Complex) Unmarshal(b []byte) error {
+	return xxx_messageInfo_Complex.Unmarshal(m, b)
+}
+func (m *Complex) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Complex.Marshal(b, m, deterministic)
+}
+func (dst *Complex) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Complex.Merge(dst, src)
+}
+func (m *Complex) XXX_Size() int {
+	return xxx_messageInfo_Complex.Size(m)
+}
+func (m *Complex) XXX_DiscardUnknown() {
+	xxx_messageInfo_Complex.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Complex proto.InternalMessageInfo
 
 func (m *Complex) GetImaginary() float64 {
 	if m != nil && m.Imaginary != nil {
@@ -620,28 +772,47 @@ var E_Complex_RealExtension = &proto.ExtensionDesc{
 }
 
 type KnownTypes struct {
-	An               *google_protobuf.Any          `protobuf:"bytes,14,opt,name=an" json:"an,omitempty"`
-	Dur              *google_protobuf1.Duration    `protobuf:"bytes,1,opt,name=dur" json:"dur,omitempty"`
-	St               *google_protobuf2.Struct      `protobuf:"bytes,12,opt,name=st" json:"st,omitempty"`
-	Ts               *google_protobuf3.Timestamp   `protobuf:"bytes,2,opt,name=ts" json:"ts,omitempty"`
-	Lv               *google_protobuf2.ListValue   `protobuf:"bytes,15,opt,name=lv" json:"lv,omitempty"`
-	Val              *google_protobuf2.Value       `protobuf:"bytes,16,opt,name=val" json:"val,omitempty"`
-	Dbl              *google_protobuf4.DoubleValue `protobuf:"bytes,3,opt,name=dbl" json:"dbl,omitempty"`
-	Flt              *google_protobuf4.FloatValue  `protobuf:"bytes,4,opt,name=flt" json:"flt,omitempty"`
-	I64              *google_protobuf4.Int64Value  `protobuf:"bytes,5,opt,name=i64" json:"i64,omitempty"`
-	U64              *google_protobuf4.UInt64Value `protobuf:"bytes,6,opt,name=u64" json:"u64,omitempty"`
-	I32              *google_protobuf4.Int32Value  `protobuf:"bytes,7,opt,name=i32" json:"i32,omitempty"`
-	U32              *google_protobuf4.UInt32Value `protobuf:"bytes,8,opt,name=u32" json:"u32,omitempty"`
-	Bool             *google_protobuf4.BoolValue   `protobuf:"bytes,9,opt,name=bool" json:"bool,omitempty"`
-	Str              *google_protobuf4.StringValue `protobuf:"bytes,10,opt,name=str" json:"str,omitempty"`
-	Bytes            *google_protobuf4.BytesValue  `protobuf:"bytes,11,opt,name=bytes" json:"bytes,omitempty"`
-	XXX_unrecognized []byte                        `json:"-"`
+	An                   *google_protobuf.Any          `protobuf:"bytes,14,opt,name=an" json:"an,omitempty"`
+	Dur                  *google_protobuf1.Duration    `protobuf:"bytes,1,opt,name=dur" json:"dur,omitempty"`
+	St                   *google_protobuf2.Struct      `protobuf:"bytes,12,opt,name=st" json:"st,omitempty"`
+	Ts                   *google_protobuf3.Timestamp   `protobuf:"bytes,2,opt,name=ts" json:"ts,omitempty"`
+	Lv                   *google_protobuf2.ListValue   `protobuf:"bytes,15,opt,name=lv" json:"lv,omitempty"`
+	Val                  *google_protobuf2.Value       `protobuf:"bytes,16,opt,name=val" json:"val,omitempty"`
+	Dbl                  *google_protobuf4.DoubleValue `protobuf:"bytes,3,opt,name=dbl" json:"dbl,omitempty"`
+	Flt                  *google_protobuf4.FloatValue  `protobuf:"bytes,4,opt,name=flt" json:"flt,omitempty"`
+	I64                  *google_protobuf4.Int64Value  `protobuf:"bytes,5,opt,name=i64" json:"i64,omitempty"`
+	U64                  *google_protobuf4.UInt64Value `protobuf:"bytes,6,opt,name=u64" json:"u64,omitempty"`
+	I32                  *google_protobuf4.Int32Value  `protobuf:"bytes,7,opt,name=i32" json:"i32,omitempty"`
+	U32                  *google_protobuf4.UInt32Value `protobuf:"bytes,8,opt,name=u32" json:"u32,omitempty"`
+	Bool                 *google_protobuf4.BoolValue   `protobuf:"bytes,9,opt,name=bool" json:"bool,omitempty"`
+	Str                  *google_protobuf4.StringValue `protobuf:"bytes,10,opt,name=str" json:"str,omitempty"`
+	Bytes                *google_protobuf4.BytesValue  `protobuf:"bytes,11,opt,name=bytes" json:"bytes,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                      `json:"-"`
+	XXX_unrecognized     []byte                        `json:"-"`
+	XXX_sizecache        int32                         `json:"-"`
 }
 
 func (m *KnownTypes) Reset()                    { *m = KnownTypes{} }
 func (m *KnownTypes) String() string            { return proto.CompactTextString(m) }
 func (*KnownTypes) ProtoMessage()               {}
 func (*KnownTypes) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{8} }
+func (m *KnownTypes) Unmarshal(b []byte) error {
+	return xxx_messageInfo_KnownTypes.Unmarshal(m, b)
+}
+func (m *KnownTypes) Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_KnownTypes.Marshal(b, m, deterministic)
+}
+func (dst *KnownTypes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_KnownTypes.Merge(dst, src)
+}
+func (m *KnownTypes) XXX_Size() int {
+	return xxx_messageInfo_KnownTypes.Size(m)
+}
+func (m *KnownTypes) XXX_DiscardUnknown() {
+	xxx_messageInfo_KnownTypes.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_KnownTypes proto.InternalMessageInfo
 
 func (m *KnownTypes) GetAn() *google_protobuf.Any {
 	if m != nil {
@@ -763,6 +934,8 @@ func init() {
 	proto.RegisterType((*Repeats)(nil), "jsonpb.Repeats")
 	proto.RegisterType((*Widget)(nil), "jsonpb.Widget")
 	proto.RegisterType((*Maps)(nil), "jsonpb.Maps")
+	proto.RegisterMapType((map[bool]*Simple)(nil), "jsonpb.Maps.MBoolSimpleEntry")
+	proto.RegisterMapType((map[int64]string)(nil), "jsonpb.Maps.MInt64StrEntry")
 	proto.RegisterType((*MsgWithOneof)(nil), "jsonpb.MsgWithOneof")
 	proto.RegisterType((*Real)(nil), "jsonpb.Real")
 	proto.RegisterType((*Complex)(nil), "jsonpb.Complex")
@@ -775,7 +948,7 @@ func init() {
 func init() { proto.RegisterFile("test_objects.proto", fileDescriptor1) }
 
 var fileDescriptor1 = []byte{
-	// 1160 bytes of a gzipped FileDescriptorProto
+	// 1162 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x95, 0x41, 0x73, 0xdb, 0x44,
 	0x14, 0xc7, 0x23, 0xc9, 0x92, 0xed, 0x75, 0x92, 0x9a, 0x6d, 0xda, 0x2a, 0x26, 0x80, 0xc6, 0x94,
 	0x22, 0x0a, 0x75, 0x07, 0xc7, 0xe3, 0x61, 0x0a, 0x97, 0xa4, 0x71, 0x29, 0x43, 0x13, 0x98, 0x4d,
@@ -825,28 +998,28 @@ var fileDescriptor1 = []byte{
 	0xff, 0x61, 0xa1, 0xcd, 0x63, 0x39, 0x79, 0x93, 0xa8, 0xb7, 0x3f, 0x31, 0xca, 0xc7, 0xf8, 0x3e,
 	0x72, 0x55, 0xa2, 0x52, 0xaa, 0xed, 0xea, 0x2f, 0x37, 0x88, 0x09, 0xb1, 0x8f, 0x3c, 0x19, 0xa5,
 	0x91, 0x98, 0x6b, 0x4f, 0xe7, 0xe5, 0x06, 0xc9, 0x63, 0xdc, 0x42, 0xd5, 0xe7, 0x3c, 0x83, 0x95,
-	0xe8, 0x67, 0x01, 0x7a, 0x8a, 0x04, 0xfe, 0x14, 0x6d, 0xbe, 0xe5, 0x53, 0x3a, 0x8c, 0xe2, 0x58,
-	0x50, 0x29, 0xf5, 0x0b, 0x01, 0x82, 0x06, 0x64, 0x0f, 0x4c, 0xf2, 0xb0, 0x8a, 0xdc, 0x8c, 0x25,
-	0x9c, 0xb5, 0x1f, 0xa1, 0x0a, 0xa1, 0x51, 0x5a, 0x7e, 0xbe, 0x65, 0xde, 0x08, 0x1d, 0x3c, 0xae,
-	0xd5, 0xe2, 0xe6, 0xd5, 0xd5, 0xd5, 0x95, 0xdd, 0xbe, 0x84, 0xff, 0x08, 0x5f, 0xf2, 0x1e, 0xef,
-	0xa1, 0x7a, 0x32, 0x8d, 0x26, 0x09, 0x83, 0x95, 0x19, 0x79, 0x99, 0x28, 0x5b, 0xba, 0x47, 0x68,
-	0x5b, 0xd0, 0x28, 0x1d, 0xd2, 0xf7, 0x8a, 0x32, 0x99, 0x70, 0x86, 0x37, 0xcb, 0x23, 0x15, 0xa5,
-	0xfe, 0x6f, 0x37, 0xcf, 0x64, 0x6e, 0x4f, 0xb6, 0xa0, 0x69, 0x50, 0xf4, 0xb4, 0xff, 0x73, 0x11,
-	0xfa, 0x91, 0xf1, 0x4b, 0xf6, 0x7a, 0x3e, 0xa3, 0x12, 0x3f, 0x44, 0x76, 0xc4, 0xfc, 0x6d, 0xdd,
-	0xba, 0xd3, 0x31, 0xf3, 0xa9, 0x53, 0xcc, 0xa7, 0xce, 0x01, 0x9b, 0x13, 0x3b, 0x62, 0xf8, 0x4b,
-	0xe4, 0xc4, 0x99, 0xb9, 0xa5, 0x8d, 0xee, 0xee, 0x8a, 0xec, 0x28, 0x9f, 0x92, 0x04, 0x54, 0xf8,
-	0x73, 0x64, 0x4b, 0xe5, 0x6f, 0x6a, 0xed, 0x83, 0x15, 0xed, 0xa9, 0x9e, 0x98, 0xc4, 0x96, 0x70,
-	0xfb, 0x6d, 0x25, 0x73, 0xbe, 0xad, 0x15, 0xe1, 0xeb, 0x62, 0x78, 0x12, 0x5b, 0x49, 0xd0, 0xa6,
-	0x17, 0xfe, 0x9d, 0x35, 0xda, 0x57, 0x89, 0x54, 0xbf, 0xc0, 0x0e, 0x13, 0x3b, 0xbd, 0xc0, 0x21,
-	0x72, 0x2e, 0xa2, 0xd4, 0x6f, 0x6a, 0xf1, 0xfd, 0x15, 0xb1, 0x11, 0x82, 0x04, 0x77, 0x90, 0x13,
-	0x8f, 0x52, 0xcd, 0xbc, 0xd1, 0xdd, 0x5b, 0xfd, 0x2e, 0xfd, 0xc8, 0xe5, 0xfa, 0x78, 0x94, 0xe2,
-	0x27, 0xc8, 0x19, 0xa7, 0x4a, 0x1f, 0x01, 0xb8, 0x70, 0xcb, 0x7a, 0xfd, 0x5c, 0xe6, 0xf2, 0x71,
-	0xaa, 0x40, 0x9e, 0xe4, 0xb3, 0xf5, 0x36, 0xb9, 0xbe, 0x42, 0xb9, 0x3c, 0xe9, 0xf7, 0x60, 0x35,
-	0x59, 0xbf, 0xa7, 0xa7, 0xca, 0x6d, 0xab, 0x39, 0xbb, 0xae, 0xcf, 0xfa, 0x3d, 0x6d, 0xbf, 0xdf,
-	0xd5, 0x43, 0x78, 0x8d, 0xfd, 0x7e, 0xb7, 0xb0, 0xdf, 0xef, 0x6a, 0xfb, 0xfd, 0xae, 0x9e, 0xcc,
-	0xeb, 0xec, 0x17, 0xfa, 0x4c, 0xeb, 0x2b, 0x7a, 0x84, 0xd5, 0xd7, 0x6c, 0x3a, 0xdc, 0x61, 0x23,
-	0xd7, 0x3a, 0xf0, 0x87, 0xd7, 0x08, 0xad, 0xf1, 0x37, 0x63, 0x21, 0xf7, 0x97, 0x4a, 0xe0, 0xaf,
-	0x91, 0x5b, 0x0e, 0xf7, 0xdb, 0x3e, 0x40, 0x8f, 0x0b, 0xd3, 0x60, 0x94, 0xcf, 0x02, 0x54, 0x61,
-	0xd1, 0x94, 0x2e, 0x1d, 0xfc, 0xdf, 0xf5, 0x0b, 0xa3, 0x2b, 0xff, 0x07, 0x00, 0x00, 0xff, 0xff,
-	0xd5, 0x39, 0x32, 0x09, 0xf9, 0x09, 0x00, 0x00,
+	0xe8, 0x67, 0x01, 0x7a, 0xaa, 0xe7, 0x26, 0x81, 0x3f, 0x45, 0x9b, 0x6f, 0xf9, 0x94, 0x0e, 0xa3,
+	0x38, 0x16, 0x54, 0x4a, 0xfd, 0x42, 0x80, 0xa0, 0x01, 0xd9, 0x03, 0x93, 0x3c, 0xac, 0x22, 0x37,
+	0x63, 0x09, 0x67, 0xed, 0x47, 0xa8, 0x42, 0x68, 0x94, 0x96, 0x9f, 0x6f, 0x99, 0x37, 0x42, 0x07,
+	0x8f, 0x6b, 0xb5, 0xb8, 0x79, 0x75, 0x75, 0x75, 0x65, 0xb7, 0x2f, 0xe1, 0x3f, 0xc2, 0x97, 0xbc,
+	0xc7, 0x7b, 0xa8, 0x9e, 0x4c, 0xa3, 0x49, 0xc2, 0x60, 0x65, 0x46, 0x5e, 0x26, 0xca, 0x96, 0xee,
+	0x11, 0xda, 0x16, 0x34, 0x4a, 0x87, 0xf4, 0xbd, 0xa2, 0x4c, 0x26, 0x9c, 0xe1, 0xcd, 0xf2, 0x48,
+	0x45, 0xa9, 0xff, 0xdb, 0xcd, 0x33, 0x99, 0xdb, 0x93, 0x2d, 0x68, 0x1a, 0x14, 0x3d, 0xed, 0xff,
+	0x5c, 0x84, 0x7e, 0x64, 0xfc, 0x92, 0xbd, 0x9e, 0xcf, 0xa8, 0xc4, 0x0f, 0x91, 0x1d, 0x31, 0x7f,
+	0x5b, 0xb7, 0xee, 0x74, 0xcc, 0x7c, 0xea, 0x14, 0xf3, 0xa9, 0x73, 0xc0, 0xe6, 0xc4, 0x8e, 0x18,
+	0xfe, 0x12, 0x39, 0x71, 0x66, 0x6e, 0x69, 0xa3, 0xbb, 0xbb, 0x22, 0x3b, 0xca, 0xa7, 0x24, 0x01,
+	0x15, 0xfe, 0x1c, 0xd9, 0x52, 0xf9, 0x9b, 0x5a, 0xfb, 0x60, 0x45, 0x7b, 0xaa, 0x27, 0x26, 0xb1,
+	0x25, 0xdc, 0x7e, 0x5b, 0xc9, 0x9c, 0x6f, 0x6b, 0x45, 0xf8, 0xba, 0x18, 0x9e, 0xc4, 0x56, 0x12,
+	0xb4, 0xe9, 0x85, 0x7f, 0x67, 0x8d, 0xf6, 0x55, 0x22, 0xd5, 0x2f, 0xb0, 0xc3, 0xc4, 0x4e, 0x2f,
+	0x70, 0x88, 0x9c, 0x8b, 0x28, 0xf5, 0x9b, 0x5a, 0x7c, 0x7f, 0x45, 0x6c, 0x84, 0x20, 0xc1, 0x1d,
+	0xe4, 0xc4, 0xa3, 0x54, 0x33, 0x6f, 0x74, 0xf7, 0x56, 0xbf, 0x4b, 0x3f, 0x72, 0xb9, 0x3e, 0x1e,
+	0xa5, 0xf8, 0x09, 0x72, 0xc6, 0xa9, 0xd2, 0x47, 0x00, 0x2e, 0xdc, 0xb2, 0x5e, 0x3f, 0x97, 0xb9,
+	0x7c, 0x9c, 0x2a, 0x90, 0x27, 0xf9, 0x6c, 0xbd, 0x4d, 0xae, 0xaf, 0x50, 0x2e, 0x4f, 0xfa, 0x3d,
+	0x58, 0x4d, 0xd6, 0xef, 0xe9, 0xa9, 0x72, 0xdb, 0x6a, 0xce, 0xae, 0xeb, 0xb3, 0x7e, 0x4f, 0xdb,
+	0xef, 0x77, 0xf5, 0x10, 0x5e, 0x63, 0xbf, 0xdf, 0x2d, 0xec, 0xf7, 0xbb, 0xda, 0x7e, 0xbf, 0xab,
+	0x27, 0xf3, 0x3a, 0xfb, 0x85, 0x3e, 0xd3, 0xfa, 0x8a, 0x1e, 0x61, 0xf5, 0x35, 0x9b, 0x0e, 0x77,
+	0xd8, 0xc8, 0xb5, 0x0e, 0xfc, 0xe1, 0x35, 0x42, 0x6b, 0xfc, 0xcd, 0x58, 0xc8, 0xfd, 0xa5, 0x12,
+	0xf8, 0x6b, 0xe4, 0x96, 0xc3, 0xfd, 0xb6, 0x0f, 0xd0, 0xe3, 0xc2, 0x34, 0x18, 0xe5, 0xb3, 0x00,
+	0x55, 0x58, 0x34, 0xa5, 0x4b, 0x07, 0xff, 0x77, 0xfd, 0xc2, 0xe8, 0xca, 0xff, 0x01, 0x00, 0x00,
+	0xff, 0xff, 0x51, 0xb7, 0x46, 0x20, 0xf9, 0x09, 0x00, 0x00,
 }

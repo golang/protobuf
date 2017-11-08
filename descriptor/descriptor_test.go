@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/descriptor"
-	tpb "github.com/golang/protobuf/proto/testdata"
+	tpb "github.com/golang/protobuf/proto/test_proto"
 	protobuf "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 

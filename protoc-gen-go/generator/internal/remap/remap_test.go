@@ -1,6 +1,6 @@
 // Go support for Protocol Buffers - Google's data interchange format
 //
-// Copyright 2014 The Go Authors.  All rights reserved.
+// Copyright 2017 The Go Authors.  All rights reserved.
 // https://github.com/golang/protobuf
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,49 +29,54 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package proto
+package remap
 
 import (
-	"bytes"
+	"go/format"
 	"testing"
 )
 
-func TestUnmarshalMessageSetWithDuplicate(t *testing.T) {
-	// Check that a repeated message set entry will be concatenated.
-	in := &messageSet{
-		Item: []*_MessageSet_Item{
-			{TypeId: Int32(12345), Message: []byte("hoo")},
-			{TypeId: Int32(12345), Message: []byte("hah")},
-		},
+func TestErrors(t *testing.T) {
+	tests := []struct {
+		in, out string
+	}{
+		{"", "x"},
+		{"x", ""},
+		{"var x int = 5\n", "var x = 5\n"},
+		{"these are \"one\" thing", "those are 'another' thing"},
 	}
-	b, err := Marshal(in)
-	if err != nil {
-		t.Fatalf("Marshal: %v", err)
-	}
-	t.Logf("Marshaled bytes: %q", b)
-
-	var extensions XXX_InternalExtensions
-	if err := UnmarshalMessageSet(b, &extensions); err != nil {
-		t.Fatalf("UnmarshalMessageSet: %v", err)
-	}
-	ext, ok := extensions.p.extensionMap[12345]
-	if !ok {
-		t.Fatalf("Didn't retrieve extension 12345; map is %v", extensions.p.extensionMap)
-	}
-	// Skip wire type/field number and length varints.
-	got := skipVarint(skipVarint(ext.enc))
-	if want := []byte("hoohah"); !bytes.Equal(got, want) {
-		t.Errorf("Combined extension is %q, want %q", got, want)
+	for _, test := range tests {
+		m, err := Compute([]byte(test.in), []byte(test.out))
+		if err != nil {
+			t.Logf("Got expected error: %v", err)
+			continue
+		}
+		t.Errorf("Compute(%q, %q): got %+v, wanted error", test.in, test.out, m)
 	}
 }
 
-func TestMarshalMessageSetJSON_UnknownType(t *testing.T) {
-	extMap := map[int32]Extension{12345: Extension{}}
-	got, err := MarshalMessageSetJSON(extMap)
+func TestMatching(t *testing.T) {
+	// The input is a source text that will be rearranged by the formatter.
+	const input = `package foo
+var s int
+func main(){}
+`
+
+	output, err := format.Source([]byte(input))
 	if err != nil {
-		t.Fatalf("MarshalMessageSetJSON: %v", err)
+		t.Fatalf("Formatting failed: %v", err)
 	}
-	if want := []byte("{}"); !bytes.Equal(got, want) {
-		t.Errorf("MarshalMessageSetJSON(%v) = %q, want %q", extMap, got, want)
+	m, err := Compute([]byte(input), output)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	// Verify that the mapped locations have the same text.
+	for key, val := range m {
+		want := input[key.Pos:key.End]
+		got := string(output[val.Pos:val.End])
+		if got != want {
+			t.Errorf("Token at %d:%d: got %q, want %q", key.Pos, key.End, got, want)
+		}
 	}
 }

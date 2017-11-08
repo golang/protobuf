@@ -31,7 +31,7 @@
 
 // Verify that the compiler output for test.proto is unchanged.
 
-package testdata
+package test_proto
 
 import (
 	"crypto/sha1"
