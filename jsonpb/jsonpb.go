@@ -32,7 +32,6 @@
 /*
 Package jsonpb provides marshaling and unmarshaling between protocol buffers and JSON.
 It follows the specification at https://developers.google.com/protocol-buffers/docs/proto3#json.
-
 This package produces a different output than the standard "encoding/json" package,
 which does not operate correctly on protocol buffers.
 */
