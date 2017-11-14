@@ -491,8 +491,10 @@ func GetExtensions(pb Message, es []*ExtensionDesc) (extensions []interface{}, e
 }
 
 // ExtensionDescs returns a new slice containing pb's extension descriptors, in undefined order.
-// For non-registered extensions, ExtensionDescs returns an incomplete descriptor containing
-// just the Field field, which defines the extension's field number.
+// If the message was de-serialized from a stream that referenced unknown extensions (e.g. fields
+// with a tag number in an extension range, but not registered), they will not be returned by
+// this function. Instead, they can only be found by examining the message's XXX_unrecognized
+// data.
 func ExtensionDescs(pb Message) ([]*ExtensionDesc, error) {
 	epb, ok := extendable(pb)
 	if !ok {
@@ -512,7 +514,7 @@ func ExtensionDescs(pb Message) ([]*ExtensionDesc, error) {
 		if desc == nil {
 			desc = registeredExtensions[extid]
 			if desc == nil {
-				desc = &ExtensionDesc{Field: extid}
+				continue
 			}
 		}
 
