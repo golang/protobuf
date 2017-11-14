@@ -609,7 +609,14 @@ func writeUnknownStruct(w *textWriter, data []byte) (err error) {
 			return err
 		}
 	}
-	b := NewBuffer(data)
+
+	b := bufPool.Get().(*Buffer)
+	b.SetBuf(data)
+	defer func() {
+		b.Reset()
+		bufPool.Put(b)
+	}()
+
 	for b.index < len(b.buf) {
 		x, err := b.DecodeVarint()
 		if err != nil {

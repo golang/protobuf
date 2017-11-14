@@ -296,6 +296,11 @@ type Stats struct {
 const collectStats = false
 
 var stats Stats
+var bufPool = sync.Pool{
+	New: func() interface{} {
+		return &Buffer{}
+	},
+}
 
 // GetStats returns a copy of the global Stats structure.
 func GetStats() Stats { return stats }

@@ -232,6 +232,7 @@ func Marshal(pb Message) ([]byte, error) {
 	if m, ok := pb.(Marshaler); ok {
 		return m.Marshal()
 	}
+
 	p := NewBuffer(nil)
 	err := p.Marshal(pb)
 	if p.buf == nil && err == nil {
@@ -748,8 +749,13 @@ func (o *Buffer) enc_slice_packed_int32(p *Properties, base structPointer) error
 	if l == 0 {
 		return ErrNil
 	}
-	// TODO: Reuse a Buffer.
-	buf := NewBuffer(nil)
+
+	buf := bufPool.Get().(*Buffer)
+	defer func() {
+		buf.Reset()
+		bufPool.Put(buf)
+	}()
+
 	for i := 0; i < l; i++ {
 		x := int32(s.Index(i)) // permit sign extension to use full 64-bit range
 		p.valEnc(buf, uint64(x))
@@ -817,8 +823,13 @@ func (o *Buffer) enc_slice_packed_uint32(p *Properties, base structPointer) erro
 	if l == 0 {
 		return ErrNil
 	}
-	// TODO: Reuse a Buffer.
-	buf := NewBuffer(nil)
+
+	buf := bufPool.Get().(*Buffer)
+	defer func() {
+		buf.Reset()
+		bufPool.Put(buf)
+	}()
+
 	for i := 0; i < l; i++ {
 		p.valEnc(buf, uint64(s.Index(i)))
 	}
@@ -880,8 +891,13 @@ func (o *Buffer) enc_slice_packed_int64(p *Properties, base structPointer) error
 	if l == 0 {
 		return ErrNil
 	}
-	// TODO: Reuse a Buffer.
-	buf := NewBuffer(nil)
+
+	buf := bufPool.Get().(*Buffer)
+	defer func() {
+		buf.Reset()
+		bufPool.Put(buf)
+	}()
+
 	for i := 0; i < l; i++ {
 		p.valEnc(buf, s.Index(i))
 	}
