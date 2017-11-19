@@ -465,11 +465,11 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 		p := &prop.Prop[fieldnum]
 
 		if p.dec == nil {
-			fmt.Fprintf(os.Stderr, "protobuf3: no protobuf decoder for %s.%s\n", st, st.Field(fieldnum).Name)
+			fmt.Fprintf(os.Stderr, "protobuf3: no protobuf decoder for %s.%s\n", st, p.Name)
 			continue
 		}
 		if wire != p.WireType && wire != WireBytes { // packed encoding, which is used in protobuf v3, wraps repeated numeric types in WireBytes
-			err = fmt.Errorf("protobuf3: bad wiretype for field %s.%s: got wiretype %d, want %d", st, st.Field(fieldnum).Name, wire, p.WireType)
+			err = fmt.Errorf("protobuf3: bad wiretype for field %s.%s: got wiretype %d, want %d", st, p.Name, wire, p.WireType)
 			break
 		}
 		err = p.dec(o, p, base)
