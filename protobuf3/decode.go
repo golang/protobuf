@@ -45,7 +45,6 @@ import (
 	"io"
 	"os"
 	"reflect"
-	"sort"
 	"time"
 	"unsafe"
 )
@@ -454,15 +453,17 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 			return fmt.Errorf("protobuf3: %s: illegal tag %d (wire type %d) at index %d of %d", st, tag, wire, o.index, len(o.buf))
 		}
 
-		i := sort.Search(len(prop.order), func(i int) bool {
-			return prop.Prop[prop.order[i]].Tag >= uint32(tag)
-		})
-		if i >= len(prop.order) || prop.Prop[prop.order[i]].Tag != uint32(tag) {
+		var p *Properties
+		for i := range prop.Prop {
+			if prop.Prop[i].Tag == uint32(tag) {
+				p = &prop.Prop[i]
+				break
+			}
+		}
+		if p == nil {
 			err = o.skip(st, wire)
 			continue
 		}
-		fieldnum := prop.order[i]
-		p := &prop.Prop[fieldnum]
 
 		if p.dec == nil {
 			fmt.Fprintf(os.Stderr, "protobuf3: no protobuf decoder for %s.%s\n", st, p.Name)
