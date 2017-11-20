@@ -60,7 +60,7 @@ func init() {
 }
 
 // non-pointer custom message
-type nonptrMessage struct{ x int }
+type nonptrMessage struct {}
 
 func (m nonptrMessage) ProtoMessage()  {}
 func (m nonptrMessage) Reset()         {}

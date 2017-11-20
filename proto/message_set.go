@@ -168,6 +168,9 @@ func marshalMessageSet(exts interface{}, deterministic bool) ([]byte, error) {
 		// Wrap it in a new-style XXX_InternalExtensions.
 		ie := XXX_InternalExtensions{
 			p: &struct{
+				//lint:ignore U1000 False positive - this
+				//"unused" field is the dictated by the
+				//anonymous struct type.
 				mu           sync.Mutex
 				extensionMap map[int32]Extension
 			}{
