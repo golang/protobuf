@@ -213,7 +213,7 @@ func TestGetExtensionDefaults(t *testing.T) {
 		{pb.E_DefaultSfixed64, setInt64, int64(51)},
 		{pb.E_DefaultBool, setBool, true},
 		{pb.E_DefaultBool, setBool2, true},
-		{pb.E_DefaultString, setString, "Hello, string"},
+		{pb.E_DefaultString, setString, "Hello, string,def=foo"},
 		{pb.E_DefaultBytes, setBytes, []byte("Hello, bytes")},
 		{pb.E_DefaultEnum, setEnum, pb.DefaultsMessage_ONE},
 	}
