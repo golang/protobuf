@@ -834,27 +834,6 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		}
 	}
 
-	// Handle enums, which have an underlying type of int32,
-	// and may appear as strings.
-	// The case of an enum appearing as a number is handled
-	// at the bottom of this function.
-	if inputValue[0] == '"' && prop != nil && prop.Enum != "" {
-		vmap := proto.EnumValueMap(prop.Enum)
-		// Don't need to do unquoting; valid enum names
-		// are from a limited character set.
-		s := inputValue[1 : len(inputValue)-1]
-		n, ok := vmap[string(s)]
-		if !ok {
-			return fmt.Errorf("unknown value %q for enum %s", s, prop.Enum)
-		}
-		if target.Kind() == reflect.Ptr { // proto2
-			target.Set(reflect.New(targetType.Elem()))
-			target = target.Elem()
-		}
-		target.SetInt(int64(n))
-		return nil
-	}
-
 	// Handle nested messages.
 	if targetType.Kind() == reflect.Struct {
 		var jsonFields map[string]json.RawMessage
@@ -961,6 +940,24 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				}
 			}
 		}
+		return nil
+	}
+
+	// Handle enums, which have an underlying type of int32,
+	// and may appear as strings.
+	if prop != nil && prop.Enum != "" {
+		n, err := proto.UnmarshalJSONEnum(proto.EnumValueMap(prop.Enum), inputValue, prop.Enum)
+		if err != nil {
+			return err
+		}
+		if _, ok := proto.EnumNameMap(prop.Enum)[n]; !ok {
+			return fmt.Errorf("unknown value %q for enum %s", inputValue, prop.Enum)
+		}
+		if target.Kind() == reflect.Ptr { // proto2
+			target.Set(reflect.New(targetType.Elem()))
+			target = target.Elem()
+		}
+		target.SetInt(int64(n))
 		return nil
 	}
 

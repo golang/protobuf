@@ -806,21 +806,31 @@ func getbase(pb Message) (t reflect.Type, b structPointer, err error) {
 // A global registry of enum types.
 // The generated code will register the generated maps by calling RegisterEnum.
 
-var enumValueMaps = make(map[string]map[string]int32)
+var (
+	enumValueMaps = make(map[string]map[string]int32)
+	enumNameMaps  = make(map[string]map[int32]string)
+)
 
 // RegisterEnum is called from the generated code to install the enum descriptor
 // maps into the global table to aid parsing text format protocol buffers.
-func RegisterEnum(typeName string, unusedNameMap map[int32]string, valueMap map[string]int32) {
+func RegisterEnum(typeName string, nameMap map[int32]string, valueMap map[string]int32) {
 	if _, ok := enumValueMaps[typeName]; ok {
 		panic("proto: duplicate enum registered: " + typeName)
 	}
 	enumValueMaps[typeName] = valueMap
+	enumNameMaps[typeName] = nameMap
 }
 
 // EnumValueMap returns the mapping from names to integers of the
 // enum type enumType, or a nil if not found.
 func EnumValueMap(enumType string) map[string]int32 {
 	return enumValueMaps[enumType]
+}
+
+// EnumNameMap returns the mapping from integers to string of the
+// enum type enumType, or an empty string if not found.
+func EnumNameMap(enumType string) map[int32]string {
+	return enumNameMaps[enumType]
 }
 
 // A registry of all linked message types.
