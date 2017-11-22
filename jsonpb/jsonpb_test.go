@@ -245,13 +245,6 @@ var (
  "color": 2
 }`
 
-	colorListPrettyJSON = `{
-  "color": 1000,
-  "rColor": [
-    "RED"
-  ]
-}`
-
 	nummyPrettyJSON = `{
   "nummy": {
     "1": 2,
@@ -354,8 +347,6 @@ var marshalingTests = []struct {
 		&pb.Widget{Color: pb.Widget_BLUE.Enum()}, `{"color":"BLUE"}`},
 	{"enum-value pretty object", Marshaler{EnumsAsInts: true, Indent: " "},
 		&pb.Widget{Color: pb.Widget_BLUE.Enum()}, colorPrettyJSON},
-	{"unknown enum value object", marshalerAllOptions,
-		&pb.Widget{Color: pb.Widget_Color(1000).Enum(), RColor: []pb.Widget_Color{pb.Widget_RED}}, colorListPrettyJSON},
 	{"repeated proto3 enum", Marshaler{},
 		&proto3pb.Message{RFunny: []proto3pb.Message_Humour{
 			proto3pb.Message_PUNS,
@@ -510,10 +501,6 @@ var unmarshalingTests = []struct {
 	{"unknown field with allowed option", Unmarshaler{AllowUnknownFields: true}, `{"unknown": "foo"}`, new(pb.Simple)},
 	{"proto3 enum string", Unmarshaler{}, `{"hilarity":"PUNS"}`, &proto3pb.Message{Hilarity: proto3pb.Message_PUNS}},
 	{"proto3 enum value", Unmarshaler{}, `{"hilarity":1}`, &proto3pb.Message{Hilarity: proto3pb.Message_PUNS}},
-	{"unknown enum value object",
-		Unmarshaler{},
-		"{\n  \"color\": 1000,\n  \"r_color\": [\n    \"RED\"\n  ]\n}",
-		&pb.Widget{Color: pb.Widget_Color(1000).Enum(), RColor: []pb.Widget_Color{pb.Widget_RED}}},
 	{"repeated proto3 enum", Unmarshaler{}, `{"rFunny":["PUNS","SLAPSTICK"]}`,
 		&proto3pb.Message{RFunny: []proto3pb.Message_Humour{
 			proto3pb.Message_PUNS,
@@ -711,6 +698,7 @@ var unmarshalingShouldError = []struct {
 	{"gibberish", "{adskja123;l23=-=", new(pb.Simple)},
 	{"unknown field", `{"unknown": "foo"}`, new(pb.Simple)},
 	{"unknown enum name", `{"hilarity":"DAVE"}`, new(proto3pb.Message)},
+	{"unkownn enum value", `{"hilarity": 1000}`, new(proto3pb.Message)},
 }
 
 func TestUnmarshalingBadInput(t *testing.T) {
