@@ -1306,7 +1306,7 @@ func (*NNIMessage) Reset()         {}
 func (*NNIMessage) String() string { return "" }
 func (*NNIMessage) ProtoMessage()  {}
 
-type NMMessage struct {}
+type NMMessage struct{}
 
 func (*NMMessage) Reset()         {}
 func (*NMMessage) String() string { return "" }
@@ -1500,6 +1500,14 @@ func TestLengthOverflow(t *testing.T) {
 func TestVarintOverflow(t *testing.T) {
 	// Overflowing a 64-bit length should not be allowed.
 	b := []byte{1<<3 | WireVarint, 0x01, 3<<3 | WireBytes, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01}
+	if err := Unmarshal(b, new(MyMessage)); err == nil {
+		t.Fatalf("Overflowed uint64 length without error")
+	}
+}
+
+func TestBytesWithInvalidLengthInGroup(t *testing.T) {
+	// Overflowing a 64-bit length should not be allowed.
+	b := []byte{0xbb, 0x30, 0xb2, 0x30, 0xb0, 0xb2, 0x83, 0xf1, 0xb0, 0xb2, 0xef, 0xbf, 0xbd, 0x01}
 	if err := Unmarshal(b, new(MyMessage)); err == nil {
 		t.Fatalf("Overflowed uint64 length without error")
 	}

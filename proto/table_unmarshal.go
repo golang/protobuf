@@ -1849,7 +1849,7 @@ func findEndGroup(b []byte) (int, int) {
 				return -1, -1
 			}
 			i += k
-			if i+int(m) > len(b) {
+			if uint64(len(b)) < uint64(i)+m {
 				return -1, -1
 			}
 			i += int(m)
