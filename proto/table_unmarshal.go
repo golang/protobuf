@@ -208,7 +208,7 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 				b = b[8:]
 			case WireBytes:
 				m, k := decodeVarint(b)
-				if k == 0 || uint64(len(b)) < uint64(k)+m {
+				if k == 0 || uint64(len(b)-k) < m {
 					return io.ErrUnexpectedEOF
 				}
 				b = b[uint64(k)+m:]
@@ -1834,12 +1834,12 @@ func findEndGroup(b []byte) (int, int) {
 			}
 			i += k
 		case WireFixed32:
-			if i+4 > len(b) {
+			if len(b)-4 < i {
 				return -1, -1
 			}
 			i += 4
 		case WireFixed64:
-			if i+8 > len(b) {
+			if len(b)-8 < i {
 				return -1, -1
 			}
 			i += 8
@@ -1849,7 +1849,7 @@ func findEndGroup(b []byte) (int, int) {
 				return -1, -1
 			}
 			i += k
-			if i+int(m) > len(b) {
+			if uint64(len(b)-i) < m {
 				return -1, -1
 			}
 			i += int(m)
