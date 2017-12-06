@@ -482,10 +482,7 @@ func writeRaw(w *textWriter, b []byte) error {
 		return err
 	}
 	w.unindent()
-	if err := w.WriteByte('>'); err != nil {
-		return err
-	}
-	return nil
+	return w.WriteByte('>')
 }
 
 // writeAny writes an arbitrary field.

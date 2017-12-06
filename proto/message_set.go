@@ -95,10 +95,7 @@ func (ms *messageSet) find(pb Message) *_MessageSet_Item {
 }
 
 func (ms *messageSet) Has(pb Message) bool {
-	if ms.find(pb) != nil {
-		return true
-	}
-	return false
+	return ms.find(pb) != nil
 }
 
 func (ms *messageSet) Unmarshal(pb Message) error {
