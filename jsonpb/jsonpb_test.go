@@ -466,7 +466,7 @@ func TestMarshalingNil(t *testing.T) {
 	var msg *pb.Simple
 	m := &Marshaler{}
 	if _, err := m.MarshalToString(msg); err == nil {
-		t.Errorf("mashalling nil returned no error")
+		t.Errorf("mashaling nil returned no error")
 	}
 }
 

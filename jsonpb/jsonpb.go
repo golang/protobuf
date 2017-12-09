@@ -118,7 +118,8 @@ type JSONPBUnmarshaler interface {
 
 // Marshal marshals a protocol buffer into JSON.
 func (m *Marshaler) Marshal(out io.Writer, pb proto.Message) error {
-	if pb == nil || reflect.ValueOf(pb).IsNil() {
+	v := reflect.ValueOf(pb)
+	if pb == nil || (v.Kind() == reflect.Ptr && v.IsNil()) {
 		return errors.New("Marshal called with nil")
 	}
 	writer := &errWriter{writer: out}
