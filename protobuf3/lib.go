@@ -115,21 +115,62 @@ func (p *Buffer) saveIndex(ptr unsafe.Pointer, idx int) {
 	p.array_indexes[ptr] = idx
 }
 
-// Find scans forward starting at 'offset', stopping and returning the next item which has id 'id'.
-// The entire item is returned, including the 'tag' header and any varint byte length in the case of WireBytes.
-// This way the item is itself a valid protobuf message.
+// Next returns the next item in the message.
+// Both the entire item and just the value bytes are returned. The entire item is useful because it is itself a valid protobuf message.
+// If the end of the buffer is reached 0,nil,nil,0,nil is returned.
+func (p *Buffer) Next() (id int, full []byte, val []byte, wt WireType, err error) {
+	start := p.index
+	if start == len(p.buf) {
+		// end of buffer
+		return 0, nil, nil, 0, nil
+	}
+
+	var vi uint64
+	vi, err = p.DecodeVarint()
+	if err != nil {
+		return 0, nil, nil, 0, err
+	}
+	wt = WireType(vi) & 7
+	id = int(vi >> 3)
+
+	val_start := p.index // correct except in the case of WireBytes, where the value starts after the varint byte length
+
+	switch wt {
+	case WireBytes:
+		val, err = p.DecodeRawBytes()
+
+	case WireVarint:
+		err = p.SkipVarint()
+
+	case WireFixed32:
+		err = p.SkipFixed(4)
+
+	case WireFixed64:
+		err = p.SkipFixed(8)
+	}
+
+	if val == nil {
+		val = p.buf[val_start:p.index:p.index]
+	} // else val is already set up
+
+	return id, p.buf[start:p.index:p.index], val, wt, err
+}
+
+// Find scans forward for next item which has id 'id'.
+// Both the entire item and just the value bytes are returned. The entire item is useful because it is itself a valid protobuf message.
+// If no match is found, ErrNotFound is returned.
 // If sorted is true then this function assumes the message's fields are sorted by id, and encountering any id > 'id' short circuits the search
-func (p *Buffer) Find(id uint, sorted bool) ([]byte, []byte, WireType, error) {
+func (p *Buffer) Find(id uint, sorted bool) (full []byte, val []byte, wt WireType, err error) {
 	for p.index < len(p.buf) {
 		start := p.index
-		vi, err := p.DecodeVarint()
+		var vi uint64
+		vi, err = p.DecodeVarint()
 		if err != nil {
 			return nil, nil, 0, err
 		}
-		wt := WireType(vi) & 7
+		wt = WireType(vi) & 7
 		if vi>>3 == uint64(id) {
 			// it's a match. size the value and return
-			var val []byte
 			val_start := p.index // correct except in the case of WireBytes, where the value starts after the varint byte length
 
 			switch wt {

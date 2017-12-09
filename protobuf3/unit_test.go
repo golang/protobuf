@@ -1033,3 +1033,93 @@ func TestPtoPtoS(t *testing.T) {
 		t.Errorf("should have failed with ErrNotPointerToStruct. Got %v", err)
 	}
 }
+
+func TestFind(t *testing.T) {
+	var b = []byte{1, 2, 3, 4, 5}
+	var msg = struct {
+		B []byte  `protobuf:"bytes,1"`
+		I int     `protobuf:"varint,2"`
+		J int     `protobuf:"varint,3"`
+		F float64 `protobuf:"fixed64,4"`
+	}{
+		B: b, I: 2, J: 3, F: 5.6,
+	}
+
+	pb, err := protobuf3.Marshal(&msg)
+	if err != nil { // we don't expect any errors
+		t.Error(err)
+		return
+	}
+
+	buf := protobuf3.NewBuffer(pb)
+	full, val, wt, err := buf.Find(1, false)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if wt != protobuf3.WireBytes {
+		t.Errorf("wt %v", wt)
+	} else if !bytes.Equal(full, []byte{2 + 1<<3, 5, 1, 2, 3, 4, 5}) {
+		t.Errorf("full % x", full)
+	} else if !bytes.Equal(val, b) {
+		t.Errorf("val % x", full)
+	}
+
+	// next find should fail
+	full, val, wt, err = buf.Find(1, false)
+	if err != protobuf3.ErrNotFound {
+		t.Errorf("didn't fail properly: %v", err)
+	}
+
+	// go back and find the I and J values
+	buf.Rewind()
+
+	for i := byte(2); i <= 3; i++ {
+		full, val, wt, err = buf.Find(uint(i), false)
+		if err != nil {
+			t.Error(err)
+		} else if wt != protobuf3.WireVarint {
+			t.Errorf("wrong wt %v", wt)
+		} else if !bytes.Equal(full, []byte{i<<3 + 0, i}) {
+			t.Errorf("full % x", full)
+		} else if !bytes.Equal(val, []byte{i}) {
+			t.Errorf("val % x", full)
+		}
+	}
+}
+
+func TestNext(t *testing.T) {
+	var b = []byte{1, 2, 3, 4, 5}
+	var msg = struct {
+		B []byte  `protobuf:"bytes,1"`
+		I int     `protobuf:"varint,2"`
+		J int     `protobuf:"varint,3"`
+		F float64 `protobuf:"fixed64,4"`
+	}{
+		B: b, I: 2, J: 3, F: 5.6,
+	}
+
+	pb, err := protobuf3.Marshal(&msg)
+	if err != nil { // we don't expect any errors
+		t.Error(err)
+		return
+	}
+
+	buf := protobuf3.NewBuffer(pb)
+
+	for i := 0; i < 4; i++ {
+		id, full, val, wt, err := buf.Next()
+		t.Logf("id %d, full % x, val % x, %v, %v", id, full, val, wt, err)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		if id != i+1 {
+			t.Errorf("id %v", id)
+		}
+	}
+	id, full, val, wt, err := buf.Next()
+	if id != 0 || full != nil || val != nil || wt != 0 || err != nil {
+		t.Error("should have returned zero-values")
+	}
+}
