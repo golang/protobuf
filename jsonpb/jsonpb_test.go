@@ -462,6 +462,14 @@ func TestMarshaling(t *testing.T) {
 	}
 }
 
+func TestMarshalingNil(t *testing.T) {
+	var msg *pb.Simple
+	m := &Marshaler{}
+	if _, err := m.MarshalToString(msg); err == nil {
+		t.Errorf("mashaling nil returned no error")
+	}
+}
+
 func TestMarshalJSONPBMarshaler(t *testing.T) {
 	rawJson := `{ "foo": "bar", "baz": [0, 1, 2, 3] }`
 	msg := dynamicMessage{rawJson: rawJson}
