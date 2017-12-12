@@ -133,7 +133,7 @@ func SizeVarint(x uint64) int {
 		return 8
 	case x < 1<<63:
 		return 9
-}
+	}
 	return 10
 }
 

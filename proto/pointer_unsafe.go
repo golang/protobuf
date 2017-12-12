@@ -88,7 +88,7 @@ func toAddrPointer(i *interface{}, isptr bool) pointer {
 		// The interface is of pointer type, thus it is a direct interface.
 		// The data word is the pointer data itself. We take its address.
 		return pointer{p: unsafe.Pointer(uintptr(unsafe.Pointer(i)) + ptrSize)}
-}
+	}
 	// The interface is not of pointer type. The data word is the pointer
 	// to the data.
 	return pointer{p: (*[2]unsafe.Pointer)(unsafe.Pointer(i))[1]}
@@ -160,7 +160,7 @@ func (p pointer) appendInt32Slice(v int32) {
 
 func (p pointer) toUint64() *uint64 {
 	return (*uint64)(p.p)
-	}
+}
 func (p pointer) toUint64Ptr() **uint64 {
 	return (**uint64)(p.p)
 }
@@ -184,7 +184,7 @@ func (p pointer) toBoolPtr() **bool {
 }
 func (p pointer) toBoolSlice() *[]bool {
 	return (*[]bool)(p.p)
-	}
+}
 func (p pointer) toFloat64() *float64 {
 	return (*float64)(p.p)
 }

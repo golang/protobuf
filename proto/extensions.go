@@ -97,12 +97,12 @@ func extendable(p interface{}) (extendableProto, error) {
 	case extendableProto:
 		if isNilPtr(p) {
 			return nil, fmt.Errorf("proto: nil %T is not extendable", p)
-	}
+		}
 		return p, nil
 	case extendableProtoV1:
 		if isNilPtr(p) {
 			return nil, fmt.Errorf("proto: nil %T is not extendable", p)
-	}
+		}
 		return extensionAdapter{p}, nil
 	}
 	// Don't allocate a specific error containing %T:
