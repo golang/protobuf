@@ -248,17 +248,17 @@ var mergeTests = []struct {
 		src:  &pb.Communique{Union: &pb.Communique_Number{41}},
 		dst:  &pb.Communique{Union: &pb.Communique_Name{"Bobby Tables"}},
 		want: &pb.Communique{Union: &pb.Communique_Number{41}},
-		},
+	},
 	{ // Oneof nil is the same as not set.
 		src:  &pb.Communique{},
 		dst:  &pb.Communique{Union: &pb.Communique_Name{"Bobby Tables"}},
 		want: &pb.Communique{Union: &pb.Communique_Name{"Bobby Tables"}},
-		},
+	},
 	{
 		src:  &pb.Communique{Union: &pb.Communique_Number{1337}},
 		dst:  &pb.Communique{},
 		want: &pb.Communique{Union: &pb.Communique_Number{1337}},
-		},
+	},
 	{
 		src:  &pb.Communique{Union: &pb.Communique_Col{pb.MyMessage_RED}},
 		dst:  &pb.Communique{},
@@ -268,12 +268,12 @@ var mergeTests = []struct {
 		src:  &pb.Communique{Union: &pb.Communique_Data{[]byte("hello")}},
 		dst:  &pb.Communique{},
 		want: &pb.Communique{Union: &pb.Communique_Data{[]byte("hello")}},
-		},
+	},
 	{
 		src:  &pb.Communique{Union: &pb.Communique_Msg{&pb.Strings{BytesField: []byte{1, 2, 3}}}},
 		dst:  &pb.Communique{},
 		want: &pb.Communique{Union: &pb.Communique_Msg{&pb.Strings{BytesField: []byte{1, 2, 3}}}},
-		},
+	},
 	{
 		src:  &pb.Communique{Union: &pb.Communique_Msg{}},
 		dst:  &pb.Communique{},

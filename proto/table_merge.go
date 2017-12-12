@@ -42,12 +42,12 @@ import (
 // Merge merges the src message into dst.
 // This assumes that dst and src of the same type and are non-nil.
 func (a *InternalMessageInfo) Merge(dst, src Message) {
-		mi := atomicLoadMergeInfo(&a.merge)
-		if mi == nil {
-			mi = getMergeInfo(reflect.TypeOf(dst).Elem())
-			atomicStoreMergeInfo(&a.merge, mi)
-		}
-		mi.merge(toPointer(&dst), toPointer(&src))
+	mi := atomicLoadMergeInfo(&a.merge)
+	if mi == nil {
+		mi = getMergeInfo(reflect.TypeOf(dst).Elem())
+		atomicStoreMergeInfo(&a.merge, mi)
+	}
+	mi.merge(toPointer(&dst), toPointer(&src))
 }
 
 type mergeInfo struct {

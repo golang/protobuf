@@ -561,7 +561,7 @@ func (tm *TextMarshaler) writeAny(w *textWriter, v reflect.Value, props *Propert
 				v = v.Elem()
 			}
 			if err := tm.writeStruct(w, v); err != nil {
-			return err
+				return err
 			}
 		}
 		w.unindent()
