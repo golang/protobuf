@@ -449,6 +449,8 @@ var marshalingTests = []struct {
 	{"BoolValue", marshaler, &pb.KnownTypes{Bool: &wpb.BoolValue{Value: true}}, `{"bool":true}`},
 	{"StringValue", marshaler, &pb.KnownTypes{Str: &wpb.StringValue{Value: "plush"}}, `{"str":"plush"}`},
 	{"BytesValue", marshaler, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}, `{"bytes":"d293"}`},
+
+	{"required", marshaler, &pb.MsgWithRequired1{Str: proto.String("hello")}, `{"str":"hello"}`},
 }
 
 func TestMarshaling(t *testing.T) {
@@ -497,6 +499,53 @@ func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
 	expected := `{"@type":"type.googleapis.com/` + dynamicMessageName + `","baz":[0,1,2,3],"foo":"bar"}`
 	if str != expected {
 		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, expected)
+	}
+}
+
+// Test marshaling unset required fields should produce error.
+func TestMarshalingUnsetRequiredFields(t *testing.T) {
+	tests := []struct {
+		desc      string
+		marshaler *Marshaler
+		pb        proto.Message
+	}{
+		{
+			desc:      "direct required field",
+			marshaler: &Marshaler{},
+			pb:        &pb.MsgWithRequired1{},
+		},
+		{
+			desc:      "direct required field + emit defaults",
+			marshaler: &Marshaler{EmitDefaults: true},
+			pb:        &pb.MsgWithRequired1{},
+		},
+		{
+			desc:      "indirect required field",
+			marshaler: &Marshaler{},
+			pb:        &pb.MsgWithRequired2{Subm: &pb.MsgWithRequired1{}},
+		},
+		{
+			desc:      "indirect required field + emit defaults",
+			marshaler: &Marshaler{EmitDefaults: true},
+			pb:        &pb.MsgWithRequired2{Subm: &pb.MsgWithRequired1{}},
+		},
+		{
+			desc:      "direct required wkt field",
+			marshaler: &Marshaler{},
+			pb:        &pb.MsgWithRequired3{},
+		},
+		{
+			desc:      "direct required wkt field + emit defaults",
+			marshaler: &Marshaler{EmitDefaults: true},
+			pb:        &pb.MsgWithRequired3{},
+		},
+	}
+
+	for _, tc := range tests {
+		_, err := tc.marshaler.MarshalToString(tc.pb)
+		if err == nil {
+			t.Errorf("%s: expecting error in marshaling with unset required fields %+v", tc.desc, tc.pb)
+		}
 	}
 }
 
@@ -631,6 +680,8 @@ var unmarshalingTests = []struct {
 	{"null BoolValue", Unmarshaler{}, `{"bool":null}`, &pb.KnownTypes{Bool: nil}},
 	{"null StringValue", Unmarshaler{}, `{"str":null}`, &pb.KnownTypes{Str: nil}},
 	{"null BytesValue", Unmarshaler{}, `{"bytes":null}`, &pb.KnownTypes{Bytes: nil}},
+
+	{"required", Unmarshaler{}, `{"str":"hello"}`, &pb.MsgWithRequired1{Str: proto.String("hello")}},
 }
 
 func TestUnmarshaling(t *testing.T) {
@@ -762,7 +813,7 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	if err != nil {
 		t.Errorf("an unexpected error occurred when marshaling any to JSON: %v", err)
 	}
-	if len(resolvedTypeUrls) != 1 {
+	if len(resolvedTypeUrls) == 0 {
 		t.Errorf("custom resolver was not invoked during marshaling")
 	} else if resolvedTypeUrls[0] != "https://foobar.com/some.random.MessageKind" {
 		t.Errorf("custom resolver was invoked with wrong URL: got %q, wanted %q", resolvedTypeUrls[0], "https://foobar.com/some.random.MessageKind")
@@ -771,6 +822,7 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	if js != wanted {
 		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", js, wanted)
 	}
+	resolvedTypeUrls = nil
 
 	u := Unmarshaler{AnyResolver: resolver}
 	roundTrip := &anypb.Any{}
@@ -778,9 +830,9 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	if err != nil {
 		t.Errorf("an unexpected error occurred when unmarshaling any from JSON: %v", err)
 	}
-	if len(resolvedTypeUrls) != 2 {
+	if len(resolvedTypeUrls) == 0 {
 		t.Errorf("custom resolver was not invoked during marshaling")
-	} else if resolvedTypeUrls[1] != "https://foobar.com/some.random.MessageKind" {
+	} else if resolvedTypeUrls[0] != "https://foobar.com/some.random.MessageKind" {
 		t.Errorf("custom resolver was invoked with wrong URL: got %q, wanted %q", resolvedTypeUrls[1], "https://foobar.com/some.random.MessageKind")
 	}
 	if !proto.Equal(any, roundTrip) {
@@ -901,4 +953,50 @@ func (m *dynamicMessage) MarshalJSONPB(jm *Marshaler) ([]byte, error) {
 func (m *dynamicMessage) UnmarshalJSONPB(jum *Unmarshaler, js []byte) error {
 	m.rawJson = string(js)
 	return nil
+}
+
+// Test unmarshaling unset required fields should produce error.
+func TestUnmarshalingUnsetRequiredFields(t *testing.T) {
+	tests := []struct {
+		desc string
+		pb   proto.Message
+		json string
+	}{
+		{
+			desc: "direct required field missing",
+			pb:   &pb.MsgWithRequired1{},
+			json: `{}`,
+		},
+		{
+			desc: "direct required field set to null",
+			pb:   &pb.MsgWithRequired1{},
+			json: `{"str": null}`,
+		},
+		{
+			desc: "indirect required field missing",
+			pb:   &pb.MsgWithRequired2{},
+			json: `{"subm": {}}`,
+		},
+		{
+			desc: "indirect required field set to null",
+			pb:   &pb.MsgWithRequired2{},
+			json: `{"subm": {"str": null}}`,
+		},
+		{
+			desc: "direct required wkt field missing",
+			pb:   &pb.MsgWithRequired3{},
+			json: `{}`,
+		},
+		{
+			desc: "direct required wkt field set to null",
+			pb:   &pb.MsgWithRequired3{},
+			json: `{"str": null}`,
+		},
+	}
+
+	for _, tc := range tests {
+		if err := UnmarshalString(tc.json, tc.pb); err == nil {
+			t.Errorf("%s: expecting error in unmarshaling with unset required fields %s", tc.desc, tc.json)
+		}
+	}
 }

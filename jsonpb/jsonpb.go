@@ -257,11 +257,16 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			continue
 		}
 
+		prop := jsonProperties(valueField, m.OrigName)
 		// IsNil will panic on most value kinds.
 		switch value.Kind() {
 		case reflect.Chan, reflect.Func, reflect.Interface:
 			if value.IsNil() {
 				continue
+			}
+		case reflect.Ptr:
+			if prop.Required && value.IsNil() {
+				return fmt.Errorf("required field %q is not set", prop.Name)
 			}
 		}
 
@@ -300,8 +305,8 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			sv := value.Elem().Elem() // interface -> *T -> T
 			value = sv.Field(0)
 			valueField = sv.Type().Field(0)
+			prop = jsonProperties(valueField, m.OrigName)
 		}
-		prop := jsonProperties(valueField, m.OrigName)
 		if !firstField {
 			m.writeSep(out)
 		}
@@ -644,7 +649,19 @@ func (u *Unmarshaler) UnmarshalNext(dec *json.Decoder, pb proto.Message) error {
 // permutations of the related Marshaler.
 func (u *Unmarshaler) Unmarshal(r io.Reader, pb proto.Message) error {
 	dec := json.NewDecoder(r)
-	return u.UnmarshalNext(dec, pb)
+	if err := u.UnmarshalNext(dec, pb); err != nil {
+		return err
+	}
+
+	// Marshal it back to check for missing required field error.
+	// TODO: Parse through the message and check for any missing required field w/o having to
+	// marshal.
+	m := &Marshaler{AnyResolver: u.AnyResolver}
+	if _, err := m.MarshalToString(pb); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // UnmarshalNext unmarshals the next protocol buffer from a JSON object stream.

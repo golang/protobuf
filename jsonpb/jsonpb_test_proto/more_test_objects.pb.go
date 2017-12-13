@@ -23,6 +23,9 @@ It has these top-level messages:
 	Real
 	Complex
 	KnownTypes
+	MsgWithRequired1
+	MsgWithRequired2
+	MsgWithRequired3
 */
 package jsonpb
 

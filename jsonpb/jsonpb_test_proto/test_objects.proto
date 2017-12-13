@@ -145,3 +145,16 @@ message KnownTypes {
   optional google.protobuf.StringValue str = 10;
   optional google.protobuf.BytesValue bytes = 11;
 }
+
+// Test messages for marshaling/unmarshaling required fields.
+message MsgWithRequired1 {
+  required string str = 1;
+}
+
+message MsgWithRequired2 {
+  optional MsgWithRequired1 subm = 1;
+}
+
+message MsgWithRequired3 {
+  required google.protobuf.StringValue str = 1;
+}
