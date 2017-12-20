@@ -450,7 +450,7 @@ var marshalingTests = []struct {
 	{"StringValue", marshaler, &pb.KnownTypes{Str: &wpb.StringValue{Value: "plush"}}, `{"str":"plush"}`},
 	{"BytesValue", marshaler, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}, `{"bytes":"d293"}`},
 
-	{"required", marshaler, &pb.MsgWithRequired1{Str: proto.String("hello")}, `{"str":"hello"}`},
+	{"required", marshaler, &pb.MsgWithRequired{Str: proto.String("hello")}, `{"str":"hello"}`},
 }
 
 func TestMarshaling(t *testing.T) {
@@ -504,6 +504,9 @@ func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
 
 // Test marshaling unset required fields should produce error.
 func TestMarshalingUnsetRequiredFields(t *testing.T) {
+	msgExt := &pb.Real{}
+	proto.SetExtension(msgExt, pb.E_Extm, &pb.MsgWithRequired{})
+
 	tests := []struct {
 		desc      string
 		marshaler *Marshaler
@@ -512,38 +515,68 @@ func TestMarshalingUnsetRequiredFields(t *testing.T) {
 		{
 			desc:      "direct required field",
 			marshaler: &Marshaler{},
-			pb:        &pb.MsgWithRequired1{},
+			pb:        &pb.MsgWithRequired{},
 		},
 		{
 			desc:      "direct required field + emit defaults",
 			marshaler: &Marshaler{EmitDefaults: true},
-			pb:        &pb.MsgWithRequired1{},
+			pb:        &pb.MsgWithRequired{},
 		},
 		{
 			desc:      "indirect required field",
 			marshaler: &Marshaler{},
-			pb:        &pb.MsgWithRequired2{Subm: &pb.MsgWithRequired1{}},
+			pb:        &pb.MsgWithIndirectRequired{Subm: &pb.MsgWithRequired{}},
 		},
 		{
 			desc:      "indirect required field + emit defaults",
 			marshaler: &Marshaler{EmitDefaults: true},
-			pb:        &pb.MsgWithRequired2{Subm: &pb.MsgWithRequired1{}},
+			pb:        &pb.MsgWithIndirectRequired{Subm: &pb.MsgWithRequired{}},
 		},
 		{
 			desc:      "direct required wkt field",
 			marshaler: &Marshaler{},
-			pb:        &pb.MsgWithRequired3{},
+			pb:        &pb.MsgWithRequiredWKT{},
 		},
 		{
 			desc:      "direct required wkt field + emit defaults",
 			marshaler: &Marshaler{EmitDefaults: true},
-			pb:        &pb.MsgWithRequired3{},
+			pb:        &pb.MsgWithRequiredWKT{},
+		},
+		{
+			desc:      "required in map value",
+			marshaler: &Marshaler{},
+			pb: &pb.MsgWithIndirectRequired{
+				MapField: map[string]*pb.MsgWithRequired{
+					"key": {},
+				},
+			},
+		},
+		{
+			desc:      "required in slice item",
+			marshaler: &Marshaler{},
+			pb: &pb.MsgWithIndirectRequired{
+				SliceField: []*pb.MsgWithRequired{
+					{Str: proto.String("hello")},
+					{},
+				},
+			},
+		},
+		{
+			desc:      "required inside oneof",
+			marshaler: &Marshaler{},
+			pb: &pb.MsgWithOneof{
+				Union: &pb.MsgWithOneof_MsgWithRequired{&pb.MsgWithRequired{}},
+			},
+		},
+		{
+			desc:      "required inside extension",
+			marshaler: &Marshaler{},
+			pb:        msgExt,
 		},
 	}
 
 	for _, tc := range tests {
-		_, err := tc.marshaler.MarshalToString(tc.pb)
-		if err == nil {
+		if _, err := tc.marshaler.MarshalToString(tc.pb); err == nil {
 			t.Errorf("%s: expecting error in marshaling with unset required fields %+v", tc.desc, tc.pb)
 		}
 	}
@@ -681,7 +714,7 @@ var unmarshalingTests = []struct {
 	{"null StringValue", Unmarshaler{}, `{"str":null}`, &pb.KnownTypes{Str: nil}},
 	{"null BytesValue", Unmarshaler{}, `{"bytes":null}`, &pb.KnownTypes{Bytes: nil}},
 
-	{"required", Unmarshaler{}, `{"str":"hello"}`, &pb.MsgWithRequired1{Str: proto.String("hello")}},
+	{"required", Unmarshaler{}, `{"str":"hello"}`, &pb.MsgWithRequired{Str: proto.String("hello")}},
 }
 
 func TestUnmarshaling(t *testing.T) {
@@ -964,33 +997,83 @@ func TestUnmarshalingUnsetRequiredFields(t *testing.T) {
 	}{
 		{
 			desc: "direct required field missing",
-			pb:   &pb.MsgWithRequired1{},
+			pb:   &pb.MsgWithRequired{},
 			json: `{}`,
 		},
 		{
 			desc: "direct required field set to null",
-			pb:   &pb.MsgWithRequired1{},
+			pb:   &pb.MsgWithRequired{},
 			json: `{"str": null}`,
 		},
 		{
 			desc: "indirect required field missing",
-			pb:   &pb.MsgWithRequired2{},
+			pb:   &pb.MsgWithIndirectRequired{},
 			json: `{"subm": {}}`,
 		},
 		{
 			desc: "indirect required field set to null",
-			pb:   &pb.MsgWithRequired2{},
+			pb:   &pb.MsgWithIndirectRequired{},
 			json: `{"subm": {"str": null}}`,
 		},
 		{
 			desc: "direct required wkt field missing",
-			pb:   &pb.MsgWithRequired3{},
+			pb:   &pb.MsgWithRequiredWKT{},
 			json: `{}`,
 		},
 		{
 			desc: "direct required wkt field set to null",
-			pb:   &pb.MsgWithRequired3{},
+			pb:   &pb.MsgWithRequiredWKT{},
 			json: `{"str": null}`,
+		},
+		{
+			desc: "any containing message with required field set to null",
+			pb:   &pb.KnownTypes{},
+			json: `{"an": {"@type": "example.com/jsonpb.MsgWithRequired", "str": null}}`,
+		},
+		{
+			desc: "any containing message with missing required field",
+			pb:   &pb.KnownTypes{},
+			json: `{"an": {"@type": "example.com/jsonpb.MsgWithRequired"}}`,
+		},
+		{
+			desc: "missing required in map value",
+			pb:   &pb.MsgWithIndirectRequired{},
+			json: `{"map_field": {"a": {}, "b": {"str": "hi"}}}`,
+		},
+		{
+			desc: "required in map value set to null",
+			pb:   &pb.MsgWithIndirectRequired{},
+			json: `{"map_field": {"a": {"str": "hello"}, "b": {"str": null}}}`,
+		},
+		{
+			desc: "missing required in slice item",
+			pb:   &pb.MsgWithIndirectRequired{},
+			json: `{"slice_field": [{}, {"str": "hi"}]}`,
+		},
+		{
+			desc: "required in slice item set to null",
+			pb:   &pb.MsgWithIndirectRequired{},
+			json: `{"slice_field": [{"str": "hello"}, {"str": null}]}`,
+		},
+		{
+			desc: "required inside oneof missing",
+			pb:   &pb.MsgWithOneof{},
+			json: `{"msgWithRequired": {}}`,
+		},
+		{
+			desc: "required inside oneof set to null",
+			pb:   &pb.MsgWithOneof{},
+			json: `{"msgWithRequired": {"str": null}}`,
+		},
+		{
+			desc: "required field in extension missing",
+			pb:   &pb.Real{},
+			json: `{"[jsonpb.extm]":{}}`,
+		},
+		{
+			desc: "required field in extension set to null",
+			pb:   &pb.Real{},
+			json: `{"[jsonpb.extm]":{"str": null}}`,
 		},
 	}
 

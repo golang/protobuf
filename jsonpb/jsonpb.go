@@ -653,14 +653,100 @@ func (u *Unmarshaler) Unmarshal(r io.Reader, pb proto.Message) error {
 		return err
 	}
 
-	// Marshal it back to check for missing required field error.
-	// TODO: Parse through the message and check for any missing required field w/o having to
-	// marshal.
-	m := &Marshaler{AnyResolver: u.AnyResolver}
-	if _, err := m.MarshalToString(pb); err != nil {
-		return err
+	return checkRequiredFields(pb)
+}
+
+// checkRequiredFields returns an error if any required field in the given proto message is not set.
+// This function is called from Unmarshal and assumes certain actions are done ahead.
+func checkRequiredFields(pb proto.Message) error {
+	// Most well-known type messages do not contain any required field.  The "Any" type may have
+	// required fields, however the Unmarshaler should have invoked proto.Marshal on the value field
+	// during unmarshaling and that would have returned an error if a required field is not set.
+	if _, ok := pb.(wkt); ok {
+		return nil
 	}
 
+	v := reflect.ValueOf(pb).Elem()
+	for i := 0; i < v.NumField(); i++ {
+		field := v.Field(i)
+		sfield := v.Type().Field(i)
+		if strings.HasPrefix(sfield.Name, "XXX_") {
+			continue
+		}
+
+		// Oneof fields need special handling.
+		if sfield.Tag.Get("protobuf_oneof") != "" {
+			// field is an interface containing &T{real_value}.
+			v := field.Elem().Elem() // interface -> *T -> T
+			field = v.Field(0)
+			sfield = v.Type().Field(0)
+		}
+
+		var prop proto.Properties
+		prop.Init(sfield.Type, sfield.Name, sfield.Tag.Get("protobuf"), &sfield)
+
+		// IsNil will panic on most value kinds.
+		switch field.Kind() {
+		case reflect.Map:
+			if field.IsNil() {
+				continue
+			}
+			// Check each map value.
+			keys := field.MapKeys()
+			for _, k := range keys {
+				v := field.MapIndex(k)
+				if err := checkRequiredFieldsInValue(v); err != nil {
+					return err
+				}
+			}
+		case reflect.Slice:
+			if field.IsNil() {
+				continue
+			}
+			// Check each slice item.
+			for i := 0; i < field.Len(); i++ {
+				v := field.Index(i)
+				if err := checkRequiredFieldsInValue(v); err != nil {
+					return err
+				}
+			}
+		case reflect.Ptr:
+			if field.IsNil() {
+				if prop.Required {
+					return fmt.Errorf("required field %q is not set", prop.Name)
+				}
+				continue
+			}
+			if err := checkRequiredFieldsInValue(field); err != nil {
+				return err
+			}
+		}
+	}
+
+	// Handle proto2 extensions.
+	for _, ext := range proto.RegisteredExtensions(pb) {
+		if !proto.HasExtension(pb, ext) {
+			continue
+		}
+		ep, err := proto.GetExtension(pb, ext)
+		if err != nil {
+			return err
+		}
+		err = checkRequiredFieldsInValue(reflect.ValueOf(ep))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func checkRequiredFieldsInValue(v reflect.Value) error {
+	if pm, ok := v.Interface().(proto.Message); ok {
+		if err := checkRequiredFields(pm); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
