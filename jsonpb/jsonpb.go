@@ -657,11 +657,14 @@ func (u *Unmarshaler) Unmarshal(r io.Reader, pb proto.Message) error {
 }
 
 // checkRequiredFields returns an error if any required field in the given proto message is not set.
-// This function is called from Unmarshal and assumes certain actions are done ahead.
+// This function is called from Unmarshal and assumes certain actions are done ahead.  While
+// required fields only exist in a proto2 message, a proto3 message can contain proto2 message(s).
 func checkRequiredFields(pb proto.Message) error {
-	// Most well-known type messages do not contain any required field.  The "Any" type may have
-	// required fields, however the Unmarshaler should have invoked proto.Marshal on the value field
-	// during unmarshaling and that would have returned an error if a required field is not set.
+	// Most well-known type messages do not contain required fields.  The "Any" type may contain
+	// a message that has required fields.  When an Any message is being unmarshaled, the code will
+	// have invoked proto.Marshal on the embedded message to store the serialized message in
+	// Any.Value field, and that should have returned an error if a required field is not set.
+	// Hence skipping well-known types here.
 	if _, ok := pb.(wkt); ok {
 		return nil
 	}
@@ -674,9 +677,9 @@ func checkRequiredFields(pb proto.Message) error {
 			continue
 		}
 
-		// Oneof fields need special handling.
+		// A oneof field is an interface implemented by wrapper structs containing the actual oneof
+		// fields.  Field is an interface containing &T{real_value}.
 		if sfield.Tag.Get("protobuf_oneof") != "" {
-			// field is an interface containing &T{real_value}.
 			v := field.Elem().Elem() // interface -> *T -> T
 			field = v.Field(0)
 			sfield = v.Type().Field(0)
@@ -685,7 +688,6 @@ func checkRequiredFields(pb proto.Message) error {
 		var prop proto.Properties
 		prop.Init(sfield.Type, sfield.Name, sfield.Tag.Get("protobuf"), &sfield)
 
-		// IsNil will panic on most value kinds.
 		switch field.Kind() {
 		case reflect.Map:
 			if field.IsNil() {
@@ -743,9 +745,7 @@ func checkRequiredFields(pb proto.Message) error {
 
 func checkRequiredFieldsInValue(v reflect.Value) error {
 	if pm, ok := v.Interface().(proto.Message); ok {
-		if err := checkRequiredFields(pm); err != nil {
-			return err
-		}
+		return checkRequiredFields(pm)
 	}
 	return nil
 }
