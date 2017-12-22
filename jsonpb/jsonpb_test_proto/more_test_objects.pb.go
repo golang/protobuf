@@ -25,6 +25,7 @@ It has these top-level messages:
 	KnownTypes
 	MsgWithRequired
 	MsgWithIndirectRequired
+	MsgWithRequiredBytes
 	MsgWithRequiredWKT
 */
 package jsonpb

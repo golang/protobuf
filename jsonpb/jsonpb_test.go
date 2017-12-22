@@ -451,6 +451,7 @@ var marshalingTests = []struct {
 	{"BytesValue", marshaler, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}, `{"bytes":"d293"}`},
 
 	{"required", marshaler, &pb.MsgWithRequired{Str: proto.String("hello")}, `{"str":"hello"}`},
+	{"required bytes", marshaler, &pb.MsgWithRequiredBytes{Byts: []byte{}}, `{"byts":""}`},
 }
 
 func TestMarshaling(t *testing.T) {
@@ -502,8 +503,8 @@ func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
 	}
 }
 
-// Test marshaling unset required fields should produce error.
-func TestMarshalingUnsetRequiredFields(t *testing.T) {
+// Test marshaling message containing unset required fields should produce error.
+func TestMarshalUnsetRequiredFields(t *testing.T) {
 	msgExt := &pb.Real{}
 	proto.SetExtension(msgExt, pb.E_Extm, &pb.MsgWithRequired{})
 
@@ -543,6 +544,11 @@ func TestMarshalingUnsetRequiredFields(t *testing.T) {
 			pb:        &pb.MsgWithRequiredWKT{},
 		},
 		{
+			desc:      "direct required bytes field",
+			marshaler: &Marshaler{},
+			pb:        &pb.MsgWithRequiredBytes{},
+		},
+		{
 			desc:      "required in map value",
 			marshaler: &Marshaler{},
 			pb: &pb.MsgWithIndirectRequired{
@@ -552,7 +558,7 @@ func TestMarshalingUnsetRequiredFields(t *testing.T) {
 			},
 		},
 		{
-			desc:      "required in slice item",
+			desc:      "required in repeated item",
 			marshaler: &Marshaler{},
 			pb: &pb.MsgWithIndirectRequired{
 				SliceField: []*pb.MsgWithRequired{
@@ -715,6 +721,7 @@ var unmarshalingTests = []struct {
 	{"null BytesValue", Unmarshaler{}, `{"bytes":null}`, &pb.KnownTypes{Bytes: nil}},
 
 	{"required", Unmarshaler{}, `{"str":"hello"}`, &pb.MsgWithRequired{Str: proto.String("hello")}},
+	{"required bytes", Unmarshaler{}, `{"byts": []}`, &pb.MsgWithRequiredBytes{Byts: []byte{}}},
 }
 
 func TestUnmarshaling(t *testing.T) {
@@ -988,8 +995,8 @@ func (m *dynamicMessage) UnmarshalJSONPB(jum *Unmarshaler, js []byte) error {
 	return nil
 }
 
-// Test unmarshaling unset required fields should produce error.
-func TestUnmarshalingUnsetRequiredFields(t *testing.T) {
+// Test unmarshaling message containing unset required fields should produce error.
+func TestUnmarshalUnsetRequiredFields(t *testing.T) {
 	tests := []struct {
 		desc string
 		pb   proto.Message
@@ -1014,6 +1021,16 @@ func TestUnmarshalingUnsetRequiredFields(t *testing.T) {
 			desc: "indirect required field set to null",
 			pb:   &pb.MsgWithIndirectRequired{},
 			json: `{"subm": {"str": null}}`,
+		},
+		{
+			desc: "direct required bytes field missing",
+			pb:   &pb.MsgWithRequiredBytes{},
+			json: `{}`,
+		},
+		{
+			desc: "direct required bytes field set to null",
+			pb:   &pb.MsgWithRequiredBytes{},
+			json: `{"byts": null}`,
 		},
 		{
 			desc: "direct required wkt field missing",

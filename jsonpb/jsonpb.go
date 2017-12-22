@@ -122,6 +122,10 @@ func (m *Marshaler) Marshal(out io.Writer, pb proto.Message) error {
 	if pb == nil || (v.Kind() == reflect.Ptr && v.IsNil()) {
 		return errors.New("Marshal called with nil")
 	}
+	// Check for unset required fields first.
+	if err := checkRequiredFields(pb); err != nil {
+		return err
+	}
 	writer := &errWriter{writer: out}
 	return m.marshalObject(writer, pb, "", "")
 }
@@ -257,16 +261,11 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			continue
 		}
 
-		prop := jsonProperties(valueField, m.OrigName)
 		// IsNil will panic on most value kinds.
 		switch value.Kind() {
 		case reflect.Chan, reflect.Func, reflect.Interface:
 			if value.IsNil() {
 				continue
-			}
-		case reflect.Ptr:
-			if prop.Required && value.IsNil() {
-				return fmt.Errorf("required field %q is not set", prop.Name)
 			}
 		}
 
@@ -305,8 +304,8 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			sv := value.Elem().Elem() // interface -> *T -> T
 			value = sv.Field(0)
 			valueField = sv.Type().Field(0)
-			prop = jsonProperties(valueField, m.OrigName)
 		}
+		prop := jsonProperties(valueField, m.OrigName)
 		if !firstField {
 			m.writeSep(out)
 		}
@@ -641,7 +640,10 @@ func (u *Unmarshaler) UnmarshalNext(dec *json.Decoder, pb proto.Message) error {
 	if err := dec.Decode(&inputValue); err != nil {
 		return err
 	}
-	return u.unmarshalValue(reflect.ValueOf(pb).Elem(), inputValue, nil)
+	if err := u.unmarshalValue(reflect.ValueOf(pb).Elem(), inputValue, nil); err != nil {
+		return err
+	}
+	return checkRequiredFields(pb)
 }
 
 // Unmarshal unmarshals a JSON object stream into a protocol
@@ -649,105 +651,7 @@ func (u *Unmarshaler) UnmarshalNext(dec *json.Decoder, pb proto.Message) error {
 // permutations of the related Marshaler.
 func (u *Unmarshaler) Unmarshal(r io.Reader, pb proto.Message) error {
 	dec := json.NewDecoder(r)
-	if err := u.UnmarshalNext(dec, pb); err != nil {
-		return err
-	}
-
-	return checkRequiredFields(pb)
-}
-
-// checkRequiredFields returns an error if any required field in the given proto message is not set.
-// This function is called from Unmarshal and assumes certain actions are done ahead.  While
-// required fields only exist in a proto2 message, a proto3 message can contain proto2 message(s).
-func checkRequiredFields(pb proto.Message) error {
-	// Most well-known type messages do not contain required fields.  The "Any" type may contain
-	// a message that has required fields.  When an Any message is being unmarshaled, the code will
-	// have invoked proto.Marshal on the embedded message to store the serialized message in
-	// Any.Value field, and that should have returned an error if a required field is not set.
-	// Hence skipping well-known types here.
-	if _, ok := pb.(wkt); ok {
-		return nil
-	}
-
-	v := reflect.ValueOf(pb).Elem()
-	for i := 0; i < v.NumField(); i++ {
-		field := v.Field(i)
-		sfield := v.Type().Field(i)
-		if strings.HasPrefix(sfield.Name, "XXX_") {
-			continue
-		}
-
-		// A oneof field is an interface implemented by wrapper structs containing the actual oneof
-		// fields.  Field is an interface containing &T{real_value}.
-		if sfield.Tag.Get("protobuf_oneof") != "" {
-			v := field.Elem().Elem() // interface -> *T -> T
-			field = v.Field(0)
-			sfield = v.Type().Field(0)
-		}
-
-		var prop proto.Properties
-		prop.Init(sfield.Type, sfield.Name, sfield.Tag.Get("protobuf"), &sfield)
-
-		switch field.Kind() {
-		case reflect.Map:
-			if field.IsNil() {
-				continue
-			}
-			// Check each map value.
-			keys := field.MapKeys()
-			for _, k := range keys {
-				v := field.MapIndex(k)
-				if err := checkRequiredFieldsInValue(v); err != nil {
-					return err
-				}
-			}
-		case reflect.Slice:
-			if field.IsNil() {
-				continue
-			}
-			// Check each slice item.
-			for i := 0; i < field.Len(); i++ {
-				v := field.Index(i)
-				if err := checkRequiredFieldsInValue(v); err != nil {
-					return err
-				}
-			}
-		case reflect.Ptr:
-			if field.IsNil() {
-				if prop.Required {
-					return fmt.Errorf("required field %q is not set", prop.Name)
-				}
-				continue
-			}
-			if err := checkRequiredFieldsInValue(field); err != nil {
-				return err
-			}
-		}
-	}
-
-	// Handle proto2 extensions.
-	for _, ext := range proto.RegisteredExtensions(pb) {
-		if !proto.HasExtension(pb, ext) {
-			continue
-		}
-		ep, err := proto.GetExtension(pb, ext)
-		if err != nil {
-			return err
-		}
-		err = checkRequiredFieldsInValue(reflect.ValueOf(ep))
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func checkRequiredFieldsInValue(v reflect.Value) error {
-	if pm, ok := v.Interface().(proto.Message); ok {
-		return checkRequiredFields(pm)
-	}
-	return nil
+	return u.UnmarshalNext(dec, pb)
 }
 
 // UnmarshalNext unmarshals the next protocol buffer from a JSON object stream.
@@ -1182,4 +1086,131 @@ func (s mapKeys) Less(i, j int) bool {
 		}
 	}
 	return fmt.Sprint(s[i].Interface()) < fmt.Sprint(s[j].Interface())
+}
+
+// checkRequiredFields returns an error if any required field in the given proto message is not set.
+// This function is used by both Marshal and Unmarshal.  While required fields only exist in a
+// proto2 message, a proto3 message can contain proto2 message(s).
+func checkRequiredFields(pb proto.Message) error {
+	// Most well-known type messages do not contain required fields.  The "Any" type may contain
+	// a message that has required fields.
+	//
+	// When an Any message is being marshaled, the code will invoked proto.Unmarshal on Any.Value
+	// field in order to transform that into JSON, and that should have returned an error if a
+	// required field is not set in the embedded message.
+	//
+	// When an Any message is being unmarshaled, the code will have invoked proto.Marshal on the
+	// embedded message to store the serialized message in Any.Value field, and that should have
+	// returned an error if a required field is not set.
+	if _, ok := pb.(wkt); ok {
+		return nil
+	}
+
+	v := reflect.ValueOf(pb)
+	// Skip message if it is not a struct pointer.
+	if v.Kind() != reflect.Ptr {
+		return nil
+	}
+	v = v.Elem()
+	if v.Kind() != reflect.Struct {
+		return nil
+	}
+
+	for i := 0; i < v.NumField(); i++ {
+		field := v.Field(i)
+		sfield := v.Type().Field(i)
+		if strings.HasPrefix(sfield.Name, "XXX_") {
+			continue
+		}
+
+		// Oneof field is an interface implemented by wrapper structs containing the actual oneof
+		// field, i.e. an interface containing &T{real_value}.
+		if sfield.Tag.Get("protobuf_oneof") != "" {
+			if field.Kind() != reflect.Interface {
+				continue
+			}
+			v := field.Elem()
+			if v.Kind() != reflect.Ptr || v.IsNil() {
+				continue
+			}
+			v = v.Elem()
+			if v.Kind() != reflect.Struct {
+				continue
+			}
+			field = v.Field(0)
+			sfield = v.Type().Field(0)
+		}
+
+		var prop proto.Properties
+		prop.Init(sfield.Type, sfield.Name, sfield.Tag.Get("protobuf"), &sfield)
+
+		switch field.Kind() {
+		case reflect.Map:
+			if field.IsNil() {
+				continue
+			}
+			// Check each map value.
+			keys := field.MapKeys()
+			for _, k := range keys {
+				v := field.MapIndex(k)
+				if err := checkRequiredFieldsInValue(v); err != nil {
+					return err
+				}
+			}
+		case reflect.Slice:
+			// Handle non-repeated type, e.g. bytes.
+			if !prop.Repeated {
+				if prop.Required && field.IsNil() {
+					return fmt.Errorf("required field %q is not set", prop.Name)
+				}
+				continue
+			}
+
+			// Handle repeated type.
+			if field.IsNil() {
+				continue
+			}
+			// Check each slice item.
+			for i := 0; i < field.Len(); i++ {
+				v := field.Index(i)
+				if err := checkRequiredFieldsInValue(v); err != nil {
+					return err
+				}
+			}
+		case reflect.Ptr:
+			if field.IsNil() {
+				if prop.Required {
+					return fmt.Errorf("required field %q is not set", prop.Name)
+				}
+				continue
+			}
+			if err := checkRequiredFieldsInValue(field); err != nil {
+				return err
+			}
+		}
+	}
+
+	// Handle proto2 extensions.
+	for _, ext := range proto.RegisteredExtensions(pb) {
+		if !proto.HasExtension(pb, ext) {
+			continue
+		}
+		ep, err := proto.GetExtension(pb, ext)
+		if err != nil {
+			return err
+		}
+		err = checkRequiredFieldsInValue(reflect.ValueOf(ep))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func checkRequiredFieldsInValue(v reflect.Value) error {
+	if pm, ok := v.Interface().(proto.Message); ok {
+		return checkRequiredFields(pm)
+	}
+	return nil
 }

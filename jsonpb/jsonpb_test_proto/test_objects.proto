@@ -158,6 +158,10 @@ message MsgWithIndirectRequired {
   repeated MsgWithRequired slice_field = 3;
 }
 
+message MsgWithRequiredBytes {
+  required bytes byts = 1;
+}
+
 message MsgWithRequiredWKT {
   required google.protobuf.StringValue str = 1;
 }
