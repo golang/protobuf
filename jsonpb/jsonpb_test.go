@@ -853,7 +853,7 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	if err != nil {
 		t.Errorf("an unexpected error occurred when marshaling any to JSON: %v", err)
 	}
-	if len(resolvedTypeUrls) == 0 {
+	if len(resolvedTypeUrls) != 1 {
 		t.Errorf("custom resolver was not invoked during marshaling")
 	} else if resolvedTypeUrls[0] != "https://foobar.com/some.random.MessageKind" {
 		t.Errorf("custom resolver was invoked with wrong URL: got %q, wanted %q", resolvedTypeUrls[0], "https://foobar.com/some.random.MessageKind")
@@ -862,7 +862,6 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	if js != wanted {
 		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", js, wanted)
 	}
-	resolvedTypeUrls = nil
 
 	u := Unmarshaler{AnyResolver: resolver}
 	roundTrip := &anypb.Any{}
@@ -870,9 +869,9 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	if err != nil {
 		t.Errorf("an unexpected error occurred when unmarshaling any from JSON: %v", err)
 	}
-	if len(resolvedTypeUrls) == 0 {
+	if len(resolvedTypeUrls) != 2 {
 		t.Errorf("custom resolver was not invoked during marshaling")
-	} else if resolvedTypeUrls[0] != "https://foobar.com/some.random.MessageKind" {
+	} else if resolvedTypeUrls[1] != "https://foobar.com/some.random.MessageKind" {
 		t.Errorf("custom resolver was invoked with wrong URL: got %q, wanted %q", resolvedTypeUrls[1], "https://foobar.com/some.random.MessageKind")
 	}
 	if !proto.Equal(any, roundTrip) {
