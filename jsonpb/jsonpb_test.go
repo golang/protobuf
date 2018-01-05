@@ -449,6 +449,9 @@ var marshalingTests = []struct {
 	{"BoolValue", marshaler, &pb.KnownTypes{Bool: &wpb.BoolValue{Value: true}}, `{"bool":true}`},
 	{"StringValue", marshaler, &pb.KnownTypes{Str: &wpb.StringValue{Value: "plush"}}, `{"str":"plush"}`},
 	{"BytesValue", marshaler, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}, `{"bytes":"d293"}`},
+
+	{"required", marshaler, &pb.MsgWithRequired{Str: proto.String("hello")}, `{"str":"hello"}`},
+	{"required bytes", marshaler, &pb.MsgWithRequiredBytes{Byts: []byte{}}, `{"byts":""}`},
 }
 
 func TestMarshaling(t *testing.T) {
@@ -497,6 +500,91 @@ func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
 	expected := `{"@type":"type.googleapis.com/` + dynamicMessageName + `","baz":[0,1,2,3],"foo":"bar"}`
 	if str != expected {
 		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, expected)
+	}
+}
+
+// Test marshaling message containing unset required fields should produce error.
+func TestMarshalUnsetRequiredFields(t *testing.T) {
+	msgExt := &pb.Real{}
+	proto.SetExtension(msgExt, pb.E_Extm, &pb.MsgWithRequired{})
+
+	tests := []struct {
+		desc      string
+		marshaler *Marshaler
+		pb        proto.Message
+	}{
+		{
+			desc:      "direct required field",
+			marshaler: &Marshaler{},
+			pb:        &pb.MsgWithRequired{},
+		},
+		{
+			desc:      "direct required field + emit defaults",
+			marshaler: &Marshaler{EmitDefaults: true},
+			pb:        &pb.MsgWithRequired{},
+		},
+		{
+			desc:      "indirect required field",
+			marshaler: &Marshaler{},
+			pb:        &pb.MsgWithIndirectRequired{Subm: &pb.MsgWithRequired{}},
+		},
+		{
+			desc:      "indirect required field + emit defaults",
+			marshaler: &Marshaler{EmitDefaults: true},
+			pb:        &pb.MsgWithIndirectRequired{Subm: &pb.MsgWithRequired{}},
+		},
+		{
+			desc:      "direct required wkt field",
+			marshaler: &Marshaler{},
+			pb:        &pb.MsgWithRequiredWKT{},
+		},
+		{
+			desc:      "direct required wkt field + emit defaults",
+			marshaler: &Marshaler{EmitDefaults: true},
+			pb:        &pb.MsgWithRequiredWKT{},
+		},
+		{
+			desc:      "direct required bytes field",
+			marshaler: &Marshaler{},
+			pb:        &pb.MsgWithRequiredBytes{},
+		},
+		{
+			desc:      "required in map value",
+			marshaler: &Marshaler{},
+			pb: &pb.MsgWithIndirectRequired{
+				MapField: map[string]*pb.MsgWithRequired{
+					"key": {},
+				},
+			},
+		},
+		{
+			desc:      "required in repeated item",
+			marshaler: &Marshaler{},
+			pb: &pb.MsgWithIndirectRequired{
+				SliceField: []*pb.MsgWithRequired{
+					{Str: proto.String("hello")},
+					{},
+				},
+			},
+		},
+		{
+			desc:      "required inside oneof",
+			marshaler: &Marshaler{},
+			pb: &pb.MsgWithOneof{
+				Union: &pb.MsgWithOneof_MsgWithRequired{&pb.MsgWithRequired{}},
+			},
+		},
+		{
+			desc:      "required inside extension",
+			marshaler: &Marshaler{},
+			pb:        msgExt,
+		},
+	}
+
+	for _, tc := range tests {
+		if _, err := tc.marshaler.MarshalToString(tc.pb); err == nil {
+			t.Errorf("%s: expecting error in marshaling with unset required fields %+v", tc.desc, tc.pb)
+		}
 	}
 }
 
@@ -631,6 +719,9 @@ var unmarshalingTests = []struct {
 	{"null BoolValue", Unmarshaler{}, `{"bool":null}`, &pb.KnownTypes{Bool: nil}},
 	{"null StringValue", Unmarshaler{}, `{"str":null}`, &pb.KnownTypes{Str: nil}},
 	{"null BytesValue", Unmarshaler{}, `{"bytes":null}`, &pb.KnownTypes{Bytes: nil}},
+
+	{"required", Unmarshaler{}, `{"str":"hello"}`, &pb.MsgWithRequired{Str: proto.String("hello")}},
+	{"required bytes", Unmarshaler{}, `{"byts": []}`, &pb.MsgWithRequiredBytes{Byts: []byte{}}},
 }
 
 func TestUnmarshaling(t *testing.T) {
@@ -901,4 +992,110 @@ func (m *dynamicMessage) MarshalJSONPB(jm *Marshaler) ([]byte, error) {
 func (m *dynamicMessage) UnmarshalJSONPB(jum *Unmarshaler, js []byte) error {
 	m.rawJson = string(js)
 	return nil
+}
+
+// Test unmarshaling message containing unset required fields should produce error.
+func TestUnmarshalUnsetRequiredFields(t *testing.T) {
+	tests := []struct {
+		desc string
+		pb   proto.Message
+		json string
+	}{
+		{
+			desc: "direct required field missing",
+			pb:   &pb.MsgWithRequired{},
+			json: `{}`,
+		},
+		{
+			desc: "direct required field set to null",
+			pb:   &pb.MsgWithRequired{},
+			json: `{"str": null}`,
+		},
+		{
+			desc: "indirect required field missing",
+			pb:   &pb.MsgWithIndirectRequired{},
+			json: `{"subm": {}}`,
+		},
+		{
+			desc: "indirect required field set to null",
+			pb:   &pb.MsgWithIndirectRequired{},
+			json: `{"subm": {"str": null}}`,
+		},
+		{
+			desc: "direct required bytes field missing",
+			pb:   &pb.MsgWithRequiredBytes{},
+			json: `{}`,
+		},
+		{
+			desc: "direct required bytes field set to null",
+			pb:   &pb.MsgWithRequiredBytes{},
+			json: `{"byts": null}`,
+		},
+		{
+			desc: "direct required wkt field missing",
+			pb:   &pb.MsgWithRequiredWKT{},
+			json: `{}`,
+		},
+		{
+			desc: "direct required wkt field set to null",
+			pb:   &pb.MsgWithRequiredWKT{},
+			json: `{"str": null}`,
+		},
+		{
+			desc: "any containing message with required field set to null",
+			pb:   &pb.KnownTypes{},
+			json: `{"an": {"@type": "example.com/jsonpb.MsgWithRequired", "str": null}}`,
+		},
+		{
+			desc: "any containing message with missing required field",
+			pb:   &pb.KnownTypes{},
+			json: `{"an": {"@type": "example.com/jsonpb.MsgWithRequired"}}`,
+		},
+		{
+			desc: "missing required in map value",
+			pb:   &pb.MsgWithIndirectRequired{},
+			json: `{"map_field": {"a": {}, "b": {"str": "hi"}}}`,
+		},
+		{
+			desc: "required in map value set to null",
+			pb:   &pb.MsgWithIndirectRequired{},
+			json: `{"map_field": {"a": {"str": "hello"}, "b": {"str": null}}}`,
+		},
+		{
+			desc: "missing required in slice item",
+			pb:   &pb.MsgWithIndirectRequired{},
+			json: `{"slice_field": [{}, {"str": "hi"}]}`,
+		},
+		{
+			desc: "required in slice item set to null",
+			pb:   &pb.MsgWithIndirectRequired{},
+			json: `{"slice_field": [{"str": "hello"}, {"str": null}]}`,
+		},
+		{
+			desc: "required inside oneof missing",
+			pb:   &pb.MsgWithOneof{},
+			json: `{"msgWithRequired": {}}`,
+		},
+		{
+			desc: "required inside oneof set to null",
+			pb:   &pb.MsgWithOneof{},
+			json: `{"msgWithRequired": {"str": null}}`,
+		},
+		{
+			desc: "required field in extension missing",
+			pb:   &pb.Real{},
+			json: `{"[jsonpb.extm]":{}}`,
+		},
+		{
+			desc: "required field in extension set to null",
+			pb:   &pb.Real{},
+			json: `{"[jsonpb.extm]":{"str": null}}`,
+		},
+	}
+
+	for _, tc := range tests {
+		if err := UnmarshalString(tc.json, tc.pb); err == nil {
+			t.Errorf("%s: expecting error in unmarshaling with unset required fields %s", tc.desc, tc.json)
+		}
+	}
 }
