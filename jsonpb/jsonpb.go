@@ -1134,7 +1134,7 @@ func checkRequiredFields(pb proto.Message) error {
 				continue
 			}
 			v = v.Elem()
-			if v.Kind() != reflect.Struct || v.NumField() == 0 {
+			if v.Kind() != reflect.Struct || v.NumField() < 1 {
 				continue
 			}
 			field = v.Field(0)
