@@ -218,7 +218,7 @@ func checkExtensionTypes(pb extendableProto, extension *ExtensionDesc) error {
 		pbi = ea.extendableProtoV1
 	}
 	if a, b := reflect.TypeOf(pbi), reflect.TypeOf(extension.ExtendedType); a != b {
-		return errors.New("proto: bad extended type; " + b.String() + " does not extend " + a.String())
+		return fmt.Errorf("proto: bad extended type; %v does not extend %v", b, a)
 	}
 	// Check the range.
 	if !isExtensionField(pb, extension.Field) {
