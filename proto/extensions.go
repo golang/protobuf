@@ -293,14 +293,22 @@ func ClearExtension(pb Message, extension *ExtensionDesc) {
 
 // GetExtension parses and returns the given extension of pb.
 // If the extension is not present and has no default value it returns ErrMissingExtension.
+// If an incomplete descriptor is used, the returned value will be the raw underlying
+// bytes since the extension value cannot not be decoded. An incomplete extension is one
+// returned from the ExtensionDescs function whose ExtensionType field is nil. An incomplete
+// extension has no default value, so querying for an incomplete extension that is not
+// present will cause this function to return ErrMissingExtension.
 func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 	epb, err := extendable(pb)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := checkExtensionTypes(epb, extension); err != nil {
-		return nil, err
+	if extension.ExtendedType != nil {
+		// can only check type if this is a complete descriptor
+		if err := checkExtensionTypes(epb, extension); err != nil {
+			return nil, err
+		}
 	}
 
 	emap, mu := epb.extensionsRead()
@@ -327,6 +335,11 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 		return e.value, nil
 	}
 
+	if extension.ExtensionType == nil {
+		// incomplete descriptor
+		return e.enc, nil
+	}
+
 	v, err := decodeExtension(e.enc, extension)
 	if err != nil {
 		return nil, err
@@ -341,42 +354,14 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 	return e.value, nil
 }
 
-// GetRawExtension returns the raw bytes for the value of the given extension.
-// This is intended for use with incompleted descriptors returned from
-// ExtensionDescs. These are extensions which are not registered, and this
-// method provides access to the raw underlying bytes for these non-decodable
-// extensions. If the extension is not present it returns ErrMissingExtension.
-func GetRawExtension(pb Message, extension *ExtensionDesc) ([]byte, error) {
-	epb, err := extendable(pb)
-	if err != nil {
-		return nil, err
-	}
-
-	// if it's not an incomplete descriptor, check the type
-	if extension.ExtendedType != nil {
-		if err := checkExtensionTypes(epb, extension); err != nil {
-			return nil, err
-		}
-	}
-
-	emap, mu := epb.extensionsRead()
-	if emap == nil {
-		return nil, ErrMissingExtension
-	}
-
-	mu.Lock()
-	defer mu.Unlock()
-	if e, ok := emap[extension.Field]; ok {
-		return e.enc, nil
-	} else {
-		return nil, ErrMissingExtension
-	}
-}
-
-
 // defaultExtensionValue returns the default value for extension.
 // If no default for an extension is defined ErrMissingExtension is returned.
 func defaultExtensionValue(extension *ExtensionDesc) (interface{}, error) {
+	if extension.ExtensionType == nil {
+		// incomplete descriptor, so no default
+		return nil, ErrMissingExtension
+	}
+
 	t := reflect.TypeOf(extension.ExtensionType)
 	props := extensionProperties(extension)
 

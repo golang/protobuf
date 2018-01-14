@@ -77,7 +77,7 @@ func TestGetExtensionWithEmptyBuffer(t *testing.T) {
 	}
 }
 
-func TestGetRawExtension(t *testing.T) {
+func TestGetExtensionForIncompleteDesc(t *testing.T) {
 	msg := &pb.MyMessage{Count: proto.Int32(0)}
 	extdesc1 := &proto.ExtensionDesc{
 		ExtendedType:  (*pb.MyMessage)(nil),
@@ -129,7 +129,7 @@ func TestGetRawExtension(t *testing.T) {
 		t.Fatalf("failed to compute expected value for ext1: %s", err)
 	}
 
-	if b, err := proto.GetRawExtension(msg, &proto.ExtensionDesc{Field: extdesc1.Field}); err != nil {
+	if b, err := proto.GetExtension(msg, &proto.ExtensionDesc{Field: extdesc1.Field}); err != nil {
 		t.Fatalf("Failed to get raw value for ext1: %s", err)
 	} else if !reflect.DeepEqual(b, expected.Bytes()) {
 		t.Fatalf("Raw value for ext1: got %v, want %v", b, expected.Bytes())
@@ -143,7 +143,7 @@ func TestGetRawExtension(t *testing.T) {
 		t.Fatalf("failed to compute expected value for ext2: %s", err)
 	}
 
-	if b, err := proto.GetRawExtension(msg, &proto.ExtensionDesc{Field: extdesc2.Field}); err != nil {
+	if b, err := proto.GetExtension(msg, &proto.ExtensionDesc{Field: extdesc2.Field}); err != nil {
 		t.Fatalf("Failed to get raw value for ext2: %s", err)
 	} else if !reflect.DeepEqual(b, expected.Bytes()) {
 		t.Fatalf("Raw value for ext2: got %v, want %v", b, expected.Bytes())
@@ -159,7 +159,7 @@ func TestGetRawExtension(t *testing.T) {
 		t.Fatalf("failed to compute expected value for ext3: %s", err)
 	}
 
-	if b, err := proto.GetRawExtension(msg, &proto.ExtensionDesc{Field: extdesc3.Field}); err != nil {
+	if b, err := proto.GetExtension(msg, &proto.ExtensionDesc{Field: extdesc3.Field}); err != nil {
 		t.Fatalf("Failed to get raw value for ext3: %s", err)
 	} else if !reflect.DeepEqual(b, expected.Bytes()) {
 		t.Fatalf("Raw value for ext3: got %v, want %v", b, expected.Bytes())
