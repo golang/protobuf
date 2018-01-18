@@ -2174,7 +2174,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	// TODO: Revisit this and consider reverting back to anonymous interfaces.
 	for oi := range message.OneofDecl {
 		dname := oneofDisc[int32(oi)]
-		g.P("type ", dname, " interface { ", dname, "() }")
+		g.P("type ", dname, " interface {")
+		g.In()
+		g.P(dname, "()")
+		g.Out()
+		g.P("}")
 	}
 	g.P()
 	for i, field := range message.Field {
