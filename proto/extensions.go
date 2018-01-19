@@ -291,13 +291,15 @@ func ClearExtension(pb Message, extension *ExtensionDesc) {
 	delete(extmap, extension.Field)
 }
 
-// GetExtension parses and returns the given extension of pb.
-// If the extension is not present and has no default value it returns ErrMissingExtension.
-// If an incomplete descriptor is used, the returned value will be the raw underlying
-// bytes since the extension value cannot not be decoded. An incomplete extension is one
-// returned from the ExtensionDescs function whose ExtensionType field is nil. An incomplete
-// extension has no default value, so querying for an incomplete extension that is not
-// present will cause this function to return ErrMissingExtension.
+// GetExtension retrieves a proto2 extended field from pb.
+//
+// If the descriptor is type complete (i.e., ExtensionDesc.ExtensionType is non-nil),
+// then GetExtension parses the encoded field and returns a Go value of the specified type.
+// If the field is not present, then the default value is returned (if one is specified),
+// otherwise ErrMissingExtension is reported.
+//
+// If the descriptor is not type complete (i.e., ExtensionDesc.ExtensionType is nil),
+// then GetExtension returns the raw encoded bytes of the field extension.
 func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 	epb, err := extendable(pb)
 	if err != nil {
