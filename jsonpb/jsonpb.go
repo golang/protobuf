@@ -56,6 +56,8 @@ import (
 	stpb "github.com/golang/protobuf/ptypes/struct"
 )
 
+const secondInNanos = int64(time.Second / time.Nanosecond)
+
 // Marshaler is a configurable object for converting between
 // protocol buffer objects and a JSON representation for them.
 type Marshaler struct {
@@ -201,6 +203,9 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			// "Generated output always contains 3, 6, or 9 fractional digits,
 			//  depending on required precision."
 			s, ns := s.Field(0).Int(), s.Field(1).Int()
+			if ns <= -secondInNanos || ns >= secondInNanos {
+				return fmt.Errorf("ns out of range (%v, %v)", -secondInNanos, secondInNanos)
+			}
 			if (s > 0 && ns < 0) || (s < 0 && ns > 0) {
 				return errors.New("signs of seconds and nanos do not match")
 			}
@@ -222,6 +227,9 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			// "RFC 3339, where generated output will always be Z-normalized
 			//  and uses 3, 6 or 9 fractional digits."
 			s, ns := s.Field(0).Int(), s.Field(1).Int()
+			if ns < 0 || ns >= secondInNanos {
+				return fmt.Errorf("ns out of range [0, %v)", secondInNanos)
+			}
 			t := time.Unix(s, ns).UTC()
 			// time.RFC3339Nano isn't exactly right (we need to get 3/6/9 fractional digits).
 			x := t.Format("2006-01-02T15:04:05.000000000")
