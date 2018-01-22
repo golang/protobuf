@@ -202,6 +202,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			// "Generated output always contains 0, 3, 6, or 9 fractional digits,
 			//  depending on required precision."
 			s, ns := s.Field(0).Int(), s.Field(1).Int()
+<<<<<<< HEAD
 			if ns <= -secondInNanos || ns >= secondInNanos {
 				return fmt.Errorf("ns out of range (%v, %v)", -secondInNanos, secondInNanos)
 			}
@@ -212,6 +213,10 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 				ns = -ns
 			}
 			x := fmt.Sprintf("%d.%09d", s, ns)
+=======
+			d := time.Duration(s)*time.Second + time.Duration(ns)*time.Nanosecond
+			x := fmt.Sprintf("%.9f", d.Seconds())
+>>>>>>> Revert "fix unnecessary rounding to float64 precision when JSON-marshaling durations (#453)" (#493)
 			x = strings.TrimSuffix(x, "000")
 			x = strings.TrimSuffix(x, "000")
 			x = strings.TrimSuffix(x, ".000")
