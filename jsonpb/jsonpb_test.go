@@ -944,7 +944,7 @@ func TestUnmarshalAnyJSONPBUnmarshaler(t *testing.T) {
 	}
 
 	if !proto.Equal(&got, &want) {
-		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", got, want)
+		t.Errorf("message contents not set correctly after unmarshalling JSON: got %v, wanted %v", got, want)
 	}
 }
 
