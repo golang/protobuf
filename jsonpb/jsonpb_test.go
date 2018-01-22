@@ -407,6 +407,8 @@ var marshalingTests = []struct {
 	{"Any with WKT", marshaler, anyWellKnown, anyWellKnownJSON},
 	{"Any with WKT and indent", marshalerAllOptions, anyWellKnown, anyWellKnownPrettyJSON},
 	{"Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}, `{"dur":"3.000s"}`},
+	{"Duration beyond float64 precision", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 100000000, Nanos: 1}}, `{"dur":"100000000.000000001s"}`},
+	{"negative Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: -123, Nanos: -456}}, `{"dur":"-123.000000456s"}`},
 	{"Struct", marshaler, &pb.KnownTypes{St: &stpb.Struct{
 		Fields: map[string]*stpb.Value{
 			"one": {Kind: &stpb.Value_StringValue{"loneliest number"}},
@@ -470,6 +472,28 @@ func TestMarshalingNil(t *testing.T) {
 	m := &Marshaler{}
 	if _, err := m.MarshalToString(msg); err == nil {
 		t.Errorf("mashaling nil returned no error")
+	}
+}
+
+func TestMarshalIllegalDuration(t *testing.T) {
+	tests := []struct {
+		pb proto.Message
+		ok bool
+	}{
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: 0}}, true},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: 0}}, true},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: -1}}, false},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: 1}}, false},
+	}
+	const errWant = "signs of seconds and nanos do not match"
+	for _, tt := range tests {
+		got, err := marshaler.MarshalToString(tt.pb)
+		if !tt.ok && (err == nil || !strings.Contains(err.Error(), errWant)) {
+			t.Errorf("marshaler.MarshalToString(%v) = %v, %v; want _, <contains %q>", tt.pb, got, err, errWant)
+		}
+		if tt.ok && err != nil {
+			t.Errorf("marshaler.MarshalToString(%v) = %v, %v; want _, <nil>", tt.pb, got, err)
+		}
 	}
 }
 
