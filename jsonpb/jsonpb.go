@@ -193,6 +193,12 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			// "Generated output always contains 3, 6, or 9 fractional digits,
 			//  depending on required precision."
 			s, ns := s.Field(0).Int(), s.Field(1).Int()
+			if (s > 0 && ns < 0) || (s < 0 && ns > 0) {
+				return errors.New("signs of seconds and nanos do not match")
+			}
+			if s < 0 {
+				ns = -ns
+			}
 			x := fmt.Sprintf("%d.%09d", s, ns)
 			x = strings.TrimSuffix(x, "000")
 			x = strings.TrimSuffix(x, "000")
