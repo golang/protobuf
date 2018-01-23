@@ -407,6 +407,8 @@ var marshalingTests = []struct {
 	{"Any with WKT", marshaler, anyWellKnown, anyWellKnownJSON},
 	{"Any with WKT and indent", marshalerAllOptions, anyWellKnown, anyWellKnownPrettyJSON},
 	{"Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}, `{"dur":"3.000s"}`},
+	{"Duration beyond float64 precision", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 100000000, Nanos: 1}}, `{"dur":"100000000.000000001s"}`},
+	{"negative Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: -123, Nanos: -456}}, `{"dur":"-123.000000456s"}`},
 	{"Struct", marshaler, &pb.KnownTypes{St: &stpb.Struct{
 		Fields: map[string]*stpb.Value{
 			"one": {Kind: &stpb.Value_StringValue{"loneliest number"}},
@@ -470,6 +472,32 @@ func TestMarshalingNil(t *testing.T) {
 	m := &Marshaler{}
 	if _, err := m.MarshalToString(msg); err == nil {
 		t.Errorf("mashaling nil returned no error")
+	}
+}
+
+func TestMarshalIllegalTime(t *testing.T) {
+	tests := []struct {
+		pb   proto.Message
+		fail bool
+	}{
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: 0}}, false},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: 0}}, false},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: -1}}, true},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: 1}}, true},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: 1000000000}}, true},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: -1000000000}}, true},
+		{&pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: 1}}, false},
+		{&pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: -1}}, true},
+		{&pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: 1000000000}}, true},
+	}
+	for _, tt := range tests {
+		_, err := marshaler.MarshalToString(tt.pb)
+		if err == nil && tt.fail {
+			t.Errorf("marshaler.MarshalToString(%v) = _, <nil>; want _, <non-nil>", tt.pb)
+		}
+		if err != nil && !tt.fail {
+			t.Errorf("marshaler.MarshalToString(%v) = _, %v; want _, <nil>", tt.pb, err)
+		}
 	}
 }
 
@@ -920,7 +948,7 @@ func TestUnmarshalAnyJSONPBUnmarshaler(t *testing.T) {
 	}
 
 	if !proto.Equal(&got, &want) {
-		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", got, want)
+		t.Errorf("message contents not set correctly after unmarshalling JSON: got %v, wanted %v", got, want)
 	}
 }
 
