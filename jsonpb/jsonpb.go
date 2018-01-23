@@ -200,7 +200,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			// Any is a bit more involved.
 			return m.marshalAny(out, v, indent)
 		case "Duration":
-			// "Generated output always contains 3, 6, or 9 fractional digits,
+			// "Generated output always contains 0, 3, 6, or 9 fractional digits,
 			//  depending on required precision."
 			s, ns := s.Field(0).Int(), s.Field(1).Int()
 			if ns <= -secondInNanos || ns >= secondInNanos {
@@ -215,6 +215,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			x := fmt.Sprintf("%d.%09d", s, ns)
 			x = strings.TrimSuffix(x, "000")
 			x = strings.TrimSuffix(x, "000")
+			x = strings.TrimSuffix(x, ".000")
 			out.write(`"`)
 			out.write(x)
 			out.write(`s"`)
@@ -225,7 +226,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			return m.marshalValue(out, &proto.Properties{}, s.Field(0), indent)
 		case "Timestamp":
 			// "RFC 3339, where generated output will always be Z-normalized
-			//  and uses 3, 6 or 9 fractional digits."
+			//  and uses 0, 3, 6 or 9 fractional digits."
 			s, ns := s.Field(0).Int(), s.Field(1).Int()
 			if ns < 0 || ns >= secondInNanos {
 				return fmt.Errorf("ns out of range [0, %v)", secondInNanos)
@@ -235,6 +236,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			x := t.Format("2006-01-02T15:04:05.000000000")
 			x = strings.TrimSuffix(x, "000")
 			x = strings.TrimSuffix(x, "000")
+			x = strings.TrimSuffix(x, ".000")
 			out.write(`"`)
 			out.write(x)
 			out.write(`Z"`)
