@@ -34,7 +34,6 @@ package jsonpb
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"io"
 	"math"
 	"reflect"
@@ -478,27 +477,26 @@ func TestMarshalingNil(t *testing.T) {
 
 func TestMarshalIllegalTime(t *testing.T) {
 	tests := []struct {
-		pb      proto.Message
-		errWant error
+		pb   proto.Message
+		fail bool
 	}{
-		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: 0}}, nil},
-		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: 0}}, nil},
-		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: -1}}, errors.New("signs of seconds and nanos do not match")},
-		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: 1}}, errors.New("signs of seconds and nanos do not match")},
-		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: 1000000000}}, errors.New("ns out of range")},
-		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: -1000000000}}, errors.New("ns out of range")},
-		{&pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: 1}}, nil},
-		{&pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: -1}}, errors.New("ns out of range")},
-		{&pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: 1000000000}}, errors.New("ns out of range")},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: 0}}, false},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: 0}}, false},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: -1}}, true},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: 1}}, true},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: 1000000000}}, true},
+		{&pb.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: -1000000000}}, true},
+		{&pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: 1}}, false},
+		{&pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: -1}}, true},
+		{&pb.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: 1000000000}}, true},
 	}
 	for _, tt := range tests {
 		_, err := marshaler.MarshalToString(tt.pb)
-		if (err == nil) != (tt.errWant == nil) {
-			t.Errorf("marshaler.MarshalToString(%v) = _, %v; want _, %v", tt.pb, err, tt.errWant)
-			continue
+		if err == nil && tt.fail {
+			t.Errorf("marshaler.MarshalToString(%v) = _, <nil>; want _, <non-nil>", tt.pb)
 		}
-		if err != nil && !strings.Contains(err.Error(), tt.errWant.Error()) {
-			t.Errorf("marshaler.MarshalToString(%v) = _, %v; want _, %v", tt.pb, err, tt.errWant)
+		if err != nil && !tt.fail {
+			t.Errorf("marshaler.MarshalToString(%v) = _, %v; want _, <nil>", tt.pb, err)
 		}
 	}
 }
