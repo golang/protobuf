@@ -64,7 +64,96 @@ func TestGetExtensionsWithMissingExtensions(t *testing.T) {
 	}
 }
 
-func TestExtensionDescsWithMissingExtensions(t *testing.T) {
+func TestGetRawExtension(t *testing.T) {
+	msg := &pb.MyMessage{Count: proto.Int32(0)}
+	extdesc1 := &proto.ExtensionDesc{
+		ExtendedType:  (*pb.MyMessage)(nil),
+		ExtensionType: (*bool)(nil),
+		Field:         123456789,
+		Name:          "a.b",
+		Tag:           "varint,123456789,opt",
+	}
+	ext1 := proto.Bool(true)
+	if err := proto.SetExtension(msg, extdesc1, ext1); err != nil {
+		t.Fatalf("Could not set ext1: %s", err)
+	}
+	extdesc2 := &proto.ExtensionDesc{
+		ExtendedType:  (*pb.MyMessage)(nil),
+		ExtensionType: ([]byte)(nil),
+		Field:         123456790,
+		Name:          "a.c",
+		Tag:           "bytes,123456790,opt",
+	}
+	ext2 := []byte{0,1,2,3,4,5,6,7}
+	if err := proto.SetExtension(msg, extdesc2, ext2); err != nil {
+		t.Fatalf("Could not set ext2: %s", err)
+	}
+	extdesc3 := &proto.ExtensionDesc{
+		ExtendedType:  (*pb.MyMessage)(nil),
+		ExtensionType: (*pb.Ext)(nil),
+		Field:         123456791,
+		Name:          "a.d",
+		Tag:           "bytes,123456791,opt",
+	}
+	ext3 := &pb.Ext{Data: proto.String("foo")}
+	if err := proto.SetExtension(msg, extdesc3, ext3); err != nil {
+		t.Fatalf("Could not set ext3: %s", err)
+	}
+
+	b, err := proto.Marshal(msg)
+	if err != nil {
+		t.Fatalf("Could not marshal msg: %v", err)
+	}
+	if err := proto.Unmarshal(b, msg); err != nil {
+		t.Fatalf("Could not unmarshal into msg: %v", err)
+	}
+
+	var expected proto.Buffer
+	if err := expected.EncodeVarint(uint64((extdesc1.Field << 3) | proto.WireVarint)); err != nil {
+		t.Fatalf("failed to compute expected prefix for ext1: %s", err)
+	}
+	if err := expected.EncodeVarint(1 /* bool true */); err != nil {
+		t.Fatalf("failed to compute expected value for ext1: %s", err)
+	}
+
+	if b, err := proto.GetRawExtension(msg, &proto.ExtensionDesc{Field: extdesc1.Field}); err != nil {
+		t.Fatalf("Failed to get raw value for ext1: %s", err)
+	} else if !reflect.DeepEqual(b, expected.Bytes()) {
+		t.Fatalf("Raw value for ext1: got %v, want %v", b, expected.Bytes())
+	}
+
+	expected = proto.Buffer{} // reset
+	if err := expected.EncodeVarint(uint64((extdesc2.Field << 3) | proto.WireBytes)); err != nil {
+		t.Fatalf("failed to compute expected prefix for ext2: %s", err)
+	}
+	if err := expected.EncodeRawBytes(ext2); err != nil {
+		t.Fatalf("failed to compute expected value for ext2: %s", err)
+	}
+
+	if b, err := proto.GetRawExtension(msg, &proto.ExtensionDesc{Field: extdesc2.Field}); err != nil {
+		t.Fatalf("Failed to get raw value for ext2: %s", err)
+	} else if !reflect.DeepEqual(b, expected.Bytes()) {
+		t.Fatalf("Raw value for ext2: got %v, want %v", b, expected.Bytes())
+	}
+
+	expected = proto.Buffer{} // reset
+	if err := expected.EncodeVarint(uint64((extdesc3.Field << 3) | proto.WireBytes)); err != nil {
+		t.Fatalf("failed to compute expected prefix for ext3: %s", err)
+	}
+	if b, err := proto.Marshal(ext3); err != nil {
+		t.Fatalf("failed to compute expected value for ext3: %s", err)
+	} else if err := expected.EncodeRawBytes(b); err != nil {
+		t.Fatalf("failed to compute expected value for ext3: %s", err)
+	}
+
+	if b, err := proto.GetRawExtension(msg, &proto.ExtensionDesc{Field: extdesc3.Field}); err != nil {
+		t.Fatalf("Failed to get raw value for ext3: %s", err)
+	} else if !reflect.DeepEqual(b, expected.Bytes()) {
+		t.Fatalf("Raw value for ext3: got %v, want %v", b, expected.Bytes())
+	}
+}
+
+func TestExtensionDescsWithUnregisteredExtensions(t *testing.T) {
 	msg := &pb.MyMessage{Count: proto.Int32(0)}
 	extdesc1 := pb.E_Ext_More
 	if descs, err := proto.ExtensionDescs(msg); len(descs) != 0 || err != nil {
@@ -100,7 +189,7 @@ func TestExtensionDescsWithMissingExtensions(t *testing.T) {
 		t.Fatalf("proto.ExtensionDescs: got error %v", err)
 	}
 	sortExtDescs(descs)
-	wantDescs := []*proto.ExtensionDesc{extdesc1, &proto.ExtensionDesc{Field: extdesc2.Field}}
+	wantDescs := []*proto.ExtensionDesc{extdesc1, {Field: extdesc2.Field}}
 	if !reflect.DeepEqual(descs, wantDescs) {
 		t.Errorf("proto.ExtensionDescs(msg) sorted extension ids: got %+v, want %+v", descs, wantDescs)
 	}

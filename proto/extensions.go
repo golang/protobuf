@@ -402,6 +402,39 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 	return e.value, nil
 }
 
+// GetRawExtension returns the raw bytes for the value of the given extension.
+// This is intended for use with incompleted descriptors returned from
+// ExtensionDescs. These are extensions which are not registered, and this
+// method provides access to the raw underlying bytes for these non-decodable
+// extensions. If the extension is not present it returns ErrMissingExtension.
+func GetRawExtension(pb Message, extension *ExtensionDesc) ([]byte, error) {
+	epb, ok := extendable(pb)
+	if !ok {
+		return nil, errors.New("proto: not an extendable proto")
+	}
+
+	// if it's not an incomplete descriptor, check the type
+	if extension.ExtendedType != nil {
+		if err := checkExtensionTypes(epb, extension); err != nil {
+			return nil, err
+		}
+	}
+
+	emap, mu := epb.extensionsRead()
+	if emap == nil {
+		return nil, ErrMissingExtension
+	}
+
+	mu.Lock()
+	defer mu.Unlock()
+	if e, ok := emap[extension.Field]; ok {
+		return e.enc, nil
+	} else {
+		return nil, ErrMissingExtension
+	}
+}
+
+
 // defaultExtensionValue returns the default value for extension.
 // If no default for an extension is defined ErrMissingExtension is returned.
 func defaultExtensionValue(extension *ExtensionDesc) (interface{}, error) {
