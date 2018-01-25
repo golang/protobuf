@@ -344,11 +344,6 @@ func (u *unmarshalInfo) computeUnmarshalInfo() {
 	for i := 0; i < n; i++ {
 		f := t.Field(i)
 		if f.Name == "XXX_unrecognized" {
-			isProto3 := f.Tag.Get("protobuf_unrecognized") == "proto3"
-			if isProto3 && !Proto3UnknownFields {
-				continue // Explicit disabling of unknown fields in proto3
-			}
-
 			// The byte slice used to hold unrecognized input is special.
 			if f.Type != reflect.TypeOf(([]byte)(nil)) {
 				panic("bad type for XXX_unrecognized field: " + f.Type.Name())

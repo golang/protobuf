@@ -145,13 +145,7 @@ func TestUnknownFieldPreservation(t *testing.T) {
 		t.Fatalf("proto.Unmarshal: %v", err)
 	}
 
-	if proto.Proto3UnknownFields {
-		if !bytes.Equal(m.XXX_unrecognized, []byte(b2)) {
-			t.Fatalf("mismatching unknown fields:\ngot  %q\nwant %q", m.XXX_unrecognized, b2)
-		}
-	} else {
-		if len(m.XXX_unrecognized) > 0 {
-			t.Fatalf("unexpected unknown fields: got %q", m.XXX_unrecognized)
-		}
+	if !bytes.Equal(m.XXX_unrecognized, []byte(b2)) {
+		t.Fatalf("mismatching unknown fields:\ngot  %q\nwant %q", m.XXX_unrecognized, b2)
 	}
 }

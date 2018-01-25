@@ -38,7 +38,7 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 // The JSON representation for `Empty` is empty JSON object `{}`.
 type Empty struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 

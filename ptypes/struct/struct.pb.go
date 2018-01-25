@@ -65,7 +65,7 @@ type Struct struct {
 	// Unordered map of dynamically typed values.
 	Fields               map[string]*Value `protobuf:"bytes,1,rep,name=fields" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
-	XXX_unrecognized     []byte            `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
 	XXX_sizecache        int32             `json:"-"`
 }
 
@@ -117,7 +117,7 @@ type Value struct {
 	//	*Value_ListValue
 	Kind                 isValue_Kind `protobuf_oneof:"kind"`
 	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
-	XXX_unrecognized     []byte       `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
 	XXX_sizecache        int32        `json:"-"`
 }
 
@@ -365,7 +365,7 @@ type ListValue struct {
 	// Repeated field of dynamically typed values.
 	Values               []*Value `protobuf:"bytes,1,rep,name=values" json:"values,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
