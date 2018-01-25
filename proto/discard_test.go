@@ -62,6 +62,23 @@ func TestDiscardUnknown(t *testing.T) {
 			Nested: &proto3pb.Nested{Cute: true},
 		},
 	}, {
+		desc: "Slice",
+		in: &proto3pb.Message{
+			Name: "Aaron",
+			Children: []*proto3pb.Message{
+				{Name: "Sarah", XXX_unrecognized: []byte("blah")},
+				{Name: "Abraham", XXX_unrecognized: []byte("blah")},
+			},
+			XXX_unrecognized: []byte("blah"),
+		},
+		want: &proto3pb.Message{
+			Name: "Aaron",
+			Children: []*proto3pb.Message{
+				{Name: "Sarah"},
+				{Name: "Abraham"},
+			},
+		},
+	}, {
 		desc: "OneOf",
 		in: &pb.Communique{
 			Union: &pb.Communique_Msg{&pb.Strings{
@@ -111,10 +128,43 @@ func TestDiscardUnknown(t *testing.T) {
 		}(),
 	}}
 
+	// Test the legacy code path.
+	for _, tt := range tests {
+		// Clone the input so that we don't alter the original.
+		in := tt.in
+		if in != nil {
+			in = proto.Clone(tt.in)
+		}
+
+		var m LegacyMessage
+		m.Message, _ = in.(*proto3pb.Message)
+		m.Communique, _ = in.(*pb.Communique)
+		m.MessageWithMap, _ = in.(*pb.MessageWithMap)
+		m.MyMessage, _ = in.(*pb.MyMessage)
+		proto.DiscardUnknown(&m)
+		if !proto.Equal(in, tt.want) {
+			t.Errorf("test %s/Legacy, expected unknown fields to be discarded\ngot  %v\nwant %v", tt.desc, in, tt.want)
+		}
+	}
+
 	for _, tt := range tests {
 		proto.DiscardUnknown(tt.in)
 		if !proto.Equal(tt.in, tt.want) {
-			t.Errorf("test %s, expected unknown fields to be discarde\ngot  %v\nwant %v", tt.desc, tt.in, tt.want)
+			t.Errorf("test %s, expected unknown fields to be discarded\ngot  %v\nwant %v", tt.desc, tt.in, tt.want)
 		}
 	}
 }
+
+// LegacyMessage is a proto.Message that has several nested messages.
+// This does not have the XXX_DiscardUnknown method and so forces DiscardUnknown
+// to use the legacy fallback logic.
+type LegacyMessage struct {
+	Message        *proto3pb.Message
+	Communique     *pb.Communique
+	MessageWithMap *pb.MessageWithMap
+	MyMessage      *pb.MyMessage
+}
+
+func (m *LegacyMessage) Reset()         { *m = LegacyMessage{} }
+func (m *LegacyMessage) String() string { return proto.CompactTextString(m) }
+func (*LegacyMessage) ProtoMessage()    {}
