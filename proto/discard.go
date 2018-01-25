@@ -35,6 +35,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+<<<<<<< HEAD
 	"sync"
 	"sync/atomic"
 )
@@ -43,6 +44,10 @@ type generatedDiscarder interface {
 	XXX_DiscardUnknown()
 }
 
+=======
+)
+
+>>>>>>> proto: add DiscardUnknown function (#498)
 // DiscardUnknown recursively discards all unknown fields from this message
 // and all embedded messages.
 //
@@ -55,6 +60,7 @@ type generatedDiscarder interface {
 // For proto2 messages, the unknown fields of message extensions are only
 // discarded from messages that have been accessed via GetExtension.
 func DiscardUnknown(m Message) {
+<<<<<<< HEAD
 	if m, ok := m.(generatedDiscarder); ok {
 		m.XXX_DiscardUnknown()
 		return
@@ -251,6 +257,11 @@ func (di *discardInfo) computeDiscardInfo() {
 	atomic.StoreInt32(&di.initialized, 1)
 }
 
+=======
+	discardLegacy(m)
+}
+
+>>>>>>> proto: add DiscardUnknown function (#498)
 func discardLegacy(m Message) {
 	v := reflect.ValueOf(m)
 	if v.Kind() != reflect.Ptr || v.IsNil() {
@@ -338,7 +349,11 @@ func discardLegacy(m Message) {
 
 	// For proto2 messages, only discard unknown fields in message extensions
 	// that have been accessed via GetExtension.
+<<<<<<< HEAD
 	if em, err := extendable(m); err == nil {
+=======
+	if em, ok := extendable(m); ok {
+>>>>>>> proto: add DiscardUnknown function (#498)
 		// Ignore lock since discardLegacy is not concurrency safe.
 		emm, _ := em.extensionsRead()
 		for _, mx := range emm {
