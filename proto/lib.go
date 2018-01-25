@@ -265,6 +265,7 @@ package proto
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"reflect"
@@ -278,6 +279,8 @@ import (
 // This variable should only be set at init time.
 // This variable is temporary and will go away soon. Do not rely on it.
 var Proto3UnknownFields = false
+
+var errInvalidUTF8 = errors.New("proto: invalid UTF-8 string")
 
 // Message is implemented by generated protocol buffer messages.
 type Message interface {
