@@ -2184,6 +2184,21 @@ func TestConcurrentMarshal(t *testing.T) {
 	}
 }
 
+func TestInvalidUTF8(t *testing.T) {
+	const wire = "\x12\x04\xde\xea\xca\xfe"
+
+	var m GoTest
+	if err := Unmarshal([]byte(wire), &m); err == nil {
+		t.Errorf("Unmarshal error: got nil, want non-nil")
+	}
+
+	m.Reset()
+	m.Table = String(wire[2:])
+	if _, err := Marshal(&m); err == nil {
+		t.Errorf("Marshal error: got nil, want non-nil")
+	}
+}
+
 // Benchmarks
 
 func testMsg() *GoTest {
