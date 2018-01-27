@@ -80,7 +80,7 @@ type Message struct {
 	Submessage           *Message                           `protobuf:"bytes,17,opt,name=submessage" json:"submessage,omitempty"`
 	Children             []*Message                         `protobuf:"bytes,18,rep,name=children" json:"children,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                           `json:"-"`
-	XXX_unrecognized     []byte                             `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte                             `json:"-"`
 	XXX_sizecache        int32                              `json:"-"`
 }
 
@@ -236,7 +236,7 @@ type Nested struct {
 	Bunny                string   `protobuf:"bytes,1,opt,name=bunny" json:"bunny,omitempty"`
 	Cute                 bool     `protobuf:"varint,2,opt,name=cute" json:"cute,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
@@ -279,7 +279,7 @@ func (m *Nested) GetCute() bool {
 type MessageWithMap struct {
 	ByteMapping          map[bool][]byte `protobuf:"bytes,1,rep,name=byte_mapping,json=byteMapping" json:"byte_mapping,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
-	XXX_unrecognized     []byte          `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
 	XXX_sizecache        int32           `json:"-"`
 }
 
@@ -315,7 +315,7 @@ func (m *MessageWithMap) GetByteMapping() map[bool][]byte {
 type IntMap struct {
 	Rtt                  map[int32]int32 `protobuf:"bytes,1,rep,name=rtt" json:"rtt,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
-	XXX_unrecognized     []byte          `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
 	XXX_sizecache        int32           `json:"-"`
 }
 
@@ -351,7 +351,7 @@ func (m *IntMap) GetRtt() map[int32]int32 {
 type IntMaps struct {
 	Maps                 []*IntMap `protobuf:"bytes,1,rep,name=maps" json:"maps,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
 	XXX_sizecache        int32     `json:"-"`
 }
 

@@ -72,7 +72,7 @@ func (Numeral) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{
 type Simple3 struct {
 	Dub                  float64  `protobuf:"fixed64,1,opt,name=dub" json:"dub,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
@@ -108,7 +108,7 @@ func (m *Simple3) GetDub() float64 {
 type SimpleSlice3 struct {
 	Slices               []string `protobuf:"bytes,1,rep,name=slices" json:"slices,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
@@ -144,7 +144,7 @@ func (m *SimpleSlice3) GetSlices() []string {
 type SimpleMap3 struct {
 	Stringy              map[string]string `protobuf:"bytes,1,rep,name=stringy" json:"stringy,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
-	XXX_unrecognized     []byte            `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
 	XXX_sizecache        int32             `json:"-"`
 }
 
@@ -180,7 +180,7 @@ func (m *SimpleMap3) GetStringy() map[string]string {
 type SimpleNull3 struct {
 	Simple               *Simple3 `protobuf:"bytes,1,opt,name=simple" json:"simple,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
@@ -225,7 +225,7 @@ type Mappy struct {
 	U32Booly             map[uint32]bool    `protobuf:"bytes,9,rep,name=u32booly" json:"u32booly,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	U64Booly             map[uint64]bool    `protobuf:"bytes,10,rep,name=u64booly" json:"u64booly,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `protobuf_unrecognized:"proto3" json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
 	XXX_sizecache        int32              `json:"-"`
 }
 
