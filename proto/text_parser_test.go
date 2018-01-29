@@ -32,6 +32,7 @@
 package proto_test
 
 import (
+	"fmt"
 	"math"
 	"testing"
 
@@ -362,7 +363,7 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	// Missing required field
 	{
 		in:  `name: "Pawel"`,
-		err: `proto: required field "test_proto.MyMessage.count" not set`,
+		err: fmt.Sprintf(`proto: required field "%T.count" not set`, MyMessage{}),
 		out: &MyMessage{
 			Name: String("Pawel"),
 		},
@@ -371,7 +372,7 @@ var unMarshalTextTests = []UnmarshalTextTest{
 	// Missing required field in a required submessage
 	{
 		in:  `count: 42 we_must_go_deeper < leo_finally_won_an_oscar <> >`,
-		err: `proto: required field "test_proto.InnerMessage.host" not set`,
+		err: fmt.Sprintf(`proto: required field "%T.host" not set`, InnerMessage{}),
 		out: &MyMessage{
 			Count:          Int32(42),
 			WeMustGoDeeper: &RequiredInnerMessage{LeoFinallyWonAnOscar: &InnerMessage{}},

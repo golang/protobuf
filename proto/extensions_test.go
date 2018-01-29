@@ -97,7 +97,7 @@ func TestGetExtensionForIncompleteDesc(t *testing.T) {
 		Name:          "a.c",
 		Tag:           "bytes,123456790,opt",
 	}
-	ext2 := []byte{0,1,2,3,4,5,6,7}
+	ext2 := []byte{0, 1, 2, 3, 4, 5, 6, 7}
 	if err := proto.SetExtension(msg, extdesc2, ext2); err != nil {
 		t.Fatalf("Could not set ext2: %s", err)
 	}
@@ -479,7 +479,7 @@ func TestNilExtension(t *testing.T) {
 	}
 	if err := proto.SetExtension(msg, pb.E_Ext_More, (*pb.Ext)(nil)); err == nil {
 		t.Error("expected SetExtension to fail due to a nil extension")
-	} else if want := "proto: SetExtension called with nil value of type *test_proto.Ext"; err.Error() != want {
+	} else if want := fmt.Sprintf("proto: SetExtension called with nil value of type %T", new(pb.Ext)); err.Error() != want {
 		t.Errorf("expected error %v, got %v", want, err)
 	}
 	// Note: if the behavior of Marshal is ever changed to ignore nil extensions, update
