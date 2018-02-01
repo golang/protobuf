@@ -286,7 +286,7 @@ func TestTimestampUntil(t *testing.T) {
 		{&tspb.Timestamp{maxValidSeconds - 1, 1e9 - 1}, false},
 	} {
 		testInTime, _ := Timestamp(test.ts)
-		before := time.Until(testInTime)
+		before := testInTime.Sub(time.Now())
 		d, err := TimestampUntil(test.ts)
 		if (err == nil) != test.valid {
 			t.Errorf("TimestampUntil(%v) = %q\nwhich is invalid(%v)", test.ts, d, err)
@@ -295,7 +295,7 @@ func TestTimestampUntil(t *testing.T) {
 		if err != nil {
 			continue
 		}
-		after := time.Until(testInTime)
+		after := testInTime.Sub(time.Now())
 		if d > before || after > d {
 			t.Errorf("between %v and %v\nTimestampUntil(%v) = %q", after, before, test.ts, d)
 		}
