@@ -40,6 +40,13 @@ import (
 	tspb "github.com/golang/protobuf/ptypes/timestamp"
 )
 
+const (
+	// The max value of time.Duration
+	maxDuration = 1<<63 - 1
+	// The min value of time.Duration
+	minDuration = -1 << 63
+)
+
 var tests = []struct {
 	ts    *tspb.Timestamp
 	valid bool
@@ -150,4 +157,226 @@ func TestTimestampNow(t *testing.T) {
 	if tm.Before(before) || tm.After(after) {
 		t.Errorf("between %v and %v\nTimestamp(TimestampNow()) = %v", before, after, tm)
 	}
+}
+
+func TestTimestampAdd(t *testing.T) {
+	for _, test := range []struct {
+		ts    *tspb.Timestamp
+		d     time.Duration
+		want  *tspb.Timestamp
+		valid bool
+	}{
+		{
+			&tspb.Timestamp{0, 0},
+			time.Duration(maxDuration),
+			&tspb.Timestamp{maxDuration / int64(time.Second), int32(maxDuration % int64(time.Second))}, true,
+		},
+		{
+			&tspb.Timestamp{0, 0},
+			time.Duration(minDuration),
+			&tspb.Timestamp{minDuration/int64(time.Second) - 1, int32(minDuration%int64(time.Second)) + 1e9}, true,
+		},
+		{
+			&tspb.Timestamp{maxValidSeconds - 1, 1e9 - 1},
+			time.Duration(maxDuration),
+			&tspb.Timestamp{maxValidSeconds + maxDuration/int64(time.Second), int32(maxDuration%int64(time.Second)) - 1}, false,
+		},
+	} {
+		tsInTime, _ := Timestamp(test.ts)
+		got, err := TimestampAdd(test.ts, test.d)
+		if (err == nil) != test.valid {
+			t.Errorf("TimestampAdd(%v, %v) = %q\nwhich is invalid (%v)", test.ts, test.d, got, err)
+		}
+		gotInTime, _ := Timestamp(got)
+		addInTime := tsInTime.Add(test.d)
+		if !addInTime.Equal(gotInTime) {
+			t.Errorf("TimestampAdd(%v, %v) = %q does not match with time.Add(%v, %v) = %q", test.ts, test.d, gotInTime, tsInTime, test.d, addInTime)
+		}
+		if *got != *test.want {
+			t.Errorf("TimestampAdd(%v, %v) = %q, want %q", test.ts, test.d, got, test.want)
+		}
+	}
+}
+
+func TestTimestampSub(t *testing.T) {
+	for _, test := range []struct {
+		ts    *tspb.Timestamp
+		uts   *tspb.Timestamp
+		want  time.Duration
+		valid bool
+	}{
+		{
+			&tspb.Timestamp{maxDuration / int64(time.Second), int32(maxDuration % int64(time.Second))},
+			&tspb.Timestamp{0, 0}, time.Duration(maxDuration),
+			true,
+		},
+		{
+			&tspb.Timestamp{minDuration / int64(time.Second), int32(minDuration % int64(time.Second))},
+			&tspb.Timestamp{0, 0}, time.Duration(minDuration),
+			true,
+		},
+		{
+			&tspb.Timestamp{0, 0},
+			&tspb.Timestamp{(minDuration + 1) / int64(time.Second), int32((minDuration + 1) % int64(time.Second))}, time.Duration((-minDuration - 1)),
+			true,
+		},
+		{
+			&tspb.Timestamp{maxValidSeconds - 1, 1e9 - 1},
+			&tspb.Timestamp{0, 0}, time.Duration(0),
+			false,
+		},
+	} {
+		got, err := TimestampSub(test.ts, test.uts)
+		if (err == nil) != test.valid {
+			t.Errorf("TimestampSub(%v, %v) = %q\nwhich is invalid (%v)", test.ts, test.uts, got, err)
+			continue
+		}
+		if err != nil {
+			continue
+		}
+		if got != test.want {
+			t.Errorf("TimestampSub(%v, %v) = %q, want %q", test.ts, test.uts, got, test.want)
+		}
+		tsInTime, _ := Timestamp(test.ts)
+		utsInTime, _ := Timestamp(test.uts)
+		gotFromTimes := tsInTime.Sub(utsInTime)
+		if got != gotFromTimes {
+			t.Errorf("TimestampSub(%v, %v) = %q does not match with time.Sub(%v, %v) = %q", test.ts, test.uts, got, tsInTime, utsInTime, gotFromTimes)
+		}
+	}
+}
+
+func TestTimestampSince(t *testing.T) {
+	for _, test := range []struct {
+		ts    *tspb.Timestamp
+		valid bool
+	}{
+		{&tspb.Timestamp{minValidSeconds, 0}, false},
+		{&tspb.Timestamp{minDuration/int64(time.Second) - 1, int32(minDuration%int64(time.Second)) + 1e9}, false},
+		{&tspb.Timestamp{0, 0}, true},
+		{&tspb.Timestamp{maxDuration / int64(time.Second), int32(maxDuration % int64(time.Second))}, true},
+		{&tspb.Timestamp{maxValidSeconds - 1, 1e9 - 1}, false},
+	} {
+		testInTime, _ := Timestamp(test.ts)
+		before := time.Since(testInTime)
+		d, err := TimestampSince(test.ts)
+		if (err == nil) != test.valid {
+			t.Errorf("TimestampSince(%v) = %q\nwhich is invalid(%v)", test.ts, d, err)
+			continue
+		}
+		if err != nil {
+			continue
+		}
+		after := time.Since(testInTime)
+		if d < before || after < d {
+			t.Errorf("between %v and %v\nTimestampSince(%v) = %q", before, after, test.ts, d)
+		}
+	}
+}
+
+func TestTimestampUntil(t *testing.T) {
+	for _, test := range []struct {
+		ts    *tspb.Timestamp
+		valid bool
+	}{
+		{&tspb.Timestamp{minValidSeconds, 0}, false},
+		{&tspb.Timestamp{minDuration/int64(time.Second) - 1, int32(minDuration%int64(time.Second)) + 1e9}, false},
+		{&tspb.Timestamp{0, 0}, true},
+		{&tspb.Timestamp{maxDuration / int64(time.Second), int32(maxDuration % int64(time.Second))}, true},
+		{&tspb.Timestamp{maxValidSeconds - 1, 1e9 - 1}, false},
+	} {
+		testInTime, _ := Timestamp(test.ts)
+		before := testInTime.Sub(time.Now())
+		d, err := TimestampUntil(test.ts)
+		if (err == nil) != test.valid {
+			t.Errorf("TimestampUntil(%v) = %q\nwhich is invalid(%v)", test.ts, d, err)
+			continue
+		}
+		if err != nil {
+			continue
+		}
+		after := testInTime.Sub(time.Now())
+		if d > before || after > d {
+			t.Errorf("between %v and %v\nTimestampUntil(%v) = %q", after, before, test.ts, d)
+		}
+	}
+}
+
+func TestTimestampAfter(t *testing.T) {
+	for _, test := range []struct {
+		ts   *tspb.Timestamp
+		uts  *tspb.Timestamp
+		want bool
+	}{
+		{&tspb.Timestamp{0, 0}, &tspb.Timestamp{0, 0}, false},
+		{&tspb.Timestamp{maxValidSeconds - 1, 0}, &tspb.Timestamp{0, 0}, true},
+		{&tspb.Timestamp{0, 1e9 - 1}, &tspb.Timestamp{0, 0}, true},
+		{&tspb.Timestamp{minValidSeconds, 0}, &tspb.Timestamp{minValidSeconds, 1e9 - 1}, false},
+		{&tspb.Timestamp{minValidSeconds, 1e9 - 1}, &tspb.Timestamp{minValidSeconds, 0}, true},
+		{&tspb.Timestamp{maxValidSeconds, 0}, &tspb.Timestamp{maxValidSeconds, 1e9 - 1}, false},
+		{&tspb.Timestamp{maxValidSeconds, 1e9 - 1}, &tspb.Timestamp{maxValidSeconds, 0}, true},
+	} {
+		tsInTime, _ := Timestamp(test.ts)
+		utsInTime, _ := Timestamp(test.uts)
+		got := TimestampAfter(test.ts, test.uts)
+		if got != test.want {
+			t.Errorf("TimestampAfter(%v, %v) = %v, want %v", test.ts, test.uts, got, test.want)
+		}
+		gotFromTimes := tsInTime.After(utsInTime)
+		if got != gotFromTimes {
+			t.Errorf("TimestampAfter(%v, %v) = %v does not match with time.After(%v, %v) = %v", test.ts, test.uts, got, tsInTime, utsInTime, gotFromTimes)
+		}
+	}
+}
+
+func TestTimestampBefore(t *testing.T) {
+	for _, test := range []struct {
+		ts   *tspb.Timestamp
+		uts  *tspb.Timestamp
+		want bool
+	}{
+		{&tspb.Timestamp{0, 0}, &tspb.Timestamp{0, 0}, false},
+		{&tspb.Timestamp{maxValidSeconds - 1, 0}, &tspb.Timestamp{0, 0}, false},
+		{&tspb.Timestamp{0, 1e9 - 1}, &tspb.Timestamp{0, 0}, false},
+		{&tspb.Timestamp{minValidSeconds, 0}, &tspb.Timestamp{minValidSeconds, 1e9 - 1}, true},
+		{&tspb.Timestamp{minValidSeconds, 1e9 - 1}, &tspb.Timestamp{minValidSeconds, 0}, false},
+		{&tspb.Timestamp{maxValidSeconds, 0}, &tspb.Timestamp{maxValidSeconds, 1e9 - 1}, true},
+		{&tspb.Timestamp{maxValidSeconds, 1e9 - 1}, &tspb.Timestamp{maxValidSeconds, 0}, false},
+	} {
+		tsInTime, _ := Timestamp(test.ts)
+		utsInTime, _ := Timestamp(test.uts)
+		got := TimestampBefore(test.ts, test.uts)
+		if got != test.want {
+			t.Errorf("TimestampBefore(%v, %v) = %v, want %v", test.ts, test.uts, got, test.want)
+		}
+		gotFromTimes := tsInTime.Before(utsInTime)
+		if got != gotFromTimes {
+			t.Errorf("TimestampBefore(%v, %v) = %v does not match with time.Before(%v, %v) = %v", test.ts, test.uts, got, tsInTime, utsInTime, gotFromTimes)
+		}
+	}
+}
+
+func TestTimestampEqual(t *testing.T) {
+	for _, test := range []struct {
+		ts   *tspb.Timestamp
+		uts  *tspb.Timestamp
+		want bool
+	}{
+		{&tspb.Timestamp{0, 0}, &tspb.Timestamp{0, 0}, true},
+		{&tspb.Timestamp{minValidSeconds, 0}, &tspb.Timestamp{minValidSeconds, 0}, true},
+		{&tspb.Timestamp{minValidSeconds, 0}, &tspb.Timestamp{minValidSeconds, 1e9 - 1}, false},
+		{&tspb.Timestamp{minValidSeconds, 1e9 - 1}, &tspb.Timestamp{minValidSeconds, 1e9 - 1}, true},
+	} {
+		tsInTime, _ := Timestamp(test.ts)
+		utsInTime, _ := Timestamp(test.uts)
+		got := TimestampEqual(test.ts, test.uts)
+		if got != test.want {
+			t.Errorf("TimestampEqual(%v, %v) = %v, want %v", test.ts, test.uts, got, test.want)
+		}
+		gotFromTimes := tsInTime.Equal(utsInTime)
+		if got != gotFromTimes {
+			t.Errorf("TimestampEqual(%v, %v) = %v does not match with time.Equal(%v, %v) = %v", test.ts, test.uts, got, tsInTime, utsInTime, gotFromTimes)
+		}
+	}
+
 }

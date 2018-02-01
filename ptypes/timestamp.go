@@ -132,3 +132,68 @@ func TimestampString(ts *tspb.Timestamp) string {
 	}
 	return t.Format(time.RFC3339Nano)
 }
+
+// TimestampAdd returns the timestamp ts+d.
+// It returns an error if the resulting Timestamp is invalid.
+func TimestampAdd(ts *tspb.Timestamp, d time.Duration) (*tspb.Timestamp, error) {
+	sums := ts.GetSeconds() + int64(d/time.Second)
+	sumn := ts.GetNanos() + int32(d%time.Second)
+	var sumts *tspb.Timestamp
+	if sumn >= 1e9 {
+		sumts = &tspb.Timestamp{sums + 1, sumn - 1e9}
+	} else if d < 0 && sumn < 0 {
+		sumts = &tspb.Timestamp{sums - 1, sumn + 1e9}
+	} else {
+		sumts = &tspb.Timestamp{sums, sumn}
+	}
+	return sumts, validateTimestamp(sumts)
+}
+
+// TimestampSub returns the duration ts-uts.
+// It returns an error if the resulting Duration is out of range
+func TimestampSub(ts *tspb.Timestamp, uts *tspb.Timestamp) (time.Duration, error) {
+	const (
+		maxDuration          = int64(1<<63 - 1)
+		minDuration          = int64(-1 << 63)
+		maxSecondsOfDuration = maxDuration / int64(time.Second)
+		maxNanosOfDuration   = int32(maxDuration % int64(time.Second))
+		minSecondsOfDuration = minDuration / int64(time.Second)
+		minNanosOfDuration   = int32(minDuration % int64(time.Second))
+	)
+	ds := ts.GetSeconds() - uts.GetSeconds()
+	dn := ts.GetNanos() - uts.GetNanos()
+	d := time.Duration(ds*int64(time.Second) + int64(dn))
+	if ds > maxSecondsOfDuration || ds < minSecondsOfDuration ||
+		(ds == maxSecondsOfDuration && dn > maxNanosOfDuration) ||
+		(ds == minSecondsOfDuration && dn < minNanosOfDuration) {
+		return d, fmt.Errorf("timestamp: subtraction(ds:%d, dn:%d) is out of time.Duration range [%d, %d]", ds, dn, minDuration, maxDuration)
+	}
+	return d, nil
+}
+
+// TimestampSince returns the time elapsed since ts.
+// It returns an error if the resulting Duration is out of range
+func TimestampSince(ts *tspb.Timestamp) (time.Duration, error) {
+	return TimestampSub(TimestampNow(), ts)
+}
+
+// TimestampUntil returns the duration until ts.
+// It returns an error if the resulting Duration is out of range
+func TimestampUntil(ts *tspb.Timestamp) (time.Duration, error) {
+	return TimestampSub(ts, TimestampNow())
+}
+
+// TimestampAfter reports whether the timestamp ts is after uts.
+func TimestampAfter(ts *tspb.Timestamp, uts *tspb.Timestamp) bool {
+	return ts.GetSeconds() > uts.GetSeconds() || ts.GetSeconds() == uts.GetSeconds() && ts.GetNanos() > uts.GetNanos()
+}
+
+// TimestampBefore reports whether the timestamp ts is before uts.
+func TimestampBefore(ts *tspb.Timestamp, uts *tspb.Timestamp) bool {
+	return ts.GetSeconds() < uts.GetSeconds() || ts.GetSeconds() == uts.GetSeconds() && ts.GetNanos() < uts.GetNanos()
+}
+
+// TimestampEqual reports whether ts and uts represent the same timestamp instant.
+func TimestampEqual(ts *tspb.Timestamp, uts *tspb.Timestamp) bool {
+	return ts.GetSeconds() == uts.GetSeconds() && ts.GetNanos() == uts.GetNanos()
+}
