@@ -1107,6 +1107,13 @@ func (s mapKeys) Less(i, j int) bool {
 // This function is used by both Marshal and Unmarshal.  While required fields only exist in a
 // proto2 message, a proto3 message can contain proto2 message(s).
 func checkRequiredFields(pb proto.Message) error {
+	type validatingMessage interface {
+		ValidateRecursive() error
+	}
+	if vm, ok := pb.(validatingMessage); ok {
+		return vm.ValidateRecursive()
+	}
+
 	// Most well-known type messages do not contain required fields.  The "Any" type may contain
 	// a message that has required fields.
 	//
