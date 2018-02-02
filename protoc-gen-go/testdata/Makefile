@@ -51,6 +51,17 @@ golden:
 	gofmt -w my_test/test.pb.go
 	diff -w my_test/test.pb.go my_test/test.pb.go.golden
 
+	make -B deprecated/deprecated.pb.go
+	sed -i -e '/return.*fileDescriptor/d' deprecated/deprecated.pb.go
+	sed -i -e '/^var fileDescriptor/,/^}/d' deprecated/deprecated.pb.go
+	sed -i -e '/proto.RegisterFile.*fileDescriptor/d' deprecated/deprecated.pb.go
+	gofmt -w deprecated/deprecated.pb.go
+	diff -w deprecated/deprecated.pb.go deprecated/deprecated.pb.go.golden
+
+
+deprecated/deprecated.pb.go: deprecated/deprecated.proto
+	protoc --go_out=plugins=grpc,import_path=Mdeprecated/deprecated.proto=github.com/golang/protobuf/protoc-gen-go/testdata/deprecated:. $<
+
 nuke:	clean
 
 testbuild:	regenerate
