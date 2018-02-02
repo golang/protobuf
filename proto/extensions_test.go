@@ -622,7 +622,11 @@ func TestUnmarshalRepeatingNonRepeatedExtension(t *testing.T) {
 		if ext == nil {
 			t.Fatalf("[%s] Invalid extension", test.name)
 		}
+<<<<<<< HEAD
 		if !proto.Equal(ext, &want) {
+=======
+		if !reflect.DeepEqual(*ext, want) {
+>>>>>>> proto, protoc-gen-go: fix vet and gofmt errors for Go 1.10 (#508)
 			t.Errorf("[%s] Wrong value for ComplexExtension: got: %s want: %s\n", test.name, ext, &want)
 		}
 	}
