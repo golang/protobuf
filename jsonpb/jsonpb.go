@@ -50,7 +50,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 
 	"github.com/golang/protobuf/proto"
 
@@ -1136,12 +1135,8 @@ func checkRequiredFields(pb proto.Message) error {
 		field := v.Field(i)
 		sfield := v.Type().Field(i)
 
-		var exported bool
-		for _, r := range sfield.Name {
-			exported = unicode.IsUpper(r)
-			break
-		}
-		if !exported {
+		if sfield.PkgPath != "" {
+			// blank PkgPath means the field is exported; skip if not exported
 			continue
 		}
 
