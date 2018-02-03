@@ -533,6 +533,19 @@ func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
 	}
 }
 
+func TestMarshalWithCustomValidation(t *testing.T) {
+	msg := dynamicMessage{rawJson: `{ "foo": "bar", "baz": [0, 1, 2, 3] }`, dummy: &dynamicMessage{}}
+
+	js, err := new(Marshaler).MarshalToString(&msg)
+	if err != nil {
+		t.Errorf("an unexpected error occurred when marshalling to json: %v", err)
+	}
+	err = Unmarshal(strings.NewReader(js), &msg)
+	if err != nil {
+		t.Errorf("an unexpected error occurred when unmarshalling from json: %v", err)
+	}
+}
+
 // Test marshaling message containing unset required fields should produce error.
 func TestMarshalUnsetRequiredFields(t *testing.T) {
 	msgExt := &pb.Real{}
@@ -1004,6 +1017,10 @@ func (s *stringField) UnmarshalJSONPB(jum *Unmarshaler, js []byte) error {
 // It provides implementations of JSONPBMarshaler and JSONPBUnmarshaler for JSON support.
 type dynamicMessage struct {
 	rawJson string `protobuf:"bytes,1,opt,name=rawJson"`
+
+	// an unexported nested message is present just to ensure that it
+	// won't result in a panic (see issue #509)
+	dummy *dynamicMessage `protobuf:"bytes,2,opt,name=dummy"`
 }
 
 func (m *dynamicMessage) Reset() {

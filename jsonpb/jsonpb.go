@@ -1134,6 +1134,12 @@ func checkRequiredFields(pb proto.Message) error {
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
 		sfield := v.Type().Field(i)
+
+		if sfield.PkgPath != "" {
+			// blank PkgPath means the field is exported; skip if not exported
+			continue
+		}
+
 		if strings.HasPrefix(sfield.Name, "XXX_") {
 			continue
 		}
@@ -1156,8 +1162,12 @@ func checkRequiredFields(pb proto.Message) error {
 			sfield = v.Type().Field(0)
 		}
 
+		protoTag := sfield.Tag.Get("protobuf")
+		if protoTag == "" {
+			continue
+		}
 		var prop proto.Properties
-		prop.Init(sfield.Type, sfield.Name, sfield.Tag.Get("protobuf"), &sfield)
+		prop.Init(sfield.Type, sfield.Name, protoTag, &sfield)
 
 		switch field.Kind() {
 		case reflect.Map:
