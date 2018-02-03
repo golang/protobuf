@@ -50,6 +50,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/golang/protobuf/proto"
 
@@ -1107,13 +1108,6 @@ func (s mapKeys) Less(i, j int) bool {
 // This function is used by both Marshal and Unmarshal.  While required fields only exist in a
 // proto2 message, a proto3 message can contain proto2 message(s).
 func checkRequiredFields(pb proto.Message) error {
-	type validatingMessage interface {
-		ValidateRecursive() error
-	}
-	if vm, ok := pb.(validatingMessage); ok {
-		return vm.ValidateRecursive()
-	}
-
 	// Most well-known type messages do not contain required fields.  The "Any" type may contain
 	// a message that has required fields.
 	//
@@ -1141,6 +1135,16 @@ func checkRequiredFields(pb proto.Message) error {
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
 		sfield := v.Type().Field(i)
+
+		var exported bool
+		for _, r := range sfield.Name {
+			exported = unicode.IsUpper(r)
+			break
+		}
+		if !exported {
+			continue
+		}
+
 		if strings.HasPrefix(sfield.Name, "XXX_") {
 			continue
 		}
@@ -1163,8 +1167,12 @@ func checkRequiredFields(pb proto.Message) error {
 			sfield = v.Type().Field(0)
 		}
 
+		protoTag := sfield.Tag.Get("protobuf")
+		if protoTag == "" {
+			continue
+		}
 		var prop proto.Properties
-		prop.Init(sfield.Type, sfield.Name, sfield.Tag.Get("protobuf"), &sfield)
+		prop.Init(sfield.Type, sfield.Name, protoTag, &sfield)
 
 		switch field.Kind() {
 		case reflect.Map:

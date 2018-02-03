@@ -34,7 +34,6 @@ package jsonpb
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"io"
 	"math"
 	"reflect"
@@ -535,7 +534,7 @@ func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
 }
 
 func TestMarshalWithCustomValidation(t *testing.T) {
-	msg := dynamicMessage{rawJson: `{ "foo": "bar", "baz": [0, 1, 2, 3] }`, dummy1: &dynamicMessage{}}
+	msg := dynamicMessage{rawJson: `{ "foo": "bar", "baz": [0, 1, 2, 3] }`, dummy: &dynamicMessage{}}
 
 	js, err := new(Marshaler).MarshalToString(&msg)
 	if err != nil {
@@ -544,13 +543,6 @@ func TestMarshalWithCustomValidation(t *testing.T) {
 	err = Unmarshal(strings.NewReader(js), &msg)
 	if err != nil {
 		t.Errorf("an unexpected error occurred when unmarshalling from json: %v", err)
-	}
-
-	// tickle an error in custom validation
-	msg.dummy2 = int32(len(msg.rawJson) + 1)
-	_, err = new(Marshaler).MarshalToString(&msg)
-	if err == nil {
-		t.Errorf("marshalling to json should have generated validation error but did not")
 	}
 }
 
@@ -1028,10 +1020,7 @@ type dynamicMessage struct {
 
 	// an unexported nested message is present just to ensure that it
 	// won't result in a panic (see issue #509)
-	dummy1 *dynamicMessage `protobuf:"bytes,2,opt,name=dummy1"`
-
-	// this is used to implement a custom validation rule
-	dummy2 int32 `protobuf:"varint,3,opt,name=dummy2"`
+	dummy *dynamicMessage `protobuf:"bytes,2,opt,name=dummy"`
 }
 
 func (m *dynamicMessage) Reset() {
@@ -1051,13 +1040,6 @@ func (m *dynamicMessage) MarshalJSONPB(jm *Marshaler) ([]byte, error) {
 
 func (m *dynamicMessage) UnmarshalJSONPB(jum *Unmarshaler, js []byte) error {
 	m.rawJson = string(js)
-	return nil
-}
-
-func (m *dynamicMessage) ValidateRecursive() error {
-	if int(m.dummy2) > len(m.rawJson) {
-		return errors.New("dummy2 should be <= rawJson length")
-	}
 	return nil
 }
 
