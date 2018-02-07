@@ -238,6 +238,13 @@ type ImportedDescriptor struct {
 
 func (id *ImportedDescriptor) TypeName() []string { return id.o.TypeName() }
 
+const (
+	// clientMode option to generates client-side service.
+	clientMode uint = 1 << iota
+	// serverMode option to generates server-side service.
+	serverMode
+)
+
 // FileDescriptor describes an protocol buffer descriptor file (.proto).
 // It includes slices of all the messages and enums defined within it.
 // Those slices are constructed by WrapTypes.
@@ -259,6 +266,8 @@ type FileDescriptor struct {
 	index int // The index of this file in the list of files to generate code for
 
 	proto3 bool // whether to generate proto3 code for this file
+
+	mode uint // generates client-side, server-side or both services.
 }
 
 // PackageName is the package name we'll use in the generated code to refer to this file.
@@ -268,6 +277,12 @@ func (d *FileDescriptor) PackageName() string { return uniquePackageOf(d.FileDes
 // to the compressed bytes of this descriptor. It is not exported, so
 // it is only valid inside the generated package.
 func (d *FileDescriptor) VarName() string { return fmt.Sprintf("fileDescriptor%d", d.index) }
+
+// IsClientMode returns true to generate client-side service.
+func (d *FileDescriptor) IsClientMode() bool { return (d.mode & clientMode) != 0 }
+
+// IsServerMode returns true to generate server-side service.
+func (d *FileDescriptor) IsServerMode() bool { return (d.mode & serverMode) != 0 }
 
 // goPackageOption interprets the file's go_package option.
 // If there is no go_package, it returns ("", "", false).
@@ -572,6 +587,7 @@ type Generator struct {
 	init             []string                   // Lines to emit in the init function.
 	indent           string
 	writeOutput      bool
+	mode             uint
 }
 
 // New creates a new generator and allocates the request and response protobufs.
@@ -612,6 +628,7 @@ func (g *Generator) CommandLineParameters(parameter string) {
 
 	g.ImportMap = make(map[string]string)
 	pluginList := "none" // Default list of plugin names to enable (empty means all).
+	var mode string
 	for k, v := range g.Param {
 		switch k {
 		case "import_prefix":
@@ -620,6 +637,8 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			g.PackageImportPath = v
 		case "plugins":
 			pluginList = v
+		case "mode":
+			mode = strings.ToLower(v)
 		default:
 			if len(k) > 0 && k[0] == 'M' {
 				g.ImportMap[k[1:]] = v
@@ -639,6 +658,14 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			}
 		}
 		plugins = nplugins
+	}
+	switch mode {
+	case "client":
+		g.mode = clientMode
+	case "server":
+		g.mode = serverMode
+	default:
+		g.mode = (clientMode | serverMode)
 	}
 }
 
@@ -821,6 +848,7 @@ func (g *Generator) WrapTypes() {
 			ext:                 exts,
 			exported:            make(map[Object][]symbol),
 			proto3:              fileIsProto3(f),
+			mode:                g.mode,
 		}
 		extractComments(fd)
 		g.allFiles = append(g.allFiles, fd)

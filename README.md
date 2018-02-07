@@ -114,9 +114,9 @@ Consider file test.proto, containing
 ```proto
 	syntax = "proto2";
 	package example;
-	
+
 	enum FOO { X = 17; };
-	
+
 	message Test {
 	  required string label = 1;
 	  optional int32 type = 2 [default=77];
@@ -171,7 +171,7 @@ To pass extra parameters to the plugin, use a comma-separated
 parameter list separated from the output directory by a colon:
 
 
-	protoc --go_out=plugins=grpc,import_path=mypackage:. *.proto
+	protoc --go_out=plugins=grpc,mode=client,import_path=mypackage:. *.proto
 
 
 - `import_prefix=xxx` - a prefix that is added onto the beginning of
@@ -185,6 +185,9 @@ parameter list separated from the output directory by a colon:
 - `Mfoo/bar.proto=quux/shme` - declares that foo/bar.proto is
   associated with Go package quux/shme.  This is subject to the
   import_prefix parameter.
+- `mode=client` - used to generate only the client-side signature,
+  being possible also generate only the server-side using `mode=server`,
+  by default is generate all the code for services.
 
 ## gRPC Support ##
 

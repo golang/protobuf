@@ -34,7 +34,7 @@ all:
 
 include ../../Make.protobuf
 
-test:	golden testbuild
+test:	golden testbuild client-side server-side
 
 #test:	golden testbuild extension_test
 #	./extension_test
@@ -71,3 +71,20 @@ regenerate:
 #multi1.pb.go:	multi2.pb.go multi3.pb.go
 #main.$O: imp.pb.$O test.pb.$O multi.a
 #extension_test.$O: extension_base.pb.$O extension_extra.pb.$O extension_user.pb.$O
+
+client-side:
+	protoc --go_out=plugins=grpc,mode=client:. mode/echo.proto
+	sed -i -e '/return.*fileDescriptor/d' mode/echo.pb.go
+	sed -i -e '/^var fileDescriptor/,/^}/d' mode/echo.pb.go
+	sed -i -e '/proto.RegisterFile.*fileDescriptor/d' mode/echo.pb.go
+	gofmt -w mode/echo.pb.go
+	diff -w mode/echo.pb.go mode/client.pb.go.golden
+
+server-side:
+	protoc --go_out=plugins=grpc,mode=server:. mode/echo.proto
+	sed -i -e '/return.*fileDescriptor/d' mode/echo.pb.go
+	sed -i -e '/^var fileDescriptor/,/^}/d' mode/echo.pb.go
+	sed -i -e '/proto.RegisterFile.*fileDescriptor/d' mode/echo.pb.go
+	gofmt -w mode/echo.pb.go
+	diff -w mode/echo.pb.go mode/server.pb.go.golden
+
