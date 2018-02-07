@@ -1131,21 +1131,25 @@ func TestBigRepeated(t *testing.T) {
 	}
 }
 
-// Verify we give a useful message when decoding to the wrong structure type.
-func TestTypeMismatch(t *testing.T) {
-	pb1 := initGoTest(true)
+func TestBadWireTypeUnknown(t *testing.T) {
+	var b []byte
+	fmt.Sscanf("0a01780d00000000080b101612036161611521000000202c220362626225370000002203636363214200000000000000584d5a036464645900000000000056405d63000000", "%x", &b)
 
-	// Marshal
-	o := old()
-	o.Marshal(pb1)
+	m := new(MyMessage)
+	if err := Unmarshal(b, m); err != nil {
+		t.Errorf("unexpected Unmarshal error: %v", err)
+	}
 
-	// Now Unmarshal it to the wrong type.
-	pb2 := initGoTestField()
-	err := o.Unmarshal(pb2)
-	if err == nil {
-		t.Error("expected error, got no error")
-	} else if !strings.Contains(err.Error(), "bad wiretype") {
-		t.Error("expected bad wiretype error, got", err)
+	var unknown []byte
+	fmt.Sscanf("0a01780d0000000010161521000000202c2537000000214200000000000000584d5a036464645d63000000", "%x", &unknown)
+	if !bytes.Equal(m.XXX_unrecognized, unknown) {
+		t.Errorf("unknown bytes mismatch:\ngot  %x\nwant %x", m.XXX_unrecognized, unknown)
+	}
+	DiscardUnknown(m)
+
+	want := &MyMessage{Count: Int32(11), Name: String("aaa"), Pet: []string{"bbb", "ccc"}, Bigfloat: Float64(88)}
+	if !Equal(m, want) {
+		t.Errorf("message mismatch:\ngot  %v\nwant %v", m, want)
 	}
 }
 
