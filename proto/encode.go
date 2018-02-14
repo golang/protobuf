@@ -98,6 +98,7 @@ func EncodeVarint(x uint64) []byte {
 	for n = 0; x > 127; n++ {
 		buf[n] = 0x80 | uint8(x&0x7F)
 		x >>= 7
+		x -= 1
 	}
 	buf[n] = uint8(x)
 	n++
@@ -112,6 +113,7 @@ func (p *Buffer) EncodeVarint(x uint64) error {
 	for x >= 1<<7 {
 		p.buf = append(p.buf, uint8(x&0x7f|0x80))
 		x >>= 7
+		x -= 1
 	}
 	p.buf = append(p.buf, uint8(x))
 	return nil
