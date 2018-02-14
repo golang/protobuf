@@ -1259,10 +1259,10 @@ func (g *Generator) generateHeader() {
 			}
 			g.P()
 		}
+		var filenames []string
 		var topMsgs []string
-		g.P("It is generated from these files:")
 		for _, f := range g.genFiles {
-			g.P("\t", f.Name)
+			filenames = append(filenames, f.GetName())
 			for _, msg := range f.desc {
 				if msg.parent != nil {
 					continue
@@ -1270,12 +1270,20 @@ func (g *Generator) generateHeader() {
 				topMsgs = append(topMsgs, CamelCaseSlice(msg.TypeName()))
 			}
 		}
+
+		g.P("It is generated from these files:")
+		sort.Strings(filenames)
+		for _, name := range filenames {
+			g.P("\t", name)
+		}
 		g.P()
 		g.P("It has these top-level messages:")
+		sort.Strings(topMsgs)
 		for _, msg := range topMsgs {
 			g.P("\t", msg)
 		}
 		g.P("*/")
+
 	}
 
 	g.P("package ", name)
