@@ -1089,6 +1089,12 @@ func (g *Generator) P(str ...interface{}) {
 			fmt.Fprintf(g, "%t", *s)
 		case int:
 			fmt.Fprintf(g, "%d", s)
+		case int32:
+			fmt.Fprintf(g, "%d", s)
+		case int64:
+			fmt.Fprintf(g, "%d", s)
+		case *int:
+			fmt.Fprintf(g, "%d", *s)
 		case *int32:
 			fmt.Fprintf(g, "%d", *s)
 		case *int64:
