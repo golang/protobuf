@@ -54,11 +54,13 @@ golden:
 nuke:	clean
 
 testbuild:	regenerate
+	go get google.golang.org/grpc
 	go test
 
 regenerate:
 	# Invoke protoc once to generate three independent .pb.go files in the same package.
 	protoc --go_out=. multi/multi1.proto multi/multi2.proto multi/multi3.proto
+	protoc --go_out=plugins=grpc:. grpc.proto
 
 #extension_test:	extension_test.$O
 #	$(LD) -L. -o $@ $<

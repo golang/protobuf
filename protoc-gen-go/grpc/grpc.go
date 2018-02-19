@@ -223,6 +223,7 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	}
 
 	// Service descriptor.
+	g.P("func Get", servName, "ServiceDescriptor() ([]byte, []int) { return ", file.VarName(), ", []int{", strconv.Itoa(index), "} }")
 	g.P("var ", serviceDescVar, " = ", grpcPkg, ".ServiceDesc {")
 	g.P("ServiceName: ", strconv.Quote(fullServName), ",")
 	g.P("HandlerType: (*", serverType, ")(nil),")
