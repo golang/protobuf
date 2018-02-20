@@ -30,4 +30,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 test:
+	go test
 	cd testdata && make test
+
+regenerate:
+	go test --regenerate

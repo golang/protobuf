@@ -1,6 +1,6 @@
 // Go support for Protocol Buffers - Google's data interchange format
 //
-// Copyright 2010 The Go Authors.  All rights reserved.
+// Copyright 2012 The Go Authors.  All rights reserved.
 // https://github.com/golang/protobuf
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,16 +31,10 @@
 
 syntax = "proto2";
 
-package extension_base;
+package imp;
 
-message BaseMessage {
-  optional int32 height = 1;
-  extensions 4 to 9;
-  extensions 16 to max;
-}
+option go_package = "github.com/golang/protobuf/protoc-gen-go/testdata/imp";
 
-// Another message that may be extended, using message_set_wire_format.
-message OldStyleMessage {
-  option message_set_wire_format = true;
-  extensions 100 to max;
+message ForeignImportedMessage {
+  optional string tuber = 1;
 }
