@@ -35,6 +35,5 @@
 #
 #	include $(GOROOT)/src/pkg/github.com/golang/protobuf/Make.protobuf
 
-%.pb.go:	%.proto
+%.pb.go: %.proto
 	protoc --go_out=. $<
-
