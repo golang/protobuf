@@ -38,7 +38,7 @@ install:
 
 test:
 	go test ./proto ./jsonpb ./ptypes
-	make -C protoc-gen-go/testdata test
+	make -C protoc-gen-go test
 
 clean:
 	go clean ./...
@@ -47,9 +47,6 @@ nuke:
 	go clean -i ./...
 
 regenerate:
-	make -C protoc-gen-go/descriptor regenerate
-	make -C protoc-gen-go/plugin regenerate
-	make -C protoc-gen-go/testdata regenerate
 	make -C proto/test_proto regenerate
 	make -C jsonpb/jsonpb_test_proto regenerate
 	make -C _conformance regenerate
