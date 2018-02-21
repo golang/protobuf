@@ -115,8 +115,6 @@ func TestGolden(t *testing.T) {
 			return nil
 		}
 
-		//
-
 		cmd := exec.Command("diff", "-u", goldenPath, genPath)
 		out, _ := cmd.CombinedOutput()
 		t.Errorf("golden file differs: %v\n%v", relPath, string(out))
