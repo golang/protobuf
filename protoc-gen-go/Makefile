@@ -33,7 +33,9 @@ all: test
 
 test:
 	go test
-	cd testdata && make test
+	make -C testdata test
 
 regenerate:
 	go test --regenerate
+	make -C descriptor regenerate
+	make -C plugin regenerate
