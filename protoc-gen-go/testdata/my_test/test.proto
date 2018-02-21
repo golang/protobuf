@@ -34,6 +34,8 @@ syntax = "proto2";
 // This package holds interesting messages.
 package my.test;  // dotted package name
 
+option go_package = "github.com/golang/protobuf/protoc-gen-go/testdata/my_test;test";
+
 //import "imp.proto";
 import "multi/multi1.proto";  // unused import
 
