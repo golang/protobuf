@@ -56,7 +56,7 @@ func TestGolden(t *testing.T) {
 			"protoc",
 			"--plugin=protoc-gen-go="+os.Args[0],
 			"-Itestdata",
-			"--go_out="+workdir,
+			"--go_out=plugins=grpc:"+workdir,
 		)
 		cmd.Args = append(cmd.Args, sources...)
 		cmd.Env = append(os.Environ(), "RUN_AS_PROTOC_GEN_GO=1")

@@ -19,6 +19,11 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 
+import (
+	context "golang.org/x/net/context"
+	grpc "google.golang.org/grpc"
+)
+
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
@@ -123,6 +128,85 @@ func init() {
 	proto.RegisterType((*DeprecatedRequest)(nil), "deprecated.DeprecatedRequest")
 	proto.RegisterType((*DeprecatedResponse)(nil), "deprecated.DeprecatedResponse")
 	proto.RegisterEnum("deprecated.DeprecatedEnum", DeprecatedEnum_name, DeprecatedEnum_value)
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion4
+
+// Client API for DeprecatedService service
+
+// Deprecated: Do not use.
+type DeprecatedServiceClient interface {
+	// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
+	DeprecatedCall(ctx context.Context, in *DeprecatedRequest, opts ...grpc.CallOption) (*DeprecatedResponse, error)
+}
+
+type deprecatedServiceClient struct {
+	cc *grpc.ClientConn
+}
+
+// Deprecated: Do not use.
+func NewDeprecatedServiceClient(cc *grpc.ClientConn) DeprecatedServiceClient {
+	return &deprecatedServiceClient{cc}
+}
+
+// Deprecated: Do not use.
+func (c *deprecatedServiceClient) DeprecatedCall(ctx context.Context, in *DeprecatedRequest, opts ...grpc.CallOption) (*DeprecatedResponse, error) {
+	out := new(DeprecatedResponse)
+	err := grpc.Invoke(ctx, "/deprecated.DeprecatedService/DeprecatedCall", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for DeprecatedService service
+
+// Deprecated: Do not use.
+type DeprecatedServiceServer interface {
+	// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
+	DeprecatedCall(context.Context, *DeprecatedRequest) (*DeprecatedResponse, error)
+}
+
+// Deprecated: Do not use.
+func RegisterDeprecatedServiceServer(s *grpc.Server, srv DeprecatedServiceServer) {
+	s.RegisterService(&_DeprecatedService_serviceDesc, srv)
+}
+
+func _DeprecatedService_DeprecatedCall_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeprecatedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeprecatedServiceServer).DeprecatedCall(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/deprecated.DeprecatedService/DeprecatedCall",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeprecatedServiceServer).DeprecatedCall(ctx, req.(*DeprecatedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _DeprecatedService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "deprecated.DeprecatedService",
+	HandlerType: (*DeprecatedServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "DeprecatedCall",
+			Handler:    _DeprecatedService_DeprecatedCall_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "deprecated/deprecated.proto",
 }
 
 func init() { proto.RegisterFile("deprecated/deprecated.proto", fileDescriptor0) }
