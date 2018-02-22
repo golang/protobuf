@@ -460,7 +460,7 @@ func (u *unmarshalInfo) computeUnmarshalInfo() {
 	// when decoding a buffer of all zeros. Without this code, we
 	// would decode and skip an all-zero buffer of even length.
 	// [0 0] is [tag=0/wiretype=varint varint-encoded-0].
-	u.setTag(0, invalidField, func(b []byte, f pointer, w int) ([]byte, error) {
+	u.setTag(0, zeroField, func(b []byte, f pointer, w int) ([]byte, error) {
 		return nil, fmt.Errorf("proto: %s: illegal tag 0 (wire type %d)", t, w)
 	}, 0)
 
