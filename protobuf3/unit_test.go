@@ -1002,10 +1002,32 @@ type MissingTagMsg struct {
 	x int32 // no protobuf tag
 }
 
+type MissingInnerTagMsg struct {
+	m *MissingTagMsg `protobuf:"bytes,1"`
+}
+
 func TestMissingTagMsg(t *testing.T) {
 	_, err := protobuf3.Marshal(&MissingTagMsg{})
 	if err == nil {
 		t.Error("ERROR marshaling a MissingTagMsg should have failed")
+	}
+
+	// make sure 2nd use of the same broken type also fails
+	_, err = protobuf3.Marshal(&MissingTagMsg{})
+	if err == nil {
+		t.Error("ERROR marshaling a MissingTagMsg a 2nd time should also have failed")
+	}
+
+	// and same for a type which contains a broken type
+	_, err = protobuf3.Marshal(&MissingInnerTagMsg{})
+	if err == nil {
+		t.Error("ERROR marshaling a MissingInnerTagMsg should have failed")
+	}
+
+	// and again
+	_, err = protobuf3.Marshal(&MissingInnerTagMsg{})
+	if err == nil {
+		t.Error("ERROR marshaling a MissingInnerTagMsg a 2nd time should also have failed")
 	}
 }
 

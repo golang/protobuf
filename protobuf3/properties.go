@@ -1125,6 +1125,7 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 		if err != nil {
 			err := fmt.Errorf("protobuf3: Error preparing field %q of type %q: %v", name, t.Name(), err)
 			fmt.Fprintln(os.Stderr, err) // print the error too
+			delete(propertiesMap, t)
 			return nil, err
 		}
 		if skip {
@@ -1138,6 +1139,7 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 			}
 			err := fmt.Errorf("protobuf3: Error duplicate tag id %d on %s.%s", p.Tag, sname, name)
 			fmt.Fprintln(os.Stderr, err) // print the error too
+			delete(propertiesMap, t)
 			return nil, err
 		}
 		seen[p.Tag] = struct{}{}
@@ -1160,6 +1162,7 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 			}
 			err := fmt.Errorf("protobuf3: Error no encoder or decoder for field %q.%q of type %q", sname, name, f.Type.Name())
 			fmt.Fprintln(os.Stderr, err) // print the error too
+			delete(propertiesMap, t)
 			return nil, err
 		}
 	}
