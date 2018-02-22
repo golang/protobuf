@@ -3,6 +3,11 @@
 
 package imp
 
+/*
+This file includes these top-level messages:
+	PubliclyImportedMessage
+*/
+
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"

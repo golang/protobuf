@@ -51,12 +51,17 @@ func TestGolden(t *testing.T) {
 	//
 	// We set the RUN_AS_PROTOC_GEN_GO environment variable to indicate that
 	// the subprocess should act as a proto compiler rather than a test.
-	for _, sources := range packages {
+	for dir, sources := range packages {
+		goOut := "--go_out=plugins=grpc:"+workdir
+		if filepath.Base(dir) == "imp" {
+			// test one of the packages w/out generating package godoc
+			goOut= "--go_out=plugins=grpc,package_godoc=false:"+workdir
+		}
 		cmd := exec.Command(
 			"protoc",
 			"--plugin=protoc-gen-go="+os.Args[0],
 			"-Itestdata",
-			"--go_out=plugins=grpc:"+workdir,
+			goOut,
 		)
 		cmd.Args = append(cmd.Args, sources...)
 		cmd.Env = append(os.Environ(), "RUN_AS_PROTOC_GEN_GO=1")

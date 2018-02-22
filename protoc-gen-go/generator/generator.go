@@ -579,6 +579,7 @@ type Generator struct {
 	writeOutput      bool
 	annotateCode     bool                                       // whether to store annotations
 	annotations      []*descriptor.GeneratedCodeInfo_Annotation // annotations to store
+	emitPackageDoc   bool                                       // whether package Go doc comments are emitted
 }
 
 // New creates a new generator and allocates the request and response protobufs.
@@ -618,6 +619,7 @@ func (g *Generator) CommandLineParameters(parameter string) {
 	}
 
 	g.ImportMap = make(map[string]string)
+	g.emitPackageDoc = true
 	pluginList := "none" // Default list of plugin names to enable (empty means all).
 	for k, v := range g.Param {
 		switch k {
@@ -627,10 +629,10 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			g.PackageImportPath = v
 		case "plugins":
 			pluginList = v
+		case "package_godoc":
+			g.emitPackageDoc = asBool(v)
 		case "annotate_code":
-			if v == "true" {
-				g.annotateCode = true
-			}
+			g.annotateCode = asBool(v)
 		default:
 			if len(k) > 0 && k[0] == 'M' {
 				g.ImportMap[k[1:]] = v
@@ -650,6 +652,15 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			}
 		}
 		plugins = nplugins
+	}
+}
+
+func asBool(s string) bool {
+	switch strings.ToLower(s) {
+	case "y", "yes", "t", "true", "on", "1":
+		return true
+	default:
+		return false
 	}
 }
 
@@ -1339,7 +1350,7 @@ func (g *Generator) generateHeader() {
 
 	name := g.file.PackageName()
 
-	if g.file.index == 0 {
+	if g.file.index == 0 && g.emitPackageDoc {
 		// Generate package docs for the first file in the package.
 		g.P("/*")
 		g.P("Package ", name, " is a generated protocol buffer package.")
@@ -1376,6 +1387,32 @@ func (g *Generator) generateHeader() {
 
 	g.P("package ", name)
 	g.P()
+
+	if !g.emitPackageDoc {
+		// If not generating package docs, include a non-doc comment at
+		// the top of each file (with same info as package doc).
+		g.P("/*")
+		if loc, ok := g.file.comments[strconv.Itoa(packagePath)]; ok {
+			// not using g.PrintComments because this is a /* */ comment block.
+			text := strings.TrimSuffix(loc.GetLeadingComments(), "\n")
+			for _, line := range strings.Split(text, "\n") {
+				line = strings.TrimPrefix(line, " ")
+				// ensure we don't escape from the block comment
+				line = strings.Replace(line, "*/", "* /", -1)
+				g.P(line)
+			}
+			g.P()
+		}
+		g.P("This file includes these top-level messages:")
+		for _, msg := range g.file.desc {
+			if msg.parent != nil {
+				continue
+			}
+			g.P("\t", CamelCaseSlice(msg.TypeName()))
+		}
+		g.P("*/")
+		g.P()
+	}
 }
 
 // deprecationComment is the standard comment added to deprecated
