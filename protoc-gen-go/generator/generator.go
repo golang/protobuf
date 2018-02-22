@@ -1339,43 +1339,22 @@ func (g *Generator) generateHeader() {
 
 	name := g.file.PackageName()
 
-	if g.file.index == 0 {
-		// Generate package docs for the first file in the package.
-		g.P("/*")
-		g.P("Package ", name, " is a generated protocol buffer package.")
-		g.P()
-		if loc, ok := g.file.comments[strconv.Itoa(packagePath)]; ok {
-			// not using g.PrintComments because this is a /* */ comment block.
-			text := strings.TrimSuffix(loc.GetLeadingComments(), "\n")
-			for _, line := range strings.Split(text, "\n") {
-				line = strings.TrimPrefix(line, " ")
-				// ensure we don't escape from the block comment
-				line = strings.Replace(line, "*/", "* /", -1)
-				g.P(line)
-			}
-			g.P()
-		}
-		var topMsgs []string
-		g.P("It is generated from these files:")
-		for _, f := range g.genFiles {
-			g.P("\t", f.Name)
-			for _, msg := range f.desc {
-				if msg.parent != nil {
-					continue
-				}
-				topMsgs = append(topMsgs, CamelCaseSlice(msg.TypeName()))
-			}
-		}
-		g.P()
-		g.P("It has these top-level messages:")
-		for _, msg := range topMsgs {
-			g.P("\t", msg)
-		}
-		g.P("*/")
-	}
-
 	g.P("package ", name)
 	g.P()
+
+	if loc, ok := g.file.comments[strconv.Itoa(packagePath)]; ok {
+		g.P("/*")
+		// not using g.PrintComments because this is a /* */ comment block.
+		text := strings.TrimSuffix(loc.GetLeadingComments(), "\n")
+		for _, line := range strings.Split(text, "\n") {
+			line = strings.TrimPrefix(line, " ")
+			// ensure we don't escape from the block comment
+			line = strings.Replace(line, "*/", "* /", -1)
+			g.P(line)
+		}
+		g.P("*/")
+		g.P()
+	}
 }
 
 // deprecationComment is the standard comment added to deprecated
