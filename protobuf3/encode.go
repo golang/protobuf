@@ -168,6 +168,13 @@ func (p *Buffer) EncodeZigzag32(x uint64) {
 	p.EncodeVarint(uint64((uint32(x) << 1) ^ uint32((int32(x) >> 31))))
 }
 
+// EncodeBytes writes a bytes tag and count-delimited byte slice to the Buffer.
+// This is equivalent to encoding a 'b []byte `protobuf:"bytes,tag"` field.
+func (p *Buffer) EncodeBytes(tag uint32, b []byte) {
+	p.EncodeVarint(uint64(tag)<<3 + uint64(WireBytes))
+	p.EncodeRawBytes(b)
+}
+
 // EncodeRawBytes writes a count-delimited byte buffer to the Buffer.
 // This is the format used for the bytes protocol buffer
 // type and for embedded messages.

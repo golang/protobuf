@@ -840,8 +840,7 @@ func (s *CustomSlice) MarshalProtobuf3() ([]byte, error) {
 		for _, x := range ss {
 			tmp.EncodeVarint(uint64(x))
 		}
-		buf.EncodeVarint(uint64(i+1)<<3 + uint64(protobuf3.WireBytes))
-		buf.EncodeRawBytes(tmp.Bytes())
+		buf.EncodeBytes(uint32(i)+1, tmp.Bytes())
 	}
 	return buf.Bytes(), nil
 }
