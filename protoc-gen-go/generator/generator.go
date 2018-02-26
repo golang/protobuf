@@ -316,12 +316,16 @@ func (d *FileDescriptor) goPackageName() (name string, explicit bool) {
 }
 
 // goFileName returns the output name for the generated Go file.
-func (d *FileDescriptor) goFileName() string {
+func (d *FileDescriptor) goFileName(pathType pathType) string {
 	name := *d.Name
 	if ext := path.Ext(name); ext == ".proto" || ext == ".protodevel" {
 		name = name[:len(name)-len(ext)]
 	}
 	name += ".pb.go"
+
+	if pathType == pathTypeSourceRelative {
+		return name
+	}
 
 	// Does the file have a "go_package" option?
 	// If it does, it may override the filename.
@@ -576,10 +580,18 @@ type Generator struct {
 	typeNameToObject map[string]Object          // Key is a fully-qualified name in input syntax.
 	init             []string                   // Lines to emit in the init function.
 	indent           string
+	pathType         pathType // How to generate output filenames.
 	writeOutput      bool
 	annotateCode     bool                                       // whether to store annotations
 	annotations      []*descriptor.GeneratedCodeInfo_Annotation // annotations to store
 }
+
+type pathType int
+
+const (
+	pathTypeImport pathType = iota
+	pathTypeSourceRelative
+)
 
 // New creates a new generator and allocates the request and response protobufs.
 func New() *Generator {
@@ -625,6 +637,15 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			g.ImportPrefix = v
 		case "import_path":
 			g.PackageImportPath = v
+		case "paths":
+			switch v {
+			case "import":
+				g.pathType = pathTypeImport
+			case "source_relative":
+				g.pathType = pathTypeSourceRelative
+			default:
+				g.Fail(fmt.Sprintf(`Unknown path type %q: want "import" or "source_relative".`, v))
+			}
 		case "plugins":
 			pluginList = v
 		case "annotate_code":
@@ -1197,7 +1218,7 @@ func (g *Generator) GenerateAllFiles() {
 		if !g.writeOutput {
 			continue
 		}
-		fname := file.goFileName()
+		fname := file.goFileName(g.pathType)
 		g.Response.File = append(g.Response.File, &plugin.CodeGeneratorResponse_File{
 			Name:    proto.String(fname),
 			Content: proto.String(g.String()),
@@ -1206,7 +1227,7 @@ func (g *Generator) GenerateAllFiles() {
 			// Store the generated code annotations in text, as the protoc plugin protocol requires that
 			// strings contain valid UTF-8.
 			g.Response.File = append(g.Response.File, &plugin.CodeGeneratorResponse_File{
-				Name:    proto.String(file.goFileName() + ".meta"),
+				Name:    proto.String(file.goFileName(g.pathType) + ".meta"),
 				Content: proto.String(proto.CompactTextString(&descriptor.GeneratedCodeInfo{Annotation: g.annotations})),
 			})
 		}
@@ -1407,8 +1428,10 @@ func (g *Generator) generateImports() {
 		if fd.PackageName() == g.packageName {
 			continue
 		}
-		filename := fd.goFileName()
 		// By default, import path is the dirname of the Go filename.
+		// Use pathTypeImport here rather than whatever the user
+		// specified, since we do want the import path.
+		filename := fd.goFileName(pathTypeImport)
 		importPath := path.Dir(filename)
 		if substitution, ok := g.ImportMap[s]; ok {
 			importPath = substitution
