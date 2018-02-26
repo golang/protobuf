@@ -1338,8 +1338,12 @@ func (g *Generator) generateHeader() {
 	g.P()
 
 	name := g.file.PackageName()
-
-	g.P("package ", name)
+	importPath, _, haveImportPath := g.file.goPackageOption()
+	if !haveImportPath {
+		g.P("package ", name)
+	} else {
+		g.P("package ", name, " // import ", strconv.Quote(g.ImportPrefix+importPath))
+	}
 	g.P()
 
 	if loc, ok := g.file.comments[strconv.Itoa(packagePath)]; ok {
