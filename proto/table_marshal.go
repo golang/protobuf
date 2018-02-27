@@ -2579,9 +2579,15 @@ func (u *marshalInfo) appendV1Extensions(b []byte, m map[int32]Extension, determ
 	return b, nil
 }
 
+// newMarshaler is the interface representing objects that can marshal themselves.
+//
+// This exists to support protoc-gen-go generated messages.
+// The proto package will stop type-asserting to this interface in the future.
+//
+// DO NOT DEPEND ON THIS.
 type newMarshaler interface {
 	XXX_Size() int
-	Marshal(b []byte, deterministic bool) ([]byte, error)
+	XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 }
 
 // Size returns the encoded size of a protocol buffer message.
@@ -2611,7 +2617,7 @@ func Marshal(pb Message) ([]byte, error) {
 	if m, ok := pb.(newMarshaler); ok {
 		siz := m.XXX_Size()
 		b := make([]byte, 0, siz)
-		return m.Marshal(b, false)
+		return m.XXX_Marshal(b, false)
 	}
 	if m, ok := pb.(Marshaler); ok {
 		// If the message can marshal itself, let it do it, for compatibility.
@@ -2641,7 +2647,7 @@ func (p *Buffer) Marshal(pb Message) error {
 		if newCap := len(p.buf) + siz; newCap > cap(p.buf) {
 			p.buf = append(make([]byte, 0, newCap), p.buf...)
 		}
-		p.buf, err = m.Marshal(p.buf, p.deterministic)
+		p.buf, err = m.XXX_Marshal(p.buf, p.deterministic)
 		return err
 	}
 	if m, ok := pb.(Marshaler); ok {

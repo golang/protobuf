@@ -29,10 +29,10 @@ func (m *ExtraMessage) Reset()                    { *m = ExtraMessage{} }
 func (m *ExtraMessage) String() string            { return proto.CompactTextString(m) }
 func (*ExtraMessage) ProtoMessage()               {}
 func (*ExtraMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-func (m *ExtraMessage) Unmarshal(b []byte) error {
+func (m *ExtraMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExtraMessage.Unmarshal(m, b)
 }
-func (m *ExtraMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ExtraMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ExtraMessage.Marshal(b, m, deterministic)
 }
 func (dst *ExtraMessage) XXX_Merge(src proto.Message) {

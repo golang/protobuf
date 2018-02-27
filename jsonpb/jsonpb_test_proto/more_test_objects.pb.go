@@ -53,10 +53,10 @@ func (m *Simple3) Reset()                    { *m = Simple3{} }
 func (m *Simple3) String() string            { return proto.CompactTextString(m) }
 func (*Simple3) ProtoMessage()               {}
 func (*Simple3) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-func (m *Simple3) Unmarshal(b []byte) error {
+func (m *Simple3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Simple3.Unmarshal(m, b)
 }
-func (m *Simple3) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Simple3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Simple3.Marshal(b, m, deterministic)
 }
 func (dst *Simple3) XXX_Merge(src proto.Message) {
@@ -89,10 +89,10 @@ func (m *SimpleSlice3) Reset()                    { *m = SimpleSlice3{} }
 func (m *SimpleSlice3) String() string            { return proto.CompactTextString(m) }
 func (*SimpleSlice3) ProtoMessage()               {}
 func (*SimpleSlice3) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
-func (m *SimpleSlice3) Unmarshal(b []byte) error {
+func (m *SimpleSlice3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleSlice3.Unmarshal(m, b)
 }
-func (m *SimpleSlice3) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SimpleSlice3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleSlice3.Marshal(b, m, deterministic)
 }
 func (dst *SimpleSlice3) XXX_Merge(src proto.Message) {
@@ -125,10 +125,10 @@ func (m *SimpleMap3) Reset()                    { *m = SimpleMap3{} }
 func (m *SimpleMap3) String() string            { return proto.CompactTextString(m) }
 func (*SimpleMap3) ProtoMessage()               {}
 func (*SimpleMap3) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
-func (m *SimpleMap3) Unmarshal(b []byte) error {
+func (m *SimpleMap3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleMap3.Unmarshal(m, b)
 }
-func (m *SimpleMap3) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SimpleMap3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleMap3.Marshal(b, m, deterministic)
 }
 func (dst *SimpleMap3) XXX_Merge(src proto.Message) {
@@ -161,10 +161,10 @@ func (m *SimpleNull3) Reset()                    { *m = SimpleNull3{} }
 func (m *SimpleNull3) String() string            { return proto.CompactTextString(m) }
 func (*SimpleNull3) ProtoMessage()               {}
 func (*SimpleNull3) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
-func (m *SimpleNull3) Unmarshal(b []byte) error {
+func (m *SimpleNull3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleNull3.Unmarshal(m, b)
 }
-func (m *SimpleNull3) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SimpleNull3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleNull3.Marshal(b, m, deterministic)
 }
 func (dst *SimpleNull3) XXX_Merge(src proto.Message) {
@@ -206,10 +206,10 @@ func (m *Mappy) Reset()                    { *m = Mappy{} }
 func (m *Mappy) String() string            { return proto.CompactTextString(m) }
 func (*Mappy) ProtoMessage()               {}
 func (*Mappy) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
-func (m *Mappy) Unmarshal(b []byte) error {
+func (m *Mappy) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Mappy.Unmarshal(m, b)
 }
-func (m *Mappy) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Mappy) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Mappy.Marshal(b, m, deterministic)
 }
 func (dst *Mappy) XXX_Merge(src proto.Message) {

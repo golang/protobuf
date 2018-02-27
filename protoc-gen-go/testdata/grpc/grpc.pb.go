@@ -33,10 +33,10 @@ func (m *SimpleRequest) Reset()                    { *m = SimpleRequest{} }
 func (m *SimpleRequest) String() string            { return proto.CompactTextString(m) }
 func (*SimpleRequest) ProtoMessage()               {}
 func (*SimpleRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-func (m *SimpleRequest) Unmarshal(b []byte) error {
+func (m *SimpleRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleRequest.Unmarshal(m, b)
 }
-func (m *SimpleRequest) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SimpleRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleRequest.Marshal(b, m, deterministic)
 }
 func (dst *SimpleRequest) XXX_Merge(src proto.Message) {
@@ -61,10 +61,10 @@ func (m *SimpleResponse) Reset()                    { *m = SimpleResponse{} }
 func (m *SimpleResponse) String() string            { return proto.CompactTextString(m) }
 func (*SimpleResponse) ProtoMessage()               {}
 func (*SimpleResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
-func (m *SimpleResponse) Unmarshal(b []byte) error {
+func (m *SimpleResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleResponse.Unmarshal(m, b)
 }
-func (m *SimpleResponse) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SimpleResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleResponse.Marshal(b, m, deterministic)
 }
 func (dst *SimpleResponse) XXX_Merge(src proto.Message) {
@@ -89,10 +89,10 @@ func (m *StreamMsg) Reset()                    { *m = StreamMsg{} }
 func (m *StreamMsg) String() string            { return proto.CompactTextString(m) }
 func (*StreamMsg) ProtoMessage()               {}
 func (*StreamMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
-func (m *StreamMsg) Unmarshal(b []byte) error {
+func (m *StreamMsg) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamMsg.Unmarshal(m, b)
 }
-func (m *StreamMsg) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *StreamMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamMsg.Marshal(b, m, deterministic)
 }
 func (dst *StreamMsg) XXX_Merge(src proto.Message) {
@@ -117,10 +117,10 @@ func (m *StreamMsg2) Reset()                    { *m = StreamMsg2{} }
 func (m *StreamMsg2) String() string            { return proto.CompactTextString(m) }
 func (*StreamMsg2) ProtoMessage()               {}
 func (*StreamMsg2) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
-func (m *StreamMsg2) Unmarshal(b []byte) error {
+func (m *StreamMsg2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamMsg2.Unmarshal(m, b)
 }
-func (m *StreamMsg2) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *StreamMsg2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamMsg2.Marshal(b, m, deterministic)
 }
 func (dst *StreamMsg2) XXX_Merge(src proto.Message) {

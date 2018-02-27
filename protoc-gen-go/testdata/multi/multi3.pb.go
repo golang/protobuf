@@ -57,10 +57,10 @@ func (m *Multi3) Reset()                    { *m = Multi3{} }
 func (m *Multi3) String() string            { return proto.CompactTextString(m) }
 func (*Multi3) ProtoMessage()               {}
 func (*Multi3) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
-func (m *Multi3) Unmarshal(b []byte) error {
+func (m *Multi3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Multi3.Unmarshal(m, b)
 }
-func (m *Multi3) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Multi3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Multi3.Marshal(b, m, deterministic)
 }
 func (dst *Multi3) XXX_Merge(src proto.Message) {

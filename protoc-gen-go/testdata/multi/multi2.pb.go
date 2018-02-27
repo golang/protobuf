@@ -61,10 +61,10 @@ func (m *Multi2) Reset()                    { *m = Multi2{} }
 func (m *Multi2) String() string            { return proto.CompactTextString(m) }
 func (*Multi2) ProtoMessage()               {}
 func (*Multi2) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
-func (m *Multi2) Unmarshal(b []byte) error {
+func (m *Multi2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Multi2.Unmarshal(m, b)
 }
-func (m *Multi2) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Multi2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Multi2.Marshal(b, m, deterministic)
 }
 func (dst *Multi2) XXX_Merge(src proto.Message) {

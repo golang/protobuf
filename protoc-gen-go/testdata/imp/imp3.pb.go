@@ -23,10 +23,10 @@ func (m *ForeignImportedMessage) Reset()                    { *m = ForeignImport
 func (m *ForeignImportedMessage) String() string            { return proto.CompactTextString(m) }
 func (*ForeignImportedMessage) ProtoMessage()               {}
 func (*ForeignImportedMessage) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
-func (m *ForeignImportedMessage) Unmarshal(b []byte) error {
+func (m *ForeignImportedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ForeignImportedMessage.Unmarshal(m, b)
 }
-func (m *ForeignImportedMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ForeignImportedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ForeignImportedMessage.Marshal(b, m, deterministic)
 }
 func (dst *ForeignImportedMessage) XXX_Merge(src proto.Message) {
