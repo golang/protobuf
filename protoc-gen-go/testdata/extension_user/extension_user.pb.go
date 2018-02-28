@@ -32,10 +32,10 @@ func (m *UserMessage) Reset()                    { *m = UserMessage{} }
 func (m *UserMessage) String() string            { return proto.CompactTextString(m) }
 func (*UserMessage) ProtoMessage()               {}
 func (*UserMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-func (m *UserMessage) Unmarshal(b []byte) error {
+func (m *UserMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserMessage.Unmarshal(m, b)
 }
-func (m *UserMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *UserMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_UserMessage.Marshal(b, m, deterministic)
 }
 func (dst *UserMessage) XXX_Merge(src proto.Message) {
@@ -84,10 +84,10 @@ var extRange_LoudMessage = []proto.ExtensionRange{
 func (*LoudMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_LoudMessage
 }
-func (m *LoudMessage) Unmarshal(b []byte) error {
+func (m *LoudMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LoudMessage.Unmarshal(m, b)
 }
-func (m *LoudMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *LoudMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_LoudMessage.Marshal(b, m, deterministic)
 }
 func (dst *LoudMessage) XXX_Merge(src proto.Message) {
@@ -122,10 +122,10 @@ func (m *LoginMessage) Reset()                    { *m = LoginMessage{} }
 func (m *LoginMessage) String() string            { return proto.CompactTextString(m) }
 func (*LoginMessage) ProtoMessage()               {}
 func (*LoginMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
-func (m *LoginMessage) Unmarshal(b []byte) error {
+func (m *LoginMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LoginMessage.Unmarshal(m, b)
 }
-func (m *LoginMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *LoginMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_LoginMessage.Marshal(b, m, deterministic)
 }
 func (dst *LoginMessage) XXX_Merge(src proto.Message) {
@@ -160,10 +160,10 @@ func (m *Detail) Reset()                    { *m = Detail{} }
 func (m *Detail) String() string            { return proto.CompactTextString(m) }
 func (*Detail) ProtoMessage()               {}
 func (*Detail) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
-func (m *Detail) Unmarshal(b []byte) error {
+func (m *Detail) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Detail.Unmarshal(m, b)
 }
-func (m *Detail) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Detail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Detail.Marshal(b, m, deterministic)
 }
 func (dst *Detail) XXX_Merge(src proto.Message) {
@@ -197,10 +197,10 @@ func (m *Announcement) Reset()                    { *m = Announcement{} }
 func (m *Announcement) String() string            { return proto.CompactTextString(m) }
 func (*Announcement) ProtoMessage()               {}
 func (*Announcement) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
-func (m *Announcement) Unmarshal(b []byte) error {
+func (m *Announcement) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Announcement.Unmarshal(m, b)
 }
-func (m *Announcement) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Announcement) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Announcement.Marshal(b, m, deterministic)
 }
 func (dst *Announcement) XXX_Merge(src proto.Message) {
@@ -244,10 +244,10 @@ func (m *OldStyleParcel) Reset()                    { *m = OldStyleParcel{} }
 func (m *OldStyleParcel) String() string            { return proto.CompactTextString(m) }
 func (*OldStyleParcel) ProtoMessage()               {}
 func (*OldStyleParcel) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
-func (m *OldStyleParcel) Unmarshal(b []byte) error {
+func (m *OldStyleParcel) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldStyleParcel.Unmarshal(m, b)
 }
-func (m *OldStyleParcel) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *OldStyleParcel) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OldStyleParcel.Marshal(b, m, deterministic)
 }
 func (dst *OldStyleParcel) XXX_Merge(src proto.Message) {

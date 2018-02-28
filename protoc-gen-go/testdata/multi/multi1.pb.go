@@ -31,10 +31,10 @@ func (m *Multi1) Reset()                    { *m = Multi1{} }
 func (m *Multi1) String() string            { return proto.CompactTextString(m) }
 func (*Multi1) ProtoMessage()               {}
 func (*Multi1) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-func (m *Multi1) Unmarshal(b []byte) error {
+func (m *Multi1) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Multi1.Unmarshal(m, b)
 }
-func (m *Multi1) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Multi1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Multi1.Marshal(b, m, deterministic)
 }
 func (dst *Multi1) XXX_Merge(src proto.Message) {

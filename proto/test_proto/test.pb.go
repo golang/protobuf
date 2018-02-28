@@ -276,10 +276,10 @@ func (m *GoEnum) Reset()                    { *m = GoEnum{} }
 func (m *GoEnum) String() string            { return proto.CompactTextString(m) }
 func (*GoEnum) ProtoMessage()               {}
 func (*GoEnum) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-func (m *GoEnum) Unmarshal(b []byte) error {
+func (m *GoEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoEnum.Unmarshal(m, b)
 }
-func (m *GoEnum) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GoEnum) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GoEnum.Marshal(b, m, deterministic)
 }
 func (dst *GoEnum) XXX_Merge(src proto.Message) {
@@ -313,10 +313,10 @@ func (m *GoTestField) Reset()                    { *m = GoTestField{} }
 func (m *GoTestField) String() string            { return proto.CompactTextString(m) }
 func (*GoTestField) ProtoMessage()               {}
 func (*GoTestField) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
-func (m *GoTestField) Unmarshal(b []byte) error {
+func (m *GoTestField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTestField.Unmarshal(m, b)
 }
-func (m *GoTestField) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GoTestField) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GoTestField.Marshal(b, m, deterministic)
 }
 func (dst *GoTestField) XXX_Merge(src proto.Message) {
@@ -444,10 +444,10 @@ func (m *GoTest) Reset()                    { *m = GoTest{} }
 func (m *GoTest) String() string            { return proto.CompactTextString(m) }
 func (*GoTest) ProtoMessage()               {}
 func (*GoTest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
-func (m *GoTest) Unmarshal(b []byte) error {
+func (m *GoTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest.Unmarshal(m, b)
 }
-func (m *GoTest) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GoTest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GoTest.Marshal(b, m, deterministic)
 }
 func (dst *GoTest) XXX_Merge(src proto.Message) {
@@ -1066,10 +1066,10 @@ func (m *GoTest_RequiredGroup) Reset()                    { *m = GoTest_Required
 func (m *GoTest_RequiredGroup) String() string            { return proto.CompactTextString(m) }
 func (*GoTest_RequiredGroup) ProtoMessage()               {}
 func (*GoTest_RequiredGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2, 0} }
-func (m *GoTest_RequiredGroup) Unmarshal(b []byte) error {
+func (m *GoTest_RequiredGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest_RequiredGroup.Unmarshal(m, b)
 }
-func (m *GoTest_RequiredGroup) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GoTest_RequiredGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GoTest_RequiredGroup.Marshal(b, m, deterministic)
 }
 func (dst *GoTest_RequiredGroup) XXX_Merge(src proto.Message) {
@@ -1102,10 +1102,10 @@ func (m *GoTest_RepeatedGroup) Reset()                    { *m = GoTest_Repeated
 func (m *GoTest_RepeatedGroup) String() string            { return proto.CompactTextString(m) }
 func (*GoTest_RepeatedGroup) ProtoMessage()               {}
 func (*GoTest_RepeatedGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2, 1} }
-func (m *GoTest_RepeatedGroup) Unmarshal(b []byte) error {
+func (m *GoTest_RepeatedGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest_RepeatedGroup.Unmarshal(m, b)
 }
-func (m *GoTest_RepeatedGroup) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GoTest_RepeatedGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GoTest_RepeatedGroup.Marshal(b, m, deterministic)
 }
 func (dst *GoTest_RepeatedGroup) XXX_Merge(src proto.Message) {
@@ -1138,10 +1138,10 @@ func (m *GoTest_OptionalGroup) Reset()                    { *m = GoTest_Optional
 func (m *GoTest_OptionalGroup) String() string            { return proto.CompactTextString(m) }
 func (*GoTest_OptionalGroup) ProtoMessage()               {}
 func (*GoTest_OptionalGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2, 2} }
-func (m *GoTest_OptionalGroup) Unmarshal(b []byte) error {
+func (m *GoTest_OptionalGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest_OptionalGroup.Unmarshal(m, b)
 }
-func (m *GoTest_OptionalGroup) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GoTest_OptionalGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GoTest_OptionalGroup.Marshal(b, m, deterministic)
 }
 func (dst *GoTest_OptionalGroup) XXX_Merge(src proto.Message) {
@@ -1175,10 +1175,10 @@ func (m *GoTestRequiredGroupField) Reset()                    { *m = GoTestRequi
 func (m *GoTestRequiredGroupField) String() string            { return proto.CompactTextString(m) }
 func (*GoTestRequiredGroupField) ProtoMessage()               {}
 func (*GoTestRequiredGroupField) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
-func (m *GoTestRequiredGroupField) Unmarshal(b []byte) error {
+func (m *GoTestRequiredGroupField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTestRequiredGroupField.Unmarshal(m, b)
 }
-func (m *GoTestRequiredGroupField) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GoTestRequiredGroupField) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GoTestRequiredGroupField.Marshal(b, m, deterministic)
 }
 func (dst *GoTestRequiredGroupField) XXX_Merge(src proto.Message) {
@@ -1213,10 +1213,10 @@ func (*GoTestRequiredGroupField_Group) ProtoMessage()    {}
 func (*GoTestRequiredGroupField_Group) Descriptor() ([]byte, []int) {
 	return fileDescriptor0, []int{3, 0}
 }
-func (m *GoTestRequiredGroupField_Group) Unmarshal(b []byte) error {
+func (m *GoTestRequiredGroupField_Group) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTestRequiredGroupField_Group.Unmarshal(m, b)
 }
-func (m *GoTestRequiredGroupField_Group) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GoTestRequiredGroupField_Group) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GoTestRequiredGroupField_Group.Marshal(b, m, deterministic)
 }
 func (dst *GoTestRequiredGroupField_Group) XXX_Merge(src proto.Message) {
@@ -1256,10 +1256,10 @@ func (m *GoSkipTest) Reset()                    { *m = GoSkipTest{} }
 func (m *GoSkipTest) String() string            { return proto.CompactTextString(m) }
 func (*GoSkipTest) ProtoMessage()               {}
 func (*GoSkipTest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
-func (m *GoSkipTest) Unmarshal(b []byte) error {
+func (m *GoSkipTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoSkipTest.Unmarshal(m, b)
 }
-func (m *GoSkipTest) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GoSkipTest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GoSkipTest.Marshal(b, m, deterministic)
 }
 func (dst *GoSkipTest) XXX_Merge(src proto.Message) {
@@ -1321,10 +1321,10 @@ func (m *GoSkipTest_SkipGroup) Reset()                    { *m = GoSkipTest_Skip
 func (m *GoSkipTest_SkipGroup) String() string            { return proto.CompactTextString(m) }
 func (*GoSkipTest_SkipGroup) ProtoMessage()               {}
 func (*GoSkipTest_SkipGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4, 0} }
-func (m *GoSkipTest_SkipGroup) Unmarshal(b []byte) error {
+func (m *GoSkipTest_SkipGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoSkipTest_SkipGroup.Unmarshal(m, b)
 }
-func (m *GoSkipTest_SkipGroup) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GoSkipTest_SkipGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GoSkipTest_SkipGroup.Marshal(b, m, deterministic)
 }
 func (dst *GoSkipTest_SkipGroup) XXX_Merge(src proto.Message) {
@@ -1366,10 +1366,10 @@ func (m *NonPackedTest) Reset()                    { *m = NonPackedTest{} }
 func (m *NonPackedTest) String() string            { return proto.CompactTextString(m) }
 func (*NonPackedTest) ProtoMessage()               {}
 func (*NonPackedTest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
-func (m *NonPackedTest) Unmarshal(b []byte) error {
+func (m *NonPackedTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonPackedTest.Unmarshal(m, b)
 }
-func (m *NonPackedTest) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *NonPackedTest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_NonPackedTest.Marshal(b, m, deterministic)
 }
 func (dst *NonPackedTest) XXX_Merge(src proto.Message) {
@@ -1402,10 +1402,10 @@ func (m *PackedTest) Reset()                    { *m = PackedTest{} }
 func (m *PackedTest) String() string            { return proto.CompactTextString(m) }
 func (*PackedTest) ProtoMessage()               {}
 func (*PackedTest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
-func (m *PackedTest) Unmarshal(b []byte) error {
+func (m *PackedTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PackedTest.Unmarshal(m, b)
 }
-func (m *PackedTest) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *PackedTest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_PackedTest.Marshal(b, m, deterministic)
 }
 func (dst *PackedTest) XXX_Merge(src proto.Message) {
@@ -1439,10 +1439,10 @@ func (m *MaxTag) Reset()                    { *m = MaxTag{} }
 func (m *MaxTag) String() string            { return proto.CompactTextString(m) }
 func (*MaxTag) ProtoMessage()               {}
 func (*MaxTag) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
-func (m *MaxTag) Unmarshal(b []byte) error {
+func (m *MaxTag) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MaxTag.Unmarshal(m, b)
 }
-func (m *MaxTag) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MaxTag) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MaxTag.Marshal(b, m, deterministic)
 }
 func (dst *MaxTag) XXX_Merge(src proto.Message) {
@@ -1476,10 +1476,10 @@ func (m *OldMessage) Reset()                    { *m = OldMessage{} }
 func (m *OldMessage) String() string            { return proto.CompactTextString(m) }
 func (*OldMessage) ProtoMessage()               {}
 func (*OldMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
-func (m *OldMessage) Unmarshal(b []byte) error {
+func (m *OldMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldMessage.Unmarshal(m, b)
 }
-func (m *OldMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *OldMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OldMessage.Marshal(b, m, deterministic)
 }
 func (dst *OldMessage) XXX_Merge(src proto.Message) {
@@ -1519,10 +1519,10 @@ func (m *OldMessage_Nested) Reset()                    { *m = OldMessage_Nested{
 func (m *OldMessage_Nested) String() string            { return proto.CompactTextString(m) }
 func (*OldMessage_Nested) ProtoMessage()               {}
 func (*OldMessage_Nested) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8, 0} }
-func (m *OldMessage_Nested) Unmarshal(b []byte) error {
+func (m *OldMessage_Nested) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldMessage_Nested.Unmarshal(m, b)
 }
-func (m *OldMessage_Nested) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *OldMessage_Nested) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OldMessage_Nested.Marshal(b, m, deterministic)
 }
 func (dst *OldMessage_Nested) XXX_Merge(src proto.Message) {
@@ -1559,10 +1559,10 @@ func (m *NewMessage) Reset()                    { *m = NewMessage{} }
 func (m *NewMessage) String() string            { return proto.CompactTextString(m) }
 func (*NewMessage) ProtoMessage()               {}
 func (*NewMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
-func (m *NewMessage) Unmarshal(b []byte) error {
+func (m *NewMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewMessage.Unmarshal(m, b)
 }
-func (m *NewMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *NewMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_NewMessage.Marshal(b, m, deterministic)
 }
 func (dst *NewMessage) XXX_Merge(src proto.Message) {
@@ -1603,10 +1603,10 @@ func (m *NewMessage_Nested) Reset()                    { *m = NewMessage_Nested{
 func (m *NewMessage_Nested) String() string            { return proto.CompactTextString(m) }
 func (*NewMessage_Nested) ProtoMessage()               {}
 func (*NewMessage_Nested) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9, 0} }
-func (m *NewMessage_Nested) Unmarshal(b []byte) error {
+func (m *NewMessage_Nested) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewMessage_Nested.Unmarshal(m, b)
 }
-func (m *NewMessage_Nested) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *NewMessage_Nested) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_NewMessage_Nested.Marshal(b, m, deterministic)
 }
 func (dst *NewMessage_Nested) XXX_Merge(src proto.Message) {
@@ -1648,10 +1648,10 @@ func (m *InnerMessage) Reset()                    { *m = InnerMessage{} }
 func (m *InnerMessage) String() string            { return proto.CompactTextString(m) }
 func (*InnerMessage) ProtoMessage()               {}
 func (*InnerMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
-func (m *InnerMessage) Unmarshal(b []byte) error {
+func (m *InnerMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InnerMessage.Unmarshal(m, b)
 }
-func (m *InnerMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *InnerMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_InnerMessage.Marshal(b, m, deterministic)
 }
 func (dst *InnerMessage) XXX_Merge(src proto.Message) {
@@ -1712,10 +1712,10 @@ var extRange_OtherMessage = []proto.ExtensionRange{
 func (*OtherMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OtherMessage
 }
-func (m *OtherMessage) Unmarshal(b []byte) error {
+func (m *OtherMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OtherMessage.Unmarshal(m, b)
 }
-func (m *OtherMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *OtherMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OtherMessage.Marshal(b, m, deterministic)
 }
 func (dst *OtherMessage) XXX_Merge(src proto.Message) {
@@ -1769,10 +1769,10 @@ func (m *RequiredInnerMessage) Reset()                    { *m = RequiredInnerMe
 func (m *RequiredInnerMessage) String() string            { return proto.CompactTextString(m) }
 func (*RequiredInnerMessage) ProtoMessage()               {}
 func (*RequiredInnerMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
-func (m *RequiredInnerMessage) Unmarshal(b []byte) error {
+func (m *RequiredInnerMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RequiredInnerMessage.Unmarshal(m, b)
 }
-func (m *RequiredInnerMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *RequiredInnerMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_RequiredInnerMessage.Marshal(b, m, deterministic)
 }
 func (dst *RequiredInnerMessage) XXX_Merge(src proto.Message) {
@@ -1826,10 +1826,10 @@ var extRange_MyMessage = []proto.ExtensionRange{
 func (*MyMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_MyMessage
 }
-func (m *MyMessage) Unmarshal(b []byte) error {
+func (m *MyMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MyMessage.Unmarshal(m, b)
 }
-func (m *MyMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MyMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MyMessage.Marshal(b, m, deterministic)
 }
 func (dst *MyMessage) XXX_Merge(src proto.Message) {
@@ -1939,10 +1939,10 @@ func (m *MyMessage_SomeGroup) Reset()                    { *m = MyMessage_SomeGr
 func (m *MyMessage_SomeGroup) String() string            { return proto.CompactTextString(m) }
 func (*MyMessage_SomeGroup) ProtoMessage()               {}
 func (*MyMessage_SomeGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13, 0} }
-func (m *MyMessage_SomeGroup) Unmarshal(b []byte) error {
+func (m *MyMessage_SomeGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MyMessage_SomeGroup.Unmarshal(m, b)
 }
-func (m *MyMessage_SomeGroup) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MyMessage_SomeGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MyMessage_SomeGroup.Marshal(b, m, deterministic)
 }
 func (dst *MyMessage_SomeGroup) XXX_Merge(src proto.Message) {
@@ -1976,10 +1976,10 @@ func (m *Ext) Reset()                    { *m = Ext{} }
 func (m *Ext) String() string            { return proto.CompactTextString(m) }
 func (*Ext) ProtoMessage()               {}
 func (*Ext) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
-func (m *Ext) Unmarshal(b []byte) error {
+func (m *Ext) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Ext.Unmarshal(m, b)
 }
-func (m *Ext) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Ext) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Ext.Marshal(b, m, deterministic)
 }
 func (dst *Ext) XXX_Merge(src proto.Message) {
@@ -2048,10 +2048,10 @@ func (m *ComplexExtension) Reset()                    { *m = ComplexExtension{} 
 func (m *ComplexExtension) String() string            { return proto.CompactTextString(m) }
 func (*ComplexExtension) ProtoMessage()               {}
 func (*ComplexExtension) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{15} }
-func (m *ComplexExtension) Unmarshal(b []byte) error {
+func (m *ComplexExtension) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ComplexExtension.Unmarshal(m, b)
 }
-func (m *ComplexExtension) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ComplexExtension) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ComplexExtension.Marshal(b, m, deterministic)
 }
 func (dst *ComplexExtension) XXX_Merge(src proto.Message) {
@@ -2106,10 +2106,10 @@ var extRange_DefaultsMessage = []proto.ExtensionRange{
 func (*DefaultsMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_DefaultsMessage
 }
-func (m *DefaultsMessage) Unmarshal(b []byte) error {
+func (m *DefaultsMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DefaultsMessage.Unmarshal(m, b)
 }
-func (m *DefaultsMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *DefaultsMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DefaultsMessage.Marshal(b, m, deterministic)
 }
 func (dst *DefaultsMessage) XXX_Merge(src proto.Message) {
@@ -2143,9 +2143,6 @@ func (m *MyMessageSet) UnmarshalJSON(buf []byte) error {
 	return proto.UnmarshalMessageSetJSON(buf, &m.XXX_InternalExtensions)
 }
 
-// ensure MyMessageSet satisfies proto.Unmarshaler
-var _ proto.Unmarshaler = (*MyMessageSet)(nil)
-
 var extRange_MyMessageSet = []proto.ExtensionRange{
 	{100, 2147483646},
 }
@@ -2153,10 +2150,10 @@ var extRange_MyMessageSet = []proto.ExtensionRange{
 func (*MyMessageSet) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_MyMessageSet
 }
-func (m *MyMessageSet) Unmarshal(b []byte) error {
+func (m *MyMessageSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MyMessageSet.Unmarshal(m, b)
 }
-func (m *MyMessageSet) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MyMessageSet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MyMessageSet.Marshal(b, m, deterministic)
 }
 func (dst *MyMessageSet) XXX_Merge(src proto.Message) {
@@ -2181,10 +2178,10 @@ func (m *Empty) Reset()                    { *m = Empty{} }
 func (m *Empty) String() string            { return proto.CompactTextString(m) }
 func (*Empty) ProtoMessage()               {}
 func (*Empty) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
-func (m *Empty) Unmarshal(b []byte) error {
+func (m *Empty) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Empty.Unmarshal(m, b)
 }
-func (m *Empty) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Empty) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Empty.Marshal(b, m, deterministic)
 }
 func (dst *Empty) XXX_Merge(src proto.Message) {
@@ -2210,10 +2207,10 @@ func (m *MessageList) Reset()                    { *m = MessageList{} }
 func (m *MessageList) String() string            { return proto.CompactTextString(m) }
 func (*MessageList) ProtoMessage()               {}
 func (*MessageList) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19} }
-func (m *MessageList) Unmarshal(b []byte) error {
+func (m *MessageList) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageList.Unmarshal(m, b)
 }
-func (m *MessageList) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MessageList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MessageList.Marshal(b, m, deterministic)
 }
 func (dst *MessageList) XXX_Merge(src proto.Message) {
@@ -2247,10 +2244,10 @@ func (m *MessageList_Message) Reset()                    { *m = MessageList_Mess
 func (m *MessageList_Message) String() string            { return proto.CompactTextString(m) }
 func (*MessageList_Message) ProtoMessage()               {}
 func (*MessageList_Message) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19, 0} }
-func (m *MessageList_Message) Unmarshal(b []byte) error {
+func (m *MessageList_Message) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageList_Message.Unmarshal(m, b)
 }
-func (m *MessageList_Message) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MessageList_Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MessageList_Message.Marshal(b, m, deterministic)
 }
 func (dst *MessageList_Message) XXX_Merge(src proto.Message) {
@@ -2291,10 +2288,10 @@ func (m *Strings) Reset()                    { *m = Strings{} }
 func (m *Strings) String() string            { return proto.CompactTextString(m) }
 func (*Strings) ProtoMessage()               {}
 func (*Strings) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{20} }
-func (m *Strings) Unmarshal(b []byte) error {
+func (m *Strings) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Strings.Unmarshal(m, b)
 }
-func (m *Strings) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Strings) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Strings.Marshal(b, m, deterministic)
 }
 func (dst *Strings) XXX_Merge(src proto.Message) {
@@ -2357,10 +2354,10 @@ func (m *Defaults) Reset()                    { *m = Defaults{} }
 func (m *Defaults) String() string            { return proto.CompactTextString(m) }
 func (*Defaults) ProtoMessage()               {}
 func (*Defaults) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{21} }
-func (m *Defaults) Unmarshal(b []byte) error {
+func (m *Defaults) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Defaults.Unmarshal(m, b)
 }
-func (m *Defaults) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Defaults) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Defaults.Marshal(b, m, deterministic)
 }
 func (dst *Defaults) XXX_Merge(src proto.Message) {
@@ -2540,10 +2537,10 @@ func (m *SubDefaults) Reset()                    { *m = SubDefaults{} }
 func (m *SubDefaults) String() string            { return proto.CompactTextString(m) }
 func (*SubDefaults) ProtoMessage()               {}
 func (*SubDefaults) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{22} }
-func (m *SubDefaults) Unmarshal(b []byte) error {
+func (m *SubDefaults) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SubDefaults.Unmarshal(m, b)
 }
-func (m *SubDefaults) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SubDefaults) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SubDefaults.Marshal(b, m, deterministic)
 }
 func (dst *SubDefaults) XXX_Merge(src proto.Message) {
@@ -2578,10 +2575,10 @@ func (m *RepeatedEnum) Reset()                    { *m = RepeatedEnum{} }
 func (m *RepeatedEnum) String() string            { return proto.CompactTextString(m) }
 func (*RepeatedEnum) ProtoMessage()               {}
 func (*RepeatedEnum) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23} }
-func (m *RepeatedEnum) Unmarshal(b []byte) error {
+func (m *RepeatedEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RepeatedEnum.Unmarshal(m, b)
 }
-func (m *RepeatedEnum) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *RepeatedEnum) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_RepeatedEnum.Marshal(b, m, deterministic)
 }
 func (dst *RepeatedEnum) XXX_Merge(src proto.Message) {
@@ -2620,10 +2617,10 @@ func (m *MoreRepeated) Reset()                    { *m = MoreRepeated{} }
 func (m *MoreRepeated) String() string            { return proto.CompactTextString(m) }
 func (*MoreRepeated) ProtoMessage()               {}
 func (*MoreRepeated) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{24} }
-func (m *MoreRepeated) Unmarshal(b []byte) error {
+func (m *MoreRepeated) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MoreRepeated.Unmarshal(m, b)
 }
-func (m *MoreRepeated) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MoreRepeated) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MoreRepeated.Marshal(b, m, deterministic)
 }
 func (dst *MoreRepeated) XXX_Merge(src proto.Message) {
@@ -2698,10 +2695,10 @@ func (m *GroupOld) Reset()                    { *m = GroupOld{} }
 func (m *GroupOld) String() string            { return proto.CompactTextString(m) }
 func (*GroupOld) ProtoMessage()               {}
 func (*GroupOld) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25} }
-func (m *GroupOld) Unmarshal(b []byte) error {
+func (m *GroupOld) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupOld.Unmarshal(m, b)
 }
-func (m *GroupOld) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GroupOld) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GroupOld.Marshal(b, m, deterministic)
 }
 func (dst *GroupOld) XXX_Merge(src proto.Message) {
@@ -2734,10 +2731,10 @@ func (m *GroupOld_G) Reset()                    { *m = GroupOld_G{} }
 func (m *GroupOld_G) String() string            { return proto.CompactTextString(m) }
 func (*GroupOld_G) ProtoMessage()               {}
 func (*GroupOld_G) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25, 0} }
-func (m *GroupOld_G) Unmarshal(b []byte) error {
+func (m *GroupOld_G) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupOld_G.Unmarshal(m, b)
 }
-func (m *GroupOld_G) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GroupOld_G) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GroupOld_G.Marshal(b, m, deterministic)
 }
 func (dst *GroupOld_G) XXX_Merge(src proto.Message) {
@@ -2770,10 +2767,10 @@ func (m *GroupNew) Reset()                    { *m = GroupNew{} }
 func (m *GroupNew) String() string            { return proto.CompactTextString(m) }
 func (*GroupNew) ProtoMessage()               {}
 func (*GroupNew) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{26} }
-func (m *GroupNew) Unmarshal(b []byte) error {
+func (m *GroupNew) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupNew.Unmarshal(m, b)
 }
-func (m *GroupNew) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GroupNew) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GroupNew.Marshal(b, m, deterministic)
 }
 func (dst *GroupNew) XXX_Merge(src proto.Message) {
@@ -2807,10 +2804,10 @@ func (m *GroupNew_G) Reset()                    { *m = GroupNew_G{} }
 func (m *GroupNew_G) String() string            { return proto.CompactTextString(m) }
 func (*GroupNew_G) ProtoMessage()               {}
 func (*GroupNew_G) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{26, 0} }
-func (m *GroupNew_G) Unmarshal(b []byte) error {
+func (m *GroupNew_G) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupNew_G.Unmarshal(m, b)
 }
-func (m *GroupNew_G) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GroupNew_G) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_GroupNew_G.Marshal(b, m, deterministic)
 }
 func (dst *GroupNew_G) XXX_Merge(src proto.Message) {
@@ -2851,10 +2848,10 @@ func (m *FloatingPoint) Reset()                    { *m = FloatingPoint{} }
 func (m *FloatingPoint) String() string            { return proto.CompactTextString(m) }
 func (*FloatingPoint) ProtoMessage()               {}
 func (*FloatingPoint) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{27} }
-func (m *FloatingPoint) Unmarshal(b []byte) error {
+func (m *FloatingPoint) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FloatingPoint.Unmarshal(m, b)
 }
-func (m *FloatingPoint) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *FloatingPoint) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_FloatingPoint.Marshal(b, m, deterministic)
 }
 func (dst *FloatingPoint) XXX_Merge(src proto.Message) {
@@ -2897,10 +2894,10 @@ func (m *MessageWithMap) Reset()                    { *m = MessageWithMap{} }
 func (m *MessageWithMap) String() string            { return proto.CompactTextString(m) }
 func (*MessageWithMap) ProtoMessage()               {}
 func (*MessageWithMap) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{28} }
-func (m *MessageWithMap) Unmarshal(b []byte) error {
+func (m *MessageWithMap) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageWithMap.Unmarshal(m, b)
 }
-func (m *MessageWithMap) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MessageWithMap) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MessageWithMap.Marshal(b, m, deterministic)
 }
 func (dst *MessageWithMap) XXX_Merge(src proto.Message) {
@@ -2975,10 +2972,10 @@ func (m *Oneof) Reset()                    { *m = Oneof{} }
 func (m *Oneof) String() string            { return proto.CompactTextString(m) }
 func (*Oneof) ProtoMessage()               {}
 func (*Oneof) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{29} }
-func (m *Oneof) Unmarshal(b []byte) error {
+func (m *Oneof) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Oneof.Unmarshal(m, b)
 }
-func (m *Oneof) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Oneof) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Oneof.Marshal(b, m, deterministic)
 }
 func (dst *Oneof) XXX_Merge(src proto.Message) {
@@ -3540,10 +3537,10 @@ func (m *Oneof_F_Group) Reset()                    { *m = Oneof_F_Group{} }
 func (m *Oneof_F_Group) String() string            { return proto.CompactTextString(m) }
 func (*Oneof_F_Group) ProtoMessage()               {}
 func (*Oneof_F_Group) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{29, 0} }
-func (m *Oneof_F_Group) Unmarshal(b []byte) error {
+func (m *Oneof_F_Group) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Oneof_F_Group.Unmarshal(m, b)
 }
-func (m *Oneof_F_Group) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Oneof_F_Group) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Oneof_F_Group.Marshal(b, m, deterministic)
 }
 func (dst *Oneof_F_Group) XXX_Merge(src proto.Message) {
@@ -3586,10 +3583,10 @@ func (m *Communique) Reset()                    { *m = Communique{} }
 func (m *Communique) String() string            { return proto.CompactTextString(m) }
 func (*Communique) ProtoMessage()               {}
 func (*Communique) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{30} }
-func (m *Communique) Unmarshal(b []byte) error {
+func (m *Communique) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique.Unmarshal(m, b)
 }
-func (m *Communique) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Communique) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Communique.Marshal(b, m, deterministic)
 }
 func (dst *Communique) XXX_Merge(src proto.Message) {

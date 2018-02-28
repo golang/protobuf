@@ -123,10 +123,10 @@ func (m *ConformanceRequest) Reset()                    { *m = ConformanceReques
 func (m *ConformanceRequest) String() string            { return proto.CompactTextString(m) }
 func (*ConformanceRequest) ProtoMessage()               {}
 func (*ConformanceRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-func (m *ConformanceRequest) Unmarshal(b []byte) error {
+func (m *ConformanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConformanceRequest.Unmarshal(m, b)
 }
-func (m *ConformanceRequest) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ConformanceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConformanceRequest.Marshal(b, m, deterministic)
 }
 func (dst *ConformanceRequest) XXX_Merge(src proto.Message) {
@@ -268,10 +268,10 @@ func (m *ConformanceResponse) Reset()                    { *m = ConformanceRespo
 func (m *ConformanceResponse) String() string            { return proto.CompactTextString(m) }
 func (*ConformanceResponse) ProtoMessage()               {}
 func (*ConformanceResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
-func (m *ConformanceResponse) Unmarshal(b []byte) error {
+func (m *ConformanceResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConformanceResponse.Unmarshal(m, b)
 }
-func (m *ConformanceResponse) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ConformanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConformanceResponse.Marshal(b, m, deterministic)
 }
 func (dst *ConformanceResponse) XXX_Merge(src proto.Message) {
@@ -630,10 +630,10 @@ func (m *TestAllTypes) Reset()                    { *m = TestAllTypes{} }
 func (m *TestAllTypes) String() string            { return proto.CompactTextString(m) }
 func (*TestAllTypes) ProtoMessage()               {}
 func (*TestAllTypes) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
-func (m *TestAllTypes) Unmarshal(b []byte) error {
+func (m *TestAllTypes) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TestAllTypes.Unmarshal(m, b)
 }
-func (m *TestAllTypes) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *TestAllTypes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_TestAllTypes.Marshal(b, m, deterministic)
 }
 func (dst *TestAllTypes) XXX_Merge(src proto.Message) {
@@ -1715,10 +1715,10 @@ func (m *TestAllTypes_NestedMessage) Reset()                    { *m = TestAllTy
 func (m *TestAllTypes_NestedMessage) String() string            { return proto.CompactTextString(m) }
 func (*TestAllTypes_NestedMessage) ProtoMessage()               {}
 func (*TestAllTypes_NestedMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2, 0} }
-func (m *TestAllTypes_NestedMessage) Unmarshal(b []byte) error {
+func (m *TestAllTypes_NestedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TestAllTypes_NestedMessage.Unmarshal(m, b)
 }
-func (m *TestAllTypes_NestedMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *TestAllTypes_NestedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_TestAllTypes_NestedMessage.Marshal(b, m, deterministic)
 }
 func (dst *TestAllTypes_NestedMessage) XXX_Merge(src proto.Message) {
@@ -1758,10 +1758,10 @@ func (m *ForeignMessage) Reset()                    { *m = ForeignMessage{} }
 func (m *ForeignMessage) String() string            { return proto.CompactTextString(m) }
 func (*ForeignMessage) ProtoMessage()               {}
 func (*ForeignMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
-func (m *ForeignMessage) Unmarshal(b []byte) error {
+func (m *ForeignMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ForeignMessage.Unmarshal(m, b)
 }
-func (m *ForeignMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ForeignMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ForeignMessage.Marshal(b, m, deterministic)
 }
 func (dst *ForeignMessage) XXX_Merge(src proto.Message) {

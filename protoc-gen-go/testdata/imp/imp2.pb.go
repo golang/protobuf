@@ -57,10 +57,10 @@ func (m *PubliclyImportedMessage) Reset()                    { *m = PubliclyImpo
 func (m *PubliclyImportedMessage) String() string            { return proto.CompactTextString(m) }
 func (*PubliclyImportedMessage) ProtoMessage()               {}
 func (*PubliclyImportedMessage) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
-func (m *PubliclyImportedMessage) Unmarshal(b []byte) error {
+func (m *PubliclyImportedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PubliclyImportedMessage.Unmarshal(m, b)
 }
-func (m *PubliclyImportedMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *PubliclyImportedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_PubliclyImportedMessage.Marshal(b, m, deterministic)
 }
 func (dst *PubliclyImportedMessage) XXX_Merge(src proto.Message) {

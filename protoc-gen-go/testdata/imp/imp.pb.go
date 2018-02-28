@@ -83,10 +83,10 @@ var extRange_ImportedMessage = []proto.ExtensionRange{
 func (*ImportedMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_ImportedMessage
 }
-func (m *ImportedMessage) Unmarshal(b []byte) error {
+func (m *ImportedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImportedMessage.Unmarshal(m, b)
 }
-func (m *ImportedMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ImportedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ImportedMessage.Marshal(b, m, deterministic)
 }
 func (dst *ImportedMessage) XXX_Merge(src proto.Message) {
@@ -241,10 +241,10 @@ func (m *ImportedMessage2) Reset()                    { *m = ImportedMessage2{} 
 func (m *ImportedMessage2) String() string            { return proto.CompactTextString(m) }
 func (*ImportedMessage2) ProtoMessage()               {}
 func (*ImportedMessage2) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
-func (m *ImportedMessage2) Unmarshal(b []byte) error {
+func (m *ImportedMessage2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImportedMessage2.Unmarshal(m, b)
 }
-func (m *ImportedMessage2) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ImportedMessage2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ImportedMessage2.Marshal(b, m, deterministic)
 }
 func (dst *ImportedMessage2) XXX_Merge(src proto.Message) {
@@ -278,9 +278,6 @@ func (m *ImportedExtendable) UnmarshalJSON(buf []byte) error {
 	return proto.UnmarshalMessageSetJSON(buf, &m.XXX_InternalExtensions)
 }
 
-// ensure ImportedExtendable satisfies proto.Unmarshaler
-var _ proto.Unmarshaler = (*ImportedExtendable)(nil)
-
 var extRange_ImportedExtendable = []proto.ExtensionRange{
 	{100, 2147483646},
 }
@@ -288,10 +285,10 @@ var extRange_ImportedExtendable = []proto.ExtensionRange{
 func (*ImportedExtendable) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_ImportedExtendable
 }
-func (m *ImportedExtendable) Unmarshal(b []byte) error {
+func (m *ImportedExtendable) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ImportedExtendable.Unmarshal(m, b)
 }
-func (m *ImportedExtendable) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ImportedExtendable) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ImportedExtendable.Marshal(b, m, deterministic)
 }
 func (dst *ImportedExtendable) XXX_Merge(src proto.Message) {

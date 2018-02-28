@@ -39,10 +39,10 @@ var extRange_BaseMessage = []proto.ExtensionRange{
 func (*BaseMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_BaseMessage
 }
-func (m *BaseMessage) Unmarshal(b []byte) error {
+func (m *BaseMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BaseMessage.Unmarshal(m, b)
 }
-func (m *BaseMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *BaseMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BaseMessage.Marshal(b, m, deterministic)
 }
 func (dst *BaseMessage) XXX_Merge(src proto.Message) {
@@ -84,9 +84,6 @@ func (m *OldStyleMessage) UnmarshalJSON(buf []byte) error {
 	return proto.UnmarshalMessageSetJSON(buf, &m.XXX_InternalExtensions)
 }
 
-// ensure OldStyleMessage satisfies proto.Unmarshaler
-var _ proto.Unmarshaler = (*OldStyleMessage)(nil)
-
 var extRange_OldStyleMessage = []proto.ExtensionRange{
 	{100, 2147483646},
 }
@@ -94,10 +91,10 @@ var extRange_OldStyleMessage = []proto.ExtensionRange{
 func (*OldStyleMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OldStyleMessage
 }
-func (m *OldStyleMessage) Unmarshal(b []byte) error {
+func (m *OldStyleMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldStyleMessage.Unmarshal(m, b)
 }
-func (m *OldStyleMessage) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *OldStyleMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OldStyleMessage.Marshal(b, m, deterministic)
 }
 func (dst *OldStyleMessage) XXX_Merge(src proto.Message) {

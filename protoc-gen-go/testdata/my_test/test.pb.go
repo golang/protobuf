@@ -192,10 +192,10 @@ func (m *Request) Reset()                    { *m = Request{} }
 func (m *Request) String() string            { return proto.CompactTextString(m) }
 func (*Request) ProtoMessage()               {}
 func (*Request) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-func (m *Request) Unmarshal(b []byte) error {
+func (m *Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Request.Unmarshal(m, b)
 }
-func (m *Request) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Request.Marshal(b, m, deterministic)
 }
 func (dst *Request) XXX_Merge(src proto.Message) {
@@ -288,10 +288,10 @@ func (m *Request_SomeGroup) Reset()                    { *m = Request_SomeGroup{
 func (m *Request_SomeGroup) String() string            { return proto.CompactTextString(m) }
 func (*Request_SomeGroup) ProtoMessage()               {}
 func (*Request_SomeGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 0} }
-func (m *Request_SomeGroup) Unmarshal(b []byte) error {
+func (m *Request_SomeGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Request_SomeGroup.Unmarshal(m, b)
 }
-func (m *Request_SomeGroup) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Request_SomeGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Request_SomeGroup.Marshal(b, m, deterministic)
 }
 func (dst *Request_SomeGroup) XXX_Merge(src proto.Message) {
@@ -334,10 +334,10 @@ var extRange_Reply = []proto.ExtensionRange{
 func (*Reply) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_Reply
 }
-func (m *Reply) Unmarshal(b []byte) error {
+func (m *Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Reply.Unmarshal(m, b)
 }
-func (m *Reply) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Reply.Marshal(b, m, deterministic)
 }
 func (dst *Reply) XXX_Merge(src proto.Message) {
@@ -379,10 +379,10 @@ func (m *Reply_Entry) Reset()                    { *m = Reply_Entry{} }
 func (m *Reply_Entry) String() string            { return proto.CompactTextString(m) }
 func (*Reply_Entry) ProtoMessage()               {}
 func (*Reply_Entry) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1, 0} }
-func (m *Reply_Entry) Unmarshal(b []byte) error {
+func (m *Reply_Entry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Reply_Entry.Unmarshal(m, b)
 }
-func (m *Reply_Entry) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Reply_Entry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Reply_Entry.Marshal(b, m, deterministic)
 }
 func (dst *Reply_Entry) XXX_Merge(src proto.Message) {
@@ -440,10 +440,10 @@ var extRange_OtherBase = []proto.ExtensionRange{
 func (*OtherBase) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OtherBase
 }
-func (m *OtherBase) Unmarshal(b []byte) error {
+func (m *OtherBase) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OtherBase.Unmarshal(m, b)
 }
-func (m *OtherBase) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *OtherBase) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OtherBase.Marshal(b, m, deterministic)
 }
 func (dst *OtherBase) XXX_Merge(src proto.Message) {
@@ -475,10 +475,10 @@ func (m *ReplyExtensions) Reset()                    { *m = ReplyExtensions{} }
 func (m *ReplyExtensions) String() string            { return proto.CompactTextString(m) }
 func (*ReplyExtensions) ProtoMessage()               {}
 func (*ReplyExtensions) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
-func (m *ReplyExtensions) Unmarshal(b []byte) error {
+func (m *ReplyExtensions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReplyExtensions.Unmarshal(m, b)
 }
-func (m *ReplyExtensions) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ReplyExtensions) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ReplyExtensions.Marshal(b, m, deterministic)
 }
 func (dst *ReplyExtensions) XXX_Merge(src proto.Message) {
@@ -531,10 +531,10 @@ func (m *OtherReplyExtensions) Reset()                    { *m = OtherReplyExten
 func (m *OtherReplyExtensions) String() string            { return proto.CompactTextString(m) }
 func (*OtherReplyExtensions) ProtoMessage()               {}
 func (*OtherReplyExtensions) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
-func (m *OtherReplyExtensions) Unmarshal(b []byte) error {
+func (m *OtherReplyExtensions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OtherReplyExtensions.Unmarshal(m, b)
 }
-func (m *OtherReplyExtensions) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *OtherReplyExtensions) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OtherReplyExtensions.Marshal(b, m, deterministic)
 }
 func (dst *OtherReplyExtensions) XXX_Merge(src proto.Message) {
@@ -575,9 +575,6 @@ func (m *OldReply) UnmarshalJSON(buf []byte) error {
 	return proto.UnmarshalMessageSetJSON(buf, &m.XXX_InternalExtensions)
 }
 
-// ensure OldReply satisfies proto.Unmarshaler
-var _ proto.Unmarshaler = (*OldReply)(nil)
-
 var extRange_OldReply = []proto.ExtensionRange{
 	{100, 2147483646},
 }
@@ -585,10 +582,10 @@ var extRange_OldReply = []proto.ExtensionRange{
 func (*OldReply) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OldReply
 }
-func (m *OldReply) Unmarshal(b []byte) error {
+func (m *OldReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldReply.Unmarshal(m, b)
 }
-func (m *OldReply) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *OldReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OldReply.Marshal(b, m, deterministic)
 }
 func (dst *OldReply) XXX_Merge(src proto.Message) {
@@ -628,10 +625,10 @@ func (m *Communique) Reset()                    { *m = Communique{} }
 func (m *Communique) String() string            { return proto.CompactTextString(m) }
 func (*Communique) ProtoMessage()               {}
 func (*Communique) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
-func (m *Communique) Unmarshal(b []byte) error {
+func (m *Communique) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique.Unmarshal(m, b)
 }
-func (m *Communique) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Communique) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Communique.Marshal(b, m, deterministic)
 }
 func (dst *Communique) XXX_Merge(src proto.Message) {
@@ -979,10 +976,10 @@ func (m *Communique_SomeGroup) Reset()                    { *m = Communique_Some
 func (m *Communique_SomeGroup) String() string            { return proto.CompactTextString(m) }
 func (*Communique_SomeGroup) ProtoMessage()               {}
 func (*Communique_SomeGroup) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6, 0} }
-func (m *Communique_SomeGroup) Unmarshal(b []byte) error {
+func (m *Communique_SomeGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique_SomeGroup.Unmarshal(m, b)
 }
-func (m *Communique_SomeGroup) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Communique_SomeGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Communique_SomeGroup.Marshal(b, m, deterministic)
 }
 func (dst *Communique_SomeGroup) XXX_Merge(src proto.Message) {
@@ -1014,10 +1011,10 @@ func (m *Communique_Delta) Reset()                    { *m = Communique_Delta{} 
 func (m *Communique_Delta) String() string            { return proto.CompactTextString(m) }
 func (*Communique_Delta) ProtoMessage()               {}
 func (*Communique_Delta) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6, 1} }
-func (m *Communique_Delta) Unmarshal(b []byte) error {
+func (m *Communique_Delta) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique_Delta.Unmarshal(m, b)
 }
-func (m *Communique_Delta) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Communique_Delta) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Communique_Delta.Marshal(b, m, deterministic)
 }
 func (dst *Communique_Delta) XXX_Merge(src proto.Message) {
