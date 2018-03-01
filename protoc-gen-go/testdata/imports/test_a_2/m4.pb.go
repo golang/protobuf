@@ -22,10 +22,10 @@ func (m *M4) Reset()                    { *m = M4{} }
 func (m *M4) String() string            { return proto.CompactTextString(m) }
 func (*M4) ProtoMessage()               {}
 func (*M4) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
-func (m *M4) Unmarshal(b []byte) error {
+func (m *M4) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_M4.Unmarshal(m, b)
 }
-func (m *M4) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *M4) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_M4.Marshal(b, m, deterministic)
 }
 func (dst *M4) XXX_Merge(src proto.Message) {
