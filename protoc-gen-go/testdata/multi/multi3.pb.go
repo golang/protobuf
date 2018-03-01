@@ -61,10 +61,12 @@ type Multi3 struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
-func (m *Multi3) Reset()                    { *m = Multi3{} }
-func (m *Multi3) String() string            { return proto.CompactTextString(m) }
-func (*Multi3) ProtoMessage()               {}
-func (*Multi3) Descriptor() ([]byte, []int) { return fileDescriptor_multi3_d55a72b4628b7875, []int{0} }
+func (m *Multi3) Reset()         { *m = Multi3{} }
+func (m *Multi3) String() string { return proto.CompactTextString(m) }
+func (*Multi3) ProtoMessage()    {}
+func (*Multi3) Descriptor() ([]byte, []int) {
+	return fileDescriptor_multi3_d55a72b4628b7875, []int{0}
+}
 func (m *Multi3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Multi3.Unmarshal(m, b)
 }

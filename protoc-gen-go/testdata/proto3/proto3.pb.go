@@ -58,10 +58,12 @@ type Request struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
-func (m *Request) Reset()                    { *m = Request{} }
-func (m *Request) String() string            { return proto.CompactTextString(m) }
-func (*Request) ProtoMessage()               {}
-func (*Request) Descriptor() ([]byte, []int) { return fileDescriptor_proto3_a752e09251f17e01, []int{0} }
+func (m *Request) Reset()         { *m = Request{} }
+func (m *Request) String() string { return proto.CompactTextString(m) }
+func (*Request) ProtoMessage()    {}
+func (*Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_proto3_a752e09251f17e01, []int{0}
+}
 func (m *Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Request.Unmarshal(m, b)
 }
@@ -123,10 +125,12 @@ type Book struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Book) Reset()                    { *m = Book{} }
-func (m *Book) String() string            { return proto.CompactTextString(m) }
-func (*Book) ProtoMessage()               {}
-func (*Book) Descriptor() ([]byte, []int) { return fileDescriptor_proto3_a752e09251f17e01, []int{1} }
+func (m *Book) Reset()         { *m = Book{} }
+func (m *Book) String() string { return proto.CompactTextString(m) }
+func (*Book) ProtoMessage()    {}
+func (*Book) Descriptor() ([]byte, []int) {
+	return fileDescriptor_proto3_a752e09251f17e01, []int{1}
+}
 func (m *Book) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Book.Unmarshal(m, b)
 }

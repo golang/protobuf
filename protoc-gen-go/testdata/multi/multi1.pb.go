@@ -27,10 +27,12 @@ type Multi1 struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
-func (m *Multi1) Reset()                    { *m = Multi1{} }
-func (m *Multi1) String() string            { return proto.CompactTextString(m) }
-func (*Multi1) ProtoMessage()               {}
-func (*Multi1) Descriptor() ([]byte, []int) { return fileDescriptor_multi1_08e50c6822e808b8, []int{0} }
+func (m *Multi1) Reset()         { *m = Multi1{} }
+func (m *Multi1) String() string { return proto.CompactTextString(m) }
+func (*Multi1) ProtoMessage()    {}
+func (*Multi1) Descriptor() ([]byte, []int) {
+	return fileDescriptor_multi1_08e50c6822e808b8, []int{0}
+}
 func (m *Multi1) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Multi1.Unmarshal(m, b)
 }

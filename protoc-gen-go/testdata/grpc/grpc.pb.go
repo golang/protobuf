@@ -89,10 +89,12 @@ type StreamMsg struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *StreamMsg) Reset()                    { *m = StreamMsg{} }
-func (m *StreamMsg) String() string            { return proto.CompactTextString(m) }
-func (*StreamMsg) ProtoMessage()               {}
-func (*StreamMsg) Descriptor() ([]byte, []int) { return fileDescriptor_grpc_65bf3902e49ee873, []int{2} }
+func (m *StreamMsg) Reset()         { *m = StreamMsg{} }
+func (m *StreamMsg) String() string { return proto.CompactTextString(m) }
+func (*StreamMsg) ProtoMessage()    {}
+func (*StreamMsg) Descriptor() ([]byte, []int) {
+	return fileDescriptor_grpc_65bf3902e49ee873, []int{2}
+}
 func (m *StreamMsg) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamMsg.Unmarshal(m, b)
 }
@@ -117,10 +119,12 @@ type StreamMsg2 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *StreamMsg2) Reset()                    { *m = StreamMsg2{} }
-func (m *StreamMsg2) String() string            { return proto.CompactTextString(m) }
-func (*StreamMsg2) ProtoMessage()               {}
-func (*StreamMsg2) Descriptor() ([]byte, []int) { return fileDescriptor_grpc_65bf3902e49ee873, []int{3} }
+func (m *StreamMsg2) Reset()         { *m = StreamMsg2{} }
+func (m *StreamMsg2) String() string { return proto.CompactTextString(m) }
+func (*StreamMsg2) ProtoMessage()    {}
+func (*StreamMsg2) Descriptor() ([]byte, []int) {
+	return fileDescriptor_grpc_65bf3902e49ee873, []int{3}
+}
 func (m *StreamMsg2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamMsg2.Unmarshal(m, b)
 }

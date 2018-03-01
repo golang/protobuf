@@ -24,10 +24,12 @@ type M2 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *M2) Reset()                    { *m = M2{} }
-func (m *M2) String() string            { return proto.CompactTextString(m) }
-func (*M2) ProtoMessage()               {}
-func (*M2) Descriptor() ([]byte, []int) { return fileDescriptor_m2_0c59cab35ba1b0d8, []int{0} }
+func (m *M2) Reset()         { *m = M2{} }
+func (m *M2) String() string { return proto.CompactTextString(m) }
+func (*M2) ProtoMessage()    {}
+func (*M2) Descriptor() ([]byte, []int) {
+	return fileDescriptor_m2_0c59cab35ba1b0d8, []int{0}
+}
 func (m *M2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_M2.Unmarshal(m, b)
 }

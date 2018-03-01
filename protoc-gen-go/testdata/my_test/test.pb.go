@@ -56,7 +56,9 @@ func (x *HatType) UnmarshalJSON(data []byte) error {
 	*x = HatType(value)
 	return nil
 }
-func (HatType) EnumDescriptor() ([]byte, []int) { return fileDescriptor_test_4c0531be33cf90ba, []int{0} }
+func (HatType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_test_4c0531be33cf90ba, []int{0}
+}
 
 // This enum represents days of the week.
 type Days int32
@@ -94,7 +96,9 @@ func (x *Days) UnmarshalJSON(data []byte) error {
 	*x = Days(value)
 	return nil
 }
-func (Days) EnumDescriptor() ([]byte, []int) { return fileDescriptor_test_4c0531be33cf90ba, []int{1} }
+func (Days) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_test_4c0531be33cf90ba, []int{1}
+}
 
 type Request_Color int32
 
@@ -192,10 +196,12 @@ type Request struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Request) Reset()                    { *m = Request{} }
-func (m *Request) String() string            { return proto.CompactTextString(m) }
-func (*Request) ProtoMessage()               {}
-func (*Request) Descriptor() ([]byte, []int) { return fileDescriptor_test_4c0531be33cf90ba, []int{0} }
+func (m *Request) Reset()         { *m = Request{} }
+func (m *Request) String() string { return proto.CompactTextString(m) }
+func (*Request) ProtoMessage()    {}
+func (*Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_test_4c0531be33cf90ba, []int{0}
+}
 func (m *Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Request.Unmarshal(m, b)
 }
@@ -328,10 +334,12 @@ type Reply struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
-func (m *Reply) Reset()                    { *m = Reply{} }
-func (m *Reply) String() string            { return proto.CompactTextString(m) }
-func (*Reply) ProtoMessage()               {}
-func (*Reply) Descriptor() ([]byte, []int) { return fileDescriptor_test_4c0531be33cf90ba, []int{1} }
+func (m *Reply) Reset()         { *m = Reply{} }
+func (m *Reply) String() string { return proto.CompactTextString(m) }
+func (*Reply) ProtoMessage()    {}
+func (*Reply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_test_4c0531be33cf90ba, []int{1}
+}
 
 var extRange_Reply = []proto.ExtensionRange{
 	{100, 536870911},
@@ -436,10 +444,12 @@ type OtherBase struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
-func (m *OtherBase) Reset()                    { *m = OtherBase{} }
-func (m *OtherBase) String() string            { return proto.CompactTextString(m) }
-func (*OtherBase) ProtoMessage()               {}
-func (*OtherBase) Descriptor() ([]byte, []int) { return fileDescriptor_test_4c0531be33cf90ba, []int{2} }
+func (m *OtherBase) Reset()         { *m = OtherBase{} }
+func (m *OtherBase) String() string { return proto.CompactTextString(m) }
+func (*OtherBase) ProtoMessage()    {}
+func (*OtherBase) Descriptor() ([]byte, []int) {
+	return fileDescriptor_test_4c0531be33cf90ba, []int{2}
+}
 
 var extRange_OtherBase = []proto.ExtensionRange{
 	{100, 536870911},
@@ -575,10 +585,12 @@ type OldReply struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
-func (m *OldReply) Reset()                    { *m = OldReply{} }
-func (m *OldReply) String() string            { return proto.CompactTextString(m) }
-func (*OldReply) ProtoMessage()               {}
-func (*OldReply) Descriptor() ([]byte, []int) { return fileDescriptor_test_4c0531be33cf90ba, []int{5} }
+func (m *OldReply) Reset()         { *m = OldReply{} }
+func (m *OldReply) String() string { return proto.CompactTextString(m) }
+func (*OldReply) ProtoMessage()    {}
+func (*OldReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_test_4c0531be33cf90ba, []int{5}
+}
 
 func (m *OldReply) MarshalJSON() ([]byte, error) {
 	return proto.MarshalMessageSetJSON(&m.XXX_InternalExtensions)
@@ -633,10 +645,12 @@ type Communique struct {
 	XXX_sizecache        int32              `json:"-"`
 }
 
-func (m *Communique) Reset()                    { *m = Communique{} }
-func (m *Communique) String() string            { return proto.CompactTextString(m) }
-func (*Communique) ProtoMessage()               {}
-func (*Communique) Descriptor() ([]byte, []int) { return fileDescriptor_test_4c0531be33cf90ba, []int{6} }
+func (m *Communique) Reset()         { *m = Communique{} }
+func (m *Communique) String() string { return proto.CompactTextString(m) }
+func (*Communique) ProtoMessage()    {}
+func (*Communique) Descriptor() ([]byte, []int) {
+	return fileDescriptor_test_4c0531be33cf90ba, []int{6}
+}
 func (m *Communique) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique.Unmarshal(m, b)
 }
