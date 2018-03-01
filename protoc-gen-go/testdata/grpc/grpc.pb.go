@@ -29,10 +29,12 @@ type SimpleRequest struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *SimpleRequest) Reset()                    { *m = SimpleRequest{} }
-func (m *SimpleRequest) String() string            { return proto.CompactTextString(m) }
-func (*SimpleRequest) ProtoMessage()               {}
-func (*SimpleRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (m *SimpleRequest) Reset()         { *m = SimpleRequest{} }
+func (m *SimpleRequest) String() string { return proto.CompactTextString(m) }
+func (*SimpleRequest) ProtoMessage()    {}
+func (*SimpleRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_grpc_65bf3902e49ee873, []int{0}
+}
 func (m *SimpleRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleRequest.Unmarshal(m, b)
 }
@@ -57,10 +59,12 @@ type SimpleResponse struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *SimpleResponse) Reset()                    { *m = SimpleResponse{} }
-func (m *SimpleResponse) String() string            { return proto.CompactTextString(m) }
-func (*SimpleResponse) ProtoMessage()               {}
-func (*SimpleResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (m *SimpleResponse) Reset()         { *m = SimpleResponse{} }
+func (m *SimpleResponse) String() string { return proto.CompactTextString(m) }
+func (*SimpleResponse) ProtoMessage()    {}
+func (*SimpleResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_grpc_65bf3902e49ee873, []int{1}
+}
 func (m *SimpleResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleResponse.Unmarshal(m, b)
 }
@@ -88,7 +92,7 @@ type StreamMsg struct {
 func (m *StreamMsg) Reset()                    { *m = StreamMsg{} }
 func (m *StreamMsg) String() string            { return proto.CompactTextString(m) }
 func (*StreamMsg) ProtoMessage()               {}
-func (*StreamMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+func (*StreamMsg) Descriptor() ([]byte, []int) { return fileDescriptor_grpc_65bf3902e49ee873, []int{2} }
 func (m *StreamMsg) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamMsg.Unmarshal(m, b)
 }
@@ -116,7 +120,7 @@ type StreamMsg2 struct {
 func (m *StreamMsg2) Reset()                    { *m = StreamMsg2{} }
 func (m *StreamMsg2) String() string            { return proto.CompactTextString(m) }
 func (*StreamMsg2) ProtoMessage()               {}
-func (*StreamMsg2) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+func (*StreamMsg2) Descriptor() ([]byte, []int) { return fileDescriptor_grpc_65bf3902e49ee873, []int{3} }
 func (m *StreamMsg2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamMsg2.Unmarshal(m, b)
 }
@@ -413,9 +417,9 @@ var _Test_serviceDesc = grpc.ServiceDesc{
 	Metadata: "grpc/grpc.proto",
 }
 
-func init() { proto.RegisterFile("grpc/grpc.proto", fileDescriptor0) }
+func init() { proto.RegisterFile("grpc/grpc.proto", fileDescriptor_grpc_65bf3902e49ee873) }
 
-var fileDescriptor0 = []byte{
+var fileDescriptor_grpc_65bf3902e49ee873 = []byte{
 	// 244 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4f, 0x2f, 0x2a, 0x48,
 	0xd6, 0x07, 0x11, 0x7a, 0x05, 0x45, 0xf9, 0x25, 0xf9, 0x42, 0x3c, 0x60, 0x76, 0x49, 0x6a, 0x71,

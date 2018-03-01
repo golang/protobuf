@@ -12,6 +12,12 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 type M4 struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -21,7 +27,7 @@ type M4 struct {
 func (m *M4) Reset()                    { *m = M4{} }
 func (m *M4) String() string            { return proto.CompactTextString(m) }
 func (*M4) ProtoMessage()               {}
-func (*M4) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
+func (*M4) Descriptor() ([]byte, []int) { return fileDescriptor_m4_da12b386229f3791, []int{0} }
 func (m *M4) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_M4.Unmarshal(m, b)
 }
@@ -44,9 +50,9 @@ func init() {
 	proto.RegisterType((*M4)(nil), "test.a.M4")
 }
 
-func init() { proto.RegisterFile("imports/test_a_2/m4.proto", fileDescriptor1) }
+func init() { proto.RegisterFile("imports/test_a_2/m4.proto", fileDescriptor_m4_da12b386229f3791) }
 
-var fileDescriptor1 = []byte{
+var fileDescriptor_m4_da12b386229f3791 = []byte{
 	// 114 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcc, 0xcc, 0x2d, 0xc8,
 	0x2f, 0x2a, 0x29, 0xd6, 0x2f, 0x49, 0x2d, 0x2e, 0x89, 0x4f, 0x8c, 0x37, 0xd2, 0xcf, 0x35, 0xd1,

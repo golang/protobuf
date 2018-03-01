@@ -12,6 +12,12 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 type ForeignImportedMessage struct {
 	Tuber                *string  `protobuf:"bytes,1,opt,name=tuber" json:"tuber,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -19,10 +25,12 @@ type ForeignImportedMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ForeignImportedMessage) Reset()                    { *m = ForeignImportedMessage{} }
-func (m *ForeignImportedMessage) String() string            { return proto.CompactTextString(m) }
-func (*ForeignImportedMessage) ProtoMessage()               {}
-func (*ForeignImportedMessage) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
+func (m *ForeignImportedMessage) Reset()         { *m = ForeignImportedMessage{} }
+func (m *ForeignImportedMessage) String() string { return proto.CompactTextString(m) }
+func (*ForeignImportedMessage) ProtoMessage()    {}
+func (*ForeignImportedMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_imp3_dbacc1715de7e782, []int{0}
+}
 func (m *ForeignImportedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ForeignImportedMessage.Unmarshal(m, b)
 }
@@ -52,9 +60,9 @@ func init() {
 	proto.RegisterType((*ForeignImportedMessage)(nil), "imp.ForeignImportedMessage")
 }
 
-func init() { proto.RegisterFile("imp/imp3.proto", fileDescriptor2) }
+func init() { proto.RegisterFile("imp/imp3.proto", fileDescriptor_imp3_dbacc1715de7e782) }
 
-var fileDescriptor2 = []byte{
+var fileDescriptor_imp3_dbacc1715de7e782 = []byte{
 	// 137 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcb, 0xcc, 0x2d, 0xd0,
 	0xcf, 0xcc, 0x2d, 0x30, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0xce, 0xcc, 0x2d, 0x50,

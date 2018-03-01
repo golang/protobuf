@@ -13,6 +13,12 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 // M1 from public import imports/test_a_1/m1.proto
 type M1 test_a.M1
 
@@ -33,10 +39,12 @@ type Public struct {
 	XXX_sizecache        int32      `json:"-"`
 }
 
-func (m *Public) Reset()                    { *m = Public{} }
-func (m *Public) String() string            { return proto.CompactTextString(m) }
-func (*Public) ProtoMessage()               {}
-func (*Public) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{0} }
+func (m *Public) Reset()         { *m = Public{} }
+func (m *Public) String() string { return proto.CompactTextString(m) }
+func (*Public) ProtoMessage()    {}
+func (*Public) Descriptor() ([]byte, []int) {
+	return fileDescriptor_test_import_public_592f461eca0812f7, []int{0}
+}
 func (m *Public) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Public.Unmarshal(m, b)
 }
@@ -66,9 +74,11 @@ func init() {
 	proto.RegisterType((*Public)(nil), "test.Public")
 }
 
-func init() { proto.RegisterFile("imports/test_import_public.proto", fileDescriptor3) }
+func init() {
+	proto.RegisterFile("imports/test_import_public.proto", fileDescriptor_test_import_public_592f461eca0812f7)
+}
 
-var fileDescriptor3 = []byte{
+var fileDescriptor_test_import_public_592f461eca0812f7 = []byte{
 	// 154 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xc8, 0xcc, 0x2d, 0xc8,
 	0x2f, 0x2a, 0x29, 0xd6, 0x2f, 0x49, 0x2d, 0x2e, 0x89, 0x87, 0x70, 0xe2, 0x0b, 0x4a, 0x93, 0x72,
