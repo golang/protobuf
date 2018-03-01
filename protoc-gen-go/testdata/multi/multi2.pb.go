@@ -12,6 +12,12 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 type Multi2_Color int32
 
 const (
@@ -47,7 +53,9 @@ func (x *Multi2_Color) UnmarshalJSON(data []byte) error {
 	*x = Multi2_Color(value)
 	return nil
 }
-func (Multi2_Color) EnumDescriptor() ([]byte, []int) { return fileDescriptor1, []int{0, 0} }
+func (Multi2_Color) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_multi2_c47490ad66d93e67, []int{0, 0}
+}
 
 type Multi2 struct {
 	RequiredValue        *int32        `protobuf:"varint,1,req,name=required_value,json=requiredValue" json:"required_value,omitempty"`
@@ -57,10 +65,12 @@ type Multi2 struct {
 	XXX_sizecache        int32         `json:"-"`
 }
 
-func (m *Multi2) Reset()                    { *m = Multi2{} }
-func (m *Multi2) String() string            { return proto.CompactTextString(m) }
-func (*Multi2) ProtoMessage()               {}
-func (*Multi2) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
+func (m *Multi2) Reset()         { *m = Multi2{} }
+func (m *Multi2) String() string { return proto.CompactTextString(m) }
+func (*Multi2) ProtoMessage()    {}
+func (*Multi2) Descriptor() ([]byte, []int) {
+	return fileDescriptor_multi2_c47490ad66d93e67, []int{0}
+}
 func (m *Multi2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Multi2.Unmarshal(m, b)
 }
@@ -98,9 +108,9 @@ func init() {
 	proto.RegisterEnum("multitest.Multi2_Color", Multi2_Color_name, Multi2_Color_value)
 }
 
-func init() { proto.RegisterFile("multi/multi2.proto", fileDescriptor1) }
+func init() { proto.RegisterFile("multi/multi2.proto", fileDescriptor_multi2_c47490ad66d93e67) }
 
-var fileDescriptor1 = []byte{
+var fileDescriptor_multi2_c47490ad66d93e67 = []byte{
 	// 202 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xca, 0x2d, 0xcd, 0x29,
 	0xc9, 0xd4, 0x07, 0x93, 0x46, 0x7a, 0x05, 0x45, 0xf9, 0x25, 0xf9, 0x42, 0x9c, 0x60, 0x5e, 0x49,

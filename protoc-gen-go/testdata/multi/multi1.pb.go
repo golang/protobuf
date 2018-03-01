@@ -27,10 +27,12 @@ type Multi1 struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
-func (m *Multi1) Reset()                    { *m = Multi1{} }
-func (m *Multi1) String() string            { return proto.CompactTextString(m) }
-func (*Multi1) ProtoMessage()               {}
-func (*Multi1) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (m *Multi1) Reset()         { *m = Multi1{} }
+func (m *Multi1) String() string { return proto.CompactTextString(m) }
+func (*Multi1) ProtoMessage()    {}
+func (*Multi1) Descriptor() ([]byte, []int) {
+	return fileDescriptor_multi1_08e50c6822e808b8, []int{0}
+}
 func (m *Multi1) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Multi1.Unmarshal(m, b)
 }
@@ -74,9 +76,9 @@ func init() {
 	proto.RegisterType((*Multi1)(nil), "multitest.Multi1")
 }
 
-func init() { proto.RegisterFile("multi/multi1.proto", fileDescriptor0) }
+func init() { proto.RegisterFile("multi/multi1.proto", fileDescriptor_multi1_08e50c6822e808b8) }
 
-var fileDescriptor0 = []byte{
+var fileDescriptor_multi1_08e50c6822e808b8 = []byte{
 	// 200 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xca, 0x2d, 0xcd, 0x29,
 	0xc9, 0xd4, 0x07, 0x93, 0x86, 0x7a, 0x05, 0x45, 0xf9, 0x25, 0xf9, 0x42, 0x9c, 0x60, 0x5e, 0x49,

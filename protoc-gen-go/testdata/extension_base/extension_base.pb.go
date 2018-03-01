@@ -26,10 +26,12 @@ type BaseMessage struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
-func (m *BaseMessage) Reset()                    { *m = BaseMessage{} }
-func (m *BaseMessage) String() string            { return proto.CompactTextString(m) }
-func (*BaseMessage) ProtoMessage()               {}
-func (*BaseMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (m *BaseMessage) Reset()         { *m = BaseMessage{} }
+func (m *BaseMessage) String() string { return proto.CompactTextString(m) }
+func (*BaseMessage) ProtoMessage()    {}
+func (*BaseMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_extension_base_41d3c712c9fc37fc, []int{0}
+}
 
 var extRange_BaseMessage = []proto.ExtensionRange{
 	{4, 9},
@@ -72,10 +74,12 @@ type OldStyleMessage struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
-func (m *OldStyleMessage) Reset()                    { *m = OldStyleMessage{} }
-func (m *OldStyleMessage) String() string            { return proto.CompactTextString(m) }
-func (*OldStyleMessage) ProtoMessage()               {}
-func (*OldStyleMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (m *OldStyleMessage) Reset()         { *m = OldStyleMessage{} }
+func (m *OldStyleMessage) String() string { return proto.CompactTextString(m) }
+func (*OldStyleMessage) ProtoMessage()    {}
+func (*OldStyleMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_extension_base_41d3c712c9fc37fc, []int{1}
+}
 
 func (m *OldStyleMessage) MarshalJSON() ([]byte, error) {
 	return proto.MarshalMessageSetJSON(&m.XXX_InternalExtensions)
@@ -114,9 +118,11 @@ func init() {
 	proto.RegisterType((*OldStyleMessage)(nil), "extension_base.OldStyleMessage")
 }
 
-func init() { proto.RegisterFile("extension_base/extension_base.proto", fileDescriptor0) }
+func init() {
+	proto.RegisterFile("extension_base/extension_base.proto", fileDescriptor_extension_base_41d3c712c9fc37fc)
+}
 
-var fileDescriptor0 = []byte{
+var fileDescriptor_extension_base_41d3c712c9fc37fc = []byte{
 	// 179 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x4e, 0xad, 0x28, 0x49,
 	0xcd, 0x2b, 0xce, 0xcc, 0xcf, 0x8b, 0x4f, 0x4a, 0x2c, 0x4e, 0xd5, 0x47, 0xe5, 0xea, 0x15, 0x14,

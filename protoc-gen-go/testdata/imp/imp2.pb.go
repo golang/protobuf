@@ -12,6 +12,12 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 type PubliclyImportedEnum int32
 
 const (
@@ -44,7 +50,9 @@ func (x *PubliclyImportedEnum) UnmarshalJSON(data []byte) error {
 	*x = PubliclyImportedEnum(value)
 	return nil
 }
-func (PubliclyImportedEnum) EnumDescriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
+func (PubliclyImportedEnum) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_imp2_dcbceb16a8ff78d7, []int{0}
+}
 
 type PubliclyImportedMessage struct {
 	Field                *int64   `protobuf:"varint,1,opt,name=field" json:"field,omitempty"`
@@ -53,10 +61,12 @@ type PubliclyImportedMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *PubliclyImportedMessage) Reset()                    { *m = PubliclyImportedMessage{} }
-func (m *PubliclyImportedMessage) String() string            { return proto.CompactTextString(m) }
-func (*PubliclyImportedMessage) ProtoMessage()               {}
-func (*PubliclyImportedMessage) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
+func (m *PubliclyImportedMessage) Reset()         { *m = PubliclyImportedMessage{} }
+func (m *PubliclyImportedMessage) String() string { return proto.CompactTextString(m) }
+func (*PubliclyImportedMessage) ProtoMessage()    {}
+func (*PubliclyImportedMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_imp2_dcbceb16a8ff78d7, []int{0}
+}
 func (m *PubliclyImportedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PubliclyImportedMessage.Unmarshal(m, b)
 }
@@ -87,9 +97,9 @@ func init() {
 	proto.RegisterEnum("imp.PubliclyImportedEnum", PubliclyImportedEnum_name, PubliclyImportedEnum_value)
 }
 
-func init() { proto.RegisterFile("imp/imp2.proto", fileDescriptor1) }
+func init() { proto.RegisterFile("imp/imp2.proto", fileDescriptor_imp2_dcbceb16a8ff78d7) }
 
-var fileDescriptor1 = []byte{
+var fileDescriptor_imp2_dcbceb16a8ff78d7 = []byte{
 	// 171 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcb, 0xcc, 0x2d, 0xd0,
 	0xcf, 0xcc, 0x2d, 0x30, 0xd2, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0xce, 0xcc, 0x2d, 0x50,

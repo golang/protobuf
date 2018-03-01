@@ -12,6 +12,12 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 type Multi3_HatType int32
 
 const (
@@ -44,7 +50,9 @@ func (x *Multi3_HatType) UnmarshalJSON(data []byte) error {
 	*x = Multi3_HatType(value)
 	return nil
 }
-func (Multi3_HatType) EnumDescriptor() ([]byte, []int) { return fileDescriptor2, []int{0, 0} }
+func (Multi3_HatType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_multi3_d55a72b4628b7875, []int{0, 0}
+}
 
 type Multi3 struct {
 	HatType              *Multi3_HatType `protobuf:"varint,1,opt,name=hat_type,json=hatType,enum=multitest.Multi3_HatType" json:"hat_type,omitempty"`
@@ -53,10 +61,12 @@ type Multi3 struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
-func (m *Multi3) Reset()                    { *m = Multi3{} }
-func (m *Multi3) String() string            { return proto.CompactTextString(m) }
-func (*Multi3) ProtoMessage()               {}
-func (*Multi3) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
+func (m *Multi3) Reset()         { *m = Multi3{} }
+func (m *Multi3) String() string { return proto.CompactTextString(m) }
+func (*Multi3) ProtoMessage()    {}
+func (*Multi3) Descriptor() ([]byte, []int) {
+	return fileDescriptor_multi3_d55a72b4628b7875, []int{0}
+}
 func (m *Multi3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Multi3.Unmarshal(m, b)
 }
@@ -87,9 +97,9 @@ func init() {
 	proto.RegisterEnum("multitest.Multi3_HatType", Multi3_HatType_name, Multi3_HatType_value)
 }
 
-func init() { proto.RegisterFile("multi/multi3.proto", fileDescriptor2) }
+func init() { proto.RegisterFile("multi/multi3.proto", fileDescriptor_multi3_d55a72b4628b7875) }
 
-var fileDescriptor2 = []byte{
+var fileDescriptor_multi3_d55a72b4628b7875 = []byte{
 	// 170 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xca, 0x2d, 0xcd, 0x29,
 	0xc9, 0xd4, 0x07, 0x93, 0xc6, 0x7a, 0x05, 0x45, 0xf9, 0x25, 0xf9, 0x42, 0x9c, 0x60, 0x5e, 0x49,

@@ -40,6 +40,8 @@ import (
 	"bufio"
 	"bytes"
 	"compress/gzip"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"go/parser"
 	"go/printer"
@@ -258,7 +260,7 @@ type FileDescriptor struct {
 	// This is used for supporting public imports.
 	exported map[Object][]symbol
 
-	index int // The index of this file in the list of files to generate code for
+	fingerprint string // Fingerprint of this file's contents.
 
 	proto3 bool // whether to generate proto3 code for this file
 }
@@ -269,7 +271,10 @@ func (d *FileDescriptor) PackageName() string { return uniquePackageOf(d.FileDes
 // VarName is the variable name we'll use in the generated code to refer
 // to the compressed bytes of this descriptor. It is not exported, so
 // it is only valid inside the generated package.
-func (d *FileDescriptor) VarName() string { return fmt.Sprintf("fileDescriptor%d", d.index) }
+func (d *FileDescriptor) VarName() string {
+	name := strings.Map(badToUnderscore, baseName(d.GetName()))
+	return fmt.Sprintf("fileDescriptor_%s_%s", name, d.fingerprint)
+}
 
 // goPackageOption interprets the file's go_package option.
 // If there is no go_package, it returns ("", "", false).
@@ -847,9 +852,25 @@ func (g *Generator) WrapTypes() {
 		if fd == nil {
 			g.Fail("could not find file named", fileName)
 		}
-		fd.index = len(g.genFiles)
+		fingerprint, err := fingerprintProto(fd.FileDescriptorProto)
+		if err != nil {
+			g.Error(err)
+		}
+		fd.fingerprint = fingerprint
 		g.genFiles = append(g.genFiles, fd)
 	}
+}
+
+// fingerprintProto returns a fingerprint for a message.
+// The fingerprint is intended to prevent conflicts between generated fileds,
+// not to provide cryptographic security.
+func fingerprintProto(m proto.Message) (string, error) {
+	b, err := proto.Marshal(m)
+	if err != nil {
+		return "", err
+	}
+	h := sha256.Sum256(b)
+	return hex.EncodeToString(h[:8]), nil
 }
 
 // Scan the descriptors in this file.  For each one, build the slice of nested descriptors
@@ -1237,15 +1258,13 @@ func (g *Generator) generate(file *FileDescriptor) {
 	g.file = g.FileOf(file.FileDescriptorProto)
 	g.usedPackages = make(map[string]bool)
 
-	if g.file.index == 0 {
-		// For one file in the package, assert version compatibility.
-		g.P("// This is a compile-time assertion to ensure that this generated file")
-		g.P("// is compatible with the proto package it is being compiled against.")
-		g.P("// A compilation error at this line likely means your copy of the")
-		g.P("// proto package needs to be updated.")
-		g.P("const _ = ", g.Pkg["proto"], ".ProtoPackageIsVersion", generatedCodeVersion, " // please upgrade the proto package")
-		g.P()
-	}
+	g.P("// This is a compile-time assertion to ensure that this generated file")
+	g.P("// is compatible with the proto package it is being compiled against.")
+	g.P("// A compilation error at this line likely means your copy of the")
+	g.P("// proto package needs to be updated.")
+	g.P("const _ = ", g.Pkg["proto"], ".ProtoPackageIsVersion", generatedCodeVersion, " // please upgrade the proto package")
+	g.P()
+
 	for _, td := range g.file.imp {
 		g.generateImported(td)
 	}
@@ -1561,7 +1580,11 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 		indexes = append([]string{strconv.Itoa(m.index)}, indexes...)
 	}
 	indexes = append(indexes, strconv.Itoa(enum.index))
-	g.P("func (", ccTypeName, ") EnumDescriptor() ([]byte, []int) { return ", g.file.VarName(), ", []int{", strings.Join(indexes, ", "), "} }")
+	g.P("func (", ccTypeName, ") EnumDescriptor() ([]byte, []int) {")
+	g.In()
+	g.P("return ", g.file.VarName(), ", []int{", strings.Join(indexes, ", "), "}")
+	g.Out()
+	g.P("}")
 	if enum.file.GetPackage() == "google.protobuf" && enum.GetName() == "NullValue" {
 		g.P("func (", ccTypeName, `) XXX_WellKnownType() string { return "`, enum.GetName(), `" }`)
 	}
@@ -2037,7 +2060,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	for m := message; m != nil; m = m.parent {
 		indexes = append([]string{strconv.Itoa(m.index)}, indexes...)
 	}
-	g.P("func (*", ccTypeName, ") Descriptor() ([]byte, []int) { return ", g.file.VarName(), ", []int{", strings.Join(indexes, ", "), "} }")
+	g.P("func (*", ccTypeName, ") Descriptor() ([]byte, []int) {")
+	g.In()
+	g.P("return ", g.file.VarName(), ", []int{", strings.Join(indexes, ", "), "}")
+	g.Out()
+	g.P("}")
 	// TODO: Revisit the decision to use a XXX_WellKnownType method
 	// if we change proto.MessageName to work with multiple equivalents.
 	if message.file.GetPackage() == "google.protobuf" && wellKnownTypes[message.GetName()] {

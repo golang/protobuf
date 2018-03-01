@@ -13,6 +13,12 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 type A1M2 struct {
 	F                    *test_a1.M2 `protobuf:"bytes,1,opt,name=f" json:"f,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
@@ -20,10 +26,12 @@ type A1M2 struct {
 	XXX_sizecache        int32       `json:"-"`
 }
 
-func (m *A1M2) Reset()                    { *m = A1M2{} }
-func (m *A1M2) String() string            { return proto.CompactTextString(m) }
-func (*A1M2) ProtoMessage()               {}
-func (*A1M2) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
+func (m *A1M2) Reset()         { *m = A1M2{} }
+func (m *A1M2) String() string { return proto.CompactTextString(m) }
+func (*A1M2) ProtoMessage()    {}
+func (*A1M2) Descriptor() ([]byte, []int) {
+	return fileDescriptor_test_import_a1m2_9a3281ce9464e116, []int{0}
+}
 func (m *A1M2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_A1M2.Unmarshal(m, b)
 }
@@ -53,9 +61,11 @@ func init() {
 	proto.RegisterType((*A1M2)(nil), "test.A1M2")
 }
 
-func init() { proto.RegisterFile("imports/test_import_a1m2.proto", fileDescriptor1) }
+func init() {
+	proto.RegisterFile("imports/test_import_a1m2.proto", fileDescriptor_test_import_a1m2_9a3281ce9464e116)
+}
 
-var fileDescriptor1 = []byte{
+var fileDescriptor_test_import_a1m2_9a3281ce9464e116 = []byte{
 	// 149 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcb, 0xcc, 0x2d, 0xc8,
 	0x2f, 0x2a, 0x29, 0xd6, 0x2f, 0x49, 0x2d, 0x2e, 0x89, 0x87, 0x70, 0xe2, 0x13, 0x0d, 0x73, 0x8d,

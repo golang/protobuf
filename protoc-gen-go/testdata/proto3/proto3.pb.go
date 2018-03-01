@@ -43,7 +43,9 @@ var Request_Flavour_value = map[string]int32{
 func (x Request_Flavour) String() string {
 	return proto.EnumName(Request_Flavour_name, int32(x))
 }
-func (Request_Flavour) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 0} }
+func (Request_Flavour) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_proto3_a752e09251f17e01, []int{0, 0}
+}
 
 type Request struct {
 	Name                 string          `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
@@ -56,10 +58,12 @@ type Request struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
-func (m *Request) Reset()                    { *m = Request{} }
-func (m *Request) String() string            { return proto.CompactTextString(m) }
-func (*Request) ProtoMessage()               {}
-func (*Request) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (m *Request) Reset()         { *m = Request{} }
+func (m *Request) String() string { return proto.CompactTextString(m) }
+func (*Request) ProtoMessage()    {}
+func (*Request) Descriptor() ([]byte, []int) {
+	return fileDescriptor_proto3_a752e09251f17e01, []int{0}
+}
 func (m *Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Request.Unmarshal(m, b)
 }
@@ -121,10 +125,12 @@ type Book struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Book) Reset()                    { *m = Book{} }
-func (m *Book) String() string            { return proto.CompactTextString(m) }
-func (*Book) ProtoMessage()               {}
-func (*Book) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (m *Book) Reset()         { *m = Book{} }
+func (m *Book) String() string { return proto.CompactTextString(m) }
+func (*Book) ProtoMessage()    {}
+func (*Book) Descriptor() ([]byte, []int) {
+	return fileDescriptor_proto3_a752e09251f17e01, []int{1}
+}
 func (m *Book) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Book.Unmarshal(m, b)
 }
@@ -163,9 +169,9 @@ func init() {
 	proto.RegisterEnum("proto3.Request_Flavour", Request_Flavour_name, Request_Flavour_value)
 }
 
-func init() { proto.RegisterFile("proto3/proto3.proto", fileDescriptor0) }
+func init() { proto.RegisterFile("proto3/proto3.proto", fileDescriptor_proto3_a752e09251f17e01) }
 
-var fileDescriptor0 = []byte{
+var fileDescriptor_proto3_a752e09251f17e01 = []byte{
 	// 306 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x3c, 0x90, 0xcf, 0x4e, 0xf2, 0x40,
 	0x14, 0xc5, 0x99, 0xfe, 0xf9, 0x80, 0xfb, 0xa1, 0x19, 0xaf, 0x26, 0x8e, 0x1b, 0x33, 0x61, 0xd5,
