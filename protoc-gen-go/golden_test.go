@@ -178,99 +178,99 @@ func TestParameters(t *testing.T) {
 		if name == "" {
 			name = "defaults"
 		}
-		t.Run(name, func(t *testing.T) {
-			workdir, err := ioutil.TempDir("", "proto-test")
-			if err != nil {
+		// TODO: Switch to t.Run when we no longer support Go 1.6.
+		t.Logf("TEST: %v", name)
+		workdir, err := ioutil.TempDir("", "proto-test")
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer os.RemoveAll(workdir)
+
+		for _, dir := range []string{"alpha", "beta", "out"} {
+			if err := os.MkdirAll(filepath.Join(workdir, dir), 0777); err != nil {
 				t.Fatal(err)
 			}
-			defer os.RemoveAll(workdir)
+		}
 
-			for _, dir := range []string{"alpha", "beta", "out"} {
-				if err := os.MkdirAll(filepath.Join(workdir, dir), 0777); err != nil {
-					t.Fatal(err)
-				}
-			}
-
-			aProto := []byte(`
+		aProto := []byte(`
 syntax = "proto3";
 package alpha;
 option go_package = "package/alpha";
 import "beta/b.proto";
 message M { beta.M field = 1; }
 `)
-			if err := ioutil.WriteFile(filepath.Join(workdir, "alpha", "a.proto"), aProto, 0666); err != nil {
-				t.Fatal(err)
-			}
+		if err := ioutil.WriteFile(filepath.Join(workdir, "alpha", "a.proto"), aProto, 0666); err != nil {
+			t.Fatal(err)
+		}
 
-			bProto := []byte(`
+		bProto := []byte(`
 syntax = "proto3";
 package beta;
 // no go_package option
 message M {}
 `)
-			if err := ioutil.WriteFile(filepath.Join(workdir, "beta", "b.proto"), bProto, 0666); err != nil {
-				t.Fatal(err)
-			}
+		if err := ioutil.WriteFile(filepath.Join(workdir, "beta", "b.proto"), bProto, 0666); err != nil {
+			t.Fatal(err)
+		}
 
-			protoc(t, []string{
-				"-I" + workdir,
-				"--go_out=" + test.parameters + ":" + filepath.Join(workdir, "out"),
-				filepath.Join(workdir, "alpha", "a.proto"),
-			})
-			protoc(t, []string{
-				"-I" + workdir,
-				"--go_out=" + test.parameters + ":" + filepath.Join(workdir, "out"),
-				filepath.Join(workdir, "beta", "b.proto"),
-			})
-
-			var aGen string
-			gotFiles := make(map[string]bool)
-			outdir := filepath.Join(workdir, "out")
-			filepath.Walk(outdir, func(p string, info os.FileInfo, _ error) error {
-				if info.IsDir() {
-					return nil
-				}
-				if filepath.Base(p) == "a.pb.go" {
-					b, err := ioutil.ReadFile(p)
-					if err != nil {
-						t.Fatal(err)
-					}
-					aGen = string(b)
-				}
-				relPath, _ := filepath.Rel(outdir, p)
-				gotFiles[relPath] = true
-				return nil
-			})
-			for got := range gotFiles {
-				if !test.wantFiles[got] {
-					t.Errorf("unexpected output file: %v", got)
-				}
-			}
-			for want := range test.wantFiles {
-				if !gotFiles[want] {
-					t.Errorf("missing output file:    %v", want)
-				}
-			}
-			missingImport := false
-			for want := range test.wantImports {
-				// For each import, just check if there's a string which
-				// matches it. We could parse the file and do a more
-				// rigorous check, but that seems like overkill.
-				if strings.Contains(aGen, strconv.Quote(want)) {
-					continue
-				}
-				t.Errorf("output file a.pb.go does not contain expected import %q", want)
-				missingImport = true
-			}
-			if missingImport {
-				t.Error("got imports:")
-				for _, line := range strings.Split(aGen, "\n") {
-					if strings.HasPrefix(line, "import") {
-						t.Errorf("  %v", line)
-					}
-				}
-			}
+		protoc(t, []string{
+			"-I" + workdir,
+			"--go_out=" + test.parameters + ":" + filepath.Join(workdir, "out"),
+			filepath.Join(workdir, "alpha", "a.proto"),
 		})
+		protoc(t, []string{
+			"-I" + workdir,
+			"--go_out=" + test.parameters + ":" + filepath.Join(workdir, "out"),
+			filepath.Join(workdir, "beta", "b.proto"),
+		})
+
+		var aGen string
+		gotFiles := make(map[string]bool)
+		outdir := filepath.Join(workdir, "out")
+		filepath.Walk(outdir, func(p string, info os.FileInfo, _ error) error {
+			if info.IsDir() {
+				return nil
+			}
+			if filepath.Base(p) == "a.pb.go" {
+				b, err := ioutil.ReadFile(p)
+				if err != nil {
+					t.Fatal(err)
+				}
+				aGen = string(b)
+			}
+			relPath, _ := filepath.Rel(outdir, p)
+			gotFiles[relPath] = true
+			return nil
+		})
+		for got := range gotFiles {
+			if !test.wantFiles[got] {
+				t.Errorf("unexpected output file: %v", got)
+			}
+		}
+		for want := range test.wantFiles {
+			if !gotFiles[want] {
+				t.Errorf("missing output file:    %v", want)
+			}
+		}
+		missingImport := false
+		for want := range test.wantImports {
+			// For each import, just check if there's a string which
+			// matches it. We could parse the file and do a more
+			// rigorous check, but that seems like overkill.
+			if strings.Contains(aGen, strconv.Quote(want)) {
+				continue
+			}
+			t.Errorf("output file a.pb.go does not contain expected import %q", want)
+			missingImport = true
+		}
+		if missingImport {
+			t.Error("got imports:")
+			for _, line := range strings.Split(aGen, "\n") {
+				if strings.HasPrefix(line, "import") {
+					t.Errorf("  %v", line)
+				}
+			}
+		}
 	}
 }
 
