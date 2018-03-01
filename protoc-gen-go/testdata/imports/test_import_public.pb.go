@@ -16,12 +16,12 @@ var _ = math.Inf
 // M1 from public import imports/test_a_1/m1.proto
 type M1 test_a.M1
 
-func (m *M1) Reset()                     { (*test_a.M1)(m).Reset() }
-func (m *M1) String() string             { return (*test_a.M1)(m).String() }
-func (*M1) ProtoMessage()                {}
-func (m *M1) Unmarshal(buf []byte) error { return (*test_a.M1)(m).Unmarshal(buf) }
-func (m *M1) Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return (*test_a.M1)(m).Marshal(b, deterministic)
+func (m *M1) Reset()                         { (*test_a.M1)(m).Reset() }
+func (m *M1) String() string                 { return (*test_a.M1)(m).String() }
+func (*M1) ProtoMessage()                    {}
+func (m *M1) XXX_Unmarshal(buf []byte) error { return (*test_a.M1)(m).XXX_Unmarshal(buf) }
+func (m *M1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return (*test_a.M1)(m).XXX_Marshal(b, deterministic)
 }
 func (m *M1) XXX_Size() int       { return (*test_a.M1)(m).XXX_Size() }
 func (m *M1) XXX_DiscardUnknown() { (*test_a.M1)(m).XXX_DiscardUnknown() }
@@ -37,10 +37,10 @@ func (m *Public) Reset()                    { *m = Public{} }
 func (m *Public) String() string            { return proto.CompactTextString(m) }
 func (*Public) ProtoMessage()               {}
 func (*Public) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{0} }
-func (m *Public) Unmarshal(b []byte) error {
+func (m *Public) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Public.Unmarshal(m, b)
 }
-func (m *Public) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Public) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Public.Marshal(b, m, deterministic)
 }
 func (dst *Public) XXX_Merge(src proto.Message) {

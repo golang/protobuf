@@ -28,10 +28,10 @@ func (m *M3) Reset()                    { *m = M3{} }
 func (m *M3) String() string            { return proto.CompactTextString(m) }
 func (*M3) ProtoMessage()               {}
 func (*M3) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-func (m *M3) Unmarshal(b []byte) error {
+func (m *M3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_M3.Unmarshal(m, b)
 }
-func (m *M3) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *M3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_M3.Marshal(b, m, deterministic)
 }
 func (dst *M3) XXX_Merge(src proto.Message) {

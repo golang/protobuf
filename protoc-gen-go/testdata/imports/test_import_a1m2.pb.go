@@ -24,10 +24,10 @@ func (m *A1M2) Reset()                    { *m = A1M2{} }
 func (m *A1M2) String() string            { return proto.CompactTextString(m) }
 func (*A1M2) ProtoMessage()               {}
 func (*A1M2) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
-func (m *A1M2) Unmarshal(b []byte) error {
+func (m *A1M2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_A1M2.Unmarshal(m, b)
 }
-func (m *A1M2) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *A1M2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_A1M2.Marshal(b, m, deterministic)
 }
 func (dst *A1M2) XXX_Merge(src proto.Message) {

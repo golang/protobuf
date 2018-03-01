@@ -36,10 +36,10 @@ func (m *All) Reset()                    { *m = All{} }
 func (m *All) String() string            { return proto.CompactTextString(m) }
 func (*All) ProtoMessage()               {}
 func (*All) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
-func (m *All) Unmarshal(b []byte) error {
+func (m *All) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_All.Unmarshal(m, b)
 }
-func (m *All) Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *All) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_All.Marshal(b, m, deterministic)
 }
 func (dst *All) XXX_Merge(src proto.Message) {
