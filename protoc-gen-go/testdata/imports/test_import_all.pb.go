@@ -6,13 +6,10 @@ package imports // import "github.com/golang/protobuf/protoc-gen-go/testdata/imp
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import test_a "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
-import test_a1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
-import test_a2 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_2"
-import test_a3 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_2"
-import test_b_part1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_b_1"
-import test_b_part2 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_b_1"
 import fmt1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/fmt"
+import test_a_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
+import test_a_2 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_2"
+import test_b_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_b_1"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -26,16 +23,16 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type All struct {
-	Am1                  *test_a.M1       `protobuf:"bytes,1,opt,name=am1" json:"am1,omitempty"`
-	Am2                  *test_a1.M2      `protobuf:"bytes,2,opt,name=am2" json:"am2,omitempty"`
-	Am3                  *test_a2.M3      `protobuf:"bytes,3,opt,name=am3" json:"am3,omitempty"`
-	Am4                  *test_a3.M4      `protobuf:"bytes,4,opt,name=am4" json:"am4,omitempty"`
-	Bm1                  *test_b_part1.M1 `protobuf:"bytes,5,opt,name=bm1" json:"bm1,omitempty"`
-	Bm2                  *test_b_part2.M2 `protobuf:"bytes,6,opt,name=bm2" json:"bm2,omitempty"`
-	Fmt                  *fmt1.M          `protobuf:"bytes,7,opt,name=fmt" json:"fmt,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
-	XXX_unrecognized     []byte           `json:"-"`
-	XXX_sizecache        int32            `json:"-"`
+	Am1                  *test_a_1.M1 `protobuf:"bytes,1,opt,name=am1" json:"am1,omitempty"`
+	Am2                  *test_a_1.M2 `protobuf:"bytes,2,opt,name=am2" json:"am2,omitempty"`
+	Am3                  *test_a_2.M3 `protobuf:"bytes,3,opt,name=am3" json:"am3,omitempty"`
+	Am4                  *test_a_2.M4 `protobuf:"bytes,4,opt,name=am4" json:"am4,omitempty"`
+	Bm1                  *test_b_1.M1 `protobuf:"bytes,5,opt,name=bm1" json:"bm1,omitempty"`
+	Bm2                  *test_b_1.M2 `protobuf:"bytes,6,opt,name=bm2" json:"bm2,omitempty"`
+	Fmt                  *fmt1.M      `protobuf:"bytes,7,opt,name=fmt" json:"fmt,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
 }
 
 func (m *All) Reset()         { *m = All{} }
@@ -62,42 +59,42 @@ func (m *All) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_All proto.InternalMessageInfo
 
-func (m *All) GetAm1() *test_a.M1 {
+func (m *All) GetAm1() *test_a_1.M1 {
 	if m != nil {
 		return m.Am1
 	}
 	return nil
 }
 
-func (m *All) GetAm2() *test_a1.M2 {
+func (m *All) GetAm2() *test_a_1.M2 {
 	if m != nil {
 		return m.Am2
 	}
 	return nil
 }
 
-func (m *All) GetAm3() *test_a2.M3 {
+func (m *All) GetAm3() *test_a_2.M3 {
 	if m != nil {
 		return m.Am3
 	}
 	return nil
 }
 
-func (m *All) GetAm4() *test_a3.M4 {
+func (m *All) GetAm4() *test_a_2.M4 {
 	if m != nil {
 		return m.Am4
 	}
 	return nil
 }
 
-func (m *All) GetBm1() *test_b_part1.M1 {
+func (m *All) GetBm1() *test_b_1.M1 {
 	if m != nil {
 		return m.Bm1
 	}
 	return nil
 }
 
-func (m *All) GetBm2() *test_b_part2.M2 {
+func (m *All) GetBm2() *test_b_1.M2 {
 	if m != nil {
 		return m.Bm2
 	}
