@@ -6,7 +6,7 @@ package imports // import "github.com/golang/protobuf/protoc-gen-go/testdata/imp
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import test_a "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
+import test_a_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -20,23 +20,23 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 // M1 from public import imports/test_a_1/m1.proto
-type M1 test_a.M1
+type M1 test_a_1.M1
 
-func (m *M1) Reset()                         { (*test_a.M1)(m).Reset() }
-func (m *M1) String() string                 { return (*test_a.M1)(m).String() }
+func (m *M1) Reset()                         { (*test_a_1.M1)(m).Reset() }
+func (m *M1) String() string                 { return (*test_a_1.M1)(m).String() }
 func (*M1) ProtoMessage()                    {}
-func (m *M1) XXX_Unmarshal(buf []byte) error { return (*test_a.M1)(m).XXX_Unmarshal(buf) }
+func (m *M1) XXX_Unmarshal(buf []byte) error { return (*test_a_1.M1)(m).XXX_Unmarshal(buf) }
 func (m *M1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return (*test_a.M1)(m).XXX_Marshal(b, deterministic)
+	return (*test_a_1.M1)(m).XXX_Marshal(b, deterministic)
 }
-func (m *M1) XXX_Size() int       { return (*test_a.M1)(m).XXX_Size() }
-func (m *M1) XXX_DiscardUnknown() { (*test_a.M1)(m).XXX_DiscardUnknown() }
+func (m *M1) XXX_Size() int       { return (*test_a_1.M1)(m).XXX_Size() }
+func (m *M1) XXX_DiscardUnknown() { (*test_a_1.M1)(m).XXX_DiscardUnknown() }
 
 type Public struct {
-	F                    *test_a.M1 `protobuf:"bytes,1,opt,name=f" json:"f,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
+	F                    *test_a_1.M1 `protobuf:"bytes,1,opt,name=f" json:"f,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
 }
 
 func (m *Public) Reset()         { *m = Public{} }
@@ -63,7 +63,7 @@ func (m *Public) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Public proto.InternalMessageInfo
 
-func (m *Public) GetF() *test_a.M1 {
+func (m *Public) GetF() *test_a_1.M1 {
 	if m != nil {
 		return m.F
 	}
