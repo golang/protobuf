@@ -3,12 +3,13 @@ package main
 import (
 	"bytes"
 	"flag"
+	"go/parser"
+	"go/token"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"strconv"
 	"strings"
 	"testing"
 )
@@ -49,9 +50,6 @@ func TestGolden(t *testing.T) {
 	}
 
 	// Compile each package, using this binary as protoc-gen-go.
-	//
-	// We set the RUN_AS_PROTOC_GEN_GO environment variable to indicate that
-	// the subprocess should act as a proto compiler rather than a test.
 	for _, sources := range packages {
 		args := []string{"-Itestdata", "--go_out=plugins=grpc:" + workdir}
 		args = append(args, sources...)
@@ -112,68 +110,77 @@ func TestGolden(t *testing.T) {
 
 var fdescRE = regexp.MustCompile(`(?ms)^var fileDescriptor.*}`)
 
+// Source files used by TestParameters.
+const (
+	aProto = `
+syntax = "proto3";
+package alpha;
+option go_package = "package/alpha";
+import "beta/b.proto";
+message M { beta.M field = 1; }`
+
+	bProto = `
+syntax = "proto3";
+package beta;
+// no go_package option
+message M {}`
+)
+
 func TestParameters(t *testing.T) {
 	for _, test := range []struct {
-		parameters  string
-		wantFiles   map[string]bool
-		wantImports map[string]bool
-		goPackage   string
-	}{
-		{
-			parameters: "",
-			wantFiles: map[string]bool{
-				"package/alpha/a.pb.go": true,
-				"beta/b.pb.go":          true,
-			},
-			wantImports: map[string]bool{
-				"github.com/golang/protobuf/proto": true,
-				"beta": true,
-			},
+		parameters   string
+		wantFiles    map[string]bool
+		wantImportsA map[string]bool
+	}{{
+		parameters: "",
+		wantFiles: map[string]bool{
+			"package/alpha/a.pb.go": true,
+			"beta/b.pb.go":          true,
 		},
-		{
-			parameters: "import_prefix=prefix",
-			wantFiles: map[string]bool{
-				"package/alpha/a.pb.go": true,
-				"beta/b.pb.go":          true,
-			},
-			wantImports: map[string]bool{
-				// This really doesn't seem like useful behavior.
-				"prefixgithub.com/golang/protobuf/proto": true,
-				"prefixbeta":                             true,
-			},
+		wantImportsA: map[string]bool{
+			"github.com/golang/protobuf/proto": true,
+			"beta": true,
 		},
-		{
-			// import_path only affects the 'package' line.
-			parameters: "import_path=import/path/of/pkg",
-			wantFiles: map[string]bool{
-				"package/alpha/a.pb.go": true,
-				"beta/b.pb.go":          true,
-			},
+	}, {
+		parameters: "import_prefix=prefix",
+		wantFiles: map[string]bool{
+			"package/alpha/a.pb.go": true,
+			"beta/b.pb.go":          true,
 		},
-		{
-			parameters: "Mbeta/b.proto=package/gamma",
-			wantFiles: map[string]bool{
-				"package/alpha/a.pb.go": true,
-				"beta/b.pb.go":          true,
-			},
-			wantImports: map[string]bool{
-				"github.com/golang/protobuf/proto": true,
-				// Rewritten by the M parameter.
-				"package/gamma": true,
-			},
+		wantImportsA: map[string]bool{
+			// This really doesn't seem like useful behavior.
+			"prefixgithub.com/golang/protobuf/proto": true,
+			"prefixbeta":                             true,
 		},
-		{
-			parameters: "import_prefix=prefix,Mbeta/b.proto=package/gamma",
-			wantFiles: map[string]bool{
-				"package/alpha/a.pb.go": true,
-				"beta/b.pb.go":          true,
-			},
-			wantImports: map[string]bool{
-				// import_prefix applies after M.
-				"prefixpackage/gamma": true,
-			},
+	}, {
+		// import_path only affects the 'package' line.
+		parameters: "import_path=import/path/of/pkg",
+		wantFiles: map[string]bool{
+			"package/alpha/a.pb.go": true,
+			"beta/b.pb.go":          true,
 		},
-	} {
+	}, {
+		parameters: "Mbeta/b.proto=package/gamma",
+		wantFiles: map[string]bool{
+			"package/alpha/a.pb.go": true,
+			"beta/b.pb.go":          true,
+		},
+		wantImportsA: map[string]bool{
+			"github.com/golang/protobuf/proto": true,
+			// Rewritten by the M parameter.
+			"package/gamma": true,
+		},
+	}, {
+		parameters: "import_prefix=prefix,Mbeta/b.proto=package/gamma",
+		wantFiles: map[string]bool{
+			"package/alpha/a.pb.go": true,
+			"beta/b.pb.go":          true,
+		},
+		wantImportsA: map[string]bool{
+			// import_prefix applies after M.
+			"prefixpackage/gamma": true,
+		},
+	}} {
 		name := test.parameters
 		if name == "" {
 			name = "defaults"
@@ -192,24 +199,11 @@ func TestParameters(t *testing.T) {
 			}
 		}
 
-		aProto := []byte(`
-syntax = "proto3";
-package alpha;
-option go_package = "package/alpha";
-import "beta/b.proto";
-message M { beta.M field = 1; }
-`)
-		if err := ioutil.WriteFile(filepath.Join(workdir, "alpha", "a.proto"), aProto, 0666); err != nil {
+		if err := ioutil.WriteFile(filepath.Join(workdir, "alpha", "a.proto"), []byte(aProto), 0666); err != nil {
 			t.Fatal(err)
 		}
 
-		bProto := []byte(`
-syntax = "proto3";
-package beta;
-// no go_package option
-message M {}
-`)
-		if err := ioutil.WriteFile(filepath.Join(workdir, "beta", "b.proto"), bProto, 0666); err != nil {
+		if err := ioutil.WriteFile(filepath.Join(workdir, "beta", "b.proto"), []byte(bProto), 0666); err != nil {
 			t.Fatal(err)
 		}
 
@@ -252,31 +246,49 @@ message M {}
 				t.Errorf("missing output file:    %v", want)
 			}
 		}
+		gotImports, err := parseImports(aGen)
+		if err != nil {
+			t.Fatal(err)
+		}
 		missingImport := false
-		for want := range test.wantImports {
-			// For each import, just check if there's a string which
-			// matches it. We could parse the file and do a more
-			// rigorous check, but that seems like overkill.
-			if strings.Contains(aGen, strconv.Quote(want)) {
-				continue
+	WantImport:
+		for want := range test.wantImportsA {
+			for _, imp := range gotImports {
+				if `"`+want+`"` == imp {
+					continue WantImport
+				}
 			}
 			t.Errorf("output file a.pb.go does not contain expected import %q", want)
 			missingImport = true
 		}
 		if missingImport {
 			t.Error("got imports:")
-			for _, line := range strings.Split(aGen, "\n") {
-				if strings.HasPrefix(line, "import") {
-					t.Errorf("  %v", line)
-				}
+			for _, imp := range gotImports {
+				t.Errorf("  %v", imp)
 			}
 		}
 	}
 }
 
+// parseImports returns a list of all packages imported by a file.
+func parseImports(source string) ([]string, error) {
+	fset := token.NewFileSet()
+	f, err := parser.ParseFile(fset, "<source>", source, parser.ImportsOnly)
+	if err != nil {
+		return nil, err
+	}
+	var imports []string
+	for _, imp := range f.Imports {
+		imports = append(imports, imp.Path.Value)
+	}
+	return imports, nil
+}
+
 func protoc(t *testing.T, args []string) {
 	cmd := exec.Command("protoc", "--plugin=protoc-gen-go="+os.Args[0])
 	cmd.Args = append(cmd.Args, args...)
+	// We set the RUN_AS_PROTOC_GEN_GO environment variable to indicate that
+	// the subprocess should act as a proto compiler rather than a test.
 	cmd.Env = append(os.Environ(), "RUN_AS_PROTOC_GEN_GO=1")
 	out, err := cmd.CombinedOutput()
 	if len(out) > 0 || err != nil {
