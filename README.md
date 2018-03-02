@@ -67,11 +67,17 @@ proto option:
 	option go_package = "github.com/golang/protobuf/ptypes/any";
 
 The protocol buffer compiler will attempt to derive a package name and
-import path if when a `go_package` option is not present, but it is
+import path if a `go_package` option is not present, but it is
 best to always specify one explicitly.
 
-The filename of generated files may be produced in one of two ways.
-Let us say we have `inputs/x.proto` with a `go_package` option of
+There is a one-to-one relationship between source `.proto` files and
+generated `.pb.go` files, but any number of `.pb.go` files may be
+contained in the same Go package.
+
+The output name of a generated file is produced by replacing the
+`.proto` suffix with `.pb.go` (e.g., `foo.proto` produces `foo.pb.go`).
+However, the output directory is selected in one of two ways.  Let
+us say we have `inputs/x.proto` with a `go_package` option of
 `github.com/golang/protobuf/p`. The corresponding output file may
 be:
 
@@ -85,7 +91,7 @@ be:
 - Relative to the input file:
 
 	protoc --go_out=paths=source_relative:. inputs/x.proto
-	# generate ./inputs/x.proto
+	# generate ./inputs/x.pb.go
 
 ## Generated code ##
 
@@ -202,20 +208,22 @@ parameter list separated from the output directory by a colon:
 
 	protoc --go_out=plugins=grpc,import_path=mypackage:. *.proto
 
-- `import_prefix=xxx` - a prefix that is added onto the beginning of
-  all imports. Supported for backwards compatibility, but rarely useful.
-- `import_path=foo/bar` - used as the package if no input files
-  declare `go_package`. If it contains slashes, everything up to the
-  rightmost slash is ignored. Rarely useful, since input files
-  should always delare `go_package`.
-- `paths=source_relative` - specifies that the paths of generated files
-  are based on the path of the corresponding source file. See the
-  "Packages and imports paths" section above.
+- `paths=(import | source_relative)` - specifies how the paths of
+  generated files are structured. See the "Packages and imports paths"
+  section above.
 - `plugins=plugin1+plugin2` - specifies the list of sub-plugins to
   load. The only plugin in this repo is `grpc`.
 - `Mfoo/bar.proto=quux/shme` - declares that foo/bar.proto is
   associated with Go package quux/shme.  This is subject to the
   import_prefix parameter.
+
+The following parameters are deprecated and should not be used:
+
+- `import_prefix=xxx` - a prefix that is added onto the beginning of
+  all imports.
+- `import_path=foo/bar` - used as the package if no input files
+  declare `go_package`. If it contains slashes, everything up to the
+  rightmost slash is ignored.
 
 ## gRPC Support ##
 

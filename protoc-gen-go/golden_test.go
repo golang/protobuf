@@ -51,7 +51,7 @@ func TestGolden(t *testing.T) {
 
 	// Compile each package, using this binary as protoc-gen-go.
 	for _, sources := range packages {
-		args := []string{"-Itestdata", "--go_out=plugins=grpc:" + workdir}
+		args := []string{"-Itestdata", "--go_out=plugins=grpc,paths=source_relative:" + workdir}
 		args = append(args, sources...)
 		protoc(t, args)
 	}
@@ -178,6 +178,19 @@ func TestParameters(t *testing.T) {
 		wantImportsA: map[string]bool{
 			// import_prefix applies after M.
 			"prefixpackage/gamma": true,
+		},
+	}, {
+		parameters: "paths=source_relative",
+		wantFiles: map[string]bool{
+			"alpha/a.pb.go": true,
+			"beta/b.pb.go":  true,
+		},
+	}, {
+		parameters: "paths=source_relative,import_prefix=prefix",
+		wantFiles: map[string]bool{
+			// import_prefix doesn't affect filenames.
+			"alpha/a.pb.go": true,
+			"beta/b.pb.go":  true,
 		},
 	}} {
 		name := test.parameters
