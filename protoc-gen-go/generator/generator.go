@@ -689,6 +689,7 @@ func RegisterUniquePackageName(pkg string, f *FileDescriptor) string {
 	for i, orig := 1, name; globalPackageNames[name]; i++ {
 		name = orig + GoPackageName(strconv.Itoa(i))
 	}
+	globalPackageNames[name] = true
 	return string(name)
 }
 
