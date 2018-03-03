@@ -130,8 +130,8 @@ func (g *grpc) GenerateImports(file *generator.FileDescriptor) {
 		return
 	}
 	g.P("import (")
-	g.P(contextPkg, " ", strconv.Quote(path.Join(string(g.gen.ImportPrefix), contextPkgPath)))
-	g.P(grpcPkg, " ", strconv.Quote(path.Join(string(g.gen.ImportPrefix), grpcPkgPath)))
+	g.P(contextPkg, " ", generator.GoImportPath(path.Join(string(g.gen.ImportPrefix), contextPkgPath)))
+	g.P(grpcPkg, " ", generator.GoImportPath(path.Join(string(g.gen.ImportPrefix), grpcPkgPath)))
 	g.P(")")
 	g.P()
 }
