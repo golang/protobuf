@@ -6,7 +6,7 @@ package imports // import "github.com/golang/protobuf/protoc-gen-go/testdata/imp
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import test_a "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
+import test_a_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -20,10 +20,10 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type A1M1 struct {
-	F                    *test_a.M1 `protobuf:"bytes,1,opt,name=f" json:"f,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
+	F                    *test_a_1.M1 `protobuf:"bytes,1,opt,name=f" json:"f,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
 }
 
 func (m *A1M1) Reset()         { *m = A1M1{} }
@@ -50,7 +50,7 @@ func (m *A1M1) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_A1M1 proto.InternalMessageInfo
 
-func (m *A1M1) GetF() *test_a.M1 {
+func (m *A1M1) GetF() *test_a_1.M1 {
 	if m != nil {
 		return m.F
 	}
