@@ -92,11 +92,11 @@ func RegisterPlugin(p Plugin) {
 	plugins = append(plugins, p)
 }
 
-// An ImportPath is the import path of a Go package. e.g., "github.com/golang/protobuf".
-type ImportPath string
+// A GoImportPath is the import path of a Go package. e.g., "google.golang.org/genproto/protobuf".
+type GoImportPath string
 
-// A PackageName is the name of a Go package. e.g., "protobuf".
-type PackageName string
+// A GoPackageName is the name of a Go package. e.g., "protobuf".
+type GoPackageName string
 
 // Each type we import as a protocol buffer (other than FileDescriptorProto) needs
 // a pointer to the FileDescriptorProto that represents it.  These types achieve that
@@ -109,8 +109,8 @@ type common struct {
 	file *FileDescriptor // File this object comes from.
 }
 
-// ImportPath is the import path of the Go package containing the type.
-func (c *common) ImportPath() ImportPath {
+// GoImportPath is the import path of the Go package containing the type.
+func (c *common) GoImportPath() GoImportPath {
 	return c.file.importPath
 }
 
@@ -268,8 +268,8 @@ type FileDescriptor struct {
 	// This is used for supporting public imports.
 	exported map[Object][]symbol
 
-	fingerprint string     // Fingerprint of this file's contents.
-	importPath  ImportPath // Import path of this file's package.
+	fingerprint string       // Fingerprint of this file's contents.
+	importPath  GoImportPath // Import path of this file's package.
 
 	proto3 bool // whether to generate proto3 code for this file
 }
@@ -286,7 +286,7 @@ func (d *FileDescriptor) VarName() string {
 // If there is no go_package, it returns ("", "", false).
 // If there's a simple name, it returns ("", pkg, true).
 // If the option implies an import path, it returns (impPath, pkg, true).
-func (d *FileDescriptor) goPackageOption() (impPath ImportPath, pkg PackageName, ok bool) {
+func (d *FileDescriptor) goPackageOption() (impPath GoImportPath, pkg GoPackageName, ok bool) {
 	opt := d.GetOptions().GetGoPackage()
 	if opt == "" {
 		return "", "", false
@@ -294,14 +294,14 @@ func (d *FileDescriptor) goPackageOption() (impPath ImportPath, pkg PackageName,
 	// The presence of a slash implies there's an import path.
 	slash := strings.LastIndex(opt, "/")
 	if slash < 0 {
-		return "", cleanPackageName(opt), true
+		return "", GoPackageName(opt), true
 	}
 	// A semicolon-delimited suffix overrides the package name.
 	sc := strings.Index(opt, ";")
 	if sc < 0 {
-		return ImportPath(opt), cleanPackageName(opt[slash+1:]), true
+		return GoImportPath(opt), cleanPackageName(opt[slash+1:]), true
 	}
-	return ImportPath(opt[:sc]), cleanPackageName(opt[sc+1:]), true
+	return GoImportPath(opt[:sc]), cleanPackageName(opt[sc+1:]), true
 }
 
 // goPackageName returns the Go package name to use in the
@@ -309,7 +309,7 @@ func (d *FileDescriptor) goPackageOption() (impPath ImportPath, pkg PackageName,
 // came from an option go_package statement.  If explicit is false,
 // the name was derived from the protocol buffer's package statement
 // or the input file name.
-func (d *FileDescriptor) goPackageName() (name PackageName, explicit bool) {
+func (d *FileDescriptor) goPackageName() (name GoPackageName, explicit bool) {
 	// Does the file have a "go_package" option?
 	if _, pkg, ok := d.goPackageOption(); ok {
 		return pkg, true
@@ -351,7 +351,7 @@ func (d *FileDescriptor) addExport(obj Object, sym symbol) {
 type symbol interface {
 	// GenerateAlias should generate an appropriate alias
 	// for the symbol from the named package.
-	GenerateAlias(g *Generator, pkg PackageName)
+	GenerateAlias(g *Generator, pkg GoPackageName)
 }
 
 type messageSymbol struct {
@@ -368,7 +368,7 @@ type getterSymbol struct {
 	genType  bool   // whether typ contains a generated type (message/group/enum)
 }
 
-func (ms *messageSymbol) GenerateAlias(g *Generator, pkg PackageName) {
+func (ms *messageSymbol) GenerateAlias(g *Generator, pkg GoPackageName) {
 	remoteSym := string(pkg) + "." + ms.sym
 
 	g.P("type ", ms.sym, " ", remoteSym)
@@ -516,7 +516,7 @@ type enumSymbol struct {
 	proto3 bool // Whether this came from a proto3 file.
 }
 
-func (es enumSymbol) GenerateAlias(g *Generator, pkg PackageName) {
+func (es enumSymbol) GenerateAlias(g *Generator, pkg GoPackageName) {
 	s := es.name
 	g.P("type ", s, " ", pkg, ".", s)
 	g.P("var ", s, "_name = ", pkg, ".", s, "_name")
@@ -534,7 +534,7 @@ type constOrVarSymbol struct {
 	cast string // if non-empty, a type cast is required (used for enums)
 }
 
-func (cs constOrVarSymbol) GenerateAlias(g *Generator, pkg PackageName) {
+func (cs constOrVarSymbol) GenerateAlias(g *Generator, pkg GoPackageName) {
 	v := string(pkg) + "." + cs.sym
 	if cs.cast != "" {
 		v = cs.cast + "(" + v + ")"
@@ -544,7 +544,7 @@ func (cs constOrVarSymbol) GenerateAlias(g *Generator, pkg PackageName) {
 
 // Object is an interface abstracting the abilities shared by enums, messages, extensions and imported objects.
 type Object interface {
-	ImportPath() ImportPath
+	GoImportPath() GoImportPath
 	TypeName() []string
 	File() *FileDescriptor
 }
@@ -556,23 +556,23 @@ type Generator struct {
 	Request  *plugin.CodeGeneratorRequest  // The input.
 	Response *plugin.CodeGeneratorResponse // The output.
 
-	Param             map[string]string     // Command-line parameters.
-	PackageImportPath string                // Go import path of the package we're generating code for
-	ImportPrefix      string                // String to prefix to imported package file names.
-	ImportMap         map[string]ImportPath // Mapping from .proto file name to import path
+	Param             map[string]string       // Command-line parameters.
+	PackageImportPath string                  // Go import path of the package we're generating code for
+	ImportPrefix      GoImportPath            // String to prefix to imported package file names.
+	ImportMap         map[string]GoImportPath // Mapping from .proto file name to import path
 
 	Pkg map[string]string // The names under which we import support packages
 
-	packageName      PackageName                // What we're calling ourselves.
-	allFiles         []*FileDescriptor          // All files in the tree
-	allFilesByName   map[string]*FileDescriptor // All files by filename.
-	genFiles         []*FileDescriptor          // Those files we will generate output for.
-	file             *FileDescriptor            // The file we are compiling now.
-	packageNames     map[ImportPath]PackageName // Imported package names in the current file.
-	usedPackages     map[ImportPath]bool        // Packages used in current file.
-	usedPackageNames map[PackageName]bool       // Package names used in the current file.
-	typeNameToObject map[string]Object          // Key is a fully-qualified name in input syntax.
-	init             []string                   // Lines to emit in the init function.
+	packageName      GoPackageName                  // What we're calling ourselves.
+	allFiles         []*FileDescriptor              // All files in the tree
+	allFilesByName   map[string]*FileDescriptor     // All files by filename.
+	genFiles         []*FileDescriptor              // Those files we will generate output for.
+	file             *FileDescriptor                // The file we are compiling now.
+	packageNames     map[GoImportPath]GoPackageName // Imported package names in the current file.
+	usedPackages     map[GoImportPath]bool          // Packages used in current file.
+	usedPackageNames map[GoPackageName]bool         // Package names used in the current file.
+	typeNameToObject map[string]Object              // Key is a fully-qualified name in input syntax.
+	init             []string                       // Lines to emit in the init function.
 	indent           string
 	writeOutput      bool
 	annotateCode     bool                                       // whether to store annotations
@@ -615,12 +615,12 @@ func (g *Generator) CommandLineParameters(parameter string) {
 		}
 	}
 
-	g.ImportMap = make(map[string]ImportPath)
+	g.ImportMap = make(map[string]GoImportPath)
 	pluginList := "none" // Default list of plugin names to enable (empty means all).
 	for k, v := range g.Param {
 		switch k {
 		case "import_prefix":
-			g.ImportPrefix = v
+			g.ImportPrefix = GoImportPath(v)
 		case "import_path":
 			g.PackageImportPath = v
 		case "plugins":
@@ -631,7 +631,7 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			}
 		default:
 			if len(k) > 0 && k[0] == 'M' {
-				g.ImportMap[k[1:]] = ImportPath(v)
+				g.ImportMap[k[1:]] = GoImportPath(v)
 			}
 		}
 	}
@@ -655,42 +655,41 @@ func (g *Generator) CommandLineParameters(parameter string) {
 // If its file is in a different package, it returns the package name we're using for this file, plus ".".
 // Otherwise it returns the empty string.
 func (g *Generator) DefaultPackageName(obj Object) string {
-	importPath := obj.ImportPath()
+	importPath := obj.GoImportPath()
 	if importPath == g.file.importPath {
 		return ""
 	}
-	return string(g.PackageName(importPath)) + "."
+	return string(g.GoPackageName(importPath)) + "."
 }
 
-// PackageName returns the name used for a package.
-func (g *Generator) PackageName(importPath ImportPath) PackageName {
+// GoPackageName returns the name used for a package.
+func (g *Generator) GoPackageName(importPath GoImportPath) GoPackageName {
 	if name, ok := g.packageNames[importPath]; ok {
 		return name
 	}
 	name := cleanPackageName(baseName(string(importPath)))
 	for i, orig := 1, name; g.usedPackageNames[name]; i++ {
-		name = orig + PackageName(strconv.Itoa(i))
+		name = orig + GoPackageName(strconv.Itoa(i))
 	}
 	g.packageNames[importPath] = name
 	g.usedPackageNames[name] = true
 	return name
 }
 
-var globalPackageNames = map[PackageName]int{
-	"fmt":   1,
-	"math":  1,
-	"proto": 1,
+var globalPackageNames = map[GoPackageName]bool{
+	"fmt":   true,
+	"math":  true,
+	"proto": true,
 }
 
 // Create and remember a guaranteed unique package name. Pkg is the candidate name.
 // The FileDescriptor parameter is unused.
 func RegisterUniquePackageName(pkg string, f *FileDescriptor) string {
 	name := cleanPackageName(pkg)
-	globalPackageNames[name]++
-	if n := globalPackageNames[name]; n > 1 {
-		return pkg + strconv.Itoa(n)
+	for i, orig := 1, name; globalPackageNames[name]; i++ {
+		name = orig + GoPackageName(strconv.Itoa(i))
 	}
-	return pkg
+	return string(name)
 }
 
 var isGoKeyword = map[string]bool{
@@ -721,7 +720,7 @@ var isGoKeyword = map[string]bool{
 	"var":         true,
 }
 
-func cleanPackageName(name string) PackageName {
+func cleanPackageName(name string) GoPackageName {
 	name = strings.Map(badToUnderscore, name)
 	// Identifier must not be keyword: insert _.
 	if isGoKeyword[name] {
@@ -731,12 +730,12 @@ func cleanPackageName(name string) PackageName {
 	if r, _ := utf8.DecodeRuneInString(name); unicode.IsDigit(r) {
 		name = "_" + name
 	}
-	return PackageName(name)
+	return GoPackageName(name)
 }
 
 // defaultGoPackage returns the package name to use,
 // derived from the import path of the package we're building code for.
-func (g *Generator) defaultGoPackage() PackageName {
+func (g *Generator) defaultGoPackage() GoPackageName {
 	p := g.PackageImportPath
 	if i := strings.LastIndex(p, "/"); i >= 0 {
 		p = p[i+1:]
@@ -814,7 +813,7 @@ func (g *Generator) WrapTypes() {
 		} else if p, _, _ := fd.goPackageOption(); p != "" {
 			fd.importPath = p
 		} else {
-			fd.importPath = ImportPath(path.Dir(f.GetName()))
+			fd.importPath = GoImportPath(path.Dir(f.GetName()))
 		}
 		// We must wrap the descriptors before we wrap the enums
 		fd.desc = wrapDescriptors(fd)
@@ -1120,10 +1119,10 @@ func (g *Generator) printAtom(v interface{}) {
 		fmt.Fprint(g, v)
 	case *float64:
 		fmt.Fprint(g, *v)
-	case PackageName:
+	case GoPackageName:
 		g.WriteString(string(v))
-	case ImportPath:
-		g.WriteString(string(v))
+	case GoImportPath:
+		g.WriteString(strconv.Quote(string(v)))
 	default:
 		g.Fail(fmt.Sprintf("unknown type in printer: %T", v))
 	}
@@ -1233,9 +1232,9 @@ func (g *Generator) runPlugins(file *FileDescriptor) {
 // supposed to generate.
 func (g *Generator) generate(file *FileDescriptor) {
 	g.file = file
-	g.usedPackages = make(map[ImportPath]bool)
-	g.packageNames = make(map[ImportPath]PackageName)
-	g.usedPackageNames = make(map[PackageName]bool)
+	g.usedPackages = make(map[GoImportPath]bool)
+	g.packageNames = make(map[GoImportPath]GoPackageName)
+	g.usedPackageNames = make(map[GoPackageName]bool)
 	for name := range globalPackageNames {
 		g.usedPackageNames[name] = true
 	}
@@ -1343,7 +1342,7 @@ func (g *Generator) generateHeader() {
 	if !haveImportPath {
 		g.P("package ", name)
 	} else {
-		g.P("package ", name, " // import ", strconv.Quote(g.ImportPrefix+string(importPath)))
+		g.P("package ", name, " // import ", g.ImportPrefix+importPath)
 	}
 	g.P()
 
@@ -1403,12 +1402,12 @@ func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the fmt and math packages.
-	g.P("import " + g.Pkg["proto"] + " " + strconv.Quote(g.ImportPrefix+"github.com/golang/protobuf/proto"))
+	g.P("import "+g.Pkg["proto"]+" ", g.ImportPrefix+"github.com/golang/protobuf/proto")
 	g.P("import " + g.Pkg["fmt"] + ` "fmt"`)
 	g.P("import " + g.Pkg["math"] + ` "math"`)
 	var (
-		imports       = make(map[ImportPath]bool)
-		strongImports = make(map[ImportPath]bool)
+		imports       = make(map[GoImportPath]bool)
+		strongImports = make(map[GoImportPath]bool)
 		importPaths   []string
 	)
 	for i, s := range g.file.Dependency {
@@ -1428,12 +1427,12 @@ func (g *Generator) generateImports() {
 	}
 	sort.Strings(importPaths)
 	for i := range importPaths {
-		importPath := ImportPath(importPaths[i])
-		packageName := g.PackageName(importPath)
-		fullPath := g.ImportPrefix + string(importPath)
+		importPath := GoImportPath(importPaths[i])
+		packageName := g.GoPackageName(importPath)
+		fullPath := g.ImportPrefix + importPath
 		// Skip weak imports.
 		if !strongImports[importPath] {
-			g.P("// skipping weak import ", packageName, " ", strconv.Quote(fullPath))
+			g.P("// skipping weak import ", packageName, " ", fullPath)
 			continue
 		}
 		// We need to import all the dependencies, even if we don't reference them,
@@ -1442,7 +1441,7 @@ func (g *Generator) generateImports() {
 		if _, ok := g.usedPackages[importPath]; !ok {
 			packageName = "_"
 		}
-		g.P("import ", packageName, " ", strconv.Quote(fullPath))
+		g.P("import ", packageName, " ", fullPath)
 	}
 	g.P()
 	// TODO: may need to worry about uniqueness across plugins
@@ -1477,7 +1476,7 @@ func (g *Generator) generateImported(id *ImportedDescriptor) {
 	g.usedPackages[df.importPath] = true
 
 	for _, sym := range df.exported[id.o] {
-		sym.GenerateAlias(g, g.PackageName(df.importPath))
+		sym.GenerateAlias(g, g.GoPackageName(df.importPath))
 	}
 
 	g.P()
@@ -1644,7 +1643,7 @@ func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptor
 	}
 	enum := ""
 	if *field.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
-		// We avoid using obj.PackageName(), because we want to use the
+		// We avoid using obj.GoPackageName(), because we want to use the
 		// original (proto-world) package name.
 		obj := g.ObjectNamed(field.GetTypeName())
 		if id, ok := obj.(*ImportedDescriptor); ok {
@@ -1788,7 +1787,7 @@ func (g *Generator) RecordTypeUse(t string) {
 	if _, ok := g.typeNameToObject[t]; ok {
 		// Call ObjectNamed to get the true object to record the use.
 		obj := g.ObjectNamed(t)
-		g.usedPackages[obj.ImportPath()] = true
+		g.usedPackages[obj.GoImportPath()] = true
 	}
 }
 
@@ -2266,7 +2265,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			getter = false
 		case descriptor.FieldDescriptorProto_TYPE_MESSAGE, descriptor.FieldDescriptorProto_TYPE_ENUM:
 			// Only export getter if its return type is in this package.
-			getter = g.ObjectNamed(field.GetTypeName()).ImportPath() == message.ImportPath()
+			getter = g.ObjectNamed(field.GetTypeName()).GoImportPath() == message.GoImportPath()
 			genType = true
 		default:
 			getter = true
