@@ -36,7 +36,7 @@
 */
 package generator
 
-import 
+import (
 	"bufio"
 	"bytes"
 	"compress/gzip"
