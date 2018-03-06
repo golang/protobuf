@@ -51,13 +51,12 @@ func TestGolden(t *testing.T) {
 
 	// Compile each package, using this binary as protoc-gen-go.
 	for _, sources := range packages {
-		args := []string{"-Itestdata", "--go_out=plugins=grpc:" + workdir}
+		args := []string{"-Itestdata", "--go_out=plugins=grpc,paths=source_relative:" + workdir}
 		args = append(args, sources...)
 		protoc(t, args)
 	}
 
 	// Compare each generated file to the golden version.
-	relRoot := filepath.Join(workdir, "github.com/golang/protobuf/protoc-gen-go/testdata")
 	filepath.Walk(workdir, func(genPath string, info os.FileInfo, _ error) error {
 		if info.IsDir() {
 			return nil
@@ -65,13 +64,13 @@ func TestGolden(t *testing.T) {
 
 		// For each generated file, figure out the path to the corresponding
 		// golden file in the testdata directory.
-		relPath, err := filepath.Rel(relRoot, genPath)
+		relPath, err := filepath.Rel(workdir, genPath)
 		if err != nil {
-			t.Errorf("filepath.Rel(%q, %q): %v", relRoot, genPath, err)
+			t.Errorf("filepath.Rel(%q, %q): %v", workdir, genPath, err)
 			return nil
 		}
 		if filepath.SplitList(relPath)[0] == ".." {
-			t.Errorf("generated file %q is not relative to %q", genPath, relRoot)
+			t.Errorf("generated file %q is not relative to %q", genPath, workdir)
 		}
 		goldenPath := filepath.Join("testdata", relPath)
 
@@ -179,6 +178,19 @@ func TestParameters(t *testing.T) {
 		wantImportsA: map[string]bool{
 			// import_prefix applies after M.
 			"prefixpackage/gamma": true,
+		},
+	}, {
+		parameters: "paths=source_relative",
+		wantFiles: map[string]bool{
+			"alpha/a.pb.go": true,
+			"beta/b.pb.go":  true,
+		},
+	}, {
+		parameters: "paths=source_relative,import_prefix=prefix",
+		wantFiles: map[string]bool{
+			// import_prefix doesn't affect filenames.
+			"alpha/a.pb.go": true,
+			"beta/b.pb.go":  true,
 		},
 	}} {
 		name := test.parameters
