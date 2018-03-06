@@ -210,7 +210,7 @@ parameter list separated from the output directory by a colon:
 
 - `paths=(import | source_relative)` - specifies how the paths of
   generated files are structured. See the "Packages and imports paths"
-  section above.
+  section above. The default is `import`.
 - `plugins=plugin1+plugin2` - specifies the list of sub-plugins to
   load. The only plugin in this repo is `grpc`.
 - `Mfoo/bar.proto=quux/shme` - declares that foo/bar.proto is
