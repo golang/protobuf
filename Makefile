@@ -32,12 +32,10 @@
 all:	install
 
 install:
-	go install ./proto ./jsonpb ./ptypes
-	go install ./protoc-gen-go
+	go install ./proto ./jsonpb ./ptypes ./protoc-gen-go
 
 test:
-	go test ./proto ./jsonpb ./ptypes
-	make -C protoc-gen-go test
+	go test ./...
 
 clean:
 	go clean ./...
@@ -46,6 +44,4 @@ nuke:
 	go clean -i ./...
 
 regenerate:
-	make -C proto/test_proto regenerate
-	make -C jsonpb/jsonpb_test_proto regenerate
-	make -C _conformance regenerate
+	./regenerate.sh
