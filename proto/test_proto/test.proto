@@ -33,6 +33,8 @@
 
 syntax = "proto2";
 
+option go_package = "github.com/golang/protobuf/proto/test_proto";
+
 package test_proto;
 
 enum FOO { FOO1 = 1; };
