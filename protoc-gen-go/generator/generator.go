@@ -95,6 +95,8 @@ func RegisterPlugin(p Plugin) {
 // A GoImportPath is the import path of a Go package. e.g., "google.golang.org/genproto/protobuf".
 type GoImportPath string
 
+func (p GoImportPath) String() string { return strconv.Quote(string(p)) }
+
 // A GoPackageName is the name of a Go package. e.g., "protobuf".
 type GoPackageName string
 
@@ -567,7 +569,7 @@ type Generator struct {
 
 	Pkg map[string]string // The names under which we import support packages
 
-	packageName      GoPackageName                  // What we're calling ourselves.
+	outputImportPath GoImportPath                   // Package we're generating code for.
 	allFiles         []*FileDescriptor              // All files in the tree
 	allFilesByName   map[string]*FileDescriptor     // All files by filename.
 	genFiles         []*FileDescriptor              // Those files we will generate output for.
@@ -677,7 +679,7 @@ func (g *Generator) CommandLineParameters(parameter string) {
 // Otherwise it returns the empty string.
 func (g *Generator) DefaultPackageName(obj Object) string {
 	importPath := obj.GoImportPath()
-	if importPath == g.file.importPath {
+	if importPath == g.outputImportPath {
 		return ""
 	}
 	return string(g.GoPackageName(importPath)) + "."
@@ -769,45 +771,19 @@ func (g *Generator) defaultGoPackage() GoPackageName {
 // The package name must agree across all files being generated.
 // It also defines unique package names for all imported files.
 func (g *Generator) SetPackageNames() {
-	// Register the name for this package.  It will be the first name
-	// registered so is guaranteed to be unmodified.
-	pkg, explicit := g.genFiles[0].goPackageName()
+	g.outputImportPath = g.genFiles[0].importPath
 
-	// Check all files for an explicit go_package option.
-	for _, f := range g.genFiles {
-		thisPkg, thisExplicit := f.goPackageName()
-		if thisExplicit {
-			if !explicit {
-				// Let this file's go_package option serve for all input files.
-				pkg, explicit = thisPkg, true
-			} else if thisPkg != pkg {
-				g.Fail("inconsistent package names:", string(thisPkg), string(pkg))
-			}
+	// Check that all files have a consistent package name and import path.
+	pkg, _ := g.genFiles[0].goPackageName()
+	for _, f := range g.genFiles[1:] {
+		if a, b := g.genFiles[0].importPath, f.importPath; a != b {
+			g.Fail(fmt.Sprint("inconsistent package import paths: ", a, b))
+		}
+		thisPkg, _ := f.goPackageName()
+		if pkg != thisPkg {
+			g.Fail(fmt.Sprint("inconsistent package names: ", thisPkg, pkg))
 		}
 	}
-
-	// If we don't have an explicit go_package option but we have an
-	// import path, use that.
-	if !explicit {
-		p := g.defaultGoPackage()
-		if p != "" {
-			pkg, explicit = p, true
-		}
-	}
-
-	// If there was no go_package and no import path to use,
-	// double-check that all the inputs have the same implicit
-	// Go package name.
-	if !explicit {
-		for _, f := range g.genFiles {
-			thisPkg, _ := f.goPackageName()
-			if thisPkg != pkg {
-				g.Fail("inconsistent package names:", string(thisPkg), string(pkg))
-			}
-		}
-	}
-
-	g.packageName = pkg
 
 	// Names of support packages. These never vary (if there are conflicts,
 	// we rename the conflicting package), so this could be removed someday.

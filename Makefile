@@ -35,7 +35,7 @@ install:
 	go install ./proto ./jsonpb ./ptypes ./protoc-gen-go
 
 test:
-	go test ./...
+	go test ./... ./protoc-gen-go/testdata
 
 clean:
 	go clean ./...

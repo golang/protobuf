@@ -35,8 +35,8 @@ package imp;
 
 option go_package = "github.com/golang/protobuf/protoc-gen-go/testdata/imp";
 
-import "imp/imp2.proto";
-import "imp/imp3.proto";
+import public "imp/imp2/imp2.proto";
+import "imp/imp3/imp3.proto";
 
 message ImportedMessage {
   required int64 field = 1;

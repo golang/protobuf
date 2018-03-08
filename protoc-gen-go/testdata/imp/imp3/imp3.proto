@@ -33,7 +33,7 @@ syntax = "proto2";
 
 package imp;
 
-option go_package = "github.com/golang/protobuf/protoc-gen-go/testdata/imp";
+option go_package = "github.com/golang/protobuf/protoc-gen-go/testdata/imp/imp3";
 
 message ForeignImportedMessage {
   optional string tuber = 1;

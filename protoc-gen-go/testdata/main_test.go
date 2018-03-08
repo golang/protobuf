@@ -36,6 +36,7 @@ package testdata
 import (
 	"testing"
 
+	imppb "github.com/golang/protobuf/protoc-gen-go/testdata/imp"
 	importspb "github.com/golang/protobuf/protoc-gen-go/testdata/imports"
 	multipb "github.com/golang/protobuf/protoc-gen-go/testdata/multi"
 	mytestpb "github.com/golang/protobuf/protoc-gen-go/testdata/my_test"
@@ -45,4 +46,5 @@ func TestLink(t *testing.T) {
 	_ = &multipb.Multi1{}
 	_ = &mytestpb.Request{}
 	_ = &importspb.All{}
+	_ = &imppb.ImportedMessage{}
 }
