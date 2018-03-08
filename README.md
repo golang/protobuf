@@ -7,7 +7,7 @@ Google's data interchange format.
 Copyright 2010 The Go Authors.
 https://github.com/golang/protobuf
 
-This package and the code it generates requires at least Go 1.6.
+This package and the code it generates requires at least Go 1.9.
 
 This software implements Go bindings for protocol buffers.  For
 information about protocol buffers themselves, see
