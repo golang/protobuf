@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -249,11 +250,17 @@ func TestParameters(t *testing.T) {
 			return nil
 		})
 		for got := range gotFiles {
+			if runtime.GOOS == "windows" {
+				got = filepath.ToSlash(got)
+			}
 			if !test.wantFiles[got] {
 				t.Errorf("unexpected output file: %v", got)
 			}
 		}
 		for want := range test.wantFiles {
+			if runtime.GOOS == "windows" {
+				want = filepath.FromSlash(want)
+			}
 			if !gotFiles[want] {
 				t.Errorf("missing output file:    %v", want)
 			}
