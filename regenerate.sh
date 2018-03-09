@@ -11,10 +11,10 @@ GOBIN=$tmpdir/bin go install ./protoc-gen-go
 
 # Generate various test protos.
 PROTO_DIRS=(
-  proto
+  conformance/internal/conformance_proto
   jsonpb/jsonpb_test_proto
+  proto
   protoc-gen-go/testdata
-  _conformance
 )
 for dir in ${PROTO_DIRS[@]}; do
   for p in `find $dir -name "*.proto"`; do

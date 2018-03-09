@@ -39,7 +39,7 @@ import (
 	"io"
 	"os"
 
-	pb "github.com/golang/protobuf/_conformance/conformance_proto"
+	pb "github.com/golang/protobuf/conformance/internal/conformance_proto"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 )
@@ -95,16 +95,10 @@ var jsonMarshaler = jsonpb.Marshaler{
 
 func handle(req *pb.ConformanceRequest) *pb.ConformanceResponse {
 	var err error
-	var msg pb.TestAllTypesProto3
-	var msg1 pb.TestAllTypesProto2
-	var isProto3 bool = bool(req.MessageType == "protobuf_test_messages.proto3.TestAllTypesProto3")
+	var msg pb.TestAllTypes
 	switch p := req.Payload.(type) {
 	case *pb.ConformanceRequest_ProtobufPayload:
-		if isProto3 {
-			err = proto.Unmarshal(p.ProtobufPayload, &msg)
-		} else {
-			err = proto.Unmarshal(p.ProtobufPayload, &msg1)
-		}
+		err = proto.Unmarshal(p.ProtobufPayload, &msg)
 	case *pb.ConformanceRequest_JsonPayload:
 		err = jsonpb.UnmarshalString(p.JsonPayload, &msg)
 	default:
@@ -124,11 +118,7 @@ func handle(req *pb.ConformanceRequest) *pb.ConformanceResponse {
 	switch req.RequestedOutputFormat {
 	case pb.WireFormat_PROTOBUF:
 		var p []byte
-		if isProto3 {
-			p, err = proto.Marshal(&msg)
-		} else {
-			p, err = proto.Marshal(&msg1)
-		}
+		p, err := proto.Marshal(&msg)
 		if err != nil {
 			return &pb.ConformanceResponse{
 				Result: &pb.ConformanceResponse_SerializeError{
