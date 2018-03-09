@@ -222,6 +222,18 @@ func (p *Buffer) Find(id uint, sorted bool) (full []byte, val []byte, wt WireTyp
 	return nil, nil, 0, ErrNotFound
 }
 
+// FindBytes is similar to Find but only matches and returns ids with wiretype "bytes".
+// If the id is present but hasn't got the wiretype "bytes" then ErrNotFound is returned.
+// It exists because calling Find() and checking for WireBytes is a common pattern in calling code.
+func (p *Buffer) FindBytes(id uint, sorted bool) (full []byte, val []byte, err error) {
+	var wt WireType
+	full, val, wt, err = p.Find(id, sorted)
+	if err == nil && wt != WireBytes {
+		return nil, nil, ErrNotFound
+	}
+	return full, val, err
+}
+
 // error returned by (*Buffer).Find when the id is not present in the buffer
 var ErrNotFound = errors.New("ID not found in protobuf buffer")
 
