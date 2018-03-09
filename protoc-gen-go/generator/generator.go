@@ -291,17 +291,17 @@ func (d *FileDescriptor) goPackageOption() (impPath GoImportPath, pkg GoPackageN
 	if opt == "" {
 		return "", "", false
 	}
+	// A semicolon-delimited suffix delimits the import path and package name.
+	sc := strings.Index(opt, ";")
+	if sc >= 0 {
+		return GoImportPath(opt[:sc]), cleanPackageName(opt[sc+1:]), true
+	}
 	// The presence of a slash implies there's an import path.
 	slash := strings.LastIndex(opt, "/")
-	if slash < 0 {
-		return "", GoPackageName(opt), true
-	}
-	// A semicolon-delimited suffix overrides the package name.
-	sc := strings.Index(opt, ";")
-	if sc < 0 {
+	if slash >= 0 {
 		return GoImportPath(opt), cleanPackageName(opt[slash+1:]), true
 	}
-	return GoImportPath(opt[:sc]), cleanPackageName(opt[sc+1:]), true
+	return "", cleanPackageName(opt), true
 }
 
 // goPackageName returns the Go package name to use in the
@@ -1360,8 +1360,8 @@ func (g *Generator) generateHeader() {
 	g.P()
 
 	name, _ := g.file.goPackageName()
-	importPath, _, haveImportPath := g.file.goPackageOption()
-	if !haveImportPath {
+	importPath, _, _ := g.file.goPackageOption()
+	if importPath == "" {
 		g.P("package ", name)
 	} else {
 		g.P("package ", name, " // import ", g.ImportPrefix+importPath)
