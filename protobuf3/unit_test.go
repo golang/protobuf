@@ -1144,3 +1144,18 @@ func TestNext(t *testing.T) {
 		t.Error("should have returned zero-values")
 	}
 }
+
+type InappropriateWiretypeMsg struct {
+	f float64 `protobuf:"bytes,1"` // should cause an error; you should use fixed64 for float64
+	i int32   `protobuf:"bytes,2"` // should cause an error; you should use varint or zigzag32 for int32, depending if the values can be negative
+}
+
+func TestInappropriateWiretypes(t *testing.T) {
+	var m InappropriateWiretypeMsg
+
+	_, err := protobuf3.Marshal(&m)
+	t.Log(err)
+	if err == nil {
+		t.Error("InappropriateWiretypeMsg should have caused an error")
+	}
+}

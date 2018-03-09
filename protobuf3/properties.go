@@ -505,7 +505,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 	} else {
 		switch t1.Kind() {
 		default:
-			fmt.Fprintf(os.Stderr, "protobuf3: no encoder/decoder for %s\n", t1.Name())
+			return fmt.Errorf("protobuf3: no encoder/decoder for type %s", t1.Name())
 
 		// proto3 scalar types
 
@@ -513,38 +513,65 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			p.enc = (*Buffer).enc_bool
 			p.dec = (*Buffer).dec_bool
 			p.asProtobuf = "bool"
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Int:
 			p.enc = (*Buffer).enc_int
 			p.dec = (*Buffer).dec_int
 			p.asProtobuf = int32_encoder_txt
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Uint:
 			p.enc = (*Buffer).enc_uint
 			p.dec = (*Buffer).dec_int // signness doesn't matter when decoding. either the top bit is set or it isn't
 			p.asProtobuf = uint32_encoder_txt
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Int8:
 			p.enc = (*Buffer).enc_int8
 			p.dec = (*Buffer).dec_int8
 			p.asProtobuf = int32_encoder_txt
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Uint8:
 			p.enc = (*Buffer).enc_uint8
 			p.dec = (*Buffer).dec_int8
 			p.asProtobuf = uint32_encoder_txt
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Int16:
 			p.enc = (*Buffer).enc_int16
 			p.dec = (*Buffer).dec_int16
 			p.asProtobuf = int32_encoder_txt
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Uint16:
 			p.enc = (*Buffer).enc_uint16
 			p.dec = (*Buffer).dec_int16
 			p.asProtobuf = uint32_encoder_txt
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Int32:
 			p.enc = (*Buffer).enc_int32
 			p.dec = (*Buffer).dec_int32
 			p.asProtobuf = int32_encoder_txt
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Uint32:
 			p.enc = (*Buffer).enc_uint32
 			p.dec = (*Buffer).dec_int32
 			p.asProtobuf = uint32_encoder_txt
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Int64:
 			// this might be a time.Duration, or it might be an ordinary int64
 			// if the caller wants a time.Duration to be encoded as a protobuf Duration then the
@@ -557,19 +584,31 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				p.enc = (*Buffer).enc_int64
 				p.dec = (*Buffer).dec_int64
 				p.asProtobuf = int64_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			}
 		case reflect.Uint64:
 			p.enc = (*Buffer).enc_int64
 			p.dec = (*Buffer).dec_int64
 			p.asProtobuf = uint64_encoder_txt
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Float32:
 			p.enc = (*Buffer).enc_uint32 // can just treat them as bits
 			p.dec = (*Buffer).dec_int32
 			p.asProtobuf = "float"
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.Float64:
 			p.enc = (*Buffer).enc_int64 // can just treat them as bits
 			p.dec = (*Buffer).dec_int64
 			p.asProtobuf = "double"
+			if p.valEnc == nil {
+				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+			}
 		case reflect.String:
 			p.enc = (*Buffer).enc_string
 			p.dec = (*Buffer).dec_string
@@ -605,20 +644,29 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 
 			switch t2.Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no encoder function for %s -> %s\n", t1.Name(), t2.Name())
+				fmt.Fprintf(os.Stderr, "protobuf3: no encoder function for %s -> %s\n", t1, t2.Name())
 				break
 			case reflect.Bool:
 				p.enc = (*Buffer).enc_ptr_bool
 				p.dec = (*Buffer).dec_ptr_bool
 				p.asProtobuf = "bool"
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Int32:
 				p.enc = (*Buffer).enc_ptr_int32
 				p.dec = (*Buffer).dec_ptr_int32
 				p.asProtobuf = int32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Uint32:
 				p.enc = (*Buffer).enc_ptr_uint32
 				p.dec = (*Buffer).dec_ptr_int32
 				p.asProtobuf = uint32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Int64:
 				if p.WireType == WireBytes && t2 == time_Duration_type {
 					p.enc = (*Buffer).enc_ptr_time_Duration
@@ -628,19 +676,31 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 					p.enc = (*Buffer).enc_ptr_int64
 					p.dec = (*Buffer).dec_ptr_int64
 					p.asProtobuf = int64_encoder_txt
+					if p.valEnc == nil {
+						return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+					}
 				}
 			case reflect.Uint64:
 				p.enc = (*Buffer).enc_ptr_int64
 				p.dec = (*Buffer).dec_ptr_int64
 				p.asProtobuf = uint64_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Float32:
 				p.enc = (*Buffer).enc_ptr_uint32 // can just treat them as bits
 				p.dec = (*Buffer).dec_ptr_int32
 				p.asProtobuf = "float"
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Float64:
 				p.enc = (*Buffer).enc_ptr_int64 // can just treat them as bits
 				p.dec = (*Buffer).dec_ptr_int64
 				p.asProtobuf = "double"
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.String:
 				p.enc = (*Buffer).enc_ptr_string
 				p.dec = (*Buffer).dec_ptr_string
@@ -684,21 +744,33 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				p.dec = (*Buffer).dec_slice_packed_bool
 				wire = WireBytes // packed=true is implied in protobuf v3
 				p.asProtobuf = "repeated bool"
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Int:
 				p.enc = (*Buffer).enc_slice_packed_int
 				p.dec = (*Buffer).dec_slice_packed_int
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Uint:
 				p.enc = (*Buffer).enc_slice_packed_uint
 				p.dec = (*Buffer).dec_slice_packed_int
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + uint32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Int8:
 				p.enc = (*Buffer).enc_slice_packed_int8
 				p.dec = (*Buffer).dec_slice_packed_int8
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_slice_byte
 				p.dec = (*Buffer).dec_slice_byte
@@ -709,21 +781,33 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				p.dec = (*Buffer).dec_slice_packed_int16
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Uint16:
 				p.enc = (*Buffer).enc_slice_packed_uint16
 				p.dec = (*Buffer).dec_slice_packed_int16
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + uint32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Int32:
 				p.enc = (*Buffer).enc_slice_packed_int32
 				p.dec = (*Buffer).dec_slice_packed_int32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Uint32:
 				p.enc = (*Buffer).enc_slice_packed_uint32
 				p.dec = (*Buffer).dec_slice_packed_int32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + uint32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Int64:
 				if p.WireType == WireBytes && t2 == time_Duration_type {
 					p.enc = (*Buffer).enc_slice_time_Duration
@@ -734,24 +818,36 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 					p.dec = (*Buffer).dec_slice_packed_int64
 					wire = WireBytes // packed=true...
 					p.asProtobuf = "repeated " + int64_encoder_txt
+					if p.valEnc == nil {
+						return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+					}
 				}
 			case reflect.Uint64:
 				p.enc = (*Buffer).enc_slice_packed_int64
 				p.dec = (*Buffer).dec_slice_packed_int64
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int64_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Float32:
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_slice_packed_uint32
 				p.dec = (*Buffer).dec_slice_packed_int32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated float"
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Float64:
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_slice_packed_int64
 				p.dec = (*Buffer).dec_slice_packed_int64
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated double"
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.String:
 				p.enc = (*Buffer).enc_slice_string
 				p.dec = (*Buffer).dec_slice_string
@@ -826,16 +922,25 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				p.dec = (*Buffer).dec_array_packed_bool
 				wire = WireBytes // packed=true is implied in protobuf v3
 				p.asProtobuf = "repeated bool"
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Int32:
 				p.enc = (*Buffer).enc_array_packed_int32
 				p.dec = (*Buffer).dec_array_packed_int32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + int32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Uint32:
 				p.enc = (*Buffer).enc_array_packed_uint32
 				p.dec = (*Buffer).dec_array_packed_int32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + uint32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Int64:
 				if p.WireType == WireBytes && t2 == time_Duration_type {
 					p.enc = (*Buffer).enc_array_time_Duration
@@ -846,12 +951,18 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 					p.dec = (*Buffer).dec_array_packed_int64
 					wire = WireBytes // packed=true...
 					p.asProtobuf = "repeated " + int64_encoder_txt
+					if p.valEnc == nil {
+						return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+					}
 				}
 			case reflect.Uint64:
 				p.enc = (*Buffer).enc_array_packed_int64
 				p.dec = (*Buffer).dec_array_packed_int64
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated " + uint64_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_array_byte
 				p.dec = (*Buffer).dec_array_byte
@@ -862,12 +973,18 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				p.dec = (*Buffer).dec_array_packed_int32
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated float"
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Float64:
 				// can just treat them as bits
 				p.enc = (*Buffer).enc_array_packed_int64
 				p.dec = (*Buffer).dec_array_packed_int64
 				wire = WireBytes // packed=true...
 				p.asProtobuf = "repeated double"
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.String:
 				p.enc = (*Buffer).enc_array_string
 				p.dec = (*Buffer).dec_array_string
