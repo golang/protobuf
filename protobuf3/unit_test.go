@@ -1159,3 +1159,18 @@ func TestInappropriateWiretypes(t *testing.T) {
 		t.Error("InappropriateWiretypeMsg should have caused an error")
 	}
 }
+
+type DuplicateIdMsg struct {
+	x int `protobuf:"varint,1"`
+	y int `protobuf:"zigzag32,1"` // should cause an error b/c it has the same ID as field 'x', even though the wiretype is different
+}
+
+func TestDuplicateId(t *testing.T) {
+	var m DuplicateIdMsg
+
+	_, err := protobuf3.Marshal(&m)
+	t.Log(err)
+	if err == nil {
+		t.Error("DuplicateIdMsg should have caused an error")
+	}
+}

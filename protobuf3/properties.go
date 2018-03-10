@@ -1254,7 +1254,7 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 			if sname == "" {
 				sname = "<anonymous struct>"
 			}
-			err := fmt.Errorf("protobuf3: Error duplicate tag id %d on %s.%s", p.Tag, sname, name)
+			err := fmt.Errorf("protobuf3: Error duplicate tag id %d assigned to %s.%s", p.Tag, sname, name)
 			fmt.Fprintln(os.Stderr, err) // print the error too
 			delete(propertiesMap, t)
 			return nil, err
