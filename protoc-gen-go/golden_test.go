@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"go/parser"
 	"go/token"
 	"io/ioutil"
@@ -285,6 +286,64 @@ func TestParameters(t *testing.T) {
 			for _, imp := range gotImports {
 				t.Errorf("  %v", imp)
 			}
+		}
+	}
+}
+
+func TestPackageComment(t *testing.T) {
+	workdir, err := ioutil.TempDir("", "proto-test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(workdir)
+
+	var packageRE = regexp.MustCompile(`(?m)^package .*`)
+
+	for i, test := range []struct {
+		goPackageOption string
+		wantPackage     string
+	}{{
+		goPackageOption: ``,
+		wantPackage:     `package proto_package`,
+	}, {
+		goPackageOption: `option go_package = "go_package";`,
+		wantPackage:     `package go_package`,
+	}, {
+		goPackageOption: `option go_package = "import/path/of/go_package";`,
+		wantPackage:     `package go_package // import "import/path/of/go_package"`,
+	}, {
+		goPackageOption: `option go_package = "import/path/of/something;go_package";`,
+		wantPackage:     `package go_package // import "import/path/of/something"`,
+	}, {
+		goPackageOption: `option go_package = "import_path;go_package";`,
+		wantPackage:     `package go_package // import "import_path"`,
+	}} {
+		srcName := filepath.Join(workdir, fmt.Sprintf("%d.proto", i))
+		tgtName := filepath.Join(workdir, fmt.Sprintf("%d.pb.go", i))
+
+		buf := &bytes.Buffer{}
+		fmt.Fprintln(buf, `syntax = "proto3";`)
+		fmt.Fprintln(buf, `package proto_package;`)
+		fmt.Fprintln(buf, test.goPackageOption)
+		if err := ioutil.WriteFile(srcName, buf.Bytes(), 0666); err != nil {
+			t.Fatal(err)
+		}
+
+		protoc(t, []string{"-I" + workdir, "--go_out=paths=source_relative:" + workdir, srcName})
+
+		out, err := ioutil.ReadFile(tgtName)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		pkg := packageRE.Find(out)
+		if pkg == nil {
+			t.Errorf("generated .pb.go contains no package line\n\nsource:\n%v\n\noutput:\n%v", buf.String(), string(out))
+			continue
+		}
+
+		if got, want := string(pkg), test.wantPackage; got != want {
+			t.Errorf("unexpected package statement with go_package = %q\n got: %v\nwant: %v", test.goPackageOption, got, want)
 		}
 	}
 }
