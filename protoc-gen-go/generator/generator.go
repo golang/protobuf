@@ -2624,58 +2624,49 @@ func (g *Generator) generateMessage(message *Descriptor) {
 				}
 				g.P("case *", oneofTypeName[field], ":")
 				val := "x." + fieldNames[field]
-				var wire, varint, fixed string
+				var varint, fixed string
 				switch *field.Type {
 				case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
-					wire = "WireFixed64"
 					fixed = "8"
 				case descriptor.FieldDescriptorProto_TYPE_FLOAT:
-					wire = "WireFixed32"
 					fixed = "4"
 				case descriptor.FieldDescriptorProto_TYPE_INT64,
 					descriptor.FieldDescriptorProto_TYPE_UINT64,
 					descriptor.FieldDescriptorProto_TYPE_INT32,
 					descriptor.FieldDescriptorProto_TYPE_UINT32,
 					descriptor.FieldDescriptorProto_TYPE_ENUM:
-					wire = "WireVarint"
 					varint = val
 				case descriptor.FieldDescriptorProto_TYPE_FIXED64,
 					descriptor.FieldDescriptorProto_TYPE_SFIXED64:
-					wire = "WireFixed64"
 					fixed = "8"
 				case descriptor.FieldDescriptorProto_TYPE_FIXED32,
 					descriptor.FieldDescriptorProto_TYPE_SFIXED32:
-					wire = "WireFixed32"
 					fixed = "4"
 				case descriptor.FieldDescriptorProto_TYPE_BOOL:
-					wire = "WireVarint"
 					fixed = "1"
 				case descriptor.FieldDescriptorProto_TYPE_STRING:
-					wire = "WireBytes"
 					fixed = "len(" + val + ")"
 					varint = fixed
 				case descriptor.FieldDescriptorProto_TYPE_GROUP:
-					wire = "WireStartGroup"
 					fixed = g.Pkg["proto"] + ".Size(" + val + ")"
 				case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
-					wire = "WireBytes"
 					g.P("s := ", g.Pkg["proto"], ".Size(", val, ")")
 					fixed = "s"
 					varint = fixed
 				case descriptor.FieldDescriptorProto_TYPE_BYTES:
-					wire = "WireBytes"
 					fixed = "len(" + val + ")"
 					varint = fixed
 				case descriptor.FieldDescriptorProto_TYPE_SINT32:
-					wire = "WireVarint"
 					varint = "(uint32(" + val + ") << 1) ^ uint32((int32(" + val + ") >> 31))"
 				case descriptor.FieldDescriptorProto_TYPE_SINT64:
-					wire = "WireVarint"
 					varint = "uint64(" + val + " << 1) ^ uint64((int64(" + val + ") >> 63))"
 				default:
 					g.Fail("unhandled oneof field type ", field.Type.String())
 				}
-				g.P("n += ", g.Pkg["proto"], ".SizeVarint(", field.Number, "<<3|", g.Pkg["proto"], ".", wire, ")")
+				// Tag and wire varint is known statically,
+				// so don't generate code for that part of the size computation.
+				tagAndWireSize := proto.SizeVarint(uint64(*field.Number << 3)) // wire doesn't affect varint size
+				g.P("n += ", tagAndWireSize, " // tag and wire")
 				if varint != "" {
 					g.P("n += ", g.Pkg["proto"], ".SizeVarint(uint64(", varint, "))")
 				}
@@ -2683,7 +2674,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 					g.P("n += ", fixed)
 				}
 				if *field.Type == descriptor.FieldDescriptorProto_TYPE_GROUP {
-					g.P("n += ", g.Pkg["proto"], ".SizeVarint(", field.Number, "<<3|", g.Pkg["proto"], ".WireEndGroup)")
+					g.P("n += ", tagAndWireSize, " // tag and wire")
 				}
 			}
 			g.P("case nil:")

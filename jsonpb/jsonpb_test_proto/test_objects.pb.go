@@ -697,23 +697,23 @@ func _MsgWithOneof_OneofSizer(msg proto.Message) (n int) {
 	// union
 	switch x := m.Union.(type) {
 	case *MsgWithOneof_Title:
-		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.Title)))
 		n += len(x.Title)
 	case *MsgWithOneof_Salary:
-		n += proto.SizeVarint(2<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.Salary))
 	case *MsgWithOneof_Country:
-		n += proto.SizeVarint(3<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.Country)))
 		n += len(x.Country)
 	case *MsgWithOneof_HomeAddress:
-		n += proto.SizeVarint(4<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.HomeAddress)))
 		n += len(x.HomeAddress)
 	case *MsgWithOneof_MsgWithRequired:
 		s := proto.Size(x.MsgWithRequired)
-		n += proto.SizeVarint(5<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
 	case nil:
