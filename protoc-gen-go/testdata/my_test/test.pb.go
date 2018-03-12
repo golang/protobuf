@@ -511,7 +511,7 @@ type Communique_Delta_ struct {
 	Delta int32 `protobuf:"zigzag32,12,opt,name=delta,oneof"`
 }
 type Communique_Msg struct {
-	Msg *Reply `protobuf:"bytes,13,opt,name=msg,oneof"`
+	Msg *Reply `protobuf:"bytes,16,opt,name=msg,oneof"`
 }
 type Communique_Somegroup struct {
 	Somegroup *Communique_SomeGroup `protobuf:"group,14,opt,name=SomeGroup,json=somegroup,oneof"`
@@ -661,7 +661,7 @@ func _Communique_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
 		b.EncodeVarint(12<<3 | proto.WireVarint)
 		b.EncodeZigzag32(uint64(x.Delta))
 	case *Communique_Msg:
-		b.EncodeVarint(13<<3 | proto.WireBytes)
+		b.EncodeVarint(16<<3 | proto.WireBytes)
 		if err := b.EncodeMessage(x.Msg); err != nil {
 			return err
 		}
@@ -737,7 +737,7 @@ func _Communique_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buf
 		x, err := b.DecodeZigzag32()
 		m.Union = &Communique_Delta_{int32(x)}
 		return true, err
-	case 13: // union.msg
+	case 16: // union.msg
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
@@ -763,40 +763,40 @@ func _Communique_OneofSizer(msg proto.Message) (n int) {
 	// union
 	switch x := m.Union.(type) {
 	case *Communique_Number:
-		n += proto.SizeVarint(5<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.Number))
 	case *Communique_Name:
-		n += proto.SizeVarint(6<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.Name)))
 		n += len(x.Name)
 	case *Communique_Data:
-		n += proto.SizeVarint(7<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.Data)))
 		n += len(x.Data)
 	case *Communique_TempC:
-		n += proto.SizeVarint(8<<3 | proto.WireFixed64)
+		n += 1 // tag and wire
 		n += 8
 	case *Communique_Height:
-		n += proto.SizeVarint(9<<3 | proto.WireFixed32)
+		n += 1 // tag and wire
 		n += 4
 	case *Communique_Today:
-		n += proto.SizeVarint(10<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.Today))
 	case *Communique_Maybe:
-		n += proto.SizeVarint(11<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += 1
 	case *Communique_Delta_:
-		n += proto.SizeVarint(12<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64((uint32(x.Delta) << 1) ^ uint32((int32(x.Delta) >> 31))))
 	case *Communique_Msg:
 		s := proto.Size(x.Msg)
-		n += proto.SizeVarint(13<<3 | proto.WireBytes)
+		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
 	case *Communique_Somegroup:
-		n += proto.SizeVarint(14<<3 | proto.WireStartGroup)
+		n += 1 // tag and wire
 		n += proto.Size(x.Somegroup)
-		n += proto.SizeVarint(14<<3 | proto.WireEndGroup)
+		n += 1 // tag and wire
 	case nil:
 	default:
 		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
