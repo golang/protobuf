@@ -324,26 +324,26 @@ func _Value_OneofSizer(msg proto.Message) (n int) {
 	// kind
 	switch x := m.Kind.(type) {
 	case *Value_NullValue:
-		n += proto.SizeVarint(1<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.NullValue))
 	case *Value_NumberValue:
-		n += proto.SizeVarint(2<<3 | proto.WireFixed64)
+		n += 1 // tag and wire
 		n += 8
 	case *Value_StringValue:
-		n += proto.SizeVarint(3<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.StringValue)))
 		n += len(x.StringValue)
 	case *Value_BoolValue:
-		n += proto.SizeVarint(4<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += 1
 	case *Value_StructValue:
 		s := proto.Size(x.StructValue)
-		n += proto.SizeVarint(5<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
 	case *Value_ListValue:
 		s := proto.Size(x.ListValue)
-		n += proto.SizeVarint(6<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
 	case nil:

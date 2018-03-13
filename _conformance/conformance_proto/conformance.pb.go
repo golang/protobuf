@@ -243,11 +243,11 @@ func _ConformanceRequest_OneofSizer(msg proto.Message) (n int) {
 	// payload
 	switch x := m.Payload.(type) {
 	case *ConformanceRequest_ProtobufPayload:
-		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.ProtobufPayload)))
 		n += len(x.ProtobufPayload)
 	case *ConformanceRequest_JsonPayload:
-		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.JsonPayload)))
 		n += len(x.JsonPayload)
 	case nil:
@@ -471,27 +471,27 @@ func _ConformanceResponse_OneofSizer(msg proto.Message) (n int) {
 	// result
 	switch x := m.Result.(type) {
 	case *ConformanceResponse_ParseError:
-		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.ParseError)))
 		n += len(x.ParseError)
 	case *ConformanceResponse_SerializeError:
-		n += proto.SizeVarint(6<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.SerializeError)))
 		n += len(x.SerializeError)
 	case *ConformanceResponse_RuntimeError:
-		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.RuntimeError)))
 		n += len(x.RuntimeError)
 	case *ConformanceResponse_ProtobufPayload:
-		n += proto.SizeVarint(3<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.ProtobufPayload)))
 		n += len(x.ProtobufPayload)
 	case *ConformanceResponse_JsonPayload:
-		n += proto.SizeVarint(4<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.JsonPayload)))
 		n += len(x.JsonPayload)
 	case *ConformanceResponse_Skipped:
-		n += proto.SizeVarint(5<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.Skipped)))
 		n += len(x.Skipped)
 	case nil:
@@ -1678,35 +1678,35 @@ func _TestAllTypes_OneofSizer(msg proto.Message) (n int) {
 	// oneof_field
 	switch x := m.OneofField.(type) {
 	case *TestAllTypes_OneofUint32:
-		n += proto.SizeVarint(111<<3 | proto.WireVarint)
+		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(x.OneofUint32))
 	case *TestAllTypes_OneofNestedMessage:
 		s := proto.Size(x.OneofNestedMessage)
-		n += proto.SizeVarint(112<<3 | proto.WireBytes)
+		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
 	case *TestAllTypes_OneofString:
-		n += proto.SizeVarint(113<<3 | proto.WireBytes)
+		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.OneofString)))
 		n += len(x.OneofString)
 	case *TestAllTypes_OneofBytes:
-		n += proto.SizeVarint(114<<3 | proto.WireBytes)
+		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.OneofBytes)))
 		n += len(x.OneofBytes)
 	case *TestAllTypes_OneofBool:
-		n += proto.SizeVarint(115<<3 | proto.WireVarint)
+		n += 2 // tag and wire
 		n += 1
 	case *TestAllTypes_OneofUint64:
-		n += proto.SizeVarint(116<<3 | proto.WireVarint)
+		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(x.OneofUint64))
 	case *TestAllTypes_OneofFloat:
-		n += proto.SizeVarint(117<<3 | proto.WireFixed32)
+		n += 2 // tag and wire
 		n += 4
 	case *TestAllTypes_OneofDouble:
-		n += proto.SizeVarint(118<<3 | proto.WireFixed64)
+		n += 2 // tag and wire
 		n += 8
 	case *TestAllTypes_OneofEnum:
-		n += proto.SizeVarint(119<<3 | proto.WireVarint)
+		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(x.OneofEnum))
 	case nil:
 	default:

@@ -3545,60 +3545,60 @@ func _Oneof_OneofSizer(msg proto.Message) (n int) {
 	// union
 	switch x := m.Union.(type) {
 	case *Oneof_F_Bool:
-		n += proto.SizeVarint(1<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += 1
 	case *Oneof_F_Int32:
-		n += proto.SizeVarint(2<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.F_Int32))
 	case *Oneof_F_Int64:
-		n += proto.SizeVarint(3<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.F_Int64))
 	case *Oneof_F_Fixed32:
-		n += proto.SizeVarint(4<<3 | proto.WireFixed32)
+		n += 1 // tag and wire
 		n += 4
 	case *Oneof_F_Fixed64:
-		n += proto.SizeVarint(5<<3 | proto.WireFixed64)
+		n += 1 // tag and wire
 		n += 8
 	case *Oneof_F_Uint32:
-		n += proto.SizeVarint(6<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.F_Uint32))
 	case *Oneof_F_Uint64:
-		n += proto.SizeVarint(7<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.F_Uint64))
 	case *Oneof_F_Float:
-		n += proto.SizeVarint(8<<3 | proto.WireFixed32)
+		n += 1 // tag and wire
 		n += 4
 	case *Oneof_F_Double:
-		n += proto.SizeVarint(9<<3 | proto.WireFixed64)
+		n += 1 // tag and wire
 		n += 8
 	case *Oneof_F_String:
-		n += proto.SizeVarint(10<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.F_String)))
 		n += len(x.F_String)
 	case *Oneof_F_Bytes:
-		n += proto.SizeVarint(11<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.F_Bytes)))
 		n += len(x.F_Bytes)
 	case *Oneof_F_Sint32:
-		n += proto.SizeVarint(12<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64((uint32(x.F_Sint32) << 1) ^ uint32((int32(x.F_Sint32) >> 31))))
 	case *Oneof_F_Sint64:
-		n += proto.SizeVarint(13<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(uint64(x.F_Sint64<<1) ^ uint64((int64(x.F_Sint64) >> 63))))
 	case *Oneof_F_Enum:
-		n += proto.SizeVarint(14<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.F_Enum))
 	case *Oneof_F_Message:
 		s := proto.Size(x.F_Message)
-		n += proto.SizeVarint(15<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
 	case *Oneof_FGroup:
-		n += proto.SizeVarint(16<<3 | proto.WireStartGroup)
+		n += 2 // tag and wire
 		n += proto.Size(x.FGroup)
-		n += proto.SizeVarint(16<<3 | proto.WireEndGroup)
+		n += 2 // tag and wire
 	case *Oneof_F_Largest_Tag:
-		n += proto.SizeVarint(536870911<<3 | proto.WireVarint)
+		n += 10 // tag and wire
 		n += proto.SizeVarint(uint64(x.F_Largest_Tag))
 	case nil:
 	default:
@@ -3607,7 +3607,7 @@ func _Oneof_OneofSizer(msg proto.Message) (n int) {
 	// tormato
 	switch x := m.Tormato.(type) {
 	case *Oneof_Value:
-		n += proto.SizeVarint(100<<3 | proto.WireVarint)
+		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(x.Value))
 	case nil:
 	default:
@@ -3880,25 +3880,25 @@ func _Communique_OneofSizer(msg proto.Message) (n int) {
 	// union
 	switch x := m.Union.(type) {
 	case *Communique_Number:
-		n += proto.SizeVarint(5<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.Number))
 	case *Communique_Name:
-		n += proto.SizeVarint(6<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.Name)))
 		n += len(x.Name)
 	case *Communique_Data:
-		n += proto.SizeVarint(7<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(len(x.Data)))
 		n += len(x.Data)
 	case *Communique_TempC:
-		n += proto.SizeVarint(8<<3 | proto.WireFixed64)
+		n += 1 // tag and wire
 		n += 8
 	case *Communique_Col:
-		n += proto.SizeVarint(9<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.Col))
 	case *Communique_Msg:
 		s := proto.Size(x.Msg)
-		n += proto.SizeVarint(10<<3 | proto.WireBytes)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
 	case nil:

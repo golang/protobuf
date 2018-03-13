@@ -226,7 +226,7 @@ func _ImportedMessage_OneofSizer(msg proto.Message) (n int) {
 	// union
 	switch x := m.Union.(type) {
 	case *ImportedMessage_State:
-		n += proto.SizeVarint(9<<3 | proto.WireVarint)
+		n += 1 // tag and wire
 		n += proto.SizeVarint(uint64(x.State))
 	case nil:
 	default:
