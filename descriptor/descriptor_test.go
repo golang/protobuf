@@ -20,7 +20,7 @@ func TestMessage(t *testing.T) {
 	}
 }
 
-func Example_Options() {
+func Example_options() {
 	var msg *tpb.MyMessageSet
 	_, md := descriptor.ForMessage(msg)
 	if md.GetOptions().GetMessageSetWireFormat() {
