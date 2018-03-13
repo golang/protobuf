@@ -1,6 +1,6 @@
 # Go support for Protocol Buffers - Google's data interchange format
 #
-# Copyright 2010 The Go Authors.  All rights reserved.
+# Copyright 2016 The Go Authors.  All rights reserved.
 # https://github.com/golang/protobuf
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,20 +29,21 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-all:	install
+PROTOBUF_ROOT=$(HOME)/src/protobuf
 
-install:
-	go install ./proto ./jsonpb ./ptypes ./protoc-gen-go
+all:
+	@echo To run the tests in this directory, acquire the main protobuf
+	@echo distribution from:
+	@echo
+	@echo '   https://github.com/google/protobuf'
+	@echo
+	@echo Build the test runner with:
+	@echo
+	@echo '   cd conformance && make conformance-test-runner'
+	@echo
+	@echo And run the tests in this directory with:
+	@echo
+	@echo '   make test PROTOBUF_ROOT=<protobuf distribution>'
 
 test:
-	go test ./... ./protoc-gen-go/testdata
-	make -C conformance test
-
-clean:
-	go clean ./...
-
-nuke:
-	go clean -i ./...
-
-regenerate:
-	./regenerate.sh
+	./test.sh $(PROTOBUF_ROOT)

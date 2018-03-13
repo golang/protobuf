@@ -12,4 +12,6 @@ core
 _obj
 _test
 _testmain.go
-_conformance/_conformance
+
+# Conformance test output and transient files.
+conformance/failing_tests.txt
