@@ -117,7 +117,6 @@ func handle(req *pb.ConformanceRequest) *pb.ConformanceResponse {
 	}
 	switch req.RequestedOutputFormat {
 	case pb.WireFormat_PROTOBUF:
-		var p []byte
 		p, err := proto.Marshal(&msg)
 		if err != nil {
 			return &pb.ConformanceResponse{
