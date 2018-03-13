@@ -33,10 +33,14 @@ syntax = "proto2";
 
 package imp;
 
-option go_package = "github.com/golang/protobuf/protoc-gen-go/testdata/imp";
+option go_package = "github.com/golang/protobuf/protoc-gen-go/testdata/imp/imp2";
 
 message PubliclyImportedMessage {
   optional int64 field = 1;
+}
+
+message PubliclyImportedMessage2 {
+  optional PubliclyImportedMessage field = 1;
 }
 
 enum PubliclyImportedEnum {
