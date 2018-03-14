@@ -66,6 +66,8 @@ message Message {
 
   Message submessage = 17;
   repeated Message children = 18;
+
+  map<string, string> string_map = 20;
 }
 
 message Nested {
