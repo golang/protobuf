@@ -342,7 +342,7 @@ func (*Reply) Descriptor() ([]byte, []int) {
 }
 
 var extRange_Reply = []proto.ExtensionRange{
-	{100, 536870911},
+	{Start: 100, End: 536870911},
 }
 
 func (*Reply) ExtensionRangeArray() []proto.ExtensionRange {
@@ -452,7 +452,7 @@ func (*OtherBase) Descriptor() ([]byte, []int) {
 }
 
 var extRange_OtherBase = []proto.ExtensionRange{
-	{100, 536870911},
+	{Start: 100, End: 536870911},
 }
 
 func (*OtherBase) ExtensionRangeArray() []proto.ExtensionRange {
@@ -600,7 +600,7 @@ func (m *OldReply) UnmarshalJSON(buf []byte) error {
 }
 
 var extRange_OldReply = []proto.ExtensionRange{
-	{100, 2147483646},
+	{Start: 100, End: 2147483646},
 }
 
 func (*OldReply) ExtensionRangeArray() []proto.ExtensionRange {

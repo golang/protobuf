@@ -739,7 +739,7 @@ func (*Real) Descriptor() ([]byte, []int) {
 }
 
 var extRange_Real = []proto.ExtensionRange{
-	{100, 536870911},
+	{Start: 100, End: 536870911},
 }
 
 func (*Real) ExtensionRangeArray() []proto.ExtensionRange {
@@ -786,7 +786,7 @@ func (*Complex) Descriptor() ([]byte, []int) {
 }
 
 var extRange_Complex = []proto.ExtensionRange{
-	{100, 536870911},
+	{Start: 100, End: 536870911},
 }
 
 func (*Complex) ExtensionRangeArray() []proto.ExtensionRange {

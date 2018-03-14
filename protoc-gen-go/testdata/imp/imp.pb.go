@@ -144,7 +144,7 @@ func (*ImportedMessage) Descriptor() ([]byte, []int) {
 }
 
 var extRange_ImportedMessage = []proto.ExtensionRange{
-	{90, 100},
+	{Start: 90, End: 100},
 }
 
 func (*ImportedMessage) ExtensionRangeArray() []proto.ExtensionRange {
@@ -350,7 +350,7 @@ func (m *ImportedExtendable) UnmarshalJSON(buf []byte) error {
 }
 
 var extRange_ImportedExtendable = []proto.ExtensionRange{
-	{100, 2147483646},
+	{Start: 100, End: 2147483646},
 }
 
 func (*ImportedExtendable) ExtensionRangeArray() []proto.ExtensionRange {
