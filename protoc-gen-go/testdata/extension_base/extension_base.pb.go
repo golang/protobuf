@@ -34,8 +34,8 @@ func (*BaseMessage) Descriptor() ([]byte, []int) {
 }
 
 var extRange_BaseMessage = []proto.ExtensionRange{
-	{4, 9},
-	{16, 536870911},
+	{Start: 4, End: 9},
+	{Start: 16, End: 536870911},
 }
 
 func (*BaseMessage) ExtensionRangeArray() []proto.ExtensionRange {
@@ -89,7 +89,7 @@ func (m *OldStyleMessage) UnmarshalJSON(buf []byte) error {
 }
 
 var extRange_OldStyleMessage = []proto.ExtensionRange{
-	{100, 2147483646},
+	{Start: 100, End: 2147483646},
 }
 
 func (*OldStyleMessage) ExtensionRangeArray() []proto.ExtensionRange {

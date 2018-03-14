@@ -1752,7 +1752,7 @@ func (*OtherMessage) Descriptor() ([]byte, []int) {
 }
 
 var extRange_OtherMessage = []proto.ExtensionRange{
-	{100, 536870911},
+	{Start: 100, End: 536870911},
 }
 
 func (*OtherMessage) ExtensionRangeArray() []proto.ExtensionRange {
@@ -1870,7 +1870,7 @@ func (*MyMessage) Descriptor() ([]byte, []int) {
 }
 
 var extRange_MyMessage = []proto.ExtensionRange{
-	{100, 536870911},
+	{Start: 100, End: 536870911},
 }
 
 func (*MyMessage) ExtensionRangeArray() []proto.ExtensionRange {
@@ -2158,7 +2158,7 @@ func (*DefaultsMessage) Descriptor() ([]byte, []int) {
 }
 
 var extRange_DefaultsMessage = []proto.ExtensionRange{
-	{100, 536870911},
+	{Start: 100, End: 536870911},
 }
 
 func (*DefaultsMessage) ExtensionRangeArray() []proto.ExtensionRange {
@@ -2204,7 +2204,7 @@ func (m *MyMessageSet) UnmarshalJSON(buf []byte) error {
 }
 
 var extRange_MyMessageSet = []proto.ExtensionRange{
-	{100, 2147483646},
+	{Start: 100, End: 2147483646},
 }
 
 func (*MyMessageSet) ExtensionRangeArray() []proto.ExtensionRange {

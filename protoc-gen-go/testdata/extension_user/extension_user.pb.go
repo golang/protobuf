@@ -82,7 +82,7 @@ func (*LoudMessage) Descriptor() ([]byte, []int) {
 }
 
 var extRange_LoudMessage = []proto.ExtensionRange{
-	{100, 536870911},
+	{Start: 100, End: 536870911},
 }
 
 func (*LoudMessage) ExtensionRangeArray() []proto.ExtensionRange {

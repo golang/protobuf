@@ -2080,7 +2080,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.In()
 		for _, r := range message.ExtensionRange {
 			end := fmt.Sprint(*r.End - 1) // make range inclusive on both ends
-			g.P("{", r.Start, ", ", end, "},")
+			g.P("{Start: ", r.Start, ", End: ", end, "},")
 		}
 		g.Out()
 		g.P("}")
