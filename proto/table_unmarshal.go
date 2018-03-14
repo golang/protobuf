@@ -188,40 +188,10 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		// Unknown tag.
 		if !u.unrecognized.IsValid() {
 			// Don't keep unrecognized data; just skip it.
-			// Use wire type to skip data.
-			switch wire {
-			case WireVarint:
-				_, k := decodeVarint(b)
-				if k == 0 {
-					return io.ErrUnexpectedEOF
-				}
-				b = b[k:]
-			case WireFixed32:
-				if len(b) < 4 {
-					return io.ErrUnexpectedEOF
-				}
-				b = b[4:]
-			case WireFixed64:
-				if len(b) < 8 {
-					return io.ErrUnexpectedEOF
-				}
-				b = b[8:]
-			case WireBytes:
-				m, k := decodeVarint(b)
-				if k == 0 || uint64(len(b)-k) < m {
-					return io.ErrUnexpectedEOF
-				}
-				b = b[uint64(k)+m:]
-			case WireStartGroup:
-				// Proto3 doesn't have groups. But the data may have
-				// been encoded with proto2.
-				_, i := findEndGroup(b)
-				if i == -1 {
-					return io.ErrUnexpectedEOF
-				}
-				b = b[i:]
-			default:
-				return fmt.Errorf("proto: can't skip unknown wire type %d for %s", wire, u.typ)
+			var err error
+			b, err = skipField(b, wire)
+			if err != nil {
+				return err
 			}
 			continue
 		}
@@ -253,49 +223,17 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 				panic("no extensions field available")
 			}
 		}
+
 		// Use wire type to skip data.
-		switch wire {
-		case WireVarint:
-			_, k := decodeVarint(b)
-			if k == 0 {
-				return io.ErrUnexpectedEOF
-			}
-			*z = encodeVarint(*z, tag<<3|uint64(wire))
-			*z = append(*z, b[:k]...)
-			b = b[k:]
-		case WireFixed32:
-			if len(b) < 4 {
-				return io.ErrUnexpectedEOF
-			}
-			*z = encodeVarint(*z, tag<<3|uint64(wire))
-			*z = append(*z, b[:4]...)
-			b = b[4:]
-		case WireFixed64:
-			if len(b) < 8 {
-				return io.ErrUnexpectedEOF
-			}
-			*z = encodeVarint(*z, tag<<3|uint64(wire))
-			*z = append(*z, b[:8]...)
-			b = b[8:]
-		case WireBytes:
-			m, k := decodeVarint(b)
-			if k == 0 || uint64(len(b)) < uint64(k)+m {
-				return io.ErrUnexpectedEOF
-			}
-			*z = encodeVarint(*z, tag<<3|uint64(wire))
-			*z = append(*z, b[:uint64(k)+m]...)
-			b = b[uint64(k)+m:]
-		case WireStartGroup:
-			_, i := findEndGroup(b)
-			if i == -1 {
-				return io.ErrUnexpectedEOF
-			}
-			*z = encodeVarint(*z, tag<<3|uint64(wire))
-			*z = append(*z, b[:i]...)
-			b = b[i:]
-		default:
-			return fmt.Errorf("proto: can't skip unknown wire type %d for %s", wire, u.typ)
+		var err error
+		b0 := b
+		b, err = skipField(b, wire)
+		if err != nil {
+			return err
 		}
+		*z = encodeVarint(*z, tag<<3|uint64(wire))
+		*z = append(*z, b0[:len(b0)-len(b)]...)
+
 		if emap != nil {
 			emap[int32(tag)] = e
 		}
@@ -1742,26 +1680,30 @@ func makeUnmarshalMap(f *reflect.StructField) unmarshaler {
 			if n == 0 {
 				return nil, io.ErrUnexpectedEOF
 			}
+			wire := int(x) & 7
 			b = b[n:]
+
+			var err error
 			switch x >> 3 {
 			case 1:
-				var err error
-				b, err = unmarshalKey(b, valToPointer(k), int(x)&7)
-				if err != nil {
-					return nil, err
-				}
+				b, err = unmarshalKey(b, valToPointer(k), wire)
 			case 2:
-				var err error
-				b, err = unmarshalVal(b, valToPointer(v), int(x)&7)
-				if err != nil {
-					return nil, err
-				}
+				b, err = unmarshalVal(b, valToPointer(v), wire)
 			default:
-				// Unknown tag.  Technically we could skip this
-				// entry and be ok.  But it's much more likely
-				// to be error somewhere - map entries shouldn't
-				// have additional tags.
-				return nil, io.ErrUnexpectedEOF
+				err = errInternalBadWireType // skip unknown tag
+			}
+
+			if err == nil {
+				continue
+			}
+			if err != errInternalBadWireType {
+				return nil, err
+			}
+
+			// Skip past unknown fields.
+			b, err = skipField(b, wire)
+			if err != nil {
+				return nil, err
 			}
 		}
 
@@ -1814,6 +1756,43 @@ func makeUnmarshalOneof(typ, ityp reflect.Type, unmarshal unmarshaler) unmarshal
 
 // Error used by decode internally.
 var errInternalBadWireType = errors.New("proto: internal error: bad wiretype")
+
+// skipField skips past a field of type wire and returns the remaining bytes.
+func skipField(b []byte, wire int) ([]byte, error) {
+	switch wire {
+	case WireVarint:
+		_, k := decodeVarint(b)
+		if k == 0 {
+			return b, io.ErrUnexpectedEOF
+		}
+		b = b[k:]
+	case WireFixed32:
+		if len(b) < 4 {
+			return b, io.ErrUnexpectedEOF
+		}
+		b = b[4:]
+	case WireFixed64:
+		if len(b) < 8 {
+			return b, io.ErrUnexpectedEOF
+		}
+		b = b[8:]
+	case WireBytes:
+		m, k := decodeVarint(b)
+		if k == 0 || uint64(len(b)-k) < m {
+			return b, io.ErrUnexpectedEOF
+		}
+		b = b[uint64(k)+m:]
+	case WireStartGroup:
+		_, i := findEndGroup(b)
+		if i == -1 {
+			return b, io.ErrUnexpectedEOF
+		}
+		b = b[i:]
+	default:
+		return b, fmt.Errorf("proto: can't skip unknown wire type %d", wire)
+	}
+	return b, nil
+}
 
 // findEndGroup finds the index of the next EndGroup tag.
 // Groups may be nested, so the "next" EndGroup tag is the first
