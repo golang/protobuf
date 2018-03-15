@@ -2782,10 +2782,15 @@ func (g *Generator) generateExtension(ext *ExtensionDescriptor) {
 	typeName := ext.TypeName()
 
 	// Special case for proto2 message sets: If this extension is extending
-	// proto2_bridge.MessageSet, and its final name component is "message_set_extension",
+	// proto2.bridge.MessageSet, and its final name component is "message_set_extension",
 	// then drop that last component.
+	//
+	// TODO: This should be implemented in the text formatter rather than the generator.
+	// In addition, the situation for when to apply this special case is implemented
+	// differently in other languages:
+	// https://github.com/google/protobuf/blob/aff10976/src/google/protobuf/text_format.cc#L1560
 	mset := false
-	if extendedType == "*proto2_bridge.MessageSet" && typeName[len(typeName)-1] == "message_set_extension" {
+	if extDesc.GetOptions().GetMessageSetWireFormat() && typeName[len(typeName)-1] == "message_set_extension" {
 		typeName = typeName[:len(typeName)-1]
 		mset = true
 	}
