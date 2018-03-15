@@ -292,7 +292,7 @@ var E_OldStyleParcel_MessageSetExtension = &proto.ExtensionDesc{
 	ExtendedType:  (*extension_base.OldStyleMessage)(nil),
 	ExtensionType: (*OldStyleParcel)(nil),
 	Field:         2001,
-	Name:          "extension_user.OldStyleParcel.message_set_extension",
+	Name:          "extension_user.OldStyleParcel",
 	Tag:           "bytes,2001,opt,name=message_set_extension,json=messageSetExtension",
 	Filename:      "extension_user/extension_user.proto",
 }
@@ -348,6 +348,7 @@ func init() {
 	proto.RegisterType((*LoginMessage)(nil), "extension_user.LoginMessage")
 	proto.RegisterType((*Detail)(nil), "extension_user.Detail")
 	proto.RegisterType((*Announcement)(nil), "extension_user.Announcement")
+	proto.RegisterMessageSetType((*OldStyleParcel)(nil), 2001, "extension_user.OldStyleParcel")
 	proto.RegisterType((*OldStyleParcel)(nil), "extension_user.OldStyleParcel")
 	proto.RegisterExtension(E_LoudMessage_Volume)
 	proto.RegisterExtension(E_LoginMessage_UserMessage)
