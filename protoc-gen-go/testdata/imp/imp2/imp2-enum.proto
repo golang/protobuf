@@ -35,20 +35,8 @@ package imp;
 
 option go_package = "github.com/golang/protobuf/protoc-gen-go/testdata/imp/imp2";
 
-import "imp/imp2/imp2-enum.proto";
-
-message PubliclyImportedMessage {
-  optional int64 field = 1;
-
-  // Field using a type in the same Go package, but a different source file.
-  optional imp.EnumPB.Type field2 = 2;
-}
-
-message PubliclyImportedMessage2 {
-  optional PubliclyImportedMessage field = 1;
-}
-
-enum PubliclyImportedEnum {
-  GLASSES = 1;
-  HAIR = 2;
+message EnumPB {
+  enum Type {
+    TYPE_1 = 0;
+  }
 }
