@@ -964,7 +964,7 @@ func (o *Buffer) enc_struct(prop *StructProperties, base unsafe.Pointer) {
 	// that depend on the ordering.
 	// https://developers.google.com/protocol-buffers/docs/encoding#order
 	for _, i := range prop.order {
-		p := &prop.Prop[i]
+		p := &prop.props[i]
 		p.enc(o, p, base)
 	}
 }

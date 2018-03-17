@@ -454,9 +454,9 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 		}
 
 		var p *Properties
-		for i := range prop.Prop {
-			if prop.Prop[i].Tag == uint32(tag) {
-				p = &prop.Prop[i]
+		for i := range prop.props {
+			if prop.props[i].Tag == uint32(tag) {
+				p = &prop.props[i]
 				break
 			}
 		}

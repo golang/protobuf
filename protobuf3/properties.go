@@ -120,23 +120,23 @@ type valueDecoder func(o *Buffer) (x uint64, err error)
 
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
-	Prop  []Properties // properties for each field, indexed by reflection's field number. Fields which are not encoded in protobuf have incomplete Properties
-	order []int        // list of struct field numbers in tag order, indexed 0 to N-1 by the number of fields to encode in protobuf. value indexes into .Prop[]
+	props []Properties // properties for each field, indexed by reflection's field number. Fields which are not encoded in protobuf have incomplete Properties
+	order []int        // list of struct field numbers in tag order, indexed 0 to N-1 by the number of fields to encode in protobuf. value indexes into .prop[]
 }
 
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
 // See encode.go, (*Buffer).enc_struct.
 func (sp *StructProperties) Len() int { return len(sp.order) }
 func (sp *StructProperties) Less(i, j int) bool {
-	return sp.Prop[sp.order[i]].Tag < sp.Prop[sp.order[j]].Tag
+	return sp.props[sp.order[i]].Tag < sp.props[sp.order[j]].Tag
 }
 func (sp *StructProperties) Swap(i, j int) { sp.order[i], sp.order[j] = sp.order[j], sp.order[i] }
 
 // returns the properties into protobuf v3 format, suitable for feeding back into the protobuf compiler.
 func (sp *StructProperties) asProtobuf(t reflect.Type, tname string) string {
 	lines := []string{fmt.Sprintf("message %s {", tname)}
-	for i := range sp.Prop {
-		pp := &sp.Prop[i]
+	for i := range sp.props {
+		pp := &sp.props[i]
 		if pp.Wire != "-" {
 			lines = append(lines, fmt.Sprintf("  %s %s = %d;", pp.asProtobuf, pp.protobufFieldName(t), pp.Tag))
 		}
@@ -263,8 +263,8 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 				body = append(body, "# "+err.Error()) // cause an error in the protobuf compiler
 				continue
 			}
-			for i := range p.Prop {
-				pp := &p.Prop[i]
+			for i := range p.props {
+				pp := &p.props[i]
 				tt := pp.Subtype()
 				if tt != nil {
 					if _, ok := discovered[tt]; !ok {
@@ -1166,7 +1166,7 @@ var (
 // to the same as the standard protobuf3 Timestamp type.
 var time_Time_type = reflect.TypeOf(time.Time{})
 var time_Time_sprop = &StructProperties{
-	Prop: []Properties{
+	props: []Properties{
 		// we need just one made-up field with a .enc() method which we've hooked into
 		Properties{
 			Name:     "time.Time",
@@ -1226,7 +1226,7 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 
 	// build properties
 	nf := t.NumField()
-	prop.Prop = make([]Properties, nf)
+	prop.props = make([]Properties, nf)
 	prop.order = make([]int, nf)
 
 	// sanity check for duplicate tags, since some of us are hand editing the tags
@@ -1235,7 +1235,7 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 	j := 0
 	for i := 0; i < nf; i++ {
 		f := t.Field(i)
-		p := &prop.Prop[i]
+		p := &prop.props[i]
 		name := f.Name
 
 		skip, err := p.init(f.Type, name, f.Tag.Get("protobuf"), &f)
