@@ -1073,7 +1073,7 @@ func TestFind(t *testing.T) {
 	}
 
 	buf := protobuf3.NewBuffer(pb)
-	full, val, wt, err := buf.Find(1, false)
+	pos, full, val, wt, err := buf.Find(1, false)
 	if err != nil {
 		t.Error(err)
 		return
@@ -1084,10 +1084,12 @@ func TestFind(t *testing.T) {
 		t.Errorf("full % x", full)
 	} else if !bytes.Equal(val, b) {
 		t.Errorf("val % x", full)
+	} else if pos != 0 {
+		t.Errorf("pos %d", pos)
 	}
 
 	// next find should fail
-	full, val, wt, err = buf.Find(1, false)
+	pos, full, val, wt, err = buf.Find(1, false)
 	if err != protobuf3.ErrNotFound {
 		t.Errorf("didn't fail properly: %v", err)
 	}
@@ -1096,7 +1098,7 @@ func TestFind(t *testing.T) {
 	buf.Rewind()
 
 	for i := byte(2); i <= 3; i++ {
-		full, val, wt, err = buf.Find(uint(i), false)
+		pos, full, val, wt, err = buf.Find(uint(i), false)
 		if err != nil {
 			t.Error(err)
 		} else if wt != protobuf3.WireVarint {
@@ -1105,6 +1107,8 @@ func TestFind(t *testing.T) {
 			t.Errorf("full % x", full)
 		} else if !bytes.Equal(val, []byte{i}) {
 			t.Errorf("val % x", full)
+		} else if pos != 2+len(b)+2*int(i-2) {
+			t.Errorf("pos %d != %d", pos, 2+len(b)+2*int(i-2))
 		}
 	}
 }

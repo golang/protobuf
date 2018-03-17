@@ -160,13 +160,13 @@ func (p *Buffer) Next() (id int, full []byte, val []byte, wt WireType, err error
 // Both the entire item and just the value bytes are returned. The entire item is useful because it is itself a valid protobuf message.
 // If no match is found, ErrNotFound is returned.
 // If sorted is true then this function assumes the message's fields are sorted by id, and encountering any id > 'id' short circuits the search
-func (p *Buffer) Find(id uint, sorted bool) (full []byte, val []byte, wt WireType, err error) {
+func (p *Buffer) Find(id uint, sorted bool) (position int, full []byte, val []byte, wt WireType, err error) {
 	for p.index < len(p.buf) {
 		start := p.index
 		var vi uint64
 		vi, err = p.DecodeVarint()
 		if err != nil {
-			return nil, nil, 0, err
+			return 0, nil, nil, 0, err
 		}
 		wt = WireType(vi) & 7
 		if vi>>3 == uint64(id) {
@@ -191,7 +191,7 @@ func (p *Buffer) Find(id uint, sorted bool) (full []byte, val []byte, wt WireTyp
 				val = p.buf[val_start:p.index:p.index]
 			} // else val is already set up
 
-			return p.buf[start:p.index:p.index], val, wt, err
+			return start, p.buf[start:p.index:p.index], val, wt, err
 
 		} else if sorted && vi>>3 > uint64(id) {
 			// we've advanced past the requested id, and we're assured the message is sorted by id
@@ -213,25 +213,25 @@ func (p *Buffer) Find(id uint, sorted bool) (full []byte, val []byte, wt WireTyp
 				err = p.SkipFixed(8)
 			}
 			if err != nil {
-				return nil, nil, 0, err
+				return 0, nil, nil, 0, err
 			}
 		}
 	}
 
 	// nothing found
-	return nil, nil, 0, ErrNotFound
+	return 0, nil, nil, 0, ErrNotFound
 }
 
 // FindBytes is similar to Find but only matches and returns ids with wiretype "bytes".
 // If the id is present but hasn't got the wiretype "bytes" then ErrNotFound is returned.
 // It exists because calling Find() and checking for WireBytes is a common pattern in calling code.
-func (p *Buffer) FindBytes(id uint, sorted bool) (full []byte, val []byte, err error) {
+func (p *Buffer) FindBytes(id uint, sorted bool) (position int, full []byte, val []byte, err error) {
 	var wt WireType
-	full, val, wt, err = p.Find(id, sorted)
+	position, full, val, wt, err = p.Find(id, sorted)
 	if err == nil && wt != WireBytes {
-		return nil, nil, ErrNotFound
+		return 0, nil, nil, ErrNotFound
 	}
-	return full, val, err
+	return position, full, val, err
 }
 
 // error returned by (*Buffer).Find when the id is not present in the buffer
