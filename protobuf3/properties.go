@@ -1139,7 +1139,7 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 		if XXXHack && strings.HasPrefix(name, "XXX_") {
 			return true, nil
 		}
-		err := fmt.Errorf("protobuf3: %s (%s) lacks a protobuf tag. Mark it with `protobuf:\"-\"` to suppress this error", name, typ.Name())
+		err := fmt.Errorf("protobuf3: %s (%s) lacks a protobuf tag. Tag it, or mark it with `protobuf:\"-\"` if it isn't intended to be marshaled to/from protobuf", name, typ.Name())
 		fmt.Fprintln(os.Stderr, err) // print the error too
 		return true, err
 	}
