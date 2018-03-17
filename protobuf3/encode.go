@@ -963,7 +963,7 @@ func (o *Buffer) enc_struct(prop *StructProperties, base unsafe.Pointer) {
 	// Encode fields in tag order so that decoders may use optimizations
 	// that depend on the ordering.
 	// https://developers.google.com/protocol-buffers/docs/encoding#order
-	for _, i := range prop.order {
+	for i := range prop.props {
 		p := &prop.props[i]
 		p.enc(o, p, base)
 	}

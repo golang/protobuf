@@ -121,17 +121,16 @@ type valueDecoder func(o *Buffer) (x uint64, err error)
 
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
-	props []Properties // properties for each field, indexed by reflection's field number. Fields which are not encoded in protobuf have incomplete Properties
-	order []int        // list of struct field numbers in tag order, indexed 0 to N-1 by the number of fields to encode in protobuf. value indexes into .prop[]
+	props []Properties // properties for each field encoded in protobuf, ordered by tag id
 }
 
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
 // See encode.go, (*Buffer).enc_struct.
-func (sp *StructProperties) Len() int { return len(sp.order) }
+func (sp *StructProperties) Len() int { return len(sp.props) }
 func (sp *StructProperties) Less(i, j int) bool {
-	return sp.props[sp.order[i]].Tag < sp.props[sp.order[j]].Tag
+	return sp.props[i].Tag < sp.props[j].Tag
 }
-func (sp *StructProperties) Swap(i, j int) { sp.order[i], sp.order[j] = sp.order[j], sp.order[i] }
+func (sp *StructProperties) Swap(i, j int) { sp.props[i], sp.props[j] = sp.props[j], sp.props[i] }
 
 // returns the properties into protobuf v3 format, suitable for feeding back into the protobuf compiler.
 func (sp *StructProperties) asProtobuf(t reflect.Type, tname string) string {
@@ -358,10 +357,9 @@ type Properties struct {
 	WireType   WireType
 
 	enc         encoder
-	valEnc      valueEncoder // set for bool and numeric types only
-	offset      uintptr      // byte offset of this field within the struct
-	tagcode     []byte       // encoding of EncodeVarint((Tag<<3)|WireType)
-	tagbuf      [8]byte
+	valEnc      valueEncoder      // set for bool and numeric types only
+	offset      uintptr           // byte offset of this field within the struct
+	tagcode     string            // encoding of EncodeVarint((Tag<<3)|WireType), stored in a string for efficiency
 	stype       reflect.Type      // set for struct types only
 	sprop       *StructProperties // set for struct types only
 	isMarshaler bool
@@ -1040,12 +1038,13 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 	// precalculate tag code
 	x := p.Tag<<3 | uint32(wire)
 	i := 0
+	var tagbuf [8]byte
 	for i = 0; x > 127; i++ {
-		p.tagbuf[i] = 0x80 | uint8(x&0x7F)
+		tagbuf[i] = 0x80 | uint8(x&0x7F)
 		x >>= 7
 	}
-	p.tagbuf[i] = uint8(x)
-	p.tagcode = p.tagbuf[0 : i+1]
+	tagbuf[i] = uint8(x)
+	p.tagcode = string(tagbuf[0 : i+1])
 
 	return nil
 }
@@ -1176,7 +1175,6 @@ var time_Time_sprop = &StructProperties{
 			// note: .dec isn't used
 		},
 	},
-	order: []int{0},
 }
 
 // similarly for time.Duration ... standard protobuf3 Duration type. Note that because
@@ -1222,22 +1220,20 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 	}
 
 	prop := new(StructProperties)
-	// in case of recursive protos, fill this in now.
+
+	// in case of recursion, add ourselves to propertiesMap now. we'll remove ourselves if we error
 	propertiesMap[t] = prop
 
 	// build properties
 	nf := t.NumField()
-	prop.props = make([]Properties, nf)
-	prop.order = make([]int, nf)
+	prop.props = make([]Properties, 0, nf)
 
-	// sanity check for duplicate tags, since some of us are hand editing the tags
-	seen := make(map[uint32]struct{})
-
-	j := 0
 	for i := 0; i < nf; i++ {
 		f := t.Field(i)
-		p := &prop.props[i]
 		name := f.Name
+
+		prop.props = append(prop.props, Properties{})
+		p := &prop.props[len(prop.props)-1]
 
 		skip, err := p.init(f.Type, name, f.Tag.Get("protobuf"), &f)
 		if err != nil {
@@ -1248,25 +1244,12 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 		}
 		if skip {
 			// silently skip this field. It's not part of the protobuf encoding of this struct
+			prop.props = prop.props[:len(prop.props)-1] // remove it from properties
 			continue
 		}
-		if _, ok := seen[p.Tag]; ok {
-			sname := t.Name()
-			if sname == "" {
-				sname = "<anonymous struct>"
-			}
-			err := fmt.Errorf("protobuf3: Error duplicate tag id %d assigned to %s.%s", p.Tag, sname, name)
-			fmt.Fprintln(os.Stderr, err) // print the error too
-			delete(propertiesMap, t)
-			return nil, err
-		}
-		seen[p.Tag] = struct{}{}
-
-		prop.order[j] = i
-		j++
 
 		if debug {
-			print(i, " ", f.Name, " ", t.String(), " ")
+			print(i, " ", name, " ", t.String(), " ")
 			if p.Tag > 0 {
 				print(p.String())
 			}
@@ -1274,22 +1257,38 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 		}
 
 		if p.enc == nil || p.dec == nil {
-			sname := t.Name()
-			if sname == "" {
-				sname = "<anonymous struct>"
+			tname := t.Name()
+			if tname == "" {
+				tname = "<anonymous struct>"
 			}
-			err := fmt.Errorf("protobuf3: Error no encoder or decoder for field %q.%q of type %q", sname, name, f.Type.Name())
+			err := fmt.Errorf("protobuf3: Error no encoder or decoder for field %q.%q of type %q", tname, name, f.Type.Name())
 			fmt.Fprintln(os.Stderr, err) // print the error too
 			delete(propertiesMap, t)
 			return nil, err
 		}
 	}
 
-	// slice off any unused indexes
-	prop.order = prop.order[:j]
-
-	// Re-order prop.order.
+	// sort prop.props by tag, so we naturally encode in tag order as suggested by protobuf documentation
 	sort.Sort(prop)
+	if debug {
+		for i := range prop.props {
+			p := &prop.props[i]
+			print("| ", t.Name(), ".", p.Name, "  ", p.WireType.String(), ",", p.Tag, "\n")
+		}
+	}
+
+	// now that they are sorted, sanity check for duplicate tags, since some of us are hand editing the tags
+	prev_tag := uint32(0)
+	for i := range prop.props {
+		p := &prop.props[i]
+		if prev_tag == p.Tag {
+			err := fmt.Errorf("protobuf3: Error duplicate tag id %d assigned to %s.%s", p.Tag, t.String(), p.Name)
+			fmt.Fprintln(os.Stderr, err) // print the error too
+			delete(propertiesMap, t)
+			return nil, err
+		}
+		prev_tag = p.Tag
+	}
 
 	return prop, nil
 }
