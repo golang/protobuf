@@ -50,6 +50,9 @@ import (
 )
 
 func TestProto3ZeroValues(t *testing.T) {
+	protobuf3.XXXHack = true // needed b/c of pb.Message.Proto2Field.XXX_unrecognized
+	defer func() { protobuf3.XXXHack = false }()
+
 	tests := []struct {
 		desc string
 		m    proto.Message
@@ -57,7 +60,6 @@ func TestProto3ZeroValues(t *testing.T) {
 		{"zero message", &pb.Message{}},
 		{"empty bytes field", &pb.Message{Data: []byte{}}},
 	}
-	protobuf3.XXXHack = true
 	for _, test := range tests {
 		b, err := protobuf3.Marshal(test.m)
 		if err != nil {
@@ -68,10 +70,12 @@ func TestProto3ZeroValues(t *testing.T) {
 			t.Errorf("ERROR %s: Encoding is non-empty: %q", test.desc, b)
 		}
 	}
-	protobuf3.XXXHack = false
 }
 
 func TestRoundTripProto3(t *testing.T) {
+	protobuf3.XXXHack = true // needed b/c of pb.Message.Proto2Field.XXX_unrecognized
+	defer func() { protobuf3.XXXHack = false }()
+
 	m := &pb.Message{
 		Name:         "David",          // (2 | 1<<3): 0x0a 0x05 "David"
 		Hilarity:     pb.Message_PUNS,  // (0 | 2<<3): 0x10 0x01
