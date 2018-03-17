@@ -1231,11 +1231,54 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 	for i := 0; i < nf; i++ {
 		f := t.Field(i)
 		name := f.Name
+		if name == "" && f.Anonymous {
+			// use the type's name for embedded fields, like go does
+			name = f.Type.Name()
+			if name == "" {
+				// use the type's unamed type
+				name = f.Type.String()
+			}
+		}
+		if name == "" {
+			// unnamed embedded field types have no simple name
+			name = "<unnamed field>"
+		}
+
+		tag := f.Tag.Get("protobuf")
+
+		if tag == "embedded" && f.Anonymous {
+			// field f is embedded in type t and has the special `protobuf:"embedded"` tag. Get f's fields and then merge them into t's
+			fprop, err := getPropertiesLocked(f.Type)
+			if err != nil {
+				err := fmt.Errorf("protobuf3: Error preparing field %q of type %q: %v", name, t.Name(), err)
+				fmt.Fprintln(os.Stderr, err) // print the error too
+				delete(propertiesMap, t)
+				return nil, err
+			}
+
+			// merge fprop's fields into prop
+			for ii, p := range fprop.props {
+				// fixup the field property as we copy them
+				p.offset += f.Offset
+
+				prop.props = append(prop.props, p)
+
+				if debug {
+					print(i, ".", ii, " ", name, " ", t.String(), " ")
+					if p.Tag > 0 {
+						print(p.String())
+					}
+					print("\n")
+				}
+			}
+
+			continue
+		}
 
 		prop.props = append(prop.props, Properties{})
 		p := &prop.props[len(prop.props)-1]
 
-		skip, err := p.init(f.Type, name, f.Tag.Get("protobuf"), &f)
+		skip, err := p.init(f.Type, name, tag, &f)
 		if err != nil {
 			err := fmt.Errorf("protobuf3: Error preparing field %q of type %q: %v", name, t.Name(), err)
 			fmt.Fprintln(os.Stderr, err) // print the error too
@@ -1273,7 +1316,7 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 	if debug {
 		for i := range prop.props {
 			p := &prop.props[i]
-			print("| ", t.Name(), ".", p.Name, "  ", p.WireType.String(), ",", p.Tag, "\n")
+			print("| ", t.Name(), ".", p.Name, "  ", p.WireType.String(), ",", p.Tag, "  offset=", p.offset, "\n")
 		}
 	}
 

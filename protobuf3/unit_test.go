@@ -1182,3 +1182,60 @@ func TestDuplicateId(t *testing.T) {
 		t.Error("DuplicateIdMsg should have caused an error")
 	}
 }
+
+type EmbeddedMsg struct {
+	X                uint32                `protobuf:"varint,2"`
+	InnerEmbeddedMsg `protobuf:"embedded"` // marshals as part of the outer struct's fields
+}
+
+type NestedEmbeddedMsg struct {
+	InnerEmbeddedMsg `protobuf:"bytes,3"` // marshals as if it were named, nested in a bytes,3
+	X                uint32               `protobuf:"varint,1"`
+}
+
+type BadEmbeddedMsg struct {
+	X                uint32                `protobuf:"varint,1"` // collides with InnerEmbeddedMsg.S
+	F                float64               `protobuf:"fixed64,4"`
+	InnerEmbeddedMsg `protobuf:"embedded"` // marshals as part of the outer struct's fields
+}
+
+type InnerEmbeddedMsg struct {
+	S string `protobuf:"bytes,1"` // don't collide with tags in EmbeddedMsg
+}
+
+func TestEmbeddedMsg(t *testing.T) {
+	{
+		var m1 EmbeddedMsg
+		m1.S = "abc"
+		b, err := protobuf3.Marshal(&m1)
+		t.Logf("[% x], %v", b, err)
+		if err != nil {
+			t.Error("EmbeddedMsg", err)
+		}
+		if !bytes.Equal(b, []byte{0x0a, 0x03, 0x61, 0x62, 0x63}) {
+			t.Errorf("EmbeddedMsg marshaling %x incorrect", b)
+		}
+	}
+
+	{
+		var m2 NestedEmbeddedMsg
+		m2.S = "abc"
+		b, err := protobuf3.Marshal(&m2)
+		t.Logf("[% x], %v", b, err)
+		if err != nil {
+			t.Error("NestedEmbeddedMsg", err)
+		}
+		if !bytes.Equal(b, []byte{0x1a, 0x05, 0x0a, 0x03, 0x61, 0x62, 0x63}) {
+			t.Errorf("NestedEmbeddedMsg protobuf [% x] incorrect", b)
+		}
+	}
+
+	{
+		var m3 BadEmbeddedMsg
+		_, err := protobuf3.Marshal(&m3)
+		t.Log(err)
+		if err == nil {
+			t.Error("BadEmbeddedMsg should have caused an error")
+		}
+	}
+}
