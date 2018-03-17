@@ -443,6 +443,7 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 	var err error
 	for err == nil && o.index < len(o.buf) {
 		var u uint64
+		start := o.index
 		u, err = o.DecodeVarint()
 		if err != nil {
 			break
@@ -450,7 +451,7 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 		wire := WireType(u & 0x7)
 		tag := int(u >> 3)
 		if tag <= 0 {
-			return fmt.Errorf("protobuf3: %s: illegal tag %d (wire type %d) at index %d of %d", st, tag, wire, o.index, len(o.buf))
+			return fmt.Errorf("protobuf3: %s: illegal tag %d (wire type %d) at index %d of %d", st, tag, wire, start, len(o.buf))
 		}
 
 		var p *Properties
