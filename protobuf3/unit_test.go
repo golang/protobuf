@@ -1154,17 +1154,54 @@ func TestNext(t *testing.T) {
 }
 
 type InappropriateWiretypeMsg struct {
-	f float64 `protobuf:"bytes,1"` // should cause an error; you should use fixed64 for float64
-	i int32   `protobuf:"bytes,2"` // should cause an error; you should use varint or zigzag32 for int32, depending if the values can be negative
+	F1 struct {
+		f float64 `protobuf:"bytes,1"` // should cause an error; you should use fixed64 for float64
+	}
+	F2 struct {
+		f float32 `protobuf:"fixed64,1"` // should cause an error; you must use fixed32 for float32
+	}
+	D1 struct {
+		d float64 `protobuf:"fixed32,1"` // should cause an error; you must use fixed64 for float64
+	}
+	I1 struct {
+		i int32 `protobuf:"bytes,2"` // should cause an error
+	}
+	I2 struct {
+		i int32 `protobuf:"fixed64,2"` // should *not* cause an error. we consider it peculiar but permitted
+	}
 }
 
 func TestInappropriateWiretypes(t *testing.T) {
 	var m InappropriateWiretypeMsg
 
-	_, err := protobuf3.Marshal(&m)
+	_, err := protobuf3.Marshal(&m.F1)
 	t.Log(err)
 	if err == nil {
-		t.Error("InappropriateWiretypeMsg should have caused an error")
+		t.Error("InappropriateWiretypeMsg.F1 should have caused an error")
+	}
+
+	_, err = protobuf3.Marshal(&m.F2)
+	t.Log(err)
+	if err == nil {
+		t.Error("InappropriateWiretypeMsg.F2 should have caused an error")
+	}
+
+	_, err = protobuf3.Marshal(&m.D1)
+	t.Log(err)
+	if err == nil {
+		t.Error("InappropriateWiretypeMsg.D1 should have caused an error")
+	}
+
+	_, err = protobuf3.Marshal(&m.I1)
+	t.Log(err)
+	if err == nil {
+		t.Error("InappropriateWiretypeMsg.I1 should have caused an error")
+	}
+
+	_, err = protobuf3.Marshal(&m.I2)
+	t.Log(err)
+	if err != nil {
+		t.Error("InappropriateWiretypeMsg.I2 should not have caused the error ", err)
 	}
 }
 

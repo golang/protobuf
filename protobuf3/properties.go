@@ -561,7 +561,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			p.enc = (*Buffer).enc_int32
 			p.dec = (*Buffer).dec_int32
 			p.asProtobuf = int32_encoder_txt
-			if p.valEnc == nil {
+			if p.valEnc == nil { // note it is safe, though peculiar, for an int32 to have a wiretype of fixed64
 				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 			}
 		case reflect.Uint32:
@@ -598,14 +598,14 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			p.enc = (*Buffer).enc_uint32 // can just treat them as bits
 			p.dec = (*Buffer).dec_int32
 			p.asProtobuf = "float"
-			if p.valEnc == nil {
+			if p.valEnc == nil || wire != WireFixed32 { // the way we encode and decode float32 at the moment means we can only support fixed32
 				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 			}
 		case reflect.Float64:
 			p.enc = (*Buffer).enc_int64 // can just treat them as bits
 			p.dec = (*Buffer).dec_int64
 			p.asProtobuf = "double"
-			if p.valEnc == nil {
+			if p.valEnc == nil || wire != WireFixed64 { // the way we encode and decode float32 at the moment means we can only support fixed64
 				return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 			}
 		case reflect.String:
