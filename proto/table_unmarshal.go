@@ -166,20 +166,21 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		} else {
 			f = u.sparse[tag]
 		}
-		reqMask |= f.reqMask
 		if fn := f.unmarshal; fn != nil {
 			var err error
 			b, err = fn(b, m.offset(f.field), wire)
 			if err == nil {
+				reqMask |= f.reqMask
 				continue
 			}
 			if r, ok := err.(*RequiredNotSetError); ok {
 				// Remember this error, but keep parsing. We need to produce
 				// a full parse even if a required field is missing.
 				rnse = r
+				reqMask |= f.reqMask
 				continue
 			}
-			if err == nil || err != errInternalBadWireType {
+			if err != errInternalBadWireType {
 				return err
 			}
 			// Fragments with bad wire type are treated as unknown fields.
