@@ -195,7 +195,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			// "Wrappers use the same representation in JSON
 			//  as the wrapped primitive type, ..."
 			sprop := proto.GetProperties(s.Type())
-			return m.marshalValue(out, sprop.Prop[0], s.Field(0), indent)
+			return m.marshalValue(out, sprop.Prop[0], nil, s.Field(0), indent)
 		case "Any":
 			// Any is a bit more involved.
 			return m.marshalAny(out, v, indent)
@@ -223,7 +223,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 		case "Struct", "ListValue":
 			// Let marshalValue handle the `Struct.fields` map or the `ListValue.values` slice.
 			// TODO: pass the correct Properties if needed.
-			return m.marshalValue(out, &proto.Properties{}, s.Field(0), indent)
+			return m.marshalValue(out, &proto.Properties{}, nil, s.Field(0), indent)
 		case "Timestamp":
 			// "RFC 3339, where generated output will always be Z-normalized
 			//  and uses 0, 3, 6 or 9 fractional digits."
@@ -251,7 +251,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			// oneof -> *T -> T -> T.F
 			x := kind.Elem().Elem().Field(0)
 			// TODO: pass the correct Properties if needed.
-			return m.marshalValue(out, &proto.Properties{}, x, indent)
+			return m.marshalValue(out, &proto.Properties{}, nil, x, indent)
 		}
 	}
 
@@ -320,11 +320,21 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			value = sv.Field(0)
 			valueField = sv.Type().Field(0)
 		}
+		var valProps *proto.Properties
+		if valTag := valueField.Tag.Get("protobuf_val"); valTag != "" {
+			valProps = &proto.Properties{
+				Name:     "Value",
+				OrigName: "Value",
+			}
+			valProps.Parse(valTag)
+		}
+
 		prop := jsonProperties(valueField, m.OrigName)
 		if !firstField {
 			m.writeSep(out)
 		}
-		if err := m.marshalField(out, prop, value, indent); err != nil {
+
+		if err := m.marshalField(out, prop, valProps, value, indent); err != nil {
 			return err
 		}
 		firstField = false
@@ -359,7 +369,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			if !firstField {
 				m.writeSep(out)
 			}
-			if err := m.marshalField(out, &prop, value, indent); err != nil {
+			if err := m.marshalField(out, &prop, nil, value, indent); err != nil {
 				return err
 			}
 			firstField = false
@@ -455,7 +465,7 @@ func (m *Marshaler) marshalTypeURL(out *errWriter, indent, typeURL string) error
 }
 
 // marshalField writes field description and value to the Writer.
-func (m *Marshaler) marshalField(out *errWriter, prop *proto.Properties, v reflect.Value, indent string) error {
+func (m *Marshaler) marshalField(out *errWriter, prop, subProp *proto.Properties, v reflect.Value, indent string) error {
 	if m.Indent != "" {
 		out.write(indent)
 		out.write(m.Indent)
@@ -466,14 +476,14 @@ func (m *Marshaler) marshalField(out *errWriter, prop *proto.Properties, v refle
 	if m.Indent != "" {
 		out.write(" ")
 	}
-	if err := m.marshalValue(out, prop, v, indent); err != nil {
+	if err := m.marshalValue(out, prop, subProp, v, indent); err != nil {
 		return err
 	}
 	return nil
 }
 
 // marshalValue writes the value to the Writer.
-func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v reflect.Value, indent string) error {
+func (m *Marshaler) marshalValue(out *errWriter, prop, subProp *proto.Properties, v reflect.Value, indent string) error {
 	var err error
 	v = reflect.Indirect(v)
 
@@ -496,7 +506,7 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 				out.write(m.Indent)
 				out.write(m.Indent)
 			}
-			if err := m.marshalValue(out, prop, sliceVal, indent+m.Indent); err != nil {
+			if err := m.marshalValue(out, prop, nil, sliceVal, indent+m.Indent); err != nil {
 				return err
 			}
 			comma = ","
@@ -586,9 +596,14 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 				out.write(` `)
 			}
 
-			if err := m.marshalValue(out, prop, v.MapIndex(k), indent+m.Indent); err != nil {
+			if subProp == nil {
+				subProp = &proto.Properties{}
+			}
+
+			if err := m.marshalValue(out, subProp, nil, v.MapIndex(k), indent+m.Indent); err != nil {
 				return err
 			}
+
 		}
 		if m.Indent != "" {
 			out.write("\n")
