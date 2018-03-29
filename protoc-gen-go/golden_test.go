@@ -115,14 +115,14 @@ var fdescRE = regexp.MustCompile(`(?ms)^var fileDescriptor.*}`)
 const (
 	aProto = `
 syntax = "proto3";
-package alpha;
+package test.alpha;
 option go_package = "package/alpha";
 import "beta/b.proto";
-message M { beta.M field = 1; }`
+message M { test.beta.M field = 1; }`
 
 	bProto = `
 syntax = "proto3";
-package beta;
+package test.beta;
 // no go_package option
 message M {}`
 )
@@ -132,12 +132,16 @@ func TestParameters(t *testing.T) {
 		parameters   string
 		wantFiles    map[string]bool
 		wantImportsA map[string]bool
+		wantPackageA string
+		wantPackageB string
 	}{{
 		parameters: "",
 		wantFiles: map[string]bool{
 			"package/alpha/a.pb.go": true,
 			"beta/b.pb.go":          true,
 		},
+		wantPackageA: "alpha",
+		wantPackageB: "test_beta",
 		wantImportsA: map[string]bool{
 			"github.com/golang/protobuf/proto": true,
 			"beta": true,
@@ -148,6 +152,8 @@ func TestParameters(t *testing.T) {
 			"package/alpha/a.pb.go": true,
 			"beta/b.pb.go":          true,
 		},
+		wantPackageA: "alpha",
+		wantPackageB: "test_beta",
 		wantImportsA: map[string]bool{
 			// This really doesn't seem like useful behavior.
 			"prefixgithub.com/golang/protobuf/proto": true,
@@ -155,7 +161,9 @@ func TestParameters(t *testing.T) {
 		},
 	}, {
 		// import_path only affects the 'package' line.
-		parameters: "import_path=import/path/of/pkg",
+		parameters:   "import_path=import/path/of/pkg",
+		wantPackageA: "alpha",
+		wantPackageB: "pkg",
 		wantFiles: map[string]bool{
 			"package/alpha/a.pb.go": true,
 			"beta/b.pb.go":          true,
@@ -166,6 +174,8 @@ func TestParameters(t *testing.T) {
 			"package/alpha/a.pb.go": true,
 			"beta/b.pb.go":          true,
 		},
+		wantPackageA: "alpha",
+		wantPackageB: "test_beta",
 		wantImportsA: map[string]bool{
 			"github.com/golang/protobuf/proto": true,
 			// Rewritten by the M parameter.
@@ -177,6 +187,8 @@ func TestParameters(t *testing.T) {
 			"package/alpha/a.pb.go": true,
 			"beta/b.pb.go":          true,
 		},
+		wantPackageA: "alpha",
+		wantPackageB: "test_beta",
 		wantImportsA: map[string]bool{
 			// import_prefix applies after M.
 			"prefixpackage/gamma": true,
@@ -187,6 +199,8 @@ func TestParameters(t *testing.T) {
 			"alpha/a.pb.go": true,
 			"beta/b.pb.go":  true,
 		},
+		wantPackageA: "alpha",
+		wantPackageB: "test_beta",
 	}, {
 		parameters: "paths=source_relative,import_prefix=prefix",
 		wantFiles: map[string]bool{
@@ -194,6 +208,8 @@ func TestParameters(t *testing.T) {
 			"alpha/a.pb.go": true,
 			"beta/b.pb.go":  true,
 		},
+		wantPackageA: "alpha",
+		wantPackageB: "test_beta",
 	}} {
 		name := test.parameters
 		if name == "" {
@@ -232,19 +248,20 @@ func TestParameters(t *testing.T) {
 			filepath.Join(workdir, "beta", "b.proto"),
 		})
 
-		var aGen string
+		contents := make(map[string]string)
 		gotFiles := make(map[string]bool)
 		outdir := filepath.Join(workdir, "out")
 		filepath.Walk(outdir, func(p string, info os.FileInfo, _ error) error {
 			if info.IsDir() {
 				return nil
 			}
-			if filepath.Base(p) == "a.pb.go" {
+			base := filepath.Base(p)
+			if base == "a.pb.go" || base == "b.pb.go" {
 				b, err := ioutil.ReadFile(p)
 				if err != nil {
 					t.Fatal(err)
 				}
-				aGen = string(b)
+				contents[base] = string(b)
 			}
 			relPath, _ := filepath.Rel(outdir, p)
 			gotFiles[relPath] = true
@@ -266,9 +283,19 @@ func TestParameters(t *testing.T) {
 				t.Errorf("missing output file:    %v", want)
 			}
 		}
-		gotImports, err := parseImports(aGen)
+		gotPackageA, gotImports, err := parseFile(contents["a.pb.go"])
 		if err != nil {
 			t.Fatal(err)
+		}
+		gotPackageB, _, err := parseFile(contents["b.pb.go"])
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got, want := gotPackageA, test.wantPackageA; want != got {
+			t.Errorf("output file a.pb.go is package %q, want %q", got, want)
+		}
+		if got, want := gotPackageB, test.wantPackageB; want != got {
+			t.Errorf("output file b.pb.go is package %q, want %q", got, want)
 		}
 		missingImport := false
 	WantImport:
@@ -348,18 +375,17 @@ func TestPackageComment(t *testing.T) {
 	}
 }
 
-// parseImports returns a list of all packages imported by a file.
-func parseImports(source string) ([]string, error) {
+// parseFile returns a file's package name and a list of all packages it imports.
+func parseFile(source string) (packageName string, imports []string, err error) {
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, "<source>", source, parser.ImportsOnly)
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
-	var imports []string
 	for _, imp := range f.Imports {
 		imports = append(imports, imp.Path.Value)
 	}
-	return imports, nil
+	return f.Name.Name, imports, nil
 }
 
 func protoc(t *testing.T, args []string) {
