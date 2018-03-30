@@ -866,6 +866,10 @@ var (
 // RegisterFile is called from generated code and maps from the
 // full file name of a .proto file to its compressed FileDescriptorProto.
 func RegisterFile(filename string, fileDescriptor []byte) {
+	if _, ok := protoFiles[filename]; ok {
+		log.Printf("proto: duplicate proto file registered: %s", filename)
+		return
+	}
 	protoFiles[filename] = fileDescriptor
 }
 
