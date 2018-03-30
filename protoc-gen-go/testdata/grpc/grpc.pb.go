@@ -143,6 +143,8 @@ func (m *StreamMsg2) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_StreamMsg2 proto.InternalMessageInfo
 
+func GetTestServiceDescriptor() ([]byte, []int) { return fileDescriptor_grpc_65bf3902e49ee873, []int{0} }
+
 func init() {
 	proto.RegisterType((*SimpleRequest)(nil), "grpc.testing.SimpleRequest")
 	proto.RegisterType((*SimpleResponse)(nil), "grpc.testing.SimpleResponse")
