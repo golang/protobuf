@@ -812,7 +812,8 @@ var enumValueMaps = make(map[string]map[string]int32)
 // maps into the global table to aid parsing text format protocol buffers.
 func RegisterEnum(typeName string, unusedNameMap map[int32]string, valueMap map[string]int32) {
 	if _, ok := enumValueMaps[typeName]; ok {
-		panic("proto: duplicate enum registered: " + typeName)
+		log.Printf("proto: duplicate enum registered: %s", typeName)
+		return
 	}
 	enumValueMaps[typeName] = valueMap
 }
@@ -865,6 +866,10 @@ var (
 // RegisterFile is called from generated code and maps from the
 // full file name of a .proto file to its compressed FileDescriptorProto.
 func RegisterFile(filename string, fileDescriptor []byte) {
+	if _, ok := protoFiles[filename]; ok {
+		log.Printf("proto: duplicate proto file registered: %s", filename)
+		return
+	}
 	protoFiles[filename] = fileDescriptor
 }
 
