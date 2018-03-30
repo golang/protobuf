@@ -812,7 +812,8 @@ var enumValueMaps = make(map[string]map[string]int32)
 // maps into the global table to aid parsing text format protocol buffers.
 func RegisterEnum(typeName string, unusedNameMap map[int32]string, valueMap map[string]int32) {
 	if _, ok := enumValueMaps[typeName]; ok {
-		panic("proto: duplicate enum registered: " + typeName)
+		log.Printf("proto: duplicate enum registered: %s", typeName)
+		return
 	}
 	enumValueMaps[typeName] = valueMap
 }
