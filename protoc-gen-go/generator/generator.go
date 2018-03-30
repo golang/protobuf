@@ -562,10 +562,10 @@ type Generator struct {
 	Request  *plugin.CodeGeneratorRequest  // The input.
 	Response *plugin.CodeGeneratorResponse // The output.
 
-	Param             map[string]string       // Command-line parameters.
-	PackageImportPath string                  // Go import path of the package we're generating code for
-	ImportPrefix      GoImportPath            // String to prefix to imported package file names.
-	ImportMap         map[string]GoImportPath // Mapping from .proto file name to import path
+	Param             map[string]string // Command-line parameters.
+	PackageImportPath string            // Go import path of the package we're generating code for
+	ImportPrefix      string            // String to prefix to imported package file names.
+	ImportMap         map[string]string // Mapping from .proto file name to import path
 
 	Pkg map[string]string // The names under which we import support packages
 
@@ -629,12 +629,12 @@ func (g *Generator) CommandLineParameters(parameter string) {
 		}
 	}
 
-	g.ImportMap = make(map[string]GoImportPath)
+	g.ImportMap = make(map[string]string)
 	pluginList := "none" // Default list of plugin names to enable (empty means all).
 	for k, v := range g.Param {
 		switch k {
 		case "import_prefix":
-			g.ImportPrefix = GoImportPath(v)
+			g.ImportPrefix = v
 		case "import_path":
 			g.PackageImportPath = v
 		case "paths":
@@ -654,7 +654,7 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			}
 		default:
 			if len(k) > 0 && k[0] == 'M' {
-				g.ImportMap[k[1:]] = GoImportPath(v)
+				g.ImportMap[k[1:]] = v
 			}
 		}
 	}
@@ -807,7 +807,7 @@ func (g *Generator) WrapTypes() {
 			proto3:              fileIsProto3(f),
 		}
 		if substitution, ok := g.ImportMap[f.GetName()]; ok {
-			fd.importPath = substitution
+			fd.importPath = GoImportPath(substitution)
 		} else if p, _, _ := fd.goPackageOption(); p != "" {
 			fd.importPath = p
 		} else {
@@ -1340,7 +1340,7 @@ func (g *Generator) generateHeader() {
 	if importPath == "" {
 		g.P("package ", name)
 	} else {
-		g.P("package ", name, " // import ", g.ImportPrefix+importPath)
+		g.P("package ", name, " // import ", GoImportPath(g.ImportPrefix)+importPath)
 	}
 	g.P()
 
@@ -1400,7 +1400,7 @@ func (g *Generator) generateImports() {
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the fmt and math packages.
-	g.P("import "+g.Pkg["proto"]+" ", g.ImportPrefix+"github.com/golang/protobuf/proto")
+	g.P("import "+g.Pkg["proto"]+" ", GoImportPath(g.ImportPrefix)+"github.com/golang/protobuf/proto")
 	g.P("import " + g.Pkg["fmt"] + ` "fmt"`)
 	g.P("import " + g.Pkg["math"] + ` "math"`)
 	var (
@@ -1427,7 +1427,7 @@ func (g *Generator) generateImports() {
 	for i := range importPaths {
 		importPath := GoImportPath(importPaths[i])
 		packageName := g.GoPackageName(importPath)
-		fullPath := g.ImportPrefix + importPath
+		fullPath := GoImportPath(g.ImportPrefix) + importPath
 		// Skip weak imports.
 		if !strongImports[importPath] {
 			g.P("// skipping weak import ", packageName, " ", fullPath)
