@@ -32,7 +32,7 @@
 all:	install
 
 deps:
-	go get -d ./...
+	go get -d -t ./...
 
 install:
 	go install ./proto ./jsonpb ./ptypes ./protoc-gen-go
