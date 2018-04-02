@@ -33,6 +33,7 @@ all:	install
 
 install:
 	go install ./proto ./jsonpb ./ptypes ./protoc-gen-go
+	go get -d -u github.com/golang/protobuf/...
 
 test:
 	go test ./... ./protoc-gen-go/testdata
