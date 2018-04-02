@@ -270,8 +270,9 @@ type FileDescriptor struct {
 	// This is used for supporting public imports.
 	exported map[Object][]symbol
 
-	fingerprint string       // Fingerprint of this file's contents.
-	importPath  GoImportPath // Import path of this file's package.
+	fingerprint string        // Fingerprint of this file's contents.
+	importPath  GoImportPath  // Import path of this file's package.
+	packageName GoPackageName // Name of this file's Go package.
 
 	proto3 bool // whether to generate proto3 code for this file
 }
@@ -304,25 +305,6 @@ func (d *FileDescriptor) goPackageOption() (impPath GoImportPath, pkg GoPackageN
 		return GoImportPath(opt), cleanPackageName(opt[slash+1:]), true
 	}
 	return "", cleanPackageName(opt), true
-}
-
-// goPackageName returns the Go package name to use in the
-// generated Go file.  The result explicit reports whether the name
-// came from an option go_package statement.  If explicit is false,
-// the name was derived from the protocol buffer's package statement
-// or the input file name.
-func (d *FileDescriptor) goPackageName() (name GoPackageName, explicit bool) {
-	// Does the file have a "go_package" option?
-	if _, pkg, ok := d.goPackageOption(); ok {
-		return pkg, true
-	}
-
-	// Does the file have a package clause?
-	if p := d.GetPackage(); p != "" {
-		return cleanPackageName(p), false
-	}
-	// Use the file base name.
-	return cleanPackageName(baseName(d.GetName())), false
 }
 
 // goFileName returns the output name for the generated Go file.
@@ -773,15 +755,45 @@ func (g *Generator) defaultGoPackage() GoPackageName {
 func (g *Generator) SetPackageNames() {
 	g.outputImportPath = g.genFiles[0].importPath
 
+	defaultPackageNames := make(map[GoImportPath]GoPackageName)
+	for _, f := range g.genFiles {
+		if _, p, ok := f.goPackageOption(); ok {
+			defaultPackageNames[f.importPath] = p
+		}
+	}
+	for _, f := range g.genFiles {
+		if _, p, ok := f.goPackageOption(); ok {
+			// Source file: option go_package = "quux/bar";
+			f.packageName = p
+		} else if p, ok := defaultPackageNames[f.importPath]; ok {
+			// A go_package option in another file in the same package.
+			//
+			// This is a poor choice in general, since every source file should
+			// contain a go_package option. Supported mainly for historical
+			// compatibility.
+			f.packageName = p
+		} else if p := g.defaultGoPackage(); p != "" {
+			// Command-line: import_path=quux/bar.
+			//
+			// The import_path flag sets a package name for files which don't
+			// contain a go_package option.
+			f.packageName = p
+		} else if p := f.GetPackage(); p != "" {
+			// Source file: package quux.bar;
+			f.packageName = cleanPackageName(p)
+		} else {
+			// Source filename.
+			f.packageName = cleanPackageName(baseName(f.GetName()))
+		}
+	}
+
 	// Check that all files have a consistent package name and import path.
-	pkg, _ := g.genFiles[0].goPackageName()
 	for _, f := range g.genFiles[1:] {
 		if a, b := g.genFiles[0].importPath, f.importPath; a != b {
-			g.Fail(fmt.Sprint("inconsistent package import paths: ", a, b))
+			g.Fail(fmt.Sprintf("inconsistent package import paths: %v, %v", a, b))
 		}
-		thisPkg, _ := f.goPackageName()
-		if pkg != thisPkg {
-			g.Fail(fmt.Sprint("inconsistent package names: ", thisPkg, pkg))
+		if a, b := g.genFiles[0].packageName, f.packageName; a != b {
+			g.Fail(fmt.Sprintf("inconsistent package names: %v, %v", a, b))
 		}
 	}
 
@@ -800,17 +812,37 @@ func (g *Generator) SetPackageNames() {
 func (g *Generator) WrapTypes() {
 	g.allFiles = make([]*FileDescriptor, 0, len(g.Request.ProtoFile))
 	g.allFilesByName = make(map[string]*FileDescriptor, len(g.allFiles))
+	genFileNames := make(map[string]bool)
+	for _, n := range g.Request.FileToGenerate {
+		genFileNames[n] = true
+	}
 	for _, f := range g.Request.ProtoFile {
 		fd := &FileDescriptor{
 			FileDescriptorProto: f,
 			exported:            make(map[Object][]symbol),
 			proto3:              fileIsProto3(f),
 		}
+		// The import path may be set in a number of ways.
 		if substitution, ok := g.ImportMap[f.GetName()]; ok {
+			// Command-line: M=foo.proto=quux/bar.
+			//
+			// Explicit mapping of source file to import path.
 			fd.importPath = GoImportPath(substitution)
+		} else if genFileNames[f.GetName()] && g.PackageImportPath != "" {
+			// Command-line: import_path=quux/bar.
+			//
+			// The import_path flag sets the import path for every file that
+			// we generate code for.
+			fd.importPath = GoImportPath(g.PackageImportPath)
 		} else if p, _, _ := fd.goPackageOption(); p != "" {
+			// Source file: option go_package = "quux/bar";
+			//
+			// The go_package option sets the import path. Most users should use this.
 			fd.importPath = p
 		} else {
+			// Source filename.
+			//
+			// Last resort when nothing else is available.
 			fd.importPath = GoImportPath(path.Dir(f.GetName()))
 		}
 		// We must wrap the descriptors before we wrap the enums
@@ -1335,12 +1367,11 @@ func (g *Generator) generateHeader() {
 	}
 	g.P()
 
-	name, _ := g.file.goPackageName()
 	importPath, _, _ := g.file.goPackageOption()
 	if importPath == "" {
-		g.P("package ", name)
+		g.P("package ", g.file.packageName)
 	} else {
-		g.P("package ", name, " // import ", GoImportPath(g.ImportPrefix)+importPath)
+		g.P("package ", g.file.packageName, " // import ", GoImportPath(g.ImportPrefix)+importPath)
 	}
 	g.P()
 
