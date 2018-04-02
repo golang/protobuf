@@ -32,7 +32,7 @@
 all:	install
 
 deps:
-	go get -d -u -f github.com/golang/protobuf/...
+	go get -d -u -f ./...
 
 install:
 	go install ./proto ./jsonpb ./ptypes ./protoc-gen-go
