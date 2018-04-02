@@ -31,10 +31,13 @@
 
 all:	install
 
+deps:
+	go get -d -f ./...
+
 install:
 	go install ./proto ./jsonpb ./ptypes ./protoc-gen-go
 
-test:
+test: deps
 	go test ./... ./protoc-gen-go/testdata
 	make -C conformance test
 
@@ -44,5 +47,5 @@ clean:
 nuke:
 	go clean -i ./...
 
-regenerate:
+regenerate: deps
 	./regenerate.sh
