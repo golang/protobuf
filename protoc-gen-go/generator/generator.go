@@ -2293,8 +2293,14 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		case descriptor.FieldDescriptorProto_TYPE_GROUP:
 			getter = false
 		case descriptor.FieldDescriptorProto_TYPE_MESSAGE, descriptor.FieldDescriptorProto_TYPE_ENUM:
-			// Only export getter if its return type is in this package.
-			getter = g.ObjectNamed(field.GetTypeName()).GoImportPath() == message.GoImportPath()
+			// Only export getter if its return type is in the same file.
+			//
+			// This should be the same package, not the same file.
+			// However, code elsewhere assumes that there's a 1-1 relationship
+			// between packages and files, so that's not safe.
+			//
+			// TODO: Tear out all of this complexity and just use type aliases.
+			getter = g.ObjectNamed(field.GetTypeName()).File() == message.File()
 			genType = true
 		default:
 			getter = true
