@@ -293,9 +293,15 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 		// Oneof fields need special handling.
 		if valueField.Tag.Get("protobuf_oneof") != "" {
 			// value is an interface containing &T{real_value}.
-			sv := value.Elem().Elem() // interface -> *T -> T
-			value = sv.Field(0)
-			valueField = sv.Type().Field(0)
+			svPtr := value.Elem() // interface -> *T
+			if !svPtr.IsNil() {
+				sv := svPtr.Elem() // *T -> T
+				value = sv.Field(0)
+				valueField = sv.Type().Field(0)
+			} else {
+				value = reflect.ValueOf(nil)
+				valueField = svPtr.Type().Elem().Field(0)
+			}
 		}
 		prop := jsonProperties(valueField, m.OrigName)
 		if !firstField {
