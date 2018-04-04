@@ -9,6 +9,12 @@ mkdir -p $tmpdir/bin
 PATH=$tmpdir/bin:$PATH
 GOBIN=$tmpdir/bin go install ./protoc-gen-go
 
+# Public imports require at least Go 1.9.
+supportTypeAliases=""
+if go list -f '{{context.ReleaseTags}}' runtime | grep -q go1.9; then
+  supportTypeAliases=1
+fi
+
 # Generate various test protos.
 PROTO_DIRS=(
   conformance/internal/conformance_proto
@@ -18,6 +24,10 @@ PROTO_DIRS=(
 )
 for dir in ${PROTO_DIRS[@]}; do
   for p in `find $dir -name "*.proto"`; do
+    if [[ $p == */import_public/* && ! $supportTypeAliases ]]; then
+      echo "# $p (skipped)"
+      continue;
+    fi
     echo "# $p"
     protoc -I$dir --go_out=plugins=grpc,paths=source_relative:$dir $p
   done

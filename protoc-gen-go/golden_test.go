@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"go/build"
 	"go/parser"
 	"go/token"
 	"io/ioutil"
@@ -38,8 +39,13 @@ func TestGolden(t *testing.T) {
 
 	// Find all the proto files we need to compile. We assume that each directory
 	// contains the files for a single package.
+	supportTypeAliases := hasReleaseTag("1.9")
 	packages := map[string][]string{}
 	err = filepath.Walk("testdata", func(path string, info os.FileInfo, err error) error {
+		if filepath.Base(path) == "import_public" && !supportTypeAliases {
+			// Public imports require type alias support.
+			return filepath.SkipDir
+		}
 		if !strings.HasSuffix(path, ".proto") {
 			return nil
 		}
@@ -404,4 +410,13 @@ func protoc(t *testing.T, args []string) {
 	if err != nil {
 		t.Fatalf("protoc: %v", err)
 	}
+}
+
+func hasReleaseTag(want string) bool {
+	for _, tag := range build.Default.ReleaseTags {
+		if tag == want {
+			return true
+		}
+	}
+	return false
 }
