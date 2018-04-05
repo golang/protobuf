@@ -940,6 +940,13 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				if !ok {
 					continue
 				}
+
+				if string(raw) == "null" {
+					nv := reflect.New(reflect.PtrTo(oop.Type.Elem()))
+					target.Field(oop.Field).Set(nv.Elem())
+					continue
+				}
+
 				nv := reflect.New(oop.Type.Elem())
 				target.Field(oop.Field).Set(nv)
 				if err := u.unmarshalValue(nv.Elem().Field(0), raw, oop.Prop); err != nil {
