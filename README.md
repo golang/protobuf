@@ -9,17 +9,24 @@ the encoder rewritten to:
   from the custom marshaler. And support slices of marshalers, as well as slices
   that can marshal themselves.
 - Support ignored (not marshaled) fields
+- Support embedded struct fields
 - Only support protobuf v3
 - Generate .proto files from the go struct definitions.
+- Error checking to support hand edited `protobuf:"..."` field tags by folks who
+  don't know protobuf very well.
 
 and whatever else I may find useful along the way.
+
+The code you want is in github.com/mistsys/protobuf3/protobuf3 package. The
+other packages are copies of the golang/protobuf I cloned when I started,
+and they are kept around for use by my unit tests.
 
 This fork stems from trying to encode deeply nested data which has heretofore
 been marshaled into JSON. The JSON marshalers, it turns out, permit many more
 of the data structures which Go has, and which we used, than golang/protobuf
 could handle.
 
-Modifications are Copyright 2016 Mist Systems.
+Modifications are Copyright 2016-2018 Mist Systems.
 
 Original README.md follows
 
