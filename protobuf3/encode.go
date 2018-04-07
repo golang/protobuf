@@ -957,13 +957,14 @@ func mapEncodeScratch(mapType reflect.Type) (keycopy, valcopy reflect.Value, key
 	keybase = unsafe.Pointer(keyptr.UnsafeAddr())               // **K
 
 	// Value types are more varied and require special handling.
-	switch mapType.Elem().Kind() {
-	case reflect.Slice:
+	k := mapType.Elem().Kind()
+	switch {
+	case k == reflect.Slice && mapType.Elem().Elem().Kind() == reflect.Uint8:
 		// []byte
 		var dummy []byte
 		valcopy = reflect.ValueOf(&dummy).Elem() // addressable []byte
 		valbase = unsafe.Pointer(valcopy.UnsafeAddr())
-	case reflect.Ptr:
+	case k == reflect.Ptr:
 		// message; the generated field type is map[K]*Msg (so V is *Msg),
 		// so we only need one level of indirection.
 		valcopy = reflect.New(mapType.Elem()).Elem() // addressable V

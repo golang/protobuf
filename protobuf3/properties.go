@@ -1065,7 +1065,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 
 			p.mvalprop = &Properties{}
 			vtype := p.mtype.Elem()
-			if vtype.Kind() != reflect.Ptr && vtype.Kind() != reflect.Slice {
+			if vtype.Kind() != reflect.Ptr && !(vtype.Kind() == reflect.Slice && vtype.Elem().Kind() == reflect.Uint8) {
 				// The value type is not a message (*T) or bytes ([]byte),
 				// so we need encoders for the pointer to this type.
 				vtype = reflect.PtrTo(vtype)
