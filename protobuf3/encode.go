@@ -273,6 +273,16 @@ func (o *Buffer) enc_bool(p *Properties, base unsafe.Pointer) {
 	p.valEnc(o, 1)
 }
 
+// Encode an *int
+func (o *Buffer) enc_ptr_int(p *Properties, base unsafe.Pointer) {
+	v := *(**int)(unsafe.Pointer(uintptr(base) + p.offset))
+	if v == nil {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(*v))
+}
+
 // Encode an int
 func (o *Buffer) enc_int(p *Properties, base unsafe.Pointer) {
 	x := *(*int)(unsafe.Pointer(uintptr(base) + p.offset))
@@ -281,6 +291,16 @@ func (o *Buffer) enc_int(p *Properties, base unsafe.Pointer) {
 	}
 	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, uint64(x))
+}
+
+// Encode an *int
+func (o *Buffer) enc_ptr_uint(p *Properties, base unsafe.Pointer) {
+	v := *(**uint)(unsafe.Pointer(uintptr(base) + p.offset))
+	if v == nil {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(*v))
 }
 
 // Encode a uint

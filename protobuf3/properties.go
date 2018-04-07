@@ -652,6 +652,20 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
+			case reflect.Int:
+				p.enc = (*Buffer).enc_ptr_int
+				p.dec = (*Buffer).dec_ptr_int
+				p.asProtobuf = int32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
+			case reflect.Uint:
+				p.enc = (*Buffer).enc_ptr_uint
+				p.dec = (*Buffer).dec_ptr_int // signness doesn't matter when decoding. either the top bit is set or it isn't
+				p.asProtobuf = uint32_encoder_txt
+				if p.valEnc == nil {
+					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
+				}
 			case reflect.Int32:
 				p.enc = (*Buffer).enc_ptr_int32
 				p.dec = (*Buffer).dec_ptr_int32
