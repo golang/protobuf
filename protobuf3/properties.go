@@ -1019,18 +1019,65 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			p.enc = (*Buffer).enc_new_map
 			p.dec = (*Buffer).dec_new_map
 
+			if p.WireType != WireBytes {
+				err := fmt.Errorf("protobuf3: %s.%s wiretype is not \"bytes\"", t1.String(), f.Name)
+				fmt.Fprintln(os.Stderr, err) // print the error too
+				return err
+			}
+
 			p.mtype = t1
 			p.mkeyprop = &Properties{}
-			p.mkeyprop.init(reflect.PtrTo(p.mtype.Key()), "Key", f.Tag.Get("protobuf_key"), nil)
-			p.mvalprop = &Properties{}
+			key_tag := f.Tag.Get("protobuf_key")
+			if key_tag == "" {
+				err := fmt.Errorf("protobuf3: %s.%s lacks a protobuf_key tag", t1.String(), f.Name)
+				fmt.Fprintln(os.Stderr, err) // print the error too
+				return err
+			}
+			skip, err := p.mkeyprop.init(reflect.PtrTo(p.mtype.Key()), "Key", key_tag, nil)
+			if err != nil {
+				return fmt.Errorf("protobuf3: while parsing the proto_key tag (%s) of %s.%s: %v", key_tag, t1.String(), f.Name, err)
+			}
+			if skip {
+				err := fmt.Errorf("protobuf3: %s.%s protobuf_key tag cannot be \"-\"", t1.String(), f.Name)
+				fmt.Fprintln(os.Stderr, err) // print the error too
+				return err
+			}
+			if p.mkeyprop.Tag != 1 {
+				// treat non-traditional map tags as an error since they won't be compatible with other protobuf marshalers
+				err := fmt.Errorf("protobuf3: %s.%s protobuf_key tag (%s) doesn't use id 1", key_tag, t1.String(), f.Name)
+				fmt.Fprintln(os.Stderr, err) // print the error too
+				return err
+			}
 
+			p.mvalprop = &Properties{}
 			vtype := p.mtype.Elem()
 			if vtype.Kind() != reflect.Ptr && vtype.Kind() != reflect.Slice {
 				// The value type is not a message (*T) or bytes ([]byte),
 				// so we need encoders for the pointer to this type.
 				vtype = reflect.PtrTo(vtype)
 			}
-			p.mvalprop.init(vtype, "Value", f.Tag.Get("protobuf_val"), nil)
+			val_tag := f.Tag.Get("protobuf_val")
+			if val_tag == "" {
+				err := fmt.Errorf("protobuf3: %s.%s lacks a protobuf_val tag", t1.String(), f.Name)
+				fmt.Fprintln(os.Stderr, err) // print the error too
+				return err
+			}
+			skip, err = p.mvalprop.init(vtype, "Value", val_tag, nil)
+			if err != nil {
+				return fmt.Errorf("protobuf3: while parsing the proto_val tag (%s) of %s.%s: %v", val_tag, t1.String(), f.Name, err)
+			}
+			if skip {
+				err := fmt.Errorf("protobuf3: %s.%s protobuf_val tag cannot be \"-\"", t1.String(), f.Name)
+				fmt.Fprintln(os.Stderr, err) // print the error too
+				return err
+			}
+			if p.mvalprop.Tag != 2 {
+				// treat non-traditional map tags as an error since they won't be compatible with other protobuf marshalers
+				err := fmt.Errorf("protobuf3: %s.%s protobuf_val tag (%s) doesn't use id 2", val_tag, t1.String(), f.Name)
+				fmt.Fprintln(os.Stderr, err) // print the error too
+				return err
+			}
+
 			p.asProtobuf = fmt.Sprintf("map<%s, %s>", p.mkeyprop.asProtobuf, p.mvalprop.asProtobuf)
 		}
 	}
@@ -1129,6 +1176,7 @@ func isMarshaler(t reflect.Type) bool {
 }
 
 // Init populates the properties from a protocol buffer struct tag.
+// returns (skip, error)
 func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructField) (bool, error) {
 	// "bytes,49,opt,def=hello!"
 

@@ -607,8 +607,9 @@ func TestRecursiveTypeMsg(t *testing.T) {
 }
 
 type MapMsg struct {
-	m map[string]int32 `protobuf:"bytes,3" protobuf_key:"bytes,1" protobuf_val:"varint,2"`
-	n map[int32][]byte `protobuf:"bytes,4" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
+	m map[string]int32   `protobuf:"bytes,3" protobuf_key:"bytes,1" protobuf_val:"varint,2"`
+	n map[int32][]byte   `protobuf:"bytes,4" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
+	e map[int32]struct{} `protobuf:"bytes,5" protobuf_key:"zigzag32,1" protobuf_val:"bytes,2"` // check that sets encode and decode properly
 }
 
 func (*MapMsg) ProtoMessage()    {}
@@ -622,6 +623,9 @@ func TestMapMsg(t *testing.T) {
 		},
 		MapMsg{
 			n: map[int32][]byte{125: []byte("abc"), 126: []byte("def")},
+		},
+		MapMsg{
+			e: map[int32]struct{}{-127: struct{}{}, -128: struct{}{}},
 		},
 	} {
 
@@ -1274,5 +1278,56 @@ func TestEmbeddedMsg(t *testing.T) {
 		if err == nil {
 			t.Error("BadEmbeddedMsg should have caused an error")
 		}
+	}
+}
+
+type BadMapMsg struct {
+	A struct {
+		m map[string]int32 `protobuf:"varint,1" protobuf_key:"bytes,1" protobuf_val:"varint,2"` // must use bytes wiretype for maps
+	}
+	B struct {
+		m map[string]int32 `protobuf:"bytes,1" protobuf_key:"-" protobuf_val:"varint,2"` // can't skip keys
+	}
+	C struct {
+		m map[string]int32 `protobuf:"bytes,1" protobuf_key:"bytes,3" protobuf_val:"varint,2"` // keys must use tag 1
+	}
+	D struct {
+		m map[string]int32 `protobuf:"bytes,1" protobuf_key:"bytes,1" protobuf_val:"-"` // can't skip values (we could support it if we ever needed it. for now if all the values are zero-values we're effectively skipping them)
+	}
+	E struct {
+		m map[string]int32 `protobuf:"bytes,1" protobuf_key:"bytes,1" protobuf_val:"varint,3"` // values must use tag 2
+	}
+}
+
+func TestBadMapMsg(t *testing.T) {
+	var m BadMapMsg
+	_, err := protobuf3.Marshal(&m.A)
+	t.Log(err)
+	if err == nil {
+		t.Error("BadMapMsg.A should have caused an error")
+	}
+
+	_, err = protobuf3.Marshal(&m.B)
+	t.Log(err)
+	if err == nil {
+		t.Error("BadMapMsg.B should have caused an error")
+	}
+
+	_, err = protobuf3.Marshal(&m.C)
+	t.Log(err)
+	if err == nil {
+		t.Error("BadMapMsg.C should have caused an error")
+	}
+
+	_, err = protobuf3.Marshal(&m.D)
+	t.Log(err)
+	if err == nil {
+		t.Error("BadMapMsg.D should have caused an error")
+	}
+
+	_, err = protobuf3.Marshal(&m.E)
+	t.Log(err)
+	if err == nil {
+		t.Error("BadMapMsg.E should have caused an error")
 	}
 }
