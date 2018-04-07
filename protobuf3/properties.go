@@ -643,8 +643,8 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 
 			switch t2.Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no encoder function for %s -> %s\n", t1, t2.Name())
-				break
+				return fmt.Errorf("protobuf3: no encoder function for %s -> %s\n", t1, t2.Name())
+
 			case reflect.Bool:
 				p.enc = (*Buffer).enc_ptr_bool
 				p.dec = (*Buffer).dec_ptr_bool
@@ -736,8 +736,8 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 
 			switch t2.Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no slice encoder for %s = []%s\n", t1.Name(), t2.Name())
-				break
+				return fmt.Errorf("protobuf3: no slice encoder for %s = []%s\n", t1.Name(), t2.Name())
+
 			case reflect.Bool:
 				p.enc = (*Buffer).enc_slice_packed_bool
 				p.dec = (*Buffer).dec_slice_packed_bool
@@ -864,8 +864,8 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			case reflect.Ptr:
 				switch t3 := t2.Elem(); t3.Kind() {
 				default:
-					fmt.Fprintf(os.Stderr, "protobuf3: no ptr encoder for %s -> %s -> %s\n", t1.Name(), t2.Name(), t3.Name())
-					break
+					return fmt.Errorf("protobuf3: no ptr encoder for %s -> %s -> %s\n", t1.Name(), t2.Name(), t3.Name())
+
 				case reflect.Struct:
 					p.stype = t3
 					p.sprop, err = getPropertiesLocked(t3)
@@ -880,8 +880,8 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			case reflect.Slice:
 				switch t2.Elem().Kind() {
 				default:
-					fmt.Fprintf(os.Stderr, "protobuf3: no slice elem encoder for %s -> %s -> %s\n", t1.Name(), t2.Name(), t2.Elem().Name())
-					break
+					return fmt.Errorf("protobuf3: no slice elem encoder for %s -> %s -> %s\n", t1.Name(), t2.Name(), t2.Elem().Name())
+
 				case reflect.Uint8:
 					p.enc = (*Buffer).enc_slice_slice_byte
 					p.dec = (*Buffer).dec_slice_slice_byte
@@ -914,8 +914,8 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 
 			switch t2.Kind() {
 			default:
-				fmt.Fprintf(os.Stderr, "protobuf3: no array encoder for %s = %s\n", t1.Name(), t2.Name())
-				break
+				return fmt.Errorf("protobuf3: no array encoder for %s = %s\n", t1.Name(), t2.Name())
+
 			case reflect.Bool:
 				p.enc = (*Buffer).enc_array_packed_bool
 				p.dec = (*Buffer).dec_array_packed_bool
@@ -1000,8 +1000,8 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			case reflect.Ptr:
 				switch t3 := t2.Elem(); t3.Kind() {
 				default:
-					fmt.Fprintf(os.Stderr, "protobuf3: no ptr encoder for %s -> %s -> %s\n", t1.Name(), t2.Name(), t3.Name())
-					break
+					return fmt.Errorf("protobuf3: no ptr encoder for %s -> %s -> %s\n", t1.Name(), t2.Name(), t3.Name())
+
 				case reflect.Struct:
 					p.stype = t3
 					p.sprop, err = getPropertiesLocked(t3)
