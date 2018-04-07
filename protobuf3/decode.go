@@ -1080,9 +1080,7 @@ func (o *Buffer) dec_new_map(p *Properties, base unsafe.Pointer) error {
 	var valptr reflect.Value
 	switch p.mtype.Elem().Kind() {
 	case reflect.Slice:
-		// []byte
-		var dummy []byte
-		valptr = reflect.ValueOf(&dummy)           // *[]byte
+		valptr = reflect.New(p.mtype.Elem())       // *[]T
 		valbase = unsafe.Pointer(valptr.Pointer()) // *[]byte
 	case reflect.Ptr:
 		// message; valptr is **Msg; need to allocate the intermediate pointer

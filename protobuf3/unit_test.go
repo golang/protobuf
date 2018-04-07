@@ -1331,3 +1331,35 @@ func TestBadMapMsg(t *testing.T) {
 		t.Error("BadMapMsg.E should have caused an error")
 	}
 }
+
+type MapOfSliceOfStruct struct {
+	m map[int][]StructForMapOfSlice `protobuf:"bytes,1" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
+}
+
+type StructForMapOfSlice struct {
+	s string `protobuf:"bytes,1"`
+}
+
+func TestMapOfSliceOfStruct(t *testing.T) {
+	var m = MapOfSliceOfStruct{
+		m: make(map[int][]StructForMapOfSlice),
+	}
+	m.m[0] = nil
+	m.m[1] = []StructForMapOfSlice{StructForMapOfSlice{s: "one.0"}, StructForMapOfSlice{s: "one.1"}, StructForMapOfSlice{s: "one.2"}}
+	m.m[2] = []StructForMapOfSlice{StructForMapOfSlice{s: "two.3"}}
+
+	b, err := protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var m2 MapOfSliceOfStruct
+	err = protobuf3.Unmarshal(b, &m2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !reflect.DeepEqual(&m, &m2) {
+		t.Error("unmarshal(marshal(x)) != x")
+	}
+}
