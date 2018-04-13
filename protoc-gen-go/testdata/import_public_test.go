@@ -1,6 +1,6 @@
 // Go support for Protocol Buffers - Google's data interchange format
 //
-// Copyright 2018 The Go Authors.  All rights reserved.
+// Copyright 2010 The Go Authors.  All rights reserved.
 // https://github.com/golang/protobuf
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,15 +29,38 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-syntax = "proto3";
+// +build go1.9
 
-package test;
+package testdata
 
-option go_package = "github.com/golang/protobuf/protoc-gen-go/testdata/imports";
+import (
+	"testing"
 
-import public "imports/test_a_1/m1.proto";
+	mainpb "github.com/golang/protobuf/protoc-gen-go/testdata/import_public"
+	subpb "github.com/golang/protobuf/protoc-gen-go/testdata/import_public/sub"
+)
 
-message Public {
-  test.a.M1 m1 = 1;
-  test.a.E1 e1 = 2;
+func TestImportPublicLink(t *testing.T) {
+	// mainpb.[ME] should be interchangable with subpb.[ME].
+	var _ mainpb.M = subpb.M{}
+	var _ mainpb.E = subpb.E(0)
+	_ = &mainpb.Public{
+		M: &mainpb.M{},
+		E: mainpb.E_ZERO,
+		Local: &mainpb.Local{
+			M: &mainpb.M{},
+			E: mainpb.E_ZERO,
+		},
+	}
+	_ = &mainpb.Public{
+		M: &subpb.M{},
+		E: subpb.E_ZERO,
+		Local: &mainpb.Local{
+			M: &subpb.M{},
+			E: subpb.E_ZERO,
+		},
+	}
+	_ = &mainpb.M{
+		M2: &subpb.M2{},
+	}
 }
