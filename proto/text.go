@@ -456,24 +456,6 @@ func (tm *TextMarshaler) writeStruct(w *textWriter, sv reflect.Value) error {
 	return nil
 }
 
-// writeRaw writes an uninterpreted raw message.
-func writeRaw(w *textWriter, b []byte) error {
-	if err := w.WriteByte('<'); err != nil {
-		return err
-	}
-	if !w.compact {
-		if err := w.WriteByte('\n'); err != nil {
-			return err
-		}
-	}
-	w.indent()
-	if err := writeUnknownStruct(w, b); err != nil {
-		return err
-	}
-	w.unindent()
-	return w.WriteByte('>')
-}
-
 // writeAny writes an arbitrary field.
 func (tm *TextMarshaler) writeAny(w *textWriter, v reflect.Value, props *Properties) error {
 	v = reflect.Indirect(v)
