@@ -2643,10 +2643,7 @@ func (p *Buffer) Marshal(pb Message) error {
 	var err error
 	if m, ok := pb.(newMarshaler); ok {
 		siz := m.XXX_Size()
-		// make sure buf has enough capacity
-		if newCap := len(p.buf) + siz; newCap > cap(p.buf) {
-			p.buf = append(make([]byte, 0, newCap), p.buf...)
-		}
+		p.grow(siz) // make sure buf has enough capacity
 		p.buf, err = m.XXX_Marshal(p.buf, p.deterministic)
 		return err
 	}
@@ -2663,10 +2660,22 @@ func (p *Buffer) Marshal(pb Message) error {
 	}
 	var info InternalMessageInfo
 	siz := info.Size(pb)
-	// make sure buf has enough capacity
-	if newCap := len(p.buf) + siz; newCap > cap(p.buf) {
-		p.buf = append(make([]byte, 0, newCap), p.buf...)
-	}
+	p.grow(siz) // make sure buf has enough capacity
 	p.buf, err = info.Marshal(p.buf, pb, p.deterministic)
 	return err
+}
+
+// grow grows the buffer's capacity, if necessary, to guarantee space for
+// another n bytes. After grow(n), at least n bytes can be written to the
+// buffer without another allocation.
+func (p *Buffer) grow(n int) {
+	need := len(p.buf) + n
+	if need <= cap(p.buf) {
+		return
+	}
+	newCap := len(p.buf) * 2
+	if newCap < need {
+		newCap = need
+	}
+	p.buf = append(make([]byte, 0, newCap), p.buf...)
 }

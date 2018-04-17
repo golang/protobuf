@@ -363,6 +363,48 @@ func TestMarshalerEncoding(t *testing.T) {
 	}
 }
 
+// Ensure that Buffer.Marshal uses O(N) memory for N messages
+func TestBufferMarshalAllocs(t *testing.T) {
+	value := &OtherMessage{Key: Int64(1)}
+	msg := &MyMessage{Count: Int32(1), Others: []*OtherMessage{value}}
+
+	reallocSize := func(t *testing.T, items int, prealloc int) (int64, int64) {
+		var b Buffer
+		b.SetBuf(make([]byte, 0, prealloc))
+
+		var allocSpace int64
+		prevCap := cap(b.Bytes())
+		for i := 0; i < items; i++ {
+			err := b.Marshal(msg)
+			if err != nil {
+				t.Errorf("Marshal err = %q", err)
+				break
+			}
+			if c := cap(b.Bytes()); prevCap != c {
+				allocSpace += int64(c)
+				prevCap = c
+			}
+		}
+		needSpace := int64(len(b.Bytes()))
+		return allocSpace, needSpace
+	}
+
+	for _, prealloc := range []int{0, 100, 10000} {
+		for _, items := range []int{1, 2, 5, 10, 20, 50, 100, 200, 500, 1000} {
+			runtimeSpace, need := reallocSize(t, items, prealloc)
+			totalSpace := int64(prealloc) + runtimeSpace
+
+			runtimeRatio := float64(runtimeSpace) / float64(need)
+			totalRatio := float64(totalSpace) / float64(need)
+
+			if totalRatio < 1 || runtimeRatio > 4 {
+				t.Errorf("needed %dB, allocated %dB total (ratio %.1f), allocated %dB at runtime (ratio %.1f)",
+					need, totalSpace, totalRatio, runtimeSpace, runtimeRatio)
+			}
+		}
+	}
+}
+
 // Simple tests for bytes
 func TestBytesPrimitives(t *testing.T) {
 	o := old()
