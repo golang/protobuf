@@ -639,7 +639,7 @@ type Communique struct {
 	//	*Communique_Delta_
 	//	*Communique_Msg
 	//	*Communique_Somegroup
-	Union                isCommunique_Union `protobuf_oneof:"union"`
+	Union                IsCommunique_Union `protobuf_oneof:"union"`
 	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
 	XXX_unrecognized     []byte             `json:"-"`
 	XXX_sizecache        int32              `json:"-"`
@@ -669,7 +669,7 @@ func (m *Communique) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Communique proto.InternalMessageInfo
 
-type isCommunique_Union interface {
+type IsCommunique_Union interface {
 	isCommunique_Union()
 }
 
@@ -715,7 +715,7 @@ func (*Communique_Delta_) isCommunique_Union()    {}
 func (*Communique_Msg) isCommunique_Union()       {}
 func (*Communique_Somegroup) isCommunique_Union() {}
 
-func (m *Communique) GetUnion() isCommunique_Union {
+func (m *Communique) GetUnion() IsCommunique_Union {
 	if m != nil {
 		return m.Union
 	}
