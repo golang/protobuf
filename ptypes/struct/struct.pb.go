@@ -108,7 +108,7 @@ type Value struct {
 	//	*Value_BoolValue
 	//	*Value_StructValue
 	//	*Value_ListValue
-	Kind                 isValue_Kind `protobuf_oneof:"kind"`
+	Kind                 IsValue_Kind `protobuf_oneof:"kind"`
 	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
 	XXX_unrecognized     []byte       `json:"-"`
 	XXX_sizecache        int32        `json:"-"`
@@ -139,7 +139,7 @@ func (m *Value) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Value proto.InternalMessageInfo
 
-type isValue_Kind interface {
+type IsValue_Kind interface {
 	isValue_Kind()
 }
 
@@ -169,7 +169,7 @@ func (*Value_BoolValue) isValue_Kind()   {}
 func (*Value_StructValue) isValue_Kind() {}
 func (*Value_ListValue) isValue_Kind()   {}
 
-func (m *Value) GetKind() isValue_Kind {
+func (m *Value) GetKind() IsValue_Kind {
 	if m != nil {
 		return m.Kind
 	}

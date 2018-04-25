@@ -117,7 +117,7 @@ type ConformanceRequest struct {
 	// Types that are valid to be assigned to Payload:
 	//	*ConformanceRequest_ProtobufPayload
 	//	*ConformanceRequest_JsonPayload
-	Payload isConformanceRequest_Payload `protobuf_oneof:"payload"`
+	Payload IsConformanceRequest_Payload `protobuf_oneof:"payload"`
 	// Which format should the testee serialize its message to?
 	RequestedOutputFormat WireFormat `protobuf:"varint,3,opt,name=requested_output_format,json=requestedOutputFormat,enum=conformance.WireFormat" json:"requested_output_format,omitempty"`
 	XXX_NoUnkeyedLiteral  struct{}   `json:"-"`
@@ -149,7 +149,7 @@ func (m *ConformanceRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ConformanceRequest proto.InternalMessageInfo
 
-type isConformanceRequest_Payload interface {
+type IsConformanceRequest_Payload interface {
 	isConformanceRequest_Payload()
 }
 
@@ -163,7 +163,7 @@ type ConformanceRequest_JsonPayload struct {
 func (*ConformanceRequest_ProtobufPayload) isConformanceRequest_Payload() {}
 func (*ConformanceRequest_JsonPayload) isConformanceRequest_Payload()     {}
 
-func (m *ConformanceRequest) GetPayload() isConformanceRequest_Payload {
+func (m *ConformanceRequest) GetPayload() IsConformanceRequest_Payload {
 	if m != nil {
 		return m.Payload
 	}
@@ -266,7 +266,7 @@ type ConformanceResponse struct {
 	//	*ConformanceResponse_ProtobufPayload
 	//	*ConformanceResponse_JsonPayload
 	//	*ConformanceResponse_Skipped
-	Result               isConformanceResponse_Result `protobuf_oneof:"result"`
+	Result               IsConformanceResponse_Result `protobuf_oneof:"result"`
 	XXX_NoUnkeyedLiteral struct{}                     `json:"-"`
 	XXX_unrecognized     []byte                       `json:"-"`
 	XXX_sizecache        int32                        `json:"-"`
@@ -296,7 +296,7 @@ func (m *ConformanceResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ConformanceResponse proto.InternalMessageInfo
 
-type isConformanceResponse_Result interface {
+type IsConformanceResponse_Result interface {
 	isConformanceResponse_Result()
 }
 
@@ -326,7 +326,7 @@ func (*ConformanceResponse_ProtobufPayload) isConformanceResponse_Result() {}
 func (*ConformanceResponse_JsonPayload) isConformanceResponse_Result()     {}
 func (*ConformanceResponse_Skipped) isConformanceResponse_Result()         {}
 
-func (m *ConformanceResponse) GetResult() isConformanceResponse_Result {
+func (m *ConformanceResponse) GetResult() IsConformanceResponse_Result {
 	if m != nil {
 		return m.Result
 	}
@@ -574,7 +574,7 @@ type TestAllTypes struct {
 	//	*TestAllTypes_OneofNestedMessage
 	//	*TestAllTypes_OneofString
 	//	*TestAllTypes_OneofBytes
-	OneofField isTestAllTypes_OneofField `protobuf_oneof:"oneof_field"`
+	OneofField IsTestAllTypes_OneofField `protobuf_oneof:"oneof_field"`
 	// Well-known types
 	OptionalBoolWrapper   *wrappers.BoolValue     `protobuf:"bytes,201,opt,name=optional_bool_wrapper,json=optionalBoolWrapper" json:"optional_bool_wrapper,omitempty"`
 	OptionalInt32Wrapper  *wrappers.Int32Value    `protobuf:"bytes,202,opt,name=optional_int32_wrapper,json=optionalInt32Wrapper" json:"optional_int32_wrapper,omitempty"`
@@ -648,7 +648,7 @@ func (m *TestAllTypes) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TestAllTypes proto.InternalMessageInfo
 
-type isTestAllTypes_OneofField interface {
+type IsTestAllTypes_OneofField interface {
 	isTestAllTypes_OneofField()
 }
 
@@ -670,7 +670,7 @@ func (*TestAllTypes_OneofNestedMessage) isTestAllTypes_OneofField() {}
 func (*TestAllTypes_OneofString) isTestAllTypes_OneofField()        {}
 func (*TestAllTypes_OneofBytes) isTestAllTypes_OneofField()         {}
 
-func (m *TestAllTypes) GetOneofField() isTestAllTypes_OneofField {
+func (m *TestAllTypes) GetOneofField() IsTestAllTypes_OneofField {
 	if m != nil {
 		return m.OneofField
 	}

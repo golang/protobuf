@@ -3047,10 +3047,10 @@ type Oneof struct {
 	//	*Oneof_F_Message
 	//	*Oneof_FGroup
 	//	*Oneof_F_Largest_Tag
-	Union isOneof_Union `protobuf_oneof:"union"`
+	Union IsOneof_Union `protobuf_oneof:"union"`
 	// Types that are valid to be assigned to Tormato:
 	//	*Oneof_Value
-	Tormato              isOneof_Tormato `protobuf_oneof:"tormato"`
+	Tormato              IsOneof_Tormato `protobuf_oneof:"tormato"`
 	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
 	XXX_unrecognized     []byte          `json:"-"`
 	XXX_sizecache        int32           `json:"-"`
@@ -3080,10 +3080,10 @@ func (m *Oneof) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Oneof proto.InternalMessageInfo
 
-type isOneof_Union interface {
+type IsOneof_Union interface {
 	isOneof_Union()
 }
-type isOneof_Tormato interface {
+type IsOneof_Tormato interface {
 	isOneof_Tormato()
 }
 
@@ -3161,13 +3161,13 @@ func (*Oneof_FGroup) isOneof_Union()        {}
 func (*Oneof_F_Largest_Tag) isOneof_Union() {}
 func (*Oneof_Value) isOneof_Tormato()       {}
 
-func (m *Oneof) GetUnion() isOneof_Union {
+func (m *Oneof) GetUnion() IsOneof_Union {
 	if m != nil {
 		return m.Union
 	}
 	return nil
 }
-func (m *Oneof) GetTormato() isOneof_Tormato {
+func (m *Oneof) GetTormato() IsOneof_Tormato {
 	if m != nil {
 		return m.Tormato
 	}
@@ -3665,7 +3665,7 @@ type Communique struct {
 	//	*Communique_TempC
 	//	*Communique_Col
 	//	*Communique_Msg
-	Union                isCommunique_Union `protobuf_oneof:"union"`
+	Union                IsCommunique_Union `protobuf_oneof:"union"`
 	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
 	XXX_unrecognized     []byte             `json:"-"`
 	XXX_sizecache        int32              `json:"-"`
@@ -3695,7 +3695,7 @@ func (m *Communique) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Communique proto.InternalMessageInfo
 
-type isCommunique_Union interface {
+type IsCommunique_Union interface {
 	isCommunique_Union()
 }
 
@@ -3725,7 +3725,7 @@ func (*Communique_TempC) isCommunique_Union()  {}
 func (*Communique_Col) isCommunique_Union()    {}
 func (*Communique_Msg) isCommunique_Union()    {}
 
-func (m *Communique) GetUnion() isCommunique_Union {
+func (m *Communique) GetUnion() IsCommunique_Union {
 	if m != nil {
 		return m.Union
 	}

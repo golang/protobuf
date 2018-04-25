@@ -511,7 +511,7 @@ type MsgWithOneof struct {
 	//	*MsgWithOneof_Country
 	//	*MsgWithOneof_HomeAddress
 	//	*MsgWithOneof_MsgWithRequired
-	Union                isMsgWithOneof_Union `protobuf_oneof:"union"`
+	Union                IsMsgWithOneof_Union `protobuf_oneof:"union"`
 	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
 	XXX_unrecognized     []byte               `json:"-"`
 	XXX_sizecache        int32                `json:"-"`
@@ -541,7 +541,7 @@ func (m *MsgWithOneof) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgWithOneof proto.InternalMessageInfo
 
-type isMsgWithOneof_Union interface {
+type IsMsgWithOneof_Union interface {
 	isMsgWithOneof_Union()
 }
 
@@ -567,7 +567,7 @@ func (*MsgWithOneof_Country) isMsgWithOneof_Union()         {}
 func (*MsgWithOneof_HomeAddress) isMsgWithOneof_Union()     {}
 func (*MsgWithOneof_MsgWithRequired) isMsgWithOneof_Union() {}
 
-func (m *MsgWithOneof) GetUnion() isMsgWithOneof_Union {
+func (m *MsgWithOneof) GetUnion() IsMsgWithOneof_Union {
 	if m != nil {
 		return m.Union
 	}
