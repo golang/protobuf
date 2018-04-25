@@ -1730,7 +1730,8 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	mapFieldTypes := make(map[*descriptor.FieldDescriptorProto]string)
 
 	oneofFieldName := make(map[int32]string)                           // indexed by oneof_index field of FieldDescriptorProto
-	oneofDisc := make(map[int32]string)                                // name of discriminator method
+	oneofDiscType := make(map[int32]string)                            // name of discriminator type
+	oneofDiscMethod := make(map[int32]string)                          // name of discriminator method
 	oneofTypeName := make(map[*descriptor.FieldDescriptorProto]string) // without star
 	oneofInsertPoints := make(map[int32]int)                           // oneof_index => offset of g.Buffer
 
@@ -1803,11 +1804,13 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			// when we've computed any disambiguation.
 			oneofInsertPoints[*field.OneofIndex] = g.Buffer.Len()
 
-			dname := "is" + ccTypeName + "_" + fname
+			tname := "Is" + ccTypeName + "_" + fname // export the type
+			mname := "is" + ccTypeName + "_" + fname // don't export the method
 			oneofFieldName[*field.OneofIndex] = fname
-			oneofDisc[*field.OneofIndex] = dname
+			oneofDiscType[*field.OneofIndex] = tname
+			oneofDiscMethod[*field.OneofIndex] = mname
 			tag := `protobuf_oneof:"` + odp.GetName() + `"`
-			g.P(Annotate(message.file, oneofFullPath, fname), " ", dname, " `", tag, "`")
+			g.P(Annotate(message.file, oneofFullPath, fname), " ", tname, " `", tag, "`")
 		}
 
 		if *field.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE {
@@ -2076,15 +2079,16 @@ func (g *Generator) generateMessage(message *Descriptor) {
 
 	// Oneof per-field types, discriminants and getters.
 	//
-	// Generate unexported named types for the discriminant interfaces.
+	// Generate exported named types for the discriminant interfaces.
 	// We shouldn't have to do this, but there was (~19 Aug 2015) a compiler/linker bug
 	// that was triggered by using anonymous interfaces here.
 	// TODO: Revisit this and consider reverting back to anonymous interfaces.
 	for oi := range message.OneofDecl {
-		dname := oneofDisc[int32(oi)]
-		g.P("type ", dname, " interface {")
+		tname := oneofDiscType[int32(oi)]
+		mname := oneofDiscMethod[int32(oi)]
+		g.P("type ", tname, " interface {")
 		g.In()
-		g.P(dname, "()")
+		g.P(mname, "()")
 		g.Out()
 		g.P("}")
 	}
@@ -2106,13 +2110,13 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		if field.OneofIndex == nil {
 			continue
 		}
-		g.P("func (*", oneofTypeName[field], ") ", oneofDisc[*field.OneofIndex], "() {}")
+		g.P("func (*", oneofTypeName[field], ") ", oneofDiscMethod[*field.OneofIndex], "() {}")
 	}
 	g.P()
 	for oi := range message.OneofDecl {
 		fname := oneofFieldName[int32(oi)]
 		oneofFullPath := fmt.Sprintf("%s,%d,%d", message.path, messageOneofPath, oi)
-		g.P("func (m *", ccTypeName, ") ", Annotate(message.file, oneofFullPath, "Get"+fname), "() ", oneofDisc[int32(oi)], " {")
+		g.P("func (m *", ccTypeName, ") ", Annotate(message.file, oneofFullPath, "Get"+fname), "() ", oneofDiscType[int32(oi)], " {")
 		g.P("if m != nil { return m.", fname, " }")
 		g.P("return nil")
 		g.P("}")
