@@ -406,14 +406,10 @@ var marshalingTests = []struct {
 	{"Any with message and indent", marshalerAllOptions, anySimple, anySimplePrettyJSON},
 	{"Any with WKT", marshaler, anyWellKnown, anyWellKnownJSON},
 	{"Any with WKT and indent", marshalerAllOptions, anyWellKnown, anyWellKnownPrettyJSON},
-<<<<<<< HEAD
 	{"Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}, `{"dur":"3s"}`},
 	{"Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3, Nanos: 1e6}}, `{"dur":"3.001s"}`},
 	{"Duration beyond float64 precision", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 100000000, Nanos: 1}}, `{"dur":"100000000.000000001s"}`},
 	{"negative Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: -123, Nanos: -456}}, `{"dur":"-123.000000456s"}`},
-=======
-	{"Duration", marshaler, &pb.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}, `{"dur":"3.000s"}`},
->>>>>>> Revert "fix unnecessary rounding to float64 precision when JSON-marshaling durations (#453)" (#493)
 	{"Struct", marshaler, &pb.KnownTypes{St: &stpb.Struct{
 		Fields: map[string]*stpb.Value{
 			"one": {Kind: &stpb.Value_StringValue{"loneliest number"}},
