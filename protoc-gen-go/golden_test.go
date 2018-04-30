@@ -39,7 +39,7 @@ func TestGolden(t *testing.T) {
 
 	// Find all the proto files we need to compile. We assume that each directory
 	// contains the files for a single package.
-	supportTypeAliases := hasReleaseTag("1.9")
+	supportTypeAliases := hasReleaseTag("go1.9")
 	packages := map[string][]string{}
 	err = filepath.Walk("testdata", func(path string, info os.FileInfo, err error) error {
 		if filepath.Base(path) == "import_public" && !supportTypeAliases {
