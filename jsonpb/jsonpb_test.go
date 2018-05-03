@@ -854,6 +854,7 @@ var unmarshalingShouldError = []struct {
 	{"gibberish", "{adskja123;l23=-=", new(pb.Simple)},
 	{"unknown field", `{"unknown": "foo"}`, new(pb.Simple)},
 	{"unknown enum name", `{"hilarity":"DAVE"}`, new(proto3pb.Message)},
+	{"single enum for repeated enum field", `{"r_color":"BLUE"}`, new(pb.Widget)},
 }
 
 func TestUnmarshalingBadInput(t *testing.T) {
