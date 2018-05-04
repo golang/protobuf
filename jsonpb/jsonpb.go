@@ -272,7 +272,7 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 	for i := 0; i < s.NumField(); i++ {
 		value := s.Field(i)
 		valueField := s.Type().Field(i)
-		if strings.HasPrefix(valueField.Name, "XXX_") {
+		if strings.HasPrefix(valueField.Name, "XXX_") || valueField.Tag.Get("json") == "-" {
 			continue
 		}
 
