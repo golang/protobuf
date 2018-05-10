@@ -49,6 +49,7 @@
 package main
 
 import (
+	"flag"
 	"io/ioutil"
 	"os"
 
@@ -56,7 +57,20 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/generator"
 )
 
+const (
+	// versionString holds the current version of protoc-gen-go.
+	versionString = "1.1.0"
+)
+
 func main() {
+	// If the -version flag is set, just print the version and exit.
+	versionFlag := flag.Bool("version", false, "print the version of protoc-gen-go")
+	flag.Parse()
+	if *versionFlag {
+		os.Stdout.WriteString(versionString)
+		os.Exit(0)
+	}
+
 	// Begin by allocating a generator. The request and response structures are stored there
 	// so we can do error handling easily - the response structure contains the field to
 	// report failure.
