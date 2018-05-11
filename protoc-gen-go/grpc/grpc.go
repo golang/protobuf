@@ -162,7 +162,7 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P()
 	g.P(fmt.Sprintf(`// Client API for %s service.
 //
-// For semantics around ctx use and closing/ending RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.`, servName))
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.`, servName))
 
 	// Client interface.
 	if deprecated {
