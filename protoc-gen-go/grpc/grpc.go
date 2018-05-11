@@ -160,13 +160,13 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	deprecated := service.GetOptions().GetDeprecated()
 
 	g.P()
-	g.P(fmt.Sprintf(`// Client API for %s service.
+	g.P(fmt.Sprintf(`// %sClient is the client API for %s service.
 //
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.`, servName))
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.`, servName, servName))
 
 	// Client interface.
 	if deprecated {
-		g.P(deprecationComment)
+		g.P("\n" + deprecationComment)
 	}
 	g.P("type ", servName, "Client interface {")
 	for i, method := range service.Method {
