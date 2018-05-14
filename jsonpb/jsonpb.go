@@ -158,6 +158,10 @@ type wkt interface {
 	XXX_WellKnownType() string
 }
 
+type enum interface {
+	EnumDescriptor() ([]byte, []int)
+}
+
 // marshalObject writes a struct to the Writer.
 func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeURL string) error {
 	if jsm, ok := v.(JSONPBMarshaler); ok {
@@ -521,7 +525,7 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 	}
 
 	// Handle enumerations.
-	if !m.EnumsAsInts && prop.Enum != "" {
+	if _, isenum := v.Interface().(enum); !m.EnumsAsInts && isenum {
 		// Unknown enum values will are stringified by the proto library as their
 		// value. Such values should _not_ be quoted or they will be interpreted
 		// as an enum string instead of their value.
