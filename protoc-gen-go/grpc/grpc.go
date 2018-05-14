@@ -166,7 +166,8 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 
 	// Client interface.
 	if deprecated {
-		g.P("\n" + deprecationComment)
+		g.P("//")
+		g.P(deprecationComment)
 	}
 	g.P("type ", servName, "Client interface {")
 	for i, method := range service.Method {
@@ -208,14 +209,13 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 		g.generateClientMethod(servName, fullServName, serviceDescVar, method, descExpr)
 	}
 
-	g.P("// Server API for ", servName, " service")
-	g.P()
-
 	// Server interface.
+	serverType := servName + "Server"
+	g.P("// ", serverType, " is the server API for ", servName, " service.")
 	if deprecated {
+		g.P("//")
 		g.P(deprecationComment)
 	}
-	serverType := servName + "Server"
 	g.P("type ", serverType, " interface {")
 	for i, method := range service.Method {
 		g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.

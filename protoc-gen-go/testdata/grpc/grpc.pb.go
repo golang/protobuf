@@ -285,8 +285,7 @@ func (x *testBidiClient) Recv() (*StreamMsg2, error) {
 	return m, nil
 }
 
-// Server API for Test service
-
+// TestServer is the server API for Test service.
 type TestServer interface {
 	UnaryCall(context.Context, *SimpleRequest) (*SimpleResponse, error)
 	// This RPC streams from the server only.
