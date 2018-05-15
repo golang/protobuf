@@ -1151,6 +1151,9 @@ func (g *Generator) generate(file *FileDescriptor) {
 	for _, ext := range g.file.ext {
 		g.generateExtension(ext)
 	}
+	for i, service := range g.file.FileDescriptorProto.Service {
+		g.generateService(service, i)
+	}
 	g.generateInitFunction()
 
 	// Run the plugins before the imports so we know which imports are necessary.
@@ -1711,6 +1714,11 @@ var wellKnownTypes = map[string]bool{
 	"BoolValue":   true,
 	"StringValue": true,
 	"BytesValue":  true,
+}
+
+func (g *Generator) generateService(service *descriptor.ServiceDescriptorProto, index int) {
+	g.P("func Get", CamelCase(service.GetName()), "ServiceDescriptor() ([]byte, []int) { return ", g.file.VarName(), ", []int{", strconv.Itoa(index), "} }")
+	g.P()
 }
 
 // Generate the type and default constant definitions for this Descriptor.

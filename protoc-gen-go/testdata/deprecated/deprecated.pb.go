@@ -122,6 +122,10 @@ func (m *DeprecatedResponse) GetDeprecatedField() DeprecatedEnum {
 	return DeprecatedEnum_DEPRECATED
 }
 
+func GetDeprecatedServiceServiceDescriptor() ([]byte, []int) {
+	return fileDescriptor_deprecated_9e1889ba21817fad, []int{0}
+}
+
 func init() {
 	proto.RegisterType((*DeprecatedRequest)(nil), "deprecated.DeprecatedRequest")
 	proto.RegisterType((*DeprecatedResponse)(nil), "deprecated.DeprecatedResponse")
