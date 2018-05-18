@@ -1,4 +1,4 @@
-# Go support for Protocol Buffers
+# Go support for Protocol Buffers - Google's data interchange format
 
 [![Build Status](https://travis-ci.org/golang/protobuf.svg?branch=master)](https://travis-ci.org/golang/protobuf)
 [![GoDoc](https://godoc.org/github.com/golang/protobuf?status.svg)](https://godoc.org/github.com/golang/protobuf)
