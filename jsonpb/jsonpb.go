@@ -870,7 +870,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		// Don't need to do unquoting; valid enum names
 		// are from a limited character set.
 		s := inputValue[1 : len(inputValue)-1]
-		n, ok := vmap[string(s)]
+		n, ok := vmap[strings.ToUpper(string(s))]
 		if !ok {
 			return fmt.Errorf("unknown value %q for enum %s", s, prop.Enum)
 		}
