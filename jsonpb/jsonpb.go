@@ -889,14 +889,14 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			return err
 		}
 
-		consumeField := func(prop *proto.Properties) (json.RawMessage, bool) {
+		consumeField := func(prop *proto.Properties) (json.RawMessage, string, bool) {
 			// Be liberal in what names we accept; both orig_name and camelName are okay.
 			fieldNames := acceptedJSONFieldNames(prop)
 
 			vOrig, okOrig := jsonFields[fieldNames.orig]
 			vCamel, okCamel := jsonFields[fieldNames.camel]
 			if !okOrig && !okCamel {
-				return nil, false
+				return nil, "", false
 			}
 			// If, for some reason, both are present in the data, favour the camelName.
 			var raw json.RawMessage
@@ -908,7 +908,10 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				raw = vCamel
 				delete(jsonFields, fieldNames.camel)
 			}
-			return raw, true
+			if okCamel {
+				return raw, fieldNames.camel, true
+			}
+			return raw, fieldNames.orig, true
 		}
 
 		sprops := proto.GetProperties(targetType)
@@ -918,7 +921,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				continue
 			}
 
-			valueForField, ok := consumeField(sprops.Prop[i])
+			valueForField, _, ok := consumeField(sprops.Prop[i])
 			if !ok {
 				continue
 			}
@@ -928,17 +931,23 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			}
 		}
 		// Check for any oneof fields.
-		if len(jsonFields) > 0 {
+		if len(jsonFields) > 0 && len(sprops.OneofTypes) > 0 {
+			consumed := make(map[int]struct{}, len(sprops.OneofTypes))
 			for _, oop := range sprops.OneofTypes {
-				raw, ok := consumeField(oop.Prop)
+				raw, fieldName, ok := consumeField(oop.Prop)
 				if !ok {
 					continue
+				}
+				if _, ok := consumed[oop.Field]; ok {
+					return fmt.Errorf("multiple values for 'one of' field %q in %v",
+						fieldName, targetType)
 				}
 				nv := reflect.New(oop.Type.Elem())
 				target.Field(oop.Field).Set(nv)
 				if err := u.unmarshalValue(nv.Elem().Field(0), raw, oop.Prop); err != nil {
 					return err
 				}
+				consumed[oop.Field] = struct{}{}
 			}
 		}
 		// Handle proto2 extensions.

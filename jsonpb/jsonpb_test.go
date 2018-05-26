@@ -688,6 +688,9 @@ var unmarshalingTests = []struct {
 	{"oneof orig_name", Unmarshaler{}, `{"Country":"Australia"}`, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_Country{"Australia"}}},
 	{"oneof spec name2", Unmarshaler{}, `{"homeAddress":"Australia"}`, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_HomeAddress{"Australia"}}},
 	{"oneof orig_name2", Unmarshaler{}, `{"home_address":"Australia"}`, &pb.MsgWithOneof{Union: &pb.MsgWithOneof_HomeAddress{"Australia"}}},
+	{"multiple oneofs, 1st set", Unmarshaler{}, `{"first_a":"value"}`, &pb.MsgWithMultipleOneofs{Oof1: &pb.MsgWithMultipleOneofs_FirstA{"value"}}},
+	{"multiple oneofs, 2nd set", Unmarshaler{}, `{"second_a":"value"}`, &pb.MsgWithMultipleOneofs{Oof2: &pb.MsgWithMultipleOneofs_SecondA{"value"}}},
+	{"multiple oneofs, all set", Unmarshaler{}, `{"first_a":"value1", "second_b": "value2"}`, &pb.MsgWithMultipleOneofs{Oof1: &pb.MsgWithMultipleOneofs_FirstA{"value1"}, Oof2: &pb.MsgWithMultipleOneofs_SecondB{"value2"}}},
 	{"orig_name input", Unmarshaler{}, `{"o_bool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
 	{"camelName input", Unmarshaler{}, `{"oBool":true}`, &pb.Simple{OBool: proto.Bool(true)}},
 
@@ -868,6 +871,8 @@ var unmarshalingShouldError = []struct {
 	{"Timestamp containing invalid character", `{"ts": "2014-05-13T16:53:20\U005a"}`, &pb.KnownTypes{}},
 	{"StringValue containing invalid character", `{"str": "\U00004E16\U0000754C"}`, &pb.KnownTypes{}},
 	{"StructValue containing invalid character", `{"str": "\U00004E16\U0000754C"}`, &stpb.Struct{}},
+	{"oneof with multiple keys", `{"home_address": "Oslo", "title": "CEO"}`, &pb.MsgWithOneof{}},
+	{"oneof with multiple keys 2", `{"a": "value", "c": "value2"}`, &pb.MsgWithMultipleOneofs{}},
 }
 
 func TestUnmarshalingBadInput(t *testing.T) {

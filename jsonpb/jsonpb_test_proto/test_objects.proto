@@ -111,6 +111,17 @@ message MsgWithOneof {
   }
 }
 
+message MsgWithMultipleOneofs {
+  oneof oof1 {
+    string first_a = 1;
+    string first_b = 2;
+  }
+  oneof oof2 {
+    string second_a = 3;
+    string second_b = 4;
+  }
+}
+
 message Real {
   optional double value = 1;
   extensions 100 to max;
