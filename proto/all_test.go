@@ -46,6 +46,7 @@ import (
 	"time"
 
 	. "github.com/golang/protobuf/proto"
+	pb3 "github.com/golang/protobuf/proto/proto3_proto"
 	. "github.com/golang/protobuf/proto/test_proto"
 )
 
@@ -2250,17 +2251,55 @@ func TestConcurrentMarshal(t *testing.T) {
 }
 
 func TestInvalidUTF8(t *testing.T) {
-	const wire = "\x12\x04\xde\xea\xca\xfe"
+	const invalidUTF8 = "\xde\xad\xbe\xef\x80\x00\xff"
+	tests := []struct {
+		label  string
+		proto2 Message
+		proto3 Message
+	}{{
+		label:  "Scalar",
+		proto2: &TestUTF8{Scalar: String(invalidUTF8)},
+		proto3: &pb3.TestUTF8{Scalar: invalidUTF8},
+	}, {
+		label:  "Vector",
+		proto2: &TestUTF8{Vector: []string{invalidUTF8}},
+		proto3: &pb3.TestUTF8{Vector: []string{invalidUTF8}},
+	}, {
+		label:  "Oneof",
+		proto2: &TestUTF8{Oneof: &TestUTF8_Field{invalidUTF8}},
+		proto3: &pb3.TestUTF8{Oneof: &pb3.TestUTF8_Field{invalidUTF8}},
+	}, {
+		label:  "MapKey",
+		proto2: &TestUTF8{MapKey: map[string]int64{invalidUTF8: 0}},
+		proto3: &pb3.TestUTF8{MapKey: map[string]int64{invalidUTF8: 0}},
+	}, {
+		label:  "MapValue",
+		proto2: &TestUTF8{MapValue: map[int64]string{0: invalidUTF8}},
+		proto3: &pb3.TestUTF8{MapValue: map[int64]string{0: invalidUTF8}},
+	}}
 
-	var m GoTest
-	if err := Unmarshal([]byte(wire), &m); err == nil {
-		t.Errorf("Unmarshal error: got nil, want non-nil")
-	}
+	for _, tt := range tests {
+		// Proto2 should not validate UTF-8.
+		b, err := Marshal(tt.proto2)
+		if err != nil {
+			t.Errorf("Marshal(proto2.%s) = %v, want nil", tt.label, err)
+		}
+		tt.proto2.Reset()
+		err = Unmarshal(b, tt.proto2)
+		if err != nil {
+			t.Errorf("Unmarshal(proto2.%s) = %v, want nil", tt.label, err)
+		}
 
-	m.Reset()
-	m.Table = String(wire[2:])
-	if _, err := Marshal(&m); err == nil {
-		t.Errorf("Marshal error: got nil, want non-nil")
+		// Proto3 should validate UTF-8.
+		_, err = Marshal(tt.proto3)
+		if err == nil {
+			t.Errorf("Marshal(proto3.%s) = %v, want non-nil", tt.label, err)
+		}
+		tt.proto3.Reset()
+		err = Unmarshal(b, tt.proto3)
+		if err == nil {
+			t.Errorf("Unmarshal(proto3.%s) = %v, want non-nil", tt.label, err)
+		}
 	}
 }
 

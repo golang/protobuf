@@ -1568,12 +1568,7 @@ func (g *Generator) goTag(message *Descriptor, field *descriptor.FieldDescriptor
 	}
 	name = ",name=" + name
 	if message.proto3() {
-		// We only need the extra tag for []byte fields;
-		// no need to add noise for the others.
-		if *field.Type == descriptor.FieldDescriptorProto_TYPE_BYTES {
-			name += ",proto3"
-		}
-
+		name += ",proto3"
 	}
 	oneof := ""
 	if field.OneofIndex != nil {

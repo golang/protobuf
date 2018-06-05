@@ -84,7 +84,7 @@ var xxx_messageInfo_DeprecatedRequest proto.InternalMessageInfo
 // Deprecated: Do not use.
 type DeprecatedResponse struct {
 	// DeprecatedField contains a DeprecatedEnum.
-	DeprecatedField      DeprecatedEnum `protobuf:"varint,1,opt,name=deprecated_field,json=deprecatedField,enum=deprecated.DeprecatedEnum" json:"deprecated_field,omitempty"` // Deprecated: Do not use.
+	DeprecatedField      DeprecatedEnum `protobuf:"varint,1,opt,name=deprecated_field,json=deprecatedField,proto3,enum=deprecated.DeprecatedEnum" json:"deprecated_field,omitempty"` // Deprecated: Do not use.
 	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
 	XXX_unrecognized     []byte         `json:"-"`
 	XXX_sizecache        int32          `json:"-"`
