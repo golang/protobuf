@@ -667,6 +667,8 @@ var unmarshalingTests = []struct {
 			proto3pb.Message_PUNS,
 			proto3pb.Message_SLAPSTICK,
 		}}},
+	{"repeated proto3 enum with non array input", Unmarshaler{}, `{"rFunny":"PUNS"}`,
+		&proto3pb.Message{RFunny: []proto3pb.Message_Humour{}}},
 	{"unquoted int64 object", Unmarshaler{}, `{"oInt64":-314}`, &pb.Simple{OInt64: proto.Int64(-314)}},
 	{"unquoted uint64 object", Unmarshaler{}, `{"oUint64":123}`, &pb.Simple{OUint64: proto.Uint64(123)}},
 	{"NaN", Unmarshaler{}, `{"oDouble":"NaN"}`, &pb.Simple{ODouble: proto.Float64(math.NaN())}},

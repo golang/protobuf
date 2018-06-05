@@ -878,7 +878,9 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			target.Set(reflect.New(targetType.Elem()))
 			target = target.Elem()
 		}
-		target.SetInt(int64(n))
+		if targetType.Kind() == reflect.Int32 {
+			target.SetInt(int64(n))
+		}
 		return nil
 	}
 
