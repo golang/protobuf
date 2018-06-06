@@ -667,8 +667,6 @@ var unmarshalingTests = []struct {
 			proto3pb.Message_PUNS,
 			proto3pb.Message_SLAPSTICK,
 		}}},
-	{"repeated proto3 enum with non array input", Unmarshaler{}, `{"rFunny":"PUNS"}`,
-		&proto3pb.Message{RFunny: []proto3pb.Message_Humour{}}},
 	{"unquoted int64 object", Unmarshaler{}, `{"oInt64":-314}`, &pb.Simple{OInt64: proto.Int64(-314)}},
 	{"unquoted uint64 object", Unmarshaler{}, `{"oUint64":123}`, &pb.Simple{OUint64: proto.Uint64(123)}},
 	{"NaN", Unmarshaler{}, `{"oDouble":"NaN"}`, &pb.Simple{ODouble: proto.Float64(math.NaN())}},
@@ -870,6 +868,7 @@ var unmarshalingShouldError = []struct {
 	{"Timestamp containing invalid character", `{"ts": "2014-05-13T16:53:20\U005a"}`, &pb.KnownTypes{}},
 	{"StringValue containing invalid character", `{"str": "\U00004E16\U0000754C"}`, &pb.KnownTypes{}},
 	{"StructValue containing invalid character", `{"str": "\U00004E16\U0000754C"}`, &stpb.Struct{}},
+	{"repeated proto3 enum with non array input", `{"rFunny":"PUNS"}`, &proto3pb.Message{RFunny: []proto3pb.Message_Humour{}}},
 }
 
 func TestUnmarshalingBadInput(t *testing.T) {

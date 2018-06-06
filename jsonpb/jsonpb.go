@@ -878,9 +878,10 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			target.Set(reflect.New(targetType.Elem()))
 			target = target.Elem()
 		}
-		if targetType.Kind() == reflect.Int32 {
-			target.SetInt(int64(n))
+		if targetType.Kind() != reflect.Int32 {
+			return fmt.Errorf("invalid target %q for enum %s", targetType.Kind(), prop.Enum)
 		}
+		target.SetInt(int64(n))
 		return nil
 	}
 
