@@ -36,6 +36,7 @@ install:
 
 test:
 	go test ./... ./protoc-gen-go/testdata
+	go build ./protoc-gen-go/testdata/grpc/grpc.pb.go
 	make -C conformance test
 
 clean:
