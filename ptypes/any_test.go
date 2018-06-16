@@ -80,7 +80,6 @@ func TestIsDifferentUrlPrefixes(t *testing.T) {
 	}
 }
 
-
 func TestIsCornerCases(t *testing.T) {
 	m := &pb.FileDescriptorProto{}
 	if Is(nil, m) {
