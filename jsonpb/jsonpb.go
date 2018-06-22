@@ -1028,13 +1028,6 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		return nil
 	}
 
-	// 64-bit integers can be encoded as strings. In this case we drop
-	// the quotes and proceed as normal.
-	isNum := targetType.Kind() == reflect.Int64 || targetType.Kind() == reflect.Uint64
-	if isNum && strings.HasPrefix(string(inputValue), `"`) {
-		inputValue = inputValue[1 : len(inputValue)-1]
-	}
-
 	// Non-finite numbers can be encoded as strings.
 	isFloat := targetType.Kind() == reflect.Float32 || targetType.Kind() == reflect.Float64
 	if isFloat {
@@ -1042,6 +1035,15 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 			target.SetFloat(num)
 			return nil
 		}
+	}
+
+	// integers & floats can be encoded as strings. In this case we drop
+	// the quotes and proceed as normal.
+	isNum := targetType.Kind() == reflect.Int64 || targetType.Kind() == reflect.Uint64 ||
+		targetType.Kind() == reflect.Int32 || targetType.Kind() == reflect.Uint32 ||
+		targetType.Kind() == reflect.Float32 || targetType.Kind() == reflect.Float64
+	if isNum && strings.HasPrefix(string(inputValue), `"`) {
+		inputValue = inputValue[1 : len(inputValue)-1]
 	}
 
 	// Use the encoding/json for parsing other value types.

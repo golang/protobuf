@@ -60,43 +60,111 @@ var (
 	}
 
 	simpleObject = &pb.Simple{
-		OInt32:  proto.Int32(-32),
-		OInt64:  proto.Int64(-6400000000),
-		OUint32: proto.Uint32(32),
-		OUint64: proto.Uint64(6400000000),
-		OSint32: proto.Int32(-13),
-		OSint64: proto.Int64(-2600000000),
-		OFloat:  proto.Float32(3.14),
-		ODouble: proto.Float64(6.02214179e23),
-		OBool:   proto.Bool(true),
-		OString: proto.String("hello \"there\""),
-		OBytes:  []byte("beep boop"),
+		OInt32:     proto.Int32(-32),
+		OInt32Str:  proto.Int32(-32),
+		OInt64:     proto.Int64(-6400000000),
+		OInt64Str:  proto.Int64(-6400000000),
+		OUint32:    proto.Uint32(32),
+		OUint32Str: proto.Uint32(32),
+		OUint64:    proto.Uint64(6400000000),
+		OUint64Str: proto.Uint64(6400000000),
+		OSint32:    proto.Int32(-13),
+		OSint32Str: proto.Int32(-13),
+		OSint64:    proto.Int64(-2600000000),
+		OSint64Str: proto.Int64(-2600000000),
+		OFloat:     proto.Float32(3.14),
+		OFloatStr:  proto.Float32(3.14),
+		ODouble:    proto.Float64(6.02214179e23),
+		ODoubleStr: proto.Float64(6.02214179e23),
+		OBool:      proto.Bool(true),
+		OString:    proto.String("hello \"there\""),
+		OBytes:     []byte("beep boop"),
 	}
 
-	simpleObjectJSON = `{` +
+	simpleObjectInputJSON = `{` +
 		`"oBool":true,` +
 		`"oInt32":-32,` +
-		`"oInt64":"-6400000000",` +
+		`"oInt32Str":"-32",` +
+		`"oInt64":-6400000000,` +
+		`"oInt64Str":"-6400000000",` +
 		`"oUint32":32,` +
-		`"oUint64":"6400000000",` +
+		`"oUint32Str":"32",` +
+		`"oUint64":6400000000,` +
+		`"oUint64Str":"6400000000",` +
 		`"oSint32":-13,` +
-		`"oSint64":"-2600000000",` +
+		`"oSint32Str":"-13",` +
+		`"oSint64":-2600000000,` +
+		`"oSint64Str":"-2600000000",` +
 		`"oFloat":3.14,` +
+		`"oFloatStr":"3.14",` +
 		`"oDouble":6.02214179e+23,` +
+		`"oDoubleStr":"6.02214179e+23",` +
 		`"oString":"hello \"there\"",` +
 		`"oBytes":"YmVlcCBib29w"` +
 		`}`
 
-	simpleObjectPrettyJSON = `{
+	simpleObjectOutputJSON = `{` +
+		`"oBool":true,` +
+		`"oInt32":-32,` +
+		`"oInt32Str":-32,` +
+		`"oInt64":"-6400000000",` +
+		`"oInt64Str":"-6400000000",` +
+		`"oUint32":32,` +
+		`"oUint32Str":32,` +
+		`"oUint64":"6400000000",` +
+		`"oUint64Str":"6400000000",` +
+		`"oSint32":-13,` +
+		`"oSint32Str":-13,` +
+		`"oSint64":"-2600000000",` +
+		`"oSint64Str":"-2600000000",` +
+		`"oFloat":3.14,` +
+		`"oFloatStr":3.14,` +
+		`"oDouble":6.02214179e+23,` +
+		`"oDoubleStr":6.02214179e+23,` +
+		`"oString":"hello \"there\"",` +
+		`"oBytes":"YmVlcCBib29w"` +
+		`}`
+
+	simpleObjectInputPrettyJSON = `{
   "oBool": true,
   "oInt32": -32,
-  "oInt64": "-6400000000",
+  "oInt32Str": "-32",
+  "oInt64": -6400000000,
+  "oInt64Str": "-6400000000",
   "oUint32": 32,
-  "oUint64": "6400000000",
+  "oUint32Str": "32",
+  "oUint64": 6400000000,
+  "oUint64Str": "6400000000",
   "oSint32": -13,
-  "oSint64": "-2600000000",
+  "oSint32Str": "-13",
+  "oSint64": -2600000000,
+  "oSint64Str": "-2600000000",
   "oFloat": 3.14,
+  "oFloatStr": "3.14",
   "oDouble": 6.02214179e+23,
+  "oDoubleStr": "6.02214179e+23",
+  "oString": "hello \"there\"",
+  "oBytes": "YmVlcCBib29w"
+}`
+
+	simpleObjectOutputPrettyJSON = `{
+  "oBool": true,
+  "oInt32": -32,
+  "oInt32Str": -32,
+  "oInt64": "-6400000000",
+  "oInt64Str": "-6400000000",
+  "oUint32": 32,
+  "oUint32Str": 32,
+  "oUint64": "6400000000",
+  "oUint64Str": "6400000000",
+  "oSint32": -13,
+  "oSint32Str": -13,
+  "oSint64": "-2600000000",
+  "oSint64Str": "-2600000000",
+  "oFloat": 3.14,
+  "oFloatStr": 3.14,
+  "oDouble": 6.02214179e+23,
+  "oDoubleStr": 6.02214179e+23,
   "oString": "hello \"there\"",
   "oBytes": "YmVlcCBib29w"
 }`
@@ -343,8 +411,8 @@ var marshalingTests = []struct {
 	pb        proto.Message
 	json      string
 }{
-	{"simple flat object", marshaler, simpleObject, simpleObjectJSON},
-	{"simple pretty object", marshalerAllOptions, simpleObject, simpleObjectPrettyJSON},
+	{"simple flat object", marshaler, simpleObject, simpleObjectOutputJSON},
+	{"simple pretty object", marshalerAllOptions, simpleObject, simpleObjectOutputPrettyJSON},
 	{"non-finite floats fields object", marshaler, nonFinites, nonFinitesJSON},
 	{"repeated fields flat object", marshaler, repeatsObject, repeatsObjectJSON},
 	{"repeated fields pretty object", marshalerAllOptions, repeatsObject, repeatsObjectPrettyJSON},
@@ -637,8 +705,8 @@ var unmarshalingTests = []struct {
 	json        string
 	pb          proto.Message
 }{
-	{"simple flat object", Unmarshaler{}, simpleObjectJSON, simpleObject},
-	{"simple pretty object", Unmarshaler{}, simpleObjectPrettyJSON, simpleObject},
+	{"simple flat object", Unmarshaler{}, simpleObjectInputJSON, simpleObject},
+	{"simple pretty object", Unmarshaler{}, simpleObjectInputPrettyJSON, simpleObject},
 	{"repeated fields flat object", Unmarshaler{}, repeatsObjectJSON, repeatsObject},
 	{"repeated fields pretty object", Unmarshaler{}, repeatsObjectPrettyJSON, repeatsObject},
 	{"nested message/enum flat object", Unmarshaler{}, complexObjectJSON, complexObject},
