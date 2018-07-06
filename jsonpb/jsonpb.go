@@ -565,6 +565,7 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 				out.write(m.Indent)
 			}
 
+			// TODO handle map key prop properly
 			b, err := json.Marshal(k.Interface())
 			if err != nil {
 				return err
@@ -586,7 +587,11 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 				out.write(` `)
 			}
 
-			if err := m.marshalValue(out, prop, v.MapIndex(k), indent+m.Indent); err != nil {
+			vprop := prop
+			if prop != nil && prop.MapValProp != nil {
+				vprop = prop.MapValProp
+			}
+			if err := m.marshalValue(out, vprop, v.MapIndex(k), indent+m.Indent); err != nil {
 				return err
 			}
 		}
@@ -1010,16 +1015,22 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 					k = reflect.ValueOf(ks)
 				} else {
 					k = reflect.New(targetType.Key()).Elem()
-					// TODO: pass the correct Properties if needed.
-					if err := u.unmarshalValue(k, json.RawMessage(ks), nil); err != nil {
+					var kprop *proto.Properties
+					if prop != nil && prop.MapKeyProp != nil {
+						kprop = prop.MapKeyProp
+					}
+					if err := u.unmarshalValue(k, json.RawMessage(ks), kprop); err != nil {
 						return err
 					}
 				}
 
 				// Unmarshal map value.
 				v := reflect.New(targetType.Elem()).Elem()
-				// TODO: pass the correct Properties if needed.
-				if err := u.unmarshalValue(v, raw, nil); err != nil {
+				var vprop *proto.Properties
+				if prop != nil && prop.MapValProp != nil {
+					vprop = prop.MapValProp
+				}
+				if err := u.unmarshalValue(v, raw, vprop); err != nil {
 					return err
 				}
 				target.SetMapIndex(k, v)
