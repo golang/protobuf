@@ -83,15 +83,19 @@ be:
 
 - Relative to the import path:
 
-	protoc --go_out=. inputs/x.proto
-	# writes ./github.com/golang/protobuf/p/x.pb.go
+```shell
+  protoc --go_out=. inputs/x.proto
+  # writes ./github.com/golang/protobuf/p/x.pb.go
+```
 
   (This can work well with `--go_out=$GOPATH`.)
 
 - Relative to the input file:
 
-	protoc --go_out=paths=source_relative:. inputs/x.proto
-	# generate ./inputs/x.pb.go
+```shell
+protoc --go_out=paths=source_relative:. inputs/x.proto
+# generate ./inputs/x.pb.go
+```
 
 ## Generated code ##
 
