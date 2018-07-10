@@ -2303,6 +2303,17 @@ func TestInvalidUTF8(t *testing.T) {
 	}
 }
 
+func TestDeterministicErrorOnCustomMarshaler(t *testing.T) {
+	u := uint64(0)
+	in := &CustomDeterministicMarshaler{Field1: &u}
+	var b1 Buffer
+	b1.SetDeterministic(true)
+	err := b1.Marshal(in)
+	if !strings.Contains(err.Error(), "deterministic") {
+		t.Fatalf("Expected: %s but got %s", "proto: deterministic not supported by the Marshal method of CustomDeterministicMarshaler", err.Error())
+	}
+}
+
 // Benchmarks
 
 func testMsg() *GoTest {
