@@ -2310,7 +2310,7 @@ func TestDeterministicErrorOnCustomMarshaler(t *testing.T) {
 	b1.SetDeterministic(true)
 	err := b1.Marshal(in)
 	if !strings.Contains(err.Error(), "deterministic") {
-		t.Fatalf("Expected: %s but got %s", "proto: deterministic not supported by the Marshal method of CustomDeterministicMarshaler", err.Error())
+		t.Fatalf("Expected: %s but got %s", "proto: deterministic not supported by the Marshal method of test_proto.CustomDeterministicMarshaler", err.Error())
 	}
 }
 
