@@ -225,6 +225,9 @@ func (u *marshalInfo) marshal(b []byte, ptr pointer, deterministic bool) ([]byte
 	// If the message can marshal itself, let it do it, for compatibility.
 	// NOTE: This is not efficient.
 	if u.hasmarshaler {
+		if deterministic {
+			return nil, errors.New("proto: deterministic not supported by the Marshal method of " + u.typ.String())
+		}
 		m := ptr.asPointerTo(u.typ).Interface().(Marshaler)
 		b1, err := m.Marshal()
 		b = append(b, b1...)
