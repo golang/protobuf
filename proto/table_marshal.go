@@ -225,9 +225,6 @@ func (u *marshalInfo) marshal(b []byte, ptr pointer, deterministic bool) ([]byte
 	// If the message can marshal itself, let it do it, for compatibility.
 	// NOTE: This is not efficient.
 	if u.hasmarshaler {
-		if deterministic {
-			return nil, errors.New("proto: deterministic not supported by the Marshal method of " + u.typ.String())
-		}
 		m := ptr.asPointerTo(u.typ).Interface().(Marshaler)
 		b1, err := m.Marshal()
 		b = append(b, b1...)
@@ -2718,6 +2715,11 @@ func Marshal(pb Message) ([]byte, error) {
 // a Buffer for most applications.
 func (p *Buffer) Marshal(pb Message) error {
 	var err error
+	if p.deterministic {
+		if _, ok := pb.(Marshaler); ok {
+			return fmt.Errorf("proto: deterministic not supported by the Marshal method of %T", pb)
+		}
+	}
 	if m, ok := pb.(newMarshaler); ok {
 		siz := m.XXX_Size()
 		p.grow(siz) // make sure buf has enough capacity
