@@ -568,7 +568,3 @@ message TestUTF8 {
   map<string, int64> map_key = 4;
   map<int64, string> map_value = 5;
 }
-
-message CustomDeterministicMarshaler {
-  optional uint64 field1 = 1;
-}
