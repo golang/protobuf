@@ -21,7 +21,8 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type UserMessage struct {
-	Name                 *string  `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name *string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+
 	Rank                 *string  `protobuf:"bytes,2,opt,name=rank" json:"rank,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -243,7 +244,8 @@ var E_Announcement_LoudExt = &proto.ExtensionDesc{
 
 // Something that can be put in a message set.
 type OldStyleParcel struct {
-	Name                 *string  `protobuf:"bytes,1,req,name=name" json:"name,omitempty"`
+	Name *string `protobuf:"bytes,1,req,name=name" json:"name,omitempty"`
+
 	Height               *int32   `protobuf:"varint,2,opt,name=height" json:"height,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
