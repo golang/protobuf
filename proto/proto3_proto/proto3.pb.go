@@ -428,6 +428,20 @@ func (m *TestUTF8) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TestUTF8 proto.InternalMessageInfo
 
+func (m *TestUTF8) GetScalar() string {
+	if m != nil {
+		return m.Scalar
+	}
+	return ""
+}
+
+func (m *TestUTF8) GetVector() []string {
+	if m != nil {
+		return m.Vector
+	}
+	return nil
+}
+
 type isTestUTF8_Oneof interface {
 	isTestUTF8_Oneof()
 }
@@ -441,20 +455,6 @@ func (*TestUTF8_Field) isTestUTF8_Oneof() {}
 func (m *TestUTF8) GetOneof() isTestUTF8_Oneof {
 	if m != nil {
 		return m.Oneof
-	}
-	return nil
-}
-
-func (m *TestUTF8) GetScalar() string {
-	if m != nil {
-		return m.Scalar
-	}
-	return ""
-}
-
-func (m *TestUTF8) GetVector() []string {
-	if m != nil {
-		return m.Vector
 	}
 	return nil
 }

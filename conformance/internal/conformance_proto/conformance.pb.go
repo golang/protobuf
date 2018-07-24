@@ -156,12 +156,14 @@ type isConformanceRequest_Payload interface {
 type ConformanceRequest_ProtobufPayload struct {
 	ProtobufPayload []byte `protobuf:"bytes,1,opt,name=protobuf_payload,json=protobufPayload,proto3,oneof"`
 }
+
 type ConformanceRequest_JsonPayload struct {
 	JsonPayload string `protobuf:"bytes,2,opt,name=json_payload,json=jsonPayload,proto3,oneof"`
 }
 
 func (*ConformanceRequest_ProtobufPayload) isConformanceRequest_Payload() {}
-func (*ConformanceRequest_JsonPayload) isConformanceRequest_Payload()     {}
+
+func (*ConformanceRequest_JsonPayload) isConformanceRequest_Payload() {}
 
 func (m *ConformanceRequest) GetPayload() isConformanceRequest_Payload {
 	if m != nil {
@@ -303,28 +305,38 @@ type isConformanceResponse_Result interface {
 type ConformanceResponse_ParseError struct {
 	ParseError string `protobuf:"bytes,1,opt,name=parse_error,json=parseError,proto3,oneof"`
 }
+
 type ConformanceResponse_SerializeError struct {
 	SerializeError string `protobuf:"bytes,6,opt,name=serialize_error,json=serializeError,proto3,oneof"`
 }
+
 type ConformanceResponse_RuntimeError struct {
 	RuntimeError string `protobuf:"bytes,2,opt,name=runtime_error,json=runtimeError,proto3,oneof"`
 }
+
 type ConformanceResponse_ProtobufPayload struct {
 	ProtobufPayload []byte `protobuf:"bytes,3,opt,name=protobuf_payload,json=protobufPayload,proto3,oneof"`
 }
+
 type ConformanceResponse_JsonPayload struct {
 	JsonPayload string `protobuf:"bytes,4,opt,name=json_payload,json=jsonPayload,proto3,oneof"`
 }
+
 type ConformanceResponse_Skipped struct {
 	Skipped string `protobuf:"bytes,5,opt,name=skipped,proto3,oneof"`
 }
 
-func (*ConformanceResponse_ParseError) isConformanceResponse_Result()      {}
-func (*ConformanceResponse_SerializeError) isConformanceResponse_Result()  {}
-func (*ConformanceResponse_RuntimeError) isConformanceResponse_Result()    {}
+func (*ConformanceResponse_ParseError) isConformanceResponse_Result() {}
+
+func (*ConformanceResponse_SerializeError) isConformanceResponse_Result() {}
+
+func (*ConformanceResponse_RuntimeError) isConformanceResponse_Result() {}
+
 func (*ConformanceResponse_ProtobufPayload) isConformanceResponse_Result() {}
-func (*ConformanceResponse_JsonPayload) isConformanceResponse_Result()     {}
-func (*ConformanceResponse_Skipped) isConformanceResponse_Result()         {}
+
+func (*ConformanceResponse_JsonPayload) isConformanceResponse_Result() {}
+
+func (*ConformanceResponse_Skipped) isConformanceResponse_Result() {}
 
 func (m *ConformanceResponse) GetResult() isConformanceResponse_Result {
 	if m != nil {
@@ -647,35 +659,6 @@ func (m *TestAllTypes) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_TestAllTypes proto.InternalMessageInfo
-
-type isTestAllTypes_OneofField interface {
-	isTestAllTypes_OneofField()
-}
-
-type TestAllTypes_OneofUint32 struct {
-	OneofUint32 uint32 `protobuf:"varint,111,opt,name=oneof_uint32,json=oneofUint32,proto3,oneof"`
-}
-type TestAllTypes_OneofNestedMessage struct {
-	OneofNestedMessage *TestAllTypes_NestedMessage `protobuf:"bytes,112,opt,name=oneof_nested_message,json=oneofNestedMessage,proto3,oneof"`
-}
-type TestAllTypes_OneofString struct {
-	OneofString string `protobuf:"bytes,113,opt,name=oneof_string,json=oneofString,proto3,oneof"`
-}
-type TestAllTypes_OneofBytes struct {
-	OneofBytes []byte `protobuf:"bytes,114,opt,name=oneof_bytes,json=oneofBytes,proto3,oneof"`
-}
-
-func (*TestAllTypes_OneofUint32) isTestAllTypes_OneofField()        {}
-func (*TestAllTypes_OneofNestedMessage) isTestAllTypes_OneofField() {}
-func (*TestAllTypes_OneofString) isTestAllTypes_OneofField()        {}
-func (*TestAllTypes_OneofBytes) isTestAllTypes_OneofField()         {}
-
-func (m *TestAllTypes) GetOneofField() isTestAllTypes_OneofField {
-	if m != nil {
-		return m.OneofField
-	}
-	return nil
-}
 
 func (m *TestAllTypes) GetOptionalInt32() int32 {
 	if m != nil {
@@ -1107,6 +1090,41 @@ func (m *TestAllTypes) GetMapStringNestedEnum() map[string]TestAllTypes_NestedEn
 func (m *TestAllTypes) GetMapStringForeignEnum() map[string]ForeignEnum {
 	if m != nil {
 		return m.MapStringForeignEnum
+	}
+	return nil
+}
+
+type isTestAllTypes_OneofField interface {
+	isTestAllTypes_OneofField()
+}
+
+type TestAllTypes_OneofUint32 struct {
+	OneofUint32 uint32 `protobuf:"varint,111,opt,name=oneof_uint32,json=oneofUint32,proto3,oneof"`
+}
+
+type TestAllTypes_OneofNestedMessage struct {
+	OneofNestedMessage *TestAllTypes_NestedMessage `protobuf:"bytes,112,opt,name=oneof_nested_message,json=oneofNestedMessage,proto3,oneof"`
+}
+
+type TestAllTypes_OneofString struct {
+	OneofString string `protobuf:"bytes,113,opt,name=oneof_string,json=oneofString,proto3,oneof"`
+}
+
+type TestAllTypes_OneofBytes struct {
+	OneofBytes []byte `protobuf:"bytes,114,opt,name=oneof_bytes,json=oneofBytes,proto3,oneof"`
+}
+
+func (*TestAllTypes_OneofUint32) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofNestedMessage) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofString) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofBytes) isTestAllTypes_OneofField() {}
+
+func (m *TestAllTypes) GetOneofField() isTestAllTypes_OneofField {
+	if m != nil {
+		return m.OneofField
 	}
 	return nil
 }

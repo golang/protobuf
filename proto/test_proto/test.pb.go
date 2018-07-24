@@ -3083,93 +3083,112 @@ var xxx_messageInfo_Oneof proto.InternalMessageInfo
 type isOneof_Union interface {
 	isOneof_Union()
 }
-type isOneof_Tormato interface {
-	isOneof_Tormato()
-}
 
 type Oneof_F_Bool struct {
 	F_Bool bool `protobuf:"varint,1,opt,name=F_Bool,json=FBool,oneof"`
 }
+
 type Oneof_F_Int32 struct {
 	F_Int32 int32 `protobuf:"varint,2,opt,name=F_Int32,json=FInt32,oneof"`
 }
+
 type Oneof_F_Int64 struct {
 	F_Int64 int64 `protobuf:"varint,3,opt,name=F_Int64,json=FInt64,oneof"`
 }
+
 type Oneof_F_Fixed32 struct {
 	F_Fixed32 uint32 `protobuf:"fixed32,4,opt,name=F_Fixed32,json=FFixed32,oneof"`
 }
+
 type Oneof_F_Fixed64 struct {
 	F_Fixed64 uint64 `protobuf:"fixed64,5,opt,name=F_Fixed64,json=FFixed64,oneof"`
 }
+
 type Oneof_F_Uint32 struct {
 	F_Uint32 uint32 `protobuf:"varint,6,opt,name=F_Uint32,json=FUint32,oneof"`
 }
+
 type Oneof_F_Uint64 struct {
 	F_Uint64 uint64 `protobuf:"varint,7,opt,name=F_Uint64,json=FUint64,oneof"`
 }
+
 type Oneof_F_Float struct {
 	F_Float float32 `protobuf:"fixed32,8,opt,name=F_Float,json=FFloat,oneof"`
 }
+
 type Oneof_F_Double struct {
 	F_Double float64 `protobuf:"fixed64,9,opt,name=F_Double,json=FDouble,oneof"`
 }
+
 type Oneof_F_String struct {
 	F_String string `protobuf:"bytes,10,opt,name=F_String,json=FString,oneof"`
 }
+
 type Oneof_F_Bytes struct {
 	F_Bytes []byte `protobuf:"bytes,11,opt,name=F_Bytes,json=FBytes,oneof"`
 }
+
 type Oneof_F_Sint32 struct {
 	F_Sint32 int32 `protobuf:"zigzag32,12,opt,name=F_Sint32,json=FSint32,oneof"`
 }
+
 type Oneof_F_Sint64 struct {
 	F_Sint64 int64 `protobuf:"zigzag64,13,opt,name=F_Sint64,json=FSint64,oneof"`
 }
+
 type Oneof_F_Enum struct {
 	F_Enum MyMessage_Color `protobuf:"varint,14,opt,name=F_Enum,json=FEnum,enum=test_proto.MyMessage_Color,oneof"`
 }
+
 type Oneof_F_Message struct {
 	F_Message *GoTestField `protobuf:"bytes,15,opt,name=F_Message,json=FMessage,oneof"`
 }
+
 type Oneof_FGroup struct {
 	FGroup *Oneof_F_Group `protobuf:"group,16,opt,name=F_Group,json=fGroup,oneof"`
 }
+
 type Oneof_F_Largest_Tag struct {
 	F_Largest_Tag int32 `protobuf:"varint,536870911,opt,name=F_Largest_Tag,json=FLargestTag,oneof"`
 }
-type Oneof_Value struct {
-	Value int32 `protobuf:"varint,100,opt,name=value,oneof"`
-}
 
-func (*Oneof_F_Bool) isOneof_Union()        {}
-func (*Oneof_F_Int32) isOneof_Union()       {}
-func (*Oneof_F_Int64) isOneof_Union()       {}
-func (*Oneof_F_Fixed32) isOneof_Union()     {}
-func (*Oneof_F_Fixed64) isOneof_Union()     {}
-func (*Oneof_F_Uint32) isOneof_Union()      {}
-func (*Oneof_F_Uint64) isOneof_Union()      {}
-func (*Oneof_F_Float) isOneof_Union()       {}
-func (*Oneof_F_Double) isOneof_Union()      {}
-func (*Oneof_F_String) isOneof_Union()      {}
-func (*Oneof_F_Bytes) isOneof_Union()       {}
-func (*Oneof_F_Sint32) isOneof_Union()      {}
-func (*Oneof_F_Sint64) isOneof_Union()      {}
-func (*Oneof_F_Enum) isOneof_Union()        {}
-func (*Oneof_F_Message) isOneof_Union()     {}
-func (*Oneof_FGroup) isOneof_Union()        {}
+func (*Oneof_F_Bool) isOneof_Union() {}
+
+func (*Oneof_F_Int32) isOneof_Union() {}
+
+func (*Oneof_F_Int64) isOneof_Union() {}
+
+func (*Oneof_F_Fixed32) isOneof_Union() {}
+
+func (*Oneof_F_Fixed64) isOneof_Union() {}
+
+func (*Oneof_F_Uint32) isOneof_Union() {}
+
+func (*Oneof_F_Uint64) isOneof_Union() {}
+
+func (*Oneof_F_Float) isOneof_Union() {}
+
+func (*Oneof_F_Double) isOneof_Union() {}
+
+func (*Oneof_F_String) isOneof_Union() {}
+
+func (*Oneof_F_Bytes) isOneof_Union() {}
+
+func (*Oneof_F_Sint32) isOneof_Union() {}
+
+func (*Oneof_F_Sint64) isOneof_Union() {}
+
+func (*Oneof_F_Enum) isOneof_Union() {}
+
+func (*Oneof_F_Message) isOneof_Union() {}
+
+func (*Oneof_FGroup) isOneof_Union() {}
+
 func (*Oneof_F_Largest_Tag) isOneof_Union() {}
-func (*Oneof_Value) isOneof_Tormato()       {}
 
 func (m *Oneof) GetUnion() isOneof_Union {
 	if m != nil {
 		return m.Union
-	}
-	return nil
-}
-func (m *Oneof) GetTormato() isOneof_Tormato {
-	if m != nil {
-		return m.Tormato
 	}
 	return nil
 }
@@ -3291,6 +3310,23 @@ func (m *Oneof) GetF_Largest_Tag() int32 {
 		return x.F_Largest_Tag
 	}
 	return 0
+}
+
+type isOneof_Tormato interface {
+	isOneof_Tormato()
+}
+
+type Oneof_Value struct {
+	Value int32 `protobuf:"varint,100,opt,name=value,oneof"`
+}
+
+func (*Oneof_Value) isOneof_Tormato() {}
+
+func (m *Oneof) GetTormato() isOneof_Tormato {
+	if m != nil {
+		return m.Tormato
+	}
+	return nil
 }
 
 func (m *Oneof) GetValue() int32 {
@@ -3598,7 +3634,7 @@ func _Oneof_OneofSizer(msg proto.Message) (n int) {
 		n += proto.Size(x.FGroup)
 		n += 2 // tag and wire
 	case *Oneof_F_Largest_Tag:
-		n += 10 // tag and wire
+		n += 5 // tag and wire
 		n += proto.SizeVarint(uint64(x.F_Largest_Tag))
 	case nil:
 	default:
@@ -3695,6 +3731,13 @@ func (m *Communique) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Communique proto.InternalMessageInfo
 
+func (m *Communique) GetMakeMeCry() bool {
+	if m != nil && m.MakeMeCry != nil {
+		return *m.MakeMeCry
+	}
+	return false
+}
+
 type isCommunique_Union interface {
 	isCommunique_Union()
 }
@@ -3702,41 +3745,44 @@ type isCommunique_Union interface {
 type Communique_Number struct {
 	Number int32 `protobuf:"varint,5,opt,name=number,oneof"`
 }
+
 type Communique_Name struct {
 	Name string `protobuf:"bytes,6,opt,name=name,oneof"`
 }
+
 type Communique_Data struct {
 	Data []byte `protobuf:"bytes,7,opt,name=data,oneof"`
 }
+
 type Communique_TempC struct {
 	TempC float64 `protobuf:"fixed64,8,opt,name=temp_c,json=tempC,oneof"`
 }
+
 type Communique_Col struct {
 	Col MyMessage_Color `protobuf:"varint,9,opt,name=col,enum=test_proto.MyMessage_Color,oneof"`
 }
+
 type Communique_Msg struct {
 	Msg *Strings `protobuf:"bytes,10,opt,name=msg,oneof"`
 }
 
 func (*Communique_Number) isCommunique_Union() {}
-func (*Communique_Name) isCommunique_Union()   {}
-func (*Communique_Data) isCommunique_Union()   {}
-func (*Communique_TempC) isCommunique_Union()  {}
-func (*Communique_Col) isCommunique_Union()    {}
-func (*Communique_Msg) isCommunique_Union()    {}
+
+func (*Communique_Name) isCommunique_Union() {}
+
+func (*Communique_Data) isCommunique_Union() {}
+
+func (*Communique_TempC) isCommunique_Union() {}
+
+func (*Communique_Col) isCommunique_Union() {}
+
+func (*Communique_Msg) isCommunique_Union() {}
 
 func (m *Communique) GetUnion() isCommunique_Union {
 	if m != nil {
 		return m.Union
 	}
 	return nil
-}
-
-func (m *Communique) GetMakeMeCry() bool {
-	if m != nil && m.MakeMeCry != nil {
-		return *m.MakeMeCry
-	}
-	return false
 }
 
 func (m *Communique) GetNumber() int32 {
@@ -3945,6 +3991,20 @@ func (m *TestUTF8) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TestUTF8 proto.InternalMessageInfo
 
+func (m *TestUTF8) GetScalar() string {
+	if m != nil && m.Scalar != nil {
+		return *m.Scalar
+	}
+	return ""
+}
+
+func (m *TestUTF8) GetVector() []string {
+	if m != nil {
+		return m.Vector
+	}
+	return nil
+}
+
 type isTestUTF8_Oneof interface {
 	isTestUTF8_Oneof()
 }
@@ -3958,20 +4018,6 @@ func (*TestUTF8_Field) isTestUTF8_Oneof() {}
 func (m *TestUTF8) GetOneof() isTestUTF8_Oneof {
 	if m != nil {
 		return m.Oneof
-	}
-	return nil
-}
-
-func (m *TestUTF8) GetScalar() string {
-	if m != nil && m.Scalar != nil {
-		return *m.Scalar
-	}
-	return ""
-}
-
-func (m *TestUTF8) GetVector() []string {
-	if m != nil {
-		return m.Vector
 	}
 	return nil
 }
