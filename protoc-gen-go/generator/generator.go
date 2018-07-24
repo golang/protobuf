@@ -1804,7 +1804,7 @@ type simpleField struct {
 
 // decl prints the declaration of the field in the struct (if any).
 func (f *simpleField) decl(g *Generator, mc *msgCtx) {
-	g.P(f.comment, "\n", Annotate(mc.message.file, f.fullPath, f.goName), "\t", f.goType, "\t`", f.tags, "`", f.deprecated)
+	g.P(f.comment, Annotate(mc.message.file, f.fullPath, f.goName), "\t", f.goType, "\t`", f.tags, "`", f.deprecated)
 }
 
 // getter prints the getter for the field.
@@ -2619,7 +2619,10 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		}
 
 		fieldFullPath := fmt.Sprintf("%s,%d,%d", message.path, messageFieldPath, i)
-		c, _ := g.makeComments(fieldFullPath)
+		c, ok := g.makeComments(fieldFullPath)
+		if ok {
+			c += "\n"
+		}
 		rf := simpleField{
 			fieldCommon: fieldCommon{
 				goName:     fieldName,
