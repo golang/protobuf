@@ -99,17 +99,18 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 //     }
 //
 type Any struct {
-	// A URL/resource name whose content describes the type of the
-	// serialized protocol buffer message.
+	// A URL/resource name that uniquely identifies the type of the serialized
+	// protocol buffer message. The last segment of the URL's path must represent
+	// the fully qualified name of the type (as in
+	// `path/google.protobuf.Duration`). The name should be in a canonical form
+	// (e.g., leading "." is not accepted).
 	//
-	// For URLs which use the scheme `http`, `https`, or no scheme, the
-	// following restrictions and interpretations apply:
+	// In practice, teams usually precompile into the binary all types that they
+	// expect it to use in the context of Any. However, for URLs which use the
+	// scheme `http`, `https`, or no scheme, one can optionally set up a type
+	// server that maps type URLs to message definitions as follows:
 	//
 	// * If no scheme is provided, `https` is assumed.
-	// * The last segment of the URL's path must represent the fully
-	//   qualified name of the type (as in `path/google.protobuf.Duration`).
-	//   The name should be in a canonical form (e.g., leading "." is
-	//   not accepted).
 	// * An HTTP GET on the URL must yield a [google.protobuf.Type][]
 	//   value in binary format, or produce an error.
 	// * Applications are allowed to cache lookup results based on the
@@ -117,6 +118,10 @@ type Any struct {
 	//   lookup. Therefore, binary compatibility needs to be preserved
 	//   on changes to types. (Use versioned type names to manage
 	//   breaking changes.)
+	//
+	// Note: this functionality is not currently available in the official
+	// protobuf release, and it is not used for type URLs beginning with
+	// type.googleapis.com.
 	//
 	// Schemes other than `http`, `https` (or the empty scheme) might be
 	// used with implementation specific semantics.
@@ -133,7 +138,7 @@ func (m *Any) Reset()         { *m = Any{} }
 func (m *Any) String() string { return proto.CompactTextString(m) }
 func (*Any) ProtoMessage()    {}
 func (*Any) Descriptor() ([]byte, []int) {
-	return fileDescriptor_any_744b9ca530f228db, []int{0}
+	return fileDescriptor_any_fddfd5d19474aed1, []int{0}
 }
 func (*Any) XXX_WellKnownType() string { return "Any" }
 func (m *Any) XXX_Unmarshal(b []byte) error {
@@ -172,9 +177,9 @@ func init() {
 	proto.RegisterType((*Any)(nil), "google.protobuf.Any")
 }
 
-func init() { proto.RegisterFile("google/protobuf/any.proto", fileDescriptor_any_744b9ca530f228db) }
+func init() { proto.RegisterFile("google/protobuf/any.proto", fileDescriptor_any_fddfd5d19474aed1) }
 
-var fileDescriptor_any_744b9ca530f228db = []byte{
+var fileDescriptor_any_fddfd5d19474aed1 = []byte{
 	// 185 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4c, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0x4f, 0x2a, 0x4d, 0xd3, 0x4f, 0xcc, 0xab, 0xd4,

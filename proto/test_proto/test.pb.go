@@ -48,7 +48,7 @@ func (x *FOO) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (FOO) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{0}
 }
 
 // An enum, for completeness.
@@ -122,7 +122,7 @@ func (x *GoTest_KIND) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (GoTest_KIND) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{2, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{2, 0}
 }
 
 type MyMessage_Color int32
@@ -161,7 +161,7 @@ func (x *MyMessage_Color) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (MyMessage_Color) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{13, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{13, 0}
 }
 
 type DefaultsMessage_DefaultsEnum int32
@@ -200,7 +200,7 @@ func (x *DefaultsMessage_DefaultsEnum) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (DefaultsMessage_DefaultsEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{16, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{16, 0}
 }
 
 type Defaults_Color int32
@@ -239,7 +239,7 @@ func (x *Defaults_Color) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (Defaults_Color) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{21, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{21, 0}
 }
 
 type RepeatedEnum_Color int32
@@ -272,7 +272,7 @@ func (x *RepeatedEnum_Color) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (RepeatedEnum_Color) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{23, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{23, 0}
 }
 
 type GoEnum struct {
@@ -286,7 +286,7 @@ func (m *GoEnum) Reset()         { *m = GoEnum{} }
 func (m *GoEnum) String() string { return proto.CompactTextString(m) }
 func (*GoEnum) ProtoMessage()    {}
 func (*GoEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{0}
 }
 func (m *GoEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoEnum.Unmarshal(m, b)
@@ -325,7 +325,7 @@ func (m *GoTestField) Reset()         { *m = GoTestField{} }
 func (m *GoTestField) String() string { return proto.CompactTextString(m) }
 func (*GoTestField) ProtoMessage()    {}
 func (*GoTestField) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{1}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{1}
 }
 func (m *GoTestField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTestField.Unmarshal(m, b)
@@ -458,7 +458,7 @@ func (m *GoTest) Reset()         { *m = GoTest{} }
 func (m *GoTest) String() string { return proto.CompactTextString(m) }
 func (*GoTest) ProtoMessage()    {}
 func (*GoTest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{2}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{2}
 }
 func (m *GoTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest.Unmarshal(m, b)
@@ -1082,7 +1082,7 @@ func (m *GoTest_RequiredGroup) Reset()         { *m = GoTest_RequiredGroup{} }
 func (m *GoTest_RequiredGroup) String() string { return proto.CompactTextString(m) }
 func (*GoTest_RequiredGroup) ProtoMessage()    {}
 func (*GoTest_RequiredGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{2, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{2, 0}
 }
 func (m *GoTest_RequiredGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest_RequiredGroup.Unmarshal(m, b)
@@ -1120,7 +1120,7 @@ func (m *GoTest_RepeatedGroup) Reset()         { *m = GoTest_RepeatedGroup{} }
 func (m *GoTest_RepeatedGroup) String() string { return proto.CompactTextString(m) }
 func (*GoTest_RepeatedGroup) ProtoMessage()    {}
 func (*GoTest_RepeatedGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{2, 1}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{2, 1}
 }
 func (m *GoTest_RepeatedGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest_RepeatedGroup.Unmarshal(m, b)
@@ -1158,7 +1158,7 @@ func (m *GoTest_OptionalGroup) Reset()         { *m = GoTest_OptionalGroup{} }
 func (m *GoTest_OptionalGroup) String() string { return proto.CompactTextString(m) }
 func (*GoTest_OptionalGroup) ProtoMessage()    {}
 func (*GoTest_OptionalGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{2, 2}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{2, 2}
 }
 func (m *GoTest_OptionalGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest_OptionalGroup.Unmarshal(m, b)
@@ -1197,7 +1197,7 @@ func (m *GoTestRequiredGroupField) Reset()         { *m = GoTestRequiredGroupFie
 func (m *GoTestRequiredGroupField) String() string { return proto.CompactTextString(m) }
 func (*GoTestRequiredGroupField) ProtoMessage()    {}
 func (*GoTestRequiredGroupField) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{3}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{3}
 }
 func (m *GoTestRequiredGroupField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTestRequiredGroupField.Unmarshal(m, b)
@@ -1235,7 +1235,7 @@ func (m *GoTestRequiredGroupField_Group) Reset()         { *m = GoTestRequiredGr
 func (m *GoTestRequiredGroupField_Group) String() string { return proto.CompactTextString(m) }
 func (*GoTestRequiredGroupField_Group) ProtoMessage()    {}
 func (*GoTestRequiredGroupField_Group) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{3, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{3, 0}
 }
 func (m *GoTestRequiredGroupField_Group) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTestRequiredGroupField_Group.Unmarshal(m, b)
@@ -1280,7 +1280,7 @@ func (m *GoSkipTest) Reset()         { *m = GoSkipTest{} }
 func (m *GoSkipTest) String() string { return proto.CompactTextString(m) }
 func (*GoSkipTest) ProtoMessage()    {}
 func (*GoSkipTest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{4}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{4}
 }
 func (m *GoSkipTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoSkipTest.Unmarshal(m, b)
@@ -1347,7 +1347,7 @@ func (m *GoSkipTest_SkipGroup) Reset()         { *m = GoSkipTest_SkipGroup{} }
 func (m *GoSkipTest_SkipGroup) String() string { return proto.CompactTextString(m) }
 func (*GoSkipTest_SkipGroup) ProtoMessage()    {}
 func (*GoSkipTest_SkipGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{4, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{4, 0}
 }
 func (m *GoSkipTest_SkipGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoSkipTest_SkipGroup.Unmarshal(m, b)
@@ -1394,7 +1394,7 @@ func (m *NonPackedTest) Reset()         { *m = NonPackedTest{} }
 func (m *NonPackedTest) String() string { return proto.CompactTextString(m) }
 func (*NonPackedTest) ProtoMessage()    {}
 func (*NonPackedTest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{5}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{5}
 }
 func (m *NonPackedTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonPackedTest.Unmarshal(m, b)
@@ -1432,7 +1432,7 @@ func (m *PackedTest) Reset()         { *m = PackedTest{} }
 func (m *PackedTest) String() string { return proto.CompactTextString(m) }
 func (*PackedTest) ProtoMessage()    {}
 func (*PackedTest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{6}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{6}
 }
 func (m *PackedTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PackedTest.Unmarshal(m, b)
@@ -1471,7 +1471,7 @@ func (m *MaxTag) Reset()         { *m = MaxTag{} }
 func (m *MaxTag) String() string { return proto.CompactTextString(m) }
 func (*MaxTag) ProtoMessage()    {}
 func (*MaxTag) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{7}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{7}
 }
 func (m *MaxTag) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MaxTag.Unmarshal(m, b)
@@ -1510,7 +1510,7 @@ func (m *OldMessage) Reset()         { *m = OldMessage{} }
 func (m *OldMessage) String() string { return proto.CompactTextString(m) }
 func (*OldMessage) ProtoMessage()    {}
 func (*OldMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{8}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{8}
 }
 func (m *OldMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldMessage.Unmarshal(m, b)
@@ -1555,7 +1555,7 @@ func (m *OldMessage_Nested) Reset()         { *m = OldMessage_Nested{} }
 func (m *OldMessage_Nested) String() string { return proto.CompactTextString(m) }
 func (*OldMessage_Nested) ProtoMessage()    {}
 func (*OldMessage_Nested) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{8, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{8, 0}
 }
 func (m *OldMessage_Nested) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldMessage_Nested.Unmarshal(m, b)
@@ -1597,7 +1597,7 @@ func (m *NewMessage) Reset()         { *m = NewMessage{} }
 func (m *NewMessage) String() string { return proto.CompactTextString(m) }
 func (*NewMessage) ProtoMessage()    {}
 func (*NewMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{9}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{9}
 }
 func (m *NewMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewMessage.Unmarshal(m, b)
@@ -1643,7 +1643,7 @@ func (m *NewMessage_Nested) Reset()         { *m = NewMessage_Nested{} }
 func (m *NewMessage_Nested) String() string { return proto.CompactTextString(m) }
 func (*NewMessage_Nested) ProtoMessage()    {}
 func (*NewMessage_Nested) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{9, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{9, 0}
 }
 func (m *NewMessage_Nested) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewMessage_Nested.Unmarshal(m, b)
@@ -1690,7 +1690,7 @@ func (m *InnerMessage) Reset()         { *m = InnerMessage{} }
 func (m *InnerMessage) String() string { return proto.CompactTextString(m) }
 func (*InnerMessage) ProtoMessage()    {}
 func (*InnerMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{10}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{10}
 }
 func (m *InnerMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InnerMessage.Unmarshal(m, b)
@@ -1748,7 +1748,7 @@ func (m *OtherMessage) Reset()         { *m = OtherMessage{} }
 func (m *OtherMessage) String() string { return proto.CompactTextString(m) }
 func (*OtherMessage) ProtoMessage()    {}
 func (*OtherMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{11}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{11}
 }
 
 var extRange_OtherMessage = []proto.ExtensionRange{
@@ -1815,7 +1815,7 @@ func (m *RequiredInnerMessage) Reset()         { *m = RequiredInnerMessage{} }
 func (m *RequiredInnerMessage) String() string { return proto.CompactTextString(m) }
 func (*RequiredInnerMessage) ProtoMessage()    {}
 func (*RequiredInnerMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{12}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{12}
 }
 func (m *RequiredInnerMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RequiredInnerMessage.Unmarshal(m, b)
@@ -1866,7 +1866,7 @@ func (m *MyMessage) Reset()         { *m = MyMessage{} }
 func (m *MyMessage) String() string { return proto.CompactTextString(m) }
 func (*MyMessage) ProtoMessage()    {}
 func (*MyMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{13}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{13}
 }
 
 var extRange_MyMessage = []proto.ExtensionRange{
@@ -1989,7 +1989,7 @@ func (m *MyMessage_SomeGroup) Reset()         { *m = MyMessage_SomeGroup{} }
 func (m *MyMessage_SomeGroup) String() string { return proto.CompactTextString(m) }
 func (*MyMessage_SomeGroup) ProtoMessage()    {}
 func (*MyMessage_SomeGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{13, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{13, 0}
 }
 func (m *MyMessage_SomeGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MyMessage_SomeGroup.Unmarshal(m, b)
@@ -2028,7 +2028,7 @@ func (m *Ext) Reset()         { *m = Ext{} }
 func (m *Ext) String() string { return proto.CompactTextString(m) }
 func (*Ext) ProtoMessage()    {}
 func (*Ext) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{14}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{14}
 }
 func (m *Ext) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Ext.Unmarshal(m, b)
@@ -2102,7 +2102,7 @@ func (m *ComplexExtension) Reset()         { *m = ComplexExtension{} }
 func (m *ComplexExtension) String() string { return proto.CompactTextString(m) }
 func (*ComplexExtension) ProtoMessage()    {}
 func (*ComplexExtension) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{15}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{15}
 }
 func (m *ComplexExtension) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ComplexExtension.Unmarshal(m, b)
@@ -2154,7 +2154,7 @@ func (m *DefaultsMessage) Reset()         { *m = DefaultsMessage{} }
 func (m *DefaultsMessage) String() string { return proto.CompactTextString(m) }
 func (*DefaultsMessage) ProtoMessage()    {}
 func (*DefaultsMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{16}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{16}
 }
 
 var extRange_DefaultsMessage = []proto.ExtensionRange{
@@ -2193,7 +2193,7 @@ func (m *MyMessageSet) Reset()         { *m = MyMessageSet{} }
 func (m *MyMessageSet) String() string { return proto.CompactTextString(m) }
 func (*MyMessageSet) ProtoMessage()    {}
 func (*MyMessageSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{17}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{17}
 }
 
 func (m *MyMessageSet) MarshalJSON() ([]byte, error) {
@@ -2238,7 +2238,7 @@ func (m *Empty) Reset()         { *m = Empty{} }
 func (m *Empty) String() string { return proto.CompactTextString(m) }
 func (*Empty) ProtoMessage()    {}
 func (*Empty) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{18}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{18}
 }
 func (m *Empty) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Empty.Unmarshal(m, b)
@@ -2269,7 +2269,7 @@ func (m *MessageList) Reset()         { *m = MessageList{} }
 func (m *MessageList) String() string { return proto.CompactTextString(m) }
 func (*MessageList) ProtoMessage()    {}
 func (*MessageList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{19}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{19}
 }
 func (m *MessageList) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageList.Unmarshal(m, b)
@@ -2308,7 +2308,7 @@ func (m *MessageList_Message) Reset()         { *m = MessageList_Message{} }
 func (m *MessageList_Message) String() string { return proto.CompactTextString(m) }
 func (*MessageList_Message) ProtoMessage()    {}
 func (*MessageList_Message) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{19, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{19, 0}
 }
 func (m *MessageList_Message) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageList_Message.Unmarshal(m, b)
@@ -2354,7 +2354,7 @@ func (m *Strings) Reset()         { *m = Strings{} }
 func (m *Strings) String() string { return proto.CompactTextString(m) }
 func (*Strings) ProtoMessage()    {}
 func (*Strings) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{20}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{20}
 }
 func (m *Strings) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Strings.Unmarshal(m, b)
@@ -2422,7 +2422,7 @@ func (m *Defaults) Reset()         { *m = Defaults{} }
 func (m *Defaults) String() string { return proto.CompactTextString(m) }
 func (*Defaults) ProtoMessage()    {}
 func (*Defaults) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{21}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{21}
 }
 func (m *Defaults) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Defaults.Unmarshal(m, b)
@@ -2607,7 +2607,7 @@ func (m *SubDefaults) Reset()         { *m = SubDefaults{} }
 func (m *SubDefaults) String() string { return proto.CompactTextString(m) }
 func (*SubDefaults) ProtoMessage()    {}
 func (*SubDefaults) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{22}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{22}
 }
 func (m *SubDefaults) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SubDefaults.Unmarshal(m, b)
@@ -2647,7 +2647,7 @@ func (m *RepeatedEnum) Reset()         { *m = RepeatedEnum{} }
 func (m *RepeatedEnum) String() string { return proto.CompactTextString(m) }
 func (*RepeatedEnum) ProtoMessage()    {}
 func (*RepeatedEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{23}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{23}
 }
 func (m *RepeatedEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RepeatedEnum.Unmarshal(m, b)
@@ -2691,7 +2691,7 @@ func (m *MoreRepeated) Reset()         { *m = MoreRepeated{} }
 func (m *MoreRepeated) String() string { return proto.CompactTextString(m) }
 func (*MoreRepeated) ProtoMessage()    {}
 func (*MoreRepeated) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{24}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{24}
 }
 func (m *MoreRepeated) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MoreRepeated.Unmarshal(m, b)
@@ -2771,7 +2771,7 @@ func (m *GroupOld) Reset()         { *m = GroupOld{} }
 func (m *GroupOld) String() string { return proto.CompactTextString(m) }
 func (*GroupOld) ProtoMessage()    {}
 func (*GroupOld) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{25}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{25}
 }
 func (m *GroupOld) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupOld.Unmarshal(m, b)
@@ -2809,7 +2809,7 @@ func (m *GroupOld_G) Reset()         { *m = GroupOld_G{} }
 func (m *GroupOld_G) String() string { return proto.CompactTextString(m) }
 func (*GroupOld_G) ProtoMessage()    {}
 func (*GroupOld_G) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{25, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{25, 0}
 }
 func (m *GroupOld_G) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupOld_G.Unmarshal(m, b)
@@ -2847,7 +2847,7 @@ func (m *GroupNew) Reset()         { *m = GroupNew{} }
 func (m *GroupNew) String() string { return proto.CompactTextString(m) }
 func (*GroupNew) ProtoMessage()    {}
 func (*GroupNew) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{26}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{26}
 }
 func (m *GroupNew) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupNew.Unmarshal(m, b)
@@ -2886,7 +2886,7 @@ func (m *GroupNew_G) Reset()         { *m = GroupNew_G{} }
 func (m *GroupNew_G) String() string { return proto.CompactTextString(m) }
 func (*GroupNew_G) ProtoMessage()    {}
 func (*GroupNew_G) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{26, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{26, 0}
 }
 func (m *GroupNew_G) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupNew_G.Unmarshal(m, b)
@@ -2932,7 +2932,7 @@ func (m *FloatingPoint) Reset()         { *m = FloatingPoint{} }
 func (m *FloatingPoint) String() string { return proto.CompactTextString(m) }
 func (*FloatingPoint) ProtoMessage()    {}
 func (*FloatingPoint) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{27}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{27}
 }
 func (m *FloatingPoint) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FloatingPoint.Unmarshal(m, b)
@@ -2980,7 +2980,7 @@ func (m *MessageWithMap) Reset()         { *m = MessageWithMap{} }
 func (m *MessageWithMap) String() string { return proto.CompactTextString(m) }
 func (*MessageWithMap) ProtoMessage()    {}
 func (*MessageWithMap) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{28}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{28}
 }
 func (m *MessageWithMap) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageWithMap.Unmarshal(m, b)
@@ -3060,7 +3060,7 @@ func (m *Oneof) Reset()         { *m = Oneof{} }
 func (m *Oneof) String() string { return proto.CompactTextString(m) }
 func (*Oneof) ProtoMessage()    {}
 func (*Oneof) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{29}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{29}
 }
 func (m *Oneof) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Oneof.Unmarshal(m, b)
@@ -3083,93 +3083,112 @@ var xxx_messageInfo_Oneof proto.InternalMessageInfo
 type isOneof_Union interface {
 	isOneof_Union()
 }
-type isOneof_Tormato interface {
-	isOneof_Tormato()
-}
 
 type Oneof_F_Bool struct {
 	F_Bool bool `protobuf:"varint,1,opt,name=F_Bool,json=FBool,oneof"`
 }
+
 type Oneof_F_Int32 struct {
 	F_Int32 int32 `protobuf:"varint,2,opt,name=F_Int32,json=FInt32,oneof"`
 }
+
 type Oneof_F_Int64 struct {
 	F_Int64 int64 `protobuf:"varint,3,opt,name=F_Int64,json=FInt64,oneof"`
 }
+
 type Oneof_F_Fixed32 struct {
 	F_Fixed32 uint32 `protobuf:"fixed32,4,opt,name=F_Fixed32,json=FFixed32,oneof"`
 }
+
 type Oneof_F_Fixed64 struct {
 	F_Fixed64 uint64 `protobuf:"fixed64,5,opt,name=F_Fixed64,json=FFixed64,oneof"`
 }
+
 type Oneof_F_Uint32 struct {
 	F_Uint32 uint32 `protobuf:"varint,6,opt,name=F_Uint32,json=FUint32,oneof"`
 }
+
 type Oneof_F_Uint64 struct {
 	F_Uint64 uint64 `protobuf:"varint,7,opt,name=F_Uint64,json=FUint64,oneof"`
 }
+
 type Oneof_F_Float struct {
 	F_Float float32 `protobuf:"fixed32,8,opt,name=F_Float,json=FFloat,oneof"`
 }
+
 type Oneof_F_Double struct {
 	F_Double float64 `protobuf:"fixed64,9,opt,name=F_Double,json=FDouble,oneof"`
 }
+
 type Oneof_F_String struct {
 	F_String string `protobuf:"bytes,10,opt,name=F_String,json=FString,oneof"`
 }
+
 type Oneof_F_Bytes struct {
 	F_Bytes []byte `protobuf:"bytes,11,opt,name=F_Bytes,json=FBytes,oneof"`
 }
+
 type Oneof_F_Sint32 struct {
 	F_Sint32 int32 `protobuf:"zigzag32,12,opt,name=F_Sint32,json=FSint32,oneof"`
 }
+
 type Oneof_F_Sint64 struct {
 	F_Sint64 int64 `protobuf:"zigzag64,13,opt,name=F_Sint64,json=FSint64,oneof"`
 }
+
 type Oneof_F_Enum struct {
 	F_Enum MyMessage_Color `protobuf:"varint,14,opt,name=F_Enum,json=FEnum,enum=test_proto.MyMessage_Color,oneof"`
 }
+
 type Oneof_F_Message struct {
 	F_Message *GoTestField `protobuf:"bytes,15,opt,name=F_Message,json=FMessage,oneof"`
 }
+
 type Oneof_FGroup struct {
 	FGroup *Oneof_F_Group `protobuf:"group,16,opt,name=F_Group,json=fGroup,oneof"`
 }
+
 type Oneof_F_Largest_Tag struct {
 	F_Largest_Tag int32 `protobuf:"varint,536870911,opt,name=F_Largest_Tag,json=FLargestTag,oneof"`
 }
-type Oneof_Value struct {
-	Value int32 `protobuf:"varint,100,opt,name=value,oneof"`
-}
 
-func (*Oneof_F_Bool) isOneof_Union()        {}
-func (*Oneof_F_Int32) isOneof_Union()       {}
-func (*Oneof_F_Int64) isOneof_Union()       {}
-func (*Oneof_F_Fixed32) isOneof_Union()     {}
-func (*Oneof_F_Fixed64) isOneof_Union()     {}
-func (*Oneof_F_Uint32) isOneof_Union()      {}
-func (*Oneof_F_Uint64) isOneof_Union()      {}
-func (*Oneof_F_Float) isOneof_Union()       {}
-func (*Oneof_F_Double) isOneof_Union()      {}
-func (*Oneof_F_String) isOneof_Union()      {}
-func (*Oneof_F_Bytes) isOneof_Union()       {}
-func (*Oneof_F_Sint32) isOneof_Union()      {}
-func (*Oneof_F_Sint64) isOneof_Union()      {}
-func (*Oneof_F_Enum) isOneof_Union()        {}
-func (*Oneof_F_Message) isOneof_Union()     {}
-func (*Oneof_FGroup) isOneof_Union()        {}
+func (*Oneof_F_Bool) isOneof_Union() {}
+
+func (*Oneof_F_Int32) isOneof_Union() {}
+
+func (*Oneof_F_Int64) isOneof_Union() {}
+
+func (*Oneof_F_Fixed32) isOneof_Union() {}
+
+func (*Oneof_F_Fixed64) isOneof_Union() {}
+
+func (*Oneof_F_Uint32) isOneof_Union() {}
+
+func (*Oneof_F_Uint64) isOneof_Union() {}
+
+func (*Oneof_F_Float) isOneof_Union() {}
+
+func (*Oneof_F_Double) isOneof_Union() {}
+
+func (*Oneof_F_String) isOneof_Union() {}
+
+func (*Oneof_F_Bytes) isOneof_Union() {}
+
+func (*Oneof_F_Sint32) isOneof_Union() {}
+
+func (*Oneof_F_Sint64) isOneof_Union() {}
+
+func (*Oneof_F_Enum) isOneof_Union() {}
+
+func (*Oneof_F_Message) isOneof_Union() {}
+
+func (*Oneof_FGroup) isOneof_Union() {}
+
 func (*Oneof_F_Largest_Tag) isOneof_Union() {}
-func (*Oneof_Value) isOneof_Tormato()       {}
 
 func (m *Oneof) GetUnion() isOneof_Union {
 	if m != nil {
 		return m.Union
-	}
-	return nil
-}
-func (m *Oneof) GetTormato() isOneof_Tormato {
-	if m != nil {
-		return m.Tormato
 	}
 	return nil
 }
@@ -3291,6 +3310,23 @@ func (m *Oneof) GetF_Largest_Tag() int32 {
 		return x.F_Largest_Tag
 	}
 	return 0
+}
+
+type isOneof_Tormato interface {
+	isOneof_Tormato()
+}
+
+type Oneof_Value struct {
+	Value int32 `protobuf:"varint,100,opt,name=value,oneof"`
+}
+
+func (*Oneof_Value) isOneof_Tormato() {}
+
+func (m *Oneof) GetTormato() isOneof_Tormato {
+	if m != nil {
+		return m.Tormato
+	}
+	return nil
 }
 
 func (m *Oneof) GetValue() int32 {
@@ -3598,7 +3634,7 @@ func _Oneof_OneofSizer(msg proto.Message) (n int) {
 		n += proto.Size(x.FGroup)
 		n += 2 // tag and wire
 	case *Oneof_F_Largest_Tag:
-		n += 10 // tag and wire
+		n += 5 // tag and wire
 		n += proto.SizeVarint(uint64(x.F_Largest_Tag))
 	case nil:
 	default:
@@ -3627,7 +3663,7 @@ func (m *Oneof_F_Group) Reset()         { *m = Oneof_F_Group{} }
 func (m *Oneof_F_Group) String() string { return proto.CompactTextString(m) }
 func (*Oneof_F_Group) ProtoMessage()    {}
 func (*Oneof_F_Group) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{29, 0}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{29, 0}
 }
 func (m *Oneof_F_Group) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Oneof_F_Group.Unmarshal(m, b)
@@ -3675,7 +3711,7 @@ func (m *Communique) Reset()         { *m = Communique{} }
 func (m *Communique) String() string { return proto.CompactTextString(m) }
 func (*Communique) ProtoMessage()    {}
 func (*Communique) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{30}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{30}
 }
 func (m *Communique) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique.Unmarshal(m, b)
@@ -3695,6 +3731,13 @@ func (m *Communique) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Communique proto.InternalMessageInfo
 
+func (m *Communique) GetMakeMeCry() bool {
+	if m != nil && m.MakeMeCry != nil {
+		return *m.MakeMeCry
+	}
+	return false
+}
+
 type isCommunique_Union interface {
 	isCommunique_Union()
 }
@@ -3702,41 +3745,44 @@ type isCommunique_Union interface {
 type Communique_Number struct {
 	Number int32 `protobuf:"varint,5,opt,name=number,oneof"`
 }
+
 type Communique_Name struct {
 	Name string `protobuf:"bytes,6,opt,name=name,oneof"`
 }
+
 type Communique_Data struct {
 	Data []byte `protobuf:"bytes,7,opt,name=data,oneof"`
 }
+
 type Communique_TempC struct {
 	TempC float64 `protobuf:"fixed64,8,opt,name=temp_c,json=tempC,oneof"`
 }
+
 type Communique_Col struct {
 	Col MyMessage_Color `protobuf:"varint,9,opt,name=col,enum=test_proto.MyMessage_Color,oneof"`
 }
+
 type Communique_Msg struct {
 	Msg *Strings `protobuf:"bytes,10,opt,name=msg,oneof"`
 }
 
 func (*Communique_Number) isCommunique_Union() {}
-func (*Communique_Name) isCommunique_Union()   {}
-func (*Communique_Data) isCommunique_Union()   {}
-func (*Communique_TempC) isCommunique_Union()  {}
-func (*Communique_Col) isCommunique_Union()    {}
-func (*Communique_Msg) isCommunique_Union()    {}
+
+func (*Communique_Name) isCommunique_Union() {}
+
+func (*Communique_Data) isCommunique_Union() {}
+
+func (*Communique_TempC) isCommunique_Union() {}
+
+func (*Communique_Col) isCommunique_Union() {}
+
+func (*Communique_Msg) isCommunique_Union() {}
 
 func (m *Communique) GetUnion() isCommunique_Union {
 	if m != nil {
 		return m.Union
 	}
 	return nil
-}
-
-func (m *Communique) GetMakeMeCry() bool {
-	if m != nil && m.MakeMeCry != nil {
-		return *m.MakeMeCry
-	}
-	return false
 }
 
 func (m *Communique) GetNumber() int32 {
@@ -3925,7 +3971,7 @@ func (m *TestUTF8) Reset()         { *m = TestUTF8{} }
 func (m *TestUTF8) String() string { return proto.CompactTextString(m) }
 func (*TestUTF8) ProtoMessage()    {}
 func (*TestUTF8) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_ee9f66cbbebc227c, []int{31}
+	return fileDescriptor_test_91ab7f48d97821a1, []int{31}
 }
 func (m *TestUTF8) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TestUTF8.Unmarshal(m, b)
@@ -3945,6 +3991,20 @@ func (m *TestUTF8) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TestUTF8 proto.InternalMessageInfo
 
+func (m *TestUTF8) GetScalar() string {
+	if m != nil && m.Scalar != nil {
+		return *m.Scalar
+	}
+	return ""
+}
+
+func (m *TestUTF8) GetVector() []string {
+	if m != nil {
+		return m.Vector
+	}
+	return nil
+}
+
 type isTestUTF8_Oneof interface {
 	isTestUTF8_Oneof()
 }
@@ -3958,20 +4018,6 @@ func (*TestUTF8_Field) isTestUTF8_Oneof() {}
 func (m *TestUTF8) GetOneof() isTestUTF8_Oneof {
 	if m != nil {
 		return m.Oneof
-	}
-	return nil
-}
-
-func (m *TestUTF8) GetScalar() string {
-	if m != nil && m.Scalar != nil {
-		return *m.Scalar
-	}
-	return ""
-}
-
-func (m *TestUTF8) GetVector() []string {
-	if m != nil {
-		return m.Vector
 	}
 	return nil
 }
@@ -4961,9 +5007,9 @@ func init() {
 	proto.RegisterExtension(E_X250)
 }
 
-func init() { proto.RegisterFile("test_proto/test.proto", fileDescriptor_test_ee9f66cbbebc227c) }
+func init() { proto.RegisterFile("test_proto/test.proto", fileDescriptor_test_91ab7f48d97821a1) }
 
-var fileDescriptor_test_ee9f66cbbebc227c = []byte{
+var fileDescriptor_test_91ab7f48d97821a1 = []byte{
 	// 4795 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x5b, 0xd9, 0x73, 0x1b, 0x47,
 	0x7a, 0xd7, 0x0c, 0xee, 0x0f, 0x20, 0x31, 0x6c, 0xc9, 0x12, 0x44, 0x59, 0xd2, 0x08, 0x6b, 0xaf,

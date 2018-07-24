@@ -45,7 +45,7 @@ func (m *Public) Reset()         { *m = Public{} }
 func (m *Public) String() string { return proto.CompactTextString(m) }
 func (*Public) ProtoMessage()    {}
 func (*Public) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_c0314c022b7c17d8, []int{0}
+	return fileDescriptor_a_b32ab045d5946df6, []int{0}
 }
 func (m *Public) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Public.Unmarshal(m, b)
@@ -90,9 +90,9 @@ func init() {
 	proto.RegisterType((*Public)(nil), "goproto.test.import_public.Public")
 }
 
-func init() { proto.RegisterFile("import_public/a.proto", fileDescriptor_a_c0314c022b7c17d8) }
+func init() { proto.RegisterFile("import_public/a.proto", fileDescriptor_a_b32ab045d5946df6) }
 
-var fileDescriptor_a_c0314c022b7c17d8 = []byte{
+var fileDescriptor_a_b32ab045d5946df6 = []byte{
 	// 200 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xcd, 0xcc, 0x2d, 0xc8,
 	0x2f, 0x2a, 0x89, 0x2f, 0x28, 0x4d, 0xca, 0xc9, 0x4c, 0xd6, 0x4f, 0xd4, 0x2b, 0x28, 0xca, 0x2f,

@@ -81,7 +81,9 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 // {hour}, {min}, and {sec} are zero-padded to two digits each. The fractional
 // seconds, which can go up to 9 digits (i.e. up to 1 nanosecond resolution),
 // are optional. The "Z" suffix indicates the timezone ("UTC"); the timezone
-// is required, though only UTC (as indicated by "Z") is presently supported.
+// is required. A proto3 JSON serializer should always use UTC (as indicated by
+// "Z") when printing the Timestamp type and a proto3 JSON parser should be
+// able to accept both UTC and other timezones (as indicated by an offset).
 //
 // For example, "2017-01-15T01:30:15.01Z" encodes 15.01 seconds past
 // 01:30 UTC on January 15, 2017.
@@ -92,8 +94,8 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 // to this format using [`strftime`](https://docs.python.org/2/library/time.html#time.strftime)
 // with the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one
 // can use the Joda Time's [`ISODateTimeFormat.dateTime()`](
-// http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime--)
-// to obtain a formatter capable of generating timestamps in this format.
+// http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime--
+// ) to obtain a formatter capable of generating timestamps in this format.
 //
 //
 type Timestamp struct {
@@ -115,7 +117,7 @@ func (m *Timestamp) Reset()         { *m = Timestamp{} }
 func (m *Timestamp) String() string { return proto.CompactTextString(m) }
 func (*Timestamp) ProtoMessage()    {}
 func (*Timestamp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_timestamp_b826e8e5fba671a8, []int{0}
+	return fileDescriptor_timestamp_23e743fd41f23887, []int{0}
 }
 func (*Timestamp) XXX_WellKnownType() string { return "Timestamp" }
 func (m *Timestamp) XXX_Unmarshal(b []byte) error {
@@ -155,10 +157,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/protobuf/timestamp.proto", fileDescriptor_timestamp_b826e8e5fba671a8)
+	proto.RegisterFile("google/protobuf/timestamp.proto", fileDescriptor_timestamp_23e743fd41f23887)
 }
 
-var fileDescriptor_timestamp_b826e8e5fba671a8 = []byte{
+var fileDescriptor_timestamp_23e743fd41f23887 = []byte{
 	// 191 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4f, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0x4f, 0x2a, 0x4d, 0xd3, 0x2f, 0xc9, 0xcc, 0x4d,
