@@ -57,7 +57,7 @@ func (x *HatType) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (HatType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{0}
+	return fileDescriptor_test_2309d445eee26af7, []int{0}
 }
 
 // This enum represents days of the week.
@@ -97,7 +97,7 @@ func (x *Days) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (Days) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{1}
+	return fileDescriptor_test_2309d445eee26af7, []int{1}
 }
 
 type Request_Color int32
@@ -136,7 +136,7 @@ func (x *Request_Color) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (Request_Color) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{0, 0}
+	return fileDescriptor_test_2309d445eee26af7, []int{0, 0}
 }
 
 type Reply_Entry_Game int32
@@ -172,7 +172,7 @@ func (x *Reply_Entry_Game) UnmarshalJSON(data []byte) error {
 	return nil
 }
 func (Reply_Entry_Game) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{1, 0, 0}
+	return fileDescriptor_test_2309d445eee26af7, []int{1, 0, 0}
 }
 
 // This is a message that might be sent somewhere.
@@ -200,7 +200,7 @@ func (m *Request) Reset()         { *m = Request{} }
 func (m *Request) String() string { return proto.CompactTextString(m) }
 func (*Request) ProtoMessage()    {}
 func (*Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{0}
+	return fileDescriptor_test_2309d445eee26af7, []int{0}
 }
 func (m *Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Request.Unmarshal(m, b)
@@ -298,7 +298,7 @@ func (m *Request_SomeGroup) Reset()         { *m = Request_SomeGroup{} }
 func (m *Request_SomeGroup) String() string { return proto.CompactTextString(m) }
 func (*Request_SomeGroup) ProtoMessage()    {}
 func (*Request_SomeGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{0, 0}
+	return fileDescriptor_test_2309d445eee26af7, []int{0, 0}
 }
 func (m *Request_SomeGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Request_SomeGroup.Unmarshal(m, b)
@@ -338,7 +338,7 @@ func (m *Reply) Reset()         { *m = Reply{} }
 func (m *Reply) String() string { return proto.CompactTextString(m) }
 func (*Reply) ProtoMessage()    {}
 func (*Reply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{1}
+	return fileDescriptor_test_2309d445eee26af7, []int{1}
 }
 
 var extRange_Reply = []proto.ExtensionRange{
@@ -393,7 +393,7 @@ func (m *Reply_Entry) Reset()         { *m = Reply_Entry{} }
 func (m *Reply_Entry) String() string { return proto.CompactTextString(m) }
 func (*Reply_Entry) ProtoMessage()    {}
 func (*Reply_Entry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{1, 0}
+	return fileDescriptor_test_2309d445eee26af7, []int{1, 0}
 }
 func (m *Reply_Entry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Reply_Entry.Unmarshal(m, b)
@@ -448,7 +448,7 @@ func (m *OtherBase) Reset()         { *m = OtherBase{} }
 func (m *OtherBase) String() string { return proto.CompactTextString(m) }
 func (*OtherBase) ProtoMessage()    {}
 func (*OtherBase) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{2}
+	return fileDescriptor_test_2309d445eee26af7, []int{2}
 }
 
 var extRange_OtherBase = []proto.ExtensionRange{
@@ -493,7 +493,7 @@ func (m *ReplyExtensions) Reset()         { *m = ReplyExtensions{} }
 func (m *ReplyExtensions) String() string { return proto.CompactTextString(m) }
 func (*ReplyExtensions) ProtoMessage()    {}
 func (*ReplyExtensions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{3}
+	return fileDescriptor_test_2309d445eee26af7, []int{3}
 }
 func (m *ReplyExtensions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReplyExtensions.Unmarshal(m, b)
@@ -551,7 +551,7 @@ func (m *OtherReplyExtensions) Reset()         { *m = OtherReplyExtensions{} }
 func (m *OtherReplyExtensions) String() string { return proto.CompactTextString(m) }
 func (*OtherReplyExtensions) ProtoMessage()    {}
 func (*OtherReplyExtensions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{4}
+	return fileDescriptor_test_2309d445eee26af7, []int{4}
 }
 func (m *OtherReplyExtensions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OtherReplyExtensions.Unmarshal(m, b)
@@ -589,7 +589,7 @@ func (m *OldReply) Reset()         { *m = OldReply{} }
 func (m *OldReply) String() string { return proto.CompactTextString(m) }
 func (*OldReply) ProtoMessage()    {}
 func (*OldReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{5}
+	return fileDescriptor_test_2309d445eee26af7, []int{5}
 }
 
 func (m *OldReply) MarshalJSON() ([]byte, error) {
@@ -649,7 +649,7 @@ func (m *Communique) Reset()         { *m = Communique{} }
 func (m *Communique) String() string { return proto.CompactTextString(m) }
 func (*Communique) ProtoMessage()    {}
 func (*Communique) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{6}
+	return fileDescriptor_test_2309d445eee26af7, []int{6}
 }
 func (m *Communique) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique.Unmarshal(m, b)
@@ -1020,7 +1020,7 @@ func (m *Communique_SomeGroup) Reset()         { *m = Communique_SomeGroup{} }
 func (m *Communique_SomeGroup) String() string { return proto.CompactTextString(m) }
 func (*Communique_SomeGroup) ProtoMessage()    {}
 func (*Communique_SomeGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{6, 0}
+	return fileDescriptor_test_2309d445eee26af7, []int{6, 0}
 }
 func (m *Communique_SomeGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique_SomeGroup.Unmarshal(m, b)
@@ -1057,7 +1057,7 @@ func (m *Communique_Delta) Reset()         { *m = Communique_Delta{} }
 func (m *Communique_Delta) String() string { return proto.CompactTextString(m) }
 func (*Communique_Delta) ProtoMessage()    {}
 func (*Communique_Delta) Descriptor() ([]byte, []int) {
-	return fileDescriptor_test_e7f51bc1dc26f0b1, []int{6, 1}
+	return fileDescriptor_test_2309d445eee26af7, []int{6, 1}
 }
 func (m *Communique_Delta) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique_Delta.Unmarshal(m, b)
@@ -1120,9 +1120,9 @@ func init() {
 	proto.RegisterExtension(E_Donut)
 }
 
-func init() { proto.RegisterFile("my_test/test.proto", fileDescriptor_test_e7f51bc1dc26f0b1) }
+func init() { proto.RegisterFile("my_test/test.proto", fileDescriptor_test_2309d445eee26af7) }
 
-var fileDescriptor_test_e7f51bc1dc26f0b1 = []byte{
+var fileDescriptor_test_2309d445eee26af7 = []byte{
 	// 1033 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x55, 0xdd, 0x6e, 0xe3, 0x44,
 	0x14, 0xce, 0xd8, 0x71, 0x7e, 0x4e, 0x42, 0x6b, 0x46, 0x55, 0x6b, 0x05, 0xed, 0xd6, 0x04, 0x8a,

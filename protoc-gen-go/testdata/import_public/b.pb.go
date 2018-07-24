@@ -31,7 +31,7 @@ func (m *Local) Reset()         { *m = Local{} }
 func (m *Local) String() string { return proto.CompactTextString(m) }
 func (*Local) ProtoMessage()    {}
 func (*Local) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b_cd675af613a33f86, []int{0}
+	return fileDescriptor_b_7f20a805fad67bd0, []int{0}
 }
 func (m *Local) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Local.Unmarshal(m, b)
@@ -69,9 +69,9 @@ func init() {
 	proto.RegisterType((*Local)(nil), "goproto.test.import_public.Local")
 }
 
-func init() { proto.RegisterFile("import_public/b.proto", fileDescriptor_b_cd675af613a33f86) }
+func init() { proto.RegisterFile("import_public/b.proto", fileDescriptor_b_7f20a805fad67bd0) }
 
-var fileDescriptor_b_cd675af613a33f86 = []byte{
+var fileDescriptor_b_7f20a805fad67bd0 = []byte{
 	// 174 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xcd, 0xcc, 0x2d, 0xc8,
 	0x2f, 0x2a, 0x89, 0x2f, 0x28, 0x4d, 0xca, 0xc9, 0x4c, 0xd6, 0x4f, 0xd2, 0x2b, 0x28, 0xca, 0x2f,

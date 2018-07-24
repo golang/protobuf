@@ -35,7 +35,7 @@ func (x E) String() string {
 	return proto.EnumName(E_name, int32(x))
 }
 func (E) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a_1f3702f9fb9898df, []int{0}
+	return fileDescriptor_a_91ca0264a534463a, []int{0}
 }
 
 type M struct {
@@ -50,7 +50,7 @@ func (m *M) Reset()         { *m = M{} }
 func (m *M) String() string { return proto.CompactTextString(m) }
 func (*M) ProtoMessage()    {}
 func (*M) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_1f3702f9fb9898df, []int{0}
+	return fileDescriptor_a_91ca0264a534463a, []int{0}
 }
 func (m *M) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_M.Unmarshal(m, b)
@@ -82,9 +82,9 @@ func init() {
 	proto.RegisterEnum("goproto.test.import_public.sub.E", E_name, E_value)
 }
 
-func init() { proto.RegisterFile("import_public/sub/a.proto", fileDescriptor_a_1f3702f9fb9898df) }
+func init() { proto.RegisterFile("import_public/sub/a.proto", fileDescriptor_a_91ca0264a534463a) }
 
-var fileDescriptor_a_1f3702f9fb9898df = []byte{
+var fileDescriptor_a_91ca0264a534463a = []byte{
 	// 172 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcc, 0xcc, 0x2d, 0xc8,
 	0x2f, 0x2a, 0x89, 0x2f, 0x28, 0x4d, 0xca, 0xc9, 0x4c, 0xd6, 0x2f, 0x2e, 0x4d, 0xd2, 0x4f, 0xd4,

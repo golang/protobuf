@@ -40,7 +40,7 @@ func (x NullValue) String() string {
 	return proto.EnumName(NullValue_name, int32(x))
 }
 func (NullValue) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_struct_f5394fc25c9c5287, []int{0}
+	return fileDescriptor_struct_3a5a94e0c7801b27, []int{0}
 }
 func (NullValue) XXX_WellKnownType() string { return "NullValue" }
 
@@ -64,7 +64,7 @@ func (m *Struct) Reset()         { *m = Struct{} }
 func (m *Struct) String() string { return proto.CompactTextString(m) }
 func (*Struct) ProtoMessage()    {}
 func (*Struct) Descriptor() ([]byte, []int) {
-	return fileDescriptor_struct_f5394fc25c9c5287, []int{0}
+	return fileDescriptor_struct_3a5a94e0c7801b27, []int{0}
 }
 func (*Struct) XXX_WellKnownType() string { return "Struct" }
 func (m *Struct) XXX_Unmarshal(b []byte) error {
@@ -118,7 +118,7 @@ func (m *Value) Reset()         { *m = Value{} }
 func (m *Value) String() string { return proto.CompactTextString(m) }
 func (*Value) ProtoMessage()    {}
 func (*Value) Descriptor() ([]byte, []int) {
-	return fileDescriptor_struct_f5394fc25c9c5287, []int{1}
+	return fileDescriptor_struct_3a5a94e0c7801b27, []int{1}
 }
 func (*Value) XXX_WellKnownType() string { return "Value" }
 func (m *Value) XXX_Unmarshal(b []byte) error {
@@ -378,7 +378,7 @@ func (m *ListValue) Reset()         { *m = ListValue{} }
 func (m *ListValue) String() string { return proto.CompactTextString(m) }
 func (*ListValue) ProtoMessage()    {}
 func (*ListValue) Descriptor() ([]byte, []int) {
-	return fileDescriptor_struct_f5394fc25c9c5287, []int{2}
+	return fileDescriptor_struct_3a5a94e0c7801b27, []int{2}
 }
 func (*ListValue) XXX_WellKnownType() string { return "ListValue" }
 func (m *ListValue) XXX_Unmarshal(b []byte) error {
@@ -415,10 +415,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("google/protobuf/struct.proto", fileDescriptor_struct_f5394fc25c9c5287)
+	proto.RegisterFile("google/protobuf/struct.proto", fileDescriptor_struct_3a5a94e0c7801b27)
 }
 
-var fileDescriptor_struct_f5394fc25c9c5287 = []byte{
+var fileDescriptor_struct_3a5a94e0c7801b27 = []byte{
 	// 417 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x92, 0x41, 0x8b, 0xd3, 0x40,
 	0x14, 0xc7, 0x3b, 0xc9, 0x36, 0x98, 0x17, 0x59, 0x97, 0x11, 0xb4, 0xac, 0xa2, 0xa1, 0x7b, 0x09,
