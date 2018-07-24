@@ -33,10 +33,8 @@ const E_ZERO = E(sub.E_ZERO)
 // Ignoring public import of Local from import_public/b.proto
 
 type Public struct {
-	M *sub.M `protobuf:"bytes,1,opt,name=m,proto3" json:"m,omitempty"`
-
-	E sub.E `protobuf:"varint,2,opt,name=e,proto3,enum=goproto.test.import_public.sub.E" json:"e,omitempty"`
-
+	M                    *sub.M   `protobuf:"bytes,1,opt,name=m,proto3" json:"m,omitempty"`
+	E                    sub.E    `protobuf:"varint,2,opt,name=e,proto3,enum=goproto.test.import_public.sub.E" json:"e,omitempty"`
 	Local                *Local   `protobuf:"bytes,3,opt,name=local,proto3" json:"local,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`

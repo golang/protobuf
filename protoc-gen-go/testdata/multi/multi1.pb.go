@@ -19,10 +19,8 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type Multi1 struct {
-	Multi2 *Multi2 `protobuf:"bytes,1,req,name=multi2" json:"multi2,omitempty"`
-
-	Color *Multi2_Color `protobuf:"varint,2,opt,name=color,enum=multitest.Multi2_Color" json:"color,omitempty"`
-
+	Multi2               *Multi2         `protobuf:"bytes,1,req,name=multi2" json:"multi2,omitempty"`
+	Color                *Multi2_Color   `protobuf:"varint,2,opt,name=color,enum=multitest.Multi2_Color" json:"color,omitempty"`
 	HatType              *Multi3_HatType `protobuf:"varint,3,opt,name=hat_type,json=hatType,enum=multitest.Multi3_HatType" json:"hat_type,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
 	XXX_unrecognized     []byte          `json:"-"`

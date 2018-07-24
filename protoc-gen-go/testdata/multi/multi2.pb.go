@@ -58,8 +58,7 @@ func (Multi2_Color) EnumDescriptor() ([]byte, []int) {
 }
 
 type Multi2 struct {
-	RequiredValue *int32 `protobuf:"varint,1,req,name=required_value,json=requiredValue" json:"required_value,omitempty"`
-
+	RequiredValue        *int32        `protobuf:"varint,1,req,name=required_value,json=requiredValue" json:"required_value,omitempty"`
 	Color                *Multi2_Color `protobuf:"varint,2,opt,name=color,enum=multitest.Multi2_Color" json:"color,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
 	XXX_unrecognized     []byte        `json:"-"`
