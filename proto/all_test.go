@@ -2303,25 +2303,6 @@ func TestInvalidUTF8(t *testing.T) {
 	}
 }
 
-type CustomRawMessage []byte
-
-func (m *CustomRawMessage) Marshal() ([]byte, error) {
-	return []byte(*m), nil
-}
-func (m *CustomRawMessage) Reset()         { *m = nil }
-func (m *CustomRawMessage) String() string { return fmt.Sprintf("%x", *m) }
-func (m *CustomRawMessage) ProtoMessage()  {}
-
-func TestDeterministicErrorOnCustomMarshaler(t *testing.T) {
-	in := CustomRawMessage{1, 2, 3}
-	var b1 Buffer
-	b1.SetDeterministic(true)
-	err := b1.Marshal(&in)
-	if err == nil || !strings.Contains(err.Error(), "deterministic") {
-		t.Fatalf("Marshal error:\ngot  %v\nwant deterministic not supported error", err)
-	}
-}
-
 // Benchmarks
 
 func testMsg() *GoTest {
