@@ -50,6 +50,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -425,6 +426,7 @@ type Generator struct {
 	writeOutput      bool
 	annotateCode     bool                                       // whether to store annotations
 	annotations      []*descriptor.GeneratedCodeInfo_Annotation // annotations to store
+	tag              bool                                       // whether to store struct tag
 }
 
 type pathType int
@@ -492,6 +494,10 @@ func (g *Generator) CommandLineParameters(parameter string) {
 		case "annotate_code":
 			if v == "true" {
 				g.annotateCode = true
+			}
+		case "tag":
+			if v == "true" {
+				g.tag = true
 			}
 		default:
 			if len(k) > 0 && k[0] == 'M' {
@@ -1261,7 +1267,7 @@ func (g *Generator) PrintComments(path string) bool {
 	if !g.writeOutput {
 		return false
 	}
-	if c, ok := g.makeComments(path); ok {
+	if c, _, ok := g.makeComments(path); ok {
 		g.P(c)
 		return true
 	}
@@ -1269,10 +1275,10 @@ func (g *Generator) PrintComments(path string) bool {
 }
 
 // makeComments generates the comment string for the field, no "\n" at the end
-func (g *Generator) makeComments(path string) (string, bool) {
+func (g *Generator) makeComments(path string) (string, string, bool) {
 	loc, ok := g.file.comments[path]
 	if !ok {
-		return "", false
+		return "", "", false
 	}
 	w := new(bytes.Buffer)
 	nl := ""
@@ -1280,7 +1286,7 @@ func (g *Generator) makeComments(path string) (string, bool) {
 		fmt.Fprintf(w, "%s// %s", nl, strings.TrimPrefix(line, " "))
 		nl = "\n"
 	}
-	return w.String(), true
+	return w.String(), loc.GetTrailingComments(), true
 }
 
 func (g *Generator) fileByName(filename string) *FileDescriptor {
@@ -2509,7 +2515,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			// This is the first field of a oneof we haven't seen before.
 			// Generate the union field.
 			oneofFullPath := fmt.Sprintf("%s,%d,%d", message.path, messageOneofPath, *field.OneofIndex)
-			c, ok := g.makeComments(oneofFullPath)
+			c, _, ok := g.makeComments(oneofFullPath)
 			if ok {
 				c += "\n//\n"
 			}
@@ -2619,9 +2625,15 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		}
 
 		fieldFullPath := fmt.Sprintf("%s,%d,%d", message.path, messageFieldPath, i)
-		c, ok := g.makeComments(fieldFullPath)
+		c, tc, ok := g.makeComments(fieldFullPath)
 		if ok {
 			c += "\n"
+		}
+		if g.tag {
+			tagre := regexp.MustCompile("`(\\w.+)`")
+			if tt := tagre.FindStringSubmatch(tc); len(tt) >= 1 {
+				tag = tag + " " + tt[1]
+			}
 		}
 		rf := simpleField{
 			fieldCommon: fieldCommon{
