@@ -2632,7 +2632,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		if g.tag {
 			tagre := regexp.MustCompile("`(\\w.+)`")
 			if tt := tagre.FindStringSubmatch(tc); len(tt) >= 1 {
-				tag = tag + " " + tt[1]
+				tag = tag + " " + getStructTag(tt[1])
 			}
 		}
 		rf := simpleField{
@@ -2712,6 +2712,23 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		g.addInitf("%s.RegisterMapType((%s)(nil), %q)", g.Pkg["proto"], mapFieldTypes[k], fullName)
 	}
 
+}
+
+func getStructTag(comment string) string {
+	parts := make([]string, 0)
+	re := regexp.MustCompile("^\\w.*:\"\\S+\"$")
+
+	for _, t := range strings.Fields(comment) {
+		if strings.HasPrefix(t, "json:") || strings.HasPrefix(t, "protobuf:") {
+			continue
+		}
+		if !re.MatchString(t) {
+			continue
+		}
+		parts = append(parts, t)
+	}
+
+	return strings.Join(parts, " ")
 }
 
 type byTypeName []*descriptor.FieldDescriptorProto
