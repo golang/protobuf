@@ -159,10 +159,7 @@ func NewDeprecatedServiceClient(cc *grpc.ClientConn) DeprecatedServiceClient {
 func (c *deprecatedServiceClient) DeprecatedCall(ctx context.Context, in *DeprecatedRequest, opts ...grpc.CallOption) (*DeprecatedResponse, error) {
 	out := new(DeprecatedResponse)
 	err := c.cc.Invoke(ctx, "/deprecated.DeprecatedService/DeprecatedCall", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
+	return out, err
 }
 
 // DeprecatedServiceServer is the server API for DeprecatedService service.
