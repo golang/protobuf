@@ -182,10 +182,7 @@ func NewTestClient(cc *grpc.ClientConn) TestClient {
 func (c *testClient) UnaryCall(ctx context.Context, in *SimpleRequest, opts ...grpc.CallOption) (*SimpleResponse, error) {
 	out := new(SimpleResponse)
 	err := c.cc.Invoke(ctx, "/grpc.testing.Test/UnaryCall", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
+	return out, err
 }
 
 func (c *testClient) Downstream(ctx context.Context, in *SimpleRequest, opts ...grpc.CallOption) (Test_DownstreamClient, error) {

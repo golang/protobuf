@@ -309,8 +309,7 @@ func (g *grpc) generateClientMethod(servName, fullServName, serviceDescVar strin
 		g.P("out := new(", outType, ")")
 		// TODO: Pass descExpr to Invoke.
 		g.P(`err := c.cc.Invoke(ctx, "`, sname, `", in, out, opts...)`)
-		g.P("if err != nil { return nil, err }")
-		g.P("return out, nil")
+		g.P("return out, err")
 		g.P("}")
 		g.P()
 		return
