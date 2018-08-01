@@ -714,6 +714,7 @@ var unmarshalingTests = []struct {
 	{"enum-value object", Unmarshaler{}, "{\n \"color\": 2\n}", &pb.Widget{Color: pb.Widget_BLUE.Enum()}},
 	{"unknown field with allowed option", Unmarshaler{AllowUnknownFields: true}, `{"unknown": "foo"}`, new(pb.Simple)},
 	{"proto3 enum string", Unmarshaler{}, `{"hilarity":"PUNS"}`, &proto3pb.Message{Hilarity: proto3pb.Message_PUNS}},
+	{"proto3 enum string", Unmarshaler{}, `{"hilarity":"puns"}`, &proto3pb.Message{Hilarity: proto3pb.Message_PUNS}},
 	{"proto3 enum value", Unmarshaler{}, `{"hilarity":1}`, &proto3pb.Message{Hilarity: proto3pb.Message_PUNS}},
 	{"unknown enum value object",
 		Unmarshaler{},
