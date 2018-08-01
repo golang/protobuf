@@ -2630,9 +2630,8 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			c += "\n"
 		}
 		if g.tag {
-			tagre := regexp.MustCompile("`(\\w.+)`")
-			if tt := tagre.FindStringSubmatch(tc); len(tt) >= 1 {
-				tag = tag + " " + getStructTag(tt[1])
+			if t := getStructTag(tc); t != "" {
+				tag = tag + " " + t
 			}
 		}
 		rf := simpleField{
@@ -2715,16 +2714,21 @@ func (g *Generator) generateMessage(message *Descriptor) {
 }
 
 func getStructTag(comment string) string {
-	parts := make([]string, 0)
-	re := regexp.MustCompile("^\\w.*:\"\\S+\"$")
+	// only support first tag comment
+	comment = regexp.MustCompile("`([^`]+)`").FindString(comment)
 
-	for _, t := range strings.Fields(comment) {
+	if comment == "" {
+		return ""
+	}
+
+	parts := make([]string, 0)
+	re := regexp.MustCompile("\\w.*?:\"[^\"]+?\"")
+
+	for _, t := range re.FindAllString(comment, len(comment)) {
 		if strings.HasPrefix(t, "json:") || strings.HasPrefix(t, "protobuf:") {
 			continue
 		}
-		if !re.MatchString(t) {
-			continue
-		}
+
 		parts = append(parts, t)
 	}
 

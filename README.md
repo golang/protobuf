@@ -220,7 +220,7 @@ parameter list separated from the output directory by a colon:
 - `Mfoo/bar.proto=quux/shme` - declares that foo/bar.proto is
   associated with Go package quux/shme.  This is subject to the
   import_prefix parameter.
-- `tag=true` - specifies wheter export tag comment.
+- `tag=true` - specifies whether export tag comment.
 
 The following parameters are deprecated and should not be used:
 
