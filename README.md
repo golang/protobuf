@@ -17,6 +17,10 @@ List of relevant design documents:
 * [Go Protocol Buffer API Improvements](https://goo.gl/wwiPVx)
 * [Go Reflection API for Protocol Buffers](https://goo.gl/96gGnE)
 
+# Contributing
+
+We appreciate community contributions. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 # Reporting Issues
 
 Issues regarding the new API can be filed at

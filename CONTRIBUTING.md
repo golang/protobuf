@@ -1,0 +1,72 @@
+# Contributing to Go Protocol Buffers
+
+Go protocol buffers is an open source project and accepts contributions.
+The source of truth for this repository is at
+[go.googlesource.com/protobuf](https://go.googlesource.com/protobuf).
+The code review tool used is
+[Gerrit Code Review](https://www.gerritcodereview.com/).
+
+
+## Becoming a contributor
+
+The first step is to configure your environment.
+Please follow the steps outlined in
+[Becoming a contributor](https://golang.org/doc/contribute.html#contributor)
+as the setup for contributing to the `protobuf` project is identical
+to that for contributing to the `go` project.
+
+
+## Before contributing code
+
+The project welcomes submissions, but to make sure things are well coordinated
+we ask that everyone discuss any significant changes before starting work.
+Best practice is to connect your work to the
+[issue tracker](https://github.com/golang/protobuf/issues),
+either by filing a new issue or by claiming an existing issue.
+Issues related to the new API should have a "APIv2:" prefix in the title.
+
+
+## Sending a change via Gerrit
+
+The `protobuf` project performs development in Gerrit.
+Unfortunately, we are not currently able to accept GitHub pull requests.
+Below are the steps to send a change using Gerrit.
+
+
+**Step 1:** Clone the Go source code:
+```
+git clone https://go.googlesource.com/protobuf
+```
+
+**Step 2:** Prepare changes in a new branch, created from the `master` branch.
+To commit the changes, use `git codereview change`;
+that will create or amend a single commit in the branch.
+
+```
+$ git checkout -b mybranch
+$ [edit files...]
+$ git add [files...]
+$ git codereview change   # create commit in the branch
+$ [edit again...]
+$ git add [files...]
+$ git codereview change   # amend the existing commit with new changes
+$ [etc.]
+```
+
+**Step 3:** Send the changes for review to Gerrit using `git codereview mail`.
+```
+$ git codereview mail     # send changes to Gerrit
+```
+
+**Step 4:** After a review, there may be changes that are required.
+Do so by applying changes to the same commit and mail them to Gerrit again:
+```
+$ [edit files...]
+$ git add [files...]
+$ git codereview change   # update same commit
+$ git codereview mail     # send to Gerrit again
+```
+
+The [Contribution Guidelines](https://golang.org/doc/contribute.html) for the
+Go project provides additional details that are also relevant to
+contributing to the Go `protobuf` project.
