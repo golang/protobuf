@@ -343,17 +343,17 @@ func TestFixed64(t *testing.T) {
 		appendOps:  ops{appendFixed64{0xf0e1d2c3b4a59687}},
 		wantRaw:    dhex("8796a5b4c3d2e1f0"),
 		consumeOps: ops{consumeFixed64{wantVal: 0xf0e1d2c3b4a59687, wantCnt: 8}},
-	}, {
-		appendOps:  ops{appendRaw(dhex(""))},
-		consumeOps: ops{consumeBytes{wantErr: io.ErrUnexpectedEOF}},
-	}, {
-		appendOps:  ops{appendRaw(dhex("01"))},
-		consumeOps: ops{consumeBytes{wantErr: io.ErrUnexpectedEOF}},
 	}})
 }
 
 func TestBytes(t *testing.T) {
 	runTests(t, []testOps{{
+		appendOps:  ops{appendRaw(dhex(""))},
+		consumeOps: ops{consumeBytes{wantErr: io.ErrUnexpectedEOF}},
+	}, {
+		appendOps:  ops{appendRaw(dhex("01"))},
+		consumeOps: ops{consumeBytes{wantErr: io.ErrUnexpectedEOF}},
+	}, {
 		appendOps:  ops{appendVarint{0}, appendRaw("")},
 		wantRaw:    dhex("00"),
 		consumeOps: ops{consumeBytes{wantVal: dhex(""), wantCnt: 1}},
