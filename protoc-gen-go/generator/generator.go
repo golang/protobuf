@@ -278,6 +278,11 @@ type FileDescriptor struct {
 	proto3 bool // whether to generate proto3 code for this file
 }
 
+// PackageName is the package name we'll use in the generated code to refer to this file.
+func (d *FileDescriptor) PackageName() GoPackageName {
+	return d.packageName
+}
+
 // VarName is the variable name we'll use in the generated code to refer
 // to the compressed bytes of this descriptor. It is not exported, so
 // it is only valid inside the generated package.
