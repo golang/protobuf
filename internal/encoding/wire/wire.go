@@ -8,9 +8,10 @@
 package wire
 
 import (
-	"errors" // TODO: replace with our own errors package?
 	"io"
 	"math/bits"
+
+	"google.golang.org/proto/internal/errors"
 )
 
 // Number represents the field number.
