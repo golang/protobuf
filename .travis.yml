@@ -1,0 +1,5 @@
+script:
+  - ./test.bash
+cache:
+  directories:
+  - /tmp/golang-protobuf-test
