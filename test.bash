@@ -26,7 +26,8 @@ if [ ! -d $PROTOBUF_DIR ]; then
 fi
 
 # Download each Go toolchain version.
-GO_VERSIONS=(1.9.7 1.10.3 1.11beta3)
+GO_LATEST=1.11beta3
+GO_VERSIONS=(1.9.7 1.10.3 $GO_LATEST)
 for GO_VERSION in ${GO_VERSIONS[@]}; do
 	GO_DIR=go$GO_VERSION
 	if [ ! -d $GO_DIR ]; then
@@ -36,8 +37,14 @@ for GO_VERSION in ${GO_VERSIONS[@]}; do
 	fi
 done
 
+# Download dependencies using modules.
+# For pre-module support, dump the dependencies in a vendor directory.
+# TODO: use GOFLAGS="-mod=readonly" when https://golang.org/issue/26850 is fixed.
+GO_LATEST_BIN=$TEST_DIR/go$GO_LATEST/bin/go
+(cd $REPO_ROOT && $GO_LATEST_BIN mod tidy && $GO_LATEST_BIN mod vendor) || exit 1
+
 # Setup GOPATH for pre-module support.
-MODULE_PATH=$(grep '^module ' $REPO_ROOT/go.mod | cut -d " " -f 2)
+MODULE_PATH=$(cd $REPO_ROOT && $GO_LATEST_BIN list -m -f "{{.Path}}")
 if [ ! -d gopath/src/$MODULE_PATH ]; then
 	mkdir -p gopath/src/$(dirname $MODULE_PATH)
 	(cd gopath/src/$(dirname $MODULE_PATH) && ln -s $REPO_ROOT $(basename $MODULE_PATH))
@@ -62,4 +69,19 @@ for GO_VERSION in ${GO_VERSIONS[@]}; do
 	go_test -race ./...
 	go_test -race -tags proto1_legacy ./...
 done
+
+# Check for changed files.
+GIT_DIFF=$(cd $REPO_ROOT && git diff --no-prefix HEAD 2>&1)
+if [ ! -z "$GIT_DIFF" ]; then
+	echo -e "git diff HEAD\n$GIT_DIFF"
+	FAIL=1
+fi
+
+# Check for untracked files.
+GIT_UNTRACKED=$(cd $REPO_ROOT && git ls-files --others --exclude-standard 2>&1)
+if [ ! -z "$GIT_UNTRACKED" ]; then
+	echo -e "git ls-files --others --exclude-standard\n$GIT_UNTRACKED"
+	FAIL=1
+fi
+
 exit $FAIL
