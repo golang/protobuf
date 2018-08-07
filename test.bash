@@ -5,11 +5,13 @@
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+function print() { echo -e "\x1b[1m> $@\x1b[0m"; }
+
 # Create a test directory.
 # The Go and protobuf toolchains used for testing will be cached here.
 TEST_DIR=/tmp/golang-protobuf-test
 if [ ! -d $TEST_DIR ]; then
-	echo "mkdir $TEST_DIR"
+	print "mkdir $TEST_DIR"
 	mkdir -p $TEST_DIR
 fi
 cd $TEST_DIR
@@ -20,10 +22,11 @@ cd $TEST_DIR
 PROTOBUF_VERSION=3.6.1
 PROTOBUF_DIR="protobuf-$PROTOBUF_VERSION"
 if [ ! -d $PROTOBUF_DIR ]; then
-	echo "download and build $PROTOBUF_DIR"
+	print "download and build $PROTOBUF_DIR"
 	(curl -s -L https://github.com/google/protobuf/releases/download/v$PROTOBUF_VERSION/protobuf-all-$PROTOBUF_VERSION.tar.gz | tar -zxf -) || exit 1
 	(cd $PROTOBUF_DIR && ./configure && make && cd conformance && make) || exit 1
 fi
+export PATH=$TEST_DIR/$PROTOBUF_DIR/src:$TEST_DIR/$PROTOBUF_DIR/conformance:$PATH
 
 # Download each Go toolchain version.
 GO_LATEST=1.11beta3
@@ -31,7 +34,7 @@ GO_VERSIONS=(1.9.7 1.10.3 $GO_LATEST)
 for GO_VERSION in ${GO_VERSIONS[@]}; do
 	GO_DIR=go$GO_VERSION
 	if [ ! -d $GO_DIR ]; then
-		echo "download $GO_DIR"
+		print "download $GO_DIR"
 		GOOS=$(uname | tr '[:upper:]' '[:lower:]')
 		(mkdir $GO_DIR && curl -s -L https://dl.google.com/go/$GO_DIR.$GOOS-amd64.tar.gz | tar -zxf - -C $GO_DIR --strip-components 1) || exit 1
 	fi
@@ -56,35 +59,67 @@ fi
 export GOPATH=$TEST_DIR/gopath
 
 # Run tests across every supported version of Go.
-FAIL=0
+LABELS=()
+PIDS=()
+OUTS=()
+function cleanup() { for OUT in ${OUTS[@]}; do rm $OUT; done; }
+trap cleanup EXIT
 for GO_VERSION in ${GO_VERSIONS[@]}; do
-	GO_BIN=go$GO_VERSION/bin/go
-	function go_build() {
-		echo "$GO_BIN build $@"
-		(cd $GOPATH/src/$MODULE_PATH && $TEST_DIR/$GO_BIN build $@) || FAIL=1
-	}
-	function go_test() {
-		echo "$GO_BIN test $@"
-		(cd $GOPATH/src/$MODULE_PATH && $TEST_DIR/$GO_BIN test $@) || FAIL=1
+	# Run the go command in a background process.
+	function go() {
+		GO_BIN=go$GO_VERSION/bin/go
+		LABELS+=("$(echo "go$GO_VERSION $@")")
+		OUT=$(mktemp)
+		(cd $GOPATH/src/$MODULE_PATH && $TEST_DIR/$GO_BIN $@ &> $OUT) &
+		PIDS+=($!)
+		OUTS+=($OUT)
 	}
 
-	go_build ./...
-	go_test -race ./...
-	go_test -race -tags proto1_legacy ./...
+	go build ./...
+	go test -race ./...
+	go test -race -tags proto1_legacy ./...
 done
+
+# Wait for all processes to finish.
+RET=0
+for I in ${!PIDS[@]}; do
+	print "${LABELS[$I]}"
+	if ! wait ${PIDS[$I]}; then
+		cat ${OUTS[$I]} # only output upon error
+		RET=1
+	fi
+done
+
+# TODO: Check for stale generated Go source files.
+
+# Check for unformatted Go source files.
+FMT_DIFF=$(cd $REPO_ROOT && ${GO_LATEST_BIN}fmt -d . 2>&1)
+if [ ! -z "$FMT_DIFF" ]; then
+	print "gofmt -d ."
+	echo "$FMT_DIFF"
+	RET=1
+fi
 
 # Check for changed files.
 GIT_DIFF=$(cd $REPO_ROOT && git diff --no-prefix HEAD 2>&1)
 if [ ! -z "$GIT_DIFF" ]; then
-	echo -e "git diff HEAD\n$GIT_DIFF"
-	FAIL=1
+	print "git diff HEAD"
+	echo "$GIT_DIFF"
+	RET=1
 fi
 
 # Check for untracked files.
 GIT_UNTRACKED=$(cd $REPO_ROOT && git ls-files --others --exclude-standard 2>&1)
 if [ ! -z "$GIT_UNTRACKED" ]; then
-	echo -e "git ls-files --others --exclude-standard\n$GIT_UNTRACKED"
-	FAIL=1
+	print "git ls-files --others --exclude-standard"
+	echo "$GIT_UNTRACKED"
+	RET=1
 fi
 
-exit $FAIL
+# Print termination status.
+if [ $RET -eq 0 ]; then
+	echo -e "\x1b[32;1mPASS\x1b[0m"
+else
+	echo -e "\x1b[31;1mFAIL\x1b[0m"
+fi
+exit $RET
