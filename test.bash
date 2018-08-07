@@ -37,6 +37,10 @@ for GO_VERSION in ${GO_VERSIONS[@]}; do
 	fi
 done
 
+# Travis-CI sets GOROOT, which confuses later invocations of the Go toolchains.
+# Explicitly clear GOROOT, so each toolchain uses their default GOROOT.
+unset GOROOT
+
 # Download dependencies using modules.
 # For pre-module support, dump the dependencies in a vendor directory.
 # TODO: use GOFLAGS="-mod=readonly" when https://golang.org/issue/26850 is fixed.
@@ -54,7 +58,6 @@ export GOPATH=$TEST_DIR/gopath
 # Run tests across every supported version of Go.
 FAIL=0
 for GO_VERSION in ${GO_VERSIONS[@]}; do
-	export GOROOT=$TEST_DIR/go$GO_VERSION
 	GO_BIN=go$GO_VERSION/bin/go
 	function go_build() {
 		echo "$GO_BIN build $@"
