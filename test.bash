@@ -29,8 +29,8 @@ fi
 export PATH=$TEST_DIR/$PROTOBUF_DIR/src:$TEST_DIR/$PROTOBUF_DIR/conformance:$PATH
 
 # Download each Go toolchain version.
-GO_LATEST=1.11beta3
-GO_VERSIONS=(1.9.7 1.10.3 $GO_LATEST)
+GO_LATEST=1.11rc1
+GO_VERSIONS=(1.10.3 $GO_LATEST)
 for GO_VERSION in ${GO_VERSIONS[@]}; do
 	GO_DIR=go$GO_VERSION
 	if [ ! -d $GO_DIR ]; then
@@ -91,7 +91,13 @@ for I in ${!PIDS[@]}; do
 	fi
 done
 
-# TODO: Check for stale generated Go source files.
+# Check for stale generated source files.
+GEN_DIFF=$(cd $REPO_ROOT && ${GO_LATEST_BIN} run ./internal/cmd/generate-types 2>&1)
+if [ ! -z "$GEN_DIFF" ]; then
+	print "go run ./internal/cmd/generate-types"
+	echo "$GEN_DIFF"
+	RET=1
+fi
 
 # Check for unformatted Go source files.
 FMT_DIFF=$(cd $REPO_ROOT && ${GO_LATEST_BIN}fmt -d . 2>&1)
