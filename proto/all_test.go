@@ -2324,6 +2324,28 @@ func TestInvalidUTF8(t *testing.T) {
 	}
 }
 
+func TestRequired(t *testing.T) {
+	// The F_BoolRequired field appears after all of the required fields.
+	// It should still be handled even after multiple required field violations.
+	m := &GoTest{F_BoolRequired: Bool(true)}
+	got, err := Marshal(m)
+	if _, ok := err.(*RequiredNotSetError); !ok {
+		t.Errorf("Marshal() = %v, want RequiredNotSetError error", err)
+	}
+	if want := []byte{0x50, 0x01}; !bytes.Equal(got, want) {
+		t.Errorf("Marshal() = %x, want %x", got, want)
+	}
+
+	m = new(GoTest)
+	err = Unmarshal(got, m)
+	if _, ok := err.(*RequiredNotSetError); !ok {
+		t.Errorf("Marshal() = %v, want RequiredNotSetError error", err)
+	}
+	if !m.GetF_BoolRequired() {
+		t.Error("m.F_BoolRequired = false, want true")
+	}
+}
+
 // Benchmarks
 
 func testMsg() *GoTest {

@@ -252,11 +252,13 @@ func (u *marshalInfo) marshal(b []byte, ptr pointer, deterministic bool) ([]byte
 		}
 	}
 	for _, f := range u.fields {
-		if f.required && errLater == nil {
+		if f.required {
 			if ptr.offset(f.field).getPointer().isNil() {
 				// Required field is not set.
 				// We record the error but keep going, to give a complete marshaling.
-				errLater = &RequiredNotSetError{f.name}
+				if errLater == nil {
+					errLater = &RequiredNotSetError{f.name}
+				}
 				continue
 			}
 		}
@@ -2592,7 +2594,7 @@ func (u *marshalInfo) appendMessageSet(b []byte, ext *XXX_InternalExtensions, de
 		p := toAddrPointer(&v, ei.isptr)
 		b, err = ei.marshaler(b, p, 3<<3|WireBytes, deterministic)
 		b = append(b, 1<<3|WireEndGroup)
-		if nerr.Merge(err) {
+		if !nerr.Merge(err) {
 			return b, err
 		}
 	}
