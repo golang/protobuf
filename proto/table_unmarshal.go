@@ -175,10 +175,12 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 				reqMask |= f.reqMask
 				continue
 			}
-			if r, ok := err.(*RequiredNotSetError); ok && errLater == nil {
+			if r, ok := err.(*RequiredNotSetError); ok {
 				// Remember this error, but keep parsing. We need to produce
 				// a full parse even if a required field is missing.
-				errLater = r
+				if errLater == nil {
+					errLater = r
+				}
 				reqMask |= f.reqMask
 				continue
 			}
