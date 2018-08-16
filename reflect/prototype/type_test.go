@@ -84,14 +84,14 @@ func TestFile(t *testing.T) {
 		}, {
 			Name: "B", // "test.B"
 			Fields: []Field{{
-				Name:        "field_one",
+				Name:        "field_one", // "test.B.field_one"
 				Number:      1,
 				Cardinality: pref.Optional,
 				Kind:        pref.StringKind,
 				Default:     pref.ValueOf("hello"),
 				OneofName:   "O1",
 			}, {
-				Name:        "field_two",
+				Name:        "field_two", // "test.B.field_two"
 				JSONName:    "Field2",
 				Number:      2,
 				Cardinality: pref.Optional,
@@ -100,32 +100,35 @@ func TestFile(t *testing.T) {
 				EnumType:    PlaceholderEnum("test.E1"),
 				OneofName:   "O2",
 			}, {
-				Name:        "field_three",
+				Name:        "field_three", // "test.B.field_three"
 				Number:      3,
 				Cardinality: pref.Optional,
 				Kind:        pref.MessageKind,
 				MessageType: PlaceholderMessage("test.C"),
 				OneofName:   "O2",
 			}, {
-				Name:        "field_four",
+				Name:        "field_four", // "test.B.field_four"
 				JSONName:    "Field4",
 				Number:      4,
 				Cardinality: pref.Repeated,
 				Kind:        pref.MessageKind,
 				MessageType: PlaceholderMessage("test.A"),
 			}, {
-				Name:        "field_five",
+				Name:        "field_five", // "test.B.field_five"
 				Number:      5,
 				Cardinality: pref.Repeated,
 				Kind:        pref.Int32Kind,
 				IsPacked:    true,
 			}, {
-				Name:        "field_six",
+				Name:        "field_six", // "test.B.field_six"
 				Number:      6,
 				Cardinality: pref.Required,
 				Kind:        pref.StringKind,
 			}},
-			Oneofs:          []Oneof{{Name: "O1"}, {Name: "O2"}},
+			Oneofs: []Oneof{
+				{Name: "O1"}, // "test.B.O1"
+				{Name: "O2"}, // "test.B.O2"
+			},
 			ExtensionRanges: [][2]pref.FieldNumber{{1000, 2000}},
 		}, {
 			Name: "C", // "test.C"
@@ -382,6 +385,33 @@ func TestFile(t *testing.T) {
 				},
 			},
 		},
+		"DescriptorByName:":                 nil,
+		"DescriptorByName:A":                nil,
+		"DescriptorByName:test":             nil,
+		"DescriptorByName:test.":            nil,
+		"DescriptorByName:test.A":           M{"FullName": pref.FullName("test.A")},
+		"DescriptorByName:test.A.key":       M{"FullName": pref.FullName("test.A.key")},
+		"DescriptorByName:test.A.A":         nil,
+		"DescriptorByName:test.A.field_one": nil,
+		"DescriptorByName:test.B.field_one": M{"FullName": pref.FullName("test.B.field_one")},
+		"DescriptorByName:test.B.O1":        M{"FullName": pref.FullName("test.B.O1")},
+		"DescriptorByName:test.B.O3":        nil,
+		"DescriptorByName:test.C.E1":        M{"FullName": pref.FullName("test.C.E1")},
+		"DescriptorByName:test.C.E1.FOO":    nil,
+		"DescriptorByName:test.C.FOO":       M{"FullName": pref.FullName("test.C.FOO")},
+		"DescriptorByName:test.C.Foo":       nil,
+		"DescriptorByName:test.C.BAZ":       nil,
+		"DescriptorByName:test.E1":          M{"FullName": pref.FullName("test.E1")},
+		"DescriptorByName:test.E1.FOO":      nil,
+		"DescriptorByName:test.FOO":         M{"FullName": pref.FullName("test.FOO")},
+		"DescriptorByName:test.Foo":         nil,
+		"DescriptorByName:test.BAZ":         nil,
+		"DescriptorByName:test.C.X":         M{"FullName": pref.FullName("test.C.X")},
+		"DescriptorByName:test.X":           M{"FullName": pref.FullName("test.X")},
+		"DescriptorByName:test.X.":          nil,
+		"DescriptorByName:test.S":           M{"FullName": pref.FullName("test.S")},
+		"DescriptorByName:test.S.M":         M{"FullName": pref.FullName("test.S.M")},
+		"DescriptorByName:test.M":           nil,
 	}
 
 	// Concurrently explore the file tree to induce races.
