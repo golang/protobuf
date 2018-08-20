@@ -86,7 +86,7 @@ type Plugin interface {
 }
 
 var plugins []Plugin
-
+var noOmitEmpty bool
 // RegisterPlugin installs a (second-order) plugin to be run when the Go output is generated.
 // It is typically called during initialization.
 func RegisterPlugin(p Plugin) {
@@ -492,6 +492,10 @@ func (g *Generator) CommandLineParameters(parameter string) {
 		case "annotate_code":
 			if v == "true" {
 				g.annotateCode = true
+			}
+		case "no_omitempty" :
+			if v == "true" {
+				noOmitEmpty = true
 			}
 		default:
 			if len(k) > 0 && k[0] == 'M' {
@@ -2497,7 +2501,10 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		fieldName, fieldGetterName := ns[0], ns[1]
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
-		tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(message, field, wiretype), jsonName+",omitempty")
+		if !noOmitEmpty {
+			jsonName = jsonName+",omitempty"
+		}
+		tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(message, field, wiretype), jsonName)
 
 		oneof := field.OneofIndex != nil
 		if oneof && oFields[*field.OneofIndex] == nil {
