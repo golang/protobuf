@@ -11,8 +11,12 @@
 package protogen
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
+	"go/parser"
+	"go/printer"
+	"go/token"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -157,9 +161,15 @@ func (gen *Plugin) Response() *pluginpb.CodeGeneratorResponse {
 		return resp
 	}
 	for _, gf := range gen.genFiles {
+		content, err := gf.Content()
+		if err != nil {
+			return &pluginpb.CodeGeneratorResponse{
+				Error: proto.String(err.Error()),
+			}
+		}
 		resp.File = append(resp.File, &pluginpb.CodeGeneratorResponse_File{
 			Name:    proto.String(gf.path),
-			Content: proto.String(string(gf.Content())),
+			Content: proto.String(string(content)),
 		})
 	}
 	return resp
@@ -171,19 +181,44 @@ func (gen *Plugin) FileByName(name string) (f *File, ok bool) {
 	return f, ok
 }
 
-// A File is a .proto source file.
+// A File describes a .proto source file.
 type File struct {
-	// TODO: Replace with protoreflect.FileDescriptor.
-	Desc *descpb.FileDescriptorProto
+	Desc *descpb.FileDescriptorProto // TODO: protoreflect.FileDescriptor
 
-	// Generate is true if the generator should generate code for this file.
-	Generate bool
+	Messages []*Message // top-level message declartions
+	Generate bool       // true if we should generate code for this file
 }
 
 func newFile(gen *Plugin, p *descpb.FileDescriptorProto) *File {
-	return &File{
+	f := &File{
 		Desc: p,
 	}
+	for _, d := range p.MessageType {
+		f.Messages = append(f.Messages, newMessage(gen, nil, d))
+	}
+	return f
+}
+
+// A Message describes a message.
+type Message struct {
+	Desc *descpb.DescriptorProto // TODO: protoreflect.MessageDescriptor
+
+	GoIdent  GoIdent    // name of the generated Go type
+	Messages []*Message // nested message declarations
+}
+
+func newMessage(gen *Plugin, parent *Message, p *descpb.DescriptorProto) *Message {
+	m := &Message{
+		Desc:    p,
+		GoIdent: camelCase(p.GetName()),
+	}
+	if parent != nil {
+		m.GoIdent = parent.GoIdent + "_" + m.GoIdent
+	}
+	for _, nested := range p.GetNestedType() {
+		m.Messages = append(m.Messages, newMessage(gen, m, nested))
+	}
+	return m
 }
 
 // A GeneratedFile is a generated file.
@@ -219,6 +254,31 @@ func (g *GeneratedFile) Write(p []byte) (n int, err error) {
 }
 
 // Content returns the contents of the generated file.
-func (g *GeneratedFile) Content() []byte {
-	return g.buf.Bytes()
+func (g *GeneratedFile) Content() ([]byte, error) {
+	if !strings.HasSuffix(g.path, ".go") {
+		return g.buf.Bytes(), nil
+	}
+
+	// Reformat generated code.
+	original := g.buf.Bytes()
+	fset := token.NewFileSet()
+	ast, err := parser.ParseFile(fset, "", original, parser.ParseComments)
+	if err != nil {
+		// Print out the bad code with line numbers.
+		// This should never happen in practice, but it can while changing generated code
+		// so consider this a debugging aid.
+		var src bytes.Buffer
+		s := bufio.NewScanner(bytes.NewReader(original))
+		for line := 1; s.Scan(); line++ {
+			fmt.Fprintf(&src, "%5d\t%s\n", line, s.Bytes())
+		}
+		return nil, fmt.Errorf("%v: unparsable Go source: %v\n%v", g.path, err, src.String())
+	}
+	var out bytes.Buffer
+	if err = (&printer.Config{Mode: printer.TabIndent | printer.UseSpaces, Tabwidth: 8}).Fprint(&out, fset, ast); err != nil {
+		return nil, fmt.Errorf("%v: can not reformat Go source: %v", g.path, err)
+	}
+	// TODO: Patch annotation locations.
+	return out.Bytes(), nil
+
 }

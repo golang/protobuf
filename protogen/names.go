@@ -8,6 +8,9 @@ import (
 	"unicode/utf8"
 )
 
+// A GoIdent is a Go identifier.
+type GoIdent string
+
 // A GoImportPath is the import path of a Go package. e.g., "google.golang.org/genproto/protobuf".
 type GoImportPath string
 
@@ -51,4 +54,63 @@ func baseName(name string) string {
 		name = name[:i]
 	}
 	return name
+}
+
+// camelCase converts a name to CamelCase.
+//
+// If there is an interior underscore followed by a lower case letter,
+// drop the underscore and convert the letter to upper case.
+// There is a remote possibility of this rewrite causing a name collision,
+// but it's so remote we're prepared to pretend it's nonexistent - since the
+// C++ generator lowercases names, it's extremely unlikely to have two fields
+// with different capitalizations.
+func camelCase(s string) GoIdent {
+	if s == "" {
+		return ""
+	}
+	var t []byte
+	i := 0
+	// Invariant: if the next letter is lower case, it must be converted
+	// to upper case.
+	// That is, we process a word at a time, where words are marked by _ or
+	// upper case letter. Digits are treated as words.
+	for ; i < len(s); i++ {
+		c := s[i]
+		switch {
+		case c == '.':
+			t = append(t, '_') // Convert . to _.
+		case c == '_' && (i == 0 || s[i-1] == '.'):
+			// Convert initial _ to X so we start with a capital letter.
+			// Do the same for _ after .; not strictly necessary, but matches
+			// historic behavior.
+			t = append(t, 'X')
+		case c == '_' && i+1 < len(s) && isASCIILower(s[i+1]):
+			// Skip the underscore in s.
+		case isASCIIDigit(c):
+			t = append(t, c)
+		default:
+			// Assume we have a letter now - if not, it's a bogus identifier.
+			// The next word is a sequence of characters that must start upper case.
+			if isASCIILower(c) {
+				c ^= ' ' // Make it a capital letter.
+			}
+			t = append(t, c) // Guaranteed not lower case.
+			// Accept lower case sequence that follows.
+			for i+1 < len(s) && isASCIILower(s[i+1]) {
+				i++
+				t = append(t, s[i])
+			}
+		}
+	}
+	return GoIdent(t)
+}
+
+// Is c an ASCII lower-case letter?
+func isASCIILower(c byte) bool {
+	return 'a' <= c && c <= 'z'
+}
+
+// Is c an ASCII digit?
+func isASCIIDigit(c byte) bool {
+	return '0' <= c && c <= '9'
 }

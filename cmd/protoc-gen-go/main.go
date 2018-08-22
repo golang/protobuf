@@ -30,6 +30,21 @@ func genFile(gen *protogen.Plugin, f *protogen.File) {
 	g.P("// source: ", f.Desc.GetName())
 	g.P()
 	g.P("package TODO")
+	g.P()
+
+	for _, m := range f.Messages {
+		genMessage(gen, g, m)
+	}
 
 	// TODO: Everything.
+}
+
+func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, m *protogen.Message) {
+	g.P("type ", m.GoIdent, " struct {")
+	g.P("}")
+	g.P()
+
+	for _, nested := range m.Messages {
+		genMessage(gen, g, nested)
+	}
 }
