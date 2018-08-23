@@ -45,6 +45,57 @@ func TestFiles(t *testing.T) {
 	}
 }
 
+func TestImports(t *testing.T) {
+	gen, err := New(&pluginpb.CodeGeneratorRequest{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := gen.NewGeneratedFile("foo.go", "golang.org/x/foo")
+	g.P("package foo")
+	g.P()
+	for _, importPath := range []GoImportPath{
+		"golang.org/x/foo",
+		// Multiple references to the same package.
+		"golang.org/x/bar",
+		"golang.org/x/bar",
+		// Reference to a different package with the same basename.
+		"golang.org/y/bar",
+		"golang.org/x/baz",
+	} {
+		g.P("var _ = ", GoIdent{GoName: "X", GoImportPath: importPath}, " // ", importPath)
+	}
+	want := `package foo
+
+import (
+	bar "golang.org/x/bar"
+	bar1 "golang.org/y/bar"
+	baz "golang.org/x/baz"
+)
+
+var _ = X      // "golang.org/x/foo"
+var _ = bar.X  // "golang.org/x/bar"
+var _ = bar.X  // "golang.org/x/bar"
+var _ = bar1.X // "golang.org/y/bar"
+var _ = baz.X  // "golang.org/x/baz"
+`
+	got, err := g.Content()
+	if err != nil {
+		t.Fatalf("g.Content() = %v", err)
+	}
+	if want != string(got) {
+		t.Fatalf(`want:
+==========
+%v
+==========
+
+got:
+==========
+%v
+==========`,
+			want, string(got))
+	}
+}
+
 // makeRequest returns a CodeGeneratorRequest for the given protoc inputs.
 //
 // It does this by running protoc with the current binary as the protoc-gen-go
@@ -86,7 +137,7 @@ func makeRequest(t *testing.T, args ...string) *pluginpb.CodeGeneratorRequest {
 func init() {
 	if os.Getenv("RUN_AS_PROTOC_PLUGIN") != "" {
 		Run(func(p *Plugin) error {
-			g := p.NewGeneratedFile("request")
+			g := p.NewGeneratedFile("request", "")
 			return proto.MarshalText(g, p.Request)
 		})
 		os.Exit(0)

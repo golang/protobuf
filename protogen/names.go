@@ -1,6 +1,7 @@
 package protogen
 
 import (
+	"fmt"
 	"go/token"
 	"strconv"
 	"strings"
@@ -8,8 +9,13 @@ import (
 	"unicode/utf8"
 )
 
-// A GoIdent is a Go identifier.
-type GoIdent string
+// A GoIdent is a Go identifier, consisting of a name and import path.
+type GoIdent struct {
+	GoName       string
+	GoImportPath GoImportPath
+}
+
+func (id GoIdent) String() string { return fmt.Sprintf("%q.%v", id.GoImportPath, id.GoName) }
 
 // A GoImportPath is the import path of a Go package. e.g., "google.golang.org/genproto/protobuf".
 type GoImportPath string
@@ -64,7 +70,7 @@ func baseName(name string) string {
 // but it's so remote we're prepared to pretend it's nonexistent - since the
 // C++ generator lowercases names, it's extremely unlikely to have two fields
 // with different capitalizations.
-func camelCase(s string) GoIdent {
+func camelCase(s string) string {
 	if s == "" {
 		return ""
 	}
@@ -102,7 +108,7 @@ func camelCase(s string) GoIdent {
 			}
 		}
 	}
-	return GoIdent(t)
+	return string(t)
 }
 
 // Is c an ASCII lower-case letter?

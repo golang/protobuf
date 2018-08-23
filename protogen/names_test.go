@@ -8,8 +8,7 @@ import "testing"
 
 func TestCamelCase(t *testing.T) {
 	tests := []struct {
-		in   string
-		want GoIdent
+		in, want string
 	}{
 		{"one", "One"},
 		{"one_two", "OneTwo"},
