@@ -28,6 +28,9 @@ import (
 	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"golang.org/x/tools/go/ast/astutil"
+	"google.golang.org/proto/reflect/protoreflect"
+	"google.golang.org/proto/reflect/protoregistry"
+	"google.golang.org/proto/reflect/prototype"
 )
 
 // Run executes a function as a protoc plugin.
@@ -88,6 +91,8 @@ type Plugin struct {
 	Files       []*File
 	filesByName map[string]*File
 
+	fileReg *protoregistry.Files
+
 	packageImportPath string // Go import path of the package we're generating code for.
 
 	genFiles []*GeneratedFile
@@ -99,6 +104,7 @@ func New(req *pluginpb.CodeGeneratorRequest) (*Plugin, error) {
 	gen := &Plugin{
 		Request:     req,
 		filesByName: make(map[string]*File),
+		fileReg:     protoregistry.NewFiles(),
 	}
 
 	// TODO: Figure out how to pass parameters to the generator.
@@ -130,8 +136,11 @@ func New(req *pluginpb.CodeGeneratorRequest) (*Plugin, error) {
 	}
 
 	for _, fdesc := range gen.Request.ProtoFile {
-		f := newFile(gen, fdesc)
-		name := f.Desc.GetName()
+		f, err := newFile(gen, fdesc)
+		if err != nil {
+			return nil, err
+		}
+		name := f.Desc.Path()
 		if gen.filesByName[name] != nil {
 			return nil, fmt.Errorf("duplicate file name: %q", name)
 		}
@@ -186,44 +195,45 @@ func (gen *Plugin) FileByName(name string) (f *File, ok bool) {
 
 // A File describes a .proto source file.
 type File struct {
-	Desc *descpb.FileDescriptorProto // TODO: protoreflect.FileDescriptor
+	Desc protoreflect.FileDescriptor
 
 	GoImportPath GoImportPath // import path of this file's Go package
 	Messages     []*Message   // top-level message declarations
 	Generate     bool         // true if we should generate code for this file
 }
 
-func newFile(gen *Plugin, p *descpb.FileDescriptorProto) *File {
+func newFile(gen *Plugin, p *descpb.FileDescriptorProto) (*File, error) {
+	desc, err := prototype.NewFileFromDescriptorProto(p, gen.fileReg)
+	if err != nil {
+		return nil, fmt.Errorf("invalid FileDescriptorProto %q: %v", p.GetName(), err)
+	}
+	if err := gen.fileReg.Register(desc); err != nil {
+		return nil, fmt.Errorf("cannot register descriptor %q: %v", p.GetName(), err)
+	}
 	f := &File{
-		Desc: p,
+		Desc: desc,
 	}
-	for i, mdesc := range p.MessageType {
-		f.Messages = append(f.Messages, newMessage(gen, f, nil, mdesc, i))
+	for i, mdescs := 0, desc.Messages(); i < mdescs.Len(); i++ {
+		f.Messages = append(f.Messages, newMessage(gen, f, nil, mdescs.Get(i), i))
 	}
-	return f
+	return f, nil
 }
 
 // A Message describes a message.
 type Message struct {
-	Desc *descpb.DescriptorProto // TODO: protoreflect.MessageDescriptor
+	Desc protoreflect.MessageDescriptor
 
 	GoIdent  GoIdent    // name of the generated Go type
 	Messages []*Message // nested message declarations
 }
 
-func newMessage(gen *Plugin, f *File, parent *Message, p *descpb.DescriptorProto, index int) *Message {
+func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.MessageDescriptor, index int) *Message {
 	m := &Message{
-		Desc: p,
-		GoIdent: GoIdent{
-			GoName:       camelCase(p.GetName()),
-			GoImportPath: f.GoImportPath,
-		},
+		Desc:    desc,
+		GoIdent: newGoIdent(f, desc),
 	}
-	if parent != nil {
-		m.GoIdent.GoName = parent.GoIdent.GoName + "_" + m.GoIdent.GoName
-	}
-	for i, nested := range p.GetNestedType() {
-		m.Messages = append(m.Messages, newMessage(gen, f, m, nested, i))
+	for i, mdescs := 0, desc.Messages(); i < mdescs.Len(); i++ {
+		m.Messages = append(m.Messages, newMessage(gen, f, m, mdescs.Get(i), i))
 	}
 	return m
 }

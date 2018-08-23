@@ -7,6 +7,8 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"google.golang.org/proto/reflect/protoreflect"
 )
 
 // A GoIdent is a Go identifier, consisting of a name and import path.
@@ -16,6 +18,15 @@ type GoIdent struct {
 }
 
 func (id GoIdent) String() string { return fmt.Sprintf("%q.%v", id.GoImportPath, id.GoName) }
+
+// newGoIdent returns the Go identifier for a descriptor.
+func newGoIdent(f *File, d protoreflect.Descriptor) GoIdent {
+	name := strings.TrimPrefix(string(d.FullName()), string(f.Desc.Package())+".")
+	return GoIdent{
+		GoName:       camelCase(name),
+		GoImportPath: f.GoImportPath,
+	}
+}
 
 // A GoImportPath is the import path of a Go package. e.g., "google.golang.org/genproto/protobuf".
 type GoImportPath string
