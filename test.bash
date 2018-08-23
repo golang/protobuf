@@ -33,7 +33,7 @@ register_binary conformance-test-runner $PROTOBUF_DIR/conformance/conformance-te
 register_binary protoc $PROTOBUF_DIR/src/protoc
 
 # Download each Go toolchain version.
-GO_LATEST=go1.11rc1
+GO_LATEST=go1.11rc2
 GO_VERSIONS=(go1.10.3 $GO_LATEST)
 for GO_VERSION in ${GO_VERSIONS[@]}; do
 	if [ ! -d $GO_VERSION ]; then
