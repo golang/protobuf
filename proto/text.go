@@ -216,6 +216,9 @@ func (tm *TextMarshaler) writeProto3Any(w *textWriter, sv reflect.Value) (bool, 
 		return true, errors.New("proto: invalid google.protobuf.Any message")
 	}
 
+	if !strings.Contains(turl.String(), "/") {
+		return false, nil
+	}
 	parts := strings.Split(turl.String(), "/")
 	mt := MessageType(parts[len(parts)-1])
 	if mt == nil {

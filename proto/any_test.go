@@ -257,6 +257,22 @@ func TestMarshalUnknownAny(t *testing.T) {
 	}
 }
 
+func TestMarshalSlashlessAny(t *testing.T) {
+	m := &pb.Message{
+		Anything: &anypb.Any{
+			TypeUrl: proto.MessageName(&pb.Nested{}),
+		},
+	}
+	want := `anything: <
+  type_url: "proto3_proto.Nested"
+>
+`
+	got := expandedMarshaler.Text(m)
+	if got != want {
+		t.Errorf("got\n`%s`\nwant\n`%s`", got, want)
+	}
+}
+
 func TestAmbiguousAny(t *testing.T) {
 	pb := &anypb.Any{}
 	err := proto.UnmarshalText(`
