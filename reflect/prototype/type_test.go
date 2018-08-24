@@ -5,6 +5,7 @@
 package prototype
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -58,6 +59,43 @@ func TestDescriptors(t *testing.T) {
 			}
 			if !hasName {
 				t.Errorf("missing method: %v.Format", implType)
+			}
+		}
+	}
+}
+
+// TestDescriptorAccessors tests that descriptorAccessors is up-to-date.
+func TestDescriptorAccessors(t *testing.T) {
+	ignore := map[string]bool{"ProtoType": true, "DescriptorByName": true}
+	rt := reflect.TypeOf((*pref.Descriptor)(nil)).Elem()
+	for i := 0; i < rt.NumMethod(); i++ {
+		ignore[rt.Method(i).Name] = true
+	}
+
+	for rt, m := range descriptorAccessors {
+		got := map[string]bool{}
+		for _, s := range m {
+			got[s] = true
+		}
+		want := map[string]bool{}
+		for i := 0; i < rt.NumMethod(); i++ {
+			want[rt.Method(i).Name] = true
+		}
+
+		// Check if descriptorAccessors contains a non-existent accessor.
+		// If this test fails, remove the accessor from descriptorAccessors.
+		for s := range got {
+			if !want[s] && !ignore[s] {
+				t.Errorf("%v.%v does not exist", rt, s)
+			}
+		}
+
+		// Check if there are new protoreflect interface methods that are not
+		// handled by the formatter. If this fails, either add the method to
+		// ignore or add them to descriptorAccessors.
+		for s := range want {
+			if !got[s] && !ignore[s] {
+				t.Errorf("%v.%v is not called by formatter", rt, s)
 			}
 		}
 	}
@@ -127,18 +165,18 @@ func TestFile(t *testing.T) {
 				Name:        "field_six", // "test.B.field_six"
 				Number:      6,
 				Cardinality: pref.Required,
-				Kind:        pref.StringKind,
+				Kind:        pref.BytesKind,
 			}},
 			Oneofs: []Oneof{
 				{Name: "O1"}, // "test.B.O1"
 				{Name: "O2"}, // "test.B.O2"
 			},
-			ExtensionRanges: [][2]pref.FieldNumber{{1000, 2000}},
+			ExtensionRanges: [][2]pref.FieldNumber{{1000, 2000}, {3000, 3001}},
 		}, {
 			Name: "C", // "test.C"
 			Messages: []Message{{
 				Name:   "A", // "test.C.A"
-				Fields: []Field{{Name: "F", Number: 1, Cardinality: pref.Required, Kind: pref.BytesKind}},
+				Fields: []Field{{Name: "F", Number: 1, Cardinality: pref.Required, Kind: pref.BytesKind, Default: pref.ValueOf([]byte("dead\xbe\xef"))}},
 			}},
 			Enums: []Enum{{
 				Name:   "E1", // "test.C.E1"
@@ -244,7 +282,7 @@ func TestFile(t *testing.T) {
 				Name:   protoV1.String("field_six"),
 				Number: protoV1.Int32(6),
 				Label:  descriptorV1.FieldDescriptorProto_Label(pref.Required).Enum(),
-				Type:   descriptorV1.FieldDescriptorProto_Type(pref.StringKind).Enum(),
+				Type:   descriptorV1.FieldDescriptorProto_Type(pref.BytesKind).Enum(),
 			}},
 			OneofDecl: []*descriptorV1.OneofDescriptorProto{
 				{Name: protoV1.String("O1")},
@@ -252,16 +290,18 @@ func TestFile(t *testing.T) {
 			},
 			ExtensionRange: []*descriptorV1.DescriptorProto_ExtensionRange{
 				{Start: protoV1.Int32(1000), End: protoV1.Int32(2000)},
+				{Start: protoV1.Int32(3000), End: protoV1.Int32(3001)},
 			},
 		}, {
 			Name: protoV1.String("C"),
 			NestedType: []*descriptorV1.DescriptorProto{{
 				Name: protoV1.String("A"),
 				Field: []*descriptorV1.FieldDescriptorProto{{
-					Name:   protoV1.String("F"),
-					Number: protoV1.Int32(1),
-					Label:  descriptorV1.FieldDescriptorProto_Label(pref.Required).Enum(),
-					Type:   descriptorV1.FieldDescriptorProto_Type(pref.BytesKind).Enum(),
+					Name:         protoV1.String("F"),
+					Number:       protoV1.Int32(1),
+					Label:        descriptorV1.FieldDescriptorProto_Label(pref.Required).Enum(),
+					Type:         descriptorV1.FieldDescriptorProto_Type(pref.BytesKind).Enum(),
+					DefaultValue: protoV1.String(`dead\276\357`),
 				}},
 			}},
 			EnumType: []*descriptorV1.EnumDescriptorProto{{
@@ -320,12 +360,14 @@ func TestFile(t *testing.T) {
 		{"NewFileFromDescriptorProto", fd2},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Run("Accessors", func(t *testing.T) {
-				// Run sub-tests in parallel to induce potential races.
-				t.Run("", func(t *testing.T) { t.Parallel(); testFileAccessors(t, tt.desc) })
-				t.Run("", func(t *testing.T) { t.Parallel(); testFileAccessors(t, tt.desc) })
-			})
+			// Run sub-tests in parallel to induce potential races.
+			for i := 0; i < 2; i++ {
+				t.Run("Accessors", func(t *testing.T) { t.Parallel(); testFileAccessors(t, tt.desc) })
+				t.Run("FormatCompact", func(t *testing.T) { t.Parallel(); testFileFormatCompact(t, tt.desc) })
+				t.Run("FormatMulti", func(t *testing.T) { t.Parallel(); testFileFormatMulti(t, tt.desc) })
+			}
 		})
 	}
 }
@@ -442,7 +484,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					},
 					"ByNumber:6": M{
 						"Cardinality": pref.Required,
-						"Default":     "",
+						"Default":     []byte(nil),
 						"OneofType":   nil,
 					},
 				},
@@ -474,13 +516,14 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					"Has:6": true,
 				},
 				"ExtensionRanges": M{
-					"Len":      1,
+					"Len":      2,
 					"Get:0":    [2]pref.FieldNumber{1000, 2000},
 					"Has:999":  false,
 					"Has:1000": true,
 					"Has:1500": true,
 					"Has:1999": true,
 					"Has:2000": false,
+					"Has:3000": true,
 				},
 			},
 			"Get:2": M{
@@ -576,7 +619,6 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 	}
 	checkAccessors(t, "", reflect.ValueOf(fd), want)
 }
-
 func checkAccessors(t *testing.T, p string, rv reflect.Value, want map[string]interface{}) {
 	if rv.Interface() == nil {
 		t.Errorf("%v is nil, want non-nil", p)
@@ -626,6 +668,159 @@ func checkAccessors(t *testing.T, p string, rv reflect.Value, want map[string]in
 				t.Errorf("%v = %v, want %v", p, got, want)
 			}
 		}
+	}
+}
+
+func testFileFormatCompact(t *testing.T, fd pref.FileDescriptor) {
+	const want = `FileDescriptor{Syntax: proto2, Path: "path/to/file.proto", Package: test, Messages: [{Name: A, IsMapEntry: true, Fields: [{Name: key, Number: 1, Cardinality: optional, Kind: string, JSONName: "key"}, {Name: value, Number: 2, Cardinality: optional, Kind: message, JSONName: "value", MessageType: test.B}]}, {Name: B, Fields: [{Name: field_one, Number: 1, Cardinality: optional, Kind: string, JSONName: "fieldOne", Default: "hello", OneofType: O1}, {Name: field_two, Number: 2, Cardinality: optional, Kind: enum, JSONName: "Field2", Default: 1, OneofType: O2, EnumType: test.E1}, {Name: field_three, Number: 3, Cardinality: optional, Kind: message, JSONName: "fieldThree", OneofType: O2, MessageType: test.C}, {Name: field_four, Number: 4, Cardinality: repeated, Kind: message, JSONName: "Field4", IsMap: true, MessageType: test.A}, {Name: field_five, Number: 5, Cardinality: repeated, Kind: int32, JSONName: "fieldFive", IsPacked: true}, {Name: field_six, Number: 6, Cardinality: required, Kind: bytes, JSONName: "fieldSix"}], Oneofs: [{Name: O1, Fields: [field_one]}, {Name: O2, Fields: [field_two, field_three]}], RequiredNumbers: [6], ExtensionRanges: [1000:2000, 3000]}, {Name: C, Messages: [{Name: A, Fields: [{Name: F, Number: 1, Cardinality: required, Kind: bytes, JSONName: "F", Default: "dead\xbe\xef"}], RequiredNumbers: [1]}], Enums: [{Name: E1, Values: [{Name: FOO}, {Name: BAR, Number: 1}]}], Extensions: [{Name: X, Number: 1000, Cardinality: repeated, Kind: message, ExtendedType: test.B, MessageType: test.C}]}], Enums: [{Name: E1, Values: [{Name: FOO}, {Name: BAR, Number: 1}]}], Extensions: [{Name: X, Number: 1000, Cardinality: repeated, Kind: message, IsPacked: true, ExtendedType: test.B, MessageType: test.C}], Services: [{Name: S, Methods: [{Name: M, InputType: test.A, OutputType: test.C.A, IsStreamingClient: true, IsStreamingServer: true}]}]}`
+	got := fmt.Sprintf("%v", fd)
+	got = strings.Replace(got, "FileDescriptor ", "FileDescriptor", 1) // cleanup randomizer
+	if got != want {
+		t.Errorf("fmt.Sprintf(%q, fd):\ngot:  %s\nwant: %s", "%v", got, want)
+	}
+}
+
+func testFileFormatMulti(t *testing.T, fd pref.FileDescriptor) {
+	const want = `FileDescriptor{
+	Syntax:  proto2
+	Path:    "path/to/file.proto"
+	Package: test
+	Messages: [{
+		Name:       A
+		IsMapEntry: true
+		Fields: [{
+			Name:        key
+			Number:      1
+			Cardinality: optional
+			Kind:        string
+			JSONName:    "key"
+		}, {
+			Name:        value
+			Number:      2
+			Cardinality: optional
+			Kind:        message
+			JSONName:    "value"
+			MessageType: test.B
+		}]
+	}, {
+		Name: B
+		Fields: [{
+			Name:        field_one
+			Number:      1
+			Cardinality: optional
+			Kind:        string
+			JSONName:    "fieldOne"
+			Default:     "hello"
+			OneofType:   O1
+		}, {
+			Name:        field_two
+			Number:      2
+			Cardinality: optional
+			Kind:        enum
+			JSONName:    "Field2"
+			Default:     1
+			OneofType:   O2
+			EnumType:    test.E1
+		}, {
+			Name:        field_three
+			Number:      3
+			Cardinality: optional
+			Kind:        message
+			JSONName:    "fieldThree"
+			OneofType:   O2
+			MessageType: test.C
+		}, {
+			Name:        field_four
+			Number:      4
+			Cardinality: repeated
+			Kind:        message
+			JSONName:    "Field4"
+			IsMap:       true
+			MessageType: test.A
+		}, {
+			Name:        field_five
+			Number:      5
+			Cardinality: repeated
+			Kind:        int32
+			JSONName:    "fieldFive"
+			IsPacked:    true
+		}, {
+			Name:        field_six
+			Number:      6
+			Cardinality: required
+			Kind:        bytes
+			JSONName:    "fieldSix"
+		}]
+		Oneofs: [{
+			Name:   O1
+			Fields: [field_one]
+		}, {
+			Name:   O2
+			Fields: [field_two, field_three]
+		}]
+		RequiredNumbers: [6]
+		ExtensionRanges: [1000:2000, 3000]
+	}, {
+		Name: C
+		Messages: [{
+			Name: A
+			Fields: [{
+				Name:        F
+				Number:      1
+				Cardinality: required
+				Kind:        bytes
+				JSONName:    "F"
+				Default:     "dead\xbe\xef"
+			}]
+			RequiredNumbers: [1]
+		}]
+		Enums: [{
+			Name: E1
+			Values: [
+				{Name: FOO}
+				{Name: BAR, Number: 1}
+			]
+		}]
+		Extensions: [{
+			Name:         X
+			Number:       1000
+			Cardinality:  repeated
+			Kind:         message
+			ExtendedType: test.B
+			MessageType:  test.C
+		}]
+	}]
+	Enums: [{
+		Name: E1
+		Values: [
+			{Name: FOO}
+			{Name: BAR, Number: 1}
+		]
+	}]
+	Extensions: [{
+		Name:         X
+		Number:       1000
+		Cardinality:  repeated
+		Kind:         message
+		IsPacked:     true
+		ExtendedType: test.B
+		MessageType:  test.C
+	}]
+	Services: [{
+		Name: S
+		Methods: [{
+			Name:              M
+			InputType:         test.A
+			OutputType:        test.C.A
+			IsStreamingClient: true
+			IsStreamingServer: true
+		}]
+	}]
+}`
+	got := fmt.Sprintf("%+v", fd)
+	got = strings.Replace(got, "FileDescriptor ", "FileDescriptor", 1) // cleanup randomizer
+	if got != want {
+		t.Errorf("fmt.Sprintf(%q, fd):\ngot:  %s\nwant: %s", "%+v", got, want)
 	}
 }
 
