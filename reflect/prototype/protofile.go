@@ -24,8 +24,6 @@ import (
 // and initialized. This architectural approach keeps the literal representation
 // smaller, which then keeps the generated code size smaller.
 
-// TODO: Support initializing File from a google.protobuf.FileDescriptor?
-
 // TODO: Instead of a top-down construction approach where internal references
 // to message types use placeholder types, we could add a Reference method
 // on Message and Enum that creates a MessageDescriptor or EnumDescriptor

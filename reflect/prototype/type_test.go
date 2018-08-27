@@ -8,8 +8,10 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-	"sync"
 	"testing"
+
+	protoV1 "github.com/golang/protobuf/proto"
+	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 
 	pref "google.golang.org/proto/reflect/protoreflect"
 )
@@ -61,8 +63,10 @@ func TestDescriptors(t *testing.T) {
 	}
 }
 
+// TODO: Test NewFileFromDescriptorProto with imported files.
+
 func TestFile(t *testing.T) {
-	f := &File{
+	f1 := &File{
 		Syntax:  pref.Proto2,
 		Path:    "path/to/file.proto",
 		Package: "test",
@@ -159,7 +163,7 @@ func TestFile(t *testing.T) {
 			Number:       1000,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.MessageKind,
-			IsPacked:     false,
+			IsPacked:     true,
 			MessageType:  PlaceholderMessage("test.C"),
 			ExtendedType: PlaceholderMessage("test.B"),
 		}},
@@ -174,12 +178,159 @@ func TestFile(t *testing.T) {
 			}},
 		}},
 	}
-
-	fd, err := NewFile(f)
+	fd1, err := NewFile(f1)
 	if err != nil {
 		t.Fatalf("NewFile() error: %v", err)
 	}
 
+	f2 := &descriptorV1.FileDescriptorProto{
+		Syntax:  protoV1.String("proto2"),
+		Name:    protoV1.String("path/to/file.proto"),
+		Package: protoV1.String("test"),
+		MessageType: []*descriptorV1.DescriptorProto{{
+			Name:    protoV1.String("A"),
+			Options: &descriptorV1.MessageOptions{MapEntry: protoV1.Bool(true)},
+			Field: []*descriptorV1.FieldDescriptorProto{{
+				Name:   protoV1.String("key"),
+				Number: protoV1.Int32(1),
+				Label:  descriptorV1.FieldDescriptorProto_Label(pref.Optional).Enum(),
+				Type:   descriptorV1.FieldDescriptorProto_Type(pref.StringKind).Enum(),
+			}, {
+				Name:     protoV1.String("value"),
+				Number:   protoV1.Int32(2),
+				Label:    descriptorV1.FieldDescriptorProto_Label(pref.Optional).Enum(),
+				Type:     descriptorV1.FieldDescriptorProto_Type(pref.MessageKind).Enum(),
+				TypeName: protoV1.String(".test.B"),
+			}},
+		}, {
+			Name: protoV1.String("B"),
+			Field: []*descriptorV1.FieldDescriptorProto{{
+				Name:         protoV1.String("field_one"),
+				Number:       protoV1.Int32(1),
+				Label:        descriptorV1.FieldDescriptorProto_Label(pref.Optional).Enum(),
+				Type:         descriptorV1.FieldDescriptorProto_Type(pref.StringKind).Enum(),
+				DefaultValue: protoV1.String("hello"),
+				OneofIndex:   protoV1.Int32(0),
+			}, {
+				Name:         protoV1.String("field_two"),
+				JsonName:     protoV1.String("Field2"),
+				Number:       protoV1.Int32(2),
+				Label:        descriptorV1.FieldDescriptorProto_Label(pref.Optional).Enum(),
+				Type:         descriptorV1.FieldDescriptorProto_Type(pref.EnumKind).Enum(),
+				DefaultValue: protoV1.String("BAR"),
+				TypeName:     protoV1.String(".test.E1"),
+				OneofIndex:   protoV1.Int32(1),
+			}, {
+				Name:       protoV1.String("field_three"),
+				Number:     protoV1.Int32(3),
+				Label:      descriptorV1.FieldDescriptorProto_Label(pref.Optional).Enum(),
+				Type:       descriptorV1.FieldDescriptorProto_Type(pref.MessageKind).Enum(),
+				TypeName:   protoV1.String(".test.C"),
+				OneofIndex: protoV1.Int32(1),
+			}, {
+				Name:     protoV1.String("field_four"),
+				JsonName: protoV1.String("Field4"),
+				Number:   protoV1.Int32(4),
+				Label:    descriptorV1.FieldDescriptorProto_Label(pref.Repeated).Enum(),
+				Type:     descriptorV1.FieldDescriptorProto_Type(pref.MessageKind).Enum(),
+				TypeName: protoV1.String(".test.A"),
+			}, {
+				Name:    protoV1.String("field_five"),
+				Number:  protoV1.Int32(5),
+				Label:   descriptorV1.FieldDescriptorProto_Label(pref.Repeated).Enum(),
+				Type:    descriptorV1.FieldDescriptorProto_Type(pref.Int32Kind).Enum(),
+				Options: &descriptorV1.FieldOptions{Packed: protoV1.Bool(true)},
+			}, {
+				Name:   protoV1.String("field_six"),
+				Number: protoV1.Int32(6),
+				Label:  descriptorV1.FieldDescriptorProto_Label(pref.Required).Enum(),
+				Type:   descriptorV1.FieldDescriptorProto_Type(pref.StringKind).Enum(),
+			}},
+			OneofDecl: []*descriptorV1.OneofDescriptorProto{
+				{Name: protoV1.String("O1")},
+				{Name: protoV1.String("O2")},
+			},
+			ExtensionRange: []*descriptorV1.DescriptorProto_ExtensionRange{
+				{Start: protoV1.Int32(1000), End: protoV1.Int32(2000)},
+			},
+		}, {
+			Name: protoV1.String("C"),
+			NestedType: []*descriptorV1.DescriptorProto{{
+				Name: protoV1.String("A"),
+				Field: []*descriptorV1.FieldDescriptorProto{{
+					Name:   protoV1.String("F"),
+					Number: protoV1.Int32(1),
+					Label:  descriptorV1.FieldDescriptorProto_Label(pref.Required).Enum(),
+					Type:   descriptorV1.FieldDescriptorProto_Type(pref.BytesKind).Enum(),
+				}},
+			}},
+			EnumType: []*descriptorV1.EnumDescriptorProto{{
+				Name: protoV1.String("E1"),
+				Value: []*descriptorV1.EnumValueDescriptorProto{
+					{Name: protoV1.String("FOO"), Number: protoV1.Int32(0)},
+					{Name: protoV1.String("BAR"), Number: protoV1.Int32(1)},
+				},
+			}},
+			Extension: []*descriptorV1.FieldDescriptorProto{{
+				Name:     protoV1.String("X"),
+				Number:   protoV1.Int32(1000),
+				Label:    descriptorV1.FieldDescriptorProto_Label(pref.Repeated).Enum(),
+				Type:     descriptorV1.FieldDescriptorProto_Type(pref.MessageKind).Enum(),
+				TypeName: protoV1.String(".test.C"),
+				Extendee: protoV1.String(".test.B"),
+			}},
+		}},
+		EnumType: []*descriptorV1.EnumDescriptorProto{{
+			Name: protoV1.String("E1"),
+			Value: []*descriptorV1.EnumValueDescriptorProto{
+				{Name: protoV1.String("FOO"), Number: protoV1.Int32(0)},
+				{Name: protoV1.String("BAR"), Number: protoV1.Int32(1)},
+			},
+		}},
+		Extension: []*descriptorV1.FieldDescriptorProto{{
+			Name:     protoV1.String("X"),
+			Number:   protoV1.Int32(1000),
+			Label:    descriptorV1.FieldDescriptorProto_Label(pref.Repeated).Enum(),
+			Type:     descriptorV1.FieldDescriptorProto_Type(pref.MessageKind).Enum(),
+			Options:  &descriptorV1.FieldOptions{Packed: protoV1.Bool(true)},
+			TypeName: protoV1.String(".test.C"),
+			Extendee: protoV1.String(".test.B"),
+		}},
+		Service: []*descriptorV1.ServiceDescriptorProto{{
+			Name: protoV1.String("S"),
+			Method: []*descriptorV1.MethodDescriptorProto{{
+				Name:            protoV1.String("M"),
+				InputType:       protoV1.String(".test.A"),
+				OutputType:      protoV1.String(".test.C.A"),
+				ClientStreaming: protoV1.Bool(true),
+				ServerStreaming: protoV1.Bool(true),
+			}},
+		}},
+	}
+	fd2, err := NewFileFromDescriptorProto(f2, nil)
+	if err != nil {
+		t.Fatalf("NewFileFromDescriptorProto() error: %v", err)
+	}
+
+	tests := []struct {
+		name string
+		desc pref.FileDescriptor
+	}{
+		{"NewFile", fd1},
+		{"NewFileFromDescriptorProto", fd2},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Run("Accessors", func(t *testing.T) {
+				// Run sub-tests in parallel to induce potential races.
+				t.Run("", func(t *testing.T) { t.Parallel(); testFileAccessors(t, tt.desc) })
+				t.Run("", func(t *testing.T) { t.Parallel(); testFileAccessors(t, tt.desc) })
+			})
+		})
+	}
+}
+
+func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 	// Represent the descriptor as a map where each key is an accessor method
 	// and the value is either the wanted tail value or another accessor map.
 	type M = map[string]interface{}
@@ -359,7 +510,7 @@ func TestFile(t *testing.T) {
 				"Number":       pref.FieldNumber(1000),
 				"Cardinality":  pref.Repeated,
 				"Kind":         pref.MessageKind,
-				"IsPacked":     false,
+				"IsPacked":     true,
 				"MessageType":  M{"FullName": pref.FullName("test.C"), "IsPlaceholder": false},
 				"ExtendedType": M{"FullName": pref.FullName("test.B"), "IsPlaceholder": false},
 			},
@@ -413,18 +564,7 @@ func TestFile(t *testing.T) {
 		"DescriptorByName:test.S.M":         M{"FullName": pref.FullName("test.S.M")},
 		"DescriptorByName:test.M":           nil,
 	}
-
-	// Concurrently explore the file tree to induce races.
-	const numGoRoutines = 2
-	var wg sync.WaitGroup
-	defer wg.Wait()
-	for i := 0; i < numGoRoutines; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			checkAccessors(t, "", reflect.ValueOf(fd), want)
-		}()
-	}
+	checkAccessors(t, "", reflect.ValueOf(fd), want)
 }
 
 func checkAccessors(t *testing.T, p string, rv reflect.Value, want map[string]interface{}) {

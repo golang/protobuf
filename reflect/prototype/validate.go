@@ -10,6 +10,22 @@ import (
 
 // TODO: This is important to prevent users from creating invalid types,
 // but is not functionality needed now.
+//
+// Things to verify:
+//	* Weak fields are only used if flags.Proto1Legacy is set
+//	* Weak fields can only reference singular messages
+//	(check if this the case for oneof fields)
+//	* FieldDescriptor.MessageType cannot reference a remote type when the
+//	remote name is a type within the local file.
+//	* Default enum identifiers resolve to a declared number.
+//	* Default values are only allowed in proto2.
+//	* Default strings are valid UTF-8? Note that protoc does not check this.
+//	* Field extensions are only valid in proto2, except when extending the
+//	descriptor options.
+//	* Remote enum and message types are actually found in imported files.
+//	* Placeholder messages and types may only be for weak fields.
+//	* Placeholder full names must be valid.
+//	* The name of each descriptor must be valid.
 
 func validateFile(t pref.FileDescriptor) error {
 	return nil

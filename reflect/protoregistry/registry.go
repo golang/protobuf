@@ -188,6 +188,9 @@ fileLoop:
 //
 // This return (nil, NotFound) if not found.
 func (r *Files) FindDescriptorByName(name protoreflect.FullName) (protoreflect.Descriptor, error) {
+	if r == nil {
+		return nil, NotFound
+	}
 	pkg := name
 	root := &r.filesByPackage
 	for len(pkg) > 0 {
@@ -222,6 +225,9 @@ func (r *Files) RangeFiles(f func(protoreflect.FileDescriptor) bool) {
 // match before iterating over files with general prefix match.
 // The iteration order is undefined within exact matches or prefix matches.
 func (r *Files) RangeFilesByPackage(pkg protoreflect.FullName, f func(protoreflect.FileDescriptor) bool) {
+	if r == nil {
+		return
+	}
 	if strings.HasSuffix(string(pkg), ".") {
 		return // avoid edge case where splitPrefix allows trailing dot
 	}
@@ -255,6 +261,9 @@ func rangeFiles(fs *filesByPackage, f func(protoreflect.FileDescriptor) bool) bo
 // RangeFilesByPath iterates over all registered files filtered by
 // the given proto path. The iteration order is undefined.
 func (r *Files) RangeFilesByPath(path string, f func(protoreflect.FileDescriptor) bool) {
+	if r == nil {
+		return
+	}
 	for _, fd := range r.filesByPath[path] { // TODO: iterate non-deterministically
 		if !f(fd) {
 			return

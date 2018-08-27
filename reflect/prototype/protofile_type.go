@@ -427,7 +427,21 @@ func (p *defaultValue) lazyInit(t pref.FieldDescriptor, v pref.Value) pref.Value
 	p.once.Do(func() {
 		p.val = v
 		if !v.IsNull() {
-			if t.Kind() == pref.BytesKind {
+			switch t.Kind() {
+			case pref.EnumKind:
+				// Treat a string value as an identifier referencing some enum
+				// value by name and extract the enum number.
+				// If this fails, validateMessage will later detect that the
+				// default value for an enum value is the wrong type.
+				if s, ok := v.Interface().(string); ok {
+					v := t.EnumType().Values().ByName(pref.Name(s))
+					if v != nil {
+						p.val = pref.ValueOf(v.Number())
+					}
+				}
+			case pref.BytesKind:
+				// Store a copy of the default bytes, so that we can detect
+				// accidental mutations of the original value.
 				if b, ok := v.Interface().([]byte); ok && len(b) > 0 {
 					p.buf = append([]byte(nil), b...)
 				}

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package protoregistry
+package protoregistry_test
 
 import (
 	"fmt"
@@ -13,6 +13,7 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 
 	pref "google.golang.org/proto/reflect/protoreflect"
+	preg "google.golang.org/proto/reflect/protoregistry"
 	ptype "google.golang.org/proto/reflect/prototype"
 )
 
@@ -252,7 +253,7 @@ func TestFiles(t *testing.T) {
 	})
 	for _, tt := range tests {
 		t.Run("", func(t *testing.T) {
-			var files Files
+			var files preg.Files
 			for i, tc := range tt.files {
 				fd, err := ptype.NewFile(tc.inFile)
 				if err != nil {
