@@ -55,7 +55,7 @@ import (
 func NewFileFromDescriptorProto(fd *descriptorV1.FileDescriptorProto, r *protoregistry.Files) (protoreflect.FileDescriptor, error) {
 	var f File
 	switch fd.GetSyntax() {
-	case "proto2":
+	case "", "proto2":
 		f.Syntax = protoreflect.Proto2
 	case "proto3":
 		f.Syntax = protoreflect.Proto3
