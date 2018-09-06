@@ -10,7 +10,7 @@ function print() { echo -e "\x1b[1m> $@\x1b[0m"; }
 # The test directory contains the Go and protobuf toolchains used for testing.
 # The bin directory contains symlinks to each tool by version.
 # It is safe to delete this directory and run the test script from scratch.
-TEST_DIR=/tmp/golang-protobuf-test
+TEST_DIR=$REPO_ROOT/.cache
 mkdir -p $TEST_DIR/bin
 function register_binary() {
 	rm -f $TEST_DIR/bin/$1 # best-effort delete
@@ -110,7 +110,7 @@ function check() {
 
 # Check for stale or unformatted source files.
 check go run ./internal/cmd/generate-types
-check gofmt -d .
+check gofmt -d $(cd $REPO_ROOT && git ls-files '*.go')
 
 # Check for changed or untracked files.
 check git diff --no-prefix HEAD
