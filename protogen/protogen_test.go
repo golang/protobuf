@@ -5,6 +5,7 @@
 package protogen
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -13,6 +14,7 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
+	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
@@ -42,6 +44,177 @@ func TestFiles(t *testing.T) {
 		if f.Generate != test.wantGenerate {
 			t.Errorf("%q: Generate=%v, want %v", test.path, f.Generate, test.wantGenerate)
 		}
+	}
+}
+
+func TestPackageNamesAndPaths(t *testing.T) {
+	const (
+		filename         = "dir/filename.proto"
+		protoPackageName = "proto.package"
+	)
+	for _, test := range []struct {
+		desc               string
+		parameter          string
+		goPackageOption    string
+		generate           bool
+		wantPackageName    GoPackageName
+		wantImportPath     GoImportPath
+		wantFilenamePrefix string
+	}{
+		{
+			desc:               "no parameters, no go_package option",
+			generate:           true,
+			wantPackageName:    "proto_package",
+			wantImportPath:     "dir",
+			wantFilenamePrefix: "dir/filename",
+		},
+		{
+			desc:               "go_package option sets import path",
+			goPackageOption:    "golang.org/x/foo",
+			generate:           true,
+			wantPackageName:    "foo",
+			wantImportPath:     "golang.org/x/foo",
+			wantFilenamePrefix: "golang.org/x/foo/filename",
+		},
+		{
+			desc:               "go_package option sets import path and package",
+			goPackageOption:    "golang.org/x/foo;bar",
+			generate:           true,
+			wantPackageName:    "bar",
+			wantImportPath:     "golang.org/x/foo",
+			wantFilenamePrefix: "golang.org/x/foo/filename",
+		},
+		{
+			desc:               "go_package option sets package",
+			goPackageOption:    "foo",
+			generate:           true,
+			wantPackageName:    "foo",
+			wantImportPath:     "dir",
+			wantFilenamePrefix: "dir/filename",
+		},
+		{
+			desc:               "command line sets import path for a file",
+			parameter:          "Mdir/filename.proto=golang.org/x/bar",
+			goPackageOption:    "golang.org/x/foo",
+			generate:           true,
+			wantPackageName:    "foo",
+			wantImportPath:     "golang.org/x/bar",
+			wantFilenamePrefix: "golang.org/x/foo/filename",
+		},
+		{
+			desc:               "import_path parameter sets import path of generated files",
+			parameter:          "import_path=golang.org/x/bar",
+			goPackageOption:    "golang.org/x/foo",
+			generate:           true,
+			wantPackageName:    "foo",
+			wantImportPath:     "golang.org/x/bar",
+			wantFilenamePrefix: "golang.org/x/foo/filename",
+		},
+		{
+			desc:               "import_path parameter does not set import path of dependencies",
+			parameter:          "import_path=golang.org/x/bar",
+			goPackageOption:    "golang.org/x/foo",
+			generate:           false,
+			wantPackageName:    "foo",
+			wantImportPath:     "golang.org/x/foo",
+			wantFilenamePrefix: "golang.org/x/foo/filename",
+		},
+	} {
+		context := fmt.Sprintf(`
+TEST: %v
+  --go_out=%v:.
+  file %q: generate=%v
+  option go_package = %q;
+
+  `,
+			test.desc, test.parameter, filename, test.generate, test.goPackageOption)
+
+		req := &pluginpb.CodeGeneratorRequest{
+			Parameter: proto.String(test.parameter),
+			ProtoFile: []*descpb.FileDescriptorProto{
+				{
+					Name:    proto.String(filename),
+					Package: proto.String(protoPackageName),
+					Options: &descpb.FileOptions{
+						GoPackage: proto.String(test.goPackageOption),
+					},
+				},
+			},
+		}
+		if test.generate {
+			req.FileToGenerate = []string{filename}
+		}
+		gen, err := New(req)
+		if err != nil {
+			t.Errorf("%vNew(req) = %v", context, err)
+			continue
+		}
+		gotFile, ok := gen.FileByName(filename)
+		if !ok {
+			t.Errorf("%v%v: missing file info", context, filename)
+			continue
+		}
+		if got, want := gotFile.GoPackageName, test.wantPackageName; got != want {
+			t.Errorf("%vGoPackageName=%v, want %v", context, got, want)
+		}
+		if got, want := gotFile.GoImportPath, test.wantImportPath; got != want {
+			t.Errorf("%vGoImportPath=%v, want %v", context, got, want)
+		}
+		if got, want := gotFile.GeneratedFilenamePrefix, test.wantFilenamePrefix; got != want {
+			t.Errorf("%vGeneratedFilenamePrefix=%v, want %v", context, got, want)
+		}
+	}
+}
+
+func TestPackageNameInference(t *testing.T) {
+	gen, err := New(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descpb.FileDescriptorProto{
+			{
+				Name:    proto.String("dir/file1.proto"),
+				Package: proto.String("proto.package"),
+			},
+			{
+				Name:    proto.String("dir/file2.proto"),
+				Package: proto.String("proto.package"),
+				Options: &descpb.FileOptions{
+					GoPackage: proto.String("foo"),
+				},
+			},
+		},
+		FileToGenerate: []string{"dir/file1.proto", "dir/file2.proto"},
+	})
+	if err != nil {
+		t.Fatalf("New(req) = %v", err)
+	}
+	if f1, ok := gen.FileByName("dir/file1.proto"); !ok {
+		t.Errorf("missing file info for dir/file1.proto")
+	} else if f1.GoPackageName != "foo" {
+		t.Errorf("dir/file1.proto: GoPackageName=%v, want foo; package name should be derived from dir/file2.proto", f1.GoPackageName)
+	}
+}
+
+func TestInconsistentPackageNames(t *testing.T) {
+	_, err := New(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descpb.FileDescriptorProto{
+			{
+				Name:    proto.String("dir/file1.proto"),
+				Package: proto.String("proto.package"),
+				Options: &descpb.FileOptions{
+					GoPackage: proto.String("golang.org/x/foo"),
+				},
+			},
+			{
+				Name:    proto.String("dir/file2.proto"),
+				Package: proto.String("proto.package"),
+				Options: &descpb.FileOptions{
+					GoPackage: proto.String("golang.org/x/foo;bar"),
+				},
+			},
+		},
+		FileToGenerate: []string{"dir/file1.proto", "dir/file2.proto"},
+	})
+	if err == nil {
+		t.Fatalf("inconsistent package names for the same import path: New(req) = nil, want error")
 	}
 }
 
