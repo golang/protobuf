@@ -28,24 +28,33 @@ func main() {
 	log.SetOutput(os.Stderr)
 
 	var fs fields
-	flag.Var((*boolFields)(&fs), "bools", "List of bool fields")
-	flag.Var((*intFields)(&fs), "ints", "List of int32 or int64 fields")
-	flag.Var((*sintFields)(&fs), "sints", "List of sint32 or sint64 fields")
-	flag.Var((*uintFields)(&fs), "uints", "List of enum, uint32, or uint64 fields")
-	flag.Var((*uint32Fields)(&fs), "uint32s", "List of fixed32 fields")
-	flag.Var((*int32Fields)(&fs), "int32s", "List of sfixed32 fields")
-	flag.Var((*float32Fields)(&fs), "float32s", "List of float fields")
-	flag.Var((*uint64Fields)(&fs), "uint64s", "List of fixed64 fields")
-	flag.Var((*int64Fields)(&fs), "int64s", "List of sfixed64 fields")
-	flag.Var((*float64Fields)(&fs), "float64s", "List of double fields")
-	flag.Var((*stringFields)(&fs), "strings", "List of string fields")
-	flag.Var((*bytesFields)(&fs), "bytes", "List of bytes fields")
-	flag.Var((*messageFields)(&fs), "messages", "List of message fields")
-	flag.Var((*groupFields)(&fs), "groups", "List of group fields")
-	printDesc := flag.Bool("print_descriptor", false, "Print the message descriptor")
-	printSource := flag.Bool("print_source", false, "Print the output in valid Go syntax")
+	var flagUsages []string
+	flagVar := func(value flag.Value, name, usage string) {
+		flagUsages = append(flagUsages, fmt.Sprintf("  -%-16v  %v", name+" "+value.String(), usage))
+		flag.Var(value, name, usage)
+	}
+	flagBool := func(name, usage string) *bool {
+		flagUsages = append(flagUsages, fmt.Sprintf("  -%-16v  %v", name, usage))
+		return flag.Bool(name, false, usage)
+	}
+	flagVar(fieldsFlag{&fs, protoreflect.BoolKind}, "bools", "List of bool fields")
+	flagVar(fieldsFlag{&fs, protoreflect.Int64Kind}, "ints", "List of int32 or int64 fields")
+	flagVar(fieldsFlag{&fs, protoreflect.Sint64Kind}, "sints", "List of sint32 or sint64 fields")
+	flagVar(fieldsFlag{&fs, protoreflect.Uint64Kind}, "uints", "List of enum, uint32, or uint64 fields")
+	flagVar(fieldsFlag{&fs, protoreflect.Fixed32Kind}, "uint32s", "List of fixed32 fields")
+	flagVar(fieldsFlag{&fs, protoreflect.Sfixed32Kind}, "int32s", "List of sfixed32 fields")
+	flagVar(fieldsFlag{&fs, protoreflect.FloatKind}, "float32s", "List of float fields")
+	flagVar(fieldsFlag{&fs, protoreflect.Fixed64Kind}, "uint64s", "List of fixed64 fields")
+	flagVar(fieldsFlag{&fs, protoreflect.Sfixed64Kind}, "int64s", "List of sfixed64 fields")
+	flagVar(fieldsFlag{&fs, protoreflect.DoubleKind}, "float64s", "List of double fields")
+	flagVar(fieldsFlag{&fs, protoreflect.StringKind}, "strings", "List of string fields")
+	flagVar(fieldsFlag{&fs, protoreflect.BytesKind}, "bytes", "List of bytes fields")
+	flagVar(fieldsFlag{&fs, protoreflect.MessageKind}, "messages", "List of message fields")
+	flagVar(fieldsFlag{&fs, protoreflect.GroupKind}, "groups", "List of group fields")
+	printDesc := flagBool("print_descriptor", "Print the message descriptor")
+	printSource := flagBool("print_source", "Print the output in valid Go syntax")
 	flag.Usage = func() {
-		log.Printf("Usage: %s [OPTIONS]... [INPUTS]...\n\n%s\n", filepath.Base(os.Args[0]), strings.Join([]string{
+		fmt.Printf("Usage: %s [OPTIONS]... [INPUTS]...\n\n%s\n", filepath.Base(os.Args[0]), strings.Join(append([]string{
 			"Print structured representations of encoded protocol buffer messages.",
 			"Since the protobuf wire format is not fully self-describing, type information",
 			"about the proto message can be provided using flags (e.g., -messages).",
@@ -55,19 +64,19 @@ func main() {
 			"",
 			"For example, \"-messages 1,3,3.1 -float32s 1.2 -bools 3.1.2\" represents:",
 			"",
-			"	message M {",
-			"		optional M1 f1 = 1;           // -messages 1",
-			"		message M1 {",
-			"			repeated float f2 = 2;    // -float32s 1.2",
-			"		}",
-			"		optional M3 f3 = 3;           // -messages 3",
-			"		message M3 {",
-			"			optional M1 f1 = 1;       // -messages 3.1",
-			"			message M1 {",
-			"				repeated bool f2 = 2; // -bools 3.1.2",
-			"			}",
-			"		}",
-			"	}",
+			"    message M {",
+			"        optional M1 f1 = 1;           // -messages 1",
+			"        message M1 {",
+			"            repeated float f2 = 2;    // -float32s 1.2",
+			"        }",
+			"        optional M3 f3 = 3;           // -messages 3",
+			"        message M3 {",
+			"            optional M1 f1 = 1;       // -messages 3.1",
+			"            message M1 {",
+			"                repeated bool f2 = 2; // -bools 3.1.2",
+			"            }",
+			"        }",
+			"    }",
 			"",
 			"Arbitrarily complex message schemas can be represented using these flags.",
 			"Scalar field types are marked as repeated so that pbdump can decode",
@@ -78,23 +87,7 @@ func main() {
 			"treated as one large message.",
 			"",
 			"Options:",
-			"  -bools fields      " + flag.Lookup("bools").Usage,
-			"  -ints fields       " + flag.Lookup("ints").Usage,
-			"  -sints fields      " + flag.Lookup("sints").Usage,
-			"  -uints fields      " + flag.Lookup("uints").Usage,
-			"  -int32s fields     " + flag.Lookup("int32s").Usage,
-			"  -int64s fields     " + flag.Lookup("int64s").Usage,
-			"  -uint32s fields    " + flag.Lookup("uint32s").Usage,
-			"  -uint64s fields    " + flag.Lookup("uint64s").Usage,
-			"  -float32s fields   " + flag.Lookup("float32s").Usage,
-			"  -float64s fields   " + flag.Lookup("float64s").Usage,
-			"  -strings fields    " + flag.Lookup("strings").Usage,
-			"  -bytes fields      " + flag.Lookup("bytes").Usage,
-			"  -messages fields   " + flag.Lookup("messages").Usage,
-			"  -groups fields     " + flag.Lookup("groups").Usage,
-			"  -print_descriptor  " + flag.Lookup("print_descriptor").Usage,
-			"  -print_source      " + flag.Lookup("print_source").Usage,
-		}, "\n"))
+		}, flagUsages...), "\n"))
 	}
 	flag.Parse()
 
@@ -107,7 +100,7 @@ func main() {
 			log.Fatalf("Descriptor error: %v", err)
 		}
 		if *printDesc {
-			log.Printf("%#v\n", desc)
+			fmt.Printf("%#v\n", desc)
 		}
 	}
 
@@ -133,9 +126,9 @@ func main() {
 	var m pack.Message
 	m.UnmarshalDescriptor(buf, desc)
 	if *printSource {
-		fmt.Fprintf(os.Stdout, "%#v\n", m)
+		fmt.Printf("%#v\n", m)
 	} else {
-		fmt.Fprintf(os.Stdout, "%+v\n", m)
+		fmt.Printf("%+v\n", m)
 	}
 	if !bytes.Equal(buf, m.Marshal()) || len(buf) != m.Size() {
 		log.Fatalf("roundtrip mismatch:\n\tgot:  %d %x\n\twant: %d %x", m.Size(), m, len(buf), buf)
@@ -253,50 +246,11 @@ func (fs fields) sortedNums() (ns []wire.Number) {
 	return ns
 }
 
-type (
-	boolFields    fields
-	intFields     fields
-	sintFields    fields
-	uintFields    fields
-	uint32Fields  fields
-	int32Fields   fields
-	float32Fields fields
-	uint64Fields  fields
-	int64Fields   fields
-	float64Fields fields
-	stringFields  fields
-	bytesFields   fields
-	messageFields fields
-	groupFields   fields
-)
+// fieldsFlag is an implementation of flag.Value that is keyed a specific kind.
+type fieldsFlag struct {
+	f *fields
+	k protoreflect.Kind
+}
 
-// String and Set implement flag.Value.
-// The String method is not implemented since the flag helper never prints it.
-func (p *boolFields) String() string        { return "not implemented" }
-func (p *intFields) String() string         { return "not implemented" }
-func (p *sintFields) String() string        { return "not implemented" }
-func (p *uintFields) String() string        { return "not implemented" }
-func (p *uint32Fields) String() string      { return "not implemented" }
-func (p *int32Fields) String() string       { return "not implemented" }
-func (p *float32Fields) String() string     { return "not implemented" }
-func (p *uint64Fields) String() string      { return "not implemented" }
-func (p *int64Fields) String() string       { return "not implemented" }
-func (p *float64Fields) String() string     { return "not implemented" }
-func (p *stringFields) String() string      { return "not implemented" }
-func (p *bytesFields) String() string       { return "not implemented" }
-func (p *messageFields) String() string     { return "not implemented" }
-func (p *groupFields) String() string       { return "not implemented" }
-func (p *boolFields) Set(s string) error    { return (*fields)(p).Set(s, protoreflect.BoolKind) }
-func (p *intFields) Set(s string) error     { return (*fields)(p).Set(s, protoreflect.Int64Kind) }
-func (p *sintFields) Set(s string) error    { return (*fields)(p).Set(s, protoreflect.Sint64Kind) }
-func (p *uintFields) Set(s string) error    { return (*fields)(p).Set(s, protoreflect.Uint64Kind) }
-func (p *uint32Fields) Set(s string) error  { return (*fields)(p).Set(s, protoreflect.Fixed32Kind) }
-func (p *int32Fields) Set(s string) error   { return (*fields)(p).Set(s, protoreflect.Sfixed32Kind) }
-func (p *float32Fields) Set(s string) error { return (*fields)(p).Set(s, protoreflect.FloatKind) }
-func (p *uint64Fields) Set(s string) error  { return (*fields)(p).Set(s, protoreflect.Fixed64Kind) }
-func (p *int64Fields) Set(s string) error   { return (*fields)(p).Set(s, protoreflect.Sfixed64Kind) }
-func (p *float64Fields) Set(s string) error { return (*fields)(p).Set(s, protoreflect.DoubleKind) }
-func (p *stringFields) Set(s string) error  { return (*fields)(p).Set(s, protoreflect.StringKind) }
-func (p *bytesFields) Set(s string) error   { return (*fields)(p).Set(s, protoreflect.BytesKind) }
-func (p *messageFields) Set(s string) error { return (*fields)(p).Set(s, protoreflect.MessageKind) }
-func (p *groupFields) Set(s string) error   { return (*fields)(p).Set(s, protoreflect.GroupKind) }
+func (fs fieldsFlag) String() string     { return "FIELDS" }
+func (fs fieldsFlag) Set(s string) error { return fs.f.Set(s, fs.k) }
