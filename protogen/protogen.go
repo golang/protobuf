@@ -349,7 +349,7 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 	f.GeneratedFilenamePrefix = prefix
 
 	for i, mdescs := 0, desc.Messages(); i < mdescs.Len(); i++ {
-		f.Messages = append(f.Messages, newMessage(gen, f, nil, mdescs.Get(i), i))
+		f.Messages = append(f.Messages, newMessage(gen, f, nil, mdescs.Get(i)))
 	}
 	return f, nil
 }
@@ -380,15 +380,23 @@ type Message struct {
 
 	GoIdent  GoIdent    // name of the generated Go type
 	Messages []*Message // nested message declarations
+	Path     []int32    // location path of this message
 }
 
-func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.MessageDescriptor, index int) *Message {
+func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.MessageDescriptor) *Message {
+	var path []int32
+	if parent != nil {
+		path = pathAppend(parent.Path, messageMessageField, int32(desc.Index()))
+	} else {
+		path = []int32{fileMessageField, int32(desc.Index())}
+	}
 	m := &Message{
 		Desc:    desc,
 		GoIdent: newGoIdent(f, desc),
+		Path:    path,
 	}
 	for i, mdescs := 0, desc.Messages(); i < mdescs.Len(); i++ {
-		m.Messages = append(m.Messages, newMessage(gen, f, m, mdescs.Get(i), i))
+		m.Messages = append(m.Messages, newMessage(gen, f, m, mdescs.Get(i)))
 	}
 	return m
 }
@@ -501,3 +509,34 @@ const (
 	pathTypeImport pathType = iota
 	pathTypeSourceRelative
 )
+
+// The SourceCodeInfo message describes the location of elements of a parsed
+// .proto file by way of a "path", which is a sequence of integers that
+// describe the route from a FileDescriptorProto to the relevant submessage.
+// The path alternates between a field number of a repeated field, and an index
+// into that repeated field. The constants below define the field numbers that
+// are used.
+//
+// See descriptor.proto for more information about this.
+const (
+	// field numbers in FileDescriptorProto
+	filePackageField = 2 // package
+	fileMessageField = 4 // message_type
+	fileenumField    = 5 // enum_type
+	// field numbers in DescriptorProto
+	messageFieldField   = 2 // field
+	messageMessageField = 3 // nested_type
+	messageEnumField    = 4 // enum_type
+	messageOneofField   = 8 // oneof_decl
+	// field numbers in EnumDescriptorProto
+	enumValueField = 2 // value
+)
+
+// pathAppend appends elements to a location path.
+// It does not alias the original path.
+func pathAppend(path []int32, a ...int32) []int32 {
+	var n []int32
+	n = append(n, path...)
+	n = append(n, a...)
+	return n
+}
