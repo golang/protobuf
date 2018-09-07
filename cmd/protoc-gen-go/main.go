@@ -7,6 +7,15 @@
 package main
 
 import (
+	"bytes"
+	"compress/gzip"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"strconv"
+
+	"github.com/golang/protobuf/proto"
+	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"google.golang.org/proto/protogen"
 )
 
@@ -34,7 +43,51 @@ func genFile(gen *protogen.Plugin, f *protogen.File) {
 		genMessage(gen, g, m)
 	}
 
-	// TODO: Everything.
+	genFileDescriptor(gen, g, f)
+}
+
+func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *protogen.File) {
+	// Determine the name of the var holding the file descriptor:
+	//
+	//     fileDescriptor_<hash of filename>
+	filenameHash := sha256.Sum256([]byte(f.Desc.Path()))
+	varName := fmt.Sprintf("fileDescriptor_%s", hex.EncodeToString(filenameHash[:8]))
+
+	// Trim the source_code_info from the descriptor.
+	// Marshal and gzip it.
+	descProto := proto.Clone(f.Proto).(*descpb.FileDescriptorProto)
+	descProto.SourceCodeInfo = nil
+	b, err := proto.Marshal(descProto)
+	if err != nil {
+		gen.Error(err)
+		return
+	}
+	var buf bytes.Buffer
+	w, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression)
+	w.Write(b)
+	w.Close()
+	b = buf.Bytes()
+
+	g.P("func init() { proto.RegisterFile(", strconv.Quote(f.Desc.Path()), ", ", varName, ") }")
+	g.P()
+	g.P("var ", varName, " = []byte{")
+	g.P("// ", len(b), " bytes of a gzipped FileDescriptorProto")
+	for len(b) > 0 {
+		n := 16
+		if n > len(b) {
+			n = len(b)
+		}
+
+		s := ""
+		for _, c := range b[:n] {
+			s += fmt.Sprintf("0x%02x,", c)
+		}
+		g.P(s)
+
+		b = b[n:]
+	}
+	g.P("}")
+	g.P()
 }
 
 func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, m *protogen.Message) {

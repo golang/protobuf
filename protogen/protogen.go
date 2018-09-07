@@ -299,7 +299,8 @@ func (gen *Plugin) FileByName(name string) (f *File, ok bool) {
 
 // A File describes a .proto source file.
 type File struct {
-	Desc protoreflect.FileDescriptor
+	Desc  protoreflect.FileDescriptor
+	Proto *descpb.FileDescriptorProto
 
 	GoPackageName GoPackageName // name of this file's Go package
 	GoImportPath  GoImportPath  // import path of this file's Go package
@@ -324,6 +325,7 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 	}
 	f := &File{
 		Desc:          desc,
+		Proto:         p,
 		GoPackageName: packageName,
 		GoImportPath:  importPath,
 	}
