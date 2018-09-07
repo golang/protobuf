@@ -52,7 +52,9 @@ const (
 type (
 	// Token is any other type (e.g., Message, Tag, Varint, Float32, etc).
 	Token token
-	// Message is a ordered sequence Tokens.
+	// Message is an ordered sequence of  Tokens, where certain tokens may
+	// contain other tokens. It is functionally a concrete syntax tree that
+	// losslessly represents any arbitrary wire data (including invalid input).
 	Message []Token
 
 	// Tag is a tuple of the field number and the wire type.
@@ -168,7 +170,7 @@ func (m Message) Size() int {
 	return n
 }
 
-// Message encodes an AST into the protobuf wire format.
+// Message encodes a syntax tree into the protobuf wire format.
 //
 // Example message definition:
 //	message MyMessage {
@@ -242,12 +244,12 @@ func (m Message) Marshal() []byte {
 	return out
 }
 
-// Unmarshal parses the input protobuf wire data as a Message AST.
+// Unmarshal parses the input protobuf wire data as a syntax tree.
 // Any parsing error results in the remainder of the input being
 // concatenated to the message as a Raw type.
 //
 // Each tag (a tuple of the field number and wire type) encountered is
-// appended to the AST as a Tag.
+// inserted into the syntax tree as a Tag.
 //
 // The contents of each wire type is mapped to the following Go types:
 //	VarintType   => Uvarint
@@ -271,7 +273,7 @@ func (m *Message) Unmarshal(in []byte) {
 	m.UnmarshalDescriptor(in, nil)
 }
 
-// UnmarshalDescriptor parses the input protobuf wire data as a Message AST
+// UnmarshalDescriptor parses the input protobuf wire data as a syntax tree
 // using the provided message descriptor for more accurate parsing of fields.
 // It operates like Unmarshal, but may use a wider range of Go types to
 // represent the wire data.
@@ -482,7 +484,7 @@ func (p *parser) parseGroup(desc protoreflect.MessageDescriptor) {
 	}
 }
 
-// Format implements a custom formatter to visualize the Message AST.
+// Format implements a custom formatter to visualize the syntax tree.
 // Using "%#v" formats the Message in Go source code.
 func (m Message) Format(s fmt.State, r rune) {
 	switch r {
