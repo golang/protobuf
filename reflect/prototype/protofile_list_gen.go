@@ -33,7 +33,7 @@ func (p *messagesMeta) lazyInit(parent protoreflect.Descriptor, ts []Message) *m
 				panic("already initialized")
 			}
 			t.messageMeta = &metas[i]
-			t.inheritedMeta.init(nb, parent, t.Name, false)
+			t.inheritedMeta.init(nb, parent, i, t.Name, false)
 		}
 		p.typs = ts
 	})
@@ -83,7 +83,7 @@ func (p *fieldsMeta) lazyInit(parent protoreflect.Descriptor, ts []Field) *field
 				panic("already initialized")
 			}
 			t.fieldMeta = &metas[i]
-			t.inheritedMeta.init(nb, parent, t.Name, false)
+			t.inheritedMeta.init(nb, parent, i, t.Name, false)
 		}
 		p.typs = ts
 	})
@@ -166,7 +166,7 @@ func (p *oneofsMeta) lazyInit(parent protoreflect.Descriptor, ts []Oneof) *oneof
 				panic("already initialized")
 			}
 			t.oneofMeta = &metas[i]
-			t.inheritedMeta.init(nb, parent, t.Name, false)
+			t.inheritedMeta.init(nb, parent, i, t.Name, false)
 		}
 		p.typs = ts
 	})
@@ -212,7 +212,7 @@ func (p *extensionsMeta) lazyInit(parent protoreflect.Descriptor, ts []Extension
 				panic("already initialized")
 			}
 			t.extensionMeta = &metas[i]
-			t.inheritedMeta.init(nb, parent, t.Name, false)
+			t.inheritedMeta.init(nb, parent, i, t.Name, false)
 		}
 		p.typs = ts
 	})
@@ -258,7 +258,7 @@ func (p *enumsMeta) lazyInit(parent protoreflect.Descriptor, ts []Enum) *enums {
 				panic("already initialized")
 			}
 			t.enumMeta = &metas[i]
-			t.inheritedMeta.init(nb, parent, t.Name, false)
+			t.inheritedMeta.init(nb, parent, i, t.Name, false)
 		}
 		p.typs = ts
 	})
@@ -306,7 +306,7 @@ func (p *enumValuesMeta) lazyInit(parent protoreflect.Descriptor, ts []EnumValue
 				panic("already initialized")
 			}
 			t.enumValueMeta = &metas[i]
-			t.inheritedMeta.init(nb, parent, t.Name, true)
+			t.inheritedMeta.init(nb, parent, i, t.Name, true)
 		}
 		p.typs = ts
 	})
@@ -370,7 +370,7 @@ func (p *servicesMeta) lazyInit(parent protoreflect.Descriptor, ts []Service) *s
 				panic("already initialized")
 			}
 			t.serviceMeta = &metas[i]
-			t.inheritedMeta.init(nb, parent, t.Name, false)
+			t.inheritedMeta.init(nb, parent, i, t.Name, false)
 		}
 		p.typs = ts
 	})
@@ -416,7 +416,7 @@ func (p *methodsMeta) lazyInit(parent protoreflect.Descriptor, ts []Method) *met
 				panic("already initialized")
 			}
 			t.methodMeta = &metas[i]
-			t.inheritedMeta.init(nb, parent, t.Name, false)
+			t.inheritedMeta.init(nb, parent, i, t.Name, false)
 		}
 		p.typs = ts
 	})

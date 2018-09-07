@@ -45,6 +45,11 @@ type Descriptor interface {
 	// Support for this functionality is optional and may return (nil, false).
 	Parent() (Descriptor, bool)
 
+	// Index returns the the index of this descriptor within its parent.
+	// It returns 0 if the descriptor does not have a parent or if the parent
+	// is unknown.
+	Index() int
+
 	// Syntax is the protobuf syntax.
 	Syntax() Syntax // e.g., Proto2 or Proto3
 

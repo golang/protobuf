@@ -14,6 +14,7 @@ import (
 type standaloneMessage struct{ m *StandaloneMessage }
 
 func (t standaloneMessage) Parent() (pref.Descriptor, bool)                   { return nil, false }
+func (t standaloneMessage) Index() int                                        { return 0 }
 func (t standaloneMessage) Syntax() pref.Syntax                               { return t.m.Syntax }
 func (t standaloneMessage) Name() pref.Name                                   { return t.m.FullName.Name() }
 func (t standaloneMessage) FullName() pref.FullName                           { return t.m.FullName }
@@ -35,6 +36,7 @@ func (t standaloneMessage) ProtoInternal(pragma.DoNotImplement)               {}
 type standaloneEnum struct{ e *StandaloneEnum }
 
 func (t standaloneEnum) Parent() (pref.Descriptor, bool)                   { return nil, false }
+func (t standaloneEnum) Index() int                                        { return 0 }
 func (t standaloneEnum) Syntax() pref.Syntax                               { return t.e.Syntax }
 func (t standaloneEnum) Name() pref.Name                                   { return t.e.FullName.Name() }
 func (t standaloneEnum) FullName() pref.FullName                           { return t.e.FullName }
@@ -49,6 +51,7 @@ func (t standaloneEnum) ProtoInternal(pragma.DoNotImplement)               {}
 type standaloneExtension struct{ x *StandaloneExtension }
 
 func (t standaloneExtension) Parent() (pref.Descriptor, bool)                   { return nil, false }
+func (t standaloneExtension) Index() int                                        { return 0 }
 func (t standaloneExtension) Syntax() pref.Syntax                               { return t.x.Syntax }
 func (t standaloneExtension) Name() pref.Name                                   { return t.x.FullName.Name() }
 func (t standaloneExtension) FullName() pref.FullName                           { return t.x.FullName }

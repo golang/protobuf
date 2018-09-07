@@ -114,7 +114,7 @@ var listTypesTemplate = template.Must(template.New("").Funcs(template.FuncMap{
 					panic("already initialized")
 				}
 				t.{{$nameMeta}} = &metas[i]
-				t.inheritedMeta.init(nb, parent, t.Name, {{printf "%v" (eq . "EnumValue")}})
+				t.inheritedMeta.init(nb, parent, i, t.Name, {{printf "%v" (eq . "EnumValue")}})
 			}
 			p.typs = ts
 		})

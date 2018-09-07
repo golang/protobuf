@@ -17,6 +17,7 @@ import (
 // inheritedMeta is information inherited from the parent.
 type inheritedMeta struct {
 	parent   pref.Descriptor
+	index    int
 	syntax   pref.Syntax
 	fullName pref.FullName
 
@@ -24,7 +25,7 @@ type inheritedMeta struct {
 	opts descriptorOptionsMeta
 }
 
-func (m *inheritedMeta) init(nb *nameBuilder, parent pref.Descriptor, name pref.Name, child bool) {
+func (m *inheritedMeta) init(nb *nameBuilder, parent pref.Descriptor, index int, name pref.Name, child bool) {
 	// Most descriptors are namespaced as a child of their parent.
 	// However, EnumValues are the exception in that they are namespaced
 	// as a sibling of the parent Enum type.
@@ -34,6 +35,7 @@ func (m *inheritedMeta) init(nb *nameBuilder, parent pref.Descriptor, name pref.
 	}
 
 	m.parent = parent
+	m.index = index
 	m.syntax = parent.Syntax()
 	m.fullName = nb.Append(prefix, name)
 }
@@ -58,6 +60,7 @@ func newFile(f *File) fileDesc {
 	return fileDesc{f}
 }
 func (t fileDesc) Parent() (pref.Descriptor, bool)                   { return nil, false }
+func (t fileDesc) Index() int                                        { return 0 }
 func (t fileDesc) Syntax() pref.Syntax                               { return t.f.Syntax }
 func (t fileDesc) Name() pref.Name                                   { return t.f.Package.Name() }
 func (t fileDesc) FullName() pref.FullName                           { return t.f.Package }
@@ -164,6 +167,7 @@ type messageMeta struct {
 type messageDesc struct{ m *Message }
 
 func (t messageDesc) Parent() (pref.Descriptor, bool)                   { return t.m.parent, true }
+func (t messageDesc) Index() int                                        { return t.m.index }
 func (t messageDesc) Syntax() pref.Syntax                               { return t.m.syntax }
 func (t messageDesc) Name() pref.Name                                   { return t.m.Name }
 func (t messageDesc) FullName() pref.FullName                           { return t.m.fullName }
@@ -194,6 +198,7 @@ type fieldMeta struct {
 type fieldDesc struct{ f *Field }
 
 func (t fieldDesc) Parent() (pref.Descriptor, bool)                   { return t.f.parent, true }
+func (t fieldDesc) Index() int                                        { return t.f.index }
 func (t fieldDesc) Syntax() pref.Syntax                               { return t.f.syntax }
 func (t fieldDesc) Name() pref.Name                                   { return t.f.Name }
 func (t fieldDesc) FullName() pref.FullName                           { return t.f.fullName }
@@ -278,6 +283,7 @@ type oneofMeta struct {
 type oneofDesc struct{ o *Oneof }
 
 func (t oneofDesc) Parent() (pref.Descriptor, bool)                   { return t.o.parent, true }
+func (t oneofDesc) Index() int                                        { return t.o.index }
 func (t oneofDesc) Syntax() pref.Syntax                               { return t.o.syntax }
 func (t oneofDesc) Name() pref.Name                                   { return t.o.Name }
 func (t oneofDesc) FullName() pref.FullName                           { return t.o.fullName }
@@ -301,6 +307,7 @@ type extensionDesc struct{ x *Extension }
 
 func (t extensionDesc) Parent() (pref.Descriptor, bool)                   { return t.x.parent, true }
 func (t extensionDesc) Syntax() pref.Syntax                               { return t.x.syntax }
+func (t extensionDesc) Index() int                                        { return t.x.index }
 func (t extensionDesc) Name() pref.Name                                   { return t.x.Name }
 func (t extensionDesc) FullName() pref.FullName                           { return t.x.fullName }
 func (t extensionDesc) IsPlaceholder() bool                               { return false }
@@ -334,6 +341,7 @@ type enumMeta struct {
 type enumDesc struct{ e *Enum }
 
 func (t enumDesc) Parent() (pref.Descriptor, bool)                   { return t.e.parent, true }
+func (t enumDesc) Index() int                                        { return t.e.index }
 func (t enumDesc) Syntax() pref.Syntax                               { return t.e.syntax }
 func (t enumDesc) Name() pref.Name                                   { return t.e.Name }
 func (t enumDesc) FullName() pref.FullName                           { return t.e.fullName }
@@ -351,6 +359,7 @@ type enumValueMeta struct {
 type enumValueDesc struct{ v *EnumValue }
 
 func (t enumValueDesc) Parent() (pref.Descriptor, bool)                   { return t.v.parent, true }
+func (t enumValueDesc) Index() int                                        { return t.v.index }
 func (t enumValueDesc) Syntax() pref.Syntax                               { return t.v.syntax }
 func (t enumValueDesc) Name() pref.Name                                   { return t.v.Name }
 func (t enumValueDesc) FullName() pref.FullName                           { return t.v.fullName }
@@ -370,6 +379,7 @@ type serviceMeta struct {
 type serviceDesc struct{ s *Service }
 
 func (t serviceDesc) Parent() (pref.Descriptor, bool)                   { return t.s.parent, true }
+func (t serviceDesc) Index() int                                        { return t.s.index }
 func (t serviceDesc) Syntax() pref.Syntax                               { return t.s.syntax }
 func (t serviceDesc) Name() pref.Name                                   { return t.s.Name }
 func (t serviceDesc) FullName() pref.FullName                           { return t.s.fullName }
@@ -390,6 +400,7 @@ type methodMeta struct {
 type methodDesc struct{ m *Method }
 
 func (t methodDesc) Parent() (pref.Descriptor, bool)                   { return t.m.parent, true }
+func (t methodDesc) Index() int                                        { return t.m.index }
 func (t methodDesc) Syntax() pref.Syntax                               { return t.m.syntax }
 func (t methodDesc) Name() pref.Name                                   { return t.m.Name }
 func (t methodDesc) FullName() pref.FullName                           { return t.m.fullName }

@@ -336,6 +336,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 	type M = map[string]interface{}
 	want := M{
 		"Parent":        nil,
+		"Index":         0,
 		"Syntax":        pref.Proto2,
 		"Name":          pref.Name("test"),
 		"FullName":      pref.FullName("test"),
@@ -346,6 +347,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 			"Len": 3,
 			"Get:0": M{
 				"Parent":        M{"FullName": pref.FullName("test")},
+				"Index":         0,
 				"Syntax":        pref.Proto2,
 				"Name":          pref.Name("A"),
 				"FullName":      pref.FullName("test.A"),
@@ -355,6 +357,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					"Len": 2,
 					"ByNumber:1": M{
 						"Parent":       M{"FullName": pref.FullName("test.A")},
+						"Index":        0,
 						"Name":         pref.Name("key"),
 						"FullName":     pref.FullName("test.A.key"),
 						"Number":       pref.FieldNumber(1),
@@ -372,6 +375,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					},
 					"ByNumber:2": M{
 						"Parent":       M{"FullName": pref.FullName("test.A")},
+						"Index":        1,
 						"Name":         pref.Name("value"),
 						"FullName":     pref.FullName("test.A.value"),
 						"Number":       pref.FieldNumber(2),
@@ -397,12 +401,14 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 				"Extensions":      M{"Len": 0},
 			},
 			"ByName:B": M{
-				"Name": pref.Name("B"),
+				"Name":  pref.Name("B"),
+				"Index": 1,
 				"Fields": M{
 					"Len":                  6,
 					"ByJSONName:field_one": nil,
 					"ByJSONName:fieldOne": M{
 						"Name":      pref.Name("field_one"),
+						"Index":     0,
 						"JSONName":  "fieldOne",
 						"Default":   "hello",
 						"OneofType": M{"Name": pref.Name("O1"), "IsPlaceholder": false},
@@ -410,6 +416,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					"ByJSONName:fieldTwo": nil,
 					"ByJSONName:Field2": M{
 						"Name":      pref.Name("field_two"),
+						"Index":     1,
 						"JSONName":  "Field2",
 						"Default":   pref.EnumNumber(1),
 						"OneofType": M{"Name": pref.Name("O2"), "IsPlaceholder": false},
@@ -444,6 +451,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					"ByName:O0": nil,
 					"ByName:O1": M{
 						"FullName": pref.FullName("test.B.O1"),
+						"Index":    0,
 						"Fields": M{
 							"Len":   1,
 							"Get:0": M{"FullName": pref.FullName("test.B.field_one")},
@@ -451,6 +459,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					},
 					"Get:1": M{
 						"FullName": pref.FullName("test.B.O2"),
+						"Index":    1,
 						"Fields": M{
 							"Len":              2,
 							"ByName:field_two": M{"Name": pref.Name("field_two")},
@@ -475,7 +484,8 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 				},
 			},
 			"Get:2": M{
-				"Name": pref.Name("C"),
+				"Name":  pref.Name("C"),
+				"Index": 2,
 				"Messages": M{
 					"Len":   1,
 					"Get:0": M{"FullName": pref.FullName("test.C.A")},
