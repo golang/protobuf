@@ -305,6 +305,7 @@ type File struct {
 	GoPackageName GoPackageName // name of this file's Go package
 	GoImportPath  GoImportPath  // import path of this file's Go package
 	Messages      []*Message    // top-level message declarations
+	Enums         []*Enum       // top-level enum declarations
 	Generate      bool          // true if we should generate code for this file
 
 	// GeneratedFilenamePrefix is used to construct filenames for generated
@@ -351,6 +352,9 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 	for i, mdescs := 0, desc.Messages(); i < mdescs.Len(); i++ {
 		f.Messages = append(f.Messages, newMessage(gen, f, nil, mdescs.Get(i)))
 	}
+	for i, edescs := 0, desc.Enums(); i < edescs.Len(); i++ {
+		f.Enums = append(f.Enums, newEnum(gen, f, nil, edescs.Get(i)))
+	}
 	return f, nil
 }
 
@@ -380,6 +384,7 @@ type Message struct {
 
 	GoIdent  GoIdent    // name of the generated Go type
 	Messages []*Message // nested message declarations
+	Enums    []*Enum    // nested enum declarations
 	Path     []int32    // location path of this message
 }
 
@@ -390,15 +395,73 @@ func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.Message
 	} else {
 		path = []int32{fileMessageField, int32(desc.Index())}
 	}
-	m := &Message{
+	message := &Message{
 		Desc:    desc,
 		GoIdent: newGoIdent(f, desc),
 		Path:    path,
 	}
 	for i, mdescs := 0, desc.Messages(); i < mdescs.Len(); i++ {
-		m.Messages = append(m.Messages, newMessage(gen, f, m, mdescs.Get(i)))
+		message.Messages = append(message.Messages, newMessage(gen, f, message, mdescs.Get(i)))
 	}
-	return m
+	for i, edescs := 0, desc.Enums(); i < edescs.Len(); i++ {
+		message.Enums = append(message.Enums, newEnum(gen, f, message, edescs.Get(i)))
+	}
+	return message
+}
+
+// An Enum describes an enum.
+type Enum struct {
+	Desc protoreflect.EnumDescriptor
+
+	GoIdent GoIdent      // name of the generated Go type
+	Values  []*EnumValue // enum values
+	Path    []int32      // location path of this enum
+}
+
+func newEnum(gen *Plugin, f *File, parent *Message, desc protoreflect.EnumDescriptor) *Enum {
+	var path []int32
+	if parent != nil {
+		path = pathAppend(parent.Path, messageEnumField, int32(desc.Index()))
+	} else {
+		path = []int32{fileEnumField, int32(desc.Index())}
+	}
+	enum := &Enum{
+		Desc:    desc,
+		GoIdent: newGoIdent(f, desc),
+		Path:    path,
+	}
+	for i, evdescs := 0, enum.Desc.Values(); i < evdescs.Len(); i++ {
+		enum.Values = append(enum.Values, newEnumValue(gen, f, parent, enum, evdescs.Get(i)))
+	}
+	return enum
+}
+
+// An EnumValue describes an enum value.
+type EnumValue struct {
+	Desc protoreflect.EnumValueDescriptor
+
+	GoIdent GoIdent // name of the generated Go type
+	Path    []int32 // location path of this enum value
+}
+
+func newEnumValue(gen *Plugin, f *File, message *Message, enum *Enum, desc protoreflect.EnumValueDescriptor) *EnumValue {
+	// A top-level enum value's name is: EnumName_ValueName
+	// An enum value contained in a message is: MessageName_ValueName
+	//
+	// Enum value names are not camelcased.
+	parentIdent := enum.GoIdent
+	if message != nil {
+		parentIdent = message.GoIdent
+	}
+	name := parentIdent.GoName + "_" + string(desc.Name())
+	return &EnumValue{
+		Desc: desc,
+		GoIdent: GoIdent{
+			GoName:       name,
+			GoImportPath: f.GoImportPath,
+		},
+		Path: pathAppend(enum.Path, enumValueField, int32(desc.Index())),
+	}
 }
 
 // A GeneratedFile is a generated file.
@@ -432,16 +495,33 @@ func (g *GeneratedFile) P(v ...interface{}) {
 	for _, x := range v {
 		switch x := x.(type) {
 		case GoIdent:
-			if x.GoImportPath != g.goImportPath {
-				fmt.Fprint(&g.buf, g.goPackageName(x.GoImportPath))
-				fmt.Fprint(&g.buf, ".")
-			}
-			fmt.Fprint(&g.buf, x.GoName)
+			fmt.Fprint(&g.buf, g.QualifiedGoIdent(x))
 		default:
 			fmt.Fprint(&g.buf, x)
 		}
 	}
 	fmt.Fprintln(&g.buf)
+}
+
+// QualifiedGoIdent returns the string to use for a Go identifier.
+//
+// If the identifier is from a different Go package than the generated file,
+// the returned name will be qualified (package.name) and an import statement
+// for the identifier's package will be included in the file.
+func (g *GeneratedFile) QualifiedGoIdent(ident GoIdent) string {
+	if ident.GoImportPath == g.goImportPath {
+		return ident.GoName
+	}
+	if packageName, ok := g.packageNames[ident.GoImportPath]; ok {
+		return string(packageName) + "." + ident.GoName
+	}
+	packageName := cleanPackageName(baseName(string(ident.GoImportPath)))
+	for i, orig := 1, packageName; g.usedPackageNames[packageName]; i++ {
+		packageName = orig + GoPackageName(strconv.Itoa(i))
+	}
+	g.packageNames[ident.GoImportPath] = packageName
+	g.usedPackageNames[packageName] = true
+	return string(packageName) + "." + ident.GoName
 }
 
 func (g *GeneratedFile) goPackageName(importPath GoImportPath) GoPackageName {
@@ -522,7 +602,7 @@ const (
 	// field numbers in FileDescriptorProto
 	filePackageField = 2 // package
 	fileMessageField = 4 // message_type
-	fileenumField    = 5 // enum_type
+	fileEnumField    = 5 // enum_type
 	// field numbers in DescriptorProto
 	messageFieldField   = 2 // field
 	messageMessageField = 3 // nested_type
