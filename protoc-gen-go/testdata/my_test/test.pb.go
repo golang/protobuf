@@ -35,6 +35,7 @@ var HatType_name = map[int32]string{
 	1: "FEDORA",
 	2: "FEZ",
 }
+
 var HatType_value = map[string]int32{
 	"FEDORA": 1,
 	"FEZ":    2,
@@ -45,9 +46,11 @@ func (x HatType) Enum() *HatType {
 	*p = x
 	return p
 }
+
 func (x HatType) String() string {
 	return proto.EnumName(HatType_name, int32(x))
 }
+
 func (x *HatType) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(HatType_value, data, "HatType")
 	if err != nil {
@@ -56,6 +59,7 @@ func (x *HatType) UnmarshalJSON(data []byte) error {
 	*x = HatType(value)
 	return nil
 }
+
 func (HatType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{0}
 }
@@ -74,6 +78,7 @@ var Days_name = map[int32]string{
 	2: "TUESDAY",
 	// Duplicate value: 1: "LUNDI",
 }
+
 var Days_value = map[string]int32{
 	"MONDAY":  1,
 	"TUESDAY": 2,
@@ -85,9 +90,11 @@ func (x Days) Enum() *Days {
 	*p = x
 	return p
 }
+
 func (x Days) String() string {
 	return proto.EnumName(Days_name, int32(x))
 }
+
 func (x *Days) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(Days_value, data, "Days")
 	if err != nil {
@@ -96,6 +103,7 @@ func (x *Days) UnmarshalJSON(data []byte) error {
 	*x = Days(value)
 	return nil
 }
+
 func (Days) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{1}
 }
@@ -113,6 +121,7 @@ var Request_Color_name = map[int32]string{
 	1: "GREEN",
 	2: "BLUE",
 }
+
 var Request_Color_value = map[string]int32{
 	"RED":   0,
 	"GREEN": 1,
@@ -124,9 +133,11 @@ func (x Request_Color) Enum() *Request_Color {
 	*p = x
 	return p
 }
+
 func (x Request_Color) String() string {
 	return proto.EnumName(Request_Color_name, int32(x))
 }
+
 func (x *Request_Color) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(Request_Color_value, data, "Request_Color")
 	if err != nil {
@@ -135,6 +146,7 @@ func (x *Request_Color) UnmarshalJSON(data []byte) error {
 	*x = Request_Color(value)
 	return nil
 }
+
 func (Request_Color) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{0, 0}
 }
@@ -150,6 +162,7 @@ var Reply_Entry_Game_name = map[int32]string{
 	1: "FOOTBALL",
 	2: "TENNIS",
 }
+
 var Reply_Entry_Game_value = map[string]int32{
 	"FOOTBALL": 1,
 	"TENNIS":   2,
@@ -160,9 +173,11 @@ func (x Reply_Entry_Game) Enum() *Reply_Entry_Game {
 	*p = x
 	return p
 }
+
 func (x Reply_Entry_Game) String() string {
 	return proto.EnumName(Reply_Entry_Game_name, int32(x))
 }
+
 func (x *Reply_Entry_Game) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(Reply_Entry_Game_value, data, "Reply_Entry_Game")
 	if err != nil {
@@ -171,6 +186,7 @@ func (x *Reply_Entry_Game) UnmarshalJSON(data []byte) error {
 	*x = Reply_Entry_Game(value)
 	return nil
 }
+
 func (Reply_Entry_Game) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{1, 0, 0}
 }

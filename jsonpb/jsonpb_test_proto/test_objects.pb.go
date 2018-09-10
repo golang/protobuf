@@ -36,6 +36,7 @@ var Widget_Color_name = map[int32]string{
 	1: "GREEN",
 	2: "BLUE",
 }
+
 var Widget_Color_value = map[string]int32{
 	"RED":   0,
 	"GREEN": 1,
@@ -47,9 +48,11 @@ func (x Widget_Color) Enum() *Widget_Color {
 	*p = x
 	return p
 }
+
 func (x Widget_Color) String() string {
 	return proto.EnumName(Widget_Color_name, int32(x))
 }
+
 func (x *Widget_Color) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(Widget_Color_value, data, "Widget_Color")
 	if err != nil {
@@ -58,6 +61,7 @@ func (x *Widget_Color) UnmarshalJSON(data []byte) error {
 	*x = Widget_Color(value)
 	return nil
 }
+
 func (Widget_Color) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{3, 0}
 }

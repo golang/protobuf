@@ -37,6 +37,7 @@ var WireFormat_name = map[int32]string{
 	1: "PROTOBUF",
 	2: "JSON",
 }
+
 var WireFormat_value = map[string]int32{
 	"UNSPECIFIED": 0,
 	"PROTOBUF":    1,
@@ -46,6 +47,7 @@ var WireFormat_value = map[string]int32{
 func (x WireFormat) String() string {
 	return proto.EnumName(WireFormat_name, int32(x))
 }
+
 func (WireFormat) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e7c910178d599565, []int{0}
 }
@@ -63,6 +65,7 @@ var ForeignEnum_name = map[int32]string{
 	1: "FOREIGN_BAR",
 	2: "FOREIGN_BAZ",
 }
+
 var ForeignEnum_value = map[string]int32{
 	"FOREIGN_FOO": 0,
 	"FOREIGN_BAR": 1,
@@ -72,6 +75,7 @@ var ForeignEnum_value = map[string]int32{
 func (x ForeignEnum) String() string {
 	return proto.EnumName(ForeignEnum_name, int32(x))
 }
+
 func (ForeignEnum) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e7c910178d599565, []int{1}
 }
@@ -91,6 +95,7 @@ var TestAllTypes_NestedEnum_name = map[int32]string{
 	2:  "BAZ",
 	-1: "NEG",
 }
+
 var TestAllTypes_NestedEnum_value = map[string]int32{
 	"FOO": 0,
 	"BAR": 1,
@@ -101,6 +106,7 @@ var TestAllTypes_NestedEnum_value = map[string]int32{
 func (x TestAllTypes_NestedEnum) String() string {
 	return proto.EnumName(TestAllTypes_NestedEnum_name, int32(x))
 }
+
 func (TestAllTypes_NestedEnum) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e7c910178d599565, []int{2, 0}
 }
