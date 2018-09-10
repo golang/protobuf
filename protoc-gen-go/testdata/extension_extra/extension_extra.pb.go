@@ -29,7 +29,7 @@ func (m *ExtraMessage) Reset()         { *m = ExtraMessage{} }
 func (m *ExtraMessage) String() string { return proto.CompactTextString(m) }
 func (*ExtraMessage) ProtoMessage()    {}
 func (*ExtraMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_extension_extra_83adf2410f49f816, []int{0}
+	return fileDescriptor_fce75f5a63502cd5, []int{0}
 }
 func (m *ExtraMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExtraMessage.Unmarshal(m, b)
@@ -61,10 +61,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("extension_extra/extension_extra.proto", fileDescriptor_extension_extra_83adf2410f49f816)
+	proto.RegisterFile("extension_extra/extension_extra.proto", fileDescriptor_fce75f5a63502cd5)
 }
 
-var fileDescriptor_extension_extra_83adf2410f49f816 = []byte{
+var fileDescriptor_fce75f5a63502cd5 = []byte{
 	// 133 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x4d, 0xad, 0x28, 0x49,
 	0xcd, 0x2b, 0xce, 0xcc, 0xcf, 0x8b, 0x4f, 0xad, 0x28, 0x29, 0x4a, 0xd4, 0x47, 0xe3, 0xeb, 0x15,

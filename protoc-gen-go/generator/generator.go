@@ -271,7 +271,6 @@ type FileDescriptor struct {
 	// This is used for supporting public imports.
 	exported map[Object][]symbol
 
-	fingerprint string        // Fingerprint of this file's contents.
 	importPath  GoImportPath  // Import path of this file's package.
 	packageName GoPackageName // Name of this file's Go package.
 
@@ -282,8 +281,8 @@ type FileDescriptor struct {
 // to the compressed bytes of this descriptor. It is not exported, so
 // it is only valid inside the generated package.
 func (d *FileDescriptor) VarName() string {
-	name := strings.Map(badToUnderscore, baseName(d.GetName()))
-	return fmt.Sprintf("fileDescriptor_%s_%s", name, d.fingerprint)
+	h := sha256.Sum256([]byte(d.GetName()))
+	return fmt.Sprintf("fileDescriptor_%s", hex.EncodeToString(h[:8]))
 }
 
 // goPackageOption interprets the file's go_package option.
@@ -724,25 +723,8 @@ func (g *Generator) WrapTypes() {
 		if fd == nil {
 			g.Fail("could not find file named", fileName)
 		}
-		fingerprint, err := fingerprintProto(fd.FileDescriptorProto)
-		if err != nil {
-			g.Error(err)
-		}
-		fd.fingerprint = fingerprint
 		g.genFiles = append(g.genFiles, fd)
 	}
-}
-
-// fingerprintProto returns a fingerprint for a message.
-// The fingerprint is intended to prevent conflicts between generated fileds,
-// not to provide cryptographic security.
-func fingerprintProto(m proto.Message) (string, error) {
-	b, err := proto.Marshal(m)
-	if err != nil {
-		return "", err
-	}
-	h := sha256.Sum256(b)
-	return hex.EncodeToString(h[:8]), nil
 }
 
 // Scan the descriptors in this file.  For each one, build the slice of nested descriptors

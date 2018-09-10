@@ -46,7 +46,7 @@ func (x Message_Humour) String() string {
 	return proto.EnumName(Message_Humour_name, int32(x))
 }
 func (Message_Humour) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_proto3_78ae00cd7e6e5e35, []int{0, 0}
+	return fileDescriptor_1c50d9b824d4ac38, []int{0, 0}
 }
 
 type Message struct {
@@ -78,7 +78,7 @@ func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
 func (*Message) ProtoMessage()    {}
 func (*Message) Descriptor() ([]byte, []int) {
-	return fileDescriptor_proto3_78ae00cd7e6e5e35, []int{0}
+	return fileDescriptor_1c50d9b824d4ac38, []int{0}
 }
 func (m *Message) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Message.Unmarshal(m, b)
@@ -243,7 +243,7 @@ func (m *Nested) Reset()         { *m = Nested{} }
 func (m *Nested) String() string { return proto.CompactTextString(m) }
 func (*Nested) ProtoMessage()    {}
 func (*Nested) Descriptor() ([]byte, []int) {
-	return fileDescriptor_proto3_78ae00cd7e6e5e35, []int{1}
+	return fileDescriptor_1c50d9b824d4ac38, []int{1}
 }
 func (m *Nested) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Nested.Unmarshal(m, b)
@@ -288,7 +288,7 @@ func (m *MessageWithMap) Reset()         { *m = MessageWithMap{} }
 func (m *MessageWithMap) String() string { return proto.CompactTextString(m) }
 func (*MessageWithMap) ProtoMessage()    {}
 func (*MessageWithMap) Descriptor() ([]byte, []int) {
-	return fileDescriptor_proto3_78ae00cd7e6e5e35, []int{2}
+	return fileDescriptor_1c50d9b824d4ac38, []int{2}
 }
 func (m *MessageWithMap) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageWithMap.Unmarshal(m, b)
@@ -326,7 +326,7 @@ func (m *IntMap) Reset()         { *m = IntMap{} }
 func (m *IntMap) String() string { return proto.CompactTextString(m) }
 func (*IntMap) ProtoMessage()    {}
 func (*IntMap) Descriptor() ([]byte, []int) {
-	return fileDescriptor_proto3_78ae00cd7e6e5e35, []int{3}
+	return fileDescriptor_1c50d9b824d4ac38, []int{3}
 }
 func (m *IntMap) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_IntMap.Unmarshal(m, b)
@@ -364,7 +364,7 @@ func (m *IntMaps) Reset()         { *m = IntMaps{} }
 func (m *IntMaps) String() string { return proto.CompactTextString(m) }
 func (*IntMaps) ProtoMessage()    {}
 func (*IntMaps) Descriptor() ([]byte, []int) {
-	return fileDescriptor_proto3_78ae00cd7e6e5e35, []int{4}
+	return fileDescriptor_1c50d9b824d4ac38, []int{4}
 }
 func (m *IntMaps) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_IntMaps.Unmarshal(m, b)
@@ -408,7 +408,7 @@ func (m *TestUTF8) Reset()         { *m = TestUTF8{} }
 func (m *TestUTF8) String() string { return proto.CompactTextString(m) }
 func (*TestUTF8) ProtoMessage()    {}
 func (*TestUTF8) Descriptor() ([]byte, []int) {
-	return fileDescriptor_proto3_78ae00cd7e6e5e35, []int{5}
+	return fileDescriptor_1c50d9b824d4ac38, []int{5}
 }
 func (m *TestUTF8) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TestUTF8.Unmarshal(m, b)
@@ -548,9 +548,9 @@ func init() {
 	proto.RegisterEnum("proto3_proto.Message_Humour", Message_Humour_name, Message_Humour_value)
 }
 
-func init() { proto.RegisterFile("proto3_proto/proto3.proto", fileDescriptor_proto3_78ae00cd7e6e5e35) }
+func init() { proto.RegisterFile("proto3_proto/proto3.proto", fileDescriptor_1c50d9b824d4ac38) }
 
-var fileDescriptor_proto3_78ae00cd7e6e5e35 = []byte{
+var fileDescriptor_1c50d9b824d4ac38 = []byte{
 	// 896 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x54, 0x6f, 0x6f, 0xdb, 0xb6,
 	0x13, 0xae, 0x2c, 0xff, 0x91, 0xcf, 0x76, 0xea, 0x1f, 0x7f, 0x6e, 0xc7, 0x7a, 0x1b, 0xa0, 0x79,

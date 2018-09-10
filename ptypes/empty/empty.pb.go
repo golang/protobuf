@@ -37,7 +37,7 @@ func (m *Empty) Reset()         { *m = Empty{} }
 func (m *Empty) String() string { return proto.CompactTextString(m) }
 func (*Empty) ProtoMessage()    {}
 func (*Empty) Descriptor() ([]byte, []int) {
-	return fileDescriptor_empty_39e6d6db0632e5b2, []int{0}
+	return fileDescriptor_900544acb223d5b8, []int{0}
 }
 func (*Empty) XXX_WellKnownType() string { return "Empty" }
 func (m *Empty) XXX_Unmarshal(b []byte) error {
@@ -62,9 +62,9 @@ func init() {
 	proto.RegisterType((*Empty)(nil), "google.protobuf.Empty")
 }
 
-func init() { proto.RegisterFile("google/protobuf/empty.proto", fileDescriptor_empty_39e6d6db0632e5b2) }
+func init() { proto.RegisterFile("google/protobuf/empty.proto", fileDescriptor_900544acb223d5b8) }
 
-var fileDescriptor_empty_39e6d6db0632e5b2 = []byte{
+var fileDescriptor_900544acb223d5b8 = []byte{
 	// 148 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4e, 0xcf, 0xcf, 0x4f,
 	0xcf, 0x49, 0xd5, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0x4f, 0x2a, 0x4d, 0xd3, 0x4f, 0xcd, 0x2d, 0x28,
