@@ -200,32 +200,178 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, enum *pro
 
 	genWellKnownType(g, enum.GoIdent, enum.Desc)
 
-	// The name registered is, confusingly, <proto_package>.<go_ident>.
-	// This probably should have been the full name of the proto enum
-	// type instead, but changing it at this point would require thought.
-	regName := string(f.Desc.Package()) + "." + enum.GoIdent.GoName
 	f.init = append(f.init, fmt.Sprintf("%s(%q, %s, %s)",
 		g.QualifiedGoIdent(protogen.GoIdent{
 			GoImportPath: protoPackage,
 			GoName:       "RegisterEnum",
 		}),
-		regName, nameMap, valueMap,
+		enumRegistryName(enum), nameMap, valueMap,
 	))
 }
 
+// enumRegistryName returns the name used to register an enum with the proto
+// package registry.
+//
+// Confusingly, this is <proto_package>.<go_ident>. This probably should have
+// been the full name of the proto enum type instead, but changing it at this
+// point would require thought.
+func enumRegistryName(enum *protogen.Enum) string {
+	// Find the FileDescriptor for this enum.
+	var desc protoreflect.Descriptor = enum.Desc
+	for {
+		p, ok := desc.Parent()
+		if !ok {
+			break
+		}
+		desc = p
+	}
+	fdesc := desc.(protoreflect.FileDescriptor)
+	return string(fdesc.Package()) + "." + enum.GoIdent.GoName
+}
+
 func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, message *protogen.Message) {
-	for _, enum := range message.Enums {
-		genEnum(gen, g, f, enum)
+	for _, e := range message.Enums {
+		genEnum(gen, g, f, e)
 	}
 
 	genComment(g, f, message.Path)
+	// TODO: deprecation
 	g.P("type ", message.GoIdent, " struct {")
+	for _, field := range message.Fields {
+		if field.Desc.OneofType() != nil {
+			// TODO oneofs
+			continue
+		}
+		genComment(g, f, field.Path)
+		g.P(field.GoIdent, " ", fieldGoType(g, field), fmt.Sprintf(" `protobuf:%q json:%q`", fieldProtobufTag(field), fieldJSONTag(field)))
+	}
+	g.P("XXX_NoUnkeyedLiteral struct{} `json:\"-\"`")
+	// TODO XXX_InternalExtensions
+	g.P("XXX_unrecognized []byte `json:\"-\"`")
+	g.P("XXX_sizecache int32 `json:\"-\"`")
 	g.P("}")
 	g.P()
 
 	for _, nested := range message.Messages {
 		genMessage(gen, g, f, nested)
 	}
+}
+
+func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) string {
+	// TODO: map types
+	var typ string
+	switch field.Desc.Kind() {
+	case protoreflect.BoolKind:
+		typ = "bool"
+	case protoreflect.EnumKind:
+		typ = g.QualifiedGoIdent(field.EnumType.GoIdent)
+	case protoreflect.Int32Kind, protoreflect.Sint32Kind, protoreflect.Sfixed32Kind:
+		typ = "int32"
+	case protoreflect.Uint32Kind, protoreflect.Fixed32Kind:
+		typ = "uint32"
+	case protoreflect.Int64Kind, protoreflect.Sint64Kind, protoreflect.Sfixed64Kind:
+		typ = "int64"
+	case protoreflect.Uint64Kind, protoreflect.Fixed64Kind:
+		typ = "uint64"
+	case protoreflect.FloatKind:
+		typ = "float32"
+	case protoreflect.DoubleKind:
+		typ = "float64"
+	case protoreflect.StringKind:
+		typ = "string"
+	case protoreflect.BytesKind:
+		typ = "[]byte"
+	case protoreflect.MessageKind, protoreflect.GroupKind:
+		typ = "*" + g.QualifiedGoIdent(field.MessageType.GoIdent)
+	}
+	if field.Desc.Cardinality() == protoreflect.Repeated {
+		return "[]" + typ
+	}
+	if field.Desc.Syntax() == protoreflect.Proto3 {
+		return typ
+	}
+	if field.Desc.OneofType() != nil {
+		return typ
+	}
+	nonPointerKinds := map[protoreflect.Kind]bool{
+		protoreflect.GroupKind:   true,
+		protoreflect.MessageKind: true,
+		protoreflect.BytesKind:   true,
+	}
+	if !nonPointerKinds[field.Desc.Kind()] {
+		return "*" + typ
+	}
+	return typ
+}
+
+func fieldProtobufTag(field *protogen.Field) string {
+	var tag []string
+	// wire type
+	tag = append(tag, wireTypes[field.Desc.Kind()])
+	// field number
+	tag = append(tag, strconv.Itoa(int(field.Desc.Number())))
+	// cardinality
+	switch field.Desc.Cardinality() {
+	case protoreflect.Optional:
+		tag = append(tag, "opt")
+	case protoreflect.Required:
+		tag = append(tag, "req")
+	case protoreflect.Repeated:
+		tag = append(tag, "rep")
+	}
+	// TODO: default values
+	// TODO: packed
+	// name
+	name := string(field.Desc.Name())
+	if field.Desc.Kind() == protoreflect.GroupKind {
+		// The name of the FieldDescriptor for a group field is
+		// lowercased. To find the original capitalization, we
+		// look in the field's MessageType.
+		name = string(field.MessageType.Desc.Name())
+	}
+	tag = append(tag, "name="+name)
+	// JSON name
+	if jsonName := field.Desc.JSONName(); jsonName != "" && jsonName != name {
+		tag = append(tag, "json="+jsonName)
+	}
+	// proto3
+	if field.Desc.Syntax() == protoreflect.Proto3 {
+		tag = append(tag, "proto3")
+	}
+	// enum
+	if field.Desc.Kind() == protoreflect.EnumKind {
+		tag = append(tag, "enum="+enumRegistryName(field.EnumType))
+	}
+	// oneof
+	if field.Desc.OneofType() != nil {
+		tag = append(tag, "oneof")
+	}
+	return strings.Join(tag, ",")
+}
+
+var wireTypes = map[protoreflect.Kind]string{
+	protoreflect.BoolKind:     "varint",
+	protoreflect.EnumKind:     "varint",
+	protoreflect.Int32Kind:    "varint",
+	protoreflect.Sint32Kind:   "zigzag32",
+	protoreflect.Uint32Kind:   "varint",
+	protoreflect.Int64Kind:    "varint",
+	protoreflect.Sint64Kind:   "zigzag64",
+	protoreflect.Uint64Kind:   "varint",
+	protoreflect.Sfixed32Kind: "fixed32",
+	protoreflect.Fixed32Kind:  "fixed32",
+	protoreflect.FloatKind:    "fixed32",
+	protoreflect.Sfixed64Kind: "fixed64",
+	protoreflect.Fixed64Kind:  "fixed64",
+	protoreflect.DoubleKind:   "fixed64",
+	protoreflect.StringKind:   "bytes",
+	protoreflect.BytesKind:    "bytes",
+	protoreflect.MessageKind:  "bytes",
+	protoreflect.GroupKind:    "group",
+}
+
+func fieldJSONTag(field *protogen.Field) string {
+	return string(field.Desc.Name()) + ",omitempty"
 }
 
 func genComment(g *protogen.GeneratedFile, f *File, path []int32) {

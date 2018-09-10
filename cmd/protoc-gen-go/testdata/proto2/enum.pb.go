@@ -165,6 +165,9 @@ func (EnumContainerMessage1_NestedEnumType1B) EnumDescriptor() ([]byte, []int) {
 }
 
 type EnumContainerMessage1 struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 // NestedEnumType2A comment.
@@ -244,6 +247,9 @@ func (EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) EnumDescript
 }
 
 type EnumContainerMessage1_EnumContainerMessage2 struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func init() {

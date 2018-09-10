@@ -9,4 +9,7 @@ package goproto.protoc.proto2;
 option go_package = "google.golang.org/proto/cmd/protoc-gen-go/testdata/proto2";
 
 message Message {
+  optional int32 i32 = 1;
+
+  optional Message m = 2;
 }
