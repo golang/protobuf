@@ -37,6 +37,7 @@ const (
 var DeprecatedEnum_name = map[int32]string{
 	0: "DEPRECATED",
 }
+
 var DeprecatedEnum_value = map[string]int32{
 	"DEPRECATED": 0,
 }
@@ -44,6 +45,7 @@ var DeprecatedEnum_value = map[string]int32{
 func (x DeprecatedEnum) String() string {
 	return proto.EnumName(DeprecatedEnum_name, int32(x))
 }
+
 func (DeprecatedEnum) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_f64ba265cd7eae3f, []int{0}
 }

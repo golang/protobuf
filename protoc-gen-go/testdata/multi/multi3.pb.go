@@ -29,6 +29,7 @@ var Multi3_HatType_name = map[int32]string{
 	1: "FEDORA",
 	2: "FEZ",
 }
+
 var Multi3_HatType_value = map[string]int32{
 	"FEDORA": 1,
 	"FEZ":    2,
@@ -39,9 +40,11 @@ func (x Multi3_HatType) Enum() *Multi3_HatType {
 	*p = x
 	return p
 }
+
 func (x Multi3_HatType) String() string {
 	return proto.EnumName(Multi3_HatType_name, int32(x))
 }
+
 func (x *Multi3_HatType) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(Multi3_HatType_value, data, "Multi3_HatType")
 	if err != nil {
@@ -50,6 +53,7 @@ func (x *Multi3_HatType) UnmarshalJSON(data []byte) error {
 	*x = Multi3_HatType(value)
 	return nil
 }
+
 func (Multi3_HatType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_580398fc0bbeeaa7, []int{0, 0}
 }

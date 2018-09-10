@@ -31,6 +31,7 @@ var Multi2_Color_name = map[int32]string{
 	2: "GREEN",
 	3: "RED",
 }
+
 var Multi2_Color_value = map[string]int32{
 	"BLUE":  1,
 	"GREEN": 2,
@@ -42,9 +43,11 @@ func (x Multi2_Color) Enum() *Multi2_Color {
 	*p = x
 	return p
 }
+
 func (x Multi2_Color) String() string {
 	return proto.EnumName(Multi2_Color_name, int32(x))
 }
+
 func (x *Multi2_Color) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(Multi2_Color_value, data, "Multi2_Color")
 	if err != nil {
@@ -53,6 +56,7 @@ func (x *Multi2_Color) UnmarshalJSON(data []byte) error {
 	*x = Multi2_Color(value)
 	return nil
 }
+
 func (Multi2_Color) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_a2aebe588a0b2853, []int{0, 0}
 }

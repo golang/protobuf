@@ -72,6 +72,7 @@ var FieldDescriptorProto_Type_name = map[int32]string{
 	17: "TYPE_SINT32",
 	18: "TYPE_SINT64",
 }
+
 var FieldDescriptorProto_Type_value = map[string]int32{
 	"TYPE_DOUBLE":   1,
 	"TYPE_FLOAT":    2,
@@ -98,9 +99,11 @@ func (x FieldDescriptorProto_Type) Enum() *FieldDescriptorProto_Type {
 	*p = x
 	return p
 }
+
 func (x FieldDescriptorProto_Type) String() string {
 	return proto.EnumName(FieldDescriptorProto_Type_name, int32(x))
 }
+
 func (x *FieldDescriptorProto_Type) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(FieldDescriptorProto_Type_value, data, "FieldDescriptorProto_Type")
 	if err != nil {
@@ -109,6 +112,7 @@ func (x *FieldDescriptorProto_Type) UnmarshalJSON(data []byte) error {
 	*x = FieldDescriptorProto_Type(value)
 	return nil
 }
+
 func (FieldDescriptorProto_Type) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e5baabe45344a177, []int{4, 0}
 }
@@ -127,6 +131,7 @@ var FieldDescriptorProto_Label_name = map[int32]string{
 	2: "LABEL_REQUIRED",
 	3: "LABEL_REPEATED",
 }
+
 var FieldDescriptorProto_Label_value = map[string]int32{
 	"LABEL_OPTIONAL": 1,
 	"LABEL_REQUIRED": 2,
@@ -138,9 +143,11 @@ func (x FieldDescriptorProto_Label) Enum() *FieldDescriptorProto_Label {
 	*p = x
 	return p
 }
+
 func (x FieldDescriptorProto_Label) String() string {
 	return proto.EnumName(FieldDescriptorProto_Label_name, int32(x))
 }
+
 func (x *FieldDescriptorProto_Label) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(FieldDescriptorProto_Label_value, data, "FieldDescriptorProto_Label")
 	if err != nil {
@@ -149,6 +156,7 @@ func (x *FieldDescriptorProto_Label) UnmarshalJSON(data []byte) error {
 	*x = FieldDescriptorProto_Label(value)
 	return nil
 }
+
 func (FieldDescriptorProto_Label) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e5baabe45344a177, []int{4, 1}
 }
@@ -168,6 +176,7 @@ var FileOptions_OptimizeMode_name = map[int32]string{
 	2: "CODE_SIZE",
 	3: "LITE_RUNTIME",
 }
+
 var FileOptions_OptimizeMode_value = map[string]int32{
 	"SPEED":        1,
 	"CODE_SIZE":    2,
@@ -179,9 +188,11 @@ func (x FileOptions_OptimizeMode) Enum() *FileOptions_OptimizeMode {
 	*p = x
 	return p
 }
+
 func (x FileOptions_OptimizeMode) String() string {
 	return proto.EnumName(FileOptions_OptimizeMode_name, int32(x))
 }
+
 func (x *FileOptions_OptimizeMode) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(FileOptions_OptimizeMode_value, data, "FileOptions_OptimizeMode")
 	if err != nil {
@@ -190,6 +201,7 @@ func (x *FileOptions_OptimizeMode) UnmarshalJSON(data []byte) error {
 	*x = FileOptions_OptimizeMode(value)
 	return nil
 }
+
 func (FileOptions_OptimizeMode) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e5baabe45344a177, []int{10, 0}
 }
@@ -208,6 +220,7 @@ var FieldOptions_CType_name = map[int32]string{
 	1: "CORD",
 	2: "STRING_PIECE",
 }
+
 var FieldOptions_CType_value = map[string]int32{
 	"STRING":       0,
 	"CORD":         1,
@@ -219,9 +232,11 @@ func (x FieldOptions_CType) Enum() *FieldOptions_CType {
 	*p = x
 	return p
 }
+
 func (x FieldOptions_CType) String() string {
 	return proto.EnumName(FieldOptions_CType_name, int32(x))
 }
+
 func (x *FieldOptions_CType) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(FieldOptions_CType_value, data, "FieldOptions_CType")
 	if err != nil {
@@ -230,6 +245,7 @@ func (x *FieldOptions_CType) UnmarshalJSON(data []byte) error {
 	*x = FieldOptions_CType(value)
 	return nil
 }
+
 func (FieldOptions_CType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e5baabe45344a177, []int{12, 0}
 }
@@ -250,6 +266,7 @@ var FieldOptions_JSType_name = map[int32]string{
 	1: "JS_STRING",
 	2: "JS_NUMBER",
 }
+
 var FieldOptions_JSType_value = map[string]int32{
 	"JS_NORMAL": 0,
 	"JS_STRING": 1,
@@ -261,9 +278,11 @@ func (x FieldOptions_JSType) Enum() *FieldOptions_JSType {
 	*p = x
 	return p
 }
+
 func (x FieldOptions_JSType) String() string {
 	return proto.EnumName(FieldOptions_JSType_name, int32(x))
 }
+
 func (x *FieldOptions_JSType) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(FieldOptions_JSType_value, data, "FieldOptions_JSType")
 	if err != nil {
@@ -272,6 +291,7 @@ func (x *FieldOptions_JSType) UnmarshalJSON(data []byte) error {
 	*x = FieldOptions_JSType(value)
 	return nil
 }
+
 func (FieldOptions_JSType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e5baabe45344a177, []int{12, 1}
 }
@@ -292,6 +312,7 @@ var MethodOptions_IdempotencyLevel_name = map[int32]string{
 	1: "NO_SIDE_EFFECTS",
 	2: "IDEMPOTENT",
 }
+
 var MethodOptions_IdempotencyLevel_value = map[string]int32{
 	"IDEMPOTENCY_UNKNOWN": 0,
 	"NO_SIDE_EFFECTS":     1,
@@ -303,9 +324,11 @@ func (x MethodOptions_IdempotencyLevel) Enum() *MethodOptions_IdempotencyLevel {
 	*p = x
 	return p
 }
+
 func (x MethodOptions_IdempotencyLevel) String() string {
 	return proto.EnumName(MethodOptions_IdempotencyLevel_name, int32(x))
 }
+
 func (x *MethodOptions_IdempotencyLevel) UnmarshalJSON(data []byte) error {
 	value, err := proto.UnmarshalJSONEnum(MethodOptions_IdempotencyLevel_value, data, "MethodOptions_IdempotencyLevel")
 	if err != nil {
@@ -314,6 +337,7 @@ func (x *MethodOptions_IdempotencyLevel) UnmarshalJSON(data []byte) error {
 	*x = MethodOptions_IdempotencyLevel(value)
 	return nil
 }
+
 func (MethodOptions_IdempotencyLevel) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e5baabe45344a177, []int{17, 0}
 }

@@ -31,6 +31,7 @@ var Numeral_name = map[int32]string{
 	1: "ARABIC",
 	2: "ROMAN",
 }
+
 var Numeral_value = map[string]int32{
 	"UNKNOWN": 0,
 	"ARABIC":  1,
@@ -40,6 +41,7 @@ var Numeral_value = map[string]int32{
 func (x Numeral) String() string {
 	return proto.EnumName(Numeral_name, int32(x))
 }
+
 func (Numeral) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_e6c135db3023e377, []int{0}
 }

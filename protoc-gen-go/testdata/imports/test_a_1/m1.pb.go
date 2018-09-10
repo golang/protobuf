@@ -27,6 +27,7 @@ const (
 var E1_name = map[int32]string{
 	0: "E1_ZERO",
 }
+
 var E1_value = map[string]int32{
 	"E1_ZERO": 0,
 }
@@ -34,6 +35,7 @@ var E1_value = map[string]int32{
 func (x E1) String() string {
 	return proto.EnumName(E1_name, int32(x))
 }
+
 func (E1) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_c1091de3fa870a14, []int{0}
 }

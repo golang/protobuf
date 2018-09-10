@@ -33,6 +33,7 @@ var Request_Flavour_name = map[int32]string{
 	2: "UMAMI",
 	3: "GOPHERLICIOUS",
 }
+
 var Request_Flavour_value = map[string]int32{
 	"SWEET":         0,
 	"SOUR":          1,
@@ -43,6 +44,7 @@ var Request_Flavour_value = map[string]int32{
 func (x Request_Flavour) String() string {
 	return proto.EnumName(Request_Flavour_name, int32(x))
 }
+
 func (Request_Flavour) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_ab04eb4084a521db, []int{0, 0}
 }
