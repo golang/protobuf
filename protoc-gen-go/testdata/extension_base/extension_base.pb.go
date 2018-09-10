@@ -30,7 +30,7 @@ func (m *BaseMessage) Reset()         { *m = BaseMessage{} }
 func (m *BaseMessage) String() string { return proto.CompactTextString(m) }
 func (*BaseMessage) ProtoMessage()    {}
 func (*BaseMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_extension_base_41d3c712c9fc37fc, []int{0}
+	return fileDescriptor_2fbd53bac0b7ca8a, []int{0}
 }
 
 var extRange_BaseMessage = []proto.ExtensionRange{
@@ -78,7 +78,7 @@ func (m *OldStyleMessage) Reset()         { *m = OldStyleMessage{} }
 func (m *OldStyleMessage) String() string { return proto.CompactTextString(m) }
 func (*OldStyleMessage) ProtoMessage()    {}
 func (*OldStyleMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_extension_base_41d3c712c9fc37fc, []int{1}
+	return fileDescriptor_2fbd53bac0b7ca8a, []int{1}
 }
 
 func (m *OldStyleMessage) MarshalJSON() ([]byte, error) {
@@ -119,10 +119,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("extension_base/extension_base.proto", fileDescriptor_extension_base_41d3c712c9fc37fc)
+	proto.RegisterFile("extension_base/extension_base.proto", fileDescriptor_2fbd53bac0b7ca8a)
 }
 
-var fileDescriptor_extension_base_41d3c712c9fc37fc = []byte{
+var fileDescriptor_2fbd53bac0b7ca8a = []byte{
 	// 179 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x4e, 0xad, 0x28, 0x49,
 	0xcd, 0x2b, 0xce, 0xcc, 0xcf, 0x8b, 0x4f, 0x4a, 0x2c, 0x4e, 0xd5, 0x47, 0xe5, 0xea, 0x15, 0x14,

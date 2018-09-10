@@ -45,7 +45,7 @@ func (x DeprecatedEnum) String() string {
 	return proto.EnumName(DeprecatedEnum_name, int32(x))
 }
 func (DeprecatedEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_deprecated_9e1889ba21817fad, []int{0}
+	return fileDescriptor_f64ba265cd7eae3f, []int{0}
 }
 
 // DeprecatedRequest is a request to DeprecatedCall.
@@ -61,7 +61,7 @@ func (m *DeprecatedRequest) Reset()         { *m = DeprecatedRequest{} }
 func (m *DeprecatedRequest) String() string { return proto.CompactTextString(m) }
 func (*DeprecatedRequest) ProtoMessage()    {}
 func (*DeprecatedRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_deprecated_9e1889ba21817fad, []int{0}
+	return fileDescriptor_f64ba265cd7eae3f, []int{0}
 }
 func (m *DeprecatedRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeprecatedRequest.Unmarshal(m, b)
@@ -94,7 +94,7 @@ func (m *DeprecatedResponse) Reset()         { *m = DeprecatedResponse{} }
 func (m *DeprecatedResponse) String() string { return proto.CompactTextString(m) }
 func (*DeprecatedResponse) ProtoMessage()    {}
 func (*DeprecatedResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_deprecated_9e1889ba21817fad, []int{1}
+	return fileDescriptor_f64ba265cd7eae3f, []int{1}
 }
 func (m *DeprecatedResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeprecatedResponse.Unmarshal(m, b)
@@ -209,11 +209,9 @@ var _DeprecatedService_serviceDesc = grpc.ServiceDesc{
 	Metadata: "deprecated/deprecated.proto",
 }
 
-func init() {
-	proto.RegisterFile("deprecated/deprecated.proto", fileDescriptor_deprecated_9e1889ba21817fad)
-}
+func init() { proto.RegisterFile("deprecated/deprecated.proto", fileDescriptor_f64ba265cd7eae3f) }
 
-var fileDescriptor_deprecated_9e1889ba21817fad = []byte{
+var fileDescriptor_f64ba265cd7eae3f = []byte{
 	// 248 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4e, 0x49, 0x2d, 0x28,
 	0x4a, 0x4d, 0x4e, 0x2c, 0x49, 0x4d, 0xd1, 0x47, 0x30, 0xf5, 0x0a, 0x8a, 0xf2, 0x4b, 0xf2, 0x85,

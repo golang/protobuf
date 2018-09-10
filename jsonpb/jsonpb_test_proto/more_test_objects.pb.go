@@ -41,7 +41,7 @@ func (x Numeral) String() string {
 	return proto.EnumName(Numeral_name, int32(x))
 }
 func (Numeral) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_more_test_objects_bef0d79b901f4c4a, []int{0}
+	return fileDescriptor_e6c135db3023e377, []int{0}
 }
 
 type Simple3 struct {
@@ -55,7 +55,7 @@ func (m *Simple3) Reset()         { *m = Simple3{} }
 func (m *Simple3) String() string { return proto.CompactTextString(m) }
 func (*Simple3) ProtoMessage()    {}
 func (*Simple3) Descriptor() ([]byte, []int) {
-	return fileDescriptor_more_test_objects_bef0d79b901f4c4a, []int{0}
+	return fileDescriptor_e6c135db3023e377, []int{0}
 }
 func (m *Simple3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Simple3.Unmarshal(m, b)
@@ -93,7 +93,7 @@ func (m *SimpleSlice3) Reset()         { *m = SimpleSlice3{} }
 func (m *SimpleSlice3) String() string { return proto.CompactTextString(m) }
 func (*SimpleSlice3) ProtoMessage()    {}
 func (*SimpleSlice3) Descriptor() ([]byte, []int) {
-	return fileDescriptor_more_test_objects_bef0d79b901f4c4a, []int{1}
+	return fileDescriptor_e6c135db3023e377, []int{1}
 }
 func (m *SimpleSlice3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleSlice3.Unmarshal(m, b)
@@ -131,7 +131,7 @@ func (m *SimpleMap3) Reset()         { *m = SimpleMap3{} }
 func (m *SimpleMap3) String() string { return proto.CompactTextString(m) }
 func (*SimpleMap3) ProtoMessage()    {}
 func (*SimpleMap3) Descriptor() ([]byte, []int) {
-	return fileDescriptor_more_test_objects_bef0d79b901f4c4a, []int{2}
+	return fileDescriptor_e6c135db3023e377, []int{2}
 }
 func (m *SimpleMap3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleMap3.Unmarshal(m, b)
@@ -169,7 +169,7 @@ func (m *SimpleNull3) Reset()         { *m = SimpleNull3{} }
 func (m *SimpleNull3) String() string { return proto.CompactTextString(m) }
 func (*SimpleNull3) ProtoMessage()    {}
 func (*SimpleNull3) Descriptor() ([]byte, []int) {
-	return fileDescriptor_more_test_objects_bef0d79b901f4c4a, []int{3}
+	return fileDescriptor_e6c135db3023e377, []int{3}
 }
 func (m *SimpleNull3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleNull3.Unmarshal(m, b)
@@ -216,7 +216,7 @@ func (m *Mappy) Reset()         { *m = Mappy{} }
 func (m *Mappy) String() string { return proto.CompactTextString(m) }
 func (*Mappy) ProtoMessage()    {}
 func (*Mappy) Descriptor() ([]byte, []int) {
-	return fileDescriptor_more_test_objects_bef0d79b901f4c4a, []int{4}
+	return fileDescriptor_e6c135db3023e377, []int{4}
 }
 func (m *Mappy) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Mappy.Unmarshal(m, b)
@@ -326,11 +326,9 @@ func init() {
 	proto.RegisterEnum("jsonpb.Numeral", Numeral_name, Numeral_value)
 }
 
-func init() {
-	proto.RegisterFile("more_test_objects.proto", fileDescriptor_more_test_objects_bef0d79b901f4c4a)
-}
+func init() { proto.RegisterFile("more_test_objects.proto", fileDescriptor_e6c135db3023e377) }
 
-var fileDescriptor_more_test_objects_bef0d79b901f4c4a = []byte{
+var fileDescriptor_e6c135db3023e377 = []byte{
 	// 526 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0xdd, 0x6b, 0xdb, 0x3c,
 	0x14, 0x87, 0x5f, 0x27, 0xf5, 0xd7, 0x49, 0xfb, 0x2e, 0x88, 0xb1, 0x99, 0xf4, 0x62, 0xc5, 0xb0,
