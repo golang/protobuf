@@ -11,6 +11,7 @@ import (
 	"compress/gzip"
 	"crypto/sha256"
 	"encoding/hex"
+	"flag"
 	"fmt"
 	"strconv"
 	"strings"
@@ -24,7 +25,13 @@ import (
 const protoPackage = "github.com/golang/protobuf/proto"
 
 func main() {
-	protogen.Run(func(gen *protogen.Plugin) error {
+	var flags flag.FlagSet
+	// TODO: Decide what to do for backwards compatibility with plugins=grpc.
+	flags.String("plugins", "", "")
+	opts := &protogen.Options{
+		ParamFunc: flags.Set,
+	}
+	protogen.Run(opts, func(gen *protogen.Plugin) error {
 		for _, f := range gen.Files {
 			if !f.Generate {
 				continue

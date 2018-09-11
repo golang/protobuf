@@ -5,6 +5,7 @@
 package protogen
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -18,8 +19,45 @@ import (
 	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
+func TestPluginParameters(t *testing.T) {
+	var flags flag.FlagSet
+	value := flags.Int("integer", 0, "")
+	opts := &Options{
+		ParamFunc: flags.Set,
+	}
+	const params = "integer=2"
+	_, err := New(&pluginpb.CodeGeneratorRequest{
+		Parameter: proto.String(params),
+	}, opts)
+	if err != nil {
+		t.Errorf("New(generator parameters %q): %v", params, err)
+	}
+	if *value != 2 {
+		t.Errorf("New(generator parameters %q): integer=%v, want 2", params, *value)
+	}
+}
+
+func TestPluginParameterErrors(t *testing.T) {
+	for _, parameter := range []string{
+		"unknown=1",
+		"boolean=error",
+	} {
+		var flags flag.FlagSet
+		flags.Bool("boolean", false, "")
+		opts := &Options{
+			ParamFunc: flags.Set,
+		}
+		_, err := New(&pluginpb.CodeGeneratorRequest{
+			Parameter: proto.String(parameter),
+		}, opts)
+		if err == nil {
+			t.Errorf("New(generator parameters %q): want error, got nil", parameter)
+		}
+	}
+}
+
 func TestFiles(t *testing.T) {
-	gen, err := New(makeRequest(t, "testdata/go_package/no_go_package_import.proto"))
+	gen, err := New(makeRequest(t, "testdata/go_package/no_go_package_import.proto"), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -144,7 +182,7 @@ TEST: %v
 		if test.generate {
 			req.FileToGenerate = []string{filename}
 		}
-		gen, err := New(req)
+		gen, err := New(req, nil)
 		if err != nil {
 			t.Errorf("%vNew(req) = %v", context, err)
 			continue
@@ -182,7 +220,7 @@ func TestPackageNameInference(t *testing.T) {
 			},
 		},
 		FileToGenerate: []string{"dir/file1.proto", "dir/file2.proto"},
-	})
+	}, nil)
 	if err != nil {
 		t.Fatalf("New(req) = %v", err)
 	}
@@ -212,14 +250,14 @@ func TestInconsistentPackageNames(t *testing.T) {
 			},
 		},
 		FileToGenerate: []string{"dir/file1.proto", "dir/file2.proto"},
-	})
+	}, nil)
 	if err == nil {
 		t.Fatalf("inconsistent package names for the same import path: New(req) = nil, want error")
 	}
 }
 
 func TestImports(t *testing.T) {
-	gen, err := New(&pluginpb.CodeGeneratorRequest{})
+	gen, err := New(&pluginpb.CodeGeneratorRequest{}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -309,7 +347,7 @@ func makeRequest(t *testing.T, args ...string) *pluginpb.CodeGeneratorRequest {
 
 func init() {
 	if os.Getenv("RUN_AS_PROTOC_PLUGIN") != "" {
-		Run(func(p *Plugin) error {
+		Run(nil, func(p *Plugin) error {
 			g := p.NewGeneratedFile("request", "")
 			return proto.MarshalText(g, p.Request)
 		})

@@ -41,14 +41,16 @@ import (
 //
 // If a failure occurs while reading or writing, Run prints an error to
 // os.Stderr and calls os.Exit(1).
-func Run(f func(*Plugin) error) {
-	if err := run(f); err != nil {
+//
+// Passing a nil options is equivalent to passing a zero-valued one.
+func Run(opts *Options, f func(*Plugin) error) {
+	if err := run(opts, f); err != nil {
 		fmt.Fprintf(os.Stderr, "%s: %v\n", filepath.Base(os.Args[0]), err)
 		os.Exit(1)
 	}
 }
 
-func run(f func(*Plugin) error) error {
+func run(opts *Options, f func(*Plugin) error) error {
 	in, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		return err
@@ -57,7 +59,7 @@ func run(f func(*Plugin) error) error {
 	if err := proto.Unmarshal(in, req); err != nil {
 		return err
 	}
-	gen, err := New(req)
+	gen, err := New(req, opts)
 	if err != nil {
 		return err
 	}
@@ -98,15 +100,47 @@ type Plugin struct {
 	err      error
 }
 
+// Options are optional parameters to New.
+type Options struct {
+	// If ParamFunc is non-nil, it will be called with each unknown
+	// generator parameter.
+	//
+	// Plugins for protoc can accept parameters from the command line,
+	// passed in the --<lang>_out protoc, separated from the output
+	// directory with a colon; e.g.,
+	//
+	//   --go_out=<param1>=<value1>,<param2>=<value2>:<output_directory>
+	//
+	// Parameters passed in this fashion as a comma-separated list of
+	// key=value pairs will be passed to the ParamFunc.
+	//
+	// The (flag.FlagSet).Set method matches this function signature,
+	// so parameters can be converted into flags as in the following:
+	//
+	//   var flags flag.FlagSet
+	//   value := flags.Bool("param", false, "")
+	//   opts := &protogen.Options{
+	//     ParamFunc: flags.Set,
+	//   }
+	//   protogen.Run(opts, func(p *protogen.Plugin) error {
+	//     if *value { ... }
+	//   })
+	ParamFunc func(name, value string) error
+}
+
 // New returns a new Plugin.
-func New(req *pluginpb.CodeGeneratorRequest) (*Plugin, error) {
+//
+// Passing a nil Options is equivalent to passing a zero-valued one.
+func New(req *pluginpb.CodeGeneratorRequest, opts *Options) (*Plugin, error) {
+	if opts == nil {
+		opts = &Options{}
+	}
 	gen := &Plugin{
 		Request:     req,
 		filesByName: make(map[string]*File),
 		fileReg:     protoregistry.NewFiles(),
 	}
 
-	// TODO: Figure out how to pass parameters to the generator.
 	packageNames := make(map[string]GoPackageName) // filename -> package name
 	importPaths := make(map[string]GoImportPath)   // filename -> import path
 	var packageImportPath GoImportPath
@@ -132,15 +166,18 @@ func New(req *pluginpb.CodeGeneratorRequest) (*Plugin, error) {
 			default:
 				return nil, fmt.Errorf(`unknown path type %q: want "import" or "source_relative"`, value)
 			}
-		case "plugins":
-			// TODO
 		case "annotate_code":
 			// TODO
 		default:
-			if param[0] != 'M' {
-				return nil, fmt.Errorf("unknown parameter %q", param)
+			if param[0] == 'M' {
+				importPaths[param[1:]] = GoImportPath(value)
+				continue
 			}
-			importPaths[param[1:]] = GoImportPath(value)
+			if opts.ParamFunc != nil {
+				if err := opts.ParamFunc(param, value); err != nil {
+					return nil, err
+				}
+			}
 		}
 	}
 
