@@ -35,7 +35,7 @@ import (
 //
 // Multiple protobuf Kinds may be represented by a single Go type if the type
 // can losslessly represent the information for the proto kind. For example,
-// Int64Kind, Sint64Kind, and Sfixed64Kind all represent int64,
+// Int64Kind, Sint64Kind, and Sfixed64Kind are all represented by int64,
 // but use different integer encoding methods.
 //
 // The Vector or Map types are used if the FieldDescriptor.Cardinality of the
@@ -46,14 +46,6 @@ import (
 // For example, ValueOf("hello").Int() panics because this attempts to
 // retrieve an int64 from a string.
 type Value value
-
-// Null is an unpopulated Value.
-//
-// Since Value is incomparable, call Value.IsNull instead to test whether
-// a Value is empty.
-//
-// It is equivalent to Value{} or ValueOf(nil).
-var Null Value
 
 // The protoreflect API uses a custom Value union type instead of interface{}
 // to keep the future open for performance optimizations. Using an interface{}
@@ -110,9 +102,9 @@ func ValueOf(v interface{}) Value {
 	}
 }
 
-// IsNull reports whether v is empty (has no value).
-func (v Value) IsNull() bool {
-	return v.typ == nilType
+// IsValid reports whether v is populated with a value.
+func (v Value) IsValid() bool {
+	return v.typ != nilType
 }
 
 // Interface returns v as an interface{}.
@@ -282,9 +274,9 @@ func (v Value) MapKey() MapKey {
 // converting a Value to a MapKey with an invalid type panics.
 type MapKey value
 
-// IsNull reports whether v is empty (has no value).
-func (k MapKey) IsNull() bool {
-	return Value(k).IsNull()
+// IsValid reports whether k is populated with a value.
+func (k MapKey) IsValid() bool {
+	return Value(k).IsValid()
 }
 
 // Interface returns k as an interface{}.

@@ -20,7 +20,7 @@ type Enum interface {
 	Number() EnumNumber
 }
 
-// Message is a reflection interface to a concrete message value,
+// Message is a reflective interface for a concrete message value,
 // which provides type information and getters/setters for individual fields.
 //
 // Concrete types may implement interfaces defined in proto/protoiface,
@@ -51,22 +51,12 @@ type Message interface {
 // underlying repeated element type is determined by the FieldDescriptor.Kind.
 // See Value for a list of Go types associated with each Kind.
 //
-// Some fields have the property of nullability where it is possible to
-// distinguish between the zero value of a field and whether the field was
-// explicitly populated with the zero value. Only scalars in proto2,
-// members of a oneof field, and singular messages are nullable.
-// In the presence of unset fields, KnownFields.Get does not return defaults;
-// use the corresponding FieldDescriptor.DefaultValue for that information.
-//
 // Field extensions are handled as known fields once the extension type has been
 // registered with KnownFields.ExtensionTypes.
 //
-// List, Len, Get, Range, and ExtensionTypes are safe for concurrent access.
+// List, Len, Has, Get, Range, and ExtensionTypes are safe for concurrent use.
 type KnownFields interface {
-	// List returns a new, unordered list of all fields that are populated.
-	// A nullable field is populated only if explicitly set.
-	// A scalar field in proto3 is populated if it contains a non-zero value.
-	// A repeated field is populated only if it is non-empty.
+	// List returns a new, unordered list of all populated fields.
 	List() []FieldNumber
 
 	// Len reports the number of fields that are populated.
@@ -74,22 +64,26 @@ type KnownFields interface {
 	// Invariant: f.Len() == len(f.List())
 	Len() int
 
-	// TODO: Should Get return FieldDescriptor.Default if unpopulated instead of
-	// returning the Null variable? If so, we loose the ability to represent
-	// nullability in Get and Set calls and also need to add Has and Clear.
+	// Has reports whether a field is populated.
+	//
+	// Some fields have the property of nullability where it is possible to
+	// distinguish between the default value of a field and whether the field
+	// was explicitly populated with the default value. Only scalars in proto2,
+	// member fields of a oneof, and singular messages are nullable.
+	//
+	// A nullable field is populated only if explicitly set.
+	// A scalar field in proto3 is populated if it contains a non-zero value.
+	// A repeated field is populated only if it is non-empty.
+	Has(FieldNumber) bool
 
-	// Get retrieves the value for field with the given field number.
-	// It returns Null for non-existent or nulled fields.
+	// Get retrieves the value for a field with the given field number.
+	// It returns the default value for unpopulated fields.
+	// It returns an invalid value for unknown fields.
 	Get(FieldNumber) Value
-
-	// TODO: Document memory aliasing behavior when a field is cleared?
-	// For example, if Mutable is called later, can it reuse memory?
 
 	// Set stores the value for a field with the given field number.
 	// Setting a field belonging to a oneof implicitly clears any other field
 	// that may be currently set by the same oneof.
-	// Null may be used to explicitly clear a field containing a proto2 scalar,
-	// a member of oneof, or a singular message.
 	//
 	// When setting a composite type, it is unspecified whether the set
 	// value aliases the source's memory in any way.
@@ -98,6 +92,15 @@ type KnownFields interface {
 	// in MessageDescriptor.Fields or an extension field in ExtensionTypes.
 	Set(FieldNumber, Value)
 
+	// TODO: Document memory aliasing behavior when a field is cleared?
+	// For example, if Mutable is called later, can it reuse memory?
+
+	// Clear clears the field such that a subsequent call to Has reports false.
+	//
+	// It panics if the field number does not correspond with a known field
+	// in MessageDescriptor.Fields or an extension field in ExtensionTypes.
+	Clear(FieldNumber)
+
 	// Mutable returns a reference value for a field with a given field number.
 	// If the field is unset, Mutable implicitly initializes the field with
 	// a zero value instance of the Go type for that field.
@@ -105,7 +108,7 @@ type KnownFields interface {
 	// The returned Mutable reference is never nil, and is only valid until the
 	// next Set or Mutable call.
 	//
-	// It panics if FieldNumber does not correspond with a known field
+	// It panics if the field number does not correspond with a known field
 	// in MessageDescriptor.Fields or an extension field in ExtensionTypes.
 	Mutable(FieldNumber) Mutable
 
@@ -124,7 +127,7 @@ type KnownFields interface {
 // However, the relative ordering of fields with different field numbers
 // is undefined.
 //
-// List, Len, Get, and Range are safe for concurrent access.
+// List, Len, Get, and Range are safe for concurrent use.
 type UnknownFields interface {
 	// List returns a new, unordered list of all fields that are set.
 	List() []FieldNumber
@@ -184,7 +187,7 @@ func (b RawFields) IsValid() bool {
 // ExtensionFieldTypes are the extension field types that this message instance
 // has been extended with.
 //
-// List, Len, Get, and Range are safe for concurrent access.
+// List, Len, Get, and Range are safe for concurrent use.
 type ExtensionFieldTypes interface {
 	// List returns a new, unordered list of known extension field types.
 	List() []ExtensionType
@@ -219,12 +222,12 @@ type ExtensionFieldTypes interface {
 	Range(f func(ExtensionType) bool)
 }
 
-// Vector is an ordered list. Every element is always considered populated
-// (i.e., Get never provides and Set never accepts Null).
+// Vector is an ordered list. Every element is considered populated
+// (i.e., Get never provides and Set never accepts invalid Values).
 // The element Value type is determined by the associated FieldDescriptor.Kind
 // and cannot be a Map or Vector.
 //
-// Len and Get are safe for concurrent access.
+// Len and Get are safe for concurrent use.
 type Vector interface {
 	// Len reports the number of entries in the Vector.
 	// Get, Set, Mutable, and Truncate panic with out of bound indexes.
@@ -237,16 +240,12 @@ type Vector interface {
 	//
 	// When setting a composite type, it is unspecified whether the set
 	// value aliases the source's memory in any way.
-	//
-	// It panics if the value is Null.
 	Set(int, Value)
 
 	// Append appends the provided value to the end of the vector.
 	//
 	// When appending a composite type, it is unspecified whether the appended
 	// value aliases the source's memory in any way.
-	//
-	// It panics if the value is Null.
 	Append(Value)
 
 	// Mutable returns a Mutable reference for the element with a given index.
@@ -274,7 +273,7 @@ type Vector interface {
 // is considered populated. The entry Value type is determined by the associated
 // FieldDescripto.Kind and cannot be a Map or Vector.
 //
-// List, Len, Get, and Range are safe for concurrent access.
+// List, Len, Has, Get, and Range are safe for concurrent use.
 type Map interface {
 	// List returns an unordered list of keys for all entries in the map.
 	List() []MapKey
@@ -284,7 +283,11 @@ type Map interface {
 	// Invariant: f.Len() == len(f.List())
 	Len() int
 
+	// Has reports whether an entry with the given key is in the map.
+	Has(MapKey) bool
+
 	// Get retrieves the value for an entry with the given key.
+	// It returns an invalid value for non-existent entries.
 	Get(MapKey) Value
 
 	// Set stores the value for an entry with the given key.
@@ -292,8 +295,11 @@ type Map interface {
 	// When setting a composite type, it is unspecified whether the set
 	// value aliases the source's memory in any way.
 	//
-	// It panics if either the key or value are Null.
+	// It panics if either the key or value are invalid.
 	Set(MapKey, Value)
+
+	// Clear clears the entry associated with they given key.
+	Clear(MapKey)
 
 	// Mutable returns a Mutable reference for the element with a given key,
 	// allocating a new entry if necessary.
@@ -303,6 +309,7 @@ type Map interface {
 	Mutable(MapKey) Mutable
 
 	// Range calls f sequentially for each key and value present in the map.
+	// The Value provided is guaranteed to be valid.
 	// If f returns false, range stops the iteration.
 	Range(f func(MapKey, Value) bool)
 

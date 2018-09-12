@@ -20,7 +20,6 @@ func TestValue(t *testing.T) {
 		in   Value
 		want interface{}
 	}{
-		{in: Null},
 		{in: Value{}},
 		{in: ValueOf(nil)},
 		{in: ValueOf(true), want: true},
@@ -43,8 +42,8 @@ func TestValue(t *testing.T) {
 			t.Errorf("Value(%v).Interface() = %v, want %v", tt.in, got, tt.want)
 		}
 
-		if got := tt.in.IsNull(); got != (tt.want == nil) {
-			t.Errorf("Value(%v).IsNull() = %v, want %v", tt.in, got, tt.want == nil)
+		if got := tt.in.IsValid(); got != (tt.want != nil) {
+			t.Errorf("Value(%v).IsValid() = %v, want %v", tt.in, got, tt.want != nil)
 		}
 		switch want := tt.want.(type) {
 		case int32:

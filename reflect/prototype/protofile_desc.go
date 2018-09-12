@@ -386,5 +386,5 @@ func parseDefault(s string, k protoreflect.Kind) (protoreflect.Value, error) {
 			return protoreflect.ValueOf([]byte(s)), nil
 		}
 	}
-	return protoreflect.Null, errors.New("invalid default value for %v: %q", k, s)
+	return protoreflect.Value{}, errors.New("invalid default value for %v: %q", k, s)
 }

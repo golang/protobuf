@@ -439,7 +439,7 @@ var (
 func (p *defaultValue) lazyInit(t pref.FieldDescriptor, v pref.Value) pref.Value {
 	p.once.Do(func() {
 		p.val = v
-		if !v.IsNull() {
+		if v.IsValid() {
 			switch t.Kind() {
 			case pref.EnumKind:
 				// Treat a string value as an identifier referencing some enum

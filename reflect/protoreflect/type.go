@@ -141,11 +141,11 @@ type DescriptorOptions interface {
 
 	// Get returns the ith field. It panics if out of bounds.
 	// The FieldDescriptor is guaranteed to be non-nil, while the Value
-	// may be Null if the proto file did not specify this option.
+	// may be invalid if the proto file did not specify this option.
 	Get(i int) (FieldDescriptor, Value)
 
 	// ByName looks a field up by full name and
-	// returns (nil, Null) if not found.
+	// returns (nil, Value{}) if not found.
 	//
 	// As a special-case, non-extension fields in the options type can be
 	// directly accessed by the field name alone (e.g., "map_entry" may be used
@@ -153,7 +153,7 @@ type DescriptorOptions interface {
 	ByName(s FullName) (FieldDescriptor, Value)
 
 	// ByNumber looks a field up by the field number and
-	// returns (nil, Null) if not found.
+	// returns (nil, Value{}) if not found.
 	ByNumber(n FieldNumber) (FieldDescriptor, Value)
 
 	doNotImplement
