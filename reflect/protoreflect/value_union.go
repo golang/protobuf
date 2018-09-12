@@ -10,6 +10,51 @@ import (
 	"reflect"
 )
 
+// Value is a union where only one Go type may be set at a time.
+// The Value is used to represent all possible values a field may take.
+// The following shows what Go type is used to represent each proto Kind:
+//
+//	+------------+-------------------------------------+
+//	| Go type    | Protobuf kind                       |
+//	+------------+-------------------------------------+
+//	| bool       | BoolKind                            |
+//	| int32      | Int32Kind, Sint32Kind, Sfixed32Kind |
+//	| int64      | Int64Kind, Sint64Kind, Sfixed64Kind |
+//	| uint32     | Uint32Kind, Fixed32Kind             |
+//	| uint64     | Uint64Kind, Fixed64Kind             |
+//	| float32    | FloatKind                           |
+//	| float64    | DoubleKind                          |
+//	| string     | StringKind                          |
+//	| []byte     | BytesKind                           |
+//	| EnumNumber | EnumKind                            |
+//	+------------+-------------------------------------+
+//	| Message    | MessageKind, GroupKind              |
+//	| Vector     |                                     |
+//	| Map        |                                     |
+//	+------------+-------------------------------------+
+//
+// Multiple protobuf Kinds may be represented by a single Go type if the type
+// can losslessly represent the information for the proto kind. For example,
+// Int64Kind, Sint64Kind, and Sfixed64Kind all represent int64,
+// but use different integer encoding methods.
+//
+// The Vector or Map types are used if the FieldDescriptor.Cardinality of the
+// corresponding field is Repeated and a Map if and only if
+// FieldDescriptor.IsMap is true.
+//
+// Converting to/from a Value and a concrete Go value panics on type mismatch.
+// For example, ValueOf("hello").Int() panics because this attempts to
+// retrieve an int64 from a string.
+type Value value
+
+// Null is an unpopulated Value.
+//
+// Since Value is incomparable, call Value.IsNull instead to test whether
+// a Value is empty.
+//
+// It is equivalent to Value{} or ValueOf(nil).
+var Null Value
+
 // The protoreflect API uses a custom Value union type instead of interface{}
 // to keep the future open for performance optimizations. Using an interface{}
 // always incurs an allocation for primitives (e.g., int64) since it needs to
@@ -213,6 +258,29 @@ func (v Value) MapKey() MapKey {
 	}
 	panic("proto: invalid map key type")
 }
+
+// MapKey is used to index maps, where the Go type of the MapKey must match
+// the specified key Kind (see MessageDescriptor.IsMapEntry).
+// The following shows what Go type is used to represent each proto Kind:
+//
+//	+---------+-------------------------------------+
+//	| Go type | Protobuf kind                       |
+//	+---------+-------------------------------------+
+//	| bool    | BoolKind                            |
+//	| int32   | Int32Kind, Sint32Kind, Sfixed32Kind |
+//	| int64   | Int64Kind, Sint64Kind, Sfixed64Kind |
+//	| uint32  | Uint32Kind, Fixed32Kind             |
+//	| uint64  | Uint64Kind, Fixed64Kind             |
+//	| string  | StringKind                          |
+//	+---------+-------------------------------------+
+//
+// A MapKey is constructed and accessed through a Value:
+//	k := ValueOf("hash").MapKey() // convert string to MapKey
+//	s := k.String()               // convert MapKey to string
+//
+// The MapKey is a strict subset of valid types used in Value;
+// converting a Value to a MapKey with an invalid type panics.
+type MapKey value
 
 // IsNull reports whether v is empty (has no value).
 func (k MapKey) IsNull() bool {
