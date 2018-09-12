@@ -108,12 +108,60 @@ type FieldTestMessage struct {
 	XXX_sizecache        int32                             `json:"-"`
 }
 
+func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
+func (m *FieldTestMessage) String() string { return proto.CompactTextString(m) }
+func (*FieldTestMessage) ProtoMessage()    {}
+func (*FieldTestMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd8a9d72b841fd68, []int{0}
+}
+func (m *FieldTestMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FieldTestMessage.Unmarshal(m, b)
+}
+func (m *FieldTestMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FieldTestMessage.Marshal(b, m, deterministic)
+}
+func (m *FieldTestMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FieldTestMessage.Merge(m, src)
+}
+func (m *FieldTestMessage) XXX_Size() int {
+	return xxx_messageInfo_FieldTestMessage.Size(m)
+}
+func (m *FieldTestMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_FieldTestMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FieldTestMessage proto.InternalMessageInfo
+
 type FieldTestMessage_OptionalGroup struct {
 	OptionalGroup        *string  `protobuf:"bytes,19,opt,name=optional_group,json=optionalGroup" json:"optional_group,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+func (m *FieldTestMessage_OptionalGroup) Reset()         { *m = FieldTestMessage_OptionalGroup{} }
+func (m *FieldTestMessage_OptionalGroup) String() string { return proto.CompactTextString(m) }
+func (*FieldTestMessage_OptionalGroup) ProtoMessage()    {}
+func (*FieldTestMessage_OptionalGroup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd8a9d72b841fd68, []int{0, 0}
+}
+func (m *FieldTestMessage_OptionalGroup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FieldTestMessage_OptionalGroup.Unmarshal(m, b)
+}
+func (m *FieldTestMessage_OptionalGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FieldTestMessage_OptionalGroup.Marshal(b, m, deterministic)
+}
+func (m *FieldTestMessage_OptionalGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FieldTestMessage_OptionalGroup.Merge(m, src)
+}
+func (m *FieldTestMessage_OptionalGroup) XXX_Size() int {
+	return xxx_messageInfo_FieldTestMessage_OptionalGroup.Size(m)
+}
+func (m *FieldTestMessage_OptionalGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_FieldTestMessage_OptionalGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FieldTestMessage_OptionalGroup proto.InternalMessageInfo
 
 type FieldTestMessage_RequiredGroup struct {
 	RequiredGroup        *string  `protobuf:"bytes,119,req,name=required_group,json=requiredGroup" json:"required_group,omitempty"`
@@ -122,6 +170,30 @@ type FieldTestMessage_RequiredGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *FieldTestMessage_RequiredGroup) Reset()         { *m = FieldTestMessage_RequiredGroup{} }
+func (m *FieldTestMessage_RequiredGroup) String() string { return proto.CompactTextString(m) }
+func (*FieldTestMessage_RequiredGroup) ProtoMessage()    {}
+func (*FieldTestMessage_RequiredGroup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd8a9d72b841fd68, []int{0, 1}
+}
+func (m *FieldTestMessage_RequiredGroup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FieldTestMessage_RequiredGroup.Unmarshal(m, b)
+}
+func (m *FieldTestMessage_RequiredGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FieldTestMessage_RequiredGroup.Marshal(b, m, deterministic)
+}
+func (m *FieldTestMessage_RequiredGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FieldTestMessage_RequiredGroup.Merge(m, src)
+}
+func (m *FieldTestMessage_RequiredGroup) XXX_Size() int {
+	return xxx_messageInfo_FieldTestMessage_RequiredGroup.Size(m)
+}
+func (m *FieldTestMessage_RequiredGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_FieldTestMessage_RequiredGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FieldTestMessage_RequiredGroup proto.InternalMessageInfo
+
 type FieldTestMessage_RepeatedGroup struct {
 	RepeatedGroup        []string `protobuf:"bytes,219,rep,name=repeated_group,json=repeatedGroup" json:"repeated_group,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -129,11 +201,59 @@ type FieldTestMessage_RepeatedGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *FieldTestMessage_RepeatedGroup) Reset()         { *m = FieldTestMessage_RepeatedGroup{} }
+func (m *FieldTestMessage_RepeatedGroup) String() string { return proto.CompactTextString(m) }
+func (*FieldTestMessage_RepeatedGroup) ProtoMessage()    {}
+func (*FieldTestMessage_RepeatedGroup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd8a9d72b841fd68, []int{0, 2}
+}
+func (m *FieldTestMessage_RepeatedGroup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FieldTestMessage_RepeatedGroup.Unmarshal(m, b)
+}
+func (m *FieldTestMessage_RepeatedGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FieldTestMessage_RepeatedGroup.Marshal(b, m, deterministic)
+}
+func (m *FieldTestMessage_RepeatedGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FieldTestMessage_RepeatedGroup.Merge(m, src)
+}
+func (m *FieldTestMessage_RepeatedGroup) XXX_Size() int {
+	return xxx_messageInfo_FieldTestMessage_RepeatedGroup.Size(m)
+}
+func (m *FieldTestMessage_RepeatedGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_FieldTestMessage_RepeatedGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FieldTestMessage_RepeatedGroup proto.InternalMessageInfo
+
 type FieldTestMessage_Message struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
+func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }
+func (*FieldTestMessage_Message) ProtoMessage()    {}
+func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd8a9d72b841fd68, []int{0, 3}
+}
+func (m *FieldTestMessage_Message) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FieldTestMessage_Message.Unmarshal(m, b)
+}
+func (m *FieldTestMessage_Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FieldTestMessage_Message.Marshal(b, m, deterministic)
+}
+func (m *FieldTestMessage_Message) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FieldTestMessage_Message.Merge(m, src)
+}
+func (m *FieldTestMessage_Message) XXX_Size() int {
+	return xxx_messageInfo_FieldTestMessage_Message.Size(m)
+}
+func (m *FieldTestMessage_Message) XXX_DiscardUnknown() {
+	xxx_messageInfo_FieldTestMessage_Message.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FieldTestMessage_Message proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterEnum("goproto.protoc.proto2.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)

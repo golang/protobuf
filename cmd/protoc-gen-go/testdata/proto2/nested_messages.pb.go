@@ -19,6 +19,30 @@ type Layer1 struct {
 	XXX_sizecache        int32                 `json:"-"`
 }
 
+func (m *Layer1) Reset()         { *m = Layer1{} }
+func (m *Layer1) String() string { return proto.CompactTextString(m) }
+func (*Layer1) ProtoMessage()    {}
+func (*Layer1) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7417ee157699d191, []int{0}
+}
+func (m *Layer1) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Layer1.Unmarshal(m, b)
+}
+func (m *Layer1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Layer1.Marshal(b, m, deterministic)
+}
+func (m *Layer1) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Layer1.Merge(m, src)
+}
+func (m *Layer1) XXX_Size() int {
+	return xxx_messageInfo_Layer1.Size(m)
+}
+func (m *Layer1) XXX_DiscardUnknown() {
+	xxx_messageInfo_Layer1.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Layer1 proto.InternalMessageInfo
+
 type Layer1_Layer2 struct {
 	L3                   *Layer1_Layer2_Layer3 `protobuf:"bytes,1,opt,name=l3" json:"l3,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
@@ -26,11 +50,59 @@ type Layer1_Layer2 struct {
 	XXX_sizecache        int32                 `json:"-"`
 }
 
+func (m *Layer1_Layer2) Reset()         { *m = Layer1_Layer2{} }
+func (m *Layer1_Layer2) String() string { return proto.CompactTextString(m) }
+func (*Layer1_Layer2) ProtoMessage()    {}
+func (*Layer1_Layer2) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7417ee157699d191, []int{0, 0}
+}
+func (m *Layer1_Layer2) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Layer1_Layer2.Unmarshal(m, b)
+}
+func (m *Layer1_Layer2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Layer1_Layer2.Marshal(b, m, deterministic)
+}
+func (m *Layer1_Layer2) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Layer1_Layer2.Merge(m, src)
+}
+func (m *Layer1_Layer2) XXX_Size() int {
+	return xxx_messageInfo_Layer1_Layer2.Size(m)
+}
+func (m *Layer1_Layer2) XXX_DiscardUnknown() {
+	xxx_messageInfo_Layer1_Layer2.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Layer1_Layer2 proto.InternalMessageInfo
+
 type Layer1_Layer2_Layer3 struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+func (m *Layer1_Layer2_Layer3) Reset()         { *m = Layer1_Layer2_Layer3{} }
+func (m *Layer1_Layer2_Layer3) String() string { return proto.CompactTextString(m) }
+func (*Layer1_Layer2_Layer3) ProtoMessage()    {}
+func (*Layer1_Layer2_Layer3) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7417ee157699d191, []int{0, 0, 0}
+}
+func (m *Layer1_Layer2_Layer3) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Layer1_Layer2_Layer3.Unmarshal(m, b)
+}
+func (m *Layer1_Layer2_Layer3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Layer1_Layer2_Layer3.Marshal(b, m, deterministic)
+}
+func (m *Layer1_Layer2_Layer3) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Layer1_Layer2_Layer3.Merge(m, src)
+}
+func (m *Layer1_Layer2_Layer3) XXX_Size() int {
+	return xxx_messageInfo_Layer1_Layer2_Layer3.Size(m)
+}
+func (m *Layer1_Layer2_Layer3) XXX_DiscardUnknown() {
+	xxx_messageInfo_Layer1_Layer2_Layer3.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Layer1_Layer2_Layer3 proto.InternalMessageInfo
 
 func init() { proto.RegisterFile("proto2/nested_messages.proto", fileDescriptor_7417ee157699d191) }
 

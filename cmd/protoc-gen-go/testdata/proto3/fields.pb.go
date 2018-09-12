@@ -56,11 +56,59 @@ type FieldTestMessage struct {
 	XXX_sizecache        int32                     `json:"-"`
 }
 
+func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
+func (m *FieldTestMessage) String() string { return proto.CompactTextString(m) }
+func (*FieldTestMessage) ProtoMessage()    {}
+func (*FieldTestMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1e3ea068187307c, []int{0}
+}
+func (m *FieldTestMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FieldTestMessage.Unmarshal(m, b)
+}
+func (m *FieldTestMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FieldTestMessage.Marshal(b, m, deterministic)
+}
+func (m *FieldTestMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FieldTestMessage.Merge(m, src)
+}
+func (m *FieldTestMessage) XXX_Size() int {
+	return xxx_messageInfo_FieldTestMessage.Size(m)
+}
+func (m *FieldTestMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_FieldTestMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FieldTestMessage proto.InternalMessageInfo
+
 type FieldTestMessage_Message struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
+func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }
+func (*FieldTestMessage_Message) ProtoMessage()    {}
+func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1e3ea068187307c, []int{0, 0}
+}
+func (m *FieldTestMessage_Message) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FieldTestMessage_Message.Unmarshal(m, b)
+}
+func (m *FieldTestMessage_Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FieldTestMessage_Message.Marshal(b, m, deterministic)
+}
+func (m *FieldTestMessage_Message) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FieldTestMessage_Message.Merge(m, src)
+}
+func (m *FieldTestMessage_Message) XXX_Size() int {
+	return xxx_messageInfo_FieldTestMessage_Message.Size(m)
+}
+func (m *FieldTestMessage_Message) XXX_DiscardUnknown() {
+	xxx_messageInfo_FieldTestMessage_Message.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FieldTestMessage_Message proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterEnum("goproto.protoc.proto3.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)

@@ -267,6 +267,62 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 	g.P("}")
 	g.P()
 
+	// Reset
+	g.P("func (m *", message.GoIdent, ") Reset() { *m = ", message.GoIdent, "{} }")
+	// String
+	g.P("func (m *", message.GoIdent, ") String() string { return ", protogen.GoIdent{
+		GoImportPath: protoPackage,
+		GoName:       "CompactTextString",
+	}, "(m) }")
+	// ProtoMessage
+	g.P("func (*", message.GoIdent, ") ProtoMessage() {}")
+	// Descriptor
+	var indexes []string
+	for i := 1; i < len(message.Path); i += 2 {
+		indexes = append(indexes, strconv.Itoa(int(message.Path[i])))
+	}
+	g.P("func (*", message.GoIdent, ") Descriptor() ([]byte, []int) {")
+	g.P("return ", f.descriptorVar, ", []int{", strings.Join(indexes, ","), "}")
+	g.P("}")
+	// TODO: extension support methods
+
+	// Table-driven proto support.
+	//
+	// TODO: It does not scale to keep adding another method for every
+	// operation on protos that we want to switch over to using the
+	// table-driven approach. Instead, we should only add a single method
+	// that allows getting access to the *InternalMessageInfo struct and then
+	// calling Unmarshal, Marshal, Merge, Size, and Discard directly on that.
+	messageInfoVar := "xxx_messageInfo_" + message.GoIdent.GoName
+	// XXX_Unmarshal
+	g.P("func (m *", message.GoIdent, ") XXX_Unmarshal(b []byte) error {")
+	g.P("return ", messageInfoVar, ".Unmarshal(m, b)")
+	g.P("}")
+	// XXX_Marshal
+	g.P("func (m *", message.GoIdent, ") XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {")
+	g.P("return ", messageInfoVar, ".Marshal(b, m, deterministic)")
+	g.P("}")
+	// XXX_Merge
+	g.P("func (m *", message.GoIdent, ") XXX_Merge(src proto.Message) {")
+	g.P(messageInfoVar, ".Merge(m, src)")
+	g.P("}")
+	// XXX_Size
+	g.P("func (m *", message.GoIdent, ") XXX_Size() int {")
+	g.P("return ", messageInfoVar, ".Size(m)")
+	g.P("}")
+	// XXX_DiscardUnknown
+	g.P("func (m *", message.GoIdent, ") XXX_DiscardUnknown() {")
+	g.P(messageInfoVar, ".DiscardUnknown(m)")
+	g.P("}")
+	g.P()
+	g.P("var ", messageInfoVar, " ", protogen.GoIdent{
+		GoImportPath: protoPackage,
+		GoName:       "InternalMessageInfo",
+	})
+	g.P()
+
+	// TODO: getters
+
 	for _, nested := range message.Messages {
 		genMessage(gen, g, f, nested)
 	}

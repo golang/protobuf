@@ -20,12 +20,60 @@ type Message1 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *Message1) Reset()         { *m = Message1{} }
+func (m *Message1) String() string { return proto.CompactTextString(m) }
+func (*Message1) ProtoMessage()    {}
+func (*Message1) Descriptor() ([]byte, []int) {
+	return fileDescriptor_885e8293f1fab554, []int{0}
+}
+func (m *Message1) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Message1.Unmarshal(m, b)
+}
+func (m *Message1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Message1.Marshal(b, m, deterministic)
+}
+func (m *Message1) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Message1.Merge(m, src)
+}
+func (m *Message1) XXX_Size() int {
+	return xxx_messageInfo_Message1.Size(m)
+}
+func (m *Message1) XXX_DiscardUnknown() {
+	xxx_messageInfo_Message1.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Message1 proto.InternalMessageInfo
+
 // COMMENT: Message1A
 type Message1_Message1A struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+func (m *Message1_Message1A) Reset()         { *m = Message1_Message1A{} }
+func (m *Message1_Message1A) String() string { return proto.CompactTextString(m) }
+func (*Message1_Message1A) ProtoMessage()    {}
+func (*Message1_Message1A) Descriptor() ([]byte, []int) {
+	return fileDescriptor_885e8293f1fab554, []int{0, 0}
+}
+func (m *Message1_Message1A) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Message1_Message1A.Unmarshal(m, b)
+}
+func (m *Message1_Message1A) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Message1_Message1A.Marshal(b, m, deterministic)
+}
+func (m *Message1_Message1A) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Message1_Message1A.Merge(m, src)
+}
+func (m *Message1_Message1A) XXX_Size() int {
+	return xxx_messageInfo_Message1_Message1A.Size(m)
+}
+func (m *Message1_Message1A) XXX_DiscardUnknown() {
+	xxx_messageInfo_Message1_Message1A.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Message1_Message1A proto.InternalMessageInfo
 
 // COMMENT: Message1B
 type Message1_Message1B struct {
@@ -34,12 +82,60 @@ type Message1_Message1B struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *Message1_Message1B) Reset()         { *m = Message1_Message1B{} }
+func (m *Message1_Message1B) String() string { return proto.CompactTextString(m) }
+func (*Message1_Message1B) ProtoMessage()    {}
+func (*Message1_Message1B) Descriptor() ([]byte, []int) {
+	return fileDescriptor_885e8293f1fab554, []int{0, 1}
+}
+func (m *Message1_Message1B) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Message1_Message1B.Unmarshal(m, b)
+}
+func (m *Message1_Message1B) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Message1_Message1B.Marshal(b, m, deterministic)
+}
+func (m *Message1_Message1B) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Message1_Message1B.Merge(m, src)
+}
+func (m *Message1_Message1B) XXX_Size() int {
+	return xxx_messageInfo_Message1_Message1B.Size(m)
+}
+func (m *Message1_Message1B) XXX_DiscardUnknown() {
+	xxx_messageInfo_Message1_Message1B.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Message1_Message1B proto.InternalMessageInfo
+
 // COMMENT: Message2
 type Message2 struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+func (m *Message2) Reset()         { *m = Message2{} }
+func (m *Message2) String() string { return proto.CompactTextString(m) }
+func (*Message2) ProtoMessage()    {}
+func (*Message2) Descriptor() ([]byte, []int) {
+	return fileDescriptor_885e8293f1fab554, []int{1}
+}
+func (m *Message2) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Message2.Unmarshal(m, b)
+}
+func (m *Message2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Message2.Marshal(b, m, deterministic)
+}
+func (m *Message2) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Message2.Merge(m, src)
+}
+func (m *Message2) XXX_Size() int {
+	return xxx_messageInfo_Message2.Size(m)
+}
+func (m *Message2) XXX_DiscardUnknown() {
+	xxx_messageInfo_Message2.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Message2 proto.InternalMessageInfo
 
 // COMMENT: Message2A
 type Message2_Message2A struct {
@@ -48,12 +144,60 @@ type Message2_Message2A struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *Message2_Message2A) Reset()         { *m = Message2_Message2A{} }
+func (m *Message2_Message2A) String() string { return proto.CompactTextString(m) }
+func (*Message2_Message2A) ProtoMessage()    {}
+func (*Message2_Message2A) Descriptor() ([]byte, []int) {
+	return fileDescriptor_885e8293f1fab554, []int{1, 0}
+}
+func (m *Message2_Message2A) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Message2_Message2A.Unmarshal(m, b)
+}
+func (m *Message2_Message2A) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Message2_Message2A.Marshal(b, m, deterministic)
+}
+func (m *Message2_Message2A) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Message2_Message2A.Merge(m, src)
+}
+func (m *Message2_Message2A) XXX_Size() int {
+	return xxx_messageInfo_Message2_Message2A.Size(m)
+}
+func (m *Message2_Message2A) XXX_DiscardUnknown() {
+	xxx_messageInfo_Message2_Message2A.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Message2_Message2A proto.InternalMessageInfo
+
 // COMMENT: Message2B
 type Message2_Message2B struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+func (m *Message2_Message2B) Reset()         { *m = Message2_Message2B{} }
+func (m *Message2_Message2B) String() string { return proto.CompactTextString(m) }
+func (*Message2_Message2B) ProtoMessage()    {}
+func (*Message2_Message2B) Descriptor() ([]byte, []int) {
+	return fileDescriptor_885e8293f1fab554, []int{1, 1}
+}
+func (m *Message2_Message2B) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Message2_Message2B.Unmarshal(m, b)
+}
+func (m *Message2_Message2B) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Message2_Message2B.Marshal(b, m, deterministic)
+}
+func (m *Message2_Message2B) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Message2_Message2B.Merge(m, src)
+}
+func (m *Message2_Message2B) XXX_Size() int {
+	return xxx_messageInfo_Message2_Message2B.Size(m)
+}
+func (m *Message2_Message2B) XXX_DiscardUnknown() {
+	xxx_messageInfo_Message2_Message2B.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Message2_Message2B proto.InternalMessageInfo
 
 func init() { proto.RegisterFile("comments/comments.proto", fileDescriptor_885e8293f1fab554) }
 
