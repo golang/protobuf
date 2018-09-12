@@ -41,8 +41,8 @@ func (m *SimpleRequest) XXX_Unmarshal(b []byte) error {
 func (m *SimpleRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleRequest.Marshal(b, m, deterministic)
 }
-func (dst *SimpleRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SimpleRequest.Merge(dst, src)
+func (m *SimpleRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SimpleRequest.Merge(m, src)
 }
 func (m *SimpleRequest) XXX_Size() int {
 	return xxx_messageInfo_SimpleRequest.Size(m)
@@ -71,8 +71,8 @@ func (m *SimpleResponse) XXX_Unmarshal(b []byte) error {
 func (m *SimpleResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleResponse.Marshal(b, m, deterministic)
 }
-func (dst *SimpleResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SimpleResponse.Merge(dst, src)
+func (m *SimpleResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SimpleResponse.Merge(m, src)
 }
 func (m *SimpleResponse) XXX_Size() int {
 	return xxx_messageInfo_SimpleResponse.Size(m)
@@ -101,8 +101,8 @@ func (m *StreamMsg) XXX_Unmarshal(b []byte) error {
 func (m *StreamMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamMsg.Marshal(b, m, deterministic)
 }
-func (dst *StreamMsg) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StreamMsg.Merge(dst, src)
+func (m *StreamMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StreamMsg.Merge(m, src)
 }
 func (m *StreamMsg) XXX_Size() int {
 	return xxx_messageInfo_StreamMsg.Size(m)
@@ -131,8 +131,8 @@ func (m *StreamMsg2) XXX_Unmarshal(b []byte) error {
 func (m *StreamMsg2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamMsg2.Marshal(b, m, deterministic)
 }
-func (dst *StreamMsg2) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StreamMsg2.Merge(dst, src)
+func (m *StreamMsg2) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StreamMsg2.Merge(m, src)
 }
 func (m *StreamMsg2) XXX_Size() int {
 	return xxx_messageInfo_StreamMsg2.Size(m)

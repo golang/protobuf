@@ -108,8 +108,8 @@ func (m *Duration) XXX_Unmarshal(b []byte) error {
 func (m *Duration) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Duration.Marshal(b, m, deterministic)
 }
-func (dst *Duration) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Duration.Merge(dst, src)
+func (m *Duration) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Duration.Merge(m, src)
 }
 func (m *Duration) XXX_Size() int {
 	return xxx_messageInfo_Duration.Size(m)

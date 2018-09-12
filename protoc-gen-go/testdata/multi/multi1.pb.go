@@ -39,8 +39,8 @@ func (m *Multi1) XXX_Unmarshal(b []byte) error {
 func (m *Multi1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Multi1.Marshal(b, m, deterministic)
 }
-func (dst *Multi1) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Multi1.Merge(dst, src)
+func (m *Multi1) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Multi1.Merge(m, src)
 }
 func (m *Multi1) XXX_Size() int {
 	return xxx_messageInfo_Multi1.Size(m)

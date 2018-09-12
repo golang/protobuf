@@ -53,8 +53,8 @@ func (m *Public) XXX_Unmarshal(b []byte) error {
 func (m *Public) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Public.Marshal(b, m, deterministic)
 }
-func (dst *Public) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Public.Merge(dst, src)
+func (m *Public) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Public.Merge(m, src)
 }
 func (m *Public) XXX_Size() int {
 	return xxx_messageInfo_Public.Size(m)

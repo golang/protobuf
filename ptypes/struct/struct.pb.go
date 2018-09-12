@@ -76,8 +76,8 @@ func (m *Struct) XXX_Unmarshal(b []byte) error {
 func (m *Struct) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Struct.Marshal(b, m, deterministic)
 }
-func (dst *Struct) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Struct.Merge(dst, src)
+func (m *Struct) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Struct.Merge(m, src)
 }
 func (m *Struct) XXX_Size() int {
 	return xxx_messageInfo_Struct.Size(m)
@@ -130,8 +130,8 @@ func (m *Value) XXX_Unmarshal(b []byte) error {
 func (m *Value) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Value.Marshal(b, m, deterministic)
 }
-func (dst *Value) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Value.Merge(dst, src)
+func (m *Value) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Value.Merge(m, src)
 }
 func (m *Value) XXX_Size() int {
 	return xxx_messageInfo_Value.Size(m)
@@ -390,8 +390,8 @@ func (m *ListValue) XXX_Unmarshal(b []byte) error {
 func (m *ListValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ListValue.Marshal(b, m, deterministic)
 }
-func (dst *ListValue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListValue.Merge(dst, src)
+func (m *ListValue) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListValue.Merge(m, src)
 }
 func (m *ListValue) XXX_Size() int {
 	return xxx_messageInfo_ListValue.Size(m)

@@ -71,8 +71,8 @@ func (m *DeprecatedRequest) XXX_Unmarshal(b []byte) error {
 func (m *DeprecatedRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DeprecatedRequest.Marshal(b, m, deterministic)
 }
-func (dst *DeprecatedRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeprecatedRequest.Merge(dst, src)
+func (m *DeprecatedRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeprecatedRequest.Merge(m, src)
 }
 func (m *DeprecatedRequest) XXX_Size() int {
 	return xxx_messageInfo_DeprecatedRequest.Size(m)
@@ -104,8 +104,8 @@ func (m *DeprecatedResponse) XXX_Unmarshal(b []byte) error {
 func (m *DeprecatedResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DeprecatedResponse.Marshal(b, m, deterministic)
 }
-func (dst *DeprecatedResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeprecatedResponse.Merge(dst, src)
+func (m *DeprecatedResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeprecatedResponse.Merge(m, src)
 }
 func (m *DeprecatedResponse) XXX_Size() int {
 	return xxx_messageInfo_DeprecatedResponse.Size(m)

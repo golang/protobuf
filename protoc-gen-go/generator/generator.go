@@ -2420,8 +2420,8 @@ func (g *Generator) generateCommonMethods(mc *msgCtx) {
 	g.P("return xxx_messageInfo_", mc.goName, ".Marshal(b, m, deterministic)")
 	g.P("}")
 
-	g.P("func (dst *", mc.goName, ") XXX_Merge(src ", g.Pkg["proto"], ".Message) {")
-	g.P("xxx_messageInfo_", mc.goName, ".Merge(dst, src)")
+	g.P("func (m *", mc.goName, ") XXX_Merge(src ", g.Pkg["proto"], ".Message) {")
+	g.P("xxx_messageInfo_", mc.goName, ".Merge(m, src)")
 	g.P("}")
 
 	g.P("func (m *", mc.goName, ") XXX_Size() int {") // avoid name clash with "Size" field in some message

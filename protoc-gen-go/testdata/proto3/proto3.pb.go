@@ -72,8 +72,8 @@ func (m *Request) XXX_Unmarshal(b []byte) error {
 func (m *Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Request.Marshal(b, m, deterministic)
 }
-func (dst *Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Request.Merge(dst, src)
+func (m *Request) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Request.Merge(m, src)
 }
 func (m *Request) XXX_Size() int {
 	return xxx_messageInfo_Request.Size(m)
@@ -139,8 +139,8 @@ func (m *Book) XXX_Unmarshal(b []byte) error {
 func (m *Book) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Book.Marshal(b, m, deterministic)
 }
-func (dst *Book) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Book.Merge(dst, src)
+func (m *Book) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Book.Merge(m, src)
 }
 func (m *Book) XXX_Size() int {
 	return xxx_messageInfo_Book.Size(m)

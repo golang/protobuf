@@ -37,8 +37,8 @@ func (m *ExtraMessage) XXX_Unmarshal(b []byte) error {
 func (m *ExtraMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ExtraMessage.Marshal(b, m, deterministic)
 }
-func (dst *ExtraMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ExtraMessage.Merge(dst, src)
+func (m *ExtraMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExtraMessage.Merge(m, src)
 }
 func (m *ExtraMessage) XXX_Size() int {
 	return xxx_messageInfo_ExtraMessage.Size(m)
