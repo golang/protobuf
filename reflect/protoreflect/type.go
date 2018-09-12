@@ -352,6 +352,9 @@ type FieldDescriptor interface {
 	// The Value type is determined by the Kind.
 	Default() Value
 
+	// HasDefault reports whether this field has a default value.
+	HasDefault() bool
+
 	// OneofType is the containing oneof that this field belongs to,
 	// and is nil if this field is not part of a oneof.
 	OneofType() OneofDescriptor

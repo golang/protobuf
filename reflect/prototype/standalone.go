@@ -71,6 +71,8 @@ type StandaloneExtension struct {
 	MessageType  protoreflect.MessageDescriptor
 	EnumType     protoreflect.EnumDescriptor
 	ExtendedType protoreflect.MessageDescriptor
+
+	dv defaultValue
 }
 
 // NewExtension creates a new protoreflect.ExtensionDescriptor.

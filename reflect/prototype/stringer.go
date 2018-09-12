@@ -86,7 +86,7 @@ func formatListOpt(vs list, isRoot, allowMulti bool) string {
 var descriptorAccessors = map[reflect.Type][]string{
 	reflect.TypeOf((*pref.FileDescriptor)(nil)).Elem():      {"Path", "Package", "Imports", "Messages", "Enums", "Extensions", "Services"},
 	reflect.TypeOf((*pref.MessageDescriptor)(nil)).Elem():   {"IsMapEntry", "Fields", "Oneofs", "RequiredNumbers", "ExtensionRanges", "Messages", "Enums", "Extensions"},
-	reflect.TypeOf((*pref.FieldDescriptor)(nil)).Elem():     {"Number", "Cardinality", "Kind", "JSONName", "IsPacked", "IsMap", "IsWeak", "Default", "OneofType", "ExtendedType", "MessageType", "EnumType"},
+	reflect.TypeOf((*pref.FieldDescriptor)(nil)).Elem():     {"Number", "Cardinality", "Kind", "JSONName", "IsPacked", "IsMap", "IsWeak", "HasDefault", "Default", "OneofType", "ExtendedType", "MessageType", "EnumType"},
 	reflect.TypeOf((*pref.OneofDescriptor)(nil)).Elem():     {"Fields"}, // not directly used; must keep in sync with formatDescOpt
 	reflect.TypeOf((*pref.EnumDescriptor)(nil)).Elem():      {"Values"},
 	reflect.TypeOf((*pref.EnumValueDescriptor)(nil)).Elem(): {"Number"},

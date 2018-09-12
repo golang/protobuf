@@ -672,7 +672,7 @@ func checkAccessors(t *testing.T, p string, rv reflect.Value, want map[string]in
 }
 
 func testFileFormatCompact(t *testing.T, fd pref.FileDescriptor) {
-	const want = `FileDescriptor{Syntax: proto2, Path: "path/to/file.proto", Package: test, Messages: [{Name: A, IsMapEntry: true, Fields: [{Name: key, Number: 1, Cardinality: optional, Kind: string, JSONName: "key"}, {Name: value, Number: 2, Cardinality: optional, Kind: message, JSONName: "value", MessageType: test.B}]}, {Name: B, Fields: [{Name: field_one, Number: 1, Cardinality: optional, Kind: string, JSONName: "fieldOne", Default: "hello", OneofType: O1}, {Name: field_two, Number: 2, Cardinality: optional, Kind: enum, JSONName: "Field2", Default: 1, OneofType: O2, EnumType: test.E1}, {Name: field_three, Number: 3, Cardinality: optional, Kind: message, JSONName: "fieldThree", OneofType: O2, MessageType: test.C}, {Name: field_four, Number: 4, Cardinality: repeated, Kind: message, JSONName: "Field4", IsMap: true, MessageType: test.A}, {Name: field_five, Number: 5, Cardinality: repeated, Kind: int32, JSONName: "fieldFive", IsPacked: true}, {Name: field_six, Number: 6, Cardinality: required, Kind: bytes, JSONName: "fieldSix"}], Oneofs: [{Name: O1, Fields: [field_one]}, {Name: O2, Fields: [field_two, field_three]}], RequiredNumbers: [6], ExtensionRanges: [1000:2000, 3000]}, {Name: C, Messages: [{Name: A, Fields: [{Name: F, Number: 1, Cardinality: required, Kind: bytes, JSONName: "F", Default: "dead\xbe\xef"}], RequiredNumbers: [1]}], Enums: [{Name: E1, Values: [{Name: FOO}, {Name: BAR, Number: 1}]}], Extensions: [{Name: X, Number: 1000, Cardinality: repeated, Kind: message, ExtendedType: test.B, MessageType: test.C}]}], Enums: [{Name: E1, Values: [{Name: FOO}, {Name: BAR, Number: 1}]}], Extensions: [{Name: X, Number: 1000, Cardinality: repeated, Kind: message, IsPacked: true, ExtendedType: test.B, MessageType: test.C}], Services: [{Name: S, Methods: [{Name: M, InputType: test.A, OutputType: test.C.A, IsStreamingClient: true, IsStreamingServer: true}]}]}`
+	const want = `FileDescriptor{Syntax: proto2, Path: "path/to/file.proto", Package: test, Messages: [{Name: A, IsMapEntry: true, Fields: [{Name: key, Number: 1, Cardinality: optional, Kind: string, JSONName: "key"}, {Name: value, Number: 2, Cardinality: optional, Kind: message, JSONName: "value", MessageType: test.B}]}, {Name: B, Fields: [{Name: field_one, Number: 1, Cardinality: optional, Kind: string, JSONName: "fieldOne", HasDefault: true, Default: "hello", OneofType: O1}, {Name: field_two, Number: 2, Cardinality: optional, Kind: enum, JSONName: "Field2", HasDefault: true, Default: 1, OneofType: O2, EnumType: test.E1}, {Name: field_three, Number: 3, Cardinality: optional, Kind: message, JSONName: "fieldThree", OneofType: O2, MessageType: test.C}, {Name: field_four, Number: 4, Cardinality: repeated, Kind: message, JSONName: "Field4", IsMap: true, MessageType: test.A}, {Name: field_five, Number: 5, Cardinality: repeated, Kind: int32, JSONName: "fieldFive", IsPacked: true}, {Name: field_six, Number: 6, Cardinality: required, Kind: bytes, JSONName: "fieldSix"}], Oneofs: [{Name: O1, Fields: [field_one]}, {Name: O2, Fields: [field_two, field_three]}], RequiredNumbers: [6], ExtensionRanges: [1000:2000, 3000]}, {Name: C, Messages: [{Name: A, Fields: [{Name: F, Number: 1, Cardinality: required, Kind: bytes, JSONName: "F", HasDefault: true, Default: "dead\xbe\xef"}], RequiredNumbers: [1]}], Enums: [{Name: E1, Values: [{Name: FOO}, {Name: BAR, Number: 1}]}], Extensions: [{Name: X, Number: 1000, Cardinality: repeated, Kind: message, ExtendedType: test.B, MessageType: test.C}]}], Enums: [{Name: E1, Values: [{Name: FOO}, {Name: BAR, Number: 1}]}], Extensions: [{Name: X, Number: 1000, Cardinality: repeated, Kind: message, IsPacked: true, ExtendedType: test.B, MessageType: test.C}], Services: [{Name: S, Methods: [{Name: M, InputType: test.A, OutputType: test.C.A, IsStreamingClient: true, IsStreamingServer: true}]}]}`
 	got := fmt.Sprintf("%v", fd)
 	got = strings.Replace(got, "FileDescriptor ", "FileDescriptor", 1) // cleanup randomizer
 	if got != want {
@@ -710,6 +710,7 @@ func testFileFormatMulti(t *testing.T, fd pref.FileDescriptor) {
 			Cardinality: optional
 			Kind:        string
 			JSONName:    "fieldOne"
+			HasDefault:  true
 			Default:     "hello"
 			OneofType:   O1
 		}, {
@@ -718,6 +719,7 @@ func testFileFormatMulti(t *testing.T, fd pref.FileDescriptor) {
 			Cardinality: optional
 			Kind:        enum
 			JSONName:    "Field2"
+			HasDefault:  true
 			Default:     1
 			OneofType:   O2
 			EnumType:    test.E1
@@ -770,6 +772,7 @@ func testFileFormatMulti(t *testing.T, fd pref.FileDescriptor) {
 				Cardinality: required
 				Kind:        bytes
 				JSONName:    "F"
+				HasDefault:  true
 				Default:     "dead\xbe\xef"
 			}]
 			RequiredNumbers: [1]
