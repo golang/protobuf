@@ -22,6 +22,12 @@ import (
 	"google.golang.org/proto/reflect/protoreflect"
 )
 
+// generatedCodeVersion indicates a version of the generated code.
+// It is incremented whenever an incompatibility between the generated code and
+// proto package is introduced; the generated code references
+// a constant, proto.ProtoPackageIsVersionN (where N is generatedCodeVersion).
+const generatedCodeVersion = 2
+
 const protoPackage = "github.com/golang/protobuf/proto"
 
 func main() {
@@ -73,6 +79,15 @@ func genFile(gen *protogen.Plugin, file *protogen.File) {
 	genComment(g, f, []int32{filePackageField})
 	g.P()
 	g.P("package ", f.GoPackageName)
+	g.P()
+	g.P("// This is a compile-time assertion to ensure that this generated file")
+	g.P("// is compatible with the proto package it is being compiled against.")
+	g.P("// A compilation error at this line likely means your copy of the")
+	g.P("// proto package needs to be updated.")
+	g.P("const _ = ", protogen.GoIdent{
+		GoImportPath: protoPackage,
+		GoName:       fmt.Sprintf("ProtoPackageIsVersion%d", generatedCodeVersion),
+	}, "// please upgrade the proto package")
 	g.P()
 
 	for _, enum := range f.Enums {
