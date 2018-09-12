@@ -143,8 +143,8 @@ func (m *ConformanceRequest) XXX_Unmarshal(b []byte) error {
 func (m *ConformanceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConformanceRequest.Marshal(b, m, deterministic)
 }
-func (dst *ConformanceRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConformanceRequest.Merge(dst, src)
+func (m *ConformanceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConformanceRequest.Merge(m, src)
 }
 func (m *ConformanceRequest) XXX_Size() int {
 	return xxx_messageInfo_ConformanceRequest.Size(m)
@@ -292,8 +292,8 @@ func (m *ConformanceResponse) XXX_Unmarshal(b []byte) error {
 func (m *ConformanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConformanceResponse.Marshal(b, m, deterministic)
 }
-func (dst *ConformanceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConformanceResponse.Merge(dst, src)
+func (m *ConformanceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConformanceResponse.Merge(m, src)
 }
 func (m *ConformanceResponse) XXX_Size() int {
 	return xxx_messageInfo_ConformanceResponse.Size(m)
@@ -654,8 +654,8 @@ func (m *TestAllTypes) XXX_Unmarshal(b []byte) error {
 func (m *TestAllTypes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_TestAllTypes.Marshal(b, m, deterministic)
 }
-func (dst *TestAllTypes) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestAllTypes.Merge(dst, src)
+func (m *TestAllTypes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TestAllTypes.Merge(m, src)
 }
 func (m *TestAllTypes) XXX_Size() int {
 	return xxx_messageInfo_TestAllTypes.Size(m)
@@ -1576,8 +1576,8 @@ func (m *TestAllTypes_NestedMessage) XXX_Unmarshal(b []byte) error {
 func (m *TestAllTypes_NestedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_TestAllTypes_NestedMessage.Marshal(b, m, deterministic)
 }
-func (dst *TestAllTypes_NestedMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestAllTypes_NestedMessage.Merge(dst, src)
+func (m *TestAllTypes_NestedMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TestAllTypes_NestedMessage.Merge(m, src)
 }
 func (m *TestAllTypes_NestedMessage) XXX_Size() int {
 	return xxx_messageInfo_TestAllTypes_NestedMessage.Size(m)
@@ -1621,8 +1621,8 @@ func (m *ForeignMessage) XXX_Unmarshal(b []byte) error {
 func (m *ForeignMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ForeignMessage.Marshal(b, m, deterministic)
 }
-func (dst *ForeignMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ForeignMessage.Merge(dst, src)
+func (m *ForeignMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ForeignMessage.Merge(m, src)
 }
 func (m *ForeignMessage) XXX_Size() int {
 	return xxx_messageInfo_ForeignMessage.Size(m)

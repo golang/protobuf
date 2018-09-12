@@ -65,8 +65,8 @@ func (m *Simple3) XXX_Unmarshal(b []byte) error {
 func (m *Simple3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Simple3.Marshal(b, m, deterministic)
 }
-func (dst *Simple3) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Simple3.Merge(dst, src)
+func (m *Simple3) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Simple3.Merge(m, src)
 }
 func (m *Simple3) XXX_Size() int {
 	return xxx_messageInfo_Simple3.Size(m)
@@ -103,8 +103,8 @@ func (m *SimpleSlice3) XXX_Unmarshal(b []byte) error {
 func (m *SimpleSlice3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleSlice3.Marshal(b, m, deterministic)
 }
-func (dst *SimpleSlice3) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SimpleSlice3.Merge(dst, src)
+func (m *SimpleSlice3) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SimpleSlice3.Merge(m, src)
 }
 func (m *SimpleSlice3) XXX_Size() int {
 	return xxx_messageInfo_SimpleSlice3.Size(m)
@@ -141,8 +141,8 @@ func (m *SimpleMap3) XXX_Unmarshal(b []byte) error {
 func (m *SimpleMap3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleMap3.Marshal(b, m, deterministic)
 }
-func (dst *SimpleMap3) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SimpleMap3.Merge(dst, src)
+func (m *SimpleMap3) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SimpleMap3.Merge(m, src)
 }
 func (m *SimpleMap3) XXX_Size() int {
 	return xxx_messageInfo_SimpleMap3.Size(m)
@@ -179,8 +179,8 @@ func (m *SimpleNull3) XXX_Unmarshal(b []byte) error {
 func (m *SimpleNull3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleNull3.Marshal(b, m, deterministic)
 }
-func (dst *SimpleNull3) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SimpleNull3.Merge(dst, src)
+func (m *SimpleNull3) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SimpleNull3.Merge(m, src)
 }
 func (m *SimpleNull3) XXX_Size() int {
 	return xxx_messageInfo_SimpleNull3.Size(m)
@@ -226,8 +226,8 @@ func (m *Mappy) XXX_Unmarshal(b []byte) error {
 func (m *Mappy) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Mappy.Marshal(b, m, deterministic)
 }
-func (dst *Mappy) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Mappy.Merge(dst, src)
+func (m *Mappy) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Mappy.Merge(m, src)
 }
 func (m *Mappy) XXX_Size() int {
 	return xxx_messageInfo_Mappy.Size(m)
