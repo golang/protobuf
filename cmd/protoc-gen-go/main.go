@@ -246,6 +246,10 @@ func enumRegistryName(enum *protogen.Enum) string {
 }
 
 func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, message *protogen.Message) {
+	if message.Desc.IsMapEntry() {
+		return
+	}
+
 	for _, e := range message.Enums {
 		genEnum(gen, g, f, e)
 	}
@@ -263,7 +267,19 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 		if pointer {
 			goType = "*" + goType
 		}
-		g.P(field.GoIdent, " ", goType, fmt.Sprintf(" `protobuf:%q json:%q`", fieldProtobufTag(field), fieldJSONTag(field)))
+		tags := []string{
+			fmt.Sprintf("protobuf:%q", fieldProtobufTag(field)),
+			fmt.Sprintf("json:%q", fieldJSONTag(field)),
+		}
+		if field.Desc.IsMap() {
+			key := field.MessageType.Fields[0]
+			val := field.MessageType.Fields[1]
+			tags = append(tags,
+				fmt.Sprintf("protobuf_key:%q", fieldProtobufTag(key)),
+				fmt.Sprintf("protobuf_val:%q", fieldProtobufTag(val)),
+			)
+		}
+		g.P(field.GoIdent, " ", goType, " `", strings.Join(tags, " "), "`")
 	}
 	g.P("XXX_NoUnkeyedLiteral struct{} `json:\"-\"`")
 	// TODO XXX_InternalExtensions
@@ -408,7 +424,6 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 //
 // If it returns pointer=true, the struct field is a pointer to the type.
 func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType string, pointer bool) {
-	// TODO: map types
 	pointer = true
 	switch field.Desc.Kind() {
 	case protoreflect.BoolKind:
@@ -433,6 +448,11 @@ func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType strin
 		goType = "[]byte"
 		pointer = false
 	case protoreflect.MessageKind, protoreflect.GroupKind:
+		if field.Desc.IsMap() {
+			keyType, _ := fieldGoType(g, field.MessageType.Fields[0])
+			valType, _ := fieldGoType(g, field.MessageType.Fields[1])
+			return fmt.Sprintf("map[%v]%v", keyType, valType), false
+		}
 		goType = "*" + g.QualifiedGoIdent(field.MessageType.GoIdent)
 		pointer = false
 	}

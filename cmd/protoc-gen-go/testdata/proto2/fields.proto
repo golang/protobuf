@@ -96,6 +96,10 @@ message FieldTestMessage {
   optional double default_double_posinf = 404 [default=inf];
   optional double default_double_nan    = 405 [default=nan];
 
+  map<int32, int64>   map_int32_int64    = 500;
+  map<string,Message> map_string_message = 501;
+  map<fixed64,Enum>   map_fixed64_enum   = 502;
+
   enum Enum {
     ZERO = 0;
     ONE = 1;

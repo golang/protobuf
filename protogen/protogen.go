@@ -400,6 +400,9 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 	for i, edescs := 0, desc.Enums(); i < edescs.Len(); i++ {
 		f.Enums = append(f.Enums, newEnum(gen, f, nil, edescs.Get(i)))
 	}
+	for _, message := range f.Messages {
+		message.init(gen)
+	}
 	return f, nil
 }
 
@@ -507,6 +510,20 @@ func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.Message
 	return message, nil
 }
 
+func (message *Message) init(gen *Plugin) error {
+	for _, child := range message.Messages {
+		if err := child.init(gen); err != nil {
+			return err
+		}
+	}
+	for _, field := range message.Fields {
+		if err := field.init(gen); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // A Field describes a message field.
 type Field struct {
 	Desc protoreflect.FieldDescriptor
@@ -530,23 +547,28 @@ func newField(gen *Plugin, f *File, message *Message, desc protoreflect.FieldDes
 		},
 		Path: pathAppend(message.Path, messageFieldField, int32(desc.Index())),
 	}
+	return field, nil
+}
+
+func (field *Field) init(gen *Plugin) error {
+	desc := field.Desc
 	switch desc.Kind() {
 	case protoreflect.MessageKind, protoreflect.GroupKind:
 		mname := desc.MessageType().FullName()
 		message, ok := gen.messagesByName[mname]
 		if !ok {
-			return nil, fmt.Errorf("field %v: no descriptor for type %v", desc.FullName(), mname)
+			return fmt.Errorf("field %v: no descriptor for type %v", desc.FullName(), mname)
 		}
 		field.MessageType = message
 	case protoreflect.EnumKind:
-		ename := desc.EnumType().FullName()
+		ename := field.Desc.EnumType().FullName()
 		enum, ok := gen.enumsByName[ename]
 		if !ok {
-			return nil, fmt.Errorf("field %v: no descriptor for enum %v", desc.FullName(), ename)
+			return fmt.Errorf("field %v: no descriptor for enum %v", desc.FullName(), ename)
 		}
 		field.EnumType = enum
 	}
-	return field, nil
+	return nil
 }
 
 // An Enum describes an enum.

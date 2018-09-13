@@ -27,6 +27,10 @@ message FieldTestMessage {
   bytes    optional_bytes    = 16;
   Message  optional_Message  = 17;
 
+  map<int32, int64>   map_int32_int64    = 500;
+  map<string,Message> map_string_message = 501;
+  map<fixed64,Enum>   map_fixed64_enum   = 502;
+
   enum Enum { ZERO = 0; }
   message Message {}
 }
