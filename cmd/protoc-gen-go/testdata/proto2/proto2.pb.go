@@ -43,6 +43,20 @@ func (m *Message) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Message proto.InternalMessageInfo
 
+func (m *Message) GetI32() int32 {
+	if m != nil && m.I32 != nil {
+		return *m.I32
+	}
+	return 0
+}
+
+func (m *Message) GetM() *Message {
+	if m != nil {
+		return m.M
+	}
+	return nil
+}
+
 func init() { proto.RegisterFile("proto2/proto2.proto", fileDescriptor_d756bbe8817c03c1) }
 
 var fileDescriptor_d756bbe8817c03c1 = []byte{

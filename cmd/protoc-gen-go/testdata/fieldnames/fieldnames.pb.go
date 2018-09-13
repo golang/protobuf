@@ -64,6 +64,125 @@ func (m *Message) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Message proto.InternalMessageInfo
 
+func (m *Message) GetFieldOne() string {
+	if m != nil && m.FieldOne != nil {
+		return *m.FieldOne
+	}
+	return ""
+}
+
+func (m *Message) GetFieldTwo() string {
+	if m != nil && m.FieldTwo != nil {
+		return *m.FieldTwo
+	}
+	return ""
+}
+
+func (m *Message) GetFieldThree() string {
+	if m != nil && m.FieldThree != nil {
+		return *m.FieldThree
+	}
+	return ""
+}
+
+func (m *Message) GetField_Four() string {
+	if m != nil && m.Field_Four != nil {
+		return *m.Field_Four
+	}
+	return ""
+}
+
+func (m *Message) GetDescriptor_() string {
+	if m != nil && m.Descriptor_ != nil {
+		return *m.Descriptor_
+	}
+	return ""
+}
+
+func (m *Message) GetMarshal_() string {
+	if m != nil && m.Marshal_ != nil {
+		return *m.Marshal_
+	}
+	return ""
+}
+
+func (m *Message) GetUnmarshal_() string {
+	if m != nil && m.Unmarshal_ != nil {
+		return *m.Unmarshal_
+	}
+	return ""
+}
+
+func (m *Message) GetProtoMessage_() string {
+	if m != nil && m.ProtoMessage_ != nil {
+		return *m.ProtoMessage_
+	}
+	return ""
+}
+
+func (m *Message) GetCamelCase() string {
+	if m != nil && m.CamelCase != nil {
+		return *m.CamelCase
+	}
+	return ""
+}
+
+func (m *Message) GetCamelCase_() string {
+	if m != nil && m.CamelCase_ != nil {
+		return *m.CamelCase_
+	}
+	return ""
+}
+
+func (m *Message) GetCamelCase__() string {
+	if m != nil && m.CamelCase__ != nil {
+		return *m.CamelCase__
+	}
+	return ""
+}
+
+func (m *Message) GetCamelCase___() string {
+	if m != nil && m.CamelCase___ != nil {
+		return *m.CamelCase___
+	}
+	return ""
+}
+
+func (m *Message) GetGetName() string {
+	if m != nil && m.GetName != nil {
+		return *m.GetName
+	}
+	return ""
+}
+
+func (m *Message) GetName_() string {
+	if m != nil && m.Name_ != nil {
+		return *m.Name_
+	}
+	return ""
+}
+
+func (m *Message) GetOneofConflictA() string {
+	if m != nil && m.OneofConflictA != nil {
+		return *m.OneofConflictA
+	}
+	return ""
+}
+
+func (m *Message) GetOneofNoConflict() string {
+	if m != nil && m.OneofNoConflict != nil {
+		return *m.OneofNoConflict
+	}
+	return ""
+}
+
+func (m *Message) GetOneofConflictB() string {
+	if m != nil && m.OneofConflictB != nil {
+		return *m.OneofConflictB
+	}
+	return ""
+}
+
 func init() { proto.RegisterFile("fieldnames/fieldnames.proto", fileDescriptor_6bbe3f70febb9403) }
 
 var fileDescriptor_6bbe3f70febb9403 = []byte{

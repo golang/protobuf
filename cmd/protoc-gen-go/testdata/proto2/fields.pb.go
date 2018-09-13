@@ -184,6 +184,538 @@ var Default_FieldTestMessage_DefaultDoubleNeginf float64 = math.Inf(-1)
 var Default_FieldTestMessage_DefaultDoublePosinf float64 = math.Inf(1)
 var Default_FieldTestMessage_DefaultDoubleNan float64 = math.NaN()
 
+func (m *FieldTestMessage) GetOptionalBool() bool {
+	if m != nil && m.OptionalBool != nil {
+		return *m.OptionalBool
+	}
+	return false
+}
+
+func (m *FieldTestMessage) GetOptionalEnum() FieldTestMessage_Enum {
+	if m != nil && m.OptionalEnum != nil {
+		return *m.OptionalEnum
+	}
+	return FieldTestMessage_ZERO
+}
+
+func (m *FieldTestMessage) GetOptionalInt32() int32 {
+	if m != nil && m.OptionalInt32 != nil {
+		return *m.OptionalInt32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalSint32() int32 {
+	if m != nil && m.OptionalSint32 != nil {
+		return *m.OptionalSint32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalUint32() uint32 {
+	if m != nil && m.OptionalUint32 != nil {
+		return *m.OptionalUint32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalInt64() int64 {
+	if m != nil && m.OptionalInt64 != nil {
+		return *m.OptionalInt64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalSint64() int64 {
+	if m != nil && m.OptionalSint64 != nil {
+		return *m.OptionalSint64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalUint64() uint64 {
+	if m != nil && m.OptionalUint64 != nil {
+		return *m.OptionalUint64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalSfixed32() int32 {
+	if m != nil && m.OptionalSfixed32 != nil {
+		return *m.OptionalSfixed32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalFixed32() uint32 {
+	if m != nil && m.OptionalFixed32 != nil {
+		return *m.OptionalFixed32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalFloat() float32 {
+	if m != nil && m.OptionalFloat != nil {
+		return *m.OptionalFloat
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalSfixed64() int64 {
+	if m != nil && m.OptionalSfixed64 != nil {
+		return *m.OptionalSfixed64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalFixed64() uint64 {
+	if m != nil && m.OptionalFixed64 != nil {
+		return *m.OptionalFixed64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalDouble() float64 {
+	if m != nil && m.OptionalDouble != nil {
+		return *m.OptionalDouble
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalString() string {
+	if m != nil && m.OptionalString != nil {
+		return *m.OptionalString
+	}
+	return ""
+}
+
+func (m *FieldTestMessage) GetOptionalBytes() []byte {
+	if m != nil {
+		return m.OptionalBytes
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetOptional_Message() *FieldTestMessage_Message {
+	if m != nil {
+		return m.Optional_Message
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetOptionalgroup() *FieldTestMessage_OptionalGroup {
+	if m != nil {
+		return m.Optionalgroup
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRequiredBool() bool {
+	if m != nil && m.RequiredBool != nil {
+		return *m.RequiredBool
+	}
+	return false
+}
+
+func (m *FieldTestMessage) GetRequiredEnum() FieldTestMessage_Enum {
+	if m != nil && m.RequiredEnum != nil {
+		return *m.RequiredEnum
+	}
+	return FieldTestMessage_ZERO
+}
+
+func (m *FieldTestMessage) GetRequiredInt32() int32 {
+	if m != nil && m.RequiredInt32 != nil {
+		return *m.RequiredInt32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredSint32() int32 {
+	if m != nil && m.RequiredSint32 != nil {
+		return *m.RequiredSint32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredUint32() uint32 {
+	if m != nil && m.RequiredUint32 != nil {
+		return *m.RequiredUint32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredInt64() int64 {
+	if m != nil && m.RequiredInt64 != nil {
+		return *m.RequiredInt64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredSint64() int64 {
+	if m != nil && m.RequiredSint64 != nil {
+		return *m.RequiredSint64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredUint64() uint64 {
+	if m != nil && m.RequiredUint64 != nil {
+		return *m.RequiredUint64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredSfixed32() int32 {
+	if m != nil && m.RequiredSfixed32 != nil {
+		return *m.RequiredSfixed32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredFixed32() uint32 {
+	if m != nil && m.RequiredFixed32 != nil {
+		return *m.RequiredFixed32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredFloat() float32 {
+	if m != nil && m.RequiredFloat != nil {
+		return *m.RequiredFloat
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredSfixed64() int64 {
+	if m != nil && m.RequiredSfixed64 != nil {
+		return *m.RequiredSfixed64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredFixed64() uint64 {
+	if m != nil && m.RequiredFixed64 != nil {
+		return *m.RequiredFixed64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredDouble() float64 {
+	if m != nil && m.RequiredDouble != nil {
+		return *m.RequiredDouble
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetRequiredString() string {
+	if m != nil && m.RequiredString != nil {
+		return *m.RequiredString
+	}
+	return ""
+}
+
+func (m *FieldTestMessage) GetRequiredBytes() []byte {
+	if m != nil {
+		return m.RequiredBytes
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRequired_Message() *FieldTestMessage_Message {
+	if m != nil {
+		return m.Required_Message
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRequiredgroup() *FieldTestMessage_RequiredGroup {
+	if m != nil {
+		return m.Requiredgroup
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedBool() []bool {
+	if m != nil {
+		return m.RepeatedBool
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedEnum() []FieldTestMessage_Enum {
+	if m != nil {
+		return m.RepeatedEnum
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedInt32() []int32 {
+	if m != nil {
+		return m.RepeatedInt32
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedSint32() []int32 {
+	if m != nil {
+		return m.RepeatedSint32
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedUint32() []uint32 {
+	if m != nil {
+		return m.RepeatedUint32
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedInt64() []int64 {
+	if m != nil {
+		return m.RepeatedInt64
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedSint64() []int64 {
+	if m != nil {
+		return m.RepeatedSint64
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedUint64() []uint64 {
+	if m != nil {
+		return m.RepeatedUint64
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedSfixed32() []int32 {
+	if m != nil {
+		return m.RepeatedSfixed32
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedFixed32() []uint32 {
+	if m != nil {
+		return m.RepeatedFixed32
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedFloat() []float32 {
+	if m != nil {
+		return m.RepeatedFloat
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedSfixed64() []int64 {
+	if m != nil {
+		return m.RepeatedSfixed64
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedFixed64() []uint64 {
+	if m != nil {
+		return m.RepeatedFixed64
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedDouble() []float64 {
+	if m != nil {
+		return m.RepeatedDouble
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedString() []string {
+	if m != nil {
+		return m.RepeatedString
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedBytes() [][]byte {
+	if m != nil {
+		return m.RepeatedBytes
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeated_Message() []*FieldTestMessage_Message {
+	if m != nil {
+		return m.Repeated_Message
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetRepeatedgroup() []*FieldTestMessage_RepeatedGroup {
+	if m != nil {
+		return m.Repeatedgroup
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetDefaultBool() bool {
+	if m != nil && m.DefaultBool != nil {
+		return *m.DefaultBool
+	}
+	return Default_FieldTestMessage_DefaultBool
+}
+
+func (m *FieldTestMessage) GetDefaultEnum() FieldTestMessage_Enum {
+	if m != nil && m.DefaultEnum != nil {
+		return *m.DefaultEnum
+	}
+	return Default_FieldTestMessage_DefaultEnum
+}
+
+func (m *FieldTestMessage) GetDefaultInt32() int32 {
+	if m != nil && m.DefaultInt32 != nil {
+		return *m.DefaultInt32
+	}
+	return Default_FieldTestMessage_DefaultInt32
+}
+
+func (m *FieldTestMessage) GetDefaultSint32() int32 {
+	if m != nil && m.DefaultSint32 != nil {
+		return *m.DefaultSint32
+	}
+	return Default_FieldTestMessage_DefaultSint32
+}
+
+func (m *FieldTestMessage) GetDefaultUint32() uint32 {
+	if m != nil && m.DefaultUint32 != nil {
+		return *m.DefaultUint32
+	}
+	return Default_FieldTestMessage_DefaultUint32
+}
+
+func (m *FieldTestMessage) GetDefaultInt64() int64 {
+	if m != nil && m.DefaultInt64 != nil {
+		return *m.DefaultInt64
+	}
+	return Default_FieldTestMessage_DefaultInt64
+}
+
+func (m *FieldTestMessage) GetDefaultSint64() int64 {
+	if m != nil && m.DefaultSint64 != nil {
+		return *m.DefaultSint64
+	}
+	return Default_FieldTestMessage_DefaultSint64
+}
+
+func (m *FieldTestMessage) GetDefaultUint64() uint64 {
+	if m != nil && m.DefaultUint64 != nil {
+		return *m.DefaultUint64
+	}
+	return Default_FieldTestMessage_DefaultUint64
+}
+
+func (m *FieldTestMessage) GetDefaultSfixed32() int32 {
+	if m != nil && m.DefaultSfixed32 != nil {
+		return *m.DefaultSfixed32
+	}
+	return Default_FieldTestMessage_DefaultSfixed32
+}
+
+func (m *FieldTestMessage) GetDefaultFixed32() uint32 {
+	if m != nil && m.DefaultFixed32 != nil {
+		return *m.DefaultFixed32
+	}
+	return Default_FieldTestMessage_DefaultFixed32
+}
+
+func (m *FieldTestMessage) GetDefaultFloat() float32 {
+	if m != nil && m.DefaultFloat != nil {
+		return *m.DefaultFloat
+	}
+	return Default_FieldTestMessage_DefaultFloat
+}
+
+func (m *FieldTestMessage) GetDefaultSfixed64() int64 {
+	if m != nil && m.DefaultSfixed64 != nil {
+		return *m.DefaultSfixed64
+	}
+	return Default_FieldTestMessage_DefaultSfixed64
+}
+
+func (m *FieldTestMessage) GetDefaultFixed64() uint64 {
+	if m != nil && m.DefaultFixed64 != nil {
+		return *m.DefaultFixed64
+	}
+	return Default_FieldTestMessage_DefaultFixed64
+}
+
+func (m *FieldTestMessage) GetDefaultDouble() float64 {
+	if m != nil && m.DefaultDouble != nil {
+		return *m.DefaultDouble
+	}
+	return Default_FieldTestMessage_DefaultDouble
+}
+
+func (m *FieldTestMessage) GetDefaultString() string {
+	if m != nil && m.DefaultString != nil {
+		return *m.DefaultString
+	}
+	return Default_FieldTestMessage_DefaultString
+}
+
+func (m *FieldTestMessage) GetDefaultBytes() []byte {
+	if m != nil && m.DefaultBytes != nil {
+		return m.DefaultBytes
+	}
+	return append([]byte(nil), Default_FieldTestMessage_DefaultBytes...)
+}
+
+func (m *FieldTestMessage) GetDefaultFloatNeginf() float32 {
+	if m != nil && m.DefaultFloatNeginf != nil {
+		return *m.DefaultFloatNeginf
+	}
+	return Default_FieldTestMessage_DefaultFloatNeginf
+}
+
+func (m *FieldTestMessage) GetDefaultFloatPosinf() float32 {
+	if m != nil && m.DefaultFloatPosinf != nil {
+		return *m.DefaultFloatPosinf
+	}
+	return Default_FieldTestMessage_DefaultFloatPosinf
+}
+
+func (m *FieldTestMessage) GetDefaultFloatNan() float32 {
+	if m != nil && m.DefaultFloatNan != nil {
+		return *m.DefaultFloatNan
+	}
+	return Default_FieldTestMessage_DefaultFloatNan
+}
+
+func (m *FieldTestMessage) GetDefaultDoubleNeginf() float64 {
+	if m != nil && m.DefaultDoubleNeginf != nil {
+		return *m.DefaultDoubleNeginf
+	}
+	return Default_FieldTestMessage_DefaultDoubleNeginf
+}
+
+func (m *FieldTestMessage) GetDefaultDoublePosinf() float64 {
+	if m != nil && m.DefaultDoublePosinf != nil {
+		return *m.DefaultDoublePosinf
+	}
+	return Default_FieldTestMessage_DefaultDoublePosinf
+}
+
+func (m *FieldTestMessage) GetDefaultDoubleNan() float64 {
+	if m != nil && m.DefaultDoubleNan != nil {
+		return *m.DefaultDoubleNan
+	}
+	return Default_FieldTestMessage_DefaultDoubleNan
+}
+
 type FieldTestMessage_OptionalGroup struct {
 	OptionalGroup        *string  `protobuf:"bytes,19,opt,name=optional_group,json=optionalGroup" json:"optional_group,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -214,6 +746,13 @@ func (m *FieldTestMessage_OptionalGroup) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_FieldTestMessage_OptionalGroup proto.InternalMessageInfo
+
+func (m *FieldTestMessage_OptionalGroup) GetOptionalGroup() string {
+	if m != nil && m.OptionalGroup != nil {
+		return *m.OptionalGroup
+	}
+	return ""
+}
 
 type FieldTestMessage_RequiredGroup struct {
 	RequiredGroup        *string  `protobuf:"bytes,119,req,name=required_group,json=requiredGroup" json:"required_group,omitempty"`
@@ -246,6 +785,13 @@ func (m *FieldTestMessage_RequiredGroup) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_FieldTestMessage_RequiredGroup proto.InternalMessageInfo
 
+func (m *FieldTestMessage_RequiredGroup) GetRequiredGroup() string {
+	if m != nil && m.RequiredGroup != nil {
+		return *m.RequiredGroup
+	}
+	return ""
+}
+
 type FieldTestMessage_RepeatedGroup struct {
 	RepeatedGroup        []string `protobuf:"bytes,219,rep,name=repeated_group,json=repeatedGroup" json:"repeated_group,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -276,6 +822,13 @@ func (m *FieldTestMessage_RepeatedGroup) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_FieldTestMessage_RepeatedGroup proto.InternalMessageInfo
+
+func (m *FieldTestMessage_RepeatedGroup) GetRepeatedGroup() []string {
+	if m != nil {
+		return m.RepeatedGroup
+	}
+	return nil
+}
 
 type FieldTestMessage_Message struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`

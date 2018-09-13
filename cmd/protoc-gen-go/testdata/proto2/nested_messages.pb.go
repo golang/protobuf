@@ -43,6 +43,20 @@ func (m *Layer1) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Layer1 proto.InternalMessageInfo
 
+func (m *Layer1) GetL2() *Layer1_Layer2 {
+	if m != nil {
+		return m.L2
+	}
+	return nil
+}
+
+func (m *Layer1) GetL3() *Layer1_Layer2_Layer3 {
+	if m != nil {
+		return m.L3
+	}
+	return nil
+}
+
 type Layer1_Layer2 struct {
 	L3                   *Layer1_Layer2_Layer3 `protobuf:"bytes,1,opt,name=l3" json:"l3,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
@@ -73,6 +87,13 @@ func (m *Layer1_Layer2) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_Layer1_Layer2 proto.InternalMessageInfo
+
+func (m *Layer1_Layer2) GetL3() *Layer1_Layer2_Layer3 {
+	if m != nil {
+		return m.L3
+	}
+	return nil
+}
 
 type Layer1_Layer2_Layer3 struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`

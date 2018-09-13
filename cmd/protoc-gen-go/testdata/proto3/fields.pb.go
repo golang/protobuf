@@ -80,6 +80,125 @@ func (m *FieldTestMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_FieldTestMessage proto.InternalMessageInfo
 
+func (m *FieldTestMessage) GetOptionalBool() string {
+	if m != nil {
+		return m.OptionalBool
+	}
+	return ""
+}
+
+func (m *FieldTestMessage) GetOptionalEnum() FieldTestMessage_Enum {
+	if m != nil {
+		return m.OptionalEnum
+	}
+	return FieldTestMessage_ZERO
+}
+
+func (m *FieldTestMessage) GetOptionalInt32() int32 {
+	if m != nil {
+		return m.OptionalInt32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalSint32() int32 {
+	if m != nil {
+		return m.OptionalSint32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalUint32() uint32 {
+	if m != nil {
+		return m.OptionalUint32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalInt64() int64 {
+	if m != nil {
+		return m.OptionalInt64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalSint64() int64 {
+	if m != nil {
+		return m.OptionalSint64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalUint64() uint64 {
+	if m != nil {
+		return m.OptionalUint64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalSfixed32() int32 {
+	if m != nil {
+		return m.OptionalSfixed32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalFixed32() uint32 {
+	if m != nil {
+		return m.OptionalFixed32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalFloat() float32 {
+	if m != nil {
+		return m.OptionalFloat
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalSfixed64() int64 {
+	if m != nil {
+		return m.OptionalSfixed64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalFixed64() uint64 {
+	if m != nil {
+		return m.OptionalFixed64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalDouble() float64 {
+	if m != nil {
+		return m.OptionalDouble
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOptionalString() string {
+	if m != nil {
+		return m.OptionalString
+	}
+	return ""
+}
+
+func (m *FieldTestMessage) GetOptionalBytes() []byte {
+	if m != nil {
+		return m.OptionalBytes
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetOptional_Message() *FieldTestMessage_Message {
+	if m != nil {
+		return m.Optional_Message
+	}
+	return nil
+}
+
 type FieldTestMessage_Message struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`

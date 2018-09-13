@@ -259,7 +259,11 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 			continue
 		}
 		genComment(g, f, field.Path)
-		g.P(field.GoIdent, " ", fieldGoType(g, field), fmt.Sprintf(" `protobuf:%q json:%q`", fieldProtobufTag(field), fieldJSONTag(field)))
+		goType, pointer := fieldGoType(g, field)
+		if pointer {
+			goType = "*" + goType
+		}
+		g.P(field.GoIdent, " ", goType, fmt.Sprintf(" `protobuf:%q json:%q`", fieldProtobufTag(field), fieldJSONTag(field)))
 	}
 	g.P("XXX_NoUnkeyedLiteral struct{} `json:\"-\"`")
 	// TODO XXX_InternalExtensions
@@ -368,65 +372,78 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 				g.P("const ", defVarName, " ", goType, " = ", f)
 			}
 		default:
-			goType := fieldGoType(g, field)
-			goType = strings.TrimPrefix(goType, "*")
+			goType, _ := fieldGoType(g, field)
 			g.P("const ", defVarName, " ", goType, " = ", def.Interface())
 		}
 	}
 	g.P()
 
-	// TODO: getters
+	// Getters.
+	for _, field := range message.Fields {
+		goType, pointer := fieldGoType(g, field)
+		defaultValue := fieldDefaultValue(g, message, field)
+		g.P("func (m *", message.GoIdent, ") Get", field.GoIdent, "() ", goType, " {")
+		if field.Desc.Syntax() == protoreflect.Proto3 || defaultValue == "nil" {
+			g.P("if m != nil {")
+		} else {
+			g.P("if m != nil && m.", field.GoIdent, " != nil {")
+		}
+		star := ""
+		if pointer {
+			star = "*"
+		}
+		g.P("return ", star, " m.", field.GoIdent)
+		g.P("}")
+		g.P("return ", defaultValue)
+		g.P("}")
+		g.P()
+	}
 
 	for _, nested := range message.Messages {
 		genMessage(gen, g, f, nested)
 	}
 }
 
-func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) string {
+// fieldGoType returns the Go type used for a field.
+//
+// If it returns pointer=true, the struct field is a pointer to the type.
+func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType string, pointer bool) {
 	// TODO: map types
-	var typ string
+	pointer = true
 	switch field.Desc.Kind() {
 	case protoreflect.BoolKind:
-		typ = "bool"
+		goType = "bool"
 	case protoreflect.EnumKind:
-		typ = g.QualifiedGoIdent(field.EnumType.GoIdent)
+		goType = g.QualifiedGoIdent(field.EnumType.GoIdent)
 	case protoreflect.Int32Kind, protoreflect.Sint32Kind, protoreflect.Sfixed32Kind:
-		typ = "int32"
+		goType = "int32"
 	case protoreflect.Uint32Kind, protoreflect.Fixed32Kind:
-		typ = "uint32"
+		goType = "uint32"
 	case protoreflect.Int64Kind, protoreflect.Sint64Kind, protoreflect.Sfixed64Kind:
-		typ = "int64"
+		goType = "int64"
 	case protoreflect.Uint64Kind, protoreflect.Fixed64Kind:
-		typ = "uint64"
+		goType = "uint64"
 	case protoreflect.FloatKind:
-		typ = "float32"
+		goType = "float32"
 	case protoreflect.DoubleKind:
-		typ = "float64"
+		goType = "float64"
 	case protoreflect.StringKind:
-		typ = "string"
+		goType = "string"
 	case protoreflect.BytesKind:
-		typ = "[]byte"
+		goType = "[]byte"
+		pointer = false
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		typ = "*" + g.QualifiedGoIdent(field.MessageType.GoIdent)
+		goType = "*" + g.QualifiedGoIdent(field.MessageType.GoIdent)
+		pointer = false
 	}
 	if field.Desc.Cardinality() == protoreflect.Repeated {
-		return "[]" + typ
+		goType = "[]" + goType
+		pointer = false
 	}
 	if field.Desc.Syntax() == protoreflect.Proto3 {
-		return typ
+		pointer = false
 	}
-	if field.Desc.OneofType() != nil {
-		return typ
-	}
-	nonPointerKinds := map[protoreflect.Kind]bool{
-		protoreflect.GroupKind:   true,
-		protoreflect.MessageKind: true,
-		protoreflect.BytesKind:   true,
-	}
-	if !nonPointerKinds[field.Desc.Kind()] {
-		return "*" + typ
-	}
-	return typ
+	return goType, pointer
 }
 
 func fieldProtobufTag(field *protogen.Field) string {
@@ -501,6 +518,31 @@ func fieldProtobufTag(field *protogen.Field) string {
 		tag = append(tag, "def="+def)
 	}
 	return strings.Join(tag, ",")
+}
+
+func fieldDefaultValue(g *protogen.GeneratedFile, message *protogen.Message, field *protogen.Field) string {
+	if field.Desc.Cardinality() == protoreflect.Repeated {
+		return "nil"
+	}
+	if field.Desc.HasDefault() {
+		defVarName := "Default_" + message.GoIdent.GoName + "_" + field.GoIdent.GoName
+		if field.Desc.Kind() == protoreflect.BytesKind {
+			return "append([]byte(nil), " + defVarName + "...)"
+		}
+		return defVarName
+	}
+	switch field.Desc.Kind() {
+	case protoreflect.BoolKind:
+		return "false"
+	case protoreflect.StringKind:
+		return `""`
+	case protoreflect.MessageKind, protoreflect.GroupKind, protoreflect.BytesKind:
+		return "nil"
+	case protoreflect.EnumKind:
+		return g.QualifiedGoIdent(field.EnumType.Values[0].GoIdent)
+	default:
+		return "0"
+	}
 }
 
 var wireTypes = map[protoreflect.Kind]string{
