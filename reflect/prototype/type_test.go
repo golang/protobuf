@@ -7,6 +7,7 @@ package prototype
 import (
 	"fmt"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"testing"
@@ -365,8 +366,7 @@ func TestFile(t *testing.T) {
 			// Run sub-tests in parallel to induce potential races.
 			for i := 0; i < 2; i++ {
 				t.Run("Accessors", func(t *testing.T) { t.Parallel(); testFileAccessors(t, tt.desc) })
-				t.Run("FormatCompact", func(t *testing.T) { t.Parallel(); testFileFormatCompact(t, tt.desc) })
-				t.Run("FormatMulti", func(t *testing.T) { t.Parallel(); testFileFormatMulti(t, tt.desc) })
+				t.Run("Format", func(t *testing.T) { t.Parallel(); testFileFormat(t, tt.desc) })
 			}
 		})
 	}
@@ -671,16 +671,7 @@ func checkAccessors(t *testing.T, p string, rv reflect.Value, want map[string]in
 	}
 }
 
-func testFileFormatCompact(t *testing.T, fd pref.FileDescriptor) {
-	const want = `FileDescriptor{Syntax: proto2, Path: "path/to/file.proto", Package: test, Messages: [{Name: A, IsMapEntry: true, Fields: [{Name: key, Number: 1, Cardinality: optional, Kind: string, JSONName: "key"}, {Name: value, Number: 2, Cardinality: optional, Kind: message, JSONName: "value", MessageType: test.B}]}, {Name: B, Fields: [{Name: field_one, Number: 1, Cardinality: optional, Kind: string, JSONName: "fieldOne", HasDefault: true, Default: "hello", OneofType: O1}, {Name: field_two, Number: 2, Cardinality: optional, Kind: enum, JSONName: "Field2", HasDefault: true, Default: 1, OneofType: O2, EnumType: test.E1}, {Name: field_three, Number: 3, Cardinality: optional, Kind: message, JSONName: "fieldThree", OneofType: O2, MessageType: test.C}, {Name: field_four, Number: 4, Cardinality: repeated, Kind: message, JSONName: "Field4", IsMap: true, MessageType: test.A}, {Name: field_five, Number: 5, Cardinality: repeated, Kind: int32, JSONName: "fieldFive", IsPacked: true}, {Name: field_six, Number: 6, Cardinality: required, Kind: bytes, JSONName: "fieldSix"}], Oneofs: [{Name: O1, Fields: [field_one]}, {Name: O2, Fields: [field_two, field_three]}], RequiredNumbers: [6], ExtensionRanges: [1000:2000, 3000]}, {Name: C, Messages: [{Name: A, Fields: [{Name: F, Number: 1, Cardinality: required, Kind: bytes, JSONName: "F", HasDefault: true, Default: "dead\xbe\xef"}], RequiredNumbers: [1]}], Enums: [{Name: E1, Values: [{Name: FOO}, {Name: BAR, Number: 1}]}], Extensions: [{Name: X, Number: 1000, Cardinality: repeated, Kind: message, ExtendedType: test.B, MessageType: test.C}]}], Enums: [{Name: E1, Values: [{Name: FOO}, {Name: BAR, Number: 1}]}], Extensions: [{Name: X, Number: 1000, Cardinality: repeated, Kind: message, IsPacked: true, ExtendedType: test.B, MessageType: test.C}], Services: [{Name: S, Methods: [{Name: M, InputType: test.A, OutputType: test.C.A, IsStreamingClient: true, IsStreamingServer: true}]}]}`
-	got := fmt.Sprintf("%v", fd)
-	got = strings.Replace(got, "FileDescriptor ", "FileDescriptor", 1) // cleanup randomizer
-	if got != want {
-		t.Errorf("fmt.Sprintf(%q, fd):\ngot:  %s\nwant: %s", "%v", got, want)
-	}
-}
-
-func testFileFormatMulti(t *testing.T, fd pref.FileDescriptor) {
+func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 	const want = `FileDescriptor{
 	Syntax:  proto2
 	Path:    "path/to/file.proto"
@@ -820,11 +811,30 @@ func testFileFormatMulti(t *testing.T, fd pref.FileDescriptor) {
 		}]
 	}]
 }`
-	got := fmt.Sprintf("%+v", fd)
-	got = strings.Replace(got, "FileDescriptor ", "FileDescriptor", 1) // cleanup randomizer
-	if got != want {
-		t.Errorf("fmt.Sprintf(%q, fd):\ngot:  %s\nwant: %s", "%+v", got, want)
+	tests := []struct{ fmt, want string }{{"%v", compactMultiFormat(want)}, {"%+v", want}}
+	for _, tt := range tests {
+		got := fmt.Sprintf(tt.fmt, fd)
+		got = strings.Replace(got, "FileDescriptor ", "FileDescriptor", 1) // cleanup randomizer
+		if got != tt.want {
+			t.Errorf("fmt.Sprintf(%q, fd):\ngot:  %s\nwant: %s", tt.fmt, got, tt.want)
+		}
 	}
+}
+
+// compactMultiFormat returns the single line form of a multi line output.
+func compactMultiFormat(s string) string {
+	var b []byte
+	for _, s := range strings.Split(s, "\n") {
+		s = strings.TrimSpace(s)
+		s = regexp.MustCompile(": +").ReplaceAllString(s, ": ")
+		prevWord := len(b) > 0 && b[len(b)-1] != '[' && b[len(b)-1] != '{'
+		nextWord := len(s) > 0 && s[0] != ']' && s[0] != '}'
+		if prevWord && nextWord {
+			b = append(b, ", "...)
+		}
+		b = append(b, s...)
+	}
+	return string(b)
 }
 
 func TestResolve(t *testing.T) {
