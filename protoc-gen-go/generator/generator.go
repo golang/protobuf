@@ -1208,12 +1208,7 @@ func (g *Generator) generateHeader() {
 	}
 	g.P()
 
-	importPath, _, _ := g.file.goPackageOption()
-	if importPath == "" {
-		g.P("package ", g.file.packageName)
-	} else {
-		g.P("package ", g.file.packageName, " // import ", GoImportPath(g.ImportPrefix)+importPath)
-	}
+	g.P("package ", g.file.packageName)
 	g.P()
 
 	if loc, ok := g.file.comments[strconv.Itoa(packagePath)]; ok {
