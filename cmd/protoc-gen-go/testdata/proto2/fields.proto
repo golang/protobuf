@@ -9,7 +9,7 @@ package goproto.protoc.proto2;
 option go_package = "google.golang.org/proto/cmd/protoc-gen-go/testdata/proto2";
 
 message FieldTestMessage {
-  optional string   optional_bool     = 1;
+  optional bool     optional_bool     = 1;
   optional Enum     optional_enum     = 2;
   optional int32    optional_int32    = 3;
   optional sint32   optional_sint32   = 4;
@@ -30,7 +30,7 @@ message FieldTestMessage {
     optional string optional_group = 19;
   }
 
-  required string   required_bool     = 101;
+  required bool     required_bool     = 101;
   required Enum     required_enum     = 102;
   required int32    required_int32    = 103;
   required sint32   required_sint32   = 104;
@@ -51,7 +51,7 @@ message FieldTestMessage {
     required string required_group = 119;
   }
 
-  repeated string   repeated_bool     = 201;
+  repeated bool     repeated_bool     = 201;
   repeated Enum     repeated_enum     = 202;
   repeated int32    repeated_int32    = 203;
   repeated sint32   repeated_sint32   = 204;
@@ -72,6 +72,33 @@ message FieldTestMessage {
     repeated string repeated_group = 219;
   }
 
-  enum Enum { ZERO = 0; }
+  optional bool     default_bool     = 301 [default=true];
+  optional Enum     default_enum     = 302 [default=ONE];
+  optional int32    default_int32    = 303 [default=1];
+  optional sint32   default_sint32   = 304 [default=1];
+  optional uint32   default_uint32   = 305 [default=1];
+  optional int64    default_int64    = 306 [default=1];
+  optional sint64   default_sint64   = 307 [default=1];
+  optional uint64   default_uint64   = 308 [default=1];
+  optional sfixed32 default_sfixed32 = 309 [default=1];
+  optional fixed32  default_fixed32  = 310 [default=1];
+  optional float    default_float    = 311 [default=1.5];
+  optional sfixed64 default_sfixed64 = 312 [default=1];
+  optional fixed64  default_fixed64  = 313 [default=1];
+  optional double   default_double   = 314 [default=1.5];
+  optional string   default_string   = 315 [default="x,y"];
+  optional bytes    default_bytes    = 316 [default="x,y"];
+
+  optional float  default_float_neginf  = 400 [default=-inf];
+  optional float  default_float_posinf  = 401 [default=inf];
+  optional float  default_float_nan     = 402 [default=nan];
+  optional double default_double_neginf = 403 [default=-inf];
+  optional double default_double_posinf = 404 [default=inf];
+  optional double default_double_nan    = 405 [default=nan];
+
+  enum Enum {
+    ZERO = 0;
+    ONE = 1;
+  }
   message Message {}
 }

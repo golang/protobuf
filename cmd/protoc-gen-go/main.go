@@ -13,6 +13,7 @@ import (
 	"encoding/hex"
 	"flag"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
@@ -321,6 +322,59 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 	})
 	g.P()
 
+	// Constants and vars holding the default values of fields.
+	for _, field := range message.Fields {
+		if !field.Desc.HasDefault() {
+			continue
+		}
+		defVarName := "Default_" + message.GoIdent.GoName + "_" + field.GoIdent.GoName
+		def := field.Desc.Default()
+		switch field.Desc.Kind() {
+		case protoreflect.StringKind:
+			g.P("const ", defVarName, " string = ", strconv.Quote(def.String()))
+		case protoreflect.BytesKind:
+			g.P("var ", defVarName, " []byte = []byte(", strconv.Quote(string(def.Bytes())), ")")
+		case protoreflect.EnumKind:
+			enum := field.EnumType
+			evalue := enum.Values[enum.Desc.Values().ByNumber(def.Enum()).Index()]
+			g.P("const ", defVarName, " ", field.EnumType.GoIdent, " = ", evalue.GoIdent)
+		case protoreflect.FloatKind, protoreflect.DoubleKind:
+			// Floating point numbers need extra handling for -Inf/Inf/NaN.
+			f := field.Desc.Default().Float()
+			goType := "float64"
+			if field.Desc.Kind() == protoreflect.FloatKind {
+				goType = "float32"
+			}
+			// funcCall returns a call to a function in the math package,
+			// possibly converting the result to float32.
+			funcCall := func(fn, param string) string {
+				s := g.QualifiedGoIdent(protogen.GoIdent{
+					GoImportPath: "math",
+					GoName:       fn,
+				}) + param
+				if goType != "float64" {
+					s = goType + "(" + s + ")"
+				}
+				return s
+			}
+			switch {
+			case math.IsInf(f, -1):
+				g.P("var ", defVarName, " ", goType, " = ", funcCall("Inf", "(-1)"))
+			case math.IsInf(f, 1):
+				g.P("var ", defVarName, " ", goType, " = ", funcCall("Inf", "(1)"))
+			case math.IsNaN(f):
+				g.P("var ", defVarName, " ", goType, " = ", funcCall("NaN", "()"))
+			default:
+				g.P("const ", defVarName, " ", goType, " = ", f)
+			}
+		default:
+			goType := fieldGoType(g, field)
+			goType = strings.TrimPrefix(goType, "*")
+			g.P("const ", defVarName, " ", goType, " = ", def.Interface())
+		}
+	}
+	g.P()
+
 	// TODO: getters
 
 	for _, nested := range message.Messages {
@@ -390,7 +444,6 @@ func fieldProtobufTag(field *protogen.Field) string {
 	case protoreflect.Repeated:
 		tag = append(tag, "rep")
 	}
-	// TODO: default values
 	// TODO: packed
 	// name
 	name := string(field.Desc.Name())
@@ -416,6 +469,36 @@ func fieldProtobufTag(field *protogen.Field) string {
 	// oneof
 	if field.Desc.OneofType() != nil {
 		tag = append(tag, "oneof")
+	}
+	// default value
+	// This must appear last in the tag, since commas in strings aren't escaped.
+	if field.Desc.HasDefault() {
+		var def string
+		switch field.Desc.Kind() {
+		case protoreflect.BoolKind:
+			if field.Desc.Default().Bool() {
+				def = "1"
+			} else {
+				def = "0"
+			}
+		case protoreflect.BytesKind:
+			def = string(field.Desc.Default().Bytes())
+		case protoreflect.FloatKind, protoreflect.DoubleKind:
+			f := field.Desc.Default().Float()
+			switch {
+			case math.IsInf(f, -1):
+				def = "-inf"
+			case math.IsInf(f, 1):
+				def = "inf"
+			case math.IsNaN(f):
+				def = "nan"
+			default:
+				def = fmt.Sprint(f)
+			}
+		default:
+			def = fmt.Sprint(field.Desc.Default().Interface())
+		}
+		tag = append(tag, "def="+def)
 	}
 	return strings.Join(tag, ",")
 }
