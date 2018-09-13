@@ -100,6 +100,34 @@ message FieldTestMessage {
   map<string,Message> map_string_message = 501;
   map<fixed64,Enum>   map_fixed64_enum   = 502;
 
+  oneof oneof_field {
+    bool     oneof_bool     = 601;
+    Enum     oneof_enum     = 602;
+    int32    oneof_int32    = 603;
+    sint32   oneof_sint32   = 604;
+    uint32   oneof_uint32   = 605;
+    int64    oneof_int64    = 606;
+    sint64   oneof_sint64   = 607;
+    uint64   oneof_uint64   = 608;
+    sfixed32 oneof_sfixed32 = 609;
+    fixed32  oneof_fixed32  = 610;
+    float    oneof_float    = 611;
+    sfixed64 oneof_sfixed64 = 612;
+    fixed64  oneof_fixed64  = 613;
+    double   oneof_double   = 614;
+    string   oneof_string   = 615;
+    bytes    oneof_bytes    = 616;
+    Message  oneof_Message  = 617;
+    group OneofGroup = 618 {
+      optional string oneof_group_field = 619;
+    }
+  }
+
+  oneof oneof_two {
+    int32 oneof_two_1 = 700;
+    int64 oneof_two_2 = 701;
+  }
+
   enum Enum {
     ZERO = 0;
     ONE = 1;

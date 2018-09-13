@@ -61,88 +61,112 @@ func (FieldTestMessage_Enum) EnumDescriptor() ([]byte, []int) {
 }
 
 type FieldTestMessage struct {
-	OptionalBool         *bool                                `protobuf:"varint,1,opt,name=optional_bool,json=optionalBool" json:"optional_bool,omitempty"`
-	OptionalEnum         *FieldTestMessage_Enum               `protobuf:"varint,2,opt,name=optional_enum,json=optionalEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum" json:"optional_enum,omitempty"`
-	OptionalInt32        *int32                               `protobuf:"varint,3,opt,name=optional_int32,json=optionalInt32" json:"optional_int32,omitempty"`
-	OptionalSint32       *int32                               `protobuf:"zigzag32,4,opt,name=optional_sint32,json=optionalSint32" json:"optional_sint32,omitempty"`
-	OptionalUint32       *uint32                              `protobuf:"varint,5,opt,name=optional_uint32,json=optionalUint32" json:"optional_uint32,omitempty"`
-	OptionalInt64        *int64                               `protobuf:"varint,6,opt,name=optional_int64,json=optionalInt64" json:"optional_int64,omitempty"`
-	OptionalSint64       *int64                               `protobuf:"zigzag64,7,opt,name=optional_sint64,json=optionalSint64" json:"optional_sint64,omitempty"`
-	OptionalUint64       *uint64                              `protobuf:"varint,8,opt,name=optional_uint64,json=optionalUint64" json:"optional_uint64,omitempty"`
-	OptionalSfixed32     *int32                               `protobuf:"fixed32,9,opt,name=optional_sfixed32,json=optionalSfixed32" json:"optional_sfixed32,omitempty"`
-	OptionalFixed32      *uint32                              `protobuf:"fixed32,10,opt,name=optional_fixed32,json=optionalFixed32" json:"optional_fixed32,omitempty"`
-	OptionalFloat        *float32                             `protobuf:"fixed32,11,opt,name=optional_float,json=optionalFloat" json:"optional_float,omitempty"`
-	OptionalSfixed64     *int64                               `protobuf:"fixed64,12,opt,name=optional_sfixed64,json=optionalSfixed64" json:"optional_sfixed64,omitempty"`
-	OptionalFixed64      *uint64                              `protobuf:"fixed64,13,opt,name=optional_fixed64,json=optionalFixed64" json:"optional_fixed64,omitempty"`
-	OptionalDouble       *float64                             `protobuf:"fixed64,14,opt,name=optional_double,json=optionalDouble" json:"optional_double,omitempty"`
-	OptionalString       *string                              `protobuf:"bytes,15,opt,name=optional_string,json=optionalString" json:"optional_string,omitempty"`
-	OptionalBytes        []byte                               `protobuf:"bytes,16,opt,name=optional_bytes,json=optionalBytes" json:"optional_bytes,omitempty"`
-	Optional_Message     *FieldTestMessage_Message            `protobuf:"bytes,17,opt,name=optional_Message,json=optionalMessage" json:"optional_Message,omitempty"`
-	Optionalgroup        *FieldTestMessage_OptionalGroup      `protobuf:"group,18,opt,name=OptionalGroup,json=optionalgroup" json:"optionalgroup,omitempty"`
-	RequiredBool         *bool                                `protobuf:"varint,101,req,name=required_bool,json=requiredBool" json:"required_bool,omitempty"`
-	RequiredEnum         *FieldTestMessage_Enum               `protobuf:"varint,102,req,name=required_enum,json=requiredEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum" json:"required_enum,omitempty"`
-	RequiredInt32        *int32                               `protobuf:"varint,103,req,name=required_int32,json=requiredInt32" json:"required_int32,omitempty"`
-	RequiredSint32       *int32                               `protobuf:"zigzag32,104,req,name=required_sint32,json=requiredSint32" json:"required_sint32,omitempty"`
-	RequiredUint32       *uint32                              `protobuf:"varint,105,req,name=required_uint32,json=requiredUint32" json:"required_uint32,omitempty"`
-	RequiredInt64        *int64                               `protobuf:"varint,106,req,name=required_int64,json=requiredInt64" json:"required_int64,omitempty"`
-	RequiredSint64       *int64                               `protobuf:"zigzag64,107,req,name=required_sint64,json=requiredSint64" json:"required_sint64,omitempty"`
-	RequiredUint64       *uint64                              `protobuf:"varint,108,req,name=required_uint64,json=requiredUint64" json:"required_uint64,omitempty"`
-	RequiredSfixed32     *int32                               `protobuf:"fixed32,109,req,name=required_sfixed32,json=requiredSfixed32" json:"required_sfixed32,omitempty"`
-	RequiredFixed32      *uint32                              `protobuf:"fixed32,110,req,name=required_fixed32,json=requiredFixed32" json:"required_fixed32,omitempty"`
-	RequiredFloat        *float32                             `protobuf:"fixed32,111,req,name=required_float,json=requiredFloat" json:"required_float,omitempty"`
-	RequiredSfixed64     *int64                               `protobuf:"fixed64,112,req,name=required_sfixed64,json=requiredSfixed64" json:"required_sfixed64,omitempty"`
-	RequiredFixed64      *uint64                              `protobuf:"fixed64,113,req,name=required_fixed64,json=requiredFixed64" json:"required_fixed64,omitempty"`
-	RequiredDouble       *float64                             `protobuf:"fixed64,114,req,name=required_double,json=requiredDouble" json:"required_double,omitempty"`
-	RequiredString       *string                              `protobuf:"bytes,115,req,name=required_string,json=requiredString" json:"required_string,omitempty"`
-	RequiredBytes        []byte                               `protobuf:"bytes,116,req,name=required_bytes,json=requiredBytes" json:"required_bytes,omitempty"`
-	Required_Message     *FieldTestMessage_Message            `protobuf:"bytes,117,req,name=required_Message,json=requiredMessage" json:"required_Message,omitempty"`
-	Requiredgroup        *FieldTestMessage_RequiredGroup      `protobuf:"group,118,req,name=RequiredGroup,json=requiredgroup" json:"requiredgroup,omitempty"`
-	RepeatedBool         []bool                               `protobuf:"varint,201,rep,name=repeated_bool,json=repeatedBool" json:"repeated_bool,omitempty"`
-	RepeatedEnum         []FieldTestMessage_Enum              `protobuf:"varint,202,rep,name=repeated_enum,json=repeatedEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum" json:"repeated_enum,omitempty"`
-	RepeatedInt32        []int32                              `protobuf:"varint,203,rep,name=repeated_int32,json=repeatedInt32" json:"repeated_int32,omitempty"`
-	RepeatedSint32       []int32                              `protobuf:"zigzag32,204,rep,name=repeated_sint32,json=repeatedSint32" json:"repeated_sint32,omitempty"`
-	RepeatedUint32       []uint32                             `protobuf:"varint,205,rep,name=repeated_uint32,json=repeatedUint32" json:"repeated_uint32,omitempty"`
-	RepeatedInt64        []int64                              `protobuf:"varint,206,rep,name=repeated_int64,json=repeatedInt64" json:"repeated_int64,omitempty"`
-	RepeatedSint64       []int64                              `protobuf:"zigzag64,207,rep,name=repeated_sint64,json=repeatedSint64" json:"repeated_sint64,omitempty"`
-	RepeatedUint64       []uint64                             `protobuf:"varint,208,rep,name=repeated_uint64,json=repeatedUint64" json:"repeated_uint64,omitempty"`
-	RepeatedSfixed32     []int32                              `protobuf:"fixed32,209,rep,name=repeated_sfixed32,json=repeatedSfixed32" json:"repeated_sfixed32,omitempty"`
-	RepeatedFixed32      []uint32                             `protobuf:"fixed32,210,rep,name=repeated_fixed32,json=repeatedFixed32" json:"repeated_fixed32,omitempty"`
-	RepeatedFloat        []float32                            `protobuf:"fixed32,211,rep,name=repeated_float,json=repeatedFloat" json:"repeated_float,omitempty"`
-	RepeatedSfixed64     []int64                              `protobuf:"fixed64,212,rep,name=repeated_sfixed64,json=repeatedSfixed64" json:"repeated_sfixed64,omitempty"`
-	RepeatedFixed64      []uint64                             `protobuf:"fixed64,213,rep,name=repeated_fixed64,json=repeatedFixed64" json:"repeated_fixed64,omitempty"`
-	RepeatedDouble       []float64                            `protobuf:"fixed64,214,rep,name=repeated_double,json=repeatedDouble" json:"repeated_double,omitempty"`
-	RepeatedString       []string                             `protobuf:"bytes,215,rep,name=repeated_string,json=repeatedString" json:"repeated_string,omitempty"`
-	RepeatedBytes        [][]byte                             `protobuf:"bytes,216,rep,name=repeated_bytes,json=repeatedBytes" json:"repeated_bytes,omitempty"`
-	Repeated_Message     []*FieldTestMessage_Message          `protobuf:"bytes,217,rep,name=repeated_Message,json=repeatedMessage" json:"repeated_Message,omitempty"`
-	Repeatedgroup        []*FieldTestMessage_RepeatedGroup    `protobuf:"group,218,rep,name=RepeatedGroup,json=repeatedgroup" json:"repeatedgroup,omitempty"`
-	DefaultBool          *bool                                `protobuf:"varint,301,opt,name=default_bool,json=defaultBool,def=1" json:"default_bool,omitempty"`
-	DefaultEnum          *FieldTestMessage_Enum               `protobuf:"varint,302,opt,name=default_enum,json=defaultEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum,def=1" json:"default_enum,omitempty"`
-	DefaultInt32         *int32                               `protobuf:"varint,303,opt,name=default_int32,json=defaultInt32,def=1" json:"default_int32,omitempty"`
-	DefaultSint32        *int32                               `protobuf:"zigzag32,304,opt,name=default_sint32,json=defaultSint32,def=1" json:"default_sint32,omitempty"`
-	DefaultUint32        *uint32                              `protobuf:"varint,305,opt,name=default_uint32,json=defaultUint32,def=1" json:"default_uint32,omitempty"`
-	DefaultInt64         *int64                               `protobuf:"varint,306,opt,name=default_int64,json=defaultInt64,def=1" json:"default_int64,omitempty"`
-	DefaultSint64        *int64                               `protobuf:"zigzag64,307,opt,name=default_sint64,json=defaultSint64,def=1" json:"default_sint64,omitempty"`
-	DefaultUint64        *uint64                              `protobuf:"varint,308,opt,name=default_uint64,json=defaultUint64,def=1" json:"default_uint64,omitempty"`
-	DefaultSfixed32      *int32                               `protobuf:"fixed32,309,opt,name=default_sfixed32,json=defaultSfixed32,def=1" json:"default_sfixed32,omitempty"`
-	DefaultFixed32       *uint32                              `protobuf:"fixed32,310,opt,name=default_fixed32,json=defaultFixed32,def=1" json:"default_fixed32,omitempty"`
-	DefaultFloat         *float32                             `protobuf:"fixed32,311,opt,name=default_float,json=defaultFloat,def=1.5" json:"default_float,omitempty"`
-	DefaultSfixed64      *int64                               `protobuf:"fixed64,312,opt,name=default_sfixed64,json=defaultSfixed64,def=1" json:"default_sfixed64,omitempty"`
-	DefaultFixed64       *uint64                              `protobuf:"fixed64,313,opt,name=default_fixed64,json=defaultFixed64,def=1" json:"default_fixed64,omitempty"`
-	DefaultDouble        *float64                             `protobuf:"fixed64,314,opt,name=default_double,json=defaultDouble,def=1.5" json:"default_double,omitempty"`
-	DefaultString        *string                              `protobuf:"bytes,315,opt,name=default_string,json=defaultString,def=x,y" json:"default_string,omitempty"`
-	DefaultBytes         []byte                               `protobuf:"bytes,316,opt,name=default_bytes,json=defaultBytes,def=x,y" json:"default_bytes,omitempty"`
-	DefaultFloatNeginf   *float32                             `protobuf:"fixed32,400,opt,name=default_float_neginf,json=defaultFloatNeginf,def=-inf" json:"default_float_neginf,omitempty"`
-	DefaultFloatPosinf   *float32                             `protobuf:"fixed32,401,opt,name=default_float_posinf,json=defaultFloatPosinf,def=inf" json:"default_float_posinf,omitempty"`
-	DefaultFloatNan      *float32                             `protobuf:"fixed32,402,opt,name=default_float_nan,json=defaultFloatNan,def=nan" json:"default_float_nan,omitempty"`
-	DefaultDoubleNeginf  *float64                             `protobuf:"fixed64,403,opt,name=default_double_neginf,json=defaultDoubleNeginf,def=-inf" json:"default_double_neginf,omitempty"`
-	DefaultDoublePosinf  *float64                             `protobuf:"fixed64,404,opt,name=default_double_posinf,json=defaultDoublePosinf,def=inf" json:"default_double_posinf,omitempty"`
-	DefaultDoubleNan     *float64                             `protobuf:"fixed64,405,opt,name=default_double_nan,json=defaultDoubleNan,def=nan" json:"default_double_nan,omitempty"`
-	MapInt32Int64        map[int32]int64                      `protobuf:"bytes,500,rep,name=map_int32_int64,json=mapInt32Int64" json:"map_int32_int64,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
-	MapStringMessage     map[string]*FieldTestMessage_Message `protobuf:"bytes,501,rep,name=map_string_message,json=mapStringMessage" json:"map_string_message,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	MapFixed64Enum       map[uint64]FieldTestMessage_Enum     `protobuf:"bytes,502,rep,name=map_fixed64_enum,json=mapFixed64Enum" json:"map_fixed64_enum,omitempty" protobuf_key:"fixed64,1,opt,name=key" protobuf_val:"varint,2,opt,name=value,enum=goproto.protoc.proto2.FieldTestMessage_Enum"`
-	XXX_NoUnkeyedLiteral struct{}                             `json:"-"`
-	XXX_unrecognized     []byte                               `json:"-"`
-	XXX_sizecache        int32                                `json:"-"`
+	OptionalBool        *bool                                `protobuf:"varint,1,opt,name=optional_bool,json=optionalBool" json:"optional_bool,omitempty"`
+	OptionalEnum        *FieldTestMessage_Enum               `protobuf:"varint,2,opt,name=optional_enum,json=optionalEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum" json:"optional_enum,omitempty"`
+	OptionalInt32       *int32                               `protobuf:"varint,3,opt,name=optional_int32,json=optionalInt32" json:"optional_int32,omitempty"`
+	OptionalSint32      *int32                               `protobuf:"zigzag32,4,opt,name=optional_sint32,json=optionalSint32" json:"optional_sint32,omitempty"`
+	OptionalUint32      *uint32                              `protobuf:"varint,5,opt,name=optional_uint32,json=optionalUint32" json:"optional_uint32,omitempty"`
+	OptionalInt64       *int64                               `protobuf:"varint,6,opt,name=optional_int64,json=optionalInt64" json:"optional_int64,omitempty"`
+	OptionalSint64      *int64                               `protobuf:"zigzag64,7,opt,name=optional_sint64,json=optionalSint64" json:"optional_sint64,omitempty"`
+	OptionalUint64      *uint64                              `protobuf:"varint,8,opt,name=optional_uint64,json=optionalUint64" json:"optional_uint64,omitempty"`
+	OptionalSfixed32    *int32                               `protobuf:"fixed32,9,opt,name=optional_sfixed32,json=optionalSfixed32" json:"optional_sfixed32,omitempty"`
+	OptionalFixed32     *uint32                              `protobuf:"fixed32,10,opt,name=optional_fixed32,json=optionalFixed32" json:"optional_fixed32,omitempty"`
+	OptionalFloat       *float32                             `protobuf:"fixed32,11,opt,name=optional_float,json=optionalFloat" json:"optional_float,omitempty"`
+	OptionalSfixed64    *int64                               `protobuf:"fixed64,12,opt,name=optional_sfixed64,json=optionalSfixed64" json:"optional_sfixed64,omitempty"`
+	OptionalFixed64     *uint64                              `protobuf:"fixed64,13,opt,name=optional_fixed64,json=optionalFixed64" json:"optional_fixed64,omitempty"`
+	OptionalDouble      *float64                             `protobuf:"fixed64,14,opt,name=optional_double,json=optionalDouble" json:"optional_double,omitempty"`
+	OptionalString      *string                              `protobuf:"bytes,15,opt,name=optional_string,json=optionalString" json:"optional_string,omitempty"`
+	OptionalBytes       []byte                               `protobuf:"bytes,16,opt,name=optional_bytes,json=optionalBytes" json:"optional_bytes,omitempty"`
+	Optional_Message    *FieldTestMessage_Message            `protobuf:"bytes,17,opt,name=optional_Message,json=optionalMessage" json:"optional_Message,omitempty"`
+	Optionalgroup       *FieldTestMessage_OptionalGroup      `protobuf:"group,18,opt,name=OptionalGroup,json=optionalgroup" json:"optionalgroup,omitempty"`
+	RequiredBool        *bool                                `protobuf:"varint,101,req,name=required_bool,json=requiredBool" json:"required_bool,omitempty"`
+	RequiredEnum        *FieldTestMessage_Enum               `protobuf:"varint,102,req,name=required_enum,json=requiredEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum" json:"required_enum,omitempty"`
+	RequiredInt32       *int32                               `protobuf:"varint,103,req,name=required_int32,json=requiredInt32" json:"required_int32,omitempty"`
+	RequiredSint32      *int32                               `protobuf:"zigzag32,104,req,name=required_sint32,json=requiredSint32" json:"required_sint32,omitempty"`
+	RequiredUint32      *uint32                              `protobuf:"varint,105,req,name=required_uint32,json=requiredUint32" json:"required_uint32,omitempty"`
+	RequiredInt64       *int64                               `protobuf:"varint,106,req,name=required_int64,json=requiredInt64" json:"required_int64,omitempty"`
+	RequiredSint64      *int64                               `protobuf:"zigzag64,107,req,name=required_sint64,json=requiredSint64" json:"required_sint64,omitempty"`
+	RequiredUint64      *uint64                              `protobuf:"varint,108,req,name=required_uint64,json=requiredUint64" json:"required_uint64,omitempty"`
+	RequiredSfixed32    *int32                               `protobuf:"fixed32,109,req,name=required_sfixed32,json=requiredSfixed32" json:"required_sfixed32,omitempty"`
+	RequiredFixed32     *uint32                              `protobuf:"fixed32,110,req,name=required_fixed32,json=requiredFixed32" json:"required_fixed32,omitempty"`
+	RequiredFloat       *float32                             `protobuf:"fixed32,111,req,name=required_float,json=requiredFloat" json:"required_float,omitempty"`
+	RequiredSfixed64    *int64                               `protobuf:"fixed64,112,req,name=required_sfixed64,json=requiredSfixed64" json:"required_sfixed64,omitempty"`
+	RequiredFixed64     *uint64                              `protobuf:"fixed64,113,req,name=required_fixed64,json=requiredFixed64" json:"required_fixed64,omitempty"`
+	RequiredDouble      *float64                             `protobuf:"fixed64,114,req,name=required_double,json=requiredDouble" json:"required_double,omitempty"`
+	RequiredString      *string                              `protobuf:"bytes,115,req,name=required_string,json=requiredString" json:"required_string,omitempty"`
+	RequiredBytes       []byte                               `protobuf:"bytes,116,req,name=required_bytes,json=requiredBytes" json:"required_bytes,omitempty"`
+	Required_Message    *FieldTestMessage_Message            `protobuf:"bytes,117,req,name=required_Message,json=requiredMessage" json:"required_Message,omitempty"`
+	Requiredgroup       *FieldTestMessage_RequiredGroup      `protobuf:"group,118,req,name=RequiredGroup,json=requiredgroup" json:"requiredgroup,omitempty"`
+	RepeatedBool        []bool                               `protobuf:"varint,201,rep,name=repeated_bool,json=repeatedBool" json:"repeated_bool,omitempty"`
+	RepeatedEnum        []FieldTestMessage_Enum              `protobuf:"varint,202,rep,name=repeated_enum,json=repeatedEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum" json:"repeated_enum,omitempty"`
+	RepeatedInt32       []int32                              `protobuf:"varint,203,rep,name=repeated_int32,json=repeatedInt32" json:"repeated_int32,omitempty"`
+	RepeatedSint32      []int32                              `protobuf:"zigzag32,204,rep,name=repeated_sint32,json=repeatedSint32" json:"repeated_sint32,omitempty"`
+	RepeatedUint32      []uint32                             `protobuf:"varint,205,rep,name=repeated_uint32,json=repeatedUint32" json:"repeated_uint32,omitempty"`
+	RepeatedInt64       []int64                              `protobuf:"varint,206,rep,name=repeated_int64,json=repeatedInt64" json:"repeated_int64,omitempty"`
+	RepeatedSint64      []int64                              `protobuf:"zigzag64,207,rep,name=repeated_sint64,json=repeatedSint64" json:"repeated_sint64,omitempty"`
+	RepeatedUint64      []uint64                             `protobuf:"varint,208,rep,name=repeated_uint64,json=repeatedUint64" json:"repeated_uint64,omitempty"`
+	RepeatedSfixed32    []int32                              `protobuf:"fixed32,209,rep,name=repeated_sfixed32,json=repeatedSfixed32" json:"repeated_sfixed32,omitempty"`
+	RepeatedFixed32     []uint32                             `protobuf:"fixed32,210,rep,name=repeated_fixed32,json=repeatedFixed32" json:"repeated_fixed32,omitempty"`
+	RepeatedFloat       []float32                            `protobuf:"fixed32,211,rep,name=repeated_float,json=repeatedFloat" json:"repeated_float,omitempty"`
+	RepeatedSfixed64    []int64                              `protobuf:"fixed64,212,rep,name=repeated_sfixed64,json=repeatedSfixed64" json:"repeated_sfixed64,omitempty"`
+	RepeatedFixed64     []uint64                             `protobuf:"fixed64,213,rep,name=repeated_fixed64,json=repeatedFixed64" json:"repeated_fixed64,omitempty"`
+	RepeatedDouble      []float64                            `protobuf:"fixed64,214,rep,name=repeated_double,json=repeatedDouble" json:"repeated_double,omitempty"`
+	RepeatedString      []string                             `protobuf:"bytes,215,rep,name=repeated_string,json=repeatedString" json:"repeated_string,omitempty"`
+	RepeatedBytes       [][]byte                             `protobuf:"bytes,216,rep,name=repeated_bytes,json=repeatedBytes" json:"repeated_bytes,omitempty"`
+	Repeated_Message    []*FieldTestMessage_Message          `protobuf:"bytes,217,rep,name=repeated_Message,json=repeatedMessage" json:"repeated_Message,omitempty"`
+	Repeatedgroup       []*FieldTestMessage_RepeatedGroup    `protobuf:"group,218,rep,name=RepeatedGroup,json=repeatedgroup" json:"repeatedgroup,omitempty"`
+	DefaultBool         *bool                                `protobuf:"varint,301,opt,name=default_bool,json=defaultBool,def=1" json:"default_bool,omitempty"`
+	DefaultEnum         *FieldTestMessage_Enum               `protobuf:"varint,302,opt,name=default_enum,json=defaultEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum,def=1" json:"default_enum,omitempty"`
+	DefaultInt32        *int32                               `protobuf:"varint,303,opt,name=default_int32,json=defaultInt32,def=1" json:"default_int32,omitempty"`
+	DefaultSint32       *int32                               `protobuf:"zigzag32,304,opt,name=default_sint32,json=defaultSint32,def=1" json:"default_sint32,omitempty"`
+	DefaultUint32       *uint32                              `protobuf:"varint,305,opt,name=default_uint32,json=defaultUint32,def=1" json:"default_uint32,omitempty"`
+	DefaultInt64        *int64                               `protobuf:"varint,306,opt,name=default_int64,json=defaultInt64,def=1" json:"default_int64,omitempty"`
+	DefaultSint64       *int64                               `protobuf:"zigzag64,307,opt,name=default_sint64,json=defaultSint64,def=1" json:"default_sint64,omitempty"`
+	DefaultUint64       *uint64                              `protobuf:"varint,308,opt,name=default_uint64,json=defaultUint64,def=1" json:"default_uint64,omitempty"`
+	DefaultSfixed32     *int32                               `protobuf:"fixed32,309,opt,name=default_sfixed32,json=defaultSfixed32,def=1" json:"default_sfixed32,omitempty"`
+	DefaultFixed32      *uint32                              `protobuf:"fixed32,310,opt,name=default_fixed32,json=defaultFixed32,def=1" json:"default_fixed32,omitempty"`
+	DefaultFloat        *float32                             `protobuf:"fixed32,311,opt,name=default_float,json=defaultFloat,def=1.5" json:"default_float,omitempty"`
+	DefaultSfixed64     *int64                               `protobuf:"fixed64,312,opt,name=default_sfixed64,json=defaultSfixed64,def=1" json:"default_sfixed64,omitempty"`
+	DefaultFixed64      *uint64                              `protobuf:"fixed64,313,opt,name=default_fixed64,json=defaultFixed64,def=1" json:"default_fixed64,omitempty"`
+	DefaultDouble       *float64                             `protobuf:"fixed64,314,opt,name=default_double,json=defaultDouble,def=1.5" json:"default_double,omitempty"`
+	DefaultString       *string                              `protobuf:"bytes,315,opt,name=default_string,json=defaultString,def=x,y" json:"default_string,omitempty"`
+	DefaultBytes        []byte                               `protobuf:"bytes,316,opt,name=default_bytes,json=defaultBytes,def=x,y" json:"default_bytes,omitempty"`
+	DefaultFloatNeginf  *float32                             `protobuf:"fixed32,400,opt,name=default_float_neginf,json=defaultFloatNeginf,def=-inf" json:"default_float_neginf,omitempty"`
+	DefaultFloatPosinf  *float32                             `protobuf:"fixed32,401,opt,name=default_float_posinf,json=defaultFloatPosinf,def=inf" json:"default_float_posinf,omitempty"`
+	DefaultFloatNan     *float32                             `protobuf:"fixed32,402,opt,name=default_float_nan,json=defaultFloatNan,def=nan" json:"default_float_nan,omitempty"`
+	DefaultDoubleNeginf *float64                             `protobuf:"fixed64,403,opt,name=default_double_neginf,json=defaultDoubleNeginf,def=-inf" json:"default_double_neginf,omitempty"`
+	DefaultDoublePosinf *float64                             `protobuf:"fixed64,404,opt,name=default_double_posinf,json=defaultDoublePosinf,def=inf" json:"default_double_posinf,omitempty"`
+	DefaultDoubleNan    *float64                             `protobuf:"fixed64,405,opt,name=default_double_nan,json=defaultDoubleNan,def=nan" json:"default_double_nan,omitempty"`
+	MapInt32Int64       map[int32]int64                      `protobuf:"bytes,500,rep,name=map_int32_int64,json=mapInt32Int64" json:"map_int32_int64,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
+	MapStringMessage    map[string]*FieldTestMessage_Message `protobuf:"bytes,501,rep,name=map_string_message,json=mapStringMessage" json:"map_string_message,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	MapFixed64Enum      map[uint64]FieldTestMessage_Enum     `protobuf:"bytes,502,rep,name=map_fixed64_enum,json=mapFixed64Enum" json:"map_fixed64_enum,omitempty" protobuf_key:"fixed64,1,opt,name=key" protobuf_val:"varint,2,opt,name=value,enum=goproto.protoc.proto2.FieldTestMessage_Enum"`
+	// Types that are valid to be assigned to OneofField:
+	//	*FieldTestMessage_OneofBool
+	//	*FieldTestMessage_OneofEnum
+	//	*FieldTestMessage_OneofInt32
+	//	*FieldTestMessage_OneofSint32
+	//	*FieldTestMessage_OneofUint32
+	//	*FieldTestMessage_OneofInt64
+	//	*FieldTestMessage_OneofSint64
+	//	*FieldTestMessage_OneofUint64
+	//	*FieldTestMessage_OneofSfixed32
+	//	*FieldTestMessage_OneofFixed32
+	//	*FieldTestMessage_OneofFloat
+	//	*FieldTestMessage_OneofSfixed64
+	//	*FieldTestMessage_OneofFixed64
+	//	*FieldTestMessage_OneofDouble
+	//	*FieldTestMessage_OneofString
+	//	*FieldTestMessage_OneofBytes
+	//	*FieldTestMessage_Oneof_Message
+	//	*FieldTestMessage_Oneofgroup
+	OneofField isFieldTestMessage_OneofField `protobuf_oneof:"oneof_field"`
+	// Types that are valid to be assigned to OneofTwo:
+	//	*FieldTestMessage_OneofTwo_1
+	//	*FieldTestMessage_OneofTwo_2
+	OneofTwo             isFieldTestMessage_OneofTwo `protobuf_oneof:"oneof_two"`
+	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
+	XXX_unrecognized     []byte                      `json:"-"`
+	XXX_sizecache        int32                       `json:"-"`
 }
 
 func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
@@ -746,6 +770,632 @@ func (m *FieldTestMessage) GetMapFixed64Enum() map[uint64]FieldTestMessage_Enum 
 	return nil
 }
 
+type isFieldTestMessage_OneofField interface {
+	isFieldTestMessage_OneofField()
+}
+
+type FieldTestMessage_OneofBool struct {
+	OneofBool bool `protobuf:"varint,601,opt,name=oneof_bool,json=oneofBool,oneof"`
+}
+
+type FieldTestMessage_OneofEnum struct {
+	OneofEnum FieldTestMessage_Enum `protobuf:"varint,602,opt,name=oneof_enum,json=oneofEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum,oneof"`
+}
+
+type FieldTestMessage_OneofInt32 struct {
+	OneofInt32 int32 `protobuf:"varint,603,opt,name=oneof_int32,json=oneofInt32,oneof"`
+}
+
+type FieldTestMessage_OneofSint32 struct {
+	OneofSint32 int32 `protobuf:"zigzag32,604,opt,name=oneof_sint32,json=oneofSint32,oneof"`
+}
+
+type FieldTestMessage_OneofUint32 struct {
+	OneofUint32 uint32 `protobuf:"varint,605,opt,name=oneof_uint32,json=oneofUint32,oneof"`
+}
+
+type FieldTestMessage_OneofInt64 struct {
+	OneofInt64 int64 `protobuf:"varint,606,opt,name=oneof_int64,json=oneofInt64,oneof"`
+}
+
+type FieldTestMessage_OneofSint64 struct {
+	OneofSint64 int64 `protobuf:"zigzag64,607,opt,name=oneof_sint64,json=oneofSint64,oneof"`
+}
+
+type FieldTestMessage_OneofUint64 struct {
+	OneofUint64 uint64 `protobuf:"varint,608,opt,name=oneof_uint64,json=oneofUint64,oneof"`
+}
+
+type FieldTestMessage_OneofSfixed32 struct {
+	OneofSfixed32 int32 `protobuf:"fixed32,609,opt,name=oneof_sfixed32,json=oneofSfixed32,oneof"`
+}
+
+type FieldTestMessage_OneofFixed32 struct {
+	OneofFixed32 uint32 `protobuf:"fixed32,610,opt,name=oneof_fixed32,json=oneofFixed32,oneof"`
+}
+
+type FieldTestMessage_OneofFloat struct {
+	OneofFloat float32 `protobuf:"fixed32,611,opt,name=oneof_float,json=oneofFloat,oneof"`
+}
+
+type FieldTestMessage_OneofSfixed64 struct {
+	OneofSfixed64 int64 `protobuf:"fixed64,612,opt,name=oneof_sfixed64,json=oneofSfixed64,oneof"`
+}
+
+type FieldTestMessage_OneofFixed64 struct {
+	OneofFixed64 uint64 `protobuf:"fixed64,613,opt,name=oneof_fixed64,json=oneofFixed64,oneof"`
+}
+
+type FieldTestMessage_OneofDouble struct {
+	OneofDouble float64 `protobuf:"fixed64,614,opt,name=oneof_double,json=oneofDouble,oneof"`
+}
+
+type FieldTestMessage_OneofString struct {
+	OneofString string `protobuf:"bytes,615,opt,name=oneof_string,json=oneofString,oneof"`
+}
+
+type FieldTestMessage_OneofBytes struct {
+	OneofBytes []byte `protobuf:"bytes,616,opt,name=oneof_bytes,json=oneofBytes,oneof"`
+}
+
+type FieldTestMessage_Oneof_Message struct {
+	Oneof_Message *FieldTestMessage_Message `protobuf:"bytes,617,opt,name=oneof_Message,json=oneofMessage,oneof"`
+}
+
+type FieldTestMessage_Oneofgroup struct {
+	Oneofgroup *FieldTestMessage_OneofGroup `protobuf:"group,618,opt,name=OneofGroup,json=oneofgroup,oneof"`
+}
+
+func (*FieldTestMessage_OneofBool) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofEnum) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofInt32) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofSint32) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofUint32) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofInt64) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofSint64) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofUint64) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofSfixed32) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofFixed32) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofFloat) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofSfixed64) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofFixed64) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofDouble) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofString) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofBytes) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_Oneof_Message) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_Oneofgroup) isFieldTestMessage_OneofField() {}
+
+func (m *FieldTestMessage) GetOneofField() isFieldTestMessage_OneofField {
+	if m != nil {
+		return m.OneofField
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetOneofBool() bool {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofBool); ok {
+		return x.OneofBool
+	}
+	return false
+}
+
+func (m *FieldTestMessage) GetOneofEnum() FieldTestMessage_Enum {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofEnum); ok {
+		return x.OneofEnum
+	}
+	return FieldTestMessage_ZERO
+}
+
+func (m *FieldTestMessage) GetOneofInt32() int32 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofInt32); ok {
+		return x.OneofInt32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofSint32() int32 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofSint32); ok {
+		return x.OneofSint32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofUint32() uint32 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofUint32); ok {
+		return x.OneofUint32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofInt64() int64 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofInt64); ok {
+		return x.OneofInt64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofSint64() int64 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofSint64); ok {
+		return x.OneofSint64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofUint64() uint64 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofUint64); ok {
+		return x.OneofUint64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofSfixed32() int32 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofSfixed32); ok {
+		return x.OneofSfixed32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofFixed32() uint32 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofFixed32); ok {
+		return x.OneofFixed32
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofFloat() float32 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofFloat); ok {
+		return x.OneofFloat
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofSfixed64() int64 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofSfixed64); ok {
+		return x.OneofSfixed64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofFixed64() uint64 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofFixed64); ok {
+		return x.OneofFixed64
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofDouble() float64 {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofDouble); ok {
+		return x.OneofDouble
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofString() string {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofString); ok {
+		return x.OneofString
+	}
+	return ""
+}
+
+func (m *FieldTestMessage) GetOneofBytes() []byte {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofBytes); ok {
+		return x.OneofBytes
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetOneof_Message() *FieldTestMessage_Message {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_Oneof_Message); ok {
+		return x.Oneof_Message
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetOneofgroup() *FieldTestMessage_OneofGroup {
+	if x, ok := m.GetOneofField().(*FieldTestMessage_Oneofgroup); ok {
+		return x.Oneofgroup
+	}
+	return nil
+}
+
+type isFieldTestMessage_OneofTwo interface {
+	isFieldTestMessage_OneofTwo()
+}
+
+type FieldTestMessage_OneofTwo_1 struct {
+	OneofTwo_1 int32 `protobuf:"varint,700,opt,name=oneof_two_1,json=oneofTwo1,oneof"`
+}
+
+type FieldTestMessage_OneofTwo_2 struct {
+	OneofTwo_2 int64 `protobuf:"varint,701,opt,name=oneof_two_2,json=oneofTwo2,oneof"`
+}
+
+func (*FieldTestMessage_OneofTwo_1) isFieldTestMessage_OneofTwo() {}
+
+func (*FieldTestMessage_OneofTwo_2) isFieldTestMessage_OneofTwo() {}
+
+func (m *FieldTestMessage) GetOneofTwo() isFieldTestMessage_OneofTwo {
+	if m != nil {
+		return m.OneofTwo
+	}
+	return nil
+}
+
+func (m *FieldTestMessage) GetOneofTwo_1() int32 {
+	if x, ok := m.GetOneofTwo().(*FieldTestMessage_OneofTwo_1); ok {
+		return x.OneofTwo_1
+	}
+	return 0
+}
+
+func (m *FieldTestMessage) GetOneofTwo_2() int64 {
+	if x, ok := m.GetOneofTwo().(*FieldTestMessage_OneofTwo_2); ok {
+		return x.OneofTwo_2
+	}
+	return 0
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*FieldTestMessage) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _FieldTestMessage_OneofMarshaler, _FieldTestMessage_OneofUnmarshaler, _FieldTestMessage_OneofSizer, []interface{}{
+		(*FieldTestMessage_OneofBool)(nil),
+		(*FieldTestMessage_OneofEnum)(nil),
+		(*FieldTestMessage_OneofInt32)(nil),
+		(*FieldTestMessage_OneofSint32)(nil),
+		(*FieldTestMessage_OneofUint32)(nil),
+		(*FieldTestMessage_OneofInt64)(nil),
+		(*FieldTestMessage_OneofSint64)(nil),
+		(*FieldTestMessage_OneofUint64)(nil),
+		(*FieldTestMessage_OneofSfixed32)(nil),
+		(*FieldTestMessage_OneofFixed32)(nil),
+		(*FieldTestMessage_OneofFloat)(nil),
+		(*FieldTestMessage_OneofSfixed64)(nil),
+		(*FieldTestMessage_OneofFixed64)(nil),
+		(*FieldTestMessage_OneofDouble)(nil),
+		(*FieldTestMessage_OneofString)(nil),
+		(*FieldTestMessage_OneofBytes)(nil),
+		(*FieldTestMessage_Oneof_Message)(nil),
+		(*FieldTestMessage_Oneofgroup)(nil),
+		(*FieldTestMessage_OneofTwo_1)(nil),
+		(*FieldTestMessage_OneofTwo_2)(nil),
+	}
+}
+
+func _FieldTestMessage_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*FieldTestMessage)
+	// oneof_field
+	switch x := m.OneofField.(type) {
+	case *FieldTestMessage_OneofBool:
+		t := uint64(0)
+		if x.OneofBool {
+			t = 1
+		}
+		b.EncodeVarint(601<<3 | proto.WireVarint)
+		b.EncodeVarint(t)
+	case *FieldTestMessage_OneofEnum:
+		b.EncodeVarint(602<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.OneofEnum))
+	case *FieldTestMessage_OneofInt32:
+		b.EncodeVarint(603<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.OneofInt32))
+	case *FieldTestMessage_OneofSint32:
+		b.EncodeVarint(604<<3 | proto.WireVarint)
+		b.EncodeZigzag32(uint64(x.OneofSint32))
+	case *FieldTestMessage_OneofUint32:
+		b.EncodeVarint(605<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.OneofUint32))
+	case *FieldTestMessage_OneofInt64:
+		b.EncodeVarint(606<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.OneofInt64))
+	case *FieldTestMessage_OneofSint64:
+		b.EncodeVarint(607<<3 | proto.WireVarint)
+		b.EncodeZigzag64(uint64(x.OneofSint64))
+	case *FieldTestMessage_OneofUint64:
+		b.EncodeVarint(608<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.OneofUint64))
+	case *FieldTestMessage_OneofSfixed32:
+		b.EncodeVarint(609<<3 | proto.WireFixed32)
+		b.EncodeFixed32(uint64(x.OneofSfixed32))
+	case *FieldTestMessage_OneofFixed32:
+		b.EncodeVarint(610<<3 | proto.WireFixed32)
+		b.EncodeFixed32(uint64(x.OneofFixed32))
+	case *FieldTestMessage_OneofFloat:
+		b.EncodeVarint(611<<3 | proto.WireFixed32)
+		b.EncodeFixed32(uint64(math.Float32bits(x.OneofFloat)))
+	case *FieldTestMessage_OneofSfixed64:
+		b.EncodeVarint(612<<3 | proto.WireFixed64)
+		b.EncodeFixed64(uint64(x.OneofSfixed64))
+	case *FieldTestMessage_OneofFixed64:
+		b.EncodeVarint(613<<3 | proto.WireFixed64)
+		b.EncodeFixed64(uint64(x.OneofFixed64))
+	case *FieldTestMessage_OneofDouble:
+		b.EncodeVarint(614<<3 | proto.WireFixed64)
+		b.EncodeFixed64(math.Float64bits(x.OneofDouble))
+	case *FieldTestMessage_OneofString:
+		b.EncodeVarint(615<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.OneofString)
+	case *FieldTestMessage_OneofBytes:
+		b.EncodeVarint(616<<3 | proto.WireBytes)
+		b.EncodeRawBytes(x.OneofBytes)
+	case *FieldTestMessage_Oneof_Message:
+		b.EncodeVarint(617<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Oneof_Message); err != nil {
+			return err
+		}
+	case *FieldTestMessage_Oneofgroup:
+		b.EncodeVarint(618<<3 | proto.WireStartGroup)
+		if err := b.Marshal(x.Oneofgroup); err != nil {
+			return err
+		}
+		b.EncodeVarint(618<<3 | proto.WireEndGroup)
+	case nil:
+	default:
+		return fmt.Errorf("FieldTestMessage.OneofField has unexpected type %T", x)
+	}
+	// oneof_two
+	switch x := m.OneofTwo.(type) {
+	case *FieldTestMessage_OneofTwo_1:
+		b.EncodeVarint(700<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.OneofTwo_1))
+	case *FieldTestMessage_OneofTwo_2:
+		b.EncodeVarint(701<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.OneofTwo_2))
+	case nil:
+	default:
+		return fmt.Errorf("FieldTestMessage.OneofTwo has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _FieldTestMessage_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*FieldTestMessage)
+	switch tag {
+	case 601: // oneof_field.oneof_bool
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.OneofField = &FieldTestMessage_OneofBool{x != 0}
+		return true, err
+	case 602: // oneof_field.oneof_enum
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.OneofField = &FieldTestMessage_OneofEnum{FieldTestMessage_Enum(x)}
+		return true, err
+	case 603: // oneof_field.oneof_int32
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.OneofField = &FieldTestMessage_OneofInt32{int32(x)}
+		return true, err
+	case 604: // oneof_field.oneof_sint32
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeZigzag32()
+		m.OneofField = &FieldTestMessage_OneofSint32{int32(x)}
+		return true, err
+	case 605: // oneof_field.oneof_uint32
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.OneofField = &FieldTestMessage_OneofUint32{uint32(x)}
+		return true, err
+	case 606: // oneof_field.oneof_int64
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.OneofField = &FieldTestMessage_OneofInt64{int64(x)}
+		return true, err
+	case 607: // oneof_field.oneof_sint64
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeZigzag64()
+		m.OneofField = &FieldTestMessage_OneofSint64{int64(x)}
+		return true, err
+	case 608: // oneof_field.oneof_uint64
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.OneofField = &FieldTestMessage_OneofUint64{x}
+		return true, err
+	case 609: // oneof_field.oneof_sfixed32
+		if wire != proto.WireFixed32 {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeFixed32()
+		m.OneofField = &FieldTestMessage_OneofSfixed32{int32(x)}
+		return true, err
+	case 610: // oneof_field.oneof_fixed32
+		if wire != proto.WireFixed32 {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeFixed32()
+		m.OneofField = &FieldTestMessage_OneofFixed32{uint32(x)}
+		return true, err
+	case 611: // oneof_field.oneof_float
+		if wire != proto.WireFixed32 {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeFixed32()
+		m.OneofField = &FieldTestMessage_OneofFloat{math.Float32frombits(uint32(x))}
+		return true, err
+	case 612: // oneof_field.oneof_sfixed64
+		if wire != proto.WireFixed64 {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeFixed64()
+		m.OneofField = &FieldTestMessage_OneofSfixed64{int64(x)}
+		return true, err
+	case 613: // oneof_field.oneof_fixed64
+		if wire != proto.WireFixed64 {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeFixed64()
+		m.OneofField = &FieldTestMessage_OneofFixed64{x}
+		return true, err
+	case 614: // oneof_field.oneof_double
+		if wire != proto.WireFixed64 {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeFixed64()
+		m.OneofField = &FieldTestMessage_OneofDouble{math.Float64frombits(x)}
+		return true, err
+	case 615: // oneof_field.oneof_string
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.OneofField = &FieldTestMessage_OneofString{x}
+		return true, err
+	case 616: // oneof_field.oneof_bytes
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeRawBytes(true)
+		m.OneofField = &FieldTestMessage_OneofBytes{x}
+		return true, err
+	case 617: // oneof_field.oneof_Message
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(FieldTestMessage_Message)
+		err := b.DecodeMessage(msg)
+		m.OneofField = &FieldTestMessage_Oneof_Message{msg}
+		return true, err
+	case 618: // oneof_field.oneofgroup
+		if wire != proto.WireStartGroup {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(FieldTestMessage_OneofGroup)
+		err := b.DecodeGroup(msg)
+		m.OneofField = &FieldTestMessage_Oneofgroup{msg}
+		return true, err
+	case 700: // oneof_two.oneof_two_1
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.OneofTwo = &FieldTestMessage_OneofTwo_1{int32(x)}
+		return true, err
+	case 701: // oneof_two.oneof_two_2
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.OneofTwo = &FieldTestMessage_OneofTwo_2{int64(x)}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _FieldTestMessage_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*FieldTestMessage)
+	// oneof_field
+	switch x := m.OneofField.(type) {
+	case *FieldTestMessage_OneofBool:
+		n += 2 // tag and wire
+		n += 1
+	case *FieldTestMessage_OneofEnum:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(x.OneofEnum))
+	case *FieldTestMessage_OneofInt32:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(x.OneofInt32))
+	case *FieldTestMessage_OneofSint32:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64((uint32(x.OneofSint32) << 1) ^ uint32((int32(x.OneofSint32) >> 31))))
+	case *FieldTestMessage_OneofUint32:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(x.OneofUint32))
+	case *FieldTestMessage_OneofInt64:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(x.OneofInt64))
+	case *FieldTestMessage_OneofSint64:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(uint64(x.OneofSint64<<1) ^ uint64((int64(x.OneofSint64) >> 63))))
+	case *FieldTestMessage_OneofUint64:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(x.OneofUint64))
+	case *FieldTestMessage_OneofSfixed32:
+		n += 2 // tag and wire
+		n += 4
+	case *FieldTestMessage_OneofFixed32:
+		n += 2 // tag and wire
+		n += 4
+	case *FieldTestMessage_OneofFloat:
+		n += 2 // tag and wire
+		n += 4
+	case *FieldTestMessage_OneofSfixed64:
+		n += 2 // tag and wire
+		n += 8
+	case *FieldTestMessage_OneofFixed64:
+		n += 2 // tag and wire
+		n += 8
+	case *FieldTestMessage_OneofDouble:
+		n += 2 // tag and wire
+		n += 8
+	case *FieldTestMessage_OneofString:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(len(x.OneofString)))
+		n += len(x.OneofString)
+	case *FieldTestMessage_OneofBytes:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(len(x.OneofBytes)))
+		n += len(x.OneofBytes)
+	case *FieldTestMessage_Oneof_Message:
+		s := proto.Size(x.Oneof_Message)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *FieldTestMessage_Oneofgroup:
+		n += 2 // tag and wire
+		n += proto.Size(x.Oneofgroup)
+		n += 2 // tag and wire
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	// oneof_two
+	switch x := m.OneofTwo.(type) {
+	case *FieldTestMessage_OneofTwo_1:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(x.OneofTwo_1))
+	case *FieldTestMessage_OneofTwo_2:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(x.OneofTwo_2))
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
 type FieldTestMessage_OptionalGroup struct {
 	OptionalGroup        *string  `protobuf:"bytes,19,opt,name=optional_group,json=optionalGroup" json:"optional_group,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -860,6 +1510,44 @@ func (m *FieldTestMessage_RepeatedGroup) GetRepeatedGroup() []string {
 	return nil
 }
 
+type FieldTestMessage_OneofGroup struct {
+	OneofGroupField      *string  `protobuf:"bytes,619,opt,name=oneof_group_field,json=oneofGroupField" json:"oneof_group_field,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *FieldTestMessage_OneofGroup) Reset()         { *m = FieldTestMessage_OneofGroup{} }
+func (m *FieldTestMessage_OneofGroup) String() string { return proto.CompactTextString(m) }
+func (*FieldTestMessage_OneofGroup) ProtoMessage()    {}
+func (*FieldTestMessage_OneofGroup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd8a9d72b841fd68, []int{0, 6}
+}
+func (m *FieldTestMessage_OneofGroup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FieldTestMessage_OneofGroup.Unmarshal(m, b)
+}
+func (m *FieldTestMessage_OneofGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FieldTestMessage_OneofGroup.Marshal(b, m, deterministic)
+}
+func (m *FieldTestMessage_OneofGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FieldTestMessage_OneofGroup.Merge(m, src)
+}
+func (m *FieldTestMessage_OneofGroup) XXX_Size() int {
+	return xxx_messageInfo_FieldTestMessage_OneofGroup.Size(m)
+}
+func (m *FieldTestMessage_OneofGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_FieldTestMessage_OneofGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FieldTestMessage_OneofGroup proto.InternalMessageInfo
+
+func (m *FieldTestMessage_OneofGroup) GetOneofGroupField() string {
+	if m != nil && m.OneofGroupField != nil {
+		return *m.OneofGroupField
+	}
+	return ""
+}
+
 type FieldTestMessage_Message struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -870,7 +1558,7 @@ func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Messa
 func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage_Message) ProtoMessage()    {}
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fd8a9d72b841fd68, []int{0, 6}
+	return fileDescriptor_fd8a9d72b841fd68, []int{0, 7}
 }
 func (m *FieldTestMessage_Message) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldTestMessage_Message.Unmarshal(m, b)
@@ -898,6 +1586,7 @@ func init() {
 	proto.RegisterType((*FieldTestMessage_OptionalGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.OptionalGroup")
 	proto.RegisterType((*FieldTestMessage_RequiredGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.RequiredGroup")
 	proto.RegisterType((*FieldTestMessage_RepeatedGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.RepeatedGroup")
+	proto.RegisterType((*FieldTestMessage_OneofGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.OneofGroup")
 	proto.RegisterType((*FieldTestMessage_Message)(nil), "goproto.protoc.proto2.FieldTestMessage.Message")
 	proto.RegisterEnum("goproto.protoc.proto2.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)
 }
@@ -905,99 +1594,120 @@ func init() {
 func init() { proto.RegisterFile("proto2/fields.proto", fileDescriptor_fd8a9d72b841fd68) }
 
 var fileDescriptor_fd8a9d72b841fd68 = []byte{
-	// 1496 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x98, 0xc9, 0x72, 0xdb, 0x46,
-	0x13, 0xc7, 0x3f, 0x00, 0xd4, 0x36, 0x16, 0x25, 0x6a, 0x64, 0x57, 0xcd, 0xe7, 0xd3, 0x94, 0x9d,
-	0xc4, 0x70, 0x6c, 0x51, 0x31, 0x0d, 0xc3, 0x36, 0x5d, 0xa9, 0x4a, 0xa9, 0x22, 0xa5, 0x72, 0x88,
-	0x9d, 0x20, 0xf1, 0xc5, 0x4e, 0x95, 0x0a, 0x16, 0x41, 0x86, 0x31, 0x09, 0xd0, 0x24, 0xe8, 0x58,
-	0x6f, 0x91, 0xf5, 0x31, 0xb2, 0xef, 0xcb, 0x0b, 0x64, 0xdf, 0xf7, 0x63, 0x5e, 0x21, 0xc9, 0x39,
-	0xd5, 0xd3, 0x33, 0x83, 0x19, 0x40, 0x07, 0x49, 0x27, 0x91, 0x8d, 0x7f, 0xf7, 0xbf, 0xa7, 0x39,
-	0x3f, 0x0c, 0x20, 0xb2, 0x3a, 0x1a, 0x67, 0x79, 0xd6, 0x5a, 0xef, 0xf6, 0x93, 0x41, 0x67, 0xd2,
-	0x14, 0xdf, 0xe8, 0xb1, 0x5e, 0x26, 0x3e, 0xe0, 0xd7, 0x1d, 0xfc, 0xd3, 0x3a, 0xf1, 0xd7, 0x49,
-	0xd2, 0xd8, 0x02, 0xdd, 0x33, 0xc9, 0x24, 0x7f, 0x22, 0x99, 0x4c, 0xe2, 0x5e, 0x42, 0x4f, 0x92,
-	0x7a, 0x36, 0xca, 0xfb, 0x59, 0x1a, 0x0f, 0xb6, 0x6f, 0x65, 0xd9, 0x80, 0x39, 0xdc, 0xf1, 0xe7,
-	0xa3, 0x45, 0x15, 0xdc, 0xc8, 0xb2, 0x01, 0x7d, 0xca, 0x10, 0x25, 0xe9, 0x74, 0xc8, 0x5c, 0xee,
-	0xf8, 0x4b, 0xad, 0xb3, 0xcd, 0x3d, 0x8d, 0x9a, 0x65, 0x93, 0xe6, 0x66, 0x3a, 0x1d, 0x16, 0x25,
-	0xe1, 0x1b, 0xbd, 0x9f, 0x2c, 0xe9, 0x92, 0xfd, 0x34, 0x3f, 0xdf, 0x62, 0x1e, 0x77, 0xfc, 0x99,
-	0x48, 0x1b, 0x3d, 0x0e, 0x41, 0x7a, 0x8a, 0x2c, 0x6b, 0xd9, 0x04, 0x75, 0x35, 0xee, 0xf8, 0x2b,
-	0x91, 0xce, 0x7e, 0xba, 0x5f, 0x11, 0x4e, 0x51, 0x38, 0xc3, 0x1d, 0xbf, 0x5e, 0x08, 0xaf, 0xa3,
-	0xb0, 0x64, 0x1c, 0x06, 0x6c, 0x96, 0x3b, 0xbe, 0x67, 0x19, 0x87, 0x41, 0xc5, 0x38, 0x0c, 0xd8,
-	0x1c, 0x77, 0x7c, 0x6a, 0x1b, 0x97, 0x84, 0x53, 0x14, 0xce, 0x73, 0xc7, 0xaf, 0xd9, 0xc6, 0x61,
-	0x40, 0xcf, 0x90, 0x95, 0xa2, 0x62, 0xb7, 0x7f, 0x2f, 0xe9, 0x9c, 0x6f, 0xb1, 0x05, 0xee, 0xf8,
-	0xcb, 0x51, 0x43, 0xd7, 0x94, 0x71, 0x7a, 0x9a, 0xe8, 0xd8, 0xb6, 0xd2, 0x12, 0xee, 0xf8, 0x73,
-	0x91, 0x76, 0xdb, 0x92, 0x52, 0x73, 0x41, 0xdd, 0x41, 0x16, 0xe7, 0xec, 0x08, 0x77, 0x7c, 0xb7,
-	0x58, 0xd0, 0x16, 0x04, 0xf7, 0xb0, 0x0f, 0x03, 0xb6, 0xc8, 0x1d, 0xbf, 0x51, 0xb6, 0x0f, 0x83,
-	0xaa, 0x7d, 0x18, 0xb0, 0x3a, 0x77, 0xfc, 0xd9, 0x92, 0x7d, 0x69, 0xfd, 0x9d, 0x6c, 0x7a, 0x6b,
-	0x90, 0xb0, 0x25, 0xee, 0xf8, 0x4e, 0xb1, 0xfe, 0x47, 0x45, 0xd4, 0x9e, 0x68, 0x3e, 0xee, 0xa7,
-	0x3d, 0xb6, 0xcc, 0x1d, 0x7f, 0xc1, 0x98, 0xa8, 0x88, 0x5a, 0x0b, 0xba, 0xb5, 0x9b, 0x27, 0x13,
-	0xd6, 0xe0, 0x8e, 0xbf, 0x58, 0x2c, 0x68, 0x03, 0x82, 0xf4, 0x86, 0xd1, 0xa3, 0xdc, 0x68, 0x6c,
-	0x85, 0x3b, 0xfe, 0x91, 0xd6, 0xfa, 0x7e, 0xf7, 0xa5, 0xfc, 0x5b, 0x2c, 0x4a, 0x51, 0x71, 0xb3,
-	0xd8, 0xf0, 0xbd, 0x71, 0x36, 0x1d, 0x31, 0xca, 0x1d, 0x9f, 0xb4, 0x2e, 0xec, 0xb7, 0xf0, 0x35,
-	0x99, 0xfc, 0x18, 0x24, 0x47, 0x76, 0x2d, 0x40, 0x6e, 0x9c, 0xdc, 0x99, 0xf6, 0xc7, 0x49, 0x07,
-	0x91, 0x4b, 0xb8, 0x0b, 0xc8, 0xa9, 0xa0, 0x42, 0x4e, 0x8b, 0x04, 0x72, 0x5d, 0xee, 0x1e, 0x1c,
-	0x39, 0x55, 0x42, 0x21, 0xa7, 0x4b, 0x22, 0x21, 0x3d, 0xee, 0x02, 0x72, 0x2a, 0xaa, 0x91, 0xd3,
-	0x32, 0x89, 0xdc, 0x73, 0xdc, 0x05, 0xe4, 0x54, 0xb8, 0x40, 0x4e, 0x0b, 0x25, 0x72, 0x7d, 0xee,
-	0x02, 0x72, 0x2a, 0x5c, 0x20, 0x67, 0x1a, 0x87, 0x01, 0x7b, 0x9e, 0xbb, 0x80, 0x9c, 0x61, 0x8c,
-	0x3b, 0xc9, 0x32, 0x0e, 0x03, 0x76, 0x9b, 0xbb, 0x80, 0x9c, 0x69, 0x5c, 0x12, 0x4a, 0xe4, 0x06,
-	0xdc, 0x05, 0xe4, 0x4c, 0x63, 0x44, 0xae, 0xa8, 0xa8, 0x30, 0x1a, 0x72, 0x17, 0x90, 0xd3, 0x35,
-	0x0d, 0xe4, 0xb4, 0x58, 0x69, 0x53, 0xee, 0x02, 0x72, 0x2a, 0x6e, 0x20, 0x57, 0x48, 0x05, 0x72,
-	0x19, 0x77, 0x01, 0x39, 0x2d, 0x54, 0xc8, 0x95, 0xec, 0xc3, 0x80, 0x8d, 0xb8, 0x0b, 0xc8, 0xd9,
-	0xf6, 0x88, 0x9c, 0x6d, 0x1f, 0x06, 0xec, 0x0e, 0x77, 0x01, 0x39, 0xcb, 0xbe, 0xb4, 0x7e, 0x89,
-	0xdc, 0x98, 0xbb, 0x80, 0x9c, 0x0a, 0x17, 0xc8, 0x15, 0x0d, 0x20, 0x72, 0x13, 0xee, 0x02, 0x72,
-	0xda, 0x5e, 0x23, 0x57, 0x6c, 0x49, 0x81, 0x5c, 0xce, 0x5d, 0x40, 0x4e, 0xef, 0x49, 0x85, 0x9c,
-	0x96, 0x29, 0xe4, 0xa6, 0xdc, 0x3d, 0x14, 0x72, 0xaa, 0x90, 0x81, 0x9c, 0x0a, 0x21, 0x72, 0x77,
-	0xb9, 0x7b, 0x10, 0xe4, 0x22, 0x99, 0x2c, 0x91, 0xb3, 0x6a, 0xd1, 0xfb, 0xa0, 0xf8, 0x28, 0x89,
-	0x73, 0x85, 0xdc, 0xe7, 0x0e, 0xf7, 0x90, 0x39, 0x8c, 0x0a, 0xe6, 0x22, 0x43, 0x25, 0x98, 0xfb,
-	0x02, 0x54, 0x87, 0x80, 0x0e, 0x6b, 0x08, 0xe8, 0x1e, 0x80, 0xc9, 0xca, 0x9a, 0xc8, 0xc8, 0x97,
-	0x50, 0x54, 0x50, 0x87, 0x61, 0xa4, 0xce, 0x87, 0x9f, 0x4a, 0xea, 0x24, 0x75, 0x5f, 0x81, 0x50,
-	0x60, 0x87, 0x71, 0x89, 0x9d, 0xa9, 0x94, 0xd8, 0x7d, 0x0d, 0xca, 0x7a, 0xa1, 0x94, 0xdc, 0x95,
-	0xbc, 0xc3, 0x80, 0x7d, 0x03, 0x42, 0xcf, 0xf2, 0x0e, 0x83, 0x8a, 0x77, 0x18, 0xb0, 0x6f, 0x41,
-	0x48, 0x6d, 0xef, 0x92, 0x52, 0x92, 0xf7, 0x1d, 0x28, 0x6b, 0xb6, 0x77, 0x18, 0xd0, 0xb3, 0xb0,
-	0xf7, 0x55, 0x4d, 0x85, 0xd3, 0xf7, 0xa0, 0x15, 0xec, 0xc9, 0xaa, 0x8a, 0xbd, 0x07, 0x89, 0x8e,
-	0x69, 0xf6, 0x7e, 0x00, 0xb1, 0x80, 0x0f, 0x2f, 0x28, 0xf8, 0xcc, 0x55, 0x21, 0x7c, 0x3f, 0x82,
-	0xd2, 0x2d, 0x56, 0x85, 0xf4, 0x55, 0x3b, 0x08, 0x03, 0xf6, 0x13, 0x48, 0x1b, 0xe5, 0x0e, 0xc2,
-	0xa0, 0xda, 0x41, 0x18, 0xb0, 0x9f, 0x41, 0x3c, 0x5b, 0xea, 0xa0, 0x34, 0x05, 0xc9, 0xdf, 0x2f,
-	0x20, 0x75, 0x8a, 0x29, 0x48, 0x00, 0xad, 0xc9, 0x22, 0x80, 0xbf, 0x82, 0x72, 0xc1, 0x98, 0x2c,
-	0x12, 0x68, 0xae, 0x0a, 0x09, 0xfc, 0x0d, 0x84, 0x8b, 0xc5, 0xaa, 0x10, 0xc1, 0x9b, 0x46, 0x9f,
-	0x0a, 0xc1, 0xdf, 0x41, 0x79, 0x38, 0x06, 0xb1, 0x92, 0x62, 0xf0, 0xd9, 0x02, 0x00, 0x64, 0xf0,
-	0x0f, 0xa8, 0x7c, 0x20, 0x08, 0x31, 0x5b, 0x43, 0x68, 0x14, 0xa3, 0x3e, 0x59, 0xec, 0x24, 0xdd,
-	0x78, 0x3a, 0xc8, 0x91, 0xc1, 0xd7, 0xe1, 0x29, 0x72, 0xbe, 0x5d, 0xcb, 0xc7, 0xd3, 0x24, 0x3a,
-	0x22, 0x2f, 0x09, 0x10, 0xaf, 0x17, 0x4a, 0xc1, 0xe1, 0x1b, 0x87, 0x78, 0xde, 0x6c, 0x7b, 0xd7,
-	0xae, 0x6e, 0xea, 0xb2, 0x82, 0xc5, 0x53, 0xa4, 0xae, 0xca, 0x22, 0x37, 0x6f, 0x42, 0xdd, 0x99,
-	0xb6, 0x73, 0x2e, 0x52, 0x7e, 0x08, 0xe3, 0x69, 0xb2, 0xa4, 0x84, 0x92, 0xc5, 0xb7, 0x40, 0xb9,
-	0x02, 0x4a, 0x55, 0x42, 0xd2, 0x68, 0x48, 0x25, 0x8c, 0x6f, 0x83, 0xb4, 0x6e, 0x4a, 0xaf, 0xab,
-	0xf3, 0xd2, 0xb4, 0x0f, 0x03, 0xf6, 0x0e, 0x28, 0xbd, 0x92, 0xbd, 0x38, 0x0a, 0x2c, 0xfb, 0x30,
-	0x60, 0xef, 0x82, 0x92, 0x96, 0xed, 0x6d, 0xa9, 0xe4, 0xf1, 0x3d, 0x90, 0xd6, 0xca, 0xf6, 0x61,
-	0x40, 0xd7, 0x48, 0x43, 0x57, 0x55, 0x8c, 0xbd, 0x0f, 0xe2, 0x65, 0x10, 0x2f, 0xab, 0xba, 0x0a,
-	0xc9, 0x33, 0x44, 0x85, 0x34, 0x91, 0x1f, 0x80, 0x7a, 0x0e, 0xd4, 0xca, 0x74, 0x4b, 0x9f, 0x9d,
-	0x7a, 0x69, 0x88, 0xe4, 0x87, 0x20, 0x75, 0xdb, 0xde, 0xb9, 0xe6, 0x05, 0xbd, 0x38, 0xc4, 0xb2,
-	0xd2, 0x46, 0x18, 0xb0, 0x8f, 0x40, 0xdd, 0xa8, 0xb6, 0x21, 0x8e, 0x70, 0xbb, 0x8d, 0x30, 0x60,
-	0x1f, 0x83, 0x7a, 0xb6, 0xd2, 0x86, 0x10, 0xeb, 0x69, 0x48, 0x2e, 0x3f, 0x01, 0xad, 0x83, 0x7d,
-	0xa8, 0x16, 0x25, 0x9b, 0x86, 0x58, 0xa2, 0xf9, 0x29, 0x88, 0x17, 0xda, 0xde, 0xbd, 0xb3, 0xbb,
-	0xc5, 0x9c, 0x11, 0x4f, 0x63, 0x81, 0x48, 0xe7, 0x67, 0xa0, 0x5d, 0x44, 0xad, 0x5a, 0x20, 0x12,
-	0x7a, 0x91, 0x1c, 0xb5, 0x66, 0xb1, 0x9d, 0x26, 0xbd, 0x7e, 0xda, 0x65, 0x2f, 0x7a, 0x62, 0x24,
-	0xb5, 0xb5, 0x7e, 0xda, 0x8d, 0xa8, 0x39, 0x93, 0xab, 0x42, 0x40, 0xc3, 0x72, 0xe2, 0x28, 0x9b,
-	0x40, 0xe2, 0x4b, 0x98, 0xe8, 0x55, 0xf2, 0x9e, 0x14, 0xd7, 0xe9, 0x43, 0x64, 0xa5, 0x64, 0x18,
-	0xa7, 0xec, 0x65, 0x99, 0x94, 0xc6, 0xa9, 0x1e, 0x2a, 0x9a, 0xc5, 0x29, 0xbd, 0x4c, 0x8e, 0xd9,
-	0x73, 0x52, 0x3d, 0xbe, 0xe2, 0x89, 0x71, 0x61, 0x8f, 0xab, 0xd6, 0xbc, 0x64, 0x93, 0x97, 0x2a,
-	0xa9, 0xb2, 0xcb, 0x57, 0x31, 0xd5, 0xab, 0x66, 0xca, 0x36, 0x5b, 0x84, 0x96, 0x4d, 0xe3, 0x94,
-	0xbd, 0x26, 0xd3, 0xa0, 0xcf, 0x86, 0x6d, 0x18, 0xa7, 0x74, 0x87, 0x2c, 0x0f, 0xe3, 0x11, 0xd2,
-	0x2a, 0xa1, 0xf9, 0xdb, 0x13, 0x37, 0xbb, 0xf6, 0xbe, 0x6f, 0x76, 0xf1, 0x48, 0x40, 0x2d, 0xd0,
-	0xda, 0x4c, 0xf3, 0xf1, 0x6e, 0x54, 0x1f, 0x9a, 0x31, 0x3a, 0x20, 0x14, 0x4c, 0x70, 0x13, 0x6c,
-	0x0f, 0xe5, 0x4d, 0xf5, 0x1f, 0xf4, 0x79, 0xf8, 0x00, 0x3e, 0xb8, 0x57, 0x64, 0x00, 0xad, 0x1a,
-	0xc3, 0x52, 0x98, 0x76, 0x09, 0xc4, 0xd4, 0x66, 0xc6, 0xfb, 0xdb, 0xbf, 0xe8, 0x75, 0xe5, 0x00,
-	0x5e, 0x72, 0xcb, 0xc3, 0x7d, 0x0d, 0x9d, 0x96, 0x86, 0x56, 0xf0, 0x78, 0x48, 0xea, 0xd6, 0x5b,
-	0x88, 0xf5, 0x5a, 0x85, 0x77, 0xf7, 0x55, 0xf1, 0xfa, 0xa5, 0xdf, 0x4e, 0x84, 0x0c, 0xf2, 0xac,
-	0x47, 0x29, 0xeb, 0xd9, 0x10, 0xf3, 0x5e, 0x10, 0xcf, 0x90, 0xfa, 0x11, 0x0b, 0xf3, 0x2e, 0x42,
-	0x9e, 0x71, 0xf7, 0xb7, 0x4e, 0x34, 0xcc, 0xfb, 0x13, 0x8f, 0x3e, 0x7d, 0x2c, 0x60, 0xe2, 0x23,
-	0x84, 0x56, 0x7f, 0x23, 0xda, 0x20, 0xde, 0xed, 0x64, 0x57, 0xfc, 0x37, 0x62, 0x26, 0x82, 0x8f,
-	0xf4, 0x28, 0x99, 0xb9, 0x1b, 0x0f, 0xa6, 0x89, 0xf8, 0xe7, 0x83, 0x17, 0xe1, 0x97, 0xb6, 0x7b,
-	0xc9, 0x39, 0x9e, 0x93, 0x63, 0x7b, 0x4e, 0xdf, 0x2c, 0xb2, 0x80, 0x45, 0x36, 0xcd, 0x22, 0x87,
-	0x38, 0x32, 0x0d, 0xd7, 0x8c, 0xac, 0xee, 0xf1, 0x3b, 0x98, 0x9e, 0xb3, 0xe8, 0xb9, 0x61, 0x7a,
-	0x1e, 0xf4, 0x69, 0xd2, 0x30, 0x5c, 0x20, 0x73, 0xf2, 0xd2, 0x89, 0xff, 0x93, 0x9a, 0x38, 0xd1,
-	0xe6, 0x49, 0xed, 0xc6, 0x66, 0x74, 0xad, 0xf1, 0x3f, 0x3a, 0x47, 0xe0, 0xbc, 0x6b, 0x38, 0x1b,
-	0x57, 0x6e, 0x5c, 0xee, 0x65, 0x59, 0x6f, 0x90, 0x34, 0x7b, 0xd9, 0x20, 0x4e, 0x7b, 0xcd, 0x6c,
-	0xdc, 0x5b, 0x17, 0x16, 0xeb, 0x3b, 0xc3, 0x0e, 0x7e, 0xda, 0x59, 0xeb, 0x25, 0xe9, 0x5a, 0x2f,
-	0x5b, 0xcf, 0x93, 0x49, 0xde, 0x89, 0xf3, 0x18, 0xc3, 0xad, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff,
-	0xd8, 0xe8, 0xaa, 0xfc, 0x4f, 0x12, 0x00, 0x00,
+	// 1825 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x98, 0x59, 0x73, 0x13, 0xcb,
+	0x15, 0xc7, 0x3d, 0x33, 0x92, 0x6d, 0xb5, 0x25, 0x4b, 0x1e, 0x43, 0x55, 0x87, 0xa7, 0x0e, 0x21,
+	0x61, 0x08, 0xd8, 0x8e, 0xc5, 0x30, 0x80, 0xa9, 0x54, 0xa5, 0x5c, 0xb1, 0xe3, 0x3c, 0x04, 0x92,
+	0x09, 0xae, 0x54, 0x41, 0xaa, 0x5c, 0x83, 0x3d, 0x52, 0x14, 0xa4, 0x19, 0x21, 0x8d, 0x00, 0x7f,
+	0x8b, 0xac, 0x1f, 0x23, 0xfb, 0x7a, 0xb9, 0xdc, 0x0f, 0x70, 0xf7, 0x7d, 0x01, 0xee, 0xbe, 0x2f,
+	0xaf, 0xf7, 0xde, 0xe7, 0x5b, 0xa7, 0x4f, 0x77, 0x4f, 0xf7, 0xc8, 0x0f, 0xb6, 0x9f, 0xb0, 0x8e,
+	0xfe, 0x7d, 0xfe, 0xe7, 0x34, 0xfd, 0x3b, 0xea, 0x19, 0x32, 0xdf, 0x1f, 0xa4, 0x59, 0xda, 0x5c,
+	0x6a, 0x75, 0xe2, 0xee, 0xce, 0x70, 0x91, 0x7f, 0x72, 0x8f, 0xb6, 0x53, 0xfe, 0x07, 0x7e, 0xdc,
+	0xc6, 0x7f, 0x9a, 0xc7, 0xef, 0x9d, 0x26, 0x8d, 0x75, 0xd0, 0x5d, 0x8d, 0x87, 0xd9, 0xcf, 0xe2,
+	0xe1, 0x30, 0x6a, 0xc7, 0xee, 0x77, 0x48, 0x2d, 0xed, 0x67, 0x9d, 0x34, 0x89, 0xba, 0x5b, 0x37,
+	0xd2, 0xb4, 0x4b, 0x2d, 0x66, 0x79, 0xd3, 0x61, 0x55, 0x06, 0x57, 0xd3, 0xb4, 0xeb, 0xfe, 0x42,
+	0x13, 0xc5, 0xc9, 0xa8, 0x47, 0x6d, 0x66, 0x79, 0xb3, 0xcd, 0x33, 0x8b, 0x7b, 0x1a, 0x2d, 0x16,
+	0x4d, 0x16, 0xd7, 0x92, 0x51, 0x2f, 0x4f, 0x09, 0x9f, 0xdc, 0xef, 0x92, 0x59, 0x95, 0xb2, 0x93,
+	0x64, 0x67, 0x9b, 0xd4, 0x61, 0x96, 0x57, 0x0e, 0x95, 0xd1, 0x4f, 0x21, 0xe8, 0x9e, 0x24, 0x75,
+	0x25, 0x1b, 0xa2, 0xae, 0xc4, 0x2c, 0x6f, 0x2e, 0x54, 0xab, 0x7f, 0xd9, 0x19, 0x13, 0x8e, 0x50,
+	0x58, 0x66, 0x96, 0x57, 0xcb, 0x85, 0x9b, 0x28, 0x2c, 0x18, 0x07, 0x3e, 0x9d, 0x64, 0x96, 0xe7,
+	0x18, 0xc6, 0x81, 0x3f, 0x66, 0x1c, 0xf8, 0x74, 0x8a, 0x59, 0x9e, 0x6b, 0x1a, 0x17, 0x84, 0x23,
+	0x14, 0x4e, 0x33, 0xcb, 0x2b, 0x99, 0xc6, 0x81, 0xef, 0x9e, 0x26, 0x73, 0x79, 0xc6, 0x56, 0xe7,
+	0x6e, 0xbc, 0x73, 0xb6, 0x49, 0x2b, 0xcc, 0xf2, 0xea, 0x61, 0x43, 0xe5, 0x14, 0x71, 0xf7, 0x14,
+	0x51, 0xb1, 0x2d, 0xa9, 0x25, 0xcc, 0xf2, 0xa6, 0x42, 0xe5, 0xb6, 0x2e, 0xa4, 0x7a, 0x43, 0xad,
+	0x6e, 0x1a, 0x65, 0x74, 0x86, 0x59, 0x9e, 0x9d, 0x37, 0xb4, 0x0e, 0xc1, 0x3d, 0xec, 0x03, 0x9f,
+	0x56, 0x99, 0xe5, 0x35, 0x8a, 0xf6, 0x81, 0x3f, 0x6e, 0x1f, 0xf8, 0xb4, 0xc6, 0x2c, 0x6f, 0xb2,
+	0x60, 0x5f, 0xe8, 0x7f, 0x27, 0x1d, 0xdd, 0xe8, 0xc6, 0x74, 0x96, 0x59, 0x9e, 0x95, 0xf7, 0xff,
+	0x63, 0x1e, 0x35, 0x77, 0x34, 0x1b, 0x74, 0x92, 0x36, 0xad, 0x33, 0xcb, 0xab, 0x68, 0x3b, 0xca,
+	0xa3, 0x46, 0x43, 0x37, 0x76, 0xb3, 0x78, 0x48, 0x1b, 0xcc, 0xf2, 0xaa, 0x79, 0x43, 0xab, 0x10,
+	0x74, 0xaf, 0x69, 0x35, 0x8a, 0x83, 0x46, 0xe7, 0x98, 0xe5, 0xcd, 0x34, 0x97, 0xf6, 0x7b, 0x2e,
+	0xc5, 0xbf, 0x79, 0x53, 0x92, 0x8a, 0xeb, 0xf9, 0x81, 0x6f, 0x0f, 0xd2, 0x51, 0x9f, 0xba, 0xcc,
+	0xf2, 0x48, 0xf3, 0xdc, 0x7e, 0x13, 0x5f, 0x11, 0x8b, 0x7f, 0x02, 0x8b, 0x43, 0x33, 0x17, 0x20,
+	0x37, 0x88, 0x6f, 0x8d, 0x3a, 0x83, 0x78, 0x07, 0x91, 0x8b, 0x99, 0x0d, 0xc8, 0xc9, 0xa0, 0x44,
+	0x4e, 0x89, 0x38, 0x72, 0x2d, 0x66, 0x1f, 0x1c, 0x39, 0x99, 0x42, 0x22, 0xa7, 0x52, 0x22, 0x21,
+	0x6d, 0x66, 0x03, 0x72, 0x32, 0xaa, 0x90, 0x53, 0x32, 0x81, 0xdc, 0x6f, 0x98, 0x0d, 0xc8, 0xc9,
+	0x70, 0x8e, 0x9c, 0x12, 0x0a, 0xe4, 0x3a, 0xcc, 0x06, 0xe4, 0x64, 0x38, 0x47, 0x4e, 0x37, 0x0e,
+	0x7c, 0xfa, 0x5b, 0x66, 0x03, 0x72, 0x9a, 0x31, 0x9e, 0x24, 0xc3, 0x38, 0xf0, 0xe9, 0x4d, 0x66,
+	0x03, 0x72, 0xba, 0x71, 0x41, 0x28, 0x90, 0xeb, 0x32, 0x1b, 0x90, 0xd3, 0x8d, 0x11, 0xb9, 0x3c,
+	0xa3, 0xc4, 0xa8, 0xc7, 0x6c, 0x40, 0x4e, 0xe5, 0xd4, 0x90, 0x53, 0x62, 0xa9, 0x4d, 0x98, 0x0d,
+	0xc8, 0xc9, 0xb8, 0x86, 0x5c, 0x2e, 0xe5, 0xc8, 0xa5, 0xcc, 0x06, 0xe4, 0x94, 0x50, 0x22, 0x57,
+	0xb0, 0x0f, 0x7c, 0xda, 0x67, 0x36, 0x20, 0x67, 0xda, 0x23, 0x72, 0xa6, 0x7d, 0xe0, 0xd3, 0x5b,
+	0xcc, 0x06, 0xe4, 0x0c, 0xfb, 0x42, 0xff, 0x02, 0xb9, 0x01, 0xb3, 0x01, 0x39, 0x19, 0xce, 0x91,
+	0xcb, 0x0b, 0x40, 0xe4, 0x86, 0xcc, 0x06, 0xe4, 0x94, 0xbd, 0x42, 0x2e, 0x3f, 0x92, 0x1c, 0xb9,
+	0x8c, 0xd9, 0x80, 0x9c, 0x3a, 0x93, 0x12, 0x39, 0x25, 0x93, 0xc8, 0x8d, 0x98, 0x7d, 0x28, 0xe4,
+	0x64, 0x22, 0x0d, 0x39, 0x19, 0x42, 0xe4, 0x6e, 0x33, 0xfb, 0x20, 0xc8, 0x85, 0x62, 0xb1, 0x40,
+	0xce, 0xc8, 0xe5, 0x9e, 0x80, 0xe4, 0xfd, 0x38, 0xca, 0x24, 0x72, 0x4f, 0x5a, 0xcc, 0x41, 0xe6,
+	0x30, 0xca, 0x99, 0x0b, 0x35, 0x15, 0x67, 0xee, 0x29, 0x50, 0x1d, 0x02, 0x3a, 0xcc, 0xc1, 0xa1,
+	0xfb, 0x1e, 0xec, 0xac, 0xc8, 0x89, 0x8c, 0x3c, 0x0d, 0x49, 0x39, 0x75, 0x18, 0x46, 0xea, 0x3c,
+	0xf8, 0xaf, 0x12, 0x3a, 0x41, 0xdd, 0x33, 0x20, 0xe4, 0xd8, 0x61, 0x5c, 0x60, 0xa7, 0x2b, 0x05,
+	0x76, 0xcf, 0x82, 0xb2, 0x96, 0x2b, 0x05, 0x77, 0x05, 0xef, 0xc0, 0xa7, 0xcf, 0x81, 0xd0, 0x31,
+	0xbc, 0x03, 0x7f, 0xcc, 0x3b, 0xf0, 0xe9, 0xf3, 0x20, 0x74, 0x4d, 0xef, 0x82, 0x52, 0x90, 0xf7,
+	0x02, 0x28, 0x4b, 0xa6, 0x77, 0xe0, 0xbb, 0x67, 0xe0, 0xec, 0xcb, 0x9c, 0x12, 0xa7, 0x17, 0x41,
+	0xcb, 0xd9, 0x13, 0x59, 0x25, 0x7b, 0xdf, 0x27, 0x2a, 0xa6, 0xd8, 0x7b, 0x09, 0xc4, 0x1c, 0x3e,
+	0xfc, 0x42, 0xc2, 0xa7, 0x77, 0x85, 0xf0, 0xbd, 0x0c, 0x4a, 0x3b, 0xef, 0x0a, 0xe9, 0x1b, 0xaf,
+	0x20, 0xf0, 0xe9, 0x2b, 0x20, 0x6d, 0x14, 0x2b, 0x08, 0xfc, 0xf1, 0x0a, 0x02, 0x9f, 0xbe, 0x0a,
+	0xe2, 0xc9, 0x42, 0x05, 0x85, 0x5d, 0x10, 0xfc, 0xbd, 0x06, 0x52, 0x2b, 0xdf, 0x05, 0x01, 0xa0,
+	0xb1, 0xb3, 0x08, 0xe0, 0xeb, 0xa0, 0xac, 0x68, 0x3b, 0x8b, 0x04, 0xea, 0x5d, 0x21, 0x81, 0x6f,
+	0x80, 0xb0, 0x9a, 0x77, 0x85, 0x08, 0x5e, 0xd7, 0xea, 0x94, 0x08, 0x3e, 0x00, 0xe5, 0xe1, 0x18,
+	0xc4, 0x4c, 0x92, 0xc1, 0x5f, 0xe7, 0x00, 0x20, 0x83, 0x0f, 0x21, 0xf3, 0x81, 0x20, 0xc4, 0xd5,
+	0x0a, 0x42, 0x2d, 0x99, 0xeb, 0x91, 0xea, 0x4e, 0xdc, 0x8a, 0x46, 0xdd, 0x0c, 0x19, 0xfc, 0x0b,
+	0xdc, 0x22, 0xa7, 0x57, 0x4a, 0xd9, 0x60, 0x14, 0x87, 0x33, 0xe2, 0x2b, 0x0e, 0xe2, 0x66, 0xae,
+	0xe4, 0x1c, 0xfe, 0xf5, 0x10, 0xf7, 0xcd, 0x15, 0xe7, 0xca, 0xe5, 0x35, 0x95, 0x96, 0xb3, 0x78,
+	0x92, 0xd4, 0x64, 0x5a, 0xe4, 0xe6, 0x6f, 0x90, 0xb7, 0xbc, 0x62, 0x2d, 0x87, 0xd2, 0x0f, 0x61,
+	0x3c, 0x45, 0x66, 0xa5, 0x50, 0xb0, 0xf8, 0x77, 0x50, 0xce, 0x81, 0x52, 0xa6, 0x10, 0x34, 0x6a,
+	0x52, 0x01, 0xe3, 0x3f, 0x40, 0x5a, 0xd3, 0xa5, 0x9b, 0xf2, 0xf7, 0x52, 0xb7, 0x0f, 0x7c, 0xfa,
+	0x4f, 0x50, 0x3a, 0x05, 0x7b, 0xfe, 0x53, 0x60, 0xd8, 0x07, 0x3e, 0xfd, 0x17, 0x28, 0xdd, 0xa2,
+	0xbd, 0x29, 0x15, 0x3c, 0xfe, 0x1b, 0xa4, 0xa5, 0xa2, 0x7d, 0xe0, 0xbb, 0x0b, 0xa4, 0xa1, 0xb2,
+	0x4a, 0xc6, 0xfe, 0x03, 0xe2, 0x3a, 0x88, 0xeb, 0x32, 0xaf, 0x44, 0xf2, 0x34, 0x91, 0x21, 0x45,
+	0xe4, 0x7f, 0x41, 0x3d, 0x05, 0x6a, 0x69, 0xba, 0xae, 0x7e, 0x3b, 0x55, 0x6b, 0x88, 0xe4, 0xff,
+	0x40, 0x6a, 0xaf, 0x38, 0xcb, 0x8b, 0xe7, 0x54, 0x73, 0x88, 0xe5, 0x58, 0x19, 0x81, 0x4f, 0xff,
+	0x0f, 0xea, 0xc6, 0x78, 0x19, 0xfc, 0x27, 0xdc, 0x2c, 0x23, 0xf0, 0xe9, 0x63, 0xa0, 0x9e, 0x1c,
+	0x2b, 0x83, 0x8b, 0xd5, 0x6e, 0x08, 0x2e, 0xef, 0x81, 0xd6, 0xc2, 0x3a, 0x64, 0x89, 0x82, 0x4d,
+	0x4d, 0x2c, 0xd0, 0x7c, 0x1c, 0xc4, 0x95, 0x15, 0xe7, 0xee, 0x99, 0xdd, 0x7c, 0x9f, 0x11, 0x4f,
+	0xad, 0x41, 0xa4, 0xf3, 0x3e, 0x68, 0xab, 0xa8, 0x95, 0x0d, 0x22, 0xa1, 0xe7, 0xc9, 0x11, 0x63,
+	0x2f, 0xb6, 0x92, 0xb8, 0xdd, 0x49, 0x5a, 0xf4, 0x77, 0x0e, 0xdf, 0x92, 0xd2, 0x42, 0x27, 0x69,
+	0x85, 0xae, 0xbe, 0x27, 0x97, 0xb9, 0xc0, 0x0d, 0x8a, 0x0b, 0xfb, 0xe9, 0x10, 0x16, 0xfe, 0x1e,
+	0x17, 0x3a, 0x63, 0xeb, 0x7e, 0xce, 0xbf, 0x77, 0x7f, 0x40, 0xe6, 0x0a, 0x86, 0x51, 0x42, 0xff,
+	0x20, 0x16, 0x25, 0x51, 0xa2, 0x36, 0x15, 0xcd, 0xa2, 0xc4, 0xbd, 0x48, 0x8e, 0x9a, 0xfb, 0x24,
+	0x6b, 0xfc, 0xa3, 0xc3, 0xb7, 0x0b, 0x6b, 0x9c, 0x37, 0xf6, 0x4b, 0x14, 0x79, 0x61, 0x6c, 0xa9,
+	0xa8, 0xf2, 0x4f, 0xb8, 0xd4, 0x19, 0x5f, 0x29, 0xca, 0x6c, 0x12, 0xb7, 0x68, 0x1a, 0x25, 0xf4,
+	0xcf, 0x62, 0x19, 0xd4, 0xd9, 0x30, 0x0d, 0xa3, 0xc4, 0xdd, 0x26, 0xf5, 0x5e, 0xd4, 0x47, 0x5a,
+	0x05, 0x34, 0x5f, 0x3a, 0x7c, 0xd8, 0xad, 0xec, 0x7b, 0xd8, 0x45, 0x7d, 0x0e, 0x35, 0x47, 0x6b,
+	0x2d, 0xc9, 0x06, 0xbb, 0x61, 0xad, 0xa7, 0xc7, 0xdc, 0x2e, 0x71, 0xc1, 0x04, 0x0f, 0xc1, 0x56,
+	0x4f, 0x0c, 0xd5, 0xaf, 0xd0, 0xe7, 0x87, 0x07, 0xf0, 0xc1, 0xb3, 0x22, 0x02, 0x68, 0xd5, 0xe8,
+	0x15, 0xc2, 0x6e, 0x8b, 0x40, 0x4c, 0x1e, 0x66, 0x9c, 0x6f, 0x5f, 0xa3, 0xd7, 0xa5, 0x03, 0x78,
+	0x89, 0x23, 0x0f, 0x73, 0x0d, 0x9d, 0x66, 0x7b, 0x46, 0xd0, 0x65, 0x84, 0xa4, 0x49, 0x9c, 0xb6,
+	0x70, 0xd6, 0x3e, 0x80, 0xa7, 0xe6, 0xe9, 0x8d, 0x89, 0xb0, 0xc2, 0x83, 0x7c, 0xca, 0x5e, 0x96,
+	0x0a, 0x5e, 0xc3, 0xc3, 0xd2, 0xc1, 0x67, 0xac, 0xca, 0xc7, 0x1d, 0x8f, 0x93, 0x19, 0xcc, 0x87,
+	0x73, 0xf0, 0x11, 0x24, 0x2c, 0x6f, 0x4c, 0x84, 0xe8, 0x82, 0x93, 0xf5, 0x04, 0xa9, 0xa2, 0x46,
+	0xcc, 0xd5, 0x37, 0xf9, 0xd3, 0xfc, 0xc6, 0x44, 0x88, 0x4b, 0xc5, 0x50, 0x55, 0x2a, 0x31, 0x52,
+	0xdf, 0x02, 0x55, 0x4d, 0xa9, 0xc4, 0x3c, 0xd5, 0xfd, 0x02, 0x9f, 0xbe, 0x0d, 0x22, 0x47, 0xf7,
+	0x0b, 0x7c, 0xd3, 0x2f, 0xf0, 0xe9, 0x3b, 0x20, 0x72, 0x0d, 0x3f, 0x5d, 0x25, 0x66, 0xe8, 0xbb,
+	0xa0, 0x2a, 0x19, 0x7e, 0xfc, 0x67, 0x7f, 0x56, 0xe4, 0x92, 0x03, 0xf1, 0x3d, 0xd0, 0xd5, 0x37,
+	0x26, 0xc2, 0x1a, 0x66, 0x6b, 0xa9, 0x2b, 0x0a, 0x06, 0xd4, 0xe4, 0x7c, 0x1f, 0x84, 0x53, 0x1b,
+	0x13, 0x21, 0xfa, 0xc8, 0xb1, 0xa9, 0x3a, 0xc0, 0xa1, 0xf9, 0x01, 0xa8, 0x6c, 0xd5, 0x01, 0xce,
+	0xcb, 0x82, 0x6b, 0xe0, 0xd3, 0x0f, 0x41, 0xd6, 0x28, 0xb8, 0x06, 0x7e, 0xc1, 0x35, 0xf0, 0xe9,
+	0x47, 0x20, 0x9c, 0x34, 0x5d, 0xf5, 0x6e, 0xc5, 0x8c, 0xfc, 0x18, 0x64, 0x96, 0xea, 0x56, 0x8c,
+	0xc7, 0x7c, 0xe7, 0x70, 0x38, 0x7e, 0x02, 0xaa, 0x4a, 0xbe, 0x73, 0x38, 0x17, 0x55, 0x07, 0x38,
+	0x15, 0x3f, 0x05, 0x51, 0x55, 0x75, 0x80, 0x03, 0xf1, 0x57, 0xb2, 0x2e, 0x79, 0x5f, 0xf9, 0xac,
+	0x74, 0xa8, 0xc7, 0x74, 0xd5, 0x88, 0x44, 0x69, 0x53, 0x1c, 0x60, 0xbc, 0xab, 0x7c, 0x5e, 0xe2,
+	0xcf, 0xe8, 0xcd, 0x7d, 0x3f, 0xa3, 0xc3, 0x52, 0x7e, 0x51, 0x51, 0xf5, 0xe2, 0x3d, 0xe5, 0xdb,
+	0xb2, 0xa7, 0xec, 0x4e, 0xba, 0xb5, 0x4c, 0xef, 0x97, 0xf9, 0x39, 0xb6, 0xc4, 0x51, 0xbf, 0x7a,
+	0x27, 0x5d, 0x36, 0x25, 0x4d, 0xfa, 0x44, 0x99, 0x1f, 0x3d, 0x4d, 0xd2, 0x3c, 0x16, 0x90, 0x9a,
+	0xf1, 0x16, 0xc0, 0x78, 0xad, 0x81, 0x15, 0xcf, 0xf3, 0xd7, 0x1f, 0xea, 0xed, 0x00, 0x97, 0xc1,
+	0x3a, 0xe3, 0x51, 0xc6, 0x78, 0x36, 0xc3, 0x75, 0x77, 0xf8, 0x33, 0x9c, 0x7a, 0xc4, 0xc1, 0x75,
+	0xe7, 0x61, 0x9d, 0x76, 0xfb, 0x32, 0x6e, 0x94, 0xb8, 0xee, 0x11, 0x5e, 0x3d, 0xd5, 0xb5, 0x0c,
+	0x17, 0xfe, 0x88, 0xb8, 0xe3, 0x33, 0xd2, 0x6d, 0x10, 0xe7, 0x66, 0xbc, 0xcb, 0xdf, 0x06, 0x96,
+	0x43, 0xf8, 0xd3, 0x3d, 0x42, 0xca, 0xb7, 0xa3, 0xee, 0x28, 0xe6, 0x2f, 0xff, 0x9c, 0x10, 0x3f,
+	0xac, 0xd8, 0x17, 0xac, 0x63, 0x19, 0x39, 0xba, 0xe7, 0xf4, 0xd3, 0x93, 0x54, 0x30, 0xc9, 0x9a,
+	0x9e, 0xe4, 0x10, 0x57, 0x56, 0xcd, 0x35, 0x25, 0xf3, 0x7b, 0xcc, 0x41, 0xdd, 0x73, 0x12, 0x3d,
+	0x57, 0x75, 0xcf, 0x83, 0x3e, 0xcd, 0x69, 0x86, 0x17, 0x09, 0xc9, 0xcf, 0x0c, 0x7f, 0x9f, 0xc6,
+	0x8f, 0x00, 0xdf, 0xdb, 0x2d, 0xfe, 0x02, 0x96, 0x7e, 0xc1, 0x21, 0x09, 0xeb, 0xa9, 0xd2, 0xf1,
+	0xac, 0xc7, 0x2a, 0x64, 0x4a, 0x64, 0x3d, 0xfe, 0x2d, 0x52, 0xe2, 0xd3, 0x72, 0x9a, 0x94, 0xae,
+	0xad, 0x85, 0x57, 0x1a, 0x13, 0xee, 0x14, 0x81, 0xab, 0x6a, 0xc3, 0x5a, 0xad, 0xa9, 0x71, 0x00,
+	0x8b, 0x56, 0x67, 0x48, 0x45, 0x1d, 0xb2, 0xd5, 0x4b, 0xd7, 0x2e, 0xb6, 0xd3, 0xb4, 0xdd, 0x8d,
+	0x17, 0xdb, 0x69, 0x37, 0x4a, 0xda, 0x8b, 0xe9, 0xa0, 0xbd, 0xc4, 0x2b, 0x5f, 0xda, 0xee, 0xed,
+	0xe0, 0x5f, 0xdb, 0x0b, 0xed, 0x38, 0x59, 0x68, 0xa7, 0x4b, 0x59, 0x3c, 0xcc, 0x76, 0xa2, 0x2c,
+	0xc2, 0x70, 0xf3, 0x9b, 0x00, 0x00, 0x00, 0xff, 0xff, 0x36, 0x9c, 0x2d, 0xf1, 0x26, 0x16, 0x00,
+	0x00,
 }

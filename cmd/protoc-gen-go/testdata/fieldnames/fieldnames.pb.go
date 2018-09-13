@@ -42,11 +42,22 @@ type Message struct {
 	CamelCase__  *string `protobuf:"bytes,22,opt,name=camel_case,json=camelCase" json:"camel_case,omitempty"`
 	CamelCase___ *string `protobuf:"bytes,23,opt,name=CamelCase__,json=CamelCase" json:"CamelCase__,omitempty"`
 	// Field with a getter that conflicts with another field.
-	GetName              *string  `protobuf:"bytes,30,opt,name=get_name,json=getName" json:"get_name,omitempty"`
-	Name_                *string  `protobuf:"bytes,31,opt,name=name" json:"name,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	GetName *string `protobuf:"bytes,30,opt,name=get_name,json=getName" json:"get_name,omitempty"`
+	Name_   *string `protobuf:"bytes,31,opt,name=name" json:"name,omitempty"`
+	// Oneof that conflicts with its first field: The oneof is renamed.
+	//
+	// Types that are valid to be assigned to OneofConflictA_:
+	//	*Message_OneofConflictA
+	OneofConflictA_ isMessage_OneofConflictA_ `protobuf_oneof:"oneof_conflict_a"`
+	// Oneof that conflicts with its second field: The field is renamed.
+	//
+	// Types that are valid to be assigned to OneofConflictB:
+	//	*Message_OneofNoConflict
+	//	*Message_OneofConflictB_
+	OneofConflictB       isMessage_OneofConflictB `protobuf_oneof:"oneof_conflict_b"`
+	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
+	XXX_unrecognized     []byte                   `json:"-"`
+	XXX_sizecache        int32                    `json:"-"`
 }
 
 func (m *Message) Reset()         { *m = Message{} }
@@ -171,25 +182,158 @@ func (m *Message) GetName_() string {
 	return ""
 }
 
+type isMessage_OneofConflictA_ interface {
+	isMessage_OneofConflictA_()
+}
+
+type Message_OneofConflictA struct {
+	OneofConflictA string `protobuf:"bytes,40,opt,name=OneofConflictA,oneof"`
+}
+
+func (*Message_OneofConflictA) isMessage_OneofConflictA_() {}
+
+func (m *Message) GetOneofConflictA_() isMessage_OneofConflictA_ {
+	if m != nil {
+		return m.OneofConflictA_
+	}
+	return nil
+}
+
 func (m *Message) GetOneofConflictA() string {
-	if m != nil && m.OneofConflictA != nil {
-		return *m.OneofConflictA
+	if x, ok := m.GetOneofConflictA_().(*Message_OneofConflictA); ok {
+		return x.OneofConflictA
 	}
 	return ""
+}
+
+type isMessage_OneofConflictB interface {
+	isMessage_OneofConflictB()
+}
+
+type Message_OneofNoConflict struct {
+	OneofNoConflict string `protobuf:"bytes,50,opt,name=oneof_no_conflict,json=oneofNoConflict,oneof"`
+}
+
+type Message_OneofConflictB_ struct {
+	OneofConflictB_ string `protobuf:"bytes,51,opt,name=OneofConflictB,oneof"`
+}
+
+func (*Message_OneofNoConflict) isMessage_OneofConflictB() {}
+
+func (*Message_OneofConflictB_) isMessage_OneofConflictB() {}
+
+func (m *Message) GetOneofConflictB() isMessage_OneofConflictB {
+	if m != nil {
+		return m.OneofConflictB
+	}
+	return nil
 }
 
 func (m *Message) GetOneofNoConflict() string {
-	if m != nil && m.OneofNoConflict != nil {
-		return *m.OneofNoConflict
+	if x, ok := m.GetOneofConflictB().(*Message_OneofNoConflict); ok {
+		return x.OneofNoConflict
 	}
 	return ""
 }
 
-func (m *Message) GetOneofConflictB() string {
-	if m != nil && m.OneofConflictB != nil {
-		return *m.OneofConflictB
+func (m *Message) GetOneofConflictB_() string {
+	if x, ok := m.GetOneofConflictB().(*Message_OneofConflictB_); ok {
+		return x.OneofConflictB_
 	}
 	return ""
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*Message) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _Message_OneofMarshaler, _Message_OneofUnmarshaler, _Message_OneofSizer, []interface{}{
+		(*Message_OneofConflictA)(nil),
+		(*Message_OneofNoConflict)(nil),
+		(*Message_OneofConflictB_)(nil),
+	}
+}
+
+func _Message_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*Message)
+	// oneof_conflict_a
+	switch x := m.OneofConflictA_.(type) {
+	case *Message_OneofConflictA:
+		b.EncodeVarint(40<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.OneofConflictA)
+	case nil:
+	default:
+		return fmt.Errorf("Message.OneofConflictA_ has unexpected type %T", x)
+	}
+	// oneof_conflict_b
+	switch x := m.OneofConflictB.(type) {
+	case *Message_OneofNoConflict:
+		b.EncodeVarint(50<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.OneofNoConflict)
+	case *Message_OneofConflictB_:
+		b.EncodeVarint(51<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.OneofConflictB_)
+	case nil:
+	default:
+		return fmt.Errorf("Message.OneofConflictB has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _Message_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*Message)
+	switch tag {
+	case 40: // oneof_conflict_a.OneofConflictA
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.OneofConflictA_ = &Message_OneofConflictA{x}
+		return true, err
+	case 50: // oneof_conflict_b.oneof_no_conflict
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.OneofConflictB = &Message_OneofNoConflict{x}
+		return true, err
+	case 51: // oneof_conflict_b.OneofConflictB
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.OneofConflictB = &Message_OneofConflictB_{x}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _Message_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*Message)
+	// oneof_conflict_a
+	switch x := m.OneofConflictA_.(type) {
+	case *Message_OneofConflictA:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(len(x.OneofConflictA)))
+		n += len(x.OneofConflictA)
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	// oneof_conflict_b
+	switch x := m.OneofConflictB.(type) {
+	case *Message_OneofNoConflict:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(len(x.OneofNoConflict)))
+		n += len(x.OneofNoConflict)
+	case *Message_OneofConflictB_:
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(len(x.OneofConflictB_)))
+		n += len(x.OneofConflictB_)
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
 }
 
 func init() {

@@ -270,8 +270,14 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 	// TODO: deprecation
 	g.P("type ", message.GoIdent, " struct {")
 	for _, field := range message.Fields {
-		if field.Desc.OneofType() != nil {
-			// TODO oneofs
+		if field.OneofType != nil {
+			// It would be a bit simpler to iterate over the oneofs below,
+			// but generating the field here keeps the contents of the Go
+			// struct in the same order as the contents of the source
+			// .proto file.
+			if field == field.OneofType.Fields[0] {
+				genOneofField(gen, g, f, message, field.OneofType)
+			}
 			continue
 		}
 		genComment(g, f, field.Path)
@@ -291,7 +297,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 				fmt.Sprintf("protobuf_val:%q", fieldProtobufTag(val)),
 			)
 		}
-		g.P(field.GoIdent, " ", goType, " `", strings.Join(tags, " "), "`")
+		g.P(field.GoName, " ", goType, " `", strings.Join(tags, " "), "`")
 	}
 	g.P("XXX_NoUnkeyedLiteral struct{} `json:\"-\"`")
 	// TODO XXX_InternalExtensions
@@ -359,7 +365,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 		if !field.Desc.HasDefault() {
 			continue
 		}
-		defVarName := "Default_" + message.GoIdent.GoName + "_" + field.GoIdent.GoName
+		defVarName := "Default_" + message.GoIdent.GoName + "_" + field.GoName
 		def := field.Desc.Default()
 		switch field.Desc.Kind() {
 		case protoreflect.StringKind:
@@ -408,26 +414,41 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 
 	// Getters.
 	for _, field := range message.Fields {
+		if field.OneofType != nil {
+			if field == field.OneofType.Fields[0] {
+				genOneofTypes(gen, g, f, message, field.OneofType)
+			}
+		}
 		goType, pointer := fieldGoType(g, field)
 		defaultValue := fieldDefaultValue(g, message, field)
-		g.P("func (m *", message.GoIdent, ") Get", field.GoIdent, "() ", goType, " {")
-		if field.Desc.Syntax() == protoreflect.Proto3 || defaultValue == "nil" {
-			g.P("if m != nil {")
+		g.P("func (m *", message.GoIdent, ") Get", field.GoName, "() ", goType, " {")
+		if field.OneofType != nil {
+			g.P("if x, ok := m.Get", field.OneofType.GoName, "().(*", message.GoIdent.GoName, "_", field.GoName, "); ok {")
+			g.P("return x.", field.GoName)
+			g.P("}")
 		} else {
-			g.P("if m != nil && m.", field.GoIdent, " != nil {")
+			if field.Desc.Syntax() == protoreflect.Proto3 || defaultValue == "nil" {
+				g.P("if m != nil {")
+			} else {
+				g.P("if m != nil && m.", field.GoName, " != nil {")
+			}
+			star := ""
+			if pointer {
+				star = "*"
+			}
+			g.P("return ", star, " m.", field.GoName)
+			g.P("}")
 		}
-		star := ""
-		if pointer {
-			star = "*"
-		}
-		g.P("return ", star, " m.", field.GoIdent)
-		g.P("}")
 		g.P("return ", defaultValue)
 		g.P("}")
 		g.P()
 	}
 
 	genWellKnownType(g, message.GoIdent, message.Desc)
+
+	if len(message.Oneofs) > 0 {
+		genOneofFuncs(gen, g, f, message)
+	}
 }
 
 // fieldGoType returns the Go type used for a field.
@@ -555,7 +576,7 @@ func fieldDefaultValue(g *protogen.GeneratedFile, message *protogen.Message, fie
 		return "nil"
 	}
 	if field.Desc.HasDefault() {
-		defVarName := "Default_" + message.GoIdent.GoName + "_" + field.GoIdent.GoName
+		defVarName := "Default_" + message.GoIdent.GoName + "_" + field.GoName
 		if field.Desc.Kind() == protoreflect.BytesKind {
 			return "append([]byte(nil), " + defVarName + "...)"
 		}
@@ -651,16 +672,18 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File) {
 	g.P()
 }
 
-func genComment(g *protogen.GeneratedFile, f *File, path []int32) {
+func genComment(g *protogen.GeneratedFile, f *File, path []int32) (hasComment bool) {
 	for _, loc := range f.locationMap[pathKey(path)] {
 		if loc.LeadingComments == nil {
 			continue
 		}
 		for _, line := range strings.Split(strings.TrimSuffix(loc.GetLeadingComments(), "\n"), "\n") {
+			hasComment = true
 			g.P("//", line)
 		}
-		return
+		break
 	}
+	return hasComment
 }
 
 // pathKey converts a location path to a string suitable for use as a map key.
