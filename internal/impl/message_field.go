@@ -41,9 +41,78 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 }
 
 func fieldInfoForVector(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
-	// TODO: support vector fields.
-	panic(fmt.Sprintf("invalid field: %v", fd))
+	ft := fs.Type
+	if ft.Kind() != reflect.Slice {
+		panic(fmt.Sprintf("invalid type: got %v, want slice kind", ft))
+	}
+	conv := matchGoTypePBKind(ft.Elem(), fd.Kind())
+	fieldOffset := offsetOf(fs)
+	// TODO: Implement unsafe fast path?
+	return fieldInfo{
+		has: func(p pointer) bool {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			return rv.Len() > 0
+		},
+		get: func(p pointer) pref.Value {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			return pref.ValueOf(vectorReflect{rv, conv})
+		},
+		set: func(p pointer, v pref.Value) {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv.Set(v.Vector().(vectorReflect).v)
+		},
+		clear: func(p pointer) {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv.Set(reflect.Zero(rv.Type()))
+		},
+		mutable: func(p pointer) pref.Mutable {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			return vectorReflect{rv, conv}
+		},
+	}
 }
+
+type vectorReflect struct {
+	v    reflect.Value // addressable []T
+	conv converter
+}
+
+func (vs vectorReflect) Len() int {
+	return vs.v.Len()
+}
+func (vs vectorReflect) Get(i int) pref.Value {
+	return vs.conv.toPB(vs.v.Index(i))
+}
+func (vs vectorReflect) Set(i int, v pref.Value) {
+	vs.v.Index(i).Set(vs.conv.toGo(v))
+}
+func (vs vectorReflect) Append(v pref.Value) {
+	vs.v.Set(reflect.Append(vs.v, vs.conv.toGo(v)))
+}
+func (vs vectorReflect) Mutable(i int) pref.Mutable {
+	// Mutable is only valid for messages and panics for other kinds.
+	rv := vs.v.Index(i)
+	if rv.IsNil() {
+		pv := pref.ValueOf(vs.conv.newMessage())
+		rv.Set(vs.conv.toGo(pv))
+	}
+	return rv.Interface().(pref.Message)
+}
+func (vs vectorReflect) MutableAppend() pref.Mutable {
+	// MutableAppend is only valid for messages and panics for other kinds.
+	pv := pref.ValueOf(vs.conv.newMessage())
+	vs.v.Set(reflect.Append(vs.v, vs.conv.toGo(pv)))
+	return vs.v.Index(vs.Len() - 1).Interface().(pref.Message)
+}
+func (vs vectorReflect) Truncate(i int) {
+	vs.v.Set(vs.v.Slice(0, i))
+}
+func (vs vectorReflect) Unwrap() interface{} { // TODO: unexport?
+	return vs.v.Interface()
+}
+func (vs vectorReflect) ProtoMutable() {}
+
+var _ pref.Vector = vectorReflect{}
 
 var emptyBytes = reflect.ValueOf([]byte{})
 
@@ -221,8 +290,9 @@ func matchGoTypePBKind(t reflect.Type, k pref.Kind) converter {
 // converter provides functions for converting to/from Go reflect.Value types
 // and protobuf protoreflect.Value types.
 type converter struct {
-	toPB func(reflect.Value) pref.Value
-	toGo func(pref.Value) reflect.Value
+	toPB       func(reflect.Value) pref.Value
+	toGo       func(pref.Value) reflect.Value
+	newMessage func() pref.Message
 }
 
 func makeScalarConverter(goType, pbType reflect.Type) converter {

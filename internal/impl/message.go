@@ -215,7 +215,7 @@ func (m *message) KnownFields() pref.KnownFields {
 func (m *message) UnknownFields() pref.UnknownFields {
 	return (*unknownFields)(m)
 }
-func (m *message) Unwrap() interface{} {
+func (m *message) Unwrap() interface{} { // TODO: unexport?
 	return m.p.asType(m.mi.goType.Elem()).Interface()
 }
 func (m *message) Interface() pref.ProtoMessage {
@@ -266,7 +266,7 @@ func (fs *knownFields) Set(n pref.FieldNumber, v pref.Value) {
 		return
 	}
 	// TODO: Handle extension fields.
-	panic("invalid field")
+	panic(fmt.Sprintf("invalid field: %d", n))
 }
 func (fs *knownFields) Clear(n pref.FieldNumber) {
 	if fi := fs.mi.fields[n]; fi != nil {
@@ -274,14 +274,14 @@ func (fs *knownFields) Clear(n pref.FieldNumber) {
 		return
 	}
 	// TODO: Handle extension fields.
-	panic("invalid field")
+	panic(fmt.Sprintf("invalid field: %d", n))
 }
 func (fs *knownFields) Mutable(n pref.FieldNumber) pref.Mutable {
 	if fi := fs.mi.fields[n]; fi != nil {
 		return fi.mutable(fs.p)
 	}
 	// TODO: Handle extension fields.
-	panic("invalid field")
+	panic(fmt.Sprintf("invalid field: %d", n))
 }
 func (fs *knownFields) Range(f func(pref.FieldNumber, pref.Value) bool) {
 	for n, fi := range fs.mi.fields {
