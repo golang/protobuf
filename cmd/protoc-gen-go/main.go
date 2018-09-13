@@ -14,6 +14,7 @@ import (
 	"flag"
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -53,7 +54,8 @@ type File struct {
 	*protogen.File
 	locationMap   map[string][]*descpb.SourceCodeInfo_Location
 	descriptorVar string // var containing the gzipped FileDescriptorProto
-	init          []string
+	allEnums      []*protogen.Enum
+	allMessages   []*protogen.Message
 }
 
 func genFile(gen *protogen.Plugin, file *protogen.File) {
@@ -64,6 +66,12 @@ func genFile(gen *protogen.Plugin, file *protogen.File) {
 	for _, loc := range file.Proto.GetSourceCodeInfo().GetLocation() {
 		key := pathKey(loc.Path)
 		f.locationMap[key] = append(f.locationMap[key], loc)
+	}
+
+	f.allEnums = append(f.allEnums, f.File.Enums...)
+	f.allMessages = append(f.allMessages, f.File.Messages...)
+	for _, message := range f.Messages {
+		f.initMessage(message)
 	}
 
 	// Determine the name of the var holding the file descriptor:
@@ -91,23 +99,24 @@ func genFile(gen *protogen.Plugin, file *protogen.File) {
 	}, "// please upgrade the proto package")
 	g.P()
 
-	for _, enum := range f.Enums {
+	for _, enum := range f.allEnums {
 		genEnum(gen, g, f, enum)
 	}
-	for _, message := range f.Messages {
+	for _, message := range f.allMessages {
 		genMessage(gen, g, f, message)
 	}
 
-	if len(f.init) != 0 {
-		g.P("func init() {")
-		for _, s := range f.init {
-			g.P(s)
-		}
-		g.P("}")
-		g.P()
-	}
+	genInitFunction(gen, g, f)
 
 	genFileDescriptor(gen, g, f)
+}
+
+func (f *File) initMessage(message *protogen.Message) {
+	f.allEnums = append(f.allEnums, message.Enums...)
+	f.allMessages = append(f.allMessages, message.Messages...)
+	for _, m := range message.Messages {
+		f.initMessage(m)
+	}
 }
 
 func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File) {
@@ -215,14 +224,6 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, enum *pro
 	g.P()
 
 	genWellKnownType(g, enum.GoIdent, enum.Desc)
-
-	f.init = append(f.init, fmt.Sprintf("%s(%q, %s, %s)",
-		g.QualifiedGoIdent(protogen.GoIdent{
-			GoImportPath: protoPackage,
-			GoName:       "RegisterEnum",
-		}),
-		enumRegistryName(enum), nameMap, valueMap,
-	))
 }
 
 // enumRegistryName returns the name used to register an enum with the proto
@@ -248,10 +249,6 @@ func enumRegistryName(enum *protogen.Enum) string {
 func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, message *protogen.Message) {
 	if message.Desc.IsMapEntry() {
 		return
-	}
-
-	for _, e := range message.Enums {
-		genEnum(gen, g, f, e)
 	}
 
 	genComment(g, f, message.Path)
@@ -415,9 +412,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 		g.P()
 	}
 
-	for _, nested := range message.Messages {
-		genMessage(gen, g, f, nested)
-	}
+	genWellKnownType(g, message.GoIdent, message.Desc)
 }
 
 // fieldGoType returns the Go type used for a field.
@@ -588,6 +583,57 @@ var wireTypes = map[protoreflect.Kind]string{
 
 func fieldJSONTag(field *protogen.Field) string {
 	return string(field.Desc.Name()) + ",omitempty"
+}
+
+// genInitFunction generates an init function that registers the types in the
+// generated file with the proto package.
+func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File) {
+	if len(f.allMessages) == 0 && len(f.allEnums) == 0 {
+		return
+	}
+
+	g.P("func init() {")
+	for _, message := range f.allMessages {
+		if message.Desc.IsMapEntry() {
+			continue
+		}
+
+		name := message.GoIdent.GoName
+		g.P(protogen.GoIdent{
+			GoImportPath: protoPackage,
+			GoName:       "RegisterType",
+		}, fmt.Sprintf("((*%s)(nil), %q)", name, message.Desc.FullName()))
+
+		// Types of map fields, sorted by the name of the field message type.
+		var mapFields []*protogen.Field
+		for _, field := range message.Fields {
+			if field.Desc.IsMap() {
+				mapFields = append(mapFields, field)
+			}
+		}
+		sort.Slice(mapFields, func(i, j int) bool {
+			ni := mapFields[i].MessageType.Desc.FullName()
+			nj := mapFields[j].MessageType.Desc.FullName()
+			return ni < nj
+		})
+		for _, field := range mapFields {
+			typeName := string(field.MessageType.Desc.FullName())
+			goType, _ := fieldGoType(g, field)
+			g.P(protogen.GoIdent{
+				GoImportPath: protoPackage,
+				GoName:       "RegisterMapType",
+			}, fmt.Sprintf("((%v)(nil), %q)", goType, typeName))
+		}
+	}
+	for _, enum := range f.allEnums {
+		name := enum.GoIdent.GoName
+		g.P(protogen.GoIdent{
+			GoImportPath: protoPackage,
+			GoName:       "RegisterEnum",
+		}, fmt.Sprintf("(%q, %s_name, %s_value)", enumRegistryName(enum), name, name))
+	}
+	g.P("}")
+	g.P()
 }
 
 func genComment(g *protogen.GeneratedFile, f *File, path []int32) {

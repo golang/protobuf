@@ -183,6 +183,10 @@ func (m *Message) GetOneofConflictB() string {
 	return ""
 }
 
+func init() {
+	proto.RegisterType((*Message)(nil), "goproto.protoc.fieldnames.Message")
+}
+
 func init() { proto.RegisterFile("fieldnames/fieldnames.proto", fileDescriptor_6bbe3f70febb9403) }
 
 var fileDescriptor_6bbe3f70febb9403 = []byte{

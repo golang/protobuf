@@ -170,36 +170,6 @@ func (EnumContainerMessage1_NestedEnumType1B) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_de9f68860d540858, []int{0, 1}
 }
 
-type EnumContainerMessage1 struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *EnumContainerMessage1) Reset()         { *m = EnumContainerMessage1{} }
-func (m *EnumContainerMessage1) String() string { return proto.CompactTextString(m) }
-func (*EnumContainerMessage1) ProtoMessage()    {}
-func (*EnumContainerMessage1) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de9f68860d540858, []int{0}
-}
-func (m *EnumContainerMessage1) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EnumContainerMessage1.Unmarshal(m, b)
-}
-func (m *EnumContainerMessage1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EnumContainerMessage1.Marshal(b, m, deterministic)
-}
-func (m *EnumContainerMessage1) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EnumContainerMessage1.Merge(m, src)
-}
-func (m *EnumContainerMessage1) XXX_Size() int {
-	return xxx_messageInfo_EnumContainerMessage1.Size(m)
-}
-func (m *EnumContainerMessage1) XXX_DiscardUnknown() {
-	xxx_messageInfo_EnumContainerMessage1.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EnumContainerMessage1 proto.InternalMessageInfo
-
 // NestedEnumType2A comment.
 type EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A int32
 
@@ -276,6 +246,36 @@ func (EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) EnumDescript
 	return fileDescriptor_de9f68860d540858, []int{0, 0, 1}
 }
 
+type EnumContainerMessage1 struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *EnumContainerMessage1) Reset()         { *m = EnumContainerMessage1{} }
+func (m *EnumContainerMessage1) String() string { return proto.CompactTextString(m) }
+func (*EnumContainerMessage1) ProtoMessage()    {}
+func (*EnumContainerMessage1) Descriptor() ([]byte, []int) {
+	return fileDescriptor_de9f68860d540858, []int{0}
+}
+func (m *EnumContainerMessage1) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EnumContainerMessage1.Unmarshal(m, b)
+}
+func (m *EnumContainerMessage1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EnumContainerMessage1.Marshal(b, m, deterministic)
+}
+func (m *EnumContainerMessage1) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EnumContainerMessage1.Merge(m, src)
+}
+func (m *EnumContainerMessage1) XXX_Size() int {
+	return xxx_messageInfo_EnumContainerMessage1.Size(m)
+}
+func (m *EnumContainerMessage1) XXX_DiscardUnknown() {
+	xxx_messageInfo_EnumContainerMessage1.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EnumContainerMessage1 proto.InternalMessageInfo
+
 type EnumContainerMessage1_EnumContainerMessage2 struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -311,6 +311,8 @@ func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_DiscardUnknown() {
 var xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2 proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterType((*EnumContainerMessage1)(nil), "goproto.protoc.proto2.EnumContainerMessage1")
+	proto.RegisterType((*EnumContainerMessage1_EnumContainerMessage2)(nil), "goproto.protoc.proto2.EnumContainerMessage1.EnumContainerMessage2")
 	proto.RegisterEnum("goproto.protoc.proto2.EnumType1", EnumType1_name, EnumType1_value)
 	proto.RegisterEnum("goproto.protoc.proto2.EnumType2", EnumType2_name, EnumType2_value)
 	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_NestedEnumType1A", EnumContainerMessage1_NestedEnumType1A_name, EnumContainerMessage1_NestedEnumType1A_value)

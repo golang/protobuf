@@ -44,6 +44,37 @@ func (m *Message1) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Message1 proto.InternalMessageInfo
 
+// COMMENT: Message2
+type Message2 struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Message2) Reset()         { *m = Message2{} }
+func (m *Message2) String() string { return proto.CompactTextString(m) }
+func (*Message2) ProtoMessage()    {}
+func (*Message2) Descriptor() ([]byte, []int) {
+	return fileDescriptor_885e8293f1fab554, []int{1}
+}
+func (m *Message2) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Message2.Unmarshal(m, b)
+}
+func (m *Message2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Message2.Marshal(b, m, deterministic)
+}
+func (m *Message2) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Message2.Merge(m, src)
+}
+func (m *Message2) XXX_Size() int {
+	return xxx_messageInfo_Message2.Size(m)
+}
+func (m *Message2) XXX_DiscardUnknown() {
+	xxx_messageInfo_Message2.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Message2 proto.InternalMessageInfo
+
 // COMMENT: Message1A
 type Message1_Message1A struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -106,37 +137,6 @@ func (m *Message1_Message1B) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Message1_Message1B proto.InternalMessageInfo
 
-// COMMENT: Message2
-type Message2 struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Message2) Reset()         { *m = Message2{} }
-func (m *Message2) String() string { return proto.CompactTextString(m) }
-func (*Message2) ProtoMessage()    {}
-func (*Message2) Descriptor() ([]byte, []int) {
-	return fileDescriptor_885e8293f1fab554, []int{1}
-}
-func (m *Message2) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message2.Unmarshal(m, b)
-}
-func (m *Message2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message2.Marshal(b, m, deterministic)
-}
-func (m *Message2) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message2.Merge(m, src)
-}
-func (m *Message2) XXX_Size() int {
-	return xxx_messageInfo_Message2.Size(m)
-}
-func (m *Message2) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message2.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message2 proto.InternalMessageInfo
-
 // COMMENT: Message2A
 type Message2_Message2A struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -198,6 +198,15 @@ func (m *Message2_Message2B) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_Message2_Message2B proto.InternalMessageInfo
+
+func init() {
+	proto.RegisterType((*Message1)(nil), "goproto.protoc.proto2.Message1")
+	proto.RegisterType((*Message2)(nil), "goproto.protoc.proto2.Message2")
+	proto.RegisterType((*Message1_Message1A)(nil), "goproto.protoc.proto2.Message1.Message1A")
+	proto.RegisterType((*Message1_Message1B)(nil), "goproto.protoc.proto2.Message1.Message1B")
+	proto.RegisterType((*Message2_Message2A)(nil), "goproto.protoc.proto2.Message2.Message2A")
+	proto.RegisterType((*Message2_Message2B)(nil), "goproto.protoc.proto2.Message2.Message2B")
+}
 
 func init() { proto.RegisterFile("comments/comments.proto", fileDescriptor_885e8293f1fab554) }
 

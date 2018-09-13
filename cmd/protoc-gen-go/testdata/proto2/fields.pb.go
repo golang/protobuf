@@ -885,6 +885,14 @@ func (m *FieldTestMessage_Message) XXX_DiscardUnknown() {
 var xxx_messageInfo_FieldTestMessage_Message proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterType((*FieldTestMessage)(nil), "goproto.protoc.proto2.FieldTestMessage")
+	proto.RegisterMapType((map[uint64]FieldTestMessage_Enum)(nil), "goproto.protoc.proto2.FieldTestMessage.MapFixed64EnumEntry")
+	proto.RegisterMapType((map[int32]int64)(nil), "goproto.protoc.proto2.FieldTestMessage.MapInt32Int64Entry")
+	proto.RegisterMapType((map[string]*FieldTestMessage_Message)(nil), "goproto.protoc.proto2.FieldTestMessage.MapStringMessageEntry")
+	proto.RegisterType((*FieldTestMessage_OptionalGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.OptionalGroup")
+	proto.RegisterType((*FieldTestMessage_RequiredGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.RequiredGroup")
+	proto.RegisterType((*FieldTestMessage_RepeatedGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.RepeatedGroup")
+	proto.RegisterType((*FieldTestMessage_Message)(nil), "goproto.protoc.proto2.FieldTestMessage.Message")
 	proto.RegisterEnum("goproto.protoc.proto2.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)
 }
 

@@ -125,6 +125,12 @@ func (m *Layer1_Layer2_Layer3) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Layer1_Layer2_Layer3 proto.InternalMessageInfo
 
+func init() {
+	proto.RegisterType((*Layer1)(nil), "goproto.protoc.proto2.Layer1")
+	proto.RegisterType((*Layer1_Layer2)(nil), "goproto.protoc.proto2.Layer1.Layer2")
+	proto.RegisterType((*Layer1_Layer2_Layer3)(nil), "goproto.protoc.proto2.Layer1.Layer2.Layer3")
+}
+
 func init() { proto.RegisterFile("proto2/nested_messages.proto", fileDescriptor_7417ee157699d191) }
 
 var fileDescriptor_7417ee157699d191 = []byte{

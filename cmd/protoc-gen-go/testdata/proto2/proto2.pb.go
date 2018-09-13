@@ -57,6 +57,10 @@ func (m *Message) GetM() *Message {
 	return nil
 }
 
+func init() {
+	proto.RegisterType((*Message)(nil), "goproto.protoc.proto2.Message")
+}
+
 func init() { proto.RegisterFile("proto2/proto2.proto", fileDescriptor_d756bbe8817c03c1) }
 
 var fileDescriptor_d756bbe8817c03c1 = []byte{
