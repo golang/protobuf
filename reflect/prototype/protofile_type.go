@@ -213,7 +213,7 @@ func (t fieldDesc) IsPacked() bool                                    { return t
 func (t fieldDesc) IsMap() bool                                       { return isMap(t) }
 func (t fieldDesc) IsWeak() bool                                      { return t.f.IsWeak }
 func (t fieldDesc) Default() pref.Value                               { return t.f.dv.lazyInit(t, t.f.Default) }
-func (t fieldDesc) HasDefault() bool                                  { return !t.f.Default.IsNull() }
+func (t fieldDesc) HasDefault() bool                                  { return t.f.Default.IsValid() }
 func (t fieldDesc) OneofType() pref.OneofDescriptor                   { return t.f.ot.lazyInit(t, t.f.OneofName) }
 func (t fieldDesc) ExtendedType() pref.MessageDescriptor              { return nil }
 func (t fieldDesc) MessageType() pref.MessageDescriptor               { return t.f.mt.lazyInit(t, &t.f.MessageType) }
@@ -322,7 +322,7 @@ func (t extensionDesc) IsPacked() bool                                    { retu
 func (t extensionDesc) IsMap() bool                                       { return false }
 func (t extensionDesc) IsWeak() bool                                      { return false }
 func (t extensionDesc) Default() pref.Value                               { return t.x.dv.lazyInit(t, t.x.Default) }
-func (t extensionDesc) HasDefault() bool                                  { return !t.x.Default.IsNull() }
+func (t extensionDesc) HasDefault() bool                                  { return t.x.Default.IsValid() }
 func (t extensionDesc) OneofType() pref.OneofDescriptor                   { return nil }
 func (t extensionDesc) ExtendedType() pref.MessageDescriptor {
 	return t.x.xt.lazyInit(t, &t.x.ExtendedType)

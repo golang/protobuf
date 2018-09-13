@@ -66,7 +66,7 @@ func (t standaloneExtension) IsPacked() bool                                    
 func (t standaloneExtension) IsMap() bool                                       { return false }
 func (t standaloneExtension) IsWeak() bool                                      { return false }
 func (t standaloneExtension) Default() pref.Value                               { return t.x.dv.lazyInit(t, t.x.Default) }
-func (t standaloneExtension) HasDefault() bool                                  { return !t.x.Default.IsNull() }
+func (t standaloneExtension) HasDefault() bool                                  { return t.x.Default.IsValid() }
 func (t standaloneExtension) OneofType() pref.OneofDescriptor                   { return nil }
 func (t standaloneExtension) MessageType() pref.MessageDescriptor               { return t.x.MessageType }
 func (t standaloneExtension) EnumType() pref.EnumDescriptor                     { return t.x.EnumType }
