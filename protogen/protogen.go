@@ -14,6 +14,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"go/ast"
 	"go/parser"
 	"go/printer"
 	"go/token"
@@ -701,7 +702,7 @@ func (g *GeneratedFile) Content() ([]byte, error) {
 	// Reformat generated code.
 	original := g.buf.Bytes()
 	fset := token.NewFileSet()
-	ast, err := parser.ParseFile(fset, "", original, parser.ParseComments)
+	file, err := parser.ParseFile(fset, "", original, parser.ParseComments)
 	if err != nil {
 		// Print out the bad code with line numbers.
 		// This should never happen in practice, but it can while changing generated code
@@ -721,11 +722,12 @@ func (g *GeneratedFile) Content() ([]byte, error) {
 	}
 	sort.Strings(importPaths)
 	for _, importPath := range importPaths {
-		astutil.AddNamedImport(fset, ast, string(g.packageNames[GoImportPath(importPath)]), importPath)
+		astutil.AddNamedImport(fset, file, string(g.packageNames[GoImportPath(importPath)]), importPath)
 	}
+	ast.SortImports(fset, file)
 
 	var out bytes.Buffer
-	if err = (&printer.Config{Mode: printer.TabIndent | printer.UseSpaces, Tabwidth: 8}).Fprint(&out, fset, ast); err != nil {
+	if err = (&printer.Config{Mode: printer.TabIndent | printer.UseSpaces, Tabwidth: 8}).Fprint(&out, fset, file); err != nil {
 		return nil, fmt.Errorf("%v: can not reformat Go source: %v", g.filename, err)
 	}
 	// TODO: Annotations.

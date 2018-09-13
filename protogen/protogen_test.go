@@ -279,8 +279,8 @@ func TestImports(t *testing.T) {
 
 import (
 	bar "golang.org/x/bar"
-	bar1 "golang.org/y/bar"
 	baz "golang.org/x/baz"
+	bar1 "golang.org/y/bar"
 )
 
 var _ = X      // "golang.org/x/foo"
