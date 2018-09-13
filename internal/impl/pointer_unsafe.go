@@ -28,6 +28,15 @@ func pointerOfValue(v reflect.Value) pointer {
 	return pointer{p: unsafe.Pointer(v.Pointer())}
 }
 
+// pointerOfIface returns the pointer portion of an interface.
+func pointerOfIface(v *interface{}) pointer {
+	type ifaceHeader struct {
+		Type unsafe.Pointer
+		Data unsafe.Pointer
+	}
+	return pointer{p: (*ifaceHeader)(unsafe.Pointer(v)).Data}
+}
+
 // apply adds an offset to the pointer to derive a new pointer
 // to a specified field. The current pointer must be pointing at a struct.
 func (p pointer) apply(f offset) pointer {

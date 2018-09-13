@@ -14,6 +14,14 @@ import (
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
+func mustMakeMessageDesc(t ptype.StandaloneMessage) pref.MessageDescriptor {
+	md, err := ptype.NewMessage(&t)
+	if err != nil {
+		panic(err)
+	}
+	return md
+}
+
 type (
 	MyBool    bool
 	MyInt32   int32
@@ -52,6 +60,36 @@ type ScalarProto2 struct {
 	MyBytesA  *MyString  `protobuf:"22"`
 }
 
+var scalarProto2Desc = mustMakeMessageDesc(ptype.StandaloneMessage{
+	Syntax:   pref.Proto2,
+	FullName: "ScalarProto2",
+	Fields: []ptype.Field{
+		{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.BoolKind, Default: pref.ValueOf(bool(true))},
+		{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.Int32Kind, Default: pref.ValueOf(int32(2))},
+		{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.Int64Kind, Default: pref.ValueOf(int64(3))},
+		{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.Uint32Kind, Default: pref.ValueOf(uint32(4))},
+		{Name: "f5", Number: 5, Cardinality: pref.Optional, Kind: pref.Uint64Kind, Default: pref.ValueOf(uint64(5))},
+		{Name: "f6", Number: 6, Cardinality: pref.Optional, Kind: pref.FloatKind, Default: pref.ValueOf(float32(6))},
+		{Name: "f7", Number: 7, Cardinality: pref.Optional, Kind: pref.DoubleKind, Default: pref.ValueOf(float64(7))},
+		{Name: "f8", Number: 8, Cardinality: pref.Optional, Kind: pref.StringKind, Default: pref.ValueOf(string("8"))},
+		{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.StringKind, Default: pref.ValueOf(string("9"))},
+		{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: pref.ValueOf([]byte("10"))},
+		{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: pref.ValueOf([]byte("11"))},
+
+		{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.BoolKind, Default: pref.ValueOf(bool(true))},
+		{Name: "f13", Number: 13, Cardinality: pref.Optional, Kind: pref.Int32Kind, Default: pref.ValueOf(int32(13))},
+		{Name: "f14", Number: 14, Cardinality: pref.Optional, Kind: pref.Int64Kind, Default: pref.ValueOf(int64(14))},
+		{Name: "f15", Number: 15, Cardinality: pref.Optional, Kind: pref.Uint32Kind, Default: pref.ValueOf(uint32(15))},
+		{Name: "f16", Number: 16, Cardinality: pref.Optional, Kind: pref.Uint64Kind, Default: pref.ValueOf(uint64(16))},
+		{Name: "f17", Number: 17, Cardinality: pref.Optional, Kind: pref.FloatKind, Default: pref.ValueOf(float32(17))},
+		{Name: "f18", Number: 18, Cardinality: pref.Optional, Kind: pref.DoubleKind, Default: pref.ValueOf(float64(18))},
+		{Name: "f19", Number: 19, Cardinality: pref.Optional, Kind: pref.StringKind, Default: pref.ValueOf(string("19"))},
+		{Name: "f20", Number: 20, Cardinality: pref.Optional, Kind: pref.StringKind, Default: pref.ValueOf(string("20"))},
+		{Name: "f21", Number: 21, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: pref.ValueOf([]byte("21"))},
+		{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: pref.ValueOf([]byte("22"))},
+	},
+})
+
 type ScalarProto3 struct {
 	Bool    bool    `protobuf:"1"`
 	Int32   int32   `protobuf:"2"`
@@ -78,7 +116,37 @@ type ScalarProto3 struct {
 	MyBytesA  MyString  `protobuf:"22"`
 }
 
-func TestFieldFuncs(t *testing.T) {
+var scalarProto3Desc = mustMakeMessageDesc(ptype.StandaloneMessage{
+	Syntax:   pref.Proto3,
+	FullName: "ScalarProto3",
+	Fields: []ptype.Field{
+		{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.BoolKind},
+		{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.Int32Kind},
+		{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.Int64Kind},
+		{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.Uint32Kind},
+		{Name: "f5", Number: 5, Cardinality: pref.Optional, Kind: pref.Uint64Kind},
+		{Name: "f6", Number: 6, Cardinality: pref.Optional, Kind: pref.FloatKind},
+		{Name: "f7", Number: 7, Cardinality: pref.Optional, Kind: pref.DoubleKind},
+		{Name: "f8", Number: 8, Cardinality: pref.Optional, Kind: pref.StringKind},
+		{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.StringKind},
+		{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.BytesKind},
+		{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.BytesKind},
+
+		{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.BoolKind},
+		{Name: "f13", Number: 13, Cardinality: pref.Optional, Kind: pref.Int32Kind},
+		{Name: "f14", Number: 14, Cardinality: pref.Optional, Kind: pref.Int64Kind},
+		{Name: "f15", Number: 15, Cardinality: pref.Optional, Kind: pref.Uint32Kind},
+		{Name: "f16", Number: 16, Cardinality: pref.Optional, Kind: pref.Uint64Kind},
+		{Name: "f17", Number: 17, Cardinality: pref.Optional, Kind: pref.FloatKind},
+		{Name: "f18", Number: 18, Cardinality: pref.Optional, Kind: pref.DoubleKind},
+		{Name: "f19", Number: 19, Cardinality: pref.Optional, Kind: pref.StringKind},
+		{Name: "f20", Number: 20, Cardinality: pref.Optional, Kind: pref.StringKind},
+		{Name: "f21", Number: 21, Cardinality: pref.Optional, Kind: pref.BytesKind},
+		{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind},
+	},
+})
+
+func TestKnownFields(t *testing.T) {
 	V := pref.ValueOf
 	type (
 		// has checks that each field matches the list.
@@ -97,39 +165,11 @@ func TestFieldFuncs(t *testing.T) {
 
 	tests := []struct {
 		structType  reflect.Type
-		messageDesc ptype.StandaloneMessage
+		messageDesc pref.MessageDescriptor
 		testOps     []testOp
 	}{{
-		structType: reflect.TypeOf(ScalarProto2{}),
-		messageDesc: ptype.StandaloneMessage{
-			Syntax:   pref.Proto2,
-			FullName: "ScalarProto2",
-			Fields: []ptype.Field{
-				{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.BoolKind, Default: V(bool(true))},
-				{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.Int32Kind, Default: V(int32(2))},
-				{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.Int64Kind, Default: V(int64(3))},
-				{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.Uint32Kind, Default: V(uint32(4))},
-				{Name: "f5", Number: 5, Cardinality: pref.Optional, Kind: pref.Uint64Kind, Default: V(uint64(5))},
-				{Name: "f6", Number: 6, Cardinality: pref.Optional, Kind: pref.FloatKind, Default: V(float32(6))},
-				{Name: "f7", Number: 7, Cardinality: pref.Optional, Kind: pref.DoubleKind, Default: V(float64(7))},
-				{Name: "f8", Number: 8, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("8"))},
-				{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("9"))},
-				{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("10"))},
-				{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("11"))},
-
-				{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.BoolKind, Default: V(bool(true))},
-				{Name: "f13", Number: 13, Cardinality: pref.Optional, Kind: pref.Int32Kind, Default: V(int32(13))},
-				{Name: "f14", Number: 14, Cardinality: pref.Optional, Kind: pref.Int64Kind, Default: V(int64(14))},
-				{Name: "f15", Number: 15, Cardinality: pref.Optional, Kind: pref.Uint32Kind, Default: V(uint32(15))},
-				{Name: "f16", Number: 16, Cardinality: pref.Optional, Kind: pref.Uint64Kind, Default: V(uint64(16))},
-				{Name: "f17", Number: 17, Cardinality: pref.Optional, Kind: pref.FloatKind, Default: V(float32(17))},
-				{Name: "f18", Number: 18, Cardinality: pref.Optional, Kind: pref.DoubleKind, Default: V(float64(18))},
-				{Name: "f19", Number: 19, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("19"))},
-				{Name: "f20", Number: 20, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("20"))},
-				{Name: "f21", Number: 21, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("21"))},
-				{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("22"))},
-			},
-		},
+		structType:  reflect.TypeOf(ScalarProto2{}),
+		messageDesc: scalarProto2Desc,
 		testOps: []testOp{
 			hasOp([]bool{
 				false, false, false, false, false, false, false, false, false, false, false,
@@ -158,36 +198,8 @@ func TestFieldFuncs(t *testing.T) {
 			equalOp{&ScalarProto2{}},
 		},
 	}, {
-		structType: reflect.TypeOf(ScalarProto3{}),
-		messageDesc: ptype.StandaloneMessage{
-			Syntax:   pref.Proto3,
-			FullName: "ScalarProto3",
-			Fields: []ptype.Field{
-				{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.BoolKind},
-				{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.Int32Kind},
-				{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.Int64Kind},
-				{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.Uint32Kind},
-				{Name: "f5", Number: 5, Cardinality: pref.Optional, Kind: pref.Uint64Kind},
-				{Name: "f6", Number: 6, Cardinality: pref.Optional, Kind: pref.FloatKind},
-				{Name: "f7", Number: 7, Cardinality: pref.Optional, Kind: pref.DoubleKind},
-				{Name: "f8", Number: 8, Cardinality: pref.Optional, Kind: pref.StringKind},
-				{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.StringKind},
-				{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.BytesKind},
-				{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.BytesKind},
-
-				{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.BoolKind},
-				{Name: "f13", Number: 13, Cardinality: pref.Optional, Kind: pref.Int32Kind},
-				{Name: "f14", Number: 14, Cardinality: pref.Optional, Kind: pref.Int64Kind},
-				{Name: "f15", Number: 15, Cardinality: pref.Optional, Kind: pref.Uint32Kind},
-				{Name: "f16", Number: 16, Cardinality: pref.Optional, Kind: pref.Uint64Kind},
-				{Name: "f17", Number: 17, Cardinality: pref.Optional, Kind: pref.FloatKind},
-				{Name: "f18", Number: 18, Cardinality: pref.Optional, Kind: pref.DoubleKind},
-				{Name: "f19", Number: 19, Cardinality: pref.Optional, Kind: pref.StringKind},
-				{Name: "f20", Number: 20, Cardinality: pref.Optional, Kind: pref.StringKind},
-				{Name: "f21", Number: 21, Cardinality: pref.Optional, Kind: pref.BytesKind},
-				{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind},
-			},
-		},
+		structType:  reflect.TypeOf(ScalarProto3{}),
+		messageDesc: scalarProto3Desc,
 		testOps: []testOp{
 			hasOp([]bool{
 				false, false, false, false, false, false, false, false, false, false, false,
@@ -228,19 +240,12 @@ func TestFieldFuncs(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.structType.Name(), func(t *testing.T) {
-			// Construct the message descriptor.
-			md, err := ptype.NewMessage(&tt.messageDesc)
-			if err != nil {
-				t.Fatalf("NewMessage error: %v", err)
-			}
-
-			// Generate the field functions from the message descriptor.
-			var mi MessageInfo
-			mi.generateFieldFuncs(tt.structType, md) // must not panic
+			mi := MessageType{Desc: tt.messageDesc}
 
 			// Test the field functions.
-			m := reflect.New(tt.structType)
-			p := pointerOfValue(m)
+			p := reflect.New(tt.structType).Interface()
+			m := mi.MessageOf(p)
+			fs := m.KnownFields()
 			for i, op := range tt.testOps {
 				switch op := op.(type) {
 				case hasOp:
@@ -248,7 +253,7 @@ func TestFieldFuncs(t *testing.T) {
 					want := map[pref.FieldNumber]bool{}
 					for j, ok := range op {
 						n := pref.FieldNumber(j + 1)
-						got[n] = mi.fields[n].has(p)
+						got[n] = fs.Has(n)
 						want[n] = ok
 					}
 					if diff := cmp.Diff(want, got); diff != "" {
@@ -259,7 +264,7 @@ func TestFieldFuncs(t *testing.T) {
 					want := map[pref.FieldNumber]pref.Value{}
 					for j, v := range op {
 						n := pref.FieldNumber(j + 1)
-						got[n] = mi.fields[n].get(p)
+						got[n] = fs.Get(n)
 						want[n] = v
 					}
 					xformValue := cmp.Transformer("", func(v pref.Value) interface{} {
@@ -271,17 +276,17 @@ func TestFieldFuncs(t *testing.T) {
 				case setOp:
 					for j, v := range op {
 						n := pref.FieldNumber(j + 1)
-						mi.fields[n].set(p, v)
+						fs.Set(n, v)
 					}
 				case clearOp:
 					for j, ok := range op {
 						n := pref.FieldNumber(j + 1)
 						if ok {
-							mi.fields[n].clear(p)
+							fs.Clear(n)
 						}
 					}
 				case equalOp:
-					got := m.Interface()
+					got := m.(interface{ Unwrap() interface{} }).Unwrap()
 					if diff := cmp.Diff(op.want, got); diff != "" {
 						t.Errorf("operation %d, equal mismatch (-want, +got):\n%s", i, diff)
 					}
