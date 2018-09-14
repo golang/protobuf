@@ -340,7 +340,7 @@ func genOneofFieldSizer(g *protogen.GeneratedFile, field *protogen.Field) {
 // fieldOneofType returns the wrapper type used to represent a field in a oneof.
 func fieldOneofType(field *protogen.Field) protogen.GoIdent {
 	return protogen.GoIdent{
-		GoImportPath: field.ContainingType.GoIdent.GoImportPath,
-		GoName:       field.ContainingType.GoIdent.GoName + "_" + field.GoName,
+		GoImportPath: field.ParentMessage.GoIdent.GoImportPath,
+		GoName:       field.ParentMessage.GoIdent.GoName + "_" + field.GoName,
 	}
 }

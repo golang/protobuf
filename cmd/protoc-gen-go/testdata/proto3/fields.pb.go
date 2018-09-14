@@ -74,6 +74,7 @@ func (*FieldTestMessage) ProtoMessage()    {}
 func (*FieldTestMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f1e3ea068187307c, []int{0}
 }
+
 func (m *FieldTestMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldTestMessage.Unmarshal(m, b)
 }
@@ -244,6 +245,7 @@ func (*FieldTestMessage_Message) ProtoMessage()    {}
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f1e3ea068187307c, []int{0, 3}
 }
+
 func (m *FieldTestMessage_Message) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldTestMessage_Message.Unmarshal(m, b)
 }

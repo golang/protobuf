@@ -348,6 +348,7 @@ type File struct {
 	GoImportPath  GoImportPath  // import path of this file's Go package
 	Messages      []*Message    // top-level message declarations
 	Enums         []*Enum       // top-level enum declarations
+	Extensions    []*Extension  // top-level extension declarations
 	Generate      bool          // true if we should generate code for this file
 
 	// GeneratedFilenamePrefix is used to construct filenames for generated
@@ -397,8 +398,18 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 	for i, edescs := 0, desc.Enums(); i < edescs.Len(); i++ {
 		f.Enums = append(f.Enums, newEnum(gen, f, nil, edescs.Get(i)))
 	}
+	for i, extdescs := 0, desc.Extensions(); i < extdescs.Len(); i++ {
+		f.Extensions = append(f.Extensions, newField(gen, f, nil, extdescs.Get(i)))
+	}
 	for _, message := range f.Messages {
-		message.init(gen)
+		if err := message.init(gen); err != nil {
+			return nil, err
+		}
+	}
+	for _, extension := range f.Extensions {
+		if err := extension.init(gen); err != nil {
+			return nil, err
+		}
 	}
 	return f, nil
 }
@@ -427,12 +438,13 @@ func goPackageOption(d *descpb.FileDescriptorProto) (pkg GoPackageName, impPath 
 type Message struct {
 	Desc protoreflect.MessageDescriptor
 
-	GoIdent  GoIdent    // name of the generated Go type
-	Fields   []*Field   // message field declarations
-	Oneofs   []*Oneof   // oneof declarations
-	Messages []*Message // nested message declarations
-	Enums    []*Enum    // nested enum declarations
-	Path     []int32    // location path of this message
+	GoIdent    GoIdent      // name of the generated Go type
+	Fields     []*Field     // message field declarations
+	Oneofs     []*Oneof     // oneof declarations
+	Messages   []*Message   // nested message declarations
+	Enums      []*Enum      // nested enum declarations
+	Extensions []*Extension // nested extension declarations
+	Path       []int32      // location path of this message
 }
 
 func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.MessageDescriptor) *Message {
@@ -459,6 +471,9 @@ func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.Message
 	}
 	for i, fdescs := 0, desc.Fields(); i < fdescs.Len(); i++ {
 		message.Fields = append(message.Fields, newField(gen, f, message, fdescs.Get(i)))
+	}
+	for i, extdescs := 0, desc.Extensions(); i < extdescs.Len(); i++ {
+		message.Extensions = append(message.Extensions, newField(gen, f, message, extdescs.Get(i)))
 	}
 
 	// Field name conflict resolution.
@@ -524,6 +539,11 @@ func (message *Message) init(gen *Plugin) error {
 	for _, oneof := range message.Oneofs {
 		oneof.init(gen, message)
 	}
+	for _, extension := range message.Extensions {
+		if err := extension.init(gen); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -536,25 +556,38 @@ type Field struct {
 	// '{{GoName}}' and a getter method named 'Get{{GoName}}'.
 	GoName string
 
-	ContainingType *Message // message in which this field occurs
-	MessageType    *Message // type for message or group fields; nil otherwise
-	EnumType       *Enum    // type for enum fields; nil otherwise
-	OneofType      *Oneof   // containing oneof; nil if not part of a oneof
-	Path           []int32  // location path of this field
+	ParentMessage *Message // message in which this field is defined; nil if top-level extension
+	ExtendedType  *Message // extended message for extension fields; nil otherwise
+	MessageType   *Message // type for message or group fields; nil otherwise
+	EnumType      *Enum    // type for enum fields; nil otherwise
+	OneofType     *Oneof   // containing oneof; nil if not part of a oneof
+	Path          []int32  // location path of this field
 }
 
 func newField(gen *Plugin, f *File, message *Message, desc protoreflect.FieldDescriptor) *Field {
+	var path []int32
+	switch {
+	case desc.ExtendedType() != nil && message == nil:
+		path = []int32{fileExtensionField, int32(desc.Index())}
+	case desc.ExtendedType() != nil && message != nil:
+		path = pathAppend(message.Path, messageExtensionField, int32(desc.Index()))
+	default:
+		path = pathAppend(message.Path, messageFieldField, int32(desc.Index()))
+	}
 	field := &Field{
-		Desc:           desc,
-		GoName:         camelCase(string(desc.Name())),
-		ContainingType: message,
-		Path:           pathAppend(message.Path, messageFieldField, int32(desc.Index())),
+		Desc:          desc,
+		GoName:        camelCase(string(desc.Name())),
+		ParentMessage: message,
+		Path:          path,
 	}
 	if desc.OneofType() != nil {
 		field.OneofType = message.Oneofs[desc.OneofType().Index()]
 	}
 	return field
 }
+
+// Extension is an alias of Field for documentation.
+type Extension = Field
 
 func (field *Field) init(gen *Plugin) error {
 	desc := field.Desc
@@ -574,6 +607,14 @@ func (field *Field) init(gen *Plugin) error {
 		}
 		field.EnumType = enum
 	}
+	if desc.ExtendedType() != nil {
+		mname := desc.ExtendedType().FullName()
+		message, ok := gen.messagesByName[mname]
+		if !ok {
+			return fmt.Errorf("field %v: no descriptor for type %v", desc.FullName(), mname)
+		}
+		field.ExtendedType = message
+	}
 	return nil
 }
 
@@ -581,18 +622,18 @@ func (field *Field) init(gen *Plugin) error {
 type Oneof struct {
 	Desc protoreflect.OneofDescriptor
 
-	GoName         string   // Go field name of this oneof
-	ContainingType *Message // message in which this oneof occurs
-	Fields         []*Field // fields that are part of this oneof
-	Path           []int32  // location path of this oneof
+	GoName        string   // Go field name of this oneof
+	ParentMessage *Message // message in which this oneof occurs
+	Fields        []*Field // fields that are part of this oneof
+	Path          []int32  // location path of this oneof
 }
 
 func newOneof(gen *Plugin, f *File, message *Message, desc protoreflect.OneofDescriptor) *Oneof {
 	return &Oneof{
-		Desc:           desc,
-		ContainingType: message,
-		GoName:         camelCase(string(desc.Name())),
-		Path:           pathAppend(message.Path, messageOneofField, int32(desc.Index())),
+		Desc:          desc,
+		ParentMessage: message,
+		GoName:        camelCase(string(desc.Name())),
+		Path:          pathAppend(message.Path, messageOneofField, int32(desc.Index())),
 	}
 }
 
@@ -782,14 +823,16 @@ const (
 // See descriptor.proto for more information about this.
 const (
 	// field numbers in FileDescriptorProto
-	filePackageField = 2 // package
-	fileMessageField = 4 // message_type
-	fileEnumField    = 5 // enum_type
+	filePackageField   = 2 // package
+	fileMessageField   = 4 // message_type
+	fileEnumField      = 5 // enum_type
+	fileExtensionField = 7 // extension
 	// field numbers in DescriptorProto
-	messageFieldField   = 2 // field
-	messageMessageField = 3 // nested_type
-	messageEnumField    = 4 // enum_type
-	messageOneofField   = 8 // oneof_decl
+	messageFieldField     = 2 // field
+	messageMessageField   = 3 // nested_type
+	messageEnumField      = 4 // enum_type
+	messageExtensionField = 6 // extension
+	messageOneofField     = 8 // oneof_decl
 	// field numbers in EnumDescriptorProto
 	enumValueField = 2 // value
 )

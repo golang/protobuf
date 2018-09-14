@@ -56,6 +56,7 @@ type File struct {
 	descriptorVar string // var containing the gzipped FileDescriptorProto
 	allEnums      []*protogen.Enum
 	allMessages   []*protogen.Message
+	allExtensions []*protogen.Extension
 }
 
 func genFile(gen *protogen.Plugin, file *protogen.File) {
@@ -68,11 +69,19 @@ func genFile(gen *protogen.Plugin, file *protogen.File) {
 		f.locationMap[key] = append(f.locationMap[key], loc)
 	}
 
+	// The different order for enums and extensions is to match the output
+	// of the previous implementation.
+	//
+	// TODO: Eventually make this consistent.
 	f.allEnums = append(f.allEnums, f.File.Enums...)
-	f.allMessages = append(f.allMessages, f.File.Messages...)
 	for _, message := range f.Messages {
-		f.initMessage(message)
+		walkMessage(message, func(message *protogen.Message) {
+			f.allMessages = append(f.allMessages, message)
+			f.allEnums = append(f.allEnums, message.Enums...)
+			f.allExtensions = append(f.allExtensions, message.Extensions...)
+		})
 	}
+	f.allExtensions = append(f.allExtensions, f.File.Extensions...)
 
 	// Determine the name of the var holding the file descriptor:
 	//
@@ -120,17 +129,20 @@ func genFile(gen *protogen.Plugin, file *protogen.File) {
 	for _, message := range f.allMessages {
 		genMessage(gen, g, f, message)
 	}
+	for _, extension := range f.Extensions {
+		genExtension(gen, g, f, extension)
+	}
 
 	genInitFunction(gen, g, f)
 
 	genFileDescriptor(gen, g, f)
 }
 
-func (f *File) initMessage(message *protogen.Message) {
-	f.allEnums = append(f.allEnums, message.Enums...)
-	f.allMessages = append(f.allMessages, message.Messages...)
+// walkMessage calls f on message and all of its descendants.
+func walkMessage(message *protogen.Message, f func(*protogen.Message)) {
+	f(message)
 	for _, m := range message.Messages {
-		f.initMessage(m)
+		walkMessage(m, f)
 	}
 }
 
@@ -300,6 +312,18 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 		g.P(field.GoName, " ", goType, " `", strings.Join(tags, " "), "`")
 	}
 	g.P("XXX_NoUnkeyedLiteral struct{} `json:\"-\"`")
+
+	if message.Desc.ExtensionRanges().Len() > 0 {
+		var tags []string
+		if messageOptions(gen, message).GetMessageSetWireFormat() {
+			tags = append(tags, `protobuf_messageset:"1"`)
+		}
+		tags = append(tags, `json:"-"`)
+		g.P(protogen.GoIdent{
+			GoImportPath: protoPackage,
+			GoName:       "XXX_InternalExtensions",
+		}, " `", strings.Join(tags, " "), "`")
+	}
 	// TODO XXX_InternalExtensions
 	g.P("XXX_unrecognized []byte `json:\"-\"`")
 	g.P("XXX_sizecache int32 `json:\"-\"`")
@@ -323,7 +347,43 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 	g.P("func (*", message.GoIdent, ") Descriptor() ([]byte, []int) {")
 	g.P("return ", f.descriptorVar, ", []int{", strings.Join(indexes, ","), "}")
 	g.P("}")
-	// TODO: extension support methods
+	g.P()
+
+	// ExtensionRangeArray
+	if extranges := message.Desc.ExtensionRanges(); extranges.Len() > 0 {
+		if messageOptions(gen, message).GetMessageSetWireFormat() {
+			g.P("func (m *", message.GoIdent, ") MarshalJSON() ([]byte, error) {")
+			g.P("return ", protogen.GoIdent{
+				GoImportPath: protoPackage,
+				GoName:       "MarshalMessageSetJSON",
+			}, "(&m.XXX_InternalExtensions)")
+			g.P("}")
+			g.P("func (m *", message.GoIdent, ") UnmarshalJSON(buf []byte) error {")
+			g.P("return ", protogen.GoIdent{
+				GoImportPath: protoPackage,
+				GoName:       "UnmarshalMessageSetJSON",
+			}, "(buf, &m.XXX_InternalExtensions)")
+			g.P("}")
+			g.P()
+		}
+
+		protoExtRange := protogen.GoIdent{
+			GoImportPath: protoPackage,
+			GoName:       "ExtensionRange",
+		}
+		extRangeVar := "extRange_" + message.GoIdent.GoName
+		g.P("var ", extRangeVar, " = []", protoExtRange, " {")
+		for i := 0; i < extranges.Len(); i++ {
+			r := extranges.Get(i)
+			g.P("{Start:", r[0], ", End:", r[1]-1 /* inclusive */, "},")
+		}
+		g.P("}")
+		g.P()
+		g.P("func (*", message.GoIdent, ") ExtensionRangeArray() []", protoExtRange, " {")
+		g.P("return ", extRangeVar)
+		g.P("}")
+		g.P()
+	}
 
 	// Table-driven proto support.
 	//
@@ -448,6 +508,9 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 
 	if len(message.Oneofs) > 0 {
 		genOneofFuncs(gen, g, f, message)
+	}
+	for _, extension := range message.Extensions {
+		genExtension(gen, g, f, extension)
 	}
 }
 
@@ -621,10 +684,42 @@ func fieldJSONTag(field *protogen.Field) string {
 	return string(field.Desc.Name()) + ",omitempty"
 }
 
+func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, extension *protogen.Extension) {
+	g.P("var ", extensionVar(f, extension), " = &", protogen.GoIdent{
+		GoImportPath: protoPackage,
+		GoName:       "ExtensionDesc",
+	}, "{")
+	g.P("ExtendedType: (*", extension.ExtendedType.GoIdent, ")(nil),")
+	goType, pointer := fieldGoType(g, extension)
+	if pointer {
+		goType = "*" + goType
+	}
+	g.P("ExtensionType: (", goType, ")(nil),")
+	g.P("Field: ", extension.Desc.Number(), ",")
+	g.P("Name: ", strconv.Quote(string(extension.Desc.FullName())), ",")
+	g.P("Tag: ", strconv.Quote(fieldProtobufTag(extension)), ",")
+	g.P("Filename: ", strconv.Quote(f.Desc.Path()), ",")
+	g.P("}")
+	g.P()
+}
+
+// extensionVar returns the var holding the ExtensionDesc for an extension.
+func extensionVar(f *File, extension *protogen.Extension) protogen.GoIdent {
+	name := "E_"
+	if extension.ParentMessage != nil {
+		name += extension.ParentMessage.GoIdent.GoName + "_"
+	}
+	name += extension.GoName
+	return protogen.GoIdent{
+		GoImportPath: f.GoImportPath,
+		GoName:       name,
+	}
+}
+
 // genInitFunction generates an init function that registers the types in the
 // generated file with the proto package.
 func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File) {
-	if len(f.allMessages) == 0 && len(f.allEnums) == 0 {
+	if len(f.allMessages) == 0 && len(f.allEnums) == 0 && len(f.allExtensions) == 0 {
 		return
 	}
 
@@ -667,6 +762,12 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File) {
 			GoImportPath: protoPackage,
 			GoName:       "RegisterEnum",
 		}, fmt.Sprintf("(%q, %s_name, %s_value)", enumRegistryName(enum), name, name))
+	}
+	for _, extension := range f.allExtensions {
+		g.P(protogen.GoIdent{
+			GoImportPath: protoPackage,
+			GoName:       "RegisterExtension",
+		}, "(", extensionVar(f, extension), ")")
 	}
 	g.P("}")
 	g.P()

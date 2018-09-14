@@ -267,6 +267,7 @@ func (*EnumContainerMessage1) ProtoMessage()    {}
 func (*EnumContainerMessage1) Descriptor() ([]byte, []int) {
 	return fileDescriptor_de9f68860d540858, []int{0}
 }
+
 func (m *EnumContainerMessage1) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EnumContainerMessage1.Unmarshal(m, b)
 }
@@ -301,6 +302,7 @@ func (*EnumContainerMessage1_EnumContainerMessage2) ProtoMessage() {}
 func (*EnumContainerMessage1_EnumContainerMessage2) Descriptor() ([]byte, []int) {
 	return fileDescriptor_de9f68860d540858, []int{0, 0}
 }
+
 func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2.Unmarshal(m, b)
 }

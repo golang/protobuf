@@ -175,6 +175,7 @@ func (*FieldTestMessage) ProtoMessage()    {}
 func (*FieldTestMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd8a9d72b841fd68, []int{0}
 }
+
 func (m *FieldTestMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldTestMessage.Unmarshal(m, b)
 }
@@ -1409,6 +1410,7 @@ func (*FieldTestMessage_OptionalGroup) ProtoMessage()    {}
 func (*FieldTestMessage_OptionalGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd8a9d72b841fd68, []int{0, 0}
 }
+
 func (m *FieldTestMessage_OptionalGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldTestMessage_OptionalGroup.Unmarshal(m, b)
 }
@@ -1447,6 +1449,7 @@ func (*FieldTestMessage_RequiredGroup) ProtoMessage()    {}
 func (*FieldTestMessage_RequiredGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd8a9d72b841fd68, []int{0, 1}
 }
+
 func (m *FieldTestMessage_RequiredGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldTestMessage_RequiredGroup.Unmarshal(m, b)
 }
@@ -1485,6 +1488,7 @@ func (*FieldTestMessage_RepeatedGroup) ProtoMessage()    {}
 func (*FieldTestMessage_RepeatedGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd8a9d72b841fd68, []int{0, 2}
 }
+
 func (m *FieldTestMessage_RepeatedGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldTestMessage_RepeatedGroup.Unmarshal(m, b)
 }
@@ -1523,6 +1527,7 @@ func (*FieldTestMessage_OneofGroup) ProtoMessage()    {}
 func (*FieldTestMessage_OneofGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd8a9d72b841fd68, []int{0, 6}
 }
+
 func (m *FieldTestMessage_OneofGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldTestMessage_OneofGroup.Unmarshal(m, b)
 }
@@ -1560,6 +1565,7 @@ func (*FieldTestMessage_Message) ProtoMessage()    {}
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd8a9d72b841fd68, []int{0, 7}
 }
+
 func (m *FieldTestMessage_Message) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldTestMessage_Message.Unmarshal(m, b)
 }

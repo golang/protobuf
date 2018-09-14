@@ -34,6 +34,7 @@ func (*Layer1) ProtoMessage()    {}
 func (*Layer1) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7417ee157699d191, []int{0}
 }
+
 func (m *Layer1) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Layer1.Unmarshal(m, b)
 }
@@ -79,6 +80,7 @@ func (*Layer1_Layer2) ProtoMessage()    {}
 func (*Layer1_Layer2) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7417ee157699d191, []int{0, 0}
 }
+
 func (m *Layer1_Layer2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Layer1_Layer2.Unmarshal(m, b)
 }
@@ -116,6 +118,7 @@ func (*Layer1_Layer2_Layer3) ProtoMessage()    {}
 func (*Layer1_Layer2_Layer3) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7417ee157699d191, []int{0, 0, 0}
 }
+
 func (m *Layer1_Layer2_Layer3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Layer1_Layer2_Layer3.Unmarshal(m, b)
 }
