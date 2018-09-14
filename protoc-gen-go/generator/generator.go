@@ -43,6 +43,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"go/ast"
 	"go/build"
 	"go/parser"
 	"go/printer"
@@ -1165,7 +1166,7 @@ func (g *Generator) generate(file *FileDescriptor) {
 		// make a copy independent of g; we'll need it after Reset.
 		original = append([]byte(nil), original...)
 	}
-	ast, err := parser.ParseFile(fset, "", original, parser.ParseComments)
+	fileAST, err := parser.ParseFile(fset, "", original, parser.ParseComments)
 	if err != nil {
 		// Print out the bad code with line numbers.
 		// This should never happen in practice, but it can while changing generated code,
@@ -1177,8 +1178,9 @@ func (g *Generator) generate(file *FileDescriptor) {
 		}
 		g.Fail("bad Go source code was generated:", err.Error(), "\n"+src.String())
 	}
+	ast.SortImports(fset, fileAST)
 	g.Reset()
-	err = (&printer.Config{Mode: printer.TabIndent | printer.UseSpaces, Tabwidth: 8}).Fprint(g, fset, ast)
+	err = (&printer.Config{Mode: printer.TabIndent | printer.UseSpaces, Tabwidth: 8}).Fprint(g, fset, fileAST)
 	if err != nil {
 		g.Fail("generated Go source code could not be reformatted:", err.Error())
 	}
@@ -1276,17 +1278,14 @@ func (g *Generator) weak(i int32) bool {
 
 // Generate the imports
 func (g *Generator) generateImports() {
+	g.P("import (")
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the fmt and math packages.
-	g.P("import "+g.Pkg["proto"]+" ", GoImportPath(g.ImportPrefix)+"github.com/golang/protobuf/proto")
-	g.P("import " + g.Pkg["fmt"] + ` "fmt"`)
-	g.P("import " + g.Pkg["math"] + ` "math"`)
-	var (
-		imports       = make(map[GoImportPath]bool)
-		strongImports = make(map[GoImportPath]bool)
-		importPaths   []string
-	)
+	g.P(g.Pkg["proto"]+" ", GoImportPath(g.ImportPrefix)+"github.com/golang/protobuf/proto")
+	g.P(g.Pkg["fmt"] + ` "fmt"`)
+	g.P(g.Pkg["math"] + ` "math"`)
+	imports := make(map[GoImportPath]bool)
 	for i, s := range g.file.Dependency {
 		fd := g.fileByName(s)
 		importPath := fd.importPath
@@ -1294,32 +1293,25 @@ func (g *Generator) generateImports() {
 		if importPath == g.file.importPath {
 			continue
 		}
-		if !imports[importPath] {
-			importPaths = append(importPaths, string(importPath))
-		}
-		imports[importPath] = true
-		if !g.weak(int32(i)) {
-			strongImports[importPath] = true
-		}
-	}
-	sort.Strings(importPaths)
-	for i := range importPaths {
-		importPath := GoImportPath(importPaths[i])
-		packageName := g.GoPackageName(importPath)
-		fullPath := GoImportPath(g.ImportPrefix) + importPath
-		// Skip weak imports.
-		if !strongImports[importPath] {
-			g.P("// skipping weak import ", packageName, " ", fullPath)
+		// Do not import weak imports.
+		if g.weak(int32(i)) {
 			continue
 		}
+		// Do not import a package twice.
+		if imports[importPath] {
+			continue
+		}
+		imports[importPath] = true
 		// We need to import all the dependencies, even if we don't reference them,
 		// because other code and tools depend on having the full transitive closure
 		// of protocol buffer types in the binary.
+		packageName := g.GoPackageName(importPath)
 		if _, ok := g.usedPackages[importPath]; !ok {
 			packageName = "_"
 		}
-		g.P("import ", packageName, " ", fullPath)
+		g.P(packageName, " ", GoImportPath(g.ImportPrefix)+importPath)
 	}
+	g.P(")")
 	g.P()
 	// TODO: may need to worry about uniqueness across plugins
 	for _, p := range plugins {
