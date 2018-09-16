@@ -33,7 +33,7 @@ To use this software, you must:
 This software has two parts: a 'protocol compiler plugin' that
 generates Go source files that, once compiled, can access and manage
 protocol buffers; and a library that implements run-time support for
-encoding (marshaling), decoding (unmarshaling), and accessing protocol
+encoding (marshaling), decoding (unmarshalling), and accessing protocol
 buffers.
 
 There is support for gRPC in Go using protocol buffers.
@@ -189,7 +189,7 @@ To create and play with a Test object from the example package,
 		newTest := &example.Test{}
 		err = proto.Unmarshal(data, newTest)
 		if err != nil {
-			log.Fatal("unmarshaling error: ", err)
+			log.Fatal("unmarshalling error: ", err)
 		}
 		// Now test and newTest contain the same data.
 		if test.GetLabel() != newTest.GetLabel() {
