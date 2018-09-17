@@ -340,7 +340,7 @@ func (d *FileDescriptor) addExport(obj Object, sym symbol) {
 type symbol interface {
 	// GenerateAlias should generate an appropriate alias
 	// for the symbol from the named package.
-	GenerateAlias(g *Generator, pkg GoPackageName)
+	GenerateAlias(g *Generator, filename string, pkg GoPackageName)
 }
 
 type messageSymbol struct {
@@ -356,7 +356,8 @@ type getterSymbol struct {
 	genType  bool   // whether typ contains a generated type (message/group/enum)
 }
 
-func (ms *messageSymbol) GenerateAlias(g *Generator, pkg GoPackageName) {
+func (ms *messageSymbol) GenerateAlias(g *Generator, filename string, pkg GoPackageName) {
+	g.P("// ", ms.sym, " from public import ", filename)
 	g.P("type ", ms.sym, " = ", pkg, ".", ms.sym)
 	for _, name := range ms.oneofTypes {
 		g.P("type ", name, " = ", pkg, ".", name)
@@ -368,8 +369,9 @@ type enumSymbol struct {
 	proto3 bool // Whether this came from a proto3 file.
 }
 
-func (es enumSymbol) GenerateAlias(g *Generator, pkg GoPackageName) {
+func (es enumSymbol) GenerateAlias(g *Generator, filename string, pkg GoPackageName) {
 	s := es.name
+	g.P("// ", s, " from public import ", filename)
 	g.P("type ", s, " = ", pkg, ".", s)
 	g.P("var ", s, "_name = ", pkg, ".", s, "_name")
 	g.P("var ", s, "_value = ", pkg, ".", s, "_value")
@@ -381,7 +383,7 @@ type constOrVarSymbol struct {
 	cast string // if non-empty, a type cast is required (used for enums)
 }
 
-func (cs constOrVarSymbol) GenerateAlias(g *Generator, pkg GoPackageName) {
+func (cs constOrVarSymbol) GenerateAlias(g *Generator, filename string, pkg GoPackageName) {
 	v := string(pkg) + "." + cs.sym
 	if cs.cast != "" {
 		v = cs.cast + "(" + v + ")"
@@ -1326,24 +1328,19 @@ func (g *Generator) generateImports() {
 }
 
 func (g *Generator) generateImported(id *ImportedDescriptor) {
-	tn := id.TypeName()
-	sn := tn[len(tn)-1]
 	df := id.o.File()
 	filename := *df.Name
 	if df.importPath == g.file.importPath {
 		// Don't generate type aliases for files in the same Go package as this one.
-		g.P("// Ignoring public import of ", sn, " from ", filename)
-		g.P()
 		return
 	}
 	if !supportTypeAliases {
 		g.Fail(fmt.Sprintf("%s: public imports require at least go1.9", filename))
 	}
-	g.P("// ", sn, " from public import ", filename)
 	g.usedPackages[df.importPath] = true
 
 	for _, sym := range df.exported[id.o] {
-		sym.GenerateAlias(g, g.GoPackageName(df.importPath))
+		sym.GenerateAlias(g, filename, g.GoPackageName(df.importPath))
 	}
 
 	g.P()

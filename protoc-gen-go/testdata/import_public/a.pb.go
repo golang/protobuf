@@ -26,7 +26,7 @@ type M = sub.M
 type M_OneofInt32 = sub.M_OneofInt32
 type M_OneofInt64 = sub.M_OneofInt64
 
-// Submessage from public import import_public/sub/a.proto
+// M_Submessage from public import import_public/sub/a.proto
 type M_Submessage = sub.M_Submessage
 type M_Submessage_SubmessageOneofInt32 = sub.M_Submessage_SubmessageOneofInt32
 type M_Submessage_SubmessageOneofInt64 = sub.M_Submessage_SubmessageOneofInt64
@@ -39,7 +39,7 @@ var E_value = sub.E_value
 
 const E_ZERO = E(sub.E_ZERO)
 
-// Subenum from public import import_public/sub/a.proto
+// M_Subenum from public import import_public/sub/a.proto
 type M_Subenum = sub.M_Subenum
 
 var M_Subenum_name = sub.M_Subenum_name
@@ -47,15 +47,13 @@ var M_Subenum_value = sub.M_Subenum_value
 
 const M_M_ZERO = M_Subenum(sub.M_M_ZERO)
 
-// Submessage_Subenum from public import import_public/sub/a.proto
+// M_Submessage_Submessage_Subenum from public import import_public/sub/a.proto
 type M_Submessage_Submessage_Subenum = sub.M_Submessage_Submessage_Subenum
 
 var M_Submessage_Submessage_Subenum_name = sub.M_Submessage_Submessage_Subenum_name
 var M_Submessage_Submessage_Subenum_value = sub.M_Submessage_Submessage_Subenum_value
 
 const M_Submessage_M_SUBMESSAGE_ZERO = M_Submessage_Submessage_Subenum(sub.M_Submessage_M_SUBMESSAGE_ZERO)
-
-// Ignoring public import of Local from import_public/b.proto
 
 type Public struct {
 	M                    *sub.M   `protobuf:"bytes,1,opt,name=m,proto3" json:"m,omitempty"`
