@@ -4,10 +4,10 @@
 
 syntax = "proto2";
 
-// COMMENT: package goproto.protoc.proto2
-package goproto.protoc.proto2;
+// COMMENT: package goproto.protoc.comments;
+package goproto.protoc.comments;
 
-option go_package = "google.golang.org/proto/cmd/protoc-gen-go/testdata/proto2";
+option go_package = "google.golang.org/proto/cmd/protoc-gen-go/testdata/comments";
 
 // COMMENT: Message1
 message Message1 {
