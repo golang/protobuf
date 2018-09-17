@@ -1784,6 +1784,7 @@ var extRange_OtherMessage = []proto.ExtensionRange{
 func (*OtherMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OtherMessage
 }
+
 func (m *OtherMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OtherMessage.Unmarshal(m, b)
 }
@@ -1902,6 +1903,7 @@ var extRange_MyMessage = []proto.ExtensionRange{
 func (*MyMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_MyMessage
 }
+
 func (m *MyMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MyMessage.Unmarshal(m, b)
 }
@@ -2190,6 +2192,7 @@ var extRange_DefaultsMessage = []proto.ExtensionRange{
 func (*DefaultsMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_DefaultsMessage
 }
+
 func (m *DefaultsMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DefaultsMessage.Unmarshal(m, b)
 }
@@ -2236,6 +2239,7 @@ var extRange_MyMessageSet = []proto.ExtensionRange{
 func (*MyMessageSet) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_MyMessageSet
 }
+
 func (m *MyMessageSet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MyMessageSet.Unmarshal(m, b)
 }

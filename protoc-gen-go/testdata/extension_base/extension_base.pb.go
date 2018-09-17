@@ -43,6 +43,7 @@ var extRange_BaseMessage = []proto.ExtensionRange{
 func (*BaseMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_BaseMessage
 }
+
 func (m *BaseMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BaseMessage.Unmarshal(m, b)
 }
@@ -97,6 +98,7 @@ var extRange_OldStyleMessage = []proto.ExtensionRange{
 func (*OldStyleMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OldStyleMessage
 }
+
 func (m *OldStyleMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldStyleMessage.Unmarshal(m, b)
 }
