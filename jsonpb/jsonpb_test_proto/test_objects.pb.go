@@ -100,6 +100,7 @@ func (*Simple) ProtoMessage()    {}
 func (*Simple) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{0}
 }
+
 func (m *Simple) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Simple.Unmarshal(m, b)
 }
@@ -270,6 +271,7 @@ func (*NonFinites) ProtoMessage()    {}
 func (*NonFinites) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{1}
 }
+
 func (m *NonFinites) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonFinites.Unmarshal(m, b)
 }
@@ -354,6 +356,7 @@ func (*Repeats) ProtoMessage()    {}
 func (*Repeats) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{2}
 }
+
 func (m *Repeats) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Repeats.Unmarshal(m, b)
 }
@@ -468,6 +471,7 @@ func (*Widget) ProtoMessage()    {}
 func (*Widget) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{3}
 }
+
 func (m *Widget) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Widget.Unmarshal(m, b)
 }
@@ -542,6 +546,7 @@ func (*Maps) ProtoMessage()    {}
 func (*Maps) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{4}
 }
+
 func (m *Maps) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Maps.Unmarshal(m, b)
 }
@@ -593,6 +598,7 @@ func (*MsgWithOneof) ProtoMessage()    {}
 func (*MsgWithOneof) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{5}
 }
+
 func (m *MsgWithOneof) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MsgWithOneof.Unmarshal(m, b)
 }
@@ -933,6 +939,7 @@ func (*KnownTypes) ProtoMessage()    {}
 func (*KnownTypes) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{8}
 }
+
 func (m *KnownTypes) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_KnownTypes.Unmarshal(m, b)
 }
@@ -1070,6 +1077,7 @@ func (*MsgWithRequired) ProtoMessage()    {}
 func (*MsgWithRequired) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{9}
 }
+
 func (m *MsgWithRequired) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MsgWithRequired.Unmarshal(m, b)
 }
@@ -1110,6 +1118,7 @@ func (*MsgWithIndirectRequired) ProtoMessage()    {}
 func (*MsgWithIndirectRequired) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{10}
 }
+
 func (m *MsgWithIndirectRequired) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MsgWithIndirectRequired.Unmarshal(m, b)
 }
@@ -1162,6 +1171,7 @@ func (*MsgWithRequiredBytes) ProtoMessage()    {}
 func (*MsgWithRequiredBytes) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{11}
 }
+
 func (m *MsgWithRequiredBytes) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MsgWithRequiredBytes.Unmarshal(m, b)
 }
@@ -1200,6 +1210,7 @@ func (*MsgWithRequiredWKT) ProtoMessage()    {}
 func (*MsgWithRequiredWKT) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e97c739a0ce14cc6, []int{12}
 }
+
 func (m *MsgWithRequiredWKT) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MsgWithRequiredWKT.Unmarshal(m, b)
 }

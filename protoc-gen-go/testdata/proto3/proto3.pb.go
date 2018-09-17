@@ -68,6 +68,7 @@ func (*Request) ProtoMessage()    {}
 func (*Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ab04eb4084a521db, []int{0}
 }
+
 func (m *Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Request.Unmarshal(m, b)
 }
@@ -135,6 +136,7 @@ func (*Book) ProtoMessage()    {}
 func (*Book) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ab04eb4084a521db, []int{1}
 }
+
 func (m *Book) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Book.Unmarshal(m, b)
 }

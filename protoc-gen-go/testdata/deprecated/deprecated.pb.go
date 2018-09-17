@@ -67,6 +67,7 @@ func (*DeprecatedRequest) ProtoMessage()    {}
 func (*DeprecatedRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f64ba265cd7eae3f, []int{0}
 }
+
 func (m *DeprecatedRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeprecatedRequest.Unmarshal(m, b)
 }
@@ -100,6 +101,7 @@ func (*DeprecatedResponse) ProtoMessage()    {}
 func (*DeprecatedResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f64ba265cd7eae3f, []int{1}
 }
+
 func (m *DeprecatedResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DeprecatedResponse.Unmarshal(m, b)
 }

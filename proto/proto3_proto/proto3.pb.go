@@ -84,6 +84,7 @@ func (*Message) ProtoMessage()    {}
 func (*Message) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1c50d9b824d4ac38, []int{0}
 }
+
 func (m *Message) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Message.Unmarshal(m, b)
 }
@@ -249,6 +250,7 @@ func (*Nested) ProtoMessage()    {}
 func (*Nested) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1c50d9b824d4ac38, []int{1}
 }
+
 func (m *Nested) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Nested.Unmarshal(m, b)
 }
@@ -294,6 +296,7 @@ func (*MessageWithMap) ProtoMessage()    {}
 func (*MessageWithMap) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1c50d9b824d4ac38, []int{2}
 }
+
 func (m *MessageWithMap) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageWithMap.Unmarshal(m, b)
 }
@@ -332,6 +335,7 @@ func (*IntMap) ProtoMessage()    {}
 func (*IntMap) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1c50d9b824d4ac38, []int{3}
 }
+
 func (m *IntMap) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_IntMap.Unmarshal(m, b)
 }
@@ -370,6 +374,7 @@ func (*IntMaps) ProtoMessage()    {}
 func (*IntMaps) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1c50d9b824d4ac38, []int{4}
 }
+
 func (m *IntMaps) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_IntMaps.Unmarshal(m, b)
 }
@@ -414,6 +419,7 @@ func (*TestUTF8) ProtoMessage()    {}
 func (*TestUTF8) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1c50d9b824d4ac38, []int{5}
 }
+
 func (m *TestUTF8) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TestUTF8.Unmarshal(m, b)
 }

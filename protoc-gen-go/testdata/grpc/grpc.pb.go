@@ -37,6 +37,7 @@ func (*SimpleRequest) ProtoMessage()    {}
 func (*SimpleRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_81ea47a3f88c2082, []int{0}
 }
+
 func (m *SimpleRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleRequest.Unmarshal(m, b)
 }
@@ -67,6 +68,7 @@ func (*SimpleResponse) ProtoMessage()    {}
 func (*SimpleResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_81ea47a3f88c2082, []int{1}
 }
+
 func (m *SimpleResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleResponse.Unmarshal(m, b)
 }
@@ -97,6 +99,7 @@ func (*StreamMsg) ProtoMessage()    {}
 func (*StreamMsg) Descriptor() ([]byte, []int) {
 	return fileDescriptor_81ea47a3f88c2082, []int{2}
 }
+
 func (m *StreamMsg) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamMsg.Unmarshal(m, b)
 }
@@ -127,6 +130,7 @@ func (*StreamMsg2) ProtoMessage()    {}
 func (*StreamMsg2) Descriptor() ([]byte, []int) {
 	return fileDescriptor_81ea47a3f88c2082, []int{3}
 }
+
 func (m *StreamMsg2) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamMsg2.Unmarshal(m, b)
 }

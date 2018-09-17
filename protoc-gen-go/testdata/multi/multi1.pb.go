@@ -35,6 +35,7 @@ func (*Multi1) ProtoMessage()    {}
 func (*Multi1) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e0bffc140cd1b1d9, []int{0}
 }
+
 func (m *Multi1) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Multi1.Unmarshal(m, b)
 }

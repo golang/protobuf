@@ -314,6 +314,7 @@ func (*GoEnum) ProtoMessage()    {}
 func (*GoEnum) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{0}
 }
+
 func (m *GoEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoEnum.Unmarshal(m, b)
 }
@@ -353,6 +354,7 @@ func (*GoTestField) ProtoMessage()    {}
 func (*GoTestField) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{1}
 }
+
 func (m *GoTestField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTestField.Unmarshal(m, b)
 }
@@ -486,6 +488,7 @@ func (*GoTest) ProtoMessage()    {}
 func (*GoTest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{2}
 }
+
 func (m *GoTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest.Unmarshal(m, b)
 }
@@ -1110,6 +1113,7 @@ func (*GoTest_RequiredGroup) ProtoMessage()    {}
 func (*GoTest_RequiredGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{2, 0}
 }
+
 func (m *GoTest_RequiredGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest_RequiredGroup.Unmarshal(m, b)
 }
@@ -1148,6 +1152,7 @@ func (*GoTest_RepeatedGroup) ProtoMessage()    {}
 func (*GoTest_RepeatedGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{2, 1}
 }
+
 func (m *GoTest_RepeatedGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest_RepeatedGroup.Unmarshal(m, b)
 }
@@ -1186,6 +1191,7 @@ func (*GoTest_OptionalGroup) ProtoMessage()    {}
 func (*GoTest_OptionalGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{2, 2}
 }
+
 func (m *GoTest_OptionalGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTest_OptionalGroup.Unmarshal(m, b)
 }
@@ -1225,6 +1231,7 @@ func (*GoTestRequiredGroupField) ProtoMessage()    {}
 func (*GoTestRequiredGroupField) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{3}
 }
+
 func (m *GoTestRequiredGroupField) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTestRequiredGroupField.Unmarshal(m, b)
 }
@@ -1263,6 +1270,7 @@ func (*GoTestRequiredGroupField_Group) ProtoMessage()    {}
 func (*GoTestRequiredGroupField_Group) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{3, 0}
 }
+
 func (m *GoTestRequiredGroupField_Group) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoTestRequiredGroupField_Group.Unmarshal(m, b)
 }
@@ -1308,6 +1316,7 @@ func (*GoSkipTest) ProtoMessage()    {}
 func (*GoSkipTest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{4}
 }
+
 func (m *GoSkipTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoSkipTest.Unmarshal(m, b)
 }
@@ -1375,6 +1384,7 @@ func (*GoSkipTest_SkipGroup) ProtoMessage()    {}
 func (*GoSkipTest_SkipGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{4, 0}
 }
+
 func (m *GoSkipTest_SkipGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GoSkipTest_SkipGroup.Unmarshal(m, b)
 }
@@ -1422,6 +1432,7 @@ func (*NonPackedTest) ProtoMessage()    {}
 func (*NonPackedTest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{5}
 }
+
 func (m *NonPackedTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonPackedTest.Unmarshal(m, b)
 }
@@ -1460,6 +1471,7 @@ func (*PackedTest) ProtoMessage()    {}
 func (*PackedTest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{6}
 }
+
 func (m *PackedTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PackedTest.Unmarshal(m, b)
 }
@@ -1499,6 +1511,7 @@ func (*MaxTag) ProtoMessage()    {}
 func (*MaxTag) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{7}
 }
+
 func (m *MaxTag) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MaxTag.Unmarshal(m, b)
 }
@@ -1538,6 +1551,7 @@ func (*OldMessage) ProtoMessage()    {}
 func (*OldMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{8}
 }
+
 func (m *OldMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldMessage.Unmarshal(m, b)
 }
@@ -1583,6 +1597,7 @@ func (*OldMessage_Nested) ProtoMessage()    {}
 func (*OldMessage_Nested) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{8, 0}
 }
+
 func (m *OldMessage_Nested) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldMessage_Nested.Unmarshal(m, b)
 }
@@ -1625,6 +1640,7 @@ func (*NewMessage) ProtoMessage()    {}
 func (*NewMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{9}
 }
+
 func (m *NewMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewMessage.Unmarshal(m, b)
 }
@@ -1671,6 +1687,7 @@ func (*NewMessage_Nested) ProtoMessage()    {}
 func (*NewMessage_Nested) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{9, 0}
 }
+
 func (m *NewMessage_Nested) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewMessage_Nested.Unmarshal(m, b)
 }
@@ -1718,6 +1735,7 @@ func (*InnerMessage) ProtoMessage()    {}
 func (*InnerMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{10}
 }
+
 func (m *InnerMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InnerMessage.Unmarshal(m, b)
 }
@@ -1844,6 +1862,7 @@ func (*RequiredInnerMessage) ProtoMessage()    {}
 func (*RequiredInnerMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{12}
 }
+
 func (m *RequiredInnerMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RequiredInnerMessage.Unmarshal(m, b)
 }
@@ -2019,6 +2038,7 @@ func (*MyMessage_SomeGroup) ProtoMessage()    {}
 func (*MyMessage_SomeGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{13, 0}
 }
+
 func (m *MyMessage_SomeGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MyMessage_SomeGroup.Unmarshal(m, b)
 }
@@ -2058,6 +2078,7 @@ func (*Ext) ProtoMessage()    {}
 func (*Ext) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{14}
 }
+
 func (m *Ext) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Ext.Unmarshal(m, b)
 }
@@ -2132,6 +2153,7 @@ func (*ComplexExtension) ProtoMessage()    {}
 func (*ComplexExtension) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{15}
 }
+
 func (m *ComplexExtension) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ComplexExtension.Unmarshal(m, b)
 }
@@ -2270,6 +2292,7 @@ func (*Empty) ProtoMessage()    {}
 func (*Empty) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{18}
 }
+
 func (m *Empty) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Empty.Unmarshal(m, b)
 }
@@ -2301,6 +2324,7 @@ func (*MessageList) ProtoMessage()    {}
 func (*MessageList) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{19}
 }
+
 func (m *MessageList) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageList.Unmarshal(m, b)
 }
@@ -2340,6 +2364,7 @@ func (*MessageList_Message) ProtoMessage()    {}
 func (*MessageList_Message) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{19, 0}
 }
+
 func (m *MessageList_Message) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageList_Message.Unmarshal(m, b)
 }
@@ -2386,6 +2411,7 @@ func (*Strings) ProtoMessage()    {}
 func (*Strings) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{20}
 }
+
 func (m *Strings) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Strings.Unmarshal(m, b)
 }
@@ -2454,6 +2480,7 @@ func (*Defaults) ProtoMessage()    {}
 func (*Defaults) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{21}
 }
+
 func (m *Defaults) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Defaults.Unmarshal(m, b)
 }
@@ -2639,6 +2666,7 @@ func (*SubDefaults) ProtoMessage()    {}
 func (*SubDefaults) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{22}
 }
+
 func (m *SubDefaults) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SubDefaults.Unmarshal(m, b)
 }
@@ -2679,6 +2707,7 @@ func (*RepeatedEnum) ProtoMessage()    {}
 func (*RepeatedEnum) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{23}
 }
+
 func (m *RepeatedEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RepeatedEnum.Unmarshal(m, b)
 }
@@ -2723,6 +2752,7 @@ func (*MoreRepeated) ProtoMessage()    {}
 func (*MoreRepeated) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{24}
 }
+
 func (m *MoreRepeated) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MoreRepeated.Unmarshal(m, b)
 }
@@ -2803,6 +2833,7 @@ func (*GroupOld) ProtoMessage()    {}
 func (*GroupOld) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{25}
 }
+
 func (m *GroupOld) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupOld.Unmarshal(m, b)
 }
@@ -2841,6 +2872,7 @@ func (*GroupOld_G) ProtoMessage()    {}
 func (*GroupOld_G) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{25, 0}
 }
+
 func (m *GroupOld_G) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupOld_G.Unmarshal(m, b)
 }
@@ -2879,6 +2911,7 @@ func (*GroupNew) ProtoMessage()    {}
 func (*GroupNew) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{26}
 }
+
 func (m *GroupNew) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupNew.Unmarshal(m, b)
 }
@@ -2918,6 +2951,7 @@ func (*GroupNew_G) ProtoMessage()    {}
 func (*GroupNew_G) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{26, 0}
 }
+
 func (m *GroupNew_G) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_GroupNew_G.Unmarshal(m, b)
 }
@@ -2964,6 +2998,7 @@ func (*FloatingPoint) ProtoMessage()    {}
 func (*FloatingPoint) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{27}
 }
+
 func (m *FloatingPoint) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FloatingPoint.Unmarshal(m, b)
 }
@@ -3012,6 +3047,7 @@ func (*MessageWithMap) ProtoMessage()    {}
 func (*MessageWithMap) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{28}
 }
+
 func (m *MessageWithMap) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageWithMap.Unmarshal(m, b)
 }
@@ -3092,6 +3128,7 @@ func (*Oneof) ProtoMessage()    {}
 func (*Oneof) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{29}
 }
+
 func (m *Oneof) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Oneof.Unmarshal(m, b)
 }
@@ -3695,6 +3732,7 @@ func (*Oneof_F_Group) ProtoMessage()    {}
 func (*Oneof_F_Group) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{29, 0}
 }
+
 func (m *Oneof_F_Group) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Oneof_F_Group.Unmarshal(m, b)
 }
@@ -3743,6 +3781,7 @@ func (*Communique) ProtoMessage()    {}
 func (*Communique) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{30}
 }
+
 func (m *Communique) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique.Unmarshal(m, b)
 }
@@ -4003,6 +4042,7 @@ func (*TestUTF8) ProtoMessage()    {}
 func (*TestUTF8) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{31}
 }
+
 func (m *TestUTF8) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TestUTF8.Unmarshal(m, b)
 }

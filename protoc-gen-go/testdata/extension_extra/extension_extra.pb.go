@@ -33,6 +33,7 @@ func (*ExtraMessage) ProtoMessage()    {}
 func (*ExtraMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fce75f5a63502cd5, []int{0}
 }
+
 func (m *ExtraMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExtraMessage.Unmarshal(m, b)
 }

@@ -139,6 +139,7 @@ func (*ConformanceRequest) ProtoMessage()    {}
 func (*ConformanceRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e7c910178d599565, []int{0}
 }
+
 func (m *ConformanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConformanceRequest.Unmarshal(m, b)
 }
@@ -288,6 +289,7 @@ func (*ConformanceResponse) ProtoMessage()    {}
 func (*ConformanceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e7c910178d599565, []int{1}
 }
+
 func (m *ConformanceResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConformanceResponse.Unmarshal(m, b)
 }
@@ -650,6 +652,7 @@ func (*TestAllTypes) ProtoMessage()    {}
 func (*TestAllTypes) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e7c910178d599565, []int{2}
 }
+
 func (m *TestAllTypes) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TestAllTypes.Unmarshal(m, b)
 }
@@ -1572,6 +1575,7 @@ func (*TestAllTypes_NestedMessage) ProtoMessage()    {}
 func (*TestAllTypes_NestedMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e7c910178d599565, []int{2, 0}
 }
+
 func (m *TestAllTypes_NestedMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TestAllTypes_NestedMessage.Unmarshal(m, b)
 }
@@ -1617,6 +1621,7 @@ func (*ForeignMessage) ProtoMessage()    {}
 func (*ForeignMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e7c910178d599565, []int{3}
 }
+
 func (m *ForeignMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ForeignMessage.Unmarshal(m, b)
 }
