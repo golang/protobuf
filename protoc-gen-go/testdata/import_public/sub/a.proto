@@ -40,6 +40,26 @@ import "import_public/sub/b.proto";
 message M {
   // Field using a type in the same Go package, but a different source file.
   M2 m2 = 1;
+
+  oneof oneof_field {
+    int32 oneof_int32 = 2;
+    int64 oneof_int64 = 3;
+  }
+
+  message Submessage {
+    enum Submessage_Subenum {
+      M_SUBMESSAGE_ZERO = 0;
+    }
+
+    oneof submessage_oneof_field {
+      int32 submessage_oneof_int32 = 1;
+      int64 submessage_oneof_int64 = 2;
+    }
+  }
+
+  enum Subenum {
+    M_ZERO = 0;
+  }
 }
 
 enum E {
