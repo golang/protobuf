@@ -74,13 +74,11 @@ func genFile(gen *protogen.Plugin, file *protogen.File) {
 	//
 	// TODO: Eventually make this consistent.
 	f.allEnums = append(f.allEnums, f.File.Enums...)
-	for _, message := range f.Messages {
-		walkMessage(message, func(message *protogen.Message) {
-			f.allMessages = append(f.allMessages, message)
-			f.allEnums = append(f.allEnums, message.Enums...)
-			f.allExtensions = append(f.allExtensions, message.Extensions...)
-		})
-	}
+	walkMessages(f.Messages, func(message *protogen.Message) {
+		f.allMessages = append(f.allMessages, message)
+		f.allEnums = append(f.allEnums, message.Enums...)
+		f.allExtensions = append(f.allExtensions, message.Extensions...)
+	})
 	f.allExtensions = append(f.allExtensions, f.File.Extensions...)
 
 	// Determine the name of the var holding the file descriptor:
@@ -123,6 +121,9 @@ func genFile(gen *protogen.Plugin, file *protogen.File) {
 	}, "// please upgrade the proto package")
 	g.P()
 
+	for i, imps := 0, f.Desc.Imports(); i < imps.Len(); i++ {
+		genImport(gen, g, f, imps.Get(i))
+	}
 	for _, enum := range f.allEnums {
 		genEnum(gen, g, f, enum)
 	}
@@ -138,11 +139,49 @@ func genFile(gen *protogen.Plugin, file *protogen.File) {
 	genFileDescriptor(gen, g, f)
 }
 
-// walkMessage calls f on message and all of its descendants.
-func walkMessage(message *protogen.Message, f func(*protogen.Message)) {
-	f(message)
-	for _, m := range message.Messages {
-		walkMessage(m, f)
+// walkMessages calls f on each message and all of its descendants.
+func walkMessages(messages []*protogen.Message, f func(*protogen.Message)) {
+	for _, m := range messages {
+		f(m)
+		walkMessages(m.Messages, f)
+	}
+}
+
+func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, imp protoreflect.FileImport) {
+	if !imp.IsPublic {
+		return
+	}
+	impFile, ok := gen.FileByName(imp.Path())
+	if !ok {
+		return
+	}
+	if impFile.GoImportPath == f.GoImportPath {
+		// Don't generate aliases for types in the same Go package.
+		return
+	}
+	var enums []*protogen.Enum
+	enums = append(enums, impFile.Enums...)
+	walkMessages(impFile.Messages, func(message *protogen.Message) {
+		enums = append(enums, message.Enums...)
+		g.P("// ", message.GoIdent.GoName, " from public import ", imp.Path())
+		g.P("type ", message.GoIdent.GoName, " = ", message.GoIdent)
+		for _, oneof := range message.Oneofs {
+			for _, field := range oneof.Fields {
+				typ := fieldOneofType(field)
+				g.P("type ", typ.GoName, " = ", typ)
+			}
+		}
+		g.P()
+	})
+	for _, enum := range enums {
+		g.P("// ", enum.GoIdent.GoName, " from public import ", imp.Path())
+		g.P("type ", enum.GoIdent.GoName, " = ", enum.GoIdent)
+		g.P("var ", enum.GoIdent.GoName, "_name = ", enum.GoIdent, "_name")
+		g.P("var ", enum.GoIdent.GoName, "_value = ", enum.GoIdent, "_value")
+		g.P()
+		for _, value := range enum.Values {
+			g.P("const ", value.GoIdent.GoName, " = ", enum.GoIdent.GoName, "(", value.GoIdent, ")")
+		}
 	}
 }
 

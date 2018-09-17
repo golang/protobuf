@@ -1,0 +1,40 @@
+// Copyright 2018 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+syntax = "proto3";
+
+package goproto.protoc.import_public.sub;
+
+option go_package = "google.golang.org/proto/cmd/protoc-gen-go/testdata/import_public/sub";
+
+import "import_public/sub/b.proto";
+
+message M {
+  // Field using a type in the same Go package, but a different source file.
+  M2 m2 = 1;
+
+  oneof oneof_field {
+    int32 oneof_int32 = 2;
+    int64 oneof_int64 = 3;
+  }
+
+  message Submessage {
+    enum Submessage_Subenum {
+      M_SUBMESSAGE_ZERO = 0;
+    }
+
+    oneof submessage_oneof_field {
+      int32 submessage_oneof_int32 = 1;
+      int64 submessage_oneof_int64 = 2;
+    }
+  }
+
+  enum Subenum {
+    M_ZERO = 0;
+  }
+}
+
+enum E {
+  ZERO = 0;
+}
