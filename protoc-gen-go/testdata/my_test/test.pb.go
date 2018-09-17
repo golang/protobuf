@@ -220,6 +220,7 @@ func (*Request) ProtoMessage()    {}
 func (*Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{0}
 }
+
 func (m *Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Request.Unmarshal(m, b)
 }
@@ -318,6 +319,7 @@ func (*Request_SomeGroup) ProtoMessage()    {}
 func (*Request_SomeGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{0, 0}
 }
+
 func (m *Request_SomeGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Request_SomeGroup.Unmarshal(m, b)
 }
@@ -414,6 +416,7 @@ func (*Reply_Entry) ProtoMessage()    {}
 func (*Reply_Entry) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{1, 0}
 }
+
 func (m *Reply_Entry) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Reply_Entry.Unmarshal(m, b)
 }
@@ -515,6 +518,7 @@ func (*ReplyExtensions) ProtoMessage()    {}
 func (*ReplyExtensions) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{3}
 }
+
 func (m *ReplyExtensions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReplyExtensions.Unmarshal(m, b)
 }
@@ -573,6 +577,7 @@ func (*OtherReplyExtensions) ProtoMessage()    {}
 func (*OtherReplyExtensions) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{4}
 }
+
 func (m *OtherReplyExtensions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OtherReplyExtensions.Unmarshal(m, b)
 }
@@ -672,6 +677,7 @@ func (*Communique) ProtoMessage()    {}
 func (*Communique) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{6}
 }
+
 func (m *Communique) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique.Unmarshal(m, b)
 }
@@ -1043,6 +1049,7 @@ func (*Communique_SomeGroup) ProtoMessage()    {}
 func (*Communique_SomeGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{6, 0}
 }
+
 func (m *Communique_SomeGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique_SomeGroup.Unmarshal(m, b)
 }
@@ -1080,6 +1087,7 @@ func (*Communique_Delta) ProtoMessage()    {}
 func (*Communique_Delta) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{6, 1}
 }
+
 func (m *Communique_Delta) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Communique_Delta.Unmarshal(m, b)
 }

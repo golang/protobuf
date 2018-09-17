@@ -71,7 +71,9 @@ func (*Struct) ProtoMessage()    {}
 func (*Struct) Descriptor() ([]byte, []int) {
 	return fileDescriptor_df322afd6c9fb402, []int{0}
 }
+
 func (*Struct) XXX_WellKnownType() string { return "Struct" }
+
 func (m *Struct) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Struct.Unmarshal(m, b)
 }
@@ -125,7 +127,9 @@ func (*Value) ProtoMessage()    {}
 func (*Value) Descriptor() ([]byte, []int) {
 	return fileDescriptor_df322afd6c9fb402, []int{1}
 }
+
 func (*Value) XXX_WellKnownType() string { return "Value" }
+
 func (m *Value) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Value.Unmarshal(m, b)
 }
@@ -385,7 +389,9 @@ func (*ListValue) ProtoMessage()    {}
 func (*ListValue) Descriptor() ([]byte, []int) {
 	return fileDescriptor_df322afd6c9fb402, []int{2}
 }
+
 func (*ListValue) XXX_WellKnownType() string { return "ListValue" }
+
 func (m *ListValue) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListValue.Unmarshal(m, b)
 }

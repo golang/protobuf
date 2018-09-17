@@ -37,7 +37,9 @@ func (*DoubleValue) ProtoMessage()    {}
 func (*DoubleValue) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5377b62bda767935, []int{0}
 }
+
 func (*DoubleValue) XXX_WellKnownType() string { return "DoubleValue" }
+
 func (m *DoubleValue) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DoubleValue.Unmarshal(m, b)
 }
@@ -80,7 +82,9 @@ func (*FloatValue) ProtoMessage()    {}
 func (*FloatValue) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5377b62bda767935, []int{1}
 }
+
 func (*FloatValue) XXX_WellKnownType() string { return "FloatValue" }
+
 func (m *FloatValue) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FloatValue.Unmarshal(m, b)
 }
@@ -123,7 +127,9 @@ func (*Int64Value) ProtoMessage()    {}
 func (*Int64Value) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5377b62bda767935, []int{2}
 }
+
 func (*Int64Value) XXX_WellKnownType() string { return "Int64Value" }
+
 func (m *Int64Value) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Int64Value.Unmarshal(m, b)
 }
@@ -166,7 +172,9 @@ func (*UInt64Value) ProtoMessage()    {}
 func (*UInt64Value) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5377b62bda767935, []int{3}
 }
+
 func (*UInt64Value) XXX_WellKnownType() string { return "UInt64Value" }
+
 func (m *UInt64Value) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UInt64Value.Unmarshal(m, b)
 }
@@ -209,7 +217,9 @@ func (*Int32Value) ProtoMessage()    {}
 func (*Int32Value) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5377b62bda767935, []int{4}
 }
+
 func (*Int32Value) XXX_WellKnownType() string { return "Int32Value" }
+
 func (m *Int32Value) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Int32Value.Unmarshal(m, b)
 }
@@ -252,7 +262,9 @@ func (*UInt32Value) ProtoMessage()    {}
 func (*UInt32Value) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5377b62bda767935, []int{5}
 }
+
 func (*UInt32Value) XXX_WellKnownType() string { return "UInt32Value" }
+
 func (m *UInt32Value) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UInt32Value.Unmarshal(m, b)
 }
@@ -295,7 +307,9 @@ func (*BoolValue) ProtoMessage()    {}
 func (*BoolValue) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5377b62bda767935, []int{6}
 }
+
 func (*BoolValue) XXX_WellKnownType() string { return "BoolValue" }
+
 func (m *BoolValue) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BoolValue.Unmarshal(m, b)
 }
@@ -338,7 +352,9 @@ func (*StringValue) ProtoMessage()    {}
 func (*StringValue) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5377b62bda767935, []int{7}
 }
+
 func (*StringValue) XXX_WellKnownType() string { return "StringValue" }
+
 func (m *StringValue) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StringValue.Unmarshal(m, b)
 }
@@ -381,7 +397,9 @@ func (*BytesValue) ProtoMessage()    {}
 func (*BytesValue) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5377b62bda767935, []int{8}
 }
+
 func (*BytesValue) XXX_WellKnownType() string { return "BytesValue" }
+
 func (m *BytesValue) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BytesValue.Unmarshal(m, b)
 }

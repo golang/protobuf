@@ -61,6 +61,7 @@ func (*Simple3) ProtoMessage()    {}
 func (*Simple3) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6c135db3023e377, []int{0}
 }
+
 func (m *Simple3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Simple3.Unmarshal(m, b)
 }
@@ -99,6 +100,7 @@ func (*SimpleSlice3) ProtoMessage()    {}
 func (*SimpleSlice3) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6c135db3023e377, []int{1}
 }
+
 func (m *SimpleSlice3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleSlice3.Unmarshal(m, b)
 }
@@ -137,6 +139,7 @@ func (*SimpleMap3) ProtoMessage()    {}
 func (*SimpleMap3) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6c135db3023e377, []int{2}
 }
+
 func (m *SimpleMap3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleMap3.Unmarshal(m, b)
 }
@@ -175,6 +178,7 @@ func (*SimpleNull3) ProtoMessage()    {}
 func (*SimpleNull3) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6c135db3023e377, []int{3}
 }
+
 func (m *SimpleNull3) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleNull3.Unmarshal(m, b)
 }
@@ -222,6 +226,7 @@ func (*Mappy) ProtoMessage()    {}
 func (*Mappy) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6c135db3023e377, []int{4}
 }
+
 func (m *Mappy) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Mappy.Unmarshal(m, b)
 }

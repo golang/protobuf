@@ -2361,10 +2361,12 @@ func (g *Generator) generateCommonMethods(mc *msgCtx) {
 	g.P("func (*", mc.goName, ") Descriptor() ([]byte, []int) {")
 	g.P("return ", g.file.VarName(), ", []int{", strings.Join(indexes, ", "), "}")
 	g.P("}")
+	g.P()
 	// TODO: Revisit the decision to use a XXX_WellKnownType method
 	// if we change proto.MessageName to work with multiple equivalents.
 	if mc.message.file.GetPackage() == "google.protobuf" && wellKnownTypes[mc.message.GetName()] {
 		g.P("func (*", mc.goName, `) XXX_WellKnownType() string { return "`, mc.message.GetName(), `" }`)
+		g.P()
 	}
 
 	// Extension support methods

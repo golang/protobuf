@@ -36,6 +36,7 @@ func (*UserMessage) ProtoMessage()    {}
 func (*UserMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_359ba8abf543ca10, []int{0}
 }
+
 func (m *UserMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserMessage.Unmarshal(m, b)
 }
@@ -131,6 +132,7 @@ func (*LoginMessage) ProtoMessage()    {}
 func (*LoginMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_359ba8abf543ca10, []int{2}
 }
+
 func (m *LoginMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LoginMessage.Unmarshal(m, b)
 }
@@ -171,6 +173,7 @@ func (*Detail) ProtoMessage()    {}
 func (*Detail) Descriptor() ([]byte, []int) {
 	return fileDescriptor_359ba8abf543ca10, []int{3}
 }
+
 func (m *Detail) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Detail.Unmarshal(m, b)
 }
@@ -210,6 +213,7 @@ func (*Announcement) ProtoMessage()    {}
 func (*Announcement) Descriptor() ([]byte, []int) {
 	return fileDescriptor_359ba8abf543ca10, []int{4}
 }
+
 func (m *Announcement) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Announcement.Unmarshal(m, b)
 }
@@ -259,6 +263,7 @@ func (*OldStyleParcel) ProtoMessage()    {}
 func (*OldStyleParcel) Descriptor() ([]byte, []int) {
 	return fileDescriptor_359ba8abf543ca10, []int{5}
 }
+
 func (m *OldStyleParcel) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldStyleParcel.Unmarshal(m, b)
 }

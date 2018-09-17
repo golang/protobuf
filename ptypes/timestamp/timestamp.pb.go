@@ -119,7 +119,9 @@ func (*Timestamp) ProtoMessage()    {}
 func (*Timestamp) Descriptor() ([]byte, []int) {
 	return fileDescriptor_292007bbfe81227e, []int{0}
 }
+
 func (*Timestamp) XXX_WellKnownType() string { return "Timestamp" }
+
 func (m *Timestamp) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Timestamp.Unmarshal(m, b)
 }

@@ -32,6 +32,7 @@ func (*M4) ProtoMessage()    {}
 func (*M4) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fdd24f82f6c5a786, []int{0}
 }
+
 func (m *M4) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_M4.Unmarshal(m, b)
 }

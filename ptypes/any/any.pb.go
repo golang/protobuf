@@ -137,7 +137,9 @@ func (*Any) ProtoMessage()    {}
 func (*Any) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b53526c13ae22eb4, []int{0}
 }
+
 func (*Any) XXX_WellKnownType() string { return "Any" }
+
 func (m *Any) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Any.Unmarshal(m, b)
 }

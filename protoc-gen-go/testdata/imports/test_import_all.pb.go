@@ -43,6 +43,7 @@ func (*All) ProtoMessage()    {}
 func (*All) Descriptor() ([]byte, []int) {
 	return fileDescriptor_324466f0afc16f77, []int{0}
 }
+
 func (m *All) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_All.Unmarshal(m, b)
 }

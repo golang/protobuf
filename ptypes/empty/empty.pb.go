@@ -41,7 +41,9 @@ func (*Empty) ProtoMessage()    {}
 func (*Empty) Descriptor() ([]byte, []int) {
 	return fileDescriptor_900544acb223d5b8, []int{0}
 }
+
 func (*Empty) XXX_WellKnownType() string { return "Empty" }
+
 func (m *Empty) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Empty.Unmarshal(m, b)
 }
