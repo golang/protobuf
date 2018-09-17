@@ -761,6 +761,7 @@ var extRange_ExtensionRangeOptions = []proto.ExtensionRange{
 func (*ExtensionRangeOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_ExtensionRangeOptions
 }
+
 func (m *ExtensionRangeOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ExtensionRangeOptions.Unmarshal(m, b)
 }
@@ -1385,6 +1386,7 @@ var extRange_FileOptions = []proto.ExtensionRange{
 func (*FileOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_FileOptions
 }
+
 func (m *FileOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FileOptions.Unmarshal(m, b)
 }
@@ -1620,6 +1622,7 @@ var extRange_MessageOptions = []proto.ExtensionRange{
 func (*MessageOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_MessageOptions
 }
+
 func (m *MessageOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageOptions.Unmarshal(m, b)
 }
@@ -1759,6 +1762,7 @@ var extRange_FieldOptions = []proto.ExtensionRange{
 func (*FieldOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_FieldOptions
 }
+
 func (m *FieldOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FieldOptions.Unmarshal(m, b)
 }
@@ -1855,6 +1859,7 @@ var extRange_OneofOptions = []proto.ExtensionRange{
 func (*OneofOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OneofOptions
 }
+
 func (m *OneofOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OneofOptions.Unmarshal(m, b)
 }
@@ -1911,6 +1916,7 @@ var extRange_EnumOptions = []proto.ExtensionRange{
 func (*EnumOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_EnumOptions
 }
+
 func (m *EnumOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EnumOptions.Unmarshal(m, b)
 }
@@ -1980,6 +1986,7 @@ var extRange_EnumValueOptions = []proto.ExtensionRange{
 func (*EnumValueOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_EnumValueOptions
 }
+
 func (m *EnumValueOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EnumValueOptions.Unmarshal(m, b)
 }
@@ -2042,6 +2049,7 @@ var extRange_ServiceOptions = []proto.ExtensionRange{
 func (*ServiceOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_ServiceOptions
 }
+
 func (m *ServiceOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ServiceOptions.Unmarshal(m, b)
 }
@@ -2105,6 +2113,7 @@ var extRange_MethodOptions = []proto.ExtensionRange{
 func (*MethodOptions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_MethodOptions
 }
+
 func (m *MethodOptions) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MethodOptions.Unmarshal(m, b)
 }

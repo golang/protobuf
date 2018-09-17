@@ -2390,6 +2390,7 @@ func (g *Generator) generateCommonMethods(mc *msgCtx) {
 		g.P("func (*", mc.goName, ") ExtensionRangeArray() []", g.Pkg["proto"], ".ExtensionRange {")
 		g.P("return extRange_", mc.goName)
 		g.P("}")
+		g.P()
 	}
 
 	// TODO: It does not scale to keep adding another method for every

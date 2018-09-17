@@ -90,6 +90,7 @@ var extRange_LoudMessage = []proto.ExtensionRange{
 func (*LoudMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_LoudMessage
 }
+
 func (m *LoudMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LoudMessage.Unmarshal(m, b)
 }

@@ -366,6 +366,7 @@ var extRange_Reply = []proto.ExtensionRange{
 func (*Reply) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_Reply
 }
+
 func (m *Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Reply.Unmarshal(m, b)
 }
@@ -476,6 +477,7 @@ var extRange_OtherBase = []proto.ExtensionRange{
 func (*OtherBase) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OtherBase
 }
+
 func (m *OtherBase) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OtherBase.Unmarshal(m, b)
 }
@@ -624,6 +626,7 @@ var extRange_OldReply = []proto.ExtensionRange{
 func (*OldReply) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_OldReply
 }
+
 func (m *OldReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OldReply.Unmarshal(m, b)
 }
