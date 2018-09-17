@@ -908,7 +908,7 @@ var E_Complex_RealExtension = &proto.ExtensionDesc{
 	ExtensionType: (*Complex)(nil),
 	Field:         123,
 	Name:          "jsonpb.Complex.real_extension",
-	Tag:           "bytes,123,opt,name=real_extension,json=realExtension",
+	Tag:           "bytes,123,opt,name=real_extension",
 	Filename:      "test_objects.proto",
 }
 
