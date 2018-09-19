@@ -744,6 +744,19 @@ func fieldJSONTag(field *protogen.Field) string {
 }
 
 func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, extension *protogen.Extension) {
+	// Special case for proto2 message sets: If this extension is extending
+	// proto2.bridge.MessageSet, and its final name component is "message_set_extension",
+	// then drop that last component.
+	//
+	// TODO: This should be implemented in the text formatter rather than the generator.
+	// In addition, the situation for when to apply this special case is implemented
+	// differently in other languages:
+	// https://github.com/google/protobuf/blob/aff10976/src/google/protobuf/text_format.cc#L1560
+	name := extension.Desc.FullName()
+	if isExtensionMessageSetElement(gen, extension) {
+		name = name.Parent()
+	}
+
 	g.P("var ", extensionVar(f, extension), " = &", protogen.GoIdent{
 		GoImportPath: protoPackage,
 		GoName:       "ExtensionDesc",
@@ -755,11 +768,17 @@ func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, exte
 	}
 	g.P("ExtensionType: (", goType, ")(nil),")
 	g.P("Field: ", extension.Desc.Number(), ",")
-	g.P("Name: ", strconv.Quote(string(extension.Desc.FullName())), ",")
+	g.P("Name: ", strconv.Quote(string(name)), ",")
 	g.P("Tag: ", strconv.Quote(fieldProtobufTag(extension)), ",")
 	g.P("Filename: ", strconv.Quote(f.Desc.Path()), ",")
 	g.P("}")
 	g.P()
+}
+
+func isExtensionMessageSetElement(gen *protogen.Plugin, extension *protogen.Extension) bool {
+	return extension.ParentMessage != nil &&
+		messageOptions(gen, extension.ExtendedType).GetMessageSetWireFormat() &&
+		extension.Desc.Name() == "message_set_extension"
 }
 
 // extensionVar returns the var holding the ExtensionDesc for an extension.
@@ -783,9 +802,20 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File) {
 	}
 
 	g.P("func init() {")
+	for _, enum := range f.allEnums {
+		name := enum.GoIdent.GoName
+		g.P(protogen.GoIdent{
+			GoImportPath: protoPackage,
+			GoName:       "RegisterEnum",
+		}, fmt.Sprintf("(%q, %s_name, %s_value)", enumRegistryName(enum), name, name))
+	}
 	for _, message := range f.allMessages {
 		if message.Desc.IsMapEntry() {
 			continue
+		}
+
+		for _, extension := range message.Extensions {
+			genRegisterExtension(gen, g, f, extension)
 		}
 
 		name := message.GoIdent.GoName
@@ -815,21 +845,28 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File) {
 			}, fmt.Sprintf("((%v)(nil), %q)", goType, typeName))
 		}
 	}
-	for _, enum := range f.allEnums {
-		name := enum.GoIdent.GoName
-		g.P(protogen.GoIdent{
-			GoImportPath: protoPackage,
-			GoName:       "RegisterEnum",
-		}, fmt.Sprintf("(%q, %s_name, %s_value)", enumRegistryName(enum), name, name))
-	}
-	for _, extension := range f.allExtensions {
-		g.P(protogen.GoIdent{
-			GoImportPath: protoPackage,
-			GoName:       "RegisterExtension",
-		}, "(", extensionVar(f, extension), ")")
+	for _, extension := range f.Extensions {
+		genRegisterExtension(gen, g, f, extension)
 	}
 	g.P("}")
 	g.P()
+}
+
+func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, extension *protogen.Extension) {
+	g.P(protogen.GoIdent{
+		GoImportPath: protoPackage,
+		GoName:       "RegisterExtension",
+	}, "(", extensionVar(f, extension), ")")
+	if isExtensionMessageSetElement(gen, extension) {
+		goType, pointer := fieldGoType(g, extension)
+		if pointer {
+			goType = "*" + goType
+		}
+		g.P(protogen.GoIdent{
+			GoImportPath: protoPackage,
+			GoName:       "RegisterMessageSetType",
+		}, "((", goType, ")(nil), ", extension.Desc.Number(), ",", strconv.Quote(string(extension.Desc.FullName().Parent())), ")")
+	}
 }
 
 func genComment(g *protogen.GeneratedFile, f *File, path []int32) (hasComment bool) {

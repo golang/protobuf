@@ -98,6 +98,6 @@ extend Extendable {
 // Message set wire format.
 message MessageSetWireFormatExtension {
   extend goproto.protoc.extension.base.MessageSetWireFormatMessage {
-    optional MessageSetWireFormatExtension message_set_field = 100;
+    optional MessageSetWireFormatExtension message_set_extension = 100;
   }
 }
