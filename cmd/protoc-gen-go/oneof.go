@@ -339,8 +339,32 @@ func genOneofFieldSizer(g *protogen.GeneratedFile, field *protogen.Field) {
 
 // fieldOneofType returns the wrapper type used to represent a field in a oneof.
 func fieldOneofType(field *protogen.Field) protogen.GoIdent {
-	return protogen.GoIdent{
+	ident := protogen.GoIdent{
 		GoImportPath: field.ParentMessage.GoIdent.GoImportPath,
 		GoName:       field.ParentMessage.GoIdent.GoName + "_" + field.GoName,
+	}
+	// Check for collisions with nested messages or enums.
+	//
+	// This conflict resolution is incomplete: Among other things, it
+	// does not consider collisions with other oneof field types.
+	//
+	// TODO: Consider dropping this entirely. Detecting conflicts and
+	// producing an error is almost certainly better than permuting
+	// field and type names in mostly unpredictable ways.
+Loop:
+	for {
+		for _, message := range field.ParentMessage.Messages {
+			if message.GoIdent == ident {
+				ident.GoName += "_"
+				continue Loop
+			}
+		}
+		for _, enum := range field.ParentMessage.Enums {
+			if enum.GoIdent == ident {
+				ident.GoName += "_"
+				continue Loop
+			}
+		}
+		return ident
 	}
 }

@@ -46,4 +46,10 @@ message Message {
     string oneof_no_conflict = 50;
     string OneofConflictB = 51;
   }
+
+  // Oneof with a field name that conflicts with a nested message.
+  oneof oneof_conflict_c {
+    string oneof_message_conflict = 60;
+  }
+  message OneofMessageConflict {}
 }

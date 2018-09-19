@@ -526,7 +526,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, messag
 		defaultValue := fieldDefaultValue(g, message, field)
 		g.P("func (m *", message.GoIdent, ") Get", field.GoName, "() ", goType, " {")
 		if field.OneofType != nil {
-			g.P("if x, ok := m.Get", field.OneofType.GoName, "().(*", message.GoIdent.GoName, "_", field.GoName, "); ok {")
+			g.P("if x, ok := m.Get", field.OneofType.GoName, "().(*", fieldOneofType(field), "); ok {")
 			g.P("return x.", field.GoName)
 			g.P("}")
 		} else {
