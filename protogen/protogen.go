@@ -706,6 +706,7 @@ type GeneratedFile struct {
 	buf              bytes.Buffer
 	packageNames     map[GoImportPath]GoPackageName
 	usedPackageNames map[GoPackageName]bool
+	manualImports    map[GoImportPath]bool
 }
 
 // NewGeneratedFile creates a new generated file with the given filename
@@ -716,6 +717,7 @@ func (gen *Plugin) NewGeneratedFile(filename string, goImportPath GoImportPath) 
 		goImportPath:     goImportPath,
 		packageNames:     make(map[GoImportPath]GoPackageName),
 		usedPackageNames: make(map[GoPackageName]bool),
+		manualImports:    make(map[GoImportPath]bool),
 	}
 	gen.genFiles = append(gen.genFiles, g)
 	return g
@@ -759,6 +761,15 @@ func (g *GeneratedFile) QualifiedGoIdent(ident GoIdent) string {
 	return string(packageName) + "." + ident.GoName
 }
 
+// Import ensures a package is imported by the generated file.
+//
+// Packages referenced by QualifiedGoIdent are automatically imported.
+// Explicitly importing a package with Import is generally only necessary
+// when the import will be blank (import _ "package").
+func (g *GeneratedFile) Import(importPath GoImportPath) {
+	g.manualImports[importPath] = true
+}
+
 // Write implements io.Writer.
 func (g *GeneratedFile) Write(p []byte) (n int, err error) {
 	return g.buf.Write(p)
@@ -794,6 +805,12 @@ func (g *GeneratedFile) Content() ([]byte, error) {
 	sort.Strings(importPaths)
 	for _, importPath := range importPaths {
 		astutil.AddNamedImport(fset, file, string(g.packageNames[GoImportPath(importPath)]), importPath)
+	}
+	for importPath := range g.manualImports {
+		if _, ok := g.packageNames[importPath]; ok {
+			continue
+		}
+		astutil.AddNamedImport(fset, file, "_", string(importPath))
 	}
 	ast.SortImports(fset, file)
 

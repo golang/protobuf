@@ -148,15 +148,19 @@ func walkMessages(messages []*protogen.Message, f func(*protogen.Message)) {
 }
 
 func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, imp protoreflect.FileImport) {
-	if !imp.IsPublic {
-		return
-	}
 	impFile, ok := gen.FileByName(imp.Path())
 	if !ok {
 		return
 	}
 	if impFile.GoImportPath == f.GoImportPath {
-		// Don't generate aliases for types in the same Go package.
+		// Don't generate imports or aliases for types in the same Go package.
+		return
+	}
+	// Generate imports for all dependencies, even if they are not
+	// referenced, because other code and tools depend on having the
+	// full transitive closure of protocol buffer types in the binary.
+	g.Import(impFile.GoImportPath)
+	if !imp.IsPublic {
 		return
 	}
 	var enums []*protogen.Enum
