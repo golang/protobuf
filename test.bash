@@ -31,6 +31,10 @@ if [ ! -d $PROTOBUF_DIR ]; then
 fi
 register_binary conformance-test-runner $PROTOBUF_DIR/conformance/conformance-test-runner
 register_binary protoc $PROTOBUF_DIR/src/protoc
+# Allow protoc to find google/protobuf/*.proto.
+rm -rf $PROTOBUF_DIR/src/include
+mkdir -p $PROTOBUF_DIR/src/include
+ln -s ../google $PROTOBUF_DIR/src/include/google
 
 # Download each Go toolchain version.
 GO_LATEST=go1.11
