@@ -95,7 +95,7 @@ func NewFileFromDescriptorProto(fd *descriptorV1.FileDescriptorProto, r *protore
 	}
 
 	var err error
-	f.Messages, err = messagesFromDescriptorProto(fd.GetMessageType(), r)
+	f.Messages, err = messagesFromDescriptorProto(fd.GetMessageType(), f.Syntax, r)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func NewFileFromDescriptorProto(fd *descriptorV1.FileDescriptorProto, r *protore
 	return NewFile(&f)
 }
 
-func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, r *protoregistry.Files) (ms []Message, err error) {
+func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, syntax protoreflect.Syntax, r *protoregistry.Files) (ms []Message, err error) {
 	for _, md := range mds {
 		var m Message
 		m.Name = protoreflect.Name(md.GetName())
@@ -127,7 +127,16 @@ func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, r *protore
 			f.Cardinality = protoreflect.Cardinality(fd.GetLabel())
 			f.Kind = protoreflect.Kind(fd.GetType())
 			f.JSONName = fd.GetJsonName()
-			f.IsPacked = fd.GetOptions().GetPacked()
+			if opts := fd.GetOptions(); opts != nil && opts.Packed != nil {
+				f.IsPacked = *opts.Packed
+			} else {
+				// https://developers.google.com/protocol-buffers/docs/proto3:
+				// "In proto3, repeated fields of scalar numeric types use packed
+				// encoding by default."
+				f.IsPacked = (syntax == protoreflect.Proto3 &&
+					f.Cardinality == protoreflect.Repeated &&
+					isScalarNumeric[f.Kind])
+			}
 			f.IsWeak = fd.GetOptions().GetWeak()
 			if fd.DefaultValue != nil {
 				f.Default, err = parseDefault(fd.GetDefaultValue(), f.Kind)
@@ -172,7 +181,7 @@ func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, r *protore
 			})
 		}
 
-		m.Messages, err = messagesFromDescriptorProto(md.GetNestedType(), r)
+		m.Messages, err = messagesFromDescriptorProto(md.GetNestedType(), syntax, r)
 		if err != nil {
 			return nil, err
 		}
@@ -188,6 +197,23 @@ func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, r *protore
 		ms = append(ms, m)
 	}
 	return ms, nil
+}
+
+var isScalarNumeric = map[protoreflect.Kind]bool{
+	protoreflect.BoolKind:     true,
+	protoreflect.EnumKind:     true,
+	protoreflect.Int32Kind:    true,
+	protoreflect.Sint32Kind:   true,
+	protoreflect.Uint32Kind:   true,
+	protoreflect.Int64Kind:    true,
+	protoreflect.Sint64Kind:   true,
+	protoreflect.Uint64Kind:   true,
+	protoreflect.Sfixed32Kind: true,
+	protoreflect.Fixed32Kind:  true,
+	protoreflect.FloatKind:    true,
+	protoreflect.Sfixed64Kind: true,
+	protoreflect.Fixed64Kind:  true,
+	protoreflect.DoubleKind:   true,
 }
 
 func enumsFromDescriptorProto(eds []*descriptorV1.EnumDescriptorProto, r *protoregistry.Files) (es []Enum, err error) {
@@ -212,6 +238,11 @@ func extensionsFromDescriptorProto(xds []*descriptorV1.FieldDescriptorProto, r *
 		x.Number = protoreflect.FieldNumber(xd.GetNumber())
 		x.Cardinality = protoreflect.Cardinality(xd.GetLabel())
 		x.Kind = protoreflect.Kind(xd.GetType())
+		// TODO: When a proto3 file extends a proto2 message (permitted only for
+		// extending descriptor options), does the extension have proto2 or proto3
+		// semantics? If the latter, repeated, scalar, numeric, proto3 extension
+		// fields should default to packed. If the former, perhaps the extension syntax
+		// should be protoreflect.Proto2.
 		x.IsPacked = xd.GetOptions().GetPacked()
 		if xd.DefaultValue != nil {
 			x.Default, err = parseDefault(xd.GetDefaultValue(), x.Kind)

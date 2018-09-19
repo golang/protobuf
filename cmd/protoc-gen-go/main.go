@@ -631,6 +631,9 @@ func fieldProtobufTag(field *protogen.Field) string {
 	case protoreflect.Repeated:
 		tag = append(tag, "rep")
 	}
+	if field.Desc.IsPacked() {
+		tag = append(tag, "packed")
+	}
 	// TODO: packed
 	// name
 	name := string(field.Desc.Name())
