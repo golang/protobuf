@@ -1211,23 +1211,10 @@ func (g *Generator) generateHeader() {
 		g.P("// source: ", g.file.Name)
 	}
 	g.P()
-
+	g.PrintComments(strconv.Itoa(packagePath))
+	g.P()
 	g.P("package ", g.file.packageName)
 	g.P()
-
-	if loc, ok := g.file.comments[strconv.Itoa(packagePath)]; ok {
-		g.P("/*")
-		// not using g.PrintComments because this is a /* */ comment block.
-		text := strings.TrimSuffix(loc.GetLeadingComments(), "\n")
-		for _, line := range strings.Split(text, "\n") {
-			line = strings.TrimPrefix(line, " ")
-			// ensure we don't escape from the block comment
-			line = strings.Replace(line, "*/", "* /", -1)
-			g.P(line)
-		}
-		g.P("*/")
-		g.P()
-	}
 }
 
 // deprecationComment is the standard comment added to deprecated
