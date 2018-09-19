@@ -127,9 +127,9 @@ func (m *DeprecatedResponse) GetDeprecatedField() DeprecatedEnum {
 }
 
 func init() {
+	proto.RegisterEnum("deprecated.DeprecatedEnum", DeprecatedEnum_name, DeprecatedEnum_value)
 	proto.RegisterType((*DeprecatedRequest)(nil), "deprecated.DeprecatedRequest")
 	proto.RegisterType((*DeprecatedResponse)(nil), "deprecated.DeprecatedResponse")
-	proto.RegisterEnum("deprecated.DeprecatedEnum", DeprecatedEnum_name, DeprecatedEnum_value)
 }
 
 // Reference imports to suppress errors if they are not otherwise used.

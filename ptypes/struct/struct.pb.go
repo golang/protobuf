@@ -418,11 +418,11 @@ func (m *ListValue) GetValues() []*Value {
 }
 
 func init() {
+	proto.RegisterEnum("google.protobuf.NullValue", NullValue_name, NullValue_value)
 	proto.RegisterType((*Struct)(nil), "google.protobuf.Struct")
 	proto.RegisterMapType((map[string]*Value)(nil), "google.protobuf.Struct.FieldsEntry")
 	proto.RegisterType((*Value)(nil), "google.protobuf.Value")
 	proto.RegisterType((*ListValue)(nil), "google.protobuf.ListValue")
-	proto.RegisterEnum("google.protobuf.NullValue", NullValue_name, NullValue_value)
 }
 
 func init() { proto.RegisterFile("google/protobuf/struct.proto", fileDescriptor_df322afd6c9fb402) }

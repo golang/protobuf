@@ -316,6 +316,7 @@ func (m *Mappy) GetU64Booly() map[uint64]bool {
 }
 
 func init() {
+	proto.RegisterEnum("jsonpb.Numeral", Numeral_name, Numeral_value)
 	proto.RegisterType((*Simple3)(nil), "jsonpb.Simple3")
 	proto.RegisterType((*SimpleSlice3)(nil), "jsonpb.SimpleSlice3")
 	proto.RegisterType((*SimpleMap3)(nil), "jsonpb.SimpleMap3")
@@ -332,7 +333,6 @@ func init() {
 	proto.RegisterMapType((map[string]string)(nil), "jsonpb.Mappy.StrryEntry")
 	proto.RegisterMapType((map[uint32]bool)(nil), "jsonpb.Mappy.U32boolyEntry")
 	proto.RegisterMapType((map[uint64]bool)(nil), "jsonpb.Mappy.U64boolyEntry")
-	proto.RegisterEnum("jsonpb.Numeral", Numeral_name, Numeral_value)
 }
 
 func init() { proto.RegisterFile("more_test_objects.proto", fileDescriptor_e6c135db3023e377) }

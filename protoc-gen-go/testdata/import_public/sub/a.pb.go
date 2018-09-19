@@ -368,11 +368,11 @@ func _M_Submessage_OneofSizer(msg proto.Message) (n int) {
 }
 
 func init() {
-	proto.RegisterType((*M)(nil), "goproto.test.import_public.sub.M")
-	proto.RegisterType((*M_Submessage)(nil), "goproto.test.import_public.sub.M.Submessage")
 	proto.RegisterEnum("goproto.test.import_public.sub.E", E_name, E_value)
 	proto.RegisterEnum("goproto.test.import_public.sub.M_Subenum", M_Subenum_name, M_Subenum_value)
 	proto.RegisterEnum("goproto.test.import_public.sub.M_Submessage_Submessage_Subenum", M_Submessage_Submessage_Subenum_name, M_Submessage_Submessage_Subenum_value)
+	proto.RegisterType((*M)(nil), "goproto.test.import_public.sub.M")
+	proto.RegisterType((*M_Submessage)(nil), "goproto.test.import_public.sub.M.Submessage")
 }
 
 func init() { proto.RegisterFile("import_public/sub/a.proto", fileDescriptor_382f7805394b5c4e) }

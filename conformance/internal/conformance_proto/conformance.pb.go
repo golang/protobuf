@@ -1648,6 +1648,9 @@ func (m *ForeignMessage) GetC() int32 {
 }
 
 func init() {
+	proto.RegisterEnum("conformance.WireFormat", WireFormat_name, WireFormat_value)
+	proto.RegisterEnum("conformance.ForeignEnum", ForeignEnum_name, ForeignEnum_value)
+	proto.RegisterEnum("conformance.TestAllTypes_NestedEnum", TestAllTypes_NestedEnum_name, TestAllTypes_NestedEnum_value)
 	proto.RegisterType((*ConformanceRequest)(nil), "conformance.ConformanceRequest")
 	proto.RegisterType((*ConformanceResponse)(nil), "conformance.ConformanceResponse")
 	proto.RegisterType((*TestAllTypes)(nil), "conformance.TestAllTypes")
@@ -1672,9 +1675,6 @@ func init() {
 	proto.RegisterMapType((map[uint64]uint64)(nil), "conformance.TestAllTypes.MapUint64Uint64Entry")
 	proto.RegisterType((*TestAllTypes_NestedMessage)(nil), "conformance.TestAllTypes.NestedMessage")
 	proto.RegisterType((*ForeignMessage)(nil), "conformance.ForeignMessage")
-	proto.RegisterEnum("conformance.WireFormat", WireFormat_name, WireFormat_value)
-	proto.RegisterEnum("conformance.ForeignEnum", ForeignEnum_name, ForeignEnum_value)
-	proto.RegisterEnum("conformance.TestAllTypes_NestedEnum", TestAllTypes_NestedEnum_name, TestAllTypes_NestedEnum_value)
 }
 
 func init() { proto.RegisterFile("conformance.proto", fileDescriptor_e7c910178d599565) }

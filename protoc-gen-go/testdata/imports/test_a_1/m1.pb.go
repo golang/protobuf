@@ -113,9 +113,9 @@ func (m *M1_1) GetM1() *M1 {
 }
 
 func init() {
+	proto.RegisterEnum("test.a.E1", E1_name, E1_value)
 	proto.RegisterType((*M1)(nil), "test.a.M1")
 	proto.RegisterType((*M1_1)(nil), "test.a.M1_1")
-	proto.RegisterEnum("test.a.E1", E1_name, E1_value)
 }
 
 func init() { proto.RegisterFile("imports/test_a_1/m1.proto", fileDescriptor_c1091de3fa870a14) }

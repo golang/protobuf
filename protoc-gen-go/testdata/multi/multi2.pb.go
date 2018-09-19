@@ -111,8 +111,8 @@ func (m *Multi2) GetColor() Multi2_Color {
 }
 
 func init() {
-	proto.RegisterType((*Multi2)(nil), "multitest.Multi2")
 	proto.RegisterEnum("multitest.Multi2_Color", Multi2_Color_name, Multi2_Color_value)
+	proto.RegisterType((*Multi2)(nil), "multitest.Multi2")
 }
 
 func init() { proto.RegisterFile("multi/multi2.proto", fileDescriptor_a2aebe588a0b2853) }
