@@ -542,6 +542,7 @@ func _TestUTF8_OneofSizer(msg proto.Message) (n int) {
 }
 
 func init() {
+	proto.RegisterEnum("proto3_proto.Message_Humour", Message_Humour_name, Message_Humour_value)
 	proto.RegisterType((*Message)(nil), "proto3_proto.Message")
 	proto.RegisterMapType((map[string]*test_proto.SubDefaults)(nil), "proto3_proto.Message.Proto2ValueEntry")
 	proto.RegisterMapType((map[string]string)(nil), "proto3_proto.Message.StringMapEntry")
@@ -555,7 +556,6 @@ func init() {
 	proto.RegisterType((*TestUTF8)(nil), "proto3_proto.TestUTF8")
 	proto.RegisterMapType((map[string]int64)(nil), "proto3_proto.TestUTF8.MapKeyEntry")
 	proto.RegisterMapType((map[int64]string)(nil), "proto3_proto.TestUTF8.MapValueEntry")
-	proto.RegisterEnum("proto3_proto.Message_Humour", Message_Humour_name, Message_Humour_value)
 }
 
 func init() { proto.RegisterFile("proto3_proto/proto3.proto", fileDescriptor_1c50d9b824d4ac38) }

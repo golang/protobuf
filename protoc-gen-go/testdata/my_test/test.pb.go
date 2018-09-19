@@ -1123,6 +1123,10 @@ var E_Donut = &proto.ExtensionDesc{
 }
 
 func init() {
+	proto.RegisterEnum("my.test.HatType", HatType_name, HatType_value)
+	proto.RegisterEnum("my.test.Days", Days_name, Days_value)
+	proto.RegisterEnum("my.test.Request_Color", Request_Color_name, Request_Color_value)
+	proto.RegisterEnum("my.test.Reply_Entry_Game", Reply_Entry_Game_name, Reply_Entry_Game_value)
 	proto.RegisterType((*Request)(nil), "my.test.Request")
 	proto.RegisterMapType((map[int64]*Reply)(nil), "my.test.Request.MsgMappingEntry")
 	proto.RegisterMapType((map[int32]string)(nil), "my.test.Request.NameMappingEntry")
@@ -1130,19 +1134,15 @@ func init() {
 	proto.RegisterType((*Reply)(nil), "my.test.Reply")
 	proto.RegisterType((*Reply_Entry)(nil), "my.test.Reply.Entry")
 	proto.RegisterType((*OtherBase)(nil), "my.test.OtherBase")
+	proto.RegisterExtension(E_ReplyExtensions_Time)
+	proto.RegisterExtension(E_ReplyExtensions_Carrot)
+	proto.RegisterExtension(E_ReplyExtensions_Donut)
 	proto.RegisterType((*ReplyExtensions)(nil), "my.test.ReplyExtensions")
 	proto.RegisterType((*OtherReplyExtensions)(nil), "my.test.OtherReplyExtensions")
 	proto.RegisterType((*OldReply)(nil), "my.test.OldReply")
 	proto.RegisterType((*Communique)(nil), "my.test.Communique")
 	proto.RegisterType((*Communique_SomeGroup)(nil), "my.test.Communique.SomeGroup")
 	proto.RegisterType((*Communique_Delta)(nil), "my.test.Communique.Delta")
-	proto.RegisterEnum("my.test.HatType", HatType_name, HatType_value)
-	proto.RegisterEnum("my.test.Days", Days_name, Days_value)
-	proto.RegisterEnum("my.test.Request_Color", Request_Color_name, Request_Color_value)
-	proto.RegisterEnum("my.test.Reply_Entry_Game", Reply_Entry_Game_name, Reply_Entry_Game_value)
-	proto.RegisterExtension(E_ReplyExtensions_Time)
-	proto.RegisterExtension(E_ReplyExtensions_Carrot)
-	proto.RegisterExtension(E_ReplyExtensions_Donut)
 	proto.RegisterExtension(E_Tag)
 	proto.RegisterExtension(E_Donut)
 }

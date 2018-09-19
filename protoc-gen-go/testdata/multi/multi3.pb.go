@@ -100,8 +100,8 @@ func (m *Multi3) GetHatType() Multi3_HatType {
 }
 
 func init() {
-	proto.RegisterType((*Multi3)(nil), "multitest.Multi3")
 	proto.RegisterEnum("multitest.Multi3_HatType", Multi3_HatType_name, Multi3_HatType_value)
+	proto.RegisterType((*Multi3)(nil), "multitest.Multi3")
 }
 
 func init() { proto.RegisterFile("multi/multi3.proto", fileDescriptor_580398fc0bbeeaa7) }

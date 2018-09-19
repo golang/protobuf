@@ -170,9 +170,9 @@ func (m *Book) GetRawData() []byte {
 }
 
 func init() {
+	proto.RegisterEnum("proto3.Request_Flavour", Request_Flavour_name, Request_Flavour_value)
 	proto.RegisterType((*Request)(nil), "proto3.Request")
 	proto.RegisterType((*Book)(nil), "proto3.Book")
-	proto.RegisterEnum("proto3.Request_Flavour", Request_Flavour_name, Request_Flavour_value)
 }
 
 func init() { proto.RegisterFile("proto3/proto3.proto", fileDescriptor_ab04eb4084a521db) }

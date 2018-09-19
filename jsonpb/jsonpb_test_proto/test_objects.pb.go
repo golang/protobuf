@@ -1255,6 +1255,7 @@ var E_Extm = &proto.ExtensionDesc{
 }
 
 func init() {
+	proto.RegisterEnum("jsonpb.Widget_Color", Widget_Color_name, Widget_Color_value)
 	proto.RegisterType((*Simple)(nil), "jsonpb.Simple")
 	proto.RegisterType((*NonFinites)(nil), "jsonpb.NonFinites")
 	proto.RegisterType((*Repeats)(nil), "jsonpb.Repeats")
@@ -1264,6 +1265,7 @@ func init() {
 	proto.RegisterMapType((map[int64]string)(nil), "jsonpb.Maps.MInt64StrEntry")
 	proto.RegisterType((*MsgWithOneof)(nil), "jsonpb.MsgWithOneof")
 	proto.RegisterType((*Real)(nil), "jsonpb.Real")
+	proto.RegisterExtension(E_Complex_RealExtension)
 	proto.RegisterType((*Complex)(nil), "jsonpb.Complex")
 	proto.RegisterType((*KnownTypes)(nil), "jsonpb.KnownTypes")
 	proto.RegisterType((*MsgWithRequired)(nil), "jsonpb.MsgWithRequired")
@@ -1271,8 +1273,6 @@ func init() {
 	proto.RegisterMapType((map[string]*MsgWithRequired)(nil), "jsonpb.MsgWithIndirectRequired.MapFieldEntry")
 	proto.RegisterType((*MsgWithRequiredBytes)(nil), "jsonpb.MsgWithRequiredBytes")
 	proto.RegisterType((*MsgWithRequiredWKT)(nil), "jsonpb.MsgWithRequiredWKT")
-	proto.RegisterEnum("jsonpb.Widget_Color", Widget_Color_name, Widget_Color_value)
-	proto.RegisterExtension(E_Complex_RealExtension)
 	proto.RegisterExtension(E_Name)
 	proto.RegisterExtension(E_Extm)
 }
