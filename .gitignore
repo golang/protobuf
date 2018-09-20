@@ -1,3 +1,6 @@
+.cache
+vendor
+
 .DS_Store
 *.[568ao]
 *.ao
