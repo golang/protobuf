@@ -11,24 +11,19 @@ trap 'rm -rf $tmpdir' EXIT
 mkdir -p $tmpdir/bin
 PATH=$tmpdir/bin:$PATH
 GOBIN=$tmpdir/bin go install ./cmd/protoc-gen-go
-
-# Public imports require at least Go 1.9.
-supportTypeAliases=""
-if go list -f '{{context.ReleaseTags}}' runtime | grep -q go1.9; then
-  supportTypeAliases=1
-fi
+GOBIN=$tmpdir/bin go install ./cmd/protoc-gen-go-grpc
 
 # Generate various test protos.
 PROTO_DIRS=(
   cmd/protoc-gen-go/testdata
+  cmd/protoc-gen-go-grpc/testdata
 )
 for dir in ${PROTO_DIRS[@]}; do
   for p in `find $dir -name "*.proto"`; do
-    if [[ $p == */import_public/* && ! $supportTypeAliases ]]; then
-      echo "# $p (skipped)"
-      continue;
-    fi
     echo "# $p"
-    protoc -I$dir --go_out=paths=source_relative:$dir $p
+    protoc -I$dir \
+      --go_out=paths=source_relative:$dir \
+      --go-grpc_out=paths=source_relative:$dir \
+      $p
   done
 done

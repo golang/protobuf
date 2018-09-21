@@ -10,6 +10,7 @@ import (
 	"compress/gzip"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"flag"
 	"fmt"
 	"math"
@@ -33,12 +34,14 @@ const protoPackage = "github.com/golang/protobuf/proto"
 
 func Main() {
 	var flags flag.FlagSet
-	// TODO: Decide what to do for backwards compatibility with plugins=grpc.
-	flags.String("plugins", "", "")
+	plugins := flags.String("plugins", "", "deprecated option")
 	opts := &protogen.Options{
 		ParamFunc: flags.Set,
 	}
 	protogen.Run(opts, func(gen *protogen.Plugin) error {
+		if *plugins != "" {
+			return errors.New("protoc-gen-go: plugins are not supported; use 'protoc --go-grpc_out=...' to generate gRPC")
+		}
 		for _, f := range gen.Files {
 			if !f.Generate {
 				continue
@@ -138,7 +141,6 @@ func genFile(gen *protogen.Plugin, file *protogen.File) {
 	}
 
 	genInitFunction(gen, g, f)
-
 	genFileDescriptor(gen, g, f)
 }
 

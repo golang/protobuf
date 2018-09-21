@@ -349,6 +349,7 @@ type File struct {
 	Messages      []*Message    // top-level message declarations
 	Enums         []*Enum       // top-level enum declarations
 	Extensions    []*Extension  // top-level extension declarations
+	Services      []*Service    // top-level service declarations
 	Generate      bool          // true if we should generate code for this file
 
 	// GeneratedFilenamePrefix is used to construct filenames for generated
@@ -401,6 +402,9 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 	for i, extdescs := 0, desc.Extensions(); i < extdescs.Len(); i++ {
 		f.Extensions = append(f.Extensions, newField(gen, f, nil, extdescs.Get(i)))
 	}
+	for i, sdescs := 0, desc.Services(); i < sdescs.Len(); i++ {
+		f.Services = append(f.Services, newService(gen, f, sdescs.Get(i)))
+	}
 	for _, message := range f.Messages {
 		if err := message.init(gen); err != nil {
 			return nil, err
@@ -409,6 +413,13 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 	for _, extension := range f.Extensions {
 		if err := extension.init(gen); err != nil {
 			return nil, err
+		}
+	}
+	for _, service := range f.Services {
+		for _, method := range service.Methods {
+			if err := method.init(gen); err != nil {
+				return nil, err
+			}
 		}
 	}
 	return f, nil
@@ -723,6 +734,68 @@ func (gen *Plugin) NewGeneratedFile(filename string, goImportPath GoImportPath) 
 	return g
 }
 
+// A Service describes a service.
+type Service struct {
+	Desc protoreflect.ServiceDescriptor
+
+	GoName  string
+	Path    []int32   // location path of this service
+	Methods []*Method // service method definitions
+}
+
+func newService(gen *Plugin, f *File, desc protoreflect.ServiceDescriptor) *Service {
+	service := &Service{
+		Desc:   desc,
+		GoName: camelCase(string(desc.Name())),
+		Path:   []int32{fileServiceField, int32(desc.Index())},
+	}
+	for i, mdescs := 0, desc.Methods(); i < mdescs.Len(); i++ {
+		service.Methods = append(service.Methods, newMethod(gen, f, service, mdescs.Get(i)))
+	}
+	return service
+}
+
+// A Method describes a method in a service.
+type Method struct {
+	Desc protoreflect.MethodDescriptor
+
+	GoName        string
+	ParentService *Service
+	Path          []int32 // location path of this method
+	InputType     *Message
+	OutputType    *Message
+}
+
+func newMethod(gen *Plugin, f *File, service *Service, desc protoreflect.MethodDescriptor) *Method {
+	method := &Method{
+		Desc:          desc,
+		GoName:        camelCase(string(desc.Name())),
+		ParentService: service,
+		Path:          pathAppend(service.Path, serviceMethodField, int32(desc.Index())),
+	}
+	return method
+}
+
+func (method *Method) init(gen *Plugin) error {
+	desc := method.Desc
+
+	inName := desc.InputType().FullName()
+	in, ok := gen.messagesByName[inName]
+	if !ok {
+		return fmt.Errorf("method %v: no descriptor for type %v", desc.FullName(), inName)
+	}
+	method.InputType = in
+
+	outName := desc.OutputType().FullName()
+	out, ok := gen.messagesByName[outName]
+	if !ok {
+		return fmt.Errorf("method %v: no descriptor for type %v", desc.FullName(), outName)
+	}
+	method.OutputType = out
+
+	return nil
+}
+
 // P prints a line to the generated output. It converts each parameter to a
 // string following the same rules as fmt.Print. It never inserts spaces
 // between parameters.
@@ -843,6 +916,7 @@ const (
 	filePackageField   = 2 // package
 	fileMessageField   = 4 // message_type
 	fileEnumField      = 5 // enum_type
+	fileServiceField   = 6 // service
 	fileExtensionField = 7 // extension
 	// field numbers in DescriptorProto
 	messageFieldField     = 2 // field
@@ -852,6 +926,9 @@ const (
 	messageOneofField     = 8 // oneof_decl
 	// field numbers in EnumDescriptorProto
 	enumValueField = 2 // value
+	// field numbers in ServiceDescriptorProto
+	serviceMethodField = 2 // method
+	serviceStreamField = 4 // stream
 )
 
 // pathAppend appends elements to a location path.
