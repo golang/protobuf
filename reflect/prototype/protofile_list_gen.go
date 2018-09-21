@@ -24,8 +24,8 @@ type messages messagesMeta
 
 func (p *messagesMeta) lazyInit(parent protoreflect.Descriptor, ts []Message) *messages {
 	p.once.Do(func() {
-		nb := nameBuilderPool.Get().(*nameBuilder)
-		defer nameBuilderPool.Put(nb)
+		nb := getNameBuilder()
+		defer putNameBuilder(nb)
 		metas := make([]messageMeta, len(ts))
 		for i := range ts {
 			t := &ts[i]
@@ -74,8 +74,8 @@ type fields fieldsMeta
 
 func (p *fieldsMeta) lazyInit(parent protoreflect.Descriptor, ts []Field) *fields {
 	p.once.Do(func() {
-		nb := nameBuilderPool.Get().(*nameBuilder)
-		defer nameBuilderPool.Put(nb)
+		nb := getNameBuilder()
+		defer putNameBuilder(nb)
 		metas := make([]fieldMeta, len(ts))
 		for i := range ts {
 			t := &ts[i]
@@ -157,8 +157,8 @@ type oneofs oneofsMeta
 
 func (p *oneofsMeta) lazyInit(parent protoreflect.Descriptor, ts []Oneof) *oneofs {
 	p.once.Do(func() {
-		nb := nameBuilderPool.Get().(*nameBuilder)
-		defer nameBuilderPool.Put(nb)
+		nb := getNameBuilder()
+		defer putNameBuilder(nb)
 		metas := make([]oneofMeta, len(ts))
 		for i := range ts {
 			t := &ts[i]
@@ -203,8 +203,8 @@ type extensions extensionsMeta
 
 func (p *extensionsMeta) lazyInit(parent protoreflect.Descriptor, ts []Extension) *extensions {
 	p.once.Do(func() {
-		nb := nameBuilderPool.Get().(*nameBuilder)
-		defer nameBuilderPool.Put(nb)
+		nb := getNameBuilder()
+		defer putNameBuilder(nb)
 		metas := make([]extensionMeta, len(ts))
 		for i := range ts {
 			t := &ts[i]
@@ -249,8 +249,8 @@ type enums enumsMeta
 
 func (p *enumsMeta) lazyInit(parent protoreflect.Descriptor, ts []Enum) *enums {
 	p.once.Do(func() {
-		nb := nameBuilderPool.Get().(*nameBuilder)
-		defer nameBuilderPool.Put(nb)
+		nb := getNameBuilder()
+		defer putNameBuilder(nb)
 		metas := make([]enumMeta, len(ts))
 		for i := range ts {
 			t := &ts[i]
@@ -297,8 +297,8 @@ type enumValues enumValuesMeta
 
 func (p *enumValuesMeta) lazyInit(parent protoreflect.Descriptor, ts []EnumValue) *enumValues {
 	p.once.Do(func() {
-		nb := nameBuilderPool.Get().(*nameBuilder)
-		defer nameBuilderPool.Put(nb)
+		nb := getNameBuilder()
+		defer putNameBuilder(nb)
 		metas := make([]enumValueMeta, len(ts))
 		for i := range ts {
 			t := &ts[i]
@@ -361,8 +361,8 @@ type services servicesMeta
 
 func (p *servicesMeta) lazyInit(parent protoreflect.Descriptor, ts []Service) *services {
 	p.once.Do(func() {
-		nb := nameBuilderPool.Get().(*nameBuilder)
-		defer nameBuilderPool.Put(nb)
+		nb := getNameBuilder()
+		defer putNameBuilder(nb)
 		metas := make([]serviceMeta, len(ts))
 		for i := range ts {
 			t := &ts[i]
@@ -407,8 +407,8 @@ type methods methodsMeta
 
 func (p *methodsMeta) lazyInit(parent protoreflect.Descriptor, ts []Method) *methods {
 	p.once.Do(func() {
-		nb := nameBuilderPool.Get().(*nameBuilder)
-		defer nameBuilderPool.Put(nb)
+		nb := getNameBuilder()
+		defer putNameBuilder(nb)
 		metas := make([]methodMeta, len(ts))
 		for i := range ts {
 			t := &ts[i]

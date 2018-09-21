@@ -7,6 +7,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"go/format"
 	"io/ioutil"
@@ -105,8 +106,8 @@ var listTypesTemplate = template.Must(template.New("").Funcs(template.FuncMap{
 
 	func (p *{{$nameListMeta}}) lazyInit(parent protoreflect.Descriptor, ts []{{.}}) *{{$nameList}} {
 		p.once.Do(func() {
-			nb := nameBuilderPool.Get().(*nameBuilder)
-			defer nameBuilderPool.Put(nb)
+			nb := getNameBuilder()
+			defer putNameBuilder(nb)
 			metas := make([]{{$nameMeta}}, len(ts))
 			for i := range ts {
 				t := &ts[i]
@@ -185,11 +186,11 @@ var listTypesTemplate = template.Must(template.New("").Funcs(template.FuncMap{
 `))
 
 func mustExecute(t *template.Template, data interface{}) string {
-	var sb strings.Builder
-	if err := t.Execute(&sb, data); err != nil {
+	var b bytes.Buffer
+	if err := t.Execute(&b, data); err != nil {
 		panic(err)
 	}
-	return sb.String()
+	return b.String()
 }
 
 func writeSource(file, src string) {

@@ -578,33 +578,3 @@ func resolveReference(parent pref.Descriptor, refName pref.FullName) pref.Descri
 	}
 	return cur
 }
-
-var nameBuilderPool = sync.Pool{
-	New: func() interface{} { return new(nameBuilder) },
-}
-
-type nameBuilder struct {
-	sb strings.Builder
-
-	// TODO: See https://golang.org/issue/26269
-	rem int // conservative approximation for Cap-Len
-}
-
-// Append is equivalent to protoreflect.FullName.Append, but is optimized for
-// large batches of operations where each name has a shared lifetime.
-func (b *nameBuilder) Append(prefix pref.FullName, name pref.Name) pref.FullName {
-	const batchSize = 1 << 12
-	n := len(prefix) + len(".") + len(name)
-	if b.rem < n {
-		b.sb.Reset()
-		b.sb.Grow(batchSize)
-		b.rem = batchSize - n
-	}
-	if !strings.HasSuffix(b.sb.String(), string(prefix)) {
-		b.sb.WriteString(string(prefix))
-	}
-	b.sb.WriteByte('.')
-	b.sb.WriteString(string(name))
-	s := b.sb.String()
-	return pref.FullName(strings.TrimPrefix(s[len(s)-n:], "."))
-}

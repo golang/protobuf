@@ -38,7 +38,7 @@ ln -s ../google $PROTOBUF_DIR/src/include/google
 
 # Download each Go toolchain version.
 GO_LATEST=go1.11
-GO_VERSIONS=(go1.10.3 $GO_LATEST)
+GO_VERSIONS=(go1.9.7 go1.10.3 $GO_LATEST)
 for GO_VERSION in ${GO_VERSIONS[@]}; do
 	if [ ! -d $GO_VERSION ]; then
 		print "download $GO_VERSION"
