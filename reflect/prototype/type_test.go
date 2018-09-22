@@ -15,7 +15,7 @@ import (
 	protoV1 "github.com/golang/protobuf/proto"
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 
-	pref "google.golang.org/proto/reflect/protoreflect"
+	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // TestDescriptors tests that the implementations do not declare additional

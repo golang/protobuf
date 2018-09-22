@@ -5,7 +5,7 @@
 package prototype
 
 import (
-	pref "google.golang.org/proto/reflect/protoreflect"
+	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // TODO: This cannot be implemented without proto.Unmarshal.

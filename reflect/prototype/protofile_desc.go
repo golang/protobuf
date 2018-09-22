@@ -12,10 +12,10 @@ import (
 
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 
-	"google.golang.org/proto/internal/encoding/text"
-	"google.golang.org/proto/internal/errors"
-	"google.golang.org/proto/reflect/protoreflect"
-	"google.golang.org/proto/reflect/protoregistry"
+	"github.com/golang/protobuf/v2/internal/encoding/text"
+	"github.com/golang/protobuf/v2/internal/errors"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoregistry"
 )
 
 // TODO: Should we be responsible for validating other parts of the descriptor

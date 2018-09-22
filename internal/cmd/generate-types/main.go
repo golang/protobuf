@@ -200,8 +200,8 @@ func writeSource(file, src string) {
 		"fmt",
 		"sync",
 		"",
-		"google.golang.org/proto/internal/pragma",
-		"google.golang.org/proto/reflect/protoreflect",
+		"github.com/golang/protobuf/v2/internal/pragma",
+		"github.com/golang/protobuf/v2/reflect/protoreflect",
 	} {
 		if pkg == "" {
 			imports = append(imports, "") // blank line between stdlib and proto packages

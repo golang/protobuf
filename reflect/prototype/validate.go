@@ -5,7 +5,7 @@
 package prototype
 
 import (
-	pref "google.golang.org/proto/reflect/protoreflect"
+	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // TODO: This is important to prevent users from creating invalid types,

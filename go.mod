@@ -1,4 +1,4 @@
-module google.golang.org/proto
+module github.com/golang/protobuf/v2
 
 require (
 	github.com/golang/protobuf v1.2.0

@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/proto"
-	"google.golang.org/proto/protogen"
-	"google.golang.org/proto/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/protogen"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // genOneofField generates the struct field for a oneof.

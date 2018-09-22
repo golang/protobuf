@@ -12,7 +12,7 @@ import (
 	"unicode/utf16"
 	"unicode/utf8"
 
-	"google.golang.org/proto/internal/errors"
+	"github.com/golang/protobuf/v2/internal/errors"
 )
 
 func (p *encoder) marshalString(v Value) error {

@@ -10,8 +10,8 @@ import (
 	"sort"
 	"strings"
 
-	"google.golang.org/proto/internal/errors"
-	"google.golang.org/proto/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/internal/errors"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // TODO: Perhaps Register should record the frame of where the function was

@@ -8,7 +8,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"google.golang.org/proto/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // A GoIdent is a Go identifier, consisting of a name and import path.

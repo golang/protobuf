@@ -6,7 +6,7 @@
 
 package prototype
 
-import pref "google.golang.org/proto/reflect/protoreflect"
+import pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 
 func getNameBuilder() *nameBuilder { return nil }
 func putNameBuilder(*nameBuilder)  {}

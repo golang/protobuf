@@ -10,8 +10,8 @@ import (
 	"strings"
 	"sync"
 
-	"google.golang.org/proto/internal/pragma"
-	pref "google.golang.org/proto/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/internal/pragma"
+	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // inheritedMeta is information inherited from the parent.

@@ -6,8 +6,8 @@ package ext
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	base "google.golang.org/proto/cmd/protoc-gen-go/testdata/extensions/base"
-	extra "google.golang.org/proto/cmd/protoc-gen-go/testdata/extensions/extra"
+	base "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/base"
+	extra "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/extra"
 	math "math"
 )
 

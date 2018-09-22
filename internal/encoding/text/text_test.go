@@ -11,10 +11,10 @@ import (
 	"testing"
 	"unicode/utf8"
 
+	"github.com/golang/protobuf/v2/internal/flags"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"google.golang.org/proto/internal/flags"
-	"google.golang.org/proto/reflect/protoreflect"
 )
 
 func Test(t *testing.T) {

@@ -14,7 +14,7 @@
 package prototype
 
 import (
-	"google.golang.org/proto/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // Every struct has a "meta" struct embedded within it as a pointer.

@@ -11,7 +11,7 @@ import (
 	"sync"
 	"unsafe"
 
-	pref "google.golang.org/proto/reflect/protoreflect"
+	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 var nameBuilderPool = sync.Pool{

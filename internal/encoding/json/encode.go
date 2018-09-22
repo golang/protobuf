@@ -7,7 +7,7 @@ package json
 import (
 	"strings"
 
-	"google.golang.org/proto/internal/errors"
+	"github.com/golang/protobuf/v2/internal/errors"
 )
 
 // Marshal serializes v as the JSON format.

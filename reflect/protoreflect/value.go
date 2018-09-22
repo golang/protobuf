@@ -4,7 +4,7 @@
 
 package protoreflect
 
-import "google.golang.org/proto/internal/encoding/wire"
+import "github.com/golang/protobuf/v2/internal/encoding/wire"
 
 // TODO: Document the behavior of each Range operation when a mutation
 // occurs while ranging. Also document the order.

@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	pref "google.golang.org/proto/reflect/protoreflect"
+	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 type MessageInfo struct {

@@ -33,8 +33,8 @@ import (
 	"math"
 	"strings"
 
-	"google.golang.org/proto/internal/flags"
-	"google.golang.org/proto/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/internal/flags"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // Type represents a type expressible in the text format.

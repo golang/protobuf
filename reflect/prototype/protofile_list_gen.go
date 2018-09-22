@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"sync"
 
-	"google.golang.org/proto/internal/pragma"
-	"google.golang.org/proto/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/internal/pragma"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 type messagesMeta struct {

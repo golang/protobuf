@@ -29,10 +29,10 @@ import (
 	"github.com/golang/protobuf/proto"
 	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoregistry"
+	"github.com/golang/protobuf/v2/reflect/prototype"
 	"golang.org/x/tools/go/ast/astutil"
-	"google.golang.org/proto/reflect/protoreflect"
-	"google.golang.org/proto/reflect/protoregistry"
-	"google.golang.org/proto/reflect/prototype"
 )
 
 // Run executes a function as a protoc plugin.

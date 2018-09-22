@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"google.golang.org/proto/internal/flags"
-	pref "google.golang.org/proto/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/internal/flags"
+	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 type fieldInfo struct {

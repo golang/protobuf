@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"google.golang.org/proto/internal/errors"
+	"github.com/golang/protobuf/v2/internal/errors"
 )
 
 // marshalNumber encodes v as a Number.

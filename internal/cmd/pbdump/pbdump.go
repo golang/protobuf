@@ -17,10 +17,10 @@ import (
 	"strconv"
 	"strings"
 
-	"google.golang.org/proto/internal/encoding/pack"
-	"google.golang.org/proto/internal/encoding/wire"
-	"google.golang.org/proto/reflect/protoreflect"
-	"google.golang.org/proto/reflect/prototype"
+	"github.com/golang/protobuf/v2/internal/encoding/pack"
+	"github.com/golang/protobuf/v2/internal/encoding/wire"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/prototype"
 )
 
 func main() {

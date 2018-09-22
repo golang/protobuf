@@ -20,8 +20,8 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"google.golang.org/proto/protogen"
-	"google.golang.org/proto/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/protogen"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // generatedCodeVersion indicates a version of the generated code.

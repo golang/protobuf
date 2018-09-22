@@ -12,9 +12,9 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	pref "google.golang.org/proto/reflect/protoreflect"
-	preg "google.golang.org/proto/reflect/protoregistry"
-	ptype "google.golang.org/proto/reflect/prototype"
+	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
+	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
 func TestFiles(t *testing.T) {

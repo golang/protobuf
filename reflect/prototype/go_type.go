@@ -9,7 +9,7 @@ import (
 	"reflect"
 	"sync"
 
-	"google.golang.org/proto/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // GoEnum is a constructor for a protoreflect.EnumType.
