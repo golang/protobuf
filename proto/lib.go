@@ -274,7 +274,7 @@ import (
 
 	// Add a bogus dependency on the v2 API to ensure the Go toolchain does not
 	// remove our dependency from the go.mod file.
-	_ "google.golang.org/proto/reflect/protoreflect"
+	_ "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // RequiredNotSetError is an error type returned by either Marshal or Unmarshal.

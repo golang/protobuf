@@ -31,51 +31,76 @@ if [ ! -d $PROTOBUF_DIR ]; then
 fi
 register_binary conformance-test-runner $PROTOBUF_DIR/conformance/conformance-test-runner
 register_binary protoc $PROTOBUF_DIR/src/protoc
+# Allow protoc to find google/protobuf/*.proto.
+rm -rf $PROTOBUF_DIR/src/include
+mkdir -p $PROTOBUF_DIR/src/include
+ln -s ../google $PROTOBUF_DIR/src/include/google
 
-# Download and update the v2 golang/protobuf code.
-if [ ! -d go-protobuf-v2 ]; then
-	print "download v2 golang/protobuf"
-	git clone https://go.googlesource.com/protobuf go-protobuf-v2
-fi
-print "update v2 golang/protobuf"
-(cd go-protobuf-v2 && git fetch && git pull)
-
-# Download the Go toolchain.
-GO_VERSION=go1.11
-if [ ! -d $GO_VERSION ]; then
-	print "download $GO_VERSION"
-	GOOS=$(uname | tr '[:upper:]' '[:lower:]')
-	(mkdir $GO_VERSION && curl -s -L https://dl.google.com/go/$GO_VERSION.$GOOS-amd64.tar.gz | tar -zxf - -C $GO_VERSION --strip-components 1) || exit 1
-fi
-register_binary go $GO_VERSION/bin/go
-register_binary gofmt $GO_VERSION/bin/gofmt
+# Download each Go toolchain version.
+GO_LATEST=go1.11
+GO_VERSIONS=(go1.9.7 go1.10.3 $GO_LATEST)
+for GO_VERSION in ${GO_VERSIONS[@]}; do
+	if [ ! -d $GO_VERSION ]; then
+		print "download $GO_VERSION"
+		GOOS=$(uname | tr '[:upper:]' '[:lower:]')
+		(mkdir $GO_VERSION && curl -s -L https://dl.google.com/go/$GO_VERSION.$GOOS-amd64.tar.gz | tar -zxf - -C $GO_VERSION --strip-components 1) || exit 1
+	fi
+	register_binary $GO_VERSION $GO_VERSION/bin/go
+done
+register_binary go $GO_LATEST/bin/go
+register_binary gofmt $GO_LATEST/bin/gofmt
 
 # Travis-CI sets GOROOT, which confuses later invocations of the Go toolchains.
 # Explicitly clear GOROOT, so each toolchain uses their default GOROOT.
 unset GOROOT
 
 # Setup GOPATH for pre-module support.
+export GOPATH=$TEST_DIR/gopath
 MODULE_PATH=$(cd $REPO_ROOT && go list -m -f "{{.Path}}")
-rm -f gopath/src/$MODULE_PATH # best-effort delete
+rm -rf gopath/src # best-effort delete
 mkdir -p gopath/src/$(dirname $MODULE_PATH)
 (cd gopath/src/$(dirname $MODULE_PATH) && ln -s $REPO_ROOT $(basename $MODULE_PATH))
-export GOPATH=$TEST_DIR/gopath
 
 # Download dependencies using modules.
 # For pre-module support, dump the dependencies in a vendor directory.
 (cd $REPO_ROOT && go mod tidy && go mod vendor) || exit 1
 
-# Build and run all targets
+# Run tests across every supported version of Go.
+LABELS=()
+PIDS=()
+OUTS=()
+function cleanup() { for OUT in ${OUTS[@]}; do rm $OUT; done; }
+trap cleanup EXIT
+for GO_VERSION in ${GO_VERSIONS[@]}; do
+	# Run the go command in a background process.
+	function go() {
+		# Use a per-version Go cache to work around bugs in Go build caching.
+		# See https://golang.org/issue/26883
+		GO_CACHE="$TEST_DIR/cache.$GO_VERSION"
+		LABELS+=("$(echo "$GO_VERSION $@")")
+		OUT=$(mktemp)
+		(cd $GOPATH/src/$MODULE_PATH && GOCACHE=$GO_CACHE $GO_VERSION "$@" &> $OUT) &
+		PIDS+=($!)
+		OUTS+=($OUT)
+	}
+
+	go build ./...
+	go test -race ./...
+	go test -race -tags purego ./...
+	go test -race -tags proto1_legacy ./...
+
+	unset go # to avoid confusing later invocations of "go"
+done
+
+# Wait for all processes to finish.
 RET=0
-function go() {
-	print "$GO_VERSION $@"
-	# Use a per-version Go cache to work around bugs in Go build caching.
-	# See https://golang.org/issue/26883
-	GO_CACHE="$TEST_DIR/cache.$GO_VERSION"
-	(cd $GOPATH/src/$MODULE_PATH && GOCACHE=$GO_CACHE $GO_VERSION "$@") || RET=1
-}
-go build ./...
-go test ./...
+for I in ${!PIDS[@]}; do
+	print "${LABELS[$I]}"
+	if ! wait ${PIDS[$I]}; then
+		cat ${OUTS[$I]} # only output upon error
+		RET=1
+	fi
+done
 
 # Run commands that produce output when there is a failure.
 function check() {
