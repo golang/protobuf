@@ -55,11 +55,11 @@ register_binary gofmt $GO_LATEST/bin/gofmt
 unset GOROOT
 
 # Setup GOPATH for pre-module support.
+export GOPATH=$TEST_DIR/gopath
 MODULE_PATH=$(cd $REPO_ROOT && go list -m -f "{{.Path}}")
-rm -f gopath/src/$MODULE_PATH # best-effort delete
+rm -rf gopath/src # best-effort delete
 mkdir -p gopath/src/$(dirname $MODULE_PATH)
 (cd gopath/src/$(dirname $MODULE_PATH) && ln -s $REPO_ROOT $(basename $MODULE_PATH))
-export GOPATH=$TEST_DIR/gopath
 
 # Download dependencies using modules.
 # For pre-module support, dump the dependencies in a vendor directory.
