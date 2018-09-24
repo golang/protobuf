@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// The protoc-gen-go binary is a protoc plugin to generate a Go protocol
-// buffer package.
-package main
+// Package internal_gengo is internal to the protobuf module.
+package internal_gengo
 
 import (
 	"bytes"
@@ -32,7 +31,7 @@ const generatedCodeVersion = 2
 
 const protoPackage = "github.com/golang/protobuf/proto"
 
-func main() {
+func Main() {
 	var flags flag.FlagSet
 	// TODO: Decide what to do for backwards compatibility with plugins=grpc.
 	flags.String("plugins", "", "")

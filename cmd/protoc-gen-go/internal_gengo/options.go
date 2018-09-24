@@ -6,7 +6,7 @@
 //
 // TODO: Replace this with the appropriate protoreflect API, once it exists.
 
-package main
+package internal_gengo
 
 import (
 	"github.com/golang/protobuf/proto"
