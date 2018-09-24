@@ -10,7 +10,7 @@ import (
 )
 
 // genOneofField generates the struct field for a oneof.
-func genOneofField(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, message *protogen.Message, oneof *protogen.Oneof) {
+func genOneofField(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message, oneof *protogen.Oneof) {
 	if genComment(g, f, oneof.Path) {
 		g.P("//")
 	}
@@ -26,7 +26,7 @@ func genOneofField(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, mes
 //
 // It also generates the getter method for the parent oneof field
 // (but not the member fields).
-func genOneofTypes(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, message *protogen.Message, oneof *protogen.Oneof) {
+func genOneofTypes(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message, oneof *protogen.Oneof) {
 	ifName := oneofInterfaceName(message, oneof)
 	g.P("type ", ifName, " interface {")
 	g.P(ifName, "()")
@@ -60,7 +60,7 @@ func oneofInterfaceName(message *protogen.Message, oneof *protogen.Oneof) string
 }
 
 // genOneofFuncs generates the XXX_OneofFuncs method for a message.
-func genOneofFuncs(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, message *protogen.Message) {
+func genOneofFuncs(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message) {
 	protoMessage := g.QualifiedGoIdent(protogen.GoIdent{
 		GoImportPath: protoPackage,
 		GoName:       "Message",

@@ -50,7 +50,7 @@ func main() {
 	})
 }
 
-type File struct {
+type fileInfo struct {
 	*protogen.File
 	locationMap   map[string][]*descpb.SourceCodeInfo_Location
 	descriptorVar string // var containing the gzipped FileDescriptorProto
@@ -60,7 +60,7 @@ type File struct {
 }
 
 func genFile(gen *protogen.Plugin, file *protogen.File) {
-	f := &File{
+	f := &fileInfo{
 		File:        file,
 		locationMap: make(map[string][]*descpb.SourceCodeInfo_Location),
 	}
@@ -151,7 +151,7 @@ func walkMessages(messages []*protogen.Message, f func(*protogen.Message)) {
 	}
 }
 
-func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, imp protoreflect.FileImport) {
+func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp protoreflect.FileImport) {
 	impFile, ok := gen.FileByName(imp.Path())
 	if !ok {
 		return
@@ -193,7 +193,7 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, imp pro
 	}
 }
 
-func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File) {
+func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
 	// Trim the source_code_info from the descriptor.
 	// Marshal and gzip it.
 	descProto := proto.Clone(f.Proto).(*descpb.FileDescriptorProto)
@@ -231,7 +231,7 @@ func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File)
 	g.P()
 }
 
-func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, enum *protogen.Enum) {
+func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum *protogen.Enum) {
 	genComment(g, f, enum.Path)
 	g.P("type ", enum.GoIdent, " int32",
 		deprecationComment(enumOptions(gen, enum).GetDeprecated()))
@@ -320,7 +320,7 @@ func enumRegistryName(enum *protogen.Enum) string {
 	return string(fdesc.Package()) + "." + enum.GoIdent.GoName
 }
 
-func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, message *protogen.Message) {
+func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message) {
 	if message.Desc.IsMapEntry() {
 		return
 	}
@@ -743,7 +743,7 @@ func fieldJSONTag(field *protogen.Field) string {
 	return string(field.Desc.Name()) + ",omitempty"
 }
 
-func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, extension *protogen.Extension) {
+func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, extension *protogen.Extension) {
 	// Special case for proto2 message sets: If this extension is extending
 	// proto2.bridge.MessageSet, and its final name component is "message_set_extension",
 	// then drop that last component.
@@ -782,7 +782,7 @@ func isExtensionMessageSetElement(gen *protogen.Plugin, extension *protogen.Exte
 }
 
 // extensionVar returns the var holding the ExtensionDesc for an extension.
-func extensionVar(f *File, extension *protogen.Extension) protogen.GoIdent {
+func extensionVar(f *fileInfo, extension *protogen.Extension) protogen.GoIdent {
 	name := "E_"
 	if extension.ParentMessage != nil {
 		name += extension.ParentMessage.GoIdent.GoName + "_"
@@ -796,7 +796,7 @@ func extensionVar(f *File, extension *protogen.Extension) protogen.GoIdent {
 
 // genInitFunction generates an init function that registers the types in the
 // generated file with the proto package.
-func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File) {
+func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
 	if len(f.allMessages) == 0 && len(f.allEnums) == 0 && len(f.allExtensions) == 0 {
 		return
 	}
@@ -852,7 +852,7 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File) {
 	g.P()
 }
 
-func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *File, extension *protogen.Extension) {
+func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, extension *protogen.Extension) {
 	g.P(protogen.GoIdent{
 		GoImportPath: protoPackage,
 		GoName:       "RegisterExtension",
@@ -869,7 +869,7 @@ func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *Fi
 	}
 }
 
-func genComment(g *protogen.GeneratedFile, f *File, path []int32) (hasComment bool) {
+func genComment(g *protogen.GeneratedFile, f *fileInfo, path []int32) (hasComment bool) {
 	for _, loc := range f.locationMap[pathKey(path)] {
 		if loc.LeadingComments == nil {
 			continue
