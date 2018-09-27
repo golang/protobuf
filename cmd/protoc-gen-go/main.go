@@ -7,9 +7,31 @@
 package main
 
 import (
-	"github.com/golang/protobuf/v2/cmd/protoc-gen-go/internal_gengo"
+	"errors"
+	"flag"
+
+	gengo "github.com/golang/protobuf/v2/cmd/protoc-gen-go/internal_gengo"
+	"github.com/golang/protobuf/v2/protogen"
 )
 
 func main() {
-	internal_gengo.Main()
+	var flags flag.FlagSet
+	plugins := flags.String("plugins", "", "deprecated option")
+	opts := &protogen.Options{
+		ParamFunc: flags.Set,
+	}
+	protogen.Run(opts, func(gen *protogen.Plugin) error {
+		if *plugins != "" {
+			return errors.New("protoc-gen-go: plugins are not supported; use 'protoc --go-grpc_out=...' to generate gRPC")
+		}
+		for _, f := range gen.Files {
+			if !f.Generate {
+				continue
+			}
+			filename := f.GeneratedFilenamePrefix + ".pb.go"
+			g := gen.NewGeneratedFile(filename, f.GoImportPath)
+			gengo.GenerateFile(gen, f, g)
+		}
+		return nil
+	})
 }
