@@ -307,6 +307,42 @@ got:
 	}
 }
 
+func TestImportRewrites(t *testing.T) {
+	gen, err := New(&pluginpb.CodeGeneratorRequest{}, &Options{
+		ImportRewriteFunc: func(i GoImportPath) GoImportPath {
+			return "prefix/" + i
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := gen.NewGeneratedFile("foo.go", "golang.org/x/foo")
+	g.P("package foo")
+	g.P("var _ = ", GoIdent{GoName: "X", GoImportPath: "golang.org/x/bar"})
+	want := `package foo
+
+import bar "prefix/golang.org/x/bar"
+
+var _ = bar.X
+`
+	got, err := g.Content()
+	if err != nil {
+		t.Fatalf("g.Content() = %v", err)
+	}
+	if want != string(got) {
+		t.Fatalf(`want:
+==========
+%v
+==========
+
+got:
+==========
+%v
+==========`,
+			want, string(got))
+	}
+}
+
 // makeRequest returns a CodeGeneratorRequest for the given protoc inputs.
 //
 // It does this by running protoc with the current binary as the protoc-gen-go

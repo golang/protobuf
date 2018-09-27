@@ -100,6 +100,7 @@ type Plugin struct {
 	enumsByName    map[protoreflect.FullName]*Enum
 	pathType       pathType
 	genFiles       []*GeneratedFile
+	opts           *Options
 	err            error
 }
 
@@ -129,6 +130,11 @@ type Options struct {
 	//     if *value { ... }
 	//   })
 	ParamFunc func(name, value string) error
+
+	// ImportRewriteFunc is called with the import path of each package
+	// imported by a generated file. It returns the import path to use
+	// for this package.
+	ImportRewriteFunc func(GoImportPath) GoImportPath
 }
 
 // New returns a new Plugin.
@@ -144,6 +150,7 @@ func New(req *pluginpb.CodeGeneratorRequest, opts *Options) (*Plugin, error) {
 		fileReg:        protoregistry.NewFiles(),
 		messagesByName: make(map[protoreflect.FullName]*Message),
 		enumsByName:    make(map[protoreflect.FullName]*Enum),
+		opts:           opts,
 	}
 
 	packageNames := make(map[string]GoPackageName) // filename -> package name
@@ -158,8 +165,6 @@ func New(req *pluginpb.CodeGeneratorRequest, opts *Options) (*Plugin, error) {
 		switch param {
 		case "":
 			// Ignore.
-		case "import_prefix":
-			// TODO
 		case "import_path":
 			packageImportPath = GoImportPath(value)
 		case "paths":
@@ -712,6 +717,7 @@ func newEnumValue(gen *Plugin, f *File, message *Message, enum *Enum, desc proto
 
 // A GeneratedFile is a generated file.
 type GeneratedFile struct {
+	gen              *Plugin
 	filename         string
 	goImportPath     GoImportPath
 	buf              bytes.Buffer
@@ -724,6 +730,7 @@ type GeneratedFile struct {
 // and import path.
 func (gen *Plugin) NewGeneratedFile(filename string, goImportPath GoImportPath) *GeneratedFile {
 	g := &GeneratedFile{
+		gen:              gen,
 		filename:         filename,
 		goImportPath:     goImportPath,
 		packageNames:     make(map[GoImportPath]GoPackageName),
@@ -876,8 +883,14 @@ func (g *GeneratedFile) Content() ([]byte, error) {
 		importPaths = append(importPaths, string(importPath))
 	}
 	sort.Strings(importPaths)
+	rewriteImport := func(importPath string) string {
+		if f := g.gen.opts.ImportRewriteFunc; f != nil {
+			return string(f(GoImportPath(importPath)))
+		}
+		return importPath
+	}
 	for _, importPath := range importPaths {
-		astutil.AddNamedImport(fset, file, string(g.packageNames[GoImportPath(importPath)]), importPath)
+		astutil.AddNamedImport(fset, file, string(g.packageNames[GoImportPath(importPath)]), rewriteImport(importPath))
 	}
 	for importPath := range g.manualImports {
 		if _, ok := g.packageNames[importPath]; ok {
