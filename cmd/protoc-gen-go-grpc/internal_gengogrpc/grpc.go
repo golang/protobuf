@@ -70,7 +70,10 @@ func genService(gen *protogen.Plugin, file *fileInfo, g *protogen.GeneratedFile,
 	g.P("// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.")
 
 	// Client interface.
-	// TODO deprecation
+	if serviceOptions(gen, service).GetDeprecated() {
+		g.P("//")
+		g.P(deprecationComment)
+	}
 	g.P("type ", clientName, " interface {")
 	for _, method := range service.Methods {
 		genComment(g, file, method.Path)
@@ -86,7 +89,9 @@ func genService(gen *protogen.Plugin, file *fileInfo, g *protogen.GeneratedFile,
 	g.P()
 
 	// NewClient factory.
-	// TODO deprecation
+	if serviceOptions(gen, service).GetDeprecated() {
+		g.P(deprecationComment)
+	}
 	g.P("func New", clientName, " (cc *", ident("grpc.ClientConn"), ") ", clientName, " {")
 	g.P("return &", unexport(clientName), "{cc}")
 	g.P("}")
@@ -109,7 +114,10 @@ func genService(gen *protogen.Plugin, file *fileInfo, g *protogen.GeneratedFile,
 	// Server interface.
 	serverType := service.GoName + "Server"
 	g.P("// ", serverType, " is the server API for ", service.GoName, " service.")
-	// TODO deprecation
+	if serviceOptions(gen, service).GetDeprecated() {
+		g.P("//")
+		g.P(deprecationComment)
+	}
 	g.P("type ", serverType, " interface {")
 	for _, method := range service.Methods {
 		genComment(g, file, method.Path)
@@ -119,7 +127,9 @@ func genService(gen *protogen.Plugin, file *fileInfo, g *protogen.GeneratedFile,
 	g.P()
 
 	// Server registration.
-	// TODO deprecation
+	if serviceOptions(gen, service).GetDeprecated() {
+		g.P(deprecationComment)
+	}
 	serviceDescVar := "_" + service.GoName + "_serviceDesc"
 	g.P("func Register", service.GoName, "Server(s *", ident("grpc.Server"), ", srv ", serverType, ") {")
 	g.P("s.RegisterService(&", serviceDescVar, `, srv)`)
@@ -189,7 +199,9 @@ func genClientMethod(gen *protogen.Plugin, file *fileInfo, g *protogen.Generated
 	service := method.ParentService
 	sname := fmt.Sprintf("/%s/%s", service.Desc.FullName(), method.Desc.Name())
 
-	// TODO deprecation
+	if methodOptions(gen, method).GetDeprecated() {
+		g.P(deprecationComment)
+	}
 	g.P("func (c *", unexport(service.GoName), "Client) ", clientSignature(g, method), "{")
 	if !method.Desc.IsStreamingServer() && !method.Desc.IsStreamingClient() {
 		g.P("out := new(", method.OutputType.GoIdent, ")")
@@ -386,13 +398,7 @@ func genComment(g *protogen.GeneratedFile, file *fileInfo, path []int32) (hasCom
 	return hasComment
 }
 
-// deprecationComment returns a standard deprecation comment if deprecated is true.
-func deprecationComment(deprecated bool) string {
-	if !deprecated {
-		return ""
-	}
-	return "// Deprecated: Do not use."
-}
+const deprecationComment = "// Deprecated: Do not use."
 
 // pathKey converts a location path to a string suitable for use as a map key.
 func pathKey(path []int32) string {

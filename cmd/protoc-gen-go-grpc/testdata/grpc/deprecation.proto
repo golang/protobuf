@@ -1,0 +1,19 @@
+// Copyright 2018 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+syntax = "proto3";
+
+package goproto.protoc.grpc;
+
+import "grpc/grpc.proto";
+
+option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/grpc";
+
+service DeprecatedService {
+  option deprecated = true;
+
+  rpc DeprecatedCall(Request) returns (Response) {
+    option deprecated = true;
+  }
+}
