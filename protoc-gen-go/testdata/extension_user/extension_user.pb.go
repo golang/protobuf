@@ -5,11 +5,10 @@ package extension_user
 
 import (
 	fmt "fmt"
-	math "math"
-
 	proto "github.com/golang/protobuf/proto"
 	extension_base "github.com/golang/protobuf/protoc-gen-go/testdata/extension_base"
 	extension_extra "github.com/golang/protobuf/protoc-gen-go/testdata/extension_extra"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

@@ -7,10 +7,9 @@ package test
 
 import (
 	fmt "fmt"
-	math "math"
-
 	proto "github.com/golang/protobuf/proto"
 	_ "github.com/golang/protobuf/protoc-gen-go/testdata/multi"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

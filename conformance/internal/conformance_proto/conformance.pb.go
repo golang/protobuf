@@ -5,8 +5,6 @@ package conformance
 
 import (
 	fmt "fmt"
-	math "math"
-
 	proto "github.com/golang/protobuf/proto"
 	any "github.com/golang/protobuf/ptypes/any"
 	duration "github.com/golang/protobuf/ptypes/duration"
@@ -14,6 +12,7 @@ import (
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	wrappers "github.com/golang/protobuf/ptypes/wrappers"
 	field_mask "google.golang.org/genproto/protobuf/field_mask"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

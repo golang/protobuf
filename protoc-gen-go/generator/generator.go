@@ -1303,26 +1303,15 @@ func (g *Generator) generateImports() {
 	for importPath := range g.addedImports {
 		imports[importPath] = g.GoPackageName(importPath)
 	}
-	g.P("import (")
-	// Standard library imports.
-	g.P(g.Pkg["fmt"] + ` "fmt"`)
-	g.P(g.Pkg["math"] + ` "math"`)
-	for importPath, packageName := range imports {
-		if !strings.Contains(string(importPath), ".") {
-			g.P(packageName, " ", GoImportPath(g.ImportPrefix)+importPath)
-		}
-	}
-	g.P()
-	// Third-party imports.
-	//
 	// We almost always need a proto import.  Rather than computing when we
 	// do, which is tricky when there's a plugin, just import it and
 	// reference it later. The same argument applies to the fmt and math packages.
+	g.P("import (")
+	g.P(g.Pkg["fmt"] + ` "fmt"`)
+	g.P(g.Pkg["math"] + ` "math"`)
 	g.P(g.Pkg["proto"]+" ", GoImportPath(g.ImportPrefix)+"github.com/golang/protobuf/proto")
 	for importPath, packageName := range imports {
-		if strings.Contains(string(importPath), ".") {
-			g.P(packageName, " ", GoImportPath(g.ImportPrefix)+importPath)
-		}
+		g.P(packageName, " ", GoImportPath(g.ImportPrefix)+importPath)
 	}
 	g.P(")")
 	g.P()
