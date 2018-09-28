@@ -420,6 +420,7 @@ type Generator struct {
 	packageNames     map[GoImportPath]GoPackageName // Imported package names in the current file.
 	usedPackages     map[GoImportPath]bool          // Packages used in current file.
 	usedPackageNames map[GoPackageName]bool         // Package names used in the current file.
+	addedImports     map[GoImportPath]bool          // Additional imports to emit.
 	typeNameToObject map[string]Object              // Key is a fully-qualified name in input syntax.
 	init             []string                       // Lines to emit in the init function.
 	indent           string
@@ -540,6 +541,13 @@ func (g *Generator) GoPackageName(importPath GoImportPath) GoPackageName {
 	g.packageNames[importPath] = name
 	g.usedPackageNames[name] = true
 	return name
+}
+
+// AddImport adds a package to the generated file's import section.
+// It returns the name used for the package.
+func (g *Generator) AddImport(importPath GoImportPath) GoPackageName {
+	g.addedImports[importPath] = true
+	return g.GoPackageName(importPath)
 }
 
 var globalPackageNames = map[GoPackageName]bool{
@@ -1109,6 +1117,7 @@ func (g *Generator) generate(file *FileDescriptor) {
 	g.usedPackages = make(map[GoImportPath]bool)
 	g.packageNames = make(map[GoImportPath]GoPackageName)
 	g.usedPackageNames = make(map[GoPackageName]bool)
+	g.addedImports = make(map[GoImportPath]bool)
 	for name := range globalPackageNames {
 		g.usedPackageNames[name] = true
 	}
@@ -1266,14 +1275,7 @@ func (g *Generator) weak(i int32) bool {
 
 // Generate the imports
 func (g *Generator) generateImports() {
-	g.P("import (")
-	// We almost always need a proto import.  Rather than computing when we
-	// do, which is tricky when there's a plugin, just import it and
-	// reference it later. The same argument applies to the fmt and math packages.
-	g.P(g.Pkg["proto"]+" ", GoImportPath(g.ImportPrefix)+"github.com/golang/protobuf/proto")
-	g.P(g.Pkg["fmt"] + ` "fmt"`)
-	g.P(g.Pkg["math"] + ` "math"`)
-	imports := make(map[GoImportPath]bool)
+	imports := make(map[GoImportPath]GoPackageName)
 	for i, s := range g.file.Dependency {
 		fd := g.fileByName(s)
 		importPath := fd.importPath
@@ -1286,10 +1288,9 @@ func (g *Generator) generateImports() {
 			continue
 		}
 		// Do not import a package twice.
-		if imports[importPath] {
+		if _, ok := imports[importPath]; ok {
 			continue
 		}
-		imports[importPath] = true
 		// We need to import all the dependencies, even if we don't reference them,
 		// because other code and tools depend on having the full transitive closure
 		// of protocol buffer types in the binary.
@@ -1297,7 +1298,31 @@ func (g *Generator) generateImports() {
 		if _, ok := g.usedPackages[importPath]; !ok {
 			packageName = "_"
 		}
-		g.P(packageName, " ", GoImportPath(g.ImportPrefix)+importPath)
+		imports[importPath] = packageName
+	}
+	for importPath := range g.addedImports {
+		imports[importPath] = g.GoPackageName(importPath)
+	}
+	g.P("import (")
+	// Standard library imports.
+	g.P(g.Pkg["fmt"] + ` "fmt"`)
+	g.P(g.Pkg["math"] + ` "math"`)
+	for importPath, packageName := range imports {
+		if !strings.Contains(string(importPath), ".") {
+			g.P(packageName, " ", GoImportPath(g.ImportPrefix)+importPath)
+		}
+	}
+	g.P()
+	// Third-party imports.
+	//
+	// We almost always need a proto import.  Rather than computing when we
+	// do, which is tricky when there's a plugin, just import it and
+	// reference it later. The same argument applies to the fmt and math packages.
+	g.P(g.Pkg["proto"]+" ", GoImportPath(g.ImportPrefix)+"github.com/golang/protobuf/proto")
+	for importPath, packageName := range imports {
+		if strings.Contains(string(importPath), ".") {
+			g.P(packageName, " ", GoImportPath(g.ImportPrefix)+importPath)
+		}
 	}
 	g.P(")")
 	g.P()
