@@ -314,7 +314,7 @@ func genOneofFieldSizer(g *protogen.GeneratedFile, field *protogen.Field) {
 		g.P("s := ", sizeProto, "(x.", field.GoName, ")")
 	}
 	// Tag and wire varint is known statically.
-	tagAndWireSize := proto.SizeVarint(uint64(field.Desc.Number() << 3)) // wire doesn't affect arint size
+	tagAndWireSize := proto.SizeVarint(uint64(field.Desc.Number()) << 3) // wire doesn't affect varint size
 	g.P("n += ", tagAndWireSize, " // tag and wire")
 	switch field.Desc.Kind() {
 	case protoreflect.BoolKind:

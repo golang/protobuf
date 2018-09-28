@@ -124,6 +124,7 @@ message FieldTestMessage {
     group OneofGroup = 618 {
       optional string oneof_group_field = 619;
     }
+    int32 oneof_largest_tag = 536870911;
   }
 
   oneof oneof_two {
