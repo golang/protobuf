@@ -29,9 +29,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Package grpc outputs gRPC service descriptions in Go code.
-// It runs as a plugin for the Go protocol buffer compiler plugin.
-// It is linked in to protoc-gen-go.
+// Package grpc is deprecated.
+//
+// This package is excluded from the Go protocol buffer compatibility guarantee
+// and may be deleted at some point in the future.
+//
+// Deprecated: Do not use.
 package grpc
 
 import (

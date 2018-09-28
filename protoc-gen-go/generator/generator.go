@@ -29,11 +29,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/*
-	The code generator for the plugin for the Google protocol buffer compiler.
-	It generates Go code from the protocol buffer description files read by the
-	main routine.
-*/
+// Package generator is deprecated.
+//
+// This package is excluded from the Go protocol buffer compatibility guarantee
+// and may be deleted at some point in the future.
+//
+// Deprecated: Do not use.
 package generator
 
 import (
