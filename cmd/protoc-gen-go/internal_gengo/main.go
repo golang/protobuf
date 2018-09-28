@@ -456,7 +456,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 
 	// Constants and vars holding the default values of fields.
 	for _, field := range message.Fields {
-		if !field.Desc.HasDefault() {
+		if !fieldHasDefault(field) {
 			continue
 		}
 		defVarName := "Default_" + message.GoIdent.GoName + "_" + field.GoName
@@ -676,7 +676,7 @@ func fieldDefaultValue(g *protogen.GeneratedFile, message *protogen.Message, fie
 	if field.Desc.Cardinality() == protoreflect.Repeated {
 		return "nil"
 	}
-	if field.Desc.HasDefault() {
+	if fieldHasDefault(field) {
 		defVarName := "Default_" + message.GoIdent.GoName + "_" + field.GoName
 		if field.Desc.Kind() == protoreflect.BytesKind {
 			return "append([]byte(nil), " + defVarName + "...)"
@@ -695,6 +695,26 @@ func fieldDefaultValue(g *protogen.GeneratedFile, message *protogen.Message, fie
 	default:
 		return "0"
 	}
+}
+
+// fieldHasDefault returns true if we consider a field to have a default value.
+//
+// For consistency with the previous generator, it returns false for fields with
+// [default=""], preventing the generation of a default const or var for these
+// fields.
+//
+// TODO: Drop this special case.
+func fieldHasDefault(field *protogen.Field) bool {
+	if !field.Desc.HasDefault() {
+		return false
+	}
+	switch field.Desc.Kind() {
+	case protoreflect.StringKind:
+		return field.Desc.Default().String() != ""
+	case protoreflect.BytesKind:
+		return len(field.Desc.Default().Bytes()) > 0
+	}
+	return true
 }
 
 var wireTypes = map[protoreflect.Kind]string{

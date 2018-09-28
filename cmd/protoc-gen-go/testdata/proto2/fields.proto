@@ -89,6 +89,9 @@ message FieldTestMessage {
   optional string   default_string   = 315 [default="x,y"];
   optional bytes    default_bytes    = 316 [default="x,y"];
 
+  optional string default_zero_string = 350 [default=""];
+  optional bytes  default_zero_bytes  = 351 [default=""];
+
   optional float  default_float_neginf  = 400 [default=-inf];
   optional float  default_float_posinf  = 401 [default=inf];
   optional float  default_float_nan     = 402 [default=nan];
