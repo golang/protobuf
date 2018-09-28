@@ -82,10 +82,10 @@ message FieldTestMessage {
   optional uint64   default_uint64   = 308 [default=1];
   optional sfixed32 default_sfixed32 = 309 [default=1];
   optional fixed32  default_fixed32  = 310 [default=1];
-  optional float    default_float    = 311 [default=1.5];
+  optional float    default_float    = 311 [default=3.14];
   optional sfixed64 default_sfixed64 = 312 [default=1];
   optional fixed64  default_fixed64  = 313 [default=1];
-  optional double   default_double   = 314 [default=1.5];
+  optional double   default_double   = 314 [default=3.1415];
   optional string   default_string   = 315 [default="x,y"];
   optional bytes    default_bytes    = 316 [default="x,y"];
 

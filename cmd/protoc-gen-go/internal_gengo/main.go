@@ -495,7 +495,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 			case math.IsNaN(f):
 				g.P("var ", defVarName, " ", goType, " = ", funcCall("NaN", "()"))
 			default:
-				g.P("const ", defVarName, " ", goType, " = ", f)
+				g.P("const ", defVarName, " ", goType, " = ", field.Desc.Default().Interface())
 			}
 		default:
 			goType, _ := fieldGoType(g, field)
@@ -662,7 +662,7 @@ func fieldProtobufTag(field *protogen.Field) string {
 			case math.IsNaN(f):
 				def = "nan"
 			default:
-				def = fmt.Sprint(f)
+				def = fmt.Sprint(field.Desc.Default().Interface())
 			}
 		default:
 			def = fmt.Sprint(field.Desc.Default().Interface())
