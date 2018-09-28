@@ -276,7 +276,7 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	g.P("}")
 	g.P()
 
-	genWellKnownType(g, enum.GoIdent, enum.Desc)
+	genWellKnownType(g, "", enum.GoIdent, enum.Desc)
 }
 
 // enumRegistryName returns the name used to register an enum with the proto
@@ -417,6 +417,8 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		g.P()
 	}
 
+	genWellKnownType(g, "*", message.GoIdent, message.Desc)
+
 	// Table-driven proto support.
 	//
 	// TODO: It does not scale to keep adding another method for every
@@ -538,8 +540,6 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		g.P("}")
 		g.P()
 	}
-
-	genWellKnownType(g, message.GoIdent, message.Desc)
 
 	if len(message.Oneofs) > 0 {
 		genOneofFuncs(gen, g, f, message)
@@ -882,14 +882,31 @@ func pathKey(path []int32) string {
 	return string(buf)
 }
 
-func genWellKnownType(g *protogen.GeneratedFile, ident protogen.GoIdent, desc protoreflect.Descriptor) {
+func genWellKnownType(g *protogen.GeneratedFile, ptr string, ident protogen.GoIdent, desc protoreflect.Descriptor) {
 	if wellKnownTypes[desc.FullName()] {
-		g.P("func (", ident, `) XXX_WellKnownType() string { return "`, desc.Name(), `" }`)
+		g.P("func (", ptr, ident, `) XXX_WellKnownType() string { return "`, desc.Name(), `" }`)
 		g.P()
 	}
 }
 
 // Names of messages and enums for which we will generate XXX_WellKnownType methods.
 var wellKnownTypes = map[protoreflect.FullName]bool{
-	"google.protobuf.NullValue": true,
+	"google.protobuf.Any":       true,
+	"google.protobuf.Duration":  true,
+	"google.protobuf.Empty":     true,
+	"google.protobuf.Struct":    true,
+	"google.protobuf.Timestamp": true,
+
+	"google.protobuf.BoolValue":   true,
+	"google.protobuf.BytesValue":  true,
+	"google.protobuf.DoubleValue": true,
+	"google.protobuf.FloatValue":  true,
+	"google.protobuf.Int32Value":  true,
+	"google.protobuf.Int64Value":  true,
+	"google.protobuf.ListValue":   true,
+	"google.protobuf.NullValue":   true,
+	"google.protobuf.StringValue": true,
+	"google.protobuf.UInt32Value": true,
+	"google.protobuf.UInt64Value": true,
+	"google.protobuf.Value":       true,
 }
