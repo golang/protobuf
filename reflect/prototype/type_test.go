@@ -131,7 +131,7 @@ func TestFile(t *testing.T) {
 				Number:      1,
 				Cardinality: pref.Optional,
 				Kind:        pref.StringKind,
-				Default:     pref.ValueOf("hello"),
+				Default:     pref.ValueOf("hello, \"world!\"\n"),
 				OneofName:   "O1",
 			}, {
 				Name:        "field_two", // "test.B.field_two"
@@ -248,7 +248,7 @@ func TestFile(t *testing.T) {
 				Number:       protoV1.Int32(1),
 				Label:        descriptorV1.FieldDescriptorProto_Label(pref.Optional).Enum(),
 				Type:         descriptorV1.FieldDescriptorProto_Type(pref.StringKind).Enum(),
-				DefaultValue: protoV1.String("hello"),
+				DefaultValue: protoV1.String("hello, \"world!\"\n"),
 				OneofIndex:   protoV1.Int32(0),
 			}, {
 				Name:         protoV1.String("field_two"),
@@ -452,7 +452,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 						"Name":      pref.Name("field_one"),
 						"Index":     0,
 						"JSONName":  "fieldOne",
-						"Default":   "hello",
+						"Default":   "hello, \"world!\"\n",
 						"OneofType": M{"Name": pref.Name("O1"), "IsPlaceholder": false},
 					},
 					"ByJSONName:fieldTwo": nil,
@@ -702,7 +702,7 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			Kind:        string
 			JSONName:    "fieldOne"
 			HasDefault:  true
-			Default:     "hello"
+			Default:     "hello, \"world!\"\n"
 			OneofType:   O1
 		}, {
 			Name:        field_two

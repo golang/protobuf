@@ -404,16 +404,16 @@ func parseDefault(s string, k protoreflect.Kind) (protoreflect.Value, error) {
 			}
 			return protoreflect.ValueOf(float64(v)), nil
 		}
-	case protoreflect.StringKind, protoreflect.BytesKind:
-		// String values use the same escaping as the text format,
+	case protoreflect.StringKind:
+		// String values are already unescaped and can be used as is.
+		return protoreflect.ValueOf(s), nil
+	case protoreflect.BytesKind:
+		// Bytes values use the same escaping as the text format,
 		// however they lack the surrounding double quotes.
 		// TODO: Export unmarshalString in the text package to avoid this hack.
 		v, err := text.Unmarshal([]byte(`["` + s + `"]:0`))
 		if err == nil && len(v.Message()) == 1 {
 			s := v.Message()[0][0].String()
-			if k == protoreflect.StringKind {
-				return protoreflect.ValueOf(s), nil
-			}
 			return protoreflect.ValueOf([]byte(s)), nil
 		}
 	}
