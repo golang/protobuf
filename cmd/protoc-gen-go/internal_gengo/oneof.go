@@ -15,14 +15,15 @@ import (
 
 // genOneofField generates the struct field for a oneof.
 func genOneofField(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message, oneof *protogen.Oneof) {
-	if genComment(g, f, oneof.Path) {
+	if genComment(g, f, oneof.Location) {
 		g.P("//")
 	}
 	g.P("// Types that are valid to be assigned to ", oneof.GoName, ":")
 	for _, field := range oneof.Fields {
-		genComment(g, f, field.Path)
+		genComment(g, f, field.Location)
 		g.P("//\t*", fieldOneofType(field))
 	}
+	g.Annotate(message.GoIdent.GoName+"."+oneof.GoName, oneof.Location)
 	g.P(oneof.GoName, " ", oneofInterfaceName(message, oneof), " `protobuf_oneof:\"", oneof.Desc.Name(), "\"`")
 }
 
@@ -38,7 +39,10 @@ func genOneofTypes(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo,
 	g.P("}")
 	g.P()
 	for _, field := range oneof.Fields {
-		g.P("type ", fieldOneofType(field), " struct {")
+		name := fieldOneofType(field)
+		g.Annotate(name.GoName, field.Location)
+		g.Annotate(name.GoName+"."+field.GoName, field.Location)
+		g.P("type ", name, " struct {")
 		goType, _ := fieldGoType(g, field)
 		tags := []string{
 			fmt.Sprintf("protobuf:%q", fieldProtobufTag(field)),
@@ -51,6 +55,7 @@ func genOneofTypes(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo,
 		g.P("func (*", fieldOneofType(field), ") ", ifName, "() {}")
 		g.P()
 	}
+	g.Annotate(message.GoIdent.GoName+".Get"+oneof.GoName, oneof.Location)
 	g.P("func (m *", message.GoIdent.GoName, ") Get", oneof.GoName, "() ", ifName, " {")
 	g.P("if m != nil {")
 	g.P("return m.", oneof.GoName)

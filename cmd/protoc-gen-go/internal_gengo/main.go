@@ -76,7 +76,7 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.Generat
 	}
 	g.P()
 	const filePackageField = 2 // FileDescriptorProto.package
-	genComment(g, f, []int32{filePackageField})
+	genComment(g, f, protogen.Location{Path: []int32{filePackageField}})
 	g.P()
 	g.P("package ", f.GoPackageName)
 	g.P()
@@ -237,12 +237,14 @@ func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 }
 
 func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum *protogen.Enum) {
-	genComment(g, f, enum.Path)
+	genComment(g, f, enum.Location)
+	g.Annotate(enum.GoIdent.GoName, enum.Location)
 	g.P("type ", enum.GoIdent, " int32",
 		deprecationComment(enumOptions(gen, enum).GetDeprecated()))
 	g.P("const (")
 	for _, value := range enum.Values {
-		genComment(g, f, value.Path)
+		genComment(g, f, value.Location)
+		g.Annotate(value.GoIdent.GoName, value.Location)
 		g.P(value.GoIdent, " ", enum.GoIdent, " = ", value.Desc.Number(),
 			deprecationComment(enumValueOptions(gen, value).GetDeprecated()))
 	}
@@ -294,8 +296,8 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	}
 
 	var indexes []string
-	for i := 1; i < len(enum.Path); i += 2 {
-		indexes = append(indexes, strconv.Itoa(int(enum.Path[i])))
+	for i := 1; i < len(enum.Location.Path); i += 2 {
+		indexes = append(indexes, strconv.Itoa(int(enum.Location.Path[i])))
 	}
 	g.P("func (", enum.GoIdent, ") EnumDescriptor() ([]byte, []int) {")
 	g.P("return ", f.descriptorVar, ", []int{", strings.Join(indexes, ","), "}")
@@ -333,13 +335,14 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		return
 	}
 
-	hasComment := genComment(g, f, message.Path)
+	hasComment := genComment(g, f, message.Location)
 	if messageOptions(gen, message).GetDeprecated() {
 		if hasComment {
 			g.P("//")
 		}
 		g.P(deprecationComment(true))
 	}
+	g.Annotate(message.GoIdent.GoName, message.Location)
 	g.P("type ", message.GoIdent, " struct {")
 	for _, field := range message.Fields {
 		if field.OneofType != nil {
@@ -352,7 +355,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 			}
 			continue
 		}
-		genComment(g, f, field.Path)
+		genComment(g, f, field.Location)
 		goType, pointer := fieldGoType(g, field)
 		if pointer {
 			goType = "*" + goType
@@ -369,6 +372,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 				fmt.Sprintf("protobuf_val:%q", fieldProtobufTag(val)),
 			)
 		}
+		g.Annotate(message.GoIdent.GoName+"."+field.GoName, field.Location)
 		g.P(field.GoName, " ", goType, " `", strings.Join(tags, " "), "`",
 			deprecationComment(fieldOptions(gen, field).GetDeprecated()))
 	}
@@ -402,8 +406,8 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	g.P("func (*", message.GoIdent, ") ProtoMessage() {}")
 	// Descriptor
 	var indexes []string
-	for i := 1; i < len(message.Path); i += 2 {
-		indexes = append(indexes, strconv.Itoa(int(message.Path[i])))
+	for i := 1; i < len(message.Location.Path); i += 2 {
+		indexes = append(indexes, strconv.Itoa(int(message.Location.Path[i])))
 	}
 	g.P("func (*", message.GoIdent, ") Descriptor() ([]byte, []int) {")
 	g.P("return ", f.descriptorVar, ", []int{", strings.Join(indexes, ","), "}")
@@ -547,6 +551,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		if fieldOptions(gen, field).GetDeprecated() {
 			g.P(deprecationComment(true))
 		}
+		g.Annotate(message.GoIdent.GoName+".Get"+field.GoName, field.Location)
 		g.P("func (m *", message.GoIdent, ") Get", field.GoName, "() ", goType, " {")
 		if field.OneofType != nil {
 			g.P("if x, ok := m.Get", field.OneofType.GoName, "().(*", fieldOneofType(field), "); ok {")
@@ -897,8 +902,8 @@ func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fi
 	}
 }
 
-func genComment(g *protogen.GeneratedFile, f *fileInfo, path []int32) (hasComment bool) {
-	for _, loc := range f.locationMap[pathKey(path)] {
+func genComment(g *protogen.GeneratedFile, f *fileInfo, loc protogen.Location) (hasComment bool) {
+	for _, loc := range f.locationMap[pathKey(loc.Path)] {
 		if loc.LeadingComments == nil {
 			continue
 		}

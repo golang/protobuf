@@ -101,6 +101,7 @@ type Plugin struct {
 	fileReg        *protoregistry.Files
 	messagesByName map[protoreflect.FullName]*Message
 	enumsByName    map[protoreflect.FullName]*Enum
+	annotateCode   bool
 	pathType       pathType
 	genFiles       []*GeneratedFile
 	opts           *Options
@@ -180,7 +181,13 @@ func New(req *pluginpb.CodeGeneratorRequest, opts *Options) (*Plugin, error) {
 				return nil, fmt.Errorf(`unknown path type %q: want "import" or "source_relative"`, value)
 			}
 		case "annotate_code":
-			// TODO
+			switch value {
+			case "true", "":
+				gen.annotateCode = true
+			case "false":
+			default:
+				return nil, fmt.Errorf(`bad value for parameter %q: want "true" or "false"`, param)
+			}
 		default:
 			if param[0] == 'M' {
 				importPaths[param[1:]] = GoImportPath(value)
@@ -331,17 +338,29 @@ func (gen *Plugin) Response() *pluginpb.CodeGeneratorResponse {
 		resp.Error = proto.String(gen.err.Error())
 		return resp
 	}
-	for _, gf := range gen.genFiles {
-		content, err := gf.Content()
+	for _, g := range gen.genFiles {
+		content, err := g.content()
 		if err != nil {
 			return &pluginpb.CodeGeneratorResponse{
 				Error: proto.String(err.Error()),
 			}
 		}
 		resp.File = append(resp.File, &pluginpb.CodeGeneratorResponse_File{
-			Name:    proto.String(gf.filename),
+			Name:    proto.String(g.filename),
 			Content: proto.String(string(content)),
 		})
+		if gen.annotateCode && strings.HasSuffix(g.filename, ".go") {
+			meta, err := g.metaFile(content)
+			if err != nil {
+				return &pluginpb.CodeGeneratorResponse{
+					Error: proto.String(err.Error()),
+				}
+			}
+			resp.File = append(resp.File, &pluginpb.CodeGeneratorResponse_File{
+				Name:    proto.String(g.filename + ".meta"),
+				Content: proto.String(meta),
+			})
+		}
 	}
 	return resp
 }
@@ -438,6 +457,13 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 	return f, nil
 }
 
+func (f *File) location(path ...int32) Location {
+	return Location{
+		SourceFile: f.Desc.Path(),
+		Path:       path,
+	}
+}
+
 // goPackageOption interprets a file's go_package option.
 // If there is no go_package, it returns ("", "").
 // If there's a simple name, it returns (pkg, "").
@@ -468,20 +494,20 @@ type Message struct {
 	Messages   []*Message   // nested message declarations
 	Enums      []*Enum      // nested enum declarations
 	Extensions []*Extension // nested extension declarations
-	Path       []int32      // location path of this message
+	Location   Location     // location of this message
 }
 
 func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.MessageDescriptor) *Message {
-	var path []int32
+	var loc Location
 	if parent != nil {
-		path = pathAppend(parent.Path, messageMessageField, int32(desc.Index()))
+		loc = parent.Location.appendPath(messageMessageField, int32(desc.Index()))
 	} else {
-		path = []int32{fileMessageField, int32(desc.Index())}
+		loc = f.location(fileMessageField, int32(desc.Index()))
 	}
 	message := &Message{
-		Desc:    desc,
-		GoIdent: newGoIdent(f, desc),
-		Path:    path,
+		Desc:     desc,
+		GoIdent:  newGoIdent(f, desc),
+		Location: loc,
 	}
 	gen.messagesByName[desc.FullName()] = message
 	for i, mdescs := 0, desc.Messages(); i < mdescs.Len(); i++ {
@@ -585,24 +611,24 @@ type Field struct {
 	MessageType   *Message // type for message or group fields; nil otherwise
 	EnumType      *Enum    // type for enum fields; nil otherwise
 	OneofType     *Oneof   // containing oneof; nil if not part of a oneof
-	Path          []int32  // location path of this field
+	Location      Location // location of this field
 }
 
 func newField(gen *Plugin, f *File, message *Message, desc protoreflect.FieldDescriptor) *Field {
-	var path []int32
+	var loc Location
 	switch {
 	case desc.ExtendedType() != nil && message == nil:
-		path = []int32{fileExtensionField, int32(desc.Index())}
+		loc = f.location(fileExtensionField, int32(desc.Index()))
 	case desc.ExtendedType() != nil && message != nil:
-		path = pathAppend(message.Path, messageExtensionField, int32(desc.Index()))
+		loc = message.Location.appendPath(messageExtensionField, int32(desc.Index()))
 	default:
-		path = pathAppend(message.Path, messageFieldField, int32(desc.Index()))
+		loc = message.Location.appendPath(messageFieldField, int32(desc.Index()))
 	}
 	field := &Field{
 		Desc:          desc,
 		GoName:        camelCase(string(desc.Name())),
 		ParentMessage: message,
-		Path:          path,
+		Location:      loc,
 	}
 	if desc.OneofType() != nil {
 		field.OneofType = message.Oneofs[desc.OneofType().Index()]
@@ -649,7 +675,7 @@ type Oneof struct {
 	GoName        string   // Go field name of this oneof
 	ParentMessage *Message // message in which this oneof occurs
 	Fields        []*Field // fields that are part of this oneof
-	Path          []int32  // location path of this oneof
+	Location      Location // location of this oneof
 }
 
 func newOneof(gen *Plugin, f *File, message *Message, desc protoreflect.OneofDescriptor) *Oneof {
@@ -657,7 +683,7 @@ func newOneof(gen *Plugin, f *File, message *Message, desc protoreflect.OneofDes
 		Desc:          desc,
 		ParentMessage: message,
 		GoName:        camelCase(string(desc.Name())),
-		Path:          pathAppend(message.Path, messageOneofField, int32(desc.Index())),
+		Location:      message.Location.appendPath(messageOneofField, int32(desc.Index())),
 	}
 }
 
@@ -671,22 +697,22 @@ func (oneof *Oneof) init(gen *Plugin, parent *Message) {
 type Enum struct {
 	Desc protoreflect.EnumDescriptor
 
-	GoIdent GoIdent      // name of the generated Go type
-	Values  []*EnumValue // enum values
-	Path    []int32      // location path of this enum
+	GoIdent  GoIdent      // name of the generated Go type
+	Values   []*EnumValue // enum values
+	Location Location     // location of this enum
 }
 
 func newEnum(gen *Plugin, f *File, parent *Message, desc protoreflect.EnumDescriptor) *Enum {
-	var path []int32
+	var loc Location
 	if parent != nil {
-		path = pathAppend(parent.Path, messageEnumField, int32(desc.Index()))
+		loc = parent.Location.appendPath(messageEnumField, int32(desc.Index()))
 	} else {
-		path = []int32{fileEnumField, int32(desc.Index())}
+		loc = f.location(fileEnumField, int32(desc.Index()))
 	}
 	enum := &Enum{
-		Desc:    desc,
-		GoIdent: newGoIdent(f, desc),
-		Path:    path,
+		Desc:     desc,
+		GoIdent:  newGoIdent(f, desc),
+		Location: loc,
 	}
 	gen.enumsByName[desc.FullName()] = enum
 	for i, evdescs := 0, enum.Desc.Values(); i < evdescs.Len(); i++ {
@@ -699,8 +725,8 @@ func newEnum(gen *Plugin, f *File, parent *Message, desc protoreflect.EnumDescri
 type EnumValue struct {
 	Desc protoreflect.EnumValueDescriptor
 
-	GoIdent GoIdent // name of the generated Go type
-	Path    []int32 // location path of this enum value
+	GoIdent  GoIdent  // name of the generated Go type
+	Location Location // location of this enum value
 }
 
 func newEnumValue(gen *Plugin, f *File, message *Message, enum *Enum, desc protoreflect.EnumValueDescriptor) *EnumValue {
@@ -719,7 +745,7 @@ func newEnumValue(gen *Plugin, f *File, message *Message, enum *Enum, desc proto
 			GoName:       name,
 			GoImportPath: f.GoImportPath,
 		},
-		Path: pathAppend(enum.Path, enumValueField, int32(desc.Index())),
+		Location: enum.Location.appendPath(enumValueField, int32(desc.Index())),
 	}
 }
 
@@ -732,6 +758,7 @@ type GeneratedFile struct {
 	packageNames     map[GoImportPath]GoPackageName
 	usedPackageNames map[GoPackageName]bool
 	manualImports    map[GoImportPath]bool
+	annotations      map[string][]Location
 }
 
 // NewGeneratedFile creates a new generated file with the given filename
@@ -744,6 +771,7 @@ func (gen *Plugin) NewGeneratedFile(filename string, goImportPath GoImportPath) 
 		packageNames:     make(map[GoImportPath]GoPackageName),
 		usedPackageNames: make(map[GoPackageName]bool),
 		manualImports:    make(map[GoImportPath]bool),
+		annotations:      make(map[string][]Location),
 	}
 	gen.genFiles = append(gen.genFiles, g)
 	return g
@@ -753,16 +781,16 @@ func (gen *Plugin) NewGeneratedFile(filename string, goImportPath GoImportPath) 
 type Service struct {
 	Desc protoreflect.ServiceDescriptor
 
-	GoName  string
-	Path    []int32   // location path of this service
-	Methods []*Method // service method definitions
+	GoName   string
+	Location Location  // location of this service
+	Methods  []*Method // service method definitions
 }
 
 func newService(gen *Plugin, f *File, desc protoreflect.ServiceDescriptor) *Service {
 	service := &Service{
-		Desc:   desc,
-		GoName: camelCase(string(desc.Name())),
-		Path:   []int32{fileServiceField, int32(desc.Index())},
+		Desc:     desc,
+		GoName:   camelCase(string(desc.Name())),
+		Location: f.location(fileServiceField, int32(desc.Index())),
 	}
 	for i, mdescs := 0, desc.Methods(); i < mdescs.Len(); i++ {
 		service.Methods = append(service.Methods, newMethod(gen, f, service, mdescs.Get(i)))
@@ -776,7 +804,7 @@ type Method struct {
 
 	GoName        string
 	ParentService *Service
-	Path          []int32 // location path of this method
+	Location      Location // location of this method
 	InputType     *Message
 	OutputType    *Message
 }
@@ -786,7 +814,7 @@ func newMethod(gen *Plugin, f *File, service *Service, desc protoreflect.MethodD
 		Desc:          desc,
 		GoName:        camelCase(string(desc.Name())),
 		ParentService: service,
-		Path:          pathAppend(service.Path, serviceMethodField, int32(desc.Index())),
+		Location:      service.Location.appendPath(serviceMethodField, int32(desc.Index())),
 	}
 	return method
 }
@@ -814,8 +842,6 @@ func (method *Method) init(gen *Plugin) error {
 // P prints a line to the generated output. It converts each parameter to a
 // string following the same rules as fmt.Print. It never inserts spaces
 // between parameters.
-//
-// TODO: .meta file annotations.
 func (g *GeneratedFile) P(v ...interface{}) {
 	for _, x := range v {
 		switch x := x.(type) {
@@ -863,8 +889,18 @@ func (g *GeneratedFile) Write(p []byte) (n int, err error) {
 	return g.buf.Write(p)
 }
 
-// Content returns the contents of the generated file.
-func (g *GeneratedFile) Content() ([]byte, error) {
+// Annotate associates a symbol in a generated Go file with a location in a
+// source .proto file.
+//
+// The symbol may refer to a type, constant, variable, function, method, or
+// struct field.  The "T.sel" syntax is used to identify the method or field
+// 'sel' on type 'T'.
+func (g *GeneratedFile) Annotate(symbol string, loc Location) {
+	g.annotations[symbol] = append(g.annotations[symbol], loc)
+}
+
+// content returns the contents of the generated file.
+func (g *GeneratedFile) content() ([]byte, error) {
 	if !strings.HasSuffix(g.filename, ".go") {
 		return g.buf.Bytes(), nil
 	}
@@ -912,9 +948,72 @@ func (g *GeneratedFile) Content() ([]byte, error) {
 	if err = (&printer.Config{Mode: printer.TabIndent | printer.UseSpaces, Tabwidth: 8}).Fprint(&out, fset, file); err != nil {
 		return nil, fmt.Errorf("%v: can not reformat Go source: %v", g.filename, err)
 	}
-	// TODO: Annotations.
 	return out.Bytes(), nil
+}
 
+// metaFile returns the contents of the file's metadata file, which is a
+// text formatted string of the google.protobuf.GeneratedCodeInfo.
+func (g *GeneratedFile) metaFile(content []byte) (string, error) {
+	fset := token.NewFileSet()
+	astFile, err := parser.ParseFile(fset, "", content, 0)
+	if err != nil {
+		return "", err
+	}
+	info := &descpb.GeneratedCodeInfo{}
+
+	seenAnnotations := make(map[string]bool)
+	annotate := func(s string, ident *ast.Ident) {
+		seenAnnotations[s] = true
+		for _, loc := range g.annotations[s] {
+			info.Annotation = append(info.Annotation, &descpb.GeneratedCodeInfo_Annotation{
+				SourceFile: proto.String(loc.SourceFile),
+				Path:       loc.Path,
+				Begin:      proto.Int32(int32(fset.Position(ident.Pos()).Offset)),
+				End:        proto.Int32(int32(fset.Position(ident.End()).Offset)),
+			})
+		}
+	}
+	for _, decl := range astFile.Decls {
+		switch decl := decl.(type) {
+		case *ast.GenDecl:
+			for _, spec := range decl.Specs {
+				switch spec := spec.(type) {
+				case *ast.TypeSpec:
+					annotate(spec.Name.Name, spec.Name)
+					if st, ok := spec.Type.(*ast.StructType); ok {
+						for _, field := range st.Fields.List {
+							for _, name := range field.Names {
+								annotate(spec.Name.Name+"."+name.Name, name)
+							}
+						}
+					}
+				case *ast.ValueSpec:
+					for _, name := range spec.Names {
+						annotate(name.Name, name)
+					}
+				}
+			}
+		case *ast.FuncDecl:
+			if decl.Recv == nil {
+				annotate(decl.Name.Name, decl.Name)
+			} else {
+				recv := decl.Recv.List[0].Type
+				if s, ok := recv.(*ast.StarExpr); ok {
+					recv = s.X
+				}
+				if id, ok := recv.(*ast.Ident); ok {
+					annotate(id.Name+"."+decl.Name.Name, decl.Name)
+				}
+			}
+		}
+	}
+	for a := range g.annotations {
+		if !seenAnnotations[a] {
+			return "", fmt.Errorf("%v: no symbol matching annotation %q", g.filename, a)
+		}
+	}
+
+	return proto.CompactTextString(info), nil
 }
 
 type pathType int
@@ -952,11 +1051,22 @@ const (
 	serviceStreamField = 4 // stream
 )
 
-// pathAppend appends elements to a location path.
-// It does not alias the original path.
-func pathAppend(path []int32, a ...int32) []int32 {
+// A Location is a location in a .proto source file.
+//
+// See the google.protobuf.SourceCodeInfo documentation in descriptor.proto
+// for details.
+type Location struct {
+	SourceFile string
+	Path       []int32
+}
+
+// appendPath add elements to a Location's path, returning a new Location.
+func (loc Location) appendPath(a ...int32) Location {
 	var n []int32
-	n = append(n, path...)
+	n = append(n, loc.Path...)
 	n = append(n, a...)
-	return n
+	return Location{
+		SourceFile: loc.SourceFile,
+		Path:       n,
+	}
 }

@@ -17,7 +17,7 @@ import (
 
 // serviceOptions returns the options for a service.
 func serviceOptions(gen *protogen.Plugin, service *protogen.Service) *descpb.ServiceOptions {
-	d := getDescriptorProto(gen, service.Desc, service.Path)
+	d := getDescriptorProto(gen, service.Desc, service.Location.Path)
 	if d == nil {
 		return nil
 	}
@@ -26,7 +26,7 @@ func serviceOptions(gen *protogen.Plugin, service *protogen.Service) *descpb.Ser
 
 // methodOptions returns the options for a method.
 func methodOptions(gen *protogen.Plugin, method *protogen.Method) *descpb.MethodOptions {
-	d := getDescriptorProto(gen, method.Desc, method.Path)
+	d := getDescriptorProto(gen, method.Desc, method.Location.Path)
 	if d == nil {
 		return nil
 	}

@@ -17,7 +17,7 @@ import (
 
 // messageOptions returns the MessageOptions for a message.
 func messageOptions(gen *protogen.Plugin, message *protogen.Message) *descpb.MessageOptions {
-	d := getDescriptorProto(gen, message.Desc, message.Path)
+	d := getDescriptorProto(gen, message.Desc, message.Location.Path)
 	if d == nil {
 		return nil
 	}
@@ -26,7 +26,7 @@ func messageOptions(gen *protogen.Plugin, message *protogen.Message) *descpb.Mes
 
 // fieldOptions returns the FieldOptions for a message.
 func fieldOptions(gen *protogen.Plugin, field *protogen.Field) *descpb.FieldOptions {
-	d := getDescriptorProto(gen, field.Desc, field.Path)
+	d := getDescriptorProto(gen, field.Desc, field.Location.Path)
 	if d == nil {
 		return nil
 	}
@@ -35,7 +35,7 @@ func fieldOptions(gen *protogen.Plugin, field *protogen.Field) *descpb.FieldOpti
 
 // enumOptions returns the EnumOptions for an enum
 func enumOptions(gen *protogen.Plugin, enum *protogen.Enum) *descpb.EnumOptions {
-	d := getDescriptorProto(gen, enum.Desc, enum.Path)
+	d := getDescriptorProto(gen, enum.Desc, enum.Location.Path)
 	if d == nil {
 		return nil
 	}
@@ -44,7 +44,7 @@ func enumOptions(gen *protogen.Plugin, enum *protogen.Enum) *descpb.EnumOptions 
 
 // enumValueOptions returns the EnumValueOptions for an enum value
 func enumValueOptions(gen *protogen.Plugin, value *protogen.EnumValue) *descpb.EnumValueOptions {
-	d := getDescriptorProto(gen, value.Desc, value.Path)
+	d := getDescriptorProto(gen, value.Desc, value.Location.Path)
 	if d == nil {
 		return nil
 	}

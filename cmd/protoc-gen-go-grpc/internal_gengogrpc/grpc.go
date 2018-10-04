@@ -74,9 +74,11 @@ func genService(gen *protogen.Plugin, file *fileInfo, g *protogen.GeneratedFile,
 		g.P("//")
 		g.P(deprecationComment)
 	}
+	g.Annotate(clientName, service.Location)
 	g.P("type ", clientName, " interface {")
 	for _, method := range service.Methods {
-		genComment(g, file, method.Path)
+		genComment(g, file, method.Location)
+		g.Annotate(clientName+"."+method.GoName, method.Location)
 		g.P(clientSignature(g, method))
 	}
 	g.P("}")
@@ -118,9 +120,11 @@ func genService(gen *protogen.Plugin, file *fileInfo, g *protogen.GeneratedFile,
 		g.P("//")
 		g.P(deprecationComment)
 	}
+	g.Annotate(serverType, service.Location)
 	g.P("type ", serverType, " interface {")
 	for _, method := range service.Methods {
-		genComment(g, file, method.Path)
+		genComment(g, file, method.Location)
+		g.Annotate(serverType+"."+method.GoName, method.Location)
 		g.P(serverSignature(g, method))
 	}
 	g.P("}")
@@ -384,8 +388,8 @@ func ident(name string) protogen.GoIdent {
 	}
 }
 
-func genComment(g *protogen.GeneratedFile, file *fileInfo, path []int32) (hasComment bool) {
-	for _, loc := range file.locationMap[pathKey(path)] {
+func genComment(g *protogen.GeneratedFile, file *fileInfo, loc protogen.Location) (hasComment bool) {
+	for _, loc := range file.locationMap[pathKey(loc.Path)] {
 		if loc.LeadingComments == nil {
 			continue
 		}

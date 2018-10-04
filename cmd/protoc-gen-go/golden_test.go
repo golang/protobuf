@@ -7,9 +7,15 @@
 package main
 
 import (
+	"bytes"
 	"flag"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"testing"
 
+	"github.com/golang/protobuf/proto"
+	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/internal/protogen/goldentest"
 )
 
@@ -22,4 +28,66 @@ func init() {
 
 func TestGolden(t *testing.T) {
 	goldentest.Run(t, *regenerate)
+}
+
+func TestAnnotations(t *testing.T) {
+	workdir, err := ioutil.TempDir("", "proto-test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(workdir)
+
+	goldentest.Protoc(t, []string{"--go_out=paths=source_relative,annotate_code:" + workdir, "-Itestdata/annotations", "testdata/annotations/annotations.proto"})
+	sourceFile, err := ioutil.ReadFile(filepath.Join(workdir, "annotations.pb.go"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	metaFile, err := ioutil.ReadFile(filepath.Join(workdir, "annotations.pb.go.meta"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	gotInfo := &descpb.GeneratedCodeInfo{}
+	if err := proto.UnmarshalText(string(metaFile), gotInfo); err != nil {
+		t.Fatalf("can't parse meta file: %v", err)
+	}
+
+	wantInfo := &descpb.GeneratedCodeInfo{}
+	for _, want := range []struct {
+		prefix, text, suffix string
+		path                 []int32
+	}{{
+		"type ", "AnnotationsTestEnum", " int32",
+		[]int32{5 /* enum_type */, 0},
+	}, {
+		"\t", "AnnotationsTestEnum_ANNOTATIONS_TEST_ENUM_VALUE", " AnnotationsTestEnum = 0",
+		[]int32{5 /* enum_type */, 0, 2 /* value */, 0},
+	}, {
+		"type ", "AnnotationsTestMessage", " struct {",
+		[]int32{4 /* message_type */, 0},
+	}, {
+		"\t", "AnnotationsTestField", " ",
+		[]int32{4 /* message_type */, 0, 2 /* field */, 0},
+	}, {
+		"func (m *AnnotationsTestMessage) ", "GetAnnotationsTestField", "() string {",
+		[]int32{4 /* message_type */, 0, 2 /* field */, 0},
+	}} {
+		s := want.prefix + want.text + want.suffix
+		pos := bytes.Index(sourceFile, []byte(s))
+		if pos < 0 {
+			t.Errorf("source file does not contain: %v", s)
+			continue
+		}
+		begin := pos + len(want.prefix)
+		end := begin + len(want.text)
+		wantInfo.Annotation = append(wantInfo.Annotation, &descpb.GeneratedCodeInfo_Annotation{
+			Path:       want.path,
+			Begin:      proto.Int32(int32(begin)),
+			End:        proto.Int32(int32(end)),
+			SourceFile: proto.String("annotations.proto"),
+		})
+	}
+	if !proto.Equal(gotInfo, wantInfo) {
+		t.Errorf("unexpected annotations for annotations.proto; got:\n%v\nwant:\n%v",
+			proto.MarshalTextString(gotInfo), proto.MarshalTextString(wantInfo))
+	}
 }

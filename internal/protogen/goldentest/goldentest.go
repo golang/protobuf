@@ -55,7 +55,7 @@ func Run(t *testing.T, regenerate bool) {
 	for _, sources := range packages {
 		args := []string{"-Itestdata", "--go_out=paths=source_relative:" + workdir}
 		args = append(args, sources...)
-		protoc(t, args)
+		Protoc(t, args)
 	}
 
 	// Compare each generated file to the golden version.
@@ -111,7 +111,9 @@ func Run(t *testing.T, regenerate bool) {
 
 var fdescRE = regexp.MustCompile(`(?ms)^var fileDescriptor.*}`)
 
-func protoc(t *testing.T, args []string) {
+// Protoc runs protoc, using the function registered with Plugin as the protoc-gen-go plugin.
+func Protoc(t *testing.T, args []string) {
+	t.Helper()
 	cmd := exec.Command("protoc", "--plugin=protoc-gen-go="+os.Args[0])
 	cmd.Args = append(cmd.Args, args...)
 	// We set the RUN_AS_PROTOC_PLUGIN environment variable to indicate that
