@@ -52,6 +52,9 @@ func Run(opts *Options, f func(*Plugin) error) {
 }
 
 func run(opts *Options, f func(*Plugin) error) error {
+	if len(os.Args) > 1 {
+		return fmt.Errorf("unknown argument %q (this program should be run by protoc, not directly)", os.Args[1])
+	}
 	in, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		return err
