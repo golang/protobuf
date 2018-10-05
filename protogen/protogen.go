@@ -896,7 +896,7 @@ func (g *GeneratedFile) Content() ([]byte, error) {
 		if _, ok := g.packageNames[importPath]; ok {
 			continue
 		}
-		astutil.AddNamedImport(fset, file, "_", string(importPath))
+		astutil.AddNamedImport(fset, file, "_", rewriteImport(string(importPath)))
 	}
 	ast.SortImports(fset, file)
 
