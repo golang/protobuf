@@ -50,6 +50,48 @@ func cleanPackageName(name string) GoPackageName {
 	return GoPackageName(name)
 }
 
+var isGoPredeclaredIdentifier = map[string]bool{
+	"append":     true,
+	"bool":       true,
+	"byte":       true,
+	"cap":        true,
+	"close":      true,
+	"complex":    true,
+	"complex128": true,
+	"complex64":  true,
+	"copy":       true,
+	"delete":     true,
+	"error":      true,
+	"false":      true,
+	"float32":    true,
+	"float64":    true,
+	"imag":       true,
+	"int":        true,
+	"int16":      true,
+	"int32":      true,
+	"int64":      true,
+	"int8":       true,
+	"iota":       true,
+	"len":        true,
+	"make":       true,
+	"new":        true,
+	"nil":        true,
+	"panic":      true,
+	"print":      true,
+	"println":    true,
+	"real":       true,
+	"recover":    true,
+	"rune":       true,
+	"string":     true,
+	"true":       true,
+	"uint":       true,
+	"uint16":     true,
+	"uint32":     true,
+	"uint64":     true,
+	"uint8":      true,
+	"uintptr":    true,
+}
+
 // badToUnderscore is the mapping function used to generate Go names from package names,
 // which can be dotted in the input .proto file.  It replaces non-identifier characters such as
 // dot or dash with underscore.

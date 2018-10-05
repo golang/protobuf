@@ -833,7 +833,7 @@ func (g *GeneratedFile) QualifiedGoIdent(ident GoIdent) string {
 		return string(packageName) + "." + ident.GoName
 	}
 	packageName := cleanPackageName(baseName(string(ident.GoImportPath)))
-	for i, orig := 1, packageName; g.usedPackageNames[packageName]; i++ {
+	for i, orig := 1, packageName; g.usedPackageNames[packageName] || isGoPredeclaredIdentifier[string(packageName)]; i++ {
 		packageName = orig + GoPackageName(strconv.Itoa(i))
 	}
 	g.packageNames[ident.GoImportPath] = packageName

@@ -272,6 +272,8 @@ func TestImports(t *testing.T) {
 		// Reference to a different package with the same basename.
 		"golang.org/y/bar",
 		"golang.org/x/baz",
+		// Reference to a package conflicting with a predeclared identifier.
+		"golang.org/z/string",
 	} {
 		g.P("var _ = ", GoIdent{GoName: "X", GoImportPath: importPath}, " // ", importPath)
 	}
@@ -281,13 +283,15 @@ import (
 	bar "golang.org/x/bar"
 	baz "golang.org/x/baz"
 	bar1 "golang.org/y/bar"
+	string1 "golang.org/z/string"
 )
 
-var _ = X      // "golang.org/x/foo"
-var _ = bar.X  // "golang.org/x/bar"
-var _ = bar.X  // "golang.org/x/bar"
-var _ = bar1.X // "golang.org/y/bar"
-var _ = baz.X  // "golang.org/x/baz"
+var _ = X         // "golang.org/x/foo"
+var _ = bar.X     // "golang.org/x/bar"
+var _ = bar.X     // "golang.org/x/bar"
+var _ = bar1.X    // "golang.org/y/bar"
+var _ = baz.X     // "golang.org/x/baz"
+var _ = string1.X // "golang.org/z/string"
 `
 	got, err := g.Content()
 	if err != nil {
