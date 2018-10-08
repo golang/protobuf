@@ -1295,7 +1295,7 @@ func (g *Generator) makeComments(path string) (string, bool) {
 	w := new(bytes.Buffer)
 	nl := ""
 	for _, line := range strings.Split(strings.TrimSuffix(loc.GetLeadingComments(), "\n"), "\n") {
-		fmt.Fprintf(w, "%s// %s", nl, strings.TrimPrefix(line, " "))
+		fmt.Fprintf(w, "%s//%s", nl, line)
 		nl = "\n"
 	}
 	return w.String(), true
