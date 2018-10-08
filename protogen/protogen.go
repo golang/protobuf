@@ -275,6 +275,11 @@ func New(req *pluginpb.CodeGeneratorRequest, opts *Options) (*Plugin, error) {
 	// the same Go package name.
 	packageFiles := make(map[GoImportPath][]string)
 	for filename, importPath := range importPaths {
+		if _, ok := packageNames[filename]; !ok {
+			// Skip files mentioned in a M<file>=<import_path> parameter
+			// but which do not appear in the CodeGeneratorRequest.
+			continue
+		}
 		packageFiles[importPath] = append(packageFiles[importPath], filename)
 	}
 	for importPath, filenames := range packageFiles {
