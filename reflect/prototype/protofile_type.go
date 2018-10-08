@@ -544,6 +544,8 @@ func resolveReference(parent pref.Descriptor, refName pref.FullName) pref.Descri
 			} else if refName[len(curName)] == '.' {
 				refName = refName[len(curName)+len("."):]
 				break // e.g., refName: foo.firetruck.driver, curName: foo.firetruck
+			} else if len(curName) == 0 {
+				break // FileDescriptor has no package name
 			}
 			// No match. (e.g., refName: foo.firetruck, curName: foo.fire)
 		}

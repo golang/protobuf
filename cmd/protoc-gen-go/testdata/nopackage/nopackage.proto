@@ -12,5 +12,5 @@ enum Enum {
 
 message Message {
   optional string string_field = 1;
-  optional Enum   enum_field   = 2;
+  optional Enum   enum_field   = 2 [default=ZERO];
 }
