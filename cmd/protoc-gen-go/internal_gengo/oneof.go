@@ -47,7 +47,7 @@ func genOneofTypes(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo,
 		g.P()
 	}
 	for _, field := range oneof.Fields {
-		g.P("func (* ", fieldOneofType(field), ") ", ifName, "() {}")
+		g.P("func (*", fieldOneofType(field), ") ", ifName, "() {}")
 		g.P()
 	}
 	g.P("func (m *", message.GoIdent.GoName, ") Get", oneof.GoName, "() ", ifName, " {")
