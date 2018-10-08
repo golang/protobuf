@@ -18,6 +18,15 @@ message Message1 {
   // COMMENT: Message1B
   message Message1B {
   }
+
+  // COMMENT: Field1A
+  optional string Field1A = 1;
+
+  // COMMENT: Oneof1A
+  oneof Oneof1a {
+    // COMMENT: Oneof1AField1
+    string Oneof1AField1 = 2;
+  }
 }
 
 // COMMENT: Message2

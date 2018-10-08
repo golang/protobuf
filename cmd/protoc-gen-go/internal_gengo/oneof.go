@@ -20,6 +20,7 @@ func genOneofField(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo,
 	}
 	g.P("// Types that are valid to be assigned to ", oneof.GoName, ":")
 	for _, field := range oneof.Fields {
+		genComment(g, f, field.Path)
 		g.P("//\t*", fieldOneofType(field))
 	}
 	g.P(oneof.GoName, " ", oneofInterfaceName(message, oneof), " `protobuf_oneof:\"", oneof.Desc.Name(), "\"`")
