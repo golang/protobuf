@@ -296,6 +296,9 @@ func enumRegistryName(enum *protogen.Enum) string {
 		desc = p
 	}
 	fdesc := desc.(protoreflect.FileDescriptor)
+	if fdesc.Package() == "" {
+		return enum.GoIdent.GoName
+	}
 	return string(fdesc.Package()) + "." + enum.GoIdent.GoName
 }
 
