@@ -136,6 +136,8 @@ func camelCase(s string) string {
 	for ; i < len(s); i++ {
 		c := s[i]
 		switch {
+		case c == '.' && i+1 < len(s) && isASCIILower(s[i+1]):
+			// Skip over .<lowercase>, to match historic behavior.
 		case c == '.':
 			t = append(t, '_') // Convert . to _.
 		case c == '_' && (i == 0 || s[i-1] == '.'):
