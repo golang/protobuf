@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-syntax = "proto3";
+syntax = "proto2";
 
 package goproto.protoc.import_public;
 
@@ -11,6 +11,6 @@ option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/im
 import "import_public/sub/a.proto";
 
 message Local {
-  goproto.protoc.import_public.sub.M m = 1;
-  goproto.protoc.import_public.sub.E e = 2;
+  optional goproto.protoc.import_public.sub.M m = 1;
+  optional goproto.protoc.import_public.sub.E e = 2;
 }

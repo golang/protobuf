@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-syntax = "proto3";
+syntax = "proto2";
 
 package goproto.protoc.import_public.sub;
 
@@ -12,7 +12,8 @@ import "import_public/sub/b.proto";
 
 message M {
   // Field using a type in the same Go package, but a different source file.
-  M2 m2 = 1;
+  optional M2 m2 = 1;
+  optional string s = 4 [default="default"];
 
   oneof oneof_field {
     int32 oneof_int32 = 2;

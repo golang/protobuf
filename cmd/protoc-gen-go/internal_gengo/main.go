@@ -146,10 +146,35 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 	if !imp.IsPublic {
 		return
 	}
+	// TODO: An alternate approach to generating public imports might be
+	// to generate the imported file contents, parse it, and extract all
+	// exported identifiers from the AST to build a list of forwarding
+	// declarations.
+	//
+	// TODO: Consider whether this should generate recursive aliases. e.g.,
+	// if a.proto publicly imports b.proto publicly imports c.proto, should
+	// a.pb.go contain aliases for symbols defined in c.proto?
 	var enums []*protogen.Enum
 	enums = append(enums, impFile.Enums...)
 	walkMessages(impFile.Messages, func(message *protogen.Message) {
+		if message.Desc.IsMapEntry() {
+			return
+		}
 		enums = append(enums, message.Enums...)
+		for _, field := range message.Fields {
+			if !fieldHasDefault(field) {
+				continue
+			}
+			defVar := protogen.GoIdent{
+				GoImportPath: message.GoIdent.GoImportPath,
+				GoName:       "Default_" + message.GoIdent.GoName + "_" + field.GoName,
+			}
+			decl := "const"
+			if field.Desc.Kind() == protoreflect.BytesKind {
+				decl = "var"
+			}
+			g.P(decl, " ", defVar.GoName, " = ", defVar)
+		}
 		g.P("// ", message.GoIdent.GoName, " from public import ", imp.Path())
 		g.P("type ", message.GoIdent.GoName, " = ", message.GoIdent)
 		for _, oneof := range message.Oneofs {
@@ -170,6 +195,7 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 			g.P("const ", value.GoIdent.GoName, " = ", enum.GoIdent.GoName, "(", value.GoIdent, ")")
 		}
 	}
+	g.P()
 }
 
 func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
