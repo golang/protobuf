@@ -232,6 +232,14 @@ the --go_out argument to protoc:
 
 	protoc --go_out=plugins=grpc:. *.proto
 
+## Tars Support ##
+
+If a proto file specifies RPC services, protoc-gen-go can be instructed to
+generate code compatible with Tars (https://github.com/TarsCloud/TarsGo). To do this, pass the `plugins` parameter to protoc-gen-go; the usual way is to insert it into
+the --go_out argument to protoc:
+
+	protoc --go_out=plugins=tarsrpc:. *.proto
+
 ## Compatibility ##
 
 The library and the generated code are expected to be stable over time.
