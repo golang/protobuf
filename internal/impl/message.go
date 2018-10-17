@@ -118,7 +118,7 @@ fieldLoop:
 			continue fieldLoop
 		}
 	}
-	if fn, ok := t.MethodByName("XXX_OneofFuncs"); ok {
+	if fn, ok := reflect.PtrTo(t).MethodByName("XXX_OneofFuncs"); ok {
 		vs := fn.Func.Call([]reflect.Value{reflect.New(fn.Type.In(0)).Elem()})[3]
 	oneofLoop:
 		for _, v := range vs.Interface().([]interface{}) {

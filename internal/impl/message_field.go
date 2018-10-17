@@ -31,8 +31,74 @@ func fieldInfoForWeak(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 }
 
 func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot reflect.Type) fieldInfo {
-	// TODO: support oneof fields.
-	panic(fmt.Sprintf("invalid field: %v", fd))
+	ft := fs.Type
+	if ft.Kind() != reflect.Interface {
+		panic(fmt.Sprintf("invalid type: got %v, want interface kind", ft))
+	}
+	if ot.Kind() != reflect.Struct {
+		panic(fmt.Sprintf("invalid type: got %v, want struct kind", ot))
+	}
+	if !reflect.PtrTo(ot).Implements(ft) {
+		panic(fmt.Sprintf("invalid type: %v does not implement %v", ot, ft))
+	}
+	conv := matchGoTypePBKind(ot.Field(0).Type, fd.Kind())
+	fieldOffset := offsetOf(fs)
+	// TODO: Implement unsafe fast path?
+	return fieldInfo{
+		// NOTE: The logic below intentionally assumes that oneof fields are
+		// well-formatted. That is, the oneof interface never contains a
+		// typed nil pointer to one of the wrapper structs.
+
+		has: func(p pointer) bool {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
+				return false
+			}
+			return true
+		},
+		get: func(p pointer) pref.Value {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
+				if fd.Kind() == pref.MessageKind || fd.Kind() == pref.GroupKind {
+					// Return a typed nil pointer of the message type to be
+					// consistent with the behavior of generated getters.
+					rv = reflect.Zero(ot.Field(0).Type)
+					return conv.toPB(rv)
+				}
+				return fd.Default()
+			}
+			rv = rv.Elem().Elem().Field(0)
+			return conv.toPB(rv)
+		},
+		set: func(p pointer, v pref.Value) {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
+				rv.Set(reflect.New(ot))
+			}
+			rv = rv.Elem().Elem().Field(0)
+			rv.Set(conv.toGo(v))
+		},
+		clear: func(p pointer) {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
+				return
+			}
+			rv.Set(reflect.Zero(rv.Type()))
+		},
+		mutable: func(p pointer) pref.Mutable {
+			// Mutable is only valid for messages and panics for other kinds.
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
+				rv.Set(reflect.New(ot))
+			}
+			rv = rv.Elem().Elem().Field(0)
+			if rv.IsNil() {
+				pv := pref.ValueOf(conv.newMessage())
+				rv.Set(conv.toGo(pv))
+			}
+			return rv.Interface().(pref.Message)
+		},
+	}
 }
 
 func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
