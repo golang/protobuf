@@ -74,13 +74,6 @@ type mapReflect struct {
 	valConv converter
 }
 
-func (ms mapReflect) List() []pref.MapKey {
-	var ks []pref.MapKey
-	for _, k := range ms.v.MapKeys() {
-		ks = append(ks, ms.keyConv.toPB(k).MapKey())
-	}
-	return ks
-}
 func (ms mapReflect) Len() int {
 	return ms.v.Len()
 }

@@ -228,15 +228,6 @@ func (m *message) ProtoMutable() {}
 
 type knownFields messageDataType
 
-func (fs *knownFields) List() (nums []pref.FieldNumber) {
-	for n, fi := range fs.mi.fields {
-		if fi.has(fs.p) {
-			nums = append(nums, n)
-		}
-	}
-	// TODO: Handle extension fields.
-	return nums
-}
 func (fs *knownFields) Len() (cnt int) {
 	for _, fi := range fs.mi.fields {
 		if fi.has(fs.p) {
@@ -299,7 +290,6 @@ func (fs *knownFields) ExtensionTypes() pref.ExtensionFieldTypes {
 
 type extensionFieldTypes messageDataType // TODO
 
-func (fs *extensionFieldTypes) List() []pref.ExtensionType                   { return nil }
 func (fs *extensionFieldTypes) Len() int                                     { return 0 }
 func (fs *extensionFieldTypes) Register(pref.ExtensionType)                  { return }
 func (fs *extensionFieldTypes) Remove(pref.ExtensionType)                    { return }
@@ -309,7 +299,6 @@ func (fs *extensionFieldTypes) Range(f func(pref.ExtensionType) bool)        { r
 
 type unknownFields messageDataType // TODO
 
-func (fs *unknownFields) List() []pref.FieldNumber                            { return nil }
 func (fs *unknownFields) Len() int                                            { return 0 }
 func (fs *unknownFields) Get(n pref.FieldNumber) pref.RawFields               { return nil }
 func (fs *unknownFields) Set(n pref.FieldNumber, b pref.RawFields)            { return }

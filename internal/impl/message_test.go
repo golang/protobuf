@@ -90,7 +90,7 @@ type (
 	setMap   map[interface{}]pref.Value
 	clearMap map[interface{}]bool
 	rangeMap map[interface{}]pref.Value
-	// TODO: List, Mutable
+	// TODO: Mutable
 )
 
 func TestScalarProto2(t *testing.T) {

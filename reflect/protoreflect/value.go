@@ -54,14 +54,9 @@ type Message interface {
 // Field extensions are handled as known fields once the extension type has been
 // registered with KnownFields.ExtensionTypes.
 //
-// List, Len, Has, Get, Range, and ExtensionTypes are safe for concurrent use.
+// Len, Has, Get, Range, and ExtensionTypes are safe for concurrent use.
 type KnownFields interface {
-	// List returns a new, unordered list of all populated fields.
-	List() []FieldNumber
-
 	// Len reports the number of fields that are populated.
-	//
-	// Invariant: f.Len() == len(f.List())
 	Len() int
 
 	// Has reports whether a field is populated.
@@ -114,6 +109,8 @@ type KnownFields interface {
 
 	// Range calls f sequentially for each known field that is populated.
 	// If f returns false, range stops the iteration.
+	// Assuming f always returns true and no mutations occur,
+	// the function is called exactly Len times.
 	Range(f func(FieldNumber, Value) bool)
 
 	// ExtensionTypes are extension field types that are known by this
@@ -127,18 +124,13 @@ type KnownFields interface {
 // However, the relative ordering of fields with different field numbers
 // is undefined.
 //
-// List, Len, Get, and Range are safe for concurrent use.
+// Len, Get, and Range are safe for concurrent use.
 type UnknownFields interface {
-	// List returns a new, unordered list of all fields that are set.
-	List() []FieldNumber
-
-	// Len reports the number of fields that are set.
-	//
-	// Invariant: f.Len() == len(f.List())
+	// Len reports the number of fields that are populated.
 	Len() int
 
 	// Get retrieves the raw bytes of fields with the given field number.
-	// It returns an empty RawFields if there are no set fields.
+	// It returns an empty RawFields if there are no populated fields.
 	//
 	// The caller must not mutate the content of the retrieved RawFields.
 	Get(FieldNumber) RawFields
@@ -153,6 +145,8 @@ type UnknownFields interface {
 
 	// Range calls f sequentially for each unknown field that is populated.
 	// If f returns false, range stops the iteration.
+	// Assuming f always returns true and no mutations occur,
+	// the function is called exactly Len times.
 	Range(f func(FieldNumber, RawFields) bool)
 
 	// TODO: Should IsSupported be renamed as ReadOnly?
@@ -187,14 +181,9 @@ func (b RawFields) IsValid() bool {
 // ExtensionFieldTypes are the extension field types that this message instance
 // has been extended with.
 //
-// List, Len, Get, and Range are safe for concurrent use.
+// Len, Get, and Range are safe for concurrent use.
 type ExtensionFieldTypes interface {
-	// List returns a new, unordered list of known extension field types.
-	List() []ExtensionType
-
 	// Len reports the number of field extensions.
-	//
-	// Invariant: f.Len() == len(f.List())
 	Len() int
 
 	// Register stores an ExtensionType.
@@ -219,6 +208,8 @@ type ExtensionFieldTypes interface {
 
 	// Range calls f sequentially for each registered extension field type.
 	// If f returns false, range stops the iteration.
+	// Assuming f always returns true and no mutations occur,
+	// the function is called exactly Len times.
 	Range(f func(ExtensionType) bool)
 }
 
@@ -273,14 +264,9 @@ type Vector interface {
 // is considered populated. The entry Value type is determined by the associated
 // FieldDescripto.Kind and cannot be a Map or Vector.
 //
-// List, Len, Has, Get, and Range are safe for concurrent use.
+// Len, Has, Get, and Range are safe for concurrent use.
 type Map interface {
-	// List returns an unordered list of keys for all entries in the map.
-	List() []MapKey
-
 	// Len reports the number of elements in the map.
-	//
-	// Invariant: f.Len() == len(f.List())
 	Len() int
 
 	// Has reports whether an entry with the given key is in the map.
@@ -309,8 +295,9 @@ type Map interface {
 	Mutable(MapKey) Mutable
 
 	// Range calls f sequentially for each key and value present in the map.
-	// The Value provided is guaranteed to be valid.
 	// If f returns false, range stops the iteration.
+	// Assuming f always returns true and no mutations occur,
+	// the function is called exactly Len times.
 	Range(f func(MapKey, Value) bool)
 
 	// ProtoMutable is a marker method to implement the Mutable interface.
