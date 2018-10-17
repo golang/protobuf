@@ -15,12 +15,12 @@ import (
 
 // genOneofField generates the struct field for a oneof.
 func genOneofField(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message, oneof *protogen.Oneof) {
-	if genComment(g, f, oneof.Location) {
+	if g.PrintLeadingComments(oneof.Location) {
 		g.P("//")
 	}
 	g.P("// Types that are valid to be assigned to ", oneof.GoName, ":")
 	for _, field := range oneof.Fields {
-		genComment(g, f, field.Location)
+		g.PrintLeadingComments(field.Location)
 		g.P("//\t*", fieldOneofType(field))
 	}
 	g.Annotate(message.GoIdent.GoName+"."+oneof.GoName, oneof.Location)

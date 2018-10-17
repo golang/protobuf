@@ -32,7 +32,6 @@ const protoPackage = "github.com/golang/protobuf/proto"
 
 type fileInfo struct {
 	*protogen.File
-	locationMap   map[string][]*descpb.SourceCodeInfo_Location
 	descriptorVar string // var containing the gzipped FileDescriptorProto
 	allEnums      []*protogen.Enum
 	allMessages   []*protogen.Message
@@ -42,12 +41,7 @@ type fileInfo struct {
 // GenerateFile generates the contents of a .pb.go file.
 func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.GeneratedFile) {
 	f := &fileInfo{
-		File:        file,
-		locationMap: make(map[string][]*descpb.SourceCodeInfo_Location),
-	}
-	for _, loc := range file.Proto.GetSourceCodeInfo().GetLocation() {
-		key := pathKey(loc.Path)
-		f.locationMap[key] = append(f.locationMap[key], loc)
+		File: file,
 	}
 
 	// The different order for enums and extensions is to match the output
@@ -76,7 +70,10 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.Generat
 	}
 	g.P()
 	const filePackageField = 2 // FileDescriptorProto.package
-	genComment(g, f, protogen.Location{Path: []int32{filePackageField}})
+	g.PrintLeadingComments(protogen.Location{
+		SourceFile: f.Proto.GetName(),
+		Path:       []int32{filePackageField},
+	})
 	g.P()
 	g.P("package ", f.GoPackageName)
 	g.P()
@@ -237,13 +234,13 @@ func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 }
 
 func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum *protogen.Enum) {
-	genComment(g, f, enum.Location)
+	g.PrintLeadingComments(enum.Location)
 	g.Annotate(enum.GoIdent.GoName, enum.Location)
 	g.P("type ", enum.GoIdent, " int32",
 		deprecationComment(enumOptions(gen, enum).GetDeprecated()))
 	g.P("const (")
 	for _, value := range enum.Values {
-		genComment(g, f, value.Location)
+		g.PrintLeadingComments(value.Location)
 		g.Annotate(value.GoIdent.GoName, value.Location)
 		g.P(value.GoIdent, " ", enum.GoIdent, " = ", value.Desc.Number(),
 			deprecationComment(enumValueOptions(gen, value).GetDeprecated()))
@@ -335,7 +332,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		return
 	}
 
-	hasComment := genComment(g, f, message.Location)
+	hasComment := g.PrintLeadingComments(message.Location)
 	if messageOptions(gen, message).GetDeprecated() {
 		if hasComment {
 			g.P("//")
@@ -355,7 +352,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 			}
 			continue
 		}
-		genComment(g, f, field.Location)
+		g.PrintLeadingComments(field.Location)
 		goType, pointer := fieldGoType(g, field)
 		if pointer {
 			goType = "*" + goType
@@ -902,38 +899,12 @@ func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fi
 	}
 }
 
-func genComment(g *protogen.GeneratedFile, f *fileInfo, loc protogen.Location) (hasComment bool) {
-	for _, loc := range f.locationMap[pathKey(loc.Path)] {
-		if loc.LeadingComments == nil {
-			continue
-		}
-		for _, line := range strings.Split(strings.TrimSuffix(loc.GetLeadingComments(), "\n"), "\n") {
-			hasComment = true
-			g.P("//", line)
-		}
-		break
-	}
-	return hasComment
-}
-
 // deprecationComment returns a standard deprecation comment if deprecated is true.
 func deprecationComment(deprecated bool) string {
 	if !deprecated {
 		return ""
 	}
 	return "// Deprecated: Do not use."
-}
-
-// pathKey converts a location path to a string suitable for use as a map key.
-func pathKey(path []int32) string {
-	var buf []byte
-	for i, x := range path {
-		if i != 0 {
-			buf = append(buf, ',')
-		}
-		buf = strconv.AppendInt(buf, int64(x), 10)
-	}
-	return string(buf)
 }
 
 func genWellKnownType(g *protogen.GeneratedFile, ptr string, ident protogen.GoIdent, desc protoreflect.Descriptor) {

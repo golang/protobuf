@@ -13,6 +13,7 @@ package protogen
 import (
 	"bufio"
 	"bytes"
+	"encoding/binary"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -390,6 +391,8 @@ type File struct {
 	// For example, the source file "dir/foo.proto" might have a filename prefix
 	// of "dir/foo". Appending ".pb.go" produces an output file of "dir/foo.pb.go".
 	GeneratedFilenamePrefix string
+
+	sourceInfo map[pathKey][]*descpb.SourceCodeInfo_Location
 }
 
 func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageName, importPath GoImportPath) (*File, error) {
@@ -405,6 +408,7 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 		Proto:         p,
 		GoPackageName: packageName,
 		GoImportPath:  importPath,
+		sourceInfo:    make(map[pathKey][]*descpb.SourceCodeInfo_Location),
 	}
 
 	// Determine the prefix for generated Go files.
@@ -425,6 +429,10 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 	}
 	f.GeneratedFilenamePrefix = prefix
 
+	for _, loc := range p.GetSourceCodeInfo().GetLocation() {
+		key := newPathKey(loc.Path)
+		f.sourceInfo[key] = append(f.sourceInfo[key], loc)
+	}
 	for i, mdescs := 0, desc.Messages(); i < mdescs.Len(); i++ {
 		f.Messages = append(f.Messages, newMessage(gen, f, nil, mdescs.Get(i)))
 	}
@@ -854,6 +862,29 @@ func (g *GeneratedFile) P(v ...interface{}) {
 	fmt.Fprintln(&g.buf)
 }
 
+// PrintLeadingComments writes the comment appearing before a location in
+// the .proto source to the generated file.
+//
+// It returns true if a comment was present at the location.
+func (g *GeneratedFile) PrintLeadingComments(loc Location) (hasComment bool) {
+	f := g.gen.filesByName[loc.SourceFile]
+	if f == nil {
+		return false
+	}
+	for _, infoLoc := range f.sourceInfo[newPathKey(loc.Path)] {
+		if infoLoc.LeadingComments == nil {
+			continue
+		}
+		for _, line := range strings.Split(strings.TrimSuffix(infoLoc.GetLeadingComments(), "\n"), "\n") {
+			g.buf.WriteString("//")
+			g.buf.WriteString(line)
+			g.buf.WriteString("\n")
+		}
+		return true
+	}
+	return false
+}
+
 // QualifiedGoIdent returns the string to use for a Go identifier.
 //
 // If the identifier is from a different Go package than the generated file,
@@ -1069,4 +1100,18 @@ func (loc Location) appendPath(a ...int32) Location {
 		SourceFile: loc.SourceFile,
 		Path:       n,
 	}
+}
+
+// A pathKey is a representation of a location path suitable for use as a map key.
+type pathKey struct {
+	s string
+}
+
+// newPathKey converts a location path to a pathKey.
+func newPathKey(path []int32) pathKey {
+	buf := make([]byte, 4*len(path))
+	for i, x := range path {
+		binary.LittleEndian.PutUint32(buf[i*4:], uint32(x))
+	}
+	return pathKey{string(buf)}
 }
