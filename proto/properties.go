@@ -439,14 +439,14 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 
 // A global registry of enum types.
 // The generated code will register the generated maps by calling RegisterEnum.
-
 var enumValueMaps = make(map[string]map[string]int32)
 
 // RegisterEnum is called from the generated code to install the enum descriptor
 // maps into the global table to aid parsing text format protocol buffers.
 func RegisterEnum(typeName string, unusedNameMap map[int32]string, valueMap map[string]int32) {
 	if _, ok := enumValueMaps[typeName]; ok {
-		panic("proto: duplicate enum registered: " + typeName)
+		log.Printf("proto: duplicate enum registered: %s", typeName)
+		return
 	}
 	enumValueMaps[typeName] = valueMap
 }
