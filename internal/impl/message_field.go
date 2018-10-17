@@ -36,9 +36,108 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 }
 
 func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
-	// TODO: support map fields.
-	panic(fmt.Sprintf("invalid field: %v", fd))
+	ft := fs.Type
+	if ft.Kind() != reflect.Map {
+		panic(fmt.Sprintf("invalid type: got %v, want map kind", ft))
+	}
+	keyConv := matchGoTypePBKind(ft.Key(), fd.MessageType().Fields().ByNumber(1).Kind())
+	valConv := matchGoTypePBKind(ft.Elem(), fd.MessageType().Fields().ByNumber(2).Kind())
+	fieldOffset := offsetOf(fs)
+	// TODO: Implement unsafe fast path?
+	return fieldInfo{
+		has: func(p pointer) bool {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			return rv.Len() > 0
+		},
+		get: func(p pointer) pref.Value {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			return pref.ValueOf(mapReflect{rv, keyConv, valConv})
+		},
+		set: func(p pointer, v pref.Value) {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv.Set(v.Map().(mapReflect).v)
+		},
+		clear: func(p pointer) {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv.Set(reflect.Zero(rv.Type()))
+		},
+		mutable: func(p pointer) pref.Mutable {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			return mapReflect{rv, keyConv, valConv}
+		},
+	}
 }
+
+type mapReflect struct {
+	v       reflect.Value // addressable map[K]V
+	keyConv converter
+	valConv converter
+}
+
+func (ms mapReflect) List() []pref.MapKey {
+	var ks []pref.MapKey
+	for _, k := range ms.v.MapKeys() {
+		ks = append(ks, ms.keyConv.toPB(k).MapKey())
+	}
+	return ks
+}
+func (ms mapReflect) Len() int {
+	return ms.v.Len()
+}
+func (ms mapReflect) Has(k pref.MapKey) bool {
+	rk := ms.keyConv.toGo(k.Value())
+	rv := ms.v.MapIndex(rk)
+	return rv.IsValid()
+}
+func (ms mapReflect) Get(k pref.MapKey) pref.Value {
+	rk := ms.keyConv.toGo(k.Value())
+	rv := ms.v.MapIndex(rk)
+	if !rv.IsValid() {
+		return pref.Value{}
+	}
+	return ms.valConv.toPB(rv)
+}
+func (ms mapReflect) Set(k pref.MapKey, v pref.Value) {
+	if ms.v.IsNil() {
+		ms.v.Set(reflect.MakeMap(ms.v.Type()))
+	}
+	rk := ms.keyConv.toGo(k.Value())
+	rv := ms.valConv.toGo(v)
+	ms.v.SetMapIndex(rk, rv)
+}
+func (ms mapReflect) Clear(k pref.MapKey) {
+	rk := ms.keyConv.toGo(k.Value())
+	ms.v.SetMapIndex(rk, reflect.Value{})
+}
+func (ms mapReflect) Mutable(k pref.MapKey) pref.Mutable {
+	// Mutable is only valid for messages and panics for other kinds.
+	if ms.v.IsNil() {
+		ms.v.Set(reflect.MakeMap(ms.v.Type()))
+	}
+	rk := ms.keyConv.toGo(k.Value())
+	rv := ms.v.MapIndex(rk)
+	if !rv.IsValid() || rv.IsNil() {
+		pv := pref.ValueOf(ms.valConv.newMessage())
+		rv = ms.valConv.toGo(pv)
+		ms.v.SetMapIndex(rk, rv)
+	}
+	return rv.Interface().(pref.Message)
+}
+func (ms mapReflect) Range(f func(pref.MapKey, pref.Value) bool) {
+	for _, k := range ms.v.MapKeys() {
+		if v := ms.v.MapIndex(k); v.IsValid() {
+			pk := ms.keyConv.toPB(k).MapKey()
+			pv := ms.valConv.toPB(v)
+			if !f(pk, pv) {
+				return
+			}
+		}
+	}
+}
+func (ms mapReflect) Unwrap() interface{} { // TODO: unexport?
+	return ms.v.Interface()
+}
+func (ms mapReflect) ProtoMutable() {}
 
 func fieldInfoForVector(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
 	ft := fs.Type
