@@ -5,6 +5,7 @@
 package prototype
 
 import (
+	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -35,6 +36,46 @@ func NewMessage(t *StandaloneMessage) (protoreflect.MessageDescriptor, error) {
 		return nil, err
 	}
 	return mt, nil
+}
+
+// NewMessages creates a set of new protoreflect.MessageDescriptors.
+//
+// This constructor permits the creation of cyclic message types that depend
+// on each other. For example, message A may have a field of type message B,
+// where message B may have a field of type message A. In such a case,
+// a placeholder message is used for these cyclic references.
+//
+// The caller must relinquish full ownership of the input ts and must not
+// access or mutate any fields.
+func NewMessages(ts []*StandaloneMessage) ([]protoreflect.MessageDescriptor, error) {
+	// TODO: Should this be []*T or []T?
+	// TODO: NewMessages is a superset of NewMessage. Do we need NewMessage?
+	ms := map[protoreflect.FullName]protoreflect.MessageDescriptor{}
+	for _, t := range ts {
+		if _, ok := ms[t.FullName]; ok {
+			return nil, errors.New("duplicate message %v", t.FullName)
+		}
+		ms[t.FullName] = standaloneMessage{t}
+	}
+
+	var mts []protoreflect.MessageDescriptor
+	for _, t := range ts {
+		for i, f := range t.Fields {
+			// Resolve placeholder messages with a concrete standalone message.
+			// If this fails, validateMessage will complain about it later.
+			if !f.IsWeak && f.MessageType != nil && f.MessageType.IsPlaceholder() {
+				if m, ok := ms[f.MessageType.FullName()]; ok {
+					t.Fields[i].MessageType = m
+				}
+			}
+		}
+		mt := standaloneMessage{t}
+		if err := validateMessage(mt); err != nil {
+			return nil, err
+		}
+		mts = append(mts, mt)
+	}
+	return mts, nil
 }
 
 // StandaloneEnum is a constructor for a protoreflect.EnumDescriptor

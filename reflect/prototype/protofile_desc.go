@@ -378,7 +378,7 @@ func parseDefault(s string, k protoreflect.Kind) (protoreflect.Value, error) {
 	case protoreflect.Uint32Kind, protoreflect.Fixed32Kind:
 		v, err := strconv.ParseUint(s, 0, 32)
 		if err == nil {
-			return protoreflect.ValueOf(uint64(v)), nil
+			return protoreflect.ValueOf(uint32(v)), nil
 		}
 	case protoreflect.Uint64Kind, protoreflect.Fixed64Kind:
 		v, err := strconv.ParseUint(s, 0, 64)
