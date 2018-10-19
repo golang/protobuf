@@ -41,12 +41,33 @@ type (
 	MyString  string
 	MyBytes   []byte
 
-	NamedStrings []MyString
-	NamedBytes   []MyBytes
+	VectorStrings []MyString
+	VectorBytes   []MyBytes
 
 	MapStrings map[MyString]MyString
 	MapBytes   map[MyString]MyBytes
+
+	MyEnumV1 pref.EnumNumber
+	MyEnumV2 string
+	myEnumV2 MyEnumV2
+
+	MyMessageV1 struct {
+		// SubMessage *Message
+	}
+	MyMessageV2 map[pref.FieldNumber]pref.Value
+	myMessageV2 MyMessageV2
 )
+
+func (e MyEnumV2) ProtoReflect() pref.Enum { return myEnumV2(e) }
+func (e myEnumV2) Type() pref.EnumType     { return nil } // TODO
+func (e myEnumV2) Number() pref.EnumNumber { return 0 }   // TODO
+
+func (m *MyMessageV2) ProtoReflect() pref.Message        { return (*myMessageV2)(m) }
+func (m *myMessageV2) Type() pref.MessageType            { return nil } // TODO
+func (m *myMessageV2) KnownFields() pref.KnownFields     { return nil } // TODO
+func (m *myMessageV2) UnknownFields() pref.UnknownFields { return nil } // TODO
+func (m *myMessageV2) Interface() pref.ProtoMessage      { return (*MyMessageV2)(m) }
+func (m *myMessageV2) ProtoMutable()                     {}
 
 // List of test operations to perform on messages, vectors, or maps.
 type (
@@ -96,33 +117,33 @@ type (
 	// TODO: Mutable
 )
 
+type ScalarProto2 struct {
+	Bool    *bool    `protobuf:"1"`
+	Int32   *int32   `protobuf:"2"`
+	Int64   *int64   `protobuf:"3"`
+	Uint32  *uint32  `protobuf:"4"`
+	Uint64  *uint64  `protobuf:"5"`
+	Float32 *float32 `protobuf:"6"`
+	Float64 *float64 `protobuf:"7"`
+	String  *string  `protobuf:"8"`
+	StringA []byte   `protobuf:"9"`
+	Bytes   []byte   `protobuf:"10"`
+	BytesA  *string  `protobuf:"11"`
+
+	MyBool    *MyBool    `protobuf:"12"`
+	MyInt32   *MyInt32   `protobuf:"13"`
+	MyInt64   *MyInt64   `protobuf:"14"`
+	MyUint32  *MyUint32  `protobuf:"15"`
+	MyUint64  *MyUint64  `protobuf:"16"`
+	MyFloat32 *MyFloat32 `protobuf:"17"`
+	MyFloat64 *MyFloat64 `protobuf:"18"`
+	MyString  *MyString  `protobuf:"19"`
+	MyStringA MyBytes    `protobuf:"20"`
+	MyBytes   MyBytes    `protobuf:"21"`
+	MyBytesA  *MyString  `protobuf:"22"`
+}
+
 func TestScalarProto2(t *testing.T) {
-	type ScalarProto2 struct {
-		Bool    *bool    `protobuf:"1"`
-		Int32   *int32   `protobuf:"2"`
-		Int64   *int64   `protobuf:"3"`
-		Uint32  *uint32  `protobuf:"4"`
-		Uint64  *uint64  `protobuf:"5"`
-		Float32 *float32 `protobuf:"6"`
-		Float64 *float64 `protobuf:"7"`
-		String  *string  `protobuf:"8"`
-		StringA []byte   `protobuf:"9"`
-		Bytes   []byte   `protobuf:"10"`
-		BytesA  *string  `protobuf:"11"`
-
-		MyBool    *MyBool    `protobuf:"12"`
-		MyInt32   *MyInt32   `protobuf:"13"`
-		MyInt64   *MyInt64   `protobuf:"14"`
-		MyUint32  *MyUint32  `protobuf:"15"`
-		MyUint64  *MyUint64  `protobuf:"16"`
-		MyFloat32 *MyFloat32 `protobuf:"17"`
-		MyFloat64 *MyFloat64 `protobuf:"18"`
-		MyString  *MyString  `protobuf:"19"`
-		MyStringA MyBytes    `protobuf:"20"`
-		MyBytes   MyBytes    `protobuf:"21"`
-		MyBytesA  *MyString  `protobuf:"22"`
-	}
-
 	mi := MessageType{Desc: mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "ScalarProto2",
@@ -182,33 +203,33 @@ func TestScalarProto2(t *testing.T) {
 	})
 }
 
+type ScalarProto3 struct {
+	Bool    bool    `protobuf:"1"`
+	Int32   int32   `protobuf:"2"`
+	Int64   int64   `protobuf:"3"`
+	Uint32  uint32  `protobuf:"4"`
+	Uint64  uint64  `protobuf:"5"`
+	Float32 float32 `protobuf:"6"`
+	Float64 float64 `protobuf:"7"`
+	String  string  `protobuf:"8"`
+	StringA []byte  `protobuf:"9"`
+	Bytes   []byte  `protobuf:"10"`
+	BytesA  string  `protobuf:"11"`
+
+	MyBool    MyBool    `protobuf:"12"`
+	MyInt32   MyInt32   `protobuf:"13"`
+	MyInt64   MyInt64   `protobuf:"14"`
+	MyUint32  MyUint32  `protobuf:"15"`
+	MyUint64  MyUint64  `protobuf:"16"`
+	MyFloat32 MyFloat32 `protobuf:"17"`
+	MyFloat64 MyFloat64 `protobuf:"18"`
+	MyString  MyString  `protobuf:"19"`
+	MyStringA MyBytes   `protobuf:"20"`
+	MyBytes   MyBytes   `protobuf:"21"`
+	MyBytesA  MyString  `protobuf:"22"`
+}
+
 func TestScalarProto3(t *testing.T) {
-	type ScalarProto3 struct {
-		Bool    bool    `protobuf:"1"`
-		Int32   int32   `protobuf:"2"`
-		Int64   int64   `protobuf:"3"`
-		Uint32  uint32  `protobuf:"4"`
-		Uint64  uint64  `protobuf:"5"`
-		Float32 float32 `protobuf:"6"`
-		Float64 float64 `protobuf:"7"`
-		String  string  `protobuf:"8"`
-		StringA []byte  `protobuf:"9"`
-		Bytes   []byte  `protobuf:"10"`
-		BytesA  string  `protobuf:"11"`
-
-		MyBool    MyBool    `protobuf:"12"`
-		MyInt32   MyInt32   `protobuf:"13"`
-		MyInt64   MyInt64   `protobuf:"14"`
-		MyUint32  MyUint32  `protobuf:"15"`
-		MyUint64  MyUint64  `protobuf:"16"`
-		MyFloat32 MyFloat32 `protobuf:"17"`
-		MyFloat64 MyFloat64 `protobuf:"18"`
-		MyString  MyString  `protobuf:"19"`
-		MyStringA MyBytes   `protobuf:"20"`
-		MyBytes   MyBytes   `protobuf:"21"`
-		MyBytesA  MyString  `protobuf:"22"`
-	}
-
 	mi := MessageType{Desc: mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto3,
 		FullName: "ScalarProto3",
@@ -277,31 +298,31 @@ func TestScalarProto3(t *testing.T) {
 	})
 }
 
+type RepeatedScalars struct {
+	Bools    []bool    `protobuf:"1"`
+	Int32s   []int32   `protobuf:"2"`
+	Int64s   []int64   `protobuf:"3"`
+	Uint32s  []uint32  `protobuf:"4"`
+	Uint64s  []uint64  `protobuf:"5"`
+	Float32s []float32 `protobuf:"6"`
+	Float64s []float64 `protobuf:"7"`
+	Strings  []string  `protobuf:"8"`
+	StringsA [][]byte  `protobuf:"9"`
+	Bytes    [][]byte  `protobuf:"10"`
+	BytesA   []string  `protobuf:"11"`
+
+	MyStrings1 []MyString `protobuf:"12"`
+	MyStrings2 []MyBytes  `protobuf:"13"`
+	MyBytes1   []MyBytes  `protobuf:"14"`
+	MyBytes2   []MyString `protobuf:"15"`
+
+	MyStrings3 VectorStrings `protobuf:"16"`
+	MyStrings4 VectorBytes   `protobuf:"17"`
+	MyBytes3   VectorBytes   `protobuf:"18"`
+	MyBytes4   VectorStrings `protobuf:"19"`
+}
+
 func TestRepeatedScalars(t *testing.T) {
-	type RepeatedScalars struct {
-		Bools    []bool    `protobuf:"1"`
-		Int32s   []int32   `protobuf:"2"`
-		Int64s   []int64   `protobuf:"3"`
-		Uint32s  []uint32  `protobuf:"4"`
-		Uint64s  []uint64  `protobuf:"5"`
-		Float32s []float32 `protobuf:"6"`
-		Float64s []float64 `protobuf:"7"`
-		Strings  []string  `protobuf:"8"`
-		StringsA [][]byte  `protobuf:"9"`
-		Bytes    [][]byte  `protobuf:"10"`
-		BytesA   []string  `protobuf:"11"`
-
-		MyStrings1 []MyString `protobuf:"12"`
-		MyStrings2 []MyBytes  `protobuf:"13"`
-		MyBytes1   []MyBytes  `protobuf:"14"`
-		MyBytes2   []MyString `protobuf:"15"`
-
-		MyStrings3 NamedStrings `protobuf:"16"`
-		MyStrings4 NamedBytes   `protobuf:"17"`
-		MyBytes3   NamedBytes   `protobuf:"18"`
-		MyBytes4   NamedStrings `protobuf:"19"`
-	}
-
 	mi := MessageType{Desc: mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "RepeatedScalars",
@@ -351,10 +372,10 @@ func TestRepeatedScalars(t *testing.T) {
 		MyBytes1:   []MyBytes{[]byte("14"), nil, []byte("fourteen")},
 		MyBytes2:   []MyString{"15", "", "fifteen"},
 
-		MyStrings3: NamedStrings{"16", "", "sixteen"},
-		MyStrings4: NamedBytes{[]byte("17"), nil, []byte("seventeen")},
-		MyBytes3:   NamedBytes{[]byte("18"), nil, []byte("eighteen")},
-		MyBytes4:   NamedStrings{"19", "", "nineteen"},
+		MyStrings3: VectorStrings{"16", "", "sixteen"},
+		MyStrings4: VectorBytes{[]byte("17"), nil, []byte("seventeen")},
+		MyBytes3:   VectorBytes{[]byte("18"), nil, []byte("eighteen")},
+		MyBytes4:   VectorStrings{"19", "", "nineteen"},
 	})
 	wantFS := want.KnownFields()
 
@@ -418,38 +439,38 @@ func TestRepeatedScalars(t *testing.T) {
 	})
 }
 
+type MapScalars struct {
+	KeyBools   map[bool]string   `protobuf:"1"`
+	KeyInt32s  map[int32]string  `protobuf:"2"`
+	KeyInt64s  map[int64]string  `protobuf:"3"`
+	KeyUint32s map[uint32]string `protobuf:"4"`
+	KeyUint64s map[uint64]string `protobuf:"5"`
+	KeyStrings map[string]string `protobuf:"6"`
+
+	ValBools    map[string]bool    `protobuf:"7"`
+	ValInt32s   map[string]int32   `protobuf:"8"`
+	ValInt64s   map[string]int64   `protobuf:"9"`
+	ValUint32s  map[string]uint32  `protobuf:"10"`
+	ValUint64s  map[string]uint64  `protobuf:"11"`
+	ValFloat32s map[string]float32 `protobuf:"12"`
+	ValFloat64s map[string]float64 `protobuf:"13"`
+	ValStrings  map[string]string  `protobuf:"14"`
+	ValStringsA map[string][]byte  `protobuf:"15"`
+	ValBytes    map[string][]byte  `protobuf:"16"`
+	ValBytesA   map[string]string  `protobuf:"17"`
+
+	MyStrings1 map[MyString]MyString `protobuf:"18"`
+	MyStrings2 map[MyString]MyBytes  `protobuf:"19"`
+	MyBytes1   map[MyString]MyBytes  `protobuf:"20"`
+	MyBytes2   map[MyString]MyString `protobuf:"21"`
+
+	MyStrings3 MapStrings `protobuf:"22"`
+	MyStrings4 MapBytes   `protobuf:"23"`
+	MyBytes3   MapBytes   `protobuf:"24"`
+	MyBytes4   MapStrings `protobuf:"25"`
+}
+
 func TestMapScalars(t *testing.T) {
-	type MapScalars struct {
-		KeyBools   map[bool]string   `protobuf:"1"`
-		KeyInt32s  map[int32]string  `protobuf:"2"`
-		KeyInt64s  map[int64]string  `protobuf:"3"`
-		KeyUint32s map[uint32]string `protobuf:"4"`
-		KeyUint64s map[uint64]string `protobuf:"5"`
-		KeyStrings map[string]string `protobuf:"6"`
-
-		ValBools    map[string]bool    `protobuf:"7"`
-		ValInt32s   map[string]int32   `protobuf:"8"`
-		ValInt64s   map[string]int64   `protobuf:"9"`
-		ValUint32s  map[string]uint32  `protobuf:"10"`
-		ValUint64s  map[string]uint64  `protobuf:"11"`
-		ValFloat32s map[string]float32 `protobuf:"12"`
-		ValFloat64s map[string]float64 `protobuf:"13"`
-		ValStrings  map[string]string  `protobuf:"14"`
-		ValStringsA map[string][]byte  `protobuf:"15"`
-		ValBytes    map[string][]byte  `protobuf:"16"`
-		ValBytesA   map[string]string  `protobuf:"17"`
-
-		MyStrings1 map[MyString]MyString `protobuf:"18"`
-		MyStrings2 map[MyString]MyBytes  `protobuf:"19"`
-		MyBytes1   map[MyString]MyBytes  `protobuf:"20"`
-		MyBytes2   map[MyString]MyString `protobuf:"21"`
-
-		MyStrings3 MapStrings `protobuf:"22"`
-		MyStrings4 MapBytes   `protobuf:"23"`
-		MyBytes3   MapBytes   `protobuf:"24"`
-		MyBytes4   MapStrings `protobuf:"25"`
-	}
-
 	mustMakeMapEntry := func(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Field {
 		return ptype.Field{
 			Name:        pref.Name(fmt.Sprintf("f%d", n)),

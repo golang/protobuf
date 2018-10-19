@@ -60,8 +60,7 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
 			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
 				if fd.Kind() == pref.MessageKind || fd.Kind() == pref.GroupKind {
-					// Return a typed nil pointer of the message type to be
-					// consistent with the behavior of generated getters.
+					// TODO: Should this return an invalid protoreflect.Value?
 					rv = reflect.Zero(ot.Field(0).Type)
 					return conv.toPB(rv)
 				}
@@ -197,6 +196,8 @@ func (ms mapReflect) Unwrap() interface{} { // TODO: unexport?
 	return ms.v.Interface()
 }
 func (ms mapReflect) ProtoMutable() {}
+
+var _ pref.Map = mapReflect{}
 
 func fieldInfoForVector(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
 	ft := fs.Type
@@ -349,8 +350,44 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 }
 
 func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
-	// TODO: support vector fields.
-	panic(fmt.Sprintf("invalid field: %v", fd))
+	ft := fs.Type
+	conv := matchGoTypePBKind(ft, fd.Kind())
+	fieldOffset := offsetOf(fs)
+	// TODO: Implement unsafe fast path?
+	return fieldInfo{
+		has: func(p pointer) bool {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			return !rv.IsNil()
+		},
+		get: func(p pointer) pref.Value {
+			// TODO: If rv.IsNil(), should this return a typed-nil pointer or
+			// an invalid protoreflect.Value?
+			//
+			// Returning a typed nil pointer assumes that such values
+			// are valid for all possible custom message types,
+			// which may not be case for dynamic messages.
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			return conv.toPB(rv)
+		},
+		set: func(p pointer, v pref.Value) {
+			// TODO: Similarly, is it valid to set this to a typed nil pointer?
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv.Set(conv.toGo(v))
+		},
+		clear: func(p pointer) {
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv.Set(reflect.Zero(rv.Type()))
+		},
+		mutable: func(p pointer) pref.Mutable {
+			// Mutable is only valid for messages and panics for other kinds.
+			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if rv.IsNil() {
+				pv := pref.ValueOf(conv.newMessage())
+				rv.Set(conv.toGo(pv))
+			}
+			return conv.toPB(rv).Message()
+		},
+	}
 }
 
 // messageV1 is the protoV1.Message interface.
@@ -424,22 +461,84 @@ func matchGoTypePBKind(t reflect.Type, k pref.Kind) converter {
 	case pref.EnumKind:
 		// Handle v2 enums, which must satisfy the proto.Enum interface.
 		if t.Kind() != reflect.Ptr && t.Implements(enumIfaceV2) {
-			// TODO: implement this.
+			et := reflect.Zero(t).Interface().(pref.ProtoEnum).ProtoReflect().Type()
+			return converter{
+				toPB: func(v reflect.Value) pref.Value {
+					if v.Type() != t {
+						panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
+					}
+					e := v.Interface().(pref.ProtoEnum)
+					return pref.ValueOf(e.ProtoReflect().Number())
+				},
+				toGo: func(v pref.Value) reflect.Value {
+					rv := reflect.ValueOf(et.GoNew(v.Enum()))
+					if rv.Type() != t {
+						panic(fmt.Sprintf("invalid type: got %v, want %v", rv.Type(), t))
+					}
+					return rv
+				},
+			}
 		}
 
 		// Handle v1 enums, which we identify as simply a named int32 type.
 		if t.Kind() == reflect.Int32 && t.PkgPath() != "" {
-			// TODO: need logic to wrap a legacy enum to implement this.
+			return converter{
+				toPB: func(v reflect.Value) pref.Value {
+					if v.Type() != t {
+						panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
+					}
+					return pref.ValueOf(pref.EnumNumber(v.Int()))
+				},
+				toGo: func(v pref.Value) reflect.Value {
+					return reflect.ValueOf(v.Enum()).Convert(t)
+				},
+			}
 		}
 	case pref.MessageKind, pref.GroupKind:
 		// Handle v2 messages, which must satisfy the proto.Message interface.
 		if t.Kind() == reflect.Ptr && t.Implements(messageIfaceV2) {
-			// TODO: implement this.
+			mt := reflect.Zero(t).Interface().(pref.ProtoMessage).ProtoReflect().Type()
+			return converter{
+				toPB: func(v reflect.Value) pref.Value {
+					if v.Type() != t {
+						panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
+					}
+					return pref.ValueOf(v.Interface())
+				},
+				toGo: func(v pref.Value) reflect.Value {
+					rv := reflect.ValueOf(v.Message())
+					if rv.Type() != t {
+						panic(fmt.Sprintf("invalid type: got %v, want %v", rv.Type(), t))
+					}
+					return rv
+				},
+				newMessage: func() pref.Message {
+					return mt.GoNew().ProtoReflect()
+				},
+			}
 		}
 
 		// Handle v1 messages, which we need to wrap as a v2 message.
 		if t.Kind() == reflect.Ptr && t.Implements(messageIfaceV1) {
-			// TODO: need logic to wrap a legacy message.
+			return converter{
+				toPB: func(v reflect.Value) pref.Value {
+					if v.Type() != t {
+						panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
+					}
+					return pref.ValueOf(wrapLegacyMessage(v))
+				},
+				toGo: func(v pref.Value) reflect.Value {
+					type unwrapper interface{ Unwrap() interface{} }
+					rv := reflect.ValueOf(v.Message().(unwrapper).Unwrap())
+					if rv.Type() != t {
+						panic(fmt.Sprintf("invalid type: got %v, want %v", rv.Type(), t))
+					}
+					return rv
+				},
+				newMessage: func() pref.Message {
+					return wrapLegacyMessage(reflect.New(t.Elem()))
+				},
+			}
 		}
 	}
 	panic(fmt.Sprintf("invalid Go type %v for protobuf kind %v", t, k))

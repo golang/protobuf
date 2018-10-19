@@ -18,10 +18,26 @@ import (
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
+var messageTypeCache sync.Map // map[reflect.Type]*MessageType
+
+// wrapLegacyMessage wraps v as a protoreflect.Message, where v must be
+// a *struct kind and not implement the v2 API already.
+func wrapLegacyMessage(v reflect.Value) pref.Message {
+	// Fast-path: check if a MessageType is cached for this concrete type.
+	if mt, ok := messageTypeCache.Load(v.Type()); ok {
+		return mt.(*MessageType).MessageOf(v.Interface())
+	}
+
+	// Slow-path: derive message descriptor and initialize MessageType.
+	mt := &MessageType{Desc: loadMessageDesc(v.Type())}
+	messageTypeCache.Store(v.Type(), mt)
+	return mt.MessageOf(v.Interface())
+}
+
 var messageDescCache sync.Map // map[reflect.Type]protoreflect.MessageDescriptor
 
 // loadMessageDesc returns an MessageDescriptor derived from the Go type,
-// which must be an *struct kind and not implement the v2 API already.
+// which must be a *struct kind and not implement the v2 API already.
 func loadMessageDesc(t reflect.Type) pref.MessageDescriptor {
 	return messageDescSet{}.Load(t)
 }
