@@ -682,7 +682,36 @@ func fieldProtobufTag(field *protogen.Field) string {
 				def = "0"
 			}
 		case protoreflect.BytesKind:
-			def = string(field.Desc.Default().Bytes())
+			// Preserve protoc-gen-go's historical output of escaped bytes.
+			// This behavior is buggy, but fixing it makes it impossible to
+			// distinguish between the escaped and unescaped forms.
+			//
+			// To match the exact output of protoc, this is identical to the
+			// CEscape function in strutil.cc of the protoc source code.
+			var b []byte
+			for _, c := range field.Desc.Default().Bytes() {
+				switch c {
+				case '\n':
+					b = append(b, `\n`...)
+				case '\r':
+					b = append(b, `\r`...)
+				case '\t':
+					b = append(b, `\t`...)
+				case '"':
+					b = append(b, `\"`...)
+				case '\'':
+					b = append(b, `\'`...)
+				case '\\':
+					b = append(b, `\\`...)
+				default:
+					if c >= 0x20 && c <= 0x7e {
+						b = append(b, c)
+					} else {
+						b = append(b, fmt.Sprintf(`\%03o`, c)...)
+					}
+				}
+			}
+			def = string(b)
 		case protoreflect.FloatKind, protoreflect.DoubleKind:
 			f := field.Desc.Default().Float()
 			switch {

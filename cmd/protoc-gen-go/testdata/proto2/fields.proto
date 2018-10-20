@@ -86,8 +86,8 @@ message FieldTestMessage {
   optional sfixed64 default_sfixed64 = 312 [default=1];
   optional fixed64  default_fixed64  = 313 [default=1];
   optional double   default_double   = 314 [default=3.1415];
-  optional string   default_string   = 315 [default="x,y"];
-  optional bytes    default_bytes    = 316 [default="x,y"];
+  optional string   default_string   = 315 [default="hello,\"world!\"\n"];
+  optional bytes    default_bytes    = 316 [default="hello,\xde\xad\xbe\xef"];
 
   optional string default_zero_string = 350 [default=""];
   optional bytes  default_zero_bytes  = 351 [default=""];
