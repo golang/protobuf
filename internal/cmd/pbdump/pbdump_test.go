@@ -67,7 +67,7 @@ func TestFields(t *testing.T) {
 					Name: "M20",
 					Fields: []ptype.Field{
 						{Name: "f30", Number: 30, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: ptype.PlaceholderMessage("M.M10.M20.M30")},
-						{Name: "f31", Number: 31, Cardinality: pref.Repeated, IsPacked: true, Kind: pref.Int32Kind},
+						{Name: "f31", Number: 31, Cardinality: pref.Repeated, Kind: pref.Int32Kind},
 					},
 					Messages: []ptype.Message{{
 						Name: "M30",
@@ -87,6 +87,7 @@ func TestFields(t *testing.T) {
 			return x.FullName() == y.FullName()
 		}),
 		cmpopts.IgnoreFields(ptype.Field{}, "Default"),
+		cmpopts.IgnoreFields(ptype.Field{}, "Options"),
 		cmpopts.IgnoreUnexported(ptype.Message{}, ptype.Field{}),
 	}
 	for _, tt := range tests {

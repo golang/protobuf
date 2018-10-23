@@ -13,6 +13,8 @@ import (
 	"sync"
 	"unicode"
 
+	protoV1 "github.com/golang/protobuf/proto"
+	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/internal/encoding/text"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
@@ -179,6 +181,9 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, t reflect.Type,
 		t = t.Elem()
 	}
 
+	f.Options = &descriptorV1.FieldOptions{
+		Packed: protoV1.Bool(false),
+	}
 	for len(tag) > 0 {
 		i := strings.IndexByte(tag, ',')
 		if i < 0 {
@@ -251,9 +256,9 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, t reflect.Type,
 		case strings.HasPrefix(s, "json="):
 			f.JSONName = s[len("json="):]
 		case s == "packed":
-			f.IsPacked = true
+			*f.Options.Packed = true
 		case strings.HasPrefix(s, "weak="):
-			f.IsWeak = true
+			f.Options.Weak = protoV1.Bool(true)
 			f.MessageType = ptype.PlaceholderMessage(pref.FullName(s[len("weak="):]))
 		case strings.HasPrefix(s, "def="):
 			// The default tag is special in that everything afterwards is the
@@ -333,9 +338,9 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, t reflect.Type,
 			f.MessageType = mv.ProtoReflect().Type()
 		} else if t.Kind() == reflect.Map {
 			m := &ptype.StandaloneMessage{
-				Syntax:     parent.Syntax,
-				FullName:   parent.FullName.Append(mapEntryName(f.Name)),
-				IsMapEntry: true,
+				Syntax:   parent.Syntax,
+				FullName: parent.FullName.Append(mapEntryName(f.Name)),
+				Options:  &descriptorV1.MessageOptions{MapEntry: protoV1.Bool(true)},
 				Fields: []ptype.Field{
 					ms.parseField(tagKey, "", "", t.Key(), nil),
 					ms.parseField(tagVal, "", "", t.Elem(), nil),

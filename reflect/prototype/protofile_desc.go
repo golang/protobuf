@@ -64,6 +64,7 @@ func NewFileFromDescriptorProto(fd *descriptorV1.FileDescriptorProto, r *protore
 	}
 	f.Path = fd.GetName()
 	f.Package = protoreflect.FullName(fd.GetPackage())
+	f.Options = fd.GetOptions()
 
 	f.Imports = make([]protoreflect.FileImport, len(fd.GetDependency()))
 	for _, i := range fd.GetPublicDependency() {
@@ -119,25 +120,15 @@ func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, syntax pro
 	for _, md := range mds {
 		var m Message
 		m.Name = protoreflect.Name(md.GetName())
-		m.IsMapEntry = md.GetOptions().GetMapEntry()
+		m.Options = md.GetOptions()
 		for _, fd := range md.GetField() {
 			var f Field
 			f.Name = protoreflect.Name(fd.GetName())
 			f.Number = protoreflect.FieldNumber(fd.GetNumber())
 			f.Cardinality = protoreflect.Cardinality(fd.GetLabel())
 			f.Kind = protoreflect.Kind(fd.GetType())
+			f.Options = fd.GetOptions()
 			f.JSONName = fd.GetJsonName()
-			if opts := fd.GetOptions(); opts != nil && opts.Packed != nil {
-				f.IsPacked = *opts.Packed
-			} else {
-				// https://developers.google.com/protocol-buffers/docs/proto3:
-				// "In proto3, repeated fields of scalar numeric types use packed
-				// encoding by default."
-				f.IsPacked = (syntax == protoreflect.Proto3 &&
-					f.Cardinality == protoreflect.Repeated &&
-					isScalarNumeric[f.Kind])
-			}
-			f.IsWeak = fd.GetOptions().GetWeak()
 			if fd.DefaultValue != nil {
 				f.Default, err = parseDefault(fd.GetDefaultValue(), f.Kind)
 				if err != nil {
@@ -157,7 +148,7 @@ func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, syntax pro
 				if err != nil {
 					return nil, err
 				}
-				if f.IsWeak && !f.EnumType.IsPlaceholder() {
+				if f.Options.GetWeak() && !f.EnumType.IsPlaceholder() {
 					f.EnumType = PlaceholderEnum(f.EnumType.FullName())
 				}
 			case protoreflect.MessageKind, protoreflect.GroupKind:
@@ -165,16 +156,20 @@ func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, syntax pro
 				if err != nil {
 					return nil, err
 				}
-				if f.IsWeak && !f.MessageType.IsPlaceholder() {
+				if f.Options.GetWeak() && !f.MessageType.IsPlaceholder() {
 					f.MessageType = PlaceholderMessage(f.MessageType.FullName())
 				}
 			}
 			m.Fields = append(m.Fields, f)
 		}
 		for _, od := range md.GetOneofDecl() {
-			m.Oneofs = append(m.Oneofs, Oneof{Name: protoreflect.Name(od.GetName())})
+			m.Oneofs = append(m.Oneofs, Oneof{
+				Name:    protoreflect.Name(od.GetName()),
+				Options: od.Options,
+			})
 		}
 		for _, xr := range md.GetExtensionRange() {
+			// TODO: Extension range options.
 			m.ExtensionRanges = append(m.ExtensionRanges, [2]protoreflect.FieldNumber{
 				protoreflect.FieldNumber(xr.GetStart()),
 				protoreflect.FieldNumber(xr.GetEnd()),
@@ -199,31 +194,16 @@ func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, syntax pro
 	return ms, nil
 }
 
-var isScalarNumeric = map[protoreflect.Kind]bool{
-	protoreflect.BoolKind:     true,
-	protoreflect.EnumKind:     true,
-	protoreflect.Int32Kind:    true,
-	protoreflect.Sint32Kind:   true,
-	protoreflect.Uint32Kind:   true,
-	protoreflect.Int64Kind:    true,
-	protoreflect.Sint64Kind:   true,
-	protoreflect.Uint64Kind:   true,
-	protoreflect.Sfixed32Kind: true,
-	protoreflect.Fixed32Kind:  true,
-	protoreflect.FloatKind:    true,
-	protoreflect.Sfixed64Kind: true,
-	protoreflect.Fixed64Kind:  true,
-	protoreflect.DoubleKind:   true,
-}
-
 func enumsFromDescriptorProto(eds []*descriptorV1.EnumDescriptorProto, r *protoregistry.Files) (es []Enum, err error) {
 	for _, ed := range eds {
 		var e Enum
 		e.Name = protoreflect.Name(ed.GetName())
+		e.Options = ed.GetOptions()
 		for _, vd := range ed.GetValue() {
 			e.Values = append(e.Values, EnumValue{
-				Name:   protoreflect.Name(vd.GetName()),
-				Number: protoreflect.EnumNumber(vd.GetNumber()),
+				Name:    protoreflect.Name(vd.GetName()),
+				Number:  protoreflect.EnumNumber(vd.GetNumber()),
+				Options: vd.Options,
 			})
 		}
 		es = append(es, e)
@@ -238,12 +218,7 @@ func extensionsFromDescriptorProto(xds []*descriptorV1.FieldDescriptorProto, r *
 		x.Number = protoreflect.FieldNumber(xd.GetNumber())
 		x.Cardinality = protoreflect.Cardinality(xd.GetLabel())
 		x.Kind = protoreflect.Kind(xd.GetType())
-		// TODO: When a proto3 file extends a proto2 message (permitted only for
-		// extending descriptor options), does the extension have proto2 or proto3
-		// semantics? If the latter, repeated, scalar, numeric, proto3 extension
-		// fields should default to packed. If the former, perhaps the extension syntax
-		// should be protoreflect.Proto2.
-		x.IsPacked = xd.GetOptions().GetPacked()
+		x.Options = xd.GetOptions()
 		if xd.DefaultValue != nil {
 			x.Default, err = parseDefault(xd.GetDefaultValue(), x.Kind)
 			if err != nil {
@@ -275,9 +250,11 @@ func servicesFromDescriptorProto(sds []*descriptorV1.ServiceDescriptorProto, r *
 	for _, sd := range sds {
 		var s Service
 		s.Name = protoreflect.Name(sd.GetName())
+		s.Options = sd.GetOptions()
 		for _, md := range sd.GetMethod() {
 			var m Method
 			m.Name = protoreflect.Name(md.GetName())
+			m.Options = md.GetOptions()
 			m.InputType, err = findMessageDescriptor(md.GetInputType(), r)
 			if err != nil {
 				return nil, err

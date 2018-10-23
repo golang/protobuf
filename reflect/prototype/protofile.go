@@ -14,6 +14,7 @@
 package prototype
 
 import (
+	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -35,15 +36,15 @@ import (
 
 // File is a constructor for protoreflect.FileDescriptor.
 type File struct {
-	Syntax  protoreflect.Syntax
-	Path    string
-	Package protoreflect.FullName
-	Imports []protoreflect.FileImport
-
+	Syntax     protoreflect.Syntax
+	Path       string
+	Package    protoreflect.FullName
+	Imports    []protoreflect.FileImport
 	Messages   []Message
 	Enums      []Enum
 	Extensions []Extension
 	Services   []Service
+	Options    *descriptorV1.FileOptions
 
 	*fileMeta
 }
@@ -72,14 +73,13 @@ func NewFile(t *File) (protoreflect.FileDescriptor, error) {
 // Message is a constructor for protoreflect.MessageDescriptor.
 type Message struct {
 	Name            protoreflect.Name
-	IsMapEntry      bool
 	Fields          []Field
 	Oneofs          []Oneof
 	ExtensionRanges [][2]protoreflect.FieldNumber
-
-	Messages   []Message
-	Enums      []Enum
-	Extensions []Extension
+	Messages        []Message
+	Enums           []Enum
+	Extensions      []Extension
+	Options         *descriptorV1.MessageOptions
 
 	*messageMeta
 }
@@ -91,19 +91,19 @@ type Field struct {
 	Cardinality protoreflect.Cardinality
 	Kind        protoreflect.Kind
 	JSONName    string
-	IsPacked    bool
-	IsWeak      bool
 	Default     protoreflect.Value
 	OneofName   protoreflect.Name
 	MessageType protoreflect.MessageDescriptor
 	EnumType    protoreflect.EnumDescriptor
+	Options     *descriptorV1.FieldOptions
 
 	*fieldMeta
 }
 
 // Oneof is a constructor for protoreflect.OneofDescriptor.
 type Oneof struct {
-	Name protoreflect.Name
+	Name    protoreflect.Name
+	Options *descriptorV1.OneofOptions
 
 	*oneofMeta
 }
@@ -114,27 +114,29 @@ type Extension struct {
 	Number       protoreflect.FieldNumber
 	Cardinality  protoreflect.Cardinality
 	Kind         protoreflect.Kind
-	IsPacked     bool
 	Default      protoreflect.Value
 	MessageType  protoreflect.MessageDescriptor
 	EnumType     protoreflect.EnumDescriptor
 	ExtendedType protoreflect.MessageDescriptor
+	Options      *descriptorV1.FieldOptions
 
 	*extensionMeta
 }
 
 // Enum is a constructor for protoreflect.EnumDescriptor.
 type Enum struct {
-	Name   protoreflect.Name
-	Values []EnumValue
+	Name    protoreflect.Name
+	Values  []EnumValue
+	Options *descriptorV1.EnumOptions
 
 	*enumMeta
 }
 
 // EnumValue is a constructor for protoreflect.EnumValueDescriptor.
 type EnumValue struct {
-	Name   protoreflect.Name
-	Number protoreflect.EnumNumber
+	Name    protoreflect.Name
+	Number  protoreflect.EnumNumber
+	Options *descriptorV1.EnumValueOptions
 
 	*enumValueMeta
 }
@@ -143,6 +145,7 @@ type EnumValue struct {
 type Service struct {
 	Name    protoreflect.Name
 	Methods []Method
+	Options *descriptorV1.ServiceOptions
 
 	*serviceMeta
 }
@@ -154,6 +157,7 @@ type Method struct {
 	OutputType        protoreflect.MessageDescriptor
 	IsStreamingClient bool
 	IsStreamingServer bool
+	Options           *descriptorV1.MethodOptions
 
 	*methodMeta
 }

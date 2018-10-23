@@ -14,6 +14,8 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 
 	"github.com/golang/protobuf/proto"
+	protoV1 "github.com/golang/protobuf/proto"
+	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
@@ -461,7 +463,7 @@ func TestMapScalars(t *testing.T) {
 					{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: keyKind},
 					{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: valKind},
 				},
-				IsMapEntry: true,
+				Options: &descriptorV1.MessageOptions{MapEntry: protoV1.Bool(true)},
 			}),
 		}
 	}

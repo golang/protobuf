@@ -99,6 +99,8 @@ func TestLegacy(t *testing.T) {
 					switch name {
 					case "Index":
 						// Ignore index since legacy descriptors have no parent.
+					case "Options":
+						// Ignore descriptor options since protos are not cmperable.
 					case "Messages", "Enums":
 						// Ignore nested message and enum declarations since
 						// legacy descriptors are all created standalone.

@@ -104,57 +104,30 @@ type Descriptor interface {
 	// Support for this functionality is optional and may return (nil, false).
 	DescriptorProto() (Message, bool)
 
-	// DescriptorOptions is a helper for accessing the proto options specified
-	// on any of the descriptor types. It is functionally equivalent to
-	// accessing the "options" field in the descriptor and providing a set of
-	// efficient lookup methods.
+	// Options returns the descriptor options. The caller must not modify
+	// the returned value.
 	//
-	// Support for this functionality is optional and may return (nil, false).
-	DescriptorOptions() (DescriptorOptions, bool)
-
-	doNotImplement
-}
-
-// DescriptorOptions is a wrapper around proto options.
-//
-// The proto message type for each descriptor type is as follows:
-//	+---------------------+----------------------------------+
-//	| Go type             | Proto message type               |
-//	+---------------------+----------------------------------+
-//	| FileDescriptor      | google.protobuf.FileOptions      |
-//	| MessageDescriptor   | google.protobuf.MessageOptions   |
-//	| FieldDescriptor     | google.protobuf.FieldOptions     |
-//	| OneofDescriptor     | google.protobuf.OneofOptions     |
-//	| EnumDescriptor      | google.protobuf.EnumOptions      |
-//	| EnumValueDescriptor | google.protobuf.EnumValueOptions |
-//	| ServiceDescriptor   | google.protobuf.ServiceOptions   |
-//	| MethodDescriptor    | google.protobuf.MethodOptions    |
-//	+---------------------+----------------------------------+
-//
-// The values returned by Get, ByName, and ByNumber are considered frozen and
-// mutating operations must not be performed on values returned by them.
-type DescriptorOptions interface {
-	// Len reports the total number of option fields,
-	// including both fields declared in the options proto and extensions, and
-	// including fields that are declared but not set in the proto file.
-	Len() int
-
-	// Get returns the ith field. It panics if out of bounds.
-	// The FieldDescriptor is guaranteed to be non-nil, while the Value
-	// may be invalid if the proto file did not specify this option.
-	Get(i int) (FieldDescriptor, Value)
-
-	// ByName looks a field up by full name and
-	// returns (nil, Value{}) if not found.
+	// To avoid a dependency cycle, this function returns an interface value.
+	// The proto message type returned for each descriptor type is as follows:
+	//	+---------------------+------------------------------------------+
+	//	| Go type             | Proto message type                       |
+	//	+---------------------+------------------------------------------+
+	//	| FileDescriptor      | google.protobuf.FileOptions              |
+	//	| MessageDescriptor   | google.protobuf.MessageOptions           |
+	//	| FieldDescriptor     | google.protobuf.FieldOptions             |
+	//	| OneofDescriptor     | google.protobuf.OneofOptions             |
+	//	| EnumDescriptor      | google.protobuf.EnumOptions              |
+	//	| EnumValueDescriptor | google.protobuf.EnumValueOptions         |
+	//	| ServiceDescriptor   | google.protobuf.ServiceOptions           |
+	//	| MethodDescriptor    | google.protobuf.MethodOptions            |
+	//	+---------------------+------------------------------------------+
 	//
-	// As a special-case, non-extension fields in the options type can be
-	// directly accessed by the field name alone (e.g., "map_entry" may be used
-	// instead of "google.protobuf.MessageOptions.map_entry").
-	ByName(s FullName) (FieldDescriptor, Value)
-
-	// ByNumber looks a field up by the field number and
-	// returns (nil, Value{}) if not found.
-	ByNumber(n FieldNumber) (FieldDescriptor, Value)
+	// This method will never return a nil interface value, although the
+	// concrete value contained in the interface may be nil (e.g.,
+	// (*descpb.FileOptions)(nil)).
+	//
+	// TODO: Return ProtoMessage instead of interface{}.
+	Options() interface{}
 
 	doNotImplement
 }

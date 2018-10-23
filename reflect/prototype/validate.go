@@ -26,6 +26,9 @@ import (
 //	* Placeholder messages and types may only be for weak fields.
 //	* Placeholder full names must be valid.
 //	* The name of each descriptor must be valid.
+//	* Options are consistent with constructor fields:
+//		Message.IsMapEntry and Message.Options.MapEntry
+//		Field.IsPacked and Field.Options.Packed
 
 func validateFile(t pref.FileDescriptor) error {
 	return nil

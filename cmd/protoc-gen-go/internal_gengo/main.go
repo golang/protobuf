@@ -237,13 +237,13 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	g.PrintLeadingComments(enum.Location)
 	g.Annotate(enum.GoIdent.GoName, enum.Location)
 	g.P("type ", enum.GoIdent, " int32",
-		deprecationComment(enumOptions(gen, enum).GetDeprecated()))
+		deprecationComment(enum.Desc.Options().(*descpb.EnumOptions).GetDeprecated()))
 	g.P("const (")
 	for _, value := range enum.Values {
 		g.PrintLeadingComments(value.Location)
 		g.Annotate(value.GoIdent.GoName, value.Location)
 		g.P(value.GoIdent, " ", enum.GoIdent, " = ", value.Desc.Number(),
-			deprecationComment(enumValueOptions(gen, value).GetDeprecated()))
+			deprecationComment(value.Desc.Options().(*descpb.EnumValueOptions).GetDeprecated()))
 	}
 	g.P(")")
 	g.P()
@@ -333,7 +333,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	}
 
 	hasComment := g.PrintLeadingComments(message.Location)
-	if messageOptions(gen, message).GetDeprecated() {
+	if message.Desc.Options().(*descpb.MessageOptions).GetDeprecated() {
 		if hasComment {
 			g.P("//")
 		}
@@ -371,13 +371,13 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		}
 		g.Annotate(message.GoIdent.GoName+"."+field.GoName, field.Location)
 		g.P(field.GoName, " ", goType, " `", strings.Join(tags, " "), "`",
-			deprecationComment(fieldOptions(gen, field).GetDeprecated()))
+			deprecationComment(field.Desc.Options().(*descpb.FieldOptions).GetDeprecated()))
 	}
 	g.P("XXX_NoUnkeyedLiteral struct{} `json:\"-\"`")
 
 	if message.Desc.ExtensionRanges().Len() > 0 {
 		var tags []string
-		if messageOptions(gen, message).GetMessageSetWireFormat() {
+		if message.Desc.Options().(*descpb.MessageOptions).GetMessageSetWireFormat() {
 			tags = append(tags, `protobuf_messageset:"1"`)
 		}
 		tags = append(tags, `json:"-"`)
@@ -413,7 +413,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 
 	// ExtensionRangeArray
 	if extranges := message.Desc.ExtensionRanges(); extranges.Len() > 0 {
-		if messageOptions(gen, message).GetMessageSetWireFormat() {
+		if message.Desc.Options().(*descpb.MessageOptions).GetMessageSetWireFormat() {
 			g.P("func (m *", message.GoIdent, ") MarshalJSON() ([]byte, error) {")
 			g.P("return ", protogen.GoIdent{
 				GoImportPath: protoPackage,
@@ -545,7 +545,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		}
 		goType, pointer := fieldGoType(g, field)
 		defaultValue := fieldDefaultValue(g, message, field)
-		if fieldOptions(gen, field).GetDeprecated() {
+		if field.Desc.Options().(*descpb.FieldOptions).GetDeprecated() {
 			g.P(deprecationComment(true))
 		}
 		g.Annotate(message.GoIdent.GoName+".Get"+field.GoName, field.Location)
@@ -836,7 +836,7 @@ func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, 
 
 func isExtensionMessageSetElement(gen *protogen.Plugin, extension *protogen.Extension) bool {
 	return extension.ParentMessage != nil &&
-		messageOptions(gen, extension.ExtendedType).GetMessageSetWireFormat() &&
+		extension.ExtendedType.Desc.Options().(*descpb.MessageOptions).GetMessageSetWireFormat() &&
 		extension.Desc.Name() == "message_set_extension"
 }
 

@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 
+	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -20,9 +21,6 @@ type inheritedMeta struct {
 	index    int
 	syntax   pref.Syntax
 	fullName pref.FullName
-
-	desc descriptorSubMeta
-	opts descriptorOptionsMeta
 }
 
 func (m *inheritedMeta) init(nb *nameBuilder, parent pref.Descriptor, index int, name pref.Name, child bool) {
@@ -41,9 +39,6 @@ func (m *inheritedMeta) init(nb *nameBuilder, parent pref.Descriptor, index int,
 }
 
 type fileMeta struct {
-	desc descriptorFileMeta
-	opts descriptorOptionsMeta
-
 	ms messagesMeta
 	es enumsMeta
 	xs extensionsMeta
@@ -59,25 +54,25 @@ func newFile(f *File) fileDesc {
 	f.fileMeta = new(fileMeta)
 	return fileDesc{f}
 }
-func (t fileDesc) Parent() (pref.Descriptor, bool)                   { return nil, false }
-func (t fileDesc) Index() int                                        { return 0 }
-func (t fileDesc) Syntax() pref.Syntax                               { return t.f.Syntax }
-func (t fileDesc) Name() pref.Name                                   { return t.f.Package.Name() }
-func (t fileDesc) FullName() pref.FullName                           { return t.f.Package }
-func (t fileDesc) IsPlaceholder() bool                               { return false }
-func (t fileDesc) DescriptorProto() (pref.Message, bool)             { return t.f.desc.lazyInit(t) }
-func (t fileDesc) DescriptorOptions() (pref.DescriptorOptions, bool) { return t.f.opts.lazyInit(t) }
-func (t fileDesc) Path() string                                      { return t.f.Path }
-func (t fileDesc) Package() pref.FullName                            { return t.f.Package }
-func (t fileDesc) Imports() pref.FileImports                         { return (*fileImports)(&t.f.Imports) }
-func (t fileDesc) Messages() pref.MessageDescriptors                 { return t.f.ms.lazyInit(t, t.f.Messages) }
-func (t fileDesc) Enums() pref.EnumDescriptors                       { return t.f.es.lazyInit(t, t.f.Enums) }
-func (t fileDesc) Extensions() pref.ExtensionDescriptors             { return t.f.xs.lazyInit(t, t.f.Extensions) }
-func (t fileDesc) Services() pref.ServiceDescriptors                 { return t.f.ss.lazyInit(t, t.f.Services) }
-func (t fileDesc) DescriptorByName(s pref.FullName) pref.Descriptor  { return t.f.ds.lookup(t, s) }
-func (t fileDesc) Format(s fmt.State, r rune)                        { formatDesc(s, r, t) }
-func (t fileDesc) ProtoType(pref.FileDescriptor)                     {}
-func (t fileDesc) ProtoInternal(pragma.DoNotImplement)               {}
+func (t fileDesc) Parent() (pref.Descriptor, bool)                  { return nil, false }
+func (t fileDesc) Index() int                                       { return 0 }
+func (t fileDesc) Syntax() pref.Syntax                              { return t.f.Syntax }
+func (t fileDesc) Name() pref.Name                                  { return t.f.Package.Name() }
+func (t fileDesc) FullName() pref.FullName                          { return t.f.Package }
+func (t fileDesc) IsPlaceholder() bool                              { return false }
+func (t fileDesc) DescriptorProto() (pref.Message, bool)            { return nil, false }
+func (t fileDesc) Options() interface{}                             { return t.f.Options }
+func (t fileDesc) Path() string                                     { return t.f.Path }
+func (t fileDesc) Package() pref.FullName                           { return t.f.Package }
+func (t fileDesc) Imports() pref.FileImports                        { return (*fileImports)(&t.f.Imports) }
+func (t fileDesc) Messages() pref.MessageDescriptors                { return t.f.ms.lazyInit(t, t.f.Messages) }
+func (t fileDesc) Enums() pref.EnumDescriptors                      { return t.f.es.lazyInit(t, t.f.Enums) }
+func (t fileDesc) Extensions() pref.ExtensionDescriptors            { return t.f.xs.lazyInit(t, t.f.Extensions) }
+func (t fileDesc) Services() pref.ServiceDescriptors                { return t.f.ss.lazyInit(t, t.f.Services) }
+func (t fileDesc) DescriptorByName(s pref.FullName) pref.Descriptor { return t.f.ds.lookup(t, s) }
+func (t fileDesc) Format(s fmt.State, r rune)                       { formatDesc(s, r, t) }
+func (t fileDesc) ProtoType(pref.FileDescriptor)                    {}
+func (t fileDesc) ProtoInternal(pragma.DoNotImplement)              {}
 
 // descriptorsMeta is a lazily initialized map of all descriptors declared in
 // the file by full name.
@@ -166,25 +161,25 @@ type messageMeta struct {
 }
 type messageDesc struct{ m *Message }
 
-func (t messageDesc) Parent() (pref.Descriptor, bool)                   { return t.m.parent, true }
-func (t messageDesc) Index() int                                        { return t.m.index }
-func (t messageDesc) Syntax() pref.Syntax                               { return t.m.syntax }
-func (t messageDesc) Name() pref.Name                                   { return t.m.Name }
-func (t messageDesc) FullName() pref.FullName                           { return t.m.fullName }
-func (t messageDesc) IsPlaceholder() bool                               { return false }
-func (t messageDesc) DescriptorProto() (pref.Message, bool)             { return t.m.desc.lazyInit(t) }
-func (t messageDesc) DescriptorOptions() (pref.DescriptorOptions, bool) { return t.m.opts.lazyInit(t) }
-func (t messageDesc) IsMapEntry() bool                                  { return t.m.IsMapEntry }
-func (t messageDesc) Fields() pref.FieldDescriptors                     { return t.m.fs.lazyInit(t, t.m.Fields) }
-func (t messageDesc) Oneofs() pref.OneofDescriptors                     { return t.m.os.lazyInit(t, t.m.Oneofs) }
-func (t messageDesc) RequiredNumbers() pref.FieldNumbers                { return t.m.ns.lazyInit(t.m.Fields) }
-func (t messageDesc) ExtensionRanges() pref.FieldRanges                 { return (*ranges)(&t.m.ExtensionRanges) }
-func (t messageDesc) Messages() pref.MessageDescriptors                 { return t.m.ms.lazyInit(t, t.m.Messages) }
-func (t messageDesc) Enums() pref.EnumDescriptors                       { return t.m.es.lazyInit(t, t.m.Enums) }
-func (t messageDesc) Extensions() pref.ExtensionDescriptors             { return t.m.xs.lazyInit(t, t.m.Extensions) }
-func (t messageDesc) Format(s fmt.State, r rune)                        { formatDesc(s, r, t) }
-func (t messageDesc) ProtoType(pref.MessageDescriptor)                  {}
-func (t messageDesc) ProtoInternal(pragma.DoNotImplement)               {}
+func (t messageDesc) Parent() (pref.Descriptor, bool)       { return t.m.parent, true }
+func (t messageDesc) Index() int                            { return t.m.index }
+func (t messageDesc) Syntax() pref.Syntax                   { return t.m.syntax }
+func (t messageDesc) Name() pref.Name                       { return t.m.Name }
+func (t messageDesc) FullName() pref.FullName               { return t.m.fullName }
+func (t messageDesc) IsPlaceholder() bool                   { return false }
+func (t messageDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t messageDesc) Options() interface{}                  { return t.m.Options }
+func (t messageDesc) IsMapEntry() bool                      { return t.m.Options.GetMapEntry() }
+func (t messageDesc) Fields() pref.FieldDescriptors         { return t.m.fs.lazyInit(t, t.m.Fields) }
+func (t messageDesc) Oneofs() pref.OneofDescriptors         { return t.m.os.lazyInit(t, t.m.Oneofs) }
+func (t messageDesc) RequiredNumbers() pref.FieldNumbers    { return t.m.ns.lazyInit(t.m.Fields) }
+func (t messageDesc) ExtensionRanges() pref.FieldRanges     { return (*ranges)(&t.m.ExtensionRanges) }
+func (t messageDesc) Messages() pref.MessageDescriptors     { return t.m.ms.lazyInit(t, t.m.Messages) }
+func (t messageDesc) Enums() pref.EnumDescriptors           { return t.m.es.lazyInit(t, t.m.Enums) }
+func (t messageDesc) Extensions() pref.ExtensionDescriptors { return t.m.xs.lazyInit(t, t.m.Extensions) }
+func (t messageDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
+func (t messageDesc) ProtoType(pref.MessageDescriptor)      {}
+func (t messageDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
 type fieldMeta struct {
 	inheritedMeta
@@ -197,35 +192,64 @@ type fieldMeta struct {
 }
 type fieldDesc struct{ f *Field }
 
-func (t fieldDesc) Parent() (pref.Descriptor, bool)                   { return t.f.parent, true }
-func (t fieldDesc) Index() int                                        { return t.f.index }
-func (t fieldDesc) Syntax() pref.Syntax                               { return t.f.syntax }
-func (t fieldDesc) Name() pref.Name                                   { return t.f.Name }
-func (t fieldDesc) FullName() pref.FullName                           { return t.f.fullName }
-func (t fieldDesc) IsPlaceholder() bool                               { return false }
-func (t fieldDesc) DescriptorProto() (pref.Message, bool)             { return t.f.desc.lazyInit(t) }
-func (t fieldDesc) DescriptorOptions() (pref.DescriptorOptions, bool) { return t.f.opts.lazyInit(t) }
-func (t fieldDesc) Number() pref.FieldNumber                          { return t.f.Number }
-func (t fieldDesc) Cardinality() pref.Cardinality                     { return t.f.Cardinality }
-func (t fieldDesc) Kind() pref.Kind                                   { return t.f.Kind }
-func (t fieldDesc) JSONName() string                                  { return t.f.js.lazyInit(t.f) }
-func (t fieldDesc) IsPacked() bool                                    { return t.f.IsPacked }
-func (t fieldDesc) IsMap() bool                                       { return isMap(t) }
-func (t fieldDesc) IsWeak() bool                                      { return t.f.IsWeak }
-func (t fieldDesc) Default() pref.Value                               { return t.f.dv.lazyInit(t, t.f.Default) }
-func (t fieldDesc) HasDefault() bool                                  { return t.f.Default.IsValid() }
-func (t fieldDesc) OneofType() pref.OneofDescriptor                   { return t.f.ot.lazyInit(t, t.f.OneofName) }
-func (t fieldDesc) ExtendedType() pref.MessageDescriptor              { return nil }
-func (t fieldDesc) MessageType() pref.MessageDescriptor               { return t.f.mt.lazyInit(t, &t.f.MessageType) }
-func (t fieldDesc) EnumType() pref.EnumDescriptor                     { return t.f.et.lazyInit(t, &t.f.EnumType) }
-func (t fieldDesc) Format(s fmt.State, r rune)                        { formatDesc(s, r, t) }
-func (t fieldDesc) ProtoType(pref.FieldDescriptor)                    {}
-func (t fieldDesc) ProtoInternal(pragma.DoNotImplement)               {}
+func (t fieldDesc) Parent() (pref.Descriptor, bool)       { return t.f.parent, true }
+func (t fieldDesc) Index() int                            { return t.f.index }
+func (t fieldDesc) Syntax() pref.Syntax                   { return t.f.syntax }
+func (t fieldDesc) Name() pref.Name                       { return t.f.Name }
+func (t fieldDesc) FullName() pref.FullName               { return t.f.fullName }
+func (t fieldDesc) IsPlaceholder() bool                   { return false }
+func (t fieldDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t fieldDesc) Options() interface{}                  { return t.f.Options }
+func (t fieldDesc) Number() pref.FieldNumber              { return t.f.Number }
+func (t fieldDesc) Cardinality() pref.Cardinality         { return t.f.Cardinality }
+func (t fieldDesc) Kind() pref.Kind                       { return t.f.Kind }
+func (t fieldDesc) JSONName() string                      { return t.f.js.lazyInit(t.f) }
+func (t fieldDesc) IsPacked() bool                        { return fieldIsPacked(t) }
+func (t fieldDesc) IsMap() bool                           { return isMap(t) }
+func (t fieldDesc) IsWeak() bool                          { return t.f.Options.GetWeak() }
+func (t fieldDesc) Default() pref.Value                   { return t.f.dv.lazyInit(t, t.f.Default) }
+func (t fieldDesc) HasDefault() bool                      { return t.f.Default.IsValid() }
+func (t fieldDesc) OneofType() pref.OneofDescriptor       { return t.f.ot.lazyInit(t, t.f.OneofName) }
+func (t fieldDesc) ExtendedType() pref.MessageDescriptor  { return nil }
+func (t fieldDesc) MessageType() pref.MessageDescriptor   { return t.f.mt.lazyInit(t, &t.f.MessageType) }
+func (t fieldDesc) EnumType() pref.EnumDescriptor         { return t.f.et.lazyInit(t, &t.f.EnumType) }
+func (t fieldDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
+func (t fieldDesc) ProtoType(pref.FieldDescriptor)        {}
+func (t fieldDesc) ProtoInternal(pragma.DoNotImplement)   {}
+
+func fieldIsPacked(t fieldDesc) bool {
+	if t.f.Options != nil && t.f.Options.Packed != nil {
+		return *t.f.Options.Packed
+	}
+	// https://developers.google.com/protocol-buffers/docs/proto3:
+	// "In proto3, repeated fields of scalar numeric types use packed
+	// encoding by default."
+	return (t.f.syntax == pref.Proto3 &&
+		t.f.Cardinality == pref.Repeated &&
+		isScalarNumeric[t.f.Kind])
+}
+
+var isScalarNumeric = map[pref.Kind]bool{
+	pref.BoolKind:     true,
+	pref.EnumKind:     true,
+	pref.Int32Kind:    true,
+	pref.Sint32Kind:   true,
+	pref.Uint32Kind:   true,
+	pref.Int64Kind:    true,
+	pref.Sint64Kind:   true,
+	pref.Uint64Kind:   true,
+	pref.Sfixed32Kind: true,
+	pref.Fixed32Kind:  true,
+	pref.FloatKind:    true,
+	pref.Sfixed64Kind: true,
+	pref.Fixed64Kind:  true,
+	pref.DoubleKind:   true,
+}
 
 func isMap(t pref.FieldDescriptor) bool {
 	if t.Cardinality() == pref.Repeated && t.Kind() == pref.MessageKind {
 		if mt := t.MessageType(); mt != nil {
-			return mt.IsMapEntry()
+			return mt.Options().(*descriptorV1.MessageOptions).GetMapEntry()
 		}
 	}
 	return false
@@ -283,18 +307,18 @@ type oneofMeta struct {
 }
 type oneofDesc struct{ o *Oneof }
 
-func (t oneofDesc) Parent() (pref.Descriptor, bool)                   { return t.o.parent, true }
-func (t oneofDesc) Index() int                                        { return t.o.index }
-func (t oneofDesc) Syntax() pref.Syntax                               { return t.o.syntax }
-func (t oneofDesc) Name() pref.Name                                   { return t.o.Name }
-func (t oneofDesc) FullName() pref.FullName                           { return t.o.fullName }
-func (t oneofDesc) IsPlaceholder() bool                               { return false }
-func (t oneofDesc) DescriptorProto() (pref.Message, bool)             { return t.o.desc.lazyInit(t) }
-func (t oneofDesc) DescriptorOptions() (pref.DescriptorOptions, bool) { return t.o.opts.lazyInit(t) }
-func (t oneofDesc) Fields() pref.FieldDescriptors                     { return t.o.fs.lazyInit(t) }
-func (t oneofDesc) Format(s fmt.State, r rune)                        { formatDesc(s, r, t) }
-func (t oneofDesc) ProtoType(pref.OneofDescriptor)                    {}
-func (t oneofDesc) ProtoInternal(pragma.DoNotImplement)               {}
+func (t oneofDesc) Parent() (pref.Descriptor, bool)       { return t.o.parent, true }
+func (t oneofDesc) Index() int                            { return t.o.index }
+func (t oneofDesc) Syntax() pref.Syntax                   { return t.o.syntax }
+func (t oneofDesc) Name() pref.Name                       { return t.o.Name }
+func (t oneofDesc) FullName() pref.FullName               { return t.o.fullName }
+func (t oneofDesc) IsPlaceholder() bool                   { return false }
+func (t oneofDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t oneofDesc) Options() interface{}                  { return t.o.Options }
+func (t oneofDesc) Fields() pref.FieldDescriptors         { return t.o.fs.lazyInit(t) }
+func (t oneofDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
+func (t oneofDesc) ProtoType(pref.OneofDescriptor)        {}
+func (t oneofDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
 type extensionMeta struct {
 	inheritedMeta
@@ -306,24 +330,24 @@ type extensionMeta struct {
 }
 type extensionDesc struct{ x *Extension }
 
-func (t extensionDesc) Parent() (pref.Descriptor, bool)                   { return t.x.parent, true }
-func (t extensionDesc) Syntax() pref.Syntax                               { return t.x.syntax }
-func (t extensionDesc) Index() int                                        { return t.x.index }
-func (t extensionDesc) Name() pref.Name                                   { return t.x.Name }
-func (t extensionDesc) FullName() pref.FullName                           { return t.x.fullName }
-func (t extensionDesc) IsPlaceholder() bool                               { return false }
-func (t extensionDesc) DescriptorProto() (pref.Message, bool)             { return t.x.desc.lazyInit(t) }
-func (t extensionDesc) DescriptorOptions() (pref.DescriptorOptions, bool) { return t.x.opts.lazyInit(t) }
-func (t extensionDesc) Number() pref.FieldNumber                          { return t.x.Number }
-func (t extensionDesc) Cardinality() pref.Cardinality                     { return t.x.Cardinality }
-func (t extensionDesc) Kind() pref.Kind                                   { return t.x.Kind }
-func (t extensionDesc) JSONName() string                                  { return "" }
-func (t extensionDesc) IsPacked() bool                                    { return t.x.IsPacked }
-func (t extensionDesc) IsMap() bool                                       { return false }
-func (t extensionDesc) IsWeak() bool                                      { return false }
-func (t extensionDesc) Default() pref.Value                               { return t.x.dv.lazyInit(t, t.x.Default) }
-func (t extensionDesc) HasDefault() bool                                  { return t.x.Default.IsValid() }
-func (t extensionDesc) OneofType() pref.OneofDescriptor                   { return nil }
+func (t extensionDesc) Parent() (pref.Descriptor, bool)       { return t.x.parent, true }
+func (t extensionDesc) Syntax() pref.Syntax                   { return t.x.syntax }
+func (t extensionDesc) Index() int                            { return t.x.index }
+func (t extensionDesc) Name() pref.Name                       { return t.x.Name }
+func (t extensionDesc) FullName() pref.FullName               { return t.x.fullName }
+func (t extensionDesc) IsPlaceholder() bool                   { return false }
+func (t extensionDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t extensionDesc) Options() interface{}                  { return t.x.Options }
+func (t extensionDesc) Number() pref.FieldNumber              { return t.x.Number }
+func (t extensionDesc) Cardinality() pref.Cardinality         { return t.x.Cardinality }
+func (t extensionDesc) Kind() pref.Kind                       { return t.x.Kind }
+func (t extensionDesc) JSONName() string                      { return "" }
+func (t extensionDesc) IsPacked() bool                        { return extIsPacked(t) }
+func (t extensionDesc) IsMap() bool                           { return false }
+func (t extensionDesc) IsWeak() bool                          { return false }
+func (t extensionDesc) Default() pref.Value                   { return t.x.dv.lazyInit(t, t.x.Default) }
+func (t extensionDesc) HasDefault() bool                      { return t.x.Default.IsValid() }
+func (t extensionDesc) OneofType() pref.OneofDescriptor       { return nil }
 func (t extensionDesc) ExtendedType() pref.MessageDescriptor {
 	return t.x.xt.lazyInit(t, &t.x.ExtendedType)
 }
@@ -335,6 +359,15 @@ func (t extensionDesc) Format(s fmt.State, r rune)          { formatDesc(s, r, t
 func (t extensionDesc) ProtoType(pref.FieldDescriptor)      {}
 func (t extensionDesc) ProtoInternal(pragma.DoNotImplement) {}
 
+func extIsPacked(t extensionDesc) bool {
+	// TODO: When a proto3 file extends a proto2 message (permitted only for
+	// extending descriptor options), does the extension have proto2 or proto3
+	// semantics? If the latter, repeated, scalar, numeric, proto3 extension
+	// fields should default to packed. If the former, perhaps the extension syntax
+	// should be protoreflect.Proto2.
+	return t.x.Options.GetPacked()
+}
+
 type enumMeta struct {
 	inheritedMeta
 
@@ -342,36 +375,36 @@ type enumMeta struct {
 }
 type enumDesc struct{ e *Enum }
 
-func (t enumDesc) Parent() (pref.Descriptor, bool)                   { return t.e.parent, true }
-func (t enumDesc) Index() int                                        { return t.e.index }
-func (t enumDesc) Syntax() pref.Syntax                               { return t.e.syntax }
-func (t enumDesc) Name() pref.Name                                   { return t.e.Name }
-func (t enumDesc) FullName() pref.FullName                           { return t.e.fullName }
-func (t enumDesc) IsPlaceholder() bool                               { return false }
-func (t enumDesc) DescriptorProto() (pref.Message, bool)             { return t.e.desc.lazyInit(t) }
-func (t enumDesc) DescriptorOptions() (pref.DescriptorOptions, bool) { return t.e.opts.lazyInit(t) }
-func (t enumDesc) Values() pref.EnumValueDescriptors                 { return t.e.vs.lazyInit(t, t.e.Values) }
-func (t enumDesc) Format(s fmt.State, r rune)                        { formatDesc(s, r, t) }
-func (t enumDesc) ProtoType(pref.EnumDescriptor)                     {}
-func (t enumDesc) ProtoInternal(pragma.DoNotImplement)               {}
+func (t enumDesc) Parent() (pref.Descriptor, bool)       { return t.e.parent, true }
+func (t enumDesc) Index() int                            { return t.e.index }
+func (t enumDesc) Syntax() pref.Syntax                   { return t.e.syntax }
+func (t enumDesc) Name() pref.Name                       { return t.e.Name }
+func (t enumDesc) FullName() pref.FullName               { return t.e.fullName }
+func (t enumDesc) IsPlaceholder() bool                   { return false }
+func (t enumDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t enumDesc) Options() interface{}                  { return t.e.Options }
+func (t enumDesc) Values() pref.EnumValueDescriptors     { return t.e.vs.lazyInit(t, t.e.Values) }
+func (t enumDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
+func (t enumDesc) ProtoType(pref.EnumDescriptor)         {}
+func (t enumDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
 type enumValueMeta struct {
 	inheritedMeta
 }
 type enumValueDesc struct{ v *EnumValue }
 
-func (t enumValueDesc) Parent() (pref.Descriptor, bool)                   { return t.v.parent, true }
-func (t enumValueDesc) Index() int                                        { return t.v.index }
-func (t enumValueDesc) Syntax() pref.Syntax                               { return t.v.syntax }
-func (t enumValueDesc) Name() pref.Name                                   { return t.v.Name }
-func (t enumValueDesc) FullName() pref.FullName                           { return t.v.fullName }
-func (t enumValueDesc) IsPlaceholder() bool                               { return false }
-func (t enumValueDesc) DescriptorProto() (pref.Message, bool)             { return t.v.desc.lazyInit(t) }
-func (t enumValueDesc) DescriptorOptions() (pref.DescriptorOptions, bool) { return t.v.opts.lazyInit(t) }
-func (t enumValueDesc) Number() pref.EnumNumber                           { return t.v.Number }
-func (t enumValueDesc) Format(s fmt.State, r rune)                        { formatDesc(s, r, t) }
-func (t enumValueDesc) ProtoType(pref.EnumValueDescriptor)                {}
-func (t enumValueDesc) ProtoInternal(pragma.DoNotImplement)               {}
+func (t enumValueDesc) Parent() (pref.Descriptor, bool)       { return t.v.parent, true }
+func (t enumValueDesc) Index() int                            { return t.v.index }
+func (t enumValueDesc) Syntax() pref.Syntax                   { return t.v.syntax }
+func (t enumValueDesc) Name() pref.Name                       { return t.v.Name }
+func (t enumValueDesc) FullName() pref.FullName               { return t.v.fullName }
+func (t enumValueDesc) IsPlaceholder() bool                   { return false }
+func (t enumValueDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t enumValueDesc) Options() interface{}                  { return t.v.Options }
+func (t enumValueDesc) Number() pref.EnumNumber               { return t.v.Number }
+func (t enumValueDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
+func (t enumValueDesc) ProtoType(pref.EnumValueDescriptor)    {}
+func (t enumValueDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
 type serviceMeta struct {
 	inheritedMeta
@@ -380,18 +413,18 @@ type serviceMeta struct {
 }
 type serviceDesc struct{ s *Service }
 
-func (t serviceDesc) Parent() (pref.Descriptor, bool)                   { return t.s.parent, true }
-func (t serviceDesc) Index() int                                        { return t.s.index }
-func (t serviceDesc) Syntax() pref.Syntax                               { return t.s.syntax }
-func (t serviceDesc) Name() pref.Name                                   { return t.s.Name }
-func (t serviceDesc) FullName() pref.FullName                           { return t.s.fullName }
-func (t serviceDesc) IsPlaceholder() bool                               { return false }
-func (t serviceDesc) DescriptorProto() (pref.Message, bool)             { return t.s.desc.lazyInit(t) }
-func (t serviceDesc) DescriptorOptions() (pref.DescriptorOptions, bool) { return t.s.opts.lazyInit(t) }
-func (t serviceDesc) Methods() pref.MethodDescriptors                   { return t.s.ms.lazyInit(t, t.s.Methods) }
-func (t serviceDesc) Format(s fmt.State, r rune)                        { formatDesc(s, r, t) }
-func (t serviceDesc) ProtoType(pref.ServiceDescriptor)                  {}
-func (t serviceDesc) ProtoInternal(pragma.DoNotImplement)               {}
+func (t serviceDesc) Parent() (pref.Descriptor, bool)       { return t.s.parent, true }
+func (t serviceDesc) Index() int                            { return t.s.index }
+func (t serviceDesc) Syntax() pref.Syntax                   { return t.s.syntax }
+func (t serviceDesc) Name() pref.Name                       { return t.s.Name }
+func (t serviceDesc) FullName() pref.FullName               { return t.s.fullName }
+func (t serviceDesc) IsPlaceholder() bool                   { return false }
+func (t serviceDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t serviceDesc) Options() interface{}                  { return t.s.Options }
+func (t serviceDesc) Methods() pref.MethodDescriptors       { return t.s.ms.lazyInit(t, t.s.Methods) }
+func (t serviceDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
+func (t serviceDesc) ProtoType(pref.ServiceDescriptor)      {}
+func (t serviceDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
 type methodMeta struct {
 	inheritedMeta
@@ -401,21 +434,21 @@ type methodMeta struct {
 }
 type methodDesc struct{ m *Method }
 
-func (t methodDesc) Parent() (pref.Descriptor, bool)                   { return t.m.parent, true }
-func (t methodDesc) Index() int                                        { return t.m.index }
-func (t methodDesc) Syntax() pref.Syntax                               { return t.m.syntax }
-func (t methodDesc) Name() pref.Name                                   { return t.m.Name }
-func (t methodDesc) FullName() pref.FullName                           { return t.m.fullName }
-func (t methodDesc) IsPlaceholder() bool                               { return false }
-func (t methodDesc) DescriptorProto() (pref.Message, bool)             { return t.m.desc.lazyInit(t) }
-func (t methodDesc) DescriptorOptions() (pref.DescriptorOptions, bool) { return t.m.opts.lazyInit(t) }
-func (t methodDesc) InputType() pref.MessageDescriptor                 { return t.m.mit.lazyInit(t, &t.m.InputType) }
-func (t methodDesc) OutputType() pref.MessageDescriptor                { return t.m.mot.lazyInit(t, &t.m.OutputType) }
-func (t methodDesc) IsStreamingClient() bool                           { return t.m.IsStreamingClient }
-func (t methodDesc) IsStreamingServer() bool                           { return t.m.IsStreamingServer }
-func (t methodDesc) Format(s fmt.State, r rune)                        { formatDesc(s, r, t) }
-func (t methodDesc) ProtoType(pref.MethodDescriptor)                   {}
-func (t methodDesc) ProtoInternal(pragma.DoNotImplement)               {}
+func (t methodDesc) Parent() (pref.Descriptor, bool)       { return t.m.parent, true }
+func (t methodDesc) Index() int                            { return t.m.index }
+func (t methodDesc) Syntax() pref.Syntax                   { return t.m.syntax }
+func (t methodDesc) Name() pref.Name                       { return t.m.Name }
+func (t methodDesc) FullName() pref.FullName               { return t.m.fullName }
+func (t methodDesc) IsPlaceholder() bool                   { return false }
+func (t methodDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t methodDesc) Options() interface{}                  { return t.m.Options }
+func (t methodDesc) InputType() pref.MessageDescriptor     { return t.m.mit.lazyInit(t, &t.m.InputType) }
+func (t methodDesc) OutputType() pref.MessageDescriptor    { return t.m.mot.lazyInit(t, &t.m.OutputType) }
+func (t methodDesc) IsStreamingClient() bool               { return t.m.IsStreamingClient }
+func (t methodDesc) IsStreamingServer() bool               { return t.m.IsStreamingServer }
+func (t methodDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
+func (t methodDesc) ProtoType(pref.MethodDescriptor)       {}
+func (t methodDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
 type defaultValue struct {
 	once sync.Once

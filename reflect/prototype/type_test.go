@@ -109,12 +109,17 @@ func TestFile(t *testing.T) {
 		Syntax:  pref.Proto2,
 		Path:    "path/to/file.proto",
 		Package: "test",
+		Options: &descriptorV1.FileOptions{Deprecated: protoV1.Bool(true)},
 		Messages: []Message{{
-			Name:       "A", // "test.A"
-			IsMapEntry: true,
+			Name: "A", // "test.A"
+			Options: &descriptorV1.MessageOptions{
+				MapEntry:   protoV1.Bool(true),
+				Deprecated: protoV1.Bool(true),
+			},
 			Fields: []Field{{
 				Name:        "key", // "test.A.key"
 				Number:      1,
+				Options:     &descriptorV1.FieldOptions{Deprecated: protoV1.Bool(true)},
 				Cardinality: pref.Optional,
 				Kind:        pref.StringKind,
 			}, {
@@ -161,7 +166,7 @@ func TestFile(t *testing.T) {
 				Number:      5,
 				Cardinality: pref.Repeated,
 				Kind:        pref.Int32Kind,
-				IsPacked:    true,
+				Options:     &descriptorV1.FieldOptions{Packed: protoV1.Bool(true)},
 			}, {
 				Name:        "field_six", // "test.B.field_six"
 				Number:      6,
@@ -169,7 +174,14 @@ func TestFile(t *testing.T) {
 				Kind:        pref.BytesKind,
 			}},
 			Oneofs: []Oneof{
-				{Name: "O1"}, // "test.B.O1"
+				{
+					Name: "O1", // "test.B.O1"
+					Options: &descriptorV1.OneofOptions{
+						UninterpretedOption: []*descriptorV1.UninterpretedOption{
+							{StringValue: []byte("option")},
+						},
+					},
+				},
 				{Name: "O2"}, // "test.B.O2"
 			},
 			ExtensionRanges: [][2]pref.FieldNumber{{1000, 2000}, {3000, 3001}},
@@ -188,32 +200,42 @@ func TestFile(t *testing.T) {
 				Number:       1000,
 				Cardinality:  pref.Repeated,
 				Kind:         pref.MessageKind,
-				IsPacked:     false,
+				Options:      &descriptorV1.FieldOptions{Packed: protoV1.Bool(false)},
 				MessageType:  PlaceholderMessage("test.C"),
 				ExtendedType: PlaceholderMessage("test.B"),
 			}},
 		}},
 		Enums: []Enum{{
-			Name:   "E1", // "test.E1"
-			Values: []EnumValue{{Name: "FOO", Number: 0}, {Name: "BAR", Number: 1}},
+			Name:    "E1", // "test.E1"
+			Options: &descriptorV1.EnumOptions{Deprecated: protoV1.Bool(true)},
+			Values: []EnumValue{
+				{
+					Name:    "FOO",
+					Number:  0,
+					Options: &descriptorV1.EnumValueOptions{Deprecated: protoV1.Bool(true)},
+				},
+				{Name: "BAR", Number: 1},
+			},
 		}},
 		Extensions: []Extension{{
 			Name:         "X", // "test.X"
 			Number:       1000,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.MessageKind,
-			IsPacked:     true,
+			Options:      &descriptorV1.FieldOptions{Packed: protoV1.Bool(true)},
 			MessageType:  PlaceholderMessage("test.C"),
 			ExtendedType: PlaceholderMessage("test.B"),
 		}},
 		Services: []Service{{
-			Name: "S", // "test.S"
+			Name:    "S", // "test.S"
+			Options: &descriptorV1.ServiceOptions{Deprecated: protoV1.Bool(true)},
 			Methods: []Method{{
 				Name:              "M", // "test.S.M"
 				InputType:         PlaceholderMessage("test.A"),
 				OutputType:        PlaceholderMessage("test.C.A"),
 				IsStreamingClient: true,
 				IsStreamingServer: true,
+				Options:           &descriptorV1.MethodOptions{Deprecated: protoV1.Bool(true)},
 			}},
 		}},
 	}
@@ -226,14 +248,19 @@ func TestFile(t *testing.T) {
 		Syntax:  protoV1.String("proto2"),
 		Name:    protoV1.String("path/to/file.proto"),
 		Package: protoV1.String("test"),
+		Options: &descriptorV1.FileOptions{Deprecated: protoV1.Bool(true)},
 		MessageType: []*descriptorV1.DescriptorProto{{
-			Name:    protoV1.String("A"),
-			Options: &descriptorV1.MessageOptions{MapEntry: protoV1.Bool(true)},
+			Name: protoV1.String("A"),
+			Options: &descriptorV1.MessageOptions{
+				MapEntry:   protoV1.Bool(true),
+				Deprecated: protoV1.Bool(true),
+			},
 			Field: []*descriptorV1.FieldDescriptorProto{{
-				Name:   protoV1.String("key"),
-				Number: protoV1.Int32(1),
-				Label:  descriptorV1.FieldDescriptorProto_Label(pref.Optional).Enum(),
-				Type:   descriptorV1.FieldDescriptorProto_Type(pref.StringKind).Enum(),
+				Name:    protoV1.String("key"),
+				Number:  protoV1.Int32(1),
+				Options: &descriptorV1.FieldOptions{Deprecated: protoV1.Bool(true)},
+				Label:   descriptorV1.FieldDescriptorProto_Label(pref.Optional).Enum(),
+				Type:    descriptorV1.FieldDescriptorProto_Type(pref.StringKind).Enum(),
 			}, {
 				Name:     protoV1.String("value"),
 				Number:   protoV1.Int32(2),
@@ -286,7 +313,14 @@ func TestFile(t *testing.T) {
 				Type:   descriptorV1.FieldDescriptorProto_Type(pref.BytesKind).Enum(),
 			}},
 			OneofDecl: []*descriptorV1.OneofDescriptorProto{
-				{Name: protoV1.String("O1")},
+				{
+					Name: protoV1.String("O1"),
+					Options: &descriptorV1.OneofOptions{
+						UninterpretedOption: []*descriptorV1.UninterpretedOption{
+							{StringValue: []byte("option")},
+						},
+					},
+				},
 				{Name: protoV1.String("O2")},
 			},
 			ExtensionRange: []*descriptorV1.DescriptorProto_ExtensionRange{
@@ -322,9 +356,14 @@ func TestFile(t *testing.T) {
 			}},
 		}},
 		EnumType: []*descriptorV1.EnumDescriptorProto{{
-			Name: protoV1.String("E1"),
+			Name:    protoV1.String("E1"),
+			Options: &descriptorV1.EnumOptions{Deprecated: protoV1.Bool(true)},
 			Value: []*descriptorV1.EnumValueDescriptorProto{
-				{Name: protoV1.String("FOO"), Number: protoV1.Int32(0)},
+				{
+					Name:    protoV1.String("FOO"),
+					Number:  protoV1.Int32(0),
+					Options: &descriptorV1.EnumValueOptions{Deprecated: protoV1.Bool(true)},
+				},
 				{Name: protoV1.String("BAR"), Number: protoV1.Int32(1)},
 			},
 		}},
@@ -338,13 +377,15 @@ func TestFile(t *testing.T) {
 			Extendee: protoV1.String(".test.B"),
 		}},
 		Service: []*descriptorV1.ServiceDescriptorProto{{
-			Name: protoV1.String("S"),
+			Name:    protoV1.String("S"),
+			Options: &descriptorV1.ServiceOptions{Deprecated: protoV1.Bool(true)},
 			Method: []*descriptorV1.MethodDescriptorProto{{
 				Name:            protoV1.String("M"),
 				InputType:       protoV1.String(".test.A"),
 				OutputType:      protoV1.String(".test.C.A"),
 				ClientStreaming: protoV1.Bool(true),
 				ServerStreaming: protoV1.Bool(true),
+				Options:         &descriptorV1.MethodOptions{Deprecated: protoV1.Bool(true)},
 			}},
 		}},
 	}
@@ -385,6 +426,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 		"Path":          "path/to/file.proto",
 		"Package":       pref.FullName("test"),
 		"IsPlaceholder": false,
+		"Options":       &descriptorV1.FileOptions{Deprecated: protoV1.Bool(true)},
 		"Messages": M{
 			"Len": 3,
 			"Get:0": M{
@@ -395,6 +437,10 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 				"FullName":      pref.FullName("test.A"),
 				"IsPlaceholder": false,
 				"IsMapEntry":    true,
+				"Options": &descriptorV1.MessageOptions{
+					MapEntry:   protoV1.Bool(true),
+					Deprecated: protoV1.Bool(true),
+				},
 				"Fields": M{
 					"Len": 2,
 					"ByNumber:1": M{
@@ -405,6 +451,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 						"Number":       pref.FieldNumber(1),
 						"Cardinality":  pref.Optional,
 						"Kind":         pref.StringKind,
+						"Options":      &descriptorV1.FieldOptions{Deprecated: protoV1.Bool(true)},
 						"JSONName":     "key",
 						"IsPacked":     false,
 						"IsMap":        false,
@@ -494,6 +541,11 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					"ByName:O1": M{
 						"FullName": pref.FullName("test.B.O1"),
 						"Index":    0,
+						"Options": &descriptorV1.OneofOptions{
+							UninterpretedOption: []*descriptorV1.UninterpretedOption{
+								{StringValue: []byte("option")},
+							},
+						},
 						"Fields": M{
 							"Len":   1,
 							"Get:0": M{"FullName": pref.FullName("test.B.field_one")},
@@ -546,11 +598,15 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 		"Enums": M{
 			"Len": 1,
 			"Get:0": M{
-				"Name": pref.Name("E1"),
+				"Name":    pref.Name("E1"),
+				"Options": &descriptorV1.EnumOptions{Deprecated: protoV1.Bool(true)},
 				"Values": M{
 					"Len":        2,
 					"ByName:Foo": nil,
-					"ByName:FOO": M{"FullName": pref.FullName("test.FOO")},
+					"ByName:FOO": M{
+						"FullName": pref.FullName("test.FOO"),
+						"Options":  &descriptorV1.EnumValueOptions{Deprecated: protoV1.Bool(true)},
+					},
 					"ByNumber:2": nil,
 					"ByNumber:1": M{"FullName": pref.FullName("test.BAR")},
 				},
@@ -566,6 +622,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 				"IsPacked":     true,
 				"MessageType":  M{"FullName": pref.FullName("test.C"), "IsPlaceholder": false},
 				"ExtendedType": M{"FullName": pref.FullName("test.B"), "IsPlaceholder": false},
+				"Options":      &descriptorV1.FieldOptions{Packed: protoV1.Bool(true)},
 			},
 		},
 		"Services": M{
@@ -575,6 +632,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 				"Parent":   M{"FullName": pref.FullName("test")},
 				"Name":     pref.Name("S"),
 				"FullName": pref.FullName("test.S"),
+				"Options":  &descriptorV1.ServiceOptions{Deprecated: protoV1.Bool(true)},
 				"Methods": M{
 					"Len": 1,
 					"Get:0": M{
@@ -585,6 +643,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 						"OutputType":        M{"FullName": pref.FullName("test.C.A"), "IsPlaceholder": false},
 						"IsStreamingClient": true,
 						"IsStreamingServer": true,
+						"Options":           &descriptorV1.MethodOptions{Deprecated: protoV1.Bool(true)},
 					},
 				},
 			},
@@ -659,14 +718,26 @@ func checkAccessors(t *testing.T, p string, rv reflect.Value, want map[string]in
 		// Check that the accessor output matches.
 		if want, ok := v.(map[string]interface{}); ok {
 			checkAccessors(t, p, rets[0], want)
-		} else {
-			got := rets[0].Interface()
-			if pv, ok := got.(pref.Value); ok {
-				got = pv.Interface()
-			}
-			if want := v; !reflect.DeepEqual(got, want) {
+			continue
+		}
+
+		got := rets[0].Interface()
+		if pv, ok := got.(pref.Value); ok {
+			got = pv.Interface()
+		}
+
+		// Compare with proto.Equal if possible.
+		gotMsg, gotMsgOK := got.(protoV1.Message)
+		wantMsg, wantMsgOK := v.(protoV1.Message)
+		if gotMsgOK && wantMsgOK {
+			if !protoV1.Equal(gotMsg, wantMsg) {
 				t.Errorf("%v = %v, want %v", p, got, want)
 			}
+			continue
+		}
+
+		if want := v; !reflect.DeepEqual(got, want) {
+			t.Errorf("%v = %v, want %v", p, got, want)
 		}
 	}
 }

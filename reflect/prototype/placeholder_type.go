@@ -7,6 +7,7 @@ package prototype
 import (
 	"fmt"
 
+	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -26,21 +27,21 @@ var (
 
 type placeholderName pref.FullName
 
-func (t placeholderName) Parent() (pref.Descriptor, bool)                   { return nil, false }
-func (t placeholderName) Index() int                                        { return 0 }
-func (t placeholderName) Syntax() pref.Syntax                               { return 0 }
-func (t placeholderName) Name() pref.Name                                   { return pref.FullName(t).Name() }
-func (t placeholderName) FullName() pref.FullName                           { return pref.FullName(t) }
-func (t placeholderName) IsPlaceholder() bool                               { return true }
-func (t placeholderName) DescriptorProto() (pref.Message, bool)             { return nil, false }
-func (t placeholderName) DescriptorOptions() (pref.DescriptorOptions, bool) { return nil, false }
-func (t placeholderName) ProtoInternal(pragma.DoNotImplement)               {}
+func (t placeholderName) Parent() (pref.Descriptor, bool)       { return nil, false }
+func (t placeholderName) Index() int                            { return 0 }
+func (t placeholderName) Syntax() pref.Syntax                   { return 0 }
+func (t placeholderName) Name() pref.Name                       { return pref.FullName(t).Name() }
+func (t placeholderName) FullName() pref.FullName               { return pref.FullName(t) }
+func (t placeholderName) IsPlaceholder() bool                   { return true }
+func (t placeholderName) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t placeholderName) ProtoInternal(pragma.DoNotImplement)   {}
 
 type placeholderFile struct {
 	path string
 	placeholderName
 }
 
+func (t placeholderFile) Options() interface{}                           { return (*descriptorV1.FileOptions)(nil) }
 func (t placeholderFile) Path() string                                   { return t.path }
 func (t placeholderFile) Package() pref.FullName                         { return t.FullName() }
 func (t placeholderFile) Imports() pref.FileImports                      { return &emptyFiles }
@@ -56,6 +57,7 @@ type placeholderMessage struct {
 	placeholderName
 }
 
+func (t placeholderMessage) Options() interface{}                  { return (*descriptorV1.MessageOptions)(nil) }
 func (t placeholderMessage) IsMapEntry() bool                      { return false }
 func (t placeholderMessage) Fields() pref.FieldDescriptors         { return &emptyFields }
 func (t placeholderMessage) Oneofs() pref.OneofDescriptors         { return &emptyOneofs }
@@ -71,6 +73,7 @@ type placeholderEnum struct {
 	placeholderName
 }
 
+func (t placeholderEnum) Options() interface{}              { return (*descriptorV1.EnumOptions)(nil) }
 func (t placeholderEnum) Values() pref.EnumValueDescriptors { return &emptyEnumValues }
 func (t placeholderEnum) Format(s fmt.State, r rune)        { formatDesc(s, r, t) }
 func (t placeholderEnum) ProtoType(pref.EnumDescriptor)     {}
