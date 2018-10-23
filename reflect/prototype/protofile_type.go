@@ -342,7 +342,7 @@ func (t extensionDesc) Number() pref.FieldNumber              { return t.x.Numbe
 func (t extensionDesc) Cardinality() pref.Cardinality         { return t.x.Cardinality }
 func (t extensionDesc) Kind() pref.Kind                       { return t.x.Kind }
 func (t extensionDesc) JSONName() string                      { return "" }
-func (t extensionDesc) IsPacked() bool                        { return extIsPacked(t) }
+func (t extensionDesc) IsPacked() bool                        { return t.x.Options.GetPacked() }
 func (t extensionDesc) IsMap() bool                           { return false }
 func (t extensionDesc) IsWeak() bool                          { return false }
 func (t extensionDesc) Default() pref.Value                   { return t.x.dv.lazyInit(t, t.x.Default) }
@@ -358,15 +358,6 @@ func (t extensionDesc) EnumType() pref.EnumDescriptor       { return t.x.et.lazy
 func (t extensionDesc) Format(s fmt.State, r rune)          { formatDesc(s, r, t) }
 func (t extensionDesc) ProtoType(pref.FieldDescriptor)      {}
 func (t extensionDesc) ProtoInternal(pragma.DoNotImplement) {}
-
-func extIsPacked(t extensionDesc) bool {
-	// TODO: When a proto3 file extends a proto2 message (permitted only for
-	// extending descriptor options), does the extension have proto2 or proto3
-	// semantics? If the latter, repeated, scalar, numeric, proto3 extension
-	// fields should default to packed. If the former, perhaps the extension syntax
-	// should be protoreflect.Proto2.
-	return t.x.Options.GetPacked()
-}
 
 type enumMeta struct {
 	inheritedMeta
