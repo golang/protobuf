@@ -1885,6 +1885,7 @@ type oneofSubField struct {
 	fieldNumber   int                                  // Actual field number, as defined in proto, e.g. 12
 	getterDef     string                               // Default for getters, e.g. "nil", `""` or "Default_MessageType_FieldName"
 	protoDef      string                               // Default value as defined in the proto file, e.g "yoshi" or "5"
+	deprecated    string                               // Deprecation comment, if any.
 }
 
 // wireTypeName returns a textual wire type, needed for oneof sub fields in generated code.
@@ -2154,6 +2155,9 @@ func (f *oneofField) getter(g *Generator, mc *msgCtx) {
 	g.P()
 	// Getters for each oneof
 	for _, sf := range f.subFields {
+		if sf.deprecated != "" {
+			g.P(sf.deprecated)
+		}
 		g.P("func (m *", mc.goName, ") ", Annotate(mc.message.file, sf.fullPath, sf.getterName), "() "+sf.goType+" {")
 		g.P("if x, ok := m.", f.getterName, "().(*", sf.oneofTypeName, "); ok {")
 		g.P("return x.", sf.goName)
@@ -2583,6 +2587,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			}
 		}
 
+		fieldDeprecated := ""
+		if field.GetOptions().GetDeprecated() {
+			fieldDeprecated = deprecationComment
+		}
+
 		dvalue := g.getterDefault(field, goTypeName)
 		if oneof {
 			tname := goTypeName + "_" + fieldName
@@ -2626,15 +2635,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 				getterDef:     dvalue,
 				protoDef:      field.GetDefaultValue(),
 				oneofTypeName: tname,
+				deprecated:    fieldDeprecated,
 			}
 			oneofField.subFields = append(oneofField.subFields, &sf)
 			g.RecordTypeUse(field.GetTypeName())
 			continue
-		}
-
-		fieldDeprecated := ""
-		if field.GetOptions().GetDeprecated() {
-			fieldDeprecated = deprecationComment
 		}
 
 		fieldFullPath := fmt.Sprintf("%s,%d,%d", message.path, messageFieldPath, i)
