@@ -620,7 +620,8 @@ func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType strin
 		goType = "[]" + goType
 		pointer = false
 	}
-	if field.Desc.Syntax() == protoreflect.Proto3 {
+	// Extension fields always have pointer type, even when defined in a proto3 file.
+	if field.Desc.Syntax() == protoreflect.Proto3 && field.Desc.ExtendedType() == nil {
 		pointer = false
 	}
 	return goType, pointer
@@ -659,7 +660,10 @@ func fieldProtobufTag(field *protogen.Field) string {
 		tag = append(tag, "json="+jsonName)
 	}
 	// proto3
-	if field.Desc.Syntax() == protoreflect.Proto3 {
+	// The previous implementation does not tag extension fields as proto3,
+	// even when the field is defined in a proto3 file. Match that behavior
+	// for consistency.
+	if field.Desc.Syntax() == protoreflect.Proto3 && field.Desc.ExtendedType() == nil {
 		tag = append(tag, "proto3")
 	}
 	// enum
