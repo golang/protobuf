@@ -104,7 +104,6 @@ func NewEnum(t *StandaloneEnum) (protoreflect.EnumDescriptor, error) {
 // StandaloneExtension is a constructor for a protoreflect.ExtensionDescriptor
 // that does not have a parent.
 type StandaloneExtension struct {
-	Syntax       protoreflect.Syntax
 	FullName     protoreflect.FullName
 	Number       protoreflect.FieldNumber
 	Cardinality  protoreflect.Cardinality

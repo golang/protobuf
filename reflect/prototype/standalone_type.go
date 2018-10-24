@@ -52,7 +52,7 @@ type standaloneExtension struct{ x *StandaloneExtension }
 
 func (t standaloneExtension) Parent() (pref.Descriptor, bool)       { return nil, false }
 func (t standaloneExtension) Index() int                            { return 0 }
-func (t standaloneExtension) Syntax() pref.Syntax                   { return t.x.Syntax }
+func (t standaloneExtension) Syntax() pref.Syntax                   { return pref.Proto2 }
 func (t standaloneExtension) Name() pref.Name                       { return t.x.FullName.Name() }
 func (t standaloneExtension) FullName() pref.FullName               { return t.x.FullName }
 func (t standaloneExtension) IsPlaceholder() bool                   { return false }
