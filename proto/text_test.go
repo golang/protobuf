@@ -377,9 +377,8 @@ func TestUseUtf8StringEscaping(t *testing.T) {
 
 	for i, tc := range testCases {
 		var buf bytes.Buffer
-		tm := proto.TextMarshaler{UseUtf8StringEscaping: true}
-		if err := tm.Marshal(&buf, tc.in); err != nil {
-			t.Errorf("proto.MarsalText: %v", err)
+		if err := proto.MarshalTextUtf8(&buf, tc.in); err != nil {
+			t.Errorf("proto.MarsalTextUtf8: %v", err)
 			continue
 		}
 		s := buf.String()
