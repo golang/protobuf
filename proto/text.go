@@ -45,6 +45,7 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+	"unicode/utf8"
 )
 
 var (
@@ -228,7 +229,11 @@ func (tm *TextMarshaler) writeProto3Any(w *textWriter, sv reflect.Value) (bool, 
 	w.Write([]byte("["))
 	u := turl.String()
 	if requiresQuotes(u) {
-		writeString(w, u)
+		if tm.UseUtf8StringEscaping {
+			writeStringUtf8(w, u)
+		} else {
+			writeString(w, u)
+		}
 	} else {
 		w.Write([]byte(u))
 	}
@@ -484,12 +489,24 @@ func (tm *TextMarshaler) writeAny(w *textWriter, v reflect.Value, props *Propert
 	switch v.Kind() {
 	case reflect.Slice:
 		// Should only be a []byte; repeated fields are handled in writeStruct.
-		if err := writeString(w, string(v.Bytes())); err != nil {
-			return err
+		if tm.UseUtf8StringEscaping {
+			if err := writeStringUtf8(w, string(v.Bytes())); err != nil {
+				return err
+			}
+		} else {
+			if err := writeString(w, string(v.Bytes())); err != nil {
+				return err
+			}
 		}
 	case reflect.String:
-		if err := writeString(w, v.String()); err != nil {
-			return err
+		if tm.UseUtf8StringEscaping {
+			if err := writeStringUtf8(w, v.String()); err != nil {
+				return err
+			}
+		} else {
+			if err := writeString(w, v.String()); err != nil {
+				return err
+			}
 		}
 	case reflect.Struct:
 		// Required/optional group/message.
@@ -583,6 +600,54 @@ func writeString(w *textWriter, s string) error {
 				err = w.w.WriteByte(c)
 			} else {
 				_, err = fmt.Fprintf(w.w, "\\%03o", c)
+			}
+		}
+		if err != nil {
+			return err
+		}
+	}
+	return w.WriteByte('"')
+}
+
+// writeStringUtf8 writes a string in the protocol buffer text format.
+// The differences from writeString are to use UTF-8 characters without
+// escaping directly.
+func writeStringUtf8(w *textWriter, s string) error {
+	// use WriteByte here to get any needed indent
+	if err := w.WriteByte('"'); err != nil {
+		return err
+	}
+	// Loop over the bytes, not the runes.
+	for i, d := 0, 0; i < len(s); i += d {
+		var err error
+		// Divergence from C++: we don't escape apostrophes.
+		// There's no need to escape them, and the C++ parser
+		// copes with a naked apostrophe.
+		d = 1
+		switch c := s[i]; c {
+		case '\n':
+			_, err = w.w.Write(backslashN)
+		case '\r':
+			_, err = w.w.Write(backslashR)
+		case '\t':
+			_, err = w.w.Write(backslashT)
+		case '"':
+			_, err = w.w.Write(backslashDQ)
+		case '\\':
+			_, err = w.w.Write(backslashBS)
+		default:
+			if c < 0x20 {
+				_, err = fmt.Fprintf(w.w, "\\%03o", c)
+			} else {
+				r, t := utf8.DecodeRuneInString(s[i:])
+				if r == utf8.RuneError {
+					for j := i; j < i+t; j++ {
+						_, err = fmt.Fprintf(w.w, "\\%03o", s[j])
+					}
+				} else {
+					_, err = fmt.Fprintf(w.w, "%c", r)
+				}
+				d = t
 			}
 		}
 		if err != nil {
@@ -767,8 +832,9 @@ func (w *textWriter) writeIndent() {
 
 // TextMarshaler is a configurable text format marshaler.
 type TextMarshaler struct {
-	Compact   bool // use compact text format (one line).
-	ExpandAny bool // expand google.protobuf.Any messages of known types
+	Compact               bool // use compact text format (one line).
+	ExpandAny             bool // expand google.protobuf.Any messages of known types
+	UseUtf8StringEscaping bool // output UTF-8 instead of ASCII
 }
 
 // Marshal writes a given protocol buffer in text format.
@@ -825,6 +891,7 @@ func (tm *TextMarshaler) Text(pb Message) string {
 var (
 	defaultTextMarshaler = TextMarshaler{}
 	compactTextMarshaler = TextMarshaler{Compact: true}
+	utf8TextMarshaler    = TextMarshaler{UseUtf8StringEscaping: true}
 )
 
 // TODO: consider removing some of the Marshal functions below.
@@ -835,6 +902,14 @@ func MarshalText(w io.Writer, pb Message) error { return defaultTextMarshaler.Ma
 
 // MarshalTextString is the same as MarshalText, but returns the string directly.
 func MarshalTextString(pb Message) string { return defaultTextMarshaler.Text(pb) }
+
+// MarshalTextUtf8 writes a given protocol buffer in text format.
+// UTF-8 characters are not escaped.
+// The only errors returned are from w.
+func MarshalTextUtf8(w io.Writer, pb Message) error { return utf8TextMarshaler.Marshal(w, pb) }
+
+// MarshalTextStringUtf8 is the same as MarshalTextUtf8, but returns the string directly.
+func MarshalTextStringUtf8(pb Message) string { return utf8TextMarshaler.Text(pb) }
 
 // CompactText writes a given protocol buffer in compact text format (one line).
 func CompactText(w io.Writer, pb Message) error { return compactTextMarshaler.Marshal(w, pb) }

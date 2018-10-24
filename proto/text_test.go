@@ -352,6 +352,54 @@ func TestStringEscaping(t *testing.T) {
 	}
 }
 
+func TestUseUtf8StringEscaping(t *testing.T) {
+	testCases := []struct {
+		in  *pb.Strings
+		out string
+	}{
+		{
+			// Test data from C++ test (TextFormatTest.StringEscape).
+			// Single divergence: we don't escape apostrophes.
+			&pb.Strings{StringField: proto.String("\"A string with ' characters \n and \r newlines and \t tabs and \001 slashes \\ and  multiple   spaces")},
+			"string_field: \"\\\"A string with ' characters \\n and \\r newlines and \\t tabs and \\001 slashes \\\\ and  multiple   spaces\"\n",
+		},
+		{
+			// UTF-8
+			&pb.Strings{StringField: proto.String("\350\260\267\346\255\214")},
+			"string_field: \"\350\260\267\346\255\214\"\n",
+		},
+		{
+			// Some UTF-8 but invalid
+			&pb.Strings{StringField: proto.String("\x00\x01\xff\x81")},
+			`string_field: "\000\001\377\201"` + "\n",
+		},
+	}
+
+	for i, tc := range testCases {
+		var buf bytes.Buffer
+		tm := proto.TextMarshaler{UseUtf8StringEscaping: true}
+		if err := tm.Marshal(&buf, tc.in); err != nil {
+			t.Errorf("proto.MarsalText: %v", err)
+			continue
+		}
+		s := buf.String()
+		if s != tc.out {
+			t.Errorf("#%d: Got:\n%s\nExpected:\n%s\n", i, s, tc.out)
+			continue
+		}
+
+		// Check round-trip.
+		pb := new(pb.Strings)
+		if err := proto.UnmarshalText(s, pb); err != nil {
+			t.Errorf("#%d: UnmarshalText: %v", i, err)
+			continue
+		}
+		if !proto.Equal(pb, tc.in) {
+			t.Errorf("#%d: Round-trip failed:\nstart: %v\n  end: %v", i, tc.in, pb)
+		}
+	}
+}
+
 // A limitedWriter accepts some output before it fails.
 // This is a proxy for something like a nearly-full or imminently-failing disk,
 // or a network connection that is about to die.
