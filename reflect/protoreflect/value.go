@@ -93,15 +93,9 @@ type KnownFields interface {
 	// in MessageDescriptor.Fields or an extension field in ExtensionTypes.
 	Clear(FieldNumber)
 
-	// Mutable returns a reference value for a field with a given field number.
-	// If the field is unset, Mutable implicitly initializes the field with
-	// a zero value instance of the Go type for that field.
-	//
-	// The returned Mutable reference is never nil, and is only valid until the
-	// next Set or Mutable call.
-	//
-	// It panics if the field number does not correspond with a known field
-	// in MessageDescriptor.Fields or an extension field in ExtensionTypes.
+	// Mutable returns a reference value for a field with a given field number,
+	// allocating a new instance if necessary.
+	// It panics if the field is not a map, vector, or message.
 	Mutable(FieldNumber) Mutable
 
 	// Range iterates over every populated field in an undefined order,
@@ -243,16 +237,13 @@ type Vector interface {
 	// value aliases the source's memory in any way.
 	Append(Value)
 
-	// Mutable returns a Mutable reference for the element with a given index.
-	//
-	// The returned reference is never nil, and is only valid until the
-	// next Set, Mutable, Append, MutableAppend, or Truncate call.
+	// Mutable returns a Mutable reference for the element with a given index,
+	// allocating a new entry if necessary.
+	// It panics if the element kind is not a message.
 	Mutable(int) Mutable
 
 	// MutableAppend appends a new element and returns a mutable reference.
-	//
-	// The returned reference is never nil, and is only valid until the
-	// next Set, Mutable, Append, MutableAppend, or Truncate call.
+	// It panics if the element kind is not a message.
 	MutableAppend() Mutable
 
 	// TODO: Should truncate accept two indexes similar to slicing?M
@@ -293,9 +284,7 @@ type Map interface {
 
 	// Mutable returns a Mutable reference for the element with a given key,
 	// allocating a new entry if necessary.
-	//
-	// The returned Mutable reference is never nil, and is only valid until the
-	// next Set or Mutable call.
+	// It panics if the element kind is not a message.
 	Mutable(MapKey) Mutable
 
 	// Range iterates over every map entry in an undefined order,
