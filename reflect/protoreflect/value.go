@@ -6,9 +6,6 @@ package protoreflect
 
 import "github.com/golang/protobuf/v2/internal/encoding/wire"
 
-// TODO: Document the behavior of each Range operation when a mutation
-// occurs while ranging. Also document the order.
-
 // Enum is a reflection interface for a concrete enum value,
 // which provides type information and a getter for the enum number.
 // Enum does not provide a mutable API since enums are commonly backed by
@@ -107,10 +104,11 @@ type KnownFields interface {
 	// in MessageDescriptor.Fields or an extension field in ExtensionTypes.
 	Mutable(FieldNumber) Mutable
 
-	// Range calls f sequentially for each known field that is populated.
-	// If f returns false, range stops the iteration.
-	// Assuming f always returns true and no mutations occur,
-	// the function is called exactly Len times.
+	// Range iterates over every populated field in an undefined order,
+	// calling f for each field number and value encountered.
+	// Range calls f Len times unless f returns false, which stops iteration.
+	// While iterating, mutating operations through Set, Clear, or Mutable
+	// may only be performed on the current field number.
 	Range(f func(FieldNumber, Value) bool)
 
 	// ExtensionTypes are extension field types that are known by this
@@ -143,10 +141,15 @@ type UnknownFields interface {
 	// The caller must not mutate the content of the RawFields being stored.
 	Set(FieldNumber, RawFields)
 
-	// Range calls f sequentially for each unknown field that is populated.
-	// If f returns false, range stops the iteration.
-	// Assuming f always returns true and no mutations occur,
-	// the function is called exactly Len times.
+	// Range iterates over every populated field in an undefined order,
+	// calling f for each field number and raw field value encountered.
+	// Range calls f Len times unless f returns false, which stops iteration.
+	// While iterating, mutating operations through Set may only be performed
+	// on the current field number.
+	//
+	// While the iteration order is undefined, it is deterministic.
+	// It is recommended, but not required, that fields be presented
+	// in the order that they were encountered in the wire data.
 	Range(f func(FieldNumber, RawFields) bool)
 
 	// TODO: Should IsSupported be renamed as ReadOnly?
@@ -206,10 +209,11 @@ type ExtensionFieldTypes interface {
 	// It returns nil if not found.
 	ByName(FullName) ExtensionType
 
-	// Range calls f sequentially for each registered extension field type.
-	// If f returns false, range stops the iteration.
-	// Assuming f always returns true and no mutations occur,
-	// the function is called exactly Len times.
+	// Range iterates over every registered field in an undefined order,
+	// calling f for each extension descriptor encountered.
+	// Range calls f Len times unless f returns false, which stops iteration.
+	// While iterating, mutating operations through Remove may only
+	// be performed on the current descriptor.
 	Range(f func(ExtensionType) bool)
 }
 
@@ -294,10 +298,11 @@ type Map interface {
 	// next Set or Mutable call.
 	Mutable(MapKey) Mutable
 
-	// Range calls f sequentially for each key and value present in the map.
-	// If f returns false, range stops the iteration.
-	// Assuming f always returns true and no mutations occur,
-	// the function is called exactly Len times.
+	// Range iterates over every map entry in an undefined order,
+	// calling f for each key and value encountered.
+	// Range calls f Len times unless f returns false, which stops iteration.
+	// While iterating, mutating operations through Set, Clear, or Mutable
+	// may only be performed on the current map key.
 	Range(f func(MapKey, Value) bool)
 
 	// ProtoMutable is a marker method to implement the Mutable interface.
