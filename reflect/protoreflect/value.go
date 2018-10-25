@@ -159,17 +159,20 @@ type UnknownFields interface {
 // and also the wire data itself.
 //
 // Once stored, the content of a RawFields must be treated as immutable.
-// (e.g., raw[:len(raw)] is immutable, but raw[len(raw):cap(raw)] is mutable).
-// Thus, appending to RawFields (with valid wire data) is permitted.
+// The capacity of RawFields may be treated as mutable only for the use-case of
+// appending additional data to store back into UnknownFields.
 type RawFields []byte
 
 // IsValid reports whether RawFields is syntactically correct wire format.
+// All fields must belong to the same field number.
 func (b RawFields) IsValid() bool {
+	var want FieldNumber
 	for len(b) > 0 {
-		_, _, n := wire.ConsumeField(b)
-		if n < 0 {
+		got, _, n := wire.ConsumeField(b)
+		if n < 0 || (want > 0 && got != want) {
 			return false
 		}
+		want = got
 		b = b[n:]
 	}
 	return true

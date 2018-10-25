@@ -163,7 +163,10 @@ fieldLoop:
 }
 
 func (mi *MessageType) generateUnknownFieldFuncs(t reflect.Type, md pref.MessageDescriptor) {
-	// TODO
+	if f := generateLegacyUnknownFieldFuncs(t, md); f != nil {
+		mi.unknownFields = f
+		return
+	}
 	mi.unknownFields = func(*messageDataType) pref.UnknownFields {
 		return emptyUnknownFields{}
 	}
