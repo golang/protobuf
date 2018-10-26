@@ -192,30 +192,31 @@ type fieldMeta struct {
 }
 type fieldDesc struct{ f *Field }
 
-func (t fieldDesc) Parent() (pref.Descriptor, bool)       { return t.f.parent, true }
-func (t fieldDesc) Index() int                            { return t.f.index }
-func (t fieldDesc) Syntax() pref.Syntax                   { return t.f.syntax }
-func (t fieldDesc) Name() pref.Name                       { return t.f.Name }
-func (t fieldDesc) FullName() pref.FullName               { return t.f.fullName }
-func (t fieldDesc) IsPlaceholder() bool                   { return false }
-func (t fieldDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t fieldDesc) Options() interface{}                  { return t.f.Options }
-func (t fieldDesc) Number() pref.FieldNumber              { return t.f.Number }
-func (t fieldDesc) Cardinality() pref.Cardinality         { return t.f.Cardinality }
-func (t fieldDesc) Kind() pref.Kind                       { return t.f.Kind }
-func (t fieldDesc) JSONName() string                      { return t.f.js.lazyInit(t.f) }
-func (t fieldDesc) IsPacked() bool                        { return fieldIsPacked(t) }
-func (t fieldDesc) IsMap() bool                           { return isMap(t) }
-func (t fieldDesc) IsWeak() bool                          { return t.f.Options.GetWeak() }
-func (t fieldDesc) Default() pref.Value                   { return t.f.dv.lazyInit(t, t.f.Default) }
-func (t fieldDesc) HasDefault() bool                      { return t.f.Default.IsValid() }
-func (t fieldDesc) OneofType() pref.OneofDescriptor       { return t.f.ot.lazyInit(t, t.f.OneofName) }
-func (t fieldDesc) ExtendedType() pref.MessageDescriptor  { return nil }
-func (t fieldDesc) MessageType() pref.MessageDescriptor   { return t.f.mt.lazyInit(t, &t.f.MessageType) }
-func (t fieldDesc) EnumType() pref.EnumDescriptor         { return t.f.et.lazyInit(t, &t.f.EnumType) }
-func (t fieldDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
-func (t fieldDesc) ProtoType(pref.FieldDescriptor)        {}
-func (t fieldDesc) ProtoInternal(pragma.DoNotImplement)   {}
+func (t fieldDesc) Parent() (pref.Descriptor, bool)            { return t.f.parent, true }
+func (t fieldDesc) Index() int                                 { return t.f.index }
+func (t fieldDesc) Syntax() pref.Syntax                        { return t.f.syntax }
+func (t fieldDesc) Name() pref.Name                            { return t.f.Name }
+func (t fieldDesc) FullName() pref.FullName                    { return t.f.fullName }
+func (t fieldDesc) IsPlaceholder() bool                        { return false }
+func (t fieldDesc) DescriptorProto() (pref.Message, bool)      { return nil, false }
+func (t fieldDesc) Options() interface{}                       { return t.f.Options }
+func (t fieldDesc) Number() pref.FieldNumber                   { return t.f.Number }
+func (t fieldDesc) Cardinality() pref.Cardinality              { return t.f.Cardinality }
+func (t fieldDesc) Kind() pref.Kind                            { return t.f.Kind }
+func (t fieldDesc) JSONName() string                           { return t.f.js.lazyInit(t.f) }
+func (t fieldDesc) IsPacked() bool                             { return fieldIsPacked(t) }
+func (t fieldDesc) IsMap() bool                                { return isMap(t) }
+func (t fieldDesc) IsWeak() bool                               { return t.f.Options.GetWeak() }
+func (t fieldDesc) Default() pref.Value                        { return t.f.dv.value(t, t.f.Default) }
+func (t fieldDesc) DefaultEnumValue() pref.EnumValueDescriptor { return t.f.dv.enum(t, t.f.Default) }
+func (t fieldDesc) HasDefault() bool                           { return t.f.Default.IsValid() }
+func (t fieldDesc) OneofType() pref.OneofDescriptor            { return t.f.ot.lazyInit(t, t.f.OneofName) }
+func (t fieldDesc) ExtendedType() pref.MessageDescriptor       { return nil }
+func (t fieldDesc) MessageType() pref.MessageDescriptor        { return t.f.mt.lazyInit(t, &t.f.MessageType) }
+func (t fieldDesc) EnumType() pref.EnumDescriptor              { return t.f.et.lazyInit(t, &t.f.EnumType) }
+func (t fieldDesc) Format(s fmt.State, r rune)                 { formatDesc(s, r, t) }
+func (t fieldDesc) ProtoType(pref.FieldDescriptor)             {}
+func (t fieldDesc) ProtoInternal(pragma.DoNotImplement)        {}
 
 func fieldIsPacked(t fieldDesc) bool {
 	if t.f.Options != nil && t.f.Options.Packed != nil {
@@ -330,24 +331,25 @@ type extensionMeta struct {
 }
 type extensionDesc struct{ x *Extension }
 
-func (t extensionDesc) Parent() (pref.Descriptor, bool)       { return t.x.parent, true }
-func (t extensionDesc) Syntax() pref.Syntax                   { return t.x.syntax }
-func (t extensionDesc) Index() int                            { return t.x.index }
-func (t extensionDesc) Name() pref.Name                       { return t.x.Name }
-func (t extensionDesc) FullName() pref.FullName               { return t.x.fullName }
-func (t extensionDesc) IsPlaceholder() bool                   { return false }
-func (t extensionDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t extensionDesc) Options() interface{}                  { return t.x.Options }
-func (t extensionDesc) Number() pref.FieldNumber              { return t.x.Number }
-func (t extensionDesc) Cardinality() pref.Cardinality         { return t.x.Cardinality }
-func (t extensionDesc) Kind() pref.Kind                       { return t.x.Kind }
-func (t extensionDesc) JSONName() string                      { return "" }
-func (t extensionDesc) IsPacked() bool                        { return t.x.Options.GetPacked() }
-func (t extensionDesc) IsMap() bool                           { return false }
-func (t extensionDesc) IsWeak() bool                          { return false }
-func (t extensionDesc) Default() pref.Value                   { return t.x.dv.lazyInit(t, t.x.Default) }
-func (t extensionDesc) HasDefault() bool                      { return t.x.Default.IsValid() }
-func (t extensionDesc) OneofType() pref.OneofDescriptor       { return nil }
+func (t extensionDesc) Parent() (pref.Descriptor, bool)            { return t.x.parent, true }
+func (t extensionDesc) Syntax() pref.Syntax                        { return t.x.syntax }
+func (t extensionDesc) Index() int                                 { return t.x.index }
+func (t extensionDesc) Name() pref.Name                            { return t.x.Name }
+func (t extensionDesc) FullName() pref.FullName                    { return t.x.fullName }
+func (t extensionDesc) IsPlaceholder() bool                        { return false }
+func (t extensionDesc) DescriptorProto() (pref.Message, bool)      { return nil, false }
+func (t extensionDesc) Options() interface{}                       { return t.x.Options }
+func (t extensionDesc) Number() pref.FieldNumber                   { return t.x.Number }
+func (t extensionDesc) Cardinality() pref.Cardinality              { return t.x.Cardinality }
+func (t extensionDesc) Kind() pref.Kind                            { return t.x.Kind }
+func (t extensionDesc) JSONName() string                           { return "" }
+func (t extensionDesc) IsPacked() bool                             { return t.x.Options.GetPacked() }
+func (t extensionDesc) IsMap() bool                                { return false }
+func (t extensionDesc) IsWeak() bool                               { return false }
+func (t extensionDesc) Default() pref.Value                        { return t.x.dv.value(t, t.x.Default) }
+func (t extensionDesc) DefaultEnumValue() pref.EnumValueDescriptor { return t.x.dv.enum(t, t.x.Default) }
+func (t extensionDesc) HasDefault() bool                           { return t.x.Default.IsValid() }
+func (t extensionDesc) OneofType() pref.OneofDescriptor            { return nil }
 func (t extensionDesc) ExtendedType() pref.MessageDescriptor {
 	return t.x.xt.lazyInit(t, &t.x.ExtendedType)
 }
@@ -444,6 +446,7 @@ func (t methodDesc) ProtoInternal(pragma.DoNotImplement)   {}
 type defaultValue struct {
 	once sync.Once
 	val  pref.Value
+	eval pref.EnumValueDescriptor
 	buf  []byte
 }
 
@@ -460,7 +463,7 @@ var (
 	zeroEnum    = pref.ValueOf(pref.EnumNumber(0))
 )
 
-func (p *defaultValue) lazyInit(t pref.FieldDescriptor, v pref.Value) pref.Value {
+func (p *defaultValue) lazyInit(t pref.FieldDescriptor, v pref.Value) {
 	p.once.Do(func() {
 		p.val = v
 		if v.IsValid() {
@@ -470,11 +473,14 @@ func (p *defaultValue) lazyInit(t pref.FieldDescriptor, v pref.Value) pref.Value
 				// value by name and extract the enum number.
 				// If this fails, validateMessage will later detect that the
 				// default value for an enum value is the wrong type.
-				if s, ok := v.Interface().(string); ok {
-					v := t.EnumType().Values().ByName(pref.Name(s))
-					if v != nil {
-						p.val = pref.ValueOf(v.Number())
+				switch v := v.Interface().(type) {
+				case string:
+					if ev := t.EnumType().Values().ByName(pref.Name(v)); ev != nil {
+						p.eval = ev
+						p.val = pref.ValueOf(p.eval.Number())
 					}
+				case pref.EnumNumber:
+					p.eval = t.EnumType().Values().ByNumber(v)
 				}
 			case pref.BytesKind:
 				// Store a copy of the default bytes, so that we can detect
@@ -521,7 +527,16 @@ func (p *defaultValue) lazyInit(t pref.FieldDescriptor, v pref.Value) pref.Value
 		// original to induce a race that can be detected by the detector.
 		panic(fmt.Sprintf("proto: detected mutation on the default bytes for %v", t.FullName()))
 	}
+}
+
+func (p *defaultValue) value(t pref.FieldDescriptor, v pref.Value) pref.Value {
+	p.lazyInit(t, v)
 	return p.val
+}
+
+func (p *defaultValue) enum(t pref.FieldDescriptor, v pref.Value) pref.EnumValueDescriptor {
+	p.lazyInit(t, v)
+	return p.eval
 }
 
 // messageReference resolves PlaceholderMessages that reference declarations

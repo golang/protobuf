@@ -67,7 +67,11 @@ func TestDescriptors(t *testing.T) {
 
 // TestDescriptorAccessors tests that descriptorAccessors is up-to-date.
 func TestDescriptorAccessors(t *testing.T) {
-	ignore := map[string]bool{"ProtoType": true, "DescriptorByName": true}
+	ignore := map[string]bool{
+		"DefaultEnumValue": true,
+		"DescriptorByName": true,
+		"ProtoType":        true,
+	}
 	rt := reflect.TypeOf((*pref.Descriptor)(nil)).Elem()
 	for i := 0; i < rt.NumMethod(); i++ {
 		ignore[rt.Method(i).Name] = true

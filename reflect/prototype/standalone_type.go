@@ -65,12 +65,15 @@ func (t standaloneExtension) JSONName() string                      { return "" 
 func (t standaloneExtension) IsPacked() bool                        { return t.x.Options.GetPacked() }
 func (t standaloneExtension) IsMap() bool                           { return false }
 func (t standaloneExtension) IsWeak() bool                          { return false }
-func (t standaloneExtension) Default() pref.Value                   { return t.x.dv.lazyInit(t, t.x.Default) }
-func (t standaloneExtension) HasDefault() bool                      { return t.x.Default.IsValid() }
-func (t standaloneExtension) OneofType() pref.OneofDescriptor       { return nil }
-func (t standaloneExtension) MessageType() pref.MessageDescriptor   { return t.x.MessageType }
-func (t standaloneExtension) EnumType() pref.EnumDescriptor         { return t.x.EnumType }
-func (t standaloneExtension) ExtendedType() pref.MessageDescriptor  { return t.x.ExtendedType }
-func (t standaloneExtension) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
-func (t standaloneExtension) ProtoType(pref.FieldDescriptor)        {}
-func (t standaloneExtension) ProtoInternal(pragma.DoNotImplement)   {}
+func (t standaloneExtension) Default() pref.Value                   { return t.x.dv.value(t, t.x.Default) }
+func (t standaloneExtension) DefaultEnumValue() pref.EnumValueDescriptor {
+	return t.x.dv.enum(t, t.x.Default)
+}
+func (t standaloneExtension) HasDefault() bool                     { return t.x.Default.IsValid() }
+func (t standaloneExtension) OneofType() pref.OneofDescriptor      { return nil }
+func (t standaloneExtension) MessageType() pref.MessageDescriptor  { return t.x.MessageType }
+func (t standaloneExtension) EnumType() pref.EnumDescriptor        { return t.x.EnumType }
+func (t standaloneExtension) ExtendedType() pref.MessageDescriptor { return t.x.ExtendedType }
+func (t standaloneExtension) Format(s fmt.State, r rune)           { formatDesc(s, r, t) }
+func (t standaloneExtension) ProtoType(pref.FieldDescriptor)       {}
+func (t standaloneExtension) ProtoInternal(pragma.DoNotImplement)  {}

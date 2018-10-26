@@ -497,8 +497,9 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		case protoreflect.BytesKind:
 			g.P("var ", defVarName, " []byte = []byte(", strconv.Quote(string(def.Bytes())), ")")
 		case protoreflect.EnumKind:
+			evalueDesc := field.Desc.DefaultEnumValue()
 			enum := field.EnumType
-			evalue := enum.Values[enum.Desc.Values().ByNumber(def.Enum()).Index()]
+			evalue := enum.Values[evalueDesc.Index()]
 			g.P("const ", defVarName, " ", field.EnumType.GoIdent, " = ", evalue.GoIdent)
 		case protoreflect.FloatKind, protoreflect.DoubleKind:
 			// Floating point numbers need extra handling for -Inf/Inf/NaN.

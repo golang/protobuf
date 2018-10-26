@@ -325,6 +325,10 @@ type FieldDescriptor interface {
 	// The Value type is determined by the Kind.
 	Default() Value
 
+	// DefaultEnumValue returns the EnummValueDescriptor for the default value
+	// of an enum field, and is nil for any other kind of field.
+	DefaultEnumValue() EnumValueDescriptor
+
 	// HasDefault reports whether this field has a default value.
 	HasDefault() bool
 
