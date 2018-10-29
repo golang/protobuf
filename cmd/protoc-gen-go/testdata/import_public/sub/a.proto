@@ -34,6 +34,12 @@ message M {
   enum Subenum {
     M_ZERO = 0;
   }
+
+  extensions 100 to max;
+}
+
+extend M {
+  optional string extension_field = 100;
 }
 
 enum E {

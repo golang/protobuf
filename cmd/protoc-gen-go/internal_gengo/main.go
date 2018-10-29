@@ -194,6 +194,11 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 			g.P("const ", value.GoIdent.GoName, " = ", enum.GoIdent.GoName, "(", value.GoIdent, ")")
 		}
 	}
+	for _, ext := range impFile.Extensions {
+		ident := extensionVar(impFile, ext)
+		g.P("var ", ident.GoName, " = ", ident)
+		g.P()
+	}
 	g.P()
 }
 
@@ -823,7 +828,7 @@ func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, 
 		name = name.Parent()
 	}
 
-	g.P("var ", extensionVar(f, extension), " = &", protogen.GoIdent{
+	g.P("var ", extensionVar(f.File, extension), " = &", protogen.GoIdent{
 		GoImportPath: protoPackage,
 		GoName:       "ExtensionDesc",
 	}, "{")
@@ -848,7 +853,7 @@ func isExtensionMessageSetElement(gen *protogen.Plugin, extension *protogen.Exte
 }
 
 // extensionVar returns the var holding the ExtensionDesc for an extension.
-func extensionVar(f *fileInfo, extension *protogen.Extension) protogen.GoIdent {
+func extensionVar(f *protogen.File, extension *protogen.Extension) protogen.GoIdent {
 	name := "E_"
 	if extension.ParentMessage != nil {
 		name += extension.ParentMessage.GoIdent.GoName + "_"
@@ -922,7 +927,7 @@ func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fi
 	g.P(protogen.GoIdent{
 		GoImportPath: protoPackage,
 		GoName:       "RegisterExtension",
-	}, "(", extensionVar(f, extension), ")")
+	}, "(", extensionVar(f.File, extension), ")")
 	if isExtensionMessageSetElement(gen, extension) {
 		goType, pointer := fieldGoType(g, extension)
 		if pointer {

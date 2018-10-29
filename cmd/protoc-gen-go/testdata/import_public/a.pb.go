@@ -57,6 +57,8 @@ var M_Submessage_Submessage_Subenum_value = sub.M_Submessage_Submessage_Subenum_
 
 const M_Submessage_M_SUBMESSAGE_ZERO = M_Submessage_Submessage_Subenum(sub.M_Submessage_M_SUBMESSAGE_ZERO)
 
+var E_ExtensionField = sub.E_ExtensionField
+
 type Public struct {
 	M                    *sub.M   `protobuf:"bytes,1,opt,name=m" json:"m,omitempty"`
 	E                    *sub.E   `protobuf:"varint,2,opt,name=e,enum=goproto.protoc.import_public.sub.E" json:"e,omitempty"`
