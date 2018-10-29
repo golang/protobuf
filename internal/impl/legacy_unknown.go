@@ -5,6 +5,7 @@
 package impl
 
 import (
+	"container/list"
 	"reflect"
 
 	protoV1 "github.com/golang/protobuf/proto"
@@ -97,7 +98,6 @@ func (fs *legacyUnknownBytes) Range(f func(pref.FieldNumber, pref.RawFields) boo
 		num pref.FieldNumber
 		raw pref.RawFields
 	}
-	var xs []entry
 
 	// Collect up a list of all the raw fields.
 	// We preserve the order such that the latest encountered fields
@@ -105,23 +105,19 @@ func (fs *legacyUnknownBytes) Range(f func(pref.FieldNumber, pref.RawFields) boo
 	//
 	// Runtime complexity: O(n)
 	b := *fs
-	m := map[pref.FieldNumber]int{}
+	l := list.New()
+	m := map[pref.FieldNumber]*list.Element{}
 	for len(b) > 0 {
 		num, _, n := wire.ConsumeField(b)
-
-		// Ensure the most recently updated entry is always at the end of xs.
-		x := entry{num: num}
-		if i, ok := m[num]; ok {
-			j := len(xs) - 1
-			xs[i], xs[j] = xs[j], xs[i] // swap current entry with last entry
-			m[xs[i].num] = i            // update index of swapped entry
-			x = xs[j]                   // retrieve the last entry
-			xs = xs[:j]                 // truncate off the last entry
+		if e, ok := m[num]; ok {
+			x := e.Value.(*entry)
+			x.raw = append(x.raw, b[:n]...)
+			l.MoveToBack(e)
+		} else {
+			x := &entry{num: num}
+			x.raw = append(x.raw, b[:n]...)
+			m[num] = l.PushBack(x)
 		}
-		m[num] = len(xs)
-		x.raw = append(x.raw, b[:n]...)
-		xs = append(xs, x)
-
 		b = b[n:]
 	}
 
@@ -130,7 +126,8 @@ func (fs *legacyUnknownBytes) Range(f func(pref.FieldNumber, pref.RawFields) boo
 	// while ranging are not observable.
 	//
 	// Runtime complexity: O(n)
-	for _, x := range xs {
+	for e := l.Front(); e != nil; e = e.Next() {
+		x := e.Value.(*entry)
 		if !f(x.num, x.raw) {
 			return
 		}

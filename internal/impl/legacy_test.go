@@ -201,7 +201,7 @@ func TestLegacyUnknown(t *testing.T) {
 	}
 
 	// Simulate manual appending of raw field data.
-	fs = append(fs, joinRaw(raw3a, raw1a, raw1b, raw3b, raw2b, raw1c)...)
+	fs = append(fs, joinRaw(raw3a, raw1a, raw1b, raw2b, raw3b, raw1c)...)
 	if got, want := fs.Len(), 3; got != want {
 		t.Errorf("Len() = %d, want %d", got, want)
 	}
@@ -212,8 +212,8 @@ func TestLegacyUnknown(t *testing.T) {
 		num pref.FieldNumber
 		raw pref.RawFields
 	}{
-		{3, joinRaw(raw3a, raw3b)},
 		{2, joinRaw(raw2a, raw2b)},
+		{3, joinRaw(raw3a, raw3b)},
 		{1, joinRaw(raw1a, raw1b, raw1c)},
 	}
 	fs.Range(func(num pref.FieldNumber, raw pref.RawFields) bool {
