@@ -136,10 +136,12 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 		// Don't generate imports or aliases for types in the same Go package.
 		return
 	}
-	// Generate imports for all dependencies, even if they are not
+	// Generate imports for all non-weak dependencies, even if they are not
 	// referenced, because other code and tools depend on having the
 	// full transitive closure of protocol buffer types in the binary.
-	g.Import(impFile.GoImportPath)
+	if !imp.IsWeak {
+		g.Import(impFile.GoImportPath)
+	}
 	if !imp.IsPublic {
 		return
 	}
