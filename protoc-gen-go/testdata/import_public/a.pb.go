@@ -28,6 +28,9 @@ type M = sub.M
 type M_OneofInt32 = sub.M_OneofInt32
 type M_OneofInt64 = sub.M_OneofInt64
 
+// M_Grouping from public import import_public/sub/a.proto
+type M_Grouping = sub.M_Grouping
+
 // M_Submessage from public import import_public/sub/a.proto
 type M_Submessage = sub.M_Submessage
 type M_Submessage_SubmessageOneofInt32 = sub.M_Submessage_SubmessageOneofInt32
