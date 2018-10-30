@@ -101,3 +101,8 @@ message MessageSetWireFormatExtension {
     optional MessageSetWireFormatExtension message_set_extension = 100;
   }
 }
+
+// Message set extension, not nested in a message.
+extend goproto.protoc.extension.base.MessageSetWireFormatMessage {
+  optional MessageSetWireFormatExtension message_set_extension = 101;
+}

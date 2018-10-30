@@ -824,8 +824,8 @@ func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, 
 	// differently in other languages:
 	// https://github.com/google/protobuf/blob/aff10976/src/google/protobuf/text_format.cc#L1560
 	name := extension.Desc.FullName()
-	if isExtensionMessageSetElement(gen, extension) {
-		name = name.Parent()
+	if n, ok := isExtensionMessageSetElement(extension); ok {
+		name = n
 	}
 
 	g.P("var ", extensionVar(f.File, extension), " = &", protogen.GoIdent{
@@ -846,10 +846,27 @@ func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, 
 	g.P()
 }
 
-func isExtensionMessageSetElement(gen *protogen.Plugin, extension *protogen.Extension) bool {
-	return extension.ParentMessage != nil &&
-		extension.ExtendedType.Desc.Options().(*descpb.MessageOptions).GetMessageSetWireFormat() &&
-		extension.Desc.Name() == "message_set_extension"
+// isExtensionMessageSetELement returns the adjusted name of an extension
+// which extends proto2.bridge.MessageSet.
+func isExtensionMessageSetElement(extension *protogen.Extension) (name protoreflect.FullName, ok bool) {
+	opts := extension.ExtendedType.Desc.Options().(*descpb.MessageOptions)
+	if !opts.GetMessageSetWireFormat() || extension.Desc.Name() != "message_set_extension" {
+		return "", false
+	}
+	if extension.ParentMessage == nil {
+		// This case shouldn't be given special handling at all--we're
+		// only supposed to drop the ".message_set_extension" for
+		// extensions defined within a message (i.e., the extension
+		// takes the message's name).
+		//
+		// This matches the behavior of the v1 generator, however.
+		//
+		// TODO: See if we can drop this case.
+		name = extension.Desc.FullName()
+		name = name[:len(name)-len("message_set_extension")]
+		return name, true
+	}
+	return extension.Desc.FullName().Parent(), true
 }
 
 // extensionVar returns the var holding the ExtensionDesc for an extension.
@@ -928,7 +945,7 @@ func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fi
 		GoImportPath: protoPackage,
 		GoName:       "RegisterExtension",
 	}, "(", extensionVar(f.File, extension), ")")
-	if isExtensionMessageSetElement(gen, extension) {
+	if name, ok := isExtensionMessageSetElement(extension); ok {
 		goType, pointer := fieldGoType(g, extension)
 		if pointer {
 			goType = "*" + goType
@@ -936,7 +953,7 @@ func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fi
 		g.P(protogen.GoIdent{
 			GoImportPath: protoPackage,
 			GoName:       "RegisterMessageSetType",
-		}, "((", goType, ")(nil), ", extension.Desc.Number(), ",", strconv.Quote(string(extension.Desc.FullName().Parent())), ")")
+		}, "((", goType, ")(nil), ", extension.Desc.Number(), ",", strconv.Quote(string(name)), ")")
 	}
 }
 
