@@ -84,13 +84,6 @@ func (*OldStyleMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2fbd53bac0b7ca8a, []int{1}
 }
 
-func (m *OldStyleMessage) MarshalJSON() ([]byte, error) {
-	return proto.MarshalMessageSetJSON(&m.XXX_InternalExtensions)
-}
-func (m *OldStyleMessage) UnmarshalJSON(buf []byte) error {
-	return proto.UnmarshalMessageSetJSON(buf, &m.XXX_InternalExtensions)
-}
-
 var extRange_OldStyleMessage = []proto.ExtensionRange{
 	{Start: 100, End: 2147483646},
 }
