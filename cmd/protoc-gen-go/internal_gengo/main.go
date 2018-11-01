@@ -18,6 +18,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/golang/protobuf/v2/internal/encoding/tag"
 	"github.com/golang/protobuf/v2/protogen"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -636,112 +637,11 @@ func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType strin
 }
 
 func fieldProtobufTag(field *protogen.Field) string {
-	var tag []string
-	// wire type
-	tag = append(tag, wireTypes[field.Desc.Kind()])
-	// field number
-	tag = append(tag, strconv.Itoa(int(field.Desc.Number())))
-	// cardinality
-	switch field.Desc.Cardinality() {
-	case protoreflect.Optional:
-		tag = append(tag, "opt")
-	case protoreflect.Required:
-		tag = append(tag, "req")
-	case protoreflect.Repeated:
-		tag = append(tag, "rep")
-	}
-	if field.Desc.IsPacked() {
-		tag = append(tag, "packed")
-	}
-	// TODO: packed
-	// name
-	name := string(field.Desc.Name())
-	if field.Desc.Kind() == protoreflect.GroupKind {
-		// The name of the FieldDescriptor for a group field is
-		// lowercased. To find the original capitalization, we
-		// look in the field's MessageType.
-		name = string(field.MessageType.Desc.Name())
-	}
-	tag = append(tag, "name="+name)
-	// JSON name
-	if jsonName := field.Desc.JSONName(); jsonName != "" && jsonName != name {
-		tag = append(tag, "json="+jsonName)
-	}
-	// proto3
-	// The previous implementation does not tag extension fields as proto3,
-	// even when the field is defined in a proto3 file. Match that behavior
-	// for consistency.
-	if field.Desc.Syntax() == protoreflect.Proto3 && field.Desc.ExtendedType() == nil {
-		tag = append(tag, "proto3")
-	}
-	// enum
+	var enumName string
 	if field.Desc.Kind() == protoreflect.EnumKind {
-		tag = append(tag, "enum="+enumRegistryName(field.EnumType))
+		enumName = enumRegistryName(field.EnumType)
 	}
-	// oneof
-	if field.Desc.OneofType() != nil {
-		tag = append(tag, "oneof")
-	}
-	// default value
-	// This must appear last in the tag, since commas in strings aren't escaped.
-	if field.Desc.HasDefault() {
-		var def string
-		switch field.Desc.Kind() {
-		case protoreflect.BoolKind:
-			if field.Desc.Default().Bool() {
-				def = "1"
-			} else {
-				def = "0"
-			}
-		case protoreflect.BytesKind:
-			// Preserve protoc-gen-go's historical output of escaped bytes.
-			// This behavior is buggy, but fixing it makes it impossible to
-			// distinguish between the escaped and unescaped forms.
-			//
-			// To match the exact output of protoc, this is identical to the
-			// CEscape function in strutil.cc of the protoc source code.
-			var b []byte
-			for _, c := range field.Desc.Default().Bytes() {
-				switch c {
-				case '\n':
-					b = append(b, `\n`...)
-				case '\r':
-					b = append(b, `\r`...)
-				case '\t':
-					b = append(b, `\t`...)
-				case '"':
-					b = append(b, `\"`...)
-				case '\'':
-					b = append(b, `\'`...)
-				case '\\':
-					b = append(b, `\\`...)
-				default:
-					if c >= 0x20 && c <= 0x7e {
-						b = append(b, c)
-					} else {
-						b = append(b, fmt.Sprintf(`\%03o`, c)...)
-					}
-				}
-			}
-			def = string(b)
-		case protoreflect.FloatKind, protoreflect.DoubleKind:
-			f := field.Desc.Default().Float()
-			switch {
-			case math.IsInf(f, -1):
-				def = "-inf"
-			case math.IsInf(f, 1):
-				def = "inf"
-			case math.IsNaN(f):
-				def = "nan"
-			default:
-				def = fmt.Sprint(field.Desc.Default().Interface())
-			}
-		default:
-			def = fmt.Sprint(field.Desc.Default().Interface())
-		}
-		tag = append(tag, "def="+def)
-	}
-	return strings.Join(tag, ",")
+	return tag.Marshal(field.Desc, enumName)
 }
 
 func fieldDefaultValue(g *protogen.GeneratedFile, message *protogen.Message, field *protogen.Field) string {
@@ -787,27 +687,6 @@ func fieldHasDefault(field *protogen.Field) bool {
 		return len(field.Desc.Default().Bytes()) > 0
 	}
 	return true
-}
-
-var wireTypes = map[protoreflect.Kind]string{
-	protoreflect.BoolKind:     "varint",
-	protoreflect.EnumKind:     "varint",
-	protoreflect.Int32Kind:    "varint",
-	protoreflect.Sint32Kind:   "zigzag32",
-	protoreflect.Uint32Kind:   "varint",
-	protoreflect.Int64Kind:    "varint",
-	protoreflect.Sint64Kind:   "zigzag64",
-	protoreflect.Uint64Kind:   "varint",
-	protoreflect.Sfixed32Kind: "fixed32",
-	protoreflect.Fixed32Kind:  "fixed32",
-	protoreflect.FloatKind:    "fixed32",
-	protoreflect.Sfixed64Kind: "fixed64",
-	protoreflect.Fixed64Kind:  "fixed64",
-	protoreflect.DoubleKind:   "fixed64",
-	protoreflect.StringKind:   "bytes",
-	protoreflect.BytesKind:    "bytes",
-	protoreflect.MessageKind:  "bytes",
-	protoreflect.GroupKind:    "group",
 }
 
 func fieldJSONTag(field *protogen.Field) string {

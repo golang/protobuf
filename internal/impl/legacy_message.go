@@ -6,16 +6,14 @@ package impl
 
 import (
 	"fmt"
-	"math"
 	"reflect"
-	"strconv"
 	"strings"
 	"sync"
 	"unicode"
 
 	protoV1 "github.com/golang/protobuf/proto"
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/golang/protobuf/v2/internal/encoding/text"
+	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
@@ -174,156 +172,14 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 	return ptype.PlaceholderMessage(m.FullName)
 }
 
-func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, t reflect.Type, parent *ptype.StandaloneMessage) (f ptype.Field) {
+func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.Type, parent *ptype.StandaloneMessage) ptype.Field {
+	t := goType
 	isOptional := t.Kind() == reflect.Ptr && t.Elem().Kind() != reflect.Struct
 	isRepeated := t.Kind() == reflect.Slice && t.Elem().Kind() != reflect.Uint8
 	if isOptional || isRepeated {
 		t = t.Elem()
 	}
-
-	f.Options = &descriptorV1.FieldOptions{
-		Packed: protoV1.Bool(false),
-	}
-	for len(tag) > 0 {
-		i := strings.IndexByte(tag, ',')
-		if i < 0 {
-			i = len(tag)
-		}
-		switch s := tag[:i]; {
-		case strings.HasPrefix(s, "name="):
-			f.Name = pref.Name(s[len("name="):])
-		case strings.Trim(s, "0123456789") == "":
-			n, _ := strconv.ParseUint(s, 10, 32)
-			f.Number = pref.FieldNumber(n)
-		case s == "opt":
-			f.Cardinality = pref.Optional
-		case s == "req":
-			f.Cardinality = pref.Required
-		case s == "rep":
-			f.Cardinality = pref.Repeated
-		case s == "varint":
-			switch t.Kind() {
-			case reflect.Bool:
-				f.Kind = pref.BoolKind
-			case reflect.Int32:
-				f.Kind = pref.Int32Kind
-			case reflect.Int64:
-				f.Kind = pref.Int64Kind
-			case reflect.Uint32:
-				f.Kind = pref.Uint32Kind
-			case reflect.Uint64:
-				f.Kind = pref.Uint64Kind
-			}
-		case s == "zigzag32":
-			if t.Kind() == reflect.Int32 {
-				f.Kind = pref.Sint32Kind
-			}
-		case s == "zigzag64":
-			if t.Kind() == reflect.Int64 {
-				f.Kind = pref.Sint64Kind
-			}
-		case s == "fixed32":
-			switch t.Kind() {
-			case reflect.Int32:
-				f.Kind = pref.Sfixed32Kind
-			case reflect.Uint32:
-				f.Kind = pref.Fixed32Kind
-			case reflect.Float32:
-				f.Kind = pref.FloatKind
-			}
-		case s == "fixed64":
-			switch t.Kind() {
-			case reflect.Int64:
-				f.Kind = pref.Sfixed64Kind
-			case reflect.Uint64:
-				f.Kind = pref.Fixed64Kind
-			case reflect.Float64:
-				f.Kind = pref.DoubleKind
-			}
-		case s == "bytes":
-			switch {
-			case t.Kind() == reflect.String:
-				f.Kind = pref.StringKind
-			case t.Kind() == reflect.Slice && t.Elem() == byteType:
-				f.Kind = pref.BytesKind
-			default:
-				f.Kind = pref.MessageKind
-			}
-		case s == "group":
-			f.Kind = pref.GroupKind
-		case strings.HasPrefix(s, "enum="):
-			f.Kind = pref.EnumKind
-		case strings.HasPrefix(s, "json="):
-			f.JSONName = s[len("json="):]
-		case s == "packed":
-			*f.Options.Packed = true
-		case strings.HasPrefix(s, "weak="):
-			f.Options.Weak = protoV1.Bool(true)
-			f.MessageType = ptype.PlaceholderMessage(pref.FullName(s[len("weak="):]))
-		case strings.HasPrefix(s, "def="):
-			// The default tag is special in that everything afterwards is the
-			// default regardless of the presence of commas.
-			s, i = tag[len("def="):], len(tag)
-
-			// Defaults are parsed last, so Kind is populated.
-			switch f.Kind {
-			case pref.BoolKind:
-				switch s {
-				case "1":
-					f.Default = pref.ValueOf(true)
-				case "0":
-					f.Default = pref.ValueOf(false)
-				}
-			case pref.EnumKind:
-				n, _ := strconv.ParseInt(s, 10, 32)
-				f.Default = pref.ValueOf(pref.EnumNumber(n))
-			case pref.Int32Kind, pref.Sint32Kind, pref.Sfixed32Kind:
-				n, _ := strconv.ParseInt(s, 10, 32)
-				f.Default = pref.ValueOf(int32(n))
-			case pref.Int64Kind, pref.Sint64Kind, pref.Sfixed64Kind:
-				n, _ := strconv.ParseInt(s, 10, 64)
-				f.Default = pref.ValueOf(int64(n))
-			case pref.Uint32Kind, pref.Fixed32Kind:
-				n, _ := strconv.ParseUint(s, 10, 32)
-				f.Default = pref.ValueOf(uint32(n))
-			case pref.Uint64Kind, pref.Fixed64Kind:
-				n, _ := strconv.ParseUint(s, 10, 64)
-				f.Default = pref.ValueOf(uint64(n))
-			case pref.FloatKind, pref.DoubleKind:
-				n, _ := strconv.ParseFloat(s, 64)
-				switch s {
-				case "nan":
-					n = math.NaN()
-				case "inf":
-					n = math.Inf(+1)
-				case "-inf":
-					n = math.Inf(-1)
-				}
-				if f.Kind == pref.FloatKind {
-					f.Default = pref.ValueOf(float32(n))
-				} else {
-					f.Default = pref.ValueOf(float64(n))
-				}
-			case pref.StringKind:
-				f.Default = pref.ValueOf(string(s))
-			case pref.BytesKind:
-				// The default value is in escaped form (C-style).
-				// TODO: Export unmarshalString in the text package to avoid this hack.
-				v, err := text.Unmarshal([]byte(`["` + s + `"]:0`))
-				if err == nil && len(v.Message()) == 1 {
-					s := v.Message()[0][0].String()
-					f.Default = pref.ValueOf([]byte(s))
-				}
-			}
-		}
-		tag = strings.TrimPrefix(tag[i:], ",")
-	}
-
-	// The generator uses the group message name instead of the field name.
-	// We obtain the real field name by lowercasing the group name.
-	if f.Kind == pref.GroupKind {
-		f.Name = pref.Name(strings.ToLower(string(f.Name)))
-	}
+	f := ptag.Unmarshal(tag, t)
 
 	// Populate EnumType and MessageType.
 	if f.EnumType == nil && f.Kind == pref.EnumKind {
