@@ -53,9 +53,8 @@ func (mi *MessageType) init(p interface{}) {
 		mi.goType = t
 
 		// Derive the message descriptor if unspecified.
-		md := mi.Desc
-		if md == nil {
-			// TODO: derive the message type from the Go struct type
+		if mi.Desc == nil {
+			mi.Desc = loadMessageDesc(t)
 		}
 
 		// Initialize the Go message type wrapper if the Go type does not
@@ -68,7 +67,7 @@ func (mi *MessageType) init(p interface{}) {
 		// Generated code ensures that this property holds.
 		if _, ok := p.(pref.ProtoMessage); !ok {
 			mi.pbType = ptype.NewGoMessage(&ptype.GoMessage{
-				MessageDescriptor: md,
+				MessageDescriptor: mi.Desc,
 				New: func(pref.MessageType) pref.ProtoMessage {
 					p := reflect.New(t.Elem()).Interface()
 					return (*message)(mi.dataTypeOf(p))
@@ -76,9 +75,9 @@ func (mi *MessageType) init(p interface{}) {
 			})
 		}
 
-		mi.generateKnownFieldFuncs(t.Elem(), md)
-		mi.generateUnknownFieldFuncs(t.Elem(), md)
-		mi.generateExtensionFieldFuncs(t.Elem(), md)
+		mi.makeKnownFieldsFunc(t.Elem())
+		mi.makeUnknownFieldsFunc(t.Elem())
+		mi.makeExtensionFieldsFunc(t.Elem())
 	})
 
 	// TODO: Remove this check? This API is primarily used by generated code,
@@ -90,14 +89,14 @@ func (mi *MessageType) init(p interface{}) {
 	}
 }
 
-// generateKnownFieldFuncs generates per-field functions for all operations
+// makeKnownFieldsFunc generates per-field functions for all operations
 // to be performed on each field. It takes in a reflect.Type representing the
 // Go struct, and a protoreflect.MessageDescriptor to match with the fields
 // in the struct.
 //
 // This code assumes that the struct is well-formed and panics if there are
 // any discrepancies.
-func (mi *MessageType) generateKnownFieldFuncs(t reflect.Type, md pref.MessageDescriptor) {
+func (mi *MessageType) makeKnownFieldsFunc(t reflect.Type) {
 	// Generate a mapping of field numbers and names to Go struct field or type.
 	fields := map[pref.FieldNumber]reflect.StructField{}
 	oneofs := map[pref.Name]reflect.StructField{}
@@ -140,8 +139,8 @@ fieldLoop:
 	}
 
 	mi.fields = map[pref.FieldNumber]*fieldInfo{}
-	for i := 0; i < md.Fields().Len(); i++ {
-		fd := md.Fields().Get(i)
+	for i := 0; i < mi.Desc.Fields().Len(); i++ {
+		fd := mi.Desc.Fields().Get(i)
 		fs := fields[fd.Number()]
 		var fi fieldInfo
 		switch {
@@ -162,8 +161,8 @@ fieldLoop:
 	}
 }
 
-func (mi *MessageType) generateUnknownFieldFuncs(t reflect.Type, md pref.MessageDescriptor) {
-	if f := generateLegacyUnknownFieldFuncs(t, md); f != nil {
+func (mi *MessageType) makeUnknownFieldsFunc(t reflect.Type) {
+	if f := makeLegacyUnknownFieldsFunc(t); f != nil {
 		mi.unknownFields = f
 		return
 	}
@@ -172,7 +171,7 @@ func (mi *MessageType) generateUnknownFieldFuncs(t reflect.Type, md pref.Message
 	}
 }
 
-func (mi *MessageType) generateExtensionFieldFuncs(t reflect.Type, md pref.MessageDescriptor) {
+func (mi *MessageType) makeExtensionFieldsFunc(t reflect.Type) {
 	// TODO
 	mi.extensionFields = func(*messageDataType) pref.KnownFields {
 		return emptyExtensionFields{}

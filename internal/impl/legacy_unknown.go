@@ -7,36 +7,104 @@ package impl
 import (
 	"container/list"
 	"reflect"
+	"sort"
 
-	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
-var (
-	extTypeA = reflect.TypeOf(map[int32]protoV1.Extension(nil))
-	extTypeB = reflect.TypeOf(protoV1.XXX_InternalExtensions{})
-)
-
-func generateLegacyUnknownFieldFuncs(t reflect.Type, md pref.MessageDescriptor) func(p *messageDataType) pref.UnknownFields {
+func makeLegacyUnknownFieldsFunc(t reflect.Type) func(p *messageDataType) pref.UnknownFields {
 	fu, ok := t.FieldByName("XXX_unrecognized")
 	if !ok || fu.Type != bytesType {
 		return nil
 	}
-	fx1, _ := t.FieldByName("XXX_extensions")
-	fx2, _ := t.FieldByName("XXX_InternalExtensions")
-	if fx1.Type == extTypeA || fx2.Type == extTypeB {
-		// TODO: In proto v1, the unknown fields are split between both
-		// XXX_unrecognized and XXX_InternalExtensions. If the message supports
-		// extensions, then we will need to create a wrapper data structure
-		// that presents unknown fields in both lists as a single ordered list.
-		panic("not implemented")
-	}
 	fieldOffset := offsetOf(fu)
-	return func(p *messageDataType) pref.UnknownFields {
+	unkFunc := func(p *messageDataType) pref.UnknownFields {
 		rv := p.p.apply(fieldOffset).asType(bytesType)
 		return (*legacyUnknownBytes)(rv.Interface().(*[]byte))
 	}
+	extFunc := makeLegacyExtensionMapFunc(t)
+	if extFunc != nil {
+		return func(p *messageDataType) pref.UnknownFields {
+			return &legacyUnknownBytesAndExtensionMap{
+				unkFunc(p), extFunc(p), p.mi.Desc.ExtensionRanges(),
+			}
+		}
+	}
+	return unkFunc
+}
+
+// legacyUnknownBytesAndExtensionMap is a wrapper around both XXX_unrecognized
+// and also the extension field map.
+type legacyUnknownBytesAndExtensionMap struct {
+	u pref.UnknownFields
+	x legacyExtensionIface
+	r pref.FieldRanges
+}
+
+func (fs *legacyUnknownBytesAndExtensionMap) Len() int {
+	n := fs.u.Len()
+	fs.x.Range(func(_ pref.FieldNumber, x legacyExtensionEntry) bool {
+		if len(x.raw) > 0 {
+			n++
+		}
+		return true
+	})
+	return n
+}
+
+func (fs *legacyUnknownBytesAndExtensionMap) Get(num pref.FieldNumber) (raw pref.RawFields) {
+	if fs.r.Has(num) {
+		return fs.x.Get(num).raw
+	}
+	return fs.u.Get(num)
+}
+
+func (fs *legacyUnknownBytesAndExtensionMap) Set(num pref.FieldNumber, raw pref.RawFields) {
+	if fs.r.Has(num) {
+		x := fs.x.Get(num)
+		x.raw = raw
+		fs.x.Set(num, x)
+		return
+	}
+	fs.u.Set(num, raw)
+}
+
+func (fs *legacyUnknownBytesAndExtensionMap) Range(f func(pref.FieldNumber, pref.RawFields) bool) {
+	// Range over unknown fields not in the extension range.
+	// Create a closure around f to capture whether iteration terminated early.
+	var stop bool
+	fs.u.Range(func(n pref.FieldNumber, b pref.RawFields) bool {
+		stop = stop || !f(n, b)
+		return !stop
+	})
+	if stop {
+		return
+	}
+
+	// Range over unknown fields in the extension range in ascending order
+	// to ensure protoreflect.UnknownFields.Range remains deterministic.
+	type entry struct {
+		num pref.FieldNumber
+		raw pref.RawFields
+	}
+	var xs []entry
+	fs.x.Range(func(n pref.FieldNumber, x legacyExtensionEntry) bool {
+		if len(x.raw) > 0 {
+			xs = append(xs, entry{n, x.raw})
+		}
+		return true
+	})
+	sort.Slice(xs, func(i, j int) bool { return xs[i].num < xs[j].num })
+	for _, x := range xs {
+		if !f(x.num, x.raw) {
+			return
+		}
+	}
+}
+
+func (fs *legacyUnknownBytesAndExtensionMap) IsSupported() bool {
+	return true
 }
 
 // legacyUnknownBytes is a wrapper around XXX_unrecognized that implements

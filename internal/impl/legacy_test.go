@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"testing"
 
+	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
@@ -137,6 +138,15 @@ func TestLegacyDescriptor(t *testing.T) {
 	}
 }
 
+type legacyUnknownMessage struct {
+	XXX_unrecognized []byte
+	protoV1.XXX_InternalExtensions
+}
+
+func (*legacyUnknownMessage) ExtensionRangeArray() []protoV1.ExtensionRange {
+	return []protoV1.ExtensionRange{{Start: 10, End: 20}, {Start: 40, End: 80}}
+}
+
 func TestLegacyUnknown(t *testing.T) {
 	rawOf := func(toks ...pack.Token) pref.RawFields {
 		return pref.RawFields(pack.Message(toks).Marshal())
@@ -149,6 +159,17 @@ func TestLegacyUnknown(t *testing.T) {
 	raw3a := rawOf(pack.Tag{3, pack.StartGroupType}, pack.Tag{3, pack.EndGroupType}) // 1b1c
 	raw3b := rawOf(pack.Tag{3, pack.BytesType}, pack.Bytes("\xde\xad\xbe\xef"))      // 1a04deadbeef
 
+	raw1 := rawOf(pack.Tag{1, pack.BytesType}, pack.Bytes("1"))    // 0a0131
+	raw3 := rawOf(pack.Tag{3, pack.BytesType}, pack.Bytes("3"))    // 1a0133
+	raw10 := rawOf(pack.Tag{10, pack.BytesType}, pack.Bytes("10")) // 52023130 - extension
+	raw15 := rawOf(pack.Tag{15, pack.BytesType}, pack.Bytes("15")) // 7a023135 - extension
+	raw26 := rawOf(pack.Tag{26, pack.BytesType}, pack.Bytes("26")) // d201023236
+	raw32 := rawOf(pack.Tag{32, pack.BytesType}, pack.Bytes("32")) // 8202023332
+	raw45 := rawOf(pack.Tag{45, pack.BytesType}, pack.Bytes("45")) // ea02023435 - extension
+	raw46 := rawOf(pack.Tag{45, pack.BytesType}, pack.Bytes("46")) // ea02023436 - extension
+	raw47 := rawOf(pack.Tag{45, pack.BytesType}, pack.Bytes("47")) // ea02023437 - extension
+	raw99 := rawOf(pack.Tag{99, pack.BytesType}, pack.Bytes("99")) // 9a06023939
+
 	joinRaw := func(bs ...pref.RawFields) (out []byte) {
 		for _, b := range bs {
 			out = append(out, b...)
@@ -156,11 +177,13 @@ func TestLegacyUnknown(t *testing.T) {
 		return out
 	}
 
-	var fs legacyUnknownBytes
+	m := new(legacyUnknownMessage)
+	fs := new(MessageType).MessageOf(m).UnknownFields()
+
 	if got, want := fs.Len(), 0; got != want {
 		t.Errorf("Len() = %d, want %d", got, want)
 	}
-	if got, want := []byte(fs), joinRaw(); !bytes.Equal(got, want) {
+	if got, want := m.XXX_unrecognized, joinRaw(); !bytes.Equal(got, want) {
 		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
 	}
 
@@ -170,7 +193,7 @@ func TestLegacyUnknown(t *testing.T) {
 	if got, want := fs.Len(), 1; got != want {
 		t.Errorf("Len() = %d, want %d", got, want)
 	}
-	if got, want := []byte(fs), joinRaw(raw1a, raw1b, raw1c); !bytes.Equal(got, want) {
+	if got, want := m.XXX_unrecognized, joinRaw(raw1a, raw1b, raw1c); !bytes.Equal(got, want) {
 		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
 	}
 
@@ -178,7 +201,7 @@ func TestLegacyUnknown(t *testing.T) {
 	if got, want := fs.Len(), 2; got != want {
 		t.Errorf("Len() = %d, want %d", got, want)
 	}
-	if got, want := []byte(fs), joinRaw(raw1a, raw1b, raw1c, raw2a); !bytes.Equal(got, want) {
+	if got, want := m.XXX_unrecognized, joinRaw(raw1a, raw1b, raw1c, raw2a); !bytes.Equal(got, want) {
 		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
 	}
 
@@ -196,12 +219,12 @@ func TestLegacyUnknown(t *testing.T) {
 	if got, want := fs.Len(), 1; got != want {
 		t.Errorf("Len() = %d, want %d", got, want)
 	}
-	if got, want := []byte(fs), joinRaw(raw2a); !bytes.Equal(got, want) {
+	if got, want := m.XXX_unrecognized, joinRaw(raw2a); !bytes.Equal(got, want) {
 		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
 	}
 
 	// Simulate manual appending of raw field data.
-	fs = append(fs, joinRaw(raw3a, raw1a, raw1b, raw2b, raw3b, raw1c)...)
+	m.XXX_unrecognized = append(m.XXX_unrecognized, joinRaw(raw3a, raw1a, raw1b, raw2b, raw3b, raw1c)...)
 	if got, want := fs.Len(), 3; got != want {
 		t.Errorf("Len() = %d, want %d", got, want)
 	}
@@ -232,14 +255,14 @@ func TestLegacyUnknown(t *testing.T) {
 	if got, want := fs.Len(), 3; got != want {
 		t.Errorf("Len() = %d, want %d", got, want)
 	}
-	if got, want := []byte(fs), joinRaw(raw3a, raw1a, raw1b, raw3b, raw1c, raw2a, raw2b); !bytes.Equal(got, want) {
+	if got, want := m.XXX_unrecognized, joinRaw(raw3a, raw1a, raw1b, raw3b, raw1c, raw2a, raw2b); !bytes.Equal(got, want) {
 		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
 	}
 	fs.Set(1, nil) // remove field 1
 	if got, want := fs.Len(), 2; got != want {
 		t.Errorf("Len() = %d, want %d", got, want)
 	}
-	if got, want := []byte(fs), joinRaw(raw3a, raw3b, raw2a, raw2b); !bytes.Equal(got, want) {
+	if got, want := m.XXX_unrecognized, joinRaw(raw3a, raw3b, raw2a, raw2b); !bytes.Equal(got, want) {
 		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
 	}
 
@@ -251,7 +274,102 @@ func TestLegacyUnknown(t *testing.T) {
 	if got, want := fs.Len(), 0; got != want {
 		t.Errorf("Len() = %d, want %d", got, want)
 	}
-	if got, want := []byte(fs), joinRaw(); !bytes.Equal(got, want) {
+	if got, want := m.XXX_unrecognized, joinRaw(); !bytes.Equal(got, want) {
 		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
 	}
+
+	fs.Set(1, raw1)
+	if got, want := fs.Len(), 1; got != want {
+		t.Errorf("Len() = %d, want %d", got, want)
+	}
+	if got, want := m.XXX_unrecognized, joinRaw(raw1); !bytes.Equal(got, want) {
+		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
+	}
+
+	fs.Set(45, raw45)
+	fs.Set(10, raw10) // extension
+	fs.Set(32, raw32)
+	fs.Set(1, nil) // deletion
+	fs.Set(26, raw26)
+	fs.Set(47, raw47) // extension
+	fs.Set(46, raw46) // extension
+	if got, want := fs.Len(), 6; got != want {
+		t.Errorf("Len() = %d, want %d", got, want)
+	}
+	if got, want := m.XXX_unrecognized, joinRaw(raw32, raw26); !bytes.Equal(got, want) {
+		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
+	}
+
+	// Verify iteration order.
+	i = 0
+	want = []struct {
+		num pref.FieldNumber
+		raw pref.RawFields
+	}{
+		{32, raw32},
+		{26, raw26},
+		{10, raw10}, // extension
+		{45, raw45}, // extension
+		{46, raw46}, // extension
+		{47, raw47}, // extension
+	}
+	fs.Range(func(num pref.FieldNumber, raw pref.RawFields) bool {
+		if i < len(want) {
+			if num != want[i].num || !bytes.Equal(raw, want[i].raw) {
+				t.Errorf("Range(%d) = (%d, %x), want (%d, %x)", i, num, raw, want[i].num, want[i].raw)
+			}
+		} else {
+			t.Errorf("unexpected Range iteration: %d", i)
+		}
+		i++
+		return true
+	})
+
+	// Perform partial deletion while iterating.
+	i = 0
+	fs.Range(func(num pref.FieldNumber, raw pref.RawFields) bool {
+		if i%2 == 0 {
+			fs.Set(num, nil)
+		}
+		i++
+		return true
+	})
+
+	if got, want := fs.Len(), 3; got != want {
+		t.Errorf("Len() = %d, want %d", got, want)
+	}
+	if got, want := m.XXX_unrecognized, joinRaw(raw26); !bytes.Equal(got, want) {
+		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
+	}
+
+	fs.Set(15, raw15) // extension
+	fs.Set(3, raw3)
+	fs.Set(99, raw99)
+	if got, want := fs.Len(), 6; got != want {
+		t.Errorf("Len() = %d, want %d", got, want)
+	}
+	if got, want := m.XXX_unrecognized, joinRaw(raw26, raw3, raw99); !bytes.Equal(got, want) {
+		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
+	}
+
+	// Perform partial iteration.
+	i = 0
+	want = []struct {
+		num pref.FieldNumber
+		raw pref.RawFields
+	}{
+		{26, raw26},
+		{3, raw3},
+	}
+	fs.Range(func(num pref.FieldNumber, raw pref.RawFields) bool {
+		if i < len(want) {
+			if num != want[i].num || !bytes.Equal(raw, want[i].raw) {
+				t.Errorf("Range(%d) = (%d, %x), want (%d, %x)", i, num, raw, want[i].num, want[i].raw)
+			}
+		} else {
+			t.Errorf("unexpected Range iteration: %d", i)
+		}
+		i++
+		return i < 2
+	})
 }
