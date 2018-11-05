@@ -13,6 +13,8 @@ import (
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
+var bytesType = reflect.TypeOf([]byte(nil))
+
 func makeLegacyUnknownFieldsFunc(t reflect.Type) func(p *messageDataType) pref.UnknownFields {
 	fu, ok := t.FieldByName("XXX_unrecognized")
 	if !ok || fu.Type != bytesType {
