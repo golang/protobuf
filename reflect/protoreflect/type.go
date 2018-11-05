@@ -438,33 +438,10 @@ type ExtensionType interface {
 	ExtensionDescriptor
 
 	// GoNew returns a new value for the field.
+	// For scalars, this returns the default value in native Go form.
 	GoNew() interface{}
 
 	// GoType returns the Go type of the field value.
-	//
-	// The type is currently determined automatically (although custom Go types
-	// may be supported in the future). The type is T for scalars and
-	// *[]T for vectors. Maps are not valid in extension fields.
-	// The type T is determined as follows:
-	//
-	//	+------------+-------------------------------------+
-	//	| Go type    | Protobuf kind                       |
-	//	+------------+-------------------------------------+
-	//	| bool       | BoolKind                            |
-	//	| int32      | Int32Kind, Sint32Kind, Sfixed32Kind |
-	//	| int64      | Int64Kind, Sint64Kind, Sfixed64Kind |
-	//	| uint32     | Uint32Kind, Fixed32Kind             |
-	//	| uint64     | Uint64Kind, Fixed64Kind             |
-	//	| float32    | FloatKind                           |
-	//	| float64    | DoubleKind                          |
-	//	| string     | StringKind                          |
-	//	| []byte     | BytesKind                           |
-	//	| E          | EnumKind                            |
-	//	| M          | MessageKind, GroupKind              |
-	//	+------------+-------------------------------------+
-	//
-	// The type E is the concrete enum type (see EnumDescriptor.GoType).
-	// The type M is the concrete message type (see MessageDescriptor.GoType).
 	//
 	// Invariants:
 	//	t.GoType() == reflect.TypeOf(t.GoNew())
