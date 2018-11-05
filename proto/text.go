@@ -561,34 +561,43 @@ func writeString(w *textWriter, s string) error {
 	if err := w.WriteByte('"'); err != nil {
 		return err
 	}
+
+	// Allocate the slice. This should reduce few allocations.
+	aSlice := make([]byte, 0, len(s))
 	// Loop over the bytes, not the runes.
 	for i := 0; i < len(s); i++ {
-		var err error
 		// Divergence from C++: we don't escape apostrophes.
 		// There's no need to escape them, and the C++ parser
 		// copes with a naked apostrophe.
 		switch c := s[i]; c {
 		case '\n':
-			_, err = w.w.Write(backslashN)
+			aSlice = append(aSlice, backslashN...)
 		case '\r':
-			_, err = w.w.Write(backslashR)
+			aSlice = append(aSlice, backslashR...)
 		case '\t':
-			_, err = w.w.Write(backslashT)
+			aSlice = append(aSlice, backslashT...)
 		case '"':
-			_, err = w.w.Write(backslashDQ)
+			aSlice = append(aSlice, backslashDQ...)
 		case '\\':
-			_, err = w.w.Write(backslashBS)
+			aSlice = append(aSlice, backslashBS...)
 		default:
 			if isprint(c) {
-				err = w.w.WriteByte(c)
+				aSlice = append(aSlice, c)
 			} else {
-				_, err = fmt.Fprintf(w.w, "\\%03o", c)
+				lastByte := byte('0' + c&7)
+				c >>= 3
+				middleByte := byte('0' + c&7)
+				c >>= 3
+				firstByte := byte('0' + c&7)
+				aSlice = append(aSlice, '\\', firstByte, middleByte, lastByte)
 			}
 		}
-		if err != nil {
-			return err
-		}
 	}
+
+	if _, err := w.w.Write(aSlice); err != nil {
+		return err
+	}
+
 	return w.WriteByte('"')
 }
 
