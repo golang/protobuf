@@ -19,26 +19,38 @@ import (
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
+// legacyWrapMessage wraps v as a protoreflect.ProtoMessage,
+// where v must be a *struct kind and not implement the v2 API already.
+func legacyWrapMessage(v reflect.Value) pref.ProtoMessage {
+	mt := legacyLoadMessageType(v.Type())
+	return (*legacyMessageWrapper)(mt.dataTypeOf(v.Interface()))
+}
+
 var messageTypeCache sync.Map // map[reflect.Type]*MessageType
 
-// wrapLegacyMessage wraps v as a protoreflect.ProtoMessage,
-// where v must be a *struct kind and not implement the v2 API already.
-func wrapLegacyMessage(v reflect.Value) pref.ProtoMessage {
+// legacyLoadMessageType dynamically loads a *MessageType for t,
+// where t must be a *struct kind and not implement the v2 API already.
+func legacyLoadMessageType(t reflect.Type) *MessageType {
 	// Fast-path: check if a MessageType is cached for this concrete type.
-	if mt, ok := messageTypeCache.Load(v.Type()); ok {
-		return mt.(*MessageType).MessageOf(v.Interface()).Interface()
+	if mt, ok := messageTypeCache.Load(t); ok {
+		return mt.(*MessageType)
 	}
 
 	// Slow-path: derive message descriptor and initialize MessageType.
-	mt := &MessageType{Desc: loadMessageDesc(v.Type())}
-	messageTypeCache.Store(v.Type(), mt)
-	return mt.MessageOf(v.Interface()).Interface()
+	md := legacyLoadMessageDesc(t)
+	mt := new(MessageType)
+	mt.Type = ptype.GoMessage(md, func(pref.MessageType) pref.ProtoMessage {
+		p := reflect.New(t.Elem()).Interface()
+		return (*legacyMessageWrapper)(mt.dataTypeOf(p))
+	})
+	messageTypeCache.Store(t, mt)
+	return mt
 }
 
 type legacyMessageWrapper messageDataType
 
 func (m *legacyMessageWrapper) Type() pref.MessageType {
-	return m.mi.pbType
+	return m.mi.Type
 }
 func (m *legacyMessageWrapper) KnownFields() pref.KnownFields {
 	return (*knownFields)(m)
@@ -65,9 +77,9 @@ var (
 
 var messageDescCache sync.Map // map[reflect.Type]protoreflect.MessageDescriptor
 
-// loadMessageDesc returns an MessageDescriptor derived from the Go type,
+// legacyLoadMessageDesc returns an MessageDescriptor derived from the Go type,
 // which must be a *struct kind and not implement the v2 API already.
-func loadMessageDesc(t reflect.Type) pref.MessageDescriptor {
+func legacyLoadMessageDesc(t reflect.Type) pref.MessageDescriptor {
 	return messageDescSet{}.Load(t)
 }
 
@@ -126,7 +138,7 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 	}
 	if md, ok := mv.(legacyMessage); ok {
 		b, idxs := md.Descriptor()
-		fd := loadFileDesc(b)
+		fd := legacyLoadFileDesc(b)
 
 		// Derive syntax.
 		switch fd.GetSyntax() {
@@ -231,7 +243,7 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 		if ev, ok := reflect.Zero(t).Interface().(pref.ProtoEnum); ok {
 			f.EnumType = ev.ProtoReflect().Type()
 		} else {
-			f.EnumType = loadEnumDesc(t)
+			f.EnumType = legacyLoadEnumDesc(t)
 		}
 	}
 	if f.MessageType == nil && (f.Kind == pref.MessageKind || f.Kind == pref.GroupKind) {

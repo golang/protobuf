@@ -13,7 +13,6 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	"github.com/golang/protobuf/proto"
 	protoV1 "github.com/golang/protobuf/proto"
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
@@ -46,28 +45,7 @@ type (
 
 	MapStrings map[MyString]MyString
 	MapBytes   map[MyString]MyBytes
-
-	MyEnumV1 pref.EnumNumber
-	MyEnumV2 string
-	myEnumV2 MyEnumV2
-
-	MyMessageV1 struct {
-		// SubMessage *Message
-	}
-	MyMessageV2 map[pref.FieldNumber]pref.Value
-	myMessageV2 MyMessageV2
 )
-
-func (e MyEnumV2) ProtoReflect() pref.Enum { return myEnumV2(e) }
-func (e myEnumV2) Type() pref.EnumType     { return nil } // TODO
-func (e myEnumV2) Number() pref.EnumNumber { return 0 }   // TODO
-
-func (m *MyMessageV2) ProtoReflect() pref.Message        { return (*myMessageV2)(m) }
-func (m *myMessageV2) Type() pref.MessageType            { return nil } // TODO
-func (m *myMessageV2) KnownFields() pref.KnownFields     { return nil } // TODO
-func (m *myMessageV2) UnknownFields() pref.UnknownFields { return nil } // TODO
-func (m *myMessageV2) Interface() pref.ProtoMessage      { return (*MyMessageV2)(m) }
-func (m *myMessageV2) ProtoMutable()                     {}
 
 // List of test operations to perform on messages, vectors, or maps.
 type (
@@ -143,8 +121,8 @@ type ScalarProto2 struct {
 	MyBytesA  *MyString  `protobuf:"22"`
 }
 
-func TestScalarProto2(t *testing.T) {
-	mi := MessageType{Desc: mustMakeMessageDesc(ptype.StandaloneMessage{
+var scalarProto2Type = MessageType{Type: ptype.GoMessage(
+	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "ScalarProto2",
 		Fields: []ptype.Field{
@@ -172,9 +150,21 @@ func TestScalarProto2(t *testing.T) {
 			{Name: "f21", Number: 21, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("21"))},
 			{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("22"))},
 		},
-	})}
+	}),
+	func(pref.MessageType) pref.ProtoMessage {
+		return new(ScalarProto2)
+	},
+)}
 
-	testMessage(t, nil, mi.MessageOf(&ScalarProto2{}), messageOps{
+func (m *ScalarProto2) Type() pref.MessageType            { return scalarProto2Type.Type }
+func (m *ScalarProto2) KnownFields() pref.KnownFields     { return scalarProto2Type.KnownFieldsOf(m) }
+func (m *ScalarProto2) UnknownFields() pref.UnknownFields { return scalarProto2Type.UnknownFieldsOf(m) }
+func (m *ScalarProto2) Interface() pref.ProtoMessage      { return m }
+func (m *ScalarProto2) ProtoReflect() pref.Message        { return m }
+func (m *ScalarProto2) ProtoMutable()                     {}
+
+func TestScalarProto2(t *testing.T) {
+	testMessage(t, nil, &ScalarProto2{}, messageOps{
 		hasFields{
 			1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false,
 			12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false,
@@ -191,15 +181,15 @@ func TestScalarProto2(t *testing.T) {
 			1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true,
 			12: true, 13: true, 14: true, 15: true, 16: true, 17: true, 18: true, 19: true, 20: true, 21: true, 22: true,
 		},
-		equalMessage(mi.MessageOf(&ScalarProto2{
+		equalMessage(&ScalarProto2{
 			new(bool), new(int32), new(int64), new(uint32), new(uint64), new(float32), new(float64), new(string), []byte{}, []byte{}, new(string),
 			new(MyBool), new(MyInt32), new(MyInt64), new(MyUint32), new(MyUint64), new(MyFloat32), new(MyFloat64), new(MyString), MyBytes{}, MyBytes{}, new(MyString),
-		})),
+		}),
 		clearFields{
 			1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true,
 			12: true, 13: true, 14: true, 15: true, 16: true, 17: true, 18: true, 19: true, 20: true, 21: true, 22: true,
 		},
-		equalMessage(mi.MessageOf(&ScalarProto2{})),
+		equalMessage(&ScalarProto2{}),
 	})
 }
 
@@ -229,8 +219,8 @@ type ScalarProto3 struct {
 	MyBytesA  MyString  `protobuf:"22"`
 }
 
-func TestScalarProto3(t *testing.T) {
-	mi := MessageType{Desc: mustMakeMessageDesc(ptype.StandaloneMessage{
+var scalarProto3Type = MessageType{Type: ptype.GoMessage(
+	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto3,
 		FullName: "ScalarProto3",
 		Fields: []ptype.Field{
@@ -258,9 +248,21 @@ func TestScalarProto3(t *testing.T) {
 			{Name: "f21", Number: 21, Cardinality: pref.Optional, Kind: pref.BytesKind},
 			{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind},
 		},
-	})}
+	}),
+	func(pref.MessageType) pref.ProtoMessage {
+		return new(ScalarProto3)
+	},
+)}
 
-	testMessage(t, nil, mi.MessageOf(&ScalarProto3{}), messageOps{
+func (m *ScalarProto3) Type() pref.MessageType            { return scalarProto3Type.Type }
+func (m *ScalarProto3) KnownFields() pref.KnownFields     { return scalarProto3Type.KnownFieldsOf(m) }
+func (m *ScalarProto3) UnknownFields() pref.UnknownFields { return scalarProto3Type.UnknownFieldsOf(m) }
+func (m *ScalarProto3) Interface() pref.ProtoMessage      { return m }
+func (m *ScalarProto3) ProtoReflect() pref.Message        { return m }
+func (m *ScalarProto3) ProtoMutable()                     {}
+
+func TestScalarProto3(t *testing.T) {
+	testMessage(t, nil, &ScalarProto3{}, messageOps{
 		hasFields{
 			1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false,
 			12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false,
@@ -277,7 +279,7 @@ func TestScalarProto3(t *testing.T) {
 			1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false,
 			12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false,
 		},
-		equalMessage(mi.MessageOf(&ScalarProto3{})),
+		equalMessage(&ScalarProto3{}),
 		setFields{
 			1: V(bool(true)), 2: V(int32(2)), 3: V(int64(3)), 4: V(uint32(4)), 5: V(uint64(5)), 6: V(float32(6)), 7: V(float64(7)), 8: V(string("8")), 9: V(string("9")), 10: V([]byte("10")), 11: V([]byte("11")),
 			12: V(bool(true)), 13: V(int32(13)), 14: V(int64(14)), 15: V(uint32(15)), 16: V(uint64(16)), 17: V(float32(17)), 18: V(float64(18)), 19: V(string("19")), 20: V(string("20")), 21: V([]byte("21")), 22: V([]byte("22")),
@@ -286,19 +288,19 @@ func TestScalarProto3(t *testing.T) {
 			1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true,
 			12: true, 13: true, 14: true, 15: true, 16: true, 17: true, 18: true, 19: true, 20: true, 21: true, 22: true,
 		},
-		equalMessage(mi.MessageOf(&ScalarProto3{
+		equalMessage(&ScalarProto3{
 			true, 2, 3, 4, 5, 6, 7, "8", []byte("9"), []byte("10"), "11",
 			true, 13, 14, 15, 16, 17, 18, "19", []byte("20"), []byte("21"), "22",
-		})),
+		}),
 		clearFields{
 			1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true,
 			12: true, 13: true, 14: true, 15: true, 16: true, 17: true, 18: true, 19: true, 20: true, 21: true, 22: true,
 		},
-		equalMessage(mi.MessageOf(&ScalarProto3{})),
+		equalMessage(&ScalarProto3{}),
 	})
 }
 
-type RepeatedScalars struct {
+type ListScalars struct {
 	Bools    []bool    `protobuf:"1"`
 	Int32s   []int32   `protobuf:"2"`
 	Int64s   []int64   `protobuf:"3"`
@@ -322,10 +324,10 @@ type RepeatedScalars struct {
 	MyBytes4   VectorStrings `protobuf:"19"`
 }
 
-func TestRepeatedScalars(t *testing.T) {
-	mi := MessageType{Desc: mustMakeMessageDesc(ptype.StandaloneMessage{
+var listScalarsType = MessageType{Type: ptype.GoMessage(
+	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
-		FullName: "RepeatedScalars",
+		FullName: "ListScalars",
 		Fields: []ptype.Field{
 			{Name: "f1", Number: 1, Cardinality: pref.Repeated, Kind: pref.BoolKind},
 			{Name: "f2", Number: 2, Cardinality: pref.Repeated, Kind: pref.Int32Kind},
@@ -349,12 +351,24 @@ func TestRepeatedScalars(t *testing.T) {
 			{Name: "f18", Number: 18, Cardinality: pref.Repeated, Kind: pref.BytesKind},
 			{Name: "f19", Number: 19, Cardinality: pref.Repeated, Kind: pref.BytesKind},
 		},
-	})}
+	}),
+	func(pref.MessageType) pref.ProtoMessage {
+		return new(ListScalars)
+	},
+)}
 
-	empty := mi.MessageOf(&RepeatedScalars{})
+func (m *ListScalars) Type() pref.MessageType            { return listScalarsType.Type }
+func (m *ListScalars) KnownFields() pref.KnownFields     { return listScalarsType.KnownFieldsOf(m) }
+func (m *ListScalars) UnknownFields() pref.UnknownFields { return listScalarsType.UnknownFieldsOf(m) }
+func (m *ListScalars) Interface() pref.ProtoMessage      { return m }
+func (m *ListScalars) ProtoReflect() pref.Message        { return m }
+func (m *ListScalars) ProtoMutable()                     {}
+
+func TestListScalars(t *testing.T) {
+	empty := &ListScalars{}
 	emptyFS := empty.KnownFields()
 
-	want := mi.MessageOf(&RepeatedScalars{
+	want := &ListScalars{
 		Bools:    []bool{true, false, true},
 		Int32s:   []int32{2, math.MinInt32, math.MaxInt32},
 		Int64s:   []int64{3, math.MinInt64, math.MaxInt64},
@@ -376,10 +390,10 @@ func TestRepeatedScalars(t *testing.T) {
 		MyStrings4: VectorBytes{[]byte("17"), nil, []byte("seventeen")},
 		MyBytes3:   VectorBytes{[]byte("18"), nil, []byte("eighteen")},
 		MyBytes4:   VectorStrings{"19", "", "nineteen"},
-	})
+	}
 	wantFS := want.KnownFields()
 
-	testMessage(t, nil, mi.MessageOf(&RepeatedScalars{}), messageOps{
+	testMessage(t, nil, &ListScalars{}, messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false},
 		getFields{1: emptyFS.Get(1), 3: emptyFS.Get(3), 5: emptyFS.Get(5), 7: emptyFS.Get(7), 9: emptyFS.Get(9), 11: emptyFS.Get(11), 13: emptyFS.Get(13), 15: emptyFS.Get(15), 17: emptyFS.Get(17), 19: emptyFS.Get(19)},
 		setFields{1: wantFS.Get(1), 3: wantFS.Get(3), 5: wantFS.Get(5), 7: wantFS.Get(7), 9: wantFS.Get(9), 11: wantFS.Get(11), 13: wantFS.Get(13), 15: wantFS.Get(15), 17: wantFS.Get(17), 19: wantFS.Get(19)},
@@ -470,25 +484,26 @@ type MapScalars struct {
 	MyBytes4   MapStrings `protobuf:"25"`
 }
 
-func TestMapScalars(t *testing.T) {
-	mustMakeMapEntry := func(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Field {
-		return ptype.Field{
-			Name:        pref.Name(fmt.Sprintf("f%d", n)),
-			Number:      n,
-			Cardinality: pref.Repeated,
-			Kind:        pref.MessageKind,
-			MessageType: mustMakeMessageDesc(ptype.StandaloneMessage{
-				Syntax:   pref.Proto2,
-				FullName: pref.FullName(fmt.Sprintf("MapScalars.F%dEntry", n)),
-				Fields: []ptype.Field{
-					{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: keyKind},
-					{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: valKind},
-				},
-				Options: &descriptorV1.MessageOptions{MapEntry: protoV1.Bool(true)},
-			}),
-		}
+func mustMakeMapEntry(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Field {
+	return ptype.Field{
+		Name:        pref.Name(fmt.Sprintf("f%d", n)),
+		Number:      n,
+		Cardinality: pref.Repeated,
+		Kind:        pref.MessageKind,
+		MessageType: mustMakeMessageDesc(ptype.StandaloneMessage{
+			Syntax:   pref.Proto2,
+			FullName: pref.FullName(fmt.Sprintf("MapScalars.F%dEntry", n)),
+			Fields: []ptype.Field{
+				{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: keyKind},
+				{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: valKind},
+			},
+			Options: &descriptorV1.MessageOptions{MapEntry: protoV1.Bool(true)},
+		}),
 	}
-	mi := MessageType{Desc: mustMakeMessageDesc(ptype.StandaloneMessage{
+}
+
+var mapScalarsType = MessageType{Type: ptype.GoMessage(
+	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "MapScalars",
 		Fields: []ptype.Field{
@@ -521,12 +536,24 @@ func TestMapScalars(t *testing.T) {
 			mustMakeMapEntry(24, pref.StringKind, pref.BytesKind),
 			mustMakeMapEntry(25, pref.StringKind, pref.BytesKind),
 		},
-	})}
+	}),
+	func(pref.MessageType) pref.ProtoMessage {
+		return new(MapScalars)
+	},
+)}
 
-	empty := mi.MessageOf(&MapScalars{})
+func (m *MapScalars) Type() pref.MessageType            { return mapScalarsType.Type }
+func (m *MapScalars) KnownFields() pref.KnownFields     { return mapScalarsType.KnownFieldsOf(m) }
+func (m *MapScalars) UnknownFields() pref.UnknownFields { return mapScalarsType.UnknownFieldsOf(m) }
+func (m *MapScalars) Interface() pref.ProtoMessage      { return m }
+func (m *MapScalars) ProtoReflect() pref.Message        { return m }
+func (m *MapScalars) ProtoMutable()                     {}
+
+func TestMapScalars(t *testing.T) {
+	empty := &MapScalars{}
 	emptyFS := empty.KnownFields()
 
-	want := mi.MessageOf(&MapScalars{
+	want := &MapScalars{
 		KeyBools:   map[bool]string{true: "true", false: "false"},
 		KeyInt32s:  map[int32]string{0: "zero", -1: "one", 2: "two"},
 		KeyInt64s:  map[int64]string{0: "zero", -10: "ten", 20: "twenty"},
@@ -555,10 +582,10 @@ func TestMapScalars(t *testing.T) {
 		MyStrings4: MapBytes{"s1": []byte("s1"), "s2": []byte("s2")},
 		MyBytes3:   MapBytes{"s1": []byte("s1"), "s2": []byte("s2")},
 		MyBytes4:   MapStrings{"s1": "s1", "s2": "s2"},
-	})
+	}
 	wantFS := want.KnownFields()
 
-	testMessage(t, nil, mi.MessageOf(&MapScalars{}), messageOps{
+	testMessage(t, nil, &MapScalars{}, messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false, 23: false, 24: false, 25: false},
 		getFields{1: emptyFS.Get(1), 3: emptyFS.Get(3), 5: emptyFS.Get(5), 7: emptyFS.Get(7), 9: emptyFS.Get(9), 11: emptyFS.Get(11), 13: emptyFS.Get(13), 15: emptyFS.Get(15), 17: emptyFS.Get(17), 19: emptyFS.Get(19), 21: emptyFS.Get(21), 23: emptyFS.Get(23), 25: emptyFS.Get(25)},
 		setFields{1: wantFS.Get(1), 3: wantFS.Get(3), 5: wantFS.Get(5), 7: wantFS.Get(7), 9: wantFS.Get(9), 11: wantFS.Get(11), 13: wantFS.Get(13), 15: wantFS.Get(15), 17: wantFS.Get(17), 19: wantFS.Get(19), 21: wantFS.Get(21), 23: wantFS.Get(23), 25: wantFS.Get(25)},
@@ -687,7 +714,40 @@ type (
 	}
 )
 
-func (*OneofScalars) XXX_OneofFuncs() (func(proto.Message, *proto.Buffer) error, func(proto.Message, int, int, *proto.Buffer) (bool, error), func(proto.Message) int, []interface{}) {
+var oneofScalarsType = MessageType{Type: ptype.GoMessage(
+	mustMakeMessageDesc(ptype.StandaloneMessage{
+		Syntax:   pref.Proto2,
+		FullName: "ScalarProto2",
+		Fields: []ptype.Field{
+			{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.BoolKind, Default: V(bool(true)), OneofName: "union"},
+			{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.Int32Kind, Default: V(int32(2)), OneofName: "union"},
+			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.Int64Kind, Default: V(int64(3)), OneofName: "union"},
+			{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.Uint32Kind, Default: V(uint32(4)), OneofName: "union"},
+			{Name: "f5", Number: 5, Cardinality: pref.Optional, Kind: pref.Uint64Kind, Default: V(uint64(5)), OneofName: "union"},
+			{Name: "f6", Number: 6, Cardinality: pref.Optional, Kind: pref.FloatKind, Default: V(float32(6)), OneofName: "union"},
+			{Name: "f7", Number: 7, Cardinality: pref.Optional, Kind: pref.DoubleKind, Default: V(float64(7)), OneofName: "union"},
+			{Name: "f8", Number: 8, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("8")), OneofName: "union"},
+			{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("9")), OneofName: "union"},
+			{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("10")), OneofName: "union"},
+			{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("11")), OneofName: "union"},
+			{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("12")), OneofName: "union"},
+			{Name: "f13", Number: 13, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("13")), OneofName: "union"},
+		},
+		Oneofs: []ptype.Oneof{{Name: "union"}},
+	}),
+	func(pref.MessageType) pref.ProtoMessage {
+		return new(OneofScalars)
+	},
+)}
+
+func (m *OneofScalars) Type() pref.MessageType            { return oneofScalarsType.Type }
+func (m *OneofScalars) KnownFields() pref.KnownFields     { return oneofScalarsType.KnownFieldsOf(m) }
+func (m *OneofScalars) UnknownFields() pref.UnknownFields { return oneofScalarsType.UnknownFieldsOf(m) }
+func (m *OneofScalars) Interface() pref.ProtoMessage      { return m }
+func (m *OneofScalars) ProtoReflect() pref.Message        { return m }
+func (m *OneofScalars) ProtoMutable()                     {}
+
+func (*OneofScalars) XXX_OneofFuncs() (func(protoV1.Message, *protoV1.Buffer) error, func(protoV1.Message, int, int, *protoV1.Buffer) (bool, error), func(protoV1.Message) int, []interface{}) {
 	return nil, nil, nil, []interface{}{
 		(*OneofScalars_Bool)(nil),
 		(*OneofScalars_Int32)(nil),
@@ -720,43 +780,22 @@ func (*OneofScalars_BytesA) isOneofScalars_Union()  {}
 func (*OneofScalars_BytesB) isOneofScalars_Union()  {}
 
 func TestOneofs(t *testing.T) {
-	mi := MessageType{Desc: mustMakeMessageDesc(ptype.StandaloneMessage{
-		Syntax:   pref.Proto2,
-		FullName: "ScalarProto2",
-		Fields: []ptype.Field{
-			{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.BoolKind, Default: V(bool(true)), OneofName: "union"},
-			{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.Int32Kind, Default: V(int32(2)), OneofName: "union"},
-			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.Int64Kind, Default: V(int64(3)), OneofName: "union"},
-			{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.Uint32Kind, Default: V(uint32(4)), OneofName: "union"},
-			{Name: "f5", Number: 5, Cardinality: pref.Optional, Kind: pref.Uint64Kind, Default: V(uint64(5)), OneofName: "union"},
-			{Name: "f6", Number: 6, Cardinality: pref.Optional, Kind: pref.FloatKind, Default: V(float32(6)), OneofName: "union"},
-			{Name: "f7", Number: 7, Cardinality: pref.Optional, Kind: pref.DoubleKind, Default: V(float64(7)), OneofName: "union"},
-			{Name: "f8", Number: 8, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("8")), OneofName: "union"},
-			{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("9")), OneofName: "union"},
-			{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("10")), OneofName: "union"},
-			{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("11")), OneofName: "union"},
-			{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("12")), OneofName: "union"},
-			{Name: "f13", Number: 13, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("13")), OneofName: "union"},
-		},
-		Oneofs: []ptype.Oneof{{Name: "union"}},
-	})}
+	empty := &OneofScalars{}
+	want1 := &OneofScalars{Union: &OneofScalars_Bool{true}}
+	want2 := &OneofScalars{Union: &OneofScalars_Int32{20}}
+	want3 := &OneofScalars{Union: &OneofScalars_Int64{30}}
+	want4 := &OneofScalars{Union: &OneofScalars_Uint32{40}}
+	want5 := &OneofScalars{Union: &OneofScalars_Uint64{50}}
+	want6 := &OneofScalars{Union: &OneofScalars_Float32{60}}
+	want7 := &OneofScalars{Union: &OneofScalars_Float64{70}}
+	want8 := &OneofScalars{Union: &OneofScalars_String{string("80")}}
+	want9 := &OneofScalars{Union: &OneofScalars_StringA{[]byte("90")}}
+	want10 := &OneofScalars{Union: &OneofScalars_StringB{MyString("100")}}
+	want11 := &OneofScalars{Union: &OneofScalars_Bytes{[]byte("110")}}
+	want12 := &OneofScalars{Union: &OneofScalars_BytesA{string("120")}}
+	want13 := &OneofScalars{Union: &OneofScalars_BytesB{MyBytes("130")}}
 
-	empty := mi.MessageOf(&OneofScalars{})
-	want1 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_Bool{true}})
-	want2 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_Int32{20}})
-	want3 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_Int64{30}})
-	want4 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_Uint32{40}})
-	want5 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_Uint64{50}})
-	want6 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_Float32{60}})
-	want7 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_Float64{70}})
-	want8 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_String{string("80")}})
-	want9 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_StringA{[]byte("90")}})
-	want10 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_StringB{MyString("100")}})
-	want11 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_Bytes{[]byte("110")}})
-	want12 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_BytesA{string("120")}})
-	want13 := mi.MessageOf(&OneofScalars{Union: &OneofScalars_BytesB{MyBytes("130")}})
-
-	testMessage(t, nil, mi.MessageOf(&OneofScalars{}), messageOps{
+	testMessage(t, nil, &OneofScalars{}, messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false},
 		getFields{1: V(bool(true)), 2: V(int32(2)), 3: V(int64(3)), 4: V(uint32(4)), 5: V(uint64(5)), 6: V(float32(6)), 7: V(float64(7)), 8: V(string("8")), 9: V(string("9")), 10: V(string("10")), 11: V([]byte("11")), 12: V([]byte("12")), 13: V([]byte("13"))},
 
@@ -788,13 +827,6 @@ func TestOneofs(t *testing.T) {
 var cmpOpts = cmp.Options{
 	cmp.Transformer("UnwrapValue", func(v pref.Value) interface{} {
 		return v.Interface()
-	}),
-	cmp.Transformer("UnwrapMessage", func(m pref.Message) interface{} {
-		v := m.Interface()
-		if v, ok := v.(interface{ Unwrap() interface{} }); ok {
-			return v.Unwrap()
-		}
-		return v
 	}),
 	cmp.Transformer("UnwrapVector", func(v pref.Vector) interface{} {
 		return v.(interface{ Unwrap() interface{} }).Unwrap()

@@ -16,29 +16,36 @@ import (
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
+// legacyWrapEnum wraps v as a protoreflect.ProtoEnum,
+// where v must be a *struct kind and not implement the v2 API already.
+func legacyWrapEnum(v reflect.Value) pref.ProtoEnum {
+	et := legacyLoadEnumType(v.Type())
+	return et.New(pref.EnumNumber(v.Int()))
+}
+
 var enumTypeCache sync.Map // map[reflect.Type]protoreflect.EnumType
 
-// wrapLegacyEnum wraps v as a protoreflect.ProtoEnum,
-// where v must be an int32 kind and not implement the v2 API already.
-func wrapLegacyEnum(v reflect.Value) pref.ProtoEnum {
+// legacyLoadEnumType dynamically loads a protoreflect.EnumType for t,
+// where t must be an int32 kind and not implement the v2 API already.
+func legacyLoadEnumType(t reflect.Type) pref.EnumType {
 	// Fast-path: check if a EnumType is cached for this concrete type.
-	if et, ok := enumTypeCache.Load(v.Type()); ok {
-		return et.(pref.EnumType).New(pref.EnumNumber(v.Int()))
+	if et, ok := enumTypeCache.Load(t); ok {
+		return et.(pref.EnumType)
 	}
 
 	// Slow-path: derive enum descriptor and initialize EnumType.
 	var m sync.Map // map[protoreflect.EnumNumber]proto.Enum
-	ed := loadEnumDesc(v.Type())
+	ed := legacyLoadEnumDesc(t)
 	et := ptype.GoEnum(ed, func(et pref.EnumType, n pref.EnumNumber) pref.ProtoEnum {
 		if e, ok := m.Load(n); ok {
 			return e.(pref.ProtoEnum)
 		}
-		e := &legacyEnumWrapper{num: n, pbTyp: et, goTyp: v.Type()}
+		e := &legacyEnumWrapper{num: n, pbTyp: et, goTyp: t}
 		m.Store(n, e)
 		return e
 	})
-	enumTypeCache.Store(v.Type(), et)
-	return et.(pref.EnumType).New(pref.EnumNumber(v.Int()))
+	enumTypeCache.Store(t, et)
+	return et.(pref.EnumType)
 }
 
 type legacyEnumWrapper struct {
@@ -70,9 +77,11 @@ var (
 
 var enumDescCache sync.Map // map[reflect.Type]protoreflect.EnumDescriptor
 
-// loadEnumDesc returns an EnumDescriptor derived from the Go type,
+var enumNumberType = reflect.TypeOf(pref.EnumNumber(0))
+
+// legacyLoadEnumDesc returns an EnumDescriptor derived from the Go type,
 // which must be an int32 kind and not implement the v2 API already.
-func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
+func legacyLoadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	// Fast-path: check if an EnumDescriptor is cached for this concrete type.
 	if v, ok := enumDescCache.Load(t); ok {
 		return v.(pref.EnumDescriptor)
@@ -81,6 +90,9 @@ func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	// Slow-path: initialize EnumDescriptor from the proto descriptor.
 	if t.Kind() != reflect.Int32 || t.PkgPath() == "" {
 		panic(fmt.Sprintf("got %v, want named int32 kind", t))
+	}
+	if t == enumNumberType {
+		panic(fmt.Sprintf("cannot be %v", t))
 	}
 
 	// Derive the enum descriptor from the raw descriptor proto.
@@ -91,7 +103,7 @@ func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	}
 	if ed, ok := ev.(legacyEnum); ok {
 		b, idxs := ed.EnumDescriptor()
-		fd := loadFileDesc(b)
+		fd := legacyLoadFileDesc(b)
 
 		// Derive syntax.
 		switch fd.GetSyntax() {

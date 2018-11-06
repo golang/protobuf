@@ -29,7 +29,7 @@ func makeLegacyUnknownFieldsFunc(t reflect.Type) func(p *messageDataType) pref.U
 	if extFunc != nil {
 		return func(p *messageDataType) pref.UnknownFields {
 			return &legacyUnknownBytesAndExtensionMap{
-				unkFunc(p), extFunc(p), p.mi.Desc.ExtensionRanges(),
+				unkFunc(p), extFunc(p), p.mi.Type.ExtensionRanges(),
 			}
 		}
 	}

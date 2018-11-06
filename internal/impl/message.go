@@ -12,24 +12,30 @@ import (
 	"sync"
 
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
+
+// MessageOf returns the protoreflect.Message interface over p.
+// If p already implements proto.Message, then it directly calls the
+// ProtoReflect method, otherwise it wraps the legacy v1 message to implement
+// the v2 reflective interface.
+func MessageOf(p interface{}) pref.Message {
+	if m, ok := p.(pref.ProtoMessage); ok {
+		return m.ProtoReflect()
+	}
+	return legacyWrapMessage(reflect.ValueOf(p)).ProtoReflect()
+}
 
 // MessageType provides protobuf related functionality for a given Go type
 // that represents a message. A given instance of MessageType is tied to
 // exactly one Go type, which must be a pointer to a struct type.
 type MessageType struct {
-	// Desc is an optionally provided message descriptor. If nil, the descriptor
-	// is lazily derived from the Go type information of generated messages
-	// for the v1 API.
-	//
+	// Type is the underlying message type and must be populated.
 	// Once set, this field must never be mutated.
-	Desc pref.MessageDescriptor
+	Type pref.MessageType
 
 	once sync.Once // protects all unexported fields
 
-	goType reflect.Type     // pointer to struct
-	pbType pref.MessageType // only valid if goType does not implement proto.Message
+	goType reflect.Type // pointer to struct
 
 	// TODO: Split fields into dense and sparse maps similar to the current
 	// table-driven implementation in v1?
@@ -45,32 +51,11 @@ type MessageType struct {
 // It must be called at the start of every exported method.
 func (mi *MessageType) init(p interface{}) {
 	mi.once.Do(func() {
-		v := reflect.ValueOf(p)
-		t := v.Type()
+		t := reflect.TypeOf(p)
 		if t.Kind() != reflect.Ptr && t.Elem().Kind() != reflect.Struct {
 			panic(fmt.Sprintf("got %v, want *struct kind", t))
 		}
 		mi.goType = t
-
-		// Derive the message descriptor if unspecified.
-		if mi.Desc == nil {
-			mi.Desc = loadMessageDesc(t)
-		}
-
-		// Initialize the Go message type wrapper if the Go type does not
-		// implement the proto.Message interface.
-		//
-		// Otherwise, we assume that the Go type manually implements the
-		// interface and is internally consistent such that:
-		//	goType == reflect.New(goType.Elem()).Interface().(proto.Message).ProtoReflect().Type().GoType()
-		//
-		// Generated code ensures that this property holds.
-		if _, ok := p.(pref.ProtoMessage); !ok {
-			mi.pbType = ptype.GoMessage(mi.Desc, func(pref.MessageType) pref.ProtoMessage {
-				p := reflect.New(t.Elem()).Interface()
-				return (*legacyMessageWrapper)(mi.dataTypeOf(p))
-			})
-		}
 
 		mi.makeKnownFieldsFunc(t.Elem())
 		mi.makeUnknownFieldsFunc(t.Elem())
@@ -86,10 +71,9 @@ func (mi *MessageType) init(p interface{}) {
 	}
 }
 
-// makeKnownFieldsFunc generates per-field functions for all operations
-// to be performed on each field. It takes in a reflect.Type representing the
-// Go struct, and a protoreflect.MessageDescriptor to match with the fields
-// in the struct.
+// makeKnownFieldsFunc generates functions for operations that can be performed
+// on each protobuf message field. It takes in a reflect.Type representing the
+// Go struct and matches message fields with struct fields.
 //
 // This code assumes that the struct is well-formed and panics if there are
 // any discrepancies.
@@ -136,8 +120,8 @@ fieldLoop:
 	}
 
 	mi.fields = map[pref.FieldNumber]*fieldInfo{}
-	for i := 0; i < mi.Desc.Fields().Len(); i++ {
-		fd := mi.Desc.Fields().Get(i)
+	for i := 0; i < mi.Type.Fields().Len(); i++ {
+		fd := mi.Type.Fields().Get(i)
 		fs := fields[fd.Number()]
 		var fi fieldInfo
 		switch {
@@ -169,33 +153,25 @@ func (mi *MessageType) makeUnknownFieldsFunc(t reflect.Type) {
 }
 
 func (mi *MessageType) makeExtensionFieldsFunc(t reflect.Type) {
-	// TODO
+	if f := makeLegacyExtensionFieldsFunc(t); f != nil {
+		mi.extensionFields = f
+		return
+	}
 	mi.extensionFields = func(*messageDataType) pref.KnownFields {
 		return emptyExtensionFields{}
 	}
 }
 
-func (mi *MessageType) MessageOf(p interface{}) pref.Message {
-	mi.init(p)
-	if m, ok := p.(pref.ProtoMessage); ok {
-		// We assume p properly implements protoreflect.Message.
-		// See the comment in MessageType.init regarding pbType.
-		return m.ProtoReflect()
-	}
-	return (*legacyMessageWrapper)(mi.dataTypeOf(p))
-}
-
 func (mi *MessageType) KnownFieldsOf(p interface{}) pref.KnownFields {
-	mi.init(p)
 	return (*knownFields)(mi.dataTypeOf(p))
 }
 
 func (mi *MessageType) UnknownFieldsOf(p interface{}) pref.UnknownFields {
-	mi.init(p)
 	return mi.unknownFields(mi.dataTypeOf(p))
 }
 
 func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
+	mi.init(p)
 	return &messageDataType{pointerOfIface(&p), mi}
 }
 
@@ -249,20 +225,30 @@ func (fs *knownFields) Set(n pref.FieldNumber, v pref.Value) {
 		fi.set(fs.p, v)
 		return
 	}
-	fs.extensionFields().Set(n, v)
+	if fs.mi.Type.ExtensionRanges().Has(n) {
+		fs.extensionFields().Set(n, v)
+		return
+	}
+	panic(fmt.Sprintf("invalid field: %d", n))
 }
 func (fs *knownFields) Clear(n pref.FieldNumber) {
 	if fi := fs.mi.fields[n]; fi != nil {
 		fi.clear(fs.p)
 		return
 	}
-	fs.extensionFields().Clear(n)
+	if fs.mi.Type.ExtensionRanges().Has(n) {
+		fs.extensionFields().Clear(n)
+		return
+	}
 }
 func (fs *knownFields) Mutable(n pref.FieldNumber) pref.Mutable {
 	if fi := fs.mi.fields[n]; fi != nil {
 		return fi.mutable(fs.p)
 	}
-	return fs.extensionFields().Mutable(n)
+	if fs.mi.Type.ExtensionRanges().Has(n) {
+		return fs.extensionFields().Mutable(n)
+	}
+	panic(fmt.Sprintf("invalid field: %d", n))
 }
 func (fs *knownFields) Range(f func(pref.FieldNumber, pref.Value) bool) {
 	for n, fi := range fs.mi.fields {
@@ -291,14 +277,14 @@ func (emptyUnknownFields) IsSupported() bool                                 { r
 
 type emptyExtensionFields struct{}
 
-func (emptyExtensionFields) Len() int                                        { return 0 }
-func (emptyExtensionFields) Has(pref.FieldNumber) bool                       { return false }
-func (emptyExtensionFields) Get(pref.FieldNumber) pref.Value                 { return pref.Value{} }
-func (emptyExtensionFields) Set(pref.FieldNumber, pref.Value)                { panic("extensions not supported") }
-func (emptyExtensionFields) Clear(pref.FieldNumber)                          { return } // noop
-func (emptyExtensionFields) Mutable(pref.FieldNumber) pref.Mutable           { panic("extensions not supported") }
-func (emptyExtensionFields) Range(f func(pref.FieldNumber, pref.Value) bool) { return }
-func (emptyExtensionFields) ExtensionTypes() pref.ExtensionFieldTypes        { return emptyExtensionTypes{} }
+func (emptyExtensionFields) Len() int                                      { return 0 }
+func (emptyExtensionFields) Has(pref.FieldNumber) bool                     { return false }
+func (emptyExtensionFields) Get(pref.FieldNumber) pref.Value               { return pref.Value{} }
+func (emptyExtensionFields) Set(pref.FieldNumber, pref.Value)              { panic("extensions not supported") }
+func (emptyExtensionFields) Clear(pref.FieldNumber)                        { return } // noop
+func (emptyExtensionFields) Mutable(pref.FieldNumber) pref.Mutable         { panic("extensions not supported") }
+func (emptyExtensionFields) Range(func(pref.FieldNumber, pref.Value) bool) { return }
+func (emptyExtensionFields) ExtensionTypes() pref.ExtensionFieldTypes      { return emptyExtensionTypes{} }
 
 type emptyExtensionTypes struct{}
 

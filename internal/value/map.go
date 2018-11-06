@@ -77,7 +77,7 @@ func (ms mapReflect) Range(f func(pref.MapKey, pref.Value) bool) {
 	}
 }
 func (ms mapReflect) Unwrap() interface{} {
-	return ms.v.Interface()
+	return ms.v.Addr().Interface()
 }
 func (ms mapReflect) ProtoMutable() {}
 

@@ -53,7 +53,7 @@ func (vs vectorReflect) Truncate(i int) {
 	vs.v.Set(vs.v.Slice(0, i))
 }
 func (vs vectorReflect) Unwrap() interface{} {
-	return vs.v.Interface()
+	return vs.v.Addr().Interface()
 }
 func (vs vectorReflect) ProtoMutable() {}
 

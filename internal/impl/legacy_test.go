@@ -30,7 +30,7 @@ import (
 )
 
 func mustLoadFileDesc(b []byte, _ []int) pref.FileDescriptor {
-	fd, err := ptype.NewFileFromDescriptorProto(loadFileDesc(b), nil)
+	fd, err := ptype.NewFileFromDescriptorProto(legacyLoadFileDesc(b), nil)
 	if err != nil {
 		panic(err)
 	}
@@ -42,286 +42,286 @@ func TestLegacyDescriptor(t *testing.T) {
 
 	fileDescP2_20160225 := mustLoadFileDesc(new(proto2_20160225.Message).Descriptor())
 	tests = append(tests, []struct{ got, want pref.Descriptor }{{
-		got:  loadEnumDesc(reflect.TypeOf(proto2_20160225.SiblingEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20160225.SiblingEnum(0))),
 		want: fileDescP2_20160225.Enums().ByName("SiblingEnum"),
 	}, {
-		got:  loadEnumDesc(reflect.TypeOf(proto2_20160225.Message_ChildEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20160225.Message_ChildEnum(0))),
 		want: fileDescP2_20160225.Messages().ByName("Message").Enums().ByName("ChildEnum"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160225.SiblingMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160225.SiblingMessage))),
 		want: fileDescP2_20160225.Messages().ByName("SiblingMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_ChildMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_ChildMessage))),
 		want: fileDescP2_20160225.Messages().ByName("Message").Messages().ByName("ChildMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message))),
 		want: fileDescP2_20160225.Messages().ByName("Message"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_NamedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_NamedGroup))),
 		want: fileDescP2_20160225.Messages().ByName("Message").Messages().ByName("NamedGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_OptionalGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_OptionalGroup))),
 		want: fileDescP2_20160225.Messages().ByName("Message").Messages().ByName("OptionalGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_RequiredGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_RequiredGroup))),
 		want: fileDescP2_20160225.Messages().ByName("Message").Messages().ByName("RequiredGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_RepeatedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_RepeatedGroup))),
 		want: fileDescP2_20160225.Messages().ByName("Message").Messages().ByName("RepeatedGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_OneofGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_OneofGroup))),
 		want: fileDescP2_20160225.Messages().ByName("Message").Messages().ByName("OneofGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_ExtensionOptionalGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_ExtensionOptionalGroup))),
 		want: fileDescP2_20160225.Messages().ByName("Message").Messages().ByName("ExtensionOptionalGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_ExtensionRepeatedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160225.Message_ExtensionRepeatedGroup))),
 		want: fileDescP2_20160225.Messages().ByName("Message").Messages().ByName("ExtensionRepeatedGroup"),
 	}}...)
 
 	fileDescP3_20160225 := mustLoadFileDesc(new(proto3_20160225.Message).Descriptor())
 	tests = append(tests, []struct{ got, want pref.Descriptor }{{
-		got:  loadEnumDesc(reflect.TypeOf(proto3_20160225.SiblingEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20160225.SiblingEnum(0))),
 		want: fileDescP3_20160225.Enums().ByName("SiblingEnum"),
 	}, {
-		got:  loadEnumDesc(reflect.TypeOf(proto3_20160225.Message_ChildEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20160225.Message_ChildEnum(0))),
 		want: fileDescP3_20160225.Messages().ByName("Message").Enums().ByName("ChildEnum"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20160225.SiblingMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20160225.SiblingMessage))),
 		want: fileDescP3_20160225.Messages().ByName("SiblingMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20160225.Message_ChildMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20160225.Message_ChildMessage))),
 		want: fileDescP3_20160225.Messages().ByName("Message").Messages().ByName("ChildMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20160225.Message))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20160225.Message))),
 		want: fileDescP3_20160225.Messages().ByName("Message"),
 	}}...)
 
 	fileDescP2_20160519 := mustLoadFileDesc(new(proto2_20160519.Message).Descriptor())
 	tests = append(tests, []struct{ got, want pref.Descriptor }{{
-		got:  loadEnumDesc(reflect.TypeOf(proto2_20160519.SiblingEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20160519.SiblingEnum(0))),
 		want: fileDescP2_20160519.Enums().ByName("SiblingEnum"),
 	}, {
-		got:  loadEnumDesc(reflect.TypeOf(proto2_20160519.Message_ChildEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20160519.Message_ChildEnum(0))),
 		want: fileDescP2_20160519.Messages().ByName("Message").Enums().ByName("ChildEnum"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160519.SiblingMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160519.SiblingMessage))),
 		want: fileDescP2_20160519.Messages().ByName("SiblingMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_ChildMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_ChildMessage))),
 		want: fileDescP2_20160519.Messages().ByName("Message").Messages().ByName("ChildMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message))),
 		want: fileDescP2_20160519.Messages().ByName("Message"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_NamedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_NamedGroup))),
 		want: fileDescP2_20160519.Messages().ByName("Message").Messages().ByName("NamedGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_OptionalGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_OptionalGroup))),
 		want: fileDescP2_20160519.Messages().ByName("Message").Messages().ByName("OptionalGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_RequiredGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_RequiredGroup))),
 		want: fileDescP2_20160519.Messages().ByName("Message").Messages().ByName("RequiredGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_RepeatedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_RepeatedGroup))),
 		want: fileDescP2_20160519.Messages().ByName("Message").Messages().ByName("RepeatedGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_OneofGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_OneofGroup))),
 		want: fileDescP2_20160519.Messages().ByName("Message").Messages().ByName("OneofGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_ExtensionOptionalGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_ExtensionOptionalGroup))),
 		want: fileDescP2_20160519.Messages().ByName("Message").Messages().ByName("ExtensionOptionalGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_ExtensionRepeatedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20160519.Message_ExtensionRepeatedGroup))),
 		want: fileDescP2_20160519.Messages().ByName("Message").Messages().ByName("ExtensionRepeatedGroup"),
 	}}...)
 
 	fileDescP3_20160519 := mustLoadFileDesc(new(proto3_20160519.Message).Descriptor())
 	tests = append(tests, []struct{ got, want pref.Descriptor }{{
-		got:  loadEnumDesc(reflect.TypeOf(proto3_20160519.SiblingEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20160519.SiblingEnum(0))),
 		want: fileDescP3_20160519.Enums().ByName("SiblingEnum"),
 	}, {
-		got:  loadEnumDesc(reflect.TypeOf(proto3_20160519.Message_ChildEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20160519.Message_ChildEnum(0))),
 		want: fileDescP3_20160519.Messages().ByName("Message").Enums().ByName("ChildEnum"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20160519.SiblingMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20160519.SiblingMessage))),
 		want: fileDescP3_20160519.Messages().ByName("SiblingMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20160519.Message_ChildMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20160519.Message_ChildMessage))),
 		want: fileDescP3_20160519.Messages().ByName("Message").Messages().ByName("ChildMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20160519.Message))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20160519.Message))),
 		want: fileDescP3_20160519.Messages().ByName("Message"),
 	}}...)
 
 	fileDescP2_20180125 := mustLoadFileDesc(new(proto2_20180125.Message).Descriptor())
 	tests = append(tests, []struct{ got, want pref.Descriptor }{{
-		got:  loadEnumDesc(reflect.TypeOf(proto2_20180125.SiblingEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20180125.SiblingEnum(0))),
 		want: fileDescP2_20180125.Enums().ByName("SiblingEnum"),
 	}, {
-		got:  loadEnumDesc(reflect.TypeOf(proto2_20180125.Message_ChildEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20180125.Message_ChildEnum(0))),
 		want: fileDescP2_20180125.Messages().ByName("Message").Enums().ByName("ChildEnum"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180125.SiblingMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180125.SiblingMessage))),
 		want: fileDescP2_20180125.Messages().ByName("SiblingMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_ChildMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_ChildMessage))),
 		want: fileDescP2_20180125.Messages().ByName("Message").Messages().ByName("ChildMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message))),
 		want: fileDescP2_20180125.Messages().ByName("Message"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_NamedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_NamedGroup))),
 		want: fileDescP2_20180125.Messages().ByName("Message").Messages().ByName("NamedGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_OptionalGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_OptionalGroup))),
 		want: fileDescP2_20180125.Messages().ByName("Message").Messages().ByName("OptionalGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_RequiredGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_RequiredGroup))),
 		want: fileDescP2_20180125.Messages().ByName("Message").Messages().ByName("RequiredGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_RepeatedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_RepeatedGroup))),
 		want: fileDescP2_20180125.Messages().ByName("Message").Messages().ByName("RepeatedGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_OneofGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_OneofGroup))),
 		want: fileDescP2_20180125.Messages().ByName("Message").Messages().ByName("OneofGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_ExtensionOptionalGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_ExtensionOptionalGroup))),
 		want: fileDescP2_20180125.Messages().ByName("Message").Messages().ByName("ExtensionOptionalGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_ExtensionRepeatedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180125.Message_ExtensionRepeatedGroup))),
 		want: fileDescP2_20180125.Messages().ByName("Message").Messages().ByName("ExtensionRepeatedGroup"),
 	}}...)
 
 	fileDescP3_20180125 := mustLoadFileDesc(new(proto3_20180125.Message).Descriptor())
 	tests = append(tests, []struct{ got, want pref.Descriptor }{{
-		got:  loadEnumDesc(reflect.TypeOf(proto3_20180125.SiblingEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20180125.SiblingEnum(0))),
 		want: fileDescP3_20180125.Enums().ByName("SiblingEnum"),
 	}, {
-		got:  loadEnumDesc(reflect.TypeOf(proto3_20180125.Message_ChildEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20180125.Message_ChildEnum(0))),
 		want: fileDescP3_20180125.Messages().ByName("Message").Enums().ByName("ChildEnum"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20180125.SiblingMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20180125.SiblingMessage))),
 		want: fileDescP3_20180125.Messages().ByName("SiblingMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20180125.Message_ChildMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20180125.Message_ChildMessage))),
 		want: fileDescP3_20180125.Messages().ByName("Message").Messages().ByName("ChildMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20180125.Message))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20180125.Message))),
 		want: fileDescP3_20180125.Messages().ByName("Message"),
 	}}...)
 
 	fileDescP2_20180430 := mustLoadFileDesc(new(proto2_20180430.Message).Descriptor())
 	tests = append(tests, []struct{ got, want pref.Descriptor }{{
-		got:  loadEnumDesc(reflect.TypeOf(proto2_20180430.SiblingEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20180430.SiblingEnum(0))),
 		want: fileDescP2_20180430.Enums().ByName("SiblingEnum"),
 	}, {
-		got:  loadEnumDesc(reflect.TypeOf(proto2_20180430.Message_ChildEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20180430.Message_ChildEnum(0))),
 		want: fileDescP2_20180430.Messages().ByName("Message").Enums().ByName("ChildEnum"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180430.SiblingMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180430.SiblingMessage))),
 		want: fileDescP2_20180430.Messages().ByName("SiblingMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_ChildMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_ChildMessage))),
 		want: fileDescP2_20180430.Messages().ByName("Message").Messages().ByName("ChildMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message))),
 		want: fileDescP2_20180430.Messages().ByName("Message"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_NamedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_NamedGroup))),
 		want: fileDescP2_20180430.Messages().ByName("Message").Messages().ByName("NamedGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_OptionalGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_OptionalGroup))),
 		want: fileDescP2_20180430.Messages().ByName("Message").Messages().ByName("OptionalGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_RequiredGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_RequiredGroup))),
 		want: fileDescP2_20180430.Messages().ByName("Message").Messages().ByName("RequiredGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_RepeatedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_RepeatedGroup))),
 		want: fileDescP2_20180430.Messages().ByName("Message").Messages().ByName("RepeatedGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_OneofGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_OneofGroup))),
 		want: fileDescP2_20180430.Messages().ByName("Message").Messages().ByName("OneofGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_ExtensionOptionalGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_ExtensionOptionalGroup))),
 		want: fileDescP2_20180430.Messages().ByName("Message").Messages().ByName("ExtensionOptionalGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_ExtensionRepeatedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180430.Message_ExtensionRepeatedGroup))),
 		want: fileDescP2_20180430.Messages().ByName("Message").Messages().ByName("ExtensionRepeatedGroup"),
 	}}...)
 
 	fileDescP3_20180430 := mustLoadFileDesc(new(proto3_20180430.Message).Descriptor())
 	tests = append(tests, []struct{ got, want pref.Descriptor }{{
-		got:  loadEnumDesc(reflect.TypeOf(proto3_20180430.SiblingEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20180430.SiblingEnum(0))),
 		want: fileDescP3_20180430.Enums().ByName("SiblingEnum"),
 	}, {
-		got:  loadEnumDesc(reflect.TypeOf(proto3_20180430.Message_ChildEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20180430.Message_ChildEnum(0))),
 		want: fileDescP3_20180430.Messages().ByName("Message").Enums().ByName("ChildEnum"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20180430.SiblingMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20180430.SiblingMessage))),
 		want: fileDescP3_20180430.Messages().ByName("SiblingMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20180430.Message_ChildMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20180430.Message_ChildMessage))),
 		want: fileDescP3_20180430.Messages().ByName("Message").Messages().ByName("ChildMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20180430.Message))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20180430.Message))),
 		want: fileDescP3_20180430.Messages().ByName("Message"),
 	}}...)
 
 	fileDescP2_20180814 := mustLoadFileDesc(new(proto2_20180814.Message).Descriptor())
 	tests = append(tests, []struct{ got, want pref.Descriptor }{{
-		got:  loadEnumDesc(reflect.TypeOf(proto2_20180814.SiblingEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20180814.SiblingEnum(0))),
 		want: fileDescP2_20180814.Enums().ByName("SiblingEnum"),
 	}, {
-		got:  loadEnumDesc(reflect.TypeOf(proto2_20180814.Message_ChildEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20180814.Message_ChildEnum(0))),
 		want: fileDescP2_20180814.Messages().ByName("Message").Enums().ByName("ChildEnum"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180814.SiblingMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180814.SiblingMessage))),
 		want: fileDescP2_20180814.Messages().ByName("SiblingMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_ChildMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_ChildMessage))),
 		want: fileDescP2_20180814.Messages().ByName("Message").Messages().ByName("ChildMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message))),
 		want: fileDescP2_20180814.Messages().ByName("Message"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_NamedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_NamedGroup))),
 		want: fileDescP2_20180814.Messages().ByName("Message").Messages().ByName("NamedGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_OptionalGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_OptionalGroup))),
 		want: fileDescP2_20180814.Messages().ByName("Message").Messages().ByName("OptionalGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_RequiredGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_RequiredGroup))),
 		want: fileDescP2_20180814.Messages().ByName("Message").Messages().ByName("RequiredGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_RepeatedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_RepeatedGroup))),
 		want: fileDescP2_20180814.Messages().ByName("Message").Messages().ByName("RepeatedGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_OneofGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_OneofGroup))),
 		want: fileDescP2_20180814.Messages().ByName("Message").Messages().ByName("OneofGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_ExtensionOptionalGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_ExtensionOptionalGroup))),
 		want: fileDescP2_20180814.Messages().ByName("Message").Messages().ByName("ExtensionOptionalGroup"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_ExtensionRepeatedGroup))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20180814.Message_ExtensionRepeatedGroup))),
 		want: fileDescP2_20180814.Messages().ByName("Message").Messages().ByName("ExtensionRepeatedGroup"),
 	}}...)
 
 	fileDescP3_20180814 := mustLoadFileDesc(new(proto3_20180814.Message).Descriptor())
 	tests = append(tests, []struct{ got, want pref.Descriptor }{{
-		got:  loadEnumDesc(reflect.TypeOf(proto3_20180814.SiblingEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20180814.SiblingEnum(0))),
 		want: fileDescP3_20180814.Enums().ByName("SiblingEnum"),
 	}, {
-		got:  loadEnumDesc(reflect.TypeOf(proto3_20180814.Message_ChildEnum(0))),
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20180814.Message_ChildEnum(0))),
 		want: fileDescP3_20180814.Messages().ByName("Message").Enums().ByName("ChildEnum"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20180814.SiblingMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20180814.SiblingMessage))),
 		want: fileDescP3_20180814.Messages().ByName("SiblingMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20180814.Message_ChildMessage))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20180814.Message_ChildMessage))),
 		want: fileDescP3_20180814.Messages().ByName("Message").Messages().ByName("ChildMessage"),
 	}, {
-		got:  loadMessageDesc(reflect.TypeOf(new(proto3_20180814.Message))),
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20180814.Message))),
 		want: fileDescP3_20180814.Messages().ByName("Message"),
 	}}...)
 
@@ -383,13 +383,16 @@ func TestLegacyDescriptor(t *testing.T) {
 	}
 }
 
-type legacyUnknownMessage struct {
+type legacyTestMessage struct {
 	XXX_unrecognized []byte
 	protoV1.XXX_InternalExtensions
 }
 
-func (*legacyUnknownMessage) ExtensionRangeArray() []protoV1.ExtensionRange {
-	return []protoV1.ExtensionRange{{Start: 10, End: 20}, {Start: 40, End: 80}}
+func (*legacyTestMessage) Reset()         {}
+func (*legacyTestMessage) String() string { return "" }
+func (*legacyTestMessage) ProtoMessage()  {}
+func (*legacyTestMessage) ExtensionRangeArray() []protoV1.ExtensionRange {
+	return []protoV1.ExtensionRange{{Start: 10, End: 20}, {Start: 40, End: 80}, {Start: 10000, End: 20000}}
 }
 
 func TestLegacyUnknown(t *testing.T) {
@@ -422,8 +425,8 @@ func TestLegacyUnknown(t *testing.T) {
 		return out
 	}
 
-	m := new(legacyUnknownMessage)
-	fs := new(MessageType).MessageOf(m).UnknownFields()
+	m := new(legacyTestMessage)
+	fs := MessageOf(m).UnknownFields()
 
 	if got, want := fs.Len(), 0; got != want {
 		t.Errorf("Len() = %d, want %d", got, want)
@@ -617,4 +620,285 @@ func TestLegacyUnknown(t *testing.T) {
 		i++
 		return i < 2
 	})
+}
+
+func TestLegactExtensions(t *testing.T) {
+	extensions := []pref.ExtensionType{
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: (*bool)(nil),
+			Field:         10000,
+			Name:          "fizz.buzz.optional_bool",
+			Tag:           "varint,10000,opt,name=optional_bool,json=optionalBool,def=1",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: (*int32)(nil),
+			Field:         10001,
+			Name:          "fizz.buzz.optional_int32",
+			Tag:           "varint,10001,opt,name=optional_int32,json=optionalInt32,def=-12345",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: (*uint32)(nil),
+			Field:         10002,
+			Name:          "fizz.buzz.optional_uint32",
+			Tag:           "varint,10002,opt,name=optional_uint32,json=optionalUint32,def=3200",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: (*float32)(nil),
+			Field:         10003,
+			Name:          "fizz.buzz.optional_float",
+			Tag:           "fixed32,10003,opt,name=optional_float,json=optionalFloat,def=3.14159",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: (*string)(nil),
+			Field:         10004,
+			Name:          "fizz.buzz.optional_string",
+			Tag:           "bytes,10004,opt,name=optional_string,json=optionalString,def=hello, \"world!\"\n",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([]byte)(nil),
+			Field:         10005,
+			Name:          "fizz.buzz.optional_bytes",
+			Tag:           "bytes,10005,opt,name=optional_bytes,json=optionalBytes,def=dead\\336\\255\\276\\357beef",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: (*proto2_20180125.Message_ChildEnum)(nil),
+			Field:         10006,
+			Name:          "fizz.buzz.optional_enum",
+			Tag:           "varint,10006,opt,name=optional_enum,json=optionalEnum,enum=google.golang.org.proto2_20180125.Message_ChildEnum,def=0",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: (*proto2_20180125.Message_ChildMessage)(nil),
+			Field:         10007,
+			Name:          "fizz.buzz.optional_message",
+			Tag:           "bytes,10007,opt,name=optional_message,json=optionalMessage",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		// TODO: Test v2 enum and messages.
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([]bool)(nil),
+			Field:         10008,
+			Name:          "fizz.buzz.repeated_bool",
+			Tag:           "varint,10008,rep,name=repeated_bool,json=repeatedBool",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([]int32)(nil),
+			Field:         10009,
+			Name:          "fizz.buzz.repeated_int32",
+			Tag:           "varint,10009,rep,name=repeated_int32,json=repeatedInt32",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([]uint32)(nil),
+			Field:         10010,
+			Name:          "fizz.buzz.repeated_uint32",
+			Tag:           "varint,10010,rep,name=repeated_uint32,json=repeatedUint32",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([]float32)(nil),
+			Field:         10011,
+			Name:          "fizz.buzz.repeated_float",
+			Tag:           "fixed32,10011,rep,name=repeated_float,json=repeatedFloat",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([]string)(nil),
+			Field:         10012,
+			Name:          "fizz.buzz.repeated_string",
+			Tag:           "bytes,10012,rep,name=repeated_string,json=repeatedString",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([][]byte)(nil),
+			Field:         10013,
+			Name:          "fizz.buzz.repeated_bytes",
+			Tag:           "bytes,10013,rep,name=repeated_bytes,json=repeatedBytes",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([]proto2_20180125.Message_ChildEnum)(nil),
+			Field:         10014,
+			Name:          "fizz.buzz.repeated_enum",
+			Tag:           "varint,10014,rep,name=repeated_enum,json=repeatedEnum,enum=google.golang.org.proto2_20180125.Message_ChildEnum",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([]*proto2_20180125.Message_ChildMessage)(nil),
+			Field:         10015,
+			Name:          "fizz.buzz.repeated_message",
+			Tag:           "bytes,10015,rep,name=repeated_message,json=repeatedMessage",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		// TODO: Test v2 enum and messages.
+	}
+	opts := cmp.Options{cmp.Comparer(func(x, y *proto2_20180125.Message_ChildMessage) bool {
+		return x == y // pointer compare messages for object identity
+	})}
+
+	m := new(legacyTestMessage)
+	fs := MessageOf(m).KnownFields()
+	ts := fs.ExtensionTypes()
+
+	if n := fs.Len(); n != 0 {
+		t.Errorf("KnownFields.Len() = %v, want 0", n)
+	}
+	if n := ts.Len(); n != 0 {
+		t.Errorf("ExtensionFieldTypes.Len() = %v, want 0", n)
+	}
+
+	// Register all the extension types.
+	for _, xt := range extensions {
+		ts.Register(xt)
+	}
+
+	// Check that getting the zero value returns the default value for scalars,
+	// nil for singular messages, and an empty vector for repeated fields.
+	defaultValues := []interface{}{
+		bool(true),
+		int32(-12345),
+		uint32(3200),
+		float32(3.14159),
+		string("hello, \"world!\"\n"),
+		[]byte("dead\xde\xad\xbe\xefbeef"),
+		proto2_20180125.Message_ALPHA,
+		nil,
+		new([]bool),
+		new([]int32),
+		new([]uint32),
+		new([]float32),
+		new([]string),
+		new([][]byte),
+		new([]proto2_20180125.Message_ChildEnum),
+		new([]*proto2_20180125.Message_ChildMessage),
+	}
+	for i, xt := range extensions {
+		var got interface{}
+		v := fs.Get(xt.Number())
+		if xt.Cardinality() != pref.Repeated && xt.Kind() == pref.MessageKind {
+			got = v.Interface()
+		} else {
+			got = xt.InterfaceOf(v) // TODO: Simplify this if InterfaceOf allows nil
+		}
+		want := defaultValues[i]
+		if diff := cmp.Diff(want, got, opts); diff != "" {
+			t.Errorf("KnownFields.Get(%d) mismatch (-want +got):\n%v", xt.Number(), diff)
+		}
+	}
+
+	// All fields should be unpopulated.
+	for _, xt := range extensions {
+		if fs.Has(xt.Number()) {
+			t.Errorf("KnownFields.Has(%d) = true, want false", xt.Number())
+		}
+	}
+
+	// Set some values and append to values to the vectors.
+	m1 := &proto2_20180125.Message_ChildMessage{F1: protoV1.String("m1")}
+	m2 := &proto2_20180125.Message_ChildMessage{F1: protoV1.String("m2")}
+	setValues := []interface{}{
+		bool(false),
+		int32(-54321),
+		uint32(6400),
+		float32(2.71828),
+		string("goodbye, \"world!\"\n"),
+		[]byte("live\xde\xad\xbe\xefchicken"),
+		proto2_20180125.Message_CHARLIE,
+		m1,
+		&[]bool{true},
+		&[]int32{-1000},
+		&[]uint32{1280},
+		&[]float32{1.6180},
+		&[]string{"zero"},
+		&[][]byte{[]byte("zero")},
+		&[]proto2_20180125.Message_ChildEnum{proto2_20180125.Message_BRAVO},
+		&[]*proto2_20180125.Message_ChildMessage{m2},
+	}
+	for i, xt := range extensions {
+		fs.Set(xt.Number(), xt.ValueOf(setValues[i]))
+	}
+	for i, xt := range extensions[len(extensions)/2:] {
+		v := extensions[i].ValueOf(setValues[i])
+		fs.Get(xt.Number()).Vector().Append(v)
+	}
+
+	// Get the values and check for equality.
+	getValues := []interface{}{
+		bool(false),
+		int32(-54321),
+		uint32(6400),
+		float32(2.71828),
+		string("goodbye, \"world!\"\n"),
+		[]byte("live\xde\xad\xbe\xefchicken"),
+		proto2_20180125.Message_ChildEnum(proto2_20180125.Message_CHARLIE),
+		m1,
+		&[]bool{true, false},
+		&[]int32{-1000, -54321},
+		&[]uint32{1280, 6400},
+		&[]float32{1.6180, 2.71828},
+		&[]string{"zero", "goodbye, \"world!\"\n"},
+		&[][]byte{[]byte("zero"), []byte("live\xde\xad\xbe\xefchicken")},
+		&[]proto2_20180125.Message_ChildEnum{proto2_20180125.Message_BRAVO, proto2_20180125.Message_CHARLIE},
+		&[]*proto2_20180125.Message_ChildMessage{m2, m1},
+	}
+	for i, xt := range extensions {
+		got := xt.InterfaceOf(fs.Get(xt.Number()))
+		want := getValues[i]
+		if diff := cmp.Diff(want, got, opts); diff != "" {
+			t.Errorf("KnownFields.Get(%d) mismatch (-want +got):\n%v", xt.Number(), diff)
+		}
+	}
+
+	if n := fs.Len(); n != 16 {
+		t.Errorf("KnownFields.Len() = %v, want 0", n)
+	}
+	if n := ts.Len(); n != 16 {
+		t.Errorf("ExtensionFieldTypes.Len() = %v, want 16", n)
+	}
+
+	// Clear the field for all extension types.
+	for _, xt := range extensions {
+		fs.Clear(xt.Number())
+	}
+	if n := fs.Len(); n != 0 {
+		t.Errorf("KnownFields.Len() = %v, want 0", n)
+	}
+	if n := ts.Len(); n != 16 {
+		t.Errorf("ExtensionFieldTypes.Len() = %v, want 16", n)
+	}
+
+	// De-register all extension types.
+	for _, xt := range extensions {
+		ts.Remove(xt)
+	}
+	if n := fs.Len(); n != 0 {
+		t.Errorf("KnownFields.Len() = %v, want 0", n)
+	}
+	if n := ts.Len(); n != 0 {
+		t.Errorf("ExtensionFieldTypes.Len() = %v, want 0", n)
+	}
+
 }

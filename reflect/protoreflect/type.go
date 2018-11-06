@@ -446,20 +446,21 @@ type ExtensionType interface {
 	//	t.GoType() == reflect.TypeOf(t.InterfaceOf(t.ValueOf(t.New())))
 	GoType() reflect.Type
 
-	// TODO: How do we reconcile GoType with the existing extension API,
-	// which returns *T for scalars (causing unnecessary aliasing),
-	// and []T for vectors (causing insufficient aliasing)?
+	// TODO: What to do with nil?
+	//	Should ValueOf(nil) return Value{}?
+	//	Should InterfaceOf(Value{}) return nil?
+	//	Similarly, should the Value.{Message,Vector,Map} also return nil?
 
 	// ValueOf wraps the input and returns it as a Value.
-	// ValueOf panics if the input value is not the appropriate type.
+	// ValueOf panics if the input value is invalid or not the appropriate type.
 	//
 	// ValueOf is more extensive than protoreflect.ValueOf for a given field's
 	// value as it has more type information available.
 	ValueOf(interface{}) Value
 
 	// InterfaceOf completely unwraps the Value to the underlying Go type.
-	// InterfaceOf panics if the input does not represent the appropriate
-	// underlying Go type.
+	// InterfaceOf panics if the input is nil or does not represent the
+	// appropriate underlying Go type.
 	//
 	// InterfaceOf is able to unwrap the Value further than Value.Interface
 	// as it has more type information available.

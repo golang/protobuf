@@ -19,22 +19,24 @@ func GoEnum(ed protoreflect.EnumDescriptor, fn func(protoreflect.EnumType, proto
 	if ed.IsPlaceholder() {
 		panic("enum descriptor must not be a placeholder")
 	}
-	t := &goEnum{EnumDescriptor: ed, new: fn}
-	t.typ = reflect.TypeOf(fn(t, 0))
-	return t
+	return &goEnum{EnumDescriptor: ed, new: fn}
 }
 
 type goEnum struct {
 	protoreflect.EnumDescriptor
-	typ reflect.Type
 	new func(protoreflect.EnumType, protoreflect.EnumNumber) protoreflect.ProtoEnum
+
+	once sync.Once
+	typ  reflect.Type
 }
 
 func (t *goEnum) GoType() reflect.Type {
+	t.New(0) // initialize t.typ
 	return t.typ
 }
 func (t *goEnum) New(n protoreflect.EnumNumber) protoreflect.ProtoEnum {
 	e := t.new(t, n)
+	t.once.Do(func() { t.typ = reflect.TypeOf(e) })
 	if t.typ != reflect.TypeOf(e) {
 		panic(fmt.Sprintf("mismatching types for enum: got %T, want %v", e, t.typ))
 	}
@@ -47,22 +49,26 @@ func GoMessage(md protoreflect.MessageDescriptor, fn func(protoreflect.MessageTy
 	if md.IsPlaceholder() {
 		panic("message descriptor must not be a placeholder")
 	}
-	t := &goMessage{MessageDescriptor: md, new: fn}
-	t.typ = reflect.TypeOf(fn(t))
-	return t
+	// NOTE: Avoid calling fn in the constructor since fn itself may depend on
+	// this function returning (for cyclic message dependencies).
+	return &goMessage{MessageDescriptor: md, new: fn}
 }
 
 type goMessage struct {
 	protoreflect.MessageDescriptor
-	typ reflect.Type
 	new func(protoreflect.MessageType) protoreflect.ProtoMessage
+
+	once sync.Once
+	typ  reflect.Type
 }
 
 func (t *goMessage) GoType() reflect.Type {
+	t.New() // initialize t.typ
 	return t.typ
 }
 func (t *goMessage) New() protoreflect.ProtoMessage {
 	m := t.new(t)
+	t.once.Do(func() { t.typ = reflect.TypeOf(m) })
 	if t.typ != reflect.TypeOf(m) {
 		panic(fmt.Sprintf("mismatching types for message: got %T, want %v", m, t.typ))
 	}
@@ -240,11 +246,11 @@ func (t *goExtension) lazyInit() {
 			t.valueOf = func(v interface{}) protoreflect.Value {
 				return protoreflect.ValueOf(value.VectorOf(v, c))
 			}
-			t.interfaceOf = func(v protoreflect.Value) interface{} {
+			t.interfaceOf = func(pv protoreflect.Value) interface{} {
 				// TODO: Can we assume that Vector implementations know how
 				// to unwrap themselves?
 				// Should this be part of the public API in protoreflect?
-				return v.Vector().(value.Unwrapper).Unwrap()
+				return pv.Vector().(value.Unwrapper).Unwrap()
 			}
 		default:
 			panic(fmt.Sprintf("invalid cardinality: %v", t.Cardinality()))
