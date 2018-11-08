@@ -310,8 +310,8 @@ type emptyUnknownFields struct{}
 
 func (emptyUnknownFields) Len() int                                          { return 0 }
 func (emptyUnknownFields) Get(pref.FieldNumber) pref.RawFields               { return nil }
-func (emptyUnknownFields) Set(pref.FieldNumber, pref.RawFields)              { /* noop */ }
-func (emptyUnknownFields) Range(func(pref.FieldNumber, pref.RawFields) bool) {}
+func (emptyUnknownFields) Set(pref.FieldNumber, pref.RawFields)              { return } // noop
+func (emptyUnknownFields) Range(func(pref.FieldNumber, pref.RawFields) bool) { return }
 func (emptyUnknownFields) IsSupported() bool                                 { return false }
 
 type emptyExtensionFields struct{}
@@ -319,17 +319,17 @@ type emptyExtensionFields struct{}
 func (emptyExtensionFields) Len() int                                        { return 0 }
 func (emptyExtensionFields) Has(pref.FieldNumber) bool                       { return false }
 func (emptyExtensionFields) Get(pref.FieldNumber) pref.Value                 { return pref.Value{} }
-func (emptyExtensionFields) Set(pref.FieldNumber, pref.Value)                { panic("invalid field") }
-func (emptyExtensionFields) Clear(pref.FieldNumber)                          { panic("invalid field") }
-func (emptyExtensionFields) Mutable(pref.FieldNumber) pref.Mutable           { panic("invalid field") }
-func (emptyExtensionFields) Range(f func(pref.FieldNumber, pref.Value) bool) {}
+func (emptyExtensionFields) Set(pref.FieldNumber, pref.Value)                { panic("extensions not supported") }
+func (emptyExtensionFields) Clear(pref.FieldNumber)                          { return } // noop
+func (emptyExtensionFields) Mutable(pref.FieldNumber) pref.Mutable           { panic("extensions not supported") }
+func (emptyExtensionFields) Range(f func(pref.FieldNumber, pref.Value) bool) { return }
 func (emptyExtensionFields) ExtensionTypes() pref.ExtensionFieldTypes        { return emptyExtensionTypes{} }
 
 type emptyExtensionTypes struct{}
 
 func (emptyExtensionTypes) Len() int                                     { return 0 }
 func (emptyExtensionTypes) Register(pref.ExtensionType)                  { panic("extensions not supported") }
-func (emptyExtensionTypes) Remove(pref.ExtensionType)                    { panic("extensions not supported") }
+func (emptyExtensionTypes) Remove(pref.ExtensionType)                    { return } // noop
 func (emptyExtensionTypes) ByNumber(pref.FieldNumber) pref.ExtensionType { return nil }
 func (emptyExtensionTypes) ByName(pref.FullName) pref.ExtensionType      { return nil }
-func (emptyExtensionTypes) Range(func(pref.ExtensionType) bool)          {}
+func (emptyExtensionTypes) Range(func(pref.ExtensionType) bool)          { return }

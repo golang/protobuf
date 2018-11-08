@@ -88,9 +88,8 @@ type KnownFields interface {
 	// For example, if Mutable is called later, can it reuse memory?
 
 	// Clear clears the field such that a subsequent call to Has reports false.
-	//
-	// It panics if the field number does not correspond with a known field
-	// in MessageDescriptor.Fields or an extension field in ExtensionTypes.
+	// The operation does nothing if the field number does not correspond with
+	// a known field or extension field.
 	Clear(FieldNumber)
 
 	// Mutable returns a reference value for a field with a given field number,
@@ -196,6 +195,7 @@ type ExtensionFieldTypes interface {
 
 	// Remove removes the ExtensionType.
 	// It panics if a value for this extension field is still populated.
+	// The operation does nothing if there is no associated type to remove.
 	Remove(ExtensionType)
 
 	// ByNumber looks up an extension by field number.
@@ -283,6 +283,7 @@ type Map interface {
 	Set(MapKey, Value)
 
 	// Clear clears the entry associated with they given key.
+	// The operation does nothing if there is no entry associated with the key.
 	Clear(MapKey)
 
 	// Mutable returns a Mutable reference for the element with a given key,
