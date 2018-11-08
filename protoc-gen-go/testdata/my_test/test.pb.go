@@ -672,13 +672,6 @@ func (*OldReply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2c9b60a40d5131b9, []int{5}
 }
 
-func (m *OldReply) MarshalJSON() ([]byte, error) {
-	return proto.MarshalMessageSetJSON(&m.XXX_InternalExtensions)
-}
-func (m *OldReply) UnmarshalJSON(buf []byte) error {
-	return proto.UnmarshalMessageSetJSON(buf, &m.XXX_InternalExtensions)
-}
-
 var extRange_OldReply = []proto.ExtensionRange{
 	{Start: 100, End: 2147483646},
 }

@@ -2247,13 +2247,6 @@ func (*MyMessageSet) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8ca34d01332f1402, []int{17}
 }
 
-func (m *MyMessageSet) MarshalJSON() ([]byte, error) {
-	return proto.MarshalMessageSetJSON(&m.XXX_InternalExtensions)
-}
-func (m *MyMessageSet) UnmarshalJSON(buf []byte) error {
-	return proto.UnmarshalMessageSetJSON(buf, &m.XXX_InternalExtensions)
-}
-
 var extRange_MyMessageSet = []proto.ExtensionRange{
 	{Start: 100, End: 2147483646},
 }
