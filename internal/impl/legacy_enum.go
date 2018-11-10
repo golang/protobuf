@@ -11,8 +11,61 @@ import (
 	"sync"
 
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
+)
+
+var enumTypeCache sync.Map // map[reflect.Type]protoreflect.EnumType
+
+// wrapLegacyEnum wraps v as a protoreflect.ProtoEnum,
+// where v must be an int32 kind and not implement the v2 API already.
+func wrapLegacyEnum(v reflect.Value) pref.ProtoEnum {
+	// Fast-path: check if a EnumType is cached for this concrete type.
+	if et, ok := enumTypeCache.Load(v.Type()); ok {
+		return et.(pref.EnumType).New(pref.EnumNumber(v.Int()))
+	}
+
+	// Slow-path: derive enum descriptor and initialize EnumType.
+	var m sync.Map // map[protoreflect.EnumNumber]proto.Enum
+	ed := loadEnumDesc(v.Type())
+	et := ptype.GoEnum(ed, func(et pref.EnumType, n pref.EnumNumber) pref.ProtoEnum {
+		if e, ok := m.Load(n); ok {
+			return e.(pref.ProtoEnum)
+		}
+		e := &legacyEnumWrapper{num: n, pbTyp: et, goTyp: v.Type()}
+		m.Store(n, e)
+		return e
+	})
+	enumTypeCache.Store(v.Type(), et)
+	return et.(pref.EnumType).New(pref.EnumNumber(v.Int()))
+}
+
+type legacyEnumWrapper struct {
+	num   pref.EnumNumber
+	pbTyp pref.EnumType
+	goTyp reflect.Type
+}
+
+func (e *legacyEnumWrapper) Number() pref.EnumNumber {
+	return e.num
+}
+func (e *legacyEnumWrapper) Type() pref.EnumType {
+	return e.pbTyp
+}
+func (e *legacyEnumWrapper) ProtoReflect() pref.Enum {
+	return e
+}
+func (e *legacyEnumWrapper) Unwrap() interface{} {
+	v := reflect.New(e.goTyp).Elem()
+	v.SetInt(int64(e.num))
+	return v.Interface()
+}
+
+var (
+	_ pref.Enum        = (*legacyEnumWrapper)(nil)
+	_ pref.ProtoEnum   = (*legacyEnumWrapper)(nil)
+	_ pvalue.Unwrapper = (*legacyEnumWrapper)(nil)
 )
 
 var enumDescCache sync.Map // map[reflect.Type]protoreflect.EnumDescriptor
@@ -26,8 +79,8 @@ func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	}
 
 	// Slow-path: initialize EnumDescriptor from the proto descriptor.
-	if t.Kind() != reflect.Int32 {
-		panic(fmt.Sprintf("got %v, want int32 kind", t))
+	if t.Kind() != reflect.Int32 || t.PkgPath() == "" {
+		panic(fmt.Sprintf("got %v, want named int32 kind", t))
 	}
 
 	// Derive the enum descriptor from the raw descriptor proto.

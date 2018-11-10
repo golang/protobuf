@@ -68,7 +68,7 @@ func (mi *MessageType) init(p interface{}) {
 		if _, ok := p.(pref.ProtoMessage); !ok {
 			mi.pbType = ptype.GoMessage(mi.Desc, func(pref.MessageType) pref.ProtoMessage {
 				p := reflect.New(t.Elem()).Interface()
-				return (*message)(mi.dataTypeOf(p))
+				return (*legacyMessageWrapper)(mi.dataTypeOf(p))
 			})
 		}
 
@@ -182,7 +182,7 @@ func (mi *MessageType) MessageOf(p interface{}) pref.Message {
 		// See the comment in MessageType.init regarding pbType.
 		return m.ProtoReflect()
 	}
-	return (*message)(mi.dataTypeOf(p))
+	return (*legacyMessageWrapper)(mi.dataTypeOf(p))
 }
 
 func (mi *MessageType) KnownFieldsOf(p interface{}) pref.KnownFields {
@@ -221,28 +221,6 @@ type messageDataType struct {
 	p  pointer
 	mi *MessageType
 }
-
-type message messageDataType
-
-func (m *message) Type() pref.MessageType {
-	return m.mi.pbType
-}
-func (m *message) KnownFields() pref.KnownFields {
-	return (*knownFields)(m)
-}
-func (m *message) UnknownFields() pref.UnknownFields {
-	return m.mi.unknownFields((*messageDataType)(m))
-}
-func (m *message) Unwrap() interface{} { // TODO: unexport?
-	return m.p.asType(m.mi.goType.Elem()).Interface()
-}
-func (m *message) Interface() pref.ProtoMessage {
-	return m
-}
-func (m *message) ProtoReflect() pref.Message {
-	return m
-}
-func (m *message) ProtoMutable() {}
 
 type knownFields messageDataType
 

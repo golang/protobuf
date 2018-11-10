@@ -14,25 +14,54 @@ import (
 	protoV1 "github.com/golang/protobuf/proto"
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
+	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
 var messageTypeCache sync.Map // map[reflect.Type]*MessageType
 
-// wrapLegacyMessage wraps v as a protoreflect.Message, where v must be
-// a *struct kind and not implement the v2 API already.
-func wrapLegacyMessage(v reflect.Value) pref.Message {
+// wrapLegacyMessage wraps v as a protoreflect.ProtoMessage,
+// where v must be a *struct kind and not implement the v2 API already.
+func wrapLegacyMessage(v reflect.Value) pref.ProtoMessage {
 	// Fast-path: check if a MessageType is cached for this concrete type.
 	if mt, ok := messageTypeCache.Load(v.Type()); ok {
-		return mt.(*MessageType).MessageOf(v.Interface())
+		return mt.(*MessageType).MessageOf(v.Interface()).Interface()
 	}
 
 	// Slow-path: derive message descriptor and initialize MessageType.
 	mt := &MessageType{Desc: loadMessageDesc(v.Type())}
 	messageTypeCache.Store(v.Type(), mt)
-	return mt.MessageOf(v.Interface())
+	return mt.MessageOf(v.Interface()).Interface()
 }
+
+type legacyMessageWrapper messageDataType
+
+func (m *legacyMessageWrapper) Type() pref.MessageType {
+	return m.mi.pbType
+}
+func (m *legacyMessageWrapper) KnownFields() pref.KnownFields {
+	return (*knownFields)(m)
+}
+func (m *legacyMessageWrapper) UnknownFields() pref.UnknownFields {
+	return m.mi.unknownFields((*messageDataType)(m))
+}
+func (m *legacyMessageWrapper) Unwrap() interface{} {
+	return m.p.asType(m.mi.goType.Elem()).Interface()
+}
+func (m *legacyMessageWrapper) Interface() pref.ProtoMessage {
+	return m
+}
+func (m *legacyMessageWrapper) ProtoReflect() pref.Message {
+	return m
+}
+func (m *legacyMessageWrapper) ProtoMutable() {}
+
+var (
+	_ pref.Message      = (*legacyMessageWrapper)(nil)
+	_ pref.ProtoMessage = (*legacyMessageWrapper)(nil)
+	_ pvalue.Unwrapper  = (*legacyMessageWrapper)(nil)
+)
 
 var messageDescCache sync.Map // map[reflect.Type]protoreflect.MessageDescriptor
 
@@ -85,8 +114,8 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 	}
 
 	// Slow-path: Walk over the struct fields to derive the message descriptor.
-	if t.Kind() != reflect.Ptr && t.Elem().Kind() != reflect.Struct {
-		panic(fmt.Sprintf("got %v, want *struct kind", t))
+	if t.Kind() != reflect.Ptr || t.Elem().Kind() != reflect.Struct || t.Elem().PkgPath() == "" {
+		panic(fmt.Sprintf("got %v, want named *struct kind", t))
 	}
 
 	// Derive name and syntax from the raw descriptor.

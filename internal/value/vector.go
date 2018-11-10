@@ -38,14 +38,14 @@ func (vs vectorReflect) Mutable(i int) pref.Mutable {
 	rv := vs.v.Index(i)
 	if rv.IsNil() {
 		// TODO: Is checking for nil proper behavior for custom messages?
-		pv := pref.ValueOf(vs.conv.NewMessage())
+		pv := pref.ValueOf(vs.conv.MessageType.New().ProtoReflect())
 		rv.Set(vs.conv.GoValueOf(pv))
 	}
 	return rv.Interface().(pref.Message)
 }
 func (vs vectorReflect) MutableAppend() pref.Mutable {
 	// MutableAppend is only valid for messages and panics for other kinds.
-	pv := pref.ValueOf(vs.conv.NewMessage())
+	pv := pref.ValueOf(vs.conv.MessageType.New().ProtoReflect())
 	vs.v.Set(reflect.Append(vs.v, vs.conv.GoValueOf(pv)))
 	return vs.v.Index(vs.Len() - 1).Interface().(pref.Message)
 }
