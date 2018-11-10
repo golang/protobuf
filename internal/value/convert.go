@@ -111,7 +111,7 @@ func NewLegacyConverter(t reflect.Type, k pref.Kind, wrapLegacyMessage func(refl
 					return pref.ValueOf(e.ProtoReflect().Number())
 				},
 				toGo: func(v pref.Value) reflect.Value {
-					rv := reflect.ValueOf(et.GoNew(v.Enum()))
+					rv := reflect.ValueOf(et.New(v.Enum()))
 					if rv.Type() != t {
 						panic(fmt.Sprintf("invalid type: got %v, want %v", rv.Type(), t))
 					}
@@ -153,7 +153,7 @@ func NewLegacyConverter(t reflect.Type, k pref.Kind, wrapLegacyMessage func(refl
 					return rv
 				},
 				newMessage: func() pref.Message {
-					return mt.GoNew().ProtoReflect()
+					return mt.New().ProtoReflect()
 				},
 			}
 		}

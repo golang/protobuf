@@ -66,12 +66,9 @@ func (mi *MessageType) init(p interface{}) {
 		//
 		// Generated code ensures that this property holds.
 		if _, ok := p.(pref.ProtoMessage); !ok {
-			mi.pbType = ptype.NewGoMessage(&ptype.GoMessage{
-				MessageDescriptor: mi.Desc,
-				New: func(pref.MessageType) pref.ProtoMessage {
-					p := reflect.New(t.Elem()).Interface()
-					return (*message)(mi.dataTypeOf(p))
-				},
+			mi.pbType = ptype.GoMessage(mi.Desc, func(pref.MessageType) pref.ProtoMessage {
+				p := reflect.New(t.Elem()).Interface()
+				return (*message)(mi.dataTypeOf(p))
 			})
 		}
 

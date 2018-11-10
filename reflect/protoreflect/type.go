@@ -6,8 +6,6 @@ package protoreflect
 
 import "reflect"
 
-// TODO: Rename GoNew as New for MessageType, EnumType, and ExtensionType?
-
 // TODO: For all ByX methods (e.g., ByName, ByJSONName, ByNumber, etc),
 // should they use a (v, ok) signature for the return value?
 
@@ -259,12 +257,12 @@ type isMessageDescriptor interface{ ProtoType(MessageDescriptor) }
 type MessageType interface {
 	MessageDescriptor
 
-	// GoNew returns a newly allocated empty message.
-	GoNew() ProtoMessage
+	// New returns a newly allocated empty message.
+	New() ProtoMessage
 
 	// GoType returns the Go type of the allocated message.
 	//
-	// Invariant: t.GoType() == reflect.TypeOf(t.GoNew())
+	// Invariant: t.GoType() == reflect.TypeOf(t.New())
 	GoType() reflect.Type
 }
 
@@ -437,15 +435,15 @@ type ExtensionDescriptors interface {
 type ExtensionType interface {
 	ExtensionDescriptor
 
-	// GoNew returns a new value for the field.
+	// New returns a new value for the field.
 	// For scalars, this returns the default value in native Go form.
-	GoNew() interface{}
+	New() interface{}
 
 	// GoType returns the Go type of the field value.
 	//
 	// Invariants:
-	//	t.GoType() == reflect.TypeOf(t.GoNew())
-	//	t.GoType() == reflect.TypeOf(t.InterfaceOf(t.ValueOf(t.GoNew())))
+	//	t.GoType() == reflect.TypeOf(t.New())
+	//	t.GoType() == reflect.TypeOf(t.InterfaceOf(t.ValueOf(t.New())))
 	GoType() reflect.Type
 
 	// TODO: How do we reconcile GoType with the existing extension API,
@@ -487,12 +485,12 @@ type isEnumDescriptor interface{ ProtoType(EnumDescriptor) }
 type EnumType interface {
 	EnumDescriptor
 
-	// GoNew returns an instance of this enum type with its value set to n.
-	GoNew(n EnumNumber) ProtoEnum
+	// New returns an instance of this enum type with its value set to n.
+	New(n EnumNumber) ProtoEnum
 
 	// GoType returns the Go type of the enum value.
 	//
-	// Invariants: t.GoType() == reflect.TypeOf(t.GoNew(0))
+	// Invariants: t.GoType() == reflect.TypeOf(t.New(0))
 	GoType() reflect.Type
 }
 
