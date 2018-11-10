@@ -119,9 +119,6 @@ type GoExtension struct {
 	// An alternative API is for ExtensionDescriptor.{EnumType,MessageType}
 	// to document that it must implement protoreflect.{EnumType,MessageType}.
 
-	// TODO: Support custom Go types? If so, the user needs to provide their
-	// own New, ValueOf, and InterfaceOf adapters.
-
 	once        sync.Once
 	new         func() interface{}
 	goType      reflect.Type
