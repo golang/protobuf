@@ -32,10 +32,7 @@ var byteType = reflect.TypeOf(byte(0))
 //
 // This function is a best effort attempt; parsing errors are ignored.
 func Unmarshal(tag string, goType reflect.Type) ptype.Field {
-	var f ptype.Field
-	f.Options = &descriptorV1.FieldOptions{
-		Packed: protoV1.Bool(false),
-	}
+	f := ptype.Field{Options: new(descriptorV1.FieldOptions)}
 	for len(tag) > 0 {
 		i := strings.IndexByte(tag, ',')
 		if i < 0 {
@@ -108,7 +105,7 @@ func Unmarshal(tag string, goType reflect.Type) ptype.Field {
 		case strings.HasPrefix(s, "json="):
 			f.JSONName = s[len("json="):]
 		case s == "packed":
-			*f.Options.Packed = true
+			f.Options.Packed = protoV1.Bool(true)
 		case strings.HasPrefix(s, "weak="):
 			f.Options.Weak = protoV1.Bool(true)
 			f.MessageType = ptype.PlaceholderMessage(pref.FullName(s[len("weak="):]))
