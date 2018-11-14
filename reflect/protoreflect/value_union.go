@@ -29,7 +29,7 @@ import (
 //	| EnumNumber | EnumKind                            |
 //	+------------+-------------------------------------+
 //	| Message    | MessageKind, GroupKind              |
-//	| Vector     |                                     |
+//	| List       |                                     |
 //	| Map        |                                     |
 //	+------------+-------------------------------------+
 //
@@ -38,7 +38,7 @@ import (
 // Int64Kind, Sint64Kind, and Sfixed64Kind are all represented by int64,
 // but use different integer encoding methods.
 //
-// The Vector or Map types are used if the FieldDescriptor.Cardinality of the
+// The List or Map types are used if the FieldDescriptor.Cardinality of the
 // corresponding field is Repeated and a Map if and only if
 // FieldDescriptor.IsMap is true.
 //
@@ -93,7 +93,7 @@ func ValueOf(v interface{}) Value {
 		return valueOfBytes(v[:len(v):len(v)])
 	case EnumNumber:
 		return Value{typ: enumType, num: uint64(v)}
-	case Message, Vector, Map:
+	case Message, List, Map:
 		return valueOfIface(v)
 	default:
 		// TODO: Special case ProtoEnum, ProtoMessage, *[]T, and *map[K]V?
@@ -222,10 +222,10 @@ func (v Value) Message() Message {
 	}
 }
 
-// Vector returns v as a Vector and panics if the type is not a Vector.
-func (v Value) Vector() Vector {
+// List returns v as a List and panics if the type is not a List.
+func (v Value) List() List {
 	switch v := v.getIface().(type) {
-	case Vector:
+	case List:
 		return v
 	default:
 		panic("proto: value type mismatch")

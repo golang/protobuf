@@ -13,7 +13,7 @@ import (
 
 func TestValue(t *testing.T) {
 	fakeMessage := new(struct{ Message })
-	fakeVector := new(struct{ Vector })
+	fakeList := new(struct{ List })
 	fakeMap := new(struct{ Map })
 
 	tests := []struct {
@@ -32,7 +32,7 @@ func TestValue(t *testing.T) {
 		{in: ValueOf(string("hello")), want: string("hello")},
 		{in: ValueOf([]byte("hello")), want: []byte("hello")},
 		{in: ValueOf(fakeMessage), want: fakeMessage},
-		{in: ValueOf(fakeVector), want: fakeVector},
+		{in: ValueOf(fakeList), want: fakeList},
 		{in: ValueOf(fakeMap), want: fakeMap},
 	}
 
@@ -86,13 +86,13 @@ func TestValue(t *testing.T) {
 			if got := tt.in.Message(); got != want {
 				t.Errorf("Value(%v).Message() = %v, want %v", tt.in, got, tt.want)
 			}
+		case List:
+			if got := tt.in.List(); got != want {
+				t.Errorf("Value(%v).List() = %v, want %v", tt.in, got, tt.want)
+			}
 		case Map:
 			if got := tt.in.Map(); got != want {
 				t.Errorf("Value(%v).Map() = %v, want %v", tt.in, got, tt.want)
-			}
-		case Vector:
-			if got := tt.in.Vector(); got != want {
-				t.Errorf("Value(%v).Vector() = %v, want %v", tt.in, got, tt.want)
 			}
 		}
 	}

@@ -40,20 +40,20 @@ type (
 	MyString  string
 	MyBytes   []byte
 
-	VectorStrings []MyString
-	VectorBytes   []MyBytes
+	ListStrings []MyString
+	ListBytes   []MyBytes
 
 	MapStrings map[MyString]MyString
 	MapBytes   map[MyString]MyBytes
 )
 
-// List of test operations to perform on messages, vectors, or maps.
+// List of test operations to perform on messages, lists, or maps.
 type (
-	messageOp  interface{} // equalMessage | hasFields | getFields | setFields | clearFields | vectorFields | mapFields
+	messageOp  interface{} // equalMessage | hasFields | getFields | setFields | clearFields | listFields | mapFields
 	messageOps []messageOp
 
-	vectorOp  interface{} // equalVector | lenVector | getVector | setVector | appendVector | truncVector
-	vectorOps []vectorOp
+	listOp  interface{} // equalList | lenList | getList | setList | appendList | truncList
+	listOps []listOp
 
 	mapOp  interface{} // equalMap | lenMap | hasMap | getMap | setMap | clearMap | rangeMap
 	mapOps []mapOp
@@ -66,20 +66,20 @@ type (
 	getFields     map[pref.FieldNumber]pref.Value
 	setFields     map[pref.FieldNumber]pref.Value
 	clearFields   map[pref.FieldNumber]bool
-	vectorFields  map[pref.FieldNumber]vectorOps
+	listFields    map[pref.FieldNumber]listOps
 	mapFields     map[pref.FieldNumber]mapOps
 	messageFields map[pref.FieldNumber]messageOps
 	// TODO: Mutable, Range, ExtensionTypes
 )
 
-// Test operations performed on a vector.
+// Test operations performed on a list.
 type (
-	equalVector  pref.Vector
-	lenVector    int
-	getVector    map[int]pref.Value
-	setVector    map[int]pref.Value
-	appendVector []pref.Value
-	truncVector  int
+	equalList  pref.List
+	lenList    int
+	getList    map[int]pref.Value
+	setList    map[int]pref.Value
+	appendList []pref.Value
+	truncList  int
 	// TODO: Mutable, MutableAppend
 )
 
@@ -318,10 +318,10 @@ type ListScalars struct {
 	MyBytes1   []MyBytes  `protobuf:"14"`
 	MyBytes2   []MyString `protobuf:"15"`
 
-	MyStrings3 VectorStrings `protobuf:"16"`
-	MyStrings4 VectorBytes   `protobuf:"17"`
-	MyBytes3   VectorBytes   `protobuf:"18"`
-	MyBytes4   VectorStrings `protobuf:"19"`
+	MyStrings3 ListStrings `protobuf:"16"`
+	MyStrings4 ListBytes   `protobuf:"17"`
+	MyBytes3   ListBytes   `protobuf:"18"`
+	MyBytes4   ListStrings `protobuf:"19"`
 }
 
 var listScalarsType = MessageType{Type: ptype.GoMessage(
@@ -386,10 +386,10 @@ func TestListScalars(t *testing.T) {
 		MyBytes1:   []MyBytes{[]byte("14"), nil, []byte("fourteen")},
 		MyBytes2:   []MyString{"15", "", "fifteen"},
 
-		MyStrings3: VectorStrings{"16", "", "sixteen"},
-		MyStrings4: VectorBytes{[]byte("17"), nil, []byte("seventeen")},
-		MyBytes3:   VectorBytes{[]byte("18"), nil, []byte("eighteen")},
-		MyBytes4:   VectorStrings{"19", "", "nineteen"},
+		MyStrings3: ListStrings{"16", "", "sixteen"},
+		MyStrings4: ListBytes{[]byte("17"), nil, []byte("seventeen")},
+		MyBytes3:   ListBytes{[]byte("18"), nil, []byte("eighteen")},
+		MyBytes4:   ListStrings{"19", "", "nineteen"},
 	}
 	wantFS := want.KnownFields()
 
@@ -397,53 +397,53 @@ func TestListScalars(t *testing.T) {
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false},
 		getFields{1: emptyFS.Get(1), 3: emptyFS.Get(3), 5: emptyFS.Get(5), 7: emptyFS.Get(7), 9: emptyFS.Get(9), 11: emptyFS.Get(11), 13: emptyFS.Get(13), 15: emptyFS.Get(15), 17: emptyFS.Get(17), 19: emptyFS.Get(19)},
 		setFields{1: wantFS.Get(1), 3: wantFS.Get(3), 5: wantFS.Get(5), 7: wantFS.Get(7), 9: wantFS.Get(9), 11: wantFS.Get(11), 13: wantFS.Get(13), 15: wantFS.Get(15), 17: wantFS.Get(17), 19: wantFS.Get(19)},
-		vectorFields{
+		listFields{
 			2: {
-				lenVector(0),
-				appendVector{V(int32(2)), V(int32(math.MinInt32)), V(int32(math.MaxInt32))},
-				getVector{0: V(int32(2)), 1: V(int32(math.MinInt32)), 2: V(int32(math.MaxInt32))},
-				equalVector(wantFS.Get(2).Vector()),
+				lenList(0),
+				appendList{V(int32(2)), V(int32(math.MinInt32)), V(int32(math.MaxInt32))},
+				getList{0: V(int32(2)), 1: V(int32(math.MinInt32)), 2: V(int32(math.MaxInt32))},
+				equalList(wantFS.Get(2).List()),
 			},
 			4: {
-				appendVector{V(uint32(0)), V(uint32(0)), V(uint32(0))},
-				setVector{0: V(uint32(4)), 1: V(uint32(math.MaxUint32 / 2)), 2: V(uint32(math.MaxUint32))},
-				lenVector(3),
+				appendList{V(uint32(0)), V(uint32(0)), V(uint32(0))},
+				setList{0: V(uint32(4)), 1: V(uint32(math.MaxUint32 / 2)), 2: V(uint32(math.MaxUint32))},
+				lenList(3),
 			},
 			6: {
-				appendVector{V(float32(6)), V(float32(math.SmallestNonzeroFloat32)), V(float32(math.NaN())), V(float32(math.MaxFloat32))},
-				equalVector(wantFS.Get(6).Vector()),
+				appendList{V(float32(6)), V(float32(math.SmallestNonzeroFloat32)), V(float32(math.NaN())), V(float32(math.MaxFloat32))},
+				equalList(wantFS.Get(6).List()),
 			},
 			8: {
-				appendVector{V(""), V(""), V(""), V(""), V(""), V("")},
-				lenVector(6),
-				setVector{0: V("8"), 2: V("eight")},
-				truncVector(3),
-				equalVector(wantFS.Get(8).Vector()),
+				appendList{V(""), V(""), V(""), V(""), V(""), V("")},
+				lenList(6),
+				setList{0: V("8"), 2: V("eight")},
+				truncList(3),
+				equalList(wantFS.Get(8).List()),
 			},
 			10: {
-				appendVector{V([]byte(nil)), V([]byte(nil))},
-				setVector{0: V([]byte("10"))},
-				appendVector{V([]byte("wrong"))},
-				setVector{2: V([]byte("ten"))},
-				equalVector(wantFS.Get(10).Vector()),
+				appendList{V([]byte(nil)), V([]byte(nil))},
+				setList{0: V([]byte("10"))},
+				appendList{V([]byte("wrong"))},
+				setList{2: V([]byte("ten"))},
+				equalList(wantFS.Get(10).List()),
 			},
 			12: {
-				appendVector{V("12"), V("wrong"), V("twelve")},
-				setVector{1: V("")},
-				equalVector(wantFS.Get(12).Vector()),
+				appendList{V("12"), V("wrong"), V("twelve")},
+				setList{1: V("")},
+				equalList(wantFS.Get(12).List()),
 			},
 			14: {
-				appendVector{V([]byte("14")), V([]byte(nil)), V([]byte("fourteen"))},
-				equalVector(wantFS.Get(14).Vector()),
+				appendList{V([]byte("14")), V([]byte(nil)), V([]byte("fourteen"))},
+				equalList(wantFS.Get(14).List()),
 			},
 			16: {
-				appendVector{V("16"), V(""), V("sixteen"), V("extra")},
-				truncVector(3),
-				equalVector(wantFS.Get(16).Vector()),
+				appendList{V("16"), V(""), V("sixteen"), V("extra")},
+				truncList(3),
+				equalList(wantFS.Get(16).List()),
 			},
 			18: {
-				appendVector{V([]byte("18")), V([]byte(nil)), V([]byte("eighteen"))},
-				equalVector(wantFS.Get(18).Vector()),
+				appendList{V([]byte("18")), V([]byte(nil)), V([]byte("eighteen"))},
+				equalList(wantFS.Get(18).List()),
 			},
 		},
 		hasFields{1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true, 12: true, 13: true, 14: true, 15: true, 16: true, 17: true, 18: true, 19: true},
@@ -828,7 +828,7 @@ var cmpOpts = cmp.Options{
 	cmp.Transformer("UnwrapValue", func(v pref.Value) interface{} {
 		return v.Interface()
 	}),
-	cmp.Transformer("UnwrapVector", func(v pref.Vector) interface{} {
+	cmp.Transformer("UnwrapList", func(v pref.List) interface{} {
 		return v.(interface{ Unwrap() interface{} }).Unwrap()
 	}),
 	cmp.Transformer("UnwrapMap", func(m pref.Map) interface{} {
@@ -874,10 +874,10 @@ func testMessage(t *testing.T, p path, m pref.Message, tt messageOps) {
 					fs.Clear(n)
 				}
 			}
-		case vectorFields:
+		case listFields:
 			for n, tt := range op {
 				p.Push(int(n))
-				testVectors(t, p, fs.Mutable(n).(pref.Vector), tt)
+				testLists(t, p, fs.Mutable(n).(pref.List), tt)
 				p.Pop()
 			}
 		case mapFields:
@@ -893,36 +893,36 @@ func testMessage(t *testing.T, p path, m pref.Message, tt messageOps) {
 	}
 }
 
-func testVectors(t *testing.T, p path, v pref.Vector, tt vectorOps) {
+func testLists(t *testing.T, p path, v pref.List, tt listOps) {
 	for i, op := range tt {
 		p.Push(i)
 		switch op := op.(type) {
-		case equalVector:
+		case equalList:
 			if diff := cmp.Diff(op, v, cmpOpts); diff != "" {
-				t.Errorf("operation %v, vector mismatch (-want, +got):\n%s", p, diff)
+				t.Errorf("operation %v, list mismatch (-want, +got):\n%s", p, diff)
 			}
-		case lenVector:
+		case lenList:
 			if got, want := v.Len(), int(op); got != want {
-				t.Errorf("operation %v, Vector.Len = %d, want %d", p, got, want)
+				t.Errorf("operation %v, List.Len = %d, want %d", p, got, want)
 			}
-		case getVector:
+		case getList:
 			got := map[int]pref.Value{}
 			want := map[int]pref.Value(op)
 			for n := range want {
 				got[n] = v.Get(n)
 			}
 			if diff := cmp.Diff(want, got, cmpOpts); diff != "" {
-				t.Errorf("operation %v, Vector.Get mismatch (-want, +got):\n%s", p, diff)
+				t.Errorf("operation %v, List.Get mismatch (-want, +got):\n%s", p, diff)
 			}
-		case setVector:
+		case setList:
 			for n, e := range op {
 				v.Set(n, e)
 			}
-		case appendVector:
+		case appendList:
 			for _, e := range op {
 				v.Append(e)
 			}
-		case truncVector:
+		case truncList:
 			v.Truncate(int(op))
 		default:
 			t.Fatalf("operation %v, invalid operation: %T", p, op)

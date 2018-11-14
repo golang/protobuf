@@ -86,7 +86,7 @@ func (t *goMessage) New() protoreflect.ProtoMessage {
 // in which case it replaces the original message in ExtensionDescriptor.
 //
 // The Go type is currently determined automatically.
-// The type is T for scalars and *[]T for vectors (maps are not allowed).
+// The type is T for scalars and *[]T for lists (maps are not allowed).
 // The type T is determined as follows:
 //
 //	+------------+-------------------------------------+
@@ -244,13 +244,13 @@ func (t *goExtension) lazyInit() {
 				return reflect.New(t.typ.Elem()).Interface()
 			}
 			t.valueOf = func(v interface{}) protoreflect.Value {
-				return protoreflect.ValueOf(value.VectorOf(v, c))
+				return protoreflect.ValueOf(value.ListOf(v, c))
 			}
 			t.interfaceOf = func(pv protoreflect.Value) interface{} {
-				// TODO: Can we assume that Vector implementations know how
+				// TODO: Can we assume that List implementations know how
 				// to unwrap themselves?
 				// Should this be part of the public API in protoreflect?
-				return pv.Vector().(value.Unwrapper).Unwrap()
+				return pv.List().(value.Unwrapper).Unwrap()
 			}
 		default:
 			panic(fmt.Sprintf("invalid cardinality: %v", t.Cardinality()))

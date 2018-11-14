@@ -47,7 +47,7 @@ func (p legacyExtensionFields) Has(n pref.FieldNumber) bool {
 	}
 	t := legacyExtensionTypeOf(x.desc)
 	if t.Cardinality() == pref.Repeated {
-		return legacyExtensionValueOf(x.val, t).Vector().Len() > 0
+		return legacyExtensionValueOf(x.val, t).List().Len() > 0
 	}
 	return true
 }
@@ -60,7 +60,7 @@ func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 	t := legacyExtensionTypeOf(x.desc)
 	if x.val == nil {
 		if t.Cardinality() == pref.Repeated {
-			// TODO: What is the zero value for Vectors?
+			// TODO: What is the zero value for Lists?
 			// TODO: This logic is racy.
 			v := t.ValueOf(t.New())
 			x.val = legacyExtensionInterfaceOf(v, t)
@@ -305,10 +305,10 @@ func legacyExtensionTypeOf(d *protoV1.ExtensionDesc) pref.ExtensionType {
 			if reflect.TypeOf(v) != xt2.typ {
 				panic(fmt.Sprintf("invalid type: got %T, want %v", v, xt2.typ))
 			}
-			return pref.ValueOf(pvalue.VectorOf(v, conv))
+			return pref.ValueOf(pvalue.ListOf(v, conv))
 		}
 		xt2.interfaceOf = func(pv pref.Value) interface{} {
-			v := pv.Vector().(pvalue.Unwrapper).Unwrap()
+			v := pv.List().(pvalue.Unwrapper).Unwrap()
 			if reflect.TypeOf(v) != xt2.typ {
 				panic(fmt.Sprintf("invalid type: got %T, want %v", v, xt2.typ))
 			}

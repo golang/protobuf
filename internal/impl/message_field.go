@@ -134,7 +134,7 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 	}
 }
 
-func fieldInfoForVector(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
+func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
 	ft := fs.Type
 	if ft.Kind() != reflect.Slice {
 		panic(fmt.Sprintf("invalid type: got %v, want slice kind", ft))
@@ -149,11 +149,11 @@ func fieldInfoForVector(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 		},
 		get: func(p pointer) pref.Value {
 			v := p.apply(fieldOffset).asType(fs.Type).Interface()
-			return pref.ValueOf(pvalue.VectorOf(v, conv))
+			return pref.ValueOf(pvalue.ListOf(v, conv))
 		},
 		set: func(p pointer, v pref.Value) {
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
-			rv.Set(reflect.ValueOf(v.Vector().(pvalue.Unwrapper).Unwrap()).Elem())
+			rv.Set(reflect.ValueOf(v.List().(pvalue.Unwrapper).Unwrap()).Elem())
 		},
 		clear: func(p pointer) {
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
@@ -161,7 +161,7 @@ func fieldInfoForVector(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 		},
 		mutable: func(p pointer) pref.Mutable {
 			v := p.apply(fieldOffset).asType(fs.Type).Interface()
-			return pvalue.VectorOf(v, conv)
+			return pvalue.ListOf(v, conv)
 		},
 	}
 }

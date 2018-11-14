@@ -132,7 +132,7 @@ fieldLoop:
 		case fd.IsMap():
 			fi = fieldInfoForMap(fd, fs)
 		case fd.Cardinality() == pref.Repeated:
-			fi = fieldInfoForVector(fd, fs)
+			fi = fieldInfoForList(fd, fs)
 		case fd.Kind() == pref.MessageKind || fd.Kind() == pref.GroupKind:
 			fi = fieldInfoForMessage(fd, fs)
 		default:

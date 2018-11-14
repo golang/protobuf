@@ -776,7 +776,7 @@ func TestLegactExtensions(t *testing.T) {
 	}
 
 	// Check that getting the zero value returns the default value for scalars,
-	// nil for singular messages, and an empty vector for repeated fields.
+	// nil for singular messages, and an empty list for repeated fields.
 	defaultValues := []interface{}{
 		bool(true),
 		int32(-12345),
@@ -816,7 +816,7 @@ func TestLegactExtensions(t *testing.T) {
 		}
 	}
 
-	// Set some values and append to values to the vectors.
+	// Set some values and append to values to the lists.
 	m1 := &proto2_20180125.Message_ChildMessage{F1: protoV1.String("m1")}
 	m2 := &proto2_20180125.Message_ChildMessage{F1: protoV1.String("m2")}
 	setValues := []interface{}{
@@ -842,7 +842,7 @@ func TestLegactExtensions(t *testing.T) {
 	}
 	for i, xt := range extensions[len(extensions)/2:] {
 		v := extensions[i].ValueOf(setValues[i])
-		fs.Get(xt.Number()).Vector().Append(v)
+		fs.Get(xt.Number()).List().Append(v)
 	}
 
 	// Get the values and check for equality.

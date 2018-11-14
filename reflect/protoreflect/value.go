@@ -42,8 +42,8 @@ type Message interface {
 
 // KnownFields provides accessor and mutator methods for known fields.
 //
-// Each field Value can either be a scalar, Message, Vector, or Map.
-// The field is a Vector or Map if FieldDescriptor.Cardinality is Repeated and
+// Each field Value can either be a scalar, Message, List, or Map.
+// The field is a List or Map if FieldDescriptor.Cardinality is Repeated and
 // a Map if and only if FieldDescriptor.IsMap is true. The scalar type or
 // underlying repeated element type is determined by the FieldDescriptor.Kind.
 // See Value for a list of Go types associated with each Kind.
@@ -94,7 +94,7 @@ type KnownFields interface {
 
 	// Mutable returns a reference value for a field with a given field number,
 	// allocating a new instance if necessary.
-	// It panics if the field is not a map, vector, or message.
+	// It panics if the field is not a message, list, or map.
 	Mutable(FieldNumber) Mutable
 
 	// Range iterates over every populated field in an undefined order,
@@ -214,14 +214,14 @@ type ExtensionFieldTypes interface {
 	Range(f func(ExtensionType) bool)
 }
 
-// Vector is an ordered list. Every element is considered populated
+// List is an ordered list. Every element is considered populated
 // (i.e., Get never provides and Set never accepts invalid Values).
 // The element Value type is determined by the associated FieldDescriptor.Kind
-// and cannot be a Map or Vector.
+// and cannot be a Map or List.
 //
 // Len and Get are safe for concurrent use.
-type Vector interface {
-	// Len reports the number of entries in the Vector.
+type List interface {
+	// Len reports the number of entries in the List.
 	// Get, Set, Mutable, and Truncate panic with out of bound indexes.
 	Len() int
 
@@ -234,7 +234,7 @@ type Vector interface {
 	// value aliases the source's memory in any way.
 	Set(int, Value)
 
-	// Append appends the provided value to the end of the vector.
+	// Append appends the provided value to the end of the list.
 	//
 	// When appending a composite type, it is unspecified whether the appended
 	// value aliases the source's memory in any way.
@@ -251,7 +251,7 @@ type Vector interface {
 
 	// TODO: Should truncate accept two indexes similar to slicing?M
 
-	// Truncate truncates the vector to a smaller length.
+	// Truncate truncates the list to a smaller length.
 	Truncate(int)
 
 	// ProtoMutable is a marker method to implement the Mutable interface.
@@ -260,7 +260,7 @@ type Vector interface {
 
 // Map is an unordered, associative map. Only elements within the map
 // is considered populated. The entry Value type is determined by the associated
-// FieldDescripto.Kind and cannot be a Map or Vector.
+// FieldDescripto.Kind and cannot be a Map or List.
 //
 // Len, Has, Get, and Range are safe for concurrent use.
 type Map interface {
@@ -303,7 +303,7 @@ type Map interface {
 }
 
 // Mutable is a mutable reference, where mutate operations also affect
-// the backing store. Possible Mutable types: Vector, Map, or Message.
+// the backing store. Possible Mutable types: Message, List, or Map.
 type Mutable interface {
 	ProtoMutable()
 }

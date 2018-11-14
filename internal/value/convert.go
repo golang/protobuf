@@ -14,7 +14,7 @@ import (
 )
 
 // Unwrapper unwraps the value to the underlying value.
-// This is implemented by Vector and Map.
+// This is implemented by List and Map.
 type Unwrapper interface {
 	Unwrap() interface{}
 }

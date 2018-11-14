@@ -305,7 +305,7 @@ type FieldDescriptor interface {
 	IsPacked() bool
 
 	// IsMap reports whether this field represents a map.
-	// The value type for the associated field is a Map instead of a Vector.
+	// The value type for the associated field is a Map instead of a List.
 	//
 	// If true, it implies that Kind is MessageKind, Cardinality is Repeated,
 	// and MessageDescriptor.IsMapEntry is true.
@@ -449,7 +449,7 @@ type ExtensionType interface {
 	// TODO: What to do with nil?
 	//	Should ValueOf(nil) return Value{}?
 	//	Should InterfaceOf(Value{}) return nil?
-	//	Similarly, should the Value.{Message,Vector,Map} also return nil?
+	//	Similarly, should the Value.{Message,List,Map} also return nil?
 
 	// ValueOf wraps the input and returns it as a Value.
 	// ValueOf panics if the input value is invalid or not the appropriate type.
