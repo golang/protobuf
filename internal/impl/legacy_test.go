@@ -676,84 +676,114 @@ func TestLegactExtensions(t *testing.T) {
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*proto2_20180125.Message_ChildEnum)(nil),
 			Field:         10006,
-			Name:          "fizz.buzz.optional_enum",
-			Tag:           "varint,10006,opt,name=optional_enum,json=optionalEnum,enum=google.golang.org.proto2_20180125.Message_ChildEnum,def=0",
+			Name:          "fizz.buzz.optional_enum_v1",
+			Tag:           "varint,10006,opt,name=optional_enum_v1,json=optionalEnumV1,enum=google.golang.org.proto2_20180125.Message_ChildEnum,def=0",
 			Filename:      "fizz/buzz/test.proto",
 		}),
 		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*proto2_20180125.Message_ChildMessage)(nil),
 			Field:         10007,
-			Name:          "fizz.buzz.optional_message",
-			Tag:           "bytes,10007,opt,name=optional_message,json=optionalMessage",
+			Name:          "fizz.buzz.optional_message_v1",
+			Tag:           "bytes,10007,opt,name=optional_message_v1,json=optionalMessageV1",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		// TODO: Test v2 enum and messages.
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: (*EnumProto2)(nil),
+			Field:         10008,
+			Name:          "fizz.buzz.optional_enum_v2",
+			Tag:           "varint,10008,opt,name=optional_enum_v2,json=optionalEnumV2,enum=EnumProto2,def=57005",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: (*EnumMessages)(nil),
+			Field:         10009,
+			Name:          "fizz.buzz.optional_message_v2",
+			Tag:           "bytes,10009,opt,name=optional_message_v2,json=optionalMessageV2",
+			Filename:      "fizz/buzz/test.proto",
+		}),
 		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]bool)(nil),
-			Field:         10008,
+			Field:         10010,
 			Name:          "fizz.buzz.repeated_bool",
-			Tag:           "varint,10008,rep,name=repeated_bool,json=repeatedBool",
+			Tag:           "varint,10010,rep,name=repeated_bool,json=repeatedBool",
 			Filename:      "fizz/buzz/test.proto",
 		}),
 		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]int32)(nil),
-			Field:         10009,
+			Field:         10011,
 			Name:          "fizz.buzz.repeated_int32",
-			Tag:           "varint,10009,rep,name=repeated_int32,json=repeatedInt32",
+			Tag:           "varint,10011,rep,name=repeated_int32,json=repeatedInt32",
 			Filename:      "fizz/buzz/test.proto",
 		}),
 		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]uint32)(nil),
-			Field:         10010,
+			Field:         10012,
 			Name:          "fizz.buzz.repeated_uint32",
-			Tag:           "varint,10010,rep,name=repeated_uint32,json=repeatedUint32",
+			Tag:           "varint,10012,rep,name=repeated_uint32,json=repeatedUint32",
 			Filename:      "fizz/buzz/test.proto",
 		}),
 		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]float32)(nil),
-			Field:         10011,
+			Field:         10013,
 			Name:          "fizz.buzz.repeated_float",
-			Tag:           "fixed32,10011,rep,name=repeated_float,json=repeatedFloat",
+			Tag:           "fixed32,10013,rep,name=repeated_float,json=repeatedFloat",
 			Filename:      "fizz/buzz/test.proto",
 		}),
 		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]string)(nil),
-			Field:         10012,
+			Field:         10014,
 			Name:          "fizz.buzz.repeated_string",
-			Tag:           "bytes,10012,rep,name=repeated_string,json=repeatedString",
+			Tag:           "bytes,10014,rep,name=repeated_string,json=repeatedString",
 			Filename:      "fizz/buzz/test.proto",
 		}),
 		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([][]byte)(nil),
-			Field:         10013,
+			Field:         10015,
 			Name:          "fizz.buzz.repeated_bytes",
-			Tag:           "bytes,10013,rep,name=repeated_bytes,json=repeatedBytes",
+			Tag:           "bytes,10015,rep,name=repeated_bytes,json=repeatedBytes",
 			Filename:      "fizz/buzz/test.proto",
 		}),
 		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]proto2_20180125.Message_ChildEnum)(nil),
-			Field:         10014,
-			Name:          "fizz.buzz.repeated_enum",
-			Tag:           "varint,10014,rep,name=repeated_enum,json=repeatedEnum,enum=google.golang.org.proto2_20180125.Message_ChildEnum",
+			Field:         10016,
+			Name:          "fizz.buzz.repeated_enum_v1",
+			Tag:           "varint,10016,rep,name=repeated_enum_v1,json=repeatedEnumV1,enum=google.golang.org.proto2_20180125.Message_ChildEnum",
 			Filename:      "fizz/buzz/test.proto",
 		}),
 		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]*proto2_20180125.Message_ChildMessage)(nil),
-			Field:         10015,
-			Name:          "fizz.buzz.repeated_message",
-			Tag:           "bytes,10015,rep,name=repeated_message,json=repeatedMessage",
+			Field:         10017,
+			Name:          "fizz.buzz.repeated_message_v1",
+			Tag:           "bytes,10017,rep,name=repeated_message_v1,json=repeatedMessageV1",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		// TODO: Test v2 enum and messages.
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([]EnumProto2)(nil),
+			Field:         10018,
+			Name:          "fizz.buzz.repeated_enum_v2",
+			Tag:           "varint,10018,rep,name=repeated_enum_v2,json=repeatedEnumV2,enum=EnumProto2",
+			Filename:      "fizz/buzz/test.proto",
+		}),
+		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+			ExtendedType:  (*legacyTestMessage)(nil),
+			ExtensionType: ([]*EnumMessages)(nil),
+			Field:         10019,
+			Name:          "fizz.buzz.repeated_message_v2",
+			Tag:           "bytes,10019,rep,name=repeated_message_v2,json=repeatedMessageV2",
+			Filename:      "fizz/buzz/test.proto",
+		}),
 	}
 	opts := cmp.Options{cmp.Comparer(func(x, y *proto2_20180125.Message_ChildMessage) bool {
 		return x == y // pointer compare messages for object identity
@@ -786,6 +816,8 @@ func TestLegactExtensions(t *testing.T) {
 		[]byte("dead\xde\xad\xbe\xefbeef"),
 		proto2_20180125.Message_ALPHA,
 		nil,
+		EnumProto2(0xdead),
+		nil,
 		new([]bool),
 		new([]int32),
 		new([]uint32),
@@ -794,6 +826,8 @@ func TestLegactExtensions(t *testing.T) {
 		new([][]byte),
 		new([]proto2_20180125.Message_ChildEnum),
 		new([]*proto2_20180125.Message_ChildMessage),
+		new([]EnumProto2),
+		new([]*EnumMessages),
 	}
 	for i, xt := range extensions {
 		var got interface{}
@@ -817,8 +851,10 @@ func TestLegactExtensions(t *testing.T) {
 	}
 
 	// Set some values and append to values to the lists.
-	m1 := &proto2_20180125.Message_ChildMessage{F1: protoV1.String("m1")}
-	m2 := &proto2_20180125.Message_ChildMessage{F1: protoV1.String("m2")}
+	m1a := &proto2_20180125.Message_ChildMessage{F1: protoV1.String("m1a")}
+	m1b := &proto2_20180125.Message_ChildMessage{F1: protoV1.String("m2b")}
+	m2a := &EnumMessages{EnumP2: EnumProto2(0x1b).Enum()}
+	m2b := &EnumMessages{EnumP2: EnumProto2(0x2b).Enum()}
 	setValues := []interface{}{
 		bool(false),
 		int32(-54321),
@@ -827,7 +863,9 @@ func TestLegactExtensions(t *testing.T) {
 		string("goodbye, \"world!\"\n"),
 		[]byte("live\xde\xad\xbe\xefchicken"),
 		proto2_20180125.Message_CHARLIE,
-		m1,
+		m1a,
+		EnumProto2(0xbeef),
+		m2a,
 		&[]bool{true},
 		&[]int32{-1000},
 		&[]uint32{1280},
@@ -835,7 +873,9 @@ func TestLegactExtensions(t *testing.T) {
 		&[]string{"zero"},
 		&[][]byte{[]byte("zero")},
 		&[]proto2_20180125.Message_ChildEnum{proto2_20180125.Message_BRAVO},
-		&[]*proto2_20180125.Message_ChildMessage{m2},
+		&[]*proto2_20180125.Message_ChildMessage{m1b},
+		&[]EnumProto2{0xdead},
+		&[]*EnumMessages{m2b},
 	}
 	for i, xt := range extensions {
 		fs.Set(xt.Number(), xt.ValueOf(setValues[i]))
@@ -854,7 +894,9 @@ func TestLegactExtensions(t *testing.T) {
 		string("goodbye, \"world!\"\n"),
 		[]byte("live\xde\xad\xbe\xefchicken"),
 		proto2_20180125.Message_ChildEnum(proto2_20180125.Message_CHARLIE),
-		m1,
+		m1a,
+		EnumProto2(0xbeef),
+		m2a,
 		&[]bool{true, false},
 		&[]int32{-1000, -54321},
 		&[]uint32{1280, 6400},
@@ -862,7 +904,9 @@ func TestLegactExtensions(t *testing.T) {
 		&[]string{"zero", "goodbye, \"world!\"\n"},
 		&[][]byte{[]byte("zero"), []byte("live\xde\xad\xbe\xefchicken")},
 		&[]proto2_20180125.Message_ChildEnum{proto2_20180125.Message_BRAVO, proto2_20180125.Message_CHARLIE},
-		&[]*proto2_20180125.Message_ChildMessage{m2, m1},
+		&[]*proto2_20180125.Message_ChildMessage{m1b, m1a},
+		&[]EnumProto2{0xdead, 0xbeef},
+		&[]*EnumMessages{m2b, m2a},
 	}
 	for i, xt := range extensions {
 		got := xt.InterfaceOf(fs.Get(xt.Number()))
@@ -872,11 +916,11 @@ func TestLegactExtensions(t *testing.T) {
 		}
 	}
 
-	if n := fs.Len(); n != 16 {
+	if n := fs.Len(); n != 20 {
 		t.Errorf("KnownFields.Len() = %v, want 0", n)
 	}
-	if n := ts.Len(); n != 16 {
-		t.Errorf("ExtensionFieldTypes.Len() = %v, want 16", n)
+	if n := ts.Len(); n != 20 {
+		t.Errorf("ExtensionFieldTypes.Len() = %v, want 20", n)
 	}
 
 	// Clear the field for all extension types.
@@ -886,8 +930,8 @@ func TestLegactExtensions(t *testing.T) {
 	if n := fs.Len(); n != 0 {
 		t.Errorf("KnownFields.Len() = %v, want 0", n)
 	}
-	if n := ts.Len(); n != 16 {
-		t.Errorf("ExtensionFieldTypes.Len() = %v, want 16", n)
+	if n := ts.Len(); n != 20 {
+		t.Errorf("ExtensionFieldTypes.Len() = %v, want 20", n)
 	}
 
 	// De-register all extension types.
