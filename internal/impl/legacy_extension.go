@@ -47,7 +47,7 @@ func (p legacyExtensionFields) Has(n pref.FieldNumber) bool {
 	}
 	t := legacyExtensionTypeOf(x.desc)
 	if t.Cardinality() == pref.Repeated {
-		return legacyExtensionValueOf(x.val, t).List().Len() > 0
+		return t.ValueOf(x.val).List().Len() > 0
 	}
 	return true
 }
@@ -63,7 +63,7 @@ func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 			// TODO: What is the zero value for Lists?
 			// TODO: This logic is racy.
 			v := t.ValueOf(t.New())
-			x.val = legacyExtensionInterfaceOf(v, t)
+			x.val = t.InterfaceOf(v)
 			p.x.Set(n, x)
 			return v
 		}
@@ -73,7 +73,7 @@ func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 		}
 		return t.Default()
 	}
-	return legacyExtensionValueOf(x.val, t)
+	return t.ValueOf(x.val)
 }
 
 func (p legacyExtensionFields) Set(n pref.FieldNumber, v pref.Value) {
@@ -82,7 +82,7 @@ func (p legacyExtensionFields) Set(n pref.FieldNumber, v pref.Value) {
 		panic("no extension descriptor registered")
 	}
 	t := legacyExtensionTypeOf(x.desc)
-	x.val = legacyExtensionInterfaceOf(v, t)
+	x.val = t.InterfaceOf(v)
 	p.x.Set(n, x)
 }
 
@@ -103,10 +103,10 @@ func (p legacyExtensionFields) Mutable(n pref.FieldNumber) pref.Mutable {
 	t := legacyExtensionTypeOf(x.desc)
 	if x.val == nil {
 		v := t.ValueOf(t.New())
-		x.val = legacyExtensionInterfaceOf(v, t)
+		x.val = t.InterfaceOf(v)
 		p.x.Set(n, x)
 	}
-	return legacyExtensionValueOf(x.val, t).Interface().(pref.Mutable)
+	return t.ValueOf(x.val).Interface().(pref.Mutable)
 }
 
 func (p legacyExtensionFields) Range(f func(pref.FieldNumber, pref.Value) bool) {
