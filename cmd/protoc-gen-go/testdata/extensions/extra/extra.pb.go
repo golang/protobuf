@@ -6,6 +6,9 @@ package extra
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -26,6 +29,25 @@ type ExtraMessage struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_ExtraMessage struct{ m *ExtraMessage }
+
+func (m *ExtraMessage) ProtoReflect() protoreflect.Message {
+	return xxx_ExtraMessage{m}
+}
+func (m xxx_ExtraMessage) Type() protoreflect.MessageType {
+	return xxx_Extra_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_ExtraMessage) KnownFields() protoreflect.KnownFields {
+	return xxx_Extra_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_ExtraMessage) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Extra_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_ExtraMessage) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_ExtraMessage) ProtoMutable() {}
 
 func (m *ExtraMessage) Reset()         { *m = ExtraMessage{} }
 func (m *ExtraMessage) String() string { return proto.CompactTextString(m) }
@@ -77,4 +99,45 @@ var fileDescriptor_496c2a5e9c1e8739 = []byte{
 	0x93, 0x73, 0x53, 0x20, 0xfc, 0x64, 0xdd, 0xf4, 0xd4, 0x3c, 0xdd, 0xf4, 0x7c, 0xfd, 0x92, 0xd4,
 	0xe2, 0x12, 0x90, 0x5e, 0x7d, 0x74, 0xc7, 0x01, 0x02, 0x00, 0x00, 0xff, 0xff, 0xcb, 0xfb, 0x31,
 	0xfc, 0xaf, 0x00, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Extra_ProtoFile_FileDesc.Messages = xxx_Extra_ProtoFile_MessageDescs[0:1]
+	var err error
+	Extra_ProtoFile, err = prototype.NewFile(&xxx_Extra_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Extra_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Extra_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "extensions/extra/extra.proto",
+	Package: "goproto.protoc.extension.extra",
+}
+var xxx_Extra_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Extra_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(ExtraMessage)
+		},
+	)},
+}
+var xxx_Extra_ProtoFile_MessageDescs = [1]prototype.Message{
+	{
+		Name: "ExtraMessage",
+		Fields: []prototype.Field{
+			{
+				Name:        "data",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "data",
+			},
+		},
+	},
 }

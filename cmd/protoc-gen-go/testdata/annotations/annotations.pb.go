@@ -6,6 +6,9 @@ package annotations
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -25,6 +28,18 @@ type AnnotationsTestEnum int32
 const (
 	AnnotationsTestEnum_ANNOTATIONS_TEST_ENUM_VALUE AnnotationsTestEnum = 0
 )
+
+type xxx_AnnotationsTestEnum AnnotationsTestEnum
+
+func (e AnnotationsTestEnum) ProtoReflect() protoreflect.Enum {
+	return (xxx_AnnotationsTestEnum)(e)
+}
+func (e xxx_AnnotationsTestEnum) Type() protoreflect.EnumType {
+	return xxx_Annotations_ProtoFile_EnumTypes[0]
+}
+func (e xxx_AnnotationsTestEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var AnnotationsTestEnum_name = map[int32]string{
 	0: "ANNOTATIONS_TEST_ENUM_VALUE",
@@ -63,6 +78,25 @@ type AnnotationsTestMessage struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_AnnotationsTestMessage struct{ m *AnnotationsTestMessage }
+
+func (m *AnnotationsTestMessage) ProtoReflect() protoreflect.Message {
+	return xxx_AnnotationsTestMessage{m}
+}
+func (m xxx_AnnotationsTestMessage) Type() protoreflect.MessageType {
+	return xxx_Annotations_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_AnnotationsTestMessage) KnownFields() protoreflect.KnownFields {
+	return xxx_Annotations_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_AnnotationsTestMessage) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Annotations_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_AnnotationsTestMessage) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_AnnotationsTestMessage) ProtoMutable() {}
 
 func (m *AnnotationsTestMessage) Reset()         { *m = AnnotationsTestMessage{} }
 func (m *AnnotationsTestMessage) String() string { return proto.CompactTextString(m) }
@@ -118,4 +152,62 @@ var fileDescriptor_21dfaf6fd39fa3b7 = []byte{
 	0x7e, 0xb2, 0x6e, 0x7a, 0x6a, 0x9e, 0x6e, 0x7a, 0xbe, 0x7e, 0x49, 0x6a, 0x71, 0x49, 0x4a, 0x62,
 	0x49, 0x22, 0xb2, 0x7f, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x40, 0xd6, 0xe5, 0x9d, 0x09, 0x01,
 	0x00, 0x00,
+}
+
+func init() {
+	xxx_Annotations_ProtoFile_FileDesc.Enums = xxx_Annotations_ProtoFile_EnumDescs[0:1]
+	xxx_Annotations_ProtoFile_FileDesc.Messages = xxx_Annotations_ProtoFile_MessageDescs[0:1]
+	var err error
+	Annotations_ProtoFile, err = prototype.NewFile(&xxx_Annotations_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Annotations_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Annotations_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "annotations/annotations.proto",
+	Package: "goproto.protoc.annotations",
+}
+var xxx_Annotations_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+	prototype.GoEnum(
+		xxx_Annotations_ProtoFile_EnumDescs[0].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return AnnotationsTestEnum(n)
+		},
+	),
+}
+var xxx_Annotations_ProtoFile_EnumDescs = [1]prototype.Enum{
+	{
+		Name: "AnnotationsTestEnum",
+		Values: []prototype.EnumValue{
+			{Name: "ANNOTATIONS_TEST_ENUM_VALUE", Number: 0},
+		},
+	},
+}
+var xxx_Annotations_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Annotations_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(AnnotationsTestMessage)
+		},
+	)},
+}
+var xxx_Annotations_ProtoFile_MessageDescs = [1]prototype.Message{
+	{
+		Name: "AnnotationsTestMessage",
+		Fields: []prototype.Field{
+			{
+				Name:        "AnnotationsTestField",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "AnnotationsTestField",
+			},
+		},
+	},
 }

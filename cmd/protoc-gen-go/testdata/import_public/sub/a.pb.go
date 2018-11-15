@@ -6,6 +6,9 @@ package sub
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -25,6 +28,18 @@ type E int32
 const (
 	E_ZERO E = 0
 )
+
+type xxx_E E
+
+func (e E) ProtoReflect() protoreflect.Enum {
+	return (xxx_E)(e)
+}
+func (e xxx_E) Type() protoreflect.EnumType {
+	return xxx_A_ProtoFile_EnumTypes[0]
+}
+func (e xxx_E) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var E_name = map[int32]string{
 	0: "ZERO",
@@ -63,6 +78,18 @@ const (
 	M_M_ZERO M_Subenum = 0
 )
 
+type xxx_M_Subenum M_Subenum
+
+func (e M_Subenum) ProtoReflect() protoreflect.Enum {
+	return (xxx_M_Subenum)(e)
+}
+func (e xxx_M_Subenum) Type() protoreflect.EnumType {
+	return xxx_A_ProtoFile_EnumTypes[1]
+}
+func (e xxx_M_Subenum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
+
 var M_Subenum_name = map[int32]string{
 	0: "M_ZERO",
 }
@@ -99,6 +126,18 @@ type M_Submessage_Submessage_Subenum int32
 const (
 	M_Submessage_M_SUBMESSAGE_ZERO M_Submessage_Submessage_Subenum = 0
 )
+
+type xxx_M_Submessage_Submessage_Subenum M_Submessage_Submessage_Subenum
+
+func (e M_Submessage_Submessage_Subenum) ProtoReflect() protoreflect.Enum {
+	return (xxx_M_Submessage_Submessage_Subenum)(e)
+}
+func (e xxx_M_Submessage_Submessage_Subenum) Type() protoreflect.EnumType {
+	return xxx_A_ProtoFile_EnumTypes[2]
+}
+func (e xxx_M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var M_Submessage_Submessage_Subenum_name = map[int32]string{
 	0: "M_SUBMESSAGE_ZERO",
@@ -146,6 +185,25 @@ type M struct {
 	XXX_unrecognized             []byte `json:"-"`
 	XXX_sizecache                int32  `json:"-"`
 }
+
+type xxx_M struct{ m *M }
+
+func (m *M) ProtoReflect() protoreflect.Message {
+	return xxx_M{m}
+}
+func (m xxx_M) Type() protoreflect.MessageType {
+	return xxx_A_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_M) KnownFields() protoreflect.KnownFields {
+	return xxx_A_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_M) UnknownFields() protoreflect.UnknownFields {
+	return xxx_A_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_M) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_M) ProtoMutable() {}
 
 func (m *M) Reset()         { *m = M{} }
 func (m *M) String() string { return proto.CompactTextString(m) }
@@ -268,6 +326,25 @@ type M_Submessage struct {
 	XXX_sizecache        int32                               `json:"-"`
 }
 
+type xxx_M_Submessage struct{ m *M_Submessage }
+
+func (m *M_Submessage) ProtoReflect() protoreflect.Message {
+	return xxx_M_Submessage{m}
+}
+func (m xxx_M_Submessage) Type() protoreflect.MessageType {
+	return xxx_A_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_M_Submessage) KnownFields() protoreflect.KnownFields {
+	return xxx_A_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_M_Submessage) UnknownFields() protoreflect.UnknownFields {
+	return xxx_A_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_M_Submessage) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_M_Submessage) ProtoMutable() {}
+
 func (m *M_Submessage) Reset()         { *m = M_Submessage{} }
 func (m *M_Submessage) String() string { return proto.CompactTextString(m) }
 func (*M_Submessage) ProtoMessage()    {}
@@ -386,4 +463,167 @@ var fileDescriptor_382f7805394b5c4e = []byte{
 	0xc0, 0x8a, 0xb6, 0xec, 0xe7, 0xe2, 0xb2, 0x16, 0xf2, 0xb2, 0x56, 0xcc, 0x08, 0x6d, 0xca, 0xdc,
 	0xe4, 0xec, 0xaf, 0xbb, 0xf6, 0x27, 0x00, 0x00, 0xff, 0xff, 0xfb, 0xa9, 0x17, 0xb5, 0xbc, 0x02,
 	0x00, 0x00,
+}
+
+func init() {
+	xxx_A_ProtoFile_FileDesc.Enums = xxx_A_ProtoFile_EnumDescs[0:1]
+	xxx_A_ProtoFile_FileDesc.Messages = xxx_A_ProtoFile_MessageDescs[0:1]
+	xxx_A_ProtoFile_MessageDescs[0].Enums = xxx_A_ProtoFile_EnumDescs[1:2]
+	xxx_A_ProtoFile_MessageDescs[0].Messages = xxx_A_ProtoFile_MessageDescs[1:2]
+	xxx_A_ProtoFile_MessageDescs[1].Enums = xxx_A_ProtoFile_EnumDescs[2:3]
+	xxx_A_ProtoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*M2)(nil))
+	var err error
+	A_ProtoFile, err = prototype.NewFile(&xxx_A_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var A_ProtoFile protoreflect.FileDescriptor
+
+var xxx_A_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "import_public/sub/a.proto",
+	Package: "goproto.protoc.import_public.sub",
+	Imports: []protoreflect.FileImport{
+		{FileDescriptor: prototype.PlaceholderFile("import_public/sub/b.proto", "goproto.protoc.import_public.sub")},
+	},
+}
+var xxx_A_ProtoFile_EnumTypes = [3]protoreflect.EnumType{
+	prototype.GoEnum(
+		xxx_A_ProtoFile_EnumDescs[0].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return E(n)
+		},
+	),
+	prototype.GoEnum(
+		xxx_A_ProtoFile_EnumDescs[1].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return M_Subenum(n)
+		},
+	),
+	prototype.GoEnum(
+		xxx_A_ProtoFile_EnumDescs[2].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return M_Submessage_Submessage_Subenum(n)
+		},
+	),
+}
+var xxx_A_ProtoFile_EnumDescs = [3]prototype.Enum{
+	{
+		Name: "E",
+		Values: []prototype.EnumValue{
+			{Name: "ZERO", Number: 0},
+		},
+	},
+	{
+		Name: "Subenum",
+		Values: []prototype.EnumValue{
+			{Name: "M_ZERO", Number: 0},
+		},
+	},
+	{
+		Name: "Submessage_Subenum",
+		Values: []prototype.EnumValue{
+			{Name: "M_SUBMESSAGE_ZERO", Number: 0},
+		},
+	},
+}
+var xxx_A_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_A_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(M)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_A_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(M_Submessage)
+		},
+	)},
+}
+var xxx_A_ProtoFile_MessageDescs = [2]prototype.Message{
+	{
+		Name: "M",
+		Fields: []prototype.Field{
+			{
+				Name:        "m2",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "m2",
+			},
+			{
+				Name:        "s",
+				Number:      4,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "s",
+				Default:     protoreflect.ValueOf(string("default")),
+			},
+			{
+				Name:        "b",
+				Number:      5,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "b",
+				Default:     protoreflect.ValueOf(("default")),
+			},
+			{
+				Name:        "f",
+				Number:      6,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "f",
+				Default:     protoreflect.ValueOf(float64(math.NaN())),
+			},
+			{
+				Name:        "oneof_int32",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "oneofInt32",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_int64",
+				Number:      3,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "oneofInt64",
+				OneofName:   "oneof_field",
+			},
+		},
+		Oneofs: []prototype.Oneof{
+			{Name: "oneof_field"},
+		},
+		ExtensionRanges: [][2]protoreflect.FieldNumber{{100, 536870912}},
+	},
+	{
+		Name: "Submessage",
+		Fields: []prototype.Field{
+			{
+				Name:        "submessage_oneof_int32",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "submessageOneofInt32",
+				OneofName:   "submessage_oneof_field",
+			},
+			{
+				Name:        "submessage_oneof_int64",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "submessageOneofInt64",
+				OneofName:   "submessage_oneof_field",
+			},
+		},
+		Oneofs: []prototype.Oneof{
+			{Name: "submessage_oneof_field"},
+		},
+	},
 }

@@ -6,6 +6,9 @@ package proto2
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -27,6 +30,25 @@ type Message struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_Message struct{ m *Message }
+
+func (m *Message) ProtoReflect() protoreflect.Message {
+	return xxx_Message{m}
+}
+func (m xxx_Message) Type() protoreflect.MessageType {
+	return xxx_Proto2_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Message) KnownFields() protoreflect.KnownFields {
+	return xxx_Proto2_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Message) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Proto2_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message) ProtoMutable() {}
 
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
@@ -85,4 +107,53 @@ var fileDescriptor_d756bbe8817c03c1 = []byte{
 	0x46, 0xfa, 0xc9, 0xb9, 0x29, 0x10, 0x7e, 0xb2, 0x6e, 0x7a, 0x6a, 0x9e, 0x6e, 0x7a, 0xbe, 0x7e,
 	0x49, 0x6a, 0x71, 0x49, 0x4a, 0x62, 0x49, 0x22, 0xd4, 0xa9, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff,
 	0x85, 0x42, 0x0d, 0x5f, 0xba, 0x00, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Proto2_ProtoFile_FileDesc.Messages = xxx_Proto2_ProtoFile_MessageDescs[0:1]
+	xxx_Proto2_ProtoFile_MessageDescs[0].Fields[1].MessageType = xxx_Proto2_ProtoFile_MessageTypes[0].Type
+	var err error
+	Proto2_ProtoFile, err = prototype.NewFile(&xxx_Proto2_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Proto2_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Proto2_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "proto2/proto2.proto",
+	Package: "goproto.protoc.proto2",
+}
+var xxx_Proto2_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Proto2_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message)
+		},
+	)},
+}
+var xxx_Proto2_ProtoFile_MessageDescs = [1]prototype.Message{
+	{
+		Name: "Message",
+		Fields: []prototype.Field{
+			{
+				Name:        "i32",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "i32",
+			},
+			{
+				Name:        "m",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "m",
+			},
+		},
+	},
 }

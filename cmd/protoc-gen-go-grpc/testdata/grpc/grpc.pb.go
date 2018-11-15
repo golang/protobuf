@@ -6,6 +6,9 @@ package grpc
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -25,6 +28,25 @@ type Request struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_Request struct{ m *Request }
+
+func (m *Request) ProtoReflect() protoreflect.Message {
+	return xxx_Request{m}
+}
+func (m xxx_Request) Type() protoreflect.MessageType {
+	return xxx_Grpc_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Request) KnownFields() protoreflect.KnownFields {
+	return xxx_Grpc_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Request) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Grpc_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Request) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Request) ProtoMutable() {}
 
 func (m *Request) Reset()         { *m = Request{} }
 func (m *Request) String() string { return proto.CompactTextString(m) }
@@ -56,6 +78,25 @@ type Response struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_Response struct{ m *Response }
+
+func (m *Response) ProtoReflect() protoreflect.Message {
+	return xxx_Response{m}
+}
+func (m xxx_Response) Type() protoreflect.MessageType {
+	return xxx_Grpc_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_Response) KnownFields() protoreflect.KnownFields {
+	return xxx_Grpc_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_Response) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Grpc_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_Response) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Response) ProtoMutable() {}
 
 func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }
@@ -105,4 +146,45 @@ var fileDescriptor_81ea47a3f88c2082 = []byte{
 	0x9e, 0x9a, 0xa7, 0x9b, 0x9e, 0xaf, 0x5f, 0x92, 0x5a, 0x5c, 0x92, 0x92, 0x58, 0x92, 0x08, 0x8e,
 	0xa6, 0x24, 0x36, 0xb0, 0xa4, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x29, 0xd5, 0xc4, 0xd0, 0xba,
 	0x01, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Grpc_ProtoFile_FileDesc.Messages = xxx_Grpc_ProtoFile_MessageDescs[0:2]
+	var err error
+	Grpc_ProtoFile, err = prototype.NewFile(&xxx_Grpc_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Grpc_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Grpc_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto3,
+	Path:    "grpc/grpc.proto",
+	Package: "goproto.protoc.grpc",
+}
+var xxx_Grpc_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Grpc_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Request)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Grpc_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Response)
+		},
+	)},
+}
+var xxx_Grpc_ProtoFile_MessageDescs = [2]prototype.Message{
+	{
+		Name: "Request",
+	},
+	{
+		Name: "Response",
+	},
 }

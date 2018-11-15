@@ -7,6 +7,9 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	sub "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/import_public/sub"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -28,6 +31,25 @@ type Local struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_Local struct{ m *Local }
+
+func (m *Local) ProtoReflect() protoreflect.Message {
+	return xxx_Local{m}
+}
+func (m xxx_Local) Type() protoreflect.MessageType {
+	return xxx_B_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Local) KnownFields() protoreflect.KnownFields {
+	return xxx_B_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Local) UnknownFields() protoreflect.UnknownFields {
+	return xxx_B_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Local) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Local) ProtoMutable() {}
 
 func (m *Local) Reset()         { *m = Local{} }
 func (m *Local) String() string { return proto.CompactTextString(m) }
@@ -87,4 +109,57 @@ var fileDescriptor_84995586b3d09710 = []byte{
 	0xb0, 0x96, 0xa4, 0xd2, 0x34, 0xfd, 0x32, 0x23, 0xfd, 0xe4, 0xdc, 0x14, 0x08, 0x3f, 0x59, 0x37,
 	0x3d, 0x35, 0x4f, 0x37, 0x3d, 0x5f, 0xbf, 0x24, 0xb5, 0xb8, 0x24, 0x25, 0xb1, 0x24, 0x51, 0x1f,
 	0xc5, 0x48, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0xcc, 0x34, 0xb9, 0xda, 0x09, 0x01, 0x00, 0x00,
+}
+
+func init() {
+	xxx_B_ProtoFile_FileDesc.Messages = xxx_B_ProtoFile_MessageDescs[0:1]
+	xxx_B_ProtoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*sub.M)(nil))
+	xxx_B_ProtoFile_MessageDescs[0].Fields[1].EnumType = protoimpl.X.EnumTypeOf(sub.E(0))
+	var err error
+	B_ProtoFile, err = prototype.NewFile(&xxx_B_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var B_ProtoFile protoreflect.FileDescriptor
+
+var xxx_B_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "import_public/b.proto",
+	Package: "goproto.protoc.import_public",
+	Imports: []protoreflect.FileImport{
+		{FileDescriptor: prototype.PlaceholderFile("import_public/sub/a.proto", "goproto.protoc.import_public.sub")},
+	},
+}
+var xxx_B_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_B_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Local)
+		},
+	)},
+}
+var xxx_B_ProtoFile_MessageDescs = [1]prototype.Message{
+	{
+		Name: "Local",
+		Fields: []prototype.Field{
+			{
+				Name:        "m",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "m",
+			},
+			{
+				Name:        "e",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "e",
+			},
+		},
+	},
 }

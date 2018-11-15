@@ -8,6 +8,9 @@ package comments
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -36,6 +39,25 @@ type Message1 struct {
 	XXX_unrecognized     []byte             `json:"-"`
 	XXX_sizecache        int32              `json:"-"`
 }
+
+type xxx_Message1 struct{ m *Message1 }
+
+func (m *Message1) ProtoReflect() protoreflect.Message {
+	return xxx_Message1{m}
+}
+func (m xxx_Message1) Type() protoreflect.MessageType {
+	return xxx_Comments_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Message1) KnownFields() protoreflect.KnownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Message1) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message1) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message1) ProtoMutable() {}
 
 func (m *Message1) Reset()         { *m = Message1{} }
 func (m *Message1) String() string { return proto.CompactTextString(m) }
@@ -107,6 +129,25 @@ type Message1_Message1A struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_Message1_Message1A struct{ m *Message1_Message1A }
+
+func (m *Message1_Message1A) ProtoReflect() protoreflect.Message {
+	return xxx_Message1_Message1A{m}
+}
+func (m xxx_Message1_Message1A) Type() protoreflect.MessageType {
+	return xxx_Comments_ProtoFile_MessageTypes[2].Type
+}
+func (m xxx_Message1_Message1A) KnownFields() protoreflect.KnownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+}
+func (m xxx_Message1_Message1A) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message1_Message1A) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message1_Message1A) ProtoMutable() {}
+
 func (m *Message1_Message1A) Reset()         { *m = Message1_Message1A{} }
 func (m *Message1_Message1A) String() string { return proto.CompactTextString(m) }
 func (*Message1_Message1A) ProtoMessage()    {}
@@ -138,6 +179,25 @@ type Message1_Message1B struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_Message1_Message1B struct{ m *Message1_Message1B }
+
+func (m *Message1_Message1B) ProtoReflect() protoreflect.Message {
+	return xxx_Message1_Message1B{m}
+}
+func (m xxx_Message1_Message1B) Type() protoreflect.MessageType {
+	return xxx_Comments_ProtoFile_MessageTypes[3].Type
+}
+func (m xxx_Message1_Message1B) KnownFields() protoreflect.KnownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[3].KnownFieldsOf(m.m)
+}
+func (m xxx_Message1_Message1B) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[3].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message1_Message1B) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message1_Message1B) ProtoMutable() {}
 
 func (m *Message1_Message1B) Reset()         { *m = Message1_Message1B{} }
 func (m *Message1_Message1B) String() string { return proto.CompactTextString(m) }
@@ -171,6 +231,25 @@ type Message2 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_Message2 struct{ m *Message2 }
+
+func (m *Message2) ProtoReflect() protoreflect.Message {
+	return xxx_Message2{m}
+}
+func (m xxx_Message2) Type() protoreflect.MessageType {
+	return xxx_Comments_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_Message2) KnownFields() protoreflect.KnownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_Message2) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message2) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message2) ProtoMutable() {}
+
 func (m *Message2) Reset()         { *m = Message2{} }
 func (m *Message2) String() string { return proto.CompactTextString(m) }
 func (*Message2) ProtoMessage()    {}
@@ -203,6 +282,25 @@ type Message2_Message2A struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_Message2_Message2A struct{ m *Message2_Message2A }
+
+func (m *Message2_Message2A) ProtoReflect() protoreflect.Message {
+	return xxx_Message2_Message2A{m}
+}
+func (m xxx_Message2_Message2A) Type() protoreflect.MessageType {
+	return xxx_Comments_ProtoFile_MessageTypes[4].Type
+}
+func (m xxx_Message2_Message2A) KnownFields() protoreflect.KnownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[4].KnownFieldsOf(m.m)
+}
+func (m xxx_Message2_Message2A) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[4].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message2_Message2A) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message2_Message2A) ProtoMutable() {}
+
 func (m *Message2_Message2A) Reset()         { *m = Message2_Message2A{} }
 func (m *Message2_Message2A) String() string { return proto.CompactTextString(m) }
 func (*Message2_Message2A) ProtoMessage()    {}
@@ -234,6 +332,25 @@ type Message2_Message2B struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_Message2_Message2B struct{ m *Message2_Message2B }
+
+func (m *Message2_Message2B) ProtoReflect() protoreflect.Message {
+	return xxx_Message2_Message2B{m}
+}
+func (m xxx_Message2_Message2B) Type() protoreflect.MessageType {
+	return xxx_Comments_ProtoFile_MessageTypes[5].Type
+}
+func (m xxx_Message2_Message2B) KnownFields() protoreflect.KnownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[5].KnownFieldsOf(m.m)
+}
+func (m xxx_Message2_Message2B) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Comments_ProtoFile_MessageTypes[5].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message2_Message2B) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message2_Message2B) ProtoMutable() {}
 
 func (m *Message2_Message2B) Reset()         { *m = Message2_Message2B{} }
 func (m *Message2_Message2B) String() string { return proto.CompactTextString(m) }
@@ -285,4 +402,103 @@ var fileDescriptor_885e8293f1fab554 = []byte{
 	0xec, 0xfa, 0xa4, 0xd2, 0x34, 0xfd, 0x32, 0x23, 0xfd, 0xe4, 0xdc, 0x14, 0x08, 0x3f, 0x59, 0x37,
 	0x3d, 0x35, 0x4f, 0x37, 0x3d, 0x5f, 0xbf, 0x24, 0xb5, 0xb8, 0x24, 0x25, 0xb1, 0x24, 0x11, 0xee,
 	0x79, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x27, 0xeb, 0x57, 0xe0, 0x10, 0x01, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Comments_ProtoFile_FileDesc.Messages = xxx_Comments_ProtoFile_MessageDescs[0:2]
+	xxx_Comments_ProtoFile_MessageDescs[0].Messages = xxx_Comments_ProtoFile_MessageDescs[2:4]
+	xxx_Comments_ProtoFile_MessageDescs[1].Messages = xxx_Comments_ProtoFile_MessageDescs[4:6]
+	var err error
+	Comments_ProtoFile, err = prototype.NewFile(&xxx_Comments_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Comments_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Comments_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "comments/comments.proto",
+	Package: "goproto.protoc.comments",
+}
+var xxx_Comments_ProtoFile_MessageTypes = [6]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Comments_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message1)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Comments_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message2)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Comments_ProtoFile_MessageDescs[2].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message1_Message1A)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Comments_ProtoFile_MessageDescs[3].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message1_Message1B)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Comments_ProtoFile_MessageDescs[4].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message2_Message2A)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Comments_ProtoFile_MessageDescs[5].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message2_Message2B)
+		},
+	)},
+}
+var xxx_Comments_ProtoFile_MessageDescs = [6]prototype.Message{
+	{
+		Name: "Message1",
+		Fields: []prototype.Field{
+			{
+				Name:        "Field1A",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "Field1A",
+			},
+			{
+				Name:        "Oneof1AField1",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "Oneof1AField1",
+				OneofName:   "Oneof1a",
+			},
+		},
+		Oneofs: []prototype.Oneof{
+			{Name: "Oneof1a"},
+		},
+	},
+	{
+		Name: "Message2",
+	},
+	{
+		Name: "Message1A",
+	},
+	{
+		Name: "Message1B",
+	},
+	{
+		Name: "Message2A",
+	},
+	{
+		Name: "Message2B",
+	},
 }

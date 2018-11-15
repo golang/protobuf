@@ -6,6 +6,9 @@ package base
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -27,6 +30,25 @@ type BaseMessage struct {
 	XXX_unrecognized             []byte `json:"-"`
 	XXX_sizecache                int32  `json:"-"`
 }
+
+type xxx_BaseMessage struct{ m *BaseMessage }
+
+func (m *BaseMessage) ProtoReflect() protoreflect.Message {
+	return xxx_BaseMessage{m}
+}
+func (m xxx_BaseMessage) Type() protoreflect.MessageType {
+	return xxx_Base_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_BaseMessage) KnownFields() protoreflect.KnownFields {
+	return xxx_Base_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_BaseMessage) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Base_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_BaseMessage) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_BaseMessage) ProtoMutable() {}
 
 func (m *BaseMessage) Reset()         { *m = BaseMessage{} }
 func (m *BaseMessage) String() string { return proto.CompactTextString(m) }
@@ -75,6 +97,25 @@ type MessageSetWireFormatMessage struct {
 	XXX_unrecognized             []byte `json:"-"`
 	XXX_sizecache                int32  `json:"-"`
 }
+
+type xxx_MessageSetWireFormatMessage struct{ m *MessageSetWireFormatMessage }
+
+func (m *MessageSetWireFormatMessage) ProtoReflect() protoreflect.Message {
+	return xxx_MessageSetWireFormatMessage{m}
+}
+func (m xxx_MessageSetWireFormatMessage) Type() protoreflect.MessageType {
+	return xxx_Base_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_MessageSetWireFormatMessage) KnownFields() protoreflect.KnownFields {
+	return xxx_Base_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_MessageSetWireFormatMessage) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Base_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_MessageSetWireFormatMessage) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_MessageSetWireFormatMessage) ProtoMutable() {}
 
 func (m *MessageSetWireFormatMessage) Reset()         { *m = MessageSetWireFormatMessage{} }
 func (m *MessageSetWireFormatMessage) String() string { return proto.CompactTextString(m) }
@@ -131,4 +172,56 @@ var fileDescriptor_aebb28f8d5a04466 = []byte{
 	0x34, 0xfd, 0x32, 0x23, 0xfd, 0xe4, 0xdc, 0x14, 0x08, 0x3f, 0x59, 0x37, 0x3d, 0x35, 0x4f, 0x37,
 	0x3d, 0x5f, 0xbf, 0x24, 0xb5, 0xb8, 0x24, 0x25, 0xb1, 0x24, 0x51, 0x1f, 0xcd, 0x5f, 0x80, 0x00,
 	0x00, 0x00, 0xff, 0xff, 0x1c, 0x75, 0xde, 0x5a, 0xe9, 0x00, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Base_ProtoFile_FileDesc.Messages = xxx_Base_ProtoFile_MessageDescs[0:2]
+	var err error
+	Base_ProtoFile, err = prototype.NewFile(&xxx_Base_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Base_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Base_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "extensions/base/base.proto",
+	Package: "goproto.protoc.extension.base",
+}
+var xxx_Base_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Base_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(BaseMessage)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Base_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(MessageSetWireFormatMessage)
+		},
+	)},
+}
+var xxx_Base_ProtoFile_MessageDescs = [2]prototype.Message{
+	{
+		Name: "BaseMessage",
+		Fields: []prototype.Field{
+			{
+				Name:        "field",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "field",
+			},
+		},
+		ExtensionRanges: [][2]protoreflect.FieldNumber{{4, 10}, {16, 536870912}},
+	},
+	{
+		Name:            "MessageSetWireFormatMessage",
+		ExtensionRanges: [][2]protoreflect.FieldNumber{{100, 2147483647}},
+	},
 }

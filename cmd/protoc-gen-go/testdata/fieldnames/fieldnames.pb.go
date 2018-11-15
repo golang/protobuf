@@ -6,6 +6,9 @@ package fieldnames
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -64,6 +67,25 @@ type Message struct {
 	XXX_unrecognized     []byte                   `json:"-"`
 	XXX_sizecache        int32                    `json:"-"`
 }
+
+type xxx_Message struct{ m *Message }
+
+func (m *Message) ProtoReflect() protoreflect.Message {
+	return xxx_Message{m}
+}
+func (m xxx_Message) Type() protoreflect.MessageType {
+	return xxx_Fieldnames_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Message) KnownFields() protoreflect.KnownFields {
+	return xxx_Fieldnames_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Message) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Fieldnames_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message) ProtoMutable() {}
 
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
@@ -289,6 +311,25 @@ type Message_OneofMessageConflict struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_Message_OneofMessageConflict struct{ m *Message_OneofMessageConflict }
+
+func (m *Message_OneofMessageConflict) ProtoReflect() protoreflect.Message {
+	return xxx_Message_OneofMessageConflict{m}
+}
+func (m xxx_Message_OneofMessageConflict) Type() protoreflect.MessageType {
+	return xxx_Fieldnames_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_Message_OneofMessageConflict) KnownFields() protoreflect.KnownFields {
+	return xxx_Fieldnames_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_Message_OneofMessageConflict) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Fieldnames_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message_OneofMessageConflict) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message_OneofMessageConflict) ProtoMutable() {}
+
 func (m *Message_OneofMessageConflict) Reset()         { *m = Message_OneofMessageConflict{} }
 func (m *Message_OneofMessageConflict) String() string { return proto.CompactTextString(m) }
 func (*Message_OneofMessageConflict) ProtoMessage()    {}
@@ -350,4 +391,183 @@ var fileDescriptor_6bbe3f70febb9403 = []byte{
 	0x26, 0x32, 0xd9, 0x2e, 0xec, 0xe6, 0xda, 0xa2, 0xbb, 0xb6, 0x14, 0x79, 0x2c, 0xfc, 0x4e, 0x7b,
 	0xfd, 0xe8, 0x2f, 0xf2, 0x2f, 0x00, 0x00, 0xff, 0xff, 0xbd, 0xee, 0x38, 0xe6, 0x3a, 0x03, 0x00,
 	0x00,
+}
+
+func init() {
+	xxx_Fieldnames_ProtoFile_FileDesc.Messages = xxx_Fieldnames_ProtoFile_MessageDescs[0:1]
+	xxx_Fieldnames_ProtoFile_MessageDescs[0].Messages = xxx_Fieldnames_ProtoFile_MessageDescs[1:2]
+	var err error
+	Fieldnames_ProtoFile, err = prototype.NewFile(&xxx_Fieldnames_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Fieldnames_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Fieldnames_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "fieldnames/fieldnames.proto",
+	Package: "goproto.protoc.fieldnames",
+}
+var xxx_Fieldnames_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Fieldnames_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Fieldnames_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message_OneofMessageConflict)
+		},
+	)},
+}
+var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
+	{
+		Name: "Message",
+		Fields: []prototype.Field{
+			{
+				Name:        "field_one",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "fieldOne",
+			},
+			{
+				Name:        "FieldTwo",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "FieldTwo",
+			},
+			{
+				Name:        "fieldThree",
+				Number:      3,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "fieldThree",
+			},
+			{
+				Name:        "field__four",
+				Number:      4,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "fieldFour",
+			},
+			{
+				Name:        "descriptor",
+				Number:      10,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "descriptor",
+			},
+			{
+				Name:        "marshal",
+				Number:      11,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "marshal",
+			},
+			{
+				Name:        "unmarshal",
+				Number:      12,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "unmarshal",
+			},
+			{
+				Name:        "proto_message",
+				Number:      13,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "protoMessage",
+			},
+			{
+				Name:        "CamelCase",
+				Number:      20,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "CamelCase",
+			},
+			{
+				Name:        "CamelCase_",
+				Number:      21,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "CamelCase",
+			},
+			{
+				Name:        "camel_case",
+				Number:      22,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "camelCase",
+			},
+			{
+				Name:        "CamelCase__",
+				Number:      23,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "CamelCase",
+			},
+			{
+				Name:        "get_name",
+				Number:      30,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "getName",
+			},
+			{
+				Name:        "name",
+				Number:      31,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "name",
+			},
+			{
+				Name:        "OneofConflictA",
+				Number:      40,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "OneofConflictA",
+				OneofName:   "oneof_conflict_a",
+			},
+			{
+				Name:        "oneof_no_conflict",
+				Number:      50,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "oneofNoConflict",
+				OneofName:   "oneof_conflict_b",
+			},
+			{
+				Name:        "OneofConflictB",
+				Number:      51,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "OneofConflictB",
+				OneofName:   "oneof_conflict_b",
+			},
+			{
+				Name:        "oneof_message_conflict",
+				Number:      60,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "oneofMessageConflict",
+				OneofName:   "oneof_conflict_c",
+			},
+		},
+		Oneofs: []prototype.Oneof{
+			{Name: "oneof_conflict_a"},
+			{Name: "oneof_conflict_b"},
+			{Name: "oneof_conflict_c"},
+		},
+	},
+	{
+		Name: "OneofMessageConflict",
+	},
 }

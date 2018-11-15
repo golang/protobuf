@@ -6,6 +6,9 @@ package proto3
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -27,6 +30,18 @@ const (
 	Enum_ONE  Enum = 1
 	Enum_TWO  Enum = 2
 )
+
+type xxx_Enum Enum
+
+func (e Enum) ProtoReflect() protoreflect.Enum {
+	return (xxx_Enum)(e)
+}
+func (e xxx_Enum) Type() protoreflect.EnumType {
+	return xxx_Enum_ProtoFile_EnumTypes[0]
+}
+func (e xxx_Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var Enum_name = map[int32]string{
 	0: "ZERO",
@@ -65,4 +80,41 @@ var fileDescriptor_b4b9b1e8d161a9a6 = []byte{
 	0xa5, 0x69, 0xfa, 0x65, 0x46, 0xfa, 0xc9, 0xb9, 0x29, 0x10, 0x7e, 0xb2, 0x6e, 0x7a, 0x6a, 0x9e,
 	0x6e, 0x7a, 0xbe, 0x7e, 0x49, 0x6a, 0x71, 0x49, 0x4a, 0x62, 0x49, 0x22, 0x44, 0xd8, 0x38, 0x89,
 	0x0d, 0x42, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x96, 0x4a, 0x7d, 0xc7, 0x99, 0x00, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Enum_ProtoFile_FileDesc.Enums = xxx_Enum_ProtoFile_EnumDescs[0:1]
+	var err error
+	Enum_ProtoFile, err = prototype.NewFile(&xxx_Enum_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Enum_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Enum_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto3,
+	Path:    "proto3/enum.proto",
+	Package: "goproto.protoc.proto3",
+}
+var xxx_Enum_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+	prototype.GoEnum(
+		xxx_Enum_ProtoFile_EnumDescs[0].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return Enum(n)
+		},
+	),
+}
+var xxx_Enum_ProtoFile_EnumDescs = [1]prototype.Enum{
+	{
+		Name: "Enum",
+		Values: []prototype.EnumValue{
+			{Name: "ZERO", Number: 0},
+			{Name: "ONE", Number: 1},
+			{Name: "TWO", Number: 2},
+		},
+	},
 }

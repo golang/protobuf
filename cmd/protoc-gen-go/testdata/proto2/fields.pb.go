@@ -6,6 +6,9 @@ package proto2
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -26,6 +29,18 @@ const (
 	FieldTestMessage_ZERO FieldTestMessage_Enum = 0
 	FieldTestMessage_ONE  FieldTestMessage_Enum = 1
 )
+
+type xxx_FieldTestMessage_Enum FieldTestMessage_Enum
+
+func (e FieldTestMessage_Enum) ProtoReflect() protoreflect.Enum {
+	return (xxx_FieldTestMessage_Enum)(e)
+}
+func (e xxx_FieldTestMessage_Enum) Type() protoreflect.EnumType {
+	return xxx_Fields_ProtoFile_EnumTypes[0]
+}
+func (e xxx_FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var FieldTestMessage_Enum_name = map[int32]string{
 	0: "ZERO",
@@ -171,6 +186,25 @@ type FieldTestMessage struct {
 	XXX_unrecognized     []byte                      `json:"-"`
 	XXX_sizecache        int32                       `json:"-"`
 }
+
+type xxx_FieldTestMessage struct{ m *FieldTestMessage }
+
+func (m *FieldTestMessage) ProtoReflect() protoreflect.Message {
+	return xxx_FieldTestMessage{m}
+}
+func (m xxx_FieldTestMessage) Type() protoreflect.MessageType {
+	return xxx_Fields_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_FieldTestMessage) KnownFields() protoreflect.KnownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_FieldTestMessage) ProtoMutable() {}
 
 func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
 func (m *FieldTestMessage) String() string { return proto.CompactTextString(m) }
@@ -1117,6 +1151,27 @@ type FieldTestMessage_OptionalGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_FieldTestMessage_OptionalGroup struct {
+	m *FieldTestMessage_OptionalGroup
+}
+
+func (m *FieldTestMessage_OptionalGroup) ProtoReflect() protoreflect.Message {
+	return xxx_FieldTestMessage_OptionalGroup{m}
+}
+func (m xxx_FieldTestMessage_OptionalGroup) Type() protoreflect.MessageType {
+	return xxx_Fields_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_FieldTestMessage_OptionalGroup) KnownFields() protoreflect.KnownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage_OptionalGroup) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage_OptionalGroup) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_FieldTestMessage_OptionalGroup) ProtoMutable() {}
+
 func (m *FieldTestMessage_OptionalGroup) Reset()         { *m = FieldTestMessage_OptionalGroup{} }
 func (m *FieldTestMessage_OptionalGroup) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage_OptionalGroup) ProtoMessage()    {}
@@ -1155,6 +1210,27 @@ type FieldTestMessage_RequiredGroup struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_FieldTestMessage_RequiredGroup struct {
+	m *FieldTestMessage_RequiredGroup
+}
+
+func (m *FieldTestMessage_RequiredGroup) ProtoReflect() protoreflect.Message {
+	return xxx_FieldTestMessage_RequiredGroup{m}
+}
+func (m xxx_FieldTestMessage_RequiredGroup) Type() protoreflect.MessageType {
+	return xxx_Fields_ProtoFile_MessageTypes[2].Type
+}
+func (m xxx_FieldTestMessage_RequiredGroup) KnownFields() protoreflect.KnownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage_RequiredGroup) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage_RequiredGroup) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_FieldTestMessage_RequiredGroup) ProtoMutable() {}
 
 func (m *FieldTestMessage_RequiredGroup) Reset()         { *m = FieldTestMessage_RequiredGroup{} }
 func (m *FieldTestMessage_RequiredGroup) String() string { return proto.CompactTextString(m) }
@@ -1195,6 +1271,27 @@ type FieldTestMessage_RepeatedGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_FieldTestMessage_RepeatedGroup struct {
+	m *FieldTestMessage_RepeatedGroup
+}
+
+func (m *FieldTestMessage_RepeatedGroup) ProtoReflect() protoreflect.Message {
+	return xxx_FieldTestMessage_RepeatedGroup{m}
+}
+func (m xxx_FieldTestMessage_RepeatedGroup) Type() protoreflect.MessageType {
+	return xxx_Fields_ProtoFile_MessageTypes[3].Type
+}
+func (m xxx_FieldTestMessage_RepeatedGroup) KnownFields() protoreflect.KnownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[3].KnownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage_RepeatedGroup) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[3].UnknownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage_RepeatedGroup) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_FieldTestMessage_RepeatedGroup) ProtoMutable() {}
+
 func (m *FieldTestMessage_RepeatedGroup) Reset()         { *m = FieldTestMessage_RepeatedGroup{} }
 func (m *FieldTestMessage_RepeatedGroup) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage_RepeatedGroup) ProtoMessage()    {}
@@ -1234,6 +1331,25 @@ type FieldTestMessage_OneofGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_FieldTestMessage_OneofGroup struct{ m *FieldTestMessage_OneofGroup }
+
+func (m *FieldTestMessage_OneofGroup) ProtoReflect() protoreflect.Message {
+	return xxx_FieldTestMessage_OneofGroup{m}
+}
+func (m xxx_FieldTestMessage_OneofGroup) Type() protoreflect.MessageType {
+	return xxx_Fields_ProtoFile_MessageTypes[7].Type
+}
+func (m xxx_FieldTestMessage_OneofGroup) KnownFields() protoreflect.KnownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[7].KnownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage_OneofGroup) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[7].UnknownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage_OneofGroup) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_FieldTestMessage_OneofGroup) ProtoMutable() {}
+
 func (m *FieldTestMessage_OneofGroup) Reset()         { *m = FieldTestMessage_OneofGroup{} }
 func (m *FieldTestMessage_OneofGroup) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage_OneofGroup) ProtoMessage()    {}
@@ -1271,6 +1387,25 @@ type FieldTestMessage_Message struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_FieldTestMessage_Message struct{ m *FieldTestMessage_Message }
+
+func (m *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
+	return xxx_FieldTestMessage_Message{m}
+}
+func (m xxx_FieldTestMessage_Message) Type() protoreflect.MessageType {
+	return xxx_Fields_ProtoFile_MessageTypes[8].Type
+}
+func (m xxx_FieldTestMessage_Message) KnownFields() protoreflect.KnownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[8].KnownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage_Message) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Fields_ProtoFile_MessageTypes[8].UnknownFieldsOf(m.m)
+}
+func (m xxx_FieldTestMessage_Message) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_FieldTestMessage_Message) ProtoMutable() {}
 
 func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
 func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }
@@ -1436,4 +1571,979 @@ var fileDescriptor_fd8a9d72b841fd68 = []byte{
 	0x6d, 0x6d, 0x9d, 0x0e, 0x3b, 0xf8, 0xf9, 0xf4, 0x6a, 0x2f, 0x49, 0xaf, 0xf6, 0xb2, 0xad, 0x3c,
 	0x99, 0xe4, 0x9d, 0x38, 0x8f, 0x31, 0xdc, 0x7a, 0x3d, 0x00, 0x00, 0xff, 0xff, 0x50, 0xd6, 0x5a,
 	0xc4, 0xe5, 0x16, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Fields_ProtoFile_FileDesc.Messages = xxx_Fields_ProtoFile_MessageDescs[0:1]
+	xxx_Fields_ProtoFile_MessageDescs[0].Enums = xxx_Fields_ProtoFile_EnumDescs[0:1]
+	xxx_Fields_ProtoFile_MessageDescs[0].Messages = xxx_Fields_ProtoFile_MessageDescs[1:9]
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[1].EnumType = xxx_Fields_ProtoFile_EnumTypes[0]
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[16].MessageType = xxx_Fields_ProtoFile_MessageTypes[8].Type
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[17].MessageType = xxx_Fields_ProtoFile_MessageTypes[1].Type
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[19].EnumType = xxx_Fields_ProtoFile_EnumTypes[0]
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[34].MessageType = xxx_Fields_ProtoFile_MessageTypes[8].Type
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[35].MessageType = xxx_Fields_ProtoFile_MessageTypes[2].Type
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[37].EnumType = xxx_Fields_ProtoFile_EnumTypes[0]
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[52].MessageType = xxx_Fields_ProtoFile_MessageTypes[8].Type
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[53].MessageType = xxx_Fields_ProtoFile_MessageTypes[3].Type
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[55].EnumType = xxx_Fields_ProtoFile_EnumTypes[0]
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[78].MessageType = xxx_Fields_ProtoFile_MessageDescs[4].Reference()
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[79].MessageType = xxx_Fields_ProtoFile_MessageDescs[5].Reference()
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[80].MessageType = xxx_Fields_ProtoFile_MessageDescs[6].Reference()
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[82].EnumType = xxx_Fields_ProtoFile_EnumTypes[0]
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[97].MessageType = xxx_Fields_ProtoFile_MessageTypes[8].Type
+	xxx_Fields_ProtoFile_MessageDescs[0].Fields[98].MessageType = xxx_Fields_ProtoFile_MessageTypes[7].Type
+	xxx_Fields_ProtoFile_MessageDescs[5].Fields[1].MessageType = xxx_Fields_ProtoFile_MessageTypes[8].Type
+	xxx_Fields_ProtoFile_MessageDescs[6].Fields[1].EnumType = xxx_Fields_ProtoFile_EnumTypes[0]
+	var err error
+	Fields_ProtoFile, err = prototype.NewFile(&xxx_Fields_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Fields_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Fields_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "proto2/fields.proto",
+	Package: "goproto.protoc.proto2",
+}
+var xxx_Fields_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+	prototype.GoEnum(
+		xxx_Fields_ProtoFile_EnumDescs[0].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return FieldTestMessage_Enum(n)
+		},
+	),
+}
+var xxx_Fields_ProtoFile_EnumDescs = [1]prototype.Enum{
+	{
+		Name: "Enum",
+		Values: []prototype.EnumValue{
+			{Name: "ZERO", Number: 0},
+			{Name: "ONE", Number: 1},
+		},
+	},
+}
+var xxx_Fields_ProtoFile_MessageTypes = [9]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Fields_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(FieldTestMessage)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Fields_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(FieldTestMessage_OptionalGroup)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Fields_ProtoFile_MessageDescs[2].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(FieldTestMessage_RequiredGroup)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Fields_ProtoFile_MessageDescs[3].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(FieldTestMessage_RepeatedGroup)
+		},
+	)},
+	{ /* no message type for FieldTestMessage_MapInt32Int64Entry */ },
+	{ /* no message type for FieldTestMessage_MapStringMessageEntry */ },
+	{ /* no message type for FieldTestMessage_MapFixed64EnumEntry */ },
+	{Type: prototype.GoMessage(
+		xxx_Fields_ProtoFile_MessageDescs[7].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(FieldTestMessage_OneofGroup)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Fields_ProtoFile_MessageDescs[8].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(FieldTestMessage_Message)
+		},
+	)},
+}
+var xxx_Fields_ProtoFile_MessageDescs = [9]prototype.Message{
+	{
+		Name: "FieldTestMessage",
+		Fields: []prototype.Field{
+			{
+				Name:        "optional_bool",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "optionalBool",
+			},
+			{
+				Name:        "optional_enum",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "optionalEnum",
+			},
+			{
+				Name:        "optional_int32",
+				Number:      3,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "optionalInt32",
+			},
+			{
+				Name:        "optional_sint32",
+				Number:      4,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sint32Kind,
+				JSONName:    "optionalSint32",
+			},
+			{
+				Name:        "optional_uint32",
+				Number:      5,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint32Kind,
+				JSONName:    "optionalUint32",
+			},
+			{
+				Name:        "optional_int64",
+				Number:      6,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "optionalInt64",
+			},
+			{
+				Name:        "optional_sint64",
+				Number:      7,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sint64Kind,
+				JSONName:    "optionalSint64",
+			},
+			{
+				Name:        "optional_uint64",
+				Number:      8,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint64Kind,
+				JSONName:    "optionalUint64",
+			},
+			{
+				Name:        "optional_sfixed32",
+				Number:      9,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed32Kind,
+				JSONName:    "optionalSfixed32",
+			},
+			{
+				Name:        "optional_fixed32",
+				Number:      10,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed32Kind,
+				JSONName:    "optionalFixed32",
+			},
+			{
+				Name:        "optional_float",
+				Number:      11,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "optionalFloat",
+			},
+			{
+				Name:        "optional_sfixed64",
+				Number:      12,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed64Kind,
+				JSONName:    "optionalSfixed64",
+			},
+			{
+				Name:        "optional_fixed64",
+				Number:      13,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed64Kind,
+				JSONName:    "optionalFixed64",
+			},
+			{
+				Name:        "optional_double",
+				Number:      14,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "optionalDouble",
+			},
+			{
+				Name:        "optional_string",
+				Number:      15,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "optionalString",
+			},
+			{
+				Name:        "optional_bytes",
+				Number:      16,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "optionalBytes",
+			},
+			{
+				Name:        "optional_Message",
+				Number:      17,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optionalMessage",
+			},
+			{
+				Name:        "optionalgroup",
+				Number:      18,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.GroupKind,
+				JSONName:    "optionalgroup",
+			},
+			{
+				Name:        "required_bool",
+				Number:      101,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "requiredBool",
+			},
+			{
+				Name:        "required_enum",
+				Number:      102,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "requiredEnum",
+			},
+			{
+				Name:        "required_int32",
+				Number:      103,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "requiredInt32",
+			},
+			{
+				Name:        "required_sint32",
+				Number:      104,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Sint32Kind,
+				JSONName:    "requiredSint32",
+			},
+			{
+				Name:        "required_uint32",
+				Number:      105,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Uint32Kind,
+				JSONName:    "requiredUint32",
+			},
+			{
+				Name:        "required_int64",
+				Number:      106,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "requiredInt64",
+			},
+			{
+				Name:        "required_sint64",
+				Number:      107,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Sint64Kind,
+				JSONName:    "requiredSint64",
+			},
+			{
+				Name:        "required_uint64",
+				Number:      108,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Uint64Kind,
+				JSONName:    "requiredUint64",
+			},
+			{
+				Name:        "required_sfixed32",
+				Number:      109,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Sfixed32Kind,
+				JSONName:    "requiredSfixed32",
+			},
+			{
+				Name:        "required_fixed32",
+				Number:      110,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Fixed32Kind,
+				JSONName:    "requiredFixed32",
+			},
+			{
+				Name:        "required_float",
+				Number:      111,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "requiredFloat",
+			},
+			{
+				Name:        "required_sfixed64",
+				Number:      112,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Sfixed64Kind,
+				JSONName:    "requiredSfixed64",
+			},
+			{
+				Name:        "required_fixed64",
+				Number:      113,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Fixed64Kind,
+				JSONName:    "requiredFixed64",
+			},
+			{
+				Name:        "required_double",
+				Number:      114,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "requiredDouble",
+			},
+			{
+				Name:        "required_string",
+				Number:      115,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "requiredString",
+			},
+			{
+				Name:        "required_bytes",
+				Number:      116,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "requiredBytes",
+			},
+			{
+				Name:        "required_Message",
+				Number:      117,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "requiredMessage",
+			},
+			{
+				Name:        "requiredgroup",
+				Number:      118,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.GroupKind,
+				JSONName:    "requiredgroup",
+			},
+			{
+				Name:        "repeated_bool",
+				Number:      201,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "repeatedBool",
+			},
+			{
+				Name:        "repeated_enum",
+				Number:      202,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "repeatedEnum",
+			},
+			{
+				Name:        "repeated_int32",
+				Number:      203,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "repeatedInt32",
+			},
+			{
+				Name:        "repeated_sint32",
+				Number:      204,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Sint32Kind,
+				JSONName:    "repeatedSint32",
+			},
+			{
+				Name:        "repeated_uint32",
+				Number:      205,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Uint32Kind,
+				JSONName:    "repeatedUint32",
+			},
+			{
+				Name:        "repeated_int64",
+				Number:      206,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "repeatedInt64",
+			},
+			{
+				Name:        "repeated_sint64",
+				Number:      207,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Sint64Kind,
+				JSONName:    "repeatedSint64",
+			},
+			{
+				Name:        "repeated_uint64",
+				Number:      208,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Uint64Kind,
+				JSONName:    "repeatedUint64",
+			},
+			{
+				Name:        "repeated_sfixed32",
+				Number:      209,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Sfixed32Kind,
+				JSONName:    "repeatedSfixed32",
+			},
+			{
+				Name:        "repeated_fixed32",
+				Number:      210,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Fixed32Kind,
+				JSONName:    "repeatedFixed32",
+			},
+			{
+				Name:        "repeated_float",
+				Number:      211,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "repeatedFloat",
+			},
+			{
+				Name:        "repeated_sfixed64",
+				Number:      212,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Sfixed64Kind,
+				JSONName:    "repeatedSfixed64",
+			},
+			{
+				Name:        "repeated_fixed64",
+				Number:      213,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Fixed64Kind,
+				JSONName:    "repeatedFixed64",
+			},
+			{
+				Name:        "repeated_double",
+				Number:      214,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "repeatedDouble",
+			},
+			{
+				Name:        "repeated_string",
+				Number:      215,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "repeatedString",
+			},
+			{
+				Name:        "repeated_bytes",
+				Number:      216,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "repeatedBytes",
+			},
+			{
+				Name:        "repeated_Message",
+				Number:      217,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "repeatedMessage",
+			},
+			{
+				Name:        "repeatedgroup",
+				Number:      218,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.GroupKind,
+				JSONName:    "repeatedgroup",
+			},
+			{
+				Name:        "default_bool",
+				Number:      301,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "defaultBool",
+				Default:     protoreflect.ValueOf(bool(true)),
+			},
+			{
+				Name:        "default_enum",
+				Number:      302,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "defaultEnum",
+				Default:     protoreflect.ValueOf(string("ONE")),
+			},
+			{
+				Name:        "default_int32",
+				Number:      303,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "defaultInt32",
+				Default:     protoreflect.ValueOf(int32(1)),
+			},
+			{
+				Name:        "default_sint32",
+				Number:      304,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sint32Kind,
+				JSONName:    "defaultSint32",
+				Default:     protoreflect.ValueOf(int32(1)),
+			},
+			{
+				Name:        "default_uint32",
+				Number:      305,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint32Kind,
+				JSONName:    "defaultUint32",
+				Default:     protoreflect.ValueOf(uint32(1)),
+			},
+			{
+				Name:        "default_int64",
+				Number:      306,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "defaultInt64",
+				Default:     protoreflect.ValueOf(int64(1)),
+			},
+			{
+				Name:        "default_sint64",
+				Number:      307,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sint64Kind,
+				JSONName:    "defaultSint64",
+				Default:     protoreflect.ValueOf(int64(1)),
+			},
+			{
+				Name:        "default_uint64",
+				Number:      308,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint64Kind,
+				JSONName:    "defaultUint64",
+				Default:     protoreflect.ValueOf(uint64(1)),
+			},
+			{
+				Name:        "default_sfixed32",
+				Number:      309,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed32Kind,
+				JSONName:    "defaultSfixed32",
+				Default:     protoreflect.ValueOf(int32(1)),
+			},
+			{
+				Name:        "default_fixed32",
+				Number:      310,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed32Kind,
+				JSONName:    "defaultFixed32",
+				Default:     protoreflect.ValueOf(uint32(1)),
+			},
+			{
+				Name:        "default_float",
+				Number:      311,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "defaultFloat",
+				Default:     protoreflect.ValueOf(float32(3.14)),
+			},
+			{
+				Name:        "default_sfixed64",
+				Number:      312,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed64Kind,
+				JSONName:    "defaultSfixed64",
+				Default:     protoreflect.ValueOf(int64(1)),
+			},
+			{
+				Name:        "default_fixed64",
+				Number:      313,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed64Kind,
+				JSONName:    "defaultFixed64",
+				Default:     protoreflect.ValueOf(uint64(1)),
+			},
+			{
+				Name:        "default_double",
+				Number:      314,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "defaultDouble",
+				Default:     protoreflect.ValueOf(float64(3.1415)),
+			},
+			{
+				Name:        "default_string",
+				Number:      315,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "defaultString",
+				Default:     protoreflect.ValueOf(string("hello,\"world!\"\n")),
+			},
+			{
+				Name:        "default_bytes",
+				Number:      316,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "defaultBytes",
+				Default:     protoreflect.ValueOf(("hello,ޭ\xbe\xef")),
+			},
+			{
+				Name:        "default_zero_string",
+				Number:      350,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "defaultZeroString",
+				Default:     protoreflect.ValueOf(string("")),
+			},
+			{
+				Name:        "default_zero_bytes",
+				Number:      351,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "defaultZeroBytes",
+				Default:     protoreflect.ValueOf(("")),
+			},
+			{
+				Name:        "default_float_neginf",
+				Number:      400,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "defaultFloatNeginf",
+				Default:     protoreflect.ValueOf(float32(math.Inf(-1))),
+			},
+			{
+				Name:        "default_float_posinf",
+				Number:      401,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "defaultFloatPosinf",
+				Default:     protoreflect.ValueOf(float32(math.Inf(+1))),
+			},
+			{
+				Name:        "default_float_nan",
+				Number:      402,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "defaultFloatNan",
+				Default:     protoreflect.ValueOf(float32(math.NaN())),
+			},
+			{
+				Name:        "default_double_neginf",
+				Number:      403,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "defaultDoubleNeginf",
+				Default:     protoreflect.ValueOf(float64(math.Inf(-1))),
+			},
+			{
+				Name:        "default_double_posinf",
+				Number:      404,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "defaultDoublePosinf",
+				Default:     protoreflect.ValueOf(float64(math.Inf(+1))),
+			},
+			{
+				Name:        "default_double_nan",
+				Number:      405,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "defaultDoubleNan",
+				Default:     protoreflect.ValueOf(float64(math.NaN())),
+			},
+			{
+				Name:        "map_int32_int64",
+				Number:      500,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "mapInt32Int64",
+			},
+			{
+				Name:        "map_string_message",
+				Number:      501,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "mapStringMessage",
+			},
+			{
+				Name:        "map_fixed64_enum",
+				Number:      502,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "mapFixed64Enum",
+			},
+			{
+				Name:        "oneof_bool",
+				Number:      601,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "oneofBool",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_enum",
+				Number:      602,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "oneofEnum",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_int32",
+				Number:      603,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "oneofInt32",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_sint32",
+				Number:      604,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sint32Kind,
+				JSONName:    "oneofSint32",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_uint32",
+				Number:      605,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint32Kind,
+				JSONName:    "oneofUint32",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_int64",
+				Number:      606,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "oneofInt64",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_sint64",
+				Number:      607,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sint64Kind,
+				JSONName:    "oneofSint64",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_uint64",
+				Number:      608,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint64Kind,
+				JSONName:    "oneofUint64",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_sfixed32",
+				Number:      609,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed32Kind,
+				JSONName:    "oneofSfixed32",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_fixed32",
+				Number:      610,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed32Kind,
+				JSONName:    "oneofFixed32",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_float",
+				Number:      611,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "oneofFloat",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_sfixed64",
+				Number:      612,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed64Kind,
+				JSONName:    "oneofSfixed64",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_fixed64",
+				Number:      613,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed64Kind,
+				JSONName:    "oneofFixed64",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_double",
+				Number:      614,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "oneofDouble",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_string",
+				Number:      615,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "oneofString",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_bytes",
+				Number:      616,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "oneofBytes",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_Message",
+				Number:      617,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "oneofMessage",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneofgroup",
+				Number:      618,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.GroupKind,
+				JSONName:    "oneofgroup",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_largest_tag",
+				Number:      536870911,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "oneofLargestTag",
+				OneofName:   "oneof_field",
+			},
+			{
+				Name:        "oneof_two_1",
+				Number:      700,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "oneofTwo1",
+				OneofName:   "oneof_two",
+			},
+			{
+				Name:        "oneof_two_2",
+				Number:      701,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "oneofTwo2",
+				OneofName:   "oneof_two",
+			},
+		},
+		Oneofs: []prototype.Oneof{
+			{Name: "oneof_field"},
+			{Name: "oneof_two"},
+		},
+	},
+	{
+		Name: "OptionalGroup",
+		Fields: []prototype.Field{
+			{
+				Name:        "optional_group",
+				Number:      19,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "optionalGroup",
+			},
+		},
+	},
+	{
+		Name: "RequiredGroup",
+		Fields: []prototype.Field{
+			{
+				Name:        "required_group",
+				Number:      119,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "requiredGroup",
+			},
+		},
+	},
+	{
+		Name: "RepeatedGroup",
+		Fields: []prototype.Field{
+			{
+				Name:        "repeated_group",
+				Number:      219,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "repeatedGroup",
+			},
+		},
+	},
+	{
+		Name: "MapInt32Int64Entry",
+		Fields: []prototype.Field{
+			{
+				Name:        "key",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "key",
+			},
+			{
+				Name:        "value",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "value",
+			},
+		},
+	},
+	{
+		Name: "MapStringMessageEntry",
+		Fields: []prototype.Field{
+			{
+				Name:        "key",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "key",
+			},
+			{
+				Name:        "value",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "value",
+			},
+		},
+	},
+	{
+		Name: "MapFixed64EnumEntry",
+		Fields: []prototype.Field{
+			{
+				Name:        "key",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed64Kind,
+				JSONName:    "key",
+			},
+			{
+				Name:        "value",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "value",
+			},
+		},
+	},
+	{
+		Name: "OneofGroup",
+		Fields: []prototype.Field{
+			{
+				Name:        "oneof_group_field",
+				Number:      619,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "oneofGroupField",
+			},
+		},
+	},
+	{
+		Name: "Message",
+	},
 }

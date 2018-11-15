@@ -6,6 +6,9 @@ package nopackage
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -25,6 +28,18 @@ type Enum int32
 const (
 	Enum_ZERO Enum = 0
 )
+
+type xxx_Enum Enum
+
+func (e Enum) ProtoReflect() protoreflect.Enum {
+	return (xxx_Enum)(e)
+}
+func (e xxx_Enum) Type() protoreflect.EnumType {
+	return xxx_Nopackage_ProtoFile_EnumTypes[0]
+}
+func (e xxx_Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var Enum_name = map[int32]string{
 	0: "ZERO",
@@ -64,6 +79,25 @@ type Message struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_Message struct{ m *Message }
+
+func (m *Message) ProtoReflect() protoreflect.Message {
+	return xxx_Message{m}
+}
+func (m xxx_Message) Type() protoreflect.MessageType {
+	return xxx_Nopackage_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Message) KnownFields() protoreflect.KnownFields {
+	return xxx_Nopackage_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Message) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Nopackage_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message) ProtoMutable() {}
 
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
@@ -124,4 +158,71 @@ var fileDescriptor_f33a1d5d178c43c9 = []byte{
 	0x20, 0xff, 0x20, 0x4e, 0x90, 0x34, 0x58, 0xad, 0x96, 0x00, 0x17, 0x0b, 0x48, 0x42, 0x88, 0x83,
 	0x0b, 0x2c, 0x25, 0xc0, 0x00, 0x08, 0x00, 0x00, 0xff, 0xff, 0x31, 0x29, 0xe4, 0xb2, 0x87, 0x00,
 	0x00, 0x00,
+}
+
+func init() {
+	xxx_Nopackage_ProtoFile_FileDesc.Enums = xxx_Nopackage_ProtoFile_EnumDescs[0:1]
+	xxx_Nopackage_ProtoFile_FileDesc.Messages = xxx_Nopackage_ProtoFile_MessageDescs[0:1]
+	xxx_Nopackage_ProtoFile_MessageDescs[0].Fields[1].EnumType = xxx_Nopackage_ProtoFile_EnumTypes[0]
+	var err error
+	Nopackage_ProtoFile, err = prototype.NewFile(&xxx_Nopackage_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Nopackage_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Nopackage_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "nopackage/nopackage.proto",
+	Package: "",
+}
+var xxx_Nopackage_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+	prototype.GoEnum(
+		xxx_Nopackage_ProtoFile_EnumDescs[0].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return Enum(n)
+		},
+	),
+}
+var xxx_Nopackage_ProtoFile_EnumDescs = [1]prototype.Enum{
+	{
+		Name: "Enum",
+		Values: []prototype.EnumValue{
+			{Name: "ZERO", Number: 0},
+		},
+	},
+}
+var xxx_Nopackage_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Nopackage_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message)
+		},
+	)},
+}
+var xxx_Nopackage_ProtoFile_MessageDescs = [1]prototype.Message{
+	{
+		Name: "Message",
+		Fields: []prototype.Field{
+			{
+				Name:        "string_field",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "stringField",
+			},
+			{
+				Name:        "enum_field",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "enumField",
+				Default:     protoreflect.ValueOf(string("ZERO")),
+			},
+		},
+	},
 }

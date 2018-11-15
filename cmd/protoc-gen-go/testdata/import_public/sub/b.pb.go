@@ -6,6 +6,9 @@ package sub
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -25,6 +28,25 @@ type M2 struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_M2 struct{ m *M2 }
+
+func (m *M2) ProtoReflect() protoreflect.Message {
+	return xxx_M2{m}
+}
+func (m xxx_M2) Type() protoreflect.MessageType {
+	return xxx_B_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_M2) KnownFields() protoreflect.KnownFields {
+	return xxx_B_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_M2) UnknownFields() protoreflect.UnknownFields {
+	return xxx_B_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_M2) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_M2) ProtoMutable() {}
 
 func (m *M2) Reset()         { *m = M2{} }
 func (m *M2) String() string { return proto.CompactTextString(m) }
@@ -68,4 +90,36 @@ var fileDescriptor_fc66afda3d7c2232 = []byte{
 	0x6e, 0x7a, 0x6a, 0x9e, 0x6e, 0x7a, 0xbe, 0x7e, 0x49, 0x6a, 0x71, 0x49, 0x4a, 0x62, 0x49, 0xa2,
 	0x3e, 0x86, 0xed, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xc7, 0x2d, 0x0b, 0x52, 0x91, 0x00, 0x00,
 	0x00,
+}
+
+func init() {
+	xxx_B_ProtoFile_FileDesc.Messages = xxx_B_ProtoFile_MessageDescs[0:1]
+	var err error
+	B_ProtoFile, err = prototype.NewFile(&xxx_B_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var B_ProtoFile protoreflect.FileDescriptor
+
+var xxx_B_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "import_public/sub/b.proto",
+	Package: "goproto.protoc.import_public.sub",
+}
+var xxx_B_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_B_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(M2)
+		},
+	)},
+}
+var xxx_B_ProtoFile_MessageDescs = [1]prototype.Message{
+	{
+		Name: "M2",
+	},
 }

@@ -182,23 +182,9 @@ type FileImports interface {
 
 // FileImport is the declaration for a proto file import.
 type FileImport struct {
-	// TODO: For FileDescriptor to be resolved, we must assume that there is
-	// a way to obtain the FileDescriptor for some dependency.
-	// How does this work for old dependencies that have not been regenerated
-	// and lack a FileDescriptor in a variable we can reference?
-	//
-	// A similar problem exists for FieldDescriptor.MessageDescriptor and
-	// FieldDescriptor.EnumDescriptor where a reference to external types
-	// is only possible if we assume that the dependency has
-	// reflection support available.
-	//
-	// Is it reasonable to assume that your dependencies have to be regenerated
-	// to have proto reflection support before you can depend on them?
-	//
-	// The decision here also affects Descriptor.IsPlaceholder
-
 	// FileDescriptor is the file type for the given import.
-	// It is a placeholder type if IsWeak is set.
+	// It is a placeholder descriptor if IsWeak is set or if a dependency has
+	// not been regenerated to implement the new reflection APIs.
 	FileDescriptor
 
 	// IsPublic reports whether this is a public import, which causes this file

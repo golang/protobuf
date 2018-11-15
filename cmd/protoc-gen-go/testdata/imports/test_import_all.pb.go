@@ -10,6 +10,9 @@ import (
 	test_a_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
 	_ "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_2"
 	test_b_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_b_1"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -34,6 +37,25 @@ type All struct {
 	XXX_unrecognized     []byte       `json:"-"`
 	XXX_sizecache        int32        `json:"-"`
 }
+
+type xxx_All struct{ m *All }
+
+func (m *All) ProtoReflect() protoreflect.Message {
+	return xxx_All{m}
+}
+func (m xxx_All) Type() protoreflect.MessageType {
+	return xxx_TestImportAll_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_All) KnownFields() protoreflect.KnownFields {
+	return xxx_TestImportAll_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_All) UnknownFields() protoreflect.UnknownFields {
+	return xxx_TestImportAll_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_All) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_All) ProtoMutable() {}
 
 func (m *All) Reset()         { *m = All{} }
 func (m *All) String() string { return proto.CompactTextString(m) }
@@ -119,4 +141,87 @@ var fileDescriptor_324466f0afc16f77 = []byte{
 	0x0f, 0xae, 0x7c, 0xac, 0xe7, 0x7e, 0xb3, 0x9b, 0xfb, 0x98, 0x0f, 0x7f, 0xb7, 0x6c, 0xf5, 0xf7,
 	0xb9, 0xd8, 0x64, 0x5f, 0x7c, 0x05, 0x00, 0x00, 0xff, 0xff, 0x88, 0x0e, 0xe2, 0x9f, 0xc7, 0x01,
 	0x00, 0x00,
+}
+
+func init() {
+	xxx_TestImportAll_ProtoFile_FileDesc.Messages = xxx_TestImportAll_ProtoFile_MessageDescs[0:1]
+	xxx_TestImportAll_ProtoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*test_a_1.M1)(nil))
+	xxx_TestImportAll_ProtoFile_MessageDescs[0].Fields[1].MessageType = protoimpl.X.MessageTypeOf((*test_a_1.M2)(nil))
+	xxx_TestImportAll_ProtoFile_MessageDescs[0].Fields[2].MessageType = protoimpl.X.MessageTypeOf((*test_b_1.M1)(nil))
+	xxx_TestImportAll_ProtoFile_MessageDescs[0].Fields[3].MessageType = protoimpl.X.MessageTypeOf((*test_b_1.M2)(nil))
+	xxx_TestImportAll_ProtoFile_MessageDescs[0].Fields[4].MessageType = protoimpl.X.MessageTypeOf((*fmt1.M)(nil))
+	var err error
+	TestImportAll_ProtoFile, err = prototype.NewFile(&xxx_TestImportAll_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var TestImportAll_ProtoFile protoreflect.FileDescriptor
+
+var xxx_TestImportAll_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto3,
+	Path:    "imports/test_import_all.proto",
+	Package: "test",
+	Imports: []protoreflect.FileImport{
+		{FileDescriptor: prototype.PlaceholderFile("imports/test_a_1/m1.proto", "test.a")},
+		{FileDescriptor: prototype.PlaceholderFile("imports/test_a_1/m2.proto", "test.a")},
+		{FileDescriptor: prototype.PlaceholderFile("imports/test_a_2/m3.proto", "test.a")},
+		{FileDescriptor: prototype.PlaceholderFile("imports/test_a_2/m4.proto", "test.a")},
+		{FileDescriptor: prototype.PlaceholderFile("imports/test_b_1/m1.proto", "test.b.part1")},
+		{FileDescriptor: prototype.PlaceholderFile("imports/test_b_1/m2.proto", "test.b.part2")},
+		{FileDescriptor: prototype.PlaceholderFile("imports/fmt/m.proto", "fmt")},
+	},
+}
+var xxx_TestImportAll_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_TestImportAll_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(All)
+		},
+	)},
+}
+var xxx_TestImportAll_ProtoFile_MessageDescs = [1]prototype.Message{
+	{
+		Name: "All",
+		Fields: []prototype.Field{
+			{
+				Name:        "am1",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "am1",
+			},
+			{
+				Name:        "am2",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "am2",
+			},
+			{
+				Name:        "bm1",
+				Number:      5,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "bm1",
+			},
+			{
+				Name:        "bm2",
+				Number:      6,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "bm2",
+			},
+			{
+				Name:        "fmt",
+				Number:      7,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "fmt",
+			},
+		},
+	},
 }

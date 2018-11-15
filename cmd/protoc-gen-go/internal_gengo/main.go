@@ -42,6 +42,8 @@ type fileInfo struct {
 	allEnums      []*protogen.Enum
 	allMessages   []*protogen.Message
 	allExtensions []*protogen.Extension
+
+	fileReflect fileReflect
 }
 
 // GenerateFile generates the contents of a .pb.go file.
@@ -53,7 +55,7 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.Generat
 	// The different order for enums and extensions is to match the output
 	// of the previous implementation.
 	//
-	// TODO: Eventually make this consistent.
+	// TODO: Eventually make this consistent (and remove fileReflect).
 	f.allEnums = append(f.allEnums, f.File.Enums...)
 	walkMessages(f.Messages, func(message *protogen.Message) {
 		f.allMessages = append(f.allMessages, message)
@@ -61,6 +63,9 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.Generat
 		f.allExtensions = append(f.allExtensions, message.Extensions...)
 	})
 	f.allExtensions = append(f.allExtensions, f.File.Extensions...)
+
+	// Initialize data structures needed for reflection.
+	f.fileReflect.init(f)
 
 	// Determine the name of the var holding the file descriptor:
 	//
@@ -121,6 +126,8 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.Generat
 
 	genInitFunction(gen, g, f)
 	genFileDescriptor(gen, g, f)
+	genReflectInitFunction(gen, g, f)
+	genReflectFileDescriptor(gen, g, f)
 }
 
 // walkMessages calls f on each message and all of its descendants.
@@ -264,6 +271,10 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	}
 	g.P(")")
 	g.P()
+
+	// Generate support for protobuf reflection.
+	genReflectEnum(gen, g, f, enum)
+
 	nameMap := enum.GoIdent.GoName + "_name"
 	g.P("var ", nameMap, " = map[int32]string{")
 	generated := make(map[protoreflect.EnumNumber]bool)
@@ -405,6 +416,9 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	g.P("XXX_sizecache int32 `json:\"-\"`")
 	g.P("}")
 	g.P()
+
+	// Generate support for protobuf reflection.
+	genReflectMessage(gen, g, f, message)
 
 	// Reset
 	g.P("func (m *", message.GoIdent, ") Reset() { *m = ", message.GoIdent, "{} }")
@@ -736,7 +750,7 @@ func extensionVar(f *protogen.File, extension *protogen.Extension) protogen.GoId
 // genInitFunction generates an init function that registers the types in the
 // generated file with the proto package.
 func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
-	if len(f.allMessages) == 0 && len(f.allEnums) == 0 && len(f.allExtensions) == 0 {
+	if len(f.allEnums)+len(f.allMessages)+len(f.allExtensions) == 0 {
 		return
 	}
 

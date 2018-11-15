@@ -6,6 +6,9 @@ package comments
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -24,6 +27,18 @@ type DeprecatedEnum int32 // Deprecated: Do not use.
 const (
 	DeprecatedEnum_DEPRECATED DeprecatedEnum = 0 // Deprecated: Do not use.
 )
+
+type xxx_DeprecatedEnum DeprecatedEnum
+
+func (e DeprecatedEnum) ProtoReflect() protoreflect.Enum {
+	return (xxx_DeprecatedEnum)(e)
+}
+func (e xxx_DeprecatedEnum) Type() protoreflect.EnumType {
+	return xxx_Deprecated_ProtoFile_EnumTypes[0]
+}
+func (e xxx_DeprecatedEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var DeprecatedEnum_name = map[int32]string{
 	0: "DEPRECATED",
@@ -48,6 +63,25 @@ type DeprecatedMessage struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_DeprecatedMessage struct{ m *DeprecatedMessage }
+
+func (m *DeprecatedMessage) ProtoReflect() protoreflect.Message {
+	return xxx_DeprecatedMessage{m}
+}
+func (m xxx_DeprecatedMessage) Type() protoreflect.MessageType {
+	return xxx_Deprecated_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_DeprecatedMessage) KnownFields() protoreflect.KnownFields {
+	return xxx_Deprecated_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_DeprecatedMessage) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Deprecated_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_DeprecatedMessage) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_DeprecatedMessage) ProtoMutable() {}
 
 func (m *DeprecatedMessage) Reset()         { *m = DeprecatedMessage{} }
 func (m *DeprecatedMessage) String() string { return proto.CompactTextString(m) }
@@ -104,4 +138,62 @@ var fileDescriptor_0336e614ee2de5f7 = []byte{
 	0xce, 0x4d, 0x81, 0xf0, 0x93, 0x75, 0xd3, 0x53, 0xf3, 0x74, 0xd3, 0xf3, 0xf5, 0x4b, 0x52, 0x8b,
 	0x4b, 0x52, 0x12, 0x4b, 0x12, 0xf5, 0x61, 0xce, 0xde, 0xc1, 0xc8, 0x98, 0xc4, 0x06, 0x56, 0x63,
 	0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x39, 0xab, 0x43, 0x93, 0xf6, 0x00, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Deprecated_ProtoFile_FileDesc.Enums = xxx_Deprecated_ProtoFile_EnumDescs[0:1]
+	xxx_Deprecated_ProtoFile_FileDesc.Messages = xxx_Deprecated_ProtoFile_MessageDescs[0:1]
+	var err error
+	Deprecated_ProtoFile, err = prototype.NewFile(&xxx_Deprecated_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Deprecated_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Deprecated_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto3,
+	Path:    "comments/deprecated.proto",
+	Package: "goproto.protoc.comments",
+}
+var xxx_Deprecated_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+	prototype.GoEnum(
+		xxx_Deprecated_ProtoFile_EnumDescs[0].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return DeprecatedEnum(n)
+		},
+	),
+}
+var xxx_Deprecated_ProtoFile_EnumDescs = [1]prototype.Enum{
+	{
+		Name: "DeprecatedEnum",
+		Values: []prototype.EnumValue{
+			{Name: "DEPRECATED", Number: 0},
+		},
+	},
+}
+var xxx_Deprecated_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Deprecated_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(DeprecatedMessage)
+		},
+	)},
+}
+var xxx_Deprecated_ProtoFile_MessageDescs = [1]prototype.Message{
+	{
+		Name: "DeprecatedMessage",
+		Fields: []prototype.Field{
+			{
+				Name:        "deprecated_field",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "deprecatedField",
+			},
+		},
+	},
 }

@@ -7,6 +7,9 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	sub "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/import_public/sub"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -70,6 +73,25 @@ type Public struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_Public struct{ m *Public }
+
+func (m *Public) ProtoReflect() protoreflect.Message {
+	return xxx_Public{m}
+}
+func (m xxx_Public) Type() protoreflect.MessageType {
+	return xxx_A_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Public) KnownFields() protoreflect.KnownFields {
+	return xxx_A_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Public) UnknownFields() protoreflect.UnknownFields {
+	return xxx_A_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Public) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Public) ProtoMutable() {}
 
 func (m *Public) Reset()         { *m = Public{} }
 func (m *Public) String() string { return proto.CompactTextString(m) }
@@ -138,4 +160,66 @@ var fileDescriptor_73b7577c95fa6b70 = []byte{
 	0x9c, 0x9b, 0x02, 0xe1, 0x27, 0xeb, 0xa6, 0xa7, 0xe6, 0xe9, 0xa6, 0xe7, 0xeb, 0x97, 0xa4, 0x16,
 	0x97, 0xa4, 0x24, 0x96, 0x24, 0xea, 0xa3, 0x18, 0x1b, 0xc0, 0x10, 0xc0, 0x08, 0x08, 0x00, 0x00,
 	0xff, 0xff, 0xfa, 0x3e, 0xda, 0xad, 0x61, 0x01, 0x00, 0x00,
+}
+
+func init() {
+	xxx_A_ProtoFile_FileDesc.Messages = xxx_A_ProtoFile_MessageDescs[0:1]
+	xxx_A_ProtoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*sub.M)(nil))
+	xxx_A_ProtoFile_MessageDescs[0].Fields[1].EnumType = protoimpl.X.EnumTypeOf(sub.E(0))
+	xxx_A_ProtoFile_MessageDescs[0].Fields[2].MessageType = protoimpl.X.MessageTypeOf((*Local)(nil))
+	var err error
+	A_ProtoFile, err = prototype.NewFile(&xxx_A_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var A_ProtoFile protoreflect.FileDescriptor
+
+var xxx_A_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "import_public/a.proto",
+	Package: "goproto.protoc.import_public",
+	Imports: []protoreflect.FileImport{
+		{FileDescriptor: prototype.PlaceholderFile("import_public/sub/a.proto", "goproto.protoc.import_public.sub"), IsPublic: true},
+		{FileDescriptor: prototype.PlaceholderFile("import_public/b.proto", "goproto.protoc.import_public"), IsPublic: true},
+	},
+}
+var xxx_A_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_A_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Public)
+		},
+	)},
+}
+var xxx_A_ProtoFile_MessageDescs = [1]prototype.Message{
+	{
+		Name: "Public",
+		Fields: []prototype.Field{
+			{
+				Name:        "m",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "m",
+			},
+			{
+				Name:        "e",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "e",
+			},
+			{
+				Name:        "local",
+				Number:      3,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "local",
+			},
+		},
+	},
 }

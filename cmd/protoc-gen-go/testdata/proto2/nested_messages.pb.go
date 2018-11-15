@@ -6,6 +6,9 @@ package proto2
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -27,6 +30,25 @@ type Layer1 struct {
 	XXX_unrecognized     []byte                `json:"-"`
 	XXX_sizecache        int32                 `json:"-"`
 }
+
+type xxx_Layer1 struct{ m *Layer1 }
+
+func (m *Layer1) ProtoReflect() protoreflect.Message {
+	return xxx_Layer1{m}
+}
+func (m xxx_Layer1) Type() protoreflect.MessageType {
+	return xxx_NestedMessages_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Layer1) KnownFields() protoreflect.KnownFields {
+	return xxx_NestedMessages_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Layer1) UnknownFields() protoreflect.UnknownFields {
+	return xxx_NestedMessages_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Layer1) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Layer1) ProtoMutable() {}
 
 func (m *Layer1) Reset()         { *m = Layer1{} }
 func (m *Layer1) String() string { return proto.CompactTextString(m) }
@@ -74,6 +96,25 @@ type Layer1_Layer2 struct {
 	XXX_sizecache        int32                 `json:"-"`
 }
 
+type xxx_Layer1_Layer2 struct{ m *Layer1_Layer2 }
+
+func (m *Layer1_Layer2) ProtoReflect() protoreflect.Message {
+	return xxx_Layer1_Layer2{m}
+}
+func (m xxx_Layer1_Layer2) Type() protoreflect.MessageType {
+	return xxx_NestedMessages_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_Layer1_Layer2) KnownFields() protoreflect.KnownFields {
+	return xxx_NestedMessages_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_Layer1_Layer2) UnknownFields() protoreflect.UnknownFields {
+	return xxx_NestedMessages_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_Layer1_Layer2) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Layer1_Layer2) ProtoMutable() {}
+
 func (m *Layer1_Layer2) Reset()         { *m = Layer1_Layer2{} }
 func (m *Layer1_Layer2) String() string { return proto.CompactTextString(m) }
 func (*Layer1_Layer2) ProtoMessage()    {}
@@ -111,6 +152,25 @@ type Layer1_Layer2_Layer3 struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_Layer1_Layer2_Layer3 struct{ m *Layer1_Layer2_Layer3 }
+
+func (m *Layer1_Layer2_Layer3) ProtoReflect() protoreflect.Message {
+	return xxx_Layer1_Layer2_Layer3{m}
+}
+func (m xxx_Layer1_Layer2_Layer3) Type() protoreflect.MessageType {
+	return xxx_NestedMessages_ProtoFile_MessageTypes[2].Type
+}
+func (m xxx_Layer1_Layer2_Layer3) KnownFields() protoreflect.KnownFields {
+	return xxx_NestedMessages_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+}
+func (m xxx_Layer1_Layer2_Layer3) UnknownFields() protoreflect.UnknownFields {
+	return xxx_NestedMessages_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+}
+func (m xxx_Layer1_Layer2_Layer3) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Layer1_Layer2_Layer3) ProtoMutable() {}
 
 func (m *Layer1_Layer2_Layer3) Reset()         { *m = Layer1_Layer2_Layer3{} }
 func (m *Layer1_Layer2_Layer3) String() string { return proto.CompactTextString(m) }
@@ -159,4 +219,84 @@ var fileDescriptor_7417ee157699d191 = []byte{
 	0x27, 0x95, 0xa6, 0xe9, 0x97, 0x19, 0xe9, 0x27, 0xe7, 0xa6, 0x40, 0xf8, 0xc9, 0xba, 0xe9, 0xa9,
 	0x79, 0xba, 0xe9, 0xf9, 0xfa, 0x25, 0xa9, 0xc5, 0x25, 0x29, 0x89, 0x25, 0x89, 0x10, 0x61, 0x23,
 	0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x11, 0x21, 0xb0, 0x06, 0x47, 0x01, 0x00, 0x00,
+}
+
+func init() {
+	xxx_NestedMessages_ProtoFile_FileDesc.Messages = xxx_NestedMessages_ProtoFile_MessageDescs[0:1]
+	xxx_NestedMessages_ProtoFile_MessageDescs[0].Messages = xxx_NestedMessages_ProtoFile_MessageDescs[1:2]
+	xxx_NestedMessages_ProtoFile_MessageDescs[1].Messages = xxx_NestedMessages_ProtoFile_MessageDescs[2:3]
+	xxx_NestedMessages_ProtoFile_MessageDescs[0].Fields[0].MessageType = xxx_NestedMessages_ProtoFile_MessageTypes[1].Type
+	xxx_NestedMessages_ProtoFile_MessageDescs[0].Fields[1].MessageType = xxx_NestedMessages_ProtoFile_MessageTypes[2].Type
+	xxx_NestedMessages_ProtoFile_MessageDescs[1].Fields[0].MessageType = xxx_NestedMessages_ProtoFile_MessageTypes[2].Type
+	var err error
+	NestedMessages_ProtoFile, err = prototype.NewFile(&xxx_NestedMessages_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var NestedMessages_ProtoFile protoreflect.FileDescriptor
+
+var xxx_NestedMessages_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "proto2/nested_messages.proto",
+	Package: "goproto.protoc.proto2",
+}
+var xxx_NestedMessages_ProtoFile_MessageTypes = [3]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_NestedMessages_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Layer1)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_NestedMessages_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Layer1_Layer2)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_NestedMessages_ProtoFile_MessageDescs[2].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Layer1_Layer2_Layer3)
+		},
+	)},
+}
+var xxx_NestedMessages_ProtoFile_MessageDescs = [3]prototype.Message{
+	{
+		Name: "Layer1",
+		Fields: []prototype.Field{
+			{
+				Name:        "l2",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "l2",
+			},
+			{
+				Name:        "l3",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "l3",
+			},
+		},
+	},
+	{
+		Name: "Layer2",
+		Fields: []prototype.Field{
+			{
+				Name:        "l3",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "l3",
+			},
+		},
+	},
+	{
+		Name: "Layer3",
+	},
 }

@@ -65,12 +65,26 @@ func (s Syntax) IsValid() bool {
 		return false
 	}
 }
+
+// String returns s as a proto source identifier.
 func (s Syntax) String() string {
 	switch s {
 	case Proto2:
 		return "proto2"
 	case Proto3:
 		return "proto3"
+	default:
+		return "<unknown>"
+	}
+}
+
+// GoString returns s as a Go source identifier.
+func (s Syntax) GoString() string {
+	switch s {
+	case Proto2:
+		return "Proto2"
+	case Proto3:
+		return "Proto3"
 	default:
 		return "<unknown>"
 	}
@@ -97,6 +111,8 @@ func (c Cardinality) IsValid() bool {
 		return false
 	}
 }
+
+// String returns c as a proto source identifier.
 func (c Cardinality) String() string {
 	switch c {
 	case Optional:
@@ -105,6 +121,20 @@ func (c Cardinality) String() string {
 		return "required"
 	case Repeated:
 		return "repeated"
+	default:
+		return "<unknown>"
+	}
+}
+
+// GoString returns c as a Go source identifier.
+func (c Cardinality) GoString() string {
+	switch c {
+	case Optional:
+		return "Optional"
+	case Required:
+		return "Required"
+	case Repeated:
+		return "Repeated"
 	default:
 		return "<unknown>"
 	}
@@ -151,6 +181,8 @@ func (k Kind) IsValid() bool {
 		return false
 	}
 }
+
+// String returns k as a proto source identifier.
 func (k Kind) String() string {
 	switch k {
 	case BoolKind:
@@ -189,6 +221,50 @@ func (k Kind) String() string {
 		return "message"
 	case GroupKind:
 		return "group"
+	default:
+		return "<unknown>"
+	}
+}
+
+// GoString returns k as a Go source identifier.
+func (k Kind) GoString() string {
+	switch k {
+	case BoolKind:
+		return "BoolKind"
+	case EnumKind:
+		return "EnumKind"
+	case Int32Kind:
+		return "Int32Kind"
+	case Sint32Kind:
+		return "Sint32Kind"
+	case Uint32Kind:
+		return "Uint32Kind"
+	case Int64Kind:
+		return "Int64Kind"
+	case Sint64Kind:
+		return "Sint64Kind"
+	case Uint64Kind:
+		return "Uint64Kind"
+	case Sfixed32Kind:
+		return "Sfixed32Kind"
+	case Fixed32Kind:
+		return "Fixed32Kind"
+	case FloatKind:
+		return "FloatKind"
+	case Sfixed64Kind:
+		return "Sfixed64Kind"
+	case Fixed64Kind:
+		return "Fixed64Kind"
+	case DoubleKind:
+		return "DoubleKind"
+	case StringKind:
+		return "StringKind"
+	case BytesKind:
+		return "BytesKind"
+	case MessageKind:
+		return "MessageKind"
+	case GroupKind:
+		return "GroupKind"
 	default:
 		return "<unknown>"
 	}

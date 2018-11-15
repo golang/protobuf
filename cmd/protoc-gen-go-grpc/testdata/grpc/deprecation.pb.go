@@ -6,6 +6,9 @@ package grpc
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -36,4 +39,25 @@ var fileDescriptor_1e7146702b7fe8c5 = []byte{
 	0x81, 0xf0, 0x93, 0x75, 0xd3, 0x53, 0xf3, 0x74, 0xd3, 0xf3, 0xf5, 0x4b, 0x52, 0x8b, 0x4b, 0x52,
 	0x12, 0x4b, 0x12, 0xc1, 0x8e, 0x4e, 0x62, 0x03, 0x4b, 0x1a, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff,
 	0x8d, 0xbe, 0xc2, 0x16, 0xf5, 0x00, 0x00, 0x00,
+}
+
+func init() {
+	var err error
+	Deprecation_ProtoFile, err = prototype.NewFile(&xxx_Deprecation_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Deprecation_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Deprecation_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto3,
+	Path:    "grpc/deprecation.proto",
+	Package: "goproto.protoc.grpc",
+	Imports: []protoreflect.FileImport{
+		{FileDescriptor: prototype.PlaceholderFile("grpc/grpc.proto", "goproto.protoc.grpc")},
+	},
 }

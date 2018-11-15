@@ -379,13 +379,14 @@ type File struct {
 	Desc  protoreflect.FileDescriptor
 	Proto *descriptorpb.FileDescriptorProto
 
-	GoPackageName GoPackageName // name of this file's Go package
-	GoImportPath  GoImportPath  // import path of this file's Go package
-	Messages      []*Message    // top-level message declarations
-	Enums         []*Enum       // top-level enum declarations
-	Extensions    []*Extension  // top-level extension declarations
-	Services      []*Service    // top-level service declarations
-	Generate      bool          // true if we should generate code for this file
+	GoDescriptorIdent GoIdent       // name of Go variable for the file descriptor
+	GoPackageName     GoPackageName // name of this file's Go package
+	GoImportPath      GoImportPath  // import path of this file's Go package
+	Messages          []*Message    // top-level message declarations
+	Enums             []*Enum       // top-level enum declarations
+	Extensions        []*Extension  // top-level extension declarations
+	Services          []*Service    // top-level service declarations
+	Generate          bool          // true if we should generate code for this file
 
 	// GeneratedFilenamePrefix is used to construct filenames for generated
 	// files associated with this source file.
@@ -428,6 +429,10 @@ func newFile(gen *Plugin, p *descriptorpb.FileDescriptorProto, packageName GoPac
 		if _, importPath := goPackageOption(p); importPath != "" {
 			prefix = path.Join(string(importPath), path.Base(prefix))
 		}
+	}
+	f.GoDescriptorIdent = GoIdent{
+		GoName:       camelCase(cleanGoName(path.Base(prefix), true)) + "_ProtoFile",
+		GoImportPath: f.GoImportPath,
 	}
 	f.GeneratedFilenamePrefix = prefix
 

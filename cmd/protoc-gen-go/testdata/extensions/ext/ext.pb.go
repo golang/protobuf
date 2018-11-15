@@ -8,6 +8,9 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	base "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/base"
 	extra "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/extra"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -27,6 +30,18 @@ type Enum int32
 const (
 	Enum_ZERO Enum = 0
 )
+
+type xxx_Enum Enum
+
+func (e Enum) ProtoReflect() protoreflect.Enum {
+	return (xxx_Enum)(e)
+}
+func (e xxx_Enum) Type() protoreflect.EnumType {
+	return xxx_Ext_ProtoFile_EnumTypes[0]
+}
+func (e xxx_Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var Enum_name = map[int32]string{
 	0: "ZERO",
@@ -66,6 +81,25 @@ type Message struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_Message struct{ m *Message }
+
+func (m *Message) ProtoReflect() protoreflect.Message {
+	return xxx_Message{m}
+}
+func (m xxx_Message) Type() protoreflect.MessageType {
+	return xxx_Ext_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Message) KnownFields() protoreflect.KnownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Message) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message) ProtoMutable() {}
+
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
 func (*Message) ProtoMessage()    {}
@@ -104,6 +138,25 @@ type Message_M struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_Message_M struct{ m *Message_M }
+
+func (m *Message_M) ProtoReflect() protoreflect.Message {
+	return xxx_Message_M{m}
+}
+func (m xxx_Message_M) Type() protoreflect.MessageType {
+	return xxx_Ext_ProtoFile_MessageTypes[6].Type
+}
+func (m xxx_Message_M) KnownFields() protoreflect.KnownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[6].KnownFieldsOf(m.m)
+}
+func (m xxx_Message_M) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[6].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message_M) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message_M) ProtoMutable() {}
+
 func (m *Message_M) Reset()         { *m = Message_M{} }
 func (m *Message_M) String() string { return proto.CompactTextString(m) }
 func (*Message_M) ProtoMessage()    {}
@@ -135,6 +188,25 @@ type ExtensionGroup struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_ExtensionGroup struct{ m *ExtensionGroup }
+
+func (m *ExtensionGroup) ProtoReflect() protoreflect.Message {
+	return xxx_ExtensionGroup{m}
+}
+func (m xxx_ExtensionGroup) Type() protoreflect.MessageType {
+	return xxx_Ext_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_ExtensionGroup) KnownFields() protoreflect.KnownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_ExtensionGroup) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_ExtensionGroup) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_ExtensionGroup) ProtoMutable() {}
 
 func (m *ExtensionGroup) Reset()         { *m = ExtensionGroup{} }
 func (m *ExtensionGroup) String() string { return proto.CompactTextString(m) }
@@ -174,6 +246,25 @@ type ExtendingMessage struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_ExtendingMessage struct{ m *ExtendingMessage }
+
+func (m *ExtendingMessage) ProtoReflect() protoreflect.Message {
+	return xxx_ExtendingMessage{m}
+}
+func (m xxx_ExtendingMessage) Type() protoreflect.MessageType {
+	return xxx_Ext_ProtoFile_MessageTypes[2].Type
+}
+func (m xxx_ExtendingMessage) KnownFields() protoreflect.KnownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+}
+func (m xxx_ExtendingMessage) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+}
+func (m xxx_ExtendingMessage) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_ExtendingMessage) ProtoMutable() {}
 
 func (m *ExtendingMessage) Reset()         { *m = ExtendingMessage{} }
 func (m *ExtendingMessage) String() string { return proto.CompactTextString(m) }
@@ -224,6 +315,27 @@ type ExtendingMessage_ExtendingMessageSubmessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_ExtendingMessage_ExtendingMessageSubmessage struct {
+	m *ExtendingMessage_ExtendingMessageSubmessage
+}
+
+func (m *ExtendingMessage_ExtendingMessageSubmessage) ProtoReflect() protoreflect.Message {
+	return xxx_ExtendingMessage_ExtendingMessageSubmessage{m}
+}
+func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) Type() protoreflect.MessageType {
+	return xxx_Ext_ProtoFile_MessageTypes[7].Type
+}
+func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) KnownFields() protoreflect.KnownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[7].KnownFieldsOf(m.m)
+}
+func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[7].UnknownFieldsOf(m.m)
+}
+func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) ProtoMutable() {}
+
 func (m *ExtendingMessage_ExtendingMessageSubmessage) Reset() {
 	*m = ExtendingMessage_ExtendingMessageSubmessage{}
 }
@@ -259,6 +371,25 @@ type RepeatedGroup struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_RepeatedGroup struct{ m *RepeatedGroup }
+
+func (m *RepeatedGroup) ProtoReflect() protoreflect.Message {
+	return xxx_RepeatedGroup{m}
+}
+func (m xxx_RepeatedGroup) Type() protoreflect.MessageType {
+	return xxx_Ext_ProtoFile_MessageTypes[3].Type
+}
+func (m xxx_RepeatedGroup) KnownFields() protoreflect.KnownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[3].KnownFieldsOf(m.m)
+}
+func (m xxx_RepeatedGroup) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[3].UnknownFieldsOf(m.m)
+}
+func (m xxx_RepeatedGroup) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_RepeatedGroup) ProtoMutable() {}
 
 func (m *RepeatedGroup) Reset()         { *m = RepeatedGroup{} }
 func (m *RepeatedGroup) String() string { return proto.CompactTextString(m) }
@@ -300,6 +431,25 @@ type Extendable struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
+type xxx_Extendable struct{ m *Extendable }
+
+func (m *Extendable) ProtoReflect() protoreflect.Message {
+	return xxx_Extendable{m}
+}
+func (m xxx_Extendable) Type() protoreflect.MessageType {
+	return xxx_Ext_ProtoFile_MessageTypes[4].Type
+}
+func (m xxx_Extendable) KnownFields() protoreflect.KnownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[4].KnownFieldsOf(m.m)
+}
+func (m xxx_Extendable) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[4].UnknownFieldsOf(m.m)
+}
+func (m xxx_Extendable) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Extendable) ProtoMutable() {}
+
 func (m *Extendable) Reset()         { *m = Extendable{} }
 func (m *Extendable) String() string { return proto.CompactTextString(m) }
 func (*Extendable) ProtoMessage()    {}
@@ -339,6 +489,27 @@ type MessageSetWireFormatExtension struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_MessageSetWireFormatExtension struct {
+	m *MessageSetWireFormatExtension
+}
+
+func (m *MessageSetWireFormatExtension) ProtoReflect() protoreflect.Message {
+	return xxx_MessageSetWireFormatExtension{m}
+}
+func (m xxx_MessageSetWireFormatExtension) Type() protoreflect.MessageType {
+	return xxx_Ext_ProtoFile_MessageTypes[5].Type
+}
+func (m xxx_MessageSetWireFormatExtension) KnownFields() protoreflect.KnownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[5].KnownFieldsOf(m.m)
+}
+func (m xxx_MessageSetWireFormatExtension) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[5].UnknownFieldsOf(m.m)
+}
+func (m xxx_MessageSetWireFormatExtension) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_MessageSetWireFormatExtension) ProtoMutable() {}
 
 func (m *MessageSetWireFormatExtension) Reset()         { *m = MessageSetWireFormatExtension{} }
 func (m *MessageSetWireFormatExtension) String() string { return proto.CompactTextString(m) }
@@ -873,4 +1044,150 @@ var fileDescriptor_bf470ef4907b23cb = []byte{
 	0xa9, 0xe9, 0xda, 0x7d, 0x06, 0x1f, 0x47, 0x93, 0xfe, 0x23, 0xb5, 0x7f, 0x31, 0xb3, 0xf8, 0xfe,
 	0xc5, 0x5d, 0x9b, 0xb8, 0x77, 0x6d, 0xaf, 0x1f, 0x92, 0x20, 0xb4, 0xcc, 0x90, 0xbd, 0x0e, 0x13,
 	0xde, 0x8f, 0x3d, 0x0b, 0x00, 0x00, 0xff, 0xff, 0xe1, 0x33, 0x5c, 0xd7, 0x84, 0x13, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Ext_ProtoFile_FileDesc.Enums = xxx_Ext_ProtoFile_EnumDescs[0:1]
+	xxx_Ext_ProtoFile_FileDesc.Messages = xxx_Ext_ProtoFile_MessageDescs[0:6]
+	xxx_Ext_ProtoFile_MessageDescs[0].Messages = xxx_Ext_ProtoFile_MessageDescs[6:7]
+	xxx_Ext_ProtoFile_MessageDescs[2].Messages = xxx_Ext_ProtoFile_MessageDescs[7:8]
+	var err error
+	Ext_ProtoFile, err = prototype.NewFile(&xxx_Ext_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Ext_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Ext_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "extensions/ext/ext.proto",
+	Package: "goproto.protoc.extension.ext",
+	Imports: []protoreflect.FileImport{
+		{FileDescriptor: prototype.PlaceholderFile("extensions/base/base.proto", "goproto.protoc.extension.base")},
+		{FileDescriptor: prototype.PlaceholderFile("extensions/extra/extra.proto", "goproto.protoc.extension.extra")},
+	},
+}
+var xxx_Ext_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+	prototype.GoEnum(
+		xxx_Ext_ProtoFile_EnumDescs[0].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return Enum(n)
+		},
+	),
+}
+var xxx_Ext_ProtoFile_EnumDescs = [1]prototype.Enum{
+	{
+		Name: "Enum",
+		Values: []prototype.EnumValue{
+			{Name: "ZERO", Number: 0},
+		},
+	},
+}
+var xxx_Ext_ProtoFile_MessageTypes = [8]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Ext_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Ext_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(ExtensionGroup)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Ext_ProtoFile_MessageDescs[2].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(ExtendingMessage)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Ext_ProtoFile_MessageDescs[3].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(RepeatedGroup)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Ext_ProtoFile_MessageDescs[4].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Extendable)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Ext_ProtoFile_MessageDescs[5].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(MessageSetWireFormatExtension)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Ext_ProtoFile_MessageDescs[6].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Message_M)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Ext_ProtoFile_MessageDescs[7].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(ExtendingMessage_ExtendingMessageSubmessage)
+		},
+	)},
+}
+var xxx_Ext_ProtoFile_MessageDescs = [8]prototype.Message{
+	{
+		Name: "Message",
+		Fields: []prototype.Field{
+			{
+				Name:        "data",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "data",
+			},
+		},
+	},
+	{
+		Name: "ExtensionGroup",
+		Fields: []prototype.Field{
+			{
+				Name:        "extension_group",
+				Number:      120,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "extensionGroup",
+			},
+		},
+	},
+	{
+		Name: "ExtendingMessage",
+	},
+	{
+		Name: "RepeatedGroup",
+		Fields: []prototype.Field{
+			{
+				Name:        "repeated_x_group",
+				Number:      319,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "repeatedXGroup",
+			},
+		},
+	},
+	{
+		Name:            "Extendable",
+		ExtensionRanges: [][2]protoreflect.FieldNumber{{1, 536870912}},
+	},
+	{
+		Name: "MessageSetWireFormatExtension",
+	},
+	{
+		Name: "M",
+	},
+	{
+		Name: "ExtendingMessageSubmessage",
+	},
 }

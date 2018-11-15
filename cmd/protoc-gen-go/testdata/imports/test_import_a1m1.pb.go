@@ -7,6 +7,9 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	test_a_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -27,6 +30,25 @@ type A1M1 struct {
 	XXX_unrecognized     []byte       `json:"-"`
 	XXX_sizecache        int32        `json:"-"`
 }
+
+type xxx_A1M1 struct{ m *A1M1 }
+
+func (m *A1M1) ProtoReflect() protoreflect.Message {
+	return xxx_A1M1{m}
+}
+func (m xxx_A1M1) Type() protoreflect.MessageType {
+	return xxx_TestImportA1M1_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_A1M1) KnownFields() protoreflect.KnownFields {
+	return xxx_TestImportA1M1_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_A1M1) UnknownFields() protoreflect.UnknownFields {
+	return xxx_TestImportA1M1_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_A1M1) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_A1M1) ProtoMutable() {}
 
 func (m *A1M1) Reset()         { *m = A1M1{} }
 func (m *A1M1) String() string { return proto.CompactTextString(m) }
@@ -78,4 +100,49 @@ var fileDescriptor_3b904a47327455f3 = []byte{
 	0x8c, 0x64, 0xdd, 0xf4, 0xd4, 0x3c, 0xdd, 0xf4, 0x7c, 0xb0, 0xf9, 0x29, 0x89, 0x25, 0x89, 0xfa,
 	0x50, 0x0b, 0x93, 0xd8, 0xc0, 0xf2, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x84, 0x2f, 0x18,
 	0x23, 0xa8, 0x00, 0x00, 0x00,
+}
+
+func init() {
+	xxx_TestImportA1M1_ProtoFile_FileDesc.Messages = xxx_TestImportA1M1_ProtoFile_MessageDescs[0:1]
+	xxx_TestImportA1M1_ProtoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*test_a_1.M1)(nil))
+	var err error
+	TestImportA1M1_ProtoFile, err = prototype.NewFile(&xxx_TestImportA1M1_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var TestImportA1M1_ProtoFile protoreflect.FileDescriptor
+
+var xxx_TestImportA1M1_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto3,
+	Path:    "imports/test_import_a1m1.proto",
+	Package: "test",
+	Imports: []protoreflect.FileImport{
+		{FileDescriptor: prototype.PlaceholderFile("imports/test_a_1/m1.proto", "test.a")},
+	},
+}
+var xxx_TestImportA1M1_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_TestImportA1M1_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(A1M1)
+		},
+	)},
+}
+var xxx_TestImportA1M1_ProtoFile_MessageDescs = [1]prototype.Message{
+	{
+		Name: "A1M1",
+		Fields: []prototype.Field{
+			{
+				Name:        "f",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "f",
+			},
+		},
+	},
 }

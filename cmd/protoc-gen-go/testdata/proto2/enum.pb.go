@@ -6,6 +6,9 @@ package proto2
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
 
@@ -29,6 +32,18 @@ const (
 	// EnumType1_TWO comment.
 	EnumType1_TWO EnumType1 = 2
 )
+
+type xxx_EnumType1 EnumType1
+
+func (e EnumType1) ProtoReflect() protoreflect.Enum {
+	return (xxx_EnumType1)(e)
+}
+func (e xxx_EnumType1) Type() protoreflect.EnumType {
+	return xxx_Enum_ProtoFile_EnumTypes[0]
+}
+func (e xxx_EnumType1) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var EnumType1_name = map[int32]string{
 	1: "ONE",
@@ -69,6 +84,18 @@ const (
 	EnumType2_duplicate1 EnumType2 = 1
 	EnumType2_duplicate2 EnumType2 = 1
 )
+
+type xxx_EnumType2 EnumType2
+
+func (e EnumType2) ProtoReflect() protoreflect.Enum {
+	return (xxx_EnumType2)(e)
+}
+func (e xxx_EnumType2) Type() protoreflect.EnumType {
+	return xxx_Enum_ProtoFile_EnumTypes[1]
+}
+func (e xxx_EnumType2) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var EnumType2_name = map[int32]string{
 	1: "duplicate1",
@@ -111,6 +138,18 @@ const (
 	EnumContainerMessage1_NESTED_1A_VALUE EnumContainerMessage1_NestedEnumType1A = 0
 )
 
+type xxx_EnumContainerMessage1_NestedEnumType1A EnumContainerMessage1_NestedEnumType1A
+
+func (e EnumContainerMessage1_NestedEnumType1A) ProtoReflect() protoreflect.Enum {
+	return (xxx_EnumContainerMessage1_NestedEnumType1A)(e)
+}
+func (e xxx_EnumContainerMessage1_NestedEnumType1A) Type() protoreflect.EnumType {
+	return xxx_Enum_ProtoFile_EnumTypes[2]
+}
+func (e xxx_EnumContainerMessage1_NestedEnumType1A) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
+
 var EnumContainerMessage1_NestedEnumType1A_name = map[int32]string{
 	0: "NESTED_1A_VALUE",
 }
@@ -147,6 +186,18 @@ type EnumContainerMessage1_NestedEnumType1B int32
 const (
 	EnumContainerMessage1_NESTED_1B_VALUE EnumContainerMessage1_NestedEnumType1B = 0
 )
+
+type xxx_EnumContainerMessage1_NestedEnumType1B EnumContainerMessage1_NestedEnumType1B
+
+func (e EnumContainerMessage1_NestedEnumType1B) ProtoReflect() protoreflect.Enum {
+	return (xxx_EnumContainerMessage1_NestedEnumType1B)(e)
+}
+func (e xxx_EnumContainerMessage1_NestedEnumType1B) Type() protoreflect.EnumType {
+	return xxx_Enum_ProtoFile_EnumTypes[3]
+}
+func (e xxx_EnumContainerMessage1_NestedEnumType1B) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var EnumContainerMessage1_NestedEnumType1B_name = map[int32]string{
 	0: "NESTED_1B_VALUE",
@@ -187,6 +238,18 @@ const (
 	EnumContainerMessage1_EnumContainerMessage2_NESTED_2A_VALUE EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A = 0
 )
 
+type xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A
+
+func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) ProtoReflect() protoreflect.Enum {
+	return (xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A)(e)
+}
+func (e xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Type() protoreflect.EnumType {
+	return xxx_Enum_ProtoFile_EnumTypes[4]
+}
+func (e xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
+
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_name = map[int32]string{
 	0: "NESTED_2A_VALUE",
 }
@@ -223,6 +286,18 @@ type EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B int32
 const (
 	EnumContainerMessage1_EnumContainerMessage2_NESTED_2B_VALUE EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B = 0
 )
+
+type xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B
+
+func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) ProtoReflect() protoreflect.Enum {
+	return (xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B)(e)
+}
+func (e xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Type() protoreflect.EnumType {
+	return xxx_Enum_ProtoFile_EnumTypes[5]
+}
+func (e xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_name = map[int32]string{
 	0: "NESTED_2B_VALUE",
@@ -262,6 +337,25 @@ type EnumContainerMessage1 struct {
 	XXX_unrecognized     []byte     `json:"-"`
 	XXX_sizecache        int32      `json:"-"`
 }
+
+type xxx_EnumContainerMessage1 struct{ m *EnumContainerMessage1 }
+
+func (m *EnumContainerMessage1) ProtoReflect() protoreflect.Message {
+	return xxx_EnumContainerMessage1{m}
+}
+func (m xxx_EnumContainerMessage1) Type() protoreflect.MessageType {
+	return xxx_Enum_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_EnumContainerMessage1) KnownFields() protoreflect.KnownFields {
+	return xxx_Enum_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_EnumContainerMessage1) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Enum_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_EnumContainerMessage1) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_EnumContainerMessage1) ProtoMutable() {}
 
 func (m *EnumContainerMessage1) Reset()         { *m = EnumContainerMessage1{} }
 func (m *EnumContainerMessage1) String() string { return proto.CompactTextString(m) }
@@ -310,6 +404,27 @@ type EnumContainerMessage1_EnumContainerMessage2 struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_EnumContainerMessage1_EnumContainerMessage2 struct {
+	m *EnumContainerMessage1_EnumContainerMessage2
+}
+
+func (m *EnumContainerMessage1_EnumContainerMessage2) ProtoReflect() protoreflect.Message {
+	return xxx_EnumContainerMessage1_EnumContainerMessage2{m}
+}
+func (m xxx_EnumContainerMessage1_EnumContainerMessage2) Type() protoreflect.MessageType {
+	return xxx_Enum_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_EnumContainerMessage1_EnumContainerMessage2) KnownFields() protoreflect.KnownFields {
+	return xxx_Enum_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_EnumContainerMessage1_EnumContainerMessage2) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Enum_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_EnumContainerMessage1_EnumContainerMessage2) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_EnumContainerMessage1_EnumContainerMessage2) ProtoMutable() {}
 
 func (m *EnumContainerMessage1_EnumContainerMessage2) Reset() {
 	*m = EnumContainerMessage1_EnumContainerMessage2{}
@@ -374,4 +489,147 @@ var fileDescriptor_de9f68860d540858 = []byte{
 	0x2b, 0x56, 0x6e, 0x74, 0xe3, 0xb6, 0xec, 0x15, 0x58, 0x94, 0xc5, 0x55, 0x1f, 0xcd, 0x94, 0xd4,
 	0x33, 0x65, 0x98, 0x95, 0x85, 0x8d, 0x85, 0x15, 0xd5, 0x18, 0x3e, 0x02, 0x00, 0x00, 0xff, 0xff,
 	0x26, 0xf5, 0x57, 0x52, 0x4e, 0x02, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Enum_ProtoFile_FileDesc.Enums = xxx_Enum_ProtoFile_EnumDescs[0:2]
+	xxx_Enum_ProtoFile_FileDesc.Messages = xxx_Enum_ProtoFile_MessageDescs[0:1]
+	xxx_Enum_ProtoFile_MessageDescs[0].Enums = xxx_Enum_ProtoFile_EnumDescs[2:4]
+	xxx_Enum_ProtoFile_MessageDescs[0].Messages = xxx_Enum_ProtoFile_MessageDescs[1:2]
+	xxx_Enum_ProtoFile_MessageDescs[1].Enums = xxx_Enum_ProtoFile_EnumDescs[4:6]
+	xxx_Enum_ProtoFile_MessageDescs[0].Fields[0].EnumType = xxx_Enum_ProtoFile_EnumTypes[1]
+	xxx_Enum_ProtoFile_MessageDescs[0].Fields[1].EnumType = xxx_Enum_ProtoFile_EnumTypes[1]
+	var err error
+	Enum_ProtoFile, err = prototype.NewFile(&xxx_Enum_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Enum_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Enum_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "proto2/enum.proto",
+	Package: "goproto.protoc.proto2",
+}
+var xxx_Enum_ProtoFile_EnumTypes = [6]protoreflect.EnumType{
+	prototype.GoEnum(
+		xxx_Enum_ProtoFile_EnumDescs[0].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return EnumType1(n)
+		},
+	),
+	prototype.GoEnum(
+		xxx_Enum_ProtoFile_EnumDescs[1].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return EnumType2(n)
+		},
+	),
+	prototype.GoEnum(
+		xxx_Enum_ProtoFile_EnumDescs[2].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return EnumContainerMessage1_NestedEnumType1A(n)
+		},
+	),
+	prototype.GoEnum(
+		xxx_Enum_ProtoFile_EnumDescs[3].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return EnumContainerMessage1_NestedEnumType1B(n)
+		},
+	),
+	prototype.GoEnum(
+		xxx_Enum_ProtoFile_EnumDescs[4].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A(n)
+		},
+	),
+	prototype.GoEnum(
+		xxx_Enum_ProtoFile_EnumDescs[5].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B(n)
+		},
+	),
+}
+var xxx_Enum_ProtoFile_EnumDescs = [6]prototype.Enum{
+	{
+		Name: "EnumType1",
+		Values: []prototype.EnumValue{
+			{Name: "ONE", Number: 1},
+			{Name: "TWO", Number: 2},
+		},
+	},
+	{
+		Name: "EnumType2",
+		Values: []prototype.EnumValue{
+			{Name: "duplicate1", Number: 1},
+			{Name: "duplicate2", Number: 1},
+		},
+	},
+	{
+		Name: "NestedEnumType1A",
+		Values: []prototype.EnumValue{
+			{Name: "NESTED_1A_VALUE", Number: 0},
+		},
+	},
+	{
+		Name: "NestedEnumType1B",
+		Values: []prototype.EnumValue{
+			{Name: "NESTED_1B_VALUE", Number: 0},
+		},
+	},
+	{
+		Name: "NestedEnumType2A",
+		Values: []prototype.EnumValue{
+			{Name: "NESTED_2A_VALUE", Number: 0},
+		},
+	},
+	{
+		Name: "NestedEnumType2B",
+		Values: []prototype.EnumValue{
+			{Name: "NESTED_2B_VALUE", Number: 0},
+		},
+	},
+}
+var xxx_Enum_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Enum_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(EnumContainerMessage1)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Enum_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(EnumContainerMessage1_EnumContainerMessage2)
+		},
+	)},
+}
+var xxx_Enum_ProtoFile_MessageDescs = [2]prototype.Message{
+	{
+		Name: "EnumContainerMessage1",
+		Fields: []prototype.Field{
+			{
+				Name:        "default_duplicate1",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "defaultDuplicate1",
+				Default:     protoreflect.ValueOf(string("duplicate1")),
+			},
+			{
+				Name:        "default_duplicate2",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "defaultDuplicate2",
+				Default:     protoreflect.ValueOf(string("duplicate2")),
+			},
+		},
+	},
+	{
+		Name: "EnumContainerMessage2",
+	},
 }
