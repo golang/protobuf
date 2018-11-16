@@ -1,3 +1,7 @@
+// Copyright 2018 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package protogen
 
 import (
@@ -12,6 +16,7 @@ import (
 )
 
 // A GoIdent is a Go identifier, consisting of a name and import path.
+// The name is a single identifier and may not be a dot-qualified selector.
 type GoIdent struct {
 	GoName       string
 	GoImportPath GoImportPath
