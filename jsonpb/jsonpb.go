@@ -67,6 +67,9 @@ type Marshaler struct {
 	// Whether to render fields with zero values.
 	EmitDefaults bool
 
+	// Whether to suppress composite fields with zero values when EmitDefaults is true.
+	SuppressCompositeDefaults bool
+
 	// A string to indent each level by. The presence of this field will
 	// also cause a space to appear between the field separator and
 	// value, and for newlines to be appear between fields and array
@@ -133,6 +136,10 @@ func (m *Marshaler) Marshal(out io.Writer, pb proto.Message) error {
 	// Check for unset required fields first.
 	if err := checkRequiredFields(pb); err != nil {
 		return err
+	}
+	// Require proper flag combination
+	if !m.EmitDefaults && m.SuppressCompositeDefaults {
+		return errors.New("EmitDefaults must be true when SuppressCompositeDefaults is true")
 	}
 	writer := &errWriter{writer: out}
 	return m.marshalObject(writer, pb, "", "")
@@ -312,6 +319,13 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 				if value.Len() == 0 {
 					continue
 				}
+			case reflect.Map, reflect.Ptr, reflect.Slice:
+				if value.IsNil() {
+					continue
+				}
+			}
+		} else if m.SuppressCompositeDefaults {
+			switch value.Kind() {
 			case reflect.Map, reflect.Ptr, reflect.Slice:
 				if value.IsNil() {
 					continue

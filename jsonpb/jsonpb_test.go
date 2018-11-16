@@ -441,6 +441,9 @@ var marshalingTests = []struct {
 	{"empty repeated emitted", Marshaler{EmitDefaults: true}, &pb.SimpleSlice3{}, `{"slices":[]}`},
 	{"empty map emitted", Marshaler{EmitDefaults: true}, &pb.SimpleMap3{}, `{"stringy":{}}`},
 	{"nested struct null", Marshaler{EmitDefaults: true}, &pb.SimpleNull3{}, `{"simple":null}`},
+	{"empty repeated emitted when suppressed", Marshaler{EmitDefaults: true, SuppressCompositeDefaults: true}, &pb.SimpleSlice3{}, `{}`},
+	{"empty map emitted when suppressed", Marshaler{EmitDefaults: true, SuppressCompositeDefaults: true}, &pb.SimpleMap3{}, `{}`},
+	{"nested struct null when suppressed", Marshaler{EmitDefaults: true, SuppressCompositeDefaults: true}, &pb.SimpleNull3{}, `{}`},
 	{"map<int64, int32>", marshaler, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, `{"nummy":{"1":2,"3":4}}`},
 	{"map<int64, int32>", marshalerAllOptions, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, nummyPrettyJSON},
 	{"map<string, string>", marshaler,
@@ -541,6 +544,14 @@ func TestMarshalingNil(t *testing.T) {
 	m := &Marshaler{}
 	if _, err := m.MarshalToString(msg); err == nil {
 		t.Errorf("mashaling nil returned no error")
+	}
+}
+
+func TestMarshalingSuppressedCompositeWithoutEmitDefaults(t *testing.T) {
+	msg := &pb.Simple{}
+	m := &Marshaler{EmitDefaults: false, SuppressCompositeDefaults: true}
+	if _, err := m.MarshalToString(msg); err == nil {
+		t.Errorf("marshaling with suppressed composites without emit defaults returned no error")
 	}
 }
 
