@@ -748,11 +748,8 @@ func newEnumValue(gen *Plugin, f *File, message *Message, enum *Enum, desc proto
 	}
 	name := parentIdent.GoName + "_" + string(desc.Name())
 	return &EnumValue{
-		Desc: desc,
-		GoIdent: GoIdent{
-			GoName:       name,
-			GoImportPath: f.GoImportPath,
-		},
+		Desc:     desc,
+		GoIdent:  f.GoImportPath.Ident(name),
 		Location: enum.Location.appendPath(enumValueField, int32(desc.Index())),
 	}
 }

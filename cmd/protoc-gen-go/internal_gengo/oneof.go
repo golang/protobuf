@@ -81,14 +81,8 @@ func oneofInterfaceName(oneof *protogen.Oneof) string {
 
 // genOneofFuncs generates the XXX_OneofFuncs method for a message.
 func genOneofFuncs(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message) {
-	protoMessage := g.QualifiedGoIdent(protogen.GoIdent{
-		GoImportPath: protoPackage,
-		GoName:       "Message",
-	})
-	protoBuffer := g.QualifiedGoIdent(protogen.GoIdent{
-		GoImportPath: protoPackage,
-		GoName:       "Buffer",
-	})
+	protoMessage := g.QualifiedGoIdent(protoPackage.Ident("Message"))
+	protoBuffer := g.QualifiedGoIdent(protoPackage.Ident("Buffer"))
 	encFunc := "_" + message.GoIdent.GoName + "_OneofMarshaler"
 	decFunc := "_" + message.GoIdent.GoName + "_OneofUnmarshaler"
 	sizeFunc := "_" + message.GoIdent.GoName + "_OneofSizer"
@@ -120,10 +114,7 @@ func genOneofFuncs(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo,
 		}
 		g.P("case nil:")
 		g.P("default:")
-		g.P("return ", protogen.GoIdent{
-			GoImportPath: "fmt",
-			GoName:       "Errorf",
-		}, `("`, message.GoIdent.GoName, ".", oneofFieldName(oneof), ` has unexpected type %T", x)`)
+		g.P("return ", fmtPackage.Ident("Errorf"), `("`, message.GoIdent.GoName, ".", oneofFieldName(oneof), ` has unexpected type %T", x)`)
 		g.P("}")
 	}
 	g.P("return nil")
@@ -156,10 +147,7 @@ func genOneofFuncs(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo,
 		}
 		g.P("case nil:")
 		g.P("default:")
-		g.P("panic(", protogen.GoIdent{
-			GoImportPath: "fmt",
-			GoName:       "Sprintf",
-		}, `("proto: unexpected type %T in oneof", x))`)
+		g.P("panic(", fmtPackage.Ident("Sprintf"), `("proto: unexpected type %T in oneof", x))`)
 		g.P("}")
 	}
 	g.P("return n")
@@ -171,10 +159,7 @@ func genOneofFuncs(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo,
 func genOneofFieldMarshal(g *protogen.GeneratedFile, field *protogen.Field) {
 	g.P("case *", fieldOneofType(field), ":")
 	encodeTag := func(wireType string) {
-		g.P("b.EncodeVarint(", field.Desc.Number(), "<<3|", protogen.GoIdent{
-			GoImportPath: protoPackage,
-			GoName:       wireType,
-		}, ")")
+		g.P("b.EncodeVarint(", field.Desc.Number(), "<<3|", protoPackage.Ident(wireType), ")")
 	}
 	switch field.Desc.Kind() {
 	case protoreflect.BoolKind:
@@ -196,19 +181,13 @@ func genOneofFieldMarshal(g *protogen.GeneratedFile, field *protogen.Field) {
 		g.P("b.EncodeFixed32(uint64(x.", field.GoName, "))")
 	case protoreflect.FloatKind:
 		encodeTag("WireFixed32")
-		g.P("b.EncodeFixed32(uint64(", protogen.GoIdent{
-			GoImportPath: "math",
-			GoName:       "Float32bits",
-		}, "(x.", field.GoName, ")))")
+		g.P("b.EncodeFixed32(uint64(", mathPackage.Ident("Float32bits"), "(x.", field.GoName, ")))")
 	case protoreflect.Sfixed64Kind, protoreflect.Fixed64Kind:
 		encodeTag("WireFixed64")
 		g.P("b.EncodeFixed64(uint64(x.", field.GoName, "))")
 	case protoreflect.DoubleKind:
 		encodeTag("WireFixed64")
-		g.P("b.EncodeFixed64(", protogen.GoIdent{
-			GoImportPath: "math",
-			GoName:       "Float64bits",
-		}, "(x.", field.GoName, "))")
+		g.P("b.EncodeFixed64(", mathPackage.Ident("Float64bits"), "(x.", field.GoName, "))")
 	case protoreflect.StringKind:
 		encodeTag("WireBytes")
 		g.P("b.EncodeStringBytes(x.", field.GoName, ")")
@@ -234,14 +213,8 @@ func genOneofFieldUnmarshal(g *protogen.GeneratedFile, field *protogen.Field) {
 	oneof := field.OneofType
 	g.P("case ", field.Desc.Number(), ": // ", oneof.Desc.Name(), ".", field.Desc.Name())
 	checkTag := func(wireType string) {
-		g.P("if wire != ", protogen.GoIdent{
-			GoImportPath: protoPackage,
-			GoName:       wireType,
-		}, " {")
-		g.P("return true, ", protogen.GoIdent{
-			GoImportPath: protoPackage,
-			GoName:       "ErrInternalBadWireType",
-		})
+		g.P("if wire != ", protoPackage.Ident(wireType), " {")
+		g.P("return true, ", protoPackage.Ident("ErrInternalBadWireType"))
 		g.P("}")
 	}
 	switch field.Desc.Kind() {
@@ -280,10 +253,7 @@ func genOneofFieldUnmarshal(g *protogen.GeneratedFile, field *protogen.Field) {
 	case protoreflect.FloatKind:
 		checkTag("WireFixed32")
 		g.P("x, err := b.DecodeFixed32()")
-		g.P("m.", oneofFieldName(oneof), " = &", fieldOneofType(field), "{", protogen.GoIdent{
-			GoImportPath: "math",
-			GoName:       "Float32frombits",
-		}, "(uint32(x))}")
+		g.P("m.", oneofFieldName(oneof), " = &", fieldOneofType(field), "{", mathPackage.Ident("Float32frombits"), "(uint32(x))}")
 	case protoreflect.Sfixed64Kind:
 		checkTag("WireFixed64")
 		g.P("x, err := b.DecodeFixed64()")
@@ -295,10 +265,7 @@ func genOneofFieldUnmarshal(g *protogen.GeneratedFile, field *protogen.Field) {
 	case protoreflect.DoubleKind:
 		checkTag("WireFixed64")
 		g.P("x, err := b.DecodeFixed64()")
-		g.P("m.", oneofFieldName(oneof), " = &", fieldOneofType(field), "{", protogen.GoIdent{
-			GoImportPath: "math",
-			GoName:       "Float64frombits",
-		}, "(x)}")
+		g.P("m.", oneofFieldName(oneof), " = &", fieldOneofType(field), "{", mathPackage.Ident("Float64frombits"), "(x)}")
 	case protoreflect.StringKind:
 		checkTag("WireBytes")
 		g.P("x, err := b.DecodeStringBytes()")
@@ -323,8 +290,8 @@ func genOneofFieldUnmarshal(g *protogen.GeneratedFile, field *protogen.Field) {
 
 // genOneofFieldSizer  generates the sizer case for a oneof subfield.
 func genOneofFieldSizer(g *protogen.GeneratedFile, field *protogen.Field) {
-	sizeProto := protogen.GoIdent{GoImportPath: protoPackage, GoName: "Size"}
-	sizeVarint := protogen.GoIdent{GoImportPath: protoPackage, GoName: "SizeVarint"}
+	sizeProto := protoPackage.Ident("Size")
+	sizeVarint := protoPackage.Ident("SizeVarint")
 	g.P("case *", fieldOneofType(field), ":")
 	if field.Desc.Kind() == protoreflect.MessageKind {
 		g.P("s := ", sizeProto, "(x.", field.GoName, ")")

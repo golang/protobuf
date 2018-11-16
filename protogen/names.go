@@ -33,6 +33,11 @@ type GoImportPath string
 
 func (p GoImportPath) String() string { return strconv.Quote(string(p)) }
 
+// Ident returns a GoIdent with s as the GoName and p as the GoImportPath.
+func (p GoImportPath) Ident(s string) GoIdent {
+	return GoIdent{GoName: s, GoImportPath: p}
+}
+
 // A GoPackageName is the name of a Go package. e.g., "protobuf".
 type GoPackageName string
 
