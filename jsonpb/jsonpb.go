@@ -491,6 +491,15 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 
 	// Handle repeated elements.
 	if v.Kind() == reflect.Slice && v.Type().Elem().Kind() != reflect.Uint8 {
+		if jsm, ok := v.Interface().(JSONPBMarshaler); ok {
+			b, err := jsm.MarshalJSONPB(m)
+			if err != nil {
+				return err
+			}
+
+			out.write(string(b))
+			return out.err
+		}
 		out.write("[")
 		comma := ""
 		for i := 0; i < v.Len(); i++ {

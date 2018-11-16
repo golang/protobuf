@@ -34,6 +34,7 @@ package jsonpb
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"math"
 	"reflect"
@@ -573,6 +574,18 @@ func TestMarshalIllegalTime(t *testing.T) {
 func TestMarshalJSONPBMarshaler(t *testing.T) {
 	rawJson := `{ "foo": "bar", "baz": [0, 1, 2, 3] }`
 	msg := dynamicMessage{RawJson: rawJson}
+	str, err := new(Marshaler).MarshalToString(&msg)
+	if err != nil {
+		t.Errorf("an unexpected error occurred when marshalling JSONPBMarshaler: %v", err)
+	}
+	if str != rawJson {
+		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, rawJson)
+	}
+}
+
+func TestMarshalSliceJSONPBMarshaler(t *testing.T) {
+	rawJson := `{"Slice":{"value0":"slice","value1":"marshaler"}}`
+	msg := messageWithSliceMarshaler{Slice: sliceWithMarshaler{"slice", "marshaler"}}
 	str, err := new(Marshaler).MarshalToString(&msg)
 	if err != nil {
 		t.Errorf("an unexpected error occurred when marshalling JSONPBMarshaler: %v", err)
@@ -1122,6 +1135,34 @@ func (m *dynamicMessage) MarshalJSONPB(jm *Marshaler) ([]byte, error) {
 func (m *dynamicMessage) UnmarshalJSONPB(jum *Unmarshaler, js []byte) error {
 	m.RawJson = string(js)
 	return nil
+}
+
+type sliceWithMarshaler []string
+
+func (m sliceWithMarshaler) MarshalJSONPB(jm *Marshaler) ([]byte, error) {
+	json := ""
+	comma := ""
+	for i, v := range m {
+		json += comma
+		json += fmt.Sprintf(`"value%d":"%s"`, i, v)
+		comma = ","
+	}
+	return []byte("{" + json + "}"), nil
+}
+
+type messageWithSliceMarshaler struct {
+	Slice sliceWithMarshaler
+}
+
+func (m *messageWithSliceMarshaler) Reset() {
+	m.Slice = sliceWithMarshaler{}
+}
+
+func (m *messageWithSliceMarshaler) String() string {
+	return ""
+}
+
+func (m *messageWithSliceMarshaler) ProtoMessage() {
 }
 
 // Test unmarshaling message containing unset required fields should produce error.
