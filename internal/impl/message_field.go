@@ -192,11 +192,11 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			case reflect.Bool:
 				return rv.Bool()
 			case reflect.Int32, reflect.Int64:
-				return rv.Int() > 0
+				return rv.Int() != 0
 			case reflect.Uint32, reflect.Uint64:
-				return rv.Uint() > 0
+				return rv.Uint() != 0
 			case reflect.Float32, reflect.Float64:
-				return rv.Float() > 0
+				return rv.Float() != 0
 			case reflect.String, reflect.Slice:
 				return rv.Len() > 0
 			default:

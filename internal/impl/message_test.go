@@ -351,6 +351,12 @@ func TestScalarProto3(t *testing.T) {
 			true, 2, 3, 4, 5, 6, 7, "8", []byte("9"), []byte("10"), "11",
 			true, 13, 14, 15, 16, 17, 18, "19", []byte("20"), []byte("21"), "22",
 		}},
+		setFields{
+			2: V(int32(-2)), 3: V(int64(-3)), 6: V(float32(math.Inf(-1))), 7: V(float64(math.NaN())),
+		},
+		hasFields{
+			2: true, 3: true, 6: true, 7: true,
+		},
 		clearFields{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22},
 		equalMessage{&ScalarProto3{}},
 	})
