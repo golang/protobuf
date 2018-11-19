@@ -831,11 +831,8 @@ func TestLegactExtensions(t *testing.T) {
 	}
 	for i, xt := range extensions {
 		var got interface{}
-		v := fs.Get(xt.Number())
-		if xt.Cardinality() != pref.Repeated && xt.Kind() == pref.MessageKind {
-			got = v.Interface()
-		} else {
-			got = xt.InterfaceOf(v) // TODO: Simplify this if InterfaceOf allows nil
+		if v := fs.Get(xt.Number()); v.IsValid() {
+			got = xt.InterfaceOf(v)
 		}
 		want := defaultValues[i]
 		if diff := cmp.Diff(want, got, opts); diff != "" {
@@ -924,8 +921,15 @@ func TestLegactExtensions(t *testing.T) {
 	}
 
 	// Clear the field for all extension types.
-	for _, xt := range extensions {
+	for _, xt := range extensions[:len(extensions)/2] {
 		fs.Clear(xt.Number())
+	}
+	for i, xt := range extensions[len(extensions)/2:] {
+		if i%2 == 0 {
+			fs.Clear(xt.Number())
+		} else {
+			fs.Get(xt.Number()).List().Truncate(0)
+		}
 	}
 	if n := fs.Len(); n != 0 {
 		t.Errorf("KnownFields.Len() = %v, want 0", n)

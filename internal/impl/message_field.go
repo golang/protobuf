@@ -61,9 +61,7 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
 			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
 				if fd.Kind() == pref.MessageKind || fd.Kind() == pref.GroupKind {
-					// TODO: Should this return an invalid protoreflect.Value?
-					rv = reflect.Zero(ot.Field(0).Type)
-					return conv.PBValueOf(rv)
+					return pref.Value{}
 				}
 				return fd.Default()
 			}
@@ -96,7 +94,7 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 				pv := pref.ValueOf(conv.MessageType.New().ProtoReflect())
 				rv.Set(conv.GoValueOf(pv))
 			}
-			return rv.Interface().(pref.Message)
+			return conv.PBValueOf(rv).Message()
 		},
 	}
 }
@@ -253,19 +251,18 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 			return !rv.IsNil()
 		},
 		get: func(p pointer) pref.Value {
-			// TODO: If rv.IsNil(), should this return a typed-nil pointer or
-			// an invalid protoreflect.Value?
-			//
-			// Returning a typed nil pointer assumes that such values
-			// are valid for all possible custom message types,
-			// which may not be case for dynamic messages.
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if rv.IsNil() {
+				return pref.Value{}
+			}
 			return conv.PBValueOf(rv)
 		},
 		set: func(p pointer, v pref.Value) {
-			// TODO: Similarly, is it valid to set this to a typed nil pointer?
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
 			rv.Set(conv.GoValueOf(v))
+			if rv.IsNil() {
+				panic("invalid nil pointer")
+			}
 		},
 		clear: func(p pointer) {
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()

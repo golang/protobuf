@@ -1017,7 +1017,6 @@ func (*EnumMessages_OneofM2) isEnumMessages_Union() {}
 func (*EnumMessages_OneofM3) isEnumMessages_Union() {}
 
 func TestEnumMessages(t *testing.T) {
-	// TODO: Test behavior of Get on unpopulated message.
 	wantL := MessageOf(&proto2_20180125.Message{OptionalFloat: protoV1.Float32(math.E)})
 	wantM := &EnumMessages{EnumP2: EnumProto2(1234).Enum()}
 	wantM2a := &ScalarProto2{Float32: protoV1.Float32(math.Pi)}
@@ -1033,7 +1032,7 @@ func TestEnumMessages(t *testing.T) {
 
 	testMessage(t, nil, &EnumMessages{}, messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false},
-		getFields{1: VE(0xbeef), 2: VE(1), 9: VE(0xbeef), 10: VE(1)},
+		getFields{1: VE(0xbeef), 2: VE(1), 3: V(nil), 4: V(nil), 9: VE(0xbeef), 10: VE(1)},
 
 		// Test singular enums.
 		setFields{1: VE(0xdead), 2: VE(0)},

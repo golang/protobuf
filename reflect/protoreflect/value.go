@@ -69,8 +69,11 @@ type KnownFields interface {
 	Has(FieldNumber) bool
 
 	// Get retrieves the value for a field with the given field number.
-	// It returns the default value for unpopulated fields.
-	// It returns an invalid value for unknown fields.
+	// If the field is unpopulated, it returns the default value for scalars,
+	// a mutable empty List for empty repeated fields, a mutable empty Map for
+	// empty map fields, and an invalid value for message fields.
+	// If the field is unknown (does not appear in MessageDescriptor.Fields
+	// or ExtensionFieldTypes), it returns an invalid value.
 	Get(FieldNumber) Value
 
 	// Set stores the value for a field with the given field number.

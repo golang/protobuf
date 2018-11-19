@@ -57,13 +57,12 @@ func (ms mapReflect) Mutable(k pref.MapKey) pref.Mutable {
 	}
 	rk := ms.keyConv.GoValueOf(k.Value())
 	rv := ms.v.MapIndex(rk)
-	if !rv.IsValid() || rv.IsNil() {
-		// TODO: Is checking for nil proper behavior for custom messages?
+	if !rv.IsValid() {
 		pv := pref.ValueOf(ms.valConv.MessageType.New().ProtoReflect())
 		rv = ms.valConv.GoValueOf(pv)
 		ms.v.SetMapIndex(rk, rv)
 	}
-	return rv.Interface().(pref.Message)
+	return ms.valConv.PBValueOf(rv).Message()
 }
 func (ms mapReflect) Range(f func(pref.MapKey, pref.Value) bool) {
 	for _, k := range ms.v.MapKeys() {

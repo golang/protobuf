@@ -59,16 +59,9 @@ func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 	}
 	t := legacyExtensionTypeOf(x.desc)
 	if x.val == nil {
-		if t.Cardinality() == pref.Repeated {
-			// TODO: What is the zero value for Lists?
-			// TODO: This logic is racy.
-			v := t.ValueOf(t.New())
-			x.val = t.InterfaceOf(v)
-			p.x.Set(n, x)
-			return v
-		}
+		// NOTE: x.val is never nil for Lists since they are always populated
+		// during ExtensionFieldTypes.Register.
 		if t.Kind() == pref.MessageKind || t.Kind() == pref.GroupKind {
-			// TODO: What is the zero value for Messages?
 			return pref.Value{}
 		}
 		return t.Default()
@@ -89,6 +82,11 @@ func (p legacyExtensionFields) Set(n pref.FieldNumber, v pref.Value) {
 func (p legacyExtensionFields) Clear(n pref.FieldNumber) {
 	x := p.x.Get(n)
 	if x.desc == nil {
+		return
+	}
+	t := legacyExtensionTypeOf(x.desc)
+	if t.Cardinality() == pref.Repeated {
+		t.ValueOf(x.val).List().Truncate(0)
 		return
 	}
 	x.val = nil
@@ -146,6 +144,11 @@ func (p legacyExtensionTypes) Register(t pref.ExtensionType) {
 		panic("extension descriptor already registered")
 	}
 	x.desc = legacyExtensionDescOf(t, p.mi.goType)
+	if t.Cardinality() == pref.Repeated {
+		// If the field is repeated, initialize the entry with an empty list
+		// so that future Get operations can return a mutable and concrete list.
+		x.val = t.InterfaceOf(t.ValueOf(t.New()))
+	}
 	p.x.Set(t.Number(), x)
 }
 
@@ -154,6 +157,13 @@ func (p legacyExtensionTypes) Remove(t pref.ExtensionType) {
 		return
 	}
 	x := p.x.Get(t.Number())
+	if t.Cardinality() == pref.Repeated {
+		// Treat an empty repeated field as unpopulated.
+		v := reflect.ValueOf(x.val)
+		if x.val == nil || v.IsNil() || v.Elem().Len() == 0 {
+			x.val = nil
+		}
+	}
 	if x.val != nil {
 		panic("value for extension descriptor still populated")
 	}

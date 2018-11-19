@@ -35,19 +35,13 @@ func (ls listReflect) Append(v pref.Value) {
 }
 func (ls listReflect) Mutable(i int) pref.Mutable {
 	// Mutable is only valid for messages and panics for other kinds.
-	rv := ls.v.Index(i)
-	if rv.IsNil() {
-		// TODO: Is checking for nil proper behavior for custom messages?
-		pv := pref.ValueOf(ls.conv.MessageType.New().ProtoReflect())
-		rv.Set(ls.conv.GoValueOf(pv))
-	}
-	return rv.Interface().(pref.Message)
+	return ls.conv.PBValueOf(ls.v.Index(i)).Message()
 }
 func (ls listReflect) MutableAppend() pref.Mutable {
 	// MutableAppend is only valid for messages and panics for other kinds.
 	pv := pref.ValueOf(ls.conv.MessageType.New().ProtoReflect())
 	ls.v.Set(reflect.Append(ls.v, ls.conv.GoValueOf(pv)))
-	return ls.v.Index(ls.Len() - 1).Interface().(pref.Message)
+	return pv.Message()
 }
 func (ls listReflect) Truncate(i int) {
 	ls.v.Set(ls.v.Slice(0, i))
