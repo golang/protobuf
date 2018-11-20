@@ -135,7 +135,9 @@ func formatDescOpt(t pref.Descriptor, isRoot, allowMulti bool) string {
 		} else {
 			rs.Append(rv, descriptorAccessors[rt]...)
 		}
-		// TODO: Print GoType
+		if rv.MethodByName("GoType").IsValid() {
+			rs.Append(rv, "GoType")
+		}
 	}
 	return start + rs.Join() + end
 }

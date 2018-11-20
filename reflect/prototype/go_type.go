@@ -42,6 +42,9 @@ func (t *goEnum) New(n protoreflect.EnumNumber) protoreflect.ProtoEnum {
 	}
 	return e
 }
+func (t *goEnum) Format(s fmt.State, r rune) {
+	formatDesc(s, r, t)
+}
 
 // GoMessage creates a new protoreflect.MessageType by combining the provided
 // protoreflect.MessageDescriptor with the provided constructor function.
@@ -73,6 +76,9 @@ func (t *goMessage) New() protoreflect.ProtoMessage {
 		panic(fmt.Sprintf("mismatching types for message: got %T, want %v", m, t.typ))
 	}
 	return m
+}
+func (t *goMessage) Format(s fmt.State, r rune) {
+	formatDesc(s, r, t)
 }
 
 // GoExtension creates a new protoreflect.ExtensionType.
@@ -186,6 +192,9 @@ func (t *goExtension) InterfaceOf(pv protoreflect.Value) interface{} {
 		panic(fmt.Sprintf("invalid type: got %T, want %v", v, t.typ))
 	}
 	return v
+}
+func (t *goExtension) Format(s fmt.State, r rune) {
+	formatDesc(s, r, t)
 }
 func (t *goExtension) lazyInit() {
 	t.once.Do(func() {
