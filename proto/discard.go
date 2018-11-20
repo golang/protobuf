@@ -123,13 +123,12 @@ func (di *discardInfo) discard(src pointer) {
 	// For proto2 messages, only discard unknown fields in message extensions
 	// that have been accessed via GetExtension.
 	if em, err := extendable(src.asPointerTo(di.typ).Interface()); err == nil {
-		// Ignore lock since DiscardUnknown is not concurrency safe.
-		emm, _ := em.extensionsRead()
-		for _, mx := range emm {
-			if m, ok := mx.value.(Message); ok {
+		em.Range(func(_ int32, mx Extension) bool {
+			if m, ok := mx.Value.(Message); ok {
 				DiscardUnknown(m)
 			}
-		}
+			return true
+		})
 	}
 
 	if di.unrecognized.IsValid() {
@@ -339,12 +338,11 @@ func discardLegacy(m Message) {
 	// For proto2 messages, only discard unknown fields in message extensions
 	// that have been accessed via GetExtension.
 	if em, err := extendable(m); err == nil {
-		// Ignore lock since discardLegacy is not concurrency safe.
-		emm, _ := em.extensionsRead()
-		for _, mx := range emm {
-			if m, ok := mx.value.(Message); ok {
+		em.Range(func(_ int32, mx Extension) bool {
+			if m, ok := mx.Value.(Message); ok {
 				discardLegacy(m)
 			}
-		}
+			return true
+		})
 	}
 }

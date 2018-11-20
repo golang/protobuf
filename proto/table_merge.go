@@ -144,12 +144,10 @@ func (mi *mergeInfo) merge(dst, src pointer) {
 	in := src.asPointerTo(mi.typ).Elem()
 	if emIn, err := extendable(in.Addr().Interface()); err == nil {
 		emOut, _ := extendable(out.Addr().Interface())
-		mIn, muIn := emIn.extensionsRead()
-		if mIn != nil {
-			mOut := emOut.extensionsWrite()
-			muIn.Lock()
-			mergeExtension(mOut, mIn)
-			muIn.Unlock()
+		if emIn.HasInit() {
+			emIn.Lock()
+			mergeExtension(emOut, emIn)
+			emIn.Unlock()
 		}
 	}
 

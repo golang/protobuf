@@ -37,6 +37,8 @@ package proto
 
 import (
 	"errors"
+
+	"github.com/golang/protobuf/protoapi"
 )
 
 // errNoMessageTypeID occurs when a protocol buffer does not have a message type ID.
@@ -142,15 +144,7 @@ func skipVarint(buf []byte) []byte {
 // unmarshalMessageSet decodes the extension map encoded in buf in the message set wire format.
 // It is called by Unmarshal methods on protocol buffer messages with the message_set_wire_format option.
 func unmarshalMessageSet(buf []byte, exts interface{}) error {
-	var m map[int32]Extension
-	switch exts := exts.(type) {
-	case *XXX_InternalExtensions:
-		m = exts.extensionsWrite()
-	case map[int32]Extension:
-		m = exts
-	default:
-		return errors.New("proto: not an extension map")
-	}
+	m := protoapi.ExtensionFieldsOf(exts)
 
 	ms := new(messageSet)
 	if err := Unmarshal(buf, ms); err != nil {
@@ -163,11 +157,13 @@ func unmarshalMessageSet(buf []byte, exts interface{}) error {
 		// Restore wire type and field number varint, plus length varint.
 		// Be careful to preserve duplicate items.
 		b := EncodeVarint(uint64(id)<<3 | WireBytes)
-		if ext, ok := m[id]; ok {
+		if m.Has(id) {
+			ext := m.Get(id)
+
 			// Existing data; rip off the tag and length varint
 			// so we join the new data correctly.
-			// We can assume that ext.enc is set because we are unmarshaling.
-			o := ext.enc[len(b):]   // skip wire type and field number
+			// We can assume that ext.Raw is set because we are unmarshaling.
+			o := ext.Raw[len(b):]   // skip wire type and field number
 			_, n := DecodeVarint(o) // calculate length of length varint
 			o = o[n:]               // skip length varint
 			msg = append(o, msg...) // join old data and new data
@@ -175,7 +171,7 @@ func unmarshalMessageSet(buf []byte, exts interface{}) error {
 		b = append(b, EncodeVarint(uint64(len(msg)))...)
 		b = append(b, msg...)
 
-		m[id] = Extension{enc: b}
+		m.Set(id, Extension{Raw: b})
 	}
 	return nil
 }

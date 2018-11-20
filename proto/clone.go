@@ -39,6 +39,8 @@ import (
 	"log"
 	"reflect"
 	"strings"
+
+	"github.com/golang/protobuf/protoapi"
 )
 
 // Clone returns a deep copy of a protocol buffer.
@@ -110,12 +112,10 @@ func mergeStruct(out, in reflect.Value) {
 
 	if emIn, err := extendable(in.Addr().Interface()); err == nil {
 		emOut, _ := extendable(out.Addr().Interface())
-		mIn, muIn := emIn.extensionsRead()
-		if mIn != nil {
-			mOut := emOut.extensionsWrite()
-			muIn.Lock()
-			mergeExtension(mOut, mIn)
-			muIn.Unlock()
+		if emIn.HasInit() {
+			emIn.Lock()
+			mergeExtension(emOut, emIn)
+			emIn.Unlock()
 		}
 	}
 
@@ -235,19 +235,20 @@ func mergeAny(out, in reflect.Value, viaPtr bool, prop *Properties) {
 	}
 }
 
-func mergeExtension(out, in map[int32]Extension) {
-	for extNum, eIn := range in {
-		eOut := Extension{desc: eIn.desc}
-		if eIn.value != nil {
-			v := reflect.New(reflect.TypeOf(eIn.value)).Elem()
-			mergeAny(v, reflect.ValueOf(eIn.value), false, nil)
-			eOut.value = v.Interface()
+func mergeExtension(out, in protoapi.ExtensionFields) {
+	in.Range(func(extNum int32, eIn Extension) bool {
+		eOut := Extension{Desc: eIn.Desc}
+		if eIn.Value != nil {
+			v := reflect.New(reflect.TypeOf(eIn.Value)).Elem()
+			mergeAny(v, reflect.ValueOf(eIn.Value), false, nil)
+			eOut.Value = v.Interface()
 		}
-		if eIn.enc != nil {
-			eOut.enc = make([]byte, len(eIn.enc))
-			copy(eOut.enc, eIn.enc)
+		if eIn.Raw != nil {
+			eOut.Raw = make([]byte, len(eIn.Raw))
+			copy(eOut.Raw, eIn.Raw)
 		}
 
-		out[extNum] = eOut
-	}
+		out.Set(extNum, eOut)
+		return true
+	})
 }

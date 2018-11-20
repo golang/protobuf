@@ -42,6 +42,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"unicode/utf8"
+
+	"github.com/golang/protobuf/protoapi"
 )
 
 // Unmarshal is the entry point from the generated .pb.go files.
@@ -210,26 +212,22 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		// Keep unrecognized data around.
 		// maybe in extensions, maybe in the unrecognized field.
 		z := m.offset(u.unrecognized).toBytes()
-		var emap map[int32]Extension
+		var emap protoapi.ExtensionFields
 		var e Extension
 		for _, r := range u.extensionRanges {
 			if uint64(r.Start) <= tag && tag <= uint64(r.End) {
 				if u.extensions.IsValid() {
 					mp := m.offset(u.extensions).toExtensions()
-					emap = mp.extensionsWrite()
-					e = emap[int32(tag)]
-					z = &e.enc
+					emap = protoapi.ExtensionFieldsOf(mp)
+					e = emap.Get(int32(tag))
+					z = &e.Raw
 					break
 				}
 				if u.oldExtensions.IsValid() {
 					p := m.offset(u.oldExtensions).toOldExtensions()
-					emap = *p
-					if emap == nil {
-						emap = map[int32]Extension{}
-						*p = emap
-					}
-					e = emap[int32(tag)]
-					z = &e.enc
+					emap = protoapi.ExtensionFieldsOf(p)
+					e = emap.Get(int32(tag))
+					z = &e.Raw
 					break
 				}
 				panic("no extensions field available")
@@ -247,7 +245,7 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		*z = append(*z, b0[:len(b0)-len(b)]...)
 
 		if emap != nil {
-			emap[int32(tag)] = e
+			emap.Set(int32(tag), e)
 		}
 	}
 	if reqMask != u.reqMask && errLater == nil {

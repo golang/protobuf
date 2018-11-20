@@ -271,6 +271,8 @@ import (
 	"sort"
 	"strconv"
 	"sync"
+
+	"github.com/golang/protobuf/protoapi"
 )
 
 // RequiredNotSetError is an error type returned by either Marshal or Unmarshal.
@@ -335,11 +337,7 @@ func (nf *nonFatal) Merge(err error) (ok bool) {
 }
 
 // Message is implemented by generated protocol buffer messages.
-type Message interface {
-	Reset()
-	String() string
-	ProtoMessage()
-}
+type Message = protoapi.Message
 
 // A Buffer is a buffer manager for marshaling and unmarshaling
 // protocol buffers.  It may be reused between invocations to

@@ -683,39 +683,39 @@ func (tm *TextMarshaler) writeExtensions(w *textWriter, pv reflect.Value) error 
 	// Order the extensions by ID.
 	// This isn't strictly necessary, but it will give us
 	// canonical output, which will also make testing easier.
-	m, mu := ep.extensionsRead()
-	if m == nil {
+	if !ep.HasInit() {
 		return nil
 	}
-	mu.Lock()
-	ids := make([]int32, 0, len(m))
-	for id := range m {
+	ep.Lock()
+	ids := make([]int32, 0, ep.Len())
+	ep.Range(func(id int32, _ Extension) bool {
 		ids = append(ids, id)
-	}
+		return true
+	})
 	sort.Sort(int32Slice(ids))
-	mu.Unlock()
+	ep.Unlock()
 
 	for _, extNum := range ids {
-		ext := m[extNum]
+		ext := ep.Get(extNum)
 		var desc *ExtensionDesc
 		if emap != nil {
 			desc = emap[extNum]
 		}
 		if desc == nil {
 			// Unknown extension.
-			if err := writeUnknownStruct(w, ext.enc); err != nil {
+			if err := writeUnknownStruct(w, ext.Raw); err != nil {
 				return err
 			}
 			continue
 		}
 
-		pb, err := GetExtension(ep, desc)
+		pb, err := GetExtension(pv.Interface().(Message), desc)
 		if err != nil {
 			return fmt.Errorf("failed getting extension: %v", err)
 		}
 
 		// Repeated extensions will appear as a slice.
-		if !desc.repeated() {
+		if !isRepeatedExtension(desc) {
 			if err := tm.writeExtension(w, desc.Name, pb); err != nil {
 				return err
 			}

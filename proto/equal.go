@@ -38,6 +38,8 @@ import (
 	"log"
 	"reflect"
 	"strings"
+
+	"github.com/golang/protobuf/protoapi"
 )
 
 /*
@@ -118,14 +120,18 @@ func equalStruct(v1, v2 reflect.Value) bool {
 
 	if em1 := v1.FieldByName("XXX_InternalExtensions"); em1.IsValid() {
 		em2 := v2.FieldByName("XXX_InternalExtensions")
-		if !equalExtensions(v1.Type(), em1.Interface().(XXX_InternalExtensions), em2.Interface().(XXX_InternalExtensions)) {
+		m1 := protoapi.ExtensionFieldsOf(em1.Addr().Interface())
+		m2 := protoapi.ExtensionFieldsOf(em2.Addr().Interface())
+		if !equalExtensions(v1.Type(), m1, m2) {
 			return false
 		}
 	}
 
 	if em1 := v1.FieldByName("XXX_extensions"); em1.IsValid() {
 		em2 := v2.FieldByName("XXX_extensions")
-		if !equalExtMap(v1.Type(), em1.Interface().(map[int32]Extension), em2.Interface().(map[int32]Extension)) {
+		m1 := protoapi.ExtensionFieldsOf(em1.Addr().Interface())
+		m2 := protoapi.ExtensionFieldsOf(em2.Addr().Interface())
+		if !equalExtensions(v1.Type(), m1, m2) {
 			return false
 		}
 	}
@@ -227,32 +233,26 @@ func equalAny(v1, v2 reflect.Value, prop *Properties) bool {
 	return false
 }
 
-// base is the struct type that the extensions are based on.
-// x1 and x2 are InternalExtensions.
-func equalExtensions(base reflect.Type, x1, x2 XXX_InternalExtensions) bool {
-	em1, _ := x1.extensionsRead()
-	em2, _ := x2.extensionsRead()
-	return equalExtMap(base, em1, em2)
-}
-
-func equalExtMap(base reflect.Type, em1, em2 map[int32]Extension) bool {
-	if len(em1) != len(em2) {
+func equalExtensions(base reflect.Type, em1, em2 protoapi.ExtensionFields) bool {
+	if em1.Len() != em2.Len() {
 		return false
 	}
 
-	for extNum, e1 := range em1 {
-		e2, ok := em2[extNum]
-		if !ok {
+	equal := true
+	em1.Range(func(extNum int32, e1 Extension) bool {
+		if !em2.Has(extNum) {
+			equal = false
 			return false
 		}
+		e2 := em2.Get(extNum)
 
-		m1 := extensionAsLegacyType(e1.value)
-		m2 := extensionAsLegacyType(e2.value)
+		m1 := extensionAsLegacyType(e1.Value)
+		m2 := extensionAsLegacyType(e2.Value)
 
 		if m1 == nil && m2 == nil {
 			// Both have only encoded form.
-			if bytes.Equal(e1.enc, e2.enc) {
-				continue
+			if bytes.Equal(e1.Raw, e2.Raw) {
+				return true
 			}
 			// The bytes are different, but the extensions might still be
 			// equal. We need to decode them to compare.
@@ -261,9 +261,10 @@ func equalExtMap(base reflect.Type, em1, em2 map[int32]Extension) bool {
 		if m1 != nil && m2 != nil {
 			// Both are unencoded.
 			if !equalAny(reflect.ValueOf(m1), reflect.ValueOf(m2), nil) {
+				equal = false
 				return false
 			}
-			continue
+			return true
 		}
 
 		// At least one is encoded. To do a semantically correct comparison
@@ -278,24 +279,28 @@ func equalExtMap(base reflect.Type, em1, em2 map[int32]Extension) bool {
 			// We don't know how to decode it, so just compare them as byte
 			// slices.
 			log.Printf("proto: don't know how to compare extension %d of %v", extNum, base)
+			equal = false
 			return false
 		}
 		var err error
 		if m1 == nil {
-			m1, err = decodeExtension(e1.enc, desc)
+			m1, err = decodeExtension(e1.Raw, desc)
 		}
 		if m2 == nil && err == nil {
-			m2, err = decodeExtension(e2.enc, desc)
+			m2, err = decodeExtension(e2.Raw, desc)
 		}
 		if err != nil {
 			// The encoded form is invalid.
 			log.Printf("proto: badly encoded extension %d of %v: %v", extNum, base, err)
+			equal = false
 			return false
 		}
 		if !equalAny(reflect.ValueOf(m1), reflect.ValueOf(m2), nil) {
+			equal = false
 			return false
 		}
-	}
+		return true
+	})
 
-	return true
+	return equal
 }
