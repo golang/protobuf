@@ -7,6 +7,7 @@ package text
 import (
 	"fmt"
 	"math"
+	"regexp"
 	"strings"
 	"testing"
 	"unicode/utf8"
@@ -17,13 +18,15 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
+var S = fmt.Sprintf
+var V = ValueOf
+var ID = func(n protoreflect.Name) Value { return V(n) }
+
+type Lst = []Value
+type Msg = [][2]Value
+
 func Test(t *testing.T) {
 	const space = " \n\r\t"
-	var S = fmt.Sprintf
-	var V = ValueOf
-	var ID = func(n protoreflect.Name) Value { return V(n) }
-	type Lst = []Value
-	type Msg = [][2]Value
 
 	tests := []struct {
 		in             string
@@ -824,7 +827,7 @@ spouse: null
 				if err != nil {
 					t.Errorf("Marshal(): got %v, want nil error", err)
 				}
-				if string(gotOut) != tt.wantOut {
+				if removeRandomSpace(gotOut, false) != tt.wantOut {
 					t.Errorf("Marshal():\ngot:  %s\nwant: %s", gotOut, tt.wantOut)
 				}
 			}
@@ -833,7 +836,7 @@ spouse: null
 				if err != nil {
 					t.Errorf("Marshal(Bracket): got %v, want nil error", err)
 				}
-				if string(gotOut) != tt.wantOutBracket {
+				if removeRandomSpace(gotOut, false) != tt.wantOutBracket {
 					t.Errorf("Marshal(Bracket):\ngot:  %s\nwant: %s", gotOut, tt.wantOutBracket)
 				}
 			}
@@ -842,7 +845,7 @@ spouse: null
 				if err != nil {
 					t.Errorf("Marshal(ASCII): got %v, want nil error", err)
 				}
-				if string(gotOut) != tt.wantOutASCII {
+				if removeRandomSpace(gotOut, false) != tt.wantOutASCII {
 					t.Errorf("Marshal(ASCII):\ngot:  %s\nwant: %s", gotOut, tt.wantOutASCII)
 				}
 			}
@@ -851,10 +854,24 @@ spouse: null
 				if err != nil {
 					t.Errorf("Marshal(Indent): got %v, want nil error", err)
 				}
-				if string(gotOut) != tt.wantOutIndent {
+				if removeRandomSpace(gotOut, true) != tt.wantOutIndent {
 					t.Errorf("Marshal(Indent):\ngot:  %s\nwant: %s", gotOut, tt.wantOutIndent)
 				}
 			}
 		})
 	}
+}
+
+var expandedRE = regexp.MustCompile(":  +")
+
+// This works only for the test cases above.
+func removeRandomSpace(b []byte, useIndent bool) string {
+	s := string(b)
+	if useIndent {
+		return expandedRE.ReplaceAllString(s, ": ")
+	}
+	s = strings.Replace(s, "  ", " ", -1)
+	s = strings.Replace(s, " }", "}", -1)
+	s = strings.Replace(s, " >", ">", -1)
+	return strings.TrimRight(s, " ")
 }

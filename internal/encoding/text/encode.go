@@ -6,6 +6,7 @@ package text
 
 import (
 	"bytes"
+	"math/rand"
 	"strings"
 
 	"github.com/golang/protobuf/v2/internal/errors"
@@ -104,6 +105,7 @@ func (p *encoder) marshalMessage(v Value, emitDelims bool) error {
 			p.out = append(p.out, p.newline...)
 		}
 	}
+	spaceAdded := false
 	for i, item := range items {
 		p.out = append(p.out, p.indents...)
 		if err := p.marshalKey(item[0]); !p.nerr.Merge(err) {
@@ -113,11 +115,24 @@ func (p *encoder) marshalMessage(v Value, emitDelims bool) error {
 		if len(p.indent) > 0 {
 			p.out = append(p.out, ' ')
 		}
+		// For multi-line output, add a random extra space after key: per message to
+		// make output unstable.
+		if !spaceAdded && len(p.indent) > 0 && rand.Intn(2) == 1 {
+			p.out = append(p.out, ' ')
+			spaceAdded = true
+		}
+
 		if err := p.marshalValue(item[1]); !p.nerr.Merge(err) {
 			return err
 		}
 		if i < len(items)-1 && len(p.indent) == 0 {
 			p.out = append(p.out, ' ')
+		}
+		// For single-line output, add a random extra space after a field per message to
+		// make output unstable.
+		if !spaceAdded && len(p.indent) == 0 && i != len(items)-1 && rand.Intn(2) == 1 {
+			p.out = append(p.out, ' ')
+			spaceAdded = true
 		}
 		p.out = append(p.out, p.newline...)
 	}
