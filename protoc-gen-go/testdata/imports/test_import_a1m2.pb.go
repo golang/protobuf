@@ -19,7 +19,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type A1M2 struct {
 	F                    *test_a_1.M2 `protobuf:"bytes,1,opt,name=f,proto3" json:"f,omitempty"`
