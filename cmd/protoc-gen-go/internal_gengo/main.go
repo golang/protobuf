@@ -27,7 +27,7 @@ import (
 // It is incremented whenever an incompatibility between the generated code and
 // proto package is introduced; the generated code references
 // a constant, proto.ProtoPackageIsVersionN (where N is generatedCodeVersion).
-const generatedCodeVersion = 2
+const generatedCodeVersion = 3
 
 const (
 	fmtPackage   = protogen.GoImportPath("fmt")
@@ -563,7 +563,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	}
 
 	if len(message.Oneofs) > 0 {
-		genOneofFuncs(gen, g, f, message)
+		genOneofWrappers(gen, g, f, message)
 	}
 	for _, extension := range message.Extensions {
 		genExtension(gen, g, f, extension)
@@ -831,4 +831,117 @@ var wellKnownTypes = map[protoreflect.FullName]bool{
 	"google.protobuf.UInt32Value": true,
 	"google.protobuf.UInt64Value": true,
 	"google.protobuf.Value":       true,
+}
+
+// genOneofField generates the struct field for a oneof.
+func genOneofField(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message, oneof *protogen.Oneof) {
+	if g.PrintLeadingComments(oneof.Location) {
+		g.P("//")
+	}
+	g.P("// Types that are valid to be assigned to ", oneofFieldName(oneof), ":")
+	for _, field := range oneof.Fields {
+		g.PrintLeadingComments(field.Location)
+		g.P("//\t*", fieldOneofType(field))
+	}
+	g.Annotate(message.GoIdent.GoName+"."+oneofFieldName(oneof), oneof.Location)
+	g.P(oneofFieldName(oneof), " ", oneofInterfaceName(oneof), " `protobuf_oneof:\"", oneof.Desc.Name(), "\"`")
+}
+
+// genOneofTypes generates the interface type used for a oneof field,
+// and the wrapper types that satisfy that interface.
+//
+// It also generates the getter method for the parent oneof field
+// (but not the member fields).
+func genOneofTypes(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message, oneof *protogen.Oneof) {
+	ifName := oneofInterfaceName(oneof)
+	g.P("type ", ifName, " interface {")
+	g.P(ifName, "()")
+	g.P("}")
+	g.P()
+	for _, field := range oneof.Fields {
+		name := fieldOneofType(field)
+		g.Annotate(name.GoName, field.Location)
+		g.Annotate(name.GoName+"."+field.GoName, field.Location)
+		g.P("type ", name, " struct {")
+		goType, _ := fieldGoType(g, field)
+		tags := []string{
+			fmt.Sprintf("protobuf:%q", fieldProtobufTag(field)),
+		}
+		g.P(field.GoName, " ", goType, " `", strings.Join(tags, " "), "`")
+		g.P("}")
+		g.P()
+	}
+	for _, field := range oneof.Fields {
+		g.P("func (*", fieldOneofType(field), ") ", ifName, "() {}")
+		g.P()
+	}
+	g.Annotate(message.GoIdent.GoName+".Get"+oneof.GoName, oneof.Location)
+	g.P("func (m *", message.GoIdent.GoName, ") Get", oneof.GoName, "() ", ifName, " {")
+	g.P("if m != nil {")
+	g.P("return m.", oneofFieldName(oneof))
+	g.P("}")
+	g.P("return nil")
+	g.P("}")
+	g.P()
+}
+
+// oneofFieldName returns the name of the struct field holding the oneof value.
+//
+// This function is trivial, but pulling out the name like this makes it easier
+// to experiment with alternative oneof implementations.
+func oneofFieldName(oneof *protogen.Oneof) string {
+	return oneof.GoName
+}
+
+// oneofInterfaceName returns the name of the interface type implemented by
+// the oneof field value types.
+func oneofInterfaceName(oneof *protogen.Oneof) string {
+	return fmt.Sprintf("is%s_%s", oneof.ParentMessage.GoIdent.GoName, oneof.GoName)
+}
+
+// genOneofWrappers generates the XXX_OneofWrappers method for a message.
+func genOneofWrappers(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message) {
+	g.P("// XXX_OneofWrappers is for the internal use of the proto package.")
+	g.P("func (*", message.GoIdent.GoName, ") XXX_OneofWrappers() []interface{} {")
+	g.P("return []interface{}{")
+	for _, oneof := range message.Oneofs {
+		for _, field := range oneof.Fields {
+			g.P("(*", fieldOneofType(field), ")(nil),")
+		}
+	}
+	g.P("}")
+	g.P("}")
+	g.P()
+}
+
+// fieldOneofType returns the wrapper type used to represent a field in a oneof.
+func fieldOneofType(field *protogen.Field) protogen.GoIdent {
+	ident := protogen.GoIdent{
+		GoImportPath: field.ParentMessage.GoIdent.GoImportPath,
+		GoName:       field.ParentMessage.GoIdent.GoName + "_" + field.GoName,
+	}
+	// Check for collisions with nested messages or enums.
+	//
+	// This conflict resolution is incomplete: Among other things, it
+	// does not consider collisions with other oneof field types.
+	//
+	// TODO: Consider dropping this entirely. Detecting conflicts and
+	// producing an error is almost certainly better than permuting
+	// field and type names in mostly unpredictable ways.
+Loop:
+	for {
+		for _, message := range field.ParentMessage.Messages {
+			if message.GoIdent == ident {
+				ident.GoName += "_"
+				continue Loop
+			}
+		}
+		for _, enum := range field.ParentMessage.Enums {
+			if enum.GoIdent == ident {
+				ident.GoName += "_"
+				continue Loop
+			}
+		}
+		return ident
+	}
 }

@@ -18,7 +18,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // Assorted edge cases in field name conflict resolution.
 //
@@ -273,124 +273,14 @@ func (m *Message) GetOneofMessageConflict() string {
 	return ""
 }
 
-// XXX_OneofFuncs is for the internal use of the proto package.
-func (*Message) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _Message_OneofMarshaler, _Message_OneofUnmarshaler, _Message_OneofSizer, []interface{}{
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*Message) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
 		(*Message_OneofConflictA)(nil),
 		(*Message_OneofNoConflict)(nil),
 		(*Message_OneofConflictB_)(nil),
 		(*Message_OneofMessageConflict_)(nil),
 	}
-}
-
-func _Message_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
-	m := msg.(*Message)
-	// oneof_conflict_a
-	switch x := m.OneofConflictA_.(type) {
-	case *Message_OneofConflictA:
-		b.EncodeVarint(40<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.OneofConflictA)
-	case nil:
-	default:
-		return fmt.Errorf("Message.OneofConflictA_ has unexpected type %T", x)
-	}
-	// oneof_conflict_b
-	switch x := m.OneofConflictB.(type) {
-	case *Message_OneofNoConflict:
-		b.EncodeVarint(50<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.OneofNoConflict)
-	case *Message_OneofConflictB_:
-		b.EncodeVarint(51<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.OneofConflictB_)
-	case nil:
-	default:
-		return fmt.Errorf("Message.OneofConflictB has unexpected type %T", x)
-	}
-	// oneof_conflict_c
-	switch x := m.OneofConflictC.(type) {
-	case *Message_OneofMessageConflict_:
-		b.EncodeVarint(60<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.OneofMessageConflict)
-	case nil:
-	default:
-		return fmt.Errorf("Message.OneofConflictC has unexpected type %T", x)
-	}
-	return nil
-}
-
-func _Message_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
-	m := msg.(*Message)
-	switch tag {
-	case 40: // oneof_conflict_a.OneofConflictA
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeStringBytes()
-		m.OneofConflictA_ = &Message_OneofConflictA{x}
-		return true, err
-	case 50: // oneof_conflict_b.oneof_no_conflict
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeStringBytes()
-		m.OneofConflictB = &Message_OneofNoConflict{x}
-		return true, err
-	case 51: // oneof_conflict_b.OneofConflictB
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeStringBytes()
-		m.OneofConflictB = &Message_OneofConflictB_{x}
-		return true, err
-	case 60: // oneof_conflict_c.oneof_message_conflict
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeStringBytes()
-		m.OneofConflictC = &Message_OneofMessageConflict_{x}
-		return true, err
-	default:
-		return false, nil
-	}
-}
-
-func _Message_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*Message)
-	// oneof_conflict_a
-	switch x := m.OneofConflictA_.(type) {
-	case *Message_OneofConflictA:
-		n += 2 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.OneofConflictA)))
-		n += len(x.OneofConflictA)
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
-	}
-	// oneof_conflict_b
-	switch x := m.OneofConflictB.(type) {
-	case *Message_OneofNoConflict:
-		n += 2 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.OneofNoConflict)))
-		n += len(x.OneofNoConflict)
-	case *Message_OneofConflictB_:
-		n += 2 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.OneofConflictB_)))
-		n += len(x.OneofConflictB_)
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
-	}
-	// oneof_conflict_c
-	switch x := m.OneofConflictC.(type) {
-	case *Message_OneofMessageConflict_:
-		n += 2 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.OneofMessageConflict)))
-		n += len(x.OneofMessageConflict)
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
-	}
-	return n
 }
 
 type Message_OneofMessageConflict struct {

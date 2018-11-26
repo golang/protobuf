@@ -103,18 +103,21 @@ fieldLoop:
 			continue fieldLoop
 		}
 	}
+	var oneofWrappers []interface{}
 	if fn, ok := reflect.PtrTo(t).MethodByName("XXX_OneofFuncs"); ok {
-		vs := fn.Func.Call([]reflect.Value{reflect.Zero(fn.Type.In(0))})[3]
-	oneofLoop:
-		for _, v := range vs.Interface().([]interface{}) {
-			tf := reflect.TypeOf(v).Elem()
-			f := tf.Field(0)
-			for _, s := range strings.Split(f.Tag.Get("protobuf"), ",") {
-				if len(s) > 0 && strings.Trim(s, "0123456789") == "" {
-					n, _ := strconv.ParseUint(s, 10, 64)
-					oneofFields[pref.FieldNumber(n)] = tf
-					continue oneofLoop
-				}
+		oneofWrappers = fn.Func.Call([]reflect.Value{reflect.Zero(fn.Type.In(0))})[3].Interface().([]interface{})
+	}
+	if fn, ok := reflect.PtrTo(t).MethodByName("XXX_OneofWrappers"); ok {
+		oneofWrappers = fn.Func.Call([]reflect.Value{reflect.Zero(fn.Type.In(0))})[0].Interface().([]interface{})
+	}
+	for _, v := range oneofWrappers {
+		tf := reflect.TypeOf(v).Elem()
+		f := tf.Field(0)
+		for _, s := range strings.Split(f.Tag.Get("protobuf"), ",") {
+			if len(s) > 0 && strings.Trim(s, "0123456789") == "" {
+				n, _ := strconv.ParseUint(s, 10, 64)
+				oneofFields[pref.FieldNumber(n)] = tf
+				break
 			}
 		}
 	}
