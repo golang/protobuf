@@ -5,14 +5,10 @@
 package impl
 
 import (
-	"fmt"
 	"reflect"
 
 	papi "github.com/golang/protobuf/protoapi"
-	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
-	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
 func makeLegacyExtensionFieldsFunc(t reflect.Type) func(p *messageDataType) pref.KnownFields {
@@ -71,7 +67,7 @@ func (p legacyExtensionFields) Has(n pref.FieldNumber) bool {
 	if x.Value == nil {
 		return false
 	}
-	t := legacyExtensionTypeOf(x.Desc)
+	t := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
 	if t.Cardinality() == pref.Repeated {
 		return t.ValueOf(x.Value).List().Len() > 0
 	}
@@ -83,7 +79,7 @@ func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 	if x.Desc == nil {
 		return pref.Value{}
 	}
-	t := legacyExtensionTypeOf(x.Desc)
+	t := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
 	if x.Value == nil {
 		// NOTE: x.Value is never nil for Lists since they are always populated
 		// during ExtensionFieldTypes.Register.
@@ -100,7 +96,7 @@ func (p legacyExtensionFields) Set(n pref.FieldNumber, v pref.Value) {
 	if x.Desc == nil {
 		panic("no extension descriptor registered")
 	}
-	t := legacyExtensionTypeOf(x.Desc)
+	t := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
 	x.Value = t.InterfaceOf(v)
 	p.x.Set(n, x)
 }
@@ -110,7 +106,7 @@ func (p legacyExtensionFields) Clear(n pref.FieldNumber) {
 	if x.Desc == nil {
 		return
 	}
-	t := legacyExtensionTypeOf(x.Desc)
+	t := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
 	if t.Cardinality() == pref.Repeated {
 		t.ValueOf(x.Value).List().Truncate(0)
 		return
@@ -124,7 +120,7 @@ func (p legacyExtensionFields) Mutable(n pref.FieldNumber) pref.Mutable {
 	if x.Desc == nil {
 		panic("no extension descriptor registered")
 	}
-	t := legacyExtensionTypeOf(x.Desc)
+	t := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
 	if x.Value == nil {
 		v := t.ValueOf(t.New())
 		x.Value = t.InterfaceOf(v)
@@ -169,7 +165,7 @@ func (p legacyExtensionTypes) Register(t pref.ExtensionType) {
 	if x.Desc != nil {
 		panic("extension descriptor already registered")
 	}
-	x.Desc = legacyExtensionDescOf(t, p.mi.goType)
+	x.Desc = legacyWrapper.ExtensionDescFromType(t)
 	if t.Cardinality() == pref.Repeated {
 		// If the field is repeated, initialize the entry with an empty list
 		// so that future Get operations can return a mutable and concrete list.
@@ -204,7 +200,7 @@ func (p legacyExtensionTypes) Remove(t pref.ExtensionType) {
 func (p legacyExtensionTypes) ByNumber(n pref.FieldNumber) pref.ExtensionType {
 	x := p.x.Get(n)
 	if x.Desc != nil {
-		return legacyExtensionTypeOf(x.Desc)
+		return legacyWrapper.ExtensionTypeFromDesc(x.Desc)
 	}
 	return nil
 }
@@ -212,7 +208,7 @@ func (p legacyExtensionTypes) ByNumber(n pref.FieldNumber) pref.ExtensionType {
 func (p legacyExtensionTypes) ByName(s pref.FullName) (t pref.ExtensionType) {
 	p.x.Range(func(_ pref.FieldNumber, x papi.ExtensionField) bool {
 		if x.Desc != nil && x.Desc.Name == string(s) {
-			t = legacyExtensionTypeOf(x.Desc)
+			t = legacyWrapper.ExtensionTypeFromDesc(x.Desc)
 			return false
 		}
 		return true
@@ -223,169 +219,10 @@ func (p legacyExtensionTypes) ByName(s pref.FullName) (t pref.ExtensionType) {
 func (p legacyExtensionTypes) Range(f func(pref.ExtensionType) bool) {
 	p.x.Range(func(_ pref.FieldNumber, x papi.ExtensionField) bool {
 		if x.Desc != nil {
-			if !f(legacyExtensionTypeOf(x.Desc)) {
+			if !f(legacyWrapper.ExtensionTypeFromDesc(x.Desc)) {
 				return false
 			}
 		}
 		return true
 	})
-}
-
-func legacyExtensionDescOf(t pref.ExtensionType, parent reflect.Type) *papi.ExtensionDesc {
-	if t, ok := t.(*legacyExtensionType); ok {
-		return t.desc
-	}
-
-	// Determine the v1 extension type, which is unfortunately not the same as
-	// the v2 ExtensionType.GoType.
-	extType := t.GoType()
-	switch extType.Kind() {
-	case reflect.Bool, reflect.Int32, reflect.Int64, reflect.Uint32, reflect.Uint64, reflect.Float32, reflect.Float64, reflect.String:
-		extType = reflect.PtrTo(extType) // T -> *T for singular scalar fields
-	case reflect.Ptr:
-		if extType.Elem().Kind() == reflect.Slice {
-			extType = extType.Elem() // *[]T -> []T for repeated fields
-		}
-	}
-
-	// Reconstruct the legacy enum full name, which is an odd mixture of the
-	// proto package name with the Go type name.
-	var enumName string
-	if t.Kind() == pref.EnumKind {
-		enumName = t.GoType().Name()
-		for d, ok := pref.Descriptor(t.EnumType()), true; ok; d, ok = d.Parent() {
-			if fd, _ := d.(pref.FileDescriptor); fd != nil && fd.Package() != "" {
-				enumName = string(fd.Package()) + "." + enumName
-			}
-		}
-	}
-
-	// Construct and return a v1 ExtensionDesc.
-	return &papi.ExtensionDesc{
-		ExtendedType:  reflect.Zero(parent).Interface().(papi.Message),
-		ExtensionType: reflect.Zero(extType).Interface(),
-		Field:         int32(t.Number()),
-		Name:          string(t.FullName()),
-		Tag:           ptag.Marshal(t, enumName),
-	}
-}
-
-func legacyExtensionTypeOf(d *papi.ExtensionDesc) pref.ExtensionType {
-	if d.Type != nil {
-		return d.Type
-	}
-
-	// Derive basic field information from the struct tag.
-	t := reflect.TypeOf(d.ExtensionType)
-	isOptional := t.Kind() == reflect.Ptr && t.Elem().Kind() != reflect.Struct
-	isRepeated := t.Kind() == reflect.Slice && t.Elem().Kind() != reflect.Uint8
-	if isOptional || isRepeated {
-		t = t.Elem()
-	}
-	f := ptag.Unmarshal(d.Tag, t)
-
-	// Construct a v2 ExtensionType.
-	conv := newConverter(t, f.Kind)
-	xd, err := ptype.NewExtension(&ptype.StandaloneExtension{
-		FullName:     pref.FullName(d.Name),
-		Number:       pref.FieldNumber(d.Field),
-		Cardinality:  f.Cardinality,
-		Kind:         f.Kind,
-		Default:      f.Default,
-		Options:      f.Options,
-		EnumType:     conv.EnumType,
-		MessageType:  conv.MessageType,
-		ExtendedType: legacyLoadMessageDesc(reflect.TypeOf(d.ExtendedType)),
-	})
-	if err != nil {
-		panic(err)
-	}
-	xt := ptype.GoExtension(xd, conv.EnumType, conv.MessageType)
-
-	// Return the extension type as is if the dependencies already support v2.
-	xt2 := &legacyExtensionType{ExtensionType: xt, desc: d}
-	if !conv.IsLegacy {
-		return xt2
-	}
-
-	// If the dependency is a v1 enum or message, we need to create a custom
-	// extension type where ExtensionType.GoType continues to use the legacy
-	// v1 Go type, instead of the wrapped versions that satisfy the v2 API.
-	if xd.Cardinality() != pref.Repeated {
-		// Custom extension type for singular enums and messages.
-		// The legacy wrappers use legacyEnumWrapper and legacyMessageWrapper
-		// to implement the v2 interfaces for enums and messages.
-		// Both of those type satisfy the value.Unwrapper interface.
-		xt2.typ = t
-		xt2.new = func() interface{} {
-			return xt.New().(pvalue.Unwrapper).ProtoUnwrap()
-		}
-		xt2.valueOf = func(v interface{}) pref.Value {
-			if reflect.TypeOf(v) != xt2.typ {
-				panic(fmt.Sprintf("invalid type: got %T, want %v", v, xt2.typ))
-			}
-			if xd.Kind() == pref.EnumKind {
-				return xt.ValueOf(legacyWrapEnum(reflect.ValueOf(v)))
-			} else {
-				return xt.ValueOf(legacyWrapMessage(reflect.ValueOf(v)))
-			}
-		}
-		xt2.interfaceOf = func(v pref.Value) interface{} {
-			return xt.InterfaceOf(v).(pvalue.Unwrapper).ProtoUnwrap()
-		}
-	} else {
-		// Custom extension type for repeated enums and messages.
-		xt2.typ = reflect.PtrTo(reflect.SliceOf(t))
-		xt2.new = func() interface{} {
-			return reflect.New(xt2.typ.Elem()).Interface()
-		}
-		xt2.valueOf = func(v interface{}) pref.Value {
-			if reflect.TypeOf(v) != xt2.typ {
-				panic(fmt.Sprintf("invalid type: got %T, want %v", v, xt2.typ))
-			}
-			return pref.ValueOf(pvalue.ListOf(v, conv))
-		}
-		xt2.interfaceOf = func(pv pref.Value) interface{} {
-			v := pv.List().(pvalue.Unwrapper).ProtoUnwrap()
-			if reflect.TypeOf(v) != xt2.typ {
-				panic(fmt.Sprintf("invalid type: got %T, want %v", v, xt2.typ))
-			}
-			return v
-		}
-	}
-	return xt2
-}
-
-type legacyExtensionType struct {
-	pref.ExtensionType
-	desc        *papi.ExtensionDesc
-	typ         reflect.Type
-	new         func() interface{}
-	valueOf     func(interface{}) pref.Value
-	interfaceOf func(pref.Value) interface{}
-}
-
-func (x *legacyExtensionType) GoType() reflect.Type {
-	if x.typ != nil {
-		return x.typ
-	}
-	return x.ExtensionType.GoType()
-}
-func (x *legacyExtensionType) New() interface{} {
-	if x.new != nil {
-		return x.new()
-	}
-	return x.ExtensionType.New()
-}
-func (x *legacyExtensionType) ValueOf(v interface{}) pref.Value {
-	if x.valueOf != nil {
-		return x.valueOf(v)
-	}
-	return x.ExtensionType.ValueOf(v)
-}
-func (x *legacyExtensionType) InterfaceOf(v pref.Value) interface{} {
-	if x.interfaceOf != nil {
-		return x.interfaceOf(v)
-	}
-	return x.ExtensionType.InterfaceOf(v)
 }

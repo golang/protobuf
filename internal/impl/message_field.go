@@ -42,7 +42,7 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 	if !reflect.PtrTo(ot).Implements(ft) {
 		panic(fmt.Sprintf("invalid type: %v does not implement %v", ot, ft))
 	}
-	conv := newConverter(ot.Field(0).Type, fd.Kind())
+	conv := pvalue.NewLegacyConverter(ot.Field(0).Type, fd.Kind(), legacyWrapper)
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
@@ -104,8 +104,8 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 	if ft.Kind() != reflect.Map {
 		panic(fmt.Sprintf("invalid type: got %v, want map kind", ft))
 	}
-	keyConv := newConverter(ft.Key(), fd.MessageType().Fields().ByNumber(1).Kind())
-	valConv := newConverter(ft.Elem(), fd.MessageType().Fields().ByNumber(2).Kind())
+	keyConv := pvalue.NewLegacyConverter(ft.Key(), fd.MessageType().Fields().ByNumber(1).Kind(), legacyWrapper)
+	valConv := pvalue.NewLegacyConverter(ft.Elem(), fd.MessageType().Fields().ByNumber(2).Kind(), legacyWrapper)
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
@@ -137,7 +137,7 @@ func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 	if ft.Kind() != reflect.Slice {
 		panic(fmt.Sprintf("invalid type: got %v, want slice kind", ft))
 	}
-	conv := newConverter(ft.Elem(), fd.Kind())
+	conv := pvalue.NewLegacyConverter(ft.Elem(), fd.Kind(), legacyWrapper)
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
@@ -177,7 +177,7 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			ft = ft.Elem()
 		}
 	}
-	conv := newConverter(ft, fd.Kind())
+	conv := pvalue.NewLegacyConverter(ft, fd.Kind(), legacyWrapper)
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
@@ -242,7 +242,7 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 
 func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
 	ft := fs.Type
-	conv := newConverter(ft, fd.Kind())
+	conv := pvalue.NewLegacyConverter(ft, fd.Kind(), legacyWrapper)
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
@@ -278,13 +278,4 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 			return conv.PBValueOf(rv).Message()
 		},
 	}
-}
-
-// newConverter calls value.NewLegacyConverter with the necessary constructor
-// functions for legacy enum and message support.
-func newConverter(t reflect.Type, k pref.Kind) pvalue.Converter {
-	messageType := func(t reflect.Type) pref.MessageType {
-		return legacyLoadMessageType(t).Type
-	}
-	return pvalue.NewLegacyConverter(t, k, legacyLoadEnumType, messageType, legacyWrapMessage)
 }

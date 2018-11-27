@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package impl
+package impl_test
 
 import (
 	"fmt"
@@ -12,14 +12,19 @@ import (
 
 	protoV1 "github.com/golang/protobuf/proto"
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
+	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 	cmp "github.com/google/go-cmp/cmp"
 	cmpopts "github.com/google/go-cmp/cmp/cmpopts"
 
+	// The legacy package must be imported prior to use of any legacy messages.
+	// TODO: Remove this when protoV1 registers these hooks for you.
+	_ "github.com/golang/protobuf/v2/internal/legacy"
+
 	proto2_20180125 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
-	pvalue "github.com/golang/protobuf/v2/internal/value"
 )
 
 // List of test operations to perform on messages, lists, or maps.
@@ -184,7 +189,7 @@ type (
 	MapBytes   map[MyString]MyBytes
 )
 
-var scalarProto2Type = MessageType{Type: ptype.GoMessage(
+var scalarProto2Type = pimpl.MessageType{Type: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "ScalarProto2",
@@ -279,7 +284,7 @@ type ScalarProto3 struct {
 	MyBytesA  MyString  `protobuf:"22"`
 }
 
-var scalarProto3Type = MessageType{Type: ptype.GoMessage(
+var scalarProto3Type = pimpl.MessageType{Type: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto3,
 		FullName: "ScalarProto3",
@@ -387,7 +392,7 @@ type ListScalars struct {
 	MyBytes4   ListStrings `protobuf:"19"`
 }
 
-var listScalarsType = MessageType{Type: ptype.GoMessage(
+var listScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "ListScalars",
@@ -565,7 +570,7 @@ func mustMakeMapEntry(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Fiel
 	}
 }
 
-var mapScalarsType = MessageType{Type: ptype.GoMessage(
+var mapScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "MapScalars",
@@ -732,7 +737,7 @@ type OneofScalars struct {
 	Union isOneofScalars_Union `protobuf_oneof:"union"`
 }
 
-var oneofScalarsType = MessageType{Type: ptype.GoMessage(
+var oneofScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "OneofScalars",
@@ -933,14 +938,14 @@ type EnumMessages struct {
 	Union         isEnumMessages_Union     `protobuf_oneof:"union"`
 }
 
-var enumMessagesType = MessageType{Type: ptype.GoMessage(
+var enumMessagesType = pimpl.MessageType{Type: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "EnumMessages",
 		Fields: []ptype.Field{
 			{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BEEF"), EnumType: enumProto2Type},
 			{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BRAVO"), EnumType: enumProto3Type},
-			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: MessageOf(new(proto2_20180125.Message)).Type()},
+			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: pimpl.Export{}.MessageOf(new(proto2_20180125.Message)).Type()},
 			{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: ptype.PlaceholderMessage("EnumMessages")},
 			{Name: "f5", Number: 5, Cardinality: pref.Repeated, Kind: pref.EnumKind, EnumType: enumProto2Type},
 			{Name: "f6", Number: 6, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: scalarProto2Type.Type},
@@ -1018,7 +1023,7 @@ func (*EnumMessages_OneofM2) isEnumMessages_Union() {}
 func (*EnumMessages_OneofM3) isEnumMessages_Union() {}
 
 func TestEnumMessages(t *testing.T) {
-	wantL := MessageOf(&proto2_20180125.Message{OptionalFloat: scalar.Float32(math.E)})
+	wantL := pimpl.Export{}.MessageOf(&proto2_20180125.Message{OptionalFloat: scalar.Float32(math.E)})
 	wantM := &EnumMessages{EnumP2: EnumProto2(1234).Enum()}
 	wantM2a := &ScalarProto2{Float32: scalar.Float32(math.Pi)}
 	wantM2b := &ScalarProto2{Float32: scalar.Float32(math.Phi)}

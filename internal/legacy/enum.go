@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package impl
+package legacy
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ import (
 )
 
 // legacyWrapEnum wraps v as a protoreflect.ProtoEnum,
-// where v must be a *struct kind and not implement the v2 API already.
+// where v must be a int32 kind and not implement the v2 API already.
 func legacyWrapEnum(v reflect.Value) pref.ProtoEnum {
 	et := legacyLoadEnumType(v.Type())
 	return et.New(pref.EnumNumber(v.Int()))

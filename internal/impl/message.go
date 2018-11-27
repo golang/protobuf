@@ -11,19 +11,9 @@ import (
 	"strings"
 	"sync"
 
+	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
-
-// MessageOf returns the protoreflect.Message interface over p.
-// If p already implements proto.Message, then it directly calls the
-// ProtoReflect method, otherwise it wraps the legacy v1 message to implement
-// the v2 reflective interface.
-func MessageOf(p interface{}) pref.Message {
-	if m, ok := p.(pref.ProtoMessage); ok {
-		return m.ProtoReflect()
-	}
-	return legacyWrapMessage(reflect.ValueOf(p)).ProtoReflect()
-}
 
 // MessageType provides protobuf related functionality for a given Go type
 // that represents a message. A given instance of MessageType is tied to
@@ -165,6 +155,10 @@ func (mi *MessageType) makeExtensionFieldsFunc(t reflect.Type) {
 	}
 }
 
+func (mi *MessageType) MessageOf(p interface{}) pref.Message {
+	return (*messageWrapper)(mi.dataTypeOf(p))
+}
+
 func (mi *MessageType) KnownFieldsOf(p interface{}) pref.KnownFields {
 	return (*knownFields)(mi.dataTypeOf(p))
 }
@@ -200,6 +194,33 @@ type messageDataType struct {
 	p  pointer
 	mi *MessageType
 }
+
+type messageWrapper messageDataType
+
+func (m *messageWrapper) Type() pref.MessageType {
+	return m.mi.Type
+}
+func (m *messageWrapper) KnownFields() pref.KnownFields {
+	return (*knownFields)(m)
+}
+func (m *messageWrapper) UnknownFields() pref.UnknownFields {
+	return m.mi.unknownFields((*messageDataType)(m))
+}
+func (m *messageWrapper) Interface() pref.ProtoMessage {
+	if m, ok := m.ProtoUnwrap().(pref.ProtoMessage); ok {
+		return m
+	}
+	return m
+}
+func (m *messageWrapper) ProtoReflect() pref.Message {
+	return m
+}
+func (m *messageWrapper) ProtoUnwrap() interface{} {
+	return m.p.asType(m.mi.goType.Elem()).Interface()
+}
+func (m *messageWrapper) ProtoMutable() {}
+
+var _ pvalue.Unwrapper = (*messageWrapper)(nil)
 
 type knownFields messageDataType
 

@@ -10,8 +10,6 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/v2/encoding/textpb"
-	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb2"
-	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb3"
 	"github.com/golang/protobuf/v2/internal/detrand"
 	"github.com/golang/protobuf/v2/internal/impl"
 	"github.com/golang/protobuf/v2/internal/scalar"
@@ -19,12 +17,18 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
+	// The legacy package must be imported prior to use of any legacy messages.
+	// TODO: Remove this when protoV1 registers these hooks for you.
+	_ "github.com/golang/protobuf/v2/internal/legacy"
+
 	anypb "github.com/golang/protobuf/ptypes/any"
 	durpb "github.com/golang/protobuf/ptypes/duration"
 	emptypb "github.com/golang/protobuf/ptypes/empty"
 	stpb "github.com/golang/protobuf/ptypes/struct"
 	tspb "github.com/golang/protobuf/ptypes/timestamp"
 	wpb "github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb2"
+	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb3"
 )
 
 func init() {
@@ -33,7 +37,7 @@ func init() {
 }
 
 func M(m interface{}) proto.Message {
-	return impl.MessageOf(m).Interface()
+	return impl.Export{}.MessageOf(m).Interface()
 }
 
 // splitLines is a cmpopts.Option for comparing strings with line breaks.

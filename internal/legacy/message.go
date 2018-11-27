@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package impl
+package legacy
 
 import (
 	"fmt"
@@ -13,8 +13,8 @@ import (
 
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
+	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
-	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
@@ -23,57 +23,29 @@ import (
 // where v must be a *struct kind and not implement the v2 API already.
 func legacyWrapMessage(v reflect.Value) pref.ProtoMessage {
 	mt := legacyLoadMessageType(v.Type())
-	return (*legacyMessageWrapper)(mt.dataTypeOf(v.Interface()))
+	return mt.MessageOf(v.Interface()).Interface()
 }
 
 var messageTypeCache sync.Map // map[reflect.Type]*MessageType
 
 // legacyLoadMessageType dynamically loads a *MessageType for t,
 // where t must be a *struct kind and not implement the v2 API already.
-func legacyLoadMessageType(t reflect.Type) *MessageType {
+func legacyLoadMessageType(t reflect.Type) *pimpl.MessageType {
 	// Fast-path: check if a MessageType is cached for this concrete type.
 	if mt, ok := messageTypeCache.Load(t); ok {
-		return mt.(*MessageType)
+		return mt.(*pimpl.MessageType)
 	}
 
 	// Slow-path: derive message descriptor and initialize MessageType.
 	md := legacyLoadMessageDesc(t)
-	mt := new(MessageType)
+	mt := new(pimpl.MessageType)
 	mt.Type = ptype.GoMessage(md, func(pref.MessageType) pref.ProtoMessage {
 		p := reflect.New(t.Elem()).Interface()
-		return (*legacyMessageWrapper)(mt.dataTypeOf(p))
+		return mt.MessageOf(p).Interface()
 	})
 	messageTypeCache.Store(t, mt)
 	return mt
 }
-
-type legacyMessageWrapper messageDataType
-
-func (m *legacyMessageWrapper) Type() pref.MessageType {
-	return m.mi.Type
-}
-func (m *legacyMessageWrapper) KnownFields() pref.KnownFields {
-	return (*knownFields)(m)
-}
-func (m *legacyMessageWrapper) UnknownFields() pref.UnknownFields {
-	return m.mi.unknownFields((*messageDataType)(m))
-}
-func (m *legacyMessageWrapper) Interface() pref.ProtoMessage {
-	return m
-}
-func (m *legacyMessageWrapper) ProtoReflect() pref.Message {
-	return m
-}
-func (m *legacyMessageWrapper) ProtoUnwrap() interface{} {
-	return m.p.asType(m.mi.goType.Elem()).Interface()
-}
-func (m *legacyMessageWrapper) ProtoMutable() {}
-
-var (
-	_ pref.Message      = (*legacyMessageWrapper)(nil)
-	_ pref.ProtoMessage = (*legacyMessageWrapper)(nil)
-	_ pvalue.Unwrapper  = (*legacyMessageWrapper)(nil)
-)
 
 var messageDescCache sync.Map // map[reflect.Type]protoreflect.MessageDescriptor
 
