@@ -39,7 +39,6 @@ package grpc
 
 import (
 	"fmt"
-	"path"
 	"strconv"
 	"strings"
 
@@ -86,8 +85,6 @@ var (
 // Init initializes the plugin.
 func (g *grpc) Init(gen *generator.Generator) {
 	g.gen = gen
-	contextPkg = generator.RegisterUniquePackageName("context", nil)
-	grpcPkg = generator.RegisterUniquePackageName("grpc", nil)
 }
 
 // Given a type name defined in a .proto, return its object.
@@ -111,6 +108,9 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 		return
 	}
 
+	contextPkg = string(g.gen.AddImport(contextPkgPath))
+	grpcPkg = string(g.gen.AddImport(grpcPkgPath))
+
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConn")
@@ -129,14 +129,6 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 
 // GenerateImports generates the import declaration for this file.
 func (g *grpc) GenerateImports(file *generator.FileDescriptor) {
-	if len(file.FileDescriptorProto.Service) == 0 {
-		return
-	}
-	g.P("import (")
-	g.P(contextPkg, " ", generator.GoImportPath(path.Join(string(g.gen.ImportPrefix), contextPkgPath)))
-	g.P(grpcPkg, " ", generator.GoImportPath(path.Join(string(g.gen.ImportPrefix), grpcPkgPath)))
-	g.P(")")
-	g.P()
 }
 
 // reservedClientName records whether a client name is reserved on the client side.
