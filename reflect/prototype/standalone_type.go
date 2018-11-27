@@ -20,8 +20,8 @@ func (t standaloneMessage) Name() pref.Name                       { return t.m.F
 func (t standaloneMessage) FullName() pref.FullName               { return t.m.FullName }
 func (t standaloneMessage) IsPlaceholder() bool                   { return false }
 func (t standaloneMessage) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t standaloneMessage) Options() interface{}                  { return t.m.Options }
-func (t standaloneMessage) IsMapEntry() bool                      { return t.m.Options.GetMapEntry() }
+func (t standaloneMessage) Options() pref.ProtoMessage            { return t.m.Options }
+func (t standaloneMessage) IsMapEntry() bool                      { return t.m.options.lazyInit(t).isMapEntry }
 func (t standaloneMessage) Fields() pref.FieldDescriptors         { return t.m.fields.lazyInit(t, t.m.Fields) }
 func (t standaloneMessage) Oneofs() pref.OneofDescriptors         { return t.m.oneofs.lazyInit(t, t.m.Oneofs) }
 func (t standaloneMessage) RequiredNumbers() pref.FieldNumbers    { return t.m.nums.lazyInit(t.m.Fields) }
@@ -42,7 +42,7 @@ func (t standaloneEnum) Name() pref.Name                       { return t.e.Full
 func (t standaloneEnum) FullName() pref.FullName               { return t.e.FullName }
 func (t standaloneEnum) IsPlaceholder() bool                   { return false }
 func (t standaloneEnum) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t standaloneEnum) Options() interface{}                  { return t.e.Options }
+func (t standaloneEnum) Options() pref.ProtoMessage            { return t.e.Options }
 func (t standaloneEnum) Values() pref.EnumValueDescriptors     { return t.e.vals.lazyInit(t, t.e.Values) }
 func (t standaloneEnum) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
 func (t standaloneEnum) ProtoType(pref.EnumDescriptor)         {}
@@ -57,14 +57,14 @@ func (t standaloneExtension) Name() pref.Name                       { return t.x
 func (t standaloneExtension) FullName() pref.FullName               { return t.x.FullName }
 func (t standaloneExtension) IsPlaceholder() bool                   { return false }
 func (t standaloneExtension) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t standaloneExtension) Options() interface{}                  { return t.x.Options }
+func (t standaloneExtension) Options() pref.ProtoMessage            { return t.x.Options }
 func (t standaloneExtension) Number() pref.FieldNumber              { return t.x.Number }
 func (t standaloneExtension) Cardinality() pref.Cardinality         { return t.x.Cardinality }
 func (t standaloneExtension) Kind() pref.Kind                       { return t.x.Kind }
 func (t standaloneExtension) JSONName() string                      { return "" }
-func (t standaloneExtension) IsPacked() bool                        { return t.x.Options.GetPacked() }
-func (t standaloneExtension) IsMap() bool                           { return false }
+func (t standaloneExtension) IsPacked() bool                        { return isPacked(t.Options()) }
 func (t standaloneExtension) IsWeak() bool                          { return false }
+func (t standaloneExtension) IsMap() bool                           { return false }
 func (t standaloneExtension) Default() pref.Value                   { return t.x.dv.value(t, t.x.Default) }
 func (t standaloneExtension) DefaultEnumValue() pref.EnumValueDescriptor {
 	return t.x.dv.enum(t, t.x.Default)

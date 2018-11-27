@@ -17,9 +17,10 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/golang/protobuf/v2/internal/scalar"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	pluginpb "github.com/golang/protobuf/v2/types/plugin"
 )
 
 func TestPluginParameters(t *testing.T) {
@@ -172,11 +173,11 @@ TEST: %v
 
 		req := &pluginpb.CodeGeneratorRequest{
 			Parameter: scalar.String(test.parameter),
-			ProtoFile: []*descpb.FileDescriptorProto{
+			ProtoFile: []*descriptorpb.FileDescriptorProto{
 				{
 					Name:    scalar.String(filename),
 					Package: scalar.String(protoPackageName),
-					Options: &descpb.FileOptions{
+					Options: &descriptorpb.FileOptions{
 						GoPackage: scalar.String(test.goPackageOption),
 					},
 				},
@@ -209,7 +210,7 @@ TEST: %v
 
 func TestPackageNameInference(t *testing.T) {
 	gen, err := New(&pluginpb.CodeGeneratorRequest{
-		ProtoFile: []*descpb.FileDescriptorProto{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{
 			{
 				Name:    scalar.String("dir/file1.proto"),
 				Package: scalar.String("proto.package"),
@@ -217,7 +218,7 @@ func TestPackageNameInference(t *testing.T) {
 			{
 				Name:    scalar.String("dir/file2.proto"),
 				Package: scalar.String("proto.package"),
-				Options: &descpb.FileOptions{
+				Options: &descriptorpb.FileOptions{
 					GoPackage: scalar.String("foo"),
 				},
 			},
@@ -236,18 +237,18 @@ func TestPackageNameInference(t *testing.T) {
 
 func TestInconsistentPackageNames(t *testing.T) {
 	_, err := New(&pluginpb.CodeGeneratorRequest{
-		ProtoFile: []*descpb.FileDescriptorProto{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{
 			{
 				Name:    scalar.String("dir/file1.proto"),
 				Package: scalar.String("proto.package"),
-				Options: &descpb.FileOptions{
+				Options: &descriptorpb.FileOptions{
 					GoPackage: scalar.String("golang.org/x/foo"),
 				},
 			},
 			{
 				Name:    scalar.String("dir/file2.proto"),
 				Package: scalar.String("proto.package"),
-				Options: &descpb.FileOptions{
+				Options: &descriptorpb.FileOptions{
 					GoPackage: scalar.String("golang.org/x/foo;bar"),
 				},
 			},
@@ -382,6 +383,16 @@ func makeRequest(t *testing.T, args ...string) *pluginpb.CodeGeneratorRequest {
 		t.Fatal(err)
 	}
 	req := &pluginpb.CodeGeneratorRequest{}
+
+	// TODO: This is a hack, but the proto v1 UnmarshalText relies on global
+	// enum registration to work. The v2 textpb will not have this issue.
+	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Type", descriptorpb.FieldDescriptorProto_Type_name, descriptorpb.FieldDescriptorProto_Type_value)
+	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Label", descriptorpb.FieldDescriptorProto_Label_name, descriptorpb.FieldDescriptorProto_Label_value)
+	proto.RegisterEnum("google.protobuf.FileOptions_OptimizeMode", descriptorpb.FileOptions_OptimizeMode_name, descriptorpb.FileOptions_OptimizeMode_value)
+	proto.RegisterEnum("google.protobuf.FieldOptions_CType", descriptorpb.FieldOptions_CType_name, descriptorpb.FieldOptions_CType_value)
+	proto.RegisterEnum("google.protobuf.FieldOptions_JSType", descriptorpb.FieldOptions_JSType_name, descriptorpb.FieldOptions_JSType_value)
+	proto.RegisterEnum("google.protobuf.MethodOptions_IdempotencyLevel", descriptorpb.MethodOptions_IdempotencyLevel_name, descriptorpb.MethodOptions_IdempotencyLevel_value)
+
 	if err := proto.UnmarshalText(string(b), req); err != nil {
 		t.Fatal(err)
 	}

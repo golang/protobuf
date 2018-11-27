@@ -8,15 +8,15 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/golang/protobuf/v2/internal/pragma"
-	"github.com/golang/protobuf/v2/internal/set"
+	pragma "github.com/golang/protobuf/v2/internal/pragma"
+	pset "github.com/golang/protobuf/v2/internal/set"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 type numbersMeta struct {
 	once sync.Once
 	ns   []pref.FieldNumber
-	nss  set.Ints
+	nss  pset.Ints
 }
 type numbers numbersMeta
 

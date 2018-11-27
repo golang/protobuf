@@ -11,12 +11,13 @@ import (
 	"sync"
 	"unicode"
 
-	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 // wrapMessage wraps v as a protoreflect.ProtoMessage,
@@ -231,7 +232,7 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 			m := &ptype.StandaloneMessage{
 				Syntax:   parent.Syntax,
 				FullName: parent.FullName.Append(mapEntryName(f.Name)),
-				Options:  &descriptorV1.MessageOptions{MapEntry: scalar.Bool(true)},
+				Options:  &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
 				Fields: []ptype.Field{
 					ms.parseField(tagKey, "", "", t.Key(), nil),
 					ms.parseField(tagVal, "", "", t.Elem(), nil),

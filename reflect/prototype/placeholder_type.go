@@ -7,8 +7,7 @@ package prototype
 import (
 	"fmt"
 
-	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/golang/protobuf/v2/internal/pragma"
+	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -41,7 +40,7 @@ type placeholderFile struct {
 	placeholderName
 }
 
-func (t placeholderFile) Options() interface{}                           { return (*descriptorV1.FileOptions)(nil) }
+func (t placeholderFile) Options() pref.ProtoMessage                     { return nil }
 func (t placeholderFile) Path() string                                   { return t.path }
 func (t placeholderFile) Package() pref.FullName                         { return t.FullName() }
 func (t placeholderFile) Imports() pref.FileImports                      { return &emptyFiles }
@@ -57,7 +56,7 @@ type placeholderMessage struct {
 	placeholderName
 }
 
-func (t placeholderMessage) Options() interface{}                  { return (*descriptorV1.MessageOptions)(nil) }
+func (t placeholderMessage) Options() pref.ProtoMessage            { return nil }
 func (t placeholderMessage) IsMapEntry() bool                      { return false }
 func (t placeholderMessage) Fields() pref.FieldDescriptors         { return &emptyFields }
 func (t placeholderMessage) Oneofs() pref.OneofDescriptors         { return &emptyOneofs }
@@ -73,7 +72,7 @@ type placeholderEnum struct {
 	placeholderName
 }
 
-func (t placeholderEnum) Options() interface{}              { return (*descriptorV1.EnumOptions)(nil) }
+func (t placeholderEnum) Options() pref.ProtoMessage        { return nil }
 func (t placeholderEnum) Values() pref.EnumValueDescriptors { return &emptyEnumValues }
 func (t placeholderEnum) Format(s fmt.State, r rune)        { formatDesc(s, r, t) }
 func (t placeholderEnum) ProtoType(pref.EnumDescriptor)     {}

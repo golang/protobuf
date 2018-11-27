@@ -10,8 +10,7 @@ import (
 	"strings"
 	"sync"
 
-	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/golang/protobuf/v2/internal/pragma"
+	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -61,7 +60,7 @@ func (t fileDesc) Name() pref.Name                                  { return t.f
 func (t fileDesc) FullName() pref.FullName                          { return t.f.Package }
 func (t fileDesc) IsPlaceholder() bool                              { return false }
 func (t fileDesc) DescriptorProto() (pref.Message, bool)            { return nil, false }
-func (t fileDesc) Options() interface{}                             { return t.f.Options }
+func (t fileDesc) Options() pref.ProtoMessage                       { return t.f.Options }
 func (t fileDesc) Path() string                                     { return t.f.Path }
 func (t fileDesc) Package() pref.FullName                           { return t.f.Package }
 func (t fileDesc) Imports() pref.FileImports                        { return (*fileImports)(&t.f.Imports) }
@@ -158,6 +157,7 @@ type messageMeta struct {
 	ms messagesMeta
 	es enumsMeta
 	xs extensionsMeta
+	mo messageOptions
 }
 type messageDesc struct{ m *Message }
 
@@ -168,8 +168,8 @@ func (t messageDesc) Name() pref.Name                       { return t.m.Name }
 func (t messageDesc) FullName() pref.FullName               { return t.m.fullName }
 func (t messageDesc) IsPlaceholder() bool                   { return false }
 func (t messageDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t messageDesc) Options() interface{}                  { return t.m.Options }
-func (t messageDesc) IsMapEntry() bool                      { return t.m.Options.GetMapEntry() }
+func (t messageDesc) Options() pref.ProtoMessage            { return t.m.Options }
+func (t messageDesc) IsMapEntry() bool                      { return t.m.mo.lazyInit(t).isMapEntry }
 func (t messageDesc) Fields() pref.FieldDescriptors         { return t.m.fs.lazyInit(t, t.m.Fields) }
 func (t messageDesc) Oneofs() pref.OneofDescriptors         { return t.m.os.lazyInit(t, t.m.Oneofs) }
 func (t messageDesc) RequiredNumbers() pref.FieldNumbers    { return t.m.ns.lazyInit(t.m.Fields) }
@@ -181,6 +181,22 @@ func (t messageDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t
 func (t messageDesc) ProtoType(pref.MessageDescriptor)      {}
 func (t messageDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
+type messageOptions struct {
+	once       sync.Once
+	isMapEntry bool
+}
+
+func (p *messageOptions) lazyInit(m pref.MessageDescriptor) *messageOptions {
+	p.once.Do(func() {
+		if m.Options() != nil {
+			const mapEntryFieldNumber = 7 // google.protobuf.MessageOptions.map_entry
+			fs := m.Options().ProtoReflect().KnownFields()
+			p.isMapEntry = fs.Get(mapEntryFieldNumber).Bool()
+		}
+	})
+	return p
+}
+
 type fieldMeta struct {
 	inheritedMeta
 
@@ -189,6 +205,7 @@ type fieldMeta struct {
 	ot oneofReference
 	mt messageReference
 	et enumReference
+	fo fieldOptions
 }
 type fieldDesc struct{ f *Field }
 
@@ -199,14 +216,14 @@ func (t fieldDesc) Name() pref.Name                            { return t.f.Name
 func (t fieldDesc) FullName() pref.FullName                    { return t.f.fullName }
 func (t fieldDesc) IsPlaceholder() bool                        { return false }
 func (t fieldDesc) DescriptorProto() (pref.Message, bool)      { return nil, false }
-func (t fieldDesc) Options() interface{}                       { return t.f.Options }
+func (t fieldDesc) Options() pref.ProtoMessage                 { return t.f.Options }
 func (t fieldDesc) Number() pref.FieldNumber                   { return t.f.Number }
 func (t fieldDesc) Cardinality() pref.Cardinality              { return t.f.Cardinality }
 func (t fieldDesc) Kind() pref.Kind                            { return t.f.Kind }
 func (t fieldDesc) JSONName() string                           { return t.f.js.lazyInit(t.f) }
-func (t fieldDesc) IsPacked() bool                             { return fieldIsPacked(t) }
-func (t fieldDesc) IsMap() bool                                { return isMap(t) }
-func (t fieldDesc) IsWeak() bool                               { return t.f.Options.GetWeak() }
+func (t fieldDesc) IsPacked() bool                             { return t.f.fo.lazyInit(t).isPacked }
+func (t fieldDesc) IsWeak() bool                               { return t.f.fo.lazyInit(t).isWeak }
+func (t fieldDesc) IsMap() bool                                { return t.f.fo.lazyInit(t).isMap }
 func (t fieldDesc) Default() pref.Value                        { return t.f.dv.value(t, t.f.Default) }
 func (t fieldDesc) DefaultEnumValue() pref.EnumValueDescriptor { return t.f.dv.enum(t, t.f.Default) }
 func (t fieldDesc) HasDefault() bool                           { return t.f.Default.IsValid() }
@@ -217,44 +234,6 @@ func (t fieldDesc) EnumType() pref.EnumDescriptor              { return t.f.et.l
 func (t fieldDesc) Format(s fmt.State, r rune)                 { formatDesc(s, r, t) }
 func (t fieldDesc) ProtoType(pref.FieldDescriptor)             {}
 func (t fieldDesc) ProtoInternal(pragma.DoNotImplement)        {}
-
-func fieldIsPacked(t fieldDesc) bool {
-	if t.f.Options != nil && t.f.Options.Packed != nil {
-		return *t.f.Options.Packed
-	}
-	// https://developers.google.com/protocol-buffers/docs/proto3:
-	// "In proto3, repeated fields of scalar numeric types use packed
-	// encoding by default."
-	return (t.f.syntax == pref.Proto3 &&
-		t.f.Cardinality == pref.Repeated &&
-		isScalarNumeric[t.f.Kind])
-}
-
-var isScalarNumeric = map[pref.Kind]bool{
-	pref.BoolKind:     true,
-	pref.EnumKind:     true,
-	pref.Int32Kind:    true,
-	pref.Sint32Kind:   true,
-	pref.Uint32Kind:   true,
-	pref.Int64Kind:    true,
-	pref.Sint64Kind:   true,
-	pref.Uint64Kind:   true,
-	pref.Sfixed32Kind: true,
-	pref.Fixed32Kind:  true,
-	pref.FloatKind:    true,
-	pref.Sfixed64Kind: true,
-	pref.Fixed64Kind:  true,
-	pref.DoubleKind:   true,
-}
-
-func isMap(t pref.FieldDescriptor) bool {
-	if t.Cardinality() == pref.Repeated && t.Kind() == pref.MessageKind {
-		if mt := t.MessageType(); mt != nil {
-			return mt.Options().(*descriptorV1.MessageOptions).GetMapEntry()
-		}
-	}
-	return false
-}
 
 type jsonName struct{ once sync.Once }
 
@@ -301,6 +280,77 @@ func (p *oneofReference) lazyInit(parent pref.Descriptor, name pref.Name) pref.O
 	return p.otyp
 }
 
+type fieldOptions struct {
+	once     sync.Once
+	isPacked bool
+	isWeak   bool
+	isMap    bool
+}
+
+func (p *fieldOptions) lazyInit(f pref.FieldDescriptor) *fieldOptions {
+	p.once.Do(func() {
+		if f.Cardinality() == pref.Repeated {
+			// In proto3, repeated fields of scalar numeric types use
+			// packed encoding by default.
+			// See https://developers.google.com/protocol-buffers/docs/proto3
+			if f.Syntax() == pref.Proto3 {
+				p.isPacked = isScalarNumeric[f.Kind()]
+			}
+			if f.Kind() == pref.MessageKind {
+				p.isMap = f.MessageType().IsMapEntry()
+			}
+		}
+
+		if f.Options() != nil {
+			const packedFieldNumber = 2 // google.protobuf.FieldOptions.packed
+			const weakFieldNumber = 10  // google.protobuf.FieldOptions.weak
+			fs := f.Options().ProtoReflect().KnownFields()
+			if fs.Has(packedFieldNumber) {
+				p.isPacked = fs.Get(packedFieldNumber).Bool()
+			}
+			p.isWeak = fs.Get(weakFieldNumber).Bool()
+		}
+	})
+	return p
+}
+
+// isPacked reports whether the packed options is set.
+func isPacked(m pref.ProtoMessage) (isPacked bool) {
+	if m != nil {
+		const packedFieldNumber = 2 // google.protobuf.FieldOptions.packed
+		fs := m.ProtoReflect().KnownFields()
+		isPacked = fs.Get(packedFieldNumber).Bool()
+	}
+	return isPacked
+}
+
+// isWeak reports whether the weak options is set.
+func isWeak(m pref.ProtoMessage) (isWeak bool) {
+	if m != nil {
+		const weakFieldNumber = 10 // google.protobuf.FieldOptions.weak
+		fs := m.ProtoReflect().KnownFields()
+		isWeak = fs.Get(weakFieldNumber).Bool()
+	}
+	return isWeak
+}
+
+var isScalarNumeric = map[pref.Kind]bool{
+	pref.BoolKind:     true,
+	pref.EnumKind:     true,
+	pref.Int32Kind:    true,
+	pref.Sint32Kind:   true,
+	pref.Uint32Kind:   true,
+	pref.Int64Kind:    true,
+	pref.Sint64Kind:   true,
+	pref.Uint64Kind:   true,
+	pref.Sfixed32Kind: true,
+	pref.Fixed32Kind:  true,
+	pref.FloatKind:    true,
+	pref.Sfixed64Kind: true,
+	pref.Fixed64Kind:  true,
+	pref.DoubleKind:   true,
+}
+
 type oneofMeta struct {
 	inheritedMeta
 
@@ -315,7 +365,7 @@ func (t oneofDesc) Name() pref.Name                       { return t.o.Name }
 func (t oneofDesc) FullName() pref.FullName               { return t.o.fullName }
 func (t oneofDesc) IsPlaceholder() bool                   { return false }
 func (t oneofDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t oneofDesc) Options() interface{}                  { return t.o.Options }
+func (t oneofDesc) Options() pref.ProtoMessage            { return t.o.Options }
 func (t oneofDesc) Fields() pref.FieldDescriptors         { return t.o.fs.lazyInit(t) }
 func (t oneofDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
 func (t oneofDesc) ProtoType(pref.OneofDescriptor)        {}
@@ -338,14 +388,14 @@ func (t extensionDesc) Name() pref.Name                            { return t.x.
 func (t extensionDesc) FullName() pref.FullName                    { return t.x.fullName }
 func (t extensionDesc) IsPlaceholder() bool                        { return false }
 func (t extensionDesc) DescriptorProto() (pref.Message, bool)      { return nil, false }
-func (t extensionDesc) Options() interface{}                       { return t.x.Options }
+func (t extensionDesc) Options() pref.ProtoMessage                 { return t.x.Options }
 func (t extensionDesc) Number() pref.FieldNumber                   { return t.x.Number }
 func (t extensionDesc) Cardinality() pref.Cardinality              { return t.x.Cardinality }
 func (t extensionDesc) Kind() pref.Kind                            { return t.x.Kind }
 func (t extensionDesc) JSONName() string                           { return "" }
-func (t extensionDesc) IsPacked() bool                             { return t.x.Options.GetPacked() }
-func (t extensionDesc) IsMap() bool                                { return false }
+func (t extensionDesc) IsPacked() bool                             { return isPacked(t.Options()) }
 func (t extensionDesc) IsWeak() bool                               { return false }
+func (t extensionDesc) IsMap() bool                                { return false }
 func (t extensionDesc) Default() pref.Value                        { return t.x.dv.value(t, t.x.Default) }
 func (t extensionDesc) DefaultEnumValue() pref.EnumValueDescriptor { return t.x.dv.enum(t, t.x.Default) }
 func (t extensionDesc) HasDefault() bool                           { return t.x.Default.IsValid() }
@@ -375,7 +425,7 @@ func (t enumDesc) Name() pref.Name                       { return t.e.Name }
 func (t enumDesc) FullName() pref.FullName               { return t.e.fullName }
 func (t enumDesc) IsPlaceholder() bool                   { return false }
 func (t enumDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t enumDesc) Options() interface{}                  { return t.e.Options }
+func (t enumDesc) Options() pref.ProtoMessage            { return t.e.Options }
 func (t enumDesc) Values() pref.EnumValueDescriptors     { return t.e.vs.lazyInit(t, t.e.Values) }
 func (t enumDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
 func (t enumDesc) ProtoType(pref.EnumDescriptor)         {}
@@ -393,7 +443,7 @@ func (t enumValueDesc) Name() pref.Name                       { return t.v.Name 
 func (t enumValueDesc) FullName() pref.FullName               { return t.v.fullName }
 func (t enumValueDesc) IsPlaceholder() bool                   { return false }
 func (t enumValueDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t enumValueDesc) Options() interface{}                  { return t.v.Options }
+func (t enumValueDesc) Options() pref.ProtoMessage            { return t.v.Options }
 func (t enumValueDesc) Number() pref.EnumNumber               { return t.v.Number }
 func (t enumValueDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
 func (t enumValueDesc) ProtoType(pref.EnumValueDescriptor)    {}
@@ -413,7 +463,7 @@ func (t serviceDesc) Name() pref.Name                       { return t.s.Name }
 func (t serviceDesc) FullName() pref.FullName               { return t.s.fullName }
 func (t serviceDesc) IsPlaceholder() bool                   { return false }
 func (t serviceDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t serviceDesc) Options() interface{}                  { return t.s.Options }
+func (t serviceDesc) Options() pref.ProtoMessage            { return t.s.Options }
 func (t serviceDesc) Methods() pref.MethodDescriptors       { return t.s.ms.lazyInit(t, t.s.Methods) }
 func (t serviceDesc) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
 func (t serviceDesc) ProtoType(pref.ServiceDescriptor)      {}
@@ -434,7 +484,7 @@ func (t methodDesc) Name() pref.Name                       { return t.m.Name }
 func (t methodDesc) FullName() pref.FullName               { return t.m.fullName }
 func (t methodDesc) IsPlaceholder() bool                   { return false }
 func (t methodDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t methodDesc) Options() interface{}                  { return t.m.Options }
+func (t methodDesc) Options() pref.ProtoMessage            { return t.m.Options }
 func (t methodDesc) InputType() pref.MessageDescriptor     { return t.m.mit.lazyInit(t, &t.m.InputType) }
 func (t methodDesc) OutputType() pref.MessageDescriptor    { return t.m.mot.lazyInit(t, &t.m.OutputType) }
 func (t methodDesc) IsStreamingClient() bool               { return t.m.IsStreamingClient }

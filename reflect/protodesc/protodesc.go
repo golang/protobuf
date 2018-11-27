@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package prototype
+// Package protodesc provides for converting descriptorpb.FileDescriptorProto
+// to/from the reflective protoreflect.FileDescriptor.
+package protodesc
 
 import (
 	"fmt"
@@ -10,12 +12,13 @@ import (
 	"strconv"
 	"strings"
 
-	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
-
 	"github.com/golang/protobuf/v2/internal/encoding/text"
 	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/protoregistry"
+	"github.com/golang/protobuf/v2/reflect/prototype"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 // TODO: Should we be responsible for validating other parts of the descriptor
@@ -41,9 +44,9 @@ import (
 // However, this will complicate future work for validation since File may now
 // diverge from the stored descriptor proto (see above TODO).
 
-// NewFileFromDescriptorProto creates a new protoreflect.FileDescriptor from
-// the provided descriptor message. The file must represent a valid proto file
-// according to protobuf semantics.
+// NewFile creates a new protoreflect.FileDescriptor from the provided
+// file descriptor message. The file must represent a valid proto file according
+// to protobuf semantics.
 //
 // Any import files, enum types, or message types referenced in the file are
 // resolved using the provided registry. When looking up an import file path,
@@ -52,8 +55,8 @@ import (
 //
 // The caller must relinquish full ownership of the input fd and must not
 // access or mutate any fields.
-func NewFileFromDescriptorProto(fd *descriptorV1.FileDescriptorProto, r *protoregistry.Files) (protoreflect.FileDescriptor, error) {
-	var f File
+func NewFile(fd *descriptorpb.FileDescriptorProto, r *protoregistry.Files) (protoreflect.FileDescriptor, error) {
+	var f prototype.File
 	switch fd.GetSyntax() {
 	case "", "proto2":
 		f.Syntax = protoreflect.Proto2
@@ -91,7 +94,7 @@ func NewFileFromDescriptorProto(fd *descriptorV1.FileDescriptorProto, r *protore
 			return nil, errors.New("duplicate files for import %q", path)
 		}
 		if imp.IsWeak || imp.FileDescriptor == nil {
-			imp.FileDescriptor = PlaceholderFile(path, "")
+			imp.FileDescriptor = prototype.PlaceholderFile(path, "")
 		}
 	}
 
@@ -113,16 +116,16 @@ func NewFileFromDescriptorProto(fd *descriptorV1.FileDescriptorProto, r *protore
 		return nil, err
 	}
 
-	return NewFile(&f)
+	return prototype.NewFile(&f)
 }
 
-func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, syntax protoreflect.Syntax, r *protoregistry.Files) (ms []Message, err error) {
+func messagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, syntax protoreflect.Syntax, r *protoregistry.Files) (ms []prototype.Message, err error) {
 	for _, md := range mds {
-		var m Message
+		var m prototype.Message
 		m.Name = protoreflect.Name(md.GetName())
 		m.Options = md.GetOptions()
 		for _, fd := range md.GetField() {
-			var f Field
+			var f prototype.Field
 			f.Name = protoreflect.Name(fd.GetName())
 			f.Number = protoreflect.FieldNumber(fd.GetNumber())
 			f.Cardinality = protoreflect.Cardinality(fd.GetLabel())
@@ -142,28 +145,29 @@ func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, syntax pro
 				}
 				f.OneofName = protoreflect.Name(md.GetOneofDecl()[i].GetName())
 			}
+			opts, _ := f.Options.(*descriptorpb.FieldOptions)
 			switch f.Kind {
 			case protoreflect.EnumKind:
 				f.EnumType, err = findEnumDescriptor(fd.GetTypeName(), r)
 				if err != nil {
 					return nil, err
 				}
-				if f.Options.GetWeak() && !f.EnumType.IsPlaceholder() {
-					f.EnumType = PlaceholderEnum(f.EnumType.FullName())
+				if opts.GetWeak() && !f.EnumType.IsPlaceholder() {
+					f.EnumType = prototype.PlaceholderEnum(f.EnumType.FullName())
 				}
 			case protoreflect.MessageKind, protoreflect.GroupKind:
 				f.MessageType, err = findMessageDescriptor(fd.GetTypeName(), r)
 				if err != nil {
 					return nil, err
 				}
-				if f.Options.GetWeak() && !f.MessageType.IsPlaceholder() {
-					f.MessageType = PlaceholderMessage(f.MessageType.FullName())
+				if opts.GetWeak() && !f.MessageType.IsPlaceholder() {
+					f.MessageType = prototype.PlaceholderMessage(f.MessageType.FullName())
 				}
 			}
 			m.Fields = append(m.Fields, f)
 		}
 		for _, od := range md.GetOneofDecl() {
-			m.Oneofs = append(m.Oneofs, Oneof{
+			m.Oneofs = append(m.Oneofs, prototype.Oneof{
 				Name:    protoreflect.Name(od.GetName()),
 				Options: od.Options,
 			})
@@ -194,13 +198,13 @@ func messagesFromDescriptorProto(mds []*descriptorV1.DescriptorProto, syntax pro
 	return ms, nil
 }
 
-func enumsFromDescriptorProto(eds []*descriptorV1.EnumDescriptorProto, r *protoregistry.Files) (es []Enum, err error) {
+func enumsFromDescriptorProto(eds []*descriptorpb.EnumDescriptorProto, r *protoregistry.Files) (es []prototype.Enum, err error) {
 	for _, ed := range eds {
-		var e Enum
+		var e prototype.Enum
 		e.Name = protoreflect.Name(ed.GetName())
 		e.Options = ed.GetOptions()
 		for _, vd := range ed.GetValue() {
-			e.Values = append(e.Values, EnumValue{
+			e.Values = append(e.Values, prototype.EnumValue{
 				Name:    protoreflect.Name(vd.GetName()),
 				Number:  protoreflect.EnumNumber(vd.GetNumber()),
 				Options: vd.Options,
@@ -211,9 +215,9 @@ func enumsFromDescriptorProto(eds []*descriptorV1.EnumDescriptorProto, r *protor
 	return es, nil
 }
 
-func extensionsFromDescriptorProto(xds []*descriptorV1.FieldDescriptorProto, r *protoregistry.Files) (xs []Extension, err error) {
+func extensionsFromDescriptorProto(xds []*descriptorpb.FieldDescriptorProto, r *protoregistry.Files) (xs []prototype.Extension, err error) {
 	for _, xd := range xds {
-		var x Extension
+		var x prototype.Extension
 		x.Name = protoreflect.Name(xd.GetName())
 		x.Number = protoreflect.FieldNumber(xd.GetNumber())
 		x.Cardinality = protoreflect.Cardinality(xd.GetLabel())
@@ -246,13 +250,13 @@ func extensionsFromDescriptorProto(xds []*descriptorV1.FieldDescriptorProto, r *
 	return xs, nil
 }
 
-func servicesFromDescriptorProto(sds []*descriptorV1.ServiceDescriptorProto, r *protoregistry.Files) (ss []Service, err error) {
+func servicesFromDescriptorProto(sds []*descriptorpb.ServiceDescriptorProto, r *protoregistry.Files) (ss []prototype.Service, err error) {
 	for _, sd := range sds {
-		var s Service
+		var s prototype.Service
 		s.Name = protoreflect.Name(sd.GetName())
 		s.Options = sd.GetOptions()
 		for _, md := range sd.GetMethod() {
-			var m Method
+			var m prototype.Method
 			m.Name = protoreflect.Name(md.GetName())
 			m.Options = md.GetOptions()
 			m.InputType, err = findMessageDescriptor(md.GetInputType(), r)
@@ -290,7 +294,7 @@ func findMessageDescriptor(s string, r *protoregistry.Files) (protoreflect.Messa
 		}
 		return m, nil
 	case err == protoregistry.NotFound:
-		return PlaceholderMessage(name), nil
+		return prototype.PlaceholderMessage(name), nil
 	default:
 		return nil, err
 	}
@@ -309,7 +313,7 @@ func findEnumDescriptor(s string, r *protoregistry.Files) (protoreflect.EnumDesc
 		}
 		return e, nil
 	case err == protoregistry.NotFound:
-		return PlaceholderEnum(name), nil
+		return prototype.PlaceholderEnum(name), nil
 	default:
 		return nil, err
 	}

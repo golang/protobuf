@@ -102,6 +102,10 @@ type Descriptor interface {
 	// Support for this functionality is optional and may return (nil, false).
 	DescriptorProto() (Message, bool)
 
+	// TODO: Should DescriptorProto exist if prototype does not depend on
+	// the descriptor package? Should this instead be a function in the
+	// protodesc package?
+
 	// Options returns the descriptor options. The caller must not modify
 	// the returned value.
 	//
@@ -120,12 +124,16 @@ type Descriptor interface {
 	//	| MethodDescriptor    | google.protobuf.MethodOptions            |
 	//	+---------------------+------------------------------------------+
 	//
-	// This method will never return a nil interface value, although the
-	// concrete value contained in the interface may be nil (e.g.,
-	// (*descpb.FileOptions)(nil)).
+	// This method may return a nil interface value if no options are present.
+	Options() ProtoMessage
+
+	// TODO: If no options are set, can Options return a typed nil-pointer
+	// using a form of dependency injection where the descriptor proto
+	// registers the option types with the prototype package?
 	//
-	// TODO: Return ProtoMessage instead of interface{}.
-	Options() interface{}
+	// However, what happens if the descriptor proto is never linked in?
+	// Then we cannot provide this guarantee.
+	// Perhaps this should return a bool as well?
 
 	doNotImplement
 }
@@ -304,17 +312,17 @@ type FieldDescriptor interface {
 	// If true, then it implies Cardinality is Repeated.
 	IsPacked() bool
 
+	// IsWeak reports whether this is a weak field, which does not impose a
+	// direct dependency on the target type.
+	// If true, then MessageDescriptor returns a placeholder type.
+	IsWeak() bool
+
 	// IsMap reports whether this field represents a map.
 	// The value type for the associated field is a Map instead of a List.
 	//
 	// If true, it implies that Kind is MessageKind, Cardinality is Repeated,
 	// and MessageDescriptor.IsMapEntry is true.
 	IsMap() bool
-
-	// IsWeak reports whether this is a weak field, which does not impose a
-	// direct dependency on the target type.
-	// If true, then MessageDescriptor returns a placeholder type.
-	IsWeak() bool
 
 	// Default returns the default value for scalar fields.
 	// For proto2, it is the default value as specified in the proto file,

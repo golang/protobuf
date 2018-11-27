@@ -10,8 +10,9 @@ import (
 	"strconv"
 	"strings"
 
-	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/protogen"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 const (
@@ -62,7 +63,7 @@ func genService(gen *protogen.Plugin, file *protogen.File, g *protogen.Generated
 	g.P("// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.")
 
 	// Client interface.
-	if service.Desc.Options().(*descpb.ServiceOptions).GetDeprecated() {
+	if service.Desc.Options().(*descriptorpb.ServiceOptions).GetDeprecated() {
 		g.P("//")
 		g.P(deprecationComment)
 	}
@@ -83,7 +84,7 @@ func genService(gen *protogen.Plugin, file *protogen.File, g *protogen.Generated
 	g.P()
 
 	// NewClient factory.
-	if service.Desc.Options().(*descpb.ServiceOptions).GetDeprecated() {
+	if service.Desc.Options().(*descriptorpb.ServiceOptions).GetDeprecated() {
 		g.P(deprecationComment)
 	}
 	g.P("func New", clientName, " (cc *", grpcPackage.Ident("ClientConn"), ") ", clientName, " {")
@@ -108,7 +109,7 @@ func genService(gen *protogen.Plugin, file *protogen.File, g *protogen.Generated
 	// Server interface.
 	serverType := service.GoName + "Server"
 	g.P("// ", serverType, " is the server API for ", service.GoName, " service.")
-	if service.Desc.Options().(*descpb.ServiceOptions).GetDeprecated() {
+	if service.Desc.Options().(*descriptorpb.ServiceOptions).GetDeprecated() {
 		g.P("//")
 		g.P(deprecationComment)
 	}
@@ -123,7 +124,7 @@ func genService(gen *protogen.Plugin, file *protogen.File, g *protogen.Generated
 	g.P()
 
 	// Server registration.
-	if service.Desc.Options().(*descpb.ServiceOptions).GetDeprecated() {
+	if service.Desc.Options().(*descriptorpb.ServiceOptions).GetDeprecated() {
 		g.P(deprecationComment)
 	}
 	serviceDescVar := "_" + service.GoName + "_serviceDesc"
@@ -195,7 +196,7 @@ func genClientMethod(gen *protogen.Plugin, file *protogen.File, g *protogen.Gene
 	service := method.ParentService
 	sname := fmt.Sprintf("/%s/%s", service.Desc.FullName(), method.Desc.Name())
 
-	if method.Desc.Options().(*descpb.MethodOptions).GetDeprecated() {
+	if method.Desc.Options().(*descriptorpb.MethodOptions).GetDeprecated() {
 		g.P(deprecationComment)
 	}
 	g.P("func (c *", unexport(service.GoName), "Client) ", clientSignature(g, method), "{")

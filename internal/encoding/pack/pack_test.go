@@ -11,10 +11,11 @@ import (
 	"math"
 	"testing"
 
-	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
-	"github.com/google/go-cmp/cmp"
+	cmp "github.com/google/go-cmp/cmp"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 var msgDesc = func() pref.MessageDescriptor {
@@ -43,8 +44,8 @@ var msgDesc = func() pref.MessageDescriptor {
 	return mtyp
 }()
 
-func packedOpt(b bool) *descriptorV1.FieldOptions {
-	return &descriptorV1.FieldOptions{Packed: &b}
+func packedOpt(b bool) *descriptorpb.FieldOptions {
+	return &descriptorpb.FieldOptions{Packed: &b}
 }
 
 // dhex decodes a hex-string and returns the bytes and panics if s is invalid.

@@ -13,10 +13,7 @@
 // the parent type.
 package prototype
 
-import (
-	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
-)
+import "github.com/golang/protobuf/v2/reflect/protoreflect"
 
 // Every struct has a "meta" struct embedded within it as a pointer.
 // The meta type provides additional data structures for efficient lookup on
@@ -44,7 +41,7 @@ type File struct {
 	Enums      []Enum
 	Extensions []Extension
 	Services   []Service
-	Options    *descriptorV1.FileOptions
+	Options    protoreflect.ProtoMessage
 
 	*fileMeta
 }
@@ -54,7 +51,12 @@ type File struct {
 //
 // Fields that reference an enum or message that is being declared within the
 // same File can be represented using a placeholder descriptor. NewFile will
-// automatically resolve the placeholder to point to the concrete type.
+// automatically resolve the placeholder to point to a concrete descriptor.
+// Alternatively, a reference descriptor obtained via Enum.Reference or
+// Message.Reference can be used instead. The placeholder approach makes it
+// possible to declare the file descriptor as a single File literal and
+// is generally easier to use. The reference approach is more performant,
+// but also more error prone.
 //
 // The caller must relinquish full ownership of the input t and must not
 // access or mutate any fields. The input must not contain slices that are
@@ -67,7 +69,27 @@ func NewFile(t *File) (protoreflect.FileDescriptor, error) {
 	if err := validateFile(ft); err != nil {
 		return nil, err
 	}
+
+	// TODO: When using reference descriptors, it is vital that all enums and
+	// messages are touched so that they are initialized before returning.
+	// Otherwise, reference descriptors may still be invalid.
+	//
+	// We can remove this once validateFile is implemented, since it will
+	// inherently touch all the necessary messages and enums.
+	visitMessages(ft)
+
 	return ft, nil
+}
+
+func visitMessages(d interface {
+	Enums() protoreflect.EnumDescriptors
+	Messages() protoreflect.MessageDescriptors
+}) {
+	d.Enums()
+	ms := d.Messages()
+	for i := 0; i < ms.Len(); i++ {
+		visitMessages(ms.Get(i))
+	}
 }
 
 // Message is a constructor for protoreflect.MessageDescriptor.
@@ -79,9 +101,17 @@ type Message struct {
 	Messages        []Message
 	Enums           []Enum
 	Extensions      []Extension
-	Options         *descriptorV1.MessageOptions
+	Options         protoreflect.ProtoMessage
 
 	*messageMeta
+}
+
+// Reference returns m as a reference protoreflect.MessageDescriptor,
+// which can be used to satisfy internal dependencies within a proto file.
+// Methods on the returned descriptor are not valid until the file that this
+// message belongs to has been constructed via NewFile.
+func (m *Message) Reference() protoreflect.MessageDescriptor {
+	return messageDesc{m}
 }
 
 // Field is a constructor for protoreflect.FieldDescriptor.
@@ -95,7 +125,7 @@ type Field struct {
 	OneofName   protoreflect.Name
 	MessageType protoreflect.MessageDescriptor
 	EnumType    protoreflect.EnumDescriptor
-	Options     *descriptorV1.FieldOptions
+	Options     protoreflect.ProtoMessage
 
 	*fieldMeta
 }
@@ -103,7 +133,7 @@ type Field struct {
 // Oneof is a constructor for protoreflect.OneofDescriptor.
 type Oneof struct {
 	Name    protoreflect.Name
-	Options *descriptorV1.OneofOptions
+	Options protoreflect.ProtoMessage
 
 	*oneofMeta
 }
@@ -118,7 +148,7 @@ type Extension struct {
 	MessageType  protoreflect.MessageDescriptor
 	EnumType     protoreflect.EnumDescriptor
 	ExtendedType protoreflect.MessageDescriptor
-	Options      *descriptorV1.FieldOptions
+	Options      protoreflect.ProtoMessage
 
 	*extensionMeta
 }
@@ -127,16 +157,24 @@ type Extension struct {
 type Enum struct {
 	Name    protoreflect.Name
 	Values  []EnumValue
-	Options *descriptorV1.EnumOptions
+	Options protoreflect.ProtoMessage
 
 	*enumMeta
+}
+
+// Reference returns e as a reference protoreflect.EnumDescriptor,
+// which can be used to satisfy internal dependencies within a proto file.
+// Methods on the returned descriptor are not valid until the file that this
+// enum belongs to has been constructed via NewFile.
+func (e *Enum) Reference() protoreflect.EnumDescriptor {
+	return enumDesc{e}
 }
 
 // EnumValue is a constructor for protoreflect.EnumValueDescriptor.
 type EnumValue struct {
 	Name    protoreflect.Name
 	Number  protoreflect.EnumNumber
-	Options *descriptorV1.EnumValueOptions
+	Options protoreflect.ProtoMessage
 
 	*enumValueMeta
 }
@@ -145,7 +183,7 @@ type EnumValue struct {
 type Service struct {
 	Name    protoreflect.Name
 	Methods []Method
-	Options *descriptorV1.ServiceOptions
+	Options protoreflect.ProtoMessage
 
 	*serviceMeta
 }
@@ -157,7 +195,7 @@ type Method struct {
 	OutputType        protoreflect.MessageDescriptor
 	IsStreamingClient bool
 	IsStreamingServer bool
-	Options           *descriptorV1.MethodOptions
+	Options           protoreflect.ProtoMessage
 
 	*methodMeta
 }

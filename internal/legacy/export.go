@@ -7,7 +7,7 @@ package legacy
 import (
 	"reflect"
 
-	protoV1 "github.com/golang/protobuf/proto"
+	papi "github.com/golang/protobuf/protoapi"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
@@ -37,11 +37,11 @@ func (Export) ExtensionTypeOf(d pref.ExtensionDescriptor, t interface{}) pref.Ex
 	return extensionTypeOf(d, reflect.TypeOf(t))
 }
 
-func (Export) ExtensionDescFromType(t pref.ExtensionType) *protoV1.ExtensionDesc {
+func (Export) ExtensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 	return extensionDescFromType(t)
 }
 
-func (Export) ExtensionTypeFromDesc(d *protoV1.ExtensionDesc) pref.ExtensionType {
+func (Export) ExtensionTypeFromDesc(d *papi.ExtensionDesc) pref.ExtensionType {
 	return extensionTypeFromDesc(d)
 }
 

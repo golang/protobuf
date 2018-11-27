@@ -17,10 +17,11 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/proto"
-	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/internal/encoding/tag"
 	"github.com/golang/protobuf/v2/protogen"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 // generatedCodeVersion indicates a version of the generated code.
@@ -214,7 +215,7 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
 	// Trim the source_code_info from the descriptor.
 	// Marshal and gzip it.
-	descProto := proto.Clone(f.Proto).(*descpb.FileDescriptorProto)
+	descProto := proto.Clone(f.Proto).(*descriptorpb.FileDescriptorProto)
 	descProto.SourceCodeInfo = nil
 	b, err := proto.Marshal(descProto)
 	if err != nil {
@@ -253,13 +254,13 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	g.PrintLeadingComments(enum.Location)
 	g.Annotate(enum.GoIdent.GoName, enum.Location)
 	g.P("type ", enum.GoIdent, " int32",
-		deprecationComment(enum.Desc.Options().(*descpb.EnumOptions).GetDeprecated()))
+		deprecationComment(enum.Desc.Options().(*descriptorpb.EnumOptions).GetDeprecated()))
 	g.P("const (")
 	for _, value := range enum.Values {
 		g.PrintLeadingComments(value.Location)
 		g.Annotate(value.GoIdent.GoName, value.Location)
 		g.P(value.GoIdent, " ", enum.GoIdent, " = ", value.Desc.Number(),
-			deprecationComment(value.Desc.Options().(*descpb.EnumValueOptions).GetDeprecated()))
+			deprecationComment(value.Desc.Options().(*descriptorpb.EnumValueOptions).GetDeprecated()))
 	}
 	g.P(")")
 	g.P()
@@ -349,7 +350,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	}
 
 	hasComment := g.PrintLeadingComments(message.Location)
-	if message.Desc.Options().(*descpb.MessageOptions).GetDeprecated() {
+	if message.Desc.Options().(*descriptorpb.MessageOptions).GetDeprecated() {
 		if hasComment {
 			g.P("//")
 		}
@@ -387,13 +388,13 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		}
 		g.Annotate(message.GoIdent.GoName+"."+field.GoName, field.Location)
 		g.P(field.GoName, " ", goType, " `", strings.Join(tags, " "), "`",
-			deprecationComment(field.Desc.Options().(*descpb.FieldOptions).GetDeprecated()))
+			deprecationComment(field.Desc.Options().(*descriptorpb.FieldOptions).GetDeprecated()))
 	}
 	g.P("XXX_NoUnkeyedLiteral struct{} `json:\"-\"`")
 
 	if message.Desc.ExtensionRanges().Len() > 0 {
 		var tags []string
-		if message.Desc.Options().(*descpb.MessageOptions).GetMessageSetWireFormat() {
+		if message.Desc.Options().(*descriptorpb.MessageOptions).GetMessageSetWireFormat() {
 			tags = append(tags, `protobuf_messageset:"1"`)
 		}
 		tags = append(tags, `json:"-"`)
@@ -531,7 +532,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		}
 		goType, pointer := fieldGoType(g, field)
 		defaultValue := fieldDefaultValue(g, message, field)
-		if field.Desc.Options().(*descpb.FieldOptions).GetDeprecated() {
+		if field.Desc.Options().(*descriptorpb.FieldOptions).GetDeprecated() {
 			g.P(deprecationComment(true))
 		}
 		g.Annotate(message.GoIdent.GoName+".Get"+field.GoName, field.Location)
@@ -702,7 +703,7 @@ func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, 
 // isExtensionMessageSetELement returns the adjusted name of an extension
 // which extends proto2.bridge.MessageSet.
 func isExtensionMessageSetElement(extension *protogen.Extension) (name protoreflect.FullName, ok bool) {
-	opts := extension.ExtendedType.Desc.Options().(*descpb.MessageOptions)
+	opts := extension.ExtendedType.Desc.Options().(*descriptorpb.MessageOptions)
 	if !opts.GetMessageSetWireFormat() || extension.Desc.Name() != "message_set_extension" {
 		return "", false
 	}

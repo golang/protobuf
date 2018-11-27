@@ -5,7 +5,6 @@
 package prototype
 
 import (
-	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -21,11 +20,12 @@ type StandaloneMessage struct {
 	Fields          []Field
 	Oneofs          []Oneof
 	ExtensionRanges [][2]protoreflect.FieldNumber
-	Options         *descriptorV1.MessageOptions
+	Options         protoreflect.ProtoMessage
 
-	fields fieldsMeta
-	oneofs oneofsMeta
-	nums   numbersMeta
+	fields  fieldsMeta
+	oneofs  oneofsMeta
+	nums    numbersMeta
+	options messageOptions
 }
 
 // NewMessage creates a new protoreflect.MessageDescriptor.
@@ -64,7 +64,7 @@ func NewMessages(ts []*StandaloneMessage) ([]protoreflect.MessageDescriptor, err
 		for i, f := range t.Fields {
 			// Resolve placeholder messages with a concrete standalone message.
 			// If this fails, validateMessage will complain about it later.
-			if !f.Options.GetWeak() && f.MessageType != nil && f.MessageType.IsPlaceholder() {
+			if f.MessageType != nil && f.MessageType.IsPlaceholder() && !isWeak(f.Options) {
 				if m, ok := ms[f.MessageType.FullName()]; ok {
 					t.Fields[i].MessageType = m
 				}
@@ -85,7 +85,7 @@ type StandaloneEnum struct {
 	Syntax   protoreflect.Syntax
 	FullName protoreflect.FullName
 	Values   []EnumValue
-	Options  *descriptorV1.EnumOptions
+	Options  protoreflect.ProtoMessage
 
 	vals enumValuesMeta
 }
@@ -112,7 +112,7 @@ type StandaloneExtension struct {
 	MessageType  protoreflect.MessageDescriptor
 	EnumType     protoreflect.EnumDescriptor
 	ExtendedType protoreflect.MessageDescriptor
-	Options      *descriptorV1.FieldOptions
+	Options      protoreflect.ProtoMessage
 
 	dv defaultValue
 }

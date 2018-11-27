@@ -10,10 +10,11 @@ import (
 	"reflect"
 	"sync"
 
-	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 // wrapEnum wraps v as a protoreflect.ProtoEnum,
@@ -114,7 +115,7 @@ func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 		}
 
 		// Derive the full name and correct enum descriptor.
-		var ed *descriptorV1.EnumDescriptorProto
+		var ed *descriptorpb.EnumDescriptorProto
 		e.FullName = pref.FullName(fd.GetPackage())
 		if len(idxs) == 1 {
 			ed = fd.EnumType[idxs[0]]

@@ -15,9 +15,10 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/internal/protogen/goldentest"
 	"github.com/golang/protobuf/v2/internal/scalar"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 // Set --regenerate to regenerate the golden files.
@@ -47,12 +48,12 @@ func TestAnnotations(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	gotInfo := &descpb.GeneratedCodeInfo{}
+	gotInfo := &descriptorpb.GeneratedCodeInfo{}
 	if err := proto.UnmarshalText(string(metaFile), gotInfo); err != nil {
 		t.Fatalf("can't parse meta file: %v", err)
 	}
 
-	wantInfo := &descpb.GeneratedCodeInfo{}
+	wantInfo := &descriptorpb.GeneratedCodeInfo{}
 	for _, want := range []struct {
 		prefix, text, suffix string
 		path                 []int32
@@ -80,7 +81,7 @@ func TestAnnotations(t *testing.T) {
 		}
 		begin := pos + len(want.prefix)
 		end := begin + len(want.text)
-		wantInfo.Annotation = append(wantInfo.Annotation, &descpb.GeneratedCodeInfo_Annotation{
+		wantInfo.Annotation = append(wantInfo.Annotation, &descriptorpb.GeneratedCodeInfo_Annotation{
 			Path:       want.path,
 			Begin:      scalar.Int32(int32(begin)),
 			End:        scalar.Int32(int32(end)),

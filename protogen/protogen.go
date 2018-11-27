@@ -28,13 +28,14 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/proto"
-	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/golang/protobuf/v2/internal/scalar"
+	"github.com/golang/protobuf/v2/reflect/protodesc"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/protoregistry"
-	"github.com/golang/protobuf/v2/reflect/prototype"
 	"golang.org/x/tools/go/ast/astutil"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	pluginpb "github.com/golang/protobuf/v2/types/plugin"
 )
 
 // Run executes a function as a protoc plugin.
@@ -376,7 +377,7 @@ func (gen *Plugin) FileByName(name string) (f *File, ok bool) {
 // A File describes a .proto source file.
 type File struct {
 	Desc  protoreflect.FileDescriptor
-	Proto *descpb.FileDescriptorProto
+	Proto *descriptorpb.FileDescriptorProto
 
 	GoPackageName GoPackageName // name of this file's Go package
 	GoImportPath  GoImportPath  // import path of this file's Go package
@@ -393,11 +394,11 @@ type File struct {
 	// of "dir/foo". Appending ".pb.go" produces an output file of "dir/foo.pb.go".
 	GeneratedFilenamePrefix string
 
-	sourceInfo map[pathKey][]*descpb.SourceCodeInfo_Location
+	sourceInfo map[pathKey][]*descriptorpb.SourceCodeInfo_Location
 }
 
-func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageName, importPath GoImportPath) (*File, error) {
-	desc, err := prototype.NewFileFromDescriptorProto(p, gen.fileReg)
+func newFile(gen *Plugin, p *descriptorpb.FileDescriptorProto, packageName GoPackageName, importPath GoImportPath) (*File, error) {
+	desc, err := protodesc.NewFile(p, gen.fileReg)
 	if err != nil {
 		return nil, fmt.Errorf("invalid FileDescriptorProto %q: %v", p.GetName(), err)
 	}
@@ -409,7 +410,7 @@ func newFile(gen *Plugin, p *descpb.FileDescriptorProto, packageName GoPackageNa
 		Proto:         p,
 		GoPackageName: packageName,
 		GoImportPath:  importPath,
-		sourceInfo:    make(map[pathKey][]*descpb.SourceCodeInfo_Location),
+		sourceInfo:    make(map[pathKey][]*descriptorpb.SourceCodeInfo_Location),
 	}
 
 	// Determine the prefix for generated Go files.
@@ -477,7 +478,7 @@ func (f *File) location(path ...int32) Location {
 // If there is no go_package, it returns ("", "").
 // If there's a simple name, it returns (pkg, "").
 // If the option implies an import path, it returns (pkg, impPath).
-func goPackageOption(d *descpb.FileDescriptorProto) (pkg GoPackageName, impPath GoImportPath) {
+func goPackageOption(d *descriptorpb.FileDescriptorProto) (pkg GoPackageName, impPath GoImportPath) {
 	opt := d.GetOptions().GetGoPackage()
 	if opt == "" {
 		return "", ""
@@ -988,13 +989,13 @@ func (g *GeneratedFile) metaFile(content []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	info := &descpb.GeneratedCodeInfo{}
+	info := &descriptorpb.GeneratedCodeInfo{}
 
 	seenAnnotations := make(map[string]bool)
 	annotate := func(s string, ident *ast.Ident) {
 		seenAnnotations[s] = true
 		for _, loc := range g.annotations[s] {
-			info.Annotation = append(info.Annotation, &descpb.GeneratedCodeInfo_Annotation{
+			info.Annotation = append(info.Annotation, &descriptorpb.GeneratedCodeInfo_Annotation{
 				SourceFile: scalar.String(loc.SourceFile),
 				Path:       loc.Path,
 				Begin:      scalar.Int32(int32(fset.Position(ident.Pos()).Offset)),

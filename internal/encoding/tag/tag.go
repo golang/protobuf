@@ -13,11 +13,12 @@ import (
 	"strconv"
 	"strings"
 
-	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	ptext "github.com/golang/protobuf/v2/internal/encoding/text"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 var byteType = reflect.TypeOf(byte(0))
@@ -32,7 +33,8 @@ var byteType = reflect.TypeOf(byte(0))
 //
 // This function is a best effort attempt; parsing errors are ignored.
 func Unmarshal(tag string, goType reflect.Type) ptype.Field {
-	f := ptype.Field{Options: new(descriptorV1.FieldOptions)}
+	opts := new(descriptorpb.FieldOptions)
+	f := ptype.Field{Options: opts}
 	for len(tag) > 0 {
 		i := strings.IndexByte(tag, ',')
 		if i < 0 {
@@ -105,9 +107,9 @@ func Unmarshal(tag string, goType reflect.Type) ptype.Field {
 		case strings.HasPrefix(s, "json="):
 			f.JSONName = s[len("json="):]
 		case s == "packed":
-			f.Options.Packed = scalar.Bool(true)
+			opts.Packed = scalar.Bool(true)
 		case strings.HasPrefix(s, "weak="):
-			f.Options.Weak = scalar.Bool(true)
+			opts.Weak = scalar.Bool(true)
 			f.MessageType = ptype.PlaceholderMessage(pref.FullName(s[len("weak="):]))
 		case strings.HasPrefix(s, "def="):
 			// The default tag is special in that everything afterwards is the

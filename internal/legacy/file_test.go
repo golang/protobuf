@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
+	pdesc "github.com/golang/protobuf/v2/reflect/protodesc"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 	cmp "github.com/google/go-cmp/cmp"
 
 	proto2_20160225 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v0.0.0-20160225-2fc053c5"
@@ -28,7 +28,7 @@ import (
 )
 
 func mustLoadFileDesc(b []byte, _ []int) pref.FileDescriptor {
-	fd, err := ptype.NewFileFromDescriptorProto(loadFileDesc(b), nil)
+	fd, err := pdesc.NewFile(loadFileDesc(b), nil)
 	if err != nil {
 		panic(err)
 	}

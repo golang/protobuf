@@ -23,8 +23,8 @@ import (
 	// TODO: Remove this when protoV1 registers these hooks for you.
 	_ "github.com/golang/protobuf/v2/internal/legacy"
 
-	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	proto2_20180125 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 // List of test operations to perform on messages, lists, or maps.
