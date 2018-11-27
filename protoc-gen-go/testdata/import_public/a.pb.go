@@ -19,7 +19,9 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+
+const Default_M_DefaultField = sub.Default_M_DefaultField
 
 // M from public import import_public/sub/a.proto
 type M = sub.M
@@ -57,6 +59,8 @@ var M_Submessage_Submessage_Subenum_name = sub.M_Submessage_Submessage_Subenum_n
 var M_Submessage_Submessage_Subenum_value = sub.M_Submessage_Submessage_Subenum_value
 
 const M_Submessage_M_SUBMESSAGE_ZERO = M_Submessage_Submessage_Subenum(sub.M_Submessage_M_SUBMESSAGE_ZERO)
+
+var E_ExtensionField = sub.E_ExtensionField
 
 type Public struct {
 	M                    *sub.M   `protobuf:"bytes,1,opt,name=m" json:"m,omitempty"`

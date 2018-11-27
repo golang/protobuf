@@ -321,8 +321,11 @@ func (u *marshalInfo) computeMarshalInfo() {
 
 	// get oneof implementers
 	var oneofImplementers []interface{}
-	if m, ok := reflect.Zero(reflect.PtrTo(t)).Interface().(oneofMessage); ok {
+	switch m := reflect.Zero(reflect.PtrTo(t)).Interface().(type) {
+	case oneofFuncsIface:
 		_, _, _, oneofImplementers = m.XXX_OneofFuncs()
+	case oneofWrappersIface:
+		oneofImplementers = m.XXX_OneofWrappers()
 	}
 
 	n := t.NumField()
@@ -484,10 +487,6 @@ func (fi *marshalFieldInfo) computeOneofFieldInfo(f *reflect.StructField, oneofI
 			marshaler: marshaler,
 		}
 	}
-}
-
-type oneofMessage interface {
-	XXX_OneofFuncs() (func(Message, *Buffer) error, func(Message, int, int, *Buffer) (bool, error), func(Message) int, []interface{})
 }
 
 // wiretype returns the wire encoding of the type.
