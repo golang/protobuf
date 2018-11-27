@@ -18,7 +18,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type FOO int32
 
@@ -3396,9 +3396,9 @@ func (m *Oneof) GetValue() int32 {
 	return 0
 }
 
-// XXX_OneofFuncs is for the internal use of the proto package.
-func (*Oneof) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _Oneof_OneofMarshaler, _Oneof_OneofUnmarshaler, _Oneof_OneofSizer, []interface{}{
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*Oneof) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
 		(*Oneof_F_Bool)(nil),
 		(*Oneof_F_Int32)(nil),
 		(*Oneof_F_Int64)(nil),
@@ -3418,298 +3418,6 @@ func (*Oneof) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, 
 		(*Oneof_F_Largest_Tag)(nil),
 		(*Oneof_Value)(nil),
 	}
-}
-
-func _Oneof_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
-	m := msg.(*Oneof)
-	// union
-	switch x := m.Union.(type) {
-	case *Oneof_F_Bool:
-		t := uint64(0)
-		if x.F_Bool {
-			t = 1
-		}
-		b.EncodeVarint(1<<3 | proto.WireVarint)
-		b.EncodeVarint(t)
-	case *Oneof_F_Int32:
-		b.EncodeVarint(2<<3 | proto.WireVarint)
-		b.EncodeVarint(uint64(x.F_Int32))
-	case *Oneof_F_Int64:
-		b.EncodeVarint(3<<3 | proto.WireVarint)
-		b.EncodeVarint(uint64(x.F_Int64))
-	case *Oneof_F_Fixed32:
-		b.EncodeVarint(4<<3 | proto.WireFixed32)
-		b.EncodeFixed32(uint64(x.F_Fixed32))
-	case *Oneof_F_Fixed64:
-		b.EncodeVarint(5<<3 | proto.WireFixed64)
-		b.EncodeFixed64(uint64(x.F_Fixed64))
-	case *Oneof_F_Uint32:
-		b.EncodeVarint(6<<3 | proto.WireVarint)
-		b.EncodeVarint(uint64(x.F_Uint32))
-	case *Oneof_F_Uint64:
-		b.EncodeVarint(7<<3 | proto.WireVarint)
-		b.EncodeVarint(uint64(x.F_Uint64))
-	case *Oneof_F_Float:
-		b.EncodeVarint(8<<3 | proto.WireFixed32)
-		b.EncodeFixed32(uint64(math.Float32bits(x.F_Float)))
-	case *Oneof_F_Double:
-		b.EncodeVarint(9<<3 | proto.WireFixed64)
-		b.EncodeFixed64(math.Float64bits(x.F_Double))
-	case *Oneof_F_String:
-		b.EncodeVarint(10<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.F_String)
-	case *Oneof_F_Bytes:
-		b.EncodeVarint(11<<3 | proto.WireBytes)
-		b.EncodeRawBytes(x.F_Bytes)
-	case *Oneof_F_Sint32:
-		b.EncodeVarint(12<<3 | proto.WireVarint)
-		b.EncodeZigzag32(uint64(x.F_Sint32))
-	case *Oneof_F_Sint64:
-		b.EncodeVarint(13<<3 | proto.WireVarint)
-		b.EncodeZigzag64(uint64(x.F_Sint64))
-	case *Oneof_F_Enum:
-		b.EncodeVarint(14<<3 | proto.WireVarint)
-		b.EncodeVarint(uint64(x.F_Enum))
-	case *Oneof_F_Message:
-		b.EncodeVarint(15<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.F_Message); err != nil {
-			return err
-		}
-	case *Oneof_FGroup:
-		b.EncodeVarint(16<<3 | proto.WireStartGroup)
-		if err := b.Marshal(x.FGroup); err != nil {
-			return err
-		}
-		b.EncodeVarint(16<<3 | proto.WireEndGroup)
-	case *Oneof_F_Largest_Tag:
-		b.EncodeVarint(536870911<<3 | proto.WireVarint)
-		b.EncodeVarint(uint64(x.F_Largest_Tag))
-	case nil:
-	default:
-		return fmt.Errorf("Oneof.Union has unexpected type %T", x)
-	}
-	// tormato
-	switch x := m.Tormato.(type) {
-	case *Oneof_Value:
-		b.EncodeVarint(100<<3 | proto.WireVarint)
-		b.EncodeVarint(uint64(x.Value))
-	case nil:
-	default:
-		return fmt.Errorf("Oneof.Tormato has unexpected type %T", x)
-	}
-	return nil
-}
-
-func _Oneof_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
-	m := msg.(*Oneof)
-	switch tag {
-	case 1: // union.F_Bool
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.Union = &Oneof_F_Bool{x != 0}
-		return true, err
-	case 2: // union.F_Int32
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.Union = &Oneof_F_Int32{int32(x)}
-		return true, err
-	case 3: // union.F_Int64
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.Union = &Oneof_F_Int64{int64(x)}
-		return true, err
-	case 4: // union.F_Fixed32
-		if wire != proto.WireFixed32 {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeFixed32()
-		m.Union = &Oneof_F_Fixed32{uint32(x)}
-		return true, err
-	case 5: // union.F_Fixed64
-		if wire != proto.WireFixed64 {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeFixed64()
-		m.Union = &Oneof_F_Fixed64{x}
-		return true, err
-	case 6: // union.F_Uint32
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.Union = &Oneof_F_Uint32{uint32(x)}
-		return true, err
-	case 7: // union.F_Uint64
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.Union = &Oneof_F_Uint64{x}
-		return true, err
-	case 8: // union.F_Float
-		if wire != proto.WireFixed32 {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeFixed32()
-		m.Union = &Oneof_F_Float{math.Float32frombits(uint32(x))}
-		return true, err
-	case 9: // union.F_Double
-		if wire != proto.WireFixed64 {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeFixed64()
-		m.Union = &Oneof_F_Double{math.Float64frombits(x)}
-		return true, err
-	case 10: // union.F_String
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeStringBytes()
-		m.Union = &Oneof_F_String{x}
-		return true, err
-	case 11: // union.F_Bytes
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeRawBytes(true)
-		m.Union = &Oneof_F_Bytes{x}
-		return true, err
-	case 12: // union.F_Sint32
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeZigzag32()
-		m.Union = &Oneof_F_Sint32{int32(x)}
-		return true, err
-	case 13: // union.F_Sint64
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeZigzag64()
-		m.Union = &Oneof_F_Sint64{int64(x)}
-		return true, err
-	case 14: // union.F_Enum
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.Union = &Oneof_F_Enum{MyMessage_Color(x)}
-		return true, err
-	case 15: // union.F_Message
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		msg := new(GoTestField)
-		err := b.DecodeMessage(msg)
-		m.Union = &Oneof_F_Message{msg}
-		return true, err
-	case 16: // union.f_group
-		if wire != proto.WireStartGroup {
-			return true, proto.ErrInternalBadWireType
-		}
-		msg := new(Oneof_F_Group)
-		err := b.DecodeGroup(msg)
-		m.Union = &Oneof_FGroup{msg}
-		return true, err
-	case 536870911: // union.F_Largest_Tag
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.Union = &Oneof_F_Largest_Tag{int32(x)}
-		return true, err
-	case 100: // tormato.value
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.Tormato = &Oneof_Value{int32(x)}
-		return true, err
-	default:
-		return false, nil
-	}
-}
-
-func _Oneof_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*Oneof)
-	// union
-	switch x := m.Union.(type) {
-	case *Oneof_F_Bool:
-		n += 1 // tag and wire
-		n += 1
-	case *Oneof_F_Int32:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(x.F_Int32))
-	case *Oneof_F_Int64:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(x.F_Int64))
-	case *Oneof_F_Fixed32:
-		n += 1 // tag and wire
-		n += 4
-	case *Oneof_F_Fixed64:
-		n += 1 // tag and wire
-		n += 8
-	case *Oneof_F_Uint32:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(x.F_Uint32))
-	case *Oneof_F_Uint64:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(x.F_Uint64))
-	case *Oneof_F_Float:
-		n += 1 // tag and wire
-		n += 4
-	case *Oneof_F_Double:
-		n += 1 // tag and wire
-		n += 8
-	case *Oneof_F_String:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.F_String)))
-		n += len(x.F_String)
-	case *Oneof_F_Bytes:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.F_Bytes)))
-		n += len(x.F_Bytes)
-	case *Oneof_F_Sint32:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64((uint32(x.F_Sint32) << 1) ^ uint32((int32(x.F_Sint32) >> 31))))
-	case *Oneof_F_Sint64:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(uint64(x.F_Sint64<<1) ^ uint64((int64(x.F_Sint64) >> 63))))
-	case *Oneof_F_Enum:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(x.F_Enum))
-	case *Oneof_F_Message:
-		s := proto.Size(x.F_Message)
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(s))
-		n += s
-	case *Oneof_FGroup:
-		n += 2 // tag and wire
-		n += proto.Size(x.FGroup)
-		n += 2 // tag and wire
-	case *Oneof_F_Largest_Tag:
-		n += 5 // tag and wire
-		n += proto.SizeVarint(uint64(x.F_Largest_Tag))
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
-	}
-	// tormato
-	switch x := m.Tormato.(type) {
-	case *Oneof_Value:
-		n += 2 // tag and wire
-		n += proto.SizeVarint(uint64(x.Value))
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
-	}
-	return n
 }
 
 type Oneof_F_Group struct {
@@ -3889,9 +3597,9 @@ func (m *Communique) GetMsg() *Strings {
 	return nil
 }
 
-// XXX_OneofFuncs is for the internal use of the proto package.
-func (*Communique) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _Communique_OneofMarshaler, _Communique_OneofUnmarshaler, _Communique_OneofSizer, []interface{}{
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*Communique) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
 		(*Communique_Number)(nil),
 		(*Communique_Name)(nil),
 		(*Communique_Data)(nil),
@@ -3899,121 +3607,6 @@ func (*Communique) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) er
 		(*Communique_Col)(nil),
 		(*Communique_Msg)(nil),
 	}
-}
-
-func _Communique_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
-	m := msg.(*Communique)
-	// union
-	switch x := m.Union.(type) {
-	case *Communique_Number:
-		b.EncodeVarint(5<<3 | proto.WireVarint)
-		b.EncodeVarint(uint64(x.Number))
-	case *Communique_Name:
-		b.EncodeVarint(6<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.Name)
-	case *Communique_Data:
-		b.EncodeVarint(7<<3 | proto.WireBytes)
-		b.EncodeRawBytes(x.Data)
-	case *Communique_TempC:
-		b.EncodeVarint(8<<3 | proto.WireFixed64)
-		b.EncodeFixed64(math.Float64bits(x.TempC))
-	case *Communique_Col:
-		b.EncodeVarint(9<<3 | proto.WireVarint)
-		b.EncodeVarint(uint64(x.Col))
-	case *Communique_Msg:
-		b.EncodeVarint(10<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.Msg); err != nil {
-			return err
-		}
-	case nil:
-	default:
-		return fmt.Errorf("Communique.Union has unexpected type %T", x)
-	}
-	return nil
-}
-
-func _Communique_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
-	m := msg.(*Communique)
-	switch tag {
-	case 5: // union.number
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.Union = &Communique_Number{int32(x)}
-		return true, err
-	case 6: // union.name
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeStringBytes()
-		m.Union = &Communique_Name{x}
-		return true, err
-	case 7: // union.data
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeRawBytes(true)
-		m.Union = &Communique_Data{x}
-		return true, err
-	case 8: // union.temp_c
-		if wire != proto.WireFixed64 {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeFixed64()
-		m.Union = &Communique_TempC{math.Float64frombits(x)}
-		return true, err
-	case 9: // union.col
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.Union = &Communique_Col{MyMessage_Color(x)}
-		return true, err
-	case 10: // union.msg
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		msg := new(Strings)
-		err := b.DecodeMessage(msg)
-		m.Union = &Communique_Msg{msg}
-		return true, err
-	default:
-		return false, nil
-	}
-}
-
-func _Communique_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*Communique)
-	// union
-	switch x := m.Union.(type) {
-	case *Communique_Number:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(x.Number))
-	case *Communique_Name:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.Name)))
-		n += len(x.Name)
-	case *Communique_Data:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.Data)))
-		n += len(x.Data)
-	case *Communique_TempC:
-		n += 1 // tag and wire
-		n += 8
-	case *Communique_Col:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(x.Col))
-	case *Communique_Msg:
-		s := proto.Size(x.Msg)
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(s))
-		n += s
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
-	}
-	return n
 }
 
 type TestUTF8 struct {
@@ -4106,55 +3699,11 @@ func (m *TestUTF8) GetMapValue() map[int64]string {
 	return nil
 }
 
-// XXX_OneofFuncs is for the internal use of the proto package.
-func (*TestUTF8) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _TestUTF8_OneofMarshaler, _TestUTF8_OneofUnmarshaler, _TestUTF8_OneofSizer, []interface{}{
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*TestUTF8) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
 		(*TestUTF8_Field)(nil),
 	}
-}
-
-func _TestUTF8_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
-	m := msg.(*TestUTF8)
-	// oneof
-	switch x := m.Oneof.(type) {
-	case *TestUTF8_Field:
-		b.EncodeVarint(3<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.Field)
-	case nil:
-	default:
-		return fmt.Errorf("TestUTF8.Oneof has unexpected type %T", x)
-	}
-	return nil
-}
-
-func _TestUTF8_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
-	m := msg.(*TestUTF8)
-	switch tag {
-	case 3: // oneof.field
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeStringBytes()
-		m.Oneof = &TestUTF8_Field{x}
-		return true, err
-	default:
-		return false, nil
-	}
-}
-
-func _TestUTF8_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*TestUTF8)
-	// oneof
-	switch x := m.Oneof.(type) {
-	case *TestUTF8_Field:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.Field)))
-		n += len(x.Field)
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
-	}
-	return n
 }
 
 var E_Greeting = &proto.ExtensionDesc{
