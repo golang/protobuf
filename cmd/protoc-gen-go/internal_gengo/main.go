@@ -417,16 +417,6 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 
 	// ExtensionRangeArray
 	if extranges := message.Desc.ExtensionRanges(); extranges.Len() > 0 {
-		if message.Desc.Options().(*descpb.MessageOptions).GetMessageSetWireFormat() {
-			g.P("func (m *", message.GoIdent, ") MarshalJSON() ([]byte, error) {")
-			g.P("return ", protoPackage.Ident("MarshalMessageSetJSON"), "(&m.XXX_InternalExtensions)")
-			g.P("}")
-			g.P("func (m *", message.GoIdent, ") UnmarshalJSON(buf []byte) error {")
-			g.P("return ", protoPackage.Ident("UnmarshalMessageSetJSON"), "(buf, &m.XXX_InternalExtensions)")
-			g.P("}")
-			g.P()
-		}
-
 		protoExtRange := protoPackage.Ident("ExtensionRange")
 		extRangeVar := "extRange_" + message.GoIdent.GoName
 		g.P("var ", extRangeVar, " = []", protoExtRange, " {")

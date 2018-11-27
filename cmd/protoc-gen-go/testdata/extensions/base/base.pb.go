@@ -83,13 +83,6 @@ func (*MessageSetWireFormatMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_aebb28f8d5a04466, []int{1}
 }
 
-func (m *MessageSetWireFormatMessage) MarshalJSON() ([]byte, error) {
-	return proto.MarshalMessageSetJSON(&m.XXX_InternalExtensions)
-}
-func (m *MessageSetWireFormatMessage) UnmarshalJSON(buf []byte) error {
-	return proto.UnmarshalMessageSetJSON(buf, &m.XXX_InternalExtensions)
-}
-
 var extRange_MessageSetWireFormatMessage = []proto.ExtensionRange{
 	{Start: 100, End: 2147483646},
 }
