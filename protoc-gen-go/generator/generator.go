@@ -536,7 +536,7 @@ func (g *Generator) GoPackageName(importPath GoImportPath) GoPackageName {
 		return name
 	}
 	name := cleanPackageName(baseName(string(importPath)))
-	for i, orig := 1, name; g.usedPackageNames[name]; i++ {
+	for i, orig := 1, name; g.usedPackageNames[name] || isGoPredeclaredIdentifier[string(name)]; i++ {
 		name = orig + GoPackageName(strconv.Itoa(i))
 	}
 	g.packageNames[importPath] = name
@@ -568,8 +568,7 @@ func RegisterUniquePackageName(pkg string, f *FileDescriptor) string {
 	return string(name)
 }
 
-var isGoKeywordOrPredeclaredIdentifier = map[string]bool{
-	// Keywords
+var isGoKeyword = map[string]bool{
 	"break":       true,
 	"case":        true,
 	"chan":        true,
@@ -595,8 +594,9 @@ var isGoKeywordOrPredeclaredIdentifier = map[string]bool{
 	"switch":      true,
 	"type":        true,
 	"var":         true,
+}
 
-	// Predeclared Identifiers
+var isGoPredeclaredIdentifier = map[string]bool{
 	"append":     true,
 	"bool":       true,
 	"byte":       true,
@@ -641,7 +641,7 @@ var isGoKeywordOrPredeclaredIdentifier = map[string]bool{
 func cleanPackageName(name string) GoPackageName {
 	name = strings.Map(badToUnderscore, name)
 	// Identifier must not be keyword or predeclared identifier: insert _.
-	if isGoKeywordOrPredeclaredIdentifier[name] {
+	if isGoKeyword[name] {
 		name = "_" + name
 	}
 	// Identifier must not begin with digit: insert _.
