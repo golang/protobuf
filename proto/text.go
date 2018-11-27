@@ -18,6 +18,8 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 var (
@@ -641,11 +643,11 @@ func writeUnknownInt(w *textWriter, x uint64, err error) error {
 	return err
 }
 
-type int32Slice []int32
+type fieldNumSlice []protoreflect.FieldNumber
 
-func (s int32Slice) Len() int           { return len(s) }
-func (s int32Slice) Less(i, j int) bool { return s[i] < s[j] }
-func (s int32Slice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s fieldNumSlice) Len() int           { return len(s) }
+func (s fieldNumSlice) Less(i, j int) bool { return s[i] < s[j] }
+func (s fieldNumSlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 
 // writeExtensions writes all the extensions in pv.
 // pv is assumed to be a pointer to a protocol message struct that is extendable.
@@ -656,39 +658,39 @@ func (tm *TextMarshaler) writeExtensions(w *textWriter, pv reflect.Value) error 
 	// Order the extensions by ID.
 	// This isn't strictly necessary, but it will give us
 	// canonical output, which will also make testing easier.
-	m, mu := ep.extensionsRead()
-	if m == nil {
+	if !ep.HasInit() {
 		return nil
 	}
-	mu.Lock()
-	ids := make([]int32, 0, len(m))
-	for id := range m {
+	ep.Lock()
+	ids := make([]protoreflect.FieldNumber, 0, ep.Len())
+	ep.Range(func(id protoreflect.FieldNumber, _ Extension) bool {
 		ids = append(ids, id)
-	}
-	sort.Sort(int32Slice(ids))
-	mu.Unlock()
+		return true
+	})
+	sort.Sort(fieldNumSlice(ids))
+	ep.Unlock()
 
 	for _, extNum := range ids {
-		ext := m[extNum]
+		ext := ep.Get(extNum)
 		var desc *ExtensionDesc
 		if emap != nil {
-			desc = emap[extNum]
+			desc = emap[int32(extNum)]
 		}
 		if desc == nil {
 			// Unknown extension.
-			if err := writeUnknownStruct(w, ext.enc); err != nil {
+			if err := writeUnknownStruct(w, ext.Raw); err != nil {
 				return err
 			}
 			continue
 		}
 
-		pb, err := GetExtension(ep, desc)
+		pb, err := GetExtension(pv.Interface().(Message), desc)
 		if err != nil {
 			return fmt.Errorf("failed getting extension: %v", err)
 		}
 
 		// Repeated extensions will appear as a slice.
-		if !desc.repeated() {
+		if !isRepeatedExtension(desc) {
 			if err := tm.writeExtension(w, desc.Name, pb); err != nil {
 				return err
 			}

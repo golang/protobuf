@@ -504,7 +504,7 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 				return err
 			}
 
-			rep := desc.repeated()
+			rep := isRepeatedExtension(desc)
 
 			// Read the extension structure, and set it in
 			// the value we're constructing.

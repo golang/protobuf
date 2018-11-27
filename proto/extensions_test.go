@@ -377,7 +377,7 @@ func TestNilMessage(t *testing.T) {
 	desc := pb.E_Ext_More
 
 	isNotExtendable := func(err error) bool {
-		return strings.Contains(fmt.Sprint(err), "not extendable")
+		return strings.Contains(fmt.Sprint(err), "not an extendable")
 	}
 
 	if proto.HasExtension(nilMsg, desc) {

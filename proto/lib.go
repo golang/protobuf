@@ -248,6 +248,8 @@ import (
 	// Add a bogus dependency on the v2 API to ensure the Go toolchain does not
 	// remove our dependency from the go.mod file.
 	_ "github.com/golang/protobuf/v2/reflect/protoreflect"
+
+	"github.com/golang/protobuf/protoapi"
 )
 
 // RequiredNotSetError is an error type returned by either Marshal or Unmarshal.
@@ -312,11 +314,7 @@ func (nf *nonFatal) Merge(err error) (ok bool) {
 }
 
 // Message is implemented by generated protocol buffer messages.
-type Message interface {
-	Reset()
-	String() string
-	ProtoMessage()
-}
+type Message = protoapi.Message
 
 // A Buffer is a buffer manager for marshaling and unmarshaling
 // protocol buffers.  It may be reused between invocations to
