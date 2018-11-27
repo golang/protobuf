@@ -3701,7 +3701,7 @@ func _Oneof_OneofSizer(msg proto.Message) (n int) {
 		n += proto.Size(x.FGroup)
 		n += 2 // tag and wire
 	case *Oneof_F_Largest_Tag:
-		n += 5 // tag and wire
+		n += 10 // tag and wire
 		n += proto.SizeVarint(uint64(x.F_Largest_Tag))
 	case nil:
 	default:

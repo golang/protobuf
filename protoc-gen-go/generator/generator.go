@@ -1138,11 +1138,10 @@ func (g *Generator) generate(file *FileDescriptor) {
 		g.generateExtension(ext)
 	}
 	g.generateInitFunction()
+	g.generateFileDescriptor(file)
 
 	// Run the plugins before the imports so we know which imports are necessary.
 	g.runPlugins(file)
-
-	g.generateFileDescriptor(file)
 
 	// Generate header and imports last, though they appear first in the output.
 	rem := g.Buffer
