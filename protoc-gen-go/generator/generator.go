@@ -568,7 +568,8 @@ func RegisterUniquePackageName(pkg string, f *FileDescriptor) string {
 	return string(name)
 }
 
-var isGoKeyword = map[string]bool{
+var isGoKeywordOrPredeclaredIdentifier = map[string]bool{
+	// Keywords
 	"break":       true,
 	"case":        true,
 	"chan":        true,
@@ -594,12 +595,53 @@ var isGoKeyword = map[string]bool{
 	"switch":      true,
 	"type":        true,
 	"var":         true,
+
+	// Predeclared Identifiers
+	"append":     true,
+	"bool":       true,
+	"byte":       true,
+	"cap":        true,
+	"close":      true,
+	"complex":    true,
+	"complex128": true,
+	"complex64":  true,
+	"copy":       true,
+	"delete":     true,
+	"error":      true,
+	"false":      true,
+	"float32":    true,
+	"float64":    true,
+	"imag":       true,
+	"int":        true,
+	"int16":      true,
+	"int32":      true,
+	"int64":      true,
+	"int8":       true,
+	"iota":       true,
+	"len":        true,
+	"make":       true,
+	"new":        true,
+	"nil":        true,
+	"panic":      true,
+	"print":      true,
+	"println":    true,
+	"real":       true,
+	"recover":    true,
+	"rune":       true,
+	"string":     true,
+	"true":       true,
+	"uint":       true,
+	"uint16":     true,
+	"uint32":     true,
+	"uint64":     true,
+	"uint8":      true,
+	"uintptr":    true,
 }
 
 func cleanPackageName(name string) GoPackageName {
 	name = strings.Map(badToUnderscore, name)
-	// Identifier must not be keyword: insert _.
-	if isGoKeyword[name] {
+	// Identifier must not be keyword or predeclared identifier: insert _.
+	if isGoKeywordOrPredeclaredIdentifier[name] {
 		name = "_" + name
 	}
 	// Identifier must not begin with digit: insert _.
