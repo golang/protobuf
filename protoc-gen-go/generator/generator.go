@@ -974,39 +974,6 @@ func (g *Generator) ObjectNamed(typeName string) Object {
 	if !ok {
 		g.Fail("can't find object with type", typeName)
 	}
-
-	// If the file of this object isn't a direct dependency of the current file,
-	// or in the current file, then this object has been publicly imported into
-	// a dependency of the current file.
-	// We should return the ImportedDescriptor object for it instead.
-	direct := *o.File().Name == *g.file.Name
-	if !direct {
-		for _, dep := range g.file.Dependency {
-			if *g.fileByName(dep).Name == *o.File().Name {
-				direct = true
-				break
-			}
-		}
-	}
-	if !direct {
-		found := false
-	Loop:
-		for _, dep := range g.file.Dependency {
-			df := g.fileByName(*g.fileByName(dep).Name)
-			for _, td := range df.imp {
-				if td.o == o {
-					// Found it!
-					o = td
-					found = true
-					break Loop
-				}
-			}
-		}
-		if !found {
-			log.Printf("protoc-gen-go: WARNING: failed finding publicly imported dependency for %v, used in %v", typeName, *g.file.Name)
-		}
-	}
-
 	return o
 }
 
@@ -1690,11 +1657,16 @@ func (g *Generator) GoType(message *Descriptor, field *descriptor.FieldDescripto
 }
 
 func (g *Generator) RecordTypeUse(t string) {
-	if _, ok := g.typeNameToObject[t]; ok {
-		// Call ObjectNamed to get the true object to record the use.
-		obj := g.ObjectNamed(t)
-		g.usedPackages[obj.GoImportPath()] = true
+	if _, ok := g.typeNameToObject[t]; !ok {
+		return
 	}
+	importPath := g.ObjectNamed(t).GoImportPath()
+	if importPath == g.outputImportPath {
+		// Don't record use of objects in our package.
+		return
+	}
+	g.AddImport(importPath)
+	g.usedPackages[importPath] = true
 }
 
 // Method names that may be generated.  Fields with these names get an
