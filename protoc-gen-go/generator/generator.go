@@ -2708,26 +2708,23 @@ func (g *Generator) generateMessage(message *Descriptor) {
 	g.generateOneofFuncs(mc, topLevelFields)
 	g.P()
 
-	if !message.group {
-
-		var oneofTypes []string
-		for _, f := range topLevelFields {
-			if of, ok := f.(*oneofField); ok {
-				for _, osf := range of.subFields {
-					oneofTypes = append(oneofTypes, osf.oneofTypeName)
-				}
+	var oneofTypes []string
+	for _, f := range topLevelFields {
+		if of, ok := f.(*oneofField); ok {
+			for _, osf := range of.subFields {
+				oneofTypes = append(oneofTypes, osf.oneofTypeName)
 			}
 		}
-
-		opts := message.Options
-		ms := &messageSymbol{
-			sym:           goTypeName,
-			hasExtensions: len(message.ExtensionRange) > 0,
-			isMessageSet:  opts != nil && opts.GetMessageSetWireFormat(),
-			oneofTypes:    oneofTypes,
-		}
-		g.file.addExport(message, ms)
 	}
+
+	opts := message.Options
+	ms := &messageSymbol{
+		sym:           goTypeName,
+		hasExtensions: len(message.ExtensionRange) > 0,
+		isMessageSet:  opts != nil && opts.GetMessageSetWireFormat(),
+		oneofTypes:    oneofTypes,
+	}
+	g.file.addExport(message, ms)
 
 	for _, ext := range message.ext {
 		g.generateExtension(ext)
