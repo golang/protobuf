@@ -7,11 +7,11 @@ package prototype
 import (
 	"fmt"
 	"io"
-	"math/rand"
 	"reflect"
 	"strconv"
 	"strings"
 
+	"github.com/golang/protobuf/v2/internal/detrand"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -256,5 +256,5 @@ func joinStrings(ss []string, isMulti bool) string {
 // These makes it harder for people to depend on the debug string as stable
 // and provides us the flexibility to make changes.
 func randomSpace() string {
-	return " "[:rand.Intn(2)]
+	return " "[:detrand.Intn(2)]
 }
