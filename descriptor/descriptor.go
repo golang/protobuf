@@ -32,8 +32,8 @@
 // Package descriptor provides functions for obtaining protocol buffer
 // descriptors for generated Go types.
 //
-// These functions cannot go in package proto because they depend on the
-// generated protobuf descriptor messages, which themselves depend on proto.
+// Deprecated: Do not use. The new v2 Message interface provides direct support
+// for programmatically interacting with the descriptor information.
 package descriptor
 
 import (
@@ -43,11 +43,11 @@ import (
 	"io/ioutil"
 
 	"github.com/golang/protobuf/proto"
-	protobuf "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
 // extractFile extracts a FileDescriptorProto from a gzip'd buffer.
-func extractFile(gz []byte) (*protobuf.FileDescriptorProto, error) {
+func extractFile(gz []byte) (*descriptorpb.FileDescriptorProto, error) {
 	r, err := gzip.NewReader(bytes.NewReader(gz))
 	if err != nil {
 		return nil, fmt.Errorf("failed to open gzip reader: %v", err)
@@ -59,7 +59,7 @@ func extractFile(gz []byte) (*protobuf.FileDescriptorProto, error) {
 		return nil, fmt.Errorf("failed to uncompress descriptor: %v", err)
 	}
 
-	fd := new(protobuf.FileDescriptorProto)
+	fd := new(descriptorpb.FileDescriptorProto)
 	if err := proto.Unmarshal(b, fd); err != nil {
 		return nil, fmt.Errorf("malformed FileDescriptorProto: %v", err)
 	}
@@ -78,7 +78,7 @@ type Message interface {
 
 // ForMessage returns a FileDescriptorProto and a DescriptorProto from within it
 // describing the given message.
-func ForMessage(msg Message) (fd *protobuf.FileDescriptorProto, md *protobuf.DescriptorProto) {
+func ForMessage(msg Message) (fd *descriptorpb.FileDescriptorProto, md *descriptorpb.DescriptorProto) {
 	gz, path := msg.Descriptor()
 	fd, err := extractFile(gz)
 	if err != nil {
