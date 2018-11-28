@@ -279,3 +279,23 @@ breaking change and would be subject to the announcement policy stated above.
 The `protoc-gen-go/generator` package exposes a plugin interface,
 which is used by the gRPC code generation. This interface is not
 supported and is subject to incompatible changes without notice.
+
+## Using protoc-gen-go in Continuous Integration (CI) Systems
+
+CI systems should produce repeatable builds.  Installing proto-gen-go via:
+
+```bash
+go get go get github.com/golang/protobuf/protoc-gen-go
+```
+
+within a CI system produces inherently non-reproducible builds, because 
+```go get``` always pulls from the HEAD of master, which is always a moving target.
+
+This can lead to unexpected build breakage in the CI system.
+
+If you are using vendoring in go, and wish to have a repeatable stable build process,
+it is better to install protoc-ge-go in your CI via:
+
+```bash
+go install ./vendor/github.com/golang/protobuf/protoc-gen-go/
+```
