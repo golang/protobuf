@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"testing"
 
-	protoV1 "github.com/golang/protobuf/proto"
+	papi "github.com/golang/protobuf/protoapi"
 	pack "github.com/golang/protobuf/v2/internal/encoding/pack"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
@@ -445,14 +445,14 @@ func TestLegacyDescriptor(t *testing.T) {
 
 type legacyTestMessage struct {
 	XXX_unrecognized []byte
-	protoV1.XXX_InternalExtensions
+	papi.XXX_InternalExtensions
 }
 
 func (*legacyTestMessage) Reset()         {}
 func (*legacyTestMessage) String() string { return "" }
 func (*legacyTestMessage) ProtoMessage()  {}
-func (*legacyTestMessage) ExtensionRangeArray() []protoV1.ExtensionRange {
-	return []protoV1.ExtensionRange{{Start: 10, End: 20}, {Start: 40, End: 80}, {Start: 10000, End: 20000}}
+func (*legacyTestMessage) ExtensionRangeArray() []papi.ExtensionRange {
+	return []papi.ExtensionRange{{Start: 10, End: 20}, {Start: 40, End: 80}, {Start: 10000, End: 20000}}
 }
 
 func TestLegacyUnknown(t *testing.T) {
@@ -684,7 +684,7 @@ func TestLegacyUnknown(t *testing.T) {
 
 func TestLegactExtensions(t *testing.T) {
 	extensions := []pref.ExtensionType{
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*bool)(nil),
 			Field:         10000,
@@ -692,7 +692,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "varint,10000,opt,name=optional_bool,json=optionalBool,def=1",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*int32)(nil),
 			Field:         10001,
@@ -700,7 +700,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "varint,10001,opt,name=optional_int32,json=optionalInt32,def=-12345",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*uint32)(nil),
 			Field:         10002,
@@ -708,7 +708,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "varint,10002,opt,name=optional_uint32,json=optionalUint32,def=3200",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*float32)(nil),
 			Field:         10003,
@@ -716,7 +716,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "fixed32,10003,opt,name=optional_float,json=optionalFloat,def=3.14159",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*string)(nil),
 			Field:         10004,
@@ -724,7 +724,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "bytes,10004,opt,name=optional_string,json=optionalString,def=hello, \"world!\"\n",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]byte)(nil),
 			Field:         10005,
@@ -732,7 +732,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "bytes,10005,opt,name=optional_bytes,json=optionalBytes,def=dead\\336\\255\\276\\357beef",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*proto2_20180125.Message_ChildEnum)(nil),
 			Field:         10006,
@@ -740,7 +740,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "varint,10006,opt,name=optional_enum_v1,json=optionalEnumV1,enum=google.golang.org.proto2_20180125.Message_ChildEnum,def=0",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*proto2_20180125.Message_ChildMessage)(nil),
 			Field:         10007,
@@ -748,7 +748,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "bytes,10007,opt,name=optional_message_v1,json=optionalMessageV1",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*EnumProto2)(nil),
 			Field:         10008,
@@ -756,7 +756,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "varint,10008,opt,name=optional_enum_v2,json=optionalEnumV2,enum=EnumProto2,def=57005",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: (*EnumMessages)(nil),
 			Field:         10009,
@@ -764,7 +764,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "bytes,10009,opt,name=optional_message_v2,json=optionalMessageV2",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]bool)(nil),
 			Field:         10010,
@@ -772,7 +772,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "varint,10010,rep,name=repeated_bool,json=repeatedBool",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]int32)(nil),
 			Field:         10011,
@@ -780,7 +780,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "varint,10011,rep,name=repeated_int32,json=repeatedInt32",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]uint32)(nil),
 			Field:         10012,
@@ -788,7 +788,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "varint,10012,rep,name=repeated_uint32,json=repeatedUint32",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]float32)(nil),
 			Field:         10013,
@@ -796,7 +796,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "fixed32,10013,rep,name=repeated_float,json=repeatedFloat",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]string)(nil),
 			Field:         10014,
@@ -804,7 +804,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "bytes,10014,rep,name=repeated_string,json=repeatedString",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([][]byte)(nil),
 			Field:         10015,
@@ -812,7 +812,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "bytes,10015,rep,name=repeated_bytes,json=repeatedBytes",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]proto2_20180125.Message_ChildEnum)(nil),
 			Field:         10016,
@@ -820,7 +820,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "varint,10016,rep,name=repeated_enum_v1,json=repeatedEnumV1,enum=google.golang.org.proto2_20180125.Message_ChildEnum",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]*proto2_20180125.Message_ChildMessage)(nil),
 			Field:         10017,
@@ -828,7 +828,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "bytes,10017,rep,name=repeated_message_v1,json=repeatedMessageV1",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]EnumProto2)(nil),
 			Field:         10018,
@@ -836,7 +836,7 @@ func TestLegactExtensions(t *testing.T) {
 			Tag:           "varint,10018,rep,name=repeated_enum_v2,json=repeatedEnumV2,enum=EnumProto2",
 			Filename:      "fizz/buzz/test.proto",
 		}),
-		legacyExtensionTypeOf(&protoV1.ExtensionDesc{
+		legacyExtensionTypeOf(&papi.ExtensionDesc{
 			ExtendedType:  (*legacyTestMessage)(nil),
 			ExtensionType: ([]*EnumMessages)(nil),
 			Field:         10019,

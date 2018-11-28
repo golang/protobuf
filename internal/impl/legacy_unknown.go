@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"sort"
 
+	papi "github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -40,14 +41,14 @@ func makeLegacyUnknownFieldsFunc(t reflect.Type) func(p *messageDataType) pref.U
 // and also the extension field map.
 type legacyUnknownBytesAndExtensionMap struct {
 	u pref.UnknownFields
-	x legacyExtensionIface
+	x papi.ExtensionFields
 	r pref.FieldRanges
 }
 
 func (fs *legacyUnknownBytesAndExtensionMap) Len() int {
 	n := fs.u.Len()
-	fs.x.Range(func(_ pref.FieldNumber, x legacyExtensionEntry) bool {
-		if len(x.raw) > 0 {
+	fs.x.Range(func(_ pref.FieldNumber, x papi.ExtensionField) bool {
+		if len(x.Raw) > 0 {
 			n++
 		}
 		return true
@@ -57,7 +58,7 @@ func (fs *legacyUnknownBytesAndExtensionMap) Len() int {
 
 func (fs *legacyUnknownBytesAndExtensionMap) Get(num pref.FieldNumber) (raw pref.RawFields) {
 	if fs.r.Has(num) {
-		return fs.x.Get(num).raw
+		return fs.x.Get(num).Raw
 	}
 	return fs.u.Get(num)
 }
@@ -65,7 +66,7 @@ func (fs *legacyUnknownBytesAndExtensionMap) Get(num pref.FieldNumber) (raw pref
 func (fs *legacyUnknownBytesAndExtensionMap) Set(num pref.FieldNumber, raw pref.RawFields) {
 	if fs.r.Has(num) {
 		x := fs.x.Get(num)
-		x.raw = raw
+		x.Raw = raw
 		fs.x.Set(num, x)
 		return
 	}
@@ -91,9 +92,9 @@ func (fs *legacyUnknownBytesAndExtensionMap) Range(f func(pref.FieldNumber, pref
 		raw pref.RawFields
 	}
 	var xs []entry
-	fs.x.Range(func(n pref.FieldNumber, x legacyExtensionEntry) bool {
-		if len(x.raw) > 0 {
-			xs = append(xs, entry{n, x.raw})
+	fs.x.Range(func(n pref.FieldNumber, x papi.ExtensionField) bool {
+		if len(x.Raw) > 0 {
+			xs = append(xs, entry{n, x.Raw})
 		}
 		return true
 	})

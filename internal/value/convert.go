@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"reflect"
 
+	papi "github.com/golang/protobuf/protoapi"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -17,13 +18,6 @@ import (
 // This is implemented by List and Map.
 type Unwrapper interface {
 	Unwrap() interface{}
-}
-
-// messageV1 is the protoV1.Message interface.
-type messageV1 = interface {
-	Reset()
-	String() string
-	ProtoMessage()
 }
 
 var (
@@ -38,7 +32,7 @@ var (
 	bytesType   = reflect.TypeOf([]byte(nil))
 
 	enumIfaceV2    = reflect.TypeOf((*pref.ProtoEnum)(nil)).Elem()
-	messageIfaceV1 = reflect.TypeOf((*messageV1)(nil)).Elem()
+	messageIfaceV1 = reflect.TypeOf((*papi.Message)(nil)).Elem()
 	messageIfaceV2 = reflect.TypeOf((*pref.ProtoMessage)(nil)).Elem()
 
 	byteType = reflect.TypeOf(byte(0))

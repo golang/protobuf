@@ -765,8 +765,8 @@ func (m *OneofScalars) Interface() pref.ProtoMessage      { return m }
 func (m *OneofScalars) ProtoReflect() pref.Message        { return m }
 func (m *OneofScalars) ProtoMutable()                     {}
 
-func (*OneofScalars) XXX_OneofFuncs() (func(protoV1.Message, *protoV1.Buffer) error, func(protoV1.Message, int, int, *protoV1.Buffer) (bool, error), func(protoV1.Message) int, []interface{}) {
-	return nil, nil, nil, []interface{}{
+func (*OneofScalars) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
 		(*OneofScalars_Bool)(nil),
 		(*OneofScalars_Int32)(nil),
 		(*OneofScalars_Int64)(nil),
@@ -985,8 +985,8 @@ func (m *EnumMessages) Interface() pref.ProtoMessage      { return m }
 func (m *EnumMessages) ProtoReflect() pref.Message        { return m }
 func (m *EnumMessages) ProtoMutable()                     {}
 
-func (*EnumMessages) XXX_OneofFuncs() (func(protoV1.Message, *protoV1.Buffer) error, func(protoV1.Message, int, int, *protoV1.Buffer) (bool, error), func(protoV1.Message) int, []interface{}) {
-	return nil, nil, nil, []interface{}{
+func (*EnumMessages) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
 		(*EnumMessages_OneofE2)(nil),
 		(*EnumMessages_OneofE3)(nil),
 		(*EnumMessages_OneofM2)(nil),
