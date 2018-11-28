@@ -11,9 +11,9 @@ import (
 	"sync"
 	"unicode"
 
-	protoV1 "github.com/golang/protobuf/proto"
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
+	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
@@ -253,7 +253,7 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 			m := &ptype.StandaloneMessage{
 				Syntax:   parent.Syntax,
 				FullName: parent.FullName.Append(mapEntryName(f.Name)),
-				Options:  &descriptorV1.MessageOptions{MapEntry: protoV1.Bool(true)},
+				Options:  &descriptorV1.MessageOptions{MapEntry: scalar.Bool(true)},
 				Fields: []ptype.Field{
 					ms.parseField(tagKey, "", "", t.Key(), nil),
 					ms.parseField(tagVal, "", "", t.Elem(), nil),

@@ -13,6 +13,7 @@ import (
 	protoV1 "github.com/golang/protobuf/proto"
 	pack "github.com/golang/protobuf/v2/internal/encoding/pack"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
+	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 	cmp "github.com/google/go-cmp/cmp"
@@ -848,8 +849,8 @@ func TestLegactExtensions(t *testing.T) {
 	}
 
 	// Set some values and append to values to the lists.
-	m1a := &proto2_20180125.Message_ChildMessage{F1: protoV1.String("m1a")}
-	m1b := &proto2_20180125.Message_ChildMessage{F1: protoV1.String("m2b")}
+	m1a := &proto2_20180125.Message_ChildMessage{F1: scalar.String("m1a")}
+	m1b := &proto2_20180125.Message_ChildMessage{F1: scalar.String("m2b")}
 	m2a := &EnumMessages{EnumP2: EnumProto2(0x1b).Enum()}
 	m2b := &EnumMessages{EnumP2: EnumProto2(0x2b).Enum()}
 	setValues := []interface{}{

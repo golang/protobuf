@@ -12,6 +12,7 @@ import (
 
 	protoV1 "github.com/golang/protobuf/proto"
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 	cmp "github.com/google/go-cmp/cmp"
@@ -559,7 +560,7 @@ func mustMakeMapEntry(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Fiel
 				{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: keyKind},
 				{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: valKind},
 			},
-			Options: &descriptorV1.MessageOptions{MapEntry: protoV1.Bool(true)},
+			Options: &descriptorV1.MessageOptions{MapEntry: scalar.Bool(true)},
 		}),
 	}
 }
@@ -964,7 +965,7 @@ var enumMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
 		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.EnumKind, EnumType: enumProto3Type},
 	},
-	Options: &descriptorV1.MessageOptions{MapEntry: protoV1.Bool(true)},
+	Options: &descriptorV1.MessageOptions{MapEntry: scalar.Bool(true)},
 })
 
 var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
@@ -974,7 +975,7 @@ var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
 		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: scalarProto3Type.Type},
 	},
-	Options: &descriptorV1.MessageOptions{MapEntry: protoV1.Bool(true)},
+	Options: &descriptorV1.MessageOptions{MapEntry: scalar.Bool(true)},
 })
 
 func (m *EnumMessages) Type() pref.MessageType            { return enumMessagesType.Type }
@@ -1017,10 +1018,10 @@ func (*EnumMessages_OneofM2) isEnumMessages_Union() {}
 func (*EnumMessages_OneofM3) isEnumMessages_Union() {}
 
 func TestEnumMessages(t *testing.T) {
-	wantL := MessageOf(&proto2_20180125.Message{OptionalFloat: protoV1.Float32(math.E)})
+	wantL := MessageOf(&proto2_20180125.Message{OptionalFloat: scalar.Float32(math.E)})
 	wantM := &EnumMessages{EnumP2: EnumProto2(1234).Enum()}
-	wantM2a := &ScalarProto2{Float32: protoV1.Float32(math.Pi)}
-	wantM2b := &ScalarProto2{Float32: protoV1.Float32(math.Phi)}
+	wantM2a := &ScalarProto2{Float32: scalar.Float32(math.Pi)}
+	wantM2b := &ScalarProto2{Float32: scalar.Float32(math.Phi)}
 	wantM3a := &ScalarProto3{Float32: math.Pi}
 	wantM3b := &ScalarProto3{Float32: math.Ln2}
 
@@ -1104,7 +1105,7 @@ func TestEnumMessages(t *testing.T) {
 		equalMessage{&EnumMessages{
 			EnumP2:        EnumProto2(0xdead).Enum(),
 			EnumP3:        EnumProto3(0).Enum(),
-			MessageLegacy: &proto2_20180125.Message{OptionalFloat: protoV1.Float32(math.E)},
+			MessageLegacy: &proto2_20180125.Message{OptionalFloat: scalar.Float32(math.E)},
 			MessageCycle:  wantM,
 			MessageList:   []*ScalarProto2{wantM2a, wantM2b},
 			EnumMap:       map[string]EnumProto3{"one": 1, "two": 2},

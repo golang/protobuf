@@ -17,6 +17,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/internal/protogen/goldentest"
+	"github.com/golang/protobuf/v2/internal/scalar"
 )
 
 // Set --regenerate to regenerate the golden files.
@@ -81,9 +82,9 @@ func TestAnnotations(t *testing.T) {
 		end := begin + len(want.text)
 		wantInfo.Annotation = append(wantInfo.Annotation, &descpb.GeneratedCodeInfo_Annotation{
 			Path:       want.path,
-			Begin:      proto.Int32(int32(begin)),
-			End:        proto.Int32(int32(end)),
-			SourceFile: proto.String("annotations.proto"),
+			Begin:      scalar.Int32(int32(begin)),
+			End:        scalar.Int32(int32(end)),
+			SourceFile: scalar.String("annotations.proto"),
 		})
 	}
 	if !proto.Equal(gotInfo, wantInfo) {

@@ -19,6 +19,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/golang/protobuf/v2/internal/scalar"
 )
 
 func TestPluginParameters(t *testing.T) {
@@ -29,7 +30,7 @@ func TestPluginParameters(t *testing.T) {
 	}
 	const params = "integer=2"
 	_, err := New(&pluginpb.CodeGeneratorRequest{
-		Parameter: proto.String(params),
+		Parameter: scalar.String(params),
 	}, opts)
 	if err != nil {
 		t.Errorf("New(generator parameters %q): %v", params, err)
@@ -50,7 +51,7 @@ func TestPluginParameterErrors(t *testing.T) {
 			ParamFunc: flags.Set,
 		}
 		_, err := New(&pluginpb.CodeGeneratorRequest{
-			Parameter: proto.String(parameter),
+			Parameter: scalar.String(parameter),
 		}, opts)
 		if err == nil {
 			t.Errorf("New(generator parameters %q): want error, got nil", parameter)
@@ -170,13 +171,13 @@ TEST: %v
 			test.desc, test.parameter, filename, test.generate, test.goPackageOption)
 
 		req := &pluginpb.CodeGeneratorRequest{
-			Parameter: proto.String(test.parameter),
+			Parameter: scalar.String(test.parameter),
 			ProtoFile: []*descpb.FileDescriptorProto{
 				{
-					Name:    proto.String(filename),
-					Package: proto.String(protoPackageName),
+					Name:    scalar.String(filename),
+					Package: scalar.String(protoPackageName),
 					Options: &descpb.FileOptions{
-						GoPackage: proto.String(test.goPackageOption),
+						GoPackage: scalar.String(test.goPackageOption),
 					},
 				},
 			},
@@ -210,14 +211,14 @@ func TestPackageNameInference(t *testing.T) {
 	gen, err := New(&pluginpb.CodeGeneratorRequest{
 		ProtoFile: []*descpb.FileDescriptorProto{
 			{
-				Name:    proto.String("dir/file1.proto"),
-				Package: proto.String("proto.package"),
+				Name:    scalar.String("dir/file1.proto"),
+				Package: scalar.String("proto.package"),
 			},
 			{
-				Name:    proto.String("dir/file2.proto"),
-				Package: proto.String("proto.package"),
+				Name:    scalar.String("dir/file2.proto"),
+				Package: scalar.String("proto.package"),
 				Options: &descpb.FileOptions{
-					GoPackage: proto.String("foo"),
+					GoPackage: scalar.String("foo"),
 				},
 			},
 		},
@@ -237,17 +238,17 @@ func TestInconsistentPackageNames(t *testing.T) {
 	_, err := New(&pluginpb.CodeGeneratorRequest{
 		ProtoFile: []*descpb.FileDescriptorProto{
 			{
-				Name:    proto.String("dir/file1.proto"),
-				Package: proto.String("proto.package"),
+				Name:    scalar.String("dir/file1.proto"),
+				Package: scalar.String("proto.package"),
 				Options: &descpb.FileOptions{
-					GoPackage: proto.String("golang.org/x/foo"),
+					GoPackage: scalar.String("golang.org/x/foo"),
 				},
 			},
 			{
-				Name:    proto.String("dir/file2.proto"),
-				Package: proto.String("proto.package"),
+				Name:    scalar.String("dir/file2.proto"),
+				Package: scalar.String("proto.package"),
 				Options: &descpb.FileOptions{
-					GoPackage: proto.String("golang.org/x/foo;bar"),
+					GoPackage: scalar.String("golang.org/x/foo;bar"),
 				},
 			},
 		},

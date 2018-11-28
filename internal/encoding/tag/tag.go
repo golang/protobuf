@@ -13,9 +13,9 @@ import (
 	"strconv"
 	"strings"
 
-	protoV1 "github.com/golang/protobuf/proto"
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	ptext "github.com/golang/protobuf/v2/internal/encoding/text"
+	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
@@ -105,9 +105,9 @@ func Unmarshal(tag string, goType reflect.Type) ptype.Field {
 		case strings.HasPrefix(s, "json="):
 			f.JSONName = s[len("json="):]
 		case s == "packed":
-			f.Options.Packed = protoV1.Bool(true)
+			f.Options.Packed = scalar.Bool(true)
 		case strings.HasPrefix(s, "weak="):
-			f.Options.Weak = protoV1.Bool(true)
+			f.Options.Weak = scalar.Bool(true)
 			f.MessageType = ptype.PlaceholderMessage(pref.FullName(s[len("weak="):]))
 		case strings.HasPrefix(s, "def="):
 			// The default tag is special in that everything afterwards is the

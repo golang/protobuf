@@ -17,10 +17,10 @@ import (
 	"strconv"
 	"strings"
 
-	protoV1 "github.com/golang/protobuf/proto"
 	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
+	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/prototype"
 )
@@ -229,7 +229,7 @@ func (fs fields) messageDescriptor(name protoreflect.FullName) prototype.Message
 			protoreflect.Sfixed32Kind, protoreflect.Fixed32Kind, protoreflect.FloatKind,
 			protoreflect.Sfixed64Kind, protoreflect.Fixed64Kind, protoreflect.DoubleKind:
 			f.Cardinality = protoreflect.Repeated
-			f.Options = &descriptorV1.FieldOptions{Packed: protoV1.Bool(true)}
+			f.Options = &descriptorV1.FieldOptions{Packed: scalar.Bool(true)}
 		case protoreflect.MessageKind, protoreflect.GroupKind:
 			s := name.Append(protoreflect.Name(fmt.Sprintf("M%d", n)))
 			f.MessageType = prototype.PlaceholderMessage(s)
