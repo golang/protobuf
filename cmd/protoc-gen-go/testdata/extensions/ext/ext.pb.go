@@ -755,7 +755,6 @@ func init() {
 	proto.RegisterType((*RepeatedGroup)(nil), "goproto.protoc.extension.ext.RepeatedGroup")
 	proto.RegisterType((*Extendable)(nil), "goproto.protoc.extension.ext.Extendable")
 	proto.RegisterExtension(E_MessageSetWireFormatExtension_MessageSetExtension)
-	proto.RegisterMessageSetType((*MessageSetWireFormatExtension)(nil), 100, "goproto.protoc.extension.ext.MessageSetWireFormatExtension")
 	proto.RegisterType((*MessageSetWireFormatExtension)(nil), "goproto.protoc.extension.ext.MessageSetWireFormatExtension")
 	proto.RegisterExtension(E_ExtensionBool)
 	proto.RegisterExtension(E_ExtensionEnum)
@@ -798,7 +797,6 @@ func init() {
 	proto.RegisterExtension(E_ExtendableField)
 	proto.RegisterExtension(E_ExtendableStringField)
 	proto.RegisterExtension(E_MessageSetExtension)
-	proto.RegisterMessageSetType((*MessageSetWireFormatExtension)(nil), 101, "goproto.protoc.extension.ext.")
 }
 
 func init() { proto.RegisterFile("extensions/ext/ext.proto", fileDescriptor_bf470ef4907b23cb) }

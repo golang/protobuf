@@ -777,13 +777,6 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInf
 
 func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, extension *protogen.Extension) {
 	g.P(protoPackage.Ident("RegisterExtension"), "(", extensionVar(f.File, extension), ")")
-	if name, ok := isExtensionMessageSetElement(extension); ok {
-		goType, pointer := fieldGoType(g, extension)
-		if pointer {
-			goType = "*" + goType
-		}
-		g.P(protoPackage.Ident("RegisterMessageSetType"), "((", goType, ")(nil), ", extension.Desc.Number(), ",", strconv.Quote(string(name)), ")")
-	}
 }
 
 // deprecationComment returns a standard deprecation comment if deprecated is true.
