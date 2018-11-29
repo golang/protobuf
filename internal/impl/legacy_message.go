@@ -189,6 +189,12 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 			oneofWrappers = append(oneofWrappers, reflect.TypeOf(v))
 		}
 	}
+	if fn, ok := t.MethodByName("XXX_OneofWrappers"); ok {
+		vs := fn.Func.Call([]reflect.Value{reflect.Zero(fn.Type.In(0))})[0]
+		for _, v := range vs.Interface().([]interface{}) {
+			oneofWrappers = append(oneofWrappers, reflect.TypeOf(v))
+		}
+	}
 
 	// Obtain a list of the extension ranges.
 	if fn, ok := t.MethodByName("ExtensionRangeArray"); ok {

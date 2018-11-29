@@ -50,6 +50,11 @@ import "internal/testprotos/legacy/proto3.v1.1.0-20180430-b4deda09/test.proto";
 //	* Added "proto3" struct tag to all fields in proto3 messages
 import "internal/testprotos/legacy/proto2.v1.2.0-20180814-aa810b61/test.proto";
 import "internal/testprotos/legacy/proto3.v1.2.0-20180814-aa810b61/test.proto";
+// Changes from 20180814 to 20181126:
+//	* Changed the XXX_OneofFuncs method to XXX_OneofWrappers
+//	* Various syntactical changes to make the output more consistent
+import "internal/testprotos/legacy/proto2.v1.2.1-20181126-8d0c54c1/test.proto";
+import "internal/testprotos/legacy/proto3.v1.2.1-20181126-8d0c54c1/test.proto";
 
 message Legacy {
 	google.golang.org.proto2_20160225.Message f1 = 1;
@@ -62,4 +67,6 @@ message Legacy {
 	google.golang.org.proto3_20180430.Message f8 = 8;
 	google.golang.org.proto2_20180814.Message f9 = 9;
 	google.golang.org.proto3_20180814.Message f10 = 10;
+	google.golang.org.proto2_20181126.Message f11 = 11;
+	google.golang.org.proto3_20181126.Message f12 = 12;
 }

@@ -23,11 +23,13 @@ import (
 	proto2_20180125 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
 	proto2_20180430 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.1.0-20180430-b4deda09"
 	proto2_20180814 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.2.0-20180814-aa810b61"
+	proto2_20181126 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.2.1-20181126-8d0c54c1"
 	proto3_20160225 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v0.0.0-20160225-2fc053c5"
 	proto3_20160519 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v0.0.0-20160519-a4ab9ec5"
 	proto3_20180125 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v1.0.0-20180125-92554152"
 	proto3_20180430 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v1.1.0-20180430-b4deda09"
 	proto3_20180814 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v1.2.0-20180814-aa810b61"
+	proto3_20181126 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v1.2.1-20181126-8d0c54c1"
 )
 
 func mustLoadFileDesc(b []byte, _ []int) pref.FileDescriptor {
@@ -324,6 +326,63 @@ func TestLegacyDescriptor(t *testing.T) {
 	}, {
 		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20180814.Message))),
 		want: fileDescP3_20180814.Messages().ByName("Message"),
+	}}...)
+
+	fileDescP2_20181126 := mustLoadFileDesc(new(proto2_20181126.Message).Descriptor())
+	tests = append(tests, []struct{ got, want pref.Descriptor }{{
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20181126.SiblingEnum(0))),
+		want: fileDescP2_20181126.Enums().ByName("SiblingEnum"),
+	}, {
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto2_20181126.Message_ChildEnum(0))),
+		want: fileDescP2_20181126.Messages().ByName("Message").Enums().ByName("ChildEnum"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20181126.SiblingMessage))),
+		want: fileDescP2_20181126.Messages().ByName("SiblingMessage"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20181126.Message_ChildMessage))),
+		want: fileDescP2_20181126.Messages().ByName("Message").Messages().ByName("ChildMessage"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20181126.Message))),
+		want: fileDescP2_20181126.Messages().ByName("Message"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20181126.Message_NamedGroup))),
+		want: fileDescP2_20181126.Messages().ByName("Message").Messages().ByName("NamedGroup"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20181126.Message_OptionalGroup))),
+		want: fileDescP2_20181126.Messages().ByName("Message").Messages().ByName("OptionalGroup"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20181126.Message_RequiredGroup))),
+		want: fileDescP2_20181126.Messages().ByName("Message").Messages().ByName("RequiredGroup"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20181126.Message_RepeatedGroup))),
+		want: fileDescP2_20181126.Messages().ByName("Message").Messages().ByName("RepeatedGroup"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20181126.Message_OneofGroup))),
+		want: fileDescP2_20181126.Messages().ByName("Message").Messages().ByName("OneofGroup"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20181126.Message_ExtensionOptionalGroup))),
+		want: fileDescP2_20181126.Messages().ByName("Message").Messages().ByName("ExtensionOptionalGroup"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto2_20181126.Message_ExtensionRepeatedGroup))),
+		want: fileDescP2_20181126.Messages().ByName("Message").Messages().ByName("ExtensionRepeatedGroup"),
+	}}...)
+
+	fileDescP3_20181126 := mustLoadFileDesc(new(proto3_20181126.Message).Descriptor())
+	tests = append(tests, []struct{ got, want pref.Descriptor }{{
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20181126.SiblingEnum(0))),
+		want: fileDescP3_20181126.Enums().ByName("SiblingEnum"),
+	}, {
+		got:  legacyLoadEnumDesc(reflect.TypeOf(proto3_20181126.Message_ChildEnum(0))),
+		want: fileDescP3_20181126.Messages().ByName("Message").Enums().ByName("ChildEnum"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20181126.SiblingMessage))),
+		want: fileDescP3_20181126.Messages().ByName("SiblingMessage"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20181126.Message_ChildMessage))),
+		want: fileDescP3_20181126.Messages().ByName("Message").Messages().ByName("ChildMessage"),
+	}, {
+		got:  legacyLoadMessageDesc(reflect.TypeOf(new(proto3_20181126.Message))),
+		want: fileDescP3_20181126.Messages().ByName("Message"),
 	}}...)
 
 	type list interface {
