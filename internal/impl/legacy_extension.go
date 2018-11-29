@@ -318,7 +318,7 @@ func legacyExtensionTypeOf(d *papi.ExtensionDesc) pref.ExtensionType {
 		// Both of those type satisfy the value.Unwrapper interface.
 		xt2.typ = t
 		xt2.new = func() interface{} {
-			return xt.New().(pvalue.Unwrapper).Unwrap()
+			return xt.New().(pvalue.Unwrapper).ProtoUnwrap()
 		}
 		xt2.valueOf = func(v interface{}) pref.Value {
 			if reflect.TypeOf(v) != xt2.typ {
@@ -331,7 +331,7 @@ func legacyExtensionTypeOf(d *papi.ExtensionDesc) pref.ExtensionType {
 			}
 		}
 		xt2.interfaceOf = func(v pref.Value) interface{} {
-			return xt.InterfaceOf(v).(pvalue.Unwrapper).Unwrap()
+			return xt.InterfaceOf(v).(pvalue.Unwrapper).ProtoUnwrap()
 		}
 	} else {
 		// Custom extension type for repeated enums and messages.
@@ -346,7 +346,7 @@ func legacyExtensionTypeOf(d *papi.ExtensionDesc) pref.ExtensionType {
 			return pref.ValueOf(pvalue.ListOf(v, conv))
 		}
 		xt2.interfaceOf = func(pv pref.Value) interface{} {
-			v := pv.List().(pvalue.Unwrapper).Unwrap()
+			v := pv.List().(pvalue.Unwrapper).ProtoUnwrap()
 			if reflect.TypeOf(v) != xt2.typ {
 				panic(fmt.Sprintf("invalid type: got %T, want %v", v, xt2.typ))
 			}

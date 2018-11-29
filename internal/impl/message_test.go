@@ -1124,7 +1124,7 @@ var cmpOpts = cmp.Options{
 		return pv.Interface()
 	}),
 	cmp.Transformer("UnwrapGeneric", func(x pvalue.Unwrapper) interface{} {
-		return x.Unwrap()
+		return x.ProtoUnwrap()
 	}),
 	cmpopts.EquateNaNs(),
 	cmpopts.EquateEmpty(),

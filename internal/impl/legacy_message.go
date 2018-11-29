@@ -58,14 +58,14 @@ func (m *legacyMessageWrapper) KnownFields() pref.KnownFields {
 func (m *legacyMessageWrapper) UnknownFields() pref.UnknownFields {
 	return m.mi.unknownFields((*messageDataType)(m))
 }
-func (m *legacyMessageWrapper) Unwrap() interface{} {
-	return m.p.asType(m.mi.goType.Elem()).Interface()
-}
 func (m *legacyMessageWrapper) Interface() pref.ProtoMessage {
 	return m
 }
 func (m *legacyMessageWrapper) ProtoReflect() pref.Message {
 	return m
+}
+func (m *legacyMessageWrapper) ProtoUnwrap() interface{} {
+	return m.p.asType(m.mi.goType.Elem()).Interface()
 }
 func (m *legacyMessageWrapper) ProtoMutable() {}
 

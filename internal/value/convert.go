@@ -17,7 +17,7 @@ import (
 // Unwrapper unwraps the value to the underlying value.
 // This is implemented by List and Map.
 type Unwrapper interface {
-	Unwrap() interface{}
+	ProtoUnwrap() interface{}
 }
 
 var (
@@ -174,7 +174,7 @@ func NewLegacyConverter(t reflect.Type, k pref.Kind, etOf enumTypeOf, mtOf messa
 					return pref.ValueOf(mvOf(v).ProtoReflect())
 				},
 				GoValueOf: func(v pref.Value) reflect.Value {
-					rv := reflect.ValueOf(v.Message().(Unwrapper).Unwrap())
+					rv := reflect.ValueOf(v.Message().(Unwrapper).ProtoUnwrap())
 					if rv.Type() != t {
 						panic(fmt.Sprintf("invalid type: got %v, want %v", rv.Type(), t))
 					}

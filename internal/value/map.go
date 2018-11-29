@@ -10,7 +10,10 @@ import (
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
-func MapOf(p interface{}, kc, kv Converter) pref.Map {
+func MapOf(p interface{}, kc, kv Converter) interface {
+	pref.Map
+	Unwrapper
+} {
 	// TODO: Validate that p is a *map[K]V?
 	rv := reflect.ValueOf(p).Elem()
 	return mapReflect{rv, kc, kv}
@@ -75,12 +78,7 @@ func (ms mapReflect) Range(f func(pref.MapKey, pref.Value) bool) {
 		}
 	}
 }
-func (ms mapReflect) Unwrap() interface{} {
+func (ms mapReflect) ProtoUnwrap() interface{} {
 	return ms.v.Addr().Interface()
 }
 func (ms mapReflect) ProtoMutable() {}
-
-var (
-	_ pref.Map  = mapReflect{}
-	_ Unwrapper = mapReflect{}
-)

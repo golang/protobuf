@@ -256,10 +256,7 @@ func (t *goExtension) lazyInit() {
 				return protoreflect.ValueOf(value.ListOf(v, c))
 			}
 			t.interfaceOf = func(pv protoreflect.Value) interface{} {
-				// TODO: Can we assume that List implementations know how
-				// to unwrap themselves?
-				// Should this be part of the public API in protoreflect?
-				return pv.List().(value.Unwrapper).Unwrap()
+				return pv.List().(value.Unwrapper).ProtoUnwrap()
 			}
 		default:
 			panic(fmt.Sprintf("invalid cardinality: %v", t.Cardinality()))

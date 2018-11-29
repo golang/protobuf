@@ -10,7 +10,10 @@ import (
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
-func ListOf(p interface{}, c Converter) pref.List {
+func ListOf(p interface{}, c Converter) interface {
+	pref.List
+	Unwrapper
+} {
 	// TODO: Validate that p is a *[]T?
 	rv := reflect.ValueOf(p).Elem()
 	return listReflect{rv, c}
@@ -46,12 +49,7 @@ func (ls listReflect) MutableAppend() pref.Mutable {
 func (ls listReflect) Truncate(i int) {
 	ls.v.Set(ls.v.Slice(0, i))
 }
-func (ls listReflect) Unwrap() interface{} {
+func (ls listReflect) ProtoUnwrap() interface{} {
 	return ls.v.Addr().Interface()
 }
 func (ls listReflect) ProtoMutable() {}
-
-var (
-	_ pref.List = listReflect{}
-	_ Unwrapper = listReflect{}
-)

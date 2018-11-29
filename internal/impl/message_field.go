@@ -119,7 +119,7 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 		},
 		set: func(p pointer, v pref.Value) {
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
-			rv.Set(reflect.ValueOf(v.Map().(pvalue.Unwrapper).Unwrap()).Elem())
+			rv.Set(reflect.ValueOf(v.Map().(pvalue.Unwrapper).ProtoUnwrap()).Elem())
 		},
 		clear: func(p pointer) {
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
@@ -151,7 +151,7 @@ func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 		},
 		set: func(p pointer, v pref.Value) {
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
-			rv.Set(reflect.ValueOf(v.List().(pvalue.Unwrapper).Unwrap()).Elem())
+			rv.Set(reflect.ValueOf(v.List().(pvalue.Unwrapper).ProtoUnwrap()).Elem())
 		},
 		clear: func(p pointer) {
 			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
