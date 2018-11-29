@@ -1,0 +1,65 @@
+// Copyright 2018 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+// Test Protobuf definitions with proto3 syntax.
+syntax = "proto3";
+
+package pb3;
+option go_package = "github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb3";
+
+// Scalars contains scalar field types.
+message Scalars {
+  bool s_bool = 1;
+
+  int32 s_int32 = 2;
+  int64 s_int64 = 3;
+  uint32 s_uint32 = 4;
+  uint64 s_uint64 = 5;
+  sint32 s_sint32 = 6;
+  sint64 s_sint64 = 7;
+  fixed32 s_fixed32 = 8;
+  fixed64 s_fixed64 = 9;
+  sfixed32 s_sfixed32 = 10;
+  sfixed64 s_sfixed64 = 11;
+
+  float s_float = 20;
+  double s_double = 21;
+
+  bytes s_bytes = 14;
+  string s_string = 13;
+}
+
+enum Enum {
+  ZERO = 0;
+  ONE = 1;
+  TWO = 2;
+  TEN = 10;
+}
+
+// Message contains enum fields.
+message Enums {
+  Enum s_enum = 1;
+  repeated Enum rpt_enum = 2;
+
+  enum NestedEnum {
+  	CERO = 0;
+	UNO = 1;
+	DOS = 2;
+	DIEZ = 10;
+  }
+  NestedEnum s_nested_enum = 3;
+  repeated NestedEnum rpt_nested_enum = 4;
+}
+
+// Message contains message and group fields.
+message Nests {
+  Nested s_nested = 1;
+  repeated Nested rpt_nested = 2;
+}
+
+// Message type used as submessage.
+message Nested {
+  string s_string = 1;
+  Nested s_nested = 2;
+}

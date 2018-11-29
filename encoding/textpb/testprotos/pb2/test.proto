@@ -1,0 +1,151 @@
+// Copyright 2018 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+// Test Protobuf definitions with proto2 syntax.
+syntax = "proto2";
+
+package pb2;
+option go_package = "github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb2";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+// Scalars contains optional scalar fields.
+message Scalars {
+  optional bool opt_bool = 1;
+
+  optional int32 opt_int32 = 2;
+  optional int64 opt_int64 = 3;
+  optional uint32 opt_uint32 = 4;
+  optional uint64 opt_uint64 = 5;
+  optional sint32 opt_sint32 = 6;
+  optional sint64 opt_sint64 = 7;
+  optional fixed32 opt_fixed32 = 8;
+  optional fixed64 opt_fixed64 = 9;
+  optional sfixed32 opt_sfixed32 = 10;
+  optional sfixed64 opt_sfixed64 = 11;
+
+  optional float opt_float = 20;
+  optional double opt_double = 21;
+
+  optional bytes opt_bytes = 14;
+  optional string opt_string = 13;
+}
+
+// Message contains repeated fields.
+message Repeats {
+  repeated bool rpt_bool = 1;
+  repeated int32 rpt_int32 = 2;
+  repeated int64 rpt_int64 = 3;
+  repeated uint32 rpt_uint32 = 4;
+  repeated uint64 rpt_uint64 = 5;
+  repeated float rpt_float = 6;
+  repeated double rpt_double = 7;
+  repeated string rpt_string = 15;
+  repeated bytes rpt_bytes = 14;
+}
+
+enum Enum {
+  UNKNOWN = 0;
+  FIRST = 1;
+  SECOND = 2;
+  TENTH = 10;
+}
+
+// Message contains enum fields.
+message Enums {
+  optional Enum opt_enum = 1;
+  repeated Enum rpt_enum = 2;
+
+  enum NestedEnum {
+	UNO = 1;
+	DOS = 2;
+	DIEZ = 10;
+  }
+  optional NestedEnum opt_nested_enum = 3;
+  repeated NestedEnum rpt_nested_enum = 4;
+}
+
+// Message contains message and group fields.
+message Nests {
+  optional Nested opt_nested = 1;
+  optional group OptGroup = 2 {
+    optional bool opt_bool = 1;
+    optional string opt_string = 2;
+    optional Nested opt_nested = 3;
+
+    optional group OptNestedGroup = 4 {
+      optional Enum opt_enum = 1;
+    }
+  }
+
+  repeated Nested rpt_nested = 3;
+  repeated group RptGroup = 4 {
+    repeated bool rpt_bool = 1;
+  }
+}
+
+// Message type used as submessage.
+message Nested {
+  optional string opt_string = 1;
+  optional Nested opt_nested = 2;
+}
+
+// Message contains required fields.
+message Requireds {
+  required bool req_bool = 1;
+  required fixed32 req_fixed32 = 2;
+  required fixed64 req_fixed64 = 3;
+  required sfixed32 req_sfixed32 = 4;
+  required sfixed64 req_sfixed64 = 5;
+  required float req_float = 6;
+  required double req_double = 7;
+  required string req_string = 8;
+  required bytes req_bytes = 9;
+  required Enum req_enum = 10;
+  required Nested req_nested = 11;
+}
+
+// Message contains oneof field.
+message Oneofs {
+  oneof union {
+    string str = 1;
+    Nested msg = 2;
+  }
+}
+
+// Message contains map fields.
+message Maps {
+  map<int32, string> int32_to_str = 1;
+  map<sfixed64, bool> sfixed64_to_bool = 2;
+  map<bool, uint32> bool_to_uint32 = 3;
+  map<uint64, Enum> uint64_to_enum = 4;
+  map<string, Nested> str_to_nested = 5;
+  map<string, Oneofs> str_to_oneofs = 6;
+}
+
+// Message contains well-known type fields.
+message KnownTypes {
+  optional google.protobuf.BoolValue opt_bool = 1;
+  optional google.protobuf.Int32Value opt_int32 = 2;
+  optional google.protobuf.Int64Value opt_int64 = 3;
+  optional google.protobuf.UInt32Value opt_uint32 = 4;
+  optional google.protobuf.UInt64Value opt_uint64 = 5;
+  optional google.protobuf.FloatValue opt_float = 6;
+  optional google.protobuf.DoubleValue opt_double = 7;
+  optional google.protobuf.StringValue opt_string = 8;
+  optional google.protobuf.BytesValue opt_bytes = 9;
+
+  optional google.protobuf.Duration opt_duration = 20;
+  optional google.protobuf.Timestamp opt_timestamp = 21;
+  optional google.protobuf.Struct opt_struct = 25;
+  optional google.protobuf.ListValue opt_list = 26;
+  optional google.protobuf.Value opt_value = 27;
+  optional google.protobuf.Empty opt_empty = 30;
+  optional google.protobuf.Any opt_any = 32;
+}
