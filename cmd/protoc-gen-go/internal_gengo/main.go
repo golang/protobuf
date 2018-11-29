@@ -172,8 +172,14 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 				GoName:       "Default_" + message.GoIdent.GoName + "_" + field.GoName,
 			}
 			decl := "const"
-			if field.Desc.Kind() == protoreflect.BytesKind {
+			switch field.Desc.Kind() {
+			case protoreflect.BytesKind:
 				decl = "var"
+			case protoreflect.FloatKind, protoreflect.DoubleKind:
+				f := field.Desc.Default().Float()
+				if math.IsInf(f, -1) || math.IsInf(f, 1) || math.IsNaN(f) {
+					decl = "var"
+				}
 			}
 			g.P(decl, " ", defVar.GoName, " = ", defVar)
 		}

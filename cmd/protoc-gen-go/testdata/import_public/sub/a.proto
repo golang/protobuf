@@ -14,6 +14,8 @@ message M {
   // Field using a type in the same Go package, but a different source file.
   optional M2 m2 = 1;
   optional string s = 4 [default="default"];
+  optional bytes b = 5 [default="default"];
+  optional double f = 6 [default=nan];
 
   oneof oneof_field {
     int32 oneof_int32 = 2;

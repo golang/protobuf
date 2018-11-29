@@ -23,6 +23,9 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 const Default_M_S = sub.Default_M_S
 
+var Default_M_B = sub.Default_M_B
+var Default_M_F = sub.Default_M_F
+
 // M from public import import_public/sub/a.proto
 type M = sub.M
 type M_OneofInt32 = sub.M_OneofInt32
