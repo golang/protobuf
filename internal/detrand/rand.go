@@ -15,9 +15,15 @@ import (
 	"os"
 )
 
+// Disable disables detrand such that all functions returns the zero value.
+// This function is not concurrent-safe and must be called during program init.
+func Disable() {
+	binHash = 0
+}
+
 // Bool returns a deterministically random boolean.
 func Bool() bool {
-	return binHash%2 == 0
+	return binHash%2 == 1
 }
 
 // Intn returns a deterministically random integer within [0,n).

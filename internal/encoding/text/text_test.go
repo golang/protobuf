@@ -7,16 +7,19 @@ package text
 import (
 	"fmt"
 	"math"
-	"regexp"
 	"strings"
 	"testing"
 	"unicode/utf8"
 
+	"github.com/golang/protobuf/v2/internal/detrand"
 	"github.com/golang/protobuf/v2/internal/flags"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
+
+// Disable detrand to enable direct comparisons on outputs.
+func init() { detrand.Disable() }
 
 var S = fmt.Sprintf
 var V = ValueOf
@@ -827,7 +830,7 @@ spouse: null
 				if err != nil {
 					t.Errorf("Marshal(): got %v, want nil error", err)
 				}
-				if removeRandomSpace(gotOut, false) != tt.wantOut {
+				if string(gotOut) != tt.wantOut {
 					t.Errorf("Marshal():\ngot:  %s\nwant: %s", gotOut, tt.wantOut)
 				}
 			}
@@ -836,7 +839,7 @@ spouse: null
 				if err != nil {
 					t.Errorf("Marshal(Bracket): got %v, want nil error", err)
 				}
-				if removeRandomSpace(gotOut, false) != tt.wantOutBracket {
+				if string(gotOut) != tt.wantOutBracket {
 					t.Errorf("Marshal(Bracket):\ngot:  %s\nwant: %s", gotOut, tt.wantOutBracket)
 				}
 			}
@@ -845,7 +848,7 @@ spouse: null
 				if err != nil {
 					t.Errorf("Marshal(ASCII): got %v, want nil error", err)
 				}
-				if removeRandomSpace(gotOut, false) != tt.wantOutASCII {
+				if string(gotOut) != tt.wantOutASCII {
 					t.Errorf("Marshal(ASCII):\ngot:  %s\nwant: %s", gotOut, tt.wantOutASCII)
 				}
 			}
@@ -854,24 +857,10 @@ spouse: null
 				if err != nil {
 					t.Errorf("Marshal(Indent): got %v, want nil error", err)
 				}
-				if removeRandomSpace(gotOut, true) != tt.wantOutIndent {
+				if string(gotOut) != tt.wantOutIndent {
 					t.Errorf("Marshal(Indent):\ngot:  %s\nwant: %s", gotOut, tt.wantOutIndent)
 				}
 			}
 		})
 	}
-}
-
-var expandedRE = regexp.MustCompile(":  +")
-
-// This works only for the test cases above.
-func removeRandomSpace(b []byte, useIndent bool) string {
-	s := string(b)
-	if useIndent {
-		return expandedRE.ReplaceAllString(s, ": ")
-	}
-	s = strings.Replace(s, "  ", " ", -1)
-	s = strings.Replace(s, " }", "}", -1)
-	s = strings.Replace(s, " >", ">", -1)
-	return strings.TrimRight(s, " ")
 }
