@@ -27,7 +27,7 @@ To use this software, you must:
 - Grab the code from the repository and install the `proto` package.
   The simplest way is to run `go get -u github.com/golang/protobuf/protoc-gen-go`.
   The compiler plugin, `protoc-gen-go`, will be installed in `$GOPATH/bin`
-  unless `$GOBIN` is set. It must be in your `$PATH` for the protocol
+  unless `$GOBIN` is set, and `$GOPATH/bin` should be in your `$PATH`, or it will cause error `protoc-gen-go: program not found or is not executable`. It must be in your `$PATH` for the protocol
   compiler, `protoc`, to find it.
 - If you need a particular version of `protoc-gen-go` (e.g., to match your
   `proto` package version), one option is
