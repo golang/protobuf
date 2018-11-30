@@ -238,5 +238,5 @@ func (m extensionMap) Lock() {
 	globalLock.Lock()
 }
 func (m extensionMap) Unlock() {
-	globalLock.Lock()
+	globalLock.Unlock()
 }
