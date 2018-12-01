@@ -555,7 +555,7 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 	}
 
 	if v.Kind() == reflect.Interface {
-		if p, ok := v.Interface().(proto.Message); ok {
+		if p, ok := v.Interface().(proto.Message); ok && !reflect.ValueOf(p).IsNil() {
 			return m.marshalObject(out, p, indent+m.Indent, "")
 		}
 	}
