@@ -17,6 +17,9 @@ func makeLegacyExtensionFieldsFunc(t reflect.Type) func(p *messageDataType) pref
 		return nil
 	}
 	return func(p *messageDataType) pref.KnownFields {
+		if p.p.IsNil() {
+			return emptyExtensionFields{}
+		}
 		return legacyExtensionFields{p.mi, f(p)}
 	}
 }
@@ -33,13 +36,13 @@ func makeLegacyExtensionMapFunc(t reflect.Type) func(*messageDataType) papi.Exte
 	case fx1.Type == extTypeA:
 		fieldOffset := offsetOf(fx1)
 		return func(p *messageDataType) papi.ExtensionFields {
-			v := p.p.apply(fieldOffset).asType(fx1.Type).Interface()
+			v := p.p.Apply(fieldOffset).AsValueOf(fx1.Type).Interface()
 			return papi.ExtensionFieldsOf(v)
 		}
 	case fx2.Type == extTypeB:
 		fieldOffset := offsetOf(fx2)
 		return func(p *messageDataType) papi.ExtensionFields {
-			v := p.p.apply(fieldOffset).asType(fx2.Type).Interface()
+			v := p.p.Apply(fieldOffset).AsValueOf(fx2.Type).Interface()
 			return papi.ExtensionFieldsOf(v)
 		}
 	default:

@@ -169,7 +169,7 @@ func (mi *MessageType) UnknownFieldsOf(p interface{}) pref.UnknownFields {
 
 func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
 	mi.init(p)
-	return &messageDataType{pointerOfIface(&p), mi}
+	return &messageDataType{pointerOfIface(p), mi}
 }
 
 // messageDataType is a tuple of a pointer to the message data and
@@ -216,7 +216,7 @@ func (m *messageWrapper) ProtoReflect() pref.Message {
 	return m
 }
 func (m *messageWrapper) ProtoUnwrap() interface{} {
-	return m.p.asType(m.mi.goType.Elem()).Interface()
+	return m.p.AsIfaceOf(m.mi.goType.Elem())
 }
 func (m *messageWrapper) ProtoMutable() {}
 

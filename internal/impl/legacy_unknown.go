@@ -23,12 +23,18 @@ func makeLegacyUnknownFieldsFunc(t reflect.Type) func(p *messageDataType) pref.U
 	}
 	fieldOffset := offsetOf(fu)
 	unkFunc := func(p *messageDataType) pref.UnknownFields {
-		rv := p.p.apply(fieldOffset).asType(bytesType)
+		if p.p.IsNil() {
+			return emptyUnknownFields{}
+		}
+		rv := p.p.Apply(fieldOffset).AsValueOf(bytesType)
 		return (*legacyUnknownBytes)(rv.Interface().(*[]byte))
 	}
 	extFunc := makeLegacyExtensionMapFunc(t)
 	if extFunc != nil {
 		return func(p *messageDataType) pref.UnknownFields {
+			if p.p.IsNil() {
+				return emptyUnknownFields{}
+			}
 			return &legacyUnknownBytesAndExtensionMap{
 				unkFunc(p), extFunc(p), p.mi.Type.ExtensionRanges(),
 			}

@@ -11,7 +11,6 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	descriptorV1 "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
@@ -24,6 +23,7 @@ import (
 	// TODO: Remove this when protoV1 registers these hooks for you.
 	_ "github.com/golang/protobuf/v2/internal/legacy"
 
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	proto2_20180125 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
 )
 
@@ -256,6 +256,18 @@ func TestScalarProto2(t *testing.T) {
 		clearFields{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22},
 		equalMessage{&ScalarProto2{}},
 	})
+
+	// Test read-only operations on nil message.
+	testMessage(t, nil, (*ScalarProto2)(nil), messageOps{
+		hasFields{
+			1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false,
+			12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false,
+		},
+		getFields{
+			1: V(bool(true)), 2: V(int32(2)), 3: V(int64(3)), 4: V(uint32(4)), 5: V(uint64(5)), 6: V(float32(6)), 7: V(float64(7)), 8: V(string("8")), 9: V(string("9")), 10: V([]byte("10")), 11: V([]byte("11")),
+			12: V(bool(true)), 13: V(int32(13)), 14: V(int64(14)), 15: V(uint32(15)), 16: V(uint64(16)), 17: V(float32(17)), 18: V(float64(18)), 19: V(string("19")), 20: V(string("20")), 21: V([]byte("21")), 22: V([]byte("22")),
+		},
+	})
 }
 
 type ScalarProto3 struct {
@@ -365,6 +377,18 @@ func TestScalarProto3(t *testing.T) {
 		},
 		clearFields{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22},
 		equalMessage{&ScalarProto3{}},
+	})
+
+	// Test read-only operations on nil message.
+	testMessage(t, nil, (*ScalarProto3)(nil), messageOps{
+		hasFields{
+			1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false,
+			12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false,
+		},
+		getFields{
+			1: V(bool(false)), 2: V(int32(0)), 3: V(int64(0)), 4: V(uint32(0)), 5: V(uint64(0)), 6: V(float32(0)), 7: V(float64(0)), 8: V(string("")), 9: V(string("")), 10: V([]byte(nil)), 11: V([]byte(nil)),
+			12: V(bool(false)), 13: V(int32(0)), 14: V(int64(0)), 15: V(uint32(0)), 16: V(uint64(0)), 17: V(float32(0)), 18: V(float64(0)), 19: V(string("")), 20: V(string("")), 21: V([]byte(nil)), 22: V([]byte(nil)),
+		},
 	})
 }
 
@@ -519,6 +543,12 @@ func TestListScalars(t *testing.T) {
 		clearFields{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19},
 		equalMessage{empty},
 	})
+
+	// Test read-only operations on nil message.
+	testMessage(t, nil, (*ListScalars)(nil), messageOps{
+		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false},
+		listFields{2: {lenList(0)}, 4: {lenList(0)}, 6: {lenList(0)}, 8: {lenList(0)}, 10: {lenList(0)}, 12: {lenList(0)}, 14: {lenList(0)}, 16: {lenList(0)}, 18: {lenList(0)}},
+	})
 }
 
 type MapScalars struct {
@@ -565,7 +595,7 @@ func mustMakeMapEntry(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Fiel
 				{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: keyKind},
 				{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: valKind},
 			},
-			Options: &descriptorV1.MessageOptions{MapEntry: scalar.Bool(true)},
+			Options: &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
 		}),
 	}
 }
@@ -731,6 +761,12 @@ func TestMapScalars(t *testing.T) {
 		clearFields{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25},
 		equalMessage{empty},
 	})
+
+	// Test read-only operations on nil message.
+	testMessage(t, nil, (*MapScalars)(nil), messageOps{
+		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false, 23: false, 24: false, 25: false},
+		mapFields{2: {lenMap(0)}, 4: {lenMap(0)}, 6: {lenMap(0)}, 8: {lenMap(0)}, 10: {lenMap(0)}, 12: {lenMap(0)}, 14: {lenMap(0)}, 16: {lenMap(0)}, 18: {lenMap(0)}, 20: {lenMap(0)}, 22: {lenMap(0)}, 24: {lenMap(0)}},
+	})
 }
 
 type OneofScalars struct {
@@ -888,6 +924,12 @@ func TestOneofs(t *testing.T) {
 		clearFields{13},
 		equalMessage{empty},
 	})
+
+	// Test read-only operations on nil message.
+	testMessage(t, nil, (*OneofScalars)(nil), messageOps{
+		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false},
+		getFields{1: V(bool(true)), 2: V(int32(2)), 3: V(int64(3)), 4: V(uint32(4)), 5: V(uint64(5)), 6: V(float32(6)), 7: V(float64(7)), 8: V(string("8")), 9: V(string("9")), 10: V(string("10")), 11: V([]byte("11")), 12: V([]byte("12")), 13: V([]byte("13"))},
+	})
 }
 
 type EnumProto2 int32
@@ -970,7 +1012,7 @@ var enumMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
 		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.EnumKind, EnumType: enumProto3Type},
 	},
-	Options: &descriptorV1.MessageOptions{MapEntry: scalar.Bool(true)},
+	Options: &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
 })
 
 var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
@@ -980,7 +1022,7 @@ var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
 		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: scalarProto3Type.Type},
 	},
-	Options: &descriptorV1.MessageOptions{MapEntry: scalar.Bool(true)},
+	Options: &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
 })
 
 func (m *EnumMessages) Type() pref.MessageType            { return enumMessagesType.Type }
@@ -1119,6 +1161,14 @@ func TestEnumMessages(t *testing.T) {
 		clearFields{1, 2, 3, 4, 6, 7, 12},
 		equalMessage{&EnumMessages{}},
 	})
+
+	// Test read-only operations on nil message.
+	testMessage(t, nil, (*EnumMessages)(nil), messageOps{
+		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false},
+		getFields{1: VE(0xbeef), 2: VE(1), 3: V(nil), 4: V(nil), 9: VE(0xbeef), 10: VE(1), 11: V(nil), 12: V(nil)},
+		listFields{5: {lenList(0)}, 6: {lenList(0)}},
+		mapFields{7: {lenMap(0)}, 8: {lenMap(0)}},
+	})
 }
 
 var cmpOpts = cmp.Options{
@@ -1179,13 +1229,13 @@ func testMessage(t *testing.T, p path, m pref.Message, tt messageOps) {
 		case listFields:
 			for n, tt := range op {
 				p.Push(int(n))
-				testLists(t, p, fs.Mutable(n).(pref.List), tt)
+				testLists(t, p, fs.Get(n).List(), tt)
 				p.Pop()
 			}
 		case mapFields:
 			for n, tt := range op {
 				p.Push(int(n))
-				testMaps(t, p, fs.Mutable(n).(pref.Map), tt)
+				testMaps(t, p, fs.Get(n).Map(), tt)
 				p.Pop()
 			}
 		case rangeFields:

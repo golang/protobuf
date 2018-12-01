@@ -29,21 +29,37 @@ func pointerOfValue(v reflect.Value) pointer {
 }
 
 // pointerOfIface returns the pointer portion of an interface.
-func pointerOfIface(v *interface{}) pointer {
+func pointerOfIface(v interface{}) pointer {
 	type ifaceHeader struct {
 		Type unsafe.Pointer
 		Data unsafe.Pointer
 	}
-	return pointer{p: (*ifaceHeader)(unsafe.Pointer(v)).Data}
+	return pointer{p: (*ifaceHeader)(unsafe.Pointer(&v)).Data}
 }
 
-// apply adds an offset to the pointer to derive a new pointer
-// to a specified field. The current pointer must be pointing at a struct.
-func (p pointer) apply(f offset) pointer {
+// IsNil reports whether the pointer is nil.
+func (p pointer) IsNil() bool {
+	return p.p == nil
+}
+
+// Apply adds an offset to the pointer to derive a new pointer
+// to a specified field. The pointer must be valid and pointing at a struct.
+func (p pointer) Apply(f offset) pointer {
+	if p.IsNil() {
+		panic("invalid nil pointer")
+	}
 	return pointer{p: unsafe.Pointer(uintptr(p.p) + uintptr(f))}
 }
 
-// asType treats p as a pointer to an object of type t and returns the value.
-func (p pointer) asType(t reflect.Type) reflect.Value {
+// AsValueOf treats p as a pointer to an object of type t and returns the value.
+// It is equivalent to reflect.ValueOf(p.AsIfaceOf(t))
+func (p pointer) AsValueOf(t reflect.Type) reflect.Value {
 	return reflect.NewAt(t, p.p)
+}
+
+// AsIfaceOf treats p as a pointer to an object of type t and returns the value.
+// It is equivalent to p.AsValueOf(t).Interface()
+func (p pointer) AsIfaceOf(t reflect.Type) interface{} {
+	// TODO: Use tricky unsafe magic to directly create ifaceHeader.
+	return p.AsValueOf(t).Interface()
 }

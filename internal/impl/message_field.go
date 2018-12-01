@@ -51,25 +51,28 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 		// typed nil pointer to one of the wrapper structs.
 
 		has: func(p pointer) bool {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if p.IsNil() {
+				return false
+			}
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
 				return false
 			}
 			return true
 		},
 		get: func(p pointer) pref.Value {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if p.IsNil() {
+				return defaultValueOf(fd)
+			}
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
-				if fd.Kind() == pref.MessageKind || fd.Kind() == pref.GroupKind {
-					return pref.Value{}
-				}
-				return fd.Default()
+				return defaultValueOf(fd)
 			}
 			rv = rv.Elem().Elem().Field(0)
 			return conv.PBValueOf(rv)
 		},
 		set: func(p pointer, v pref.Value) {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
 				rv.Set(reflect.New(ot))
 			}
@@ -77,7 +80,7 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 			rv.Set(conv.GoValueOf(v))
 		},
 		clear: func(p pointer) {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
 				return
 			}
@@ -85,7 +88,7 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 		},
 		mutable: func(p pointer) pref.Mutable {
 			// Mutable is only valid for messages and panics for other kinds.
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
 				rv.Set(reflect.New(ot))
 			}
@@ -110,23 +113,30 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
 		has: func(p pointer) bool {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if p.IsNil() {
+				return false
+			}
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			return rv.Len() > 0
 		},
 		get: func(p pointer) pref.Value {
-			v := p.apply(fieldOffset).asType(fs.Type).Interface()
+			if p.IsNil() {
+				v := reflect.Zero(reflect.PtrTo(fs.Type)).Interface()
+				return pref.ValueOf(pvalue.MapOf(v, keyConv, valConv))
+			}
+			v := p.Apply(fieldOffset).AsIfaceOf(fs.Type)
 			return pref.ValueOf(pvalue.MapOf(v, keyConv, valConv))
 		},
 		set: func(p pointer, v pref.Value) {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.ValueOf(v.Map().(pvalue.Unwrapper).ProtoUnwrap()).Elem())
 		},
 		clear: func(p pointer) {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
 		mutable: func(p pointer) pref.Mutable {
-			v := p.apply(fieldOffset).asType(fs.Type).Interface()
+			v := p.Apply(fieldOffset).AsIfaceOf(fs.Type)
 			return pvalue.MapOf(v, keyConv, valConv)
 		},
 	}
@@ -142,23 +152,30 @@ func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
 		has: func(p pointer) bool {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if p.IsNil() {
+				return false
+			}
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			return rv.Len() > 0
 		},
 		get: func(p pointer) pref.Value {
-			v := p.apply(fieldOffset).asType(fs.Type).Interface()
+			if p.IsNil() {
+				v := reflect.Zero(reflect.PtrTo(fs.Type)).Interface()
+				return pref.ValueOf(pvalue.ListOf(v, conv))
+			}
+			v := p.Apply(fieldOffset).AsIfaceOf(fs.Type)
 			return pref.ValueOf(pvalue.ListOf(v, conv))
 		},
 		set: func(p pointer, v pref.Value) {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.ValueOf(v.List().(pvalue.Unwrapper).ProtoUnwrap()).Elem())
 		},
 		clear: func(p pointer) {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
 		mutable: func(p pointer) pref.Mutable {
-			v := p.apply(fieldOffset).asType(fs.Type).Interface()
+			v := p.Apply(fieldOffset).AsIfaceOf(fs.Type)
 			return pvalue.ListOf(v, conv)
 		},
 	}
@@ -182,7 +199,10 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
 		has: func(p pointer) bool {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if p.IsNil() {
+				return false
+			}
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if nullable {
 				return !rv.IsNil()
 			}
@@ -202,14 +222,13 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			}
 		},
 		get: func(p pointer) pref.Value {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if p.IsNil() {
+				return defaultValueOf(fd)
+			}
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if nullable {
 				if rv.IsNil() {
-					pv := fd.Default()
-					if fd.Kind() == pref.BytesKind && len(pv.Bytes()) > 0 {
-						return pref.ValueOf(append([]byte(nil), pv.Bytes()...)) // copy default bytes for safety
-					}
-					return pv
+					return defaultValueOf(fd)
 				}
 				if rv.Kind() == reflect.Ptr {
 					rv = rv.Elem()
@@ -218,7 +237,7 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			return conv.PBValueOf(rv)
 		},
 		set: func(p pointer, v pref.Value) {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if nullable && rv.Kind() == reflect.Ptr {
 				if rv.IsNil() {
 					rv.Set(reflect.New(ft))
@@ -231,7 +250,7 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			}
 		},
 		clear: func(p pointer) {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
 		mutable: func(p pointer) pref.Mutable {
@@ -247,30 +266,36 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
 		has: func(p pointer) bool {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if p.IsNil() {
+				return false
+			}
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			return !rv.IsNil()
 		},
 		get: func(p pointer) pref.Value {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			if p.IsNil() {
+				return pref.Value{}
+			}
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if rv.IsNil() {
 				return pref.Value{}
 			}
 			return conv.PBValueOf(rv)
 		},
 		set: func(p pointer, v pref.Value) {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(conv.GoValueOf(v))
 			if rv.IsNil() {
 				panic("invalid nil pointer")
 			}
 		},
 		clear: func(p pointer) {
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
 		mutable: func(p pointer) pref.Mutable {
 			// Mutable is only valid for messages and panics for other kinds.
-			rv := p.apply(fieldOffset).asType(fs.Type).Elem()
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if rv.IsNil() {
 				pv := pref.ValueOf(conv.MessageType.New().ProtoReflect())
 				rv.Set(conv.GoValueOf(pv))
@@ -278,4 +303,16 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 			return conv.PBValueOf(rv).Message()
 		},
 	}
+}
+
+// defaultValueOf returns the default value for the field.
+func defaultValueOf(fd pref.FieldDescriptor) pref.Value {
+	if fd == nil {
+		return pref.Value{}
+	}
+	pv := fd.Default() // invalid Value for messages and repeated fields
+	if fd.Kind() == pref.BytesKind && pv.IsValid() && len(pv.Bytes()) > 0 {
+		return pref.ValueOf(append([]byte(nil), pv.Bytes()...)) // copy default bytes for safety
+	}
+	return pv
 }

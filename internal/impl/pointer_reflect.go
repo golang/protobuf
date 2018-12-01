@@ -32,21 +32,33 @@ func pointerOfValue(v reflect.Value) pointer {
 }
 
 // pointerOfIface returns the pointer portion of an interface.
-func pointerOfIface(v *interface{}) pointer {
-	return pointer{v: reflect.ValueOf(*v)}
+func pointerOfIface(v interface{}) pointer {
+	return pointer{v: reflect.ValueOf(v)}
 }
 
-// apply adds an offset to the pointer to derive a new pointer
+// IsNil reports whether the pointer is nil.
+func (p pointer) IsNil() bool {
+	return p.v.IsNil()
+}
+
+// Apply adds an offset to the pointer to derive a new pointer
 // to a specified field. The current pointer must be pointing at a struct.
-func (p pointer) apply(f offset) pointer {
+func (p pointer) Apply(f offset) pointer {
 	// TODO: Handle unexported fields in an API that hides XXX fields?
 	return pointer{v: p.v.Elem().FieldByIndex(f).Addr()}
 }
 
-// asType treats p as a pointer to an object of type t and returns the value.
-func (p pointer) asType(t reflect.Type) reflect.Value {
+// AsValueOf treats p as a pointer to an object of type t and returns the value.
+// It is equivalent to reflect.ValueOf(p.AsIfaceOf(t))
+func (p pointer) AsValueOf(t reflect.Type) reflect.Value {
 	if p.v.Type().Elem() != t {
 		panic(fmt.Sprintf("invalid type: got %v, want %v", p.v.Type(), t))
 	}
 	return p.v
+}
+
+// AsIfaceOf treats p as a pointer to an object of type t and returns the value.
+// It is equivalent to p.AsValueOf(t).Interface()
+func (p pointer) AsIfaceOf(t reflect.Type) interface{} {
+	return p.AsValueOf(t).Interface()
 }

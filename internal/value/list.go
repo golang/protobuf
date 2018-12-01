@@ -15,41 +15,44 @@ func ListOf(p interface{}, c Converter) interface {
 	Unwrapper
 } {
 	// TODO: Validate that p is a *[]T?
-	rv := reflect.ValueOf(p).Elem()
+	rv := reflect.ValueOf(p)
 	return listReflect{rv, c}
 }
 
 type listReflect struct {
-	v    reflect.Value // addressable []T
+	v    reflect.Value // *[]T
 	conv Converter
 }
 
 func (ls listReflect) Len() int {
-	return ls.v.Len()
+	if ls.v.IsNil() {
+		return 0
+	}
+	return ls.v.Elem().Len()
 }
 func (ls listReflect) Get(i int) pref.Value {
-	return ls.conv.PBValueOf(ls.v.Index(i))
+	return ls.conv.PBValueOf(ls.v.Elem().Index(i))
 }
 func (ls listReflect) Set(i int, v pref.Value) {
-	ls.v.Index(i).Set(ls.conv.GoValueOf(v))
+	ls.v.Elem().Index(i).Set(ls.conv.GoValueOf(v))
 }
 func (ls listReflect) Append(v pref.Value) {
-	ls.v.Set(reflect.Append(ls.v, ls.conv.GoValueOf(v)))
+	ls.v.Elem().Set(reflect.Append(ls.v.Elem(), ls.conv.GoValueOf(v)))
 }
 func (ls listReflect) Mutable(i int) pref.Mutable {
 	// Mutable is only valid for messages and panics for other kinds.
-	return ls.conv.PBValueOf(ls.v.Index(i)).Message()
+	return ls.conv.PBValueOf(ls.v.Elem().Index(i)).Message()
 }
 func (ls listReflect) MutableAppend() pref.Mutable {
 	// MutableAppend is only valid for messages and panics for other kinds.
 	pv := pref.ValueOf(ls.conv.MessageType.New().ProtoReflect())
-	ls.v.Set(reflect.Append(ls.v, ls.conv.GoValueOf(pv)))
+	ls.v.Elem().Set(reflect.Append(ls.v.Elem(), ls.conv.GoValueOf(pv)))
 	return pv.Message()
 }
 func (ls listReflect) Truncate(i int) {
-	ls.v.Set(ls.v.Slice(0, i))
+	ls.v.Elem().Set(ls.v.Elem().Slice(0, i))
 }
 func (ls listReflect) ProtoUnwrap() interface{} {
-	return ls.v.Addr().Interface()
+	return ls.v.Interface()
 }
 func (ls listReflect) ProtoMutable() {}
