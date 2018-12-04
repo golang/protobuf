@@ -19,25 +19,25 @@ import (
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
-// legacyWrapMessage wraps v as a protoreflect.ProtoMessage,
+// wrapMessage wraps v as a protoreflect.ProtoMessage,
 // where v must be a *struct kind and not implement the v2 API already.
-func legacyWrapMessage(v reflect.Value) pref.ProtoMessage {
-	mt := legacyLoadMessageType(v.Type())
+func wrapMessage(v reflect.Value) pref.ProtoMessage {
+	mt := loadMessageType(v.Type())
 	return mt.MessageOf(v.Interface()).Interface()
 }
 
 var messageTypeCache sync.Map // map[reflect.Type]*MessageType
 
-// legacyLoadMessageType dynamically loads a *MessageType for t,
+// loadMessageType dynamically loads a *MessageType for t,
 // where t must be a *struct kind and not implement the v2 API already.
-func legacyLoadMessageType(t reflect.Type) *pimpl.MessageType {
+func loadMessageType(t reflect.Type) *pimpl.MessageType {
 	// Fast-path: check if a MessageType is cached for this concrete type.
 	if mt, ok := messageTypeCache.Load(t); ok {
 		return mt.(*pimpl.MessageType)
 	}
 
 	// Slow-path: derive message descriptor and initialize MessageType.
-	md := legacyLoadMessageDesc(t)
+	md := loadMessageDesc(t)
 	mt := new(pimpl.MessageType)
 	mt.Type = ptype.GoMessage(md, func(pref.MessageType) pref.ProtoMessage {
 		p := reflect.New(t.Elem()).Interface()
@@ -49,9 +49,9 @@ func legacyLoadMessageType(t reflect.Type) *pimpl.MessageType {
 
 var messageDescCache sync.Map // map[reflect.Type]protoreflect.MessageDescriptor
 
-// legacyLoadMessageDesc returns an MessageDescriptor derived from the Go type,
+// loadMessageDesc returns an MessageDescriptor derived from the Go type,
 // which must be a *struct kind and not implement the v2 API already.
-func legacyLoadMessageDesc(t reflect.Type) pref.MessageDescriptor {
+func loadMessageDesc(t reflect.Type) pref.MessageDescriptor {
 	return messageDescSet{}.Load(t)
 }
 
@@ -108,9 +108,9 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 	if _, ok := mv.(pref.ProtoMessage); ok {
 		panic(fmt.Sprintf("%v already implements proto.Message", t))
 	}
-	if md, ok := mv.(legacyMessage); ok {
+	if md, ok := mv.(messageV1); ok {
 		b, idxs := md.Descriptor()
-		fd := legacyLoadFileDesc(b)
+		fd := loadFileDesc(b)
 
 		// Derive syntax.
 		switch fd.GetSyntax() {
@@ -128,7 +128,7 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 			m.FullName = m.FullName.Append(pref.Name(md.GetName()))
 		}
 	} else {
-		// If the type does not implement legacyMessage, then the only way to
+		// If the type does not implement messageV1, then the only way to
 		// obtain the full name is through the registry. However, this is
 		// unreliable as some generated messages register with a fork of
 		// golang/protobuf, so the registry may not have this information.
@@ -221,7 +221,7 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 		if ev, ok := reflect.Zero(t).Interface().(pref.ProtoEnum); ok {
 			f.EnumType = ev.ProtoReflect().Type()
 		} else {
-			f.EnumType = legacyLoadEnumDesc(t)
+			f.EnumType = loadEnumDesc(t)
 		}
 	}
 	if f.MessageType == nil && (f.Kind == pref.MessageKind || f.Kind == pref.GroupKind) {

@@ -16,18 +16,18 @@ import (
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
-// legacyWrapEnum wraps v as a protoreflect.ProtoEnum,
+// wrapEnum wraps v as a protoreflect.ProtoEnum,
 // where v must be a int32 kind and not implement the v2 API already.
-func legacyWrapEnum(v reflect.Value) pref.ProtoEnum {
-	et := legacyLoadEnumType(v.Type())
+func wrapEnum(v reflect.Value) pref.ProtoEnum {
+	et := loadEnumType(v.Type())
 	return et.New(pref.EnumNumber(v.Int()))
 }
 
 var enumTypeCache sync.Map // map[reflect.Type]protoreflect.EnumType
 
-// legacyLoadEnumType dynamically loads a protoreflect.EnumType for t,
+// loadEnumType dynamically loads a protoreflect.EnumType for t,
 // where t must be an int32 kind and not implement the v2 API already.
-func legacyLoadEnumType(t reflect.Type) pref.EnumType {
+func loadEnumType(t reflect.Type) pref.EnumType {
 	// Fast-path: check if a EnumType is cached for this concrete type.
 	if et, ok := enumTypeCache.Load(t); ok {
 		return et.(pref.EnumType)
@@ -35,12 +35,12 @@ func legacyLoadEnumType(t reflect.Type) pref.EnumType {
 
 	// Slow-path: derive enum descriptor and initialize EnumType.
 	var m sync.Map // map[protoreflect.EnumNumber]proto.Enum
-	ed := legacyLoadEnumDesc(t)
+	ed := loadEnumDesc(t)
 	et := ptype.GoEnum(ed, func(et pref.EnumType, n pref.EnumNumber) pref.ProtoEnum {
 		if e, ok := m.Load(n); ok {
 			return e.(pref.ProtoEnum)
 		}
-		e := &legacyEnumWrapper{num: n, pbTyp: et, goTyp: t}
+		e := &enumWrapper{num: n, pbTyp: et, goTyp: t}
 		m.Store(n, e)
 		return e
 	})
@@ -48,40 +48,40 @@ func legacyLoadEnumType(t reflect.Type) pref.EnumType {
 	return et.(pref.EnumType)
 }
 
-type legacyEnumWrapper struct {
+type enumWrapper struct {
 	num   pref.EnumNumber
 	pbTyp pref.EnumType
 	goTyp reflect.Type
 }
 
-func (e *legacyEnumWrapper) Number() pref.EnumNumber {
+func (e *enumWrapper) Number() pref.EnumNumber {
 	return e.num
 }
-func (e *legacyEnumWrapper) Type() pref.EnumType {
+func (e *enumWrapper) Type() pref.EnumType {
 	return e.pbTyp
 }
-func (e *legacyEnumWrapper) ProtoReflect() pref.Enum {
+func (e *enumWrapper) ProtoReflect() pref.Enum {
 	return e
 }
-func (e *legacyEnumWrapper) ProtoUnwrap() interface{} {
+func (e *enumWrapper) ProtoUnwrap() interface{} {
 	v := reflect.New(e.goTyp).Elem()
 	v.SetInt(int64(e.num))
 	return v.Interface()
 }
 
 var (
-	_ pref.Enum        = (*legacyEnumWrapper)(nil)
-	_ pref.ProtoEnum   = (*legacyEnumWrapper)(nil)
-	_ pvalue.Unwrapper = (*legacyEnumWrapper)(nil)
+	_ pref.Enum        = (*enumWrapper)(nil)
+	_ pref.ProtoEnum   = (*enumWrapper)(nil)
+	_ pvalue.Unwrapper = (*enumWrapper)(nil)
 )
 
 var enumDescCache sync.Map // map[reflect.Type]protoreflect.EnumDescriptor
 
 var enumNumberType = reflect.TypeOf(pref.EnumNumber(0))
 
-// legacyLoadEnumDesc returns an EnumDescriptor derived from the Go type,
+// loadEnumDesc returns an EnumDescriptor derived from the Go type,
 // which must be an int32 kind and not implement the v2 API already.
-func legacyLoadEnumDesc(t reflect.Type) pref.EnumDescriptor {
+func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	// Fast-path: check if an EnumDescriptor is cached for this concrete type.
 	if v, ok := enumDescCache.Load(t); ok {
 		return v.(pref.EnumDescriptor)
@@ -101,9 +101,9 @@ func legacyLoadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	if _, ok := ev.(pref.ProtoEnum); ok {
 		panic(fmt.Sprintf("%v already implements proto.Enum", t))
 	}
-	if ed, ok := ev.(legacyEnum); ok {
+	if ed, ok := ev.(enumV1); ok {
 		b, idxs := ed.EnumDescriptor()
-		fd := legacyLoadFileDesc(b)
+		fd := loadFileDesc(b)
 
 		// Derive syntax.
 		switch fd.GetSyntax() {
@@ -138,7 +138,7 @@ func legacyLoadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 			})
 		}
 	} else {
-		// If the type does not implement legacyEnum, then there is no reliable
+		// If the type does not implement enumV1, then there is no reliable
 		// way to derive the original protobuf type information.
 		// We are unable to use the global enum registry since it is
 		// unfortunately keyed by the full name, which we do not know.

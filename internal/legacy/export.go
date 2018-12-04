@@ -18,31 +18,31 @@ import (
 type Export struct{}
 
 func (Export) EnumOf(e interface{}) pvalue.LegacyEnum {
-	return legacyWrapEnum(reflect.ValueOf(e)).ProtoReflect().(pvalue.LegacyEnum)
+	return wrapEnum(reflect.ValueOf(e)).ProtoReflect().(pvalue.LegacyEnum)
 }
 
 func (Export) EnumTypeOf(e interface{}) pref.EnumType {
-	return legacyLoadEnumType(reflect.TypeOf(e))
+	return loadEnumType(reflect.TypeOf(e))
 }
 
 func (Export) MessageOf(m interface{}) pvalue.LegacyMessage {
-	return legacyWrapMessage(reflect.ValueOf(m)).ProtoReflect().(pvalue.LegacyMessage)
+	return wrapMessage(reflect.ValueOf(m)).ProtoReflect().(pvalue.LegacyMessage)
 }
 
 func (Export) MessageTypeOf(m interface{}) pref.MessageType {
-	return legacyLoadMessageType(reflect.TypeOf(m)).Type
+	return loadMessageType(reflect.TypeOf(m)).Type
 }
 
 func (Export) ExtensionTypeOf(d pref.ExtensionDescriptor, t interface{}) pref.ExtensionType {
-	return legacyExtensionTypeOf(d, reflect.TypeOf(t))
+	return extensionTypeOf(d, reflect.TypeOf(t))
 }
 
 func (Export) ExtensionDescFromType(t pref.ExtensionType) *protoV1.ExtensionDesc {
-	return legacyExtensionDescFromType(t)
+	return extensionDescFromType(t)
 }
 
 func (Export) ExtensionTypeFromDesc(d *protoV1.ExtensionDesc) pref.ExtensionType {
-	return legacyExtensionTypeFromDesc(d)
+	return extensionTypeFromDesc(d)
 }
 
 func init() {

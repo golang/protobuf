@@ -43,9 +43,9 @@ var (
 	extensionDescCache sync.Map // map[protoreflect.ExtensionType]*protoapi.ExtensionDesc
 )
 
-// legacyExtensionDescFromType converts a v2 protoreflect.ExtensionType to a
+// extensionDescFromType converts a v2 protoreflect.ExtensionType to a
 // v1 protoapi.ExtensionDesc. The returned ExtensionDesc must not be mutated.
-func legacyExtensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
+func extensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 	// Fast-path: check the cache for whether this ExtensionType has already
 	// been converted to a legacy descriptor.
 	if d, ok := extensionDescCache.Load(t); ok {
@@ -100,9 +100,9 @@ func legacyExtensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 		if fd := parentFileDescriptor(et); fd != nil {
 			protoPkg = string(fd.Package())
 		}
-		if ed, ok := ev.(legacyEnum); ok && protoPkg == "" {
+		if ed, ok := ev.(enumV1); ok && protoPkg == "" {
 			b, _ := ed.EnumDescriptor()
-			protoPkg = legacyLoadFileDesc(b).GetPackage()
+			protoPkg = loadFileDesc(b).GetPackage()
 		}
 
 		if protoPkg != "" {
@@ -130,14 +130,14 @@ func legacyExtensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 	return d
 }
 
-// legacyExtensionTypeFromDesc converts a v1 protoapi.ExtensionDesc to a
+// extensionTypeFromDesc converts a v1 protoapi.ExtensionDesc to a
 // v2 protoreflect.ExtensionType. The returned descriptor type takes ownership
 // of the input extension desc. The input must not be mutated so long as the
 // returned type is still in use.
-func legacyExtensionTypeFromDesc(d *papi.ExtensionDesc) pref.ExtensionType {
+func extensionTypeFromDesc(d *papi.ExtensionDesc) pref.ExtensionType {
 	// Fast-path: check whether an extension type is already nested within.
 	if d.Type != nil {
-		// Cache descriptor for future legacyExtensionDescFromType operation.
+		// Cache descriptor for future extensionDescFromType operation.
 		// This assumes that there is only one legacy protoapi.ExtensionDesc
 		// that wraps any given specific protoreflect.ExtensionType.
 		extensionDescCache.LoadOrStore(d.Type, d)
@@ -184,18 +184,18 @@ func legacyExtensionTypeFromDesc(d *papi.ExtensionDesc) pref.ExtensionType {
 	return xt
 }
 
-// legacyExtensionTypeOf returns a protoreflect.ExtensionType where the GoType
+// extensionTypeOf returns a protoreflect.ExtensionType where the GoType
 // is the underlying v1 Go type instead of the wrapper types used to present
 // v1 Go types as if they satisfied the v2 API.
 //
 // This function is only valid if xd.Kind is an enum or message.
-func legacyExtensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.ExtensionType {
+func extensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.ExtensionType {
 	// Step 1: Create an ExtensionType where GoType is the wrapper type.
 	conv := pvalue.NewLegacyConverter(t, xd.Kind(), Export{})
 	xt := ptype.GoExtension(xd, conv.EnumType, conv.MessageType)
 
 	// Step 2: Wrap ExtensionType such that GoType presents the legacy Go type.
-	xt2 := &legacyExtensionType{ExtensionType: xt}
+	xt2 := &extensionType{ExtensionType: xt}
 	if xd.Cardinality() != pref.Repeated {
 		xt2.typ = t
 		xt2.new = func() interface{} {
@@ -236,7 +236,7 @@ func legacyExtensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.Ext
 	return xt2
 }
 
-type legacyExtensionType struct {
+type extensionType struct {
 	pref.ExtensionType
 	typ         reflect.Type
 	new         func() interface{}
@@ -244,9 +244,9 @@ type legacyExtensionType struct {
 	interfaceOf func(pref.Value) interface{}
 }
 
-func (x *legacyExtensionType) GoType() reflect.Type                 { return x.typ }
-func (x *legacyExtensionType) New() interface{}                     { return x.new() }
-func (x *legacyExtensionType) ValueOf(v interface{}) pref.Value     { return x.valueOf(v) }
-func (x *legacyExtensionType) InterfaceOf(v pref.Value) interface{} { return x.interfaceOf(v) }
+func (x *extensionType) GoType() reflect.Type                 { return x.typ }
+func (x *extensionType) New() interface{}                     { return x.new() }
+func (x *extensionType) ValueOf(v interface{}) pref.Value     { return x.valueOf(v) }
+func (x *extensionType) InterfaceOf(v pref.Value) interface{} { return x.interfaceOf(v) }
 
 // TODO: Provide custom stringer with the new GoType.
