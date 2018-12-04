@@ -7,6 +7,7 @@ package legacy
 import (
 	"fmt"
 	"reflect"
+	"sync"
 
 	papi "github.com/golang/protobuf/protoapi"
 	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
@@ -16,9 +17,39 @@ import (
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
+// extensionDescKey is a comparable version of protoapi.ExtensionDesc
+// suitable for use as a key in a map.
+type extensionDescKey struct {
+	typeV2        pref.ExtensionType
+	extendedType  reflect.Type
+	extensionType reflect.Type
+	field         int32
+	name          string
+	tag           string
+	filename      string
+}
+
+func extensionDescKeyOf(d *papi.ExtensionDesc) extensionDescKey {
+	return extensionDescKey{
+		d.Type,
+		reflect.TypeOf(d.ExtendedType),
+		reflect.TypeOf(d.ExtensionType),
+		d.Field, d.Name, d.Tag, d.Filename,
+	}
+}
+
+var (
+	extensionTypeCache sync.Map // map[extensionDescKey]protoreflect.ExtensionType
+	extensionDescCache sync.Map // map[protoreflect.ExtensionType]*protoapi.ExtensionDesc
+)
+
+// legacyExtensionDescFromType converts a v2 protoreflect.ExtensionType to a
+// v1 protoapi.ExtensionDesc. The returned ExtensionDesc must not be mutated.
 func legacyExtensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
-	if t, ok := t.(dualExtensionType); ok {
-		return t.desc
+	// Fast-path: check the cache for whether this ExtensionType has already
+	// been converted to a legacy descriptor.
+	if d, ok := extensionDescCache.Load(t); ok {
+		return d.(*papi.ExtensionDesc)
 	}
 
 	// Determine the parent type if possible.
@@ -86,7 +117,7 @@ func legacyExtensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 	}
 
 	// Construct and return a v1 ExtensionDesc.
-	return &papi.ExtensionDesc{
+	d := &papi.ExtensionDesc{
 		Type:          t,
 		ExtendedType:  parent,
 		ExtensionType: reflect.Zero(extType).Interface(),
@@ -95,11 +126,29 @@ func legacyExtensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 		Tag:           ptag.Marshal(t, enumName),
 		Filename:      filename,
 	}
+	extensionDescCache.Store(t, d)
+	return d
 }
 
+// legacyExtensionTypeFromDesc converts a v1 protoapi.ExtensionDesc to a
+// v2 protoreflect.ExtensionType. The returned descriptor type takes ownership
+// of the input extension desc. The input must not be mutated so long as the
+// returned type is still in use.
 func legacyExtensionTypeFromDesc(d *papi.ExtensionDesc) pref.ExtensionType {
+	// Fast-path: check whether an extension type is already nested within.
 	if d.Type != nil {
-		return dualExtensionType{d.Type, d}
+		// Cache descriptor for future legacyExtensionDescFromType operation.
+		// This assumes that there is only one legacy protoapi.ExtensionDesc
+		// that wraps any given specific protoreflect.ExtensionType.
+		extensionDescCache.LoadOrStore(d.Type, d)
+		return d.Type
+	}
+
+	// Fast-path: check the cache for whether this ExtensionType has already
+	// been converted from a legacy descriptor.
+	dk := extensionDescKeyOf(d)
+	if t, ok := extensionTypeCache.Load(dk); ok {
+		return t.(pref.ExtensionType)
 	}
 
 	// Derive basic field information from the struct tag.
@@ -128,15 +177,12 @@ func legacyExtensionTypeFromDesc(d *papi.ExtensionDesc) pref.ExtensionType {
 		panic(err)
 	}
 	xt := pimpl.Export{}.ExtensionTypeOf(xd, reflect.Zero(t).Interface())
-	return dualExtensionType{xt, d}
-}
 
-type dualExtensionType struct {
-	pref.ExtensionType
-	desc *papi.ExtensionDesc
+	// Cache the conversion for both directions.
+	extensionDescCache.Store(xt, d)
+	extensionTypeCache.Store(dk, xt)
+	return xt
 }
-
-// TODO: Provide custom stringer for dualExtensionType.
 
 // legacyExtensionTypeOf returns a protoreflect.ExtensionType where the GoType
 // is the underlying v1 Go type instead of the wrapper types used to present
