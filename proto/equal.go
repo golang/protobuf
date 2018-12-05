@@ -244,7 +244,8 @@ func equalExtensions(base reflect.Type, em1, em2 protoapi.ExtensionFields) bool 
 		// At least one is encoded. To do a semantically correct comparison
 		// we need to unmarshal them first.
 		var desc *ExtensionDesc
-		if m := extensionMaps[base]; m != nil {
+		mz := reflect.Zero(reflect.PtrTo(base)).Interface().(Message)
+		if m := protoapi.RegisteredExtensions(mz); m != nil {
 			desc = m[int32(extNum)]
 		}
 		if desc == nil {

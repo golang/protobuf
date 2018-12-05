@@ -15,6 +15,8 @@ import (
 	"strconv"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/golang/protobuf/protoapi"
 )
 
 // Error string emitted when deserializing Any and fields are already set
@@ -787,8 +789,8 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) error {
 		if len(props.Enum) == 0 {
 			break
 		}
-		m, ok := enumValueMaps[props.Enum]
-		if !ok {
+		m := protoapi.EnumValueMap(props.Enum)
+		if m == nil {
 			break
 		}
 		x, ok := m[tok.value]

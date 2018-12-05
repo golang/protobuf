@@ -4,7 +4,11 @@
 
 package proto
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/golang/protobuf/protoapi"
+)
 
 // Deprecated: do not use.
 type Stats struct{ Emalloc, Dmalloc, Encode, Decode, Chit, Cmiss, Size uint64 }
@@ -34,3 +38,13 @@ func UnmarshalMessageSetJSON([]byte, interface{}) error {
 
 // Deprecated: do not use.
 func RegisterMessageSetType(Message, int32, string) {}
+
+// Deprecated: do not use.
+func EnumName(m map[int32]string, v int32) string {
+	return protoapi.EnumName(m, v)
+}
+
+// Deprecated: do not use.
+func UnmarshalJSONEnum(m map[string]int32, data []byte, enumName string) (int32, error) {
+	return protoapi.UnmarshalJSONEnum(m, data, enumName)
+}

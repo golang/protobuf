@@ -163,7 +163,8 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 			if err != errInternalBadWireType {
 				if err == errInvalidUTF8 {
 					if errLater == nil {
-						fullName := revProtoTypes[reflect.PtrTo(u.typ)] + "." + f.name
+						mz := reflect.Zero(reflect.PtrTo(u.typ)).Interface().(Message)
+						fullName := protoapi.MessageName(mz) + "." + f.name
 						errLater = &invalidUTF8Error{fullName}
 					}
 					continue

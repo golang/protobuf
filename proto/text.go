@@ -19,6 +19,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -652,7 +653,7 @@ func (s fieldNumSlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 // writeExtensions writes all the extensions in pv.
 // pv is assumed to be a pointer to a protocol message struct that is extendable.
 func (tm *TextMarshaler) writeExtensions(w *textWriter, pv reflect.Value) error {
-	emap := extensionMaps[pv.Type().Elem()]
+	emap := protoapi.RegisteredExtensions(pv.Interface().(Message))
 	ep, _ := extendable(pv.Interface())
 
 	// Order the extensions by ID.
@@ -816,3 +817,7 @@ func CompactText(w io.Writer, pb Message) error { return compactTextMarshaler.Ma
 
 // CompactTextString is the same as CompactText, but returns the string directly.
 func CompactTextString(pb Message) string { return compactTextMarshaler.Text(pb) }
+
+func init() {
+	protoapi.CompactTextString = CompactTextString
+}
