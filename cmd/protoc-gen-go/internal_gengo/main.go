@@ -40,11 +40,12 @@ const (
 type fileInfo struct {
 	*protogen.File
 	descriptorVar string // var containing the gzipped FileDescriptorProto
-	allEnums      []*protogen.Enum
-	allMessages   []*protogen.Message
-	allExtensions []*protogen.Extension
 
-	fileReflect fileReflect
+	allEnums         []*protogen.Enum
+	allEnumsByPtr    map[*protogen.Enum]int // value is index into allEnums
+	allMessages      []*protogen.Message
+	allMessagesByPtr map[*protogen.Message]int // value is index into allMessages
+	allExtensions    []*protogen.Extension
 }
 
 // protoPackage returns the package to import, which is either the protoPackage
@@ -75,20 +76,30 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.Generat
 		File: file,
 	}
 
-	// The different order for enums and extensions is to match the output
-	// of the previous implementation.
-	//
-	// TODO: Eventually make this consistent (and remove fileReflect).
-	f.allEnums = append(f.allEnums, f.File.Enums...)
-	walkMessages(f.Messages, func(message *protogen.Message) {
-		f.allMessages = append(f.allMessages, message)
-		f.allEnums = append(f.allEnums, message.Enums...)
-		f.allExtensions = append(f.allExtensions, message.Extensions...)
+	// Collect all enums, messages, and extensions in a breadth-first order.
+	f.allEnums = append(f.allEnums, f.Enums...)
+	f.allMessages = append(f.allMessages, f.Messages...)
+	f.allExtensions = append(f.allExtensions, f.Extensions...)
+	walkMessages(f.Messages, func(m *protogen.Message) {
+		f.allEnums = append(f.allEnums, m.Enums...)
+		f.allMessages = append(f.allMessages, m.Messages...)
+		f.allExtensions = append(f.allExtensions, m.Extensions...)
 	})
-	f.allExtensions = append(f.allExtensions, f.File.Extensions...)
 
-	// Initialize data structures needed for reflection.
-	f.fileReflect.init(f)
+	// Derive a reverse mapping of enum and message pointers to their index
+	// in allEnums and allMessages.
+	if len(f.allEnums) > 0 {
+		f.allEnumsByPtr = make(map[*protogen.Enum]int)
+		for i, e := range f.allEnums {
+			f.allEnumsByPtr[e] = i
+		}
+	}
+	if len(f.allMessages) > 0 {
+		f.allMessagesByPtr = make(map[*protogen.Message]int)
+		for i, m := range f.allMessages {
+			f.allMessagesByPtr[m] = i
+		}
+	}
 
 	// Determine the name of the var holding the file descriptor:
 	//
@@ -118,15 +129,7 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.Generat
 	// This section exists to generate output more consistent with
 	// the previous version of protoc-gen-go, to make it easier to
 	// detect unintended variations.
-	//
-	// TODO: Eventually remove this.
 	if !isDescriptor(file) {
-		g.P("// Reference imports to suppress errors if they are not otherwise used.")
-		g.P("var _ = ", protoPackage.Ident("Marshal"))
-		g.P("var _ = ", fmtPackage.Ident("Errorf"))
-		g.P("var _ = ", mathPackage.Ident("Inf"))
-		g.P()
-
 		g.P("// This is a compile-time assertion to ensure that this generated file")
 		g.P("// is compatible with the proto package it is being compiled against.")
 		g.P("// A compilation error at this line likely means your copy of the")
@@ -145,7 +148,7 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.Generat
 	for _, message := range f.allMessages {
 		genMessage(gen, g, f, message)
 	}
-	for _, extension := range f.Extensions {
+	for _, extension := range f.allExtensions {
 		genExtension(gen, g, f, extension)
 	}
 
@@ -197,7 +200,7 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 		}
 		enums = append(enums, message.Enums...)
 		for _, field := range message.Fields {
-			if !fieldHasDefault(field) {
+			if !field.Desc.HasDefault() {
 				continue
 			}
 			defVar := protogen.GoIdent{
@@ -260,8 +263,6 @@ func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 	w.Close()
 	b = buf.Bytes()
 
-	g.P("func init() {", f.protoPackage().Ident("RegisterFile"), "(", strconv.Quote(f.Desc.Path()), ", ", f.descriptorVar, ") }")
-	g.P()
 	g.P("var ", f.descriptorVar, " = []byte{")
 	g.P("// ", len(b), " bytes of a gzipped FileDescriptorProto")
 	for len(b) > 0 {
@@ -436,7 +437,6 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		tags = append(tags, `json:"-"`)
 		g.P(f.protoPackage().Ident("XXX_InternalExtensions"), " `", strings.Join(tags, " "), "`")
 	}
-	// TODO XXX_InternalExtensions
 	g.P("XXX_unrecognized []byte `json:\"-\"`")
 	g.P("XXX_sizecache int32 `json:\"-\"`")
 	g.P("}")
@@ -519,7 +519,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 
 	// Constants and vars holding the default values of fields.
 	for _, field := range message.Fields {
-		if !fieldHasDefault(field) {
+		if !field.Desc.HasDefault() {
 			continue
 		}
 		defVarName := "Default_" + message.GoIdent.GoName + "_" + field.GoName
@@ -606,9 +606,6 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	if len(message.Oneofs) > 0 {
 		genOneofWrappers(gen, g, f, message)
 	}
-	for _, extension := range message.Extensions {
-		genExtension(gen, g, f, extension)
-	}
 }
 
 // fieldGoType returns the Go type used for a field.
@@ -670,7 +667,7 @@ func fieldDefaultValue(g *protogen.GeneratedFile, message *protogen.Message, fie
 	if field.Desc.Cardinality() == protoreflect.Repeated {
 		return "nil"
 	}
-	if fieldHasDefault(field) {
+	if field.Desc.HasDefault() {
 		defVarName := "Default_" + message.GoIdent.GoName + "_" + field.GoName
 		if field.Desc.Kind() == protoreflect.BytesKind {
 			return "append([]byte(nil), " + defVarName + "...)"
@@ -689,26 +686,6 @@ func fieldDefaultValue(g *protogen.GeneratedFile, message *protogen.Message, fie
 	default:
 		return "0"
 	}
-}
-
-// fieldHasDefault returns true if we consider a field to have a default value.
-//
-// For consistency with the previous generator, it returns false for fields with
-// [default=""], preventing the generation of a default const or var for these
-// fields.
-//
-// TODO: Drop this special case.
-func fieldHasDefault(field *protogen.Field) bool {
-	if !field.Desc.HasDefault() {
-		return false
-	}
-	switch field.Desc.Kind() {
-	case protoreflect.StringKind:
-		return field.Desc.Default().String() != ""
-	case protoreflect.BytesKind:
-		return len(field.Desc.Default().Bytes()) > 0
-	}
-	return true
 }
 
 func fieldJSONTag(field *protogen.Field) string {
@@ -785,6 +762,7 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInf
 	}
 
 	g.P("func init() {")
+	g.P(f.protoPackage().Ident("RegisterFile"), "(", strconv.Quote(f.Desc.Path()), ", ", f.descriptorVar, ")")
 	for _, enum := range f.allEnums {
 		name := enum.GoIdent.GoName
 		g.P(f.protoPackage().Ident("RegisterEnum"), fmt.Sprintf("(%q, %s_name, %s_value)", enumRegistryName(enum), name, name))
@@ -792,10 +770,6 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInf
 	for _, message := range f.allMessages {
 		if message.Desc.IsMapEntry() {
 			continue
-		}
-
-		for _, extension := range message.Extensions {
-			genRegisterExtension(gen, g, f, extension)
 		}
 
 		name := message.GoIdent.GoName
@@ -819,15 +793,11 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInf
 			g.P(f.protoPackage().Ident("RegisterMapType"), fmt.Sprintf("((%v)(nil), %q)", goType, typeName))
 		}
 	}
-	for _, extension := range f.Extensions {
-		genRegisterExtension(gen, g, f, extension)
+	for _, extension := range f.allExtensions {
+		g.P(f.protoPackage().Ident("RegisterExtension"), "(", extensionVar(f.File, extension), ")")
 	}
 	g.P("}")
 	g.P()
-}
-
-func genRegisterExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, extension *protogen.Extension) {
-	g.P(f.protoPackage().Ident("RegisterExtension"), "(", extensionVar(f.File, extension), ")")
 }
 
 // deprecationComment returns a standard deprecation comment if deprecated is true.

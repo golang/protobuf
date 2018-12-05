@@ -4,19 +4,12 @@
 package imports
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	test_a_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -83,10 +76,9 @@ func (m *A1M1) GetF() *test_a_1.M1 {
 }
 
 func init() {
+	proto.RegisterFile("imports/test_import_a1m1.proto", fileDescriptor_3b904a47327455f3)
 	proto.RegisterType((*A1M1)(nil), "test.A1M1")
 }
-
-func init() { proto.RegisterFile("imports/test_import_a1m1.proto", fileDescriptor_3b904a47327455f3) }
 
 var fileDescriptor_3b904a47327455f3 = []byte{
 	// 149 bytes of a gzipped FileDescriptorProto

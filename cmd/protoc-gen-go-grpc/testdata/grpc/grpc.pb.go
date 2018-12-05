@@ -4,18 +4,11 @@
 package grpc
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -124,11 +117,10 @@ func (m *Response) XXX_DiscardUnknown() {
 var xxx_messageInfo_Response proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterFile("grpc/grpc.proto", fileDescriptor_81ea47a3f88c2082)
 	proto.RegisterType((*Request)(nil), "goproto.protoc.grpc.Request")
 	proto.RegisterType((*Response)(nil), "goproto.protoc.grpc.Response")
 }
-
-func init() { proto.RegisterFile("grpc/grpc.proto", fileDescriptor_81ea47a3f88c2082) }
 
 var fileDescriptor_81ea47a3f88c2082 = []byte{
 	// 211 bytes of a gzipped FileDescriptorProto

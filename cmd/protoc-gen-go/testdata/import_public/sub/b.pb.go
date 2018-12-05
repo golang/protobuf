@@ -4,18 +4,11 @@
 package sub
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -74,10 +67,9 @@ func (m *M2) XXX_DiscardUnknown() {
 var xxx_messageInfo_M2 proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterFile("import_public/sub/b.proto", fileDescriptor_fc66afda3d7c2232)
 	proto.RegisterType((*M2)(nil), "goproto.protoc.import_public.sub.M2")
 }
-
-func init() { proto.RegisterFile("import_public/sub/b.proto", fileDescriptor_fc66afda3d7c2232) }
 
 var fileDescriptor_fc66afda3d7c2232 = []byte{
 	// 129 bytes of a gzipped FileDescriptorProto

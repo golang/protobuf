@@ -4,18 +4,11 @@
 package proto3
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -454,6 +447,7 @@ func (m *FieldTestMessage_Message) XXX_DiscardUnknown() {
 var xxx_messageInfo_FieldTestMessage_Message proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterFile("proto3/fields.proto", fileDescriptor_f1e3ea068187307c)
 	proto.RegisterEnum("goproto.protoc.proto3.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)
 	proto.RegisterType((*FieldTestMessage)(nil), "goproto.protoc.proto3.FieldTestMessage")
 	proto.RegisterMapType((map[uint64]FieldTestMessage_Enum)(nil), "goproto.protoc.proto3.FieldTestMessage.MapFixed64EnumEntry")
@@ -461,8 +455,6 @@ func init() {
 	proto.RegisterMapType((map[string]*FieldTestMessage_Message)(nil), "goproto.protoc.proto3.FieldTestMessage.MapStringMessageEntry")
 	proto.RegisterType((*FieldTestMessage_Message)(nil), "goproto.protoc.proto3.FieldTestMessage.Message")
 }
-
-func init() { proto.RegisterFile("proto3/fields.proto", fileDescriptor_f1e3ea068187307c) }
 
 var fileDescriptor_f1e3ea068187307c = []byte{
 	// 832 bytes of a gzipped FileDescriptorProto

@@ -4,22 +4,15 @@
 package imports
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	fmt1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/fmt"
+	fmt "github.com/golang/protobuf/protoc-gen-go/testdata/imports/fmt"
 	test_a_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
 	_ "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_2"
 	test_b_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_b_1"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -32,7 +25,7 @@ type All struct {
 	Am2                  *test_a_1.M2 `protobuf:"bytes,2,opt,name=am2,proto3" json:"am2,omitempty"`
 	Bm1                  *test_b_1.M1 `protobuf:"bytes,5,opt,name=bm1,proto3" json:"bm1,omitempty"`
 	Bm2                  *test_b_1.M2 `protobuf:"bytes,6,opt,name=bm2,proto3" json:"bm2,omitempty"`
-	Fmt                  *fmt1.M      `protobuf:"bytes,7,opt,name=fmt,proto3" json:"fmt,omitempty"`
+	Fmt                  *fmt.M       `protobuf:"bytes,7,opt,name=fmt,proto3" json:"fmt,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
 	XXX_unrecognized     []byte       `json:"-"`
 	XXX_sizecache        int32        `json:"-"`
@@ -110,7 +103,7 @@ func (m *All) GetBm2() *test_b_1.M2 {
 	return nil
 }
 
-func (m *All) GetFmt() *fmt1.M {
+func (m *All) GetFmt() *fmt.M {
 	if m != nil {
 		return m.Fmt
 	}
@@ -118,10 +111,9 @@ func (m *All) GetFmt() *fmt1.M {
 }
 
 func init() {
+	proto.RegisterFile("imports/test_import_all.proto", fileDescriptor_324466f0afc16f77)
 	proto.RegisterType((*All)(nil), "test.All")
 }
-
-func init() { proto.RegisterFile("imports/test_import_all.proto", fileDescriptor_324466f0afc16f77) }
 
 var fileDescriptor_324466f0afc16f77 = []byte{
 	// 242 bytes of a gzipped FileDescriptorProto
@@ -149,7 +141,7 @@ func init() {
 	xxx_TestImportAll_ProtoFile_MessageDescs[0].Fields[1].MessageType = protoimpl.X.MessageTypeOf((*test_a_1.M2)(nil))
 	xxx_TestImportAll_ProtoFile_MessageDescs[0].Fields[2].MessageType = protoimpl.X.MessageTypeOf((*test_b_1.M1)(nil))
 	xxx_TestImportAll_ProtoFile_MessageDescs[0].Fields[3].MessageType = protoimpl.X.MessageTypeOf((*test_b_1.M2)(nil))
-	xxx_TestImportAll_ProtoFile_MessageDescs[0].Fields[4].MessageType = protoimpl.X.MessageTypeOf((*fmt1.M)(nil))
+	xxx_TestImportAll_ProtoFile_MessageDescs[0].Fields[4].MessageType = protoimpl.X.MessageTypeOf((*fmt.M)(nil))
 	var err error
 	TestImportAll_ProtoFile, err = prototype.NewFile(&xxx_TestImportAll_ProtoFile_FileDesc)
 	if err != nil {

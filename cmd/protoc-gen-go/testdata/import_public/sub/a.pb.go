@@ -4,18 +4,12 @@
 package sub
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -425,6 +419,7 @@ var E_ExtensionField = &proto.ExtensionDesc{
 }
 
 func init() {
+	proto.RegisterFile("import_public/sub/a.proto", fileDescriptor_382f7805394b5c4e)
 	proto.RegisterEnum("goproto.protoc.import_public.sub.E", E_name, E_value)
 	proto.RegisterEnum("goproto.protoc.import_public.sub.M_Subenum", M_Subenum_name, M_Subenum_value)
 	proto.RegisterEnum("goproto.protoc.import_public.sub.M_Submessage_Submessage_Subenum", M_Submessage_Submessage_Subenum_name, M_Submessage_Submessage_Subenum_value)
@@ -432,8 +427,6 @@ func init() {
 	proto.RegisterType((*M_Submessage)(nil), "goproto.protoc.import_public.sub.M.Submessage")
 	proto.RegisterExtension(E_ExtensionField)
 }
-
-func init() { proto.RegisterFile("import_public/sub/a.proto", fileDescriptor_382f7805394b5c4e) }
 
 var fileDescriptor_382f7805394b5c4e = []byte{
 	// 402 bytes of a gzipped FileDescriptorProto

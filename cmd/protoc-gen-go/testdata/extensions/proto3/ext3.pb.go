@@ -4,19 +4,12 @@
 package proto3
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -415,6 +408,7 @@ var E_RepeatedExtension_Message = &proto.ExtensionDesc{
 }
 
 func init() {
+	proto.RegisterFile("extensions/proto3/ext3.proto", fileDescriptor_3db31bb248c8865e)
 	proto.RegisterEnum("goproto.protoc.extension.proto3.Enum", Enum_name, Enum_value)
 	proto.RegisterType((*Message)(nil), "goproto.protoc.extension.proto3.Message")
 	proto.RegisterExtension(E_ExtensionBool)
@@ -452,8 +446,6 @@ func init() {
 	proto.RegisterExtension(E_RepeatedExtensionBytes)
 	proto.RegisterExtension(E_RepeatedExtension_Message)
 }
-
-func init() { proto.RegisterFile("extensions/proto3/ext3.proto", fileDescriptor_3db31bb248c8865e) }
 
 var fileDescriptor_3db31bb248c8865e = []byte{
 	// 758 bytes of a gzipped FileDescriptorProto

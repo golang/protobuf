@@ -4,26 +4,17 @@
 package grpc
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
-
-func init() { proto.RegisterFile("grpc/deprecation.proto", fileDescriptor_1e7146702b7fe8c5) }
 
 var fileDescriptor_1e7146702b7fe8c5 = []byte{
 	// 184 bytes of a gzipped FileDescriptorProto

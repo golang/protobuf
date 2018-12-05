@@ -4,19 +4,12 @@
 package plugin_proto
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	descriptor "github.com/golang/protobuf/v2/types/descriptor"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -411,14 +404,11 @@ func (m *CodeGeneratorResponse_File) GetContent() string {
 }
 
 func init() {
+	proto.RegisterFile("google/protobuf/compiler/plugin.proto", fileDescriptor_3562add825dafed5)
 	proto.RegisterType((*Version)(nil), "google.protobuf.compiler.Version")
 	proto.RegisterType((*CodeGeneratorRequest)(nil), "google.protobuf.compiler.CodeGeneratorRequest")
 	proto.RegisterType((*CodeGeneratorResponse)(nil), "google.protobuf.compiler.CodeGeneratorResponse")
 	proto.RegisterType((*CodeGeneratorResponse_File)(nil), "google.protobuf.compiler.CodeGeneratorResponse.File")
-}
-
-func init() {
-	proto.RegisterFile("google/protobuf/compiler/plugin.proto", fileDescriptor_3562add825dafed5)
 }
 
 var fileDescriptor_3562add825dafed5 = []byte{

@@ -42,48 +42,12 @@ const (
 
 // TODO: Add support for proto options.
 
-// fileReflect is embedded in fileInfo to maintain state needed for reflection.
-//
-// TODO: Remove this when we have the freedom to change the order of
-// fileInfo.{allEnums,allMessages,allExtensions} to be a breadth-first search
-// to ensure that all declarations are coalesced together.
-type fileReflect struct {
-	allEnums         []*protogen.Enum
-	allEnumsByPtr    map[*protogen.Enum]int // value is index into allEnums
-	allMessages      []*protogen.Message
-	allMessagesByPtr map[*protogen.Message]int // value is index into allMessages
-}
-
-func (r *fileReflect) init(f *fileInfo) {
-	r.allEnums = append(r.allEnums, f.Enums...)
-	r.allMessages = append(r.allMessages, f.Messages...)
-	walkMessages(f.Messages, func(m *protogen.Message) {
-		r.allEnums = append(r.allEnums, m.Enums...)
-		r.allMessages = append(r.allMessages, m.Messages...)
-	})
-
-	// Derive a reverse mapping of enum and message pointers to their index
-	// in allEnums and allMessages.
-	if len(r.allEnums) > 0 {
-		r.allEnumsByPtr = make(map[*protogen.Enum]int)
-		for i, e := range r.allEnums {
-			r.allEnumsByPtr[e] = i
-		}
-	}
-	if len(r.allMessages) > 0 {
-		r.allMessagesByPtr = make(map[*protogen.Message]int)
-		for i, m := range r.allMessages {
-			r.allMessagesByPtr[m] = i
-		}
-	}
-}
-
 func genReflectInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
 	if !enableReflection(f.File) {
 		return
 	}
 
-	if len(f.fileReflect.allEnums)+len(f.fileReflect.allMessages)+len(f.allExtensions)+len(f.Services) == 0 {
+	if len(f.allEnums)+len(f.allMessages)+len(f.allExtensions)+len(f.Services) == 0 {
 		return
 	}
 
@@ -103,20 +67,20 @@ func genReflectInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *
 	// Populate all declarations for messages and enums.
 	// These are not declared in the literals to avoid an initialization loop.
 	if enums := f.Enums; len(enums) > 0 {
-		i := f.fileReflect.allEnumsByPtr[enums[0]]
+		i := f.allEnumsByPtr[enums[0]]
 		g.P(fileDescVar, ".Enums = ", enumDescsVar, "[", i, ":", i+len(enums), "]")
 	}
 	if messages := f.Messages; len(messages) > 0 {
-		i := f.fileReflect.allMessagesByPtr[messages[0]]
+		i := f.allMessagesByPtr[messages[0]]
 		g.P(fileDescVar, ".Messages = ", messageDescsVar, "[", i, ":", i+len(messages), "]")
 	}
-	for i, message := range f.fileReflect.allMessages {
+	for i, message := range f.allMessages {
 		if enums := message.Enums; len(enums) > 0 {
-			j := f.fileReflect.allEnumsByPtr[enums[0]]
+			j := f.allEnumsByPtr[enums[0]]
 			g.P(messageDescsVar, "[", i, "].Enums = ", enumDescsVar, "[", j, ":", j+len(enums), "]")
 		}
 		if messages := message.Messages; len(messages) > 0 {
-			j := f.fileReflect.allMessagesByPtr[messages[0]]
+			j := f.allMessagesByPtr[messages[0]]
 			g.P(messageDescsVar, "[", i, "].Messages = ", messageDescsVar, "[", j, ":", j+len(messages), "]")
 		}
 	}
@@ -127,11 +91,11 @@ func genReflectInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *
 	// v2 protobuf reflection interfaces. The EnumTypeOf and MessageTypeOf
 	// helper functions checks for compliance and derives a v2 type from the
 	// legacy v1 enum or message if necessary.
-	for i, message := range f.fileReflect.allMessages {
+	for i, message := range f.allMessages {
 		for j, field := range message.Fields {
 			fieldSel := fmt.Sprintf("[%d].Fields[%d]", i, j)
 			if et := field.EnumType; et != nil {
-				idx, ok := f.fileReflect.allEnumsByPtr[et]
+				idx, ok := f.allEnumsByPtr[et]
 				if ok {
 					// Locally defined enums are found in the type array.
 					g.P(messageDescsVar, fieldSel, ".EnumType = ", enumTypesVar, "[", idx, "]")
@@ -141,7 +105,7 @@ func genReflectInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *
 				}
 			}
 			if mt := field.MessageType; mt != nil {
-				idx, ok := f.fileReflect.allMessagesByPtr[mt]
+				idx, ok := f.allMessagesByPtr[mt]
 				if ok {
 					if mt.Desc.IsMapEntry() {
 						// Map entry types have no Go type generated for them.
@@ -209,11 +173,11 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 	g.P("}")
 
 	// Generate literals for enum descriptors.
-	if len(f.fileReflect.allEnums) > 0 {
+	if len(f.allEnums) > 0 {
 		enumTypesVar := enumTypesVarName(f)
 		enumDescsVar := enumDescsVarName(f)
-		g.P("var ", enumTypesVar, " = [", len(f.fileReflect.allEnums), "]", protoreflectPackage.Ident("EnumType"), "{")
-		for i, enum := range f.fileReflect.allEnums {
+		g.P("var ", enumTypesVar, " = [", len(f.allEnums), "]", protoreflectPackage.Ident("EnumType"), "{")
+		for i, enum := range f.allEnums {
 			g.P(prototypePackage.Ident("GoEnum"), "(")
 			g.P(enumDescsVar, "[", i, "].Reference(),")
 			g.P("func(_ ", protoreflectPackage.Ident("EnumType"), ", n ", protoreflectPackage.Ident("EnumNumber"), ") ", protoreflectPackage.Ident("ProtoEnum"), " {")
@@ -223,8 +187,8 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		}
 		g.P("}")
 
-		g.P("var ", enumDescsVar, " = [", len(f.fileReflect.allEnums), "]", prototypePackage.Ident("Enum"), "{")
-		for _, enum := range f.fileReflect.allEnums {
+		g.P("var ", enumDescsVar, " = [", len(f.allEnums), "]", prototypePackage.Ident("Enum"), "{")
+		for _, enum := range f.allEnums {
 			g.P("{")
 			g.P("Name: ", strconv.Quote(string(enum.Desc.Name())), ",")
 			g.P("Values: []", prototypePackage.Ident("EnumValue"), "{")
@@ -238,11 +202,11 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 	}
 
 	// Generate literals for message descriptors.
-	if len(f.fileReflect.allMessages) > 0 {
+	if len(f.allMessages) > 0 {
 		messageTypesVar := messageTypesVarName(f)
 		messageDescsVar := messageDescsVarName(f)
-		g.P("var ", messageTypesVar, " = [", len(f.fileReflect.allMessages), "]", protoimplPackage.Ident("MessageType"), "{")
-		for i, message := range f.fileReflect.allMessages {
+		g.P("var ", messageTypesVar, " = [", len(f.allMessages), "]", protoimplPackage.Ident("MessageType"), "{")
+		for i, message := range f.allMessages {
 			if message.Desc.IsMapEntry() {
 				// Map entry types have no Go type generated for them.
 				g.P("{ /* no message type for ", message.GoIdent, " */ },")
@@ -257,8 +221,8 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		}
 		g.P("}")
 
-		g.P("var ", messageDescsVar, " = [", len(f.fileReflect.allMessages), "]", prototypePackage.Ident("Message"), "{")
-		for _, message := range f.fileReflect.allMessages {
+		g.P("var ", messageDescsVar, " = [", len(f.allMessages), "]", prototypePackage.Ident("Message"), "{")
+		for _, message := range f.allMessages {
 			g.P("{")
 			g.P("Name: ", strconv.Quote(string(message.Desc.Name())), ",")
 			if fields := message.Desc.Fields(); fields.Len() > 0 {
@@ -337,7 +301,7 @@ func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo
 	g.P("type ", shadowType, " ", enum.GoIdent)
 	g.P()
 
-	idx := f.fileReflect.allEnumsByPtr[enum]
+	idx := f.allEnumsByPtr[enum]
 	typesVar := enumTypesVarName(f)
 	g.P("func (e ", enum.GoIdent, ") ProtoReflect() ", protoreflectPackage.Ident("Enum"), " {")
 	g.P("return (", shadowType, ")(e)")
@@ -359,7 +323,7 @@ func genReflectMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 	g.P("type ", shadowType, " struct{m *", message.GoIdent, "}")
 	g.P()
 
-	idx := f.fileReflect.allMessagesByPtr[message]
+	idx := f.allMessagesByPtr[message]
 	typesVar := messageTypesVarName(f)
 	g.P("func (m *", message.GoIdent, ") ProtoReflect() ", protoreflectPackage.Ident("Message"), " {")
 	g.P("return ", shadowType, "{m}")

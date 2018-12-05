@@ -4,18 +4,11 @@
 package annotations
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -131,11 +124,10 @@ func (m *AnnotationsTestMessage) GetAnnotationsTestField() string {
 }
 
 func init() {
+	proto.RegisterFile("annotations/annotations.proto", fileDescriptor_21dfaf6fd39fa3b7)
 	proto.RegisterEnum("goproto.protoc.annotations.AnnotationsTestEnum", AnnotationsTestEnum_name, AnnotationsTestEnum_value)
 	proto.RegisterType((*AnnotationsTestMessage)(nil), "goproto.protoc.annotations.AnnotationsTestMessage")
 }
-
-func init() { proto.RegisterFile("annotations/annotations.proto", fileDescriptor_21dfaf6fd39fa3b7) }
 
 var fileDescriptor_21dfaf6fd39fa3b7 = []byte{
 	// 194 bytes of a gzipped FileDescriptorProto

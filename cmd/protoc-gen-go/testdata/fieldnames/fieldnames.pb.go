@@ -4,18 +4,11 @@
 package fieldnames
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -356,11 +349,10 @@ func (m *Message_OneofMessageConflict) XXX_DiscardUnknown() {
 var xxx_messageInfo_Message_OneofMessageConflict proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterFile("fieldnames/fieldnames.proto", fileDescriptor_6bbe3f70febb9403)
 	proto.RegisterType((*Message)(nil), "goproto.protoc.fieldnames.Message")
 	proto.RegisterType((*Message_OneofMessageConflict)(nil), "goproto.protoc.fieldnames.Message.OneofMessageConflict")
 }
-
-func init() { proto.RegisterFile("fieldnames/fieldnames.proto", fileDescriptor_6bbe3f70febb9403) }
 
 var fileDescriptor_6bbe3f70febb9403 = []byte{
 	// 417 bytes of a gzipped FileDescriptorProto

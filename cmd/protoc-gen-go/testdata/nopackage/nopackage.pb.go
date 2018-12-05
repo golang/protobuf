@@ -4,18 +4,11 @@
 package nopackage
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -141,11 +134,10 @@ func (m *Message) GetEnumField() Enum {
 }
 
 func init() {
+	proto.RegisterFile("nopackage/nopackage.proto", fileDescriptor_f33a1d5d178c43c9)
 	proto.RegisterEnum("Enum", Enum_name, Enum_value)
 	proto.RegisterType((*Message)(nil), "Message")
 }
-
-func init() { proto.RegisterFile("nopackage/nopackage.proto", fileDescriptor_f33a1d5d178c43c9) }
 
 var fileDescriptor_f33a1d5d178c43c9 = []byte{
 	// 130 bytes of a gzipped FileDescriptorProto

@@ -4,18 +4,11 @@
 package comments
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -117,11 +110,10 @@ func (m *DeprecatedMessage) GetDeprecatedField() string {
 }
 
 func init() {
+	proto.RegisterFile("comments/deprecated.proto", fileDescriptor_0336e614ee2de5f7)
 	proto.RegisterEnum("goproto.protoc.comments.DeprecatedEnum", DeprecatedEnum_name, DeprecatedEnum_value)
 	proto.RegisterType((*DeprecatedMessage)(nil), "goproto.protoc.comments.DeprecatedMessage")
 }
-
-func init() { proto.RegisterFile("comments/deprecated.proto", fileDescriptor_0336e614ee2de5f7) }
 
 var fileDescriptor_0336e614ee2de5f7 = []byte{
 	// 206 bytes of a gzipped FileDescriptorProto

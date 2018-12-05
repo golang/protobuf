@@ -4,18 +4,11 @@
 package proto2
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -198,12 +191,11 @@ func (m *Layer1_Layer2_Layer3) XXX_DiscardUnknown() {
 var xxx_messageInfo_Layer1_Layer2_Layer3 proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterFile("proto2/nested_messages.proto", fileDescriptor_7417ee157699d191)
 	proto.RegisterType((*Layer1)(nil), "goproto.protoc.proto2.Layer1")
 	proto.RegisterType((*Layer1_Layer2)(nil), "goproto.protoc.proto2.Layer1.Layer2")
 	proto.RegisterType((*Layer1_Layer2_Layer3)(nil), "goproto.protoc.proto2.Layer1.Layer2.Layer3")
 }
-
-func init() { proto.RegisterFile("proto2/nested_messages.proto", fileDescriptor_7417ee157699d191) }
 
 var fileDescriptor_7417ee157699d191 = []byte{
 	// 190 bytes of a gzipped FileDescriptorProto

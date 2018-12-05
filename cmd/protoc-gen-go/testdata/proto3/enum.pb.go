@@ -4,18 +4,11 @@
 package proto3
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -64,10 +57,9 @@ func (Enum) EnumDescriptor() ([]byte, []int) {
 }
 
 func init() {
+	proto.RegisterFile("proto3/enum.proto", fileDescriptor_b4b9b1e8d161a9a6)
 	proto.RegisterEnum("goproto.protoc.proto3.Enum", Enum_name, Enum_value)
 }
-
-func init() { proto.RegisterFile("proto3/enum.proto", fileDescriptor_b4b9b1e8d161a9a6) }
 
 var fileDescriptor_b4b9b1e8d161a9a6 = []byte{
 	// 144 bytes of a gzipped FileDescriptorProto

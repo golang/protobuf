@@ -4,18 +4,11 @@
 package extra
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -82,10 +75,9 @@ func (m *ExtraMessage) GetData() []byte {
 }
 
 func init() {
+	proto.RegisterFile("extensions/extra/extra.proto", fileDescriptor_496c2a5e9c1e8739)
 	proto.RegisterType((*ExtraMessage)(nil), "goproto.protoc.extension.extra.ExtraMessage")
 }
-
-func init() { proto.RegisterFile("extensions/extra/extra.proto", fileDescriptor_496c2a5e9c1e8739) }
 
 var fileDescriptor_496c2a5e9c1e8739 = []byte{
 	// 149 bytes of a gzipped FileDescriptorProto

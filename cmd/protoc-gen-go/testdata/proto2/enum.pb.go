@@ -4,18 +4,11 @@
 package proto2
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -456,6 +449,7 @@ func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_DiscardUnknown() {
 var xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2 proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterFile("proto2/enum.proto", fileDescriptor_de9f68860d540858)
 	proto.RegisterEnum("goproto.protoc.proto2.EnumType1", EnumType1_name, EnumType1_value)
 	proto.RegisterEnum("goproto.protoc.proto2.EnumType2", EnumType2_name, EnumType2_value)
 	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_NestedEnumType1A", EnumContainerMessage1_NestedEnumType1A_name, EnumContainerMessage1_NestedEnumType1A_value)
@@ -465,8 +459,6 @@ func init() {
 	proto.RegisterType((*EnumContainerMessage1)(nil), "goproto.protoc.proto2.EnumContainerMessage1")
 	proto.RegisterType((*EnumContainerMessage1_EnumContainerMessage2)(nil), "goproto.protoc.proto2.EnumContainerMessage1.EnumContainerMessage2")
 }
-
-func init() { proto.RegisterFile("proto2/enum.proto", fileDescriptor_de9f68860d540858) }
 
 var fileDescriptor_de9f68860d540858 = []byte{
 	// 296 bytes of a gzipped FileDescriptorProto

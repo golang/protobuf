@@ -703,117 +703,6 @@ func (m *DescriptorProto) GetReservedName() []string {
 	return nil
 }
 
-type DescriptorProto_ExtensionRange struct {
-	Start                *int32                 `protobuf:"varint,1,opt,name=start" json:"start,omitempty"`
-	End                  *int32                 `protobuf:"varint,2,opt,name=end" json:"end,omitempty"`
-	Options              *ExtensionRangeOptions `protobuf:"bytes,3,opt,name=options" json:"options,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
-	XXX_unrecognized     []byte                 `json:"-"`
-	XXX_sizecache        int32                  `json:"-"`
-}
-
-type xxx_DescriptorProto_ExtensionRange struct {
-	m *DescriptorProto_ExtensionRange
-}
-
-func (m *DescriptorProto_ExtensionRange) ProtoReflect() protoreflect.Message {
-	return xxx_DescriptorProto_ExtensionRange{m}
-}
-func (m xxx_DescriptorProto_ExtensionRange) Type() protoreflect.MessageType {
-	return xxx_Descriptor_ProtoFile_MessageTypes[21].Type
-}
-func (m xxx_DescriptorProto_ExtensionRange) KnownFields() protoreflect.KnownFields {
-	return xxx_Descriptor_ProtoFile_MessageTypes[21].KnownFieldsOf(m.m)
-}
-func (m xxx_DescriptorProto_ExtensionRange) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Descriptor_ProtoFile_MessageTypes[21].UnknownFieldsOf(m.m)
-}
-func (m xxx_DescriptorProto_ExtensionRange) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-func (m xxx_DescriptorProto_ExtensionRange) ProtoMutable() {}
-
-func (m *DescriptorProto_ExtensionRange) Reset()         { *m = DescriptorProto_ExtensionRange{} }
-func (m *DescriptorProto_ExtensionRange) String() string { return protoapi.CompactTextString(m) }
-func (*DescriptorProto_ExtensionRange) ProtoMessage()    {}
-func (*DescriptorProto_ExtensionRange) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e5baabe45344a177, []int{2, 0}
-}
-
-func (m *DescriptorProto_ExtensionRange) GetStart() int32 {
-	if m != nil && m.Start != nil {
-		return *m.Start
-	}
-	return 0
-}
-
-func (m *DescriptorProto_ExtensionRange) GetEnd() int32 {
-	if m != nil && m.End != nil {
-		return *m.End
-	}
-	return 0
-}
-
-func (m *DescriptorProto_ExtensionRange) GetOptions() *ExtensionRangeOptions {
-	if m != nil {
-		return m.Options
-	}
-	return nil
-}
-
-// Range of reserved tag numbers. Reserved tag numbers may not be used by
-// fields or extension ranges in the same message. Reserved ranges may
-// not overlap.
-type DescriptorProto_ReservedRange struct {
-	Start                *int32   `protobuf:"varint,1,opt,name=start" json:"start,omitempty"`
-	End                  *int32   `protobuf:"varint,2,opt,name=end" json:"end,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-type xxx_DescriptorProto_ReservedRange struct {
-	m *DescriptorProto_ReservedRange
-}
-
-func (m *DescriptorProto_ReservedRange) ProtoReflect() protoreflect.Message {
-	return xxx_DescriptorProto_ReservedRange{m}
-}
-func (m xxx_DescriptorProto_ReservedRange) Type() protoreflect.MessageType {
-	return xxx_Descriptor_ProtoFile_MessageTypes[22].Type
-}
-func (m xxx_DescriptorProto_ReservedRange) KnownFields() protoreflect.KnownFields {
-	return xxx_Descriptor_ProtoFile_MessageTypes[22].KnownFieldsOf(m.m)
-}
-func (m xxx_DescriptorProto_ReservedRange) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Descriptor_ProtoFile_MessageTypes[22].UnknownFieldsOf(m.m)
-}
-func (m xxx_DescriptorProto_ReservedRange) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-func (m xxx_DescriptorProto_ReservedRange) ProtoMutable() {}
-
-func (m *DescriptorProto_ReservedRange) Reset()         { *m = DescriptorProto_ReservedRange{} }
-func (m *DescriptorProto_ReservedRange) String() string { return protoapi.CompactTextString(m) }
-func (*DescriptorProto_ReservedRange) ProtoMessage()    {}
-func (*DescriptorProto_ReservedRange) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e5baabe45344a177, []int{2, 1}
-}
-
-func (m *DescriptorProto_ReservedRange) GetStart() int32 {
-	if m != nil && m.Start != nil {
-		return *m.Start
-	}
-	return 0
-}
-
-func (m *DescriptorProto_ReservedRange) GetEnd() int32 {
-	if m != nil && m.End != nil {
-		return *m.End
-	}
-	return 0
-}
-
 type ExtensionRangeOptions struct {
 	// The parser stores options it doesn't recognize here. See above.
 	UninterpretedOption             []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
@@ -1122,62 +1011,6 @@ func (m *EnumDescriptorProto) GetReservedName() []string {
 		return m.ReservedName
 	}
 	return nil
-}
-
-// Range of reserved numeric values. Reserved values may not be used by
-// entries in the same enum. Reserved ranges may not overlap.
-//
-// Note that this is distinct from DescriptorProto.ReservedRange in that it
-// is inclusive such that it can appropriately represent the entire int32
-// domain.
-type EnumDescriptorProto_EnumReservedRange struct {
-	Start                *int32   `protobuf:"varint,1,opt,name=start" json:"start,omitempty"`
-	End                  *int32   `protobuf:"varint,2,opt,name=end" json:"end,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-type xxx_EnumDescriptorProto_EnumReservedRange struct {
-	m *EnumDescriptorProto_EnumReservedRange
-}
-
-func (m *EnumDescriptorProto_EnumReservedRange) ProtoReflect() protoreflect.Message {
-	return xxx_EnumDescriptorProto_EnumReservedRange{m}
-}
-func (m xxx_EnumDescriptorProto_EnumReservedRange) Type() protoreflect.MessageType {
-	return xxx_Descriptor_ProtoFile_MessageTypes[23].Type
-}
-func (m xxx_EnumDescriptorProto_EnumReservedRange) KnownFields() protoreflect.KnownFields {
-	return xxx_Descriptor_ProtoFile_MessageTypes[23].KnownFieldsOf(m.m)
-}
-func (m xxx_EnumDescriptorProto_EnumReservedRange) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Descriptor_ProtoFile_MessageTypes[23].UnknownFieldsOf(m.m)
-}
-func (m xxx_EnumDescriptorProto_EnumReservedRange) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-func (m xxx_EnumDescriptorProto_EnumReservedRange) ProtoMutable() {}
-
-func (m *EnumDescriptorProto_EnumReservedRange) Reset()         { *m = EnumDescriptorProto_EnumReservedRange{} }
-func (m *EnumDescriptorProto_EnumReservedRange) String() string { return protoapi.CompactTextString(m) }
-func (*EnumDescriptorProto_EnumReservedRange) ProtoMessage()    {}
-func (*EnumDescriptorProto_EnumReservedRange) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e5baabe45344a177, []int{6, 0}
-}
-
-func (m *EnumDescriptorProto_EnumReservedRange) GetStart() int32 {
-	if m != nil && m.Start != nil {
-		return *m.Start
-	}
-	return 0
-}
-
-func (m *EnumDescriptorProto_EnumReservedRange) GetEnd() int32 {
-	if m != nil && m.End != nil {
-		return *m.End
-	}
-	return 0
 }
 
 // Describes a value within an enum.
@@ -2375,59 +2208,6 @@ func (m *UninterpretedOption) GetAggregateValue() string {
 	return ""
 }
 
-// The name of the uninterpreted option.  Each string represents a segment in
-// a dot-separated name.  is_extension is true iff a segment represents an
-// extension (denoted with parentheses in options specs in .proto files).
-// E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
-// "foo.(bar.baz).qux".
-type UninterpretedOption_NamePart struct {
-	NamePart             *string  `protobuf:"bytes,1,req,name=name_part,json=namePart" json:"name_part,omitempty"`
-	IsExtension          *bool    `protobuf:"varint,2,req,name=is_extension,json=isExtension" json:"is_extension,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-type xxx_UninterpretedOption_NamePart struct{ m *UninterpretedOption_NamePart }
-
-func (m *UninterpretedOption_NamePart) ProtoReflect() protoreflect.Message {
-	return xxx_UninterpretedOption_NamePart{m}
-}
-func (m xxx_UninterpretedOption_NamePart) Type() protoreflect.MessageType {
-	return xxx_Descriptor_ProtoFile_MessageTypes[24].Type
-}
-func (m xxx_UninterpretedOption_NamePart) KnownFields() protoreflect.KnownFields {
-	return xxx_Descriptor_ProtoFile_MessageTypes[24].KnownFieldsOf(m.m)
-}
-func (m xxx_UninterpretedOption_NamePart) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Descriptor_ProtoFile_MessageTypes[24].UnknownFieldsOf(m.m)
-}
-func (m xxx_UninterpretedOption_NamePart) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-func (m xxx_UninterpretedOption_NamePart) ProtoMutable() {}
-
-func (m *UninterpretedOption_NamePart) Reset()         { *m = UninterpretedOption_NamePart{} }
-func (m *UninterpretedOption_NamePart) String() string { return protoapi.CompactTextString(m) }
-func (*UninterpretedOption_NamePart) ProtoMessage()    {}
-func (*UninterpretedOption_NamePart) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e5baabe45344a177, []int{18, 0}
-}
-
-func (m *UninterpretedOption_NamePart) GetNamePart() string {
-	if m != nil && m.NamePart != nil {
-		return *m.NamePart
-	}
-	return ""
-}
-
-func (m *UninterpretedOption_NamePart) GetIsExtension() bool {
-	if m != nil && m.IsExtension != nil {
-		return *m.IsExtension
-	}
-	return false
-}
-
 // Encapsulates information about the original source file from which a
 // FileDescriptorProto was generated.
 type SourceCodeInfo struct {
@@ -2511,6 +2291,271 @@ func (m *SourceCodeInfo) GetLocation() []*SourceCodeInfo_Location {
 		return m.Location
 	}
 	return nil
+}
+
+// Describes the relationship between generated code and its original source
+// file. A GeneratedCodeInfo message is associated with only one generated
+// source file, but may contain references to different source .proto files.
+type GeneratedCodeInfo struct {
+	// An Annotation connects some span of text in generated code to an element
+	// of its generating .proto file.
+	Annotation           []*GeneratedCodeInfo_Annotation `protobuf:"bytes,1,rep,name=annotation" json:"annotation,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                        `json:"-"`
+	XXX_unrecognized     []byte                          `json:"-"`
+	XXX_sizecache        int32                           `json:"-"`
+}
+
+type xxx_GeneratedCodeInfo struct{ m *GeneratedCodeInfo }
+
+func (m *GeneratedCodeInfo) ProtoReflect() protoreflect.Message {
+	return xxx_GeneratedCodeInfo{m}
+}
+func (m xxx_GeneratedCodeInfo) Type() protoreflect.MessageType {
+	return xxx_Descriptor_ProtoFile_MessageTypes[20].Type
+}
+func (m xxx_GeneratedCodeInfo) KnownFields() protoreflect.KnownFields {
+	return xxx_Descriptor_ProtoFile_MessageTypes[20].KnownFieldsOf(m.m)
+}
+func (m xxx_GeneratedCodeInfo) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Descriptor_ProtoFile_MessageTypes[20].UnknownFieldsOf(m.m)
+}
+func (m xxx_GeneratedCodeInfo) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_GeneratedCodeInfo) ProtoMutable() {}
+
+func (m *GeneratedCodeInfo) Reset()         { *m = GeneratedCodeInfo{} }
+func (m *GeneratedCodeInfo) String() string { return protoapi.CompactTextString(m) }
+func (*GeneratedCodeInfo) ProtoMessage()    {}
+func (*GeneratedCodeInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e5baabe45344a177, []int{20}
+}
+
+func (m *GeneratedCodeInfo) GetAnnotation() []*GeneratedCodeInfo_Annotation {
+	if m != nil {
+		return m.Annotation
+	}
+	return nil
+}
+
+type DescriptorProto_ExtensionRange struct {
+	Start                *int32                 `protobuf:"varint,1,opt,name=start" json:"start,omitempty"`
+	End                  *int32                 `protobuf:"varint,2,opt,name=end" json:"end,omitempty"`
+	Options              *ExtensionRangeOptions `protobuf:"bytes,3,opt,name=options" json:"options,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
+	XXX_unrecognized     []byte                 `json:"-"`
+	XXX_sizecache        int32                  `json:"-"`
+}
+
+type xxx_DescriptorProto_ExtensionRange struct {
+	m *DescriptorProto_ExtensionRange
+}
+
+func (m *DescriptorProto_ExtensionRange) ProtoReflect() protoreflect.Message {
+	return xxx_DescriptorProto_ExtensionRange{m}
+}
+func (m xxx_DescriptorProto_ExtensionRange) Type() protoreflect.MessageType {
+	return xxx_Descriptor_ProtoFile_MessageTypes[21].Type
+}
+func (m xxx_DescriptorProto_ExtensionRange) KnownFields() protoreflect.KnownFields {
+	return xxx_Descriptor_ProtoFile_MessageTypes[21].KnownFieldsOf(m.m)
+}
+func (m xxx_DescriptorProto_ExtensionRange) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Descriptor_ProtoFile_MessageTypes[21].UnknownFieldsOf(m.m)
+}
+func (m xxx_DescriptorProto_ExtensionRange) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_DescriptorProto_ExtensionRange) ProtoMutable() {}
+
+func (m *DescriptorProto_ExtensionRange) Reset()         { *m = DescriptorProto_ExtensionRange{} }
+func (m *DescriptorProto_ExtensionRange) String() string { return protoapi.CompactTextString(m) }
+func (*DescriptorProto_ExtensionRange) ProtoMessage()    {}
+func (*DescriptorProto_ExtensionRange) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e5baabe45344a177, []int{2, 0}
+}
+
+func (m *DescriptorProto_ExtensionRange) GetStart() int32 {
+	if m != nil && m.Start != nil {
+		return *m.Start
+	}
+	return 0
+}
+
+func (m *DescriptorProto_ExtensionRange) GetEnd() int32 {
+	if m != nil && m.End != nil {
+		return *m.End
+	}
+	return 0
+}
+
+func (m *DescriptorProto_ExtensionRange) GetOptions() *ExtensionRangeOptions {
+	if m != nil {
+		return m.Options
+	}
+	return nil
+}
+
+// Range of reserved tag numbers. Reserved tag numbers may not be used by
+// fields or extension ranges in the same message. Reserved ranges may
+// not overlap.
+type DescriptorProto_ReservedRange struct {
+	Start                *int32   `protobuf:"varint,1,opt,name=start" json:"start,omitempty"`
+	End                  *int32   `protobuf:"varint,2,opt,name=end" json:"end,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_DescriptorProto_ReservedRange struct {
+	m *DescriptorProto_ReservedRange
+}
+
+func (m *DescriptorProto_ReservedRange) ProtoReflect() protoreflect.Message {
+	return xxx_DescriptorProto_ReservedRange{m}
+}
+func (m xxx_DescriptorProto_ReservedRange) Type() protoreflect.MessageType {
+	return xxx_Descriptor_ProtoFile_MessageTypes[22].Type
+}
+func (m xxx_DescriptorProto_ReservedRange) KnownFields() protoreflect.KnownFields {
+	return xxx_Descriptor_ProtoFile_MessageTypes[22].KnownFieldsOf(m.m)
+}
+func (m xxx_DescriptorProto_ReservedRange) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Descriptor_ProtoFile_MessageTypes[22].UnknownFieldsOf(m.m)
+}
+func (m xxx_DescriptorProto_ReservedRange) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_DescriptorProto_ReservedRange) ProtoMutable() {}
+
+func (m *DescriptorProto_ReservedRange) Reset()         { *m = DescriptorProto_ReservedRange{} }
+func (m *DescriptorProto_ReservedRange) String() string { return protoapi.CompactTextString(m) }
+func (*DescriptorProto_ReservedRange) ProtoMessage()    {}
+func (*DescriptorProto_ReservedRange) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e5baabe45344a177, []int{2, 1}
+}
+
+func (m *DescriptorProto_ReservedRange) GetStart() int32 {
+	if m != nil && m.Start != nil {
+		return *m.Start
+	}
+	return 0
+}
+
+func (m *DescriptorProto_ReservedRange) GetEnd() int32 {
+	if m != nil && m.End != nil {
+		return *m.End
+	}
+	return 0
+}
+
+// Range of reserved numeric values. Reserved values may not be used by
+// entries in the same enum. Reserved ranges may not overlap.
+//
+// Note that this is distinct from DescriptorProto.ReservedRange in that it
+// is inclusive such that it can appropriately represent the entire int32
+// domain.
+type EnumDescriptorProto_EnumReservedRange struct {
+	Start                *int32   `protobuf:"varint,1,opt,name=start" json:"start,omitempty"`
+	End                  *int32   `protobuf:"varint,2,opt,name=end" json:"end,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_EnumDescriptorProto_EnumReservedRange struct {
+	m *EnumDescriptorProto_EnumReservedRange
+}
+
+func (m *EnumDescriptorProto_EnumReservedRange) ProtoReflect() protoreflect.Message {
+	return xxx_EnumDescriptorProto_EnumReservedRange{m}
+}
+func (m xxx_EnumDescriptorProto_EnumReservedRange) Type() protoreflect.MessageType {
+	return xxx_Descriptor_ProtoFile_MessageTypes[23].Type
+}
+func (m xxx_EnumDescriptorProto_EnumReservedRange) KnownFields() protoreflect.KnownFields {
+	return xxx_Descriptor_ProtoFile_MessageTypes[23].KnownFieldsOf(m.m)
+}
+func (m xxx_EnumDescriptorProto_EnumReservedRange) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Descriptor_ProtoFile_MessageTypes[23].UnknownFieldsOf(m.m)
+}
+func (m xxx_EnumDescriptorProto_EnumReservedRange) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_EnumDescriptorProto_EnumReservedRange) ProtoMutable() {}
+
+func (m *EnumDescriptorProto_EnumReservedRange) Reset()         { *m = EnumDescriptorProto_EnumReservedRange{} }
+func (m *EnumDescriptorProto_EnumReservedRange) String() string { return protoapi.CompactTextString(m) }
+func (*EnumDescriptorProto_EnumReservedRange) ProtoMessage()    {}
+func (*EnumDescriptorProto_EnumReservedRange) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e5baabe45344a177, []int{6, 0}
+}
+
+func (m *EnumDescriptorProto_EnumReservedRange) GetStart() int32 {
+	if m != nil && m.Start != nil {
+		return *m.Start
+	}
+	return 0
+}
+
+func (m *EnumDescriptorProto_EnumReservedRange) GetEnd() int32 {
+	if m != nil && m.End != nil {
+		return *m.End
+	}
+	return 0
+}
+
+// The name of the uninterpreted option.  Each string represents a segment in
+// a dot-separated name.  is_extension is true iff a segment represents an
+// extension (denoted with parentheses in options specs in .proto files).
+// E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
+// "foo.(bar.baz).qux".
+type UninterpretedOption_NamePart struct {
+	NamePart             *string  `protobuf:"bytes,1,req,name=name_part,json=namePart" json:"name_part,omitempty"`
+	IsExtension          *bool    `protobuf:"varint,2,req,name=is_extension,json=isExtension" json:"is_extension,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_UninterpretedOption_NamePart struct{ m *UninterpretedOption_NamePart }
+
+func (m *UninterpretedOption_NamePart) ProtoReflect() protoreflect.Message {
+	return xxx_UninterpretedOption_NamePart{m}
+}
+func (m xxx_UninterpretedOption_NamePart) Type() protoreflect.MessageType {
+	return xxx_Descriptor_ProtoFile_MessageTypes[24].Type
+}
+func (m xxx_UninterpretedOption_NamePart) KnownFields() protoreflect.KnownFields {
+	return xxx_Descriptor_ProtoFile_MessageTypes[24].KnownFieldsOf(m.m)
+}
+func (m xxx_UninterpretedOption_NamePart) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Descriptor_ProtoFile_MessageTypes[24].UnknownFieldsOf(m.m)
+}
+func (m xxx_UninterpretedOption_NamePart) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_UninterpretedOption_NamePart) ProtoMutable() {}
+
+func (m *UninterpretedOption_NamePart) Reset()         { *m = UninterpretedOption_NamePart{} }
+func (m *UninterpretedOption_NamePart) String() string { return protoapi.CompactTextString(m) }
+func (*UninterpretedOption_NamePart) ProtoMessage()    {}
+func (*UninterpretedOption_NamePart) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e5baabe45344a177, []int{18, 0}
+}
+
+func (m *UninterpretedOption_NamePart) GetNamePart() string {
+	if m != nil && m.NamePart != nil {
+		return *m.NamePart
+	}
+	return ""
+}
+
+func (m *UninterpretedOption_NamePart) GetIsExtension() bool {
+	if m != nil && m.IsExtension != nil {
+		return *m.IsExtension
+	}
+	return false
 }
 
 type SourceCodeInfo_Location struct {
@@ -2660,51 +2705,6 @@ func (m *SourceCodeInfo_Location) GetLeadingDetachedComments() []string {
 	return nil
 }
 
-// Describes the relationship between generated code and its original source
-// file. A GeneratedCodeInfo message is associated with only one generated
-// source file, but may contain references to different source .proto files.
-type GeneratedCodeInfo struct {
-	// An Annotation connects some span of text in generated code to an element
-	// of its generating .proto file.
-	Annotation           []*GeneratedCodeInfo_Annotation `protobuf:"bytes,1,rep,name=annotation" json:"annotation,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                        `json:"-"`
-	XXX_unrecognized     []byte                          `json:"-"`
-	XXX_sizecache        int32                           `json:"-"`
-}
-
-type xxx_GeneratedCodeInfo struct{ m *GeneratedCodeInfo }
-
-func (m *GeneratedCodeInfo) ProtoReflect() protoreflect.Message {
-	return xxx_GeneratedCodeInfo{m}
-}
-func (m xxx_GeneratedCodeInfo) Type() protoreflect.MessageType {
-	return xxx_Descriptor_ProtoFile_MessageTypes[20].Type
-}
-func (m xxx_GeneratedCodeInfo) KnownFields() protoreflect.KnownFields {
-	return xxx_Descriptor_ProtoFile_MessageTypes[20].KnownFieldsOf(m.m)
-}
-func (m xxx_GeneratedCodeInfo) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Descriptor_ProtoFile_MessageTypes[20].UnknownFieldsOf(m.m)
-}
-func (m xxx_GeneratedCodeInfo) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-func (m xxx_GeneratedCodeInfo) ProtoMutable() {}
-
-func (m *GeneratedCodeInfo) Reset()         { *m = GeneratedCodeInfo{} }
-func (m *GeneratedCodeInfo) String() string { return protoapi.CompactTextString(m) }
-func (*GeneratedCodeInfo) ProtoMessage()    {}
-func (*GeneratedCodeInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e5baabe45344a177, []int{20}
-}
-
-func (m *GeneratedCodeInfo) GetAnnotation() []*GeneratedCodeInfo_Annotation {
-	if m != nil {
-		return m.Annotation
-	}
-	return nil
-}
-
 type GeneratedCodeInfo_Annotation struct {
 	// Identifies the element in the original source .proto file. This field
 	// is formatted the same as SourceCodeInfo.Location.path.
@@ -2778,6 +2778,7 @@ func (m *GeneratedCodeInfo_Annotation) GetEnd() int32 {
 }
 
 func init() {
+	protoapi.RegisterFile("google/protobuf/descriptor.proto", fileDescriptor_e5baabe45344a177)
 	protoapi.RegisterEnum("google.protobuf.FieldDescriptorProto_Type", FieldDescriptorProto_Type_name, FieldDescriptorProto_Type_value)
 	protoapi.RegisterEnum("google.protobuf.FieldDescriptorProto_Label", FieldDescriptorProto_Label_name, FieldDescriptorProto_Label_value)
 	protoapi.RegisterEnum("google.protobuf.FileOptions_OptimizeMode", FileOptions_OptimizeMode_name, FileOptions_OptimizeMode_value)
@@ -2787,13 +2788,10 @@ func init() {
 	protoapi.RegisterType((*FileDescriptorSet)(nil), "google.protobuf.FileDescriptorSet")
 	protoapi.RegisterType((*FileDescriptorProto)(nil), "google.protobuf.FileDescriptorProto")
 	protoapi.RegisterType((*DescriptorProto)(nil), "google.protobuf.DescriptorProto")
-	protoapi.RegisterType((*DescriptorProto_ExtensionRange)(nil), "google.protobuf.DescriptorProto.ExtensionRange")
-	protoapi.RegisterType((*DescriptorProto_ReservedRange)(nil), "google.protobuf.DescriptorProto.ReservedRange")
 	protoapi.RegisterType((*ExtensionRangeOptions)(nil), "google.protobuf.ExtensionRangeOptions")
 	protoapi.RegisterType((*FieldDescriptorProto)(nil), "google.protobuf.FieldDescriptorProto")
 	protoapi.RegisterType((*OneofDescriptorProto)(nil), "google.protobuf.OneofDescriptorProto")
 	protoapi.RegisterType((*EnumDescriptorProto)(nil), "google.protobuf.EnumDescriptorProto")
-	protoapi.RegisterType((*EnumDescriptorProto_EnumReservedRange)(nil), "google.protobuf.EnumDescriptorProto.EnumReservedRange")
 	protoapi.RegisterType((*EnumValueDescriptorProto)(nil), "google.protobuf.EnumValueDescriptorProto")
 	protoapi.RegisterType((*ServiceDescriptorProto)(nil), "google.protobuf.ServiceDescriptorProto")
 	protoapi.RegisterType((*MethodDescriptorProto)(nil), "google.protobuf.MethodDescriptorProto")
@@ -2806,15 +2804,14 @@ func init() {
 	protoapi.RegisterType((*ServiceOptions)(nil), "google.protobuf.ServiceOptions")
 	protoapi.RegisterType((*MethodOptions)(nil), "google.protobuf.MethodOptions")
 	protoapi.RegisterType((*UninterpretedOption)(nil), "google.protobuf.UninterpretedOption")
-	protoapi.RegisterType((*UninterpretedOption_NamePart)(nil), "google.protobuf.UninterpretedOption.NamePart")
 	protoapi.RegisterType((*SourceCodeInfo)(nil), "google.protobuf.SourceCodeInfo")
-	protoapi.RegisterType((*SourceCodeInfo_Location)(nil), "google.protobuf.SourceCodeInfo.Location")
 	protoapi.RegisterType((*GeneratedCodeInfo)(nil), "google.protobuf.GeneratedCodeInfo")
+	protoapi.RegisterType((*DescriptorProto_ExtensionRange)(nil), "google.protobuf.DescriptorProto.ExtensionRange")
+	protoapi.RegisterType((*DescriptorProto_ReservedRange)(nil), "google.protobuf.DescriptorProto.ReservedRange")
+	protoapi.RegisterType((*EnumDescriptorProto_EnumReservedRange)(nil), "google.protobuf.EnumDescriptorProto.EnumReservedRange")
+	protoapi.RegisterType((*UninterpretedOption_NamePart)(nil), "google.protobuf.UninterpretedOption.NamePart")
+	protoapi.RegisterType((*SourceCodeInfo_Location)(nil), "google.protobuf.SourceCodeInfo.Location")
 	protoapi.RegisterType((*GeneratedCodeInfo_Annotation)(nil), "google.protobuf.GeneratedCodeInfo.Annotation")
-}
-
-func init() {
-	protoapi.RegisterFile("google/protobuf/descriptor.proto", fileDescriptor_e5baabe45344a177)
 }
 
 var fileDescriptor_e5baabe45344a177 = []byte{

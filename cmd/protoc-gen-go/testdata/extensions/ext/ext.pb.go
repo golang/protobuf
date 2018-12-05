@@ -4,20 +4,13 @@
 package ext
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	base "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/base"
 	extra "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/extra"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -132,56 +125,6 @@ func (m *Message) GetData() []byte {
 	return nil
 }
 
-type Message_M struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-type xxx_Message_M struct{ m *Message_M }
-
-func (m *Message_M) ProtoReflect() protoreflect.Message {
-	return xxx_Message_M{m}
-}
-func (m xxx_Message_M) Type() protoreflect.MessageType {
-	return xxx_Ext_ProtoFile_MessageTypes[6].Type
-}
-func (m xxx_Message_M) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[6].KnownFieldsOf(m.m)
-}
-func (m xxx_Message_M) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[6].UnknownFieldsOf(m.m)
-}
-func (m xxx_Message_M) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-func (m xxx_Message_M) ProtoMutable() {}
-
-func (m *Message_M) Reset()         { *m = Message_M{} }
-func (m *Message_M) String() string { return proto.CompactTextString(m) }
-func (*Message_M) ProtoMessage()    {}
-func (*Message_M) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bf470ef4907b23cb, []int{0, 0}
-}
-
-func (m *Message_M) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message_M.Unmarshal(m, b)
-}
-func (m *Message_M) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message_M.Marshal(b, m, deterministic)
-}
-func (m *Message_M) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message_M.Merge(m, src)
-}
-func (m *Message_M) XXX_Size() int {
-	return xxx_messageInfo_Message_M.Size(m)
-}
-func (m *Message_M) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message_M.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message_M proto.InternalMessageInfo
-
 type ExtensionGroup struct {
 	ExtensionGroup       *string  `protobuf:"bytes,120,opt,name=extension_group,json=extensionGroup" json:"extension_group,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -290,80 +233,6 @@ func (m *ExtendingMessage) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_ExtendingMessage proto.InternalMessageInfo
-
-var E_ExtendingMessage_ExtendingMessageString = &proto.ExtensionDesc{
-	ExtendedType:  (*base.BaseMessage)(nil),
-	ExtensionType: (*string)(nil),
-	Field:         200,
-	Name:          "goproto.protoc.extension.ext.ExtendingMessage.extending_message_string",
-	Tag:           "bytes,200,opt,name=extending_message_string",
-	Filename:      "extensions/ext/ext.proto",
-}
-
-var E_ExtendingMessage_ExtendingMessageSubmessage = &proto.ExtensionDesc{
-	ExtendedType:  (*base.BaseMessage)(nil),
-	ExtensionType: (*ExtendingMessage_ExtendingMessageSubmessage)(nil),
-	Field:         201,
-	Name:          "goproto.protoc.extension.ext.ExtendingMessage.extending_message_submessage",
-	Tag:           "bytes,201,opt,name=extending_message_submessage",
-	Filename:      "extensions/ext/ext.proto",
-}
-
-type ExtendingMessage_ExtendingMessageSubmessage struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-type xxx_ExtendingMessage_ExtendingMessageSubmessage struct {
-	m *ExtendingMessage_ExtendingMessageSubmessage
-}
-
-func (m *ExtendingMessage_ExtendingMessageSubmessage) ProtoReflect() protoreflect.Message {
-	return xxx_ExtendingMessage_ExtendingMessageSubmessage{m}
-}
-func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) Type() protoreflect.MessageType {
-	return xxx_Ext_ProtoFile_MessageTypes[7].Type
-}
-func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[7].KnownFieldsOf(m.m)
-}
-func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[7].UnknownFieldsOf(m.m)
-}
-func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) ProtoMutable() {}
-
-func (m *ExtendingMessage_ExtendingMessageSubmessage) Reset() {
-	*m = ExtendingMessage_ExtendingMessageSubmessage{}
-}
-func (m *ExtendingMessage_ExtendingMessageSubmessage) String() string {
-	return proto.CompactTextString(m)
-}
-func (*ExtendingMessage_ExtendingMessageSubmessage) ProtoMessage() {}
-func (*ExtendingMessage_ExtendingMessageSubmessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bf470ef4907b23cb, []int{2, 0}
-}
-
-func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage.Unmarshal(m, b)
-}
-func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage.Marshal(b, m, deterministic)
-}
-func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage.Merge(m, src)
-}
-func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_Size() int {
-	return xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage.Size(m)
-}
-func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage proto.InternalMessageInfo
 
 type RepeatedGroup struct {
 	RepeatedXGroup       []string `protobuf:"bytes,319,rep,name=repeated_x_group,json=repeatedXGroup" json:"repeated_x_group,omitempty"`
@@ -536,14 +405,111 @@ func (m *MessageSetWireFormatExtension) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MessageSetWireFormatExtension proto.InternalMessageInfo
 
-var E_MessageSetWireFormatExtension_MessageSetExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*base.MessageSetWireFormatMessage)(nil),
-	ExtensionType: (*MessageSetWireFormatExtension)(nil),
-	Field:         100,
-	Name:          "goproto.protoc.extension.ext.MessageSetWireFormatExtension",
-	Tag:           "bytes,100,opt,name=message_set_extension",
-	Filename:      "extensions/ext/ext.proto",
+type Message_M struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
+
+type xxx_Message_M struct{ m *Message_M }
+
+func (m *Message_M) ProtoReflect() protoreflect.Message {
+	return xxx_Message_M{m}
+}
+func (m xxx_Message_M) Type() protoreflect.MessageType {
+	return xxx_Ext_ProtoFile_MessageTypes[6].Type
+}
+func (m xxx_Message_M) KnownFields() protoreflect.KnownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[6].KnownFieldsOf(m.m)
+}
+func (m xxx_Message_M) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[6].UnknownFieldsOf(m.m)
+}
+func (m xxx_Message_M) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_Message_M) ProtoMutable() {}
+
+func (m *Message_M) Reset()         { *m = Message_M{} }
+func (m *Message_M) String() string { return proto.CompactTextString(m) }
+func (*Message_M) ProtoMessage()    {}
+func (*Message_M) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bf470ef4907b23cb, []int{0, 0}
+}
+
+func (m *Message_M) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Message_M.Unmarshal(m, b)
+}
+func (m *Message_M) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Message_M.Marshal(b, m, deterministic)
+}
+func (m *Message_M) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Message_M.Merge(m, src)
+}
+func (m *Message_M) XXX_Size() int {
+	return xxx_messageInfo_Message_M.Size(m)
+}
+func (m *Message_M) XXX_DiscardUnknown() {
+	xxx_messageInfo_Message_M.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Message_M proto.InternalMessageInfo
+
+type ExtendingMessage_ExtendingMessageSubmessage struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_ExtendingMessage_ExtendingMessageSubmessage struct {
+	m *ExtendingMessage_ExtendingMessageSubmessage
+}
+
+func (m *ExtendingMessage_ExtendingMessageSubmessage) ProtoReflect() protoreflect.Message {
+	return xxx_ExtendingMessage_ExtendingMessageSubmessage{m}
+}
+func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) Type() protoreflect.MessageType {
+	return xxx_Ext_ProtoFile_MessageTypes[7].Type
+}
+func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) KnownFields() protoreflect.KnownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[7].KnownFieldsOf(m.m)
+}
+func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Ext_ProtoFile_MessageTypes[7].UnknownFieldsOf(m.m)
+}
+func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) ProtoMutable() {}
+
+func (m *ExtendingMessage_ExtendingMessageSubmessage) Reset() {
+	*m = ExtendingMessage_ExtendingMessageSubmessage{}
+}
+func (m *ExtendingMessage_ExtendingMessageSubmessage) String() string {
+	return proto.CompactTextString(m)
+}
+func (*ExtendingMessage_ExtendingMessageSubmessage) ProtoMessage() {}
+func (*ExtendingMessage_ExtendingMessageSubmessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bf470ef4907b23cb, []int{2, 0}
+}
+
+func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage.Unmarshal(m, b)
+}
+func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage.Marshal(b, m, deterministic)
+}
+func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage.Merge(m, src)
+}
+func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_Size() int {
+	return xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage.Size(m)
+}
+func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage proto.InternalMessageInfo
 
 var E_ExtensionBool = &proto.ExtensionDesc{
 	ExtendedType:  (*base.BaseMessage)(nil),
@@ -914,19 +880,44 @@ var E_MessageSetExtension = &proto.ExtensionDesc{
 	Filename:      "extensions/ext/ext.proto",
 }
 
+var E_ExtendingMessage_ExtendingMessageString = &proto.ExtensionDesc{
+	ExtendedType:  (*base.BaseMessage)(nil),
+	ExtensionType: (*string)(nil),
+	Field:         200,
+	Name:          "goproto.protoc.extension.ext.ExtendingMessage.extending_message_string",
+	Tag:           "bytes,200,opt,name=extending_message_string",
+	Filename:      "extensions/ext/ext.proto",
+}
+
+var E_ExtendingMessage_ExtendingMessageSubmessage = &proto.ExtensionDesc{
+	ExtendedType:  (*base.BaseMessage)(nil),
+	ExtensionType: (*ExtendingMessage_ExtendingMessageSubmessage)(nil),
+	Field:         201,
+	Name:          "goproto.protoc.extension.ext.ExtendingMessage.extending_message_submessage",
+	Tag:           "bytes,201,opt,name=extending_message_submessage",
+	Filename:      "extensions/ext/ext.proto",
+}
+
+var E_MessageSetWireFormatExtension_MessageSetExtension = &proto.ExtensionDesc{
+	ExtendedType:  (*base.MessageSetWireFormatMessage)(nil),
+	ExtensionType: (*MessageSetWireFormatExtension)(nil),
+	Field:         100,
+	Name:          "goproto.protoc.extension.ext.MessageSetWireFormatExtension",
+	Tag:           "bytes,100,opt,name=message_set_extension",
+	Filename:      "extensions/ext/ext.proto",
+}
+
 func init() {
+	proto.RegisterFile("extensions/ext/ext.proto", fileDescriptor_bf470ef4907b23cb)
 	proto.RegisterEnum("goproto.protoc.extension.ext.Enum", Enum_name, Enum_value)
 	proto.RegisterType((*Message)(nil), "goproto.protoc.extension.ext.Message")
-	proto.RegisterType((*Message_M)(nil), "goproto.protoc.extension.ext.Message.M")
 	proto.RegisterType((*ExtensionGroup)(nil), "goproto.protoc.extension.ext.ExtensionGroup")
-	proto.RegisterExtension(E_ExtendingMessage_ExtendingMessageString)
-	proto.RegisterExtension(E_ExtendingMessage_ExtendingMessageSubmessage)
 	proto.RegisterType((*ExtendingMessage)(nil), "goproto.protoc.extension.ext.ExtendingMessage")
-	proto.RegisterType((*ExtendingMessage_ExtendingMessageSubmessage)(nil), "goproto.protoc.extension.ext.ExtendingMessage.ExtendingMessageSubmessage")
 	proto.RegisterType((*RepeatedGroup)(nil), "goproto.protoc.extension.ext.RepeatedGroup")
 	proto.RegisterType((*Extendable)(nil), "goproto.protoc.extension.ext.Extendable")
-	proto.RegisterExtension(E_MessageSetWireFormatExtension_MessageSetExtension)
 	proto.RegisterType((*MessageSetWireFormatExtension)(nil), "goproto.protoc.extension.ext.MessageSetWireFormatExtension")
+	proto.RegisterType((*Message_M)(nil), "goproto.protoc.extension.ext.Message.M")
+	proto.RegisterType((*ExtendingMessage_ExtendingMessageSubmessage)(nil), "goproto.protoc.extension.ext.ExtendingMessage.ExtendingMessageSubmessage")
 	proto.RegisterExtension(E_ExtensionBool)
 	proto.RegisterExtension(E_ExtensionEnum)
 	proto.RegisterExtension(E_ExtensionInt32)
@@ -968,9 +959,10 @@ func init() {
 	proto.RegisterExtension(E_ExtendableField)
 	proto.RegisterExtension(E_ExtendableStringField)
 	proto.RegisterExtension(E_MessageSetExtension)
+	proto.RegisterExtension(E_ExtendingMessage_ExtendingMessageString)
+	proto.RegisterExtension(E_ExtendingMessage_ExtendingMessageSubmessage)
+	proto.RegisterExtension(E_MessageSetWireFormatExtension_MessageSetExtension)
 }
-
-func init() { proto.RegisterFile("extensions/ext/ext.proto", fileDescriptor_bf470ef4907b23cb) }
 
 var fileDescriptor_bf470ef4907b23cb = []byte{
 	// 1120 bytes of a gzipped FileDescriptorProto

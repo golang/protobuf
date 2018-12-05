@@ -4,18 +4,12 @@
 package proto2
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -248,6 +242,10 @@ const Default_FieldTestMessage_DefaultDouble float64 = 3.1415
 const Default_FieldTestMessage_DefaultString string = "hello,\"world!\"\n"
 
 var Default_FieldTestMessage_DefaultBytes []byte = []byte("hello,ޭ\xbe\xef")
+
+const Default_FieldTestMessage_DefaultZeroString string = ""
+
+var Default_FieldTestMessage_DefaultZeroBytes []byte = []byte("")
 var Default_FieldTestMessage_DefaultFloatNeginf float32 = float32(math.Inf(-1))
 var Default_FieldTestMessage_DefaultFloatPosinf float32 = float32(math.Inf(1))
 var Default_FieldTestMessage_DefaultFloatNan float32 = float32(math.NaN())
@@ -749,14 +747,14 @@ func (m *FieldTestMessage) GetDefaultZeroString() string {
 	if m != nil && m.DefaultZeroString != nil {
 		return *m.DefaultZeroString
 	}
-	return ""
+	return Default_FieldTestMessage_DefaultZeroString
 }
 
 func (m *FieldTestMessage) GetDefaultZeroBytes() []byte {
-	if m != nil {
+	if m != nil && m.DefaultZeroBytes != nil {
 		return m.DefaultZeroBytes
 	}
-	return nil
+	return append([]byte(nil), Default_FieldTestMessage_DefaultZeroBytes...)
 }
 
 func (m *FieldTestMessage) GetDefaultFloatNeginf() float32 {
@@ -1433,6 +1431,7 @@ func (m *FieldTestMessage_Message) XXX_DiscardUnknown() {
 var xxx_messageInfo_FieldTestMessage_Message proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterFile("proto2/fields.proto", fileDescriptor_fd8a9d72b841fd68)
 	proto.RegisterEnum("goproto.protoc.proto2.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)
 	proto.RegisterType((*FieldTestMessage)(nil), "goproto.protoc.proto2.FieldTestMessage")
 	proto.RegisterMapType((map[uint64]FieldTestMessage_Enum)(nil), "goproto.protoc.proto2.FieldTestMessage.MapFixed64EnumEntry")
@@ -1444,8 +1443,6 @@ func init() {
 	proto.RegisterType((*FieldTestMessage_OneofGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.OneofGroup")
 	proto.RegisterType((*FieldTestMessage_Message)(nil), "goproto.protoc.proto2.FieldTestMessage.Message")
 }
-
-func init() { proto.RegisterFile("proto2/fields.proto", fileDescriptor_fd8a9d72b841fd68) }
 
 var fileDescriptor_fd8a9d72b841fd68 = []byte{
 	// 1941 bytes of a gzipped FileDescriptorProto
