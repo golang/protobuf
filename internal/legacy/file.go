@@ -13,9 +13,9 @@ import (
 	// TODO: Avoid reliance on old API. However, there is currently a
 	// chicken and egg problem where we need the descriptor protos to implement
 	// the new API.
-	protoV1 "github.com/golang/protobuf/proto"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoV1 "github.com/golang/protobuf/v2/internal/legacy/protoV1"
 
+	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
