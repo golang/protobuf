@@ -270,3 +270,33 @@ var _DeprecatedService_serviceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "deprecated/deprecated.proto",
 }
+
+func ClientServiceInfo(client interface{}) (grpc.ServiceInfo, error) {
+	var desc grpc.ServiceDesc
+	switch client.(type) {
+	case DeprecatedServiceClient:
+		desc = _DeprecatedService_serviceDesc
+	default:
+		return grpc.ServiceInfo{}, fmt.Errorf("unknown gRPC client type: %T", client)
+	}
+
+	methods := make([]grpc.MethodInfo, 0, len(desc.Methods)+len(desc.Streams))
+	for _, method := range desc.Methods {
+		methods = append(methods, grpc.MethodInfo{
+			Name:           method.MethodName,
+			IsClientStream: false,
+			IsServerStream: false,
+		})
+	}
+	for _, stream := range desc.Streams {
+		methods = append(methods, grpc.MethodInfo{
+			Name:           stream.StreamName,
+			IsClientStream: stream.ClientStreams,
+			IsServerStream: stream.ServerStreams,
+		})
+	}
+	return grpc.ServiceInfo{
+		Methods:  methods,
+		Metadata: desc.Methods,
+	}, nil
+}

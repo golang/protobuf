@@ -122,6 +122,8 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	for i, service := range file.FileDescriptorProto.Service {
 		g.generateService(file, service, i)
 	}
+
+	g.generateClientServiceInfo(file)
 }
 
 // GenerateImports generates the import declaration for this file.
@@ -267,6 +269,40 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P("Metadata: \"", file.GetName(), "\",")
 	g.P("}")
 	g.P()
+}
+
+func (g *grpc) generateClientServiceInfo(file *generator.FileDescriptor) {
+	g.P("func ClientServiceInfo(client interface{}) (grpc.ServiceInfo, error) {")
+	g.P("var desc grpc.ServiceDesc")
+	g.P("switch client.(type) {")
+	for _, service := range file.FileDescriptorProto.GetService() {
+		g.P("case ", service.GetName(), "Client:")
+		g.P("desc = _",service.GetName(),"_serviceDesc")
+	}
+	g.P("default:")
+	g.P("return grpc.ServiceInfo{}, fmt.Errorf(\"unknown gRPC client type: %T\", client)")
+	g.P("}")
+	g.P(`
+	methods := make([]grpc.MethodInfo, 0, len(desc.Methods)+len(desc.Streams))
+	for _, method := range desc.Methods {
+		methods = append(methods, grpc.MethodInfo{
+			Name:           method.MethodName,
+			IsClientStream: false,
+			IsServerStream: false,
+		})
+	}
+	for _, stream := range desc.Streams {
+		methods = append(methods, grpc.MethodInfo{
+			Name:           stream.StreamName,
+			IsClientStream: stream.ClientStreams,
+			IsServerStream: stream.ServerStreams,
+		})
+	}`)
+	g.P(`return grpc.ServiceInfo{
+		Methods:  methods,
+		Metadata: desc.Methods,
+	}, nil`)
+	g.P("}")
 }
 
 // generateClientSignature returns the client-side signature for a method.
