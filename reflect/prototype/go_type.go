@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"sync"
 
+	"github.com/golang/protobuf/v2/internal/typefmt"
 	"github.com/golang/protobuf/v2/internal/value"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -43,7 +44,7 @@ func (t *goEnum) New(n protoreflect.EnumNumber) protoreflect.ProtoEnum {
 	return e
 }
 func (t *goEnum) Format(s fmt.State, r rune) {
-	formatDesc(s, r, t)
+	typefmt.FormatDesc(s, r, t)
 }
 
 // GoMessage creates a new protoreflect.MessageType by combining the provided
@@ -78,7 +79,7 @@ func (t *goMessage) New() protoreflect.ProtoMessage {
 	return m
 }
 func (t *goMessage) Format(s fmt.State, r rune) {
-	formatDesc(s, r, t)
+	typefmt.FormatDesc(s, r, t)
 }
 
 // GoExtension creates a new protoreflect.ExtensionType.
@@ -194,7 +195,7 @@ func (t *goExtension) InterfaceOf(pv protoreflect.Value) interface{} {
 	return v
 }
 func (t *goExtension) Format(s fmt.State, r rune) {
-	formatDesc(s, r, t)
+	typefmt.FormatDesc(s, r, t)
 }
 func (t *goExtension) lazyInit() {
 	t.once.Do(func() {

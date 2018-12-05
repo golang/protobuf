@@ -7,7 +7,8 @@ package prototype
 import (
 	"fmt"
 
-	"github.com/golang/protobuf/v2/internal/pragma"
+	pragma "github.com/golang/protobuf/v2/internal/pragma"
+	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -29,7 +30,7 @@ func (t standaloneMessage) ExtensionRanges() pref.FieldRanges     { return (*ran
 func (t standaloneMessage) Messages() pref.MessageDescriptors     { return &emptyMessages }
 func (t standaloneMessage) Enums() pref.EnumDescriptors           { return &emptyEnums }
 func (t standaloneMessage) Extensions() pref.ExtensionDescriptors { return &emptyExtensions }
-func (t standaloneMessage) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
+func (t standaloneMessage) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
 func (t standaloneMessage) ProtoType(pref.MessageDescriptor)      {}
 func (t standaloneMessage) ProtoInternal(pragma.DoNotImplement)   {}
 
@@ -44,7 +45,7 @@ func (t standaloneEnum) IsPlaceholder() bool                   { return false }
 func (t standaloneEnum) DescriptorProto() (pref.Message, bool) { return nil, false }
 func (t standaloneEnum) Options() pref.ProtoMessage            { return t.e.Options }
 func (t standaloneEnum) Values() pref.EnumValueDescriptors     { return t.e.vals.lazyInit(t, t.e.Values) }
-func (t standaloneEnum) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
+func (t standaloneEnum) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
 func (t standaloneEnum) ProtoType(pref.EnumDescriptor)         {}
 func (t standaloneEnum) ProtoInternal(pragma.DoNotImplement)   {}
 
@@ -74,6 +75,6 @@ func (t standaloneExtension) OneofType() pref.OneofDescriptor      { return nil 
 func (t standaloneExtension) MessageType() pref.MessageDescriptor  { return t.x.MessageType }
 func (t standaloneExtension) EnumType() pref.EnumDescriptor        { return t.x.EnumType }
 func (t standaloneExtension) ExtendedType() pref.MessageDescriptor { return t.x.ExtendedType }
-func (t standaloneExtension) Format(s fmt.State, r rune)           { formatDesc(s, r, t) }
+func (t standaloneExtension) Format(s fmt.State, r rune)           { pfmt.FormatDesc(s, r, t) }
 func (t standaloneExtension) ProtoType(pref.FieldDescriptor)       {}
 func (t standaloneExtension) ProtoInternal(pragma.DoNotImplement)  {}

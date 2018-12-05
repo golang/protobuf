@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
+	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -49,7 +50,7 @@ func (t placeholderFile) Enums() pref.EnumDescriptors                    { retur
 func (t placeholderFile) Extensions() pref.ExtensionDescriptors          { return &emptyExtensions }
 func (t placeholderFile) Services() pref.ServiceDescriptors              { return &emptyServices }
 func (t placeholderFile) DescriptorByName(pref.FullName) pref.Descriptor { return nil }
-func (t placeholderFile) Format(s fmt.State, r rune)                     { formatDesc(s, r, t) }
+func (t placeholderFile) Format(s fmt.State, r rune)                     { pfmt.FormatDesc(s, r, t) }
 func (t placeholderFile) ProtoType(pref.FileDescriptor)                  {}
 
 type placeholderMessage struct {
@@ -65,7 +66,7 @@ func (t placeholderMessage) ExtensionRanges() pref.FieldRanges     { return &emp
 func (t placeholderMessage) Messages() pref.MessageDescriptors     { return &emptyMessages }
 func (t placeholderMessage) Enums() pref.EnumDescriptors           { return &emptyEnums }
 func (t placeholderMessage) Extensions() pref.ExtensionDescriptors { return &emptyExtensions }
-func (t placeholderMessage) Format(s fmt.State, r rune)            { formatDesc(s, r, t) }
+func (t placeholderMessage) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
 func (t placeholderMessage) ProtoType(pref.MessageDescriptor)      {}
 
 type placeholderEnum struct {
@@ -74,5 +75,5 @@ type placeholderEnum struct {
 
 func (t placeholderEnum) Options() pref.ProtoMessage        { return nil }
 func (t placeholderEnum) Values() pref.EnumValueDescriptors { return &emptyEnumValues }
-func (t placeholderEnum) Format(s fmt.State, r rune)        { formatDesc(s, r, t) }
+func (t placeholderEnum) Format(s fmt.State, r rune)        { pfmt.FormatDesc(s, r, t) }
 func (t placeholderEnum) ProtoType(pref.EnumDescriptor)     {}

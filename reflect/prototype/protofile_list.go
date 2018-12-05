@@ -10,6 +10,7 @@ import (
 
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	pset "github.com/golang/protobuf/v2/internal/set"
+	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -34,7 +35,7 @@ func (p *numbersMeta) lazyInit(fs []Field) *numbers {
 func (p *numbers) Len() int                            { return len(p.ns) }
 func (p *numbers) Get(i int) pref.FieldNumber          { return p.ns[i] }
 func (p *numbers) Has(n pref.FieldNumber) bool         { return p.nss.Has(uint64(n)) }
-func (p *numbers) Format(s fmt.State, r rune)          { formatList(s, r, p) }
+func (p *numbers) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
 func (p *numbers) ProtoInternal(pragma.DoNotImplement) {}
 
 type ranges [][2]pref.FieldNumber
@@ -49,14 +50,14 @@ func (p *ranges) Has(n pref.FieldNumber) bool {
 	}
 	return false
 }
-func (p *ranges) Format(s fmt.State, r rune)          { formatList(s, r, p) }
+func (p *ranges) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
 func (p *ranges) ProtoInternal(pragma.DoNotImplement) {}
 
 type fileImports []pref.FileImport
 
 func (p *fileImports) Len() int                            { return len(*p) }
 func (p *fileImports) Get(i int) pref.FileImport           { return (*p)[i] }
-func (p *fileImports) Format(s fmt.State, r rune)          { formatList(s, r, p) }
+func (p *fileImports) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
 func (p *fileImports) ProtoInternal(pragma.DoNotImplement) {}
 
 type oneofFieldsMeta struct {
@@ -96,5 +97,5 @@ func (p *oneofFields) Get(i int) pref.FieldDescriptor                   { return
 func (p *oneofFields) ByName(s pref.Name) pref.FieldDescriptor          { return p.byName[s] }
 func (p *oneofFields) ByJSONName(s string) pref.FieldDescriptor         { return p.byJSON[s] }
 func (p *oneofFields) ByNumber(n pref.FieldNumber) pref.FieldDescriptor { return p.byNum[n] }
-func (p *oneofFields) Format(s fmt.State, r rune)                       { formatList(s, r, p) }
+func (p *oneofFields) Format(s fmt.State, r rune)                       { pfmt.FormatList(s, r, p) }
 func (p *oneofFields) ProtoInternal(pragma.DoNotImplement)              {}

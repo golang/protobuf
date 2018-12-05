@@ -180,7 +180,7 @@ var listTypesTemplate = template.Must(template.New("").Funcs(template.FuncMap{
 		return {{$nameDesc}}{t}
 	}
 	{{- end}}
-	func (p *{{$nameList}}) Format(s fmt.State, r rune)          { formatList(s, r, p) }
+	func (p *{{$nameList}}) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
 	func (p *{{$nameList}}) ProtoInternal(pragma.DoNotImplement) {}
 	{{- end}}
 `))
@@ -201,6 +201,7 @@ func writeSource(file, src string) {
 		"sync",
 		"",
 		"github.com/golang/protobuf/v2/internal/pragma",
+		"github.com/golang/protobuf/v2/internal/typefmt",
 		"github.com/golang/protobuf/v2/reflect/protoreflect",
 	} {
 		if pkg == "" {

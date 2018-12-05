@@ -12,6 +12,7 @@ import (
 	papi "github.com/golang/protobuf/protoapi"
 	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
+	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
@@ -248,5 +249,4 @@ func (x *extensionType) GoType() reflect.Type                 { return x.typ }
 func (x *extensionType) New() interface{}                     { return x.new() }
 func (x *extensionType) ValueOf(v interface{}) pref.Value     { return x.valueOf(v) }
 func (x *extensionType) InterfaceOf(v pref.Value) interface{} { return x.interfaceOf(v) }
-
-// TODO: Provide custom stringer with the new GoType.
+func (x *extensionType) Format(s fmt.State, r rune)           { pfmt.FormatDesc(s, r, x) }

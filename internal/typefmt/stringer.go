@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package prototype
+// Package typefmt provides functionality to format descriptors.
+package typefmt
 
 import (
 	"fmt"
@@ -21,7 +22,7 @@ type list interface {
 	pragma.DoNotImplement
 }
 
-func formatList(s fmt.State, r rune, vs list) {
+func FormatList(s fmt.State, r rune, vs list) {
 	io.WriteString(s, formatListOpt(vs, true, r == 'v' && (s.Flag('+') || s.Flag('#'))))
 }
 func formatListOpt(vs list, isRoot, allowMulti bool) string {
@@ -94,7 +95,7 @@ var descriptorAccessors = map[reflect.Type][]string{
 	reflect.TypeOf((*pref.MethodDescriptor)(nil)).Elem():    {"InputType", "OutputType", "IsStreamingClient", "IsStreamingServer"},
 }
 
-func formatDesc(s fmt.State, r rune, t pref.Descriptor) {
+func FormatDesc(s fmt.State, r rune, t pref.Descriptor) {
 	io.WriteString(s, formatDescOpt(t, true, r == 'v' && (s.Flag('+') || s.Flag('#'))))
 }
 func formatDescOpt(t pref.Descriptor, isRoot, allowMulti bool) string {
