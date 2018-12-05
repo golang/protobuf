@@ -21,9 +21,28 @@ PROTO_DIRS=(
 for dir in ${PROTO_DIRS[@]}; do
   for p in `find $dir -name "*.proto"`; do
     echo "# $p"
-    protoc -I$dir \
+    PROTOC_GEN_GO_ENABLE_REFLECT=1 protoc -I$dir \
       --go_out=paths=source_relative:$dir \
       --go-grpc_out=paths=source_relative:$dir \
       $p
   done
 done
+
+# Generate descriptor and plugin.
+# TODO: Make this more automated.
+
+echo "# types/descriptor/descriptor.proto"
+mkdir -p $tmpdir/src/google/protobuf
+cp ./types/descriptor/descriptor.proto $tmpdir/src/google/protobuf/descriptor.proto
+PROTOC_GEN_GO_ENABLE_REFLECT=1 protoc -I$tmpdir/src \
+  --go_out=paths=source_relative:$tmpdir/src \
+  $tmpdir/src/google/protobuf/descriptor.proto
+cp $tmpdir/src/google/protobuf/descriptor.pb.go ./types/descriptor/descriptor.pb.go
+
+echo "# types/plugin/plugin.proto"
+mkdir -p $tmpdir/src/google/protobuf/compiler
+cp ./types/plugin/plugin.proto $tmpdir/src/google/protobuf/compiler/plugin.proto
+PROTOC_GEN_GO_ENABLE_REFLECT=1 protoc -I$tmpdir/src \
+  --go_out=paths=source_relative:$tmpdir/src \
+  $tmpdir/src/google/protobuf/compiler/plugin.proto
+cp $tmpdir/src/google/protobuf/compiler/plugin.pb.go ./types/plugin/plugin.pb.go

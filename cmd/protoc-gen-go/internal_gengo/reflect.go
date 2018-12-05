@@ -7,6 +7,7 @@ package internal_gengo
 import (
 	"fmt"
 	"math"
+	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -16,7 +17,17 @@ import (
 )
 
 // TODO: Remove this flag.
-const enableReflect = true
+// Remember to remove the copy in internal/protogen/goldentest.
+var enableReflectFlag = os.Getenv("PROTOC_GEN_GO_ENABLE_REFLECT") != ""
+
+func enableReflection(f *protogen.File) bool {
+	return enableReflectFlag || isDescriptor(f)
+}
+
+// TODO: Remove special-casing for descriptor proto.
+func isDescriptor(f *protogen.File) bool {
+	return f.Desc.Path() == "google/protobuf/descriptor.proto" && f.Desc.Package() == "google.protobuf"
+}
 
 // minimumVersion is minimum version of the v2 proto package that is required.
 // This is incremented every time the generated code relies on some property
@@ -68,7 +79,7 @@ func (r *fileReflect) init(f *fileInfo) {
 }
 
 func genReflectInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
-	if !enableReflect {
+	if !enableReflection(f.File) {
 		return
 	}
 
@@ -160,7 +171,7 @@ func genReflectInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *
 }
 
 func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
-	if !enableReflect {
+	if !enableReflection(f.File) {
 		return
 	}
 
@@ -318,7 +329,7 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 }
 
 func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum *protogen.Enum) {
-	if !enableReflect {
+	if !enableReflection(f.File) {
 		return
 	}
 
@@ -340,7 +351,7 @@ func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo
 }
 
 func genReflectMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message) {
-	if !enableReflect {
+	if !enableReflection(f.File) {
 		return
 	}
 

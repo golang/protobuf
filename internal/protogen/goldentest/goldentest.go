@@ -119,6 +119,8 @@ func Protoc(t *testing.T, args []string) {
 	// We set the RUN_AS_PROTOC_PLUGIN environment variable to indicate that
 	// the subprocess should act as a proto compiler rather than a test.
 	cmd.Env = append(os.Environ(), "RUN_AS_PROTOC_PLUGIN=1")
+	// TODO: Remove this when protoc-gen-go always generates reflection.
+	cmd.Env = append(cmd.Env, "PROTOC_GEN_GO_ENABLE_REFLECT=1")
 	out, err := cmd.CombinedOutput()
 	if len(out) > 0 || err != nil {
 		t.Log("RUNNING: ", strings.Join(cmd.Args, " "))

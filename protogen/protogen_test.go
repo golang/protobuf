@@ -383,16 +383,6 @@ func makeRequest(t *testing.T, args ...string) *pluginpb.CodeGeneratorRequest {
 		t.Fatal(err)
 	}
 	req := &pluginpb.CodeGeneratorRequest{}
-
-	// TODO: This is a hack, but the proto v1 UnmarshalText relies on global
-	// enum registration to work. The v2 textpb will not have this issue.
-	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Type", descriptorpb.FieldDescriptorProto_Type_name, descriptorpb.FieldDescriptorProto_Type_value)
-	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Label", descriptorpb.FieldDescriptorProto_Label_name, descriptorpb.FieldDescriptorProto_Label_value)
-	proto.RegisterEnum("google.protobuf.FileOptions_OptimizeMode", descriptorpb.FileOptions_OptimizeMode_name, descriptorpb.FileOptions_OptimizeMode_value)
-	proto.RegisterEnum("google.protobuf.FieldOptions_CType", descriptorpb.FieldOptions_CType_name, descriptorpb.FieldOptions_CType_value)
-	proto.RegisterEnum("google.protobuf.FieldOptions_JSType", descriptorpb.FieldOptions_JSType_name, descriptorpb.FieldOptions_JSType_value)
-	proto.RegisterEnum("google.protobuf.MethodOptions_IdempotencyLevel", descriptorpb.MethodOptions_IdempotencyLevel_name, descriptorpb.MethodOptions_IdempotencyLevel_value)
-
 	if err := proto.UnmarshalText(string(b), req); err != nil {
 		t.Fatal(err)
 	}
