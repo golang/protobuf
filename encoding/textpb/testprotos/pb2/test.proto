@@ -111,6 +111,12 @@ message Requireds {
   required Nested req_nested = 11;
 }
 
+// Message contains both required and optional fields.
+message PartialRequired {
+  required string req_string = 1;
+  optional string opt_string = 2;
+}
+
 // Message contains oneof field.
 message Oneofs {
   oneof union {
@@ -127,6 +133,17 @@ message Maps {
   map<uint64, Enum> uint64_to_enum = 4;
   map<string, Nested> str_to_nested = 5;
   map<string, Oneofs> str_to_oneofs = 6;
+}
+
+// Following messages are for testing required field nested in optional, repeated and map fields.
+message NestedWithRequired {
+  required string req_string = 1;
+}
+
+message IndirectRequired {
+  optional NestedWithRequired opt_nested = 1;
+  repeated NestedWithRequired rpt_nested = 2;
+  map<string, NestedWithRequired> str_to_nested = 3;
 }
 
 // Message contains well-known type fields.

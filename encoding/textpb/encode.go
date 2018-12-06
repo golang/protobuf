@@ -14,7 +14,7 @@ import (
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
-// Marshal marshals a proto.Message in text format using default options.
+// Marshal writes the given proto.Message in textproto format using default options.
 // TODO: may want to describe when Marshal returns error.
 func Marshal(m proto.Message) ([]byte, error) {
 	return MarshalOptions{}.Marshal(m)
@@ -28,20 +28,15 @@ type MarshalOptions struct {
 	Compact bool
 }
 
-// Marshal returns the given proto.Message in text format using options in MarshalOptions object.
+// Marshal writes the given proto.Message in textproto format using options in MarshalOptions object.
 func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
 	var nerr errors.NonFatal
 	var v text.Value
 
-	if m == nil {
-		// TODO: Make sure this is consistent with jsonpb and binary serialization.
-		v = text.ValueOf([][2]text.Value{})
-	} else {
-		var err error
-		v, err = o.marshalMessage(m.ProtoReflect())
-		if !nerr.Merge(err) {
-			return nil, err
-		}
+	var err error
+	v, err = o.marshalMessage(m.ProtoReflect())
+	if !nerr.Merge(err) {
+		return nil, err
 	}
 
 	indent := "  "
@@ -69,31 +64,31 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 	knownFields := m.KnownFields()
 	size := fieldDescs.Len()
 	for i := 0; i < size; i++ {
-		fieldDesc := fieldDescs.Get(i)
-		fieldNum := fieldDesc.Number()
+		fd := fieldDescs.Get(i)
+		num := fd.Number()
 
-		if !knownFields.Has(fieldNum) {
-			if fieldDesc.Cardinality() == pref.Required {
+		if !knownFields.Has(num) {
+			if fd.Cardinality() == pref.Required {
 				// Treat unset required fields as a non-fatal error.
-				nerr.AppendRequiredNotSet(string(fieldDesc.FullName()))
+				nerr.AppendRequiredNotSet(string(fd.FullName()))
 			}
 			continue
 		}
 
-		txtName := text.ValueOf(fieldDesc.Name())
-		value := knownFields.Get(fieldNum)
+		tname := text.ValueOf(fd.Name())
+		pval := knownFields.Get(num)
 
-		if fieldDesc.Cardinality() == pref.Repeated {
+		if fd.Cardinality() == pref.Repeated {
 			// Map or repeated fields.
 			var items []text.Value
 			var err error
-			if fieldDesc.IsMap() {
-				items, err = o.marshalMap(value.Map(), fieldDesc)
+			if fd.IsMap() {
+				items, err = o.marshalMap(pval.Map(), fd)
 				if !nerr.Merge(err) {
 					return text.Value{}, err
 				}
 			} else {
-				items, err = o.marshalList(value.List(), fieldDesc)
+				items, err = o.marshalList(pval.List(), fd)
 				if !nerr.Merge(err) {
 					return text.Value{}, err
 				}
@@ -101,15 +96,15 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 
 			// Add each item as key: value field.
 			for _, item := range items {
-				msgFields = append(msgFields, [2]text.Value{txtName, item})
+				msgFields = append(msgFields, [2]text.Value{tname, item})
 			}
 		} else {
 			// Required or optional fields.
-			txtValue, err := o.marshalSingular(value, fieldDesc)
+			tval, err := o.marshalSingular(pval, fd)
 			if !nerr.Merge(err) {
 				return text.Value{}, err
 			}
-			msgFields = append(msgFields, [2]text.Value{txtName, txtValue})
+			msgFields = append(msgFields, [2]text.Value{tname, tval})
 		}
 
 	}

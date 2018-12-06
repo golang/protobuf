@@ -23,6 +23,10 @@ message Scalars {
   sfixed32 s_sfixed32 = 10;
   sfixed64 s_sfixed64 = 11;
 
+  // Textproto marshal outputs fields in the same order as this proto
+  // definition regardless of field number. Following fields are intended to
+  // test that assumption.
+
   float s_float = 20;
   double s_double = 21;
 
@@ -40,7 +44,6 @@ enum Enum {
 // Message contains enum fields.
 message Enums {
   Enum s_enum = 1;
-  repeated Enum rpt_enum = 2;
 
   enum NestedEnum {
   	CERO = 0;
@@ -49,13 +52,11 @@ message Enums {
 	DIEZ = 10;
   }
   NestedEnum s_nested_enum = 3;
-  repeated NestedEnum rpt_nested_enum = 4;
 }
 
-// Message contains message and group fields.
+// Message contains nested message field.
 message Nests {
   Nested s_nested = 1;
-  repeated Nested rpt_nested = 2;
 }
 
 // Message type used as submessage.

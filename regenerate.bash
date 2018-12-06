@@ -46,3 +46,8 @@ PROTOC_GEN_GO_ENABLE_REFLECT=1 protoc -I$tmpdir/src \
   --go_out=paths=source_relative:$tmpdir/src \
   $tmpdir/src/google/protobuf/compiler/plugin.proto
 cp $tmpdir/src/google/protobuf/compiler/plugin.pb.go ./types/plugin/plugin.pb.go
+
+# TODO: Uncomment when test protos are ready.
+# echo "# encoding/textpb/testprotos/pb?/test.proto"
+# PROTOC_GEN_GO_ENABLE_REFLECT=1 protoc --go_out=paths=source_relative:. \
+#  encoding/textpb/testprotos/pb?/test.proto
