@@ -47,6 +47,14 @@ type fileMeta struct {
 }
 type fileDesc struct{ f *File }
 
+// altOptions returns m as is if it is non-nil. Otherwise, it returns alt.
+func altOptions(m, alt pref.ProtoMessage) pref.ProtoMessage {
+	if m != nil {
+		return m
+	}
+	return alt
+}
+
 func newFile(f *File) fileDesc {
 	if f.fileMeta != nil {
 		panic("already initialized")
@@ -61,7 +69,7 @@ func (t fileDesc) Name() pref.Name                                  { return t.f
 func (t fileDesc) FullName() pref.FullName                          { return t.f.Package }
 func (t fileDesc) IsPlaceholder() bool                              { return false }
 func (t fileDesc) DescriptorProto() (pref.Message, bool)            { return nil, false }
-func (t fileDesc) Options() pref.ProtoMessage                       { return t.f.Options }
+func (t fileDesc) Options() pref.ProtoMessage                       { return altOptions(t.f.Options, optionTypes.File) }
 func (t fileDesc) Path() string                                     { return t.f.Path }
 func (t fileDesc) Package() pref.FullName                           { return t.f.Package }
 func (t fileDesc) Imports() pref.FileImports                        { return (*fileImports)(&t.f.Imports) }
@@ -169,7 +177,7 @@ func (t messageDesc) Name() pref.Name                       { return t.m.Name }
 func (t messageDesc) FullName() pref.FullName               { return t.m.fullName }
 func (t messageDesc) IsPlaceholder() bool                   { return false }
 func (t messageDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t messageDesc) Options() pref.ProtoMessage            { return t.m.Options }
+func (t messageDesc) Options() pref.ProtoMessage            { return altOptions(t.m.Options, optionTypes.Message) }
 func (t messageDesc) IsMapEntry() bool                      { return t.m.mo.lazyInit(t).isMapEntry }
 func (t messageDesc) Fields() pref.FieldDescriptors         { return t.m.fs.lazyInit(t, t.m.Fields) }
 func (t messageDesc) Oneofs() pref.OneofDescriptors         { return t.m.os.lazyInit(t, t.m.Oneofs) }
@@ -189,7 +197,7 @@ type messageOptions struct {
 
 func (p *messageOptions) lazyInit(m pref.MessageDescriptor) *messageOptions {
 	p.once.Do(func() {
-		if m.Options() != nil {
+		if m.Options() != optionTypes.Message {
 			const mapEntryFieldNumber = 7 // google.protobuf.MessageOptions.map_entry
 			fs := m.Options().ProtoReflect().KnownFields()
 			p.isMapEntry = fs.Get(mapEntryFieldNumber).Bool()
@@ -217,7 +225,7 @@ func (t fieldDesc) Name() pref.Name                            { return t.f.Name
 func (t fieldDesc) FullName() pref.FullName                    { return t.f.fullName }
 func (t fieldDesc) IsPlaceholder() bool                        { return false }
 func (t fieldDesc) DescriptorProto() (pref.Message, bool)      { return nil, false }
-func (t fieldDesc) Options() pref.ProtoMessage                 { return t.f.Options }
+func (t fieldDesc) Options() pref.ProtoMessage                 { return altOptions(t.f.Options, optionTypes.Field) }
 func (t fieldDesc) Number() pref.FieldNumber                   { return t.f.Number }
 func (t fieldDesc) Cardinality() pref.Cardinality              { return t.f.Cardinality }
 func (t fieldDesc) Kind() pref.Kind                            { return t.f.Kind }
@@ -302,7 +310,7 @@ func (p *fieldOptions) lazyInit(f pref.FieldDescriptor) *fieldOptions {
 			}
 		}
 
-		if f.Options() != nil {
+		if f.Options() != optionTypes.Field {
 			const packedFieldNumber = 2 // google.protobuf.FieldOptions.packed
 			const weakFieldNumber = 10  // google.protobuf.FieldOptions.weak
 			fs := f.Options().ProtoReflect().KnownFields()
@@ -317,7 +325,7 @@ func (p *fieldOptions) lazyInit(f pref.FieldDescriptor) *fieldOptions {
 
 // isPacked reports whether the packed options is set.
 func isPacked(m pref.ProtoMessage) (isPacked bool) {
-	if m != nil {
+	if m != optionTypes.Field {
 		const packedFieldNumber = 2 // google.protobuf.FieldOptions.packed
 		fs := m.ProtoReflect().KnownFields()
 		isPacked = fs.Get(packedFieldNumber).Bool()
@@ -327,7 +335,7 @@ func isPacked(m pref.ProtoMessage) (isPacked bool) {
 
 // isWeak reports whether the weak options is set.
 func isWeak(m pref.ProtoMessage) (isWeak bool) {
-	if m != nil {
+	if m != optionTypes.Field {
 		const weakFieldNumber = 10 // google.protobuf.FieldOptions.weak
 		fs := m.ProtoReflect().KnownFields()
 		isWeak = fs.Get(weakFieldNumber).Bool()
@@ -366,7 +374,7 @@ func (t oneofDesc) Name() pref.Name                       { return t.o.Name }
 func (t oneofDesc) FullName() pref.FullName               { return t.o.fullName }
 func (t oneofDesc) IsPlaceholder() bool                   { return false }
 func (t oneofDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t oneofDesc) Options() pref.ProtoMessage            { return t.o.Options }
+func (t oneofDesc) Options() pref.ProtoMessage            { return altOptions(t.o.Options, optionTypes.Oneof) }
 func (t oneofDesc) Fields() pref.FieldDescriptors         { return t.o.fs.lazyInit(t) }
 func (t oneofDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
 func (t oneofDesc) ProtoType(pref.OneofDescriptor)        {}
@@ -389,7 +397,7 @@ func (t extensionDesc) Name() pref.Name                            { return t.x.
 func (t extensionDesc) FullName() pref.FullName                    { return t.x.fullName }
 func (t extensionDesc) IsPlaceholder() bool                        { return false }
 func (t extensionDesc) DescriptorProto() (pref.Message, bool)      { return nil, false }
-func (t extensionDesc) Options() pref.ProtoMessage                 { return t.x.Options }
+func (t extensionDesc) Options() pref.ProtoMessage                 { return altOptions(t.x.Options, optionTypes.Field) }
 func (t extensionDesc) Number() pref.FieldNumber                   { return t.x.Number }
 func (t extensionDesc) Cardinality() pref.Cardinality              { return t.x.Cardinality }
 func (t extensionDesc) Kind() pref.Kind                            { return t.x.Kind }
@@ -426,7 +434,7 @@ func (t enumDesc) Name() pref.Name                       { return t.e.Name }
 func (t enumDesc) FullName() pref.FullName               { return t.e.fullName }
 func (t enumDesc) IsPlaceholder() bool                   { return false }
 func (t enumDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t enumDesc) Options() pref.ProtoMessage            { return t.e.Options }
+func (t enumDesc) Options() pref.ProtoMessage            { return altOptions(t.e.Options, optionTypes.Enum) }
 func (t enumDesc) Values() pref.EnumValueDescriptors     { return t.e.vs.lazyInit(t, t.e.Values) }
 func (t enumDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
 func (t enumDesc) ProtoType(pref.EnumDescriptor)         {}
@@ -444,11 +452,13 @@ func (t enumValueDesc) Name() pref.Name                       { return t.v.Name 
 func (t enumValueDesc) FullName() pref.FullName               { return t.v.fullName }
 func (t enumValueDesc) IsPlaceholder() bool                   { return false }
 func (t enumValueDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t enumValueDesc) Options() pref.ProtoMessage            { return t.v.Options }
-func (t enumValueDesc) Number() pref.EnumNumber               { return t.v.Number }
-func (t enumValueDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
-func (t enumValueDesc) ProtoType(pref.EnumValueDescriptor)    {}
-func (t enumValueDesc) ProtoInternal(pragma.DoNotImplement)   {}
+func (t enumValueDesc) Options() pref.ProtoMessage {
+	return altOptions(t.v.Options, optionTypes.EnumValue)
+}
+func (t enumValueDesc) Number() pref.EnumNumber             { return t.v.Number }
+func (t enumValueDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t enumValueDesc) ProtoType(pref.EnumValueDescriptor)  {}
+func (t enumValueDesc) ProtoInternal(pragma.DoNotImplement) {}
 
 type serviceMeta struct {
 	inheritedMeta
@@ -464,7 +474,7 @@ func (t serviceDesc) Name() pref.Name                       { return t.s.Name }
 func (t serviceDesc) FullName() pref.FullName               { return t.s.fullName }
 func (t serviceDesc) IsPlaceholder() bool                   { return false }
 func (t serviceDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t serviceDesc) Options() pref.ProtoMessage            { return t.s.Options }
+func (t serviceDesc) Options() pref.ProtoMessage            { return altOptions(t.s.Options, optionTypes.Service) }
 func (t serviceDesc) Methods() pref.MethodDescriptors       { return t.s.ms.lazyInit(t, t.s.Methods) }
 func (t serviceDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
 func (t serviceDesc) ProtoType(pref.ServiceDescriptor)      {}
@@ -485,7 +495,7 @@ func (t methodDesc) Name() pref.Name                       { return t.m.Name }
 func (t methodDesc) FullName() pref.FullName               { return t.m.fullName }
 func (t methodDesc) IsPlaceholder() bool                   { return false }
 func (t methodDesc) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t methodDesc) Options() pref.ProtoMessage            { return t.m.Options }
+func (t methodDesc) Options() pref.ProtoMessage            { return altOptions(t.m.Options, optionTypes.Method) }
 func (t methodDesc) InputType() pref.MessageDescriptor     { return t.m.mit.lazyInit(t, &t.m.InputType) }
 func (t methodDesc) OutputType() pref.MessageDescriptor    { return t.m.mot.lazyInit(t, &t.m.OutputType) }
 func (t methodDesc) IsStreamingClient() bool               { return t.m.IsStreamingClient }

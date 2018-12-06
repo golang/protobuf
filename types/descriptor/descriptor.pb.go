@@ -3039,6 +3039,15 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	prototype.X.RegisterExtensionRangeOptions((*ExtensionRangeOptions)(nil))
+	prototype.X.RegisterFileOptions((*FileOptions)(nil))
+	prototype.X.RegisterMessageOptions((*MessageOptions)(nil))
+	prototype.X.RegisterFieldOptions((*FieldOptions)(nil))
+	prototype.X.RegisterOneofOptions((*OneofOptions)(nil))
+	prototype.X.RegisterEnumOptions((*EnumOptions)(nil))
+	prototype.X.RegisterEnumValueOptions((*EnumValueOptions)(nil))
+	prototype.X.RegisterServiceOptions((*ServiceOptions)(nil))
+	prototype.X.RegisterMethodOptions((*MethodOptions)(nil))
 }
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)

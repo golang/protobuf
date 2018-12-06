@@ -131,6 +131,17 @@ func genReflectInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *
 
 	// TODO: Add v2 registration and stop v1 registration in genInitFunction.
 
+	// The descriptor proto needs to register the option types with the
+	// prototype so that the package can properly handle those option types.
+	if isDescriptor(f.File) {
+		for _, m := range f.allMessages {
+			name := m.GoIdent.GoName
+			if strings.HasSuffix(name, "Options") {
+				g.P(prototypePackage.Ident("X"), ".Register", name, "((*", name, ")(nil))")
+			}
+		}
+	}
+
 	g.P("}")
 }
 
