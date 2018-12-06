@@ -110,6 +110,10 @@ func TestFile(t *testing.T) {
 				{Name: "O2"}, // "test.B.O2"
 			},
 			ExtensionRanges: [][2]pref.FieldNumber{{1000, 2000}, {3000, 3001}},
+			ExtensionRangeOptions: []pref.ProtoMessage{
+				0: (*descriptorpb.ExtensionRangeOptions)(nil),
+				1: new(descriptorpb.ExtensionRangeOptions),
+			},
 		}, {
 			Name: "C", // "test.C"
 			Messages: []ptype.Message{{
@@ -250,7 +254,7 @@ func TestFile(t *testing.T) {
 			},
 			ExtensionRange: []*descriptorpb.DescriptorProto_ExtensionRange{
 				{Start: scalar.Int32(1000), End: scalar.Int32(2000)},
-				{Start: scalar.Int32(3000), End: scalar.Int32(3001)},
+				{Start: scalar.Int32(3000), End: scalar.Int32(3001), Options: new(descriptorpb.ExtensionRangeOptions)},
 			},
 		}, {
 			Name: scalar.String("C"),
@@ -502,6 +506,8 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					"Has:2000": false,
 					"Has:3000": true,
 				},
+				"ExtensionRangeOptions:0": (*descriptorpb.ExtensionRangeOptions)(nil),
+				"ExtensionRangeOptions:1": new(descriptorpb.ExtensionRangeOptions),
 			},
 			"Get:2": M{
 				"Name":  pref.Name("C"),
@@ -669,7 +675,7 @@ func checkAccessors(t *testing.T, p string, rv reflect.Value, want map[string]in
 		}
 
 		if want := v; !reflect.DeepEqual(got, want) {
-			t.Errorf("%v = %v, want %v", p, got, want)
+			t.Errorf("%v = %T(%v), want %T(%v)", p, got, got, want, want)
 		}
 	}
 }

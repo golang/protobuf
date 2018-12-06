@@ -173,11 +173,11 @@ func messagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, syntax pro
 			})
 		}
 		for _, xr := range md.GetExtensionRange() {
-			// TODO: Extension range options.
 			m.ExtensionRanges = append(m.ExtensionRanges, [2]protoreflect.FieldNumber{
 				protoreflect.FieldNumber(xr.GetStart()),
 				protoreflect.FieldNumber(xr.GetEnd()),
 			})
+			m.ExtensionRangeOptions = append(m.ExtensionRangeOptions, xr.GetOptions())
 		}
 
 		m.Messages, err = messagesFromDescriptorProto(md.GetNestedType(), syntax, r)

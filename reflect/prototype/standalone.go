@@ -15,12 +15,13 @@ import (
 // StandaloneMessage is a constructor for a protoreflect.MessageDescriptor
 // that does not have a parent and has no child declarations.
 type StandaloneMessage struct {
-	Syntax          protoreflect.Syntax
-	FullName        protoreflect.FullName
-	Fields          []Field
-	Oneofs          []Oneof
-	ExtensionRanges [][2]protoreflect.FieldNumber
-	Options         protoreflect.ProtoMessage
+	Syntax                protoreflect.Syntax
+	FullName              protoreflect.FullName
+	Fields                []Field
+	Oneofs                []Oneof
+	ExtensionRanges       [][2]protoreflect.FieldNumber
+	ExtensionRangeOptions []protoreflect.ProtoMessage
+	Options               protoreflect.ProtoMessage
 
 	fields  fieldsMeta
 	oneofs  oneofsMeta

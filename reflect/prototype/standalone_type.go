@@ -24,13 +24,16 @@ func (t standaloneMessage) DescriptorProto() (pref.Message, bool) { return nil, 
 func (t standaloneMessage) Options() pref.ProtoMessage {
 	return altOptions(t.m.Options, optionTypes.Message)
 }
-func (t standaloneMessage) IsMapEntry() bool                      { return t.m.options.lazyInit(t).isMapEntry }
-func (t standaloneMessage) Fields() pref.FieldDescriptors         { return t.m.fields.lazyInit(t, t.m.Fields) }
-func (t standaloneMessage) Oneofs() pref.OneofDescriptors         { return t.m.oneofs.lazyInit(t, t.m.Oneofs) }
-func (t standaloneMessage) RequiredNumbers() pref.FieldNumbers    { return t.m.nums.lazyInit(t.m.Fields) }
-func (t standaloneMessage) ExtensionRanges() pref.FieldRanges     { return (*ranges)(&t.m.ExtensionRanges) }
-func (t standaloneMessage) Messages() pref.MessageDescriptors     { return &emptyMessages }
+func (t standaloneMessage) IsMapEntry() bool                   { return t.m.options.lazyInit(t).isMapEntry }
+func (t standaloneMessage) Fields() pref.FieldDescriptors      { return t.m.fields.lazyInit(t, t.m.Fields) }
+func (t standaloneMessage) Oneofs() pref.OneofDescriptors      { return t.m.oneofs.lazyInit(t, t.m.Oneofs) }
+func (t standaloneMessage) RequiredNumbers() pref.FieldNumbers { return t.m.nums.lazyInit(t.m.Fields) }
+func (t standaloneMessage) ExtensionRanges() pref.FieldRanges  { return (*ranges)(&t.m.ExtensionRanges) }
+func (t standaloneMessage) ExtensionRangeOptions(i int) pref.ProtoMessage {
+	return extensionRangeOptions(i, len(t.m.ExtensionRanges), t.m.ExtensionRangeOptions)
+}
 func (t standaloneMessage) Enums() pref.EnumDescriptors           { return &emptyEnums }
+func (t standaloneMessage) Messages() pref.MessageDescriptors     { return &emptyMessages }
 func (t standaloneMessage) Extensions() pref.ExtensionDescriptors { return &emptyExtensions }
 func (t standaloneMessage) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
 func (t standaloneMessage) ProtoType(pref.MessageDescriptor)      {}

@@ -33,15 +33,16 @@ import "github.com/golang/protobuf/v2/reflect/protoreflect"
 
 // File is a constructor for protoreflect.FileDescriptor.
 type File struct {
-	Syntax     protoreflect.Syntax
-	Path       string
-	Package    protoreflect.FullName
-	Imports    []protoreflect.FileImport
-	Messages   []Message
+	Syntax  protoreflect.Syntax
+	Path    string
+	Package protoreflect.FullName
+	Imports []protoreflect.FileImport
+	Options protoreflect.ProtoMessage
+
 	Enums      []Enum
+	Messages   []Message
 	Extensions []Extension
 	Services   []Service
-	Options    protoreflect.ProtoMessage
 
 	*fileMeta
 }
@@ -94,14 +95,16 @@ func visitMessages(d interface {
 
 // Message is a constructor for protoreflect.MessageDescriptor.
 type Message struct {
-	Name            protoreflect.Name
-	Fields          []Field
-	Oneofs          []Oneof
-	ExtensionRanges [][2]protoreflect.FieldNumber
-	Messages        []Message
-	Enums           []Enum
-	Extensions      []Extension
-	Options         protoreflect.ProtoMessage
+	Name                  protoreflect.Name
+	Fields                []Field
+	Oneofs                []Oneof
+	ExtensionRanges       [][2]protoreflect.FieldNumber
+	ExtensionRangeOptions []protoreflect.ProtoMessage
+	Options               protoreflect.ProtoMessage
+
+	Enums      []Enum
+	Messages   []Message
+	Extensions []Extension
 
 	*messageMeta
 }

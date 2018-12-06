@@ -27,6 +27,7 @@ import (
 //	* Placeholder full names must be valid.
 //	* The name of each descriptor must be valid.
 //	* Options are of the correct Go type (e.g. *descriptorpb.MessageOptions).
+// 	* len(ExtensionRangeOptions) <= len(ExtensionRanges)
 
 func validateFile(t pref.FileDescriptor) error {
 	return nil

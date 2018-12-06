@@ -235,6 +235,12 @@ type MessageDescriptor interface {
 	// ExtensionRanges is the field ranges used for extension fields.
 	// In Proto3, it is always an empty ranges.
 	ExtensionRanges() FieldRanges
+	// ExtensionRangeOptions returns the ith extension range options,
+	// which is a google.protobuf.ExtensionRangeOptions protobuf message.
+	// The caller must not modify the returned message.
+	//
+	// This method may return a nil interface value if no options are present.
+	ExtensionRangeOptions(i int) ProtoMessage
 
 	// Messages is a list of nested message declarations.
 	Messages() MessageDescriptors

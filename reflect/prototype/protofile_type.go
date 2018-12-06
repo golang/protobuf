@@ -73,8 +73,8 @@ func (t fileDesc) Options() pref.ProtoMessage                       { return alt
 func (t fileDesc) Path() string                                     { return t.f.Path }
 func (t fileDesc) Package() pref.FullName                           { return t.f.Package }
 func (t fileDesc) Imports() pref.FileImports                        { return (*fileImports)(&t.f.Imports) }
-func (t fileDesc) Messages() pref.MessageDescriptors                { return t.f.ms.lazyInit(t, t.f.Messages) }
 func (t fileDesc) Enums() pref.EnumDescriptors                      { return t.f.es.lazyInit(t, t.f.Enums) }
+func (t fileDesc) Messages() pref.MessageDescriptors                { return t.f.ms.lazyInit(t, t.f.Messages) }
 func (t fileDesc) Extensions() pref.ExtensionDescriptors            { return t.f.xs.lazyInit(t, t.f.Extensions) }
 func (t fileDesc) Services() pref.ServiceDescriptors                { return t.f.ss.lazyInit(t, t.f.Services) }
 func (t fileDesc) DescriptorByName(s pref.FullName) pref.Descriptor { return t.f.ds.lookup(t, s) }
@@ -183,12 +183,29 @@ func (t messageDesc) Fields() pref.FieldDescriptors         { return t.m.fs.lazy
 func (t messageDesc) Oneofs() pref.OneofDescriptors         { return t.m.os.lazyInit(t, t.m.Oneofs) }
 func (t messageDesc) RequiredNumbers() pref.FieldNumbers    { return t.m.ns.lazyInit(t.m.Fields) }
 func (t messageDesc) ExtensionRanges() pref.FieldRanges     { return (*ranges)(&t.m.ExtensionRanges) }
-func (t messageDesc) Messages() pref.MessageDescriptors     { return t.m.ms.lazyInit(t, t.m.Messages) }
+func (t messageDesc) ExtensionRangeOptions(i int) pref.ProtoMessage {
+	return extensionRangeOptions(i, len(t.m.ExtensionRanges), t.m.ExtensionRangeOptions)
+}
 func (t messageDesc) Enums() pref.EnumDescriptors           { return t.m.es.lazyInit(t, t.m.Enums) }
+func (t messageDesc) Messages() pref.MessageDescriptors     { return t.m.ms.lazyInit(t, t.m.Messages) }
 func (t messageDesc) Extensions() pref.ExtensionDescriptors { return t.m.xs.lazyInit(t, t.m.Extensions) }
 func (t messageDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
 func (t messageDesc) ProtoType(pref.MessageDescriptor)      {}
 func (t messageDesc) ProtoInternal(pragma.DoNotImplement)   {}
+
+func extensionRangeOptions(i, n int, ms []pref.ProtoMessage) pref.ProtoMessage {
+	if i < 0 || i >= n {
+		panic("out of bounds")
+	}
+	var m pref.ProtoMessage
+	if i < len(ms) {
+		m = ms[i]
+	}
+	if m == nil {
+		m = optionTypes.ExtensionRange
+	}
+	return m
+}
 
 type messageOptions struct {
 	once       sync.Once

@@ -5,22 +5,28 @@
 package typefmt
 
 import (
-	"reflect"
 	"testing"
-
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
 // TestDescriptorAccessors tests that descriptorAccessors is up-to-date.
 func TestDescriptorAccessors(t *testing.T) {
 	ignore := map[string]bool{
-		"DefaultEnumValue": true,
-		"DescriptorByName": true,
-		"ProtoType":        true,
-	}
-	rt := reflect.TypeOf((*pref.Descriptor)(nil)).Elem()
-	for i := 0; i < rt.NumMethod(); i++ {
-		ignore[rt.Method(i).Name] = true
+		"Parent":        true,
+		"Index":         true,
+		"Syntax":        true,
+		"Name":          true,
+		"FullName":      true,
+		"IsPlaceholder": true,
+		"ProtoInternal": true,
+		"ProtoType":     true,
+
+		"DescriptorByName": true, // specific to FileDescriptor
+		"DefaultEnumValue": true, // specific to FieldDescriptor
+
+		// TODO: These should be removed or handled.
+		"DescriptorProto":       true,
+		"ExtensionRangeOptions": true,
+		"Options":               true,
 	}
 
 	for rt, m := range descriptorAccessors {
