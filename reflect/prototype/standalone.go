@@ -19,6 +19,8 @@ type StandaloneMessage struct {
 	FullName              protoreflect.FullName
 	Fields                []Field
 	Oneofs                []Oneof
+	ReservedNames         []protoreflect.Name
+	ReservedRanges        [][2]protoreflect.FieldNumber
 	ExtensionRanges       [][2]protoreflect.FieldNumber
 	ExtensionRangeOptions []protoreflect.ProtoMessage
 	Options               protoreflect.ProtoMessage
@@ -83,10 +85,12 @@ func NewMessages(ts []*StandaloneMessage) ([]protoreflect.MessageDescriptor, err
 // StandaloneEnum is a constructor for a protoreflect.EnumDescriptor
 // that does not have a parent.
 type StandaloneEnum struct {
-	Syntax   protoreflect.Syntax
-	FullName protoreflect.FullName
-	Values   []EnumValue
-	Options  protoreflect.ProtoMessage
+	Syntax         protoreflect.Syntax
+	FullName       protoreflect.FullName
+	Values         []EnumValue
+	ReservedNames  []protoreflect.Name
+	ReservedRanges [][2]protoreflect.EnumNumber
+	Options        protoreflect.ProtoMessage
 
 	vals enumValuesMeta
 }

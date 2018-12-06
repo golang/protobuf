@@ -14,6 +14,21 @@ import (
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
+type names []pref.Name
+
+func (p *names) Len() int            { return len(*p) }
+func (p *names) Get(i int) pref.Name { return (*p)[i] }
+func (p *names) Has(s pref.Name) bool {
+	for _, n := range *p {
+		if s == n {
+			return true
+		}
+	}
+	return false
+}
+func (p *names) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
+func (p *names) ProtoInternal(pragma.DoNotImplement) {}
+
 type numbersMeta struct {
 	once sync.Once
 	ns   []pref.FieldNumber
@@ -38,11 +53,11 @@ func (p *numbers) Has(n pref.FieldNumber) bool         { return p.nss.Has(uint64
 func (p *numbers) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
 func (p *numbers) ProtoInternal(pragma.DoNotImplement) {}
 
-type ranges [][2]pref.FieldNumber
+type fieldRanges [][2]pref.FieldNumber
 
-func (p *ranges) Len() int                      { return len(*p) }
-func (p *ranges) Get(i int) [2]pref.FieldNumber { return (*p)[i] }
-func (p *ranges) Has(n pref.FieldNumber) bool {
+func (p *fieldRanges) Len() int                      { return len(*p) }
+func (p *fieldRanges) Get(i int) [2]pref.FieldNumber { return (*p)[i] }
+func (p *fieldRanges) Has(n pref.FieldNumber) bool {
 	for _, r := range *p {
 		if r[0] <= n && n < r[1] {
 			return true
@@ -50,8 +65,23 @@ func (p *ranges) Has(n pref.FieldNumber) bool {
 	}
 	return false
 }
-func (p *ranges) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
-func (p *ranges) ProtoInternal(pragma.DoNotImplement) {}
+func (p *fieldRanges) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
+func (p *fieldRanges) ProtoInternal(pragma.DoNotImplement) {}
+
+type enumRanges [][2]pref.EnumNumber
+
+func (p *enumRanges) Len() int                     { return len(*p) }
+func (p *enumRanges) Get(i int) [2]pref.EnumNumber { return (*p)[i] }
+func (p *enumRanges) Has(n pref.EnumNumber) bool {
+	for _, r := range *p {
+		if r[0] <= n && n <= r[1] {
+			return true
+		}
+	}
+	return false
+}
+func (p *enumRanges) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
+func (p *enumRanges) ProtoInternal(pragma.DoNotImplement) {}
 
 type fileImports []pref.FileImport
 

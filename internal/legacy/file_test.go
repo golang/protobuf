@@ -409,6 +409,9 @@ func TestDescriptor(t *testing.T) {
 					case "Enums", "Messages", "Extensions":
 						// Ignore nested message and enum declarations since
 						// legacy descriptors are all created standalone.
+					case "HasJSONName":
+						// Ignore this since the semantics of the field has
+						// changed across protoc and protoc-gen-go releases.
 					case "OneofType", "ExtendedType", "EnumType", "MessageType":
 						// Avoid descending into a dependency to avoid a cycle.
 						// Just record the full name if available.

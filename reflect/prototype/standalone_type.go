@@ -24,11 +24,17 @@ func (t standaloneMessage) DescriptorProto() (pref.Message, bool) { return nil, 
 func (t standaloneMessage) Options() pref.ProtoMessage {
 	return altOptions(t.m.Options, optionTypes.Message)
 }
-func (t standaloneMessage) IsMapEntry() bool                   { return t.m.options.lazyInit(t).isMapEntry }
-func (t standaloneMessage) Fields() pref.FieldDescriptors      { return t.m.fields.lazyInit(t, t.m.Fields) }
-func (t standaloneMessage) Oneofs() pref.OneofDescriptors      { return t.m.oneofs.lazyInit(t, t.m.Oneofs) }
+func (t standaloneMessage) IsMapEntry() bool              { return t.m.options.lazyInit(t).isMapEntry }
+func (t standaloneMessage) Fields() pref.FieldDescriptors { return t.m.fields.lazyInit(t, t.m.Fields) }
+func (t standaloneMessage) Oneofs() pref.OneofDescriptors { return t.m.oneofs.lazyInit(t, t.m.Oneofs) }
+func (t standaloneMessage) ReservedNames() pref.Names     { return (*names)(&t.m.ReservedNames) }
+func (t standaloneMessage) ReservedRanges() pref.FieldRanges {
+	return (*fieldRanges)(&t.m.ReservedRanges)
+}
 func (t standaloneMessage) RequiredNumbers() pref.FieldNumbers { return t.m.nums.lazyInit(t.m.Fields) }
-func (t standaloneMessage) ExtensionRanges() pref.FieldRanges  { return (*ranges)(&t.m.ExtensionRanges) }
+func (t standaloneMessage) ExtensionRanges() pref.FieldRanges {
+	return (*fieldRanges)(&t.m.ExtensionRanges)
+}
 func (t standaloneMessage) ExtensionRangeOptions(i int) pref.ProtoMessage {
 	return extensionRangeOptions(i, len(t.m.ExtensionRanges), t.m.ExtensionRangeOptions)
 }
@@ -50,6 +56,8 @@ func (t standaloneEnum) IsPlaceholder() bool                   { return false }
 func (t standaloneEnum) DescriptorProto() (pref.Message, bool) { return nil, false }
 func (t standaloneEnum) Options() pref.ProtoMessage            { return altOptions(t.e.Options, optionTypes.Enum) }
 func (t standaloneEnum) Values() pref.EnumValueDescriptors     { return t.e.vals.lazyInit(t, t.e.Values) }
+func (t standaloneEnum) ReservedNames() pref.Names             { return (*names)(&t.e.ReservedNames) }
+func (t standaloneEnum) ReservedRanges() pref.EnumRanges       { return (*enumRanges)(&t.e.ReservedRanges) }
 func (t standaloneEnum) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
 func (t standaloneEnum) ProtoType(pref.EnumDescriptor)         {}
 func (t standaloneEnum) ProtoInternal(pragma.DoNotImplement)   {}
@@ -69,15 +77,16 @@ func (t standaloneExtension) Options() pref.ProtoMessage {
 func (t standaloneExtension) Number() pref.FieldNumber      { return t.x.Number }
 func (t standaloneExtension) Cardinality() pref.Cardinality { return t.x.Cardinality }
 func (t standaloneExtension) Kind() pref.Kind               { return t.x.Kind }
+func (t standaloneExtension) HasJSONName() bool             { return false }
 func (t standaloneExtension) JSONName() string              { return "" }
 func (t standaloneExtension) IsPacked() bool                { return isPacked(t.Options()) }
 func (t standaloneExtension) IsWeak() bool                  { return false }
 func (t standaloneExtension) IsMap() bool                   { return false }
+func (t standaloneExtension) HasDefault() bool              { return t.x.Default.IsValid() }
 func (t standaloneExtension) Default() pref.Value           { return t.x.dv.value(t, t.x.Default) }
 func (t standaloneExtension) DefaultEnumValue() pref.EnumValueDescriptor {
 	return t.x.dv.enum(t, t.x.Default)
 }
-func (t standaloneExtension) HasDefault() bool                     { return t.x.Default.IsValid() }
 func (t standaloneExtension) OneofType() pref.OneofDescriptor      { return nil }
 func (t standaloneExtension) MessageType() pref.MessageDescriptor  { return t.x.MessageType }
 func (t standaloneExtension) EnumType() pref.EnumDescriptor        { return t.x.EnumType }

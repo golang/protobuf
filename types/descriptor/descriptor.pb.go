@@ -3911,6 +3911,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				JSONName:    "uninterpretedOption",
 			},
 		},
+		ReservedRanges:  [][2]protoreflect.FieldNumber{{38, 39}},
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{1000, 536870912}},
 	},
 	{
@@ -3955,6 +3956,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				JSONName:    "uninterpretedOption",
 			},
 		},
+		ReservedRanges:  [][2]protoreflect.FieldNumber{{8, 9}, {9, 10}},
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{1000, 536870912}},
 	},
 	{
@@ -4015,6 +4017,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				JSONName:    "uninterpretedOption",
 			},
 		},
+		ReservedRanges:  [][2]protoreflect.FieldNumber{{4, 5}},
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{1000, 536870912}},
 	},
 	{
@@ -4056,6 +4059,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				JSONName:    "uninterpretedOption",
 			},
 		},
+		ReservedRanges:  [][2]protoreflect.FieldNumber{{5, 6}},
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{1000, 536870912}},
 	},
 	{

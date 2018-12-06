@@ -98,6 +98,8 @@ type Message struct {
 	Name                  protoreflect.Name
 	Fields                []Field
 	Oneofs                []Oneof
+	ReservedNames         []protoreflect.Name
+	ReservedRanges        [][2]protoreflect.FieldNumber
 	ExtensionRanges       [][2]protoreflect.FieldNumber
 	ExtensionRangeOptions []protoreflect.ProtoMessage
 	Options               protoreflect.ProtoMessage
@@ -158,9 +160,11 @@ type Extension struct {
 
 // Enum is a constructor for protoreflect.EnumDescriptor.
 type Enum struct {
-	Name    protoreflect.Name
-	Values  []EnumValue
-	Options protoreflect.ProtoMessage
+	Name           protoreflect.Name
+	Values         []EnumValue
+	ReservedNames  []protoreflect.Name
+	ReservedRanges [][2]protoreflect.EnumNumber
+	Options        protoreflect.ProtoMessage
 
 	*enumMeta
 }

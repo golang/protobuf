@@ -229,6 +229,10 @@ type MessageDescriptor interface {
 	// Oneofs is a list of nested oneof declarations.
 	Oneofs() OneofDescriptors
 
+	// ReservedNames is a list of reserved field names.
+	ReservedNames() Names
+	// ReservedRanges is a list of reserved ranges of field numbers.
+	ReservedRanges() FieldRanges
 	// RequiredNumbers is a list of required field numbers.
 	// In Proto3, it is always an empty list.
 	RequiredNumbers() FieldNumbers
@@ -295,6 +299,9 @@ type FieldDescriptor interface {
 	// Kind reports the basic kind for this field.
 	Kind() Kind
 
+	// HasJSONName reports whether this field has an explicitly set JSON name.
+	HasJSONName() bool
+
 	// JSONName reports the name used for JSON serialization.
 	// It is usually the camel-cased form of the field name.
 	JSONName() string
@@ -316,6 +323,9 @@ type FieldDescriptor interface {
 	// and MessageDescriptor.IsMapEntry is true.
 	IsMap() bool
 
+	// HasDefault reports whether this field has a default value.
+	HasDefault() bool
+
 	// Default returns the default value for scalar fields.
 	// For proto2, it is the default value as specified in the proto file,
 	// or the zero value if unspecified.
@@ -326,9 +336,6 @@ type FieldDescriptor interface {
 	// DefaultEnumValue returns the EnummValueDescriptor for the default value
 	// of an enum field, and is nil for any other kind of field.
 	DefaultEnumValue() EnumValueDescriptor
-
-	// HasDefault reports whether this field has a default value.
-	HasDefault() bool
 
 	// OneofType is the containing oneof that this field belongs to,
 	// and is nil if this field is not part of a oneof.
@@ -477,6 +484,11 @@ type EnumDescriptor interface {
 
 	// Values is a list of nested enum value declarations.
 	Values() EnumValueDescriptors
+
+	// ReservedNames is a list of reserved enum names.
+	ReservedNames() Names
+	// ReservedRanges is a list of reserved ranges of enum numbers.
+	ReservedRanges() EnumRanges
 
 	isEnumDescriptor
 }

@@ -20,6 +20,10 @@ enum EnumType2 {
   option allow_alias = true;
   duplicate1 = 1;
   duplicate2 = 1;
+
+  reserved "RESERVED1";
+  reserved "RESERVED2";
+  reserved 2, 3;
 }
 
 message EnumContainerMessage1 {

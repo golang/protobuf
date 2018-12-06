@@ -13,16 +13,18 @@ import (
 )
 
 var (
-	emptyFiles      fileImports
-	emptyMessages   messages
-	emptyFields     fields
-	emptyOneofs     oneofs
-	emptyNumbers    numbers
-	emptyRanges     ranges
-	emptyEnums      enums
-	emptyEnumValues enumValues
-	emptyExtensions extensions
-	emptyServices   services
+	emptyFiles       fileImports
+	emptyMessages    messages
+	emptyFields      fields
+	emptyOneofs      oneofs
+	emptyNames       names
+	emptyNumbers     numbers
+	emptyFieldRanges fieldRanges
+	emptyEnums       enums
+	emptyEnumValues  enumValues
+	emptyEnumRanges  enumRanges
+	emptyExtensions  extensions
+	emptyServices    services
 )
 
 type placeholderName pref.FullName
@@ -61,8 +63,10 @@ func (t placeholderMessage) Options() pref.ProtoMessage                  { retur
 func (t placeholderMessage) IsMapEntry() bool                            { return false }
 func (t placeholderMessage) Fields() pref.FieldDescriptors               { return &emptyFields }
 func (t placeholderMessage) Oneofs() pref.OneofDescriptors               { return &emptyOneofs }
+func (t placeholderMessage) ReservedNames() pref.Names                   { return &emptyNames }
+func (t placeholderMessage) ReservedRanges() pref.FieldRanges            { return &emptyFieldRanges }
 func (t placeholderMessage) RequiredNumbers() pref.FieldNumbers          { return &emptyNumbers }
-func (t placeholderMessage) ExtensionRanges() pref.FieldRanges           { return &emptyRanges }
+func (t placeholderMessage) ExtensionRanges() pref.FieldRanges           { return &emptyFieldRanges }
 func (t placeholderMessage) ExtensionRangeOptions(int) pref.ProtoMessage { panic("out of bounds") }
 func (t placeholderMessage) Enums() pref.EnumDescriptors                 { return &emptyEnums }
 func (t placeholderMessage) Messages() pref.MessageDescriptors           { return &emptyMessages }
@@ -76,5 +80,7 @@ type placeholderEnum struct {
 
 func (t placeholderEnum) Options() pref.ProtoMessage        { return optionTypes.Enum }
 func (t placeholderEnum) Values() pref.EnumValueDescriptors { return &emptyEnumValues }
+func (t placeholderEnum) ReservedNames() pref.Names         { return &emptyNames }
+func (t placeholderEnum) ReservedRanges() pref.EnumRanges   { return &emptyEnumRanges }
 func (t placeholderEnum) Format(s fmt.State, r rune)        { pfmt.FormatDesc(s, r, t) }
 func (t placeholderEnum) ProtoType(pref.EnumDescriptor)     {}

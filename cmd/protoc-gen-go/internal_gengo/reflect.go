@@ -207,6 +207,22 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 				g.P("{Name: ", strconv.Quote(string(value.Desc.Name())), ", Number: ", value.Desc.Number(), "},")
 			}
 			g.P("},")
+			if resvNames := enum.Desc.ReservedNames(); resvNames.Len() > 0 {
+				var ss []string
+				for i := 0; i < resvNames.Len(); i++ {
+					s := resvNames.Get(i)
+					ss = append(ss, strconv.Quote(string(s)))
+				}
+				g.P("ReservedNames: []", protoreflectPackage.Ident("Name"), "{", strings.Join(ss, ","), "},")
+			}
+			if resvRanges := enum.Desc.ReservedRanges(); resvRanges.Len() > 0 {
+				var ss []string
+				for i := 0; i < resvRanges.Len(); i++ {
+					r := resvRanges.Get(i)
+					ss = append(ss, fmt.Sprintf("{%d,%d}", r[0], r[1]))
+				}
+				g.P("ReservedRanges: [][2]", protoreflectPackage.Ident("EnumNumber"), "{", strings.Join(ss, ","), "},")
+			}
 			g.P("},")
 		}
 		g.P("}")
@@ -245,8 +261,9 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 					g.P("Number: ", field.Number(), ",")
 					g.P("Cardinality: ", protoreflectPackage.Ident(field.Cardinality().GoString()), ",")
 					g.P("Kind: ", protoreflectPackage.Ident(field.Kind().GoString()), ",")
-					// TODO: omit JSONName if it can be derived from Name?
-					g.P("JSONName: ", strconv.Quote(field.JSONName()), ",")
+					if field.HasJSONName() {
+						g.P("JSONName: ", strconv.Quote(field.JSONName()), ",")
+					}
 					if field.HasDefault() {
 						v := field.Default().Interface()
 						typeName := reflect.TypeOf(v).Name()
@@ -284,6 +301,22 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 					g.P("{Name: ", strconv.Quote(string(oneof.Name())), "},")
 				}
 				g.P("},")
+			}
+			if resvNames := message.Desc.ReservedNames(); resvNames.Len() > 0 {
+				var ss []string
+				for i := 0; i < resvNames.Len(); i++ {
+					s := resvNames.Get(i)
+					ss = append(ss, strconv.Quote(string(s)))
+				}
+				g.P("ReservedNames: []", protoreflectPackage.Ident("Name"), "{", strings.Join(ss, ","), "},")
+			}
+			if resvRanges := message.Desc.ReservedRanges(); resvRanges.Len() > 0 {
+				var ss []string
+				for i := 0; i < resvRanges.Len(); i++ {
+					r := resvRanges.Get(i)
+					ss = append(ss, fmt.Sprintf("{%d,%d}", r[0], r[1]))
+				}
+				g.P("ReservedRanges: [][2]", protoreflectPackage.Ident("FieldNumber"), "{", strings.Join(ss, ","), "},")
 			}
 			if extRanges := message.Desc.ExtensionRanges(); extRanges.Len() > 0 {
 				var ss []string

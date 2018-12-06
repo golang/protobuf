@@ -137,4 +137,7 @@ message FieldTestMessage {
     ONE = 1;
   }
   message Message {}
+
+  reserved 10000, 10001;
+  reserved "TEN_THOUSAND", "TEN_THOUSAND_AND_ONE";
 }

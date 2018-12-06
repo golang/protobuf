@@ -109,6 +109,8 @@ func TestFile(t *testing.T) {
 				},
 				{Name: "O2"}, // "test.B.O2"
 			},
+			ReservedNames:   []pref.Name{"fizz", "buzz"},
+			ReservedRanges:  [][2]pref.FieldNumber{{100, 200}, {300, 301}},
 			ExtensionRanges: [][2]pref.FieldNumber{{1000, 2000}, {3000, 3001}},
 			ExtensionRangeOptions: []pref.ProtoMessage{
 				0: (*descriptorpb.ExtensionRangeOptions)(nil),
@@ -145,6 +147,8 @@ func TestFile(t *testing.T) {
 				},
 				{Name: "BAR", Number: 1},
 			},
+			ReservedNames:  []pref.Name{"FIZZ", "BUZZ"},
+			ReservedRanges: [][2]pref.EnumNumber{{10, 19}, {30, 30}},
 		}},
 		Extensions: []ptype.Extension{{
 			Name:         "X", // "test.X"
@@ -252,6 +256,11 @@ func TestFile(t *testing.T) {
 				},
 				{Name: scalar.String("O2")},
 			},
+			ReservedName: []string{"fizz", "buzz"},
+			ReservedRange: []*descriptorpb.DescriptorProto_ReservedRange{
+				{Start: scalar.Int32(100), End: scalar.Int32(200)},
+				{Start: scalar.Int32(300), End: scalar.Int32(301)},
+			},
 			ExtensionRange: []*descriptorpb.DescriptorProto_ExtensionRange{
 				{Start: scalar.Int32(1000), End: scalar.Int32(2000)},
 				{Start: scalar.Int32(3000), End: scalar.Int32(3001), Options: new(descriptorpb.ExtensionRangeOptions)},
@@ -294,6 +303,11 @@ func TestFile(t *testing.T) {
 					Options: &descriptorpb.EnumValueOptions{Deprecated: scalar.Bool(true)},
 				},
 				{Name: scalar.String("BAR"), Number: scalar.Int32(1)},
+			},
+			ReservedName: []string{"FIZZ", "BUZZ"},
+			ReservedRange: []*descriptorpb.EnumDescriptorProto_EnumReservedRange{
+				{Start: scalar.Int32(10), End: scalar.Int32(19)},
+				{Start: scalar.Int32(30), End: scalar.Int32(30)},
 			},
 		}},
 		Extension: []*descriptorpb.FieldDescriptorProto{{
@@ -381,6 +395,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 						"Cardinality":  pref.Optional,
 						"Kind":         pref.StringKind,
 						"Options":      &descriptorpb.FieldOptions{Deprecated: scalar.Bool(true)},
+						"HasJSONName":  false,
 						"JSONName":     "key",
 						"IsPacked":     false,
 						"IsMap":        false,
@@ -433,11 +448,12 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					},
 					"ByJSONName:fieldTwo": nil,
 					"ByJSONName:Field2": M{
-						"Name":      pref.Name("field_two"),
-						"Index":     1,
-						"JSONName":  "Field2",
-						"Default":   pref.EnumNumber(1),
-						"OneofType": M{"Name": pref.Name("O2"), "IsPlaceholder": false},
+						"Name":        pref.Name("field_two"),
+						"Index":       1,
+						"HasJSONName": true,
+						"JSONName":    "Field2",
+						"Default":     pref.EnumNumber(1),
+						"OneofType":   M{"Name": pref.Name("O2"), "IsPlaceholder": false},
 					},
 					"ByName:fieldThree": nil,
 					"ByName:field_three": M{
@@ -490,6 +506,23 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 						},
 					},
 				},
+				"ReservedNames": M{
+					"Len":         2,
+					"Get:0":       pref.Name("fizz"),
+					"Has:buzz":    true,
+					"Has:noexist": false,
+				},
+				"ReservedRanges": M{
+					"Len":     2,
+					"Get:0":   [2]pref.FieldNumber{100, 200},
+					"Has:99":  false,
+					"Has:100": true,
+					"Has:150": true,
+					"Has:199": true,
+					"Has:200": false,
+					"Has:300": true,
+					"Has:301": false,
+				},
 				"RequiredNumbers": M{
 					"Len":   1,
 					"Get:0": pref.FieldNumber(6),
@@ -505,6 +538,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					"Has:1999": true,
 					"Has:2000": false,
 					"Has:3000": true,
+					"Has:3001": false,
 				},
 				"ExtensionRangeOptions:0": (*descriptorpb.ExtensionRangeOptions)(nil),
 				"ExtensionRangeOptions:1": new(descriptorpb.ExtensionRangeOptions),
@@ -540,6 +574,23 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					},
 					"ByNumber:2": nil,
 					"ByNumber:1": M{"FullName": pref.FullName("test.BAR")},
+				},
+				"ReservedNames": M{
+					"Len":         2,
+					"Get:0":       pref.Name("FIZZ"),
+					"Has:BUZZ":    true,
+					"Has:NOEXIST": false,
+				},
+				"ReservedRanges": M{
+					"Len":    2,
+					"Get:0":  [2]pref.EnumNumber{10, 19},
+					"Has:9":  false,
+					"Has:10": true,
+					"Has:15": true,
+					"Has:19": true,
+					"Has:20": false,
+					"Has:30": true,
+					"Has:31": false,
 				},
 			},
 		},
@@ -718,6 +769,7 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			Number:      2
 			Cardinality: optional
 			Kind:        enum
+			HasJSONName: true
 			JSONName:    "Field2"
 			HasDefault:  true
 			Default:     1
@@ -736,6 +788,7 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			Number:      4
 			Cardinality: repeated
 			Kind:        message
+			HasJSONName: true
 			JSONName:    "Field4"
 			IsMap:       true
 			MessageType: test.A
@@ -760,6 +813,8 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			Name:   O2
 			Fields: [field_two, field_three]
 		}]
+		ReservedNames:   [fizz, buzz]
+		ReservedRanges:  [100:200, 300]
 		RequiredNumbers: [6]
 		ExtensionRanges: [1000:2000, 3000]
 	}, {
@@ -799,6 +854,8 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			{Name: FOO}
 			{Name: BAR, Number: 1}
 		]
+		ReservedNames:  [FIZZ, BUZZ]
+		ReservedRanges: [10:20, 30]
 	}]
 	Extensions: [{
 		Name:         X

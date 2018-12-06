@@ -300,6 +300,18 @@ type FieldRanges interface {
 // EnumNumber is the numeric value for an enum.
 type EnumNumber int32
 
+// EnumRanges represent a list of enum number ranges.
+type EnumRanges interface {
+	// Len reports the number of ranges in the list.
+	Len() int
+	// Get returns the ith range. It panics if out of bounds.
+	Get(i int) [2]EnumNumber // start inclusive; end inclusive
+	// Has reports whether n is within any of the ranges.
+	Has(n EnumNumber) bool
+
+	doNotImplement
+}
+
 var (
 	regexName     = regexp.MustCompile(`^[_a-zA-Z][_a-zA-Z0-9]*$`)
 	regexFullName = regexp.MustCompile(`^[_a-zA-Z][_a-zA-Z0-9]*(\.[_a-zA-Z][_a-zA-Z0-9]*)*$`)
@@ -313,6 +325,18 @@ type Name string // e.g., "Kind"
 // An empty name is invalid.
 func (n Name) IsValid() bool {
 	return regexName.MatchString(string(n))
+}
+
+// Names represent a list of names.
+type Names interface {
+	// Len reports the number of names in the list.
+	Len() int
+	// Get returns the ith name. It panics if out of bounds.
+	Get(i int) Name
+	// Has reports whether s matches any names in the list.
+	Has(s Name) bool
+
+	doNotImplement
 }
 
 // FullName is a qualified name that uniquely identifies a proto declaration.

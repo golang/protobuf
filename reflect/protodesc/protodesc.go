@@ -58,7 +58,7 @@ import (
 func NewFile(fd *descriptorpb.FileDescriptorProto, r *protoregistry.Files) (protoreflect.FileDescriptor, error) {
 	var f prototype.File
 	switch fd.GetSyntax() {
-	case "", "proto2":
+	case "proto2", "":
 		f.Syntax = protoreflect.Proto2
 	case "proto3":
 		f.Syntax = protoreflect.Proto3
@@ -172,6 +172,15 @@ func messagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, syntax pro
 				Options: od.Options,
 			})
 		}
+		for _, s := range md.GetReservedName() {
+			m.ReservedNames = append(m.ReservedNames, protoreflect.Name(s))
+		}
+		for _, rr := range md.GetReservedRange() {
+			m.ReservedRanges = append(m.ReservedRanges, [2]protoreflect.FieldNumber{
+				protoreflect.FieldNumber(rr.GetStart()),
+				protoreflect.FieldNumber(rr.GetEnd()),
+			})
+		}
 		for _, xr := range md.GetExtensionRange() {
 			m.ExtensionRanges = append(m.ExtensionRanges, [2]protoreflect.FieldNumber{
 				protoreflect.FieldNumber(xr.GetStart()),
@@ -208,6 +217,15 @@ func enumsFromDescriptorProto(eds []*descriptorpb.EnumDescriptorProto, r *protor
 				Name:    protoreflect.Name(vd.GetName()),
 				Number:  protoreflect.EnumNumber(vd.GetNumber()),
 				Options: vd.Options,
+			})
+		}
+		for _, s := range ed.GetReservedName() {
+			e.ReservedNames = append(e.ReservedNames, protoreflect.Name(s))
+		}
+		for _, rr := range ed.GetReservedRange() {
+			e.ReservedRanges = append(e.ReservedRanges, [2]protoreflect.EnumNumber{
+				protoreflect.EnumNumber(rr.GetStart()),
+				protoreflect.EnumNumber(rr.GetEnd()),
 			})
 		}
 		es = append(es, e)

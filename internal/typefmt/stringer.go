@@ -30,10 +30,14 @@ func formatListOpt(vs list, isRoot, allowMulti bool) string {
 	if isRoot {
 		var name string
 		switch vs.(type) {
+		case pref.Names:
+			name = "Names"
 		case pref.FieldNumbers:
 			name = "FieldNumbers"
 		case pref.FieldRanges:
 			name = "FieldRanges"
+		case pref.EnumRanges:
+			name = "EnumRanges"
 		case pref.FileImports:
 			name = "FileImports"
 		case pref.Descriptor:
@@ -44,6 +48,11 @@ func formatListOpt(vs list, isRoot, allowMulti bool) string {
 
 	var ss []string
 	switch vs := vs.(type) {
+	case pref.Names:
+		for i := 0; i < vs.Len(); i++ {
+			ss = append(ss, fmt.Sprint(vs.Get(i)))
+		}
+		return start + joinStrings(ss, false) + end
 	case pref.FieldNumbers:
 		for i := 0; i < vs.Len(); i++ {
 			ss = append(ss, fmt.Sprint(vs.Get(i)))
@@ -55,7 +64,17 @@ func formatListOpt(vs list, isRoot, allowMulti bool) string {
 			if r[0]+1 == r[1] {
 				ss = append(ss, fmt.Sprintf("%d", r[0]))
 			} else {
-				ss = append(ss, fmt.Sprintf("%d:%d", r[0], r[1]))
+				ss = append(ss, fmt.Sprintf("%d:%d", r[0], r[1])) // enum ranges are end exclusive
+			}
+		}
+		return start + joinStrings(ss, false) + end
+	case pref.EnumRanges:
+		for i := 0; i < vs.Len(); i++ {
+			r := vs.Get(i)
+			if r[0] == r[1] {
+				ss = append(ss, fmt.Sprintf("%d", r[0]))
+			} else {
+				ss = append(ss, fmt.Sprintf("%d:%d", r[0], int64(r[1])+1)) // enum ranges are end inclusive
 			}
 		}
 		return start + joinStrings(ss, false) + end
@@ -86,10 +105,10 @@ func formatListOpt(vs list, isRoot, allowMulti bool) string {
 // Using a list allows us to print the accessors in a sensible order.
 var descriptorAccessors = map[reflect.Type][]string{
 	reflect.TypeOf((*pref.FileDescriptor)(nil)).Elem():      {"Path", "Package", "Imports", "Messages", "Enums", "Extensions", "Services"},
-	reflect.TypeOf((*pref.MessageDescriptor)(nil)).Elem():   {"IsMapEntry", "Fields", "Oneofs", "RequiredNumbers", "ExtensionRanges", "Messages", "Enums", "Extensions"},
-	reflect.TypeOf((*pref.FieldDescriptor)(nil)).Elem():     {"Number", "Cardinality", "Kind", "JSONName", "IsPacked", "IsMap", "IsWeak", "HasDefault", "Default", "OneofType", "ExtendedType", "MessageType", "EnumType"},
+	reflect.TypeOf((*pref.MessageDescriptor)(nil)).Elem():   {"IsMapEntry", "Fields", "Oneofs", "ReservedNames", "ReservedRanges", "RequiredNumbers", "ExtensionRanges", "Messages", "Enums", "Extensions"},
+	reflect.TypeOf((*pref.FieldDescriptor)(nil)).Elem():     {"Number", "Cardinality", "Kind", "HasJSONName", "JSONName", "IsPacked", "IsMap", "IsWeak", "HasDefault", "Default", "OneofType", "ExtendedType", "MessageType", "EnumType"},
 	reflect.TypeOf((*pref.OneofDescriptor)(nil)).Elem():     {"Fields"}, // not directly used; must keep in sync with formatDescOpt
-	reflect.TypeOf((*pref.EnumDescriptor)(nil)).Elem():      {"Values"},
+	reflect.TypeOf((*pref.EnumDescriptor)(nil)).Elem():      {"Values", "ReservedNames", "ReservedRanges"},
 	reflect.TypeOf((*pref.EnumValueDescriptor)(nil)).Elem(): {"Number"},
 	reflect.TypeOf((*pref.ServiceDescriptor)(nil)).Elem():   {"Methods"},
 	reflect.TypeOf((*pref.MethodDescriptor)(nil)).Elem():    {"InputType", "OutputType", "IsStreamingClient", "IsStreamingServer"},
