@@ -5,6 +5,8 @@
 
 set -e
 
+go generate internal/cmd/generate-types/main.go
+
 # Install the working tree's protoc-gen-gen in a tempdir.
 tmpdir=$(mktemp -d -t protobuf-regen.XXXXXX)
 trap 'rm -rf $tmpdir' EXIT
@@ -17,6 +19,7 @@ GOBIN=$tmpdir/bin go install ./cmd/protoc-gen-go-grpc
 PROTO_DIRS=(
   cmd/protoc-gen-go/testdata
   cmd/protoc-gen-go-grpc/testdata
+  internal/testprotos/test
 )
 for dir in ${PROTO_DIRS[@]}; do
   for p in `find $dir -name "*.proto"`; do

@@ -26,6 +26,7 @@ var run = flag.Bool("execute", false, "Write generated files to destination.")
 func main() {
 	flag.Parse()
 	chdirRoot()
+	writeSource("proto/decode_gen.go", generateProtoDecode())
 	writeSource("reflect/prototype/protofile_list_gen.go", generateListTypes())
 }
 
@@ -198,8 +199,10 @@ func writeSource(file, src string) {
 	var imports []string
 	for _, pkg := range []string{
 		"fmt",
+		"math",
 		"sync",
 		"",
+		"github.com/golang/protobuf/v2/internal/encoding/wire",
 		"github.com/golang/protobuf/v2/internal/pragma",
 		"github.com/golang/protobuf/v2/internal/typefmt",
 		"github.com/golang/protobuf/v2/reflect/protoreflect",
