@@ -7,13 +7,11 @@
 package tag
 
 import (
-	"fmt"
-	"math"
 	"reflect"
 	"strconv"
 	"strings"
 
-	ptext "github.com/golang/protobuf/v2/internal/encoding/text"
+	defval "github.com/golang/protobuf/v2/internal/encoding/defval"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
@@ -115,57 +113,7 @@ func Unmarshal(tag string, goType reflect.Type) ptype.Field {
 			// The default tag is special in that everything afterwards is the
 			// default regardless of the presence of commas.
 			s, i = tag[len("def="):], len(tag)
-
-			// Defaults are parsed last, so Kind is populated.
-			switch f.Kind {
-			case pref.BoolKind:
-				switch s {
-				case "1":
-					f.Default = pref.ValueOf(true)
-				case "0":
-					f.Default = pref.ValueOf(false)
-				}
-			case pref.EnumKind:
-				n, _ := strconv.ParseInt(s, 10, 32)
-				f.Default = pref.ValueOf(pref.EnumNumber(n))
-			case pref.Int32Kind, pref.Sint32Kind, pref.Sfixed32Kind:
-				n, _ := strconv.ParseInt(s, 10, 32)
-				f.Default = pref.ValueOf(int32(n))
-			case pref.Int64Kind, pref.Sint64Kind, pref.Sfixed64Kind:
-				n, _ := strconv.ParseInt(s, 10, 64)
-				f.Default = pref.ValueOf(int64(n))
-			case pref.Uint32Kind, pref.Fixed32Kind:
-				n, _ := strconv.ParseUint(s, 10, 32)
-				f.Default = pref.ValueOf(uint32(n))
-			case pref.Uint64Kind, pref.Fixed64Kind:
-				n, _ := strconv.ParseUint(s, 10, 64)
-				f.Default = pref.ValueOf(uint64(n))
-			case pref.FloatKind, pref.DoubleKind:
-				n, _ := strconv.ParseFloat(s, 64)
-				switch s {
-				case "nan":
-					n = math.NaN()
-				case "inf":
-					n = math.Inf(+1)
-				case "-inf":
-					n = math.Inf(-1)
-				}
-				if f.Kind == pref.FloatKind {
-					f.Default = pref.ValueOf(float32(n))
-				} else {
-					f.Default = pref.ValueOf(float64(n))
-				}
-			case pref.StringKind:
-				f.Default = pref.ValueOf(string(s))
-			case pref.BytesKind:
-				// The default value is in escaped form (C-style).
-				// TODO: Export unmarshalString in the text package to avoid this hack.
-				v, err := ptext.Unmarshal([]byte(`["` + s + `"]:0`))
-				if err == nil && len(v.Message()) == 1 {
-					s := v.Message()[0][0].String()
-					f.Default = pref.ValueOf([]byte(s))
-				}
-			}
+			f.Default, _ = defval.Unmarshal(s, f.Kind, defval.GoTag)
 		}
 		tag = strings.TrimPrefix(tag[i:], ",")
 	}
@@ -242,60 +190,7 @@ func Marshal(fd pref.FieldDescriptor, enumName string) string {
 	}
 	// This must appear last in the tag, since commas in strings aren't escaped.
 	if fd.HasDefault() {
-		var def string
-		switch fd.Kind() {
-		case pref.BoolKind:
-			if fd.Default().Bool() {
-				def = "1"
-			} else {
-				def = "0"
-			}
-		case pref.BytesKind:
-			// Preserve protoc-gen-go's historical output of escaped bytes.
-			// This behavior is buggy, but fixing it makes it impossible to
-			// distinguish between the escaped and unescaped forms.
-			//
-			// To match the exact output of protoc, this is identical to the
-			// CEscape function in strutil.cc of the protoc source code.
-			var b []byte
-			for _, c := range fd.Default().Bytes() {
-				switch c {
-				case '\n':
-					b = append(b, `\n`...)
-				case '\r':
-					b = append(b, `\r`...)
-				case '\t':
-					b = append(b, `\t`...)
-				case '"':
-					b = append(b, `\"`...)
-				case '\'':
-					b = append(b, `\'`...)
-				case '\\':
-					b = append(b, `\\`...)
-				default:
-					if c >= 0x20 && c <= 0x7e { // printable ASCII
-						b = append(b, c)
-					} else {
-						b = append(b, fmt.Sprintf(`\%03o`, c)...)
-					}
-				}
-			}
-			def = string(b)
-		case pref.FloatKind, pref.DoubleKind:
-			f := fd.Default().Float()
-			switch {
-			case math.IsInf(f, -1):
-				def = "-inf"
-			case math.IsInf(f, 1):
-				def = "inf"
-			case math.IsNaN(f):
-				def = "nan"
-			default:
-				def = fmt.Sprint(fd.Default().Interface())
-			}
-		default:
-			def = fmt.Sprint(fd.Default().Interface())
-		}
+		def, _ := defval.Marshal(fd.Default(), fd.Kind(), defval.GoTag)
 		tag = append(tag, "def="+def)
 	}
 	return strings.Join(tag, ",")

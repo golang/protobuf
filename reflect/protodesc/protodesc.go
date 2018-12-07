@@ -8,11 +8,9 @@ package protodesc
 
 import (
 	"fmt"
-	"math"
-	"strconv"
 	"strings"
 
-	"github.com/golang/protobuf/v2/internal/encoding/text"
+	"github.com/golang/protobuf/v2/internal/encoding/defval"
 	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -133,7 +131,7 @@ func messagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, syntax pro
 			f.Options = fd.GetOptions()
 			f.JSONName = fd.GetJsonName()
 			if fd.DefaultValue != nil {
-				f.Default, err = parseDefault(fd.GetDefaultValue(), f.Kind)
+				f.Default, err = defval.Unmarshal(fd.GetDefaultValue(), f.Kind, defval.Descriptor)
 				if err != nil {
 					return nil, err
 				}
@@ -242,7 +240,7 @@ func extensionsFromDescriptorProto(xds []*descriptorpb.FieldDescriptorProto, r *
 		x.Kind = protoreflect.Kind(xd.GetType())
 		x.Options = xd.GetOptions()
 		if xd.DefaultValue != nil {
-			x.Default, err = parseDefault(xd.GetDefaultValue(), x.Kind)
+			x.Default, err = defval.Unmarshal(xd.GetDefaultValue(), x.Kind, defval.Descriptor)
 			if err != nil {
 				return nil, err
 			}
@@ -346,75 +344,4 @@ func typeName(t protoreflect.Descriptor) string {
 	default:
 		return fmt.Sprintf("%T", t)
 	}
-}
-
-func parseDefault(s string, k protoreflect.Kind) (protoreflect.Value, error) {
-	switch k {
-	case protoreflect.BoolKind:
-		switch s {
-		case "true":
-			return protoreflect.ValueOf(true), nil
-		case "false":
-			return protoreflect.ValueOf(false), nil
-		}
-	case protoreflect.EnumKind:
-		// For enums, we are supposed to return a protoreflect.EnumNumber type.
-		// However, default values record the name instead of the number.
-		// We are unable to resolve the name into a number without additional
-		// type information. Thus, we temporarily return the name identifier
-		// for now and rely on logic in defaultValue.lazyInit to resolve it.
-		return protoreflect.ValueOf(s), nil
-	case protoreflect.Int32Kind, protoreflect.Sint32Kind, protoreflect.Sfixed32Kind:
-		v, err := strconv.ParseInt(s, 0, 32)
-		if err == nil {
-			return protoreflect.ValueOf(int32(v)), nil
-		}
-	case protoreflect.Int64Kind, protoreflect.Sint64Kind, protoreflect.Sfixed64Kind:
-		v, err := strconv.ParseInt(s, 0, 64)
-		if err == nil {
-			return protoreflect.ValueOf(int64(v)), nil
-		}
-	case protoreflect.Uint32Kind, protoreflect.Fixed32Kind:
-		v, err := strconv.ParseUint(s, 0, 32)
-		if err == nil {
-			return protoreflect.ValueOf(uint32(v)), nil
-		}
-	case protoreflect.Uint64Kind, protoreflect.Fixed64Kind:
-		v, err := strconv.ParseUint(s, 0, 64)
-		if err == nil {
-			return protoreflect.ValueOf(uint64(v)), nil
-		}
-	case protoreflect.FloatKind, protoreflect.DoubleKind:
-		var v float64
-		var err error
-		switch s {
-		case "nan":
-			v = math.NaN()
-		case "inf":
-			v = math.Inf(+1)
-		case "-inf":
-			v = math.Inf(-1)
-		default:
-			v, err = strconv.ParseFloat(s, 64)
-		}
-		if err == nil {
-			if k == protoreflect.FloatKind {
-				return protoreflect.ValueOf(float32(v)), nil
-			}
-			return protoreflect.ValueOf(float64(v)), nil
-		}
-	case protoreflect.StringKind:
-		// String values are already unescaped and can be used as is.
-		return protoreflect.ValueOf(s), nil
-	case protoreflect.BytesKind:
-		// Bytes values use the same escaping as the text format,
-		// however they lack the surrounding double quotes.
-		// TODO: Export unmarshalString in the text package to avoid this hack.
-		v, err := text.Unmarshal([]byte(`["` + s + `"]:0`))
-		if err == nil && len(v.Message()) == 1 {
-			s := v.Message()[0][0].String()
-			return protoreflect.ValueOf([]byte(s)), nil
-		}
-	}
-	return protoreflect.Value{}, errors.New("invalid default value for %v: %q", k, s)
 }
