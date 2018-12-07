@@ -91,7 +91,6 @@ func (m xxx_Message) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Message) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Message) ProtoMutable() {}
 
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
@@ -149,7 +148,6 @@ func (m xxx_ExtensionGroup) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_ExtensionGroup) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_ExtensionGroup) ProtoMutable() {}
 
 func (m *ExtensionGroup) Reset()         { *m = ExtensionGroup{} }
 func (m *ExtensionGroup) String() string { return proto.CompactTextString(m) }
@@ -207,7 +205,6 @@ func (m xxx_ExtendingMessage) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_ExtendingMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_ExtendingMessage) ProtoMutable() {}
 
 func (m *ExtendingMessage) Reset()         { *m = ExtendingMessage{} }
 func (m *ExtendingMessage) String() string { return proto.CompactTextString(m) }
@@ -258,7 +255,6 @@ func (m xxx_RepeatedGroup) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_RepeatedGroup) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_RepeatedGroup) ProtoMutable() {}
 
 func (m *RepeatedGroup) Reset()         { *m = RepeatedGroup{} }
 func (m *RepeatedGroup) String() string { return proto.CompactTextString(m) }
@@ -317,7 +313,6 @@ func (m xxx_Extendable) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Extendable) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Extendable) ProtoMutable() {}
 
 func (m *Extendable) Reset()         { *m = Extendable{} }
 func (m *Extendable) String() string { return proto.CompactTextString(m) }
@@ -378,7 +373,6 @@ func (m xxx_MessageSetWireFormatExtension) UnknownFields() protoreflect.UnknownF
 func (m xxx_MessageSetWireFormatExtension) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_MessageSetWireFormatExtension) ProtoMutable() {}
 
 func (m *MessageSetWireFormatExtension) Reset()         { *m = MessageSetWireFormatExtension{} }
 func (m *MessageSetWireFormatExtension) String() string { return proto.CompactTextString(m) }
@@ -428,7 +422,6 @@ func (m xxx_Message_M) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Message_M) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Message_M) ProtoMutable() {}
 
 func (m *Message_M) Reset()         { *m = Message_M{} }
 func (m *Message_M) String() string { return proto.CompactTextString(m) }
@@ -480,7 +473,6 @@ func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) UnknownFields() protore
 func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) ProtoMutable() {}
 
 func (m *ExtendingMessage_ExtendingMessageSubmessage) Reset() {
 	*m = ExtendingMessage_ExtendingMessageSubmessage{}

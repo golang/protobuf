@@ -110,7 +110,6 @@ func (m xxx_FieldTestMessage) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_FieldTestMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FieldTestMessage) ProtoMutable() {}
 
 func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
 func (m *FieldTestMessage) String() string { return proto.CompactTextString(m) }
@@ -419,7 +418,6 @@ func (m xxx_FieldTestMessage_Message) UnknownFields() protoreflect.UnknownFields
 func (m xxx_FieldTestMessage_Message) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FieldTestMessage_Message) ProtoMutable() {}
 
 func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
 func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }

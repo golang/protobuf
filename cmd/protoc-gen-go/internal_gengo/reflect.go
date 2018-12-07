@@ -384,7 +384,6 @@ func genReflectMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 	g.P("func (m ", shadowType, ") Interface() ", protoreflectPackage.Ident("ProtoMessage"), " {")
 	g.P("return m.m")
 	g.P("}")
-	g.P("func (m ", shadowType, ") ProtoMutable() {}")
 	g.P()
 }
 

@@ -84,7 +84,6 @@ func (m xxx_Public) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Public) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Public) ProtoMutable() {}
 
 func (m *Public) Reset()         { *m = Public{} }
 func (m *Public) String() string { return proto.CompactTextString(m) }

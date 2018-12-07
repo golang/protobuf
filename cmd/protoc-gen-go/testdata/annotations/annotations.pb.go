@@ -89,7 +89,6 @@ func (m xxx_AnnotationsTestMessage) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_AnnotationsTestMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_AnnotationsTestMessage) ProtoMutable() {}
 
 func (m *AnnotationsTestMessage) Reset()         { *m = AnnotationsTestMessage{} }
 func (m *AnnotationsTestMessage) String() string { return proto.CompactTextString(m) }

@@ -198,7 +198,6 @@ func (m xxx_FieldTestMessage) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_FieldTestMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FieldTestMessage) ProtoMutable() {}
 
 func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
 func (m *FieldTestMessage) String() string { return proto.CompactTextString(m) }
@@ -1168,7 +1167,6 @@ func (m xxx_FieldTestMessage_OptionalGroup) UnknownFields() protoreflect.Unknown
 func (m xxx_FieldTestMessage_OptionalGroup) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FieldTestMessage_OptionalGroup) ProtoMutable() {}
 
 func (m *FieldTestMessage_OptionalGroup) Reset()         { *m = FieldTestMessage_OptionalGroup{} }
 func (m *FieldTestMessage_OptionalGroup) String() string { return proto.CompactTextString(m) }
@@ -1228,7 +1226,6 @@ func (m xxx_FieldTestMessage_RequiredGroup) UnknownFields() protoreflect.Unknown
 func (m xxx_FieldTestMessage_RequiredGroup) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FieldTestMessage_RequiredGroup) ProtoMutable() {}
 
 func (m *FieldTestMessage_RequiredGroup) Reset()         { *m = FieldTestMessage_RequiredGroup{} }
 func (m *FieldTestMessage_RequiredGroup) String() string { return proto.CompactTextString(m) }
@@ -1288,7 +1285,6 @@ func (m xxx_FieldTestMessage_RepeatedGroup) UnknownFields() protoreflect.Unknown
 func (m xxx_FieldTestMessage_RepeatedGroup) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FieldTestMessage_RepeatedGroup) ProtoMutable() {}
 
 func (m *FieldTestMessage_RepeatedGroup) Reset()         { *m = FieldTestMessage_RepeatedGroup{} }
 func (m *FieldTestMessage_RepeatedGroup) String() string { return proto.CompactTextString(m) }
@@ -1346,7 +1342,6 @@ func (m xxx_FieldTestMessage_OneofGroup) UnknownFields() protoreflect.UnknownFie
 func (m xxx_FieldTestMessage_OneofGroup) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FieldTestMessage_OneofGroup) ProtoMutable() {}
 
 func (m *FieldTestMessage_OneofGroup) Reset()         { *m = FieldTestMessage_OneofGroup{} }
 func (m *FieldTestMessage_OneofGroup) String() string { return proto.CompactTextString(m) }
@@ -1403,7 +1398,6 @@ func (m xxx_FieldTestMessage_Message) UnknownFields() protoreflect.UnknownFields
 func (m xxx_FieldTestMessage_Message) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FieldTestMessage_Message) ProtoMutable() {}
 
 func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
 func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }

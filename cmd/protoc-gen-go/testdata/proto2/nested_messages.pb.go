@@ -41,7 +41,6 @@ func (m xxx_Layer1) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Layer1) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Layer1) ProtoMutable() {}
 
 func (m *Layer1) Reset()         { *m = Layer1{} }
 func (m *Layer1) String() string { return proto.CompactTextString(m) }
@@ -106,7 +105,6 @@ func (m xxx_Layer1_Layer2) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Layer1_Layer2) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Layer1_Layer2) ProtoMutable() {}
 
 func (m *Layer1_Layer2) Reset()         { *m = Layer1_Layer2{} }
 func (m *Layer1_Layer2) String() string { return proto.CompactTextString(m) }
@@ -163,7 +161,6 @@ func (m xxx_Layer1_Layer2_Layer3) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Layer1_Layer2_Layer3) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Layer1_Layer2_Layer3) ProtoMutable() {}
 
 func (m *Layer1_Layer2_Layer3) Reset()         { *m = Layer1_Layer2_Layer3{} }
 func (m *Layer1_Layer2_Layer3) String() string { return proto.CompactTextString(m) }

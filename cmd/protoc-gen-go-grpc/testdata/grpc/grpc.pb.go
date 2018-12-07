@@ -39,7 +39,6 @@ func (m xxx_Request) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Request) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Request) ProtoMutable() {}
 
 func (m *Request) Reset()         { *m = Request{} }
 func (m *Request) String() string { return proto.CompactTextString(m) }
@@ -89,7 +88,6 @@ func (m xxx_Response) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Response) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Response) ProtoMutable() {}
 
 func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }

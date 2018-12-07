@@ -229,7 +229,6 @@ func (m *ScalarProto2) KnownFields() pref.KnownFields     { return scalarProto2T
 func (m *ScalarProto2) UnknownFields() pref.UnknownFields { return scalarProto2Type.UnknownFieldsOf(m) }
 func (m *ScalarProto2) Interface() pref.ProtoMessage      { return m }
 func (m *ScalarProto2) ProtoReflect() pref.Message        { return m }
-func (m *ScalarProto2) ProtoMutable()                     {}
 
 func TestScalarProto2(t *testing.T) {
 	testMessage(t, nil, &ScalarProto2{}, messageOps{
@@ -336,7 +335,6 @@ func (m *ScalarProto3) KnownFields() pref.KnownFields     { return scalarProto3T
 func (m *ScalarProto3) UnknownFields() pref.UnknownFields { return scalarProto3Type.UnknownFieldsOf(m) }
 func (m *ScalarProto3) Interface() pref.ProtoMessage      { return m }
 func (m *ScalarProto3) ProtoReflect() pref.Message        { return m }
-func (m *ScalarProto3) ProtoMutable()                     {}
 
 func TestScalarProto3(t *testing.T) {
 	testMessage(t, nil, &ScalarProto3{}, messageOps{
@@ -454,7 +452,6 @@ func (m *ListScalars) KnownFields() pref.KnownFields     { return listScalarsTyp
 func (m *ListScalars) UnknownFields() pref.UnknownFields { return listScalarsType.UnknownFieldsOf(m) }
 func (m *ListScalars) Interface() pref.ProtoMessage      { return m }
 func (m *ListScalars) ProtoReflect() pref.Message        { return m }
-func (m *ListScalars) ProtoMutable()                     {}
 
 func TestListScalars(t *testing.T) {
 	empty := &ListScalars{}
@@ -645,7 +642,6 @@ func (m *MapScalars) KnownFields() pref.KnownFields     { return mapScalarsType.
 func (m *MapScalars) UnknownFields() pref.UnknownFields { return mapScalarsType.UnknownFieldsOf(m) }
 func (m *MapScalars) Interface() pref.ProtoMessage      { return m }
 func (m *MapScalars) ProtoReflect() pref.Message        { return m }
-func (m *MapScalars) ProtoMutable()                     {}
 
 func TestMapScalars(t *testing.T) {
 	empty := &MapScalars{}
@@ -804,7 +800,6 @@ func (m *OneofScalars) KnownFields() pref.KnownFields     { return oneofScalarsT
 func (m *OneofScalars) UnknownFields() pref.UnknownFields { return oneofScalarsType.UnknownFieldsOf(m) }
 func (m *OneofScalars) Interface() pref.ProtoMessage      { return m }
 func (m *OneofScalars) ProtoReflect() pref.Message        { return m }
-func (m *OneofScalars) ProtoMutable()                     {}
 
 func (*OneofScalars) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
@@ -1030,7 +1025,6 @@ func (m *EnumMessages) KnownFields() pref.KnownFields     { return enumMessagesT
 func (m *EnumMessages) UnknownFields() pref.UnknownFields { return enumMessagesType.UnknownFieldsOf(m) }
 func (m *EnumMessages) Interface() pref.ProtoMessage      { return m }
 func (m *EnumMessages) ProtoReflect() pref.Message        { return m }
-func (m *EnumMessages) ProtoMutable()                     {}
 
 func (*EnumMessages) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
@@ -1223,7 +1217,10 @@ func testMessage(t *testing.T, p path, m pref.Message, tt messageOps) {
 		case messageFields:
 			for n, tt := range op {
 				p.Push(int(n))
-				testMessage(t, p, fs.Mutable(n).(pref.Message), tt)
+				if !fs.Has(n) {
+					fs.Set(n, V(fs.NewMessage(n)))
+				}
+				testMessage(t, p, fs.Get(n).Message(), tt)
 				p.Pop()
 			}
 		case listFields:
@@ -1285,7 +1282,9 @@ func testLists(t *testing.T, p path, v pref.List, tt listOps) {
 				v.Append(e)
 			}
 		case appendMessageList:
-			testMessage(t, p, v.MutableAppend().(pref.Message), messageOps(op))
+			m := v.NewMessage().ProtoReflect()
+			v.Append(V(m))
+			testMessage(t, p, m, messageOps(op))
 		case truncList:
 			v.Truncate(int(op))
 		default:
@@ -1335,7 +1334,11 @@ func testMaps(t *testing.T, p path, m pref.Map, tt mapOps) {
 			}
 		case messageMap:
 			for k, tt := range op {
-				testMessage(t, p, m.Mutable(V(k).MapKey()).(pref.Message), tt)
+				mk := V(k).MapKey()
+				if !m.Has(mk) {
+					m.Set(mk, V(m.NewMessage()))
+				}
+				testMessage(t, p, m.Get(mk).Message(), tt)
 			}
 		case rangeMap:
 			got := map[interface{}]pref.Value{}

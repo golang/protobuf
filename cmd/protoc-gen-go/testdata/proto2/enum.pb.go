@@ -348,7 +348,6 @@ func (m xxx_EnumContainerMessage1) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_EnumContainerMessage1) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_EnumContainerMessage1) ProtoMutable() {}
 
 func (m *EnumContainerMessage1) Reset()         { *m = EnumContainerMessage1{} }
 func (m *EnumContainerMessage1) String() string { return proto.CompactTextString(m) }
@@ -417,7 +416,6 @@ func (m xxx_EnumContainerMessage1_EnumContainerMessage2) UnknownFields() protore
 func (m xxx_EnumContainerMessage1_EnumContainerMessage2) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_EnumContainerMessage1_EnumContainerMessage2) ProtoMutable() {}
 
 func (m *EnumContainerMessage1_EnumContainerMessage2) Reset() {
 	*m = EnumContainerMessage1_EnumContainerMessage2{}

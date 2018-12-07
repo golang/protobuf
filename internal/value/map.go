@@ -62,20 +62,6 @@ func (ms mapReflect) Clear(k pref.MapKey) {
 	rk := ms.keyConv.GoValueOf(k.Value())
 	ms.v.Elem().SetMapIndex(rk, reflect.Value{})
 }
-func (ms mapReflect) Mutable(k pref.MapKey) pref.Mutable {
-	// Mutable is only valid for messages and panics for other kinds.
-	if ms.v.Elem().IsNil() {
-		ms.v.Elem().Set(reflect.MakeMap(ms.v.Elem().Type()))
-	}
-	rk := ms.keyConv.GoValueOf(k.Value())
-	rv := ms.v.Elem().MapIndex(rk)
-	if !rv.IsValid() {
-		pv := pref.ValueOf(ms.valConv.MessageType.New().ProtoReflect())
-		rv = ms.valConv.GoValueOf(pv)
-		ms.v.Elem().SetMapIndex(rk, rv)
-	}
-	return ms.valConv.PBValueOf(rv).Message()
-}
 func (ms mapReflect) Range(f func(pref.MapKey, pref.Value) bool) {
 	if ms.v.IsNil() {
 		return
@@ -90,7 +76,9 @@ func (ms mapReflect) Range(f func(pref.MapKey, pref.Value) bool) {
 		}
 	}
 }
+func (ms mapReflect) NewMessage() pref.ProtoMessage {
+	return ms.valConv.MessageType.New()
+}
 func (ms mapReflect) ProtoUnwrap() interface{} {
 	return ms.v.Interface()
 }
-func (ms mapReflect) ProtoMutable() {}

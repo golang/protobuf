@@ -265,15 +265,6 @@ func (fs *knownFields) Clear(n pref.FieldNumber) {
 		return
 	}
 }
-func (fs *knownFields) Mutable(n pref.FieldNumber) pref.Mutable {
-	if fi := fs.mi.fields[n]; fi != nil {
-		return fi.mutable(fs.p)
-	}
-	if fs.mi.Type.ExtensionRanges().Has(n) {
-		return fs.extensionFields().Mutable(n)
-	}
-	panic(fmt.Sprintf("invalid field: %d", n))
-}
 func (fs *knownFields) Range(f func(pref.FieldNumber, pref.Value) bool) {
 	for n, fi := range fs.mi.fields {
 		if fi.has(fs.p) {
@@ -283,6 +274,15 @@ func (fs *knownFields) Range(f func(pref.FieldNumber, pref.Value) bool) {
 		}
 	}
 	fs.extensionFields().Range(f)
+}
+func (fs *knownFields) NewMessage(n pref.FieldNumber) pref.ProtoMessage {
+	if fi := fs.mi.fields[n]; fi != nil {
+		return fi.newMessage().Interface()
+	}
+	if fs.mi.Type.ExtensionRanges().Has(n) {
+		return fs.extensionFields().NewMessage(n)
+	}
+	panic(fmt.Sprintf("invalid field: %d", n))
 }
 func (fs *knownFields) ExtensionTypes() pref.ExtensionFieldTypes {
 	return fs.extensionFields().ExtensionTypes()
@@ -306,9 +306,11 @@ func (emptyExtensionFields) Has(pref.FieldNumber) bool                     { ret
 func (emptyExtensionFields) Get(pref.FieldNumber) pref.Value               { return pref.Value{} }
 func (emptyExtensionFields) Set(pref.FieldNumber, pref.Value)              { panic("extensions not supported") }
 func (emptyExtensionFields) Clear(pref.FieldNumber)                        { return } // noop
-func (emptyExtensionFields) Mutable(pref.FieldNumber) pref.Mutable         { panic("extensions not supported") }
 func (emptyExtensionFields) Range(func(pref.FieldNumber, pref.Value) bool) { return }
-func (emptyExtensionFields) ExtensionTypes() pref.ExtensionFieldTypes      { return emptyExtensionTypes{} }
+func (emptyExtensionFields) NewMessage(pref.FieldNumber) pref.ProtoMessage {
+	panic("extensions not supported")
+}
+func (emptyExtensionFields) ExtensionTypes() pref.ExtensionFieldTypes { return emptyExtensionTypes{} }
 
 type emptyExtensionTypes struct{}
 

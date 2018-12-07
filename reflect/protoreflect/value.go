@@ -35,9 +35,6 @@ type Message interface {
 	// Interface unwraps the message reflection interface and
 	// returns the underlying proto.Message interface.
 	Interface() ProtoMessage
-
-	// ProtoMutable is a marker method to implement the Mutable interface.
-	ProtoMutable()
 }
 
 // KnownFields provides accessor and mutator methods for known fields.
@@ -95,17 +92,17 @@ type KnownFields interface {
 	// a known field or extension field.
 	Clear(FieldNumber)
 
-	// Mutable returns a reference value for a field with a given field number,
-	// allocating a new instance if necessary.
-	// It panics if the field is not a message, list, or map.
-	Mutable(FieldNumber) Mutable
-
 	// Range iterates over every populated field in an undefined order,
 	// calling f for each field number and value encountered.
 	// Range calls f Len times unless f returns false, which stops iteration.
 	// While iterating, mutating operations through Set, Clear, or Mutable
 	// may only be performed on the current field number.
 	Range(f func(FieldNumber, Value) bool)
+
+	// NewMessage returns a newly allocated empty message assignable to
+	// the field of the given number.
+	// It panics if the field is not a singular message.
+	NewMessage(FieldNumber) ProtoMessage
 
 	// ExtensionTypes are extension field types that are known by this
 	// specific message instance.
@@ -243,22 +240,14 @@ type List interface {
 	// value aliases the source's memory in any way.
 	Append(Value)
 
-	// Mutable returns a Mutable reference for the element with a given index,
-	// allocating a new entry if necessary.
-	// It panics if the element kind is not a message.
-	Mutable(int) Mutable
-
-	// MutableAppend appends a new element and returns a mutable reference.
-	// It panics if the element kind is not a message.
-	MutableAppend() Mutable
-
-	// TODO: Should truncate accept two indexes similar to slicing?M
+	// TODO: Should truncate accept two indexes similar to slicing?
 
 	// Truncate truncates the list to a smaller length.
 	Truncate(int)
 
-	// ProtoMutable is a marker method to implement the Mutable interface.
-	ProtoMutable()
+	// NewMessage returns a newly allocated empty message assignable to a list entry.
+	// It panics if the list entry type is not a message.
+	NewMessage() ProtoMessage
 }
 
 // Map is an unordered, associative map. Only elements within the map
@@ -289,11 +278,6 @@ type Map interface {
 	// The operation does nothing if there is no entry associated with the key.
 	Clear(MapKey)
 
-	// Mutable returns a Mutable reference for the element with a given key,
-	// allocating a new entry if necessary.
-	// It panics if the element kind is not a message.
-	Mutable(MapKey) Mutable
-
 	// Range iterates over every map entry in an undefined order,
 	// calling f for each key and value encountered.
 	// Range calls f Len times unless f returns false, which stops iteration.
@@ -301,12 +285,7 @@ type Map interface {
 	// may only be performed on the current map key.
 	Range(f func(MapKey, Value) bool)
 
-	// ProtoMutable is a marker method to implement the Mutable interface.
-	ProtoMutable()
-}
-
-// Mutable is a mutable reference, where mutate operations also affect
-// the backing store. Possible Mutable types: Message, List, or Map.
-type Mutable interface {
-	ProtoMutable()
+	// NewMessage returns a newly allocated empty message assignable to a map value.
+	// It panics if the map value type is not a message.
+	NewMessage() ProtoMessage
 }

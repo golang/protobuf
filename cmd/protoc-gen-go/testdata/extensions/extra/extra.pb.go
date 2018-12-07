@@ -40,7 +40,6 @@ func (m xxx_ExtraMessage) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_ExtraMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_ExtraMessage) ProtoMutable() {}
 
 func (m *ExtraMessage) Reset()         { *m = ExtraMessage{} }
 func (m *ExtraMessage) String() string { return proto.CompactTextString(m) }

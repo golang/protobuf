@@ -432,7 +432,6 @@ func (m xxx_FileDescriptorSet) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_FileDescriptorSet) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FileDescriptorSet) ProtoMutable() {}
 
 func (m *FileDescriptorSet) Reset()         { *m = FileDescriptorSet{} }
 func (m *FileDescriptorSet) String() string { return protoapi.CompactTextString(m) }
@@ -495,7 +494,6 @@ func (m xxx_FileDescriptorProto) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_FileDescriptorProto) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FileDescriptorProto) ProtoMutable() {}
 
 func (m *FileDescriptorProto) Reset()         { *m = FileDescriptorProto{} }
 func (m *FileDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -624,7 +622,6 @@ func (m xxx_DescriptorProto) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_DescriptorProto) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_DescriptorProto) ProtoMutable() {}
 
 func (m *DescriptorProto) Reset()         { *m = DescriptorProto{} }
 func (m *DescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -729,7 +726,6 @@ func (m xxx_ExtensionRangeOptions) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_ExtensionRangeOptions) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_ExtensionRangeOptions) ProtoMutable() {}
 
 func (m *ExtensionRangeOptions) Reset()         { *m = ExtensionRangeOptions{} }
 func (m *ExtensionRangeOptions) String() string { return protoapi.CompactTextString(m) }
@@ -807,7 +803,6 @@ func (m xxx_FieldDescriptorProto) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_FieldDescriptorProto) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FieldDescriptorProto) ProtoMutable() {}
 
 func (m *FieldDescriptorProto) Reset()         { *m = FieldDescriptorProto{} }
 func (m *FieldDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -912,7 +907,6 @@ func (m xxx_OneofDescriptorProto) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_OneofDescriptorProto) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_OneofDescriptorProto) ProtoMutable() {}
 
 func (m *OneofDescriptorProto) Reset()         { *m = OneofDescriptorProto{} }
 func (m *OneofDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -969,7 +963,6 @@ func (m xxx_EnumDescriptorProto) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_EnumDescriptorProto) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_EnumDescriptorProto) ProtoMutable() {}
 
 func (m *EnumDescriptorProto) Reset()         { *m = EnumDescriptorProto{} }
 func (m *EnumDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -1040,7 +1033,6 @@ func (m xxx_EnumValueDescriptorProto) UnknownFields() protoreflect.UnknownFields
 func (m xxx_EnumValueDescriptorProto) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_EnumValueDescriptorProto) ProtoMutable() {}
 
 func (m *EnumValueDescriptorProto) Reset()         { *m = EnumValueDescriptorProto{} }
 func (m *EnumValueDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -1097,7 +1089,6 @@ func (m xxx_ServiceDescriptorProto) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_ServiceDescriptorProto) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_ServiceDescriptorProto) ProtoMutable() {}
 
 func (m *ServiceDescriptorProto) Reset()         { *m = ServiceDescriptorProto{} }
 func (m *ServiceDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -1161,7 +1152,6 @@ func (m xxx_MethodDescriptorProto) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_MethodDescriptorProto) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_MethodDescriptorProto) ProtoMutable() {}
 
 func (m *MethodDescriptorProto) Reset()         { *m = MethodDescriptorProto{} }
 func (m *MethodDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -1323,7 +1313,6 @@ func (m xxx_FileOptions) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_FileOptions) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FileOptions) ProtoMutable() {}
 
 func (m *FileOptions) Reset()         { *m = FileOptions{} }
 func (m *FileOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1574,7 +1563,6 @@ func (m xxx_MessageOptions) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_MessageOptions) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_MessageOptions) ProtoMutable() {}
 
 func (m *MessageOptions) Reset()         { *m = MessageOptions{} }
 func (m *MessageOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1715,7 +1703,6 @@ func (m xxx_FieldOptions) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_FieldOptions) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_FieldOptions) ProtoMutable() {}
 
 func (m *FieldOptions) Reset()         { *m = FieldOptions{} }
 func (m *FieldOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1813,7 +1800,6 @@ func (m xxx_OneofOptions) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_OneofOptions) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_OneofOptions) ProtoMutable() {}
 
 func (m *OneofOptions) Reset()         { *m = OneofOptions{} }
 func (m *OneofOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1871,7 +1857,6 @@ func (m xxx_EnumOptions) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_EnumOptions) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_EnumOptions) ProtoMutable() {}
 
 func (m *EnumOptions) Reset()         { *m = EnumOptions{} }
 func (m *EnumOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1942,7 +1927,6 @@ func (m xxx_EnumValueOptions) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_EnumValueOptions) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_EnumValueOptions) ProtoMutable() {}
 
 func (m *EnumValueOptions) Reset()         { *m = EnumValueOptions{} }
 func (m *EnumValueOptions) String() string { return protoapi.CompactTextString(m) }
@@ -2006,7 +1990,6 @@ func (m xxx_ServiceOptions) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_ServiceOptions) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_ServiceOptions) ProtoMutable() {}
 
 func (m *ServiceOptions) Reset()         { *m = ServiceOptions{} }
 func (m *ServiceOptions) String() string { return protoapi.CompactTextString(m) }
@@ -2071,7 +2054,6 @@ func (m xxx_MethodOptions) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_MethodOptions) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_MethodOptions) ProtoMutable() {}
 
 func (m *MethodOptions) Reset()         { *m = MethodOptions{} }
 func (m *MethodOptions) String() string { return protoapi.CompactTextString(m) }
@@ -2150,7 +2132,6 @@ func (m xxx_UninterpretedOption) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_UninterpretedOption) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_UninterpretedOption) ProtoMutable() {}
 
 func (m *UninterpretedOption) Reset()         { *m = UninterpretedOption{} }
 func (m *UninterpretedOption) String() string { return protoapi.CompactTextString(m) }
@@ -2277,7 +2258,6 @@ func (m xxx_SourceCodeInfo) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_SourceCodeInfo) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_SourceCodeInfo) ProtoMutable() {}
 
 func (m *SourceCodeInfo) Reset()         { *m = SourceCodeInfo{} }
 func (m *SourceCodeInfo) String() string { return protoapi.CompactTextString(m) }
@@ -2322,7 +2302,6 @@ func (m xxx_GeneratedCodeInfo) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_GeneratedCodeInfo) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_GeneratedCodeInfo) ProtoMutable() {}
 
 func (m *GeneratedCodeInfo) Reset()         { *m = GeneratedCodeInfo{} }
 func (m *GeneratedCodeInfo) String() string { return protoapi.CompactTextString(m) }
@@ -2366,7 +2345,6 @@ func (m xxx_DescriptorProto_ExtensionRange) UnknownFields() protoreflect.Unknown
 func (m xxx_DescriptorProto_ExtensionRange) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_DescriptorProto_ExtensionRange) ProtoMutable() {}
 
 func (m *DescriptorProto_ExtensionRange) Reset()         { *m = DescriptorProto_ExtensionRange{} }
 func (m *DescriptorProto_ExtensionRange) String() string { return protoapi.CompactTextString(m) }
@@ -2426,7 +2404,6 @@ func (m xxx_DescriptorProto_ReservedRange) UnknownFields() protoreflect.UnknownF
 func (m xxx_DescriptorProto_ReservedRange) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_DescriptorProto_ReservedRange) ProtoMutable() {}
 
 func (m *DescriptorProto_ReservedRange) Reset()         { *m = DescriptorProto_ReservedRange{} }
 func (m *DescriptorProto_ReservedRange) String() string { return protoapi.CompactTextString(m) }
@@ -2482,7 +2459,6 @@ func (m xxx_EnumDescriptorProto_EnumReservedRange) UnknownFields() protoreflect.
 func (m xxx_EnumDescriptorProto_EnumReservedRange) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_EnumDescriptorProto_EnumReservedRange) ProtoMutable() {}
 
 func (m *EnumDescriptorProto_EnumReservedRange) Reset()         { *m = EnumDescriptorProto_EnumReservedRange{} }
 func (m *EnumDescriptorProto_EnumReservedRange) String() string { return protoapi.CompactTextString(m) }
@@ -2535,7 +2511,6 @@ func (m xxx_UninterpretedOption_NamePart) UnknownFields() protoreflect.UnknownFi
 func (m xxx_UninterpretedOption_NamePart) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_UninterpretedOption_NamePart) ProtoMutable() {}
 
 func (m *UninterpretedOption_NamePart) Reset()         { *m = UninterpretedOption_NamePart{} }
 func (m *UninterpretedOption_NamePart) String() string { return protoapi.CompactTextString(m) }
@@ -2661,7 +2636,6 @@ func (m xxx_SourceCodeInfo_Location) UnknownFields() protoreflect.UnknownFields 
 func (m xxx_SourceCodeInfo_Location) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_SourceCodeInfo_Location) ProtoMutable() {}
 
 func (m *SourceCodeInfo_Location) Reset()         { *m = SourceCodeInfo_Location{} }
 func (m *SourceCodeInfo_Location) String() string { return protoapi.CompactTextString(m) }
@@ -2740,7 +2714,6 @@ func (m xxx_GeneratedCodeInfo_Annotation) UnknownFields() protoreflect.UnknownFi
 func (m xxx_GeneratedCodeInfo_Annotation) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_GeneratedCodeInfo_Annotation) ProtoMutable() {}
 
 func (m *GeneratedCodeInfo_Annotation) Reset()         { *m = GeneratedCodeInfo_Annotation{} }
 func (m *GeneratedCodeInfo_Annotation) String() string { return protoapi.CompactTextString(m) }

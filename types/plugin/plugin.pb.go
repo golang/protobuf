@@ -47,7 +47,6 @@ func (m xxx_Version) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Version) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Version) ProtoMutable() {}
 
 func (m *Version) Reset()         { *m = Version{} }
 func (m *Version) String() string { return proto.CompactTextString(m) }
@@ -149,7 +148,6 @@ func (m xxx_CodeGeneratorRequest) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_CodeGeneratorRequest) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_CodeGeneratorRequest) ProtoMutable() {}
 
 func (m *CodeGeneratorRequest) Reset()         { *m = CodeGeneratorRequest{} }
 func (m *CodeGeneratorRequest) String() string { return proto.CompactTextString(m) }
@@ -238,7 +236,6 @@ func (m xxx_CodeGeneratorResponse) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_CodeGeneratorResponse) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_CodeGeneratorResponse) ProtoMutable() {}
 
 func (m *CodeGeneratorResponse) Reset()         { *m = CodeGeneratorResponse{} }
 func (m *CodeGeneratorResponse) String() string { return proto.CompactTextString(m) }
@@ -355,7 +352,6 @@ func (m xxx_CodeGeneratorResponse_File) UnknownFields() protoreflect.UnknownFiel
 func (m xxx_CodeGeneratorResponse_File) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_CodeGeneratorResponse_File) ProtoMutable() {}
 
 func (m *CodeGeneratorResponse_File) Reset()         { *m = CodeGeneratorResponse_File{} }
 func (m *CodeGeneratorResponse_File) String() string { return proto.CompactTextString(m) }

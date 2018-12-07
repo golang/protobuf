@@ -50,7 +50,6 @@ func (m xxx_Message1) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Message1) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Message1) ProtoMutable() {}
 
 func (m *Message1) Reset()         { *m = Message1{} }
 func (m *Message1) String() string { return proto.CompactTextString(m) }
@@ -139,7 +138,6 @@ func (m xxx_Message2) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Message2) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Message2) ProtoMutable() {}
 
 func (m *Message2) Reset()         { *m = Message2{} }
 func (m *Message2) String() string { return proto.CompactTextString(m) }
@@ -190,7 +188,6 @@ func (m xxx_Message1_Message1A) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Message1_Message1A) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Message1_Message1A) ProtoMutable() {}
 
 func (m *Message1_Message1A) Reset()         { *m = Message1_Message1A{} }
 func (m *Message1_Message1A) String() string { return proto.CompactTextString(m) }
@@ -241,7 +238,6 @@ func (m xxx_Message1_Message1B) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Message1_Message1B) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Message1_Message1B) ProtoMutable() {}
 
 func (m *Message1_Message1B) Reset()         { *m = Message1_Message1B{} }
 func (m *Message1_Message1B) String() string { return proto.CompactTextString(m) }
@@ -292,7 +288,6 @@ func (m xxx_Message2_Message2A) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Message2_Message2A) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Message2_Message2A) ProtoMutable() {}
 
 func (m *Message2_Message2A) Reset()         { *m = Message2_Message2A{} }
 func (m *Message2_Message2A) String() string { return proto.CompactTextString(m) }
@@ -343,7 +338,6 @@ func (m xxx_Message2_Message2B) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_Message2_Message2B) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_Message2_Message2B) ProtoMutable() {}
 
 func (m *Message2_Message2B) Reset()         { *m = Message2_Message2B{} }
 func (m *Message2_Message2B) String() string { return proto.CompactTextString(m) }

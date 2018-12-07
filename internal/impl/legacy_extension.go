@@ -118,20 +118,6 @@ func (p legacyExtensionFields) Clear(n pref.FieldNumber) {
 	p.x.Set(n, x)
 }
 
-func (p legacyExtensionFields) Mutable(n pref.FieldNumber) pref.Mutable {
-	x := p.x.Get(n)
-	if x.Desc == nil {
-		panic("no extension descriptor registered")
-	}
-	t := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
-	if x.Value == nil {
-		v := t.ValueOf(t.New())
-		x.Value = t.InterfaceOf(v)
-		p.x.Set(n, x)
-	}
-	return t.ValueOf(x.Value).Interface().(pref.Mutable)
-}
-
 func (p legacyExtensionFields) Range(f func(pref.FieldNumber, pref.Value) bool) {
 	p.x.Range(func(n pref.FieldNumber, x papi.ExtensionField) bool {
 		if p.Has(n) {
@@ -139,6 +125,15 @@ func (p legacyExtensionFields) Range(f func(pref.FieldNumber, pref.Value) bool) 
 		}
 		return true
 	})
+}
+
+func (p legacyExtensionFields) NewMessage(n pref.FieldNumber) pref.ProtoMessage {
+	x := p.x.Get(n)
+	if x.Desc == nil {
+		panic("no extension descriptor registered")
+	}
+	xt := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
+	return xt.ValueOf(xt.New()).Message().Interface()
 }
 
 func (p legacyExtensionFields) ExtensionTypes() pref.ExtensionFieldTypes {

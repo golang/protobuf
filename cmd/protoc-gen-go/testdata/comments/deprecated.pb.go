@@ -74,7 +74,6 @@ func (m xxx_DeprecatedMessage) UnknownFields() protoreflect.UnknownFields {
 func (m xxx_DeprecatedMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
 }
-func (m xxx_DeprecatedMessage) ProtoMutable() {}
 
 func (m *DeprecatedMessage) Reset()         { *m = DeprecatedMessage{} }
 func (m *DeprecatedMessage) String() string { return proto.CompactTextString(m) }

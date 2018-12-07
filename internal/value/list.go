@@ -39,20 +39,12 @@ func (ls listReflect) Set(i int, v pref.Value) {
 func (ls listReflect) Append(v pref.Value) {
 	ls.v.Elem().Set(reflect.Append(ls.v.Elem(), ls.conv.GoValueOf(v)))
 }
-func (ls listReflect) Mutable(i int) pref.Mutable {
-	// Mutable is only valid for messages and panics for other kinds.
-	return ls.conv.PBValueOf(ls.v.Elem().Index(i)).Message()
-}
-func (ls listReflect) MutableAppend() pref.Mutable {
-	// MutableAppend is only valid for messages and panics for other kinds.
-	pv := pref.ValueOf(ls.conv.MessageType.New().ProtoReflect())
-	ls.v.Elem().Set(reflect.Append(ls.v.Elem(), ls.conv.GoValueOf(pv)))
-	return pv.Message()
-}
 func (ls listReflect) Truncate(i int) {
 	ls.v.Elem().Set(ls.v.Elem().Slice(0, i))
+}
+func (ls listReflect) NewMessage() pref.ProtoMessage {
+	return ls.conv.MessageType.New()
 }
 func (ls listReflect) ProtoUnwrap() interface{} {
 	return ls.v.Interface()
 }
-func (ls listReflect) ProtoMutable() {}

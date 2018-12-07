@@ -16,11 +16,11 @@ import (
 type fieldInfo struct {
 	// TODO: specialize marshal and unmarshal functions?
 
-	has     func(pointer) bool
-	get     func(pointer) pref.Value
-	set     func(pointer, pref.Value)
-	clear   func(pointer)
-	mutable func(pointer) pref.Mutable
+	has        func(pointer) bool
+	get        func(pointer) pref.Value
+	set        func(pointer, pref.Value)
+	clear      func(pointer)
+	newMessage func() pref.Message
 }
 
 func fieldInfoForWeak(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
@@ -86,18 +86,9 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 			}
 			rv.Set(reflect.Zero(rv.Type()))
 		},
-		mutable: func(p pointer) pref.Mutable {
-			// Mutable is only valid for messages and panics for other kinds.
-			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
-			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
-				rv.Set(reflect.New(ot))
-			}
-			rv = rv.Elem().Elem().Field(0)
-			if rv.IsNil() {
-				pv := pref.ValueOf(conv.MessageType.New().ProtoReflect())
-				rv.Set(conv.GoValueOf(pv))
-			}
-			return conv.PBValueOf(rv).Message()
+		newMessage: func() pref.Message {
+			// This is only valid for messages and panics for other kinds.
+			return conv.MessageType.New().ProtoReflect()
 		},
 	}
 }
@@ -135,10 +126,6 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
-		mutable: func(p pointer) pref.Mutable {
-			v := p.Apply(fieldOffset).AsIfaceOf(fs.Type)
-			return pvalue.MapOf(v, keyConv, valConv)
-		},
 	}
 }
 
@@ -173,10 +160,6 @@ func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 		clear: func(p pointer) {
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
-		},
-		mutable: func(p pointer) pref.Mutable {
-			v := p.Apply(fieldOffset).AsIfaceOf(fs.Type)
-			return pvalue.ListOf(v, conv)
 		},
 	}
 }
@@ -253,9 +236,6 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
-		mutable: func(p pointer) pref.Mutable {
-			panic("invalid mutable call")
-		},
 	}
 }
 
@@ -293,14 +273,8 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
-		mutable: func(p pointer) pref.Mutable {
-			// Mutable is only valid for messages and panics for other kinds.
-			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
-			if rv.IsNil() {
-				pv := pref.ValueOf(conv.MessageType.New().ProtoReflect())
-				rv.Set(conv.GoValueOf(pv))
-			}
-			return conv.PBValueOf(rv).Message()
+		newMessage: func() pref.Message {
+			return conv.MessageType.New().ProtoReflect()
 		},
 	}
 }
