@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
+	detrand "github.com/golang/protobuf/v2/internal/detrand"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pdesc "github.com/golang/protobuf/v2/reflect/protodesc"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
@@ -20,6 +21,11 @@ import (
 
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
+
+func init() {
+	// Disable detrand to enable direct comparisons on outputs.
+	detrand.Disable()
+}
 
 // TODO: Test protodesc.NewFile with imported files.
 
@@ -811,7 +817,6 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 	tests := []struct{ fmt, want string }{{"%v", compactMultiFormat(want)}, {"%+v", want}}
 	for _, tt := range tests {
 		got := fmt.Sprintf(tt.fmt, fd)
-		got = strings.Replace(got, "FileDescriptor ", "FileDescriptor", 1) // cleanup randomizer
 		if got != tt.want {
 			t.Errorf("fmt.Sprintf(%q, fd):\ngot:  %s\nwant: %s", tt.fmt, got, tt.want)
 		}
