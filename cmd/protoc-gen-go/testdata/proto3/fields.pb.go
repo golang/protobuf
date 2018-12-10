@@ -582,6 +582,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "optionalBool",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_enum",
@@ -589,6 +590,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "optionalEnum",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_int32",
@@ -596,6 +598,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "optionalInt32",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_sint32",
@@ -603,6 +606,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Sint32Kind,
 				JSONName:    "optionalSint32",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_uint32",
@@ -610,6 +614,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Uint32Kind,
 				JSONName:    "optionalUint32",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_int64",
@@ -617,6 +622,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int64Kind,
 				JSONName:    "optionalInt64",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_sint64",
@@ -624,6 +630,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Sint64Kind,
 				JSONName:    "optionalSint64",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_uint64",
@@ -631,6 +638,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Uint64Kind,
 				JSONName:    "optionalUint64",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_sfixed32",
@@ -638,6 +646,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Sfixed32Kind,
 				JSONName:    "optionalSfixed32",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_fixed32",
@@ -645,6 +654,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Fixed32Kind,
 				JSONName:    "optionalFixed32",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_float",
@@ -652,6 +662,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.FloatKind,
 				JSONName:    "optionalFloat",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_sfixed64",
@@ -659,6 +670,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Sfixed64Kind,
 				JSONName:    "optionalSfixed64",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_fixed64",
@@ -666,6 +678,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Fixed64Kind,
 				JSONName:    "optionalFixed64",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_double",
@@ -673,6 +686,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.DoubleKind,
 				JSONName:    "optionalDouble",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_string",
@@ -680,6 +694,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "optionalString",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_bytes",
@@ -687,6 +702,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.BytesKind,
 				JSONName:    "optionalBytes",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optional_Message",
@@ -694,6 +710,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "optionalMessage",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "repeated_bool",
@@ -701,6 +718,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "repeatedBool",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_enum",
@@ -708,6 +726,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "repeatedEnum",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_int32",
@@ -715,6 +734,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "repeatedInt32",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_sint32",
@@ -722,6 +742,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Sint32Kind,
 				JSONName:    "repeatedSint32",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_uint32",
@@ -729,6 +750,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Uint32Kind,
 				JSONName:    "repeatedUint32",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_int64",
@@ -736,6 +758,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Int64Kind,
 				JSONName:    "repeatedInt64",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_sint64",
@@ -743,6 +766,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Sint64Kind,
 				JSONName:    "repeatedSint64",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_uint64",
@@ -750,6 +774,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Uint64Kind,
 				JSONName:    "repeatedUint64",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_sfixed32",
@@ -757,6 +782,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Sfixed32Kind,
 				JSONName:    "repeatedSfixed32",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_fixed32",
@@ -764,6 +790,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Fixed32Kind,
 				JSONName:    "repeatedFixed32",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_float",
@@ -771,6 +798,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.FloatKind,
 				JSONName:    "repeatedFloat",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_sfixed64",
@@ -778,6 +806,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Sfixed64Kind,
 				JSONName:    "repeatedSfixed64",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_fixed64",
@@ -785,6 +814,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Fixed64Kind,
 				JSONName:    "repeatedFixed64",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_double",
@@ -792,6 +822,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.DoubleKind,
 				JSONName:    "repeatedDouble",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "repeated_string",
@@ -799,6 +830,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "repeatedString",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "repeated_bytes",
@@ -806,6 +838,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.BytesKind,
 				JSONName:    "repeatedBytes",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "repeated_Message",
@@ -813,6 +846,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "repeatedMessage",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "map_int32_int64",
@@ -820,6 +854,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "mapInt32Int64",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "map_string_message",
@@ -827,6 +862,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "mapStringMessage",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "map_fixed64_enum",
@@ -834,6 +870,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "mapFixed64Enum",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -846,6 +883,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "key",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "value",
@@ -853,8 +891,10 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int64Kind,
 				JSONName:    "value",
+				IsPacked:    prototype.False,
 			},
 		},
+		IsMapEntry: true,
 	},
 	{
 		Name: "MapStringMessageEntry",
@@ -865,6 +905,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "key",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "value",
@@ -872,8 +913,10 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "value",
+				IsPacked:    prototype.False,
 			},
 		},
+		IsMapEntry: true,
 	},
 	{
 		Name: "MapFixed64EnumEntry",
@@ -884,6 +927,7 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Fixed64Kind,
 				JSONName:    "key",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "value",
@@ -891,8 +935,10 @@ var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "value",
+				IsPacked:    prototype.False,
 			},
 		},
+		IsMapEntry: true,
 	},
 	{
 		Name: "Message",

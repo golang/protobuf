@@ -230,9 +230,10 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 			f.MessageType = mv.ProtoReflect().Type()
 		} else if t.Kind() == reflect.Map {
 			m := &ptype.StandaloneMessage{
-				Syntax:   parent.Syntax,
-				FullName: parent.FullName.Append(mapEntryName(f.Name)),
-				Options:  &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
+				Syntax:     parent.Syntax,
+				FullName:   parent.FullName.Append(mapEntryName(f.Name)),
+				Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
+				IsMapEntry: true,
 				Fields: []ptype.Field{
 					ms.parseField(tagKey, "", "", t.Key(), nil),
 					ms.parseField(tagVal, "", "", t.Elem(), nil),

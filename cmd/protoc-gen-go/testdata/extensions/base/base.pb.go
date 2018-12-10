@@ -206,6 +206,7 @@ var xxx_Base_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "field",
+				IsPacked:    prototype.False,
 			},
 		},
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{4, 10}, {16, 536870912}},

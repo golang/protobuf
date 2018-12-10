@@ -143,6 +143,7 @@ var xxx_B_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "m",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "e",
@@ -150,6 +151,7 @@ var xxx_B_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "e",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

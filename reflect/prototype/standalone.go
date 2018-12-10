@@ -24,11 +24,11 @@ type StandaloneMessage struct {
 	ExtensionRanges       [][2]protoreflect.FieldNumber
 	ExtensionRangeOptions []protoreflect.ProtoMessage
 	Options               protoreflect.ProtoMessage
+	IsMapEntry            bool
 
-	fields  fieldsMeta
-	oneofs  oneofsMeta
-	nums    numbersMeta
-	options messageOptions
+	fields fieldsMeta
+	oneofs oneofsMeta
+	nums   numbersMeta
 }
 
 // NewMessage creates a new protoreflect.MessageDescriptor.
@@ -67,7 +67,7 @@ func NewMessages(ts []*StandaloneMessage) ([]protoreflect.MessageDescriptor, err
 		for i, f := range t.Fields {
 			// Resolve placeholder messages with a concrete standalone message.
 			// If this fails, validateMessage will complain about it later.
-			if f.MessageType != nil && f.MessageType.IsPlaceholder() && !isWeak(f.Options) {
+			if f.MessageType != nil && f.MessageType.IsPlaceholder() && !f.IsWeak {
 				if m, ok := ms[f.MessageType.FullName()]; ok {
 					t.Fields[i].MessageType = m
 				}
@@ -118,6 +118,7 @@ type StandaloneExtension struct {
 	EnumType     protoreflect.EnumDescriptor
 	ExtendedType protoreflect.MessageDescriptor
 	Options      protoreflect.ProtoMessage
+	IsPacked     OptionalBool
 
 	dv defaultValue
 }

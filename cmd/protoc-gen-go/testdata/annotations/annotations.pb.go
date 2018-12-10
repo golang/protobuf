@@ -198,6 +198,7 @@ var xxx_Annotations_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "AnnotationsTestField",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

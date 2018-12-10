@@ -184,6 +184,7 @@ var xxx_TestImportAll_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "am1",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "am2",
@@ -191,6 +192,7 @@ var xxx_TestImportAll_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "am2",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "bm1",
@@ -198,6 +200,7 @@ var xxx_TestImportAll_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "bm1",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "bm2",
@@ -205,6 +208,7 @@ var xxx_TestImportAll_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "bm2",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "fmt",
@@ -212,6 +216,7 @@ var xxx_TestImportAll_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "fmt",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

@@ -498,6 +498,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "major",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "minor",
@@ -505,6 +506,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "minor",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "patch",
@@ -512,6 +514,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "patch",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "suffix",
@@ -519,6 +522,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "suffix",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -531,6 +535,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "fileToGenerate",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "parameter",
@@ -538,6 +543,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "parameter",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "proto_file",
@@ -545,6 +551,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "protoFile",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "compiler_version",
@@ -552,6 +559,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "compilerVersion",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -564,6 +572,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "error",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "file",
@@ -571,6 +580,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "file",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -583,6 +593,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "insertion_point",
@@ -590,6 +601,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "insertionPoint",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "content",
@@ -597,6 +609,7 @@ var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "content",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

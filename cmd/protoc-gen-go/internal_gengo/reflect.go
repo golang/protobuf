@@ -289,6 +289,14 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 					if oneof := field.OneofType(); oneof != nil {
 						g.P("OneofName: ", strconv.Quote(string(oneof.Name())), ",")
 					}
+					if field.IsPacked() {
+						g.P("IsPacked: ", prototypePackage.Ident("True"), ",")
+					} else {
+						g.P("IsPacked: ", prototypePackage.Ident("False"), ",")
+					}
+					if field.IsWeak() {
+						g.P("IsWeak: true,")
+					}
 					// NOTE: MessageType and EnumType are populated by init.
 					g.P("},")
 				}
@@ -325,6 +333,9 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 					ss = append(ss, fmt.Sprintf("{%d,%d}", r[0], r[1]))
 				}
 				g.P("ExtensionRanges: [][2]", protoreflectPackage.Ident("FieldNumber"), "{", strings.Join(ss, ","), "},")
+			}
+			if message.Desc.IsMapEntry() {
+				g.P("IsMapEntry: true,")
 			}
 			// NOTE: Messages, Enums, and Extensions are populated by init.
 			g.P("},")

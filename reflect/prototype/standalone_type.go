@@ -23,7 +23,7 @@ func (t standaloneMessage) IsPlaceholder() bool             { return false }
 func (t standaloneMessage) Options() pref.ProtoMessage {
 	return altOptions(t.m.Options, optionTypes.Message)
 }
-func (t standaloneMessage) IsMapEntry() bool              { return t.m.options.lazyInit(t).isMapEntry }
+func (t standaloneMessage) IsMapEntry() bool              { return t.m.IsMapEntry }
 func (t standaloneMessage) Fields() pref.FieldDescriptors { return t.m.fields.lazyInit(t, t.m.Fields) }
 func (t standaloneMessage) Oneofs() pref.OneofDescriptors { return t.m.oneofs.lazyInit(t, t.m.Oneofs) }
 func (t standaloneMessage) ReservedNames() pref.Names     { return (*names)(&t.m.ReservedNames) }
@@ -76,11 +76,13 @@ func (t standaloneExtension) Cardinality() pref.Cardinality { return t.x.Cardina
 func (t standaloneExtension) Kind() pref.Kind               { return t.x.Kind }
 func (t standaloneExtension) HasJSONName() bool             { return false }
 func (t standaloneExtension) JSONName() string              { return "" }
-func (t standaloneExtension) IsPacked() bool                { return isPacked(t.Options()) }
-func (t standaloneExtension) IsWeak() bool                  { return false }
-func (t standaloneExtension) IsMap() bool                   { return false }
-func (t standaloneExtension) HasDefault() bool              { return t.x.Default.IsValid() }
-func (t standaloneExtension) Default() pref.Value           { return t.x.dv.value(t, t.x.Default) }
+func (t standaloneExtension) IsPacked() bool {
+	return isPacked(t.x.IsPacked, pref.Proto2, t.x.Cardinality, t.x.Kind)
+}
+func (t standaloneExtension) IsWeak() bool        { return false }
+func (t standaloneExtension) IsMap() bool         { return false }
+func (t standaloneExtension) HasDefault() bool    { return t.x.Default.IsValid() }
+func (t standaloneExtension) Default() pref.Value { return t.x.dv.value(t, t.x.Default) }
 func (t standaloneExtension) DefaultEnumValue() pref.EnumValueDescriptor {
 	return t.x.dv.enum(t, t.x.Default)
 }

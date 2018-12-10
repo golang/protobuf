@@ -137,6 +137,7 @@ var xxx_Proto2_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "i32",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "m",
@@ -144,6 +145,7 @@ var xxx_Proto2_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "m",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

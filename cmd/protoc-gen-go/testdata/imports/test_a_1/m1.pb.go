@@ -241,6 +241,7 @@ var xxx_M1_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "m1",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

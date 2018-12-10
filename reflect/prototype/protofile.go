@@ -11,6 +11,13 @@
 // information must be provided such as the full type name and the proto syntax.
 // When creating an entire file, the syntax and full name is derived from
 // the parent type.
+//
+// Most types contain options, defined as messages in descriptor.proto.
+// To avoid cyclic dependencies, the prototype package treats these options
+// as opaque protoreflect.ProtoMessage values. In some cases where the option
+// contains semantically important information (e.g.,
+// google.protobuf.MessageOptions.map_entry), this information must be provided
+// as a field of the corresponding type (e.g., prototype.Message.MapEntry).
 package prototype
 
 import "github.com/golang/protobuf/v2/reflect/protoreflect"
@@ -103,6 +110,7 @@ type Message struct {
 	ExtensionRanges       [][2]protoreflect.FieldNumber
 	ExtensionRangeOptions []protoreflect.ProtoMessage
 	Options               protoreflect.ProtoMessage
+	IsMapEntry            bool
 
 	Enums      []Enum
 	Messages   []Message
@@ -131,6 +139,8 @@ type Field struct {
 	MessageType protoreflect.MessageDescriptor
 	EnumType    protoreflect.EnumDescriptor
 	Options     protoreflect.ProtoMessage
+	IsPacked    OptionalBool
+	IsWeak      bool
 
 	*fieldMeta
 }
@@ -154,6 +164,7 @@ type Extension struct {
 	EnumType     protoreflect.EnumDescriptor
 	ExtendedType protoreflect.MessageDescriptor
 	Options      protoreflect.ProtoMessage
+	IsPacked     OptionalBool
 
 	*extensionMeta
 }
@@ -206,3 +217,13 @@ type Method struct {
 
 	*methodMeta
 }
+
+// OptionalBool is a tristate boolean.
+type OptionalBool uint8
+
+// Tristate boolean values.
+const (
+	DefaultBool OptionalBool = iota
+	True
+	False
+)

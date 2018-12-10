@@ -165,7 +165,6 @@ type messageMeta struct {
 	ms messagesMeta
 	es enumsMeta
 	xs extensionsMeta
-	mo messageOptions
 }
 type messageDesc struct{ m *Message }
 
@@ -176,7 +175,7 @@ func (t messageDesc) Name() pref.Name                    { return t.m.Name }
 func (t messageDesc) FullName() pref.FullName            { return t.m.fullName }
 func (t messageDesc) IsPlaceholder() bool                { return false }
 func (t messageDesc) Options() pref.ProtoMessage         { return altOptions(t.m.Options, optionTypes.Message) }
-func (t messageDesc) IsMapEntry() bool                   { return t.m.mo.lazyInit(t).isMapEntry }
+func (t messageDesc) IsMapEntry() bool                   { return t.m.IsMapEntry }
 func (t messageDesc) Fields() pref.FieldDescriptors      { return t.m.fs.lazyInit(t, t.m.Fields) }
 func (t messageDesc) Oneofs() pref.OneofDescriptors      { return t.m.os.lazyInit(t, t.m.Oneofs) }
 func (t messageDesc) ReservedNames() pref.Names          { return (*names)(&t.m.ReservedNames) }
@@ -207,22 +206,6 @@ func extensionRangeOptions(i, n int, ms []pref.ProtoMessage) pref.ProtoMessage {
 	return m
 }
 
-type messageOptions struct {
-	once       sync.Once
-	isMapEntry bool
-}
-
-func (p *messageOptions) lazyInit(m pref.MessageDescriptor) *messageOptions {
-	p.once.Do(func() {
-		if m.Options() != optionTypes.Message {
-			const mapEntryFieldNumber = 7 // google.protobuf.MessageOptions.map_entry
-			fs := m.Options().ProtoReflect().KnownFields()
-			p.isMapEntry = fs.Get(mapEntryFieldNumber).Bool()
-		}
-	})
-	return p
-}
-
 type fieldMeta struct {
 	inheritedMeta
 
@@ -231,25 +214,29 @@ type fieldMeta struct {
 	ot oneofReference
 	mt messageReference
 	et enumReference
-	fo fieldOptions
 }
 type fieldDesc struct{ f *Field }
 
-func (t fieldDesc) Parent() (pref.Descriptor, bool)            { return t.f.parent, true }
-func (t fieldDesc) Index() int                                 { return t.f.index }
-func (t fieldDesc) Syntax() pref.Syntax                        { return t.f.syntax }
-func (t fieldDesc) Name() pref.Name                            { return t.f.Name }
-func (t fieldDesc) FullName() pref.FullName                    { return t.f.fullName }
-func (t fieldDesc) IsPlaceholder() bool                        { return false }
-func (t fieldDesc) Options() pref.ProtoMessage                 { return altOptions(t.f.Options, optionTypes.Field) }
-func (t fieldDesc) Number() pref.FieldNumber                   { return t.f.Number }
-func (t fieldDesc) Cardinality() pref.Cardinality              { return t.f.Cardinality }
-func (t fieldDesc) Kind() pref.Kind                            { return t.f.Kind }
-func (t fieldDesc) HasJSONName() bool                          { return t.f.JSONName != "" }
-func (t fieldDesc) JSONName() string                           { return t.f.js.lazyInit(t.f) }
-func (t fieldDesc) IsPacked() bool                             { return t.f.fo.lazyInit(t).isPacked }
-func (t fieldDesc) IsWeak() bool                               { return t.f.fo.lazyInit(t).isWeak }
-func (t fieldDesc) IsMap() bool                                { return t.f.fo.lazyInit(t).isMap }
+func (t fieldDesc) Parent() (pref.Descriptor, bool) { return t.f.parent, true }
+func (t fieldDesc) Index() int                      { return t.f.index }
+func (t fieldDesc) Syntax() pref.Syntax             { return t.f.syntax }
+func (t fieldDesc) Name() pref.Name                 { return t.f.Name }
+func (t fieldDesc) FullName() pref.FullName         { return t.f.fullName }
+func (t fieldDesc) IsPlaceholder() bool             { return false }
+func (t fieldDesc) Options() pref.ProtoMessage      { return altOptions(t.f.Options, optionTypes.Field) }
+func (t fieldDesc) Number() pref.FieldNumber        { return t.f.Number }
+func (t fieldDesc) Cardinality() pref.Cardinality   { return t.f.Cardinality }
+func (t fieldDesc) Kind() pref.Kind                 { return t.f.Kind }
+func (t fieldDesc) HasJSONName() bool               { return t.f.JSONName != "" }
+func (t fieldDesc) JSONName() string                { return t.f.js.lazyInit(t.f) }
+func (t fieldDesc) IsPacked() bool {
+	return isPacked(t.f.IsPacked, t.f.syntax, t.f.Cardinality, t.f.Kind)
+}
+func (t fieldDesc) IsWeak() bool { return t.f.IsWeak }
+func (t fieldDesc) IsMap() bool {
+	mt := t.MessageType()
+	return mt != nil && mt.IsMapEntry()
+}
 func (t fieldDesc) HasDefault() bool                           { return t.f.Default.IsValid() }
 func (t fieldDesc) Default() pref.Value                        { return t.f.dv.value(t, t.f.Default) }
 func (t fieldDesc) DefaultEnumValue() pref.EnumValueDescriptor { return t.f.dv.enum(t, t.f.Default) }
@@ -260,6 +247,20 @@ func (t fieldDesc) EnumType() pref.EnumDescriptor              { return t.f.et.l
 func (t fieldDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, t) }
 func (t fieldDesc) ProtoType(pref.FieldDescriptor)             {}
 func (t fieldDesc) ProtoInternal(pragma.DoNotImplement)        {}
+
+func isPacked(packed OptionalBool, s pref.Syntax, c pref.Cardinality, k pref.Kind) bool {
+	if packed == False || (packed == DefaultBool && s == pref.Proto2) {
+		return false
+	}
+	if c != pref.Repeated {
+		return false
+	}
+	switch k {
+	case pref.StringKind, pref.BytesKind, pref.MessageKind, pref.GroupKind:
+		return false
+	}
+	return true
+}
 
 type jsonName struct {
 	once sync.Once
@@ -310,77 +311,6 @@ func (p *oneofReference) lazyInit(parent pref.Descriptor, name pref.Name) pref.O
 	return p.otyp
 }
 
-type fieldOptions struct {
-	once     sync.Once
-	isPacked bool
-	isWeak   bool
-	isMap    bool
-}
-
-func (p *fieldOptions) lazyInit(f pref.FieldDescriptor) *fieldOptions {
-	p.once.Do(func() {
-		if f.Cardinality() == pref.Repeated {
-			// In proto3, repeated fields of scalar numeric types use
-			// packed encoding by default.
-			// See https://developers.google.com/protocol-buffers/docs/proto3
-			if f.Syntax() == pref.Proto3 {
-				p.isPacked = isScalarNumeric[f.Kind()]
-			}
-			if f.Kind() == pref.MessageKind {
-				p.isMap = f.MessageType().IsMapEntry()
-			}
-		}
-
-		if f.Options() != optionTypes.Field {
-			const packedFieldNumber = 2 // google.protobuf.FieldOptions.packed
-			const weakFieldNumber = 10  // google.protobuf.FieldOptions.weak
-			fs := f.Options().ProtoReflect().KnownFields()
-			if fs.Has(packedFieldNumber) {
-				p.isPacked = fs.Get(packedFieldNumber).Bool()
-			}
-			p.isWeak = fs.Get(weakFieldNumber).Bool()
-		}
-	})
-	return p
-}
-
-// isPacked reports whether the packed options is set.
-func isPacked(m pref.ProtoMessage) (isPacked bool) {
-	if m != optionTypes.Field {
-		const packedFieldNumber = 2 // google.protobuf.FieldOptions.packed
-		fs := m.ProtoReflect().KnownFields()
-		isPacked = fs.Get(packedFieldNumber).Bool()
-	}
-	return isPacked
-}
-
-// isWeak reports whether the weak options is set.
-func isWeak(m pref.ProtoMessage) (isWeak bool) {
-	if m != optionTypes.Field {
-		const weakFieldNumber = 10 // google.protobuf.FieldOptions.weak
-		fs := m.ProtoReflect().KnownFields()
-		isWeak = fs.Get(weakFieldNumber).Bool()
-	}
-	return isWeak
-}
-
-var isScalarNumeric = map[pref.Kind]bool{
-	pref.BoolKind:     true,
-	pref.EnumKind:     true,
-	pref.Int32Kind:    true,
-	pref.Sint32Kind:   true,
-	pref.Uint32Kind:   true,
-	pref.Int64Kind:    true,
-	pref.Sint64Kind:   true,
-	pref.Uint64Kind:   true,
-	pref.Sfixed32Kind: true,
-	pref.Fixed32Kind:  true,
-	pref.FloatKind:    true,
-	pref.Sfixed64Kind: true,
-	pref.Fixed64Kind:  true,
-	pref.DoubleKind:   true,
-}
-
 type oneofMeta struct {
 	inheritedMeta
 
@@ -410,19 +340,22 @@ type extensionMeta struct {
 }
 type extensionDesc struct{ x *Extension }
 
-func (t extensionDesc) Parent() (pref.Descriptor, bool)            { return t.x.parent, true }
-func (t extensionDesc) Syntax() pref.Syntax                        { return t.x.syntax }
-func (t extensionDesc) Index() int                                 { return t.x.index }
-func (t extensionDesc) Name() pref.Name                            { return t.x.Name }
-func (t extensionDesc) FullName() pref.FullName                    { return t.x.fullName }
-func (t extensionDesc) IsPlaceholder() bool                        { return false }
-func (t extensionDesc) Options() pref.ProtoMessage                 { return altOptions(t.x.Options, optionTypes.Field) }
-func (t extensionDesc) Number() pref.FieldNumber                   { return t.x.Number }
-func (t extensionDesc) Cardinality() pref.Cardinality              { return t.x.Cardinality }
-func (t extensionDesc) Kind() pref.Kind                            { return t.x.Kind }
-func (t extensionDesc) HasJSONName() bool                          { return false }
-func (t extensionDesc) JSONName() string                           { return "" }
-func (t extensionDesc) IsPacked() bool                             { return isPacked(t.Options()) }
+func (t extensionDesc) Parent() (pref.Descriptor, bool) { return t.x.parent, true }
+func (t extensionDesc) Syntax() pref.Syntax             { return t.x.syntax }
+func (t extensionDesc) Index() int                      { return t.x.index }
+func (t extensionDesc) Name() pref.Name                 { return t.x.Name }
+func (t extensionDesc) FullName() pref.FullName         { return t.x.fullName }
+func (t extensionDesc) IsPlaceholder() bool             { return false }
+func (t extensionDesc) Options() pref.ProtoMessage      { return altOptions(t.x.Options, optionTypes.Field) }
+func (t extensionDesc) Number() pref.FieldNumber        { return t.x.Number }
+func (t extensionDesc) Cardinality() pref.Cardinality   { return t.x.Cardinality }
+func (t extensionDesc) Kind() pref.Kind                 { return t.x.Kind }
+func (t extensionDesc) HasJSONName() bool               { return false }
+func (t extensionDesc) JSONName() string                { return "" }
+func (t extensionDesc) IsPacked() bool {
+	// Extensions always use proto2 defaults for packing.
+	return isPacked(t.x.IsPacked, pref.Proto2, t.x.Cardinality, t.x.Kind)
+}
 func (t extensionDesc) IsWeak() bool                               { return false }
 func (t extensionDesc) IsMap() bool                                { return false }
 func (t extensionDesc) HasDefault() bool                           { return t.x.Default.IsValid() }

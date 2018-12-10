@@ -128,6 +128,7 @@ var xxx_Extra_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.BytesKind,
 				JSONName:    "data",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

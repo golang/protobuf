@@ -263,6 +263,7 @@ var xxx_NestedMessages_ProtoFile_MessageDescs = [3]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "l2",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "l3",
@@ -270,6 +271,7 @@ var xxx_NestedMessages_ProtoFile_MessageDescs = [3]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "l3",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -282,6 +284,7 @@ var xxx_NestedMessages_ProtoFile_MessageDescs = [3]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "l3",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

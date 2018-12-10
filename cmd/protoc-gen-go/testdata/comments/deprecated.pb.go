@@ -184,6 +184,7 @@ var xxx_Deprecated_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "deprecatedField",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

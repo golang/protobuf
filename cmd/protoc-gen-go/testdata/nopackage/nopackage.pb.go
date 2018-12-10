@@ -205,6 +205,7 @@ var xxx_Nopackage_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "stringField",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "enum_field",
@@ -213,6 +214,7 @@ var xxx_Nopackage_ProtoFile_MessageDescs = [1]prototype.Message{
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "enumField",
 				Default:     protoreflect.ValueOf(string("ZERO")),
+				IsPacked:    prototype.False,
 			},
 		},
 	},

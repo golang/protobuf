@@ -546,6 +546,7 @@ var xxx_A_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "m2",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "s",
@@ -554,6 +555,7 @@ var xxx_A_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.StringKind,
 				JSONName:    "s",
 				Default:     protoreflect.ValueOf(string("default")),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "b",
@@ -562,6 +564,7 @@ var xxx_A_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.BytesKind,
 				JSONName:    "b",
 				Default:     protoreflect.ValueOf(("default")),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "f",
@@ -570,6 +573,7 @@ var xxx_A_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.DoubleKind,
 				JSONName:    "f",
 				Default:     protoreflect.ValueOf(float64(math.NaN())),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "oneof_int32",
@@ -578,6 +582,7 @@ var xxx_A_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "oneofInt32",
 				OneofName:   "oneof_field",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "oneof_int64",
@@ -586,6 +591,7 @@ var xxx_A_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.Int64Kind,
 				JSONName:    "oneofInt64",
 				OneofName:   "oneof_field",
+				IsPacked:    prototype.False,
 			},
 		},
 		Oneofs: []prototype.Oneof{
@@ -603,6 +609,7 @@ var xxx_A_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "submessageOneofInt32",
 				OneofName:   "submessage_oneof_field",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "submessage_oneof_int64",
@@ -611,6 +618,7 @@ var xxx_A_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.Int64Kind,
 				JSONName:    "submessageOneofInt64",
 				OneofName:   "submessage_oneof_field",
+				IsPacked:    prototype.False,
 			},
 		},
 		Oneofs: []prototype.Oneof{

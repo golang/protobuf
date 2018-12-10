@@ -41,6 +41,7 @@ func TestFile(t *testing.T) {
 				MapEntry:   scalar.Bool(true),
 				Deprecated: scalar.Bool(true),
 			},
+			IsMapEntry: true,
 			Fields: []ptype.Field{{
 				Name:        "key", // "test.A.key"
 				Number:      1,
@@ -92,6 +93,7 @@ func TestFile(t *testing.T) {
 				Cardinality: pref.Repeated,
 				Kind:        pref.Int32Kind,
 				Options:     &descriptorpb.FieldOptions{Packed: scalar.Bool(true)},
+				IsPacked:    ptype.True,
 			}, {
 				Name:        "field_six", // "test.B.field_six"
 				Number:      6,
@@ -132,6 +134,7 @@ func TestFile(t *testing.T) {
 				Cardinality:  pref.Repeated,
 				Kind:         pref.MessageKind,
 				Options:      &descriptorpb.FieldOptions{Packed: scalar.Bool(false)},
+				IsPacked:     ptype.False,
 				MessageType:  ptype.PlaceholderMessage("test.C"),
 				ExtendedType: ptype.PlaceholderMessage("test.B"),
 			}},
@@ -156,6 +159,7 @@ func TestFile(t *testing.T) {
 			Cardinality:  pref.Repeated,
 			Kind:         pref.MessageKind,
 			Options:      &descriptorpb.FieldOptions{Packed: scalar.Bool(true)},
+			IsPacked:     ptype.True,
 			MessageType:  ptype.PlaceholderMessage("test.C"),
 			ExtendedType: ptype.PlaceholderMessage("test.B"),
 		}},
@@ -601,7 +605,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 				"Number":       pref.FieldNumber(1000),
 				"Cardinality":  pref.Repeated,
 				"Kind":         pref.MessageKind,
-				"IsPacked":     true,
+				"IsPacked":     false,
 				"MessageType":  M{"FullName": pref.FullName("test.C"), "IsPlaceholder": false},
 				"ExtendedType": M{"FullName": pref.FullName("test.B"), "IsPlaceholder": false},
 				"Options":      &descriptorpb.FieldOptions{Packed: scalar.Bool(true)},
@@ -862,7 +866,6 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 		Number:       1000
 		Cardinality:  repeated
 		Kind:         message
-		IsPacked:     true
 		ExtendedType: test.B
 		MessageType:  test.C
 	}]

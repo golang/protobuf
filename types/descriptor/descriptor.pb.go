@@ -3309,6 +3309,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "file",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -3321,6 +3322,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "package",
@@ -3328,6 +3330,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "package",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "dependency",
@@ -3335,6 +3338,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "dependency",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "public_dependency",
@@ -3342,6 +3346,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "publicDependency",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "weak_dependency",
@@ -3349,6 +3354,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "weakDependency",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "message_type",
@@ -3356,6 +3362,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "messageType",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "enum_type",
@@ -3363,6 +3370,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "enumType",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "service",
@@ -3370,6 +3378,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "service",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "extension",
@@ -3377,6 +3386,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "extension",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "options",
@@ -3384,6 +3394,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "options",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "source_code_info",
@@ -3391,6 +3402,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "sourceCodeInfo",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "syntax",
@@ -3398,6 +3410,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "syntax",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -3410,6 +3423,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "field",
@@ -3417,6 +3431,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "field",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "extension",
@@ -3424,6 +3439,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "extension",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "nested_type",
@@ -3431,6 +3447,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "nestedType",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "enum_type",
@@ -3438,6 +3455,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "enumType",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "extension_range",
@@ -3445,6 +3463,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "extensionRange",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "oneof_decl",
@@ -3452,6 +3471,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "oneofDecl",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "options",
@@ -3459,6 +3479,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "options",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "reserved_range",
@@ -3466,6 +3487,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "reservedRange",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "reserved_name",
@@ -3473,6 +3495,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "reservedName",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -3485,6 +3508,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "uninterpretedOption",
+				IsPacked:    prototype.False,
 			},
 		},
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{1000, 536870912}},
@@ -3498,6 +3522,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "number",
@@ -3505,6 +3530,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "number",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "label",
@@ -3512,6 +3538,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "label",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "type",
@@ -3519,6 +3546,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "type",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "type_name",
@@ -3526,6 +3554,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "typeName",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "extendee",
@@ -3533,6 +3562,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "extendee",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "default_value",
@@ -3540,6 +3570,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "defaultValue",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "oneof_index",
@@ -3547,6 +3578,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "oneofIndex",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "json_name",
@@ -3554,6 +3586,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "jsonName",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "options",
@@ -3561,6 +3594,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "options",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -3573,6 +3607,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "options",
@@ -3580,6 +3615,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "options",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -3592,6 +3628,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "value",
@@ -3599,6 +3636,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "value",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "options",
@@ -3606,6 +3644,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "options",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "reserved_range",
@@ -3613,6 +3652,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "reservedRange",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "reserved_name",
@@ -3620,6 +3660,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "reservedName",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -3632,6 +3673,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "number",
@@ -3639,6 +3681,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "number",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "options",
@@ -3646,6 +3689,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "options",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -3658,6 +3702,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "method",
@@ -3665,6 +3710,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "method",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "options",
@@ -3672,6 +3718,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "options",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -3684,6 +3731,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "input_type",
@@ -3691,6 +3739,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "inputType",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "output_type",
@@ -3698,6 +3747,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "outputType",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "options",
@@ -3705,6 +3755,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "options",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "client_streaming",
@@ -3713,6 +3764,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "clientStreaming",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "server_streaming",
@@ -3721,6 +3773,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "serverStreaming",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -3733,6 +3786,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "javaPackage",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "java_outer_classname",
@@ -3740,6 +3794,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "javaOuterClassname",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "java_multiple_files",
@@ -3748,6 +3803,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "javaMultipleFiles",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "java_generate_equals_and_hash",
@@ -3755,6 +3811,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "javaGenerateEqualsAndHash",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "java_string_check_utf8",
@@ -3763,6 +3820,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "javaStringCheckUtf8",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "optimize_for",
@@ -3771,6 +3829,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "optimizeFor",
 				Default:     protoreflect.ValueOf(string("SPEED")),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "go_package",
@@ -3778,6 +3837,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "goPackage",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "cc_generic_services",
@@ -3786,6 +3846,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "ccGenericServices",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "java_generic_services",
@@ -3794,6 +3855,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "javaGenericServices",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "py_generic_services",
@@ -3802,6 +3864,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "pyGenericServices",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "php_generic_services",
@@ -3810,6 +3873,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "phpGenericServices",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "deprecated",
@@ -3818,6 +3882,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "deprecated",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "cc_enable_arenas",
@@ -3826,6 +3891,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "ccEnableArenas",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "objc_class_prefix",
@@ -3833,6 +3899,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "objcClassPrefix",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "csharp_namespace",
@@ -3840,6 +3907,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "csharpNamespace",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "swift_prefix",
@@ -3847,6 +3915,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "swiftPrefix",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "php_class_prefix",
@@ -3854,6 +3923,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "phpClassPrefix",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "php_namespace",
@@ -3861,6 +3931,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "phpNamespace",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "php_metadata_namespace",
@@ -3868,6 +3939,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "phpMetadataNamespace",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "ruby_package",
@@ -3875,6 +3947,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "rubyPackage",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "uninterpreted_option",
@@ -3882,6 +3955,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "uninterpretedOption",
+				IsPacked:    prototype.False,
 			},
 		},
 		ReservedRanges:  [][2]protoreflect.FieldNumber{{38, 39}},
@@ -3897,6 +3971,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "messageSetWireFormat",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "no_standard_descriptor_accessor",
@@ -3905,6 +3980,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "noStandardDescriptorAccessor",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "deprecated",
@@ -3913,6 +3989,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "deprecated",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "map_entry",
@@ -3920,6 +3997,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "mapEntry",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "uninterpreted_option",
@@ -3927,6 +4005,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "uninterpretedOption",
+				IsPacked:    prototype.False,
 			},
 		},
 		ReservedRanges:  [][2]protoreflect.FieldNumber{{8, 9}, {9, 10}},
@@ -3942,6 +4021,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "ctype",
 				Default:     protoreflect.ValueOf(string("STRING")),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "packed",
@@ -3949,6 +4029,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "packed",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "jstype",
@@ -3957,6 +4038,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "jstype",
 				Default:     protoreflect.ValueOf(string("JS_NORMAL")),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "lazy",
@@ -3965,6 +4047,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "lazy",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "deprecated",
@@ -3973,6 +4056,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "deprecated",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "weak",
@@ -3981,6 +4065,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "weak",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "uninterpreted_option",
@@ -3988,6 +4073,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "uninterpretedOption",
+				IsPacked:    prototype.False,
 			},
 		},
 		ReservedRanges:  [][2]protoreflect.FieldNumber{{4, 5}},
@@ -4002,6 +4088,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "uninterpretedOption",
+				IsPacked:    prototype.False,
 			},
 		},
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{1000, 536870912}},
@@ -4015,6 +4102,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "allowAlias",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "deprecated",
@@ -4023,6 +4111,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "deprecated",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "uninterpreted_option",
@@ -4030,6 +4119,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "uninterpretedOption",
+				IsPacked:    prototype.False,
 			},
 		},
 		ReservedRanges:  [][2]protoreflect.FieldNumber{{5, 6}},
@@ -4045,6 +4135,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "deprecated",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "uninterpreted_option",
@@ -4052,6 +4143,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "uninterpretedOption",
+				IsPacked:    prototype.False,
 			},
 		},
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{1000, 536870912}},
@@ -4066,6 +4158,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "deprecated",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "uninterpreted_option",
@@ -4073,6 +4166,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "uninterpretedOption",
+				IsPacked:    prototype.False,
 			},
 		},
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{1000, 536870912}},
@@ -4087,6 +4181,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "deprecated",
 				Default:     protoreflect.ValueOf(bool(false)),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "idempotency_level",
@@ -4095,6 +4190,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "idempotencyLevel",
 				Default:     protoreflect.ValueOf(string("IDEMPOTENCY_UNKNOWN")),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "uninterpreted_option",
@@ -4102,6 +4198,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "uninterpretedOption",
+				IsPacked:    prototype.False,
 			},
 		},
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{1000, 536870912}},
@@ -4115,6 +4212,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "identifier_value",
@@ -4122,6 +4220,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "identifierValue",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "positive_int_value",
@@ -4129,6 +4228,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Uint64Kind,
 				JSONName:    "positiveIntValue",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "negative_int_value",
@@ -4136,6 +4236,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int64Kind,
 				JSONName:    "negativeIntValue",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "double_value",
@@ -4143,6 +4244,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.DoubleKind,
 				JSONName:    "doubleValue",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "string_value",
@@ -4150,6 +4252,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.BytesKind,
 				JSONName:    "stringValue",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "aggregate_value",
@@ -4157,6 +4260,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "aggregateValue",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -4169,6 +4273,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "location",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -4181,6 +4286,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "annotation",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -4193,6 +4299,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "start",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "end",
@@ -4200,6 +4307,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "end",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "options",
@@ -4207,6 +4315,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "options",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -4219,6 +4328,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "start",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "end",
@@ -4226,6 +4336,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "end",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -4238,6 +4349,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "start",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "end",
@@ -4245,6 +4357,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "end",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -4257,6 +4370,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Required,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "namePart",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "is_extension",
@@ -4264,6 +4378,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Required,
 				Kind:        protoreflect.BoolKind,
 				JSONName:    "isExtension",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -4276,6 +4391,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "path",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "span",
@@ -4283,6 +4399,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "span",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "leading_comments",
@@ -4290,6 +4407,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "leadingComments",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "trailing_comments",
@@ -4297,6 +4415,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "trailingComments",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "leading_detached_comments",
@@ -4304,6 +4423,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "leadingDetachedComments",
+				IsPacked:    prototype.False,
 			},
 		},
 	},
@@ -4316,6 +4436,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Repeated,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "path",
+				IsPacked:    prototype.True,
 			},
 			{
 				Name:        "source_file",
@@ -4323,6 +4444,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "sourceFile",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "begin",
@@ -4330,6 +4452,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "begin",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "end",
@@ -4337,6 +4460,7 @@ var xxx_Descriptor_ProtoFile_MessageDescs = [27]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.Int32Kind,
 				JSONName:    "end",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

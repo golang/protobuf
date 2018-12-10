@@ -14,8 +14,6 @@ import (
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 	cmp "github.com/google/go-cmp/cmp"
-
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 var msgDesc = func() pref.MessageDescriptor {
@@ -23,16 +21,16 @@ var msgDesc = func() pref.MessageDescriptor {
 		Syntax:   pref.Proto2,
 		FullName: "Message",
 		Fields: []ptype.Field{
-			{Name: "F1", Number: 1, Cardinality: pref.Repeated, Kind: pref.BoolKind, Options: packedOpt(true)},
-			{Name: "F2", Number: 2, Cardinality: pref.Repeated, Kind: pref.Int64Kind, Options: packedOpt(true)},
-			{Name: "F3", Number: 3, Cardinality: pref.Repeated, Kind: pref.Sint64Kind, Options: packedOpt(true)},
-			{Name: "F4", Number: 4, Cardinality: pref.Repeated, Kind: pref.Uint64Kind, Options: packedOpt(true)},
-			{Name: "F5", Number: 5, Cardinality: pref.Repeated, Kind: pref.Fixed32Kind, Options: packedOpt(true)},
-			{Name: "F6", Number: 6, Cardinality: pref.Repeated, Kind: pref.Sfixed32Kind, Options: packedOpt(true)},
-			{Name: "F7", Number: 7, Cardinality: pref.Repeated, Kind: pref.FloatKind, Options: packedOpt(true)},
-			{Name: "F8", Number: 8, Cardinality: pref.Repeated, Kind: pref.Fixed64Kind, Options: packedOpt(true)},
-			{Name: "F9", Number: 9, Cardinality: pref.Repeated, Kind: pref.Sfixed64Kind, Options: packedOpt(true)},
-			{Name: "F10", Number: 10, Cardinality: pref.Repeated, Kind: pref.DoubleKind, Options: packedOpt(true)},
+			{Name: "F1", Number: 1, Cardinality: pref.Repeated, Kind: pref.BoolKind, IsPacked: ptype.True},
+			{Name: "F2", Number: 2, Cardinality: pref.Repeated, Kind: pref.Int64Kind, IsPacked: ptype.True},
+			{Name: "F3", Number: 3, Cardinality: pref.Repeated, Kind: pref.Sint64Kind, IsPacked: ptype.True},
+			{Name: "F4", Number: 4, Cardinality: pref.Repeated, Kind: pref.Uint64Kind, IsPacked: ptype.True},
+			{Name: "F5", Number: 5, Cardinality: pref.Repeated, Kind: pref.Fixed32Kind, IsPacked: ptype.True},
+			{Name: "F6", Number: 6, Cardinality: pref.Repeated, Kind: pref.Sfixed32Kind, IsPacked: ptype.True},
+			{Name: "F7", Number: 7, Cardinality: pref.Repeated, Kind: pref.FloatKind, IsPacked: ptype.True},
+			{Name: "F8", Number: 8, Cardinality: pref.Repeated, Kind: pref.Fixed64Kind, IsPacked: ptype.True},
+			{Name: "F9", Number: 9, Cardinality: pref.Repeated, Kind: pref.Sfixed64Kind, IsPacked: ptype.True},
+			{Name: "F10", Number: 10, Cardinality: pref.Repeated, Kind: pref.DoubleKind, IsPacked: ptype.True},
 			{Name: "F11", Number: 11, Cardinality: pref.Optional, Kind: pref.StringKind},
 			{Name: "F12", Number: 12, Cardinality: pref.Optional, Kind: pref.BytesKind},
 			{Name: "F13", Number: 13, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: ptype.PlaceholderMessage("Message")},
@@ -43,10 +41,6 @@ var msgDesc = func() pref.MessageDescriptor {
 	}
 	return mtyp
 }()
-
-func packedOpt(b bool) *descriptorpb.FieldOptions {
-	return &descriptorpb.FieldOptions{Packed: &b}
-}
 
 // dhex decodes a hex-string and returns the bytes and panics if s is invalid.
 func dhex(s string) []byte {

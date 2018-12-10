@@ -122,13 +122,23 @@ func messagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, syntax pro
 		var m prototype.Message
 		m.Name = protoreflect.Name(md.GetName())
 		m.Options = md.GetOptions()
+		m.IsMapEntry = md.GetOptions().GetMapEntry()
 		for _, fd := range md.GetField() {
 			var f prototype.Field
 			f.Name = protoreflect.Name(fd.GetName())
 			f.Number = protoreflect.FieldNumber(fd.GetNumber())
 			f.Cardinality = protoreflect.Cardinality(fd.GetLabel())
 			f.Kind = protoreflect.Kind(fd.GetType())
-			f.Options = fd.GetOptions()
+			opts := fd.GetOptions()
+			f.Options = opts
+			if opts != nil && opts.Packed != nil {
+				if *opts.Packed {
+					f.IsPacked = prototype.True
+				} else {
+					f.IsPacked = prototype.False
+				}
+			}
+			f.IsWeak = opts.GetWeak()
 			f.JSONName = fd.GetJsonName()
 			if fd.DefaultValue != nil {
 				f.Default, err = defval.Unmarshal(fd.GetDefaultValue(), f.Kind, defval.Descriptor)
@@ -143,7 +153,6 @@ func messagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, syntax pro
 				}
 				f.OneofName = protoreflect.Name(md.GetOneofDecl()[i].GetName())
 			}
-			opts, _ := f.Options.(*descriptorpb.FieldOptions)
 			switch f.Kind {
 			case protoreflect.EnumKind:
 				f.EnumType, err = findEnumDescriptor(fd.GetTypeName(), r)

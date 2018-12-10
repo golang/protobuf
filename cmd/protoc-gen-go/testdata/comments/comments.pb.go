@@ -458,6 +458,7 @@ var xxx_Comments_ProtoFile_MessageDescs = [6]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "Field1A",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "Oneof1AField1",
@@ -466,6 +467,7 @@ var xxx_Comments_ProtoFile_MessageDescs = [6]prototype.Message{
 				Kind:        protoreflect.StringKind,
 				JSONName:    "Oneof1AField1",
 				OneofName:   "Oneof1a",
+				IsPacked:    prototype.False,
 			},
 		},
 		Oneofs: []prototype.Oneof{

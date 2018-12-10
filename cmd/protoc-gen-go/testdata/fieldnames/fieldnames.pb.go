@@ -426,6 +426,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "fieldOne",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "FieldTwo",
@@ -433,6 +434,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "FieldTwo",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "fieldThree",
@@ -440,6 +442,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "fieldThree",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "field__four",
@@ -447,6 +450,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "fieldFour",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "descriptor",
@@ -454,6 +458,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "descriptor",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "marshal",
@@ -461,6 +466,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "marshal",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "unmarshal",
@@ -468,6 +474,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "unmarshal",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "proto_message",
@@ -475,6 +482,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "protoMessage",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "CamelCase",
@@ -482,6 +490,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "CamelCase",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "CamelCase_",
@@ -489,6 +498,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "CamelCase",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "camel_case",
@@ -496,6 +506,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "camelCase",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "CamelCase__",
@@ -503,6 +514,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "CamelCase",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "get_name",
@@ -510,6 +522,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "getName",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "name",
@@ -517,6 +530,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.StringKind,
 				JSONName:    "name",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "OneofConflictA",
@@ -525,6 +539,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.StringKind,
 				JSONName:    "OneofConflictA",
 				OneofName:   "oneof_conflict_a",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "oneof_no_conflict",
@@ -533,6 +548,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.StringKind,
 				JSONName:    "oneofNoConflict",
 				OneofName:   "oneof_conflict_b",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "OneofConflictB",
@@ -541,6 +557,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.StringKind,
 				JSONName:    "OneofConflictB",
 				OneofName:   "oneof_conflict_b",
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "oneof_message_conflict",
@@ -549,6 +566,7 @@ var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.StringKind,
 				JSONName:    "oneofMessageConflict",
 				OneofName:   "oneof_conflict_c",
+				IsPacked:    prototype.False,
 			},
 		},
 		Oneofs: []prototype.Oneof{

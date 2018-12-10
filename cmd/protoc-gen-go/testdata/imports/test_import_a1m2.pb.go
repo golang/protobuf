@@ -133,6 +133,7 @@ var xxx_TestImportA1M2_ProtoFile_MessageDescs = [1]prototype.Message{
 				Cardinality: protoreflect.Optional,
 				Kind:        protoreflect.MessageKind,
 				JSONName:    "f",
+				IsPacked:    prototype.False,
 			},
 		},
 	},

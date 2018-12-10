@@ -611,6 +611,7 @@ var xxx_Enum_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "defaultDuplicate1",
 				Default:     protoreflect.ValueOf(string("duplicate1")),
+				IsPacked:    prototype.False,
 			},
 			{
 				Name:        "default_duplicate2",
@@ -619,6 +620,7 @@ var xxx_Enum_ProtoFile_MessageDescs = [2]prototype.Message{
 				Kind:        protoreflect.EnumKind,
 				JSONName:    "defaultDuplicate2",
 				Default:     protoreflect.ValueOf(string("duplicate2")),
+				IsPacked:    prototype.False,
 			},
 		},
 	},

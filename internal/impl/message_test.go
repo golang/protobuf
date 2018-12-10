@@ -592,7 +592,8 @@ func mustMakeMapEntry(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Fiel
 				{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: keyKind},
 				{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: valKind},
 			},
-			Options: &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
+			Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
+			IsMapEntry: true,
 		}),
 	}
 }
@@ -1007,7 +1008,8 @@ var enumMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
 		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.EnumKind, EnumType: enumProto3Type},
 	},
-	Options: &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
+	Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
+	IsMapEntry: true,
 })
 
 var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
@@ -1017,7 +1019,8 @@ var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
 		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: scalarProto3Type.Type},
 	},
-	Options: &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
+	Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
+	IsMapEntry: true,
 })
 
 func (m *EnumMessages) Type() pref.MessageType            { return enumMessagesType.Type }
