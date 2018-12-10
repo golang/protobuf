@@ -29,14 +29,13 @@ var (
 
 type placeholderName pref.FullName
 
-func (t placeholderName) Parent() (pref.Descriptor, bool)       { return nil, false }
-func (t placeholderName) Index() int                            { return 0 }
-func (t placeholderName) Syntax() pref.Syntax                   { return 0 }
-func (t placeholderName) Name() pref.Name                       { return pref.FullName(t).Name() }
-func (t placeholderName) FullName() pref.FullName               { return pref.FullName(t) }
-func (t placeholderName) IsPlaceholder() bool                   { return true }
-func (t placeholderName) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t placeholderName) ProtoInternal(pragma.DoNotImplement)   {}
+func (t placeholderName) Parent() (pref.Descriptor, bool)     { return nil, false }
+func (t placeholderName) Index() int                          { return 0 }
+func (t placeholderName) Syntax() pref.Syntax                 { return 0 }
+func (t placeholderName) Name() pref.Name                     { return pref.FullName(t).Name() }
+func (t placeholderName) FullName() pref.FullName             { return pref.FullName(t) }
+func (t placeholderName) IsPlaceholder() bool                 { return true }
+func (t placeholderName) ProtoInternal(pragma.DoNotImplement) {}
 
 type placeholderFile struct {
 	path string

@@ -14,13 +14,12 @@ import (
 
 type standaloneMessage struct{ m *StandaloneMessage }
 
-func (t standaloneMessage) Parent() (pref.Descriptor, bool)       { return nil, false }
-func (t standaloneMessage) Index() int                            { return 0 }
-func (t standaloneMessage) Syntax() pref.Syntax                   { return t.m.Syntax }
-func (t standaloneMessage) Name() pref.Name                       { return t.m.FullName.Name() }
-func (t standaloneMessage) FullName() pref.FullName               { return t.m.FullName }
-func (t standaloneMessage) IsPlaceholder() bool                   { return false }
-func (t standaloneMessage) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t standaloneMessage) Parent() (pref.Descriptor, bool) { return nil, false }
+func (t standaloneMessage) Index() int                      { return 0 }
+func (t standaloneMessage) Syntax() pref.Syntax             { return t.m.Syntax }
+func (t standaloneMessage) Name() pref.Name                 { return t.m.FullName.Name() }
+func (t standaloneMessage) FullName() pref.FullName         { return t.m.FullName }
+func (t standaloneMessage) IsPlaceholder() bool             { return false }
 func (t standaloneMessage) Options() pref.ProtoMessage {
 	return altOptions(t.m.Options, optionTypes.Message)
 }
@@ -47,30 +46,28 @@ func (t standaloneMessage) ProtoInternal(pragma.DoNotImplement)   {}
 
 type standaloneEnum struct{ e *StandaloneEnum }
 
-func (t standaloneEnum) Parent() (pref.Descriptor, bool)       { return nil, false }
-func (t standaloneEnum) Index() int                            { return 0 }
-func (t standaloneEnum) Syntax() pref.Syntax                   { return t.e.Syntax }
-func (t standaloneEnum) Name() pref.Name                       { return t.e.FullName.Name() }
-func (t standaloneEnum) FullName() pref.FullName               { return t.e.FullName }
-func (t standaloneEnum) IsPlaceholder() bool                   { return false }
-func (t standaloneEnum) DescriptorProto() (pref.Message, bool) { return nil, false }
-func (t standaloneEnum) Options() pref.ProtoMessage            { return altOptions(t.e.Options, optionTypes.Enum) }
-func (t standaloneEnum) Values() pref.EnumValueDescriptors     { return t.e.vals.lazyInit(t, t.e.Values) }
-func (t standaloneEnum) ReservedNames() pref.Names             { return (*names)(&t.e.ReservedNames) }
-func (t standaloneEnum) ReservedRanges() pref.EnumRanges       { return (*enumRanges)(&t.e.ReservedRanges) }
-func (t standaloneEnum) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
-func (t standaloneEnum) ProtoType(pref.EnumDescriptor)         {}
-func (t standaloneEnum) ProtoInternal(pragma.DoNotImplement)   {}
+func (t standaloneEnum) Parent() (pref.Descriptor, bool)     { return nil, false }
+func (t standaloneEnum) Index() int                          { return 0 }
+func (t standaloneEnum) Syntax() pref.Syntax                 { return t.e.Syntax }
+func (t standaloneEnum) Name() pref.Name                     { return t.e.FullName.Name() }
+func (t standaloneEnum) FullName() pref.FullName             { return t.e.FullName }
+func (t standaloneEnum) IsPlaceholder() bool                 { return false }
+func (t standaloneEnum) Options() pref.ProtoMessage          { return altOptions(t.e.Options, optionTypes.Enum) }
+func (t standaloneEnum) Values() pref.EnumValueDescriptors   { return t.e.vals.lazyInit(t, t.e.Values) }
+func (t standaloneEnum) ReservedNames() pref.Names           { return (*names)(&t.e.ReservedNames) }
+func (t standaloneEnum) ReservedRanges() pref.EnumRanges     { return (*enumRanges)(&t.e.ReservedRanges) }
+func (t standaloneEnum) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t standaloneEnum) ProtoType(pref.EnumDescriptor)       {}
+func (t standaloneEnum) ProtoInternal(pragma.DoNotImplement) {}
 
 type standaloneExtension struct{ x *StandaloneExtension }
 
-func (t standaloneExtension) Parent() (pref.Descriptor, bool)       { return nil, false }
-func (t standaloneExtension) Index() int                            { return 0 }
-func (t standaloneExtension) Syntax() pref.Syntax                   { return pref.Proto2 }
-func (t standaloneExtension) Name() pref.Name                       { return t.x.FullName.Name() }
-func (t standaloneExtension) FullName() pref.FullName               { return t.x.FullName }
-func (t standaloneExtension) IsPlaceholder() bool                   { return false }
-func (t standaloneExtension) DescriptorProto() (pref.Message, bool) { return nil, false }
+func (t standaloneExtension) Parent() (pref.Descriptor, bool) { return nil, false }
+func (t standaloneExtension) Index() int                      { return 0 }
+func (t standaloneExtension) Syntax() pref.Syntax             { return pref.Proto2 }
+func (t standaloneExtension) Name() pref.Name                 { return t.x.FullName.Name() }
+func (t standaloneExtension) FullName() pref.FullName         { return t.x.FullName }
+func (t standaloneExtension) IsPlaceholder() bool             { return false }
 func (t standaloneExtension) Options() pref.ProtoMessage {
 	return altOptions(t.x.Options, optionTypes.Field)
 }

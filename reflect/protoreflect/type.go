@@ -80,32 +80,6 @@ type Descriptor interface {
 	// For FileDescriptor, the Path and Package are also valid.
 	IsPlaceholder() bool
 
-	// DescriptorProto returns a reflective interface to the underlying
-	// google.protobuf.XXXDescriptorProto message. The returned Message is
-	// considered frozen and mutating operations must not be performed
-	// on the message or any nested values retrieved by methods on the message.
-	//
-	// The proto message type for each type is as follows:
-	//	+---------------------+------------------------------------------+
-	//	| Go type             | Proto message type                       |
-	//	+---------------------+------------------------------------------+
-	//	| FileDescriptor      | google.protobuf.FileDescriptorProto      |
-	//	| MessageDescriptor   | google.protobuf.DescriptorProto          |
-	//	| FieldDescriptor     | google.protobuf.FieldDescriptorProto     |
-	//	| OneofDescriptor     | google.protobuf.OneofDescriptorProto     |
-	//	| EnumDescriptor      | google.protobuf.EnumDescriptorProto      |
-	//	| EnumValueDescriptor | google.protobuf.EnumValueDescriptorProto |
-	//	| ServiceDescriptor   | google.protobuf.ServiceDescriptorProto   |
-	//	| MethodDescriptor    | google.protobuf.MethodDescriptorProto    |
-	//	+---------------------+------------------------------------------+
-	//
-	// Support for this functionality is optional and may return (nil, false).
-	DescriptorProto() (Message, bool)
-
-	// TODO: Should DescriptorProto exist if prototype does not depend on
-	// the descriptor package? Should this instead be a function in the
-	// protodesc package?
-
 	// Options returns the descriptor options. The caller must not modify
 	// the returned value.
 	//
@@ -124,16 +98,9 @@ type Descriptor interface {
 	//	| MethodDescriptor    | google.protobuf.MethodOptions            |
 	//	+---------------------+------------------------------------------+
 	//
-	// This method may return a nil interface value if no options are present.
+	// This method returns a typed nil-pointer if no options are present.
+	// The caller must import the descriptor package to use this.
 	Options() ProtoMessage
-
-	// TODO: If no options are set, can Options return a typed nil-pointer
-	// using a form of dependency injection where the descriptor proto
-	// registers the option types with the prototype package?
-	//
-	// However, what happens if the descriptor proto is never linked in?
-	// Then we cannot provide this guarantee.
-	// Perhaps this should return a bool as well?
 
 	doNotImplement
 }
