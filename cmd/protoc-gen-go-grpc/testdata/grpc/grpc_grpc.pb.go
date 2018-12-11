@@ -167,7 +167,7 @@ func _TestService_UnaryCall_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/goproto.protoc.grpc.test_service/unary_call",
+		FullMethod: "/goproto.protoc.grpc.test_service/UnaryCall",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TestServiceServer).UnaryCall(ctx, req.(*Request))
@@ -253,23 +253,23 @@ var _TestService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*TestServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UnaryCall",
+			MethodName: "unary_call",
 			Handler:    _TestService_UnaryCall_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "DownstreamCall",
+			StreamName:    "downstream_call",
 			Handler:       _TestService_DownstreamCall_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "UpstreamCall",
+			StreamName:    "upstream_call",
 			Handler:       _TestService_UpstreamCall_Handler,
 			ClientStreams: true,
 		},
 		{
-			StreamName:    "BidiCall",
+			StreamName:    "bidi_call",
 			Handler:       _TestService_BidiCall_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
