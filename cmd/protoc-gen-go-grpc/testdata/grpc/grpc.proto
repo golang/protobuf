@@ -11,15 +11,17 @@ option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/gr
 message Request {}
 message Response {}
 
-service Test {
-  rpc UnaryCall(Request) returns (Response);
+// Service and method names chosen to exercise the distinction between the
+// proto definition names and the CamelCased Go names.
+service test_service {
+  rpc unary_call(Request) returns (Response);
 
   // This RPC streams from the server only.
-  rpc Downstream(Request) returns (stream Response);
+  rpc downstream_call(Request) returns (stream Response);
 
   // This RPC streams from the client.
-  rpc Upstream(stream Request) returns (Response);
+  rpc upstream_call(stream Request) returns (Response);
 
   // This one streams in both directions.
-  rpc Bidi(stream Request) returns (stream Response);
+  rpc bidi_call(stream Request) returns (stream Response);
 }
