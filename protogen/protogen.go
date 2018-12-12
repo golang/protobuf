@@ -1015,8 +1015,15 @@ func (g *GeneratedFile) metaFile(content []byte) (string, error) {
 				switch spec := spec.(type) {
 				case *ast.TypeSpec:
 					annotate(spec.Name.Name, spec.Name)
-					if st, ok := spec.Type.(*ast.StructType); ok {
+					switch st := spec.Type.(type) {
+					case *ast.StructType:
 						for _, field := range st.Fields.List {
+							for _, name := range field.Names {
+								annotate(spec.Name.Name+"."+name.Name, name)
+							}
+						}
+					case *ast.InterfaceType:
+						for _, field := range st.Methods.List {
 							for _, name := range field.Names {
 								annotate(spec.Name.Name+"."+name.Name, name)
 							}

@@ -53,7 +53,7 @@ func Run(t *testing.T, regenerate bool) {
 
 	// Compile each package, using this binary as protoc-gen-go.
 	for _, sources := range packages {
-		args := []string{"-Itestdata", "--go_out=paths=source_relative:" + workdir}
+		args := []string{"-Itestdata", "--go_out=paths=source_relative,annotate_code:" + workdir}
 		args = append(args, sources...)
 		Protoc(t, args)
 	}
@@ -61,6 +61,9 @@ func Run(t *testing.T, regenerate bool) {
 	// Compare each generated file to the golden version.
 	filepath.Walk(workdir, func(genPath string, info os.FileInfo, _ error) error {
 		if info.IsDir() {
+			return nil
+		}
+		if strings.HasSuffix(genPath, ".meta") {
 			return nil
 		}
 
