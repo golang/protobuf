@@ -12,6 +12,7 @@ import (
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/detrand"
+	"github.com/golang/protobuf/v2/internal/encoding/pack"
 	"github.com/golang/protobuf/v2/internal/impl"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
@@ -737,6 +738,68 @@ req_nested: {}
 }
 `,
 		wantErr: true,
+	}, {
+		desc: "unknown varint and fixed types",
+		input: &pb2.Scalars{
+			OptString: scalar.String("this message contains unknown fields"),
+			XXX_unrecognized: pack.Message{
+				pack.Tag{101, pack.VarintType}, pack.Bool(true),
+				pack.Tag{102, pack.VarintType}, pack.Varint(0xff),
+				pack.Tag{103, pack.Fixed32Type}, pack.Uint32(47),
+				pack.Tag{104, pack.Fixed64Type}, pack.Int64(0xdeadbeef),
+			}.Marshal(),
+		},
+		want: `opt_string: "this message contains unknown fields"
+101: 1
+102: 255
+103: 47
+104: 3735928559
+`,
+	}, {
+		desc: "unknown length-delimited",
+		input: &pb2.Scalars{
+			XXX_unrecognized: pack.Message{
+				pack.Tag{101, pack.BytesType}, pack.LengthPrefix{pack.Bool(true), pack.Bool(false)},
+				pack.Tag{102, pack.BytesType}, pack.String("hello world"),
+				pack.Tag{103, pack.BytesType}, pack.Bytes("\xe4\xb8\x96\xe7\x95\x8c"),
+			}.Marshal(),
+		},
+		want: `101: "\x01\x00"
+102: "hello world"
+103: "世界"
+`,
+	}, {
+		desc: "unknown group type",
+		input: &pb2.Scalars{
+			XXX_unrecognized: pack.Message{
+				pack.Tag{101, pack.StartGroupType}, pack.Tag{101, pack.EndGroupType},
+				pack.Tag{102, pack.StartGroupType},
+				pack.Tag{101, pack.VarintType}, pack.Bool(false),
+				pack.Tag{102, pack.BytesType}, pack.String("inside a group"),
+				pack.Tag{102, pack.EndGroupType},
+			}.Marshal(),
+		},
+		want: `101: {}
+102: {
+  101: 0
+  102: "inside a group"
+}
+`,
+	}, {
+		desc: "unknown unpack repeated field",
+		input: &pb2.Scalars{
+			XXX_unrecognized: pack.Message{
+				pack.Tag{101, pack.BytesType}, pack.LengthPrefix{pack.Bool(true), pack.Bool(false), pack.Bool(true)},
+				pack.Tag{102, pack.BytesType}, pack.String("hello"),
+				pack.Tag{101, pack.VarintType}, pack.Bool(true),
+				pack.Tag{102, pack.BytesType}, pack.String("世界"),
+			}.Marshal(),
+		},
+		want: `101: "\x01\x00\x01"
+101: 1
+102: "hello"
+102: "世界"
+`,
 	}}
 
 	for _, tt := range tests {

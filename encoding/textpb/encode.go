@@ -5,9 +5,11 @@
 package textpb
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/golang/protobuf/v2/internal/encoding/text"
+	"github.com/golang/protobuf/v2/internal/encoding/wire"
 	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/proto"
@@ -106,10 +108,16 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 			}
 			msgFields = append(msgFields, [2]text.Value{tname, tval})
 		}
-
 	}
 
-	// TODO: Handle extensions, unknowns and Any.
+	// Marshal out unknown fields.
+	// TODO: Provide option to exclude or include unknown fields.
+	m.UnknownFields().Range(func(_ pref.FieldNumber, raw pref.RawFields) bool {
+		msgFields = appendUnknown(msgFields, raw)
+		return true
+	})
+
+	// TODO: Handle extensions and Any expansion.
 
 	return text.ValueOf(msgFields), nerr.E
 }
@@ -242,4 +250,36 @@ func sortMap(keyKind pref.Kind, values []text.Value) {
 		}
 	}
 	sort.Slice(values, less)
+}
+
+// appendUnknown parses the given []byte and appends field(s) into the given fields slice.
+// This function assumes proper encoding in the given []byte.
+func appendUnknown(fields [][2]text.Value, b []byte) [][2]text.Value {
+	for len(b) > 0 {
+		var value interface{}
+		num, wtype, n := wire.ConsumeTag(b)
+		b = b[n:]
+
+		switch wtype {
+		case wire.VarintType:
+			value, n = wire.ConsumeVarint(b)
+		case wire.Fixed32Type:
+			value, n = wire.ConsumeFixed32(b)
+		case wire.Fixed64Type:
+			value, n = wire.ConsumeFixed64(b)
+		case wire.BytesType:
+			value, n = wire.ConsumeBytes(b)
+		case wire.StartGroupType:
+			var v []byte
+			v, n = wire.ConsumeGroup(num, b)
+			var msg [][2]text.Value
+			value = appendUnknown(msg, v)
+		default:
+			panic(fmt.Sprintf("error parsing unknown field wire type: %v", wtype))
+		}
+
+		fields = append(fields, [2]text.Value{text.ValueOf(uint32(num)), text.ValueOf(value)})
+		b = b[n:]
+	}
+	return fields
 }
