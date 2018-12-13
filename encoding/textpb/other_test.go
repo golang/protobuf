@@ -6,6 +6,7 @@ import (
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb2"
+	"github.com/golang/protobuf/v2/proto"
 
 	// The legacy package must be imported prior to use of any legacy messages.
 	// TODO: Remove this when protoV1 registers these hooks for you.
@@ -22,7 +23,7 @@ import (
 func TestRoundTrip(t *testing.T) {
 	tests := []struct {
 		desc    string
-		message protoV1.Message
+		message proto.Message
 	}{{
 		desc: "well-known type fields set to empty messages",
 		message: &pb2.KnownTypes{
@@ -151,15 +152,17 @@ func TestRoundTrip(t *testing.T) {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
 			t.Parallel()
-			b, err := textpb.Marshal(M(tt.message))
+			b, err := textpb.Marshal(tt.message)
 			if err != nil {
 				t.Errorf("Marshal() returned error: %v\n\n", err)
 			}
-			want := protoV1.Clone(tt.message)
-			want.Reset()
-			err = textpb.Unmarshal(M(want), b)
+			gotMessage := tt.message.ProtoReflect().Type().New()
+			err = textpb.Unmarshal(gotMessage, b)
 			if err != nil {
 				t.Errorf("Unmarshal() returned error: %v\n\n", err)
+			}
+			if !protoV1.Equal(gotMessage.(protoV1.Message), tt.message.(protoV1.Message)) {
+				t.Errorf("Unmarshal()\n<got>\n%v\n<want>\n%v\n", gotMessage, tt.message)
 			}
 		})
 	}

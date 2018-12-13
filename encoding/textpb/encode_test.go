@@ -9,11 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/detrand"
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
-	"github.com/golang/protobuf/v2/internal/impl"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	"github.com/google/go-cmp/cmp"
@@ -30,10 +28,6 @@ import (
 func init() {
 	// Disable detrand to enable direct comparisons on outputs.
 	detrand.Disable()
-}
-
-func M(m interface{}) proto.Message {
-	return impl.Export{}.MessageOf(m).Interface()
 }
 
 // splitLines is a cmpopts.Option for comparing strings with line breaks.
@@ -56,7 +50,7 @@ func pb2Enums_NestedEnum(i int32) *pb2.Enums_NestedEnum {
 func TestMarshal(t *testing.T) {
 	tests := []struct {
 		desc    string
-		input   protoV1.Message
+		input   proto.Message
 		want    string
 		wantErr bool
 	}{{
@@ -806,7 +800,7 @@ req_nested: {}
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
 			t.Parallel()
-			b, err := textpb.Marshal(M(tt.input))
+			b, err := textpb.Marshal(tt.input)
 			if err != nil && !tt.wantErr {
 				t.Errorf("Marshal() returned error: %v\n\n", err)
 			}

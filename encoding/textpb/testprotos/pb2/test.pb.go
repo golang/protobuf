@@ -4,7 +4,6 @@
 package pb2
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	any "github.com/golang/protobuf/ptypes/any"
 	duration "github.com/golang/protobuf/ptypes/duration"
@@ -12,19 +11,16 @@ import (
 	_struct "github.com/golang/protobuf/ptypes/struct"
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	wrappers "github.com/golang/protobuf/ptypes/wrappers"
-	math "math"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Enum int32
 
@@ -34,6 +30,18 @@ const (
 	Enum_SECOND  Enum = 2
 	Enum_TENTH   Enum = 10
 )
+
+type xxx_Enum Enum
+
+func (e Enum) ProtoReflect() protoreflect.Enum {
+	return (xxx_Enum)(e)
+}
+func (e xxx_Enum) Type() protoreflect.EnumType {
+	return xxx_Test_ProtoFile_EnumTypes[0]
+}
+func (e xxx_Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var Enum_name = map[int32]string{
 	0:  "UNKNOWN",
@@ -79,6 +87,18 @@ const (
 	Enums_DOS  Enums_NestedEnum = 2
 	Enums_DIEZ Enums_NestedEnum = 10
 )
+
+type xxx_Enums_NestedEnum Enums_NestedEnum
+
+func (e Enums_NestedEnum) ProtoReflect() protoreflect.Enum {
+	return (xxx_Enums_NestedEnum)(e)
+}
+func (e xxx_Enums_NestedEnum) Type() protoreflect.EnumType {
+	return xxx_Test_ProtoFile_EnumTypes[1]
+}
+func (e xxx_Enums_NestedEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var Enums_NestedEnum_name = map[int32]string{
 	1:  "UNO",
@@ -135,6 +155,24 @@ type Scalars struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_Scalars struct{ m *Scalars }
+
+func (m *Scalars) ProtoReflect() protoreflect.Message {
+	return xxx_Scalars{m}
+}
+func (m xxx_Scalars) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Scalars) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Scalars) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Scalars) Interface() protoreflect.ProtoMessage {
+	return m.m
 }
 
 func (m *Scalars) Reset()         { *m = Scalars{} }
@@ -283,6 +321,24 @@ type Repeats struct {
 	XXX_sizecache        int32     `json:"-"`
 }
 
+type xxx_Repeats struct{ m *Repeats }
+
+func (m *Repeats) ProtoReflect() protoreflect.Message {
+	return xxx_Repeats{m}
+}
+func (m xxx_Repeats) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_Repeats) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_Repeats) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_Repeats) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+
 func (m *Repeats) Reset()         { *m = Repeats{} }
 func (m *Repeats) String() string { return proto.CompactTextString(m) }
 func (*Repeats) ProtoMessage()    {}
@@ -382,6 +438,24 @@ type Enums struct {
 	XXX_sizecache        int32              `json:"-"`
 }
 
+type xxx_Enums struct{ m *Enums }
+
+func (m *Enums) ProtoReflect() protoreflect.Message {
+	return xxx_Enums{m}
+}
+func (m xxx_Enums) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[2].Type
+}
+func (m xxx_Enums) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+}
+func (m xxx_Enums) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+}
+func (m xxx_Enums) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+
 func (m *Enums) Reset()         { *m = Enums{} }
 func (m *Enums) String() string { return proto.CompactTextString(m) }
 func (*Enums) ProtoMessage()    {}
@@ -446,6 +520,24 @@ type Nests struct {
 	XXX_sizecache        int32             `json:"-"`
 }
 
+type xxx_Nests struct{ m *Nests }
+
+func (m *Nests) ProtoReflect() protoreflect.Message {
+	return xxx_Nests{m}
+}
+func (m xxx_Nests) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[3].Type
+}
+func (m xxx_Nests) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[3].KnownFieldsOf(m.m)
+}
+func (m xxx_Nests) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[3].UnknownFieldsOf(m.m)
+}
+func (m xxx_Nests) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+
 func (m *Nests) Reset()         { *m = Nests{} }
 func (m *Nests) String() string { return proto.CompactTextString(m) }
 func (*Nests) ProtoMessage()    {}
@@ -499,147 +591,6 @@ func (m *Nests) GetRptgroup() []*Nests_RptGroup {
 	return nil
 }
 
-type Nests_OptGroup struct {
-	OptBool              *bool                          `protobuf:"varint,1,opt,name=opt_bool,json=optBool" json:"opt_bool,omitempty"`
-	OptString            *string                        `protobuf:"bytes,2,opt,name=opt_string,json=optString" json:"opt_string,omitempty"`
-	OptNested            *Nested                        `protobuf:"bytes,3,opt,name=opt_nested,json=optNested" json:"opt_nested,omitempty"`
-	Optnestedgroup       *Nests_OptGroup_OptNestedGroup `protobuf:"group,4,opt,name=OptNestedGroup,json=optnestedgroup" json:"optnestedgroup,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                       `json:"-"`
-	XXX_unrecognized     []byte                         `json:"-"`
-	XXX_sizecache        int32                          `json:"-"`
-}
-
-func (m *Nests_OptGroup) Reset()         { *m = Nests_OptGroup{} }
-func (m *Nests_OptGroup) String() string { return proto.CompactTextString(m) }
-func (*Nests_OptGroup) ProtoMessage()    {}
-func (*Nests_OptGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c8d7acc1bcec9a72, []int{3, 0}
-}
-
-func (m *Nests_OptGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Nests_OptGroup.Unmarshal(m, b)
-}
-func (m *Nests_OptGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Nests_OptGroup.Marshal(b, m, deterministic)
-}
-func (m *Nests_OptGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Nests_OptGroup.Merge(m, src)
-}
-func (m *Nests_OptGroup) XXX_Size() int {
-	return xxx_messageInfo_Nests_OptGroup.Size(m)
-}
-func (m *Nests_OptGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_Nests_OptGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Nests_OptGroup proto.InternalMessageInfo
-
-func (m *Nests_OptGroup) GetOptBool() bool {
-	if m != nil && m.OptBool != nil {
-		return *m.OptBool
-	}
-	return false
-}
-
-func (m *Nests_OptGroup) GetOptString() string {
-	if m != nil && m.OptString != nil {
-		return *m.OptString
-	}
-	return ""
-}
-
-func (m *Nests_OptGroup) GetOptNested() *Nested {
-	if m != nil {
-		return m.OptNested
-	}
-	return nil
-}
-
-func (m *Nests_OptGroup) GetOptnestedgroup() *Nests_OptGroup_OptNestedGroup {
-	if m != nil {
-		return m.Optnestedgroup
-	}
-	return nil
-}
-
-type Nests_OptGroup_OptNestedGroup struct {
-	OptEnum              *Enum    `protobuf:"varint,1,opt,name=opt_enum,json=optEnum,enum=pb2.Enum" json:"opt_enum,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Nests_OptGroup_OptNestedGroup) Reset()         { *m = Nests_OptGroup_OptNestedGroup{} }
-func (m *Nests_OptGroup_OptNestedGroup) String() string { return proto.CompactTextString(m) }
-func (*Nests_OptGroup_OptNestedGroup) ProtoMessage()    {}
-func (*Nests_OptGroup_OptNestedGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c8d7acc1bcec9a72, []int{3, 0, 0}
-}
-
-func (m *Nests_OptGroup_OptNestedGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Unmarshal(m, b)
-}
-func (m *Nests_OptGroup_OptNestedGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Marshal(b, m, deterministic)
-}
-func (m *Nests_OptGroup_OptNestedGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Merge(m, src)
-}
-func (m *Nests_OptGroup_OptNestedGroup) XXX_Size() int {
-	return xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Size(m)
-}
-func (m *Nests_OptGroup_OptNestedGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_Nests_OptGroup_OptNestedGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Nests_OptGroup_OptNestedGroup proto.InternalMessageInfo
-
-func (m *Nests_OptGroup_OptNestedGroup) GetOptEnum() Enum {
-	if m != nil && m.OptEnum != nil {
-		return *m.OptEnum
-	}
-	return Enum_UNKNOWN
-}
-
-type Nests_RptGroup struct {
-	RptBool              []bool   `protobuf:"varint,1,rep,name=rpt_bool,json=rptBool" json:"rpt_bool,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Nests_RptGroup) Reset()         { *m = Nests_RptGroup{} }
-func (m *Nests_RptGroup) String() string { return proto.CompactTextString(m) }
-func (*Nests_RptGroup) ProtoMessage()    {}
-func (*Nests_RptGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c8d7acc1bcec9a72, []int{3, 1}
-}
-
-func (m *Nests_RptGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Nests_RptGroup.Unmarshal(m, b)
-}
-func (m *Nests_RptGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Nests_RptGroup.Marshal(b, m, deterministic)
-}
-func (m *Nests_RptGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Nests_RptGroup.Merge(m, src)
-}
-func (m *Nests_RptGroup) XXX_Size() int {
-	return xxx_messageInfo_Nests_RptGroup.Size(m)
-}
-func (m *Nests_RptGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_Nests_RptGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Nests_RptGroup proto.InternalMessageInfo
-
-func (m *Nests_RptGroup) GetRptBool() []bool {
-	if m != nil {
-		return m.RptBool
-	}
-	return nil
-}
-
 // Message type used as submessage.
 type Nested struct {
 	OptString            *string  `protobuf:"bytes,1,opt,name=opt_string,json=optString" json:"opt_string,omitempty"`
@@ -647,6 +598,24 @@ type Nested struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_Nested struct{ m *Nested }
+
+func (m *Nested) ProtoReflect() protoreflect.Message {
+	return xxx_Nested{m}
+}
+func (m xxx_Nested) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[4].Type
+}
+func (m xxx_Nested) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[4].KnownFieldsOf(m.m)
+}
+func (m xxx_Nested) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[4].UnknownFieldsOf(m.m)
+}
+func (m xxx_Nested) Interface() protoreflect.ProtoMessage {
+	return m.m
 }
 
 func (m *Nested) Reset()         { *m = Nested{} }
@@ -704,6 +673,24 @@ type Requireds struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_Requireds struct{ m *Requireds }
+
+func (m *Requireds) ProtoReflect() protoreflect.Message {
+	return xxx_Requireds{m}
+}
+func (m xxx_Requireds) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[5].Type
+}
+func (m xxx_Requireds) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[5].KnownFieldsOf(m.m)
+}
+func (m xxx_Requireds) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[5].UnknownFieldsOf(m.m)
+}
+func (m xxx_Requireds) Interface() protoreflect.ProtoMessage {
+	return m.m
 }
 
 func (m *Requireds) Reset()         { *m = Requireds{} }
@@ -817,6 +804,24 @@ type PartialRequired struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_PartialRequired struct{ m *PartialRequired }
+
+func (m *PartialRequired) ProtoReflect() protoreflect.Message {
+	return xxx_PartialRequired{m}
+}
+func (m xxx_PartialRequired) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[6].Type
+}
+func (m xxx_PartialRequired) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[6].KnownFieldsOf(m.m)
+}
+func (m xxx_PartialRequired) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[6].UnknownFieldsOf(m.m)
+}
+func (m xxx_PartialRequired) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+
 func (m *PartialRequired) Reset()         { *m = PartialRequired{} }
 func (m *PartialRequired) String() string { return proto.CompactTextString(m) }
 func (*PartialRequired) ProtoMessage()    {}
@@ -865,6 +870,24 @@ type Oneofs struct {
 	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
 	XXX_unrecognized     []byte         `json:"-"`
 	XXX_sizecache        int32          `json:"-"`
+}
+
+type xxx_Oneofs struct{ m *Oneofs }
+
+func (m *Oneofs) ProtoReflect() protoreflect.Message {
+	return xxx_Oneofs{m}
+}
+func (m xxx_Oneofs) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[7].Type
+}
+func (m xxx_Oneofs) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[7].KnownFieldsOf(m.m)
+}
+func (m xxx_Oneofs) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[7].UnknownFieldsOf(m.m)
+}
+func (m xxx_Oneofs) Interface() protoreflect.ProtoMessage {
+	return m.m
 }
 
 func (m *Oneofs) Reset()         { *m = Oneofs{} }
@@ -929,74 +952,12 @@ func (m *Oneofs) GetMsg() *Nested {
 	return nil
 }
 
-// XXX_OneofFuncs is for the internal use of the proto package.
-func (*Oneofs) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _Oneofs_OneofMarshaler, _Oneofs_OneofUnmarshaler, _Oneofs_OneofSizer, []interface{}{
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*Oneofs) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
 		(*Oneofs_Str)(nil),
 		(*Oneofs_Msg)(nil),
 	}
-}
-
-func _Oneofs_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
-	m := msg.(*Oneofs)
-	// union
-	switch x := m.Union.(type) {
-	case *Oneofs_Str:
-		b.EncodeVarint(1<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.Str)
-	case *Oneofs_Msg:
-		b.EncodeVarint(2<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.Msg); err != nil {
-			return err
-		}
-	case nil:
-	default:
-		return fmt.Errorf("Oneofs.Union has unexpected type %T", x)
-	}
-	return nil
-}
-
-func _Oneofs_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
-	m := msg.(*Oneofs)
-	switch tag {
-	case 1: // union.str
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeStringBytes()
-		m.Union = &Oneofs_Str{x}
-		return true, err
-	case 2: // union.msg
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		msg := new(Nested)
-		err := b.DecodeMessage(msg)
-		m.Union = &Oneofs_Msg{msg}
-		return true, err
-	default:
-		return false, nil
-	}
-}
-
-func _Oneofs_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*Oneofs)
-	// union
-	switch x := m.Union.(type) {
-	case *Oneofs_Str:
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(len(x.Str)))
-		n += len(x.Str)
-	case *Oneofs_Msg:
-		s := proto.Size(x.Msg)
-		n += 1 // tag and wire
-		n += proto.SizeVarint(uint64(s))
-		n += s
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
-	}
-	return n
 }
 
 // Message contains map fields.
@@ -1010,6 +971,24 @@ type Maps struct {
 	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
 	XXX_unrecognized     []byte             `json:"-"`
 	XXX_sizecache        int32              `json:"-"`
+}
+
+type xxx_Maps struct{ m *Maps }
+
+func (m *Maps) ProtoReflect() protoreflect.Message {
+	return xxx_Maps{m}
+}
+func (m xxx_Maps) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[8].Type
+}
+func (m xxx_Maps) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[8].KnownFieldsOf(m.m)
+}
+func (m xxx_Maps) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[8].UnknownFieldsOf(m.m)
+}
+func (m xxx_Maps) Interface() protoreflect.ProtoMessage {
+	return m.m
 }
 
 func (m *Maps) Reset()         { *m = Maps{} }
@@ -1087,6 +1066,24 @@ type NestedWithRequired struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_NestedWithRequired struct{ m *NestedWithRequired }
+
+func (m *NestedWithRequired) ProtoReflect() protoreflect.Message {
+	return xxx_NestedWithRequired{m}
+}
+func (m xxx_NestedWithRequired) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[9].Type
+}
+func (m xxx_NestedWithRequired) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[9].KnownFieldsOf(m.m)
+}
+func (m xxx_NestedWithRequired) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[9].UnknownFieldsOf(m.m)
+}
+func (m xxx_NestedWithRequired) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+
 func (m *NestedWithRequired) Reset()         { *m = NestedWithRequired{} }
 func (m *NestedWithRequired) String() string { return proto.CompactTextString(m) }
 func (*NestedWithRequired) ProtoMessage()    {}
@@ -1126,6 +1123,24 @@ type IndirectRequired struct {
 	XXX_NoUnkeyedLiteral struct{}                       `json:"-"`
 	XXX_unrecognized     []byte                         `json:"-"`
 	XXX_sizecache        int32                          `json:"-"`
+}
+
+type xxx_IndirectRequired struct{ m *IndirectRequired }
+
+func (m *IndirectRequired) ProtoReflect() protoreflect.Message {
+	return xxx_IndirectRequired{m}
+}
+func (m xxx_IndirectRequired) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[10].Type
+}
+func (m xxx_IndirectRequired) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[10].KnownFieldsOf(m.m)
+}
+func (m xxx_IndirectRequired) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[10].UnknownFieldsOf(m.m)
+}
+func (m xxx_IndirectRequired) Interface() protoreflect.ProtoMessage {
+	return m.m
 }
 
 func (m *IndirectRequired) Reset()         { *m = IndirectRequired{} }
@@ -1195,6 +1210,24 @@ type KnownTypes struct {
 	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
 	XXX_unrecognized     []byte                `json:"-"`
 	XXX_sizecache        int32                 `json:"-"`
+}
+
+type xxx_KnownTypes struct{ m *KnownTypes }
+
+func (m *KnownTypes) ProtoReflect() protoreflect.Message {
+	return xxx_KnownTypes{m}
+}
+func (m xxx_KnownTypes) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[11].Type
+}
+func (m xxx_KnownTypes) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[11].KnownFieldsOf(m.m)
+}
+func (m xxx_KnownTypes) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[11].UnknownFieldsOf(m.m)
+}
+func (m xxx_KnownTypes) Interface() protoreflect.ProtoMessage {
+	return m.m
 }
 
 func (m *KnownTypes) Reset()         { *m = KnownTypes{} }
@@ -1334,16 +1367,211 @@ func (m *KnownTypes) GetOptAny() *any.Any {
 	return nil
 }
 
+type Nests_OptGroup struct {
+	OptBool              *bool                          `protobuf:"varint,1,opt,name=opt_bool,json=optBool" json:"opt_bool,omitempty"`
+	OptString            *string                        `protobuf:"bytes,2,opt,name=opt_string,json=optString" json:"opt_string,omitempty"`
+	OptNested            *Nested                        `protobuf:"bytes,3,opt,name=opt_nested,json=optNested" json:"opt_nested,omitempty"`
+	Optnestedgroup       *Nests_OptGroup_OptNestedGroup `protobuf:"group,4,opt,name=OptNestedGroup,json=optnestedgroup" json:"optnestedgroup,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                       `json:"-"`
+	XXX_unrecognized     []byte                         `json:"-"`
+	XXX_sizecache        int32                          `json:"-"`
+}
+
+type xxx_Nests_OptGroup struct{ m *Nests_OptGroup }
+
+func (m *Nests_OptGroup) ProtoReflect() protoreflect.Message {
+	return xxx_Nests_OptGroup{m}
+}
+func (m xxx_Nests_OptGroup) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[12].Type
+}
+func (m xxx_Nests_OptGroup) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[12].KnownFieldsOf(m.m)
+}
+func (m xxx_Nests_OptGroup) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[12].UnknownFieldsOf(m.m)
+}
+func (m xxx_Nests_OptGroup) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+
+func (m *Nests_OptGroup) Reset()         { *m = Nests_OptGroup{} }
+func (m *Nests_OptGroup) String() string { return proto.CompactTextString(m) }
+func (*Nests_OptGroup) ProtoMessage()    {}
+func (*Nests_OptGroup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c8d7acc1bcec9a72, []int{3, 0}
+}
+
+func (m *Nests_OptGroup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Nests_OptGroup.Unmarshal(m, b)
+}
+func (m *Nests_OptGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Nests_OptGroup.Marshal(b, m, deterministic)
+}
+func (m *Nests_OptGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Nests_OptGroup.Merge(m, src)
+}
+func (m *Nests_OptGroup) XXX_Size() int {
+	return xxx_messageInfo_Nests_OptGroup.Size(m)
+}
+func (m *Nests_OptGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_Nests_OptGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Nests_OptGroup proto.InternalMessageInfo
+
+func (m *Nests_OptGroup) GetOptBool() bool {
+	if m != nil && m.OptBool != nil {
+		return *m.OptBool
+	}
+	return false
+}
+
+func (m *Nests_OptGroup) GetOptString() string {
+	if m != nil && m.OptString != nil {
+		return *m.OptString
+	}
+	return ""
+}
+
+func (m *Nests_OptGroup) GetOptNested() *Nested {
+	if m != nil {
+		return m.OptNested
+	}
+	return nil
+}
+
+func (m *Nests_OptGroup) GetOptnestedgroup() *Nests_OptGroup_OptNestedGroup {
+	if m != nil {
+		return m.Optnestedgroup
+	}
+	return nil
+}
+
+type Nests_RptGroup struct {
+	RptBool              []bool   `protobuf:"varint,1,rep,name=rpt_bool,json=rptBool" json:"rpt_bool,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_Nests_RptGroup struct{ m *Nests_RptGroup }
+
+func (m *Nests_RptGroup) ProtoReflect() protoreflect.Message {
+	return xxx_Nests_RptGroup{m}
+}
+func (m xxx_Nests_RptGroup) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[13].Type
+}
+func (m xxx_Nests_RptGroup) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[13].KnownFieldsOf(m.m)
+}
+func (m xxx_Nests_RptGroup) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[13].UnknownFieldsOf(m.m)
+}
+func (m xxx_Nests_RptGroup) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+
+func (m *Nests_RptGroup) Reset()         { *m = Nests_RptGroup{} }
+func (m *Nests_RptGroup) String() string { return proto.CompactTextString(m) }
+func (*Nests_RptGroup) ProtoMessage()    {}
+func (*Nests_RptGroup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c8d7acc1bcec9a72, []int{3, 1}
+}
+
+func (m *Nests_RptGroup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Nests_RptGroup.Unmarshal(m, b)
+}
+func (m *Nests_RptGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Nests_RptGroup.Marshal(b, m, deterministic)
+}
+func (m *Nests_RptGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Nests_RptGroup.Merge(m, src)
+}
+func (m *Nests_RptGroup) XXX_Size() int {
+	return xxx_messageInfo_Nests_RptGroup.Size(m)
+}
+func (m *Nests_RptGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_Nests_RptGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Nests_RptGroup proto.InternalMessageInfo
+
+func (m *Nests_RptGroup) GetRptBool() []bool {
+	if m != nil {
+		return m.RptBool
+	}
+	return nil
+}
+
+type Nests_OptGroup_OptNestedGroup struct {
+	OptEnum              *Enum    `protobuf:"varint,1,opt,name=opt_enum,json=optEnum,enum=pb2.Enum" json:"opt_enum,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_Nests_OptGroup_OptNestedGroup struct {
+	m *Nests_OptGroup_OptNestedGroup
+}
+
+func (m *Nests_OptGroup_OptNestedGroup) ProtoReflect() protoreflect.Message {
+	return xxx_Nests_OptGroup_OptNestedGroup{m}
+}
+func (m xxx_Nests_OptGroup_OptNestedGroup) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[14].Type
+}
+func (m xxx_Nests_OptGroup_OptNestedGroup) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[14].KnownFieldsOf(m.m)
+}
+func (m xxx_Nests_OptGroup_OptNestedGroup) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[14].UnknownFieldsOf(m.m)
+}
+func (m xxx_Nests_OptGroup_OptNestedGroup) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+
+func (m *Nests_OptGroup_OptNestedGroup) Reset()         { *m = Nests_OptGroup_OptNestedGroup{} }
+func (m *Nests_OptGroup_OptNestedGroup) String() string { return proto.CompactTextString(m) }
+func (*Nests_OptGroup_OptNestedGroup) ProtoMessage()    {}
+func (*Nests_OptGroup_OptNestedGroup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c8d7acc1bcec9a72, []int{3, 0, 0}
+}
+
+func (m *Nests_OptGroup_OptNestedGroup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Unmarshal(m, b)
+}
+func (m *Nests_OptGroup_OptNestedGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Marshal(b, m, deterministic)
+}
+func (m *Nests_OptGroup_OptNestedGroup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Merge(m, src)
+}
+func (m *Nests_OptGroup_OptNestedGroup) XXX_Size() int {
+	return xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Size(m)
+}
+func (m *Nests_OptGroup_OptNestedGroup) XXX_DiscardUnknown() {
+	xxx_messageInfo_Nests_OptGroup_OptNestedGroup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Nests_OptGroup_OptNestedGroup proto.InternalMessageInfo
+
+func (m *Nests_OptGroup_OptNestedGroup) GetOptEnum() Enum {
+	if m != nil && m.OptEnum != nil {
+		return *m.OptEnum
+	}
+	return Enum_UNKNOWN
+}
+
 func init() {
+	proto.RegisterFile("encoding/textpb/testprotos/pb2/test.proto", fileDescriptor_c8d7acc1bcec9a72)
 	proto.RegisterEnum("pb2.Enum", Enum_name, Enum_value)
 	proto.RegisterEnum("pb2.Enums_NestedEnum", Enums_NestedEnum_name, Enums_NestedEnum_value)
 	proto.RegisterType((*Scalars)(nil), "pb2.Scalars")
 	proto.RegisterType((*Repeats)(nil), "pb2.Repeats")
 	proto.RegisterType((*Enums)(nil), "pb2.Enums")
 	proto.RegisterType((*Nests)(nil), "pb2.Nests")
-	proto.RegisterType((*Nests_OptGroup)(nil), "pb2.Nests.OptGroup")
-	proto.RegisterType((*Nests_OptGroup_OptNestedGroup)(nil), "pb2.Nests.OptGroup.OptNestedGroup")
-	proto.RegisterType((*Nests_RptGroup)(nil), "pb2.Nests.RptGroup")
 	proto.RegisterType((*Nested)(nil), "pb2.Nested")
 	proto.RegisterType((*Requireds)(nil), "pb2.Requireds")
 	proto.RegisterType((*PartialRequired)(nil), "pb2.PartialRequired")
@@ -1359,10 +1587,9 @@ func init() {
 	proto.RegisterType((*IndirectRequired)(nil), "pb2.IndirectRequired")
 	proto.RegisterMapType((map[string]*NestedWithRequired)(nil), "pb2.IndirectRequired.StrToNestedEntry")
 	proto.RegisterType((*KnownTypes)(nil), "pb2.KnownTypes")
-}
-
-func init() {
-	proto.RegisterFile("encoding/textpb/testprotos/pb2/test.proto", fileDescriptor_c8d7acc1bcec9a72)
+	proto.RegisterType((*Nests_OptGroup)(nil), "pb2.Nests.OptGroup")
+	proto.RegisterType((*Nests_RptGroup)(nil), "pb2.Nests.RptGroup")
+	proto.RegisterType((*Nests_OptGroup_OptNestedGroup)(nil), "pb2.Nests.OptGroup.OptNestedGroup")
 }
 
 var fileDescriptor_c8d7acc1bcec9a72 = []byte{
@@ -1468,4 +1695,1097 @@ var fileDescriptor_c8d7acc1bcec9a72 = []byte{
 	0x27, 0xfd, 0x37, 0x55, 0xb4, 0xff, 0xf2, 0xc3, 0xf3, 0x91, 0xcb, 0x3e, 0x86, 0xc3, 0xe6, 0x05,
 	0x99, 0xb4, 0x46, 0x64, 0x3c, 0xf0, 0x46, 0xc9, 0xdf, 0x1c, 0x9f, 0xda, 0xad, 0xeb, 0xff, 0xc0,
 	0xf9, 0x3f, 0x00, 0x00, 0xff, 0xff, 0x7b, 0xf3, 0x0d, 0xb6, 0xe1, 0x11, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Test_ProtoFile_FileDesc.Enums = xxx_Test_ProtoFile_EnumDescs[0:1]
+	xxx_Test_ProtoFile_FileDesc.Messages = xxx_Test_ProtoFile_MessageDescs[0:12]
+	xxx_Test_ProtoFile_MessageDescs[2].Enums = xxx_Test_ProtoFile_EnumDescs[1:2]
+	xxx_Test_ProtoFile_MessageDescs[3].Messages = xxx_Test_ProtoFile_MessageDescs[12:14]
+	xxx_Test_ProtoFile_MessageDescs[8].Messages = xxx_Test_ProtoFile_MessageDescs[15:21]
+	xxx_Test_ProtoFile_MessageDescs[10].Messages = xxx_Test_ProtoFile_MessageDescs[21:22]
+	xxx_Test_ProtoFile_MessageDescs[12].Messages = xxx_Test_ProtoFile_MessageDescs[14:15]
+	xxx_Test_ProtoFile_MessageDescs[2].Fields[0].EnumType = xxx_Test_ProtoFile_EnumTypes[0]
+	xxx_Test_ProtoFile_MessageDescs[2].Fields[1].EnumType = xxx_Test_ProtoFile_EnumTypes[0]
+	xxx_Test_ProtoFile_MessageDescs[2].Fields[2].EnumType = xxx_Test_ProtoFile_EnumTypes[1]
+	xxx_Test_ProtoFile_MessageDescs[2].Fields[3].EnumType = xxx_Test_ProtoFile_EnumTypes[1]
+	xxx_Test_ProtoFile_MessageDescs[3].Fields[0].MessageType = xxx_Test_ProtoFile_MessageTypes[4].Type
+	xxx_Test_ProtoFile_MessageDescs[3].Fields[1].MessageType = xxx_Test_ProtoFile_MessageTypes[12].Type
+	xxx_Test_ProtoFile_MessageDescs[3].Fields[2].MessageType = xxx_Test_ProtoFile_MessageTypes[4].Type
+	xxx_Test_ProtoFile_MessageDescs[3].Fields[3].MessageType = xxx_Test_ProtoFile_MessageTypes[13].Type
+	xxx_Test_ProtoFile_MessageDescs[4].Fields[1].MessageType = xxx_Test_ProtoFile_MessageTypes[4].Type
+	xxx_Test_ProtoFile_MessageDescs[5].Fields[9].EnumType = xxx_Test_ProtoFile_EnumTypes[0]
+	xxx_Test_ProtoFile_MessageDescs[5].Fields[10].MessageType = xxx_Test_ProtoFile_MessageTypes[4].Type
+	xxx_Test_ProtoFile_MessageDescs[7].Fields[1].MessageType = xxx_Test_ProtoFile_MessageTypes[4].Type
+	xxx_Test_ProtoFile_MessageDescs[8].Fields[0].MessageType = xxx_Test_ProtoFile_MessageDescs[15].Reference()
+	xxx_Test_ProtoFile_MessageDescs[8].Fields[1].MessageType = xxx_Test_ProtoFile_MessageDescs[16].Reference()
+	xxx_Test_ProtoFile_MessageDescs[8].Fields[2].MessageType = xxx_Test_ProtoFile_MessageDescs[17].Reference()
+	xxx_Test_ProtoFile_MessageDescs[8].Fields[3].MessageType = xxx_Test_ProtoFile_MessageDescs[18].Reference()
+	xxx_Test_ProtoFile_MessageDescs[8].Fields[4].MessageType = xxx_Test_ProtoFile_MessageDescs[19].Reference()
+	xxx_Test_ProtoFile_MessageDescs[8].Fields[5].MessageType = xxx_Test_ProtoFile_MessageDescs[20].Reference()
+	xxx_Test_ProtoFile_MessageDescs[10].Fields[0].MessageType = xxx_Test_ProtoFile_MessageTypes[9].Type
+	xxx_Test_ProtoFile_MessageDescs[10].Fields[1].MessageType = xxx_Test_ProtoFile_MessageTypes[9].Type
+	xxx_Test_ProtoFile_MessageDescs[10].Fields[2].MessageType = xxx_Test_ProtoFile_MessageDescs[21].Reference()
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*wrappers.BoolValue)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[1].MessageType = protoimpl.X.MessageTypeOf((*wrappers.Int32Value)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[2].MessageType = protoimpl.X.MessageTypeOf((*wrappers.Int64Value)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[3].MessageType = protoimpl.X.MessageTypeOf((*wrappers.UInt32Value)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[4].MessageType = protoimpl.X.MessageTypeOf((*wrappers.UInt64Value)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[5].MessageType = protoimpl.X.MessageTypeOf((*wrappers.FloatValue)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[6].MessageType = protoimpl.X.MessageTypeOf((*wrappers.DoubleValue)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[7].MessageType = protoimpl.X.MessageTypeOf((*wrappers.StringValue)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[8].MessageType = protoimpl.X.MessageTypeOf((*wrappers.BytesValue)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[9].MessageType = protoimpl.X.MessageTypeOf((*duration.Duration)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[10].MessageType = protoimpl.X.MessageTypeOf((*timestamp.Timestamp)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[11].MessageType = protoimpl.X.MessageTypeOf((*_struct.Struct)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[12].MessageType = protoimpl.X.MessageTypeOf((*_struct.ListValue)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[13].MessageType = protoimpl.X.MessageTypeOf((*_struct.Value)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[14].MessageType = protoimpl.X.MessageTypeOf((*empty.Empty)(nil))
+	xxx_Test_ProtoFile_MessageDescs[11].Fields[15].MessageType = protoimpl.X.MessageTypeOf((*any.Any)(nil))
+	xxx_Test_ProtoFile_MessageDescs[12].Fields[2].MessageType = xxx_Test_ProtoFile_MessageTypes[4].Type
+	xxx_Test_ProtoFile_MessageDescs[12].Fields[3].MessageType = xxx_Test_ProtoFile_MessageTypes[14].Type
+	xxx_Test_ProtoFile_MessageDescs[14].Fields[0].EnumType = xxx_Test_ProtoFile_EnumTypes[0]
+	xxx_Test_ProtoFile_MessageDescs[18].Fields[1].EnumType = xxx_Test_ProtoFile_EnumTypes[0]
+	xxx_Test_ProtoFile_MessageDescs[19].Fields[1].MessageType = xxx_Test_ProtoFile_MessageTypes[4].Type
+	xxx_Test_ProtoFile_MessageDescs[20].Fields[1].MessageType = xxx_Test_ProtoFile_MessageTypes[7].Type
+	xxx_Test_ProtoFile_MessageDescs[21].Fields[1].MessageType = xxx_Test_ProtoFile_MessageTypes[9].Type
+	var err error
+	Test_ProtoFile, err = prototype.NewFile(&xxx_Test_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Test_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Test_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto2,
+	Path:    "encoding/textpb/testprotos/pb2/test.proto",
+	Package: "pb2",
+	Imports: []protoreflect.FileImport{
+		{FileDescriptor: prototype.PlaceholderFile("google/protobuf/any.proto", "google.protobuf")},
+		{FileDescriptor: prototype.PlaceholderFile("google/protobuf/empty.proto", "google.protobuf")},
+		{FileDescriptor: prototype.PlaceholderFile("google/protobuf/duration.proto", "google.protobuf")},
+		{FileDescriptor: prototype.PlaceholderFile("google/protobuf/struct.proto", "google.protobuf")},
+		{FileDescriptor: prototype.PlaceholderFile("google/protobuf/timestamp.proto", "google.protobuf")},
+		{FileDescriptor: prototype.PlaceholderFile("google/protobuf/wrappers.proto", "google.protobuf")},
+	},
+}
+var xxx_Test_ProtoFile_EnumTypes = [2]protoreflect.EnumType{
+	prototype.GoEnum(
+		xxx_Test_ProtoFile_EnumDescs[0].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return Enum(n)
+		},
+	),
+	prototype.GoEnum(
+		xxx_Test_ProtoFile_EnumDescs[1].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return Enums_NestedEnum(n)
+		},
+	),
+}
+var xxx_Test_ProtoFile_EnumDescs = [2]prototype.Enum{
+	{
+		Name: "Enum",
+		Values: []prototype.EnumValue{
+			{Name: "UNKNOWN", Number: 0},
+			{Name: "FIRST", Number: 1},
+			{Name: "SECOND", Number: 2},
+			{Name: "TENTH", Number: 10},
+		},
+	},
+	{
+		Name: "NestedEnum",
+		Values: []prototype.EnumValue{
+			{Name: "UNO", Number: 1},
+			{Name: "DOS", Number: 2},
+			{Name: "DIEZ", Number: 10},
+		},
+	},
+}
+var xxx_Test_ProtoFile_MessageTypes = [22]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Scalars)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Repeats)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[2].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Enums)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[3].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Nests)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[4].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Nested)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[5].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Requireds)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[6].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(PartialRequired)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[7].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Oneofs)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[8].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Maps)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[9].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(NestedWithRequired)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[10].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(IndirectRequired)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[11].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(KnownTypes)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[12].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Nests_OptGroup)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[13].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Nests_RptGroup)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[14].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Nests_OptGroup_OptNestedGroup)
+		},
+	)},
+	{ /* no message type for Maps_Int32ToStrEntry */ },
+	{ /* no message type for Maps_Sfixed64ToBoolEntry */ },
+	{ /* no message type for Maps_BoolToUint32Entry */ },
+	{ /* no message type for Maps_Uint64ToEnumEntry */ },
+	{ /* no message type for Maps_StrToNestedEntry */ },
+	{ /* no message type for Maps_StrToOneofsEntry */ },
+	{ /* no message type for IndirectRequired_StrToNestedEntry */ },
+}
+var xxx_Test_ProtoFile_MessageDescs = [22]prototype.Message{
+	{
+		Name: "Scalars",
+		Fields: []prototype.Field{
+			{
+				Name:        "opt_bool",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "optBool",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_int32",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "optInt32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_int64",
+				Number:      3,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "optInt64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_uint32",
+				Number:      4,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint32Kind,
+				JSONName:    "optUint32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_uint64",
+				Number:      5,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint64Kind,
+				JSONName:    "optUint64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_sint32",
+				Number:      6,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sint32Kind,
+				JSONName:    "optSint32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_sint64",
+				Number:      7,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sint64Kind,
+				JSONName:    "optSint64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_fixed32",
+				Number:      8,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed32Kind,
+				JSONName:    "optFixed32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_fixed64",
+				Number:      9,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed64Kind,
+				JSONName:    "optFixed64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_sfixed32",
+				Number:      10,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed32Kind,
+				JSONName:    "optSfixed32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_sfixed64",
+				Number:      11,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed64Kind,
+				JSONName:    "optSfixed64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_float",
+				Number:      20,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "optFloat",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_double",
+				Number:      21,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "optDouble",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_bytes",
+				Number:      14,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "optBytes",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_string",
+				Number:      13,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "optString",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "Repeats",
+		Fields: []prototype.Field{
+			{
+				Name:        "rpt_bool",
+				Number:      1,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "rptBool",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_int32",
+				Number:      2,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "rptInt32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_int64",
+				Number:      3,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "rptInt64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_uint32",
+				Number:      4,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Uint32Kind,
+				JSONName:    "rptUint32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_uint64",
+				Number:      5,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.Uint64Kind,
+				JSONName:    "rptUint64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_float",
+				Number:      6,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "rptFloat",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_double",
+				Number:      7,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "rptDouble",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_string",
+				Number:      15,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "rptString",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_bytes",
+				Number:      14,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "rptBytes",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "Enums",
+		Fields: []prototype.Field{
+			{
+				Name:        "opt_enum",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "optEnum",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_enum",
+				Number:      2,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "rptEnum",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_nested_enum",
+				Number:      3,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "optNestedEnum",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_nested_enum",
+				Number:      4,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "rptNestedEnum",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "Nests",
+		Fields: []prototype.Field{
+			{
+				Name:        "opt_nested",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optNested",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "optgroup",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.GroupKind,
+				JSONName:    "optgroup",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_nested",
+				Number:      3,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "rptNested",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rptgroup",
+				Number:      4,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.GroupKind,
+				JSONName:    "rptgroup",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "Nested",
+		Fields: []prototype.Field{
+			{
+				Name:        "opt_string",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "optString",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_nested",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optNested",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "Requireds",
+		Fields: []prototype.Field{
+			{
+				Name:        "req_bool",
+				Number:      1,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "reqBool",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "req_fixed32",
+				Number:      2,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Fixed32Kind,
+				JSONName:    "reqFixed32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "req_fixed64",
+				Number:      3,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Fixed64Kind,
+				JSONName:    "reqFixed64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "req_sfixed32",
+				Number:      4,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Sfixed32Kind,
+				JSONName:    "reqSfixed32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "req_sfixed64",
+				Number:      5,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.Sfixed64Kind,
+				JSONName:    "reqSfixed64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "req_float",
+				Number:      6,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "reqFloat",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "req_double",
+				Number:      7,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "reqDouble",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "req_string",
+				Number:      8,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "reqString",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "req_bytes",
+				Number:      9,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "reqBytes",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "req_enum",
+				Number:      10,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "reqEnum",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "req_nested",
+				Number:      11,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "reqNested",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "PartialRequired",
+		Fields: []prototype.Field{
+			{
+				Name:        "req_string",
+				Number:      1,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "reqString",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_string",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "optString",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "Oneofs",
+		Fields: []prototype.Field{
+			{
+				Name:        "str",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "str",
+				OneofName:   "union",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "msg",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "msg",
+				OneofName:   "union",
+				IsPacked:    prototype.False,
+			},
+		},
+		Oneofs: []prototype.Oneof{
+			{Name: "union"},
+		},
+	},
+	{
+		Name: "Maps",
+		Fields: []prototype.Field{
+			{
+				Name:        "int32_to_str",
+				Number:      1,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "int32ToStr",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "sfixed64_to_bool",
+				Number:      2,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "sfixed64ToBool",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "bool_to_uint32",
+				Number:      3,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "boolToUint32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "uint64_to_enum",
+				Number:      4,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "uint64ToEnum",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "str_to_nested",
+				Number:      5,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "strToNested",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "str_to_oneofs",
+				Number:      6,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "strToOneofs",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "NestedWithRequired",
+		Fields: []prototype.Field{
+			{
+				Name:        "req_string",
+				Number:      1,
+				Cardinality: protoreflect.Required,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "reqString",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "IndirectRequired",
+		Fields: []prototype.Field{
+			{
+				Name:        "opt_nested",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optNested",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "rpt_nested",
+				Number:      2,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "rptNested",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "str_to_nested",
+				Number:      3,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "strToNested",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "KnownTypes",
+		Fields: []prototype.Field{
+			{
+				Name:        "opt_bool",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optBool",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_int32",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optInt32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_int64",
+				Number:      3,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optInt64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_uint32",
+				Number:      4,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optUint32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_uint64",
+				Number:      5,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optUint64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_float",
+				Number:      6,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optFloat",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_double",
+				Number:      7,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optDouble",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_string",
+				Number:      8,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optString",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_bytes",
+				Number:      9,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optBytes",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_duration",
+				Number:      20,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optDuration",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_timestamp",
+				Number:      21,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optTimestamp",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_struct",
+				Number:      25,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optStruct",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_list",
+				Number:      26,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optList",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_value",
+				Number:      27,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optValue",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_empty",
+				Number:      30,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optEmpty",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_any",
+				Number:      32,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optAny",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "OptGroup",
+		Fields: []prototype.Field{
+			{
+				Name:        "opt_bool",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "optBool",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_string",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "optString",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "opt_nested",
+				Number:      3,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "optNested",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "optnestedgroup",
+				Number:      4,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.GroupKind,
+				JSONName:    "optnestedgroup",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "RptGroup",
+		Fields: []prototype.Field{
+			{
+				Name:        "rpt_bool",
+				Number:      1,
+				Cardinality: protoreflect.Repeated,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "rptBool",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "OptNestedGroup",
+		Fields: []prototype.Field{
+			{
+				Name:        "opt_enum",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "optEnum",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "Int32ToStrEntry",
+		Fields: []prototype.Field{
+			{
+				Name:        "key",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "key",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "value",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "value",
+				IsPacked:    prototype.False,
+			},
+		},
+		IsMapEntry: true,
+	},
+	{
+		Name: "Sfixed64ToBoolEntry",
+		Fields: []prototype.Field{
+			{
+				Name:        "key",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed64Kind,
+				JSONName:    "key",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "value",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "value",
+				IsPacked:    prototype.False,
+			},
+		},
+		IsMapEntry: true,
+	},
+	{
+		Name: "BoolToUint32Entry",
+		Fields: []prototype.Field{
+			{
+				Name:        "key",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "key",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "value",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint32Kind,
+				JSONName:    "value",
+				IsPacked:    prototype.False,
+			},
+		},
+		IsMapEntry: true,
+	},
+	{
+		Name: "Uint64ToEnumEntry",
+		Fields: []prototype.Field{
+			{
+				Name:        "key",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint64Kind,
+				JSONName:    "key",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "value",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "value",
+				IsPacked:    prototype.False,
+			},
+		},
+		IsMapEntry: true,
+	},
+	{
+		Name: "StrToNestedEntry",
+		Fields: []prototype.Field{
+			{
+				Name:        "key",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "key",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "value",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "value",
+				IsPacked:    prototype.False,
+			},
+		},
+		IsMapEntry: true,
+	},
+	{
+		Name: "StrToOneofsEntry",
+		Fields: []prototype.Field{
+			{
+				Name:        "key",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "key",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "value",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "value",
+				IsPacked:    prototype.False,
+			},
+		},
+		IsMapEntry: true,
+	},
+	{
+		Name: "StrToNestedEntry",
+		Fields: []prototype.Field{
+			{
+				Name:        "key",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "key",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "value",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "value",
+				IsPacked:    prototype.False,
+			},
+		},
+		IsMapEntry: true,
+	},
 }

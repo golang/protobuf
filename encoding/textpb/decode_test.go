@@ -11,6 +11,7 @@ import (
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/scalar"
+	"github.com/golang/protobuf/v2/proto"
 
 	// The legacy package must be imported prior to use of any legacy messages.
 	// TODO: Remove this when protoV1 registers these hooks for you.
@@ -21,13 +22,11 @@ import (
 )
 
 func TestUnmarshal(t *testing.T) {
-	// TODO: Switch to using proto.Message for inputMessage and wantMessage fields when v2
-	// proto.Equal is implemented.
 	tests := []struct {
 		desc         string
-		inputMessage protoV1.Message
+		inputMessage proto.Message
 		inputText    string
-		wantMessage  protoV1.Message
+		wantMessage  proto.Message
 		wantErr      bool
 	}{{
 		desc:         "proto2 empty message",
@@ -970,14 +969,14 @@ str_to_nested: {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
 			t.Parallel()
-			err := textpb.Unmarshal(M(tt.inputMessage), []byte(tt.inputText))
+			err := textpb.Unmarshal(tt.inputMessage, []byte(tt.inputText))
 			if err != nil && !tt.wantErr {
 				t.Errorf("Unmarshal() returned error: %v\n\n", err)
 			}
 			if err == nil && tt.wantErr {
 				t.Error("Unmarshal() got nil error, want error\n\n")
 			}
-			if tt.wantMessage != nil && !protoV1.Equal(tt.inputMessage, tt.wantMessage) {
+			if tt.wantMessage != nil && !protoV1.Equal(tt.inputMessage.(protoV1.Message), tt.wantMessage.(protoV1.Message)) {
 				t.Errorf("Unmarshal()\n<got>\n%v\n<want>\n%v\n", tt.inputMessage, tt.wantMessage)
 			}
 		})

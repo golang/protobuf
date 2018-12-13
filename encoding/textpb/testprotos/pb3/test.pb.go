@@ -4,21 +4,17 @@
 package pb3
 
 import (
-	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	math "math"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	prototype "github.com/golang/protobuf/v2/reflect/prototype"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 )
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Enum int32
 
@@ -28,6 +24,18 @@ const (
 	Enum_TWO  Enum = 2
 	Enum_TEN  Enum = 10
 )
+
+type xxx_Enum Enum
+
+func (e Enum) ProtoReflect() protoreflect.Enum {
+	return (xxx_Enum)(e)
+}
+func (e xxx_Enum) Type() protoreflect.EnumType {
+	return xxx_Test_ProtoFile_EnumTypes[0]
+}
+func (e xxx_Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var Enum_name = map[int32]string{
 	0:  "ZERO",
@@ -59,6 +67,18 @@ const (
 	Enums_DOS  Enums_NestedEnum = 2
 	Enums_DIEZ Enums_NestedEnum = 10
 )
+
+type xxx_Enums_NestedEnum Enums_NestedEnum
+
+func (e Enums_NestedEnum) ProtoReflect() protoreflect.Enum {
+	return (xxx_Enums_NestedEnum)(e)
+}
+func (e xxx_Enums_NestedEnum) Type() protoreflect.EnumType {
+	return xxx_Test_ProtoFile_EnumTypes[1]
+}
+func (e xxx_Enums_NestedEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var Enums_NestedEnum_name = map[int32]string{
 	0:  "CERO",
@@ -102,6 +122,24 @@ type Scalars struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_Scalars struct{ m *Scalars }
+
+func (m *Scalars) ProtoReflect() protoreflect.Message {
+	return xxx_Scalars{m}
+}
+func (m xxx_Scalars) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[0].Type
+}
+func (m xxx_Scalars) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+}
+func (m xxx_Scalars) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+}
+func (m xxx_Scalars) Interface() protoreflect.ProtoMessage {
+	return m.m
 }
 
 func (m *Scalars) Reset()         { *m = Scalars{} }
@@ -243,6 +281,24 @@ type Enums struct {
 	XXX_sizecache        int32            `json:"-"`
 }
 
+type xxx_Enums struct{ m *Enums }
+
+func (m *Enums) ProtoReflect() protoreflect.Message {
+	return xxx_Enums{m}
+}
+func (m xxx_Enums) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[1].Type
+}
+func (m xxx_Enums) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+}
+func (m xxx_Enums) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+}
+func (m xxx_Enums) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+
 func (m *Enums) Reset()         { *m = Enums{} }
 func (m *Enums) String() string { return proto.CompactTextString(m) }
 func (*Enums) ProtoMessage()    {}
@@ -290,6 +346,24 @@ type Nests struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+type xxx_Nests struct{ m *Nests }
+
+func (m *Nests) ProtoReflect() protoreflect.Message {
+	return xxx_Nests{m}
+}
+func (m xxx_Nests) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[2].Type
+}
+func (m xxx_Nests) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+}
+func (m xxx_Nests) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+}
+func (m xxx_Nests) Interface() protoreflect.ProtoMessage {
+	return m.m
+}
+
 func (m *Nests) Reset()         { *m = Nests{} }
 func (m *Nests) String() string { return proto.CompactTextString(m) }
 func (*Nests) ProtoMessage()    {}
@@ -329,6 +403,24 @@ type Nested struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
+}
+
+type xxx_Nested struct{ m *Nested }
+
+func (m *Nested) ProtoReflect() protoreflect.Message {
+	return xxx_Nested{m}
+}
+func (m xxx_Nested) Type() protoreflect.MessageType {
+	return xxx_Test_ProtoFile_MessageTypes[3].Type
+}
+func (m xxx_Nested) KnownFields() protoreflect.KnownFields {
+	return xxx_Test_ProtoFile_MessageTypes[3].KnownFieldsOf(m.m)
+}
+func (m xxx_Nested) UnknownFields() protoreflect.UnknownFields {
+	return xxx_Test_ProtoFile_MessageTypes[3].UnknownFieldsOf(m.m)
+}
+func (m xxx_Nested) Interface() protoreflect.ProtoMessage {
+	return m.m
 }
 
 func (m *Nested) Reset()         { *m = Nested{} }
@@ -371,16 +463,13 @@ func (m *Nested) GetSNested() *Nested {
 }
 
 func init() {
+	proto.RegisterFile("encoding/textpb/testprotos/pb3/test.proto", fileDescriptor_0854715c5b41c422)
 	proto.RegisterEnum("pb3.Enum", Enum_name, Enum_value)
 	proto.RegisterEnum("pb3.Enums_NestedEnum", Enums_NestedEnum_name, Enums_NestedEnum_value)
 	proto.RegisterType((*Scalars)(nil), "pb3.Scalars")
 	proto.RegisterType((*Enums)(nil), "pb3.Enums")
 	proto.RegisterType((*Nests)(nil), "pb3.Nests")
 	proto.RegisterType((*Nested)(nil), "pb3.Nested")
-}
-
-func init() {
-	proto.RegisterFile("encoding/textpb/testprotos/pb3/test.proto", fileDescriptor_0854715c5b41c422)
 }
 
 var fileDescriptor_0854715c5b41c422 = []byte{
@@ -417,4 +506,271 @@ var fileDescriptor_0854715c5b41c422 = []byte{
 	0xde, 0x5f, 0xc8, 0x6d, 0xb8, 0x96, 0xe5, 0xbc, 0x5a, 0x87, 0xe6, 0x19, 0xe4, 0xf5, 0x2a, 0xfc,
 	0x19, 0x85, 0xff, 0x7f, 0x36, 0xb9, 0x67, 0xea, 0xf8, 0x6f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd9,
 	0x7d, 0x94, 0x3a, 0x5f, 0x03, 0x00, 0x00,
+}
+
+func init() {
+	xxx_Test_ProtoFile_FileDesc.Enums = xxx_Test_ProtoFile_EnumDescs[0:1]
+	xxx_Test_ProtoFile_FileDesc.Messages = xxx_Test_ProtoFile_MessageDescs[0:4]
+	xxx_Test_ProtoFile_MessageDescs[1].Enums = xxx_Test_ProtoFile_EnumDescs[1:2]
+	xxx_Test_ProtoFile_MessageDescs[1].Fields[0].EnumType = xxx_Test_ProtoFile_EnumTypes[0]
+	xxx_Test_ProtoFile_MessageDescs[1].Fields[1].EnumType = xxx_Test_ProtoFile_EnumTypes[1]
+	xxx_Test_ProtoFile_MessageDescs[2].Fields[0].MessageType = xxx_Test_ProtoFile_MessageTypes[3].Type
+	xxx_Test_ProtoFile_MessageDescs[3].Fields[1].MessageType = xxx_Test_ProtoFile_MessageTypes[3].Type
+	var err error
+	Test_ProtoFile, err = prototype.NewFile(&xxx_Test_ProtoFile_FileDesc)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var Test_ProtoFile protoreflect.FileDescriptor
+
+var xxx_Test_ProtoFile_FileDesc = prototype.File{
+	Syntax:  protoreflect.Proto3,
+	Path:    "encoding/textpb/testprotos/pb3/test.proto",
+	Package: "pb3",
+}
+var xxx_Test_ProtoFile_EnumTypes = [2]protoreflect.EnumType{
+	prototype.GoEnum(
+		xxx_Test_ProtoFile_EnumDescs[0].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return Enum(n)
+		},
+	),
+	prototype.GoEnum(
+		xxx_Test_ProtoFile_EnumDescs[1].Reference(),
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+			return Enums_NestedEnum(n)
+		},
+	),
+}
+var xxx_Test_ProtoFile_EnumDescs = [2]prototype.Enum{
+	{
+		Name: "Enum",
+		Values: []prototype.EnumValue{
+			{Name: "ZERO", Number: 0},
+			{Name: "ONE", Number: 1},
+			{Name: "TWO", Number: 2},
+			{Name: "TEN", Number: 10},
+		},
+	},
+	{
+		Name: "NestedEnum",
+		Values: []prototype.EnumValue{
+			{Name: "CERO", Number: 0},
+			{Name: "UNO", Number: 1},
+			{Name: "DOS", Number: 2},
+			{Name: "DIEZ", Number: 10},
+		},
+	},
+}
+var xxx_Test_ProtoFile_MessageTypes = [4]protoimpl.MessageType{
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[0].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Scalars)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[1].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Enums)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[2].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Nests)
+		},
+	)},
+	{Type: prototype.GoMessage(
+		xxx_Test_ProtoFile_MessageDescs[3].Reference(),
+		func(protoreflect.MessageType) protoreflect.ProtoMessage {
+			return new(Nested)
+		},
+	)},
+}
+var xxx_Test_ProtoFile_MessageDescs = [4]prototype.Message{
+	{
+		Name: "Scalars",
+		Fields: []prototype.Field{
+			{
+				Name:        "s_bool",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BoolKind,
+				JSONName:    "sBool",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_int32",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int32Kind,
+				JSONName:    "sInt32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_int64",
+				Number:      3,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Int64Kind,
+				JSONName:    "sInt64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_uint32",
+				Number:      4,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint32Kind,
+				JSONName:    "sUint32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_uint64",
+				Number:      5,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Uint64Kind,
+				JSONName:    "sUint64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_sint32",
+				Number:      6,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sint32Kind,
+				JSONName:    "sSint32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_sint64",
+				Number:      7,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sint64Kind,
+				JSONName:    "sSint64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_fixed32",
+				Number:      8,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed32Kind,
+				JSONName:    "sFixed32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_fixed64",
+				Number:      9,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Fixed64Kind,
+				JSONName:    "sFixed64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_sfixed32",
+				Number:      10,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed32Kind,
+				JSONName:    "sSfixed32",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_sfixed64",
+				Number:      11,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.Sfixed64Kind,
+				JSONName:    "sSfixed64",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_float",
+				Number:      20,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.FloatKind,
+				JSONName:    "sFloat",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_double",
+				Number:      21,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.DoubleKind,
+				JSONName:    "sDouble",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_bytes",
+				Number:      14,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.BytesKind,
+				JSONName:    "sBytes",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_string",
+				Number:      13,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "sString",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "Enums",
+		Fields: []prototype.Field{
+			{
+				Name:        "s_enum",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "sEnum",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_nested_enum",
+				Number:      3,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.EnumKind,
+				JSONName:    "sNestedEnum",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "Nests",
+		Fields: []prototype.Field{
+			{
+				Name:        "s_nested",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "sNested",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
+	{
+		Name: "Nested",
+		Fields: []prototype.Field{
+			{
+				Name:        "s_string",
+				Number:      1,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.StringKind,
+				JSONName:    "sString",
+				IsPacked:    prototype.False,
+			},
+			{
+				Name:        "s_nested",
+				Number:      2,
+				Cardinality: protoreflect.Optional,
+				Kind:        protoreflect.MessageKind,
+				JSONName:    "sNested",
+				IsPacked:    prototype.False,
+			},
+		},
+	},
 }
