@@ -88,6 +88,8 @@ message Nests {
   repeated group RptGroup = 4 {
     repeated bool rpt_bool = 1;
   }
+
+  reserved "reserved_field";
 }
 
 // Message type used as submessage.

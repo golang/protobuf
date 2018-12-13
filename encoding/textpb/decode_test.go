@@ -963,6 +963,11 @@ str_to_nested: {
 			},
 		},
 		wantErr: true,
+	}, {
+		desc:         "ignore reserved field",
+		inputMessage: &pb2.Nests{},
+		inputText:    "reserved_field: 'ignore this'",
+		wantMessage:  &pb2.Nests{},
 	}}
 
 	for _, tt := range tests {

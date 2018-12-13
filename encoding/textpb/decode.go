@@ -79,6 +79,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 
 	msgType := m.Type()
 	fieldDescs := msgType.Fields()
+	reservedNames := msgType.ReservedNames()
 	knownFields := m.KnownFields()
 	var reqNums set.Ints
 	var seenNums set.Ints
@@ -88,12 +89,16 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 		tval := tfield[1]
 
 		var fd pref.FieldDescriptor
-		if name, ok := tkey.Name(); ok {
+		name, ok := tkey.Name()
+		if ok {
 			fd = fieldDescs.ByName(name)
 		}
 		if fd == nil {
+			// Ignore reserved names.
+			if reservedNames.Has(name) {
+				continue
+			}
 			// TODO: Can provide option to ignore unknown message fields.
-			// TODO: Simply ignore and skip reserved field names.
 			return errors.New("%v contains unknown field: %v", msgType.FullName(), tkey)
 		}
 
