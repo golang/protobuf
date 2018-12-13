@@ -168,7 +168,7 @@ func NewLegacyConverter(t reflect.Type, k pref.Kind, w LegacyWrapper) Converter 
 					if v.Type() != t {
 						panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
 					}
-					return pref.ValueOf(v.Interface())
+					return pref.ValueOf(v.Interface().(pref.ProtoMessage).ProtoReflect())
 				},
 				GoValueOf: func(v pref.Value) reflect.Value {
 					rv := reflect.ValueOf(v.Message().Interface())
