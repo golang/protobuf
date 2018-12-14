@@ -53,29 +53,34 @@ func cleanPackageName(name string) GoPackageName {
 
 // cleanGoName converts a string to a valid Go identifier.
 // If mustExport, then the returned identifier is exported if not already.
-func cleanGoName(name string, mustExport bool) string {
-	name = strings.Map(func(r rune) rune {
+func cleanGoName(s string, mustExport bool) string {
+	// Sanitize the input to the set of valid characters,
+	// which must be '_' or be in the Unicode L or N categories.
+	s = strings.Map(func(r rune) rune {
 		if unicode.IsLetter(r) || unicode.IsDigit(r) {
 			return r
 		}
 		return '_'
-	}, name)
-	prefix := "_"
+	}, s)
+	r, n := utf8.DecodeRuneInString(s)
+
+	// Export the identifier by either uppercasing the first character or by
+	// prepending 'X' (to ensure name starts in the Unicode Lu category).
 	if mustExport {
-		prefix = "X"
-	}
-	switch r, n := utf8.DecodeRuneInString(name); {
-	case token.Lookup(name).IsKeyword():
-		return prefix + name
-	case unicode.IsDigit(r):
-		return prefix + name
-	case mustExport && !unicode.IsUpper(r):
-		if unicode.IsLower(r) {
-			return string(unicode.ToUpper(r)) + name[n:]
+		// If possible, uppercase the first character. However, not all
+		// characters in the Unicode L category have an Lu equivalent.
+		if unicode.IsUpper(unicode.ToUpper(r)) {
+			return string(unicode.ToUpper(r)) + s[n:]
 		}
-		return prefix + name
+		return "X" + s
 	}
-	return name
+
+	// Prepend '_' in the event of a Go keyword conflict or if
+	// the identifier is invalid (does not start in the Unicode L category).
+	if token.Lookup(s).IsKeyword() || !unicode.IsLetter(r) {
+		return "_" + s
+	}
+	return s
 }
 
 var isGoPredeclaredIdentifier = map[string]bool{
@@ -142,46 +147,41 @@ func baseName(name string) string {
 // C++ generator lowercases names, it's extremely unlikely to have two fields
 // with different capitalizations.
 func camelCase(s string) string {
-	if s == "" {
-		return ""
-	}
-	var t []byte
-	i := 0
 	// Invariant: if the next letter is lower case, it must be converted
 	// to upper case.
 	// That is, we process a word at a time, where words are marked by _ or
 	// upper case letter. Digits are treated as words.
-	for ; i < len(s); i++ {
+	var b []byte
+	for i := 0; i < len(s); i++ {
 		c := s[i]
 		switch {
 		case c == '.' && i+1 < len(s) && isASCIILower(s[i+1]):
-			// Skip over .<lowercase>, to match historic behavior.
+			// Skip over '.' in ".{{lowercase}}".
 		case c == '.':
-			t = append(t, '_') // Convert . to _.
+			b = append(b, '_') // convert '.' to '_'
 		case c == '_' && (i == 0 || s[i-1] == '.'):
-			// Convert initial _ to X so we start with a capital letter.
-			// Do the same for _ after .; not strictly necessary, but matches
-			// historic behavior.
-			t = append(t, 'X')
+			// Convert initial '_' to ensure we start with a capital letter.
+			// Do the same for '_' after '.' to match historic behavior.
+			b = append(b, 'X') // convert '_' to 'X'
 		case c == '_' && i+1 < len(s) && isASCIILower(s[i+1]):
-			// Skip the underscore in s.
+			// Skip over '_' in "_{{lowercase}}".
 		case isASCIIDigit(c):
-			t = append(t, c)
+			b = append(b, c)
 		default:
 			// Assume we have a letter now - if not, it's a bogus identifier.
 			// The next word is a sequence of characters that must start upper case.
 			if isASCIILower(c) {
-				c ^= ' ' // Make it a capital letter.
+				c -= 'a' - 'A' // convert lowercase to uppercase
 			}
-			t = append(t, c) // Guaranteed not lower case.
+			b = append(b, c)
+
 			// Accept lower case sequence that follows.
-			for i+1 < len(s) && isASCIILower(s[i+1]) {
-				i++
-				t = append(t, s[i])
+			for ; i+1 < len(s) && isASCIILower(s[i+1]); i++ {
+				b = append(b, s[i+1])
 			}
 		}
 	}
-	return string(t)
+	return string(b)
 }
 
 // Is c an ASCII lower-case letter?

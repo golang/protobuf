@@ -10,6 +10,7 @@ func TestCamelCase(t *testing.T) {
 	tests := []struct {
 		in, want string
 	}{
+		{"", ""},
 		{"one", "One"},
 		{"one_two", "OneTwo"},
 		{"_my_field_name_2", "XMyFieldName_2"},
@@ -42,7 +43,11 @@ func TestCleanGoName(t *testing.T) {
 	tests := []struct {
 		in, want, wantExported string
 	}{
-		{"", "", "X"},
+		{"", "_", "X"},
+		{"boo", "boo", "Boo"},
+		{"Boo", "Boo", "Boo"},
+		{"ßoo", "ßoo", "Xßoo"},
+		{"default", "_default", "Default"},
 		{"hello", "hello", "Hello"},
 		{"hello-world!!", "hello_world__", "Hello_world__"},
 		{"hello-\xde\xad\xbe\xef\x00", "hello_____", "Hello_____"},
