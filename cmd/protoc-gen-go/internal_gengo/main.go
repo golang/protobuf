@@ -334,7 +334,7 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	g.P("}")
 	g.P()
 
-	if enum.Desc.Syntax() != protoreflect.Proto3 {
+	if enum.Desc.Syntax() == protoreflect.Proto2 {
 		g.P("func (x *", enum.GoIdent, ") UnmarshalJSON(data []byte) error {")
 		g.P("value, err := ", f.protoPackage().Ident("UnmarshalJSONEnum"), "(", enum.GoIdent, `_value, data, "`, enum.GoIdent, `")`)
 		g.P("if err != nil {")
