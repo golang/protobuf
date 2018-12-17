@@ -10,11 +10,7 @@ import (
 	"io/ioutil"
 	"sync"
 
-	// TODO: Avoid reliance on old API. However, there is currently a
-	// chicken and egg problem where we need the descriptor protos to implement
-	// the new API.
-	protoV1 "github.com/golang/protobuf/v2/internal/legacy/protoV1"
-
+	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
@@ -62,7 +58,7 @@ func loadFileDesc(b []byte) *descriptorpb.FileDescriptorProto {
 	}
 	// TODO: What about extensions?
 	// The protoV1 API does not eagerly unmarshal extensions.
-	if err := protoV1.Unmarshal(b, m); err != nil {
+	if err := proto.Unmarshal(b, m); err != nil {
 		panic(err)
 	}
 	fileDescCache.Store(&b[0], m)
