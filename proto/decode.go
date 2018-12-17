@@ -48,6 +48,9 @@ func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) err
 
 		// Parse the field value.
 		fieldType := fieldTypes.ByNumber(num)
+		if fieldType == nil {
+			fieldType = knownFields.ExtensionTypes().ByNumber(num)
+		}
 		var err error
 		var valLen int
 		switch {
