@@ -138,6 +138,7 @@ message Maps {
 }
 
 // Following messages are for testing required field nested in optional, repeated and map fields.
+
 message NestedWithRequired {
   required string req_string = 1;
 }
@@ -146,6 +147,57 @@ message IndirectRequired {
   optional NestedWithRequired opt_nested = 1;
   repeated NestedWithRequired rpt_nested = 2;
   map<string, NestedWithRequired> str_to_nested = 3;
+}
+
+// Following messages are for testing extensions.
+
+message Extensions {
+  optional string opt_string = 1;
+  extensions 20 to 100;
+  optional bool opt_bool = 101;
+  optional int32 opt_int32 = 2;
+}
+
+extend Extensions {
+  optional bool opt_ext_bool = 21;
+  optional string opt_ext_string = 22;
+  optional Enum opt_ext_enum = 23;
+  optional Nested opt_ext_nested = 24;
+
+  repeated fixed32 rpt_ext_fixed32 = 31;
+  repeated Enum rpt_ext_enum = 32;
+  repeated Nested rpt_ext_nested = 33;
+}
+
+message ExtensionsContainer {
+  extend Extensions {
+    optional bool opt_ext_bool = 51;
+    optional string opt_ext_string = 52;
+    optional Enum opt_ext_enum = 53;
+    optional Nested opt_ext_nested = 54;
+
+    repeated string rpt_ext_string = 61;
+    repeated Enum rpt_ext_enum = 62;
+    repeated Nested rpt_ext_nested = 63;
+  }
+}
+
+// Following messages are for testing MessageSet.
+
+message MessageSet {
+  option message_set_wire_format = true;
+
+  extensions 4 to max;
+}
+
+message MessageSetExtension {
+  optional string opt_string = 1;
+
+  extend MessageSet {
+    optional MessageSetExtension message_set_extension = 10;
+    optional MessageSetExtension not_message_set_extension = 20;
+    optional Nested ext_nested = 30;
+  }
 }
 
 // Message contains well-known type fields.
