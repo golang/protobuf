@@ -42,7 +42,7 @@ type placeholderFile struct {
 	placeholderName
 }
 
-func (t placeholderFile) Options() pref.ProtoMessage                     { return optionTypes.File }
+func (t placeholderFile) Options() pref.OptionsMessage                   { return optionTypes.File }
 func (t placeholderFile) Path() string                                   { return t.path }
 func (t placeholderFile) Package() pref.FullName                         { return t.FullName() }
 func (t placeholderFile) Imports() pref.FileImports                      { return &emptyFiles }
@@ -58,26 +58,26 @@ type placeholderMessage struct {
 	placeholderName
 }
 
-func (t placeholderMessage) Options() pref.ProtoMessage                  { return optionTypes.Message }
-func (t placeholderMessage) IsMapEntry() bool                            { return false }
-func (t placeholderMessage) Fields() pref.FieldDescriptors               { return &emptyFields }
-func (t placeholderMessage) Oneofs() pref.OneofDescriptors               { return &emptyOneofs }
-func (t placeholderMessage) ReservedNames() pref.Names                   { return &emptyNames }
-func (t placeholderMessage) ReservedRanges() pref.FieldRanges            { return &emptyFieldRanges }
-func (t placeholderMessage) RequiredNumbers() pref.FieldNumbers          { return &emptyNumbers }
-func (t placeholderMessage) ExtensionRanges() pref.FieldRanges           { return &emptyFieldRanges }
-func (t placeholderMessage) ExtensionRangeOptions(int) pref.ProtoMessage { panic("out of bounds") }
-func (t placeholderMessage) Enums() pref.EnumDescriptors                 { return &emptyEnums }
-func (t placeholderMessage) Messages() pref.MessageDescriptors           { return &emptyMessages }
-func (t placeholderMessage) Extensions() pref.ExtensionDescriptors       { return &emptyExtensions }
-func (t placeholderMessage) Format(s fmt.State, r rune)                  { pfmt.FormatDesc(s, r, t) }
-func (t placeholderMessage) ProtoType(pref.MessageDescriptor)            {}
+func (t placeholderMessage) Options() pref.OptionsMessage                  { return optionTypes.Message }
+func (t placeholderMessage) IsMapEntry() bool                              { return false }
+func (t placeholderMessage) Fields() pref.FieldDescriptors                 { return &emptyFields }
+func (t placeholderMessage) Oneofs() pref.OneofDescriptors                 { return &emptyOneofs }
+func (t placeholderMessage) ReservedNames() pref.Names                     { return &emptyNames }
+func (t placeholderMessage) ReservedRanges() pref.FieldRanges              { return &emptyFieldRanges }
+func (t placeholderMessage) RequiredNumbers() pref.FieldNumbers            { return &emptyNumbers }
+func (t placeholderMessage) ExtensionRanges() pref.FieldRanges             { return &emptyFieldRanges }
+func (t placeholderMessage) ExtensionRangeOptions(int) pref.OptionsMessage { panic("out of bounds") }
+func (t placeholderMessage) Enums() pref.EnumDescriptors                   { return &emptyEnums }
+func (t placeholderMessage) Messages() pref.MessageDescriptors             { return &emptyMessages }
+func (t placeholderMessage) Extensions() pref.ExtensionDescriptors         { return &emptyExtensions }
+func (t placeholderMessage) Format(s fmt.State, r rune)                    { pfmt.FormatDesc(s, r, t) }
+func (t placeholderMessage) ProtoType(pref.MessageDescriptor)              {}
 
 type placeholderEnum struct {
 	placeholderName
 }
 
-func (t placeholderEnum) Options() pref.ProtoMessage        { return optionTypes.Enum }
+func (t placeholderEnum) Options() pref.OptionsMessage      { return optionTypes.Enum }
 func (t placeholderEnum) Values() pref.EnumValueDescriptors { return &emptyEnumValues }
 func (t placeholderEnum) ReservedNames() pref.Names         { return &emptyNames }
 func (t placeholderEnum) ReservedRanges() pref.EnumRanges   { return &emptyEnumRanges }

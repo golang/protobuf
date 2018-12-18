@@ -22,8 +22,8 @@ type StandaloneMessage struct {
 	ReservedNames         []protoreflect.Name
 	ReservedRanges        [][2]protoreflect.FieldNumber
 	ExtensionRanges       [][2]protoreflect.FieldNumber
-	ExtensionRangeOptions []protoreflect.ProtoMessage
-	Options               protoreflect.ProtoMessage
+	ExtensionRangeOptions []protoreflect.OptionsMessage
+	Options               protoreflect.OptionsMessage
 	IsMapEntry            bool
 
 	fields fieldsMeta
@@ -90,7 +90,7 @@ type StandaloneEnum struct {
 	Values         []EnumValue
 	ReservedNames  []protoreflect.Name
 	ReservedRanges [][2]protoreflect.EnumNumber
-	Options        protoreflect.ProtoMessage
+	Options        protoreflect.OptionsMessage
 
 	vals enumValuesMeta
 }
@@ -117,7 +117,7 @@ type StandaloneExtension struct {
 	MessageType  protoreflect.MessageDescriptor
 	EnumType     protoreflect.EnumDescriptor
 	ExtendedType protoreflect.MessageDescriptor
-	Options      protoreflect.ProtoMessage
+	Options      protoreflect.OptionsMessage
 	IsPacked     OptionalBool
 
 	dv defaultValue
