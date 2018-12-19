@@ -13,6 +13,7 @@ import (
 	"github.com/golang/protobuf/v2/internal/set"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoregistry"
 )
 
 // Unmarshal reads the given []byte into the given proto.Message.
@@ -24,6 +25,11 @@ func Unmarshal(m proto.Message, b []byte) error {
 // UnmarshalOptions is a configurable textproto format parser.
 type UnmarshalOptions struct {
 	pragma.NoUnkeyedLiterals
+
+	// Resolver is the registry used for type lookups when unmarshaling extensions
+	// and processing Any. If Resolver is not set, unmarshaling will default to
+	// using protoregistry.GlobalTypes.
+	Resolver *protoregistry.Types
 }
 
 // Unmarshal reads the given []byte and populates the given proto.Message using options in
@@ -44,6 +50,9 @@ func (o UnmarshalOptions) Unmarshal(m proto.Message, b []byte) error {
 		return err
 	}
 
+	if o.Resolver == nil {
+		o.Resolver = protoregistry.GlobalTypes
+	}
 	err = o.unmarshalMessage(val.Message(), mr)
 	if !nerr.Merge(err) {
 		return err
@@ -65,7 +74,6 @@ func resetMessage(m pref.Message) {
 		unknownFields.Set(num, nil)
 		return true
 	})
-
 	extTypes := knownFields.ExtensionTypes()
 	extTypes.Range(func(xt pref.ExtensionType) bool {
 		extTypes.Remove(xt)
@@ -81,6 +89,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 	fieldDescs := msgType.Fields()
 	reservedNames := msgType.ReservedNames()
 	knownFields := m.KnownFields()
+	xtTypes := knownFields.ExtensionTypes()
 	var reqNums set.Ints
 	var seenNums set.Ints
 
@@ -89,10 +98,32 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 		tval := tfield[1]
 
 		var fd pref.FieldDescriptor
-		name, ok := tkey.Name()
-		if ok {
+		var name pref.Name
+		switch tkey.Type() {
+		case text.Name:
+			name, _ = tkey.Name()
 			fd = fieldDescs.ByName(name)
+		case text.String:
+			// TODO: Handle Any expansions here as well.
+
+			// Handle extensions. Extensions have to be registered first in the message's
+			// ExtensionTypes before setting a value to it.
+			xtName := pref.FullName(tkey.String())
+			// Check first if it is already registered. This is the case for repeated fields.
+			xt := xtTypes.ByName(xtName)
+			if xt == nil {
+				var err error
+				xt, err = o.Resolver.FindExtensionByName(xtName)
+				if err != nil && err != protoregistry.NotFound {
+					return err
+				}
+				if xt != nil {
+					xtTypes.Register(xt)
+				}
+			}
+			fd = xt
 		}
+
 		if fd == nil {
 			// Ignore reserved names.
 			if reservedNames.Has(name) {

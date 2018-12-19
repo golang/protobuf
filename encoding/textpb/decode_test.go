@@ -9,9 +9,12 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/encoding/textpb"
+	"github.com/golang/protobuf/v2/internal/legacy"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
+	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 
 	// The legacy package must be imported prior to use of any legacy messages.
 	// TODO: Remove this when protoV1 registers these hooks for you.
@@ -20,6 +23,28 @@ import (
 	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb2"
 	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb3"
 )
+
+func init() {
+	registerExtension(pb2.E_OptExtBool)
+	registerExtension(pb2.E_OptExtString)
+	registerExtension(pb2.E_OptExtEnum)
+	registerExtension(pb2.E_OptExtNested)
+	registerExtension(pb2.E_RptExtFixed32)
+	registerExtension(pb2.E_RptExtEnum)
+	registerExtension(pb2.E_RptExtNested)
+	registerExtension(pb2.E_ExtensionsContainer_OptExtBool)
+	registerExtension(pb2.E_ExtensionsContainer_OptExtString)
+	registerExtension(pb2.E_ExtensionsContainer_OptExtEnum)
+	registerExtension(pb2.E_ExtensionsContainer_OptExtNested)
+	registerExtension(pb2.E_ExtensionsContainer_RptExtString)
+	registerExtension(pb2.E_ExtensionsContainer_RptExtEnum)
+	registerExtension(pb2.E_ExtensionsContainer_RptExtNested)
+}
+
+func registerExtension(xd *protoapi.ExtensionDesc) {
+	xt := legacy.Export{}.ExtensionTypeFromDesc(xd)
+	preg.GlobalTypes.Register(xt)
+}
 
 func TestUnmarshal(t *testing.T) {
 	tests := []struct {
@@ -968,6 +993,135 @@ str_to_nested: {
 		inputMessage: &pb2.Nests{},
 		inputText:    "reserved_field: 'ignore this'",
 		wantMessage:  &pb2.Nests{},
+	}, {
+		desc:         "extensions of non-repeated fields",
+		inputMessage: &pb2.Extensions{},
+		inputText: `opt_string: "non-extension field"
+[pb2.opt_ext_bool]: true
+opt_bool: true
+[pb2.opt_ext_nested]: {
+  opt_string: "nested in an extension"
+  opt_nested: {
+    opt_string: "another nested in an extension"
+  }
+}
+[pb2.opt_ext_string]: "extension field"
+opt_int32: 42
+[pb2.opt_ext_enum]: TENTH
+`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{
+				OptString: scalar.String("non-extension field"),
+				OptBool:   scalar.Bool(true),
+				OptInt32:  scalar.Int32(42),
+			}
+			setExtension(m, pb2.E_OptExtBool, true)
+			setExtension(m, pb2.E_OptExtString, "extension field")
+			setExtension(m, pb2.E_OptExtEnum, pb2.Enum_TENTH)
+			setExtension(m, pb2.E_OptExtNested, &pb2.Nested{
+				OptString: scalar.String("nested in an extension"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("another nested in an extension"),
+				},
+			})
+			return m
+		}(),
+	}, {
+		desc:         "extensions of repeated fields",
+		inputMessage: &pb2.Extensions{},
+		inputText: `[pb2.rpt_ext_enum]: TENTH
+[pb2.rpt_ext_enum]: 101
+[pb2.rpt_ext_fixed32]: 42
+[pb2.rpt_ext_enum]: FIRST
+[pb2.rpt_ext_nested]: {
+  opt_string: "one"
+}
+[pb2.rpt_ext_nested]: {
+  opt_string: "two"
+}
+[pb2.rpt_ext_fixed32]: 47
+[pb2.rpt_ext_nested]: {
+  opt_string: "three"
+}
+`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{}
+			setExtension(m, pb2.E_RptExtEnum, &[]pb2.Enum{pb2.Enum_TENTH, 101, pb2.Enum_FIRST})
+			setExtension(m, pb2.E_RptExtFixed32, &[]uint32{42, 47})
+			setExtension(m, pb2.E_RptExtNested, &[]*pb2.Nested{
+				&pb2.Nested{OptString: scalar.String("one")},
+				&pb2.Nested{OptString: scalar.String("two")},
+				&pb2.Nested{OptString: scalar.String("three")},
+			})
+			return m
+		}(),
+	}, {
+		desc:         "extensions of non-repeated fields in another message",
+		inputMessage: &pb2.Extensions{},
+		inputText: `[pb2.ExtensionsContainer.opt_ext_bool]: true
+[pb2.ExtensionsContainer.opt_ext_enum]: TENTH
+[pb2.ExtensionsContainer.opt_ext_nested]: {
+  opt_string: "nested in an extension"
+  opt_nested: {
+    opt_string: "another nested in an extension"
+  }
+}
+[pb2.ExtensionsContainer.opt_ext_string]: "extension field"
+`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{}
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtBool, true)
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtString, "extension field")
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtEnum, pb2.Enum_TENTH)
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtNested, &pb2.Nested{
+				OptString: scalar.String("nested in an extension"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("another nested in an extension"),
+				},
+			})
+			return m
+		}(),
+	}, {
+		desc:         "extensions of repeated fields in another message",
+		inputMessage: &pb2.Extensions{},
+		inputText: `opt_string: "non-extension field"
+opt_bool: true
+opt_int32: 42
+[pb2.ExtensionsContainer.rpt_ext_nested]: {
+  opt_string: "one"
+}
+[pb2.ExtensionsContainer.rpt_ext_enum]: TENTH
+[pb2.ExtensionsContainer.rpt_ext_nested]: {
+  opt_string: "two"
+}
+[pb2.ExtensionsContainer.rpt_ext_enum]: 101
+[pb2.ExtensionsContainer.rpt_ext_string]: "hello"
+[pb2.ExtensionsContainer.rpt_ext_enum]: FIRST
+[pb2.ExtensionsContainer.rpt_ext_nested]: {
+  opt_string: "three"
+}
+[pb2.ExtensionsContainer.rpt_ext_string]: "world"
+`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{
+				OptString: scalar.String("non-extension field"),
+				OptBool:   scalar.Bool(true),
+				OptInt32:  scalar.Int32(42),
+			}
+			setExtension(m, pb2.E_ExtensionsContainer_RptExtEnum, &[]pb2.Enum{pb2.Enum_TENTH, 101, pb2.Enum_FIRST})
+			setExtension(m, pb2.E_ExtensionsContainer_RptExtString, &[]string{"hello", "world"})
+			setExtension(m, pb2.E_ExtensionsContainer_RptExtNested, &[]*pb2.Nested{
+				&pb2.Nested{OptString: scalar.String("one")},
+				&pb2.Nested{OptString: scalar.String("two")},
+				&pb2.Nested{OptString: scalar.String("three")},
+			})
+			return m
+		}(),
+	}, {
+		desc:         "invalid extension field name",
+		inputMessage: &pb2.Extensions{},
+		inputText:    "[pb2.invalid_message_field]: true",
+		wantErr:      true,
 	}}
 
 	for _, tt := range tests {
