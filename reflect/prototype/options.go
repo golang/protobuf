@@ -4,8 +4,6 @@
 
 package prototype
 
-import pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-
 // X provides functionality internal to the protobuf module.
 //
 // WARNING: The compatibility agreement covers nothing except for functionality
@@ -18,23 +16,23 @@ type internal struct{}
 // optionTypes contains typed nil-pointers to each of the options types.
 // These are populated at init time by the descriptor package.
 var optionTypes struct {
-	File           pref.ProtoMessage
-	Enum           pref.ProtoMessage
-	EnumValue      pref.ProtoMessage
-	Message        pref.ProtoMessage
-	Field          pref.ProtoMessage
-	Oneof          pref.ProtoMessage
-	ExtensionRange pref.ProtoMessage
-	Service        pref.ProtoMessage
-	Method         pref.ProtoMessage
+	File           interface{}
+	Enum           interface{}
+	EnumValue      interface{}
+	Message        interface{}
+	Field          interface{}
+	Oneof          interface{}
+	ExtensionRange interface{}
+	Service        interface{}
+	Method         interface{}
 }
 
-func (internal) RegisterFileOptions(m pref.ProtoMessage)           { optionTypes.File = m }
-func (internal) RegisterEnumOptions(m pref.ProtoMessage)           { optionTypes.Enum = m }
-func (internal) RegisterEnumValueOptions(m pref.ProtoMessage)      { optionTypes.EnumValue = m }
-func (internal) RegisterMessageOptions(m pref.ProtoMessage)        { optionTypes.Message = m }
-func (internal) RegisterFieldOptions(m pref.ProtoMessage)          { optionTypes.Field = m }
-func (internal) RegisterOneofOptions(m pref.ProtoMessage)          { optionTypes.Oneof = m }
-func (internal) RegisterExtensionRangeOptions(m pref.ProtoMessage) { optionTypes.ExtensionRange = m }
-func (internal) RegisterServiceOptions(m pref.ProtoMessage)        { optionTypes.Service = m }
-func (internal) RegisterMethodOptions(m pref.ProtoMessage)         { optionTypes.Method = m }
+func (internal) RegisterFileOptions(m interface{})           { optionTypes.File = m }
+func (internal) RegisterEnumOptions(m interface{})           { optionTypes.Enum = m }
+func (internal) RegisterEnumValueOptions(m interface{})      { optionTypes.EnumValue = m }
+func (internal) RegisterMessageOptions(m interface{})        { optionTypes.Message = m }
+func (internal) RegisterFieldOptions(m interface{})          { optionTypes.Field = m }
+func (internal) RegisterOneofOptions(m interface{})          { optionTypes.Oneof = m }
+func (internal) RegisterExtensionRangeOptions(m interface{}) { optionTypes.ExtensionRange = m }
+func (internal) RegisterServiceOptions(m interface{})        { optionTypes.Service = m }
+func (internal) RegisterMethodOptions(m interface{})         { optionTypes.Method = m }
