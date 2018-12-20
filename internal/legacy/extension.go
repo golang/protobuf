@@ -172,12 +172,17 @@ func extensionTypeFromDesc(d *papi.ExtensionDesc) pref.ExtensionType {
 		Options:      f.Options,
 		EnumType:     conv.EnumType,
 		MessageType:  conv.MessageType,
-		ExtendedType: Export{}.MessageTypeOf(d.ExtendedType),
+		ExtendedType: pimpl.Export{}.MessageTypeOf(d.ExtendedType),
 	})
 	if err != nil {
 		panic(err)
 	}
-	xt := pimpl.Export{}.ExtensionTypeOf(xd, reflect.Zero(t).Interface())
+	var zv interface{}
+	switch xd.Kind() {
+	case pref.EnumKind, pref.MessageKind, pref.GroupKind:
+		zv = reflect.Zero(t).Interface()
+	}
+	xt := pimpl.Export{}.ExtensionTypeOf(xd, zv)
 
 	// Cache the conversion for both directions.
 	extensionDescCache.Store(xt, d)
