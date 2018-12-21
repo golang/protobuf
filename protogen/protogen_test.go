@@ -297,9 +297,9 @@ var _ = bar1.X    // "golang.org/y/bar"
 var _ = baz.X     // "golang.org/x/baz"
 var _ = string1.X // "golang.org/z/string"
 `
-	got, err := g.content()
+	got, err := g.Content()
 	if err != nil {
-		t.Fatalf("g.content() = %v", err)
+		t.Fatalf("g.Content() = %v", err)
 	}
 	if want != string(got) {
 		t.Fatalf(`want:
@@ -333,9 +333,9 @@ import bar "prefix/golang.org/x/bar"
 
 var _ = bar.X
 `
-	got, err := g.content()
+	got, err := g.Content()
 	if err != nil {
-		t.Fatalf("g.content() = %v", err)
+		t.Fatalf("g.Content() = %v", err)
 	}
 	if want != string(got) {
 		t.Fatalf(`want:

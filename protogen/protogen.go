@@ -342,7 +342,10 @@ func (gen *Plugin) Response() *pluginpb.CodeGeneratorResponse {
 		return resp
 	}
 	for _, g := range gen.genFiles {
-		content, err := g.content()
+		if g.skip {
+			continue
+		}
+		content, err := g.Content()
 		if err != nil {
 			return &pluginpb.CodeGeneratorResponse{
 				Error: scalar.String(err.Error()),
@@ -761,34 +764,6 @@ func newEnumValue(gen *Plugin, f *File, message *Message, enum *Enum, desc proto
 	}
 }
 
-// A GeneratedFile is a generated file.
-type GeneratedFile struct {
-	gen              *Plugin
-	filename         string
-	goImportPath     GoImportPath
-	buf              bytes.Buffer
-	packageNames     map[GoImportPath]GoPackageName
-	usedPackageNames map[GoPackageName]bool
-	manualImports    map[GoImportPath]bool
-	annotations      map[string][]Location
-}
-
-// NewGeneratedFile creates a new generated file with the given filename
-// and import path.
-func (gen *Plugin) NewGeneratedFile(filename string, goImportPath GoImportPath) *GeneratedFile {
-	g := &GeneratedFile{
-		gen:              gen,
-		filename:         filename,
-		goImportPath:     goImportPath,
-		packageNames:     make(map[GoImportPath]GoPackageName),
-		usedPackageNames: make(map[GoPackageName]bool),
-		manualImports:    make(map[GoImportPath]bool),
-		annotations:      make(map[string][]Location),
-	}
-	gen.genFiles = append(gen.genFiles, g)
-	return g
-}
-
 // A Service describes a service.
 type Service struct {
 	Desc protoreflect.ServiceDescriptor
@@ -849,6 +824,35 @@ func (method *Method) init(gen *Plugin) error {
 	method.OutputType = out
 
 	return nil
+}
+
+// A GeneratedFile is a generated file.
+type GeneratedFile struct {
+	gen              *Plugin
+	skip             bool
+	filename         string
+	goImportPath     GoImportPath
+	buf              bytes.Buffer
+	packageNames     map[GoImportPath]GoPackageName
+	usedPackageNames map[GoPackageName]bool
+	manualImports    map[GoImportPath]bool
+	annotations      map[string][]Location
+}
+
+// NewGeneratedFile creates a new generated file with the given filename
+// and import path.
+func (gen *Plugin) NewGeneratedFile(filename string, goImportPath GoImportPath) *GeneratedFile {
+	g := &GeneratedFile{
+		gen:              gen,
+		filename:         filename,
+		goImportPath:     goImportPath,
+		packageNames:     make(map[GoImportPath]GoPackageName),
+		usedPackageNames: make(map[GoPackageName]bool),
+		manualImports:    make(map[GoImportPath]bool),
+		annotations:      make(map[string][]Location),
+	}
+	gen.genFiles = append(gen.genFiles, g)
+	return g
 }
 
 // P prints a line to the generated output. It converts each parameter to a
@@ -924,6 +928,11 @@ func (g *GeneratedFile) Write(p []byte) (n int, err error) {
 	return g.buf.Write(p)
 }
 
+// Skip removes the generated file from the plugin output.
+func (g *GeneratedFile) Skip() {
+	g.skip = true
+}
+
 // Annotate associates a symbol in a generated Go file with a location in a
 // source .proto file.
 //
@@ -934,8 +943,8 @@ func (g *GeneratedFile) Annotate(symbol string, loc Location) {
 	g.annotations[symbol] = append(g.annotations[symbol], loc)
 }
 
-// content returns the contents of the generated file.
-func (g *GeneratedFile) content() ([]byte, error) {
+// Content returns the contents of the generated file.
+func (g *GeneratedFile) Content() ([]byte, error) {
 	if !strings.HasSuffix(g.filename, ".go") {
 		return g.buf.Bytes(), nil
 	}

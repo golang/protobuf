@@ -17,44 +17,41 @@ import (
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+// Symbols defined in public import of import_public/sub/a.proto
+
+type E = sub.E
+
+const E_ZERO = sub.E_ZERO
+
+var E_name = sub.E_name
+var E_value = sub.E_value
+
+type M_Subenum = sub.M_Subenum
+
+const M_M_ZERO = sub.M_M_ZERO
+
+var M_Subenum_name = sub.M_Subenum_name
+var M_Subenum_value = sub.M_Subenum_value
+
+type M_Submessage_Submessage_Subenum = sub.M_Submessage_Submessage_Subenum
+
+const M_Submessage_M_SUBMESSAGE_ZERO = sub.M_Submessage_M_SUBMESSAGE_ZERO
+
+var M_Submessage_Submessage_Subenum_name = sub.M_Submessage_Submessage_Subenum_name
+var M_Submessage_Submessage_Subenum_value = sub.M_Submessage_Submessage_Subenum_value
+
+type M = sub.M
+
 const Default_M_S = sub.Default_M_S
 
 var Default_M_B = sub.Default_M_B
 var Default_M_F = sub.Default_M_F
 
-// M from public import import_public/sub/a.proto
-type M = sub.M
 type M_OneofInt32 = sub.M_OneofInt32
 type M_OneofInt64 = sub.M_OneofInt64
-
-// M_Submessage from public import import_public/sub/a.proto
 type M_Submessage = sub.M_Submessage
 type M_Submessage_SubmessageOneofInt32 = sub.M_Submessage_SubmessageOneofInt32
 type M_Submessage_SubmessageOneofInt64 = sub.M_Submessage_SubmessageOneofInt64
-
-// E from public import import_public/sub/a.proto
-type E = sub.E
-
-var E_name = sub.E_name
-var E_value = sub.E_value
-
-const E_ZERO = E(sub.E_ZERO)
-
-// M_Subenum from public import import_public/sub/a.proto
-type M_Subenum = sub.M_Subenum
-
-var M_Subenum_name = sub.M_Subenum_name
-var M_Subenum_value = sub.M_Subenum_value
-
-const M_M_ZERO = M_Subenum(sub.M_M_ZERO)
-
-// M_Submessage_Submessage_Subenum from public import import_public/sub/a.proto
-type M_Submessage_Submessage_Subenum = sub.M_Submessage_Submessage_Subenum
-
-var M_Submessage_Submessage_Subenum_name = sub.M_Submessage_Submessage_Subenum_name
-var M_Submessage_Submessage_Subenum_value = sub.M_Submessage_Submessage_Subenum_value
-
-const M_Submessage_M_SUBMESSAGE_ZERO = M_Submessage_Submessage_Subenum(sub.M_Submessage_M_SUBMESSAGE_ZERO)
 
 var E_ExtensionField = sub.E_ExtensionField
 
