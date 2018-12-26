@@ -4,9 +4,20 @@
 
 // Package protoregistry provides data structures to register and lookup
 // protobuf descriptor types.
+//
+// The Files registry contains file descriptors and provides the ability
+// to iterate over the files or lookup a specific descriptor within the files.
+// Files only contains protobuf descriptors and has no understanding of Go
+// type information that may be associated with each descriptor.
+//
+// The Types registry contains descriptor types for which there is a known
+// Go type associated with that descriptor. It provides the ability to iterate
+// over the registered types or lookup a type by name.
 package protoregistry
 
 import (
+	"fmt"
+	"reflect"
 	"sort"
 	"strings"
 
@@ -19,33 +30,12 @@ import (
 // registration issues. This presumes that we provide a way to disable automatic
 // registration in generated code.
 
-// TODO: Add a type registry:
-/*
-var GlobalTypes = new(Types)
-
-type Type interface {
-	protoreflect.Descriptor
-	GoType() reflect.Type
-}
-type Types struct {
-	Parent   *Types
-	Resolver func(url string) (Type, error)
-}
-func NewTypes(typs ...Type) *Types
-func (*Types) Register(typs ...Type) error
-func (*Types) FindEnumByName(enum protoreflect.FullName) (protoreflect.EnumType, error)
-func (*Types) FindMessageByName(message protoreflect.FullName) (protoreflect.MessageType, error)
-func (*Types) FindMessageByURL(url string) (protoreflect.MessageType, error)
-func (*Types) FindExtensionByName(field protoreflect.FullName) (protoreflect.ExtensionType, error)
-func (*Types) FindExtensionByNumber(message protoreflect.FullName, field protoreflect.FieldNumber) (protoreflect.ExtensionType, error)
-func (*Types) RangeEnums(f func(protoreflect.EnumType) bool)
-func (*Types) RangeMessages(f func(protoreflect.MessageType) bool)
-func (*Types) RangeExtensions(f func(protoreflect.ExtensionType) bool)
-func (*Types) RangeExtensionsByMessage(message protoreflect.FullName, f func(protoreflect.ExtensionType) bool)
-*/
-
 // GlobalFiles is a global registry of file descriptors.
-var GlobalFiles = new(Files)
+var GlobalFiles *Files = new(Files)
+
+// GlobalTypes is the registry used by default for type lookups
+// unless a local registry is provided by the user.
+var GlobalTypes *Types = new(Types)
 
 // NotFound is a sentinel error value to indicate that the type was not found.
 var NotFound = errors.New("not found")
@@ -296,5 +286,339 @@ func rangeTopLevelDeclarations(fd protoreflect.FileDescriptor, f func(protorefle
 	}
 	for i := 0; i < fd.Services().Len(); i++ {
 		f(fd.Services().Get(i).Name())
+	}
+}
+
+// Type is an interface satisfied by protoreflect.EnumType,
+// protoreflect.MessageType, or protoreflect.ExtensionType.
+type Type interface {
+	protoreflect.Descriptor
+	GoType() reflect.Type
+}
+
+var (
+	_ Type = protoreflect.EnumType(nil)
+	_ Type = protoreflect.MessageType(nil)
+	_ Type = protoreflect.ExtensionType(nil)
+)
+
+// Types is a registry for looking up or iterating over descriptor types.
+// The Find and Range methods are safe for concurrent use.
+type Types struct {
+	// Parent sets the parent registry to consult if a find operation
+	// could not locate the appropriate entry.
+	//
+	// Setting a parent results in each Range operation also iterating over the
+	// entries contained within the parent. In such a case, it is possible for
+	// Range to emit duplicates (since they may exist in both child and parent).
+	// Range iteration is guaranteed to iterate over local entries before
+	// iterating over parent entries.
+	Parent *Types
+
+	// Resolver sets the local resolver to consult if the local registry does
+	// not contain an entry. The resolver takes precedence over the parent.
+	//
+	// The url is a URL where the full name of the type is the last segment
+	// of the path (i.e. string following the last '/' character).
+	// When missing a '/' character, the URL is the full name of the type.
+	// See documentation on the google.protobuf.Any.type_url field for details.
+	//
+	// If the resolver returns a result, it is not automatically registered
+	// into the local registry. Thus, a resolver function should cache results
+	// such that it deterministically returns the same result given the
+	// same URL assuming the error returned is nil or NotFound.
+	//
+	// If the resolver returns the NotFound error, the registry will consult the
+	// parent registry if it is set.
+	//
+	// Setting a resolver has no effect on the result of each Range operation.
+	Resolver func(url string) (Type, error)
+
+	// TODO: The syntax of the URL is ill-defined and the protobuf team recently
+	// changed the documented semantics in a way that breaks prior usages.
+	// I do not believe they can do this and need to sync up with the
+	// protobuf team again to hash out what the proper syntax of the URL is.
+
+	// TODO: Should we separate this out as a registry for each type?
+	//
+	// In Java, the extension and message registry are distinct classes.
+	// Their extension registry has knowledge of distinct Java types,
+	// while their message registry only contains descriptor information.
+	//
+	// In Go, we have always registered messages, enums, and extensions.
+	// Messages and extensions are registered with Go information, while enums
+	// are only registered with descriptor information. We cannot drop Go type
+	// information for messages otherwise we would be unable to implement
+	// portions of the v1 API such as ptypes.DynamicAny.
+	//
+	// There is no enum registry in Java. In v1, we used the enum registry
+	// because enum types provided no reflective methods. The addition of
+	// ProtoReflect removes that need.
+
+	typesByName         typesByName
+	extensionsByMessage extensionsByMessage
+}
+
+type (
+	typesByName         map[protoreflect.FullName]Type
+	extensionsByMessage map[protoreflect.FullName]extensionsByNumber
+	extensionsByNumber  map[protoreflect.FieldNumber]protoreflect.ExtensionType
+)
+
+// NewTypes returns a registry initialized with the provided set of types.
+// If there are conflicts, the first one takes precedence.
+func NewTypes(typs ...Type) *Types {
+	// TODO: Allow setting resolver and parent via constructor?
+	r := new(Types)
+	r.Register(typs...) // ignore errors; first takes precedence
+	return r
+}
+
+// Register registers the provided list of descriptor types.
+//
+// If a registration conflict occurs for enum, message, or extension types
+// (e.g., two different types have the same full name),
+// then the first type takes precedence and an error is returned.
+func (r *Types) Register(typs ...Type) error {
+	var firstErr error
+typeLoop:
+	for _, typ := range typs {
+		switch typ.(type) {
+		case protoreflect.EnumType, protoreflect.MessageType, protoreflect.ExtensionType:
+			// Check for conflicts in typesByName.
+			name := typ.FullName()
+			if r.typesByName[name] != nil {
+				if firstErr == nil {
+					firstErr = errors.New("%v %v is already registered", typeName(typ), name)
+				}
+				continue typeLoop
+			}
+
+			// Check for conflicts in extensionsByMessage.
+			if xt, _ := typ.(protoreflect.ExtensionType); xt != nil {
+				field := xt.Number()
+				message := xt.ExtendedType().FullName()
+				if r.extensionsByMessage[message][field] != nil {
+					if firstErr == nil {
+						firstErr = errors.New("extension %v is already registered on message %v", name, message)
+					}
+					continue typeLoop
+				}
+
+				// Update extensionsByMessage.
+				if r.extensionsByMessage == nil {
+					r.extensionsByMessage = make(extensionsByMessage)
+				}
+				if r.extensionsByMessage[message] == nil {
+					r.extensionsByMessage[message] = make(extensionsByNumber)
+				}
+				r.extensionsByMessage[message][field] = xt
+			}
+
+			// Update typesByName.
+			if r.typesByName == nil {
+				r.typesByName = make(typesByName)
+			}
+			r.typesByName[name] = typ
+		default:
+			if firstErr == nil {
+				firstErr = errors.New("invalid type: %v", typeName(typ))
+			}
+		}
+	}
+	return firstErr
+}
+
+// FindEnumByName looks up an enum by its full name.
+// E.g., "google.protobuf.Field.Kind".
+//
+// This returns (nil, NotFound) if not found.
+func (r *Types) FindEnumByName(enum protoreflect.FullName) (protoreflect.EnumType, error) {
+	r.globalCheck()
+	if r == nil {
+		return nil, NotFound
+	}
+	v, _ := r.typesByName[enum]
+	if v == nil && r.Resolver != nil {
+		var err error
+		v, err = r.Resolver(string(enum))
+		if err != nil && err != NotFound {
+			return nil, err
+		}
+	}
+	if v != nil {
+		if et, _ := v.(protoreflect.EnumType); et != nil {
+			return et, nil
+		}
+		return nil, errors.New("found wrong type: got %v, want enum", typeName(v))
+	}
+	return r.Parent.FindEnumByName(enum)
+}
+
+// FindMessageByName looks up a message by its full name.
+// E.g., "google.protobuf.Any"
+//
+// This return (nil, NotFound) if not found.
+func (r *Types) FindMessageByName(message protoreflect.FullName) (protoreflect.MessageType, error) {
+	// The full name by itself is a valid URL.
+	return r.FindMessageByURL(string(message))
+}
+
+// FindMessageByURL looks up a message by a URL identifier.
+// See Resolver for the format of the URL.
+//
+// This returns (nil, NotFound) if not found.
+func (r *Types) FindMessageByURL(url string) (protoreflect.MessageType, error) {
+	r.globalCheck()
+	if r == nil {
+		return nil, NotFound
+	}
+	message := protoreflect.FullName(url)
+	if i := strings.LastIndexByte(url, '/'); i >= 0 {
+		message = message[i+len("/"):]
+	}
+
+	v, _ := r.typesByName[message]
+	if v == nil && r.Resolver != nil {
+		var err error
+		v, err = r.Resolver(url)
+		if err != nil && err != NotFound {
+			return nil, err
+		}
+	}
+	if v != nil {
+		if mt, _ := v.(protoreflect.MessageType); mt != nil {
+			return mt, nil
+		}
+		return nil, errors.New("found wrong type: got %v, want message", typeName(v))
+	}
+	return r.Parent.FindMessageByURL(url)
+}
+
+// FindExtensionByName looks up a extension field by the field's full name.
+// Note that this is the full name of the field as determined by
+// where the extension is declared and is unrelated to the full name of the
+// message being extended.
+//
+// This returns (nil, NotFound) if not found.
+func (r *Types) FindExtensionByName(field protoreflect.FullName) (protoreflect.ExtensionType, error) {
+	r.globalCheck()
+	if r == nil {
+		return nil, NotFound
+	}
+	v, _ := r.typesByName[field]
+	if v == nil && r.Resolver != nil {
+		var err error
+		v, err = r.Resolver(string(field))
+		if err != nil && err != NotFound {
+			return nil, err
+		}
+	}
+	if v != nil {
+		if xt, _ := v.(protoreflect.ExtensionType); xt != nil {
+			return xt, nil
+		}
+		return nil, errors.New("found wrong type: got %v, want extension", typeName(v))
+	}
+	return r.Parent.FindExtensionByName(field)
+}
+
+// FindExtensionByNumber looks up a extension field by the field number
+// within some parent message, identified by full name.
+//
+// This returns (nil, NotFound) if not found.
+func (r *Types) FindExtensionByNumber(message protoreflect.FullName, field protoreflect.FieldNumber) (protoreflect.ExtensionType, error) {
+	r.globalCheck()
+	if r == nil {
+		return nil, NotFound
+	}
+	if xt, ok := r.extensionsByMessage[message][field]; ok {
+		return xt, nil
+	}
+	return r.Parent.FindExtensionByNumber(message, field)
+}
+
+// RangeEnums iterates over all registered enums.
+// Iteration order is undefined.
+func (r *Types) RangeEnums(f func(protoreflect.EnumType) bool) {
+	r.globalCheck()
+	if r == nil {
+		return
+	}
+	for _, typ := range r.typesByName {
+		if et, ok := typ.(protoreflect.EnumType); ok {
+			if !f(et) {
+				return
+			}
+		}
+	}
+	r.Parent.RangeEnums(f)
+}
+
+// RangeMessages iterates over all registered messages.
+// Iteration order is undefined.
+func (r *Types) RangeMessages(f func(protoreflect.MessageType) bool) {
+	r.globalCheck()
+	if r == nil {
+		return
+	}
+	for _, typ := range r.typesByName {
+		if mt, ok := typ.(protoreflect.MessageType); ok {
+			if !f(mt) {
+				return
+			}
+		}
+	}
+	r.Parent.RangeMessages(f)
+}
+
+// RangeExtensions iterates over all registered extensions.
+// Iteration order is undefined.
+func (r *Types) RangeExtensions(f func(protoreflect.ExtensionType) bool) {
+	r.globalCheck()
+	if r == nil {
+		return
+	}
+	for _, typ := range r.typesByName {
+		if xt, ok := typ.(protoreflect.ExtensionType); ok {
+			if !f(xt) {
+				return
+			}
+		}
+	}
+	r.Parent.RangeExtensions(f)
+}
+
+// RangeExtensionsByMessage iterates over all registered extensions filtered
+// by a given message type. Iteration order is undefined.
+func (r *Types) RangeExtensionsByMessage(message protoreflect.FullName, f func(protoreflect.ExtensionType) bool) {
+	r.globalCheck()
+	if r == nil {
+		return
+	}
+	for _, xt := range r.extensionsByMessage[message] {
+		if !f(xt) {
+			return
+		}
+	}
+	r.Parent.RangeExtensionsByMessage(message, f)
+}
+
+func (r *Types) globalCheck() {
+	if r == GlobalTypes && (r.Parent != nil || r.Resolver != nil) {
+		panic("GlobalTypes.Parent and GlobalTypes.Resolver cannot be set")
+	}
+}
+
+func typeName(t Type) string {
+	switch t.(type) {
+	case protoreflect.EnumType:
+		return "enum"
+	case protoreflect.MessageType:
+		return "message"
+	case protoreflect.ExtensionType:
+		return "extension"
+	default:
+		return fmt.Sprintf("%T", t)
 	}
 }

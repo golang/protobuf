@@ -12,9 +12,13 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
+	"github.com/golang/protobuf/protoapi"
+	"github.com/golang/protobuf/v2/internal/legacy"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 	ptype "github.com/golang/protobuf/v2/reflect/prototype"
+
+	testpb "github.com/golang/protobuf/v2/reflect/protoregistry/testprotos"
 )
 
 func TestFiles(t *testing.T) {
@@ -311,4 +315,358 @@ func TestFiles(t *testing.T) {
 			}
 		})
 	}
+}
+
+func extensionType(xd *protoapi.ExtensionDesc) pref.ExtensionType {
+	return legacy.Export{}.ExtensionTypeFromDesc(xd)
+}
+
+func TestTypes(t *testing.T) {
+	// Suffix 1 in registry, 2 in parent, 3 in resolver.
+	mt1 := (&testpb.Message1{}).ProtoReflect().Type()
+	mt2 := (&testpb.Message2{}).ProtoReflect().Type()
+	mt3 := (&testpb.Message3{}).ProtoReflect().Type()
+	et1 := testpb.Enum1_ONE.ProtoReflect().Type()
+	et2 := testpb.Enum2_UNO.ProtoReflect().Type()
+	et3 := testpb.Enum3_YI.ProtoReflect().Type()
+	// Suffix indicates field number.
+	xt11 := extensionType(testpb.E_StringField)
+	xt12 := extensionType(testpb.E_EnumField)
+	xt13 := extensionType(testpb.E_MessageField)
+	xt21 := extensionType(testpb.E_Message4_MessageField)
+	xt22 := extensionType(testpb.E_Message4_EnumField)
+	xt23 := extensionType(testpb.E_Message4_StringField)
+	parent := &preg.Types{}
+	if err := parent.Register(mt2, et2, xt12, xt22); err != nil {
+		t.Fatalf("parent.Register() returns unexpected error: %v", err)
+	}
+	registry := &preg.Types{
+		Parent: parent,
+		Resolver: func(url string) (preg.Type, error) {
+			switch {
+			case strings.HasSuffix(url, "testprotos.Message3"):
+				return mt3, nil
+			case strings.HasSuffix(url, "testprotos.Enum3"):
+				return et3, nil
+			case strings.HasSuffix(url, "testprotos.message_field"):
+				return xt13, nil
+			case strings.HasSuffix(url, "testprotos.Message4.string_field"):
+				return xt23, nil
+			}
+			return nil, preg.NotFound
+		},
+	}
+	if err := registry.Register(mt1, et1, xt11, xt21); err != nil {
+		t.Fatalf("registry.Register() returns unexpected error: %v", err)
+	}
+
+	t.Run("FindMessageByName", func(t *testing.T) {
+		tests := []struct {
+			name         string
+			messageType  pref.MessageType
+			wantErr      bool
+			wantNotFound bool
+		}{{
+			name:        "testprotos.Message1",
+			messageType: mt1,
+		}, {
+			name:        "testprotos.Message2",
+			messageType: mt2,
+		}, {
+			name:        "testprotos.Message3",
+			messageType: mt3,
+		}, {
+			name:         "testprotos.NoSuchMessage",
+			wantErr:      true,
+			wantNotFound: true,
+		}, {
+			name:    "testprotos.Enum1",
+			wantErr: true,
+		}, {
+			name:    "testprotos.Enum2",
+			wantErr: true,
+		}, {
+			name:    "testprotos.Enum3",
+			wantErr: true,
+		}}
+		for _, tc := range tests {
+			got, err := registry.FindMessageByName(pref.FullName(tc.name))
+			gotErr := err != nil
+			if gotErr != tc.wantErr {
+				t.Errorf("FindMessageByName(%v) = (_, %v), want error? %t", tc.name, err, tc.wantErr)
+				continue
+			}
+			if tc.wantNotFound && err != preg.NotFound {
+				t.Errorf("FindMessageByName(%v) got error: %v, want NotFound error", tc.name, err)
+				continue
+			}
+			if got != tc.messageType {
+				t.Errorf("FindMessageByName(%v) got wrong value: %v", tc.name, got)
+			}
+		}
+	})
+
+	t.Run("FindMessageByURL", func(t *testing.T) {
+		tests := []struct {
+			name         string
+			messageType  pref.MessageType
+			wantErr      bool
+			wantNotFound bool
+		}{{
+			name:        "testprotos.Message1",
+			messageType: mt1,
+		}, {
+			name:        "foo.com/testprotos.Message2",
+			messageType: mt2,
+		}, {
+			name:        "/testprotos.Message3",
+			messageType: mt3,
+		}, {
+			name:         "type.googleapis.com/testprotos.Nada",
+			wantErr:      true,
+			wantNotFound: true,
+		}, {
+			name:    "testprotos.Enum1",
+			wantErr: true,
+		}}
+		for _, tc := range tests {
+			got, err := registry.FindMessageByURL(tc.name)
+			gotErr := err != nil
+			if gotErr != tc.wantErr {
+				t.Errorf("FindMessageByURL(%v) = (_, %v), want error? %t", tc.name, err, tc.wantErr)
+				continue
+			}
+			if tc.wantNotFound && err != preg.NotFound {
+				t.Errorf("FindMessageByURL(%v) got error: %v, want NotFound error", tc.name, err)
+				continue
+			}
+			if got != tc.messageType {
+				t.Errorf("FindMessageByURL(%v) got wrong value: %v", tc.name, got)
+			}
+		}
+	})
+
+	t.Run("FindEnumByName", func(t *testing.T) {
+		tests := []struct {
+			name         string
+			enumType     pref.EnumType
+			wantErr      bool
+			wantNotFound bool
+		}{{
+			name:     "testprotos.Enum1",
+			enumType: et1,
+		}, {
+			name:     "testprotos.Enum2",
+			enumType: et2,
+		}, {
+			name:     "testprotos.Enum3",
+			enumType: et3,
+		}, {
+			name:         "testprotos.None",
+			wantErr:      true,
+			wantNotFound: true,
+		}, {
+			name:    "testprotos.Message1",
+			wantErr: true,
+		}}
+		for _, tc := range tests {
+			got, err := registry.FindEnumByName(pref.FullName(tc.name))
+			gotErr := err != nil
+			if gotErr != tc.wantErr {
+				t.Errorf("FindEnumByName(%v) = (_, %v), want error? %t", tc.name, err, tc.wantErr)
+				continue
+			}
+			if tc.wantNotFound && err != preg.NotFound {
+				t.Errorf("FindEnumByName(%v) got error: %v, want NotFound error", tc.name, err)
+				continue
+			}
+			if got != tc.enumType {
+				t.Errorf("FindEnumByName(%v) got wrong value: %v", tc.name, got)
+			}
+		}
+	})
+
+	t.Run("FindExtensionByName", func(t *testing.T) {
+		tests := []struct {
+			name          string
+			extensionType pref.ExtensionType
+			wantErr       bool
+			wantNotFound  bool
+		}{{
+			name:          "testprotos.string_field",
+			extensionType: xt11,
+		}, {
+			name:          "testprotos.enum_field",
+			extensionType: xt12,
+		}, {
+			name:          "testprotos.message_field",
+			extensionType: xt13,
+		}, {
+			name:          "testprotos.Message4.message_field",
+			extensionType: xt21,
+		}, {
+			name:          "testprotos.Message4.enum_field",
+			extensionType: xt22,
+		}, {
+			name:          "testprotos.Message4.string_field",
+			extensionType: xt23,
+		}, {
+			name:         "testprotos.None",
+			wantErr:      true,
+			wantNotFound: true,
+		}, {
+			name:    "testprotos.Message1",
+			wantErr: true,
+		}}
+		for _, tc := range tests {
+			got, err := registry.FindExtensionByName(pref.FullName(tc.name))
+			gotErr := err != nil
+			if gotErr != tc.wantErr {
+				t.Errorf("FindExtensionByName(%v) = (_, %v), want error? %t", tc.name, err, tc.wantErr)
+				continue
+			}
+			if tc.wantNotFound && err != preg.NotFound {
+				t.Errorf("FindExtensionByName(%v) got error: %v, want NotFound error", tc.name, err)
+				continue
+			}
+			if got != tc.extensionType {
+				t.Errorf("FindExtensionByName(%v) got wrong value: %v", tc.name, got)
+			}
+		}
+	})
+
+	t.Run("FindExtensionByNumber", func(t *testing.T) {
+		tests := []struct {
+			parent        string
+			number        int32
+			extensionType pref.ExtensionType
+			wantErr       bool
+			wantNotFound  bool
+		}{{
+			parent:        "testprotos.Message1",
+			number:        11,
+			extensionType: xt11,
+		}, {
+			parent:        "testprotos.Message1",
+			number:        12,
+			extensionType: xt12,
+		}, {
+			// FindExtensionByNumber does not use Resolver.
+			parent:       "testprotos.Message1",
+			number:       13,
+			wantErr:      true,
+			wantNotFound: true,
+		}, {
+			parent:        "testprotos.Message1",
+			number:        21,
+			extensionType: xt21,
+		}, {
+			parent:        "testprotos.Message1",
+			number:        22,
+			extensionType: xt22,
+		}, {
+			// FindExtensionByNumber does not use Resolver.
+			parent:       "testprotos.Message1",
+			number:       23,
+			wantErr:      true,
+			wantNotFound: true,
+		}, {
+			parent:       "testprotos.NoSuchMessage",
+			number:       11,
+			wantErr:      true,
+			wantNotFound: true,
+		}, {
+			parent:       "testprotos.Message1",
+			number:       30,
+			wantErr:      true,
+			wantNotFound: true,
+		}, {
+			parent:       "testprotos.Message1",
+			number:       99,
+			wantErr:      true,
+			wantNotFound: true,
+		}}
+		for _, tc := range tests {
+			got, err := registry.FindExtensionByNumber(pref.FullName(tc.parent), pref.FieldNumber(tc.number))
+			gotErr := err != nil
+			if gotErr != tc.wantErr {
+				t.Errorf("FindExtensionByNumber(%v, %d) = (_, %v), want error? %t", tc.parent, tc.number, err, tc.wantErr)
+				continue
+			}
+			if tc.wantNotFound && err != preg.NotFound {
+				t.Errorf("FindExtensionByNumber(%v, %d) got error %v, want NotFound error", tc.parent, tc.number, err)
+				continue
+			}
+			if got != tc.extensionType {
+				t.Errorf("FindExtensionByNumber(%v, %d) got wrong value: %v", tc.parent, tc.number, got)
+			}
+		}
+	})
+
+	sortTypes := cmpopts.SortSlices(func(x, y preg.Type) bool {
+		return x.FullName() < y.FullName()
+	})
+	compare := cmp.Comparer(func(x, y preg.Type) bool {
+		return x == y
+	})
+
+	t.Run("RangeMessages", func(t *testing.T) {
+		// RangeMessages do not include messages from Resolver.
+		want := []preg.Type{mt1, mt2}
+		var got []preg.Type
+		registry.RangeMessages(func(mt pref.MessageType) bool {
+			got = append(got, mt)
+			return true
+		})
+
+		diff := cmp.Diff(want, got, sortTypes, compare)
+		if diff != "" {
+			t.Errorf("RangeMessages() mismatch (-want +got):\n%v", diff)
+		}
+	})
+
+	t.Run("RangeEnums", func(t *testing.T) {
+		// RangeEnums do not include enums from Resolver.
+		want := []preg.Type{et1, et2}
+		var got []preg.Type
+		registry.RangeEnums(func(et pref.EnumType) bool {
+			got = append(got, et)
+			return true
+		})
+
+		diff := cmp.Diff(want, got, sortTypes, compare)
+		if diff != "" {
+			t.Errorf("RangeEnums() mismatch (-want +got):\n%v", diff)
+		}
+	})
+
+	t.Run("RangeExtensions", func(t *testing.T) {
+		// RangeExtensions do not include messages from Resolver.
+		want := []preg.Type{xt11, xt12, xt21, xt22}
+		var got []preg.Type
+		registry.RangeExtensions(func(xt pref.ExtensionType) bool {
+			got = append(got, xt)
+			return true
+		})
+
+		diff := cmp.Diff(want, got, sortTypes, compare)
+		if diff != "" {
+			t.Errorf("RangeExtensions() mismatch (-want +got):\n%v", diff)
+		}
+	})
+
+	t.Run("RangeExtensionsByMessage", func(t *testing.T) {
+		// RangeExtensions do not include messages from Resolver.
+		want := []preg.Type{xt11, xt12, xt21, xt22}
+		var got []preg.Type
+		registry.RangeExtensionsByMessage(pref.FullName("testprotos.Message1"), func(xt pref.ExtensionType) bool {
+			got = append(got, xt)
+			return true
+		})
+
+		diff := cmp.Diff(want, got, sortTypes, compare)
+		if diff != "" {
+			t.Errorf("RangeExtensionsByMessage() mismatch (-want +got):\n%v", diff)
+		}
+	})
 }
