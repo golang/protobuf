@@ -9,14 +9,17 @@ import (
 	"strings"
 	"testing"
 
+	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/detrand"
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
+	"github.com/golang/protobuf/v2/internal/impl"
 	"github.com/golang/protobuf/v2/internal/legacy"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
+	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
@@ -24,6 +27,7 @@ import (
 	// TODO: Remove this when protoV1 registers these hooks for you.
 	_ "github.com/golang/protobuf/v2/internal/legacy"
 
+	anypb "github.com/golang/protobuf/ptypes/any"
 	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb2"
 	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb3"
 )
@@ -65,6 +69,7 @@ func setExtension(m proto.Message, xd *protoapi.ExtensionDesc, val interface{}) 
 func TestMarshal(t *testing.T) {
 	tests := []struct {
 		desc    string
+		mo      textpb.MarshalOptions
 		input   proto.Message
 		want    string
 		wantErr bool
@@ -964,18 +969,161 @@ opt_int32: 42
 		   }
 		   `,
 		*/
+	}, {
+		desc: "google.protobuf.Any message not expanded",
+		mo:   textpb.MarshalOptions{Resolver: preg.NewTypes()},
+		input: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("embedded inside Any"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("inception"),
+				},
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b, err := protoV1.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return impl.Export{}.MessageOf(&anypb.Any{
+				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				Value:   b,
+			}).Interface()
+		}(),
+		want: `type_url: "pb2.Nested"
+value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
+`,
+	}, {
+		desc: "google.protobuf.Any message expanded",
+		mo: func() textpb.MarshalOptions {
+			m := &pb2.Nested{}
+			resolver := preg.NewTypes(m.ProtoReflect().Type())
+			return textpb.MarshalOptions{Resolver: resolver}
+		}(),
+		input: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("embedded inside Any"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("inception"),
+				},
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b, err := protoV1.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return impl.Export{}.MessageOf(&anypb.Any{
+				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				Value:   b,
+			}).Interface()
+		}(),
+		want: `[pb2.Nested]: {
+  opt_string: "embedded inside Any"
+  opt_nested: {
+    opt_string: "inception"
+  }
+}
+`,
+	}, {
+		desc: "google.protobuf.Any message expanded with missing required error",
+		mo: func() textpb.MarshalOptions {
+			m := &pb2.PartialRequired{}
+			resolver := preg.NewTypes(m.ProtoReflect().Type())
+			return textpb.MarshalOptions{Resolver: resolver}
+		}(),
+		input: func() proto.Message {
+			m := &pb2.PartialRequired{
+				OptString: scalar.String("embedded inside Any"),
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b, err := protoV1.Marshal(m)
+			// Ignore required not set error.
+			if _, ok := err.(*protoV1.RequiredNotSetError); !ok {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return impl.Export{}.MessageOf(&anypb.Any{
+				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				Value:   b,
+			}).Interface()
+		}(),
+		want: `[pb2.PartialRequired]: {
+  opt_string: "embedded inside Any"
+}
+`,
+		wantErr: true,
+	}, {
+		desc: "google.protobuf.Any field",
+		mo:   textpb.MarshalOptions{Resolver: preg.NewTypes()},
+		input: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("embedded inside Any"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("inception"),
+				},
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b, err := protoV1.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &pb2.KnownTypes{
+				OptAny: &anypb.Any{
+					TypeUrl: string(m.ProtoReflect().Type().FullName()),
+					Value:   b,
+				},
+			}
+		}(),
+		want: `opt_any: {
+  type_url: "pb2.Nested"
+  value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
+}
+`,
+	}, {
+		desc: "google.protobuf.Any field expanded using given types registry",
+		mo: func() textpb.MarshalOptions {
+			m := &pb2.Nested{}
+			resolver := preg.NewTypes(m.ProtoReflect().Type())
+			return textpb.MarshalOptions{Resolver: resolver}
+		}(),
+		input: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("embedded inside Any"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("inception"),
+				},
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b, err := protoV1.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &pb2.KnownTypes{
+				OptAny: &anypb.Any{
+					TypeUrl: string(m.ProtoReflect().Type().FullName()),
+					Value:   b,
+				},
+			}
+		}(),
+		want: `opt_any: {
+  [pb2.Nested]: {
+    opt_string: "embedded inside Any"
+    opt_nested: {
+      opt_string: "inception"
+    }
+  }
+}
+`,
 	}}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
 			t.Parallel()
-			b, err := textpb.Marshal(tt.input)
+			b, err := tt.mo.Marshal(tt.input)
 			if err != nil && !tt.wantErr {
-				t.Errorf("Marshal() returned error: %v\n\n", err)
+				t.Errorf("Marshal() returned error: %v\n", err)
 			}
 			if err == nil && tt.wantErr {
-				t.Error("Marshal() got nil error, want error\n\n")
+				t.Error("Marshal() got nil error, want error\n")
 			}
 			got := string(b)
 			if tt.want != "" && got != tt.want {

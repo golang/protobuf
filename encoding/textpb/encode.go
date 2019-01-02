@@ -14,6 +14,7 @@ import (
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoregistry"
 )
 
 // Marshal writes the given proto.Message in textproto format using default options.
@@ -28,13 +29,22 @@ type MarshalOptions struct {
 
 	// Set Compact to true to have output in a single line with no line breaks.
 	Compact bool
+
+	// Resolver is the registry used for type lookups when marshaling out
+	// google.protobuf.Any messages in expanded form. If Resolver is not set,
+	// marshaling will default to using protoregistry.GlobalTypes.  If a type is
+	// not found, an Any message will be marshaled as a regular message.
+	Resolver *protoregistry.Types
 }
 
 // Marshal writes the given proto.Message in textproto format using options in MarshalOptions object.
 func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
+	if o.Resolver == nil {
+		o.Resolver = protoregistry.GlobalTypes
+	}
+
 	var nerr errors.NonFatal
 	var v text.Value
-
 	var err error
 	v, err = o.marshalMessage(m.ProtoReflect())
 	if !nerr.Merge(err) {
@@ -59,9 +69,22 @@ func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
 func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 	var nerr errors.NonFatal
 	var msgFields [][2]text.Value
+	msgType := m.Type()
+
+	// Handle Any expansion.
+	if msgType.FullName() == "google.protobuf.Any" {
+		msg, err := o.marshalAny(m)
+		if err == nil || nerr.Merge(err) {
+			// Return as is for nil or non-fatal error.
+			return msg, nerr.E
+		}
+		if err != protoregistry.NotFound {
+			return text.Value{}, err
+		}
+		// Continue on to marshal Any as a regular message if error is not found.
+	}
 
 	// Handle known fields.
-	msgType := m.Type()
 	fieldDescs := msgType.Fields()
 	knownFields := m.KnownFields()
 	size := fieldDescs.Len()
@@ -334,4 +357,49 @@ func appendUnknown(fields [][2]text.Value, b []byte) [][2]text.Value {
 		b = b[n:]
 	}
 	return fields
+}
+
+// marshalAny converts a google.protobuf.Any protoreflect.Message to a text.Value.
+func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
+	var nerr errors.NonFatal
+
+	fds := m.Type().Fields()
+	tfd := fds.ByName("type_url")
+	if tfd == nil || tfd.Kind() != pref.StringKind {
+		return text.Value{}, errors.New("invalid google.protobuf.Any message")
+	}
+	vfd := fds.ByName("value")
+	if vfd == nil || vfd.Kind() != pref.BytesKind {
+		return text.Value{}, errors.New("invalid google.protobuf.Any message")
+	}
+
+	knownFields := m.KnownFields()
+	typeURL := knownFields.Get(tfd.Number())
+	value := knownFields.Get(vfd.Number())
+
+	emt, err := o.Resolver.FindMessageByURL(typeURL.String())
+	if !nerr.Merge(err) {
+		return text.Value{}, err
+	}
+	em := emt.New()
+	// TODO: Need to set types registry in binary unmarshaling.
+	err = proto.Unmarshal(value.Bytes(), em)
+	if !nerr.Merge(err) {
+		return text.Value{}, err
+	}
+
+	msg, err := o.marshalMessage(em.ProtoReflect())
+	if !nerr.Merge(err) {
+		return text.Value{}, err
+	}
+	// Expanded Any field value contains only a single field with the embedded
+	// message type as the field name in [] and a text marshaled field value of
+	// the embedded message.
+	msgFields := [][2]text.Value{
+		{
+			text.ValueOf(string(emt.FullName())),
+			msg,
+		},
+	}
+	return text.ValueOf(msgFields), nerr.E
 }
