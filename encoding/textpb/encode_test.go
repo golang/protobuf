@@ -5,6 +5,7 @@
 package textpb_test
 
 import (
+	"encoding/hex"
 	"math"
 	"strings"
 	"testing"
@@ -64,6 +65,15 @@ func setExtension(m proto.Message, xd *protoapi.ExtensionDesc, val interface{}) 
 	}
 	pval := xt.ValueOf(val)
 	knownFields.Set(wire.Number(xd.Field), pval)
+}
+
+// dhex decodes a hex-string and returns the bytes and panics if s is invalid.
+func dhex(s string) []byte {
+	b, err := hex.DecodeString(s)
+	if err != nil {
+		panic(err)
+	}
+	return b
 }
 
 func TestMarshal(t *testing.T) {
@@ -1050,6 +1060,23 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 }
 `,
 		wantErr: true,
+	}, {
+		desc: "google.protobuf.Any message with invalid value",
+		mo: func() textpb.MarshalOptions {
+			m := &pb2.Nested{}
+			resolver := preg.NewTypes(m.ProtoReflect().Type())
+			return textpb.MarshalOptions{Resolver: resolver}
+		}(),
+		input: func() proto.Message {
+			m := &pb2.Nested{}
+			return impl.Export{}.MessageOf(&anypb.Any{
+				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				Value:   dhex("80"),
+			}).Interface()
+		}(),
+		want: `type_url: "pb2.Nested"
+value: "\x80"
+`,
 	}, {
 		desc: "google.protobuf.Any field",
 		mo:   textpb.MarshalOptions{Resolver: preg.NewTypes()},

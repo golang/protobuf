@@ -78,10 +78,7 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 			// Return as is for nil or non-fatal error.
 			return msg, nerr.E
 		}
-		if err != protoregistry.NotFound {
-			return text.Value{}, err
-		}
-		// Continue on to marshal Any as a regular message if error is not found.
+		// For other errors, continue on to marshal Any as a regular message.
 	}
 
 	// Handle known fields.
