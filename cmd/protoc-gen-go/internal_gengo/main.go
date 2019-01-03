@@ -123,12 +123,6 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.Generat
 	g.P("package ", f.GoPackageName)
 	g.P()
 
-	// These references are not necessary, since we automatically add
-	// all necessary imports before formatting the generated file.
-	//
-	// This section exists to generate output more consistent with
-	// the previous version of protoc-gen-go, to make it easier to
-	// detect unintended variations.
 	if !isDescriptor(file) {
 		g.P("// This is a compile-time assertion to ensure that this generated file")
 		g.P("// is compatible with the proto package it is being compiled against.")
