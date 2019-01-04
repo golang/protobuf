@@ -10,6 +10,7 @@ import (
 
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoapi"
+	anypb "github.com/golang/protobuf/ptypes/any"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/legacy"
 	"github.com/golang/protobuf/v2/internal/scalar"
@@ -49,6 +50,7 @@ func registerExtension(xd *protoapi.ExtensionDesc) {
 func TestUnmarshal(t *testing.T) {
 	tests := []struct {
 		desc         string
+		umo          textpb.UnmarshalOptions
 		inputMessage proto.Message
 		inputText    string
 		wantMessage  proto.Message
@@ -1122,13 +1124,186 @@ opt_int32: 42
 		inputMessage: &pb2.Extensions{},
 		inputText:    "[pb2.invalid_message_field]: true",
 		wantErr:      true,
+	}, {
+		desc:         "Any not expanded",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `opt_any: {
+type_url: "pb2.Nested"
+value: "some bytes"
+}
+`,
+		wantMessage: &pb2.KnownTypes{
+			OptAny: &anypb.Any{
+				TypeUrl: "pb2.Nested",
+				Value:   []byte("some bytes"),
+			},
+		},
+	}, {
+		desc:         "Any not expanded missing value",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `opt_any: {
+type_url: "pb2.Nested"
+}
+`,
+		wantMessage: &pb2.KnownTypes{
+			OptAny: &anypb.Any{
+				TypeUrl: "pb2.Nested",
+			},
+		},
+	}, {
+		desc:         "Any not expanded missing type_url",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `opt_any: {
+value: "some bytes"
+}
+`,
+		wantMessage: &pb2.KnownTypes{
+			OptAny: &anypb.Any{
+				Value: []byte("some bytes"),
+			},
+		},
+	}, {
+		desc: "Any expanded",
+		umo: func() textpb.UnmarshalOptions {
+			m := &pb2.Nested{}
+			resolver := preg.NewTypes(m.ProtoReflect().Type())
+			return textpb.UnmarshalOptions{Resolver: resolver}
+		}(),
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `opt_any: {
+  [foobar/pb2.Nested]: {
+    opt_string: "embedded inside Any"
+    opt_nested: {
+      opt_string: "inception"
+    }
+  }
+}
+`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("embedded inside Any"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("inception"),
+				},
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b, err := protoV1.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &pb2.KnownTypes{
+				OptAny: &anypb.Any{
+					TypeUrl: "foobar/pb2.Nested",
+					Value:   b,
+				},
+			}
+		}(),
+	}, {
+		desc: "Any expanded with empty value",
+		umo: func() textpb.UnmarshalOptions {
+			m := &pb2.Nested{}
+			resolver := preg.NewTypes(m.ProtoReflect().Type())
+			return textpb.UnmarshalOptions{Resolver: resolver}
+		}(),
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `opt_any: {
+[foo.com/pb2.Nested]: {}
+}
+`,
+		wantMessage: &pb2.KnownTypes{
+			OptAny: &anypb.Any{
+				TypeUrl: "foo.com/pb2.Nested",
+			},
+		},
+	}, {
+		desc: "Any expanded with missing required error",
+		umo: func() textpb.UnmarshalOptions {
+			m := &pb2.PartialRequired{}
+			resolver := preg.NewTypes(m.ProtoReflect().Type())
+			return textpb.UnmarshalOptions{Resolver: resolver}
+		}(),
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `opt_any: {
+  [pb2.PartialRequired]: {
+    opt_string: "embedded inside Any"
+  }
+}
+`,
+		wantMessage: func() proto.Message {
+			m := &pb2.PartialRequired{
+				OptString: scalar.String("embedded inside Any"),
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b, err := protoV1.Marshal(m)
+			// Ignore required not set error.
+			if _, ok := err.(*protoV1.RequiredNotSetError); !ok {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &pb2.KnownTypes{
+				OptAny: &anypb.Any{
+					TypeUrl: "pb2.PartialRequired",
+					Value:   b,
+				},
+			}
+		}(),
+		wantErr: true,
+	}, {
+		desc:         "Any expanded with unregistered type",
+		umo:          textpb.UnmarshalOptions{Resolver: preg.NewTypes()},
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `opt_any: {
+[SomeMessage]: {}
+}
+`,
+		wantErr: true,
+	}, {
+		desc: "Any expanded with invalid value",
+		umo: func() textpb.UnmarshalOptions {
+			m := &pb2.Nested{}
+			resolver := preg.NewTypes(m.ProtoReflect().Type())
+			return textpb.UnmarshalOptions{Resolver: resolver}
+		}(),
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `opt_any: {
+[pb2.Nested]: 123
+}
+`,
+		wantErr: true,
+	}, {
+		desc: "Any expanded with unknown fields",
+		umo: func() textpb.UnmarshalOptions {
+			m := &pb2.Nested{}
+			resolver := preg.NewTypes(m.ProtoReflect().Type())
+			return textpb.UnmarshalOptions{Resolver: resolver}
+		}(),
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `opt_any: {
+[pb2.Nested]: {}
+unknown: ""
+}
+`,
+		wantErr: true,
+	}, {
+		desc: "Any contains expanded and unexpanded fields",
+		umo: func() textpb.UnmarshalOptions {
+			m := &pb2.Nested{}
+			resolver := preg.NewTypes(m.ProtoReflect().Type())
+			return textpb.UnmarshalOptions{Resolver: resolver}
+		}(),
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `opt_any: {
+[pb2.Nested]: {}
+type_url: "pb2.Nested"
+}
+`,
+		wantErr: true,
 	}}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
 			t.Parallel()
-			err := textpb.Unmarshal(tt.inputMessage, []byte(tt.inputText))
+			err := tt.umo.Unmarshal(tt.inputMessage, []byte(tt.inputText))
 			if err != nil && !tt.wantErr {
 				t.Errorf("Unmarshal() returned error: %v\n\n", err)
 			}

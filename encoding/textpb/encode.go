@@ -375,10 +375,10 @@ func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
 	}
 
 	knownFields := m.KnownFields()
-	typeURL := knownFields.Get(tfd.Number())
+	typeURL := knownFields.Get(tfd.Number()).String()
 	value := knownFields.Get(vfd.Number())
 
-	emt, err := o.Resolver.FindMessageByURL(typeURL.String())
+	emt, err := o.Resolver.FindMessageByURL(typeURL)
 	if !nerr.Merge(err) {
 		return text.Value{}, err
 	}
@@ -393,12 +393,11 @@ func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
 	if !nerr.Merge(err) {
 		return text.Value{}, err
 	}
-	// Expanded Any field value contains only a single field with the embedded
-	// message type as the field name in [] and a text marshaled field value of
-	// the embedded message.
+	// Expanded Any field value contains only a single field with the type_url field value as the
+	// field name in [] and a text marshaled field value of the embedded message.
 	msgFields := [][2]text.Value{
 		{
-			text.ValueOf(string(emt.FullName())),
+			text.ValueOf(typeURL),
 			msg,
 		},
 	}

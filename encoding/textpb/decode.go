@@ -8,10 +8,12 @@ import (
 	"fmt"
 	"strings"
 
+	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/internal/encoding/text"
 	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/internal/set"
+	pvalue "github.com/golang/protobuf/v2/internal/value"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -87,9 +89,15 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 	var nerr errors.NonFatal
 
 	msgType := m.Type()
+	knownFields := m.KnownFields()
+
+	// Handle expanded Any message.
+	if msgType.FullName() == "google.protobuf.Any" && isExpandedAny(tmsg) {
+		return o.unmarshalAny(tmsg[0], knownFields)
+	}
+
 	fieldDescs := msgType.Fields()
 	reservedNames := msgType.ReservedNames()
-	knownFields := m.KnownFields()
 	xtTypes := knownFields.ExtensionTypes()
 	var reqNums set.Ints
 	var seenNums set.Ints
@@ -109,18 +117,21 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 				fd = fieldDescs.ByName(pref.Name(strings.ToLower(string(name))))
 			}
 		case text.String:
-			// TODO: Handle Any expansions here as well.
-
-			// Handle extensions. Extensions have to be registered first in the message's
+			// Handle extensions only. This code path is not for Any.
+			if msgType.FullName() == "google.protobuf.Any" {
+				break
+			}
+			// Extensions have to be registered first in the message's
 			// ExtensionTypes before setting a value to it.
 			xtName := pref.FullName(tkey.String())
-			// Check first if it is already registered. This is the case for repeated fields.
+			// Check first if it is already registered. This is the case for
+			// repeated fields.
 			xt := xtTypes.ByName(xtName)
 			if xt == nil {
 				var err error
 				xt, err = o.Resolver.FindExtensionByName(xtName)
 				if err != nil && err != protoregistry.NotFound {
-					return err
+					return errors.New("unable to resolve [%v]: %v", xtName, err)
 				}
 				if xt != nil {
 					xtTypes.Register(xt)
@@ -274,12 +285,11 @@ func unmarshalScalar(input text.Value, fd pref.FieldDescriptor) (pref.Value, err
 		// If input is int32, use directly.
 		if n, ok := input.Int(b32); ok {
 			return pref.ValueOf(pref.EnumNumber(n)), nil
-		} else {
-			if name, ok := input.Name(); ok {
-				// Lookup EnumNumber based on name.
-				if enumVal := fd.EnumType().Values().ByName(name); enumVal != nil {
-					return pref.ValueOf(enumVal.Number()), nil
-				}
+		}
+		if name, ok := input.Name(); ok {
+			// Lookup EnumNumber based on name.
+			if enumVal := fd.EnumType().Values().ByName(name); enumVal != nil {
+				return pref.ValueOf(enumVal.Number()), nil
 			}
 		}
 	default:
@@ -327,7 +337,7 @@ func (o UnmarshalOptions) unmarshalMap(input []text.Value, fd pref.FieldDescript
 
 	// Determine ahead whether map entry is a scalar type or a message type in order to call the
 	// appropriate unmarshalMapValue func inside the for loop below.
-	unmarshalMapValue := o.unmarshalMapScalarValue
+	unmarshalMapValue := unmarshalMapScalarValue
 	switch valDesc.Kind() {
 	case pref.MessageKind, pref.GroupKind:
 		unmarshalMapValue = o.unmarshalMapMessageValue
@@ -418,7 +428,7 @@ func (o UnmarshalOptions) unmarshalMapMessageValue(input text.Value, pkey pref.M
 
 // unmarshalMapScalarValue unmarshals given scalar-type text.Value into a protoreflect.Map
 // for the given MapKey.
-func (o UnmarshalOptions) unmarshalMapScalarValue(input text.Value, pkey pref.MapKey, fd pref.FieldDescriptor, mmap pref.Map) error {
+func unmarshalMapScalarValue(input text.Value, pkey pref.MapKey, fd pref.FieldDescriptor, mmap pref.Map) error {
 	var val pref.Value
 	if input.Type() == 0 {
 		val = fd.Default()
@@ -431,4 +441,52 @@ func (o UnmarshalOptions) unmarshalMapScalarValue(input text.Value, pkey pref.Ma
 	}
 	mmap.Set(pkey, val)
 	return nil
+}
+
+// isExpandedAny returns true if given [][2]text.Value may be an expanded Any that contains only one
+// field with key type of text.String type and value type of text.Message.
+func isExpandedAny(tmsg [][2]text.Value) bool {
+	if len(tmsg) != 1 {
+		return false
+	}
+
+	field := tmsg[0]
+	return field[0].Type() == text.String && field[1].Type() == text.Message
+}
+
+// unmarshalAny unmarshals an expanded Any textproto. This method assumes that the given
+// tfield has key type of text.String and value type of text.Message.
+func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, knownFields pref.KnownFields) error {
+	var nerr errors.NonFatal
+
+	typeURL := tfield[0].String()
+	value := tfield[1].Message()
+
+	mt, err := o.Resolver.FindMessageByURL(typeURL)
+	if !nerr.Merge(err) {
+		return errors.New("unable to resolve message [%v]: %v", typeURL, err)
+	}
+	// Create new message for the embedded message type and unmarshal the
+	// value into it.
+	m := mt.New()
+	if err := o.unmarshalMessage(value, m); !nerr.Merge(err) {
+		return err
+	}
+	// Serialize the embedded message and assign the resulting bytes to the value field.
+	// TODO: Switch to V2 marshal and enable deterministic option when ready.
+	var mv1 protoV1.Message
+	if mtmp, ok := m.(pvalue.Unwrapper); ok {
+		mv1 = mtmp.ProtoUnwrap().(protoV1.Message)
+	} else {
+		mv1 = m.Interface().(protoV1.Message)
+	}
+	b, err := protoV1.Marshal(mv1)
+	if !nerr.Merge(err) {
+		return err
+	}
+
+	knownFields.Set(pref.FieldNumber(1), pref.ValueOf(typeURL))
+	knownFields.Set(pref.FieldNumber(2), pref.ValueOf(b))
+
+	return nerr.E
 }

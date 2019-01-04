@@ -7,10 +7,13 @@ import (
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb2"
 	"github.com/golang/protobuf/v2/proto"
+	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 
 	// The legacy package must be imported prior to use of any legacy messages.
 	// TODO: Remove this when protoV1 registers these hooks for you.
+	"github.com/golang/protobuf/v2/internal/impl"
 	_ "github.com/golang/protobuf/v2/internal/legacy"
+	"github.com/golang/protobuf/v2/internal/scalar"
 
 	anypb "github.com/golang/protobuf/ptypes/any"
 	durpb "github.com/golang/protobuf/ptypes/duration"
@@ -22,8 +25,9 @@ import (
 
 func TestRoundTrip(t *testing.T) {
 	tests := []struct {
-		desc    string
-		message proto.Message
+		desc     string
+		resolver *preg.Types
+		message  proto.Message
 	}{{
 		desc: "well-known type fields set to empty messages",
 		message: &pb2.KnownTypes{
@@ -88,7 +92,7 @@ func TestRoundTrip(t *testing.T) {
 			},
 		},
 	}, {
-		desc: "well-known type struct field and different Value types",
+		desc: "Struct field and different Value types",
 		message: &pb2.KnownTypes{
 			OptStruct: &stpb.Struct{
 				Fields: map[string]*stpb.Value{
@@ -146,21 +150,101 @@ func TestRoundTrip(t *testing.T) {
 				},
 			},
 		},
+	}, {
+		desc:     "Any field without registered type",
+		resolver: preg.NewTypes(),
+		message: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("embedded inside Any"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("inception"),
+				},
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b, err := protoV1.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &pb2.KnownTypes{
+				OptAny: &anypb.Any{
+					TypeUrl: string(m.ProtoReflect().Type().FullName()),
+					Value:   b,
+				},
+			}
+		}(),
+	}, {
+		desc:     "Any field with registered type",
+		resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+		message: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("embedded inside Any"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("inception"),
+				},
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b, err := protoV1.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &pb2.KnownTypes{
+				OptAny: &anypb.Any{
+					TypeUrl: string(m.ProtoReflect().Type().FullName()),
+					Value:   b,
+				},
+			}
+		}(),
+	}, {
+		desc: "Any field containing Any message",
+		resolver: func() *preg.Types {
+			mt1 := (&pb2.Nested{}).ProtoReflect().Type()
+			mt2 := impl.Export{}.MessageTypeOf(&anypb.Any{})
+			return preg.NewTypes(mt1, mt2)
+		}(),
+		message: func() proto.Message {
+			m1 := &pb2.Nested{
+				OptString: scalar.String("message inside Any of another Any field"),
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b1, err := protoV1.Marshal(m1)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			m2 := &anypb.Any{
+				TypeUrl: "pb2.Nested",
+				Value:   b1,
+			}
+			// TODO: Switch to V2 marshal when ready.
+			b2, err := protoV1.Marshal(m2)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &pb2.KnownTypes{
+				OptAny: &anypb.Any{
+					TypeUrl: "google.protobuf.Any",
+					Value:   b2,
+				},
+			}
+		}(),
 	}}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
 			t.Parallel()
-			b, err := textpb.Marshal(tt.message)
+			mo := textpb.MarshalOptions{Resolver: tt.resolver}
+			umo := textpb.UnmarshalOptions{Resolver: tt.resolver}
+
+			b, err := mo.Marshal(tt.message)
 			if err != nil {
 				t.Errorf("Marshal() returned error: %v\n\n", err)
 			}
 			gotMessage := tt.message.ProtoReflect().Type().New().Interface()
-			err = textpb.Unmarshal(gotMessage, b)
+			err = umo.Unmarshal(gotMessage, b)
 			if err != nil {
 				t.Errorf("Unmarshal() returned error: %v\n\n", err)
 			}
+
 			if !protoV1.Equal(gotMessage.(protoV1.Message), tt.message.(protoV1.Message)) {
 				t.Errorf("Unmarshal()\n<got>\n%v\n<want>\n%v\n", gotMessage, tt.message)
 			}
