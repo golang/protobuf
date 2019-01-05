@@ -16,6 +16,10 @@ import (
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+func init() {
+	proto.RegisterFile("grpc/deprecation.proto", fileDescriptor_1e7146702b7fe8c5)
+}
+
 var fileDescriptor_1e7146702b7fe8c5 = []byte{
 	// 184 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4b, 0x2f, 0x2a, 0x48,
