@@ -9,6 +9,7 @@ package goproto.protoc.import_public.sub;
 option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/import_public/sub";
 
 import "import_public/sub/b.proto";
+import public "import_public/sub2/a.proto";
 
 message M {
   // Field using a type in the same Go package, but a different source file.
