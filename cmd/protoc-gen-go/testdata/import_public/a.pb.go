@@ -20,7 +20,6 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // Symbols defined in public import of import_public/sub/a.proto
 
-type Sub2Message = sub.Sub2Message
 type E = sub.E
 
 const E_ZERO = sub.E_ZERO

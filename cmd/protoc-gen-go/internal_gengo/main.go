@@ -200,7 +200,7 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 		gen.Error(err)
 		return
 	}
-	genForward := func(tok token.Token, name string) {
+	genForward := func(tok token.Token, name string, expr ast.Expr) {
 		// Don't import unexported symbols.
 		r, _ := utf8.DecodeRuneInString(name)
 		if !unicode.IsUpper(r) {
@@ -208,6 +208,13 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 		}
 		// Don't import the FileDescriptor.
 		if name == impFile.GoDescriptorIdent.GoName {
+			return
+		}
+		// Don't import decls referencing a symbol defined in another package.
+		// i.e., don't import decls which are themselves public imports:
+		//
+		//	type T = somepackage.T
+		if _, ok := expr.(*ast.SelectorExpr); ok {
 			return
 		}
 		g.P(tok, " ", name, " = ", impFile.GoImportPath.Ident(name))
@@ -220,10 +227,14 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 			for _, spec := range decl.Specs {
 				switch spec := spec.(type) {
 				case *ast.TypeSpec:
-					genForward(decl.Tok, spec.Name.Name)
+					genForward(decl.Tok, spec.Name.Name, spec.Type)
 				case *ast.ValueSpec:
-					for _, name := range spec.Names {
-						genForward(decl.Tok, name.Name)
+					for i, name := range spec.Names {
+						var expr ast.Expr
+						if i < len(spec.Values) {
+							expr = spec.Values[i]
+						}
+						genForward(decl.Tok, name.Name, expr)
 					}
 				case *ast.ImportSpec:
 				default:
