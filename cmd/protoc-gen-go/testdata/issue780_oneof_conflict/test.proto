@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package oneoftest;
+
+message Foo {
+	oneof bar { // must be generated as Bar field in Foo struct
+		string get_bar = 1;
+	}
+}

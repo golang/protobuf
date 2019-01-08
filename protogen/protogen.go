@@ -569,22 +569,22 @@ func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.Message
 		"ExtensionMap":        true,
 		"Descriptor":          true,
 	}
-	makeNameUnique := func(name string) string {
-		for usedNames[name] || usedNames["Get"+name] {
+	makeNameUnique := func(name string, hasGetter bool) string {
+		for usedNames[name] || (hasGetter && usedNames["Get"+name]) {
 			name += "_"
 		}
 		usedNames[name] = true
-		usedNames["Get"+name] = true
+		usedNames["Get"+name] = hasGetter
 		return name
 	}
 	seenOneofs := make(map[int]bool)
 	for _, field := range message.Fields {
-		field.GoName = makeNameUnique(field.GoName)
+		field.GoName = makeNameUnique(field.GoName, true)
 		if field.OneofType != nil {
 			if !seenOneofs[field.OneofType.Desc.Index()] {
 				// If this is a field in a oneof that we haven't seen before,
 				// make the name for that oneof unique as well.
-				field.OneofType.GoName = makeNameUnique(field.OneofType.GoName)
+				field.OneofType.GoName = makeNameUnique(field.OneofType.GoName, false)
 				seenOneofs[field.OneofType.Desc.Index()] = true
 			}
 		}
