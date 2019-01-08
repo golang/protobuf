@@ -200,6 +200,22 @@ message MessageSetExtension {
   }
 }
 
+message FakeMessageSet {
+  extensions 4 to max;
+}
+
+message FakeMessageSetExtension {
+  optional string opt_string = 1;
+
+  extend FakeMessageSet {
+    optional FakeMessageSetExtension message_set_extension = 10;
+  }
+}
+
+extend MessageSet {
+  optional FakeMessageSetExtension message_set_extension = 50;
+}
+
 // Message contains well-known type fields.
 message KnownTypes {
   optional google.protobuf.BoolValue opt_bool = 1;

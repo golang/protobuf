@@ -129,7 +129,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 			xt := xtTypes.ByName(xtName)
 			if xt == nil {
 				var err error
-				xt, err = o.Resolver.FindExtensionByName(xtName)
+				xt, err = o.findExtension(xtName)
 				if err != nil && err != protoregistry.NotFound {
 					return errors.New("unable to resolve [%v]: %v", xtName, err)
 				}
@@ -181,6 +181,21 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 	}
 
 	return nerr.E
+}
+
+// findExtension returns protoreflect.ExtensionType from the Resolver if found.
+func (o UnmarshalOptions) findExtension(xtName pref.FullName) (pref.ExtensionType, error) {
+	xt, err := o.Resolver.FindExtensionByName(xtName)
+	if err == nil {
+		return xt, nil
+	}
+
+	// Check if this is a MessageSet extension field.
+	xt, err = o.Resolver.FindExtensionByName(xtName + ".message_set_extension")
+	if err == nil && isMessageSetExtension(xt) {
+		return xt, nil
+	}
+	return nil, protoregistry.NotFound
 }
 
 // unmarshalSingular unmarshals given text.Value into the non-repeated field.

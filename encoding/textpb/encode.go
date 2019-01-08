@@ -15,6 +15,8 @@ import (
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/protoregistry"
+
+	descpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 // Marshal writes the given proto.Message in textproto format using default options.
@@ -302,14 +304,16 @@ func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, knownFields 
 
 	var err error
 	xtTypes.Range(func(xt pref.ExtensionType) bool {
-		// TODO: Handle MessageSet.  Field name should be message_set_extension
-		// of message type without any fields and has message option
-		// message_set_wire_format=true.
+		name := xt.FullName()
+		// If extended type is a MessageSet, set field name to be the message type name.
+		if isMessageSetExtension(xt) {
+			name = xt.MessageType().FullName()
+		}
 
 		num := xt.Number()
 		if knownFields.Has(num) {
 			// Use string type to produce [name] format.
-			tname := text.ValueOf(string(xt.FullName()))
+			tname := text.ValueOf(string(name))
 			pval := knownFields.Get(num)
 			xtFields, err = o.appendField(xtFields, tname, pval, xt)
 			if err != nil {
@@ -327,6 +331,29 @@ func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, knownFields 
 		return xtFields[i][0].String() < xtFields[j][0].String()
 	})
 	return append(msgFields, xtFields...), nerr.E
+}
+
+// isMessageSetExtension reports whether extension extends a message set.
+func isMessageSetExtension(xt pref.ExtensionType) bool {
+	if xt.Name() != "message_set_extension" {
+		return false
+	}
+	mt := xt.MessageType()
+	if mt == nil {
+		return false
+	}
+	if xt.FullName().Parent() != mt.FullName() {
+		return false
+	}
+	xmt := xt.ExtendedType()
+	if xmt.Fields().Len() != 0 {
+		return false
+	}
+	opt := xmt.Options().(*descpb.MessageOptions)
+	if opt == nil {
+		return false
+	}
+	return opt.GetMessageSetWireFormat()
 }
 
 // appendUnknown parses the given []byte and appends field(s) into the given fields slice.

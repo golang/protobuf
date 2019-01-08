@@ -959,33 +959,57 @@ opt_int32: 42
 [pb2.ExtensionsContainer.rpt_ext_string]: "hello"
 [pb2.ExtensionsContainer.rpt_ext_string]: "world"
 `,
-		/* TODO: test for MessageSet
-		   	}, {
-		   		desc: "MessageSet",
-		   		input: func() proto.Message {
-		   			m := &pb2.MessageSet{}
-		   			setExtension(m, pb2.E_MessageSetExtension_MessageSetExtension, &pb2.MessageSetExtension{
-		   				OptString: scalar.String("a messageset extension"),
-		   			})
-		   			setExtension(m, pb2.E_MessageSetExtension_NotMessageSetExtension, &pb2.MessageSetExtension{
-		   				OptString: scalar.String("not a messageset extension"),
-		   			})
-		   			setExtension(m, pb2.E_MessageSetExtension_ExtNested, &pb2.Nested{
-		   				OptString: scalar.String("just a regular extension"),
-		   			})
-		   			return m
-		   		}(),
-		   		want: `[pb2.MessageSetExtension]: {
-		     opt_string: "a messageset extension"
-		   }
-		   [pb2.MessageSetExtension.ext_nested]: {
-		     opt_string: "just a regular extension"
-		   }
-		   [pb2.MessageSetExtension.not_message_set_extension]: {
-		     opt_string: "not a messageset extension"
-		   }
-		   `,
-		*/
+	}, {
+		desc: "MessageSet",
+		input: func() proto.Message {
+			m := &pb2.MessageSet{}
+			setExtension(m, pb2.E_MessageSetExtension_MessageSetExtension, &pb2.MessageSetExtension{
+				OptString: scalar.String("a messageset extension"),
+			})
+			setExtension(m, pb2.E_MessageSetExtension_NotMessageSetExtension, &pb2.MessageSetExtension{
+				OptString: scalar.String("not a messageset extension"),
+			})
+			setExtension(m, pb2.E_MessageSetExtension_ExtNested, &pb2.Nested{
+				OptString: scalar.String("just a regular extension"),
+			})
+			return m
+		}(),
+		want: `[pb2.MessageSetExtension]: {
+  opt_string: "a messageset extension"
+}
+[pb2.MessageSetExtension.ext_nested]: {
+  opt_string: "just a regular extension"
+}
+[pb2.MessageSetExtension.not_message_set_extension]: {
+  opt_string: "not a messageset extension"
+}
+`,
+	}, {
+		desc: "not real MessageSet 1",
+		input: func() proto.Message {
+			m := &pb2.FakeMessageSet{}
+			setExtension(m, pb2.E_FakeMessageSetExtension_MessageSetExtension, &pb2.FakeMessageSetExtension{
+				OptString: scalar.String("not a messageset extension"),
+			})
+			return m
+		}(),
+		want: `[pb2.FakeMessageSetExtension.message_set_extension]: {
+  opt_string: "not a messageset extension"
+}
+`,
+	}, {
+		desc: "not real MessageSet 2",
+		input: func() proto.Message {
+			m := &pb2.MessageSet{}
+			setExtension(m, pb2.E_MessageSetExtension, &pb2.FakeMessageSetExtension{
+				OptString: scalar.String("another not a messageset extension"),
+			})
+			return m
+		}(),
+		want: `[pb2.message_set_extension]: {
+  opt_string: "another not a messageset extension"
+}
+`,
 	}, {
 		desc: "Any message not expanded",
 		mo: textpb.MarshalOptions{
