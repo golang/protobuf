@@ -3108,164 +3108,164 @@ var xxx_Descriptor_ProtoFile_EnumDescs = [6]prototype.Enum{
 var xxx_Descriptor_ProtoFile_MessageTypes = [27]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FileDescriptorSet)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FileDescriptorSet{new(FileDescriptorSet)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FileDescriptorProto)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FileDescriptorProto{new(FileDescriptorProto)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[2].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(DescriptorProto)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_DescriptorProto{new(DescriptorProto)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[3].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(ExtensionRangeOptions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_ExtensionRangeOptions{new(ExtensionRangeOptions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[4].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FieldDescriptorProto)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FieldDescriptorProto{new(FieldDescriptorProto)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[5].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(OneofDescriptorProto)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_OneofDescriptorProto{new(OneofDescriptorProto)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[6].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(EnumDescriptorProto)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_EnumDescriptorProto{new(EnumDescriptorProto)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[7].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(EnumValueDescriptorProto)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_EnumValueDescriptorProto{new(EnumValueDescriptorProto)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[8].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(ServiceDescriptorProto)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_ServiceDescriptorProto{new(ServiceDescriptorProto)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[9].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(MethodDescriptorProto)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_MethodDescriptorProto{new(MethodDescriptorProto)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[10].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FileOptions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FileOptions{new(FileOptions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[11].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(MessageOptions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_MessageOptions{new(MessageOptions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[12].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FieldOptions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FieldOptions{new(FieldOptions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[13].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(OneofOptions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_OneofOptions{new(OneofOptions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[14].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(EnumOptions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_EnumOptions{new(EnumOptions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[15].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(EnumValueOptions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_EnumValueOptions{new(EnumValueOptions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[16].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(ServiceOptions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_ServiceOptions{new(ServiceOptions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[17].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(MethodOptions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_MethodOptions{new(MethodOptions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[18].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(UninterpretedOption)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_UninterpretedOption{new(UninterpretedOption)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[19].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(SourceCodeInfo)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_SourceCodeInfo{new(SourceCodeInfo)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[20].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(GeneratedCodeInfo)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_GeneratedCodeInfo{new(GeneratedCodeInfo)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[21].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(DescriptorProto_ExtensionRange)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_DescriptorProto_ExtensionRange{new(DescriptorProto_ExtensionRange)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[22].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(DescriptorProto_ReservedRange)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_DescriptorProto_ReservedRange{new(DescriptorProto_ReservedRange)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[23].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(EnumDescriptorProto_EnumReservedRange)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_EnumDescriptorProto_EnumReservedRange{new(EnumDescriptorProto_EnumReservedRange)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[24].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(UninterpretedOption_NamePart)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_UninterpretedOption_NamePart{new(UninterpretedOption_NamePart)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[25].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(SourceCodeInfo_Location)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_SourceCodeInfo_Location{new(SourceCodeInfo_Location)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Descriptor_ProtoFile_MessageDescs[26].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(GeneratedCodeInfo_Annotation)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_GeneratedCodeInfo_Annotation{new(GeneratedCodeInfo_Annotation)}
 		},
 	)},
 }

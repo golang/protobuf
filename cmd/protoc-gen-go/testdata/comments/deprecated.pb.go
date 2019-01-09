@@ -164,8 +164,8 @@ var xxx_Deprecated_ProtoFile_EnumDescs = [1]prototype.Enum{
 var xxx_Deprecated_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Deprecated_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(DeprecatedMessage)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_DeprecatedMessage{new(DeprecatedMessage)}
 		},
 	)},
 }

@@ -241,8 +241,8 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 			}
 			g.P("{Type: ", prototypePackage.Ident("GoMessage"), "(")
 			g.P(messageDescsVar, "[", i, "].Reference(),")
-			g.P("func(", protoreflectPackage.Ident("MessageType"), ") ", protoreflectPackage.Ident("ProtoMessage"), " {")
-			g.P("return new(", message.GoIdent, ")")
+			g.P("func(", protoreflectPackage.Ident("MessageType"), ") ", protoreflectPackage.Ident("Message"), " {")
+			g.P("return ", shadowTypeName(message.GoIdent), "{new(", message.GoIdent, ")}")
 			g.P("},")
 			g.P(")},")
 		}

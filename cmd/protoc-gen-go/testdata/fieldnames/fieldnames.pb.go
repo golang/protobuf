@@ -405,14 +405,14 @@ var xxx_Fieldnames_ProtoFile_FileDesc = prototype.File{
 var xxx_Fieldnames_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Fieldnames_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message{new(Message)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Fieldnames_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message_OneofMessageConflict)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message_OneofMessageConflict{new(Message_OneofMessageConflict)}
 		},
 	)},
 }

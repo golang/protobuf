@@ -185,8 +185,8 @@ var xxx_Nopackage_ProtoFile_EnumDescs = [1]prototype.Enum{
 var xxx_Nopackage_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Nopackage_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message{new(Message)}
 		},
 	)},
 }

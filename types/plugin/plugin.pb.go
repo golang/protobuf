@@ -465,26 +465,26 @@ var xxx_Plugin_ProtoFile_FileDesc = prototype.File{
 var xxx_Plugin_ProtoFile_MessageTypes = [4]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Plugin_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Version)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Version{new(Version)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Plugin_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(CodeGeneratorRequest)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_CodeGeneratorRequest{new(CodeGeneratorRequest)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Plugin_ProtoFile_MessageDescs[2].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(CodeGeneratorResponse)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_CodeGeneratorResponse{new(CodeGeneratorResponse)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Plugin_ProtoFile_MessageDescs[3].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(CodeGeneratorResponse_File)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_CodeGeneratorResponse_File{new(CodeGeneratorResponse_File)}
 		},
 	)},
 }

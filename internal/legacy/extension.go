@@ -57,7 +57,7 @@ func extensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 	var parent papi.Message
 	if mt, ok := t.ExtendedType().(pref.MessageType); ok {
 		// Create a new parent message and unwrap it if possible.
-		mv := mt.New()
+		mv := mt.New().Interface()
 		t := reflect.TypeOf(mv)
 		if mv, ok := mv.(pvalue.Unwrapper); ok {
 			t = reflect.TypeOf(mv.ProtoUnwrap())

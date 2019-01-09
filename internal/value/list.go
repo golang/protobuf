@@ -42,7 +42,7 @@ func (ls listReflect) Append(v pref.Value) {
 func (ls listReflect) Truncate(i int) {
 	ls.v.Elem().Set(ls.v.Elem().Slice(0, i))
 }
-func (ls listReflect) NewMessage() pref.ProtoMessage {
+func (ls listReflect) NewMessage() pref.Message {
 	return ls.conv.MessageType.New()
 }
 func (ls listReflect) ProtoUnwrap() interface{} {

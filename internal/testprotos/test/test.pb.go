@@ -1636,44 +1636,44 @@ var xxx_Test_ProtoFile_EnumDescs = [1]prototype.Enum{
 var xxx_Test_ProtoFile_MessageTypes = [24]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(TestAllTypes)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_TestAllTypes{new(TestAllTypes)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(TestAllExtensions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_TestAllExtensions{new(TestAllExtensions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[2].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(OptionalGroupExtension)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_OptionalGroupExtension{new(OptionalGroupExtension)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[3].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(RepeatedGroupExtension)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_RepeatedGroupExtension{new(RepeatedGroupExtension)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[4].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(TestAllTypes_NestedMessage)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_TestAllTypes_NestedMessage{new(TestAllTypes_NestedMessage)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[5].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(TestAllTypes_OptionalGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_TestAllTypes_OptionalGroup{new(TestAllTypes_OptionalGroup)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[6].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(TestAllTypes_RepeatedGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_TestAllTypes_RepeatedGroup{new(TestAllTypes_RepeatedGroup)}
 		},
 	)},
 	{ /* no message type for TestAllTypes_MapInt32Int32Entry */ },

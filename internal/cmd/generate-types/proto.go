@@ -193,7 +193,7 @@ func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Numbe
 			return 0, wire.ParseError(n)
 		}
 		{{if or (eq .Name "Message") (eq .Name "Group") -}}
-		m := list.NewMessage().ProtoReflect()
+		m := list.NewMessage()
 		if err := o.unmarshalMessage(v, m); err != nil {
 			return 0, err
 		}

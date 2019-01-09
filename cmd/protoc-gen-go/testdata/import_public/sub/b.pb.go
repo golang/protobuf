@@ -104,8 +104,8 @@ var xxx_B_ProtoFile_FileDesc = prototype.File{
 var xxx_B_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_B_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(M2)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_M2{new(M2)}
 		},
 	)},
 }

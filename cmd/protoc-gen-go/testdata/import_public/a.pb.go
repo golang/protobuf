@@ -185,8 +185,8 @@ var xxx_A_ProtoFile_FileDesc = prototype.File{
 var xxx_A_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_A_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Public)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Public{new(Public)}
 		},
 	)},
 }

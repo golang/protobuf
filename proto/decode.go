@@ -94,7 +94,7 @@ func (o UnmarshalOptions) unmarshalScalarField(b []byte, wtyp wire.Type, num wir
 		if knownFields.Has(num) && field.OneofType() == nil {
 			m = knownFields.Get(num).Message()
 		} else {
-			m = knownFields.NewMessage(num).ProtoReflect()
+			m = knownFields.NewMessage(num)
 			knownFields.Set(num, protoreflect.ValueOf(m))
 		}
 		if err := o.unmarshalMessage(v.Bytes(), m); err != nil {
@@ -125,7 +125,7 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number
 	)
 	switch valField.Kind() {
 	case protoreflect.GroupKind, protoreflect.MessageKind:
-		val = protoreflect.ValueOf(mapv.NewMessage().ProtoReflect())
+		val = protoreflect.ValueOf(mapv.NewMessage())
 	}
 	// Map entries are represented as a two-element message with fields
 	// containing the key and value.

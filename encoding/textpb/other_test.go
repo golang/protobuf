@@ -156,7 +156,7 @@ func TestRoundTrip(t *testing.T) {
 			if err != nil {
 				t.Errorf("Marshal() returned error: %v\n\n", err)
 			}
-			gotMessage := tt.message.ProtoReflect().Type().New()
+			gotMessage := tt.message.ProtoReflect().Type().New().Interface()
 			err = textpb.Unmarshal(gotMessage, b)
 			if err != nil {
 				t.Errorf("Unmarshal() returned error: %v\n\n", err)

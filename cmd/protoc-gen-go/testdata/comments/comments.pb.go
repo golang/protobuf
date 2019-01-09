@@ -413,38 +413,38 @@ var xxx_Comments_ProtoFile_FileDesc = prototype.File{
 var xxx_Comments_ProtoFile_MessageTypes = [6]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Comments_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message1)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message1{new(Message1)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Comments_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message2)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message2{new(Message2)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Comments_ProtoFile_MessageDescs[2].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message1_Message1A)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message1_Message1A{new(Message1_Message1A)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Comments_ProtoFile_MessageDescs[3].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message1_Message1B)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message1_Message1B{new(Message1_Message1B)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Comments_ProtoFile_MessageDescs[4].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message2_Message2A)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message2_Message2A{new(Message2_Message2A)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Comments_ProtoFile_MessageDescs[5].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message2_Message2B)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message2_Message2B{new(Message2_Message2B)}
 		},
 	)},
 }

@@ -233,11 +233,11 @@ type MessageType interface {
 	MessageDescriptor
 
 	// New returns a newly allocated empty message.
-	New() ProtoMessage
+	New() Message
 
 	// GoType returns the Go type of the allocated message.
 	//
-	// Invariant: t.GoType() == reflect.TypeOf(t.New())
+	// Invariant: t.GoType() == reflect.TypeOf(t.New().Interface())
 	GoType() reflect.Type
 }
 

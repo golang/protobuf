@@ -127,13 +127,13 @@ func (p legacyExtensionFields) Range(f func(pref.FieldNumber, pref.Value) bool) 
 	})
 }
 
-func (p legacyExtensionFields) NewMessage(n pref.FieldNumber) pref.ProtoMessage {
+func (p legacyExtensionFields) NewMessage(n pref.FieldNumber) pref.Message {
 	x := p.x.Get(n)
 	if x.Desc == nil {
 		panic("no extension descriptor registered")
 	}
 	xt := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
-	return xt.ValueOf(xt.New()).Message().Interface()
+	return xt.ValueOf(xt.New()).Message()
 }
 
 func (p legacyExtensionFields) ExtensionTypes() pref.ExtensionFieldTypes {

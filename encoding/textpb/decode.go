@@ -178,7 +178,7 @@ func (o UnmarshalOptions) unmarshalSingular(input text.Value, fd pref.FieldDescr
 		if input.Type() != text.Message {
 			return errors.New("%v contains invalid message/group value: %v", fd.FullName(), input)
 		}
-		m := knownFields.NewMessage(num).ProtoReflect()
+		m := knownFields.NewMessage(num)
 		if err := o.unmarshalMessage(input.Message(), m); !nerr.Merge(err) {
 			return err
 		}
@@ -294,7 +294,7 @@ func (o UnmarshalOptions) unmarshalList(inputList []text.Value, fd pref.FieldDes
 			if input.Type() != text.Message {
 				return errors.New("%v contains invalid message/group value: %v", fd.FullName(), input)
 			}
-			m := list.NewMessage().ProtoReflect()
+			m := list.NewMessage()
 			if err := o.unmarshalMessage(input.Message(), m); !nerr.Merge(err) {
 				return err
 			}
@@ -403,7 +403,7 @@ func (o UnmarshalOptions) unmarshalMapMessageValue(input text.Value, pkey pref.M
 	if input.Type() != 0 {
 		value = input.Message()
 	}
-	m := mmap.NewMessage().ProtoReflect()
+	m := mmap.NewMessage()
 	if err := o.unmarshalMessage(value, m); !nerr.Merge(err) {
 		return err
 	}

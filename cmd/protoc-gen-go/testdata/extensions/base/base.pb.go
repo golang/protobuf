@@ -185,14 +185,14 @@ var xxx_Base_ProtoFile_FileDesc = prototype.File{
 var xxx_Base_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Base_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(BaseMessage)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_BaseMessage{new(BaseMessage)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Base_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(MessageSetWireFormatMessage)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_MessageSetWireFormatMessage{new(MessageSetWireFormatMessage)}
 		},
 	)},
 }

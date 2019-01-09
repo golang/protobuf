@@ -159,14 +159,14 @@ var xxx_Grpc_ProtoFile_FileDesc = prototype.File{
 var xxx_Grpc_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Grpc_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Request)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Request{new(Request)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Grpc_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Response)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Response{new(Response)}
 		},
 	)},
 }

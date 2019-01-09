@@ -1069,50 +1069,50 @@ var xxx_Ext_ProtoFile_EnumDescs = [1]prototype.Enum{
 var xxx_Ext_ProtoFile_MessageTypes = [8]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Ext_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message{new(Message)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Ext_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(ExtensionGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_ExtensionGroup{new(ExtensionGroup)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Ext_ProtoFile_MessageDescs[2].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(ExtendingMessage)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_ExtendingMessage{new(ExtendingMessage)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Ext_ProtoFile_MessageDescs[3].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(RepeatedGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_RepeatedGroup{new(RepeatedGroup)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Ext_ProtoFile_MessageDescs[4].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Extendable)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Extendable{new(Extendable)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Ext_ProtoFile_MessageDescs[5].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(MessageSetWireFormatExtension)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_MessageSetWireFormatExtension{new(MessageSetWireFormatExtension)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Ext_ProtoFile_MessageDescs[6].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message_M)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message_M{new(Message_M)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Ext_ProtoFile_MessageDescs[7].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(ExtendingMessage_ExtendingMessageSubmessage)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_ExtendingMessage_ExtendingMessageSubmessage{new(ExtendingMessage_ExtendingMessageSubmessage)}
 		},
 	)},
 }

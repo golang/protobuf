@@ -559,14 +559,14 @@ var xxx_Enum_ProtoFile_EnumDescs = [6]prototype.Enum{
 var xxx_Enum_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Enum_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(EnumContainerMessage1)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_EnumContainerMessage1{new(EnumContainerMessage1)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Enum_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(EnumContainerMessage1_EnumContainerMessage2)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_EnumContainerMessage1_EnumContainerMessage2{new(EnumContainerMessage1_EnumContainerMessage2)}
 		},
 	)},
 }

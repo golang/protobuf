@@ -565,7 +565,7 @@ func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Numbe
 		if n < 0 {
 			return 0, wire.ParseError(n)
 		}
-		m := list.NewMessage().ProtoReflect()
+		m := list.NewMessage()
 		if err := o.unmarshalMessage(v, m); err != nil {
 			return 0, err
 		}
@@ -579,7 +579,7 @@ func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Numbe
 		if n < 0 {
 			return 0, wire.ParseError(n)
 		}
-		m := list.NewMessage().ProtoReflect()
+		m := list.NewMessage()
 		if err := o.unmarshalMessage(v, m); err != nil {
 			return 0, err
 		}

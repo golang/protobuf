@@ -102,7 +102,7 @@ type KnownFields interface {
 	// NewMessage returns a newly allocated empty message assignable to
 	// the field of the given number.
 	// It panics if the field is not a singular message.
-	NewMessage(FieldNumber) ProtoMessage
+	NewMessage(FieldNumber) Message
 
 	// ExtensionTypes are extension field types that are known by this
 	// specific message instance.
@@ -247,7 +247,7 @@ type List interface {
 
 	// NewMessage returns a newly allocated empty message assignable to a list entry.
 	// It panics if the list entry type is not a message.
-	NewMessage() ProtoMessage
+	NewMessage() Message
 }
 
 // Map is an unordered, associative map. Only elements within the map
@@ -287,5 +287,5 @@ type Map interface {
 
 	// NewMessage returns a newly allocated empty message assignable to a map value.
 	// It panics if the map value type is not a message.
-	NewMessage() ProtoMessage
+	NewMessage() Message
 }

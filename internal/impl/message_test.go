@@ -219,7 +219,7 @@ var scalarProto2Type = pimpl.MessageType{Type: ptype.GoMessage(
 			{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("22"))},
 		},
 	}),
-	func(pref.MessageType) pref.ProtoMessage {
+	func(pref.MessageType) pref.Message {
 		return new(ScalarProto2)
 	},
 )}
@@ -325,7 +325,7 @@ var scalarProto3Type = pimpl.MessageType{Type: ptype.GoMessage(
 			{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind},
 		},
 	}),
-	func(pref.MessageType) pref.ProtoMessage {
+	func(pref.MessageType) pref.Message {
 		return new(ScalarProto3)
 	},
 )}
@@ -442,7 +442,7 @@ var listScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
 			{Name: "f19", Number: 19, Cardinality: pref.Repeated, Kind: pref.BytesKind},
 		},
 	}),
-	func(pref.MessageType) pref.ProtoMessage {
+	func(pref.MessageType) pref.Message {
 		return new(ListScalars)
 	},
 )}
@@ -633,7 +633,7 @@ var mapScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
 			mustMakeMapEntry(25, pref.StringKind, pref.BytesKind),
 		},
 	}),
-	func(pref.MessageType) pref.ProtoMessage {
+	func(pref.MessageType) pref.Message {
 		return new(MapScalars)
 	},
 )}
@@ -791,7 +791,7 @@ var oneofScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
 		},
 		Oneofs: []ptype.Oneof{{Name: "union"}},
 	}),
-	func(pref.MessageType) pref.ProtoMessage {
+	func(pref.MessageType) pref.Message {
 		return new(OneofScalars)
 	},
 )}
@@ -994,7 +994,7 @@ var enumMessagesType = pimpl.MessageType{Type: ptype.GoMessage(
 		},
 		Oneofs: []ptype.Oneof{{Name: "union"}},
 	}),
-	func(pref.MessageType) pref.ProtoMessage {
+	func(pref.MessageType) pref.Message {
 		return new(EnumMessages)
 	},
 )}
@@ -1283,7 +1283,7 @@ func testLists(t *testing.T, p path, v pref.List, tt listOps) {
 				v.Append(e)
 			}
 		case appendMessageList:
-			m := v.NewMessage().ProtoReflect()
+			m := v.NewMessage()
 			v.Append(V(m))
 			testMessage(t, p, m, messageOps(op))
 		case truncList:

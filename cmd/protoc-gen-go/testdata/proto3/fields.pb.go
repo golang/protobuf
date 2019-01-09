@@ -553,8 +553,8 @@ var xxx_Fields_ProtoFile_EnumDescs = [1]prototype.Enum{
 var xxx_Fields_ProtoFile_MessageTypes = [5]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Fields_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FieldTestMessage)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FieldTestMessage{new(FieldTestMessage)}
 		},
 	)},
 	{ /* no message type for FieldTestMessage_MapInt32Int64Entry */ },
@@ -562,8 +562,8 @@ var xxx_Fields_ProtoFile_MessageTypes = [5]protoimpl.MessageType{
 	{ /* no message type for FieldTestMessage_MapFixed64EnumEntry */ },
 	{Type: prototype.GoMessage(
 		xxx_Fields_ProtoFile_MessageDescs[4].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FieldTestMessage_Message)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FieldTestMessage_Message{new(FieldTestMessage_Message)}
 		},
 	)},
 }

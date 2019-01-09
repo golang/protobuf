@@ -236,20 +236,20 @@ var xxx_NestedMessages_ProtoFile_FileDesc = prototype.File{
 var xxx_NestedMessages_ProtoFile_MessageTypes = [3]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_NestedMessages_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Layer1)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Layer1{new(Layer1)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_NestedMessages_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Layer1_Layer2)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Layer1_Layer2{new(Layer1_Layer2)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_NestedMessages_ProtoFile_MessageDescs[2].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Layer1_Layer2_Layer3)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Layer1_Layer2_Layer3{new(Layer1_Layer2_Layer3)}
 		},
 	)},
 }

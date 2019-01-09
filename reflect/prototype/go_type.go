@@ -49,7 +49,7 @@ func (t *goEnum) Format(s fmt.State, r rune) {
 
 // GoMessage creates a new protoreflect.MessageType by combining the provided
 // protoreflect.MessageDescriptor with the provided constructor function.
-func GoMessage(md protoreflect.MessageDescriptor, fn func(protoreflect.MessageType) protoreflect.ProtoMessage) protoreflect.MessageType {
+func GoMessage(md protoreflect.MessageDescriptor, fn func(protoreflect.MessageType) protoreflect.Message) protoreflect.MessageType {
 	if md.IsPlaceholder() {
 		panic("message descriptor must not be a placeholder")
 	}
@@ -60,7 +60,7 @@ func GoMessage(md protoreflect.MessageDescriptor, fn func(protoreflect.MessageTy
 
 type goMessage struct {
 	protoreflect.MessageDescriptor
-	new func(protoreflect.MessageType) protoreflect.ProtoMessage
+	new func(protoreflect.MessageType) protoreflect.Message
 
 	once sync.Once
 	typ  reflect.Type
@@ -70,11 +70,12 @@ func (t *goMessage) GoType() reflect.Type {
 	t.New() // initialize t.typ
 	return t.typ
 }
-func (t *goMessage) New() protoreflect.ProtoMessage {
+func (t *goMessage) New() protoreflect.Message {
 	m := t.new(t)
-	t.once.Do(func() { t.typ = reflect.TypeOf(m) })
-	if t.typ != reflect.TypeOf(m) {
-		panic(fmt.Sprintf("mismatching types for message: got %T, want %v", m, t.typ))
+	mi := m.Interface()
+	t.once.Do(func() { t.typ = reflect.TypeOf(mi) })
+	if t.typ != reflect.TypeOf(mi) {
+		panic(fmt.Sprintf("mismatching types for message: got %T, want %v", mi, t.typ))
 	}
 	return m
 }
@@ -217,7 +218,7 @@ func (t *goExtension) lazyInit() {
 			case protoreflect.MessageKind, protoreflect.GroupKind:
 				t.typ = t.messageType.GoType()
 				t.new = func() interface{} {
-					return t.messageType.New()
+					return t.messageType.New().Interface()
 				}
 				t.valueOf = func(v interface{}) protoreflect.Value {
 					mv := v.(protoreflect.ProtoMessage).ProtoReflect()

@@ -88,7 +88,7 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 		},
 		newMessage: func() pref.Message {
 			// This is only valid for messages and panics for other kinds.
-			return conv.MessageType.New().ProtoReflect()
+			return conv.MessageType.New()
 		},
 	}
 }
@@ -274,7 +274,7 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 			rv.Set(reflect.Zero(rv.Type()))
 		},
 		newMessage: func() pref.Message {
-			return conv.MessageType.New().ProtoReflect()
+			return conv.MessageType.New()
 		},
 	}
 }

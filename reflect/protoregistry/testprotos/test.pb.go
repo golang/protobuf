@@ -517,26 +517,26 @@ var xxx_Test_ProtoFile_EnumDescs = [3]prototype.Enum{
 var xxx_Test_ProtoFile_MessageTypes = [4]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message1)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message1{new(Message1)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message2)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message2{new(Message2)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[2].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message3)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message3{new(Message3)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[3].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Message4)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Message4{new(Message4)}
 		},
 	)},
 }

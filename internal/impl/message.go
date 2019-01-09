@@ -275,9 +275,9 @@ func (fs *knownFields) Range(f func(pref.FieldNumber, pref.Value) bool) {
 	}
 	fs.extensionFields().Range(f)
 }
-func (fs *knownFields) NewMessage(n pref.FieldNumber) pref.ProtoMessage {
+func (fs *knownFields) NewMessage(n pref.FieldNumber) pref.Message {
 	if fi := fs.mi.fields[n]; fi != nil {
-		return fi.newMessage().Interface()
+		return fi.newMessage()
 	}
 	if fs.mi.Type.ExtensionRanges().Has(n) {
 		return fs.extensionFields().NewMessage(n)
@@ -307,7 +307,7 @@ func (emptyExtensionFields) Get(pref.FieldNumber) pref.Value               { ret
 func (emptyExtensionFields) Set(pref.FieldNumber, pref.Value)              { panic("extensions not supported") }
 func (emptyExtensionFields) Clear(pref.FieldNumber)                        { return } // noop
 func (emptyExtensionFields) Range(func(pref.FieldNumber, pref.Value) bool) { return }
-func (emptyExtensionFields) NewMessage(pref.FieldNumber) pref.ProtoMessage {
+func (emptyExtensionFields) NewMessage(pref.FieldNumber) pref.Message {
 	panic("extensions not supported")
 }
 func (emptyExtensionFields) ExtensionTypes() pref.ExtensionFieldTypes { return emptyExtensionTypes{} }

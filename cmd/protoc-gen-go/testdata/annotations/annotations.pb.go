@@ -178,8 +178,8 @@ var xxx_Annotations_ProtoFile_EnumDescs = [1]prototype.Enum{
 var xxx_Annotations_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Annotations_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(AnnotationsTestMessage)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_AnnotationsTestMessage{new(AnnotationsTestMessage)}
 		},
 	)},
 }

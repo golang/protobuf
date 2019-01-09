@@ -212,14 +212,14 @@ var xxx_M1_ProtoFile_EnumDescs = [1]prototype.Enum{
 var xxx_M1_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_M1_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(M1)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_M1{new(M1)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_M1_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(M1_1)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_M1_1{new(M1_1)}
 		},
 	)},
 }

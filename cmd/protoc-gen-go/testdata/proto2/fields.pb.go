@@ -1620,26 +1620,26 @@ var xxx_Fields_ProtoFile_EnumDescs = [1]prototype.Enum{
 var xxx_Fields_ProtoFile_MessageTypes = [9]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Fields_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FieldTestMessage)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FieldTestMessage{new(FieldTestMessage)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Fields_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FieldTestMessage_OptionalGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FieldTestMessage_OptionalGroup{new(FieldTestMessage_OptionalGroup)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Fields_ProtoFile_MessageDescs[2].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FieldTestMessage_RequiredGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FieldTestMessage_RequiredGroup{new(FieldTestMessage_RequiredGroup)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Fields_ProtoFile_MessageDescs[3].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FieldTestMessage_RepeatedGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FieldTestMessage_RepeatedGroup{new(FieldTestMessage_RepeatedGroup)}
 		},
 	)},
 	{ /* no message type for FieldTestMessage_MapInt32Int64Entry */ },
@@ -1647,14 +1647,14 @@ var xxx_Fields_ProtoFile_MessageTypes = [9]protoimpl.MessageType{
 	{ /* no message type for FieldTestMessage_MapFixed64EnumEntry */ },
 	{Type: prototype.GoMessage(
 		xxx_Fields_ProtoFile_MessageDescs[7].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FieldTestMessage_OneofGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FieldTestMessage_OneofGroup{new(FieldTestMessage_OneofGroup)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Fields_ProtoFile_MessageDescs[8].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(FieldTestMessage_Message)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_FieldTestMessage_Message{new(FieldTestMessage_Message)}
 		},
 	)},
 }

@@ -2239,116 +2239,116 @@ var xxx_Test_ProtoFile_EnumDescs = [2]prototype.Enum{
 var xxx_Test_ProtoFile_MessageTypes = [26]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Scalars)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Scalars{new(Scalars)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Repeats)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Repeats{new(Repeats)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[2].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Enums)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Enums{new(Enums)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[3].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Nests)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Nests{new(Nests)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[4].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Nested)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Nested{new(Nested)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[5].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Requireds)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Requireds{new(Requireds)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[6].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(PartialRequired)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_PartialRequired{new(PartialRequired)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[7].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Oneofs)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Oneofs{new(Oneofs)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[8].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Maps)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Maps{new(Maps)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[9].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(NestedWithRequired)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_NestedWithRequired{new(NestedWithRequired)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[10].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(IndirectRequired)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_IndirectRequired{new(IndirectRequired)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[11].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Extensions)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Extensions{new(Extensions)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[12].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(ExtensionsContainer)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_ExtensionsContainer{new(ExtensionsContainer)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[13].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(MessageSet)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_MessageSet{new(MessageSet)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[14].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(MessageSetExtension)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_MessageSetExtension{new(MessageSetExtension)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[15].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(KnownTypes)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_KnownTypes{new(KnownTypes)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[16].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Nests_OptGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Nests_OptGroup{new(Nests_OptGroup)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[17].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Nests_RptGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Nests_RptGroup{new(Nests_RptGroup)}
 		},
 	)},
 	{Type: prototype.GoMessage(
 		xxx_Test_ProtoFile_MessageDescs[18].Reference(),
-		func(protoreflect.MessageType) protoreflect.ProtoMessage {
-			return new(Nests_OptGroup_OptNestedGroup)
+		func(protoreflect.MessageType) protoreflect.Message {
+			return xxx_Nests_OptGroup_OptNestedGroup{new(Nests_OptGroup_OptNestedGroup)}
 		},
 	)},
 	{ /* no message type for Maps_Int32ToStrEntry */ },
