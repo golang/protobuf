@@ -4,14 +4,9 @@
 
 // Package protoreflect provides interfaces to dynamically manipulate messages.
 //
-// Every Go type that represents a protocol buffer type must implement the
-// proto.Message or proto.Enum interface, which has a ProtoReflect method that
-// returns a protoreflect.Message or protoreflect.Enum.
-// These interfaces provide programs with the ability to manipulate a
-// message value or to explore the protobuf type descriptor.
-//
-// The defined interfaces can be categorized as either a type descriptor
-// or a value interface.
+// This package includes type descriptors which describe the structure of
+// types defined in proto source files, and value interfaces which provide the
+// ability to examine and manipulate the contents of messages.
 //
 // Type Descriptors
 //
@@ -19,11 +14,16 @@
 // are immutable objects that represent protobuf type information.
 // They are wrappers around the messages declared in descriptor.proto.
 //
+// The Message and Enum interfaces provide a Type method which returns the
+// appropriate descriptor type for a value.
+//
 // Value Interfaces
 //
-// The value is a reflective interface (e.g., Message) for a message instance.
-// The Message interface provides the ability to manipulate the fields of a
-// message using getters and setters.
+// The protoreflect.Message type is a reflective view of a message instance.
+// This type provides the ability to manipulate the fields of a message.
+//
+// To convert a proto.Message to a protoreflect.Message, use the
+// former's ProtoReflect method.
 package protoreflect
 
 import (
