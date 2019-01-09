@@ -18,7 +18,7 @@ import (
 type Export struct{}
 
 func (Export) EnumOf(e interface{}) pvalue.LegacyEnum {
-	return wrapEnum(reflect.ValueOf(e)).ProtoReflect().(pvalue.LegacyEnum)
+	return wrapEnum(reflect.ValueOf(e)).(pvalue.LegacyEnum)
 }
 
 func (Export) EnumTypeOf(e interface{}) pref.EnumType {

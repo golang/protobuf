@@ -26,15 +26,10 @@ const (
 	EnumType1_TWO EnumType1 = 2
 )
 
-type xxx_EnumType1 EnumType1
-
-func (e EnumType1) ProtoReflect() protoreflect.Enum {
-	return (xxx_EnumType1)(e)
-}
-func (e xxx_EnumType1) Type() protoreflect.EnumType {
+func (e EnumType1) Type() protoreflect.EnumType {
 	return xxx_Enum_ProtoFile_EnumTypes[0]
 }
-func (e xxx_EnumType1) Number() protoreflect.EnumNumber {
+func (e EnumType1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -78,15 +73,10 @@ const (
 	EnumType2_duplicate2 EnumType2 = 1
 )
 
-type xxx_EnumType2 EnumType2
-
-func (e EnumType2) ProtoReflect() protoreflect.Enum {
-	return (xxx_EnumType2)(e)
-}
-func (e xxx_EnumType2) Type() protoreflect.EnumType {
+func (e EnumType2) Type() protoreflect.EnumType {
 	return xxx_Enum_ProtoFile_EnumTypes[1]
 }
-func (e xxx_EnumType2) Number() protoreflect.EnumNumber {
+func (e EnumType2) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -131,15 +121,10 @@ const (
 	EnumContainerMessage1_NESTED_1A_VALUE EnumContainerMessage1_NestedEnumType1A = 0
 )
 
-type xxx_EnumContainerMessage1_NestedEnumType1A EnumContainerMessage1_NestedEnumType1A
-
-func (e EnumContainerMessage1_NestedEnumType1A) ProtoReflect() protoreflect.Enum {
-	return (xxx_EnumContainerMessage1_NestedEnumType1A)(e)
-}
-func (e xxx_EnumContainerMessage1_NestedEnumType1A) Type() protoreflect.EnumType {
+func (e EnumContainerMessage1_NestedEnumType1A) Type() protoreflect.EnumType {
 	return xxx_Enum_ProtoFile_EnumTypes[2]
 }
-func (e xxx_EnumContainerMessage1_NestedEnumType1A) Number() protoreflect.EnumNumber {
+func (e EnumContainerMessage1_NestedEnumType1A) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -180,15 +165,10 @@ const (
 	EnumContainerMessage1_NESTED_1B_VALUE EnumContainerMessage1_NestedEnumType1B = 0
 )
 
-type xxx_EnumContainerMessage1_NestedEnumType1B EnumContainerMessage1_NestedEnumType1B
-
-func (e EnumContainerMessage1_NestedEnumType1B) ProtoReflect() protoreflect.Enum {
-	return (xxx_EnumContainerMessage1_NestedEnumType1B)(e)
-}
-func (e xxx_EnumContainerMessage1_NestedEnumType1B) Type() protoreflect.EnumType {
+func (e EnumContainerMessage1_NestedEnumType1B) Type() protoreflect.EnumType {
 	return xxx_Enum_ProtoFile_EnumTypes[3]
 }
-func (e xxx_EnumContainerMessage1_NestedEnumType1B) Number() protoreflect.EnumNumber {
+func (e EnumContainerMessage1_NestedEnumType1B) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -231,15 +211,10 @@ const (
 	EnumContainerMessage1_EnumContainerMessage2_NESTED_2A_VALUE EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A = 0
 )
 
-type xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A
-
-func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) ProtoReflect() protoreflect.Enum {
-	return (xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A)(e)
-}
-func (e xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Type() protoreflect.EnumType {
+func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Type() protoreflect.EnumType {
 	return xxx_Enum_ProtoFile_EnumTypes[4]
 }
-func (e xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Number() protoreflect.EnumNumber {
+func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -280,15 +255,10 @@ const (
 	EnumContainerMessage1_EnumContainerMessage2_NESTED_2B_VALUE EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B = 0
 )
 
-type xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B
-
-func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) ProtoReflect() protoreflect.Enum {
-	return (xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B)(e)
-}
-func (e xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Type() protoreflect.EnumType {
+func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Type() protoreflect.EnumType {
 	return xxx_Enum_ProtoFile_EnumTypes[5]
 }
-func (e xxx_EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Number() protoreflect.EnumNumber {
+func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -509,37 +479,37 @@ var xxx_Enum_ProtoFile_FileDesc = prototype.File{
 var xxx_Enum_ProtoFile_EnumTypes = [6]protoreflect.EnumType{
 	prototype.GoEnum(
 		xxx_Enum_ProtoFile_EnumDescs[0].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return EnumType1(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Enum_ProtoFile_EnumDescs[1].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return EnumType2(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Enum_ProtoFile_EnumDescs[2].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return EnumContainerMessage1_NestedEnumType1A(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Enum_ProtoFile_EnumDescs[3].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return EnumContainerMessage1_NestedEnumType1B(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Enum_ProtoFile_EnumDescs[4].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Enum_ProtoFile_EnumDescs[5].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B(n)
 		},
 	),

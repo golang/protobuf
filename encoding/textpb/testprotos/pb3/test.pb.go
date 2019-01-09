@@ -25,15 +25,10 @@ const (
 	Enum_TEN  Enum = 10
 )
 
-type xxx_Enum Enum
-
-func (e Enum) ProtoReflect() protoreflect.Enum {
-	return (xxx_Enum)(e)
-}
-func (e xxx_Enum) Type() protoreflect.EnumType {
+func (e Enum) Type() protoreflect.EnumType {
 	return xxx_Test_ProtoFile_EnumTypes[0]
 }
-func (e xxx_Enum) Number() protoreflect.EnumNumber {
+func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -68,15 +63,10 @@ const (
 	Enums_DIEZ Enums_NestedEnum = 10
 )
 
-type xxx_Enums_NestedEnum Enums_NestedEnum
-
-func (e Enums_NestedEnum) ProtoReflect() protoreflect.Enum {
-	return (xxx_Enums_NestedEnum)(e)
-}
-func (e xxx_Enums_NestedEnum) Type() protoreflect.EnumType {
+func (e Enums_NestedEnum) Type() protoreflect.EnumType {
 	return xxx_Test_ProtoFile_EnumTypes[1]
 }
-func (e xxx_Enums_NestedEnum) Number() protoreflect.EnumNumber {
+func (e Enums_NestedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -535,13 +525,13 @@ var xxx_Test_ProtoFile_FileDesc = prototype.File{
 var xxx_Test_ProtoFile_EnumTypes = [2]protoreflect.EnumType{
 	prototype.GoEnum(
 		xxx_Test_ProtoFile_EnumDescs[0].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enum(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Test_ProtoFile_EnumDescs[1].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enums_NestedEnum(n)
 		},
 	),

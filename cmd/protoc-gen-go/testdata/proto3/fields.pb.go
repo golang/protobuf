@@ -22,15 +22,10 @@ const (
 	FieldTestMessage_ZERO FieldTestMessage_Enum = 0
 )
 
-type xxx_FieldTestMessage_Enum FieldTestMessage_Enum
-
-func (e FieldTestMessage_Enum) ProtoReflect() protoreflect.Enum {
-	return (xxx_FieldTestMessage_Enum)(e)
-}
-func (e xxx_FieldTestMessage_Enum) Type() protoreflect.EnumType {
+func (e FieldTestMessage_Enum) Type() protoreflect.EnumType {
 	return xxx_Fields_ProtoFile_EnumTypes[0]
 }
-func (e xxx_FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
+func (e FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -542,7 +537,7 @@ var xxx_Fields_ProtoFile_FileDesc = prototype.File{
 var xxx_Fields_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
 		xxx_Fields_ProtoFile_EnumDescs[0].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return FieldTestMessage_Enum(n)
 		},
 	),

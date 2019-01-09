@@ -31,7 +31,7 @@ var (
 	stringType  = reflect.TypeOf(string(""))
 	bytesType   = reflect.TypeOf([]byte(nil))
 
-	enumIfaceV2    = reflect.TypeOf((*pref.ProtoEnum)(nil)).Elem()
+	enumIfaceV2    = reflect.TypeOf((*pref.Enum)(nil)).Elem()
 	messageIfaceV1 = reflect.TypeOf((*papi.Message)(nil)).Elem()
 	messageIfaceV2 = reflect.TypeOf((*pref.ProtoMessage)(nil)).Elem()
 
@@ -122,14 +122,14 @@ func NewLegacyConverter(t reflect.Type, k pref.Kind, w LegacyWrapper) Converter 
 	case pref.EnumKind:
 		// Handle v2 enums, which must satisfy the proto.Enum interface.
 		if t.Kind() != reflect.Ptr && t.Implements(enumIfaceV2) {
-			et := reflect.Zero(t).Interface().(pref.ProtoEnum).ProtoReflect().Type()
+			et := reflect.Zero(t).Interface().(pref.Enum).Type()
 			return Converter{
 				PBValueOf: func(v reflect.Value) pref.Value {
 					if v.Type() != t {
 						panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
 					}
-					e := v.Interface().(pref.ProtoEnum)
-					return pref.ValueOf(e.ProtoReflect().Number())
+					e := v.Interface().(pref.Enum)
+					return pref.ValueOf(e.Number())
 				},
 				GoValueOf: func(v pref.Value) reflect.Value {
 					rv := reflect.ValueOf(et.New(v.Enum()))

@@ -41,11 +41,6 @@ type doNotImplement pragma.DoNotImplement
 // use the proto.Message type instead, which aliases this type.
 type ProtoMessage interface{ ProtoReflect() Message }
 
-// ProtoEnum is the top-level interface that all proto enums implement.
-// This is declared in the protoreflect package to avoid a cyclic dependency;
-// use the proto.Enum type instead, which aliases this type.
-type ProtoEnum interface{ ProtoReflect() Enum }
-
 // Syntax is the language version of the proto file.
 type Syntax syntax
 

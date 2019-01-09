@@ -470,7 +470,7 @@ type EnumType interface {
 	EnumDescriptor
 
 	// New returns an instance of this enum type with its value set to n.
-	New(n EnumNumber) ProtoEnum
+	New(n EnumNumber) Enum
 
 	// GoType returns the Go type of the enum value.
 	//

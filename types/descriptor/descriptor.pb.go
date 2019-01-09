@@ -44,15 +44,10 @@ const (
 	FieldDescriptorProto_TYPE_SINT64   FieldDescriptorProto_Type = 18
 )
 
-type xxx_FieldDescriptorProto_Type FieldDescriptorProto_Type
-
-func (e FieldDescriptorProto_Type) ProtoReflect() protoreflect.Enum {
-	return (xxx_FieldDescriptorProto_Type)(e)
-}
-func (e xxx_FieldDescriptorProto_Type) Type() protoreflect.EnumType {
+func (e FieldDescriptorProto_Type) Type() protoreflect.EnumType {
 	return xxx_Descriptor_ProtoFile_EnumTypes[0]
 }
-func (e xxx_FieldDescriptorProto_Type) Number() protoreflect.EnumNumber {
+func (e FieldDescriptorProto_Type) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -130,15 +125,10 @@ const (
 	FieldDescriptorProto_LABEL_REPEATED FieldDescriptorProto_Label = 3
 )
 
-type xxx_FieldDescriptorProto_Label FieldDescriptorProto_Label
-
-func (e FieldDescriptorProto_Label) ProtoReflect() protoreflect.Enum {
-	return (xxx_FieldDescriptorProto_Label)(e)
-}
-func (e xxx_FieldDescriptorProto_Label) Type() protoreflect.EnumType {
+func (e FieldDescriptorProto_Label) Type() protoreflect.EnumType {
 	return xxx_Descriptor_ProtoFile_EnumTypes[1]
 }
-func (e xxx_FieldDescriptorProto_Label) Number() protoreflect.EnumNumber {
+func (e FieldDescriptorProto_Label) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -187,15 +177,10 @@ const (
 	FileOptions_LITE_RUNTIME FileOptions_OptimizeMode = 3
 )
 
-type xxx_FileOptions_OptimizeMode FileOptions_OptimizeMode
-
-func (e FileOptions_OptimizeMode) ProtoReflect() protoreflect.Enum {
-	return (xxx_FileOptions_OptimizeMode)(e)
-}
-func (e xxx_FileOptions_OptimizeMode) Type() protoreflect.EnumType {
+func (e FileOptions_OptimizeMode) Type() protoreflect.EnumType {
 	return xxx_Descriptor_ProtoFile_EnumTypes[2]
 }
-func (e xxx_FileOptions_OptimizeMode) Number() protoreflect.EnumNumber {
+func (e FileOptions_OptimizeMode) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -243,15 +228,10 @@ const (
 	FieldOptions_STRING_PIECE FieldOptions_CType = 2
 )
 
-type xxx_FieldOptions_CType FieldOptions_CType
-
-func (e FieldOptions_CType) ProtoReflect() protoreflect.Enum {
-	return (xxx_FieldOptions_CType)(e)
-}
-func (e xxx_FieldOptions_CType) Type() protoreflect.EnumType {
+func (e FieldOptions_CType) Type() protoreflect.EnumType {
 	return xxx_Descriptor_ProtoFile_EnumTypes[3]
 }
-func (e xxx_FieldOptions_CType) Number() protoreflect.EnumNumber {
+func (e FieldOptions_CType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -301,15 +281,10 @@ const (
 	FieldOptions_JS_NUMBER FieldOptions_JSType = 2
 )
 
-type xxx_FieldOptions_JSType FieldOptions_JSType
-
-func (e FieldOptions_JSType) ProtoReflect() protoreflect.Enum {
-	return (xxx_FieldOptions_JSType)(e)
-}
-func (e xxx_FieldOptions_JSType) Type() protoreflect.EnumType {
+func (e FieldOptions_JSType) Type() protoreflect.EnumType {
 	return xxx_Descriptor_ProtoFile_EnumTypes[4]
 }
-func (e xxx_FieldOptions_JSType) Number() protoreflect.EnumNumber {
+func (e FieldOptions_JSType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -359,15 +334,10 @@ const (
 	MethodOptions_IDEMPOTENT          MethodOptions_IdempotencyLevel = 2
 )
 
-type xxx_MethodOptions_IdempotencyLevel MethodOptions_IdempotencyLevel
-
-func (e MethodOptions_IdempotencyLevel) ProtoReflect() protoreflect.Enum {
-	return (xxx_MethodOptions_IdempotencyLevel)(e)
-}
-func (e xxx_MethodOptions_IdempotencyLevel) Type() protoreflect.EnumType {
+func (e MethodOptions_IdempotencyLevel) Type() protoreflect.EnumType {
 	return xxx_Descriptor_ProtoFile_EnumTypes[5]
 }
-func (e xxx_MethodOptions_IdempotencyLevel) Number() protoreflect.EnumNumber {
+func (e MethodOptions_IdempotencyLevel) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -3035,37 +3005,37 @@ var xxx_Descriptor_ProtoFile_FileDesc = prototype.File{
 var xxx_Descriptor_ProtoFile_EnumTypes = [6]protoreflect.EnumType{
 	prototype.GoEnum(
 		xxx_Descriptor_ProtoFile_EnumDescs[0].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return FieldDescriptorProto_Type(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Descriptor_ProtoFile_EnumDescs[1].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return FieldDescriptorProto_Label(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Descriptor_ProtoFile_EnumDescs[2].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return FileOptions_OptimizeMode(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Descriptor_ProtoFile_EnumDescs[3].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return FieldOptions_CType(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Descriptor_ProtoFile_EnumDescs[4].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return FieldOptions_JSType(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Descriptor_ProtoFile_EnumDescs[5].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return MethodOptions_IdempotencyLevel(n)
 		},
 	),

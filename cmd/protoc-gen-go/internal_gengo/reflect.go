@@ -191,7 +191,7 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		for i, enum := range f.allEnums {
 			g.P(prototypePackage.Ident("GoEnum"), "(")
 			g.P(enumDescsVar, "[", i, "].Reference(),")
-			g.P("func(_ ", protoreflectPackage.Ident("EnumType"), ", n ", protoreflectPackage.Ident("EnumNumber"), ") ", protoreflectPackage.Ident("ProtoEnum"), " {")
+			g.P("func(_ ", protoreflectPackage.Ident("EnumType"), ", n ", protoreflectPackage.Ident("EnumNumber"), ") ", protoreflectPackage.Ident("Enum"), " {")
 			g.P("return ", enum.GoIdent, "(n)")
 			g.P("},")
 			g.P("),")
@@ -352,19 +352,12 @@ func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo
 		return
 	}
 
-	shadowType := shadowTypeName(enum.GoIdent)
-	g.P("type ", shadowType, " ", enum.GoIdent)
-	g.P()
-
 	idx := f.allEnumsByPtr[enum]
 	typesVar := enumTypesVarName(f)
-	g.P("func (e ", enum.GoIdent, ") ProtoReflect() ", protoreflectPackage.Ident("Enum"), " {")
-	g.P("return (", shadowType, ")(e)")
-	g.P("}")
-	g.P("func (e ", shadowType, ") Type() ", protoreflectPackage.Ident("EnumType"), " {")
+	g.P("func (e ", enum.GoIdent, ") Type() ", protoreflectPackage.Ident("EnumType"), " {")
 	g.P("return ", typesVar, "[", idx, "]")
 	g.P("}")
-	g.P("func (e ", shadowType, ") Number() ", protoreflectPackage.Ident("EnumNumber"), " {")
+	g.P("func (e ", enum.GoIdent, ") Number() ", protoreflectPackage.Ident("EnumNumber"), " {")
 	g.P("return ", protoreflectPackage.Ident("EnumNumber"), "(e)")
 	g.P("}")
 }

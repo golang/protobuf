@@ -21,15 +21,10 @@ const (
 	DeprecatedEnum_DEPRECATED DeprecatedEnum = 0 // Deprecated: Do not use.
 )
 
-type xxx_DeprecatedEnum DeprecatedEnum
-
-func (e DeprecatedEnum) ProtoReflect() protoreflect.Enum {
-	return (xxx_DeprecatedEnum)(e)
-}
-func (e xxx_DeprecatedEnum) Type() protoreflect.EnumType {
+func (e DeprecatedEnum) Type() protoreflect.EnumType {
 	return xxx_Deprecated_ProtoFile_EnumTypes[0]
 }
-func (e xxx_DeprecatedEnum) Number() protoreflect.EnumNumber {
+func (e DeprecatedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -153,7 +148,7 @@ var xxx_Deprecated_ProtoFile_FileDesc = prototype.File{
 var xxx_Deprecated_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
 		xxx_Deprecated_ProtoFile_EnumDescs[0].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return DeprecatedEnum(n)
 		},
 	),

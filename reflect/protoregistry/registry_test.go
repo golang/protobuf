@@ -326,9 +326,9 @@ func TestTypes(t *testing.T) {
 	mt1 := (&testpb.Message1{}).ProtoReflect().Type()
 	mt2 := (&testpb.Message2{}).ProtoReflect().Type()
 	mt3 := (&testpb.Message3{}).ProtoReflect().Type()
-	et1 := testpb.Enum1_ONE.ProtoReflect().Type()
-	et2 := testpb.Enum2_UNO.ProtoReflect().Type()
-	et3 := testpb.Enum3_YI.ProtoReflect().Type()
+	et1 := testpb.Enum1_ONE.Type()
+	et2 := testpb.Enum2_UNO.Type()
+	et3 := testpb.Enum3_YI.Type()
 	// Suffix indicates field number.
 	xt11 := extensionType(testpb.E_StringField)
 	xt12 := extensionType(testpb.E_EnumField)

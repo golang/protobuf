@@ -936,7 +936,7 @@ var enumProto2Type = ptype.GoEnum(
 		FullName: "EnumProto2",
 		Values:   []ptype.EnumValue{{Name: "DEAD", Number: 0xdead}, {Name: "BEEF", Number: 0xbeef}},
 	}),
-	func(_ pref.EnumType, n pref.EnumNumber) pref.ProtoEnum {
+	func(_ pref.EnumType, n pref.EnumNumber) pref.Enum {
 		return EnumProto2(n)
 	},
 )
@@ -944,7 +944,6 @@ var enumProto2Type = ptype.GoEnum(
 func (e EnumProto2) Enum() *EnumProto2       { return &e }
 func (e EnumProto2) Type() pref.EnumType     { return enumProto2Type }
 func (e EnumProto2) Number() pref.EnumNumber { return pref.EnumNumber(e) }
-func (e EnumProto2) ProtoReflect() pref.Enum { return e }
 
 type EnumProto3 int32
 
@@ -954,7 +953,7 @@ var enumProto3Type = ptype.GoEnum(
 		FullName: "EnumProto3",
 		Values:   []ptype.EnumValue{{Name: "ALPHA", Number: 0}, {Name: "BRAVO", Number: 1}},
 	}),
-	func(_ pref.EnumType, n pref.EnumNumber) pref.ProtoEnum {
+	func(_ pref.EnumType, n pref.EnumNumber) pref.Enum {
 		return EnumProto3(n)
 	},
 )
@@ -962,7 +961,6 @@ var enumProto3Type = ptype.GoEnum(
 func (e EnumProto3) Enum() *EnumProto3       { return &e }
 func (e EnumProto3) Type() pref.EnumType     { return enumProto3Type }
 func (e EnumProto3) Number() pref.EnumNumber { return pref.EnumNumber(e) }
-func (e EnumProto3) ProtoReflect() pref.Enum { return e }
 
 type EnumMessages struct {
 	EnumP2        *EnumProto2              `protobuf:"1"`

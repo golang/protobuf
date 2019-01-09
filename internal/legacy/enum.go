@@ -17,9 +17,9 @@ import (
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
-// wrapEnum wraps v as a protoreflect.ProtoEnum,
+// wrapEnum wraps v as a protoreflect.Enum,
 // where v must be a int32 kind and not implement the v2 API already.
-func wrapEnum(v reflect.Value) pref.ProtoEnum {
+func wrapEnum(v reflect.Value) pref.Enum {
 	et := loadEnumType(v.Type())
 	return et.New(pref.EnumNumber(v.Int()))
 }
@@ -37,9 +37,9 @@ func loadEnumType(t reflect.Type) pref.EnumType {
 	// Slow-path: derive enum descriptor and initialize EnumType.
 	var m sync.Map // map[protoreflect.EnumNumber]proto.Enum
 	ed := loadEnumDesc(t)
-	et := ptype.GoEnum(ed, func(et pref.EnumType, n pref.EnumNumber) pref.ProtoEnum {
+	et := ptype.GoEnum(ed, func(et pref.EnumType, n pref.EnumNumber) pref.Enum {
 		if e, ok := m.Load(n); ok {
-			return e.(pref.ProtoEnum)
+			return e.(pref.Enum)
 		}
 		e := &enumWrapper{num: n, pbTyp: et, goTyp: t}
 		m.Store(n, e)
@@ -72,7 +72,6 @@ func (e *enumWrapper) ProtoUnwrap() interface{} {
 
 var (
 	_ pref.Enum        = (*enumWrapper)(nil)
-	_ pref.ProtoEnum   = (*enumWrapper)(nil)
 	_ pvalue.Unwrapper = (*enumWrapper)(nil)
 )
 
@@ -99,7 +98,7 @@ func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	// Derive the enum descriptor from the raw descriptor proto.
 	e := new(ptype.StandaloneEnum)
 	ev := reflect.Zero(t).Interface()
-	if _, ok := ev.(pref.ProtoEnum); ok {
+	if _, ok := ev.(pref.Enum); ok {
 		panic(fmt.Sprintf("%v already implements proto.Enum", t))
 	}
 	if ed, ok := ev.(enumV1); ok {

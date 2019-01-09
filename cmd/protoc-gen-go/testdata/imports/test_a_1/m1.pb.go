@@ -22,15 +22,10 @@ const (
 	E1_E1_ZERO E1 = 0
 )
 
-type xxx_E1 E1
-
-func (e E1) ProtoReflect() protoreflect.Enum {
-	return (xxx_E1)(e)
-}
-func (e xxx_E1) Type() protoreflect.EnumType {
+func (e E1) Type() protoreflect.EnumType {
 	return xxx_M1_ProtoFile_EnumTypes[0]
 }
-func (e xxx_E1) Number() protoreflect.EnumNumber {
+func (e E1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -201,7 +196,7 @@ var xxx_M1_ProtoFile_FileDesc = prototype.File{
 var xxx_M1_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
 		xxx_M1_ProtoFile_EnumDescs[0].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return E1(n)
 		},
 	),

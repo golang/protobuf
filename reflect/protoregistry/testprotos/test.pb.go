@@ -22,15 +22,10 @@ const (
 	Enum1_ONE Enum1 = 1
 )
 
-type xxx_Enum1 Enum1
-
-func (e Enum1) ProtoReflect() protoreflect.Enum {
-	return (xxx_Enum1)(e)
-}
-func (e xxx_Enum1) Type() protoreflect.EnumType {
+func (e Enum1) Type() protoreflect.EnumType {
 	return xxx_Test_ProtoFile_EnumTypes[0]
 }
-func (e xxx_Enum1) Number() protoreflect.EnumNumber {
+func (e Enum1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -71,15 +66,10 @@ const (
 	Enum2_UNO Enum2 = 1
 )
 
-type xxx_Enum2 Enum2
-
-func (e Enum2) ProtoReflect() protoreflect.Enum {
-	return (xxx_Enum2)(e)
-}
-func (e xxx_Enum2) Type() protoreflect.EnumType {
+func (e Enum2) Type() protoreflect.EnumType {
 	return xxx_Test_ProtoFile_EnumTypes[1]
 }
-func (e xxx_Enum2) Number() protoreflect.EnumNumber {
+func (e Enum2) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -120,15 +110,10 @@ const (
 	Enum3_YI Enum3 = 1
 )
 
-type xxx_Enum3 Enum3
-
-func (e Enum3) ProtoReflect() protoreflect.Enum {
-	return (xxx_Enum3)(e)
-}
-func (e xxx_Enum3) Type() protoreflect.EnumType {
+func (e Enum3) Type() protoreflect.EnumType {
 	return xxx_Test_ProtoFile_EnumTypes[2]
 }
-func (e xxx_Enum3) Number() protoreflect.EnumNumber {
+func (e Enum3) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -492,19 +477,19 @@ var xxx_Test_ProtoFile_FileDesc = prototype.File{
 var xxx_Test_ProtoFile_EnumTypes = [3]protoreflect.EnumType{
 	prototype.GoEnum(
 		xxx_Test_ProtoFile_EnumDescs[0].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enum1(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Test_ProtoFile_EnumDescs[1].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enum2(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_Test_ProtoFile_EnumDescs[2].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enum3(n)
 		},
 	),

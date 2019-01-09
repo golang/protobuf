@@ -96,7 +96,7 @@ func ValueOf(v interface{}) Value {
 	case Message, List, Map:
 		return valueOfIface(v)
 	default:
-		// TODO: Special case ProtoEnum, ProtoMessage, *[]T, and *map[K]V?
+		// TODO: Special case Enum, ProtoMessage, *[]T, and *map[K]V?
 		// Note: this would violate the documented invariant in Interface.
 		panic(fmt.Sprintf("invalid type: %v", reflect.TypeOf(v)))
 	}

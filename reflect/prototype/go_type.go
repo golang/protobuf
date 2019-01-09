@@ -16,7 +16,7 @@ import (
 
 // GoEnum creates a new protoreflect.EnumType by combining the provided
 // protoreflect.EnumDescriptor with the provided constructor function.
-func GoEnum(ed protoreflect.EnumDescriptor, fn func(protoreflect.EnumType, protoreflect.EnumNumber) protoreflect.ProtoEnum) protoreflect.EnumType {
+func GoEnum(ed protoreflect.EnumDescriptor, fn func(protoreflect.EnumType, protoreflect.EnumNumber) protoreflect.Enum) protoreflect.EnumType {
 	if ed.IsPlaceholder() {
 		panic("enum descriptor must not be a placeholder")
 	}
@@ -25,7 +25,7 @@ func GoEnum(ed protoreflect.EnumDescriptor, fn func(protoreflect.EnumType, proto
 
 type goEnum struct {
 	protoreflect.EnumDescriptor
-	new func(protoreflect.EnumType, protoreflect.EnumNumber) protoreflect.ProtoEnum
+	new func(protoreflect.EnumType, protoreflect.EnumNumber) protoreflect.Enum
 
 	once sync.Once
 	typ  reflect.Type
@@ -35,7 +35,7 @@ func (t *goEnum) GoType() reflect.Type {
 	t.New(0) // initialize t.typ
 	return t.typ
 }
-func (t *goEnum) New(n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+func (t *goEnum) New(n protoreflect.EnumNumber) protoreflect.Enum {
 	e := t.new(t, n)
 	t.once.Do(func() { t.typ = reflect.TypeOf(e) })
 	if t.typ != reflect.TypeOf(e) {
@@ -208,7 +208,7 @@ func (t *goExtension) lazyInit() {
 					return t.enumType.New(t.Default().Enum())
 				}
 				t.valueOf = func(v interface{}) protoreflect.Value {
-					ev := v.(protoreflect.ProtoEnum).ProtoReflect()
+					ev := v.(protoreflect.Enum)
 					return protoreflect.ValueOf(ev.Number())
 				}
 				t.interfaceOf = func(pv protoreflect.Value) interface{} {

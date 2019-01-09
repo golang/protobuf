@@ -18,8 +18,8 @@ type Export struct{}
 // ProtoReflect method, otherwise it wraps the v1 enum to implement
 // the v2 reflective interface.
 func (Export) EnumOf(e interface{}) pref.Enum {
-	if ev, ok := e.(pref.ProtoEnum); ok {
-		return ev.ProtoReflect()
+	if ev, ok := e.(pref.Enum); ok {
+		return ev
 	}
 	return legacyWrapper.EnumOf(e)
 }
@@ -29,8 +29,8 @@ func (Export) EnumOf(e interface{}) pref.Enum {
 // calling the ProtoReflect.Type method, otherwise it derives an enum type
 // from the v1 named int32 type.
 func (Export) EnumTypeOf(e interface{}) pref.EnumType {
-	if ev, ok := e.(pref.ProtoEnum); ok {
-		return ev.ProtoReflect().Type()
+	if ev, ok := e.(pref.Enum); ok {
+		return ev.Type()
 	}
 	return legacyWrapper.EnumTypeOf(e)
 }
@@ -67,8 +67,8 @@ func (Export) ExtensionTypeOf(d pref.ExtensionDescriptor, t interface{}) pref.Ex
 	switch t := t.(type) {
 	case nil:
 		return ptype.GoExtension(d, nil, nil)
-	case pref.ProtoEnum:
-		return ptype.GoExtension(d, t.ProtoReflect().Type(), nil)
+	case pref.Enum:
+		return ptype.GoExtension(d, t.Type(), nil)
 	case pref.ProtoMessage:
 		return ptype.GoExtension(d, nil, t.ProtoReflect().Type())
 	}

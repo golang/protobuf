@@ -25,15 +25,10 @@ const (
 	TestAllTypes_NEG TestAllTypes_NestedEnum = -1
 )
 
-type xxx_TestAllTypes_NestedEnum TestAllTypes_NestedEnum
-
-func (e TestAllTypes_NestedEnum) ProtoReflect() protoreflect.Enum {
-	return (xxx_TestAllTypes_NestedEnum)(e)
-}
-func (e xxx_TestAllTypes_NestedEnum) Type() protoreflect.EnumType {
+func (e TestAllTypes_NestedEnum) Type() protoreflect.EnumType {
 	return xxx_Test_ProtoFile_EnumTypes[0]
 }
-func (e xxx_TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
+func (e TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -1622,7 +1617,7 @@ var xxx_Test_ProtoFile_FileDesc = prototype.File{
 var xxx_Test_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
 		xxx_Test_ProtoFile_EnumDescs[0].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return TestAllTypes_NestedEnum(n)
 		},
 	),

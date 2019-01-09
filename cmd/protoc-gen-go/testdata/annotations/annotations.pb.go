@@ -22,15 +22,10 @@ const (
 	AnnotationsTestEnum_ANNOTATIONS_TEST_ENUM_VALUE AnnotationsTestEnum = 0
 )
 
-type xxx_AnnotationsTestEnum AnnotationsTestEnum
-
-func (e AnnotationsTestEnum) ProtoReflect() protoreflect.Enum {
-	return (xxx_AnnotationsTestEnum)(e)
-}
-func (e xxx_AnnotationsTestEnum) Type() protoreflect.EnumType {
+func (e AnnotationsTestEnum) Type() protoreflect.EnumType {
 	return xxx_Annotations_ProtoFile_EnumTypes[0]
 }
-func (e xxx_AnnotationsTestEnum) Number() protoreflect.EnumNumber {
+func (e AnnotationsTestEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -167,7 +162,7 @@ var xxx_Annotations_ProtoFile_FileDesc = prototype.File{
 var xxx_Annotations_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
 		xxx_Annotations_ProtoFile_EnumDescs[0].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return AnnotationsTestEnum(n)
 		},
 	),

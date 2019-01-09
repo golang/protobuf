@@ -219,8 +219,8 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 
 	// Populate EnumType and MessageType.
 	if f.EnumType == nil && f.Kind == pref.EnumKind {
-		if ev, ok := reflect.Zero(t).Interface().(pref.ProtoEnum); ok {
-			f.EnumType = ev.ProtoReflect().Type()
+		if ev, ok := reflect.Zero(t).Interface().(pref.Enum); ok {
+			f.EnumType = ev.Type()
 		} else {
 			f.EnumType = loadEnumDesc(t)
 		}

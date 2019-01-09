@@ -28,15 +28,10 @@ const (
 	E_ZERO E = 0
 )
 
-type xxx_E E
-
-func (e E) ProtoReflect() protoreflect.Enum {
-	return (xxx_E)(e)
-}
-func (e xxx_E) Type() protoreflect.EnumType {
+func (e E) Type() protoreflect.EnumType {
 	return xxx_A_ProtoFile_EnumTypes[0]
 }
-func (e xxx_E) Number() protoreflect.EnumNumber {
+func (e E) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -77,15 +72,10 @@ const (
 	M_M_ZERO M_Subenum = 0
 )
 
-type xxx_M_Subenum M_Subenum
-
-func (e M_Subenum) ProtoReflect() protoreflect.Enum {
-	return (xxx_M_Subenum)(e)
-}
-func (e xxx_M_Subenum) Type() protoreflect.EnumType {
+func (e M_Subenum) Type() protoreflect.EnumType {
 	return xxx_A_ProtoFile_EnumTypes[1]
 }
-func (e xxx_M_Subenum) Number() protoreflect.EnumNumber {
+func (e M_Subenum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -126,15 +116,10 @@ const (
 	M_Submessage_M_SUBMESSAGE_ZERO M_Submessage_Submessage_Subenum = 0
 )
 
-type xxx_M_Submessage_Submessage_Subenum M_Submessage_Submessage_Subenum
-
-func (e M_Submessage_Submessage_Subenum) ProtoReflect() protoreflect.Enum {
-	return (xxx_M_Submessage_Submessage_Subenum)(e)
-}
-func (e xxx_M_Submessage_Submessage_Subenum) Type() protoreflect.EnumType {
+func (e M_Submessage_Submessage_Subenum) Type() protoreflect.EnumType {
 	return xxx_A_ProtoFile_EnumTypes[2]
 }
-func (e xxx_M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
+func (e M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
@@ -491,19 +476,19 @@ var xxx_A_ProtoFile_FileDesc = prototype.File{
 var xxx_A_ProtoFile_EnumTypes = [3]protoreflect.EnumType{
 	prototype.GoEnum(
 		xxx_A_ProtoFile_EnumDescs[0].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return E(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_A_ProtoFile_EnumDescs[1].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return M_Subenum(n)
 		},
 	),
 	prototype.GoEnum(
 		xxx_A_ProtoFile_EnumDescs[2].Reference(),
-		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.ProtoEnum {
+		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return M_Submessage_Submessage_Subenum(n)
 		},
 	),
