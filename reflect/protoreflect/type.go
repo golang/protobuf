@@ -415,13 +415,12 @@ type ExtensionType interface {
 
 	// New returns a new value for the field.
 	// For scalars, this returns the default value in native Go form.
-	New() interface{}
+	New() Value
 
 	// GoType returns the Go type of the field value.
 	//
 	// Invariants:
-	//	t.GoType() == reflect.TypeOf(t.New())
-	//	t.GoType() == reflect.TypeOf(t.InterfaceOf(t.ValueOf(t.New())))
+	//	t.GoType() == reflect.TypeOf(t.InterfaceOf(t.New()))
 	GoType() reflect.Type
 
 	// TODO: What to do with nil?

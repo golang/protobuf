@@ -157,7 +157,7 @@ type goExtension struct {
 
 	once        sync.Once
 	typ         reflect.Type
-	new         func() interface{}
+	new         func() protoreflect.Value
 	valueOf     func(v interface{}) protoreflect.Value
 	interfaceOf func(v protoreflect.Value) interface{}
 }
@@ -172,13 +172,14 @@ func (t *goExtension) GoType() reflect.Type {
 	t.lazyInit()
 	return t.typ
 }
-func (t *goExtension) New() interface{} {
+func (t *goExtension) New() protoreflect.Value {
 	t.lazyInit()
-	v := t.new()
+	pv := t.new()
+	v := t.interfaceOf(pv)
 	if reflect.TypeOf(v) != t.typ {
 		panic(fmt.Sprintf("invalid type: got %T, want %v", v, t.typ))
 	}
-	return v
+	return pv
 }
 func (t *goExtension) ValueOf(v interface{}) protoreflect.Value {
 	t.lazyInit()
@@ -205,8 +206,8 @@ func (t *goExtension) lazyInit() {
 			switch t.Kind() {
 			case protoreflect.EnumKind:
 				t.typ = t.enumType.GoType()
-				t.new = func() interface{} {
-					return t.enumType.New(t.Default().Enum())
+				t.new = func() protoreflect.Value {
+					return t.Default()
 				}
 				t.valueOf = func(v interface{}) protoreflect.Value {
 					ev := v.(protoreflect.Enum)
@@ -217,8 +218,8 @@ func (t *goExtension) lazyInit() {
 				}
 			case protoreflect.MessageKind, protoreflect.GroupKind:
 				t.typ = t.messageType.GoType()
-				t.new = func() interface{} {
-					return t.messageType.New().Interface()
+				t.new = func() protoreflect.Value {
+					return protoreflect.ValueOf(t.messageType.New())
 				}
 				t.valueOf = func(v interface{}) protoreflect.Value {
 					mv := v.(protoreflect.ProtoMessage).ProtoReflect()
@@ -229,8 +230,8 @@ func (t *goExtension) lazyInit() {
 				}
 			default:
 				t.typ = goTypeForPBKind[t.Kind()]
-				t.new = func() interface{} {
-					return t.Default().Interface()
+				t.new = func() protoreflect.Value {
+					return t.Default()
 				}
 				t.valueOf = func(v interface{}) protoreflect.Value {
 					return protoreflect.ValueOf(v)
@@ -251,8 +252,9 @@ func (t *goExtension) lazyInit() {
 			}
 			c := value.NewConverter(typ, t.Kind())
 			t.typ = reflect.PtrTo(reflect.SliceOf(typ))
-			t.new = func() interface{} {
-				return reflect.New(t.typ.Elem()).Interface()
+			t.new = func() protoreflect.Value {
+				v := reflect.New(t.typ.Elem()).Interface()
+				return protoreflect.ValueOf(value.ListOf(v, c))
 			}
 			t.valueOf = func(v interface{}) protoreflect.Value {
 				return protoreflect.ValueOf(value.ListOf(v, c))

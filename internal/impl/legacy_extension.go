@@ -133,7 +133,7 @@ func (p legacyExtensionFields) NewMessage(n pref.FieldNumber) pref.Message {
 		panic("no extension descriptor registered")
 	}
 	xt := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
-	return xt.ValueOf(xt.New()).Message()
+	return xt.New().Message()
 }
 
 func (p legacyExtensionFields) ExtensionTypes() pref.ExtensionFieldTypes {
@@ -167,7 +167,7 @@ func (p legacyExtensionTypes) Register(t pref.ExtensionType) {
 	if t.Cardinality() == pref.Repeated {
 		// If the field is repeated, initialize the entry with an empty list
 		// so that future Get operations can return a mutable and concrete list.
-		x.Value = t.InterfaceOf(t.ValueOf(t.New()))
+		x.Value = t.InterfaceOf(t.New())
 	}
 	p.x.Set(t.Number(), x)
 }

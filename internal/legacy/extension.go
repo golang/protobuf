@@ -204,8 +204,8 @@ func extensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.Extension
 	xt2 := &extensionType{ExtensionType: xt}
 	if xd.Cardinality() != pref.Repeated {
 		xt2.typ = t
-		xt2.new = func() interface{} {
-			return xt.New().(pvalue.Unwrapper).ProtoUnwrap()
+		xt2.new = func() pref.Value {
+			return xt.New()
 		}
 		xt2.valueOf = func(v interface{}) pref.Value {
 			if reflect.TypeOf(v) != xt2.typ {
@@ -222,8 +222,9 @@ func extensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.Extension
 		}
 	} else {
 		xt2.typ = reflect.PtrTo(reflect.SliceOf(t))
-		xt2.new = func() interface{} {
-			return reflect.New(xt2.typ.Elem()).Interface()
+		xt2.new = func() pref.Value {
+			v := reflect.New(xt2.typ.Elem()).Interface()
+			return pref.ValueOf(pvalue.ListOf(v, conv))
 		}
 		xt2.valueOf = func(v interface{}) pref.Value {
 			if reflect.TypeOf(v) != xt2.typ {
@@ -245,13 +246,13 @@ func extensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.Extension
 type extensionType struct {
 	pref.ExtensionType
 	typ         reflect.Type
-	new         func() interface{}
+	new         func() pref.Value
 	valueOf     func(interface{}) pref.Value
 	interfaceOf func(pref.Value) interface{}
 }
 
 func (x *extensionType) GoType() reflect.Type                 { return x.typ }
-func (x *extensionType) New() interface{}                     { return x.new() }
+func (x *extensionType) New() pref.Value                      { return x.new() }
 func (x *extensionType) ValueOf(v interface{}) pref.Value     { return x.valueOf(v) }
 func (x *extensionType) InterfaceOf(v pref.Value) interface{} { return x.interfaceOf(v) }
 func (x *extensionType) Format(s fmt.State, r rune)           { pfmt.FormatDesc(s, r, x) }
