@@ -2246,8 +2246,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		if oneof && oFields[*field.OneofIndex] == nil {
 			odp := message.OneofDecl[int(*field.OneofIndex)]
 			base := CamelCase(odp.GetName())
-			names := allocNames(base, "Get"+base)
-			fname, gname := names[0], names[1]
+			fname := allocNames(base)[0]
 
 			// This is the first field of a oneof we haven't seen before.
 			// Generate the union field.
@@ -2265,7 +2264,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			of := oneofField{
 				fieldCommon: fieldCommon{
 					goName:     fname,
-					getterName: gname,
+					getterName: "Get"+fname,
 					goType:     dname,
 					tags:       tag,
 					protoName:  odp.GetName(),
