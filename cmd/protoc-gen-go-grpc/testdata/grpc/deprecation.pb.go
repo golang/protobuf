@@ -38,7 +38,7 @@ var fileDescriptor_1e7146702b7fe8c5 = []byte{
 
 func init() {
 	var err error
-	Deprecation_ProtoFile, err = prototype.NewFile(&xxx_Deprecation_ProtoFile_FileDesc)
+	Deprecation_protoFile, err = prototype.NewFile(&xxx_Deprecation_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -46,9 +46,9 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Deprecation_ProtoFile protoreflect.FileDescriptor
+var Deprecation_protoFile protoreflect.FileDescriptor
 
-var xxx_Deprecation_ProtoFile_FileDesc = prototype.File{
+var xxx_Deprecation_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto3,
 	Path:    "grpc/deprecation.proto",
 	Package: "goproto.protoc.grpc",

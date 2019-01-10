@@ -67,13 +67,13 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 	return xxx_Message{m}
 }
 func (m xxx_Message) Type() protoreflect.MessageType {
-	return xxx_Fieldnames_ProtoFile_MessageTypes[0].Type
+	return xxx_Fieldnames_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Message) KnownFields() protoreflect.KnownFields {
-	return xxx_Fieldnames_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Fieldnames_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Message) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Fieldnames_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Fieldnames_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -309,13 +309,13 @@ func (m *Message_OneofMessageConflict) ProtoReflect() protoreflect.Message {
 	return xxx_Message_OneofMessageConflict{m}
 }
 func (m xxx_Message_OneofMessageConflict) Type() protoreflect.MessageType {
-	return xxx_Fieldnames_ProtoFile_MessageTypes[1].Type
+	return xxx_Fieldnames_protoFile_MessageTypes[1].Type
 }
 func (m xxx_Message_OneofMessageConflict) KnownFields() protoreflect.KnownFields {
-	return xxx_Fieldnames_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+	return xxx_Fieldnames_protoFile_MessageTypes[1].KnownFieldsOf(m.m)
 }
 func (m xxx_Message_OneofMessageConflict) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Fieldnames_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+	return xxx_Fieldnames_protoFile_MessageTypes[1].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message_OneofMessageConflict) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -384,10 +384,10 @@ var fileDescriptor_6bbe3f70febb9403 = []byte{
 }
 
 func init() {
-	xxx_Fieldnames_ProtoFile_FileDesc.Messages = xxx_Fieldnames_ProtoFile_MessageDescs[0:1]
-	xxx_Fieldnames_ProtoFile_MessageDescs[0].Messages = xxx_Fieldnames_ProtoFile_MessageDescs[1:2]
+	xxx_Fieldnames_protoFile_FileDesc.Messages = xxx_Fieldnames_protoFile_MessageDescs[0:1]
+	xxx_Fieldnames_protoFile_MessageDescs[0].Messages = xxx_Fieldnames_protoFile_MessageDescs[1:2]
 	var err error
-	Fieldnames_ProtoFile, err = prototype.NewFile(&xxx_Fieldnames_ProtoFile_FileDesc)
+	Fieldnames_protoFile, err = prototype.NewFile(&xxx_Fieldnames_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -395,28 +395,28 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Fieldnames_ProtoFile protoreflect.FileDescriptor
+var Fieldnames_protoFile protoreflect.FileDescriptor
 
-var xxx_Fieldnames_ProtoFile_FileDesc = prototype.File{
+var xxx_Fieldnames_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "fieldnames/fieldnames.proto",
 	Package: "goproto.protoc.fieldnames",
 }
-var xxx_Fieldnames_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
+var xxx_Fieldnames_protoFile_MessageTypes = [2]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Fieldnames_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Fieldnames_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message{new(Message)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Fieldnames_ProtoFile_MessageDescs[1].Reference(),
+		xxx_Fieldnames_protoFile_MessageDescs[1].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message_OneofMessageConflict{new(Message_OneofMessageConflict)}
 		},
 	)},
 }
-var xxx_Fieldnames_ProtoFile_MessageDescs = [2]prototype.Message{
+var xxx_Fieldnames_protoFile_MessageDescs = [2]prototype.Message{
 	{
 		Name: "Message",
 		Fields: []prototype.Field{

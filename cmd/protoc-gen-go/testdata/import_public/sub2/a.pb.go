@@ -28,13 +28,13 @@ func (m *Sub2Message) ProtoReflect() protoreflect.Message {
 	return xxx_Sub2Message{m}
 }
 func (m xxx_Sub2Message) Type() protoreflect.MessageType {
-	return xxx_A_ProtoFile_MessageTypes[0].Type
+	return xxx_A_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Sub2Message) KnownFields() protoreflect.KnownFields {
-	return xxx_A_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_A_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Sub2Message) UnknownFields() protoreflect.UnknownFields {
-	return xxx_A_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_A_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Sub2Message) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -84,9 +84,9 @@ var fileDescriptor_7ac53d99328778ac = []byte{
 }
 
 func init() {
-	xxx_A_ProtoFile_FileDesc.Messages = xxx_A_ProtoFile_MessageDescs[0:1]
+	xxx_A_protoFile_FileDesc.Messages = xxx_A_protoFile_MessageDescs[0:1]
 	var err error
-	A_ProtoFile, err = prototype.NewFile(&xxx_A_ProtoFile_FileDesc)
+	A_protoFile, err = prototype.NewFile(&xxx_A_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -94,22 +94,22 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var A_ProtoFile protoreflect.FileDescriptor
+var A_protoFile protoreflect.FileDescriptor
 
-var xxx_A_ProtoFile_FileDesc = prototype.File{
+var xxx_A_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "import_public/sub2/a.proto",
 	Package: "goproto.protoc.import_public.sub2",
 }
-var xxx_A_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_A_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_A_ProtoFile_MessageDescs[0].Reference(),
+		xxx_A_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Sub2Message{new(Sub2Message)}
 		},
 	)},
 }
-var xxx_A_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_A_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "Sub2Message",
 	},

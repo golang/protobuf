@@ -75,13 +75,13 @@ func (m *Public) ProtoReflect() protoreflect.Message {
 	return xxx_Public{m}
 }
 func (m xxx_Public) Type() protoreflect.MessageType {
-	return xxx_A_ProtoFile_MessageTypes[0].Type
+	return xxx_A_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Public) KnownFields() protoreflect.KnownFields {
-	return xxx_A_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_A_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Public) UnknownFields() protoreflect.UnknownFields {
-	return xxx_A_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_A_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Public) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -157,12 +157,12 @@ var fileDescriptor_73b7577c95fa6b70 = []byte{
 }
 
 func init() {
-	xxx_A_ProtoFile_FileDesc.Messages = xxx_A_ProtoFile_MessageDescs[0:1]
-	xxx_A_ProtoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*sub.M)(nil))
-	xxx_A_ProtoFile_MessageDescs[0].Fields[1].EnumType = protoimpl.X.EnumTypeOf(sub.E(0))
-	xxx_A_ProtoFile_MessageDescs[0].Fields[2].MessageType = protoimpl.X.MessageTypeOf((*Local)(nil))
+	xxx_A_protoFile_FileDesc.Messages = xxx_A_protoFile_MessageDescs[0:1]
+	xxx_A_protoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*sub.M)(nil))
+	xxx_A_protoFile_MessageDescs[0].Fields[1].EnumType = protoimpl.X.EnumTypeOf(sub.E(0))
+	xxx_A_protoFile_MessageDescs[0].Fields[2].MessageType = protoimpl.X.MessageTypeOf((*Local)(nil))
 	var err error
-	A_ProtoFile, err = prototype.NewFile(&xxx_A_ProtoFile_FileDesc)
+	A_protoFile, err = prototype.NewFile(&xxx_A_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -170,9 +170,9 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var A_ProtoFile protoreflect.FileDescriptor
+var A_protoFile protoreflect.FileDescriptor
 
-var xxx_A_ProtoFile_FileDesc = prototype.File{
+var xxx_A_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "import_public/a.proto",
 	Package: "goproto.protoc.import_public",
@@ -182,15 +182,15 @@ var xxx_A_ProtoFile_FileDesc = prototype.File{
 		{FileDescriptor: prototype.PlaceholderFile("import_public/b.proto", "goproto.protoc.import_public"), IsPublic: true},
 	},
 }
-var xxx_A_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_A_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_A_ProtoFile_MessageDescs[0].Reference(),
+		xxx_A_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Public{new(Public)}
 		},
 	)},
 }
-var xxx_A_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_A_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "Public",
 		Fields: []prototype.Field{

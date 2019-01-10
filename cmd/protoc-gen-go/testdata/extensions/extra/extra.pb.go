@@ -29,13 +29,13 @@ func (m *ExtraMessage) ProtoReflect() protoreflect.Message {
 	return xxx_ExtraMessage{m}
 }
 func (m xxx_ExtraMessage) Type() protoreflect.MessageType {
-	return xxx_Extra_ProtoFile_MessageTypes[0].Type
+	return xxx_Extra_protoFile_MessageTypes[0].Type
 }
 func (m xxx_ExtraMessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Extra_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Extra_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_ExtraMessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Extra_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Extra_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_ExtraMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -93,9 +93,9 @@ var fileDescriptor_496c2a5e9c1e8739 = []byte{
 }
 
 func init() {
-	xxx_Extra_ProtoFile_FileDesc.Messages = xxx_Extra_ProtoFile_MessageDescs[0:1]
+	xxx_Extra_protoFile_FileDesc.Messages = xxx_Extra_protoFile_MessageDescs[0:1]
 	var err error
-	Extra_ProtoFile, err = prototype.NewFile(&xxx_Extra_ProtoFile_FileDesc)
+	Extra_protoFile, err = prototype.NewFile(&xxx_Extra_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -103,22 +103,22 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Extra_ProtoFile protoreflect.FileDescriptor
+var Extra_protoFile protoreflect.FileDescriptor
 
-var xxx_Extra_ProtoFile_FileDesc = prototype.File{
+var xxx_Extra_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "extensions/extra/extra.proto",
 	Package: "goproto.protoc.extension.extra",
 }
-var xxx_Extra_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_Extra_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Extra_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Extra_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_ExtraMessage{new(ExtraMessage)}
 		},
 	)},
 }
-var xxx_Extra_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_Extra_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "ExtraMessage",
 		Fields: []prototype.Field{

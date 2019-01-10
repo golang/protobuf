@@ -23,7 +23,7 @@ const (
 )
 
 func (e FieldTestMessage_Enum) Type() protoreflect.EnumType {
-	return xxx_Fields_ProtoFile_EnumTypes[0]
+	return xxx_Fields_protoFile_EnumTypes[0]
 }
 func (e FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -94,13 +94,13 @@ func (m *FieldTestMessage) ProtoReflect() protoreflect.Message {
 	return xxx_FieldTestMessage{m}
 }
 func (m xxx_FieldTestMessage) Type() protoreflect.MessageType {
-	return xxx_Fields_ProtoFile_MessageTypes[0].Type
+	return xxx_Fields_protoFile_MessageTypes[0].Type
 }
 func (m xxx_FieldTestMessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Fields_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Fields_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_FieldTestMessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Fields_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Fields_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_FieldTestMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -402,13 +402,13 @@ func (m *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
 	return xxx_FieldTestMessage_Message{m}
 }
 func (m xxx_FieldTestMessage_Message) Type() protoreflect.MessageType {
-	return xxx_Fields_ProtoFile_MessageTypes[4].Type
+	return xxx_Fields_protoFile_MessageTypes[4].Type
 }
 func (m xxx_FieldTestMessage_Message) KnownFields() protoreflect.KnownFields {
-	return xxx_Fields_ProtoFile_MessageTypes[4].KnownFieldsOf(m.m)
+	return xxx_Fields_protoFile_MessageTypes[4].KnownFieldsOf(m.m)
 }
 func (m xxx_FieldTestMessage_Message) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Fields_ProtoFile_MessageTypes[4].UnknownFieldsOf(m.m)
+	return xxx_Fields_protoFile_MessageTypes[4].UnknownFieldsOf(m.m)
 }
 func (m xxx_FieldTestMessage_Message) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -506,20 +506,20 @@ var fileDescriptor_f1e3ea068187307c = []byte{
 }
 
 func init() {
-	xxx_Fields_ProtoFile_FileDesc.Messages = xxx_Fields_ProtoFile_MessageDescs[0:1]
-	xxx_Fields_ProtoFile_MessageDescs[0].Enums = xxx_Fields_ProtoFile_EnumDescs[0:1]
-	xxx_Fields_ProtoFile_MessageDescs[0].Messages = xxx_Fields_ProtoFile_MessageDescs[1:5]
-	xxx_Fields_ProtoFile_MessageDescs[0].Fields[1].EnumType = xxx_Fields_ProtoFile_EnumTypes[0]
-	xxx_Fields_ProtoFile_MessageDescs[0].Fields[16].MessageType = xxx_Fields_ProtoFile_MessageTypes[4].Type
-	xxx_Fields_ProtoFile_MessageDescs[0].Fields[18].EnumType = xxx_Fields_ProtoFile_EnumTypes[0]
-	xxx_Fields_ProtoFile_MessageDescs[0].Fields[33].MessageType = xxx_Fields_ProtoFile_MessageTypes[4].Type
-	xxx_Fields_ProtoFile_MessageDescs[0].Fields[34].MessageType = xxx_Fields_ProtoFile_MessageDescs[1].Reference()
-	xxx_Fields_ProtoFile_MessageDescs[0].Fields[35].MessageType = xxx_Fields_ProtoFile_MessageDescs[2].Reference()
-	xxx_Fields_ProtoFile_MessageDescs[0].Fields[36].MessageType = xxx_Fields_ProtoFile_MessageDescs[3].Reference()
-	xxx_Fields_ProtoFile_MessageDescs[2].Fields[1].MessageType = xxx_Fields_ProtoFile_MessageTypes[4].Type
-	xxx_Fields_ProtoFile_MessageDescs[3].Fields[1].EnumType = xxx_Fields_ProtoFile_EnumTypes[0]
+	xxx_Fields_protoFile_FileDesc.Messages = xxx_Fields_protoFile_MessageDescs[0:1]
+	xxx_Fields_protoFile_MessageDescs[0].Enums = xxx_Fields_protoFile_EnumDescs[0:1]
+	xxx_Fields_protoFile_MessageDescs[0].Messages = xxx_Fields_protoFile_MessageDescs[1:5]
+	xxx_Fields_protoFile_MessageDescs[0].Fields[1].EnumType = xxx_Fields_protoFile_EnumTypes[0]
+	xxx_Fields_protoFile_MessageDescs[0].Fields[16].MessageType = xxx_Fields_protoFile_MessageTypes[4].Type
+	xxx_Fields_protoFile_MessageDescs[0].Fields[18].EnumType = xxx_Fields_protoFile_EnumTypes[0]
+	xxx_Fields_protoFile_MessageDescs[0].Fields[33].MessageType = xxx_Fields_protoFile_MessageTypes[4].Type
+	xxx_Fields_protoFile_MessageDescs[0].Fields[34].MessageType = xxx_Fields_protoFile_MessageDescs[1].Reference()
+	xxx_Fields_protoFile_MessageDescs[0].Fields[35].MessageType = xxx_Fields_protoFile_MessageDescs[2].Reference()
+	xxx_Fields_protoFile_MessageDescs[0].Fields[36].MessageType = xxx_Fields_protoFile_MessageDescs[3].Reference()
+	xxx_Fields_protoFile_MessageDescs[2].Fields[1].MessageType = xxx_Fields_protoFile_MessageTypes[4].Type
+	xxx_Fields_protoFile_MessageDescs[3].Fields[1].EnumType = xxx_Fields_protoFile_EnumTypes[0]
 	var err error
-	Fields_ProtoFile, err = prototype.NewFile(&xxx_Fields_ProtoFile_FileDesc)
+	Fields_protoFile, err = prototype.NewFile(&xxx_Fields_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -527,22 +527,22 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Fields_ProtoFile protoreflect.FileDescriptor
+var Fields_protoFile protoreflect.FileDescriptor
 
-var xxx_Fields_ProtoFile_FileDesc = prototype.File{
+var xxx_Fields_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto3,
 	Path:    "proto3/fields.proto",
 	Package: "goproto.protoc.proto3",
 }
-var xxx_Fields_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+var xxx_Fields_protoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
-		xxx_Fields_ProtoFile_EnumDescs[0].Reference(),
+		xxx_Fields_protoFile_EnumDescs[0].Reference(),
 		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return FieldTestMessage_Enum(n)
 		},
 	),
 }
-var xxx_Fields_ProtoFile_EnumDescs = [1]prototype.Enum{
+var xxx_Fields_protoFile_EnumDescs = [1]prototype.Enum{
 	{
 		Name: "Enum",
 		Values: []prototype.EnumValue{
@@ -550,9 +550,9 @@ var xxx_Fields_ProtoFile_EnumDescs = [1]prototype.Enum{
 		},
 	},
 }
-var xxx_Fields_ProtoFile_MessageTypes = [5]protoimpl.MessageType{
+var xxx_Fields_protoFile_MessageTypes = [5]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Fields_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Fields_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_FieldTestMessage{new(FieldTestMessage)}
 		},
@@ -561,13 +561,13 @@ var xxx_Fields_ProtoFile_MessageTypes = [5]protoimpl.MessageType{
 	{ /* no message type for FieldTestMessage_MapStringMessageEntry */ },
 	{ /* no message type for FieldTestMessage_MapFixed64EnumEntry */ },
 	{Type: prototype.GoMessage(
-		xxx_Fields_ProtoFile_MessageDescs[4].Reference(),
+		xxx_Fields_protoFile_MessageDescs[4].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_FieldTestMessage_Message{new(FieldTestMessage_Message)}
 		},
 	)},
 }
-var xxx_Fields_ProtoFile_MessageDescs = [5]prototype.Message{
+var xxx_Fields_protoFile_MessageDescs = [5]prototype.Message{
 	{
 		Name: "FieldTestMessage",
 		Fields: []prototype.Field{

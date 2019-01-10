@@ -23,7 +23,7 @@ const (
 )
 
 func (e AnnotationsTestEnum) Type() protoreflect.EnumType {
-	return xxx_Annotations_ProtoFile_EnumTypes[0]
+	return xxx_Annotations_protoFile_EnumTypes[0]
 }
 func (e AnnotationsTestEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -73,13 +73,13 @@ func (m *AnnotationsTestMessage) ProtoReflect() protoreflect.Message {
 	return xxx_AnnotationsTestMessage{m}
 }
 func (m xxx_AnnotationsTestMessage) Type() protoreflect.MessageType {
-	return xxx_Annotations_ProtoFile_MessageTypes[0].Type
+	return xxx_Annotations_protoFile_MessageTypes[0].Type
 }
 func (m xxx_AnnotationsTestMessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Annotations_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Annotations_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_AnnotationsTestMessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Annotations_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Annotations_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_AnnotationsTestMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -141,10 +141,10 @@ var fileDescriptor_21dfaf6fd39fa3b7 = []byte{
 }
 
 func init() {
-	xxx_Annotations_ProtoFile_FileDesc.Enums = xxx_Annotations_ProtoFile_EnumDescs[0:1]
-	xxx_Annotations_ProtoFile_FileDesc.Messages = xxx_Annotations_ProtoFile_MessageDescs[0:1]
+	xxx_Annotations_protoFile_FileDesc.Enums = xxx_Annotations_protoFile_EnumDescs[0:1]
+	xxx_Annotations_protoFile_FileDesc.Messages = xxx_Annotations_protoFile_MessageDescs[0:1]
 	var err error
-	Annotations_ProtoFile, err = prototype.NewFile(&xxx_Annotations_ProtoFile_FileDesc)
+	Annotations_protoFile, err = prototype.NewFile(&xxx_Annotations_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -152,22 +152,22 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Annotations_ProtoFile protoreflect.FileDescriptor
+var Annotations_protoFile protoreflect.FileDescriptor
 
-var xxx_Annotations_ProtoFile_FileDesc = prototype.File{
+var xxx_Annotations_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "annotations/annotations.proto",
 	Package: "goproto.protoc.annotations",
 }
-var xxx_Annotations_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+var xxx_Annotations_protoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
-		xxx_Annotations_ProtoFile_EnumDescs[0].Reference(),
+		xxx_Annotations_protoFile_EnumDescs[0].Reference(),
 		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return AnnotationsTestEnum(n)
 		},
 	),
 }
-var xxx_Annotations_ProtoFile_EnumDescs = [1]prototype.Enum{
+var xxx_Annotations_protoFile_EnumDescs = [1]prototype.Enum{
 	{
 		Name: "AnnotationsTestEnum",
 		Values: []prototype.EnumValue{
@@ -175,15 +175,15 @@ var xxx_Annotations_ProtoFile_EnumDescs = [1]prototype.Enum{
 		},
 	},
 }
-var xxx_Annotations_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_Annotations_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Annotations_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Annotations_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_AnnotationsTestMessage{new(AnnotationsTestMessage)}
 		},
 	)},
 }
-var xxx_Annotations_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_Annotations_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "AnnotationsTestMessage",
 		Fields: []prototype.Field{

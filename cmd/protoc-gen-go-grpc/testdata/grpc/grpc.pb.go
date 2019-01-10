@@ -28,13 +28,13 @@ func (m *Request) ProtoReflect() protoreflect.Message {
 	return xxx_Request{m}
 }
 func (m xxx_Request) Type() protoreflect.MessageType {
-	return xxx_Grpc_ProtoFile_MessageTypes[0].Type
+	return xxx_Grpc_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Request) KnownFields() protoreflect.KnownFields {
-	return xxx_Grpc_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Grpc_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Request) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Grpc_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Grpc_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Request) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -77,13 +77,13 @@ func (m *Response) ProtoReflect() protoreflect.Message {
 	return xxx_Response{m}
 }
 func (m xxx_Response) Type() protoreflect.MessageType {
-	return xxx_Grpc_ProtoFile_MessageTypes[1].Type
+	return xxx_Grpc_protoFile_MessageTypes[1].Type
 }
 func (m xxx_Response) KnownFields() protoreflect.KnownFields {
-	return xxx_Grpc_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+	return xxx_Grpc_protoFile_MessageTypes[1].KnownFieldsOf(m.m)
 }
 func (m xxx_Response) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Grpc_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+	return xxx_Grpc_protoFile_MessageTypes[1].UnknownFieldsOf(m.m)
 }
 func (m xxx_Response) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -139,9 +139,9 @@ var fileDescriptor_81ea47a3f88c2082 = []byte{
 }
 
 func init() {
-	xxx_Grpc_ProtoFile_FileDesc.Messages = xxx_Grpc_ProtoFile_MessageDescs[0:2]
+	xxx_Grpc_protoFile_FileDesc.Messages = xxx_Grpc_protoFile_MessageDescs[0:2]
 	var err error
-	Grpc_ProtoFile, err = prototype.NewFile(&xxx_Grpc_ProtoFile_FileDesc)
+	Grpc_protoFile, err = prototype.NewFile(&xxx_Grpc_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -149,28 +149,28 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Grpc_ProtoFile protoreflect.FileDescriptor
+var Grpc_protoFile protoreflect.FileDescriptor
 
-var xxx_Grpc_ProtoFile_FileDesc = prototype.File{
+var xxx_Grpc_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto3,
 	Path:    "grpc/grpc.proto",
 	Package: "goproto.protoc.grpc",
 }
-var xxx_Grpc_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
+var xxx_Grpc_protoFile_MessageTypes = [2]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Grpc_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Grpc_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Request{new(Request)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Grpc_ProtoFile_MessageDescs[1].Reference(),
+		xxx_Grpc_protoFile_MessageDescs[1].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Response{new(Response)}
 		},
 	)},
 }
-var xxx_Grpc_ProtoFile_MessageDescs = [2]prototype.Message{
+var xxx_Grpc_protoFile_MessageDescs = [2]prototype.Message{
 	{
 		Name: "Request",
 	},

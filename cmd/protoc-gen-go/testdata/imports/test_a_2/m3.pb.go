@@ -28,13 +28,13 @@ func (m *M3) ProtoReflect() protoreflect.Message {
 	return xxx_M3{m}
 }
 func (m xxx_M3) Type() protoreflect.MessageType {
-	return xxx_M3_ProtoFile_MessageTypes[0].Type
+	return xxx_M3_protoFile_MessageTypes[0].Type
 }
 func (m xxx_M3) KnownFields() protoreflect.KnownFields {
-	return xxx_M3_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_M3_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_M3) UnknownFields() protoreflect.UnknownFields {
-	return xxx_M3_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_M3_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_M3) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -83,9 +83,9 @@ var fileDescriptor_ff9d8f834875c9c5 = []byte{
 }
 
 func init() {
-	xxx_M3_ProtoFile_FileDesc.Messages = xxx_M3_ProtoFile_MessageDescs[0:1]
+	xxx_M3_protoFile_FileDesc.Messages = xxx_M3_protoFile_MessageDescs[0:1]
 	var err error
-	M3_ProtoFile, err = prototype.NewFile(&xxx_M3_ProtoFile_FileDesc)
+	M3_protoFile, err = prototype.NewFile(&xxx_M3_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -93,22 +93,22 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var M3_ProtoFile protoreflect.FileDescriptor
+var M3_protoFile protoreflect.FileDescriptor
 
-var xxx_M3_ProtoFile_FileDesc = prototype.File{
+var xxx_M3_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto3,
 	Path:    "imports/test_a_2/m3.proto",
 	Package: "test.a",
 }
-var xxx_M3_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_M3_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_M3_ProtoFile_MessageDescs[0].Reference(),
+		xxx_M3_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_M3{new(M3)}
 		},
 	)},
 }
-var xxx_M3_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_M3_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "M3",
 	},

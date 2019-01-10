@@ -30,13 +30,13 @@ func (m *Layer1) ProtoReflect() protoreflect.Message {
 	return xxx_Layer1{m}
 }
 func (m xxx_Layer1) Type() protoreflect.MessageType {
-	return xxx_NestedMessages_ProtoFile_MessageTypes[0].Type
+	return xxx_NestedMessages_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Layer1) KnownFields() protoreflect.KnownFields {
-	return xxx_NestedMessages_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_NestedMessages_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Layer1) UnknownFields() protoreflect.UnknownFields {
-	return xxx_NestedMessages_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_NestedMessages_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Layer1) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -94,13 +94,13 @@ func (m *Layer1_Layer2) ProtoReflect() protoreflect.Message {
 	return xxx_Layer1_Layer2{m}
 }
 func (m xxx_Layer1_Layer2) Type() protoreflect.MessageType {
-	return xxx_NestedMessages_ProtoFile_MessageTypes[1].Type
+	return xxx_NestedMessages_protoFile_MessageTypes[1].Type
 }
 func (m xxx_Layer1_Layer2) KnownFields() protoreflect.KnownFields {
-	return xxx_NestedMessages_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+	return xxx_NestedMessages_protoFile_MessageTypes[1].KnownFieldsOf(m.m)
 }
 func (m xxx_Layer1_Layer2) UnknownFields() protoreflect.UnknownFields {
-	return xxx_NestedMessages_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+	return xxx_NestedMessages_protoFile_MessageTypes[1].UnknownFieldsOf(m.m)
 }
 func (m xxx_Layer1_Layer2) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -150,13 +150,13 @@ func (m *Layer1_Layer2_Layer3) ProtoReflect() protoreflect.Message {
 	return xxx_Layer1_Layer2_Layer3{m}
 }
 func (m xxx_Layer1_Layer2_Layer3) Type() protoreflect.MessageType {
-	return xxx_NestedMessages_ProtoFile_MessageTypes[2].Type
+	return xxx_NestedMessages_protoFile_MessageTypes[2].Type
 }
 func (m xxx_Layer1_Layer2_Layer3) KnownFields() protoreflect.KnownFields {
-	return xxx_NestedMessages_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+	return xxx_NestedMessages_protoFile_MessageTypes[2].KnownFieldsOf(m.m)
 }
 func (m xxx_Layer1_Layer2_Layer3) UnknownFields() protoreflect.UnknownFields {
-	return xxx_NestedMessages_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+	return xxx_NestedMessages_protoFile_MessageTypes[2].UnknownFieldsOf(m.m)
 }
 func (m xxx_Layer1_Layer2_Layer3) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -211,14 +211,14 @@ var fileDescriptor_7417ee157699d191 = []byte{
 }
 
 func init() {
-	xxx_NestedMessages_ProtoFile_FileDesc.Messages = xxx_NestedMessages_ProtoFile_MessageDescs[0:1]
-	xxx_NestedMessages_ProtoFile_MessageDescs[0].Messages = xxx_NestedMessages_ProtoFile_MessageDescs[1:2]
-	xxx_NestedMessages_ProtoFile_MessageDescs[1].Messages = xxx_NestedMessages_ProtoFile_MessageDescs[2:3]
-	xxx_NestedMessages_ProtoFile_MessageDescs[0].Fields[0].MessageType = xxx_NestedMessages_ProtoFile_MessageTypes[1].Type
-	xxx_NestedMessages_ProtoFile_MessageDescs[0].Fields[1].MessageType = xxx_NestedMessages_ProtoFile_MessageTypes[2].Type
-	xxx_NestedMessages_ProtoFile_MessageDescs[1].Fields[0].MessageType = xxx_NestedMessages_ProtoFile_MessageTypes[2].Type
+	xxx_NestedMessages_protoFile_FileDesc.Messages = xxx_NestedMessages_protoFile_MessageDescs[0:1]
+	xxx_NestedMessages_protoFile_MessageDescs[0].Messages = xxx_NestedMessages_protoFile_MessageDescs[1:2]
+	xxx_NestedMessages_protoFile_MessageDescs[1].Messages = xxx_NestedMessages_protoFile_MessageDescs[2:3]
+	xxx_NestedMessages_protoFile_MessageDescs[0].Fields[0].MessageType = xxx_NestedMessages_protoFile_MessageTypes[1].Type
+	xxx_NestedMessages_protoFile_MessageDescs[0].Fields[1].MessageType = xxx_NestedMessages_protoFile_MessageTypes[2].Type
+	xxx_NestedMessages_protoFile_MessageDescs[1].Fields[0].MessageType = xxx_NestedMessages_protoFile_MessageTypes[2].Type
 	var err error
-	NestedMessages_ProtoFile, err = prototype.NewFile(&xxx_NestedMessages_ProtoFile_FileDesc)
+	NestedMessages_protoFile, err = prototype.NewFile(&xxx_NestedMessages_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -226,34 +226,34 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var NestedMessages_ProtoFile protoreflect.FileDescriptor
+var NestedMessages_protoFile protoreflect.FileDescriptor
 
-var xxx_NestedMessages_ProtoFile_FileDesc = prototype.File{
+var xxx_NestedMessages_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "proto2/nested_messages.proto",
 	Package: "goproto.protoc.proto2",
 }
-var xxx_NestedMessages_ProtoFile_MessageTypes = [3]protoimpl.MessageType{
+var xxx_NestedMessages_protoFile_MessageTypes = [3]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_NestedMessages_ProtoFile_MessageDescs[0].Reference(),
+		xxx_NestedMessages_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Layer1{new(Layer1)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_NestedMessages_ProtoFile_MessageDescs[1].Reference(),
+		xxx_NestedMessages_protoFile_MessageDescs[1].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Layer1_Layer2{new(Layer1_Layer2)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_NestedMessages_ProtoFile_MessageDescs[2].Reference(),
+		xxx_NestedMessages_protoFile_MessageDescs[2].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Layer1_Layer2_Layer3{new(Layer1_Layer2_Layer3)}
 		},
 	)},
 }
-var xxx_NestedMessages_ProtoFile_MessageDescs = [3]prototype.Message{
+var xxx_NestedMessages_protoFile_MessageDescs = [3]prototype.Message{
 	{
 		Name: "Layer1",
 		Fields: []prototype.Field{

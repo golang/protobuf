@@ -31,13 +31,13 @@ func (m *Foo) ProtoReflect() protoreflect.Message {
 	return xxx_Foo{m}
 }
 func (m xxx_Foo) Type() protoreflect.MessageType {
-	return xxx_Test_ProtoFile_MessageTypes[0].Type
+	return xxx_Test_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Foo) KnownFields() protoreflect.KnownFields {
-	return xxx_Test_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Test_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Foo) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Test_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Test_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Foo) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -116,9 +116,9 @@ var fileDescriptor_48462cafc802a68e = []byte{
 }
 
 func init() {
-	xxx_Test_ProtoFile_FileDesc.Messages = xxx_Test_ProtoFile_MessageDescs[0:1]
+	xxx_Test_protoFile_FileDesc.Messages = xxx_Test_protoFile_MessageDescs[0:1]
 	var err error
-	Test_ProtoFile, err = prototype.NewFile(&xxx_Test_ProtoFile_FileDesc)
+	Test_protoFile, err = prototype.NewFile(&xxx_Test_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -126,22 +126,22 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Test_ProtoFile protoreflect.FileDescriptor
+var Test_protoFile protoreflect.FileDescriptor
 
-var xxx_Test_ProtoFile_FileDesc = prototype.File{
+var xxx_Test_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "issue780_oneof_conflict/test.proto",
 	Package: "oneoftest",
 }
-var xxx_Test_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_Test_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Test_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Test_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Foo{new(Foo)}
 		},
 	)},
 }
-var xxx_Test_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_Test_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "Foo",
 		Fields: []prototype.Field{

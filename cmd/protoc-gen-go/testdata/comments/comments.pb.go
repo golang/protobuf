@@ -39,13 +39,13 @@ func (m *Message1) ProtoReflect() protoreflect.Message {
 	return xxx_Message1{m}
 }
 func (m xxx_Message1) Type() protoreflect.MessageType {
-	return xxx_Comments_ProtoFile_MessageTypes[0].Type
+	return xxx_Comments_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Message1) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Message1) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message1) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -127,13 +127,13 @@ func (m *Message2) ProtoReflect() protoreflect.Message {
 	return xxx_Message2{m}
 }
 func (m xxx_Message2) Type() protoreflect.MessageType {
-	return xxx_Comments_ProtoFile_MessageTypes[1].Type
+	return xxx_Comments_protoFile_MessageTypes[1].Type
 }
 func (m xxx_Message2) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[1].KnownFieldsOf(m.m)
 }
 func (m xxx_Message2) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[1].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message2) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -177,13 +177,13 @@ func (m *Message1_Message1A) ProtoReflect() protoreflect.Message {
 	return xxx_Message1_Message1A{m}
 }
 func (m xxx_Message1_Message1A) Type() protoreflect.MessageType {
-	return xxx_Comments_ProtoFile_MessageTypes[2].Type
+	return xxx_Comments_protoFile_MessageTypes[2].Type
 }
 func (m xxx_Message1_Message1A) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[2].KnownFieldsOf(m.m)
 }
 func (m xxx_Message1_Message1A) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[2].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message1_Message1A) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -227,13 +227,13 @@ func (m *Message1_Message1B) ProtoReflect() protoreflect.Message {
 	return xxx_Message1_Message1B{m}
 }
 func (m xxx_Message1_Message1B) Type() protoreflect.MessageType {
-	return xxx_Comments_ProtoFile_MessageTypes[3].Type
+	return xxx_Comments_protoFile_MessageTypes[3].Type
 }
 func (m xxx_Message1_Message1B) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[3].KnownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[3].KnownFieldsOf(m.m)
 }
 func (m xxx_Message1_Message1B) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[3].UnknownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[3].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message1_Message1B) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -277,13 +277,13 @@ func (m *Message2_Message2A) ProtoReflect() protoreflect.Message {
 	return xxx_Message2_Message2A{m}
 }
 func (m xxx_Message2_Message2A) Type() protoreflect.MessageType {
-	return xxx_Comments_ProtoFile_MessageTypes[4].Type
+	return xxx_Comments_protoFile_MessageTypes[4].Type
 }
 func (m xxx_Message2_Message2A) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[4].KnownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[4].KnownFieldsOf(m.m)
 }
 func (m xxx_Message2_Message2A) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[4].UnknownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[4].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message2_Message2A) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -327,13 +327,13 @@ func (m *Message2_Message2B) ProtoReflect() protoreflect.Message {
 	return xxx_Message2_Message2B{m}
 }
 func (m xxx_Message2_Message2B) Type() protoreflect.MessageType {
-	return xxx_Comments_ProtoFile_MessageTypes[5].Type
+	return xxx_Comments_protoFile_MessageTypes[5].Type
 }
 func (m xxx_Message2_Message2B) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[5].KnownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[5].KnownFieldsOf(m.m)
 }
 func (m xxx_Message2_Message2B) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_ProtoFile_MessageTypes[5].UnknownFieldsOf(m.m)
+	return xxx_Comments_protoFile_MessageTypes[5].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message2_Message2B) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -391,11 +391,11 @@ var fileDescriptor_885e8293f1fab554 = []byte{
 }
 
 func init() {
-	xxx_Comments_ProtoFile_FileDesc.Messages = xxx_Comments_ProtoFile_MessageDescs[0:2]
-	xxx_Comments_ProtoFile_MessageDescs[0].Messages = xxx_Comments_ProtoFile_MessageDescs[2:4]
-	xxx_Comments_ProtoFile_MessageDescs[1].Messages = xxx_Comments_ProtoFile_MessageDescs[4:6]
+	xxx_Comments_protoFile_FileDesc.Messages = xxx_Comments_protoFile_MessageDescs[0:2]
+	xxx_Comments_protoFile_MessageDescs[0].Messages = xxx_Comments_protoFile_MessageDescs[2:4]
+	xxx_Comments_protoFile_MessageDescs[1].Messages = xxx_Comments_protoFile_MessageDescs[4:6]
 	var err error
-	Comments_ProtoFile, err = prototype.NewFile(&xxx_Comments_ProtoFile_FileDesc)
+	Comments_protoFile, err = prototype.NewFile(&xxx_Comments_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -403,52 +403,52 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Comments_ProtoFile protoreflect.FileDescriptor
+var Comments_protoFile protoreflect.FileDescriptor
 
-var xxx_Comments_ProtoFile_FileDesc = prototype.File{
+var xxx_Comments_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "comments/comments.proto",
 	Package: "goproto.protoc.comments",
 }
-var xxx_Comments_ProtoFile_MessageTypes = [6]protoimpl.MessageType{
+var xxx_Comments_protoFile_MessageTypes = [6]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Comments_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Comments_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message1{new(Message1)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Comments_ProtoFile_MessageDescs[1].Reference(),
+		xxx_Comments_protoFile_MessageDescs[1].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message2{new(Message2)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Comments_ProtoFile_MessageDescs[2].Reference(),
+		xxx_Comments_protoFile_MessageDescs[2].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message1_Message1A{new(Message1_Message1A)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Comments_ProtoFile_MessageDescs[3].Reference(),
+		xxx_Comments_protoFile_MessageDescs[3].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message1_Message1B{new(Message1_Message1B)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Comments_ProtoFile_MessageDescs[4].Reference(),
+		xxx_Comments_protoFile_MessageDescs[4].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message2_Message2A{new(Message2_Message2A)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Comments_ProtoFile_MessageDescs[5].Reference(),
+		xxx_Comments_protoFile_MessageDescs[5].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message2_Message2B{new(Message2_Message2B)}
 		},
 	)},
 }
-var xxx_Comments_ProtoFile_MessageDescs = [6]prototype.Message{
+var xxx_Comments_protoFile_MessageDescs = [6]prototype.Message{
 	{
 		Name: "Message1",
 		Fields: []prototype.Field{

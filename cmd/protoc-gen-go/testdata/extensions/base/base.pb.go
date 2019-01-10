@@ -30,13 +30,13 @@ func (m *BaseMessage) ProtoReflect() protoreflect.Message {
 	return xxx_BaseMessage{m}
 }
 func (m xxx_BaseMessage) Type() protoreflect.MessageType {
-	return xxx_Base_ProtoFile_MessageTypes[0].Type
+	return xxx_Base_protoFile_MessageTypes[0].Type
 }
 func (m xxx_BaseMessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Base_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Base_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_BaseMessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Base_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Base_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_BaseMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -96,13 +96,13 @@ func (m *MessageSetWireFormatMessage) ProtoReflect() protoreflect.Message {
 	return xxx_MessageSetWireFormatMessage{m}
 }
 func (m xxx_MessageSetWireFormatMessage) Type() protoreflect.MessageType {
-	return xxx_Base_ProtoFile_MessageTypes[1].Type
+	return xxx_Base_protoFile_MessageTypes[1].Type
 }
 func (m xxx_MessageSetWireFormatMessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Base_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+	return xxx_Base_protoFile_MessageTypes[1].KnownFieldsOf(m.m)
 }
 func (m xxx_MessageSetWireFormatMessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Base_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+	return xxx_Base_protoFile_MessageTypes[1].UnknownFieldsOf(m.m)
 }
 func (m xxx_MessageSetWireFormatMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -165,9 +165,9 @@ var fileDescriptor_aebb28f8d5a04466 = []byte{
 }
 
 func init() {
-	xxx_Base_ProtoFile_FileDesc.Messages = xxx_Base_ProtoFile_MessageDescs[0:2]
+	xxx_Base_protoFile_FileDesc.Messages = xxx_Base_protoFile_MessageDescs[0:2]
 	var err error
-	Base_ProtoFile, err = prototype.NewFile(&xxx_Base_ProtoFile_FileDesc)
+	Base_protoFile, err = prototype.NewFile(&xxx_Base_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -175,28 +175,28 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Base_ProtoFile protoreflect.FileDescriptor
+var Base_protoFile protoreflect.FileDescriptor
 
-var xxx_Base_ProtoFile_FileDesc = prototype.File{
+var xxx_Base_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "extensions/base/base.proto",
 	Package: "goproto.protoc.extension.base",
 }
-var xxx_Base_ProtoFile_MessageTypes = [2]protoimpl.MessageType{
+var xxx_Base_protoFile_MessageTypes = [2]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Base_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Base_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_BaseMessage{new(BaseMessage)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Base_ProtoFile_MessageDescs[1].Reference(),
+		xxx_Base_protoFile_MessageDescs[1].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_MessageSetWireFormatMessage{new(MessageSetWireFormatMessage)}
 		},
 	)},
 }
-var xxx_Base_ProtoFile_MessageDescs = [2]prototype.Message{
+var xxx_Base_protoFile_MessageDescs = [2]prototype.Message{
 	{
 		Name: "BaseMessage",
 		Fields: []prototype.Field{

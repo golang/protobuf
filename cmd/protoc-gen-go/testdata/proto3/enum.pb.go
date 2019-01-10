@@ -25,7 +25,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_Enum_ProtoFile_EnumTypes[0]
+	return xxx_Enum_protoFile_EnumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -70,9 +70,9 @@ var fileDescriptor_b4b9b1e8d161a9a6 = []byte{
 }
 
 func init() {
-	xxx_Enum_ProtoFile_FileDesc.Enums = xxx_Enum_ProtoFile_EnumDescs[0:1]
+	xxx_Enum_protoFile_FileDesc.Enums = xxx_Enum_protoFile_EnumDescs[0:1]
 	var err error
-	Enum_ProtoFile, err = prototype.NewFile(&xxx_Enum_ProtoFile_FileDesc)
+	Enum_protoFile, err = prototype.NewFile(&xxx_Enum_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -80,22 +80,22 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Enum_ProtoFile protoreflect.FileDescriptor
+var Enum_protoFile protoreflect.FileDescriptor
 
-var xxx_Enum_ProtoFile_FileDesc = prototype.File{
+var xxx_Enum_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto3,
 	Path:    "proto3/enum.proto",
 	Package: "goproto.protoc.proto3",
 }
-var xxx_Enum_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+var xxx_Enum_protoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
-		xxx_Enum_ProtoFile_EnumDescs[0].Reference(),
+		xxx_Enum_protoFile_EnumDescs[0].Reference(),
 		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enum(n)
 		},
 	),
 }
-var xxx_Enum_ProtoFile_EnumDescs = [1]prototype.Enum{
+var xxx_Enum_protoFile_EnumDescs = [1]prototype.Enum{
 	{
 		Name: "Enum",
 		Values: []prototype.EnumValue{

@@ -30,13 +30,13 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 	return xxx_Message{m}
 }
 func (m xxx_Message) Type() protoreflect.MessageType {
-	return xxx_Proto2_ProtoFile_MessageTypes[0].Type
+	return xxx_Proto2_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Message) KnownFields() protoreflect.KnownFields {
-	return xxx_Proto2_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Proto2_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Message) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Proto2_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Proto2_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -101,10 +101,10 @@ var fileDescriptor_d756bbe8817c03c1 = []byte{
 }
 
 func init() {
-	xxx_Proto2_ProtoFile_FileDesc.Messages = xxx_Proto2_ProtoFile_MessageDescs[0:1]
-	xxx_Proto2_ProtoFile_MessageDescs[0].Fields[1].MessageType = xxx_Proto2_ProtoFile_MessageTypes[0].Type
+	xxx_Proto2_protoFile_FileDesc.Messages = xxx_Proto2_protoFile_MessageDescs[0:1]
+	xxx_Proto2_protoFile_MessageDescs[0].Fields[1].MessageType = xxx_Proto2_protoFile_MessageTypes[0].Type
 	var err error
-	Proto2_ProtoFile, err = prototype.NewFile(&xxx_Proto2_ProtoFile_FileDesc)
+	Proto2_protoFile, err = prototype.NewFile(&xxx_Proto2_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -112,22 +112,22 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Proto2_ProtoFile protoreflect.FileDescriptor
+var Proto2_protoFile protoreflect.FileDescriptor
 
-var xxx_Proto2_ProtoFile_FileDesc = prototype.File{
+var xxx_Proto2_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "proto2/proto2.proto",
 	Package: "goproto.protoc.proto2",
 }
-var xxx_Proto2_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_Proto2_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Proto2_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Proto2_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message{new(Message)}
 		},
 	)},
 }
-var xxx_Proto2_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_Proto2_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "Message",
 		Fields: []prototype.Field{

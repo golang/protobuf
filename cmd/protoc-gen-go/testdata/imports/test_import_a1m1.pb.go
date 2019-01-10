@@ -30,13 +30,13 @@ func (m *A1M1) ProtoReflect() protoreflect.Message {
 	return xxx_A1M1{m}
 }
 func (m xxx_A1M1) Type() protoreflect.MessageType {
-	return xxx_TestImportA1M1_ProtoFile_MessageTypes[0].Type
+	return xxx_TestImportA1M1_protoFile_MessageTypes[0].Type
 }
 func (m xxx_A1M1) KnownFields() protoreflect.KnownFields {
-	return xxx_TestImportA1M1_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_TestImportA1M1_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_A1M1) UnknownFields() protoreflect.UnknownFields {
-	return xxx_TestImportA1M1_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_TestImportA1M1_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_A1M1) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -94,10 +94,10 @@ var fileDescriptor_3b904a47327455f3 = []byte{
 }
 
 func init() {
-	xxx_TestImportA1M1_ProtoFile_FileDesc.Messages = xxx_TestImportA1M1_ProtoFile_MessageDescs[0:1]
-	xxx_TestImportA1M1_ProtoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*test_a_1.M1)(nil))
+	xxx_TestImportA1M1_protoFile_FileDesc.Messages = xxx_TestImportA1M1_protoFile_MessageDescs[0:1]
+	xxx_TestImportA1M1_protoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*test_a_1.M1)(nil))
 	var err error
-	TestImportA1M1_ProtoFile, err = prototype.NewFile(&xxx_TestImportA1M1_ProtoFile_FileDesc)
+	TestImportA1M1_protoFile, err = prototype.NewFile(&xxx_TestImportA1M1_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -105,9 +105,9 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var TestImportA1M1_ProtoFile protoreflect.FileDescriptor
+var TestImportA1M1_protoFile protoreflect.FileDescriptor
 
-var xxx_TestImportA1M1_ProtoFile_FileDesc = prototype.File{
+var xxx_TestImportA1M1_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto3,
 	Path:    "imports/test_import_a1m1.proto",
 	Package: "test",
@@ -115,15 +115,15 @@ var xxx_TestImportA1M1_ProtoFile_FileDesc = prototype.File{
 		{FileDescriptor: prototype.PlaceholderFile("imports/test_a_1/m1.proto", "test.a")},
 	},
 }
-var xxx_TestImportA1M1_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_TestImportA1M1_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_TestImportA1M1_ProtoFile_MessageDescs[0].Reference(),
+		xxx_TestImportA1M1_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_A1M1{new(A1M1)}
 		},
 	)},
 }
-var xxx_TestImportA1M1_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_TestImportA1M1_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "A1M1",
 		Fields: []prototype.Field{

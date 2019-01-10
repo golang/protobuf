@@ -31,13 +31,13 @@ func (m *Local) ProtoReflect() protoreflect.Message {
 	return xxx_Local{m}
 }
 func (m xxx_Local) Type() protoreflect.MessageType {
-	return xxx_B_ProtoFile_MessageTypes[0].Type
+	return xxx_B_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Local) KnownFields() protoreflect.KnownFields {
-	return xxx_B_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_B_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Local) UnknownFields() protoreflect.UnknownFields {
-	return xxx_B_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_B_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Local) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -103,11 +103,11 @@ var fileDescriptor_84995586b3d09710 = []byte{
 }
 
 func init() {
-	xxx_B_ProtoFile_FileDesc.Messages = xxx_B_ProtoFile_MessageDescs[0:1]
-	xxx_B_ProtoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*sub.M)(nil))
-	xxx_B_ProtoFile_MessageDescs[0].Fields[1].EnumType = protoimpl.X.EnumTypeOf(sub.E(0))
+	xxx_B_protoFile_FileDesc.Messages = xxx_B_protoFile_MessageDescs[0:1]
+	xxx_B_protoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*sub.M)(nil))
+	xxx_B_protoFile_MessageDescs[0].Fields[1].EnumType = protoimpl.X.EnumTypeOf(sub.E(0))
 	var err error
-	B_ProtoFile, err = prototype.NewFile(&xxx_B_ProtoFile_FileDesc)
+	B_protoFile, err = prototype.NewFile(&xxx_B_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -115,9 +115,9 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var B_ProtoFile protoreflect.FileDescriptor
+var B_protoFile protoreflect.FileDescriptor
 
-var xxx_B_ProtoFile_FileDesc = prototype.File{
+var xxx_B_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "import_public/b.proto",
 	Package: "goproto.protoc.import_public",
@@ -125,15 +125,15 @@ var xxx_B_ProtoFile_FileDesc = prototype.File{
 		{FileDescriptor: prototype.PlaceholderFile("import_public/sub/a.proto", "goproto.protoc.import_public.sub")},
 	},
 }
-var xxx_B_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_B_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_B_ProtoFile_MessageDescs[0].Reference(),
+		xxx_B_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Local{new(Local)}
 		},
 	)},
 }
-var xxx_B_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_B_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "Local",
 		Fields: []prototype.Field{

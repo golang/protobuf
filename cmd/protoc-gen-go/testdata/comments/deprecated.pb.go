@@ -22,7 +22,7 @@ const (
 )
 
 func (e DeprecatedEnum) Type() protoreflect.EnumType {
-	return xxx_Deprecated_ProtoFile_EnumTypes[0]
+	return xxx_Deprecated_protoFile_EnumTypes[0]
 }
 func (e DeprecatedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -58,13 +58,13 @@ func (m *DeprecatedMessage) ProtoReflect() protoreflect.Message {
 	return xxx_DeprecatedMessage{m}
 }
 func (m xxx_DeprecatedMessage) Type() protoreflect.MessageType {
-	return xxx_Deprecated_ProtoFile_MessageTypes[0].Type
+	return xxx_Deprecated_protoFile_MessageTypes[0].Type
 }
 func (m xxx_DeprecatedMessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Deprecated_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Deprecated_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_DeprecatedMessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Deprecated_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Deprecated_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_DeprecatedMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -127,10 +127,10 @@ var fileDescriptor_0336e614ee2de5f7 = []byte{
 }
 
 func init() {
-	xxx_Deprecated_ProtoFile_FileDesc.Enums = xxx_Deprecated_ProtoFile_EnumDescs[0:1]
-	xxx_Deprecated_ProtoFile_FileDesc.Messages = xxx_Deprecated_ProtoFile_MessageDescs[0:1]
+	xxx_Deprecated_protoFile_FileDesc.Enums = xxx_Deprecated_protoFile_EnumDescs[0:1]
+	xxx_Deprecated_protoFile_FileDesc.Messages = xxx_Deprecated_protoFile_MessageDescs[0:1]
 	var err error
-	Deprecated_ProtoFile, err = prototype.NewFile(&xxx_Deprecated_ProtoFile_FileDesc)
+	Deprecated_protoFile, err = prototype.NewFile(&xxx_Deprecated_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -138,22 +138,22 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Deprecated_ProtoFile protoreflect.FileDescriptor
+var Deprecated_protoFile protoreflect.FileDescriptor
 
-var xxx_Deprecated_ProtoFile_FileDesc = prototype.File{
+var xxx_Deprecated_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto3,
 	Path:    "comments/deprecated.proto",
 	Package: "goproto.protoc.comments",
 }
-var xxx_Deprecated_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+var xxx_Deprecated_protoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
-		xxx_Deprecated_ProtoFile_EnumDescs[0].Reference(),
+		xxx_Deprecated_protoFile_EnumDescs[0].Reference(),
 		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return DeprecatedEnum(n)
 		},
 	),
 }
-var xxx_Deprecated_ProtoFile_EnumDescs = [1]prototype.Enum{
+var xxx_Deprecated_protoFile_EnumDescs = [1]prototype.Enum{
 	{
 		Name: "DeprecatedEnum",
 		Values: []prototype.EnumValue{
@@ -161,15 +161,15 @@ var xxx_Deprecated_ProtoFile_EnumDescs = [1]prototype.Enum{
 		},
 	},
 }
-var xxx_Deprecated_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_Deprecated_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Deprecated_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Deprecated_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_DeprecatedMessage{new(DeprecatedMessage)}
 		},
 	)},
 }
-var xxx_Deprecated_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_Deprecated_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "DeprecatedMessage",
 		Fields: []prototype.Field{

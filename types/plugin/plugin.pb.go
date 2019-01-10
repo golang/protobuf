@@ -36,13 +36,13 @@ func (m *Version) ProtoReflect() protoreflect.Message {
 	return xxx_Version{m}
 }
 func (m xxx_Version) Type() protoreflect.MessageType {
-	return xxx_Plugin_ProtoFile_MessageTypes[0].Type
+	return xxx_Plugin_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Version) KnownFields() protoreflect.KnownFields {
-	return xxx_Plugin_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Plugin_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Version) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Plugin_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Plugin_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Version) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -137,13 +137,13 @@ func (m *CodeGeneratorRequest) ProtoReflect() protoreflect.Message {
 	return xxx_CodeGeneratorRequest{m}
 }
 func (m xxx_CodeGeneratorRequest) Type() protoreflect.MessageType {
-	return xxx_Plugin_ProtoFile_MessageTypes[1].Type
+	return xxx_Plugin_protoFile_MessageTypes[1].Type
 }
 func (m xxx_CodeGeneratorRequest) KnownFields() protoreflect.KnownFields {
-	return xxx_Plugin_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+	return xxx_Plugin_protoFile_MessageTypes[1].KnownFieldsOf(m.m)
 }
 func (m xxx_CodeGeneratorRequest) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Plugin_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+	return xxx_Plugin_protoFile_MessageTypes[1].UnknownFieldsOf(m.m)
 }
 func (m xxx_CodeGeneratorRequest) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -225,13 +225,13 @@ func (m *CodeGeneratorResponse) ProtoReflect() protoreflect.Message {
 	return xxx_CodeGeneratorResponse{m}
 }
 func (m xxx_CodeGeneratorResponse) Type() protoreflect.MessageType {
-	return xxx_Plugin_ProtoFile_MessageTypes[2].Type
+	return xxx_Plugin_protoFile_MessageTypes[2].Type
 }
 func (m xxx_CodeGeneratorResponse) KnownFields() protoreflect.KnownFields {
-	return xxx_Plugin_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+	return xxx_Plugin_protoFile_MessageTypes[2].KnownFieldsOf(m.m)
 }
 func (m xxx_CodeGeneratorResponse) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Plugin_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+	return xxx_Plugin_protoFile_MessageTypes[2].UnknownFieldsOf(m.m)
 }
 func (m xxx_CodeGeneratorResponse) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -341,13 +341,13 @@ func (m *CodeGeneratorResponse_File) ProtoReflect() protoreflect.Message {
 	return xxx_CodeGeneratorResponse_File{m}
 }
 func (m xxx_CodeGeneratorResponse_File) Type() protoreflect.MessageType {
-	return xxx_Plugin_ProtoFile_MessageTypes[3].Type
+	return xxx_Plugin_protoFile_MessageTypes[3].Type
 }
 func (m xxx_CodeGeneratorResponse_File) KnownFields() protoreflect.KnownFields {
-	return xxx_Plugin_ProtoFile_MessageTypes[3].KnownFieldsOf(m.m)
+	return xxx_Plugin_protoFile_MessageTypes[3].KnownFieldsOf(m.m)
 }
 func (m xxx_CodeGeneratorResponse_File) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Plugin_ProtoFile_MessageTypes[3].UnknownFieldsOf(m.m)
+	return xxx_Plugin_protoFile_MessageTypes[3].UnknownFieldsOf(m.m)
 }
 func (m xxx_CodeGeneratorResponse_File) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -438,13 +438,13 @@ var fileDescriptor_3562add825dafed5 = []byte{
 }
 
 func init() {
-	xxx_Plugin_ProtoFile_FileDesc.Messages = xxx_Plugin_ProtoFile_MessageDescs[0:3]
-	xxx_Plugin_ProtoFile_MessageDescs[2].Messages = xxx_Plugin_ProtoFile_MessageDescs[3:4]
-	xxx_Plugin_ProtoFile_MessageDescs[1].Fields[2].MessageType = protoimpl.X.MessageTypeOf((*descriptor.FileDescriptorProto)(nil))
-	xxx_Plugin_ProtoFile_MessageDescs[1].Fields[3].MessageType = xxx_Plugin_ProtoFile_MessageTypes[0].Type
-	xxx_Plugin_ProtoFile_MessageDescs[2].Fields[1].MessageType = xxx_Plugin_ProtoFile_MessageTypes[3].Type
+	xxx_Plugin_protoFile_FileDesc.Messages = xxx_Plugin_protoFile_MessageDescs[0:3]
+	xxx_Plugin_protoFile_MessageDescs[2].Messages = xxx_Plugin_protoFile_MessageDescs[3:4]
+	xxx_Plugin_protoFile_MessageDescs[1].Fields[2].MessageType = protoimpl.X.MessageTypeOf((*descriptor.FileDescriptorProto)(nil))
+	xxx_Plugin_protoFile_MessageDescs[1].Fields[3].MessageType = xxx_Plugin_protoFile_MessageTypes[0].Type
+	xxx_Plugin_protoFile_MessageDescs[2].Fields[1].MessageType = xxx_Plugin_protoFile_MessageTypes[3].Type
 	var err error
-	Plugin_ProtoFile, err = prototype.NewFile(&xxx_Plugin_ProtoFile_FileDesc)
+	Plugin_protoFile, err = prototype.NewFile(&xxx_Plugin_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -452,9 +452,9 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Plugin_ProtoFile protoreflect.FileDescriptor
+var Plugin_protoFile protoreflect.FileDescriptor
 
-var xxx_Plugin_ProtoFile_FileDesc = prototype.File{
+var xxx_Plugin_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "google/protobuf/compiler/plugin.proto",
 	Package: "google.protobuf.compiler",
@@ -462,33 +462,33 @@ var xxx_Plugin_ProtoFile_FileDesc = prototype.File{
 		{FileDescriptor: prototype.PlaceholderFile("google/protobuf/descriptor.proto", "google.protobuf")},
 	},
 }
-var xxx_Plugin_ProtoFile_MessageTypes = [4]protoimpl.MessageType{
+var xxx_Plugin_protoFile_MessageTypes = [4]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Plugin_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Plugin_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Version{new(Version)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Plugin_ProtoFile_MessageDescs[1].Reference(),
+		xxx_Plugin_protoFile_MessageDescs[1].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_CodeGeneratorRequest{new(CodeGeneratorRequest)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Plugin_ProtoFile_MessageDescs[2].Reference(),
+		xxx_Plugin_protoFile_MessageDescs[2].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_CodeGeneratorResponse{new(CodeGeneratorResponse)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Plugin_ProtoFile_MessageDescs[3].Reference(),
+		xxx_Plugin_protoFile_MessageDescs[3].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_CodeGeneratorResponse_File{new(CodeGeneratorResponse_File)}
 		},
 	)},
 }
-var xxx_Plugin_ProtoFile_MessageDescs = [4]prototype.Message{
+var xxx_Plugin_protoFile_MessageDescs = [4]prototype.Message{
 	{
 		Name: "Version",
 		Fields: []prototype.Field{

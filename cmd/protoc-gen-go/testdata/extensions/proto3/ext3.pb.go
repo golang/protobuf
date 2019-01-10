@@ -24,7 +24,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_Ext3_ProtoFile_EnumTypes[0]
+	return xxx_Ext3_protoFile_EnumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -58,13 +58,13 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 	return xxx_Message{m}
 }
 func (m xxx_Message) Type() protoreflect.MessageType {
-	return xxx_Ext3_ProtoFile_MessageTypes[0].Type
+	return xxx_Ext3_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Message) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext3_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Ext3_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Message) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext3_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Ext3_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -494,10 +494,10 @@ var fileDescriptor_3db31bb248c8865e = []byte{
 }
 
 func init() {
-	xxx_Ext3_ProtoFile_FileDesc.Enums = xxx_Ext3_ProtoFile_EnumDescs[0:1]
-	xxx_Ext3_ProtoFile_FileDesc.Messages = xxx_Ext3_ProtoFile_MessageDescs[0:1]
+	xxx_Ext3_protoFile_FileDesc.Enums = xxx_Ext3_protoFile_EnumDescs[0:1]
+	xxx_Ext3_protoFile_FileDesc.Messages = xxx_Ext3_protoFile_MessageDescs[0:1]
 	var err error
-	Ext3_ProtoFile, err = prototype.NewFile(&xxx_Ext3_ProtoFile_FileDesc)
+	Ext3_protoFile, err = prototype.NewFile(&xxx_Ext3_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -505,9 +505,9 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Ext3_ProtoFile protoreflect.FileDescriptor
+var Ext3_protoFile protoreflect.FileDescriptor
 
-var xxx_Ext3_ProtoFile_FileDesc = prototype.File{
+var xxx_Ext3_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto3,
 	Path:    "extensions/proto3/ext3.proto",
 	Package: "goproto.protoc.extension.proto3",
@@ -515,15 +515,15 @@ var xxx_Ext3_ProtoFile_FileDesc = prototype.File{
 		{FileDescriptor: prototype.PlaceholderFile("google/protobuf/descriptor.proto", "google.protobuf")},
 	},
 }
-var xxx_Ext3_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+var xxx_Ext3_protoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
-		xxx_Ext3_ProtoFile_EnumDescs[0].Reference(),
+		xxx_Ext3_protoFile_EnumDescs[0].Reference(),
 		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enum(n)
 		},
 	),
 }
-var xxx_Ext3_ProtoFile_EnumDescs = [1]prototype.Enum{
+var xxx_Ext3_protoFile_EnumDescs = [1]prototype.Enum{
 	{
 		Name: "Enum",
 		Values: []prototype.EnumValue{
@@ -531,15 +531,15 @@ var xxx_Ext3_ProtoFile_EnumDescs = [1]prototype.Enum{
 		},
 	},
 }
-var xxx_Ext3_ProtoFile_MessageTypes = [1]protoimpl.MessageType{
+var xxx_Ext3_protoFile_MessageTypes = [1]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Ext3_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Ext3_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message{new(Message)}
 		},
 	)},
 }
-var xxx_Ext3_ProtoFile_MessageDescs = [1]prototype.Message{
+var xxx_Ext3_protoFile_MessageDescs = [1]prototype.Message{
 	{
 		Name: "Message",
 	},

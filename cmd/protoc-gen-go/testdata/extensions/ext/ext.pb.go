@@ -25,7 +25,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_Ext_ProtoFile_EnumTypes[0]
+	return xxx_Ext_protoFile_EnumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -75,13 +75,13 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 	return xxx_Message{m}
 }
 func (m xxx_Message) Type() protoreflect.MessageType {
-	return xxx_Ext_ProtoFile_MessageTypes[0].Type
+	return xxx_Ext_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Message) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Message) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -132,13 +132,13 @@ func (m *ExtensionGroup) ProtoReflect() protoreflect.Message {
 	return xxx_ExtensionGroup{m}
 }
 func (m xxx_ExtensionGroup) Type() protoreflect.MessageType {
-	return xxx_Ext_ProtoFile_MessageTypes[1].Type
+	return xxx_Ext_protoFile_MessageTypes[1].Type
 }
 func (m xxx_ExtensionGroup) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[1].KnownFieldsOf(m.m)
 }
 func (m xxx_ExtensionGroup) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[1].UnknownFieldsOf(m.m)
 }
 func (m xxx_ExtensionGroup) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -189,13 +189,13 @@ func (m *ExtendingMessage) ProtoReflect() protoreflect.Message {
 	return xxx_ExtendingMessage{m}
 }
 func (m xxx_ExtendingMessage) Type() protoreflect.MessageType {
-	return xxx_Ext_ProtoFile_MessageTypes[2].Type
+	return xxx_Ext_protoFile_MessageTypes[2].Type
 }
 func (m xxx_ExtendingMessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[2].KnownFieldsOf(m.m)
 }
 func (m xxx_ExtendingMessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[2].UnknownFieldsOf(m.m)
 }
 func (m xxx_ExtendingMessage) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -239,13 +239,13 @@ func (m *RepeatedGroup) ProtoReflect() protoreflect.Message {
 	return xxx_RepeatedGroup{m}
 }
 func (m xxx_RepeatedGroup) Type() protoreflect.MessageType {
-	return xxx_Ext_ProtoFile_MessageTypes[3].Type
+	return xxx_Ext_protoFile_MessageTypes[3].Type
 }
 func (m xxx_RepeatedGroup) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[3].KnownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[3].KnownFieldsOf(m.m)
 }
 func (m xxx_RepeatedGroup) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[3].UnknownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[3].UnknownFieldsOf(m.m)
 }
 func (m xxx_RepeatedGroup) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -297,13 +297,13 @@ func (m *Extendable) ProtoReflect() protoreflect.Message {
 	return xxx_Extendable{m}
 }
 func (m xxx_Extendable) Type() protoreflect.MessageType {
-	return xxx_Ext_ProtoFile_MessageTypes[4].Type
+	return xxx_Ext_protoFile_MessageTypes[4].Type
 }
 func (m xxx_Extendable) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[4].KnownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[4].KnownFieldsOf(m.m)
 }
 func (m xxx_Extendable) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[4].UnknownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[4].UnknownFieldsOf(m.m)
 }
 func (m xxx_Extendable) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -357,13 +357,13 @@ func (m *MessageSetWireFormatExtension) ProtoReflect() protoreflect.Message {
 	return xxx_MessageSetWireFormatExtension{m}
 }
 func (m xxx_MessageSetWireFormatExtension) Type() protoreflect.MessageType {
-	return xxx_Ext_ProtoFile_MessageTypes[5].Type
+	return xxx_Ext_protoFile_MessageTypes[5].Type
 }
 func (m xxx_MessageSetWireFormatExtension) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[5].KnownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[5].KnownFieldsOf(m.m)
 }
 func (m xxx_MessageSetWireFormatExtension) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[5].UnknownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[5].UnknownFieldsOf(m.m)
 }
 func (m xxx_MessageSetWireFormatExtension) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -406,13 +406,13 @@ func (m *Message_M) ProtoReflect() protoreflect.Message {
 	return xxx_Message_M{m}
 }
 func (m xxx_Message_M) Type() protoreflect.MessageType {
-	return xxx_Ext_ProtoFile_MessageTypes[6].Type
+	return xxx_Ext_protoFile_MessageTypes[6].Type
 }
 func (m xxx_Message_M) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[6].KnownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[6].KnownFieldsOf(m.m)
 }
 func (m xxx_Message_M) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[6].UnknownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[6].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message_M) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -457,13 +457,13 @@ func (m *ExtendingMessage_ExtendingMessageSubmessage) ProtoReflect() protoreflec
 	return xxx_ExtendingMessage_ExtendingMessageSubmessage{m}
 }
 func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) Type() protoreflect.MessageType {
-	return xxx_Ext_ProtoFile_MessageTypes[7].Type
+	return xxx_Ext_protoFile_MessageTypes[7].Type
 }
 func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[7].KnownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[7].KnownFieldsOf(m.m)
 }
 func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Ext_ProtoFile_MessageTypes[7].UnknownFieldsOf(m.m)
+	return xxx_Ext_protoFile_MessageTypes[7].UnknownFieldsOf(m.m)
 }
 func (m xxx_ExtendingMessage_ExtendingMessageSubmessage) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -1026,12 +1026,12 @@ var fileDescriptor_bf470ef4907b23cb = []byte{
 }
 
 func init() {
-	xxx_Ext_ProtoFile_FileDesc.Enums = xxx_Ext_ProtoFile_EnumDescs[0:1]
-	xxx_Ext_ProtoFile_FileDesc.Messages = xxx_Ext_ProtoFile_MessageDescs[0:6]
-	xxx_Ext_ProtoFile_MessageDescs[0].Messages = xxx_Ext_ProtoFile_MessageDescs[6:7]
-	xxx_Ext_ProtoFile_MessageDescs[2].Messages = xxx_Ext_ProtoFile_MessageDescs[7:8]
+	xxx_Ext_protoFile_FileDesc.Enums = xxx_Ext_protoFile_EnumDescs[0:1]
+	xxx_Ext_protoFile_FileDesc.Messages = xxx_Ext_protoFile_MessageDescs[0:6]
+	xxx_Ext_protoFile_MessageDescs[0].Messages = xxx_Ext_protoFile_MessageDescs[6:7]
+	xxx_Ext_protoFile_MessageDescs[2].Messages = xxx_Ext_protoFile_MessageDescs[7:8]
 	var err error
-	Ext_ProtoFile, err = prototype.NewFile(&xxx_Ext_ProtoFile_FileDesc)
+	Ext_protoFile, err = prototype.NewFile(&xxx_Ext_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -1039,9 +1039,9 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Ext_ProtoFile protoreflect.FileDescriptor
+var Ext_protoFile protoreflect.FileDescriptor
 
-var xxx_Ext_ProtoFile_FileDesc = prototype.File{
+var xxx_Ext_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "extensions/ext/ext.proto",
 	Package: "goproto.protoc.extension.ext",
@@ -1050,15 +1050,15 @@ var xxx_Ext_ProtoFile_FileDesc = prototype.File{
 		{FileDescriptor: prototype.PlaceholderFile("extensions/extra/extra.proto", "goproto.protoc.extension.extra")},
 	},
 }
-var xxx_Ext_ProtoFile_EnumTypes = [1]protoreflect.EnumType{
+var xxx_Ext_protoFile_EnumTypes = [1]protoreflect.EnumType{
 	prototype.GoEnum(
-		xxx_Ext_ProtoFile_EnumDescs[0].Reference(),
+		xxx_Ext_protoFile_EnumDescs[0].Reference(),
 		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enum(n)
 		},
 	),
 }
-var xxx_Ext_ProtoFile_EnumDescs = [1]prototype.Enum{
+var xxx_Ext_protoFile_EnumDescs = [1]prototype.Enum{
 	{
 		Name: "Enum",
 		Values: []prototype.EnumValue{
@@ -1066,57 +1066,57 @@ var xxx_Ext_ProtoFile_EnumDescs = [1]prototype.Enum{
 		},
 	},
 }
-var xxx_Ext_ProtoFile_MessageTypes = [8]protoimpl.MessageType{
+var xxx_Ext_protoFile_MessageTypes = [8]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Ext_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Ext_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message{new(Message)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Ext_ProtoFile_MessageDescs[1].Reference(),
+		xxx_Ext_protoFile_MessageDescs[1].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_ExtensionGroup{new(ExtensionGroup)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Ext_ProtoFile_MessageDescs[2].Reference(),
+		xxx_Ext_protoFile_MessageDescs[2].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_ExtendingMessage{new(ExtendingMessage)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Ext_ProtoFile_MessageDescs[3].Reference(),
+		xxx_Ext_protoFile_MessageDescs[3].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_RepeatedGroup{new(RepeatedGroup)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Ext_ProtoFile_MessageDescs[4].Reference(),
+		xxx_Ext_protoFile_MessageDescs[4].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Extendable{new(Extendable)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Ext_ProtoFile_MessageDescs[5].Reference(),
+		xxx_Ext_protoFile_MessageDescs[5].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_MessageSetWireFormatExtension{new(MessageSetWireFormatExtension)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Ext_ProtoFile_MessageDescs[6].Reference(),
+		xxx_Ext_protoFile_MessageDescs[6].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message_M{new(Message_M)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Ext_ProtoFile_MessageDescs[7].Reference(),
+		xxx_Ext_protoFile_MessageDescs[7].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_ExtendingMessage_ExtendingMessageSubmessage{new(ExtendingMessage_ExtendingMessageSubmessage)}
 		},
 	)},
 }
-var xxx_Ext_ProtoFile_MessageDescs = [8]prototype.Message{
+var xxx_Ext_protoFile_MessageDescs = [8]prototype.Message{
 	{
 		Name: "Message",
 		Fields: []prototype.Field{

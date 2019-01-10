@@ -23,7 +23,7 @@ const (
 )
 
 func (e Enum1) Type() protoreflect.EnumType {
-	return xxx_Test_ProtoFile_EnumTypes[0]
+	return xxx_Test_protoFile_EnumTypes[0]
 }
 func (e Enum1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -67,7 +67,7 @@ const (
 )
 
 func (e Enum2) Type() protoreflect.EnumType {
-	return xxx_Test_ProtoFile_EnumTypes[1]
+	return xxx_Test_protoFile_EnumTypes[1]
 }
 func (e Enum2) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -111,7 +111,7 @@ const (
 )
 
 func (e Enum3) Type() protoreflect.EnumType {
-	return xxx_Test_ProtoFile_EnumTypes[2]
+	return xxx_Test_protoFile_EnumTypes[2]
 }
 func (e Enum3) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -161,13 +161,13 @@ func (m *Message1) ProtoReflect() protoreflect.Message {
 	return xxx_Message1{m}
 }
 func (m xxx_Message1) Type() protoreflect.MessageType {
-	return xxx_Test_ProtoFile_MessageTypes[0].Type
+	return xxx_Test_protoFile_MessageTypes[0].Type
 }
 func (m xxx_Message1) KnownFields() protoreflect.KnownFields {
-	return xxx_Test_ProtoFile_MessageTypes[0].KnownFieldsOf(m.m)
+	return xxx_Test_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
 }
 func (m xxx_Message1) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Test_ProtoFile_MessageTypes[0].UnknownFieldsOf(m.m)
+	return xxx_Test_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message1) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -218,13 +218,13 @@ func (m *Message2) ProtoReflect() protoreflect.Message {
 	return xxx_Message2{m}
 }
 func (m xxx_Message2) Type() protoreflect.MessageType {
-	return xxx_Test_ProtoFile_MessageTypes[1].Type
+	return xxx_Test_protoFile_MessageTypes[1].Type
 }
 func (m xxx_Message2) KnownFields() protoreflect.KnownFields {
-	return xxx_Test_ProtoFile_MessageTypes[1].KnownFieldsOf(m.m)
+	return xxx_Test_protoFile_MessageTypes[1].KnownFieldsOf(m.m)
 }
 func (m xxx_Message2) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Test_ProtoFile_MessageTypes[1].UnknownFieldsOf(m.m)
+	return xxx_Test_protoFile_MessageTypes[1].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message2) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -267,13 +267,13 @@ func (m *Message3) ProtoReflect() protoreflect.Message {
 	return xxx_Message3{m}
 }
 func (m xxx_Message3) Type() protoreflect.MessageType {
-	return xxx_Test_ProtoFile_MessageTypes[2].Type
+	return xxx_Test_protoFile_MessageTypes[2].Type
 }
 func (m xxx_Message3) KnownFields() protoreflect.KnownFields {
-	return xxx_Test_ProtoFile_MessageTypes[2].KnownFieldsOf(m.m)
+	return xxx_Test_protoFile_MessageTypes[2].KnownFieldsOf(m.m)
 }
 func (m xxx_Message3) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Test_ProtoFile_MessageTypes[2].UnknownFieldsOf(m.m)
+	return xxx_Test_protoFile_MessageTypes[2].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message3) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -317,13 +317,13 @@ func (m *Message4) ProtoReflect() protoreflect.Message {
 	return xxx_Message4{m}
 }
 func (m xxx_Message4) Type() protoreflect.MessageType {
-	return xxx_Test_ProtoFile_MessageTypes[3].Type
+	return xxx_Test_protoFile_MessageTypes[3].Type
 }
 func (m xxx_Message4) KnownFields() protoreflect.KnownFields {
-	return xxx_Test_ProtoFile_MessageTypes[3].KnownFieldsOf(m.m)
+	return xxx_Test_protoFile_MessageTypes[3].KnownFieldsOf(m.m)
 }
 func (m xxx_Message4) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Test_ProtoFile_MessageTypes[3].UnknownFieldsOf(m.m)
+	return xxx_Test_protoFile_MessageTypes[3].UnknownFieldsOf(m.m)
 }
 func (m xxx_Message4) Interface() protoreflect.ProtoMessage {
 	return m.m
@@ -456,10 +456,10 @@ var fileDescriptor_3628d63611f7063d = []byte{
 }
 
 func init() {
-	xxx_Test_ProtoFile_FileDesc.Enums = xxx_Test_ProtoFile_EnumDescs[0:3]
-	xxx_Test_ProtoFile_FileDesc.Messages = xxx_Test_ProtoFile_MessageDescs[0:4]
+	xxx_Test_protoFile_FileDesc.Enums = xxx_Test_protoFile_EnumDescs[0:3]
+	xxx_Test_protoFile_FileDesc.Messages = xxx_Test_protoFile_MessageDescs[0:4]
 	var err error
-	Test_ProtoFile, err = prototype.NewFile(&xxx_Test_ProtoFile_FileDesc)
+	Test_protoFile, err = prototype.NewFile(&xxx_Test_protoFile_FileDesc)
 	if err != nil {
 		panic(err)
 	}
@@ -467,34 +467,34 @@ func init() {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Test_ProtoFile protoreflect.FileDescriptor
+var Test_protoFile protoreflect.FileDescriptor
 
-var xxx_Test_ProtoFile_FileDesc = prototype.File{
+var xxx_Test_protoFile_FileDesc = prototype.File{
 	Syntax:  protoreflect.Proto2,
 	Path:    "reflect/protoregistry/testprotos/test.proto",
 	Package: "testprotos",
 }
-var xxx_Test_ProtoFile_EnumTypes = [3]protoreflect.EnumType{
+var xxx_Test_protoFile_EnumTypes = [3]protoreflect.EnumType{
 	prototype.GoEnum(
-		xxx_Test_ProtoFile_EnumDescs[0].Reference(),
+		xxx_Test_protoFile_EnumDescs[0].Reference(),
 		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enum1(n)
 		},
 	),
 	prototype.GoEnum(
-		xxx_Test_ProtoFile_EnumDescs[1].Reference(),
+		xxx_Test_protoFile_EnumDescs[1].Reference(),
 		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enum2(n)
 		},
 	),
 	prototype.GoEnum(
-		xxx_Test_ProtoFile_EnumDescs[2].Reference(),
+		xxx_Test_protoFile_EnumDescs[2].Reference(),
 		func(_ protoreflect.EnumType, n protoreflect.EnumNumber) protoreflect.Enum {
 			return Enum3(n)
 		},
 	),
 }
-var xxx_Test_ProtoFile_EnumDescs = [3]prototype.Enum{
+var xxx_Test_protoFile_EnumDescs = [3]prototype.Enum{
 	{
 		Name: "Enum1",
 		Values: []prototype.EnumValue{
@@ -514,33 +514,33 @@ var xxx_Test_ProtoFile_EnumDescs = [3]prototype.Enum{
 		},
 	},
 }
-var xxx_Test_ProtoFile_MessageTypes = [4]protoimpl.MessageType{
+var xxx_Test_protoFile_MessageTypes = [4]protoimpl.MessageType{
 	{Type: prototype.GoMessage(
-		xxx_Test_ProtoFile_MessageDescs[0].Reference(),
+		xxx_Test_protoFile_MessageDescs[0].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message1{new(Message1)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Test_ProtoFile_MessageDescs[1].Reference(),
+		xxx_Test_protoFile_MessageDescs[1].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message2{new(Message2)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Test_ProtoFile_MessageDescs[2].Reference(),
+		xxx_Test_protoFile_MessageDescs[2].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message3{new(Message3)}
 		},
 	)},
 	{Type: prototype.GoMessage(
-		xxx_Test_ProtoFile_MessageDescs[3].Reference(),
+		xxx_Test_protoFile_MessageDescs[3].Reference(),
 		func(protoreflect.MessageType) protoreflect.Message {
 			return xxx_Message4{new(Message4)}
 		},
 	)},
 }
-var xxx_Test_ProtoFile_MessageDescs = [4]prototype.Message{
+var xxx_Test_protoFile_MessageDescs = [4]prototype.Message{
 	{
 		Name:            "Message1",
 		ExtensionRanges: [][2]protoreflect.FieldNumber{{10, 536870912}},
