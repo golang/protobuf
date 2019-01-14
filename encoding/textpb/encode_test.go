@@ -316,7 +316,7 @@ s_nested_enum: 47
 			Optgroup:  &pb2.Nests_OptGroup{},
 		},
 		want: `opt_nested: {}
-optgroup: {}
+OptGroup: {}
 `,
 	}, {
 		desc: "proto2 nested messages",
@@ -349,13 +349,13 @@ optgroup: {}
 				},
 			},
 		},
-		want: `optgroup: {
+		want: `OptGroup: {
   opt_bool: true
   opt_string: "inside a group"
   opt_nested: {
     opt_string: "nested message inside a group"
   }
-  optnestedgroup: {
+  OptNestedGroup: {
     opt_enum: TENTH
   }
 }

@@ -6,6 +6,7 @@ package textpb
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/golang/protobuf/v2/internal/encoding/text"
 	"github.com/golang/protobuf/v2/internal/errors"
@@ -103,6 +104,10 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 		case text.Name:
 			name, _ = tkey.Name()
 			fd = fieldDescs.ByName(name)
+			if fd == nil {
+				// Check if this is a group field.
+				fd = fieldDescs.ByName(pref.Name(strings.ToLower(string(name))))
+			}
 		case text.String:
 			// TODO: Handle Any expansions here as well.
 

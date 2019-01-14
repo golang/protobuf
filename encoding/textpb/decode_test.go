@@ -417,7 +417,7 @@ s_nested_enum: -0x80000000
 		inputMessage: &pb2.Nests{},
 		inputText: `
 opt_nested: {}
-optgroup: {}
+OptGroup: {}
 `,
 		wantMessage: &pb2.Nests{
 			OptNested: &pb2.Nested{},
@@ -585,11 +585,11 @@ rpt_nested: {}
 		desc:         "repeated group fields",
 		inputMessage: &pb2.Nests{},
 		inputText: `
-rptgroup: {
+RptGroup: {
   rpt_bool: true
   rpt_bool: false
 }
-rptgroup: {}
+RptGroup: {}
 `,
 		wantMessage: &pb2.Nests{
 			Rptgroup: []*pb2.Nests_RptGroup{
