@@ -19,6 +19,7 @@ import (
 	"go/parser"
 	"go/printer"
 	"go/token"
+	"go/types"
 	"io/ioutil"
 	"os"
 	"path"
@@ -851,6 +852,12 @@ func (gen *Plugin) NewGeneratedFile(filename string, goImportPath GoImportPath) 
 		manualImports:    make(map[GoImportPath]bool),
 		annotations:      make(map[string][]Location),
 	}
+
+	// All predeclared identifiers in Go are already used.
+	for _, s := range types.Universe.Names() {
+		g.usedPackageNames[GoPackageName(s)] = true
+	}
+
 	gen.genFiles = append(gen.genFiles, g)
 	return g
 }
@@ -906,7 +913,7 @@ func (g *GeneratedFile) QualifiedGoIdent(ident GoIdent) string {
 		return string(packageName) + "." + ident.GoName
 	}
 	packageName := cleanPackageName(baseName(string(ident.GoImportPath)))
-	for i, orig := 1, packageName; g.usedPackageNames[packageName] || isGoPredeclaredIdentifier[string(packageName)]; i++ {
+	for i, orig := 1, packageName; g.usedPackageNames[packageName]; i++ {
 		packageName = orig + GoPackageName(strconv.Itoa(i))
 	}
 	g.packageNames[ident.GoImportPath] = packageName
