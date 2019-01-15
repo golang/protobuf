@@ -169,6 +169,19 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P("}")
 	g.P()
 
+	// Client Unimplemented struct for forward compatabilit.
+	if deprecated {
+		g.P("//")
+		g.P(deprecationComment)
+	}
+	g.P("type ", servName, "ClientSafeImplementation struct {")
+	g.P("}")
+	g.P()
+	for i, method := range service.Method {
+		g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
+		g.P(g.generateClientMethodConcrete(servName, method))
+	}
+
 	// Client structure.
 	g.P("type ", unexport(servName), "Client struct {")
 	g.P("cc *", grpcPkg, ".ClientConn")
@@ -267,6 +280,13 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P("Metadata: \"", file.GetName(), "\",")
 	g.P("}")
 	g.P()
+}
+
+// generateClientMethodConcrete returns unimplemented methods which ensure forward compatibility
+func (g *grpc) generateClientMethodConcrete(servName string, method *pb.MethodDescriptorProto) string {
+	header := g.generateClientSignature(servName, method)
+	implementation := fmt.Sprintf("func (*%sSafeImplementation) %s {\n\tfmt.Println(\"Unimplemented function\")\n}\n", servName, header)
+	return implementation
 }
 
 // generateClientSignature returns the client-side signature for a method.
