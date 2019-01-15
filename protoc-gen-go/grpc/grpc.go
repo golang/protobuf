@@ -52,6 +52,7 @@ const generatedCodeVersion = 4
 // Paths for packages used by code generated in this file,
 // relative to the import_prefix of the generator.Generator.
 const (
+	errorPkgPath   = "errors"
 	contextPkgPath = "context"
 	grpcPkgPath    = "google.golang.org/grpc"
 )
@@ -77,6 +78,7 @@ func (g *grpc) Name() string {
 var (
 	contextPkg string
 	grpcPkg    string
+	errorPkg   string
 )
 
 // Init initializes the plugin.
@@ -105,12 +107,14 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 		return
 	}
 
+	errorPkg = string(g.gen.AddImport(errorPkgPath))
 	contextPkg = string(g.gen.AddImport(contextPkgPath))
 	grpcPkg = string(g.gen.AddImport(grpcPkgPath))
 
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConn")
+	g.P("var v = ", errorPkg, ".New(\"Unimplemented Function\")")
 	g.P()
 
 	// Assert version compatibility.
@@ -174,6 +178,7 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 		g.P("//")
 		g.P(deprecationComment)
 	}
+	g.P("// ", servName, "ClientSafeImplementation should be extended to have forward comptaible implementations")
 	g.P("type ", servName, "ClientSafeImplementation struct {")
 	g.P("}")
 	g.P()
@@ -229,6 +234,22 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P("}")
 	g.P()
 
+	// Server Unimplemented struct for forward compatabilit.
+	if deprecated {
+		g.P("//")
+		g.P(deprecationComment)
+	}
+	g.P("// ", servName, "ServerSafeImplementation should be extended to have forward comptaible implementations")
+	g.P("type ", serverType, "SafeImplementation struct {")
+	g.P("}")
+	g.P()
+	// SafeImplementation's concrete methods
+	for i, method := range service.Method {
+		g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
+		g.P(g.generateServerMethodConcrete(servName, method))
+	}
+	g.P()
+
 	// Server registration.
 	if deprecated {
 		g.P(deprecationComment)
@@ -282,10 +303,15 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P()
 }
 
-// generateClientMethodConcrete returns unimplemented methods which ensure forward compatibility
-func (g *grpc) generateClientMethodConcrete(servName string, method *pb.MethodDescriptorProto) string {
-	header := g.generateClientSignature(servName, method)
-	implementation := fmt.Sprintf("func (*%sSafeImplementation) %s {\n\tfmt.Println(\"Unimplemented function\")\n}\n", servName, header)
+// generateServerMethodConcrete returns unimplemented methods which ensure forward compatibility
+func (g *grpc) generateServerMethodConcrete(servName string, method *pb.MethodDescriptorProto) string {
+	header := g.generateServerSignature(servName, method)
+	implementation := fmt.Sprintf("func (*%sServerSafeImplementation) %s {\n\tfmt.Println(\"Unimplemented function\")\n", servName, header)
+	implementation += fmt.Sprintf("\treturn ")
+	if !method.GetServerStreaming() && !method.GetClientStreaming() {
+		implementation += fmt.Sprintf("nil, ")
+	}
+	implementation += fmt.Sprintf("errors.New(\"Unimplemented Function\")\n}")
 	return implementation
 }
 
@@ -386,6 +412,14 @@ func (g *grpc) generateClientMethod(servName, fullServName, serviceDescVar strin
 		g.P("}")
 		g.P()
 	}
+}
+
+// generateClientMethodConcrete returns unimplemented methods which ensure forward compatibility
+func (g *grpc) generateClientMethodConcrete(servName string, method *pb.MethodDescriptorProto) string {
+	header := g.generateClientSignature(servName, method)
+	implementation := fmt.Sprintf("func (*%sClientSafeImplementation) %s {\n\tfmt.Println(\"Unimplemented function\")\n", servName, header)
+	implementation += fmt.Sprintf("\treturn nil, errors.New(\"Unimplemented Function\")\n}")
+	return implementation
 }
 
 // generateServerSignature returns the server-side signature for a method.
