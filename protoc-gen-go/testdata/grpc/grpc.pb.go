@@ -5,6 +5,7 @@ package testing
 
 import (
 	context "context"
+	errors "errors"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
@@ -178,6 +179,7 @@ var fileDescriptor_81ea47a3f88c2082 = []byte{
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
+var v = errors.New("Unimplemented Function")
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -194,6 +196,33 @@ type TestClient interface {
 	Upstream(ctx context.Context, opts ...grpc.CallOption) (Test_UpstreamClient, error)
 	// This one streams in both directions.
 	Bidi(ctx context.Context, opts ...grpc.CallOption) (Test_BidiClient, error)
+}
+
+// TestClientSafeImplementation should be extended to have forward comptaible implementations
+type TestClientSafeImplementation struct {
+}
+
+func (*TestClientSafeImplementation) UnaryCall(ctx context.Context, in *SimpleRequest, opts ...grpc.CallOption) (*SimpleResponse, error) {
+	fmt.Println("Unimplemented function")
+	return nil, errors.New("Unimplemented Function")
+}
+
+// This RPC streams from the server only.
+func (*TestClientSafeImplementation) Downstream(ctx context.Context, in *SimpleRequest, opts ...grpc.CallOption) (Test_DownstreamClient, error) {
+	fmt.Println("Unimplemented function")
+	return nil, errors.New("Unimplemented Function")
+}
+
+// This RPC streams from the client.
+func (*TestClientSafeImplementation) Upstream(ctx context.Context, opts ...grpc.CallOption) (Test_UpstreamClient, error) {
+	fmt.Println("Unimplemented function")
+	return nil, errors.New("Unimplemented Function")
+}
+
+// This one streams in both directions.
+func (*TestClientSafeImplementation) Bidi(ctx context.Context, opts ...grpc.CallOption) (Test_BidiClient, error) {
+	fmt.Println("Unimplemented function")
+	return nil, errors.New("Unimplemented Function")
 }
 
 type testClient struct {
@@ -319,6 +348,33 @@ type TestServer interface {
 	Upstream(Test_UpstreamServer) error
 	// This one streams in both directions.
 	Bidi(Test_BidiServer) error
+}
+
+// TestServerSafeImplementation should be extended to have forward comptaible implementations
+type TestServerSafeImplementation struct {
+}
+
+func (*TestServerSafeImplementation) UnaryCall(context.Context, *SimpleRequest) (*SimpleResponse, error) {
+	fmt.Println("Unimplemented function")
+	return nil, errors.New("Unimplemented Function")
+}
+
+// This RPC streams from the server only.
+func (*TestServerSafeImplementation) Downstream(*SimpleRequest, Test_DownstreamServer) error {
+	fmt.Println("Unimplemented function")
+	return errors.New("Unimplemented Function")
+}
+
+// This RPC streams from the client.
+func (*TestServerSafeImplementation) Upstream(Test_UpstreamServer) error {
+	fmt.Println("Unimplemented function")
+	return errors.New("Unimplemented Function")
+}
+
+// This one streams in both directions.
+func (*TestServerSafeImplementation) Bidi(Test_BidiServer) error {
+	fmt.Println("Unimplemented function")
+	return errors.New("Unimplemented Function")
 }
 
 func RegisterTestServer(s *grpc.Server, srv TestServer) {

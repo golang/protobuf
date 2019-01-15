@@ -7,6 +7,7 @@ package deprecated
 
 import (
 	context "context"
+	errors "errors"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
@@ -193,6 +194,7 @@ var fileDescriptor_f64ba265cd7eae3f = []byte{
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
+var v = errors.New("Unimplemented Function")
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -206,6 +208,18 @@ const _ = grpc.SupportPackageIsVersion4
 type DeprecatedServiceClient interface {
 	// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
 	DeprecatedCall(ctx context.Context, in *DeprecatedRequest, opts ...grpc.CallOption) (*DeprecatedResponse, error)
+}
+
+//
+// Deprecated: Do not use.
+// DeprecatedServiceClientSafeImplementation should be extended to have forward comptaible implementations
+type DeprecatedServiceClientSafeImplementation struct {
+}
+
+// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
+func (*DeprecatedServiceClientSafeImplementation) DeprecatedCall(ctx context.Context, in *DeprecatedRequest, opts ...grpc.CallOption) (*DeprecatedResponse, error) {
+	fmt.Println("Unimplemented function")
+	return nil, errors.New("Unimplemented Function")
 }
 
 type deprecatedServiceClient struct {
@@ -233,6 +247,18 @@ func (c *deprecatedServiceClient) DeprecatedCall(ctx context.Context, in *Deprec
 type DeprecatedServiceServer interface {
 	// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
 	DeprecatedCall(context.Context, *DeprecatedRequest) (*DeprecatedResponse, error)
+}
+
+//
+// Deprecated: Do not use.
+// DeprecatedServiceServerSafeImplementation should be extended to have forward comptaible implementations
+type DeprecatedServiceServerSafeImplementation struct {
+}
+
+// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
+func (*DeprecatedServiceServerSafeImplementation) DeprecatedCall(context.Context, *DeprecatedRequest) (*DeprecatedResponse, error) {
+	fmt.Println("Unimplemented function")
+	return nil, errors.New("Unimplemented Function")
 }
 
 // Deprecated: Do not use.
