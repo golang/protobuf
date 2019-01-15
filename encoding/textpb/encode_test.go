@@ -537,11 +537,11 @@ rpt_nested: {}
 				{},
 			},
 		},
-		want: `rptgroup: {
+		want: `RptGroup: {
   rpt_bool: true
   rpt_bool: false
 }
-rptgroup: {}
+RptGroup: {}
 `,
 	}, {
 		desc:  "map fields empty",

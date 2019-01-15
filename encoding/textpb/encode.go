@@ -127,6 +127,11 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 func (o MarshalOptions) appendField(msgFields [][2]text.Value, tname text.Value, pval pref.Value, fd pref.FieldDescriptor) ([][2]text.Value, error) {
 	var nerr errors.NonFatal
 
+	// Use type name for group field name.
+	if fd.Kind() == pref.GroupKind {
+		tname = text.ValueOf(fd.MessageType().Name())
+	}
+
 	if fd.Cardinality() == pref.Repeated {
 		// Map or repeated fields.
 		var items []text.Value
@@ -152,10 +157,6 @@ func (o MarshalOptions) appendField(msgFields [][2]text.Value, tname text.Value,
 		tval, err := o.marshalSingular(pval, fd)
 		if !nerr.Merge(err) {
 			return msgFields, err
-		}
-		// Use type name for group field name.
-		if fd.Kind() == pref.GroupKind {
-			tname = text.ValueOf(fd.MessageType().Name())
 		}
 		msgFields = append(msgFields, [2]text.Value{tname, tval})
 	}
