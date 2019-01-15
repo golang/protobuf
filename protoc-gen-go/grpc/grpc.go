@@ -52,9 +52,10 @@ const generatedCodeVersion = 4
 // Paths for packages used by code generated in this file,
 // relative to the import_prefix of the generator.Generator.
 const (
-	errorPkgPath   = "errors"
+	errorPkgPath   = "google.golang.org/grpc/status"
 	contextPkgPath = "context"
 	grpcPkgPath    = "google.golang.org/grpc"
+	codePkgPath    = "google.golang.org/grpc/codes"
 )
 
 func init() {
@@ -79,6 +80,7 @@ var (
 	contextPkg string
 	grpcPkg    string
 	errorPkg   string
+	codePkg    string
 )
 
 // Init initializes the plugin.
@@ -108,13 +110,15 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	}
 
 	errorPkg = string(g.gen.AddImport(errorPkgPath))
+	codePkg = string(g.gen.AddImport(codePkgPath))
 	contextPkg = string(g.gen.AddImport(contextPkgPath))
 	grpcPkg = string(g.gen.AddImport(grpcPkgPath))
 
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConn")
-	g.P("var v = ", errorPkg, ".New(\"Unimplemented Function\")")
+	g.P("var errUnimplemented = ", errorPkg, ".Errorf(codes.Unimplemented, \"not implemented\\n\")")
+	g.P("var _ ", codePkg, ".Code")
 	g.P()
 
 	// Assert version compatibility.
@@ -178,8 +182,8 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 		g.P("//")
 		g.P(deprecationComment)
 	}
-	g.P("// ", servName, "ClientSafeImplementation should be extended to have forward comptaible implementations")
-	g.P("type ", servName, "ClientSafeImplementation struct {")
+	g.P("// Unimplemented", servName, "Client should be embedded to have forward compatible implementations")
+	g.P("type Unimplemented", servName, "Client struct {")
 	g.P("}")
 	g.P()
 	for i, method := range service.Method {
@@ -239,11 +243,11 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 		g.P("//")
 		g.P(deprecationComment)
 	}
-	g.P("// ", servName, "ServerSafeImplementation should be extended to have forward comptaible implementations")
-	g.P("type ", serverType, "SafeImplementation struct {")
+	g.P("// Unimplemented", servName, "Server should be embedded to have forward compatible implementations")
+	g.P("type Unimplemented", serverType, " struct {")
 	g.P("}")
 	g.P()
-	// SafeImplementation's concrete methods
+	// Unimplemented<service_name>Server's concrete methods
 	for i, method := range service.Method {
 		g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
 		g.P(g.generateServerMethodConcrete(servName, method))
@@ -306,12 +310,12 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 // generateServerMethodConcrete returns unimplemented methods which ensure forward compatibility
 func (g *grpc) generateServerMethodConcrete(servName string, method *pb.MethodDescriptorProto) string {
 	header := g.generateServerSignature(servName, method)
-	implementation := fmt.Sprintf("func (*%sServerSafeImplementation) %s {\n\tfmt.Println(\"Unimplemented function\")\n", servName, header)
+	implementation := fmt.Sprintf("func (*Unimplemented%sServer) %s {\n\tfmt.Println(\"Unimplemented function\")\n", servName, header)
 	implementation += fmt.Sprintf("\treturn ")
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
 		implementation += fmt.Sprintf("nil, ")
 	}
-	implementation += fmt.Sprintf("errors.New(\"Unimplemented Function\")\n}")
+	implementation += fmt.Sprintf("errUnimplemented\n}")
 	return implementation
 }
 
@@ -417,8 +421,8 @@ func (g *grpc) generateClientMethod(servName, fullServName, serviceDescVar strin
 // generateClientMethodConcrete returns unimplemented methods which ensure forward compatibility
 func (g *grpc) generateClientMethodConcrete(servName string, method *pb.MethodDescriptorProto) string {
 	header := g.generateClientSignature(servName, method)
-	implementation := fmt.Sprintf("func (*%sClientSafeImplementation) %s {\n\tfmt.Println(\"Unimplemented function\")\n", servName, header)
-	implementation += fmt.Sprintf("\treturn nil, errors.New(\"Unimplemented Function\")\n}")
+	implementation := fmt.Sprintf("func (*Unimplemented%sClient) %s {\n\tfmt.Println(\"Unimplemented function\")\n", servName, header)
+	implementation += fmt.Sprintf("\treturn nil, errUnimplemented\n}")
 	return implementation
 }
 
