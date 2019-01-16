@@ -180,7 +180,7 @@ var fileDescriptor_81ea47a3f88c2082 = []byte{
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
-var errUnimplemented = status.Errorf(codes.Unimplemented, "not implemented\n")
+var errUnimplemented = status.Error(codes.Unimplemented, "not implemented\n")
 var _ codes.Code
 
 // This is a compile-time assertion to ensure that this generated file
@@ -198,33 +198,6 @@ type TestClient interface {
 	Upstream(ctx context.Context, opts ...grpc.CallOption) (Test_UpstreamClient, error)
 	// This one streams in both directions.
 	Bidi(ctx context.Context, opts ...grpc.CallOption) (Test_BidiClient, error)
-}
-
-// UnimplementedTestClient should be embedded to have forward compatible implementations
-type UnimplementedTestClient struct {
-}
-
-func (*UnimplementedTestClient) UnaryCall(ctx context.Context, in *SimpleRequest, opts ...grpc.CallOption) (*SimpleResponse, error) {
-	fmt.Println("Unimplemented function")
-	return nil, errUnimplemented
-}
-
-// This RPC streams from the server only.
-func (*UnimplementedTestClient) Downstream(ctx context.Context, in *SimpleRequest, opts ...grpc.CallOption) (Test_DownstreamClient, error) {
-	fmt.Println("Unimplemented function")
-	return nil, errUnimplemented
-}
-
-// This RPC streams from the client.
-func (*UnimplementedTestClient) Upstream(ctx context.Context, opts ...grpc.CallOption) (Test_UpstreamClient, error) {
-	fmt.Println("Unimplemented function")
-	return nil, errUnimplemented
-}
-
-// This one streams in both directions.
-func (*UnimplementedTestClient) Bidi(ctx context.Context, opts ...grpc.CallOption) (Test_BidiClient, error) {
-	fmt.Println("Unimplemented function")
-	return nil, errUnimplemented
 }
 
 type testClient struct {

@@ -195,7 +195,7 @@ var fileDescriptor_f64ba265cd7eae3f = []byte{
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
-var errUnimplemented = status.Errorf(codes.Unimplemented, "not implemented\n")
+var errUnimplemented = status.Error(codes.Unimplemented, "not implemented\n")
 var _ codes.Code
 
 // This is a compile-time assertion to ensure that this generated file
@@ -210,18 +210,6 @@ const _ = grpc.SupportPackageIsVersion4
 type DeprecatedServiceClient interface {
 	// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
 	DeprecatedCall(ctx context.Context, in *DeprecatedRequest, opts ...grpc.CallOption) (*DeprecatedResponse, error)
-}
-
-//
-// Deprecated: Do not use.
-// UnimplementedDeprecatedServiceClient should be embedded to have forward compatible implementations
-type UnimplementedDeprecatedServiceClient struct {
-}
-
-// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
-func (*UnimplementedDeprecatedServiceClient) DeprecatedCall(ctx context.Context, in *DeprecatedRequest, opts ...grpc.CallOption) (*DeprecatedResponse, error) {
-	fmt.Println("Unimplemented function")
-	return nil, errUnimplemented
 }
 
 type deprecatedServiceClient struct {

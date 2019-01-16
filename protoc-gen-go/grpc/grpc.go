@@ -117,7 +117,7 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConn")
-	g.P("var errUnimplemented = ", errorPkg, ".Errorf(codes.Unimplemented, \"not implemented\\n\")")
+	g.P("var errUnimplemented = ", errorPkg, ".Error(codes.Unimplemented, \"not implemented\\n\")")
 	g.P("var _ ", codePkg, ".Code")
 	g.P()
 
@@ -176,20 +176,6 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	}
 	g.P("}")
 	g.P()
-
-	// Client Unimplemented struct for forward compatabilit.
-	if deprecated {
-		g.P("//")
-		g.P(deprecationComment)
-	}
-	g.P("// Unimplemented", servName, "Client should be embedded to have forward compatible implementations")
-	g.P("type Unimplemented", servName, "Client struct {")
-	g.P("}")
-	g.P()
-	for i, method := range service.Method {
-		g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
-		g.P(g.generateClientMethodConcrete(servName, method))
-	}
 
 	// Client structure.
 	g.P("type ", unexport(servName), "Client struct {")
