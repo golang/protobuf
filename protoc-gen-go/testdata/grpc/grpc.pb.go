@@ -180,7 +180,9 @@ var fileDescriptor_81ea47a3f88c2082 = []byte{
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
-var errUnimplemented = status.Error(codes.Unimplemented, "not implemented\n")
+var errUnimplemented = func(methodName string) error {
+	return status.Errorf(codes.Unimplemented, "Method %s not implemented", methodName)
+}
 var _ codes.Code
 
 // This is a compile-time assertion to ensure that this generated file
@@ -329,27 +331,17 @@ type TestServer interface {
 type UnimplementedTestServer struct {
 }
 
-func (*UnimplementedTestServer) UnaryCall(context.Context, *SimpleRequest) (*SimpleResponse, error) {
-	fmt.Println("Unimplemented function")
-	return nil, errUnimplemented
+func (*UnimplementedTestServer) UnaryCall(ctx context.Context, req *SimpleRequest) (*SimpleResponse, error) {
+	return nil, errUnimplemented("UnaryCall")
 }
-
-// This RPC streams from the server only.
-func (*UnimplementedTestServer) Downstream(*SimpleRequest, Test_DownstreamServer) error {
-	fmt.Println("Unimplemented function")
-	return errUnimplemented
+func (*UnimplementedTestServer) Downstream(req *SimpleRequest, srv Test_DownstreamServer) error {
+	return errUnimplemented("Downstream")
 }
-
-// This RPC streams from the client.
-func (*UnimplementedTestServer) Upstream(Test_UpstreamServer) error {
-	fmt.Println("Unimplemented function")
-	return errUnimplemented
+func (*UnimplementedTestServer) Upstream(srv Test_UpstreamServer) error {
+	return errUnimplemented("Upstream")
 }
-
-// This one streams in both directions.
-func (*UnimplementedTestServer) Bidi(Test_BidiServer) error {
-	fmt.Println("Unimplemented function")
-	return errUnimplemented
+func (*UnimplementedTestServer) Bidi(srv Test_BidiServer) error {
+	return errUnimplemented("Bidi")
 }
 
 func RegisterTestServer(s *grpc.Server, srv TestServer) {

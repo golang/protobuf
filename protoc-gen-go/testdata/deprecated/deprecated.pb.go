@@ -195,7 +195,9 @@ var fileDescriptor_f64ba265cd7eae3f = []byte{
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
-var errUnimplemented = status.Error(codes.Unimplemented, "not implemented\n")
+var errUnimplemented = func(methodName string) error {
+	return status.Errorf(codes.Unimplemented, "Method %s not implemented", methodName)
+}
 var _ codes.Code
 
 // This is a compile-time assertion to ensure that this generated file
@@ -245,10 +247,8 @@ type DeprecatedServiceServer interface {
 type UnimplementedDeprecatedServiceServer struct {
 }
 
-// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
-func (*UnimplementedDeprecatedServiceServer) DeprecatedCall(context.Context, *DeprecatedRequest) (*DeprecatedResponse, error) {
-	fmt.Println("Unimplemented function")
-	return nil, errUnimplemented
+func (*UnimplementedDeprecatedServiceServer) DeprecatedCall(ctx context.Context, req *DeprecatedRequest) (*DeprecatedResponse, error) {
+	return nil, errUnimplemented("DeprecatedCall")
 }
 
 // Deprecated: Do not use.

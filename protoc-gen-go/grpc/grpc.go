@@ -117,7 +117,7 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConn")
-	g.P("var errUnimplemented = ", errorPkg, ".Error(codes.Unimplemented, \"not implemented\\n\")")
+	g.P("var errUnimplemented = func (methodName string) error {\n\t return ", errorPkg, ".Errorf(codes.Unimplemented, \"Method %s not implemented\", methodName)\n}")
 	g.P("var _ ", codePkg, ".Code")
 	g.P()
 
@@ -224,21 +224,12 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P("}")
 	g.P()
 
-	// Server Unimplemented struct for forward compatabilit.
+	// Server Unimplemented struct for forward compatability.
 	if deprecated {
 		g.P("//")
 		g.P(deprecationComment)
 	}
-	g.P("// Unimplemented", servName, "Server should be embedded to have forward compatible implementations")
-	g.P("type Unimplemented", serverType, " struct {")
-	g.P("}")
-	g.P()
-	// Unimplemented<service_name>Server's concrete methods
-	for i, method := range service.Method {
-		g.gen.PrintComments(fmt.Sprintf("%s,2,%d", path, i)) // 2 means method in a service.
-		g.P(g.generateServerMethodConcrete(servName, method))
-	}
-	g.P()
+	g.generateUnimplementedServer(servName, service)
 
 	// Server registration.
 	if deprecated {
@@ -293,15 +284,32 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P()
 }
 
+// generateUnimplementedServer creats the unimplemented server struct
+
+func (g *grpc) generateUnimplementedServer(servName string, service *pb.ServiceDescriptorProto) {
+	serverType := servName + "Server"
+	g.P("// Unimplemented", servName, "Server should be embedded to have forward compatible implementations")
+	g.P("type Unimplemented", serverType, " struct {")
+	g.P("}")
+	g.P()
+	// Unimplemented<service_name>Server's concrete methods
+	for _, method := range service.Method {
+		g.P(g.generateServerMethodConcrete(servName, method))
+	}
+	g.P()
+}
+
 // generateServerMethodConcrete returns unimplemented methods which ensure forward compatibility
 func (g *grpc) generateServerMethodConcrete(servName string, method *pb.MethodDescriptorProto) string {
-	header := g.generateServerSignature(servName, method)
-	implementation := fmt.Sprintf("func (*Unimplemented%sServer) %s {\n\tfmt.Println(\"Unimplemented function\")\n", servName, header)
+	header := g.generateServerSignatureWithParamNames(servName, method)
+	implementation := fmt.Sprintf("func (*Unimplemented%sServer) %s {\n", servName, header)
 	implementation += fmt.Sprintf("\treturn ")
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
 		implementation += fmt.Sprintf("nil, ")
 	}
-	implementation += fmt.Sprintf("errUnimplemented\n}")
+	origMethName := method.GetName()
+	methName := generator.CamelCase(origMethName)
+	implementation += fmt.Sprintf("errUnimplemented(\"%s\")\n}", methName)
 	return implementation
 }
 
@@ -404,12 +412,28 @@ func (g *grpc) generateClientMethod(servName, fullServName, serviceDescVar strin
 	}
 }
 
-// generateClientMethodConcrete returns unimplemented methods which ensure forward compatibility
-func (g *grpc) generateClientMethodConcrete(servName string, method *pb.MethodDescriptorProto) string {
-	header := g.generateClientSignature(servName, method)
-	implementation := fmt.Sprintf("func (*Unimplemented%sClient) %s {\n\tfmt.Println(\"Unimplemented function\")\n", servName, header)
-	implementation += fmt.Sprintf("\treturn nil, errUnimplemented\n}")
-	return implementation
+// generateServerSignatureWithParamNames returns the server-side signature for a method with parameter names.
+func (g *grpc) generateServerSignatureWithParamNames(servName string, method *pb.MethodDescriptorProto) string {
+	origMethName := method.GetName()
+	methName := generator.CamelCase(origMethName)
+	if reservedClientName[methName] {
+		methName += "_"
+	}
+
+	var reqArgs []string
+	ret := "error"
+	if !method.GetServerStreaming() && !method.GetClientStreaming() {
+		reqArgs = append(reqArgs, "ctx "+contextPkg+".Context")
+		ret = "(*" + g.typeName(method.GetOutputType()) + ", error)"
+	}
+	if !method.GetClientStreaming() {
+		reqArgs = append(reqArgs, "req "+"*"+g.typeName(method.GetInputType()))
+	}
+	if method.GetServerStreaming() || method.GetClientStreaming() {
+		reqArgs = append(reqArgs, "srv "+servName+"_"+generator.CamelCase(origMethName)+"Server")
+	}
+
+	return methName + "(" + strings.Join(reqArgs, ", ") + ") " + ret
 }
 
 // generateServerSignature returns the server-side signature for a method.
