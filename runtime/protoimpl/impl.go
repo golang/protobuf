@@ -11,7 +11,10 @@
 // to unauthorized usages of this package are not the author's responsibility.
 package protoimpl
 
-import "github.com/golang/protobuf/v2/internal/impl"
+import (
+	"github.com/golang/protobuf/v2/internal/fileinit"
+	"github.com/golang/protobuf/v2/internal/impl"
+)
 
 // Version is the current minor version of the package.
 // This is incremented every time the API of this package expands.
@@ -36,4 +39,5 @@ type (
 	EnforceVersion uint
 
 	MessageType = impl.MessageType
+	FileBuilder = fileinit.FileBuilder
 )

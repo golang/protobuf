@@ -153,10 +153,10 @@ func (p legacyExtensionTypes) Len() (n int) {
 }
 
 func (p legacyExtensionTypes) Register(t pref.ExtensionType) {
-	if p.mi.Type.FullName() != t.ExtendedType().FullName() {
+	if p.mi.PBType.FullName() != t.ExtendedType().FullName() {
 		panic("extended type mismatch")
 	}
-	if !p.mi.Type.ExtensionRanges().Has(t.Number()) {
+	if !p.mi.PBType.ExtensionRanges().Has(t.Number()) {
 		panic("invalid extension field number")
 	}
 	x := p.x.Get(t.Number())
@@ -173,7 +173,7 @@ func (p legacyExtensionTypes) Register(t pref.ExtensionType) {
 }
 
 func (p legacyExtensionTypes) Remove(t pref.ExtensionType) {
-	if !p.mi.Type.ExtensionRanges().Has(t.Number()) {
+	if !p.mi.PBType.ExtensionRanges().Has(t.Number()) {
 		return
 	}
 	x := p.x.Get(t.Number())

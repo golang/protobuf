@@ -126,6 +126,7 @@ fileLoop:
 				root = nextRoot
 			}
 		}
+
 		// Check for top-level conflicts within the same package.
 		// The current file cannot add any top-level declaration that conflict
 		// with another top-level declaration or sub-package name.
@@ -274,6 +275,14 @@ func rangeTopLevelDeclarations(fd protoreflect.FileDescriptor, f func(protorefle
 	for i := 0; i < fd.Enums().Len(); i++ {
 		e := fd.Enums().Get(i)
 		f(e.Name())
+
+		// TODO: Drop ranging over top-level enum values. The current
+		// implementation of fileinit.FileBuilder does not initialize the names
+		// for enum values in enums. Doing so reduces init time considerably.
+		// If we drop this, it means that conflict checks in the registry
+		// is not complete. However, this may be okay since the most common
+		// reason for a conflict is due to vendored proto files, which are
+		// most certainly going to have a name conflict on the parent enum.
 		for i := 0; i < e.Values().Len(); i++ {
 			f(e.Values().Get(i).Name())
 		}

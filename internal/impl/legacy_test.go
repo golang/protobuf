@@ -279,7 +279,7 @@ var (
 	enumV1Type    = pimpl.Export{}.EnumTypeOf(proto2_20180125.Message_ChildEnum(0))
 	messageV1Type = pimpl.Export{}.MessageTypeOf((*proto2_20180125.Message_ChildMessage)(nil))
 	enumV2Type    = enumProto2Type
-	messageV2Type = enumMessagesType.Type
+	messageV2Type = enumMessagesType.PBType
 
 	extensionTypes = []pref.ExtensionType{
 		mustMakeExtensionType(&ptype.StandaloneExtension{

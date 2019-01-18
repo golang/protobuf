@@ -4,10 +4,12 @@
 package base
 
 import (
+	bytes "bytes"
+	gzip "compress/gzip"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
-	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	reflect "reflect"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -24,29 +26,14 @@ type BaseMessage struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
-type xxx_BaseMessage struct{ m *BaseMessage }
-
 func (m *BaseMessage) ProtoReflect() protoreflect.Message {
-	return xxx_BaseMessage{m}
+	return xxx_Base_protoFile_messageTypes[0].MessageOf(m)
 }
-func (m xxx_BaseMessage) Type() protoreflect.MessageType {
-	return xxx_Base_protoFile_MessageTypes[0].Type
-}
-func (m xxx_BaseMessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Base_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
-}
-func (m xxx_BaseMessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Base_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
-}
-func (m xxx_BaseMessage) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-
 func (m *BaseMessage) Reset()         { *m = BaseMessage{} }
 func (m *BaseMessage) String() string { return proto.CompactTextString(m) }
 func (*BaseMessage) ProtoMessage()    {}
 func (*BaseMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_aebb28f8d5a04466, []int{0}
+	return fileDescriptor_aebb28f8d5a04466_gzipped, []int{0}
 }
 
 var extRange_BaseMessage = []proto.ExtensionRange{
@@ -90,29 +77,14 @@ type MessageSetWireFormatMessage struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
-type xxx_MessageSetWireFormatMessage struct{ m *MessageSetWireFormatMessage }
-
 func (m *MessageSetWireFormatMessage) ProtoReflect() protoreflect.Message {
-	return xxx_MessageSetWireFormatMessage{m}
+	return xxx_Base_protoFile_messageTypes[1].MessageOf(m)
 }
-func (m xxx_MessageSetWireFormatMessage) Type() protoreflect.MessageType {
-	return xxx_Base_protoFile_MessageTypes[1].Type
-}
-func (m xxx_MessageSetWireFormatMessage) KnownFields() protoreflect.KnownFields {
-	return xxx_Base_protoFile_MessageTypes[1].KnownFieldsOf(m.m)
-}
-func (m xxx_MessageSetWireFormatMessage) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Base_protoFile_MessageTypes[1].UnknownFieldsOf(m.m)
-}
-func (m xxx_MessageSetWireFormatMessage) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-
 func (m *MessageSetWireFormatMessage) Reset()         { *m = MessageSetWireFormatMessage{} }
 func (m *MessageSetWireFormatMessage) String() string { return proto.CompactTextString(m) }
 func (*MessageSetWireFormatMessage) ProtoMessage()    {}
 func (*MessageSetWireFormatMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_aebb28f8d5a04466, []int{1}
+	return fileDescriptor_aebb28f8d5a04466_gzipped, []int{1}
 }
 
 var extRange_MessageSetWireFormatMessage = []proto.ExtensionRange{
@@ -142,77 +114,62 @@ func (m *MessageSetWireFormatMessage) XXX_DiscardUnknown() {
 var xxx_messageInfo_MessageSetWireFormatMessage proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterFile("extensions/base/base.proto", fileDescriptor_aebb28f8d5a04466)
+	proto.RegisterFile("extensions/base/base.proto", fileDescriptor_aebb28f8d5a04466_gzipped)
 	proto.RegisterType((*BaseMessage)(nil), "goproto.protoc.extension.base.BaseMessage")
 	proto.RegisterType((*MessageSetWireFormatMessage)(nil), "goproto.protoc.extension.base.MessageSetWireFormatMessage")
 }
 
 var fileDescriptor_aebb28f8d5a04466 = []byte{
-	// 204 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4a, 0xad, 0x28, 0x49,
-	0xcd, 0x2b, 0xce, 0xcc, 0xcf, 0x2b, 0xd6, 0x4f, 0x4a, 0x2c, 0x4e, 0x05, 0x13, 0x7a, 0x05, 0x45,
-	0xf9, 0x25, 0xf9, 0x42, 0xb2, 0xe9, 0xf9, 0x60, 0x06, 0x84, 0x9b, 0xac, 0x07, 0x57, 0xaa, 0x07,
-	0x52, 0xa4, 0x64, 0xcc, 0xc5, 0xed, 0x94, 0x58, 0x9c, 0xea, 0x9b, 0x5a, 0x5c, 0x9c, 0x98, 0x9e,
-	0x2a, 0x24, 0xc2, 0xc5, 0x9a, 0x96, 0x99, 0x9a, 0x93, 0x22, 0xc1, 0xa8, 0xc0, 0xa8, 0xc1, 0x19,
-	0x04, 0xe1, 0x68, 0xb1, 0x70, 0xb0, 0x08, 0x70, 0x69, 0x71, 0x70, 0x08, 0x08, 0x34, 0x34, 0x34,
-	0x34, 0x30, 0x29, 0x69, 0x73, 0x49, 0x43, 0x35, 0x04, 0xa7, 0x96, 0x84, 0x67, 0x16, 0xa5, 0xba,
-	0xe5, 0x17, 0xe5, 0x26, 0x96, 0x40, 0xc5, 0xb4, 0x38, 0x38, 0x52, 0x04, 0xfe, 0xff, 0xff, 0xff,
-	0x9f, 0xdd, 0x8a, 0x89, 0x83, 0xd1, 0xc9, 0x2b, 0xca, 0x23, 0x3d, 0xb3, 0x24, 0xa3, 0x34, 0x49,
-	0x2f, 0x39, 0x3f, 0x57, 0x3f, 0x3d, 0x3f, 0x27, 0x31, 0x2f, 0x5d, 0x1f, 0xec, 0x98, 0xa4, 0xd2,
-	0x34, 0xfd, 0x32, 0x23, 0xfd, 0xe4, 0xdc, 0x14, 0x08, 0x3f, 0x59, 0x37, 0x3d, 0x35, 0x4f, 0x37,
-	0x3d, 0x5f, 0xbf, 0x24, 0xb5, 0xb8, 0x24, 0x25, 0xb1, 0x24, 0x51, 0x1f, 0xcd, 0x5f, 0x80, 0x00,
-	0x00, 0x00, 0xff, 0xff, 0x1c, 0x75, 0xde, 0x5a, 0xe9, 0x00, 0x00, 0x00,
+	// 233 bytes of the wire-encoded FileDescriptorProto
+	0x0a, 0x1a, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x62, 0x61, 0x73,
+	0x65, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1d, 0x67, 0x6f,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x65, 0x78, 0x74,
+	0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x22, 0x33, 0x0a, 0x0b, 0x42,
+	0x61, 0x73, 0x65, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x66, 0x69,
+	0x65, 0x6c, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x66, 0x69, 0x65, 0x6c, 0x64,
+	0x2a, 0x04, 0x08, 0x04, 0x10, 0x0a, 0x2a, 0x08, 0x08, 0x10, 0x10, 0x80, 0x80, 0x80, 0x80, 0x02,
+	0x22, 0x2b, 0x0a, 0x1b, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x53, 0x65, 0x74, 0x57, 0x69,
+	0x72, 0x65, 0x46, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2a,
+	0x08, 0x08, 0x64, 0x10, 0xff, 0xff, 0xff, 0xff, 0x07, 0x3a, 0x02, 0x08, 0x01, 0x42, 0x4a, 0x5a,
+	0x48, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x6f, 0x6c, 0x61,
+	0x6e, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x76, 0x32, 0x2f, 0x63,
+	0x6d, 0x64, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2d, 0x67, 0x65, 0x6e, 0x2d, 0x67, 0x6f,
+	0x2f, 0x74, 0x65, 0x73, 0x74, 0x64, 0x61, 0x74, 0x61, 0x2f, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73,
+	0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65,
 }
 
-func init() {
-	xxx_Base_protoFile_FileDesc.Messages = xxx_Base_protoFile_MessageDescs[0:2]
-	var err error
-	Base_protoFile, err = prototype.NewFile(&xxx_Base_protoFile_FileDesc)
-	if err != nil {
-		panic(err)
-	}
-}
+var fileDescriptor_aebb28f8d5a04466_gzipped = func() []byte {
+	bb := new(bytes.Buffer)
+	zw, _ := gzip.NewWriterLevel(bb, gzip.NoCompression)
+	zw.Write(fileDescriptor_aebb28f8d5a04466)
+	zw.Close()
+	return bb.Bytes()
+}()
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var Base_protoFile protoreflect.FileDescriptor
 
-var xxx_Base_protoFile_FileDesc = prototype.File{
-	Syntax:  protoreflect.Proto2,
-	Path:    "extensions/base/base.proto",
-	Package: "goproto.protoc.extension.base",
+var xxx_Base_protoFile_messageTypes [2]protoimpl.MessageType
+var xxx_Base_protoFile_goTypes = []interface{}{
+	(*BaseMessage)(nil),                 // 0: goproto.protoc.extension.base.BaseMessage
+	(*MessageSetWireFormatMessage)(nil), // 1: goproto.protoc.extension.base.MessageSetWireFormatMessage
 }
-var xxx_Base_protoFile_MessageTypes = [2]protoimpl.MessageType{
-	{Type: prototype.GoMessage(
-		xxx_Base_protoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.Message {
-			return xxx_BaseMessage{new(BaseMessage)}
-		},
-	)},
-	{Type: prototype.GoMessage(
-		xxx_Base_protoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.Message {
-			return xxx_MessageSetWireFormatMessage{new(MessageSetWireFormatMessage)}
-		},
-	)},
-}
-var xxx_Base_protoFile_MessageDescs = [2]prototype.Message{
-	{
-		Name: "BaseMessage",
-		Fields: []prototype.Field{
-			{
-				Name:        "field",
-				Number:      1,
-				Cardinality: protoreflect.Optional,
-				Kind:        protoreflect.StringKind,
-				JSONName:    "field",
-				IsPacked:    prototype.False,
-			},
-		},
-		ExtensionRanges: [][2]protoreflect.FieldNumber{{4, 10}, {16, 536870912}},
-	},
-	{
-		Name:            "MessageSetWireFormatMessage",
-		ExtensionRanges: [][2]protoreflect.FieldNumber{{100, 2147483647}},
-	},
+var xxx_Base_protoFile_depIdxs = []int32{}
+
+func init() {
+	var messageTypes [2]protoreflect.MessageType
+	Base_protoFile = protoimpl.FileBuilder{
+		RawDescriptor:      fileDescriptor_aebb28f8d5a04466,
+		GoTypes:            xxx_Base_protoFile_goTypes,
+		DependencyIndexes:  xxx_Base_protoFile_depIdxs,
+		MessageOutputTypes: messageTypes[:],
+	}.Init()
+	messageGoTypes := xxx_Base_protoFile_goTypes[0:][:2]
+	for i, mt := range messageTypes[:] {
+		xxx_Base_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_Base_protoFile_messageTypes[i].PBType = mt
+	}
+	xxx_Base_protoFile_goTypes = nil
+	xxx_Base_protoFile_depIdxs = nil
 }

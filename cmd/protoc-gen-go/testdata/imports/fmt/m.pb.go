@@ -4,10 +4,12 @@
 package fmt
 
 import (
+	bytes "bytes"
+	gzip "compress/gzip"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
-	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	reflect "reflect"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -22,29 +24,14 @@ type M struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-type xxx_M struct{ m *M }
-
 func (m *M) ProtoReflect() protoreflect.Message {
-	return xxx_M{m}
+	return xxx_M_protoFile_messageTypes[0].MessageOf(m)
 }
-func (m xxx_M) Type() protoreflect.MessageType {
-	return xxx_M_protoFile_MessageTypes[0].Type
-}
-func (m xxx_M) KnownFields() protoreflect.KnownFields {
-	return xxx_M_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
-}
-func (m xxx_M) UnknownFields() protoreflect.UnknownFields {
-	return xxx_M_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
-}
-func (m xxx_M) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-
 func (m *M) Reset()         { *m = M{} }
 func (m *M) String() string { return proto.CompactTextString(m) }
 func (*M) ProtoMessage()    {}
 func (*M) Descriptor() ([]byte, []int) {
-	return fileDescriptor_72c126fcd452e392, []int{0}
+	return fileDescriptor_72c126fcd452e392_gzipped, []int{0}
 }
 
 func (m *M) XXX_Unmarshal(b []byte) error {
@@ -66,49 +53,52 @@ func (m *M) XXX_DiscardUnknown() {
 var xxx_messageInfo_M proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterFile("imports/fmt/m.proto", fileDescriptor_72c126fcd452e392)
+	proto.RegisterFile("imports/fmt/m.proto", fileDescriptor_72c126fcd452e392_gzipped)
 	proto.RegisterType((*M)(nil), "fmt.M")
 }
 
 var fileDescriptor_72c126fcd452e392 = []byte{
-	// 109 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xce, 0xcc, 0x2d, 0xc8,
-	0x2f, 0x2a, 0x29, 0xd6, 0x4f, 0xcb, 0x2d, 0xd1, 0xcf, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17,
-	0x62, 0x4e, 0xcb, 0x2d, 0x51, 0x62, 0xe6, 0x62, 0xf4, 0x75, 0xb2, 0x8f, 0xb2, 0x4d, 0xcf, 0x2c,
-	0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce, 0xcf, 0xd5, 0x4f, 0xcf, 0xcf, 0x49, 0xcc, 0x4b, 0xd7, 0x07,
-	0x2b, 0x4a, 0x2a, 0x4d, 0x83, 0x30, 0x92, 0x75, 0xd3, 0x53, 0xf3, 0x74, 0xd3, 0xf3, 0xf5, 0x4b,
-	0x52, 0x8b, 0x4b, 0x52, 0x12, 0x4b, 0x12, 0xf5, 0x91, 0x8c, 0x4c, 0x62, 0x03, 0xab, 0x31, 0x06,
-	0x04, 0x00, 0x00, 0xff, 0xff, 0xc4, 0xc9, 0xee, 0xbe, 0x68, 0x00, 0x00, 0x00,
+	// 104 bytes of the wire-encoded FileDescriptorProto
+	0x0a, 0x13, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x2f, 0x66, 0x6d, 0x74, 0x2f, 0x6d, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x03, 0x66, 0x6d, 0x74, 0x22, 0x03, 0x0a, 0x01, 0x4d, 0x42,
+	0x3f, 0x5a, 0x3d, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x6f,
+	0x6c, 0x61, 0x6e, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x63, 0x2d, 0x67, 0x65, 0x6e, 0x2d, 0x67, 0x6f, 0x2f, 0x74, 0x65, 0x73, 0x74,
+	0x64, 0x61, 0x74, 0x61, 0x2f, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x2f, 0x66, 0x6d, 0x74,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-func init() {
-	xxx_M_protoFile_FileDesc.Messages = xxx_M_protoFile_MessageDescs[0:1]
-	var err error
-	M_protoFile, err = prototype.NewFile(&xxx_M_protoFile_FileDesc)
-	if err != nil {
-		panic(err)
-	}
-}
+var fileDescriptor_72c126fcd452e392_gzipped = func() []byte {
+	bb := new(bytes.Buffer)
+	zw, _ := gzip.NewWriterLevel(bb, gzip.NoCompression)
+	zw.Write(fileDescriptor_72c126fcd452e392)
+	zw.Close()
+	return bb.Bytes()
+}()
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var M_protoFile protoreflect.FileDescriptor
 
-var xxx_M_protoFile_FileDesc = prototype.File{
-	Syntax:  protoreflect.Proto3,
-	Path:    "imports/fmt/m.proto",
-	Package: "fmt",
+var xxx_M_protoFile_messageTypes [1]protoimpl.MessageType
+var xxx_M_protoFile_goTypes = []interface{}{
+	(*M)(nil), // 0: fmt.M
 }
-var xxx_M_protoFile_MessageTypes = [1]protoimpl.MessageType{
-	{Type: prototype.GoMessage(
-		xxx_M_protoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.Message {
-			return xxx_M{new(M)}
-		},
-	)},
-}
-var xxx_M_protoFile_MessageDescs = [1]prototype.Message{
-	{
-		Name: "M",
-	},
+var xxx_M_protoFile_depIdxs = []int32{}
+
+func init() {
+	var messageTypes [1]protoreflect.MessageType
+	M_protoFile = protoimpl.FileBuilder{
+		RawDescriptor:      fileDescriptor_72c126fcd452e392,
+		GoTypes:            xxx_M_protoFile_goTypes,
+		DependencyIndexes:  xxx_M_protoFile_depIdxs,
+		MessageOutputTypes: messageTypes[:],
+	}.Init()
+	messageGoTypes := xxx_M_protoFile_goTypes[0:][:1]
+	for i, mt := range messageTypes[:] {
+		xxx_M_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_M_protoFile_messageTypes[i].PBType = mt
+	}
+	xxx_M_protoFile_goTypes = nil
+	xxx_M_protoFile_depIdxs = nil
 }

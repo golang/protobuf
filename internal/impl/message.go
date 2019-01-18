@@ -19,13 +19,15 @@ import (
 // that represents a message. A given instance of MessageType is tied to
 // exactly one Go type, which must be a pointer to a struct type.
 type MessageType struct {
-	// Type is the underlying message type and must be populated.
+	// GoType is the underlying message Go type and must be populated.
 	// Once set, this field must never be mutated.
-	Type pref.MessageType
+	GoType reflect.Type // pointer to struct
+
+	// PBType is the underlying message descriptor type and must be populated.
+	// Once set, this field must never be mutated.
+	PBType pref.MessageType
 
 	once sync.Once // protects all unexported fields
-
-	goType reflect.Type // pointer to struct
 
 	// TODO: Split fields into dense and sparse maps similar to the current
 	// table-driven implementation in v1?
@@ -35,30 +37,17 @@ type MessageType struct {
 	extensionFields func(*messageDataType) pref.KnownFields
 }
 
-// init lazily initializes the MessageType upon first use and
-// also checks that the provided pointer p is of the correct Go type.
-//
-// It must be called at the start of every exported method.
-func (mi *MessageType) init(p interface{}) {
+func (mi *MessageType) init() {
 	mi.once.Do(func() {
-		t := reflect.TypeOf(p)
+		t := mi.GoType
 		if t.Kind() != reflect.Ptr && t.Elem().Kind() != reflect.Struct {
 			panic(fmt.Sprintf("got %v, want *struct kind", t))
 		}
-		mi.goType = t
 
 		mi.makeKnownFieldsFunc(t.Elem())
 		mi.makeUnknownFieldsFunc(t.Elem())
 		mi.makeExtensionFieldsFunc(t.Elem())
 	})
-
-	// TODO: Remove this check? This API is primarily used by generated code,
-	// and should not violate this assumption. Leave this check in for now to
-	// provide some sanity checks during development. This can be removed if
-	// it proves to be detrimental to performance.
-	if reflect.TypeOf(p) != mi.goType {
-		panic(fmt.Sprintf("type mismatch: got %T, want %v", p, mi.goType))
-	}
 }
 
 // makeKnownFieldsFunc generates functions for operations that can be performed
@@ -113,8 +102,8 @@ fieldLoop:
 	}
 
 	mi.fields = map[pref.FieldNumber]*fieldInfo{}
-	for i := 0; i < mi.Type.Fields().Len(); i++ {
-		fd := mi.Type.Fields().Get(i)
+	for i := 0; i < mi.PBType.Fields().Len(); i++ {
+		fd := mi.PBType.Fields().Get(i)
 		fs := fields[fd.Number()]
 		var fi fieldInfo
 		switch {
@@ -160,15 +149,23 @@ func (mi *MessageType) MessageOf(p interface{}) pref.Message {
 }
 
 func (mi *MessageType) KnownFieldsOf(p interface{}) pref.KnownFields {
+	mi.init()
 	return (*knownFields)(mi.dataTypeOf(p))
 }
 
 func (mi *MessageType) UnknownFieldsOf(p interface{}) pref.UnknownFields {
+	mi.init()
 	return mi.unknownFields(mi.dataTypeOf(p))
 }
 
 func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
-	mi.init(p)
+	// TODO: Remove this check? This API is primarily used by generated code,
+	// and should not violate this assumption. Leave this check in for now to
+	// provide some sanity checks during development. This can be removed if
+	// it proves to be detrimental to performance.
+	if reflect.TypeOf(p) != mi.GoType {
+		panic(fmt.Sprintf("type mismatch: got %T, want %v", p, mi.GoType))
+	}
 	return &messageDataType{pointerOfIface(p), mi}
 }
 
@@ -181,7 +178,7 @@ func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
 // with reflect.NamedOf (see https://golang.org/issues/16522).
 //
 // With that hypothetical API, we could dynamically create a new named type
-// that has the same underlying type as MessageType.goType, and
+// that has the same underlying type as MessageType.GoType, and
 // dynamically create methods that close over MessageType.
 // Since the new type would have the same underlying type, we could directly
 // convert between pointers of those types, giving us an efficient way to swap
@@ -198,12 +195,14 @@ type messageDataType struct {
 type messageWrapper messageDataType
 
 func (m *messageWrapper) Type() pref.MessageType {
-	return m.mi.Type
+	return m.mi.PBType
 }
 func (m *messageWrapper) KnownFields() pref.KnownFields {
+	m.mi.init()
 	return (*knownFields)(m)
 }
 func (m *messageWrapper) UnknownFields() pref.UnknownFields {
+	m.mi.init()
 	return m.mi.unknownFields((*messageDataType)(m))
 }
 func (m *messageWrapper) Interface() pref.ProtoMessage {
@@ -216,7 +215,7 @@ func (m *messageWrapper) ProtoReflect() pref.Message {
 	return m
 }
 func (m *messageWrapper) ProtoUnwrap() interface{} {
-	return m.p.AsIfaceOf(m.mi.goType.Elem())
+	return m.p.AsIfaceOf(m.mi.GoType.Elem())
 }
 func (m *messageWrapper) ProtoMutable() {}
 
@@ -249,7 +248,7 @@ func (fs *knownFields) Set(n pref.FieldNumber, v pref.Value) {
 		fi.set(fs.p, v)
 		return
 	}
-	if fs.mi.Type.ExtensionRanges().Has(n) {
+	if fs.mi.PBType.ExtensionRanges().Has(n) {
 		fs.extensionFields().Set(n, v)
 		return
 	}
@@ -260,7 +259,7 @@ func (fs *knownFields) Clear(n pref.FieldNumber) {
 		fi.clear(fs.p)
 		return
 	}
-	if fs.mi.Type.ExtensionRanges().Has(n) {
+	if fs.mi.PBType.ExtensionRanges().Has(n) {
 		fs.extensionFields().Clear(n)
 		return
 	}
@@ -279,7 +278,7 @@ func (fs *knownFields) NewMessage(n pref.FieldNumber) pref.Message {
 	if fi := fs.mi.fields[n]; fi != nil {
 		return fi.newMessage()
 	}
-	if fs.mi.Type.ExtensionRanges().Has(n) {
+	if fs.mi.PBType.ExtensionRanges().Has(n) {
 		return fs.extensionFields().NewMessage(n)
 	}
 	panic(fmt.Sprintf("invalid field: %d", n))

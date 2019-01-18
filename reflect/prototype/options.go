@@ -4,6 +4,10 @@
 
 package prototype
 
+import (
+	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+)
+
 // X provides functionality internal to the protobuf module.
 //
 // WARNING: The compatibility agreement covers nothing except for functionality
@@ -16,23 +20,33 @@ type internal struct{}
 // optionTypes contains typed nil-pointers to each of the options types.
 // These are populated at init time by the descriptor package.
 var optionTypes struct {
-	File           interface{}
-	Enum           interface{}
-	EnumValue      interface{}
-	Message        interface{}
-	Field          interface{}
-	Oneof          interface{}
-	ExtensionRange interface{}
-	Service        interface{}
-	Method         interface{}
+	File           pref.OptionsMessage
+	Enum           pref.OptionsMessage
+	EnumValue      pref.OptionsMessage
+	Message        pref.OptionsMessage
+	Field          pref.OptionsMessage
+	Oneof          pref.OptionsMessage
+	ExtensionRange pref.OptionsMessage
+	Service        pref.OptionsMessage
+	Method         pref.OptionsMessage
 }
 
-func (internal) RegisterFileOptions(m interface{})           { optionTypes.File = m }
-func (internal) RegisterEnumOptions(m interface{})           { optionTypes.Enum = m }
-func (internal) RegisterEnumValueOptions(m interface{})      { optionTypes.EnumValue = m }
-func (internal) RegisterMessageOptions(m interface{})        { optionTypes.Message = m }
-func (internal) RegisterFieldOptions(m interface{})          { optionTypes.Field = m }
-func (internal) RegisterOneofOptions(m interface{})          { optionTypes.Oneof = m }
-func (internal) RegisterExtensionRangeOptions(m interface{}) { optionTypes.ExtensionRange = m }
-func (internal) RegisterServiceOptions(m interface{})        { optionTypes.Service = m }
-func (internal) RegisterMethodOptions(m interface{})         { optionTypes.Method = m }
+func (internal) FileOptions() pref.OptionsMessage           { return optionTypes.File }
+func (internal) EnumOptions() pref.OptionsMessage           { return optionTypes.Enum }
+func (internal) EnumValueOptions() pref.OptionsMessage      { return optionTypes.EnumValue }
+func (internal) MessageOptions() pref.OptionsMessage        { return optionTypes.Message }
+func (internal) FieldOptions() pref.OptionsMessage          { return optionTypes.Field }
+func (internal) OneofOptions() pref.OptionsMessage          { return optionTypes.Oneof }
+func (internal) ExtensionRangeOptions() pref.OptionsMessage { return optionTypes.ExtensionRange }
+func (internal) ServiceOptions() pref.OptionsMessage        { return optionTypes.Service }
+func (internal) MethodOptions() pref.OptionsMessage         { return optionTypes.Method }
+
+func (internal) RegisterFileOptions(m pref.OptionsMessage)           { optionTypes.File = m }
+func (internal) RegisterEnumOptions(m pref.OptionsMessage)           { optionTypes.Enum = m }
+func (internal) RegisterEnumValueOptions(m pref.OptionsMessage)      { optionTypes.EnumValue = m }
+func (internal) RegisterMessageOptions(m pref.OptionsMessage)        { optionTypes.Message = m }
+func (internal) RegisterFieldOptions(m pref.OptionsMessage)          { optionTypes.Field = m }
+func (internal) RegisterOneofOptions(m pref.OptionsMessage)          { optionTypes.Oneof = m }
+func (internal) RegisterExtensionRangeOptions(m pref.OptionsMessage) { optionTypes.ExtensionRange = m }
+func (internal) RegisterServiceOptions(m pref.OptionsMessage)        { optionTypes.Service = m }
+func (internal) RegisterMethodOptions(m pref.OptionsMessage)         { optionTypes.Method = m }

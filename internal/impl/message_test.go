@@ -7,6 +7,7 @@ package impl_test
 import (
 	"fmt"
 	"math"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -189,7 +190,7 @@ type (
 	MapBytes   map[MyString]MyBytes
 )
 
-var scalarProto2Type = pimpl.MessageType{Type: ptype.GoMessage(
+var scalarProto2Type = pimpl.MessageType{GoType: reflect.TypeOf(new(ScalarProto2)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "ScalarProto2",
@@ -224,7 +225,7 @@ var scalarProto2Type = pimpl.MessageType{Type: ptype.GoMessage(
 	},
 )}
 
-func (m *ScalarProto2) Type() pref.MessageType            { return scalarProto2Type.Type }
+func (m *ScalarProto2) Type() pref.MessageType            { return scalarProto2Type.PBType }
 func (m *ScalarProto2) KnownFields() pref.KnownFields     { return scalarProto2Type.KnownFieldsOf(m) }
 func (m *ScalarProto2) UnknownFields() pref.UnknownFields { return scalarProto2Type.UnknownFieldsOf(m) }
 func (m *ScalarProto2) Interface() pref.ProtoMessage      { return m }
@@ -295,7 +296,7 @@ type ScalarProto3 struct {
 	MyBytesA  MyString  `protobuf:"22"`
 }
 
-var scalarProto3Type = pimpl.MessageType{Type: ptype.GoMessage(
+var scalarProto3Type = pimpl.MessageType{GoType: reflect.TypeOf(new(ScalarProto3)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto3,
 		FullName: "ScalarProto3",
@@ -330,7 +331,7 @@ var scalarProto3Type = pimpl.MessageType{Type: ptype.GoMessage(
 	},
 )}
 
-func (m *ScalarProto3) Type() pref.MessageType            { return scalarProto3Type.Type }
+func (m *ScalarProto3) Type() pref.MessageType            { return scalarProto3Type.PBType }
 func (m *ScalarProto3) KnownFields() pref.KnownFields     { return scalarProto3Type.KnownFieldsOf(m) }
 func (m *ScalarProto3) UnknownFields() pref.UnknownFields { return scalarProto3Type.UnknownFieldsOf(m) }
 func (m *ScalarProto3) Interface() pref.ProtoMessage      { return m }
@@ -414,7 +415,7 @@ type ListScalars struct {
 	MyBytes4   ListStrings `protobuf:"19"`
 }
 
-var listScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
+var listScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(ListScalars)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "ListScalars",
@@ -447,7 +448,7 @@ var listScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
 	},
 )}
 
-func (m *ListScalars) Type() pref.MessageType            { return listScalarsType.Type }
+func (m *ListScalars) Type() pref.MessageType            { return listScalarsType.PBType }
 func (m *ListScalars) KnownFields() pref.KnownFields     { return listScalarsType.KnownFieldsOf(m) }
 func (m *ListScalars) UnknownFields() pref.UnknownFields { return listScalarsType.UnknownFieldsOf(m) }
 func (m *ListScalars) Interface() pref.ProtoMessage      { return m }
@@ -598,7 +599,7 @@ func mustMakeMapEntry(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Fiel
 	}
 }
 
-var mapScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
+var mapScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(MapScalars)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "MapScalars",
@@ -638,7 +639,7 @@ var mapScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
 	},
 )}
 
-func (m *MapScalars) Type() pref.MessageType            { return mapScalarsType.Type }
+func (m *MapScalars) Type() pref.MessageType            { return mapScalarsType.PBType }
 func (m *MapScalars) KnownFields() pref.KnownFields     { return mapScalarsType.KnownFieldsOf(m) }
 func (m *MapScalars) UnknownFields() pref.UnknownFields { return mapScalarsType.UnknownFieldsOf(m) }
 func (m *MapScalars) Interface() pref.ProtoMessage      { return m }
@@ -770,7 +771,7 @@ type OneofScalars struct {
 	Union isOneofScalars_Union `protobuf_oneof:"union"`
 }
 
-var oneofScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
+var oneofScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(OneofScalars)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "OneofScalars",
@@ -796,7 +797,7 @@ var oneofScalarsType = pimpl.MessageType{Type: ptype.GoMessage(
 	},
 )}
 
-func (m *OneofScalars) Type() pref.MessageType            { return oneofScalarsType.Type }
+func (m *OneofScalars) Type() pref.MessageType            { return oneofScalarsType.PBType }
 func (m *OneofScalars) KnownFields() pref.KnownFields     { return oneofScalarsType.KnownFieldsOf(m) }
 func (m *OneofScalars) UnknownFields() pref.UnknownFields { return oneofScalarsType.UnknownFieldsOf(m) }
 func (m *OneofScalars) Interface() pref.ProtoMessage      { return m }
@@ -974,7 +975,7 @@ type EnumMessages struct {
 	Union         isEnumMessages_Union     `protobuf_oneof:"union"`
 }
 
-var enumMessagesType = pimpl.MessageType{Type: ptype.GoMessage(
+var enumMessagesType = pimpl.MessageType{GoType: reflect.TypeOf(new(EnumMessages)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "EnumMessages",
@@ -984,13 +985,13 @@ var enumMessagesType = pimpl.MessageType{Type: ptype.GoMessage(
 			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: pimpl.Export{}.MessageOf(new(proto2_20180125.Message)).Type()},
 			{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: ptype.PlaceholderMessage("EnumMessages")},
 			{Name: "f5", Number: 5, Cardinality: pref.Repeated, Kind: pref.EnumKind, EnumType: enumProto2Type},
-			{Name: "f6", Number: 6, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: scalarProto2Type.Type},
+			{Name: "f6", Number: 6, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: scalarProto2Type.PBType},
 			{Name: "f7", Number: 7, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: enumMapDesc},
 			{Name: "f8", Number: 8, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: messageMapDesc},
 			{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BEEF"), OneofName: "union", EnumType: enumProto2Type},
 			{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BRAVO"), OneofName: "union", EnumType: enumProto3Type},
-			{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.MessageKind, OneofName: "union", MessageType: scalarProto2Type.Type},
-			{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.MessageKind, OneofName: "union", MessageType: scalarProto3Type.Type},
+			{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.MessageKind, OneofName: "union", MessageType: scalarProto2Type.PBType},
+			{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.MessageKind, OneofName: "union", MessageType: scalarProto3Type.PBType},
 		},
 		Oneofs: []ptype.Oneof{{Name: "union"}},
 	}),
@@ -1015,13 +1016,13 @@ var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 	FullName: "EnumMessages.F8Entry",
 	Fields: []ptype.Field{
 		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
-		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: scalarProto3Type.Type},
+		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: scalarProto3Type.PBType},
 	},
 	Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
 	IsMapEntry: true,
 })
 
-func (m *EnumMessages) Type() pref.MessageType            { return enumMessagesType.Type }
+func (m *EnumMessages) Type() pref.MessageType            { return enumMessagesType.PBType }
 func (m *EnumMessages) KnownFields() pref.KnownFields     { return enumMessagesType.KnownFieldsOf(m) }
 func (m *EnumMessages) UnknownFields() pref.UnknownFields { return enumMessagesType.UnknownFieldsOf(m) }
 func (m *EnumMessages) Interface() pref.ProtoMessage      { return m }

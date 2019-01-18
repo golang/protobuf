@@ -26,6 +26,7 @@ var run = flag.Bool("execute", false, "Write generated files to destination.")
 func main() {
 	flag.Parse()
 	chdirRoot()
+	writeSource("internal/fileinit/desc_list_gen.go", generateFileinitDescList())
 	writeSource("proto/decode_gen.go", generateProtoDecode())
 	writeSource("reflect/prototype/protofile_list_gen.go", generateListTypes())
 }
@@ -183,6 +184,98 @@ var listTypesTemplate = template.Must(template.New("").Funcs(template.FuncMap{
 	{{- end}}
 	func (p *{{$nameList}}) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
 	func (p *{{$nameList}}) ProtoInternal(pragma.DoNotImplement) {}
+	{{- end}}
+`))
+
+func generateFileinitDescList() string {
+	return mustExecute(fileinitDescListTemplate, []DescriptorType{
+		EnumDesc, EnumValueDesc, MessageDesc, FieldDesc, OneofDesc, ExtensionDesc, ServiceDesc, MethodDesc,
+	})
+}
+
+var fileinitDescListTemplate = template.Must(template.New("").Funcs(template.FuncMap{
+	"unexport": func(t DescriptorType) Expr {
+		return Expr(string(unicode.ToLower(rune(t[0]))) + string(t[1:]))
+	},
+}).Parse(`
+	{{- range .}}
+	{{$nameList := (printf "%sDescs" (unexport .))}} {{/* e.g., "messageDescs" */}}
+	{{$nameDesc := (printf "%sDesc"  (unexport .))}} {{/* e.g., "messageDesc" */}}
+
+	type {{$nameList}} struct {
+		list   []{{$nameDesc}}
+		once   sync.Once
+		byName map[protoreflect.Name]*{{$nameDesc}} // protected by once
+		{{- if (eq . "Field")}}
+		byJSON map[string]*{{$nameDesc}}            // protected by once
+		{{- end}}
+		{{- if .NumberExpr}}
+		byNum  map[{{.NumberExpr}}]*{{$nameDesc}}   // protected by once
+		{{- end}}
+	}
+
+	func (p *{{$nameList}}) Len() int {
+		return len(p.list)
+	}
+	func (p *{{$nameList}}) Get(i int) {{.Expr}} {
+		return &p.list[i]
+	}
+	func (p *{{$nameList}}) ByName(s protoreflect.Name) {{.Expr}} {
+		if d := p.lazyInit().byName[s]; d != nil {
+			return d
+		}
+		return nil
+	}
+	{{- if (eq . "Field")}}
+	func (p *{{$nameList}}) ByJSONName(s string) {{.Expr}} {
+		if d := p.lazyInit().byJSON[s]; d != nil {
+			return d
+		}
+		return nil
+	}
+	{{- end}}
+	{{- if .NumberExpr}}
+	func (p *{{$nameList}}) ByNumber(n {{.NumberExpr}}) {{.Expr}} {
+		if d := p.lazyInit().byNum[n]; d != nil {
+			return d
+		}
+		return nil
+	}
+	{{- end}}
+	func (p *{{$nameList}}) Format(s fmt.State, r rune) {
+		typefmt.FormatList(s, r, p)
+	}
+	func (p *{{$nameList}}) ProtoInternal(pragma.DoNotImplement) {}
+	func (p *{{$nameList}}) lazyInit() *{{$nameList}} {
+		p.once.Do(func() {
+			if len(p.list) > 0 {
+				p.byName = make(map[protoreflect.Name]*{{$nameDesc}}, len(p.list))
+				{{- if (eq . "Field")}}
+				p.byJSON = make(map[string]*{{$nameDesc}}, len(p.list))
+				{{- end}}
+				{{- if .NumberExpr}}
+				p.byNum = make(map[{{.NumberExpr}}]*{{$nameDesc}}, len(p.list))
+				{{- end}}
+				for i := range p.list {
+					d := &p.list[i]
+					if _, ok := p.byName[d.Name()]; !ok {
+						p.byName[d.Name()] = d
+					}
+					{{- if (eq . "Field")}}
+					if _, ok := p.byJSON[d.JSONName()]; !ok {
+						p.byJSON[d.JSONName()] = d
+					}
+					{{- end}}
+					{{- if .NumberExpr}}
+					if _, ok := p.byNum[d.Number()]; !ok {
+						p.byNum[d.Number()] = d
+					}
+					{{- end}}
+				}
+			}
+		})
+		return p
+	}
 	{{- end}}
 `))
 

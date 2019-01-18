@@ -40,7 +40,8 @@ func loadMessageType(t reflect.Type) *pimpl.MessageType {
 	// Slow-path: derive message descriptor and initialize MessageType.
 	md := loadMessageDesc(t)
 	mt := new(pimpl.MessageType)
-	mt.Type = ptype.GoMessage(md, func(pref.MessageType) pref.Message {
+	mt.GoType = t
+	mt.PBType = ptype.GoMessage(md, func(pref.MessageType) pref.Message {
 		p := reflect.New(t.Elem()).Interface()
 		return mt.MessageOf(p)
 	})

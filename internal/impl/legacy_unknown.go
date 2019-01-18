@@ -36,7 +36,7 @@ func makeLegacyUnknownFieldsFunc(t reflect.Type) func(p *messageDataType) pref.U
 				return emptyUnknownFields{}
 			}
 			return &legacyUnknownBytesAndExtensionMap{
-				unkFunc(p), extFunc(p), p.mi.Type.ExtensionRanges(),
+				unkFunc(p), extFunc(p), p.mi.PBType.ExtensionRanges(),
 			}
 		}
 	}

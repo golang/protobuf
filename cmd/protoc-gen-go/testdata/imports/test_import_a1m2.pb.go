@@ -4,11 +4,13 @@
 package imports
 
 import (
+	bytes "bytes"
+	gzip "compress/gzip"
 	proto "github.com/golang/protobuf/proto"
 	test_a_1 "github.com/golang/protobuf/protoc-gen-go/testdata/imports/test_a_1"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
-	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	reflect "reflect"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -24,29 +26,14 @@ type A1M2 struct {
 	XXX_sizecache        int32        `json:"-"`
 }
 
-type xxx_A1M2 struct{ m *A1M2 }
-
 func (m *A1M2) ProtoReflect() protoreflect.Message {
-	return xxx_A1M2{m}
+	return xxx_TestImportA1M2_protoFile_messageTypes[0].MessageOf(m)
 }
-func (m xxx_A1M2) Type() protoreflect.MessageType {
-	return xxx_TestImportA1M2_protoFile_MessageTypes[0].Type
-}
-func (m xxx_A1M2) KnownFields() protoreflect.KnownFields {
-	return xxx_TestImportA1M2_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
-}
-func (m xxx_A1M2) UnknownFields() protoreflect.UnknownFields {
-	return xxx_TestImportA1M2_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
-}
-func (m xxx_A1M2) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-
 func (m *A1M2) Reset()         { *m = A1M2{} }
 func (m *A1M2) String() string { return proto.CompactTextString(m) }
 func (*A1M2) ProtoMessage()    {}
 func (*A1M2) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bdb27b114687957d, []int{0}
+	return fileDescriptor_bdb27b114687957d_gzipped, []int{0}
 }
 
 func (m *A1M2) XXX_Unmarshal(b []byte) error {
@@ -75,66 +62,59 @@ func (m *A1M2) GetF() *test_a_1.M2 {
 }
 
 func init() {
-	proto.RegisterFile("imports/test_import_a1m2.proto", fileDescriptor_bdb27b114687957d)
+	proto.RegisterFile("imports/test_import_a1m2.proto", fileDescriptor_bdb27b114687957d_gzipped)
 	proto.RegisterType((*A1M2)(nil), "test.A1M2")
 }
 
 var fileDescriptor_bdb27b114687957d = []byte{
-	// 149 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcb, 0xcc, 0x2d, 0xc8,
-	0x2f, 0x2a, 0x29, 0xd6, 0x2f, 0x49, 0x2d, 0x2e, 0x89, 0x87, 0x70, 0xe2, 0x13, 0x0d, 0x73, 0x8d,
-	0xf4, 0x0a, 0x8a, 0xf2, 0x4b, 0xf2, 0x85, 0x58, 0x40, 0xe2, 0x52, 0x92, 0x28, 0xaa, 0x12, 0xe3,
-	0x0d, 0xf5, 0x61, 0x0a, 0x94, 0x14, 0xb8, 0x58, 0x1c, 0x0d, 0x7d, 0x8d, 0x84, 0x24, 0xb8, 0x18,
-	0xd3, 0x24, 0x18, 0x15, 0x18, 0x35, 0xb8, 0x8d, 0xb8, 0xf4, 0x40, 0xca, 0xf4, 0x12, 0xf5, 0x7c,
-	0x8d, 0x82, 0x18, 0xd3, 0x9c, 0xac, 0xa3, 0x2c, 0xd3, 0x33, 0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92,
-	0xf3, 0x73, 0xf5, 0xd3, 0xf3, 0x73, 0x12, 0xf3, 0xd2, 0xf5, 0xc1, 0x9a, 0x93, 0x4a, 0xd3, 0x20,
-	0x8c, 0x64, 0xdd, 0xf4, 0xd4, 0x3c, 0xdd, 0xf4, 0x7c, 0xb0, 0xf9, 0x29, 0x89, 0x25, 0x89, 0xfa,
-	0x50, 0x0b, 0x93, 0xd8, 0xc0, 0xf2, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x1f, 0x88, 0xfb,
-	0xea, 0xa8, 0x00, 0x00, 0x00,
+	// 168 bytes of the wire-encoded FileDescriptorProto
+	0x0a, 0x1e, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x69,
+	0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x61, 0x31, 0x6d, 0x32, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x12, 0x04, 0x74, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x2f,
+	0x74, 0x65, 0x73, 0x74, 0x5f, 0x61, 0x5f, 0x31, 0x2f, 0x6d, 0x32, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x22, 0x20, 0x0a, 0x04, 0x41, 0x31, 0x4d, 0x32, 0x12, 0x18, 0x0a, 0x01, 0x66, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x61, 0x2e, 0x4d, 0x32,
+	0x52, 0x01, 0x66, 0x42, 0x3b, 0x5a, 0x39, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
+	0x6d, 0x2f, 0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2d, 0x67, 0x65, 0x6e, 0x2d, 0x67, 0x6f, 0x2f,
+	0x74, 0x65, 0x73, 0x74, 0x64, 0x61, 0x74, 0x61, 0x2f, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-func init() {
-	xxx_TestImportA1M2_protoFile_FileDesc.Messages = xxx_TestImportA1M2_protoFile_MessageDescs[0:1]
-	xxx_TestImportA1M2_protoFile_MessageDescs[0].Fields[0].MessageType = protoimpl.X.MessageTypeOf((*test_a_1.M2)(nil))
-	var err error
-	TestImportA1M2_protoFile, err = prototype.NewFile(&xxx_TestImportA1M2_protoFile_FileDesc)
-	if err != nil {
-		panic(err)
-	}
-}
+var fileDescriptor_bdb27b114687957d_gzipped = func() []byte {
+	bb := new(bytes.Buffer)
+	zw, _ := gzip.NewWriterLevel(bb, gzip.NoCompression)
+	zw.Write(fileDescriptor_bdb27b114687957d)
+	zw.Close()
+	return bb.Bytes()
+}()
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var TestImportA1M2_protoFile protoreflect.FileDescriptor
 
-var xxx_TestImportA1M2_protoFile_FileDesc = prototype.File{
-	Syntax:  protoreflect.Proto3,
-	Path:    "imports/test_import_a1m2.proto",
-	Package: "test",
-	Imports: []protoreflect.FileImport{
-		{FileDescriptor: prototype.PlaceholderFile("imports/test_a_1/m2.proto", "test.a")},
-	},
+var xxx_TestImportA1M2_protoFile_messageTypes [1]protoimpl.MessageType
+var xxx_TestImportA1M2_protoFile_goTypes = []interface{}{
+	(*A1M2)(nil),        // 0: test.A1M2
+	(*test_a_1.M2)(nil), // 1: test.a.M2
 }
-var xxx_TestImportA1M2_protoFile_MessageTypes = [1]protoimpl.MessageType{
-	{Type: prototype.GoMessage(
-		xxx_TestImportA1M2_protoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.Message {
-			return xxx_A1M2{new(A1M2)}
-		},
-	)},
+var xxx_TestImportA1M2_protoFile_depIdxs = []int32{
+	1, // test.A1M2.f:type_name -> test.a.M2
 }
-var xxx_TestImportA1M2_protoFile_MessageDescs = [1]prototype.Message{
-	{
-		Name: "A1M2",
-		Fields: []prototype.Field{
-			{
-				Name:        "f",
-				Number:      1,
-				Cardinality: protoreflect.Optional,
-				Kind:        protoreflect.MessageKind,
-				JSONName:    "f",
-				IsPacked:    prototype.False,
-			},
-		},
-	},
+
+func init() {
+	var messageTypes [1]protoreflect.MessageType
+	TestImportA1M2_protoFile = protoimpl.FileBuilder{
+		RawDescriptor:      fileDescriptor_bdb27b114687957d,
+		GoTypes:            xxx_TestImportA1M2_protoFile_goTypes,
+		DependencyIndexes:  xxx_TestImportA1M2_protoFile_depIdxs,
+		MessageOutputTypes: messageTypes[:],
+	}.Init()
+	messageGoTypes := xxx_TestImportA1M2_protoFile_goTypes[0:][:1]
+	for i, mt := range messageTypes[:] {
+		xxx_TestImportA1M2_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_TestImportA1M2_protoFile_messageTypes[i].PBType = mt
+	}
+	xxx_TestImportA1M2_protoFile_goTypes = nil
+	xxx_TestImportA1M2_protoFile_depIdxs = nil
 }

@@ -6,10 +6,12 @@
 package comments
 
 import (
+	bytes "bytes"
+	gzip "compress/gzip"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
-	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	reflect "reflect"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -33,29 +35,14 @@ type Message1 struct {
 	XXX_sizecache        int32              `json:"-"`
 }
 
-type xxx_Message1 struct{ m *Message1 }
-
 func (m *Message1) ProtoReflect() protoreflect.Message {
-	return xxx_Message1{m}
+	return xxx_Comments_protoFile_messageTypes[0].MessageOf(m)
 }
-func (m xxx_Message1) Type() protoreflect.MessageType {
-	return xxx_Comments_protoFile_MessageTypes[0].Type
-}
-func (m xxx_Message1) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_protoFile_MessageTypes[0].KnownFieldsOf(m.m)
-}
-func (m xxx_Message1) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_protoFile_MessageTypes[0].UnknownFieldsOf(m.m)
-}
-func (m xxx_Message1) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-
 func (m *Message1) Reset()         { *m = Message1{} }
 func (m *Message1) String() string { return proto.CompactTextString(m) }
 func (*Message1) ProtoMessage()    {}
 func (*Message1) Descriptor() ([]byte, []int) {
-	return fileDescriptor_885e8293f1fab554, []int{0}
+	return fileDescriptor_885e8293f1fab554_gzipped, []int{0}
 }
 
 func (m *Message1) XXX_Unmarshal(b []byte) error {
@@ -121,29 +108,14 @@ type Message2 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-type xxx_Message2 struct{ m *Message2 }
-
 func (m *Message2) ProtoReflect() protoreflect.Message {
-	return xxx_Message2{m}
+	return xxx_Comments_protoFile_messageTypes[1].MessageOf(m)
 }
-func (m xxx_Message2) Type() protoreflect.MessageType {
-	return xxx_Comments_protoFile_MessageTypes[1].Type
-}
-func (m xxx_Message2) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_protoFile_MessageTypes[1].KnownFieldsOf(m.m)
-}
-func (m xxx_Message2) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_protoFile_MessageTypes[1].UnknownFieldsOf(m.m)
-}
-func (m xxx_Message2) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-
 func (m *Message2) Reset()         { *m = Message2{} }
 func (m *Message2) String() string { return proto.CompactTextString(m) }
 func (*Message2) ProtoMessage()    {}
 func (*Message2) Descriptor() ([]byte, []int) {
-	return fileDescriptor_885e8293f1fab554, []int{1}
+	return fileDescriptor_885e8293f1fab554_gzipped, []int{1}
 }
 
 func (m *Message2) XXX_Unmarshal(b []byte) error {
@@ -171,29 +143,14 @@ type Message1_Message1A struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-type xxx_Message1_Message1A struct{ m *Message1_Message1A }
-
 func (m *Message1_Message1A) ProtoReflect() protoreflect.Message {
-	return xxx_Message1_Message1A{m}
+	return xxx_Comments_protoFile_messageTypes[2].MessageOf(m)
 }
-func (m xxx_Message1_Message1A) Type() protoreflect.MessageType {
-	return xxx_Comments_protoFile_MessageTypes[2].Type
-}
-func (m xxx_Message1_Message1A) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_protoFile_MessageTypes[2].KnownFieldsOf(m.m)
-}
-func (m xxx_Message1_Message1A) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_protoFile_MessageTypes[2].UnknownFieldsOf(m.m)
-}
-func (m xxx_Message1_Message1A) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-
 func (m *Message1_Message1A) Reset()         { *m = Message1_Message1A{} }
 func (m *Message1_Message1A) String() string { return proto.CompactTextString(m) }
 func (*Message1_Message1A) ProtoMessage()    {}
 func (*Message1_Message1A) Descriptor() ([]byte, []int) {
-	return fileDescriptor_885e8293f1fab554, []int{0, 0}
+	return fileDescriptor_885e8293f1fab554_gzipped, []int{0, 0}
 }
 
 func (m *Message1_Message1A) XXX_Unmarshal(b []byte) error {
@@ -221,29 +178,14 @@ type Message1_Message1B struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-type xxx_Message1_Message1B struct{ m *Message1_Message1B }
-
 func (m *Message1_Message1B) ProtoReflect() protoreflect.Message {
-	return xxx_Message1_Message1B{m}
+	return xxx_Comments_protoFile_messageTypes[3].MessageOf(m)
 }
-func (m xxx_Message1_Message1B) Type() protoreflect.MessageType {
-	return xxx_Comments_protoFile_MessageTypes[3].Type
-}
-func (m xxx_Message1_Message1B) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_protoFile_MessageTypes[3].KnownFieldsOf(m.m)
-}
-func (m xxx_Message1_Message1B) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_protoFile_MessageTypes[3].UnknownFieldsOf(m.m)
-}
-func (m xxx_Message1_Message1B) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-
 func (m *Message1_Message1B) Reset()         { *m = Message1_Message1B{} }
 func (m *Message1_Message1B) String() string { return proto.CompactTextString(m) }
 func (*Message1_Message1B) ProtoMessage()    {}
 func (*Message1_Message1B) Descriptor() ([]byte, []int) {
-	return fileDescriptor_885e8293f1fab554, []int{0, 1}
+	return fileDescriptor_885e8293f1fab554_gzipped, []int{0, 1}
 }
 
 func (m *Message1_Message1B) XXX_Unmarshal(b []byte) error {
@@ -271,29 +213,14 @@ type Message2_Message2A struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-type xxx_Message2_Message2A struct{ m *Message2_Message2A }
-
 func (m *Message2_Message2A) ProtoReflect() protoreflect.Message {
-	return xxx_Message2_Message2A{m}
+	return xxx_Comments_protoFile_messageTypes[4].MessageOf(m)
 }
-func (m xxx_Message2_Message2A) Type() protoreflect.MessageType {
-	return xxx_Comments_protoFile_MessageTypes[4].Type
-}
-func (m xxx_Message2_Message2A) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_protoFile_MessageTypes[4].KnownFieldsOf(m.m)
-}
-func (m xxx_Message2_Message2A) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_protoFile_MessageTypes[4].UnknownFieldsOf(m.m)
-}
-func (m xxx_Message2_Message2A) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-
 func (m *Message2_Message2A) Reset()         { *m = Message2_Message2A{} }
 func (m *Message2_Message2A) String() string { return proto.CompactTextString(m) }
 func (*Message2_Message2A) ProtoMessage()    {}
 func (*Message2_Message2A) Descriptor() ([]byte, []int) {
-	return fileDescriptor_885e8293f1fab554, []int{1, 0}
+	return fileDescriptor_885e8293f1fab554_gzipped, []int{1, 0}
 }
 
 func (m *Message2_Message2A) XXX_Unmarshal(b []byte) error {
@@ -321,29 +248,14 @@ type Message2_Message2B struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-type xxx_Message2_Message2B struct{ m *Message2_Message2B }
-
 func (m *Message2_Message2B) ProtoReflect() protoreflect.Message {
-	return xxx_Message2_Message2B{m}
+	return xxx_Comments_protoFile_messageTypes[5].MessageOf(m)
 }
-func (m xxx_Message2_Message2B) Type() protoreflect.MessageType {
-	return xxx_Comments_protoFile_MessageTypes[5].Type
-}
-func (m xxx_Message2_Message2B) KnownFields() protoreflect.KnownFields {
-	return xxx_Comments_protoFile_MessageTypes[5].KnownFieldsOf(m.m)
-}
-func (m xxx_Message2_Message2B) UnknownFields() protoreflect.UnknownFields {
-	return xxx_Comments_protoFile_MessageTypes[5].UnknownFieldsOf(m.m)
-}
-func (m xxx_Message2_Message2B) Interface() protoreflect.ProtoMessage {
-	return m.m
-}
-
 func (m *Message2_Message2B) Reset()         { *m = Message2_Message2B{} }
 func (m *Message2_Message2B) String() string { return proto.CompactTextString(m) }
 func (*Message2_Message2B) ProtoMessage()    {}
 func (*Message2_Message2B) Descriptor() ([]byte, []int) {
-	return fileDescriptor_885e8293f1fab554, []int{1, 1}
+	return fileDescriptor_885e8293f1fab554_gzipped, []int{1, 1}
 }
 
 func (m *Message2_Message2B) XXX_Unmarshal(b []byte) error {
@@ -365,7 +277,7 @@ func (m *Message2_Message2B) XXX_DiscardUnknown() {
 var xxx_messageInfo_Message2_Message2B proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterFile("comments/comments.proto", fileDescriptor_885e8293f1fab554)
+	proto.RegisterFile("comments/comments.proto", fileDescriptor_885e8293f1fab554_gzipped)
 	proto.RegisterType((*Message1)(nil), "goproto.protoc.comments.Message1")
 	proto.RegisterType((*Message2)(nil), "goproto.protoc.comments.Message2")
 	proto.RegisterType((*Message1_Message1A)(nil), "goproto.protoc.comments.Message1.Message1A")
@@ -375,118 +287,62 @@ func init() {
 }
 
 var fileDescriptor_885e8293f1fab554 = []byte{
-	// 191 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4f, 0xce, 0xcf, 0xcd,
-	0x4d, 0xcd, 0x2b, 0x29, 0xd6, 0x87, 0x31, 0xf4, 0x0a, 0x8a, 0xf2, 0x4b, 0xf2, 0x85, 0xc4, 0xd3,
-	0xf3, 0xc1, 0x0c, 0x08, 0x37, 0x59, 0x0f, 0x26, 0xad, 0x54, 0xc8, 0xc5, 0xe1, 0x9b, 0x5a, 0x5c,
-	0x9c, 0x98, 0x9e, 0x6a, 0x28, 0x24, 0xc1, 0xc5, 0xee, 0x96, 0x99, 0x9a, 0x93, 0x62, 0xe8, 0x28,
-	0xc1, 0xa8, 0xc0, 0xa8, 0xc1, 0x19, 0x04, 0xe3, 0x0a, 0xa9, 0x71, 0xf1, 0xfa, 0xe7, 0xa5, 0xe6,
-	0xa7, 0x19, 0x3a, 0x42, 0x44, 0x24, 0x98, 0x40, 0xf2, 0x1e, 0x0c, 0x41, 0xa8, 0xc2, 0x52, 0xdc,
-	0x5c, 0x9c, 0x30, 0xd3, 0x1c, 0x91, 0x39, 0x4e, 0x4e, 0x9c, 0x5c, 0xec, 0x10, 0xa5, 0x89, 0x4a,
-	0x2a, 0x70, 0x2b, 0x8d, 0x90, 0xd4, 0x18, 0x21, 0x6b, 0x30, 0x72, 0x72, 0x72, 0x8e, 0x72, 0x4c,
-	0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0x02, 0xb9, 0x55, 0x3f, 0x3d, 0x3f, 0x27, 0x31, 0x2f, 0x5d, 0x1f,
-	0xec, 0xfa, 0xa4, 0xd2, 0x34, 0xfd, 0x32, 0x23, 0xfd, 0xe4, 0xdc, 0x14, 0x08, 0x3f, 0x59, 0x37,
-	0x3d, 0x35, 0x4f, 0x37, 0x3d, 0x5f, 0xbf, 0x24, 0xb5, 0xb8, 0x24, 0x25, 0xb1, 0x24, 0x11, 0xee,
-	0x79, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x27, 0xeb, 0x57, 0xe0, 0x10, 0x01, 0x00, 0x00,
+	// 272 bytes of the wire-encoded FileDescriptorProto
+	0x0a, 0x17, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
+	0x6e, 0x74, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x17, 0x67, 0x6f, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e,
+	0x74, 0x73, 0x22, 0x71, 0x0a, 0x08, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x31, 0x12, 0x18,
+	0x0a, 0x07, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x31, 0x41, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x31, 0x41, 0x12, 0x26, 0x0a, 0x0d, 0x4f, 0x6e, 0x65, 0x6f,
+	0x66, 0x31, 0x41, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x31, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x48,
+	0x00, 0x52, 0x0d, 0x4f, 0x6e, 0x65, 0x6f, 0x66, 0x31, 0x41, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x31,
+	0x1a, 0x0b, 0x0a, 0x09, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x31, 0x41, 0x1a, 0x0b, 0x0a,
+	0x09, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x31, 0x42, 0x42, 0x09, 0x0a, 0x07, 0x4f, 0x6e,
+	0x65, 0x6f, 0x66, 0x31, 0x61, 0x22, 0x24, 0x0a, 0x08, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x32, 0x1a, 0x0b, 0x0a, 0x09, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x32, 0x41, 0x1a, 0x0b,
+	0x0a, 0x09, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x32, 0x42, 0x42, 0x43, 0x5a, 0x41, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67,
+	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x76, 0x32, 0x2f, 0x63, 0x6d, 0x64,
+	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2d, 0x67, 0x65, 0x6e, 0x2d, 0x67, 0x6f, 0x2f, 0x74,
+	0x65, 0x73, 0x74, 0x64, 0x61, 0x74, 0x61, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73,
 }
 
-func init() {
-	xxx_Comments_protoFile_FileDesc.Messages = xxx_Comments_protoFile_MessageDescs[0:2]
-	xxx_Comments_protoFile_MessageDescs[0].Messages = xxx_Comments_protoFile_MessageDescs[2:4]
-	xxx_Comments_protoFile_MessageDescs[1].Messages = xxx_Comments_protoFile_MessageDescs[4:6]
-	var err error
-	Comments_protoFile, err = prototype.NewFile(&xxx_Comments_protoFile_FileDesc)
-	if err != nil {
-		panic(err)
-	}
-}
+var fileDescriptor_885e8293f1fab554_gzipped = func() []byte {
+	bb := new(bytes.Buffer)
+	zw, _ := gzip.NewWriterLevel(bb, gzip.NoCompression)
+	zw.Write(fileDescriptor_885e8293f1fab554)
+	zw.Close()
+	return bb.Bytes()
+}()
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var Comments_protoFile protoreflect.FileDescriptor
 
-var xxx_Comments_protoFile_FileDesc = prototype.File{
-	Syntax:  protoreflect.Proto2,
-	Path:    "comments/comments.proto",
-	Package: "goproto.protoc.comments",
+var xxx_Comments_protoFile_messageTypes [6]protoimpl.MessageType
+var xxx_Comments_protoFile_goTypes = []interface{}{
+	(*Message1)(nil),           // 0: goproto.protoc.comments.Message1
+	(*Message2)(nil),           // 1: goproto.protoc.comments.Message2
+	(*Message1_Message1A)(nil), // 2: goproto.protoc.comments.Message1.Message1A
+	(*Message1_Message1B)(nil), // 3: goproto.protoc.comments.Message1.Message1B
+	(*Message2_Message2A)(nil), // 4: goproto.protoc.comments.Message2.Message2A
+	(*Message2_Message2B)(nil), // 5: goproto.protoc.comments.Message2.Message2B
 }
-var xxx_Comments_protoFile_MessageTypes = [6]protoimpl.MessageType{
-	{Type: prototype.GoMessage(
-		xxx_Comments_protoFile_MessageDescs[0].Reference(),
-		func(protoreflect.MessageType) protoreflect.Message {
-			return xxx_Message1{new(Message1)}
-		},
-	)},
-	{Type: prototype.GoMessage(
-		xxx_Comments_protoFile_MessageDescs[1].Reference(),
-		func(protoreflect.MessageType) protoreflect.Message {
-			return xxx_Message2{new(Message2)}
-		},
-	)},
-	{Type: prototype.GoMessage(
-		xxx_Comments_protoFile_MessageDescs[2].Reference(),
-		func(protoreflect.MessageType) protoreflect.Message {
-			return xxx_Message1_Message1A{new(Message1_Message1A)}
-		},
-	)},
-	{Type: prototype.GoMessage(
-		xxx_Comments_protoFile_MessageDescs[3].Reference(),
-		func(protoreflect.MessageType) protoreflect.Message {
-			return xxx_Message1_Message1B{new(Message1_Message1B)}
-		},
-	)},
-	{Type: prototype.GoMessage(
-		xxx_Comments_protoFile_MessageDescs[4].Reference(),
-		func(protoreflect.MessageType) protoreflect.Message {
-			return xxx_Message2_Message2A{new(Message2_Message2A)}
-		},
-	)},
-	{Type: prototype.GoMessage(
-		xxx_Comments_protoFile_MessageDescs[5].Reference(),
-		func(protoreflect.MessageType) protoreflect.Message {
-			return xxx_Message2_Message2B{new(Message2_Message2B)}
-		},
-	)},
-}
-var xxx_Comments_protoFile_MessageDescs = [6]prototype.Message{
-	{
-		Name: "Message1",
-		Fields: []prototype.Field{
-			{
-				Name:        "Field1A",
-				Number:      1,
-				Cardinality: protoreflect.Optional,
-				Kind:        protoreflect.StringKind,
-				JSONName:    "Field1A",
-				IsPacked:    prototype.False,
-			},
-			{
-				Name:        "Oneof1AField1",
-				Number:      2,
-				Cardinality: protoreflect.Optional,
-				Kind:        protoreflect.StringKind,
-				JSONName:    "Oneof1AField1",
-				OneofName:   "Oneof1a",
-				IsPacked:    prototype.False,
-			},
-		},
-		Oneofs: []prototype.Oneof{
-			{Name: "Oneof1a"},
-		},
-	},
-	{
-		Name: "Message2",
-	},
-	{
-		Name: "Message1A",
-	},
-	{
-		Name: "Message1B",
-	},
-	{
-		Name: "Message2A",
-	},
-	{
-		Name: "Message2B",
-	},
+var xxx_Comments_protoFile_depIdxs = []int32{}
+
+func init() {
+	var messageTypes [6]protoreflect.MessageType
+	Comments_protoFile = protoimpl.FileBuilder{
+		RawDescriptor:      fileDescriptor_885e8293f1fab554,
+		GoTypes:            xxx_Comments_protoFile_goTypes,
+		DependencyIndexes:  xxx_Comments_protoFile_depIdxs,
+		MessageOutputTypes: messageTypes[:],
+	}.Init()
+	messageGoTypes := xxx_Comments_protoFile_goTypes[0:][:6]
+	for i, mt := range messageTypes[:] {
+		xxx_Comments_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_Comments_protoFile_messageTypes[i].PBType = mt
+	}
+	xxx_Comments_protoFile_goTypes = nil
+	xxx_Comments_protoFile_depIdxs = nil
 }
