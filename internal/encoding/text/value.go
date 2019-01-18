@@ -49,8 +49,11 @@ const (
 	Int
 	// Uint is an unsigned integer (e.g., "0xdeadbeef").
 	Uint
-	// Float is a floating-point number (e.g., "1.234" or "1e100").
-	Float
+	// Float32 is a 32-bit floating-point number (e.g., "1.234" or "1e38").
+	// This allows encoding to differentiate the bitsize used for formatting.
+	Float32
+	// Float64 is a 64-bit floating-point number.
+	Float64
 	// String is a quoted string (e.g., `"the quick brown fox"`).
 	String
 	// Name is a protocol buffer identifier (e.g., `field_name`).
@@ -69,8 +72,10 @@ func (t Type) String() string {
 		return "int"
 	case Uint:
 		return "uint"
-	case Float:
-		return "float"
+	case Float32:
+		return "float32"
+	case Float64:
+		return "float64"
 	case String:
 		return "string"
 	case Name:
@@ -89,7 +94,7 @@ type Value struct {
 	typ Type
 	raw []byte     // raw bytes of the serialized data
 	str string     // only for String or Name
-	num uint64     // only for Bool, Int, Uint, or Float
+	num uint64     // only for Bool, Int, Uint, Float32, or Float64
 	arr []Value    // only for List
 	obj [][2]Value // only for Message
 }
@@ -98,7 +103,8 @@ type Value struct {
 //	bool               =>  Bool
 //	int32, int64       =>  Int
 //	uint32, uint64     =>  Uint
-//	float32, float64   =>  Float
+//	float32            =>  Float32
+//	float64            =>  Float64
 //	string, []byte     =>  String
 //	protoreflect.Name  =>  Name
 //	[]Value            =>  List
@@ -122,9 +128,10 @@ func ValueOf(v interface{}) Value {
 	case uint64:
 		return Value{typ: Uint, num: uint64(v)}
 	case float32:
-		return Value{typ: Float, num: math.Float64bits(float64(v))}
+		// Store as float64 bits.
+		return Value{typ: Float32, num: math.Float64bits(float64(v))}
 	case float64:
-		return Value{typ: Float, num: math.Float64bits(float64(v))}
+		return Value{typ: Float64, num: math.Float64bits(float64(v))}
 	case string:
 		return Value{typ: String, str: string(v)}
 	case []byte:
@@ -149,8 +156,8 @@ func rawValueOf(v interface{}, raw []byte) Value {
 // at the resulting type. However, there are ambiguities as to the exact type
 // of the value (e.g., "false" is either a bool or a name).
 // Thus, some of the types are convertible with each other.
-// The Bool, Int, Uint, Float, and Name methods return a boolean to report
-// whether the conversion was successful.
+// The Bool, Int, Uint, Float32, Float64, and Name methods return a boolean to
+// report whether the conversion was successful.
 func (v Value) Type() Type {
 	return v.typ
 }
@@ -216,22 +223,40 @@ func (v Value) Uint(b64 bool) (x uint64, ok bool) {
 	return 0, false
 }
 
-// Float returns v as a float64 of the specified precision and reports whether
+// Float32 returns v as a float32 of the specified precision and reports whether
 // the conversion succeeded.
-func (v Value) Float(b64 bool) (x float64, ok bool) {
+func (v Value) Float32() (x float32, ok bool) {
+	switch v.typ {
+	case Int:
+		return float32(int64(v.num)), true // possibly lossy, but allowed
+	case Uint:
+		return float32(uint64(v.num)), true // possibly lossy, but allowed
+	case Float32, Float64:
+		n := math.Float64frombits(v.num)
+		if math.IsNaN(n) || math.IsInf(n, 0) {
+			return float32(n), true
+		}
+		if math.Abs(n) <= math.MaxFloat32 {
+			return float32(n), true
+		}
+	}
+	return 0, false
+}
+
+// Float64 returns v as a float64 of the specified precision and reports whether
+// the conversion succeeded.
+func (v Value) Float64() (x float64, ok bool) {
 	switch v.typ {
 	case Int:
 		return float64(int64(v.num)), true // possibly lossy, but allowed
 	case Uint:
 		return float64(uint64(v.num)), true // possibly lossy, but allowed
-	case Float:
+	case Float32:
+		f, ok := v.Float32()
+		return float64(f), ok
+	case Float64:
 		n := math.Float64frombits(v.num)
-		if math.IsNaN(n) || math.IsInf(n, 0) {
-			return float64(n), true
-		}
-		if b64 || math.Abs(n) <= math.MaxFloat32 {
-			return float64(n), true
-		}
+		return n, true
 	}
 	return 0, false
 }
@@ -250,7 +275,7 @@ func (v Value) String() string {
 }
 func (v Value) stringValue() string {
 	switch v.typ {
-	case Bool, Int, Uint, Float, Name:
+	case Bool, Int, Uint, Float32, Float64, Name:
 		return string(v.Raw())
 	case List:
 		var ss []string
@@ -277,9 +302,9 @@ func (v Value) stringValue() string {
 // can be treated as an identifier.
 func (v Value) Name() (protoreflect.Name, bool) {
 	switch v.typ {
-	case Bool, Float:
+	case Bool, Float32, Float64:
 		// Ambiguity arises in unmarshalValue since "nan" may interpreted as
-		// either a Name type (for enum values) or a Float type.
+		// either a Name type (for enum values) or a Float32/Float64 type.
 		// Similarly, "true" may be interpreted as either a Name or Bool type.
 		n := protoreflect.Name(v.raw)
 		if n.IsValid() {

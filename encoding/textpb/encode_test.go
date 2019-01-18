@@ -162,9 +162,8 @@ opt_string: ""
 			OptSint64:   scalar.Int64(-0xffff),
 			OptFixed64:  scalar.Uint64(64),
 			OptSfixed32: scalar.Int32(-32),
-			// TODO: Update encoder to output same decimals.
-			OptFloat:  scalar.Float32(1.02),
-			OptDouble: scalar.Float64(1.23e100),
+			OptFloat:    scalar.Float32(1.02),
+			OptDouble:   scalar.Float64(1.0199999809265137),
 			// TODO: Update encoder to not output UTF8 for bytes.
 			OptBytes:  []byte("\xe8\xb0\xb7\xe6\xad\x8c"),
 			OptString: scalar.String("谷歌"),
@@ -178,8 +177,8 @@ opt_sint32: -1001
 opt_sint64: -65535
 opt_fixed64: 64
 opt_sfixed32: -32
-opt_float: 1.0199999809265137
-opt_double: 1.23e+100
+opt_float: 1.02
+opt_double: 1.0199999809265137
 opt_bytes: "谷歌"
 opt_string: "谷歌"
 `,
@@ -449,7 +448,7 @@ OptGroup: {}
 			RptInt64:  []int64{-64, 47},
 			RptUint32: []uint32{0xff, 0xffff},
 			RptUint64: []uint64{0xdeadbeef},
-			// TODO: add float32 examples.
+			RptFloat:  []float32{float32(math.NaN()), float32(math.Inf(1)), float32(math.Inf(-1)), 1.034},
 			RptDouble: []float64{math.NaN(), math.Inf(1), math.Inf(-1), 1.23e-308},
 			RptString: []string{"hello", "世界"},
 			RptBytes: [][]byte{
@@ -470,6 +469,10 @@ rpt_int64: 47
 rpt_uint32: 255
 rpt_uint32: 65535
 rpt_uint64: 3735928559
+rpt_float: nan
+rpt_float: inf
+rpt_float: -inf
+rpt_float: 1.034
 rpt_double: nan
 rpt_double: inf
 rpt_double: -inf

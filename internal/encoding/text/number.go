@@ -15,7 +15,7 @@ import (
 	"github.com/golang/protobuf/v2/internal/errors"
 )
 
-// marshalNumber encodes v as either a Bool, Int, Uint, or Float.
+// marshalNumber encodes v as either a Bool, Int, Uint, Float32, or Float64.
 func (p *encoder) marshalNumber(v Value) error {
 	var err error
 	p.out, err = appendNumber(p.out, v)
@@ -24,7 +24,7 @@ func (p *encoder) marshalNumber(v Value) error {
 func appendNumber(out []byte, v Value) ([]byte, error) {
 	if len(v.raw) > 0 {
 		switch v.Type() {
-		case Bool, Int, Uint, Float:
+		case Bool, Int, Uint, Float32, Float64:
 			return append(out, v.raw...), nil
 		}
 	}
@@ -39,19 +39,25 @@ func appendNumber(out []byte, v Value) ([]byte, error) {
 		return strconv.AppendInt(out, int64(v.num), 10), nil
 	case Uint:
 		return strconv.AppendUint(out, uint64(v.num), 10), nil
-	case Float:
-		switch n := math.Float64frombits(v.num); {
-		case math.IsNaN(n):
-			return append(out, "nan"...), nil
-		case math.IsInf(n, +1):
-			return append(out, "inf"...), nil
-		case math.IsInf(n, -1):
-			return append(out, "-inf"...), nil
-		default:
-			return strconv.AppendFloat(out, n, 'g', -1, 64), nil
-		}
+	case Float32:
+		return appendFloat(out, v, 32)
+	case Float64:
+		return appendFloat(out, v, 64)
 	default:
 		return nil, errors.New("invalid type %v, expected bool or number", v.Type())
+	}
+}
+
+func appendFloat(out []byte, v Value, bitSize int) ([]byte, error) {
+	switch n := math.Float64frombits(v.num); {
+	case math.IsNaN(n):
+		return append(out, "nan"...), nil
+	case math.IsInf(n, +1):
+		return append(out, "inf"...), nil
+	case math.IsInf(n, -1):
+		return append(out, "-inf"...), nil
+	default:
+		return strconv.AppendFloat(out, n, 'g', -1, bitSize), nil
 	}
 }
 
@@ -80,7 +86,7 @@ var (
 	floatRegexp   = regexp.MustCompile("^-?((0|[1-9][0-9]*)?([.][0-9]*)?([eE][+-]?[0-9]+)?[fF]?)")
 )
 
-// unmarshalNumber decodes a Bool, Int, Uint, or Float from the input.
+// unmarshalNumber decodes a Bool, Int, Uint, or Float64 from the input.
 func (p *decoder) unmarshalNumber() (Value, error) {
 	v, n, err := consumeNumber(p.in)
 	p.consume(n)
@@ -98,6 +104,7 @@ func consumeNumber(in []byte) (Value, int, error) {
 	if n := matchWithDelim(floatRegexp, in); n > 0 {
 		if bytes.ContainsAny(in[:n], ".eEfF") {
 			s := strings.TrimRight(string(in[:n]), "fF")
+			// Always decode float as 64-bit.
 			f, err := strconv.ParseFloat(s, 64)
 			if err != nil {
 				return Value{}, 0, err

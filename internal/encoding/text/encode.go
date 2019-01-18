@@ -168,7 +168,7 @@ func (p *encoder) marshalKey(v Value) error {
 
 func (p *encoder) marshalValue(v Value) error {
 	switch v.Type() {
-	case Bool, Int, Uint, Float:
+	case Bool, Int, Uint, Float32, Float64:
 		return p.marshalNumber(v)
 	case String:
 		return p.marshalString(v)

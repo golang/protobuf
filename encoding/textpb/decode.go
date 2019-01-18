@@ -266,11 +266,11 @@ func unmarshalScalar(input text.Value, fd pref.FieldDescriptor) (pref.Value, err
 			return pref.ValueOf(uint64(n)), nil
 		}
 	case pref.FloatKind:
-		if n, ok := input.Float(b32); ok {
+		if n, ok := input.Float32(); ok {
 			return pref.ValueOf(float32(n)), nil
 		}
 	case pref.DoubleKind:
-		if n, ok := input.Float(b64); ok {
+		if n, ok := input.Float64(); ok {
 			return pref.ValueOf(float64(n)), nil
 		}
 	case pref.StringKind:
