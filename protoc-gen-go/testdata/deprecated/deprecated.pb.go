@@ -243,7 +243,7 @@ type DeprecatedServiceServer interface {
 
 //
 // Deprecated: Do not use.
-// UnimplementedDeprecatedServiceServer should be embedded to have forward compatible implementations
+// UnimplementedDeprecatedServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedDeprecatedServiceServer struct {
 }
 

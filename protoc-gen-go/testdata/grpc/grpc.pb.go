@@ -327,7 +327,7 @@ type TestServer interface {
 	Bidi(Test_BidiServer) error
 }
 
-// UnimplementedTestServer should be embedded to have forward compatible implementations
+// UnimplementedTestServer can be embedded to have forward compatible implementations.
 type UnimplementedTestServer struct {
 }
 

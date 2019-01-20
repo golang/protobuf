@@ -117,7 +117,7 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConn")
-	g.P("var errUnimplemented = func (methodName string) error {\n\t return ", errorPkg, ".Errorf(codes.Unimplemented, \"Method %s not implemented\", methodName)\n}")
+	g.P("var errUnimplemented = func(methodName string) error {\n\t return ", errorPkg, ".Errorf(codes.Unimplemented, \"Method %s not implemented\", methodName)\n}")
 	g.P("var _ ", codePkg, ".Code")
 	g.P()
 
@@ -288,7 +288,7 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 
 func (g *grpc) generateUnimplementedServer(servName string, service *pb.ServiceDescriptorProto) {
 	serverType := servName + "Server"
-	g.P("// Unimplemented", servName, "Server should be embedded to have forward compatible implementations")
+	g.P("// Unimplemented", serverType, " can be embedded to have forward compatible implementations.")
 	g.P("type Unimplemented", serverType, " struct {")
 	g.P("}")
 	g.P()
@@ -305,11 +305,11 @@ func (g *grpc) generateServerMethodConcrete(servName string, method *pb.MethodDe
 	implementation := fmt.Sprintf("func (*Unimplemented%sServer) %s {\n", servName, header)
 	implementation += fmt.Sprintf("\treturn ")
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
-		implementation += fmt.Sprintf("nil, ")
+		implementation += "nil, "
 	}
 	origMethName := method.GetName()
 	methName := generator.CamelCase(origMethName)
-	implementation += fmt.Sprintf("errUnimplemented(\"%s\")\n}", methName)
+	implementation += fmt.Sprintf("errUnimplemented(%q)\n}", methName)
 	return implementation
 }
 
@@ -427,7 +427,7 @@ func (g *grpc) generateServerSignatureWithParamNames(servName string, method *pb
 		ret = "(*" + g.typeName(method.GetOutputType()) + ", error)"
 	}
 	if !method.GetClientStreaming() {
-		reqArgs = append(reqArgs, "req "+"*"+g.typeName(method.GetInputType()))
+		reqArgs = append(reqArgs, "req *"+g.typeName(method.GetInputType()))
 	}
 	if method.GetServerStreaming() || method.GetClientStreaming() {
 		reqArgs = append(reqArgs, "srv "+servName+"_"+generator.CamelCase(origMethName)+"Server")
