@@ -117,8 +117,10 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConn")
-	g.P("var errUnimplemented = func(methodName string) error {\n\t return ", errorPkg, ".Errorf(codes.Unimplemented, \"Method %s not implemented\", methodName)\n}")
-	g.P("var _ ", codePkg, ".Code")
+	g.P()
+	g.P("func errUnimplemented(methodName string) error {")
+	g.P("\treturn ", errorPkg, ".Errorf(codes.Unimplemented, \"method %s not implemented\", methodName)")
+	g.P("}")
 	g.P()
 
 	// Assert version compatibility.
@@ -226,7 +228,6 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 
 	// Server Unimplemented struct for forward compatability.
 	if deprecated {
-		g.P("//")
 		g.P(deprecationComment)
 	}
 	g.generateUnimplementedServer(servName, service)
@@ -284,8 +285,7 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P()
 }
 
-// generateUnimplementedServer creats the unimplemented server struct
-
+// generateUnimplementedServer creates the unimplemented server struct
 func (g *grpc) generateUnimplementedServer(servName string, service *pb.ServiceDescriptorProto) {
 	serverType := servName + "Server"
 	g.P("// Unimplemented", serverType, " can be embedded to have forward compatible implementations.")
