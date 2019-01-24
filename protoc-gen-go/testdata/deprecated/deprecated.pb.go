@@ -240,7 +240,6 @@ type DeprecatedServiceServer interface {
 	DeprecatedCall(context.Context, *DeprecatedRequest) (*DeprecatedResponse, error)
 }
 
-//
 // Deprecated: Do not use.
 // UnimplementedDeprecatedServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedDeprecatedServiceServer struct {

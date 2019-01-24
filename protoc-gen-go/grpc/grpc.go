@@ -225,7 +225,6 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 
 	// Server Unimplemented struct for forward compatability.
 	if deprecated {
-		g.P("//")
 		g.P(deprecationComment)
 	}
 	g.generateUnimplementedServer(servName, service)
@@ -283,8 +282,7 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P()
 }
 
-// generateUnimplementedServer creats the unimplemented server struct
-
+// generateUnimplementedServer creates the unimplemented server struct
 func (g *grpc) generateUnimplementedServer(servName string, service *pb.ServiceDescriptorProto) {
 	serverType := servName + "Server"
 	g.P("// Unimplemented", serverType, " can be embedded to have forward compatible implementations.")
