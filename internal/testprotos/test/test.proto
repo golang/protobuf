@@ -6,6 +6,10 @@ syntax = "proto2";
 
 package goproto.proto.test;
 
+import "test_import.proto";
+import public "test_public.proto";
+import weak "test_weak.proto";
+
 option go_package = "github.com/golang/protobuf/v2/internal/testprotos/test";
 
 message TestAllTypes {
@@ -39,8 +43,12 @@ message TestAllTypes {
   optional group OptionalGroup = 16 {
     optional int32 a = 17;
   }
-  optional NestedMessage optional_nested_message = 18;
-  optional NestedEnum    optional_nested_enum    = 21;
+  optional NestedMessage  optional_nested_message  = 18;
+  optional ForeignMessage optional_foreign_message = 19;
+  optional ImportMessage  optional_import_message  = 20;
+  optional NestedEnum     optional_nested_enum     = 21;
+  optional ForeignEnum    optional_foreign_enum    = 22;
+  optional ImportEnum     optional_import_enum     = 23;
 
   repeated int32         repeated_int32    = 31;
   repeated int64         repeated_int64    = 32;
@@ -60,8 +68,12 @@ message TestAllTypes {
   repeated group RepeatedGroup = 46 {
     optional int32 a = 47;
   }
-  repeated NestedMessage repeated_nested_message = 48;
-  repeated NestedEnum    repeated_nested_enum    = 51;
+  repeated NestedMessage  repeated_nested_message  = 48;
+  repeated ForeignMessage repeated_foreign_message = 49;
+  repeated ImportMessage  repeated_importmessage   = 50;
+  repeated NestedEnum     repeated_nested_enum     = 51;
+  repeated ForeignEnum    repeated_foreign_enum    = 52;
+  repeated ImportEnum     repeated_importenum      = 53;
 
   map <   int32, int32>         map_int32_int32           = 56;
   map <   int64, int64>         map_int64_int64           = 57;
@@ -81,6 +93,25 @@ message TestAllTypes {
   map <  string, NestedMessage> map_string_nested_message = 71;
   map <  string, NestedEnum>    map_string_nested_enum    = 73;
 
+  // Singular with defaults
+  optional    int32 default_int32    = 81 [default =  81    ];
+  optional    int64 default_int64    = 82 [default =  82    ];
+  optional   uint32 default_uint32   = 83 [default =  83    ];
+  optional   uint64 default_uint64   = 84 [default =  84    ];
+  optional   sint32 default_sint32   = 85 [default = -85    ];
+  optional   sint64 default_sint64   = 86 [default =  86    ];
+  optional  fixed32 default_fixed32  = 87 [default =  87    ];
+  optional  fixed64 default_fixed64  = 88 [default =  88    ];
+  optional sfixed32 default_sfixed32 = 89 [default =  89    ];
+  optional sfixed64 default_sfixed64 = 80 [default = -90    ];
+  optional    float default_float    = 91 [default =  91.5  ];
+  optional   double default_double   = 92 [default =  92e3  ];
+  optional     bool default_bool     = 93 [default = true   ];
+  optional   string default_string   = 94 [default = "hello"];
+  optional    bytes default_bytes    = 95 [default = "world"];
+  optional NestedEnum  default_nested_enum  = 96 [default = BAR        ];
+  optional ForeignEnum default_foreign_enum = 97 [default = FOREIGN_BAR];
+
   oneof oneof_field {
     uint32        oneof_uint32         = 111;
     NestedMessage oneof_nested_message = 112;
@@ -92,6 +123,41 @@ message TestAllTypes {
     double        oneof_double         = 118;
     NestedEnum    oneof_enum           = 119;
   }
+}
+
+message TestDeprecatedMessage {
+  option deprecated = true;
+  optional int32 deprecated_int32 = 1 [deprecated=true];
+  enum DeprecatedEnum {
+    option deprecated = true;
+    DEPRECATED = 0 [deprecated=true];
+    //DEPRECATED = 0 [deprecated=true];
+  }
+  oneof deprecated_oneof {
+    int32 deprecated_oneof_field = 2 [deprecated = true];
+  }
+}
+
+message ForeignMessage {
+  optional int32 c = 1;
+  optional int32 d = 2;
+}
+
+enum ForeignEnum {
+  FOREIGN_FOO = 4;
+  FOREIGN_BAR = 5;
+  FOREIGN_BAZ = 6;
+}
+
+message TestReservedFields {
+  reserved 2, 15, 9 to 11;
+  reserved "bar", "baz";
+}
+
+enum TestReservedEnumFields {
+  RESERVED_ENUM = 0;
+  reserved 2, 15, 9 to 11;
+  reserved "BAR", "BAZ";
 }
 
 message TestAllExtensions {
@@ -144,4 +210,26 @@ extend TestAllExtensions {
 
   repeated TestAllTypes.NestedMessage repeated_nested_message_extension = 48;
   repeated TestAllTypes.NestedEnum repeated_nested_enum_extension = 51;
+}
+
+message TestNestedExtension {
+  extend TestAllExtensions {
+    optional string nested_string_extension = 1003;
+  }
+}
+
+// Test that RPC services work.
+message FooRequest  {}
+message FooResponse {}
+
+service TestService {
+  rpc Foo(FooRequest) returns (FooResponse);
+  rpc TestStream(stream FooRequest) returns (stream FooResponse);
+}
+
+service TestDeprecatedService {
+  option deprecated = true;
+  rpc Deprecated(TestDeprecatedMessage) returns (TestDeprecatedMessage) {
+    option deprecated = true;
+  }
 }

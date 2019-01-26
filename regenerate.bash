@@ -18,14 +18,23 @@ GOBIN=$tmpdir/bin go install ./cmd/protoc-gen-go-grpc
 # Generate various test protos.
 PROTO_DIRS=(
   cmd/protoc-gen-go/testdata
-  cmd/protoc-gen-go-grpc/testdata
   internal/testprotos/test
+)
+GRPC_PROTO_DIRS=(
+  cmd/protoc-gen-go-grpc/testdata
 )
 for dir in ${PROTO_DIRS[@]}; do
   for p in `find $dir -name "*.proto"`; do
     echo "# $p"
     PROTOC_GEN_GO_ENABLE_REFLECT=1 protoc -I$dir \
       --go_out=paths=source_relative:$dir \
+      $p
+  done
+done
+for dir in ${GRPC_PROTO_DIRS[@]}; do
+  for p in `find $dir -name "*.proto"`; do
+    echo "# $p"
+    PROTOC_GEN_GO_ENABLE_REFLECT=1 protoc -I$dir \
       --go-grpc_out=paths=source_relative:$dir \
       $p
   done
