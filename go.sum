@@ -1,4 +1,3 @@
-github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
 github.com/golang/protobuf v1.2.1-0.20181127190454-8d0c54c12466/go.mod h1:Qd/q+1AKNOZr9uGQzbzCmRO6sUih6GTPZv6a1/R87v0=
 github.com/golang/protobuf v1.2.1-0.20181205191652-7e65e513332f h1:jEoef3K+ZQwZ7UB1iGu6KhX8hS9cYw1aXR7djS3Vn10=
 github.com/golang/protobuf v1.2.1-0.20181205191652-7e65e513332f/go.mod h1:asK8yRb/+zxJTE0SbTESCku/4OjiDfbPwk4rEyIatUA=
