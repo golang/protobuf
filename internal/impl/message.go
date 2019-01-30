@@ -148,16 +148,6 @@ func (mi *MessageType) MessageOf(p interface{}) pref.Message {
 	return (*messageWrapper)(mi.dataTypeOf(p))
 }
 
-func (mi *MessageType) KnownFieldsOf(p interface{}) pref.KnownFields {
-	mi.init()
-	return (*knownFields)(mi.dataTypeOf(p))
-}
-
-func (mi *MessageType) UnknownFieldsOf(p interface{}) pref.UnknownFields {
-	mi.init()
-	return mi.unknownFields(mi.dataTypeOf(p))
-}
-
 func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
 	// TODO: Remove this check? This API is primarily used by generated code,
 	// and should not violate this assumption. Leave this check in for now to

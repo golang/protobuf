@@ -225,11 +225,15 @@ var scalarProto2Type = pimpl.MessageType{GoType: reflect.TypeOf(new(ScalarProto2
 	},
 )}
 
-func (m *ScalarProto2) Type() pref.MessageType            { return scalarProto2Type.PBType }
-func (m *ScalarProto2) KnownFields() pref.KnownFields     { return scalarProto2Type.KnownFieldsOf(m) }
-func (m *ScalarProto2) UnknownFields() pref.UnknownFields { return scalarProto2Type.UnknownFieldsOf(m) }
-func (m *ScalarProto2) Interface() pref.ProtoMessage      { return m }
-func (m *ScalarProto2) ProtoReflect() pref.Message        { return m }
+func (m *ScalarProto2) Type() pref.MessageType { return scalarProto2Type.PBType }
+func (m *ScalarProto2) KnownFields() pref.KnownFields {
+	return scalarProto2Type.MessageOf(m).KnownFields()
+}
+func (m *ScalarProto2) UnknownFields() pref.UnknownFields {
+	return scalarProto2Type.MessageOf(m).UnknownFields()
+}
+func (m *ScalarProto2) Interface() pref.ProtoMessage { return m }
+func (m *ScalarProto2) ProtoReflect() pref.Message   { return m }
 
 func TestScalarProto2(t *testing.T) {
 	testMessage(t, nil, &ScalarProto2{}, messageOps{
@@ -331,11 +335,15 @@ var scalarProto3Type = pimpl.MessageType{GoType: reflect.TypeOf(new(ScalarProto3
 	},
 )}
 
-func (m *ScalarProto3) Type() pref.MessageType            { return scalarProto3Type.PBType }
-func (m *ScalarProto3) KnownFields() pref.KnownFields     { return scalarProto3Type.KnownFieldsOf(m) }
-func (m *ScalarProto3) UnknownFields() pref.UnknownFields { return scalarProto3Type.UnknownFieldsOf(m) }
-func (m *ScalarProto3) Interface() pref.ProtoMessage      { return m }
-func (m *ScalarProto3) ProtoReflect() pref.Message        { return m }
+func (m *ScalarProto3) Type() pref.MessageType { return scalarProto3Type.PBType }
+func (m *ScalarProto3) KnownFields() pref.KnownFields {
+	return scalarProto3Type.MessageOf(m).KnownFields()
+}
+func (m *ScalarProto3) UnknownFields() pref.UnknownFields {
+	return scalarProto3Type.MessageOf(m).UnknownFields()
+}
+func (m *ScalarProto3) Interface() pref.ProtoMessage { return m }
+func (m *ScalarProto3) ProtoReflect() pref.Message   { return m }
 
 func TestScalarProto3(t *testing.T) {
 	testMessage(t, nil, &ScalarProto3{}, messageOps{
@@ -448,11 +456,15 @@ var listScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(ListScalars))
 	},
 )}
 
-func (m *ListScalars) Type() pref.MessageType            { return listScalarsType.PBType }
-func (m *ListScalars) KnownFields() pref.KnownFields     { return listScalarsType.KnownFieldsOf(m) }
-func (m *ListScalars) UnknownFields() pref.UnknownFields { return listScalarsType.UnknownFieldsOf(m) }
-func (m *ListScalars) Interface() pref.ProtoMessage      { return m }
-func (m *ListScalars) ProtoReflect() pref.Message        { return m }
+func (m *ListScalars) Type() pref.MessageType { return listScalarsType.PBType }
+func (m *ListScalars) KnownFields() pref.KnownFields {
+	return listScalarsType.MessageOf(m).KnownFields()
+}
+func (m *ListScalars) UnknownFields() pref.UnknownFields {
+	return listScalarsType.MessageOf(m).UnknownFields()
+}
+func (m *ListScalars) Interface() pref.ProtoMessage { return m }
+func (m *ListScalars) ProtoReflect() pref.Message   { return m }
 
 func TestListScalars(t *testing.T) {
 	empty := &ListScalars{}
@@ -639,11 +651,15 @@ var mapScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(MapScalars)), 
 	},
 )}
 
-func (m *MapScalars) Type() pref.MessageType            { return mapScalarsType.PBType }
-func (m *MapScalars) KnownFields() pref.KnownFields     { return mapScalarsType.KnownFieldsOf(m) }
-func (m *MapScalars) UnknownFields() pref.UnknownFields { return mapScalarsType.UnknownFieldsOf(m) }
-func (m *MapScalars) Interface() pref.ProtoMessage      { return m }
-func (m *MapScalars) ProtoReflect() pref.Message        { return m }
+func (m *MapScalars) Type() pref.MessageType { return mapScalarsType.PBType }
+func (m *MapScalars) KnownFields() pref.KnownFields {
+	return mapScalarsType.MessageOf(m).KnownFields()
+}
+func (m *MapScalars) UnknownFields() pref.UnknownFields {
+	return mapScalarsType.MessageOf(m).UnknownFields()
+}
+func (m *MapScalars) Interface() pref.ProtoMessage { return m }
+func (m *MapScalars) ProtoReflect() pref.Message   { return m }
 
 func TestMapScalars(t *testing.T) {
 	empty := &MapScalars{}
@@ -797,11 +813,15 @@ var oneofScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(OneofScalars
 	},
 )}
 
-func (m *OneofScalars) Type() pref.MessageType            { return oneofScalarsType.PBType }
-func (m *OneofScalars) KnownFields() pref.KnownFields     { return oneofScalarsType.KnownFieldsOf(m) }
-func (m *OneofScalars) UnknownFields() pref.UnknownFields { return oneofScalarsType.UnknownFieldsOf(m) }
-func (m *OneofScalars) Interface() pref.ProtoMessage      { return m }
-func (m *OneofScalars) ProtoReflect() pref.Message        { return m }
+func (m *OneofScalars) Type() pref.MessageType { return oneofScalarsType.PBType }
+func (m *OneofScalars) KnownFields() pref.KnownFields {
+	return oneofScalarsType.MessageOf(m).KnownFields()
+}
+func (m *OneofScalars) UnknownFields() pref.UnknownFields {
+	return oneofScalarsType.MessageOf(m).UnknownFields()
+}
+func (m *OneofScalars) Interface() pref.ProtoMessage { return m }
+func (m *OneofScalars) ProtoReflect() pref.Message   { return m }
 
 func (*OneofScalars) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
@@ -1022,11 +1042,15 @@ var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 	IsMapEntry: true,
 })
 
-func (m *EnumMessages) Type() pref.MessageType            { return enumMessagesType.PBType }
-func (m *EnumMessages) KnownFields() pref.KnownFields     { return enumMessagesType.KnownFieldsOf(m) }
-func (m *EnumMessages) UnknownFields() pref.UnknownFields { return enumMessagesType.UnknownFieldsOf(m) }
-func (m *EnumMessages) Interface() pref.ProtoMessage      { return m }
-func (m *EnumMessages) ProtoReflect() pref.Message        { return m }
+func (m *EnumMessages) Type() pref.MessageType { return enumMessagesType.PBType }
+func (m *EnumMessages) KnownFields() pref.KnownFields {
+	return enumMessagesType.MessageOf(m).KnownFields()
+}
+func (m *EnumMessages) UnknownFields() pref.UnknownFields {
+	return enumMessagesType.MessageOf(m).UnknownFields()
+}
+func (m *EnumMessages) Interface() pref.ProtoMessage { return m }
+func (m *EnumMessages) ProtoReflect() pref.Message   { return m }
 
 func (*EnumMessages) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
