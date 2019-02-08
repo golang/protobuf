@@ -46,9 +46,7 @@ func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
 	}
 
 	var nerr errors.NonFatal
-	var v text.Value
-	var err error
-	v, err = o.marshalMessage(m.ProtoReflect())
+	v, err := o.marshalMessage(m.ProtoReflect())
 	if !nerr.Merge(err) {
 		return nil, err
 	}
@@ -99,10 +97,14 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 			continue
 		}
 
-		tname := text.ValueOf(fd.Name())
+		name := text.ValueOf(fd.Name())
+		// Use type name for group field name.
+		if fd.Kind() == pref.GroupKind {
+			name = text.ValueOf(fd.MessageType().Name())
+		}
 		pval := knownFields.Get(num)
 		var err error
-		msgFields, err = o.appendField(msgFields, tname, pval, fd)
+		msgFields, err = o.appendField(msgFields, name, pval, fd)
 		if !nerr.Merge(err) {
 			return text.Value{}, err
 		}
@@ -126,13 +128,8 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 }
 
 // appendField marshals a protoreflect.Value and appends it to the given [][2]text.Value.
-func (o MarshalOptions) appendField(msgFields [][2]text.Value, tname text.Value, pval pref.Value, fd pref.FieldDescriptor) ([][2]text.Value, error) {
+func (o MarshalOptions) appendField(msgFields [][2]text.Value, name text.Value, pval pref.Value, fd pref.FieldDescriptor) ([][2]text.Value, error) {
 	var nerr errors.NonFatal
-
-	// Use type name for group field name.
-	if fd.Kind() == pref.GroupKind {
-		tname = text.ValueOf(fd.MessageType().Name())
-	}
 
 	if fd.Cardinality() == pref.Repeated {
 		// Map or repeated fields.
@@ -152,7 +149,7 @@ func (o MarshalOptions) appendField(msgFields [][2]text.Value, tname text.Value,
 
 		// Add each item as key: value field.
 		for _, item := range items {
-			msgFields = append(msgFields, [2]text.Value{tname, item})
+			msgFields = append(msgFields, [2]text.Value{name, item})
 		}
 	} else {
 		// Required or optional fields.
@@ -160,7 +157,7 @@ func (o MarshalOptions) appendField(msgFields [][2]text.Value, tname text.Value,
 		if !nerr.Merge(err) {
 			return msgFields, err
 		}
-		msgFields = append(msgFields, [2]text.Value{tname, tval})
+		msgFields = append(msgFields, [2]text.Value{name, tval})
 	}
 
 	return msgFields, nerr.E

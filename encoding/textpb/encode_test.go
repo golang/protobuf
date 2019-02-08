@@ -531,6 +531,14 @@ rpt_nested: {
 rpt_nested: {}
 `,
 	}, {
+		desc: "repeated nested messages contains nil value",
+		input: &pb2.Nests{
+			RptNested: []*pb2.Nested{nil, {}},
+		},
+		want: `rpt_nested: {}
+rpt_nested: {}
+`,
+	}, {
 		desc: "repeated group fields",
 		input: &pb2.Nests{
 			Rptgroup: []*pb2.Nests_RptGroup{
@@ -676,6 +684,18 @@ str_to_oneofs: {
   value: {
     str: "hello"
   }
+}
+`,
+	}, {
+		desc: "map field nil message value",
+		input: &pb2.Maps{
+			StrToNested: map[string]*pb2.Nested{
+				"nil": nil,
+			},
+		},
+		want: `str_to_nested: {
+  key: "nil"
+  value: {}
 }
 `,
 	}, {
