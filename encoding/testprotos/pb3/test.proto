@@ -81,3 +81,8 @@ message Maps {
   map<string, Nested> str_to_nested = 4;
   map<string, Oneofs> str_to_oneofs = 5;
 }
+
+// Message for testing json_name option.
+message JSONNames {
+  string s_string = 1 [json_name = "foo_bar"];
+}

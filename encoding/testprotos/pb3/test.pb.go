@@ -568,6 +568,49 @@ func (m *Maps) GetStrToOneofs() map[string]*Oneofs {
 	return nil
 }
 
+// Message for testing json_name option.
+type JSONNames struct {
+	SString              string   `protobuf:"bytes,1,opt,name=s_string,json=foo_bar,proto3" json:"s_string,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *JSONNames) ProtoReflect() protoreflect.Message {
+	return xxx_Test_protoFile_messageTypes[6].MessageOf(m)
+}
+func (m *JSONNames) Reset()         { *m = JSONNames{} }
+func (m *JSONNames) String() string { return proto.CompactTextString(m) }
+func (*JSONNames) ProtoMessage()    {}
+func (*JSONNames) Descriptor() ([]byte, []int) {
+	return fileDescriptor_33e0a17922cde063_gzipped, []int{6}
+}
+
+func (m *JSONNames) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_JSONNames.Unmarshal(m, b)
+}
+func (m *JSONNames) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_JSONNames.Marshal(b, m, deterministic)
+}
+func (m *JSONNames) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_JSONNames.Merge(m, src)
+}
+func (m *JSONNames) XXX_Size() int {
+	return xxx_messageInfo_JSONNames.Size(m)
+}
+func (m *JSONNames) XXX_DiscardUnknown() {
+	xxx_messageInfo_JSONNames.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_JSONNames proto.InternalMessageInfo
+
+func (m *JSONNames) GetSString() string {
+	if m != nil {
+		return m.SString
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterFile("encoding/testprotos/pb3/test.proto", fileDescriptor_33e0a17922cde063_gzipped)
 	proto.RegisterEnum("pb3.Enum", Enum_name, Enum_value)
@@ -583,10 +626,11 @@ func init() {
 	proto.RegisterMapType((map[string]*Nested)(nil), "pb3.Maps.StrToNestedEntry")
 	proto.RegisterMapType((map[string]*Oneofs)(nil), "pb3.Maps.StrToOneofsEntry")
 	proto.RegisterMapType((map[uint64]Enum)(nil), "pb3.Maps.Uint64ToEnumEntry")
+	proto.RegisterType((*JSONNames)(nil), "pb3.JSONNames")
 }
 
 var fileDescriptor_33e0a17922cde063 = []byte{
-	// 1690 bytes of the wire-encoded FileDescriptorProto
+	// 1730 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x22, 0x65, 0x6e, 0x63, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x70, 0x62, 0x33, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x03, 0x70, 0x62, 0x33, 0x22, 0x9e, 0x03, 0x0a, 0x07, 0x53, 0x63,
@@ -685,14 +729,17 @@ var fileDescriptor_33e0a17922cde063 = []byte{
 	0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x21, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x70, 0x62, 0x33, 0x2e, 0x4f, 0x6e, 0x65, 0x6f, 0x66,
-	0x73, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x2a, 0x2b, 0x0a, 0x04,
-	0x45, 0x6e, 0x75, 0x6d, 0x12, 0x08, 0x0a, 0x04, 0x5a, 0x45, 0x52, 0x4f, 0x10, 0x00, 0x12, 0x07,
-	0x0a, 0x03, 0x4f, 0x4e, 0x45, 0x10, 0x01, 0x12, 0x07, 0x0a, 0x03, 0x54, 0x57, 0x4f, 0x10, 0x02,
-	0x12, 0x07, 0x0a, 0x03, 0x54, 0x45, 0x4e, 0x10, 0x0a, 0x42, 0x37, 0x5a, 0x35, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67, 0x2f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x76, 0x32, 0x2f, 0x65, 0x6e, 0x63, 0x6f, 0x64,
-	0x69, 0x6e, 0x67, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x70,
-	0x62, 0x33, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x26, 0x0a, 0x09,
+	0x4a, 0x53, 0x4f, 0x4e, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x73, 0x5f, 0x73,
+	0x74, 0x72, 0x69, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x66, 0x6f, 0x6f,
+	0x5f, 0x62, 0x61, 0x72, 0x2a, 0x2b, 0x0a, 0x04, 0x45, 0x6e, 0x75, 0x6d, 0x12, 0x08, 0x0a, 0x04,
+	0x5a, 0x45, 0x52, 0x4f, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x4f, 0x4e, 0x45, 0x10, 0x01, 0x12,
+	0x07, 0x0a, 0x03, 0x54, 0x57, 0x4f, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x54, 0x45, 0x4e, 0x10,
+	0x0a, 0x42, 0x37, 0x5a, 0x35, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f,
+	0x76, 0x32, 0x2f, 0x65, 0x6e, 0x63, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x2f, 0x74, 0x65, 0x73, 0x74,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x70, 0x62, 0x33, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var fileDescriptor_33e0a17922cde063_gzipped = func() []byte {
@@ -708,7 +755,7 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 var Test_protoFile protoreflect.FileDescriptor
 
 var xxx_Test_protoFile_enumTypes [2]protoreflect.EnumType
-var xxx_Test_protoFile_messageTypes [11]protoimpl.MessageType
+var xxx_Test_protoFile_messageTypes [12]protoimpl.MessageType
 var xxx_Test_protoFile_goTypes = []interface{}{
 	(Enum)(0),             // 0: pb3.Enum
 	(Enums_NestedEnum)(0), // 1: pb3.Enums.NestedEnum
@@ -718,11 +765,12 @@ var xxx_Test_protoFile_goTypes = []interface{}{
 	(*Nested)(nil),        // 5: pb3.Nested
 	(*Oneofs)(nil),        // 6: pb3.Oneofs
 	(*Maps)(nil),          // 7: pb3.Maps
-	nil,                   // 8: pb3.Maps.Int32ToStrEntry
-	nil,                   // 9: pb3.Maps.BoolToUint32Entry
-	nil,                   // 10: pb3.Maps.Uint64ToEnumEntry
-	nil,                   // 11: pb3.Maps.StrToNestedEntry
-	nil,                   // 12: pb3.Maps.StrToOneofsEntry
+	(*JSONNames)(nil),     // 8: pb3.JSONNames
+	nil,                   // 9: pb3.Maps.Int32ToStrEntry
+	nil,                   // 10: pb3.Maps.BoolToUint32Entry
+	nil,                   // 11: pb3.Maps.Uint64ToEnumEntry
+	nil,                   // 12: pb3.Maps.StrToNestedEntry
+	nil,                   // 13: pb3.Maps.StrToOneofsEntry
 }
 var xxx_Test_protoFile_depIdxs = []int32{
 	0,  // pb3.Enums.s_enum:type_name -> pb3.Enum
@@ -731,18 +779,18 @@ var xxx_Test_protoFile_depIdxs = []int32{
 	5,  // pb3.Nested.s_nested:type_name -> pb3.Nested
 	0,  // pb3.Oneofs.oneof_enum:type_name -> pb3.Enum
 	5,  // pb3.Oneofs.oneof_nested:type_name -> pb3.Nested
-	8,  // pb3.Maps.int32_to_str:type_name -> pb3.Maps.Int32ToStrEntry
-	9,  // pb3.Maps.bool_to_uint32:type_name -> pb3.Maps.BoolToUint32Entry
-	10, // pb3.Maps.uint64_to_enum:type_name -> pb3.Maps.Uint64ToEnumEntry
-	11, // pb3.Maps.str_to_nested:type_name -> pb3.Maps.StrToNestedEntry
-	12, // pb3.Maps.str_to_oneofs:type_name -> pb3.Maps.StrToOneofsEntry
+	9,  // pb3.Maps.int32_to_str:type_name -> pb3.Maps.Int32ToStrEntry
+	10, // pb3.Maps.bool_to_uint32:type_name -> pb3.Maps.BoolToUint32Entry
+	11, // pb3.Maps.uint64_to_enum:type_name -> pb3.Maps.Uint64ToEnumEntry
+	12, // pb3.Maps.str_to_nested:type_name -> pb3.Maps.StrToNestedEntry
+	13, // pb3.Maps.str_to_oneofs:type_name -> pb3.Maps.StrToOneofsEntry
 	0,  // pb3.Maps.Uint64ToEnumEntry.value:type_name -> pb3.Enum
 	5,  // pb3.Maps.StrToNestedEntry.value:type_name -> pb3.Nested
 	6,  // pb3.Maps.StrToOneofsEntry.value:type_name -> pb3.Oneofs
 }
 
 func init() {
-	var messageTypes [11]protoreflect.MessageType
+	var messageTypes [12]protoreflect.MessageType
 	Test_protoFile = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_33e0a17922cde063,
 		GoTypes:            xxx_Test_protoFile_goTypes,
@@ -750,7 +798,7 @@ func init() {
 		EnumOutputTypes:    xxx_Test_protoFile_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Test_protoFile_goTypes[2:][:11]
+	messageGoTypes := xxx_Test_protoFile_goTypes[2:][:12]
 	for i, mt := range messageTypes[:] {
 		xxx_Test_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_Test_protoFile_messageTypes[i].PBType = mt
