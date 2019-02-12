@@ -52,6 +52,8 @@ func dhex(s string) []byte {
 }
 
 func TestPack(t *testing.T) {
+	nan32 := math.Float32frombits(0x7fc00000)
+	nan64 := math.Float64frombits(0x7FF8000000000001)
 	tests := []struct {
 		raw []byte
 		msg Message
@@ -126,7 +128,7 @@ func TestPack(t *testing.T) {
 		raw: dhex("3ddb0f49403a1401000000ffff7f7f0000c07f0000807f000080ff"),
 		msg: Message{
 			Tag{7, Fixed32Type}, Float32(math.Pi),
-			Tag{7, BytesType}, LengthPrefix{Float32(math.SmallestNonzeroFloat32), Float32(math.MaxFloat32), Float32(math.NaN()), Float32(math.Inf(+1)), Float32(math.Inf(-1))},
+			Tag{7, BytesType}, LengthPrefix{Float32(math.SmallestNonzeroFloat32), Float32(math.MaxFloat32), Float32(nan32), Float32(math.Inf(+1)), Float32(math.Inf(-1))},
 		},
 		wantOutSource: `pack.Message{
 	pack.Tag{7, pack.Fixed32Type}, pack.Float32(3.1415927),
@@ -153,7 +155,7 @@ func TestPack(t *testing.T) {
 		raw: dhex("51182d4454fb21094052280100000000000000ffffffffffffef7f010000000000f87f000000000000f07f000000000000f0ff"),
 		msg: Message{
 			Tag{10, Fixed64Type}, Float64(math.Pi),
-			Tag{10, BytesType}, LengthPrefix{Float64(math.SmallestNonzeroFloat64), Float64(math.MaxFloat64), Float64(math.NaN()), Float64(math.Inf(+1)), Float64(math.Inf(-1))},
+			Tag{10, BytesType}, LengthPrefix{Float64(math.SmallestNonzeroFloat64), Float64(math.MaxFloat64), Float64(nan64), Float64(math.Inf(+1)), Float64(math.Inf(-1))},
 		},
 		wantOutMulti: `Message{
 	Tag{10, Fixed64}, Float64(3.141592653589793),
