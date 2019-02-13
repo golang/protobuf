@@ -6,12 +6,11 @@
 syntax = "proto3";
 
 package pb3;
-option go_package = "github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb3";
+option go_package = "github.com/golang/protobuf/v2/encoding/testprotos/pb3";
 
 // Scalars contains scalar field types.
 message Scalars {
   bool s_bool = 1;
-
   int32 s_int32 = 2;
   int64 s_int64 = 3;
   uint32 s_uint32 = 4;
@@ -56,11 +55,29 @@ message Enums {
 
 // Message contains nested message field.
 message Nests {
-  Nested s_nested = 1;
+  Nested s_nested = 2;
 }
 
 // Message type used as submessage.
 message Nested {
   string s_string = 1;
   Nested s_nested = 2;
+}
+
+// Message contains oneof field.
+message Oneofs {
+  oneof union {
+    Enum oneof_enum = 1;
+    string oneof_string = 2;
+    Nested oneof_nested = 3;
+  }
+}
+
+// Message contains map fields.
+message Maps {
+  map<int32, string> int32_to_str = 1;
+  map<bool, uint32> bool_to_uint32 = 2;
+  map<uint64, Enum> uint64_to_enum = 3;
+  map<string, Nested> str_to_nested = 4;
+  map<string, Oneofs> str_to_oneofs = 5;
 }

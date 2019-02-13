@@ -59,9 +59,9 @@ PROTOC_GEN_GO_ENABLE_REFLECT=1 protoc -I$tmpdir/src \
   $tmpdir/src/google/protobuf/compiler/plugin.proto
 cp $tmpdir/src/google/protobuf/compiler/plugin.pb.go ./types/plugin/plugin.pb.go
 
-echo "# encoding/textpb/testprotos/pb?/test.proto"
+echo "# encoding/testprotos/pb?/test.proto"
 PROTOC_GEN_GO_ENABLE_REFLECT=1 protoc --go_out=paths=source_relative:. \
-  encoding/textpb/testprotos/pb?/test.proto
+  encoding/testprotos/pb?/test.proto
 
 echo "# reflect/protoregistry/testprotos/test.proto"
 PROTOC_GEN_GO_ENABLE_REFLECT=1 protoc --go_out=paths=source_relative:. \

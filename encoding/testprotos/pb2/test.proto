@@ -1,4 +1,4 @@
-// Copyright 2018 The Go Authors. All rights reserved.
+// Copyright 2019 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -6,7 +6,7 @@
 syntax = "proto2";
 
 package pb2;
-option go_package = "github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb2";
+option go_package = "github.com/golang/protobuf/v2/encoding/testprotos/pb2";
 
 import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";
@@ -18,7 +18,6 @@ import "google/protobuf/wrappers.proto";
 // Scalars contains optional scalar fields.
 message Scalars {
   optional bool opt_bool = 1;
-
   optional int32 opt_int32 = 2;
   optional int64 opt_int64 = 3;
   optional uint32 opt_uint32 = 4;
@@ -30,6 +29,10 @@ message Scalars {
   optional sfixed32 opt_sfixed32 = 10;
   optional sfixed64 opt_sfixed64 = 11;
 
+  // Textproto marshal outputs fields in the same order as this proto
+  // definition regardless of field number. Following fields are intended to
+  // test that assumption.
+
   optional float opt_float = 20;
   optional double opt_double = 21;
 
@@ -37,24 +40,10 @@ message Scalars {
   optional string opt_string = 13;
 }
 
-// Message contains repeated fields.
-message Repeats {
-  repeated bool rpt_bool = 1;
-  repeated int32 rpt_int32 = 2;
-  repeated int64 rpt_int64 = 3;
-  repeated uint32 rpt_uint32 = 4;
-  repeated uint64 rpt_uint64 = 5;
-  repeated float rpt_float = 6;
-  repeated double rpt_double = 7;
-  repeated string rpt_string = 15;
-  repeated bytes rpt_bytes = 14;
-}
-
 enum Enum {
-  UNKNOWN = 0;
-  FIRST = 1;
-  SECOND = 2;
-  TENTH = 10;
+  ONE = 1;
+  TWO = 2;
+  TEN = 10;
 }
 
 // Message contains enum fields.
@@ -71,25 +60,17 @@ message Enums {
   repeated NestedEnum rpt_nested_enum = 4;
 }
 
-// Message contains message and group fields.
-message Nests {
-  optional Nested opt_nested = 1;
-  optional group OptGroup = 2 {
-    optional bool opt_bool = 1;
-    optional string opt_string = 2;
-    optional Nested opt_nested = 3;
-
-    optional group OptNestedGroup = 4 {
-      optional Enum opt_enum = 1;
-    }
-  }
-
-  repeated Nested rpt_nested = 3;
-  repeated group RptGroup = 4 {
-    repeated bool rpt_bool = 1;
-  }
-
-  reserved "reserved_field";
+// Message contains repeated fields.
+message Repeats {
+  repeated bool rpt_bool = 1;
+  repeated int32 rpt_int32 = 2;
+  repeated int64 rpt_int64 = 3;
+  repeated uint32 rpt_uint32 = 4;
+  repeated uint64 rpt_uint64 = 5;
+  repeated float rpt_float = 6;
+  repeated double rpt_double = 7;
+  repeated string rpt_string = 8;
+  repeated bytes rpt_bytes = 9;
 }
 
 // Message type used as submessage.
@@ -98,43 +79,40 @@ message Nested {
   optional Nested opt_nested = 2;
 }
 
+// Message contains message and group fields.
+message Nests {
+  optional Nested opt_nested = 1;
+  optional group OptGroup = 2 {
+    optional string opt_string = 1;
+    optional Nested opt_nested = 2;
+
+    optional group OptNestedGroup = 3 {
+      optional fixed32 opt_fixed32 = 1;
+    }
+  }
+
+  repeated Nested rpt_nested = 4;
+  repeated group RptGroup = 5 {
+    repeated string rpt_string = 1;
+  }
+
+  reserved "reserved_field";
+}
+
 // Message contains required fields.
 message Requireds {
   required bool req_bool = 1;
-  required fixed32 req_fixed32 = 2;
-  required fixed64 req_fixed64 = 3;
-  required sfixed32 req_sfixed32 = 4;
-  required sfixed64 req_sfixed64 = 5;
-  required float req_float = 6;
-  required double req_double = 7;
-  required string req_string = 8;
-  required bytes req_bytes = 9;
-  required Enum req_enum = 10;
-  required Nested req_nested = 11;
+  required sfixed64 req_sfixed64 = 2;
+  required double req_double = 3;
+  required string req_string = 4;
+  required Enum req_enum = 5;
+  required Nested req_nested = 6;
 }
 
 // Message contains both required and optional fields.
 message PartialRequired {
   required string req_string = 1;
   optional string opt_string = 2;
-}
-
-// Message contains oneof field.
-message Oneofs {
-  oneof union {
-    string str = 1;
-    Nested msg = 2;
-  }
-}
-
-// Message contains map fields.
-message Maps {
-  map<int32, string> int32_to_str = 1;
-  map<sfixed64, bool> sfixed64_to_bool = 2;
-  map<bool, uint32> bool_to_uint32 = 3;
-  map<uint64, Enum> uint64_to_enum = 4;
-  map<string, Nested> str_to_nested = 5;
-  map<string, Oneofs> str_to_oneofs = 6;
 }
 
 // Following messages are for testing required field nested in optional, repeated and map fields.
@@ -147,6 +125,10 @@ message IndirectRequired {
   optional NestedWithRequired opt_nested = 1;
   repeated NestedWithRequired rpt_nested = 2;
   map<string, NestedWithRequired> str_to_nested = 3;
+
+  oneof union {
+    NestedWithRequired oneof_nested = 4;
+  }
 }
 
 // Following messages are for testing extensions.

@@ -21,12 +21,13 @@ import (
 	// TODO: Remove this when protoV1 registers these hooks for you.
 	_ "github.com/golang/protobuf/v2/internal/legacy"
 
-	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb2"
-	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb3"
+	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
+	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
 )
 
 func init() {
-	// TODO: remove this when generated code registers to V2 global registry.
+	// TODO: remove these registerExtension calls when generated code registers
+	// to V2 global registry.
 	registerExtension(pb2.E_OptExtBool)
 	registerExtension(pb2.E_OptExtString)
 	registerExtension(pb2.E_OptExtEnum)
@@ -66,7 +67,7 @@ func TestUnmarshal(t *testing.T) {
 		inputMessage: &pb2.Scalars{},
 		wantMessage:  &pb2.Scalars{},
 	}, {
-		desc:         "proto2 optional scalar fields set to zero values",
+		desc:         "proto2 optional scalars set to zero values",
 		inputMessage: &pb2.Scalars{},
 		inputText: `opt_bool: false
 opt_int32: 0
@@ -102,7 +103,7 @@ opt_string: ""
 			OptString:   scalar.String(""),
 		},
 	}, {
-		desc:         "proto3 scalar fields set to zero values",
+		desc:         "proto3 scalars set to zero values",
 		inputMessage: &pb3.Scalars{},
 		inputText: `s_bool: false
 s_int32: 0
@@ -122,7 +123,7 @@ s_string: ""
 `,
 		wantMessage: &pb3.Scalars{},
 	}, {
-		desc:         "proto2 optional scalar fields",
+		desc:         "proto2 optional scalars",
 		inputMessage: &pb2.Scalars{},
 		inputText: `opt_bool: true
 opt_int32: 255
@@ -154,7 +155,7 @@ opt_string: "谷歌"
 			OptString:   scalar.String("谷歌"),
 		},
 	}, {
-		desc:         "proto3 scalar fields",
+		desc:         "proto3 scalars",
 		inputMessage: &pb3.Scalars{},
 		inputText: `s_bool: true
 s_int32: 255
@@ -261,28 +262,28 @@ s_string: "谷歌"
 		inputText:    "s_sfixed64: bad",
 		wantErr:      true,
 	}, {
-		desc:         "float32 positive infinity",
+		desc:         "float positive infinity",
 		inputMessage: &pb3.Scalars{},
 		inputText:    "s_float: inf",
 		wantMessage: &pb3.Scalars{
 			SFloat: float32(math.Inf(1)),
 		},
 	}, {
-		desc:         "float32 negative infinity",
+		desc:         "float negative infinity",
 		inputMessage: &pb3.Scalars{},
 		inputText:    "s_float: -inf",
 		wantMessage: &pb3.Scalars{
 			SFloat: float32(math.Inf(-1)),
 		},
 	}, {
-		desc:         "float64 positive infinity",
+		desc:         "double positive infinity",
 		inputMessage: &pb3.Scalars{},
 		inputText:    "s_double: inf",
 		wantMessage: &pb3.Scalars{
 			SDouble: math.Inf(1),
 		},
 	}, {
-		desc:         "float64 negative infinity",
+		desc:         "double negative infinity",
 		inputMessage: &pb3.Scalars{},
 		inputText:    "s_double: -inf",
 		wantMessage: &pb3.Scalars{
@@ -314,19 +315,19 @@ opt_bool: false
 `,
 		wantErr: true,
 	}, {
-		desc:         "proto2 invalid singular field",
-		inputMessage: &pb2.Scalars{},
-		inputText: `
-opt_bool: [true, false]
-`,
-		wantErr: true,
-	}, {
 		desc:         "proto2 more duplicate singular field",
 		inputMessage: &pb2.Scalars{},
 		inputText: `
 opt_bool: true
 opt_string: "hello"
 opt_bool: false
+`,
+		wantErr: true,
+	}, {
+		desc:         "proto2 invalid singular field",
+		inputMessage: &pb2.Scalars{},
+		inputText: `
+opt_bool: [true, false]
 `,
 		wantErr: true,
 	}, {
@@ -350,22 +351,22 @@ s_bool: true
 		desc:         "proto2 enum",
 		inputMessage: &pb2.Enums{},
 		inputText: `
-opt_enum: FIRST
+opt_enum: ONE
 opt_nested_enum: UNO
 `,
 		wantMessage: &pb2.Enums{
-			OptEnum:       pb2.Enum_FIRST.Enum(),
+			OptEnum:       pb2.Enum_ONE.Enum(),
 			OptNestedEnum: pb2.Enums_UNO.Enum(),
 		},
 	}, {
 		desc:         "proto2 enum set to numeric values",
 		inputMessage: &pb2.Enums{},
 		inputText: `
-opt_enum: 1
+opt_enum: 2
 opt_nested_enum: 2
 `,
 		wantMessage: &pb2.Enums{
-			OptEnum:       pb2.Enum_FIRST.Enum(),
+			OptEnum:       pb2.Enum_TWO.Enum(),
 			OptNestedEnum: pb2.Enums_DOS.Enum(),
 		},
 	}, {
@@ -383,7 +384,7 @@ opt_nested_enum: -101
 		desc:         "proto2 enum set to invalid named",
 		inputMessage: &pb2.Enums{},
 		inputText: `
-opt_enum: UNNAMED 
+opt_enum: UNNAMED
 opt_nested_enum: UNNAMED_TOO
 `,
 		wantErr: true,
@@ -403,11 +404,11 @@ s_nested_enum: DIEZ
 		inputMessage: &pb3.Enums{},
 		inputText: `
 s_enum: 2
-s_nested_enum: 1
+s_nested_enum: 2
 `,
 		wantMessage: &pb3.Enums{
 			SEnum:       pb3.Enum_TWO,
-			SNestedEnum: pb3.Enums_UNO,
+			SNestedEnum: pb3.Enums_DOS,
 		},
 	}, {
 		desc:         "proto3 enum unnamed numeric value",
@@ -477,57 +478,67 @@ s_nested: {
 			},
 		},
 	}, {
-		desc:         "oneof field set to empty string",
-		inputMessage: &pb2.Oneofs{},
-		inputText:    "str: ''",
-		wantMessage: &pb2.Oneofs{
-			Union: &pb2.Oneofs_Str{},
+		desc:         "oneof set to empty string",
+		inputMessage: &pb3.Oneofs{},
+		inputText:    "oneof_string: ''",
+		wantMessage: &pb3.Oneofs{
+			Union: &pb3.Oneofs_OneofString{},
 		},
 	}, {
-		desc:         "oneof field set to string",
-		inputMessage: &pb2.Oneofs{},
-		inputText:    "str: 'hello'",
-		wantMessage: &pb2.Oneofs{
-			Union: &pb2.Oneofs_Str{
-				Str: "hello",
+		desc:         "oneof set to string",
+		inputMessage: &pb3.Oneofs{},
+		inputText:    "oneof_string: 'hello'",
+		wantMessage: &pb3.Oneofs{
+			Union: &pb3.Oneofs_OneofString{
+				OneofString: "hello",
 			},
 		},
 	}, {
-		desc:         "oneof field set to empty message",
-		inputMessage: &pb2.Oneofs{},
-		inputText:    "msg: {}",
-		wantMessage: &pb2.Oneofs{
-			Union: &pb2.Oneofs_Msg{
-				Msg: &pb2.Nested{},
+		desc:         "oneof set to enum",
+		inputMessage: &pb3.Oneofs{},
+		inputText:    "oneof_enum: TEN",
+		wantMessage: &pb3.Oneofs{
+			Union: &pb3.Oneofs_OneofEnum{
+				OneofEnum: pb3.Enum_TEN,
 			},
 		},
 	}, {
-		desc:         "oneof field set to message",
-		inputMessage: &pb2.Oneofs{},
+		desc:         "oneof set to empty message",
+		inputMessage: &pb3.Oneofs{},
+		inputText:    "oneof_nested: {}",
+		wantMessage: &pb3.Oneofs{
+			Union: &pb3.Oneofs_OneofNested{
+				OneofNested: &pb3.Nested{},
+			},
+		},
+	}, {
+		desc:         "oneof set to message",
+		inputMessage: &pb3.Oneofs{},
 		inputText: `
-msg: {
-  opt_string: "nested message"
+oneof_nested: {
+  s_string: "nested message"
 }
 `,
-		wantMessage: &pb2.Oneofs{
-			Union: &pb2.Oneofs_Msg{
-				Msg: &pb2.Nested{
-					OptString: scalar.String("nested message"),
+		wantMessage: &pb3.Oneofs{
+			Union: &pb3.Oneofs_OneofNested{
+				OneofNested: &pb3.Nested{
+					SString: "nested message",
 				},
 			},
 		},
 	}, {
-		desc:         "oneof field set to last value",
-		inputMessage: &pb2.Oneofs{},
+		desc:         "oneof set to last value",
+		inputMessage: &pb3.Oneofs{},
 		inputText: `
-msg: {
-  opt_string: "nested message"
+oneof_nested: {
+  s_string: "nested message"
 }
-str: "wins"
+oneof_enum: TEN
+oneof_string: "wins"
 `,
-		wantMessage: &pb2.Oneofs{
-			Union: &pb2.Oneofs_Str{
-				Str: "wins",
+		wantMessage: &pb3.Oneofs{
+			Union: &pb3.Oneofs_OneofString{
+				OneofString: "wins",
 			},
 		},
 	}, {
@@ -564,14 +575,14 @@ rpt_string: "b"
 		desc:         "repeated enums",
 		inputMessage: &pb2.Enums{},
 		inputText: `
-rpt_enum: TENTH
+rpt_enum: TEN
 rpt_enum: 1
 rpt_nested_enum: [DOS, 2]
 rpt_enum: 42
 rpt_nested_enum: -47
 `,
 		wantMessage: &pb2.Enums{
-			RptEnum:       []pb2.Enum{pb2.Enum_TENTH, pb2.Enum_FIRST, 42},
+			RptEnum:       []pb2.Enum{pb2.Enum_TEN, pb2.Enum_ONE, 42},
 			RptNestedEnum: []pb2.Enums_NestedEnum{pb2.Enums_DOS, pb2.Enums_DOS, -47},
 		},
 	}, {
@@ -608,22 +619,22 @@ rpt_nested: {}
 		inputMessage: &pb2.Nests{},
 		inputText: `
 RptGroup: {
-  rpt_bool: true
-  rpt_bool: false
+  rpt_string: "hello"
+  rpt_string: "world"
 }
 RptGroup: {}
 `,
 		wantMessage: &pb2.Nests{
 			Rptgroup: []*pb2.Nests_RptGroup{
 				{
-					RptBool: []bool{true, false},
+					RptString: []string{"hello", "world"},
 				},
 				{},
 			},
 		},
 	}, {
 		desc:         "map fields 1",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   key: -101
@@ -633,36 +644,24 @@ int32_to_str: {
   key: 0
   value: "zero"
 }
-sfixed64_to_bool: {
-  key: 0
-  value: false
+bool_to_uint32: {
+  key: false
+  value: 101
 }
 int32_to_str: {
   key: 255
   value: "0xff"
 }
 bool_to_uint32: {
-  key: false
-  value: 101
-}
-sfixed64_to_bool: {
-  key: 51966
-  value: true
-}
-bool_to_uint32: {
   key: true
   value: 42
 }
 `,
-		wantMessage: &pb2.Maps{
+		wantMessage: &pb3.Maps{
 			Int32ToStr: map[int32]string{
 				-101: "-101",
 				0xff: "0xff",
 				0:    "zero",
-			},
-			Sfixed64ToBool: map[int64]bool{
-				0xcafe: true,
-				0:      false,
 			},
 			BoolToUint32: map[bool]uint32{
 				true:  42,
@@ -671,76 +670,76 @@ bool_to_uint32: {
 		},
 	}, {
 		desc:         "map fields 2",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 uint64_to_enum: {
   key: 1
-  value: FIRST
+  value: ONE
 }
 uint64_to_enum: {
   key: 2
-  value: SECOND
+  value: 2
 }
 uint64_to_enum: {
   key: 10
-  value: TENTH
+  value: 101
 }
 `,
-		wantMessage: &pb2.Maps{
-			Uint64ToEnum: map[uint64]pb2.Enum{
-				1:  pb2.Enum_FIRST,
-				2:  pb2.Enum_SECOND,
-				10: pb2.Enum_TENTH,
+		wantMessage: &pb3.Maps{
+			Uint64ToEnum: map[uint64]pb3.Enum{
+				1:  pb3.Enum_ONE,
+				2:  pb3.Enum_TWO,
+				10: 101,
 			},
 		},
 	}, {
 		desc:         "map fields 3",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 str_to_nested: {
   key: "nested_one"
   value: {
-    opt_string: "nested in a map"
+    s_string: "nested in a map"
   }
 }
 `,
-		wantMessage: &pb2.Maps{
-			StrToNested: map[string]*pb2.Nested{
-				"nested_one": &pb2.Nested{
-					OptString: scalar.String("nested in a map"),
+		wantMessage: &pb3.Maps{
+			StrToNested: map[string]*pb3.Nested{
+				"nested_one": &pb3.Nested{
+					SString: "nested in a map",
 				},
 			},
 		},
 	}, {
 		desc:         "map fields 4",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 str_to_oneofs: {
   key: "nested"
   value: {
-    msg: {
-      opt_string: "nested oneof in map field value"
+    oneof_nested: {
+      s_string: "nested oneof in map field value"
     }
   }
 }
 str_to_oneofs: {
   key: "string"
   value: {
-    str: "hello"
+    oneof_string: "hello"
   }
 }
 `,
-		wantMessage: &pb2.Maps{
-			StrToOneofs: map[string]*pb2.Oneofs{
-				"string": &pb2.Oneofs{
-					Union: &pb2.Oneofs_Str{
-						Str: "hello",
+		wantMessage: &pb3.Maps{
+			StrToOneofs: map[string]*pb3.Oneofs{
+				"string": &pb3.Oneofs{
+					Union: &pb3.Oneofs_OneofString{
+						OneofString: "hello",
 					},
 				},
-				"nested": &pb2.Oneofs{
-					Union: &pb2.Oneofs_Msg{
-						Msg: &pb2.Nested{
-							OptString: scalar.String("nested oneof in map field value"),
+				"nested": &pb3.Oneofs{
+					Union: &pb3.Oneofs_OneofNested{
+						OneofNested: &pb3.Nested{
+							SString: "nested oneof in map field value",
 						},
 					},
 				},
@@ -748,7 +747,7 @@ str_to_oneofs: {
 		},
 	}, {
 		desc:         "map contains duplicate keys",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   key: 0
@@ -759,14 +758,14 @@ int32_to_str: {
   value: "zero"
 }
 `,
-		wantMessage: &pb2.Maps{
+		wantMessage: &pb3.Maps{
 			Int32ToStr: map[int32]string{
 				0: "zero",
 			},
 		},
 	}, {
 		desc:         "map contains duplicate key fields",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   key: 0
@@ -777,7 +776,7 @@ int32_to_str: {
 		wantErr: true,
 	}, {
 		desc:         "map contains duplicate value fields",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   key: 1
@@ -788,44 +787,103 @@ int32_to_str: {
 		wantErr: true,
 	}, {
 		desc:         "map contains missing key",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   value: "zero"
 }
+bool_to_uint32: {
+  value: 47
+}
+str_to_nested: {
+  value: {}
+}
 `,
-		wantMessage: &pb2.Maps{
+		wantMessage: &pb3.Maps{
 			Int32ToStr: map[int32]string{
 				0: "zero",
+			},
+			BoolToUint32: map[bool]uint32{
+				false: 47,
+			},
+			StrToNested: map[string]*pb3.Nested{
+				"": {},
 			},
 		},
 	}, {
 		desc:         "map contains missing value",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   key: 100
 }
+bool_to_uint32: {
+  key: true
+}
+uint64_to_enum: {
+  key: 101
+}
+str_to_nested: {
+  key: "hello"
+}
 `,
-		wantMessage: &pb2.Maps{
+		wantMessage: &pb3.Maps{
 			Int32ToStr: map[int32]string{
 				100: "",
+			},
+			BoolToUint32: map[bool]uint32{
+				true: 0,
+			},
+			Uint64ToEnum: map[uint64]pb3.Enum{
+				101: pb3.Enum_ZERO,
+			},
+			StrToNested: map[string]*pb3.Nested{
+				"hello": {},
 			},
 		},
 	}, {
 		desc:         "map contains missing key and value",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {}
+bool_to_uint32: {}
+uint64_to_enum: {}
+str_to_nested: {}
 `,
-		wantMessage: &pb2.Maps{
+		wantMessage: &pb3.Maps{
+			Int32ToStr: map[int32]string{
+				0: "",
+			},
+			BoolToUint32: map[bool]uint32{
+				false: 0,
+			},
+			Uint64ToEnum: map[uint64]pb3.Enum{
+				0: pb3.Enum_ZERO,
+			},
+			StrToNested: map[string]*pb3.Nested{
+				"": {},
+			},
+		},
+	}, {
+		desc:         "map contains overriding entries",
+		inputMessage: &pb3.Maps{},
+		inputText: `
+int32_to_str: {
+  key: 0
+}
+int32_to_str: {
+  value: "empty"
+}
+int32_to_str: {}
+`,
+		wantMessage: &pb3.Maps{
 			Int32ToStr: map[int32]string{
 				0: "",
 			},
 		},
 	}, {
 		desc:         "map contains unknown field",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   key: 0
@@ -836,7 +894,7 @@ int32_to_str: {
 		wantErr: true,
 	}, {
 		desc:         "map contains extension-like key field",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   [key]: 10
@@ -846,7 +904,7 @@ int32_to_str: {
 		wantErr: true,
 	}, {
 		desc:         "map contains invalid key",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   key: "invalid"
@@ -856,7 +914,7 @@ int32_to_str: {
 		wantErr: true,
 	}, {
 		desc:         "map contains invalid value",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   key: 100
@@ -866,7 +924,7 @@ int32_to_str: {
 		wantErr: true,
 	}, {
 		desc:         "map using mix of [] and repeated",
-		inputMessage: &pb2.Maps{},
+		inputMessage: &pb3.Maps{},
 		inputText: `
 int32_to_str: {
   key: 1
@@ -889,7 +947,7 @@ int32_to_str: {
   value: "two"
 }
 `,
-		wantMessage: &pb2.Maps{
+		wantMessage: &pb3.Maps{
 			Int32ToStr: map[int32]string{
 				0: "",
 				1: "one",
@@ -902,7 +960,7 @@ int32_to_str: {
 		inputMessage: &pb2.Requireds{},
 		wantErr:      true,
 	}, {
-		desc:         "proto2 required field set but not optional",
+		desc:         "proto2 required field set",
 		inputMessage: &pb2.PartialRequired{},
 		inputText:    "req_string: 'this is required'",
 		wantMessage: &pb2.PartialRequired{
@@ -913,17 +971,15 @@ int32_to_str: {
 		inputMessage: &pb2.Requireds{},
 		inputText: `
 req_bool: false
-req_fixed32: 47
 req_sfixed64: 3203386110
 req_string: "hello"
-req_enum: FIRST
+req_enum: ONE
 `,
 		wantMessage: &pb2.Requireds{
 			ReqBool:     scalar.Bool(false),
-			ReqFixed32:  scalar.Uint32(47),
 			ReqSfixed64: scalar.Int64(0xbeefcafe),
 			ReqString:   scalar.String("hello"),
-			ReqEnum:     pb2.Enum_FIRST.Enum(),
+			ReqEnum:     pb2.Enum_ONE.Enum(),
 		},
 		wantErr: true,
 	}, {
@@ -931,28 +987,18 @@ req_enum: FIRST
 		inputMessage: &pb2.Requireds{},
 		inputText: `
 req_bool: false
-req_fixed32: 0
-req_fixed64: 0
-req_sfixed32: 0
 req_sfixed64: 0
-req_float: 0
 req_double: 0
 req_string: ""
-req_bytes: ""
-req_enum: UNKNOWN
+req_enum: ONE
 req_nested: {}
 `,
 		wantMessage: &pb2.Requireds{
 			ReqBool:     scalar.Bool(false),
-			ReqFixed32:  scalar.Uint32(0),
-			ReqFixed64:  scalar.Uint64(0),
-			ReqSfixed32: scalar.Int32(0),
 			ReqSfixed64: scalar.Int64(0),
-			ReqFloat:    scalar.Float32(0),
 			ReqDouble:   scalar.Float64(0),
 			ReqString:   scalar.String(""),
-			ReqEnum:     pb2.Enum_UNKNOWN.Enum(),
-			ReqBytes:    []byte{},
+			ReqEnum:     pb2.Enum_ONE.Enum(),
 			ReqNested:   &pb2.Nested{},
 		},
 	}, {
@@ -1011,6 +1057,17 @@ str_to_nested: {
 		},
 		wantErr: true,
 	}, {
+		desc:         "indirect required field in oneof",
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `oneof_nested: {}
+`,
+		wantMessage: &pb2.IndirectRequired{
+			Union: &pb2.IndirectRequired_OneofNested{
+				OneofNested: &pb2.NestedWithRequired{},
+			},
+		},
+		wantErr: true,
+	}, {
 		desc:         "ignore reserved field",
 		inputMessage: &pb2.Nests{},
 		inputText:    "reserved_field: 'ignore this'",
@@ -1029,7 +1086,7 @@ opt_bool: true
 }
 [pb2.opt_ext_string]: "extension field"
 opt_int32: 42
-[pb2.opt_ext_enum]: TENTH
+[pb2.opt_ext_enum]: TEN
 `,
 		wantMessage: func() proto.Message {
 			m := &pb2.Extensions{
@@ -1039,7 +1096,7 @@ opt_int32: 42
 			}
 			setExtension(m, pb2.E_OptExtBool, true)
 			setExtension(m, pb2.E_OptExtString, "extension field")
-			setExtension(m, pb2.E_OptExtEnum, pb2.Enum_TENTH)
+			setExtension(m, pb2.E_OptExtEnum, pb2.Enum_TEN)
 			setExtension(m, pb2.E_OptExtNested, &pb2.Nested{
 				OptString: scalar.String("nested in an extension"),
 				OptNested: &pb2.Nested{
@@ -1051,10 +1108,10 @@ opt_int32: 42
 	}, {
 		desc:         "extensions of repeated fields",
 		inputMessage: &pb2.Extensions{},
-		inputText: `[pb2.rpt_ext_enum]: TENTH
+		inputText: `[pb2.rpt_ext_enum]: TEN
 [pb2.rpt_ext_enum]: 101
 [pb2.rpt_ext_fixed32]: 42
-[pb2.rpt_ext_enum]: FIRST
+[pb2.rpt_ext_enum]: ONE
 [pb2.rpt_ext_nested]: {
   opt_string: "one"
 }
@@ -1068,7 +1125,7 @@ opt_int32: 42
 `,
 		wantMessage: func() proto.Message {
 			m := &pb2.Extensions{}
-			setExtension(m, pb2.E_RptExtEnum, &[]pb2.Enum{pb2.Enum_TENTH, 101, pb2.Enum_FIRST})
+			setExtension(m, pb2.E_RptExtEnum, &[]pb2.Enum{pb2.Enum_TEN, 101, pb2.Enum_ONE})
 			setExtension(m, pb2.E_RptExtFixed32, &[]uint32{42, 47})
 			setExtension(m, pb2.E_RptExtNested, &[]*pb2.Nested{
 				&pb2.Nested{OptString: scalar.String("one")},
@@ -1081,7 +1138,7 @@ opt_int32: 42
 		desc:         "extensions of non-repeated fields in another message",
 		inputMessage: &pb2.Extensions{},
 		inputText: `[pb2.ExtensionsContainer.opt_ext_bool]: true
-[pb2.ExtensionsContainer.opt_ext_enum]: TENTH
+[pb2.ExtensionsContainer.opt_ext_enum]: TEN
 [pb2.ExtensionsContainer.opt_ext_nested]: {
   opt_string: "nested in an extension"
   opt_nested: {
@@ -1094,7 +1151,7 @@ opt_int32: 42
 			m := &pb2.Extensions{}
 			setExtension(m, pb2.E_ExtensionsContainer_OptExtBool, true)
 			setExtension(m, pb2.E_ExtensionsContainer_OptExtString, "extension field")
-			setExtension(m, pb2.E_ExtensionsContainer_OptExtEnum, pb2.Enum_TENTH)
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtEnum, pb2.Enum_TEN)
 			setExtension(m, pb2.E_ExtensionsContainer_OptExtNested, &pb2.Nested{
 				OptString: scalar.String("nested in an extension"),
 				OptNested: &pb2.Nested{
@@ -1112,13 +1169,13 @@ opt_int32: 42
 [pb2.ExtensionsContainer.rpt_ext_nested]: {
   opt_string: "one"
 }
-[pb2.ExtensionsContainer.rpt_ext_enum]: TENTH
+[pb2.ExtensionsContainer.rpt_ext_enum]: TEN
 [pb2.ExtensionsContainer.rpt_ext_nested]: {
   opt_string: "two"
 }
 [pb2.ExtensionsContainer.rpt_ext_enum]: 101
 [pb2.ExtensionsContainer.rpt_ext_string]: "hello"
-[pb2.ExtensionsContainer.rpt_ext_enum]: FIRST
+[pb2.ExtensionsContainer.rpt_ext_enum]: ONE
 [pb2.ExtensionsContainer.rpt_ext_nested]: {
   opt_string: "three"
 }
@@ -1130,7 +1187,7 @@ opt_int32: 42
 				OptBool:   scalar.Bool(true),
 				OptInt32:  scalar.Int32(42),
 			}
-			setExtension(m, pb2.E_ExtensionsContainer_RptExtEnum, &[]pb2.Enum{pb2.Enum_TENTH, 101, pb2.Enum_FIRST})
+			setExtension(m, pb2.E_ExtensionsContainer_RptExtEnum, &[]pb2.Enum{pb2.Enum_TEN, 101, pb2.Enum_ONE})
 			setExtension(m, pb2.E_ExtensionsContainer_RptExtString, &[]string{"hello", "world"})
 			setExtension(m, pb2.E_ExtensionsContainer_RptExtNested, &[]*pb2.Nested{
 				&pb2.Nested{OptString: scalar.String("one")},
@@ -1211,6 +1268,8 @@ opt_int32: 42
 			return m
 		}(),
 	}, {
+		// TODO: Change these tests to directly use anypb.Any type instead once
+		// type has been regenerated with V2 compiler.
 		desc:         "Any not expanded",
 		inputMessage: &pb2.KnownTypes{},
 		inputText: `opt_any: {

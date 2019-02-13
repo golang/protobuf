@@ -5,15 +5,14 @@ import (
 
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/encoding/textpb"
-	"github.com/golang/protobuf/v2/encoding/textpb/testprotos/pb2"
+	"github.com/golang/protobuf/v2/internal/impl"
+	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 
 	// The legacy package must be imported prior to use of any legacy messages.
 	// TODO: Remove this when protoV1 registers these hooks for you.
-	"github.com/golang/protobuf/v2/internal/impl"
 	_ "github.com/golang/protobuf/v2/internal/legacy"
-	"github.com/golang/protobuf/v2/internal/scalar"
 
 	anypb "github.com/golang/protobuf/ptypes/any"
 	durpb "github.com/golang/protobuf/ptypes/duration"
@@ -21,6 +20,7 @@ import (
 	stpb "github.com/golang/protobuf/ptypes/struct"
 	tspb "github.com/golang/protobuf/ptypes/timestamp"
 	wpb "github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
 )
 
 func TestRoundTrip(t *testing.T) {
