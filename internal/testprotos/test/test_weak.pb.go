@@ -25,7 +25,7 @@ type WeakImportMessage struct {
 }
 
 func (m *WeakImportMessage) ProtoReflect() protoreflect.Message {
-	return xxx_TestWeak_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_test_weak_messageTypes[0].MessageOf(m)
 }
 func (m *WeakImportMessage) Reset()         { *m = WeakImportMessage{} }
 func (m *WeakImportMessage) String() string { return proto.CompactTextString(m) }
@@ -79,27 +79,27 @@ var fileDescriptor_c2b8edfebc4f71b3_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var TestWeak_protoFile protoreflect.FileDescriptor
+var ProtoFile_test_weak protoreflect.FileDescriptor
 
-var xxx_TestWeak_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_TestWeak_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_test_weak_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_test_weak_goTypes = []interface{}{
 	(*WeakImportMessage)(nil), // 0: goproto.proto.test.WeakImportMessage
 }
-var xxx_TestWeak_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_test_weak_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	TestWeak_protoFile = protoimpl.FileBuilder{
+	ProtoFile_test_weak = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_c2b8edfebc4f71b3,
-		GoTypes:            xxx_TestWeak_protoFile_goTypes,
-		DependencyIndexes:  xxx_TestWeak_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_test_weak_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_test_weak_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_TestWeak_protoFile_goTypes[0:][:1]
+	messageGoTypes := xxx_ProtoFile_test_weak_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_TestWeak_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_TestWeak_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_test_weak_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_test_weak_messageTypes[i].PBType = mt
 	}
-	xxx_TestWeak_protoFile_goTypes = nil
-	xxx_TestWeak_protoFile_depIdxs = nil
+	xxx_ProtoFile_test_weak_goTypes = nil
+	xxx_ProtoFile_test_weak_depIdxs = nil
 }

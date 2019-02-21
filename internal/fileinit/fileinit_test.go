@@ -20,7 +20,7 @@ func TestInit(t *testing.T) {
 	// 2. The protoc-generated wire-encoded message.
 	//
 	// This serves as a test of both fileinit and protodesc.
-	got := protodesc.ToFileDescriptorProto(testpb.Test_protoFile)
+	got := protodesc.ToFileDescriptorProto(testpb.ProtoFile_test)
 
 	want := &descriptorpb.FileDescriptorProto{}
 	zb, _ := (&testpb.TestAllTypes{}).Descriptor()
@@ -60,7 +60,7 @@ func TestInit(t *testing.T) {
 		"ServiceDescriptorProto",
 		"MethodDescriptorProto",
 	} {
-		message := descriptorpb.Descriptor_protoFile.Messages().ByName(messageName)
+		message := descriptorpb.ProtoFile_google_protobuf_descriptor.Messages().ByName(messageName)
 		for i, fields := 0, message.Fields(); i < fields.Len(); i++ {
 			if name := fields.Get(i).FullName(); !seen[name] && !ignore[name] {
 				t.Errorf("No test for descriptor field: %v", name)

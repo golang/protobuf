@@ -27,7 +27,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_Ext_protoFile_enumTypes[0]
+	return xxx_ProtoFile_extensions_ext_ext_enumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -72,7 +72,7 @@ type Message struct {
 }
 
 func (m *Message) ProtoReflect() protoreflect.Message {
-	return xxx_Ext_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_extensions_ext_ext_messageTypes[0].MessageOf(m)
 }
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
@@ -114,7 +114,7 @@ type ExtensionGroup struct {
 }
 
 func (m *ExtensionGroup) ProtoReflect() protoreflect.Message {
-	return xxx_Ext_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_ProtoFile_extensions_ext_ext_messageTypes[1].MessageOf(m)
 }
 func (m *ExtensionGroup) Reset()         { *m = ExtensionGroup{} }
 func (m *ExtensionGroup) String() string { return proto.CompactTextString(m) }
@@ -156,7 +156,7 @@ type ExtendingMessage struct {
 }
 
 func (m *ExtendingMessage) ProtoReflect() protoreflect.Message {
-	return xxx_Ext_protoFile_messageTypes[2].MessageOf(m)
+	return xxx_ProtoFile_extensions_ext_ext_messageTypes[2].MessageOf(m)
 }
 func (m *ExtendingMessage) Reset()         { *m = ExtendingMessage{} }
 func (m *ExtendingMessage) String() string { return proto.CompactTextString(m) }
@@ -191,7 +191,7 @@ type RepeatedGroup struct {
 }
 
 func (m *RepeatedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_Ext_protoFile_messageTypes[3].MessageOf(m)
+	return xxx_ProtoFile_extensions_ext_ext_messageTypes[3].MessageOf(m)
 }
 func (m *RepeatedGroup) Reset()         { *m = RepeatedGroup{} }
 func (m *RepeatedGroup) String() string { return proto.CompactTextString(m) }
@@ -234,7 +234,7 @@ type Extendable struct {
 }
 
 func (m *Extendable) ProtoReflect() protoreflect.Message {
-	return xxx_Ext_protoFile_messageTypes[4].MessageOf(m)
+	return xxx_ProtoFile_extensions_ext_ext_messageTypes[4].MessageOf(m)
 }
 func (m *Extendable) Reset()         { *m = Extendable{} }
 func (m *Extendable) String() string { return proto.CompactTextString(m) }
@@ -277,7 +277,7 @@ type MessageSetWireFormatExtension struct {
 }
 
 func (m *MessageSetWireFormatExtension) ProtoReflect() protoreflect.Message {
-	return xxx_Ext_protoFile_messageTypes[5].MessageOf(m)
+	return xxx_ProtoFile_extensions_ext_ext_messageTypes[5].MessageOf(m)
 }
 func (m *MessageSetWireFormatExtension) Reset()         { *m = MessageSetWireFormatExtension{} }
 func (m *MessageSetWireFormatExtension) String() string { return proto.CompactTextString(m) }
@@ -311,7 +311,7 @@ type Message_M struct {
 }
 
 func (m *Message_M) ProtoReflect() protoreflect.Message {
-	return xxx_Ext_protoFile_messageTypes[6].MessageOf(m)
+	return xxx_ProtoFile_extensions_ext_ext_messageTypes[6].MessageOf(m)
 }
 func (m *Message_M) Reset()         { *m = Message_M{} }
 func (m *Message_M) String() string { return proto.CompactTextString(m) }
@@ -345,7 +345,7 @@ type ExtendingMessage_ExtendingMessageSubmessage struct {
 }
 
 func (m *ExtendingMessage_ExtendingMessageSubmessage) ProtoReflect() protoreflect.Message {
-	return xxx_Ext_protoFile_messageTypes[7].MessageOf(m)
+	return xxx_ProtoFile_extensions_ext_ext_messageTypes[7].MessageOf(m)
 }
 func (m *ExtendingMessage_ExtendingMessageSubmessage) Reset() {
 	*m = ExtendingMessage_ExtendingMessageSubmessage{}
@@ -1156,11 +1156,11 @@ var fileDescriptor_bf470ef4907b23cb_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Ext_protoFile protoreflect.FileDescriptor
+var ProtoFile_extensions_ext_ext protoreflect.FileDescriptor
 
-var xxx_Ext_protoFile_enumTypes [1]protoreflect.EnumType
-var xxx_Ext_protoFile_messageTypes [8]protoimpl.MessageType
-var xxx_Ext_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_extensions_ext_ext_enumTypes [1]protoreflect.EnumType
+var xxx_ProtoFile_extensions_ext_ext_messageTypes [8]protoimpl.MessageType
+var xxx_ProtoFile_extensions_ext_ext_goTypes = []interface{}{
 	(Enum)(0),                             // 0: goproto.protoc.extension.ext.Enum
 	(*Message)(nil),                       // 1: goproto.protoc.extension.ext.Message
 	(*ExtensionGroup)(nil),                // 2: goproto.protoc.extension.ext.ExtensionGroup
@@ -1174,7 +1174,7 @@ var xxx_Ext_protoFile_goTypes = []interface{}{
 	(*base.MessageSetWireFormatMessage)(nil),            // 10: goproto.protoc.extension.base.MessageSetWireFormatMessage
 	(*extra.ExtraMessage)(nil),                          // 11: goproto.protoc.extension.extra.ExtraMessage
 }
-var xxx_Ext_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_extensions_ext_ext_depIdxs = []int32{
 	9,  // goproto.protoc.extension.ext.extension_bool:extendee -> goproto.protoc.extension.base.BaseMessage
 	9,  // goproto.protoc.extension.ext.extension_enum:extendee -> goproto.protoc.extension.base.BaseMessage
 	9,  // goproto.protoc.extension.ext.extension_int32:extendee -> goproto.protoc.extension.base.BaseMessage
@@ -1236,18 +1236,18 @@ var xxx_Ext_protoFile_depIdxs = []int32{
 func init() {
 	var messageTypes [8]protoreflect.MessageType
 	var extensionTypes [44]protoreflect.ExtensionType
-	Ext_protoFile = protoimpl.FileBuilder{
+	ProtoFile_extensions_ext_ext = protoimpl.FileBuilder{
 		RawDescriptor:        fileDescriptor_bf470ef4907b23cb,
-		GoTypes:              xxx_Ext_protoFile_goTypes,
-		DependencyIndexes:    xxx_Ext_protoFile_depIdxs,
-		EnumOutputTypes:      xxx_Ext_protoFile_enumTypes[:],
+		GoTypes:              xxx_ProtoFile_extensions_ext_ext_goTypes,
+		DependencyIndexes:    xxx_ProtoFile_extensions_ext_ext_depIdxs,
+		EnumOutputTypes:      xxx_ProtoFile_extensions_ext_ext_enumTypes[:],
 		MessageOutputTypes:   messageTypes[:],
 		ExtensionOutputTypes: extensionTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Ext_protoFile_goTypes[1:][:8]
+	messageGoTypes := xxx_ProtoFile_extensions_ext_ext_goTypes[1:][:8]
 	for i, mt := range messageTypes[:] {
-		xxx_Ext_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Ext_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_extensions_ext_ext_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_extensions_ext_ext_messageTypes[i].PBType = mt
 	}
 	E_ExtensionBool.Type = extensionTypes[0]
 	E_ExtensionEnum.Type = extensionTypes[1]
@@ -1293,6 +1293,6 @@ func init() {
 	E_ExtendingMessage_ExtendingMessageString.Type = extensionTypes[41]
 	E_ExtendingMessage_ExtendingMessageSubmessage.Type = extensionTypes[42]
 	E_MessageSetWireFormatExtension_MessageSetExtension.Type = extensionTypes[43]
-	xxx_Ext_protoFile_goTypes = nil
-	xxx_Ext_protoFile_depIdxs = nil
+	xxx_ProtoFile_extensions_ext_ext_goTypes = nil
+	xxx_ProtoFile_extensions_ext_ext_depIdxs = nil
 }

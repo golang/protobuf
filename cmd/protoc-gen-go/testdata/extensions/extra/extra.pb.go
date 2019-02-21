@@ -26,7 +26,7 @@ type ExtraMessage struct {
 }
 
 func (m *ExtraMessage) ProtoReflect() protoreflect.Message {
-	return xxx_Extra_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_extensions_extra_extra_messageTypes[0].MessageOf(m)
 }
 func (m *ExtraMessage) Reset()         { *m = ExtraMessage{} }
 func (m *ExtraMessage) String() string { return proto.CompactTextString(m) }
@@ -90,27 +90,27 @@ var fileDescriptor_496c2a5e9c1e8739_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Extra_protoFile protoreflect.FileDescriptor
+var ProtoFile_extensions_extra_extra protoreflect.FileDescriptor
 
-var xxx_Extra_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_Extra_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_extensions_extra_extra_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_extensions_extra_extra_goTypes = []interface{}{
 	(*ExtraMessage)(nil), // 0: goproto.protoc.extension.extra.ExtraMessage
 }
-var xxx_Extra_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_extensions_extra_extra_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	Extra_protoFile = protoimpl.FileBuilder{
+	ProtoFile_extensions_extra_extra = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_496c2a5e9c1e8739,
-		GoTypes:            xxx_Extra_protoFile_goTypes,
-		DependencyIndexes:  xxx_Extra_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_extensions_extra_extra_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_extensions_extra_extra_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Extra_protoFile_goTypes[0:][:1]
+	messageGoTypes := xxx_ProtoFile_extensions_extra_extra_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_Extra_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Extra_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_extensions_extra_extra_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_extensions_extra_extra_messageTypes[i].PBType = mt
 	}
-	xxx_Extra_protoFile_goTypes = nil
-	xxx_Extra_protoFile_depIdxs = nil
+	xxx_ProtoFile_extensions_extra_extra_goTypes = nil
+	xxx_ProtoFile_extensions_extra_extra_depIdxs = nil
 }

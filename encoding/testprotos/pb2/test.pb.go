@@ -33,7 +33,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_Test_protoFile_enumTypes[0]
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_enumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -83,7 +83,7 @@ const (
 )
 
 func (e Enums_NestedEnum) Type() protoreflect.EnumType {
-	return xxx_Test_protoFile_enumTypes[1]
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_enumTypes[1]
 }
 func (e Enums_NestedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -147,7 +147,7 @@ type Scalars struct {
 }
 
 func (m *Scalars) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[0].MessageOf(m)
 }
 func (m *Scalars) Reset()         { *m = Scalars{} }
 func (m *Scalars) String() string { return proto.CompactTextString(m) }
@@ -291,7 +291,7 @@ type Enums struct {
 }
 
 func (m *Enums) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[1].MessageOf(m)
 }
 func (m *Enums) Reset()         { *m = Enums{} }
 func (m *Enums) String() string { return proto.CompactTextString(m) }
@@ -363,7 +363,7 @@ type Repeats struct {
 }
 
 func (m *Repeats) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[2].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[2].MessageOf(m)
 }
 func (m *Repeats) Reset()         { *m = Repeats{} }
 func (m *Repeats) String() string { return proto.CompactTextString(m) }
@@ -463,7 +463,7 @@ type Nested struct {
 }
 
 func (m *Nested) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[3].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[3].MessageOf(m)
 }
 func (m *Nested) Reset()         { *m = Nested{} }
 func (m *Nested) String() string { return proto.CompactTextString(m) }
@@ -516,7 +516,7 @@ type Nests struct {
 }
 
 func (m *Nests) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[4].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[4].MessageOf(m)
 }
 func (m *Nests) Reset()         { *m = Nests{} }
 func (m *Nests) String() string { return proto.CompactTextString(m) }
@@ -585,7 +585,7 @@ type Requireds struct {
 }
 
 func (m *Requireds) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[5].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[5].MessageOf(m)
 }
 func (m *Requireds) Reset()         { *m = Requireds{} }
 func (m *Requireds) String() string { return proto.CompactTextString(m) }
@@ -664,7 +664,7 @@ type PartialRequired struct {
 }
 
 func (m *PartialRequired) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[6].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[6].MessageOf(m)
 }
 func (m *PartialRequired) Reset()         { *m = PartialRequired{} }
 func (m *PartialRequired) String() string { return proto.CompactTextString(m) }
@@ -713,7 +713,7 @@ type NestedWithRequired struct {
 }
 
 func (m *NestedWithRequired) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[7].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[7].MessageOf(m)
 }
 func (m *NestedWithRequired) Reset()         { *m = NestedWithRequired{} }
 func (m *NestedWithRequired) String() string { return proto.CompactTextString(m) }
@@ -760,7 +760,7 @@ type IndirectRequired struct {
 }
 
 func (m *IndirectRequired) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[8].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[8].MessageOf(m)
 }
 func (m *IndirectRequired) Reset()         { *m = IndirectRequired{} }
 func (m *IndirectRequired) String() string { return proto.CompactTextString(m) }
@@ -850,7 +850,7 @@ type Extensions struct {
 }
 
 func (m *Extensions) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[9].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[9].MessageOf(m)
 }
 func (m *Extensions) Reset()         { *m = Extensions{} }
 func (m *Extensions) String() string { return proto.CompactTextString(m) }
@@ -913,7 +913,7 @@ type ExtensionsContainer struct {
 }
 
 func (m *ExtensionsContainer) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[10].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[10].MessageOf(m)
 }
 func (m *ExtensionsContainer) Reset()         { *m = ExtensionsContainer{} }
 func (m *ExtensionsContainer) String() string { return proto.CompactTextString(m) }
@@ -948,7 +948,7 @@ type MessageSet struct {
 }
 
 func (m *MessageSet) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[11].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[11].MessageOf(m)
 }
 func (m *MessageSet) Reset()         { *m = MessageSet{} }
 func (m *MessageSet) String() string { return proto.CompactTextString(m) }
@@ -991,7 +991,7 @@ type MessageSetExtension struct {
 }
 
 func (m *MessageSetExtension) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[12].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[12].MessageOf(m)
 }
 func (m *MessageSetExtension) Reset()         { *m = MessageSetExtension{} }
 func (m *MessageSetExtension) String() string { return proto.CompactTextString(m) }
@@ -1033,7 +1033,7 @@ type FakeMessageSet struct {
 }
 
 func (m *FakeMessageSet) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[13].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[13].MessageOf(m)
 }
 func (m *FakeMessageSet) Reset()         { *m = FakeMessageSet{} }
 func (m *FakeMessageSet) String() string { return proto.CompactTextString(m) }
@@ -1076,7 +1076,7 @@ type FakeMessageSetExtension struct {
 }
 
 func (m *FakeMessageSetExtension) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[14].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[14].MessageOf(m)
 }
 func (m *FakeMessageSetExtension) Reset()         { *m = FakeMessageSetExtension{} }
 func (m *FakeMessageSetExtension) String() string { return proto.CompactTextString(m) }
@@ -1134,7 +1134,7 @@ type KnownTypes struct {
 }
 
 func (m *KnownTypes) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[15].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[15].MessageOf(m)
 }
 func (m *KnownTypes) Reset()         { *m = KnownTypes{} }
 func (m *KnownTypes) String() string { return proto.CompactTextString(m) }
@@ -1283,7 +1283,7 @@ type Nests_OptGroup struct {
 }
 
 func (m *Nests_OptGroup) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[16].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[16].MessageOf(m)
 }
 func (m *Nests_OptGroup) Reset()         { *m = Nests_OptGroup{} }
 func (m *Nests_OptGroup) String() string { return proto.CompactTextString(m) }
@@ -1339,7 +1339,7 @@ type Nests_RptGroup struct {
 }
 
 func (m *Nests_RptGroup) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[17].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[17].MessageOf(m)
 }
 func (m *Nests_RptGroup) Reset()         { *m = Nests_RptGroup{} }
 func (m *Nests_RptGroup) String() string { return proto.CompactTextString(m) }
@@ -1381,7 +1381,7 @@ type Nests_OptGroup_OptNestedGroup struct {
 }
 
 func (m *Nests_OptGroup_OptNestedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[18].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[18].MessageOf(m)
 }
 func (m *Nests_OptGroup_OptNestedGroup) Reset()         { *m = Nests_OptGroup_OptNestedGroup{} }
 func (m *Nests_OptGroup_OptNestedGroup) String() string { return proto.CompactTextString(m) }
@@ -1967,11 +1967,11 @@ var fileDescriptor_72e37deb177b50f8_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Test_protoFile protoreflect.FileDescriptor
+var ProtoFile_encoding_testprotos_pb2_test protoreflect.FileDescriptor
 
-var xxx_Test_protoFile_enumTypes [2]protoreflect.EnumType
-var xxx_Test_protoFile_messageTypes [20]protoimpl.MessageType
-var xxx_Test_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_encoding_testprotos_pb2_test_enumTypes [2]protoreflect.EnumType
+var xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes [20]protoimpl.MessageType
+var xxx_ProtoFile_encoding_testprotos_pb2_test_goTypes = []interface{}{
 	(Enum)(0),                             // 0: pb2.Enum
 	(Enums_NestedEnum)(0),                 // 1: pb2.Enums.NestedEnum
 	(*Scalars)(nil),                       // 2: pb2.Scalars
@@ -2011,7 +2011,7 @@ var xxx_Test_protoFile_goTypes = []interface{}{
 	(*empty.Empty)(nil),                   // 36: google.protobuf.Empty
 	(*any.Any)(nil),                       // 37: google.protobuf.Any
 }
-var xxx_Test_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_encoding_testprotos_pb2_test_depIdxs = []int32{
 	11, // pb2.opt_ext_bool:extendee -> pb2.Extensions
 	11, // pb2.opt_ext_string:extendee -> pb2.Extensions
 	11, // pb2.opt_ext_enum:extendee -> pb2.Extensions
@@ -2083,18 +2083,18 @@ var xxx_Test_protoFile_depIdxs = []int32{
 func init() {
 	var messageTypes [20]protoreflect.MessageType
 	var extensionTypes [19]protoreflect.ExtensionType
-	Test_protoFile = protoimpl.FileBuilder{
+	ProtoFile_encoding_testprotos_pb2_test = protoimpl.FileBuilder{
 		RawDescriptor:        fileDescriptor_72e37deb177b50f8,
-		GoTypes:              xxx_Test_protoFile_goTypes,
-		DependencyIndexes:    xxx_Test_protoFile_depIdxs,
-		EnumOutputTypes:      xxx_Test_protoFile_enumTypes[:],
+		GoTypes:              xxx_ProtoFile_encoding_testprotos_pb2_test_goTypes,
+		DependencyIndexes:    xxx_ProtoFile_encoding_testprotos_pb2_test_depIdxs,
+		EnumOutputTypes:      xxx_ProtoFile_encoding_testprotos_pb2_test_enumTypes[:],
 		MessageOutputTypes:   messageTypes[:],
 		ExtensionOutputTypes: extensionTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Test_protoFile_goTypes[2:][:20]
+	messageGoTypes := xxx_ProtoFile_encoding_testprotos_pb2_test_goTypes[2:][:20]
 	for i, mt := range messageTypes[:] {
-		xxx_Test_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Test_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_encoding_testprotos_pb2_test_messageTypes[i].PBType = mt
 	}
 	E_OptExtBool.Type = extensionTypes[0]
 	E_OptExtString.Type = extensionTypes[1]
@@ -2115,6 +2115,6 @@ func init() {
 	E_MessageSetExtension_NotMessageSetExtension.Type = extensionTypes[16]
 	E_MessageSetExtension_ExtNested.Type = extensionTypes[17]
 	E_FakeMessageSetExtension_MessageSetExtension.Type = extensionTypes[18]
-	xxx_Test_protoFile_goTypes = nil
-	xxx_Test_protoFile_depIdxs = nil
+	xxx_ProtoFile_encoding_testprotos_pb2_test_goTypes = nil
+	xxx_ProtoFile_encoding_testprotos_pb2_test_depIdxs = nil
 }

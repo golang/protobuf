@@ -36,7 +36,7 @@ type Message1 struct {
 }
 
 func (m *Message1) ProtoReflect() protoreflect.Message {
-	return xxx_Comments_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_comments_comments_messageTypes[0].MessageOf(m)
 }
 func (m *Message1) Reset()         { *m = Message1{} }
 func (m *Message1) String() string { return proto.CompactTextString(m) }
@@ -109,7 +109,7 @@ type Message2 struct {
 }
 
 func (m *Message2) ProtoReflect() protoreflect.Message {
-	return xxx_Comments_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_ProtoFile_comments_comments_messageTypes[1].MessageOf(m)
 }
 func (m *Message2) Reset()         { *m = Message2{} }
 func (m *Message2) String() string { return proto.CompactTextString(m) }
@@ -144,7 +144,7 @@ type Message1_Message1A struct {
 }
 
 func (m *Message1_Message1A) ProtoReflect() protoreflect.Message {
-	return xxx_Comments_protoFile_messageTypes[2].MessageOf(m)
+	return xxx_ProtoFile_comments_comments_messageTypes[2].MessageOf(m)
 }
 func (m *Message1_Message1A) Reset()         { *m = Message1_Message1A{} }
 func (m *Message1_Message1A) String() string { return proto.CompactTextString(m) }
@@ -179,7 +179,7 @@ type Message1_Message1B struct {
 }
 
 func (m *Message1_Message1B) ProtoReflect() protoreflect.Message {
-	return xxx_Comments_protoFile_messageTypes[3].MessageOf(m)
+	return xxx_ProtoFile_comments_comments_messageTypes[3].MessageOf(m)
 }
 func (m *Message1_Message1B) Reset()         { *m = Message1_Message1B{} }
 func (m *Message1_Message1B) String() string { return proto.CompactTextString(m) }
@@ -214,7 +214,7 @@ type Message2_Message2A struct {
 }
 
 func (m *Message2_Message2A) ProtoReflect() protoreflect.Message {
-	return xxx_Comments_protoFile_messageTypes[4].MessageOf(m)
+	return xxx_ProtoFile_comments_comments_messageTypes[4].MessageOf(m)
 }
 func (m *Message2_Message2A) Reset()         { *m = Message2_Message2A{} }
 func (m *Message2_Message2A) String() string { return proto.CompactTextString(m) }
@@ -249,7 +249,7 @@ type Message2_Message2B struct {
 }
 
 func (m *Message2_Message2B) ProtoReflect() protoreflect.Message {
-	return xxx_Comments_protoFile_messageTypes[5].MessageOf(m)
+	return xxx_ProtoFile_comments_comments_messageTypes[5].MessageOf(m)
 }
 func (m *Message2_Message2B) Reset()         { *m = Message2_Message2B{} }
 func (m *Message2_Message2B) String() string { return proto.CompactTextString(m) }
@@ -317,10 +317,10 @@ var fileDescriptor_885e8293f1fab554_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Comments_protoFile protoreflect.FileDescriptor
+var ProtoFile_comments_comments protoreflect.FileDescriptor
 
-var xxx_Comments_protoFile_messageTypes [6]protoimpl.MessageType
-var xxx_Comments_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_comments_comments_messageTypes [6]protoimpl.MessageType
+var xxx_ProtoFile_comments_comments_goTypes = []interface{}{
 	(*Message1)(nil),           // 0: goproto.protoc.comments.Message1
 	(*Message2)(nil),           // 1: goproto.protoc.comments.Message2
 	(*Message1_Message1A)(nil), // 2: goproto.protoc.comments.Message1.Message1A
@@ -328,21 +328,21 @@ var xxx_Comments_protoFile_goTypes = []interface{}{
 	(*Message2_Message2A)(nil), // 4: goproto.protoc.comments.Message2.Message2A
 	(*Message2_Message2B)(nil), // 5: goproto.protoc.comments.Message2.Message2B
 }
-var xxx_Comments_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_comments_comments_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [6]protoreflect.MessageType
-	Comments_protoFile = protoimpl.FileBuilder{
+	ProtoFile_comments_comments = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_885e8293f1fab554,
-		GoTypes:            xxx_Comments_protoFile_goTypes,
-		DependencyIndexes:  xxx_Comments_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_comments_comments_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_comments_comments_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Comments_protoFile_goTypes[0:][:6]
+	messageGoTypes := xxx_ProtoFile_comments_comments_goTypes[0:][:6]
 	for i, mt := range messageTypes[:] {
-		xxx_Comments_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Comments_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_comments_comments_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_comments_comments_messageTypes[i].PBType = mt
 	}
-	xxx_Comments_protoFile_goTypes = nil
-	xxx_Comments_protoFile_depIdxs = nil
+	xxx_ProtoFile_comments_comments_goTypes = nil
+	xxx_ProtoFile_comments_comments_depIdxs = nil
 }

@@ -27,7 +27,7 @@ type A1M1 struct {
 }
 
 func (m *A1M1) ProtoReflect() protoreflect.Message {
-	return xxx_TestImportA1M1_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_imports_test_import_a1m1_messageTypes[0].MessageOf(m)
 }
 func (m *A1M1) Reset()         { *m = A1M1{} }
 func (m *A1M1) String() string { return proto.CompactTextString(m) }
@@ -91,30 +91,30 @@ var fileDescriptor_3b904a47327455f3_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var TestImportA1M1_protoFile protoreflect.FileDescriptor
+var ProtoFile_imports_test_import_a1m1 protoreflect.FileDescriptor
 
-var xxx_TestImportA1M1_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_TestImportA1M1_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_imports_test_import_a1m1_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_imports_test_import_a1m1_goTypes = []interface{}{
 	(*A1M1)(nil),        // 0: test.A1M1
 	(*test_a_1.M1)(nil), // 1: test.a.M1
 }
-var xxx_TestImportA1M1_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_imports_test_import_a1m1_depIdxs = []int32{
 	1, // test.A1M1.f:type_name -> test.a.M1
 }
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	TestImportA1M1_protoFile = protoimpl.FileBuilder{
+	ProtoFile_imports_test_import_a1m1 = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_3b904a47327455f3,
-		GoTypes:            xxx_TestImportA1M1_protoFile_goTypes,
-		DependencyIndexes:  xxx_TestImportA1M1_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_imports_test_import_a1m1_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_imports_test_import_a1m1_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_TestImportA1M1_protoFile_goTypes[0:][:1]
+	messageGoTypes := xxx_ProtoFile_imports_test_import_a1m1_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_TestImportA1M1_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_TestImportA1M1_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_imports_test_import_a1m1_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_imports_test_import_a1m1_messageTypes[i].PBType = mt
 	}
-	xxx_TestImportA1M1_protoFile_goTypes = nil
-	xxx_TestImportA1M1_protoFile_depIdxs = nil
+	xxx_ProtoFile_imports_test_import_a1m1_goTypes = nil
+	xxx_ProtoFile_imports_test_import_a1m1_depIdxs = nil
 }

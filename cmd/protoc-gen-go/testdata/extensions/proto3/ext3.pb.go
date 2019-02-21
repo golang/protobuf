@@ -26,7 +26,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_Ext3_protoFile_enumTypes[0]
+	return xxx_ProtoFile_extensions_proto3_ext3_enumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -55,7 +55,7 @@ type Message struct {
 }
 
 func (m *Message) ProtoReflect() protoreflect.Message {
-	return xxx_Ext3_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_extensions_proto3_ext3_messageTypes[0].MessageOf(m)
 }
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
@@ -647,16 +647,16 @@ var fileDescriptor_3db31bb248c8865e_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Ext3_protoFile protoreflect.FileDescriptor
+var ProtoFile_extensions_proto3_ext3 protoreflect.FileDescriptor
 
-var xxx_Ext3_protoFile_enumTypes [1]protoreflect.EnumType
-var xxx_Ext3_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_Ext3_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_extensions_proto3_ext3_enumTypes [1]protoreflect.EnumType
+var xxx_ProtoFile_extensions_proto3_ext3_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_extensions_proto3_ext3_goTypes = []interface{}{
 	(Enum)(0),                         // 0: goproto.protoc.extension.proto3.Enum
 	(*Message)(nil),                   // 1: goproto.protoc.extension.proto3.Message
 	(*descriptor.MessageOptions)(nil), // 2: google.protobuf.MessageOptions
 }
-var xxx_Ext3_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_extensions_proto3_ext3_depIdxs = []int32{
 	2, // goproto.protoc.extension.proto3.extension_bool:extendee -> google.protobuf.MessageOptions
 	2, // goproto.protoc.extension.proto3.extension_enum:extendee -> google.protobuf.MessageOptions
 	2, // goproto.protoc.extension.proto3.extension_int32:extendee -> google.protobuf.MessageOptions
@@ -700,18 +700,18 @@ var xxx_Ext3_protoFile_depIdxs = []int32{
 func init() {
 	var messageTypes [1]protoreflect.MessageType
 	var extensionTypes [34]protoreflect.ExtensionType
-	Ext3_protoFile = protoimpl.FileBuilder{
+	ProtoFile_extensions_proto3_ext3 = protoimpl.FileBuilder{
 		RawDescriptor:        fileDescriptor_3db31bb248c8865e,
-		GoTypes:              xxx_Ext3_protoFile_goTypes,
-		DependencyIndexes:    xxx_Ext3_protoFile_depIdxs,
-		EnumOutputTypes:      xxx_Ext3_protoFile_enumTypes[:],
+		GoTypes:              xxx_ProtoFile_extensions_proto3_ext3_goTypes,
+		DependencyIndexes:    xxx_ProtoFile_extensions_proto3_ext3_depIdxs,
+		EnumOutputTypes:      xxx_ProtoFile_extensions_proto3_ext3_enumTypes[:],
 		MessageOutputTypes:   messageTypes[:],
 		ExtensionOutputTypes: extensionTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Ext3_protoFile_goTypes[1:][:1]
+	messageGoTypes := xxx_ProtoFile_extensions_proto3_ext3_goTypes[1:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_Ext3_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Ext3_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_extensions_proto3_ext3_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_extensions_proto3_ext3_messageTypes[i].PBType = mt
 	}
 	E_ExtensionBool.Type = extensionTypes[0]
 	E_ExtensionEnum.Type = extensionTypes[1]
@@ -747,6 +747,6 @@ func init() {
 	E_RepeatedExtensionString.Type = extensionTypes[31]
 	E_RepeatedExtensionBytes.Type = extensionTypes[32]
 	E_RepeatedExtension_Message.Type = extensionTypes[33]
-	xxx_Ext3_protoFile_goTypes = nil
-	xxx_Ext3_protoFile_depIdxs = nil
+	xxx_ProtoFile_extensions_proto3_ext3_goTypes = nil
+	xxx_ProtoFile_extensions_proto3_ext3_depIdxs = nil
 }

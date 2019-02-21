@@ -25,7 +25,7 @@ const (
 )
 
 func (e FieldTestMessage_Enum) Type() protoreflect.EnumType {
-	return xxx_Fields_protoFile_enumTypes[0]
+	return xxx_ProtoFile_proto3_fields_enumTypes[0]
 }
 func (e FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -91,7 +91,7 @@ type FieldTestMessage struct {
 }
 
 func (m *FieldTestMessage) ProtoReflect() protoreflect.Message {
-	return xxx_Fields_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_proto3_fields_messageTypes[0].MessageOf(m)
 }
 func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
 func (m *FieldTestMessage) String() string { return proto.CompactTextString(m) }
@@ -384,7 +384,7 @@ type FieldTestMessage_Message struct {
 }
 
 func (m *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
-	return xxx_Fields_protoFile_messageTypes[4].MessageOf(m)
+	return xxx_ProtoFile_proto3_fields_messageTypes[4].MessageOf(m)
 }
 func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
 func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }
@@ -584,11 +584,11 @@ var fileDescriptor_f1e3ea068187307c_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Fields_protoFile protoreflect.FileDescriptor
+var ProtoFile_proto3_fields protoreflect.FileDescriptor
 
-var xxx_Fields_protoFile_enumTypes [1]protoreflect.EnumType
-var xxx_Fields_protoFile_messageTypes [5]protoimpl.MessageType
-var xxx_Fields_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_proto3_fields_enumTypes [1]protoreflect.EnumType
+var xxx_ProtoFile_proto3_fields_messageTypes [5]protoimpl.MessageType
+var xxx_ProtoFile_proto3_fields_goTypes = []interface{}{
 	(FieldTestMessage_Enum)(0),       // 0: goproto.protoc.proto3.FieldTestMessage.Enum
 	(*FieldTestMessage)(nil),         // 1: goproto.protoc.proto3.FieldTestMessage
 	nil,                              // 2: goproto.protoc.proto3.FieldTestMessage.MapInt32Int64Entry
@@ -596,7 +596,7 @@ var xxx_Fields_protoFile_goTypes = []interface{}{
 	nil,                              // 4: goproto.protoc.proto3.FieldTestMessage.MapFixed64EnumEntry
 	(*FieldTestMessage_Message)(nil), // 5: goproto.protoc.proto3.FieldTestMessage.Message
 }
-var xxx_Fields_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_proto3_fields_depIdxs = []int32{
 	0, // goproto.protoc.proto3.FieldTestMessage.optional_enum:type_name -> goproto.protoc.proto3.FieldTestMessage.Enum
 	5, // goproto.protoc.proto3.FieldTestMessage.optional_Message:type_name -> goproto.protoc.proto3.FieldTestMessage.Message
 	0, // goproto.protoc.proto3.FieldTestMessage.repeated_enum:type_name -> goproto.protoc.proto3.FieldTestMessage.Enum
@@ -610,18 +610,18 @@ var xxx_Fields_protoFile_depIdxs = []int32{
 
 func init() {
 	var messageTypes [5]protoreflect.MessageType
-	Fields_protoFile = protoimpl.FileBuilder{
+	ProtoFile_proto3_fields = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_f1e3ea068187307c,
-		GoTypes:            xxx_Fields_protoFile_goTypes,
-		DependencyIndexes:  xxx_Fields_protoFile_depIdxs,
-		EnumOutputTypes:    xxx_Fields_protoFile_enumTypes[:],
+		GoTypes:            xxx_ProtoFile_proto3_fields_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_proto3_fields_depIdxs,
+		EnumOutputTypes:    xxx_ProtoFile_proto3_fields_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Fields_protoFile_goTypes[1:][:5]
+	messageGoTypes := xxx_ProtoFile_proto3_fields_goTypes[1:][:5]
 	for i, mt := range messageTypes[:] {
-		xxx_Fields_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Fields_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_proto3_fields_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_proto3_fields_messageTypes[i].PBType = mt
 	}
-	xxx_Fields_protoFile_goTypes = nil
-	xxx_Fields_protoFile_depIdxs = nil
+	xxx_ProtoFile_proto3_fields_goTypes = nil
+	xxx_ProtoFile_proto3_fields_depIdxs = nil
 }

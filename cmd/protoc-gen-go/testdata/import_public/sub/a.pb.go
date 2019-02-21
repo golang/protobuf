@@ -31,7 +31,7 @@ const (
 )
 
 func (e E) Type() protoreflect.EnumType {
-	return xxx_A_protoFile_enumTypes[0]
+	return xxx_ProtoFile_import_public_sub_a_enumTypes[0]
 }
 func (e E) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -75,7 +75,7 @@ const (
 )
 
 func (e M_Subenum) Type() protoreflect.EnumType {
-	return xxx_A_protoFile_enumTypes[1]
+	return xxx_ProtoFile_import_public_sub_a_enumTypes[1]
 }
 func (e M_Subenum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -119,7 +119,7 @@ const (
 )
 
 func (e M_Submessage_Submessage_Subenum) Type() protoreflect.EnumType {
-	return xxx_A_protoFile_enumTypes[2]
+	return xxx_ProtoFile_import_public_sub_a_enumTypes[2]
 }
 func (e M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -173,7 +173,7 @@ type M struct {
 }
 
 func (m *M) ProtoReflect() protoreflect.Message {
-	return xxx_A_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_import_public_sub_a_messageTypes[0].MessageOf(m)
 }
 func (m *M) Reset()         { *m = M{} }
 func (m *M) String() string { return proto.CompactTextString(m) }
@@ -297,7 +297,7 @@ type M_Submessage struct {
 }
 
 func (m *M_Submessage) ProtoReflect() protoreflect.Message {
-	return xxx_A_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_ProtoFile_import_public_sub_a_messageTypes[1].MessageOf(m)
 }
 func (m *M_Submessage) Reset()         { *m = M_Submessage{} }
 func (m *M_Submessage) String() string { return proto.CompactTextString(m) }
@@ -448,11 +448,11 @@ var fileDescriptor_382f7805394b5c4e_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var A_protoFile protoreflect.FileDescriptor
+var ProtoFile_import_public_sub_a protoreflect.FileDescriptor
 
-var xxx_A_protoFile_enumTypes [3]protoreflect.EnumType
-var xxx_A_protoFile_messageTypes [2]protoimpl.MessageType
-var xxx_A_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_import_public_sub_a_enumTypes [3]protoreflect.EnumType
+var xxx_ProtoFile_import_public_sub_a_messageTypes [2]protoimpl.MessageType
+var xxx_ProtoFile_import_public_sub_a_goTypes = []interface{}{
 	(E)(0),                               // 0: goproto.protoc.import_public.sub.E
 	(M_Subenum)(0),                       // 1: goproto.protoc.import_public.sub.M.Subenum
 	(M_Submessage_Submessage_Subenum)(0), // 2: goproto.protoc.import_public.sub.M.Submessage.Submessage_Subenum
@@ -460,7 +460,7 @@ var xxx_A_protoFile_goTypes = []interface{}{
 	(*M_Submessage)(nil),                 // 4: goproto.protoc.import_public.sub.M.Submessage
 	(*M2)(nil),                           // 5: goproto.protoc.import_public.sub.M2
 }
-var xxx_A_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_import_public_sub_a_depIdxs = []int32{
 	3, // goproto.protoc.import_public.sub.extension_field:extendee -> goproto.protoc.import_public.sub.M
 	5, // goproto.protoc.import_public.sub.M.m2:type_name -> goproto.protoc.import_public.sub.M2
 }
@@ -468,20 +468,20 @@ var xxx_A_protoFile_depIdxs = []int32{
 func init() {
 	var messageTypes [2]protoreflect.MessageType
 	var extensionTypes [1]protoreflect.ExtensionType
-	A_protoFile = protoimpl.FileBuilder{
+	ProtoFile_import_public_sub_a = protoimpl.FileBuilder{
 		RawDescriptor:        fileDescriptor_382f7805394b5c4e,
-		GoTypes:              xxx_A_protoFile_goTypes,
-		DependencyIndexes:    xxx_A_protoFile_depIdxs,
-		EnumOutputTypes:      xxx_A_protoFile_enumTypes[:],
+		GoTypes:              xxx_ProtoFile_import_public_sub_a_goTypes,
+		DependencyIndexes:    xxx_ProtoFile_import_public_sub_a_depIdxs,
+		EnumOutputTypes:      xxx_ProtoFile_import_public_sub_a_enumTypes[:],
 		MessageOutputTypes:   messageTypes[:],
 		ExtensionOutputTypes: extensionTypes[:],
 	}.Init()
-	messageGoTypes := xxx_A_protoFile_goTypes[3:][:2]
+	messageGoTypes := xxx_ProtoFile_import_public_sub_a_goTypes[3:][:2]
 	for i, mt := range messageTypes[:] {
-		xxx_A_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_A_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_import_public_sub_a_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_import_public_sub_a_messageTypes[i].PBType = mt
 	}
 	E_ExtensionField.Type = extensionTypes[0]
-	xxx_A_protoFile_goTypes = nil
-	xxx_A_protoFile_depIdxs = nil
+	xxx_ProtoFile_import_public_sub_a_goTypes = nil
+	xxx_ProtoFile_import_public_sub_a_depIdxs = nil
 }

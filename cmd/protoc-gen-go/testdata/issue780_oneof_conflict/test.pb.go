@@ -28,7 +28,7 @@ type Foo struct {
 }
 
 func (m *Foo) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_issue780_oneof_conflict_test_messageTypes[0].MessageOf(m)
 }
 func (m *Foo) Reset()         { *m = Foo{} }
 func (m *Foo) String() string { return proto.CompactTextString(m) }
@@ -111,27 +111,27 @@ var fileDescriptor_48462cafc802a68e_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Test_protoFile protoreflect.FileDescriptor
+var ProtoFile_issue780_oneof_conflict_test protoreflect.FileDescriptor
 
-var xxx_Test_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_Test_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_issue780_oneof_conflict_test_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_issue780_oneof_conflict_test_goTypes = []interface{}{
 	(*Foo)(nil), // 0: oneoftest.Foo
 }
-var xxx_Test_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_issue780_oneof_conflict_test_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	Test_protoFile = protoimpl.FileBuilder{
+	ProtoFile_issue780_oneof_conflict_test = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_48462cafc802a68e,
-		GoTypes:            xxx_Test_protoFile_goTypes,
-		DependencyIndexes:  xxx_Test_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_issue780_oneof_conflict_test_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_issue780_oneof_conflict_test_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Test_protoFile_goTypes[0:][:1]
+	messageGoTypes := xxx_ProtoFile_issue780_oneof_conflict_test_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_Test_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Test_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_issue780_oneof_conflict_test_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_issue780_oneof_conflict_test_messageTypes[i].PBType = mt
 	}
-	xxx_Test_protoFile_goTypes = nil
-	xxx_Test_protoFile_depIdxs = nil
+	xxx_ProtoFile_issue780_oneof_conflict_test_goTypes = nil
+	xxx_ProtoFile_issue780_oneof_conflict_test_depIdxs = nil
 }

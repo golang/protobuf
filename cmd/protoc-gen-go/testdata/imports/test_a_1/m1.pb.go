@@ -25,7 +25,7 @@ const (
 )
 
 func (e E1) Type() protoreflect.EnumType {
-	return xxx_M1_protoFile_enumTypes[0]
+	return xxx_ProtoFile_imports_test_a_1_m1_enumTypes[0]
 }
 func (e E1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -54,7 +54,7 @@ type M1 struct {
 }
 
 func (m *M1) ProtoReflect() protoreflect.Message {
-	return xxx_M1_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_imports_test_a_1_m1_messageTypes[0].MessageOf(m)
 }
 func (m *M1) Reset()         { *m = M1{} }
 func (m *M1) String() string { return proto.CompactTextString(m) }
@@ -89,7 +89,7 @@ type M1_1 struct {
 }
 
 func (m *M1_1) ProtoReflect() protoreflect.Message {
-	return xxx_M1_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_ProtoFile_imports_test_a_1_m1_messageTypes[1].MessageOf(m)
 }
 func (m *M1_1) Reset()         { *m = M1_1{} }
 func (m *M1_1) String() string { return proto.CompactTextString(m) }
@@ -155,33 +155,33 @@ var fileDescriptor_c1091de3fa870a14_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var M1_protoFile protoreflect.FileDescriptor
+var ProtoFile_imports_test_a_1_m1 protoreflect.FileDescriptor
 
-var xxx_M1_protoFile_enumTypes [1]protoreflect.EnumType
-var xxx_M1_protoFile_messageTypes [2]protoimpl.MessageType
-var xxx_M1_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_imports_test_a_1_m1_enumTypes [1]protoreflect.EnumType
+var xxx_ProtoFile_imports_test_a_1_m1_messageTypes [2]protoimpl.MessageType
+var xxx_ProtoFile_imports_test_a_1_m1_goTypes = []interface{}{
 	(E1)(0),      // 0: test.a.E1
 	(*M1)(nil),   // 1: test.a.M1
 	(*M1_1)(nil), // 2: test.a.M1_1
 }
-var xxx_M1_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_imports_test_a_1_m1_depIdxs = []int32{
 	1, // test.a.M1_1.m1:type_name -> test.a.M1
 }
 
 func init() {
 	var messageTypes [2]protoreflect.MessageType
-	M1_protoFile = protoimpl.FileBuilder{
+	ProtoFile_imports_test_a_1_m1 = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_c1091de3fa870a14,
-		GoTypes:            xxx_M1_protoFile_goTypes,
-		DependencyIndexes:  xxx_M1_protoFile_depIdxs,
-		EnumOutputTypes:    xxx_M1_protoFile_enumTypes[:],
+		GoTypes:            xxx_ProtoFile_imports_test_a_1_m1_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_imports_test_a_1_m1_depIdxs,
+		EnumOutputTypes:    xxx_ProtoFile_imports_test_a_1_m1_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_M1_protoFile_goTypes[1:][:2]
+	messageGoTypes := xxx_ProtoFile_imports_test_a_1_m1_goTypes[1:][:2]
 	for i, mt := range messageTypes[:] {
-		xxx_M1_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_M1_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_imports_test_a_1_m1_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_imports_test_a_1_m1_messageTypes[i].PBType = mt
 	}
-	xxx_M1_protoFile_goTypes = nil
-	xxx_M1_protoFile_depIdxs = nil
+	xxx_ProtoFile_imports_test_a_1_m1_goTypes = nil
+	xxx_ProtoFile_imports_test_a_1_m1_depIdxs = nil
 }

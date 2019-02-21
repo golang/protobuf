@@ -25,7 +25,7 @@ type Sub2Message struct {
 }
 
 func (m *Sub2Message) ProtoReflect() protoreflect.Message {
-	return xxx_A_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_import_public_sub2_a_messageTypes[0].MessageOf(m)
 }
 func (m *Sub2Message) Reset()         { *m = Sub2Message{} }
 func (m *Sub2Message) String() string { return proto.CompactTextString(m) }
@@ -81,27 +81,27 @@ var fileDescriptor_7ac53d99328778ac_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var A_protoFile protoreflect.FileDescriptor
+var ProtoFile_import_public_sub2_a protoreflect.FileDescriptor
 
-var xxx_A_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_A_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_import_public_sub2_a_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_import_public_sub2_a_goTypes = []interface{}{
 	(*Sub2Message)(nil), // 0: goproto.protoc.import_public.sub2.Sub2Message
 }
-var xxx_A_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_import_public_sub2_a_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	A_protoFile = protoimpl.FileBuilder{
+	ProtoFile_import_public_sub2_a = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_7ac53d99328778ac,
-		GoTypes:            xxx_A_protoFile_goTypes,
-		DependencyIndexes:  xxx_A_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_import_public_sub2_a_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_import_public_sub2_a_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_A_protoFile_goTypes[0:][:1]
+	messageGoTypes := xxx_ProtoFile_import_public_sub2_a_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_A_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_A_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_import_public_sub2_a_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_import_public_sub2_a_messageTypes[i].PBType = mt
 	}
-	xxx_A_protoFile_goTypes = nil
-	xxx_A_protoFile_depIdxs = nil
+	xxx_ProtoFile_import_public_sub2_a_goTypes = nil
+	xxx_ProtoFile_import_public_sub2_a_depIdxs = nil
 }

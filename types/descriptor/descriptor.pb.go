@@ -48,7 +48,7 @@ const (
 )
 
 func (e FieldDescriptorProto_Type) Type() protoreflect.EnumType {
-	return xxx_Descriptor_protoFile_enumTypes[0]
+	return xxx_ProtoFile_google_protobuf_descriptor_enumTypes[0]
 }
 func (e FieldDescriptorProto_Type) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -129,7 +129,7 @@ const (
 )
 
 func (e FieldDescriptorProto_Label) Type() protoreflect.EnumType {
-	return xxx_Descriptor_protoFile_enumTypes[1]
+	return xxx_ProtoFile_google_protobuf_descriptor_enumTypes[1]
 }
 func (e FieldDescriptorProto_Label) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -181,7 +181,7 @@ const (
 )
 
 func (e FileOptions_OptimizeMode) Type() protoreflect.EnumType {
-	return xxx_Descriptor_protoFile_enumTypes[2]
+	return xxx_ProtoFile_google_protobuf_descriptor_enumTypes[2]
 }
 func (e FileOptions_OptimizeMode) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -232,7 +232,7 @@ const (
 )
 
 func (e FieldOptions_CType) Type() protoreflect.EnumType {
-	return xxx_Descriptor_protoFile_enumTypes[3]
+	return xxx_ProtoFile_google_protobuf_descriptor_enumTypes[3]
 }
 func (e FieldOptions_CType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -285,7 +285,7 @@ const (
 )
 
 func (e FieldOptions_JSType) Type() protoreflect.EnumType {
-	return xxx_Descriptor_protoFile_enumTypes[4]
+	return xxx_ProtoFile_google_protobuf_descriptor_enumTypes[4]
 }
 func (e FieldOptions_JSType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -338,7 +338,7 @@ const (
 )
 
 func (e MethodOptions_IdempotencyLevel) Type() protoreflect.EnumType {
-	return xxx_Descriptor_protoFile_enumTypes[5]
+	return xxx_ProtoFile_google_protobuf_descriptor_enumTypes[5]
 }
 func (e MethodOptions_IdempotencyLevel) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -389,7 +389,7 @@ type FileDescriptorSet struct {
 }
 
 func (m *FileDescriptorSet) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[0].MessageOf(m)
 }
 func (m *FileDescriptorSet) Reset()         { *m = FileDescriptorSet{} }
 func (m *FileDescriptorSet) String() string { return protoapi.CompactTextString(m) }
@@ -436,7 +436,7 @@ type FileDescriptorProto struct {
 }
 
 func (m *FileDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[1].MessageOf(m)
 }
 func (m *FileDescriptorProto) Reset()         { *m = FileDescriptorProto{} }
 func (m *FileDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -549,7 +549,7 @@ type DescriptorProto struct {
 }
 
 func (m *DescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[2].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[2].MessageOf(m)
 }
 func (m *DescriptorProto) Reset()         { *m = DescriptorProto{} }
 func (m *DescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -638,7 +638,7 @@ type ExtensionRangeOptions struct {
 }
 
 func (m *ExtensionRangeOptions) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[3].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[3].MessageOf(m)
 }
 func (m *ExtensionRangeOptions) Reset()         { *m = ExtensionRangeOptions{} }
 func (m *ExtensionRangeOptions) String() string { return protoapi.CompactTextString(m) }
@@ -700,7 +700,7 @@ type FieldDescriptorProto struct {
 }
 
 func (m *FieldDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[4].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[4].MessageOf(m)
 }
 func (m *FieldDescriptorProto) Reset()         { *m = FieldDescriptorProto{} }
 func (m *FieldDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -789,7 +789,7 @@ type OneofDescriptorProto struct {
 }
 
 func (m *OneofDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[5].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[5].MessageOf(m)
 }
 func (m *OneofDescriptorProto) Reset()         { *m = OneofDescriptorProto{} }
 func (m *OneofDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -830,7 +830,7 @@ type EnumDescriptorProto struct {
 }
 
 func (m *EnumDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[6].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[6].MessageOf(m)
 }
 func (m *EnumDescriptorProto) Reset()         { *m = EnumDescriptorProto{} }
 func (m *EnumDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -885,7 +885,7 @@ type EnumValueDescriptorProto struct {
 }
 
 func (m *EnumValueDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[7].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[7].MessageOf(m)
 }
 func (m *EnumValueDescriptorProto) Reset()         { *m = EnumValueDescriptorProto{} }
 func (m *EnumValueDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -926,7 +926,7 @@ type ServiceDescriptorProto struct {
 }
 
 func (m *ServiceDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[8].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[8].MessageOf(m)
 }
 func (m *ServiceDescriptorProto) Reset()         { *m = ServiceDescriptorProto{} }
 func (m *ServiceDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -974,7 +974,7 @@ type MethodDescriptorProto struct {
 }
 
 func (m *MethodDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[9].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[9].MessageOf(m)
 }
 func (m *MethodDescriptorProto) Reset()         { *m = MethodDescriptorProto{} }
 func (m *MethodDescriptorProto) String() string { return protoapi.CompactTextString(m) }
@@ -1120,7 +1120,7 @@ type FileOptions struct {
 }
 
 func (m *FileOptions) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[10].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[10].MessageOf(m)
 }
 func (m *FileOptions) Reset()         { *m = FileOptions{} }
 func (m *FileOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1355,7 +1355,7 @@ type MessageOptions struct {
 }
 
 func (m *MessageOptions) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[11].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[11].MessageOf(m)
 }
 func (m *MessageOptions) Reset()         { *m = MessageOptions{} }
 func (m *MessageOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1480,7 +1480,7 @@ type FieldOptions struct {
 }
 
 func (m *FieldOptions) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[12].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[12].MessageOf(m)
 }
 func (m *FieldOptions) Reset()         { *m = FieldOptions{} }
 func (m *FieldOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1562,7 +1562,7 @@ type OneofOptions struct {
 }
 
 func (m *OneofOptions) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[13].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[13].MessageOf(m)
 }
 func (m *OneofOptions) Reset()         { *m = OneofOptions{} }
 func (m *OneofOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1604,7 +1604,7 @@ type EnumOptions struct {
 }
 
 func (m *EnumOptions) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[14].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[14].MessageOf(m)
 }
 func (m *EnumOptions) Reset()         { *m = EnumOptions{} }
 func (m *EnumOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1659,7 +1659,7 @@ type EnumValueOptions struct {
 }
 
 func (m *EnumValueOptions) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[15].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[15].MessageOf(m)
 }
 func (m *EnumValueOptions) Reset()         { *m = EnumValueOptions{} }
 func (m *EnumValueOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1707,7 +1707,7 @@ type ServiceOptions struct {
 }
 
 func (m *ServiceOptions) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[16].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[16].MessageOf(m)
 }
 func (m *ServiceOptions) Reset()         { *m = ServiceOptions{} }
 func (m *ServiceOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1756,7 +1756,7 @@ type MethodOptions struct {
 }
 
 func (m *MethodOptions) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[17].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[17].MessageOf(m)
 }
 func (m *MethodOptions) Reset()         { *m = MethodOptions{} }
 func (m *MethodOptions) String() string { return protoapi.CompactTextString(m) }
@@ -1819,7 +1819,7 @@ type UninterpretedOption struct {
 }
 
 func (m *UninterpretedOption) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[18].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[18].MessageOf(m)
 }
 func (m *UninterpretedOption) Reset()         { *m = UninterpretedOption{} }
 func (m *UninterpretedOption) String() string { return protoapi.CompactTextString(m) }
@@ -1930,7 +1930,7 @@ type SourceCodeInfo struct {
 }
 
 func (m *SourceCodeInfo) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[19].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[19].MessageOf(m)
 }
 func (m *SourceCodeInfo) Reset()         { *m = SourceCodeInfo{} }
 func (m *SourceCodeInfo) String() string { return protoapi.CompactTextString(m) }
@@ -1959,7 +1959,7 @@ type GeneratedCodeInfo struct {
 }
 
 func (m *GeneratedCodeInfo) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[20].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[20].MessageOf(m)
 }
 func (m *GeneratedCodeInfo) Reset()         { *m = GeneratedCodeInfo{} }
 func (m *GeneratedCodeInfo) String() string { return protoapi.CompactTextString(m) }
@@ -1985,7 +1985,7 @@ type DescriptorProto_ExtensionRange struct {
 }
 
 func (m *DescriptorProto_ExtensionRange) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[21].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[21].MessageOf(m)
 }
 func (m *DescriptorProto_ExtensionRange) Reset()         { *m = DescriptorProto_ExtensionRange{} }
 func (m *DescriptorProto_ExtensionRange) String() string { return protoapi.CompactTextString(m) }
@@ -2027,7 +2027,7 @@ type DescriptorProto_ReservedRange struct {
 }
 
 func (m *DescriptorProto_ReservedRange) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[22].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[22].MessageOf(m)
 }
 func (m *DescriptorProto_ReservedRange) Reset()         { *m = DescriptorProto_ReservedRange{} }
 func (m *DescriptorProto_ReservedRange) String() string { return protoapi.CompactTextString(m) }
@@ -2065,7 +2065,7 @@ type EnumDescriptorProto_EnumReservedRange struct {
 }
 
 func (m *EnumDescriptorProto_EnumReservedRange) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[23].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[23].MessageOf(m)
 }
 func (m *EnumDescriptorProto_EnumReservedRange) Reset()         { *m = EnumDescriptorProto_EnumReservedRange{} }
 func (m *EnumDescriptorProto_EnumReservedRange) String() string { return protoapi.CompactTextString(m) }
@@ -2102,7 +2102,7 @@ type UninterpretedOption_NamePart struct {
 }
 
 func (m *UninterpretedOption_NamePart) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[24].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[24].MessageOf(m)
 }
 func (m *UninterpretedOption_NamePart) Reset()         { *m = UninterpretedOption_NamePart{} }
 func (m *UninterpretedOption_NamePart) String() string { return protoapi.CompactTextString(m) }
@@ -2212,7 +2212,7 @@ type SourceCodeInfo_Location struct {
 }
 
 func (m *SourceCodeInfo_Location) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[25].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[25].MessageOf(m)
 }
 func (m *SourceCodeInfo_Location) Reset()         { *m = SourceCodeInfo_Location{} }
 func (m *SourceCodeInfo_Location) String() string { return protoapi.CompactTextString(m) }
@@ -2275,7 +2275,7 @@ type GeneratedCodeInfo_Annotation struct {
 }
 
 func (m *GeneratedCodeInfo_Annotation) ProtoReflect() protoreflect.Message {
-	return xxx_Descriptor_protoFile_messageTypes[26].MessageOf(m)
+	return xxx_ProtoFile_google_protobuf_descriptor_messageTypes[26].MessageOf(m)
 }
 func (m *GeneratedCodeInfo_Annotation) Reset()         { *m = GeneratedCodeInfo_Annotation{} }
 func (m *GeneratedCodeInfo_Annotation) String() string { return protoapi.CompactTextString(m) }
@@ -2837,11 +2837,11 @@ var fileDescriptor_e5baabe45344a177_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Descriptor_protoFile protoreflect.FileDescriptor
+var ProtoFile_google_protobuf_descriptor protoreflect.FileDescriptor
 
-var xxx_Descriptor_protoFile_enumTypes [6]protoreflect.EnumType
-var xxx_Descriptor_protoFile_messageTypes [27]protoimpl.MessageType
-var xxx_Descriptor_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_google_protobuf_descriptor_enumTypes [6]protoreflect.EnumType
+var xxx_ProtoFile_google_protobuf_descriptor_messageTypes [27]protoimpl.MessageType
+var xxx_ProtoFile_google_protobuf_descriptor_goTypes = []interface{}{
 	(FieldDescriptorProto_Type)(0),                // 0: google.protobuf.FieldDescriptorProto.Type
 	(FieldDescriptorProto_Label)(0),               // 1: google.protobuf.FieldDescriptorProto.Label
 	(FileOptions_OptimizeMode)(0),                 // 2: google.protobuf.FileOptions.OptimizeMode
@@ -2876,7 +2876,7 @@ var xxx_Descriptor_protoFile_goTypes = []interface{}{
 	(*SourceCodeInfo_Location)(nil),               // 31: google.protobuf.SourceCodeInfo.Location
 	(*GeneratedCodeInfo_Annotation)(nil),          // 32: google.protobuf.GeneratedCodeInfo.Annotation
 }
-var xxx_Descriptor_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_google_protobuf_descriptor_depIdxs = []int32{
 	7,  // google.protobuf.FileDescriptorSet.file:type_name -> google.protobuf.FileDescriptorProto
 	8,  // google.protobuf.FileDescriptorProto.message_type:type_name -> google.protobuf.DescriptorProto
 	12, // google.protobuf.FileDescriptorProto.enum_type:type_name -> google.protobuf.EnumDescriptorProto
@@ -2924,17 +2924,17 @@ var xxx_Descriptor_protoFile_depIdxs = []int32{
 
 func init() {
 	var messageTypes [27]protoreflect.MessageType
-	Descriptor_protoFile = protoimpl.FileBuilder{
+	ProtoFile_google_protobuf_descriptor = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_e5baabe45344a177,
-		GoTypes:            xxx_Descriptor_protoFile_goTypes,
-		DependencyIndexes:  xxx_Descriptor_protoFile_depIdxs,
-		EnumOutputTypes:    xxx_Descriptor_protoFile_enumTypes[:],
+		GoTypes:            xxx_ProtoFile_google_protobuf_descriptor_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_google_protobuf_descriptor_depIdxs,
+		EnumOutputTypes:    xxx_ProtoFile_google_protobuf_descriptor_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Descriptor_protoFile_goTypes[6:][:27]
+	messageGoTypes := xxx_ProtoFile_google_protobuf_descriptor_goTypes[6:][:27]
 	for i, mt := range messageTypes[:] {
-		xxx_Descriptor_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Descriptor_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_google_protobuf_descriptor_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_google_protobuf_descriptor_messageTypes[i].PBType = mt
 	}
 	prototype.X.RegisterExtensionRangeOptions((*ExtensionRangeOptions)(nil))
 	prototype.X.RegisterFileOptions((*FileOptions)(nil))
@@ -2945,6 +2945,6 @@ func init() {
 	prototype.X.RegisterEnumValueOptions((*EnumValueOptions)(nil))
 	prototype.X.RegisterServiceOptions((*ServiceOptions)(nil))
 	prototype.X.RegisterMethodOptions((*MethodOptions)(nil))
-	xxx_Descriptor_protoFile_goTypes = nil
-	xxx_Descriptor_protoFile_depIdxs = nil
+	xxx_ProtoFile_google_protobuf_descriptor_goTypes = nil
+	xxx_ProtoFile_google_protobuf_descriptor_depIdxs = nil
 }

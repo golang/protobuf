@@ -25,7 +25,7 @@ const (
 )
 
 func (e ImportEnum) Type() protoreflect.EnumType {
-	return xxx_TestImport_protoFile_enumTypes[0]
+	return xxx_ProtoFile_test_import_enumTypes[0]
 }
 func (e ImportEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -69,7 +69,7 @@ type ImportMessage struct {
 }
 
 func (m *ImportMessage) ProtoReflect() protoreflect.Message {
-	return xxx_TestImport_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_test_import_messageTypes[0].MessageOf(m)
 }
 func (m *ImportMessage) Reset()         { *m = ImportMessage{} }
 func (m *ImportMessage) String() string { return proto.CompactTextString(m) }
@@ -126,30 +126,30 @@ var fileDescriptor_89be98e26346f54e_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var TestImport_protoFile protoreflect.FileDescriptor
+var ProtoFile_test_import protoreflect.FileDescriptor
 
-var xxx_TestImport_protoFile_enumTypes [1]protoreflect.EnumType
-var xxx_TestImport_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_TestImport_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_test_import_enumTypes [1]protoreflect.EnumType
+var xxx_ProtoFile_test_import_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_test_import_goTypes = []interface{}{
 	(ImportEnum)(0),       // 0: goproto.proto.test.ImportEnum
 	(*ImportMessage)(nil), // 1: goproto.proto.test.ImportMessage
 }
-var xxx_TestImport_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_test_import_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	TestImport_protoFile = protoimpl.FileBuilder{
+	ProtoFile_test_import = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_89be98e26346f54e,
-		GoTypes:            xxx_TestImport_protoFile_goTypes,
-		DependencyIndexes:  xxx_TestImport_protoFile_depIdxs,
-		EnumOutputTypes:    xxx_TestImport_protoFile_enumTypes[:],
+		GoTypes:            xxx_ProtoFile_test_import_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_test_import_depIdxs,
+		EnumOutputTypes:    xxx_ProtoFile_test_import_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_TestImport_protoFile_goTypes[1:][:1]
+	messageGoTypes := xxx_ProtoFile_test_import_goTypes[1:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_TestImport_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_TestImport_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_test_import_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_test_import_messageTypes[i].PBType = mt
 	}
-	xxx_TestImport_protoFile_goTypes = nil
-	xxx_TestImport_protoFile_depIdxs = nil
+	xxx_ProtoFile_test_import_goTypes = nil
+	xxx_ProtoFile_test_import_depIdxs = nil
 }

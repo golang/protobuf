@@ -28,7 +28,7 @@ type Local struct {
 }
 
 func (m *Local) ProtoReflect() protoreflect.Message {
-	return xxx_B_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_import_public_b_messageTypes[0].MessageOf(m)
 }
 func (m *Local) Reset()         { *m = Local{} }
 func (m *Local) String() string { return proto.CompactTextString(m) }
@@ -105,32 +105,32 @@ var fileDescriptor_84995586b3d09710_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var B_protoFile protoreflect.FileDescriptor
+var ProtoFile_import_public_b protoreflect.FileDescriptor
 
-var xxx_B_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_B_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_import_public_b_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_import_public_b_goTypes = []interface{}{
 	(*Local)(nil), // 0: goproto.protoc.import_public.Local
 	(*sub.M)(nil), // 1: goproto.protoc.import_public.sub.M
 	(sub.E)(0),    // 2: goproto.protoc.import_public.sub.E
 }
-var xxx_B_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_import_public_b_depIdxs = []int32{
 	1, // goproto.protoc.import_public.Local.m:type_name -> goproto.protoc.import_public.sub.M
 	2, // goproto.protoc.import_public.Local.e:type_name -> goproto.protoc.import_public.sub.E
 }
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	B_protoFile = protoimpl.FileBuilder{
+	ProtoFile_import_public_b = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_84995586b3d09710,
-		GoTypes:            xxx_B_protoFile_goTypes,
-		DependencyIndexes:  xxx_B_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_import_public_b_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_import_public_b_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_B_protoFile_goTypes[0:][:1]
+	messageGoTypes := xxx_ProtoFile_import_public_b_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_B_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_B_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_import_public_b_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_import_public_b_messageTypes[i].PBType = mt
 	}
-	xxx_B_protoFile_goTypes = nil
-	xxx_B_protoFile_depIdxs = nil
+	xxx_ProtoFile_import_public_b_goTypes = nil
+	xxx_ProtoFile_import_public_b_depIdxs = nil
 }

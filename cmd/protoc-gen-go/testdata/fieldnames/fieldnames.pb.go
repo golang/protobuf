@@ -64,7 +64,7 @@ type Message struct {
 }
 
 func (m *Message) ProtoReflect() protoreflect.Message {
-	return xxx_Fieldnames_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_fieldnames_fieldnames_messageTypes[0].MessageOf(m)
 }
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
@@ -291,7 +291,7 @@ type Message_OneofMessageConflict struct {
 }
 
 func (m *Message_OneofMessageConflict) ProtoReflect() protoreflect.Message {
-	return xxx_Fieldnames_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_ProtoFile_fieldnames_fieldnames_messageTypes[1].MessageOf(m)
 }
 func (m *Message_OneofMessageConflict) Reset()         { *m = Message_OneofMessageConflict{} }
 func (m *Message_OneofMessageConflict) String() string { return proto.CompactTextString(m) }
@@ -390,28 +390,28 @@ var fileDescriptor_6bbe3f70febb9403_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Fieldnames_protoFile protoreflect.FileDescriptor
+var ProtoFile_fieldnames_fieldnames protoreflect.FileDescriptor
 
-var xxx_Fieldnames_protoFile_messageTypes [2]protoimpl.MessageType
-var xxx_Fieldnames_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_fieldnames_fieldnames_messageTypes [2]protoimpl.MessageType
+var xxx_ProtoFile_fieldnames_fieldnames_goTypes = []interface{}{
 	(*Message)(nil),                      // 0: goproto.protoc.fieldnames.Message
 	(*Message_OneofMessageConflict)(nil), // 1: goproto.protoc.fieldnames.Message.OneofMessageConflict
 }
-var xxx_Fieldnames_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_fieldnames_fieldnames_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [2]protoreflect.MessageType
-	Fieldnames_protoFile = protoimpl.FileBuilder{
+	ProtoFile_fieldnames_fieldnames = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_6bbe3f70febb9403,
-		GoTypes:            xxx_Fieldnames_protoFile_goTypes,
-		DependencyIndexes:  xxx_Fieldnames_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_fieldnames_fieldnames_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_fieldnames_fieldnames_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Fieldnames_protoFile_goTypes[0:][:2]
+	messageGoTypes := xxx_ProtoFile_fieldnames_fieldnames_goTypes[0:][:2]
 	for i, mt := range messageTypes[:] {
-		xxx_Fieldnames_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Fieldnames_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_fieldnames_fieldnames_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_fieldnames_fieldnames_messageTypes[i].PBType = mt
 	}
-	xxx_Fieldnames_protoFile_goTypes = nil
-	xxx_Fieldnames_protoFile_depIdxs = nil
+	xxx_ProtoFile_fieldnames_fieldnames_goTypes = nil
+	xxx_ProtoFile_fieldnames_fieldnames_depIdxs = nil
 }

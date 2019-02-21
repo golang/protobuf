@@ -27,7 +27,7 @@ type Layer1 struct {
 }
 
 func (m *Layer1) ProtoReflect() protoreflect.Message {
-	return xxx_NestedMessages_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_proto2_nested_messages_messageTypes[0].MessageOf(m)
 }
 func (m *Layer1) Reset()         { *m = Layer1{} }
 func (m *Layer1) String() string { return proto.CompactTextString(m) }
@@ -76,7 +76,7 @@ type Layer1_Layer2 struct {
 }
 
 func (m *Layer1_Layer2) ProtoReflect() protoreflect.Message {
-	return xxx_NestedMessages_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_ProtoFile_proto2_nested_messages_messageTypes[1].MessageOf(m)
 }
 func (m *Layer1_Layer2) Reset()         { *m = Layer1_Layer2{} }
 func (m *Layer1_Layer2) String() string { return proto.CompactTextString(m) }
@@ -117,7 +117,7 @@ type Layer1_Layer2_Layer3 struct {
 }
 
 func (m *Layer1_Layer2_Layer3) ProtoReflect() protoreflect.Message {
-	return xxx_NestedMessages_protoFile_messageTypes[2].MessageOf(m)
+	return xxx_ProtoFile_proto2_nested_messages_messageTypes[2].MessageOf(m)
 }
 func (m *Layer1_Layer2_Layer3) Reset()         { *m = Layer1_Layer2_Layer3{} }
 func (m *Layer1_Layer2_Layer3) String() string { return proto.CompactTextString(m) }
@@ -186,15 +186,15 @@ var fileDescriptor_7417ee157699d191_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var NestedMessages_protoFile protoreflect.FileDescriptor
+var ProtoFile_proto2_nested_messages protoreflect.FileDescriptor
 
-var xxx_NestedMessages_protoFile_messageTypes [3]protoimpl.MessageType
-var xxx_NestedMessages_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_proto2_nested_messages_messageTypes [3]protoimpl.MessageType
+var xxx_ProtoFile_proto2_nested_messages_goTypes = []interface{}{
 	(*Layer1)(nil),               // 0: goproto.protoc.proto2.Layer1
 	(*Layer1_Layer2)(nil),        // 1: goproto.protoc.proto2.Layer1.Layer2
 	(*Layer1_Layer2_Layer3)(nil), // 2: goproto.protoc.proto2.Layer1.Layer2.Layer3
 }
-var xxx_NestedMessages_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_proto2_nested_messages_depIdxs = []int32{
 	1, // goproto.protoc.proto2.Layer1.l2:type_name -> goproto.protoc.proto2.Layer1.Layer2
 	2, // goproto.protoc.proto2.Layer1.l3:type_name -> goproto.protoc.proto2.Layer1.Layer2.Layer3
 	2, // goproto.protoc.proto2.Layer1.Layer2.l3:type_name -> goproto.protoc.proto2.Layer1.Layer2.Layer3
@@ -202,17 +202,17 @@ var xxx_NestedMessages_protoFile_depIdxs = []int32{
 
 func init() {
 	var messageTypes [3]protoreflect.MessageType
-	NestedMessages_protoFile = protoimpl.FileBuilder{
+	ProtoFile_proto2_nested_messages = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_7417ee157699d191,
-		GoTypes:            xxx_NestedMessages_protoFile_goTypes,
-		DependencyIndexes:  xxx_NestedMessages_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_proto2_nested_messages_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_proto2_nested_messages_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_NestedMessages_protoFile_goTypes[0:][:3]
+	messageGoTypes := xxx_ProtoFile_proto2_nested_messages_goTypes[0:][:3]
 	for i, mt := range messageTypes[:] {
-		xxx_NestedMessages_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_NestedMessages_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_proto2_nested_messages_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_proto2_nested_messages_messageTypes[i].PBType = mt
 	}
-	xxx_NestedMessages_protoFile_goTypes = nil
-	xxx_NestedMessages_protoFile_depIdxs = nil
+	xxx_ProtoFile_proto2_nested_messages_goTypes = nil
+	xxx_ProtoFile_proto2_nested_messages_depIdxs = nil
 }

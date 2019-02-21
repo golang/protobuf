@@ -25,7 +25,7 @@ const (
 )
 
 func (e AnnotationsTestEnum) Type() protoreflect.EnumType {
-	return xxx_Annotations_protoFile_enumTypes[0]
+	return xxx_ProtoFile_annotations_annotations_enumTypes[0]
 }
 func (e AnnotationsTestEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -70,7 +70,7 @@ type AnnotationsTestMessage struct {
 }
 
 func (m *AnnotationsTestMessage) ProtoReflect() protoreflect.Message {
-	return xxx_Annotations_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_annotations_annotations_messageTypes[0].MessageOf(m)
 }
 func (m *AnnotationsTestMessage) Reset()         { *m = AnnotationsTestMessage{} }
 func (m *AnnotationsTestMessage) String() string { return proto.CompactTextString(m) }
@@ -141,30 +141,30 @@ var fileDescriptor_21dfaf6fd39fa3b7_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Annotations_protoFile protoreflect.FileDescriptor
+var ProtoFile_annotations_annotations protoreflect.FileDescriptor
 
-var xxx_Annotations_protoFile_enumTypes [1]protoreflect.EnumType
-var xxx_Annotations_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_Annotations_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_annotations_annotations_enumTypes [1]protoreflect.EnumType
+var xxx_ProtoFile_annotations_annotations_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_annotations_annotations_goTypes = []interface{}{
 	(AnnotationsTestEnum)(0),       // 0: goproto.protoc.annotations.AnnotationsTestEnum
 	(*AnnotationsTestMessage)(nil), // 1: goproto.protoc.annotations.AnnotationsTestMessage
 }
-var xxx_Annotations_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_annotations_annotations_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	Annotations_protoFile = protoimpl.FileBuilder{
+	ProtoFile_annotations_annotations = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_21dfaf6fd39fa3b7,
-		GoTypes:            xxx_Annotations_protoFile_goTypes,
-		DependencyIndexes:  xxx_Annotations_protoFile_depIdxs,
-		EnumOutputTypes:    xxx_Annotations_protoFile_enumTypes[:],
+		GoTypes:            xxx_ProtoFile_annotations_annotations_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_annotations_annotations_depIdxs,
+		EnumOutputTypes:    xxx_ProtoFile_annotations_annotations_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Annotations_protoFile_goTypes[1:][:1]
+	messageGoTypes := xxx_ProtoFile_annotations_annotations_goTypes[1:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_Annotations_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Annotations_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_annotations_annotations_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_annotations_annotations_messageTypes[i].PBType = mt
 	}
-	xxx_Annotations_protoFile_goTypes = nil
-	xxx_Annotations_protoFile_depIdxs = nil
+	xxx_ProtoFile_annotations_annotations_goTypes = nil
+	xxx_ProtoFile_annotations_annotations_depIdxs = nil
 }

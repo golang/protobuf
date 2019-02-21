@@ -26,7 +26,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_Enum_protoFile_enumTypes[0]
+	return xxx_ProtoFile_proto3_enum_enumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -81,21 +81,21 @@ var fileDescriptor_b4b9b1e8d161a9a6_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Enum_protoFile protoreflect.FileDescriptor
+var ProtoFile_proto3_enum protoreflect.FileDescriptor
 
-var xxx_Enum_protoFile_enumTypes [1]protoreflect.EnumType
-var xxx_Enum_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_proto3_enum_enumTypes [1]protoreflect.EnumType
+var xxx_ProtoFile_proto3_enum_goTypes = []interface{}{
 	(Enum)(0), // 0: goproto.protoc.proto3.Enum
 }
-var xxx_Enum_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_proto3_enum_depIdxs = []int32{}
 
 func init() {
-	Enum_protoFile = protoimpl.FileBuilder{
+	ProtoFile_proto3_enum = protoimpl.FileBuilder{
 		RawDescriptor:     fileDescriptor_b4b9b1e8d161a9a6,
-		GoTypes:           xxx_Enum_protoFile_goTypes,
-		DependencyIndexes: xxx_Enum_protoFile_depIdxs,
-		EnumOutputTypes:   xxx_Enum_protoFile_enumTypes[:],
+		GoTypes:           xxx_ProtoFile_proto3_enum_goTypes,
+		DependencyIndexes: xxx_ProtoFile_proto3_enum_depIdxs,
+		EnumOutputTypes:   xxx_ProtoFile_proto3_enum_enumTypes[:],
 	}.Init()
-	xxx_Enum_protoFile_goTypes = nil
-	xxx_Enum_protoFile_depIdxs = nil
+	xxx_ProtoFile_proto3_enum_goTypes = nil
+	xxx_ProtoFile_proto3_enum_depIdxs = nil
 }

@@ -27,7 +27,7 @@ type BaseMessage struct {
 }
 
 func (m *BaseMessage) ProtoReflect() protoreflect.Message {
-	return xxx_Base_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_extensions_base_base_messageTypes[0].MessageOf(m)
 }
 func (m *BaseMessage) Reset()         { *m = BaseMessage{} }
 func (m *BaseMessage) String() string { return proto.CompactTextString(m) }
@@ -78,7 +78,7 @@ type MessageSetWireFormatMessage struct {
 }
 
 func (m *MessageSetWireFormatMessage) ProtoReflect() protoreflect.Message {
-	return xxx_Base_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_ProtoFile_extensions_base_base_messageTypes[1].MessageOf(m)
 }
 func (m *MessageSetWireFormatMessage) Reset()         { *m = MessageSetWireFormatMessage{} }
 func (m *MessageSetWireFormatMessage) String() string { return proto.CompactTextString(m) }
@@ -148,28 +148,28 @@ var fileDescriptor_aebb28f8d5a04466_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Base_protoFile protoreflect.FileDescriptor
+var ProtoFile_extensions_base_base protoreflect.FileDescriptor
 
-var xxx_Base_protoFile_messageTypes [2]protoimpl.MessageType
-var xxx_Base_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_extensions_base_base_messageTypes [2]protoimpl.MessageType
+var xxx_ProtoFile_extensions_base_base_goTypes = []interface{}{
 	(*BaseMessage)(nil),                 // 0: goproto.protoc.extension.base.BaseMessage
 	(*MessageSetWireFormatMessage)(nil), // 1: goproto.protoc.extension.base.MessageSetWireFormatMessage
 }
-var xxx_Base_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_extensions_base_base_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [2]protoreflect.MessageType
-	Base_protoFile = protoimpl.FileBuilder{
+	ProtoFile_extensions_base_base = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_aebb28f8d5a04466,
-		GoTypes:            xxx_Base_protoFile_goTypes,
-		DependencyIndexes:  xxx_Base_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_extensions_base_base_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_extensions_base_base_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Base_protoFile_goTypes[0:][:2]
+	messageGoTypes := xxx_ProtoFile_extensions_base_base_goTypes[0:][:2]
 	for i, mt := range messageTypes[:] {
-		xxx_Base_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Base_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_extensions_base_base_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_extensions_base_base_messageTypes[i].PBType = mt
 	}
-	xxx_Base_protoFile_goTypes = nil
-	xxx_Base_protoFile_depIdxs = nil
+	xxx_ProtoFile_extensions_base_base_goTypes = nil
+	xxx_ProtoFile_extensions_base_base_depIdxs = nil
 }

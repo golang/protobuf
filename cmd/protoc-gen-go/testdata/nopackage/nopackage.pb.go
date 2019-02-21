@@ -25,7 +25,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_Nopackage_protoFile_enumTypes[0]
+	return xxx_ProtoFile_nopackage_nopackage_enumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -71,7 +71,7 @@ type Message struct {
 }
 
 func (m *Message) ProtoReflect() protoreflect.Message {
-	return xxx_Nopackage_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_nopackage_nopackage_messageTypes[0].MessageOf(m)
 }
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
@@ -143,32 +143,32 @@ var fileDescriptor_f33a1d5d178c43c9_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Nopackage_protoFile protoreflect.FileDescriptor
+var ProtoFile_nopackage_nopackage protoreflect.FileDescriptor
 
-var xxx_Nopackage_protoFile_enumTypes [1]protoreflect.EnumType
-var xxx_Nopackage_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_Nopackage_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_nopackage_nopackage_enumTypes [1]protoreflect.EnumType
+var xxx_ProtoFile_nopackage_nopackage_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_nopackage_nopackage_goTypes = []interface{}{
 	(Enum)(0),       // 0: Enum
 	(*Message)(nil), // 1: Message
 }
-var xxx_Nopackage_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_nopackage_nopackage_depIdxs = []int32{
 	0, // Message.enum_field:type_name -> Enum
 }
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	Nopackage_protoFile = protoimpl.FileBuilder{
+	ProtoFile_nopackage_nopackage = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_f33a1d5d178c43c9,
-		GoTypes:            xxx_Nopackage_protoFile_goTypes,
-		DependencyIndexes:  xxx_Nopackage_protoFile_depIdxs,
-		EnumOutputTypes:    xxx_Nopackage_protoFile_enumTypes[:],
+		GoTypes:            xxx_ProtoFile_nopackage_nopackage_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_nopackage_nopackage_depIdxs,
+		EnumOutputTypes:    xxx_ProtoFile_nopackage_nopackage_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Nopackage_protoFile_goTypes[1:][:1]
+	messageGoTypes := xxx_ProtoFile_nopackage_nopackage_goTypes[1:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_Nopackage_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Nopackage_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_nopackage_nopackage_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_nopackage_nopackage_messageTypes[i].PBType = mt
 	}
-	xxx_Nopackage_protoFile_goTypes = nil
-	xxx_Nopackage_protoFile_depIdxs = nil
+	xxx_ProtoFile_nopackage_nopackage_goTypes = nil
+	xxx_ProtoFile_nopackage_nopackage_depIdxs = nil
 }

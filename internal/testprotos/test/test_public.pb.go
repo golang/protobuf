@@ -25,7 +25,7 @@ type PublicImportMessage struct {
 }
 
 func (m *PublicImportMessage) ProtoReflect() protoreflect.Message {
-	return xxx_TestPublic_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_test_public_messageTypes[0].MessageOf(m)
 }
 func (m *PublicImportMessage) Reset()         { *m = PublicImportMessage{} }
 func (m *PublicImportMessage) String() string { return proto.CompactTextString(m) }
@@ -79,27 +79,27 @@ var fileDescriptor_36dd44afd5b47374_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var TestPublic_protoFile protoreflect.FileDescriptor
+var ProtoFile_test_public protoreflect.FileDescriptor
 
-var xxx_TestPublic_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_TestPublic_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_test_public_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_test_public_goTypes = []interface{}{
 	(*PublicImportMessage)(nil), // 0: goproto.proto.test.PublicImportMessage
 }
-var xxx_TestPublic_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_test_public_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	TestPublic_protoFile = protoimpl.FileBuilder{
+	ProtoFile_test_public = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_36dd44afd5b47374,
-		GoTypes:            xxx_TestPublic_protoFile_goTypes,
-		DependencyIndexes:  xxx_TestPublic_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_test_public_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_test_public_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_TestPublic_protoFile_goTypes[0:][:1]
+	messageGoTypes := xxx_ProtoFile_test_public_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_TestPublic_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_TestPublic_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_test_public_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_test_public_messageTypes[i].PBType = mt
 	}
-	xxx_TestPublic_protoFile_goTypes = nil
-	xxx_TestPublic_protoFile_depIdxs = nil
+	xxx_ProtoFile_test_public_goTypes = nil
+	xxx_ProtoFile_test_public_depIdxs = nil
 }

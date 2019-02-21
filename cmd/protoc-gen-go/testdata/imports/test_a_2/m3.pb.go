@@ -25,7 +25,7 @@ type M3 struct {
 }
 
 func (m *M3) ProtoReflect() protoreflect.Message {
-	return xxx_M3_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_imports_test_a_2_m3_messageTypes[0].MessageOf(m)
 }
 func (m *M3) Reset()         { *m = M3{} }
 func (m *M3) String() string { return proto.CompactTextString(m) }
@@ -79,27 +79,27 @@ var fileDescriptor_ff9d8f834875c9c5_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var M3_protoFile protoreflect.FileDescriptor
+var ProtoFile_imports_test_a_2_m3 protoreflect.FileDescriptor
 
-var xxx_M3_protoFile_messageTypes [1]protoimpl.MessageType
-var xxx_M3_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_imports_test_a_2_m3_messageTypes [1]protoimpl.MessageType
+var xxx_ProtoFile_imports_test_a_2_m3_goTypes = []interface{}{
 	(*M3)(nil), // 0: test.a.M3
 }
-var xxx_M3_protoFile_depIdxs = []int32{}
+var xxx_ProtoFile_imports_test_a_2_m3_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	M3_protoFile = protoimpl.FileBuilder{
+	ProtoFile_imports_test_a_2_m3 = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_ff9d8f834875c9c5,
-		GoTypes:            xxx_M3_protoFile_goTypes,
-		DependencyIndexes:  xxx_M3_protoFile_depIdxs,
+		GoTypes:            xxx_ProtoFile_imports_test_a_2_m3_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_imports_test_a_2_m3_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_M3_protoFile_goTypes[0:][:1]
+	messageGoTypes := xxx_ProtoFile_imports_test_a_2_m3_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_M3_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_M3_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_imports_test_a_2_m3_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_imports_test_a_2_m3_messageTypes[i].PBType = mt
 	}
-	xxx_M3_protoFile_goTypes = nil
-	xxx_M3_protoFile_depIdxs = nil
+	xxx_ProtoFile_imports_test_a_2_m3_goTypes = nil
+	xxx_ProtoFile_imports_test_a_2_m3_depIdxs = nil
 }

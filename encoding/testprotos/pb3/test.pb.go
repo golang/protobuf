@@ -28,7 +28,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_Test_protoFile_enumTypes[0]
+	return xxx_ProtoFile_encoding_testprotos_pb3_test_enumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -66,7 +66,7 @@ const (
 )
 
 func (e Enums_NestedEnum) Type() protoreflect.EnumType {
-	return xxx_Test_protoFile_enumTypes[1]
+	return xxx_ProtoFile_encoding_testprotos_pb3_test_enumTypes[1]
 }
 func (e Enums_NestedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -117,7 +117,7 @@ type Scalars struct {
 }
 
 func (m *Scalars) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[0].MessageOf(m)
 }
 func (m *Scalars) Reset()         { *m = Scalars{} }
 func (m *Scalars) String() string { return proto.CompactTextString(m) }
@@ -259,7 +259,7 @@ type Enums struct {
 }
 
 func (m *Enums) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[1].MessageOf(m)
 }
 func (m *Enums) Reset()         { *m = Enums{} }
 func (m *Enums) String() string { return proto.CompactTextString(m) }
@@ -309,7 +309,7 @@ type Nests struct {
 }
 
 func (m *Nests) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[2].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[2].MessageOf(m)
 }
 func (m *Nests) Reset()         { *m = Nests{} }
 func (m *Nests) String() string { return proto.CompactTextString(m) }
@@ -353,7 +353,7 @@ type Nested struct {
 }
 
 func (m *Nested) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[3].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[3].MessageOf(m)
 }
 func (m *Nested) Reset()         { *m = Nested{} }
 func (m *Nested) String() string { return proto.CompactTextString(m) }
@@ -407,7 +407,7 @@ type Oneofs struct {
 }
 
 func (m *Oneofs) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[4].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[4].MessageOf(m)
 }
 func (m *Oneofs) Reset()         { *m = Oneofs{} }
 func (m *Oneofs) String() string { return proto.CompactTextString(m) }
@@ -506,7 +506,7 @@ type Maps struct {
 }
 
 func (m *Maps) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[5].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[5].MessageOf(m)
 }
 func (m *Maps) Reset()         { *m = Maps{} }
 func (m *Maps) String() string { return proto.CompactTextString(m) }
@@ -577,7 +577,7 @@ type JSONNames struct {
 }
 
 func (m *JSONNames) ProtoReflect() protoreflect.Message {
-	return xxx_Test_protoFile_messageTypes[6].MessageOf(m)
+	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[6].MessageOf(m)
 }
 func (m *JSONNames) Reset()         { *m = JSONNames{} }
 func (m *JSONNames) String() string { return proto.CompactTextString(m) }
@@ -752,11 +752,11 @@ var fileDescriptor_33e0a17922cde063_gzipped = func() []byte {
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Test_protoFile protoreflect.FileDescriptor
+var ProtoFile_encoding_testprotos_pb3_test protoreflect.FileDescriptor
 
-var xxx_Test_protoFile_enumTypes [2]protoreflect.EnumType
-var xxx_Test_protoFile_messageTypes [12]protoimpl.MessageType
-var xxx_Test_protoFile_goTypes = []interface{}{
+var xxx_ProtoFile_encoding_testprotos_pb3_test_enumTypes [2]protoreflect.EnumType
+var xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes [12]protoimpl.MessageType
+var xxx_ProtoFile_encoding_testprotos_pb3_test_goTypes = []interface{}{
 	(Enum)(0),             // 0: pb3.Enum
 	(Enums_NestedEnum)(0), // 1: pb3.Enums.NestedEnum
 	(*Scalars)(nil),       // 2: pb3.Scalars
@@ -772,7 +772,7 @@ var xxx_Test_protoFile_goTypes = []interface{}{
 	nil,                   // 12: pb3.Maps.StrToNestedEntry
 	nil,                   // 13: pb3.Maps.StrToOneofsEntry
 }
-var xxx_Test_protoFile_depIdxs = []int32{
+var xxx_ProtoFile_encoding_testprotos_pb3_test_depIdxs = []int32{
 	0,  // pb3.Enums.s_enum:type_name -> pb3.Enum
 	1,  // pb3.Enums.s_nested_enum:type_name -> pb3.Enums.NestedEnum
 	5,  // pb3.Nests.s_nested:type_name -> pb3.Nested
@@ -791,18 +791,18 @@ var xxx_Test_protoFile_depIdxs = []int32{
 
 func init() {
 	var messageTypes [12]protoreflect.MessageType
-	Test_protoFile = protoimpl.FileBuilder{
+	ProtoFile_encoding_testprotos_pb3_test = protoimpl.FileBuilder{
 		RawDescriptor:      fileDescriptor_33e0a17922cde063,
-		GoTypes:            xxx_Test_protoFile_goTypes,
-		DependencyIndexes:  xxx_Test_protoFile_depIdxs,
-		EnumOutputTypes:    xxx_Test_protoFile_enumTypes[:],
+		GoTypes:            xxx_ProtoFile_encoding_testprotos_pb3_test_goTypes,
+		DependencyIndexes:  xxx_ProtoFile_encoding_testprotos_pb3_test_depIdxs,
+		EnumOutputTypes:    xxx_ProtoFile_encoding_testprotos_pb3_test_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Test_protoFile_goTypes[2:][:12]
+	messageGoTypes := xxx_ProtoFile_encoding_testprotos_pb3_test_goTypes[2:][:12]
 	for i, mt := range messageTypes[:] {
-		xxx_Test_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Test_protoFile_messageTypes[i].PBType = mt
+		xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[i].PBType = mt
 	}
-	xxx_Test_protoFile_goTypes = nil
-	xxx_Test_protoFile_depIdxs = nil
+	xxx_ProtoFile_encoding_testprotos_pb3_test_goTypes = nil
+	xxx_ProtoFile_encoding_testprotos_pb3_test_depIdxs = nil
 }
