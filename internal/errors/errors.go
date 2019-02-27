@@ -116,7 +116,7 @@ func (invalidUTF8Error) InvalidUTF8() bool { return true }
 // returns an error that has a "proto" prefix.
 func New(f string, x ...interface{}) error {
 	for i := 0; i < len(x); i++ {
-		if e, ok := x[i].(prefixError); ok {
+		if e, ok := x[i].(*prefixError); ok {
 			x[i] = e.s // avoid "proto: " prefix when chaining
 		}
 	}
