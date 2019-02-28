@@ -21,9 +21,9 @@ const (
 )
 
 // GenerateFile generates a _grpc.pb.go file containing gRPC service definitions.
-func GenerateFile(gen *protogen.Plugin, file *protogen.File) {
+func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
 	if len(file.Services) == 0 {
-		return
+		return nil
 	}
 	filename := file.GeneratedFilenamePrefix + "_grpc.pb.go"
 	g := gen.NewGeneratedFile(filename, file.GoImportPath)
@@ -32,6 +32,7 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) {
 	g.P("package ", file.GoPackageName)
 	g.P()
 	GenerateFileContent(gen, file, g)
+	return g
 }
 
 // GenerateFileContent generates the gRPC service definitions, excluding the package statement.

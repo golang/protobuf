@@ -4,9 +4,8 @@
 package grpc
 
 import (
-	bytes "bytes"
-	gzip "compress/gzip"
 	proto "github.com/golang/protobuf/proto"
+	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
@@ -25,13 +24,13 @@ type Request struct {
 }
 
 func (m *Request) ProtoReflect() protoreflect.Message {
-	return xxx_Grpc_protoFile_messageTypes[0].MessageOf(m)
+	return xxx_File_grpc_grpc_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Request) Reset()         { *m = Request{} }
 func (m *Request) String() string { return proto.CompactTextString(m) }
 func (*Request) ProtoMessage()    {}
 func (*Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_81ea47a3f88c2082_gzipped, []int{0}
+	return xxx_File_grpc_grpc_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *Request) XXX_Unmarshal(b []byte) error {
@@ -59,13 +58,13 @@ type Response struct {
 }
 
 func (m *Response) ProtoReflect() protoreflect.Message {
-	return xxx_Grpc_protoFile_messageTypes[1].MessageOf(m)
+	return xxx_File_grpc_grpc_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()    {}
 func (*Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_81ea47a3f88c2082_gzipped, []int{1}
+	return xxx_File_grpc_grpc_proto_rawdesc_gzipped, []int{1}
 }
 
 func (m *Response) XXX_Unmarshal(b []byte) error {
@@ -87,12 +86,12 @@ func (m *Response) XXX_DiscardUnknown() {
 var xxx_messageInfo_Response proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterFile("grpc/grpc.proto", fileDescriptor_81ea47a3f88c2082_gzipped)
+	proto.RegisterFile("grpc/grpc.proto", xxx_File_grpc_grpc_proto_rawdesc_gzipped)
 	proto.RegisterType((*Request)(nil), "goproto.protoc.grpc.Request")
 	proto.RegisterType((*Response)(nil), "goproto.protoc.grpc.Response")
 }
 
-var fileDescriptor_81ea47a3f88c2082 = []byte{
+var xxx_File_grpc_grpc_proto_rawdesc = []byte{
 	// 466 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x0f, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x12, 0x13, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
@@ -126,24 +125,18 @@ var fileDescriptor_81ea47a3f88c2082 = []byte{
 	0x6f, 0x33,
 }
 
-var fileDescriptor_81ea47a3f88c2082_gzipped = func() []byte {
-	bb := new(bytes.Buffer)
-	zw, _ := gzip.NewWriterLevel(bb, gzip.NoCompression)
-	zw.Write(fileDescriptor_81ea47a3f88c2082)
-	zw.Close()
-	return bb.Bytes()
-}()
+var xxx_File_grpc_grpc_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_grpc_grpc_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Grpc_protoFile protoreflect.FileDescriptor
+var File_grpc_grpc_proto protoreflect.FileDescriptor
 
-var xxx_Grpc_protoFile_messageTypes [2]protoimpl.MessageType
-var xxx_Grpc_protoFile_goTypes = []interface{}{
+var xxx_File_grpc_grpc_proto_messageTypes [2]protoimpl.MessageType
+var xxx_File_grpc_grpc_proto_goTypes = []interface{}{
 	(*Request)(nil),  // 0: goproto.protoc.grpc.Request
 	(*Response)(nil), // 1: goproto.protoc.grpc.Response
 }
-var xxx_Grpc_protoFile_depIdxs = []int32{
+var xxx_File_grpc_grpc_proto_depIdxs = []int32{
 	0, // goproto.protoc.grpc.test_service.unary_call:input_type -> goproto.protoc.grpc.Request
 	1, // goproto.protoc.grpc.test_service.unary_call:output_type -> goproto.protoc.grpc.Response
 	0, // goproto.protoc.grpc.test_service.downstream_call:input_type -> goproto.protoc.grpc.Request
@@ -156,17 +149,17 @@ var xxx_Grpc_protoFile_depIdxs = []int32{
 
 func init() {
 	var messageTypes [2]protoreflect.MessageType
-	Grpc_protoFile = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_81ea47a3f88c2082,
-		GoTypes:            xxx_Grpc_protoFile_goTypes,
-		DependencyIndexes:  xxx_Grpc_protoFile_depIdxs,
+	File_grpc_grpc_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_grpc_grpc_proto_rawdesc,
+		GoTypes:            xxx_File_grpc_grpc_proto_goTypes,
+		DependencyIndexes:  xxx_File_grpc_grpc_proto_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_Grpc_protoFile_goTypes[0:][:2]
+	messageGoTypes := xxx_File_grpc_grpc_proto_goTypes[0:][:2]
 	for i, mt := range messageTypes[:] {
-		xxx_Grpc_protoFile_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_Grpc_protoFile_messageTypes[i].PBType = mt
+		xxx_File_grpc_grpc_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_grpc_grpc_proto_messageTypes[i].PBType = mt
 	}
-	xxx_Grpc_protoFile_goTypes = nil
-	xxx_Grpc_protoFile_depIdxs = nil
+	xxx_File_grpc_grpc_proto_goTypes = nil
+	xxx_File_grpc_grpc_proto_depIdxs = nil
 }

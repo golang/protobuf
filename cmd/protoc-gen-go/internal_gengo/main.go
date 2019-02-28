@@ -74,7 +74,9 @@ func (f *fileInfo) protoPackage() protogen.GoImportPath {
 }
 
 // GenerateFile generates the contents of a .pb.go file.
-func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.GeneratedFile) {
+func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
+	filename := file.GeneratedFilenamePrefix + ".pb.go"
+	g := gen.NewGeneratedFile(filename, file.GoImportPath)
 	f := &fileInfo{
 		File: file,
 	}
@@ -151,6 +153,8 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File, g *protogen.Generat
 	genInitFunction(gen, g, f)
 	genFileDescriptor(gen, g, f)
 	genReflectFileDescriptor(gen, g, f)
+
+	return g
 }
 
 // walkMessages calls f on each message and all of its descendants.
@@ -182,9 +186,8 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 
 	// Generate public imports by generating the imported file, parsing it,
 	// and extracting every symbol that should receive a forwarding declaration.
-	impGen := gen.NewGeneratedFile("temp.go", impFile.GoImportPath)
+	impGen := GenerateFile(gen, impFile)
 	impGen.Skip()
-	GenerateFile(gen, impFile, impGen)
 	b, err := impGen.Content()
 	if err != nil {
 		gen.Error(err)

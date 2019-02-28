@@ -31,10 +31,79 @@ if [ ! -d $PROTOBUF_DIR ]; then
 fi
 register_binary conformance-test-runner $PROTOBUF_DIR/conformance/conformance-test-runner
 register_binary protoc $PROTOBUF_DIR/src/protoc
-# Allow protoc to find google/protobuf/*.proto.
-rm -rf $PROTOBUF_DIR/src/include
-mkdir -p $PROTOBUF_DIR/src/include
-ln -s ../google $PROTOBUF_DIR/src/include/google
+export PROTOBUF_ROOT=$TEST_DIR/$PROTOBUF_DIR
+
+# Patch proto files in the toolchain with new locations of Go packages.
+# TODO: these changes should be committed upstream.
+if ! grep -q "option go_package =" $PROTOBUF_ROOT/conformance/conformance.proto; then
+(cat << EOF
+--- a/conformance/conformance.proto	2018-07-30 15:16:10.000000000 -0700
++++ b/conformance/conformance.proto	2019-01-20 03:03:47.000000000 -0800
+@@ -32,0 +33 @@
++option go_package = "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance_proto";
+--- a/src/google/protobuf/any.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/any.proto	2019-01-20 02:58:13.000000000 -0800
+@@ -36 +36 @@
+-option go_package = "github.com/golang/protobuf/ptypes/any";
++option go_package = "github.com/golang/protobuf/v2/types/known;known_proto";
+--- a/src/google/protobuf/api.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/api.proto	2019-01-20 03:00:58.000000000 -0800
+@@ -43 +43 @@
+-option go_package = "google.golang.org/genproto/protobuf/api;api";
++option go_package = "github.com/golang/protobuf/v2/types/known;known_proto";
+--- a/src/google/protobuf/compiler/plugin.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/compiler/plugin.proto	2019-01-20 03:03:49.000000000 -0800
+@@ -52 +52 @@
+-option go_package = "github.com/golang/protobuf/protoc-gen-go/plugin;plugin_go";
++option go_package = "github.com/golang/protobuf/v2/types/plugin;plugin_proto";
+--- a/src/google/protobuf/descriptor.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/descriptor.proto	2019-01-20 03:03:52.000000000 -0800
+@@ -43 +43 @@
+-option go_package = "github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor";
++option go_package = "github.com/golang/protobuf/v2/types/descriptor;descriptor_proto";
+--- a/src/google/protobuf/duration.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/duration.proto	2019-01-20 03:00:55.000000000 -0800
+@@ -37 +37 @@
+-option go_package = "github.com/golang/protobuf/ptypes/duration";
++option go_package = "github.com/golang/protobuf/v2/types/known;known_proto";
+--- a/src/google/protobuf/empty.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/empty.proto	2019-01-20 03:00:52.000000000 -0800
+@@ -36 +36 @@
+-option go_package = "github.com/golang/protobuf/ptypes/empty";
++option go_package = "github.com/golang/protobuf/v2/types/known;known_proto";
+--- a/src/google/protobuf/field_mask.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/field_mask.proto	2019-01-20 03:00:50.000000000 -0800
+@@ -40 +40 @@
+-option go_package = "google.golang.org/genproto/protobuf/field_mask;field_mask";
++option go_package = "github.com/golang/protobuf/v2/types/known;known_proto";
+--- a/src/google/protobuf/source_context.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/source_context.proto	2019-01-20 03:00:47.000000000 -0800
+@@ -40 +40 @@
+-option go_package = "google.golang.org/genproto/protobuf/source_context;source_context";
++option go_package = "github.com/golang/protobuf/v2/types/known;known_proto";
+--- a/src/google/protobuf/struct.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/struct.proto	2019-01-20 03:00:42.000000000 -0800
+@@ -37 +37 @@
+-option go_package = "github.com/golang/protobuf/ptypes/struct;structpb";
++option go_package = "github.com/golang/protobuf/v2/types/known;known_proto";
+--- a/src/google/protobuf/timestamp.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/timestamp.proto	2019-01-20 03:00:40.000000000 -0800
+@@ -37 +37 @@
+-option go_package = "github.com/golang/protobuf/ptypes/timestamp";
++option go_package = "github.com/golang/protobuf/v2/types/known;known_proto";
+--- a/src/google/protobuf/type.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/type.proto	2019-01-20 03:03:44.000000000 -0800
+@@ -44 +44 @@
+-option go_package = "google.golang.org/genproto/protobuf/ptype;ptype";
++option go_package = "github.com/golang/protobuf/v2/types/known;known_proto";
+--- a/src/google/protobuf/wrappers.proto	2018-07-23 13:56:42.000000000 -0700
++++ b/src/google/protobuf/wrappers.proto	2019-01-20 03:03:45.000000000 -0800
+@@ -42 +42 @@
+-option go_package = "github.com/golang/protobuf/ptypes/wrappers";
++option go_package = "github.com/golang/protobuf/v2/types/known;known_proto";
+EOF
+) | patch -d $PROTOBUF_ROOT -p1
+fi
 
 # Download each Go toolchain version.
 GO_LATEST=go1.11.4
@@ -65,6 +134,15 @@ mkdir -p gopath/src/$(dirname $MODULE_PATH)
 # For pre-module support, dump the dependencies in a vendor directory.
 (cd $REPO_ROOT && go mod tidy && go mod vendor) || exit 1
 
+# Regenerate Go source files.
+if [ "$1" == "-regenerate" ]; then
+	cd $REPO_ROOT
+	go run ./internal/cmd/generate-types  -execute || exit 1
+	go run ./internal/cmd/generate-protos -execute || exit 1
+	gofmt -w $(git ls-files '*.go') || exit 1
+	exit 0
+fi
+
 # Run tests across every supported version of Go.
 LABELS=()
 PIDS=()
@@ -84,16 +162,12 @@ for GO_VERSION in ${GO_VERSIONS[@]}; do
 		OUTS+=($OUT)
 	}
 
+	# TODO: "go build" does not descend into testdata, which means that
+	# generated .pb.go files are not being built.
 	go build ./...
 	go test -race ./...
 	go test -race -tags purego ./...
 	go test -race -tags proto1_legacy ./...
-
-	# Only run golden tests with the latest Go version since
-	# the test results are sensitive to the exact version used.
-	if [ $GO_VERSION = $GO_LATEST ]; then
-		go test -tags golden ./...
-	fi
 
 	unset go # to avoid confusing later invocations of "go"
 done
@@ -120,6 +194,7 @@ function check() {
 
 # Check for stale or unformatted source files.
 check go run ./internal/cmd/generate-types
+check go run ./internal/cmd/generate-protos
 check gofmt -d $(cd $REPO_ROOT && git ls-files '*.go')
 
 # Check for changed or untracked files.

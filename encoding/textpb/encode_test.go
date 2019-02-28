@@ -24,13 +24,9 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	// The legacy package must be imported prior to use of any legacy messages.
-	// TODO: Remove this when protoV1 registers these hooks for you.
-	_ "github.com/golang/protobuf/v2/internal/legacy"
-
-	anypb "github.com/golang/protobuf/ptypes/any"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
+	knownpb "github.com/golang/protobuf/v2/types/known"
 )
 
 func init() {
@@ -67,7 +63,7 @@ func setExtension(m proto.Message, xd *protoapi.ExtensionDesc, val interface{}) 
 	knownFields.Set(wire.Number(xd.Field), pval)
 }
 
-func wrapV1Message(any *anypb.Any) proto.Message {
+func wrapV1Message(any *knownpb.Any) proto.Message {
 	return impl.Export{}.MessageOf(any).Interface()
 }
 
@@ -1040,7 +1036,7 @@ opt_int32: 42
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return wrapV1Message(&anypb.Any{
+			return wrapV1Message(&knownpb.Any{
 				TypeUrl: "pb2.Nested",
 				Value:   b,
 			})
@@ -1065,7 +1061,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return wrapV1Message(&anypb.Any{
+			return wrapV1Message(&knownpb.Any{
 				TypeUrl: "foo/pb2.Nested",
 				Value:   b,
 			})
@@ -1092,7 +1088,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 			if _, ok := err.(*protoV1.RequiredNotSetError); !ok {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return wrapV1Message(&anypb.Any{
+			return wrapV1Message(&knownpb.Any{
 				TypeUrl: string(m.ProtoReflect().Type().FullName()),
 				Value:   b,
 			})
@@ -1107,7 +1103,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 		mo: textpb.MarshalOptions{
 			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
 		},
-		input: wrapV1Message(&anypb.Any{
+		input: wrapV1Message(&knownpb.Any{
 			TypeUrl: "foo/pb2.Nested",
 			Value:   dhex("80"),
 		}),

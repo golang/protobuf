@@ -9,11 +9,13 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"go/format"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -21,10 +23,20 @@ import (
 	"unicode"
 )
 
-var run = flag.Bool("execute", false, "Write generated files to destination.")
+var (
+	run      bool
+	repoRoot string
+)
 
 func main() {
+	flag.BoolVar(&run, "execute", false, "Write generated files to destination.")
 	flag.Parse()
+
+	// Determine repository root path.
+	out, err := exec.Command("git", "rev-parse", "--show-toplevel").CombinedOutput()
+	check(err)
+	repoRoot = strings.TrimSpace(string(out))
+
 	chdirRoot()
 	writeSource("internal/fileinit/desc_list_gen.go", generateFileinitDescList())
 	writeSource("proto/decode_gen.go", generateProtoDecode())
@@ -34,12 +46,8 @@ func main() {
 // chdirRoot changes the working directory to the repository root.
 func chdirRoot() {
 	out, err := exec.Command("git", "rev-parse", "--show-toplevel").CombinedOutput()
-	if err != nil {
-		panic(err)
-	}
-	if err := os.Chdir(strings.TrimSuffix(string(out), "\n")); err != nil {
-		panic(err)
-	}
+	check(err)
+	check(os.Chdir(strings.TrimSpace(string(out))))
 }
 
 // Expr is a single line Go expression.
@@ -321,22 +329,25 @@ func writeSource(file, src string) {
 		src,
 	}, "\n")
 	b, err := format.Source([]byte(s))
-	if err != nil {
-		panic(err)
-	}
+	check(err)
 
-	if *run {
-		if err := ioutil.WriteFile(file, b, 0664); err != nil {
-			panic(err)
-		}
+	absFile := filepath.Join(repoRoot, file)
+	if run {
+		fmt.Println("#", file)
+		check(ioutil.WriteFile(absFile, b, 0664))
 	} else {
-		if err := ioutil.WriteFile(file+".tmp", b, 0664); err != nil {
-			panic(err)
-		}
-		defer os.Remove(file + ".tmp")
+		check(ioutil.WriteFile(absFile+".tmp", b, 0664))
+		defer os.Remove(absFile + ".tmp")
 
-		cmd := exec.Command("diff", file, file+".tmp", "-u")
+		cmd := exec.Command("diff", file, file+".tmp", "-N", "-u")
+		cmd.Dir = repoRoot
 		cmd.Stdout = os.Stdout
 		cmd.Run()
+	}
+}
+
+func check(err error) {
+	if err != nil {
+		panic(err)
 	}
 }

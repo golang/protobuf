@@ -18,12 +18,12 @@ option go_package = "github.com/golang/protobuf/v2/internal/testprotos/legacy";
 
 // The oldest supported version of protoc-gen-go is 2fc053c5,
 // which finished adding descriptor methods to all protobuf types.
-import "internal/testprotos/legacy/proto2.v0.0.0-20160225-2fc053c5/test.proto";
-import "internal/testprotos/legacy/proto3.v0.0.0-20160225-2fc053c5/test.proto";
+import "legacy/proto2.v0.0.0-20160225-2fc053c5/test.proto";
+import "legacy/proto3.v0.0.0-20160225-2fc053c5/test.proto";
 // Changes from 20160225 to 20160519:
 //	* Nothing noteworthy to generated code
-import "internal/testprotos/legacy/proto2.v0.0.0-20160519-a4ab9ec5/test.proto";
-import "internal/testprotos/legacy/proto3.v0.0.0-20160519-a4ab9ec5/test.proto";
+import "legacy/proto2.v0.0.0-20160519-a4ab9ec5/test.proto";
+import "legacy/proto3.v0.0.0-20160519-a4ab9ec5/test.proto";
 // Changes from 20160519 to 20180125:
 //	* Removed ExtensionMap method and XXX_extensions field from messages
 //	* Added embedded proto.XXX_InternalExtensions field to messages
@@ -31,8 +31,8 @@ import "internal/testprotos/legacy/proto3.v0.0.0-20160519-a4ab9ec5/test.proto";
 //	* Added registration for file descriptor
 //	* Added Get accessor methods for all fields in proto3 messages
 //	* Proto3 repeated primitives are packed by default
-import "internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152/test.proto";
-import "internal/testprotos/legacy/proto3.v1.0.0-20180125-92554152/test.proto";
+import "legacy/proto2.v1.0.0-20180125-92554152/test.proto";
+import "legacy/proto3.v1.0.0-20180125-92554152/test.proto";
 // Changes from 20180125 to 20180430:
 //	* Added XXX_unrecognized field to proto3 messages
 //	* Added XXX_NoUnkeyedLiteral field to messages
@@ -44,17 +44,17 @@ import "internal/testprotos/legacy/proto3.v1.0.0-20180125-92554152/test.proto";
 //	* Added XXX_DiscardUnknown method to messages
 //	* Added dependency on proto.InternalMessageInfo for table-driven logic
 //	* Added registration for map types
-import "internal/testprotos/legacy/proto2.v1.1.0-20180430-b4deda09/test.proto";
-import "internal/testprotos/legacy/proto3.v1.1.0-20180430-b4deda09/test.proto";
+import "legacy/proto2.v1.1.0-20180430-b4deda09/test.proto";
+import "legacy/proto3.v1.1.0-20180430-b4deda09/test.proto";
 // Changes from 20180430 to 20180814:
 //	* Added "proto3" struct tag to all fields in proto3 messages
-import "internal/testprotos/legacy/proto2.v1.2.0-20180814-aa810b61/test.proto";
-import "internal/testprotos/legacy/proto3.v1.2.0-20180814-aa810b61/test.proto";
+import "legacy/proto2.v1.2.0-20180814-aa810b61/test.proto";
+import "legacy/proto3.v1.2.0-20180814-aa810b61/test.proto";
 // Changes from 20180814 to 20181126:
 //	* Changed the XXX_OneofFuncs method to XXX_OneofWrappers
 //	* Various syntactical changes to make the output more consistent
-import "internal/testprotos/legacy/proto2.v1.2.1-20181126-8d0c54c1/test.proto";
-import "internal/testprotos/legacy/proto3.v1.2.1-20181126-8d0c54c1/test.proto";
+import "legacy/proto2.v1.2.1-20181126-8d0c54c1/test.proto";
+import "legacy/proto3.v1.2.1-20181126-8d0c54c1/test.proto";
 
 message Legacy {
 	google.golang.org.proto2_20160225.Message f1 = 1;

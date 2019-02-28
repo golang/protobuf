@@ -6,9 +6,9 @@ package proto3
 import (
 	proto "github.com/golang/protobuf/proto"
 	protoapi "github.com/golang/protobuf/protoapi"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	descriptor "github.com/golang/protobuf/v2/types/descriptor"
 	reflect "reflect"
 )
 

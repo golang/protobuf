@@ -1071,7 +1071,7 @@ func (g *GeneratedFile) metaFile(content []byte) (string, error) {
 		}
 	}
 
-	return proto.CompactTextString(info), nil
+	return strings.TrimSpace(proto.CompactTextString(info)), nil
 }
 
 type pathType int

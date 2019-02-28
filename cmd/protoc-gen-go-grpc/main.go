@@ -13,11 +13,10 @@ import (
 
 func main() {
 	protogen.Run(nil, func(gen *protogen.Plugin) error {
-		for _, file := range gen.Files {
-			if !file.Generate {
-				continue
+		for _, f := range gen.Files {
+			if f.Generate {
+				internal_gengogrpc.GenerateFile(gen, f)
 			}
-			internal_gengogrpc.GenerateFile(gen, file)
 		}
 		return nil
 	})

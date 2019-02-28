@@ -10,19 +10,15 @@ import (
 
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoapi"
-	anypb "github.com/golang/protobuf/ptypes/any"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/legacy"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 
-	// The legacy package must be imported prior to use of any legacy messages.
-	// TODO: Remove this when protoV1 registers these hooks for you.
-	_ "github.com/golang/protobuf/v2/internal/legacy"
-
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
+	knownpb "github.com/golang/protobuf/v2/types/known"
 )
 
 func init() {
@@ -1268,7 +1264,7 @@ opt_int32: 42
 			return m
 		}(),
 	}, {
-		// TODO: Change these tests to directly use anypb.Any type instead once
+		// TODO: Change these tests to directly use knownpb.Any type instead once
 		// type has been regenerated with V2 compiler.
 		desc:         "Any not expanded",
 		inputMessage: &pb2.KnownTypes{},
@@ -1278,7 +1274,7 @@ value: "some bytes"
 }
 `,
 		wantMessage: &pb2.KnownTypes{
-			OptAny: &anypb.Any{
+			OptAny: &knownpb.Any{
 				TypeUrl: "pb2.Nested",
 				Value:   []byte("some bytes"),
 			},
@@ -1291,7 +1287,7 @@ type_url: "pb2.Nested"
 }
 `,
 		wantMessage: &pb2.KnownTypes{
-			OptAny: &anypb.Any{
+			OptAny: &knownpb.Any{
 				TypeUrl: "pb2.Nested",
 			},
 		},
@@ -1303,7 +1299,7 @@ value: "some bytes"
 }
 `,
 		wantMessage: &pb2.KnownTypes{
-			OptAny: &anypb.Any{
+			OptAny: &knownpb.Any{
 				Value: []byte("some bytes"),
 			},
 		},
@@ -1337,7 +1333,7 @@ value: "some bytes"
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &pb2.KnownTypes{
-				OptAny: &anypb.Any{
+				OptAny: &knownpb.Any{
 					TypeUrl: "foobar/pb2.Nested",
 					Value:   b,
 				},
@@ -1356,7 +1352,7 @@ value: "some bytes"
 }
 `,
 		wantMessage: &pb2.KnownTypes{
-			OptAny: &anypb.Any{
+			OptAny: &knownpb.Any{
 				TypeUrl: "foo.com/pb2.Nested",
 			},
 		},
@@ -1385,7 +1381,7 @@ value: "some bytes"
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &pb2.KnownTypes{
-				OptAny: &anypb.Any{
+				OptAny: &knownpb.Any{
 					TypeUrl: "pb2.PartialRequired",
 					Value:   b,
 				},

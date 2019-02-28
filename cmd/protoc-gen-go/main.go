@@ -31,12 +31,9 @@ func main() {
 			return errors.New("protoc-gen-go: import_prefix is not supported")
 		}
 		for _, f := range gen.Files {
-			if !f.Generate {
-				continue
+			if f.Generate {
+				gengo.GenerateFile(gen, f)
 			}
-			filename := f.GeneratedFilenamePrefix + ".pb.go"
-			g := gen.NewGeneratedFile(filename, f.GoImportPath)
-			gengo.GenerateFile(gen, f, g)
 		}
 		return nil
 	})

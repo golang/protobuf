@@ -4,9 +4,8 @@
 package grpc
 
 import (
-	bytes "bytes"
-	gzip "compress/gzip"
 	proto "github.com/golang/protobuf/proto"
+	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 )
@@ -18,10 +17,10 @@ import (
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 func init() {
-	proto.RegisterFile("grpc/deprecation.proto", fileDescriptor_1e7146702b7fe8c5_gzipped)
+	proto.RegisterFile("grpc/deprecation.proto", xxx_File_grpc_deprecation_proto_rawdesc_gzipped)
 }
 
-var fileDescriptor_1e7146702b7fe8c5 = []byte{
+var xxx_File_grpc_deprecation_proto_rawdesc = []byte{
 	// 245 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x16, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x64, 0x65, 0x70, 0x72, 0x65, 0x63, 0x61, 0x74, 0x69,
 	0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x13, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74,
@@ -41,33 +40,27 @@ var fileDescriptor_1e7146702b7fe8c5 = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var fileDescriptor_1e7146702b7fe8c5_gzipped = func() []byte {
-	bb := new(bytes.Buffer)
-	zw, _ := gzip.NewWriterLevel(bb, gzip.NoCompression)
-	zw.Write(fileDescriptor_1e7146702b7fe8c5)
-	zw.Close()
-	return bb.Bytes()
-}()
+var xxx_File_grpc_deprecation_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_grpc_deprecation_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var Deprecation_protoFile protoreflect.FileDescriptor
+var File_grpc_deprecation_proto protoreflect.FileDescriptor
 
-var xxx_Deprecation_protoFile_goTypes = []interface{}{
+var xxx_File_grpc_deprecation_proto_goTypes = []interface{}{
 	(*Request)(nil),  // 0: goproto.protoc.grpc.Request
 	(*Response)(nil), // 1: goproto.protoc.grpc.Response
 }
-var xxx_Deprecation_protoFile_depIdxs = []int32{
+var xxx_File_grpc_deprecation_proto_depIdxs = []int32{
 	0, // goproto.protoc.grpc.DeprecatedService.DeprecatedCall:input_type -> goproto.protoc.grpc.Request
 	1, // goproto.protoc.grpc.DeprecatedService.DeprecatedCall:output_type -> goproto.protoc.grpc.Response
 }
 
 func init() {
-	Deprecation_protoFile = protoimpl.FileBuilder{
-		RawDescriptor:     fileDescriptor_1e7146702b7fe8c5,
-		GoTypes:           xxx_Deprecation_protoFile_goTypes,
-		DependencyIndexes: xxx_Deprecation_protoFile_depIdxs,
+	File_grpc_deprecation_proto = protoimpl.FileBuilder{
+		RawDescriptor:     xxx_File_grpc_deprecation_proto_rawdesc,
+		GoTypes:           xxx_File_grpc_deprecation_proto_goTypes,
+		DependencyIndexes: xxx_File_grpc_deprecation_proto_depIdxs,
 	}.Init()
-	xxx_Deprecation_protoFile_goTypes = nil
-	xxx_Deprecation_protoFile_depIdxs = nil
+	xxx_File_grpc_deprecation_proto_goTypes = nil
+	xxx_File_grpc_deprecation_proto_depIdxs = nil
 }

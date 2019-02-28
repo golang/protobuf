@@ -6,9 +6,9 @@ syntax = "proto2";
 
 package goproto.proto.test;
 
-import "test_import.proto";
-import public "test_public.proto";
-import weak "test_weak.proto";
+import "test/test_import.proto";
+import public "test/test_public.proto";
+import weak "test/test_weak.proto";
 
 option go_package = "github.com/golang/protobuf/v2/internal/testprotos/test";
 

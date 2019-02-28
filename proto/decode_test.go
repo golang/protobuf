@@ -11,11 +11,11 @@ import (
 
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
-	_ "github.com/golang/protobuf/v2/internal/legacy"
 	"github.com/golang/protobuf/v2/internal/scalar"
-	testpb "github.com/golang/protobuf/v2/internal/testprotos/test"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+
+	testpb "github.com/golang/protobuf/v2/internal/testprotos/test"
 )
 
 type testProto struct {

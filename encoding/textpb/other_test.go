@@ -10,17 +10,8 @@ import (
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 
-	// The legacy package must be imported prior to use of any legacy messages.
-	// TODO: Remove this when protoV1 registers these hooks for you.
-	_ "github.com/golang/protobuf/v2/internal/legacy"
-
-	anypb "github.com/golang/protobuf/ptypes/any"
-	durpb "github.com/golang/protobuf/ptypes/duration"
-	emptypb "github.com/golang/protobuf/ptypes/empty"
-	stpb "github.com/golang/protobuf/ptypes/struct"
-	tspb "github.com/golang/protobuf/ptypes/timestamp"
-	wpb "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
+	knownpb "github.com/golang/protobuf/v2/types/known"
 )
 
 func TestRoundTrip(t *testing.T) {
@@ -31,62 +22,62 @@ func TestRoundTrip(t *testing.T) {
 	}{{
 		desc: "well-known type fields set to empty messages",
 		message: &pb2.KnownTypes{
-			OptBool:      &wpb.BoolValue{},
-			OptInt32:     &wpb.Int32Value{},
-			OptInt64:     &wpb.Int64Value{},
-			OptUint32:    &wpb.UInt32Value{},
-			OptUint64:    &wpb.UInt64Value{},
-			OptFloat:     &wpb.FloatValue{},
-			OptDouble:    &wpb.DoubleValue{},
-			OptString:    &wpb.StringValue{},
-			OptBytes:     &wpb.BytesValue{},
-			OptDuration:  &durpb.Duration{},
-			OptTimestamp: &tspb.Timestamp{},
-			OptStruct:    &stpb.Struct{},
-			OptList:      &stpb.ListValue{},
-			OptValue:     &stpb.Value{},
-			OptEmpty:     &emptypb.Empty{},
-			OptAny:       &anypb.Any{},
+			OptBool:      &knownpb.BoolValue{},
+			OptInt32:     &knownpb.Int32Value{},
+			OptInt64:     &knownpb.Int64Value{},
+			OptUint32:    &knownpb.UInt32Value{},
+			OptUint64:    &knownpb.UInt64Value{},
+			OptFloat:     &knownpb.FloatValue{},
+			OptDouble:    &knownpb.DoubleValue{},
+			OptString:    &knownpb.StringValue{},
+			OptBytes:     &knownpb.BytesValue{},
+			OptDuration:  &knownpb.Duration{},
+			OptTimestamp: &knownpb.Timestamp{},
+			OptStruct:    &knownpb.Struct{},
+			OptList:      &knownpb.ListValue{},
+			OptValue:     &knownpb.Value{},
+			OptEmpty:     &knownpb.Empty{},
+			OptAny:       &knownpb.Any{},
 		},
 	}, {
 		desc: "well-known type scalar fields",
 		message: &pb2.KnownTypes{
-			OptBool: &wpb.BoolValue{
+			OptBool: &knownpb.BoolValue{
 				Value: true,
 			},
-			OptInt32: &wpb.Int32Value{
+			OptInt32: &knownpb.Int32Value{
 				Value: -42,
 			},
-			OptInt64: &wpb.Int64Value{
+			OptInt64: &knownpb.Int64Value{
 				Value: -42,
 			},
-			OptUint32: &wpb.UInt32Value{
+			OptUint32: &knownpb.UInt32Value{
 				Value: 0xff,
 			},
-			OptUint64: &wpb.UInt64Value{
+			OptUint64: &knownpb.UInt64Value{
 				Value: 0xffff,
 			},
-			OptFloat: &wpb.FloatValue{
+			OptFloat: &knownpb.FloatValue{
 				Value: 1.234,
 			},
-			OptDouble: &wpb.DoubleValue{
+			OptDouble: &knownpb.DoubleValue{
 				Value: 1.23e308,
 			},
-			OptString: &wpb.StringValue{
+			OptString: &knownpb.StringValue{
 				Value: "谷歌",
 			},
-			OptBytes: &wpb.BytesValue{
+			OptBytes: &knownpb.BytesValue{
 				Value: []byte("\xe8\xb0\xb7\xe6\xad\x8c"),
 			},
 		},
 	}, {
 		desc: "well-known type time-related fields",
 		message: &pb2.KnownTypes{
-			OptDuration: &durpb.Duration{
+			OptDuration: &knownpb.Duration{
 				Seconds: -3600,
 				Nanos:   -123,
 			},
-			OptTimestamp: &tspb.Timestamp{
+			OptTimestamp: &knownpb.Timestamp{
 				Seconds: 1257894000,
 				Nanos:   123,
 			},
@@ -94,34 +85,34 @@ func TestRoundTrip(t *testing.T) {
 	}, {
 		desc: "Struct field and different Value types",
 		message: &pb2.KnownTypes{
-			OptStruct: &stpb.Struct{
-				Fields: map[string]*stpb.Value{
-					"bool": &stpb.Value{
-						Kind: &stpb.Value_BoolValue{
+			OptStruct: &knownpb.Struct{
+				Fields: map[string]*knownpb.Value{
+					"bool": &knownpb.Value{
+						Kind: &knownpb.Value_BoolValue{
 							BoolValue: true,
 						},
 					},
-					"double": &stpb.Value{
-						Kind: &stpb.Value_NumberValue{
+					"double": &knownpb.Value{
+						Kind: &knownpb.Value_NumberValue{
 							NumberValue: 3.1415,
 						},
 					},
-					"null": &stpb.Value{
-						Kind: &stpb.Value_NullValue{
-							NullValue: stpb.NullValue_NULL_VALUE,
+					"null": &knownpb.Value{
+						Kind: &knownpb.Value_NullValue{
+							NullValue: knownpb.NullValue_NULL_VALUE,
 						},
 					},
-					"string": &stpb.Value{
-						Kind: &stpb.Value_StringValue{
+					"string": &knownpb.Value{
+						Kind: &knownpb.Value_StringValue{
 							StringValue: "string",
 						},
 					},
-					"struct": &stpb.Value{
-						Kind: &stpb.Value_StructValue{
-							StructValue: &stpb.Struct{
-								Fields: map[string]*stpb.Value{
-									"bool": &stpb.Value{
-										Kind: &stpb.Value_BoolValue{
+					"struct": &knownpb.Value{
+						Kind: &knownpb.Value_StructValue{
+							StructValue: &knownpb.Struct{
+								Fields: map[string]*knownpb.Value{
+									"bool": &knownpb.Value{
+										Kind: &knownpb.Value_BoolValue{
 											BoolValue: false,
 										},
 									},
@@ -129,17 +120,17 @@ func TestRoundTrip(t *testing.T) {
 							},
 						},
 					},
-					"list": &stpb.Value{
-						Kind: &stpb.Value_ListValue{
-							ListValue: &stpb.ListValue{
-								Values: []*stpb.Value{
+					"list": &knownpb.Value{
+						Kind: &knownpb.Value_ListValue{
+							ListValue: &knownpb.ListValue{
+								Values: []*knownpb.Value{
 									{
-										Kind: &stpb.Value_BoolValue{
+										Kind: &knownpb.Value_BoolValue{
 											BoolValue: false,
 										},
 									},
 									{
-										Kind: &stpb.Value_StringValue{
+										Kind: &knownpb.Value_StringValue{
 											StringValue: "hello",
 										},
 									},
@@ -166,7 +157,7 @@ func TestRoundTrip(t *testing.T) {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &pb2.KnownTypes{
-				OptAny: &anypb.Any{
+				OptAny: &knownpb.Any{
 					TypeUrl: string(m.ProtoReflect().Type().FullName()),
 					Value:   b,
 				},
@@ -188,7 +179,7 @@ func TestRoundTrip(t *testing.T) {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &pb2.KnownTypes{
-				OptAny: &anypb.Any{
+				OptAny: &knownpb.Any{
 					TypeUrl: string(m.ProtoReflect().Type().FullName()),
 					Value:   b,
 				},
@@ -198,7 +189,7 @@ func TestRoundTrip(t *testing.T) {
 		desc: "Any field containing Any message",
 		resolver: func() *preg.Types {
 			mt1 := (&pb2.Nested{}).ProtoReflect().Type()
-			mt2 := impl.Export{}.MessageTypeOf(&anypb.Any{})
+			mt2 := impl.Export{}.MessageTypeOf(&knownpb.Any{})
 			return preg.NewTypes(mt1, mt2)
 		}(),
 		message: func() proto.Message {
@@ -210,7 +201,7 @@ func TestRoundTrip(t *testing.T) {
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			m2 := &anypb.Any{
+			m2 := &knownpb.Any{
 				TypeUrl: "pb2.Nested",
 				Value:   b1,
 			}
@@ -220,7 +211,7 @@ func TestRoundTrip(t *testing.T) {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &pb2.KnownTypes{
-				OptAny: &anypb.Any{
+				OptAny: &knownpb.Any{
 					TypeUrl: "google.protobuf.Any",
 					Value:   b2,
 				},

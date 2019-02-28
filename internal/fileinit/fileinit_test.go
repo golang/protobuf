@@ -20,7 +20,7 @@ func TestInit(t *testing.T) {
 	// 2. The protoc-generated wire-encoded message.
 	//
 	// This serves as a test of both fileinit and protodesc.
-	got := protodesc.ToFileDescriptorProto(testpb.File_test_proto)
+	got := protodesc.ToFileDescriptorProto(testpb.File_test_test_proto)
 
 	want := &descriptorpb.FileDescriptorProto{}
 	zb, _ := (&testpb.TestAllTypes{}).Descriptor()

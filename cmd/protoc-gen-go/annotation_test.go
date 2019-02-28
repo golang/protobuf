@@ -2,49 +2,25 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build golden
-
 package main
 
 import (
 	"bytes"
-	"flag"
 	"io/ioutil"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/v2/internal/protogen/goldentest"
 	"github.com/golang/protobuf/v2/internal/scalar"
 
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
-// Set --regenerate to regenerate the golden files.
-var regenerate = flag.Bool("regenerate", false, "regenerate golden files")
-
-func init() {
-	goldentest.Plugin(main)
-}
-
-func TestGolden(t *testing.T) {
-	goldentest.Run(t, *regenerate)
-}
-
 func TestAnnotations(t *testing.T) {
-	workdir, err := ioutil.TempDir("", "proto-test")
+	sourceFile, err := ioutil.ReadFile("testdata/annotations/annotations.pb.go")
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.RemoveAll(workdir)
-
-	goldentest.Protoc(t, []string{"--go_out=paths=source_relative,annotate_code:" + workdir, "-Itestdata/annotations", "testdata/annotations/annotations.proto"})
-	sourceFile, err := ioutil.ReadFile(filepath.Join(workdir, "annotations.pb.go"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	metaFile, err := ioutil.ReadFile(filepath.Join(workdir, "annotations.pb.go.meta"))
+	metaFile, err := ioutil.ReadFile("testdata/annotations/annotations.pb.go.meta")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -85,7 +61,7 @@ func TestAnnotations(t *testing.T) {
 			Path:       want.path,
 			Begin:      scalar.Int32(int32(begin)),
 			End:        scalar.Int32(int32(end)),
-			SourceFile: scalar.String("annotations.proto"),
+			SourceFile: scalar.String("annotations/annotations.proto"),
 		})
 	}
 	if !proto.Equal(gotInfo, wantInfo) {
