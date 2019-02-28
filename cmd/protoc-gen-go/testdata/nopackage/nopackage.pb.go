@@ -4,9 +4,8 @@
 package nopackage
 
 import (
-	bytes "bytes"
-	gzip "compress/gzip"
 	proto "github.com/golang/protobuf/proto"
+	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
@@ -133,13 +132,7 @@ var fileDescriptor_f33a1d5d178c43c9 = []byte{
 	0x04, 0x5a, 0x45, 0x52, 0x4f, 0x10, 0x00,
 }
 
-var fileDescriptor_f33a1d5d178c43c9_gzipped = func() []byte {
-	bb := new(bytes.Buffer)
-	zw, _ := gzip.NewWriterLevel(bb, gzip.NoCompression)
-	zw.Write(fileDescriptor_f33a1d5d178c43c9)
-	zw.Close()
-	return bb.Bytes()
-}()
+var fileDescriptor_f33a1d5d178c43c9_gzipped = protoapi.CompressGZIP(fileDescriptor_f33a1d5d178c43c9)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

@@ -34,8 +34,6 @@ import (
 const generatedCodeVersion = 3
 
 const (
-	bytesPackage    = protogen.GoImportPath("bytes")
-	gzipPackage     = protogen.GoImportPath("compress/gzip")
 	mathPackage     = protogen.GoImportPath("math")
 	protoPackage    = protogen.GoImportPath("github.com/golang/protobuf/proto")
 	protoapiPackage = protogen.GoImportPath("github.com/golang/protobuf/protoapi")
@@ -279,17 +277,9 @@ func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 	g.P("}")
 	g.P()
 
-	// TODO: Add a helper function in protoapi or protoimpl?
-	// This function would probably encode the input lazily upon first use.
-	// Currently, the GZIPed form is used eagerly in v1 registration.
-	// See https://play.golang.org/p/_atJHs0izTH
-	g.P("var ", f.descriptorGzipVar, " = func() []byte {")
-	g.P("bb := new(", bytesPackage.Ident("Buffer"), ")")
-	g.P("zw, _ := ", gzipPackage.Ident("NewWriterLevel"), "(bb, ", gzipPackage.Ident("NoCompression"), ")")
-	g.P("zw.Write(", f.descriptorRawVar, ")")
-	g.P("zw.Close()")
-	g.P("return bb.Bytes()")
-	g.P("}()")
+	// TODO: Modify CompressGZIP to lazy encode? Currently, the GZIP'd form
+	// is eagerly registered in v1, preventing any benefit from lazy encoding.
+	g.P("var ", f.descriptorGzipVar, " = ", protoapiPackage.Ident("CompressGZIP"), "(", f.descriptorRawVar, ")")
 	g.P()
 }
 
