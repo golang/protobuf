@@ -2274,6 +2274,85 @@ func makeMessageSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 		}
 }
 
+// stringMarshaler returns sizer, marshaler for string
+func stringMarshaler(tags []string, nozero bool) (sizer, marshaler) {
+	proto3 := false
+	validateUTF8 := true
+	for i := 2; i < len(tags); i++ {
+		if tags[i] == "proto3" {
+			proto3 = true
+		}
+	}
+	validateUTF8 = validateUTF8 && proto3
+	if validateUTF8 {
+		if nozero {
+			return sizeStringValueNoZero, appendUTF8StringValueNoZero
+		}
+		return sizeStringValue, appendUTF8StringValue
+	}
+	if nozero {
+		return sizeStringValueNoZero, appendStringValueNoZero
+	}
+	return sizeStringValue, appendStringValue
+}
+
+// makeMapStringStringMarshaler returns the sizer and marshaler for a map[string]string
+// f is the pointer to the reflect data structure of the field
+func makeMapStringStringMarshaler(f *reflect.StructField) (sizer, marshaler) {
+	// figure out key and value type
+	t := f.Type
+	// keyType := t.Key()
+	// valType := t.Elem()
+	keyTags := strings.Split(f.Tag.Get("protobuf_key"), ",")
+	valTags := strings.Split(f.Tag.Get("protobuf_val"), ",")
+	keySizer, keyMarshaler := stringMarshaler(keyTags, false) // don't omit zero value in map
+	valSizer, valMarshaler := stringMarshaler(valTags, false) // don't omit zero value in map
+	keyWireTag := 1<<3 | wiretype(keyTags[0])
+	valWireTag := 2<<3 | wiretype(valTags[0])
+	// return sizer, marshaler
+	return func(ptr pointer, tagsize int) int {
+			m := ptr.asPointerTo(t).Elem() // the map
+			n := 0
+			for _, k := range m.MapKeys() {
+				ki := k.Interface()
+				vi := m.MapIndex(k).Interface()
+				kaddr := toAddrPointer(&ki, false, false)      // pointer to key
+				vaddr := toAddrPointer(&vi, false, false)      // pointer to value
+				siz := keySizer(kaddr, 1) + valSizer(vaddr, 1) // tag of key = 1 (size=1), tag of val = 2 (size=1)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
+		func(b []byte, ptr pointer, tag uint64, deterministic bool) ([]byte, error) {
+			m := ptr.asPointerTo(t).Elem() // the map
+			var err error
+			keys := m.MapKeys()
+			if len(keys) > 1 && deterministic {
+				sort.Sort(mapKeys(keys))
+			}
+
+			var nerr nonFatal
+			for _, k := range keys {
+				ki := k.Interface()
+				vi := m.MapIndex(k).Interface()
+				kaddr := toAddrPointer(&ki, false, false) // pointer to key
+				vaddr := toAddrPointer(&vi, false, false) // pointer to value
+				b = appendVarint(b, tag)
+				siz := keySizer(kaddr, 1) + valSizer(vaddr, 1) // tag of key = 1 (size=1), tag of val = 2 (size=1)
+				b = appendVarint(b, uint64(siz))
+				b, err = keyMarshaler(b, kaddr, keyWireTag, deterministic)
+				if !nerr.Merge(err) {
+					return b, err
+				}
+				b, err = valMarshaler(b, vaddr, valWireTag, deterministic)
+				if err != ErrNil && !nerr.Merge(err) { // allow nil value in map
+					return b, err
+				}
+			}
+			return b, nerr.E
+		}
+}
+
 // makeMapMarshaler returns the sizer and marshaler for a map field.
 // f is the pointer to the reflect data structure of the field.
 func makeMapMarshaler(f *reflect.StructField) (sizer, marshaler) {
@@ -2281,6 +2360,9 @@ func makeMapMarshaler(f *reflect.StructField) (sizer, marshaler) {
 	t := f.Type
 	keyType := t.Key()
 	valType := t.Elem()
+	if keyType.Kind() == reflect.String && valType.Kind() == reflect.String {
+		return makeMapStringStringMarshaler(f)
+	}
 	keyTags := strings.Split(f.Tag.Get("protobuf_key"), ",")
 	valTags := strings.Split(f.Tag.Get("protobuf_val"), ",")
 	keySizer, keyMarshaler := typeMarshaler(keyType, keyTags, false, false) // don't omit zero value in map
