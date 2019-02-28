@@ -24,7 +24,7 @@ const (
 )
 
 func (e Enum1) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_reflect_protoregistry_testprotos_test_enumTypes[0]
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_enumTypes[0]
 }
 func (e Enum1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -58,7 +58,7 @@ func (x *Enum1) UnmarshalJSON(data []byte) error {
 }
 
 func (Enum1) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_3628d63611f7063d_gzipped, []int{0}
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc_gzipped, []int{0}
 }
 
 type Enum2 int32
@@ -68,7 +68,7 @@ const (
 )
 
 func (e Enum2) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_reflect_protoregistry_testprotos_test_enumTypes[1]
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_enumTypes[1]
 }
 func (e Enum2) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -102,7 +102,7 @@ func (x *Enum2) UnmarshalJSON(data []byte) error {
 }
 
 func (Enum2) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_3628d63611f7063d_gzipped, []int{1}
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc_gzipped, []int{1}
 }
 
 type Enum3 int32
@@ -112,7 +112,7 @@ const (
 )
 
 func (e Enum3) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_reflect_protoregistry_testprotos_test_enumTypes[2]
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_enumTypes[2]
 }
 func (e Enum3) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -146,7 +146,7 @@ func (x *Enum3) UnmarshalJSON(data []byte) error {
 }
 
 func (Enum3) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_3628d63611f7063d_gzipped, []int{2}
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc_gzipped, []int{2}
 }
 
 type Message1 struct {
@@ -157,13 +157,13 @@ type Message1 struct {
 }
 
 func (m *Message1) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_reflect_protoregistry_testprotos_test_messageTypes[0].MessageOf(m)
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Message1) Reset()         { *m = Message1{} }
 func (m *Message1) String() string { return proto.CompactTextString(m) }
 func (*Message1) ProtoMessage()    {}
 func (*Message1) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3628d63611f7063d_gzipped, []int{0}
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc_gzipped, []int{0}
 }
 
 var extRange_Message1 = []proto.ExtensionRange{
@@ -199,13 +199,13 @@ type Message2 struct {
 }
 
 func (m *Message2) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_reflect_protoregistry_testprotos_test_messageTypes[1].MessageOf(m)
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Message2) Reset()         { *m = Message2{} }
 func (m *Message2) String() string { return proto.CompactTextString(m) }
 func (*Message2) ProtoMessage()    {}
 func (*Message2) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3628d63611f7063d_gzipped, []int{1}
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc_gzipped, []int{1}
 }
 
 func (m *Message2) XXX_Unmarshal(b []byte) error {
@@ -233,13 +233,13 @@ type Message3 struct {
 }
 
 func (m *Message3) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_reflect_protoregistry_testprotos_test_messageTypes[2].MessageOf(m)
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_messageTypes[2].MessageOf(m)
 }
 func (m *Message3) Reset()         { *m = Message3{} }
 func (m *Message3) String() string { return proto.CompactTextString(m) }
 func (*Message3) ProtoMessage()    {}
 func (*Message3) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3628d63611f7063d_gzipped, []int{2}
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc_gzipped, []int{2}
 }
 
 func (m *Message3) XXX_Unmarshal(b []byte) error {
@@ -268,13 +268,13 @@ type Message4 struct {
 }
 
 func (m *Message4) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_reflect_protoregistry_testprotos_test_messageTypes[3].MessageOf(m)
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_messageTypes[3].MessageOf(m)
 }
 func (m *Message4) Reset()         { *m = Message4{} }
 func (m *Message4) String() string { return proto.CompactTextString(m) }
 func (*Message4) ProtoMessage()    {}
 func (*Message4) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3628d63611f7063d_gzipped, []int{3}
+	return xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc_gzipped, []int{3}
 }
 
 func (m *Message4) XXX_Unmarshal(b []byte) error {
@@ -357,7 +357,7 @@ var E_Message4_StringField = &proto.ExtensionDesc{
 }
 
 func init() {
-	proto.RegisterFile("reflect/protoregistry/testprotos/test.proto", fileDescriptor_3628d63611f7063d_gzipped)
+	proto.RegisterFile("reflect/protoregistry/testprotos/test.proto", xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc_gzipped)
 	proto.RegisterEnum("testprotos.Enum1", Enum1_name, Enum1_value)
 	proto.RegisterEnum("testprotos.Enum2", Enum2_name, Enum2_value)
 	proto.RegisterEnum("testprotos.Enum3", Enum3_name, Enum3_value)
@@ -373,7 +373,7 @@ func init() {
 	proto.RegisterExtension(E_Message4_StringField)
 }
 
-var fileDescriptor_3628d63611f7063d = []byte{
+var xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc = []byte{
 	// 686 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x2b, 0x72, 0x65, 0x66, 0x6c, 0x65, 0x63, 0x74, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x72,
 	0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x79, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74,
@@ -420,15 +420,15 @@ var fileDescriptor_3628d63611f7063d = []byte{
 	0x74, 0x72, 0x79, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73,
 }
 
-var fileDescriptor_3628d63611f7063d_gzipped = protoapi.CompressGZIP(fileDescriptor_3628d63611f7063d)
+var xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_reflect_protoregistry_testprotos_test protoreflect.FileDescriptor
+var File_reflect_protoregistry_testprotos_test_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_reflect_protoregistry_testprotos_test_enumTypes [3]protoreflect.EnumType
-var xxx_ProtoFile_reflect_protoregistry_testprotos_test_messageTypes [4]protoimpl.MessageType
-var xxx_ProtoFile_reflect_protoregistry_testprotos_test_goTypes = []interface{}{
+var xxx_File_reflect_protoregistry_testprotos_test_proto_enumTypes [3]protoreflect.EnumType
+var xxx_File_reflect_protoregistry_testprotos_test_proto_messageTypes [4]protoimpl.MessageType
+var xxx_File_reflect_protoregistry_testprotos_test_proto_goTypes = []interface{}{
 	(Enum1)(0),       // 0: testprotos.Enum1
 	(Enum2)(0),       // 1: testprotos.Enum2
 	(Enum3)(0),       // 2: testprotos.Enum3
@@ -437,7 +437,7 @@ var xxx_ProtoFile_reflect_protoregistry_testprotos_test_goTypes = []interface{}{
 	(*Message3)(nil), // 5: testprotos.Message3
 	(*Message4)(nil), // 6: testprotos.Message4
 }
-var xxx_ProtoFile_reflect_protoregistry_testprotos_test_depIdxs = []int32{
+var xxx_File_reflect_protoregistry_testprotos_test_proto_depIdxs = []int32{
 	3, // testprotos.string_field:extendee -> testprotos.Message1
 	3, // testprotos.enum_field:extendee -> testprotos.Message1
 	3, // testprotos.message_field:extendee -> testprotos.Message1
@@ -453,18 +453,18 @@ var xxx_ProtoFile_reflect_protoregistry_testprotos_test_depIdxs = []int32{
 func init() {
 	var messageTypes [4]protoreflect.MessageType
 	var extensionTypes [6]protoreflect.ExtensionType
-	ProtoFile_reflect_protoregistry_testprotos_test = protoimpl.FileBuilder{
-		RawDescriptor:        fileDescriptor_3628d63611f7063d,
-		GoTypes:              xxx_ProtoFile_reflect_protoregistry_testprotos_test_goTypes,
-		DependencyIndexes:    xxx_ProtoFile_reflect_protoregistry_testprotos_test_depIdxs,
-		EnumOutputTypes:      xxx_ProtoFile_reflect_protoregistry_testprotos_test_enumTypes[:],
+	File_reflect_protoregistry_testprotos_test_proto = protoimpl.FileBuilder{
+		RawDescriptor:        xxx_File_reflect_protoregistry_testprotos_test_proto_rawdesc,
+		GoTypes:              xxx_File_reflect_protoregistry_testprotos_test_proto_goTypes,
+		DependencyIndexes:    xxx_File_reflect_protoregistry_testprotos_test_proto_depIdxs,
+		EnumOutputTypes:      xxx_File_reflect_protoregistry_testprotos_test_proto_enumTypes[:],
 		MessageOutputTypes:   messageTypes[:],
 		ExtensionOutputTypes: extensionTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_reflect_protoregistry_testprotos_test_goTypes[3:][:4]
+	messageGoTypes := xxx_File_reflect_protoregistry_testprotos_test_proto_goTypes[3:][:4]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_reflect_protoregistry_testprotos_test_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_reflect_protoregistry_testprotos_test_messageTypes[i].PBType = mt
+		xxx_File_reflect_protoregistry_testprotos_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_reflect_protoregistry_testprotos_test_proto_messageTypes[i].PBType = mt
 	}
 	E_StringField.Type = extensionTypes[0]
 	E_EnumField.Type = extensionTypes[1]
@@ -472,6 +472,6 @@ func init() {
 	E_Message4_MessageField.Type = extensionTypes[3]
 	E_Message4_EnumField.Type = extensionTypes[4]
 	E_Message4_StringField.Type = extensionTypes[5]
-	xxx_ProtoFile_reflect_protoregistry_testprotos_test_goTypes = nil
-	xxx_ProtoFile_reflect_protoregistry_testprotos_test_depIdxs = nil
+	xxx_File_reflect_protoregistry_testprotos_test_proto_goTypes = nil
+	xxx_File_reflect_protoregistry_testprotos_test_proto_depIdxs = nil
 }

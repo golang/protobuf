@@ -30,7 +30,7 @@ const (
 )
 
 func (e E) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_import_public_sub_a_enumTypes[0]
+	return xxx_File_import_public_sub_a_proto_enumTypes[0]
 }
 func (e E) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -64,7 +64,7 @@ func (x *E) UnmarshalJSON(data []byte) error {
 }
 
 func (E) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_382f7805394b5c4e_gzipped, []int{0}
+	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0}
 }
 
 type M_Subenum int32
@@ -74,7 +74,7 @@ const (
 )
 
 func (e M_Subenum) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_import_public_sub_a_enumTypes[1]
+	return xxx_File_import_public_sub_a_proto_enumTypes[1]
 }
 func (e M_Subenum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -108,7 +108,7 @@ func (x *M_Subenum) UnmarshalJSON(data []byte) error {
 }
 
 func (M_Subenum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_382f7805394b5c4e_gzipped, []int{0, 0}
+	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0, 0}
 }
 
 type M_Submessage_Submessage_Subenum int32
@@ -118,7 +118,7 @@ const (
 )
 
 func (e M_Submessage_Submessage_Subenum) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_import_public_sub_a_enumTypes[2]
+	return xxx_File_import_public_sub_a_proto_enumTypes[2]
 }
 func (e M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -152,7 +152,7 @@ func (x *M_Submessage_Submessage_Subenum) UnmarshalJSON(data []byte) error {
 }
 
 func (M_Submessage_Submessage_Subenum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_382f7805394b5c4e_gzipped, []int{0, 0, 0}
+	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0, 0, 0}
 }
 
 type M struct {
@@ -172,13 +172,13 @@ type M struct {
 }
 
 func (m *M) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_import_public_sub_a_messageTypes[0].MessageOf(m)
+	return xxx_File_import_public_sub_a_proto_messageTypes[0].MessageOf(m)
 }
 func (m *M) Reset()         { *m = M{} }
 func (m *M) String() string { return proto.CompactTextString(m) }
 func (*M) ProtoMessage()    {}
 func (*M) Descriptor() ([]byte, []int) {
-	return fileDescriptor_382f7805394b5c4e_gzipped, []int{0}
+	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0}
 }
 
 var extRange_M = []proto.ExtensionRange{
@@ -296,13 +296,13 @@ type M_Submessage struct {
 }
 
 func (m *M_Submessage) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_import_public_sub_a_messageTypes[1].MessageOf(m)
+	return xxx_File_import_public_sub_a_proto_messageTypes[1].MessageOf(m)
 }
 func (m *M_Submessage) Reset()         { *m = M_Submessage{} }
 func (m *M_Submessage) String() string { return proto.CompactTextString(m) }
 func (*M_Submessage) ProtoMessage()    {}
 func (*M_Submessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_382f7805394b5c4e_gzipped, []int{0, 0}
+	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0, 0}
 }
 
 func (m *M_Submessage) XXX_Unmarshal(b []byte) error {
@@ -378,7 +378,7 @@ var E_ExtensionField = &proto.ExtensionDesc{
 }
 
 func init() {
-	proto.RegisterFile("import_public/sub/a.proto", fileDescriptor_382f7805394b5c4e_gzipped)
+	proto.RegisterFile("import_public/sub/a.proto", xxx_File_import_public_sub_a_proto_rawdesc_gzipped)
 	proto.RegisterEnum("goproto.protoc.import_public.sub.E", E_name, E_value)
 	proto.RegisterEnum("goproto.protoc.import_public.sub.M_Subenum", M_Subenum_name, M_Subenum_value)
 	proto.RegisterEnum("goproto.protoc.import_public.sub.M_Submessage_Submessage_Subenum", M_Submessage_Submessage_Subenum_name, M_Submessage_Submessage_Subenum_value)
@@ -387,7 +387,7 @@ func init() {
 	proto.RegisterExtension(E_ExtensionField)
 }
 
-var fileDescriptor_382f7805394b5c4e = []byte{
+var xxx_File_import_public_sub_a_proto_rawdesc = []byte{
 	// 730 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x19, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x2f,
 	0x73, 0x75, 0x62, 0x2f, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x20, 0x67, 0x6f, 0x70,
@@ -437,15 +437,15 @@ var fileDescriptor_382f7805394b5c4e = []byte{
 	0x62, 0x6c, 0x69, 0x63, 0x2f, 0x73, 0x75, 0x62, 0x50, 0x01,
 }
 
-var fileDescriptor_382f7805394b5c4e_gzipped = protoapi.CompressGZIP(fileDescriptor_382f7805394b5c4e)
+var xxx_File_import_public_sub_a_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_import_public_sub_a_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_import_public_sub_a protoreflect.FileDescriptor
+var File_import_public_sub_a_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_import_public_sub_a_enumTypes [3]protoreflect.EnumType
-var xxx_ProtoFile_import_public_sub_a_messageTypes [2]protoimpl.MessageType
-var xxx_ProtoFile_import_public_sub_a_goTypes = []interface{}{
+var xxx_File_import_public_sub_a_proto_enumTypes [3]protoreflect.EnumType
+var xxx_File_import_public_sub_a_proto_messageTypes [2]protoimpl.MessageType
+var xxx_File_import_public_sub_a_proto_goTypes = []interface{}{
 	(E)(0),                               // 0: goproto.protoc.import_public.sub.E
 	(M_Subenum)(0),                       // 1: goproto.protoc.import_public.sub.M.Subenum
 	(M_Submessage_Submessage_Subenum)(0), // 2: goproto.protoc.import_public.sub.M.Submessage.Submessage_Subenum
@@ -453,7 +453,7 @@ var xxx_ProtoFile_import_public_sub_a_goTypes = []interface{}{
 	(*M_Submessage)(nil),                 // 4: goproto.protoc.import_public.sub.M.Submessage
 	(*M2)(nil),                           // 5: goproto.protoc.import_public.sub.M2
 }
-var xxx_ProtoFile_import_public_sub_a_depIdxs = []int32{
+var xxx_File_import_public_sub_a_proto_depIdxs = []int32{
 	3, // goproto.protoc.import_public.sub.extension_field:extendee -> goproto.protoc.import_public.sub.M
 	5, // goproto.protoc.import_public.sub.M.m2:type_name -> goproto.protoc.import_public.sub.M2
 }
@@ -461,20 +461,20 @@ var xxx_ProtoFile_import_public_sub_a_depIdxs = []int32{
 func init() {
 	var messageTypes [2]protoreflect.MessageType
 	var extensionTypes [1]protoreflect.ExtensionType
-	ProtoFile_import_public_sub_a = protoimpl.FileBuilder{
-		RawDescriptor:        fileDescriptor_382f7805394b5c4e,
-		GoTypes:              xxx_ProtoFile_import_public_sub_a_goTypes,
-		DependencyIndexes:    xxx_ProtoFile_import_public_sub_a_depIdxs,
-		EnumOutputTypes:      xxx_ProtoFile_import_public_sub_a_enumTypes[:],
+	File_import_public_sub_a_proto = protoimpl.FileBuilder{
+		RawDescriptor:        xxx_File_import_public_sub_a_proto_rawdesc,
+		GoTypes:              xxx_File_import_public_sub_a_proto_goTypes,
+		DependencyIndexes:    xxx_File_import_public_sub_a_proto_depIdxs,
+		EnumOutputTypes:      xxx_File_import_public_sub_a_proto_enumTypes[:],
 		MessageOutputTypes:   messageTypes[:],
 		ExtensionOutputTypes: extensionTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_import_public_sub_a_goTypes[3:][:2]
+	messageGoTypes := xxx_File_import_public_sub_a_proto_goTypes[3:][:2]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_import_public_sub_a_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_import_public_sub_a_messageTypes[i].PBType = mt
+		xxx_File_import_public_sub_a_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_import_public_sub_a_proto_messageTypes[i].PBType = mt
 	}
 	E_ExtensionField.Type = extensionTypes[0]
-	xxx_ProtoFile_import_public_sub_a_goTypes = nil
-	xxx_ProtoFile_import_public_sub_a_depIdxs = nil
+	xxx_File_import_public_sub_a_proto_goTypes = nil
+	xxx_File_import_public_sub_a_proto_depIdxs = nil
 }

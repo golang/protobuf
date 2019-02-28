@@ -27,7 +27,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_encoding_testprotos_pb3_test_enumTypes[0]
+	return xxx_File_encoding_testprotos_pb3_test_proto_enumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -52,7 +52,7 @@ func (x Enum) String() string {
 }
 
 func (Enum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_33e0a17922cde063_gzipped, []int{0}
+	return xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped, []int{0}
 }
 
 type Enums_NestedEnum int32
@@ -65,7 +65,7 @@ const (
 )
 
 func (e Enums_NestedEnum) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_encoding_testprotos_pb3_test_enumTypes[1]
+	return xxx_File_encoding_testprotos_pb3_test_proto_enumTypes[1]
 }
 func (e Enums_NestedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -90,7 +90,7 @@ func (x Enums_NestedEnum) String() string {
 }
 
 func (Enums_NestedEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_33e0a17922cde063_gzipped, []int{1, 0}
+	return xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped, []int{1, 0}
 }
 
 // Scalars contains scalar field types.
@@ -116,13 +116,13 @@ type Scalars struct {
 }
 
 func (m *Scalars) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[0].MessageOf(m)
+	return xxx_File_encoding_testprotos_pb3_test_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Scalars) Reset()         { *m = Scalars{} }
 func (m *Scalars) String() string { return proto.CompactTextString(m) }
 func (*Scalars) ProtoMessage()    {}
 func (*Scalars) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33e0a17922cde063_gzipped, []int{0}
+	return xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *Scalars) XXX_Unmarshal(b []byte) error {
@@ -258,13 +258,13 @@ type Enums struct {
 }
 
 func (m *Enums) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[1].MessageOf(m)
+	return xxx_File_encoding_testprotos_pb3_test_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Enums) Reset()         { *m = Enums{} }
 func (m *Enums) String() string { return proto.CompactTextString(m) }
 func (*Enums) ProtoMessage()    {}
 func (*Enums) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33e0a17922cde063_gzipped, []int{1}
+	return xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped, []int{1}
 }
 
 func (m *Enums) XXX_Unmarshal(b []byte) error {
@@ -308,13 +308,13 @@ type Nests struct {
 }
 
 func (m *Nests) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[2].MessageOf(m)
+	return xxx_File_encoding_testprotos_pb3_test_proto_messageTypes[2].MessageOf(m)
 }
 func (m *Nests) Reset()         { *m = Nests{} }
 func (m *Nests) String() string { return proto.CompactTextString(m) }
 func (*Nests) ProtoMessage()    {}
 func (*Nests) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33e0a17922cde063_gzipped, []int{2}
+	return xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped, []int{2}
 }
 
 func (m *Nests) XXX_Unmarshal(b []byte) error {
@@ -352,13 +352,13 @@ type Nested struct {
 }
 
 func (m *Nested) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[3].MessageOf(m)
+	return xxx_File_encoding_testprotos_pb3_test_proto_messageTypes[3].MessageOf(m)
 }
 func (m *Nested) Reset()         { *m = Nested{} }
 func (m *Nested) String() string { return proto.CompactTextString(m) }
 func (*Nested) ProtoMessage()    {}
 func (*Nested) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33e0a17922cde063_gzipped, []int{3}
+	return xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped, []int{3}
 }
 
 func (m *Nested) XXX_Unmarshal(b []byte) error {
@@ -406,13 +406,13 @@ type Oneofs struct {
 }
 
 func (m *Oneofs) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[4].MessageOf(m)
+	return xxx_File_encoding_testprotos_pb3_test_proto_messageTypes[4].MessageOf(m)
 }
 func (m *Oneofs) Reset()         { *m = Oneofs{} }
 func (m *Oneofs) String() string { return proto.CompactTextString(m) }
 func (*Oneofs) ProtoMessage()    {}
 func (*Oneofs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33e0a17922cde063_gzipped, []int{4}
+	return xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped, []int{4}
 }
 
 func (m *Oneofs) XXX_Unmarshal(b []byte) error {
@@ -505,13 +505,13 @@ type Maps struct {
 }
 
 func (m *Maps) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[5].MessageOf(m)
+	return xxx_File_encoding_testprotos_pb3_test_proto_messageTypes[5].MessageOf(m)
 }
 func (m *Maps) Reset()         { *m = Maps{} }
 func (m *Maps) String() string { return proto.CompactTextString(m) }
 func (*Maps) ProtoMessage()    {}
 func (*Maps) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33e0a17922cde063_gzipped, []int{5}
+	return xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped, []int{5}
 }
 
 func (m *Maps) XXX_Unmarshal(b []byte) error {
@@ -576,13 +576,13 @@ type JSONNames struct {
 }
 
 func (m *JSONNames) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[6].MessageOf(m)
+	return xxx_File_encoding_testprotos_pb3_test_proto_messageTypes[6].MessageOf(m)
 }
 func (m *JSONNames) Reset()         { *m = JSONNames{} }
 func (m *JSONNames) String() string { return proto.CompactTextString(m) }
 func (*JSONNames) ProtoMessage()    {}
 func (*JSONNames) Descriptor() ([]byte, []int) {
-	return fileDescriptor_33e0a17922cde063_gzipped, []int{6}
+	return xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped, []int{6}
 }
 
 func (m *JSONNames) XXX_Unmarshal(b []byte) error {
@@ -611,7 +611,7 @@ func (m *JSONNames) GetSString() string {
 }
 
 func init() {
-	proto.RegisterFile("encoding/testprotos/pb3/test.proto", fileDescriptor_33e0a17922cde063_gzipped)
+	proto.RegisterFile("encoding/testprotos/pb3/test.proto", xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped)
 	proto.RegisterEnum("pb3.Enum", Enum_name, Enum_value)
 	proto.RegisterEnum("pb3.Enums_NestedEnum", Enums_NestedEnum_name, Enums_NestedEnum_value)
 	proto.RegisterType((*Scalars)(nil), "pb3.Scalars")
@@ -628,7 +628,7 @@ func init() {
 	proto.RegisterType((*JSONNames)(nil), "pb3.JSONNames")
 }
 
-var fileDescriptor_33e0a17922cde063 = []byte{
+var xxx_File_encoding_testprotos_pb3_test_proto_rawdesc = []byte{
 	// 1730 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x22, 0x65, 0x6e, 0x63, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x70, 0x62, 0x33, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70,
@@ -741,15 +741,15 @@ var fileDescriptor_33e0a17922cde063 = []byte{
 	0x6f, 0x33,
 }
 
-var fileDescriptor_33e0a17922cde063_gzipped = protoapi.CompressGZIP(fileDescriptor_33e0a17922cde063)
+var xxx_File_encoding_testprotos_pb3_test_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_encoding_testprotos_pb3_test_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_encoding_testprotos_pb3_test protoreflect.FileDescriptor
+var File_encoding_testprotos_pb3_test_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_encoding_testprotos_pb3_test_enumTypes [2]protoreflect.EnumType
-var xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes [12]protoimpl.MessageType
-var xxx_ProtoFile_encoding_testprotos_pb3_test_goTypes = []interface{}{
+var xxx_File_encoding_testprotos_pb3_test_proto_enumTypes [2]protoreflect.EnumType
+var xxx_File_encoding_testprotos_pb3_test_proto_messageTypes [12]protoimpl.MessageType
+var xxx_File_encoding_testprotos_pb3_test_proto_goTypes = []interface{}{
 	(Enum)(0),             // 0: pb3.Enum
 	(Enums_NestedEnum)(0), // 1: pb3.Enums.NestedEnum
 	(*Scalars)(nil),       // 2: pb3.Scalars
@@ -765,7 +765,7 @@ var xxx_ProtoFile_encoding_testprotos_pb3_test_goTypes = []interface{}{
 	nil,                   // 12: pb3.Maps.StrToNestedEntry
 	nil,                   // 13: pb3.Maps.StrToOneofsEntry
 }
-var xxx_ProtoFile_encoding_testprotos_pb3_test_depIdxs = []int32{
+var xxx_File_encoding_testprotos_pb3_test_proto_depIdxs = []int32{
 	0,  // pb3.Enums.s_enum:type_name -> pb3.Enum
 	1,  // pb3.Enums.s_nested_enum:type_name -> pb3.Enums.NestedEnum
 	5,  // pb3.Nests.s_nested:type_name -> pb3.Nested
@@ -784,18 +784,18 @@ var xxx_ProtoFile_encoding_testprotos_pb3_test_depIdxs = []int32{
 
 func init() {
 	var messageTypes [12]protoreflect.MessageType
-	ProtoFile_encoding_testprotos_pb3_test = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_33e0a17922cde063,
-		GoTypes:            xxx_ProtoFile_encoding_testprotos_pb3_test_goTypes,
-		DependencyIndexes:  xxx_ProtoFile_encoding_testprotos_pb3_test_depIdxs,
-		EnumOutputTypes:    xxx_ProtoFile_encoding_testprotos_pb3_test_enumTypes[:],
+	File_encoding_testprotos_pb3_test_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_encoding_testprotos_pb3_test_proto_rawdesc,
+		GoTypes:            xxx_File_encoding_testprotos_pb3_test_proto_goTypes,
+		DependencyIndexes:  xxx_File_encoding_testprotos_pb3_test_proto_depIdxs,
+		EnumOutputTypes:    xxx_File_encoding_testprotos_pb3_test_proto_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_encoding_testprotos_pb3_test_goTypes[2:][:12]
+	messageGoTypes := xxx_File_encoding_testprotos_pb3_test_proto_goTypes[2:][:12]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_encoding_testprotos_pb3_test_messageTypes[i].PBType = mt
+		xxx_File_encoding_testprotos_pb3_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_encoding_testprotos_pb3_test_proto_messageTypes[i].PBType = mt
 	}
-	xxx_ProtoFile_encoding_testprotos_pb3_test_goTypes = nil
-	xxx_ProtoFile_encoding_testprotos_pb3_test_depIdxs = nil
+	xxx_File_encoding_testprotos_pb3_test_proto_goTypes = nil
+	xxx_File_encoding_testprotos_pb3_test_proto_depIdxs = nil
 }

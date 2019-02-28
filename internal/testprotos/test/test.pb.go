@@ -26,7 +26,7 @@ const (
 )
 
 func (e ForeignEnum) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_test_enumTypes[0]
+	return xxx_File_test_proto_enumTypes[0]
 }
 func (e ForeignEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -64,7 +64,7 @@ func (x *ForeignEnum) UnmarshalJSON(data []byte) error {
 }
 
 func (ForeignEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{0}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{0}
 }
 
 type TestReservedEnumFields int32
@@ -74,7 +74,7 @@ const (
 )
 
 func (e TestReservedEnumFields) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_test_enumTypes[1]
+	return xxx_File_test_proto_enumTypes[1]
 }
 func (e TestReservedEnumFields) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -108,7 +108,7 @@ func (x *TestReservedEnumFields) UnmarshalJSON(data []byte) error {
 }
 
 func (TestReservedEnumFields) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{1}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{1}
 }
 
 type TestAllTypes_NestedEnum int32
@@ -121,7 +121,7 @@ const (
 )
 
 func (e TestAllTypes_NestedEnum) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_test_enumTypes[2]
+	return xxx_File_test_proto_enumTypes[2]
 }
 func (e TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -161,7 +161,7 @@ func (x *TestAllTypes_NestedEnum) UnmarshalJSON(data []byte) error {
 }
 
 func (TestAllTypes_NestedEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{0, 0}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{0, 0}
 }
 
 type TestDeprecatedMessage_DeprecatedEnum int32 // Deprecated: Do not use.
@@ -170,7 +170,7 @@ const (
 )
 
 func (e TestDeprecatedMessage_DeprecatedEnum) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_test_enumTypes[3]
+	return xxx_File_test_proto_enumTypes[3]
 }
 func (e TestDeprecatedMessage_DeprecatedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -204,7 +204,7 @@ func (x *TestDeprecatedMessage_DeprecatedEnum) UnmarshalJSON(data []byte) error 
 }
 
 func (TestDeprecatedMessage_DeprecatedEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{1, 0}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{1, 0}
 }
 
 type TestAllTypes struct {
@@ -304,13 +304,13 @@ type TestAllTypes struct {
 }
 
 func (m *TestAllTypes) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[0].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[0].MessageOf(m)
 }
 func (m *TestAllTypes) Reset()         { *m = TestAllTypes{} }
 func (m *TestAllTypes) String() string { return proto.CompactTextString(m) }
 func (*TestAllTypes) ProtoMessage()    {}
 func (*TestAllTypes) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{0}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *TestAllTypes) XXX_Unmarshal(b []byte) error {
@@ -1052,13 +1052,13 @@ type TestDeprecatedMessage struct {
 }
 
 func (m *TestDeprecatedMessage) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[1].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[1].MessageOf(m)
 }
 func (m *TestDeprecatedMessage) Reset()         { *m = TestDeprecatedMessage{} }
 func (m *TestDeprecatedMessage) String() string { return proto.CompactTextString(m) }
 func (*TestDeprecatedMessage) ProtoMessage()    {}
 func (*TestDeprecatedMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{1}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{1}
 }
 
 func (m *TestDeprecatedMessage) XXX_Unmarshal(b []byte) error {
@@ -1128,13 +1128,13 @@ type ForeignMessage struct {
 }
 
 func (m *ForeignMessage) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[2].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[2].MessageOf(m)
 }
 func (m *ForeignMessage) Reset()         { *m = ForeignMessage{} }
 func (m *ForeignMessage) String() string { return proto.CompactTextString(m) }
 func (*ForeignMessage) ProtoMessage()    {}
 func (*ForeignMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{2}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{2}
 }
 
 func (m *ForeignMessage) XXX_Unmarshal(b []byte) error {
@@ -1176,13 +1176,13 @@ type TestReservedFields struct {
 }
 
 func (m *TestReservedFields) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[3].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[3].MessageOf(m)
 }
 func (m *TestReservedFields) Reset()         { *m = TestReservedFields{} }
 func (m *TestReservedFields) String() string { return proto.CompactTextString(m) }
 func (*TestReservedFields) ProtoMessage()    {}
 func (*TestReservedFields) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{3}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{3}
 }
 
 func (m *TestReservedFields) XXX_Unmarshal(b []byte) error {
@@ -1211,13 +1211,13 @@ type TestAllExtensions struct {
 }
 
 func (m *TestAllExtensions) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[4].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[4].MessageOf(m)
 }
 func (m *TestAllExtensions) Reset()         { *m = TestAllExtensions{} }
 func (m *TestAllExtensions) String() string { return proto.CompactTextString(m) }
 func (*TestAllExtensions) ProtoMessage()    {}
 func (*TestAllExtensions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{4}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{4}
 }
 
 var extRange_TestAllExtensions = []proto.ExtensionRange{
@@ -1254,13 +1254,13 @@ type OptionalGroupExtension struct {
 }
 
 func (m *OptionalGroupExtension) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[5].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[5].MessageOf(m)
 }
 func (m *OptionalGroupExtension) Reset()         { *m = OptionalGroupExtension{} }
 func (m *OptionalGroupExtension) String() string { return proto.CompactTextString(m) }
 func (*OptionalGroupExtension) ProtoMessage()    {}
 func (*OptionalGroupExtension) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{5}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{5}
 }
 
 func (m *OptionalGroupExtension) XXX_Unmarshal(b []byte) error {
@@ -1296,13 +1296,13 @@ type RepeatedGroupExtension struct {
 }
 
 func (m *RepeatedGroupExtension) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[6].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[6].MessageOf(m)
 }
 func (m *RepeatedGroupExtension) Reset()         { *m = RepeatedGroupExtension{} }
 func (m *RepeatedGroupExtension) String() string { return proto.CompactTextString(m) }
 func (*RepeatedGroupExtension) ProtoMessage()    {}
 func (*RepeatedGroupExtension) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{6}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{6}
 }
 
 func (m *RepeatedGroupExtension) XXX_Unmarshal(b []byte) error {
@@ -1337,13 +1337,13 @@ type TestNestedExtension struct {
 }
 
 func (m *TestNestedExtension) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[7].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[7].MessageOf(m)
 }
 func (m *TestNestedExtension) Reset()         { *m = TestNestedExtension{} }
 func (m *TestNestedExtension) String() string { return proto.CompactTextString(m) }
 func (*TestNestedExtension) ProtoMessage()    {}
 func (*TestNestedExtension) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{7}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{7}
 }
 
 func (m *TestNestedExtension) XXX_Unmarshal(b []byte) error {
@@ -1372,13 +1372,13 @@ type FooRequest struct {
 }
 
 func (m *FooRequest) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[8].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[8].MessageOf(m)
 }
 func (m *FooRequest) Reset()         { *m = FooRequest{} }
 func (m *FooRequest) String() string { return proto.CompactTextString(m) }
 func (*FooRequest) ProtoMessage()    {}
 func (*FooRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{8}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{8}
 }
 
 func (m *FooRequest) XXX_Unmarshal(b []byte) error {
@@ -1406,13 +1406,13 @@ type FooResponse struct {
 }
 
 func (m *FooResponse) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[9].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[9].MessageOf(m)
 }
 func (m *FooResponse) Reset()         { *m = FooResponse{} }
 func (m *FooResponse) String() string { return proto.CompactTextString(m) }
 func (*FooResponse) ProtoMessage()    {}
 func (*FooResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{9}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{9}
 }
 
 func (m *FooResponse) XXX_Unmarshal(b []byte) error {
@@ -1442,13 +1442,13 @@ type TestAllTypes_NestedMessage struct {
 }
 
 func (m *TestAllTypes_NestedMessage) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[10].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[10].MessageOf(m)
 }
 func (m *TestAllTypes_NestedMessage) Reset()         { *m = TestAllTypes_NestedMessage{} }
 func (m *TestAllTypes_NestedMessage) String() string { return proto.CompactTextString(m) }
 func (*TestAllTypes_NestedMessage) ProtoMessage()    {}
 func (*TestAllTypes_NestedMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{0, 0}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{0, 0}
 }
 
 func (m *TestAllTypes_NestedMessage) XXX_Unmarshal(b []byte) error {
@@ -1491,13 +1491,13 @@ type TestAllTypes_OptionalGroup struct {
 }
 
 func (m *TestAllTypes_OptionalGroup) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[11].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[11].MessageOf(m)
 }
 func (m *TestAllTypes_OptionalGroup) Reset()         { *m = TestAllTypes_OptionalGroup{} }
 func (m *TestAllTypes_OptionalGroup) String() string { return proto.CompactTextString(m) }
 func (*TestAllTypes_OptionalGroup) ProtoMessage()    {}
 func (*TestAllTypes_OptionalGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{0, 1}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{0, 1}
 }
 
 func (m *TestAllTypes_OptionalGroup) XXX_Unmarshal(b []byte) error {
@@ -1533,13 +1533,13 @@ type TestAllTypes_RepeatedGroup struct {
 }
 
 func (m *TestAllTypes_RepeatedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_test_messageTypes[12].MessageOf(m)
+	return xxx_File_test_proto_messageTypes[12].MessageOf(m)
 }
 func (m *TestAllTypes_RepeatedGroup) Reset()         { *m = TestAllTypes_RepeatedGroup{} }
 func (m *TestAllTypes_RepeatedGroup) String() string { return proto.CompactTextString(m) }
 func (*TestAllTypes_RepeatedGroup) ProtoMessage()    {}
 func (*TestAllTypes_RepeatedGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c161fcfdc0c3ff1e_gzipped, []int{0, 2}
+	return xxx_File_test_proto_rawdesc_gzipped, []int{0, 2}
 }
 
 func (m *TestAllTypes_RepeatedGroup) XXX_Unmarshal(b []byte) error {
@@ -1901,7 +1901,7 @@ var E_TestNestedExtension_NestedStringExtension = &proto.ExtensionDesc{
 }
 
 func init() {
-	proto.RegisterFile("test.proto", fileDescriptor_c161fcfdc0c3ff1e_gzipped)
+	proto.RegisterFile("test.proto", xxx_File_test_proto_rawdesc_gzipped)
 	proto.RegisterEnum("goproto.proto.test.ForeignEnum", ForeignEnum_name, ForeignEnum_value)
 	proto.RegisterEnum("goproto.proto.test.TestReservedEnumFields", TestReservedEnumFields_name, TestReservedEnumFields_value)
 	proto.RegisterEnum("goproto.proto.test.TestAllTypes_NestedEnum", TestAllTypes_NestedEnum_name, TestAllTypes_NestedEnum_value)
@@ -1975,7 +1975,7 @@ func init() {
 	proto.RegisterExtension(E_TestNestedExtension_NestedStringExtension)
 }
 
-var fileDescriptor_c161fcfdc0c3ff1e = []byte{
+var xxx_File_test_proto_rawdesc = []byte{
 	// 12054 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x0a, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x12, 0x67, 0x6f,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x74, 0x65, 0x73, 0x74,
@@ -2733,15 +2733,15 @@ var fileDescriptor_c161fcfdc0c3ff1e = []byte{
 	0x73, 0x74, 0x50, 0x01, 0x58, 0x02,
 }
 
-var fileDescriptor_c161fcfdc0c3ff1e_gzipped = protoapi.CompressGZIP(fileDescriptor_c161fcfdc0c3ff1e)
+var xxx_File_test_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_test_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_test protoreflect.FileDescriptor
+var File_test_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_test_enumTypes [4]protoreflect.EnumType
-var xxx_ProtoFile_test_messageTypes [30]protoimpl.MessageType
-var xxx_ProtoFile_test_goTypes = []interface{}{
+var xxx_File_test_proto_enumTypes [4]protoreflect.EnumType
+var xxx_File_test_proto_messageTypes [30]protoimpl.MessageType
+var xxx_File_test_proto_goTypes = []interface{}{
 	(ForeignEnum)(0),                          // 0: goproto.proto.test.ForeignEnum
 	(TestReservedEnumFields)(0),               // 1: goproto.proto.test.TestReservedEnumFields
 	(TestAllTypes_NestedEnum)(0),              // 2: goproto.proto.test.TestAllTypes.NestedEnum
@@ -2779,7 +2779,7 @@ var xxx_ProtoFile_test_goTypes = []interface{}{
 	(*ImportMessage)(nil),                     // 34: goproto.proto.test.ImportMessage
 	(ImportEnum)(0),                           // 35: goproto.proto.test.ImportEnum
 }
-var xxx_ProtoFile_test_depIdxs = []int32{
+var xxx_File_test_proto_depIdxs = []int32{
 	8,  // goproto.proto.test.optional_int32_extension:extendee -> goproto.proto.test.TestAllExtensions
 	8,  // goproto.proto.test.optional_int64_extension:extendee -> goproto.proto.test.TestAllExtensions
 	8,  // goproto.proto.test.optional_uint32_extension:extendee -> goproto.proto.test.TestAllExtensions
@@ -2872,18 +2872,18 @@ var xxx_ProtoFile_test_depIdxs = []int32{
 func init() {
 	var messageTypes [30]protoreflect.MessageType
 	var extensionTypes [37]protoreflect.ExtensionType
-	ProtoFile_test = protoimpl.FileBuilder{
-		RawDescriptor:        fileDescriptor_c161fcfdc0c3ff1e,
-		GoTypes:              xxx_ProtoFile_test_goTypes,
-		DependencyIndexes:    xxx_ProtoFile_test_depIdxs,
-		EnumOutputTypes:      xxx_ProtoFile_test_enumTypes[:],
+	File_test_proto = protoimpl.FileBuilder{
+		RawDescriptor:        xxx_File_test_proto_rawdesc,
+		GoTypes:              xxx_File_test_proto_goTypes,
+		DependencyIndexes:    xxx_File_test_proto_depIdxs,
+		EnumOutputTypes:      xxx_File_test_proto_enumTypes[:],
 		MessageOutputTypes:   messageTypes[:],
 		ExtensionOutputTypes: extensionTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_test_goTypes[4:][:30]
+	messageGoTypes := xxx_File_test_proto_goTypes[4:][:30]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_test_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_test_messageTypes[i].PBType = mt
+		xxx_File_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_test_proto_messageTypes[i].PBType = mt
 	}
 	E_OptionalInt32Extension.Type = extensionTypes[0]
 	E_OptionalInt64Extension.Type = extensionTypes[1]
@@ -2922,6 +2922,6 @@ func init() {
 	E_RepeatedNestedMessageExtension.Type = extensionTypes[34]
 	E_RepeatedNestedEnumExtension.Type = extensionTypes[35]
 	E_TestNestedExtension_NestedStringExtension.Type = extensionTypes[36]
-	xxx_ProtoFile_test_goTypes = nil
-	xxx_ProtoFile_test_depIdxs = nil
+	xxx_File_test_proto_goTypes = nil
+	xxx_File_test_proto_depIdxs = nil
 }

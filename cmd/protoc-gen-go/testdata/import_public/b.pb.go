@@ -27,13 +27,13 @@ type Local struct {
 }
 
 func (m *Local) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_import_public_b_messageTypes[0].MessageOf(m)
+	return xxx_File_import_public_b_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Local) Reset()         { *m = Local{} }
 func (m *Local) String() string { return proto.CompactTextString(m) }
 func (*Local) ProtoMessage()    {}
 func (*Local) Descriptor() ([]byte, []int) {
-	return fileDescriptor_84995586b3d09710_gzipped, []int{0}
+	return xxx_File_import_public_b_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *Local) XXX_Unmarshal(b []byte) error {
@@ -69,11 +69,11 @@ func (m *Local) GetE() sub.E {
 }
 
 func init() {
-	proto.RegisterFile("import_public/b.proto", fileDescriptor_84995586b3d09710_gzipped)
+	proto.RegisterFile("import_public/b.proto", xxx_File_import_public_b_proto_rawdesc_gzipped)
 	proto.RegisterType((*Local)(nil), "goproto.protoc.import_public.Local")
 }
 
-var fileDescriptor_84995586b3d09710 = []byte{
+var xxx_File_import_public_b_proto_rawdesc = []byte{
 	// 265 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x15, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x2f,
 	0x62, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1c, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
@@ -94,36 +94,36 @@ var fileDescriptor_84995586b3d09710 = []byte{
 	0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63,
 }
 
-var fileDescriptor_84995586b3d09710_gzipped = protoapi.CompressGZIP(fileDescriptor_84995586b3d09710)
+var xxx_File_import_public_b_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_import_public_b_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_import_public_b protoreflect.FileDescriptor
+var File_import_public_b_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_import_public_b_messageTypes [1]protoimpl.MessageType
-var xxx_ProtoFile_import_public_b_goTypes = []interface{}{
+var xxx_File_import_public_b_proto_messageTypes [1]protoimpl.MessageType
+var xxx_File_import_public_b_proto_goTypes = []interface{}{
 	(*Local)(nil), // 0: goproto.protoc.import_public.Local
 	(*sub.M)(nil), // 1: goproto.protoc.import_public.sub.M
 	(sub.E)(0),    // 2: goproto.protoc.import_public.sub.E
 }
-var xxx_ProtoFile_import_public_b_depIdxs = []int32{
+var xxx_File_import_public_b_proto_depIdxs = []int32{
 	1, // goproto.protoc.import_public.Local.m:type_name -> goproto.protoc.import_public.sub.M
 	2, // goproto.protoc.import_public.Local.e:type_name -> goproto.protoc.import_public.sub.E
 }
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	ProtoFile_import_public_b = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_84995586b3d09710,
-		GoTypes:            xxx_ProtoFile_import_public_b_goTypes,
-		DependencyIndexes:  xxx_ProtoFile_import_public_b_depIdxs,
+	File_import_public_b_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_import_public_b_proto_rawdesc,
+		GoTypes:            xxx_File_import_public_b_proto_goTypes,
+		DependencyIndexes:  xxx_File_import_public_b_proto_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_import_public_b_goTypes[0:][:1]
+	messageGoTypes := xxx_File_import_public_b_proto_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_import_public_b_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_import_public_b_messageTypes[i].PBType = mt
+		xxx_File_import_public_b_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_import_public_b_proto_messageTypes[i].PBType = mt
 	}
-	xxx_ProtoFile_import_public_b_goTypes = nil
-	xxx_ProtoFile_import_public_b_depIdxs = nil
+	xxx_File_import_public_b_proto_goTypes = nil
+	xxx_File_import_public_b_proto_depIdxs = nil
 }

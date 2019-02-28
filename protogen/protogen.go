@@ -435,7 +435,7 @@ func newFile(gen *Plugin, p *descriptorpb.FileDescriptorProto, packageName GoPac
 		}
 	}
 	f.GoDescriptorIdent = GoIdent{
-		GoName:       "ProtoFile_" + cleanGoName(prefix, false),
+		GoName:       "File_" + cleanGoName(p.GetName()),
 		GoImportPath: f.GoImportPath,
 	}
 	f.GeneratedFilenamePrefix = prefix

@@ -71,13 +71,13 @@ type Public struct {
 }
 
 func (m *Public) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_import_public_a_messageTypes[0].MessageOf(m)
+	return xxx_File_import_public_a_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Public) Reset()         { *m = Public{} }
 func (m *Public) String() string { return proto.CompactTextString(m) }
 func (*Public) ProtoMessage()    {}
 func (*Public) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73b7577c95fa6b70_gzipped, []int{0}
+	return xxx_File_import_public_a_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *Public) XXX_Unmarshal(b []byte) error {
@@ -120,11 +120,11 @@ func (m *Public) GetLocal() *Local {
 }
 
 func init() {
-	proto.RegisterFile("import_public/a.proto", fileDescriptor_73b7577c95fa6b70_gzipped)
+	proto.RegisterFile("import_public/a.proto", xxx_File_import_public_a_proto_rawdesc_gzipped)
 	proto.RegisterType((*Public)(nil), "goproto.protoc.import_public.Public")
 }
 
-var fileDescriptor_73b7577c95fa6b70 = []byte{
+var xxx_File_import_public_a_proto_rawdesc = []byte{
 	// 383 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x15, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x2f,
 	0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1c, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
@@ -152,20 +152,20 @@ var fileDescriptor_73b7577c95fa6b70 = []byte{
 	0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x50, 0x00, 0x50, 0x01, 0x50, 0x02,
 }
 
-var fileDescriptor_73b7577c95fa6b70_gzipped = protoapi.CompressGZIP(fileDescriptor_73b7577c95fa6b70)
+var xxx_File_import_public_a_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_import_public_a_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_import_public_a protoreflect.FileDescriptor
+var File_import_public_a_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_import_public_a_messageTypes [1]protoimpl.MessageType
-var xxx_ProtoFile_import_public_a_goTypes = []interface{}{
+var xxx_File_import_public_a_proto_messageTypes [1]protoimpl.MessageType
+var xxx_File_import_public_a_proto_goTypes = []interface{}{
 	(*Public)(nil), // 0: goproto.protoc.import_public.Public
 	(*sub.M)(nil),  // 1: goproto.protoc.import_public.sub.M
 	(sub.E)(0),     // 2: goproto.protoc.import_public.sub.E
 	(*Local)(nil),  // 3: goproto.protoc.import_public.Local
 }
-var xxx_ProtoFile_import_public_a_depIdxs = []int32{
+var xxx_File_import_public_a_proto_depIdxs = []int32{
 	1, // goproto.protoc.import_public.Public.m:type_name -> goproto.protoc.import_public.sub.M
 	2, // goproto.protoc.import_public.Public.e:type_name -> goproto.protoc.import_public.sub.E
 	3, // goproto.protoc.import_public.Public.local:type_name -> goproto.protoc.import_public.Local
@@ -173,17 +173,17 @@ var xxx_ProtoFile_import_public_a_depIdxs = []int32{
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	ProtoFile_import_public_a = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_73b7577c95fa6b70,
-		GoTypes:            xxx_ProtoFile_import_public_a_goTypes,
-		DependencyIndexes:  xxx_ProtoFile_import_public_a_depIdxs,
+	File_import_public_a_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_import_public_a_proto_rawdesc,
+		GoTypes:            xxx_File_import_public_a_proto_goTypes,
+		DependencyIndexes:  xxx_File_import_public_a_proto_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_import_public_a_goTypes[0:][:1]
+	messageGoTypes := xxx_File_import_public_a_proto_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_import_public_a_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_import_public_a_messageTypes[i].PBType = mt
+		xxx_File_import_public_a_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_import_public_a_proto_messageTypes[i].PBType = mt
 	}
-	xxx_ProtoFile_import_public_a_goTypes = nil
-	xxx_ProtoFile_import_public_a_depIdxs = nil
+	xxx_File_import_public_a_proto_goTypes = nil
+	xxx_File_import_public_a_proto_depIdxs = nil
 }

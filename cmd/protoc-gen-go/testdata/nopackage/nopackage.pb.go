@@ -24,7 +24,7 @@ const (
 )
 
 func (e Enum) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_nopackage_nopackage_enumTypes[0]
+	return xxx_File_nopackage_nopackage_proto_enumTypes[0]
 }
 func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -58,7 +58,7 @@ func (x *Enum) UnmarshalJSON(data []byte) error {
 }
 
 func (Enum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_f33a1d5d178c43c9_gzipped, []int{0}
+	return xxx_File_nopackage_nopackage_proto_rawdesc_gzipped, []int{0}
 }
 
 type Message struct {
@@ -70,13 +70,13 @@ type Message struct {
 }
 
 func (m *Message) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_nopackage_nopackage_messageTypes[0].MessageOf(m)
+	return xxx_File_nopackage_nopackage_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
 func (*Message) ProtoMessage()    {}
 func (*Message) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f33a1d5d178c43c9_gzipped, []int{0}
+	return xxx_File_nopackage_nopackage_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *Message) XXX_Unmarshal(b []byte) error {
@@ -114,12 +114,12 @@ func (m *Message) GetEnumField() Enum {
 }
 
 func init() {
-	proto.RegisterFile("nopackage/nopackage.proto", fileDescriptor_f33a1d5d178c43c9_gzipped)
+	proto.RegisterFile("nopackage/nopackage.proto", xxx_File_nopackage_nopackage_proto_rawdesc_gzipped)
 	proto.RegisterEnum("Enum", Enum_name, Enum_value)
 	proto.RegisterType((*Message)(nil), "Message")
 }
 
-var fileDescriptor_f33a1d5d178c43c9 = []byte{
+var xxx_File_nopackage_nopackage_proto_rawdesc = []byte{
 	// 135 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x19, 0x6e, 0x6f, 0x70, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x2f, 0x6e, 0x6f, 0x70, 0x61,
 	0x63, 0x6b, 0x61, 0x67, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x58, 0x0a, 0x07, 0x4d,
@@ -132,36 +132,36 @@ var fileDescriptor_f33a1d5d178c43c9 = []byte{
 	0x04, 0x5a, 0x45, 0x52, 0x4f, 0x10, 0x00,
 }
 
-var fileDescriptor_f33a1d5d178c43c9_gzipped = protoapi.CompressGZIP(fileDescriptor_f33a1d5d178c43c9)
+var xxx_File_nopackage_nopackage_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_nopackage_nopackage_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_nopackage_nopackage protoreflect.FileDescriptor
+var File_nopackage_nopackage_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_nopackage_nopackage_enumTypes [1]protoreflect.EnumType
-var xxx_ProtoFile_nopackage_nopackage_messageTypes [1]protoimpl.MessageType
-var xxx_ProtoFile_nopackage_nopackage_goTypes = []interface{}{
+var xxx_File_nopackage_nopackage_proto_enumTypes [1]protoreflect.EnumType
+var xxx_File_nopackage_nopackage_proto_messageTypes [1]protoimpl.MessageType
+var xxx_File_nopackage_nopackage_proto_goTypes = []interface{}{
 	(Enum)(0),       // 0: Enum
 	(*Message)(nil), // 1: Message
 }
-var xxx_ProtoFile_nopackage_nopackage_depIdxs = []int32{
+var xxx_File_nopackage_nopackage_proto_depIdxs = []int32{
 	0, // Message.enum_field:type_name -> Enum
 }
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	ProtoFile_nopackage_nopackage = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_f33a1d5d178c43c9,
-		GoTypes:            xxx_ProtoFile_nopackage_nopackage_goTypes,
-		DependencyIndexes:  xxx_ProtoFile_nopackage_nopackage_depIdxs,
-		EnumOutputTypes:    xxx_ProtoFile_nopackage_nopackage_enumTypes[:],
+	File_nopackage_nopackage_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_nopackage_nopackage_proto_rawdesc,
+		GoTypes:            xxx_File_nopackage_nopackage_proto_goTypes,
+		DependencyIndexes:  xxx_File_nopackage_nopackage_proto_depIdxs,
+		EnumOutputTypes:    xxx_File_nopackage_nopackage_proto_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_nopackage_nopackage_goTypes[1:][:1]
+	messageGoTypes := xxx_File_nopackage_nopackage_proto_goTypes[1:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_nopackage_nopackage_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_nopackage_nopackage_messageTypes[i].PBType = mt
+		xxx_File_nopackage_nopackage_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_nopackage_nopackage_proto_messageTypes[i].PBType = mt
 	}
-	xxx_ProtoFile_nopackage_nopackage_goTypes = nil
-	xxx_ProtoFile_nopackage_nopackage_depIdxs = nil
+	xxx_File_nopackage_nopackage_proto_goTypes = nil
+	xxx_File_nopackage_nopackage_proto_depIdxs = nil
 }

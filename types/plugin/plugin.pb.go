@@ -32,13 +32,13 @@ type Version struct {
 }
 
 func (m *Version) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_google_protobuf_compiler_plugin_messageTypes[0].MessageOf(m)
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Version) Reset()         { *m = Version{} }
 func (m *Version) String() string { return proto.CompactTextString(m) }
 func (*Version) ProtoMessage()    {}
 func (*Version) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3562add825dafed5_gzipped, []int{0}
+	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *Version) XXX_Unmarshal(b []byte) error {
@@ -118,13 +118,13 @@ type CodeGeneratorRequest struct {
 }
 
 func (m *CodeGeneratorRequest) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_google_protobuf_compiler_plugin_messageTypes[1].MessageOf(m)
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[1].MessageOf(m)
 }
 func (m *CodeGeneratorRequest) Reset()         { *m = CodeGeneratorRequest{} }
 func (m *CodeGeneratorRequest) String() string { return proto.CompactTextString(m) }
 func (*CodeGeneratorRequest) ProtoMessage()    {}
 func (*CodeGeneratorRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3562add825dafed5_gzipped, []int{1}
+	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{1}
 }
 
 func (m *CodeGeneratorRequest) XXX_Unmarshal(b []byte) error {
@@ -191,13 +191,13 @@ type CodeGeneratorResponse struct {
 }
 
 func (m *CodeGeneratorResponse) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_google_protobuf_compiler_plugin_messageTypes[2].MessageOf(m)
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[2].MessageOf(m)
 }
 func (m *CodeGeneratorResponse) Reset()         { *m = CodeGeneratorResponse{} }
 func (m *CodeGeneratorResponse) String() string { return proto.CompactTextString(m) }
 func (*CodeGeneratorResponse) ProtoMessage()    {}
 func (*CodeGeneratorResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3562add825dafed5_gzipped, []int{2}
+	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{2}
 }
 
 func (m *CodeGeneratorResponse) XXX_Unmarshal(b []byte) error {
@@ -292,13 +292,13 @@ type CodeGeneratorResponse_File struct {
 }
 
 func (m *CodeGeneratorResponse_File) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_google_protobuf_compiler_plugin_messageTypes[3].MessageOf(m)
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[3].MessageOf(m)
 }
 func (m *CodeGeneratorResponse_File) Reset()         { *m = CodeGeneratorResponse_File{} }
 func (m *CodeGeneratorResponse_File) String() string { return proto.CompactTextString(m) }
 func (*CodeGeneratorResponse_File) ProtoMessage()    {}
 func (*CodeGeneratorResponse_File) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3562add825dafed5_gzipped, []int{2, 0}
+	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{2, 0}
 }
 
 func (m *CodeGeneratorResponse_File) XXX_Unmarshal(b []byte) error {
@@ -341,14 +341,14 @@ func (m *CodeGeneratorResponse_File) GetContent() string {
 }
 
 func init() {
-	proto.RegisterFile("google/protobuf/compiler/plugin.proto", fileDescriptor_3562add825dafed5_gzipped)
+	proto.RegisterFile("google/protobuf/compiler/plugin.proto", xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped)
 	proto.RegisterType((*Version)(nil), "google.protobuf.compiler.Version")
 	proto.RegisterType((*CodeGeneratorRequest)(nil), "google.protobuf.compiler.CodeGeneratorRequest")
 	proto.RegisterType((*CodeGeneratorResponse)(nil), "google.protobuf.compiler.CodeGeneratorResponse")
 	proto.RegisterType((*CodeGeneratorResponse_File)(nil), "google.protobuf.compiler.CodeGeneratorResponse.File")
 }
 
-var fileDescriptor_3562add825dafed5 = []byte{
+var xxx_File_google_protobuf_compiler_plugin_proto_rawdesc = []byte{
 	// 764 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x25, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x63, 0x6f, 0x6d, 0x70, 0x69, 0x6c, 0x65, 0x72, 0x2f, 0x70, 0x6c, 0x75, 0x67, 0x69,
@@ -400,21 +400,21 @@ var fileDescriptor_3562add825dafed5 = []byte{
 	0x70, 0x6c, 0x75, 0x67, 0x69, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 }
 
-var fileDescriptor_3562add825dafed5_gzipped = protoapi.CompressGZIP(fileDescriptor_3562add825dafed5)
+var xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_google_protobuf_compiler_plugin_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_google_protobuf_compiler_plugin protoreflect.FileDescriptor
+var File_google_protobuf_compiler_plugin_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_google_protobuf_compiler_plugin_messageTypes [4]protoimpl.MessageType
-var xxx_ProtoFile_google_protobuf_compiler_plugin_goTypes = []interface{}{
+var xxx_File_google_protobuf_compiler_plugin_proto_messageTypes [4]protoimpl.MessageType
+var xxx_File_google_protobuf_compiler_plugin_proto_goTypes = []interface{}{
 	(*Version)(nil),                        // 0: google.protobuf.compiler.Version
 	(*CodeGeneratorRequest)(nil),           // 1: google.protobuf.compiler.CodeGeneratorRequest
 	(*CodeGeneratorResponse)(nil),          // 2: google.protobuf.compiler.CodeGeneratorResponse
 	(*CodeGeneratorResponse_File)(nil),     // 3: google.protobuf.compiler.CodeGeneratorResponse.File
 	(*descriptor.FileDescriptorProto)(nil), // 4: google.protobuf.FileDescriptorProto
 }
-var xxx_ProtoFile_google_protobuf_compiler_plugin_depIdxs = []int32{
+var xxx_File_google_protobuf_compiler_plugin_proto_depIdxs = []int32{
 	4, // google.protobuf.compiler.CodeGeneratorRequest.proto_file:type_name -> google.protobuf.FileDescriptorProto
 	0, // google.protobuf.compiler.CodeGeneratorRequest.compiler_version:type_name -> google.protobuf.compiler.Version
 	3, // google.protobuf.compiler.CodeGeneratorResponse.file:type_name -> google.protobuf.compiler.CodeGeneratorResponse.File
@@ -422,17 +422,17 @@ var xxx_ProtoFile_google_protobuf_compiler_plugin_depIdxs = []int32{
 
 func init() {
 	var messageTypes [4]protoreflect.MessageType
-	ProtoFile_google_protobuf_compiler_plugin = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_3562add825dafed5,
-		GoTypes:            xxx_ProtoFile_google_protobuf_compiler_plugin_goTypes,
-		DependencyIndexes:  xxx_ProtoFile_google_protobuf_compiler_plugin_depIdxs,
+	File_google_protobuf_compiler_plugin_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_google_protobuf_compiler_plugin_proto_rawdesc,
+		GoTypes:            xxx_File_google_protobuf_compiler_plugin_proto_goTypes,
+		DependencyIndexes:  xxx_File_google_protobuf_compiler_plugin_proto_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_google_protobuf_compiler_plugin_goTypes[0:][:4]
+	messageGoTypes := xxx_File_google_protobuf_compiler_plugin_proto_goTypes[0:][:4]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_google_protobuf_compiler_plugin_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_google_protobuf_compiler_plugin_messageTypes[i].PBType = mt
+		xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[i].PBType = mt
 	}
-	xxx_ProtoFile_google_protobuf_compiler_plugin_goTypes = nil
-	xxx_ProtoFile_google_protobuf_compiler_plugin_depIdxs = nil
+	xxx_File_google_protobuf_compiler_plugin_proto_goTypes = nil
+	xxx_File_google_protobuf_compiler_plugin_proto_depIdxs = nil
 }

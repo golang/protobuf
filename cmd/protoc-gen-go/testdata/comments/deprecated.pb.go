@@ -23,7 +23,7 @@ const (
 )
 
 func (e DeprecatedEnum) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_comments_deprecated_enumTypes[0]
+	return xxx_File_comments_deprecated_proto_enumTypes[0]
 }
 func (e DeprecatedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -42,7 +42,7 @@ func (x DeprecatedEnum) String() string {
 }
 
 func (DeprecatedEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_0336e614ee2de5f7_gzipped, []int{0}
+	return xxx_File_comments_deprecated_proto_rawdesc_gzipped, []int{0}
 }
 
 // Deprecated: Do not use.
@@ -54,13 +54,13 @@ type DeprecatedMessage struct {
 }
 
 func (m *DeprecatedMessage) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_comments_deprecated_messageTypes[0].MessageOf(m)
+	return xxx_File_comments_deprecated_proto_messageTypes[0].MessageOf(m)
 }
 func (m *DeprecatedMessage) Reset()         { *m = DeprecatedMessage{} }
 func (m *DeprecatedMessage) String() string { return proto.CompactTextString(m) }
 func (*DeprecatedMessage) ProtoMessage()    {}
 func (*DeprecatedMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0336e614ee2de5f7_gzipped, []int{0}
+	return xxx_File_comments_deprecated_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *DeprecatedMessage) XXX_Unmarshal(b []byte) error {
@@ -90,12 +90,12 @@ func (m *DeprecatedMessage) GetDeprecatedField() string {
 }
 
 func init() {
-	proto.RegisterFile("comments/deprecated.proto", fileDescriptor_0336e614ee2de5f7_gzipped)
+	proto.RegisterFile("comments/deprecated.proto", xxx_File_comments_deprecated_proto_rawdesc_gzipped)
 	proto.RegisterEnum("goproto.protoc.comments.DeprecatedEnum", DeprecatedEnum_name, DeprecatedEnum_value)
 	proto.RegisterType((*DeprecatedMessage)(nil), "goproto.protoc.comments.DeprecatedMessage")
 }
 
-var fileDescriptor_0336e614ee2de5f7 = []byte{
+var xxx_File_comments_deprecated_proto_rawdesc = []byte{
 	// 246 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x19, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x2f, 0x64, 0x65, 0x70, 0x72, 0x65,
 	0x63, 0x61, 0x74, 0x65, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x17, 0x67, 0x6f, 0x70,
@@ -115,34 +115,34 @@ var fileDescriptor_0336e614ee2de5f7 = []byte{
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var fileDescriptor_0336e614ee2de5f7_gzipped = protoapi.CompressGZIP(fileDescriptor_0336e614ee2de5f7)
+var xxx_File_comments_deprecated_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_comments_deprecated_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_comments_deprecated protoreflect.FileDescriptor
+var File_comments_deprecated_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_comments_deprecated_enumTypes [1]protoreflect.EnumType
-var xxx_ProtoFile_comments_deprecated_messageTypes [1]protoimpl.MessageType
-var xxx_ProtoFile_comments_deprecated_goTypes = []interface{}{
+var xxx_File_comments_deprecated_proto_enumTypes [1]protoreflect.EnumType
+var xxx_File_comments_deprecated_proto_messageTypes [1]protoimpl.MessageType
+var xxx_File_comments_deprecated_proto_goTypes = []interface{}{
 	(DeprecatedEnum)(0),       // 0: goproto.protoc.comments.DeprecatedEnum
 	(*DeprecatedMessage)(nil), // 1: goproto.protoc.comments.DeprecatedMessage
 }
-var xxx_ProtoFile_comments_deprecated_depIdxs = []int32{}
+var xxx_File_comments_deprecated_proto_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	ProtoFile_comments_deprecated = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_0336e614ee2de5f7,
-		GoTypes:            xxx_ProtoFile_comments_deprecated_goTypes,
-		DependencyIndexes:  xxx_ProtoFile_comments_deprecated_depIdxs,
-		EnumOutputTypes:    xxx_ProtoFile_comments_deprecated_enumTypes[:],
+	File_comments_deprecated_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_comments_deprecated_proto_rawdesc,
+		GoTypes:            xxx_File_comments_deprecated_proto_goTypes,
+		DependencyIndexes:  xxx_File_comments_deprecated_proto_depIdxs,
+		EnumOutputTypes:    xxx_File_comments_deprecated_proto_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_comments_deprecated_goTypes[1:][:1]
+	messageGoTypes := xxx_File_comments_deprecated_proto_goTypes[1:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_comments_deprecated_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_comments_deprecated_messageTypes[i].PBType = mt
+		xxx_File_comments_deprecated_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_comments_deprecated_proto_messageTypes[i].PBType = mt
 	}
-	xxx_ProtoFile_comments_deprecated_goTypes = nil
-	xxx_ProtoFile_comments_deprecated_depIdxs = nil
+	xxx_File_comments_deprecated_proto_goTypes = nil
+	xxx_File_comments_deprecated_proto_depIdxs = nil
 }

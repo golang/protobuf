@@ -41,25 +41,22 @@ func TestCamelCase(t *testing.T) {
 
 func TestCleanGoName(t *testing.T) {
 	tests := []struct {
-		in, want, wantExported string
+		in, want string
 	}{
-		{"", "_", "X"},
-		{"boo", "boo", "Boo"},
-		{"Boo", "Boo", "Boo"},
-		{"ßoo", "ßoo", "Xßoo"},
-		{"default", "_default", "Default"},
-		{"hello", "hello", "Hello"},
-		{"hello-world!!", "hello_world__", "Hello_world__"},
-		{"hello-\xde\xad\xbe\xef\x00", "hello_____", "Hello_____"},
-		{"hello 世界", "hello_世界", "Hello_世界"},
-		{"世界", "世界", "X世界"},
+		{"", "_"},
+		{"boo", "boo"},
+		{"Boo", "Boo"},
+		{"ßoo", "ßoo"},
+		{"default", "_default"},
+		{"hello", "hello"},
+		{"hello-world!!", "hello_world__"},
+		{"hello-\xde\xad\xbe\xef\x00", "hello_____"},
+		{"hello 世界", "hello_世界"},
+		{"世界", "世界"},
 	}
 	for _, tc := range tests {
-		if got := cleanGoName(tc.in, false); got != tc.want {
-			t.Errorf("cleanGoName(%q, false) = %q, want %q", tc.in, got, tc.want)
-		}
-		if got := cleanGoName(tc.in, true); got != tc.wantExported {
-			t.Errorf("cleanGoName(%q, true) = %q, want %q", tc.in, got, tc.wantExported)
+		if got := cleanGoName(tc.in); got != tc.want {
+			t.Errorf("cleanGoName(%q) = %q, want %q", tc.in, got, tc.want)
 		}
 	}
 }

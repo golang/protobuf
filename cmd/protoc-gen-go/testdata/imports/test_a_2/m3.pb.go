@@ -24,13 +24,13 @@ type M3 struct {
 }
 
 func (m *M3) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_imports_test_a_2_m3_messageTypes[0].MessageOf(m)
+	return xxx_File_imports_test_a_2_m3_proto_messageTypes[0].MessageOf(m)
 }
 func (m *M3) Reset()         { *m = M3{} }
 func (m *M3) String() string { return proto.CompactTextString(m) }
 func (*M3) ProtoMessage()    {}
 func (*M3) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ff9d8f834875c9c5_gzipped, []int{0}
+	return xxx_File_imports_test_a_2_m3_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *M3) XXX_Unmarshal(b []byte) error {
@@ -52,11 +52,11 @@ func (m *M3) XXX_DiscardUnknown() {
 var xxx_messageInfo_M3 proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterFile("imports/test_a_2/m3.proto", fileDescriptor_ff9d8f834875c9c5_gzipped)
+	proto.RegisterFile("imports/test_a_2/m3.proto", xxx_File_imports_test_a_2_m3_proto_rawdesc_gzipped)
 	proto.RegisterType((*M3)(nil), "test.a.M3")
 }
 
-var fileDescriptor_ff9d8f834875c9c5 = []byte{
+var xxx_File_imports_test_a_2_m3_proto_rawdesc = []byte{
 	// 119 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x19, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x61,
 	0x5f, 0x32, 0x2f, 0x6d, 0x33, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x74, 0x65, 0x73,
@@ -68,31 +68,31 @@ var fileDescriptor_ff9d8f834875c9c5 = []byte{
 	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var fileDescriptor_ff9d8f834875c9c5_gzipped = protoapi.CompressGZIP(fileDescriptor_ff9d8f834875c9c5)
+var xxx_File_imports_test_a_2_m3_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_imports_test_a_2_m3_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_imports_test_a_2_m3 protoreflect.FileDescriptor
+var File_imports_test_a_2_m3_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_imports_test_a_2_m3_messageTypes [1]protoimpl.MessageType
-var xxx_ProtoFile_imports_test_a_2_m3_goTypes = []interface{}{
+var xxx_File_imports_test_a_2_m3_proto_messageTypes [1]protoimpl.MessageType
+var xxx_File_imports_test_a_2_m3_proto_goTypes = []interface{}{
 	(*M3)(nil), // 0: test.a.M3
 }
-var xxx_ProtoFile_imports_test_a_2_m3_depIdxs = []int32{}
+var xxx_File_imports_test_a_2_m3_proto_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	ProtoFile_imports_test_a_2_m3 = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_ff9d8f834875c9c5,
-		GoTypes:            xxx_ProtoFile_imports_test_a_2_m3_goTypes,
-		DependencyIndexes:  xxx_ProtoFile_imports_test_a_2_m3_depIdxs,
+	File_imports_test_a_2_m3_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_imports_test_a_2_m3_proto_rawdesc,
+		GoTypes:            xxx_File_imports_test_a_2_m3_proto_goTypes,
+		DependencyIndexes:  xxx_File_imports_test_a_2_m3_proto_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_imports_test_a_2_m3_goTypes[0:][:1]
+	messageGoTypes := xxx_File_imports_test_a_2_m3_proto_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_imports_test_a_2_m3_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_imports_test_a_2_m3_messageTypes[i].PBType = mt
+		xxx_File_imports_test_a_2_m3_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_imports_test_a_2_m3_proto_messageTypes[i].PBType = mt
 	}
-	xxx_ProtoFile_imports_test_a_2_m3_goTypes = nil
-	xxx_ProtoFile_imports_test_a_2_m3_depIdxs = nil
+	xxx_File_imports_test_a_2_m3_proto_goTypes = nil
+	xxx_File_imports_test_a_2_m3_proto_depIdxs = nil
 }

@@ -48,12 +48,11 @@ type GoPackageName string
 
 // cleanPackageName converts a string to a valid Go package name.
 func cleanPackageName(name string) GoPackageName {
-	return GoPackageName(cleanGoName(name, false))
+	return GoPackageName(cleanGoName(name))
 }
 
 // cleanGoName converts a string to a valid Go identifier.
-// If mustExport, then the returned identifier is exported if not already.
-func cleanGoName(s string, mustExport bool) string {
+func cleanGoName(s string) string {
 	// Sanitize the input to the set of valid characters,
 	// which must be '_' or be in the Unicode L or N categories.
 	s = strings.Map(func(r rune) rune {
@@ -62,21 +61,10 @@ func cleanGoName(s string, mustExport bool) string {
 		}
 		return '_'
 	}, s)
-	r, n := utf8.DecodeRuneInString(s)
-
-	// Export the identifier by either uppercasing the first character or by
-	// prepending 'X' (to ensure name starts in the Unicode Lu category).
-	if mustExport {
-		// If possible, uppercase the first character. However, not all
-		// characters in the Unicode L category have an Lu equivalent.
-		if unicode.IsUpper(unicode.ToUpper(r)) {
-			return string(unicode.ToUpper(r)) + s[n:]
-		}
-		return "X" + s
-	}
 
 	// Prepend '_' in the event of a Go keyword conflict or if
 	// the identifier is invalid (does not start in the Unicode L category).
+	r, _ := utf8.DecodeRuneInString(s)
 	if token.Lookup(s).IsKeyword() || !unicode.IsLetter(r) {
 		return "_" + s
 	}

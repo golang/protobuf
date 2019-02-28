@@ -26,7 +26,7 @@ const (
 )
 
 func (e FieldTestMessage_Enum) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_proto2_fields_enumTypes[0]
+	return xxx_File_proto2_fields_proto_enumTypes[0]
 }
 func (e FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -62,7 +62,7 @@ func (x *FieldTestMessage_Enum) UnmarshalJSON(data []byte) error {
 }
 
 func (FieldTestMessage_Enum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_fd8a9d72b841fd68_gzipped, []int{0, 0}
+	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 0}
 }
 
 type FieldTestMessage struct {
@@ -178,13 +178,13 @@ type FieldTestMessage struct {
 }
 
 func (m *FieldTestMessage) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_proto2_fields_messageTypes[0].MessageOf(m)
+	return xxx_File_proto2_fields_proto_messageTypes[0].MessageOf(m)
 }
 func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
 func (m *FieldTestMessage) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage) ProtoMessage()    {}
 func (*FieldTestMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fd8a9d72b841fd68_gzipped, []int{0}
+	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *FieldTestMessage) XXX_Unmarshal(b []byte) error {
@@ -1130,13 +1130,13 @@ type FieldTestMessage_OptionalGroup struct {
 }
 
 func (m *FieldTestMessage_OptionalGroup) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_proto2_fields_messageTypes[1].MessageOf(m)
+	return xxx_File_proto2_fields_proto_messageTypes[1].MessageOf(m)
 }
 func (m *FieldTestMessage_OptionalGroup) Reset()         { *m = FieldTestMessage_OptionalGroup{} }
 func (m *FieldTestMessage_OptionalGroup) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage_OptionalGroup) ProtoMessage()    {}
 func (*FieldTestMessage_OptionalGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fd8a9d72b841fd68_gzipped, []int{0, 0}
+	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 0}
 }
 
 func (m *FieldTestMessage_OptionalGroup) XXX_Unmarshal(b []byte) error {
@@ -1172,13 +1172,13 @@ type FieldTestMessage_RequiredGroup struct {
 }
 
 func (m *FieldTestMessage_RequiredGroup) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_proto2_fields_messageTypes[2].MessageOf(m)
+	return xxx_File_proto2_fields_proto_messageTypes[2].MessageOf(m)
 }
 func (m *FieldTestMessage_RequiredGroup) Reset()         { *m = FieldTestMessage_RequiredGroup{} }
 func (m *FieldTestMessage_RequiredGroup) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage_RequiredGroup) ProtoMessage()    {}
 func (*FieldTestMessage_RequiredGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fd8a9d72b841fd68_gzipped, []int{0, 1}
+	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 1}
 }
 
 func (m *FieldTestMessage_RequiredGroup) XXX_Unmarshal(b []byte) error {
@@ -1214,13 +1214,13 @@ type FieldTestMessage_RepeatedGroup struct {
 }
 
 func (m *FieldTestMessage_RepeatedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_proto2_fields_messageTypes[3].MessageOf(m)
+	return xxx_File_proto2_fields_proto_messageTypes[3].MessageOf(m)
 }
 func (m *FieldTestMessage_RepeatedGroup) Reset()         { *m = FieldTestMessage_RepeatedGroup{} }
 func (m *FieldTestMessage_RepeatedGroup) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage_RepeatedGroup) ProtoMessage()    {}
 func (*FieldTestMessage_RepeatedGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fd8a9d72b841fd68_gzipped, []int{0, 2}
+	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 2}
 }
 
 func (m *FieldTestMessage_RepeatedGroup) XXX_Unmarshal(b []byte) error {
@@ -1256,13 +1256,13 @@ type FieldTestMessage_OneofGroup struct {
 }
 
 func (m *FieldTestMessage_OneofGroup) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_proto2_fields_messageTypes[7].MessageOf(m)
+	return xxx_File_proto2_fields_proto_messageTypes[7].MessageOf(m)
 }
 func (m *FieldTestMessage_OneofGroup) Reset()         { *m = FieldTestMessage_OneofGroup{} }
 func (m *FieldTestMessage_OneofGroup) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage_OneofGroup) ProtoMessage()    {}
 func (*FieldTestMessage_OneofGroup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fd8a9d72b841fd68_gzipped, []int{0, 6}
+	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 6}
 }
 
 func (m *FieldTestMessage_OneofGroup) XXX_Unmarshal(b []byte) error {
@@ -1297,13 +1297,13 @@ type FieldTestMessage_Message struct {
 }
 
 func (m *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_proto2_fields_messageTypes[8].MessageOf(m)
+	return xxx_File_proto2_fields_proto_messageTypes[8].MessageOf(m)
 }
 func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
 func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage_Message) ProtoMessage()    {}
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fd8a9d72b841fd68_gzipped, []int{0, 7}
+	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 7}
 }
 
 func (m *FieldTestMessage_Message) XXX_Unmarshal(b []byte) error {
@@ -1325,7 +1325,7 @@ func (m *FieldTestMessage_Message) XXX_DiscardUnknown() {
 var xxx_messageInfo_FieldTestMessage_Message proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterFile("proto2/fields.proto", fileDescriptor_fd8a9d72b841fd68_gzipped)
+	proto.RegisterFile("proto2/fields.proto", xxx_File_proto2_fields_proto_rawdesc_gzipped)
 	proto.RegisterEnum("goproto.protoc.proto2.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)
 	proto.RegisterType((*FieldTestMessage)(nil), "goproto.protoc.proto2.FieldTestMessage")
 	proto.RegisterMapType((map[uint64]FieldTestMessage_Enum)(nil), "goproto.protoc.proto2.FieldTestMessage.MapFixed64EnumEntry")
@@ -1338,7 +1338,7 @@ func init() {
 	proto.RegisterType((*FieldTestMessage_Message)(nil), "goproto.protoc.proto2.FieldTestMessage.Message")
 }
 
-var fileDescriptor_fd8a9d72b841fd68 = []byte{
+var xxx_File_proto2_fields_proto_rawdesc = []byte{
 	// 5913 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x13, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0x2f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x15, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70,
@@ -1712,15 +1712,15 @@ var fileDescriptor_fd8a9d72b841fd68 = []byte{
 	0x74, 0x61, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32,
 }
 
-var fileDescriptor_fd8a9d72b841fd68_gzipped = protoapi.CompressGZIP(fileDescriptor_fd8a9d72b841fd68)
+var xxx_File_proto2_fields_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_proto2_fields_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_proto2_fields protoreflect.FileDescriptor
+var File_proto2_fields_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_proto2_fields_enumTypes [1]protoreflect.EnumType
-var xxx_ProtoFile_proto2_fields_messageTypes [9]protoimpl.MessageType
-var xxx_ProtoFile_proto2_fields_goTypes = []interface{}{
+var xxx_File_proto2_fields_proto_enumTypes [1]protoreflect.EnumType
+var xxx_File_proto2_fields_proto_messageTypes [9]protoimpl.MessageType
+var xxx_File_proto2_fields_proto_goTypes = []interface{}{
 	(FieldTestMessage_Enum)(0),             // 0: goproto.protoc.proto2.FieldTestMessage.Enum
 	(*FieldTestMessage)(nil),               // 1: goproto.protoc.proto2.FieldTestMessage
 	(*FieldTestMessage_OptionalGroup)(nil), // 2: goproto.protoc.proto2.FieldTestMessage.OptionalGroup
@@ -1732,7 +1732,7 @@ var xxx_ProtoFile_proto2_fields_goTypes = []interface{}{
 	(*FieldTestMessage_OneofGroup)(nil),    // 8: goproto.protoc.proto2.FieldTestMessage.OneofGroup
 	(*FieldTestMessage_Message)(nil),       // 9: goproto.protoc.proto2.FieldTestMessage.Message
 }
-var xxx_ProtoFile_proto2_fields_depIdxs = []int32{
+var xxx_File_proto2_fields_proto_depIdxs = []int32{
 	0, // goproto.protoc.proto2.FieldTestMessage.optional_enum:type_name -> goproto.protoc.proto2.FieldTestMessage.Enum
 	9, // goproto.protoc.proto2.FieldTestMessage.optional_Message:type_name -> goproto.protoc.proto2.FieldTestMessage.Message
 	2, // goproto.protoc.proto2.FieldTestMessage.optionalgroup:type_name -> goproto.protoc.proto2.FieldTestMessage.OptionalGroup
@@ -1755,18 +1755,18 @@ var xxx_ProtoFile_proto2_fields_depIdxs = []int32{
 
 func init() {
 	var messageTypes [9]protoreflect.MessageType
-	ProtoFile_proto2_fields = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_fd8a9d72b841fd68,
-		GoTypes:            xxx_ProtoFile_proto2_fields_goTypes,
-		DependencyIndexes:  xxx_ProtoFile_proto2_fields_depIdxs,
-		EnumOutputTypes:    xxx_ProtoFile_proto2_fields_enumTypes[:],
+	File_proto2_fields_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_proto2_fields_proto_rawdesc,
+		GoTypes:            xxx_File_proto2_fields_proto_goTypes,
+		DependencyIndexes:  xxx_File_proto2_fields_proto_depIdxs,
+		EnumOutputTypes:    xxx_File_proto2_fields_proto_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_proto2_fields_goTypes[1:][:9]
+	messageGoTypes := xxx_File_proto2_fields_proto_goTypes[1:][:9]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_proto2_fields_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_proto2_fields_messageTypes[i].PBType = mt
+		xxx_File_proto2_fields_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_proto2_fields_proto_messageTypes[i].PBType = mt
 	}
-	xxx_ProtoFile_proto2_fields_goTypes = nil
-	xxx_ProtoFile_proto2_fields_depIdxs = nil
+	xxx_File_proto2_fields_proto_goTypes = nil
+	xxx_File_proto2_fields_proto_depIdxs = nil
 }

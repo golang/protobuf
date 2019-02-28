@@ -28,7 +28,7 @@ const (
 )
 
 func (e EnumType1) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_proto2_enum_enumTypes[0]
+	return xxx_File_proto2_enum_proto_enumTypes[0]
 }
 func (e EnumType1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -64,7 +64,7 @@ func (x *EnumType1) UnmarshalJSON(data []byte) error {
 }
 
 func (EnumType1) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_de9f68860d540858_gzipped, []int{0}
+	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0}
 }
 
 type EnumType2 int32
@@ -75,7 +75,7 @@ const (
 )
 
 func (e EnumType2) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_proto2_enum_enumTypes[1]
+	return xxx_File_proto2_enum_proto_enumTypes[1]
 }
 func (e EnumType2) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -111,7 +111,7 @@ func (x *EnumType2) UnmarshalJSON(data []byte) error {
 }
 
 func (EnumType2) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_de9f68860d540858_gzipped, []int{1}
+	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{1}
 }
 
 // NestedEnumType1A comment.
@@ -123,7 +123,7 @@ const (
 )
 
 func (e EnumContainerMessage1_NestedEnumType1A) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_proto2_enum_enumTypes[2]
+	return xxx_File_proto2_enum_proto_enumTypes[2]
 }
 func (e EnumContainerMessage1_NestedEnumType1A) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -157,7 +157,7 @@ func (x *EnumContainerMessage1_NestedEnumType1A) UnmarshalJSON(data []byte) erro
 }
 
 func (EnumContainerMessage1_NestedEnumType1A) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_de9f68860d540858_gzipped, []int{0, 0}
+	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 0}
 }
 
 type EnumContainerMessage1_NestedEnumType1B int32
@@ -167,7 +167,7 @@ const (
 )
 
 func (e EnumContainerMessage1_NestedEnumType1B) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_proto2_enum_enumTypes[3]
+	return xxx_File_proto2_enum_proto_enumTypes[3]
 }
 func (e EnumContainerMessage1_NestedEnumType1B) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -201,7 +201,7 @@ func (x *EnumContainerMessage1_NestedEnumType1B) UnmarshalJSON(data []byte) erro
 }
 
 func (EnumContainerMessage1_NestedEnumType1B) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_de9f68860d540858_gzipped, []int{0, 1}
+	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 1}
 }
 
 // NestedEnumType2A comment.
@@ -213,7 +213,7 @@ const (
 )
 
 func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_proto2_enum_enumTypes[4]
+	return xxx_File_proto2_enum_proto_enumTypes[4]
 }
 func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -247,7 +247,7 @@ func (x *EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Unmarshal
 }
 
 func (EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_de9f68860d540858_gzipped, []int{0, 0, 0}
+	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 0, 0}
 }
 
 type EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B int32
@@ -257,7 +257,7 @@ const (
 )
 
 func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Type() protoreflect.EnumType {
-	return xxx_ProtoFile_proto2_enum_enumTypes[5]
+	return xxx_File_proto2_enum_proto_enumTypes[5]
 }
 func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
@@ -291,7 +291,7 @@ func (x *EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Unmarshal
 }
 
 func (EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_de9f68860d540858_gzipped, []int{0, 0, 1}
+	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 0, 1}
 }
 
 type EnumContainerMessage1 struct {
@@ -303,13 +303,13 @@ type EnumContainerMessage1 struct {
 }
 
 func (m *EnumContainerMessage1) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_proto2_enum_messageTypes[0].MessageOf(m)
+	return xxx_File_proto2_enum_proto_messageTypes[0].MessageOf(m)
 }
 func (m *EnumContainerMessage1) Reset()         { *m = EnumContainerMessage1{} }
 func (m *EnumContainerMessage1) String() string { return proto.CompactTextString(m) }
 func (*EnumContainerMessage1) ProtoMessage()    {}
 func (*EnumContainerMessage1) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de9f68860d540858_gzipped, []int{0}
+	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *EnumContainerMessage1) XXX_Unmarshal(b []byte) error {
@@ -354,7 +354,7 @@ type EnumContainerMessage1_EnumContainerMessage2 struct {
 }
 
 func (m *EnumContainerMessage1_EnumContainerMessage2) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_proto2_enum_messageTypes[1].MessageOf(m)
+	return xxx_File_proto2_enum_proto_messageTypes[1].MessageOf(m)
 }
 func (m *EnumContainerMessage1_EnumContainerMessage2) Reset() {
 	*m = EnumContainerMessage1_EnumContainerMessage2{}
@@ -364,7 +364,7 @@ func (m *EnumContainerMessage1_EnumContainerMessage2) String() string {
 }
 func (*EnumContainerMessage1_EnumContainerMessage2) ProtoMessage() {}
 func (*EnumContainerMessage1_EnumContainerMessage2) Descriptor() ([]byte, []int) {
-	return fileDescriptor_de9f68860d540858_gzipped, []int{0, 0}
+	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 0}
 }
 
 func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_Unmarshal(b []byte) error {
@@ -386,7 +386,7 @@ func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_DiscardUnknown() {
 var xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2 proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterFile("proto2/enum.proto", fileDescriptor_de9f68860d540858_gzipped)
+	proto.RegisterFile("proto2/enum.proto", xxx_File_proto2_enum_proto_rawdesc_gzipped)
 	proto.RegisterEnum("goproto.protoc.proto2.EnumType1", EnumType1_name, EnumType1_value)
 	proto.RegisterEnum("goproto.protoc.proto2.EnumType2", EnumType2_name, EnumType2_value)
 	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_NestedEnumType1A", EnumContainerMessage1_NestedEnumType1A_name, EnumContainerMessage1_NestedEnumType1A_value)
@@ -397,7 +397,7 @@ func init() {
 	proto.RegisterType((*EnumContainerMessage1_EnumContainerMessage2)(nil), "goproto.protoc.proto2.EnumContainerMessage1.EnumContainerMessage2")
 }
 
-var fileDescriptor_de9f68860d540858 = []byte{
+var xxx_File_proto2_enum_proto_rawdesc = []byte{
 	// 624 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x11, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0x2f, 0x65, 0x6e, 0x75, 0x6d, 0x2e, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x12, 0x15, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f,
@@ -440,15 +440,15 @@ var fileDescriptor_de9f68860d540858 = []byte{
 	0x2f, 0x74, 0x65, 0x73, 0x74, 0x64, 0x61, 0x74, 0x61, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32,
 }
 
-var fileDescriptor_de9f68860d540858_gzipped = protoapi.CompressGZIP(fileDescriptor_de9f68860d540858)
+var xxx_File_proto2_enum_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_proto2_enum_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_proto2_enum protoreflect.FileDescriptor
+var File_proto2_enum_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_proto2_enum_enumTypes [6]protoreflect.EnumType
-var xxx_ProtoFile_proto2_enum_messageTypes [2]protoimpl.MessageType
-var xxx_ProtoFile_proto2_enum_goTypes = []interface{}{
+var xxx_File_proto2_enum_proto_enumTypes [6]protoreflect.EnumType
+var xxx_File_proto2_enum_proto_messageTypes [2]protoimpl.MessageType
+var xxx_File_proto2_enum_proto_goTypes = []interface{}{
 	(EnumType1)(0), // 0: goproto.protoc.proto2.EnumType1
 	(EnumType2)(0), // 1: goproto.protoc.proto2.EnumType2
 	(EnumContainerMessage1_NestedEnumType1A)(0),                       // 2: goproto.protoc.proto2.EnumContainerMessage1.NestedEnumType1A
@@ -458,25 +458,25 @@ var xxx_ProtoFile_proto2_enum_goTypes = []interface{}{
 	(*EnumContainerMessage1)(nil),                                     // 6: goproto.protoc.proto2.EnumContainerMessage1
 	(*EnumContainerMessage1_EnumContainerMessage2)(nil),               // 7: goproto.protoc.proto2.EnumContainerMessage1.EnumContainerMessage2
 }
-var xxx_ProtoFile_proto2_enum_depIdxs = []int32{
+var xxx_File_proto2_enum_proto_depIdxs = []int32{
 	1, // goproto.protoc.proto2.EnumContainerMessage1.default_duplicate1:type_name -> goproto.protoc.proto2.EnumType2
 	1, // goproto.protoc.proto2.EnumContainerMessage1.default_duplicate2:type_name -> goproto.protoc.proto2.EnumType2
 }
 
 func init() {
 	var messageTypes [2]protoreflect.MessageType
-	ProtoFile_proto2_enum = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_de9f68860d540858,
-		GoTypes:            xxx_ProtoFile_proto2_enum_goTypes,
-		DependencyIndexes:  xxx_ProtoFile_proto2_enum_depIdxs,
-		EnumOutputTypes:    xxx_ProtoFile_proto2_enum_enumTypes[:],
+	File_proto2_enum_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_proto2_enum_proto_rawdesc,
+		GoTypes:            xxx_File_proto2_enum_proto_goTypes,
+		DependencyIndexes:  xxx_File_proto2_enum_proto_depIdxs,
+		EnumOutputTypes:    xxx_File_proto2_enum_proto_enumTypes[:],
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_proto2_enum_goTypes[6:][:2]
+	messageGoTypes := xxx_File_proto2_enum_proto_goTypes[6:][:2]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_proto2_enum_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_proto2_enum_messageTypes[i].PBType = mt
+		xxx_File_proto2_enum_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_proto2_enum_proto_messageTypes[i].PBType = mt
 	}
-	xxx_ProtoFile_proto2_enum_goTypes = nil
-	xxx_ProtoFile_proto2_enum_depIdxs = nil
+	xxx_File_proto2_enum_proto_goTypes = nil
+	xxx_File_proto2_enum_proto_depIdxs = nil
 }

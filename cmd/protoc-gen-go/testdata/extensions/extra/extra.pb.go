@@ -25,13 +25,13 @@ type ExtraMessage struct {
 }
 
 func (m *ExtraMessage) ProtoReflect() protoreflect.Message {
-	return xxx_ProtoFile_extensions_extra_extra_messageTypes[0].MessageOf(m)
+	return xxx_File_extensions_extra_extra_proto_messageTypes[0].MessageOf(m)
 }
 func (m *ExtraMessage) Reset()         { *m = ExtraMessage{} }
 func (m *ExtraMessage) String() string { return proto.CompactTextString(m) }
 func (*ExtraMessage) ProtoMessage()    {}
 func (*ExtraMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_496c2a5e9c1e8739_gzipped, []int{0}
+	return xxx_File_extensions_extra_extra_proto_rawdesc_gzipped, []int{0}
 }
 
 func (m *ExtraMessage) XXX_Unmarshal(b []byte) error {
@@ -60,11 +60,11 @@ func (m *ExtraMessage) GetData() []byte {
 }
 
 func init() {
-	proto.RegisterFile("extensions/extra/extra.proto", fileDescriptor_496c2a5e9c1e8739_gzipped)
+	proto.RegisterFile("extensions/extra/extra.proto", xxx_File_extensions_extra_extra_proto_rawdesc_gzipped)
 	proto.RegisterType((*ExtraMessage)(nil), "goproto.protoc.extension.extra.ExtraMessage")
 }
 
-var fileDescriptor_496c2a5e9c1e8739 = []byte{
+var xxx_File_extensions_extra_extra_proto_rawdesc = []byte{
 	// 175 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1c, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x65, 0x78, 0x74,
 	0x72, 0x61, 0x2f, 0x65, 0x78, 0x74, 0x72, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1e,
@@ -79,31 +79,31 @@ var fileDescriptor_496c2a5e9c1e8739 = []byte{
 	0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x65, 0x78, 0x74, 0x72, 0x61,
 }
 
-var fileDescriptor_496c2a5e9c1e8739_gzipped = protoapi.CompressGZIP(fileDescriptor_496c2a5e9c1e8739)
+var xxx_File_extensions_extra_extra_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_extensions_extra_extra_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var ProtoFile_extensions_extra_extra protoreflect.FileDescriptor
+var File_extensions_extra_extra_proto protoreflect.FileDescriptor
 
-var xxx_ProtoFile_extensions_extra_extra_messageTypes [1]protoimpl.MessageType
-var xxx_ProtoFile_extensions_extra_extra_goTypes = []interface{}{
+var xxx_File_extensions_extra_extra_proto_messageTypes [1]protoimpl.MessageType
+var xxx_File_extensions_extra_extra_proto_goTypes = []interface{}{
 	(*ExtraMessage)(nil), // 0: goproto.protoc.extension.extra.ExtraMessage
 }
-var xxx_ProtoFile_extensions_extra_extra_depIdxs = []int32{}
+var xxx_File_extensions_extra_extra_proto_depIdxs = []int32{}
 
 func init() {
 	var messageTypes [1]protoreflect.MessageType
-	ProtoFile_extensions_extra_extra = protoimpl.FileBuilder{
-		RawDescriptor:      fileDescriptor_496c2a5e9c1e8739,
-		GoTypes:            xxx_ProtoFile_extensions_extra_extra_goTypes,
-		DependencyIndexes:  xxx_ProtoFile_extensions_extra_extra_depIdxs,
+	File_extensions_extra_extra_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_extensions_extra_extra_proto_rawdesc,
+		GoTypes:            xxx_File_extensions_extra_extra_proto_goTypes,
+		DependencyIndexes:  xxx_File_extensions_extra_extra_proto_depIdxs,
 		MessageOutputTypes: messageTypes[:],
 	}.Init()
-	messageGoTypes := xxx_ProtoFile_extensions_extra_extra_goTypes[0:][:1]
+	messageGoTypes := xxx_File_extensions_extra_extra_proto_goTypes[0:][:1]
 	for i, mt := range messageTypes[:] {
-		xxx_ProtoFile_extensions_extra_extra_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_ProtoFile_extensions_extra_extra_messageTypes[i].PBType = mt
+		xxx_File_extensions_extra_extra_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_extensions_extra_extra_proto_messageTypes[i].PBType = mt
 	}
-	xxx_ProtoFile_extensions_extra_extra_goTypes = nil
-	xxx_ProtoFile_extensions_extra_extra_depIdxs = nil
+	xxx_File_extensions_extra_extra_proto_goTypes = nil
+	xxx_File_extensions_extra_extra_proto_depIdxs = nil
 }
