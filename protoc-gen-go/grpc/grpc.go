@@ -117,7 +117,10 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConn")
-	g.P("var errUnimplemented = func(methodName string) error {\n\treturn ", errorPkg, ".Errorf(codes.Unimplemented, \"method %s not implemented\", methodName)\n}")
+	g.P()
+	g.P("func errUnimplemented(methodName string) error {")
+	g.P("\treturn ", errorPkg, ".Errorf(codes.Unimplemented, \"method %s not implemented\", methodName)")
+	g.P("}")
 	g.P()
 
 	// Assert version compatibility.
