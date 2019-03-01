@@ -745,8 +745,8 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_pb3_test_proto protoreflect.FileDescriptor
 
-var xxx_File_pb3_test_proto_enumTypes [2]protoreflect.EnumType
-var xxx_File_pb3_test_proto_messageTypes [12]protoimpl.MessageType
+var xxx_File_pb3_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
+var xxx_File_pb3_test_proto_messageTypes = make([]protoimpl.MessageType, 12)
 var xxx_File_pb3_test_proto_goTypes = []interface{}{
 	(Enum)(0),             // 0: pb3.Enum
 	(Enums_NestedEnum)(0), // 1: pb3.Enums.NestedEnum
@@ -781,16 +781,16 @@ var xxx_File_pb3_test_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [12]protoreflect.MessageType
+	messageTypes := make([]protoreflect.MessageType, 12)
 	File_pb3_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_pb3_test_proto_rawdesc,
 		GoTypes:            xxx_File_pb3_test_proto_goTypes,
 		DependencyIndexes:  xxx_File_pb3_test_proto_depIdxs,
-		EnumOutputTypes:    xxx_File_pb3_test_proto_enumTypes[:],
-		MessageOutputTypes: messageTypes[:],
+		EnumOutputTypes:    xxx_File_pb3_test_proto_enumTypes,
+		MessageOutputTypes: messageTypes,
 	}.Init()
 	messageGoTypes := xxx_File_pb3_test_proto_goTypes[2:][:12]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_pb3_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_pb3_test_proto_messageTypes[i].PBType = mt
 	}

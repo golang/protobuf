@@ -450,7 +450,7 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_google_protobuf_api_proto protoreflect.FileDescriptor
 
-var xxx_File_google_protobuf_api_proto_messageTypes [3]protoimpl.MessageType
+var xxx_File_google_protobuf_api_proto_messageTypes = make([]protoimpl.MessageType, 3)
 var xxx_File_google_protobuf_api_proto_goTypes = []interface{}{
 	(*Api)(nil),           // 0: google.protobuf.Api
 	(*Method)(nil),        // 1: google.protobuf.Method
@@ -470,15 +470,15 @@ var xxx_File_google_protobuf_api_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [3]protoreflect.MessageType
+	messageTypes := make([]protoreflect.MessageType, 3)
 	File_google_protobuf_api_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_api_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_api_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_api_proto_depIdxs,
-		MessageOutputTypes: messageTypes[:],
+		MessageOutputTypes: messageTypes,
 	}.Init()
 	messageGoTypes := xxx_File_google_protobuf_api_proto_goTypes[0:][:3]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_google_protobuf_api_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_api_proto_messageTypes[i].PBType = mt
 	}

@@ -143,7 +143,7 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_extensions_base_base_proto protoreflect.FileDescriptor
 
-var xxx_File_extensions_base_base_proto_messageTypes [2]protoimpl.MessageType
+var xxx_File_extensions_base_base_proto_messageTypes = make([]protoimpl.MessageType, 2)
 var xxx_File_extensions_base_base_proto_goTypes = []interface{}{
 	(*BaseMessage)(nil),                 // 0: goproto.protoc.extension.base.BaseMessage
 	(*MessageSetWireFormatMessage)(nil), // 1: goproto.protoc.extension.base.MessageSetWireFormatMessage
@@ -151,15 +151,15 @@ var xxx_File_extensions_base_base_proto_goTypes = []interface{}{
 var xxx_File_extensions_base_base_proto_depIdxs = []int32{}
 
 func init() {
-	var messageTypes [2]protoreflect.MessageType
+	messageTypes := make([]protoreflect.MessageType, 2)
 	File_extensions_base_base_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_extensions_base_base_proto_rawdesc,
 		GoTypes:            xxx_File_extensions_base_base_proto_goTypes,
 		DependencyIndexes:  xxx_File_extensions_base_base_proto_depIdxs,
-		MessageOutputTypes: messageTypes[:],
+		MessageOutputTypes: messageTypes,
 	}.Init()
 	messageGoTypes := xxx_File_extensions_base_base_proto_goTypes[0:][:2]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_extensions_base_base_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_extensions_base_base_proto_messageTypes[i].PBType = mt
 	}

@@ -406,7 +406,7 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_google_protobuf_compiler_plugin_proto protoreflect.FileDescriptor
 
-var xxx_File_google_protobuf_compiler_plugin_proto_messageTypes [4]protoimpl.MessageType
+var xxx_File_google_protobuf_compiler_plugin_proto_messageTypes = make([]protoimpl.MessageType, 4)
 var xxx_File_google_protobuf_compiler_plugin_proto_goTypes = []interface{}{
 	(*Version)(nil),                        // 0: google.protobuf.compiler.Version
 	(*CodeGeneratorRequest)(nil),           // 1: google.protobuf.compiler.CodeGeneratorRequest
@@ -421,15 +421,15 @@ var xxx_File_google_protobuf_compiler_plugin_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [4]protoreflect.MessageType
+	messageTypes := make([]protoreflect.MessageType, 4)
 	File_google_protobuf_compiler_plugin_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_compiler_plugin_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_compiler_plugin_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_compiler_plugin_proto_depIdxs,
-		MessageOutputTypes: messageTypes[:],
+		MessageOutputTypes: messageTypes,
 	}.Init()
 	messageGoTypes := xxx_File_google_protobuf_compiler_plugin_proto_goTypes[0:][:4]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[i].PBType = mt
 	}

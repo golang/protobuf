@@ -181,7 +181,7 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_proto2_nested_messages_proto protoreflect.FileDescriptor
 
-var xxx_File_proto2_nested_messages_proto_messageTypes [3]protoimpl.MessageType
+var xxx_File_proto2_nested_messages_proto_messageTypes = make([]protoimpl.MessageType, 3)
 var xxx_File_proto2_nested_messages_proto_goTypes = []interface{}{
 	(*Layer1)(nil),               // 0: goproto.protoc.proto2.Layer1
 	(*Layer1_Layer2)(nil),        // 1: goproto.protoc.proto2.Layer1.Layer2
@@ -194,15 +194,15 @@ var xxx_File_proto2_nested_messages_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [3]protoreflect.MessageType
+	messageTypes := make([]protoreflect.MessageType, 3)
 	File_proto2_nested_messages_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_proto2_nested_messages_proto_rawdesc,
 		GoTypes:            xxx_File_proto2_nested_messages_proto_goTypes,
 		DependencyIndexes:  xxx_File_proto2_nested_messages_proto_depIdxs,
-		MessageOutputTypes: messageTypes[:],
+		MessageOutputTypes: messageTypes,
 	}.Init()
 	messageGoTypes := xxx_File_proto2_nested_messages_proto_goTypes[0:][:3]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_proto2_nested_messages_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_proto2_nested_messages_proto_messageTypes[i].PBType = mt
 	}

@@ -86,7 +86,7 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_imports_test_import_a1m1_proto protoreflect.FileDescriptor
 
-var xxx_File_imports_test_import_a1m1_proto_messageTypes [1]protoimpl.MessageType
+var xxx_File_imports_test_import_a1m1_proto_messageTypes = make([]protoimpl.MessageType, 1)
 var xxx_File_imports_test_import_a1m1_proto_goTypes = []interface{}{
 	(*A1M1)(nil),        // 0: test.A1M1
 	(*test_a_1.M1)(nil), // 1: test.a.M1
@@ -96,15 +96,15 @@ var xxx_File_imports_test_import_a1m1_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [1]protoreflect.MessageType
+	messageTypes := make([]protoreflect.MessageType, 1)
 	File_imports_test_import_a1m1_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_imports_test_import_a1m1_proto_rawdesc,
 		GoTypes:            xxx_File_imports_test_import_a1m1_proto_goTypes,
 		DependencyIndexes:  xxx_File_imports_test_import_a1m1_proto_depIdxs,
-		MessageOutputTypes: messageTypes[:],
+		MessageOutputTypes: messageTypes,
 	}.Init()
 	messageGoTypes := xxx_File_imports_test_import_a1m1_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_imports_test_import_a1m1_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_imports_test_import_a1m1_proto_messageTypes[i].PBType = mt
 	}

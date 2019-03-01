@@ -379,8 +379,8 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_google_protobuf_struct_proto protoreflect.FileDescriptor
 
-var xxx_File_google_protobuf_struct_proto_enumTypes [1]protoreflect.EnumType
-var xxx_File_google_protobuf_struct_proto_messageTypes [4]protoimpl.MessageType
+var xxx_File_google_protobuf_struct_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var xxx_File_google_protobuf_struct_proto_messageTypes = make([]protoimpl.MessageType, 4)
 var xxx_File_google_protobuf_struct_proto_goTypes = []interface{}{
 	(NullValue)(0),    // 0: google.protobuf.NullValue
 	(*Struct)(nil),    // 1: google.protobuf.Struct
@@ -398,16 +398,16 @@ var xxx_File_google_protobuf_struct_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [4]protoreflect.MessageType
+	messageTypes := make([]protoreflect.MessageType, 4)
 	File_google_protobuf_struct_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_struct_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_struct_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_struct_proto_depIdxs,
-		EnumOutputTypes:    xxx_File_google_protobuf_struct_proto_enumTypes[:],
-		MessageOutputTypes: messageTypes[:],
+		EnumOutputTypes:    xxx_File_google_protobuf_struct_proto_enumTypes,
+		MessageOutputTypes: messageTypes,
 	}.Init()
 	messageGoTypes := xxx_File_google_protobuf_struct_proto_goTypes[1:][:4]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_google_protobuf_struct_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_struct_proto_messageTypes[i].PBType = mt
 	}

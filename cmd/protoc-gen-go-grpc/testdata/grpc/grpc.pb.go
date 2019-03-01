@@ -131,7 +131,7 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_grpc_grpc_proto protoreflect.FileDescriptor
 
-var xxx_File_grpc_grpc_proto_messageTypes [2]protoimpl.MessageType
+var xxx_File_grpc_grpc_proto_messageTypes = make([]protoimpl.MessageType, 2)
 var xxx_File_grpc_grpc_proto_goTypes = []interface{}{
 	(*Request)(nil),  // 0: goproto.protoc.grpc.Request
 	(*Response)(nil), // 1: goproto.protoc.grpc.Response
@@ -148,15 +148,15 @@ var xxx_File_grpc_grpc_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [2]protoreflect.MessageType
+	messageTypes := make([]protoreflect.MessageType, 2)
 	File_grpc_grpc_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_grpc_grpc_proto_rawdesc,
 		GoTypes:            xxx_File_grpc_grpc_proto_goTypes,
 		DependencyIndexes:  xxx_File_grpc_grpc_proto_depIdxs,
-		MessageOutputTypes: messageTypes[:],
+		MessageOutputTypes: messageTypes,
 	}.Init()
 	messageGoTypes := xxx_File_grpc_grpc_proto_goTypes[0:][:2]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_grpc_grpc_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_grpc_grpc_proto_messageTypes[i].PBType = mt
 	}

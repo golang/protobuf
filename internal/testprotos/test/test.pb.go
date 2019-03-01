@@ -2740,8 +2740,8 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_test_test_proto protoreflect.FileDescriptor
 
-var xxx_File_test_test_proto_enumTypes [4]protoreflect.EnumType
-var xxx_File_test_test_proto_messageTypes [30]protoimpl.MessageType
+var xxx_File_test_test_proto_enumTypes = make([]protoreflect.EnumType, 4)
+var xxx_File_test_test_proto_messageTypes = make([]protoimpl.MessageType, 30)
 var xxx_File_test_test_proto_goTypes = []interface{}{
 	(ForeignEnum)(0),                          // 0: goproto.proto.test.ForeignEnum
 	(TestReservedEnumFields)(0),               // 1: goproto.proto.test.TestReservedEnumFields
@@ -2871,18 +2871,18 @@ var xxx_File_test_test_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [30]protoreflect.MessageType
-	var extensionTypes [37]protoreflect.ExtensionType
+	messageTypes := make([]protoreflect.MessageType, 30)
+	extensionTypes := make([]protoreflect.ExtensionType, 37)
 	File_test_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:        xxx_File_test_test_proto_rawdesc,
 		GoTypes:              xxx_File_test_test_proto_goTypes,
 		DependencyIndexes:    xxx_File_test_test_proto_depIdxs,
-		EnumOutputTypes:      xxx_File_test_test_proto_enumTypes[:],
-		MessageOutputTypes:   messageTypes[:],
-		ExtensionOutputTypes: extensionTypes[:],
+		EnumOutputTypes:      xxx_File_test_test_proto_enumTypes,
+		MessageOutputTypes:   messageTypes,
+		ExtensionOutputTypes: extensionTypes,
 	}.Init()
 	messageGoTypes := xxx_File_test_test_proto_goTypes[4:][:30]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_test_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_test_test_proto_messageTypes[i].PBType = mt
 	}

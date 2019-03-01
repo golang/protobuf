@@ -76,7 +76,7 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_proto3_enum_proto protoreflect.FileDescriptor
 
-var xxx_File_proto3_enum_proto_enumTypes [1]protoreflect.EnumType
+var xxx_File_proto3_enum_proto_enumTypes = make([]protoreflect.EnumType, 1)
 var xxx_File_proto3_enum_proto_goTypes = []interface{}{
 	(Enum)(0), // 0: goproto.protoc.proto3.Enum
 }
@@ -87,7 +87,7 @@ func init() {
 		RawDescriptor:     xxx_File_proto3_enum_proto_rawdesc,
 		GoTypes:           xxx_File_proto3_enum_proto_goTypes,
 		DependencyIndexes: xxx_File_proto3_enum_proto_depIdxs,
-		EnumOutputTypes:   xxx_File_proto3_enum_proto_enumTypes[:],
+		EnumOutputTypes:   xxx_File_proto3_enum_proto_enumTypes,
 	}.Init()
 	xxx_File_proto3_enum_proto_goTypes = nil
 	xxx_File_proto3_enum_proto_depIdxs = nil

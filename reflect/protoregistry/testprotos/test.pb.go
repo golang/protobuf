@@ -424,8 +424,8 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_test_proto protoreflect.FileDescriptor
 
-var xxx_File_test_proto_enumTypes [3]protoreflect.EnumType
-var xxx_File_test_proto_messageTypes [4]protoimpl.MessageType
+var xxx_File_test_proto_enumTypes = make([]protoreflect.EnumType, 3)
+var xxx_File_test_proto_messageTypes = make([]protoimpl.MessageType, 4)
 var xxx_File_test_proto_goTypes = []interface{}{
 	(Enum1)(0),       // 0: testprotos.Enum1
 	(Enum2)(0),       // 1: testprotos.Enum2
@@ -449,18 +449,18 @@ var xxx_File_test_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [4]protoreflect.MessageType
-	var extensionTypes [6]protoreflect.ExtensionType
+	messageTypes := make([]protoreflect.MessageType, 4)
+	extensionTypes := make([]protoreflect.ExtensionType, 6)
 	File_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:        xxx_File_test_proto_rawdesc,
 		GoTypes:              xxx_File_test_proto_goTypes,
 		DependencyIndexes:    xxx_File_test_proto_depIdxs,
-		EnumOutputTypes:      xxx_File_test_proto_enumTypes[:],
-		MessageOutputTypes:   messageTypes[:],
-		ExtensionOutputTypes: extensionTypes[:],
+		EnumOutputTypes:      xxx_File_test_proto_enumTypes,
+		MessageOutputTypes:   messageTypes,
+		ExtensionOutputTypes: extensionTypes,
 	}.Init()
 	messageGoTypes := xxx_File_test_proto_goTypes[3:][:4]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_test_proto_messageTypes[i].PBType = mt
 	}

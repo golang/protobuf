@@ -1956,8 +1956,8 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_pb2_test_proto protoreflect.FileDescriptor
 
-var xxx_File_pb2_test_proto_enumTypes [2]protoreflect.EnumType
-var xxx_File_pb2_test_proto_messageTypes [20]protoimpl.MessageType
+var xxx_File_pb2_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
+var xxx_File_pb2_test_proto_messageTypes = make([]protoimpl.MessageType, 20)
 var xxx_File_pb2_test_proto_goTypes = []interface{}{
 	(Enum)(0),                             // 0: pb2.Enum
 	(Enums_NestedEnum)(0),                 // 1: pb2.Enums.NestedEnum
@@ -2068,18 +2068,18 @@ var xxx_File_pb2_test_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [20]protoreflect.MessageType
-	var extensionTypes [19]protoreflect.ExtensionType
+	messageTypes := make([]protoreflect.MessageType, 20)
+	extensionTypes := make([]protoreflect.ExtensionType, 19)
 	File_pb2_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:        xxx_File_pb2_test_proto_rawdesc,
 		GoTypes:              xxx_File_pb2_test_proto_goTypes,
 		DependencyIndexes:    xxx_File_pb2_test_proto_depIdxs,
-		EnumOutputTypes:      xxx_File_pb2_test_proto_enumTypes[:],
-		MessageOutputTypes:   messageTypes[:],
-		ExtensionOutputTypes: extensionTypes[:],
+		EnumOutputTypes:      xxx_File_pb2_test_proto_enumTypes,
+		MessageOutputTypes:   messageTypes,
+		ExtensionOutputTypes: extensionTypes,
 	}.Init()
 	messageGoTypes := xxx_File_pb2_test_proto_goTypes[2:][:20]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_pb2_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_pb2_test_proto_messageTypes[i].PBType = mt
 	}

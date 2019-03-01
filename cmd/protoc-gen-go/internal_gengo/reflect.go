@@ -54,10 +54,10 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 	g.P()
 
 	if len(f.allEnums) > 0 {
-		g.P("var ", enumTypesVarName(f), " [", len(f.allEnums), "]", protoreflectPackage.Ident("EnumType"))
+		g.P("var ", enumTypesVarName(f), " = make([]", protoreflectPackage.Ident("EnumType"), ",", len(f.allEnums), ")")
 	}
 	if len(f.allMessages) > 0 {
-		g.P("var ", messageTypesVarName(f), " [", len(f.allMessages), "]", protoimplPackage.Ident("MessageType"))
+		g.P("var ", messageTypesVarName(f), " = make([]", protoimplPackage.Ident("MessageType"), ",", len(f.allMessages), ")")
 	}
 
 	// Generate a unique list of Go types for all declarations and dependencies,
@@ -153,10 +153,10 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 
 	g.P("func init() {")
 	if len(f.allMessages) > 0 {
-		g.P("var messageTypes [", len(f.allMessages), "]", protoreflectPackage.Ident("MessageType"))
+		g.P("messageTypes := make([]", protoreflectPackage.Ident("MessageType"), ",", len(f.allMessages), ")")
 	}
 	if len(f.allExtensions) > 0 {
-		g.P("var extensionTypes [", len(f.allExtensions), "]", protoreflectPackage.Ident("ExtensionType"))
+		g.P("extensionTypes := make([]", protoreflectPackage.Ident("ExtensionType"), ",", len(f.allExtensions), ")")
 	}
 
 	g.P(f.GoDescriptorIdent, " = ", protoimplPackage.Ident("FileBuilder"), "{")
@@ -164,20 +164,20 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 	g.P("GoTypes: ", goTypesVarName(f), ",")
 	g.P("DependencyIndexes: ", depIdxsVarName(f), ",")
 	if len(f.allEnums) > 0 {
-		g.P("EnumOutputTypes: ", enumTypesVarName(f), "[:],")
+		g.P("EnumOutputTypes: ", enumTypesVarName(f), ",")
 	}
 	if len(f.allMessages) > 0 {
-		g.P("MessageOutputTypes: messageTypes[:],")
+		g.P("MessageOutputTypes: messageTypes,")
 	}
 	if len(f.allExtensions) > 0 {
-		g.P("ExtensionOutputTypes: extensionTypes[:],")
+		g.P("ExtensionOutputTypes: extensionTypes,")
 	}
 	g.P("}.Init()")
 
 	// Copy the local list of message types into the global array.
 	if len(f.allMessages) > 0 {
 		g.P("messageGoTypes := ", goTypesVarName(f), "[", len(f.allEnums), ":][:", len(f.allMessages), "]")
-		g.P("for i, mt := range messageTypes[:] {")
+		g.P("for i, mt := range messageTypes {")
 		g.P(messageTypesVarName(f), "[i].GoType = ", reflectPackage.Ident("TypeOf"), "(messageGoTypes[i])")
 		g.P(messageTypesVarName(f), "[i].PBType = mt")
 		g.P("}")

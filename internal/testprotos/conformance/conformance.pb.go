@@ -391,8 +391,8 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var File_conformance_conformance_proto protoreflect.FileDescriptor
 
-var xxx_File_conformance_conformance_proto_enumTypes [1]protoreflect.EnumType
-var xxx_File_conformance_conformance_proto_messageTypes [2]protoimpl.MessageType
+var xxx_File_conformance_conformance_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var xxx_File_conformance_conformance_proto_messageTypes = make([]protoimpl.MessageType, 2)
 var xxx_File_conformance_conformance_proto_goTypes = []interface{}{
 	(WireFormat)(0),             // 0: conformance.WireFormat
 	(*ConformanceRequest)(nil),  // 1: conformance.ConformanceRequest
@@ -403,16 +403,16 @@ var xxx_File_conformance_conformance_proto_depIdxs = []int32{
 }
 
 func init() {
-	var messageTypes [2]protoreflect.MessageType
+	messageTypes := make([]protoreflect.MessageType, 2)
 	File_conformance_conformance_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_conformance_conformance_proto_rawdesc,
 		GoTypes:            xxx_File_conformance_conformance_proto_goTypes,
 		DependencyIndexes:  xxx_File_conformance_conformance_proto_depIdxs,
-		EnumOutputTypes:    xxx_File_conformance_conformance_proto_enumTypes[:],
-		MessageOutputTypes: messageTypes[:],
+		EnumOutputTypes:    xxx_File_conformance_conformance_proto_enumTypes,
+		MessageOutputTypes: messageTypes,
 	}.Init()
 	messageGoTypes := xxx_File_conformance_conformance_proto_goTypes[1:][:2]
-	for i, mt := range messageTypes[:] {
+	for i, mt := range messageTypes {
 		xxx_File_conformance_conformance_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_conformance_conformance_proto_messageTypes[i].PBType = mt
 	}
