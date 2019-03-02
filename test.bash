@@ -4,5 +4,5 @@
 # license that can be found in the LICENSE file.
 
 cd "$(git rev-parse --show-toplevel)"
-go test -v -timeout 60m -tags integration "$@"
+go test -v -timeout 60m integration_test.go "$@"
 exit $?
