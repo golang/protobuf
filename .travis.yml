@@ -1,3 +1,4 @@
+dist: xenial
 script:
   - ./test.bash
 cache:

@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build integration
+// +build ignore
 
-package protobuf
+package main
 
 import (
 	"archive/tar"
@@ -22,6 +22,7 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+	"time"
 )
 
 var (
@@ -119,6 +120,25 @@ func mustInitDeps(t *testing.T) {
 	testDir := filepath.Join(repoRoot, ".cache")
 	check(os.MkdirAll(testDir, 0775))
 
+	// Travis-CI has a hard-coded timeout where it kills the test after
+	// 10 minutes of a lack of activity on stdout.
+	// We work around this restriction by periodically printing the timestamp.
+	ticker := time.NewTicker(5 * time.Minute)
+	done := make(chan struct{})
+	go func() {
+		now := time.Now()
+		for {
+			select {
+			case t := <-ticker.C:
+				fmt.Printf("\tt=%0.fmin\n", t.Sub(now).Minutes())
+			case <-done:
+				return
+			}
+		}
+	}()
+	defer close(done)
+	defer ticker.Stop()
+
 	// Delete the current directory if non-empty,
 	// which only occurs if a dependency failed to initialize properly.
 	var workingDir string
@@ -165,9 +185,10 @@ func mustInitDeps(t *testing.T) {
 	if _, err := os.Stat(workingDir); err != nil {
 		fmt.Printf("download %v\n", filepath.Base(workingDir))
 		url := fmt.Sprintf("https://github.com/google/protobuf/releases/download/v%v/protobuf-all-%v.tar.gz", protobufVersion, protobufVersion)
-		downloadArchive(check, workingDir, url, 1)
+		downloadArchive(check, workingDir, url, "protobuf-"+protobufVersion)
 
 		fmt.Printf("build %v\n", filepath.Base(workingDir))
+		mustRunCommand(t, workingDir, "./autogen.sh")
 		mustRunCommand(t, workingDir, "./configure")
 		mustRunCommand(t, workingDir, "make")
 		mustRunCommand(t, filepath.Join(workingDir, "conformance"), "make")
@@ -184,7 +205,7 @@ func mustInitDeps(t *testing.T) {
 		if _, err := os.Stat(workingDir); err != nil {
 			fmt.Printf("download %v\n", filepath.Base(workingDir))
 			url := fmt.Sprintf("https://dl.google.com/go/go%v.%v-%v.tar.gz", v, runtime.GOOS, runtime.GOARCH)
-			downloadArchive(check, workingDir, url, 1)
+			downloadArchive(check, workingDir, url, "go")
 		}
 		registerBinary("go"+v, filepath.Join(workingDir, "bin", "go"))
 	}
@@ -210,7 +231,7 @@ func mustInitDeps(t *testing.T) {
 	check(os.Setenv("GOPATH", goPath))
 }
 
-func downloadArchive(check func(error), dstPath, srcURL string, skipPrefixes int) {
+func downloadArchive(check func(error), dstPath, srcURL, skipPrefix string) {
 	check(os.RemoveAll(dstPath))
 
 	resp, err := http.Get(srcURL)
@@ -228,7 +249,17 @@ func downloadArchive(check func(error), dstPath, srcURL string, skipPrefixes int
 		}
 		check(err)
 
-		path := strings.Join(strings.Split(h.Name, "/")[skipPrefixes:], "/")
+		// Skip directories or files outside the prefix directory.
+		if len(skipPrefix) > 0 {
+			if !strings.HasPrefix(h.Name, skipPrefix) {
+				continue
+			}
+			if len(h.Name) > len(skipPrefix) && h.Name[len(skipPrefix)] != '/' {
+				continue
+			}
+		}
+
+		path := strings.TrimPrefix(strings.TrimPrefix(h.Name, skipPrefix), "/")
 		path = filepath.Join(dstPath, filepath.FromSlash(path))
 		mode := os.FileMode(h.Mode & 0777)
 		switch h.Typeflag {
