@@ -5,6 +5,7 @@
 package fileinit
 
 import (
+	descfield "github.com/golang/protobuf/v2/internal/descfield"
 	wire "github.com/golang/protobuf/v2/internal/encoding/wire"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -88,36 +89,36 @@ func (fd *fileDesc) unmarshalSeed(b []byte) {
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case fileDesc_Name:
+			case descfield.FileDescriptorProto_Name:
 				fd.path = nb.MakeString(v)
-			case fileDesc_Package:
+			case descfield.FileDescriptorProto_Package:
 				fd.protoPackage = pref.FullName(nb.MakeString(v))
-			case fileDesc_Enums:
-				if prevField != fileDesc_Enums {
+			case descfield.FileDescriptorProto_EnumType:
+				if prevField != descfield.FileDescriptorProto_EnumType {
 					if numEnums > 0 {
 						panic("non-contiguous repeated field")
 					}
 					posEnums = len(b0) - len(b) - n - m
 				}
 				numEnums++
-			case fileDesc_Messages:
-				if prevField != fileDesc_Messages {
+			case descfield.FileDescriptorProto_MessageType:
+				if prevField != descfield.FileDescriptorProto_MessageType {
 					if numMessages > 0 {
 						panic("non-contiguous repeated field")
 					}
 					posMessages = len(b0) - len(b) - n - m
 				}
 				numMessages++
-			case fileDesc_Extensions:
-				if prevField != fileDesc_Extensions {
+			case descfield.FileDescriptorProto_Extension:
+				if prevField != descfield.FileDescriptorProto_Extension {
 					if numExtensions > 0 {
 						panic("non-contiguous repeated field")
 					}
 					posExtensions = len(b0) - len(b) - n - m
 				}
 				numExtensions++
-			case fileDesc_Services:
-				if prevField != fileDesc_Services {
+			case descfield.FileDescriptorProto_Service:
+				if prevField != descfield.FileDescriptorProto_Service {
 					if numServices > 0 {
 						panic("non-contiguous repeated field")
 					}
@@ -199,7 +200,7 @@ func (ed *enumDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, pd pr
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case enumDesc_Name:
+			case descfield.EnumDescriptorProto_Name:
 				ed.fullName = nb.AppendFullName(pd.FullName(), v)
 			}
 		default:
@@ -226,26 +227,26 @@ func (md *messageDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, pd
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case messageDesc_Name:
+			case descfield.DescriptorProto_Name:
 				md.fullName = nb.AppendFullName(pd.FullName(), v)
-			case messageDesc_Enums:
-				if prevField != messageDesc_Enums {
+			case descfield.DescriptorProto_EnumType:
+				if prevField != descfield.DescriptorProto_EnumType {
 					if numEnums > 0 {
 						panic("non-contiguous repeated field")
 					}
 					posEnums = len(b0) - len(b) - n - m
 				}
 				numEnums++
-			case messageDesc_Messages:
-				if prevField != messageDesc_Messages {
+			case descfield.DescriptorProto_NestedType:
+				if prevField != descfield.DescriptorProto_NestedType {
 					if numMessages > 0 {
 						panic("non-contiguous repeated field")
 					}
 					posMessages = len(b0) - len(b) - n - m
 				}
 				numMessages++
-			case messageDesc_Extensions:
-				if prevField != messageDesc_Extensions {
+			case descfield.DescriptorProto_Extension:
+				if prevField != descfield.DescriptorProto_Extension {
 					if numExtensions > 0 {
 						panic("non-contiguous repeated field")
 					}
@@ -315,14 +316,14 @@ func (xd *extensionDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, 
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case fieldDesc_Number:
+			case descfield.FieldDescriptorProto_Number:
 				xd.number = pref.FieldNumber(v)
 			}
 		case wire.BytesType:
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case fieldDesc_Name:
+			case descfield.FieldDescriptorProto_Name:
 				xd.fullName = nb.AppendFullName(pd.FullName(), v)
 			}
 		default:
@@ -345,7 +346,7 @@ func (sd *serviceDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, pd
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case serviceDesc_Name:
+			case descfield.ServiceDescriptorProto_Name:
 				sd.fullName = nb.AppendFullName(pd.FullName(), v)
 			}
 		default:

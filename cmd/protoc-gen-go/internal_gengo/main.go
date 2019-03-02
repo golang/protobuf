@@ -18,6 +18,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/v2/internal/descfield"
 	"github.com/golang/protobuf/v2/internal/encoding/tag"
 	"github.com/golang/protobuf/v2/protogen"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
@@ -118,10 +119,9 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 		g.P("// source: ", f.Desc.Path())
 	}
 	g.P()
-	const filePackageField = 2 // FileDescriptorProto.package
 	g.PrintLeadingComments(protogen.Location{
 		SourceFile: f.Proto.GetName(),
-		Path:       []int32{filePackageField},
+		Path:       []int32{descfield.FileDescriptorProto_Package},
 	})
 	g.P()
 	g.P("package ", f.GoPackageName)
