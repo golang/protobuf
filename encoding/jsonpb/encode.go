@@ -9,7 +9,7 @@ import (
 	"math"
 	"sort"
 
-	"github.com/golang/protobuf/v2/internal/encoding/json"
+	json "github.com/golang/protobuf/v2/internal/encoding/jsonx"
 	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/proto"
