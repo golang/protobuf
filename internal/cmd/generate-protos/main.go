@@ -9,12 +9,14 @@ package main
 import (
 	"flag"
 	"fmt"
+	"go/format"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 
 	gengogrpc "github.com/golang/protobuf/v2/cmd/protoc-gen-go-grpc/internal_gengogrpc"
@@ -27,13 +29,19 @@ func init() {
 	// When the environment variable RUN_AS_PROTOC_PLUGIN is set,
 	// we skip running main and instead act as a protoc plugin.
 	// This allows the binary to pass itself to protoc.
-	if os.Getenv("RUN_AS_PROTOC_PLUGIN") != "" {
+	if plugins := os.Getenv("RUN_AS_PROTOC_PLUGIN"); plugins != "" {
 		protogen.Run(nil, func(gen *protogen.Plugin) error {
-			for _, file := range gen.Files {
-				if file.Generate {
-					gengo.GenerateFile(gen, file)
-					gengogrpc.GenerateFile(gen, file)
-					generateDescriptorFields(gen, file)
+			for _, plugin := range strings.Split(plugins, ",") {
+				for _, file := range gen.Files {
+					if file.Generate {
+						switch plugin {
+						case "go":
+							gengo.GenerateFile(gen, file)
+							generateDescriptorFields(gen, file)
+						case "gogrpc":
+							gengogrpc.GenerateFile(gen, file)
+						}
+					}
 				}
 			}
 			return nil
@@ -43,9 +51,10 @@ func init() {
 }
 
 var (
-	run       bool
-	protoRoot string
-	repoRoot  string
+	run        bool
+	protoRoot  string
+	repoRoot   string
+	modulePath string
 
 	generatedPreamble = []string{
 		"// Copyright 2019 The Go Authors. All rights reserved.",
@@ -70,6 +79,13 @@ func main() {
 	check(err)
 	repoRoot = strings.TrimSpace(string(out))
 
+	// Determine the module path.
+	cmd := exec.Command("go", "list", "-m", "-f", "{{.Path}}")
+	cmd.Dir = repoRoot
+	out, err = cmd.CombinedOutput()
+	check(err)
+	modulePath = strings.TrimSpace(string(out))
+
 	generateLocalProtos()
 	generateRemoteProtos()
 }
@@ -82,16 +98,19 @@ func generateLocalProtos() {
 	// Generate all local proto files (except version-locked files).
 	dirs := []struct {
 		path        string
+		grpcPlugin  bool
 		annotateFor map[string]bool
 	}{
-		{"cmd/protoc-gen-go/testdata", map[string]bool{"annotations/annotations.proto": true}},
-		{"cmd/protoc-gen-go-grpc/testdata", nil},
-		{"internal/testprotos", nil},
-		{"encoding/testprotos", nil},
-		{"reflect/protoregistry/testprotos", nil},
+		{path: "cmd/protoc-gen-go/testdata", annotateFor: map[string]bool{"annotations/annotations.proto": true}},
+		{path: "cmd/protoc-gen-go-grpc/testdata", grpcPlugin: true},
+		{path: "internal/testprotos"},
+		{path: "encoding/testprotos"},
+		{path: "reflect/protoregistry/testprotos"},
 	}
 	semVerRx := regexp.MustCompile(`v[0-9]+\.[0-9]+\.[0-9]+`)
 	for _, d := range dirs {
+		subDirs := map[string]bool{}
+
 		dstDir := filepath.Join(tmpDir, filepath.FromSlash(d.path))
 		check(os.MkdirAll(dstDir, 0775))
 
@@ -102,6 +121,7 @@ func generateLocalProtos() {
 			}
 			relPath, err := filepath.Rel(srcDir, srcPath)
 			check(err)
+			subDirs[filepath.Dir(relPath)] = true
 
 			// Emit a .meta file for certain files.
 			var opts string
@@ -109,9 +129,36 @@ func generateLocalProtos() {
 				opts = ",annotate_code"
 			}
 
-			protoc("-I"+filepath.Join(protoRoot, "src"), "-I"+srcDir, "--go_out=paths=source_relative"+opts+":"+dstDir, relPath)
+			// Determine which set of plugins to use.
+			plugins := "go"
+			if d.grpcPlugin {
+				plugins += ",gogrpc"
+			}
+
+			protoc(plugins, "-I"+filepath.Join(protoRoot, "src"), "-I"+srcDir, "--go_out=paths=source_relative"+opts+":"+dstDir, relPath)
 			return nil
 		})
+
+		// For directories in testdata, generate a test that links in all
+		// generated packages to ensure that it builds and initializes properly.
+		// This is done because "go build ./..." does not build sub-packages
+		// under testdata.
+		if filepath.Base(d.path) == "testdata" {
+			var imports []string
+			for sd := range subDirs {
+				imports = append(imports, fmt.Sprintf("_ %q", path.Join(modulePath, d.path, filepath.ToSlash(sd))))
+			}
+			sort.Strings(imports)
+
+			s := strings.Join(append(generatedPreamble, []string{
+				"package main",
+				"",
+				"import (" + strings.Join(imports, "\n") + ")",
+			}...), "\n")
+			b, err := format.Source([]byte(s))
+			check(err)
+			check(ioutil.WriteFile(filepath.Join(tmpDir, filepath.FromSlash(d.path+"/gen_test.go")), b, 0664))
+		}
 	}
 
 	syncOutput(repoRoot, tmpDir)
@@ -139,23 +186,16 @@ func generateRemoteProtos() {
 		{"src", "google/protobuf/compiler/plugin.proto"},
 	}
 	for _, f := range files {
-		protoc("-I"+filepath.Join(protoRoot, f.prefix), "--go_out="+tmpDir, f.path)
+		protoc("go", "-I"+filepath.Join(protoRoot, f.prefix), "--go_out="+tmpDir, f.path)
 	}
-
-	// Determine the module path.
-	cmd := exec.Command("go", "list", "-m", "-f", "{{.Path}}")
-	cmd.Dir = repoRoot
-	out, err := cmd.CombinedOutput()
-	check(err)
-	modulePath := strings.TrimSpace(string(out))
 
 	syncOutput(repoRoot, filepath.Join(tmpDir, modulePath))
 }
 
-func protoc(args ...string) {
+func protoc(plugins string, args ...string) {
 	cmd := exec.Command("protoc", "--plugin=protoc-gen-go="+os.Args[0])
 	cmd.Args = append(cmd.Args, args...)
-	cmd.Env = append(os.Environ(), "RUN_AS_PROTOC_PLUGIN=1")
+	cmd.Env = append(os.Environ(), "RUN_AS_PROTOC_PLUGIN="+plugins)
 	cmd.Env = append(cmd.Env, "PROTOC_GEN_GO_ENABLE_REFLECT=1")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -170,8 +210,8 @@ func generateDescriptorFields(gen *protogen.Plugin, file *protogen.File) {
 		return
 	}
 
-	const importPath = "github.com/golang/protobuf/v2/internal/descfield"
-	g := gen.NewGeneratedFile(importPath+"/field_gen.go", importPath)
+	importPath := modulePath + "/internal/descfield"
+	g := gen.NewGeneratedFile(importPath+"/field_gen.go", protogen.GoImportPath(importPath))
 	for _, s := range generatedPreamble {
 		g.P(s)
 	}

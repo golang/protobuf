@@ -57,20 +57,21 @@ func Test(t *testing.T) {
 
 	for _, v := range golangVersions {
 		t.Run("Go"+v, func(t *testing.T) {
-			runGo := func(label string, args ...string) {
+			runGo := func(label, workDir string, args ...string) {
 				args[0] += v
 				t.Run(label, func(t *testing.T) {
 					t.Parallel()
-					mustRunCommand(t, filepath.Join(goPath, "src", modulePath), args...)
+					mustRunCommand(t, workDir, args...)
 				})
 			}
-			// TODO: "go build" does not descend into testdata,
-			// which means that generated .pb.go files are not being built.
-			runGo("Build", "go", "build", "./...")
-			runGo("TestNormal", "go", "test", "-race", "./...")
-			runGo("TestPureGo", "go", "test", "-race", "-tags", "purego", "./...")
+			workDir := filepath.Join(goPath, "src", modulePath)
+			runGo("Build", workDir, "go", "build", "./...")
+			runGo("TestNormal", workDir, "go", "test", "-race", "./...")
+			runGo("TestPureGo", workDir, "go", "test", "-race", "-tags", "purego", "./...")
 			if v == golangLatest {
-				runGo("TestLegacy", "go", "test", "-race", "-tags", "proto1_legacy", "./...")
+				runGo("TestProto1Legacy", workDir, "go", "test", "-race", "-tags", "proto1_legacy", "./...")
+				runGo("TestProtocGenGo", "cmd/protoc-gen-go/testdata", "go", "test")
+				runGo("TestProtocGenGoGRPC", "cmd/protoc-gen-go-grpc/testdata", "go", "test")
 			}
 		})
 	}
