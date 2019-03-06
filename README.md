@@ -96,7 +96,7 @@ be:
   # writes ./github.com/golang/protobuf/p/x.pb.go
 ```
 
-  (This can work well with `--go_out=$GOPATH`.)
+  (This can work well with `--go_out=$GOPATH/src`)
 
 - Relative to the input file:
 
