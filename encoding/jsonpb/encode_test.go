@@ -101,7 +101,7 @@ func TestMarshal(t *testing.T) {
 			OptSfixed32: scalar.Int32(-32),
 			OptFloat:    scalar.Float32(1.02),
 			OptDouble:   scalar.Float64(1.234),
-			OptBytes:    []byte("\xe8\xb0\xb7\xe6\xad\x8c"),
+			OptBytes:    []byte("谷歌"),
 			OptString:   scalar.String("谷歌"),
 		},
 		want: `{
