@@ -13,9 +13,9 @@ import (
 )
 
 type R struct {
-	// T is expected Type returned from calling Decoder.ReadNext.
+	// T is expected Type returned from calling Decoder.Read.
 	T json.Type
-	// E is expected error substring from calling Decoder.ReadNext if set.
+	// E is expected error substring from calling Decoder.Read if set.
 	E string
 	// V is expected value from calling
 	// Value.{Bool()|Float()|Int()|Uint()|String()} depending on type.
@@ -31,8 +31,8 @@ func TestDecoder(t *testing.T) {
 	tests := []struct {
 		input string
 		// want is a list of expected values returned from calling
-		// Decoder.ReadNext. An item makes the test code invoke
-		// Decoder.ReadNext and compare against R.T and R.E.  For Bool,
+		// Decoder.Read. An item makes the test code invoke
+		// Decoder.Read and compare against R.T and R.E.  For Bool,
 		// Number and String tokens, it invokes the corresponding getter method
 		// and compares the returned value against R.V or R.VE if it returned an
 		// error.
@@ -47,8 +47,8 @@ func TestDecoder(t *testing.T) {
 			want:  []R{{T: json.EOF}},
 		},
 		{
-			// Calling ReadNext after EOF will keep returning EOF for
-			// succeeding ReadNext calls.
+			// Calling Read after EOF will keep returning EOF for
+			// succeeding Read calls.
 			input: space,
 			want: []R{
 				{T: json.EOF},
@@ -119,7 +119,7 @@ func TestDecoder(t *testing.T) {
 			},
 		},
 		{
-			// Invalid UTF-8 error is returned in ReadString instead of ReadNext.
+			// Invalid UTF-8 error is returned in ReadString instead of Read.
 			input: "\"\xff\"",
 			want: []R{
 				{T: json.String, E: `invalid UTF-8 detected`, V: string("\xff")},
@@ -1009,22 +1009,26 @@ func TestDecoder(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			dec := json.NewDecoder([]byte(tc.input))
 			for i, want := range tc.want {
-				value, err := dec.ReadNext()
+				typ := dec.Peek()
+				if typ != want.T {
+					t.Errorf("input: %v\nPeek() got %v want %v", tc.input, typ, want.T)
+				}
+				value, err := dec.Read()
 				if err != nil {
 					if want.E == "" {
-						t.Errorf("input: %v\nReadNext() got unexpected error: %v", tc.input, err)
+						t.Errorf("input: %v\nRead() got unexpected error: %v", tc.input, err)
 
 					} else if !strings.Contains(err.Error(), want.E) {
-						t.Errorf("input: %v\nReadNext() got %q, want %q", tc.input, err, want.E)
+						t.Errorf("input: %v\nRead() got %q, want %q", tc.input, err, want.E)
 					}
 				} else {
 					if want.E != "" {
-						t.Errorf("input: %v\nReadNext() got nil error, want %q", tc.input, want.E)
+						t.Errorf("input: %v\nRead() got nil error, want %q", tc.input, want.E)
 					}
 				}
 				token := value.Type()
 				if token != want.T {
-					t.Errorf("input: %v\nReadNext() got %v, want %v", tc.input, token, want.T)
+					t.Errorf("input: %v\nRead() got %v, want %v", tc.input, token, want.T)
 					break
 				}
 				checkValue(t, value, i, want)

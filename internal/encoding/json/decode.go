@@ -15,9 +15,24 @@ import (
 	"github.com/golang/protobuf/v2/internal/errors"
 )
 
+// call specifies which Decoder method was invoked.
+type call uint8
+
+const (
+	readCall call = iota
+	peekCall
+)
+
 // Decoder is a token-based JSON decoder.
 type Decoder struct {
-	lastType Type
+	// lastCall is last method called, eiterh readCall or peekCall.
+	lastCall call
+
+	// value contains the last read value.
+	value Value
+
+	// err contains the last read error.
+	err error
 
 	// startStack is a stack containing StartObject and StartArray types. The
 	// top of stack represents the object or the array the current value is
@@ -35,10 +50,24 @@ func NewDecoder(b []byte) *Decoder {
 	return &Decoder{orig: b, in: b}
 }
 
-// ReadNext returns the next JSON value. It will return an error if there is no
-// valid JSON value.  For String types containing invalid UTF8 characters, a
-// non-fatal error is returned and caller can call ReadNext for the next value.
-func (d *Decoder) ReadNext() (Value, error) {
+// Peek looks ahead and returns the next JSON type without advancing a read.
+func (d *Decoder) Peek() Type {
+	defer func() { d.lastCall = peekCall }()
+	if d.lastCall == readCall {
+		d.value, d.err = d.Read()
+	}
+	return d.value.typ
+}
+
+// Read returns the next JSON value. It will return an error if there is no
+// valid value.  For String types containing invalid UTF8 characters, a
+// non-fatal error is returned and caller can call Read for the next value.
+func (d *Decoder) Read() (Value, error) {
+	defer func() { d.lastCall = readCall }()
+	if d.lastCall == peekCall {
+		return d.value, d.err
+	}
+
 	var nerr errors.NonFatal
 	value, n, err := d.parseNext()
 	if !nerr.Merge(err) {
@@ -48,7 +77,7 @@ func (d *Decoder) ReadNext() (Value, error) {
 	switch value.typ {
 	case EOF:
 		if len(d.startStack) != 0 ||
-			d.lastType&Null|Bool|Number|String|EndObject|EndArray == 0 {
+			d.value.typ&Null|Bool|Number|String|EndObject|EndArray == 0 {
 			return Value{}, io.ErrUnexpectedEOF
 		}
 
@@ -67,7 +96,7 @@ func (d *Decoder) ReadNext() (Value, error) {
 			break
 		}
 		// Check if this is for an object name.
-		if d.lastType&(StartObject|comma) == 0 {
+		if d.value.typ&(StartObject|comma) == 0 {
 			return Value{}, d.newSyntaxError("unexpected value %q", value)
 		}
 		d.in = d.in[n:]
@@ -86,7 +115,7 @@ func (d *Decoder) ReadNext() (Value, error) {
 
 	case EndObject:
 		if len(d.startStack) == 0 ||
-			d.lastType == comma ||
+			d.value.typ == comma ||
 			d.startStack[len(d.startStack)-1] != StartObject {
 			return Value{}, d.newSyntaxError("unexpected character }")
 		}
@@ -94,7 +123,7 @@ func (d *Decoder) ReadNext() (Value, error) {
 
 	case EndArray:
 		if len(d.startStack) == 0 ||
-			d.lastType == comma ||
+			d.value.typ == comma ||
 			d.startStack[len(d.startStack)-1] != StartArray {
 			return Value{}, d.newSyntaxError("unexpected character ]")
 		}
@@ -102,18 +131,18 @@ func (d *Decoder) ReadNext() (Value, error) {
 
 	case comma:
 		if len(d.startStack) == 0 ||
-			d.lastType&(Null|Bool|Number|String|EndObject|EndArray) == 0 {
+			d.value.typ&(Null|Bool|Number|String|EndObject|EndArray) == 0 {
 			return Value{}, d.newSyntaxError("unexpected character ,")
 		}
 	}
 
 	// Update lastType only after validating value to be in the right
 	// sequence.
-	d.lastType = value.typ
+	d.value.typ = value.typ
 	d.in = d.in[n:]
 
-	if d.lastType == comma {
-		return d.ReadNext()
+	if d.value.typ == comma {
+		return d.Read()
 	}
 	return value, nerr.E
 }
@@ -244,19 +273,19 @@ func (d *Decoder) consume(n int) {
 // Number, String or Bool.
 func (d *Decoder) isValueNext() bool {
 	if len(d.startStack) == 0 {
-		return d.lastType == 0
+		return d.value.typ == 0
 	}
 
 	start := d.startStack[len(d.startStack)-1]
 	switch start {
 	case StartObject:
-		return d.lastType&Name != 0
+		return d.value.typ&Name != 0
 	case StartArray:
-		return d.lastType&(StartArray|comma) != 0
+		return d.value.typ&(StartArray|comma) != 0
 	}
 	panic(fmt.Sprintf(
 		"unreachable logic in Decoder.isValueNext, lastType: %v, startStack: %v",
-		d.lastType, start))
+		d.value.typ, start))
 }
 
 // newValue constructs a Value.
@@ -271,7 +300,7 @@ func (d *Decoder) newValue(typ Type, input []byte, value interface{}) Value {
 	}
 }
 
-// Value contains a JSON type and value parsed from calling Decoder.ReadNext.
+// Value contains a JSON type and value parsed from calling Decoder.Read.
 type Value struct {
 	input  []byte
 	line   int

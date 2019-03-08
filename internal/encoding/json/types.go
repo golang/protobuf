@@ -8,7 +8,7 @@ package json
 type Type uint
 
 const (
-	_ Type = (1 << iota) / 2
+	Invalid Type = (1 << iota) / 2
 	EOF
 	Null
 	Bool
