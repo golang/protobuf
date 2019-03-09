@@ -151,7 +151,24 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 	}
 	g.P("}")
 
-	g.P("func init() {")
+	g.P("func init() { ", initFuncName(f.File), "() }")
+
+	g.P("func ", initFuncName(f.File), "() {")
+	g.P("if ", f.GoDescriptorIdent, " != nil {")
+	g.P("return")
+	g.P("}")
+
+	// Ensure that initialization functions for different files in the same Go
+	// package run in the correct order: Call the init funcs for every .proto file
+	// imported by this one that is in the same Go package.
+	for i, imps := 0, f.Desc.Imports(); i < imps.Len(); i++ {
+		impFile, _ := gen.FileByName(imps.Get(i).Path())
+		if impFile.GoImportPath != f.GoImportPath {
+			continue
+		}
+		g.P(initFuncName(impFile), "()")
+	}
+
 	if len(f.allMessages) > 0 {
 		g.P("messageTypes := make([]", protoreflectPackage.Ident("MessageType"), ",", len(f.allMessages), ")")
 	}
@@ -244,4 +261,7 @@ func enumTypesVarName(f *fileInfo) string {
 }
 func messageTypesVarName(f *fileInfo) string {
 	return "xxx_" + f.GoDescriptorIdent.GoName + "_messageTypes"
+}
+func initFuncName(f *protogen.File) string {
+	return "xxx_" + f.GoDescriptorIdent.GoName + "_init"
 }

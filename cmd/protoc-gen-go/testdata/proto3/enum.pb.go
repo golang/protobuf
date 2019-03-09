@@ -82,7 +82,11 @@ var xxx_File_proto3_enum_proto_goTypes = []interface{}{
 }
 var xxx_File_proto3_enum_proto_depIdxs = []int32{}
 
-func init() {
+func init() { xxx_File_proto3_enum_proto_init() }
+func xxx_File_proto3_enum_proto_init() {
+	if File_proto3_enum_proto != nil {
+		return
+	}
 	File_proto3_enum_proto = protoimpl.FileBuilder{
 		RawDescriptor:     xxx_File_proto3_enum_proto_rawdesc,
 		GoTypes:           xxx_File_proto3_enum_proto_goTypes,

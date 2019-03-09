@@ -102,7 +102,11 @@ var xxx_File_proto2_proto2_proto_depIdxs = []int32{
 	0, // goproto.protoc.proto2.Message.m:type_name -> goproto.protoc.proto2.Message
 }
 
-func init() {
+func init() { xxx_File_proto2_proto2_proto_init() }
+func xxx_File_proto2_proto2_proto_init() {
+	if File_proto2_proto2_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 1)
 	File_proto2_proto2_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_proto2_proto2_proto_rawdesc,

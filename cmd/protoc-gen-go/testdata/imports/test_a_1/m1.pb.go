@@ -161,7 +161,11 @@ var xxx_File_imports_test_a_1_m1_proto_depIdxs = []int32{
 	1, // test.a.M1_1.m1:type_name -> test.a.M1
 }
 
-func init() {
+func init() { xxx_File_imports_test_a_1_m1_proto_init() }
+func xxx_File_imports_test_a_1_m1_proto_init() {
+	if File_imports_test_a_1_m1_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 2)
 	File_imports_test_a_1_m1_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_imports_test_a_1_m1_proto_rawdesc,

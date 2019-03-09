@@ -402,7 +402,11 @@ var xxx_File_conformance_conformance_proto_depIdxs = []int32{
 	0, // conformance.ConformanceRequest.requested_output_format:type_name -> conformance.WireFormat
 }
 
-func init() {
+func init() { xxx_File_conformance_conformance_proto_init() }
+func xxx_File_conformance_conformance_proto_init() {
+	if File_conformance_conformance_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 2)
 	File_conformance_conformance_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_conformance_conformance_proto_rawdesc,

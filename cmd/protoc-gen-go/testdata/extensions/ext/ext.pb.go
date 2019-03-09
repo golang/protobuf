@@ -1226,7 +1226,11 @@ var xxx_File_extensions_ext_ext_proto_depIdxs = []int32{
 	6,  // goproto.protoc.extension.ext.MessageSetWireFormatExtension.message_set_extension:type_name -> goproto.protoc.extension.ext.MessageSetWireFormatExtension
 }
 
-func init() {
+func init() { xxx_File_extensions_ext_ext_proto_init() }
+func xxx_File_extensions_ext_ext_proto_init() {
+	if File_extensions_ext_ext_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 8)
 	extensionTypes := make([]protoreflect.ExtensionType, 44)
 	File_extensions_ext_ext_proto = protoimpl.FileBuilder{

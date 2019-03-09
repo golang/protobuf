@@ -783,7 +783,13 @@ var xxx_File_google_protobuf_type_proto_depIdxs = []int32{
 	9, // google.protobuf.Option.value:type_name -> google.protobuf.Any
 }
 
-func init() {
+func init() { xxx_File_google_protobuf_type_proto_init() }
+func xxx_File_google_protobuf_type_proto_init() {
+	if File_google_protobuf_type_proto != nil {
+		return
+	}
+	xxx_File_google_protobuf_any_proto_init()
+	xxx_File_google_protobuf_source_context_proto_init()
 	messageTypes := make([]protoreflect.MessageType, 5)
 	File_google_protobuf_type_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_type_proto_rawdesc,

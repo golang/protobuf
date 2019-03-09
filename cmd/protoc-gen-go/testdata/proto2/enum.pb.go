@@ -463,7 +463,11 @@ var xxx_File_proto2_enum_proto_depIdxs = []int32{
 	1, // goproto.protoc.proto2.EnumContainerMessage1.default_duplicate2:type_name -> goproto.protoc.proto2.EnumType2
 }
 
-func init() {
+func init() { xxx_File_proto2_enum_proto_init() }
+func xxx_File_proto2_enum_proto_init() {
+	if File_proto2_enum_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 2)
 	File_proto2_enum_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_proto2_enum_proto_rawdesc,

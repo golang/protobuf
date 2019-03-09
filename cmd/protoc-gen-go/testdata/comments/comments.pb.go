@@ -323,7 +323,11 @@ var xxx_File_comments_comments_proto_goTypes = []interface{}{
 }
 var xxx_File_comments_comments_proto_depIdxs = []int32{}
 
-func init() {
+func init() { xxx_File_comments_comments_proto_init() }
+func xxx_File_comments_comments_proto_init() {
+	if File_comments_comments_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 6)
 	File_comments_comments_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_comments_comments_proto_rawdesc,

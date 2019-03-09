@@ -147,7 +147,11 @@ var xxx_File_grpc_grpc_proto_depIdxs = []int32{
 	1, // goproto.protoc.grpc.test_service.bidi_call:output_type -> goproto.protoc.grpc.Response
 }
 
-func init() {
+func init() { xxx_File_grpc_grpc_proto_init() }
+func xxx_File_grpc_grpc_proto_init() {
+	if File_grpc_grpc_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 2)
 	File_grpc_grpc_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_grpc_grpc_proto_rawdesc,

@@ -397,7 +397,11 @@ var xxx_File_google_protobuf_struct_proto_depIdxs = []int32{
 	2, // google.protobuf.Struct.FieldsEntry.value:type_name -> google.protobuf.Value
 }
 
-func init() {
+func init() { xxx_File_google_protobuf_struct_proto_init() }
+func xxx_File_google_protobuf_struct_proto_init() {
+	if File_google_protobuf_struct_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 4)
 	File_google_protobuf_struct_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_struct_proto_rawdesc,

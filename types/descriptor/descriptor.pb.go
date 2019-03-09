@@ -2914,7 +2914,11 @@ var xxx_File_google_protobuf_descriptor_proto_depIdxs = []int32{
 	9,  // google.protobuf.DescriptorProto.ExtensionRange.options:type_name -> google.protobuf.ExtensionRangeOptions
 }
 
-func init() {
+func init() { xxx_File_google_protobuf_descriptor_proto_init() }
+func xxx_File_google_protobuf_descriptor_proto_init() {
+	if File_google_protobuf_descriptor_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 27)
 	File_google_protobuf_descriptor_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_descriptor_proto_rawdesc,

@@ -2870,7 +2870,14 @@ var xxx_File_test_test_proto_depIdxs = []int32{
 	5,  // goproto.proto.test.TestDeprecatedService.Deprecated:output_type -> goproto.proto.test.TestDeprecatedMessage
 }
 
-func init() {
+func init() { xxx_File_test_test_proto_init() }
+func xxx_File_test_test_proto_init() {
+	if File_test_test_proto != nil {
+		return
+	}
+	xxx_File_test_test_import_proto_init()
+	xxx_File_test_test_public_proto_init()
+	xxx_File_test_test_weak_proto_init()
 	messageTypes := make([]protoreflect.MessageType, 30)
 	extensionTypes := make([]protoreflect.ExtensionType, 37)
 	File_test_test_proto = protoimpl.FileBuilder{

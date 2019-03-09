@@ -112,7 +112,11 @@ var xxx_File_issue780_oneof_conflict_test_proto_goTypes = []interface{}{
 }
 var xxx_File_issue780_oneof_conflict_test_proto_depIdxs = []int32{}
 
-func init() {
+func init() { xxx_File_issue780_oneof_conflict_test_proto_init() }
+func xxx_File_issue780_oneof_conflict_test_proto_init() {
+	if File_issue780_oneof_conflict_test_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 1)
 	File_issue780_oneof_conflict_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_issue780_oneof_conflict_test_proto_rawdesc,

@@ -780,7 +780,11 @@ var xxx_File_pb3_test_proto_depIdxs = []int32{
 	6,  // pb3.Maps.StrToOneofsEntry.value:type_name -> pb3.Oneofs
 }
 
-func init() {
+func init() { xxx_File_pb3_test_proto_init() }
+func xxx_File_pb3_test_proto_init() {
+	if File_pb3_test_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 12)
 	File_pb3_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_pb3_test_proto_rawdesc,

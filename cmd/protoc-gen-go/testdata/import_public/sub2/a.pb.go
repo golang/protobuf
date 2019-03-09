@@ -82,7 +82,11 @@ var xxx_File_import_public_sub2_a_proto_goTypes = []interface{}{
 }
 var xxx_File_import_public_sub2_a_proto_depIdxs = []int32{}
 
-func init() {
+func init() { xxx_File_import_public_sub2_a_proto_init() }
+func xxx_File_import_public_sub2_a_proto_init() {
+	if File_import_public_sub2_a_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 1)
 	File_import_public_sub2_a_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_import_public_sub2_a_proto_rawdesc,

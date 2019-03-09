@@ -55,7 +55,12 @@ var xxx_File_grpc_deprecation_proto_depIdxs = []int32{
 	1, // goproto.protoc.grpc.DeprecatedService.DeprecatedCall:output_type -> goproto.protoc.grpc.Response
 }
 
-func init() {
+func init() { xxx_File_grpc_deprecation_proto_init() }
+func xxx_File_grpc_deprecation_proto_init() {
+	if File_grpc_deprecation_proto != nil {
+		return
+	}
+	xxx_File_grpc_grpc_proto_init()
 	File_grpc_deprecation_proto = protoimpl.FileBuilder{
 		RawDescriptor:     xxx_File_grpc_deprecation_proto_rawdesc,
 		GoTypes:           xxx_File_grpc_deprecation_proto_goTypes,

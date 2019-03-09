@@ -171,7 +171,12 @@ var xxx_File_import_public_a_proto_depIdxs = []int32{
 	3, // goproto.protoc.import_public.Public.local:type_name -> goproto.protoc.import_public.Local
 }
 
-func init() {
+func init() { xxx_File_import_public_a_proto_init() }
+func xxx_File_import_public_a_proto_init() {
+	if File_import_public_a_proto != nil {
+		return
+	}
+	xxx_File_import_public_b_proto_init()
 	messageTypes := make([]protoreflect.MessageType, 1)
 	File_import_public_a_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_import_public_a_proto_rawdesc,

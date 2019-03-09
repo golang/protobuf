@@ -448,7 +448,11 @@ var xxx_File_test_proto_depIdxs = []int32{
 	0, // testprotos.Message4.enum_field:type_name -> testprotos.Enum1
 }
 
-func init() {
+func init() { xxx_File_test_proto_init() }
+func xxx_File_test_proto_init() {
+	if File_test_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 4)
 	extensionTypes := make([]protoreflect.ExtensionType, 6)
 	File_test_proto = protoimpl.FileBuilder{

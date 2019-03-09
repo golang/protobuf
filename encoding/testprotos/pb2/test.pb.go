@@ -2067,7 +2067,11 @@ var xxx_File_pb2_test_proto_depIdxs = []int32{
 	16, // pb2.FakeMessageSetExtension.message_set_extension:type_name -> pb2.FakeMessageSetExtension
 }
 
-func init() {
+func init() { xxx_File_pb2_test_proto_init() }
+func xxx_File_pb2_test_proto_init() {
+	if File_pb2_test_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 20)
 	extensionTypes := make([]protoreflect.ExtensionType, 19)
 	File_pb2_test_proto = protoimpl.FileBuilder{

@@ -469,7 +469,13 @@ var xxx_File_google_protobuf_api_proto_depIdxs = []int32{
 	5, // google.protobuf.Method.syntax:type_name -> google.protobuf.Syntax
 }
 
-func init() {
+func init() { xxx_File_google_protobuf_api_proto_init() }
+func xxx_File_google_protobuf_api_proto_init() {
+	if File_google_protobuf_api_proto != nil {
+		return
+	}
+	xxx_File_google_protobuf_source_context_proto_init()
+	xxx_File_google_protobuf_type_proto_init()
 	messageTypes := make([]protoreflect.MessageType, 3)
 	File_google_protobuf_api_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_api_proto_rawdesc,

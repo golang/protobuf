@@ -690,7 +690,11 @@ var xxx_File_extensions_proto3_ext3_proto_depIdxs = []int32{
 	1, // goproto.protoc.extension.proto3.repeated_extension_Message:type_name -> goproto.protoc.extension.proto3.Message
 }
 
-func init() {
+func init() { xxx_File_extensions_proto3_ext3_proto_init() }
+func xxx_File_extensions_proto3_ext3_proto_init() {
+	if File_extensions_proto3_ext3_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 1)
 	extensionTypes := make([]protoreflect.ExtensionType, 34)
 	File_extensions_proto3_ext3_proto = protoimpl.FileBuilder{

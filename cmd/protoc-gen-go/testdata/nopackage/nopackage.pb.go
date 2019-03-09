@@ -148,7 +148,11 @@ var xxx_File_nopackage_nopackage_proto_depIdxs = []int32{
 	0, // Message.enum_field:type_name -> Enum
 }
 
-func init() {
+func init() { xxx_File_nopackage_nopackage_proto_init() }
+func xxx_File_nopackage_nopackage_proto_init() {
+	if File_nopackage_nopackage_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 1)
 	File_nopackage_nopackage_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_nopackage_nopackage_proto_rawdesc,

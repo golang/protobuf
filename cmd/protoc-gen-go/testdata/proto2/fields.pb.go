@@ -1753,7 +1753,11 @@ var xxx_File_proto2_fields_proto_depIdxs = []int32{
 	0, // goproto.protoc.proto2.FieldTestMessage.MapFixed64EnumEntry.value:type_name -> goproto.protoc.proto2.FieldTestMessage.Enum
 }
 
-func init() {
+func init() { xxx_File_proto2_fields_proto_init() }
+func xxx_File_proto2_fields_proto_init() {
+	if File_proto2_fields_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 9)
 	File_proto2_fields_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_proto2_fields_proto_rawdesc,

@@ -297,7 +297,11 @@ var xxx_File_legacy_legacy_proto_depIdxs = []int32{
 	12, // google.golang.org.Legacy.f12:type_name -> google.golang.org.proto3_20181126.Message
 }
 
-func init() {
+func init() { xxx_File_legacy_legacy_proto_init() }
+func xxx_File_legacy_legacy_proto_init() {
+	if File_legacy_legacy_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 1)
 	File_legacy_legacy_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_legacy_legacy_proto_rawdesc,

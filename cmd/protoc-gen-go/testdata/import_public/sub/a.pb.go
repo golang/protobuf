@@ -458,7 +458,12 @@ var xxx_File_import_public_sub_a_proto_depIdxs = []int32{
 	5, // goproto.protoc.import_public.sub.M.m2:type_name -> goproto.protoc.import_public.sub.M2
 }
 
-func init() {
+func init() { xxx_File_import_public_sub_a_proto_init() }
+func xxx_File_import_public_sub_a_proto_init() {
+	if File_import_public_sub_a_proto != nil {
+		return
+	}
+	xxx_File_import_public_sub_b_proto_init()
 	messageTypes := make([]protoreflect.MessageType, 2)
 	extensionTypes := make([]protoreflect.ExtensionType, 1)
 	File_import_public_sub_a_proto = protoimpl.FileBuilder{

@@ -156,7 +156,11 @@ var xxx_File_imports_test_import_all_proto_depIdxs = []int32{
 	5, // test.All.fmt:type_name -> fmt.M
 }
 
-func init() {
+func init() { xxx_File_imports_test_import_all_proto_init() }
+func xxx_File_imports_test_import_all_proto_init() {
+	if File_imports_test_import_all_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 1)
 	File_imports_test_import_all_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_imports_test_import_all_proto_rawdesc,

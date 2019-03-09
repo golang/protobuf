@@ -420,7 +420,11 @@ var xxx_File_google_protobuf_compiler_plugin_proto_depIdxs = []int32{
 	3, // google.protobuf.compiler.CodeGeneratorResponse.file:type_name -> google.protobuf.compiler.CodeGeneratorResponse.File
 }
 
-func init() {
+func init() { xxx_File_google_protobuf_compiler_plugin_proto_init() }
+func xxx_File_google_protobuf_compiler_plugin_proto_init() {
+	if File_google_protobuf_compiler_plugin_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 4)
 	File_google_protobuf_compiler_plugin_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_compiler_plugin_proto_rawdesc,

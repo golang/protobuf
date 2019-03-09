@@ -213,7 +213,11 @@ var xxx_File_google_protobuf_any_proto_goTypes = []interface{}{
 }
 var xxx_File_google_protobuf_any_proto_depIdxs = []int32{}
 
-func init() {
+func init() { xxx_File_google_protobuf_any_proto_init() }
+func xxx_File_google_protobuf_any_proto_init() {
+	if File_google_protobuf_any_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 1)
 	File_google_protobuf_any_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_any_proto_rawdesc,

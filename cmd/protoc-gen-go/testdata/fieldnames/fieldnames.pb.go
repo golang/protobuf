@@ -392,7 +392,11 @@ var xxx_File_fieldnames_fieldnames_proto_goTypes = []interface{}{
 }
 var xxx_File_fieldnames_fieldnames_proto_depIdxs = []int32{}
 
-func init() {
+func init() { xxx_File_fieldnames_fieldnames_proto_init() }
+func xxx_File_fieldnames_fieldnames_proto_init() {
+	if File_fieldnames_fieldnames_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 2)
 	File_fieldnames_fieldnames_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_fieldnames_fieldnames_proto_rawdesc,

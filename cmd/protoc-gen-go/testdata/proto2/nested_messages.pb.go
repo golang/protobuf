@@ -193,7 +193,11 @@ var xxx_File_proto2_nested_messages_proto_depIdxs = []int32{
 	2, // goproto.protoc.proto2.Layer1.Layer2.l3:type_name -> goproto.protoc.proto2.Layer1.Layer2.Layer3
 }
 
-func init() {
+func init() { xxx_File_proto2_nested_messages_proto_init() }
+func xxx_File_proto2_nested_messages_proto_init() {
+	if File_proto2_nested_messages_proto != nil {
+		return
+	}
 	messageTypes := make([]protoreflect.MessageType, 3)
 	File_proto2_nested_messages_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_proto2_nested_messages_proto_rawdesc,
