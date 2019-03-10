@@ -34,7 +34,6 @@ import (
 	"github.com/golang/protobuf/v2/reflect/protodesc"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/protoregistry"
-	"golang.org/x/tools/go/ast/astutil"
 
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 	pluginpb "github.com/golang/protobuf/v2/types/plugin"
@@ -973,28 +972,66 @@ func (g *GeneratedFile) Content() ([]byte, error) {
 		return nil, fmt.Errorf("%v: unparsable Go source: %v\n%v", g.filename, err, src.String())
 	}
 
-	// Add imports.
-	var importPaths []string
-	for importPath := range g.packageNames {
-		importPaths = append(importPaths, string(importPath))
-	}
-	sort.Strings(importPaths)
+	// Collect a sorted list of all imports.
+	var importPaths [][2]string
 	rewriteImport := func(importPath string) string {
 		if f := g.gen.opts.ImportRewriteFunc; f != nil {
 			return string(f(GoImportPath(importPath)))
 		}
 		return importPath
 	}
-	for _, importPath := range importPaths {
-		astutil.AddNamedImport(fset, file, string(g.packageNames[GoImportPath(importPath)]), rewriteImport(importPath))
+	for importPath := range g.packageNames {
+		pkgName := string(g.packageNames[GoImportPath(importPath)])
+		pkgPath := rewriteImport(string(importPath))
+		importPaths = append(importPaths, [2]string{pkgName, pkgPath})
 	}
 	for importPath := range g.manualImports {
-		if _, ok := g.packageNames[importPath]; ok {
-			continue
+		if _, ok := g.packageNames[importPath]; !ok {
+			pkgPath := rewriteImport(string(importPath))
+			importPaths = append(importPaths, [2]string{"_", pkgPath})
 		}
-		astutil.AddNamedImport(fset, file, "_", rewriteImport(string(importPath)))
 	}
-	ast.SortImports(fset, file)
+	sort.Slice(importPaths, func(i, j int) bool {
+		return importPaths[i][1] < importPaths[j][1]
+	})
+
+	// Modify the AST to include a new import block.
+	if len(importPaths) > 0 {
+		// Insert block after package statement or
+		// possible comment attached to the end of the package statement.
+		pos := file.Package
+		tokFile := fset.File(file.Package)
+		pkgLine := tokFile.Line(file.Package)
+		for _, c := range file.Comments {
+			if tokFile.Line(c.Pos()) > pkgLine {
+				break
+			}
+			pos = c.End()
+		}
+
+		// Construct the import block.
+		impDecl := &ast.GenDecl{
+			Tok:    token.IMPORT,
+			TokPos: pos,
+			Lparen: pos,
+			Rparen: pos,
+		}
+		for _, importPath := range importPaths {
+			impDecl.Specs = append(impDecl.Specs, &ast.ImportSpec{
+				Name: &ast.Ident{
+					Name:    importPath[0],
+					NamePos: pos,
+				},
+				Path: &ast.BasicLit{
+					Kind:     token.STRING,
+					Value:    strconv.Quote(importPath[1]),
+					ValuePos: pos,
+				},
+				EndPos: pos,
+			})
+		}
+		file.Decls = append([]ast.Decl{impDecl}, file.Decls...)
+	}
 
 	var out bytes.Buffer
 	if err = (&printer.Config{Mode: printer.TabIndent | printer.UseSpaces, Tabwidth: 8}).Fprint(&out, fset, file); err != nil {
