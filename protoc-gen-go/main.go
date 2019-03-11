@@ -64,9 +64,7 @@ func main() {
 			if !f.Generate {
 				continue
 			}
-			filename := f.GeneratedFilenamePrefix + ".pb.go"
-			g := gen.NewGeneratedFile(filename, f.GoImportPath)
-			gengo.GenerateFile(gen, f, g)
+			g := gengo.GenerateFile(gen, f)
 			if grpc {
 				gengogrpc.GenerateFileContent(gen, f, g)
 			}
