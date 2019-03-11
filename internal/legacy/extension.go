@@ -214,7 +214,7 @@ func extensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.Extension
 			if xd.Kind() == pref.EnumKind {
 				return xt.ValueOf(Export{}.EnumOf(v))
 			} else {
-				return xt.ValueOf(Export{}.MessageOf(v))
+				return xt.ValueOf(Export{}.MessageOf(v).Interface())
 			}
 		}
 		xt2.interfaceOf = func(v pref.Value) interface{} {

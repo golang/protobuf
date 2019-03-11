@@ -145,7 +145,7 @@ func (mi *MessageType) makeExtensionFieldsFunc(t reflect.Type) {
 }
 
 func (mi *MessageType) MessageOf(p interface{}) pref.Message {
-	return (*messageWrapper)(mi.dataTypeOf(p))
+	return (*messageReflectWrapper)(mi.dataTypeOf(p))
 }
 
 func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
@@ -182,34 +182,40 @@ type messageDataType struct {
 	mi *MessageType
 }
 
-type messageWrapper messageDataType
+type messageReflectWrapper messageDataType
 
-func (m *messageWrapper) Type() pref.MessageType {
+func (m *messageReflectWrapper) Type() pref.MessageType {
 	return m.mi.PBType
 }
-func (m *messageWrapper) KnownFields() pref.KnownFields {
+func (m *messageReflectWrapper) KnownFields() pref.KnownFields {
 	m.mi.init()
 	return (*knownFields)(m)
 }
-func (m *messageWrapper) UnknownFields() pref.UnknownFields {
+func (m *messageReflectWrapper) UnknownFields() pref.UnknownFields {
 	m.mi.init()
 	return m.mi.unknownFields((*messageDataType)(m))
 }
-func (m *messageWrapper) Interface() pref.ProtoMessage {
+func (m *messageReflectWrapper) Interface() pref.ProtoMessage {
 	if m, ok := m.ProtoUnwrap().(pref.ProtoMessage); ok {
 		return m
 	}
-	return m
+	return (*messageIfaceWrapper)(m)
 }
-func (m *messageWrapper) ProtoReflect() pref.Message {
-	return m
-}
-func (m *messageWrapper) ProtoUnwrap() interface{} {
+func (m *messageReflectWrapper) ProtoUnwrap() interface{} {
 	return m.p.AsIfaceOf(m.mi.GoType.Elem())
 }
-func (m *messageWrapper) ProtoMutable() {}
+func (m *messageReflectWrapper) ProtoMutable() {}
 
-var _ pvalue.Unwrapper = (*messageWrapper)(nil)
+var _ pvalue.Unwrapper = (*messageReflectWrapper)(nil)
+
+type messageIfaceWrapper messageDataType
+
+func (m *messageIfaceWrapper) ProtoReflect() pref.Message {
+	return (*messageReflectWrapper)(m)
+}
+func (m *messageIfaceWrapper) ProtoUnwrap() interface{} {
+	return m.p.AsIfaceOf(m.mi.GoType.Elem())
+}
 
 type knownFields messageDataType
 
