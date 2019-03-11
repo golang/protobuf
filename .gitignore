@@ -1,4 +1,6 @@
 .cache
 vendor
 cmd/protoc-gen-go/protoc-gen-go
+cmd/protoc-gen-go/testdata/go.sum
 cmd/protoc-gen-go-grpc/protoc-gen-go-grpc
+cmd/protoc-gen-go-grpc/testdata/go.sum
