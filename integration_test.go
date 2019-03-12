@@ -28,14 +28,14 @@ import (
 var (
 	regenerate = flag.Bool("regenerate", false, "regenerate files")
 
-	protobufVersion = "3.6.1"
+	protobufVersion = "3.7.0"
 	golangVersions  = []string{"1.9.7", "1.10.8", "1.11.5", "1.12"}
 	golangLatest    = golangVersions[len(golangVersions)-1]
 
 	// List of directories to avoid auto-deleting. After updating the versions,
 	// it is worth placing the previous versions here for some time since
 	// other developers may still have working branches using the old versions.
-	keepDirs = []string{"go1.10.7", "go1.11.4"}
+	keepDirs = []string{"protobuf-3.6.1", "go1.10.7", "go1.11.4"}
 
 	// Variables initialized by mustInitDeps.
 	goPath     string
