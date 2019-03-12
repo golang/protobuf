@@ -6,7 +6,10 @@ package test_proto
 import (
 	proto "github.com/golang/protobuf/proto"
 	protoapi "github.com/golang/protobuf/protoapi"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
+	reflect "reflect"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,6 +23,13 @@ type FOO int32
 const (
 	FOO_FOO1 FOO = 1
 )
+
+func (e FOO) Type() protoreflect.EnumType {
+	return xxx_File_test_proto_test_proto_enumTypes[0]
+}
+func (e FOO) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var FOO_name = map[int32]string{
 	1: "FOO1",
@@ -74,6 +84,13 @@ const (
 	// Functions
 	GoTest_FUNCTION GoTest_KIND = 12
 )
+
+func (e GoTest_KIND) Type() protoreflect.EnumType {
+	return xxx_File_test_proto_test_proto_enumTypes[1]
+}
+func (e GoTest_KIND) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var GoTest_KIND_name = map[int32]string{
 	0:  "VOID",
@@ -138,6 +155,13 @@ const (
 	MyMessage_BLUE  MyMessage_Color = 2
 )
 
+func (e MyMessage_Color) Type() protoreflect.EnumType {
+	return xxx_File_test_proto_test_proto_enumTypes[2]
+}
+func (e MyMessage_Color) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
+
 var MyMessage_Color_name = map[int32]string{
 	0: "RED",
 	1: "GREEN",
@@ -180,6 +204,13 @@ const (
 	DefaultsMessage_ONE  DefaultsMessage_DefaultsEnum = 1
 	DefaultsMessage_TWO  DefaultsMessage_DefaultsEnum = 2
 )
+
+func (e DefaultsMessage_DefaultsEnum) Type() protoreflect.EnumType {
+	return xxx_File_test_proto_test_proto_enumTypes[3]
+}
+func (e DefaultsMessage_DefaultsEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var DefaultsMessage_DefaultsEnum_name = map[int32]string{
 	0: "ZERO",
@@ -224,6 +255,13 @@ const (
 	Defaults_BLUE  Defaults_Color = 2
 )
 
+func (e Defaults_Color) Type() protoreflect.EnumType {
+	return xxx_File_test_proto_test_proto_enumTypes[4]
+}
+func (e Defaults_Color) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
+
 var Defaults_Color_name = map[int32]string{
 	0: "RED",
 	1: "GREEN",
@@ -265,6 +303,13 @@ const (
 	RepeatedEnum_RED RepeatedEnum_Color = 1
 )
 
+func (e RepeatedEnum_Color) Type() protoreflect.EnumType {
+	return xxx_File_test_proto_test_proto_enumTypes[5]
+}
+func (e RepeatedEnum_Color) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
+
 var RepeatedEnum_Color_name = map[int32]string{
 	1: "RED",
 }
@@ -303,6 +348,9 @@ type GoEnum struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *GoEnum) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[0].MessageOf(m)
+}
 func (m *GoEnum) Reset()         { *m = GoEnum{} }
 func (m *GoEnum) String() string { return proto.CompactTextString(m) }
 func (*GoEnum) ProtoMessage()    {}
@@ -343,6 +391,9 @@ type GoTestField struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *GoTestField) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[1].MessageOf(m)
+}
 func (m *GoTestField) Reset()         { *m = GoTestField{} }
 func (m *GoTestField) String() string { return proto.CompactTextString(m) }
 func (*GoTestField) ProtoMessage()    {}
@@ -477,6 +528,9 @@ type GoTest struct {
 	XXX_sizecache            int32                   `json:"-"`
 }
 
+func (m *GoTest) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[2].MessageOf(m)
+}
 func (m *GoTest) Reset()         { *m = GoTest{} }
 func (m *GoTest) String() string { return proto.CompactTextString(m) }
 func (*GoTest) ProtoMessage()    {}
@@ -1102,6 +1156,9 @@ type GoTestRequiredGroupField struct {
 	XXX_sizecache        int32                           `json:"-"`
 }
 
+func (m *GoTestRequiredGroupField) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[3].MessageOf(m)
+}
 func (m *GoTestRequiredGroupField) Reset()         { *m = GoTestRequiredGroupField{} }
 func (m *GoTestRequiredGroupField) String() string { return proto.CompactTextString(m) }
 func (*GoTestRequiredGroupField) ProtoMessage()    {}
@@ -1148,6 +1205,9 @@ type GoSkipTest struct {
 	XXX_sizecache        int32                 `json:"-"`
 }
 
+func (m *GoSkipTest) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[4].MessageOf(m)
+}
 func (m *GoSkipTest) Reset()         { *m = GoSkipTest{} }
 func (m *GoSkipTest) String() string { return proto.CompactTextString(m) }
 func (*GoSkipTest) ProtoMessage()    {}
@@ -1217,6 +1277,9 @@ type NonPackedTest struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *NonPackedTest) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[5].MessageOf(m)
+}
 func (m *NonPackedTest) Reset()         { *m = NonPackedTest{} }
 func (m *NonPackedTest) String() string { return proto.CompactTextString(m) }
 func (*NonPackedTest) ProtoMessage()    {}
@@ -1256,6 +1319,9 @@ type PackedTest struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *PackedTest) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[6].MessageOf(m)
+}
 func (m *PackedTest) Reset()         { *m = PackedTest{} }
 func (m *PackedTest) String() string { return proto.CompactTextString(m) }
 func (*PackedTest) ProtoMessage()    {}
@@ -1296,6 +1362,9 @@ type MaxTag struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *MaxTag) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[7].MessageOf(m)
+}
 func (m *MaxTag) Reset()         { *m = MaxTag{} }
 func (m *MaxTag) String() string { return proto.CompactTextString(m) }
 func (*MaxTag) ProtoMessage()    {}
@@ -1336,6 +1405,9 @@ type OldMessage struct {
 	XXX_sizecache        int32              `json:"-"`
 }
 
+func (m *OldMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[8].MessageOf(m)
+}
 func (m *OldMessage) Reset()         { *m = OldMessage{} }
 func (m *OldMessage) String() string { return proto.CompactTextString(m) }
 func (*OldMessage) ProtoMessage()    {}
@@ -1386,6 +1458,9 @@ type NewMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *NewMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[9].MessageOf(m)
+}
 func (m *NewMessage) Reset()         { *m = NewMessage{} }
 func (m *NewMessage) String() string { return proto.CompactTextString(m) }
 func (*NewMessage) ProtoMessage()    {}
@@ -1434,6 +1509,9 @@ type InnerMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *InnerMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[10].MessageOf(m)
+}
 func (m *InnerMessage) Reset()         { *m = InnerMessage{} }
 func (m *InnerMessage) String() string { return proto.CompactTextString(m) }
 func (*InnerMessage) ProtoMessage()    {}
@@ -1493,6 +1571,9 @@ type OtherMessage struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
+func (m *OtherMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[11].MessageOf(m)
+}
 func (m *OtherMessage) Reset()         { *m = OtherMessage{} }
 func (m *OtherMessage) String() string { return proto.CompactTextString(m) }
 func (*OtherMessage) ProtoMessage()    {}
@@ -1561,6 +1642,9 @@ type RequiredInnerMessage struct {
 	XXX_sizecache        int32         `json:"-"`
 }
 
+func (m *RequiredInnerMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[12].MessageOf(m)
+}
 func (m *RequiredInnerMessage) Reset()         { *m = RequiredInnerMessage{} }
 func (m *RequiredInnerMessage) String() string { return proto.CompactTextString(m) }
 func (*RequiredInnerMessage) ProtoMessage()    {}
@@ -1613,6 +1697,9 @@ type MyMessage struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
+func (m *MyMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[13].MessageOf(m)
+}
 func (m *MyMessage) Reset()         { *m = MyMessage{} }
 func (m *MyMessage) String() string { return proto.CompactTextString(m) }
 func (*MyMessage) ProtoMessage()    {}
@@ -1738,6 +1825,9 @@ type Ext struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
+func (m *Ext) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[14].MessageOf(m)
+}
 func (m *Ext) Reset()         { *m = Ext{} }
 func (m *Ext) String() string { return proto.CompactTextString(m) }
 func (*Ext) ProtoMessage()    {}
@@ -1786,6 +1876,9 @@ type ComplexExtension struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *ComplexExtension) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[15].MessageOf(m)
+}
 func (m *ComplexExtension) Reset()         { *m = ComplexExtension{} }
 func (m *ComplexExtension) String() string { return proto.CompactTextString(m) }
 func (*ComplexExtension) ProtoMessage()    {}
@@ -1839,6 +1932,9 @@ type DefaultsMessage struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
+func (m *DefaultsMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[16].MessageOf(m)
+}
 func (m *DefaultsMessage) Reset()         { *m = DefaultsMessage{} }
 func (m *DefaultsMessage) String() string { return proto.CompactTextString(m) }
 func (*DefaultsMessage) ProtoMessage()    {}
@@ -1879,6 +1975,9 @@ type MyMessageSet struct {
 	XXX_sizecache                int32  `json:"-"`
 }
 
+func (m *MyMessageSet) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[17].MessageOf(m)
+}
 func (m *MyMessageSet) Reset()         { *m = MyMessageSet{} }
 func (m *MyMessageSet) String() string { return proto.CompactTextString(m) }
 func (*MyMessageSet) ProtoMessage()    {}
@@ -1918,6 +2017,9 @@ type Empty struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *Empty) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[18].MessageOf(m)
+}
 func (m *Empty) Reset()         { *m = Empty{} }
 func (m *Empty) String() string { return proto.CompactTextString(m) }
 func (*Empty) ProtoMessage()    {}
@@ -1950,6 +2052,9 @@ type MessageList struct {
 	XXX_sizecache        int32                  `json:"-"`
 }
 
+func (m *MessageList) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[19].MessageOf(m)
+}
 func (m *MessageList) Reset()         { *m = MessageList{} }
 func (m *MessageList) String() string { return proto.CompactTextString(m) }
 func (*MessageList) ProtoMessage()    {}
@@ -1990,6 +2095,9 @@ type Strings struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *Strings) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[20].MessageOf(m)
+}
 func (m *Strings) Reset()         { *m = Strings{} }
 func (m *Strings) String() string { return proto.CompactTextString(m) }
 func (*Strings) ProtoMessage()    {}
@@ -2059,6 +2167,9 @@ type Defaults struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *Defaults) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[21].MessageOf(m)
+}
 func (m *Defaults) Reset()         { *m = Defaults{} }
 func (m *Defaults) String() string { return proto.CompactTextString(m) }
 func (*Defaults) ProtoMessage()    {}
@@ -2247,6 +2358,9 @@ type SubDefaults struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *SubDefaults) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[22].MessageOf(m)
+}
 func (m *SubDefaults) Reset()         { *m = SubDefaults{} }
 func (m *SubDefaults) String() string { return proto.CompactTextString(m) }
 func (*SubDefaults) ProtoMessage()    {}
@@ -2288,6 +2402,9 @@ type RepeatedEnum struct {
 	XXX_sizecache        int32                `json:"-"`
 }
 
+func (m *RepeatedEnum) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[23].MessageOf(m)
+}
 func (m *RepeatedEnum) Reset()         { *m = RepeatedEnum{} }
 func (m *RepeatedEnum) String() string { return proto.CompactTextString(m) }
 func (*RepeatedEnum) ProtoMessage()    {}
@@ -2333,6 +2450,9 @@ type MoreRepeated struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *MoreRepeated) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[24].MessageOf(m)
+}
 func (m *MoreRepeated) Reset()         { *m = MoreRepeated{} }
 func (m *MoreRepeated) String() string { return proto.CompactTextString(m) }
 func (*MoreRepeated) ProtoMessage()    {}
@@ -2414,6 +2534,9 @@ type GroupOld struct {
 	XXX_sizecache        int32       `json:"-"`
 }
 
+func (m *GroupOld) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[25].MessageOf(m)
+}
 func (m *GroupOld) Reset()         { *m = GroupOld{} }
 func (m *GroupOld) String() string { return proto.CompactTextString(m) }
 func (*GroupOld) ProtoMessage()    {}
@@ -2453,6 +2576,9 @@ type GroupNew struct {
 	XXX_sizecache        int32       `json:"-"`
 }
 
+func (m *GroupNew) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[26].MessageOf(m)
+}
 func (m *GroupNew) Reset()         { *m = GroupNew{} }
 func (m *GroupNew) String() string { return proto.CompactTextString(m) }
 func (*GroupNew) ProtoMessage()    {}
@@ -2493,6 +2619,9 @@ type FloatingPoint struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *FloatingPoint) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[27].MessageOf(m)
+}
 func (m *FloatingPoint) Reset()         { *m = FloatingPoint{} }
 func (m *FloatingPoint) String() string { return proto.CompactTextString(m) }
 func (*FloatingPoint) ProtoMessage()    {}
@@ -2542,6 +2671,9 @@ type MessageWithMap struct {
 	XXX_sizecache        int32                    `json:"-"`
 }
 
+func (m *MessageWithMap) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[28].MessageOf(m)
+}
 func (m *MessageWithMap) Reset()         { *m = MessageWithMap{} }
 func (m *MessageWithMap) String() string { return proto.CompactTextString(m) }
 func (*MessageWithMap) ProtoMessage()    {}
@@ -2623,6 +2755,9 @@ type Oneof struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
+func (m *Oneof) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[29].MessageOf(m)
+}
 func (m *Oneof) Reset()         { *m = Oneof{} }
 func (m *Oneof) String() string { return proto.CompactTextString(m) }
 func (*Oneof) ProtoMessage()    {}
@@ -2945,6 +3080,9 @@ type Communique struct {
 	XXX_sizecache        int32              `json:"-"`
 }
 
+func (m *Communique) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[30].MessageOf(m)
+}
 func (m *Communique) Reset()         { *m = Communique{} }
 func (m *Communique) String() string { return proto.CompactTextString(m) }
 func (*Communique) ProtoMessage()    {}
@@ -3091,6 +3229,9 @@ type TestUTF8 struct {
 	XXX_sizecache        int32            `json:"-"`
 }
 
+func (m *TestUTF8) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[31].MessageOf(m)
+}
 func (m *TestUTF8) Reset()         { *m = TestUTF8{} }
 func (m *TestUTF8) String() string { return proto.CompactTextString(m) }
 func (*TestUTF8) ProtoMessage()    {}
@@ -3183,6 +3324,9 @@ type GoTest_RequiredGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *GoTest_RequiredGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[32].MessageOf(m)
+}
 func (m *GoTest_RequiredGroup) Reset()         { *m = GoTest_RequiredGroup{} }
 func (m *GoTest_RequiredGroup) String() string { return proto.CompactTextString(m) }
 func (*GoTest_RequiredGroup) ProtoMessage()    {}
@@ -3222,6 +3366,9 @@ type GoTest_RepeatedGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *GoTest_RepeatedGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[33].MessageOf(m)
+}
 func (m *GoTest_RepeatedGroup) Reset()         { *m = GoTest_RepeatedGroup{} }
 func (m *GoTest_RepeatedGroup) String() string { return proto.CompactTextString(m) }
 func (*GoTest_RepeatedGroup) ProtoMessage()    {}
@@ -3261,6 +3408,9 @@ type GoTest_OptionalGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *GoTest_OptionalGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[34].MessageOf(m)
+}
 func (m *GoTest_OptionalGroup) Reset()         { *m = GoTest_OptionalGroup{} }
 func (m *GoTest_OptionalGroup) String() string { return proto.CompactTextString(m) }
 func (*GoTest_OptionalGroup) ProtoMessage()    {}
@@ -3300,6 +3450,9 @@ type GoTestRequiredGroupField_Group struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *GoTestRequiredGroupField_Group) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[35].MessageOf(m)
+}
 func (m *GoTestRequiredGroupField_Group) Reset()         { *m = GoTestRequiredGroupField_Group{} }
 func (m *GoTestRequiredGroupField_Group) String() string { return proto.CompactTextString(m) }
 func (*GoTestRequiredGroupField_Group) ProtoMessage()    {}
@@ -3340,6 +3493,9 @@ type GoSkipTest_SkipGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *GoSkipTest_SkipGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[36].MessageOf(m)
+}
 func (m *GoSkipTest_SkipGroup) Reset()         { *m = GoSkipTest_SkipGroup{} }
 func (m *GoSkipTest_SkipGroup) String() string { return proto.CompactTextString(m) }
 func (*GoSkipTest_SkipGroup) ProtoMessage()    {}
@@ -3386,6 +3542,9 @@ type OldMessage_Nested struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *OldMessage_Nested) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[37].MessageOf(m)
+}
 func (m *OldMessage_Nested) Reset()         { *m = OldMessage_Nested{} }
 func (m *OldMessage_Nested) String() string { return proto.CompactTextString(m) }
 func (*OldMessage_Nested) ProtoMessage()    {}
@@ -3426,6 +3585,9 @@ type NewMessage_Nested struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *NewMessage_Nested) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[38].MessageOf(m)
+}
 func (m *NewMessage_Nested) Reset()         { *m = NewMessage_Nested{} }
 func (m *NewMessage_Nested) String() string { return proto.CompactTextString(m) }
 func (*NewMessage_Nested) ProtoMessage()    {}
@@ -3472,6 +3634,9 @@ type MyMessage_SomeGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *MyMessage_SomeGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[39].MessageOf(m)
+}
 func (m *MyMessage_SomeGroup) Reset()         { *m = MyMessage_SomeGroup{} }
 func (m *MyMessage_SomeGroup) String() string { return proto.CompactTextString(m) }
 func (*MyMessage_SomeGroup) ProtoMessage()    {}
@@ -3512,6 +3677,9 @@ type MessageList_Message struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *MessageList_Message) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[41].MessageOf(m)
+}
 func (m *MessageList_Message) Reset()         { *m = MessageList_Message{} }
 func (m *MessageList_Message) String() string { return proto.CompactTextString(m) }
 func (*MessageList_Message) ProtoMessage()    {}
@@ -3558,6 +3726,9 @@ type GroupOld_G struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *GroupOld_G) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[42].MessageOf(m)
+}
 func (m *GroupOld_G) Reset()         { *m = GroupOld_G{} }
 func (m *GroupOld_G) String() string { return proto.CompactTextString(m) }
 func (*GroupOld_G) ProtoMessage()    {}
@@ -3598,6 +3769,9 @@ type GroupNew_G struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *GroupNew_G) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[43].MessageOf(m)
+}
 func (m *GroupNew_G) Reset()         { *m = GroupNew_G{} }
 func (m *GroupNew_G) String() string { return proto.CompactTextString(m) }
 func (*GroupNew_G) ProtoMessage()    {}
@@ -3644,6 +3818,9 @@ type Oneof_F_Group struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *Oneof_F_Group) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_test_proto_messageTypes[48].MessageOf(m)
+}
 func (m *Oneof_F_Group) Reset()         { *m = Oneof_F_Group{} }
 func (m *Oneof_F_Group) String() string { return proto.CompactTextString(m) }
 func (*Oneof_F_Group) ProtoMessage()    {}
@@ -5629,3 +5806,365 @@ var xxx_File_test_proto_test_proto_rawdesc = []byte{
 }
 
 var xxx_File_test_proto_test_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_test_proto_test_proto_rawdesc)
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var File_test_proto_test_proto protoreflect.FileDescriptor
+
+var xxx_File_test_proto_test_proto_enumTypes = make([]protoreflect.EnumType, 6)
+var xxx_File_test_proto_test_proto_messageTypes = make([]protoimpl.MessageType, 51)
+var xxx_File_test_proto_test_proto_goTypes = []interface{}{
+	(FOO)(0),                               // 0: test_proto.FOO
+	(GoTest_KIND)(0),                       // 1: test_proto.GoTest.KIND
+	(MyMessage_Color)(0),                   // 2: test_proto.MyMessage.Color
+	(DefaultsMessage_DefaultsEnum)(0),      // 3: test_proto.DefaultsMessage.DefaultsEnum
+	(Defaults_Color)(0),                    // 4: test_proto.Defaults.Color
+	(RepeatedEnum_Color)(0),                // 5: test_proto.RepeatedEnum.Color
+	(*GoEnum)(nil),                         // 6: test_proto.GoEnum
+	(*GoTestField)(nil),                    // 7: test_proto.GoTestField
+	(*GoTest)(nil),                         // 8: test_proto.GoTest
+	(*GoTestRequiredGroupField)(nil),       // 9: test_proto.GoTestRequiredGroupField
+	(*GoSkipTest)(nil),                     // 10: test_proto.GoSkipTest
+	(*NonPackedTest)(nil),                  // 11: test_proto.NonPackedTest
+	(*PackedTest)(nil),                     // 12: test_proto.PackedTest
+	(*MaxTag)(nil),                         // 13: test_proto.MaxTag
+	(*OldMessage)(nil),                     // 14: test_proto.OldMessage
+	(*NewMessage)(nil),                     // 15: test_proto.NewMessage
+	(*InnerMessage)(nil),                   // 16: test_proto.InnerMessage
+	(*OtherMessage)(nil),                   // 17: test_proto.OtherMessage
+	(*RequiredInnerMessage)(nil),           // 18: test_proto.RequiredInnerMessage
+	(*MyMessage)(nil),                      // 19: test_proto.MyMessage
+	(*Ext)(nil),                            // 20: test_proto.Ext
+	(*ComplexExtension)(nil),               // 21: test_proto.ComplexExtension
+	(*DefaultsMessage)(nil),                // 22: test_proto.DefaultsMessage
+	(*MyMessageSet)(nil),                   // 23: test_proto.MyMessageSet
+	(*Empty)(nil),                          // 24: test_proto.Empty
+	(*MessageList)(nil),                    // 25: test_proto.MessageList
+	(*Strings)(nil),                        // 26: test_proto.Strings
+	(*Defaults)(nil),                       // 27: test_proto.Defaults
+	(*SubDefaults)(nil),                    // 28: test_proto.SubDefaults
+	(*RepeatedEnum)(nil),                   // 29: test_proto.RepeatedEnum
+	(*MoreRepeated)(nil),                   // 30: test_proto.MoreRepeated
+	(*GroupOld)(nil),                       // 31: test_proto.GroupOld
+	(*GroupNew)(nil),                       // 32: test_proto.GroupNew
+	(*FloatingPoint)(nil),                  // 33: test_proto.FloatingPoint
+	(*MessageWithMap)(nil),                 // 34: test_proto.MessageWithMap
+	(*Oneof)(nil),                          // 35: test_proto.Oneof
+	(*Communique)(nil),                     // 36: test_proto.Communique
+	(*TestUTF8)(nil),                       // 37: test_proto.TestUTF8
+	(*GoTest_RequiredGroup)(nil),           // 38: test_proto.GoTest.RequiredGroup
+	(*GoTest_RepeatedGroup)(nil),           // 39: test_proto.GoTest.RepeatedGroup
+	(*GoTest_OptionalGroup)(nil),           // 40: test_proto.GoTest.OptionalGroup
+	(*GoTestRequiredGroupField_Group)(nil), // 41: test_proto.GoTestRequiredGroupField.Group
+	(*GoSkipTest_SkipGroup)(nil),           // 42: test_proto.GoSkipTest.SkipGroup
+	(*OldMessage_Nested)(nil),              // 43: test_proto.OldMessage.Nested
+	(*NewMessage_Nested)(nil),              // 44: test_proto.NewMessage.Nested
+	(*MyMessage_SomeGroup)(nil),            // 45: test_proto.MyMessage.SomeGroup
+	nil,                                    // 46: test_proto.Ext.MapFieldEntry
+	(*MessageList_Message)(nil),            // 47: test_proto.MessageList.Message
+	(*GroupOld_G)(nil),                     // 48: test_proto.GroupOld.G
+	(*GroupNew_G)(nil),                     // 49: test_proto.GroupNew.G
+	nil,                                    // 50: test_proto.MessageWithMap.NameMappingEntry
+	nil,                                    // 51: test_proto.MessageWithMap.MsgMappingEntry
+	nil,                                    // 52: test_proto.MessageWithMap.ByteMappingEntry
+	nil,                                    // 53: test_proto.MessageWithMap.StrToStrEntry
+	(*Oneof_F_Group)(nil),                  // 54: test_proto.Oneof.F_Group
+	nil,                                    // 55: test_proto.TestUTF8.MapKeyEntry
+	nil,                                    // 56: test_proto.TestUTF8.MapValueEntry
+}
+var xxx_File_test_proto_test_proto_depIdxs = []int32{
+	19, // test_proto.greeting:extendee -> test_proto.MyMessage
+	17, // test_proto.complex:extendee -> test_proto.OtherMessage
+	17, // test_proto.r_complex:extendee -> test_proto.OtherMessage
+	22, // test_proto.no_default_double:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_float:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_int32:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_int64:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_uint32:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_uint64:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_sint32:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_sint64:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_fixed32:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_fixed64:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_sfixed32:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_sfixed64:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_bool:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_string:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_bytes:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.no_default_enum:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_double:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_float:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_int32:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_int64:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_uint32:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_uint64:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_sint32:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_sint64:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_fixed32:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_fixed64:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_sfixed32:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_sfixed64:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_bool:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_string:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_bytes:extendee -> test_proto.DefaultsMessage
+	22, // test_proto.default_enum:extendee -> test_proto.DefaultsMessage
+	23, // test_proto.x201:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x202:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x203:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x204:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x205:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x206:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x207:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x208:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x209:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x210:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x211:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x212:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x213:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x214:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x215:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x216:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x217:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x218:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x219:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x220:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x221:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x222:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x223:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x224:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x225:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x226:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x227:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x228:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x229:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x230:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x231:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x232:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x233:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x234:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x235:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x236:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x237:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x238:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x239:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x240:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x241:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x242:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x243:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x244:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x245:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x246:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x247:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x248:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x249:extendee -> test_proto.MyMessageSet
+	23, // test_proto.x250:extendee -> test_proto.MyMessageSet
+	19, // test_proto.Ext.more:extendee -> test_proto.MyMessage
+	19, // test_proto.Ext.text:extendee -> test_proto.MyMessage
+	19, // test_proto.Ext.number:extendee -> test_proto.MyMessage
+	0,  // test_proto.GoEnum.foo:type_name -> test_proto.FOO
+	1,  // test_proto.GoTest.Kind:type_name -> test_proto.GoTest.KIND
+	7,  // test_proto.GoTest.RequiredField:type_name -> test_proto.GoTestField
+	7,  // test_proto.GoTest.RepeatedField:type_name -> test_proto.GoTestField
+	7,  // test_proto.GoTest.OptionalField:type_name -> test_proto.GoTestField
+	38, // test_proto.GoTest.requiredgroup:type_name -> test_proto.GoTest.RequiredGroup
+	39, // test_proto.GoTest.repeatedgroup:type_name -> test_proto.GoTest.RepeatedGroup
+	40, // test_proto.GoTest.optionalgroup:type_name -> test_proto.GoTest.OptionalGroup
+	41, // test_proto.GoTestRequiredGroupField.group:type_name -> test_proto.GoTestRequiredGroupField.Group
+	42, // test_proto.GoSkipTest.skipgroup:type_name -> test_proto.GoSkipTest.SkipGroup
+	43, // test_proto.OldMessage.nested:type_name -> test_proto.OldMessage.Nested
+	44, // test_proto.NewMessage.nested:type_name -> test_proto.NewMessage.Nested
+	16, // test_proto.OtherMessage.inner:type_name -> test_proto.InnerMessage
+	16, // test_proto.RequiredInnerMessage.leo_finally_won_an_oscar:type_name -> test_proto.InnerMessage
+	16, // test_proto.MyMessage.inner:type_name -> test_proto.InnerMessage
+	17, // test_proto.MyMessage.others:type_name -> test_proto.OtherMessage
+	18, // test_proto.MyMessage.we_must_go_deeper:type_name -> test_proto.RequiredInnerMessage
+	16, // test_proto.MyMessage.rep_inner:type_name -> test_proto.InnerMessage
+	2,  // test_proto.MyMessage.bikeshed:type_name -> test_proto.MyMessage.Color
+	45, // test_proto.MyMessage.somegroup:type_name -> test_proto.MyMessage.SomeGroup
+	46, // test_proto.Ext.map_field:type_name -> test_proto.Ext.MapFieldEntry
+	47, // test_proto.MessageList.message:type_name -> test_proto.MessageList.Message
+	4,  // test_proto.Defaults.F_Enum:type_name -> test_proto.Defaults.Color
+	28, // test_proto.Defaults.sub:type_name -> test_proto.SubDefaults
+	5,  // test_proto.RepeatedEnum.color:type_name -> test_proto.RepeatedEnum.Color
+	48, // test_proto.GroupOld.g:type_name -> test_proto.GroupOld.G
+	49, // test_proto.GroupNew.g:type_name -> test_proto.GroupNew.G
+	50, // test_proto.MessageWithMap.name_mapping:type_name -> test_proto.MessageWithMap.NameMappingEntry
+	51, // test_proto.MessageWithMap.msg_mapping:type_name -> test_proto.MessageWithMap.MsgMappingEntry
+	52, // test_proto.MessageWithMap.byte_mapping:type_name -> test_proto.MessageWithMap.ByteMappingEntry
+	53, // test_proto.MessageWithMap.str_to_str:type_name -> test_proto.MessageWithMap.StrToStrEntry
+	2,  // test_proto.Oneof.F_Enum:type_name -> test_proto.MyMessage.Color
+	7,  // test_proto.Oneof.F_Message:type_name -> test_proto.GoTestField
+	54, // test_proto.Oneof.f_group:type_name -> test_proto.Oneof.F_Group
+	2,  // test_proto.Communique.col:type_name -> test_proto.MyMessage.Color
+	26, // test_proto.Communique.msg:type_name -> test_proto.Strings
+	55, // test_proto.TestUTF8.map_key:type_name -> test_proto.TestUTF8.MapKeyEntry
+	56, // test_proto.TestUTF8.map_value:type_name -> test_proto.TestUTF8.MapValueEntry
+	33, // test_proto.MessageWithMap.MsgMappingEntry.value:type_name -> test_proto.FloatingPoint
+	21, // test_proto.complex:type_name -> test_proto.ComplexExtension
+	21, // test_proto.r_complex:type_name -> test_proto.ComplexExtension
+	3,  // test_proto.no_default_enum:type_name -> test_proto.DefaultsMessage.DefaultsEnum
+	3,  // test_proto.default_enum:type_name -> test_proto.DefaultsMessage.DefaultsEnum
+	24, // test_proto.x201:type_name -> test_proto.Empty
+	24, // test_proto.x202:type_name -> test_proto.Empty
+	24, // test_proto.x203:type_name -> test_proto.Empty
+	24, // test_proto.x204:type_name -> test_proto.Empty
+	24, // test_proto.x205:type_name -> test_proto.Empty
+	24, // test_proto.x206:type_name -> test_proto.Empty
+	24, // test_proto.x207:type_name -> test_proto.Empty
+	24, // test_proto.x208:type_name -> test_proto.Empty
+	24, // test_proto.x209:type_name -> test_proto.Empty
+	24, // test_proto.x210:type_name -> test_proto.Empty
+	24, // test_proto.x211:type_name -> test_proto.Empty
+	24, // test_proto.x212:type_name -> test_proto.Empty
+	24, // test_proto.x213:type_name -> test_proto.Empty
+	24, // test_proto.x214:type_name -> test_proto.Empty
+	24, // test_proto.x215:type_name -> test_proto.Empty
+	24, // test_proto.x216:type_name -> test_proto.Empty
+	24, // test_proto.x217:type_name -> test_proto.Empty
+	24, // test_proto.x218:type_name -> test_proto.Empty
+	24, // test_proto.x219:type_name -> test_proto.Empty
+	24, // test_proto.x220:type_name -> test_proto.Empty
+	24, // test_proto.x221:type_name -> test_proto.Empty
+	24, // test_proto.x222:type_name -> test_proto.Empty
+	24, // test_proto.x223:type_name -> test_proto.Empty
+	24, // test_proto.x224:type_name -> test_proto.Empty
+	24, // test_proto.x225:type_name -> test_proto.Empty
+	24, // test_proto.x226:type_name -> test_proto.Empty
+	24, // test_proto.x227:type_name -> test_proto.Empty
+	24, // test_proto.x228:type_name -> test_proto.Empty
+	24, // test_proto.x229:type_name -> test_proto.Empty
+	24, // test_proto.x230:type_name -> test_proto.Empty
+	24, // test_proto.x231:type_name -> test_proto.Empty
+	24, // test_proto.x232:type_name -> test_proto.Empty
+	24, // test_proto.x233:type_name -> test_proto.Empty
+	24, // test_proto.x234:type_name -> test_proto.Empty
+	24, // test_proto.x235:type_name -> test_proto.Empty
+	24, // test_proto.x236:type_name -> test_proto.Empty
+	24, // test_proto.x237:type_name -> test_proto.Empty
+	24, // test_proto.x238:type_name -> test_proto.Empty
+	24, // test_proto.x239:type_name -> test_proto.Empty
+	24, // test_proto.x240:type_name -> test_proto.Empty
+	24, // test_proto.x241:type_name -> test_proto.Empty
+	24, // test_proto.x242:type_name -> test_proto.Empty
+	24, // test_proto.x243:type_name -> test_proto.Empty
+	24, // test_proto.x244:type_name -> test_proto.Empty
+	24, // test_proto.x245:type_name -> test_proto.Empty
+	24, // test_proto.x246:type_name -> test_proto.Empty
+	24, // test_proto.x247:type_name -> test_proto.Empty
+	24, // test_proto.x248:type_name -> test_proto.Empty
+	24, // test_proto.x249:type_name -> test_proto.Empty
+	24, // test_proto.x250:type_name -> test_proto.Empty
+	20, // test_proto.Ext.more:type_name -> test_proto.Ext
+}
+
+func init() { xxx_File_test_proto_test_proto_init() }
+func xxx_File_test_proto_test_proto_init() {
+	if File_test_proto_test_proto != nil {
+		return
+	}
+	messageTypes := make([]protoreflect.MessageType, 51)
+	extensionTypes := make([]protoreflect.ExtensionType, 88)
+	File_test_proto_test_proto = protoimpl.FileBuilder{
+		RawDescriptor:        xxx_File_test_proto_test_proto_rawdesc,
+		GoTypes:              xxx_File_test_proto_test_proto_goTypes,
+		DependencyIndexes:    xxx_File_test_proto_test_proto_depIdxs,
+		EnumOutputTypes:      xxx_File_test_proto_test_proto_enumTypes,
+		MessageOutputTypes:   messageTypes,
+		ExtensionOutputTypes: extensionTypes,
+	}.Init()
+	messageGoTypes := xxx_File_test_proto_test_proto_goTypes[6:][:51]
+	for i, mt := range messageTypes {
+		xxx_File_test_proto_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_test_proto_test_proto_messageTypes[i].PBType = mt
+	}
+	E_Greeting.Type = extensionTypes[0]
+	E_Complex.Type = extensionTypes[1]
+	E_RComplex.Type = extensionTypes[2]
+	E_NoDefaultDouble.Type = extensionTypes[3]
+	E_NoDefaultFloat.Type = extensionTypes[4]
+	E_NoDefaultInt32.Type = extensionTypes[5]
+	E_NoDefaultInt64.Type = extensionTypes[6]
+	E_NoDefaultUint32.Type = extensionTypes[7]
+	E_NoDefaultUint64.Type = extensionTypes[8]
+	E_NoDefaultSint32.Type = extensionTypes[9]
+	E_NoDefaultSint64.Type = extensionTypes[10]
+	E_NoDefaultFixed32.Type = extensionTypes[11]
+	E_NoDefaultFixed64.Type = extensionTypes[12]
+	E_NoDefaultSfixed32.Type = extensionTypes[13]
+	E_NoDefaultSfixed64.Type = extensionTypes[14]
+	E_NoDefaultBool.Type = extensionTypes[15]
+	E_NoDefaultString.Type = extensionTypes[16]
+	E_NoDefaultBytes.Type = extensionTypes[17]
+	E_NoDefaultEnum.Type = extensionTypes[18]
+	E_DefaultDouble.Type = extensionTypes[19]
+	E_DefaultFloat.Type = extensionTypes[20]
+	E_DefaultInt32.Type = extensionTypes[21]
+	E_DefaultInt64.Type = extensionTypes[22]
+	E_DefaultUint32.Type = extensionTypes[23]
+	E_DefaultUint64.Type = extensionTypes[24]
+	E_DefaultSint32.Type = extensionTypes[25]
+	E_DefaultSint64.Type = extensionTypes[26]
+	E_DefaultFixed32.Type = extensionTypes[27]
+	E_DefaultFixed64.Type = extensionTypes[28]
+	E_DefaultSfixed32.Type = extensionTypes[29]
+	E_DefaultSfixed64.Type = extensionTypes[30]
+	E_DefaultBool.Type = extensionTypes[31]
+	E_DefaultString.Type = extensionTypes[32]
+	E_DefaultBytes.Type = extensionTypes[33]
+	E_DefaultEnum.Type = extensionTypes[34]
+	E_X201.Type = extensionTypes[35]
+	E_X202.Type = extensionTypes[36]
+	E_X203.Type = extensionTypes[37]
+	E_X204.Type = extensionTypes[38]
+	E_X205.Type = extensionTypes[39]
+	E_X206.Type = extensionTypes[40]
+	E_X207.Type = extensionTypes[41]
+	E_X208.Type = extensionTypes[42]
+	E_X209.Type = extensionTypes[43]
+	E_X210.Type = extensionTypes[44]
+	E_X211.Type = extensionTypes[45]
+	E_X212.Type = extensionTypes[46]
+	E_X213.Type = extensionTypes[47]
+	E_X214.Type = extensionTypes[48]
+	E_X215.Type = extensionTypes[49]
+	E_X216.Type = extensionTypes[50]
+	E_X217.Type = extensionTypes[51]
+	E_X218.Type = extensionTypes[52]
+	E_X219.Type = extensionTypes[53]
+	E_X220.Type = extensionTypes[54]
+	E_X221.Type = extensionTypes[55]
+	E_X222.Type = extensionTypes[56]
+	E_X223.Type = extensionTypes[57]
+	E_X224.Type = extensionTypes[58]
+	E_X225.Type = extensionTypes[59]
+	E_X226.Type = extensionTypes[60]
+	E_X227.Type = extensionTypes[61]
+	E_X228.Type = extensionTypes[62]
+	E_X229.Type = extensionTypes[63]
+	E_X230.Type = extensionTypes[64]
+	E_X231.Type = extensionTypes[65]
+	E_X232.Type = extensionTypes[66]
+	E_X233.Type = extensionTypes[67]
+	E_X234.Type = extensionTypes[68]
+	E_X235.Type = extensionTypes[69]
+	E_X236.Type = extensionTypes[70]
+	E_X237.Type = extensionTypes[71]
+	E_X238.Type = extensionTypes[72]
+	E_X239.Type = extensionTypes[73]
+	E_X240.Type = extensionTypes[74]
+	E_X241.Type = extensionTypes[75]
+	E_X242.Type = extensionTypes[76]
+	E_X243.Type = extensionTypes[77]
+	E_X244.Type = extensionTypes[78]
+	E_X245.Type = extensionTypes[79]
+	E_X246.Type = extensionTypes[80]
+	E_X247.Type = extensionTypes[81]
+	E_X248.Type = extensionTypes[82]
+	E_X249.Type = extensionTypes[83]
+	E_X250.Type = extensionTypes[84]
+	E_Ext_More.Type = extensionTypes[85]
+	E_Ext_Text.Type = extensionTypes[86]
+	E_Ext_Number.Type = extensionTypes[87]
+	xxx_File_test_proto_test_proto_goTypes = nil
+	xxx_File_test_proto_test_proto_depIdxs = nil
+}

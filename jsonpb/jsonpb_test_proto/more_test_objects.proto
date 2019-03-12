@@ -31,6 +31,8 @@
 
 syntax = "proto3";
 
+option go_package = "github.com/golang/protobuf/jsonpb/jsonpb_test_proto;jsonpb";
+
 package jsonpb;
 
 message Simple3 {

@@ -31,6 +31,8 @@
 
 syntax = "proto3";
 
+option go_package = "github.com/golang/protobuf/proto/proto3_proto";
+
 import "google/protobuf/any.proto";
 import "test_proto/test.proto";
 

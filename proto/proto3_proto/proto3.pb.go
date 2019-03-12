@@ -7,7 +7,10 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	test_proto "github.com/golang/protobuf/proto/test_proto"
 	protoapi "github.com/golang/protobuf/protoapi"
-	any "github.com/golang/protobuf/ptypes/any"
+	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	known "github.com/golang/protobuf/v2/types/known"
+	reflect "reflect"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -24,6 +27,13 @@ const (
 	Message_SLAPSTICK   Message_Humour = 2
 	Message_BILL_BAILEY Message_Humour = 3
 )
+
+func (e Message_Humour) Type() protoreflect.EnumType {
+	return xxx_File_proto3_proto_proto3_proto_enumTypes[0]
+}
+func (e Message_Humour) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(e)
+}
 
 var Message_Humour_name = map[int32]string{
 	0: "UNKNOWN",
@@ -62,8 +72,8 @@ type Message struct {
 	Terrain              map[string]*Nested                 `protobuf:"bytes,10,rep,name=terrain,proto3" json:"terrain,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	Proto2Field          *test_proto.SubDefaults            `protobuf:"bytes,11,opt,name=proto2_field,json=proto2Field,proto3" json:"proto2_field,omitempty"`
 	Proto2Value          map[string]*test_proto.SubDefaults `protobuf:"bytes,13,rep,name=proto2_value,json=proto2Value,proto3" json:"proto2_value,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Anything             *any.Any                           `protobuf:"bytes,14,opt,name=anything,proto3" json:"anything,omitempty"`
-	ManyThings           []*any.Any                         `protobuf:"bytes,15,rep,name=many_things,json=manyThings,proto3" json:"many_things,omitempty"`
+	Anything             *known.Any                         `protobuf:"bytes,14,opt,name=anything,proto3" json:"anything,omitempty"`
+	ManyThings           []*known.Any                       `protobuf:"bytes,15,rep,name=many_things,json=manyThings,proto3" json:"many_things,omitempty"`
 	Submessage           *Message                           `protobuf:"bytes,17,opt,name=submessage,proto3" json:"submessage,omitempty"`
 	Children             []*Message                         `protobuf:"bytes,18,rep,name=children,proto3" json:"children,omitempty"`
 	StringMap            map[string]string                  `protobuf:"bytes,20,rep,name=string_map,json=stringMap,proto3" json:"string_map,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
@@ -72,6 +82,9 @@ type Message struct {
 	XXX_sizecache        int32                              `json:"-"`
 }
 
+func (m *Message) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto3_proto_proto3_proto_messageTypes[0].MessageOf(m)
+}
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
 func (*Message) ProtoMessage()    {}
@@ -195,14 +208,14 @@ func (m *Message) GetProto2Value() map[string]*test_proto.SubDefaults {
 	return nil
 }
 
-func (m *Message) GetAnything() *any.Any {
+func (m *Message) GetAnything() *known.Any {
 	if m != nil {
 		return m.Anything
 	}
 	return nil
 }
 
-func (m *Message) GetManyThings() []*any.Any {
+func (m *Message) GetManyThings() []*known.Any {
 	if m != nil {
 		return m.ManyThings
 	}
@@ -238,6 +251,9 @@ type Nested struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
+func (m *Nested) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto3_proto_proto3_proto_messageTypes[1].MessageOf(m)
+}
 func (m *Nested) Reset()         { *m = Nested{} }
 func (m *Nested) String() string { return proto.CompactTextString(m) }
 func (*Nested) ProtoMessage()    {}
@@ -284,6 +300,9 @@ type MessageWithMap struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
+func (m *MessageWithMap) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto3_proto_proto3_proto_messageTypes[2].MessageOf(m)
+}
 func (m *MessageWithMap) Reset()         { *m = MessageWithMap{} }
 func (m *MessageWithMap) String() string { return proto.CompactTextString(m) }
 func (*MessageWithMap) ProtoMessage()    {}
@@ -323,6 +342,9 @@ type IntMap struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
+func (m *IntMap) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto3_proto_proto3_proto_messageTypes[3].MessageOf(m)
+}
 func (m *IntMap) Reset()         { *m = IntMap{} }
 func (m *IntMap) String() string { return proto.CompactTextString(m) }
 func (*IntMap) ProtoMessage()    {}
@@ -362,6 +384,9 @@ type IntMaps struct {
 	XXX_sizecache        int32     `json:"-"`
 }
 
+func (m *IntMaps) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto3_proto_proto3_proto_messageTypes[4].MessageOf(m)
+}
 func (m *IntMaps) Reset()         { *m = IntMaps{} }
 func (m *IntMaps) String() string { return proto.CompactTextString(m) }
 func (*IntMaps) ProtoMessage()    {}
@@ -407,6 +432,9 @@ type TestUTF8 struct {
 	XXX_sizecache        int32            `json:"-"`
 }
 
+func (m *TestUTF8) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto3_proto_proto3_proto_messageTypes[5].MessageOf(m)
+}
 func (m *TestUTF8) Reset()         { *m = TestUTF8{} }
 func (m *TestUTF8) String() string { return proto.CompactTextString(m) }
 func (*TestUTF8) ProtoMessage()    {}
@@ -510,7 +538,7 @@ func init() {
 }
 
 var xxx_File_proto3_proto_proto3_proto_rawdesc = []byte{
-	// 1987 bytes of the wire-encoded FileDescriptorProto
+	// 2036 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x19, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x33, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0c, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x33, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
@@ -634,8 +662,78 @@ var xxx_File_proto3_proto_proto3_proto_rawdesc = []byte{
 	0x65, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x03, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75,
 	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02,
-	0x38, 0x01, 0x42, 0x07, 0x0a, 0x05, 0x6f, 0x6e, 0x65, 0x6f, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x38, 0x01, 0x42, 0x07, 0x0a, 0x05, 0x6f, 0x6e, 0x65, 0x6f, 0x66, 0x42, 0x2f, 0x5a, 0x2d, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67,
+	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var xxx_File_proto3_proto_proto3_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_proto3_proto_proto3_proto_rawdesc)
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var File_proto3_proto_proto3_proto protoreflect.FileDescriptor
+
+var xxx_File_proto3_proto_proto3_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var xxx_File_proto3_proto_proto3_proto_messageTypes = make([]protoimpl.MessageType, 13)
+var xxx_File_proto3_proto_proto3_proto_goTypes = []interface{}{
+	(Message_Humour)(0),            // 0: proto3_proto.Message.Humour
+	(*Message)(nil),                // 1: proto3_proto.Message
+	(*Nested)(nil),                 // 2: proto3_proto.Nested
+	(*MessageWithMap)(nil),         // 3: proto3_proto.MessageWithMap
+	(*IntMap)(nil),                 // 4: proto3_proto.IntMap
+	(*IntMaps)(nil),                // 5: proto3_proto.IntMaps
+	(*TestUTF8)(nil),               // 6: proto3_proto.TestUTF8
+	nil,                            // 7: proto3_proto.Message.TerrainEntry
+	nil,                            // 8: proto3_proto.Message.Proto2ValueEntry
+	nil,                            // 9: proto3_proto.Message.StringMapEntry
+	nil,                            // 10: proto3_proto.MessageWithMap.ByteMappingEntry
+	nil,                            // 11: proto3_proto.IntMap.RttEntry
+	nil,                            // 12: proto3_proto.TestUTF8.MapKeyEntry
+	nil,                            // 13: proto3_proto.TestUTF8.MapValueEntry
+	(*test_proto.SubDefaults)(nil), // 14: test_proto.SubDefaults
+	(*known.Any)(nil),              // 15: google.protobuf.Any
+}
+var xxx_File_proto3_proto_proto3_proto_depIdxs = []int32{
+	0,  // proto3_proto.Message.hilarity:type_name -> proto3_proto.Message.Humour
+	2,  // proto3_proto.Message.nested:type_name -> proto3_proto.Nested
+	0,  // proto3_proto.Message.r_funny:type_name -> proto3_proto.Message.Humour
+	7,  // proto3_proto.Message.terrain:type_name -> proto3_proto.Message.TerrainEntry
+	14, // proto3_proto.Message.proto2_field:type_name -> test_proto.SubDefaults
+	8,  // proto3_proto.Message.proto2_value:type_name -> proto3_proto.Message.Proto2ValueEntry
+	15, // proto3_proto.Message.anything:type_name -> google.protobuf.Any
+	15, // proto3_proto.Message.many_things:type_name -> google.protobuf.Any
+	1,  // proto3_proto.Message.submessage:type_name -> proto3_proto.Message
+	1,  // proto3_proto.Message.children:type_name -> proto3_proto.Message
+	9,  // proto3_proto.Message.string_map:type_name -> proto3_proto.Message.StringMapEntry
+	10, // proto3_proto.MessageWithMap.byte_mapping:type_name -> proto3_proto.MessageWithMap.ByteMappingEntry
+	11, // proto3_proto.IntMap.rtt:type_name -> proto3_proto.IntMap.RttEntry
+	4,  // proto3_proto.IntMaps.maps:type_name -> proto3_proto.IntMap
+	12, // proto3_proto.TestUTF8.map_key:type_name -> proto3_proto.TestUTF8.MapKeyEntry
+	13, // proto3_proto.TestUTF8.map_value:type_name -> proto3_proto.TestUTF8.MapValueEntry
+	2,  // proto3_proto.Message.TerrainEntry.value:type_name -> proto3_proto.Nested
+	14, // proto3_proto.Message.Proto2ValueEntry.value:type_name -> test_proto.SubDefaults
+}
+
+func init() { xxx_File_proto3_proto_proto3_proto_init() }
+func xxx_File_proto3_proto_proto3_proto_init() {
+	if File_proto3_proto_proto3_proto != nil {
+		return
+	}
+	messageTypes := make([]protoreflect.MessageType, 13)
+	File_proto3_proto_proto3_proto = protoimpl.FileBuilder{
+		RawDescriptor:      xxx_File_proto3_proto_proto3_proto_rawdesc,
+		GoTypes:            xxx_File_proto3_proto_proto3_proto_goTypes,
+		DependencyIndexes:  xxx_File_proto3_proto_proto3_proto_depIdxs,
+		EnumOutputTypes:    xxx_File_proto3_proto_proto3_proto_enumTypes,
+		MessageOutputTypes: messageTypes,
+	}.Init()
+	messageGoTypes := xxx_File_proto3_proto_proto3_proto_goTypes[1:][:13]
+	for i, mt := range messageTypes {
+		xxx_File_proto3_proto_proto3_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+		xxx_File_proto3_proto_proto3_proto_messageTypes[i].PBType = mt
+	}
+	xxx_File_proto3_proto_proto3_proto_goTypes = nil
+	xxx_File_proto3_proto_proto3_proto_depIdxs = nil
+}
