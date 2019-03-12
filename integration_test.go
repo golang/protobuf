@@ -32,10 +32,8 @@ var (
 	golangVersions  = []string{"1.9.7", "1.10.8", "1.11.5", "1.12"}
 	golangLatest    = golangVersions[len(golangVersions)-1]
 
-	// List of directories to avoid auto-deleting. After updating the versions,
-	// it is worth placing the previous versions here for some time since
-	// other developers may still have working branches using the old versions.
-	keepDirs = []string{"protobuf-3.6.1", "go1.10.7", "go1.11.4"}
+	// purgeTimeout determines the maximum age of unused sub-directories.
+	purgeTimeout = 30 * 24 * time.Hour // 1 month
 
 	// Variables initialized by mustInitDeps.
 	goPath     string
@@ -156,16 +154,19 @@ func mustInitDeps(t *testing.T) {
 		for _, v := range golangVersions {
 			subDirs["go"+v] = true
 		}
-		for _, d := range keepDirs {
-			subDirs[d] = true
-		}
 
+		now := time.Now()
 		fis, _ := ioutil.ReadDir(testDir)
 		for _, fi := range fis {
-			if !subDirs[fi.Name()] {
-				fmt.Printf("delete %v\n", fi.Name())
-				os.RemoveAll(filepath.Join(testDir, fi.Name())) // best-effort
+			if subDirs[fi.Name()] {
+				os.Chtimes(filepath.Join(testDir, fi.Name()), now, now) // best-effort
+				continue
 			}
+			if now.Sub(fi.ModTime()) < purgeTimeout {
+				continue
+			}
+			fmt.Printf("delete %v\n", fi.Name())
+			os.RemoveAll(filepath.Join(testDir, fi.Name())) // best-effort
 		}
 	}()
 
