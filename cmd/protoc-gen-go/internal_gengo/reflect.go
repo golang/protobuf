@@ -7,20 +7,11 @@ package internal_gengo
 import (
 	"fmt"
 	"math"
-	"os"
 	"strings"
 
 	"github.com/golang/protobuf/v2/protogen"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
-
-// TODO: Remove this flag.
-// Remember to remove the copy in internal/protogen/goldentest.
-var enableReflectFlag = os.Getenv("PROTOC_GEN_GO_ENABLE_REFLECT") != ""
-
-func enableReflection(f *protogen.File) bool {
-	return enableReflectFlag || isDescriptor(f)
-}
 
 // TODO: Remove special-casing for descriptor proto.
 func isDescriptor(f *protogen.File) bool {
@@ -42,10 +33,6 @@ const (
 // TODO: Add support for proto options.
 
 func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
-	if !enableReflection(f.File) {
-		return
-	}
-
 	// Emit a static check that enforces a minimum version of the proto package.
 	// TODO: This should appear higher up in the Go source file.
 	g.P("const _ = ", protoimplPackage.Ident("EnforceVersion"), "(", protoimplPackage.Ident("Version"), " - ", minimumVersion, ")")
@@ -224,10 +211,6 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 }
 
 func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum *protogen.Enum) {
-	if !enableReflection(f.File) {
-		return
-	}
-
 	idx := f.allEnumsByPtr[enum]
 	typesVar := enumTypesVarName(f)
 	g.P("func (e ", enum.GoIdent, ") Type() ", protoreflectPackage.Ident("EnumType"), " {")
@@ -239,10 +222,6 @@ func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo
 }
 
 func genReflectMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message) {
-	if !enableReflection(f.File) {
-		return
-	}
-
 	idx := f.allMessagesByPtr[message]
 	typesVar := messageTypesVarName(f)
 	g.P("func (m *", message.GoIdent, ") ProtoReflect() ", protoreflectPackage.Ident("Message"), " {")

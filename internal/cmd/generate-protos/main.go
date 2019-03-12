@@ -196,7 +196,6 @@ func protoc(plugins string, args ...string) {
 	cmd := exec.Command("protoc", "--plugin=protoc-gen-go="+os.Args[0])
 	cmd.Args = append(cmd.Args, args...)
 	cmd.Env = append(os.Environ(), "RUN_AS_PROTOC_PLUGIN="+plugins)
-	cmd.Env = append(cmd.Env, "PROTOC_GEN_GO_ENABLE_REFLECT=1")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("executing: %v\n%s\n", strings.Join(cmd.Args, " "), out)
