@@ -11,6 +11,9 @@ import (
 )
 
 // Deprecated: do not use.
+var ErrInternalBadWireType = errors.New("proto: internal error: bad wiretype for oneof")
+
+// Deprecated: do not use.
 type Stats struct{ Emalloc, Dmalloc, Encode, Decode, Chit, Cmiss, Size uint64 }
 
 // Deprecated: do not use.

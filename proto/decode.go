@@ -17,10 +17,6 @@ import (
 // errOverflow is returned when an integer is too large to be represented.
 var errOverflow = errors.New("proto: integer overflow")
 
-// ErrInternalBadWireType is returned by generated code when an incorrect
-// wire type is encountered. It does not get returned to user code.
-var ErrInternalBadWireType = errors.New("proto: internal error: bad wiretype for oneof")
-
 // DecodeVarint reads a varint-encoded integer from the slice.
 // It returns the integer and the number of bytes consumed, or
 // zero if there is not enough.
