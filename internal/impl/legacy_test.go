@@ -14,9 +14,9 @@ import (
 	pack "github.com/golang/protobuf/v2/internal/encoding/pack"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 	cmp "github.com/google/go-cmp/cmp"
 	cmpopts "github.com/google/go-cmp/cmp/cmpopts"
 

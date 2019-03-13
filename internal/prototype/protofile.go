@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// TODO: Delete this package and re-write functionality to depend on
+// reflect/protodesc and internal/fileinit.
+
 // Package prototype provides builders to construct protobuf types that
 // implement the interfaces defined in the protoreflect package.
 //

@@ -9,8 +9,8 @@ import (
 
 	papi "github.com/golang/protobuf/protoapi"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 
 	// The legacy package must be imported prior to use of any legacy messages.
 	// TODO: Remove this when protoV1 registers these hooks for you.

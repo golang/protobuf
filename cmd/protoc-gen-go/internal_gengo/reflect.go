@@ -27,7 +27,7 @@ const (
 	reflectPackage      = protogen.GoImportPath("reflect")
 	protoimplPackage    = protogen.GoImportPath("github.com/golang/protobuf/v2/runtime/protoimpl")
 	protoreflectPackage = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoreflect")
-	prototypePackage    = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/prototype")
+	prototypePackage    = protogen.GoImportPath("github.com/golang/protobuf/v2/internal/prototype")
 )
 
 // TODO: Add support for proto options.

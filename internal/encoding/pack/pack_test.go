@@ -11,8 +11,8 @@ import (
 	"math"
 	"testing"
 
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 	cmp "github.com/google/go-cmp/cmp"
 )
 

@@ -14,10 +14,10 @@ import (
 
 	protoV1 "github.com/golang/protobuf/proto"
 	detrand "github.com/golang/protobuf/v2/internal/detrand"
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pdesc "github.com/golang/protobuf/v2/reflect/protodesc"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )

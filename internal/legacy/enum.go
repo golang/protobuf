@@ -10,9 +10,9 @@ import (
 	"reflect"
 	"sync"
 
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )

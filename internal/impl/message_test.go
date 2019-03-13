@@ -13,10 +13,10 @@ import (
 
 	protoV1 "github.com/golang/protobuf/proto"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 	cmp "github.com/google/go-cmp/cmp"
 	cmpopts "github.com/google/go-cmp/cmp/cmpopts"
 

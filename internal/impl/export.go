@@ -5,8 +5,8 @@
 package impl
 
 import (
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
 // Export is a zero-length named type that exists only to export a set of

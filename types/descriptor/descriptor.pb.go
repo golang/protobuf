@@ -5,8 +5,8 @@ package descriptor_proto
 
 import (
 	protoapi "github.com/golang/protobuf/protoapi"
+	prototype "github.com/golang/protobuf/v2/internal/prototype"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
-	prototype "github.com/golang/protobuf/v2/reflect/prototype"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )

@@ -13,9 +13,9 @@ import (
 
 	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )

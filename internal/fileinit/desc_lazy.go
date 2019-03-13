@@ -13,9 +13,9 @@ import (
 	defval "github.com/golang/protobuf/v2/internal/encoding/defval"
 	wire "github.com/golang/protobuf/v2/internal/encoding/wire"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
 func (file *fileDesc) lazyInit() *fileLazy {

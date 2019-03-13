@@ -14,9 +14,9 @@ import (
 
 	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/internal/legacy"
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 
 	testpb "github.com/golang/protobuf/v2/reflect/protoregistry/testprotos"
 )

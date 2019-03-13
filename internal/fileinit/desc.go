@@ -14,10 +14,10 @@ import (
 	"sync"
 
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
+	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	ptype "github.com/golang/protobuf/v2/reflect/prototype"
 )
 
 // FileBuilder construct a protoreflect.FileDescriptor from the
