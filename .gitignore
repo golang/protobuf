@@ -1,20 +1,3 @@
 .cache
 vendor
-
-.DS_Store
-*.[568ao]
-*.ao
-*.so
-*.pyc
-._*
-.nfs.*
-[568a].out
-*~
-*.orig
-core
-_obj
-_test
-_testmain.go
-
-# Conformance test output and transient files.
-conformance/failing_tests.txt
+cmd/protoc-gen-go/protoc-gen-go
