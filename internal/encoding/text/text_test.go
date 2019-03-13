@@ -550,10 +550,6 @@ func Test(t *testing.T) {
 		in:      `crazy:"x'"'\""\''"'z"`,
 		wantVal: V(Msg{{ID("crazy"), V(`x'""''z`)}}),
 	}, {
-		in:      `num: 1.02`,
-		wantVal: V(Msg{{ID("num"), V(float32(1.02))}}), // Use float32 to test marshaling of Float32 type.
-		wantOut: `num:1.02`,
-	}, {
 		in: `nums: [t,T,true,True,TRUE,f,F,false,False,FALSE]`,
 		wantVal: V(Msg{{ID("nums"), V(Lst{
 			V(true),
@@ -794,16 +790,9 @@ spouse: null
 				want, _ := x.Uint(true)
 				got, ok := y.Uint(math.MaxUint32 < want)
 				return got == want && ok
-			case Float32:
-				want, _ := x.Float32()
-				got, ok := y.Float32()
-				if math.IsNaN(float64(got)) || math.IsNaN(float64(want)) {
-					return math.IsNaN(float64(got)) == math.IsNaN(float64(want))
-				}
-				return got == want && ok
-			case Float64:
-				want, _ := x.Float64()
-				got, ok := y.Float64()
+			case Float32, Float64:
+				want, _ := x.Float(true)
+				got, ok := y.Float(math.MaxFloat32 < math.Abs(want))
 				if math.IsNaN(got) || math.IsNaN(want) {
 					return math.IsNaN(got) == math.IsNaN(want)
 				}

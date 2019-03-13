@@ -223,40 +223,22 @@ func (v Value) Uint(b64 bool) (x uint64, ok bool) {
 	return 0, false
 }
 
-// Float32 returns v as a float32 of the specified precision and reports whether
+// Float returns v as a float64 of the specified precision and reports whether
 // the conversion succeeded.
-func (v Value) Float32() (x float32, ok bool) {
-	switch v.typ {
-	case Int:
-		return float32(int64(v.num)), true // possibly lossy, but allowed
-	case Uint:
-		return float32(uint64(v.num)), true // possibly lossy, but allowed
-	case Float32, Float64:
-		n := math.Float64frombits(v.num)
-		if math.IsNaN(n) || math.IsInf(n, 0) {
-			return float32(n), true
-		}
-		if math.Abs(n) <= math.MaxFloat32 {
-			return float32(n), true
-		}
-	}
-	return 0, false
-}
-
-// Float64 returns v as a float64 of the specified precision and reports whether
-// the conversion succeeded.
-func (v Value) Float64() (x float64, ok bool) {
+func (v Value) Float(b64 bool) (x float64, ok bool) {
 	switch v.typ {
 	case Int:
 		return float64(int64(v.num)), true // possibly lossy, but allowed
 	case Uint:
 		return float64(uint64(v.num)), true // possibly lossy, but allowed
-	case Float32:
-		f, ok := v.Float32()
-		return float64(f), ok
-	case Float64:
+	case Float32, Float64:
 		n := math.Float64frombits(v.num)
-		return n, true
+		if math.IsNaN(n) || math.IsInf(n, 0) {
+			return float64(n), true
+		}
+		if b64 || math.Abs(n) <= math.MaxFloat32 {
+			return float64(n), true
+		}
 	}
 	return 0, false
 }
