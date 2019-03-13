@@ -38,6 +38,13 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
+func init() {
+	fmt.Fprint(os.Stderr,
+		"WARNING: Package github.com/golang/protobuf/protoc-gen-go/generator is deprecated.\n"+
+			"\tA future release of golang/protobuf will delete this package,\n"+
+			"\twhich has long been excluded from the compatibility promise.\n\n")
+}
+
 // generatedCodeVersion indicates a version of the generated code.
 // It is incremented whenever an incompatibility between the generated code and
 // proto package is introduced; the generated code references
