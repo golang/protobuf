@@ -1,3 +1,0 @@
-syntax = "proto3";
-option go_package = "github.com/golang/protobuf/ptypes/wrappers";
-import public "google/protobuf/wrappers.proto";

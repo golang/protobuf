@@ -1,3 +1,0 @@
-syntax = "proto2";
-option go_package = "github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor";
-import public "google/protobuf/descriptor.proto";
