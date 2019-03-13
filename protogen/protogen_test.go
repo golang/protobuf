@@ -2,22 +2,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build golden
-
 package protogen
 
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/internal/scalar"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/google/go-cmp/cmp"
 
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 	pluginpb "github.com/golang/protobuf/v2/types/plugin"
@@ -60,31 +54,32 @@ func TestPluginParameterErrors(t *testing.T) {
 	}
 }
 
-func TestFiles(t *testing.T) {
-	gen, err := New(makeRequest(t, "testdata/go_package/no_go_package_import.proto"), nil)
+func TestNoGoPackage(t *testing.T) {
+	gen, err := New(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{
+			{
+				Name:    scalar.String("testdata/go_package/no_go_package.proto"),
+				Syntax:  scalar.String(protoreflect.Proto3.String()),
+				Package: scalar.String("goproto.testdata"),
+			},
+			{
+				Name:       scalar.String("testdata/go_package/no_go_package_import.proto"),
+				Syntax:     scalar.String(protoreflect.Proto3.String()),
+				Package:    scalar.String("goproto.testdata"),
+				Dependency: []string{"go_package/no_go_package.proto"},
+			},
+		},
+	}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, test := range []struct {
-		path         string
-		wantGenerate bool
-	}{
-		{
-			path:         "go_package/no_go_package_import.proto",
-			wantGenerate: true,
-		},
-		{
-			path:         "go_package/no_go_package.proto",
-			wantGenerate: false,
-		},
-	} {
-		f, ok := gen.FileByName(test.path)
-		if !ok {
-			t.Errorf("%q: not found by gen.FileByName", test.path)
-			continue
+
+	for i, f := range gen.Files {
+		if got, want := string(f.GoPackageName), "goproto_testdata"; got != want {
+			t.Errorf("gen.Files[%d].GoPackageName = %v, want %v", i, got, want)
 		}
-		if f.Generate != test.wantGenerate {
-			t.Errorf("%q: Generate=%v, want %v", test.path, f.Generate, test.wantGenerate)
+		if got, want := string(f.GoImportPath), "testdata/go_package"; got != want {
+			t.Errorf("gen.Files[%d].GoImportPath = %v, want %v", i, got, want)
 		}
 	}
 }
@@ -301,17 +296,8 @@ var _ = string1.X // "golang.org/z/string"
 	if err != nil {
 		t.Fatalf("g.Content() = %v", err)
 	}
-	if want != string(got) {
-		t.Fatalf(`want:
-==========
-%v
-==========
-
-got:
-==========
-%v
-==========`,
-			want, string(got))
+	if diff := cmp.Diff(string(want), string(got)); diff != "" {
+		t.Fatalf("content mismatch (-want +got):\n%s", diff)
 	}
 }
 
@@ -329,7 +315,9 @@ func TestImportRewrites(t *testing.T) {
 	g.P("var _ = ", GoIdent{GoName: "X", GoImportPath: "golang.org/x/bar"})
 	want := `package foo
 
-import bar "prefix/golang.org/x/bar"
+import (
+	bar "prefix/golang.org/x/bar"
+)
 
 var _ = bar.X
 `
@@ -337,64 +325,7 @@ var _ = bar.X
 	if err != nil {
 		t.Fatalf("g.Content() = %v", err)
 	}
-	if want != string(got) {
-		t.Fatalf(`want:
-==========
-%v
-==========
-
-got:
-==========
-%v
-==========`,
-			want, string(got))
-	}
-}
-
-// makeRequest returns a CodeGeneratorRequest for the given protoc inputs.
-//
-// It does this by running protoc with the current binary as the protoc-gen-go
-// plugin. This "plugin" produces a single file, named 'request', which contains
-// the code generator request.
-func makeRequest(t *testing.T, args ...string) *pluginpb.CodeGeneratorRequest {
-	workdir, err := ioutil.TempDir("", "test")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(workdir)
-
-	cmd := exec.Command("protoc", "--plugin=protoc-gen-go="+os.Args[0])
-	cmd.Args = append(cmd.Args, "--go_out="+workdir, "-Itestdata")
-	cmd.Args = append(cmd.Args, args...)
-	cmd.Env = append(os.Environ(), "RUN_AS_PROTOC_PLUGIN=1")
-	out, err := cmd.CombinedOutput()
-	if len(out) > 0 || err != nil {
-		t.Log("RUNNING: ", strings.Join(cmd.Args, " "))
-	}
-	if len(out) > 0 {
-		t.Log(string(out))
-	}
-	if err != nil {
-		t.Fatalf("protoc: %v", err)
-	}
-
-	b, err := ioutil.ReadFile(filepath.Join(workdir, "request"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	req := &pluginpb.CodeGeneratorRequest{}
-	if err := proto.UnmarshalText(string(b), req); err != nil {
-		t.Fatal(err)
-	}
-	return req
-}
-
-func init() {
-	if os.Getenv("RUN_AS_PROTOC_PLUGIN") != "" {
-		Run(nil, func(p *Plugin) error {
-			g := p.NewGeneratedFile("request", "")
-			return proto.MarshalText(g, p.Request)
-		})
-		os.Exit(0)
+	if diff := cmp.Diff(string(want), string(got)); diff != "" {
+		t.Fatalf("content mismatch (-want +got):\n%s", diff)
 	}
 }
