@@ -70,7 +70,7 @@ func (p legacyExtensionFields) Has(n pref.FieldNumber) bool {
 	if x.Value == nil {
 		return false
 	}
-	t := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
+	t := extensionTypeFromDesc(x.Desc)
 	if t.Cardinality() == pref.Repeated {
 		return t.ValueOf(x.Value).List().Len() > 0
 	}
@@ -82,7 +82,7 @@ func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 	if x.Desc == nil {
 		return pref.Value{}
 	}
-	t := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
+	t := extensionTypeFromDesc(x.Desc)
 	if x.Value == nil {
 		// NOTE: x.Value is never nil for Lists since they are always populated
 		// during ExtensionFieldTypes.Register.
@@ -99,7 +99,7 @@ func (p legacyExtensionFields) Set(n pref.FieldNumber, v pref.Value) {
 	if x.Desc == nil {
 		panic("no extension descriptor registered")
 	}
-	t := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
+	t := extensionTypeFromDesc(x.Desc)
 	x.Value = t.InterfaceOf(v)
 	p.x.Set(n, x)
 }
@@ -109,7 +109,7 @@ func (p legacyExtensionFields) Clear(n pref.FieldNumber) {
 	if x.Desc == nil {
 		return
 	}
-	t := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
+	t := extensionTypeFromDesc(x.Desc)
 	if t.Cardinality() == pref.Repeated {
 		t.ValueOf(x.Value).List().Truncate(0)
 		return
@@ -132,7 +132,7 @@ func (p legacyExtensionFields) NewMessage(n pref.FieldNumber) pref.Message {
 	if x.Desc == nil {
 		panic("no extension descriptor registered")
 	}
-	xt := legacyWrapper.ExtensionTypeFromDesc(x.Desc)
+	xt := extensionTypeFromDesc(x.Desc)
 	return xt.New().Message()
 }
 
@@ -198,7 +198,7 @@ func (p legacyExtensionTypes) Remove(t pref.ExtensionType) {
 func (p legacyExtensionTypes) ByNumber(n pref.FieldNumber) pref.ExtensionType {
 	x := p.x.Get(n)
 	if x.Desc != nil {
-		return legacyWrapper.ExtensionTypeFromDesc(x.Desc)
+		return extensionTypeFromDesc(x.Desc)
 	}
 	return nil
 }
@@ -206,7 +206,7 @@ func (p legacyExtensionTypes) ByNumber(n pref.FieldNumber) pref.ExtensionType {
 func (p legacyExtensionTypes) ByName(s pref.FullName) (t pref.ExtensionType) {
 	p.x.Range(func(_ pref.FieldNumber, x papi.ExtensionField) bool {
 		if x.Desc != nil && x.Desc.Name == string(s) {
-			t = legacyWrapper.ExtensionTypeFromDesc(x.Desc)
+			t = extensionTypeFromDesc(x.Desc)
 			return false
 		}
 		return true
@@ -217,10 +217,17 @@ func (p legacyExtensionTypes) ByName(s pref.FullName) (t pref.ExtensionType) {
 func (p legacyExtensionTypes) Range(f func(pref.ExtensionType) bool) {
 	p.x.Range(func(_ pref.FieldNumber, x papi.ExtensionField) bool {
 		if x.Desc != nil {
-			if !f(legacyWrapper.ExtensionTypeFromDesc(x.Desc)) {
+			if !f(extensionTypeFromDesc(x.Desc)) {
 				return false
 			}
 		}
 		return true
 	})
+}
+
+func extensionTypeFromDesc(desc *papi.ExtensionDesc) pref.ExtensionType {
+	if desc.Type != nil {
+		return desc.Type
+	}
+	return legacyWrapper.ExtensionTypeFromDesc(desc)
 }
