@@ -56,9 +56,8 @@ func loadFileDesc(b []byte) *descriptorpb.FileDescriptorProto {
 	if err != nil {
 		panic(err)
 	}
-	// TODO: What about extensions?
-	// The protoV1 API does not eagerly unmarshal extensions.
-	if err := proto.Unmarshal(b, m); err != nil {
+	err = proto.UnmarshalOptions{DiscardUnknown: true}.Unmarshal(b, m)
+	if err != nil {
 		panic(err)
 	}
 	fileDescCache.Store(&b[0], m)
