@@ -28,9 +28,10 @@ func (w WireType) Packable() bool {
 }
 
 type ProtoKind struct {
-	Name     string
-	WireType WireType
-	ToValue  Expr
+	Name      string
+	WireType  WireType
+	ToValue   Expr
+	FromValue Expr
 }
 
 func (k ProtoKind) Expr() Expr {
@@ -39,94 +40,112 @@ func (k ProtoKind) Expr() Expr {
 
 var ProtoKinds = []ProtoKind{
 	{
-		Name:     "Bool",
-		WireType: WireVarint,
-		ToValue:  "wire.DecodeBool(v)",
+		Name:      "Bool",
+		WireType:  WireVarint,
+		ToValue:   "wire.DecodeBool(v)",
+		FromValue: "wire.EncodeBool(v.Bool())",
 	},
 	{
-		Name:     "Enum",
-		WireType: WireVarint,
-		ToValue:  "protoreflect.EnumNumber(v)",
+		Name:      "Enum",
+		WireType:  WireVarint,
+		ToValue:   "protoreflect.EnumNumber(v)",
+		FromValue: "uint64(v.Enum())",
 	},
 	{
-		Name:     "Int32",
-		WireType: WireVarint,
-		ToValue:  "int32(v)",
+		Name:      "Int32",
+		WireType:  WireVarint,
+		ToValue:   "int32(v)",
+		FromValue: "uint64(int32(v.Int()))",
 	},
 	{
-		Name:     "Sint32",
-		WireType: WireVarint,
-		ToValue:  "int32(wire.DecodeZigZag(v & math.MaxUint32))",
+		Name:      "Sint32",
+		WireType:  WireVarint,
+		ToValue:   "int32(wire.DecodeZigZag(v & math.MaxUint32))",
+		FromValue: "wire.EncodeZigZag(int64(int32(v.Int())))",
 	},
 	{
-		Name:     "Uint32",
-		WireType: WireVarint,
-		ToValue:  "uint32(v)",
+		Name:      "Uint32",
+		WireType:  WireVarint,
+		ToValue:   "uint32(v)",
+		FromValue: "uint64(uint32(v.Uint()))",
 	},
 	{
-		Name:     "Int64",
-		WireType: WireVarint,
-		ToValue:  "int64(v)",
+		Name:      "Int64",
+		WireType:  WireVarint,
+		ToValue:   "int64(v)",
+		FromValue: "uint64(v.Int())",
 	},
 	{
-		Name:     "Sint64",
-		WireType: WireVarint,
-		ToValue:  "wire.DecodeZigZag(v)",
+		Name:      "Sint64",
+		WireType:  WireVarint,
+		ToValue:   "wire.DecodeZigZag(v)",
+		FromValue: "wire.EncodeZigZag(v.Int())",
 	},
 	{
-		Name:     "Uint64",
-		WireType: WireVarint,
-		ToValue:  "v",
+		Name:      "Uint64",
+		WireType:  WireVarint,
+		ToValue:   "v",
+		FromValue: "v.Uint()",
 	},
 	{
-		Name:     "Sfixed32",
-		WireType: WireFixed32,
-		ToValue:  "int32(v)",
+		Name:      "Sfixed32",
+		WireType:  WireFixed32,
+		ToValue:   "int32(v)",
+		FromValue: "uint32(v.Int())",
 	},
 	{
-		Name:     "Fixed32",
-		WireType: WireFixed32,
-		ToValue:  "uint32(v)",
+		Name:      "Fixed32",
+		WireType:  WireFixed32,
+		ToValue:   "uint32(v)",
+		FromValue: "uint32(v.Uint())",
 	},
 	{
-		Name:     "Float",
-		WireType: WireFixed32,
-		ToValue:  "math.Float32frombits(uint32(v))",
+		Name:      "Float",
+		WireType:  WireFixed32,
+		ToValue:   "math.Float32frombits(uint32(v))",
+		FromValue: "math.Float32bits(float32(v.Float()))",
 	},
 	{
-		Name:     "Sfixed64",
-		WireType: WireFixed64,
-		ToValue:  "int64(v)",
+		Name:      "Sfixed64",
+		WireType:  WireFixed64,
+		ToValue:   "int64(v)",
+		FromValue: "uint64(v.Int())",
 	},
 	{
-		Name:     "Fixed64",
-		WireType: WireFixed64,
-		ToValue:  "v",
+		Name:      "Fixed64",
+		WireType:  WireFixed64,
+		ToValue:   "v",
+		FromValue: "v.Uint()",
 	},
 	{
-		Name:     "Double",
-		WireType: WireFixed64,
-		ToValue:  "math.Float64frombits(v)",
+		Name:      "Double",
+		WireType:  WireFixed64,
+		ToValue:   "math.Float64frombits(v)",
+		FromValue: "math.Float64bits(v.Float())",
 	},
 	{
-		Name:     "String",
-		WireType: WireBytes,
-		ToValue:  "string(v)",
+		Name:      "String",
+		WireType:  WireBytes,
+		ToValue:   "string(v)",
+		FromValue: "[]byte(v.String())",
 	},
 	{
-		Name:     "Bytes",
-		WireType: WireBytes,
-		ToValue:  "append(([]byte)(nil), v...)",
+		Name:      "Bytes",
+		WireType:  WireBytes,
+		ToValue:   "append(([]byte)(nil), v...)",
+		FromValue: "v.Bytes()",
 	},
 	{
-		Name:     "Message",
-		WireType: WireBytes,
-		ToValue:  "v",
+		Name:      "Message",
+		WireType:  WireBytes,
+		ToValue:   "v",
+		FromValue: "v",
 	},
 	{
-		Name:     "Group",
-		WireType: WireGroup,
-		ToValue:  "v",
+		Name:      "Group",
+		WireType:  WireGroup,
+		ToValue:   "v",
+		FromValue: "v",
 	},
 }
 
@@ -206,5 +225,47 @@ func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Numbe
 	default:
 		return 0, errUnknown
 	}
+}
+`))
+
+func generateProtoEncode() string {
+	return mustExecute(protoEncodeTemplate, ProtoKinds)
+}
+
+var protoEncodeTemplate = template.Must(template.New("").Parse(`
+var wireTypes = map[protoreflect.Kind]wire.Type{
+{{- range .}}
+	{{.Expr}}: {{.WireType.Expr}},
+{{- end}}
+}
+
+func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoreflect.Kind, v protoreflect.Value) ([]byte, error) {
+	switch kind {
+	{{- range .}}
+	case {{.Expr}}:
+		{{if (eq .Name "Message") -}}
+		var pos int
+		var err error
+		b, pos = appendSpeculativeLength(b)
+		b, err = o.marshalMessage(b, v.Message())
+		if err != nil {
+			return nil, err
+		}
+		b = finishSpeculativeLength(b, pos)
+		{{- else if (eq .Name "Group") -}}
+		var err error
+		b, err = o.marshalMessage(b, v.Message())
+		if err != nil {
+			return nil, err
+		}
+		b = wire.AppendVarint(b, wire.EncodeTag(num, wire.EndGroupType))
+		{{- else -}}
+		b = wire.Append{{.WireType}}(b, {{.FromValue}})
+		{{- end}}
+	{{- end}}
+	default:
+		return nil, errors.New("invalid kind %v", kind)
+	}
+	return b, nil
 }
 `))

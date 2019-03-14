@@ -39,8 +39,9 @@ func main() {
 
 	chdirRoot()
 	writeSource("internal/fileinit/desc_list_gen.go", generateFileinitDescList())
-	writeSource("proto/decode_gen.go", generateProtoDecode())
 	writeSource("internal/prototype/protofile_list_gen.go", generateListTypes())
+	writeSource("proto/decode_gen.go", generateProtoDecode())
+	writeSource("proto/encode_gen.go", generateProtoEncode())
 }
 
 // chdirRoot changes the working directory to the repository root.
@@ -304,6 +305,7 @@ func writeSource(file, src string) {
 		"sync",
 		"",
 		"github.com/golang/protobuf/v2/internal/encoding/wire",
+		"github.com/golang/protobuf/v2/internal/errors",
 		"github.com/golang/protobuf/v2/internal/pragma",
 		"github.com/golang/protobuf/v2/internal/typefmt",
 		"github.com/golang/protobuf/v2/reflect/protoreflect",
