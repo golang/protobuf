@@ -368,14 +368,20 @@ func (*M_Submessage) XXX_OneofWrappers() []interface{} {
 	}
 }
 
-var E_ExtensionField = &proto.ExtensionDesc{
-	ExtendedType:  (*M)(nil),
-	ExtensionType: (*string)(nil),
-	Field:         100,
-	Name:          "goproto.protoc.import_public.sub.extension_field",
-	Tag:           "bytes,100,opt,name=extension_field",
-	Filename:      "import_public/sub/a.proto",
+var xxx_File_import_public_sub_a_proto_extDescs = []proto.ExtensionDesc{
+	{
+		ExtendedType:  (*M)(nil),
+		ExtensionType: (*string)(nil),
+		Field:         100,
+		Name:          "goproto.protoc.import_public.sub.extension_field",
+		Tag:           "bytes,100,opt,name=extension_field",
+		Filename:      "import_public/sub/a.proto",
+	},
 }
+var (
+	// extend goproto.protoc.import_public.sub.M { optional string extension_field = 100; }
+	E_ExtensionField = &xxx_File_import_public_sub_a_proto_extDescs[0]
+)
 
 func init() {
 	proto.RegisterFile("import_public/sub/a.proto", xxx_File_import_public_sub_a_proto_rawdesc_gzipped)
@@ -470,6 +476,7 @@ func xxx_File_import_public_sub_a_proto_init() {
 		RawDescriptor:        xxx_File_import_public_sub_a_proto_rawdesc,
 		GoTypes:              xxx_File_import_public_sub_a_proto_goTypes,
 		DependencyIndexes:    xxx_File_import_public_sub_a_proto_depIdxs,
+		LegacyExtensions:     xxx_File_import_public_sub_a_proto_extDescs,
 		EnumOutputTypes:      xxx_File_import_public_sub_a_proto_enumTypes,
 		MessageOutputTypes:   messageTypes,
 		ExtensionOutputTypes: extensionTypes,
@@ -479,7 +486,6 @@ func xxx_File_import_public_sub_a_proto_init() {
 		xxx_File_import_public_sub_a_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_import_public_sub_a_proto_messageTypes[i].PBType = mt
 	}
-	E_ExtensionField.Type = extensionTypes[0]
 	xxx_File_import_public_sub_a_proto_goTypes = nil
 	xxx_File_import_public_sub_a_proto_depIdxs = nil
 }

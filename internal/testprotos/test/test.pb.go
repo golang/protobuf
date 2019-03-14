@@ -1567,338 +1567,416 @@ func (m *TestAllTypes_RepeatedGroup) GetA() int32 {
 	return 0
 }
 
-var E_OptionalInt32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*int32)(nil),
-	Field:         1,
-	Name:          "goproto.proto.test.optional_int32_extension",
-	Tag:           "varint,1,opt,name=optional_int32_extension",
-	Filename:      "test/test.proto",
+var xxx_File_test_test_proto_extDescs = []proto.ExtensionDesc{
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*int32)(nil),
+		Field:         1,
+		Name:          "goproto.proto.test.optional_int32_extension",
+		Tag:           "varint,1,opt,name=optional_int32_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*int64)(nil),
+		Field:         2,
+		Name:          "goproto.proto.test.optional_int64_extension",
+		Tag:           "varint,2,opt,name=optional_int64_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*uint32)(nil),
+		Field:         3,
+		Name:          "goproto.proto.test.optional_uint32_extension",
+		Tag:           "varint,3,opt,name=optional_uint32_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*uint64)(nil),
+		Field:         4,
+		Name:          "goproto.proto.test.optional_uint64_extension",
+		Tag:           "varint,4,opt,name=optional_uint64_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*int32)(nil),
+		Field:         5,
+		Name:          "goproto.proto.test.optional_sint32_extension",
+		Tag:           "zigzag32,5,opt,name=optional_sint32_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*int64)(nil),
+		Field:         6,
+		Name:          "goproto.proto.test.optional_sint64_extension",
+		Tag:           "zigzag64,6,opt,name=optional_sint64_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*uint32)(nil),
+		Field:         7,
+		Name:          "goproto.proto.test.optional_fixed32_extension",
+		Tag:           "fixed32,7,opt,name=optional_fixed32_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*uint64)(nil),
+		Field:         8,
+		Name:          "goproto.proto.test.optional_fixed64_extension",
+		Tag:           "fixed64,8,opt,name=optional_fixed64_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*int32)(nil),
+		Field:         9,
+		Name:          "goproto.proto.test.optional_sfixed32_extension",
+		Tag:           "fixed32,9,opt,name=optional_sfixed32_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*int64)(nil),
+		Field:         10,
+		Name:          "goproto.proto.test.optional_sfixed64_extension",
+		Tag:           "fixed64,10,opt,name=optional_sfixed64_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*float32)(nil),
+		Field:         11,
+		Name:          "goproto.proto.test.optional_float_extension",
+		Tag:           "fixed32,11,opt,name=optional_float_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*float64)(nil),
+		Field:         12,
+		Name:          "goproto.proto.test.optional_double_extension",
+		Tag:           "fixed64,12,opt,name=optional_double_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*bool)(nil),
+		Field:         13,
+		Name:          "goproto.proto.test.optional_bool_extension",
+		Tag:           "varint,13,opt,name=optional_bool_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*string)(nil),
+		Field:         14,
+		Name:          "goproto.proto.test.optional_string_extension",
+		Tag:           "bytes,14,opt,name=optional_string_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]byte)(nil),
+		Field:         15,
+		Name:          "goproto.proto.test.optional_bytes_extension",
+		Tag:           "bytes,15,opt,name=optional_bytes_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*OptionalGroupExtension)(nil),
+		Field:         16,
+		Name:          "goproto.proto.test.optionalgroup_extension",
+		Tag:           "group,16,opt,name=OptionalGroup_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*TestAllTypes_NestedMessage)(nil),
+		Field:         18,
+		Name:          "goproto.proto.test.optional_nested_message_extension",
+		Tag:           "bytes,18,opt,name=optional_nested_message_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*TestAllTypes_NestedEnum)(nil),
+		Field:         21,
+		Name:          "goproto.proto.test.optional_nested_enum_extension",
+		Tag:           "varint,21,opt,name=optional_nested_enum_extension,enum=goproto.proto.test.TestAllTypes_NestedEnum",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]int32)(nil),
+		Field:         31,
+		Name:          "goproto.proto.test.repeated_int32_extension",
+		Tag:           "varint,31,rep,name=repeated_int32_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]int64)(nil),
+		Field:         32,
+		Name:          "goproto.proto.test.repeated_int64_extension",
+		Tag:           "varint,32,rep,name=repeated_int64_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]uint32)(nil),
+		Field:         33,
+		Name:          "goproto.proto.test.repeated_uint32_extension",
+		Tag:           "varint,33,rep,name=repeated_uint32_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]uint64)(nil),
+		Field:         34,
+		Name:          "goproto.proto.test.repeated_uint64_extension",
+		Tag:           "varint,34,rep,name=repeated_uint64_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]int32)(nil),
+		Field:         35,
+		Name:          "goproto.proto.test.repeated_sint32_extension",
+		Tag:           "zigzag32,35,rep,name=repeated_sint32_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]int64)(nil),
+		Field:         36,
+		Name:          "goproto.proto.test.repeated_sint64_extension",
+		Tag:           "zigzag64,36,rep,name=repeated_sint64_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]uint32)(nil),
+		Field:         37,
+		Name:          "goproto.proto.test.repeated_fixed32_extension",
+		Tag:           "fixed32,37,rep,name=repeated_fixed32_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]uint64)(nil),
+		Field:         38,
+		Name:          "goproto.proto.test.repeated_fixed64_extension",
+		Tag:           "fixed64,38,rep,name=repeated_fixed64_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]int32)(nil),
+		Field:         39,
+		Name:          "goproto.proto.test.repeated_sfixed32_extension",
+		Tag:           "fixed32,39,rep,name=repeated_sfixed32_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]int64)(nil),
+		Field:         40,
+		Name:          "goproto.proto.test.repeated_sfixed64_extension",
+		Tag:           "fixed64,40,rep,name=repeated_sfixed64_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]float32)(nil),
+		Field:         41,
+		Name:          "goproto.proto.test.repeated_float_extension",
+		Tag:           "fixed32,41,rep,name=repeated_float_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]float64)(nil),
+		Field:         42,
+		Name:          "goproto.proto.test.repeated_double_extension",
+		Tag:           "fixed64,42,rep,name=repeated_double_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]bool)(nil),
+		Field:         43,
+		Name:          "goproto.proto.test.repeated_bool_extension",
+		Tag:           "varint,43,rep,name=repeated_bool_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]string)(nil),
+		Field:         44,
+		Name:          "goproto.proto.test.repeated_string_extension",
+		Tag:           "bytes,44,rep,name=repeated_string_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([][]byte)(nil),
+		Field:         45,
+		Name:          "goproto.proto.test.repeated_bytes_extension",
+		Tag:           "bytes,45,rep,name=repeated_bytes_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]*RepeatedGroupExtension)(nil),
+		Field:         46,
+		Name:          "goproto.proto.test.repeatedgroup_extension",
+		Tag:           "group,46,rep,name=RepeatedGroup_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]*TestAllTypes_NestedMessage)(nil),
+		Field:         48,
+		Name:          "goproto.proto.test.repeated_nested_message_extension",
+		Tag:           "bytes,48,rep,name=repeated_nested_message_extension",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: ([]TestAllTypes_NestedEnum)(nil),
+		Field:         51,
+		Name:          "goproto.proto.test.repeated_nested_enum_extension",
+		Tag:           "varint,51,rep,name=repeated_nested_enum_extension,enum=goproto.proto.test.TestAllTypes_NestedEnum",
+		Filename:      "test/test.proto",
+	},
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*string)(nil),
+		Field:         1003,
+		Name:          "goproto.proto.test.TestNestedExtension.nested_string_extension",
+		Tag:           "bytes,1003,opt,name=nested_string_extension",
+		Filename:      "test/test.proto",
+	},
 }
+var (
+	// extend goproto.proto.test.TestAllExtensions { optional int32 optional_int32_extension = 1; }
+	E_OptionalInt32Extension = &xxx_File_test_test_proto_extDescs[0]
 
-var E_OptionalInt64Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*int64)(nil),
-	Field:         2,
-	Name:          "goproto.proto.test.optional_int64_extension",
-	Tag:           "varint,2,opt,name=optional_int64_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional int64 optional_int64_extension = 2; }
+	E_OptionalInt64Extension = &xxx_File_test_test_proto_extDescs[1]
 
-var E_OptionalUint32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*uint32)(nil),
-	Field:         3,
-	Name:          "goproto.proto.test.optional_uint32_extension",
-	Tag:           "varint,3,opt,name=optional_uint32_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional uint32 optional_uint32_extension = 3; }
+	E_OptionalUint32Extension = &xxx_File_test_test_proto_extDescs[2]
 
-var E_OptionalUint64Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*uint64)(nil),
-	Field:         4,
-	Name:          "goproto.proto.test.optional_uint64_extension",
-	Tag:           "varint,4,opt,name=optional_uint64_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional uint64 optional_uint64_extension = 4; }
+	E_OptionalUint64Extension = &xxx_File_test_test_proto_extDescs[3]
 
-var E_OptionalSint32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*int32)(nil),
-	Field:         5,
-	Name:          "goproto.proto.test.optional_sint32_extension",
-	Tag:           "zigzag32,5,opt,name=optional_sint32_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional sint32 optional_sint32_extension = 5; }
+	E_OptionalSint32Extension = &xxx_File_test_test_proto_extDescs[4]
 
-var E_OptionalSint64Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*int64)(nil),
-	Field:         6,
-	Name:          "goproto.proto.test.optional_sint64_extension",
-	Tag:           "zigzag64,6,opt,name=optional_sint64_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional sint64 optional_sint64_extension = 6; }
+	E_OptionalSint64Extension = &xxx_File_test_test_proto_extDescs[5]
 
-var E_OptionalFixed32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*uint32)(nil),
-	Field:         7,
-	Name:          "goproto.proto.test.optional_fixed32_extension",
-	Tag:           "fixed32,7,opt,name=optional_fixed32_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional fixed32 optional_fixed32_extension = 7; }
+	E_OptionalFixed32Extension = &xxx_File_test_test_proto_extDescs[6]
 
-var E_OptionalFixed64Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*uint64)(nil),
-	Field:         8,
-	Name:          "goproto.proto.test.optional_fixed64_extension",
-	Tag:           "fixed64,8,opt,name=optional_fixed64_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional fixed64 optional_fixed64_extension = 8; }
+	E_OptionalFixed64Extension = &xxx_File_test_test_proto_extDescs[7]
 
-var E_OptionalSfixed32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*int32)(nil),
-	Field:         9,
-	Name:          "goproto.proto.test.optional_sfixed32_extension",
-	Tag:           "fixed32,9,opt,name=optional_sfixed32_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional sfixed32 optional_sfixed32_extension = 9; }
+	E_OptionalSfixed32Extension = &xxx_File_test_test_proto_extDescs[8]
 
-var E_OptionalSfixed64Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*int64)(nil),
-	Field:         10,
-	Name:          "goproto.proto.test.optional_sfixed64_extension",
-	Tag:           "fixed64,10,opt,name=optional_sfixed64_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional sfixed64 optional_sfixed64_extension = 10; }
+	E_OptionalSfixed64Extension = &xxx_File_test_test_proto_extDescs[9]
 
-var E_OptionalFloatExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*float32)(nil),
-	Field:         11,
-	Name:          "goproto.proto.test.optional_float_extension",
-	Tag:           "fixed32,11,opt,name=optional_float_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional float optional_float_extension = 11; }
+	E_OptionalFloatExtension = &xxx_File_test_test_proto_extDescs[10]
 
-var E_OptionalDoubleExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*float64)(nil),
-	Field:         12,
-	Name:          "goproto.proto.test.optional_double_extension",
-	Tag:           "fixed64,12,opt,name=optional_double_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional double optional_double_extension = 12; }
+	E_OptionalDoubleExtension = &xxx_File_test_test_proto_extDescs[11]
 
-var E_OptionalBoolExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*bool)(nil),
-	Field:         13,
-	Name:          "goproto.proto.test.optional_bool_extension",
-	Tag:           "varint,13,opt,name=optional_bool_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional bool optional_bool_extension = 13; }
+	E_OptionalBoolExtension = &xxx_File_test_test_proto_extDescs[12]
 
-var E_OptionalStringExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*string)(nil),
-	Field:         14,
-	Name:          "goproto.proto.test.optional_string_extension",
-	Tag:           "bytes,14,opt,name=optional_string_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional string optional_string_extension = 14; }
+	E_OptionalStringExtension = &xxx_File_test_test_proto_extDescs[13]
 
-var E_OptionalBytesExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]byte)(nil),
-	Field:         15,
-	Name:          "goproto.proto.test.optional_bytes_extension",
-	Tag:           "bytes,15,opt,name=optional_bytes_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional bytes optional_bytes_extension = 15; }
+	E_OptionalBytesExtension = &xxx_File_test_test_proto_extDescs[14]
 
-var E_OptionalgroupExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*OptionalGroupExtension)(nil),
-	Field:         16,
-	Name:          "goproto.proto.test.optionalgroup_extension",
-	Tag:           "group,16,opt,name=OptionalGroup_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional goproto.proto.test.OptionalGroup_extension optionalgroup_extension = 16; }
+	E_OptionalgroupExtension = &xxx_File_test_test_proto_extDescs[15]
 
-var E_OptionalNestedMessageExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*TestAllTypes_NestedMessage)(nil),
-	Field:         18,
-	Name:          "goproto.proto.test.optional_nested_message_extension",
-	Tag:           "bytes,18,opt,name=optional_nested_message_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional goproto.proto.test.TestAllTypes.NestedMessage optional_nested_message_extension = 18; }
+	E_OptionalNestedMessageExtension = &xxx_File_test_test_proto_extDescs[16]
 
-var E_OptionalNestedEnumExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*TestAllTypes_NestedEnum)(nil),
-	Field:         21,
-	Name:          "goproto.proto.test.optional_nested_enum_extension",
-	Tag:           "varint,21,opt,name=optional_nested_enum_extension,enum=goproto.proto.test.TestAllTypes_NestedEnum",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional goproto.proto.test.TestAllTypes.NestedEnum optional_nested_enum_extension = 21; }
+	E_OptionalNestedEnumExtension = &xxx_File_test_test_proto_extDescs[17]
 
-var E_RepeatedInt32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]int32)(nil),
-	Field:         31,
-	Name:          "goproto.proto.test.repeated_int32_extension",
-	Tag:           "varint,31,rep,name=repeated_int32_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated int32 repeated_int32_extension = 31; }
+	E_RepeatedInt32Extension = &xxx_File_test_test_proto_extDescs[18]
 
-var E_RepeatedInt64Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]int64)(nil),
-	Field:         32,
-	Name:          "goproto.proto.test.repeated_int64_extension",
-	Tag:           "varint,32,rep,name=repeated_int64_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated int64 repeated_int64_extension = 32; }
+	E_RepeatedInt64Extension = &xxx_File_test_test_proto_extDescs[19]
 
-var E_RepeatedUint32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]uint32)(nil),
-	Field:         33,
-	Name:          "goproto.proto.test.repeated_uint32_extension",
-	Tag:           "varint,33,rep,name=repeated_uint32_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated uint32 repeated_uint32_extension = 33; }
+	E_RepeatedUint32Extension = &xxx_File_test_test_proto_extDescs[20]
 
-var E_RepeatedUint64Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]uint64)(nil),
-	Field:         34,
-	Name:          "goproto.proto.test.repeated_uint64_extension",
-	Tag:           "varint,34,rep,name=repeated_uint64_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated uint64 repeated_uint64_extension = 34; }
+	E_RepeatedUint64Extension = &xxx_File_test_test_proto_extDescs[21]
 
-var E_RepeatedSint32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]int32)(nil),
-	Field:         35,
-	Name:          "goproto.proto.test.repeated_sint32_extension",
-	Tag:           "zigzag32,35,rep,name=repeated_sint32_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated sint32 repeated_sint32_extension = 35; }
+	E_RepeatedSint32Extension = &xxx_File_test_test_proto_extDescs[22]
 
-var E_RepeatedSint64Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]int64)(nil),
-	Field:         36,
-	Name:          "goproto.proto.test.repeated_sint64_extension",
-	Tag:           "zigzag64,36,rep,name=repeated_sint64_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated sint64 repeated_sint64_extension = 36; }
+	E_RepeatedSint64Extension = &xxx_File_test_test_proto_extDescs[23]
 
-var E_RepeatedFixed32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]uint32)(nil),
-	Field:         37,
-	Name:          "goproto.proto.test.repeated_fixed32_extension",
-	Tag:           "fixed32,37,rep,name=repeated_fixed32_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated fixed32 repeated_fixed32_extension = 37; }
+	E_RepeatedFixed32Extension = &xxx_File_test_test_proto_extDescs[24]
 
-var E_RepeatedFixed64Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]uint64)(nil),
-	Field:         38,
-	Name:          "goproto.proto.test.repeated_fixed64_extension",
-	Tag:           "fixed64,38,rep,name=repeated_fixed64_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated fixed64 repeated_fixed64_extension = 38; }
+	E_RepeatedFixed64Extension = &xxx_File_test_test_proto_extDescs[25]
 
-var E_RepeatedSfixed32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]int32)(nil),
-	Field:         39,
-	Name:          "goproto.proto.test.repeated_sfixed32_extension",
-	Tag:           "fixed32,39,rep,name=repeated_sfixed32_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated sfixed32 repeated_sfixed32_extension = 39; }
+	E_RepeatedSfixed32Extension = &xxx_File_test_test_proto_extDescs[26]
 
-var E_RepeatedSfixed64Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]int64)(nil),
-	Field:         40,
-	Name:          "goproto.proto.test.repeated_sfixed64_extension",
-	Tag:           "fixed64,40,rep,name=repeated_sfixed64_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated sfixed64 repeated_sfixed64_extension = 40; }
+	E_RepeatedSfixed64Extension = &xxx_File_test_test_proto_extDescs[27]
 
-var E_RepeatedFloatExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]float32)(nil),
-	Field:         41,
-	Name:          "goproto.proto.test.repeated_float_extension",
-	Tag:           "fixed32,41,rep,name=repeated_float_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated float repeated_float_extension = 41; }
+	E_RepeatedFloatExtension = &xxx_File_test_test_proto_extDescs[28]
 
-var E_RepeatedDoubleExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]float64)(nil),
-	Field:         42,
-	Name:          "goproto.proto.test.repeated_double_extension",
-	Tag:           "fixed64,42,rep,name=repeated_double_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated double repeated_double_extension = 42; }
+	E_RepeatedDoubleExtension = &xxx_File_test_test_proto_extDescs[29]
 
-var E_RepeatedBoolExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]bool)(nil),
-	Field:         43,
-	Name:          "goproto.proto.test.repeated_bool_extension",
-	Tag:           "varint,43,rep,name=repeated_bool_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated bool repeated_bool_extension = 43; }
+	E_RepeatedBoolExtension = &xxx_File_test_test_proto_extDescs[30]
 
-var E_RepeatedStringExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]string)(nil),
-	Field:         44,
-	Name:          "goproto.proto.test.repeated_string_extension",
-	Tag:           "bytes,44,rep,name=repeated_string_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated string repeated_string_extension = 44; }
+	E_RepeatedStringExtension = &xxx_File_test_test_proto_extDescs[31]
 
-var E_RepeatedBytesExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([][]byte)(nil),
-	Field:         45,
-	Name:          "goproto.proto.test.repeated_bytes_extension",
-	Tag:           "bytes,45,rep,name=repeated_bytes_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated bytes repeated_bytes_extension = 45; }
+	E_RepeatedBytesExtension = &xxx_File_test_test_proto_extDescs[32]
 
-var E_RepeatedgroupExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]*RepeatedGroupExtension)(nil),
-	Field:         46,
-	Name:          "goproto.proto.test.repeatedgroup_extension",
-	Tag:           "group,46,rep,name=RepeatedGroup_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated goproto.proto.test.RepeatedGroup_extension repeatedgroup_extension = 46; }
+	E_RepeatedgroupExtension = &xxx_File_test_test_proto_extDescs[33]
 
-var E_RepeatedNestedMessageExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]*TestAllTypes_NestedMessage)(nil),
-	Field:         48,
-	Name:          "goproto.proto.test.repeated_nested_message_extension",
-	Tag:           "bytes,48,rep,name=repeated_nested_message_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated goproto.proto.test.TestAllTypes.NestedMessage repeated_nested_message_extension = 48; }
+	E_RepeatedNestedMessageExtension = &xxx_File_test_test_proto_extDescs[34]
 
-var E_RepeatedNestedEnumExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: ([]TestAllTypes_NestedEnum)(nil),
-	Field:         51,
-	Name:          "goproto.proto.test.repeated_nested_enum_extension",
-	Tag:           "varint,51,rep,name=repeated_nested_enum_extension,enum=goproto.proto.test.TestAllTypes_NestedEnum",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { repeated goproto.proto.test.TestAllTypes.NestedEnum repeated_nested_enum_extension = 51; }
+	E_RepeatedNestedEnumExtension = &xxx_File_test_test_proto_extDescs[35]
 
-var E_TestNestedExtension_NestedStringExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*string)(nil),
-	Field:         1003,
-	Name:          "goproto.proto.test.TestNestedExtension.nested_string_extension",
-	Tag:           "bytes,1003,opt,name=nested_string_extension",
-	Filename:      "test/test.proto",
-}
+	// extend goproto.proto.test.TestAllExtensions { optional string nested_string_extension = 1003; }
+	E_TestNestedExtension_NestedStringExtension = &xxx_File_test_test_proto_extDescs[36]
+)
 
 func init() {
 	proto.RegisterFile("test/test.proto", xxx_File_test_test_proto_rawdesc_gzipped)
@@ -2884,6 +2962,7 @@ func xxx_File_test_test_proto_init() {
 		RawDescriptor:        xxx_File_test_test_proto_rawdesc,
 		GoTypes:              xxx_File_test_test_proto_goTypes,
 		DependencyIndexes:    xxx_File_test_test_proto_depIdxs,
+		LegacyExtensions:     xxx_File_test_test_proto_extDescs,
 		EnumOutputTypes:      xxx_File_test_test_proto_enumTypes,
 		MessageOutputTypes:   messageTypes,
 		ExtensionOutputTypes: extensionTypes,
@@ -2893,43 +2972,6 @@ func xxx_File_test_test_proto_init() {
 		xxx_File_test_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_test_test_proto_messageTypes[i].PBType = mt
 	}
-	E_OptionalInt32Extension.Type = extensionTypes[0]
-	E_OptionalInt64Extension.Type = extensionTypes[1]
-	E_OptionalUint32Extension.Type = extensionTypes[2]
-	E_OptionalUint64Extension.Type = extensionTypes[3]
-	E_OptionalSint32Extension.Type = extensionTypes[4]
-	E_OptionalSint64Extension.Type = extensionTypes[5]
-	E_OptionalFixed32Extension.Type = extensionTypes[6]
-	E_OptionalFixed64Extension.Type = extensionTypes[7]
-	E_OptionalSfixed32Extension.Type = extensionTypes[8]
-	E_OptionalSfixed64Extension.Type = extensionTypes[9]
-	E_OptionalFloatExtension.Type = extensionTypes[10]
-	E_OptionalDoubleExtension.Type = extensionTypes[11]
-	E_OptionalBoolExtension.Type = extensionTypes[12]
-	E_OptionalStringExtension.Type = extensionTypes[13]
-	E_OptionalBytesExtension.Type = extensionTypes[14]
-	E_OptionalgroupExtension.Type = extensionTypes[15]
-	E_OptionalNestedMessageExtension.Type = extensionTypes[16]
-	E_OptionalNestedEnumExtension.Type = extensionTypes[17]
-	E_RepeatedInt32Extension.Type = extensionTypes[18]
-	E_RepeatedInt64Extension.Type = extensionTypes[19]
-	E_RepeatedUint32Extension.Type = extensionTypes[20]
-	E_RepeatedUint64Extension.Type = extensionTypes[21]
-	E_RepeatedSint32Extension.Type = extensionTypes[22]
-	E_RepeatedSint64Extension.Type = extensionTypes[23]
-	E_RepeatedFixed32Extension.Type = extensionTypes[24]
-	E_RepeatedFixed64Extension.Type = extensionTypes[25]
-	E_RepeatedSfixed32Extension.Type = extensionTypes[26]
-	E_RepeatedSfixed64Extension.Type = extensionTypes[27]
-	E_RepeatedFloatExtension.Type = extensionTypes[28]
-	E_RepeatedDoubleExtension.Type = extensionTypes[29]
-	E_RepeatedBoolExtension.Type = extensionTypes[30]
-	E_RepeatedStringExtension.Type = extensionTypes[31]
-	E_RepeatedBytesExtension.Type = extensionTypes[32]
-	E_RepeatedgroupExtension.Type = extensionTypes[33]
-	E_RepeatedNestedMessageExtension.Type = extensionTypes[34]
-	E_RepeatedNestedEnumExtension.Type = extensionTypes[35]
-	E_TestNestedExtension_NestedStringExtension.Type = extensionTypes[36]
 	xxx_File_test_test_proto_goTypes = nil
 	xxx_File_test_test_proto_depIdxs = nil
 }

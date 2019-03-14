@@ -13,6 +13,7 @@ import (
 	"reflect"
 	"sync"
 
+	papi "github.com/golang/protobuf/protoapi"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
@@ -95,6 +96,13 @@ type FileBuilder struct {
 	// TODO: Provide a list of extension types for options extensions.
 	// OptionDependencies []pref.ExtensionType
 
+	// LegacyExtensions are a list of legacy extension descriptors.
+	// If provided, the pointer to the v1 ExtensionDesc will be stored into the
+	// associated v2 ExtensionType and accessible via a pseudo-internal API.
+	// Also, the v2 ExtensionType will be stored into each v1 ExtensionDesc.
+	// If non-nil, len(LegacyExtensions) must equal len(ExtensionOutputTypes).
+	LegacyExtensions []papi.ExtensionDesc
+
 	// EnumOutputTypes is where Init stores all initialized enum types
 	// in "flattened ordering".
 	EnumOutputTypes []pref.EnumType
@@ -115,6 +123,13 @@ type FileBuilder struct {
 // are encountered.
 func (fb FileBuilder) Init() pref.FileDescriptor {
 	fd := newFileDesc(fb)
+
+	if fb.LegacyExtensions != nil {
+		for i := range fd.allExtensions {
+			fd.allExtensions[i].legacyDesc = &fb.LegacyExtensions[i]
+			fb.LegacyExtensions[i].Type = &fd.allExtensions[i]
+		}
+	}
 
 	for i := range fd.allEnums {
 		fb.EnumOutputTypes[i] = &fd.allEnums[i]
@@ -341,6 +356,8 @@ type (
 		number       pref.FieldNumber
 		extendedType pref.MessageDescriptor
 
+		legacyDesc *papi.ExtensionDesc
+
 		lazy *extensionLazy // protected by fileDesc.once
 	}
 	extensionLazy struct {
@@ -396,6 +413,10 @@ func (xd *extensionDesc) lazyInit() *extensionLazy {
 	xd.parentFile.lazyInit() // implicitly initializes extensionLazy
 	return xd.lazy
 }
+
+// ProtoLegacyExtensionDesc is a pseudo-internal API for allowing the v1 code
+// to be able to retrieve a v1 ExtensionDesc.
+func (xd *extensionDesc) ProtoLegacyExtensionDesc() *papi.ExtensionDesc { return xd.legacyDesc }
 
 type (
 	serviceDesc struct {

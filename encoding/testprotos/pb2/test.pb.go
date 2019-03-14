@@ -1409,176 +1409,218 @@ func (m *Nests_OptGroup_OptNestedGroup) GetOptFixed32() uint32 {
 	return 0
 }
 
-var E_OptExtBool = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: (*bool)(nil),
-	Field:         21,
-	Name:          "pb2.opt_ext_bool",
-	Tag:           "varint,21,opt,name=opt_ext_bool",
-	Filename:      "pb2/test.proto",
+var xxx_File_pb2_test_proto_extDescs = []proto.ExtensionDesc{
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: (*bool)(nil),
+		Field:         21,
+		Name:          "pb2.opt_ext_bool",
+		Tag:           "varint,21,opt,name=opt_ext_bool",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: (*string)(nil),
+		Field:         22,
+		Name:          "pb2.opt_ext_string",
+		Tag:           "bytes,22,opt,name=opt_ext_string",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: (*Enum)(nil),
+		Field:         23,
+		Name:          "pb2.opt_ext_enum",
+		Tag:           "varint,23,opt,name=opt_ext_enum,enum=pb2.Enum",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: (*Nested)(nil),
+		Field:         24,
+		Name:          "pb2.opt_ext_nested",
+		Tag:           "bytes,24,opt,name=opt_ext_nested",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: ([]uint32)(nil),
+		Field:         31,
+		Name:          "pb2.rpt_ext_fixed32",
+		Tag:           "fixed32,31,rep,name=rpt_ext_fixed32",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: ([]Enum)(nil),
+		Field:         32,
+		Name:          "pb2.rpt_ext_enum",
+		Tag:           "varint,32,rep,name=rpt_ext_enum,enum=pb2.Enum",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: ([]*Nested)(nil),
+		Field:         33,
+		Name:          "pb2.rpt_ext_nested",
+		Tag:           "bytes,33,rep,name=rpt_ext_nested",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*MessageSet)(nil),
+		ExtensionType: (*FakeMessageSetExtension)(nil),
+		Field:         50,
+		Name:          "pb2.",
+		Tag:           "bytes,50,opt,name=message_set_extension",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: (*bool)(nil),
+		Field:         51,
+		Name:          "pb2.ExtensionsContainer.opt_ext_bool",
+		Tag:           "varint,51,opt,name=opt_ext_bool",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: (*string)(nil),
+		Field:         52,
+		Name:          "pb2.ExtensionsContainer.opt_ext_string",
+		Tag:           "bytes,52,opt,name=opt_ext_string",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: (*Enum)(nil),
+		Field:         53,
+		Name:          "pb2.ExtensionsContainer.opt_ext_enum",
+		Tag:           "varint,53,opt,name=opt_ext_enum,enum=pb2.Enum",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: (*Nested)(nil),
+		Field:         54,
+		Name:          "pb2.ExtensionsContainer.opt_ext_nested",
+		Tag:           "bytes,54,opt,name=opt_ext_nested",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: ([]string)(nil),
+		Field:         61,
+		Name:          "pb2.ExtensionsContainer.rpt_ext_string",
+		Tag:           "bytes,61,rep,name=rpt_ext_string",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: ([]Enum)(nil),
+		Field:         62,
+		Name:          "pb2.ExtensionsContainer.rpt_ext_enum",
+		Tag:           "varint,62,rep,name=rpt_ext_enum,enum=pb2.Enum",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*Extensions)(nil),
+		ExtensionType: ([]*Nested)(nil),
+		Field:         63,
+		Name:          "pb2.ExtensionsContainer.rpt_ext_nested",
+		Tag:           "bytes,63,rep,name=rpt_ext_nested",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*MessageSet)(nil),
+		ExtensionType: (*MessageSetExtension)(nil),
+		Field:         10,
+		Name:          "pb2.MessageSetExtension",
+		Tag:           "bytes,10,opt,name=message_set_extension",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*MessageSet)(nil),
+		ExtensionType: (*MessageSetExtension)(nil),
+		Field:         20,
+		Name:          "pb2.MessageSetExtension.not_message_set_extension",
+		Tag:           "bytes,20,opt,name=not_message_set_extension",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*MessageSet)(nil),
+		ExtensionType: (*Nested)(nil),
+		Field:         30,
+		Name:          "pb2.MessageSetExtension.ext_nested",
+		Tag:           "bytes,30,opt,name=ext_nested",
+		Filename:      "pb2/test.proto",
+	},
+	{
+		ExtendedType:  (*FakeMessageSet)(nil),
+		ExtensionType: (*FakeMessageSetExtension)(nil),
+		Field:         10,
+		Name:          "pb2.FakeMessageSetExtension.message_set_extension",
+		Tag:           "bytes,10,opt,name=message_set_extension",
+		Filename:      "pb2/test.proto",
+	},
 }
+var (
+	// extend pb2.Extensions { optional bool opt_ext_bool = 21; }
+	E_OptExtBool = &xxx_File_pb2_test_proto_extDescs[0]
 
-var E_OptExtString = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: (*string)(nil),
-	Field:         22,
-	Name:          "pb2.opt_ext_string",
-	Tag:           "bytes,22,opt,name=opt_ext_string",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { optional string opt_ext_string = 22; }
+	E_OptExtString = &xxx_File_pb2_test_proto_extDescs[1]
 
-var E_OptExtEnum = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: (*Enum)(nil),
-	Field:         23,
-	Name:          "pb2.opt_ext_enum",
-	Tag:           "varint,23,opt,name=opt_ext_enum,enum=pb2.Enum",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { optional pb2.Enum opt_ext_enum = 23; }
+	E_OptExtEnum = &xxx_File_pb2_test_proto_extDescs[2]
 
-var E_OptExtNested = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: (*Nested)(nil),
-	Field:         24,
-	Name:          "pb2.opt_ext_nested",
-	Tag:           "bytes,24,opt,name=opt_ext_nested",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { optional pb2.Nested opt_ext_nested = 24; }
+	E_OptExtNested = &xxx_File_pb2_test_proto_extDescs[3]
 
-var E_RptExtFixed32 = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: ([]uint32)(nil),
-	Field:         31,
-	Name:          "pb2.rpt_ext_fixed32",
-	Tag:           "fixed32,31,rep,name=rpt_ext_fixed32",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { repeated fixed32 rpt_ext_fixed32 = 31; }
+	E_RptExtFixed32 = &xxx_File_pb2_test_proto_extDescs[4]
 
-var E_RptExtEnum = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: ([]Enum)(nil),
-	Field:         32,
-	Name:          "pb2.rpt_ext_enum",
-	Tag:           "varint,32,rep,name=rpt_ext_enum,enum=pb2.Enum",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { repeated pb2.Enum rpt_ext_enum = 32; }
+	E_RptExtEnum = &xxx_File_pb2_test_proto_extDescs[5]
 
-var E_RptExtNested = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: ([]*Nested)(nil),
-	Field:         33,
-	Name:          "pb2.rpt_ext_nested",
-	Tag:           "bytes,33,rep,name=rpt_ext_nested",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { repeated pb2.Nested rpt_ext_nested = 33; }
+	E_RptExtNested = &xxx_File_pb2_test_proto_extDescs[6]
 
-var E_MessageSetExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*MessageSet)(nil),
-	ExtensionType: (*FakeMessageSetExtension)(nil),
-	Field:         50,
-	Name:          "pb2.",
-	Tag:           "bytes,50,opt,name=message_set_extension",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.MessageSet { optional pb2.FakeMessageSetExtension message_set_extension = 50; }
+	E_MessageSetExtension = &xxx_File_pb2_test_proto_extDescs[7]
 
-var E_ExtensionsContainer_OptExtBool = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: (*bool)(nil),
-	Field:         51,
-	Name:          "pb2.ExtensionsContainer.opt_ext_bool",
-	Tag:           "varint,51,opt,name=opt_ext_bool",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { optional bool opt_ext_bool = 51; }
+	E_ExtensionsContainer_OptExtBool = &xxx_File_pb2_test_proto_extDescs[8]
 
-var E_ExtensionsContainer_OptExtString = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: (*string)(nil),
-	Field:         52,
-	Name:          "pb2.ExtensionsContainer.opt_ext_string",
-	Tag:           "bytes,52,opt,name=opt_ext_string",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { optional string opt_ext_string = 52; }
+	E_ExtensionsContainer_OptExtString = &xxx_File_pb2_test_proto_extDescs[9]
 
-var E_ExtensionsContainer_OptExtEnum = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: (*Enum)(nil),
-	Field:         53,
-	Name:          "pb2.ExtensionsContainer.opt_ext_enum",
-	Tag:           "varint,53,opt,name=opt_ext_enum,enum=pb2.Enum",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { optional pb2.Enum opt_ext_enum = 53; }
+	E_ExtensionsContainer_OptExtEnum = &xxx_File_pb2_test_proto_extDescs[10]
 
-var E_ExtensionsContainer_OptExtNested = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: (*Nested)(nil),
-	Field:         54,
-	Name:          "pb2.ExtensionsContainer.opt_ext_nested",
-	Tag:           "bytes,54,opt,name=opt_ext_nested",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { optional pb2.Nested opt_ext_nested = 54; }
+	E_ExtensionsContainer_OptExtNested = &xxx_File_pb2_test_proto_extDescs[11]
 
-var E_ExtensionsContainer_RptExtString = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: ([]string)(nil),
-	Field:         61,
-	Name:          "pb2.ExtensionsContainer.rpt_ext_string",
-	Tag:           "bytes,61,rep,name=rpt_ext_string",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { repeated string rpt_ext_string = 61; }
+	E_ExtensionsContainer_RptExtString = &xxx_File_pb2_test_proto_extDescs[12]
 
-var E_ExtensionsContainer_RptExtEnum = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: ([]Enum)(nil),
-	Field:         62,
-	Name:          "pb2.ExtensionsContainer.rpt_ext_enum",
-	Tag:           "varint,62,rep,name=rpt_ext_enum,enum=pb2.Enum",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { repeated pb2.Enum rpt_ext_enum = 62; }
+	E_ExtensionsContainer_RptExtEnum = &xxx_File_pb2_test_proto_extDescs[13]
 
-var E_ExtensionsContainer_RptExtNested = &proto.ExtensionDesc{
-	ExtendedType:  (*Extensions)(nil),
-	ExtensionType: ([]*Nested)(nil),
-	Field:         63,
-	Name:          "pb2.ExtensionsContainer.rpt_ext_nested",
-	Tag:           "bytes,63,rep,name=rpt_ext_nested",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.Extensions { repeated pb2.Nested rpt_ext_nested = 63; }
+	E_ExtensionsContainer_RptExtNested = &xxx_File_pb2_test_proto_extDescs[14]
 
-var E_MessageSetExtension_MessageSetExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*MessageSet)(nil),
-	ExtensionType: (*MessageSetExtension)(nil),
-	Field:         10,
-	Name:          "pb2.MessageSetExtension",
-	Tag:           "bytes,10,opt,name=message_set_extension",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.MessageSet { optional pb2.MessageSetExtension message_set_extension = 10; }
+	E_MessageSetExtension_MessageSetExtension = &xxx_File_pb2_test_proto_extDescs[15]
 
-var E_MessageSetExtension_NotMessageSetExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*MessageSet)(nil),
-	ExtensionType: (*MessageSetExtension)(nil),
-	Field:         20,
-	Name:          "pb2.MessageSetExtension.not_message_set_extension",
-	Tag:           "bytes,20,opt,name=not_message_set_extension",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.MessageSet { optional pb2.MessageSetExtension not_message_set_extension = 20; }
+	E_MessageSetExtension_NotMessageSetExtension = &xxx_File_pb2_test_proto_extDescs[16]
 
-var E_MessageSetExtension_ExtNested = &proto.ExtensionDesc{
-	ExtendedType:  (*MessageSet)(nil),
-	ExtensionType: (*Nested)(nil),
-	Field:         30,
-	Name:          "pb2.MessageSetExtension.ext_nested",
-	Tag:           "bytes,30,opt,name=ext_nested",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.MessageSet { optional pb2.Nested ext_nested = 30; }
+	E_MessageSetExtension_ExtNested = &xxx_File_pb2_test_proto_extDescs[17]
 
-var E_FakeMessageSetExtension_MessageSetExtension = &proto.ExtensionDesc{
-	ExtendedType:  (*FakeMessageSet)(nil),
-	ExtensionType: (*FakeMessageSetExtension)(nil),
-	Field:         10,
-	Name:          "pb2.FakeMessageSetExtension.message_set_extension",
-	Tag:           "bytes,10,opt,name=message_set_extension",
-	Filename:      "pb2/test.proto",
-}
+	// extend pb2.FakeMessageSet { optional pb2.FakeMessageSetExtension message_set_extension = 10; }
+	E_FakeMessageSetExtension_MessageSetExtension = &xxx_File_pb2_test_proto_extDescs[18]
+)
 
 func init() {
 	proto.RegisterFile("pb2/test.proto", xxx_File_pb2_test_proto_rawdesc_gzipped)
@@ -2078,6 +2120,7 @@ func xxx_File_pb2_test_proto_init() {
 		RawDescriptor:        xxx_File_pb2_test_proto_rawdesc,
 		GoTypes:              xxx_File_pb2_test_proto_goTypes,
 		DependencyIndexes:    xxx_File_pb2_test_proto_depIdxs,
+		LegacyExtensions:     xxx_File_pb2_test_proto_extDescs,
 		EnumOutputTypes:      xxx_File_pb2_test_proto_enumTypes,
 		MessageOutputTypes:   messageTypes,
 		ExtensionOutputTypes: extensionTypes,
@@ -2087,25 +2130,6 @@ func xxx_File_pb2_test_proto_init() {
 		xxx_File_pb2_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_pb2_test_proto_messageTypes[i].PBType = mt
 	}
-	E_OptExtBool.Type = extensionTypes[0]
-	E_OptExtString.Type = extensionTypes[1]
-	E_OptExtEnum.Type = extensionTypes[2]
-	E_OptExtNested.Type = extensionTypes[3]
-	E_RptExtFixed32.Type = extensionTypes[4]
-	E_RptExtEnum.Type = extensionTypes[5]
-	E_RptExtNested.Type = extensionTypes[6]
-	E_MessageSetExtension.Type = extensionTypes[7]
-	E_ExtensionsContainer_OptExtBool.Type = extensionTypes[8]
-	E_ExtensionsContainer_OptExtString.Type = extensionTypes[9]
-	E_ExtensionsContainer_OptExtEnum.Type = extensionTypes[10]
-	E_ExtensionsContainer_OptExtNested.Type = extensionTypes[11]
-	E_ExtensionsContainer_RptExtString.Type = extensionTypes[12]
-	E_ExtensionsContainer_RptExtEnum.Type = extensionTypes[13]
-	E_ExtensionsContainer_RptExtNested.Type = extensionTypes[14]
-	E_MessageSetExtension_MessageSetExtension.Type = extensionTypes[15]
-	E_MessageSetExtension_NotMessageSetExtension.Type = extensionTypes[16]
-	E_MessageSetExtension_ExtNested.Type = extensionTypes[17]
-	E_FakeMessageSetExtension_MessageSetExtension.Type = extensionTypes[18]
 	xxx_File_pb2_test_proto_goTypes = nil
 	xxx_File_pb2_test_proto_depIdxs = nil
 }

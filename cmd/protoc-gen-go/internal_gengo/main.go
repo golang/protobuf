@@ -146,9 +146,7 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 	for _, message := range f.allMessages {
 		genMessage(gen, g, f, message)
 	}
-	for _, extension := range f.allExtensions {
-		genExtension(gen, g, f, extension)
-	}
+	genExtensions(gen, g, f)
 
 	genInitFunction(gen, g, f)
 	genFileDescriptor(gen, g, f)
@@ -690,33 +688,58 @@ func fieldJSONTag(field *protogen.Field) string {
 	return string(field.Desc.Name()) + ",omitempty"
 }
 
-func genExtension(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, extension *protogen.Extension) {
-	// Special case for proto2 message sets: If this extension is extending
-	// proto2.bridge.MessageSet, and its final name component is "message_set_extension",
-	// then drop that last component.
-	//
-	// TODO: This should be implemented in the text formatter rather than the generator.
-	// In addition, the situation for when to apply this special case is implemented
-	// differently in other languages:
-	// https://github.com/google/protobuf/blob/aff10976/src/google/protobuf/text_format.cc#L1560
-	name := extension.Desc.FullName()
-	if n, ok := isExtensionMessageSetElement(extension); ok {
-		name = n
+func genExtensions(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
+	if len(f.allExtensions) == 0 {
+		return
 	}
 
-	g.P("var ", extensionVar(f.File, extension), " = &", f.protoPackage().Ident("ExtensionDesc"), "{")
-	g.P("ExtendedType: (*", extension.ExtendedType.GoIdent, ")(nil),")
-	goType, pointer := fieldGoType(g, extension)
-	if pointer {
-		goType = "*" + goType
+	g.P("var ", extDecsVarName(f), " = []", f.protoPackage().Ident("ExtensionDesc"), "{")
+	for _, extension := range f.allExtensions {
+		// Special case for proto2 message sets: If this extension is extending
+		// proto2.bridge.MessageSet, and its final name component is "message_set_extension",
+		// then drop that last component.
+		//
+		// TODO: This should be implemented in the text formatter rather than the generator.
+		// In addition, the situation for when to apply this special case is implemented
+		// differently in other languages:
+		// https://github.com/google/protobuf/blob/aff10976/src/google/protobuf/text_format.cc#L1560
+		name := extension.Desc.FullName()
+		if n, ok := isExtensionMessageSetElement(extension); ok {
+			name = n
+		}
+
+		g.P("{")
+		g.P("ExtendedType: (*", extension.ExtendedType.GoIdent, ")(nil),")
+		goType, pointer := fieldGoType(g, extension)
+		if pointer {
+			goType = "*" + goType
+		}
+		g.P("ExtensionType: (", goType, ")(nil),")
+		g.P("Field: ", extension.Desc.Number(), ",")
+		g.P("Name: ", strconv.Quote(string(name)), ",")
+		g.P("Tag: ", strconv.Quote(fieldProtobufTag(extension)), ",")
+		g.P("Filename: ", strconv.Quote(f.Desc.Path()), ",")
+		g.P("},")
 	}
-	g.P("ExtensionType: (", goType, ")(nil),")
-	g.P("Field: ", extension.Desc.Number(), ",")
-	g.P("Name: ", strconv.Quote(string(name)), ",")
-	g.P("Tag: ", strconv.Quote(fieldProtobufTag(extension)), ",")
-	g.P("Filename: ", strconv.Quote(f.Desc.Path()), ",")
 	g.P("}")
-	g.P()
+
+	g.P("var (")
+	for i, extension := range f.allExtensions {
+		ed := extension.Desc
+		targetName := string(ed.ExtendedType().FullName())
+		typeName := ed.Kind().String()
+		switch ed.Kind() {
+		case protoreflect.EnumKind:
+			typeName = string(ed.EnumType().FullName())
+		case protoreflect.MessageKind, protoreflect.GroupKind:
+			typeName = string(ed.MessageType().FullName())
+		}
+		fieldName := string(ed.Name())
+		g.P("// extend ", targetName, " { ", ed.Cardinality().String(), " ", typeName, " ", fieldName, " = ", ed.Number(), "; }")
+		g.P(extensionVar(f.File, extension), " = &", extDecsVarName(f), "[", i, "]")
+		g.P()
+	}
+	g.P(")")
 }
 
 // isExtensionMessageSetELement returns the adjusted name of an extension

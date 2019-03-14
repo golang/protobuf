@@ -167,6 +167,9 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 	g.P("RawDescriptor: ", f.descriptorRawVar, ",")
 	g.P("GoTypes: ", goTypesVarName(f), ",")
 	g.P("DependencyIndexes: ", depIdxsVarName(f), ",")
+	if len(f.allExtensions) > 0 {
+		g.P("LegacyExtensions: ", extDecsVarName(f), ",")
+	}
 	if len(f.allEnums) > 0 {
 		g.P("EnumOutputTypes: ", enumTypesVarName(f), ",")
 	}
@@ -185,11 +188,6 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		g.P(messageTypesVarName(f), "[i].GoType = ", reflectPackage.Ident("TypeOf"), "(messageGoTypes[i])")
 		g.P(messageTypesVarName(f), "[i].PBType = mt")
 		g.P("}")
-	}
-
-	// Copy the local list of extension types into each global variable.
-	for i, extension := range f.allExtensions {
-		g.P(extensionVar(f.File, extension), ".Type = extensionTypes[", i, "]")
 	}
 
 	// TODO: Add v2 registration and stop v1 registration in genInitFunction.
@@ -240,6 +238,9 @@ func enumTypesVarName(f *fileInfo) string {
 }
 func messageTypesVarName(f *fileInfo) string {
 	return "xxx_" + f.GoDescriptorIdent.GoName + "_messageTypes"
+}
+func extDecsVarName(f *fileInfo) string {
+	return "xxx_" + f.GoDescriptorIdent.GoName + "_extDescs"
 }
 func initFuncName(f *protogen.File) string {
 	return "xxx_" + f.GoDescriptorIdent.GoName + "_init"

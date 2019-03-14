@@ -163,7 +163,7 @@ func (p legacyExtensionTypes) Register(t pref.ExtensionType) {
 	if x.Desc != nil {
 		panic("extension descriptor already registered")
 	}
-	x.Desc = legacyWrapper.ExtensionDescFromType(t)
+	x.Desc = extensionDescFromType(t)
 	if t.Cardinality() == pref.Repeated {
 		// If the field is repeated, initialize the entry with an empty list
 		// so that future Get operations can return a mutable and concrete list.
@@ -223,6 +223,15 @@ func (p legacyExtensionTypes) Range(f func(pref.ExtensionType) bool) {
 		}
 		return true
 	})
+}
+
+func extensionDescFromType(typ pref.ExtensionType) *papi.ExtensionDesc {
+	if xt, ok := typ.(interface{ ProtoLegacyExtensionDesc() *papi.ExtensionDesc }); ok {
+		if desc := xt.ProtoLegacyExtensionDesc(); desc != nil {
+			return desc
+		}
+	}
+	return legacyWrapper.ExtensionDescFromType(typ)
 }
 
 func extensionTypeFromDesc(desc *papi.ExtensionDesc) pref.ExtensionType {

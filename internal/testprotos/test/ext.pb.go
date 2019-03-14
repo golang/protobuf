@@ -16,14 +16,20 @@ import (
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-var E_ForeignInt32Extension = &proto.ExtensionDesc{
-	ExtendedType:  (*TestAllExtensions)(nil),
-	ExtensionType: (*int32)(nil),
-	Field:         2000,
-	Name:          "goproto.proto.test.foreign_int32_extension",
-	Tag:           "varint,2000,opt,name=foreign_int32_extension",
-	Filename:      "test/ext.proto",
+var xxx_File_test_ext_proto_extDescs = []proto.ExtensionDesc{
+	{
+		ExtendedType:  (*TestAllExtensions)(nil),
+		ExtensionType: (*int32)(nil),
+		Field:         2000,
+		Name:          "goproto.proto.test.foreign_int32_extension",
+		Tag:           "varint,2000,opt,name=foreign_int32_extension",
+		Filename:      "test/ext.proto",
+	},
 }
+var (
+	// extend goproto.proto.test.TestAllExtensions { optional int32 foreign_int32_extension = 2000; }
+	E_ForeignInt32Extension = &xxx_File_test_ext_proto_extDescs[0]
+)
 
 func init() {
 	proto.RegisterFile("test/ext.proto", xxx_File_test_ext_proto_rawdesc_gzipped)
@@ -71,9 +77,9 @@ func xxx_File_test_ext_proto_init() {
 		RawDescriptor:        xxx_File_test_ext_proto_rawdesc,
 		GoTypes:              xxx_File_test_ext_proto_goTypes,
 		DependencyIndexes:    xxx_File_test_ext_proto_depIdxs,
+		LegacyExtensions:     xxx_File_test_ext_proto_extDescs,
 		ExtensionOutputTypes: extensionTypes,
 	}.Init()
-	E_ForeignInt32Extension.Type = extensionTypes[0]
 	xxx_File_test_ext_proto_goTypes = nil
 	xxx_File_test_ext_proto_depIdxs = nil
 }

@@ -17,7 +17,6 @@ import (
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
 	"github.com/golang/protobuf/v2/internal/impl"
-	"github.com/golang/protobuf/v2/internal/legacy"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -52,14 +51,13 @@ func pb2Enums_NestedEnum(i int32) *pb2.Enums_NestedEnum {
 }
 
 func setExtension(m proto.Message, xd *protoapi.ExtensionDesc, val interface{}) {
-	xt := legacy.Export{}.ExtensionTypeFromDesc(xd)
 	knownFields := m.ProtoReflect().KnownFields()
 	extTypes := knownFields.ExtensionTypes()
-	extTypes.Register(xt)
+	extTypes.Register(xd.Type)
 	if val == nil {
 		return
 	}
-	pval := xt.ValueOf(val)
+	pval := xd.Type.ValueOf(val)
 	knownFields.Set(wire.Number(xd.Field), pval)
 }
 

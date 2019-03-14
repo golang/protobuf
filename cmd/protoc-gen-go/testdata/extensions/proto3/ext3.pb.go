@@ -81,311 +81,383 @@ func (m *Message) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Message proto.InternalMessageInfo
 
-var E_ExtensionBool = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*bool)(nil),
-	Field:         1001,
-	Name:          "goproto.protoc.extension.proto3.extension_bool",
-	Tag:           "varint,1001,opt,name=extension_bool",
-	Filename:      "extensions/proto3/ext3.proto",
+var xxx_File_extensions_proto3_ext3_proto_extDescs = []proto.ExtensionDesc{
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*bool)(nil),
+		Field:         1001,
+		Name:          "goproto.protoc.extension.proto3.extension_bool",
+		Tag:           "varint,1001,opt,name=extension_bool",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*Enum)(nil),
+		Field:         1002,
+		Name:          "goproto.protoc.extension.proto3.extension_enum",
+		Tag:           "varint,1002,opt,name=extension_enum,enum=goproto.protoc.extension.proto3.Enum",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*int32)(nil),
+		Field:         1003,
+		Name:          "goproto.protoc.extension.proto3.extension_int32",
+		Tag:           "varint,1003,opt,name=extension_int32",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*int32)(nil),
+		Field:         1004,
+		Name:          "goproto.protoc.extension.proto3.extension_sint32",
+		Tag:           "zigzag32,1004,opt,name=extension_sint32",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*uint32)(nil),
+		Field:         1005,
+		Name:          "goproto.protoc.extension.proto3.extension_uint32",
+		Tag:           "varint,1005,opt,name=extension_uint32",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*int64)(nil),
+		Field:         1006,
+		Name:          "goproto.protoc.extension.proto3.extension_int64",
+		Tag:           "varint,1006,opt,name=extension_int64",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*int64)(nil),
+		Field:         1007,
+		Name:          "goproto.protoc.extension.proto3.extension_sint64",
+		Tag:           "zigzag64,1007,opt,name=extension_sint64",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*uint64)(nil),
+		Field:         1008,
+		Name:          "goproto.protoc.extension.proto3.extension_uint64",
+		Tag:           "varint,1008,opt,name=extension_uint64",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*int32)(nil),
+		Field:         1009,
+		Name:          "goproto.protoc.extension.proto3.extension_sfixed32",
+		Tag:           "fixed32,1009,opt,name=extension_sfixed32",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*uint32)(nil),
+		Field:         1010,
+		Name:          "goproto.protoc.extension.proto3.extension_fixed32",
+		Tag:           "fixed32,1010,opt,name=extension_fixed32",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*float32)(nil),
+		Field:         1011,
+		Name:          "goproto.protoc.extension.proto3.extension_float",
+		Tag:           "fixed32,1011,opt,name=extension_float",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*int64)(nil),
+		Field:         1012,
+		Name:          "goproto.protoc.extension.proto3.extension_sfixed64",
+		Tag:           "fixed64,1012,opt,name=extension_sfixed64",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*uint64)(nil),
+		Field:         1013,
+		Name:          "goproto.protoc.extension.proto3.extension_fixed64",
+		Tag:           "fixed64,1013,opt,name=extension_fixed64",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*float64)(nil),
+		Field:         1014,
+		Name:          "goproto.protoc.extension.proto3.extension_double",
+		Tag:           "fixed64,1014,opt,name=extension_double",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*string)(nil),
+		Field:         1015,
+		Name:          "goproto.protoc.extension.proto3.extension_string",
+		Tag:           "bytes,1015,opt,name=extension_string",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]byte)(nil),
+		Field:         1016,
+		Name:          "goproto.protoc.extension.proto3.extension_bytes",
+		Tag:           "bytes,1016,opt,name=extension_bytes",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: (*Message)(nil),
+		Field:         1017,
+		Name:          "goproto.protoc.extension.proto3.extension_Message",
+		Tag:           "bytes,1017,opt,name=extension_Message",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]bool)(nil),
+		Field:         2001,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_bool",
+		Tag:           "varint,2001,rep,name=repeated_extension_bool",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]Enum)(nil),
+		Field:         2002,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_enum",
+		Tag:           "varint,2002,rep,name=repeated_extension_enum,enum=goproto.protoc.extension.proto3.Enum",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]int32)(nil),
+		Field:         2003,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_int32",
+		Tag:           "varint,2003,rep,name=repeated_extension_int32",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]int32)(nil),
+		Field:         2004,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_sint32",
+		Tag:           "zigzag32,2004,rep,name=repeated_extension_sint32",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]uint32)(nil),
+		Field:         2005,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_uint32",
+		Tag:           "varint,2005,rep,name=repeated_extension_uint32",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]int64)(nil),
+		Field:         2006,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_int64",
+		Tag:           "varint,2006,rep,name=repeated_extension_int64",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]int64)(nil),
+		Field:         2007,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_sint64",
+		Tag:           "zigzag64,2007,rep,name=repeated_extension_sint64",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]uint64)(nil),
+		Field:         2008,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_uint64",
+		Tag:           "varint,2008,rep,name=repeated_extension_uint64",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]int32)(nil),
+		Field:         2009,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_sfixed32",
+		Tag:           "fixed32,2009,rep,name=repeated_extension_sfixed32",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]uint32)(nil),
+		Field:         2010,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_fixed32",
+		Tag:           "fixed32,2010,rep,name=repeated_extension_fixed32",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]float32)(nil),
+		Field:         2011,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_float",
+		Tag:           "fixed32,2011,rep,name=repeated_extension_float",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]int64)(nil),
+		Field:         2012,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_sfixed64",
+		Tag:           "fixed64,2012,rep,name=repeated_extension_sfixed64",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]uint64)(nil),
+		Field:         2013,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_fixed64",
+		Tag:           "fixed64,2013,rep,name=repeated_extension_fixed64",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]float64)(nil),
+		Field:         2014,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_double",
+		Tag:           "fixed64,2014,rep,name=repeated_extension_double",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]string)(nil),
+		Field:         2015,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_string",
+		Tag:           "bytes,2015,rep,name=repeated_extension_string",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([][]byte)(nil),
+		Field:         2016,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_bytes",
+		Tag:           "bytes,2016,rep,name=repeated_extension_bytes",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
+	{
+		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtensionType: ([]*Message)(nil),
+		Field:         2017,
+		Name:          "goproto.protoc.extension.proto3.repeated_extension_Message",
+		Tag:           "bytes,2017,rep,name=repeated_extension_Message",
+		Filename:      "extensions/proto3/ext3.proto",
+	},
 }
+var (
+	// extend google.protobuf.MessageOptions { optional bool extension_bool = 1001; }
+	E_ExtensionBool = &xxx_File_extensions_proto3_ext3_proto_extDescs[0]
 
-var E_ExtensionEnum = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*Enum)(nil),
-	Field:         1002,
-	Name:          "goproto.protoc.extension.proto3.extension_enum",
-	Tag:           "varint,1002,opt,name=extension_enum,enum=goproto.protoc.extension.proto3.Enum",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional goproto.protoc.extension.proto3.Enum extension_enum = 1002; }
+	E_ExtensionEnum = &xxx_File_extensions_proto3_ext3_proto_extDescs[1]
 
-var E_ExtensionInt32 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*int32)(nil),
-	Field:         1003,
-	Name:          "goproto.protoc.extension.proto3.extension_int32",
-	Tag:           "varint,1003,opt,name=extension_int32",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional int32 extension_int32 = 1003; }
+	E_ExtensionInt32 = &xxx_File_extensions_proto3_ext3_proto_extDescs[2]
 
-var E_ExtensionSint32 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*int32)(nil),
-	Field:         1004,
-	Name:          "goproto.protoc.extension.proto3.extension_sint32",
-	Tag:           "zigzag32,1004,opt,name=extension_sint32",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional sint32 extension_sint32 = 1004; }
+	E_ExtensionSint32 = &xxx_File_extensions_proto3_ext3_proto_extDescs[3]
 
-var E_ExtensionUint32 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*uint32)(nil),
-	Field:         1005,
-	Name:          "goproto.protoc.extension.proto3.extension_uint32",
-	Tag:           "varint,1005,opt,name=extension_uint32",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional uint32 extension_uint32 = 1005; }
+	E_ExtensionUint32 = &xxx_File_extensions_proto3_ext3_proto_extDescs[4]
 
-var E_ExtensionInt64 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*int64)(nil),
-	Field:         1006,
-	Name:          "goproto.protoc.extension.proto3.extension_int64",
-	Tag:           "varint,1006,opt,name=extension_int64",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional int64 extension_int64 = 1006; }
+	E_ExtensionInt64 = &xxx_File_extensions_proto3_ext3_proto_extDescs[5]
 
-var E_ExtensionSint64 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*int64)(nil),
-	Field:         1007,
-	Name:          "goproto.protoc.extension.proto3.extension_sint64",
-	Tag:           "zigzag64,1007,opt,name=extension_sint64",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional sint64 extension_sint64 = 1007; }
+	E_ExtensionSint64 = &xxx_File_extensions_proto3_ext3_proto_extDescs[6]
 
-var E_ExtensionUint64 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*uint64)(nil),
-	Field:         1008,
-	Name:          "goproto.protoc.extension.proto3.extension_uint64",
-	Tag:           "varint,1008,opt,name=extension_uint64",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional uint64 extension_uint64 = 1008; }
+	E_ExtensionUint64 = &xxx_File_extensions_proto3_ext3_proto_extDescs[7]
 
-var E_ExtensionSfixed32 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*int32)(nil),
-	Field:         1009,
-	Name:          "goproto.protoc.extension.proto3.extension_sfixed32",
-	Tag:           "fixed32,1009,opt,name=extension_sfixed32",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional sfixed32 extension_sfixed32 = 1009; }
+	E_ExtensionSfixed32 = &xxx_File_extensions_proto3_ext3_proto_extDescs[8]
 
-var E_ExtensionFixed32 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*uint32)(nil),
-	Field:         1010,
-	Name:          "goproto.protoc.extension.proto3.extension_fixed32",
-	Tag:           "fixed32,1010,opt,name=extension_fixed32",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional fixed32 extension_fixed32 = 1010; }
+	E_ExtensionFixed32 = &xxx_File_extensions_proto3_ext3_proto_extDescs[9]
 
-var E_ExtensionFloat = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*float32)(nil),
-	Field:         1011,
-	Name:          "goproto.protoc.extension.proto3.extension_float",
-	Tag:           "fixed32,1011,opt,name=extension_float",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional float extension_float = 1011; }
+	E_ExtensionFloat = &xxx_File_extensions_proto3_ext3_proto_extDescs[10]
 
-var E_ExtensionSfixed64 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*int64)(nil),
-	Field:         1012,
-	Name:          "goproto.protoc.extension.proto3.extension_sfixed64",
-	Tag:           "fixed64,1012,opt,name=extension_sfixed64",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional sfixed64 extension_sfixed64 = 1012; }
+	E_ExtensionSfixed64 = &xxx_File_extensions_proto3_ext3_proto_extDescs[11]
 
-var E_ExtensionFixed64 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*uint64)(nil),
-	Field:         1013,
-	Name:          "goproto.protoc.extension.proto3.extension_fixed64",
-	Tag:           "fixed64,1013,opt,name=extension_fixed64",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional fixed64 extension_fixed64 = 1013; }
+	E_ExtensionFixed64 = &xxx_File_extensions_proto3_ext3_proto_extDescs[12]
 
-var E_ExtensionDouble = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*float64)(nil),
-	Field:         1014,
-	Name:          "goproto.protoc.extension.proto3.extension_double",
-	Tag:           "fixed64,1014,opt,name=extension_double",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional double extension_double = 1014; }
+	E_ExtensionDouble = &xxx_File_extensions_proto3_ext3_proto_extDescs[13]
 
-var E_ExtensionString = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*string)(nil),
-	Field:         1015,
-	Name:          "goproto.protoc.extension.proto3.extension_string",
-	Tag:           "bytes,1015,opt,name=extension_string",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional string extension_string = 1015; }
+	E_ExtensionString = &xxx_File_extensions_proto3_ext3_proto_extDescs[14]
 
-var E_ExtensionBytes = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]byte)(nil),
-	Field:         1016,
-	Name:          "goproto.protoc.extension.proto3.extension_bytes",
-	Tag:           "bytes,1016,opt,name=extension_bytes",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional bytes extension_bytes = 1016; }
+	E_ExtensionBytes = &xxx_File_extensions_proto3_ext3_proto_extDescs[15]
 
-var E_Extension_Message = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: (*Message)(nil),
-	Field:         1017,
-	Name:          "goproto.protoc.extension.proto3.extension_Message",
-	Tag:           "bytes,1017,opt,name=extension_Message",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { optional goproto.protoc.extension.proto3.Message extension_Message = 1017; }
+	E_Extension_Message = &xxx_File_extensions_proto3_ext3_proto_extDescs[16]
 
-var E_RepeatedExtensionBool = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]bool)(nil),
-	Field:         2001,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_bool",
-	Tag:           "varint,2001,rep,name=repeated_extension_bool",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated bool repeated_extension_bool = 2001; }
+	E_RepeatedExtensionBool = &xxx_File_extensions_proto3_ext3_proto_extDescs[17]
 
-var E_RepeatedExtensionEnum = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]Enum)(nil),
-	Field:         2002,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_enum",
-	Tag:           "varint,2002,rep,name=repeated_extension_enum,enum=goproto.protoc.extension.proto3.Enum",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated goproto.protoc.extension.proto3.Enum repeated_extension_enum = 2002; }
+	E_RepeatedExtensionEnum = &xxx_File_extensions_proto3_ext3_proto_extDescs[18]
 
-var E_RepeatedExtensionInt32 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]int32)(nil),
-	Field:         2003,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_int32",
-	Tag:           "varint,2003,rep,name=repeated_extension_int32",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated int32 repeated_extension_int32 = 2003; }
+	E_RepeatedExtensionInt32 = &xxx_File_extensions_proto3_ext3_proto_extDescs[19]
 
-var E_RepeatedExtensionSint32 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]int32)(nil),
-	Field:         2004,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_sint32",
-	Tag:           "zigzag32,2004,rep,name=repeated_extension_sint32",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated sint32 repeated_extension_sint32 = 2004; }
+	E_RepeatedExtensionSint32 = &xxx_File_extensions_proto3_ext3_proto_extDescs[20]
 
-var E_RepeatedExtensionUint32 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]uint32)(nil),
-	Field:         2005,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_uint32",
-	Tag:           "varint,2005,rep,name=repeated_extension_uint32",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated uint32 repeated_extension_uint32 = 2005; }
+	E_RepeatedExtensionUint32 = &xxx_File_extensions_proto3_ext3_proto_extDescs[21]
 
-var E_RepeatedExtensionInt64 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]int64)(nil),
-	Field:         2006,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_int64",
-	Tag:           "varint,2006,rep,name=repeated_extension_int64",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated int64 repeated_extension_int64 = 2006; }
+	E_RepeatedExtensionInt64 = &xxx_File_extensions_proto3_ext3_proto_extDescs[22]
 
-var E_RepeatedExtensionSint64 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]int64)(nil),
-	Field:         2007,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_sint64",
-	Tag:           "zigzag64,2007,rep,name=repeated_extension_sint64",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated sint64 repeated_extension_sint64 = 2007; }
+	E_RepeatedExtensionSint64 = &xxx_File_extensions_proto3_ext3_proto_extDescs[23]
 
-var E_RepeatedExtensionUint64 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]uint64)(nil),
-	Field:         2008,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_uint64",
-	Tag:           "varint,2008,rep,name=repeated_extension_uint64",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated uint64 repeated_extension_uint64 = 2008; }
+	E_RepeatedExtensionUint64 = &xxx_File_extensions_proto3_ext3_proto_extDescs[24]
 
-var E_RepeatedExtensionSfixed32 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]int32)(nil),
-	Field:         2009,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_sfixed32",
-	Tag:           "fixed32,2009,rep,name=repeated_extension_sfixed32",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated sfixed32 repeated_extension_sfixed32 = 2009; }
+	E_RepeatedExtensionSfixed32 = &xxx_File_extensions_proto3_ext3_proto_extDescs[25]
 
-var E_RepeatedExtensionFixed32 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]uint32)(nil),
-	Field:         2010,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_fixed32",
-	Tag:           "fixed32,2010,rep,name=repeated_extension_fixed32",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated fixed32 repeated_extension_fixed32 = 2010; }
+	E_RepeatedExtensionFixed32 = &xxx_File_extensions_proto3_ext3_proto_extDescs[26]
 
-var E_RepeatedExtensionFloat = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]float32)(nil),
-	Field:         2011,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_float",
-	Tag:           "fixed32,2011,rep,name=repeated_extension_float",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated float repeated_extension_float = 2011; }
+	E_RepeatedExtensionFloat = &xxx_File_extensions_proto3_ext3_proto_extDescs[27]
 
-var E_RepeatedExtensionSfixed64 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]int64)(nil),
-	Field:         2012,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_sfixed64",
-	Tag:           "fixed64,2012,rep,name=repeated_extension_sfixed64",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated sfixed64 repeated_extension_sfixed64 = 2012; }
+	E_RepeatedExtensionSfixed64 = &xxx_File_extensions_proto3_ext3_proto_extDescs[28]
 
-var E_RepeatedExtensionFixed64 = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]uint64)(nil),
-	Field:         2013,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_fixed64",
-	Tag:           "fixed64,2013,rep,name=repeated_extension_fixed64",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated fixed64 repeated_extension_fixed64 = 2013; }
+	E_RepeatedExtensionFixed64 = &xxx_File_extensions_proto3_ext3_proto_extDescs[29]
 
-var E_RepeatedExtensionDouble = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]float64)(nil),
-	Field:         2014,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_double",
-	Tag:           "fixed64,2014,rep,name=repeated_extension_double",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated double repeated_extension_double = 2014; }
+	E_RepeatedExtensionDouble = &xxx_File_extensions_proto3_ext3_proto_extDescs[30]
 
-var E_RepeatedExtensionString = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]string)(nil),
-	Field:         2015,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_string",
-	Tag:           "bytes,2015,rep,name=repeated_extension_string",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated string repeated_extension_string = 2015; }
+	E_RepeatedExtensionString = &xxx_File_extensions_proto3_ext3_proto_extDescs[31]
 
-var E_RepeatedExtensionBytes = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([][]byte)(nil),
-	Field:         2016,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_bytes",
-	Tag:           "bytes,2016,rep,name=repeated_extension_bytes",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated bytes repeated_extension_bytes = 2016; }
+	E_RepeatedExtensionBytes = &xxx_File_extensions_proto3_ext3_proto_extDescs[32]
 
-var E_RepeatedExtension_Message = &proto.ExtensionDesc{
-	ExtendedType:  (*descriptor.MessageOptions)(nil),
-	ExtensionType: ([]*Message)(nil),
-	Field:         2017,
-	Name:          "goproto.protoc.extension.proto3.repeated_extension_Message",
-	Tag:           "bytes,2017,rep,name=repeated_extension_Message",
-	Filename:      "extensions/proto3/ext3.proto",
-}
+	// extend google.protobuf.MessageOptions { repeated goproto.protoc.extension.proto3.Message repeated_extension_Message = 2017; }
+	E_RepeatedExtension_Message = &xxx_File_extensions_proto3_ext3_proto_extDescs[33]
+)
 
 func init() {
 	proto.RegisterFile("extensions/proto3/ext3.proto", xxx_File_extensions_proto3_ext3_proto_rawdesc_gzipped)
@@ -701,6 +773,7 @@ func xxx_File_extensions_proto3_ext3_proto_init() {
 		RawDescriptor:        xxx_File_extensions_proto3_ext3_proto_rawdesc,
 		GoTypes:              xxx_File_extensions_proto3_ext3_proto_goTypes,
 		DependencyIndexes:    xxx_File_extensions_proto3_ext3_proto_depIdxs,
+		LegacyExtensions:     xxx_File_extensions_proto3_ext3_proto_extDescs,
 		EnumOutputTypes:      xxx_File_extensions_proto3_ext3_proto_enumTypes,
 		MessageOutputTypes:   messageTypes,
 		ExtensionOutputTypes: extensionTypes,
@@ -710,40 +783,6 @@ func xxx_File_extensions_proto3_ext3_proto_init() {
 		xxx_File_extensions_proto3_ext3_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_extensions_proto3_ext3_proto_messageTypes[i].PBType = mt
 	}
-	E_ExtensionBool.Type = extensionTypes[0]
-	E_ExtensionEnum.Type = extensionTypes[1]
-	E_ExtensionInt32.Type = extensionTypes[2]
-	E_ExtensionSint32.Type = extensionTypes[3]
-	E_ExtensionUint32.Type = extensionTypes[4]
-	E_ExtensionInt64.Type = extensionTypes[5]
-	E_ExtensionSint64.Type = extensionTypes[6]
-	E_ExtensionUint64.Type = extensionTypes[7]
-	E_ExtensionSfixed32.Type = extensionTypes[8]
-	E_ExtensionFixed32.Type = extensionTypes[9]
-	E_ExtensionFloat.Type = extensionTypes[10]
-	E_ExtensionSfixed64.Type = extensionTypes[11]
-	E_ExtensionFixed64.Type = extensionTypes[12]
-	E_ExtensionDouble.Type = extensionTypes[13]
-	E_ExtensionString.Type = extensionTypes[14]
-	E_ExtensionBytes.Type = extensionTypes[15]
-	E_Extension_Message.Type = extensionTypes[16]
-	E_RepeatedExtensionBool.Type = extensionTypes[17]
-	E_RepeatedExtensionEnum.Type = extensionTypes[18]
-	E_RepeatedExtensionInt32.Type = extensionTypes[19]
-	E_RepeatedExtensionSint32.Type = extensionTypes[20]
-	E_RepeatedExtensionUint32.Type = extensionTypes[21]
-	E_RepeatedExtensionInt64.Type = extensionTypes[22]
-	E_RepeatedExtensionSint64.Type = extensionTypes[23]
-	E_RepeatedExtensionUint64.Type = extensionTypes[24]
-	E_RepeatedExtensionSfixed32.Type = extensionTypes[25]
-	E_RepeatedExtensionFixed32.Type = extensionTypes[26]
-	E_RepeatedExtensionFloat.Type = extensionTypes[27]
-	E_RepeatedExtensionSfixed64.Type = extensionTypes[28]
-	E_RepeatedExtensionFixed64.Type = extensionTypes[29]
-	E_RepeatedExtensionDouble.Type = extensionTypes[30]
-	E_RepeatedExtensionString.Type = extensionTypes[31]
-	E_RepeatedExtensionBytes.Type = extensionTypes[32]
-	E_RepeatedExtension_Message.Type = extensionTypes[33]
 	xxx_File_extensions_proto3_ext3_proto_goTypes = nil
 	xxx_File_extensions_proto3_ext3_proto_depIdxs = nil
 }

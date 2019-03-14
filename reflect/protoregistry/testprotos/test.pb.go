@@ -302,59 +302,75 @@ func (m *Message4) GetBoolField() bool {
 	return false
 }
 
-var E_StringField = &proto.ExtensionDesc{
-	ExtendedType:  (*Message1)(nil),
-	ExtensionType: (*string)(nil),
-	Field:         11,
-	Name:          "testprotos.string_field",
-	Tag:           "bytes,11,opt,name=string_field",
-	Filename:      "test.proto",
+var xxx_File_test_proto_extDescs = []proto.ExtensionDesc{
+	{
+		ExtendedType:  (*Message1)(nil),
+		ExtensionType: (*string)(nil),
+		Field:         11,
+		Name:          "testprotos.string_field",
+		Tag:           "bytes,11,opt,name=string_field",
+		Filename:      "test.proto",
+	},
+	{
+		ExtendedType:  (*Message1)(nil),
+		ExtensionType: (*Enum1)(nil),
+		Field:         12,
+		Name:          "testprotos.enum_field",
+		Tag:           "varint,12,opt,name=enum_field,enum=testprotos.Enum1",
+		Filename:      "test.proto",
+	},
+	{
+		ExtendedType:  (*Message1)(nil),
+		ExtensionType: (*Message2)(nil),
+		Field:         13,
+		Name:          "testprotos.message_field",
+		Tag:           "bytes,13,opt,name=message_field",
+		Filename:      "test.proto",
+	},
+	{
+		ExtendedType:  (*Message1)(nil),
+		ExtensionType: (*Message2)(nil),
+		Field:         21,
+		Name:          "testprotos.Message4.message_field",
+		Tag:           "bytes,21,opt,name=message_field",
+		Filename:      "test.proto",
+	},
+	{
+		ExtendedType:  (*Message1)(nil),
+		ExtensionType: (*Enum1)(nil),
+		Field:         22,
+		Name:          "testprotos.Message4.enum_field",
+		Tag:           "varint,22,opt,name=enum_field,enum=testprotos.Enum1",
+		Filename:      "test.proto",
+	},
+	{
+		ExtendedType:  (*Message1)(nil),
+		ExtensionType: (*string)(nil),
+		Field:         23,
+		Name:          "testprotos.Message4.string_field",
+		Tag:           "bytes,23,opt,name=string_field",
+		Filename:      "test.proto",
+	},
 }
+var (
+	// extend testprotos.Message1 { optional string string_field = 11; }
+	E_StringField = &xxx_File_test_proto_extDescs[0]
 
-var E_EnumField = &proto.ExtensionDesc{
-	ExtendedType:  (*Message1)(nil),
-	ExtensionType: (*Enum1)(nil),
-	Field:         12,
-	Name:          "testprotos.enum_field",
-	Tag:           "varint,12,opt,name=enum_field,enum=testprotos.Enum1",
-	Filename:      "test.proto",
-}
+	// extend testprotos.Message1 { optional testprotos.Enum1 enum_field = 12; }
+	E_EnumField = &xxx_File_test_proto_extDescs[1]
 
-var E_MessageField = &proto.ExtensionDesc{
-	ExtendedType:  (*Message1)(nil),
-	ExtensionType: (*Message2)(nil),
-	Field:         13,
-	Name:          "testprotos.message_field",
-	Tag:           "bytes,13,opt,name=message_field",
-	Filename:      "test.proto",
-}
+	// extend testprotos.Message1 { optional testprotos.Message2 message_field = 13; }
+	E_MessageField = &xxx_File_test_proto_extDescs[2]
 
-var E_Message4_MessageField = &proto.ExtensionDesc{
-	ExtendedType:  (*Message1)(nil),
-	ExtensionType: (*Message2)(nil),
-	Field:         21,
-	Name:          "testprotos.Message4.message_field",
-	Tag:           "bytes,21,opt,name=message_field",
-	Filename:      "test.proto",
-}
+	// extend testprotos.Message1 { optional testprotos.Message2 message_field = 21; }
+	E_Message4_MessageField = &xxx_File_test_proto_extDescs[3]
 
-var E_Message4_EnumField = &proto.ExtensionDesc{
-	ExtendedType:  (*Message1)(nil),
-	ExtensionType: (*Enum1)(nil),
-	Field:         22,
-	Name:          "testprotos.Message4.enum_field",
-	Tag:           "varint,22,opt,name=enum_field,enum=testprotos.Enum1",
-	Filename:      "test.proto",
-}
+	// extend testprotos.Message1 { optional testprotos.Enum1 enum_field = 22; }
+	E_Message4_EnumField = &xxx_File_test_proto_extDescs[4]
 
-var E_Message4_StringField = &proto.ExtensionDesc{
-	ExtendedType:  (*Message1)(nil),
-	ExtensionType: (*string)(nil),
-	Field:         23,
-	Name:          "testprotos.Message4.string_field",
-	Tag:           "bytes,23,opt,name=string_field",
-	Filename:      "test.proto",
-}
+	// extend testprotos.Message1 { optional string string_field = 23; }
+	E_Message4_StringField = &xxx_File_test_proto_extDescs[5]
+)
 
 func init() {
 	proto.RegisterFile("test.proto", xxx_File_test_proto_rawdesc_gzipped)
@@ -459,6 +475,7 @@ func xxx_File_test_proto_init() {
 		RawDescriptor:        xxx_File_test_proto_rawdesc,
 		GoTypes:              xxx_File_test_proto_goTypes,
 		DependencyIndexes:    xxx_File_test_proto_depIdxs,
+		LegacyExtensions:     xxx_File_test_proto_extDescs,
 		EnumOutputTypes:      xxx_File_test_proto_enumTypes,
 		MessageOutputTypes:   messageTypes,
 		ExtensionOutputTypes: extensionTypes,
@@ -468,12 +485,6 @@ func xxx_File_test_proto_init() {
 		xxx_File_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_test_proto_messageTypes[i].PBType = mt
 	}
-	E_StringField.Type = extensionTypes[0]
-	E_EnumField.Type = extensionTypes[1]
-	E_MessageField.Type = extensionTypes[2]
-	E_Message4_MessageField.Type = extensionTypes[3]
-	E_Message4_EnumField.Type = extensionTypes[4]
-	E_Message4_StringField.Type = extensionTypes[5]
 	xxx_File_test_proto_goTypes = nil
 	xxx_File_test_proto_depIdxs = nil
 }

@@ -47,6 +47,13 @@ var (
 // extensionDescFromType converts a v2 protoreflect.ExtensionType to a
 // v1 protoapi.ExtensionDesc. The returned ExtensionDesc must not be mutated.
 func extensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
+	// Fast-path: check whether an extension desc is already nested within.
+	if t, ok := t.(interface{ ProtoLegacyExtensionDesc() *papi.ExtensionDesc }); ok {
+		if d := t.ProtoLegacyExtensionDesc(); d != nil {
+			return d
+		}
+	}
+
 	// Fast-path: check the cache for whether this ExtensionType has already
 	// been converted to a legacy descriptor.
 	if d, ok := extensionDescCache.Load(t); ok {
