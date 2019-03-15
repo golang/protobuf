@@ -4,5 +4,4 @@
 
 // Package textpb marshals and unmarshals protocol buffer messages as the
 // textproto format.
-
 package textpb
