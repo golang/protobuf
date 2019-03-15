@@ -73,11 +73,8 @@ func generateLocalProtos() {
 
 	// Generate all local proto files.
 	dirs := []struct {
-		path     string
-		relative bool
+		path string
 	}{
-		{path: "jsonpb", relative: true},
-		{path: "proto", relative: true},
 		{path: "protoc-gen-go"},
 		{path: "ptypes"},
 	}
@@ -88,23 +85,15 @@ func generateLocalProtos() {
 				return nil
 			}
 
-			var impPath, relPath string
-			if d.relative {
-				impPath = srcDir
+			impPath := tmpDir
 
-				relPath, err = filepath.Rel(srcDir, srcPath)
-				check(err)
-			} else {
-				impPath = tmpDir
+			relPath, err := filepath.Rel(repoRoot, srcPath)
+			check(err)
+			relPath = filepath.Join(filepath.FromSlash(modulePath), relPath)
 
-				relPath, err = filepath.Rel(repoRoot, srcPath)
-				check(err)
-				relPath = filepath.Join(filepath.FromSlash(modulePath), relPath)
-
-				dstDir := filepath.Join(tmpDir, filepath.Dir(relPath))
-				check(os.MkdirAll(dstDir, 0775))
-				check(os.Link(srcPath, filepath.Join(tmpDir, relPath)))
-			}
+			dstDir := filepath.Join(tmpDir, filepath.Dir(relPath))
+			check(os.MkdirAll(dstDir, 0775))
+			check(os.Link(srcPath, filepath.Join(tmpDir, relPath)))
 
 			protoc("-I"+filepath.Join(protoRoot, "src"), "-I"+impPath, "--go_out="+tmpDir, relPath)
 			return nil
