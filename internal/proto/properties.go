@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build !proto_reimpl
-
 package proto
 
 import (
@@ -32,17 +30,6 @@ type StructProperties struct {
 	OneofTypes map[string]*OneofProperties
 }
 
-// OneofProperties represents information about a specific field in a oneof.
-type OneofProperties struct {
-	Type  reflect.Type // pointer to generated struct type for this oneof field
-	Field int          // struct field number of the containing oneof in the message
-	Prop  *Properties
-}
-
-func (sp *StructProperties) Len() int           { return len(sp.Prop) }
-func (sp *StructProperties) Less(i, j int) bool { return false }
-func (sp *StructProperties) Swap(i, j int)      { return }
-
 // Properties represents the protocol-specific behavior of a single struct field.
 type Properties struct {
 	Name     string // name of the field, for error messages
@@ -64,6 +51,13 @@ type Properties struct {
 
 	MapKeyProp *Properties // set for map types only
 	MapValProp *Properties // set for map types only
+}
+
+// OneofProperties represents information about a specific field in a oneof.
+type OneofProperties struct {
+	Type  reflect.Type // pointer to generated struct type for this oneof field
+	Field int          // struct field number of the containing oneof in the message
+	Prop  *Properties
 }
 
 // String formats the properties in the protobuf struct field tag style.
@@ -187,6 +181,10 @@ func GetProperties(t reflect.Type) *StructProperties {
 	p, _ := propertiesCache.LoadOrStore(t, newProperties(t))
 	return p.(*StructProperties)
 }
+
+func (sp *StructProperties) Len() int           { return len(sp.Prop) }
+func (sp *StructProperties) Less(i, j int) bool { return false }
+func (sp *StructProperties) Swap(i, j int)      { return }
 
 func newProperties(t reflect.Type) *StructProperties {
 	if t.Kind() != reflect.Struct {
