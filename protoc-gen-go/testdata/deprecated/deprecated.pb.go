@@ -10,6 +10,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -194,6 +196,10 @@ var fileDescriptor_f64ba265cd7eae3f = []byte{
 var _ context.Context
 var _ grpc.ClientConn
 
+func errUnimplemented(methodName string) error {
+	return status.Errorf(codes.Unimplemented, "method %s not implemented", methodName)
+}
+
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
@@ -233,6 +239,15 @@ func (c *deprecatedServiceClient) DeprecatedCall(ctx context.Context, in *Deprec
 type DeprecatedServiceServer interface {
 	// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
 	DeprecatedCall(context.Context, *DeprecatedRequest) (*DeprecatedResponse, error)
+}
+
+// Deprecated: Do not use.
+// UnimplementedDeprecatedServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedDeprecatedServiceServer struct {
+}
+
+func (*UnimplementedDeprecatedServiceServer) DeprecatedCall(ctx context.Context, req *DeprecatedRequest) (*DeprecatedResponse, error) {
+	return nil, errUnimplemented("DeprecatedCall")
 }
 
 // Deprecated: Do not use.

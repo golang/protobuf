@@ -8,6 +8,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -179,6 +181,10 @@ var fileDescriptor_81ea47a3f88c2082 = []byte{
 var _ context.Context
 var _ grpc.ClientConn
 
+func errUnimplemented(methodName string) error {
+	return status.Errorf(codes.Unimplemented, "method %s not implemented", methodName)
+}
+
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
@@ -319,6 +325,23 @@ type TestServer interface {
 	Upstream(Test_UpstreamServer) error
 	// This one streams in both directions.
 	Bidi(Test_BidiServer) error
+}
+
+// UnimplementedTestServer can be embedded to have forward compatible implementations.
+type UnimplementedTestServer struct {
+}
+
+func (*UnimplementedTestServer) UnaryCall(ctx context.Context, req *SimpleRequest) (*SimpleResponse, error) {
+	return nil, errUnimplemented("UnaryCall")
+}
+func (*UnimplementedTestServer) Downstream(req *SimpleRequest, srv Test_DownstreamServer) error {
+	return errUnimplemented("Downstream")
+}
+func (*UnimplementedTestServer) Upstream(srv Test_UpstreamServer) error {
+	return errUnimplemented("Upstream")
+}
+func (*UnimplementedTestServer) Bidi(srv Test_BidiServer) error {
+	return errUnimplemented("Bidi")
 }
 
 func RegisterTestServer(s *grpc.Server, srv TestServer) {
