@@ -18,6 +18,8 @@ type generatedDiscarder interface {
 	XXX_DiscardUnknown()
 }
 
+var discardUnknownAlt func(Message) // populated by hooks.go
+
 // DiscardUnknown recursively discards all unknown fields from this message
 // and all embedded messages.
 //
@@ -30,6 +32,11 @@ type generatedDiscarder interface {
 // For proto2 messages, the unknown fields of message extensions are only
 // discarded from messages that have been accessed via GetExtension.
 func DiscardUnknown(m Message) {
+	if discardUnknownAlt != nil {
+		discardUnknownAlt(m)
+		return
+	}
+
 	if m, ok := m.(generatedDiscarder); ok {
 		m.XXX_DiscardUnknown()
 		return

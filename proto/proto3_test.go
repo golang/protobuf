@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"testing"
 
-	protoV1a "github.com/golang/protobuf/internal/proto"
 	"github.com/golang/protobuf/proto"
 	pb "github.com/golang/protobuf/proto/proto3_proto"
 	tpb "github.com/golang/protobuf/proto/test_proto"
@@ -91,37 +90,6 @@ func TestProto3SetDefaults(t *testing.T) {
 
 	got := proto.Clone(in).(*pb.Message)
 	proto.SetDefaults(got)
-
-	// There are no defaults in proto3.  Everything should be the zero value, but
-	// we need to remember to set defaults for nested proto2 messages.
-	want := &pb.Message{
-		Terrain: map[string]*pb.Nested{
-			"meadow": new(pb.Nested),
-		},
-		Proto2Field: &tpb.SubDefaults{N: proto.Int64(7)},
-		Proto2Value: map[string]*tpb.SubDefaults{
-			"badlands": &tpb.SubDefaults{N: proto.Int64(7)},
-		},
-	}
-
-	if !proto.Equal(got, want) {
-		t.Errorf("with in = %v\nproto.SetDefaults(in) =>\ngot %v\nwant %v", in, got, want)
-	}
-}
-
-func TestProto3SetDefaults2(t *testing.T) {
-	in := &pb.Message{
-		Terrain: map[string]*pb.Nested{
-			"meadow": new(pb.Nested),
-		},
-		Proto2Field: new(tpb.SubDefaults),
-		Proto2Value: map[string]*tpb.SubDefaults{
-			"badlands": new(tpb.SubDefaults),
-		},
-	}
-
-	got := proto.Clone(in).(*pb.Message)
-	protoV1a.SetDefaults(got)
 
 	// There are no defaults in proto3.  Everything should be the zero value, but
 	// we need to remember to set defaults for nested proto2 messages.

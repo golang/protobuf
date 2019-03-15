@@ -9,9 +9,9 @@ package proto
 // that they would otherwise be able to call directly.
 
 import (
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/protoapi"
 
 	_ "github.com/golang/protobuf/v2/runtime/protolegacy"
 )
 
-type Message = proto.Message
+type Message = protoapi.Message

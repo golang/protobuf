@@ -309,10 +309,16 @@ out:
 	p.index = index
 }
 
+var setDefaultsAlt func(Message) // populated by hooks.go
+
 // SetDefaults sets unset protocol buffer fields to their default values.
 // It only modifies fields that are both unset and have defined defaults.
 // It recursively sets default values in any non-nil sub-messages.
 func SetDefaults(pb Message) {
+	if setDefaultsAlt != nil {
+		setDefaultsAlt(pb)
+		return
+	}
 	setDefaults(reflect.ValueOf(pb), true, false)
 }
 

@@ -64,6 +64,7 @@ func Test(t *testing.T) {
 			workDir := filepath.Join(goPath, "src", modulePath)
 			runGo("Build", workDir, "go", "build", "./...")
 			runGo("TestNormal", workDir, "go", "test", "-race", "./...")
+			runGo("TestReimpl", workDir, "go", "test", "-race", "-tags", "proto_reimpl", "./...")
 		})
 	}
 
