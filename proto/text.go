@@ -364,7 +364,7 @@ func (tm *TextMarshaler) writeStruct(w *textWriter, sv reflect.Value) error {
 			}
 			continue
 		}
-		if props.proto3 && fv.Kind() == reflect.Slice && fv.Len() == 0 {
+		if props.Proto3 && fv.Kind() == reflect.Slice && fv.Len() == 0 {
 			// empty bytes field
 			continue
 		}

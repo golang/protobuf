@@ -465,7 +465,7 @@ func (mi *mergeInfo) computeMergeInfo() {
 				}
 			}
 		case reflect.Slice:
-			isProto3 := props.Prop[i].proto3
+			isProto3 := props.Prop[i].Proto3
 			switch {
 			case isPointer:
 				panic("bad pointer in byte slice case in " + tf.Name())

@@ -176,7 +176,7 @@ func equalAny(v1, v2 reflect.Value, prop *Properties) bool {
 
 			// Edge case: if this is in a proto3 message, a zero length
 			// bytes field is considered the zero value.
-			if prop != nil && prop.proto3 && v1.Len() == 0 && v2.Len() == 0 {
+			if prop != nil && prop.Proto3 && v1.Len() == 0 && v2.Len() == 0 {
 				return true
 			}
 			if v1.IsNil() != v2.IsNil() {

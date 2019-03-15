@@ -86,6 +86,19 @@ func (nf *nonFatal) Merge(err error) (ok bool) {
 // Message is implemented by generated protocol buffer messages.
 type Message = protoapi.Message
 
+var protoMessageType = reflect.TypeOf((*Message)(nil)).Elem()
+
+var marshalerType = reflect.TypeOf((*Marshaler)(nil)).Elem()
+
+type (
+	oneofFuncsIface interface {
+		XXX_OneofFuncs() (func(Message, *Buffer) error, func(Message, int, int, *Buffer) (bool, error), func(Message) int, []interface{})
+	}
+	oneofWrappersIface interface {
+		XXX_OneofWrappers() []interface{}
+	}
+)
+
 // A Buffer is a buffer manager for marshaling and unmarshaling
 // protocol buffers.  It may be reused between invocations to
 // reduce memory usage.  It is not necessary to use a Buffer;
@@ -479,9 +492,8 @@ type scalarField struct {
 // t is a struct type.
 func buildDefaultMessage(t reflect.Type) (dm defaultMessage) {
 	sprop := GetProperties(t)
-	for _, prop := range sprop.Prop {
-		fi, ok := sprop.decoderTags.get(prop.Tag)
-		if !ok {
+	for fi, prop := range sprop.Prop {
+		if prop.Tag <= 0 {
 			// XXX_unrecognized
 			continue
 		}

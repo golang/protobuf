@@ -14,6 +14,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"sync"
 	"unicode/utf8"
 
 	"github.com/golang/protobuf/protoapi"
@@ -357,7 +358,7 @@ func (p *textParser) missingRequiredFieldError(sv reflect.Value) *RequiredNotSet
 }
 
 // Returns the index in the struct for the named field, as well as the parsed tag properties.
-func structFieldByName(sprops *StructProperties, name string) (int, *Properties, bool) {
+func structFieldByName(sprops *textStructProperties, name string) (int, *Properties, bool) {
 	i, ok := sprops.decoderOrigNames[name]
 	if ok {
 		return i, sprops.Prop[i], true
@@ -407,9 +408,42 @@ func (p *textParser) checkForColon(props *Properties, typ reflect.Type) *ParseEr
 	return nil
 }
 
+var textPropertiesCache sync.Map // map[reflect.Type]*textStructProperties
+
+type textStructProperties struct {
+	*StructProperties
+	reqCount         int
+	decoderOrigNames map[string]int
+}
+
+func getTextProperties(t reflect.Type) *textStructProperties {
+	if p, ok := textPropertiesCache.Load(t); ok {
+		return p.(*textStructProperties)
+	}
+
+	prop := &textStructProperties{StructProperties: GetProperties(t)}
+	reqCount := 0
+	prop.decoderOrigNames = make(map[string]int)
+	for i, p := range prop.Prop {
+		if strings.HasPrefix(p.Name, "XXX_") {
+			// Internal fields should not appear in tags/origNames maps.
+			// They are handled specially when encoding and decoding.
+			continue
+		}
+		if p.Required {
+			reqCount++
+		}
+		prop.decoderOrigNames[p.OrigName] = i
+	}
+	prop.reqCount = reqCount
+
+	textPropertiesCache.Store(t, prop)
+	return prop
+}
+
 func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 	st := sv.Type()
-	sprops := GetProperties(st)
+	sprops := getTextProperties(st)
 	reqCount := sprops.reqCount
 	var reqFieldErr error
 	fieldSet := make(map[string]bool)
