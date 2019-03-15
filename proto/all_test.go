@@ -18,6 +18,7 @@ import (
 	"testing"
 	"time"
 
+	protoV1a "github.com/golang/protobuf/internal/proto"
 	. "github.com/golang/protobuf/proto"
 	pb3 "github.com/golang/protobuf/proto/proto3_proto"
 	. "github.com/golang/protobuf/proto/test_proto"
@@ -1371,12 +1372,55 @@ func TestAllSetDefaults(t *testing.T) {
 	}
 }
 
+func TestAllSetDefaults2(t *testing.T) {
+	// Exercise SetDefaults with all scalar field types.
+	m := &Defaults{
+		// NaN != NaN, so override that here.
+		F_Nan: Float32(1.7),
+	}
+	expected := &Defaults{
+		F_Bool:    Bool(true),
+		F_Int32:   Int32(32),
+		F_Int64:   Int64(64),
+		F_Fixed32: Uint32(320),
+		F_Fixed64: Uint64(640),
+		F_Uint32:  Uint32(3200),
+		F_Uint64:  Uint64(6400),
+		F_Float:   Float32(314159),
+		F_Double:  Float64(271828),
+		F_String:  String(`hello, "world!"` + "\n"),
+		F_Bytes:   []byte("Bignose"),
+		F_Sint32:  Int32(-32),
+		F_Sint64:  Int64(-64),
+		F_Enum:    Defaults_GREEN.Enum(),
+		F_Pinf:    Float32(float32(math.Inf(1))),
+		F_Ninf:    Float32(float32(math.Inf(-1))),
+		F_Nan:     Float32(1.7),
+		StrZero:   String(""),
+	}
+	protoV1a.SetDefaults(m)
+	if !Equal(m, expected) {
+		t.Errorf("SetDefaults failed\n got %v\nwant %v", m, expected)
+	}
+}
+
 func TestSetDefaultsWithSetField(t *testing.T) {
 	// Check that a set value is not overridden.
 	m := &Defaults{
 		F_Int32: Int32(12),
 	}
 	SetDefaults(m)
+	if v := m.GetF_Int32(); v != 12 {
+		t.Errorf("m.FInt32 = %v, want 12", v)
+	}
+}
+
+func TestSetDefaultsWithSetField2(t *testing.T) {
+	// Check that a set value is not overridden.
+	m := &Defaults{
+		F_Int32: Int32(12),
+	}
+	protoV1a.SetDefaults(m)
 	if v := m.GetF_Int32(); v != 12 {
 		t.Errorf("m.FInt32 = %v, want 12", v)
 	}
@@ -1402,6 +1446,26 @@ func TestSetDefaultsWithSubMessage(t *testing.T) {
 	}
 }
 
+func TestSetDefaultsWithSubMessage2(t *testing.T) {
+	m := &OtherMessage{
+		Key: Int64(123),
+		Inner: &InnerMessage{
+			Host: String("gopher"),
+		},
+	}
+	expected := &OtherMessage{
+		Key: Int64(123),
+		Inner: &InnerMessage{
+			Host: String("gopher"),
+			Port: Int32(4000),
+		},
+	}
+	protoV1a.SetDefaults(m)
+	if !Equal(m, expected) {
+		t.Errorf("\n got %v\nwant %v", m, expected)
+	}
+}
+
 func TestSetDefaultsWithRepeatedSubMessage(t *testing.T) {
 	m := &MyMessage{
 		RepInner: []*InnerMessage{{}},
@@ -1417,12 +1481,38 @@ func TestSetDefaultsWithRepeatedSubMessage(t *testing.T) {
 	}
 }
 
+func TestSetDefaultsWithRepeatedSubMessage2(t *testing.T) {
+	m := &MyMessage{
+		RepInner: []*InnerMessage{{}},
+	}
+	expected := &MyMessage{
+		RepInner: []*InnerMessage{{
+			Port: Int32(4000),
+		}},
+	}
+	protoV1a.SetDefaults(m)
+	if !Equal(m, expected) {
+		t.Errorf("\n got %v\nwant %v", m, expected)
+	}
+}
+
 func TestSetDefaultWithRepeatedNonMessage(t *testing.T) {
 	m := &MyMessage{
 		Pet: []string{"turtle", "wombat"},
 	}
 	expected := Clone(m)
 	SetDefaults(m)
+	if !Equal(m, expected) {
+		t.Errorf("\n got %v\nwant %v", m, expected)
+	}
+}
+
+func TestSetDefaultWithRepeatedNonMessage2(t *testing.T) {
+	m := &MyMessage{
+		Pet: []string{"turtle", "wombat"},
+	}
+	expected := Clone(m)
+	protoV1a.SetDefaults(m)
 	if !Equal(m, expected) {
 		t.Errorf("\n got %v\nwant %v", m, expected)
 	}
