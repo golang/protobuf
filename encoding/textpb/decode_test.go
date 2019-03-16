@@ -1327,7 +1327,7 @@ value: "some bytes"
 					OptString: scalar.String("inception"),
 				},
 			}
-			b, err := proto.Marshal(m)
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
