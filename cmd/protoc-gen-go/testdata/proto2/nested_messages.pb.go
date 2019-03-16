@@ -5,17 +5,10 @@ package proto2
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Layer1 struct {
 	L2                   *Layer1_Layer2        `protobuf:"bytes,1,opt,name=l2" json:"l2,omitempty"`
@@ -31,6 +24,8 @@ func (m *Layer1) ProtoReflect() protoreflect.Message {
 func (m *Layer1) Reset()         { *m = Layer1{} }
 func (m *Layer1) String() string { return proto.CompactTextString(m) }
 func (*Layer1) ProtoMessage()    {}
+
+// Deprecated: Use Layer1.ProtoReflect.Type instead.
 func (*Layer1) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_nested_messages_proto_rawdesc_gzipped, []int{0}
 }
@@ -80,6 +75,8 @@ func (m *Layer1_Layer2) ProtoReflect() protoreflect.Message {
 func (m *Layer1_Layer2) Reset()         { *m = Layer1_Layer2{} }
 func (m *Layer1_Layer2) String() string { return proto.CompactTextString(m) }
 func (*Layer1_Layer2) ProtoMessage()    {}
+
+// Deprecated: Use Layer1_Layer2.ProtoReflect.Type instead.
 func (*Layer1_Layer2) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_nested_messages_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -121,6 +118,8 @@ func (m *Layer1_Layer2_Layer3) ProtoReflect() protoreflect.Message {
 func (m *Layer1_Layer2_Layer3) Reset()         { *m = Layer1_Layer2_Layer3{} }
 func (m *Layer1_Layer2_Layer3) String() string { return proto.CompactTextString(m) }
 func (*Layer1_Layer2_Layer3) ProtoMessage()    {}
+
+// Deprecated: Use Layer1_Layer2_Layer3.ProtoReflect.Type instead.
 func (*Layer1_Layer2_Layer3) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_nested_messages_proto_rawdesc_gzipped, []int{0, 0, 0}
 }
@@ -175,7 +174,7 @@ var xxx_File_proto2_nested_messages_proto_rawdesc = []byte{
 	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32,
 }
 
-var xxx_File_proto2_nested_messages_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_proto2_nested_messages_proto_rawdesc)
+var xxx_File_proto2_nested_messages_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_proto2_nested_messages_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

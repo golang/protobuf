@@ -5,18 +5,11 @@ package pb2
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	known "github.com/golang/protobuf/v2/types/known"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Enum int32
 
@@ -33,12 +26,14 @@ func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	1:  "ONE",
 	2:  "TWO",
 	10: "TEN",
 }
 
+// Deprecated: Use Enum.Type.Values instead.
 var Enum_value = map[string]int32{
 	"ONE": 1,
 	"TWO": 2,
@@ -46,24 +41,24 @@ var Enum_value = map[string]int32{
 }
 
 func (x Enum) Enum() *Enum {
-	p := new(Enum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x Enum) String() string {
-	return proto.EnumName(Enum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *Enum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(Enum_value, data, "Enum")
+// Deprecated: Do not use.
+func (x *Enum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = Enum(value)
+	*x = Enum(num)
 	return nil
 }
 
+// Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{0}
 }
@@ -83,12 +78,14 @@ func (e Enums_NestedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Enums_NestedEnum.Type.Values instead.
 var Enums_NestedEnum_name = map[int32]string{
 	1:  "UNO",
 	2:  "DOS",
 	10: "DIEZ",
 }
 
+// Deprecated: Use Enums_NestedEnum.Type.Values instead.
 var Enums_NestedEnum_value = map[string]int32{
 	"UNO":  1,
 	"DOS":  2,
@@ -96,24 +93,24 @@ var Enums_NestedEnum_value = map[string]int32{
 }
 
 func (x Enums_NestedEnum) Enum() *Enums_NestedEnum {
-	p := new(Enums_NestedEnum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x Enums_NestedEnum) String() string {
-	return proto.EnumName(Enums_NestedEnum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *Enums_NestedEnum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(Enums_NestedEnum_value, data, "Enums_NestedEnum")
+// Deprecated: Do not use.
+func (x *Enums_NestedEnum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = Enums_NestedEnum(value)
+	*x = Enums_NestedEnum(num)
 	return nil
 }
 
+// Deprecated: Use Enums_NestedEnum.Type instead.
 func (Enums_NestedEnum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{1, 0}
 }
@@ -146,6 +143,8 @@ func (m *Scalars) ProtoReflect() protoreflect.Message {
 func (m *Scalars) Reset()         { *m = Scalars{} }
 func (m *Scalars) String() string { return proto.CompactTextString(m) }
 func (*Scalars) ProtoMessage()    {}
+
+// Deprecated: Use Scalars.ProtoReflect.Type instead.
 func (*Scalars) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{0}
 }
@@ -290,6 +289,8 @@ func (m *Enums) ProtoReflect() protoreflect.Message {
 func (m *Enums) Reset()         { *m = Enums{} }
 func (m *Enums) String() string { return proto.CompactTextString(m) }
 func (*Enums) ProtoMessage()    {}
+
+// Deprecated: Use Enums.ProtoReflect.Type instead.
 func (*Enums) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{1}
 }
@@ -362,6 +363,8 @@ func (m *Repeats) ProtoReflect() protoreflect.Message {
 func (m *Repeats) Reset()         { *m = Repeats{} }
 func (m *Repeats) String() string { return proto.CompactTextString(m) }
 func (*Repeats) ProtoMessage()    {}
+
+// Deprecated: Use Repeats.ProtoReflect.Type instead.
 func (*Repeats) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{2}
 }
@@ -462,6 +465,8 @@ func (m *Nested) ProtoReflect() protoreflect.Message {
 func (m *Nested) Reset()         { *m = Nested{} }
 func (m *Nested) String() string { return proto.CompactTextString(m) }
 func (*Nested) ProtoMessage()    {}
+
+// Deprecated: Use Nested.ProtoReflect.Type instead.
 func (*Nested) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{3}
 }
@@ -515,6 +520,8 @@ func (m *Nests) ProtoReflect() protoreflect.Message {
 func (m *Nests) Reset()         { *m = Nests{} }
 func (m *Nests) String() string { return proto.CompactTextString(m) }
 func (*Nests) ProtoMessage()    {}
+
+// Deprecated: Use Nests.ProtoReflect.Type instead.
 func (*Nests) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4}
 }
@@ -584,6 +591,8 @@ func (m *Requireds) ProtoReflect() protoreflect.Message {
 func (m *Requireds) Reset()         { *m = Requireds{} }
 func (m *Requireds) String() string { return proto.CompactTextString(m) }
 func (*Requireds) ProtoMessage()    {}
+
+// Deprecated: Use Requireds.ProtoReflect.Type instead.
 func (*Requireds) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{5}
 }
@@ -663,6 +672,8 @@ func (m *PartialRequired) ProtoReflect() protoreflect.Message {
 func (m *PartialRequired) Reset()         { *m = PartialRequired{} }
 func (m *PartialRequired) String() string { return proto.CompactTextString(m) }
 func (*PartialRequired) ProtoMessage()    {}
+
+// Deprecated: Use PartialRequired.ProtoReflect.Type instead.
 func (*PartialRequired) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{6}
 }
@@ -712,6 +723,8 @@ func (m *NestedWithRequired) ProtoReflect() protoreflect.Message {
 func (m *NestedWithRequired) Reset()         { *m = NestedWithRequired{} }
 func (m *NestedWithRequired) String() string { return proto.CompactTextString(m) }
 func (*NestedWithRequired) ProtoMessage()    {}
+
+// Deprecated: Use NestedWithRequired.ProtoReflect.Type instead.
 func (*NestedWithRequired) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{7}
 }
@@ -759,6 +772,8 @@ func (m *IndirectRequired) ProtoReflect() protoreflect.Message {
 func (m *IndirectRequired) Reset()         { *m = IndirectRequired{} }
 func (m *IndirectRequired) String() string { return proto.CompactTextString(m) }
 func (*IndirectRequired) ProtoMessage()    {}
+
+// Deprecated: Use IndirectRequired.ProtoReflect.Type instead.
 func (*IndirectRequired) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{8}
 }
@@ -849,6 +864,8 @@ func (m *Extensions) ProtoReflect() protoreflect.Message {
 func (m *Extensions) Reset()         { *m = Extensions{} }
 func (m *Extensions) String() string { return proto.CompactTextString(m) }
 func (*Extensions) ProtoMessage()    {}
+
+// Deprecated: Use Extensions.ProtoReflect.Type instead.
 func (*Extensions) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{9}
 }
@@ -857,6 +874,7 @@ var extRange_Extensions = []proto.ExtensionRange{
 	{Start: 20, End: 100},
 }
 
+// Deprecated: Use Extensions.ProtoReflect.Type.ExtensionRanges instead.
 func (*Extensions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_Extensions
 }
@@ -912,6 +930,8 @@ func (m *ExtensionsContainer) ProtoReflect() protoreflect.Message {
 func (m *ExtensionsContainer) Reset()         { *m = ExtensionsContainer{} }
 func (m *ExtensionsContainer) String() string { return proto.CompactTextString(m) }
 func (*ExtensionsContainer) ProtoMessage()    {}
+
+// Deprecated: Use ExtensionsContainer.ProtoReflect.Type instead.
 func (*ExtensionsContainer) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{10}
 }
@@ -947,6 +967,8 @@ func (m *MessageSet) ProtoReflect() protoreflect.Message {
 func (m *MessageSet) Reset()         { *m = MessageSet{} }
 func (m *MessageSet) String() string { return proto.CompactTextString(m) }
 func (*MessageSet) ProtoMessage()    {}
+
+// Deprecated: Use MessageSet.ProtoReflect.Type instead.
 func (*MessageSet) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{11}
 }
@@ -955,6 +977,7 @@ var extRange_MessageSet = []proto.ExtensionRange{
 	{Start: 4, End: 2147483646},
 }
 
+// Deprecated: Use MessageSet.ProtoReflect.Type.ExtensionRanges instead.
 func (*MessageSet) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_MessageSet
 }
@@ -990,6 +1013,8 @@ func (m *MessageSetExtension) ProtoReflect() protoreflect.Message {
 func (m *MessageSetExtension) Reset()         { *m = MessageSetExtension{} }
 func (m *MessageSetExtension) String() string { return proto.CompactTextString(m) }
 func (*MessageSetExtension) ProtoMessage()    {}
+
+// Deprecated: Use MessageSetExtension.ProtoReflect.Type instead.
 func (*MessageSetExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{12}
 }
@@ -1032,6 +1057,8 @@ func (m *FakeMessageSet) ProtoReflect() protoreflect.Message {
 func (m *FakeMessageSet) Reset()         { *m = FakeMessageSet{} }
 func (m *FakeMessageSet) String() string { return proto.CompactTextString(m) }
 func (*FakeMessageSet) ProtoMessage()    {}
+
+// Deprecated: Use FakeMessageSet.ProtoReflect.Type instead.
 func (*FakeMessageSet) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{13}
 }
@@ -1040,6 +1067,7 @@ var extRange_FakeMessageSet = []proto.ExtensionRange{
 	{Start: 4, End: 536870911},
 }
 
+// Deprecated: Use FakeMessageSet.ProtoReflect.Type.ExtensionRanges instead.
 func (*FakeMessageSet) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_FakeMessageSet
 }
@@ -1075,6 +1103,8 @@ func (m *FakeMessageSetExtension) ProtoReflect() protoreflect.Message {
 func (m *FakeMessageSetExtension) Reset()         { *m = FakeMessageSetExtension{} }
 func (m *FakeMessageSetExtension) String() string { return proto.CompactTextString(m) }
 func (*FakeMessageSetExtension) ProtoMessage()    {}
+
+// Deprecated: Use FakeMessageSetExtension.ProtoReflect.Type instead.
 func (*FakeMessageSetExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{14}
 }
@@ -1133,6 +1163,8 @@ func (m *KnownTypes) ProtoReflect() protoreflect.Message {
 func (m *KnownTypes) Reset()         { *m = KnownTypes{} }
 func (m *KnownTypes) String() string { return proto.CompactTextString(m) }
 func (*KnownTypes) ProtoMessage()    {}
+
+// Deprecated: Use KnownTypes.ProtoReflect.Type instead.
 func (*KnownTypes) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{15}
 }
@@ -1282,6 +1314,8 @@ func (m *Nests_OptGroup) ProtoReflect() protoreflect.Message {
 func (m *Nests_OptGroup) Reset()         { *m = Nests_OptGroup{} }
 func (m *Nests_OptGroup) String() string { return proto.CompactTextString(m) }
 func (*Nests_OptGroup) ProtoMessage()    {}
+
+// Deprecated: Use Nests_OptGroup.ProtoReflect.Type instead.
 func (*Nests_OptGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4, 0}
 }
@@ -1338,6 +1372,8 @@ func (m *Nests_RptGroup) ProtoReflect() protoreflect.Message {
 func (m *Nests_RptGroup) Reset()         { *m = Nests_RptGroup{} }
 func (m *Nests_RptGroup) String() string { return proto.CompactTextString(m) }
 func (*Nests_RptGroup) ProtoMessage()    {}
+
+// Deprecated: Use Nests_RptGroup.ProtoReflect.Type instead.
 func (*Nests_RptGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4, 1}
 }
@@ -1380,6 +1416,8 @@ func (m *Nests_OptGroup_OptNestedGroup) ProtoReflect() protoreflect.Message {
 func (m *Nests_OptGroup_OptNestedGroup) Reset()         { *m = Nests_OptGroup_OptNestedGroup{} }
 func (m *Nests_OptGroup_OptNestedGroup) String() string { return proto.CompactTextString(m) }
 func (*Nests_OptGroup_OptNestedGroup) ProtoMessage()    {}
+
+// Deprecated: Use Nests_OptGroup_OptNestedGroup.ProtoReflect.Type instead.
 func (*Nests_OptGroup_OptNestedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4, 0, 0}
 }
@@ -1992,7 +2030,7 @@ var xxx_File_pb2_test_proto_rawdesc = []byte{
 	0x6f, 0x73, 0x2f, 0x70, 0x62, 0x32,
 }
 
-var xxx_File_pb2_test_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_pb2_test_proto_rawdesc)
+var xxx_File_pb2_test_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_pb2_test_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

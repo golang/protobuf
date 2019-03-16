@@ -4,6 +4,7 @@
 package descriptor_proto
 
 import (
+	proto "github.com/golang/protobuf/proto"
 	protoapi "github.com/golang/protobuf/protoapi"
 	prototype "github.com/golang/protobuf/v2/internal/prototype"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
@@ -52,6 +53,7 @@ func (e FieldDescriptorProto_Type) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use FieldDescriptorProto_Type.Type.Values instead.
 var FieldDescriptorProto_Type_name = map[int32]string{
 	1:  "TYPE_DOUBLE",
 	2:  "TYPE_FLOAT",
@@ -73,6 +75,7 @@ var FieldDescriptorProto_Type_name = map[int32]string{
 	18: "TYPE_SINT64",
 }
 
+// Deprecated: Use FieldDescriptorProto_Type.Type.Values instead.
 var FieldDescriptorProto_Type_value = map[string]int32{
 	"TYPE_DOUBLE":   1,
 	"TYPE_FLOAT":    2,
@@ -95,24 +98,24 @@ var FieldDescriptorProto_Type_value = map[string]int32{
 }
 
 func (x FieldDescriptorProto_Type) Enum() *FieldDescriptorProto_Type {
-	p := new(FieldDescriptorProto_Type)
-	*p = x
-	return p
+	return &x
 }
 
 func (x FieldDescriptorProto_Type) String() string {
-	return protoapi.EnumName(FieldDescriptorProto_Type_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *FieldDescriptorProto_Type) UnmarshalJSON(data []byte) error {
-	value, err := protoapi.UnmarshalJSONEnum(FieldDescriptorProto_Type_value, data, "FieldDescriptorProto_Type")
+// Deprecated: Do not use.
+func (x *FieldDescriptorProto_Type) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = FieldDescriptorProto_Type(value)
+	*x = FieldDescriptorProto_Type(num)
 	return nil
 }
 
+// Deprecated: Use FieldDescriptorProto_Type.Type instead.
 func (FieldDescriptorProto_Type) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{4, 0}
 }
@@ -133,12 +136,14 @@ func (e FieldDescriptorProto_Label) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use FieldDescriptorProto_Label.Type.Values instead.
 var FieldDescriptorProto_Label_name = map[int32]string{
 	1: "LABEL_OPTIONAL",
 	2: "LABEL_REQUIRED",
 	3: "LABEL_REPEATED",
 }
 
+// Deprecated: Use FieldDescriptorProto_Label.Type.Values instead.
 var FieldDescriptorProto_Label_value = map[string]int32{
 	"LABEL_OPTIONAL": 1,
 	"LABEL_REQUIRED": 2,
@@ -146,24 +151,24 @@ var FieldDescriptorProto_Label_value = map[string]int32{
 }
 
 func (x FieldDescriptorProto_Label) Enum() *FieldDescriptorProto_Label {
-	p := new(FieldDescriptorProto_Label)
-	*p = x
-	return p
+	return &x
 }
 
 func (x FieldDescriptorProto_Label) String() string {
-	return protoapi.EnumName(FieldDescriptorProto_Label_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *FieldDescriptorProto_Label) UnmarshalJSON(data []byte) error {
-	value, err := protoapi.UnmarshalJSONEnum(FieldDescriptorProto_Label_value, data, "FieldDescriptorProto_Label")
+// Deprecated: Do not use.
+func (x *FieldDescriptorProto_Label) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = FieldDescriptorProto_Label(value)
+	*x = FieldDescriptorProto_Label(num)
 	return nil
 }
 
+// Deprecated: Use FieldDescriptorProto_Label.Type instead.
 func (FieldDescriptorProto_Label) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{4, 1}
 }
@@ -185,12 +190,14 @@ func (e FileOptions_OptimizeMode) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use FileOptions_OptimizeMode.Type.Values instead.
 var FileOptions_OptimizeMode_name = map[int32]string{
 	1: "SPEED",
 	2: "CODE_SIZE",
 	3: "LITE_RUNTIME",
 }
 
+// Deprecated: Use FileOptions_OptimizeMode.Type.Values instead.
 var FileOptions_OptimizeMode_value = map[string]int32{
 	"SPEED":        1,
 	"CODE_SIZE":    2,
@@ -198,24 +205,24 @@ var FileOptions_OptimizeMode_value = map[string]int32{
 }
 
 func (x FileOptions_OptimizeMode) Enum() *FileOptions_OptimizeMode {
-	p := new(FileOptions_OptimizeMode)
-	*p = x
-	return p
+	return &x
 }
 
 func (x FileOptions_OptimizeMode) String() string {
-	return protoapi.EnumName(FileOptions_OptimizeMode_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *FileOptions_OptimizeMode) UnmarshalJSON(data []byte) error {
-	value, err := protoapi.UnmarshalJSONEnum(FileOptions_OptimizeMode_value, data, "FileOptions_OptimizeMode")
+// Deprecated: Do not use.
+func (x *FileOptions_OptimizeMode) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = FileOptions_OptimizeMode(value)
+	*x = FileOptions_OptimizeMode(num)
 	return nil
 }
 
+// Deprecated: Use FileOptions_OptimizeMode.Type instead.
 func (FileOptions_OptimizeMode) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{10, 0}
 }
@@ -236,12 +243,14 @@ func (e FieldOptions_CType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use FieldOptions_CType.Type.Values instead.
 var FieldOptions_CType_name = map[int32]string{
 	0: "STRING",
 	1: "CORD",
 	2: "STRING_PIECE",
 }
 
+// Deprecated: Use FieldOptions_CType.Type.Values instead.
 var FieldOptions_CType_value = map[string]int32{
 	"STRING":       0,
 	"CORD":         1,
@@ -249,24 +258,24 @@ var FieldOptions_CType_value = map[string]int32{
 }
 
 func (x FieldOptions_CType) Enum() *FieldOptions_CType {
-	p := new(FieldOptions_CType)
-	*p = x
-	return p
+	return &x
 }
 
 func (x FieldOptions_CType) String() string {
-	return protoapi.EnumName(FieldOptions_CType_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *FieldOptions_CType) UnmarshalJSON(data []byte) error {
-	value, err := protoapi.UnmarshalJSONEnum(FieldOptions_CType_value, data, "FieldOptions_CType")
+// Deprecated: Do not use.
+func (x *FieldOptions_CType) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = FieldOptions_CType(value)
+	*x = FieldOptions_CType(num)
 	return nil
 }
 
+// Deprecated: Use FieldOptions_CType.Type instead.
 func (FieldOptions_CType) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{12, 0}
 }
@@ -289,12 +298,14 @@ func (e FieldOptions_JSType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use FieldOptions_JSType.Type.Values instead.
 var FieldOptions_JSType_name = map[int32]string{
 	0: "JS_NORMAL",
 	1: "JS_STRING",
 	2: "JS_NUMBER",
 }
 
+// Deprecated: Use FieldOptions_JSType.Type.Values instead.
 var FieldOptions_JSType_value = map[string]int32{
 	"JS_NORMAL": 0,
 	"JS_STRING": 1,
@@ -302,24 +313,24 @@ var FieldOptions_JSType_value = map[string]int32{
 }
 
 func (x FieldOptions_JSType) Enum() *FieldOptions_JSType {
-	p := new(FieldOptions_JSType)
-	*p = x
-	return p
+	return &x
 }
 
 func (x FieldOptions_JSType) String() string {
-	return protoapi.EnumName(FieldOptions_JSType_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *FieldOptions_JSType) UnmarshalJSON(data []byte) error {
-	value, err := protoapi.UnmarshalJSONEnum(FieldOptions_JSType_value, data, "FieldOptions_JSType")
+// Deprecated: Do not use.
+func (x *FieldOptions_JSType) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = FieldOptions_JSType(value)
+	*x = FieldOptions_JSType(num)
 	return nil
 }
 
+// Deprecated: Use FieldOptions_JSType.Type instead.
 func (FieldOptions_JSType) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{12, 1}
 }
@@ -342,12 +353,14 @@ func (e MethodOptions_IdempotencyLevel) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use MethodOptions_IdempotencyLevel.Type.Values instead.
 var MethodOptions_IdempotencyLevel_name = map[int32]string{
 	0: "IDEMPOTENCY_UNKNOWN",
 	1: "NO_SIDE_EFFECTS",
 	2: "IDEMPOTENT",
 }
 
+// Deprecated: Use MethodOptions_IdempotencyLevel.Type.Values instead.
 var MethodOptions_IdempotencyLevel_value = map[string]int32{
 	"IDEMPOTENCY_UNKNOWN": 0,
 	"NO_SIDE_EFFECTS":     1,
@@ -355,24 +368,24 @@ var MethodOptions_IdempotencyLevel_value = map[string]int32{
 }
 
 func (x MethodOptions_IdempotencyLevel) Enum() *MethodOptions_IdempotencyLevel {
-	p := new(MethodOptions_IdempotencyLevel)
-	*p = x
-	return p
+	return &x
 }
 
 func (x MethodOptions_IdempotencyLevel) String() string {
-	return protoapi.EnumName(MethodOptions_IdempotencyLevel_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *MethodOptions_IdempotencyLevel) UnmarshalJSON(data []byte) error {
-	value, err := protoapi.UnmarshalJSONEnum(MethodOptions_IdempotencyLevel_value, data, "MethodOptions_IdempotencyLevel")
+// Deprecated: Do not use.
+func (x *MethodOptions_IdempotencyLevel) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = MethodOptions_IdempotencyLevel(value)
+	*x = MethodOptions_IdempotencyLevel(num)
 	return nil
 }
 
+// Deprecated: Use MethodOptions_IdempotencyLevel.Type instead.
 func (MethodOptions_IdempotencyLevel) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{17, 0}
 }
@@ -392,6 +405,8 @@ func (m *FileDescriptorSet) ProtoReflect() protoreflect.Message {
 func (m *FileDescriptorSet) Reset()         { *m = FileDescriptorSet{} }
 func (m *FileDescriptorSet) String() string { return protoapi.CompactTextString(m) }
 func (*FileDescriptorSet) ProtoMessage()    {}
+
+// Deprecated: Use FileDescriptorSet.ProtoReflect.Type instead.
 func (*FileDescriptorSet) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{0}
 }
@@ -439,6 +454,8 @@ func (m *FileDescriptorProto) ProtoReflect() protoreflect.Message {
 func (m *FileDescriptorProto) Reset()         { *m = FileDescriptorProto{} }
 func (m *FileDescriptorProto) String() string { return protoapi.CompactTextString(m) }
 func (*FileDescriptorProto) ProtoMessage()    {}
+
+// Deprecated: Use FileDescriptorProto.ProtoReflect.Type instead.
 func (*FileDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{1}
 }
@@ -552,6 +569,8 @@ func (m *DescriptorProto) ProtoReflect() protoreflect.Message {
 func (m *DescriptorProto) Reset()         { *m = DescriptorProto{} }
 func (m *DescriptorProto) String() string { return protoapi.CompactTextString(m) }
 func (*DescriptorProto) ProtoMessage()    {}
+
+// Deprecated: Use DescriptorProto.ProtoReflect.Type instead.
 func (*DescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{2}
 }
@@ -641,6 +660,8 @@ func (m *ExtensionRangeOptions) ProtoReflect() protoreflect.Message {
 func (m *ExtensionRangeOptions) Reset()         { *m = ExtensionRangeOptions{} }
 func (m *ExtensionRangeOptions) String() string { return protoapi.CompactTextString(m) }
 func (*ExtensionRangeOptions) ProtoMessage()    {}
+
+// Deprecated: Use ExtensionRangeOptions.ProtoReflect.Type instead.
 func (*ExtensionRangeOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{3}
 }
@@ -649,6 +670,7 @@ var extRange_ExtensionRangeOptions = []protoapi.ExtensionRange{
 	{Start: 1000, End: 536870911},
 }
 
+// Deprecated: Use ExtensionRangeOptions.ProtoReflect.Type.ExtensionRanges instead.
 func (*ExtensionRangeOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
 	return extRange_ExtensionRangeOptions
 }
@@ -703,6 +725,8 @@ func (m *FieldDescriptorProto) ProtoReflect() protoreflect.Message {
 func (m *FieldDescriptorProto) Reset()         { *m = FieldDescriptorProto{} }
 func (m *FieldDescriptorProto) String() string { return protoapi.CompactTextString(m) }
 func (*FieldDescriptorProto) ProtoMessage()    {}
+
+// Deprecated: Use FieldDescriptorProto.ProtoReflect.Type instead.
 func (*FieldDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{4}
 }
@@ -792,6 +816,8 @@ func (m *OneofDescriptorProto) ProtoReflect() protoreflect.Message {
 func (m *OneofDescriptorProto) Reset()         { *m = OneofDescriptorProto{} }
 func (m *OneofDescriptorProto) String() string { return protoapi.CompactTextString(m) }
 func (*OneofDescriptorProto) ProtoMessage()    {}
+
+// Deprecated: Use OneofDescriptorProto.ProtoReflect.Type instead.
 func (*OneofDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{5}
 }
@@ -833,6 +859,8 @@ func (m *EnumDescriptorProto) ProtoReflect() protoreflect.Message {
 func (m *EnumDescriptorProto) Reset()         { *m = EnumDescriptorProto{} }
 func (m *EnumDescriptorProto) String() string { return protoapi.CompactTextString(m) }
 func (*EnumDescriptorProto) ProtoMessage()    {}
+
+// Deprecated: Use EnumDescriptorProto.ProtoReflect.Type instead.
 func (*EnumDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{6}
 }
@@ -888,6 +916,8 @@ func (m *EnumValueDescriptorProto) ProtoReflect() protoreflect.Message {
 func (m *EnumValueDescriptorProto) Reset()         { *m = EnumValueDescriptorProto{} }
 func (m *EnumValueDescriptorProto) String() string { return protoapi.CompactTextString(m) }
 func (*EnumValueDescriptorProto) ProtoMessage()    {}
+
+// Deprecated: Use EnumValueDescriptorProto.ProtoReflect.Type instead.
 func (*EnumValueDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{7}
 }
@@ -929,6 +959,8 @@ func (m *ServiceDescriptorProto) ProtoReflect() protoreflect.Message {
 func (m *ServiceDescriptorProto) Reset()         { *m = ServiceDescriptorProto{} }
 func (m *ServiceDescriptorProto) String() string { return protoapi.CompactTextString(m) }
 func (*ServiceDescriptorProto) ProtoMessage()    {}
+
+// Deprecated: Use ServiceDescriptorProto.ProtoReflect.Type instead.
 func (*ServiceDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{8}
 }
@@ -977,6 +1009,8 @@ func (m *MethodDescriptorProto) ProtoReflect() protoreflect.Message {
 func (m *MethodDescriptorProto) Reset()         { *m = MethodDescriptorProto{} }
 func (m *MethodDescriptorProto) String() string { return protoapi.CompactTextString(m) }
 func (*MethodDescriptorProto) ProtoMessage()    {}
+
+// Deprecated: Use MethodDescriptorProto.ProtoReflect.Type instead.
 func (*MethodDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{9}
 }
@@ -1123,6 +1157,8 @@ func (m *FileOptions) ProtoReflect() protoreflect.Message {
 func (m *FileOptions) Reset()         { *m = FileOptions{} }
 func (m *FileOptions) String() string { return protoapi.CompactTextString(m) }
 func (*FileOptions) ProtoMessage()    {}
+
+// Deprecated: Use FileOptions.ProtoReflect.Type instead.
 func (*FileOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{10}
 }
@@ -1131,6 +1167,7 @@ var extRange_FileOptions = []protoapi.ExtensionRange{
 	{Start: 1000, End: 536870911},
 }
 
+// Deprecated: Use FileOptions.ProtoReflect.Type.ExtensionRanges instead.
 func (*FileOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
 	return extRange_FileOptions
 }
@@ -1358,6 +1395,8 @@ func (m *MessageOptions) ProtoReflect() protoreflect.Message {
 func (m *MessageOptions) Reset()         { *m = MessageOptions{} }
 func (m *MessageOptions) String() string { return protoapi.CompactTextString(m) }
 func (*MessageOptions) ProtoMessage()    {}
+
+// Deprecated: Use MessageOptions.ProtoReflect.Type instead.
 func (*MessageOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{11}
 }
@@ -1366,6 +1405,7 @@ var extRange_MessageOptions = []protoapi.ExtensionRange{
 	{Start: 1000, End: 536870911},
 }
 
+// Deprecated: Use MessageOptions.ProtoReflect.Type.ExtensionRanges instead.
 func (*MessageOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
 	return extRange_MessageOptions
 }
@@ -1483,6 +1523,8 @@ func (m *FieldOptions) ProtoReflect() protoreflect.Message {
 func (m *FieldOptions) Reset()         { *m = FieldOptions{} }
 func (m *FieldOptions) String() string { return protoapi.CompactTextString(m) }
 func (*FieldOptions) ProtoMessage()    {}
+
+// Deprecated: Use FieldOptions.ProtoReflect.Type instead.
 func (*FieldOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{12}
 }
@@ -1491,6 +1533,7 @@ var extRange_FieldOptions = []protoapi.ExtensionRange{
 	{Start: 1000, End: 536870911},
 }
 
+// Deprecated: Use FieldOptions.ProtoReflect.Type.ExtensionRanges instead.
 func (*FieldOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
 	return extRange_FieldOptions
 }
@@ -1565,6 +1608,8 @@ func (m *OneofOptions) ProtoReflect() protoreflect.Message {
 func (m *OneofOptions) Reset()         { *m = OneofOptions{} }
 func (m *OneofOptions) String() string { return protoapi.CompactTextString(m) }
 func (*OneofOptions) ProtoMessage()    {}
+
+// Deprecated: Use OneofOptions.ProtoReflect.Type instead.
 func (*OneofOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{13}
 }
@@ -1573,6 +1618,7 @@ var extRange_OneofOptions = []protoapi.ExtensionRange{
 	{Start: 1000, End: 536870911},
 }
 
+// Deprecated: Use OneofOptions.ProtoReflect.Type.ExtensionRanges instead.
 func (*OneofOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
 	return extRange_OneofOptions
 }
@@ -1607,6 +1653,8 @@ func (m *EnumOptions) ProtoReflect() protoreflect.Message {
 func (m *EnumOptions) Reset()         { *m = EnumOptions{} }
 func (m *EnumOptions) String() string { return protoapi.CompactTextString(m) }
 func (*EnumOptions) ProtoMessage()    {}
+
+// Deprecated: Use EnumOptions.ProtoReflect.Type instead.
 func (*EnumOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{14}
 }
@@ -1615,6 +1663,7 @@ var extRange_EnumOptions = []protoapi.ExtensionRange{
 	{Start: 1000, End: 536870911},
 }
 
+// Deprecated: Use EnumOptions.ProtoReflect.Type.ExtensionRanges instead.
 func (*EnumOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
 	return extRange_EnumOptions
 }
@@ -1662,6 +1711,8 @@ func (m *EnumValueOptions) ProtoReflect() protoreflect.Message {
 func (m *EnumValueOptions) Reset()         { *m = EnumValueOptions{} }
 func (m *EnumValueOptions) String() string { return protoapi.CompactTextString(m) }
 func (*EnumValueOptions) ProtoMessage()    {}
+
+// Deprecated: Use EnumValueOptions.ProtoReflect.Type instead.
 func (*EnumValueOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{15}
 }
@@ -1670,6 +1721,7 @@ var extRange_EnumValueOptions = []protoapi.ExtensionRange{
 	{Start: 1000, End: 536870911},
 }
 
+// Deprecated: Use EnumValueOptions.ProtoReflect.Type.ExtensionRanges instead.
 func (*EnumValueOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
 	return extRange_EnumValueOptions
 }
@@ -1710,6 +1762,8 @@ func (m *ServiceOptions) ProtoReflect() protoreflect.Message {
 func (m *ServiceOptions) Reset()         { *m = ServiceOptions{} }
 func (m *ServiceOptions) String() string { return protoapi.CompactTextString(m) }
 func (*ServiceOptions) ProtoMessage()    {}
+
+// Deprecated: Use ServiceOptions.ProtoReflect.Type instead.
 func (*ServiceOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{16}
 }
@@ -1718,6 +1772,7 @@ var extRange_ServiceOptions = []protoapi.ExtensionRange{
 	{Start: 1000, End: 536870911},
 }
 
+// Deprecated: Use ServiceOptions.ProtoReflect.Type.ExtensionRanges instead.
 func (*ServiceOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
 	return extRange_ServiceOptions
 }
@@ -1759,6 +1814,8 @@ func (m *MethodOptions) ProtoReflect() protoreflect.Message {
 func (m *MethodOptions) Reset()         { *m = MethodOptions{} }
 func (m *MethodOptions) String() string { return protoapi.CompactTextString(m) }
 func (*MethodOptions) ProtoMessage()    {}
+
+// Deprecated: Use MethodOptions.ProtoReflect.Type instead.
 func (*MethodOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{17}
 }
@@ -1767,6 +1824,7 @@ var extRange_MethodOptions = []protoapi.ExtensionRange{
 	{Start: 1000, End: 536870911},
 }
 
+// Deprecated: Use MethodOptions.ProtoReflect.Type.ExtensionRanges instead.
 func (*MethodOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
 	return extRange_MethodOptions
 }
@@ -1822,6 +1880,8 @@ func (m *UninterpretedOption) ProtoReflect() protoreflect.Message {
 func (m *UninterpretedOption) Reset()         { *m = UninterpretedOption{} }
 func (m *UninterpretedOption) String() string { return protoapi.CompactTextString(m) }
 func (*UninterpretedOption) ProtoMessage()    {}
+
+// Deprecated: Use UninterpretedOption.ProtoReflect.Type instead.
 func (*UninterpretedOption) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{18}
 }
@@ -1933,6 +1993,8 @@ func (m *SourceCodeInfo) ProtoReflect() protoreflect.Message {
 func (m *SourceCodeInfo) Reset()         { *m = SourceCodeInfo{} }
 func (m *SourceCodeInfo) String() string { return protoapi.CompactTextString(m) }
 func (*SourceCodeInfo) ProtoMessage()    {}
+
+// Deprecated: Use SourceCodeInfo.ProtoReflect.Type instead.
 func (*SourceCodeInfo) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{19}
 }
@@ -1962,6 +2024,8 @@ func (m *GeneratedCodeInfo) ProtoReflect() protoreflect.Message {
 func (m *GeneratedCodeInfo) Reset()         { *m = GeneratedCodeInfo{} }
 func (m *GeneratedCodeInfo) String() string { return protoapi.CompactTextString(m) }
 func (*GeneratedCodeInfo) ProtoMessage()    {}
+
+// Deprecated: Use GeneratedCodeInfo.ProtoReflect.Type instead.
 func (*GeneratedCodeInfo) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{20}
 }
@@ -1988,6 +2052,8 @@ func (m *DescriptorProto_ExtensionRange) ProtoReflect() protoreflect.Message {
 func (m *DescriptorProto_ExtensionRange) Reset()         { *m = DescriptorProto_ExtensionRange{} }
 func (m *DescriptorProto_ExtensionRange) String() string { return protoapi.CompactTextString(m) }
 func (*DescriptorProto_ExtensionRange) ProtoMessage()    {}
+
+// Deprecated: Use DescriptorProto_ExtensionRange.ProtoReflect.Type instead.
 func (*DescriptorProto_ExtensionRange) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{2, 0}
 }
@@ -2030,6 +2096,8 @@ func (m *DescriptorProto_ReservedRange) ProtoReflect() protoreflect.Message {
 func (m *DescriptorProto_ReservedRange) Reset()         { *m = DescriptorProto_ReservedRange{} }
 func (m *DescriptorProto_ReservedRange) String() string { return protoapi.CompactTextString(m) }
 func (*DescriptorProto_ReservedRange) ProtoMessage()    {}
+
+// Deprecated: Use DescriptorProto_ReservedRange.ProtoReflect.Type instead.
 func (*DescriptorProto_ReservedRange) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{2, 1}
 }
@@ -2068,6 +2136,8 @@ func (m *EnumDescriptorProto_EnumReservedRange) ProtoReflect() protoreflect.Mess
 func (m *EnumDescriptorProto_EnumReservedRange) Reset()         { *m = EnumDescriptorProto_EnumReservedRange{} }
 func (m *EnumDescriptorProto_EnumReservedRange) String() string { return protoapi.CompactTextString(m) }
 func (*EnumDescriptorProto_EnumReservedRange) ProtoMessage()    {}
+
+// Deprecated: Use EnumDescriptorProto_EnumReservedRange.ProtoReflect.Type instead.
 func (*EnumDescriptorProto_EnumReservedRange) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{6, 0}
 }
@@ -2105,6 +2175,8 @@ func (m *UninterpretedOption_NamePart) ProtoReflect() protoreflect.Message {
 func (m *UninterpretedOption_NamePart) Reset()         { *m = UninterpretedOption_NamePart{} }
 func (m *UninterpretedOption_NamePart) String() string { return protoapi.CompactTextString(m) }
 func (*UninterpretedOption_NamePart) ProtoMessage()    {}
+
+// Deprecated: Use UninterpretedOption_NamePart.ProtoReflect.Type instead.
 func (*UninterpretedOption_NamePart) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{18, 0}
 }
@@ -2215,6 +2287,8 @@ func (m *SourceCodeInfo_Location) ProtoReflect() protoreflect.Message {
 func (m *SourceCodeInfo_Location) Reset()         { *m = SourceCodeInfo_Location{} }
 func (m *SourceCodeInfo_Location) String() string { return protoapi.CompactTextString(m) }
 func (*SourceCodeInfo_Location) ProtoMessage()    {}
+
+// Deprecated: Use SourceCodeInfo_Location.ProtoReflect.Type instead.
 func (*SourceCodeInfo_Location) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{19, 0}
 }
@@ -2278,6 +2352,8 @@ func (m *GeneratedCodeInfo_Annotation) ProtoReflect() protoreflect.Message {
 func (m *GeneratedCodeInfo_Annotation) Reset()         { *m = GeneratedCodeInfo_Annotation{} }
 func (m *GeneratedCodeInfo_Annotation) String() string { return protoapi.CompactTextString(m) }
 func (*GeneratedCodeInfo_Annotation) ProtoMessage()    {}
+
+// Deprecated: Use GeneratedCodeInfo_Annotation.ProtoReflect.Type instead.
 func (*GeneratedCodeInfo_Annotation) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{20, 0}
 }
@@ -2311,40 +2387,40 @@ func (m *GeneratedCodeInfo_Annotation) GetEnd() int32 {
 }
 
 func init() {
-	protoapi.RegisterFile("google/protobuf/descriptor.proto", xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped)
-	protoapi.RegisterEnum("google.protobuf.FieldDescriptorProto_Type", FieldDescriptorProto_Type_name, FieldDescriptorProto_Type_value)
-	protoapi.RegisterEnum("google.protobuf.FieldDescriptorProto_Label", FieldDescriptorProto_Label_name, FieldDescriptorProto_Label_value)
-	protoapi.RegisterEnum("google.protobuf.FileOptions_OptimizeMode", FileOptions_OptimizeMode_name, FileOptions_OptimizeMode_value)
-	protoapi.RegisterEnum("google.protobuf.FieldOptions_CType", FieldOptions_CType_name, FieldOptions_CType_value)
-	protoapi.RegisterEnum("google.protobuf.FieldOptions_JSType", FieldOptions_JSType_name, FieldOptions_JSType_value)
-	protoapi.RegisterEnum("google.protobuf.MethodOptions_IdempotencyLevel", MethodOptions_IdempotencyLevel_name, MethodOptions_IdempotencyLevel_value)
-	protoapi.RegisterType((*FileDescriptorSet)(nil), "google.protobuf.FileDescriptorSet")
-	protoapi.RegisterType((*FileDescriptorProto)(nil), "google.protobuf.FileDescriptorProto")
-	protoapi.RegisterType((*DescriptorProto)(nil), "google.protobuf.DescriptorProto")
-	protoapi.RegisterType((*ExtensionRangeOptions)(nil), "google.protobuf.ExtensionRangeOptions")
-	protoapi.RegisterType((*FieldDescriptorProto)(nil), "google.protobuf.FieldDescriptorProto")
-	protoapi.RegisterType((*OneofDescriptorProto)(nil), "google.protobuf.OneofDescriptorProto")
-	protoapi.RegisterType((*EnumDescriptorProto)(nil), "google.protobuf.EnumDescriptorProto")
-	protoapi.RegisterType((*EnumValueDescriptorProto)(nil), "google.protobuf.EnumValueDescriptorProto")
-	protoapi.RegisterType((*ServiceDescriptorProto)(nil), "google.protobuf.ServiceDescriptorProto")
-	protoapi.RegisterType((*MethodDescriptorProto)(nil), "google.protobuf.MethodDescriptorProto")
-	protoapi.RegisterType((*FileOptions)(nil), "google.protobuf.FileOptions")
-	protoapi.RegisterType((*MessageOptions)(nil), "google.protobuf.MessageOptions")
-	protoapi.RegisterType((*FieldOptions)(nil), "google.protobuf.FieldOptions")
-	protoapi.RegisterType((*OneofOptions)(nil), "google.protobuf.OneofOptions")
-	protoapi.RegisterType((*EnumOptions)(nil), "google.protobuf.EnumOptions")
-	protoapi.RegisterType((*EnumValueOptions)(nil), "google.protobuf.EnumValueOptions")
-	protoapi.RegisterType((*ServiceOptions)(nil), "google.protobuf.ServiceOptions")
-	protoapi.RegisterType((*MethodOptions)(nil), "google.protobuf.MethodOptions")
-	protoapi.RegisterType((*UninterpretedOption)(nil), "google.protobuf.UninterpretedOption")
-	protoapi.RegisterType((*SourceCodeInfo)(nil), "google.protobuf.SourceCodeInfo")
-	protoapi.RegisterType((*GeneratedCodeInfo)(nil), "google.protobuf.GeneratedCodeInfo")
-	protoapi.RegisterType((*DescriptorProto_ExtensionRange)(nil), "google.protobuf.DescriptorProto.ExtensionRange")
-	protoapi.RegisterType((*DescriptorProto_ReservedRange)(nil), "google.protobuf.DescriptorProto.ReservedRange")
-	protoapi.RegisterType((*EnumDescriptorProto_EnumReservedRange)(nil), "google.protobuf.EnumDescriptorProto.EnumReservedRange")
-	protoapi.RegisterType((*UninterpretedOption_NamePart)(nil), "google.protobuf.UninterpretedOption.NamePart")
-	protoapi.RegisterType((*SourceCodeInfo_Location)(nil), "google.protobuf.SourceCodeInfo.Location")
-	protoapi.RegisterType((*GeneratedCodeInfo_Annotation)(nil), "google.protobuf.GeneratedCodeInfo.Annotation")
+	proto.RegisterFile("google/protobuf/descriptor.proto", xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped)
+	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Type", FieldDescriptorProto_Type_name, FieldDescriptorProto_Type_value)
+	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Label", FieldDescriptorProto_Label_name, FieldDescriptorProto_Label_value)
+	proto.RegisterEnum("google.protobuf.FileOptions_OptimizeMode", FileOptions_OptimizeMode_name, FileOptions_OptimizeMode_value)
+	proto.RegisterEnum("google.protobuf.FieldOptions_CType", FieldOptions_CType_name, FieldOptions_CType_value)
+	proto.RegisterEnum("google.protobuf.FieldOptions_JSType", FieldOptions_JSType_name, FieldOptions_JSType_value)
+	proto.RegisterEnum("google.protobuf.MethodOptions_IdempotencyLevel", MethodOptions_IdempotencyLevel_name, MethodOptions_IdempotencyLevel_value)
+	proto.RegisterType((*FileDescriptorSet)(nil), "google.protobuf.FileDescriptorSet")
+	proto.RegisterType((*FileDescriptorProto)(nil), "google.protobuf.FileDescriptorProto")
+	proto.RegisterType((*DescriptorProto)(nil), "google.protobuf.DescriptorProto")
+	proto.RegisterType((*ExtensionRangeOptions)(nil), "google.protobuf.ExtensionRangeOptions")
+	proto.RegisterType((*FieldDescriptorProto)(nil), "google.protobuf.FieldDescriptorProto")
+	proto.RegisterType((*OneofDescriptorProto)(nil), "google.protobuf.OneofDescriptorProto")
+	proto.RegisterType((*EnumDescriptorProto)(nil), "google.protobuf.EnumDescriptorProto")
+	proto.RegisterType((*EnumValueDescriptorProto)(nil), "google.protobuf.EnumValueDescriptorProto")
+	proto.RegisterType((*ServiceDescriptorProto)(nil), "google.protobuf.ServiceDescriptorProto")
+	proto.RegisterType((*MethodDescriptorProto)(nil), "google.protobuf.MethodDescriptorProto")
+	proto.RegisterType((*FileOptions)(nil), "google.protobuf.FileOptions")
+	proto.RegisterType((*MessageOptions)(nil), "google.protobuf.MessageOptions")
+	proto.RegisterType((*FieldOptions)(nil), "google.protobuf.FieldOptions")
+	proto.RegisterType((*OneofOptions)(nil), "google.protobuf.OneofOptions")
+	proto.RegisterType((*EnumOptions)(nil), "google.protobuf.EnumOptions")
+	proto.RegisterType((*EnumValueOptions)(nil), "google.protobuf.EnumValueOptions")
+	proto.RegisterType((*ServiceOptions)(nil), "google.protobuf.ServiceOptions")
+	proto.RegisterType((*MethodOptions)(nil), "google.protobuf.MethodOptions")
+	proto.RegisterType((*UninterpretedOption)(nil), "google.protobuf.UninterpretedOption")
+	proto.RegisterType((*SourceCodeInfo)(nil), "google.protobuf.SourceCodeInfo")
+	proto.RegisterType((*GeneratedCodeInfo)(nil), "google.protobuf.GeneratedCodeInfo")
+	proto.RegisterType((*DescriptorProto_ExtensionRange)(nil), "google.protobuf.DescriptorProto.ExtensionRange")
+	proto.RegisterType((*DescriptorProto_ReservedRange)(nil), "google.protobuf.DescriptorProto.ReservedRange")
+	proto.RegisterType((*EnumDescriptorProto_EnumReservedRange)(nil), "google.protobuf.EnumDescriptorProto.EnumReservedRange")
+	proto.RegisterType((*UninterpretedOption_NamePart)(nil), "google.protobuf.UninterpretedOption.NamePart")
+	proto.RegisterType((*SourceCodeInfo_Location)(nil), "google.protobuf.SourceCodeInfo.Location")
+	proto.RegisterType((*GeneratedCodeInfo_Annotation)(nil), "google.protobuf.GeneratedCodeInfo.Annotation")
 }
 
 var xxx_File_google_protobuf_descriptor_proto_rawdesc = []byte{
@@ -2825,7 +2901,7 @@ var xxx_File_google_protobuf_descriptor_proto_rawdesc = []byte{
 	0x66, 0x2e, 0x52, 0x65, 0x66, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
 }
 
-var xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_google_protobuf_descriptor_proto_rawdesc)
+var xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_descriptor_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

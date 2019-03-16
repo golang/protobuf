@@ -5,17 +5,10 @@ package proto2
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // EnumType1 comment.
 type EnumType1 int32
@@ -34,35 +27,37 @@ func (e EnumType1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use EnumType1.Type.Values instead.
 var EnumType1_name = map[int32]string{
 	1: "ONE",
 	2: "TWO",
 }
 
+// Deprecated: Use EnumType1.Type.Values instead.
 var EnumType1_value = map[string]int32{
 	"ONE": 1,
 	"TWO": 2,
 }
 
 func (x EnumType1) Enum() *EnumType1 {
-	p := new(EnumType1)
-	*p = x
-	return p
+	return &x
 }
 
 func (x EnumType1) String() string {
-	return proto.EnumName(EnumType1_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *EnumType1) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(EnumType1_value, data, "EnumType1")
+// Deprecated: Do not use.
+func (x *EnumType1) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = EnumType1(value)
+	*x = EnumType1(num)
 	return nil
 }
 
+// Deprecated: Use EnumType1.Type instead.
 func (EnumType1) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0}
 }
@@ -81,35 +76,37 @@ func (e EnumType2) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use EnumType2.Type.Values instead.
 var EnumType2_name = map[int32]string{
 	1: "duplicate1",
 	// Duplicate value: 1: "duplicate2",
 }
 
+// Deprecated: Use EnumType2.Type.Values instead.
 var EnumType2_value = map[string]int32{
 	"duplicate1": 1,
 	"duplicate2": 1,
 }
 
 func (x EnumType2) Enum() *EnumType2 {
-	p := new(EnumType2)
-	*p = x
-	return p
+	return &x
 }
 
 func (x EnumType2) String() string {
-	return proto.EnumName(EnumType2_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *EnumType2) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(EnumType2_value, data, "EnumType2")
+// Deprecated: Do not use.
+func (x *EnumType2) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = EnumType2(value)
+	*x = EnumType2(num)
 	return nil
 }
 
+// Deprecated: Use EnumType2.Type instead.
 func (EnumType2) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{1}
 }
@@ -129,33 +126,35 @@ func (e EnumContainerMessage1_NestedEnumType1A) Number() protoreflect.EnumNumber
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use EnumContainerMessage1_NestedEnumType1A.Type.Values instead.
 var EnumContainerMessage1_NestedEnumType1A_name = map[int32]string{
 	0: "NESTED_1A_VALUE",
 }
 
+// Deprecated: Use EnumContainerMessage1_NestedEnumType1A.Type.Values instead.
 var EnumContainerMessage1_NestedEnumType1A_value = map[string]int32{
 	"NESTED_1A_VALUE": 0,
 }
 
 func (x EnumContainerMessage1_NestedEnumType1A) Enum() *EnumContainerMessage1_NestedEnumType1A {
-	p := new(EnumContainerMessage1_NestedEnumType1A)
-	*p = x
-	return p
+	return &x
 }
 
 func (x EnumContainerMessage1_NestedEnumType1A) String() string {
-	return proto.EnumName(EnumContainerMessage1_NestedEnumType1A_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *EnumContainerMessage1_NestedEnumType1A) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(EnumContainerMessage1_NestedEnumType1A_value, data, "EnumContainerMessage1_NestedEnumType1A")
+// Deprecated: Do not use.
+func (x *EnumContainerMessage1_NestedEnumType1A) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = EnumContainerMessage1_NestedEnumType1A(value)
+	*x = EnumContainerMessage1_NestedEnumType1A(num)
 	return nil
 }
 
+// Deprecated: Use EnumContainerMessage1_NestedEnumType1A.Type instead.
 func (EnumContainerMessage1_NestedEnumType1A) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -173,33 +172,35 @@ func (e EnumContainerMessage1_NestedEnumType1B) Number() protoreflect.EnumNumber
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use EnumContainerMessage1_NestedEnumType1B.Type.Values instead.
 var EnumContainerMessage1_NestedEnumType1B_name = map[int32]string{
 	0: "NESTED_1B_VALUE",
 }
 
+// Deprecated: Use EnumContainerMessage1_NestedEnumType1B.Type.Values instead.
 var EnumContainerMessage1_NestedEnumType1B_value = map[string]int32{
 	"NESTED_1B_VALUE": 0,
 }
 
 func (x EnumContainerMessage1_NestedEnumType1B) Enum() *EnumContainerMessage1_NestedEnumType1B {
-	p := new(EnumContainerMessage1_NestedEnumType1B)
-	*p = x
-	return p
+	return &x
 }
 
 func (x EnumContainerMessage1_NestedEnumType1B) String() string {
-	return proto.EnumName(EnumContainerMessage1_NestedEnumType1B_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *EnumContainerMessage1_NestedEnumType1B) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(EnumContainerMessage1_NestedEnumType1B_value, data, "EnumContainerMessage1_NestedEnumType1B")
+// Deprecated: Do not use.
+func (x *EnumContainerMessage1_NestedEnumType1B) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = EnumContainerMessage1_NestedEnumType1B(value)
+	*x = EnumContainerMessage1_NestedEnumType1B(num)
 	return nil
 }
 
+// Deprecated: Use EnumContainerMessage1_NestedEnumType1B.Type instead.
 func (EnumContainerMessage1_NestedEnumType1B) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 1}
 }
@@ -219,33 +220,35 @@ func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Number() p
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A.Type.Values instead.
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_name = map[int32]string{
 	0: "NESTED_2A_VALUE",
 }
 
+// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A.Type.Values instead.
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_value = map[string]int32{
 	"NESTED_2A_VALUE": 0,
 }
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Enum() *EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A {
-	p := new(EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A)
-	*p = x
-	return p
+	return &x
 }
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) String() string {
-	return proto.EnumName(EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_value, data, "EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A")
+// Deprecated: Do not use.
+func (x *EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A(value)
+	*x = EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A(num)
 	return nil
 }
 
+// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A.Type instead.
 func (EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 0, 0}
 }
@@ -263,33 +266,35 @@ func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Number() p
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B.Type.Values instead.
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_name = map[int32]string{
 	0: "NESTED_2B_VALUE",
 }
 
+// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B.Type.Values instead.
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_value = map[string]int32{
 	"NESTED_2B_VALUE": 0,
 }
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Enum() *EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B {
-	p := new(EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B)
-	*p = x
-	return p
+	return &x
 }
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) String() string {
-	return proto.EnumName(EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_value, data, "EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B")
+// Deprecated: Do not use.
+func (x *EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B(value)
+	*x = EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B(num)
 	return nil
 }
 
+// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B.Type instead.
 func (EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 0, 1}
 }
@@ -308,6 +313,8 @@ func (m *EnumContainerMessage1) ProtoReflect() protoreflect.Message {
 func (m *EnumContainerMessage1) Reset()         { *m = EnumContainerMessage1{} }
 func (m *EnumContainerMessage1) String() string { return proto.CompactTextString(m) }
 func (*EnumContainerMessage1) ProtoMessage()    {}
+
+// Deprecated: Use EnumContainerMessage1.ProtoReflect.Type instead.
 func (*EnumContainerMessage1) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0}
 }
@@ -363,6 +370,8 @@ func (m *EnumContainerMessage1_EnumContainerMessage2) String() string {
 	return proto.CompactTextString(m)
 }
 func (*EnumContainerMessage1_EnumContainerMessage2) ProtoMessage() {}
+
+// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2.ProtoReflect.Type instead.
 func (*EnumContainerMessage1_EnumContainerMessage2) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -440,7 +449,7 @@ var xxx_File_proto2_enum_proto_rawdesc = []byte{
 	0x2f, 0x74, 0x65, 0x73, 0x74, 0x64, 0x61, 0x74, 0x61, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32,
 }
 
-var xxx_File_proto2_enum_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_proto2_enum_proto_rawdesc)
+var xxx_File_proto2_enum_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_proto2_enum_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

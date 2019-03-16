@@ -5,17 +5,10 @@ package known_proto
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // Api is a light-weight descriptor for an API Interface.
 //
@@ -74,6 +67,8 @@ func (m *Api) ProtoReflect() protoreflect.Message {
 func (m *Api) Reset()         { *m = Api{} }
 func (m *Api) String() string { return proto.CompactTextString(m) }
 func (*Api) ProtoMessage()    {}
+
+// Deprecated: Use Api.ProtoReflect.Type instead.
 func (*Api) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_api_proto_rawdesc_gzipped, []int{0}
 }
@@ -172,6 +167,8 @@ func (m *Method) ProtoReflect() protoreflect.Message {
 func (m *Method) Reset()         { *m = Method{} }
 func (m *Method) String() string { return proto.CompactTextString(m) }
 func (*Method) ProtoMessage()    {}
+
+// Deprecated: Use Method.ProtoReflect.Type instead.
 func (*Method) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_api_proto_rawdesc_gzipped, []int{1}
 }
@@ -338,6 +335,8 @@ func (m *Mixin) ProtoReflect() protoreflect.Message {
 func (m *Mixin) Reset()         { *m = Mixin{} }
 func (m *Mixin) String() string { return proto.CompactTextString(m) }
 func (*Mixin) ProtoMessage()    {}
+
+// Deprecated: Use Mixin.ProtoReflect.Type instead.
 func (*Mixin) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_api_proto_rawdesc_gzipped, []int{2}
 }
@@ -444,7 +443,7 @@ var xxx_File_google_protobuf_api_proto_rawdesc = []byte{
 	0x33,
 }
 
-var xxx_File_google_protobuf_api_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_google_protobuf_api_proto_rawdesc)
+var xxx_File_google_protobuf_api_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_api_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

@@ -5,17 +5,10 @@ package test
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type ForeignEnum int32
 
@@ -32,12 +25,14 @@ func (e ForeignEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use ForeignEnum.Type.Values instead.
 var ForeignEnum_name = map[int32]string{
 	4: "FOREIGN_FOO",
 	5: "FOREIGN_BAR",
 	6: "FOREIGN_BAZ",
 }
 
+// Deprecated: Use ForeignEnum.Type.Values instead.
 var ForeignEnum_value = map[string]int32{
 	"FOREIGN_FOO": 4,
 	"FOREIGN_BAR": 5,
@@ -45,24 +40,24 @@ var ForeignEnum_value = map[string]int32{
 }
 
 func (x ForeignEnum) Enum() *ForeignEnum {
-	p := new(ForeignEnum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x ForeignEnum) String() string {
-	return proto.EnumName(ForeignEnum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *ForeignEnum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(ForeignEnum_value, data, "ForeignEnum")
+// Deprecated: Do not use.
+func (x *ForeignEnum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = ForeignEnum(value)
+	*x = ForeignEnum(num)
 	return nil
 }
 
+// Deprecated: Use ForeignEnum.Type instead.
 func (ForeignEnum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{0}
 }
@@ -80,33 +75,35 @@ func (e TestReservedEnumFields) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use TestReservedEnumFields.Type.Values instead.
 var TestReservedEnumFields_name = map[int32]string{
 	0: "RESERVED_ENUM",
 }
 
+// Deprecated: Use TestReservedEnumFields.Type.Values instead.
 var TestReservedEnumFields_value = map[string]int32{
 	"RESERVED_ENUM": 0,
 }
 
 func (x TestReservedEnumFields) Enum() *TestReservedEnumFields {
-	p := new(TestReservedEnumFields)
-	*p = x
-	return p
+	return &x
 }
 
 func (x TestReservedEnumFields) String() string {
-	return proto.EnumName(TestReservedEnumFields_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *TestReservedEnumFields) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(TestReservedEnumFields_value, data, "TestReservedEnumFields")
+// Deprecated: Do not use.
+func (x *TestReservedEnumFields) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = TestReservedEnumFields(value)
+	*x = TestReservedEnumFields(num)
 	return nil
 }
 
+// Deprecated: Use TestReservedEnumFields.Type instead.
 func (TestReservedEnumFields) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{1}
 }
@@ -127,6 +124,7 @@ func (e TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use TestAllTypes_NestedEnum.Type.Values instead.
 var TestAllTypes_NestedEnum_name = map[int32]string{
 	0:  "FOO",
 	1:  "BAR",
@@ -134,6 +132,7 @@ var TestAllTypes_NestedEnum_name = map[int32]string{
 	-1: "NEG",
 }
 
+// Deprecated: Use TestAllTypes_NestedEnum.Type.Values instead.
 var TestAllTypes_NestedEnum_value = map[string]int32{
 	"FOO": 0,
 	"BAR": 1,
@@ -142,24 +141,24 @@ var TestAllTypes_NestedEnum_value = map[string]int32{
 }
 
 func (x TestAllTypes_NestedEnum) Enum() *TestAllTypes_NestedEnum {
-	p := new(TestAllTypes_NestedEnum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x TestAllTypes_NestedEnum) String() string {
-	return proto.EnumName(TestAllTypes_NestedEnum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *TestAllTypes_NestedEnum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(TestAllTypes_NestedEnum_value, data, "TestAllTypes_NestedEnum")
+// Deprecated: Do not use.
+func (x *TestAllTypes_NestedEnum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = TestAllTypes_NestedEnum(value)
+	*x = TestAllTypes_NestedEnum(num)
 	return nil
 }
 
+// Deprecated: Use TestAllTypes_NestedEnum.Type instead.
 func (TestAllTypes_NestedEnum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -176,33 +175,35 @@ func (e TestDeprecatedMessage_DeprecatedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use TestDeprecatedMessage_DeprecatedEnum.Type.Values instead.
 var TestDeprecatedMessage_DeprecatedEnum_name = map[int32]string{
 	0: "DEPRECATED",
 }
 
+// Deprecated: Use TestDeprecatedMessage_DeprecatedEnum.Type.Values instead.
 var TestDeprecatedMessage_DeprecatedEnum_value = map[string]int32{
 	"DEPRECATED": 0,
 }
 
 func (x TestDeprecatedMessage_DeprecatedEnum) Enum() *TestDeprecatedMessage_DeprecatedEnum {
-	p := new(TestDeprecatedMessage_DeprecatedEnum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x TestDeprecatedMessage_DeprecatedEnum) String() string {
-	return proto.EnumName(TestDeprecatedMessage_DeprecatedEnum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *TestDeprecatedMessage_DeprecatedEnum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(TestDeprecatedMessage_DeprecatedEnum_value, data, "TestDeprecatedMessage_DeprecatedEnum")
+// Deprecated: Do not use.
+func (x *TestDeprecatedMessage_DeprecatedEnum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = TestDeprecatedMessage_DeprecatedEnum(value)
+	*x = TestDeprecatedMessage_DeprecatedEnum(num)
 	return nil
 }
 
+// Deprecated: Use TestDeprecatedMessage_DeprecatedEnum.Type instead.
 func (TestDeprecatedMessage_DeprecatedEnum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{1, 0}
 }
@@ -309,6 +310,8 @@ func (m *TestAllTypes) ProtoReflect() protoreflect.Message {
 func (m *TestAllTypes) Reset()         { *m = TestAllTypes{} }
 func (m *TestAllTypes) String() string { return proto.CompactTextString(m) }
 func (*TestAllTypes) ProtoMessage()    {}
+
+// Deprecated: Use TestAllTypes.ProtoReflect.Type instead.
 func (*TestAllTypes) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{0}
 }
@@ -1057,6 +1060,8 @@ func (m *TestDeprecatedMessage) ProtoReflect() protoreflect.Message {
 func (m *TestDeprecatedMessage) Reset()         { *m = TestDeprecatedMessage{} }
 func (m *TestDeprecatedMessage) String() string { return proto.CompactTextString(m) }
 func (*TestDeprecatedMessage) ProtoMessage()    {}
+
+// Deprecated: Use TestDeprecatedMessage.ProtoReflect.Type instead.
 func (*TestDeprecatedMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{1}
 }
@@ -1133,6 +1138,8 @@ func (m *ForeignMessage) ProtoReflect() protoreflect.Message {
 func (m *ForeignMessage) Reset()         { *m = ForeignMessage{} }
 func (m *ForeignMessage) String() string { return proto.CompactTextString(m) }
 func (*ForeignMessage) ProtoMessage()    {}
+
+// Deprecated: Use ForeignMessage.ProtoReflect.Type instead.
 func (*ForeignMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{2}
 }
@@ -1181,6 +1188,8 @@ func (m *TestReservedFields) ProtoReflect() protoreflect.Message {
 func (m *TestReservedFields) Reset()         { *m = TestReservedFields{} }
 func (m *TestReservedFields) String() string { return proto.CompactTextString(m) }
 func (*TestReservedFields) ProtoMessage()    {}
+
+// Deprecated: Use TestReservedFields.ProtoReflect.Type instead.
 func (*TestReservedFields) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{3}
 }
@@ -1216,6 +1225,8 @@ func (m *TestAllExtensions) ProtoReflect() protoreflect.Message {
 func (m *TestAllExtensions) Reset()         { *m = TestAllExtensions{} }
 func (m *TestAllExtensions) String() string { return proto.CompactTextString(m) }
 func (*TestAllExtensions) ProtoMessage()    {}
+
+// Deprecated: Use TestAllExtensions.ProtoReflect.Type instead.
 func (*TestAllExtensions) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{4}
 }
@@ -1224,6 +1235,7 @@ var extRange_TestAllExtensions = []proto.ExtensionRange{
 	{Start: 1, End: 536870911},
 }
 
+// Deprecated: Use TestAllExtensions.ProtoReflect.Type.ExtensionRanges instead.
 func (*TestAllExtensions) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_TestAllExtensions
 }
@@ -1259,6 +1271,8 @@ func (m *OptionalGroupExtension) ProtoReflect() protoreflect.Message {
 func (m *OptionalGroupExtension) Reset()         { *m = OptionalGroupExtension{} }
 func (m *OptionalGroupExtension) String() string { return proto.CompactTextString(m) }
 func (*OptionalGroupExtension) ProtoMessage()    {}
+
+// Deprecated: Use OptionalGroupExtension.ProtoReflect.Type instead.
 func (*OptionalGroupExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{5}
 }
@@ -1301,6 +1315,8 @@ func (m *RepeatedGroupExtension) ProtoReflect() protoreflect.Message {
 func (m *RepeatedGroupExtension) Reset()         { *m = RepeatedGroupExtension{} }
 func (m *RepeatedGroupExtension) String() string { return proto.CompactTextString(m) }
 func (*RepeatedGroupExtension) ProtoMessage()    {}
+
+// Deprecated: Use RepeatedGroupExtension.ProtoReflect.Type instead.
 func (*RepeatedGroupExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{6}
 }
@@ -1342,6 +1358,8 @@ func (m *TestNestedExtension) ProtoReflect() protoreflect.Message {
 func (m *TestNestedExtension) Reset()         { *m = TestNestedExtension{} }
 func (m *TestNestedExtension) String() string { return proto.CompactTextString(m) }
 func (*TestNestedExtension) ProtoMessage()    {}
+
+// Deprecated: Use TestNestedExtension.ProtoReflect.Type instead.
 func (*TestNestedExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{7}
 }
@@ -1377,6 +1395,8 @@ func (m *FooRequest) ProtoReflect() protoreflect.Message {
 func (m *FooRequest) Reset()         { *m = FooRequest{} }
 func (m *FooRequest) String() string { return proto.CompactTextString(m) }
 func (*FooRequest) ProtoMessage()    {}
+
+// Deprecated: Use FooRequest.ProtoReflect.Type instead.
 func (*FooRequest) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{8}
 }
@@ -1411,6 +1431,8 @@ func (m *FooResponse) ProtoReflect() protoreflect.Message {
 func (m *FooResponse) Reset()         { *m = FooResponse{} }
 func (m *FooResponse) String() string { return proto.CompactTextString(m) }
 func (*FooResponse) ProtoMessage()    {}
+
+// Deprecated: Use FooResponse.ProtoReflect.Type instead.
 func (*FooResponse) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{9}
 }
@@ -1447,6 +1469,8 @@ func (m *TestAllTypes_NestedMessage) ProtoReflect() protoreflect.Message {
 func (m *TestAllTypes_NestedMessage) Reset()         { *m = TestAllTypes_NestedMessage{} }
 func (m *TestAllTypes_NestedMessage) String() string { return proto.CompactTextString(m) }
 func (*TestAllTypes_NestedMessage) ProtoMessage()    {}
+
+// Deprecated: Use TestAllTypes_NestedMessage.ProtoReflect.Type instead.
 func (*TestAllTypes_NestedMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -1496,6 +1520,8 @@ func (m *TestAllTypes_OptionalGroup) ProtoReflect() protoreflect.Message {
 func (m *TestAllTypes_OptionalGroup) Reset()         { *m = TestAllTypes_OptionalGroup{} }
 func (m *TestAllTypes_OptionalGroup) String() string { return proto.CompactTextString(m) }
 func (*TestAllTypes_OptionalGroup) ProtoMessage()    {}
+
+// Deprecated: Use TestAllTypes_OptionalGroup.ProtoReflect.Type instead.
 func (*TestAllTypes_OptionalGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{0, 1}
 }
@@ -1538,6 +1564,8 @@ func (m *TestAllTypes_RepeatedGroup) ProtoReflect() protoreflect.Message {
 func (m *TestAllTypes_RepeatedGroup) Reset()         { *m = TestAllTypes_RepeatedGroup{} }
 func (m *TestAllTypes_RepeatedGroup) String() string { return proto.CompactTextString(m) }
 func (*TestAllTypes_RepeatedGroup) ProtoMessage()    {}
+
+// Deprecated: Use TestAllTypes_RepeatedGroup.ProtoReflect.Type instead.
 func (*TestAllTypes_RepeatedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{0, 2}
 }
@@ -2812,7 +2840,7 @@ var xxx_File_test_test_proto_rawdesc = []byte{
 	0x73, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x50, 0x01, 0x58, 0x02,
 }
 
-var xxx_File_test_test_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_test_test_proto_rawdesc)
+var xxx_File_test_test_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_test_test_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

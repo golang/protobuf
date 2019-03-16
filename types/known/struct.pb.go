@@ -5,17 +5,10 @@ package known_proto
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // `NullValue` is a singleton enumeration to represent the null value for the
 // `Value` type union.
@@ -35,18 +28,21 @@ func (e NullValue) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use NullValue.Type.Values instead.
 var NullValue_name = map[int32]string{
 	0: "NULL_VALUE",
 }
 
+// Deprecated: Use NullValue.Type.Values instead.
 var NullValue_value = map[string]int32{
 	"NULL_VALUE": 0,
 }
 
 func (x NullValue) String() string {
-	return proto.EnumName(NullValue_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use NullValue.Type instead.
 func (NullValue) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_struct_proto_rawdesc_gzipped, []int{0}
 }
@@ -75,6 +71,8 @@ func (m *Struct) ProtoReflect() protoreflect.Message {
 func (m *Struct) Reset()         { *m = Struct{} }
 func (m *Struct) String() string { return proto.CompactTextString(m) }
 func (*Struct) ProtoMessage()    {}
+
+// Deprecated: Use Struct.ProtoReflect.Type instead.
 func (*Struct) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_struct_proto_rawdesc_gzipped, []int{0}
 }
@@ -140,6 +138,8 @@ func (m *Value) ProtoReflect() protoreflect.Message {
 func (m *Value) Reset()         { *m = Value{} }
 func (m *Value) String() string { return proto.CompactTextString(m) }
 func (*Value) ProtoMessage()    {}
+
+// Deprecated: Use Value.ProtoReflect.Type instead.
 func (*Value) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_struct_proto_rawdesc_gzipped, []int{1}
 }
@@ -282,6 +282,8 @@ func (m *ListValue) ProtoReflect() protoreflect.Message {
 func (m *ListValue) Reset()         { *m = ListValue{} }
 func (m *ListValue) String() string { return proto.CompactTextString(m) }
 func (*ListValue) ProtoMessage()    {}
+
+// Deprecated: Use ListValue.ProtoReflect.Type instead.
 func (*ListValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_struct_proto_rawdesc_gzipped, []int{2}
 }
@@ -373,7 +375,7 @@ var xxx_File_google_protobuf_struct_proto_rawdesc = []byte{
 	0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_google_protobuf_struct_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_google_protobuf_struct_proto_rawdesc)
+var xxx_File_google_protobuf_struct_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_struct_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

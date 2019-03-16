@@ -26,12 +26,6 @@ import (
 	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
-// generatedCodeVersion indicates a version of the generated code.
-// It is incremented whenever an incompatibility between the generated code and
-// proto package is introduced; the generated code references
-// a constant, proto.ProtoPackageIsVersionN (where N is generatedCodeVersion).
-const generatedCodeVersion = 3
-
 const (
 	mathPackage     = protogen.GoImportPath("math")
 	protoPackage    = protogen.GoImportPath("github.com/golang/protobuf/proto")
@@ -126,16 +120,6 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 	g.P()
 	g.P("package ", f.GoPackageName)
 	g.P()
-
-	if !isDescriptor(file) {
-		g.P("// This is a compile-time assertion to ensure that this generated file")
-		g.P("// is compatible with the proto package it is being compiled against.")
-		g.P("// A compilation error at this line likely means your copy of the")
-		g.P("// proto package needs to be updated.")
-		g.P("const _ = ", protoPackage.Ident(fmt.Sprintf("ProtoPackageIsVersion%d", generatedCodeVersion)),
-			"// please upgrade the proto package")
-		g.P()
-	}
 
 	for i, imps := 0, f.Desc.Imports(); i < imps.Len(); i++ {
 		genImport(gen, g, f, imps.Get(i))
@@ -275,7 +259,7 @@ func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 
 	// TODO: Modify CompressGZIP to lazy encode? Currently, the GZIP'd form
 	// is eagerly registered in v1, preventing any benefit from lazy encoding.
-	g.P("var ", f.descriptorGzipVar, " = ", protoapiPackage.Ident("CompressGZIP"), "(", f.descriptorRawVar, ")")
+	g.P("var ", f.descriptorGzipVar, " = ", protoimplPackage.Ident("X"), ".CompressGZIP(", f.descriptorRawVar, ")")
 	g.P()
 }
 
@@ -298,6 +282,7 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	genReflectEnum(gen, g, f, enum)
 
 	nameMap := enum.GoIdent.GoName + "_name"
+	g.P("// Deprecated: Use ", enum.GoIdent.GoName, ".Type.Values instead.")
 	g.P("var ", nameMap, " = map[int32]string{")
 	generated := make(map[protoreflect.EnumNumber]bool)
 	for _, value := range enum.Values {
@@ -310,33 +295,35 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	}
 	g.P("}")
 	g.P()
+
 	valueMap := enum.GoIdent.GoName + "_value"
+	g.P("// Deprecated: Use ", enum.GoIdent.GoName, ".Type.Values instead.")
 	g.P("var ", valueMap, " = map[string]int32{")
 	for _, value := range enum.Values {
 		g.P(strconv.Quote(string(value.Desc.Name())), ": ", value.Desc.Number(), ",")
 	}
 	g.P("}")
 	g.P()
+
 	if enum.Desc.Syntax() != protoreflect.Proto3 {
 		g.P("func (x ", enum.GoIdent, ") Enum() *", enum.GoIdent, " {")
-		g.P("p := new(", enum.GoIdent, ")")
-		g.P("*p = x")
-		g.P("return p")
+		g.P("return &x")
 		g.P("}")
 		g.P()
 	}
 	g.P("func (x ", enum.GoIdent, ") String() string {")
-	g.P("return ", f.protoPackage().Ident("EnumName"), "(", enum.GoIdent, "_name, int32(x))")
+	g.P("return ", protoimplPackage.Ident("X"), ".EnumStringOf(x.Type(), ", protoreflectPackage.Ident("EnumNumber"), "(x))")
 	g.P("}")
 	g.P()
 
 	if enum.Desc.Syntax() == protoreflect.Proto2 {
-		g.P("func (x *", enum.GoIdent, ") UnmarshalJSON(data []byte) error {")
-		g.P("value, err := ", f.protoPackage().Ident("UnmarshalJSONEnum"), "(", enum.GoIdent, `_value, data, "`, enum.GoIdent, `")`)
+		g.P("// Deprecated: Do not use.")
+		g.P("func (x *", enum.GoIdent, ") UnmarshalJSON(b []byte) error {")
+		g.P("num, err := ", protoimplPackage.Ident("X"), ".UnmarshalJSONEnum(x.Type(), b)")
 		g.P("if err != nil {")
 		g.P("return err")
 		g.P("}")
-		g.P("*x = ", enum.GoIdent, "(value)")
+		g.P("*x = ", enum.GoIdent, "(num)")
 		g.P("return nil")
 		g.P("}")
 		g.P()
@@ -346,6 +333,7 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	for i := 1; i < len(enum.Location.Path); i += 2 {
 		indexes = append(indexes, strconv.Itoa(int(enum.Location.Path[i])))
 	}
+	g.P("// Deprecated: Use ", enum.GoIdent, ".Type instead.")
 	g.P("func (", enum.GoIdent, ") EnumDescriptor() ([]byte, []int) {")
 	g.P("return ", f.descriptorGzipVar, ", []int{", strings.Join(indexes, ","), "}")
 	g.P("}")
@@ -452,6 +440,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	for i := 1; i < len(message.Location.Path); i += 2 {
 		indexes = append(indexes, strconv.Itoa(int(message.Location.Path[i])))
 	}
+	g.P("// Deprecated: Use ", message.GoIdent, ".ProtoReflect.Type instead.")
 	g.P("func (*", message.GoIdent, ") Descriptor() ([]byte, []int) {")
 	g.P("return ", f.descriptorGzipVar, ", []int{", strings.Join(indexes, ","), "}")
 	g.P("}")
@@ -468,6 +457,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		}
 		g.P("}")
 		g.P()
+		g.P("// Deprecated: Use ", message.GoIdent, ".ProtoReflect.Type.ExtensionRanges instead.")
 		g.P("func (*", message.GoIdent, ") ExtensionRangeArray() []", protoExtRange, " {")
 		g.P("return ", extRangeVar)
 		g.P("}")
@@ -779,10 +769,10 @@ func extensionVar(f *protogen.File, extension *protogen.Extension) protogen.GoId
 // generated file with the proto package.
 func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
 	g.P("func init() {")
-	g.P(f.protoPackage().Ident("RegisterFile"), "(", strconv.Quote(f.Desc.Path()), ", ", f.descriptorGzipVar, ")")
+	g.P(protoPackage.Ident("RegisterFile"), "(", strconv.Quote(f.Desc.Path()), ", ", f.descriptorGzipVar, ")")
 	for _, enum := range f.allEnums {
 		name := enum.GoIdent.GoName
-		g.P(f.protoPackage().Ident("RegisterEnum"), fmt.Sprintf("(%q, %s_name, %s_value)", enumRegistryName(enum), name, name))
+		g.P(protoPackage.Ident("RegisterEnum"), fmt.Sprintf("(%q, %s_name, %s_value)", enumRegistryName(enum), name, name))
 	}
 	for _, message := range f.allMessages {
 		if message.Desc.IsMapEntry() {
@@ -790,7 +780,7 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInf
 		}
 
 		name := message.GoIdent.GoName
-		g.P(f.protoPackage().Ident("RegisterType"), fmt.Sprintf("((*%s)(nil), %q)", name, message.Desc.FullName()))
+		g.P(protoPackage.Ident("RegisterType"), fmt.Sprintf("((*%s)(nil), %q)", name, message.Desc.FullName()))
 
 		// Types of map fields, sorted by the name of the field message type.
 		var mapFields []*protogen.Field
@@ -807,11 +797,11 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInf
 		for _, field := range mapFields {
 			typeName := string(field.MessageType.Desc.FullName())
 			goType, _ := fieldGoType(g, field)
-			g.P(f.protoPackage().Ident("RegisterMapType"), fmt.Sprintf("((%v)(nil), %q)", goType, typeName))
+			g.P(protoPackage.Ident("RegisterMapType"), fmt.Sprintf("((%v)(nil), %q)", goType, typeName))
 		}
 	}
 	for _, extension := range f.allExtensions {
-		g.P(f.protoPackage().Ident("RegisterExtension"), "(", extensionVar(f.File, extension), ")")
+		g.P(protoPackage.Ident("RegisterExtension"), "(", extensionVar(f.File, extension), ")")
 	}
 	g.P("}")
 	g.P()

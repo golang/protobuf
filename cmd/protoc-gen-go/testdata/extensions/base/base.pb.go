@@ -5,17 +5,10 @@ package base
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type BaseMessage struct {
 	Field                        *string  `protobuf:"bytes,1,opt,name=field" json:"field,omitempty"`
@@ -31,6 +24,8 @@ func (m *BaseMessage) ProtoReflect() protoreflect.Message {
 func (m *BaseMessage) Reset()         { *m = BaseMessage{} }
 func (m *BaseMessage) String() string { return proto.CompactTextString(m) }
 func (*BaseMessage) ProtoMessage()    {}
+
+// Deprecated: Use BaseMessage.ProtoReflect.Type instead.
 func (*BaseMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_base_base_proto_rawdesc_gzipped, []int{0}
 }
@@ -40,6 +35,7 @@ var extRange_BaseMessage = []proto.ExtensionRange{
 	{Start: 16, End: 536870911},
 }
 
+// Deprecated: Use BaseMessage.ProtoReflect.Type.ExtensionRanges instead.
 func (*BaseMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_BaseMessage
 }
@@ -82,6 +78,8 @@ func (m *MessageSetWireFormatMessage) ProtoReflect() protoreflect.Message {
 func (m *MessageSetWireFormatMessage) Reset()         { *m = MessageSetWireFormatMessage{} }
 func (m *MessageSetWireFormatMessage) String() string { return proto.CompactTextString(m) }
 func (*MessageSetWireFormatMessage) ProtoMessage()    {}
+
+// Deprecated: Use MessageSetWireFormatMessage.ProtoReflect.Type instead.
 func (*MessageSetWireFormatMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_base_base_proto_rawdesc_gzipped, []int{1}
 }
@@ -90,6 +88,7 @@ var extRange_MessageSetWireFormatMessage = []proto.ExtensionRange{
 	{Start: 100, End: 2147483646},
 }
 
+// Deprecated: Use MessageSetWireFormatMessage.ProtoReflect.Type.ExtensionRanges instead.
 func (*MessageSetWireFormatMessage) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_MessageSetWireFormatMessage
 }
@@ -137,7 +136,7 @@ var xxx_File_extensions_base_base_proto_rawdesc = []byte{
 	0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65,
 }
 
-var xxx_File_extensions_base_base_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_extensions_base_base_proto_rawdesc)
+var xxx_File_extensions_base_base_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_extensions_base_base_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

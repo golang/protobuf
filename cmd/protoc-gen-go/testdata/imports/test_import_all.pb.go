@@ -5,7 +5,6 @@ package imports
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	fmt "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/imports/fmt"
 	test_a_1 "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/imports/test_a_1"
 	_ "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/imports/test_a_2"
@@ -14,12 +13,6 @@ import (
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type All struct {
 	Am1                  *test_a_1.M1 `protobuf:"bytes,1,opt,name=am1,proto3" json:"am1,omitempty"`
@@ -38,6 +31,8 @@ func (m *All) ProtoReflect() protoreflect.Message {
 func (m *All) Reset()         { *m = All{} }
 func (m *All) String() string { return proto.CompactTextString(m) }
 func (*All) ProtoMessage()    {}
+
+// Deprecated: Use All.ProtoReflect.Type instead.
 func (*All) Descriptor() ([]byte, []int) {
 	return xxx_File_imports_test_import_all_proto_rawdesc_gzipped, []int{0}
 }
@@ -133,7 +128,7 @@ var xxx_File_imports_test_import_all_proto_rawdesc = []byte{
 	0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_imports_test_import_all_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_imports_test_import_all_proto_rawdesc)
+var xxx_File_imports_test_import_all_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_imports_test_import_all_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

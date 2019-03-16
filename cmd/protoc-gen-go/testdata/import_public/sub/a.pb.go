@@ -5,19 +5,12 @@ package sub
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	sub2 "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/import_public/sub2"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // Symbols defined in public import of import_public/sub2/a.proto
 
@@ -36,33 +29,35 @@ func (e E) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use E.Type.Values instead.
 var E_name = map[int32]string{
 	0: "ZERO",
 }
 
+// Deprecated: Use E.Type.Values instead.
 var E_value = map[string]int32{
 	"ZERO": 0,
 }
 
 func (x E) Enum() *E {
-	p := new(E)
-	*p = x
-	return p
+	return &x
 }
 
 func (x E) String() string {
-	return proto.EnumName(E_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *E) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(E_value, data, "E")
+// Deprecated: Do not use.
+func (x *E) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = E(value)
+	*x = E(num)
 	return nil
 }
 
+// Deprecated: Use E.Type instead.
 func (E) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0}
 }
@@ -80,33 +75,35 @@ func (e M_Subenum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use M_Subenum.Type.Values instead.
 var M_Subenum_name = map[int32]string{
 	0: "M_ZERO",
 }
 
+// Deprecated: Use M_Subenum.Type.Values instead.
 var M_Subenum_value = map[string]int32{
 	"M_ZERO": 0,
 }
 
 func (x M_Subenum) Enum() *M_Subenum {
-	p := new(M_Subenum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x M_Subenum) String() string {
-	return proto.EnumName(M_Subenum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *M_Subenum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(M_Subenum_value, data, "M_Subenum")
+// Deprecated: Do not use.
+func (x *M_Subenum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = M_Subenum(value)
+	*x = M_Subenum(num)
 	return nil
 }
 
+// Deprecated: Use M_Subenum.Type instead.
 func (M_Subenum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -124,33 +121,35 @@ func (e M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use M_Submessage_Submessage_Subenum.Type.Values instead.
 var M_Submessage_Submessage_Subenum_name = map[int32]string{
 	0: "M_SUBMESSAGE_ZERO",
 }
 
+// Deprecated: Use M_Submessage_Submessage_Subenum.Type.Values instead.
 var M_Submessage_Submessage_Subenum_value = map[string]int32{
 	"M_SUBMESSAGE_ZERO": 0,
 }
 
 func (x M_Submessage_Submessage_Subenum) Enum() *M_Submessage_Submessage_Subenum {
-	p := new(M_Submessage_Submessage_Subenum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x M_Submessage_Submessage_Subenum) String() string {
-	return proto.EnumName(M_Submessage_Submessage_Subenum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *M_Submessage_Submessage_Subenum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(M_Submessage_Submessage_Subenum_value, data, "M_Submessage_Submessage_Subenum")
+// Deprecated: Do not use.
+func (x *M_Submessage_Submessage_Subenum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = M_Submessage_Submessage_Subenum(value)
+	*x = M_Submessage_Submessage_Subenum(num)
 	return nil
 }
 
+// Deprecated: Use M_Submessage_Submessage_Subenum.Type instead.
 func (M_Submessage_Submessage_Subenum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0, 0, 0}
 }
@@ -177,6 +176,8 @@ func (m *M) ProtoReflect() protoreflect.Message {
 func (m *M) Reset()         { *m = M{} }
 func (m *M) String() string { return proto.CompactTextString(m) }
 func (*M) ProtoMessage()    {}
+
+// Deprecated: Use M.ProtoReflect.Type instead.
 func (*M) Descriptor() ([]byte, []int) {
 	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0}
 }
@@ -185,6 +186,7 @@ var extRange_M = []proto.ExtensionRange{
 	{Start: 100, End: 536870911},
 }
 
+// Deprecated: Use M.ProtoReflect.Type.ExtensionRanges instead.
 func (*M) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_M
 }
@@ -301,6 +303,8 @@ func (m *M_Submessage) ProtoReflect() protoreflect.Message {
 func (m *M_Submessage) Reset()         { *m = M_Submessage{} }
 func (m *M_Submessage) String() string { return proto.CompactTextString(m) }
 func (*M_Submessage) ProtoMessage()    {}
+
+// Deprecated: Use M_Submessage.ProtoReflect.Type instead.
 func (*M_Submessage) Descriptor() ([]byte, []int) {
 	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -443,7 +447,7 @@ var xxx_File_import_public_sub_a_proto_rawdesc = []byte{
 	0x62, 0x6c, 0x69, 0x63, 0x2f, 0x73, 0x75, 0x62, 0x50, 0x01,
 }
 
-var xxx_File_import_public_sub_a_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_import_public_sub_a_proto_rawdesc)
+var xxx_File_import_public_sub_a_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_import_public_sub_a_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

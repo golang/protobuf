@@ -5,17 +5,10 @@ package grpc
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Request struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -29,6 +22,8 @@ func (m *Request) ProtoReflect() protoreflect.Message {
 func (m *Request) Reset()         { *m = Request{} }
 func (m *Request) String() string { return proto.CompactTextString(m) }
 func (*Request) ProtoMessage()    {}
+
+// Deprecated: Use Request.ProtoReflect.Type instead.
 func (*Request) Descriptor() ([]byte, []int) {
 	return xxx_File_grpc_grpc_proto_rawdesc_gzipped, []int{0}
 }
@@ -63,6 +58,8 @@ func (m *Response) ProtoReflect() protoreflect.Message {
 func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()    {}
+
+// Deprecated: Use Response.ProtoReflect.Type instead.
 func (*Response) Descriptor() ([]byte, []int) {
 	return xxx_File_grpc_grpc_proto_rawdesc_gzipped, []int{1}
 }
@@ -125,7 +122,7 @@ var xxx_File_grpc_grpc_proto_rawdesc = []byte{
 	0x6f, 0x33,
 }
 
-var xxx_File_grpc_grpc_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_grpc_grpc_proto_rawdesc)
+var xxx_File_grpc_grpc_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_grpc_grpc_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

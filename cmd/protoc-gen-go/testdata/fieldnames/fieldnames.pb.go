@@ -5,17 +5,10 @@ package fieldnames
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // Assorted edge cases in field name conflict resolution.
 //
@@ -68,6 +61,8 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
 func (*Message) ProtoMessage()    {}
+
+// Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_fieldnames_fieldnames_proto_rawdesc_gzipped, []int{0}
 }
@@ -295,6 +290,8 @@ func (m *Message_OneofMessageConflict) ProtoReflect() protoreflect.Message {
 func (m *Message_OneofMessageConflict) Reset()         { *m = Message_OneofMessageConflict{} }
 func (m *Message_OneofMessageConflict) String() string { return proto.CompactTextString(m) }
 func (*Message_OneofMessageConflict) ProtoMessage()    {}
+
+// Deprecated: Use Message_OneofMessageConflict.ProtoReflect.Type instead.
 func (*Message_OneofMessageConflict) Descriptor() ([]byte, []int) {
 	return xxx_File_fieldnames_fieldnames_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -379,7 +376,7 @@ var xxx_File_fieldnames_fieldnames_proto_rawdesc = []byte{
 	0x66, 0x69, 0x65, 0x6c, 0x64, 0x6e, 0x61, 0x6d, 0x65, 0x73,
 }
 
-var xxx_File_fieldnames_fieldnames_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_fieldnames_fieldnames_proto_rawdesc)
+var xxx_File_fieldnames_fieldnames_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_fieldnames_fieldnames_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

@@ -5,17 +5,10 @@ package pb3
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Enum int32
 
@@ -33,6 +26,7 @@ func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0:  "ZERO",
 	1:  "ONE",
@@ -40,6 +34,7 @@ var Enum_name = map[int32]string{
 	10: "TEN",
 }
 
+// Deprecated: Use Enum.Type.Values instead.
 var Enum_value = map[string]int32{
 	"ZERO": 0,
 	"ONE":  1,
@@ -48,9 +43,10 @@ var Enum_value = map[string]int32{
 }
 
 func (x Enum) String() string {
-	return proto.EnumName(Enum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{0}
 }
@@ -71,6 +67,7 @@ func (e Enums_NestedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Enums_NestedEnum.Type.Values instead.
 var Enums_NestedEnum_name = map[int32]string{
 	0:  "CERO",
 	1:  "UNO",
@@ -78,6 +75,7 @@ var Enums_NestedEnum_name = map[int32]string{
 	10: "DIEZ",
 }
 
+// Deprecated: Use Enums_NestedEnum.Type.Values instead.
 var Enums_NestedEnum_value = map[string]int32{
 	"CERO": 0,
 	"UNO":  1,
@@ -86,9 +84,10 @@ var Enums_NestedEnum_value = map[string]int32{
 }
 
 func (x Enums_NestedEnum) String() string {
-	return proto.EnumName(Enums_NestedEnum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use Enums_NestedEnum.Type instead.
 func (Enums_NestedEnum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{1, 0}
 }
@@ -121,6 +120,8 @@ func (m *Scalars) ProtoReflect() protoreflect.Message {
 func (m *Scalars) Reset()         { *m = Scalars{} }
 func (m *Scalars) String() string { return proto.CompactTextString(m) }
 func (*Scalars) ProtoMessage()    {}
+
+// Deprecated: Use Scalars.ProtoReflect.Type instead.
 func (*Scalars) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{0}
 }
@@ -263,6 +264,8 @@ func (m *Enums) ProtoReflect() protoreflect.Message {
 func (m *Enums) Reset()         { *m = Enums{} }
 func (m *Enums) String() string { return proto.CompactTextString(m) }
 func (*Enums) ProtoMessage()    {}
+
+// Deprecated: Use Enums.ProtoReflect.Type instead.
 func (*Enums) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{1}
 }
@@ -313,6 +316,8 @@ func (m *Nests) ProtoReflect() protoreflect.Message {
 func (m *Nests) Reset()         { *m = Nests{} }
 func (m *Nests) String() string { return proto.CompactTextString(m) }
 func (*Nests) ProtoMessage()    {}
+
+// Deprecated: Use Nests.ProtoReflect.Type instead.
 func (*Nests) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{2}
 }
@@ -357,6 +362,8 @@ func (m *Nested) ProtoReflect() protoreflect.Message {
 func (m *Nested) Reset()         { *m = Nested{} }
 func (m *Nested) String() string { return proto.CompactTextString(m) }
 func (*Nested) ProtoMessage()    {}
+
+// Deprecated: Use Nested.ProtoReflect.Type instead.
 func (*Nested) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{3}
 }
@@ -411,6 +418,8 @@ func (m *Oneofs) ProtoReflect() protoreflect.Message {
 func (m *Oneofs) Reset()         { *m = Oneofs{} }
 func (m *Oneofs) String() string { return proto.CompactTextString(m) }
 func (*Oneofs) ProtoMessage()    {}
+
+// Deprecated: Use Oneofs.ProtoReflect.Type instead.
 func (*Oneofs) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{4}
 }
@@ -510,6 +519,8 @@ func (m *Maps) ProtoReflect() protoreflect.Message {
 func (m *Maps) Reset()         { *m = Maps{} }
 func (m *Maps) String() string { return proto.CompactTextString(m) }
 func (*Maps) ProtoMessage()    {}
+
+// Deprecated: Use Maps.ProtoReflect.Type instead.
 func (*Maps) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{5}
 }
@@ -581,6 +592,8 @@ func (m *JSONNames) ProtoReflect() protoreflect.Message {
 func (m *JSONNames) Reset()         { *m = JSONNames{} }
 func (m *JSONNames) String() string { return proto.CompactTextString(m) }
 func (*JSONNames) ProtoMessage()    {}
+
+// Deprecated: Use JSONNames.ProtoReflect.Type instead.
 func (*JSONNames) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{6}
 }
@@ -739,7 +752,7 @@ var xxx_File_pb3_test_proto_rawdesc = []byte{
 	0x6f, 0x73, 0x2f, 0x70, 0x62, 0x33, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_pb3_test_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_pb3_test_proto_rawdesc)
+var xxx_File_pb3_test_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_pb3_test_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

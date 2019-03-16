@@ -5,17 +5,10 @@ package known_proto
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // `FieldMask` represents a set of symbolic field paths, for example:
 //
@@ -230,6 +223,8 @@ func (m *FieldMask) ProtoReflect() protoreflect.Message {
 func (m *FieldMask) Reset()         { *m = FieldMask{} }
 func (m *FieldMask) String() string { return proto.CompactTextString(m) }
 func (*FieldMask) ProtoMessage()    {}
+
+// Deprecated: Use FieldMask.ProtoReflect.Type instead.
 func (*FieldMask) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_field_mask_proto_rawdesc_gzipped, []int{0}
 }
@@ -283,7 +278,7 @@ var xxx_File_google_protobuf_field_mask_proto_rawdesc = []byte{
 	0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_google_protobuf_field_mask_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_google_protobuf_field_mask_proto_rawdesc)
+var xxx_File_google_protobuf_field_mask_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_field_mask_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

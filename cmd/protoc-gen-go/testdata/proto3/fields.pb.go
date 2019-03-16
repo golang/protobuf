@@ -5,17 +5,10 @@ package proto3
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type FieldTestMessage_Enum int32
 
@@ -30,18 +23,21 @@ func (e FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use FieldTestMessage_Enum.Type.Values instead.
 var FieldTestMessage_Enum_name = map[int32]string{
 	0: "ZERO",
 }
 
+// Deprecated: Use FieldTestMessage_Enum.Type.Values instead.
 var FieldTestMessage_Enum_value = map[string]int32{
 	"ZERO": 0,
 }
 
 func (x FieldTestMessage_Enum) String() string {
-	return proto.EnumName(FieldTestMessage_Enum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use FieldTestMessage_Enum.Type instead.
 func (FieldTestMessage_Enum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_proto3_fields_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -95,6 +91,8 @@ func (m *FieldTestMessage) ProtoReflect() protoreflect.Message {
 func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
 func (m *FieldTestMessage) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage) ProtoMessage()    {}
+
+// Deprecated: Use FieldTestMessage.ProtoReflect.Type instead.
 func (*FieldTestMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_proto3_fields_proto_rawdesc_gzipped, []int{0}
 }
@@ -388,6 +386,8 @@ func (m *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
 func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
 func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }
 func (*FieldTestMessage_Message) ProtoMessage()    {}
+
+// Deprecated: Use FieldTestMessage_Message.ProtoReflect.Type instead.
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
 	return xxx_File_proto3_fields_proto_rawdesc_gzipped, []int{0, 3}
 }
@@ -573,7 +573,7 @@ var xxx_File_proto3_fields_proto_rawdesc = []byte{
 	0x6f, 0x33, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_proto3_fields_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_proto3_fields_proto_rawdesc)
+var xxx_File_proto3_fields_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_proto3_fields_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

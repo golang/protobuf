@@ -5,17 +5,10 @@ package annotations
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type AnnotationsTestEnum int32
 
@@ -30,33 +23,35 @@ func (e AnnotationsTestEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use AnnotationsTestEnum.Type.Values instead.
 var AnnotationsTestEnum_name = map[int32]string{
 	0: "ANNOTATIONS_TEST_ENUM_VALUE",
 }
 
+// Deprecated: Use AnnotationsTestEnum.Type.Values instead.
 var AnnotationsTestEnum_value = map[string]int32{
 	"ANNOTATIONS_TEST_ENUM_VALUE": 0,
 }
 
 func (x AnnotationsTestEnum) Enum() *AnnotationsTestEnum {
-	p := new(AnnotationsTestEnum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x AnnotationsTestEnum) String() string {
-	return proto.EnumName(AnnotationsTestEnum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *AnnotationsTestEnum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(AnnotationsTestEnum_value, data, "AnnotationsTestEnum")
+// Deprecated: Do not use.
+func (x *AnnotationsTestEnum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = AnnotationsTestEnum(value)
+	*x = AnnotationsTestEnum(num)
 	return nil
 }
 
+// Deprecated: Use AnnotationsTestEnum.Type instead.
 func (AnnotationsTestEnum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_annotations_annotations_proto_rawdesc_gzipped, []int{0}
 }
@@ -74,6 +69,8 @@ func (m *AnnotationsTestMessage) ProtoReflect() protoreflect.Message {
 func (m *AnnotationsTestMessage) Reset()         { *m = AnnotationsTestMessage{} }
 func (m *AnnotationsTestMessage) String() string { return proto.CompactTextString(m) }
 func (*AnnotationsTestMessage) ProtoMessage()    {}
+
+// Deprecated: Use AnnotationsTestMessage.ProtoReflect.Type instead.
 func (*AnnotationsTestMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_annotations_annotations_proto_rawdesc_gzipped, []int{0}
 }
@@ -130,7 +127,7 @@ var xxx_File_annotations_annotations_proto_rawdesc = []byte{
 	0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73,
 }
 
-var xxx_File_annotations_annotations_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_annotations_annotations_proto_rawdesc)
+var xxx_File_annotations_annotations_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_annotations_annotations_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

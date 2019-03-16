@@ -5,17 +5,10 @@ package proto2
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Message struct {
 	I32                  *int32   `protobuf:"varint,1,opt,name=i32" json:"i32,omitempty"`
@@ -31,6 +24,8 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
 func (*Message) ProtoMessage()    {}
+
+// Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_proto2_proto_rawdesc_gzipped, []int{0}
 }
@@ -88,7 +83,7 @@ var xxx_File_proto2_proto2_proto_rawdesc = []byte{
 	0x61, 0x74, 0x61, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32,
 }
 
-var xxx_File_proto2_proto2_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_proto2_proto2_proto_rawdesc)
+var xxx_File_proto2_proto2_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_proto2_proto2_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

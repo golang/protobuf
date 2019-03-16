@@ -5,17 +5,10 @@ package known_proto
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // Wrapper message for `double`.
 //
@@ -34,6 +27,8 @@ func (m *DoubleValue) ProtoReflect() protoreflect.Message {
 func (m *DoubleValue) Reset()         { *m = DoubleValue{} }
 func (m *DoubleValue) String() string { return proto.CompactTextString(m) }
 func (*DoubleValue) ProtoMessage()    {}
+
+// Deprecated: Use DoubleValue.ProtoReflect.Type instead.
 func (*DoubleValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped, []int{0}
 }
@@ -82,6 +77,8 @@ func (m *FloatValue) ProtoReflect() protoreflect.Message {
 func (m *FloatValue) Reset()         { *m = FloatValue{} }
 func (m *FloatValue) String() string { return proto.CompactTextString(m) }
 func (*FloatValue) ProtoMessage()    {}
+
+// Deprecated: Use FloatValue.ProtoReflect.Type instead.
 func (*FloatValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped, []int{1}
 }
@@ -130,6 +127,8 @@ func (m *Int64Value) ProtoReflect() protoreflect.Message {
 func (m *Int64Value) Reset()         { *m = Int64Value{} }
 func (m *Int64Value) String() string { return proto.CompactTextString(m) }
 func (*Int64Value) ProtoMessage()    {}
+
+// Deprecated: Use Int64Value.ProtoReflect.Type instead.
 func (*Int64Value) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped, []int{2}
 }
@@ -178,6 +177,8 @@ func (m *UInt64Value) ProtoReflect() protoreflect.Message {
 func (m *UInt64Value) Reset()         { *m = UInt64Value{} }
 func (m *UInt64Value) String() string { return proto.CompactTextString(m) }
 func (*UInt64Value) ProtoMessage()    {}
+
+// Deprecated: Use UInt64Value.ProtoReflect.Type instead.
 func (*UInt64Value) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped, []int{3}
 }
@@ -226,6 +227,8 @@ func (m *Int32Value) ProtoReflect() protoreflect.Message {
 func (m *Int32Value) Reset()         { *m = Int32Value{} }
 func (m *Int32Value) String() string { return proto.CompactTextString(m) }
 func (*Int32Value) ProtoMessage()    {}
+
+// Deprecated: Use Int32Value.ProtoReflect.Type instead.
 func (*Int32Value) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped, []int{4}
 }
@@ -274,6 +277,8 @@ func (m *UInt32Value) ProtoReflect() protoreflect.Message {
 func (m *UInt32Value) Reset()         { *m = UInt32Value{} }
 func (m *UInt32Value) String() string { return proto.CompactTextString(m) }
 func (*UInt32Value) ProtoMessage()    {}
+
+// Deprecated: Use UInt32Value.ProtoReflect.Type instead.
 func (*UInt32Value) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped, []int{5}
 }
@@ -322,6 +327,8 @@ func (m *BoolValue) ProtoReflect() protoreflect.Message {
 func (m *BoolValue) Reset()         { *m = BoolValue{} }
 func (m *BoolValue) String() string { return proto.CompactTextString(m) }
 func (*BoolValue) ProtoMessage()    {}
+
+// Deprecated: Use BoolValue.ProtoReflect.Type instead.
 func (*BoolValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped, []int{6}
 }
@@ -370,6 +377,8 @@ func (m *StringValue) ProtoReflect() protoreflect.Message {
 func (m *StringValue) Reset()         { *m = StringValue{} }
 func (m *StringValue) String() string { return proto.CompactTextString(m) }
 func (*StringValue) ProtoMessage()    {}
+
+// Deprecated: Use StringValue.ProtoReflect.Type instead.
 func (*StringValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped, []int{7}
 }
@@ -418,6 +427,8 @@ func (m *BytesValue) ProtoReflect() protoreflect.Message {
 func (m *BytesValue) Reset()         { *m = BytesValue{} }
 func (m *BytesValue) String() string { return proto.CompactTextString(m) }
 func (*BytesValue) ProtoMessage()    {}
+
+// Deprecated: Use BytesValue.ProtoReflect.Type instead.
 func (*BytesValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped, []int{8}
 }
@@ -499,7 +510,7 @@ var xxx_File_google_protobuf_wrappers_proto_rawdesc = []byte{
 	0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_google_protobuf_wrappers_proto_rawdesc)
+var xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_wrappers_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

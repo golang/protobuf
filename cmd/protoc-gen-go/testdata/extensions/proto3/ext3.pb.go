@@ -5,18 +5,11 @@ package proto3
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	descriptor "github.com/golang/protobuf/v2/types/descriptor"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Enum int32
 
@@ -31,18 +24,21 @@ func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0: "ZERO",
 }
 
+// Deprecated: Use Enum.Type.Values instead.
 var Enum_value = map[string]int32{
 	"ZERO": 0,
 }
 
 func (x Enum) String() string {
-	return proto.EnumName(Enum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_extensions_proto3_ext3_proto_rawdesc_gzipped, []int{0}
 }
@@ -59,6 +55,8 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
 func (*Message) ProtoMessage()    {}
+
+// Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_proto3_ext3_proto_rawdesc_gzipped, []int{0}
 }
@@ -708,7 +706,7 @@ var xxx_File_extensions_proto3_ext3_proto_rawdesc = []byte{
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_extensions_proto3_ext3_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_extensions_proto3_ext3_proto_rawdesc)
+var xxx_File_extensions_proto3_ext3_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_extensions_proto3_ext3_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

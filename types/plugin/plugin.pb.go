@@ -5,18 +5,11 @@ package plugin_proto
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	descriptor "github.com/golang/protobuf/v2/types/descriptor"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // The version number of protocol compiler.
 type Version struct {
@@ -37,6 +30,8 @@ func (m *Version) ProtoReflect() protoreflect.Message {
 func (m *Version) Reset()         { *m = Version{} }
 func (m *Version) String() string { return proto.CompactTextString(m) }
 func (*Version) ProtoMessage()    {}
+
+// Deprecated: Use Version.ProtoReflect.Type instead.
 func (*Version) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{0}
 }
@@ -123,6 +118,8 @@ func (m *CodeGeneratorRequest) ProtoReflect() protoreflect.Message {
 func (m *CodeGeneratorRequest) Reset()         { *m = CodeGeneratorRequest{} }
 func (m *CodeGeneratorRequest) String() string { return proto.CompactTextString(m) }
 func (*CodeGeneratorRequest) ProtoMessage()    {}
+
+// Deprecated: Use CodeGeneratorRequest.ProtoReflect.Type instead.
 func (*CodeGeneratorRequest) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{1}
 }
@@ -196,6 +193,8 @@ func (m *CodeGeneratorResponse) ProtoReflect() protoreflect.Message {
 func (m *CodeGeneratorResponse) Reset()         { *m = CodeGeneratorResponse{} }
 func (m *CodeGeneratorResponse) String() string { return proto.CompactTextString(m) }
 func (*CodeGeneratorResponse) ProtoMessage()    {}
+
+// Deprecated: Use CodeGeneratorResponse.ProtoReflect.Type instead.
 func (*CodeGeneratorResponse) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{2}
 }
@@ -297,6 +296,8 @@ func (m *CodeGeneratorResponse_File) ProtoReflect() protoreflect.Message {
 func (m *CodeGeneratorResponse_File) Reset()         { *m = CodeGeneratorResponse_File{} }
 func (m *CodeGeneratorResponse_File) String() string { return proto.CompactTextString(m) }
 func (*CodeGeneratorResponse_File) ProtoMessage()    {}
+
+// Deprecated: Use CodeGeneratorResponse_File.ProtoReflect.Type instead.
 func (*CodeGeneratorResponse_File) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{2, 0}
 }
@@ -400,7 +401,7 @@ var xxx_File_google_protobuf_compiler_plugin_proto_rawdesc = []byte{
 	0x70, 0x6c, 0x75, 0x67, 0x69, 0x6e, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 }
 
-var xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_google_protobuf_compiler_plugin_proto_rawdesc)
+var xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_compiler_plugin_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

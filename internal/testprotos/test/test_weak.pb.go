@@ -5,17 +5,10 @@ package test
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type WeakImportMessage struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -29,6 +22,8 @@ func (m *WeakImportMessage) ProtoReflect() protoreflect.Message {
 func (m *WeakImportMessage) Reset()         { *m = WeakImportMessage{} }
 func (m *WeakImportMessage) String() string { return proto.CompactTextString(m) }
 func (*WeakImportMessage) ProtoMessage()    {}
+
+// Deprecated: Use WeakImportMessage.ProtoReflect.Type instead.
 func (*WeakImportMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_weak_proto_rawdesc_gzipped, []int{0}
 }
@@ -68,7 +63,7 @@ var xxx_File_test_test_weak_proto_rawdesc = []byte{
 	0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x74, 0x65, 0x73, 0x74,
 }
 
-var xxx_File_test_test_weak_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_test_test_weak_proto_rawdesc)
+var xxx_File_test_test_weak_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_test_test_weak_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

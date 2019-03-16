@@ -5,16 +5,9 @@ package grpc
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 func init() {
 	proto.RegisterFile("grpc/deprecation.proto", xxx_File_grpc_deprecation_proto_rawdesc_gzipped)
@@ -40,7 +33,7 @@ var xxx_File_grpc_deprecation_proto_rawdesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_grpc_deprecation_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_grpc_deprecation_proto_rawdesc)
+var xxx_File_grpc_deprecation_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_grpc_deprecation_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

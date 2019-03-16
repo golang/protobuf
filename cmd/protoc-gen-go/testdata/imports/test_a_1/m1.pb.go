@@ -5,17 +5,10 @@ package test_a_1
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type E1 int32
 
@@ -30,18 +23,21 @@ func (e E1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use E1.Type.Values instead.
 var E1_name = map[int32]string{
 	0: "E1_ZERO",
 }
 
+// Deprecated: Use E1.Type.Values instead.
 var E1_value = map[string]int32{
 	"E1_ZERO": 0,
 }
 
 func (x E1) String() string {
-	return proto.EnumName(E1_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use E1.Type instead.
 func (E1) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_imports_test_a_1_m1_proto_rawdesc_gzipped, []int{0}
 }
@@ -58,6 +54,8 @@ func (m *M1) ProtoReflect() protoreflect.Message {
 func (m *M1) Reset()         { *m = M1{} }
 func (m *M1) String() string { return proto.CompactTextString(m) }
 func (*M1) ProtoMessage()    {}
+
+// Deprecated: Use M1.ProtoReflect.Type instead.
 func (*M1) Descriptor() ([]byte, []int) {
 	return xxx_File_imports_test_a_1_m1_proto_rawdesc_gzipped, []int{0}
 }
@@ -93,6 +91,8 @@ func (m *M1_1) ProtoReflect() protoreflect.Message {
 func (m *M1_1) Reset()         { *m = M1_1{} }
 func (m *M1_1) String() string { return proto.CompactTextString(m) }
 func (*M1_1) ProtoMessage()    {}
+
+// Deprecated: Use M1_1.ProtoReflect.Type instead.
 func (*M1_1) Descriptor() ([]byte, []int) {
 	return xxx_File_imports_test_a_1_m1_proto_rawdesc_gzipped, []int{1}
 }
@@ -145,7 +145,7 @@ var xxx_File_imports_test_a_1_m1_proto_rawdesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_imports_test_a_1_m1_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_imports_test_a_1_m1_proto_rawdesc)
+var xxx_File_imports_test_a_1_m1_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_imports_test_a_1_m1_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

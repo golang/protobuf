@@ -5,17 +5,10 @@ package comments
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type DeprecatedEnum int32 // Deprecated: Do not use.
 const (
@@ -29,18 +22,21 @@ func (e DeprecatedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use DeprecatedEnum.Type.Values instead.
 var DeprecatedEnum_name = map[int32]string{
 	0: "DEPRECATED",
 }
 
+// Deprecated: Use DeprecatedEnum.Type.Values instead.
 var DeprecatedEnum_value = map[string]int32{
 	"DEPRECATED": 0,
 }
 
 func (x DeprecatedEnum) String() string {
-	return proto.EnumName(DeprecatedEnum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use DeprecatedEnum.Type instead.
 func (DeprecatedEnum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_comments_deprecated_proto_rawdesc_gzipped, []int{0}
 }
@@ -59,6 +55,8 @@ func (m *DeprecatedMessage) ProtoReflect() protoreflect.Message {
 func (m *DeprecatedMessage) Reset()         { *m = DeprecatedMessage{} }
 func (m *DeprecatedMessage) String() string { return proto.CompactTextString(m) }
 func (*DeprecatedMessage) ProtoMessage()    {}
+
+// Deprecated: Use DeprecatedMessage.ProtoReflect.Type instead.
 func (*DeprecatedMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_deprecated_proto_rawdesc_gzipped, []int{0}
 }
@@ -115,7 +113,7 @@ var xxx_File_comments_deprecated_proto_rawdesc = []byte{
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_comments_deprecated_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_comments_deprecated_proto_rawdesc)
+var xxx_File_comments_deprecated_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_comments_deprecated_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

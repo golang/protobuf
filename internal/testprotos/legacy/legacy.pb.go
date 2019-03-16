@@ -5,7 +5,6 @@ package legacy
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	proto2_v0_0 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v0.0.0-20160225-2fc053c5"
 	proto2_v0_01 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v0.0.0-20160519-a4ab9ec5"
 	proto2_v1_0 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
@@ -22,12 +21,6 @@ import (
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Legacy struct {
 	F1                   *proto2_v0_0.Message  `protobuf:"bytes,1,opt,name=f1,proto3" json:"f1,omitempty"`
@@ -53,6 +46,8 @@ func (m *Legacy) ProtoReflect() protoreflect.Message {
 func (m *Legacy) Reset()         { *m = Legacy{} }
 func (m *Legacy) String() string { return proto.CompactTextString(m) }
 func (*Legacy) ProtoMessage()    {}
+
+// Deprecated: Use Legacy.ProtoReflect.Type instead.
 func (*Legacy) Descriptor() ([]byte, []int) {
 	return xxx_File_legacy_legacy_proto_rawdesc_gzipped, []int{0}
 }
@@ -260,7 +255,7 @@ var xxx_File_legacy_legacy_proto_rawdesc = []byte{
 	0x33,
 }
 
-var xxx_File_legacy_legacy_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_legacy_legacy_proto_rawdesc)
+var xxx_File_legacy_legacy_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_legacy_legacy_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

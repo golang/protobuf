@@ -5,17 +5,10 @@ package nopackage
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Enum int32
 
@@ -30,33 +23,35 @@ func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0: "ZERO",
 }
 
+// Deprecated: Use Enum.Type.Values instead.
 var Enum_value = map[string]int32{
 	"ZERO": 0,
 }
 
 func (x Enum) Enum() *Enum {
-	p := new(Enum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x Enum) String() string {
-	return proto.EnumName(Enum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *Enum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(Enum_value, data, "Enum")
+// Deprecated: Do not use.
+func (x *Enum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = Enum(value)
+	*x = Enum(num)
 	return nil
 }
 
+// Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_nopackage_nopackage_proto_rawdesc_gzipped, []int{0}
 }
@@ -75,6 +70,8 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
 func (*Message) ProtoMessage()    {}
+
+// Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_nopackage_nopackage_proto_rawdesc_gzipped, []int{0}
 }
@@ -132,7 +129,7 @@ var xxx_File_nopackage_nopackage_proto_rawdesc = []byte{
 	0x04, 0x5a, 0x45, 0x52, 0x4f, 0x10, 0x00,
 }
 
-var xxx_File_nopackage_nopackage_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_nopackage_nopackage_proto_rawdesc)
+var xxx_File_nopackage_nopackage_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_nopackage_nopackage_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

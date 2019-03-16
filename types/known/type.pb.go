@@ -5,17 +5,10 @@ package known_proto
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // The syntax in which a protocol buffer element is defined.
 type Syntax int32
@@ -34,20 +27,23 @@ func (e Syntax) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Syntax.Type.Values instead.
 var Syntax_name = map[int32]string{
 	0: "SYNTAX_PROTO2",
 	1: "SYNTAX_PROTO3",
 }
 
+// Deprecated: Use Syntax.Type.Values instead.
 var Syntax_value = map[string]int32{
 	"SYNTAX_PROTO2": 0,
 	"SYNTAX_PROTO3": 1,
 }
 
 func (x Syntax) String() string {
-	return proto.EnumName(Syntax_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use Syntax.Type instead.
 func (Syntax) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{0}
 }
@@ -103,6 +99,7 @@ func (e Field_Kind) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Field_Kind.Type.Values instead.
 var Field_Kind_name = map[int32]string{
 	0:  "TYPE_UNKNOWN",
 	1:  "TYPE_DOUBLE",
@@ -125,6 +122,7 @@ var Field_Kind_name = map[int32]string{
 	18: "TYPE_SINT64",
 }
 
+// Deprecated: Use Field_Kind.Type.Values instead.
 var Field_Kind_value = map[string]int32{
 	"TYPE_UNKNOWN":  0,
 	"TYPE_DOUBLE":   1,
@@ -148,9 +146,10 @@ var Field_Kind_value = map[string]int32{
 }
 
 func (x Field_Kind) String() string {
-	return proto.EnumName(Field_Kind_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use Field_Kind.Type instead.
 func (Field_Kind) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{1, 0}
 }
@@ -176,6 +175,7 @@ func (e Field_Cardinality) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Field_Cardinality.Type.Values instead.
 var Field_Cardinality_name = map[int32]string{
 	0: "CARDINALITY_UNKNOWN",
 	1: "CARDINALITY_OPTIONAL",
@@ -183,6 +183,7 @@ var Field_Cardinality_name = map[int32]string{
 	3: "CARDINALITY_REPEATED",
 }
 
+// Deprecated: Use Field_Cardinality.Type.Values instead.
 var Field_Cardinality_value = map[string]int32{
 	"CARDINALITY_UNKNOWN":  0,
 	"CARDINALITY_OPTIONAL": 1,
@@ -191,9 +192,10 @@ var Field_Cardinality_value = map[string]int32{
 }
 
 func (x Field_Cardinality) String() string {
-	return proto.EnumName(Field_Cardinality_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use Field_Cardinality.Type instead.
 func (Field_Cardinality) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{1, 1}
 }
@@ -223,6 +225,8 @@ func (m *Type) ProtoReflect() protoreflect.Message {
 func (m *Type) Reset()         { *m = Type{} }
 func (m *Type) String() string { return proto.CompactTextString(m) }
 func (*Type) ProtoMessage()    {}
+
+// Deprecated: Use Type.ProtoReflect.Type instead.
 func (*Type) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{0}
 }
@@ -322,6 +326,8 @@ func (m *Field) ProtoReflect() protoreflect.Message {
 func (m *Field) Reset()         { *m = Field{} }
 func (m *Field) String() string { return proto.CompactTextString(m) }
 func (*Field) ProtoMessage()    {}
+
+// Deprecated: Use Field.ProtoReflect.Type instead.
 func (*Field) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{1}
 }
@@ -437,6 +443,8 @@ func (m *Enum) ProtoReflect() protoreflect.Message {
 func (m *Enum) Reset()         { *m = Enum{} }
 func (m *Enum) String() string { return proto.CompactTextString(m) }
 func (*Enum) ProtoMessage()    {}
+
+// Deprecated: Use Enum.ProtoReflect.Type instead.
 func (*Enum) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{2}
 }
@@ -513,6 +521,8 @@ func (m *EnumValue) ProtoReflect() protoreflect.Message {
 func (m *EnumValue) Reset()         { *m = EnumValue{} }
 func (m *EnumValue) String() string { return proto.CompactTextString(m) }
 func (*EnumValue) ProtoMessage()    {}
+
+// Deprecated: Use EnumValue.ProtoReflect.Type instead.
 func (*EnumValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{3}
 }
@@ -580,6 +590,8 @@ func (m *Option) ProtoReflect() protoreflect.Message {
 func (m *Option) Reset()         { *m = Option{} }
 func (m *Option) String() string { return proto.CompactTextString(m) }
 func (*Option) ProtoMessage()    {}
+
+// Deprecated: Use Option.ProtoReflect.Type instead.
 func (*Option) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{4}
 }
@@ -747,7 +759,7 @@ var xxx_File_google_protobuf_type_proto_rawdesc = []byte{
 	0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_google_protobuf_type_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_google_protobuf_type_proto_rawdesc)
+var xxx_File_google_protobuf_type_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_type_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

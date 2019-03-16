@@ -5,19 +5,12 @@ package import_public
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	sub "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/import_public/sub"
 	sub2 "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/import_public/sub2"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // Symbols defined in public import of import_public/sub/a.proto
 
@@ -76,6 +69,8 @@ func (m *Public) ProtoReflect() protoreflect.Message {
 func (m *Public) Reset()         { *m = Public{} }
 func (m *Public) String() string { return proto.CompactTextString(m) }
 func (*Public) ProtoMessage()    {}
+
+// Deprecated: Use Public.ProtoReflect.Type instead.
 func (*Public) Descriptor() ([]byte, []int) {
 	return xxx_File_import_public_a_proto_rawdesc_gzipped, []int{0}
 }
@@ -152,7 +147,7 @@ var xxx_File_import_public_a_proto_rawdesc = []byte{
 	0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x50, 0x00, 0x50, 0x01, 0x50, 0x02,
 }
 
-var xxx_File_import_public_a_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_import_public_a_proto_rawdesc)
+var xxx_File_import_public_a_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_import_public_a_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

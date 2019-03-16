@@ -5,17 +5,10 @@ package known_proto
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // A Timestamp represents a point in time independent of any time zone or local
 // calendar, encoded as a count of seconds and fractions of seconds at
@@ -120,6 +113,8 @@ func (m *Timestamp) ProtoReflect() protoreflect.Message {
 func (m *Timestamp) Reset()         { *m = Timestamp{} }
 func (m *Timestamp) String() string { return proto.CompactTextString(m) }
 func (*Timestamp) ProtoMessage()    {}
+
+// Deprecated: Use Timestamp.ProtoReflect.Type instead.
 func (*Timestamp) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_timestamp_proto_rawdesc_gzipped, []int{0}
 }
@@ -184,7 +179,7 @@ var xxx_File_google_protobuf_timestamp_proto_rawdesc = []byte{
 	0x6f, 0x33,
 }
 
-var xxx_File_google_protobuf_timestamp_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_google_protobuf_timestamp_proto_rawdesc)
+var xxx_File_google_protobuf_timestamp_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_timestamp_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

@@ -5,19 +5,12 @@ package ext
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	base "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/base"
 	extra "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/extra"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Enum int32
 
@@ -32,33 +25,35 @@ func (e Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0: "ZERO",
 }
 
+// Deprecated: Use Enum.Type.Values instead.
 var Enum_value = map[string]int32{
 	"ZERO": 0,
 }
 
 func (x Enum) Enum() *Enum {
-	p := new(Enum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x Enum) String() string {
-	return proto.EnumName(Enum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *Enum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(Enum_value, data, "Enum")
+// Deprecated: Do not use.
+func (x *Enum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = Enum(value)
+	*x = Enum(num)
 	return nil
 }
 
+// Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{0}
 }
@@ -76,6 +71,8 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 func (m *Message) Reset()         { *m = Message{} }
 func (m *Message) String() string { return proto.CompactTextString(m) }
 func (*Message) ProtoMessage()    {}
+
+// Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{0}
 }
@@ -118,6 +115,8 @@ func (m *ExtensionGroup) ProtoReflect() protoreflect.Message {
 func (m *ExtensionGroup) Reset()         { *m = ExtensionGroup{} }
 func (m *ExtensionGroup) String() string { return proto.CompactTextString(m) }
 func (*ExtensionGroup) ProtoMessage()    {}
+
+// Deprecated: Use ExtensionGroup.ProtoReflect.Type instead.
 func (*ExtensionGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{1}
 }
@@ -160,6 +159,8 @@ func (m *ExtendingMessage) ProtoReflect() protoreflect.Message {
 func (m *ExtendingMessage) Reset()         { *m = ExtendingMessage{} }
 func (m *ExtendingMessage) String() string { return proto.CompactTextString(m) }
 func (*ExtendingMessage) ProtoMessage()    {}
+
+// Deprecated: Use ExtendingMessage.ProtoReflect.Type instead.
 func (*ExtendingMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{2}
 }
@@ -195,6 +196,8 @@ func (m *RepeatedGroup) ProtoReflect() protoreflect.Message {
 func (m *RepeatedGroup) Reset()         { *m = RepeatedGroup{} }
 func (m *RepeatedGroup) String() string { return proto.CompactTextString(m) }
 func (*RepeatedGroup) ProtoMessage()    {}
+
+// Deprecated: Use RepeatedGroup.ProtoReflect.Type instead.
 func (*RepeatedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{3}
 }
@@ -238,6 +241,8 @@ func (m *Extendable) ProtoReflect() protoreflect.Message {
 func (m *Extendable) Reset()         { *m = Extendable{} }
 func (m *Extendable) String() string { return proto.CompactTextString(m) }
 func (*Extendable) ProtoMessage()    {}
+
+// Deprecated: Use Extendable.ProtoReflect.Type instead.
 func (*Extendable) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{4}
 }
@@ -246,6 +251,7 @@ var extRange_Extendable = []proto.ExtensionRange{
 	{Start: 1, End: 536870911},
 }
 
+// Deprecated: Use Extendable.ProtoReflect.Type.ExtensionRanges instead.
 func (*Extendable) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_Extendable
 }
@@ -281,6 +287,8 @@ func (m *MessageSetWireFormatExtension) ProtoReflect() protoreflect.Message {
 func (m *MessageSetWireFormatExtension) Reset()         { *m = MessageSetWireFormatExtension{} }
 func (m *MessageSetWireFormatExtension) String() string { return proto.CompactTextString(m) }
 func (*MessageSetWireFormatExtension) ProtoMessage()    {}
+
+// Deprecated: Use MessageSetWireFormatExtension.ProtoReflect.Type instead.
 func (*MessageSetWireFormatExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{5}
 }
@@ -315,6 +323,8 @@ func (m *Message_M) ProtoReflect() protoreflect.Message {
 func (m *Message_M) Reset()         { *m = Message_M{} }
 func (m *Message_M) String() string { return proto.CompactTextString(m) }
 func (*Message_M) ProtoMessage()    {}
+
+// Deprecated: Use Message_M.ProtoReflect.Type instead.
 func (*Message_M) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -353,6 +363,8 @@ func (m *ExtendingMessage_ExtendingMessageSubmessage) String() string {
 	return proto.CompactTextString(m)
 }
 func (*ExtendingMessage_ExtendingMessageSubmessage) ProtoMessage() {}
+
+// Deprecated: Use ExtendingMessage_ExtendingMessageSubmessage.ProtoReflect.Type instead.
 func (*ExtendingMessage_ExtendingMessageSubmessage) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{2, 0}
 }
@@ -1237,7 +1249,7 @@ var xxx_File_extensions_ext_ext_proto_rawdesc = []byte{
 	0x2f, 0x65, 0x78, 0x74,
 }
 
-var xxx_File_extensions_ext_ext_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_extensions_ext_ext_proto_rawdesc)
+var xxx_File_extensions_ext_ext_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_extensions_ext_ext_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

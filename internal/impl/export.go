@@ -5,6 +5,8 @@
 package impl
 
 import (
+	"strconv"
+
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -33,6 +35,16 @@ func (Export) EnumTypeOf(e interface{}) pref.EnumType {
 		return ev.Type()
 	}
 	return legacyWrapper.EnumTypeOf(e)
+}
+
+// EnumStringOf returns the enum value as a string, either as the name if
+// the number is resolvable, or the number formatted as a string.
+func (Export) EnumStringOf(ed pref.EnumDescriptor, n pref.EnumNumber) string {
+	ev := ed.Values().ByNumber(n)
+	if ev != nil {
+		return string(ev.Name())
+	}
+	return strconv.Itoa(int(n))
 }
 
 // MessageOf returns the protoreflect.Message interface over m.

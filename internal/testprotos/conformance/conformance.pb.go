@@ -5,17 +5,10 @@ package conformance_proto
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type WireFormat int32
 
@@ -34,6 +27,7 @@ func (e WireFormat) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use WireFormat.Type.Values instead.
 var WireFormat_name = map[int32]string{
 	0: "UNSPECIFIED",
 	1: "PROTOBUF",
@@ -42,6 +36,7 @@ var WireFormat_name = map[int32]string{
 	4: "TEXT_FORMAT",
 }
 
+// Deprecated: Use WireFormat.Type.Values instead.
 var WireFormat_value = map[string]int32{
 	"UNSPECIFIED": 0,
 	"PROTOBUF":    1,
@@ -51,9 +46,10 @@ var WireFormat_value = map[string]int32{
 }
 
 func (x WireFormat) String() string {
-	return proto.EnumName(WireFormat_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use WireFormat.Type instead.
 func (WireFormat) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawdesc_gzipped, []int{0}
 }
@@ -84,6 +80,7 @@ func (e TestCategory) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use TestCategory.Type.Values instead.
 var TestCategory_name = map[int32]string{
 	0: "UNSPECIFIED_TEST",
 	1: "BINARY_TEST",
@@ -93,6 +90,7 @@ var TestCategory_name = map[int32]string{
 	5: "TEXT_FORMAT_TEST",
 }
 
+// Deprecated: Use TestCategory.Type.Values instead.
 var TestCategory_value = map[string]int32{
 	"UNSPECIFIED_TEST":                 0,
 	"BINARY_TEST":                      1,
@@ -103,9 +101,10 @@ var TestCategory_value = map[string]int32{
 }
 
 func (x TestCategory) String() string {
-	return proto.EnumName(TestCategory_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+// Deprecated: Use TestCategory.Type instead.
 func (TestCategory) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawdesc_gzipped, []int{1}
 }
@@ -126,6 +125,8 @@ func (m *FailureSet) ProtoReflect() protoreflect.Message {
 func (m *FailureSet) Reset()         { *m = FailureSet{} }
 func (m *FailureSet) String() string { return proto.CompactTextString(m) }
 func (*FailureSet) ProtoMessage()    {}
+
+// Deprecated: Use FailureSet.ProtoReflect.Type instead.
 func (*FailureSet) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawdesc_gzipped, []int{0}
 }
@@ -199,6 +200,8 @@ func (m *ConformanceRequest) ProtoReflect() protoreflect.Message {
 func (m *ConformanceRequest) Reset()         { *m = ConformanceRequest{} }
 func (m *ConformanceRequest) String() string { return proto.CompactTextString(m) }
 func (*ConformanceRequest) ProtoMessage()    {}
+
+// Deprecated: Use ConformanceRequest.ProtoReflect.Type instead.
 func (*ConformanceRequest) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawdesc_gzipped, []int{1}
 }
@@ -367,6 +370,8 @@ func (m *ConformanceResponse) ProtoReflect() protoreflect.Message {
 func (m *ConformanceResponse) Reset()         { *m = ConformanceResponse{} }
 func (m *ConformanceResponse) String() string { return proto.CompactTextString(m) }
 func (*ConformanceResponse) ProtoMessage()    {}
+
+// Deprecated: Use ConformanceResponse.ProtoReflect.Type instead.
 func (*ConformanceResponse) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawdesc_gzipped, []int{2}
 }
@@ -533,6 +538,8 @@ func (m *JspbEncodingConfig) ProtoReflect() protoreflect.Message {
 func (m *JspbEncodingConfig) Reset()         { *m = JspbEncodingConfig{} }
 func (m *JspbEncodingConfig) String() string { return proto.CompactTextString(m) }
 func (*JspbEncodingConfig) ProtoMessage()    {}
+
+// Deprecated: Use JspbEncodingConfig.ProtoReflect.Type instead.
 func (*JspbEncodingConfig) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawdesc_gzipped, []int{3}
 }
@@ -658,7 +665,7 @@ var xxx_File_conformance_conformance_proto_rawdesc = []byte{
 	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_conformance_conformance_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_conformance_conformance_proto_rawdesc)
+var xxx_File_conformance_conformance_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_conformance_conformance_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

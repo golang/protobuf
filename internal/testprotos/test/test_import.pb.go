@@ -5,17 +5,10 @@ package test
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type ImportEnum int32
 
@@ -30,33 +23,35 @@ func (e ImportEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use ImportEnum.Type.Values instead.
 var ImportEnum_name = map[int32]string{
 	0: "IMPORT_ZERO",
 }
 
+// Deprecated: Use ImportEnum.Type.Values instead.
 var ImportEnum_value = map[string]int32{
 	"IMPORT_ZERO": 0,
 }
 
 func (x ImportEnum) Enum() *ImportEnum {
-	p := new(ImportEnum)
-	*p = x
-	return p
+	return &x
 }
 
 func (x ImportEnum) String() string {
-	return proto.EnumName(ImportEnum_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *ImportEnum) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(ImportEnum_value, data, "ImportEnum")
+// Deprecated: Do not use.
+func (x *ImportEnum) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = ImportEnum(value)
+	*x = ImportEnum(num)
 	return nil
 }
 
+// Deprecated: Use ImportEnum.Type instead.
 func (ImportEnum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_test_test_import_proto_rawdesc_gzipped, []int{0}
 }
@@ -73,6 +68,8 @@ func (m *ImportMessage) ProtoReflect() protoreflect.Message {
 func (m *ImportMessage) Reset()         { *m = ImportMessage{} }
 func (m *ImportMessage) String() string { return proto.CompactTextString(m) }
 func (*ImportMessage) ProtoMessage()    {}
+
+// Deprecated: Use ImportMessage.ProtoReflect.Type instead.
 func (*ImportMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_import_proto_rawdesc_gzipped, []int{0}
 }
@@ -115,7 +112,7 @@ var xxx_File_test_test_import_proto_rawdesc = []byte{
 	0x73, 0x2f, 0x74, 0x65, 0x73, 0x74,
 }
 
-var xxx_File_test_test_import_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_test_test_import_proto_rawdesc)
+var xxx_File_test_test_import_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_test_test_import_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

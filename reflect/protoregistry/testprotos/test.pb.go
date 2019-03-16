@@ -5,17 +5,10 @@ package testprotos
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Enum1 int32
 
@@ -30,33 +23,35 @@ func (e Enum1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Enum1.Type.Values instead.
 var Enum1_name = map[int32]string{
 	1: "ONE",
 }
 
+// Deprecated: Use Enum1.Type.Values instead.
 var Enum1_value = map[string]int32{
 	"ONE": 1,
 }
 
 func (x Enum1) Enum() *Enum1 {
-	p := new(Enum1)
-	*p = x
-	return p
+	return &x
 }
 
 func (x Enum1) String() string {
-	return proto.EnumName(Enum1_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *Enum1) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(Enum1_value, data, "Enum1")
+// Deprecated: Do not use.
+func (x *Enum1) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = Enum1(value)
+	*x = Enum1(num)
 	return nil
 }
 
+// Deprecated: Use Enum1.Type instead.
 func (Enum1) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{0}
 }
@@ -74,33 +69,35 @@ func (e Enum2) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Enum2.Type.Values instead.
 var Enum2_name = map[int32]string{
 	1: "UNO",
 }
 
+// Deprecated: Use Enum2.Type.Values instead.
 var Enum2_value = map[string]int32{
 	"UNO": 1,
 }
 
 func (x Enum2) Enum() *Enum2 {
-	p := new(Enum2)
-	*p = x
-	return p
+	return &x
 }
 
 func (x Enum2) String() string {
-	return proto.EnumName(Enum2_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *Enum2) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(Enum2_value, data, "Enum2")
+// Deprecated: Do not use.
+func (x *Enum2) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = Enum2(value)
+	*x = Enum2(num)
 	return nil
 }
 
+// Deprecated: Use Enum2.Type instead.
 func (Enum2) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{1}
 }
@@ -118,33 +115,35 @@ func (e Enum3) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(e)
 }
 
+// Deprecated: Use Enum3.Type.Values instead.
 var Enum3_name = map[int32]string{
 	1: "YI",
 }
 
+// Deprecated: Use Enum3.Type.Values instead.
 var Enum3_value = map[string]int32{
 	"YI": 1,
 }
 
 func (x Enum3) Enum() *Enum3 {
-	p := new(Enum3)
-	*p = x
-	return p
+	return &x
 }
 
 func (x Enum3) String() string {
-	return proto.EnumName(Enum3_name, int32(x))
+	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
-func (x *Enum3) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(Enum3_value, data, "Enum3")
+// Deprecated: Do not use.
+func (x *Enum3) UnmarshalJSON(b []byte) error {
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
 	if err != nil {
 		return err
 	}
-	*x = Enum3(value)
+	*x = Enum3(num)
 	return nil
 }
 
+// Deprecated: Use Enum3.Type instead.
 func (Enum3) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{2}
 }
@@ -162,6 +161,8 @@ func (m *Message1) ProtoReflect() protoreflect.Message {
 func (m *Message1) Reset()         { *m = Message1{} }
 func (m *Message1) String() string { return proto.CompactTextString(m) }
 func (*Message1) ProtoMessage()    {}
+
+// Deprecated: Use Message1.ProtoReflect.Type instead.
 func (*Message1) Descriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{0}
 }
@@ -170,6 +171,7 @@ var extRange_Message1 = []proto.ExtensionRange{
 	{Start: 10, End: 536870911},
 }
 
+// Deprecated: Use Message1.ProtoReflect.Type.ExtensionRanges instead.
 func (*Message1) ExtensionRangeArray() []proto.ExtensionRange {
 	return extRange_Message1
 }
@@ -204,6 +206,8 @@ func (m *Message2) ProtoReflect() protoreflect.Message {
 func (m *Message2) Reset()         { *m = Message2{} }
 func (m *Message2) String() string { return proto.CompactTextString(m) }
 func (*Message2) ProtoMessage()    {}
+
+// Deprecated: Use Message2.ProtoReflect.Type instead.
 func (*Message2) Descriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{1}
 }
@@ -238,6 +242,8 @@ func (m *Message3) ProtoReflect() protoreflect.Message {
 func (m *Message3) Reset()         { *m = Message3{} }
 func (m *Message3) String() string { return proto.CompactTextString(m) }
 func (*Message3) ProtoMessage()    {}
+
+// Deprecated: Use Message3.ProtoReflect.Type instead.
 func (*Message3) Descriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{2}
 }
@@ -273,6 +279,8 @@ func (m *Message4) ProtoReflect() protoreflect.Message {
 func (m *Message4) Reset()         { *m = Message4{} }
 func (m *Message4) String() string { return proto.CompactTextString(m) }
 func (*Message4) ProtoMessage()    {}
+
+// Deprecated: Use Message4.ProtoReflect.Type instead.
 func (*Message4) Descriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{3}
 }
@@ -434,7 +442,7 @@ var xxx_File_test_proto_rawdesc = []byte{
 	0x72, 0x79, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73,
 }
 
-var xxx_File_test_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_test_proto_rawdesc)
+var xxx_File_test_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_test_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 

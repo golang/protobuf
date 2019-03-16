@@ -7,17 +7,10 @@ package comments
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // COMMENT: Message1
 type Message1 struct {
@@ -40,6 +33,8 @@ func (m *Message1) ProtoReflect() protoreflect.Message {
 func (m *Message1) Reset()         { *m = Message1{} }
 func (m *Message1) String() string { return proto.CompactTextString(m) }
 func (*Message1) ProtoMessage()    {}
+
+// Deprecated: Use Message1.ProtoReflect.Type instead.
 func (*Message1) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{0}
 }
@@ -113,6 +108,8 @@ func (m *Message2) ProtoReflect() protoreflect.Message {
 func (m *Message2) Reset()         { *m = Message2{} }
 func (m *Message2) String() string { return proto.CompactTextString(m) }
 func (*Message2) ProtoMessage()    {}
+
+// Deprecated: Use Message2.ProtoReflect.Type instead.
 func (*Message2) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{1}
 }
@@ -148,6 +145,8 @@ func (m *Message1_Message1A) ProtoReflect() protoreflect.Message {
 func (m *Message1_Message1A) Reset()         { *m = Message1_Message1A{} }
 func (m *Message1_Message1A) String() string { return proto.CompactTextString(m) }
 func (*Message1_Message1A) ProtoMessage()    {}
+
+// Deprecated: Use Message1_Message1A.ProtoReflect.Type instead.
 func (*Message1_Message1A) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{0, 0}
 }
@@ -183,6 +182,8 @@ func (m *Message1_Message1B) ProtoReflect() protoreflect.Message {
 func (m *Message1_Message1B) Reset()         { *m = Message1_Message1B{} }
 func (m *Message1_Message1B) String() string { return proto.CompactTextString(m) }
 func (*Message1_Message1B) ProtoMessage()    {}
+
+// Deprecated: Use Message1_Message1B.ProtoReflect.Type instead.
 func (*Message1_Message1B) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{0, 1}
 }
@@ -218,6 +219,8 @@ func (m *Message2_Message2A) ProtoReflect() protoreflect.Message {
 func (m *Message2_Message2A) Reset()         { *m = Message2_Message2A{} }
 func (m *Message2_Message2A) String() string { return proto.CompactTextString(m) }
 func (*Message2_Message2A) ProtoMessage()    {}
+
+// Deprecated: Use Message2_Message2A.ProtoReflect.Type instead.
 func (*Message2_Message2A) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{1, 0}
 }
@@ -253,6 +256,8 @@ func (m *Message2_Message2B) ProtoReflect() protoreflect.Message {
 func (m *Message2_Message2B) Reset()         { *m = Message2_Message2B{} }
 func (m *Message2_Message2B) String() string { return proto.CompactTextString(m) }
 func (*Message2_Message2B) ProtoMessage()    {}
+
+// Deprecated: Use Message2_Message2B.ProtoReflect.Type instead.
 func (*Message2_Message2B) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{1, 1}
 }
@@ -306,7 +311,7 @@ var xxx_File_comments_comments_proto_rawdesc = []byte{
 	0x65, 0x73, 0x74, 0x64, 0x61, 0x74, 0x61, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73,
 }
 
-var xxx_File_comments_comments_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_comments_comments_proto_rawdesc)
+var xxx_File_comments_comments_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_comments_comments_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
