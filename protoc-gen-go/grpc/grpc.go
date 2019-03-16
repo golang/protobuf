@@ -118,10 +118,6 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConn")
 	g.P()
-	g.P("func errUnimplemented(methodName string) error {")
-	g.P("\treturn ", errorPkg, ".Errorf(codes.Unimplemented, \"method %s not implemented\", methodName)")
-	g.P("}")
-	g.P()
 
 	// Assert version compatibility.
 	g.P("// This is a compile-time assertion to ensure that this generated file")
@@ -294,23 +290,22 @@ func (g *grpc) generateUnimplementedServer(servName string, service *pb.ServiceD
 	g.P()
 	// Unimplemented<service_name>Server's concrete methods
 	for _, method := range service.Method {
-		g.P(g.generateServerMethodConcrete(servName, method))
+		g.generateServerMethodConcrete(servName, method)
 	}
 	g.P()
 }
 
 // generateServerMethodConcrete returns unimplemented methods which ensure forward compatibility
-func (g *grpc) generateServerMethodConcrete(servName string, method *pb.MethodDescriptorProto) string {
+func (g *grpc) generateServerMethodConcrete(servName string, method *pb.MethodDescriptorProto) {
 	header := g.generateServerSignatureWithParamNames(servName, method)
-	implementation := fmt.Sprintf("func (*Unimplemented%sServer) %s {\n", servName, header)
-	implementation += fmt.Sprintf("\treturn ")
+	g.P("func (*Unimplemented", servName, "Server) ", header, " {")
+	var nilArg string
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
-		implementation += "nil, "
+		nilArg = "nil, "
 	}
-	origMethName := method.GetName()
-	methName := generator.CamelCase(origMethName)
-	implementation += fmt.Sprintf("errUnimplemented(%q)\n}", methName)
-	return implementation
+	methName := generator.CamelCase(method.GetName())
+	g.P("return ", nilArg, errorPkg, `.Errorf(codes.Unimplemented, "method `, methName, ` not implemented")`)
+	g.P("}")
 }
 
 // generateClientSignature returns the client-side signature for a method.

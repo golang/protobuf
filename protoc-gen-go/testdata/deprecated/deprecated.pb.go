@@ -196,10 +196,6 @@ var fileDescriptor_f64ba265cd7eae3f = []byte{
 var _ context.Context
 var _ grpc.ClientConn
 
-func errUnimplemented(methodName string) error {
-	return status.Errorf(codes.Unimplemented, "method %s not implemented", methodName)
-}
-
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
@@ -247,7 +243,7 @@ type UnimplementedDeprecatedServiceServer struct {
 }
 
 func (*UnimplementedDeprecatedServiceServer) DeprecatedCall(ctx context.Context, req *DeprecatedRequest) (*DeprecatedResponse, error) {
-	return nil, errUnimplemented("DeprecatedCall")
+	return nil, status.Errorf(codes.Unimplemented, "method DeprecatedCall not implemented")
 }
 
 // Deprecated: Do not use.

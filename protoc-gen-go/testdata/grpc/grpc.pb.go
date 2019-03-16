@@ -181,10 +181,6 @@ var fileDescriptor_81ea47a3f88c2082 = []byte{
 var _ context.Context
 var _ grpc.ClientConn
 
-func errUnimplemented(methodName string) error {
-	return status.Errorf(codes.Unimplemented, "method %s not implemented", methodName)
-}
-
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
@@ -332,16 +328,16 @@ type UnimplementedTestServer struct {
 }
 
 func (*UnimplementedTestServer) UnaryCall(ctx context.Context, req *SimpleRequest) (*SimpleResponse, error) {
-	return nil, errUnimplemented("UnaryCall")
+	return nil, status.Errorf(codes.Unimplemented, "method UnaryCall not implemented")
 }
 func (*UnimplementedTestServer) Downstream(req *SimpleRequest, srv Test_DownstreamServer) error {
-	return errUnimplemented("Downstream")
+	return status.Errorf(codes.Unimplemented, "method Downstream not implemented")
 }
 func (*UnimplementedTestServer) Upstream(srv Test_UpstreamServer) error {
-	return errUnimplemented("Upstream")
+	return status.Errorf(codes.Unimplemented, "method Upstream not implemented")
 }
 func (*UnimplementedTestServer) Bidi(srv Test_BidiServer) error {
-	return errUnimplemented("Bidi")
+	return status.Errorf(codes.Unimplemented, "method Bidi not implemented")
 }
 
 func RegisterTestServer(s *grpc.Server, srv TestServer) {
