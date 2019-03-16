@@ -9,12 +9,42 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/encoding/jsonpb"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
+	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 )
+
+func init() {
+	// TODO: remove these registerExtension calls when generated code registers
+	// to V2 global registry.
+	registerExtension(pb2.E_OptExtBool)
+	registerExtension(pb2.E_OptExtString)
+	registerExtension(pb2.E_OptExtEnum)
+	registerExtension(pb2.E_OptExtNested)
+	registerExtension(pb2.E_RptExtFixed32)
+	registerExtension(pb2.E_RptExtEnum)
+	registerExtension(pb2.E_RptExtNested)
+	registerExtension(pb2.E_ExtensionsContainer_OptExtBool)
+	registerExtension(pb2.E_ExtensionsContainer_OptExtString)
+	registerExtension(pb2.E_ExtensionsContainer_OptExtEnum)
+	registerExtension(pb2.E_ExtensionsContainer_OptExtNested)
+	registerExtension(pb2.E_ExtensionsContainer_RptExtString)
+	registerExtension(pb2.E_ExtensionsContainer_RptExtEnum)
+	registerExtension(pb2.E_ExtensionsContainer_RptExtNested)
+	registerExtension(pb2.E_MessageSetExtension)
+	registerExtension(pb2.E_MessageSetExtension_MessageSetExtension)
+	registerExtension(pb2.E_MessageSetExtension_NotMessageSetExtension)
+	registerExtension(pb2.E_MessageSetExtension_ExtNested)
+	registerExtension(pb2.E_FakeMessageSetExtension_MessageSetExtension)
+}
+
+func registerExtension(xd *protoapi.ExtensionDesc) {
+	preg.GlobalTypes.Register(xd.Type)
+}
 
 func TestUnmarshal(t *testing.T) {
 	tests := []struct {
@@ -907,6 +937,215 @@ func TestUnmarshal(t *testing.T) {
   }
 }`,
 		wantErr: true,
+	}, {
+		desc:         "extensions of non-repeated fields",
+		inputMessage: &pb2.Extensions{},
+		inputText: `{
+  "optString": "non-extension field",
+  "optBool": true,
+  "optInt32": 42,
+  "[pb2.opt_ext_bool]": true,
+  "[pb2.opt_ext_nested]": {
+    "optString": "nested in an extension",
+    "opt_nested": {
+      "opt_string": "another nested in an extension"
+    }
+  },
+  "[pb2.opt_ext_string]": "extension field",
+  "[pb2.opt_ext_enum]": "TEN"
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{
+				OptString: scalar.String("non-extension field"),
+				OptBool:   scalar.Bool(true),
+				OptInt32:  scalar.Int32(42),
+			}
+			setExtension(m, pb2.E_OptExtBool, true)
+			setExtension(m, pb2.E_OptExtString, "extension field")
+			setExtension(m, pb2.E_OptExtEnum, pb2.Enum_TEN)
+			setExtension(m, pb2.E_OptExtNested, &pb2.Nested{
+				OptString: scalar.String("nested in an extension"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("another nested in an extension"),
+				},
+			})
+			return m
+		}(),
+	}, {
+		desc:         "extensions of repeated fields",
+		inputMessage: &pb2.Extensions{},
+		inputText: `{
+  "[pb2.rpt_ext_enum]": ["TEN", 101, "ONE"],
+  "[pb2.rpt_ext_fixed32]": [42, 47],
+  "[pb2.rpt_ext_nested]": [
+    {"optString": "one"},
+	{"optString": "two"},
+	{"optString": "three"}
+  ]
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{}
+			setExtension(m, pb2.E_RptExtEnum, &[]pb2.Enum{pb2.Enum_TEN, 101, pb2.Enum_ONE})
+			setExtension(m, pb2.E_RptExtFixed32, &[]uint32{42, 47})
+			setExtension(m, pb2.E_RptExtNested, &[]*pb2.Nested{
+				&pb2.Nested{OptString: scalar.String("one")},
+				&pb2.Nested{OptString: scalar.String("two")},
+				&pb2.Nested{OptString: scalar.String("three")},
+			})
+			return m
+		}(),
+	}, {
+		desc:         "extensions of non-repeated fields in another message",
+		inputMessage: &pb2.Extensions{},
+		inputText: `{
+  "[pb2.ExtensionsContainer.opt_ext_bool]": true,
+  "[pb2.ExtensionsContainer.opt_ext_enum]": "TEN",
+  "[pb2.ExtensionsContainer.opt_ext_nested]": {
+    "optString": "nested in an extension",
+    "optNested": {
+      "optString": "another nested in an extension"
+    }
+  },
+  "[pb2.ExtensionsContainer.opt_ext_string]": "extension field"
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{}
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtBool, true)
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtString, "extension field")
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtEnum, pb2.Enum_TEN)
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtNested, &pb2.Nested{
+				OptString: scalar.String("nested in an extension"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("another nested in an extension"),
+				},
+			})
+			return m
+		}(),
+	}, {
+		desc:         "extensions of repeated fields in another message",
+		inputMessage: &pb2.Extensions{},
+		inputText: `{
+  "optString": "non-extension field",
+  "optBool": true,
+  "optInt32": 42,
+  "[pb2.ExtensionsContainer.rpt_ext_nested]": [
+    {"optString": "one"},
+    {"optString": "two"},
+    {"optString": "three"}
+  ],
+  "[pb2.ExtensionsContainer.rpt_ext_enum]": ["TEN", 101, "ONE"],
+  "[pb2.ExtensionsContainer.rpt_ext_string]": ["hello", "world"]
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{
+				OptString: scalar.String("non-extension field"),
+				OptBool:   scalar.Bool(true),
+				OptInt32:  scalar.Int32(42),
+			}
+			setExtension(m, pb2.E_ExtensionsContainer_RptExtEnum, &[]pb2.Enum{pb2.Enum_TEN, 101, pb2.Enum_ONE})
+			setExtension(m, pb2.E_ExtensionsContainer_RptExtString, &[]string{"hello", "world"})
+			setExtension(m, pb2.E_ExtensionsContainer_RptExtNested, &[]*pb2.Nested{
+				&pb2.Nested{OptString: scalar.String("one")},
+				&pb2.Nested{OptString: scalar.String("two")},
+				&pb2.Nested{OptString: scalar.String("three")},
+			})
+			return m
+		}(),
+	}, {
+		desc:         "invalid extension field name",
+		inputMessage: &pb2.Extensions{},
+		inputText:    `{ "[pb2.invalid_message_field]": true }`,
+		wantErr:      true,
+	}, {
+		desc:         "MessageSet",
+		inputMessage: &pb2.MessageSet{},
+		inputText: `{
+  "[pb2.MessageSetExtension]": {
+    "optString": "a messageset extension"
+  },
+  "[pb2.MessageSetExtension.ext_nested]": {
+    "optString": "just a regular extension"
+  },
+  "[pb2.MessageSetExtension.not_message_set_extension]": {
+    "optString": "not a messageset extension"
+  }
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.MessageSet{}
+			setExtension(m, pb2.E_MessageSetExtension_MessageSetExtension, &pb2.MessageSetExtension{
+				OptString: scalar.String("a messageset extension"),
+			})
+			setExtension(m, pb2.E_MessageSetExtension_NotMessageSetExtension, &pb2.MessageSetExtension{
+				OptString: scalar.String("not a messageset extension"),
+			})
+			setExtension(m, pb2.E_MessageSetExtension_ExtNested, &pb2.Nested{
+				OptString: scalar.String("just a regular extension"),
+			})
+			return m
+		}(),
+	}, {
+		desc:         "extension field set to null",
+		inputMessage: &pb2.Extensions{},
+		inputText: `{
+  "[pb2.ExtensionsContainer.opt_ext_bool]": null,
+  "[pb2.ExtensionsContainer.opt_ext_nested]": null
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{}
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtBool, nil)
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtNested, nil)
+			return m
+		}(),
+	}, {
+		desc:         "extensions of repeated field contains null",
+		inputMessage: &pb2.Extensions{},
+		inputText: `{
+  "[pb2.ExtensionsContainer.rpt_ext_nested]": [
+    {"optString": "one"},
+	null,
+    {"optString": "three"}
+  ],
+}`,
+		wantErr: true,
+	}, {
+		desc:         "not real MessageSet 1",
+		inputMessage: &pb2.FakeMessageSet{},
+		inputText: `{
+  "[pb2.FakeMessageSetExtension.message_set_extension]": {
+    "optString": "not a messageset extension"
+  }
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.FakeMessageSet{}
+			setExtension(m, pb2.E_FakeMessageSetExtension_MessageSetExtension, &pb2.FakeMessageSetExtension{
+				OptString: scalar.String("not a messageset extension"),
+			})
+			return m
+		}(),
+	}, {
+		desc:         "not real MessageSet 2",
+		inputMessage: &pb2.FakeMessageSet{},
+		inputText: `{
+  "[pb2.FakeMessageSetExtension]": {
+    "optString": "not a messageset extension"
+  }
+}`,
+		wantErr: true,
+	}, {
+		desc:         "not real MessageSet 3",
+		inputMessage: &pb2.MessageSet{},
+		inputText: `{
+  "[pb2.message_set_extension]": {
+    "optString": "another not a messageset extension"
+  }
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.MessageSet{}
+			setExtension(m, pb2.E_MessageSetExtension, &pb2.FakeMessageSetExtension{
+				OptString: scalar.String("another not a messageset extension"),
+			})
+			return m
+		}(),
 	}}
 
 	for _, tt := range tests {

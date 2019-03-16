@@ -13,9 +13,11 @@ import (
 
 	"github.com/golang/protobuf/v2/internal/encoding/json"
 	"github.com/golang/protobuf/v2/internal/errors"
+	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/internal/set"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoregistry"
 )
 
 // Unmarshal reads the given []byte into the given proto.Message.
@@ -24,7 +26,14 @@ func Unmarshal(m proto.Message, b []byte) error {
 }
 
 // UnmarshalOptions is a configurable JSON format parser.
-type UnmarshalOptions struct{}
+type UnmarshalOptions struct {
+	pragma.NoUnkeyedLiterals
+
+	// Resolver is the registry used for type lookups when unmarshaling extensions
+	// and processing Any. If Resolver is not set, unmarshaling will default to
+	// using protoregistry.GlobalTypes.
+	Resolver *protoregistry.Types
+}
 
 // Unmarshal reads the given []byte and populates the given proto.Message using
 // options in UnmarshalOptions object. It will clear the message first before
@@ -37,7 +46,15 @@ func (o UnmarshalOptions) Unmarshal(m proto.Message, b []byte) error {
 	// marshaling.
 	resetMessage(mr)
 
-	dec := decoder{json.NewDecoder(b)}
+	resolver := o.Resolver
+	if resolver == nil {
+		resolver = protoregistry.GlobalTypes
+	}
+
+	dec := decoder{
+		Decoder:  json.NewDecoder(b),
+		resolver: resolver,
+	}
 	var nerr errors.NonFatal
 	if err := dec.unmarshalMessage(mr); !nerr.Merge(err) {
 		return err
@@ -108,6 +125,7 @@ func newError(f string, x ...interface{}) error {
 // decoder decodes JSON into protoreflect values.
 type decoder struct {
 	*json.Decoder
+	resolver *protoregistry.Types
 }
 
 // unmarshalMessage unmarshals a message into the given protoreflect.Message.
@@ -119,6 +137,7 @@ func (d decoder) unmarshalMessage(m pref.Message) error {
 	msgType := m.Type()
 	knownFields := m.KnownFields()
 	fieldDescs := msgType.Fields()
+	xtTypes := knownFields.ExtensionTypes()
 
 	jval, err := d.Read()
 	if !nerr.Merge(err) {
@@ -149,11 +168,28 @@ Loop:
 			return err
 		}
 
-		// Get the FieldDescriptor based on the field name. The name can either
-		// be the JSON name for the field or the proto field name.
-		fd := fieldDescs.ByJSONName(name)
-		if fd == nil {
-			fd = fieldDescs.ByName(pref.Name(name))
+		// Get the FieldDescriptor.
+		var fd pref.FieldDescriptor
+		if strings.HasPrefix(name, "[") && strings.HasSuffix(name, "]") {
+			// Only extension names are in [name] format.
+			xtName := pref.FullName(name[1 : len(name)-1])
+			xt := xtTypes.ByName(xtName)
+			if xt == nil {
+				xt, err = d.findExtension(xtName)
+				if err != nil && err != protoregistry.NotFound {
+					return errors.New("unable to resolve [%v]: %v", xtName, err)
+				}
+				if xt != nil {
+					xtTypes.Register(xt)
+				}
+			}
+			fd = xt
+		} else {
+			// The name can either be the JSON name or the proto field name.
+			fd = fieldDescs.ByJSONName(name)
+			if fd == nil {
+				fd = fieldDescs.ByName(pref.Name(name))
+			}
 		}
 
 		if fd == nil {
@@ -202,6 +238,21 @@ Loop:
 	}
 
 	return nerr.E
+}
+
+// findExtension returns protoreflect.ExtensionType from the resolver if found.
+func (d decoder) findExtension(xtName pref.FullName) (pref.ExtensionType, error) {
+	xt, err := d.resolver.FindExtensionByName(xtName)
+	if err == nil {
+		return xt, nil
+	}
+
+	// Check if this is a MessageSet extension field.
+	xt, err = d.resolver.FindExtensionByName(xtName + ".message_set_extension")
+	if err == nil && isMessageSetExtension(xt) {
+		return xt, nil
+	}
+	return nil, protoregistry.NotFound
 }
 
 // unmarshalSingular unmarshals to the non-repeated field specified by the given
@@ -294,8 +345,8 @@ func unmarshalInt(jval json.Value, bitSize int) (pref.Value, error) {
 		return getInt(jval, bitSize)
 
 	case json.String:
-		// Use another decoder to decode number from string.
-		dec := decoder{json.NewDecoder([]byte(jval.String()))}
+		// Decode number from string.
+		dec := json.NewDecoder([]byte(jval.String()))
 		var nerr errors.NonFatal
 		jval, err := dec.Read()
 		if !nerr.Merge(err) {
@@ -323,8 +374,8 @@ func unmarshalUint(jval json.Value, bitSize int) (pref.Value, error) {
 		return getUint(jval, bitSize)
 
 	case json.String:
-		// Use another decoder to decode number from string.
-		dec := decoder{json.NewDecoder([]byte(jval.String()))}
+		// Decode number from string.
+		dec := json.NewDecoder([]byte(jval.String()))
 		var nerr errors.NonFatal
 		jval, err := dec.Read()
 		if !nerr.Merge(err) {
@@ -370,8 +421,8 @@ func unmarshalFloat(jval json.Value, bitSize int) (pref.Value, error) {
 			}
 			return pref.ValueOf(math.Inf(-1)), nil
 		}
-		// Use another decoder to decode number from string.
-		dec := decoder{json.NewDecoder([]byte(s))}
+		// Decode number from string.
+		dec := json.NewDecoder([]byte(s))
 		var nerr errors.NonFatal
 		jval, err := dec.Read()
 		if !nerr.Merge(err) {
