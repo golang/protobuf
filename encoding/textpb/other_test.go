@@ -151,8 +151,7 @@ func TestRoundTrip(t *testing.T) {
 					OptString: scalar.String("inception"),
 				},
 			}
-			// TODO: Switch to V2 marshal when ready.
-			b, err := protoV1.Marshal(m)
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
@@ -173,8 +172,7 @@ func TestRoundTrip(t *testing.T) {
 					OptString: scalar.String("inception"),
 				},
 			}
-			// TODO: Switch to V2 marshal when ready.
-			b, err := protoV1.Marshal(m)
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
@@ -196,8 +194,7 @@ func TestRoundTrip(t *testing.T) {
 			m1 := &pb2.Nested{
 				OptString: scalar.String("message inside Any of another Any field"),
 			}
-			// TODO: Switch to V2 marshal when ready.
-			b1, err := protoV1.Marshal(m1)
+			b1, err := proto.MarshalOptions{Deterministic: true}.Marshal(m1)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
@@ -205,8 +202,7 @@ func TestRoundTrip(t *testing.T) {
 				TypeUrl: "pb2.Nested",
 				Value:   b1,
 			}
-			// TODO: Switch to V2 marshal when ready.
-			b2, err := protoV1.Marshal(m2)
+			b2, err := proto.MarshalOptions{Deterministic: true}.Marshal(m2)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}

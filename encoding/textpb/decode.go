@@ -8,12 +8,10 @@ import (
 	"fmt"
 	"strings"
 
-	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/internal/encoding/text"
 	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/internal/set"
-	pvalue "github.com/golang/protobuf/v2/internal/value"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -488,14 +486,7 @@ func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, knownFields pref.Kn
 		return err
 	}
 	// Serialize the embedded message and assign the resulting bytes to the value field.
-	// TODO: Switch to V2 marshal and enable deterministic option when ready.
-	var mv1 protoV1.Message
-	if mtmp, ok := m.(pvalue.Unwrapper); ok {
-		mv1 = mtmp.ProtoUnwrap().(protoV1.Message)
-	} else {
-		mv1 = m.Interface().(protoV1.Message)
-	}
-	b, err := protoV1.Marshal(mv1)
+	b, err := proto.Marshal(m.Interface())
 	if !nerr.Merge(err) {
 		return err
 	}

@@ -1327,8 +1327,7 @@ value: "some bytes"
 					OptString: scalar.String("inception"),
 				},
 			}
-			// TODO: Switch to V2 marshal when ready.
-			b, err := protoV1.Marshal(m)
+			b, err := proto.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}

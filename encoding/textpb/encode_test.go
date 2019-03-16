@@ -1029,8 +1029,7 @@ opt_int32: 42
 					OptString: scalar.String("inception"),
 				},
 			}
-			// TODO: Switch to V2 marshal when ready.
-			b, err := protoV1.Marshal(m)
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
@@ -1054,8 +1053,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 					OptString: scalar.String("inception"),
 				},
 			}
-			// TODO: Switch to V2 marshal when ready.
-			b, err := protoV1.Marshal(m)
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
