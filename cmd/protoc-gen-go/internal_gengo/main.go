@@ -17,9 +17,9 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/internal/descfield"
 	"github.com/golang/protobuf/v2/internal/encoding/tag"
+	"github.com/golang/protobuf/v2/proto"
 	"github.com/golang/protobuf/v2/protogen"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 
@@ -228,11 +228,21 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 }
 
 func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
+	// TODO: Replace this with v2 Clone.
+	descProto := new(descriptorpb.FileDescriptorProto)
+	b, err := proto.Marshal(f.Proto)
+	if err != nil {
+		gen.Error(err)
+		return
+	}
+	if err := proto.Unmarshal(b, descProto); err != nil {
+		gen.Error(err)
+		return
+	}
+
 	// Trim the source_code_info from the descriptor.
-	// Marshal and gzip it.
-	descProto := proto.Clone(f.Proto).(*descriptorpb.FileDescriptorProto)
 	descProto.SourceCodeInfo = nil
-	b, err := proto.Marshal(descProto)
+	b, err = proto.MarshalOptions{Deterministic: true}.Marshal(descProto)
 	if err != nil {
 		gen.Error(err)
 		return

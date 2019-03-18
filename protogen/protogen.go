@@ -28,9 +28,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/descfield"
 	"github.com/golang/protobuf/v2/internal/scalar"
+	"github.com/golang/protobuf/v2/proto"
 	"github.com/golang/protobuf/v2/reflect/protodesc"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -1109,7 +1110,11 @@ func (g *GeneratedFile) metaFile(content []byte) (string, error) {
 		}
 	}
 
-	return strings.TrimSpace(proto.CompactTextString(info)), nil
+	b, err := textpb.MarshalOptions{Compact: true}.Marshal(info)
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
 }
 
 type pathType int
