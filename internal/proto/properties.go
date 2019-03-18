@@ -301,7 +301,7 @@ func newProperties(t reflect.Type) *StructProperties {
 	if !foundField {
 		// Check with protobuf reflection to make sure this isn't
 		// an empty protobuf message.
-		mt := protoimpl.X.MessageOf(reflect.New(t).Interface()).Type()
+		mt := protoimpl.X.MessageTypeOf(reflect.New(t).Interface())
 		if mt.Fields().Len() > 0 {
 			panic(fmt.Sprintf("%v is not a generated message in the open-struct API", t))
 		}

@@ -18,8 +18,6 @@ type generatedDiscarder interface {
 	XXX_DiscardUnknown()
 }
 
-var discardUnknownAlt func(Message) // populated by hooks.go
-
 // DiscardUnknown recursively discards all unknown fields from this message
 // and all embedded messages.
 //
@@ -33,7 +31,7 @@ var discardUnknownAlt func(Message) // populated by hooks.go
 // discarded from messages that have been accessed via GetExtension.
 func DiscardUnknown(m Message) {
 	if discardUnknownAlt != nil {
-		discardUnknownAlt(m)
+		discardUnknownAlt(m) // populated by hooks_enabled.go
 		return
 	}
 

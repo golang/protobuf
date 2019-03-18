@@ -164,7 +164,7 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 				if err == errInvalidUTF8 {
 					if errLater == nil {
 						mz := reflect.Zero(reflect.PtrTo(u.typ)).Interface().(Message)
-						fullName := protoapi.MessageName(mz) + "." + f.name
+						fullName := MessageName(mz) + "." + f.name
 						errLater = &invalidUTF8Error{fullName}
 					}
 					continue

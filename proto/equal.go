@@ -245,7 +245,7 @@ func equalExtensions(base reflect.Type, em1, em2 protoapi.ExtensionFields) bool 
 		// we need to unmarshal them first.
 		var desc *ExtensionDesc
 		mz := reflect.Zero(reflect.PtrTo(base)).Interface().(Message)
-		if m := protoapi.RegisteredExtensions(mz); m != nil {
+		if m := RegisteredExtensions(mz); m != nil {
 			desc = m[int32(extNum)]
 		}
 		if desc == nil {

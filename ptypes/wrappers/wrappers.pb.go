@@ -5,17 +5,10 @@ package wrappers
 
 import (
 	proto "github.com/golang/protobuf/proto"
-	protoapi "github.com/golang/protobuf/protoapi"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	known "github.com/golang/protobuf/v2/types/known"
 )
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 // Symbols defined in public import of google/protobuf/wrappers.proto
 
@@ -28,10 +21,6 @@ type UInt32Value = known.UInt32Value
 type BoolValue = known.BoolValue
 type StringValue = known.StringValue
 type BytesValue = known.BytesValue
-
-func init() {
-	proto.RegisterFile("github.com/golang/protobuf/ptypes/wrappers/wrappers.proto", xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_rawdesc_gzipped)
-}
 
 var xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_rawdesc = []byte{
 	// 156 bytes of the wire-encoded FileDescriptorProto
@@ -47,7 +36,7 @@ var xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_rawdesc =
 	0x72, 0x73, 0x50, 0x00, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_rawdesc_gzipped = protoapi.CompressGZIP(xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_rawdesc)
+var xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_rawdesc)
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
@@ -66,6 +55,7 @@ func xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_init() {
 		GoTypes:           xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_goTypes,
 		DependencyIndexes: xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_depIdxs,
 	}.Init()
+	proto.RegisterFile("github.com/golang/protobuf/ptypes/wrappers/wrappers.proto", xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_rawdesc_gzipped)
 	xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_goTypes = nil
 	xxx_File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto_depIdxs = nil
 }

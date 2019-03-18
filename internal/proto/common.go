@@ -14,4 +14,7 @@ import (
 	_ "github.com/golang/protobuf/v2/runtime/protolegacy"
 )
 
-type Message = protoapi.Message
+type (
+	Message       = protoapi.Message
+	ExtensionDesc = protoapi.ExtensionDesc
+)

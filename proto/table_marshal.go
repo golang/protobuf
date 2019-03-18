@@ -259,7 +259,7 @@ func (u *marshalInfo) marshal(b []byte, ptr pointer, deterministic bool) ([]byte
 			if err == errInvalidUTF8 {
 				if errLater == nil {
 					mz := reflect.Zero(reflect.PtrTo(u.typ)).Interface().(Message)
-					fullName := protoapi.MessageName(mz) + "." + f.name
+					fullName := MessageName(mz) + "." + f.name
 					errLater = &invalidUTF8Error{fullName}
 				}
 				continue

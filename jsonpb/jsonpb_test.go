@@ -1024,7 +1024,7 @@ func TestUnmarshalAnyJSONPBUnmarshaler(t *testing.T) {
 }
 
 const (
-	dynamicMessageName = "google.protobuf.jsonpb.testing.dynamicMessage"
+	dynamicMessageName = "github_com.golang.protobuf.jsonpb.dynamicMessage"
 )
 
 func init() {

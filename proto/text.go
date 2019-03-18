@@ -653,7 +653,7 @@ func (s fieldNumSlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 // writeExtensions writes all the extensions in pv.
 // pv is assumed to be a pointer to a protocol message struct that is extendable.
 func (tm *TextMarshaler) writeExtensions(w *textWriter, pv reflect.Value) error {
-	emap := protoapi.RegisteredExtensions(pv.Interface().(Message))
+	emap := RegisteredExtensions(pv.Interface().(Message))
 	ep, _ := extendable(pv.Interface())
 
 	// Order the extensions by ID.
