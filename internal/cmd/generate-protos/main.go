@@ -21,6 +21,7 @@ import (
 
 	gengogrpc "github.com/golang/protobuf/v2/cmd/protoc-gen-go-grpc/internal_gengogrpc"
 	gengo "github.com/golang/protobuf/v2/cmd/protoc-gen-go/internal_gengo"
+	"github.com/golang/protobuf/v2/internal/detrand"
 	"github.com/golang/protobuf/v2/protogen"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -30,6 +31,10 @@ func init() {
 	// we skip running main and instead act as a protoc plugin.
 	// This allows the binary to pass itself to protoc.
 	if plugins := os.Getenv("RUN_AS_PROTOC_PLUGIN"); plugins != "" {
+		// Disable deliberate output instability for generated files.
+		// This is reasonable since we fully control the output.
+		detrand.Disable()
+
 		protogen.Run(nil, func(gen *protogen.Plugin) error {
 			for _, plugin := range strings.Split(plugins, ",") {
 				for _, file := range gen.Files {
