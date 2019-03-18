@@ -4,10 +4,10 @@
 package descriptor_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoapi "github.com/golang/protobuf/protoapi"
 	prototype "github.com/golang/protobuf/v2/internal/prototype"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
@@ -2386,43 +2386,6 @@ func (m *GeneratedCodeInfo_Annotation) GetEnd() int32 {
 	return 0
 }
 
-func init() {
-	proto.RegisterFile("google/protobuf/descriptor.proto", xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped)
-	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Type", FieldDescriptorProto_Type_name, FieldDescriptorProto_Type_value)
-	proto.RegisterEnum("google.protobuf.FieldDescriptorProto_Label", FieldDescriptorProto_Label_name, FieldDescriptorProto_Label_value)
-	proto.RegisterEnum("google.protobuf.FileOptions_OptimizeMode", FileOptions_OptimizeMode_name, FileOptions_OptimizeMode_value)
-	proto.RegisterEnum("google.protobuf.FieldOptions_CType", FieldOptions_CType_name, FieldOptions_CType_value)
-	proto.RegisterEnum("google.protobuf.FieldOptions_JSType", FieldOptions_JSType_name, FieldOptions_JSType_value)
-	proto.RegisterEnum("google.protobuf.MethodOptions_IdempotencyLevel", MethodOptions_IdempotencyLevel_name, MethodOptions_IdempotencyLevel_value)
-	proto.RegisterType((*FileDescriptorSet)(nil), "google.protobuf.FileDescriptorSet")
-	proto.RegisterType((*FileDescriptorProto)(nil), "google.protobuf.FileDescriptorProto")
-	proto.RegisterType((*DescriptorProto)(nil), "google.protobuf.DescriptorProto")
-	proto.RegisterType((*ExtensionRangeOptions)(nil), "google.protobuf.ExtensionRangeOptions")
-	proto.RegisterType((*FieldDescriptorProto)(nil), "google.protobuf.FieldDescriptorProto")
-	proto.RegisterType((*OneofDescriptorProto)(nil), "google.protobuf.OneofDescriptorProto")
-	proto.RegisterType((*EnumDescriptorProto)(nil), "google.protobuf.EnumDescriptorProto")
-	proto.RegisterType((*EnumValueDescriptorProto)(nil), "google.protobuf.EnumValueDescriptorProto")
-	proto.RegisterType((*ServiceDescriptorProto)(nil), "google.protobuf.ServiceDescriptorProto")
-	proto.RegisterType((*MethodDescriptorProto)(nil), "google.protobuf.MethodDescriptorProto")
-	proto.RegisterType((*FileOptions)(nil), "google.protobuf.FileOptions")
-	proto.RegisterType((*MessageOptions)(nil), "google.protobuf.MessageOptions")
-	proto.RegisterType((*FieldOptions)(nil), "google.protobuf.FieldOptions")
-	proto.RegisterType((*OneofOptions)(nil), "google.protobuf.OneofOptions")
-	proto.RegisterType((*EnumOptions)(nil), "google.protobuf.EnumOptions")
-	proto.RegisterType((*EnumValueOptions)(nil), "google.protobuf.EnumValueOptions")
-	proto.RegisterType((*ServiceOptions)(nil), "google.protobuf.ServiceOptions")
-	proto.RegisterType((*MethodOptions)(nil), "google.protobuf.MethodOptions")
-	proto.RegisterType((*UninterpretedOption)(nil), "google.protobuf.UninterpretedOption")
-	proto.RegisterType((*SourceCodeInfo)(nil), "google.protobuf.SourceCodeInfo")
-	proto.RegisterType((*GeneratedCodeInfo)(nil), "google.protobuf.GeneratedCodeInfo")
-	proto.RegisterType((*DescriptorProto_ExtensionRange)(nil), "google.protobuf.DescriptorProto.ExtensionRange")
-	proto.RegisterType((*DescriptorProto_ReservedRange)(nil), "google.protobuf.DescriptorProto.ReservedRange")
-	proto.RegisterType((*EnumDescriptorProto_EnumReservedRange)(nil), "google.protobuf.EnumDescriptorProto.EnumReservedRange")
-	proto.RegisterType((*UninterpretedOption_NamePart)(nil), "google.protobuf.UninterpretedOption.NamePart")
-	proto.RegisterType((*SourceCodeInfo_Location)(nil), "google.protobuf.SourceCodeInfo.Location")
-	proto.RegisterType((*GeneratedCodeInfo_Annotation)(nil), "google.protobuf.GeneratedCodeInfo.Annotation")
-}
-
 var xxx_File_google_protobuf_descriptor_proto_rawdesc = []byte{
 	// 7580 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x20, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -3002,6 +2965,8 @@ func xxx_File_google_protobuf_descriptor_proto_init() {
 		DependencyIndexes:  xxx_File_google_protobuf_descriptor_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_google_protobuf_descriptor_proto_enumTypes,
 		MessageOutputTypes: messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
 	messageGoTypes := xxx_File_google_protobuf_descriptor_proto_goTypes[6:][:27]
 	for i, mt := range messageTypes {

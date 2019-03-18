@@ -778,6 +778,11 @@ func extensionVar(f *protogen.File, extension *protogen.Extension) protogen.GoId
 // genInitFunction generates an init function that registers the types in the
 // generated file with the proto package.
 func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
+	// TODO: Remove this function when we always register with v2.
+	if isDescriptor(f.File) {
+		return
+	}
+
 	g.P("func init() {")
 	g.P(protoPackage.Ident("RegisterFile"), "(", strconv.Quote(f.Desc.Path()), ", ", f.descriptorGzipVar, ")")
 	for _, enum := range f.allEnums {

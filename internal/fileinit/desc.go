@@ -19,6 +19,7 @@ import (
 	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 )
 
 // FileBuilder construct a protoreflect.FileDescriptor from the
@@ -113,9 +114,12 @@ type FileBuilder struct {
 	// in "flattened ordering".
 	ExtensionOutputTypes []pref.ExtensionType
 
-	// TODO: Provide ability for FileBuilder to handle registration?
-	// FilesRegistry *pref.Files
-	// TypesRegistry *pref.Types
+	// FilesRegistry is the file registry to register the file descriptor.
+	// If nil, no registration occurs.
+	FilesRegistry *preg.Files
+	// TypesRegistry is the types registry to register each type descriptor.
+	// If nil, no registration occurs.
+	TypesRegistry *preg.Types
 }
 
 // Init constructs a FileDescriptor given the parameters set in FileBuilder.
@@ -124,6 +128,7 @@ type FileBuilder struct {
 func (fb FileBuilder) Init() pref.FileDescriptor {
 	fd := newFileDesc(fb)
 
+	// Keep v1 and v2 extension descriptors in sync.
 	if fb.LegacyExtensions != nil {
 		for i := range fd.allExtensions {
 			fd.allExtensions[i].legacyDesc = &fb.LegacyExtensions[i]
@@ -131,6 +136,7 @@ func (fb FileBuilder) Init() pref.FileDescriptor {
 		}
 	}
 
+	// Copy type descriptors to the output.
 	for i := range fd.allEnums {
 		fb.EnumOutputTypes[i] = &fd.allEnums[i]
 	}
@@ -140,6 +146,31 @@ func (fb FileBuilder) Init() pref.FileDescriptor {
 	for i := range fd.allExtensions {
 		fb.ExtensionOutputTypes[i] = &fd.allExtensions[i]
 	}
+
+	// Register file and type descriptors.
+	if fb.FilesRegistry != nil {
+		if err := fb.FilesRegistry.Register(fd); err != nil {
+			panic(err)
+		}
+	}
+	if fb.TypesRegistry != nil {
+		for i := range fd.allEnums {
+			if err := fb.TypesRegistry.Register(&fd.allEnums[i]); err != nil {
+				panic(err)
+			}
+		}
+		for i := range fd.allMessages {
+			if err := fb.TypesRegistry.Register(&fd.allMessages[i]); err != nil {
+				panic(err)
+			}
+		}
+		for i := range fd.allExtensions {
+			if err := fb.TypesRegistry.Register(&fd.allExtensions[i]); err != nil {
+				panic(err)
+			}
+		}
+	}
+
 	return fd
 }
 

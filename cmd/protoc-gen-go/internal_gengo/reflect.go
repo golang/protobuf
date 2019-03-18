@@ -24,10 +24,11 @@ func isDescriptor(f *protogen.File) bool {
 const minimumVersion = 0
 
 const (
-	reflectPackage      = protogen.GoImportPath("reflect")
-	protoimplPackage    = protogen.GoImportPath("github.com/golang/protobuf/v2/runtime/protoimpl")
-	protoreflectPackage = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoreflect")
-	prototypePackage    = protogen.GoImportPath("github.com/golang/protobuf/v2/internal/prototype")
+	reflectPackage       = protogen.GoImportPath("reflect")
+	protoimplPackage     = protogen.GoImportPath("github.com/golang/protobuf/v2/runtime/protoimpl")
+	protoreflectPackage  = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoreflect")
+	protoregistryPackage = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoregistry")
+	prototypePackage     = protogen.GoImportPath("github.com/golang/protobuf/v2/internal/prototype")
 )
 
 // TODO: Add support for proto options.
@@ -179,6 +180,11 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 	if len(f.allExtensions) > 0 {
 		g.P("ExtensionOutputTypes: extensionTypes,")
 	}
+	if isDescriptor(f.File) {
+		// TODO: Enable this for all protos.
+		g.P("FilesRegistry: ", protoregistryPackage.Ident("GlobalFiles"), ",")
+		g.P("TypesRegistry: ", protoregistryPackage.Ident("GlobalTypes"), ",")
+	}
 	g.P("}.Init()")
 
 	// Copy the local list of message types into the global array.
@@ -189,8 +195,6 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		g.P(messageTypesVarName(f), "[i].PBType = mt")
 		g.P("}")
 	}
-
-	// TODO: Add v2 registration and stop v1 registration in genInitFunction.
 
 	// The descriptor proto needs to register the option types with the
 	// prototype so that the package can properly handle those option types.
