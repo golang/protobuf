@@ -52,10 +52,10 @@ const generatedCodeVersion = 4
 // Paths for packages used by code generated in this file,
 // relative to the import_prefix of the generator.Generator.
 const (
-	errorPkgPath   = "google.golang.org/grpc/status"
 	contextPkgPath = "context"
 	grpcPkgPath    = "google.golang.org/grpc"
 	codePkgPath    = "google.golang.org/grpc/codes"
+	statusPkgPath  = "google.golang.org/grpc/status"
 )
 
 func init() {
@@ -79,8 +79,6 @@ func (g *grpc) Name() string {
 var (
 	contextPkg string
 	grpcPkg    string
-	errorPkg   string
-	codePkg    string
 )
 
 // Init initializes the plugin.
@@ -109,8 +107,6 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 		return
 	}
 
-	errorPkg = string(g.gen.AddImport(errorPkgPath))
-	codePkg = string(g.gen.AddImport(codePkgPath))
 	contextPkg = string(g.gen.AddImport(contextPkgPath))
 	grpcPkg = string(g.gen.AddImport(grpcPkgPath))
 
@@ -304,7 +300,9 @@ func (g *grpc) generateServerMethodConcrete(servName string, method *pb.MethodDe
 		nilArg = "nil, "
 	}
 	methName := generator.CamelCase(method.GetName())
-	g.P("return ", nilArg, errorPkg, `.Errorf(codes.Unimplemented, "method `, methName, ` not implemented")`)
+	statusPkg := string(g.gen.AddImport(statusPkgPath))
+	codePkg := string(g.gen.AddImport(codePkgPath))
+	g.P("return ", nilArg, statusPkg, `.Errorf(`, codePkg, `.Unimplemented, "method `, methName, ` not implemented")`)
 	g.P("}")
 }
 
