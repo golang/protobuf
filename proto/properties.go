@@ -134,11 +134,12 @@ func (p *Properties) Parse(tag string) {
 		case s == "fixed64":
 			p.Wire = s
 			p.WireType = WireFixed64
-		case s == "bytes" || s == "group":
-			// NOTE: Historically, this used WireBytes even for groups,
-			// when it should have been WireStartGroup.
+		case s == "bytes":
 			p.Wire = s
 			p.WireType = WireBytes
+		case s == "group":
+			p.Wire = s
+			p.WireType = WireStartGroup
 		case s == "packed":
 			p.Packed = true
 		case s == "proto3":
