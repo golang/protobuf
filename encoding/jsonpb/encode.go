@@ -6,6 +6,7 @@ package jsonpb
 
 import (
 	"encoding/base64"
+	"fmt"
 	"sort"
 
 	"github.com/golang/protobuf/v2/internal/encoding/json"
@@ -13,6 +14,7 @@ import (
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoregistry"
 
 	descpb "github.com/golang/protobuf/v2/types/descriptor"
 )
@@ -26,18 +28,21 @@ func Marshal(m proto.Message) ([]byte, error) {
 type MarshalOptions struct {
 	pragma.NoUnkeyedLiterals
 
-	// Set Compact to true to have output in a single line with no line breaks.
-	Compact bool
+	// If Indent is a non-empty string, it causes entries for an Array or Object
+	// to be preceded by the indent and trailed by a newline. Indent can only be
+	// composed of space or tab characters.
+	Indent string
+
+	// Resolver is the registry used for type lookups when marshaling
+	// google.protobuf.Any messages. If Resolver is not set, marshaling will
+	// default to using protoregistry.GlobalTypes.
+	Resolver *protoregistry.Types
 }
 
-// Marshal returns the given proto.Message in JSON format using options in MarshalOptions object.
+// Marshal marshals the given proto.Message in the JSON format using options in
+// MarshalOptions.
 func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
-	indent := "  "
-	if o.Compact {
-		indent = ""
-	}
-
-	enc, err := newEncoder(indent)
+	enc, err := newEncoder(o.Indent, o.Resolver)
 	if err != nil {
 		return nil, err
 	}
@@ -53,21 +58,42 @@ func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
 // encoder encodes protoreflect values into JSON.
 type encoder struct {
 	*json.Encoder
+	resolver *protoregistry.Types
 }
 
-func newEncoder(indent string) (encoder, error) {
+func newEncoder(indent string, resolver *protoregistry.Types) (encoder, error) {
 	enc, err := json.NewEncoder(indent)
 	if err != nil {
-		return encoder{}, errors.New("error in constructing an encoder: %v", err)
+		return encoder{}, err
 	}
-	return encoder{enc}, nil
+	if resolver == nil {
+		resolver = protoregistry.GlobalTypes
+	}
+	return encoder{
+		Encoder:  enc,
+		resolver: resolver,
+	}, nil
 }
 
 // marshalMessage marshals the given protoreflect.Message.
 func (e encoder) marshalMessage(m pref.Message) error {
+	var nerr errors.NonFatal
+
+	if isCustomType(m.Type().FullName()) {
+		return e.marshalCustomType(m)
+	}
+
 	e.StartObject()
 	defer e.EndObject()
+	if err := e.marshalFields(m); !nerr.Merge(err) {
+		return err
+	}
 
+	return nerr.E
+}
+
+// marshalFields marshals the fields in the given protoreflect.Message.
+func (e encoder) marshalFields(m pref.Message) error {
 	var nerr errors.NonFatal
 	fieldDescs := m.Type().Fields()
 	knownFields := m.KnownFields()
@@ -85,12 +111,17 @@ func (e encoder) marshalMessage(m pref.Message) error {
 			continue
 		}
 
+		// An empty google.protobuf.Value should NOT be marshaled out.
+		// Hence need to check ahead for this.
+		val := knownFields.Get(num)
+		if isEmptyKnownValue(val, fd.MessageType()) {
+			continue
+		}
+
 		name := fd.JSONName()
 		if err := e.WriteName(name); !nerr.Merge(err) {
 			return err
 		}
-
-		val := knownFields.Get(num)
 		if err := e.marshalValue(val, fd); !nerr.Merge(err) {
 			return err
 		}
@@ -165,8 +196,12 @@ func (e encoder) marshalSingular(val pref.Value, fd pref.FieldDescriptor) error 
 		}
 
 	case pref.EnumKind:
+		enumType := fd.EnumType()
 		num := val.Enum()
-		if desc := fd.EnumType().Values().ByNumber(num); desc != nil {
+
+		if enumType.FullName() == "google.protobuf.NullValue" {
+			e.WriteNull()
+		} else if desc := enumType.Values().ByNumber(num); desc != nil {
 			err := e.WriteString(string(desc.Name()))
 			if !nerr.Merge(err) {
 				return err
@@ -182,7 +217,7 @@ func (e encoder) marshalSingular(val pref.Value, fd pref.FieldDescriptor) error 
 		}
 
 	default:
-		return errors.New("%v has unknown kind: %v", fd.FullName(), kind)
+		panic(fmt.Sprintf("%v has unknown kind: %v", fd.FullName(), kind))
 	}
 	return nerr.E
 }

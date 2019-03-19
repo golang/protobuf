@@ -10,6 +10,7 @@ option go_package = "github.com/golang/protobuf/v2/encoding/testprotos/pb2";
 
 import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
@@ -217,4 +218,6 @@ message KnownTypes {
   optional google.protobuf.Value opt_value = 27;
   optional google.protobuf.Empty opt_empty = 30;
   optional google.protobuf.Any opt_any = 32;
+
+  optional google.protobuf.FieldMask opt_fieldmask = 40;
 }

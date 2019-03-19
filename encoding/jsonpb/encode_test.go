@@ -5,6 +5,7 @@
 package jsonpb_test
 
 import (
+	"encoding/hex"
 	"math"
 	"strings"
 	"testing"
@@ -15,6 +16,7 @@ import (
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
+	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
@@ -23,6 +25,7 @@ import (
 
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
+	knownpb "github.com/golang/protobuf/v2/types/known"
 )
 
 // splitLines is a cmpopts.Option for comparing strings with line breaks.
@@ -53,12 +56,22 @@ func setExtension(m proto.Message, xd *protoapi.ExtensionDesc, val interface{}) 
 	knownFields.Set(wire.Number(xd.Field), pval)
 }
 
+// dhex decodes a hex-string and returns the bytes and panics if s is invalid.
+func dhex(s string) []byte {
+	b, err := hex.DecodeString(s)
+	if err != nil {
+		panic(err)
+	}
+	return b
+}
+
 func TestMarshal(t *testing.T) {
 	tests := []struct {
-		desc  string
-		mo    jsonpb.MarshalOptions
-		input proto.Message
-		want  string
+		desc    string
+		mo      jsonpb.MarshalOptions
+		input   proto.Message
+		want    string
+		wantErr bool // TODO: Verify error message substring.
 	}{{
 		desc:  "proto2 optional scalars not set",
 		input: &pb2.Scalars{},
@@ -135,6 +148,21 @@ func TestMarshal(t *testing.T) {
   "optBytes": "6LC35q2M",
   "optString": "谷歌"
 }`,
+	}, {
+		desc: "string",
+		input: &pb3.Scalars{
+			SString: "谷歌",
+		},
+		want: `{
+  "sString": "谷歌"
+}`,
+	}, {
+		desc: "string with invalid UTF8",
+		input: &pb3.Scalars{
+			SString: "abc\xff",
+		},
+		want:    "{\n  \"sString\": \"abc\xff\"\n}",
+		wantErr: true,
 	}, {
 		desc: "float nan",
 		input: &pb3.Scalars{
@@ -915,14 +943,753 @@ func TestMarshal(t *testing.T) {
     "optString": "another not a messageset extension"
   }
 }`,
+	}, {
+		desc:  "BoolValue empty",
+		input: &knownpb.BoolValue{},
+		want:  `false`,
+	}, {
+		desc:  "BoolValue",
+		input: &knownpb.BoolValue{Value: true},
+		want:  `true`,
+	}, {
+		desc:  "Int32Value empty",
+		input: &knownpb.Int32Value{},
+		want:  `0`,
+	}, {
+		desc:  "Int32Value",
+		input: &knownpb.Int32Value{Value: 42},
+		want:  `42`,
+	}, {
+		desc:  "Int64Value",
+		input: &knownpb.Int64Value{Value: 42},
+		want:  `"42"`,
+	}, {
+		desc:  "UInt32Value",
+		input: &knownpb.UInt32Value{Value: 42},
+		want:  `42`,
+	}, {
+		desc:  "UInt64Value",
+		input: &knownpb.UInt64Value{Value: 42},
+		want:  `"42"`,
+	}, {
+		desc:  "FloatValue",
+		input: &knownpb.FloatValue{Value: 1.02},
+		want:  `1.02`,
+	}, {
+		desc:  "DoubleValue",
+		input: &knownpb.DoubleValue{Value: 1.02},
+		want:  `1.02`,
+	}, {
+		desc:  "StringValue empty",
+		input: &knownpb.StringValue{},
+		want:  `""`,
+	}, {
+		desc:  "StringValue",
+		input: &knownpb.StringValue{Value: "谷歌"},
+		want:  `"谷歌"`,
+	}, {
+		desc:    "StringValue with invalid UTF8 error",
+		input:   &knownpb.StringValue{Value: "abc\xff"},
+		want:    "\"abc\xff\"",
+		wantErr: true,
+	}, {
+		desc: "StringValue field with invalid UTF8 error",
+		input: &pb2.KnownTypes{
+			OptString: &knownpb.StringValue{Value: "abc\xff"},
+		},
+		want:    "{\n  \"optString\": \"abc\xff\"\n}",
+		wantErr: true,
+	}, {
+		desc:  "BytesValue",
+		input: &knownpb.BytesValue{Value: []byte("hello")},
+		want:  `"aGVsbG8="`,
+	}, {
+		desc:  "Empty",
+		input: &knownpb.Empty{},
+		want:  `{}`,
+	}, {
+		desc:  "Value empty",
+		input: &knownpb.Value{},
+		want:  ``,
+	}, {
+		desc: "Value empty field",
+		input: &pb2.KnownTypes{
+			OptValue: &knownpb.Value{},
+		},
+		want: `{}`,
+	}, {
+		desc:  "Value contains NullValue",
+		input: &knownpb.Value{Kind: &knownpb.Value_NullValue{}},
+		want:  `null`,
+	}, {
+		desc:  "Value contains BoolValue",
+		input: &knownpb.Value{Kind: &knownpb.Value_BoolValue{}},
+		want:  `false`,
+	}, {
+		desc:  "Value contains NumberValue",
+		input: &knownpb.Value{Kind: &knownpb.Value_NumberValue{1.02}},
+		want:  `1.02`,
+	}, {
+		desc:  "Value contains StringValue",
+		input: &knownpb.Value{Kind: &knownpb.Value_StringValue{"hello"}},
+		want:  `"hello"`,
+	}, {
+		desc:    "Value contains StringValue with invalid UTF8",
+		input:   &knownpb.Value{Kind: &knownpb.Value_StringValue{"\xff"}},
+		want:    "\"\xff\"",
+		wantErr: true,
+	}, {
+		desc: "Value contains Struct",
+		input: &knownpb.Value{
+			Kind: &knownpb.Value_StructValue{
+				&knownpb.Struct{
+					Fields: map[string]*knownpb.Value{
+						"null":   {Kind: &knownpb.Value_NullValue{}},
+						"number": {Kind: &knownpb.Value_NumberValue{}},
+						"string": {Kind: &knownpb.Value_StringValue{}},
+						"struct": {Kind: &knownpb.Value_StructValue{}},
+						"list":   {Kind: &knownpb.Value_ListValue{}},
+						"bool":   {Kind: &knownpb.Value_BoolValue{}},
+					},
+				},
+			},
+		},
+		want: `{
+  "bool": false,
+  "list": [],
+  "null": null,
+  "number": 0,
+  "string": "",
+  "struct": {}
+}`,
+	}, {
+		desc: "Value contains ListValue",
+		input: &knownpb.Value{
+			Kind: &knownpb.Value_ListValue{
+				&knownpb.ListValue{
+					Values: []*knownpb.Value{
+						{Kind: &knownpb.Value_BoolValue{}},
+						{Kind: &knownpb.Value_NullValue{}},
+						{Kind: &knownpb.Value_NumberValue{}},
+						{Kind: &knownpb.Value_StringValue{}},
+						{Kind: &knownpb.Value_StructValue{}},
+						{Kind: &knownpb.Value_ListValue{}},
+					},
+				},
+			},
+		},
+		want: `[
+  false,
+  null,
+  0,
+  "",
+  {},
+  []
+]`,
+	}, {
+		desc:  "Struct with nil map",
+		input: &knownpb.Struct{},
+		want:  `{}`,
+	}, {
+		desc: "Struct with empty map",
+		input: &knownpb.Struct{
+			Fields: map[string]*knownpb.Value{},
+		},
+		want: `{}`,
+	}, {
+		desc: "Struct",
+		input: &knownpb.Struct{
+			Fields: map[string]*knownpb.Value{
+				"bool":   {Kind: &knownpb.Value_BoolValue{true}},
+				"null":   {Kind: &knownpb.Value_NullValue{}},
+				"number": {Kind: &knownpb.Value_NumberValue{3.1415}},
+				"string": {Kind: &knownpb.Value_StringValue{"hello"}},
+				"struct": {
+					Kind: &knownpb.Value_StructValue{
+						&knownpb.Struct{
+							Fields: map[string]*knownpb.Value{
+								"string": {Kind: &knownpb.Value_StringValue{"world"}},
+							},
+						},
+					},
+				},
+				"list": {
+					Kind: &knownpb.Value_ListValue{
+						&knownpb.ListValue{
+							Values: []*knownpb.Value{
+								{Kind: &knownpb.Value_BoolValue{}},
+								{Kind: &knownpb.Value_NullValue{}},
+								{Kind: &knownpb.Value_NumberValue{}},
+							},
+						},
+					},
+				},
+			},
+		},
+		want: `{
+  "bool": true,
+  "list": [
+    false,
+    null,
+    0
+  ],
+  "null": null,
+  "number": 3.1415,
+  "string": "hello",
+  "struct": {
+    "string": "world"
+  }
+}`,
+	}, {
+		desc: "Struct message with invalid UTF8 string",
+		input: &knownpb.Struct{
+			Fields: map[string]*knownpb.Value{
+				"string": {Kind: &knownpb.Value_StringValue{"\xff"}},
+			},
+		},
+		want:    "{\n  \"string\": \"\xff\"\n}",
+		wantErr: true,
+	}, {
+		desc:  "ListValue with nil values",
+		input: &knownpb.ListValue{},
+		want:  `[]`,
+	}, {
+		desc: "ListValue with empty values",
+		input: &knownpb.ListValue{
+			Values: []*knownpb.Value{},
+		},
+		want: `[]`,
+	}, {
+		desc: "ListValue",
+		input: &knownpb.ListValue{
+			Values: []*knownpb.Value{
+				{Kind: &knownpb.Value_BoolValue{true}},
+				{Kind: &knownpb.Value_NullValue{}},
+				{Kind: &knownpb.Value_NumberValue{3.1415}},
+				{Kind: &knownpb.Value_StringValue{"hello"}},
+				{
+					Kind: &knownpb.Value_ListValue{
+						&knownpb.ListValue{
+							Values: []*knownpb.Value{
+								{Kind: &knownpb.Value_BoolValue{}},
+								{Kind: &knownpb.Value_NullValue{}},
+								{Kind: &knownpb.Value_NumberValue{}},
+							},
+						},
+					},
+				},
+				{
+					Kind: &knownpb.Value_StructValue{
+						&knownpb.Struct{
+							Fields: map[string]*knownpb.Value{
+								"string": {Kind: &knownpb.Value_StringValue{"world"}},
+							},
+						},
+					},
+				},
+			},
+		},
+		want: `[
+  true,
+  null,
+  3.1415,
+  "hello",
+  [
+    false,
+    null,
+    0
+  ],
+  {
+    "string": "world"
+  }
+]`,
+	}, {
+		desc: "ListValue with invalid UTF8 string",
+		input: &knownpb.ListValue{
+			Values: []*knownpb.Value{
+				{Kind: &knownpb.Value_StringValue{"\xff"}},
+			},
+		},
+		want:    "[\n  \"\xff\"\n]",
+		wantErr: true,
+	}, {
+		desc:  "Duration empty",
+		input: &knownpb.Duration{},
+		want:  `"0s"`,
+	}, {
+		desc:  "Duration with secs",
+		input: &knownpb.Duration{Seconds: 3},
+		want:  `"3s"`,
+	}, {
+		desc:  "Duration with -secs",
+		input: &knownpb.Duration{Seconds: -3},
+		want:  `"-3s"`,
+	}, {
+		desc:  "Duration with nanos",
+		input: &knownpb.Duration{Nanos: 1e6},
+		want:  `"0.001s"`,
+	}, {
+		desc:  "Duration with -nanos",
+		input: &knownpb.Duration{Nanos: -1e6},
+		want:  `"-0.001s"`,
+	}, {
+		desc:  "Duration with large secs",
+		input: &knownpb.Duration{Seconds: 1e10, Nanos: 1},
+		want:  `"10000000000.000000001s"`,
+	}, {
+		desc:  "Duration with 6-digit nanos",
+		input: &knownpb.Duration{Nanos: 1e4},
+		want:  `"0.000010s"`,
+	}, {
+		desc:  "Duration with 3-digit nanos",
+		input: &knownpb.Duration{Nanos: 1e6},
+		want:  `"0.001s"`,
+	}, {
+		desc:  "Duration with -secs -nanos",
+		input: &knownpb.Duration{Seconds: -123, Nanos: -450},
+		want:  `"-123.000000450s"`,
+	}, {
+		desc:    "Duration with +secs -nanos",
+		input:   &knownpb.Duration{Seconds: 1, Nanos: -1},
+		wantErr: true,
+	}, {
+		desc:    "Duration with -secs +nanos",
+		input:   &knownpb.Duration{Seconds: -1, Nanos: 1},
+		wantErr: true,
+	}, {
+		desc:    "Duration with +secs out of range",
+		input:   &knownpb.Duration{Seconds: 315576000001},
+		wantErr: true,
+	}, {
+		desc:    "Duration with -secs out of range",
+		input:   &knownpb.Duration{Seconds: -315576000001},
+		wantErr: true,
+	}, {
+		desc:    "Duration with +nanos out of range",
+		input:   &knownpb.Duration{Seconds: 0, Nanos: 1e9},
+		wantErr: true,
+	}, {
+		desc:    "Duration with -nanos out of range",
+		input:   &knownpb.Duration{Seconds: 0, Nanos: -1e9},
+		wantErr: true,
+	}, {
+		desc:  "Timestamp zero",
+		input: &knownpb.Timestamp{},
+		want:  `"1970-01-01T00:00:00Z"`,
+	}, {
+		desc:  "Timestamp",
+		input: &knownpb.Timestamp{Seconds: 1553036601},
+		want:  `"2019-03-19T23:03:21Z"`,
+	}, {
+		desc:  "Timestamp with nanos",
+		input: &knownpb.Timestamp{Seconds: 1553036601, Nanos: 1},
+		want:  `"2019-03-19T23:03:21.000000001Z"`,
+	}, {
+		desc:  "Timestamp with 6-digit nanos",
+		input: &knownpb.Timestamp{Nanos: 1e3},
+		want:  `"1970-01-01T00:00:00.000001Z"`,
+	}, {
+		desc:  "Timestamp with 3-digit nanos",
+		input: &knownpb.Timestamp{Nanos: 1e7},
+		want:  `"1970-01-01T00:00:00.010Z"`,
+	}, {
+		desc:    "Timestamp with +secs out of range",
+		input:   &knownpb.Timestamp{Seconds: 253402300800},
+		wantErr: true,
+	}, {
+		desc:    "Timestamp with -secs out of range",
+		input:   &knownpb.Timestamp{Seconds: -62135596801},
+		wantErr: true,
+	}, {
+		desc:    "Timestamp with -nanos",
+		input:   &knownpb.Timestamp{Nanos: -1},
+		wantErr: true,
+	}, {
+		desc:    "Timestamp with +nanos out of range",
+		input:   &knownpb.Timestamp{Nanos: 1e9},
+		wantErr: true,
+	}, {
+		desc:  "FieldMask empty",
+		input: &knownpb.FieldMask{},
+		want:  `""`,
+	}, {
+		desc: "FieldMask",
+		input: &knownpb.FieldMask{
+			Paths: []string{
+				"foo",
+				"foo_bar",
+				"foo.bar_qux",
+				"_foo",
+			},
+		},
+		want: `"foo,fooBar,foo.barQux,Foo"`,
+	}, {
+		desc: "FieldMask error 1",
+		input: &knownpb.FieldMask{
+			Paths: []string{"foo_"},
+		},
+		wantErr: true,
+	}, {
+		desc: "FieldMask error 2",
+		input: &knownpb.FieldMask{
+			Paths: []string{"foo__bar"},
+		},
+		wantErr: true,
+	}, {
+		desc:  "Any empty",
+		input: &knownpb.Any{},
+		want:  `{}`,
+	}, {
+		desc: "Any",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("embedded inside Any"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("inception"),
+				},
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "foo/pb2.Nested",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "foo/pb2.Nested",
+  "optString": "embedded inside Any",
+  "optNested": {
+    "optString": "inception"
+  }
+}`,
+	}, {
+		desc: "Any without value",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+		},
+		input: &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
+		want: `{
+  "@type": "foo/pb2.Nested"
+}`,
+	}, {
+		desc: "Any without registered type",
+		mo:   jsonpb.MarshalOptions{Resolver: preg.NewTypes()},
+		input: func() proto.Message {
+			return &knownpb.Any{TypeUrl: "foo/pb2.Nested"}
+		}(),
+		wantErr: true,
+	}, {
+		desc: "Any with missing required error",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&pb2.PartialRequired{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &pb2.PartialRequired{
+				OptString: scalar.String("embedded inside Any"),
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			// TODO: Marshal may fail due to required field not set at some
+			// point. Need to ignore required not set error here.
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "pb2.PartialRequired",
+  "optString": "embedded inside Any"
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with invalid UTF8",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("abc\xff"),
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "foo/pb2.Nested",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "foo/pb2.Nested",
+  "optString": "` + "abc\xff" + `"
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with invalid value",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+		},
+		input: &knownpb.Any{
+			TypeUrl: "foo/pb2.Nested",
+			Value:   dhex("80"),
+		},
+		wantErr: true,
+	}, {
+		desc: "Any with BoolValue",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.BoolValue{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &knownpb.BoolValue{Value: true}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "type.googleapis.com/google.protobuf.BoolValue",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "type.googleapis.com/google.protobuf.BoolValue",
+  "value": true
+}`,
+	}, {
+		// TODO: Need clarification on the specification for this. See
+		// https://github.com/protocolbuffers/protobuf/issues/5390
+		desc: "Any with Empty",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &knownpb.Empty{}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "type.googleapis.com/google.protobuf.Empty",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "type.googleapis.com/google.protobuf.Empty"
+}`,
+	}, {
+		desc: "Any with StringValue containing invalid UTF8",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.StringValue{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &knownpb.StringValue{Value: "abc\xff"}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "google.protobuf.StringValue",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "google.protobuf.StringValue",
+  "value": "` + "abc\xff" + `"
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with Value of StringValue",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &knownpb.Value{Kind: &knownpb.Value_StringValue{"abc\xff"}}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "type.googleapis.com/google.protobuf.Value",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "type.googleapis.com/google.protobuf.Value",
+  "value": "` + "abc\xff" + `"
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with empty Value",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &knownpb.Value{}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "type.googleapis.com/google.protobuf.Value",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "type.googleapis.com/google.protobuf.Value"
+}`,
+	}, {
+		desc: "Any with Duration",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Duration{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &knownpb.Duration{}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "type.googleapis.com/google.protobuf.Duration",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "type.googleapis.com/google.protobuf.Duration",
+  "value": "0s"
+}`,
+	}, {
+		desc: "Any with Struct",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes(
+				(&knownpb.Struct{}).ProtoReflect().Type(),
+				(&knownpb.Value{}).ProtoReflect().Type(),
+				(&knownpb.BoolValue{}).ProtoReflect().Type(),
+				knownpb.NullValue_NULL_VALUE.Type(),
+				(&knownpb.StringValue{}).ProtoReflect().Type(),
+			),
+		},
+		input: func() proto.Message {
+			m := &knownpb.Struct{
+				Fields: map[string]*knownpb.Value{
+					"bool":   {Kind: &knownpb.Value_BoolValue{true}},
+					"null":   {Kind: &knownpb.Value_NullValue{}},
+					"string": {Kind: &knownpb.Value_StringValue{"hello"}},
+					"struct": {
+						Kind: &knownpb.Value_StructValue{
+							&knownpb.Struct{
+								Fields: map[string]*knownpb.Value{
+									"string": {Kind: &knownpb.Value_StringValue{"world"}},
+								},
+							},
+						},
+					},
+				},
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "google.protobuf.Struct",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "google.protobuf.Struct",
+  "value": {
+    "bool": true,
+    "null": null,
+    "string": "hello",
+    "struct": {
+      "string": "world"
+    }
+  }
+}`,
+	}, {
+		desc: "well known types as field values",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+		},
+		input: &pb2.KnownTypes{
+			OptBool:      &knownpb.BoolValue{Value: false},
+			OptInt32:     &knownpb.Int32Value{Value: 42},
+			OptInt64:     &knownpb.Int64Value{Value: 42},
+			OptUint32:    &knownpb.UInt32Value{Value: 42},
+			OptUint64:    &knownpb.UInt64Value{Value: 42},
+			OptFloat:     &knownpb.FloatValue{Value: 1.23},
+			OptDouble:    &knownpb.DoubleValue{Value: 3.1415},
+			OptString:    &knownpb.StringValue{Value: "hello"},
+			OptBytes:     &knownpb.BytesValue{Value: []byte("hello")},
+			OptDuration:  &knownpb.Duration{Seconds: 123},
+			OptTimestamp: &knownpb.Timestamp{Seconds: 1553036601},
+			OptStruct: &knownpb.Struct{
+				Fields: map[string]*knownpb.Value{
+					"string": {Kind: &knownpb.Value_StringValue{"hello"}},
+				},
+			},
+			OptList: &knownpb.ListValue{
+				Values: []*knownpb.Value{
+					{Kind: &knownpb.Value_NullValue{}},
+					{Kind: &knownpb.Value_StringValue{}},
+					{Kind: &knownpb.Value_StructValue{}},
+					{Kind: &knownpb.Value_ListValue{}},
+				},
+			},
+			OptValue: &knownpb.Value{},
+			OptEmpty: &knownpb.Empty{},
+			OptAny: &knownpb.Any{
+				TypeUrl: "google.protobuf.Empty",
+			},
+			OptFieldmask: &knownpb.FieldMask{
+				Paths: []string{"foo_bar", "bar_foo"},
+			},
+		},
+		want: `{
+  "optBool": false,
+  "optInt32": 42,
+  "optInt64": "42",
+  "optUint32": 42,
+  "optUint64": "42",
+  "optFloat": 1.23,
+  "optDouble": 3.1415,
+  "optString": "hello",
+  "optBytes": "aGVsbG8=",
+  "optDuration": "123s",
+  "optTimestamp": "2019-03-19T23:03:21Z",
+  "optStruct": {
+    "string": "hello"
+  },
+  "optList": [
+    null,
+    "",
+    {},
+    []
+  ],
+  "optEmpty": {},
+  "optAny": {
+    "@type": "google.protobuf.Empty"
+  },
+  "optFieldmask": "fooBar,barFoo"
+}`,
 	}}
 
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
+			// Use 2-space indentation on all MarshalOptions.
+			tt.mo.Indent = "  "
 			b, err := tt.mo.Marshal(tt.input)
-			if err != nil {
+			if err != nil && !tt.wantErr {
 				t.Errorf("Marshal() returned error: %v\n", err)
+			}
+			if err == nil && tt.wantErr {
+				t.Errorf("Marshal() got nil error, want error\n")
 			}
 			got := string(b)
 			if got != tt.want {
