@@ -332,14 +332,14 @@ func patchProtos(check func(error), repoRoot string) {
 func mustRunCommand(t *testing.T, dir string, args ...string) string {
 	t.Helper()
 	stdout := new(bytes.Buffer)
-	combined := new(bytes.Buffer)
+	stderr := new(bytes.Buffer)
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Dir = dir
 	cmd.Env = append(os.Environ(), "PWD="+dir)
-	cmd.Stdout = io.MultiWriter(stdout, combined)
-	cmd.Stderr = combined
+	cmd.Stdout = stdout
+	cmd.Stderr = stderr
 	if err := cmd.Run(); err != nil {
-		t.Fatalf("executing (%v): %v\n%s", strings.Join(args, " "), err, combined.String())
+		t.Fatalf("executing (%v): %v\n%s%s", strings.Join(args, " "), err, stdout.String(), stderr.String())
 	}
 	return stdout.String()
 }
