@@ -45,8 +45,10 @@ func loadEnumType(t reflect.Type) pref.EnumType {
 		m.Store(n, e)
 		return e
 	})
-	enumTypeCache.Store(t, et)
-	return et.(pref.EnumType)
+	if et, ok := enumTypeCache.LoadOrStore(t, et); ok {
+		return et.(pref.EnumType)
+	}
+	return et
 }
 
 type enumWrapper struct {
@@ -83,8 +85,8 @@ var enumNumberType = reflect.TypeOf(pref.EnumNumber(0))
 // which must be an int32 kind and not implement the v2 API already.
 func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	// Fast-path: check if an EnumDescriptor is cached for this concrete type.
-	if v, ok := enumDescCache.Load(t); ok {
-		return v.(pref.EnumDescriptor)
+	if ed, ok := enumDescCache.Load(t); ok {
+		return ed.(pref.EnumDescriptor)
 	}
 
 	// Slow-path: initialize EnumDescriptor from the proto descriptor.
@@ -157,6 +159,8 @@ func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	if err != nil {
 		panic(err)
 	}
-	enumDescCache.Store(t, ed)
+	if ed, ok := enumDescCache.LoadOrStore(t, ed); ok {
+		return ed.(pref.EnumDescriptor)
+	}
 	return ed
 }

@@ -45,10 +45,13 @@ func loadMessageType(t reflect.Type) *pimpl.MessageType {
 		p := reflect.New(t.Elem()).Interface()
 		return mt.MessageOf(p)
 	})
-	messageTypeCache.Store(t, mt)
+	if mt, ok := messageTypeCache.LoadOrStore(t, mt); ok {
+		return mt.(*pimpl.MessageType)
+	}
 	return mt
 }
 
+var messageDescLock sync.Mutex
 var messageDescCache sync.Map // map[reflect.Type]protoreflect.MessageDescriptor
 
 // loadMessageDesc returns an MessageDescriptor derived from the Go type,
@@ -70,6 +73,15 @@ func (ms messageDescSet) Load(t reflect.Type) pref.MessageDescriptor {
 	}
 
 	// Slow-path: initialize MessageDescriptor from the Go type.
+	//
+	// Hold a global lock during message creation to ensure that each Go type
+	// maps to exactly one MessageDescriptor. After obtaining the lock, we must
+	// check again whether the message has already been handled.
+	messageDescLock.Lock()
+	defer messageDescLock.Unlock()
+	if mi, ok := messageDescCache.Load(t); ok {
+		return mi.(pref.MessageDescriptor)
+	}
 
 	// Processing t recursively populates descs and types with all sub-messages.
 	// The descriptor for the first type is guaranteed to be at the front.

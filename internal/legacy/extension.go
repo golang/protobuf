@@ -134,7 +134,9 @@ func extensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 		Tag:           ptag.Marshal(t, enumName),
 		Filename:      filename,
 	}
-	extensionDescCache.Store(t, d)
+	if d, ok := extensionDescCache.LoadOrStore(t, d); ok {
+		return d.(*papi.ExtensionDesc)
+	}
 	return d
 }
 
@@ -145,10 +147,6 @@ func extensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 func extensionTypeFromDesc(d *papi.ExtensionDesc) pref.ExtensionType {
 	// Fast-path: check whether an extension type is already nested within.
 	if d.Type != nil {
-		// Cache descriptor for future extensionDescFromType operation.
-		// This assumes that there is only one legacy protoapi.ExtensionDesc
-		// that wraps any given specific protoreflect.ExtensionType.
-		extensionDescCache.LoadOrStore(d.Type, d)
 		return d.Type
 	}
 
@@ -192,8 +190,10 @@ func extensionTypeFromDesc(d *papi.ExtensionDesc) pref.ExtensionType {
 	xt := pimpl.Export{}.ExtensionTypeOf(xd, zv)
 
 	// Cache the conversion for both directions.
-	extensionDescCache.Store(xt, d)
-	extensionTypeCache.Store(dk, xt)
+	extensionDescCache.LoadOrStore(xt, d)
+	if xt, ok := extensionTypeCache.LoadOrStore(dk, xt); ok {
+		return xt.(pref.ExtensionType)
+	}
 	return xt
 }
 
