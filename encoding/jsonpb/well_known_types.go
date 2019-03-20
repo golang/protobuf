@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/v2/internal/errors"
+	"github.com/golang/protobuf/v2/internal/fieldnum"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -86,15 +87,12 @@ func (e encoder) marshalAny(m pref.Message) error {
 	msgType := m.Type()
 	knownFields := m.KnownFields()
 
-	const typeNum = 1  // string type_url.
-	const valueNum = 2 // bytes value.
-
 	// Start writing the JSON object.
 	e.StartObject()
 	defer e.EndObject()
 
-	if !knownFields.Has(typeNum) {
-		if !knownFields.Has(valueNum) {
+	if !knownFields.Has(fieldnum.Any_TypeUrl) {
+		if !knownFields.Has(fieldnum.Any_Value) {
 			// If message is empty, marshal out empty JSON object.
 			return nil
 		} else {
@@ -103,8 +101,8 @@ func (e encoder) marshalAny(m pref.Message) error {
 		}
 	}
 
-	typeVal := knownFields.Get(typeNum)
-	valueVal := knownFields.Get(valueNum)
+	typeVal := knownFields.Get(fieldnum.Any_TypeUrl)
+	valueVal := knownFields.Get(fieldnum.Any_Value)
 
 	// Marshal out @type field.
 	typeURL := typeVal.String()
@@ -151,7 +149,8 @@ func (e encoder) marshalKnownScalar(m pref.Message) error {
 	fieldDescs := msgType.Fields()
 	knownFields := m.KnownFields()
 
-	const num = 1 // Field "value", type is dependent on msgType.
+	// The "value" field has the same field number for all wrapper types.
+	const num = fieldnum.BoolValue_Value
 	fd := fieldDescs.ByNumber(num)
 	val := knownFields.Get(num)
 	return e.marshalSingular(val, fd)
@@ -162,9 +161,8 @@ func (e encoder) marshalStruct(m pref.Message) error {
 	fieldDescs := msgType.Fields()
 	knownFields := m.KnownFields()
 
-	const num = 1 // map<string, Value> fields.
-	fd := fieldDescs.ByNumber(num)
-	val := knownFields.Get(num)
+	fd := fieldDescs.ByNumber(fieldnum.Struct_Fields)
+	val := knownFields.Get(fieldnum.Struct_Fields)
 	return e.marshalMap(val.Map(), fd)
 }
 
@@ -173,9 +171,8 @@ func (e encoder) marshalListValue(m pref.Message) error {
 	fieldDescs := msgType.Fields()
 	knownFields := m.KnownFields()
 
-	const num = 1 // repeated Value values.
-	fd := fieldDescs.ByNumber(num)
-	val := knownFields.Get(num)
+	fd := fieldDescs.ByNumber(fieldnum.ListValue_Values)
+	val := knownFields.Get(fieldnum.ListValue_Values)
 	return e.marshalList(val.List(), fd)
 }
 
@@ -216,11 +213,8 @@ func (e encoder) marshalDuration(m pref.Message) error {
 	msgType := m.Type()
 	knownFields := m.KnownFields()
 
-	const secsNum = 1  // int64 seconds.
-	const nanosNum = 2 // int32 nanos.
-
-	secsVal := knownFields.Get(secsNum)
-	nanosVal := knownFields.Get(nanosNum)
+	secsVal := knownFields.Get(fieldnum.Duration_Seconds)
+	nanosVal := knownFields.Get(fieldnum.Duration_Nanos)
 	secs := secsVal.Int()
 	nanos := nanosVal.Int()
 	if secs < -maxSecondsInDuration || secs > maxSecondsInDuration {
@@ -258,11 +252,8 @@ func (e encoder) marshalTimestamp(m pref.Message) error {
 	msgType := m.Type()
 	knownFields := m.KnownFields()
 
-	const secsNum = 1  // int64 seconds.
-	const nanosNum = 2 // int32 nanos.
-
-	secsVal := knownFields.Get(secsNum)
-	nanosVal := knownFields.Get(nanosNum)
+	secsVal := knownFields.Get(fieldnum.Timestamp_Seconds)
+	nanosVal := knownFields.Get(fieldnum.Timestamp_Nanos)
 	secs := secsVal.Int()
 	nanos := nanosVal.Int()
 	if secs < minTimestampSeconds || secs > maxTimestampSeconds {
@@ -287,8 +278,7 @@ func (e encoder) marshalFieldMask(m pref.Message) error {
 	knownFields := m.KnownFields()
 	name := msgType.FullName()
 
-	const num = 1 // repeated string paths.
-	val := knownFields.Get(num)
+	val := knownFields.Get(fieldnum.FieldMask_Paths)
 	list := val.List()
 	paths := make([]string, 0, list.Len())
 

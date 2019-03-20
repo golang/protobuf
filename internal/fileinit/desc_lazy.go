@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"reflect"
 
-	descfield "github.com/golang/protobuf/v2/internal/descfield"
 	defval "github.com/golang/protobuf/v2/internal/encoding/defval"
 	wire "github.com/golang/protobuf/v2/internal/encoding/wire"
+	fieldnum "github.com/golang/protobuf/v2/internal/fieldnum"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
@@ -345,16 +345,16 @@ func (fd *fileDesc) unmarshalFull(b []byte) {
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.FileDescriptorProto_PublicDependency:
+			case fieldnum.FileDescriptorProto_PublicDependency:
 				fd.lazy.imports[v].IsPublic = true
-			case descfield.FileDescriptorProto_WeakDependency:
+			case fieldnum.FileDescriptorProto_WeakDependency:
 				fd.lazy.imports[v].IsWeak = true
 			}
 		case wire.BytesType:
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.FileDescriptorProto_Syntax:
+			case fieldnum.FileDescriptorProto_Syntax:
 				hasSyntax = true
 				switch string(v) {
 				case "proto2":
@@ -364,23 +364,23 @@ func (fd *fileDesc) unmarshalFull(b []byte) {
 				default:
 					panic("invalid syntax")
 				}
-			case descfield.FileDescriptorProto_Dependency:
+			case fieldnum.FileDescriptorProto_Dependency:
 				fd.lazy.imports = append(fd.lazy.imports, pref.FileImport{
 					FileDescriptor: ptype.PlaceholderFile(nb.MakeString(v), ""),
 				})
-			case descfield.FileDescriptorProto_EnumType:
+			case fieldnum.FileDescriptorProto_EnumType:
 				fd.enums.list[enumIdx].unmarshalFull(v, nb)
 				enumIdx++
-			case descfield.FileDescriptorProto_MessageType:
+			case fieldnum.FileDescriptorProto_MessageType:
 				fd.messages.list[messageIdx].unmarshalFull(v, nb)
 				messageIdx++
-			case descfield.FileDescriptorProto_Extension:
+			case fieldnum.FileDescriptorProto_Extension:
 				fd.extensions.list[extensionIdx].unmarshalFull(v, nb)
 				extensionIdx++
-			case descfield.FileDescriptorProto_Service:
+			case fieldnum.FileDescriptorProto_Service:
 				fd.services.list[serviceIdx].unmarshalFull(v, nb)
 				serviceIdx++
-			case descfield.FileDescriptorProto_Options:
+			case fieldnum.FileDescriptorProto_Options:
 				fd.lazy.options = append(fd.lazy.options, v...)
 			}
 		default:
@@ -406,13 +406,13 @@ func (ed *enumDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.EnumDescriptorProto_Value:
+			case fieldnum.EnumDescriptorProto_Value:
 				rawValues = append(rawValues, v)
-			case descfield.EnumDescriptorProto_ReservedName:
+			case fieldnum.EnumDescriptorProto_ReservedName:
 				ed.lazy.resvNames.list = append(ed.lazy.resvNames.list, pref.Name(nb.MakeString(v)))
-			case descfield.EnumDescriptorProto_ReservedRange:
+			case fieldnum.EnumDescriptorProto_ReservedRange:
 				ed.lazy.resvRanges.list = append(ed.lazy.resvRanges.list, unmarshalEnumReservedRange(v))
-			case descfield.EnumDescriptorProto_Options:
+			case fieldnum.EnumDescriptorProto_Options:
 				ed.lazy.options = append(ed.lazy.options, v...)
 			}
 		default:
@@ -440,9 +440,9 @@ func unmarshalEnumReservedRange(b []byte) (r [2]pref.EnumNumber) {
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.EnumDescriptorProto_EnumReservedRange_Start:
+			case fieldnum.EnumDescriptorProto_EnumReservedRange_Start:
 				r[0] = pref.EnumNumber(v)
-			case descfield.EnumDescriptorProto_EnumReservedRange_End:
+			case fieldnum.EnumDescriptorProto_EnumReservedRange_End:
 				r[1] = pref.EnumNumber(v)
 			}
 		default:
@@ -466,16 +466,16 @@ func (vd *enumValueDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, 
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.EnumValueDescriptorProto_Number:
+			case fieldnum.EnumValueDescriptorProto_Number:
 				vd.number = pref.EnumNumber(v)
 			}
 		case wire.BytesType:
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.EnumValueDescriptorProto_Name:
+			case fieldnum.EnumValueDescriptorProto_Name:
 				vd.fullName = nb.AppendFullName(pd.FullName(), v)
-			case descfield.EnumValueDescriptorProto_Options:
+			case fieldnum.EnumValueDescriptorProto_Options:
 				vd.options = append(vd.options, v...)
 			}
 		default:
@@ -499,28 +499,28 @@ func (md *messageDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.DescriptorProto_Field:
+			case fieldnum.DescriptorProto_Field:
 				rawFields = append(rawFields, v)
-			case descfield.DescriptorProto_OneofDecl:
+			case fieldnum.DescriptorProto_OneofDecl:
 				rawOneofs = append(rawOneofs, v)
-			case descfield.DescriptorProto_ReservedName:
+			case fieldnum.DescriptorProto_ReservedName:
 				md.lazy.resvNames.list = append(md.lazy.resvNames.list, pref.Name(nb.MakeString(v)))
-			case descfield.DescriptorProto_ReservedRange:
+			case fieldnum.DescriptorProto_ReservedRange:
 				md.lazy.resvRanges.list = append(md.lazy.resvRanges.list, unmarshalMessageReservedRange(v))
-			case descfield.DescriptorProto_ExtensionRange:
+			case fieldnum.DescriptorProto_ExtensionRange:
 				r, opts := unmarshalMessageExtensionRange(v)
 				md.lazy.extRanges.list = append(md.lazy.extRanges.list, r)
 				md.lazy.extRangeOptions = append(md.lazy.extRangeOptions, opts)
-			case descfield.DescriptorProto_EnumType:
+			case fieldnum.DescriptorProto_EnumType:
 				md.enums.list[enumIdx].unmarshalFull(v, nb)
 				enumIdx++
-			case descfield.DescriptorProto_NestedType:
+			case fieldnum.DescriptorProto_NestedType:
 				md.messages.list[messageIdx].unmarshalFull(v, nb)
 				messageIdx++
-			case descfield.DescriptorProto_Extension:
+			case fieldnum.DescriptorProto_Extension:
 				md.extensions.list[extensionIdx].unmarshalFull(v, nb)
 				extensionIdx++
-			case descfield.DescriptorProto_Options:
+			case fieldnum.DescriptorProto_Options:
 				md.unmarshalOptions(v)
 			}
 		default:
@@ -558,9 +558,9 @@ func (md *messageDesc) unmarshalOptions(b []byte) {
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.MessageOptions_MapEntry:
+			case fieldnum.MessageOptions_MapEntry:
 				md.lazy.isMapEntry = wire.DecodeBool(v)
-			case descfield.MessageOptions_MessageSetWireFormat:
+			case fieldnum.MessageOptions_MessageSetWireFormat:
 				md.lazy.isMessageSet = wire.DecodeBool(v)
 			}
 		default:
@@ -579,9 +579,9 @@ func unmarshalMessageReservedRange(b []byte) (r [2]pref.FieldNumber) {
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.DescriptorProto_ReservedRange_Start:
+			case fieldnum.DescriptorProto_ReservedRange_Start:
 				r[0] = pref.FieldNumber(v)
-			case descfield.DescriptorProto_ReservedRange_End:
+			case fieldnum.DescriptorProto_ReservedRange_End:
 				r[1] = pref.FieldNumber(v)
 			}
 		default:
@@ -601,16 +601,16 @@ func unmarshalMessageExtensionRange(b []byte) (r [2]pref.FieldNumber, opts []byt
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.DescriptorProto_ExtensionRange_Start:
+			case fieldnum.DescriptorProto_ExtensionRange_Start:
 				r[0] = pref.FieldNumber(v)
-			case descfield.DescriptorProto_ExtensionRange_End:
+			case fieldnum.DescriptorProto_ExtensionRange_End:
 				r[1] = pref.FieldNumber(v)
 			}
 		case wire.BytesType:
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.DescriptorProto_ExtensionRange_Options:
+			case fieldnum.DescriptorProto_ExtensionRange_Options:
 				opts = append(opts, v...)
 			}
 		default:
@@ -636,13 +636,13 @@ func (fd *fieldDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.FieldDescriptorProto_Number:
+			case fieldnum.FieldDescriptorProto_Number:
 				fd.number = pref.FieldNumber(v)
-			case descfield.FieldDescriptorProto_Label:
+			case fieldnum.FieldDescriptorProto_Label:
 				fd.cardinality = pref.Cardinality(v)
-			case descfield.FieldDescriptorProto_Type:
+			case fieldnum.FieldDescriptorProto_Type:
 				fd.kind = pref.Kind(v)
-			case descfield.FieldDescriptorProto_OneofIndex:
+			case fieldnum.FieldDescriptorProto_OneofIndex:
 				// In messageDesc.UnmarshalFull, we allocate slices for both
 				// the field and oneof descriptors before unmarshaling either
 				// of them. This ensures pointers to slice elements are stable.
@@ -657,17 +657,17 @@ func (fd *fieldDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.FieldDescriptorProto_Name:
+			case fieldnum.FieldDescriptorProto_Name:
 				fd.fullName = nb.AppendFullName(pd.FullName(), v)
-			case descfield.FieldDescriptorProto_JsonName:
+			case fieldnum.FieldDescriptorProto_JsonName:
 				fd.hasJSONName = true
 				fd.jsonName = nb.MakeString(v)
-			case descfield.FieldDescriptorProto_DefaultValue:
+			case fieldnum.FieldDescriptorProto_DefaultValue:
 				fd.defVal.has = true
 				rawDefVal = v
-			case descfield.FieldDescriptorProto_TypeName:
+			case fieldnum.FieldDescriptorProto_TypeName:
 				rawTypeName = v
-			case descfield.FieldDescriptorProto_Options:
+			case fieldnum.FieldDescriptorProto_Options:
 				fd.unmarshalOptions(v)
 			}
 		default:
@@ -706,10 +706,10 @@ func (fd *fieldDesc) unmarshalOptions(b []byte) {
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.FieldOptions_Packed:
+			case fieldnum.FieldOptions_Packed:
 				fd.hasPacked = true
 				fd.isPacked = wire.DecodeBool(v)
-			case descfield.FieldOptions_Weak:
+			case fieldnum.FieldOptions_Weak:
 				fd.isWeak = wire.DecodeBool(v)
 			}
 		default:
@@ -732,9 +732,9 @@ func (od *oneofDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.OneofDescriptorProto_Name:
+			case fieldnum.OneofDescriptorProto_Name:
 				od.fullName = nb.AppendFullName(pd.FullName(), v)
-			case descfield.OneofDescriptorProto_Options:
+			case fieldnum.OneofDescriptorProto_Options:
 				od.options = append(od.options, v...)
 			}
 		default:
@@ -757,22 +757,22 @@ func (xd *extensionDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.FieldDescriptorProto_Label:
+			case fieldnum.FieldDescriptorProto_Label:
 				xd.lazy.cardinality = pref.Cardinality(v)
-			case descfield.FieldDescriptorProto_Type:
+			case fieldnum.FieldDescriptorProto_Type:
 				xd.lazy.kind = pref.Kind(v)
 			}
 		case wire.BytesType:
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.FieldDescriptorProto_JsonName:
+			case fieldnum.FieldDescriptorProto_JsonName:
 				xd.lazy.hasJSONName = true
 				xd.lazy.jsonName = nb.MakeString(v)
-			case descfield.FieldDescriptorProto_DefaultValue:
+			case fieldnum.FieldDescriptorProto_DefaultValue:
 				xd.lazy.defVal.has = true
 				rawDefVal = v
-			case descfield.FieldDescriptorProto_Options:
+			case fieldnum.FieldDescriptorProto_Options:
 				xd.unmarshalOptions(v)
 			}
 		default:
@@ -802,7 +802,7 @@ func (xd *extensionDesc) unmarshalOptions(b []byte) {
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.FieldOptions_Packed:
+			case fieldnum.FieldOptions_Packed:
 				xd.lazy.isPacked = wire.DecodeBool(v)
 			}
 		default:
@@ -823,9 +823,9 @@ func (sd *serviceDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.ServiceDescriptorProto_Method:
+			case fieldnum.ServiceDescriptorProto_Method:
 				rawMethods = append(rawMethods, v)
-			case descfield.ServiceDescriptorProto_Options:
+			case fieldnum.ServiceDescriptorProto_Options:
 				sd.lazy.options = append(sd.lazy.options, v...)
 			}
 		default:
@@ -857,18 +857,18 @@ func (md *methodDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd 
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.MethodDescriptorProto_ClientStreaming:
+			case fieldnum.MethodDescriptorProto_ClientStreaming:
 				md.isStreamingClient = wire.DecodeBool(v)
-			case descfield.MethodDescriptorProto_ServerStreaming:
+			case fieldnum.MethodDescriptorProto_ServerStreaming:
 				md.isStreamingServer = wire.DecodeBool(v)
 			}
 		case wire.BytesType:
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.MethodDescriptorProto_Name:
+			case fieldnum.MethodDescriptorProto_Name:
 				md.fullName = nb.AppendFullName(pd.FullName(), v)
-			case descfield.MethodDescriptorProto_Options:
+			case fieldnum.MethodDescriptorProto_Options:
 				md.options = append(md.options, v...)
 			}
 		default:

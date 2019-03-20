@@ -29,7 +29,7 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/v2/encoding/textpb"
-	"github.com/golang/protobuf/v2/internal/descfield"
+	"github.com/golang/protobuf/v2/internal/fieldnum"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	"github.com/golang/protobuf/v2/reflect/protodesc"
@@ -520,9 +520,9 @@ type Message struct {
 func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.MessageDescriptor) *Message {
 	var loc Location
 	if parent != nil {
-		loc = parent.Location.appendPath(descfield.DescriptorProto_NestedType, int32(desc.Index()))
+		loc = parent.Location.appendPath(fieldnum.DescriptorProto_NestedType, int32(desc.Index()))
 	} else {
-		loc = f.location(descfield.FileDescriptorProto_MessageType, int32(desc.Index()))
+		loc = f.location(fieldnum.FileDescriptorProto_MessageType, int32(desc.Index()))
 	}
 	message := &Message{
 		Desc:     desc,
@@ -638,11 +638,11 @@ func newField(gen *Plugin, f *File, message *Message, desc protoreflect.FieldDes
 	var loc Location
 	switch {
 	case desc.ExtendedType() != nil && message == nil:
-		loc = f.location(descfield.FileDescriptorProto_Extension, int32(desc.Index()))
+		loc = f.location(fieldnum.FileDescriptorProto_Extension, int32(desc.Index()))
 	case desc.ExtendedType() != nil && message != nil:
-		loc = message.Location.appendPath(descfield.DescriptorProto_Extension, int32(desc.Index()))
+		loc = message.Location.appendPath(fieldnum.DescriptorProto_Extension, int32(desc.Index()))
 	default:
-		loc = message.Location.appendPath(descfield.DescriptorProto_Field, int32(desc.Index()))
+		loc = message.Location.appendPath(fieldnum.DescriptorProto_Field, int32(desc.Index()))
 	}
 	field := &Field{
 		Desc:          desc,
@@ -703,7 +703,7 @@ func newOneof(gen *Plugin, f *File, message *Message, desc protoreflect.OneofDes
 		Desc:          desc,
 		ParentMessage: message,
 		GoName:        camelCase(string(desc.Name())),
-		Location:      message.Location.appendPath(descfield.DescriptorProto_OneofDecl, int32(desc.Index())),
+		Location:      message.Location.appendPath(fieldnum.DescriptorProto_OneofDecl, int32(desc.Index())),
 	}
 }
 
@@ -725,9 +725,9 @@ type Enum struct {
 func newEnum(gen *Plugin, f *File, parent *Message, desc protoreflect.EnumDescriptor) *Enum {
 	var loc Location
 	if parent != nil {
-		loc = parent.Location.appendPath(descfield.DescriptorProto_EnumType, int32(desc.Index()))
+		loc = parent.Location.appendPath(fieldnum.DescriptorProto_EnumType, int32(desc.Index()))
 	} else {
-		loc = f.location(descfield.FileDescriptorProto_EnumType, int32(desc.Index()))
+		loc = f.location(fieldnum.FileDescriptorProto_EnumType, int32(desc.Index()))
 	}
 	enum := &Enum{
 		Desc:     desc,
@@ -762,7 +762,7 @@ func newEnumValue(gen *Plugin, f *File, message *Message, enum *Enum, desc proto
 	return &EnumValue{
 		Desc:     desc,
 		GoIdent:  f.GoImportPath.Ident(name),
-		Location: enum.Location.appendPath(descfield.EnumDescriptorProto_Value, int32(desc.Index())),
+		Location: enum.Location.appendPath(fieldnum.EnumDescriptorProto_Value, int32(desc.Index())),
 	}
 }
 
@@ -779,7 +779,7 @@ func newService(gen *Plugin, f *File, desc protoreflect.ServiceDescriptor) *Serv
 	service := &Service{
 		Desc:     desc,
 		GoName:   camelCase(string(desc.Name())),
-		Location: f.location(descfield.FileDescriptorProto_Service, int32(desc.Index())),
+		Location: f.location(fieldnum.FileDescriptorProto_Service, int32(desc.Index())),
 	}
 	for i, mdescs := 0, desc.Methods(); i < mdescs.Len(); i++ {
 		service.Methods = append(service.Methods, newMethod(gen, f, service, mdescs.Get(i)))
@@ -803,7 +803,7 @@ func newMethod(gen *Plugin, f *File, service *Service, desc protoreflect.MethodD
 		Desc:          desc,
 		GoName:        camelCase(string(desc.Name())),
 		ParentService: service,
-		Location:      service.Location.appendPath(descfield.ServiceDescriptorProto_Method, int32(desc.Index())),
+		Location:      service.Location.appendPath(fieldnum.ServiceDescriptorProto_Method, int32(desc.Index())),
 	}
 	return method
 }

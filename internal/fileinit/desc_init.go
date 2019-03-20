@@ -5,8 +5,8 @@
 package fileinit
 
 import (
-	descfield "github.com/golang/protobuf/v2/internal/descfield"
 	wire "github.com/golang/protobuf/v2/internal/encoding/wire"
+	fieldnum "github.com/golang/protobuf/v2/internal/fieldnum"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -89,36 +89,36 @@ func (fd *fileDesc) unmarshalSeed(b []byte) {
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.FileDescriptorProto_Name:
+			case fieldnum.FileDescriptorProto_Name:
 				fd.path = nb.MakeString(v)
-			case descfield.FileDescriptorProto_Package:
+			case fieldnum.FileDescriptorProto_Package:
 				fd.protoPackage = pref.FullName(nb.MakeString(v))
-			case descfield.FileDescriptorProto_EnumType:
-				if prevField != descfield.FileDescriptorProto_EnumType {
+			case fieldnum.FileDescriptorProto_EnumType:
+				if prevField != fieldnum.FileDescriptorProto_EnumType {
 					if numEnums > 0 {
 						panic("non-contiguous repeated field")
 					}
 					posEnums = len(b0) - len(b) - n - m
 				}
 				numEnums++
-			case descfield.FileDescriptorProto_MessageType:
-				if prevField != descfield.FileDescriptorProto_MessageType {
+			case fieldnum.FileDescriptorProto_MessageType:
+				if prevField != fieldnum.FileDescriptorProto_MessageType {
 					if numMessages > 0 {
 						panic("non-contiguous repeated field")
 					}
 					posMessages = len(b0) - len(b) - n - m
 				}
 				numMessages++
-			case descfield.FileDescriptorProto_Extension:
-				if prevField != descfield.FileDescriptorProto_Extension {
+			case fieldnum.FileDescriptorProto_Extension:
+				if prevField != fieldnum.FileDescriptorProto_Extension {
 					if numExtensions > 0 {
 						panic("non-contiguous repeated field")
 					}
 					posExtensions = len(b0) - len(b) - n - m
 				}
 				numExtensions++
-			case descfield.FileDescriptorProto_Service:
-				if prevField != descfield.FileDescriptorProto_Service {
+			case fieldnum.FileDescriptorProto_Service:
+				if prevField != fieldnum.FileDescriptorProto_Service {
 					if numServices > 0 {
 						panic("non-contiguous repeated field")
 					}
@@ -200,7 +200,7 @@ func (ed *enumDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, pd pr
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.EnumDescriptorProto_Name:
+			case fieldnum.EnumDescriptorProto_Name:
 				ed.fullName = nb.AppendFullName(pd.FullName(), v)
 			}
 		default:
@@ -227,26 +227,26 @@ func (md *messageDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, pd
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.DescriptorProto_Name:
+			case fieldnum.DescriptorProto_Name:
 				md.fullName = nb.AppendFullName(pd.FullName(), v)
-			case descfield.DescriptorProto_EnumType:
-				if prevField != descfield.DescriptorProto_EnumType {
+			case fieldnum.DescriptorProto_EnumType:
+				if prevField != fieldnum.DescriptorProto_EnumType {
 					if numEnums > 0 {
 						panic("non-contiguous repeated field")
 					}
 					posEnums = len(b0) - len(b) - n - m
 				}
 				numEnums++
-			case descfield.DescriptorProto_NestedType:
-				if prevField != descfield.DescriptorProto_NestedType {
+			case fieldnum.DescriptorProto_NestedType:
+				if prevField != fieldnum.DescriptorProto_NestedType {
 					if numMessages > 0 {
 						panic("non-contiguous repeated field")
 					}
 					posMessages = len(b0) - len(b) - n - m
 				}
 				numMessages++
-			case descfield.DescriptorProto_Extension:
-				if prevField != descfield.DescriptorProto_Extension {
+			case fieldnum.DescriptorProto_Extension:
+				if prevField != fieldnum.DescriptorProto_Extension {
 					if numExtensions > 0 {
 						panic("non-contiguous repeated field")
 					}
@@ -316,14 +316,14 @@ func (xd *extensionDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, 
 			v, m := wire.ConsumeVarint(b)
 			b = b[m:]
 			switch num {
-			case descfield.FieldDescriptorProto_Number:
+			case fieldnum.FieldDescriptorProto_Number:
 				xd.number = pref.FieldNumber(v)
 			}
 		case wire.BytesType:
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.FieldDescriptorProto_Name:
+			case fieldnum.FieldDescriptorProto_Name:
 				xd.fullName = nb.AppendFullName(pd.FullName(), v)
 			}
 		default:
@@ -346,7 +346,7 @@ func (sd *serviceDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, pd
 			v, m := wire.ConsumeBytes(b)
 			b = b[m:]
 			switch num {
-			case descfield.ServiceDescriptorProto_Name:
+			case fieldnum.ServiceDescriptorProto_Name:
 				sd.fullName = nb.AppendFullName(pd.FullName(), v)
 			}
 		default:

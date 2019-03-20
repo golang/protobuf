@@ -27,6 +27,18 @@ import (
 )
 
 func init() {
+	// Determine repository root path.
+	out, err := exec.Command("git", "rev-parse", "--show-toplevel").CombinedOutput()
+	check(err)
+	repoRoot = strings.TrimSpace(string(out))
+
+	// Determine the module path.
+	cmd := exec.Command("go", "list", "-m", "-f", "{{.Path}}")
+	cmd.Dir = repoRoot
+	out, err = cmd.CombinedOutput()
+	check(err)
+	modulePath = strings.TrimSpace(string(out))
+
 	// When the environment variable RUN_AS_PROTOC_PLUGIN is set,
 	// we skip running main and instead act as a protoc plugin.
 	// This allows the binary to pass itself to protoc.
@@ -42,7 +54,7 @@ func init() {
 						switch plugin {
 						case "go":
 							gengo.GenerateFile(gen, file)
-							generateDescriptorFields(gen, file)
+							generateFieldNumbers(gen, file)
 						case "gogrpc":
 							gengogrpc.GenerateFile(gen, file)
 						}
@@ -78,18 +90,6 @@ func main() {
 	if protoRoot == "" {
 		panic("protobuf source root is not set")
 	}
-
-	// Determine repository root path.
-	out, err := exec.Command("git", "rev-parse", "--show-toplevel").CombinedOutput()
-	check(err)
-	repoRoot = strings.TrimSpace(string(out))
-
-	// Determine the module path.
-	cmd := exec.Command("go", "list", "-m", "-f", "{{.Path}}")
-	cmd.Dir = repoRoot
-	out, err = cmd.CombinedOutput()
-	check(err)
-	modulePath = strings.TrimSpace(string(out))
 
 	generateLocalProtos()
 	generateRemoteProtos()
@@ -208,18 +208,19 @@ func protoc(plugins string, args ...string) {
 	check(err)
 }
 
-// generateDescriptorFields generates an internal package for descriptor.proto.
-func generateDescriptorFields(gen *protogen.Plugin, file *protogen.File) {
-	if file.Desc.Path() != "google/protobuf/descriptor.proto" {
+// generateFieldNumbers generates an internal package for descriptor.proto
+// and well-known types.
+func generateFieldNumbers(gen *protogen.Plugin, file *protogen.File) {
+	if file.Desc.Package() != "google.protobuf" {
 		return
 	}
 
-	importPath := modulePath + "/internal/descfield"
-	g := gen.NewGeneratedFile(importPath+"/field_gen.go", protogen.GoImportPath(importPath))
+	importPath := modulePath + "/internal/fieldnum"
+	base := strings.TrimSuffix(path.Base(file.Desc.Path()), ".proto")
+	g := gen.NewGeneratedFile(importPath+"/"+base+"_gen.go", protogen.GoImportPath(importPath))
 	for _, s := range generatedPreamble {
 		g.P(s)
 	}
-	g.P("// Package descfield contains constants for field numbers in descriptor.proto.")
 	g.P("package ", path.Base(importPath))
 	g.P("")
 
