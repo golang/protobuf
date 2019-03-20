@@ -420,7 +420,7 @@ func (tm *TextMarshaler) writeStruct(w *textWriter, sv reflect.Value) error {
 				// in writeAny.
 				if fv.Kind() == reflect.Ptr && fv.IsNil() {
 					// Use errors.New so writeAny won't render quotes.
-					msg := errors.New("/* nil */")
+					msg := errors.New("# nil")
 					fv = reflect.ValueOf(&msg).Elem()
 				}
 			}
@@ -594,7 +594,7 @@ func writeString(w *textWriter, s string) error {
 
 func writeUnknownStruct(w *textWriter, data []byte) (err error) {
 	if !w.compact {
-		if _, err := fmt.Fprintf(w, "/* %d unknown bytes */\n", len(data)); err != nil {
+		if _, err := fmt.Fprintf(w, "# %d unknown bytes\n", len(data)); err != nil {
 			return err
 		}
 	}
@@ -602,7 +602,7 @@ func writeUnknownStruct(w *textWriter, data []byte) (err error) {
 	for b.index < len(b.buf) {
 		x, err := b.DecodeVarint()
 		if err != nil {
-			_, err := fmt.Fprintf(w, "/* %v */\n", err)
+			_, err := fmt.Fprintf(w, "# %v\n", err)
 			return err
 		}
 		wire, tag := x&7, x>>3
@@ -632,7 +632,7 @@ func writeUnknownStruct(w *textWriter, data []byte) (err error) {
 			if e == nil {
 				_, err = fmt.Fprintf(w, "%q", buf)
 			} else {
-				_, err = fmt.Fprintf(w, "/* %v */", e)
+				_, err = fmt.Fprintf(w, "# %v", e)
 			}
 		case WireFixed32:
 			x, err = b.DecodeFixed32()
@@ -647,7 +647,7 @@ func writeUnknownStruct(w *textWriter, data []byte) (err error) {
 			x, err = b.DecodeVarint()
 			err = writeUnknownInt(w, x, err)
 		default:
-			_, err = fmt.Fprintf(w, "/* unknown wire type %d */", wire)
+			_, err = fmt.Fprintf(w, "# unknown wire type %d", wire)
 		}
 		if err != nil {
 			return err
@@ -663,7 +663,7 @@ func writeUnknownInt(w *textWriter, x uint64, err error) error {
 	if err == nil {
 		_, err = fmt.Fprint(w, x)
 	} else {
-		_, err = fmt.Fprintf(w, "/* %v */", err)
+		_, err = fmt.Fprintf(w, "# %v", err)
 	}
 	return err
 }

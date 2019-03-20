@@ -151,7 +151,7 @@ bikeshed: BLUE
 SomeGroup {
   group_field: 8
 }
-/* 2 unknown bytes */
+# 2 unknown bytes
 13: 4
 [test_proto.Ext.more]: <
   data: "Big gobs for big rats"
@@ -159,9 +159,9 @@ SomeGroup {
 [test_proto.greeting]: "adg"
 [test_proto.greeting]: "easy"
 [test_proto.greeting]: "cow"
-/* 13 unknown bytes */
+# 13 unknown bytes
 201: "\t3G skiing"
-/* 3 unknown bytes */
+# 3 unknown bytes
 202: 19
 `
 
@@ -224,7 +224,7 @@ func TestTextOneof(t *testing.T) {
 			&pb.Strings{StringField: proto.String("why hello!")},
 		}}, `msg:<string_field:"why hello!" >`},
 		// bad oneof (should not panic)
-		{&pb.Communique{Union: &pb.Communique_Msg{nil}}, `msg:/* nil */`},
+		{&pb.Communique{Union: &pb.Communique_Msg{nil}}, `msg:# nil`},
 	}
 	for _, test := range tests {
 		got := strings.TrimSpace(test.m.String())
@@ -257,20 +257,17 @@ func compact(src string) string {
 	space, comment := false, false
 	j := 0
 	for i := 0; i < len(src); i++ {
-		if strings.HasPrefix(src[i:], "/*") {
+		c := src[i]
+		if c == '#' {
 			comment = true
-			i++
 			continue
 		}
-		if comment && strings.HasPrefix(src[i:], "*/") {
+		if comment && c == '\n' {
 			comment = false
-			i++
-			continue
 		}
 		if comment {
 			continue
 		}
-		c := src[i]
 		if c == ' ' || c == '\n' {
 			space = true
 			continue
