@@ -110,11 +110,11 @@ func (p *messageDescs) Len() int {
 	return len(p.list)
 }
 func (p *messageDescs) Get(i int) protoreflect.MessageDescriptor {
-	return &p.list[i]
+	return p.list[i].asDesc()
 }
 func (p *messageDescs) ByName(s protoreflect.Name) protoreflect.MessageDescriptor {
 	if d := p.lazyInit().byName[s]; d != nil {
-		return d
+		return d.asDesc()
 	}
 	return nil
 }

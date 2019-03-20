@@ -227,11 +227,19 @@ var fileinitDescListTemplate = template.Must(template.New("").Funcs(template.Fun
 		return len(p.list)
 	}
 	func (p *{{$nameList}}) Get(i int) {{.Expr}} {
+		{{- if (eq . "Message")}}
+		return p.list[i].asDesc()
+		{{- else}}
 		return &p.list[i]
+		{{- end}}
 	}
 	func (p *{{$nameList}}) ByName(s protoreflect.Name) {{.Expr}} {
 		if d := p.lazyInit().byName[s]; d != nil {
+			{{- if (eq . "Message")}}
+			return d.asDesc()
+			{{- else}}
 			return d
+			{{- end}}
 		}
 		return nil
 	}

@@ -108,7 +108,8 @@ type FileBuilder struct {
 	// in "flattened ordering".
 	EnumOutputTypes []pref.EnumType
 	// MessageOutputTypes is where Init stores all initialized message types
-	// in "flattened ordering"; this includes map entry types.
+	// in "flattened ordering". This includes slots for map entry messages,
+	// which are skipped over.
 	MessageOutputTypes []pref.MessageType
 	// ExtensionOutputTypes is where Init stores all initialized extension types
 	// in "flattened ordering".
@@ -141,7 +142,9 @@ func (fb FileBuilder) Init() pref.FileDescriptor {
 		fb.EnumOutputTypes[i] = &fd.allEnums[i]
 	}
 	for i := range fd.allMessages {
-		fb.MessageOutputTypes[i] = &fd.allMessages[i]
+		if mt, _ := fd.allMessages[i].asDesc().(pref.MessageType); mt != nil {
+			fb.MessageOutputTypes[i] = mt
+		}
 	}
 	for i := range fd.allExtensions {
 		fb.ExtensionOutputTypes[i] = &fd.allExtensions[i]
@@ -160,8 +163,10 @@ func (fb FileBuilder) Init() pref.FileDescriptor {
 			}
 		}
 		for i := range fd.allMessages {
-			if err := fb.TypesRegistry.Register(&fd.allMessages[i]); err != nil {
-				panic(err)
+			if mt, _ := fd.allMessages[i].asDesc().(pref.MessageType); mt != nil {
+				if err := fb.TypesRegistry.Register(mt); err != nil {
+					panic(err)
+				}
 			}
 		}
 		for i := range fd.allExtensions {
@@ -278,6 +283,11 @@ func (ed *enumValueDesc) Format(s fmt.State, r rune)         { pfmt.FormatDesc(s
 func (ed *enumValueDesc) ProtoType(pref.EnumValueDescriptor) {}
 
 type (
+	messageType       struct{ *messageDesc }
+	messageDescriptor struct{ *messageDesc }
+
+	// messageDesc does not implement protoreflect.Descriptor to avoid
+	// accidental usages of it as such. Use the asDesc method to retrieve one.
 	messageDesc struct {
 		baseDesc
 
@@ -285,13 +295,13 @@ type (
 		messages   messageDescs
 		extensions extensionDescs
 
-		lazy *messageLazy // protected by fileDesc.once
+		isMapEntry bool
+		lazy       *messageLazy // protected by fileDesc.once
 	}
 	messageLazy struct {
 		typ reflect.Type
 		new func() pref.Message
 
-		isMapEntry      bool
 		isMessageSet    bool
 		fields          fieldDescs
 		oneofs          oneofDescs
@@ -328,12 +338,10 @@ type (
 	}
 )
 
-func (md *messageDesc) GoType() reflect.Type { return md.lazyInit().typ }
-func (md *messageDesc) New() pref.Message    { return md.lazyInit().new() }
-func (md *messageDesc) Options() pref.OptionsMessage {
+func (md *messageDesc) options() pref.OptionsMessage {
 	return unmarshalOptions(ptype.X.MessageOptions(), md.lazyInit().options)
 }
-func (md *messageDesc) IsMapEntry() bool                   { return md.lazyInit().isMapEntry }
+func (md *messageDesc) IsMapEntry() bool                   { return md.isMapEntry }
 func (md *messageDesc) Fields() pref.FieldDescriptors      { return &md.lazyInit().fields }
 func (md *messageDesc) Oneofs() pref.OneofDescriptors      { return &md.lazyInit().oneofs }
 func (md *messageDesc) ReservedNames() pref.Names          { return &md.lazyInit().resvNames }
@@ -346,8 +354,8 @@ func (md *messageDesc) ExtensionRangeOptions(i int) pref.OptionsMessage {
 func (md *messageDesc) Enums() pref.EnumDescriptors           { return &md.enums }
 func (md *messageDesc) Messages() pref.MessageDescriptors     { return &md.messages }
 func (md *messageDesc) Extensions() pref.ExtensionDescriptors { return &md.extensions }
-func (md *messageDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, md) }
 func (md *messageDesc) ProtoType(pref.MessageDescriptor)      {}
+func (md *messageDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, md.asDesc()) }
 func (md *messageDesc) lazyInit() *messageLazy {
 	md.parentFile.lazyInit() // implicitly initializes messageLazy
 	return md.lazy
@@ -358,6 +366,19 @@ func (md *messageDesc) lazyInit() *messageLazy {
 func (md *messageDesc) IsMessageSet() bool {
 	return md.lazyInit().isMessageSet
 }
+
+// asDesc returns a protoreflect.MessageDescriptor or protoreflect.MessageType
+// depending on whether the message is a map entry or not.
+func (mb *messageDesc) asDesc() pref.MessageDescriptor {
+	if !mb.isMapEntry {
+		return messageType{mb}
+	}
+	return messageDescriptor{mb}
+}
+func (mt messageType) GoType() reflect.Type               { return mt.lazyInit().typ }
+func (mt messageType) New() pref.Message                  { return mt.lazyInit().new() }
+func (mt messageType) Options() pref.OptionsMessage       { return mt.options() }
+func (md messageDescriptor) Options() pref.OptionsMessage { return md.options() }
 
 func (fd *fieldDesc) Options() pref.OptionsMessage {
 	return unmarshalOptions(ptype.X.FieldOptions(), fd.options)

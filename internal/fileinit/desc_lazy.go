@@ -64,15 +64,12 @@ func (file *fileDesc) resolveMessages() {
 		md := &file.allMessages[i]
 
 		// Associate the MessageType with a concrete Go type.
-		//
-		// Note that descriptors for map entries, which have no associated
-		// Go type, also implement the protoreflect.MessageType interface,
-		// but have a GoType accessor that reports nil. Calling New results
-		// in a panic, which is sensible behavior.
-		md.lazy.typ = reflect.TypeOf(messageDecls[i])
-		md.lazy.new = func() pref.Message {
-			t := md.lazy.typ.Elem()
-			return reflect.New(t).Interface().(pref.ProtoMessage).ProtoReflect()
+		if !md.isMapEntry {
+			md.lazy.typ = reflect.TypeOf(messageDecls[i])
+			md.lazy.new = func() pref.Message {
+				t := md.lazy.typ.Elem()
+				return reflect.New(t).Interface().(pref.ProtoMessage).ProtoReflect()
+			}
 		}
 
 		// Resolve message field dependencies.
@@ -173,9 +170,9 @@ func (file *fileDesc) resolveExtensions() {
 		// Resolve extension field dependency.
 		switch xd.lazy.kind {
 		case pref.EnumKind:
-			xd.lazy.enumType = file.popEnumDependency()
+			xd.lazy.enumType = file.popEnumDependency().(pref.EnumType)
 		case pref.MessageKind, pref.GroupKind:
-			xd.lazy.messageType = file.popMessageDependency()
+			xd.lazy.messageType = file.popMessageDependency().(pref.MessageType)
 		}
 		xd.lazy.defVal.lazyInit(xd.lazy.kind, file.enumValuesOf(xd.lazy.enumType))
 	}
@@ -219,8 +216,8 @@ func (fd *fileDesc) isMapEntry(md pref.MessageDescriptor) bool {
 	if md == nil {
 		return false
 	}
-	if md, ok := md.(*messageDesc); ok && md.parentFile == fd {
-		return md.lazy.isMapEntry
+	if md, ok := md.(*messageDescriptor); ok && md.parentFile == fd {
+		return md.isMapEntry
 	}
 	return md.IsMapEntry()
 }
@@ -238,7 +235,7 @@ func (fd *fileDesc) enumValuesOf(ed pref.EnumDescriptor) pref.EnumValueDescripto
 	return ed.Values()
 }
 
-func (fd *fileDesc) popEnumDependency() pref.EnumType {
+func (fd *fileDesc) popEnumDependency() pref.EnumDescriptor {
 	depIdx := fd.popDependencyIndex()
 	if depIdx < len(fd.allEnums)+len(fd.allMessages) {
 		return &fd.allEnums[depIdx]
@@ -247,10 +244,10 @@ func (fd *fileDesc) popEnumDependency() pref.EnumType {
 	}
 }
 
-func (fd *fileDesc) popMessageDependency() pref.MessageType {
+func (fd *fileDesc) popMessageDependency() pref.MessageDescriptor {
 	depIdx := fd.popDependencyIndex()
 	if depIdx < len(fd.allEnums)+len(fd.allMessages) {
-		return &fd.allMessages[depIdx-len(fd.allEnums)]
+		return fd.allMessages[depIdx-len(fd.allEnums)].asDesc()
 	} else {
 		return pimpl.Export{}.MessageTypeOf(fd.GoTypes[depIdx])
 	}
@@ -490,6 +487,7 @@ func (vd *enumValueDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, 
 func (md *messageDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 	var rawFields, rawOneofs [][]byte
 	var enumIdx, messageIdx, extensionIdx int
+	var isMapEntry bool
 	md.lazy = new(messageLazy)
 	for len(b) > 0 {
 		num, typ, n := wire.ConsumeTag(b)
@@ -521,7 +519,7 @@ func (md *messageDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 				md.extensions.list[extensionIdx].unmarshalFull(v, nb)
 				extensionIdx++
 			case fieldnum.DescriptorProto_Options:
-				md.unmarshalOptions(v)
+				md.unmarshalOptions(v, &isMapEntry)
 			}
 		default:
 			m := wire.ConsumeFieldValue(num, typ, b)
@@ -534,21 +532,25 @@ func (md *messageDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 		md.lazy.oneofs.list = make([]oneofDesc, len(rawOneofs))
 		for i, b := range rawFields {
 			fd := &md.lazy.fields.list[i]
-			fd.unmarshalFull(b, nb, md.parentFile, md, i)
+			fd.unmarshalFull(b, nb, md.parentFile, md.asDesc(), i)
 			if fd.cardinality == pref.Required {
 				md.lazy.reqNumbers.list = append(md.lazy.reqNumbers.list, fd.number)
 			}
 		}
 		for i, b := range rawOneofs {
 			od := &md.lazy.oneofs.list[i]
-			od.unmarshalFull(b, nb, md.parentFile, md, i)
+			od.unmarshalFull(b, nb, md.parentFile, md.asDesc(), i)
 		}
 	}
 
-	md.parentFile.lazy.byName[md.FullName()] = md
+	if isMapEntry != md.isMapEntry {
+		panic("mismatching map entry property")
+	}
+
+	md.parentFile.lazy.byName[md.FullName()] = md.asDesc()
 }
 
-func (md *messageDesc) unmarshalOptions(b []byte) {
+func (md *messageDesc) unmarshalOptions(b []byte, isMapEntry *bool) {
 	md.lazy.options = append(md.lazy.options, b...)
 	for len(b) > 0 {
 		num, typ, n := wire.ConsumeTag(b)
@@ -559,7 +561,7 @@ func (md *messageDesc) unmarshalOptions(b []byte) {
 			b = b[m:]
 			switch num {
 			case fieldnum.MessageOptions_MapEntry:
-				md.lazy.isMapEntry = wire.DecodeBool(v)
+				*isMapEntry = wire.DecodeBool(v)
 			case fieldnum.MessageOptions_MessageSetWireFormat:
 				md.lazy.isMessageSet = wire.DecodeBool(v)
 			}
@@ -646,7 +648,7 @@ func (fd *fieldDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 				// In messageDesc.UnmarshalFull, we allocate slices for both
 				// the field and oneof descriptors before unmarshaling either
 				// of them. This ensures pointers to slice elements are stable.
-				od := &pd.(*messageDesc).lazy.oneofs.list[v]
+				od := &pd.(messageType).lazy.oneofs.list[v]
 				od.fields.list = append(od.fields.list, fd)
 				if fd.oneofType != nil {
 					panic("oneof type already set")

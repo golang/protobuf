@@ -19,6 +19,13 @@ func newFileDesc(fb FileBuilder) *fileDesc {
 	file.initDecls(len(fb.EnumOutputTypes), len(fb.MessageOutputTypes), len(fb.ExtensionOutputTypes))
 	file.unmarshalSeed(fb.RawDescriptor)
 
+	// Determine which message descriptors represent map entries based on the
+	// lack of an associated Go type.
+	messageDecls := file.GoTypes[len(file.allEnums):]
+	for i := range file.allMessages {
+		file.allMessages[i].isMapEntry = messageDecls[i] == nil
+	}
+
 	// Extended message dependencies are eagerly handled since registration
 	// needs this information at program init time.
 	for i := range file.allExtensions {
@@ -31,7 +38,7 @@ func newFileDesc(fb FileBuilder) *fileDesc {
 }
 
 // initDecls pre-allocates slices for the exact number of enums, messages
-// (excluding map entries), and extensions declared in the proto file.
+// (including map entries), and extensions declared in the proto file.
 // This is done to avoid regrowing the slice, which would change the address
 // for any previously seen declaration.
 //
@@ -279,7 +286,7 @@ func (md *messageDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, pd
 		for i := range md.enums.list {
 			_, n := wire.ConsumeVarint(b)
 			v, m := wire.ConsumeBytes(b[n:])
-			md.enums.list[i].unmarshalSeed(v, nb, pf, md, i)
+			md.enums.list[i].unmarshalSeed(v, nb, pf, md.asDesc(), i)
 			b = b[n+m:]
 		}
 	}
@@ -288,7 +295,7 @@ func (md *messageDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, pd
 		for i := range md.messages.list {
 			_, n := wire.ConsumeVarint(b)
 			v, m := wire.ConsumeBytes(b[n:])
-			md.messages.list[i].unmarshalSeed(v, nb, pf, md, i)
+			md.messages.list[i].unmarshalSeed(v, nb, pf, md.asDesc(), i)
 			b = b[n+m:]
 		}
 	}
@@ -297,7 +304,7 @@ func (md *messageDesc) unmarshalSeed(b []byte, nb *nameBuilder, pf *fileDesc, pd
 		for i := range md.extensions.list {
 			_, n := wire.ConsumeVarint(b)
 			v, m := wire.ConsumeBytes(b[n:])
-			md.extensions.list[i].unmarshalSeed(v, nb, pf, md, i)
+			md.extensions.list[i].unmarshalSeed(v, nb, pf, md.asDesc(), i)
 			b = b[n+m:]
 		}
 	}
