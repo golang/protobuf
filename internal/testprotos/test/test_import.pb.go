@@ -92,12 +92,6 @@ func (m *ImportMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ImportMessage proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("test/test_import.proto", xxx_File_test_test_import_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.proto.test.ImportEnum", ImportEnum_name, ImportEnum_value)
-	proto.RegisterType((*ImportMessage)(nil), "goproto.proto.test.ImportMessage")
-}
-
 var xxx_File_test_test_import_proto_rawdesc = []byte{
 	// 150 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x16, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x69, 0x6d, 0x70, 0x6f,
@@ -144,6 +138,9 @@ func xxx_File_test_test_import_proto_init() {
 		xxx_File_test_test_import_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_test_test_import_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("test/test_import.proto", xxx_File_test_test_import_proto_rawdesc_gzipped)
+	proto.RegisterEnum("goproto.proto.test.ImportEnum", ImportEnum_name, ImportEnum_value)
+	proto.RegisterType((*ImportMessage)(nil), "goproto.proto.test.ImportMessage")
 	xxx_File_test_test_import_proto_goTypes = nil
 	xxx_File_test_test_import_proto_depIdxs = nil
 }

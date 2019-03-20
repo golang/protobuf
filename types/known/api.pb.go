@@ -373,13 +373,6 @@ func (m *Mixin) GetRoot() string {
 	return ""
 }
 
-func init() {
-	proto.RegisterFile("google/protobuf/api.proto", xxx_File_google_protobuf_api_proto_rawdesc_gzipped)
-	proto.RegisterType((*Api)(nil), "google.protobuf.Api")
-	proto.RegisterType((*Method)(nil), "google.protobuf.Method")
-	proto.RegisterType((*Mixin)(nil), "google.protobuf.Mixin")
-}
-
 var xxx_File_google_protobuf_api_proto_rawdesc = []byte{
 	// 929 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -487,6 +480,10 @@ func xxx_File_google_protobuf_api_proto_init() {
 		xxx_File_google_protobuf_api_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_api_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("google/protobuf/api.proto", xxx_File_google_protobuf_api_proto_rawdesc_gzipped)
+	proto.RegisterType((*Api)(nil), "google.protobuf.Api")
+	proto.RegisterType((*Method)(nil), "google.protobuf.Method")
+	proto.RegisterType((*Mixin)(nil), "google.protobuf.Mixin")
 	xxx_File_google_protobuf_api_proto_goTypes = nil
 	xxx_File_google_protobuf_api_proto_depIdxs = nil
 }

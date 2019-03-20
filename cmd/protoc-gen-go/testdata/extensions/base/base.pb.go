@@ -111,12 +111,6 @@ func (m *MessageSetWireFormatMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MessageSetWireFormatMessage proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("extensions/base/base.proto", xxx_File_extensions_base_base_proto_rawdesc_gzipped)
-	proto.RegisterType((*BaseMessage)(nil), "goproto.protoc.extension.base.BaseMessage")
-	proto.RegisterType((*MessageSetWireFormatMessage)(nil), "goproto.protoc.extension.base.MessageSetWireFormatMessage")
-}
-
 var xxx_File_extensions_base_base_proto_rawdesc = []byte{
 	// 233 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1a, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x62, 0x61, 0x73,
@@ -166,6 +160,9 @@ func xxx_File_extensions_base_base_proto_init() {
 		xxx_File_extensions_base_base_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_extensions_base_base_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("extensions/base/base.proto", xxx_File_extensions_base_base_proto_rawdesc_gzipped)
+	proto.RegisterType((*BaseMessage)(nil), "goproto.protoc.extension.base.BaseMessage")
+	proto.RegisterType((*MessageSetWireFormatMessage)(nil), "goproto.protoc.extension.base.MessageSetWireFormatMessage")
 	xxx_File_extensions_base_base_proto_goTypes = nil
 	xxx_File_extensions_base_base_proto_depIdxs = nil
 }

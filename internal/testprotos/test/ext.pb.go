@@ -23,12 +23,6 @@ var (
 	// extend goproto.proto.test.TestAllExtensions { optional int32 foreign_int32_extension = 2000; }
 	E_ForeignInt32Extension = &xxx_File_test_ext_proto_extDescs[0]
 )
-
-func init() {
-	proto.RegisterFile("test/ext.proto", xxx_File_test_ext_proto_rawdesc_gzipped)
-	proto.RegisterExtension(E_ForeignInt32Extension)
-}
-
 var xxx_File_test_ext_proto_rawdesc = []byte{
 	// 207 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x0e, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x65, 0x78, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
@@ -73,6 +67,8 @@ func xxx_File_test_ext_proto_init() {
 		LegacyExtensions:     xxx_File_test_ext_proto_extDescs,
 		ExtensionOutputTypes: extensionTypes,
 	}.Init()
+	proto.RegisterFile("test/ext.proto", xxx_File_test_ext_proto_rawdesc_gzipped)
+	proto.RegisterExtension(E_ForeignInt32Extension)
 	xxx_File_test_ext_proto_goTypes = nil
 	xxx_File_test_ext_proto_depIdxs = nil
 }

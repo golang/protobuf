@@ -80,11 +80,6 @@ func (*Foo) XXX_OneofWrappers() []interface{} {
 	}
 }
 
-func init() {
-	proto.RegisterFile("issue780_oneof_conflict/test.proto", xxx_File_issue780_oneof_conflict_test_proto_rawdesc_gzipped)
-	proto.RegisterType((*Foo)(nil), "oneoftest.Foo")
-}
-
 var xxx_File_issue780_oneof_conflict_test_proto_rawdesc = []byte{
 	// 88 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x22, 0x69, 0x73, 0x73, 0x75, 0x65, 0x37, 0x38, 0x30, 0x5f, 0x6f, 0x6e, 0x65, 0x6f, 0x66,
@@ -124,6 +119,8 @@ func xxx_File_issue780_oneof_conflict_test_proto_init() {
 		xxx_File_issue780_oneof_conflict_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_issue780_oneof_conflict_test_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("issue780_oneof_conflict/test.proto", xxx_File_issue780_oneof_conflict_test_proto_rawdesc_gzipped)
+	proto.RegisterType((*Foo)(nil), "oneoftest.Foo")
 	xxx_File_issue780_oneof_conflict_test_proto_goTypes = nil
 	xxx_File_issue780_oneof_conflict_test_proto_depIdxs = nil
 }

@@ -379,24 +379,6 @@ var (
 	// extend testprotos.Message1 { optional string string_field = 23; }
 	E_Message4_StringField = &xxx_File_test_proto_extDescs[5]
 )
-
-func init() {
-	proto.RegisterFile("test.proto", xxx_File_test_proto_rawdesc_gzipped)
-	proto.RegisterEnum("testprotos.Enum1", Enum1_name, Enum1_value)
-	proto.RegisterEnum("testprotos.Enum2", Enum2_name, Enum2_value)
-	proto.RegisterEnum("testprotos.Enum3", Enum3_name, Enum3_value)
-	proto.RegisterType((*Message1)(nil), "testprotos.Message1")
-	proto.RegisterType((*Message2)(nil), "testprotos.Message2")
-	proto.RegisterType((*Message3)(nil), "testprotos.Message3")
-	proto.RegisterType((*Message4)(nil), "testprotos.Message4")
-	proto.RegisterExtension(E_StringField)
-	proto.RegisterExtension(E_EnumField)
-	proto.RegisterExtension(E_MessageField)
-	proto.RegisterExtension(E_Message4_MessageField)
-	proto.RegisterExtension(E_Message4_EnumField)
-	proto.RegisterExtension(E_Message4_StringField)
-}
-
 var xxx_File_test_proto_rawdesc = []byte{
 	// 653 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x0a, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0a, 0x74, 0x65,
@@ -493,6 +475,20 @@ func xxx_File_test_proto_init() {
 		xxx_File_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_test_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("test.proto", xxx_File_test_proto_rawdesc_gzipped)
+	proto.RegisterEnum("testprotos.Enum1", Enum1_name, Enum1_value)
+	proto.RegisterEnum("testprotos.Enum2", Enum2_name, Enum2_value)
+	proto.RegisterEnum("testprotos.Enum3", Enum3_name, Enum3_value)
+	proto.RegisterType((*Message1)(nil), "testprotos.Message1")
+	proto.RegisterType((*Message2)(nil), "testprotos.Message2")
+	proto.RegisterType((*Message3)(nil), "testprotos.Message3")
+	proto.RegisterType((*Message4)(nil), "testprotos.Message4")
+	proto.RegisterExtension(E_StringField)
+	proto.RegisterExtension(E_EnumField)
+	proto.RegisterExtension(E_MessageField)
+	proto.RegisterExtension(E_Message4_MessageField)
+	proto.RegisterExtension(E_Message4_EnumField)
+	proto.RegisterExtension(E_Message4_StringField)
 	xxx_File_test_proto_goTypes = nil
 	xxx_File_test_proto_depIdxs = nil
 }

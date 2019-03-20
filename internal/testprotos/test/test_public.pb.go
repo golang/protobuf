@@ -46,11 +46,6 @@ func (m *PublicImportMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PublicImportMessage proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("test/test_public.proto", xxx_File_test_test_public_proto_rawdesc_gzipped)
-	proto.RegisterType((*PublicImportMessage)(nil), "goproto.proto.test.PublicImportMessage")
-}
-
 var xxx_File_test_test_public_proto_rawdesc = []byte{
 	// 125 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x16, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c,
@@ -92,6 +87,8 @@ func xxx_File_test_test_public_proto_init() {
 		xxx_File_test_test_public_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_test_test_public_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("test/test_public.proto", xxx_File_test_test_public_proto_rawdesc_gzipped)
+	proto.RegisterType((*PublicImportMessage)(nil), "goproto.proto.test.PublicImportMessage")
 	xxx_File_test_test_public_proto_goTypes = nil
 	xxx_File_test_test_public_proto_depIdxs = nil
 }

@@ -386,17 +386,6 @@ var (
 	// extend goproto.protoc.import_public.sub.M { optional string extension_field = 100; }
 	E_ExtensionField = &xxx_File_import_public_sub_a_proto_extDescs[0]
 )
-
-func init() {
-	proto.RegisterFile("import_public/sub/a.proto", xxx_File_import_public_sub_a_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.import_public.sub.E", E_name, E_value)
-	proto.RegisterEnum("goproto.protoc.import_public.sub.M_Subenum", M_Subenum_name, M_Subenum_value)
-	proto.RegisterEnum("goproto.protoc.import_public.sub.M_Submessage_Submessage_Subenum", M_Submessage_Submessage_Subenum_name, M_Submessage_Submessage_Subenum_value)
-	proto.RegisterType((*M)(nil), "goproto.protoc.import_public.sub.M")
-	proto.RegisterType((*M_Submessage)(nil), "goproto.protoc.import_public.sub.M.Submessage")
-	proto.RegisterExtension(E_ExtensionField)
-}
-
 var xxx_File_import_public_sub_a_proto_rawdesc = []byte{
 	// 730 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x19, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x2f,
@@ -490,6 +479,13 @@ func xxx_File_import_public_sub_a_proto_init() {
 		xxx_File_import_public_sub_a_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_import_public_sub_a_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("import_public/sub/a.proto", xxx_File_import_public_sub_a_proto_rawdesc_gzipped)
+	proto.RegisterEnum("goproto.protoc.import_public.sub.E", E_name, E_value)
+	proto.RegisterEnum("goproto.protoc.import_public.sub.M_Subenum", M_Subenum_name, M_Subenum_value)
+	proto.RegisterEnum("goproto.protoc.import_public.sub.M_Submessage_Submessage_Subenum", M_Submessage_Submessage_Subenum_name, M_Submessage_Submessage_Subenum_value)
+	proto.RegisterType((*M)(nil), "goproto.protoc.import_public.sub.M")
+	proto.RegisterType((*M_Submessage)(nil), "goproto.protoc.import_public.sub.M.Submessage")
+	proto.RegisterExtension(E_ExtensionField)
 	xxx_File_import_public_sub_a_proto_goTypes = nil
 	xxx_File_import_public_sub_a_proto_depIdxs = nil
 }

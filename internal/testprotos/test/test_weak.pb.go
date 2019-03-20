@@ -46,11 +46,6 @@ func (m *WeakImportMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_WeakImportMessage proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("test/test_weak.proto", xxx_File_test_test_weak_proto_rawdesc_gzipped)
-	proto.RegisterType((*WeakImportMessage)(nil), "goproto.proto.test.WeakImportMessage")
-}
-
 var xxx_File_test_test_weak_proto_rawdesc = []byte{
 	// 121 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x14, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x77, 0x65, 0x61, 0x6b,
@@ -92,6 +87,8 @@ func xxx_File_test_test_weak_proto_init() {
 		xxx_File_test_test_weak_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_test_test_weak_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("test/test_weak.proto", xxx_File_test_test_weak_proto_rawdesc_gzipped)
+	proto.RegisterType((*WeakImportMessage)(nil), "goproto.proto.test.WeakImportMessage")
 	xxx_File_test_test_weak_proto_goTypes = nil
 	xxx_File_test_test_weak_proto_depIdxs = nil
 }

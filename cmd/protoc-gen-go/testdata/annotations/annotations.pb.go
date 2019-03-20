@@ -100,12 +100,6 @@ func (m *AnnotationsTestMessage) GetAnnotationsTestField() string {
 	return ""
 }
 
-func init() {
-	proto.RegisterFile("annotations/annotations.proto", xxx_File_annotations_annotations_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.annotations.AnnotationsTestEnum", AnnotationsTestEnum_name, AnnotationsTestEnum_value)
-	proto.RegisterType((*AnnotationsTestMessage)(nil), "goproto.protoc.annotations.AnnotationsTestMessage")
-}
-
 var xxx_File_annotations_annotations_proto_rawdesc = []byte{
 	// 265 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1d, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x61, 0x6e,
@@ -159,6 +153,9 @@ func xxx_File_annotations_annotations_proto_init() {
 		xxx_File_annotations_annotations_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_annotations_annotations_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("annotations/annotations.proto", xxx_File_annotations_annotations_proto_rawdesc_gzipped)
+	proto.RegisterEnum("goproto.protoc.annotations.AnnotationsTestEnum", AnnotationsTestEnum_name, AnnotationsTestEnum_value)
+	proto.RegisterType((*AnnotationsTestMessage)(nil), "goproto.protoc.annotations.AnnotationsTestMessage")
 	xxx_File_annotations_annotations_proto_goTypes = nil
 	xxx_File_annotations_annotations_proto_depIdxs = nil
 }

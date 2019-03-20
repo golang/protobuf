@@ -280,16 +280,6 @@ func (m *Message2_Message2B) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Message2_Message2B proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("comments/comments.proto", xxx_File_comments_comments_proto_rawdesc_gzipped)
-	proto.RegisterType((*Message1)(nil), "goproto.protoc.comments.Message1")
-	proto.RegisterType((*Message2)(nil), "goproto.protoc.comments.Message2")
-	proto.RegisterType((*Message1_Message1A)(nil), "goproto.protoc.comments.Message1.Message1A")
-	proto.RegisterType((*Message1_Message1B)(nil), "goproto.protoc.comments.Message1.Message1B")
-	proto.RegisterType((*Message2_Message2A)(nil), "goproto.protoc.comments.Message2.Message2A")
-	proto.RegisterType((*Message2_Message2B)(nil), "goproto.protoc.comments.Message2.Message2B")
-}
-
 var xxx_File_comments_comments_proto_rawdesc = []byte{
 	// 272 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x17, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
@@ -345,6 +335,13 @@ func xxx_File_comments_comments_proto_init() {
 		xxx_File_comments_comments_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_comments_comments_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("comments/comments.proto", xxx_File_comments_comments_proto_rawdesc_gzipped)
+	proto.RegisterType((*Message1)(nil), "goproto.protoc.comments.Message1")
+	proto.RegisterType((*Message2)(nil), "goproto.protoc.comments.Message2")
+	proto.RegisterType((*Message1_Message1A)(nil), "goproto.protoc.comments.Message1.Message1A")
+	proto.RegisterType((*Message1_Message1B)(nil), "goproto.protoc.comments.Message1.Message1B")
+	proto.RegisterType((*Message2_Message2A)(nil), "goproto.protoc.comments.Message2.Message2A")
+	proto.RegisterType((*Message2_Message2B)(nil), "goproto.protoc.comments.Message2.Message2B")
 	xxx_File_comments_comments_proto_goTypes = nil
 	xxx_File_comments_comments_proto_depIdxs = nil
 }

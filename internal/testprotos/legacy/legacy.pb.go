@@ -154,11 +154,6 @@ func (m *Legacy) GetF12() *proto3_v1_21.Message {
 	return nil
 }
 
-func init() {
-	proto.RegisterFile("legacy/legacy.proto", xxx_File_legacy_legacy_proto_rawdesc_gzipped)
-	proto.RegisterType((*Legacy)(nil), "google.golang.org.Legacy")
-}
-
 var xxx_File_legacy_legacy_proto_rawdesc = []byte{
 	// 1457 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x13, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x2f, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x2e,
@@ -309,6 +304,8 @@ func xxx_File_legacy_legacy_proto_init() {
 		xxx_File_legacy_legacy_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_legacy_legacy_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("legacy/legacy.proto", xxx_File_legacy_legacy_proto_rawdesc_gzipped)
+	proto.RegisterType((*Legacy)(nil), "google.golang.org.Legacy")
 	xxx_File_legacy_legacy_proto_goTypes = nil
 	xxx_File_legacy_legacy_proto_depIdxs = nil
 }

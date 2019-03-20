@@ -87,12 +87,6 @@ func (m *DeprecatedMessage) GetDeprecatedField() string {
 	return ""
 }
 
-func init() {
-	proto.RegisterFile("comments/deprecated.proto", xxx_File_comments_deprecated_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.comments.DeprecatedEnum", DeprecatedEnum_name, DeprecatedEnum_value)
-	proto.RegisterType((*DeprecatedMessage)(nil), "goproto.protoc.comments.DeprecatedMessage")
-}
-
 var xxx_File_comments_deprecated_proto_rawdesc = []byte{
 	// 246 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x19, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x2f, 0x64, 0x65, 0x70, 0x72, 0x65,
@@ -145,6 +139,9 @@ func xxx_File_comments_deprecated_proto_init() {
 		xxx_File_comments_deprecated_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_comments_deprecated_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("comments/deprecated.proto", xxx_File_comments_deprecated_proto_rawdesc_gzipped)
+	proto.RegisterEnum("goproto.protoc.comments.DeprecatedEnum", DeprecatedEnum_name, DeprecatedEnum_value)
+	proto.RegisterType((*DeprecatedMessage)(nil), "goproto.protoc.comments.DeprecatedMessage")
 	xxx_File_comments_deprecated_proto_goTypes = nil
 	xxx_File_comments_deprecated_proto_depIdxs = nil
 }

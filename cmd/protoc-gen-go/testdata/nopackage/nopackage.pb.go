@@ -110,12 +110,6 @@ func (m *Message) GetEnumField() Enum {
 	return Default_Message_EnumField
 }
 
-func init() {
-	proto.RegisterFile("nopackage/nopackage.proto", xxx_File_nopackage_nopackage_proto_rawdesc_gzipped)
-	proto.RegisterEnum("Enum", Enum_name, Enum_value)
-	proto.RegisterType((*Message)(nil), "Message")
-}
-
 var xxx_File_nopackage_nopackage_proto_rawdesc = []byte{
 	// 135 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x19, 0x6e, 0x6f, 0x70, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x2f, 0x6e, 0x6f, 0x70, 0x61,
@@ -163,6 +157,9 @@ func xxx_File_nopackage_nopackage_proto_init() {
 		xxx_File_nopackage_nopackage_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_nopackage_nopackage_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("nopackage/nopackage.proto", xxx_File_nopackage_nopackage_proto_rawdesc_gzipped)
+	proto.RegisterEnum("Enum", Enum_name, Enum_value)
+	proto.RegisterType((*Message)(nil), "Message")
 	xxx_File_nopackage_nopackage_proto_goTypes = nil
 	xxx_File_nopackage_nopackage_proto_depIdxs = nil
 }

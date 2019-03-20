@@ -46,11 +46,6 @@ func (m *M) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_M proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("imports/fmt/m.proto", xxx_File_imports_fmt_m_proto_rawdesc_gzipped)
-	proto.RegisterType((*M)(nil), "fmt.M")
-}
-
 var xxx_File_imports_fmt_m_proto_rawdesc = []byte{
 	// 111 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x13, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x2f, 0x66, 0x6d, 0x74, 0x2f, 0x6d, 0x2e,
@@ -91,6 +86,8 @@ func xxx_File_imports_fmt_m_proto_init() {
 		xxx_File_imports_fmt_m_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_imports_fmt_m_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("imports/fmt/m.proto", xxx_File_imports_fmt_m_proto_rawdesc_gzipped)
+	proto.RegisterType((*M)(nil), "fmt.M")
 	xxx_File_imports_fmt_m_proto_goTypes = nil
 	xxx_File_imports_fmt_m_proto_depIdxs = nil
 }

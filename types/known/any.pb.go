@@ -173,11 +173,6 @@ func (m *Any) GetValue() []byte {
 	return nil
 }
 
-func init() {
-	proto.RegisterFile("google/protobuf/any.proto", xxx_File_google_protobuf_any_proto_rawdesc_gzipped)
-	proto.RegisterType((*Any)(nil), "google.protobuf.Any")
-}
-
 var xxx_File_google_protobuf_any_proto_rawdesc = []byte{
 	// 237 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -226,6 +221,8 @@ func xxx_File_google_protobuf_any_proto_init() {
 		xxx_File_google_protobuf_any_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_any_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("google/protobuf/any.proto", xxx_File_google_protobuf_any_proto_rawdesc_gzipped)
+	proto.RegisterType((*Any)(nil), "google.protobuf.Any")
 	xxx_File_google_protobuf_any_proto_goTypes = nil
 	xxx_File_google_protobuf_any_proto_depIdxs = nil
 }

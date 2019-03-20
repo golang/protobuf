@@ -207,6 +207,8 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		}
 	}
 
+	genRegistrationV1(gen, g, f)
+
 	g.P(goTypesVarName(f), " = nil") // allow GC to reclaim resource
 	g.P(depIdxsVarName(f), " = nil") // allow GC to reclaim resource
 	g.P("}")

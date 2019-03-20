@@ -569,16 +569,6 @@ func (m *JspbEncodingConfig) GetUseJspbArrayAnyFormat() bool {
 	return false
 }
 
-func init() {
-	proto.RegisterFile("conformance/conformance.proto", xxx_File_conformance_conformance_proto_rawdesc_gzipped)
-	proto.RegisterEnum("conformance.WireFormat", WireFormat_name, WireFormat_value)
-	proto.RegisterEnum("conformance.TestCategory", TestCategory_name, TestCategory_value)
-	proto.RegisterType((*FailureSet)(nil), "conformance.FailureSet")
-	proto.RegisterType((*ConformanceRequest)(nil), "conformance.ConformanceRequest")
-	proto.RegisterType((*ConformanceResponse)(nil), "conformance.ConformanceResponse")
-	proto.RegisterType((*JspbEncodingConfig)(nil), "conformance.JspbEncodingConfig")
-}
-
 var xxx_File_conformance_conformance_proto_rawdesc = []byte{
 	// 1306 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1d, 0x63, 0x6f, 0x6e, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x6e, 0x63, 0x65, 0x2f, 0x63, 0x6f,
@@ -705,6 +695,13 @@ func xxx_File_conformance_conformance_proto_init() {
 		xxx_File_conformance_conformance_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_conformance_conformance_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("conformance/conformance.proto", xxx_File_conformance_conformance_proto_rawdesc_gzipped)
+	proto.RegisterEnum("conformance.WireFormat", WireFormat_name, WireFormat_value)
+	proto.RegisterEnum("conformance.TestCategory", TestCategory_name, TestCategory_value)
+	proto.RegisterType((*FailureSet)(nil), "conformance.FailureSet")
+	proto.RegisterType((*ConformanceRequest)(nil), "conformance.ConformanceRequest")
+	proto.RegisterType((*ConformanceResponse)(nil), "conformance.ConformanceResponse")
+	proto.RegisterType((*JspbEncodingConfig)(nil), "conformance.JspbEncodingConfig")
 	xxx_File_conformance_conformance_proto_goTypes = nil
 	xxx_File_conformance_conformance_proto_depIdxs = nil
 }

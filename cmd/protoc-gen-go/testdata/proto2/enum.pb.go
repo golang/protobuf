@@ -394,18 +394,6 @@ func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2 proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("proto2/enum.proto", xxx_File_proto2_enum_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumType1", EnumType1_name, EnumType1_value)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumType2", EnumType2_name, EnumType2_value)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_NestedEnumType1A", EnumContainerMessage1_NestedEnumType1A_name, EnumContainerMessage1_NestedEnumType1A_value)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_NestedEnumType1B", EnumContainerMessage1_NestedEnumType1B_name, EnumContainerMessage1_NestedEnumType1B_value)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A", EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_name, EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_value)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B", EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_name, EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_value)
-	proto.RegisterType((*EnumContainerMessage1)(nil), "goproto.protoc.proto2.EnumContainerMessage1")
-	proto.RegisterType((*EnumContainerMessage1_EnumContainerMessage2)(nil), "goproto.protoc.proto2.EnumContainerMessage1.EnumContainerMessage2")
-}
-
 var xxx_File_proto2_enum_proto_rawdesc = []byte{
 	// 624 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x11, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0x2f, 0x65, 0x6e, 0x75, 0x6d, 0x2e, 0x70, 0x72,
@@ -490,6 +478,15 @@ func xxx_File_proto2_enum_proto_init() {
 		xxx_File_proto2_enum_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_proto2_enum_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("proto2/enum.proto", xxx_File_proto2_enum_proto_rawdesc_gzipped)
+	proto.RegisterEnum("goproto.protoc.proto2.EnumType1", EnumType1_name, EnumType1_value)
+	proto.RegisterEnum("goproto.protoc.proto2.EnumType2", EnumType2_name, EnumType2_value)
+	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_NestedEnumType1A", EnumContainerMessage1_NestedEnumType1A_name, EnumContainerMessage1_NestedEnumType1A_value)
+	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_NestedEnumType1B", EnumContainerMessage1_NestedEnumType1B_name, EnumContainerMessage1_NestedEnumType1B_value)
+	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A", EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_name, EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_value)
+	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B", EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_name, EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_value)
+	proto.RegisterType((*EnumContainerMessage1)(nil), "goproto.protoc.proto2.EnumContainerMessage1")
+	proto.RegisterType((*EnumContainerMessage1_EnumContainerMessage2)(nil), "goproto.protoc.proto2.EnumContainerMessage1.EnumContainerMessage2")
 	xxx_File_proto2_enum_proto_goTypes = nil
 	xxx_File_proto2_enum_proto_depIdxs = nil
 }

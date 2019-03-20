@@ -341,14 +341,6 @@ func (m *CodeGeneratorResponse_File) GetContent() string {
 	return ""
 }
 
-func init() {
-	proto.RegisterFile("google/protobuf/compiler/plugin.proto", xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped)
-	proto.RegisterType((*Version)(nil), "google.protobuf.compiler.Version")
-	proto.RegisterType((*CodeGeneratorRequest)(nil), "google.protobuf.compiler.CodeGeneratorRequest")
-	proto.RegisterType((*CodeGeneratorResponse)(nil), "google.protobuf.compiler.CodeGeneratorResponse")
-	proto.RegisterType((*CodeGeneratorResponse_File)(nil), "google.protobuf.compiler.CodeGeneratorResponse.File")
-}
-
 var xxx_File_google_protobuf_compiler_plugin_proto_rawdesc = []byte{
 	// 764 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x25, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -438,6 +430,11 @@ func xxx_File_google_protobuf_compiler_plugin_proto_init() {
 		xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("google/protobuf/compiler/plugin.proto", xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped)
+	proto.RegisterType((*Version)(nil), "google.protobuf.compiler.Version")
+	proto.RegisterType((*CodeGeneratorRequest)(nil), "google.protobuf.compiler.CodeGeneratorRequest")
+	proto.RegisterType((*CodeGeneratorResponse)(nil), "google.protobuf.compiler.CodeGeneratorResponse")
+	proto.RegisterType((*CodeGeneratorResponse_File)(nil), "google.protobuf.compiler.CodeGeneratorResponse.File")
 	xxx_File_google_protobuf_compiler_plugin_proto_goTypes = nil
 	xxx_File_google_protobuf_compiler_plugin_proto_depIdxs = nil
 }

@@ -132,7 +132,6 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 	}
 	genExtensions(gen, g, f)
 
-	genInitFunction(gen, g, f)
 	genFileDescriptor(gen, g, f)
 	genReflectFileDescriptor(gen, g, f)
 
@@ -775,15 +774,14 @@ func extensionVar(f *protogen.File, extension *protogen.Extension) protogen.GoId
 	return f.GoImportPath.Ident(name)
 }
 
-// genInitFunction generates an init function that registers the types in the
-// generated file with the proto package.
-func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
+// genRegistrationV1 generates the init function body that registers the
+// types in the generated file with the v1 proto package.
+func genRegistrationV1(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
 	// TODO: Remove this function when we always register with v2.
 	if isDescriptor(f.File) {
 		return
 	}
 
-	g.P("func init() {")
 	g.P(protoPackage.Ident("RegisterFile"), "(", strconv.Quote(f.Desc.Path()), ", ", f.descriptorGzipVar, ")")
 	for _, enum := range f.allEnums {
 		name := enum.GoIdent.GoName
@@ -818,8 +816,6 @@ func genInitFunction(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInf
 	for _, extension := range f.allExtensions {
 		g.P(protoPackage.Ident("RegisterExtension"), "(", extensionVar(f.File, extension), ")")
 	}
-	g.P("}")
-	g.P()
 }
 
 // deprecationComment returns a standard deprecation comment if deprecated is true.

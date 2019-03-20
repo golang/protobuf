@@ -57,11 +57,6 @@ func (m *Empty) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Empty proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("google/protobuf/empty.proto", xxx_File_google_protobuf_empty_proto_rawdesc_gzipped)
-	proto.RegisterType((*Empty)(nil), "google.protobuf.Empty")
-}
-
 var xxx_File_google_protobuf_empty_proto_rawdesc = []byte{
 	// 198 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1b, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -108,6 +103,8 @@ func xxx_File_google_protobuf_empty_proto_init() {
 		xxx_File_google_protobuf_empty_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_empty_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("google/protobuf/empty.proto", xxx_File_google_protobuf_empty_proto_rawdesc_gzipped)
+	proto.RegisterType((*Empty)(nil), "google.protobuf.Empty")
 	xxx_File_google_protobuf_empty_proto_goTypes = nil
 	xxx_File_google_protobuf_empty_proto_depIdxs = nil
 }

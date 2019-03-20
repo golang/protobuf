@@ -460,19 +460,6 @@ func (m *BytesValue) GetValue() []byte {
 	return nil
 }
 
-func init() {
-	proto.RegisterFile("google/protobuf/wrappers.proto", xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped)
-	proto.RegisterType((*DoubleValue)(nil), "google.protobuf.DoubleValue")
-	proto.RegisterType((*FloatValue)(nil), "google.protobuf.FloatValue")
-	proto.RegisterType((*Int64Value)(nil), "google.protobuf.Int64Value")
-	proto.RegisterType((*UInt64Value)(nil), "google.protobuf.UInt64Value")
-	proto.RegisterType((*Int32Value)(nil), "google.protobuf.Int32Value")
-	proto.RegisterType((*UInt32Value)(nil), "google.protobuf.UInt32Value")
-	proto.RegisterType((*BoolValue)(nil), "google.protobuf.BoolValue")
-	proto.RegisterType((*StringValue)(nil), "google.protobuf.StringValue")
-	proto.RegisterType((*BytesValue)(nil), "google.protobuf.BytesValue")
-}
-
 var xxx_File_google_protobuf_wrappers_proto_rawdesc = []byte{
 	// 522 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -547,6 +534,16 @@ func xxx_File_google_protobuf_wrappers_proto_init() {
 		xxx_File_google_protobuf_wrappers_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_wrappers_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("google/protobuf/wrappers.proto", xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped)
+	proto.RegisterType((*DoubleValue)(nil), "google.protobuf.DoubleValue")
+	proto.RegisterType((*FloatValue)(nil), "google.protobuf.FloatValue")
+	proto.RegisterType((*Int64Value)(nil), "google.protobuf.Int64Value")
+	proto.RegisterType((*UInt64Value)(nil), "google.protobuf.UInt64Value")
+	proto.RegisterType((*Int32Value)(nil), "google.protobuf.Int32Value")
+	proto.RegisterType((*UInt32Value)(nil), "google.protobuf.UInt32Value")
+	proto.RegisterType((*BoolValue)(nil), "google.protobuf.BoolValue")
+	proto.RegisterType((*StringValue)(nil), "google.protobuf.StringValue")
+	proto.RegisterType((*BytesValue)(nil), "google.protobuf.BytesValue")
 	xxx_File_google_protobuf_wrappers_proto_goTypes = nil
 	xxx_File_google_protobuf_wrappers_proto_depIdxs = nil
 }

@@ -410,16 +410,6 @@ func (m *FieldTestMessage_Message) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_FieldTestMessage_Message proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("proto3/fields.proto", xxx_File_proto3_fields_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.proto3.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)
-	proto.RegisterType((*FieldTestMessage)(nil), "goproto.protoc.proto3.FieldTestMessage")
-	proto.RegisterMapType((map[uint64]FieldTestMessage_Enum)(nil), "goproto.protoc.proto3.FieldTestMessage.MapFixed64EnumEntry")
-	proto.RegisterMapType((map[int32]int64)(nil), "goproto.protoc.proto3.FieldTestMessage.MapInt32Int64Entry")
-	proto.RegisterMapType((map[string]*FieldTestMessage_Message)(nil), "goproto.protoc.proto3.FieldTestMessage.MapStringMessageEntry")
-	proto.RegisterType((*FieldTestMessage_Message)(nil), "goproto.protoc.proto3.FieldTestMessage.Message")
-}
-
 var xxx_File_proto3_fields_proto_rawdesc = []byte{
 	// 2378 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x13, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x2f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x2e,
@@ -619,6 +609,13 @@ func xxx_File_proto3_fields_proto_init() {
 		xxx_File_proto3_fields_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_proto3_fields_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("proto3/fields.proto", xxx_File_proto3_fields_proto_rawdesc_gzipped)
+	proto.RegisterEnum("goproto.protoc.proto3.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)
+	proto.RegisterType((*FieldTestMessage)(nil), "goproto.protoc.proto3.FieldTestMessage")
+	proto.RegisterMapType((map[uint64]FieldTestMessage_Enum)(nil), "goproto.protoc.proto3.FieldTestMessage.MapFixed64EnumEntry")
+	proto.RegisterMapType((map[int32]int64)(nil), "goproto.protoc.proto3.FieldTestMessage.MapInt32Int64Entry")
+	proto.RegisterMapType((map[string]*FieldTestMessage_Message)(nil), "goproto.protoc.proto3.FieldTestMessage.MapStringMessageEntry")
+	proto.RegisterType((*FieldTestMessage_Message)(nil), "goproto.protoc.proto3.FieldTestMessage.Message")
 	xxx_File_proto3_fields_proto_goTypes = nil
 	xxx_File_proto3_fields_proto_depIdxs = nil
 }

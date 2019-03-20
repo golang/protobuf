@@ -58,11 +58,6 @@ func (m *SourceContext) GetFileName() string {
 	return ""
 }
 
-func init() {
-	proto.RegisterFile("google/protobuf/source_context.proto", xxx_File_google_protobuf_source_context_proto_rawdesc_gzipped)
-	proto.RegisterType((*SourceContext)(nil), "google.protobuf.SourceContext")
-}
-
 var xxx_File_google_protobuf_source_context_proto_rawdesc = []byte{
 	// 249 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x24, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -112,6 +107,8 @@ func xxx_File_google_protobuf_source_context_proto_init() {
 		xxx_File_google_protobuf_source_context_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_source_context_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("google/protobuf/source_context.proto", xxx_File_google_protobuf_source_context_proto_rawdesc_gzipped)
+	proto.RegisterType((*SourceContext)(nil), "google.protobuf.SourceContext")
 	xxx_File_google_protobuf_source_context_proto_goTypes = nil
 	xxx_File_google_protobuf_source_context_proto_depIdxs = nil
 }

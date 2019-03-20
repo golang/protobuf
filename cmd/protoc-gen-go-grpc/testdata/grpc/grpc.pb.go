@@ -82,12 +82,6 @@ func (m *Response) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Response proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("grpc/grpc.proto", xxx_File_grpc_grpc_proto_rawdesc_gzipped)
-	proto.RegisterType((*Request)(nil), "goproto.protoc.grpc.Request")
-	proto.RegisterType((*Response)(nil), "goproto.protoc.grpc.Response")
-}
-
 var xxx_File_grpc_grpc_proto_rawdesc = []byte{
 	// 466 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x0f, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x70, 0x72, 0x6f, 0x74,
@@ -161,6 +155,9 @@ func xxx_File_grpc_grpc_proto_init() {
 		xxx_File_grpc_grpc_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_grpc_grpc_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("grpc/grpc.proto", xxx_File_grpc_grpc_proto_rawdesc_gzipped)
+	proto.RegisterType((*Request)(nil), "goproto.protoc.grpc.Request")
+	proto.RegisterType((*Response)(nil), "goproto.protoc.grpc.Response")
 	xxx_File_grpc_grpc_proto_goTypes = nil
 	xxx_File_grpc_grpc_proto_depIdxs = nil
 }

@@ -314,12 +314,6 @@ func (m *Message_OneofMessageConflict) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Message_OneofMessageConflict proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("fieldnames/fieldnames.proto", xxx_File_fieldnames_fieldnames_proto_rawdesc_gzipped)
-	proto.RegisterType((*Message)(nil), "goproto.protoc.fieldnames.Message")
-	proto.RegisterType((*Message_OneofMessageConflict)(nil), "goproto.protoc.fieldnames.Message.OneofMessageConflict")
-}
-
 var xxx_File_fieldnames_fieldnames_proto_rawdesc = []byte{
 	// 826 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1b, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x2f, 0x66, 0x69, 0x65,
@@ -406,6 +400,9 @@ func xxx_File_fieldnames_fieldnames_proto_init() {
 		xxx_File_fieldnames_fieldnames_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_fieldnames_fieldnames_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("fieldnames/fieldnames.proto", xxx_File_fieldnames_fieldnames_proto_rawdesc_gzipped)
+	proto.RegisterType((*Message)(nil), "goproto.protoc.fieldnames.Message")
+	proto.RegisterType((*Message_OneofMessageConflict)(nil), "goproto.protoc.fieldnames.Message.OneofMessageConflict")
 	xxx_File_fieldnames_fieldnames_proto_goTypes = nil
 	xxx_File_fieldnames_fieldnames_proto_depIdxs = nil
 }

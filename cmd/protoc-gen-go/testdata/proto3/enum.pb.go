@@ -47,11 +47,6 @@ func (Enum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_proto3_enum_proto_rawdesc_gzipped, []int{0}
 }
 
-func init() {
-	proto.RegisterFile("proto3/enum.proto", xxx_File_proto3_enum_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.proto3.Enum", Enum_name, Enum_value)
-}
-
 var xxx_File_proto3_enum_proto_rawdesc = []byte{
 	// 153 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x11, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x2f, 0x65, 0x6e, 0x75, 0x6d, 0x2e, 0x70, 0x72,
@@ -89,6 +84,8 @@ func xxx_File_proto3_enum_proto_init() {
 		DependencyIndexes: xxx_File_proto3_enum_proto_depIdxs,
 		EnumOutputTypes:   xxx_File_proto3_enum_proto_enumTypes,
 	}.Init()
+	proto.RegisterFile("proto3/enum.proto", xxx_File_proto3_enum_proto_rawdesc_gzipped)
+	proto.RegisterEnum("goproto.protoc.proto3.Enum", Enum_name, Enum_value)
 	xxx_File_proto3_enum_proto_goTypes = nil
 	xxx_File_proto3_enum_proto_depIdxs = nil
 }

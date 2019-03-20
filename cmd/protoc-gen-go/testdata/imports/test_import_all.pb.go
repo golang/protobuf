@@ -90,11 +90,6 @@ func (m *All) GetFmt() *fmt.M {
 	return nil
 }
 
-func init() {
-	proto.RegisterFile("imports/test_import_all.proto", xxx_File_imports_test_import_all_proto_rawdesc_gzipped)
-	proto.RegisterType((*All)(nil), "test.All")
-}
-
 var xxx_File_imports_test_import_all_proto_rawdesc = []byte{
 	// 462 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1d, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x69,
@@ -168,6 +163,8 @@ func xxx_File_imports_test_import_all_proto_init() {
 		xxx_File_imports_test_import_all_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_imports_test_import_all_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("imports/test_import_all.proto", xxx_File_imports_test_import_all_proto_rawdesc_gzipped)
+	proto.RegisterType((*All)(nil), "test.All")
 	xxx_File_imports_test_import_all_proto_goTypes = nil
 	xxx_File_imports_test_import_all_proto_depIdxs = nil
 }

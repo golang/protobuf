@@ -62,11 +62,6 @@ func (m *Message) GetM() *Message {
 	return nil
 }
 
-func init() {
-	proto.RegisterFile("proto2/proto2.proto", xxx_File_proto2_proto2_proto_rawdesc_gzipped)
-	proto.RegisterType((*Message)(nil), "goproto.protoc.proto2.Message")
-}
-
 var xxx_File_proto2_proto2_proto_rawdesc = []byte{
 	// 186 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x13, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0x2e,
@@ -114,6 +109,8 @@ func xxx_File_proto2_proto2_proto_init() {
 		xxx_File_proto2_proto2_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_proto2_proto2_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("proto2/proto2.proto", xxx_File_proto2_proto2_proto_rawdesc_gzipped)
+	proto.RegisterType((*Message)(nil), "goproto.protoc.proto2.Message")
 	xxx_File_proto2_proto2_proto_goTypes = nil
 	xxx_File_proto2_proto2_proto_depIdxs = nil
 }

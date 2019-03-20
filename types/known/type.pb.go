@@ -628,18 +628,6 @@ func (m *Option) GetValue() *Any {
 	return nil
 }
 
-func init() {
-	proto.RegisterFile("google/protobuf/type.proto", xxx_File_google_protobuf_type_proto_rawdesc_gzipped)
-	proto.RegisterEnum("google.protobuf.Syntax", Syntax_name, Syntax_value)
-	proto.RegisterEnum("google.protobuf.Field_Kind", Field_Kind_name, Field_Kind_value)
-	proto.RegisterEnum("google.protobuf.Field_Cardinality", Field_Cardinality_name, Field_Cardinality_value)
-	proto.RegisterType((*Type)(nil), "google.protobuf.Type")
-	proto.RegisterType((*Field)(nil), "google.protobuf.Field")
-	proto.RegisterType((*Enum)(nil), "google.protobuf.Enum")
-	proto.RegisterType((*EnumValue)(nil), "google.protobuf.EnumValue")
-	proto.RegisterType((*Option)(nil), "google.protobuf.Option")
-}
-
 var xxx_File_google_protobuf_type_proto_rawdesc = []byte{
 	// 1835 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1a, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -815,6 +803,15 @@ func xxx_File_google_protobuf_type_proto_init() {
 		xxx_File_google_protobuf_type_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_type_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("google/protobuf/type.proto", xxx_File_google_protobuf_type_proto_rawdesc_gzipped)
+	proto.RegisterEnum("google.protobuf.Syntax", Syntax_name, Syntax_value)
+	proto.RegisterEnum("google.protobuf.Field_Kind", Field_Kind_name, Field_Kind_value)
+	proto.RegisterEnum("google.protobuf.Field_Cardinality", Field_Cardinality_name, Field_Cardinality_value)
+	proto.RegisterType((*Type)(nil), "google.protobuf.Type")
+	proto.RegisterType((*Field)(nil), "google.protobuf.Field")
+	proto.RegisterType((*Enum)(nil), "google.protobuf.Enum")
+	proto.RegisterType((*EnumValue)(nil), "google.protobuf.EnumValue")
+	proto.RegisterType((*Option)(nil), "google.protobuf.Option")
 	xxx_File_google_protobuf_type_proto_goTypes = nil
 	xxx_File_google_protobuf_type_proto_depIdxs = nil
 }

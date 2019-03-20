@@ -315,15 +315,6 @@ func (m *ListValue) GetValues() []*Value {
 	return nil
 }
 
-func init() {
-	proto.RegisterFile("google/protobuf/struct.proto", xxx_File_google_protobuf_struct_proto_rawdesc_gzipped)
-	proto.RegisterEnum("google.protobuf.NullValue", NullValue_name, NullValue_value)
-	proto.RegisterType((*Struct)(nil), "google.protobuf.Struct")
-	proto.RegisterMapType((map[string]*Value)(nil), "google.protobuf.Struct.FieldsEntry")
-	proto.RegisterType((*Value)(nil), "google.protobuf.Value")
-	proto.RegisterType((*ListValue)(nil), "google.protobuf.ListValue")
-}
-
 var xxx_File_google_protobuf_struct_proto_rawdesc = []byte{
 	// 745 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1c, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -417,6 +408,12 @@ func xxx_File_google_protobuf_struct_proto_init() {
 		xxx_File_google_protobuf_struct_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_google_protobuf_struct_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("google/protobuf/struct.proto", xxx_File_google_protobuf_struct_proto_rawdesc_gzipped)
+	proto.RegisterEnum("google.protobuf.NullValue", NullValue_name, NullValue_value)
+	proto.RegisterType((*Struct)(nil), "google.protobuf.Struct")
+	proto.RegisterMapType((map[string]*Value)(nil), "google.protobuf.Struct.FieldsEntry")
+	proto.RegisterType((*Value)(nil), "google.protobuf.Value")
+	proto.RegisterType((*ListValue)(nil), "google.protobuf.ListValue")
 	xxx_File_google_protobuf_struct_proto_goTypes = nil
 	xxx_File_google_protobuf_struct_proto_depIdxs = nil
 }

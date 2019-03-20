@@ -9,10 +9,6 @@ import (
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 )
 
-func init() {
-	proto.RegisterFile("grpc/deprecation.proto", xxx_File_grpc_deprecation_proto_rawdesc_gzipped)
-}
-
 var xxx_File_grpc_deprecation_proto_rawdesc = []byte{
 	// 245 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x16, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x64, 0x65, 0x70, 0x72, 0x65, 0x63, 0x61, 0x74, 0x69,
@@ -59,6 +55,7 @@ func xxx_File_grpc_deprecation_proto_init() {
 		GoTypes:           xxx_File_grpc_deprecation_proto_goTypes,
 		DependencyIndexes: xxx_File_grpc_deprecation_proto_depIdxs,
 	}.Init()
+	proto.RegisterFile("grpc/deprecation.proto", xxx_File_grpc_deprecation_proto_rawdesc_gzipped)
 	xxx_File_grpc_deprecation_proto_goTypes = nil
 	xxx_File_grpc_deprecation_proto_depIdxs = nil
 }

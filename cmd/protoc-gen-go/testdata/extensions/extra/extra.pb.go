@@ -54,11 +54,6 @@ func (m *ExtraMessage) GetData() []byte {
 	return nil
 }
 
-func init() {
-	proto.RegisterFile("extensions/extra/extra.proto", xxx_File_extensions_extra_extra_proto_rawdesc_gzipped)
-	proto.RegisterType((*ExtraMessage)(nil), "goproto.protoc.extension.extra.ExtraMessage")
-}
-
 var xxx_File_extensions_extra_extra_proto_rawdesc = []byte{
 	// 175 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1c, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x65, 0x78, 0x74,
@@ -103,6 +98,8 @@ func xxx_File_extensions_extra_extra_proto_init() {
 		xxx_File_extensions_extra_extra_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_extensions_extra_extra_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("extensions/extra/extra.proto", xxx_File_extensions_extra_extra_proto_rawdesc_gzipped)
+	proto.RegisterType((*ExtraMessage)(nil), "goproto.protoc.extension.extra.ExtraMessage")
 	xxx_File_extensions_extra_extra_proto_goTypes = nil
 	xxx_File_extensions_extra_extra_proto_depIdxs = nil
 }

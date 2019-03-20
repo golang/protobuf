@@ -142,13 +142,6 @@ func (m *Layer1_Layer2_Layer3) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Layer1_Layer2_Layer3 proto.InternalMessageInfo
 
-func init() {
-	proto.RegisterFile("proto2/nested_messages.proto", xxx_File_proto2_nested_messages_proto_rawdesc_gzipped)
-	proto.RegisterType((*Layer1)(nil), "goproto.protoc.proto2.Layer1")
-	proto.RegisterType((*Layer1_Layer2)(nil), "goproto.protoc.proto2.Layer1.Layer2")
-	proto.RegisterType((*Layer1_Layer2_Layer3)(nil), "goproto.protoc.proto2.Layer1.Layer2.Layer3")
-}
-
 var xxx_File_proto2_nested_messages_proto_rawdesc = []byte{
 	// 327 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x1c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0x2f, 0x6e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x5f,
@@ -209,6 +202,10 @@ func xxx_File_proto2_nested_messages_proto_init() {
 		xxx_File_proto2_nested_messages_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_proto2_nested_messages_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("proto2/nested_messages.proto", xxx_File_proto2_nested_messages_proto_rawdesc_gzipped)
+	proto.RegisterType((*Layer1)(nil), "goproto.protoc.proto2.Layer1")
+	proto.RegisterType((*Layer1_Layer2)(nil), "goproto.protoc.proto2.Layer1.Layer2")
+	proto.RegisterType((*Layer1_Layer2_Layer3)(nil), "goproto.protoc.proto2.Layer1.Layer2.Layer3")
 	xxx_File_proto2_nested_messages_proto_goTypes = nil
 	xxx_File_proto2_nested_messages_proto_depIdxs = nil
 }

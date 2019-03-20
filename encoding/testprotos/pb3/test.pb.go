@@ -623,24 +623,6 @@ func (m *JSONNames) GetSString() string {
 	return ""
 }
 
-func init() {
-	proto.RegisterFile("pb3/test.proto", xxx_File_pb3_test_proto_rawdesc_gzipped)
-	proto.RegisterEnum("pb3.Enum", Enum_name, Enum_value)
-	proto.RegisterEnum("pb3.Enums_NestedEnum", Enums_NestedEnum_name, Enums_NestedEnum_value)
-	proto.RegisterType((*Scalars)(nil), "pb3.Scalars")
-	proto.RegisterType((*Enums)(nil), "pb3.Enums")
-	proto.RegisterType((*Nests)(nil), "pb3.Nests")
-	proto.RegisterType((*Nested)(nil), "pb3.Nested")
-	proto.RegisterType((*Oneofs)(nil), "pb3.Oneofs")
-	proto.RegisterType((*Maps)(nil), "pb3.Maps")
-	proto.RegisterMapType((map[bool]uint32)(nil), "pb3.Maps.BoolToUint32Entry")
-	proto.RegisterMapType((map[int32]string)(nil), "pb3.Maps.Int32ToStrEntry")
-	proto.RegisterMapType((map[string]*Nested)(nil), "pb3.Maps.StrToNestedEntry")
-	proto.RegisterMapType((map[string]*Oneofs)(nil), "pb3.Maps.StrToOneofsEntry")
-	proto.RegisterMapType((map[uint64]Enum)(nil), "pb3.Maps.Uint64ToEnumEntry")
-	proto.RegisterType((*JSONNames)(nil), "pb3.JSONNames")
-}
-
 var xxx_File_pb3_test_proto_rawdesc = []byte{
 	// 1710 bytes of the wire-encoded FileDescriptorProto
 	0x0a, 0x0e, 0x70, 0x62, 0x33, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
@@ -811,6 +793,21 @@ func xxx_File_pb3_test_proto_init() {
 		xxx_File_pb3_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
 		xxx_File_pb3_test_proto_messageTypes[i].PBType = mt
 	}
+	proto.RegisterFile("pb3/test.proto", xxx_File_pb3_test_proto_rawdesc_gzipped)
+	proto.RegisterEnum("pb3.Enum", Enum_name, Enum_value)
+	proto.RegisterEnum("pb3.Enums_NestedEnum", Enums_NestedEnum_name, Enums_NestedEnum_value)
+	proto.RegisterType((*Scalars)(nil), "pb3.Scalars")
+	proto.RegisterType((*Enums)(nil), "pb3.Enums")
+	proto.RegisterType((*Nests)(nil), "pb3.Nests")
+	proto.RegisterType((*Nested)(nil), "pb3.Nested")
+	proto.RegisterType((*Oneofs)(nil), "pb3.Oneofs")
+	proto.RegisterType((*Maps)(nil), "pb3.Maps")
+	proto.RegisterMapType((map[bool]uint32)(nil), "pb3.Maps.BoolToUint32Entry")
+	proto.RegisterMapType((map[int32]string)(nil), "pb3.Maps.Int32ToStrEntry")
+	proto.RegisterMapType((map[string]*Nested)(nil), "pb3.Maps.StrToNestedEntry")
+	proto.RegisterMapType((map[string]*Oneofs)(nil), "pb3.Maps.StrToOneofsEntry")
+	proto.RegisterMapType((map[uint64]Enum)(nil), "pb3.Maps.Uint64ToEnumEntry")
+	proto.RegisterType((*JSONNames)(nil), "pb3.JSONNames")
 	xxx_File_pb3_test_proto_goTypes = nil
 	xxx_File_pb3_test_proto_depIdxs = nil
 }
