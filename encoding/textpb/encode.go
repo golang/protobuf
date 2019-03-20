@@ -27,8 +27,10 @@ func Marshal(m proto.Message) ([]byte, error) {
 type MarshalOptions struct {
 	pragma.NoUnkeyedLiterals
 
-	// Set Compact to true to have output in a single line with no line breaks.
-	Compact bool
+	// If Indent is a non-empty string, it causes entries for a Message to be
+	// preceded by the indent and trailed by a newline. Indent can only be
+	// composed of space or tab characters.
+	Indent string
 
 	// Resolver is the registry used for type lookups when marshaling out
 	// google.protobuf.Any messages in expanded form. If Resolver is not set,
@@ -49,14 +51,9 @@ func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
 		return nil, err
 	}
 
-	indent := "  "
-	if o.Compact {
-		indent = ""
-	}
 	delims := [2]byte{'{', '}'}
-
 	const outputASCII = false
-	b, err := text.Marshal(v, indent, delims, outputASCII)
+	b, err := text.Marshal(v, o.Indent, delims, outputASCII)
 	if !nerr.Merge(err) {
 		return nil, err
 	}

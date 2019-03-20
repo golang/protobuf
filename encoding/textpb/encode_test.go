@@ -1111,7 +1111,8 @@ value: "\x80"
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
-			t.Parallel()
+			// Use 2-space indentation on all MarshalOptions.
+			tt.mo.Indent = "  "
 			b, err := tt.mo.Marshal(tt.input)
 			if err != nil && !tt.wantErr {
 				t.Errorf("Marshal() returned error: %v\n", err)
