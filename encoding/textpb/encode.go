@@ -15,8 +15,6 @@ import (
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/protoregistry"
-
-	descpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 // Marshal writes the given proto.Message in textproto format using default options.
@@ -342,15 +340,8 @@ func isMessageSetExtension(xt pref.ExtensionType) bool {
 	if xt.FullName().Parent() != mt.FullName() {
 		return false
 	}
-	xmt := xt.ExtendedType()
-	if xmt.Fields().Len() != 0 {
-		return false
-	}
-	opt := xmt.Options().(*descpb.MessageOptions)
-	if opt == nil {
-		return false
-	}
-	return opt.GetMessageSetWireFormat()
+	xmt, ok := xt.ExtendedType().(interface{ IsMessageSet() bool })
+	return ok && xmt.IsMessageSet()
 }
 
 // appendUnknown parses the given []byte and appends field(s) into the given fields slice.

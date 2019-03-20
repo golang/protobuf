@@ -403,7 +403,7 @@ func (m *FileDescriptorSet) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[0].MessageOf(m)
 }
 func (m *FileDescriptorSet) Reset()         { *m = FileDescriptorSet{} }
-func (m *FileDescriptorSet) String() string { return protoapi.CompactTextString(m) }
+func (m *FileDescriptorSet) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FileDescriptorSet) ProtoMessage()    {}
 
 // Deprecated: Use FileDescriptorSet.ProtoReflect.Type instead.
@@ -452,7 +452,7 @@ func (m *FileDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[1].MessageOf(m)
 }
 func (m *FileDescriptorProto) Reset()         { *m = FileDescriptorProto{} }
-func (m *FileDescriptorProto) String() string { return protoapi.CompactTextString(m) }
+func (m *FileDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FileDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use FileDescriptorProto.ProtoReflect.Type instead.
@@ -567,7 +567,7 @@ func (m *DescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[2].MessageOf(m)
 }
 func (m *DescriptorProto) Reset()         { *m = DescriptorProto{} }
-func (m *DescriptorProto) String() string { return protoapi.CompactTextString(m) }
+func (m *DescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*DescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use DescriptorProto.ProtoReflect.Type instead.
@@ -658,7 +658,7 @@ func (m *ExtensionRangeOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[3].MessageOf(m)
 }
 func (m *ExtensionRangeOptions) Reset()         { *m = ExtensionRangeOptions{} }
-func (m *ExtensionRangeOptions) String() string { return protoapi.CompactTextString(m) }
+func (m *ExtensionRangeOptions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*ExtensionRangeOptions) ProtoMessage()    {}
 
 // Deprecated: Use ExtensionRangeOptions.ProtoReflect.Type instead.
@@ -723,7 +723,7 @@ func (m *FieldDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[4].MessageOf(m)
 }
 func (m *FieldDescriptorProto) Reset()         { *m = FieldDescriptorProto{} }
-func (m *FieldDescriptorProto) String() string { return protoapi.CompactTextString(m) }
+func (m *FieldDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use FieldDescriptorProto.ProtoReflect.Type instead.
@@ -814,7 +814,7 @@ func (m *OneofDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[5].MessageOf(m)
 }
 func (m *OneofDescriptorProto) Reset()         { *m = OneofDescriptorProto{} }
-func (m *OneofDescriptorProto) String() string { return protoapi.CompactTextString(m) }
+func (m *OneofDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*OneofDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use OneofDescriptorProto.ProtoReflect.Type instead.
@@ -857,7 +857,7 @@ func (m *EnumDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[6].MessageOf(m)
 }
 func (m *EnumDescriptorProto) Reset()         { *m = EnumDescriptorProto{} }
-func (m *EnumDescriptorProto) String() string { return protoapi.CompactTextString(m) }
+func (m *EnumDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*EnumDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use EnumDescriptorProto.ProtoReflect.Type instead.
@@ -914,7 +914,7 @@ func (m *EnumValueDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[7].MessageOf(m)
 }
 func (m *EnumValueDescriptorProto) Reset()         { *m = EnumValueDescriptorProto{} }
-func (m *EnumValueDescriptorProto) String() string { return protoapi.CompactTextString(m) }
+func (m *EnumValueDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*EnumValueDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use EnumValueDescriptorProto.ProtoReflect.Type instead.
@@ -957,7 +957,7 @@ func (m *ServiceDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[8].MessageOf(m)
 }
 func (m *ServiceDescriptorProto) Reset()         { *m = ServiceDescriptorProto{} }
-func (m *ServiceDescriptorProto) String() string { return protoapi.CompactTextString(m) }
+func (m *ServiceDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*ServiceDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use ServiceDescriptorProto.ProtoReflect.Type instead.
@@ -1007,7 +1007,7 @@ func (m *MethodDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[9].MessageOf(m)
 }
 func (m *MethodDescriptorProto) Reset()         { *m = MethodDescriptorProto{} }
-func (m *MethodDescriptorProto) String() string { return protoapi.CompactTextString(m) }
+func (m *MethodDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*MethodDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use MethodDescriptorProto.ProtoReflect.Type instead.
@@ -1155,7 +1155,7 @@ func (m *FileOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[10].MessageOf(m)
 }
 func (m *FileOptions) Reset()         { *m = FileOptions{} }
-func (m *FileOptions) String() string { return protoapi.CompactTextString(m) }
+func (m *FileOptions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FileOptions) ProtoMessage()    {}
 
 // Deprecated: Use FileOptions.ProtoReflect.Type instead.
@@ -1393,7 +1393,7 @@ func (m *MessageOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[11].MessageOf(m)
 }
 func (m *MessageOptions) Reset()         { *m = MessageOptions{} }
-func (m *MessageOptions) String() string { return protoapi.CompactTextString(m) }
+func (m *MessageOptions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*MessageOptions) ProtoMessage()    {}
 
 // Deprecated: Use MessageOptions.ProtoReflect.Type instead.
@@ -1521,7 +1521,7 @@ func (m *FieldOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[12].MessageOf(m)
 }
 func (m *FieldOptions) Reset()         { *m = FieldOptions{} }
-func (m *FieldOptions) String() string { return protoapi.CompactTextString(m) }
+func (m *FieldOptions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldOptions) ProtoMessage()    {}
 
 // Deprecated: Use FieldOptions.ProtoReflect.Type instead.
@@ -1606,7 +1606,7 @@ func (m *OneofOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[13].MessageOf(m)
 }
 func (m *OneofOptions) Reset()         { *m = OneofOptions{} }
-func (m *OneofOptions) String() string { return protoapi.CompactTextString(m) }
+func (m *OneofOptions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*OneofOptions) ProtoMessage()    {}
 
 // Deprecated: Use OneofOptions.ProtoReflect.Type instead.
@@ -1651,7 +1651,7 @@ func (m *EnumOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[14].MessageOf(m)
 }
 func (m *EnumOptions) Reset()         { *m = EnumOptions{} }
-func (m *EnumOptions) String() string { return protoapi.CompactTextString(m) }
+func (m *EnumOptions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*EnumOptions) ProtoMessage()    {}
 
 // Deprecated: Use EnumOptions.ProtoReflect.Type instead.
@@ -1709,7 +1709,7 @@ func (m *EnumValueOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[15].MessageOf(m)
 }
 func (m *EnumValueOptions) Reset()         { *m = EnumValueOptions{} }
-func (m *EnumValueOptions) String() string { return protoapi.CompactTextString(m) }
+func (m *EnumValueOptions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*EnumValueOptions) ProtoMessage()    {}
 
 // Deprecated: Use EnumValueOptions.ProtoReflect.Type instead.
@@ -1760,7 +1760,7 @@ func (m *ServiceOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[16].MessageOf(m)
 }
 func (m *ServiceOptions) Reset()         { *m = ServiceOptions{} }
-func (m *ServiceOptions) String() string { return protoapi.CompactTextString(m) }
+func (m *ServiceOptions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*ServiceOptions) ProtoMessage()    {}
 
 // Deprecated: Use ServiceOptions.ProtoReflect.Type instead.
@@ -1812,7 +1812,7 @@ func (m *MethodOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[17].MessageOf(m)
 }
 func (m *MethodOptions) Reset()         { *m = MethodOptions{} }
-func (m *MethodOptions) String() string { return protoapi.CompactTextString(m) }
+func (m *MethodOptions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*MethodOptions) ProtoMessage()    {}
 
 // Deprecated: Use MethodOptions.ProtoReflect.Type instead.
@@ -1878,7 +1878,7 @@ func (m *UninterpretedOption) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[18].MessageOf(m)
 }
 func (m *UninterpretedOption) Reset()         { *m = UninterpretedOption{} }
-func (m *UninterpretedOption) String() string { return protoapi.CompactTextString(m) }
+func (m *UninterpretedOption) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*UninterpretedOption) ProtoMessage()    {}
 
 // Deprecated: Use UninterpretedOption.ProtoReflect.Type instead.
@@ -1991,7 +1991,7 @@ func (m *SourceCodeInfo) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[19].MessageOf(m)
 }
 func (m *SourceCodeInfo) Reset()         { *m = SourceCodeInfo{} }
-func (m *SourceCodeInfo) String() string { return protoapi.CompactTextString(m) }
+func (m *SourceCodeInfo) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*SourceCodeInfo) ProtoMessage()    {}
 
 // Deprecated: Use SourceCodeInfo.ProtoReflect.Type instead.
@@ -2022,7 +2022,7 @@ func (m *GeneratedCodeInfo) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[20].MessageOf(m)
 }
 func (m *GeneratedCodeInfo) Reset()         { *m = GeneratedCodeInfo{} }
-func (m *GeneratedCodeInfo) String() string { return protoapi.CompactTextString(m) }
+func (m *GeneratedCodeInfo) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*GeneratedCodeInfo) ProtoMessage()    {}
 
 // Deprecated: Use GeneratedCodeInfo.ProtoReflect.Type instead.
@@ -2050,7 +2050,7 @@ func (m *DescriptorProto_ExtensionRange) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[21].MessageOf(m)
 }
 func (m *DescriptorProto_ExtensionRange) Reset()         { *m = DescriptorProto_ExtensionRange{} }
-func (m *DescriptorProto_ExtensionRange) String() string { return protoapi.CompactTextString(m) }
+func (m *DescriptorProto_ExtensionRange) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*DescriptorProto_ExtensionRange) ProtoMessage()    {}
 
 // Deprecated: Use DescriptorProto_ExtensionRange.ProtoReflect.Type instead.
@@ -2094,7 +2094,7 @@ func (m *DescriptorProto_ReservedRange) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[22].MessageOf(m)
 }
 func (m *DescriptorProto_ReservedRange) Reset()         { *m = DescriptorProto_ReservedRange{} }
-func (m *DescriptorProto_ReservedRange) String() string { return protoapi.CompactTextString(m) }
+func (m *DescriptorProto_ReservedRange) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*DescriptorProto_ReservedRange) ProtoMessage()    {}
 
 // Deprecated: Use DescriptorProto_ReservedRange.ProtoReflect.Type instead.
@@ -2134,7 +2134,7 @@ func (m *EnumDescriptorProto_EnumReservedRange) ProtoReflect() protoreflect.Mess
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[23].MessageOf(m)
 }
 func (m *EnumDescriptorProto_EnumReservedRange) Reset()         { *m = EnumDescriptorProto_EnumReservedRange{} }
-func (m *EnumDescriptorProto_EnumReservedRange) String() string { return protoapi.CompactTextString(m) }
+func (m *EnumDescriptorProto_EnumReservedRange) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*EnumDescriptorProto_EnumReservedRange) ProtoMessage()    {}
 
 // Deprecated: Use EnumDescriptorProto_EnumReservedRange.ProtoReflect.Type instead.
@@ -2173,7 +2173,7 @@ func (m *UninterpretedOption_NamePart) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[24].MessageOf(m)
 }
 func (m *UninterpretedOption_NamePart) Reset()         { *m = UninterpretedOption_NamePart{} }
-func (m *UninterpretedOption_NamePart) String() string { return protoapi.CompactTextString(m) }
+func (m *UninterpretedOption_NamePart) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*UninterpretedOption_NamePart) ProtoMessage()    {}
 
 // Deprecated: Use UninterpretedOption_NamePart.ProtoReflect.Type instead.
@@ -2285,7 +2285,7 @@ func (m *SourceCodeInfo_Location) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[25].MessageOf(m)
 }
 func (m *SourceCodeInfo_Location) Reset()         { *m = SourceCodeInfo_Location{} }
-func (m *SourceCodeInfo_Location) String() string { return protoapi.CompactTextString(m) }
+func (m *SourceCodeInfo_Location) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*SourceCodeInfo_Location) ProtoMessage()    {}
 
 // Deprecated: Use SourceCodeInfo_Location.ProtoReflect.Type instead.
@@ -2350,7 +2350,7 @@ func (m *GeneratedCodeInfo_Annotation) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[26].MessageOf(m)
 }
 func (m *GeneratedCodeInfo_Annotation) Reset()         { *m = GeneratedCodeInfo_Annotation{} }
-func (m *GeneratedCodeInfo_Annotation) String() string { return protoapi.CompactTextString(m) }
+func (m *GeneratedCodeInfo_Annotation) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*GeneratedCodeInfo_Annotation) ProtoMessage()    {}
 
 // Deprecated: Use GeneratedCodeInfo_Annotation.ProtoReflect.Type instead.

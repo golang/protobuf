@@ -560,6 +560,8 @@ func (md *messageDesc) unmarshalOptions(b []byte) {
 			switch num {
 			case descfield.MessageOptions_MapEntry:
 				md.lazy.isMapEntry = wire.DecodeBool(v)
+			case descfield.MessageOptions_MessageSetWireFormat:
+				md.lazy.isMessageSet = wire.DecodeBool(v)
 			}
 		default:
 			m := wire.ConsumeFieldValue(num, typ, b)

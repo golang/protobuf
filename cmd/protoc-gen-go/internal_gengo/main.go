@@ -441,7 +441,11 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	// Reset
 	g.P("func (m *", message.GoIdent, ") Reset() { *m = ", message.GoIdent, "{} }")
 	// String
-	g.P("func (m *", message.GoIdent, ") String() string { return ", f.protoPackage().Ident("CompactTextString"), "(m) }")
+	if isDescriptor(f.File) {
+		g.P("func (m *", message.GoIdent, ") String() string { return ", protoimplPackage.Ident("X"), ".MessageStringOf(m) }")
+	} else {
+		g.P("func (m *", message.GoIdent, ") String() string { return ", f.protoPackage().Ident("CompactTextString"), "(m) }")
+	}
 	// ProtoMessage
 	g.P("func (*", message.GoIdent, ") ProtoMessage() {}")
 	// Descriptor

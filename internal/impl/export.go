@@ -7,6 +7,7 @@ package impl
 import (
 	"strconv"
 
+	"github.com/golang/protobuf/v2/encoding/textpb"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -85,4 +86,11 @@ func (Export) ExtensionTypeOf(d pref.ExtensionDescriptor, t interface{}) pref.Ex
 		return ptype.GoExtension(d, nil, t.ProtoReflect().Type())
 	}
 	return legacyWrapper.ExtensionTypeOf(d, t)
+}
+
+// MessageStringOf returns the message value as a string,
+// which is the message serialized in the protobuf text format.
+func (Export) MessageStringOf(m pref.ProtoMessage) string {
+	b, _ := textpb.MarshalOptions{Compact: true}.Marshal(m)
+	return string(b)
 }

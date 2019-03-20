@@ -292,6 +292,7 @@ type (
 		new func() pref.Message
 
 		isMapEntry      bool
+		isMessageSet    bool
 		fields          fieldDescs
 		oneofs          oneofDescs
 		resvNames       names
@@ -350,6 +351,12 @@ func (md *messageDesc) ProtoType(pref.MessageDescriptor)      {}
 func (md *messageDesc) lazyInit() *messageLazy {
 	md.parentFile.lazyInit() // implicitly initializes messageLazy
 	return md.lazy
+}
+
+// IsMessageSet is a pseudo-internal API for checking whether a message
+// should serialize in the proto1 message format.
+func (md *messageDesc) IsMessageSet() bool {
+	return md.lazyInit().isMessageSet
 }
 
 func (fd *fieldDesc) Options() pref.OptionsMessage {
