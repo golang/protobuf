@@ -10,13 +10,11 @@ import (
 	"strings"
 	"testing"
 
-	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/detrand"
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
-	"github.com/golang/protobuf/v2/internal/impl"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -61,10 +59,6 @@ func setExtension(m proto.Message, xd *protoapi.ExtensionDesc, val interface{}) 
 	knownFields.Set(wire.Number(xd.Field), pval)
 }
 
-func wrapV1Message(any *knownpb.Any) proto.Message {
-	return impl.Export{}.MessageOf(any).Interface()
-}
-
 // dhex decodes a hex-string and returns the bytes and panics if s is invalid.
 func dhex(s string) []byte {
 	b, err := hex.DecodeString(s)
@@ -80,7 +74,7 @@ func TestMarshal(t *testing.T) {
 		mo      textpb.MarshalOptions
 		input   proto.Message
 		want    string
-		wantErr bool
+		wantErr bool // TODO: Verify error message content.
 	}{{
 		desc:  "proto2 optional scalars not set",
 		input: &pb2.Scalars{},
@@ -1033,10 +1027,10 @@ opt_int32: 42
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return wrapV1Message(&knownpb.Any{
+			return &knownpb.Any{
 				TypeUrl: "pb2.Nested",
 				Value:   b,
-			})
+			}
 		}(),
 		want: `type_url: "pb2.Nested"
 value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
@@ -1057,10 +1051,10 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return wrapV1Message(&knownpb.Any{
+			return &knownpb.Any{
 				TypeUrl: "foo/pb2.Nested",
 				Value:   b,
-			})
+			}
 		}(),
 		want: `[foo/pb2.Nested]: {
   opt_string: "embedded inside Any"
@@ -1078,16 +1072,16 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 			m := &pb2.PartialRequired{
 				OptString: scalar.String("embedded inside Any"),
 			}
-			// TODO: Switch to V2 marshal when ready.
-			b, err := protoV1.Marshal(m)
-			// Ignore required not set error.
-			if _, ok := err.(*protoV1.RequiredNotSetError); !ok {
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			// TODO: Marshal may fail due to required field not set at some
+			// point. Need to ignore required not set error here.
+			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return wrapV1Message(&knownpb.Any{
+			return &knownpb.Any{
 				TypeUrl: string(m.ProtoReflect().Type().FullName()),
 				Value:   b,
-			})
+			}
 		}(),
 		want: `[pb2.PartialRequired]: {
   opt_string: "embedded inside Any"
@@ -1099,10 +1093,10 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 		mo: textpb.MarshalOptions{
 			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
 		},
-		input: wrapV1Message(&knownpb.Any{
+		input: &knownpb.Any{
 			TypeUrl: "foo/pb2.Nested",
 			Value:   dhex("80"),
-		}),
+		},
 		want: `type_url: "foo/pb2.Nested"
 value: "\x80"
 `,
