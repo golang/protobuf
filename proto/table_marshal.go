@@ -16,8 +16,8 @@ import (
 	"sync/atomic"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/runtime/protoimpl"
 )
 
 // a sizer takes a pointer to a field and the size of its tag, computes the size of
@@ -2366,7 +2366,7 @@ func makeOneOfMarshaler(fi *marshalFieldInfo, f *reflect.StructField) (sizer, ma
 
 // sizeExtensions computes the size of encoded data for a XXX_InternalExtensions field.
 func (u *marshalInfo) sizeExtensions(ext *XXX_InternalExtensions) int {
-	m := protoapi.ExtensionFieldsOf(ext)
+	m := protoimpl.X.ExtensionFieldsOf(ext)
 	if !m.HasInit() {
 		return 0
 	}
@@ -2395,7 +2395,7 @@ func (u *marshalInfo) sizeExtensions(ext *XXX_InternalExtensions) int {
 
 // appendExtensions marshals a XXX_InternalExtensions field to the end of byte slice b.
 func (u *marshalInfo) appendExtensions(b []byte, ext *XXX_InternalExtensions, deterministic bool) ([]byte, error) {
-	m := protoapi.ExtensionFieldsOf(ext)
+	m := protoimpl.X.ExtensionFieldsOf(ext)
 	if !m.HasInit() {
 		return b, nil
 	}
@@ -2475,7 +2475,7 @@ func (u *marshalInfo) appendExtensions(b []byte, ext *XXX_InternalExtensions, de
 // sizeMessageSet computes the size of encoded data for a XXX_InternalExtensions field
 // in message set format (above).
 func (u *marshalInfo) sizeMessageSet(ext *XXX_InternalExtensions) int {
-	m := protoapi.ExtensionFieldsOf(ext)
+	m := protoimpl.X.ExtensionFieldsOf(ext)
 	if !m.HasInit() {
 		return 0
 	}
@@ -2511,7 +2511,7 @@ func (u *marshalInfo) sizeMessageSet(ext *XXX_InternalExtensions) int {
 // appendMessageSet marshals a XXX_InternalExtensions field in message set format (above)
 // to the end of byte slice b.
 func (u *marshalInfo) appendMessageSet(b []byte, ext *XXX_InternalExtensions, deterministic bool) ([]byte, error) {
-	m := protoapi.ExtensionFieldsOf(ext)
+	m := protoimpl.X.ExtensionFieldsOf(ext)
 	if !m.HasInit() {
 		return b, nil
 	}

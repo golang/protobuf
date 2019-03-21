@@ -9,12 +9,11 @@ package proto
 // that they would otherwise be able to call directly.
 
 import (
-	"github.com/golang/protobuf/protoapi"
-
+	"github.com/golang/protobuf/v2/runtime/protoiface"
 	_ "github.com/golang/protobuf/v2/runtime/protolegacy"
 )
 
 type (
-	Message       = protoapi.Message
-	ExtensionDesc = protoapi.ExtensionDesc
+	Message       = protoiface.MessageV1
+	ExtensionDesc = protoiface.ExtensionDescV1
 )

@@ -15,14 +15,15 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/runtime/protoiface"
+	"github.com/golang/protobuf/v2/runtime/protoimpl"
 )
 
 // ErrMissingExtension is the error returned by GetExtension if the named extension is not in the message.
 var ErrMissingExtension = errors.New("proto: missing extension")
 
-func extendable(p interface{}) (protoapi.ExtensionFields, error) {
+func extendable(p interface{}) (extensionFields, error) {
 	type extendableProto interface {
 		Message
 		ExtensionRangeArray() []ExtensionRange
@@ -32,10 +33,10 @@ func extendable(p interface{}) (protoapi.ExtensionFields, error) {
 		if v.Kind() == reflect.Ptr && !v.IsNil() {
 			v = v.Elem()
 			if v := v.FieldByName("XXX_InternalExtensions"); v.IsValid() {
-				return protoapi.ExtensionFieldsOf(v.Addr().Interface()), nil
+				return protoimpl.X.ExtensionFieldsOf(v.Addr().Interface()), nil
 			}
 			if v := v.FieldByName("XXX_extensions"); v.IsValid() {
-				return protoapi.ExtensionFieldsOf(v.Addr().Interface()), nil
+				return protoimpl.X.ExtensionFieldsOf(v.Addr().Interface()), nil
 			}
 		}
 	}
@@ -47,10 +48,10 @@ func extendable(p interface{}) (protoapi.ExtensionFields, error) {
 var errNotExtendable = errors.New("proto: not an extendable proto.Message")
 
 type (
-	ExtensionRange         = protoapi.ExtensionRange
-	ExtensionDesc          = protoapi.ExtensionDesc
-	Extension              = protoapi.ExtensionField
-	XXX_InternalExtensions = protoapi.XXX_InternalExtensions
+	ExtensionRange         = protoiface.ExtensionRangeV1
+	ExtensionDesc          = protoiface.ExtensionDescV1
+	Extension              = protoimpl.ExtensionFieldV1
+	XXX_InternalExtensions = protoimpl.ExtensionFieldsV1
 )
 
 func isRepeatedExtension(ed *ExtensionDesc) bool {

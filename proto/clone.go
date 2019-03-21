@@ -13,7 +13,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -209,7 +208,7 @@ func mergeAny(out, in reflect.Value, viaPtr bool, prop *Properties) {
 	}
 }
 
-func mergeExtension(out, in protoapi.ExtensionFields) {
+func mergeExtension(out, in extensionFields) {
 	in.Range(func(extNum protoreflect.FieldNumber, eIn Extension) bool {
 		eOut := Extension{Desc: eIn.Desc}
 		if eIn.Value != nil {
