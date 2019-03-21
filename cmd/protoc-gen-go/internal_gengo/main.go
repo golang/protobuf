@@ -27,9 +27,14 @@ import (
 )
 
 const (
-	mathPackage     = protogen.GoImportPath("math")
-	protoPackage    = protogen.GoImportPath("github.com/golang/protobuf/proto")
-	protoapiPackage = protogen.GoImportPath("github.com/golang/protobuf/protoapi")
+	mathPackage          = protogen.GoImportPath("math")
+	reflectPackage       = protogen.GoImportPath("reflect")
+	protoPackage         = protogen.GoImportPath("github.com/golang/protobuf/proto")
+	protoifacePackage    = protogen.GoImportPath("github.com/golang/protobuf/v2/runtime/protoiface")
+	protoimplPackage     = protogen.GoImportPath("github.com/golang/protobuf/v2/runtime/protoimpl")
+	protoreflectPackage  = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoreflect")
+	protoregistryPackage = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoregistry")
+	prototypePackage     = protogen.GoImportPath("github.com/golang/protobuf/v2/internal/prototype")
 )
 
 type fileInfo struct {
@@ -44,28 +49,6 @@ type fileInfo struct {
 	allMessages      []*protogen.Message
 	allMessagesByPtr map[*protogen.Message]int // value is index into allMessages
 	allExtensions    []*protogen.Extension
-}
-
-// protoPackage returns the package to import, which is either the protoPackage
-// or the protoapiPackage constant.
-//
-// This special casing exists because we are unable to move InternalMessageInfo
-// to protoapi since the implementation behind that logic is heavy and
-// too intricately connected to other parts of the proto package.
-// The descriptor proto is special in that it avoids using InternalMessageInfo
-// so that it is able to depend solely on protoapi and break its dependency
-// on the proto package. It is still semantically correct for descriptor to
-// avoid using InternalMessageInfo, but it does incur some performance penalty.
-// This is acceptable for descriptor, which is a single proto file and is not
-// known to be in the hot path for any code.
-//
-// TODO: Remove this special-casing when the table-driven implementation has
-// been ported over to v2.
-func (f *fileInfo) protoPackage() protogen.GoImportPath {
-	if isDescriptor(f.File) {
-		return protoapiPackage
-	}
-	return protoPackage
 }
 
 // GenerateFile generates the contents of a .pb.go file.
@@ -428,7 +411,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 			tags = append(tags, `protobuf_messageset:"1"`)
 		}
 		tags = append(tags, `json:"-"`)
-		g.P(f.protoPackage().Ident("XXX_InternalExtensions"), " `", strings.Join(tags, " "), "`")
+		g.P("XXX_InternalExtensions ", protoimplPackage.Ident("ExtensionFieldsV1"), " `", strings.Join(tags, " "), "`")
 	}
 	g.P("XXX_unrecognized []byte `json:\"-\"`")
 	g.P("XXX_sizecache int32 `json:\"-\"`")
@@ -444,7 +427,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	if isDescriptor(f.File) {
 		g.P("func (m *", message.GoIdent, ") String() string { return ", protoimplPackage.Ident("X"), ".MessageStringOf(m) }")
 	} else {
-		g.P("func (m *", message.GoIdent, ") String() string { return ", f.protoPackage().Ident("CompactTextString"), "(m) }")
+		g.P("func (m *", message.GoIdent, ") String() string { return ", protoPackage.Ident("CompactTextString"), "(m) }")
 	}
 	// ProtoMessage
 	g.P("func (*", message.GoIdent, ") ProtoMessage() {}")
@@ -461,7 +444,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 
 	// ExtensionRangeArray
 	if extranges := message.Desc.ExtensionRanges(); extranges.Len() > 0 {
-		protoExtRange := f.protoPackage().Ident("ExtensionRange")
+		protoExtRange := protoifacePackage.Ident("ExtensionRangeV1")
 		extRangeVar := "extRange_" + message.GoIdent.GoName
 		g.P("var ", extRangeVar, " = []", protoExtRange, " {")
 		for i := 0; i < extranges.Len(); i++ {
@@ -696,7 +679,7 @@ func genExtensions(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo)
 		return
 	}
 
-	g.P("var ", extDecsVarName(f), " = []", f.protoPackage().Ident("ExtensionDesc"), "{")
+	g.P("var ", extDecsVarName(f), " = []", protoifacePackage.Ident("ExtensionDescV1"), "{")
 	for _, extension := range f.allExtensions {
 		// Special case for proto2 message sets: If this extension is extending
 		// proto2.bridge.MessageSet, and its final name component is "message_set_extension",

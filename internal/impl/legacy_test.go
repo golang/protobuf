@@ -10,13 +10,13 @@ import (
 	"reflect"
 	"testing"
 
-	papi "github.com/golang/protobuf/protoapi"
 	pack "github.com/golang/protobuf/v2/internal/encoding/pack"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	piface "github.com/golang/protobuf/v2/runtime/protoiface"
 	cmp "github.com/google/go-cmp/cmp"
 	cmpopts "github.com/google/go-cmp/cmp/cmpopts"
 
@@ -28,15 +28,15 @@ import (
 )
 
 type legacyTestMessage struct {
-	XXX_unrecognized []byte
-	papi.XXX_InternalExtensions
+	XXX_unrecognized       []byte
+	XXX_InternalExtensions pimpl.ExtensionFieldsV1
 }
 
 func (*legacyTestMessage) Reset()         {}
 func (*legacyTestMessage) String() string { return "" }
 func (*legacyTestMessage) ProtoMessage()  {}
-func (*legacyTestMessage) ExtensionRangeArray() []papi.ExtensionRange {
-	return []papi.ExtensionRange{{Start: 10, End: 20}, {Start: 40, End: 80}, {Start: 10000, End: 20000}}
+func (*legacyTestMessage) ExtensionRangeArray() []piface.ExtensionRangeV1 {
+	return []piface.ExtensionRangeV1{{Start: 10, End: 20}, {Start: 40, End: 80}, {Start: 10000, End: 20000}}
 }
 
 func TestLegacyUnknown(t *testing.T) {
@@ -440,7 +440,7 @@ var (
 		}, (*EnumMessages)(nil)),
 	}
 
-	extensionDescs = []*papi.ExtensionDesc{{
+	extensionDescs = []*piface.ExtensionDescV1{{
 		ExtendedType:  (*legacyTestMessage)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         10000,
@@ -794,7 +794,7 @@ func TestExtensionConvert(t *testing.T) {
 			}
 
 			opts = cmp.Options{
-				cmpopts.IgnoreFields(papi.ExtensionDesc{}, "Type"),
+				cmpopts.IgnoreFields(piface.ExtensionDescV1{}, "Type"),
 			}
 			if diff := cmp.Diff(wantDesc, gotDesc, opts); diff != "" {
 				t.Errorf("ExtensionDesc mismatch (-want, +got):\n%v", diff)

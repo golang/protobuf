@@ -9,16 +9,16 @@ import (
 	"reflect"
 	"sync"
 
-	papi "github.com/golang/protobuf/protoapi"
 	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	piface "github.com/golang/protobuf/v2/runtime/protoiface"
 )
 
-// extensionDescKey is a comparable version of protoapi.ExtensionDesc
+// extensionDescKey is a comparable version of protoiface.ExtensionDescV1
 // suitable for use as a key in a map.
 type extensionDescKey struct {
 	typeV2        pref.ExtensionType
@@ -30,7 +30,7 @@ type extensionDescKey struct {
 	filename      string
 }
 
-func extensionDescKeyOf(d *papi.ExtensionDesc) extensionDescKey {
+func extensionDescKeyOf(d *piface.ExtensionDescV1) extensionDescKey {
 	return extensionDescKey{
 		d.Type,
 		reflect.TypeOf(d.ExtendedType),
@@ -41,14 +41,16 @@ func extensionDescKeyOf(d *papi.ExtensionDesc) extensionDescKey {
 
 var (
 	extensionTypeCache sync.Map // map[extensionDescKey]protoreflect.ExtensionType
-	extensionDescCache sync.Map // map[protoreflect.ExtensionType]*protoapi.ExtensionDesc
+	extensionDescCache sync.Map // map[protoreflect.ExtensionType]*protoiface.ExtensionDescV1
 )
 
 // extensionDescFromType converts a v2 protoreflect.ExtensionType to a
-// v1 protoapi.ExtensionDesc. The returned ExtensionDesc must not be mutated.
-func extensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
+// protoiface.ExtensionDescV1. The returned ExtensionDesc must not be mutated.
+func extensionDescFromType(t pref.ExtensionType) *piface.ExtensionDescV1 {
 	// Fast-path: check whether an extension desc is already nested within.
-	if t, ok := t.(interface{ ProtoLegacyExtensionDesc() *papi.ExtensionDesc }); ok {
+	if t, ok := t.(interface {
+		ProtoLegacyExtensionDesc() *piface.ExtensionDescV1
+	}); ok {
 		if d := t.ProtoLegacyExtensionDesc(); d != nil {
 			return d
 		}
@@ -57,11 +59,11 @@ func extensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 	// Fast-path: check the cache for whether this ExtensionType has already
 	// been converted to a legacy descriptor.
 	if d, ok := extensionDescCache.Load(t); ok {
-		return d.(*papi.ExtensionDesc)
+		return d.(*piface.ExtensionDescV1)
 	}
 
 	// Determine the parent type if possible.
-	var parent papi.Message
+	var parent piface.MessageV1
 	if mt, ok := t.ExtendedType().(pref.MessageType); ok {
 		// Create a new parent message and unwrap it if possible.
 		mv := mt.New().Interface()
@@ -72,7 +74,7 @@ func extensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 
 		// Check whether the message implements the legacy v1 Message interface.
 		mz := reflect.Zero(t).Interface()
-		if mz, ok := mz.(papi.Message); ok {
+		if mz, ok := mz.(piface.MessageV1); ok {
 			parent = mz
 		}
 	}
@@ -124,8 +126,8 @@ func extensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 		filename = fd.Path()
 	}
 
-	// Construct and return a v1 ExtensionDesc.
-	d := &papi.ExtensionDesc{
+	// Construct and return a ExtensionDescV1.
+	d := &piface.ExtensionDescV1{
 		Type:          t,
 		ExtendedType:  parent,
 		ExtensionType: reflect.Zero(extType).Interface(),
@@ -135,16 +137,16 @@ func extensionDescFromType(t pref.ExtensionType) *papi.ExtensionDesc {
 		Filename:      filename,
 	}
 	if d, ok := extensionDescCache.LoadOrStore(t, d); ok {
-		return d.(*papi.ExtensionDesc)
+		return d.(*piface.ExtensionDescV1)
 	}
 	return d
 }
 
-// extensionTypeFromDesc converts a v1 protoapi.ExtensionDesc to a
+// extensionTypeFromDesc converts a protoiface.ExtensionDescV1 to a
 // v2 protoreflect.ExtensionType. The returned descriptor type takes ownership
 // of the input extension desc. The input must not be mutated so long as the
 // returned type is still in use.
-func extensionTypeFromDesc(d *papi.ExtensionDesc) pref.ExtensionType {
+func extensionTypeFromDesc(d *piface.ExtensionDescV1) pref.ExtensionType {
 	// Fast-path: check whether an extension type is already nested within.
 	if d.Type != nil {
 		return d.Type

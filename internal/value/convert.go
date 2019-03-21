@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"reflect"
 
-	papi "github.com/golang/protobuf/protoapi"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	piface "github.com/golang/protobuf/v2/runtime/protoiface"
 )
 
 // Unwrapper unwraps the value to the underlying value.
@@ -32,7 +32,7 @@ var (
 	bytesType   = reflect.TypeOf([]byte(nil))
 
 	enumIfaceV2    = reflect.TypeOf((*pref.Enum)(nil)).Elem()
-	messageIfaceV1 = reflect.TypeOf((*papi.Message)(nil)).Elem()
+	messageIfaceV1 = reflect.TypeOf((*piface.MessageV1)(nil)).Elem()
 	messageIfaceV2 = reflect.TypeOf((*pref.ProtoMessage)(nil)).Elem()
 
 	byteType = reflect.TypeOf(byte(0))
@@ -62,9 +62,10 @@ type (
 
 		ExtensionTypeOf(pref.ExtensionDescriptor, interface{}) pref.ExtensionType
 
-		// TODO: Remove these eventually. See the TODOs in protoapi.
-		ExtensionDescFromType(pref.ExtensionType) *papi.ExtensionDesc
-		ExtensionTypeFromDesc(*papi.ExtensionDesc) pref.ExtensionType
+		// TODO: Remove these eventually.
+		// See the TODOs in internal/impl/legacy_extension.go.
+		ExtensionDescFromType(pref.ExtensionType) *piface.ExtensionDescV1
+		ExtensionTypeFromDesc(*piface.ExtensionDescV1) pref.ExtensionType
 	}
 
 	LegacyEnum = interface {

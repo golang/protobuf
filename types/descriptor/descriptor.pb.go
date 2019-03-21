@@ -4,10 +4,10 @@
 package descriptor_proto
 
 import (
-	protoapi "github.com/golang/protobuf/protoapi"
 	prototype "github.com/golang/protobuf/v2/internal/prototype"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
@@ -647,11 +647,11 @@ func (m *DescriptorProto) GetReservedName() []string {
 
 type ExtensionRangeOptions struct {
 	// The parser stores options it doesn't recognize here. See above.
-	UninterpretedOption             []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
-	XXX_NoUnkeyedLiteral            struct{}               `json:"-"`
-	protoapi.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized                []byte `json:"-"`
-	XXX_sizecache                   int32  `json:"-"`
+	UninterpretedOption    []*UninterpretedOption      `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *ExtensionRangeOptions) ProtoReflect() protoreflect.Message {
@@ -666,12 +666,12 @@ func (*ExtensionRangeOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{3}
 }
 
-var extRange_ExtensionRangeOptions = []protoapi.ExtensionRange{
+var extRange_ExtensionRangeOptions = []protoiface.ExtensionRangeV1{
 	{Start: 1000, End: 536870911},
 }
 
 // Deprecated: Use ExtensionRangeOptions.ProtoReflect.Type.ExtensionRanges instead.
-func (*ExtensionRangeOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
+func (*ExtensionRangeOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_ExtensionRangeOptions
 }
 
@@ -1144,11 +1144,11 @@ type FileOptions struct {
 	RubyPackage *string `protobuf:"bytes,45,opt,name=ruby_package,json=rubyPackage" json:"ruby_package,omitempty"`
 	// The parser stores options it doesn't recognize here.
 	// See the documentation for the "Options" section above.
-	UninterpretedOption             []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
-	XXX_NoUnkeyedLiteral            struct{}               `json:"-"`
-	protoapi.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized                []byte `json:"-"`
-	XXX_sizecache                   int32  `json:"-"`
+	UninterpretedOption    []*UninterpretedOption      `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *FileOptions) ProtoReflect() protoreflect.Message {
@@ -1163,12 +1163,12 @@ func (*FileOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{10}
 }
 
-var extRange_FileOptions = []protoapi.ExtensionRange{
+var extRange_FileOptions = []protoiface.ExtensionRangeV1{
 	{Start: 1000, End: 536870911},
 }
 
 // Deprecated: Use FileOptions.ProtoReflect.Type.ExtensionRanges instead.
-func (*FileOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
+func (*FileOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_FileOptions
 }
 
@@ -1382,11 +1382,11 @@ type MessageOptions struct {
 	// parser.
 	MapEntry *bool `protobuf:"varint,7,opt,name=map_entry,json=mapEntry" json:"map_entry,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
-	UninterpretedOption             []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
-	XXX_NoUnkeyedLiteral            struct{}               `json:"-"`
-	protoapi.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized                []byte `json:"-"`
-	XXX_sizecache                   int32  `json:"-"`
+	UninterpretedOption    []*UninterpretedOption      `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *MessageOptions) ProtoReflect() protoreflect.Message {
@@ -1401,12 +1401,12 @@ func (*MessageOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{11}
 }
 
-var extRange_MessageOptions = []protoapi.ExtensionRange{
+var extRange_MessageOptions = []protoiface.ExtensionRangeV1{
 	{Start: 1000, End: 536870911},
 }
 
 // Deprecated: Use MessageOptions.ProtoReflect.Type.ExtensionRanges instead.
-func (*MessageOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
+func (*MessageOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_MessageOptions
 }
 
@@ -1510,11 +1510,11 @@ type FieldOptions struct {
 	// For Google-internal migration only. Do not use.
 	Weak *bool `protobuf:"varint,10,opt,name=weak,def=0" json:"weak,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
-	UninterpretedOption             []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
-	XXX_NoUnkeyedLiteral            struct{}               `json:"-"`
-	protoapi.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized                []byte `json:"-"`
-	XXX_sizecache                   int32  `json:"-"`
+	UninterpretedOption    []*UninterpretedOption      `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *FieldOptions) ProtoReflect() protoreflect.Message {
@@ -1529,12 +1529,12 @@ func (*FieldOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{12}
 }
 
-var extRange_FieldOptions = []protoapi.ExtensionRange{
+var extRange_FieldOptions = []protoiface.ExtensionRangeV1{
 	{Start: 1000, End: 536870911},
 }
 
 // Deprecated: Use FieldOptions.ProtoReflect.Type.ExtensionRanges instead.
-func (*FieldOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
+func (*FieldOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_FieldOptions
 }
 
@@ -1595,11 +1595,11 @@ func (m *FieldOptions) GetUninterpretedOption() []*UninterpretedOption {
 
 type OneofOptions struct {
 	// The parser stores options it doesn't recognize here. See above.
-	UninterpretedOption             []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
-	XXX_NoUnkeyedLiteral            struct{}               `json:"-"`
-	protoapi.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized                []byte `json:"-"`
-	XXX_sizecache                   int32  `json:"-"`
+	UninterpretedOption    []*UninterpretedOption      `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *OneofOptions) ProtoReflect() protoreflect.Message {
@@ -1614,12 +1614,12 @@ func (*OneofOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{13}
 }
 
-var extRange_OneofOptions = []protoapi.ExtensionRange{
+var extRange_OneofOptions = []protoiface.ExtensionRangeV1{
 	{Start: 1000, End: 536870911},
 }
 
 // Deprecated: Use OneofOptions.ProtoReflect.Type.ExtensionRanges instead.
-func (*OneofOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
+func (*OneofOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_OneofOptions
 }
 
@@ -1640,11 +1640,11 @@ type EnumOptions struct {
 	// is a formalization for deprecating enums.
 	Deprecated *bool `protobuf:"varint,3,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
-	UninterpretedOption             []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
-	XXX_NoUnkeyedLiteral            struct{}               `json:"-"`
-	protoapi.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized                []byte `json:"-"`
-	XXX_sizecache                   int32  `json:"-"`
+	UninterpretedOption    []*UninterpretedOption      `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *EnumOptions) ProtoReflect() protoreflect.Message {
@@ -1659,12 +1659,12 @@ func (*EnumOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{14}
 }
 
-var extRange_EnumOptions = []protoapi.ExtensionRange{
+var extRange_EnumOptions = []protoiface.ExtensionRangeV1{
 	{Start: 1000, End: 536870911},
 }
 
 // Deprecated: Use EnumOptions.ProtoReflect.Type.ExtensionRanges instead.
-func (*EnumOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
+func (*EnumOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_EnumOptions
 }
 
@@ -1698,11 +1698,11 @@ type EnumValueOptions struct {
 	// this is a formalization for deprecating enum values.
 	Deprecated *bool `protobuf:"varint,1,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
-	UninterpretedOption             []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
-	XXX_NoUnkeyedLiteral            struct{}               `json:"-"`
-	protoapi.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized                []byte `json:"-"`
-	XXX_sizecache                   int32  `json:"-"`
+	UninterpretedOption    []*UninterpretedOption      `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *EnumValueOptions) ProtoReflect() protoreflect.Message {
@@ -1717,12 +1717,12 @@ func (*EnumValueOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{15}
 }
 
-var extRange_EnumValueOptions = []protoapi.ExtensionRange{
+var extRange_EnumValueOptions = []protoiface.ExtensionRangeV1{
 	{Start: 1000, End: 536870911},
 }
 
 // Deprecated: Use EnumValueOptions.ProtoReflect.Type.ExtensionRanges instead.
-func (*EnumValueOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
+func (*EnumValueOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_EnumValueOptions
 }
 
@@ -1749,11 +1749,11 @@ type ServiceOptions struct {
 	// this is a formalization for deprecating services.
 	Deprecated *bool `protobuf:"varint,33,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
-	UninterpretedOption             []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
-	XXX_NoUnkeyedLiteral            struct{}               `json:"-"`
-	protoapi.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized                []byte `json:"-"`
-	XXX_sizecache                   int32  `json:"-"`
+	UninterpretedOption    []*UninterpretedOption      `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *ServiceOptions) ProtoReflect() protoreflect.Message {
@@ -1768,12 +1768,12 @@ func (*ServiceOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{16}
 }
 
-var extRange_ServiceOptions = []protoapi.ExtensionRange{
+var extRange_ServiceOptions = []protoiface.ExtensionRangeV1{
 	{Start: 1000, End: 536870911},
 }
 
 // Deprecated: Use ServiceOptions.ProtoReflect.Type.ExtensionRanges instead.
-func (*ServiceOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
+func (*ServiceOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_ServiceOptions
 }
 
@@ -1801,11 +1801,11 @@ type MethodOptions struct {
 	Deprecated       *bool                           `protobuf:"varint,33,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	IdempotencyLevel *MethodOptions_IdempotencyLevel `protobuf:"varint,34,opt,name=idempotency_level,json=idempotencyLevel,enum=google.protobuf.MethodOptions_IdempotencyLevel,def=0" json:"idempotency_level,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.
-	UninterpretedOption             []*UninterpretedOption `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
-	XXX_NoUnkeyedLiteral            struct{}               `json:"-"`
-	protoapi.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized                []byte `json:"-"`
-	XXX_sizecache                   int32  `json:"-"`
+	UninterpretedOption    []*UninterpretedOption      `protobuf:"bytes,999,rep,name=uninterpreted_option,json=uninterpretedOption" json:"uninterpreted_option,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *MethodOptions) ProtoReflect() protoreflect.Message {
@@ -1820,12 +1820,12 @@ func (*MethodOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{17}
 }
 
-var extRange_MethodOptions = []protoapi.ExtensionRange{
+var extRange_MethodOptions = []protoiface.ExtensionRangeV1{
 	{Start: 1000, End: 536870911},
 }
 
 // Deprecated: Use MethodOptions.ProtoReflect.Type.ExtensionRanges instead.
-func (*MethodOptions) ExtensionRangeArray() []protoapi.ExtensionRange {
+func (*MethodOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_MethodOptions
 }
 

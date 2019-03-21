@@ -6,6 +6,7 @@ package test
 import (
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
@@ -1213,10 +1214,10 @@ func (m *TestReservedFields) XXX_DiscardUnknown() {
 var xxx_messageInfo_TestReservedFields proto.InternalMessageInfo
 
 type TestAllExtensions struct {
-	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
-	proto.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized             []byte `json:"-"`
-	XXX_sizecache                int32  `json:"-"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *TestAllExtensions) ProtoReflect() protoreflect.Message {
@@ -1231,12 +1232,12 @@ func (*TestAllExtensions) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{4}
 }
 
-var extRange_TestAllExtensions = []proto.ExtensionRange{
+var extRange_TestAllExtensions = []protoiface.ExtensionRangeV1{
 	{Start: 1, End: 536870911},
 }
 
 // Deprecated: Use TestAllExtensions.ProtoReflect.Type.ExtensionRanges instead.
-func (*TestAllExtensions) ExtensionRangeArray() []proto.ExtensionRange {
+func (*TestAllExtensions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_TestAllExtensions
 }
 
@@ -1595,7 +1596,7 @@ func (m *TestAllTypes_RepeatedGroup) GetA() int32 {
 	return 0
 }
 
-var xxx_File_test_test_proto_extDescs = []proto.ExtensionDesc{
+var xxx_File_test_test_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*TestAllExtensions)(nil),
 		ExtensionType: (*int32)(nil),

@@ -6,10 +6,11 @@ package test
 import (
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 )
 
-var xxx_File_test_ext_proto_extDescs = []proto.ExtensionDesc{
+var xxx_File_test_ext_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*TestAllExtensions)(nil),
 		ExtensionType: (*int32)(nil),

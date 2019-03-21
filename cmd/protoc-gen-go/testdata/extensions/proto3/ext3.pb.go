@@ -6,6 +6,7 @@ package proto3
 import (
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	descriptor "github.com/golang/protobuf/v2/types/descriptor"
 	reflect "reflect"
@@ -79,7 +80,7 @@ func (m *Message) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Message proto.InternalMessageInfo
 
-var xxx_File_extensions_proto3_ext3_proto_extDescs = []proto.ExtensionDesc{
+var xxx_File_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*descriptor.MessageOptions)(nil),
 		ExtensionType: (*bool)(nil),

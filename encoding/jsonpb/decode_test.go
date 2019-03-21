@@ -9,13 +9,13 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/encoding/jsonpb"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
+	"github.com/golang/protobuf/v2/runtime/protoiface"
 )
 
 func init() {
@@ -42,7 +42,7 @@ func init() {
 	registerExtension(pb2.E_FakeMessageSetExtension_MessageSetExtension)
 }
 
-func registerExtension(xd *protoapi.ExtensionDesc) {
+func registerExtension(xd *protoiface.ExtensionDescV1) {
 	preg.GlobalTypes.Register(xd.Type)
 }
 

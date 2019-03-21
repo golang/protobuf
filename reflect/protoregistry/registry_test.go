@@ -12,11 +12,11 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/internal/legacy"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
+	piface "github.com/golang/protobuf/v2/runtime/protoiface"
 
 	testpb "github.com/golang/protobuf/v2/reflect/protoregistry/testprotos"
 )
@@ -317,7 +317,7 @@ func TestFiles(t *testing.T) {
 	}
 }
 
-func extensionType(xd *protoapi.ExtensionDesc) pref.ExtensionType {
+func extensionType(xd *piface.ExtensionDescV1) pref.ExtensionType {
 	return legacy.Export{}.ExtensionTypeFromDesc(xd)
 }
 

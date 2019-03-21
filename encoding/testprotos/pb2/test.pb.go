@@ -6,6 +6,7 @@ package pb2
 import (
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	known "github.com/golang/protobuf/v2/types/known"
 	reflect "reflect"
@@ -849,13 +850,13 @@ func (*IndirectRequired) XXX_OneofWrappers() []interface{} {
 }
 
 type Extensions struct {
-	OptString                    *string  `protobuf:"bytes,1,opt,name=opt_string,json=optString" json:"opt_string,omitempty"`
-	OptBool                      *bool    `protobuf:"varint,101,opt,name=opt_bool,json=optBool" json:"opt_bool,omitempty"`
-	OptInt32                     *int32   `protobuf:"varint,2,opt,name=opt_int32,json=optInt32" json:"opt_int32,omitempty"`
-	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
-	proto.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized             []byte `json:"-"`
-	XXX_sizecache                int32  `json:"-"`
+	OptString              *string                     `protobuf:"bytes,1,opt,name=opt_string,json=optString" json:"opt_string,omitempty"`
+	OptBool                *bool                       `protobuf:"varint,101,opt,name=opt_bool,json=optBool" json:"opt_bool,omitempty"`
+	OptInt32               *int32                      `protobuf:"varint,2,opt,name=opt_int32,json=optInt32" json:"opt_int32,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *Extensions) ProtoReflect() protoreflect.Message {
@@ -870,12 +871,12 @@ func (*Extensions) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{9}
 }
 
-var extRange_Extensions = []proto.ExtensionRange{
+var extRange_Extensions = []protoiface.ExtensionRangeV1{
 	{Start: 20, End: 100},
 }
 
 // Deprecated: Use Extensions.ProtoReflect.Type.ExtensionRanges instead.
-func (*Extensions) ExtensionRangeArray() []proto.ExtensionRange {
+func (*Extensions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_Extensions
 }
 
@@ -955,10 +956,10 @@ func (m *ExtensionsContainer) XXX_DiscardUnknown() {
 var xxx_messageInfo_ExtensionsContainer proto.InternalMessageInfo
 
 type MessageSet struct {
-	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
-	proto.XXX_InternalExtensions `protobuf_messageset:"1" json:"-"`
-	XXX_unrecognized             []byte `json:"-"`
-	XXX_sizecache                int32  `json:"-"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `protobuf_messageset:"1" json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *MessageSet) ProtoReflect() protoreflect.Message {
@@ -973,12 +974,12 @@ func (*MessageSet) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{11}
 }
 
-var extRange_MessageSet = []proto.ExtensionRange{
+var extRange_MessageSet = []protoiface.ExtensionRangeV1{
 	{Start: 4, End: 2147483646},
 }
 
 // Deprecated: Use MessageSet.ProtoReflect.Type.ExtensionRanges instead.
-func (*MessageSet) ExtensionRangeArray() []proto.ExtensionRange {
+func (*MessageSet) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_MessageSet
 }
 
@@ -1045,10 +1046,10 @@ func (m *MessageSetExtension) GetOptString() string {
 }
 
 type FakeMessageSet struct {
-	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
-	proto.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized             []byte `json:"-"`
-	XXX_sizecache                int32  `json:"-"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *FakeMessageSet) ProtoReflect() protoreflect.Message {
@@ -1063,12 +1064,12 @@ func (*FakeMessageSet) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{13}
 }
 
-var extRange_FakeMessageSet = []proto.ExtensionRange{
+var extRange_FakeMessageSet = []protoiface.ExtensionRangeV1{
 	{Start: 4, End: 536870911},
 }
 
 // Deprecated: Use FakeMessageSet.ProtoReflect.Type.ExtensionRanges instead.
-func (*FakeMessageSet) ExtensionRangeArray() []proto.ExtensionRange {
+func (*FakeMessageSet) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_FakeMessageSet
 }
 
@@ -1455,7 +1456,7 @@ func (m *Nests_OptGroup_OptNestedGroup) GetOptFixed32() uint32 {
 	return 0
 }
 
-var xxx_File_pb2_test_proto_extDescs = []proto.ExtensionDesc{
+var xxx_File_pb2_test_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*Extensions)(nil),
 		ExtensionType: (*bool)(nil),

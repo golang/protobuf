@@ -8,6 +8,7 @@ import (
 	base "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/base"
 	extra "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/extra"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
@@ -229,10 +230,10 @@ func (m *RepeatedGroup) GetRepeatedXGroup() []string {
 
 // An extension of an extension.
 type Extendable struct {
-	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
-	proto.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized             []byte `json:"-"`
-	XXX_sizecache                int32  `json:"-"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *Extendable) ProtoReflect() protoreflect.Message {
@@ -247,12 +248,12 @@ func (*Extendable) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{4}
 }
 
-var extRange_Extendable = []proto.ExtensionRange{
+var extRange_Extendable = []protoiface.ExtensionRangeV1{
 	{Start: 1, End: 536870911},
 }
 
 // Deprecated: Use Extendable.ProtoReflect.Type.ExtensionRanges instead.
-func (*Extendable) ExtensionRangeArray() []proto.ExtensionRange {
+func (*Extendable) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_Extendable
 }
 
@@ -387,7 +388,7 @@ func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ExtendingMessage_ExtendingMessageSubmessage proto.InternalMessageInfo
 
-var xxx_File_extensions_ext_ext_proto_extDescs = []proto.ExtensionDesc{
+var xxx_File_extensions_ext_ext_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*base.BaseMessage)(nil),
 		ExtensionType: (*bool)(nil),

@@ -6,6 +6,7 @@ package testprotos
 import (
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
@@ -149,10 +150,10 @@ func (Enum3) EnumDescriptor() ([]byte, []int) {
 }
 
 type Message1 struct {
-	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
-	proto.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized             []byte `json:"-"`
-	XXX_sizecache                int32  `json:"-"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *Message1) ProtoReflect() protoreflect.Message {
@@ -167,12 +168,12 @@ func (*Message1) Descriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{0}
 }
 
-var extRange_Message1 = []proto.ExtensionRange{
+var extRange_Message1 = []protoiface.ExtensionRangeV1{
 	{Start: 10, End: 536870911},
 }
 
 // Deprecated: Use Message1.ProtoReflect.Type.ExtensionRanges instead.
-func (*Message1) ExtensionRangeArray() []proto.ExtensionRange {
+func (*Message1) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_Message1
 }
 
@@ -310,7 +311,7 @@ func (m *Message4) GetBoolField() bool {
 	return false
 }
 
-var xxx_File_test_proto_extDescs = []proto.ExtensionDesc{
+var xxx_File_test_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*Message1)(nil),
 		ExtensionType: (*string)(nil),

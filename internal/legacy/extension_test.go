@@ -7,10 +7,10 @@ package legacy_test
 import (
 	"testing"
 
-	papi "github.com/golang/protobuf/protoapi"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	piface "github.com/golang/protobuf/v2/runtime/protoiface"
 
 	// The legacy package must be imported prior to use of any legacy messages.
 	// TODO: Remove this when protoV1 registers these hooks for you.
@@ -20,15 +20,15 @@ import (
 )
 
 type legacyTestMessage struct {
-	XXX_unrecognized []byte
-	papi.XXX_InternalExtensions
+	XXX_unrecognized       []byte
+	XXX_InternalExtensions pimpl.ExtensionFieldsV1
 }
 
 func (*legacyTestMessage) Reset()         {}
 func (*legacyTestMessage) String() string { return "" }
 func (*legacyTestMessage) ProtoMessage()  {}
-func (*legacyTestMessage) ExtensionRangeArray() []papi.ExtensionRange {
-	return []papi.ExtensionRange{{Start: 10000, End: 20000}}
+func (*legacyTestMessage) ExtensionRangeArray() []piface.ExtensionRangeV1 {
+	return []piface.ExtensionRangeV1{{Start: 10000, End: 20000}}
 }
 
 func mustMakeExtensionType(x *ptype.StandaloneExtension, v interface{}) pref.ExtensionType {
@@ -51,7 +51,7 @@ var (
 		MessageType:  messageV1Type,
 		ExtendedType: parentType,
 	}, (*proto2_20180125.Message_ChildMessage)(nil))
-	wantDesc = &papi.ExtensionDesc{
+	wantDesc = &piface.ExtensionDescV1{
 		ExtendedType:  (*legacyTestMessage)(nil),
 		ExtensionType: (*proto2_20180125.Message_ChildMessage)(nil),
 		Field:         10007,

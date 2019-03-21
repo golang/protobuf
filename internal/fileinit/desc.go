@@ -13,13 +13,13 @@ import (
 	"reflect"
 	"sync"
 
-	papi "github.com/golang/protobuf/protoapi"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
+	piface "github.com/golang/protobuf/v2/runtime/protoiface"
 )
 
 // FileBuilder construct a protoreflect.FileDescriptor from the
@@ -102,7 +102,7 @@ type FileBuilder struct {
 	// associated v2 ExtensionType and accessible via a pseudo-internal API.
 	// Also, the v2 ExtensionType will be stored into each v1 ExtensionDesc.
 	// If non-nil, len(LegacyExtensions) must equal len(ExtensionOutputTypes).
-	LegacyExtensions []papi.ExtensionDesc
+	LegacyExtensions []piface.ExtensionDescV1
 
 	// EnumOutputTypes is where Init stores all initialized enum types
 	// in "flattened ordering".
@@ -415,7 +415,7 @@ type (
 		number       pref.FieldNumber
 		extendedType pref.MessageDescriptor
 
-		legacyDesc *papi.ExtensionDesc
+		legacyDesc *piface.ExtensionDescV1
 
 		lazy *extensionLazy // protected by fileDesc.once
 	}
@@ -475,7 +475,7 @@ func (xd *extensionDesc) lazyInit() *extensionLazy {
 
 // ProtoLegacyExtensionDesc is a pseudo-internal API for allowing the v1 code
 // to be able to retrieve a v1 ExtensionDesc.
-func (xd *extensionDesc) ProtoLegacyExtensionDesc() *papi.ExtensionDesc { return xd.legacyDesc }
+func (xd *extensionDesc) ProtoLegacyExtensionDesc() *piface.ExtensionDescV1 { return xd.legacyDesc }
 
 type (
 	serviceDesc struct {

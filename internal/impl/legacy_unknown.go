@@ -9,7 +9,6 @@ import (
 	"reflect"
 	"sort"
 
-	papi "github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -47,13 +46,13 @@ func makeLegacyUnknownFieldsFunc(t reflect.Type) func(p *messageDataType) pref.U
 // and also the extension field map.
 type legacyUnknownBytesAndExtensionMap struct {
 	u pref.UnknownFields
-	x papi.ExtensionFields
+	x legacyExtensionFieldsIface
 	r pref.FieldRanges
 }
 
 func (fs *legacyUnknownBytesAndExtensionMap) Len() int {
 	n := fs.u.Len()
-	fs.x.Range(func(_ pref.FieldNumber, x papi.ExtensionField) bool {
+	fs.x.Range(func(_ pref.FieldNumber, x ExtensionFieldV1) bool {
 		if len(x.Raw) > 0 {
 			n++
 		}
@@ -98,7 +97,7 @@ func (fs *legacyUnknownBytesAndExtensionMap) Range(f func(pref.FieldNumber, pref
 		raw pref.RawFields
 	}
 	var xs []entry
-	fs.x.Range(func(n pref.FieldNumber, x papi.ExtensionField) bool {
+	fs.x.Range(func(n pref.FieldNumber, x ExtensionFieldV1) bool {
 		if len(x.Raw) > 0 {
 			xs = append(xs, entry{n, x.Raw})
 		}

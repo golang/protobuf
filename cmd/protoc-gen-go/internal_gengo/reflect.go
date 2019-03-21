@@ -23,14 +23,6 @@ func isDescriptor(f *protogen.File) bool {
 // in the proto package that was introduced in a later version.
 const minimumVersion = 0
 
-const (
-	reflectPackage       = protogen.GoImportPath("reflect")
-	protoimplPackage     = protogen.GoImportPath("github.com/golang/protobuf/v2/runtime/protoimpl")
-	protoreflectPackage  = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoreflect")
-	protoregistryPackage = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoregistry")
-	prototypePackage     = protogen.GoImportPath("github.com/golang/protobuf/v2/internal/prototype")
-)
-
 // TODO: Add support for proto options.
 
 func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {

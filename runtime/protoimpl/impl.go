@@ -40,4 +40,7 @@ type (
 
 	MessageType = impl.MessageType
 	FileBuilder = fileinit.FileBuilder
+
+	ExtensionFieldV1  = impl.ExtensionFieldV1
+	ExtensionFieldsV1 = impl.ExtensionFieldsV1
 )

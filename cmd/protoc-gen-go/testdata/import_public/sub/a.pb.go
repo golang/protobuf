@@ -7,6 +7,7 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	sub2 "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/import_public/sub2"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 	reflect "reflect"
@@ -163,11 +164,11 @@ type M struct {
 	// Types that are valid to be assigned to OneofField:
 	//	*M_OneofInt32
 	//	*M_OneofInt64
-	OneofField                   isM_OneofField `protobuf_oneof:"oneof_field"`
-	XXX_NoUnkeyedLiteral         struct{}       `json:"-"`
-	proto.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized             []byte `json:"-"`
-	XXX_sizecache                int32  `json:"-"`
+	OneofField             isM_OneofField              `protobuf_oneof:"oneof_field"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *M) ProtoReflect() protoreflect.Message {
@@ -182,12 +183,12 @@ func (*M) Descriptor() ([]byte, []int) {
 	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0}
 }
 
-var extRange_M = []proto.ExtensionRange{
+var extRange_M = []protoiface.ExtensionRangeV1{
 	{Start: 100, End: 536870911},
 }
 
 // Deprecated: Use M.ProtoReflect.Type.ExtensionRanges instead.
-func (*M) ExtensionRangeArray() []proto.ExtensionRange {
+func (*M) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_M
 }
 
@@ -372,7 +373,7 @@ func (*M_Submessage) XXX_OneofWrappers() []interface{} {
 	}
 }
 
-var xxx_File_import_public_sub_a_proto_extDescs = []proto.ExtensionDesc{
+var xxx_File_import_public_sub_a_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*M)(nil),
 		ExtensionType: (*string)(nil),

@@ -10,7 +10,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/protoapi"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/detrand"
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
@@ -18,6 +17,7 @@ import (
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
+	"github.com/golang/protobuf/v2/runtime/protoiface"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
@@ -48,7 +48,7 @@ func pb2Enums_NestedEnum(i int32) *pb2.Enums_NestedEnum {
 	return p
 }
 
-func setExtension(m proto.Message, xd *protoapi.ExtensionDesc, val interface{}) {
+func setExtension(m proto.Message, xd *protoiface.ExtensionDescV1, val interface{}) {
 	knownFields := m.ProtoReflect().KnownFields()
 	extTypes := knownFields.ExtensionTypes()
 	extTypes.Register(xd.Type)

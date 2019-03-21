@@ -6,16 +6,17 @@ package base
 import (
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	reflect "reflect"
 )
 
 type BaseMessage struct {
-	Field                        *string  `protobuf:"bytes,1,opt,name=field" json:"field,omitempty"`
-	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
-	proto.XXX_InternalExtensions `json:"-"`
-	XXX_unrecognized             []byte `json:"-"`
-	XXX_sizecache                int32  `json:"-"`
+	Field                  *string                     `protobuf:"bytes,1,opt,name=field" json:"field,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *BaseMessage) ProtoReflect() protoreflect.Message {
@@ -30,13 +31,13 @@ func (*BaseMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_base_base_proto_rawdesc_gzipped, []int{0}
 }
 
-var extRange_BaseMessage = []proto.ExtensionRange{
+var extRange_BaseMessage = []protoiface.ExtensionRangeV1{
 	{Start: 4, End: 9},
 	{Start: 16, End: 536870911},
 }
 
 // Deprecated: Use BaseMessage.ProtoReflect.Type.ExtensionRanges instead.
-func (*BaseMessage) ExtensionRangeArray() []proto.ExtensionRange {
+func (*BaseMessage) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_BaseMessage
 }
 
@@ -66,10 +67,10 @@ func (m *BaseMessage) GetField() string {
 }
 
 type MessageSetWireFormatMessage struct {
-	XXX_NoUnkeyedLiteral         struct{} `json:"-"`
-	proto.XXX_InternalExtensions `protobuf_messageset:"1" json:"-"`
-	XXX_unrecognized             []byte `json:"-"`
-	XXX_sizecache                int32  `json:"-"`
+	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `protobuf_messageset:"1" json:"-"`
+	XXX_unrecognized       []byte                      `json:"-"`
+	XXX_sizecache          int32                       `json:"-"`
 }
 
 func (m *MessageSetWireFormatMessage) ProtoReflect() protoreflect.Message {
@@ -84,12 +85,12 @@ func (*MessageSetWireFormatMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_base_base_proto_rawdesc_gzipped, []int{1}
 }
 
-var extRange_MessageSetWireFormatMessage = []proto.ExtensionRange{
+var extRange_MessageSetWireFormatMessage = []protoiface.ExtensionRangeV1{
 	{Start: 100, End: 2147483646},
 }
 
 // Deprecated: Use MessageSetWireFormatMessage.ProtoReflect.Type.ExtensionRanges instead.
-func (*MessageSetWireFormatMessage) ExtensionRangeArray() []proto.ExtensionRange {
+func (*MessageSetWireFormatMessage) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_MessageSetWireFormatMessage
 }
 
