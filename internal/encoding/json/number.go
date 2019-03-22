@@ -41,70 +41,50 @@ func appendFloat(out []byte, n float64, bitSize int) []byte {
 	return out
 }
 
-// numberParts is the result of parsing out a valid JSON number. It contains
-// the parts of a number. The parts are used for integer conversion.
-type numberParts struct {
-	neg  bool
-	intp []byte
-	frac []byte
-	exp  []byte
-}
-
-// parseNumber returns a numberParts instance if it is able to read a JSON
-// number from the given []byte. It also returns the number of bytes read.
-// Parsing logic follows the definition in
+// consumeNumber reads the given []byte for a valid JSON number. If it is valid,
+// it returns the number of bytes.  Parsing logic follows the definition in
 // https://tools.ietf.org/html/rfc7159#section-6, and is based off
 // encoding/json.isValidNumber function.
-func parseNumber(input []byte) (*numberParts, int) {
+func consumeNumber(input []byte) (int, bool) {
 	var n int
-	var neg bool
-	var intp []byte
-	var frac []byte
-	var exp []byte
 
 	s := input
 	if len(s) == 0 {
-		return nil, 0
+		return 0, false
 	}
 
 	// Optional -
 	if s[0] == '-' {
-		neg = true
 		s = s[1:]
 		n++
 		if len(s) == 0 {
-			return nil, 0
+			return 0, false
 		}
 	}
 
 	// Digits
 	switch {
 	case s[0] == '0':
-		// Skip first 0 and no need to store.
 		s = s[1:]
 		n++
 
 	case '1' <= s[0] && s[0] <= '9':
-		intp = append(intp, s[0])
 		s = s[1:]
 		n++
 		for len(s) > 0 && '0' <= s[0] && s[0] <= '9' {
-			intp = append(intp, s[0])
 			s = s[1:]
 			n++
 		}
 
 	default:
-		return nil, 0
+		return 0, false
 	}
 
 	// . followed by 1 or more digits.
 	if len(s) >= 2 && s[0] == '.' && '0' <= s[1] && s[1] <= '9' {
-		frac = append(frac, s[1])
 		s = s[2:]
 		n += 2
 		for len(s) > 0 && '0' <= s[0] && s[0] <= '9' {
-			frac = append(frac, s[0])
 			s = s[1:]
 			n++
 		}
@@ -116,15 +96,13 @@ func parseNumber(input []byte) (*numberParts, int) {
 		s = s[1:]
 		n++
 		if s[0] == '+' || s[0] == '-' {
-			exp = append(exp, s[0])
 			s = s[1:]
 			n++
 			if len(s) == 0 {
-				return nil, 0
+				return 0, false
 			}
 		}
 		for len(s) > 0 && '0' <= s[0] && s[0] <= '9' {
-			exp = append(exp, s[0])
 			s = s[1:]
 			n++
 		}
@@ -132,21 +110,101 @@ func parseNumber(input []byte) (*numberParts, int) {
 
 	// Check that next byte is a delimiter or it is at the end.
 	if n < len(input) && isNotDelim(input[n]) {
-		return nil, 0
+		return 0, false
 	}
 
-	return &numberParts{
+	return n, true
+}
+
+// numberParts is the result of parsing out a valid JSON number. It contains
+// the parts of a number. The parts are used for integer conversion.
+type numberParts struct {
+	neg  bool
+	intp []byte
+	frac []byte
+	exp  []byte
+}
+
+// parseNumber constructs numberParts from given []byte. The logic here is
+// similar to consumeNumber above with the difference of having to construct
+// numberParts.
+func parseNumber(input []byte) (numberParts, bool) {
+	var neg bool
+	var intp []byte
+	var frac []byte
+	var exp []byte
+
+	s := input
+	if len(s) == 0 {
+		return numberParts{}, false
+	}
+
+	// Optional -
+	if s[0] == '-' {
+		neg = true
+		s = s[1:]
+		if len(s) == 0 {
+			return numberParts{}, false
+		}
+	}
+
+	// Digits
+	switch {
+	case s[0] == '0':
+		// Skip first 0 and no need to store.
+		s = s[1:]
+
+	case '1' <= s[0] && s[0] <= '9':
+		intp = append(intp, s[0])
+		s = s[1:]
+		for len(s) > 0 && '0' <= s[0] && s[0] <= '9' {
+			intp = append(intp, s[0])
+			s = s[1:]
+		}
+
+	default:
+		return numberParts{}, false
+	}
+
+	// . followed by 1 or more digits.
+	if len(s) >= 2 && s[0] == '.' && '0' <= s[1] && s[1] <= '9' {
+		frac = append(frac, s[1])
+		s = s[2:]
+		for len(s) > 0 && '0' <= s[0] && s[0] <= '9' {
+			frac = append(frac, s[0])
+			s = s[1:]
+		}
+	}
+
+	// e or E followed by an optional - or + and
+	// 1 or more digits.
+	if len(s) >= 2 && (s[0] == 'e' || s[0] == 'E') {
+		s = s[1:]
+		if s[0] == '+' || s[0] == '-' {
+			exp = append(exp, s[0])
+			s = s[1:]
+			if len(s) == 0 {
+				return numberParts{}, false
+			}
+		}
+		for len(s) > 0 && '0' <= s[0] && s[0] <= '9' {
+			exp = append(exp, s[0])
+			s = s[1:]
+		}
+	}
+
+	return numberParts{
 		neg:  neg,
 		intp: intp,
 		frac: bytes.TrimRight(frac, "0"), // Remove unnecessary 0s to the right.
 		exp:  exp,
-	}, n
+	}, true
 }
 
 // normalizeToIntString returns an integer string in normal form without the
 // E-notation for given numberParts. It will return false if it is not an
 // integer or if the exponent exceeds than max/min int value.
-func normalizeToIntString(n *numberParts) (string, bool) {
+func normalizeToIntString(n numberParts) (string, bool) {
 	num := n.intp
 	intpSize := len(num)
 	fracSize := len(n.frac)

@@ -182,11 +182,11 @@ func (d *Decoder) parseNext() (value Value, n int, err error) {
 		}
 
 	case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		num, n := parseNumber(in)
-		if num == nil {
+		n, ok := consumeNumber(in)
+		if !ok {
 			return Value{}, 0, d.newSyntaxError("invalid number %s", errRegexp.Find(in))
 		}
-		return d.newValue(Number, in[:n], num), n, nil
+		return d.newValue(Number, in[:n], nil), n, nil
 
 	case '"':
 		var nerr errors.NonFatal
@@ -308,7 +308,6 @@ type Value struct {
 	typ    Type
 	// value will be set to the following Go type based on the type field:
 	//    Bool   => bool
-	//    Number => *numberParts
 	//    String => string
 	//    Name   => string
 	// It will be nil if none of the above.
@@ -414,8 +413,11 @@ func (v Value) getIntStr() (string, error) {
 	if v.typ != Number {
 		return "", v.newError("%s is not a number", v.input)
 	}
-	pnum := v.value.(*numberParts)
-	num, ok := normalizeToIntString(pnum)
+	parts, ok := parseNumber(v.input)
+	if !ok {
+		return "", v.newError("%s is not a number", v.input)
+	}
+	num, ok := normalizeToIntString(parts)
 	if !ok {
 		return "", v.newError("cannot convert %s to integer", v.input)
 	}
