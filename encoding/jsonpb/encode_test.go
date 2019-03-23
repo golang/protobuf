@@ -1008,15 +1008,15 @@ func TestMarshal(t *testing.T) {
 		input: &knownpb.Empty{},
 		want:  `{}`,
 	}, {
-		desc:  "Value empty",
-		input: &knownpb.Value{},
-		want:  ``,
+		desc:    "Value empty",
+		input:   &knownpb.Value{},
+		wantErr: true,
 	}, {
 		desc: "Value empty field",
 		input: &pb2.KnownTypes{
 			OptValue: &knownpb.Value{},
 		},
-		want: `{}`,
+		wantErr: true,
 	}, {
 		desc:  "Value contains NullValue",
 		input: &knownpb.Value{Kind: &knownpb.Value_NullValue{}},
@@ -1531,7 +1531,7 @@ func TestMarshal(t *testing.T) {
 		},
 		input: func() proto.Message {
 			m := &knownpb.Value{}
-			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			b, err := proto.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
@@ -1540,9 +1540,7 @@ func TestMarshal(t *testing.T) {
 				Value:   b,
 			}
 		}(),
-		want: `{
-  "@type": "type.googleapis.com/google.protobuf.Value"
-}`,
+		wantErr: true,
 	}, {
 		desc: "Any with Duration",
 		mo: jsonpb.MarshalOptions{
@@ -1641,7 +1639,9 @@ func TestMarshal(t *testing.T) {
 					{Kind: &knownpb.Value_ListValue{}},
 				},
 			},
-			OptValue: &knownpb.Value{},
+			OptValue: &knownpb.Value{
+				Kind: &knownpb.Value_StringValue{"world"},
+			},
 			OptEmpty: &knownpb.Empty{},
 			OptAny: &knownpb.Any{
 				TypeUrl: "google.protobuf.Empty",
@@ -1671,6 +1671,7 @@ func TestMarshal(t *testing.T) {
     {},
     []
   ],
+  "optValue": "world",
   "optEmpty": {},
   "optAny": {
     "@type": "google.protobuf.Empty"

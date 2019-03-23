@@ -111,14 +111,8 @@ func (e encoder) marshalFields(m pref.Message) error {
 			continue
 		}
 
-		// An empty google.protobuf.Value should NOT be marshaled out.
-		// Hence need to check ahead for this.
-		val := knownFields.Get(num)
-		if isEmptyKnownValue(val, fd.MessageType()) {
-			continue
-		}
-
 		name := fd.JSONName()
+		val := knownFields.Get(num)
 		if err := e.WriteName(name); !nerr.Merge(err) {
 			return err
 		}

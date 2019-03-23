@@ -128,10 +128,6 @@ func (e encoder) marshalAny(m pref.Message) error {
 	// with corresponding custom JSON encoding of the embedded message as a
 	// field.
 	if isCustomType(emt.FullName()) {
-		// An empty google.protobuf.Value should NOT be marshaled out.
-		if isEmptyKnownValue(pref.ValueOf(em), emt) {
-			return nil
-		}
 		e.WriteName("value")
 		return e.marshalCustomType(em)
 	}
@@ -176,14 +172,6 @@ func (e encoder) marshalListValue(m pref.Message) error {
 	return e.marshalList(val.List(), fd)
 }
 
-// isEmptyKnownValue returns true if given val is of type google.protobuf.Value
-// and does not have any of its oneof fields set.
-func isEmptyKnownValue(val pref.Value, md pref.MessageDescriptor) bool {
-	return md != nil &&
-		md.FullName() == "google.protobuf.Value" &&
-		val.Message().KnownFields().Len() == 0
-}
-
 func (e encoder) marshalKnownValue(m pref.Message) error {
 	msgType := m.Type()
 	fieldDescs := msgType.Oneofs().Get(0).Fields()
@@ -200,8 +188,8 @@ func (e encoder) marshalKnownValue(m pref.Message) error {
 		return e.marshalSingular(val, fd)
 	}
 
-	// None of the fields are set.
-	return nil
+	// Return error if none of the fields are set.
+	return errors.New("%s: none of the variants is set", msgType.FullName())
 }
 
 const (
