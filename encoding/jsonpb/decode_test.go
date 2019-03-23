@@ -16,6 +16,8 @@ import (
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 	"github.com/golang/protobuf/v2/runtime/protoiface"
+
+	knownpb "github.com/golang/protobuf/v2/types/known"
 )
 
 func init() {
@@ -754,12 +756,28 @@ func TestUnmarshal(t *testing.T) {
 			},
 		},
 	}, {
-		desc:         "repeated scalars containing invalid type",
+		desc:         "repeated string contains invalid UTF8",
+		inputMessage: &pb2.Repeats{},
+		inputText:    `{"rptString": ["` + "abc\xff" + `"]}`,
+		wantMessage: &pb2.Repeats{
+			RptString: []string{"abc\xff"},
+		},
+		wantErr: true,
+	}, {
+		desc:         "repeated messages contain invalid UTF8",
+		inputMessage: &pb2.Nests{},
+		inputText:    `{"rptNested": [{"optString": "` + "abc\xff" + `"}]}`,
+		wantMessage: &pb2.Nests{
+			RptNested: []*pb2.Nested{{OptString: scalar.String("abc\xff")}},
+		},
+		wantErr: true,
+	}, {
+		desc:         "repeated scalars contain invalid type",
 		inputMessage: &pb2.Repeats{},
 		inputText:    `{"rptString": ["hello", null, "world"]}`,
 		wantErr:      true,
 	}, {
-		desc:         "repeated messages containing invalid type",
+		desc:         "repeated messages contain invalid type",
 		inputMessage: &pb2.Nests{},
 		inputText:    `{"rptNested": [{}, null]}`,
 		wantErr:      true,
@@ -938,6 +956,36 @@ func TestUnmarshal(t *testing.T) {
 }`,
 		wantErr: true,
 	}, {
+		desc:         "map contains contains message value with invalid UTF8",
+		inputMessage: &pb3.Maps{},
+		inputText: `{
+  "strToNested": {
+    "hello": {
+      "sString": "` + "abc\xff" + `"
+	}
+  }
+}`,
+		wantMessage: &pb3.Maps{
+			StrToNested: map[string]*pb3.Nested{
+				"hello": {SString: "abc\xff"},
+			},
+		},
+		wantErr: true,
+	}, {
+		desc:         "map key contains invalid UTF8",
+		inputMessage: &pb3.Maps{},
+		inputText: `{
+  "strToNested": {
+    "` + "abc\xff" + `": {}
+  }
+}`,
+		wantMessage: &pb3.Maps{
+			StrToNested: map[string]*pb3.Nested{
+				"abc\xff": {},
+			},
+		},
+		wantErr: true,
+	}, {
 		desc:         "extensions of non-repeated fields",
 		inputMessage: &pb2.Extensions{},
 		inputText: `{
@@ -947,8 +995,8 @@ func TestUnmarshal(t *testing.T) {
   "[pb2.opt_ext_bool]": true,
   "[pb2.opt_ext_nested]": {
     "optString": "nested in an extension",
-    "opt_nested": {
-      "opt_string": "another nested in an extension"
+    "optNested": {
+      "optString": "another nested in an extension"
     }
   },
   "[pb2.opt_ext_string]": "extension field",
@@ -1146,6 +1194,374 @@ func TestUnmarshal(t *testing.T) {
 			})
 			return m
 		}(),
+	}, {
+		desc:         "Empty",
+		inputMessage: &knownpb.Empty{},
+		inputText:    `{}`,
+		wantMessage:  &knownpb.Empty{},
+	}, {
+		desc:         "Empty contains unknown",
+		inputMessage: &knownpb.Empty{},
+		inputText:    `{"unknown": null}`,
+		wantErr:      true,
+	}, {
+		desc:         "BoolValue false",
+		inputMessage: &knownpb.BoolValue{},
+		inputText:    `false`,
+		wantMessage:  &knownpb.BoolValue{},
+	}, {
+		desc:         "BoolValue true",
+		inputMessage: &knownpb.BoolValue{},
+		inputText:    `true`,
+		wantMessage:  &knownpb.BoolValue{Value: true},
+	}, {
+		desc:         "BoolValue invalid value",
+		inputMessage: &knownpb.BoolValue{},
+		inputText:    `{}`,
+		wantErr:      true,
+	}, {
+		desc:         "Int32Value",
+		inputMessage: &knownpb.Int32Value{},
+		inputText:    `42`,
+		wantMessage:  &knownpb.Int32Value{Value: 42},
+	}, {
+		desc:         "Int32Value in JSON string",
+		inputMessage: &knownpb.Int32Value{},
+		inputText:    `"1.23e3"`,
+		wantMessage:  &knownpb.Int32Value{Value: 1230},
+	}, {
+		desc:         "Int64Value",
+		inputMessage: &knownpb.Int64Value{},
+		inputText:    `"42"`,
+		wantMessage:  &knownpb.Int64Value{Value: 42},
+	}, {
+		desc:         "UInt32Value",
+		inputMessage: &knownpb.UInt32Value{},
+		inputText:    `42`,
+		wantMessage:  &knownpb.UInt32Value{Value: 42},
+	}, {
+		desc:         "UInt64Value",
+		inputMessage: &knownpb.UInt64Value{},
+		inputText:    `"42"`,
+		wantMessage:  &knownpb.UInt64Value{Value: 42},
+	}, {
+		desc:         "FloatValue",
+		inputMessage: &knownpb.FloatValue{},
+		inputText:    `1.02`,
+		wantMessage:  &knownpb.FloatValue{Value: 1.02},
+	}, {
+		desc:         "FloatValue exceeds max limit",
+		inputMessage: &knownpb.FloatValue{},
+		inputText:    `1.23+40`,
+		wantErr:      true,
+	}, {
+		desc:         "FloatValue Infinity",
+		inputMessage: &knownpb.FloatValue{},
+		inputText:    `"-Infinity"`,
+		wantMessage:  &knownpb.FloatValue{Value: float32(math.Inf(-1))},
+	}, {
+		desc:         "DoubleValue",
+		inputMessage: &knownpb.DoubleValue{},
+		inputText:    `1.02`,
+		wantMessage:  &knownpb.DoubleValue{Value: 1.02},
+	}, {
+		desc:         "DoubleValue Infinity",
+		inputMessage: &knownpb.DoubleValue{},
+		inputText:    `"Infinity"`,
+		wantMessage:  &knownpb.DoubleValue{Value: math.Inf(+1)},
+	}, {
+		desc:         "StringValue empty",
+		inputMessage: &knownpb.StringValue{},
+		inputText:    `""`,
+		wantMessage:  &knownpb.StringValue{},
+	}, {
+		desc:         "StringValue",
+		inputMessage: &knownpb.StringValue{},
+		inputText:    `"谷歌"`,
+		wantMessage:  &knownpb.StringValue{Value: "谷歌"},
+	}, {
+		desc:         "StringValue with invalid UTF8 error",
+		inputMessage: &knownpb.StringValue{},
+		inputText:    "\"abc\xff\"",
+		wantMessage:  &knownpb.StringValue{Value: "abc\xff"},
+		wantErr:      true,
+	}, {
+		desc:         "StringValue field with invalid UTF8 error",
+		inputMessage: &pb2.KnownTypes{},
+		inputText:    "{\n  \"optString\": \"abc\xff\"\n}",
+		wantMessage: &pb2.KnownTypes{
+			OptString: &knownpb.StringValue{Value: "abc\xff"},
+		},
+		wantErr: true,
+	}, {
+		desc:         "BytesValue",
+		inputMessage: &knownpb.BytesValue{},
+		inputText:    `"aGVsbG8="`,
+		wantMessage:  &knownpb.BytesValue{Value: []byte("hello")},
+	}, {
+		desc:         "Value null",
+		inputMessage: &knownpb.Value{},
+		inputText:    `null`,
+		wantMessage:  &knownpb.Value{Kind: &knownpb.Value_NullValue{}},
+	}, {
+		desc:         "Value field null",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optValue": null
+}`,
+		wantMessage: &pb2.KnownTypes{
+			OptValue: &knownpb.Value{Kind: &knownpb.Value_NullValue{}},
+		},
+	}, {
+		desc:         "Value bool",
+		inputMessage: &knownpb.Value{},
+		inputText:    `false`,
+		wantMessage:  &knownpb.Value{Kind: &knownpb.Value_BoolValue{}},
+	}, {
+		desc:         "Value field bool",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optValue": true
+}`,
+		wantMessage: &pb2.KnownTypes{
+			OptValue: &knownpb.Value{Kind: &knownpb.Value_BoolValue{true}},
+		},
+	}, {
+		desc:         "Value number",
+		inputMessage: &knownpb.Value{},
+		inputText:    `1.02`,
+		wantMessage:  &knownpb.Value{Kind: &knownpb.Value_NumberValue{1.02}},
+	}, {
+		desc:         "Value field number",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optValue": 1.02
+}`,
+		wantMessage: &pb2.KnownTypes{
+			OptValue: &knownpb.Value{Kind: &knownpb.Value_NumberValue{1.02}},
+		},
+	}, {
+		desc:         "Value string",
+		inputMessage: &knownpb.Value{},
+		inputText:    `"hello"`,
+		wantMessage:  &knownpb.Value{Kind: &knownpb.Value_StringValue{"hello"}},
+	}, {
+		desc:         "Value string with invalid UTF8",
+		inputMessage: &knownpb.Value{},
+		inputText:    "\"\xff\"",
+		wantMessage:  &knownpb.Value{Kind: &knownpb.Value_StringValue{"\xff"}},
+		wantErr:      true,
+	}, {
+		desc:         "Value field string",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optValue": "NaN"
+}`,
+		wantMessage: &pb2.KnownTypes{
+			OptValue: &knownpb.Value{Kind: &knownpb.Value_StringValue{"NaN"}},
+		},
+	}, {
+		desc:         "Value field string with invalid UTF8",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optValue": "` + "\xff" + `"
+}`,
+		wantMessage: &pb2.KnownTypes{
+			OptValue: &knownpb.Value{Kind: &knownpb.Value_StringValue{"\xff"}},
+		},
+		wantErr: true,
+	}, {
+		desc:         "Value empty struct",
+		inputMessage: &knownpb.Value{},
+		inputText:    `{}`,
+		wantMessage: &knownpb.Value{
+			Kind: &knownpb.Value_StructValue{
+				&knownpb.Struct{Fields: map[string]*knownpb.Value{}},
+			},
+		},
+	}, {
+		desc:         "Value struct",
+		inputMessage: &knownpb.Value{},
+		inputText: `{
+  "string": "hello",
+  "number": 123,
+  "null": null,
+  "bool": false,
+  "struct": {
+    "string": "world"
+  },
+  "list": []
+}`,
+		wantMessage: &knownpb.Value{
+			Kind: &knownpb.Value_StructValue{
+				&knownpb.Struct{
+					Fields: map[string]*knownpb.Value{
+						"string": {Kind: &knownpb.Value_StringValue{"hello"}},
+						"number": {Kind: &knownpb.Value_NumberValue{123}},
+						"null":   {Kind: &knownpb.Value_NullValue{}},
+						"bool":   {Kind: &knownpb.Value_BoolValue{false}},
+						"struct": {
+							Kind: &knownpb.Value_StructValue{
+								&knownpb.Struct{
+									Fields: map[string]*knownpb.Value{
+										"string": {Kind: &knownpb.Value_StringValue{"world"}},
+									},
+								},
+							},
+						},
+						"list": {
+							Kind: &knownpb.Value_ListValue{&knownpb.ListValue{}},
+						},
+					},
+				},
+			},
+		},
+	}, {
+		desc:         "Value struct with invalid UTF8 string",
+		inputMessage: &knownpb.Value{},
+		inputText:    "{\"string\": \"abc\xff\"}",
+		wantMessage: &knownpb.Value{
+			Kind: &knownpb.Value_StructValue{
+				&knownpb.Struct{
+					Fields: map[string]*knownpb.Value{
+						"string": {Kind: &knownpb.Value_StringValue{"abc\xff"}},
+					},
+				},
+			},
+		},
+		wantErr: true,
+	}, {
+		desc:         "Value field struct",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optValue": {
+    "string": "hello"
+  }
+}`,
+		wantMessage: &pb2.KnownTypes{
+			OptValue: &knownpb.Value{
+				Kind: &knownpb.Value_StructValue{
+					&knownpb.Struct{
+						Fields: map[string]*knownpb.Value{
+							"string": {Kind: &knownpb.Value_StringValue{"hello"}},
+						},
+					},
+				},
+			},
+		},
+	}, {
+		desc:         "Value empty list",
+		inputMessage: &knownpb.Value{},
+		inputText:    `[]`,
+		wantMessage: &knownpb.Value{
+			Kind: &knownpb.Value_ListValue{
+				&knownpb.ListValue{Values: []*knownpb.Value{}},
+			},
+		},
+	}, {
+		desc:         "Value list",
+		inputMessage: &knownpb.Value{},
+		inputText: `[
+  "string",
+  123,
+  null,
+  true,
+  {},
+  [
+    "string",
+	1.23,
+	null,
+	false
+  ]
+]`,
+		wantMessage: &knownpb.Value{
+			Kind: &knownpb.Value_ListValue{
+				&knownpb.ListValue{
+					Values: []*knownpb.Value{
+						{Kind: &knownpb.Value_StringValue{"string"}},
+						{Kind: &knownpb.Value_NumberValue{123}},
+						{Kind: &knownpb.Value_NullValue{}},
+						{Kind: &knownpb.Value_BoolValue{true}},
+						{Kind: &knownpb.Value_StructValue{&knownpb.Struct{}}},
+						{
+							Kind: &knownpb.Value_ListValue{
+								&knownpb.ListValue{
+									Values: []*knownpb.Value{
+										{Kind: &knownpb.Value_StringValue{"string"}},
+										{Kind: &knownpb.Value_NumberValue{1.23}},
+										{Kind: &knownpb.Value_NullValue{}},
+										{Kind: &knownpb.Value_BoolValue{false}},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}, {
+		desc:         "Value list with invalid UTF8 string",
+		inputMessage: &knownpb.Value{},
+		inputText:    "[\"abc\xff\"]",
+		wantMessage: &knownpb.Value{
+			Kind: &knownpb.Value_ListValue{
+				&knownpb.ListValue{
+					Values: []*knownpb.Value{
+						{Kind: &knownpb.Value_StringValue{"abc\xff"}},
+					},
+				},
+			},
+		},
+		wantErr: true,
+	}, {
+		desc:         "Value field list with invalid UTF8 string",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optValue": [ "` + "abc\xff" + `"]
+}`,
+		wantMessage: &pb2.KnownTypes{
+			OptValue: &knownpb.Value{
+				Kind: &knownpb.Value_ListValue{
+					&knownpb.ListValue{
+						Values: []*knownpb.Value{
+							{Kind: &knownpb.Value_StringValue{"abc\xff"}},
+						},
+					},
+				},
+			},
+		},
+		wantErr: true,
+	}, {
+		desc:         "FieldMask empty",
+		inputMessage: &knownpb.FieldMask{},
+		inputText:    `""`,
+		wantMessage:  &knownpb.FieldMask{Paths: []string{}},
+	}, {
+		desc:         "FieldMask",
+		inputMessage: &knownpb.FieldMask{},
+		inputText:    `"foo,fooBar , foo.barQux ,Foo"`,
+		wantMessage: &knownpb.FieldMask{
+			Paths: []string{
+				"foo",
+				"foo_bar",
+				"foo.bar_qux",
+				"_foo",
+			},
+		},
+	}, {
+		desc:         "FieldMask field",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optFieldmask": "foo, qux.fooBar"
+}`,
+		wantMessage: &pb2.KnownTypes{
+			OptFieldmask: &knownpb.FieldMask{
+				Paths: []string{
+					"foo",
+					"qux.foo_bar",
+				},
+			},
+		},
 	}}
 
 	for _, tt := range tests {

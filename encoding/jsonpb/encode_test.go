@@ -976,9 +976,17 @@ func TestMarshal(t *testing.T) {
 		input: &knownpb.FloatValue{Value: 1.02},
 		want:  `1.02`,
 	}, {
+		desc:  "FloatValue Infinity",
+		input: &knownpb.FloatValue{Value: float32(math.Inf(-1))},
+		want:  `"-Infinity"`,
+	}, {
 		desc:  "DoubleValue",
 		input: &knownpb.DoubleValue{Value: 1.02},
 		want:  `1.02`,
+	}, {
+		desc:  "DoubleValue NaN",
+		input: &knownpb.DoubleValue{Value: math.NaN()},
+		want:  `"NaN"`,
 	}, {
 		desc:  "StringValue empty",
 		input: &knownpb.StringValue{},

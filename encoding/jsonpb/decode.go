@@ -131,13 +131,10 @@ type decoder struct {
 // unmarshalMessage unmarshals a message into the given protoreflect.Message.
 func (d decoder) unmarshalMessage(m pref.Message) error {
 	var nerr errors.NonFatal
-	var reqNums set.Ints
-	var seenNums set.Ints
 
-	msgType := m.Type()
-	knownFields := m.KnownFields()
-	fieldDescs := msgType.Fields()
-	xtTypes := knownFields.ExtensionTypes()
+	if isCustomType(m.Type().FullName()) {
+		return d.unmarshalCustomType(m)
+	}
 
 	jval, err := d.Read()
 	if !nerr.Merge(err) {
@@ -146,6 +143,24 @@ func (d decoder) unmarshalMessage(m pref.Message) error {
 	if jval.Type() != json.StartObject {
 		return unexpectedJSONError{jval}
 	}
+
+	if err := d.unmarshalFields(m); !nerr.Merge(err) {
+		return err
+	}
+
+	return nerr.E
+}
+
+// unmarshalFields unmarshals the fields into the given protoreflect.Message.
+func (d decoder) unmarshalFields(m pref.Message) error {
+	var nerr errors.NonFatal
+	var reqNums set.Ints
+	var seenNums set.Ints
+
+	msgType := m.Type()
+	knownFields := m.KnownFields()
+	fieldDescs := msgType.Fields()
+	xtTypes := knownFields.ExtensionTypes()
 
 Loop:
 	for {
@@ -205,20 +220,21 @@ Loop:
 		}
 		seenNums.Set(num)
 
-		// No need to set values for JSON null.
-		if d.Peek() == json.Null {
+		// No need to set values for JSON null unless the field type is
+		// google.protobuf.Value.
+		if d.Peek() == json.Null && !isKnownValue(fd) {
 			d.Read()
 			continue
 		}
 
 		if cardinality := fd.Cardinality(); cardinality == pref.Repeated {
 			// Map or list fields have cardinality of repeated.
-			if err := d.unmarshalRepeated(fd, knownFields); !nerr.Merge(err) {
+			if err := d.unmarshalRepeated(knownFields, fd); !nerr.Merge(err) {
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)
 			}
 		} else {
 			// Required or optional fields.
-			if err := d.unmarshalSingular(fd, knownFields); !nerr.Merge(err) {
+			if err := d.unmarshalSingular(knownFields, fd); !nerr.Merge(err) {
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)
 			}
 			if cardinality == pref.Required {
@@ -257,7 +273,7 @@ func (d decoder) findExtension(xtName pref.FullName) (pref.ExtensionType, error)
 
 // unmarshalSingular unmarshals to the non-repeated field specified by the given
 // FieldDescriptor.
-func (d decoder) unmarshalSingular(fd pref.FieldDescriptor, knownFields pref.KnownFields) error {
+func (d decoder) unmarshalSingular(knownFields pref.KnownFields, fd pref.FieldDescriptor) error {
 	var val pref.Value
 	var err error
 	num := fd.Number()
@@ -493,16 +509,16 @@ func unmarshalEnum(jval json.Value, fd pref.FieldDescriptor) (pref.Value, error)
 }
 
 // unmarshalRepeated unmarshals into a repeated field.
-func (d decoder) unmarshalRepeated(fd pref.FieldDescriptor, knownFields pref.KnownFields) error {
+func (d decoder) unmarshalRepeated(knownFields pref.KnownFields, fd pref.FieldDescriptor) error {
 	var nerr errors.NonFatal
 	num := fd.Number()
 	val := knownFields.Get(num)
 	if !fd.IsMap() {
-		if err := d.unmarshalList(fd, val.List()); !nerr.Merge(err) {
+		if err := d.unmarshalList(val.List(), fd); !nerr.Merge(err) {
 			return err
 		}
 	} else {
-		if err := d.unmarshalMap(fd, val.Map()); !nerr.Merge(err) {
+		if err := d.unmarshalMap(val.Map(), fd); !nerr.Merge(err) {
 			return err
 		}
 	}
@@ -510,7 +526,7 @@ func (d decoder) unmarshalRepeated(fd pref.FieldDescriptor, knownFields pref.Kno
 }
 
 // unmarshalList unmarshals into given protoreflect.List.
-func (d decoder) unmarshalList(fd pref.FieldDescriptor, list pref.List) error {
+func (d decoder) unmarshalList(list pref.List, fd pref.FieldDescriptor) error {
 	var nerr errors.NonFatal
 	jval, err := d.Read()
 	if !nerr.Merge(err) {
@@ -555,7 +571,7 @@ func (d decoder) unmarshalList(fd pref.FieldDescriptor, list pref.List) error {
 }
 
 // unmarshalMap unmarshals into given protoreflect.Map.
-func (d decoder) unmarshalMap(fd pref.FieldDescriptor, mmap pref.Map) error {
+func (d decoder) unmarshalMap(mmap pref.Map, fd pref.FieldDescriptor) error {
 	var nerr errors.NonFatal
 
 	jval, err := d.Read()
@@ -579,11 +595,12 @@ func (d decoder) unmarshalMap(fd pref.FieldDescriptor, mmap pref.Map) error {
 	switch valDesc.Kind() {
 	case pref.MessageKind, pref.GroupKind:
 		unmarshalMapValue = func() (pref.Value, error) {
+			var nerr errors.NonFatal
 			m := mmap.NewMessage()
-			if err := d.unmarshalMessage(m); err != nil {
+			if err := d.unmarshalMessage(m); !nerr.Merge(err) {
 				return pref.Value{}, err
 			}
-			return pref.ValueOf(m), nil
+			return pref.ValueOf(m), nerr.E
 		}
 	}
 

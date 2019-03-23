@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/golang/protobuf/v2/internal/encoding/json"
 	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/internal/fieldnum"
 	"github.com/golang/protobuf/v2/proto"
@@ -79,7 +80,7 @@ func (e encoder) marshalCustomType(m pref.Message) error {
 		return e.marshalFieldMask(m)
 	}
 
-	panic(fmt.Sprintf("encoder.marshalCustomTypes(%q) does not have a custom marshaler", name))
+	panic(fmt.Sprintf("%q does not have a custom marshaler", name))
 }
 
 func (e encoder) marshalAny(m pref.Message) error {
@@ -328,4 +329,185 @@ func isASCIILower(c byte) bool {
 
 func isASCIIUpper(c byte) bool {
 	return 'A' <= c && c <= 'Z'
+}
+
+// unmarshalCustomType unmarshals given well-known type message that have
+// special JSON conversion rules. It needs to be a message type where
+// isCustomType returns true, else it will panic.
+func (d decoder) unmarshalCustomType(m pref.Message) error {
+	name := m.Type().FullName()
+	switch name {
+	case "google.protobuf.Any",
+		"google.protobuf.Duration",
+		"google.protobuf.Timestamp":
+		panic(fmt.Sprintf("unmarshaling of %v is not implemented yet", name))
+
+	case "google.protobuf.BoolValue",
+		"google.protobuf.DoubleValue",
+		"google.protobuf.FloatValue",
+		"google.protobuf.Int32Value",
+		"google.protobuf.Int64Value",
+		"google.protobuf.UInt32Value",
+		"google.protobuf.UInt64Value",
+		"google.protobuf.StringValue",
+		"google.protobuf.BytesValue":
+		return d.unmarshalKnownScalar(m)
+
+	case "google.protobuf.Struct":
+		return d.unmarshalStruct(m)
+
+	case "google.protobuf.ListValue":
+		return d.unmarshalListValue(m)
+
+	case "google.protobuf.Value":
+		return d.unmarshalKnownValue(m)
+
+	case "google.protobuf.FieldMask":
+		return d.unmarshalFieldMask(m)
+	}
+
+	panic(fmt.Sprintf("%q does not have a custom unmarshaler", name))
+}
+
+func (d decoder) unmarshalKnownScalar(m pref.Message) error {
+	var nerr errors.NonFatal
+	msgType := m.Type()
+	fieldDescs := msgType.Fields()
+	knownFields := m.KnownFields()
+
+	// The "value" field has the same field number for all wrapper types.
+	const num = fieldnum.BoolValue_Value
+	fd := fieldDescs.ByNumber(num)
+	val, err := d.unmarshalScalar(fd)
+	if !nerr.Merge(err) {
+		return err
+	}
+	knownFields.Set(num, val)
+	return nerr.E
+}
+
+func (d decoder) unmarshalStruct(m pref.Message) error {
+	msgType := m.Type()
+	fieldDescs := msgType.Fields()
+	knownFields := m.KnownFields()
+
+	fd := fieldDescs.ByNumber(fieldnum.Struct_Fields)
+	val := knownFields.Get(fieldnum.Struct_Fields)
+	return d.unmarshalMap(val.Map(), fd)
+}
+
+func (d decoder) unmarshalListValue(m pref.Message) error {
+	msgType := m.Type()
+	fieldDescs := msgType.Fields()
+	knownFields := m.KnownFields()
+
+	fd := fieldDescs.ByNumber(fieldnum.ListValue_Values)
+	val := knownFields.Get(fieldnum.ListValue_Values)
+	return d.unmarshalList(val.List(), fd)
+}
+
+func isKnownValue(fd pref.FieldDescriptor) bool {
+	md := fd.MessageType()
+	return md != nil && md.FullName() == "google.protobuf.Value"
+}
+
+func (d decoder) unmarshalKnownValue(m pref.Message) error {
+	var nerr errors.NonFatal
+	knownFields := m.KnownFields()
+
+	switch d.Peek() {
+	case json.Null:
+		d.Read()
+		knownFields.Set(fieldnum.Value_NullValue, pref.ValueOf(pref.EnumNumber(0)))
+
+	case json.Bool:
+		jval, err := d.Read()
+		if err != nil {
+			return err
+		}
+		val, err := unmarshalBool(jval)
+		if err != nil {
+			return err
+		}
+		knownFields.Set(fieldnum.Value_BoolValue, val)
+
+	case json.Number:
+		jval, err := d.Read()
+		if err != nil {
+			return err
+		}
+		val, err := unmarshalFloat(jval, 64)
+		if err != nil {
+			return err
+		}
+		knownFields.Set(fieldnum.Value_NumberValue, val)
+
+	case json.String:
+		// A JSON string may have been encoded from the number_value field,
+		// e.g. "NaN", "Infinity", etc. Parsing a proto double type also allows
+		// for it to be in JSON string form. Given this custom encoding spec,
+		// however, there is no way to identify that and hence a JSON string is
+		// always assigned to the string_value field, which means that certain
+		// encoding cannot be parsed back to the same field.
+		jval, err := d.Read()
+		if !nerr.Merge(err) {
+			return err
+		}
+		val, err := unmarshalString(jval)
+		if !nerr.Merge(err) {
+			return err
+		}
+		knownFields.Set(fieldnum.Value_StringValue, val)
+
+	case json.StartObject:
+		m := knownFields.NewMessage(fieldnum.Value_StructValue)
+		if err := d.unmarshalStruct(m); !nerr.Merge(err) {
+			return err
+		}
+		knownFields.Set(fieldnum.Value_StructValue, pref.ValueOf(m))
+
+	case json.StartArray:
+		m := knownFields.NewMessage(fieldnum.Value_ListValue)
+		if err := d.unmarshalListValue(m); !nerr.Merge(err) {
+			return err
+		}
+		knownFields.Set(fieldnum.Value_ListValue, pref.ValueOf(m))
+
+	default:
+		jval, err := d.Read()
+		if err != nil {
+			return err
+		}
+		return unexpectedJSONError{jval}
+	}
+
+	return nerr.E
+}
+
+func (d decoder) unmarshalFieldMask(m pref.Message) error {
+	var nerr errors.NonFatal
+	jval, err := d.Read()
+	if !nerr.Merge(err) {
+		return err
+	}
+	if jval.Type() != json.String {
+		return unexpectedJSONError{jval}
+	}
+	str := strings.TrimSpace(jval.String())
+	if str == "" {
+		return nil
+	}
+	paths := strings.Split(str, ",")
+
+	knownFields := m.KnownFields()
+	val := knownFields.Get(fieldnum.FieldMask_Paths)
+	list := val.List()
+
+	for _, s := range paths {
+		s = strings.TrimSpace(s)
+		// Convert to snake_case. Unlike encoding, no validation is done because
+		// it is not possible to know the original path names.
+		list.Append(pref.ValueOf(snakeCase(s)))
+	}
+	return nil
 }
