@@ -13,6 +13,7 @@ import (
 	"reflect"
 	"sync"
 
+	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
@@ -110,7 +111,7 @@ type FileBuilder struct {
 	// MessageOutputTypes is where Init stores all initialized message types
 	// in "flattened ordering". This includes slots for map entry messages,
 	// which are skipped over.
-	MessageOutputTypes []pref.MessageType
+	MessageOutputTypes []pimpl.MessageType
 	// ExtensionOutputTypes is where Init stores all initialized extension types
 	// in "flattened ordering".
 	ExtensionOutputTypes []pref.ExtensionType
@@ -138,12 +139,19 @@ func (fb FileBuilder) Init() pref.FileDescriptor {
 	}
 
 	// Copy type descriptors to the output.
+	//
+	// While iterating over the messages, we also determine whether the message
+	// is a map entry type.
+	messageGoTypes := fb.GoTypes[len(fd.allEnums):][:len(fd.allMessages)]
 	for i := range fd.allEnums {
 		fb.EnumOutputTypes[i] = &fd.allEnums[i]
 	}
 	for i := range fd.allMessages {
-		if mt, _ := fd.allMessages[i].asDesc().(pref.MessageType); mt != nil {
-			fb.MessageOutputTypes[i] = mt
+		if messageGoTypes[i] == nil {
+			fd.allMessages[i].isMapEntry = true
+		} else {
+			fb.MessageOutputTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
+			fb.MessageOutputTypes[i].PBType = fd.allMessages[i].asDesc().(pref.MessageType)
 		}
 	}
 	for i := range fd.allExtensions {

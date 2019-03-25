@@ -4,11 +4,10 @@
 package test
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type ForeignEnum int32
@@ -309,31 +308,13 @@ func (m *TestAllTypes) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[0].MessageOf(m)
 }
 func (m *TestAllTypes) Reset()         { *m = TestAllTypes{} }
-func (m *TestAllTypes) String() string { return proto.CompactTextString(m) }
+func (m *TestAllTypes) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*TestAllTypes) ProtoMessage()    {}
 
 // Deprecated: Use TestAllTypes.ProtoReflect.Type instead.
 func (*TestAllTypes) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *TestAllTypes) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestAllTypes.Unmarshal(m, b)
-}
-func (m *TestAllTypes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestAllTypes.Marshal(b, m, deterministic)
-}
-func (m *TestAllTypes) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestAllTypes.Merge(m, src)
-}
-func (m *TestAllTypes) XXX_Size() int {
-	return xxx_messageInfo_TestAllTypes.Size(m)
-}
-func (m *TestAllTypes) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestAllTypes.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_TestAllTypes proto.InternalMessageInfo
 
 const Default_TestAllTypes_DefaultInt32 int32 = 81
 const Default_TestAllTypes_DefaultInt64 int64 = 82
@@ -1059,31 +1040,13 @@ func (m *TestDeprecatedMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[1].MessageOf(m)
 }
 func (m *TestDeprecatedMessage) Reset()         { *m = TestDeprecatedMessage{} }
-func (m *TestDeprecatedMessage) String() string { return proto.CompactTextString(m) }
+func (m *TestDeprecatedMessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*TestDeprecatedMessage) ProtoMessage()    {}
 
 // Deprecated: Use TestDeprecatedMessage.ProtoReflect.Type instead.
 func (*TestDeprecatedMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *TestDeprecatedMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestDeprecatedMessage.Unmarshal(m, b)
-}
-func (m *TestDeprecatedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestDeprecatedMessage.Marshal(b, m, deterministic)
-}
-func (m *TestDeprecatedMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestDeprecatedMessage.Merge(m, src)
-}
-func (m *TestDeprecatedMessage) XXX_Size() int {
-	return xxx_messageInfo_TestDeprecatedMessage.Size(m)
-}
-func (m *TestDeprecatedMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestDeprecatedMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_TestDeprecatedMessage proto.InternalMessageInfo
 
 // Deprecated: Do not use.
 func (m *TestDeprecatedMessage) GetDeprecatedInt32() int32 {
@@ -1137,31 +1100,13 @@ func (m *ForeignMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[2].MessageOf(m)
 }
 func (m *ForeignMessage) Reset()         { *m = ForeignMessage{} }
-func (m *ForeignMessage) String() string { return proto.CompactTextString(m) }
+func (m *ForeignMessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*ForeignMessage) ProtoMessage()    {}
 
 // Deprecated: Use ForeignMessage.ProtoReflect.Type instead.
 func (*ForeignMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{2}
 }
-
-func (m *ForeignMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ForeignMessage.Unmarshal(m, b)
-}
-func (m *ForeignMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ForeignMessage.Marshal(b, m, deterministic)
-}
-func (m *ForeignMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ForeignMessage.Merge(m, src)
-}
-func (m *ForeignMessage) XXX_Size() int {
-	return xxx_messageInfo_ForeignMessage.Size(m)
-}
-func (m *ForeignMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_ForeignMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ForeignMessage proto.InternalMessageInfo
 
 func (m *ForeignMessage) GetC() int32 {
 	if m != nil && m.C != nil {
@@ -1187,31 +1132,13 @@ func (m *TestReservedFields) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[3].MessageOf(m)
 }
 func (m *TestReservedFields) Reset()         { *m = TestReservedFields{} }
-func (m *TestReservedFields) String() string { return proto.CompactTextString(m) }
+func (m *TestReservedFields) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*TestReservedFields) ProtoMessage()    {}
 
 // Deprecated: Use TestReservedFields.ProtoReflect.Type instead.
 func (*TestReservedFields) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{3}
 }
-
-func (m *TestReservedFields) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestReservedFields.Unmarshal(m, b)
-}
-func (m *TestReservedFields) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestReservedFields.Marshal(b, m, deterministic)
-}
-func (m *TestReservedFields) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestReservedFields.Merge(m, src)
-}
-func (m *TestReservedFields) XXX_Size() int {
-	return xxx_messageInfo_TestReservedFields.Size(m)
-}
-func (m *TestReservedFields) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestReservedFields.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_TestReservedFields proto.InternalMessageInfo
 
 type TestAllExtensions struct {
 	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
@@ -1224,7 +1151,7 @@ func (m *TestAllExtensions) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[4].MessageOf(m)
 }
 func (m *TestAllExtensions) Reset()         { *m = TestAllExtensions{} }
-func (m *TestAllExtensions) String() string { return proto.CompactTextString(m) }
+func (m *TestAllExtensions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*TestAllExtensions) ProtoMessage()    {}
 
 // Deprecated: Use TestAllExtensions.ProtoReflect.Type instead.
@@ -1241,24 +1168,6 @@ func (*TestAllExtensions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_TestAllExtensions
 }
 
-func (m *TestAllExtensions) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestAllExtensions.Unmarshal(m, b)
-}
-func (m *TestAllExtensions) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestAllExtensions.Marshal(b, m, deterministic)
-}
-func (m *TestAllExtensions) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestAllExtensions.Merge(m, src)
-}
-func (m *TestAllExtensions) XXX_Size() int {
-	return xxx_messageInfo_TestAllExtensions.Size(m)
-}
-func (m *TestAllExtensions) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestAllExtensions.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_TestAllExtensions proto.InternalMessageInfo
-
 type OptionalGroupExtension struct {
 	A                    *int32   `protobuf:"varint,17,opt,name=a" json:"a,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -1270,31 +1179,13 @@ func (m *OptionalGroupExtension) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[5].MessageOf(m)
 }
 func (m *OptionalGroupExtension) Reset()         { *m = OptionalGroupExtension{} }
-func (m *OptionalGroupExtension) String() string { return proto.CompactTextString(m) }
+func (m *OptionalGroupExtension) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*OptionalGroupExtension) ProtoMessage()    {}
 
 // Deprecated: Use OptionalGroupExtension.ProtoReflect.Type instead.
 func (*OptionalGroupExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{5}
 }
-
-func (m *OptionalGroupExtension) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_OptionalGroupExtension.Unmarshal(m, b)
-}
-func (m *OptionalGroupExtension) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_OptionalGroupExtension.Marshal(b, m, deterministic)
-}
-func (m *OptionalGroupExtension) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OptionalGroupExtension.Merge(m, src)
-}
-func (m *OptionalGroupExtension) XXX_Size() int {
-	return xxx_messageInfo_OptionalGroupExtension.Size(m)
-}
-func (m *OptionalGroupExtension) XXX_DiscardUnknown() {
-	xxx_messageInfo_OptionalGroupExtension.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_OptionalGroupExtension proto.InternalMessageInfo
 
 func (m *OptionalGroupExtension) GetA() int32 {
 	if m != nil && m.A != nil {
@@ -1314,31 +1205,13 @@ func (m *RepeatedGroupExtension) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[6].MessageOf(m)
 }
 func (m *RepeatedGroupExtension) Reset()         { *m = RepeatedGroupExtension{} }
-func (m *RepeatedGroupExtension) String() string { return proto.CompactTextString(m) }
+func (m *RepeatedGroupExtension) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*RepeatedGroupExtension) ProtoMessage()    {}
 
 // Deprecated: Use RepeatedGroupExtension.ProtoReflect.Type instead.
 func (*RepeatedGroupExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{6}
 }
-
-func (m *RepeatedGroupExtension) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_RepeatedGroupExtension.Unmarshal(m, b)
-}
-func (m *RepeatedGroupExtension) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_RepeatedGroupExtension.Marshal(b, m, deterministic)
-}
-func (m *RepeatedGroupExtension) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RepeatedGroupExtension.Merge(m, src)
-}
-func (m *RepeatedGroupExtension) XXX_Size() int {
-	return xxx_messageInfo_RepeatedGroupExtension.Size(m)
-}
-func (m *RepeatedGroupExtension) XXX_DiscardUnknown() {
-	xxx_messageInfo_RepeatedGroupExtension.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_RepeatedGroupExtension proto.InternalMessageInfo
 
 func (m *RepeatedGroupExtension) GetA() int32 {
 	if m != nil && m.A != nil {
@@ -1357,31 +1230,13 @@ func (m *TestNestedExtension) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[7].MessageOf(m)
 }
 func (m *TestNestedExtension) Reset()         { *m = TestNestedExtension{} }
-func (m *TestNestedExtension) String() string { return proto.CompactTextString(m) }
+func (m *TestNestedExtension) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*TestNestedExtension) ProtoMessage()    {}
 
 // Deprecated: Use TestNestedExtension.ProtoReflect.Type instead.
 func (*TestNestedExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{7}
 }
-
-func (m *TestNestedExtension) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestNestedExtension.Unmarshal(m, b)
-}
-func (m *TestNestedExtension) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestNestedExtension.Marshal(b, m, deterministic)
-}
-func (m *TestNestedExtension) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestNestedExtension.Merge(m, src)
-}
-func (m *TestNestedExtension) XXX_Size() int {
-	return xxx_messageInfo_TestNestedExtension.Size(m)
-}
-func (m *TestNestedExtension) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestNestedExtension.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_TestNestedExtension proto.InternalMessageInfo
 
 // Test that RPC services work.
 type FooRequest struct {
@@ -1394,31 +1249,13 @@ func (m *FooRequest) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[8].MessageOf(m)
 }
 func (m *FooRequest) Reset()         { *m = FooRequest{} }
-func (m *FooRequest) String() string { return proto.CompactTextString(m) }
+func (m *FooRequest) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FooRequest) ProtoMessage()    {}
 
 // Deprecated: Use FooRequest.ProtoReflect.Type instead.
 func (*FooRequest) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{8}
 }
-
-func (m *FooRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FooRequest.Unmarshal(m, b)
-}
-func (m *FooRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FooRequest.Marshal(b, m, deterministic)
-}
-func (m *FooRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FooRequest.Merge(m, src)
-}
-func (m *FooRequest) XXX_Size() int {
-	return xxx_messageInfo_FooRequest.Size(m)
-}
-func (m *FooRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_FooRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FooRequest proto.InternalMessageInfo
 
 type FooResponse struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -1430,31 +1267,13 @@ func (m *FooResponse) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[9].MessageOf(m)
 }
 func (m *FooResponse) Reset()         { *m = FooResponse{} }
-func (m *FooResponse) String() string { return proto.CompactTextString(m) }
+func (m *FooResponse) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FooResponse) ProtoMessage()    {}
 
 // Deprecated: Use FooResponse.ProtoReflect.Type instead.
 func (*FooResponse) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{9}
 }
-
-func (m *FooResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FooResponse.Unmarshal(m, b)
-}
-func (m *FooResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FooResponse.Marshal(b, m, deterministic)
-}
-func (m *FooResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FooResponse.Merge(m, src)
-}
-func (m *FooResponse) XXX_Size() int {
-	return xxx_messageInfo_FooResponse.Size(m)
-}
-func (m *FooResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_FooResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FooResponse proto.InternalMessageInfo
 
 type TestAllTypes_NestedMessage struct {
 	A                    *int32        `protobuf:"varint,1,opt,name=a" json:"a,omitempty"`
@@ -1468,31 +1287,13 @@ func (m *TestAllTypes_NestedMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[10].MessageOf(m)
 }
 func (m *TestAllTypes_NestedMessage) Reset()         { *m = TestAllTypes_NestedMessage{} }
-func (m *TestAllTypes_NestedMessage) String() string { return proto.CompactTextString(m) }
+func (m *TestAllTypes_NestedMessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*TestAllTypes_NestedMessage) ProtoMessage()    {}
 
 // Deprecated: Use TestAllTypes_NestedMessage.ProtoReflect.Type instead.
 func (*TestAllTypes_NestedMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{0, 0}
 }
-
-func (m *TestAllTypes_NestedMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestAllTypes_NestedMessage.Unmarshal(m, b)
-}
-func (m *TestAllTypes_NestedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestAllTypes_NestedMessage.Marshal(b, m, deterministic)
-}
-func (m *TestAllTypes_NestedMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestAllTypes_NestedMessage.Merge(m, src)
-}
-func (m *TestAllTypes_NestedMessage) XXX_Size() int {
-	return xxx_messageInfo_TestAllTypes_NestedMessage.Size(m)
-}
-func (m *TestAllTypes_NestedMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestAllTypes_NestedMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_TestAllTypes_NestedMessage proto.InternalMessageInfo
 
 func (m *TestAllTypes_NestedMessage) GetA() int32 {
 	if m != nil && m.A != nil {
@@ -1519,31 +1320,13 @@ func (m *TestAllTypes_OptionalGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[11].MessageOf(m)
 }
 func (m *TestAllTypes_OptionalGroup) Reset()         { *m = TestAllTypes_OptionalGroup{} }
-func (m *TestAllTypes_OptionalGroup) String() string { return proto.CompactTextString(m) }
+func (m *TestAllTypes_OptionalGroup) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*TestAllTypes_OptionalGroup) ProtoMessage()    {}
 
 // Deprecated: Use TestAllTypes_OptionalGroup.ProtoReflect.Type instead.
 func (*TestAllTypes_OptionalGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{0, 1}
 }
-
-func (m *TestAllTypes_OptionalGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestAllTypes_OptionalGroup.Unmarshal(m, b)
-}
-func (m *TestAllTypes_OptionalGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestAllTypes_OptionalGroup.Marshal(b, m, deterministic)
-}
-func (m *TestAllTypes_OptionalGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestAllTypes_OptionalGroup.Merge(m, src)
-}
-func (m *TestAllTypes_OptionalGroup) XXX_Size() int {
-	return xxx_messageInfo_TestAllTypes_OptionalGroup.Size(m)
-}
-func (m *TestAllTypes_OptionalGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestAllTypes_OptionalGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_TestAllTypes_OptionalGroup proto.InternalMessageInfo
 
 func (m *TestAllTypes_OptionalGroup) GetA() int32 {
 	if m != nil && m.A != nil {
@@ -1563,31 +1346,13 @@ func (m *TestAllTypes_RepeatedGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_test_proto_messageTypes[12].MessageOf(m)
 }
 func (m *TestAllTypes_RepeatedGroup) Reset()         { *m = TestAllTypes_RepeatedGroup{} }
-func (m *TestAllTypes_RepeatedGroup) String() string { return proto.CompactTextString(m) }
+func (m *TestAllTypes_RepeatedGroup) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*TestAllTypes_RepeatedGroup) ProtoMessage()    {}
 
 // Deprecated: Use TestAllTypes_RepeatedGroup.ProtoReflect.Type instead.
 func (*TestAllTypes_RepeatedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawdesc_gzipped, []int{0, 2}
 }
-
-func (m *TestAllTypes_RepeatedGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TestAllTypes_RepeatedGroup.Unmarshal(m, b)
-}
-func (m *TestAllTypes_RepeatedGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TestAllTypes_RepeatedGroup.Marshal(b, m, deterministic)
-}
-func (m *TestAllTypes_RepeatedGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TestAllTypes_RepeatedGroup.Merge(m, src)
-}
-func (m *TestAllTypes_RepeatedGroup) XXX_Size() int {
-	return xxx_messageInfo_TestAllTypes_RepeatedGroup.Size(m)
-}
-func (m *TestAllTypes_RepeatedGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_TestAllTypes_RepeatedGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_TestAllTypes_RepeatedGroup proto.InternalMessageInfo
 
 func (m *TestAllTypes_RepeatedGroup) GetA() int32 {
 	if m != nil && m.A != nil {
@@ -2909,7 +2674,6 @@ func xxx_File_test_test_proto_init() {
 	xxx_File_test_test_import_proto_init()
 	xxx_File_test_test_public_proto_init()
 	xxx_File_test_test_weak_proto_init()
-	messageTypes := make([]protoreflect.MessageType, 30)
 	extensionTypes := make([]protoreflect.ExtensionType, 37)
 	File_test_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:        xxx_File_test_test_proto_rawdesc,
@@ -2917,86 +2681,11 @@ func xxx_File_test_test_proto_init() {
 		DependencyIndexes:    xxx_File_test_test_proto_depIdxs,
 		LegacyExtensions:     xxx_File_test_test_proto_extDescs,
 		EnumOutputTypes:      xxx_File_test_test_proto_enumTypes,
-		MessageOutputTypes:   messageTypes,
+		MessageOutputTypes:   xxx_File_test_test_proto_messageTypes,
 		ExtensionOutputTypes: extensionTypes,
+		FilesRegistry:        protoregistry.GlobalFiles,
+		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_test_test_proto_goTypes[4:][:30]
-	for i, mt := range messageTypes {
-		xxx_File_test_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_test_test_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("test/test.proto", xxx_File_test_test_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.proto.test.ForeignEnum", ForeignEnum_name, ForeignEnum_value)
-	proto.RegisterEnum("goproto.proto.test.TestReservedEnumFields", TestReservedEnumFields_name, TestReservedEnumFields_value)
-	proto.RegisterEnum("goproto.proto.test.TestAllTypes_NestedEnum", TestAllTypes_NestedEnum_name, TestAllTypes_NestedEnum_value)
-	proto.RegisterEnum("goproto.proto.test.TestDeprecatedMessage_DeprecatedEnum", TestDeprecatedMessage_DeprecatedEnum_name, TestDeprecatedMessage_DeprecatedEnum_value)
-	proto.RegisterType((*TestAllTypes)(nil), "goproto.proto.test.TestAllTypes")
-	proto.RegisterMapType((map[bool]bool)(nil), "goproto.proto.test.TestAllTypes.MapBoolBoolEntry")
-	proto.RegisterMapType((map[uint32]uint32)(nil), "goproto.proto.test.TestAllTypes.MapFixed32Fixed32Entry")
-	proto.RegisterMapType((map[uint64]uint64)(nil), "goproto.proto.test.TestAllTypes.MapFixed64Fixed64Entry")
-	proto.RegisterMapType((map[int32]float64)(nil), "goproto.proto.test.TestAllTypes.MapInt32DoubleEntry")
-	proto.RegisterMapType((map[int32]float32)(nil), "goproto.proto.test.TestAllTypes.MapInt32FloatEntry")
-	proto.RegisterMapType((map[int32]int32)(nil), "goproto.proto.test.TestAllTypes.MapInt32Int32Entry")
-	proto.RegisterMapType((map[int64]int64)(nil), "goproto.proto.test.TestAllTypes.MapInt64Int64Entry")
-	proto.RegisterMapType((map[int32]int32)(nil), "goproto.proto.test.TestAllTypes.MapSfixed32Sfixed32Entry")
-	proto.RegisterMapType((map[int64]int64)(nil), "goproto.proto.test.TestAllTypes.MapSfixed64Sfixed64Entry")
-	proto.RegisterMapType((map[int32]int32)(nil), "goproto.proto.test.TestAllTypes.MapSint32Sint32Entry")
-	proto.RegisterMapType((map[int64]int64)(nil), "goproto.proto.test.TestAllTypes.MapSint64Sint64Entry")
-	proto.RegisterMapType((map[string][]byte)(nil), "goproto.proto.test.TestAllTypes.MapStringBytesEntry")
-	proto.RegisterMapType((map[string]TestAllTypes_NestedEnum)(nil), "goproto.proto.test.TestAllTypes.MapStringNestedEnumEntry")
-	proto.RegisterMapType((map[string]*TestAllTypes_NestedMessage)(nil), "goproto.proto.test.TestAllTypes.MapStringNestedMessageEntry")
-	proto.RegisterMapType((map[string]string)(nil), "goproto.proto.test.TestAllTypes.MapStringStringEntry")
-	proto.RegisterMapType((map[uint32]uint32)(nil), "goproto.proto.test.TestAllTypes.MapUint32Uint32Entry")
-	proto.RegisterMapType((map[uint64]uint64)(nil), "goproto.proto.test.TestAllTypes.MapUint64Uint64Entry")
-	proto.RegisterType((*TestDeprecatedMessage)(nil), "goproto.proto.test.TestDeprecatedMessage")
-	proto.RegisterType((*ForeignMessage)(nil), "goproto.proto.test.ForeignMessage")
-	proto.RegisterType((*TestReservedFields)(nil), "goproto.proto.test.TestReservedFields")
-	proto.RegisterType((*TestAllExtensions)(nil), "goproto.proto.test.TestAllExtensions")
-	proto.RegisterType((*OptionalGroupExtension)(nil), "goproto.proto.test.OptionalGroup_extension")
-	proto.RegisterType((*RepeatedGroupExtension)(nil), "goproto.proto.test.RepeatedGroup_extension")
-	proto.RegisterType((*TestNestedExtension)(nil), "goproto.proto.test.TestNestedExtension")
-	proto.RegisterType((*FooRequest)(nil), "goproto.proto.test.FooRequest")
-	proto.RegisterType((*FooResponse)(nil), "goproto.proto.test.FooResponse")
-	proto.RegisterType((*TestAllTypes_NestedMessage)(nil), "goproto.proto.test.TestAllTypes.NestedMessage")
-	proto.RegisterType((*TestAllTypes_OptionalGroup)(nil), "goproto.proto.test.TestAllTypes.OptionalGroup")
-	proto.RegisterType((*TestAllTypes_RepeatedGroup)(nil), "goproto.proto.test.TestAllTypes.RepeatedGroup")
-	proto.RegisterExtension(E_OptionalInt32Extension)
-	proto.RegisterExtension(E_OptionalInt64Extension)
-	proto.RegisterExtension(E_OptionalUint32Extension)
-	proto.RegisterExtension(E_OptionalUint64Extension)
-	proto.RegisterExtension(E_OptionalSint32Extension)
-	proto.RegisterExtension(E_OptionalSint64Extension)
-	proto.RegisterExtension(E_OptionalFixed32Extension)
-	proto.RegisterExtension(E_OptionalFixed64Extension)
-	proto.RegisterExtension(E_OptionalSfixed32Extension)
-	proto.RegisterExtension(E_OptionalSfixed64Extension)
-	proto.RegisterExtension(E_OptionalFloatExtension)
-	proto.RegisterExtension(E_OptionalDoubleExtension)
-	proto.RegisterExtension(E_OptionalBoolExtension)
-	proto.RegisterExtension(E_OptionalStringExtension)
-	proto.RegisterExtension(E_OptionalBytesExtension)
-	proto.RegisterExtension(E_OptionalgroupExtension)
-	proto.RegisterExtension(E_OptionalNestedMessageExtension)
-	proto.RegisterExtension(E_OptionalNestedEnumExtension)
-	proto.RegisterExtension(E_RepeatedInt32Extension)
-	proto.RegisterExtension(E_RepeatedInt64Extension)
-	proto.RegisterExtension(E_RepeatedUint32Extension)
-	proto.RegisterExtension(E_RepeatedUint64Extension)
-	proto.RegisterExtension(E_RepeatedSint32Extension)
-	proto.RegisterExtension(E_RepeatedSint64Extension)
-	proto.RegisterExtension(E_RepeatedFixed32Extension)
-	proto.RegisterExtension(E_RepeatedFixed64Extension)
-	proto.RegisterExtension(E_RepeatedSfixed32Extension)
-	proto.RegisterExtension(E_RepeatedSfixed64Extension)
-	proto.RegisterExtension(E_RepeatedFloatExtension)
-	proto.RegisterExtension(E_RepeatedDoubleExtension)
-	proto.RegisterExtension(E_RepeatedBoolExtension)
-	proto.RegisterExtension(E_RepeatedStringExtension)
-	proto.RegisterExtension(E_RepeatedBytesExtension)
-	proto.RegisterExtension(E_RepeatedgroupExtension)
-	proto.RegisterExtension(E_RepeatedNestedMessageExtension)
-	proto.RegisterExtension(E_RepeatedNestedEnumExtension)
-	proto.RegisterExtension(E_TestNestedExtension_NestedStringExtension)
 	xxx_File_test_test_proto_goTypes = nil
 	xxx_File_test_test_proto_depIdxs = nil
 }

@@ -4,10 +4,9 @@
 package known_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // A Duration represents a signed, fixed-length span of time represented
@@ -91,7 +90,7 @@ func (m *Duration) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_duration_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Duration) Reset()         { *m = Duration{} }
-func (m *Duration) String() string { return proto.CompactTextString(m) }
+func (m *Duration) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Duration) ProtoMessage()    {}
 
 // Deprecated: Use Duration.ProtoReflect.Type instead.
@@ -100,24 +99,6 @@ func (*Duration) Descriptor() ([]byte, []int) {
 }
 
 func (*Duration) XXX_WellKnownType() string { return "Duration" }
-
-func (m *Duration) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Duration.Unmarshal(m, b)
-}
-func (m *Duration) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Duration.Marshal(b, m, deterministic)
-}
-func (m *Duration) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Duration.Merge(m, src)
-}
-func (m *Duration) XXX_Size() int {
-	return xxx_messageInfo_Duration.Size(m)
-}
-func (m *Duration) XXX_DiscardUnknown() {
-	xxx_messageInfo_Duration.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Duration proto.InternalMessageInfo
 
 func (m *Duration) GetSeconds() int64 {
 	if m != nil {
@@ -170,20 +151,14 @@ func xxx_File_google_protobuf_duration_proto_init() {
 	if File_google_protobuf_duration_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_google_protobuf_duration_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_duration_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_duration_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_duration_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_duration_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_duration_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_duration_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_duration_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("google/protobuf/duration.proto", xxx_File_google_protobuf_duration_proto_rawdesc_gzipped)
-	proto.RegisterType((*Duration)(nil), "google.protobuf.Duration")
 	xxx_File_google_protobuf_duration_proto_goTypes = nil
 	xxx_File_google_protobuf_duration_proto_depIdxs = nil
 }

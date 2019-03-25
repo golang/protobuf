@@ -4,10 +4,9 @@
 package proto3
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type FieldTestMessage_Enum int32
@@ -89,31 +88,13 @@ func (m *FieldTestMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto3_fields_proto_messageTypes[0].MessageOf(m)
 }
 func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
-func (m *FieldTestMessage) String() string { return proto.CompactTextString(m) }
+func (m *FieldTestMessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldTestMessage) ProtoMessage()    {}
 
 // Deprecated: Use FieldTestMessage.ProtoReflect.Type instead.
 func (*FieldTestMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_proto3_fields_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *FieldTestMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FieldTestMessage.Unmarshal(m, b)
-}
-func (m *FieldTestMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FieldTestMessage.Marshal(b, m, deterministic)
-}
-func (m *FieldTestMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FieldTestMessage.Merge(m, src)
-}
-func (m *FieldTestMessage) XXX_Size() int {
-	return xxx_messageInfo_FieldTestMessage.Size(m)
-}
-func (m *FieldTestMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_FieldTestMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FieldTestMessage proto.InternalMessageInfo
 
 func (m *FieldTestMessage) GetOptionalBool() string {
 	if m != nil {
@@ -384,31 +365,13 @@ func (m *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto3_fields_proto_messageTypes[4].MessageOf(m)
 }
 func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
-func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }
+func (m *FieldTestMessage_Message) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldTestMessage_Message) ProtoMessage()    {}
 
 // Deprecated: Use FieldTestMessage_Message.ProtoReflect.Type instead.
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
 	return xxx_File_proto3_fields_proto_rawdesc_gzipped, []int{0, 3}
 }
-
-func (m *FieldTestMessage_Message) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FieldTestMessage_Message.Unmarshal(m, b)
-}
-func (m *FieldTestMessage_Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FieldTestMessage_Message.Marshal(b, m, deterministic)
-}
-func (m *FieldTestMessage_Message) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FieldTestMessage_Message.Merge(m, src)
-}
-func (m *FieldTestMessage_Message) XXX_Size() int {
-	return xxx_messageInfo_FieldTestMessage_Message.Size(m)
-}
-func (m *FieldTestMessage_Message) XXX_DiscardUnknown() {
-	xxx_messageInfo_FieldTestMessage_Message.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FieldTestMessage_Message proto.InternalMessageInfo
 
 var xxx_File_proto3_fields_proto_rawdesc = []byte{
 	// 2378 bytes of the wire-encoded FileDescriptorProto
@@ -596,26 +559,15 @@ func xxx_File_proto3_fields_proto_init() {
 	if File_proto3_fields_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 5)
 	File_proto3_fields_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_proto3_fields_proto_rawdesc,
 		GoTypes:            xxx_File_proto3_fields_proto_goTypes,
 		DependencyIndexes:  xxx_File_proto3_fields_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_proto3_fields_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_proto3_fields_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_proto3_fields_proto_goTypes[1:][:5]
-	for i, mt := range messageTypes {
-		xxx_File_proto3_fields_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_proto3_fields_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("proto3/fields.proto", xxx_File_proto3_fields_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.proto3.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)
-	proto.RegisterType((*FieldTestMessage)(nil), "goproto.protoc.proto3.FieldTestMessage")
-	proto.RegisterMapType((map[uint64]FieldTestMessage_Enum)(nil), "goproto.protoc.proto3.FieldTestMessage.MapFixed64EnumEntry")
-	proto.RegisterMapType((map[int32]int64)(nil), "goproto.protoc.proto3.FieldTestMessage.MapInt32Int64Entry")
-	proto.RegisterMapType((map[string]*FieldTestMessage_Message)(nil), "goproto.protoc.proto3.FieldTestMessage.MapStringMessageEntry")
-	proto.RegisterType((*FieldTestMessage_Message)(nil), "goproto.protoc.proto3.FieldTestMessage.Message")
 	xxx_File_proto3_fields_proto_goTypes = nil
 	xxx_File_proto3_fields_proto_depIdxs = nil
 }

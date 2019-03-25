@@ -36,7 +36,7 @@ func loadEnumType(t reflect.Type) pref.EnumType {
 
 	// Slow-path: derive enum descriptor and initialize EnumType.
 	var m sync.Map // map[protoreflect.EnumNumber]proto.Enum
-	ed := loadEnumDesc(t)
+	ed := LoadEnumDesc(t)
 	et := ptype.GoEnum(ed, func(et pref.EnumType, n pref.EnumNumber) pref.Enum {
 		if e, ok := m.Load(n); ok {
 			return e.(pref.Enum)
@@ -81,9 +81,11 @@ var enumDescCache sync.Map // map[reflect.Type]protoreflect.EnumDescriptor
 
 var enumNumberType = reflect.TypeOf(pref.EnumNumber(0))
 
-// loadEnumDesc returns an EnumDescriptor derived from the Go type,
+// LoadEnumDesc returns an EnumDescriptor derived from the Go type,
 // which must be an int32 kind and not implement the v2 API already.
-func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
+//
+// This is exported for testing purposes.
+func LoadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	// Fast-path: check if an EnumDescriptor is cached for this concrete type.
 	if ed, ok := enumDescCache.Load(t); ok {
 		return ed.(pref.EnumDescriptor)
@@ -105,7 +107,7 @@ func loadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	}
 	if ed, ok := ev.(enumV1); ok {
 		b, idxs := ed.EnumDescriptor()
-		fd := loadFileDesc(b)
+		fd := LoadFileDesc(b)
 
 		// Derive syntax.
 		switch fd.GetSyntax() {

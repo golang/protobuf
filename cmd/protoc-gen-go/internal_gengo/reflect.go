@@ -149,9 +149,6 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		g.P(initFuncName(impFile), "()")
 	}
 
-	if len(f.allMessages) > 0 {
-		g.P("messageTypes := make([]", protoreflectPackage.Ident("MessageType"), ",", len(f.allMessages), ")")
-	}
 	if len(f.allExtensions) > 0 {
 		g.P("extensionTypes := make([]", protoreflectPackage.Ident("ExtensionType"), ",", len(f.allExtensions), ")")
 	}
@@ -167,30 +164,20 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		g.P("EnumOutputTypes: ", enumTypesVarName(f), ",")
 	}
 	if len(f.allMessages) > 0 {
-		g.P("MessageOutputTypes: messageTypes,")
+		g.P("MessageOutputTypes: ", messageTypesVarName(f), ",")
 	}
 	if len(f.allExtensions) > 0 {
 		g.P("ExtensionOutputTypes: extensionTypes,")
 	}
-	if isDescriptor(f.File) {
-		// TODO: Enable this for all protos.
-		g.P("FilesRegistry: ", protoregistryPackage.Ident("GlobalFiles"), ",")
-		g.P("TypesRegistry: ", protoregistryPackage.Ident("GlobalTypes"), ",")
-	}
+	g.P("FilesRegistry: ", protoregistryPackage.Ident("GlobalFiles"), ",")
+	g.P("TypesRegistry: ", protoregistryPackage.Ident("GlobalTypes"), ",")
 	g.P("}.Init()")
-
-	// Copy the local list of message types into the global array.
-	if len(f.allMessages) > 0 {
-		g.P("messageGoTypes := ", goTypesVarName(f), "[", len(f.allEnums), ":][:", len(f.allMessages), "]")
-		g.P("for i, mt := range messageTypes {")
-		g.P(messageTypesVarName(f), "[i].GoType = ", reflectPackage.Ident("TypeOf"), "(messageGoTypes[i])")
-		g.P(messageTypesVarName(f), "[i].PBType = mt")
-		g.P("}")
-	}
 
 	// The descriptor proto needs to register the option types with the
 	// prototype so that the package can properly handle those option types.
-	if isDescriptor(f.File) {
+	//
+	// TODO: Should this be handled by fileinit at runtime?
+	if f.Desc.Path() == "google/protobuf/descriptor.proto" && f.Desc.Package() == "google.protobuf" {
 		for _, m := range f.allMessages {
 			name := m.GoIdent.GoName
 			if strings.HasSuffix(name, "Options") {
@@ -198,8 +185,6 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 			}
 		}
 	}
-
-	genRegistrationV1(gen, g, f)
 
 	g.P(goTypesVarName(f), " = nil") // allow GC to reclaim resource
 	g.P(depIdxsVarName(f), " = nil") // allow GC to reclaim resource

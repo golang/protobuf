@@ -4,10 +4,9 @@
 package grpc
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type Request struct {
@@ -20,31 +19,13 @@ func (m *Request) ProtoReflect() protoreflect.Message {
 	return xxx_File_grpc_grpc_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Request) Reset()         { *m = Request{} }
-func (m *Request) String() string { return proto.CompactTextString(m) }
+func (m *Request) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Request) ProtoMessage()    {}
 
 // Deprecated: Use Request.ProtoReflect.Type instead.
 func (*Request) Descriptor() ([]byte, []int) {
 	return xxx_File_grpc_grpc_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Request) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Request.Unmarshal(m, b)
-}
-func (m *Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Request.Marshal(b, m, deterministic)
-}
-func (m *Request) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Request.Merge(m, src)
-}
-func (m *Request) XXX_Size() int {
-	return xxx_messageInfo_Request.Size(m)
-}
-func (m *Request) XXX_DiscardUnknown() {
-	xxx_messageInfo_Request.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Request proto.InternalMessageInfo
 
 type Response struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -56,31 +37,13 @@ func (m *Response) ProtoReflect() protoreflect.Message {
 	return xxx_File_grpc_grpc_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Response) Reset()         { *m = Response{} }
-func (m *Response) String() string { return proto.CompactTextString(m) }
+func (m *Response) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Response) ProtoMessage()    {}
 
 // Deprecated: Use Response.ProtoReflect.Type instead.
 func (*Response) Descriptor() ([]byte, []int) {
 	return xxx_File_grpc_grpc_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Response.Unmarshal(m, b)
-}
-func (m *Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Response.Marshal(b, m, deterministic)
-}
-func (m *Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Response.Merge(m, src)
-}
-func (m *Response) XXX_Size() int {
-	return xxx_messageInfo_Response.Size(m)
-}
-func (m *Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Response proto.InternalMessageInfo
 
 var xxx_File_grpc_grpc_proto_rawdesc = []byte{
 	// 466 bytes of the wire-encoded FileDescriptorProto
@@ -143,21 +106,14 @@ func xxx_File_grpc_grpc_proto_init() {
 	if File_grpc_grpc_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 2)
 	File_grpc_grpc_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_grpc_grpc_proto_rawdesc,
 		GoTypes:            xxx_File_grpc_grpc_proto_goTypes,
 		DependencyIndexes:  xxx_File_grpc_grpc_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_grpc_grpc_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_grpc_grpc_proto_goTypes[0:][:2]
-	for i, mt := range messageTypes {
-		xxx_File_grpc_grpc_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_grpc_grpc_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("grpc/grpc.proto", xxx_File_grpc_grpc_proto_rawdesc_gzipped)
-	proto.RegisterType((*Request)(nil), "goproto.protoc.grpc.Request")
-	proto.RegisterType((*Response)(nil), "goproto.protoc.grpc.Response")
 	xxx_File_grpc_grpc_proto_goTypes = nil
 	xxx_File_grpc_grpc_proto_depIdxs = nil
 }

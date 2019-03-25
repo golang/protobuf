@@ -112,7 +112,7 @@ func extensionDescFromType(t pref.ExtensionType) *piface.ExtensionDescV1 {
 		}
 		if ed, ok := ev.(enumV1); ok && protoPkg == "" {
 			b, _ := ed.EnumDescriptor()
-			protoPkg = loadFileDesc(b).GetPackage()
+			protoPkg = LoadFileDesc(b).GetPackage()
 		}
 
 		if protoPkg != "" {

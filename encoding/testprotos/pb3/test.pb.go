@@ -4,10 +4,9 @@
 package pb3
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type Enum int32
@@ -118,31 +117,13 @@ func (m *Scalars) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Scalars) Reset()         { *m = Scalars{} }
-func (m *Scalars) String() string { return proto.CompactTextString(m) }
+func (m *Scalars) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Scalars) ProtoMessage()    {}
 
 // Deprecated: Use Scalars.ProtoReflect.Type instead.
 func (*Scalars) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Scalars) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Scalars.Unmarshal(m, b)
-}
-func (m *Scalars) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Scalars.Marshal(b, m, deterministic)
-}
-func (m *Scalars) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Scalars.Merge(m, src)
-}
-func (m *Scalars) XXX_Size() int {
-	return xxx_messageInfo_Scalars.Size(m)
-}
-func (m *Scalars) XXX_DiscardUnknown() {
-	xxx_messageInfo_Scalars.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Scalars proto.InternalMessageInfo
 
 func (m *Scalars) GetSBool() bool {
 	if m != nil {
@@ -262,31 +243,13 @@ func (m *Enums) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Enums) Reset()         { *m = Enums{} }
-func (m *Enums) String() string { return proto.CompactTextString(m) }
+func (m *Enums) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Enums) ProtoMessage()    {}
 
 // Deprecated: Use Enums.ProtoReflect.Type instead.
 func (*Enums) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *Enums) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Enums.Unmarshal(m, b)
-}
-func (m *Enums) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Enums.Marshal(b, m, deterministic)
-}
-func (m *Enums) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Enums.Merge(m, src)
-}
-func (m *Enums) XXX_Size() int {
-	return xxx_messageInfo_Enums.Size(m)
-}
-func (m *Enums) XXX_DiscardUnknown() {
-	xxx_messageInfo_Enums.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Enums proto.InternalMessageInfo
 
 func (m *Enums) GetSEnum() Enum {
 	if m != nil {
@@ -314,31 +277,13 @@ func (m *Nests) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[2].MessageOf(m)
 }
 func (m *Nests) Reset()         { *m = Nests{} }
-func (m *Nests) String() string { return proto.CompactTextString(m) }
+func (m *Nests) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Nests) ProtoMessage()    {}
 
 // Deprecated: Use Nests.ProtoReflect.Type instead.
 func (*Nests) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{2}
 }
-
-func (m *Nests) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Nests.Unmarshal(m, b)
-}
-func (m *Nests) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Nests.Marshal(b, m, deterministic)
-}
-func (m *Nests) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Nests.Merge(m, src)
-}
-func (m *Nests) XXX_Size() int {
-	return xxx_messageInfo_Nests.Size(m)
-}
-func (m *Nests) XXX_DiscardUnknown() {
-	xxx_messageInfo_Nests.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Nests proto.InternalMessageInfo
 
 func (m *Nests) GetSNested() *Nested {
 	if m != nil {
@@ -360,31 +305,13 @@ func (m *Nested) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[3].MessageOf(m)
 }
 func (m *Nested) Reset()         { *m = Nested{} }
-func (m *Nested) String() string { return proto.CompactTextString(m) }
+func (m *Nested) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Nested) ProtoMessage()    {}
 
 // Deprecated: Use Nested.ProtoReflect.Type instead.
 func (*Nested) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{3}
 }
-
-func (m *Nested) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Nested.Unmarshal(m, b)
-}
-func (m *Nested) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Nested.Marshal(b, m, deterministic)
-}
-func (m *Nested) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Nested.Merge(m, src)
-}
-func (m *Nested) XXX_Size() int {
-	return xxx_messageInfo_Nested.Size(m)
-}
-func (m *Nested) XXX_DiscardUnknown() {
-	xxx_messageInfo_Nested.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Nested proto.InternalMessageInfo
 
 func (m *Nested) GetSString() string {
 	if m != nil {
@@ -416,31 +343,13 @@ func (m *Oneofs) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[4].MessageOf(m)
 }
 func (m *Oneofs) Reset()         { *m = Oneofs{} }
-func (m *Oneofs) String() string { return proto.CompactTextString(m) }
+func (m *Oneofs) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Oneofs) ProtoMessage()    {}
 
 // Deprecated: Use Oneofs.ProtoReflect.Type instead.
 func (*Oneofs) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{4}
 }
-
-func (m *Oneofs) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Oneofs.Unmarshal(m, b)
-}
-func (m *Oneofs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Oneofs.Marshal(b, m, deterministic)
-}
-func (m *Oneofs) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Oneofs.Merge(m, src)
-}
-func (m *Oneofs) XXX_Size() int {
-	return xxx_messageInfo_Oneofs.Size(m)
-}
-func (m *Oneofs) XXX_DiscardUnknown() {
-	xxx_messageInfo_Oneofs.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Oneofs proto.InternalMessageInfo
 
 type isOneofs_Union interface {
 	isOneofs_Union()
@@ -517,31 +426,13 @@ func (m *Maps) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[5].MessageOf(m)
 }
 func (m *Maps) Reset()         { *m = Maps{} }
-func (m *Maps) String() string { return proto.CompactTextString(m) }
+func (m *Maps) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Maps) ProtoMessage()    {}
 
 // Deprecated: Use Maps.ProtoReflect.Type instead.
 func (*Maps) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{5}
 }
-
-func (m *Maps) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Maps.Unmarshal(m, b)
-}
-func (m *Maps) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Maps.Marshal(b, m, deterministic)
-}
-func (m *Maps) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Maps.Merge(m, src)
-}
-func (m *Maps) XXX_Size() int {
-	return xxx_messageInfo_Maps.Size(m)
-}
-func (m *Maps) XXX_DiscardUnknown() {
-	xxx_messageInfo_Maps.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Maps proto.InternalMessageInfo
 
 func (m *Maps) GetInt32ToStr() map[int32]string {
 	if m != nil {
@@ -590,31 +481,13 @@ func (m *JSONNames) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[6].MessageOf(m)
 }
 func (m *JSONNames) Reset()         { *m = JSONNames{} }
-func (m *JSONNames) String() string { return proto.CompactTextString(m) }
+func (m *JSONNames) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*JSONNames) ProtoMessage()    {}
 
 // Deprecated: Use JSONNames.ProtoReflect.Type instead.
 func (*JSONNames) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawdesc_gzipped, []int{6}
 }
-
-func (m *JSONNames) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_JSONNames.Unmarshal(m, b)
-}
-func (m *JSONNames) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_JSONNames.Marshal(b, m, deterministic)
-}
-func (m *JSONNames) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_JSONNames.Merge(m, src)
-}
-func (m *JSONNames) XXX_Size() int {
-	return xxx_messageInfo_JSONNames.Size(m)
-}
-func (m *JSONNames) XXX_DiscardUnknown() {
-	xxx_messageInfo_JSONNames.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_JSONNames proto.InternalMessageInfo
 
 func (m *JSONNames) GetSString() string {
 	if m != nil {
@@ -780,34 +653,15 @@ func xxx_File_pb3_test_proto_init() {
 	if File_pb3_test_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 12)
 	File_pb3_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_pb3_test_proto_rawdesc,
 		GoTypes:            xxx_File_pb3_test_proto_goTypes,
 		DependencyIndexes:  xxx_File_pb3_test_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_pb3_test_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_pb3_test_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_pb3_test_proto_goTypes[2:][:12]
-	for i, mt := range messageTypes {
-		xxx_File_pb3_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_pb3_test_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("pb3/test.proto", xxx_File_pb3_test_proto_rawdesc_gzipped)
-	proto.RegisterEnum("pb3.Enum", Enum_name, Enum_value)
-	proto.RegisterEnum("pb3.Enums_NestedEnum", Enums_NestedEnum_name, Enums_NestedEnum_value)
-	proto.RegisterType((*Scalars)(nil), "pb3.Scalars")
-	proto.RegisterType((*Enums)(nil), "pb3.Enums")
-	proto.RegisterType((*Nests)(nil), "pb3.Nests")
-	proto.RegisterType((*Nested)(nil), "pb3.Nested")
-	proto.RegisterType((*Oneofs)(nil), "pb3.Oneofs")
-	proto.RegisterType((*Maps)(nil), "pb3.Maps")
-	proto.RegisterMapType((map[bool]uint32)(nil), "pb3.Maps.BoolToUint32Entry")
-	proto.RegisterMapType((map[int32]string)(nil), "pb3.Maps.Int32ToStrEntry")
-	proto.RegisterMapType((map[string]*Nested)(nil), "pb3.Maps.StrToNestedEntry")
-	proto.RegisterMapType((map[string]*Oneofs)(nil), "pb3.Maps.StrToOneofsEntry")
-	proto.RegisterMapType((map[uint64]Enum)(nil), "pb3.Maps.Uint64ToEnumEntry")
-	proto.RegisterType((*JSONNames)(nil), "pb3.JSONNames")
 	xxx_File_pb3_test_proto_goTypes = nil
 	xxx_File_pb3_test_proto_depIdxs = nil
 }

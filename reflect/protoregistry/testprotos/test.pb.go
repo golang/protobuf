@@ -4,11 +4,10 @@
 package testprotos
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type Enum1 int32
@@ -160,7 +159,7 @@ func (m *Message1) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Message1) Reset()         { *m = Message1{} }
-func (m *Message1) String() string { return proto.CompactTextString(m) }
+func (m *Message1) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message1) ProtoMessage()    {}
 
 // Deprecated: Use Message1.ProtoReflect.Type instead.
@@ -177,24 +176,6 @@ func (*Message1) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_Message1
 }
 
-func (m *Message1) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message1.Unmarshal(m, b)
-}
-func (m *Message1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message1.Marshal(b, m, deterministic)
-}
-func (m *Message1) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message1.Merge(m, src)
-}
-func (m *Message1) XXX_Size() int {
-	return xxx_messageInfo_Message1.Size(m)
-}
-func (m *Message1) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message1.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message1 proto.InternalMessageInfo
-
 type Message2 struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -205,31 +186,13 @@ func (m *Message2) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Message2) Reset()         { *m = Message2{} }
-func (m *Message2) String() string { return proto.CompactTextString(m) }
+func (m *Message2) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message2) ProtoMessage()    {}
 
 // Deprecated: Use Message2.ProtoReflect.Type instead.
 func (*Message2) Descriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *Message2) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message2.Unmarshal(m, b)
-}
-func (m *Message2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message2.Marshal(b, m, deterministic)
-}
-func (m *Message2) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message2.Merge(m, src)
-}
-func (m *Message2) XXX_Size() int {
-	return xxx_messageInfo_Message2.Size(m)
-}
-func (m *Message2) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message2.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message2 proto.InternalMessageInfo
 
 type Message3 struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -241,31 +204,13 @@ func (m *Message3) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_proto_messageTypes[2].MessageOf(m)
 }
 func (m *Message3) Reset()         { *m = Message3{} }
-func (m *Message3) String() string { return proto.CompactTextString(m) }
+func (m *Message3) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message3) ProtoMessage()    {}
 
 // Deprecated: Use Message3.ProtoReflect.Type instead.
 func (*Message3) Descriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{2}
 }
-
-func (m *Message3) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message3.Unmarshal(m, b)
-}
-func (m *Message3) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message3.Marshal(b, m, deterministic)
-}
-func (m *Message3) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message3.Merge(m, src)
-}
-func (m *Message3) XXX_Size() int {
-	return xxx_messageInfo_Message3.Size(m)
-}
-func (m *Message3) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message3.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message3 proto.InternalMessageInfo
 
 type Message4 struct {
 	BoolField            *bool    `protobuf:"varint,30,opt,name=bool_field,json=boolField" json:"bool_field,omitempty"`
@@ -278,31 +223,13 @@ func (m *Message4) ProtoReflect() protoreflect.Message {
 	return xxx_File_test_proto_messageTypes[3].MessageOf(m)
 }
 func (m *Message4) Reset()         { *m = Message4{} }
-func (m *Message4) String() string { return proto.CompactTextString(m) }
+func (m *Message4) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message4) ProtoMessage()    {}
 
 // Deprecated: Use Message4.ProtoReflect.Type instead.
 func (*Message4) Descriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawdesc_gzipped, []int{3}
 }
-
-func (m *Message4) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message4.Unmarshal(m, b)
-}
-func (m *Message4) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message4.Marshal(b, m, deterministic)
-}
-func (m *Message4) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message4.Merge(m, src)
-}
-func (m *Message4) XXX_Size() int {
-	return xxx_messageInfo_Message4.Size(m)
-}
-func (m *Message4) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message4.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message4 proto.InternalMessageInfo
 
 func (m *Message4) GetBoolField() bool {
 	if m != nil && m.BoolField != nil {
@@ -460,7 +387,6 @@ func xxx_File_test_proto_init() {
 	if File_test_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 4)
 	extensionTypes := make([]protoreflect.ExtensionType, 6)
 	File_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:        xxx_File_test_proto_rawdesc,
@@ -468,28 +394,11 @@ func xxx_File_test_proto_init() {
 		DependencyIndexes:    xxx_File_test_proto_depIdxs,
 		LegacyExtensions:     xxx_File_test_proto_extDescs,
 		EnumOutputTypes:      xxx_File_test_proto_enumTypes,
-		MessageOutputTypes:   messageTypes,
+		MessageOutputTypes:   xxx_File_test_proto_messageTypes,
 		ExtensionOutputTypes: extensionTypes,
+		FilesRegistry:        protoregistry.GlobalFiles,
+		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_test_proto_goTypes[3:][:4]
-	for i, mt := range messageTypes {
-		xxx_File_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_test_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("test.proto", xxx_File_test_proto_rawdesc_gzipped)
-	proto.RegisterEnum("testprotos.Enum1", Enum1_name, Enum1_value)
-	proto.RegisterEnum("testprotos.Enum2", Enum2_name, Enum2_value)
-	proto.RegisterEnum("testprotos.Enum3", Enum3_name, Enum3_value)
-	proto.RegisterType((*Message1)(nil), "testprotos.Message1")
-	proto.RegisterType((*Message2)(nil), "testprotos.Message2")
-	proto.RegisterType((*Message3)(nil), "testprotos.Message3")
-	proto.RegisterType((*Message4)(nil), "testprotos.Message4")
-	proto.RegisterExtension(E_StringField)
-	proto.RegisterExtension(E_EnumField)
-	proto.RegisterExtension(E_MessageField)
-	proto.RegisterExtension(E_Message4_MessageField)
-	proto.RegisterExtension(E_Message4_EnumField)
-	proto.RegisterExtension(E_Message4_StringField)
 	xxx_File_test_proto_goTypes = nil
 	xxx_File_test_proto_depIdxs = nil
 }

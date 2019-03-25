@@ -4,10 +4,9 @@
 package sub2
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type Sub2Message struct {
@@ -20,31 +19,13 @@ func (m *Sub2Message) ProtoReflect() protoreflect.Message {
 	return xxx_File_import_public_sub2_a_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Sub2Message) Reset()         { *m = Sub2Message{} }
-func (m *Sub2Message) String() string { return proto.CompactTextString(m) }
+func (m *Sub2Message) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Sub2Message) ProtoMessage()    {}
 
 // Deprecated: Use Sub2Message.ProtoReflect.Type instead.
 func (*Sub2Message) Descriptor() ([]byte, []int) {
 	return xxx_File_import_public_sub2_a_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Sub2Message) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Sub2Message.Unmarshal(m, b)
-}
-func (m *Sub2Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Sub2Message.Marshal(b, m, deterministic)
-}
-func (m *Sub2Message) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Sub2Message.Merge(m, src)
-}
-func (m *Sub2Message) XXX_Size() int {
-	return xxx_messageInfo_Sub2Message.Size(m)
-}
-func (m *Sub2Message) XXX_DiscardUnknown() {
-	xxx_messageInfo_Sub2Message.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Sub2Message proto.InternalMessageInfo
 
 var xxx_File_import_public_sub2_a_proto_rawdesc = []byte{
 	// 157 bytes of the wire-encoded FileDescriptorProto
@@ -77,20 +58,14 @@ func xxx_File_import_public_sub2_a_proto_init() {
 	if File_import_public_sub2_a_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_import_public_sub2_a_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_import_public_sub2_a_proto_rawdesc,
 		GoTypes:            xxx_File_import_public_sub2_a_proto_goTypes,
 		DependencyIndexes:  xxx_File_import_public_sub2_a_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_import_public_sub2_a_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_import_public_sub2_a_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_import_public_sub2_a_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_import_public_sub2_a_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("import_public/sub2/a.proto", xxx_File_import_public_sub2_a_proto_rawdesc_gzipped)
-	proto.RegisterType((*Sub2Message)(nil), "goproto.protoc.import_public.sub2.Sub2Message")
 	xxx_File_import_public_sub2_a_proto_goTypes = nil
 	xxx_File_import_public_sub2_a_proto_depIdxs = nil
 }

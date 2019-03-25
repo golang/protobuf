@@ -9,7 +9,6 @@ import (
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type FieldDescriptorProto_Type int32
@@ -2958,21 +2957,15 @@ func xxx_File_google_protobuf_descriptor_proto_init() {
 	if File_google_protobuf_descriptor_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 27)
 	File_google_protobuf_descriptor_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_descriptor_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_descriptor_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_descriptor_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_google_protobuf_descriptor_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_descriptor_proto_messageTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_descriptor_proto_goTypes[6:][:27]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_descriptor_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_descriptor_proto_messageTypes[i].PBType = mt
-	}
 	prototype.X.RegisterExtensionRangeOptions((*ExtensionRangeOptions)(nil))
 	prototype.X.RegisterFileOptions((*FileOptions)(nil))
 	prototype.X.RegisterMessageOptions((*MessageOptions)(nil))

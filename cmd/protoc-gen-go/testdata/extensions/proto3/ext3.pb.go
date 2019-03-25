@@ -4,12 +4,11 @@
 package proto3
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	descriptor "github.com/golang/protobuf/v2/types/descriptor"
-	reflect "reflect"
 )
 
 type Enum int32
@@ -54,31 +53,13 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_proto3_ext3_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Message) Reset()         { *m = Message{} }
-func (m *Message) String() string { return proto.CompactTextString(m) }
+func (m *Message) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message) ProtoMessage()    {}
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_proto3_ext3_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Message) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message.Unmarshal(m, b)
-}
-func (m *Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message.Marshal(b, m, deterministic)
-}
-func (m *Message) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message.Merge(m, src)
-}
-func (m *Message) XXX_Size() int {
-	return xxx_messageInfo_Message.Size(m)
-}
-func (m *Message) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message proto.InternalMessageInfo
 
 var xxx_File_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
@@ -725,7 +706,6 @@ func xxx_File_extensions_proto3_ext3_proto_init() {
 	if File_extensions_proto3_ext3_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	extensionTypes := make([]protoreflect.ExtensionType, 34)
 	File_extensions_proto3_ext3_proto = protoimpl.FileBuilder{
 		RawDescriptor:        xxx_File_extensions_proto3_ext3_proto_rawdesc,
@@ -733,51 +713,11 @@ func xxx_File_extensions_proto3_ext3_proto_init() {
 		DependencyIndexes:    xxx_File_extensions_proto3_ext3_proto_depIdxs,
 		LegacyExtensions:     xxx_File_extensions_proto3_ext3_proto_extDescs,
 		EnumOutputTypes:      xxx_File_extensions_proto3_ext3_proto_enumTypes,
-		MessageOutputTypes:   messageTypes,
+		MessageOutputTypes:   xxx_File_extensions_proto3_ext3_proto_messageTypes,
 		ExtensionOutputTypes: extensionTypes,
+		FilesRegistry:        protoregistry.GlobalFiles,
+		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_extensions_proto3_ext3_proto_goTypes[1:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_extensions_proto3_ext3_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_extensions_proto3_ext3_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("extensions/proto3/ext3.proto", xxx_File_extensions_proto3_ext3_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.extension.proto3.Enum", Enum_name, Enum_value)
-	proto.RegisterType((*Message)(nil), "goproto.protoc.extension.proto3.Message")
-	proto.RegisterExtension(E_ExtensionBool)
-	proto.RegisterExtension(E_ExtensionEnum)
-	proto.RegisterExtension(E_ExtensionInt32)
-	proto.RegisterExtension(E_ExtensionSint32)
-	proto.RegisterExtension(E_ExtensionUint32)
-	proto.RegisterExtension(E_ExtensionInt64)
-	proto.RegisterExtension(E_ExtensionSint64)
-	proto.RegisterExtension(E_ExtensionUint64)
-	proto.RegisterExtension(E_ExtensionSfixed32)
-	proto.RegisterExtension(E_ExtensionFixed32)
-	proto.RegisterExtension(E_ExtensionFloat)
-	proto.RegisterExtension(E_ExtensionSfixed64)
-	proto.RegisterExtension(E_ExtensionFixed64)
-	proto.RegisterExtension(E_ExtensionDouble)
-	proto.RegisterExtension(E_ExtensionString)
-	proto.RegisterExtension(E_ExtensionBytes)
-	proto.RegisterExtension(E_Extension_Message)
-	proto.RegisterExtension(E_RepeatedExtensionBool)
-	proto.RegisterExtension(E_RepeatedExtensionEnum)
-	proto.RegisterExtension(E_RepeatedExtensionInt32)
-	proto.RegisterExtension(E_RepeatedExtensionSint32)
-	proto.RegisterExtension(E_RepeatedExtensionUint32)
-	proto.RegisterExtension(E_RepeatedExtensionInt64)
-	proto.RegisterExtension(E_RepeatedExtensionSint64)
-	proto.RegisterExtension(E_RepeatedExtensionUint64)
-	proto.RegisterExtension(E_RepeatedExtensionSfixed32)
-	proto.RegisterExtension(E_RepeatedExtensionFixed32)
-	proto.RegisterExtension(E_RepeatedExtensionFloat)
-	proto.RegisterExtension(E_RepeatedExtensionSfixed64)
-	proto.RegisterExtension(E_RepeatedExtensionFixed64)
-	proto.RegisterExtension(E_RepeatedExtensionDouble)
-	proto.RegisterExtension(E_RepeatedExtensionString)
-	proto.RegisterExtension(E_RepeatedExtensionBytes)
-	proto.RegisterExtension(E_RepeatedExtension_Message)
 	xxx_File_extensions_proto3_ext3_proto_goTypes = nil
 	xxx_File_extensions_proto3_ext3_proto_depIdxs = nil
 }

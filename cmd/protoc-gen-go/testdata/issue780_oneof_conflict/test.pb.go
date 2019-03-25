@@ -4,10 +4,9 @@
 package oneoftest
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type Foo struct {
@@ -23,31 +22,13 @@ func (m *Foo) ProtoReflect() protoreflect.Message {
 	return xxx_File_issue780_oneof_conflict_test_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Foo) Reset()         { *m = Foo{} }
-func (m *Foo) String() string { return proto.CompactTextString(m) }
+func (m *Foo) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Foo) ProtoMessage()    {}
 
 // Deprecated: Use Foo.ProtoReflect.Type instead.
 func (*Foo) Descriptor() ([]byte, []int) {
 	return xxx_File_issue780_oneof_conflict_test_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Foo) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Foo.Unmarshal(m, b)
-}
-func (m *Foo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Foo.Marshal(b, m, deterministic)
-}
-func (m *Foo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Foo.Merge(m, src)
-}
-func (m *Foo) XXX_Size() int {
-	return xxx_messageInfo_Foo.Size(m)
-}
-func (m *Foo) XXX_DiscardUnknown() {
-	xxx_messageInfo_Foo.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Foo proto.InternalMessageInfo
 
 type isFoo_Bar interface {
 	isFoo_Bar()
@@ -107,20 +88,14 @@ func xxx_File_issue780_oneof_conflict_test_proto_init() {
 	if File_issue780_oneof_conflict_test_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_issue780_oneof_conflict_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_issue780_oneof_conflict_test_proto_rawdesc,
 		GoTypes:            xxx_File_issue780_oneof_conflict_test_proto_goTypes,
 		DependencyIndexes:  xxx_File_issue780_oneof_conflict_test_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_issue780_oneof_conflict_test_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_issue780_oneof_conflict_test_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_issue780_oneof_conflict_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_issue780_oneof_conflict_test_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("issue780_oneof_conflict/test.proto", xxx_File_issue780_oneof_conflict_test_proto_rawdesc_gzipped)
-	proto.RegisterType((*Foo)(nil), "oneoftest.Foo")
 	xxx_File_issue780_oneof_conflict_test_proto_goTypes = nil
 	xxx_File_issue780_oneof_conflict_test_proto_depIdxs = nil
 }

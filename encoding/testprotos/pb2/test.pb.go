@@ -4,12 +4,11 @@
 package pb2
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	known "github.com/golang/protobuf/v2/types/known"
-	reflect "reflect"
 )
 
 type Enum int32
@@ -142,31 +141,13 @@ func (m *Scalars) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Scalars) Reset()         { *m = Scalars{} }
-func (m *Scalars) String() string { return proto.CompactTextString(m) }
+func (m *Scalars) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Scalars) ProtoMessage()    {}
 
 // Deprecated: Use Scalars.ProtoReflect.Type instead.
 func (*Scalars) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Scalars) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Scalars.Unmarshal(m, b)
-}
-func (m *Scalars) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Scalars.Marshal(b, m, deterministic)
-}
-func (m *Scalars) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Scalars.Merge(m, src)
-}
-func (m *Scalars) XXX_Size() int {
-	return xxx_messageInfo_Scalars.Size(m)
-}
-func (m *Scalars) XXX_DiscardUnknown() {
-	xxx_messageInfo_Scalars.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Scalars proto.InternalMessageInfo
 
 func (m *Scalars) GetOptBool() bool {
 	if m != nil && m.OptBool != nil {
@@ -288,31 +269,13 @@ func (m *Enums) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Enums) Reset()         { *m = Enums{} }
-func (m *Enums) String() string { return proto.CompactTextString(m) }
+func (m *Enums) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Enums) ProtoMessage()    {}
 
 // Deprecated: Use Enums.ProtoReflect.Type instead.
 func (*Enums) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *Enums) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Enums.Unmarshal(m, b)
-}
-func (m *Enums) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Enums.Marshal(b, m, deterministic)
-}
-func (m *Enums) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Enums.Merge(m, src)
-}
-func (m *Enums) XXX_Size() int {
-	return xxx_messageInfo_Enums.Size(m)
-}
-func (m *Enums) XXX_DiscardUnknown() {
-	xxx_messageInfo_Enums.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Enums proto.InternalMessageInfo
 
 func (m *Enums) GetOptEnum() Enum {
 	if m != nil && m.OptEnum != nil {
@@ -362,31 +325,13 @@ func (m *Repeats) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[2].MessageOf(m)
 }
 func (m *Repeats) Reset()         { *m = Repeats{} }
-func (m *Repeats) String() string { return proto.CompactTextString(m) }
+func (m *Repeats) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Repeats) ProtoMessage()    {}
 
 // Deprecated: Use Repeats.ProtoReflect.Type instead.
 func (*Repeats) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{2}
 }
-
-func (m *Repeats) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Repeats.Unmarshal(m, b)
-}
-func (m *Repeats) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Repeats.Marshal(b, m, deterministic)
-}
-func (m *Repeats) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Repeats.Merge(m, src)
-}
-func (m *Repeats) XXX_Size() int {
-	return xxx_messageInfo_Repeats.Size(m)
-}
-func (m *Repeats) XXX_DiscardUnknown() {
-	xxx_messageInfo_Repeats.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Repeats proto.InternalMessageInfo
 
 func (m *Repeats) GetRptBool() []bool {
 	if m != nil {
@@ -464,31 +409,13 @@ func (m *Nested) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[3].MessageOf(m)
 }
 func (m *Nested) Reset()         { *m = Nested{} }
-func (m *Nested) String() string { return proto.CompactTextString(m) }
+func (m *Nested) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Nested) ProtoMessage()    {}
 
 // Deprecated: Use Nested.ProtoReflect.Type instead.
 func (*Nested) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{3}
 }
-
-func (m *Nested) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Nested.Unmarshal(m, b)
-}
-func (m *Nested) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Nested.Marshal(b, m, deterministic)
-}
-func (m *Nested) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Nested.Merge(m, src)
-}
-func (m *Nested) XXX_Size() int {
-	return xxx_messageInfo_Nested.Size(m)
-}
-func (m *Nested) XXX_DiscardUnknown() {
-	xxx_messageInfo_Nested.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Nested proto.InternalMessageInfo
 
 func (m *Nested) GetOptString() string {
 	if m != nil && m.OptString != nil {
@@ -519,31 +446,13 @@ func (m *Nests) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[4].MessageOf(m)
 }
 func (m *Nests) Reset()         { *m = Nests{} }
-func (m *Nests) String() string { return proto.CompactTextString(m) }
+func (m *Nests) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Nests) ProtoMessage()    {}
 
 // Deprecated: Use Nests.ProtoReflect.Type instead.
 func (*Nests) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4}
 }
-
-func (m *Nests) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Nests.Unmarshal(m, b)
-}
-func (m *Nests) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Nests.Marshal(b, m, deterministic)
-}
-func (m *Nests) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Nests.Merge(m, src)
-}
-func (m *Nests) XXX_Size() int {
-	return xxx_messageInfo_Nests.Size(m)
-}
-func (m *Nests) XXX_DiscardUnknown() {
-	xxx_messageInfo_Nests.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Nests proto.InternalMessageInfo
 
 func (m *Nests) GetOptNested() *Nested {
 	if m != nil {
@@ -590,31 +499,13 @@ func (m *Requireds) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[5].MessageOf(m)
 }
 func (m *Requireds) Reset()         { *m = Requireds{} }
-func (m *Requireds) String() string { return proto.CompactTextString(m) }
+func (m *Requireds) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Requireds) ProtoMessage()    {}
 
 // Deprecated: Use Requireds.ProtoReflect.Type instead.
 func (*Requireds) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{5}
 }
-
-func (m *Requireds) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Requireds.Unmarshal(m, b)
-}
-func (m *Requireds) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Requireds.Marshal(b, m, deterministic)
-}
-func (m *Requireds) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Requireds.Merge(m, src)
-}
-func (m *Requireds) XXX_Size() int {
-	return xxx_messageInfo_Requireds.Size(m)
-}
-func (m *Requireds) XXX_DiscardUnknown() {
-	xxx_messageInfo_Requireds.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Requireds proto.InternalMessageInfo
 
 func (m *Requireds) GetReqBool() bool {
 	if m != nil && m.ReqBool != nil {
@@ -671,31 +562,13 @@ func (m *PartialRequired) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[6].MessageOf(m)
 }
 func (m *PartialRequired) Reset()         { *m = PartialRequired{} }
-func (m *PartialRequired) String() string { return proto.CompactTextString(m) }
+func (m *PartialRequired) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*PartialRequired) ProtoMessage()    {}
 
 // Deprecated: Use PartialRequired.ProtoReflect.Type instead.
 func (*PartialRequired) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{6}
 }
-
-func (m *PartialRequired) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_PartialRequired.Unmarshal(m, b)
-}
-func (m *PartialRequired) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_PartialRequired.Marshal(b, m, deterministic)
-}
-func (m *PartialRequired) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PartialRequired.Merge(m, src)
-}
-func (m *PartialRequired) XXX_Size() int {
-	return xxx_messageInfo_PartialRequired.Size(m)
-}
-func (m *PartialRequired) XXX_DiscardUnknown() {
-	xxx_messageInfo_PartialRequired.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_PartialRequired proto.InternalMessageInfo
 
 func (m *PartialRequired) GetReqString() string {
 	if m != nil && m.ReqString != nil {
@@ -722,31 +595,13 @@ func (m *NestedWithRequired) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[7].MessageOf(m)
 }
 func (m *NestedWithRequired) Reset()         { *m = NestedWithRequired{} }
-func (m *NestedWithRequired) String() string { return proto.CompactTextString(m) }
+func (m *NestedWithRequired) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*NestedWithRequired) ProtoMessage()    {}
 
 // Deprecated: Use NestedWithRequired.ProtoReflect.Type instead.
 func (*NestedWithRequired) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{7}
 }
-
-func (m *NestedWithRequired) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_NestedWithRequired.Unmarshal(m, b)
-}
-func (m *NestedWithRequired) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_NestedWithRequired.Marshal(b, m, deterministic)
-}
-func (m *NestedWithRequired) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NestedWithRequired.Merge(m, src)
-}
-func (m *NestedWithRequired) XXX_Size() int {
-	return xxx_messageInfo_NestedWithRequired.Size(m)
-}
-func (m *NestedWithRequired) XXX_DiscardUnknown() {
-	xxx_messageInfo_NestedWithRequired.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_NestedWithRequired proto.InternalMessageInfo
 
 func (m *NestedWithRequired) GetReqString() string {
 	if m != nil && m.ReqString != nil {
@@ -771,31 +626,13 @@ func (m *IndirectRequired) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[8].MessageOf(m)
 }
 func (m *IndirectRequired) Reset()         { *m = IndirectRequired{} }
-func (m *IndirectRequired) String() string { return proto.CompactTextString(m) }
+func (m *IndirectRequired) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*IndirectRequired) ProtoMessage()    {}
 
 // Deprecated: Use IndirectRequired.ProtoReflect.Type instead.
 func (*IndirectRequired) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{8}
 }
-
-func (m *IndirectRequired) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_IndirectRequired.Unmarshal(m, b)
-}
-func (m *IndirectRequired) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_IndirectRequired.Marshal(b, m, deterministic)
-}
-func (m *IndirectRequired) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_IndirectRequired.Merge(m, src)
-}
-func (m *IndirectRequired) XXX_Size() int {
-	return xxx_messageInfo_IndirectRequired.Size(m)
-}
-func (m *IndirectRequired) XXX_DiscardUnknown() {
-	xxx_messageInfo_IndirectRequired.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_IndirectRequired proto.InternalMessageInfo
 
 func (m *IndirectRequired) GetOptNested() *NestedWithRequired {
 	if m != nil {
@@ -863,7 +700,7 @@ func (m *Extensions) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[9].MessageOf(m)
 }
 func (m *Extensions) Reset()         { *m = Extensions{} }
-func (m *Extensions) String() string { return proto.CompactTextString(m) }
+func (m *Extensions) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Extensions) ProtoMessage()    {}
 
 // Deprecated: Use Extensions.ProtoReflect.Type instead.
@@ -879,24 +716,6 @@ var extRange_Extensions = []protoiface.ExtensionRangeV1{
 func (*Extensions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_Extensions
 }
-
-func (m *Extensions) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Extensions.Unmarshal(m, b)
-}
-func (m *Extensions) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Extensions.Marshal(b, m, deterministic)
-}
-func (m *Extensions) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Extensions.Merge(m, src)
-}
-func (m *Extensions) XXX_Size() int {
-	return xxx_messageInfo_Extensions.Size(m)
-}
-func (m *Extensions) XXX_DiscardUnknown() {
-	xxx_messageInfo_Extensions.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Extensions proto.InternalMessageInfo
 
 func (m *Extensions) GetOptString() string {
 	if m != nil && m.OptString != nil {
@@ -929,31 +748,13 @@ func (m *ExtensionsContainer) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[10].MessageOf(m)
 }
 func (m *ExtensionsContainer) Reset()         { *m = ExtensionsContainer{} }
-func (m *ExtensionsContainer) String() string { return proto.CompactTextString(m) }
+func (m *ExtensionsContainer) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*ExtensionsContainer) ProtoMessage()    {}
 
 // Deprecated: Use ExtensionsContainer.ProtoReflect.Type instead.
 func (*ExtensionsContainer) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{10}
 }
-
-func (m *ExtensionsContainer) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ExtensionsContainer.Unmarshal(m, b)
-}
-func (m *ExtensionsContainer) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ExtensionsContainer.Marshal(b, m, deterministic)
-}
-func (m *ExtensionsContainer) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ExtensionsContainer.Merge(m, src)
-}
-func (m *ExtensionsContainer) XXX_Size() int {
-	return xxx_messageInfo_ExtensionsContainer.Size(m)
-}
-func (m *ExtensionsContainer) XXX_DiscardUnknown() {
-	xxx_messageInfo_ExtensionsContainer.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ExtensionsContainer proto.InternalMessageInfo
 
 type MessageSet struct {
 	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
@@ -966,7 +767,7 @@ func (m *MessageSet) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[11].MessageOf(m)
 }
 func (m *MessageSet) Reset()         { *m = MessageSet{} }
-func (m *MessageSet) String() string { return proto.CompactTextString(m) }
+func (m *MessageSet) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*MessageSet) ProtoMessage()    {}
 
 // Deprecated: Use MessageSet.ProtoReflect.Type instead.
@@ -983,24 +784,6 @@ func (*MessageSet) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_MessageSet
 }
 
-func (m *MessageSet) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MessageSet.Unmarshal(m, b)
-}
-func (m *MessageSet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MessageSet.Marshal(b, m, deterministic)
-}
-func (m *MessageSet) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MessageSet.Merge(m, src)
-}
-func (m *MessageSet) XXX_Size() int {
-	return xxx_messageInfo_MessageSet.Size(m)
-}
-func (m *MessageSet) XXX_DiscardUnknown() {
-	xxx_messageInfo_MessageSet.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MessageSet proto.InternalMessageInfo
-
 type MessageSetExtension struct {
 	OptString            *string  `protobuf:"bytes,1,opt,name=opt_string,json=optString" json:"opt_string,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -1012,31 +795,13 @@ func (m *MessageSetExtension) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[12].MessageOf(m)
 }
 func (m *MessageSetExtension) Reset()         { *m = MessageSetExtension{} }
-func (m *MessageSetExtension) String() string { return proto.CompactTextString(m) }
+func (m *MessageSetExtension) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*MessageSetExtension) ProtoMessage()    {}
 
 // Deprecated: Use MessageSetExtension.ProtoReflect.Type instead.
 func (*MessageSetExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{12}
 }
-
-func (m *MessageSetExtension) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MessageSetExtension.Unmarshal(m, b)
-}
-func (m *MessageSetExtension) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MessageSetExtension.Marshal(b, m, deterministic)
-}
-func (m *MessageSetExtension) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MessageSetExtension.Merge(m, src)
-}
-func (m *MessageSetExtension) XXX_Size() int {
-	return xxx_messageInfo_MessageSetExtension.Size(m)
-}
-func (m *MessageSetExtension) XXX_DiscardUnknown() {
-	xxx_messageInfo_MessageSetExtension.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MessageSetExtension proto.InternalMessageInfo
 
 func (m *MessageSetExtension) GetOptString() string {
 	if m != nil && m.OptString != nil {
@@ -1056,7 +821,7 @@ func (m *FakeMessageSet) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[13].MessageOf(m)
 }
 func (m *FakeMessageSet) Reset()         { *m = FakeMessageSet{} }
-func (m *FakeMessageSet) String() string { return proto.CompactTextString(m) }
+func (m *FakeMessageSet) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FakeMessageSet) ProtoMessage()    {}
 
 // Deprecated: Use FakeMessageSet.ProtoReflect.Type instead.
@@ -1073,24 +838,6 @@ func (*FakeMessageSet) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_FakeMessageSet
 }
 
-func (m *FakeMessageSet) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FakeMessageSet.Unmarshal(m, b)
-}
-func (m *FakeMessageSet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FakeMessageSet.Marshal(b, m, deterministic)
-}
-func (m *FakeMessageSet) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FakeMessageSet.Merge(m, src)
-}
-func (m *FakeMessageSet) XXX_Size() int {
-	return xxx_messageInfo_FakeMessageSet.Size(m)
-}
-func (m *FakeMessageSet) XXX_DiscardUnknown() {
-	xxx_messageInfo_FakeMessageSet.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FakeMessageSet proto.InternalMessageInfo
-
 type FakeMessageSetExtension struct {
 	OptString            *string  `protobuf:"bytes,1,opt,name=opt_string,json=optString" json:"opt_string,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -1102,31 +849,13 @@ func (m *FakeMessageSetExtension) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[14].MessageOf(m)
 }
 func (m *FakeMessageSetExtension) Reset()         { *m = FakeMessageSetExtension{} }
-func (m *FakeMessageSetExtension) String() string { return proto.CompactTextString(m) }
+func (m *FakeMessageSetExtension) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FakeMessageSetExtension) ProtoMessage()    {}
 
 // Deprecated: Use FakeMessageSetExtension.ProtoReflect.Type instead.
 func (*FakeMessageSetExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{14}
 }
-
-func (m *FakeMessageSetExtension) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FakeMessageSetExtension.Unmarshal(m, b)
-}
-func (m *FakeMessageSetExtension) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FakeMessageSetExtension.Marshal(b, m, deterministic)
-}
-func (m *FakeMessageSetExtension) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FakeMessageSetExtension.Merge(m, src)
-}
-func (m *FakeMessageSetExtension) XXX_Size() int {
-	return xxx_messageInfo_FakeMessageSetExtension.Size(m)
-}
-func (m *FakeMessageSetExtension) XXX_DiscardUnknown() {
-	xxx_messageInfo_FakeMessageSetExtension.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FakeMessageSetExtension proto.InternalMessageInfo
 
 func (m *FakeMessageSetExtension) GetOptString() string {
 	if m != nil && m.OptString != nil {
@@ -1163,31 +892,13 @@ func (m *KnownTypes) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[15].MessageOf(m)
 }
 func (m *KnownTypes) Reset()         { *m = KnownTypes{} }
-func (m *KnownTypes) String() string { return proto.CompactTextString(m) }
+func (m *KnownTypes) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*KnownTypes) ProtoMessage()    {}
 
 // Deprecated: Use KnownTypes.ProtoReflect.Type instead.
 func (*KnownTypes) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{15}
 }
-
-func (m *KnownTypes) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_KnownTypes.Unmarshal(m, b)
-}
-func (m *KnownTypes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_KnownTypes.Marshal(b, m, deterministic)
-}
-func (m *KnownTypes) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_KnownTypes.Merge(m, src)
-}
-func (m *KnownTypes) XXX_Size() int {
-	return xxx_messageInfo_KnownTypes.Size(m)
-}
-func (m *KnownTypes) XXX_DiscardUnknown() {
-	xxx_messageInfo_KnownTypes.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_KnownTypes proto.InternalMessageInfo
 
 func (m *KnownTypes) GetOptBool() *known.BoolValue {
 	if m != nil {
@@ -1321,31 +1032,13 @@ func (m *Nests_OptGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[16].MessageOf(m)
 }
 func (m *Nests_OptGroup) Reset()         { *m = Nests_OptGroup{} }
-func (m *Nests_OptGroup) String() string { return proto.CompactTextString(m) }
+func (m *Nests_OptGroup) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Nests_OptGroup) ProtoMessage()    {}
 
 // Deprecated: Use Nests_OptGroup.ProtoReflect.Type instead.
 func (*Nests_OptGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4, 0}
 }
-
-func (m *Nests_OptGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Nests_OptGroup.Unmarshal(m, b)
-}
-func (m *Nests_OptGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Nests_OptGroup.Marshal(b, m, deterministic)
-}
-func (m *Nests_OptGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Nests_OptGroup.Merge(m, src)
-}
-func (m *Nests_OptGroup) XXX_Size() int {
-	return xxx_messageInfo_Nests_OptGroup.Size(m)
-}
-func (m *Nests_OptGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_Nests_OptGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Nests_OptGroup proto.InternalMessageInfo
 
 func (m *Nests_OptGroup) GetOptString() string {
 	if m != nil && m.OptString != nil {
@@ -1379,31 +1072,13 @@ func (m *Nests_RptGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[17].MessageOf(m)
 }
 func (m *Nests_RptGroup) Reset()         { *m = Nests_RptGroup{} }
-func (m *Nests_RptGroup) String() string { return proto.CompactTextString(m) }
+func (m *Nests_RptGroup) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Nests_RptGroup) ProtoMessage()    {}
 
 // Deprecated: Use Nests_RptGroup.ProtoReflect.Type instead.
 func (*Nests_RptGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4, 1}
 }
-
-func (m *Nests_RptGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Nests_RptGroup.Unmarshal(m, b)
-}
-func (m *Nests_RptGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Nests_RptGroup.Marshal(b, m, deterministic)
-}
-func (m *Nests_RptGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Nests_RptGroup.Merge(m, src)
-}
-func (m *Nests_RptGroup) XXX_Size() int {
-	return xxx_messageInfo_Nests_RptGroup.Size(m)
-}
-func (m *Nests_RptGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_Nests_RptGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Nests_RptGroup proto.InternalMessageInfo
 
 func (m *Nests_RptGroup) GetRptString() []string {
 	if m != nil {
@@ -1423,31 +1098,13 @@ func (m *Nests_OptGroup_OptNestedGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb2_test_proto_messageTypes[18].MessageOf(m)
 }
 func (m *Nests_OptGroup_OptNestedGroup) Reset()         { *m = Nests_OptGroup_OptNestedGroup{} }
-func (m *Nests_OptGroup_OptNestedGroup) String() string { return proto.CompactTextString(m) }
+func (m *Nests_OptGroup_OptNestedGroup) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Nests_OptGroup_OptNestedGroup) ProtoMessage()    {}
 
 // Deprecated: Use Nests_OptGroup_OptNestedGroup.ProtoReflect.Type instead.
 func (*Nests_OptGroup_OptNestedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4, 0, 0}
 }
-
-func (m *Nests_OptGroup_OptNestedGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Unmarshal(m, b)
-}
-func (m *Nests_OptGroup_OptNestedGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Marshal(b, m, deterministic)
-}
-func (m *Nests_OptGroup_OptNestedGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Merge(m, src)
-}
-func (m *Nests_OptGroup_OptNestedGroup) XXX_Size() int {
-	return xxx_messageInfo_Nests_OptGroup_OptNestedGroup.Size(m)
-}
-func (m *Nests_OptGroup_OptNestedGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_Nests_OptGroup_OptNestedGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Nests_OptGroup_OptNestedGroup proto.InternalMessageInfo
 
 func (m *Nests_OptGroup_OptNestedGroup) GetOptFixed32() uint32 {
 	if m != nil && m.OptFixed32 != nil {
@@ -2123,7 +1780,6 @@ func xxx_File_pb2_test_proto_init() {
 	if File_pb2_test_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 20)
 	extensionTypes := make([]protoreflect.ExtensionType, 19)
 	File_pb2_test_proto = protoimpl.FileBuilder{
 		RawDescriptor:        xxx_File_pb2_test_proto_rawdesc,
@@ -2131,56 +1787,11 @@ func xxx_File_pb2_test_proto_init() {
 		DependencyIndexes:    xxx_File_pb2_test_proto_depIdxs,
 		LegacyExtensions:     xxx_File_pb2_test_proto_extDescs,
 		EnumOutputTypes:      xxx_File_pb2_test_proto_enumTypes,
-		MessageOutputTypes:   messageTypes,
+		MessageOutputTypes:   xxx_File_pb2_test_proto_messageTypes,
 		ExtensionOutputTypes: extensionTypes,
+		FilesRegistry:        protoregistry.GlobalFiles,
+		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_pb2_test_proto_goTypes[2:][:20]
-	for i, mt := range messageTypes {
-		xxx_File_pb2_test_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_pb2_test_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("pb2/test.proto", xxx_File_pb2_test_proto_rawdesc_gzipped)
-	proto.RegisterEnum("pb2.Enum", Enum_name, Enum_value)
-	proto.RegisterEnum("pb2.Enums_NestedEnum", Enums_NestedEnum_name, Enums_NestedEnum_value)
-	proto.RegisterType((*Scalars)(nil), "pb2.Scalars")
-	proto.RegisterType((*Enums)(nil), "pb2.Enums")
-	proto.RegisterType((*Repeats)(nil), "pb2.Repeats")
-	proto.RegisterType((*Nested)(nil), "pb2.Nested")
-	proto.RegisterType((*Nests)(nil), "pb2.Nests")
-	proto.RegisterType((*Requireds)(nil), "pb2.Requireds")
-	proto.RegisterType((*PartialRequired)(nil), "pb2.PartialRequired")
-	proto.RegisterType((*NestedWithRequired)(nil), "pb2.NestedWithRequired")
-	proto.RegisterType((*IndirectRequired)(nil), "pb2.IndirectRequired")
-	proto.RegisterMapType((map[string]*NestedWithRequired)(nil), "pb2.IndirectRequired.StrToNestedEntry")
-	proto.RegisterType((*Extensions)(nil), "pb2.Extensions")
-	proto.RegisterType((*ExtensionsContainer)(nil), "pb2.ExtensionsContainer")
-	proto.RegisterType((*MessageSet)(nil), "pb2.MessageSet")
-	proto.RegisterType((*MessageSetExtension)(nil), "pb2.MessageSetExtension")
-	proto.RegisterType((*FakeMessageSet)(nil), "pb2.FakeMessageSet")
-	proto.RegisterType((*FakeMessageSetExtension)(nil), "pb2.FakeMessageSetExtension")
-	proto.RegisterType((*KnownTypes)(nil), "pb2.KnownTypes")
-	proto.RegisterType((*Nests_OptGroup)(nil), "pb2.Nests.OptGroup")
-	proto.RegisterType((*Nests_RptGroup)(nil), "pb2.Nests.RptGroup")
-	proto.RegisterType((*Nests_OptGroup_OptNestedGroup)(nil), "pb2.Nests.OptGroup.OptNestedGroup")
-	proto.RegisterExtension(E_OptExtBool)
-	proto.RegisterExtension(E_OptExtString)
-	proto.RegisterExtension(E_OptExtEnum)
-	proto.RegisterExtension(E_OptExtNested)
-	proto.RegisterExtension(E_RptExtFixed32)
-	proto.RegisterExtension(E_RptExtEnum)
-	proto.RegisterExtension(E_RptExtNested)
-	proto.RegisterExtension(E_MessageSetExtension)
-	proto.RegisterExtension(E_ExtensionsContainer_OptExtBool)
-	proto.RegisterExtension(E_ExtensionsContainer_OptExtString)
-	proto.RegisterExtension(E_ExtensionsContainer_OptExtEnum)
-	proto.RegisterExtension(E_ExtensionsContainer_OptExtNested)
-	proto.RegisterExtension(E_ExtensionsContainer_RptExtString)
-	proto.RegisterExtension(E_ExtensionsContainer_RptExtEnum)
-	proto.RegisterExtension(E_ExtensionsContainer_RptExtNested)
-	proto.RegisterExtension(E_MessageSetExtension_MessageSetExtension)
-	proto.RegisterExtension(E_MessageSetExtension_NotMessageSetExtension)
-	proto.RegisterExtension(E_MessageSetExtension_ExtNested)
-	proto.RegisterExtension(E_FakeMessageSetExtension_MessageSetExtension)
 	xxx_File_pb2_test_proto_goTypes = nil
 	xxx_File_pb2_test_proto_depIdxs = nil
 }

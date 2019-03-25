@@ -4,10 +4,9 @@
 package known_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // Api is a light-weight descriptor for an API Interface.
@@ -65,31 +64,13 @@ func (m *Api) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_api_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Api) Reset()         { *m = Api{} }
-func (m *Api) String() string { return proto.CompactTextString(m) }
+func (m *Api) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Api) ProtoMessage()    {}
 
 // Deprecated: Use Api.ProtoReflect.Type instead.
 func (*Api) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_api_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Api) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Api.Unmarshal(m, b)
-}
-func (m *Api) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Api.Marshal(b, m, deterministic)
-}
-func (m *Api) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Api.Merge(m, src)
-}
-func (m *Api) XXX_Size() int {
-	return xxx_messageInfo_Api.Size(m)
-}
-func (m *Api) XXX_DiscardUnknown() {
-	xxx_messageInfo_Api.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Api proto.InternalMessageInfo
 
 func (m *Api) GetName() string {
 	if m != nil {
@@ -165,31 +146,13 @@ func (m *Method) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_api_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Method) Reset()         { *m = Method{} }
-func (m *Method) String() string { return proto.CompactTextString(m) }
+func (m *Method) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Method) ProtoMessage()    {}
 
 // Deprecated: Use Method.ProtoReflect.Type instead.
 func (*Method) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_api_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *Method) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Method.Unmarshal(m, b)
-}
-func (m *Method) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Method.Marshal(b, m, deterministic)
-}
-func (m *Method) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Method.Merge(m, src)
-}
-func (m *Method) XXX_Size() int {
-	return xxx_messageInfo_Method.Size(m)
-}
-func (m *Method) XXX_DiscardUnknown() {
-	xxx_messageInfo_Method.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Method proto.InternalMessageInfo
 
 func (m *Method) GetName() string {
 	if m != nil {
@@ -333,31 +296,13 @@ func (m *Mixin) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_api_proto_messageTypes[2].MessageOf(m)
 }
 func (m *Mixin) Reset()         { *m = Mixin{} }
-func (m *Mixin) String() string { return proto.CompactTextString(m) }
+func (m *Mixin) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Mixin) ProtoMessage()    {}
 
 // Deprecated: Use Mixin.ProtoReflect.Type instead.
 func (*Mixin) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_api_proto_rawdesc_gzipped, []int{2}
 }
-
-func (m *Mixin) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Mixin.Unmarshal(m, b)
-}
-func (m *Mixin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Mixin.Marshal(b, m, deterministic)
-}
-func (m *Mixin) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Mixin.Merge(m, src)
-}
-func (m *Mixin) XXX_Size() int {
-	return xxx_messageInfo_Mixin.Size(m)
-}
-func (m *Mixin) XXX_DiscardUnknown() {
-	xxx_messageInfo_Mixin.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Mixin proto.InternalMessageInfo
 
 func (m *Mixin) GetName() string {
 	if m != nil {
@@ -468,22 +413,14 @@ func xxx_File_google_protobuf_api_proto_init() {
 	}
 	xxx_File_google_protobuf_source_context_proto_init()
 	xxx_File_google_protobuf_type_proto_init()
-	messageTypes := make([]protoreflect.MessageType, 3)
 	File_google_protobuf_api_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_api_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_api_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_api_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_api_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_api_proto_goTypes[0:][:3]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_api_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_api_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("google/protobuf/api.proto", xxx_File_google_protobuf_api_proto_rawdesc_gzipped)
-	proto.RegisterType((*Api)(nil), "google.protobuf.Api")
-	proto.RegisterType((*Method)(nil), "google.protobuf.Method")
-	proto.RegisterType((*Mixin)(nil), "google.protobuf.Mixin")
 	xxx_File_google_protobuf_api_proto_goTypes = nil
 	xxx_File_google_protobuf_api_proto_depIdxs = nil
 }

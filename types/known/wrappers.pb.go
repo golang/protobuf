@@ -4,10 +4,9 @@
 package known_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // Wrapper message for `double`.
@@ -25,7 +24,7 @@ func (m *DoubleValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[0].MessageOf(m)
 }
 func (m *DoubleValue) Reset()         { *m = DoubleValue{} }
-func (m *DoubleValue) String() string { return proto.CompactTextString(m) }
+func (m *DoubleValue) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*DoubleValue) ProtoMessage()    {}
 
 // Deprecated: Use DoubleValue.ProtoReflect.Type instead.
@@ -34,24 +33,6 @@ func (*DoubleValue) Descriptor() ([]byte, []int) {
 }
 
 func (*DoubleValue) XXX_WellKnownType() string { return "DoubleValue" }
-
-func (m *DoubleValue) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DoubleValue.Unmarshal(m, b)
-}
-func (m *DoubleValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DoubleValue.Marshal(b, m, deterministic)
-}
-func (m *DoubleValue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DoubleValue.Merge(m, src)
-}
-func (m *DoubleValue) XXX_Size() int {
-	return xxx_messageInfo_DoubleValue.Size(m)
-}
-func (m *DoubleValue) XXX_DiscardUnknown() {
-	xxx_messageInfo_DoubleValue.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DoubleValue proto.InternalMessageInfo
 
 func (m *DoubleValue) GetValue() float64 {
 	if m != nil {
@@ -75,7 +56,7 @@ func (m *FloatValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[1].MessageOf(m)
 }
 func (m *FloatValue) Reset()         { *m = FloatValue{} }
-func (m *FloatValue) String() string { return proto.CompactTextString(m) }
+func (m *FloatValue) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FloatValue) ProtoMessage()    {}
 
 // Deprecated: Use FloatValue.ProtoReflect.Type instead.
@@ -84,24 +65,6 @@ func (*FloatValue) Descriptor() ([]byte, []int) {
 }
 
 func (*FloatValue) XXX_WellKnownType() string { return "FloatValue" }
-
-func (m *FloatValue) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FloatValue.Unmarshal(m, b)
-}
-func (m *FloatValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FloatValue.Marshal(b, m, deterministic)
-}
-func (m *FloatValue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FloatValue.Merge(m, src)
-}
-func (m *FloatValue) XXX_Size() int {
-	return xxx_messageInfo_FloatValue.Size(m)
-}
-func (m *FloatValue) XXX_DiscardUnknown() {
-	xxx_messageInfo_FloatValue.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FloatValue proto.InternalMessageInfo
 
 func (m *FloatValue) GetValue() float32 {
 	if m != nil {
@@ -125,7 +88,7 @@ func (m *Int64Value) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[2].MessageOf(m)
 }
 func (m *Int64Value) Reset()         { *m = Int64Value{} }
-func (m *Int64Value) String() string { return proto.CompactTextString(m) }
+func (m *Int64Value) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Int64Value) ProtoMessage()    {}
 
 // Deprecated: Use Int64Value.ProtoReflect.Type instead.
@@ -134,24 +97,6 @@ func (*Int64Value) Descriptor() ([]byte, []int) {
 }
 
 func (*Int64Value) XXX_WellKnownType() string { return "Int64Value" }
-
-func (m *Int64Value) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Int64Value.Unmarshal(m, b)
-}
-func (m *Int64Value) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Int64Value.Marshal(b, m, deterministic)
-}
-func (m *Int64Value) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Int64Value.Merge(m, src)
-}
-func (m *Int64Value) XXX_Size() int {
-	return xxx_messageInfo_Int64Value.Size(m)
-}
-func (m *Int64Value) XXX_DiscardUnknown() {
-	xxx_messageInfo_Int64Value.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Int64Value proto.InternalMessageInfo
 
 func (m *Int64Value) GetValue() int64 {
 	if m != nil {
@@ -175,7 +120,7 @@ func (m *UInt64Value) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[3].MessageOf(m)
 }
 func (m *UInt64Value) Reset()         { *m = UInt64Value{} }
-func (m *UInt64Value) String() string { return proto.CompactTextString(m) }
+func (m *UInt64Value) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*UInt64Value) ProtoMessage()    {}
 
 // Deprecated: Use UInt64Value.ProtoReflect.Type instead.
@@ -184,24 +129,6 @@ func (*UInt64Value) Descriptor() ([]byte, []int) {
 }
 
 func (*UInt64Value) XXX_WellKnownType() string { return "UInt64Value" }
-
-func (m *UInt64Value) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UInt64Value.Unmarshal(m, b)
-}
-func (m *UInt64Value) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UInt64Value.Marshal(b, m, deterministic)
-}
-func (m *UInt64Value) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UInt64Value.Merge(m, src)
-}
-func (m *UInt64Value) XXX_Size() int {
-	return xxx_messageInfo_UInt64Value.Size(m)
-}
-func (m *UInt64Value) XXX_DiscardUnknown() {
-	xxx_messageInfo_UInt64Value.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_UInt64Value proto.InternalMessageInfo
 
 func (m *UInt64Value) GetValue() uint64 {
 	if m != nil {
@@ -225,7 +152,7 @@ func (m *Int32Value) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[4].MessageOf(m)
 }
 func (m *Int32Value) Reset()         { *m = Int32Value{} }
-func (m *Int32Value) String() string { return proto.CompactTextString(m) }
+func (m *Int32Value) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Int32Value) ProtoMessage()    {}
 
 // Deprecated: Use Int32Value.ProtoReflect.Type instead.
@@ -234,24 +161,6 @@ func (*Int32Value) Descriptor() ([]byte, []int) {
 }
 
 func (*Int32Value) XXX_WellKnownType() string { return "Int32Value" }
-
-func (m *Int32Value) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Int32Value.Unmarshal(m, b)
-}
-func (m *Int32Value) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Int32Value.Marshal(b, m, deterministic)
-}
-func (m *Int32Value) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Int32Value.Merge(m, src)
-}
-func (m *Int32Value) XXX_Size() int {
-	return xxx_messageInfo_Int32Value.Size(m)
-}
-func (m *Int32Value) XXX_DiscardUnknown() {
-	xxx_messageInfo_Int32Value.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Int32Value proto.InternalMessageInfo
 
 func (m *Int32Value) GetValue() int32 {
 	if m != nil {
@@ -275,7 +184,7 @@ func (m *UInt32Value) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[5].MessageOf(m)
 }
 func (m *UInt32Value) Reset()         { *m = UInt32Value{} }
-func (m *UInt32Value) String() string { return proto.CompactTextString(m) }
+func (m *UInt32Value) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*UInt32Value) ProtoMessage()    {}
 
 // Deprecated: Use UInt32Value.ProtoReflect.Type instead.
@@ -284,24 +193,6 @@ func (*UInt32Value) Descriptor() ([]byte, []int) {
 }
 
 func (*UInt32Value) XXX_WellKnownType() string { return "UInt32Value" }
-
-func (m *UInt32Value) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UInt32Value.Unmarshal(m, b)
-}
-func (m *UInt32Value) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UInt32Value.Marshal(b, m, deterministic)
-}
-func (m *UInt32Value) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UInt32Value.Merge(m, src)
-}
-func (m *UInt32Value) XXX_Size() int {
-	return xxx_messageInfo_UInt32Value.Size(m)
-}
-func (m *UInt32Value) XXX_DiscardUnknown() {
-	xxx_messageInfo_UInt32Value.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_UInt32Value proto.InternalMessageInfo
 
 func (m *UInt32Value) GetValue() uint32 {
 	if m != nil {
@@ -325,7 +216,7 @@ func (m *BoolValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[6].MessageOf(m)
 }
 func (m *BoolValue) Reset()         { *m = BoolValue{} }
-func (m *BoolValue) String() string { return proto.CompactTextString(m) }
+func (m *BoolValue) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*BoolValue) ProtoMessage()    {}
 
 // Deprecated: Use BoolValue.ProtoReflect.Type instead.
@@ -334,24 +225,6 @@ func (*BoolValue) Descriptor() ([]byte, []int) {
 }
 
 func (*BoolValue) XXX_WellKnownType() string { return "BoolValue" }
-
-func (m *BoolValue) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_BoolValue.Unmarshal(m, b)
-}
-func (m *BoolValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_BoolValue.Marshal(b, m, deterministic)
-}
-func (m *BoolValue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BoolValue.Merge(m, src)
-}
-func (m *BoolValue) XXX_Size() int {
-	return xxx_messageInfo_BoolValue.Size(m)
-}
-func (m *BoolValue) XXX_DiscardUnknown() {
-	xxx_messageInfo_BoolValue.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_BoolValue proto.InternalMessageInfo
 
 func (m *BoolValue) GetValue() bool {
 	if m != nil {
@@ -375,7 +248,7 @@ func (m *StringValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[7].MessageOf(m)
 }
 func (m *StringValue) Reset()         { *m = StringValue{} }
-func (m *StringValue) String() string { return proto.CompactTextString(m) }
+func (m *StringValue) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*StringValue) ProtoMessage()    {}
 
 // Deprecated: Use StringValue.ProtoReflect.Type instead.
@@ -384,24 +257,6 @@ func (*StringValue) Descriptor() ([]byte, []int) {
 }
 
 func (*StringValue) XXX_WellKnownType() string { return "StringValue" }
-
-func (m *StringValue) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_StringValue.Unmarshal(m, b)
-}
-func (m *StringValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_StringValue.Marshal(b, m, deterministic)
-}
-func (m *StringValue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StringValue.Merge(m, src)
-}
-func (m *StringValue) XXX_Size() int {
-	return xxx_messageInfo_StringValue.Size(m)
-}
-func (m *StringValue) XXX_DiscardUnknown() {
-	xxx_messageInfo_StringValue.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_StringValue proto.InternalMessageInfo
 
 func (m *StringValue) GetValue() string {
 	if m != nil {
@@ -425,7 +280,7 @@ func (m *BytesValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[8].MessageOf(m)
 }
 func (m *BytesValue) Reset()         { *m = BytesValue{} }
-func (m *BytesValue) String() string { return proto.CompactTextString(m) }
+func (m *BytesValue) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*BytesValue) ProtoMessage()    {}
 
 // Deprecated: Use BytesValue.ProtoReflect.Type instead.
@@ -434,24 +289,6 @@ func (*BytesValue) Descriptor() ([]byte, []int) {
 }
 
 func (*BytesValue) XXX_WellKnownType() string { return "BytesValue" }
-
-func (m *BytesValue) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_BytesValue.Unmarshal(m, b)
-}
-func (m *BytesValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_BytesValue.Marshal(b, m, deterministic)
-}
-func (m *BytesValue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BytesValue.Merge(m, src)
-}
-func (m *BytesValue) XXX_Size() int {
-	return xxx_messageInfo_BytesValue.Size(m)
-}
-func (m *BytesValue) XXX_DiscardUnknown() {
-	xxx_messageInfo_BytesValue.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_BytesValue proto.InternalMessageInfo
 
 func (m *BytesValue) GetValue() []byte {
 	if m != nil {
@@ -522,28 +359,14 @@ func xxx_File_google_protobuf_wrappers_proto_init() {
 	if File_google_protobuf_wrappers_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 9)
 	File_google_protobuf_wrappers_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_wrappers_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_wrappers_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_wrappers_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_wrappers_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_wrappers_proto_goTypes[0:][:9]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_wrappers_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_wrappers_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("google/protobuf/wrappers.proto", xxx_File_google_protobuf_wrappers_proto_rawdesc_gzipped)
-	proto.RegisterType((*DoubleValue)(nil), "google.protobuf.DoubleValue")
-	proto.RegisterType((*FloatValue)(nil), "google.protobuf.FloatValue")
-	proto.RegisterType((*Int64Value)(nil), "google.protobuf.Int64Value")
-	proto.RegisterType((*UInt64Value)(nil), "google.protobuf.UInt64Value")
-	proto.RegisterType((*Int32Value)(nil), "google.protobuf.Int32Value")
-	proto.RegisterType((*UInt32Value)(nil), "google.protobuf.UInt32Value")
-	proto.RegisterType((*BoolValue)(nil), "google.protobuf.BoolValue")
-	proto.RegisterType((*StringValue)(nil), "google.protobuf.StringValue")
-	proto.RegisterType((*BytesValue)(nil), "google.protobuf.BytesValue")
 	xxx_File_google_protobuf_wrappers_proto_goTypes = nil
 	xxx_File_google_protobuf_wrappers_proto_depIdxs = nil
 }

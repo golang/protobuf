@@ -38,7 +38,7 @@ func loadMessageType(t reflect.Type) *pimpl.MessageType {
 	}
 
 	// Slow-path: derive message descriptor and initialize MessageType.
-	md := loadMessageDesc(t)
+	md := LoadMessageDesc(t)
 	mt := new(pimpl.MessageType)
 	mt.GoType = t
 	mt.PBType = ptype.GoMessage(md, func(pref.MessageType) pref.Message {
@@ -54,9 +54,11 @@ func loadMessageType(t reflect.Type) *pimpl.MessageType {
 var messageDescLock sync.Mutex
 var messageDescCache sync.Map // map[reflect.Type]protoreflect.MessageDescriptor
 
-// loadMessageDesc returns an MessageDescriptor derived from the Go type,
+// LoadMessageDesc returns an MessageDescriptor derived from the Go type,
 // which must be a *struct kind and not implement the v2 API already.
-func loadMessageDesc(t reflect.Type) pref.MessageDescriptor {
+//
+// This is exported for testing purposes.
+func LoadMessageDesc(t reflect.Type) pref.MessageDescriptor {
 	return messageDescSet{}.Load(t)
 }
 
@@ -124,7 +126,7 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 	}
 	if md, ok := mv.(messageV1); ok {
 		b, idxs := md.Descriptor()
-		fd := loadFileDesc(b)
+		fd := LoadFileDesc(b)
 
 		// Derive syntax.
 		switch fd.GetSyntax() {
@@ -235,7 +237,7 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 		if ev, ok := reflect.Zero(t).Interface().(pref.Enum); ok {
 			f.EnumType = ev.Type()
 		} else {
-			f.EnumType = loadEnumDesc(t)
+			f.EnumType = LoadEnumDesc(t)
 		}
 	}
 	if f.MessageType == nil && (f.Kind == pref.MessageKind || f.Kind == pref.GroupKind) {

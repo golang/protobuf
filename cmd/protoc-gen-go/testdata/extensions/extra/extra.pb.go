@@ -4,10 +4,9 @@
 package extra
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type ExtraMessage struct {
@@ -21,31 +20,13 @@ func (m *ExtraMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_extra_extra_proto_messageTypes[0].MessageOf(m)
 }
 func (m *ExtraMessage) Reset()         { *m = ExtraMessage{} }
-func (m *ExtraMessage) String() string { return proto.CompactTextString(m) }
+func (m *ExtraMessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*ExtraMessage) ProtoMessage()    {}
 
 // Deprecated: Use ExtraMessage.ProtoReflect.Type instead.
 func (*ExtraMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_extra_extra_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *ExtraMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ExtraMessage.Unmarshal(m, b)
-}
-func (m *ExtraMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ExtraMessage.Marshal(b, m, deterministic)
-}
-func (m *ExtraMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ExtraMessage.Merge(m, src)
-}
-func (m *ExtraMessage) XXX_Size() int {
-	return xxx_messageInfo_ExtraMessage.Size(m)
-}
-func (m *ExtraMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_ExtraMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ExtraMessage proto.InternalMessageInfo
 
 func (m *ExtraMessage) GetData() []byte {
 	if m != nil {
@@ -86,20 +67,14 @@ func xxx_File_extensions_extra_extra_proto_init() {
 	if File_extensions_extra_extra_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_extensions_extra_extra_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_extensions_extra_extra_proto_rawdesc,
 		GoTypes:            xxx_File_extensions_extra_extra_proto_goTypes,
 		DependencyIndexes:  xxx_File_extensions_extra_extra_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_extensions_extra_extra_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_extensions_extra_extra_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_extensions_extra_extra_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_extensions_extra_extra_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("extensions/extra/extra.proto", xxx_File_extensions_extra_extra_proto_rawdesc_gzipped)
-	proto.RegisterType((*ExtraMessage)(nil), "goproto.protoc.extension.extra.ExtraMessage")
 	xxx_File_extensions_extra_extra_proto_goTypes = nil
 	xxx_File_extensions_extra_extra_proto_depIdxs = nil
 }

@@ -4,8 +4,8 @@
 package test
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 )
@@ -67,9 +67,9 @@ func xxx_File_test_ext_proto_init() {
 		DependencyIndexes:    xxx_File_test_ext_proto_depIdxs,
 		LegacyExtensions:     xxx_File_test_ext_proto_extDescs,
 		ExtensionOutputTypes: extensionTypes,
+		FilesRegistry:        protoregistry.GlobalFiles,
+		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
-	proto.RegisterFile("test/ext.proto", xxx_File_test_ext_proto_rawdesc_gzipped)
-	proto.RegisterExtension(E_ForeignInt32Extension)
 	xxx_File_test_ext_proto_goTypes = nil
 	xxx_File_test_ext_proto_depIdxs = nil
 }

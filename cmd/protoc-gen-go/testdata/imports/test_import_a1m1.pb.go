@@ -4,11 +4,10 @@
 package imports
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	test_a_1 "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/imports/test_a_1"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type A1M1 struct {
@@ -22,31 +21,13 @@ func (m *A1M1) ProtoReflect() protoreflect.Message {
 	return xxx_File_imports_test_import_a1m1_proto_messageTypes[0].MessageOf(m)
 }
 func (m *A1M1) Reset()         { *m = A1M1{} }
-func (m *A1M1) String() string { return proto.CompactTextString(m) }
+func (m *A1M1) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*A1M1) ProtoMessage()    {}
 
 // Deprecated: Use A1M1.ProtoReflect.Type instead.
 func (*A1M1) Descriptor() ([]byte, []int) {
 	return xxx_File_imports_test_import_a1m1_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *A1M1) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_A1M1.Unmarshal(m, b)
-}
-func (m *A1M1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_A1M1.Marshal(b, m, deterministic)
-}
-func (m *A1M1) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_A1M1.Merge(m, src)
-}
-func (m *A1M1) XXX_Size() int {
-	return xxx_messageInfo_A1M1.Size(m)
-}
-func (m *A1M1) XXX_DiscardUnknown() {
-	xxx_messageInfo_A1M1.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_A1M1 proto.InternalMessageInfo
 
 func (m *A1M1) GetF() *test_a_1.M1 {
 	if m != nil {
@@ -90,20 +71,14 @@ func xxx_File_imports_test_import_a1m1_proto_init() {
 	if File_imports_test_import_a1m1_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_imports_test_import_a1m1_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_imports_test_import_a1m1_proto_rawdesc,
 		GoTypes:            xxx_File_imports_test_import_a1m1_proto_goTypes,
 		DependencyIndexes:  xxx_File_imports_test_import_a1m1_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_imports_test_import_a1m1_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_imports_test_import_a1m1_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_imports_test_import_a1m1_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_imports_test_import_a1m1_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("imports/test_import_a1m1.proto", xxx_File_imports_test_import_a1m1_proto_rawdesc_gzipped)
-	proto.RegisterType((*A1M1)(nil), "test.A1M1")
 	xxx_File_imports_test_import_a1m1_proto_goTypes = nil
 	xxx_File_imports_test_import_a1m1_proto_depIdxs = nil
 }

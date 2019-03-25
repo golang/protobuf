@@ -4,10 +4,9 @@
 package test_a_1
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type E1 int32
@@ -52,31 +51,13 @@ func (m *M1) ProtoReflect() protoreflect.Message {
 	return xxx_File_imports_test_a_1_m1_proto_messageTypes[0].MessageOf(m)
 }
 func (m *M1) Reset()         { *m = M1{} }
-func (m *M1) String() string { return proto.CompactTextString(m) }
+func (m *M1) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*M1) ProtoMessage()    {}
 
 // Deprecated: Use M1.ProtoReflect.Type instead.
 func (*M1) Descriptor() ([]byte, []int) {
 	return xxx_File_imports_test_a_1_m1_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *M1) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_M1.Unmarshal(m, b)
-}
-func (m *M1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_M1.Marshal(b, m, deterministic)
-}
-func (m *M1) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_M1.Merge(m, src)
-}
-func (m *M1) XXX_Size() int {
-	return xxx_messageInfo_M1.Size(m)
-}
-func (m *M1) XXX_DiscardUnknown() {
-	xxx_messageInfo_M1.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_M1 proto.InternalMessageInfo
 
 type M1_1 struct {
 	M1                   *M1      `protobuf:"bytes,1,opt,name=m1,proto3" json:"m1,omitempty"`
@@ -89,31 +70,13 @@ func (m *M1_1) ProtoReflect() protoreflect.Message {
 	return xxx_File_imports_test_a_1_m1_proto_messageTypes[1].MessageOf(m)
 }
 func (m *M1_1) Reset()         { *m = M1_1{} }
-func (m *M1_1) String() string { return proto.CompactTextString(m) }
+func (m *M1_1) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*M1_1) ProtoMessage()    {}
 
 // Deprecated: Use M1_1.ProtoReflect.Type instead.
 func (*M1_1) Descriptor() ([]byte, []int) {
 	return xxx_File_imports_test_a_1_m1_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *M1_1) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_M1_1.Unmarshal(m, b)
-}
-func (m *M1_1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_M1_1.Marshal(b, m, deterministic)
-}
-func (m *M1_1) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_M1_1.Merge(m, src)
-}
-func (m *M1_1) XXX_Size() int {
-	return xxx_messageInfo_M1_1.Size(m)
-}
-func (m *M1_1) XXX_DiscardUnknown() {
-	xxx_messageInfo_M1_1.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_M1_1 proto.InternalMessageInfo
 
 func (m *M1_1) GetM1() *M1 {
 	if m != nil {
@@ -160,23 +123,15 @@ func xxx_File_imports_test_a_1_m1_proto_init() {
 	if File_imports_test_a_1_m1_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 2)
 	File_imports_test_a_1_m1_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_imports_test_a_1_m1_proto_rawdesc,
 		GoTypes:            xxx_File_imports_test_a_1_m1_proto_goTypes,
 		DependencyIndexes:  xxx_File_imports_test_a_1_m1_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_imports_test_a_1_m1_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_imports_test_a_1_m1_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_imports_test_a_1_m1_proto_goTypes[1:][:2]
-	for i, mt := range messageTypes {
-		xxx_File_imports_test_a_1_m1_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_imports_test_a_1_m1_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("imports/test_a_1/m1.proto", xxx_File_imports_test_a_1_m1_proto_rawdesc_gzipped)
-	proto.RegisterEnum("test.a.E1", E1_name, E1_value)
-	proto.RegisterType((*M1)(nil), "test.a.M1")
-	proto.RegisterType((*M1_1)(nil), "test.a.M1_1")
 	xxx_File_imports_test_a_1_m1_proto_goTypes = nil
 	xxx_File_imports_test_a_1_m1_proto_depIdxs = nil
 }

@@ -4,11 +4,10 @@
 package plugin_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	descriptor "github.com/golang/protobuf/v2/types/descriptor"
-	reflect "reflect"
 )
 
 // The version number of protocol compiler.
@@ -28,31 +27,13 @@ func (m *Version) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Version) Reset()         { *m = Version{} }
-func (m *Version) String() string { return proto.CompactTextString(m) }
+func (m *Version) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Version) ProtoMessage()    {}
 
 // Deprecated: Use Version.ProtoReflect.Type instead.
 func (*Version) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Version) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Version.Unmarshal(m, b)
-}
-func (m *Version) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Version.Marshal(b, m, deterministic)
-}
-func (m *Version) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Version.Merge(m, src)
-}
-func (m *Version) XXX_Size() int {
-	return xxx_messageInfo_Version.Size(m)
-}
-func (m *Version) XXX_DiscardUnknown() {
-	xxx_messageInfo_Version.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Version proto.InternalMessageInfo
 
 func (m *Version) GetMajor() int32 {
 	if m != nil && m.Major != nil {
@@ -116,31 +97,13 @@ func (m *CodeGeneratorRequest) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[1].MessageOf(m)
 }
 func (m *CodeGeneratorRequest) Reset()         { *m = CodeGeneratorRequest{} }
-func (m *CodeGeneratorRequest) String() string { return proto.CompactTextString(m) }
+func (m *CodeGeneratorRequest) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*CodeGeneratorRequest) ProtoMessage()    {}
 
 // Deprecated: Use CodeGeneratorRequest.ProtoReflect.Type instead.
 func (*CodeGeneratorRequest) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *CodeGeneratorRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CodeGeneratorRequest.Unmarshal(m, b)
-}
-func (m *CodeGeneratorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CodeGeneratorRequest.Marshal(b, m, deterministic)
-}
-func (m *CodeGeneratorRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CodeGeneratorRequest.Merge(m, src)
-}
-func (m *CodeGeneratorRequest) XXX_Size() int {
-	return xxx_messageInfo_CodeGeneratorRequest.Size(m)
-}
-func (m *CodeGeneratorRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_CodeGeneratorRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CodeGeneratorRequest proto.InternalMessageInfo
 
 func (m *CodeGeneratorRequest) GetFileToGenerate() []string {
 	if m != nil {
@@ -191,31 +154,13 @@ func (m *CodeGeneratorResponse) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[2].MessageOf(m)
 }
 func (m *CodeGeneratorResponse) Reset()         { *m = CodeGeneratorResponse{} }
-func (m *CodeGeneratorResponse) String() string { return proto.CompactTextString(m) }
+func (m *CodeGeneratorResponse) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*CodeGeneratorResponse) ProtoMessage()    {}
 
 // Deprecated: Use CodeGeneratorResponse.ProtoReflect.Type instead.
 func (*CodeGeneratorResponse) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{2}
 }
-
-func (m *CodeGeneratorResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CodeGeneratorResponse.Unmarshal(m, b)
-}
-func (m *CodeGeneratorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CodeGeneratorResponse.Marshal(b, m, deterministic)
-}
-func (m *CodeGeneratorResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CodeGeneratorResponse.Merge(m, src)
-}
-func (m *CodeGeneratorResponse) XXX_Size() int {
-	return xxx_messageInfo_CodeGeneratorResponse.Size(m)
-}
-func (m *CodeGeneratorResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_CodeGeneratorResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CodeGeneratorResponse proto.InternalMessageInfo
 
 func (m *CodeGeneratorResponse) GetError() string {
 	if m != nil && m.Error != nil {
@@ -294,31 +239,13 @@ func (m *CodeGeneratorResponse_File) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[3].MessageOf(m)
 }
 func (m *CodeGeneratorResponse_File) Reset()         { *m = CodeGeneratorResponse_File{} }
-func (m *CodeGeneratorResponse_File) String() string { return proto.CompactTextString(m) }
+func (m *CodeGeneratorResponse_File) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*CodeGeneratorResponse_File) ProtoMessage()    {}
 
 // Deprecated: Use CodeGeneratorResponse_File.ProtoReflect.Type instead.
 func (*CodeGeneratorResponse_File) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped, []int{2, 0}
 }
-
-func (m *CodeGeneratorResponse_File) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CodeGeneratorResponse_File.Unmarshal(m, b)
-}
-func (m *CodeGeneratorResponse_File) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CodeGeneratorResponse_File.Marshal(b, m, deterministic)
-}
-func (m *CodeGeneratorResponse_File) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CodeGeneratorResponse_File.Merge(m, src)
-}
-func (m *CodeGeneratorResponse_File) XXX_Size() int {
-	return xxx_messageInfo_CodeGeneratorResponse_File.Size(m)
-}
-func (m *CodeGeneratorResponse_File) XXX_DiscardUnknown() {
-	xxx_messageInfo_CodeGeneratorResponse_File.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CodeGeneratorResponse_File proto.InternalMessageInfo
 
 func (m *CodeGeneratorResponse_File) GetName() string {
 	if m != nil && m.Name != nil {
@@ -418,23 +345,14 @@ func xxx_File_google_protobuf_compiler_plugin_proto_init() {
 	if File_google_protobuf_compiler_plugin_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 4)
 	File_google_protobuf_compiler_plugin_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_compiler_plugin_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_compiler_plugin_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_compiler_plugin_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_compiler_plugin_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_compiler_plugin_proto_goTypes[0:][:4]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("google/protobuf/compiler/plugin.proto", xxx_File_google_protobuf_compiler_plugin_proto_rawdesc_gzipped)
-	proto.RegisterType((*Version)(nil), "google.protobuf.compiler.Version")
-	proto.RegisterType((*CodeGeneratorRequest)(nil), "google.protobuf.compiler.CodeGeneratorRequest")
-	proto.RegisterType((*CodeGeneratorResponse)(nil), "google.protobuf.compiler.CodeGeneratorResponse")
-	proto.RegisterType((*CodeGeneratorResponse_File)(nil), "google.protobuf.compiler.CodeGeneratorResponse.File")
 	xxx_File_google_protobuf_compiler_plugin_proto_goTypes = nil
 	xxx_File_google_protobuf_compiler_plugin_proto_depIdxs = nil
 }

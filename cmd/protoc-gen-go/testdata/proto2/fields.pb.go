@@ -4,11 +4,10 @@
 package proto2
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
-	reflect "reflect"
 )
 
 type FieldTestMessage_Enum int32
@@ -176,31 +175,13 @@ func (m *FieldTestMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[0].MessageOf(m)
 }
 func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
-func (m *FieldTestMessage) String() string { return proto.CompactTextString(m) }
+func (m *FieldTestMessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldTestMessage) ProtoMessage()    {}
 
 // Deprecated: Use FieldTestMessage.ProtoReflect.Type instead.
 func (*FieldTestMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *FieldTestMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FieldTestMessage.Unmarshal(m, b)
-}
-func (m *FieldTestMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FieldTestMessage.Marshal(b, m, deterministic)
-}
-func (m *FieldTestMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FieldTestMessage.Merge(m, src)
-}
-func (m *FieldTestMessage) XXX_Size() int {
-	return xxx_messageInfo_FieldTestMessage.Size(m)
-}
-func (m *FieldTestMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_FieldTestMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FieldTestMessage proto.InternalMessageInfo
 
 const Default_FieldTestMessage_DefaultBool bool = true
 const Default_FieldTestMessage_DefaultEnum FieldTestMessage_Enum = FieldTestMessage_ONE
@@ -1130,31 +1111,13 @@ func (m *FieldTestMessage_OptionalGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[1].MessageOf(m)
 }
 func (m *FieldTestMessage_OptionalGroup) Reset()         { *m = FieldTestMessage_OptionalGroup{} }
-func (m *FieldTestMessage_OptionalGroup) String() string { return proto.CompactTextString(m) }
+func (m *FieldTestMessage_OptionalGroup) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldTestMessage_OptionalGroup) ProtoMessage()    {}
 
 // Deprecated: Use FieldTestMessage_OptionalGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_OptionalGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 0}
 }
-
-func (m *FieldTestMessage_OptionalGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FieldTestMessage_OptionalGroup.Unmarshal(m, b)
-}
-func (m *FieldTestMessage_OptionalGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FieldTestMessage_OptionalGroup.Marshal(b, m, deterministic)
-}
-func (m *FieldTestMessage_OptionalGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FieldTestMessage_OptionalGroup.Merge(m, src)
-}
-func (m *FieldTestMessage_OptionalGroup) XXX_Size() int {
-	return xxx_messageInfo_FieldTestMessage_OptionalGroup.Size(m)
-}
-func (m *FieldTestMessage_OptionalGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_FieldTestMessage_OptionalGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FieldTestMessage_OptionalGroup proto.InternalMessageInfo
 
 func (m *FieldTestMessage_OptionalGroup) GetOptionalGroup() string {
 	if m != nil && m.OptionalGroup != nil {
@@ -1174,31 +1137,13 @@ func (m *FieldTestMessage_RequiredGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[2].MessageOf(m)
 }
 func (m *FieldTestMessage_RequiredGroup) Reset()         { *m = FieldTestMessage_RequiredGroup{} }
-func (m *FieldTestMessage_RequiredGroup) String() string { return proto.CompactTextString(m) }
+func (m *FieldTestMessage_RequiredGroup) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldTestMessage_RequiredGroup) ProtoMessage()    {}
 
 // Deprecated: Use FieldTestMessage_RequiredGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_RequiredGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 1}
 }
-
-func (m *FieldTestMessage_RequiredGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FieldTestMessage_RequiredGroup.Unmarshal(m, b)
-}
-func (m *FieldTestMessage_RequiredGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FieldTestMessage_RequiredGroup.Marshal(b, m, deterministic)
-}
-func (m *FieldTestMessage_RequiredGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FieldTestMessage_RequiredGroup.Merge(m, src)
-}
-func (m *FieldTestMessage_RequiredGroup) XXX_Size() int {
-	return xxx_messageInfo_FieldTestMessage_RequiredGroup.Size(m)
-}
-func (m *FieldTestMessage_RequiredGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_FieldTestMessage_RequiredGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FieldTestMessage_RequiredGroup proto.InternalMessageInfo
 
 func (m *FieldTestMessage_RequiredGroup) GetRequiredGroup() string {
 	if m != nil && m.RequiredGroup != nil {
@@ -1218,31 +1163,13 @@ func (m *FieldTestMessage_RepeatedGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[3].MessageOf(m)
 }
 func (m *FieldTestMessage_RepeatedGroup) Reset()         { *m = FieldTestMessage_RepeatedGroup{} }
-func (m *FieldTestMessage_RepeatedGroup) String() string { return proto.CompactTextString(m) }
+func (m *FieldTestMessage_RepeatedGroup) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldTestMessage_RepeatedGroup) ProtoMessage()    {}
 
 // Deprecated: Use FieldTestMessage_RepeatedGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_RepeatedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 2}
 }
-
-func (m *FieldTestMessage_RepeatedGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FieldTestMessage_RepeatedGroup.Unmarshal(m, b)
-}
-func (m *FieldTestMessage_RepeatedGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FieldTestMessage_RepeatedGroup.Marshal(b, m, deterministic)
-}
-func (m *FieldTestMessage_RepeatedGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FieldTestMessage_RepeatedGroup.Merge(m, src)
-}
-func (m *FieldTestMessage_RepeatedGroup) XXX_Size() int {
-	return xxx_messageInfo_FieldTestMessage_RepeatedGroup.Size(m)
-}
-func (m *FieldTestMessage_RepeatedGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_FieldTestMessage_RepeatedGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FieldTestMessage_RepeatedGroup proto.InternalMessageInfo
 
 func (m *FieldTestMessage_RepeatedGroup) GetRepeatedGroup() []string {
 	if m != nil {
@@ -1262,31 +1189,13 @@ func (m *FieldTestMessage_OneofGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[7].MessageOf(m)
 }
 func (m *FieldTestMessage_OneofGroup) Reset()         { *m = FieldTestMessage_OneofGroup{} }
-func (m *FieldTestMessage_OneofGroup) String() string { return proto.CompactTextString(m) }
+func (m *FieldTestMessage_OneofGroup) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldTestMessage_OneofGroup) ProtoMessage()    {}
 
 // Deprecated: Use FieldTestMessage_OneofGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_OneofGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 6}
 }
-
-func (m *FieldTestMessage_OneofGroup) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FieldTestMessage_OneofGroup.Unmarshal(m, b)
-}
-func (m *FieldTestMessage_OneofGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FieldTestMessage_OneofGroup.Marshal(b, m, deterministic)
-}
-func (m *FieldTestMessage_OneofGroup) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FieldTestMessage_OneofGroup.Merge(m, src)
-}
-func (m *FieldTestMessage_OneofGroup) XXX_Size() int {
-	return xxx_messageInfo_FieldTestMessage_OneofGroup.Size(m)
-}
-func (m *FieldTestMessage_OneofGroup) XXX_DiscardUnknown() {
-	xxx_messageInfo_FieldTestMessage_OneofGroup.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FieldTestMessage_OneofGroup proto.InternalMessageInfo
 
 func (m *FieldTestMessage_OneofGroup) GetOneofGroupField() string {
 	if m != nil && m.OneofGroupField != nil {
@@ -1305,31 +1214,13 @@ func (m *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[8].MessageOf(m)
 }
 func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
-func (m *FieldTestMessage_Message) String() string { return proto.CompactTextString(m) }
+func (m *FieldTestMessage_Message) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldTestMessage_Message) ProtoMessage()    {}
 
 // Deprecated: Use FieldTestMessage_Message.ProtoReflect.Type instead.
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawdesc_gzipped, []int{0, 7}
 }
-
-func (m *FieldTestMessage_Message) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FieldTestMessage_Message.Unmarshal(m, b)
-}
-func (m *FieldTestMessage_Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FieldTestMessage_Message.Marshal(b, m, deterministic)
-}
-func (m *FieldTestMessage_Message) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FieldTestMessage_Message.Merge(m, src)
-}
-func (m *FieldTestMessage_Message) XXX_Size() int {
-	return xxx_messageInfo_FieldTestMessage_Message.Size(m)
-}
-func (m *FieldTestMessage_Message) XXX_DiscardUnknown() {
-	xxx_messageInfo_FieldTestMessage_Message.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FieldTestMessage_Message proto.InternalMessageInfo
 
 var xxx_File_proto2_fields_proto_rawdesc = []byte{
 	// 5913 bytes of the wire-encoded FileDescriptorProto
@@ -1751,30 +1642,15 @@ func xxx_File_proto2_fields_proto_init() {
 	if File_proto2_fields_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 9)
 	File_proto2_fields_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_proto2_fields_proto_rawdesc,
 		GoTypes:            xxx_File_proto2_fields_proto_goTypes,
 		DependencyIndexes:  xxx_File_proto2_fields_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_proto2_fields_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_proto2_fields_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_proto2_fields_proto_goTypes[1:][:9]
-	for i, mt := range messageTypes {
-		xxx_File_proto2_fields_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_proto2_fields_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("proto2/fields.proto", xxx_File_proto2_fields_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.proto2.FieldTestMessage_Enum", FieldTestMessage_Enum_name, FieldTestMessage_Enum_value)
-	proto.RegisterType((*FieldTestMessage)(nil), "goproto.protoc.proto2.FieldTestMessage")
-	proto.RegisterMapType((map[uint64]FieldTestMessage_Enum)(nil), "goproto.protoc.proto2.FieldTestMessage.MapFixed64EnumEntry")
-	proto.RegisterMapType((map[int32]int64)(nil), "goproto.protoc.proto2.FieldTestMessage.MapInt32Int64Entry")
-	proto.RegisterMapType((map[string]*FieldTestMessage_Message)(nil), "goproto.protoc.proto2.FieldTestMessage.MapStringMessageEntry")
-	proto.RegisterType((*FieldTestMessage_OptionalGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.OptionalGroup")
-	proto.RegisterType((*FieldTestMessage_RequiredGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.RequiredGroup")
-	proto.RegisterType((*FieldTestMessage_RepeatedGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.RepeatedGroup")
-	proto.RegisterType((*FieldTestMessage_OneofGroup)(nil), "goproto.protoc.proto2.FieldTestMessage.OneofGroup")
-	proto.RegisterType((*FieldTestMessage_Message)(nil), "goproto.protoc.proto2.FieldTestMessage.Message")
 	xxx_File_proto2_fields_proto_goTypes = nil
 	xxx_File_proto2_fields_proto_depIdxs = nil
 }

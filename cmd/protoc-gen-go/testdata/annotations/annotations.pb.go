@@ -4,10 +4,9 @@
 package annotations
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type AnnotationsTestEnum int32
@@ -67,31 +66,13 @@ func (m *AnnotationsTestMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_annotations_annotations_proto_messageTypes[0].MessageOf(m)
 }
 func (m *AnnotationsTestMessage) Reset()         { *m = AnnotationsTestMessage{} }
-func (m *AnnotationsTestMessage) String() string { return proto.CompactTextString(m) }
+func (m *AnnotationsTestMessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*AnnotationsTestMessage) ProtoMessage()    {}
 
 // Deprecated: Use AnnotationsTestMessage.ProtoReflect.Type instead.
 func (*AnnotationsTestMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_annotations_annotations_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *AnnotationsTestMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AnnotationsTestMessage.Unmarshal(m, b)
-}
-func (m *AnnotationsTestMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AnnotationsTestMessage.Marshal(b, m, deterministic)
-}
-func (m *AnnotationsTestMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AnnotationsTestMessage.Merge(m, src)
-}
-func (m *AnnotationsTestMessage) XXX_Size() int {
-	return xxx_messageInfo_AnnotationsTestMessage.Size(m)
-}
-func (m *AnnotationsTestMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_AnnotationsTestMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AnnotationsTestMessage proto.InternalMessageInfo
 
 func (m *AnnotationsTestMessage) GetAnnotationsTestField() string {
 	if m != nil && m.AnnotationsTestField != nil {
@@ -140,22 +121,15 @@ func xxx_File_annotations_annotations_proto_init() {
 	if File_annotations_annotations_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_annotations_annotations_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_annotations_annotations_proto_rawdesc,
 		GoTypes:            xxx_File_annotations_annotations_proto_goTypes,
 		DependencyIndexes:  xxx_File_annotations_annotations_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_annotations_annotations_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_annotations_annotations_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_annotations_annotations_proto_goTypes[1:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_annotations_annotations_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_annotations_annotations_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("annotations/annotations.proto", xxx_File_annotations_annotations_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.annotations.AnnotationsTestEnum", AnnotationsTestEnum_name, AnnotationsTestEnum_value)
-	proto.RegisterType((*AnnotationsTestMessage)(nil), "goproto.protoc.annotations.AnnotationsTestMessage")
 	xxx_File_annotations_annotations_proto_goTypes = nil
 	xxx_File_annotations_annotations_proto_depIdxs = nil
 }

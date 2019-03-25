@@ -4,10 +4,9 @@
 package conformance_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type WireFormat int32
@@ -123,31 +122,13 @@ func (m *FailureSet) ProtoReflect() protoreflect.Message {
 	return xxx_File_conformance_conformance_proto_messageTypes[0].MessageOf(m)
 }
 func (m *FailureSet) Reset()         { *m = FailureSet{} }
-func (m *FailureSet) String() string { return proto.CompactTextString(m) }
+func (m *FailureSet) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FailureSet) ProtoMessage()    {}
 
 // Deprecated: Use FailureSet.ProtoReflect.Type instead.
 func (*FailureSet) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *FailureSet) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FailureSet.Unmarshal(m, b)
-}
-func (m *FailureSet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FailureSet.Marshal(b, m, deterministic)
-}
-func (m *FailureSet) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FailureSet.Merge(m, src)
-}
-func (m *FailureSet) XXX_Size() int {
-	return xxx_messageInfo_FailureSet.Size(m)
-}
-func (m *FailureSet) XXX_DiscardUnknown() {
-	xxx_messageInfo_FailureSet.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FailureSet proto.InternalMessageInfo
 
 func (m *FailureSet) GetFailure() []string {
 	if m != nil {
@@ -198,31 +179,13 @@ func (m *ConformanceRequest) ProtoReflect() protoreflect.Message {
 	return xxx_File_conformance_conformance_proto_messageTypes[1].MessageOf(m)
 }
 func (m *ConformanceRequest) Reset()         { *m = ConformanceRequest{} }
-func (m *ConformanceRequest) String() string { return proto.CompactTextString(m) }
+func (m *ConformanceRequest) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*ConformanceRequest) ProtoMessage()    {}
 
 // Deprecated: Use ConformanceRequest.ProtoReflect.Type instead.
 func (*ConformanceRequest) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *ConformanceRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConformanceRequest.Unmarshal(m, b)
-}
-func (m *ConformanceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConformanceRequest.Marshal(b, m, deterministic)
-}
-func (m *ConformanceRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConformanceRequest.Merge(m, src)
-}
-func (m *ConformanceRequest) XXX_Size() int {
-	return xxx_messageInfo_ConformanceRequest.Size(m)
-}
-func (m *ConformanceRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConformanceRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConformanceRequest proto.InternalMessageInfo
 
 type isConformanceRequest_Payload interface {
 	isConformanceRequest_Payload()
@@ -368,31 +331,13 @@ func (m *ConformanceResponse) ProtoReflect() protoreflect.Message {
 	return xxx_File_conformance_conformance_proto_messageTypes[2].MessageOf(m)
 }
 func (m *ConformanceResponse) Reset()         { *m = ConformanceResponse{} }
-func (m *ConformanceResponse) String() string { return proto.CompactTextString(m) }
+func (m *ConformanceResponse) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*ConformanceResponse) ProtoMessage()    {}
 
 // Deprecated: Use ConformanceResponse.ProtoReflect.Type instead.
 func (*ConformanceResponse) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawdesc_gzipped, []int{2}
 }
-
-func (m *ConformanceResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ConformanceResponse.Unmarshal(m, b)
-}
-func (m *ConformanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ConformanceResponse.Marshal(b, m, deterministic)
-}
-func (m *ConformanceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ConformanceResponse.Merge(m, src)
-}
-func (m *ConformanceResponse) XXX_Size() int {
-	return xxx_messageInfo_ConformanceResponse.Size(m)
-}
-func (m *ConformanceResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_ConformanceResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ConformanceResponse proto.InternalMessageInfo
 
 type isConformanceResponse_Result interface {
 	isConformanceResponse_Result()
@@ -536,31 +481,13 @@ func (m *JspbEncodingConfig) ProtoReflect() protoreflect.Message {
 	return xxx_File_conformance_conformance_proto_messageTypes[3].MessageOf(m)
 }
 func (m *JspbEncodingConfig) Reset()         { *m = JspbEncodingConfig{} }
-func (m *JspbEncodingConfig) String() string { return proto.CompactTextString(m) }
+func (m *JspbEncodingConfig) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*JspbEncodingConfig) ProtoMessage()    {}
 
 // Deprecated: Use JspbEncodingConfig.ProtoReflect.Type instead.
 func (*JspbEncodingConfig) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawdesc_gzipped, []int{3}
 }
-
-func (m *JspbEncodingConfig) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_JspbEncodingConfig.Unmarshal(m, b)
-}
-func (m *JspbEncodingConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_JspbEncodingConfig.Marshal(b, m, deterministic)
-}
-func (m *JspbEncodingConfig) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_JspbEncodingConfig.Merge(m, src)
-}
-func (m *JspbEncodingConfig) XXX_Size() int {
-	return xxx_messageInfo_JspbEncodingConfig.Size(m)
-}
-func (m *JspbEncodingConfig) XXX_DiscardUnknown() {
-	xxx_messageInfo_JspbEncodingConfig.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_JspbEncodingConfig proto.InternalMessageInfo
 
 func (m *JspbEncodingConfig) GetUseJspbArrayAnyFormat() bool {
 	if m != nil {
@@ -682,26 +609,15 @@ func xxx_File_conformance_conformance_proto_init() {
 	if File_conformance_conformance_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 4)
 	File_conformance_conformance_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_conformance_conformance_proto_rawdesc,
 		GoTypes:            xxx_File_conformance_conformance_proto_goTypes,
 		DependencyIndexes:  xxx_File_conformance_conformance_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_conformance_conformance_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_conformance_conformance_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_conformance_conformance_proto_goTypes[2:][:4]
-	for i, mt := range messageTypes {
-		xxx_File_conformance_conformance_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_conformance_conformance_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("conformance/conformance.proto", xxx_File_conformance_conformance_proto_rawdesc_gzipped)
-	proto.RegisterEnum("conformance.WireFormat", WireFormat_name, WireFormat_value)
-	proto.RegisterEnum("conformance.TestCategory", TestCategory_name, TestCategory_value)
-	proto.RegisterType((*FailureSet)(nil), "conformance.FailureSet")
-	proto.RegisterType((*ConformanceRequest)(nil), "conformance.ConformanceRequest")
-	proto.RegisterType((*ConformanceResponse)(nil), "conformance.ConformanceResponse")
-	proto.RegisterType((*JspbEncodingConfig)(nil), "conformance.JspbEncodingConfig")
 	xxx_File_conformance_conformance_proto_goTypes = nil
 	xxx_File_conformance_conformance_proto_depIdxs = nil
 }

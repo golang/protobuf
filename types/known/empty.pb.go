@@ -4,10 +4,9 @@
 package known_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // A generic empty message that you can re-use to avoid defining duplicated
@@ -29,7 +28,7 @@ func (m *Empty) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_empty_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Empty) Reset()         { *m = Empty{} }
-func (m *Empty) String() string { return proto.CompactTextString(m) }
+func (m *Empty) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Empty) ProtoMessage()    {}
 
 // Deprecated: Use Empty.ProtoReflect.Type instead.
@@ -38,24 +37,6 @@ func (*Empty) Descriptor() ([]byte, []int) {
 }
 
 func (*Empty) XXX_WellKnownType() string { return "Empty" }
-
-func (m *Empty) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Empty.Unmarshal(m, b)
-}
-func (m *Empty) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Empty.Marshal(b, m, deterministic)
-}
-func (m *Empty) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Empty.Merge(m, src)
-}
-func (m *Empty) XXX_Size() int {
-	return xxx_messageInfo_Empty.Size(m)
-}
-func (m *Empty) XXX_DiscardUnknown() {
-	xxx_messageInfo_Empty.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Empty proto.InternalMessageInfo
 
 var xxx_File_google_protobuf_empty_proto_rawdesc = []byte{
 	// 198 bytes of the wire-encoded FileDescriptorProto
@@ -91,20 +72,14 @@ func xxx_File_google_protobuf_empty_proto_init() {
 	if File_google_protobuf_empty_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_google_protobuf_empty_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_empty_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_empty_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_empty_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_empty_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_empty_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_empty_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_empty_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("google/protobuf/empty.proto", xxx_File_google_protobuf_empty_proto_rawdesc_gzipped)
-	proto.RegisterType((*Empty)(nil), "google.protobuf.Empty")
 	xxx_File_google_protobuf_empty_proto_goTypes = nil
 	xxx_File_google_protobuf_empty_proto_depIdxs = nil
 }

@@ -4,10 +4,9 @@
 package comments
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type DeprecatedEnum int32 // Deprecated: Do not use.
@@ -53,31 +52,13 @@ func (m *DeprecatedMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_deprecated_proto_messageTypes[0].MessageOf(m)
 }
 func (m *DeprecatedMessage) Reset()         { *m = DeprecatedMessage{} }
-func (m *DeprecatedMessage) String() string { return proto.CompactTextString(m) }
+func (m *DeprecatedMessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*DeprecatedMessage) ProtoMessage()    {}
 
 // Deprecated: Use DeprecatedMessage.ProtoReflect.Type instead.
 func (*DeprecatedMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_deprecated_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *DeprecatedMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeprecatedMessage.Unmarshal(m, b)
-}
-func (m *DeprecatedMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeprecatedMessage.Marshal(b, m, deterministic)
-}
-func (m *DeprecatedMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeprecatedMessage.Merge(m, src)
-}
-func (m *DeprecatedMessage) XXX_Size() int {
-	return xxx_messageInfo_DeprecatedMessage.Size(m)
-}
-func (m *DeprecatedMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeprecatedMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DeprecatedMessage proto.InternalMessageInfo
 
 // Deprecated: Do not use.
 func (m *DeprecatedMessage) GetDeprecatedField() string {
@@ -126,22 +107,15 @@ func xxx_File_comments_deprecated_proto_init() {
 	if File_comments_deprecated_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_comments_deprecated_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_comments_deprecated_proto_rawdesc,
 		GoTypes:            xxx_File_comments_deprecated_proto_goTypes,
 		DependencyIndexes:  xxx_File_comments_deprecated_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_comments_deprecated_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_comments_deprecated_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_comments_deprecated_proto_goTypes[1:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_comments_deprecated_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_comments_deprecated_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("comments/deprecated.proto", xxx_File_comments_deprecated_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.comments.DeprecatedEnum", DeprecatedEnum_name, DeprecatedEnum_value)
-	proto.RegisterType((*DeprecatedMessage)(nil), "goproto.protoc.comments.DeprecatedMessage")
 	xxx_File_comments_deprecated_proto_goTypes = nil
 	xxx_File_comments_deprecated_proto_depIdxs = nil
 }

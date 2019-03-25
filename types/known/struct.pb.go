@@ -4,10 +4,9 @@
 package known_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // `NullValue` is a singleton enumeration to represent the null value for the
@@ -69,7 +68,7 @@ func (m *Struct) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_struct_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Struct) Reset()         { *m = Struct{} }
-func (m *Struct) String() string { return proto.CompactTextString(m) }
+func (m *Struct) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Struct) ProtoMessage()    {}
 
 // Deprecated: Use Struct.ProtoReflect.Type instead.
@@ -78,24 +77,6 @@ func (*Struct) Descriptor() ([]byte, []int) {
 }
 
 func (*Struct) XXX_WellKnownType() string { return "Struct" }
-
-func (m *Struct) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Struct.Unmarshal(m, b)
-}
-func (m *Struct) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Struct.Marshal(b, m, deterministic)
-}
-func (m *Struct) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Struct.Merge(m, src)
-}
-func (m *Struct) XXX_Size() int {
-	return xxx_messageInfo_Struct.Size(m)
-}
-func (m *Struct) XXX_DiscardUnknown() {
-	xxx_messageInfo_Struct.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Struct proto.InternalMessageInfo
 
 func (m *Struct) GetFields() map[string]*Value {
 	if m != nil {
@@ -136,7 +117,7 @@ func (m *Value) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_struct_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Value) Reset()         { *m = Value{} }
-func (m *Value) String() string { return proto.CompactTextString(m) }
+func (m *Value) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Value) ProtoMessage()    {}
 
 // Deprecated: Use Value.ProtoReflect.Type instead.
@@ -145,24 +126,6 @@ func (*Value) Descriptor() ([]byte, []int) {
 }
 
 func (*Value) XXX_WellKnownType() string { return "Value" }
-
-func (m *Value) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Value.Unmarshal(m, b)
-}
-func (m *Value) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Value.Marshal(b, m, deterministic)
-}
-func (m *Value) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Value.Merge(m, src)
-}
-func (m *Value) XXX_Size() int {
-	return xxx_messageInfo_Value.Size(m)
-}
-func (m *Value) XXX_DiscardUnknown() {
-	xxx_messageInfo_Value.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Value proto.InternalMessageInfo
 
 type isValue_Kind interface {
 	isValue_Kind()
@@ -280,7 +243,7 @@ func (m *ListValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_struct_proto_messageTypes[2].MessageOf(m)
 }
 func (m *ListValue) Reset()         { *m = ListValue{} }
-func (m *ListValue) String() string { return proto.CompactTextString(m) }
+func (m *ListValue) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*ListValue) ProtoMessage()    {}
 
 // Deprecated: Use ListValue.ProtoReflect.Type instead.
@@ -289,24 +252,6 @@ func (*ListValue) Descriptor() ([]byte, []int) {
 }
 
 func (*ListValue) XXX_WellKnownType() string { return "ListValue" }
-
-func (m *ListValue) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ListValue.Unmarshal(m, b)
-}
-func (m *ListValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ListValue.Marshal(b, m, deterministic)
-}
-func (m *ListValue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListValue.Merge(m, src)
-}
-func (m *ListValue) XXX_Size() int {
-	return xxx_messageInfo_ListValue.Size(m)
-}
-func (m *ListValue) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListValue.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ListValue proto.InternalMessageInfo
 
 func (m *ListValue) GetValues() []*Value {
 	if m != nil {
@@ -395,25 +340,15 @@ func xxx_File_google_protobuf_struct_proto_init() {
 	if File_google_protobuf_struct_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 4)
 	File_google_protobuf_struct_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_struct_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_struct_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_struct_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_google_protobuf_struct_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_struct_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_struct_proto_goTypes[1:][:4]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_struct_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_struct_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("google/protobuf/struct.proto", xxx_File_google_protobuf_struct_proto_rawdesc_gzipped)
-	proto.RegisterEnum("google.protobuf.NullValue", NullValue_name, NullValue_value)
-	proto.RegisterType((*Struct)(nil), "google.protobuf.Struct")
-	proto.RegisterMapType((map[string]*Value)(nil), "google.protobuf.Struct.FieldsEntry")
-	proto.RegisterType((*Value)(nil), "google.protobuf.Value")
-	proto.RegisterType((*ListValue)(nil), "google.protobuf.ListValue")
 	xxx_File_google_protobuf_struct_proto_goTypes = nil
 	xxx_File_google_protobuf_struct_proto_depIdxs = nil
 }

@@ -4,8 +4,8 @@
 package grpc
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 )
 
@@ -54,8 +54,9 @@ func xxx_File_grpc_deprecation_proto_init() {
 		RawDescriptor:     xxx_File_grpc_deprecation_proto_rawdesc,
 		GoTypes:           xxx_File_grpc_deprecation_proto_goTypes,
 		DependencyIndexes: xxx_File_grpc_deprecation_proto_depIdxs,
+		FilesRegistry:     protoregistry.GlobalFiles,
+		TypesRegistry:     protoregistry.GlobalTypes,
 	}.Init()
-	proto.RegisterFile("grpc/deprecation.proto", xxx_File_grpc_deprecation_proto_rawdesc_gzipped)
 	xxx_File_grpc_deprecation_proto_goTypes = nil
 	xxx_File_grpc_deprecation_proto_depIdxs = nil
 }

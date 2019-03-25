@@ -4,13 +4,12 @@
 package sub
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	sub2 "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/import_public/sub2"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
-	reflect "reflect"
 )
 
 // Symbols defined in public import of import_public/sub2/a.proto
@@ -175,7 +174,7 @@ func (m *M) ProtoReflect() protoreflect.Message {
 	return xxx_File_import_public_sub_a_proto_messageTypes[0].MessageOf(m)
 }
 func (m *M) Reset()         { *m = M{} }
-func (m *M) String() string { return proto.CompactTextString(m) }
+func (m *M) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*M) ProtoMessage()    {}
 
 // Deprecated: Use M.ProtoReflect.Type instead.
@@ -191,24 +190,6 @@ var extRange_M = []protoiface.ExtensionRangeV1{
 func (*M) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_M
 }
-
-func (m *M) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_M.Unmarshal(m, b)
-}
-func (m *M) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_M.Marshal(b, m, deterministic)
-}
-func (m *M) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_M.Merge(m, src)
-}
-func (m *M) XXX_Size() int {
-	return xxx_messageInfo_M.Size(m)
-}
-func (m *M) XXX_DiscardUnknown() {
-	xxx_messageInfo_M.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_M proto.InternalMessageInfo
 
 const Default_M_S string = "default"
 
@@ -302,31 +283,13 @@ func (m *M_Submessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_import_public_sub_a_proto_messageTypes[1].MessageOf(m)
 }
 func (m *M_Submessage) Reset()         { *m = M_Submessage{} }
-func (m *M_Submessage) String() string { return proto.CompactTextString(m) }
+func (m *M_Submessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*M_Submessage) ProtoMessage()    {}
 
 // Deprecated: Use M_Submessage.ProtoReflect.Type instead.
 func (*M_Submessage) Descriptor() ([]byte, []int) {
 	return xxx_File_import_public_sub_a_proto_rawdesc_gzipped, []int{0, 0}
 }
-
-func (m *M_Submessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_M_Submessage.Unmarshal(m, b)
-}
-func (m *M_Submessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_M_Submessage.Marshal(b, m, deterministic)
-}
-func (m *M_Submessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_M_Submessage.Merge(m, src)
-}
-func (m *M_Submessage) XXX_Size() int {
-	return xxx_messageInfo_M_Submessage.Size(m)
-}
-func (m *M_Submessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_M_Submessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_M_Submessage proto.InternalMessageInfo
 
 type isM_Submessage_SubmessageOneofField interface {
 	isM_Submessage_SubmessageOneofField()
@@ -464,7 +427,6 @@ func xxx_File_import_public_sub_a_proto_init() {
 		return
 	}
 	xxx_File_import_public_sub_b_proto_init()
-	messageTypes := make([]protoreflect.MessageType, 2)
 	extensionTypes := make([]protoreflect.ExtensionType, 1)
 	File_import_public_sub_a_proto = protoimpl.FileBuilder{
 		RawDescriptor:        xxx_File_import_public_sub_a_proto_rawdesc,
@@ -472,21 +434,11 @@ func xxx_File_import_public_sub_a_proto_init() {
 		DependencyIndexes:    xxx_File_import_public_sub_a_proto_depIdxs,
 		LegacyExtensions:     xxx_File_import_public_sub_a_proto_extDescs,
 		EnumOutputTypes:      xxx_File_import_public_sub_a_proto_enumTypes,
-		MessageOutputTypes:   messageTypes,
+		MessageOutputTypes:   xxx_File_import_public_sub_a_proto_messageTypes,
 		ExtensionOutputTypes: extensionTypes,
+		FilesRegistry:        protoregistry.GlobalFiles,
+		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_import_public_sub_a_proto_goTypes[3:][:2]
-	for i, mt := range messageTypes {
-		xxx_File_import_public_sub_a_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_import_public_sub_a_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("import_public/sub/a.proto", xxx_File_import_public_sub_a_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.import_public.sub.E", E_name, E_value)
-	proto.RegisterEnum("goproto.protoc.import_public.sub.M_Subenum", M_Subenum_name, M_Subenum_value)
-	proto.RegisterEnum("goproto.protoc.import_public.sub.M_Submessage_Submessage_Subenum", M_Submessage_Submessage_Subenum_name, M_Submessage_Submessage_Subenum_value)
-	proto.RegisterType((*M)(nil), "goproto.protoc.import_public.sub.M")
-	proto.RegisterType((*M_Submessage)(nil), "goproto.protoc.import_public.sub.M.Submessage")
-	proto.RegisterExtension(E_ExtensionField)
 	xxx_File_import_public_sub_a_proto_goTypes = nil
 	xxx_File_import_public_sub_a_proto_depIdxs = nil
 }

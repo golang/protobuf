@@ -4,10 +4,9 @@
 package known_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // The syntax in which a protocol buffer element is defined.
@@ -223,31 +222,13 @@ func (m *Type) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_type_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Type) Reset()         { *m = Type{} }
-func (m *Type) String() string { return proto.CompactTextString(m) }
+func (m *Type) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Type) ProtoMessage()    {}
 
 // Deprecated: Use Type.ProtoReflect.Type instead.
 func (*Type) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Type) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Type.Unmarshal(m, b)
-}
-func (m *Type) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Type.Marshal(b, m, deterministic)
-}
-func (m *Type) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Type.Merge(m, src)
-}
-func (m *Type) XXX_Size() int {
-	return xxx_messageInfo_Type.Size(m)
-}
-func (m *Type) XXX_DiscardUnknown() {
-	xxx_messageInfo_Type.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Type proto.InternalMessageInfo
 
 func (m *Type) GetName() string {
 	if m != nil {
@@ -324,31 +305,13 @@ func (m *Field) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_type_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Field) Reset()         { *m = Field{} }
-func (m *Field) String() string { return proto.CompactTextString(m) }
+func (m *Field) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Field) ProtoMessage()    {}
 
 // Deprecated: Use Field.ProtoReflect.Type instead.
 func (*Field) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *Field) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Field.Unmarshal(m, b)
-}
-func (m *Field) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Field.Marshal(b, m, deterministic)
-}
-func (m *Field) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Field.Merge(m, src)
-}
-func (m *Field) XXX_Size() int {
-	return xxx_messageInfo_Field.Size(m)
-}
-func (m *Field) XXX_DiscardUnknown() {
-	xxx_messageInfo_Field.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Field proto.InternalMessageInfo
 
 func (m *Field) GetKind() Field_Kind {
 	if m != nil {
@@ -441,31 +404,13 @@ func (m *Enum) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_type_proto_messageTypes[2].MessageOf(m)
 }
 func (m *Enum) Reset()         { *m = Enum{} }
-func (m *Enum) String() string { return proto.CompactTextString(m) }
+func (m *Enum) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Enum) ProtoMessage()    {}
 
 // Deprecated: Use Enum.ProtoReflect.Type instead.
 func (*Enum) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{2}
 }
-
-func (m *Enum) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Enum.Unmarshal(m, b)
-}
-func (m *Enum) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Enum.Marshal(b, m, deterministic)
-}
-func (m *Enum) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Enum.Merge(m, src)
-}
-func (m *Enum) XXX_Size() int {
-	return xxx_messageInfo_Enum.Size(m)
-}
-func (m *Enum) XXX_DiscardUnknown() {
-	xxx_messageInfo_Enum.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Enum proto.InternalMessageInfo
 
 func (m *Enum) GetName() string {
 	if m != nil {
@@ -519,31 +464,13 @@ func (m *EnumValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_type_proto_messageTypes[3].MessageOf(m)
 }
 func (m *EnumValue) Reset()         { *m = EnumValue{} }
-func (m *EnumValue) String() string { return proto.CompactTextString(m) }
+func (m *EnumValue) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*EnumValue) ProtoMessage()    {}
 
 // Deprecated: Use EnumValue.ProtoReflect.Type instead.
 func (*EnumValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{3}
 }
-
-func (m *EnumValue) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EnumValue.Unmarshal(m, b)
-}
-func (m *EnumValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EnumValue.Marshal(b, m, deterministic)
-}
-func (m *EnumValue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EnumValue.Merge(m, src)
-}
-func (m *EnumValue) XXX_Size() int {
-	return xxx_messageInfo_EnumValue.Size(m)
-}
-func (m *EnumValue) XXX_DiscardUnknown() {
-	xxx_messageInfo_EnumValue.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EnumValue proto.InternalMessageInfo
 
 func (m *EnumValue) GetName() string {
 	if m != nil {
@@ -588,31 +515,13 @@ func (m *Option) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_type_proto_messageTypes[4].MessageOf(m)
 }
 func (m *Option) Reset()         { *m = Option{} }
-func (m *Option) String() string { return proto.CompactTextString(m) }
+func (m *Option) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Option) ProtoMessage()    {}
 
 // Deprecated: Use Option.ProtoReflect.Type instead.
 func (*Option) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{4}
 }
-
-func (m *Option) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Option.Unmarshal(m, b)
-}
-func (m *Option) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Option.Marshal(b, m, deterministic)
-}
-func (m *Option) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Option.Merge(m, src)
-}
-func (m *Option) XXX_Size() int {
-	return xxx_messageInfo_Option.Size(m)
-}
-func (m *Option) XXX_DiscardUnknown() {
-	xxx_messageInfo_Option.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Option proto.InternalMessageInfo
 
 func (m *Option) GetName() string {
 	if m != nil {
@@ -790,28 +699,15 @@ func xxx_File_google_protobuf_type_proto_init() {
 	}
 	xxx_File_google_protobuf_any_proto_init()
 	xxx_File_google_protobuf_source_context_proto_init()
-	messageTypes := make([]protoreflect.MessageType, 5)
 	File_google_protobuf_type_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_type_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_type_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_type_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_google_protobuf_type_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_type_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_type_proto_goTypes[3:][:5]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_type_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_type_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("google/protobuf/type.proto", xxx_File_google_protobuf_type_proto_rawdesc_gzipped)
-	proto.RegisterEnum("google.protobuf.Syntax", Syntax_name, Syntax_value)
-	proto.RegisterEnum("google.protobuf.Field_Kind", Field_Kind_name, Field_Kind_value)
-	proto.RegisterEnum("google.protobuf.Field_Cardinality", Field_Cardinality_name, Field_Cardinality_value)
-	proto.RegisterType((*Type)(nil), "google.protobuf.Type")
-	proto.RegisterType((*Field)(nil), "google.protobuf.Field")
-	proto.RegisterType((*Enum)(nil), "google.protobuf.Enum")
-	proto.RegisterType((*EnumValue)(nil), "google.protobuf.EnumValue")
-	proto.RegisterType((*Option)(nil), "google.protobuf.Option")
 	xxx_File_google_protobuf_type_proto_goTypes = nil
 	xxx_File_google_protobuf_type_proto_depIdxs = nil
 }

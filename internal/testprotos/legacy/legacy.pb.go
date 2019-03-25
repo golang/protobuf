@@ -4,7 +4,6 @@
 package legacy
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	proto2_v0_0 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v0.0.0-20160225-2fc053c5"
 	proto2_v0_01 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v0.0.0-20160519-a4ab9ec5"
 	proto2_v1_0 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
@@ -18,8 +17,8 @@ import (
 	proto3_v1_2 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v1.2.0-20180814-aa810b61"
 	proto3_v1_21 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v1.2.1-20181126-8d0c54c1"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type Legacy struct {
@@ -44,31 +43,13 @@ func (m *Legacy) ProtoReflect() protoreflect.Message {
 	return xxx_File_legacy_legacy_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Legacy) Reset()         { *m = Legacy{} }
-func (m *Legacy) String() string { return proto.CompactTextString(m) }
+func (m *Legacy) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Legacy) ProtoMessage()    {}
 
 // Deprecated: Use Legacy.ProtoReflect.Type instead.
 func (*Legacy) Descriptor() ([]byte, []int) {
 	return xxx_File_legacy_legacy_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Legacy) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Legacy.Unmarshal(m, b)
-}
-func (m *Legacy) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Legacy.Marshal(b, m, deterministic)
-}
-func (m *Legacy) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Legacy.Merge(m, src)
-}
-func (m *Legacy) XXX_Size() int {
-	return xxx_messageInfo_Legacy.Size(m)
-}
-func (m *Legacy) XXX_DiscardUnknown() {
-	xxx_messageInfo_Legacy.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Legacy proto.InternalMessageInfo
 
 func (m *Legacy) GetF1() *proto2_v0_0.Message {
 	if m != nil {
@@ -292,20 +273,14 @@ func xxx_File_legacy_legacy_proto_init() {
 	if File_legacy_legacy_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_legacy_legacy_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_legacy_legacy_proto_rawdesc,
 		GoTypes:            xxx_File_legacy_legacy_proto_goTypes,
 		DependencyIndexes:  xxx_File_legacy_legacy_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_legacy_legacy_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_legacy_legacy_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_legacy_legacy_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_legacy_legacy_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("legacy/legacy.proto", xxx_File_legacy_legacy_proto_rawdesc_gzipped)
-	proto.RegisterType((*Legacy)(nil), "google.golang.org.Legacy")
 	xxx_File_legacy_legacy_proto_goTypes = nil
 	xxx_File_legacy_legacy_proto_depIdxs = nil
 }

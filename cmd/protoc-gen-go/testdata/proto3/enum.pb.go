@@ -4,8 +4,8 @@
 package proto3
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 )
 
@@ -83,9 +83,9 @@ func xxx_File_proto3_enum_proto_init() {
 		GoTypes:           xxx_File_proto3_enum_proto_goTypes,
 		DependencyIndexes: xxx_File_proto3_enum_proto_depIdxs,
 		EnumOutputTypes:   xxx_File_proto3_enum_proto_enumTypes,
+		FilesRegistry:     protoregistry.GlobalFiles,
+		TypesRegistry:     protoregistry.GlobalTypes,
 	}.Init()
-	proto.RegisterFile("proto3/enum.proto", xxx_File_proto3_enum_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.proto3.Enum", Enum_name, Enum_value)
 	xxx_File_proto3_enum_proto_goTypes = nil
 	xxx_File_proto3_enum_proto_depIdxs = nil
 }

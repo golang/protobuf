@@ -6,10 +6,9 @@
 package comments
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // COMMENT: Message1
@@ -31,31 +30,13 @@ func (m *Message1) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Message1) Reset()         { *m = Message1{} }
-func (m *Message1) String() string { return proto.CompactTextString(m) }
+func (m *Message1) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message1) ProtoMessage()    {}
 
 // Deprecated: Use Message1.ProtoReflect.Type instead.
 func (*Message1) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Message1) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message1.Unmarshal(m, b)
-}
-func (m *Message1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message1.Marshal(b, m, deterministic)
-}
-func (m *Message1) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message1.Merge(m, src)
-}
-func (m *Message1) XXX_Size() int {
-	return xxx_messageInfo_Message1.Size(m)
-}
-func (m *Message1) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message1.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message1 proto.InternalMessageInfo
 
 func (m *Message1) GetField1A() string {
 	if m != nil && m.Field1A != nil {
@@ -106,31 +87,13 @@ func (m *Message2) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Message2) Reset()         { *m = Message2{} }
-func (m *Message2) String() string { return proto.CompactTextString(m) }
+func (m *Message2) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message2) ProtoMessage()    {}
 
 // Deprecated: Use Message2.ProtoReflect.Type instead.
 func (*Message2) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{1}
 }
-
-func (m *Message2) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message2.Unmarshal(m, b)
-}
-func (m *Message2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message2.Marshal(b, m, deterministic)
-}
-func (m *Message2) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message2.Merge(m, src)
-}
-func (m *Message2) XXX_Size() int {
-	return xxx_messageInfo_Message2.Size(m)
-}
-func (m *Message2) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message2.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message2 proto.InternalMessageInfo
 
 // COMMENT: Message1A
 type Message1_Message1A struct {
@@ -143,31 +106,13 @@ func (m *Message1_Message1A) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[2].MessageOf(m)
 }
 func (m *Message1_Message1A) Reset()         { *m = Message1_Message1A{} }
-func (m *Message1_Message1A) String() string { return proto.CompactTextString(m) }
+func (m *Message1_Message1A) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message1_Message1A) ProtoMessage()    {}
 
 // Deprecated: Use Message1_Message1A.ProtoReflect.Type instead.
 func (*Message1_Message1A) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{0, 0}
 }
-
-func (m *Message1_Message1A) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message1_Message1A.Unmarshal(m, b)
-}
-func (m *Message1_Message1A) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message1_Message1A.Marshal(b, m, deterministic)
-}
-func (m *Message1_Message1A) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message1_Message1A.Merge(m, src)
-}
-func (m *Message1_Message1A) XXX_Size() int {
-	return xxx_messageInfo_Message1_Message1A.Size(m)
-}
-func (m *Message1_Message1A) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message1_Message1A.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message1_Message1A proto.InternalMessageInfo
 
 // COMMENT: Message1B
 type Message1_Message1B struct {
@@ -180,31 +125,13 @@ func (m *Message1_Message1B) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[3].MessageOf(m)
 }
 func (m *Message1_Message1B) Reset()         { *m = Message1_Message1B{} }
-func (m *Message1_Message1B) String() string { return proto.CompactTextString(m) }
+func (m *Message1_Message1B) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message1_Message1B) ProtoMessage()    {}
 
 // Deprecated: Use Message1_Message1B.ProtoReflect.Type instead.
 func (*Message1_Message1B) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{0, 1}
 }
-
-func (m *Message1_Message1B) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message1_Message1B.Unmarshal(m, b)
-}
-func (m *Message1_Message1B) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message1_Message1B.Marshal(b, m, deterministic)
-}
-func (m *Message1_Message1B) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message1_Message1B.Merge(m, src)
-}
-func (m *Message1_Message1B) XXX_Size() int {
-	return xxx_messageInfo_Message1_Message1B.Size(m)
-}
-func (m *Message1_Message1B) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message1_Message1B.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message1_Message1B proto.InternalMessageInfo
 
 // COMMENT: Message2A
 type Message2_Message2A struct {
@@ -217,31 +144,13 @@ func (m *Message2_Message2A) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[4].MessageOf(m)
 }
 func (m *Message2_Message2A) Reset()         { *m = Message2_Message2A{} }
-func (m *Message2_Message2A) String() string { return proto.CompactTextString(m) }
+func (m *Message2_Message2A) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message2_Message2A) ProtoMessage()    {}
 
 // Deprecated: Use Message2_Message2A.ProtoReflect.Type instead.
 func (*Message2_Message2A) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{1, 0}
 }
-
-func (m *Message2_Message2A) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message2_Message2A.Unmarshal(m, b)
-}
-func (m *Message2_Message2A) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message2_Message2A.Marshal(b, m, deterministic)
-}
-func (m *Message2_Message2A) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message2_Message2A.Merge(m, src)
-}
-func (m *Message2_Message2A) XXX_Size() int {
-	return xxx_messageInfo_Message2_Message2A.Size(m)
-}
-func (m *Message2_Message2A) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message2_Message2A.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message2_Message2A proto.InternalMessageInfo
 
 // COMMENT: Message2B
 type Message2_Message2B struct {
@@ -254,31 +163,13 @@ func (m *Message2_Message2B) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[5].MessageOf(m)
 }
 func (m *Message2_Message2B) Reset()         { *m = Message2_Message2B{} }
-func (m *Message2_Message2B) String() string { return proto.CompactTextString(m) }
+func (m *Message2_Message2B) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message2_Message2B) ProtoMessage()    {}
 
 // Deprecated: Use Message2_Message2B.ProtoReflect.Type instead.
 func (*Message2_Message2B) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{1, 1}
 }
-
-func (m *Message2_Message2B) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message2_Message2B.Unmarshal(m, b)
-}
-func (m *Message2_Message2B) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message2_Message2B.Marshal(b, m, deterministic)
-}
-func (m *Message2_Message2B) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message2_Message2B.Merge(m, src)
-}
-func (m *Message2_Message2B) XXX_Size() int {
-	return xxx_messageInfo_Message2_Message2B.Size(m)
-}
-func (m *Message2_Message2B) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message2_Message2B.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message2_Message2B proto.InternalMessageInfo
 
 var xxx_File_comments_comments_proto_rawdesc = []byte{
 	// 272 bytes of the wire-encoded FileDescriptorProto
@@ -323,25 +214,14 @@ func xxx_File_comments_comments_proto_init() {
 	if File_comments_comments_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 6)
 	File_comments_comments_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_comments_comments_proto_rawdesc,
 		GoTypes:            xxx_File_comments_comments_proto_goTypes,
 		DependencyIndexes:  xxx_File_comments_comments_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_comments_comments_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_comments_comments_proto_goTypes[0:][:6]
-	for i, mt := range messageTypes {
-		xxx_File_comments_comments_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_comments_comments_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("comments/comments.proto", xxx_File_comments_comments_proto_rawdesc_gzipped)
-	proto.RegisterType((*Message1)(nil), "goproto.protoc.comments.Message1")
-	proto.RegisterType((*Message2)(nil), "goproto.protoc.comments.Message2")
-	proto.RegisterType((*Message1_Message1A)(nil), "goproto.protoc.comments.Message1.Message1A")
-	proto.RegisterType((*Message1_Message1B)(nil), "goproto.protoc.comments.Message1.Message1B")
-	proto.RegisterType((*Message2_Message2A)(nil), "goproto.protoc.comments.Message2.Message2A")
-	proto.RegisterType((*Message2_Message2B)(nil), "goproto.protoc.comments.Message2.Message2B")
 	xxx_File_comments_comments_proto_goTypes = nil
 	xxx_File_comments_comments_proto_depIdxs = nil
 }

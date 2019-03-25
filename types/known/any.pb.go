@@ -4,10 +4,9 @@
 package known_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // `Any` contains an arbitrary serialized protocol buffer message along with a
@@ -131,7 +130,7 @@ func (m *Any) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_any_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Any) Reset()         { *m = Any{} }
-func (m *Any) String() string { return proto.CompactTextString(m) }
+func (m *Any) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Any) ProtoMessage()    {}
 
 // Deprecated: Use Any.ProtoReflect.Type instead.
@@ -140,24 +139,6 @@ func (*Any) Descriptor() ([]byte, []int) {
 }
 
 func (*Any) XXX_WellKnownType() string { return "Any" }
-
-func (m *Any) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Any.Unmarshal(m, b)
-}
-func (m *Any) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Any.Marshal(b, m, deterministic)
-}
-func (m *Any) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Any.Merge(m, src)
-}
-func (m *Any) XXX_Size() int {
-	return xxx_messageInfo_Any.Size(m)
-}
-func (m *Any) XXX_DiscardUnknown() {
-	xxx_messageInfo_Any.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Any proto.InternalMessageInfo
 
 func (m *Any) GetTypeUrl() string {
 	if m != nil {
@@ -209,20 +190,14 @@ func xxx_File_google_protobuf_any_proto_init() {
 	if File_google_protobuf_any_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_google_protobuf_any_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_any_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_any_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_any_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_any_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_any_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_any_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_any_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("google/protobuf/any.proto", xxx_File_google_protobuf_any_proto_rawdesc_gzipped)
-	proto.RegisterType((*Any)(nil), "google.protobuf.Any")
 	xxx_File_google_protobuf_any_proto_goTypes = nil
 	xxx_File_google_protobuf_any_proto_depIdxs = nil
 }

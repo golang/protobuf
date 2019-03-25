@@ -4,10 +4,9 @@
 package known_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // `FieldMask` represents a set of symbolic field paths, for example:
@@ -221,31 +220,13 @@ func (m *FieldMask) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_field_mask_proto_messageTypes[0].MessageOf(m)
 }
 func (m *FieldMask) Reset()         { *m = FieldMask{} }
-func (m *FieldMask) String() string { return proto.CompactTextString(m) }
+func (m *FieldMask) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*FieldMask) ProtoMessage()    {}
 
 // Deprecated: Use FieldMask.ProtoReflect.Type instead.
 func (*FieldMask) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_field_mask_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *FieldMask) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_FieldMask.Unmarshal(m, b)
-}
-func (m *FieldMask) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_FieldMask.Marshal(b, m, deterministic)
-}
-func (m *FieldMask) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FieldMask.Merge(m, src)
-}
-func (m *FieldMask) XXX_Size() int {
-	return xxx_messageInfo_FieldMask.Size(m)
-}
-func (m *FieldMask) XXX_DiscardUnknown() {
-	xxx_messageInfo_FieldMask.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FieldMask proto.InternalMessageInfo
 
 func (m *FieldMask) GetPaths() []string {
 	if m != nil {
@@ -290,20 +271,14 @@ func xxx_File_google_protobuf_field_mask_proto_init() {
 	if File_google_protobuf_field_mask_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_google_protobuf_field_mask_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_field_mask_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_field_mask_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_field_mask_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_field_mask_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_field_mask_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_field_mask_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_field_mask_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("google/protobuf/field_mask.proto", xxx_File_google_protobuf_field_mask_proto_rawdesc_gzipped)
-	proto.RegisterType((*FieldMask)(nil), "google.protobuf.FieldMask")
 	xxx_File_google_protobuf_field_mask_proto_goTypes = nil
 	xxx_File_google_protobuf_field_mask_proto_depIdxs = nil
 }

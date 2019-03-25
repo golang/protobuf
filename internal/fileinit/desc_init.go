@@ -19,13 +19,6 @@ func newFileDesc(fb FileBuilder) *fileDesc {
 	file.initDecls(len(fb.EnumOutputTypes), len(fb.MessageOutputTypes), len(fb.ExtensionOutputTypes))
 	file.unmarshalSeed(fb.RawDescriptor)
 
-	// Determine which message descriptors represent map entries based on the
-	// lack of an associated Go type.
-	messageDecls := file.GoTypes[len(file.allEnums):]
-	for i := range file.allMessages {
-		file.allMessages[i].isMapEntry = messageDecls[i] == nil
-	}
-
 	// Extended message dependencies are eagerly handled since registration
 	// needs this information at program init time.
 	for i := range file.allExtensions {

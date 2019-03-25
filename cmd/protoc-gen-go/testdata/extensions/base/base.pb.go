@@ -4,11 +4,10 @@
 package base
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 type BaseMessage struct {
@@ -23,7 +22,7 @@ func (m *BaseMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_base_base_proto_messageTypes[0].MessageOf(m)
 }
 func (m *BaseMessage) Reset()         { *m = BaseMessage{} }
-func (m *BaseMessage) String() string { return proto.CompactTextString(m) }
+func (m *BaseMessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*BaseMessage) ProtoMessage()    {}
 
 // Deprecated: Use BaseMessage.ProtoReflect.Type instead.
@@ -40,24 +39,6 @@ var extRange_BaseMessage = []protoiface.ExtensionRangeV1{
 func (*BaseMessage) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_BaseMessage
 }
-
-func (m *BaseMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_BaseMessage.Unmarshal(m, b)
-}
-func (m *BaseMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_BaseMessage.Marshal(b, m, deterministic)
-}
-func (m *BaseMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BaseMessage.Merge(m, src)
-}
-func (m *BaseMessage) XXX_Size() int {
-	return xxx_messageInfo_BaseMessage.Size(m)
-}
-func (m *BaseMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_BaseMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_BaseMessage proto.InternalMessageInfo
 
 func (m *BaseMessage) GetField() string {
 	if m != nil && m.Field != nil {
@@ -77,7 +58,7 @@ func (m *MessageSetWireFormatMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_base_base_proto_messageTypes[1].MessageOf(m)
 }
 func (m *MessageSetWireFormatMessage) Reset()         { *m = MessageSetWireFormatMessage{} }
-func (m *MessageSetWireFormatMessage) String() string { return proto.CompactTextString(m) }
+func (m *MessageSetWireFormatMessage) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*MessageSetWireFormatMessage) ProtoMessage()    {}
 
 // Deprecated: Use MessageSetWireFormatMessage.ProtoReflect.Type instead.
@@ -93,24 +74,6 @@ var extRange_MessageSetWireFormatMessage = []protoiface.ExtensionRangeV1{
 func (*MessageSetWireFormatMessage) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_MessageSetWireFormatMessage
 }
-
-func (m *MessageSetWireFormatMessage) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MessageSetWireFormatMessage.Unmarshal(m, b)
-}
-func (m *MessageSetWireFormatMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MessageSetWireFormatMessage.Marshal(b, m, deterministic)
-}
-func (m *MessageSetWireFormatMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MessageSetWireFormatMessage.Merge(m, src)
-}
-func (m *MessageSetWireFormatMessage) XXX_Size() int {
-	return xxx_messageInfo_MessageSetWireFormatMessage.Size(m)
-}
-func (m *MessageSetWireFormatMessage) XXX_DiscardUnknown() {
-	xxx_messageInfo_MessageSetWireFormatMessage.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MessageSetWireFormatMessage proto.InternalMessageInfo
 
 var xxx_File_extensions_base_base_proto_rawdesc = []byte{
 	// 233 bytes of the wire-encoded FileDescriptorProto
@@ -149,21 +112,14 @@ func xxx_File_extensions_base_base_proto_init() {
 	if File_extensions_base_base_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 2)
 	File_extensions_base_base_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_extensions_base_base_proto_rawdesc,
 		GoTypes:            xxx_File_extensions_base_base_proto_goTypes,
 		DependencyIndexes:  xxx_File_extensions_base_base_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_extensions_base_base_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_extensions_base_base_proto_goTypes[0:][:2]
-	for i, mt := range messageTypes {
-		xxx_File_extensions_base_base_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_extensions_base_base_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("extensions/base/base.proto", xxx_File_extensions_base_base_proto_rawdesc_gzipped)
-	proto.RegisterType((*BaseMessage)(nil), "goproto.protoc.extension.base.BaseMessage")
-	proto.RegisterType((*MessageSetWireFormatMessage)(nil), "goproto.protoc.extension.base.MessageSetWireFormatMessage")
 	xxx_File_extensions_base_base_proto_goTypes = nil
 	xxx_File_extensions_base_base_proto_depIdxs = nil
 }

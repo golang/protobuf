@@ -4,10 +4,9 @@
 package known_proto
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // `SourceContext` represents information about the source of a
@@ -25,31 +24,13 @@ func (m *SourceContext) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_source_context_proto_messageTypes[0].MessageOf(m)
 }
 func (m *SourceContext) Reset()         { *m = SourceContext{} }
-func (m *SourceContext) String() string { return proto.CompactTextString(m) }
+func (m *SourceContext) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*SourceContext) ProtoMessage()    {}
 
 // Deprecated: Use SourceContext.ProtoReflect.Type instead.
 func (*SourceContext) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_source_context_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *SourceContext) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_SourceContext.Unmarshal(m, b)
-}
-func (m *SourceContext) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_SourceContext.Marshal(b, m, deterministic)
-}
-func (m *SourceContext) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SourceContext.Merge(m, src)
-}
-func (m *SourceContext) XXX_Size() int {
-	return xxx_messageInfo_SourceContext.Size(m)
-}
-func (m *SourceContext) XXX_DiscardUnknown() {
-	xxx_messageInfo_SourceContext.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SourceContext proto.InternalMessageInfo
 
 func (m *SourceContext) GetFileName() string {
 	if m != nil {
@@ -95,20 +76,14 @@ func xxx_File_google_protobuf_source_context_proto_init() {
 	if File_google_protobuf_source_context_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 1)
 	File_google_protobuf_source_context_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_google_protobuf_source_context_proto_rawdesc,
 		GoTypes:            xxx_File_google_protobuf_source_context_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_source_context_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_google_protobuf_source_context_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_google_protobuf_source_context_proto_goTypes[0:][:1]
-	for i, mt := range messageTypes {
-		xxx_File_google_protobuf_source_context_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_google_protobuf_source_context_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("google/protobuf/source_context.proto", xxx_File_google_protobuf_source_context_proto_rawdesc_gzipped)
-	proto.RegisterType((*SourceContext)(nil), "google.protobuf.SourceContext")
 	xxx_File_google_protobuf_source_context_proto_goTypes = nil
 	xxx_File_google_protobuf_source_context_proto_depIdxs = nil
 }

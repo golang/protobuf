@@ -4,10 +4,9 @@
 package proto2
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // EnumType1 comment.
@@ -311,31 +310,13 @@ func (m *EnumContainerMessage1) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_enum_proto_messageTypes[0].MessageOf(m)
 }
 func (m *EnumContainerMessage1) Reset()         { *m = EnumContainerMessage1{} }
-func (m *EnumContainerMessage1) String() string { return proto.CompactTextString(m) }
+func (m *EnumContainerMessage1) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*EnumContainerMessage1) ProtoMessage()    {}
 
 // Deprecated: Use EnumContainerMessage1.ProtoReflect.Type instead.
 func (*EnumContainerMessage1) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *EnumContainerMessage1) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EnumContainerMessage1.Unmarshal(m, b)
-}
-func (m *EnumContainerMessage1) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EnumContainerMessage1.Marshal(b, m, deterministic)
-}
-func (m *EnumContainerMessage1) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EnumContainerMessage1.Merge(m, src)
-}
-func (m *EnumContainerMessage1) XXX_Size() int {
-	return xxx_messageInfo_EnumContainerMessage1.Size(m)
-}
-func (m *EnumContainerMessage1) XXX_DiscardUnknown() {
-	xxx_messageInfo_EnumContainerMessage1.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EnumContainerMessage1 proto.InternalMessageInfo
 
 const Default_EnumContainerMessage1_DefaultDuplicate1 EnumType2 = EnumType2_duplicate1
 const Default_EnumContainerMessage1_DefaultDuplicate2 EnumType2 = EnumType2_duplicate2
@@ -367,7 +348,7 @@ func (m *EnumContainerMessage1_EnumContainerMessage2) Reset() {
 	*m = EnumContainerMessage1_EnumContainerMessage2{}
 }
 func (m *EnumContainerMessage1_EnumContainerMessage2) String() string {
-	return proto.CompactTextString(m)
+	return protoimpl.X.MessageStringOf(m)
 }
 func (*EnumContainerMessage1_EnumContainerMessage2) ProtoMessage() {}
 
@@ -375,24 +356,6 @@ func (*EnumContainerMessage1_EnumContainerMessage2) ProtoMessage() {}
 func (*EnumContainerMessage1_EnumContainerMessage2) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawdesc_gzipped, []int{0, 0}
 }
-
-func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2.Unmarshal(m, b)
-}
-func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2.Marshal(b, m, deterministic)
-}
-func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2.Merge(m, src)
-}
-func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_Size() int {
-	return xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2.Size(m)
-}
-func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_DiscardUnknown() {
-	xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EnumContainerMessage1_EnumContainerMessage2 proto.InternalMessageInfo
 
 var xxx_File_proto2_enum_proto_rawdesc = []byte{
 	// 624 bytes of the wire-encoded FileDescriptorProto
@@ -465,28 +428,15 @@ func xxx_File_proto2_enum_proto_init() {
 	if File_proto2_enum_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 2)
 	File_proto2_enum_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_proto2_enum_proto_rawdesc,
 		GoTypes:            xxx_File_proto2_enum_proto_goTypes,
 		DependencyIndexes:  xxx_File_proto2_enum_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_proto2_enum_proto_enumTypes,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_proto2_enum_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_proto2_enum_proto_goTypes[6:][:2]
-	for i, mt := range messageTypes {
-		xxx_File_proto2_enum_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_proto2_enum_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("proto2/enum.proto", xxx_File_proto2_enum_proto_rawdesc_gzipped)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumType1", EnumType1_name, EnumType1_value)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumType2", EnumType2_name, EnumType2_value)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_NestedEnumType1A", EnumContainerMessage1_NestedEnumType1A_name, EnumContainerMessage1_NestedEnumType1A_value)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_NestedEnumType1B", EnumContainerMessage1_NestedEnumType1B_name, EnumContainerMessage1_NestedEnumType1B_value)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A", EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_name, EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_value)
-	proto.RegisterEnum("goproto.protoc.proto2.EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B", EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_name, EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_value)
-	proto.RegisterType((*EnumContainerMessage1)(nil), "goproto.protoc.proto2.EnumContainerMessage1")
-	proto.RegisterType((*EnumContainerMessage1_EnumContainerMessage2)(nil), "goproto.protoc.proto2.EnumContainerMessage1.EnumContainerMessage2")
 	xxx_File_proto2_enum_proto_goTypes = nil
 	xxx_File_proto2_enum_proto_depIdxs = nil
 }

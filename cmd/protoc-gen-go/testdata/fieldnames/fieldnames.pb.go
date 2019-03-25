@@ -4,10 +4,9 @@
 package fieldnames
 
 import (
-	proto "github.com/golang/protobuf/proto"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
+	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	reflect "reflect"
 )
 
 // Assorted edge cases in field name conflict resolution.
@@ -59,31 +58,13 @@ func (m *Message) ProtoReflect() protoreflect.Message {
 	return xxx_File_fieldnames_fieldnames_proto_messageTypes[0].MessageOf(m)
 }
 func (m *Message) Reset()         { *m = Message{} }
-func (m *Message) String() string { return proto.CompactTextString(m) }
+func (m *Message) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message) ProtoMessage()    {}
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_fieldnames_fieldnames_proto_rawdesc_gzipped, []int{0}
 }
-
-func (m *Message) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message.Unmarshal(m, b)
-}
-func (m *Message) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message.Marshal(b, m, deterministic)
-}
-func (m *Message) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message.Merge(m, src)
-}
-func (m *Message) XXX_Size() int {
-	return xxx_messageInfo_Message.Size(m)
-}
-func (m *Message) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message proto.InternalMessageInfo
 
 func (m *Message) GetFieldOne() string {
 	if m != nil && m.FieldOne != nil {
@@ -288,31 +269,13 @@ func (m *Message_OneofMessageConflict) ProtoReflect() protoreflect.Message {
 	return xxx_File_fieldnames_fieldnames_proto_messageTypes[1].MessageOf(m)
 }
 func (m *Message_OneofMessageConflict) Reset()         { *m = Message_OneofMessageConflict{} }
-func (m *Message_OneofMessageConflict) String() string { return proto.CompactTextString(m) }
+func (m *Message_OneofMessageConflict) String() string { return protoimpl.X.MessageStringOf(m) }
 func (*Message_OneofMessageConflict) ProtoMessage()    {}
 
 // Deprecated: Use Message_OneofMessageConflict.ProtoReflect.Type instead.
 func (*Message_OneofMessageConflict) Descriptor() ([]byte, []int) {
 	return xxx_File_fieldnames_fieldnames_proto_rawdesc_gzipped, []int{0, 0}
 }
-
-func (m *Message_OneofMessageConflict) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Message_OneofMessageConflict.Unmarshal(m, b)
-}
-func (m *Message_OneofMessageConflict) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Message_OneofMessageConflict.Marshal(b, m, deterministic)
-}
-func (m *Message_OneofMessageConflict) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Message_OneofMessageConflict.Merge(m, src)
-}
-func (m *Message_OneofMessageConflict) XXX_Size() int {
-	return xxx_messageInfo_Message_OneofMessageConflict.Size(m)
-}
-func (m *Message_OneofMessageConflict) XXX_DiscardUnknown() {
-	xxx_messageInfo_Message_OneofMessageConflict.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Message_OneofMessageConflict proto.InternalMessageInfo
 
 var xxx_File_fieldnames_fieldnames_proto_rawdesc = []byte{
 	// 826 bytes of the wire-encoded FileDescriptorProto
@@ -388,21 +351,14 @@ func xxx_File_fieldnames_fieldnames_proto_init() {
 	if File_fieldnames_fieldnames_proto != nil {
 		return
 	}
-	messageTypes := make([]protoreflect.MessageType, 2)
 	File_fieldnames_fieldnames_proto = protoimpl.FileBuilder{
 		RawDescriptor:      xxx_File_fieldnames_fieldnames_proto_rawdesc,
 		GoTypes:            xxx_File_fieldnames_fieldnames_proto_goTypes,
 		DependencyIndexes:  xxx_File_fieldnames_fieldnames_proto_depIdxs,
-		MessageOutputTypes: messageTypes,
+		MessageOutputTypes: xxx_File_fieldnames_fieldnames_proto_messageTypes,
+		FilesRegistry:      protoregistry.GlobalFiles,
+		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	messageGoTypes := xxx_File_fieldnames_fieldnames_proto_goTypes[0:][:2]
-	for i, mt := range messageTypes {
-		xxx_File_fieldnames_fieldnames_proto_messageTypes[i].GoType = reflect.TypeOf(messageGoTypes[i])
-		xxx_File_fieldnames_fieldnames_proto_messageTypes[i].PBType = mt
-	}
-	proto.RegisterFile("fieldnames/fieldnames.proto", xxx_File_fieldnames_fieldnames_proto_rawdesc_gzipped)
-	proto.RegisterType((*Message)(nil), "goproto.protoc.fieldnames.Message")
-	proto.RegisterType((*Message_OneofMessageConflict)(nil), "goproto.protoc.fieldnames.Message.OneofMessageConflict")
 	xxx_File_fieldnames_fieldnames_proto_goTypes = nil
 	xxx_File_fieldnames_fieldnames_proto_depIdxs = nil
 }
