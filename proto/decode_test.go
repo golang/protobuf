@@ -16,6 +16,7 @@ import (
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 
 	testpb "github.com/golang/protobuf/v2/internal/testprotos/test"
+	test3pb "github.com/golang/protobuf/v2/internal/testprotos/test3"
 )
 
 type testProto struct {
@@ -69,6 +70,23 @@ var testProtos = []testProto{
 			OptionalString:     scalar.String("string"),
 			OptionalBytes:      []byte("bytes"),
 			OptionalNestedEnum: testpb.TestAllTypes_BAR.Enum(),
+		}, &test3pb.TestAllTypes{
+			OptionalInt32:      1001,
+			OptionalInt64:      1002,
+			OptionalUint32:     1003,
+			OptionalUint64:     1004,
+			OptionalSint32:     1005,
+			OptionalSint64:     1006,
+			OptionalFixed32:    1007,
+			OptionalFixed64:    1008,
+			OptionalSfixed32:   1009,
+			OptionalSfixed64:   1010,
+			OptionalFloat:      1011.5,
+			OptionalDouble:     1012.5,
+			OptionalBool:       true,
+			OptionalString:     "string",
+			OptionalBytes:      []byte("bytes"),
+			OptionalNestedEnum: test3pb.TestAllTypes_BAR,
 		}, build(
 			&testpb.TestAllExtensions{},
 			extend(testpb.E_OptionalInt32Extension, scalar.Int32(1001)),
@@ -155,6 +173,13 @@ var testProtos = []testProto{
 					OptionalInt32: scalar.Int32(43),
 				},
 			},
+		}, &test3pb.TestAllTypes{
+			OptionalNestedMessage: &test3pb.TestAllTypes_NestedMessage{
+				A: 42,
+				Corecursive: &test3pb.TestAllTypes{
+					OptionalInt32: 43,
+				},
+			},
 		}, build(
 			&testpb.TestAllExtensions{},
 			extend(testpb.E_OptionalNestedMessageExtension, &testpb.TestAllTypes_NestedMessage{
@@ -182,6 +207,13 @@ var testProtos = []testProto{
 					OptionalInt32: scalar.Int32(43),
 				},
 			},
+		}, &test3pb.TestAllTypes{
+			OptionalNestedMessage: &test3pb.TestAllTypes_NestedMessage{
+				A: 42,
+				Corecursive: &test3pb.TestAllTypes{
+					OptionalInt32: 43,
+				},
+			},
 		}, build(
 			&testpb.TestAllExtensions{},
 			extend(testpb.E_OptionalNestedMessageExtension, &testpb.TestAllTypes_NestedMessage{
@@ -207,6 +239,10 @@ var testProtos = []testProto{
 		decodeTo: []proto.Message{&testpb.TestAllTypes{
 			OptionalNestedMessage: &testpb.TestAllTypes_NestedMessage{
 				A: scalar.Int32(2),
+			},
+		}, &test3pb.TestAllTypes{
+			OptionalNestedMessage: &test3pb.TestAllTypes_NestedMessage{
+				A: 2,
 			},
 		}, build(
 			&testpb.TestAllExtensions{},
@@ -244,6 +280,26 @@ var testProtos = []testProto{
 			RepeatedNestedEnum: []testpb.TestAllTypes_NestedEnum{
 				testpb.TestAllTypes_FOO,
 				testpb.TestAllTypes_BAR,
+			},
+		}, &test3pb.TestAllTypes{
+			RepeatedInt32:    []int32{1001, 2001},
+			RepeatedInt64:    []int64{1002, 2002},
+			RepeatedUint32:   []uint32{1003, 2003},
+			RepeatedUint64:   []uint64{1004, 2004},
+			RepeatedSint32:   []int32{1005, 2005},
+			RepeatedSint64:   []int64{1006, 2006},
+			RepeatedFixed32:  []uint32{1007, 2007},
+			RepeatedFixed64:  []uint64{1008, 2008},
+			RepeatedSfixed32: []int32{1009, 2009},
+			RepeatedSfixed64: []int64{1010, 2010},
+			RepeatedFloat:    []float32{1011.5, 2011.5},
+			RepeatedDouble:   []float64{1012.5, 2012.5},
+			RepeatedBool:     []bool{true, false},
+			RepeatedString:   []string{"foo", "bar"},
+			RepeatedBytes:    [][]byte{[]byte("FOO"), []byte("BAR")},
+			RepeatedNestedEnum: []test3pb.TestAllTypes_NestedEnum{
+				test3pb.TestAllTypes_FOO,
+				test3pb.TestAllTypes_BAR,
 			},
 		}, build(
 			&testpb.TestAllExtensions{},
@@ -322,6 +378,24 @@ var testProtos = []testProto{
 				testpb.TestAllTypes_FOO,
 				testpb.TestAllTypes_BAR,
 			},
+		}, &test3pb.TestAllTypes{
+			RepeatedInt32:    []int32{1001, 2001},
+			RepeatedInt64:    []int64{1002, 2002},
+			RepeatedUint32:   []uint32{1003, 2003},
+			RepeatedUint64:   []uint64{1004, 2004},
+			RepeatedSint32:   []int32{1005, 2005},
+			RepeatedSint64:   []int64{1006, 2006},
+			RepeatedFixed32:  []uint32{1007, 2007},
+			RepeatedFixed64:  []uint64{1008, 2008},
+			RepeatedSfixed32: []int32{1009, 2009},
+			RepeatedSfixed64: []int64{1010, 2010},
+			RepeatedFloat:    []float32{1011.5, 2011.5},
+			RepeatedDouble:   []float64{1012.5, 2012.5},
+			RepeatedBool:     []bool{true, false},
+			RepeatedNestedEnum: []test3pb.TestAllTypes_NestedEnum{
+				test3pb.TestAllTypes_FOO,
+				test3pb.TestAllTypes_BAR,
+			},
 		}, build(
 			&testpb.TestAllExtensions{},
 			extend(testpb.E_RepeatedInt32Extension, []int32{1001, 2001}),
@@ -395,6 +469,11 @@ var testProtos = []testProto{
 				{A: scalar.Int32(1)},
 				{A: scalar.Int32(2)},
 			},
+		}, &test3pb.TestAllTypes{
+			RepeatedNestedMessage: []*test3pb.TestAllTypes_NestedMessage{
+				{A: 1},
+				{A: 2},
+			},
 		}, build(
 			&testpb.TestAllExtensions{},
 			extend(testpb.E_RepeatedNestedMessageExtension, []*testpb.TestAllTypes_NestedMessage{
@@ -459,6 +538,30 @@ var testProtos = []testProto{
 			MapStringNestedEnum: map[string]testpb.TestAllTypes_NestedEnum{
 				"73.1.key": testpb.TestAllTypes_FOO,
 				"73.2.key": testpb.TestAllTypes_BAR,
+			},
+		}, &test3pb.TestAllTypes{
+			MapInt32Int32:       map[int32]int32{1056: 1156, 2056: 2156},
+			MapInt64Int64:       map[int64]int64{1057: 1157, 2057: 2157},
+			MapUint32Uint32:     map[uint32]uint32{1058: 1158, 2058: 2158},
+			MapUint64Uint64:     map[uint64]uint64{1059: 1159, 2059: 2159},
+			MapSint32Sint32:     map[int32]int32{1060: 1160, 2060: 2160},
+			MapSint64Sint64:     map[int64]int64{1061: 1161, 2061: 2161},
+			MapFixed32Fixed32:   map[uint32]uint32{1062: 1162, 2062: 2162},
+			MapFixed64Fixed64:   map[uint64]uint64{1063: 1163, 2063: 2163},
+			MapSfixed32Sfixed32: map[int32]int32{1064: 1164, 2064: 2164},
+			MapSfixed64Sfixed64: map[int64]int64{1065: 1165, 2065: 2165},
+			MapInt32Float:       map[int32]float32{1066: 1166.5, 2066: 2166.5},
+			MapInt32Double:      map[int32]float64{1067: 1167.5, 2067: 2167.5},
+			MapBoolBool:         map[bool]bool{true: false, false: true},
+			MapStringString:     map[string]string{"69.1.key": "69.1.val", "69.2.key": "69.2.val"},
+			MapStringBytes:      map[string][]byte{"70.1.key": []byte("70.1.val"), "70.2.key": []byte("70.2.val")},
+			MapStringNestedMessage: map[string]*test3pb.TestAllTypes_NestedMessage{
+				"71.1.key": {A: 1171},
+				"71.2.key": {A: 2171},
+			},
+			MapStringNestedEnum: map[string]test3pb.TestAllTypes_NestedEnum{
+				"73.1.key": test3pb.TestAllTypes_FOO,
+				"73.2.key": test3pb.TestAllTypes_BAR,
 			},
 		}},
 		wire: pack.Message{
@@ -605,28 +708,42 @@ var testProtos = []testProto{
 		}.Marshal(),
 	},
 	{
-		desc:     "oneof (uint32)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofUint32{1111}}},
-		wire:     pack.Message{pack.Tag{111, pack.VarintType}, pack.Varint(1111)}.Marshal(),
+		desc: "oneof (uint32)",
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofUint32{1111}},
+			&test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofUint32{1111}},
+		},
+		wire: pack.Message{pack.Tag{111, pack.VarintType}, pack.Varint(1111)}.Marshal(),
 	},
 	{
 		desc: "oneof (message)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofNestedMessage{
-			&testpb.TestAllTypes_NestedMessage{A: scalar.Int32(1112)},
-		}}},
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofNestedMessage{
+				&testpb.TestAllTypes_NestedMessage{A: scalar.Int32(1112)},
+			}}, &test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofNestedMessage{
+				&test3pb.TestAllTypes_NestedMessage{A: 1112},
+			}},
+		},
 		wire: pack.Message{pack.Tag{112, pack.BytesType}, pack.LengthPrefix(pack.Message{
 			pack.Message{pack.Tag{1, pack.VarintType}, pack.Varint(1112)},
 		})}.Marshal(),
 	},
 	{
 		desc: "oneof (overridden message)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofNestedMessage{
-			&testpb.TestAllTypes_NestedMessage{
-				Corecursive: &testpb.TestAllTypes{
-					OptionalInt32: scalar.Int32(43),
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofNestedMessage{
+				&testpb.TestAllTypes_NestedMessage{
+					Corecursive: &testpb.TestAllTypes{
+						OptionalInt32: scalar.Int32(43),
+					},
 				},
-			},
-		}}},
+			}}, &test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofNestedMessage{
+				&test3pb.TestAllTypes_NestedMessage{
+					Corecursive: &test3pb.TestAllTypes{
+						OptionalInt32: 43,
+					},
+				},
+			}}},
 		wire: pack.Message{
 			pack.Tag{112, pack.BytesType}, pack.LengthPrefix(pack.Message{
 				pack.Message{pack.Tag{1, pack.VarintType}, pack.Varint(1)},
@@ -639,43 +756,67 @@ var testProtos = []testProto{
 		}.Marshal(),
 	},
 	{
-		desc:     "oneof (string)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofString{"1113"}}},
-		wire:     pack.Message{pack.Tag{113, pack.BytesType}, pack.String("1113")}.Marshal(),
+		desc: "oneof (string)",
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofString{"1113"}},
+			&test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofString{"1113"}},
+		},
+		wire: pack.Message{pack.Tag{113, pack.BytesType}, pack.String("1113")}.Marshal(),
 	},
 	{
-		desc:     "oneof (bytes)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofBytes{[]byte("1114")}}},
-		wire:     pack.Message{pack.Tag{114, pack.BytesType}, pack.String("1114")}.Marshal(),
+		desc: "oneof (bytes)",
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofBytes{[]byte("1114")}},
+			&test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofBytes{[]byte("1114")}},
+		},
+		wire: pack.Message{pack.Tag{114, pack.BytesType}, pack.String("1114")}.Marshal(),
 	},
 	{
-		desc:     "oneof (bool)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofBool{true}}},
-		wire:     pack.Message{pack.Tag{115, pack.VarintType}, pack.Bool(true)}.Marshal(),
+		desc: "oneof (bool)",
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofBool{true}},
+			&test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofBool{true}},
+		},
+		wire: pack.Message{pack.Tag{115, pack.VarintType}, pack.Bool(true)}.Marshal(),
 	},
 	{
-		desc:     "oneof (uint64)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofUint64{116}}},
-		wire:     pack.Message{pack.Tag{116, pack.VarintType}, pack.Varint(116)}.Marshal(),
+		desc: "oneof (uint64)",
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofUint64{116}},
+			&test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofUint64{116}},
+		},
+		wire: pack.Message{pack.Tag{116, pack.VarintType}, pack.Varint(116)}.Marshal(),
 	},
 	{
-		desc:     "oneof (float)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofFloat{117.5}}},
-		wire:     pack.Message{pack.Tag{117, pack.Fixed32Type}, pack.Float32(117.5)}.Marshal(),
+		desc: "oneof (float)",
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofFloat{117.5}},
+			&test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofFloat{117.5}},
+		},
+		wire: pack.Message{pack.Tag{117, pack.Fixed32Type}, pack.Float32(117.5)}.Marshal(),
 	},
 	{
-		desc:     "oneof (double)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofDouble{118.5}}},
-		wire:     pack.Message{pack.Tag{118, pack.Fixed64Type}, pack.Float64(118.5)}.Marshal(),
+		desc: "oneof (double)",
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofDouble{118.5}},
+			&test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofDouble{118.5}},
+		},
+		wire: pack.Message{pack.Tag{118, pack.Fixed64Type}, pack.Float64(118.5)}.Marshal(),
 	},
 	{
-		desc:     "oneof (enum)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofEnum{testpb.TestAllTypes_BAR}}},
-		wire:     pack.Message{pack.Tag{119, pack.VarintType}, pack.Varint(int(testpb.TestAllTypes_BAR))}.Marshal(),
+		desc: "oneof (enum)",
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofEnum{testpb.TestAllTypes_BAR}},
+			&test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofEnum{test3pb.TestAllTypes_BAR}},
+		},
+		wire: pack.Message{pack.Tag{119, pack.VarintType}, pack.Varint(int(testpb.TestAllTypes_BAR))}.Marshal(),
 	},
 	{
-		desc:     "oneof (overridden value)",
-		decodeTo: []proto.Message{&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofUint64{2}}},
+		desc: "oneof (overridden value)",
+		decodeTo: []proto.Message{
+			&testpb.TestAllTypes{OneofField: &testpb.TestAllTypes_OneofUint64{2}},
+			&test3pb.TestAllTypes{OneofField: &test3pb.TestAllTypes_OneofUint64{2}},
+		},
 		wire: pack.Message{
 			pack.Tag{111, pack.VarintType}, pack.Varint(1),
 			pack.Tag{116, pack.VarintType}, pack.Varint(2),
@@ -693,6 +834,11 @@ var testProtos = []testProto{
 			unknown(100000, pack.Message{
 				pack.Tag{100000, pack.VarintType}, pack.Varint(1),
 			}.Marshal()),
+		), build(
+			&test3pb.TestAllTypes{},
+			unknown(100000, pack.Message{
+				pack.Tag{100000, pack.VarintType}, pack.Varint(1),
+			}.Marshal()),
 		)},
 		wire: pack.Message{
 			pack.Tag{100000, pack.VarintType}, pack.Varint(1),
@@ -705,6 +851,11 @@ var testProtos = []testProto{
 			unknown(1, pack.Message{
 				pack.Tag{1, pack.BytesType}, pack.String("string"),
 			}.Marshal()),
+		), build(
+			&test3pb.TestAllTypes{},
+			unknown(1, pack.Message{
+				pack.Tag{1, pack.BytesType}, pack.String("string"),
+			}.Marshal()),
 		)},
 		wire: pack.Message{
 			pack.Tag{1, pack.BytesType}, pack.String("string"),
@@ -714,6 +865,8 @@ var testProtos = []testProto{
 		desc: "map field element mismatch",
 		decodeTo: []proto.Message{
 			&testpb.TestAllTypes{
+				MapInt32Int32: map[int32]int32{1: 0},
+			}, &test3pb.TestAllTypes{
 				MapInt32Int32: map[int32]int32{1: 0},
 			},
 		},
