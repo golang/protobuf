@@ -952,18 +952,18 @@ int32_to_str: {
 			},
 		},
 	}, {
-		desc:         "proto2 required fields not set",
+		desc:         "required fields not set",
 		inputMessage: &pb2.Requireds{},
 		wantErr:      true,
 	}, {
-		desc:         "proto2 required field set",
+		desc:         "required field set",
 		inputMessage: &pb2.PartialRequired{},
 		inputText:    "req_string: 'this is required'",
 		wantMessage: &pb2.PartialRequired{
 			ReqString: scalar.String("this is required"),
 		},
 	}, {
-		desc:         "proto2 required fields partially set",
+		desc:         "required fields partially set",
 		inputMessage: &pb2.Requireds{},
 		inputText: `
 req_bool: false
@@ -979,7 +979,23 @@ req_enum: ONE
 		},
 		wantErr: true,
 	}, {
-		desc:         "proto2 required fields all set",
+		desc:         "required fields partially set with AllowPartial",
+		umo:          textpb.UnmarshalOptions{AllowPartial: true},
+		inputMessage: &pb2.Requireds{},
+		inputText: `
+req_bool: false
+req_sfixed64: 3203386110
+req_string: "hello"
+req_enum: ONE
+`,
+		wantMessage: &pb2.Requireds{
+			ReqBool:     scalar.Bool(false),
+			ReqSfixed64: scalar.Int64(0xbeefcafe),
+			ReqString:   scalar.String("hello"),
+			ReqEnum:     pb2.Enum_ONE.Enum(),
+		},
+	}, {
+		desc:         "required fields all set",
 		inputMessage: &pb2.Requireds{},
 		inputText: `
 req_bool: false
@@ -1006,6 +1022,14 @@ req_nested: {}
 		},
 		wantErr: true,
 	}, {
+		desc:         "indirect required field with AllowPartial",
+		umo:          textpb.UnmarshalOptions{AllowPartial: true},
+		inputMessage: &pb2.IndirectRequired{},
+		inputText:    "opt_nested: {}",
+		wantMessage: &pb2.IndirectRequired{
+			OptNested: &pb2.NestedWithRequired{},
+		},
+	}, {
 		desc:         "indirect required field in repeated",
 		inputMessage: &pb2.IndirectRequired{},
 		inputText: `
@@ -1013,9 +1037,6 @@ rpt_nested: {
   req_string: "one"
 }
 rpt_nested: {}
-rpt_nested: {
-  req_string: "three"
-}
 `,
 		wantMessage: &pb2.IndirectRequired{
 			RptNested: []*pb2.NestedWithRequired{
@@ -1023,12 +1044,27 @@ rpt_nested: {
 					ReqString: scalar.String("one"),
 				},
 				{},
-				{
-					ReqString: scalar.String("three"),
-				},
 			},
 		},
 		wantErr: true,
+	}, {
+		desc:         "indirect required field in repeated with AllowPartial",
+		umo:          textpb.UnmarshalOptions{AllowPartial: true},
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `
+rpt_nested: {
+  req_string: "one"
+}
+rpt_nested: {}
+`,
+		wantMessage: &pb2.IndirectRequired{
+			RptNested: []*pb2.NestedWithRequired{
+				{
+					ReqString: scalar.String("one"),
+				},
+				{},
+			},
+		},
 	}, {
 		desc:         "indirect required field in map",
 		inputMessage: &pb2.IndirectRequired{},
@@ -1053,6 +1089,29 @@ str_to_nested: {
 		},
 		wantErr: true,
 	}, {
+		desc:         "indirect required field in map with AllowPartial",
+		umo:          textpb.UnmarshalOptions{AllowPartial: true},
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `
+str_to_nested: {
+  key: "missing"
+}
+str_to_nested: {
+  key: "contains"
+  value: {
+    req_string: "here"
+  }
+}
+`,
+		wantMessage: &pb2.IndirectRequired{
+			StrToNested: map[string]*pb2.NestedWithRequired{
+				"missing": &pb2.NestedWithRequired{},
+				"contains": &pb2.NestedWithRequired{
+					ReqString: scalar.String("here"),
+				},
+			},
+		},
+	}, {
 		desc:         "indirect required field in oneof",
 		inputMessage: &pb2.IndirectRequired{},
 		inputText: `oneof_nested: {}
@@ -1063,6 +1122,17 @@ str_to_nested: {
 			},
 		},
 		wantErr: true,
+	}, {
+		desc:         "indirect required field in oneof with AllowPartial",
+		umo:          textpb.UnmarshalOptions{AllowPartial: true},
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `oneof_nested: {}
+`,
+		wantMessage: &pb2.IndirectRequired{
+			Union: &pb2.IndirectRequired_OneofNested{
+				OneofNested: &pb2.NestedWithRequired{},
+			},
+		},
 	}, {
 		desc:         "ignore reserved field",
 		inputMessage: &pb2.Nests{},

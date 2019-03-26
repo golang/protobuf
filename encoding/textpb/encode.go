@@ -18,7 +18,6 @@ import (
 )
 
 // Marshal writes the given proto.Message in textproto format using default options.
-// TODO: may want to describe when Marshal returns error.
 func Marshal(m proto.Message) ([]byte, error) {
 	return MarshalOptions{}.Marshal(m)
 }
@@ -26,6 +25,11 @@ func Marshal(m proto.Message) ([]byte, error) {
 // MarshalOptions is a configurable text format marshaler.
 type MarshalOptions struct {
 	pragma.NoUnkeyedLiterals
+
+	// AllowPartial allows messages that have missing required fields to marshal
+	// without returning an error. If AllowPartial is false (the default),
+	// Marshal will return error if there are any missing required fields.
+	AllowPartial bool
 
 	// If Indent is a non-empty string, it causes entries for a Message to be
 	// preceded by the indent and trailed by a newline. Indent can only be
@@ -85,7 +89,7 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 		num := fd.Number()
 
 		if !knownFields.Has(num) {
-			if fd.Cardinality() == pref.Required {
+			if !o.AllowPartial && fd.Cardinality() == pref.Required {
 				// Treat unset required fields as a non-fatal error.
 				nerr.AppendRequiredNotSet(string(fd.FullName()))
 			}

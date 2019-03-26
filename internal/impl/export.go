@@ -91,6 +91,6 @@ func (Export) ExtensionTypeOf(d pref.ExtensionDescriptor, t interface{}) pref.Ex
 // MessageStringOf returns the message value as a string,
 // which is the message serialized in the protobuf text format.
 func (Export) MessageStringOf(m pref.ProtoMessage) string {
-	b, _ := textpb.Marshal(m)
+	b, _ := textpb.MarshalOptions{AllowPartial: true}.Marshal(m)
 	return string(b)
 }

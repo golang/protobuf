@@ -683,12 +683,12 @@ str_to_oneofs: {
 }
 `,
 	}, {
-		desc:    "proto2 required fields not set",
+		desc:    "required fields not set",
 		input:   &pb2.Requireds{},
 		want:    "\n",
 		wantErr: true,
 	}, {
-		desc: "proto2 required fields partially set",
+		desc: "required fields partially set",
 		input: &pb2.Requireds{
 			ReqBool:     scalar.Bool(false),
 			ReqSfixed64: scalar.Int64(0xbeefcafe),
@@ -704,7 +704,23 @@ req_enum: ONE
 `,
 		wantErr: true,
 	}, {
-		desc: "proto2 required fields all set",
+		desc: "required fields not set with AllowPartial",
+		mo:   textpb.MarshalOptions{AllowPartial: true},
+		input: &pb2.Requireds{
+			ReqBool:     scalar.Bool(false),
+			ReqSfixed64: scalar.Int64(0xbeefcafe),
+			ReqDouble:   scalar.Float64(math.NaN()),
+			ReqString:   scalar.String("hello"),
+			ReqEnum:     pb2.Enum_ONE.Enum(),
+		},
+		want: `req_bool: false
+req_sfixed64: 3203386110
+req_double: nan
+req_string: "hello"
+req_enum: ONE
+`,
+	}, {
+		desc: "required fields all set",
 		input: &pb2.Requireds{
 			ReqBool:     scalar.Bool(false),
 			ReqSfixed64: scalar.Int64(0),
@@ -728,6 +744,13 @@ req_nested: {}
 		want:    "opt_nested: {}\n",
 		wantErr: true,
 	}, {
+		desc: "indirect required field with AllowPartial",
+		mo:   textpb.MarshalOptions{AllowPartial: true},
+		input: &pb2.IndirectRequired{
+			OptNested: &pb2.NestedWithRequired{},
+		},
+		want: "opt_nested: {}\n",
+	}, {
 		desc: "indirect required field in empty repeated",
 		input: &pb2.IndirectRequired{
 			RptNested: []*pb2.NestedWithRequired{},
@@ -742,6 +765,15 @@ req_nested: {}
 		},
 		want:    "rpt_nested: {}\n",
 		wantErr: true,
+	}, {
+		desc: "indirect required field in repeated with AllowPartial",
+		mo:   textpb.MarshalOptions{AllowPartial: true},
+		input: &pb2.IndirectRequired{
+			RptNested: []*pb2.NestedWithRequired{
+				&pb2.NestedWithRequired{},
+			},
+		},
+		want: "rpt_nested: {}\n",
 	}, {
 		desc: "indirect required field in empty map",
 		input: &pb2.IndirectRequired{
@@ -762,6 +794,19 @@ req_nested: {}
 `,
 		wantErr: true,
 	}, {
+		desc: "indirect required field in map with AllowPartial",
+		mo:   textpb.MarshalOptions{AllowPartial: true},
+		input: &pb2.IndirectRequired{
+			StrToNested: map[string]*pb2.NestedWithRequired{
+				"fail": &pb2.NestedWithRequired{},
+			},
+		},
+		want: `str_to_nested: {
+  key: "fail"
+  value: {}
+}
+`,
+	}, {
 		desc: "indirect required field in oneof",
 		input: &pb2.IndirectRequired{
 			Union: &pb2.IndirectRequired_OneofNested{
@@ -770,6 +815,15 @@ req_nested: {}
 		},
 		want:    "oneof_nested: {}\n",
 		wantErr: true,
+	}, {
+		desc: "indirect required field in oneof with AllowPartial",
+		mo:   textpb.MarshalOptions{AllowPartial: true},
+		input: &pb2.IndirectRequired{
+			Union: &pb2.IndirectRequired_OneofNested{
+				OneofNested: &pb2.NestedWithRequired{},
+			},
+		},
+		want: "oneof_nested: {}\n",
 	}, {
 		desc: "unknown varint and fixed types",
 		input: &pb2.Scalars{
