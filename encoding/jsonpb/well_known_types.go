@@ -17,7 +17,8 @@ import (
 )
 
 // isCustomType returns true if type name has special JSON conversion rules.
-// The list of custom types here has to match the ones in marshalCustomTypes.
+// The list of custom types here has to match the ones in marshalCustomType and
+// unmarshalCustomType.
 func isCustomType(name pref.FullName) bool {
 	switch name {
 	case "google.protobuf.Any",
@@ -59,7 +60,7 @@ func (e encoder) marshalCustomType(m pref.Message) error {
 		"google.protobuf.UInt64Value",
 		"google.protobuf.StringValue",
 		"google.protobuf.BytesValue":
-		return e.marshalKnownScalar(m)
+		return e.marshalWrapperType(m)
 
 	case "google.protobuf.Struct":
 		return e.marshalStruct(m)
@@ -83,254 +84,6 @@ func (e encoder) marshalCustomType(m pref.Message) error {
 	panic(fmt.Sprintf("%q does not have a custom marshaler", name))
 }
 
-func (e encoder) marshalAny(m pref.Message) error {
-	var nerr errors.NonFatal
-	msgType := m.Type()
-	knownFields := m.KnownFields()
-
-	// Start writing the JSON object.
-	e.StartObject()
-	defer e.EndObject()
-
-	if !knownFields.Has(fieldnum.Any_TypeUrl) {
-		if !knownFields.Has(fieldnum.Any_Value) {
-			// If message is empty, marshal out empty JSON object.
-			return nil
-		} else {
-			// Return error if type_url field is not set, but value is set.
-			return errors.New("field %s.type_url is not set", msgType.FullName())
-		}
-	}
-
-	typeVal := knownFields.Get(fieldnum.Any_TypeUrl)
-	valueVal := knownFields.Get(fieldnum.Any_Value)
-
-	// Marshal out @type field.
-	typeURL := typeVal.String()
-	e.WriteName("@type")
-	if err := e.WriteString(typeURL); !nerr.Merge(err) {
-		return err
-	}
-
-	// Resolve the type in order to unmarshal value field.
-	emt, err := e.resolver.FindMessageByURL(typeURL)
-	if !nerr.Merge(err) {
-		return errors.New("unable to resolve %v: %v", typeURL, err)
-	}
-
-	em := emt.New()
-	// TODO: Need to set types registry in binary unmarshaling.
-	err = proto.Unmarshal(valueVal.Bytes(), em.Interface())
-	if !nerr.Merge(err) {
-		return errors.New("unable to unmarshal %v: %v", typeURL, err)
-	}
-
-	// If type of value has custom JSON encoding, marshal out a field "value"
-	// with corresponding custom JSON encoding of the embedded message as a
-	// field.
-	if isCustomType(emt.FullName()) {
-		e.WriteName("value")
-		return e.marshalCustomType(em)
-	}
-
-	// Else, marshal out the embedded message's fields in this Any object.
-	if err := e.marshalFields(em); !nerr.Merge(err) {
-		return err
-	}
-
-	return nerr.E
-}
-
-func (e encoder) marshalKnownScalar(m pref.Message) error {
-	msgType := m.Type()
-	fieldDescs := msgType.Fields()
-	knownFields := m.KnownFields()
-
-	// The "value" field has the same field number for all wrapper types.
-	const num = fieldnum.BoolValue_Value
-	fd := fieldDescs.ByNumber(num)
-	val := knownFields.Get(num)
-	return e.marshalSingular(val, fd)
-}
-
-func (e encoder) marshalStruct(m pref.Message) error {
-	msgType := m.Type()
-	fieldDescs := msgType.Fields()
-	knownFields := m.KnownFields()
-
-	fd := fieldDescs.ByNumber(fieldnum.Struct_Fields)
-	val := knownFields.Get(fieldnum.Struct_Fields)
-	return e.marshalMap(val.Map(), fd)
-}
-
-func (e encoder) marshalListValue(m pref.Message) error {
-	msgType := m.Type()
-	fieldDescs := msgType.Fields()
-	knownFields := m.KnownFields()
-
-	fd := fieldDescs.ByNumber(fieldnum.ListValue_Values)
-	val := knownFields.Get(fieldnum.ListValue_Values)
-	return e.marshalList(val.List(), fd)
-}
-
-func (e encoder) marshalKnownValue(m pref.Message) error {
-	msgType := m.Type()
-	fieldDescs := msgType.Oneofs().Get(0).Fields()
-	knownFields := m.KnownFields()
-
-	for i := 0; i < fieldDescs.Len(); i++ {
-		fd := fieldDescs.Get(i)
-		num := fd.Number()
-		if !knownFields.Has(num) {
-			continue
-		}
-		// Only one field should be set.
-		val := knownFields.Get(num)
-		return e.marshalSingular(val, fd)
-	}
-
-	// Return error if none of the fields are set.
-	return errors.New("%s: none of the variants is set", msgType.FullName())
-}
-
-const (
-	secondsInNanos       = int64(time.Second / time.Nanosecond)
-	maxSecondsInDuration = int64(315576000000)
-)
-
-func (e encoder) marshalDuration(m pref.Message) error {
-	msgType := m.Type()
-	knownFields := m.KnownFields()
-
-	secsVal := knownFields.Get(fieldnum.Duration_Seconds)
-	nanosVal := knownFields.Get(fieldnum.Duration_Nanos)
-	secs := secsVal.Int()
-	nanos := nanosVal.Int()
-	if secs < -maxSecondsInDuration || secs > maxSecondsInDuration {
-		return errors.New("%s.seconds out of range", msgType.FullName())
-	}
-	if nanos <= -secondsInNanos || nanos >= secondsInNanos {
-		return errors.New("%s.nanos out of range", msgType.FullName())
-	}
-	if (secs > 0 && nanos < 0) || (secs < 0 && nanos > 0) {
-		return errors.New("%s: signs of seconds and nanos do not match", msgType.FullName())
-	}
-	// Generated output always contains 0, 3, 6, or 9 fractional digits,
-	// depending on required precision, followed by the suffix "s".
-	f := "%d.%09d"
-	if nanos < 0 {
-		nanos = -nanos
-		if secs == 0 {
-			f = "-%d.%09d"
-		}
-	}
-	x := fmt.Sprintf(f, secs, nanos)
-	x = strings.TrimSuffix(x, "000")
-	x = strings.TrimSuffix(x, "000")
-	x = strings.TrimSuffix(x, ".000")
-	e.WriteString(x + "s")
-	return nil
-}
-
-const (
-	maxTimestampSeconds = 253402300799
-	minTimestampSeconds = -62135596800
-)
-
-func (e encoder) marshalTimestamp(m pref.Message) error {
-	msgType := m.Type()
-	knownFields := m.KnownFields()
-
-	secsVal := knownFields.Get(fieldnum.Timestamp_Seconds)
-	nanosVal := knownFields.Get(fieldnum.Timestamp_Nanos)
-	secs := secsVal.Int()
-	nanos := nanosVal.Int()
-	if secs < minTimestampSeconds || secs > maxTimestampSeconds {
-		return errors.New("%s.seconds out of range", msgType.FullName())
-	}
-	if nanos < 0 || nanos >= secondsInNanos {
-		return errors.New("%s.nanos out of range", msgType.FullName())
-	}
-	// Uses RFC 3339, where generated output will be Z-normalized and uses 0, 3,
-	// 6 or 9 fractional digits.
-	t := time.Unix(secs, nanos).UTC()
-	x := t.Format("2006-01-02T15:04:05.000000000")
-	x = strings.TrimSuffix(x, "000")
-	x = strings.TrimSuffix(x, "000")
-	x = strings.TrimSuffix(x, ".000")
-	e.WriteString(x + "Z")
-	return nil
-}
-
-func (e encoder) marshalFieldMask(m pref.Message) error {
-	msgType := m.Type()
-	knownFields := m.KnownFields()
-	name := msgType.FullName()
-
-	val := knownFields.Get(fieldnum.FieldMask_Paths)
-	list := val.List()
-	paths := make([]string, 0, list.Len())
-
-	for i := 0; i < list.Len(); i++ {
-		s := list.Get(i).String()
-		// Return error if conversion to camelCase is not reversible.
-		cc := camelCase(s)
-		if s != snakeCase(cc) {
-			return errors.New("%s.paths contains irreversible value %q", name, s)
-		}
-		paths = append(paths, cc)
-	}
-
-	e.WriteString(strings.Join(paths, ","))
-	return nil
-}
-
-// camelCase converts given string into camelCase where ASCII character after _
-// is turned into uppercase and _'s are removed.
-func camelCase(s string) string {
-	var b []byte
-	var afterUnderscore bool
-	for i := 0; i < len(s); i++ {
-		c := s[i]
-		if afterUnderscore {
-			if isASCIILower(c) {
-				c -= 'a' - 'A'
-			}
-		}
-		if c == '_' {
-			afterUnderscore = true
-			continue
-		}
-		afterUnderscore = false
-		b = append(b, c)
-	}
-	return string(b)
-}
-
-// snakeCase converts given string into snake_case where ASCII uppercase
-// character is turned into _ + lowercase.
-func snakeCase(s string) string {
-	var b []byte
-	for i := 0; i < len(s); i++ {
-		c := s[i]
-		if isASCIIUpper(c) {
-			c += 'a' - 'A'
-			b = append(b, '_', c)
-		} else {
-			b = append(b, c)
-		}
-	}
-	return string(b)
-}
-
-func isASCIILower(c byte) bool {
-	return 'a' <= c && c <= 'z'
-}
-
-func isASCIIUpper(c byte) bool {
-	return 'A' <= c && c <= 'Z'
-}
-
 // unmarshalCustomType unmarshals given well-known type message that have
 // special JSON conversion rules. It needs to be a message type where
 // isCustomType returns true, else it will panic.
@@ -351,7 +104,7 @@ func (d decoder) unmarshalCustomType(m pref.Message) error {
 		"google.protobuf.UInt64Value",
 		"google.protobuf.StringValue",
 		"google.protobuf.BytesValue":
-		return d.unmarshalKnownScalar(m)
+		return d.unmarshalWrapperType(m)
 
 	case "google.protobuf.Struct":
 		return d.unmarshalStruct(m)
@@ -369,7 +122,85 @@ func (d decoder) unmarshalCustomType(m pref.Message) error {
 	panic(fmt.Sprintf("%q does not have a custom unmarshaler", name))
 }
 
-func (d decoder) unmarshalKnownScalar(m pref.Message) error {
+// The JSON representation of an Any message uses the regular representation of
+// the deserialized, embedded message, with an additional field `@type` which
+// contains the type URL.  If the embedded message type is well-known and has a
+// custom JSON representation, that representation will be embedded adding a
+// field `value` which holds the custom JSON in addition to the `@type` field.
+
+func (e encoder) marshalAny(m pref.Message) error {
+	var nerr errors.NonFatal
+	msgType := m.Type()
+	knownFields := m.KnownFields()
+
+	// Start writing the JSON object.
+	e.StartObject()
+	defer e.EndObject()
+
+	if !knownFields.Has(fieldnum.Any_TypeUrl) {
+		if !knownFields.Has(fieldnum.Any_Value) {
+			// If message is empty, marshal out empty JSON object.
+			return nil
+		} else {
+			// Return error if type_url field is not set, but value is set.
+			return errors.New("%s: type_url is not set", msgType.FullName())
+		}
+	}
+
+	typeVal := knownFields.Get(fieldnum.Any_TypeUrl)
+	valueVal := knownFields.Get(fieldnum.Any_Value)
+
+	// Marshal out @type field.
+	typeURL := typeVal.String()
+	e.WriteName("@type")
+	if err := e.WriteString(typeURL); !nerr.Merge(err) {
+		return err
+	}
+
+	// Resolve the type in order to unmarshal value field.
+	emt, err := e.resolver.FindMessageByURL(typeURL)
+	if !nerr.Merge(err) {
+		return errors.New("%s: unable to resolve %q: %v", msgType.FullName(), typeURL, err)
+	}
+
+	em := emt.New()
+	// TODO: Need to set types registry in binary unmarshaling.
+	err = proto.Unmarshal(valueVal.Bytes(), em.Interface())
+	if !nerr.Merge(err) {
+		return errors.New("%s: unable to unmarshal %q: %v", msgType.FullName(), typeURL, err)
+	}
+
+	// If type of value has custom JSON encoding, marshal out a field "value"
+	// with corresponding custom JSON encoding of the embedded message as a
+	// field.
+	if isCustomType(emt.FullName()) {
+		e.WriteName("value")
+		return e.marshalCustomType(em)
+	}
+
+	// Else, marshal out the embedded message's fields in this Any object.
+	if err := e.marshalFields(em); !nerr.Merge(err) {
+		return err
+	}
+
+	return nerr.E
+}
+
+// Wrapper types are encoded as JSON primitives like string, number or boolean.
+
+func (e encoder) marshalWrapperType(m pref.Message) error {
+	msgType := m.Type()
+	fieldDescs := msgType.Fields()
+	knownFields := m.KnownFields()
+
+	// The "value" field has the same field number for all wrapper types.
+	const num = fieldnum.BoolValue_Value
+	fd := fieldDescs.ByNumber(num)
+	val := knownFields.Get(num)
+	return e.marshalSingular(val, fd)
+}
+
+func (d decoder) unmarshalWrapperType(m pref.Message) error {
 	var nerr errors.NonFatal
 	msgType := m.Type()
 	fieldDescs := msgType.Fields()
@@ -386,6 +217,19 @@ func (d decoder) unmarshalKnownScalar(m pref.Message) error {
 	return nerr.E
 }
 
+// The JSON representation for Struct is a JSON object that contains the encoded
+// Struct.fields map and follows the serialization rules for a map.
+
+func (e encoder) marshalStruct(m pref.Message) error {
+	msgType := m.Type()
+	fieldDescs := msgType.Fields()
+	knownFields := m.KnownFields()
+
+	fd := fieldDescs.ByNumber(fieldnum.Struct_Fields)
+	val := knownFields.Get(fieldnum.Struct_Fields)
+	return e.marshalMap(val.Map(), fd)
+}
+
 func (d decoder) unmarshalStruct(m pref.Message) error {
 	msgType := m.Type()
 	fieldDescs := msgType.Fields()
@@ -396,6 +240,20 @@ func (d decoder) unmarshalStruct(m pref.Message) error {
 	return d.unmarshalMap(val.Map(), fd)
 }
 
+// The JSON representation for ListValue is JSON array that contains the encoded
+// ListValue.values repeated field and follows the serialization rules for a
+// repeated field.
+
+func (e encoder) marshalListValue(m pref.Message) error {
+	msgType := m.Type()
+	fieldDescs := msgType.Fields()
+	knownFields := m.KnownFields()
+
+	fd := fieldDescs.ByNumber(fieldnum.ListValue_Values)
+	val := knownFields.Get(fieldnum.ListValue_Values)
+	return e.marshalList(val.List(), fd)
+}
+
 func (d decoder) unmarshalListValue(m pref.Message) error {
 	msgType := m.Type()
 	fieldDescs := msgType.Fields()
@@ -404,6 +262,30 @@ func (d decoder) unmarshalListValue(m pref.Message) error {
 	fd := fieldDescs.ByNumber(fieldnum.ListValue_Values)
 	val := knownFields.Get(fieldnum.ListValue_Values)
 	return d.unmarshalList(val.List(), fd)
+}
+
+// The JSON representation for a Value is dependent on the oneof field that is
+// set. Each of the field in the oneof has its own custom serialization rule. A
+// Value message needs to be a oneof field set, else it is an error.
+
+func (e encoder) marshalKnownValue(m pref.Message) error {
+	msgType := m.Type()
+	fieldDescs := msgType.Oneofs().Get(0).Fields()
+	knownFields := m.KnownFields()
+
+	for i := 0; i < fieldDescs.Len(); i++ {
+		fd := fieldDescs.Get(i)
+		num := fd.Number()
+		if !knownFields.Has(num) {
+			continue
+		}
+		// Only one field should be set.
+		val := knownFields.Get(num)
+		return e.marshalSingular(val, fd)
+	}
+
+	// Return error if none of the fields are set.
+	return errors.New("%s: none of the variants is set", msgType.FullName())
 }
 
 func isKnownValue(fd pref.FieldDescriptor) bool {
@@ -484,6 +366,128 @@ func (d decoder) unmarshalKnownValue(m pref.Message) error {
 	return nerr.E
 }
 
+// The JSON representation for a Duration is a JSON string that ends in the
+// suffix "s" (indicating seconds) and is preceded by the number of seconds,
+// with nanoseconds expressed as fractional seconds.
+//
+// Durations less than one second are represented with a 0 seconds field and a
+// positive or negative nanos field. For durations of one second or more, a
+// non-zero value for the nanos field must be of the same sign as the seconds
+// field.
+//
+// Duration.seconds must be from -315,576,000,000 to +315,576,000,000 inclusive.
+// Duration.nanos must be from -999,999,999 to +999,999,999 inclusive.
+
+const (
+	secondsInNanos       = 999999999
+	maxSecondsInDuration = 315576000000
+)
+
+func (e encoder) marshalDuration(m pref.Message) error {
+	msgType := m.Type()
+	knownFields := m.KnownFields()
+
+	secsVal := knownFields.Get(fieldnum.Duration_Seconds)
+	nanosVal := knownFields.Get(fieldnum.Duration_Nanos)
+	secs := secsVal.Int()
+	nanos := nanosVal.Int()
+	if secs < -maxSecondsInDuration || secs > maxSecondsInDuration {
+		return errors.New("%s: seconds out of range", msgType.FullName())
+	}
+	if nanos <= -secondsInNanos || nanos >= secondsInNanos {
+		return errors.New("%s: nanos out of range", msgType.FullName())
+	}
+	if (secs > 0 && nanos < 0) || (secs < 0 && nanos > 0) {
+		return errors.New("%s: signs of seconds and nanos do not match", msgType.FullName())
+	}
+	// Generated output always contains 0, 3, 6, or 9 fractional digits,
+	// depending on required precision, followed by the suffix "s".
+	f := "%d.%09d"
+	if nanos < 0 {
+		nanos = -nanos
+		if secs == 0 {
+			f = "-%d.%09d"
+		}
+	}
+	x := fmt.Sprintf(f, secs, nanos)
+	x = strings.TrimSuffix(x, "000")
+	x = strings.TrimSuffix(x, "000")
+	x = strings.TrimSuffix(x, ".000")
+	e.WriteString(x + "s")
+	return nil
+}
+
+// The JSON representation for a Timestamp is a JSON string in the RFC 3339
+// format, i.e. "{year}-{month}-{day}T{hour}:{min}:{sec}[.{frac_sec}]Z" where
+// {year} is always expressed using four digits while {month}, {day}, {hour},
+// {min}, and {sec} are zero-padded to two digits each. The fractional seconds,
+// which can go up to 9 digits, up to 1 nanosecond resolution, is optional. The
+// "Z" suffix indicates the timezone ("UTC"); the timezone is required. Encoding
+// should always use UTC (as indicated by "Z") and a decoder should be able to
+// accept both UTC and other timezones (as indicated by an offset).
+//
+// Timestamp.seconds must be from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59Z
+// inclusive.
+// Timestamp.nanos must be from 0 to 999,999,999 inclusive.
+
+const (
+	maxTimestampSeconds = 253402300799
+	minTimestampSeconds = -62135596800
+)
+
+func (e encoder) marshalTimestamp(m pref.Message) error {
+	msgType := m.Type()
+	knownFields := m.KnownFields()
+
+	secsVal := knownFields.Get(fieldnum.Timestamp_Seconds)
+	nanosVal := knownFields.Get(fieldnum.Timestamp_Nanos)
+	secs := secsVal.Int()
+	nanos := nanosVal.Int()
+	if secs < minTimestampSeconds || secs > maxTimestampSeconds {
+		return errors.New("%s: seconds out of range %q", msgType.FullName(), secs)
+	}
+	if nanos < 0 || nanos >= secondsInNanos {
+		return errors.New("%s: nanos out of range %q", msgType.FullName(), nanos)
+	}
+	// Uses RFC 3339, where generated output will be Z-normalized and uses 0, 3,
+	// 6 or 9 fractional digits.
+	t := time.Unix(secs, nanos).UTC()
+	x := t.Format("2006-01-02T15:04:05.000000000")
+	x = strings.TrimSuffix(x, "000")
+	x = strings.TrimSuffix(x, "000")
+	x = strings.TrimSuffix(x, ".000")
+	e.WriteString(x + "Z")
+	return nil
+}
+
+// The JSON representation for a FieldMask is a JSON string where paths are
+// separated by a comma. Fields name in each path are converted to/from
+// lower-camel naming conventions. Encoding should fail if the path name would
+// end up differently after a round-trip.
+
+func (e encoder) marshalFieldMask(m pref.Message) error {
+	msgType := m.Type()
+	knownFields := m.KnownFields()
+	name := msgType.FullName()
+
+	val := knownFields.Get(fieldnum.FieldMask_Paths)
+	list := val.List()
+	paths := make([]string, 0, list.Len())
+
+	for i := 0; i < list.Len(); i++ {
+		s := list.Get(i).String()
+		// Return error if conversion to camelCase is not reversible.
+		cc := camelCase(s)
+		if s != snakeCase(cc) {
+			return errors.New("%s.paths contains irreversible value %q", name, s)
+		}
+		paths = append(paths, cc)
+	}
+
+	e.WriteString(strings.Join(paths, ","))
+	return nil
+}
+
 func (d decoder) unmarshalFieldMask(m pref.Message) error {
 	var nerr errors.NonFatal
 	jval, err := d.Read()
@@ -510,4 +514,50 @@ func (d decoder) unmarshalFieldMask(m pref.Message) error {
 		list.Append(pref.ValueOf(snakeCase(s)))
 	}
 	return nil
+}
+
+// camelCase converts given string into camelCase where ASCII character after _
+// is turned into uppercase and _'s are removed.
+func camelCase(s string) string {
+	var b []byte
+	var afterUnderscore bool
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if afterUnderscore {
+			if isASCIILower(c) {
+				c -= 'a' - 'A'
+			}
+		}
+		if c == '_' {
+			afterUnderscore = true
+			continue
+		}
+		afterUnderscore = false
+		b = append(b, c)
+	}
+	return string(b)
+}
+
+// snakeCase converts given string into snake_case where ASCII uppercase
+// character is turned into _ + lowercase.
+func snakeCase(s string) string {
+	var b []byte
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if isASCIIUpper(c) {
+			c += 'a' - 'A'
+			b = append(b, '_', c)
+		} else {
+			b = append(b, c)
+		}
+	}
+	return string(b)
+}
+
+func isASCIILower(c byte) bool {
+	return 'a' <= c && c <= 'z'
+}
+
+func isASCIIUpper(c byte) bool {
+	return 'A' <= c && c <= 'Z'
 }
