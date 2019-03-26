@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build proto_reimpl
+// +build !use_golang_protobuf_v1
 
 package proto
 

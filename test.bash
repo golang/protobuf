@@ -11,7 +11,7 @@ FAIL="\x1b[31mFAIL"
 RESET="\x1b[0m"
 
 echo -e "${BOLD}go test${RESET}"
-RET_TEST=$((go test ./... && go test -tags proto_reimpl ./...) | egrep -v "^(ok|[?])\s+")
+RET_TEST=$((go test ./... && go test -tags use_golang_protobuf_v1 ./...) | egrep -v "^(ok|[?])\s+")
 if [[ ! -z "$RET_TEST" ]]; then echo "$RET_TEST"; echo; fi
 
 echo -e "${BOLD}go generate${RESET}"
