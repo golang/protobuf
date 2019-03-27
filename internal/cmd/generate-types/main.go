@@ -42,6 +42,7 @@ func main() {
 	writeSource("internal/prototype/protofile_list_gen.go", generateListTypes())
 	writeSource("proto/decode_gen.go", generateProtoDecode())
 	writeSource("proto/encode_gen.go", generateProtoEncode())
+	writeSource("proto/size_gen.go", generateProtoSize())
 }
 
 // chdirRoot changes the working directory to the repository root.

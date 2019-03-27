@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
@@ -32,7 +33,7 @@ func TestDecode(t *testing.T) {
 				wire := append(([]byte)(nil), test.wire...)
 				got := reflect.New(reflect.TypeOf(want).Elem()).Interface().(proto.Message)
 				if err := proto.Unmarshal(wire, got); err != nil {
-					t.Errorf("Unmarshal error: %v\nMessage:\n%v", err, protoV1.MarshalTextString(want.(protoV1.Message)))
+					t.Errorf("Unmarshal error: %v\nMessage:\n%v", err, marshalText(want))
 					return
 				}
 
@@ -43,7 +44,7 @@ func TestDecode(t *testing.T) {
 				}
 
 				if !protoV1.Equal(got.(protoV1.Message), want.(protoV1.Message)) {
-					t.Errorf("Unmarshal returned unexpected result; got:\n%v\nwant:\n%v", protoV1.MarshalTextString(got.(protoV1.Message)), protoV1.MarshalTextString(want.(protoV1.Message)))
+					t.Errorf("Unmarshal returned unexpected result; got:\n%v\nwant:\n%v", marshalText(got), marshalText(want))
 				}
 			})
 		}
@@ -900,4 +901,9 @@ func extend(desc *protoV1.ExtensionDesc, value interface{}) buildOpt {
 			panic(err)
 		}
 	}
+}
+
+func marshalText(m proto.Message) string {
+	b, _ := textpb.Marshal(m)
+	return string(b)
 }

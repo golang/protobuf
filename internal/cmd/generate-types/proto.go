@@ -269,3 +269,30 @@ func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoref
 	return b, nil
 }
 `))
+
+func generateProtoSize() string {
+	return mustExecute(protoSizeTemplate, ProtoKinds)
+}
+
+var protoSizeTemplate = template.Must(template.New("").Parse(`
+func sizeSingular(num wire.Number, kind protoreflect.Kind, v protoreflect.Value) int {
+	switch kind {
+	{{- range .}}
+	case {{.Expr}}:
+		{{if (eq .Name "Message") -}}
+		return wire.SizeBytes(sizeMessage(v.Message()))
+		{{- else if or (eq .WireType "Fixed32") (eq .WireType "Fixed64") -}}
+		return wire.Size{{.WireType}}()
+		{{- else if (eq .WireType "Bytes") -}}
+		return wire.Size{{.WireType}}(len({{.FromValue}}))
+		{{- else if (eq .WireType "Group") -}}
+		return wire.Size{{.WireType}}(num, sizeMessage(v.Message()))
+		{{- else -}}
+		return wire.Size{{.WireType}}({{.FromValue}})
+		{{- end}}
+	{{- end}}
+	default:
+		return 0
+	}
+}
+`))
