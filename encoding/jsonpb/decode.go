@@ -29,6 +29,11 @@ func Unmarshal(m proto.Message, b []byte) error {
 type UnmarshalOptions struct {
 	pragma.NoUnkeyedLiterals
 
+	// AllowPartial accepts input for messages that will result in missing
+	// required fields. If AllowPartial is false (the default), Unmarshal will
+	// return error if there are any missing required fields.
+	AllowPartial bool
+
 	// Resolver is the registry used for type lookups when unmarshaling extensions
 	// and processing Any. If Resolver is not set, unmarshaling will default to
 	// using protoregistry.GlobalTypes.
@@ -229,18 +234,20 @@ Loop:
 			if err := o.unmarshalSingular(knownFields, fd); !nerr.Merge(err) {
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)
 			}
-			if cardinality == pref.Required {
+			if !o.AllowPartial && cardinality == pref.Required {
 				reqNums.Set(num)
 			}
 		}
 	}
 
-	// Check for any missing required fields.
-	allReqNums := msgType.RequiredNumbers()
-	if reqNums.Len() != allReqNums.Len() {
-		for i := 0; i < allReqNums.Len(); i++ {
-			if num := allReqNums.Get(i); !reqNums.Has(uint64(num)) {
-				nerr.AppendRequiredNotSet(string(fieldDescs.ByNumber(num).FullName()))
+	if !o.AllowPartial {
+		// Check for any missing required fields.
+		allReqNums := msgType.RequiredNumbers()
+		if reqNums.Len() != allReqNums.Len() {
+			for i := 0; i < allReqNums.Len(); i++ {
+				if num := allReqNums.Get(i); !reqNums.Has(uint64(num)) {
+					nerr.AppendRequiredNotSet(string(fieldDescs.ByNumber(num).FullName()))
+				}
 			}
 		}
 	}

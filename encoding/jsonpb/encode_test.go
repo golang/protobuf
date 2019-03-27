@@ -727,6 +727,167 @@ func TestMarshal(t *testing.T) {
   }
 }`,
 	}, {
+		desc:    "required fields not set",
+		input:   &pb2.Requireds{},
+		want:    `{}`,
+		wantErr: true,
+	}, {
+		desc: "required fields partially set",
+		input: &pb2.Requireds{
+			ReqBool:     scalar.Bool(false),
+			ReqSfixed64: scalar.Int64(0),
+			ReqDouble:   scalar.Float64(1.23),
+			ReqString:   scalar.String("hello"),
+			ReqEnum:     pb2.Enum_ONE.Enum(),
+		},
+		want: `{
+  "reqBool": false,
+  "reqSfixed64": "0",
+  "reqDouble": 1.23,
+  "reqString": "hello",
+  "reqEnum": "ONE"
+}`,
+		wantErr: true,
+	}, {
+		desc: "required fields not set with AllowPartial",
+		mo:   jsonpb.MarshalOptions{AllowPartial: true},
+		input: &pb2.Requireds{
+			ReqBool:     scalar.Bool(false),
+			ReqSfixed64: scalar.Int64(0),
+			ReqDouble:   scalar.Float64(1.23),
+			ReqString:   scalar.String("hello"),
+			ReqEnum:     pb2.Enum_ONE.Enum(),
+		},
+		want: `{
+  "reqBool": false,
+  "reqSfixed64": "0",
+  "reqDouble": 1.23,
+  "reqString": "hello",
+  "reqEnum": "ONE"
+}`,
+	}, {
+		desc: "required fields all set",
+		input: &pb2.Requireds{
+			ReqBool:     scalar.Bool(false),
+			ReqSfixed64: scalar.Int64(0),
+			ReqDouble:   scalar.Float64(1.23),
+			ReqString:   scalar.String("hello"),
+			ReqEnum:     pb2.Enum_ONE.Enum(),
+			ReqNested:   &pb2.Nested{},
+		},
+		want: `{
+  "reqBool": false,
+  "reqSfixed64": "0",
+  "reqDouble": 1.23,
+  "reqString": "hello",
+  "reqEnum": "ONE",
+  "reqNested": {}
+}`,
+	}, {
+		desc: "indirect required field",
+		input: &pb2.IndirectRequired{
+			OptNested: &pb2.NestedWithRequired{},
+		},
+		want: `{
+  "optNested": {}
+}`,
+		wantErr: true,
+	}, {
+		desc: "indirect required field with AllowPartial",
+		mo:   jsonpb.MarshalOptions{AllowPartial: true},
+		input: &pb2.IndirectRequired{
+			OptNested: &pb2.NestedWithRequired{},
+		},
+		want: `{
+  "optNested": {}
+}`,
+	}, {
+		desc: "indirect required field in empty repeated",
+		input: &pb2.IndirectRequired{
+			RptNested: []*pb2.NestedWithRequired{},
+		},
+		want: `{}`,
+	}, {
+		desc: "indirect required field in repeated",
+		input: &pb2.IndirectRequired{
+			RptNested: []*pb2.NestedWithRequired{
+				&pb2.NestedWithRequired{},
+			},
+		},
+		want: `{
+  "rptNested": [
+    {}
+  ]
+}`,
+		wantErr: true,
+	}, {
+		desc: "indirect required field in repeated with AllowPartial",
+		mo:   jsonpb.MarshalOptions{AllowPartial: true},
+		input: &pb2.IndirectRequired{
+			RptNested: []*pb2.NestedWithRequired{
+				&pb2.NestedWithRequired{},
+			},
+		},
+		want: `{
+  "rptNested": [
+    {}
+  ]
+}`,
+	}, {
+		desc: "indirect required field in empty map",
+		input: &pb2.IndirectRequired{
+			StrToNested: map[string]*pb2.NestedWithRequired{},
+		},
+		want: "{}",
+	}, {
+		desc: "indirect required field in map",
+		input: &pb2.IndirectRequired{
+			StrToNested: map[string]*pb2.NestedWithRequired{
+				"fail": &pb2.NestedWithRequired{},
+			},
+		},
+		want: `{
+  "strToNested": {
+    "fail": {}
+  }
+}`,
+		wantErr: true,
+	}, {
+		desc: "indirect required field in map with AllowPartial",
+		mo:   jsonpb.MarshalOptions{AllowPartial: true},
+		input: &pb2.IndirectRequired{
+			StrToNested: map[string]*pb2.NestedWithRequired{
+				"fail": &pb2.NestedWithRequired{},
+			},
+		},
+		want: `{
+  "strToNested": {
+    "fail": {}
+  }
+}`,
+	}, {
+		desc: "indirect required field in oneof",
+		input: &pb2.IndirectRequired{
+			Union: &pb2.IndirectRequired_OneofNested{
+				OneofNested: &pb2.NestedWithRequired{},
+			},
+		},
+		want: `{
+  "oneofNested": {}
+}`,
+		wantErr: true,
+	}, {
+		desc: "indirect required field in oneof with AllowPartial",
+		mo:   jsonpb.MarshalOptions{AllowPartial: true},
+		input: &pb2.IndirectRequired{
+			Union: &pb2.IndirectRequired_OneofNested{
+				OneofNested: &pb2.NestedWithRequired{},
+			},
+		},
+		want: `{
+  "oneofNested": {}
+}`,
+	}, {
 		desc: "unknown fields are ignored",
 		input: &pb2.Scalars{
 			OptString: scalar.String("no unknowns"),

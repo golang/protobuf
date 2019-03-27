@@ -28,6 +28,11 @@ func Marshal(m proto.Message) ([]byte, error) {
 type MarshalOptions struct {
 	pragma.NoUnkeyedLiterals
 
+	// AllowPartial allows messages that have missing required fields to marshal
+	// without returning an error. If AllowPartial is false (the default),
+	// Marshal will return error if there are any missing required fields.
+	AllowPartial bool
+
 	// If Indent is a non-empty string, it causes entries for an Array or Object
 	// to be preceded by the indent and trailed by a newline. Indent can only be
 	// composed of space or tab characters.
@@ -90,7 +95,7 @@ func (o MarshalOptions) marshalFields(m pref.Message) error {
 		num := fd.Number()
 
 		if !knownFields.Has(num) {
-			if fd.Cardinality() == pref.Required {
+			if !o.AllowPartial && fd.Cardinality() == pref.Required {
 				// Treat unset required fields as a non-fatal error.
 				nerr.AppendRequiredNotSet(string(fd.FullName()))
 			}

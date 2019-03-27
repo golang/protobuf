@@ -986,6 +986,190 @@ func TestUnmarshal(t *testing.T) {
 		},
 		wantErr: true,
 	}, {
+		desc:         "required fields not set",
+		inputMessage: &pb2.Requireds{},
+		wantErr:      true,
+	}, {
+		desc:         "required field set",
+		inputMessage: &pb2.PartialRequired{},
+		inputText: `{
+  "reqString": "this is required"
+}`,
+		wantMessage: &pb2.PartialRequired{
+			ReqString: scalar.String("this is required"),
+		},
+	}, {
+		desc:         "required fields partially set",
+		inputMessage: &pb2.Requireds{},
+		inputText: `{
+  "reqBool": false,
+  "reqSfixed64": 42,
+  "reqString": "hello",
+  "reqEnum": "ONE"
+}`,
+		wantMessage: &pb2.Requireds{
+			ReqBool:     scalar.Bool(false),
+			ReqSfixed64: scalar.Int64(42),
+			ReqString:   scalar.String("hello"),
+			ReqEnum:     pb2.Enum_ONE.Enum(),
+		},
+		wantErr: true,
+	}, {
+		desc:         "required fields partially set with AllowPartial",
+		umo:          jsonpb.UnmarshalOptions{AllowPartial: true},
+		inputMessage: &pb2.Requireds{},
+		inputText: `{
+  "reqBool": false,
+  "reqSfixed64": 42,
+  "reqString": "hello",
+  "reqEnum": "ONE"
+}`,
+		wantMessage: &pb2.Requireds{
+			ReqBool:     scalar.Bool(false),
+			ReqSfixed64: scalar.Int64(42),
+			ReqString:   scalar.String("hello"),
+			ReqEnum:     pb2.Enum_ONE.Enum(),
+		},
+	}, {
+		desc:         "required fields all set",
+		inputMessage: &pb2.Requireds{},
+		inputText: `{
+  "reqBool": false,
+  "reqSfixed64": 42,
+  "reqDouble": 1.23,
+  "reqString": "hello",
+  "reqEnum": "ONE",
+  "reqNested": {}
+}`,
+		wantMessage: &pb2.Requireds{
+			ReqBool:     scalar.Bool(false),
+			ReqSfixed64: scalar.Int64(42),
+			ReqDouble:   scalar.Float64(1.23),
+			ReqString:   scalar.String("hello"),
+			ReqEnum:     pb2.Enum_ONE.Enum(),
+			ReqNested:   &pb2.Nested{},
+		},
+	}, {
+		desc:         "indirect required field",
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `{
+  "optNested": {}
+}`,
+		wantMessage: &pb2.IndirectRequired{
+			OptNested: &pb2.NestedWithRequired{},
+		},
+		wantErr: true,
+	}, {
+		desc:         "indirect required field with AllowPartial",
+		umo:          jsonpb.UnmarshalOptions{AllowPartial: true},
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `{
+  "optNested": {}
+}`,
+		wantMessage: &pb2.IndirectRequired{
+			OptNested: &pb2.NestedWithRequired{},
+		},
+	}, {
+		desc:         "indirect required field in repeated",
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `{
+  "rptNested": [
+    {"reqString": "one"},
+    {}
+  ]
+}`,
+		wantMessage: &pb2.IndirectRequired{
+			RptNested: []*pb2.NestedWithRequired{
+				{
+					ReqString: scalar.String("one"),
+				},
+				{},
+			},
+		},
+		wantErr: true,
+	}, {
+		desc:         "indirect required field in repeated with AllowPartial",
+		umo:          jsonpb.UnmarshalOptions{AllowPartial: true},
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `{
+  "rptNested": [
+    {"reqString": "one"},
+    {}
+  ]
+}`,
+		wantMessage: &pb2.IndirectRequired{
+			RptNested: []*pb2.NestedWithRequired{
+				{
+					ReqString: scalar.String("one"),
+				},
+				{},
+			},
+		},
+	}, {
+		desc:         "indirect required field in map",
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `{
+  "strToNested": {
+    "missing": {},
+	"contains": {
+      "reqString": "here"
+    }
+  }
+}`,
+		wantMessage: &pb2.IndirectRequired{
+			StrToNested: map[string]*pb2.NestedWithRequired{
+				"missing": &pb2.NestedWithRequired{},
+				"contains": &pb2.NestedWithRequired{
+					ReqString: scalar.String("here"),
+				},
+			},
+		},
+		wantErr: true,
+	}, {
+		desc:         "indirect required field in map with AllowPartial",
+		umo:          jsonpb.UnmarshalOptions{AllowPartial: true},
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `{
+  "strToNested": {
+    "missing": {},
+	"contains": {
+      "reqString": "here"
+    }
+  }
+}`,
+		wantMessage: &pb2.IndirectRequired{
+			StrToNested: map[string]*pb2.NestedWithRequired{
+				"missing": &pb2.NestedWithRequired{},
+				"contains": &pb2.NestedWithRequired{
+					ReqString: scalar.String("here"),
+				},
+			},
+		},
+	}, {
+		desc:         "indirect required field in oneof",
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `{
+  "oneofNested": {}
+}`,
+		wantMessage: &pb2.IndirectRequired{
+			Union: &pb2.IndirectRequired_OneofNested{
+				OneofNested: &pb2.NestedWithRequired{},
+			},
+		},
+		wantErr: true,
+	}, {
+		desc:         "indirect required field in oneof with AllowPartial",
+		umo:          jsonpb.UnmarshalOptions{AllowPartial: true},
+		inputMessage: &pb2.IndirectRequired{},
+		inputText: `{
+  "oneofNested": {}
+}`,
+		wantMessage: &pb2.IndirectRequired{
+			Union: &pb2.IndirectRequired_OneofNested{
+				OneofNested: &pb2.NestedWithRequired{},
+			},
+		},
+	}, {
 		desc:         "extensions of non-repeated fields",
 		inputMessage: &pb2.Extensions{},
 		inputText: `{
