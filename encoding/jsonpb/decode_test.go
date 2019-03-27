@@ -1532,6 +1532,126 @@ func TestUnmarshal(t *testing.T) {
 		},
 		wantErr: true,
 	}, {
+		desc:         "Duration empty string",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `""`,
+		wantErr:      true,
+	}, {
+		desc:         "Duration with secs",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"3s"`,
+		wantMessage:  &knownpb.Duration{Seconds: 3},
+	}, {
+		desc:         "Duration with escaped unicode",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"\u0033s"`,
+		wantMessage:  &knownpb.Duration{Seconds: 3},
+	}, {
+		desc:         "Duration with -secs",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"-3s"`,
+		wantMessage:  &knownpb.Duration{Seconds: -3},
+	}, {
+		desc:         "Duration with nanos",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"0.001s"`,
+		wantMessage:  &knownpb.Duration{Nanos: 1e6},
+	}, {
+		desc:         "Duration with -nanos",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"-0.001s"`,
+		wantMessage:  &knownpb.Duration{Nanos: -1e6},
+	}, {
+		desc:         "Duration with -secs -nanos",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"-123.000000450s"`,
+		wantMessage:  &knownpb.Duration{Seconds: -123, Nanos: -450},
+	}, {
+		desc:         "Duration with large secs",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"10000000000.000000001s"`,
+		wantMessage:  &knownpb.Duration{Seconds: 1e10, Nanos: 1},
+	}, {
+		desc:         "Duration with decimal without fractional",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"3.s"`,
+		wantMessage:  &knownpb.Duration{Seconds: 3},
+	}, {
+		desc:         "Duration with decimal without integer",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"0.5s"`,
+		wantMessage:  &knownpb.Duration{Nanos: 5e8},
+	}, {
+		desc:         "Duration with +secs out of range",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"315576000001s"`,
+		wantErr:      true,
+	}, {
+		desc:         "Duration with -secs out of range",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"-315576000001s"`,
+		wantErr:      true,
+	}, {
+		desc:         "Duration with nanos beyond 9 digits",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"0.9999999990s"`,
+		wantErr:      true,
+	}, {
+		desc:         "Duration without suffix s",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"123"`,
+		wantErr:      true,
+	}, {
+		desc:         "Timestamp zero",
+		inputMessage: &knownpb.Timestamp{},
+		inputText:    `"1970-01-01T00:00:00Z"`,
+		wantMessage:  &knownpb.Timestamp{},
+	}, {
+		desc:         "Timestamp with tz adjustment",
+		inputMessage: &knownpb.Timestamp{},
+		inputText:    `"1970-01-01T00:00:00+01:00"`,
+		wantMessage:  &knownpb.Timestamp{Seconds: -3600},
+	}, {
+		desc:         "Timestamp UTC",
+		inputMessage: &knownpb.Timestamp{},
+		inputText:    `"2019-03-19T23:03:21Z"`,
+		wantMessage:  &knownpb.Timestamp{Seconds: 1553036601},
+	}, {
+		desc:         "Timestamp with escaped unicode",
+		inputMessage: &knownpb.Timestamp{},
+		inputText:    `"2019-0\u0033-19T23:03:21Z"`,
+		wantMessage:  &knownpb.Timestamp{Seconds: 1553036601},
+	}, {
+		desc:         "Timestamp with nanos",
+		inputMessage: &knownpb.Timestamp{},
+		inputText:    `"2019-03-19T23:03:21.000000001Z"`,
+		wantMessage:  &knownpb.Timestamp{Seconds: 1553036601, Nanos: 1},
+	}, {
+		desc:         "Timestamp upper limit",
+		inputMessage: &knownpb.Timestamp{},
+		inputText:    `"9999-12-31T23:59:59.999999999Z"`,
+		wantMessage:  &knownpb.Timestamp{Seconds: 253402300799, Nanos: 999999999},
+	}, {
+		desc:         "Timestamp above upper limit",
+		inputMessage: &knownpb.Timestamp{},
+		inputText:    `"9999-12-31T23:59:59-01:00"`,
+		wantErr:      true,
+	}, {
+		desc:         "Timestamp lower limit",
+		inputMessage: &knownpb.Timestamp{},
+		inputText:    `"0001-01-01T00:00:00Z"`,
+		wantMessage:  &knownpb.Timestamp{Seconds: -62135596800},
+	}, {
+		desc:         "Timestamp below lower limit",
+		inputMessage: &knownpb.Timestamp{},
+		inputText:    `"0001-01-01T00:00:00+01:00"`,
+		wantErr:      true,
+	}, {
+		desc:         "Timestamp with nanos beyond 9 digits",
+		inputMessage: &knownpb.Timestamp{},
+		inputText:    `"1970-01-01T00:00:00.0000000001Z"`,
+		wantErr:      true,
+	}, {
 		desc:         "FieldMask empty",
 		inputMessage: &knownpb.FieldMask{},
 		inputText:    `""`,

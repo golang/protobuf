@@ -5,7 +5,10 @@
 package jsonpb
 
 import (
+	"bytes"
 	"fmt"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -90,10 +93,8 @@ func (e encoder) marshalCustomType(m pref.Message) error {
 func (d decoder) unmarshalCustomType(m pref.Message) error {
 	name := m.Type().FullName()
 	switch name {
-	case "google.protobuf.Any",
-		"google.protobuf.Duration",
-		"google.protobuf.Timestamp":
-		panic(fmt.Sprintf("unmarshaling of %v is not implemented yet", name))
+	case "google.protobuf.Any":
+		panic("unmarshaling of google.protobuf.Any is not implemented yet")
 
 	case "google.protobuf.BoolValue",
 		"google.protobuf.DoubleValue",
@@ -114,6 +115,12 @@ func (d decoder) unmarshalCustomType(m pref.Message) error {
 
 	case "google.protobuf.Value":
 		return d.unmarshalKnownValue(m)
+
+	case "google.protobuf.Duration":
+		return d.unmarshalDuration(m)
+
+	case "google.protobuf.Timestamp":
+		return d.unmarshalTimestamp(m)
 
 	case "google.protobuf.FieldMask":
 		return d.unmarshalFieldMask(m)
@@ -417,6 +424,91 @@ func (e encoder) marshalDuration(m pref.Message) error {
 	return nil
 }
 
+func (d decoder) unmarshalDuration(m pref.Message) error {
+	var nerr errors.NonFatal
+	jval, err := d.Read()
+	if !nerr.Merge(err) {
+		return err
+	}
+	if jval.Type() != json.String {
+		return unexpectedJSONError{jval}
+	}
+
+	msgType := m.Type()
+	input := jval.String()
+	secs, nanos, ok := parseDuration(input)
+	if !ok {
+		return errors.New("%s: invalid duration value %q", msgType.FullName(), input)
+	}
+	// Validate seconds. No need to validate nanos because parseDuration would
+	// have covered that already.
+	if secs < -maxSecondsInDuration || secs > maxSecondsInDuration {
+		return errors.New("%s: out of range %q", msgType.FullName(), input)
+	}
+
+	knownFields := m.KnownFields()
+	knownFields.Set(fieldnum.Duration_Seconds, pref.ValueOf(secs))
+	knownFields.Set(fieldnum.Duration_Nanos, pref.ValueOf(nanos))
+	return nerr.E
+}
+
+// Regular expression for Duration type in JSON format. This allows for values
+// like 1s, 0.1s, 1.s, .1s. It limits fractional part to 9 digits only for
+// nanoseconds precision, regardless of whether there are trailing zero digits.
+var durationRE = regexp.MustCompile(`^-?([0-9]|[1-9][0-9]+)?(\.[0-9]{0,9})?s$`)
+
+func parseDuration(input string) (int64, int32, bool) {
+	b := []byte(input)
+	// TODO: Parse input directly instead of using a regular expression.
+	matched := durationRE.FindSubmatch(b)
+	if len(matched) != 3 {
+		return 0, 0, false
+	}
+
+	var neg bool
+	if b[0] == '-' {
+		neg = true
+	}
+	var secb []byte
+	if len(matched[1]) == 0 {
+		secb = []byte{'0'}
+	} else {
+		secb = matched[1]
+	}
+	var nanob []byte
+	if len(matched[2]) <= 1 {
+		nanob = []byte{'0'}
+	} else {
+		nanob = matched[2][1:]
+		// Right-pad with 0s for nanosecond-precision.
+		for i := len(nanob); i < 9; i++ {
+			nanob = append(nanob, '0')
+		}
+		// Remove unnecessary 0s in the left.
+		nanob = bytes.TrimLeft(nanob, "0")
+	}
+
+	secs, err := strconv.ParseInt(string(secb), 10, 64)
+	if err != nil {
+		return 0, 0, false
+	}
+
+	nanos, err := strconv.ParseInt(string(nanob), 10, 32)
+	if err != nil {
+		return 0, 0, false
+	}
+
+	if neg {
+		if secs > 0 {
+			secs = -secs
+		}
+		if nanos > 0 {
+			nanos = -nanos
+		}
+	}
+	return secs, int32(nanos), true
+}
+
 // The JSON representation for a Timestamp is a JSON string in the RFC 3339
 // format, i.e. "{year}-{month}-{day}T{hour}:{min}:{sec}[.{frac_sec}]Z" where
 // {year} is always expressed using four digits while {month}, {day}, {hour},
@@ -458,6 +550,35 @@ func (e encoder) marshalTimestamp(m pref.Message) error {
 	x = strings.TrimSuffix(x, ".000")
 	e.WriteString(x + "Z")
 	return nil
+}
+
+func (d decoder) unmarshalTimestamp(m pref.Message) error {
+	var nerr errors.NonFatal
+	jval, err := d.Read()
+	if !nerr.Merge(err) {
+		return err
+	}
+	if jval.Type() != json.String {
+		return unexpectedJSONError{jval}
+	}
+
+	msgType := m.Type()
+	input := jval.String()
+	t, err := time.Parse(time.RFC3339Nano, input)
+	if err != nil {
+		return errors.New("%s: invalid timestamp value %q", msgType.FullName(), input)
+	}
+	// Validate seconds. No need to validate nanos because time.Parse would have
+	// covered that already.
+	secs := t.Unix()
+	if secs < minTimestampSeconds || secs > maxTimestampSeconds {
+		return errors.New("%s: out of range %q", msgType.FullName(), input)
+	}
+
+	knownFields := m.KnownFields()
+	knownFields.Set(fieldnum.Timestamp_Seconds, pref.ValueOf(secs))
+	knownFields.Set(fieldnum.Timestamp_Nanos, pref.ValueOf(int32(t.Nanosecond())))
+	return nerr.E
 }
 
 // The JSON representation for a FieldMask is a JSON string where paths are
