@@ -1087,3 +1087,37 @@ func checkValue(t *testing.T, value json.Value, wantIdx int, want R) {
 		t.Errorf("want#%d: %v got %v, want %v", wantIdx, value, got, want.V)
 	}
 }
+
+func TestClone(t *testing.T) {
+	input := `{"outer":{"str":"hello", "number": 123}}`
+	dec := json.NewDecoder([]byte(input))
+
+	// Clone at the start should produce the same reads as the original.
+	clone := dec.Clone()
+	compareDecoders(t, dec, clone)
+
+	// Advance to inner object, clone and compare again.
+	dec.Read() // Read StartObject.
+	dec.Read() // Read Name.
+	clone = dec.Clone()
+	compareDecoders(t, dec, clone)
+}
+
+func compareDecoders(t *testing.T, d1 *json.Decoder, d2 *json.Decoder) {
+	for {
+		v1, err1 := d1.Read()
+		v2, err2 := d2.Read()
+		if v1.Type() != v2.Type() {
+			t.Errorf("cloned decoder: got Type %v, want %v", v2.Type(), v1.Type())
+		}
+		if v1.Raw() != v2.Raw() {
+			t.Errorf("cloned decoder: got Raw %v, want %v", v2.Raw(), v1.Raw())
+		}
+		if err1 != err2 {
+			t.Errorf("cloned decoder: got error %v, want %v", err2, err1)
+		}
+		if v1.Type() == json.EOF {
+			break
+		}
+	}
+}

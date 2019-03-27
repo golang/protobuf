@@ -1509,7 +1509,7 @@ func TestMarshal(t *testing.T) {
 		input: &knownpb.Any{},
 		want:  `{}`,
 	}, {
-		desc: "Any",
+		desc: "Any with non-custom message",
 		mo: jsonpb.MarshalOptions{
 			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
 		},
@@ -1537,7 +1537,7 @@ func TestMarshal(t *testing.T) {
   }
 }`,
 	}, {
-		desc: "Any without value",
+		desc: "Any with empty embedded message",
 		mo: jsonpb.MarshalOptions{
 			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
 		},
@@ -1546,11 +1546,9 @@ func TestMarshal(t *testing.T) {
   "@type": "foo/pb2.Nested"
 }`,
 	}, {
-		desc: "Any without registered type",
-		mo:   jsonpb.MarshalOptions{Resolver: preg.NewTypes()},
-		input: func() proto.Message {
-			return &knownpb.Any{TypeUrl: "foo/pb2.Nested"}
-		}(),
+		desc:    "Any without registered type",
+		mo:      jsonpb.MarshalOptions{Resolver: preg.NewTypes()},
+		input:   &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
 		wantErr: true,
 	}, {
 		desc: "Any with missing required error",
@@ -1577,6 +1575,31 @@ func TestMarshal(t *testing.T) {
   "optString": "embedded inside Any"
 }`,
 		wantErr: true,
+	}, {
+		desc: "Any with partial required and AllowPartial",
+		mo: jsonpb.MarshalOptions{
+			AllowPartial: true,
+			Resolver:     preg.NewTypes((&pb2.PartialRequired{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &pb2.PartialRequired{
+				OptString: scalar.String("embedded inside Any"),
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			// TODO: Marshal may fail due to required field not set at some
+			// point. Need to ignore required not set error here.
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "pb2.PartialRequired",
+  "optString": "embedded inside Any"
+}`,
 	}, {
 		desc: "Any with invalid UTF8",
 		mo: jsonpb.MarshalOptions{
@@ -1672,6 +1695,63 @@ func TestMarshal(t *testing.T) {
 }`,
 		wantErr: true,
 	}, {
+		desc: "Any with Int64Value",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Int64Value{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &knownpb.Int64Value{Value: 42}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "google.protobuf.Int64Value",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "google.protobuf.Int64Value",
+  "value": "42"
+}`,
+	}, {
+		desc: "Any with Duration",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Duration{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &knownpb.Duration{}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "type.googleapis.com/google.protobuf.Duration",
+				Value:   b,
+			}
+		}(),
+		want: `{
+  "@type": "type.googleapis.com/google.protobuf.Duration",
+  "value": "0s"
+}`,
+	}, {
+		desc: "Any with empty Value",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &knownpb.Value{}
+			b, err := proto.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "type.googleapis.com/google.protobuf.Value",
+				Value:   b,
+			}
+		}(),
+		wantErr: true,
+	}, {
 		desc: "Any with Value of StringValue",
 		mo: jsonpb.MarshalOptions{
 			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
@@ -1693,13 +1773,13 @@ func TestMarshal(t *testing.T) {
 }`,
 		wantErr: true,
 	}, {
-		desc: "Any with empty Value",
+		desc: "Any with Value of NullValue",
 		mo: jsonpb.MarshalOptions{
 			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
 		},
 		input: func() proto.Message {
-			m := &knownpb.Value{}
-			b, err := proto.Marshal(m)
+			m := &knownpb.Value{Kind: &knownpb.Value_NullValue{}}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
@@ -1708,26 +1788,9 @@ func TestMarshal(t *testing.T) {
 				Value:   b,
 			}
 		}(),
-		wantErr: true,
-	}, {
-		desc: "Any with Duration",
-		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Duration{}).ProtoReflect().Type()),
-		},
-		input: func() proto.Message {
-			m := &knownpb.Duration{}
-			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
-			if err != nil {
-				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
-			}
-			return &knownpb.Any{
-				TypeUrl: "type.googleapis.com/google.protobuf.Duration",
-				Value:   b,
-			}
-		}(),
 		want: `{
-  "@type": "type.googleapis.com/google.protobuf.Duration",
-  "value": "0s"
+  "@type": "type.googleapis.com/google.protobuf.Value",
+  "value": null
 }`,
 	}, {
 		desc: "Any with Struct",
@@ -1777,6 +1840,22 @@ func TestMarshal(t *testing.T) {
     }
   }
 }`,
+	}, {
+		desc: "Any with missing type_url",
+		mo: jsonpb.MarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.BoolValue{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &knownpb.BoolValue{Value: true}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				Value: b,
+			}
+		}(),
+		wantErr: true,
 	}, {
 		desc: "well known types as field values",
 		mo: jsonpb.MarshalOptions{

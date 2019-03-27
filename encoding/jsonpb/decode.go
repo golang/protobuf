@@ -59,7 +59,7 @@ func (o UnmarshalOptions) Unmarshal(m proto.Message, b []byte) error {
 	o.decoder = json.NewDecoder(b)
 
 	var nerr errors.NonFatal
-	if err := o.unmarshalMessage(mr); !nerr.Merge(err) {
+	if err := o.unmarshalMessage(mr, false); !nerr.Merge(err) {
 		return err
 	}
 
@@ -126,7 +126,7 @@ func newError(f string, x ...interface{}) error {
 }
 
 // unmarshalMessage unmarshals a message into the given protoreflect.Message.
-func (o UnmarshalOptions) unmarshalMessage(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalMessage(m pref.Message, skipTypeURL bool) error {
 	var nerr errors.NonFatal
 
 	if isCustomType(m.Type().FullName()) {
@@ -141,7 +141,7 @@ func (o UnmarshalOptions) unmarshalMessage(m pref.Message) error {
 		return unexpectedJSONError{jval}
 	}
 
-	if err := o.unmarshalFields(m); !nerr.Merge(err) {
+	if err := o.unmarshalFields(m, skipTypeURL); !nerr.Merge(err) {
 		return err
 	}
 
@@ -149,7 +149,7 @@ func (o UnmarshalOptions) unmarshalMessage(m pref.Message) error {
 }
 
 // unmarshalFields unmarshals the fields into the given protoreflect.Message.
-func (o UnmarshalOptions) unmarshalFields(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalFields(m pref.Message, skipTypeURL bool) error {
 	var nerr errors.NonFatal
 	var reqNums set.Ints
 	var seenNums set.Ints
@@ -178,6 +178,13 @@ Loop:
 		name, err := jval.Name()
 		if !nerr.Merge(err) {
 			return err
+		}
+		// Unmarshaling a non-custom embedded message in Any will contain the
+		// JSON field "@type" which should be skipped because it is not a field
+		// of the embedded message, but simply an artifact of the Any format.
+		if skipTypeURL && name == "@type" {
+			o.decoder.Read()
+			continue
 		}
 
 		// Get the FieldDescriptor.
@@ -280,7 +287,7 @@ func (o UnmarshalOptions) unmarshalSingular(knownFields pref.KnownFields, fd pre
 	switch fd.Kind() {
 	case pref.MessageKind, pref.GroupKind:
 		m := knownFields.NewMessage(num)
-		err = o.unmarshalMessage(m)
+		err = o.unmarshalMessage(m, false)
 		val = pref.ValueOf(m)
 	default:
 		val, err = o.unmarshalScalar(fd)
@@ -539,7 +546,7 @@ func (o UnmarshalOptions) unmarshalList(list pref.List, fd pref.FieldDescriptor)
 	case pref.MessageKind, pref.GroupKind:
 		for {
 			m := list.NewMessage()
-			err := o.unmarshalMessage(m)
+			err := o.unmarshalMessage(m, false)
 			if !nerr.Merge(err) {
 				if e, ok := err.(unexpectedJSONError); ok {
 					if e.value.Type() == json.EndArray {
@@ -596,7 +603,7 @@ func (o UnmarshalOptions) unmarshalMap(mmap pref.Map, fd pref.FieldDescriptor) e
 		unmarshalMapValue = func() (pref.Value, error) {
 			var nerr errors.NonFatal
 			m := mmap.NewMessage()
-			if err := o.unmarshalMessage(m); !nerr.Merge(err) {
+			if err := o.unmarshalMessage(m, false); !nerr.Merge(err) {
 				return pref.Value{}, err
 			}
 			return pref.ValueOf(m), nerr.E

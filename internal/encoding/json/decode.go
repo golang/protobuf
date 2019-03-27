@@ -25,7 +25,8 @@ const (
 
 // Decoder is a token-based JSON decoder.
 type Decoder struct {
-	// lastCall is last method called, eiterh readCall or peekCall.
+	// lastCall is last method called, either readCall or peekCall.
+	// Initial value is readCall.
 	lastCall call
 
 	// value contains the last read value.
@@ -88,7 +89,7 @@ func (d *Decoder) Read() (Value, error) {
 
 	case Bool, Number:
 		if !d.isValueNext() {
-			return Value{}, d.newSyntaxError("unexpected value %v", value)
+			return Value{}, d.newSyntaxError("unexpected value %v", value.Raw())
 		}
 
 	case String:
@@ -97,7 +98,7 @@ func (d *Decoder) Read() (Value, error) {
 		}
 		// Check if this is for an object name.
 		if d.value.typ&(StartObject|comma) == 0 {
-			return Value{}, d.newSyntaxError("unexpected value %q", value)
+			return Value{}, d.newSyntaxError("unexpected value %v", value.Raw())
 		}
 		d.in = d.in[n:]
 		d.consume(0)
@@ -109,7 +110,7 @@ func (d *Decoder) Read() (Value, error) {
 
 	case StartObject, StartArray:
 		if !d.isValueNext() {
-			return Value{}, d.newSyntaxError("unexpected character %v", value)
+			return Value{}, d.newSyntaxError("unexpected character %v", value.Raw())
 		}
 		d.startStack = append(d.startStack, value.typ)
 
@@ -323,6 +324,14 @@ func (d *Decoder) newStringValue(input []byte, s string) Value {
 	}
 }
 
+// Clone returns a copy of the Decoder for use in reading ahead the next JSON
+// object, array or other values without affecting current Decoder.
+func (d *Decoder) Clone() *Decoder {
+	ret := *d
+	ret.startStack = append([]Type(nil), ret.startStack...)
+	return &ret
+}
+
 // Value contains a JSON type and value parsed from calling Decoder.Read.
 // For JSON boolean and string, it holds the converted value in boo and str
 // fields respectively. For JSON number, input field holds a valid number which
@@ -375,6 +384,11 @@ func (v Value) Name() (string, error) {
 		return "", v.newError("%s is not an object name", v.input)
 	}
 	return v.str, nil
+}
+
+// Raw returns the read value in string.
+func (v Value) Raw() string {
+	return string(v.input)
 }
 
 // Float returns the floating-point number if token is Number, else it will

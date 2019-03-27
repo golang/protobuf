@@ -98,7 +98,7 @@ func (o UnmarshalOptions) unmarshalCustomType(m pref.Message) error {
 	name := m.Type().FullName()
 	switch name {
 	case "google.protobuf.Any":
-		panic("unmarshaling of google.protobuf.Any is not implemented yet")
+		return o.unmarshalAny(m)
 
 	case "google.protobuf.BoolValue",
 		"google.protobuf.DoubleValue",
@@ -138,12 +138,11 @@ func (o UnmarshalOptions) unmarshalCustomType(m pref.Message) error {
 
 // The JSON representation of an Any message uses the regular representation of
 // the deserialized, embedded message, with an additional field `@type` which
-// contains the type URL.  If the embedded message type is well-known and has a
+// contains the type URL. If the embedded message type is well-known and has a
 // custom JSON representation, that representation will be embedded adding a
 // field `value` which holds the custom JSON in addition to the `@type` field.
 
 func (o MarshalOptions) marshalAny(m pref.Message) error {
-	var nerr errors.NonFatal
 	msgType := m.Type()
 	knownFields := m.KnownFields()
 
@@ -167,6 +166,7 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 	// Marshal out @type field.
 	typeURL := typeVal.String()
 	o.encoder.WriteName("@type")
+	var nerr errors.NonFatal
 	if err := o.encoder.WriteString(typeURL); !nerr.Merge(err) {
 		return err
 	}
@@ -198,6 +198,225 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 	}
 
 	return nerr.E
+}
+
+func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
+	// Use Peek to check for json.StartObject to avoid advancing a read.
+	if o.decoder.Peek() != json.StartObject {
+		jval, _ := o.decoder.Read()
+		return unexpectedJSONError{jval}
+	}
+
+	// Use another json.Decoder to parse the unread bytes from o.decoder for
+	// @type field. This avoids advancing a read from o.decoder because the
+	// current JSON object may contain the fields of the embedded type.
+	dec := o.decoder.Clone()
+	typeURL, err := findTypeURL(dec)
+	if err == errEmptyObject {
+		// An empty JSON object translates to an empty Any message.
+		o.decoder.Read() // Read json.StartObject.
+		o.decoder.Read() // Read json.EndObject.
+		return nil
+	}
+	var nerr errors.NonFatal
+	if !nerr.Merge(err) {
+		return errors.New("google.protobuf.Any: %v", err)
+	}
+
+	emt, err := o.Resolver.FindMessageByURL(typeURL)
+	if err != nil {
+		return errors.New("google.protobuf.Any: unable to resolve type %q: %v", typeURL, err)
+	}
+
+	// Create new message for the embedded message type and unmarshal into it.
+	em := emt.New()
+	if isCustomType(emt.FullName()) {
+		// If embedded message is a custom type, unmarshal the JSON "value" field
+		// into it.
+		if err := o.unmarshalAnyValue(em); !nerr.Merge(err) {
+			return errors.New("google.protobuf.Any: %v", err)
+		}
+	} else {
+		// Else unmarshal the current JSON object into it.
+		if err := o.unmarshalMessage(em, true); !nerr.Merge(err) {
+			return errors.New("google.protobuf.Any: %v", err)
+		}
+	}
+	// Serialize the embedded message and assign the resulting bytes to the
+	// proto value field.
+	b, err := proto.MarshalOptions{Deterministic: true}.Marshal(em.Interface())
+	if !nerr.Merge(err) {
+		return errors.New("google.protobuf.Any: %v", err)
+	}
+
+	knownFields := m.KnownFields()
+	knownFields.Set(fieldnum.Any_TypeUrl, pref.ValueOf(typeURL))
+	knownFields.Set(fieldnum.Any_Value, pref.ValueOf(b))
+	return nerr.E
+}
+
+var errEmptyObject = errors.New(`empty object`)
+
+// findTypeURL returns the "@type" field value from the given JSON bytes. It is
+// expected that the given bytes start with json.StartObject. It returns
+// errEmptyObject if the JSON object is empty. It returns error if the object
+// does not contain the field or other decoding problems.
+func findTypeURL(dec *json.Decoder) (string, error) {
+	var typeURL string
+	var nerr errors.NonFatal
+	numFields := 0
+	// Skip start object.
+	dec.Read()
+
+Loop:
+	for {
+		jval, err := dec.Read()
+		if !nerr.Merge(err) {
+			return "", err
+		}
+
+		switch jval.Type() {
+		case json.EndObject:
+			if typeURL == "" {
+				// Did not find @type field.
+				if numFields > 0 {
+					return "", errors.New(`missing "@type" field`)
+				}
+				return "", errEmptyObject
+			}
+			break Loop
+
+		case json.Name:
+			numFields++
+			name, err := jval.Name()
+			if !nerr.Merge(err) {
+				return "", err
+			}
+			if name != "@type" {
+				// Skip value.
+				if err := skipJSONValue(dec); err != nil {
+					return "", err
+				}
+				continue
+			}
+
+			// Return error if this was previously set already.
+			if typeURL != "" {
+				return "", errors.New(`duplicate "@type" field`)
+			}
+			// Read field value.
+			jval, err := dec.Read()
+			if !nerr.Merge(err) {
+				return "", err
+			}
+			if jval.Type() != json.String {
+				return "", unexpectedJSONError{jval}
+			}
+			typeURL = jval.String()
+			if typeURL == "" {
+				return "", errors.New(`"@type" field contains empty value`)
+			}
+		}
+	}
+
+	return typeURL, nerr.E
+}
+
+// skipJSONValue makes the given decoder parse a JSON value (null, boolean,
+// string, number, object and array) in order to advance the read to the next
+// JSON value. It relies on Decoder.Read returning an error if the types are
+// not in valid sequence.
+func skipJSONValue(dec *json.Decoder) error {
+	// Ignore non-fatal errors, do not return nerr.E.
+	var nerr errors.NonFatal
+	jval, err := dec.Read()
+	if !nerr.Merge(err) {
+		return err
+	}
+	// Only need to continue reading for objects and arrays.
+	switch jval.Type() {
+	case json.StartObject:
+		for {
+			jval, err := dec.Read()
+			if !nerr.Merge(err) {
+				return err
+			}
+			switch jval.Type() {
+			case json.EndObject:
+				return nil
+			case json.Name:
+				// Skip object field value.
+				if err := skipJSONValue(dec); err != nil {
+					return err
+				}
+			}
+		}
+
+	case json.StartArray:
+		for {
+			switch dec.Peek() {
+			case json.EndArray:
+				dec.Read()
+				return nil
+			case json.Invalid:
+				_, err := dec.Read()
+				return err
+			default:
+				// Skip array item.
+				if err := skipJSONValue(dec); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// unmarshalAnyValue unmarshals the given custom-type message from the JSON
+// object's "value" field.
+func (o UnmarshalOptions) unmarshalAnyValue(m pref.Message) error {
+	var nerr errors.NonFatal
+	// Skip StartObject, and start reading the fields.
+	o.decoder.Read()
+
+	var found bool // Used for detecting duplicate "value".
+	for {
+		jval, err := o.decoder.Read()
+		if !nerr.Merge(err) {
+			return err
+		}
+		switch jval.Type() {
+		case json.EndObject:
+			if !found {
+				return errors.New(`missing "value" field`)
+			}
+			return nerr.E
+
+		case json.Name:
+			name, err := jval.Name()
+			if !nerr.Merge(err) {
+				return err
+			}
+			switch name {
+			default:
+				return errors.New("unknown field %q", name)
+
+			case "@type":
+				// Skip the value as this was previously parsed already.
+				o.decoder.Read()
+
+			case "value":
+				if found {
+					return errors.New(`duplicate "value" field`)
+				}
+				// Unmarshal the field value into the given message.
+				if err := o.unmarshalCustomType(m); !nerr.Merge(err) {
+					return err
+				}
+				found = true
+			}
+		}
+	}
 }
 
 // Wrapper types are encoded as JSON primitives like string, number or boolean.

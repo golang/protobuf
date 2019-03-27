@@ -1866,6 +1866,535 @@ func TestUnmarshal(t *testing.T) {
 				},
 			},
 		},
+	}, {
+		desc:         "Any empty",
+		inputMessage: &knownpb.Any{},
+		inputText:    `{}`,
+		wantMessage:  &knownpb.Any{},
+	}, {
+		desc: "Any with non-custom message",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "foo/pb2.Nested",
+  "optString": "embedded inside Any",
+  "optNested": {
+    "optString": "inception"
+  }
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("embedded inside Any"),
+				OptNested: &pb2.Nested{
+					OptString: scalar.String("inception"),
+				},
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "foo/pb2.Nested",
+				Value:   b,
+			}
+		}(),
+	}, {
+		desc: "Any with empty embedded message",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "foo/pb2.Nested"
+}`,
+		wantMessage: &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
+	}, {
+		desc:         "Any without registered type",
+		umo:          jsonpb.UnmarshalOptions{Resolver: preg.NewTypes()},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "foo/pb2.Nested"
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with missing required error",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&pb2.PartialRequired{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "pb2.PartialRequired",
+  "optString": "embedded inside Any"
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.PartialRequired{
+				OptString: scalar.String("embedded inside Any"),
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			// TODO: Marshal may fail due to required field not set at some
+			// point. Need to ignore required not set error here.
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				Value:   b,
+			}
+		}(),
+		wantErr: true,
+	}, {
+		desc: "Any with partial required and AllowPartial",
+		umo: jsonpb.UnmarshalOptions{
+			AllowPartial: true,
+			Resolver:     preg.NewTypes((&pb2.PartialRequired{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "pb2.PartialRequired",
+  "optString": "embedded inside Any"
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.PartialRequired{
+				OptString: scalar.String("embedded inside Any"),
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			// TODO: Marshal may fail due to required field not set at some
+			// point. Need to ignore required not set error here.
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				Value:   b,
+			}
+		}(),
+	}, {
+		desc: "Any with invalid UTF8",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "optString": "` + "abc\xff" + `",
+  "@type": "foo/pb2.Nested"
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Nested{
+				OptString: scalar.String("abc\xff"),
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "foo/pb2.Nested",
+				Value:   b,
+			}
+		}(),
+		wantErr: true,
+	}, {
+		desc: "Any with BoolValue",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.BoolValue{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "type.googleapis.com/google.protobuf.BoolValue",
+  "value": true
+}`,
+		wantMessage: func() proto.Message {
+			m := &knownpb.BoolValue{Value: true}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "type.googleapis.com/google.protobuf.BoolValue",
+				Value:   b,
+			}
+		}(),
+	}, {
+		desc: "Any with Empty",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "value": {},
+  "@type": "type.googleapis.com/google.protobuf.Empty"
+}`,
+		wantMessage: func() proto.Message {
+			m := &knownpb.Empty{}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "type.googleapis.com/google.protobuf.Empty",
+				Value:   b,
+			}
+		}(),
+	}, {
+		desc: "Any with missing Empty",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "type.googleapis.com/google.protobuf.Empty"
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with StringValue containing invalid UTF8",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.StringValue{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "google.protobuf.StringValue",
+  "value": "` + "abc\xff" + `"
+}`,
+		wantMessage: func() proto.Message {
+			m := &knownpb.StringValue{Value: "abc\xff"}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "google.protobuf.StringValue",
+				Value:   b,
+			}
+		}(),
+		wantErr: true,
+	}, {
+		desc: "Any with Int64Value",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Int64Value{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "google.protobuf.Int64Value",
+  "value": "42"
+}`,
+		wantMessage: func() proto.Message {
+			m := &knownpb.Int64Value{Value: 42}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "google.protobuf.Int64Value",
+				Value:   b,
+			}
+		}(),
+	}, {
+		desc: "Any with invalid Int64Value",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Int64Value{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "google.protobuf.Int64Value",
+  "value": "forty-two"
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with invalid UInt64Value",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.UInt64Value{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "google.protobuf.UInt64Value",
+  "value": -42
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with Duration",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Duration{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "type.googleapis.com/google.protobuf.Duration",
+  "value": "0s"
+}`,
+		wantMessage: func() proto.Message {
+			m := &knownpb.Duration{}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "type.googleapis.com/google.protobuf.Duration",
+				Value:   b,
+			}
+		}(),
+	}, {
+		desc: "Any with Value of StringValue",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "google.protobuf.Value",
+  "value": "` + "abc\xff" + `"
+}`,
+		wantMessage: func() proto.Message {
+			m := &knownpb.Value{Kind: &knownpb.Value_StringValue{"abc\xff"}}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "google.protobuf.Value",
+				Value:   b,
+			}
+		}(),
+		wantErr: true,
+	}, {
+		desc: "Any with Value of NullValue",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "google.protobuf.Value",
+  "value": null
+}`,
+		wantMessage: func() proto.Message {
+			m := &knownpb.Value{Kind: &knownpb.Value_NullValue{}}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "google.protobuf.Value",
+				Value:   b,
+			}
+		}(),
+	}, {
+		desc: "Any with Struct",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes(
+				(&knownpb.Struct{}).ProtoReflect().Type(),
+				(&knownpb.Value{}).ProtoReflect().Type(),
+				(&knownpb.BoolValue{}).ProtoReflect().Type(),
+				knownpb.NullValue_NULL_VALUE.Type(),
+				(&knownpb.StringValue{}).ProtoReflect().Type(),
+			),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "google.protobuf.Struct",
+  "value": {
+    "bool": true,
+    "null": null,
+    "string": "hello",
+    "struct": {
+      "string": "world"
+    }
+  }
+}`,
+		wantMessage: func() proto.Message {
+			m := &knownpb.Struct{
+				Fields: map[string]*knownpb.Value{
+					"bool":   {Kind: &knownpb.Value_BoolValue{true}},
+					"null":   {Kind: &knownpb.Value_NullValue{}},
+					"string": {Kind: &knownpb.Value_StringValue{"hello"}},
+					"struct": {
+						Kind: &knownpb.Value_StructValue{
+							&knownpb.Struct{
+								Fields: map[string]*knownpb.Value{
+									"string": {Kind: &knownpb.Value_StringValue{"world"}},
+								},
+							},
+						},
+					},
+				},
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "google.protobuf.Struct",
+				Value:   b,
+			}
+		}(),
+	}, {
+		desc:         "Any with missing @type",
+		umo:          jsonpb.UnmarshalOptions{},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "value": {}
+}`,
+		wantErr: true,
+	}, {
+		desc:         "Any with empty @type",
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": ""
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with duplicate @type",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes(
+				(&pb2.Nested{}).ProtoReflect().Type(),
+				(&knownpb.StringValue{}).ProtoReflect().Type(),
+			),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "google.protobuf.StringValue",
+  "value": "hello",
+  "@type": "pb2.Nested"
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with duplicate value",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.StringValue{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "google.protobuf.StringValue",
+  "value": "hello",
+  "value": "world"
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with unknown field",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "pb2.Nested",
+  "optString": "hello",
+  "unknown": "world"
+}`,
+		wantErr: true,
+	}, {
+		desc: "Any with embedded type containing Any",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes(
+				(&pb2.KnownTypes{}).ProtoReflect().Type(),
+				(&knownpb.Any{}).ProtoReflect().Type(),
+				(&knownpb.StringValue{}).ProtoReflect().Type(),
+			),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "pb2.KnownTypes",
+  "optAny": {
+    "@type": "google.protobuf.StringValue",
+	"value": "` + "abc\xff" + `"
+  }
+}`,
+		wantMessage: func() proto.Message {
+			m1 := &knownpb.StringValue{Value: "abc\xff"}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m1)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			m2 := &knownpb.Any{
+				TypeUrl: "google.protobuf.StringValue",
+				Value:   b,
+			}
+			m3 := &pb2.KnownTypes{OptAny: m2}
+			b, err = proto.MarshalOptions{Deterministic: true}.Marshal(m3)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: "pb2.KnownTypes",
+				Value:   b,
+			}
+		}(),
+		wantErr: true,
+	}, {
+		desc: "well known types as field values",
+		umo: jsonpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+		},
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optBool": false,
+  "optInt32": 42,
+  "optInt64": "42",
+  "optUint32": 42,
+  "optUint64": "42",
+  "optFloat": 1.23,
+  "optDouble": 3.1415,
+  "optString": "hello",
+  "optBytes": "aGVsbG8=",
+  "optDuration": "123s",
+  "optTimestamp": "2019-03-19T23:03:21Z",
+  "optStruct": {
+    "string": "hello"
+  },
+  "optList": [
+    null,
+    "",
+    {},
+    []
+  ],
+  "optValue": "world",
+  "optEmpty": {},
+  "optAny": {
+    "@type": "google.protobuf.Empty",
+    "value": {}
+  },
+  "optFieldmask": "fooBar,barFoo"
+}`,
+		wantMessage: &pb2.KnownTypes{
+			OptBool:      &knownpb.BoolValue{Value: false},
+			OptInt32:     &knownpb.Int32Value{Value: 42},
+			OptInt64:     &knownpb.Int64Value{Value: 42},
+			OptUint32:    &knownpb.UInt32Value{Value: 42},
+			OptUint64:    &knownpb.UInt64Value{Value: 42},
+			OptFloat:     &knownpb.FloatValue{Value: 1.23},
+			OptDouble:    &knownpb.DoubleValue{Value: 3.1415},
+			OptString:    &knownpb.StringValue{Value: "hello"},
+			OptBytes:     &knownpb.BytesValue{Value: []byte("hello")},
+			OptDuration:  &knownpb.Duration{Seconds: 123},
+			OptTimestamp: &knownpb.Timestamp{Seconds: 1553036601},
+			OptStruct: &knownpb.Struct{
+				Fields: map[string]*knownpb.Value{
+					"string": {Kind: &knownpb.Value_StringValue{"hello"}},
+				},
+			},
+			OptList: &knownpb.ListValue{
+				Values: []*knownpb.Value{
+					{Kind: &knownpb.Value_NullValue{}},
+					{Kind: &knownpb.Value_StringValue{}},
+					{
+						Kind: &knownpb.Value_StructValue{
+							&knownpb.Struct{Fields: map[string]*knownpb.Value{}},
+						},
+					},
+					{
+						Kind: &knownpb.Value_ListValue{
+							&knownpb.ListValue{Values: []*knownpb.Value{}},
+						},
+					},
+				},
+			},
+			OptValue: &knownpb.Value{
+				Kind: &knownpb.Value_StringValue{"world"},
+			},
+			OptEmpty: &knownpb.Empty{},
+			OptAny: &knownpb.Any{
+				TypeUrl: "google.protobuf.Empty",
+			},
+			OptFieldmask: &knownpb.FieldMask{
+				Paths: []string{"foo_bar", "bar_foo"},
+			},
+		},
 	}}
 
 	for _, tt := range tests {
