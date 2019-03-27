@@ -37,6 +37,7 @@ package proto
 
 import (
 	"errors"
+	"math"
 	"reflect"
 )
 
@@ -55,6 +56,10 @@ var (
 	// ErrTooLarge is the error returned if Marshal is called with a
 	// message that encodes to >2GB.
 	ErrTooLarge = errors.New("proto: message encodes to over 2 GB")
+
+	// ErrMaxUint32 is the error returned if the input to EncodeFixed32 exceeds
+	// the max value of an unsigned 32 bit integer.
+	ErrMaxUint32 = errors.New("proto: input exceeds max value for uint32")
 )
 
 // The fundamental encoders that put bytes on the wire.
@@ -139,6 +144,9 @@ func (p *Buffer) EncodeFixed64(x uint64) error {
 // This is the format for the
 // fixed32, sfixed32, and float protocol buffer types.
 func (p *Buffer) EncodeFixed32(x uint64) error {
+	if x > math.MaxUint32 {
+		return ErrMaxUint32
+	}
 	p.buf = append(p.buf,
 		uint8(x),
 		uint8(x>>8),
