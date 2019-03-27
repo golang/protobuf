@@ -48,11 +48,11 @@ func isCustomType(name pref.FullName) bool {
 // marshalCustomType marshals given well-known type message that have special
 // JSON conversion rules. It needs to be a message type where isCustomType
 // returns true, else it will panic.
-func (e encoder) marshalCustomType(m pref.Message) error {
+func (o MarshalOptions) marshalCustomType(m pref.Message) error {
 	name := m.Type().FullName()
 	switch name {
 	case "google.protobuf.Any":
-		return e.marshalAny(m)
+		return o.marshalAny(m)
 
 	case "google.protobuf.BoolValue",
 		"google.protobuf.DoubleValue",
@@ -63,25 +63,25 @@ func (e encoder) marshalCustomType(m pref.Message) error {
 		"google.protobuf.UInt64Value",
 		"google.protobuf.StringValue",
 		"google.protobuf.BytesValue":
-		return e.marshalWrapperType(m)
+		return o.marshalWrapperType(m)
 
 	case "google.protobuf.Struct":
-		return e.marshalStruct(m)
+		return o.marshalStruct(m)
 
 	case "google.protobuf.ListValue":
-		return e.marshalListValue(m)
+		return o.marshalListValue(m)
 
 	case "google.protobuf.Value":
-		return e.marshalKnownValue(m)
+		return o.marshalKnownValue(m)
 
 	case "google.protobuf.Duration":
-		return e.marshalDuration(m)
+		return o.marshalDuration(m)
 
 	case "google.protobuf.Timestamp":
-		return e.marshalTimestamp(m)
+		return o.marshalTimestamp(m)
 
 	case "google.protobuf.FieldMask":
-		return e.marshalFieldMask(m)
+		return o.marshalFieldMask(m)
 	}
 
 	panic(fmt.Sprintf("%q does not have a custom marshaler", name))
@@ -90,7 +90,7 @@ func (e encoder) marshalCustomType(m pref.Message) error {
 // unmarshalCustomType unmarshals given well-known type message that have
 // special JSON conversion rules. It needs to be a message type where
 // isCustomType returns true, else it will panic.
-func (d decoder) unmarshalCustomType(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalCustomType(m pref.Message) error {
 	name := m.Type().FullName()
 	switch name {
 	case "google.protobuf.Any":
@@ -105,25 +105,25 @@ func (d decoder) unmarshalCustomType(m pref.Message) error {
 		"google.protobuf.UInt64Value",
 		"google.protobuf.StringValue",
 		"google.protobuf.BytesValue":
-		return d.unmarshalWrapperType(m)
+		return o.unmarshalWrapperType(m)
 
 	case "google.protobuf.Struct":
-		return d.unmarshalStruct(m)
+		return o.unmarshalStruct(m)
 
 	case "google.protobuf.ListValue":
-		return d.unmarshalListValue(m)
+		return o.unmarshalListValue(m)
 
 	case "google.protobuf.Value":
-		return d.unmarshalKnownValue(m)
+		return o.unmarshalKnownValue(m)
 
 	case "google.protobuf.Duration":
-		return d.unmarshalDuration(m)
+		return o.unmarshalDuration(m)
 
 	case "google.protobuf.Timestamp":
-		return d.unmarshalTimestamp(m)
+		return o.unmarshalTimestamp(m)
 
 	case "google.protobuf.FieldMask":
-		return d.unmarshalFieldMask(m)
+		return o.unmarshalFieldMask(m)
 	}
 
 	panic(fmt.Sprintf("%q does not have a custom unmarshaler", name))
@@ -135,14 +135,14 @@ func (d decoder) unmarshalCustomType(m pref.Message) error {
 // custom JSON representation, that representation will be embedded adding a
 // field `value` which holds the custom JSON in addition to the `@type` field.
 
-func (e encoder) marshalAny(m pref.Message) error {
+func (o MarshalOptions) marshalAny(m pref.Message) error {
 	var nerr errors.NonFatal
 	msgType := m.Type()
 	knownFields := m.KnownFields()
 
 	// Start writing the JSON object.
-	e.StartObject()
-	defer e.EndObject()
+	o.encoder.StartObject()
+	defer o.encoder.EndObject()
 
 	if !knownFields.Has(fieldnum.Any_TypeUrl) {
 		if !knownFields.Has(fieldnum.Any_Value) {
@@ -159,13 +159,13 @@ func (e encoder) marshalAny(m pref.Message) error {
 
 	// Marshal out @type field.
 	typeURL := typeVal.String()
-	e.WriteName("@type")
-	if err := e.WriteString(typeURL); !nerr.Merge(err) {
+	o.encoder.WriteName("@type")
+	if err := o.encoder.WriteString(typeURL); !nerr.Merge(err) {
 		return err
 	}
 
 	// Resolve the type in order to unmarshal value field.
-	emt, err := e.resolver.FindMessageByURL(typeURL)
+	emt, err := o.Resolver.FindMessageByURL(typeURL)
 	if !nerr.Merge(err) {
 		return errors.New("%s: unable to resolve %q: %v", msgType.FullName(), typeURL, err)
 	}
@@ -181,12 +181,12 @@ func (e encoder) marshalAny(m pref.Message) error {
 	// with corresponding custom JSON encoding of the embedded message as a
 	// field.
 	if isCustomType(emt.FullName()) {
-		e.WriteName("value")
-		return e.marshalCustomType(em)
+		o.encoder.WriteName("value")
+		return o.marshalCustomType(em)
 	}
 
 	// Else, marshal out the embedded message's fields in this Any object.
-	if err := e.marshalFields(em); !nerr.Merge(err) {
+	if err := o.marshalFields(em); !nerr.Merge(err) {
 		return err
 	}
 
@@ -195,7 +195,7 @@ func (e encoder) marshalAny(m pref.Message) error {
 
 // Wrapper types are encoded as JSON primitives like string, number or boolean.
 
-func (e encoder) marshalWrapperType(m pref.Message) error {
+func (o MarshalOptions) marshalWrapperType(m pref.Message) error {
 	msgType := m.Type()
 	fieldDescs := msgType.Fields()
 	knownFields := m.KnownFields()
@@ -204,10 +204,10 @@ func (e encoder) marshalWrapperType(m pref.Message) error {
 	const num = fieldnum.BoolValue_Value
 	fd := fieldDescs.ByNumber(num)
 	val := knownFields.Get(num)
-	return e.marshalSingular(val, fd)
+	return o.marshalSingular(val, fd)
 }
 
-func (d decoder) unmarshalWrapperType(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalWrapperType(m pref.Message) error {
 	var nerr errors.NonFatal
 	msgType := m.Type()
 	fieldDescs := msgType.Fields()
@@ -216,7 +216,7 @@ func (d decoder) unmarshalWrapperType(m pref.Message) error {
 	// The "value" field has the same field number for all wrapper types.
 	const num = fieldnum.BoolValue_Value
 	fd := fieldDescs.ByNumber(num)
-	val, err := d.unmarshalScalar(fd)
+	val, err := o.unmarshalScalar(fd)
 	if !nerr.Merge(err) {
 		return err
 	}
@@ -227,55 +227,55 @@ func (d decoder) unmarshalWrapperType(m pref.Message) error {
 // The JSON representation for Struct is a JSON object that contains the encoded
 // Struct.fields map and follows the serialization rules for a map.
 
-func (e encoder) marshalStruct(m pref.Message) error {
+func (o MarshalOptions) marshalStruct(m pref.Message) error {
 	msgType := m.Type()
 	fieldDescs := msgType.Fields()
 	knownFields := m.KnownFields()
 
 	fd := fieldDescs.ByNumber(fieldnum.Struct_Fields)
 	val := knownFields.Get(fieldnum.Struct_Fields)
-	return e.marshalMap(val.Map(), fd)
+	return o.marshalMap(val.Map(), fd)
 }
 
-func (d decoder) unmarshalStruct(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalStruct(m pref.Message) error {
 	msgType := m.Type()
 	fieldDescs := msgType.Fields()
 	knownFields := m.KnownFields()
 
 	fd := fieldDescs.ByNumber(fieldnum.Struct_Fields)
 	val := knownFields.Get(fieldnum.Struct_Fields)
-	return d.unmarshalMap(val.Map(), fd)
+	return o.unmarshalMap(val.Map(), fd)
 }
 
 // The JSON representation for ListValue is JSON array that contains the encoded
 // ListValue.values repeated field and follows the serialization rules for a
 // repeated field.
 
-func (e encoder) marshalListValue(m pref.Message) error {
+func (o MarshalOptions) marshalListValue(m pref.Message) error {
 	msgType := m.Type()
 	fieldDescs := msgType.Fields()
 	knownFields := m.KnownFields()
 
 	fd := fieldDescs.ByNumber(fieldnum.ListValue_Values)
 	val := knownFields.Get(fieldnum.ListValue_Values)
-	return e.marshalList(val.List(), fd)
+	return o.marshalList(val.List(), fd)
 }
 
-func (d decoder) unmarshalListValue(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalListValue(m pref.Message) error {
 	msgType := m.Type()
 	fieldDescs := msgType.Fields()
 	knownFields := m.KnownFields()
 
 	fd := fieldDescs.ByNumber(fieldnum.ListValue_Values)
 	val := knownFields.Get(fieldnum.ListValue_Values)
-	return d.unmarshalList(val.List(), fd)
+	return o.unmarshalList(val.List(), fd)
 }
 
 // The JSON representation for a Value is dependent on the oneof field that is
 // set. Each of the field in the oneof has its own custom serialization rule. A
 // Value message needs to be a oneof field set, else it is an error.
 
-func (e encoder) marshalKnownValue(m pref.Message) error {
+func (o MarshalOptions) marshalKnownValue(m pref.Message) error {
 	msgType := m.Type()
 	fieldDescs := msgType.Oneofs().Get(0).Fields()
 	knownFields := m.KnownFields()
@@ -288,7 +288,7 @@ func (e encoder) marshalKnownValue(m pref.Message) error {
 		}
 		// Only one field should be set.
 		val := knownFields.Get(num)
-		return e.marshalSingular(val, fd)
+		return o.marshalSingular(val, fd)
 	}
 
 	// Return error if none of the fields are set.
@@ -300,17 +300,17 @@ func isKnownValue(fd pref.FieldDescriptor) bool {
 	return md != nil && md.FullName() == "google.protobuf.Value"
 }
 
-func (d decoder) unmarshalKnownValue(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 	var nerr errors.NonFatal
 	knownFields := m.KnownFields()
 
-	switch d.Peek() {
+	switch o.decoder.Peek() {
 	case json.Null:
-		d.Read()
+		o.decoder.Read()
 		knownFields.Set(fieldnum.Value_NullValue, pref.ValueOf(pref.EnumNumber(0)))
 
 	case json.Bool:
-		jval, err := d.Read()
+		jval, err := o.decoder.Read()
 		if err != nil {
 			return err
 		}
@@ -321,7 +321,7 @@ func (d decoder) unmarshalKnownValue(m pref.Message) error {
 		knownFields.Set(fieldnum.Value_BoolValue, val)
 
 	case json.Number:
-		jval, err := d.Read()
+		jval, err := o.decoder.Read()
 		if err != nil {
 			return err
 		}
@@ -338,7 +338,7 @@ func (d decoder) unmarshalKnownValue(m pref.Message) error {
 		// however, there is no way to identify that and hence a JSON string is
 		// always assigned to the string_value field, which means that certain
 		// encoding cannot be parsed back to the same field.
-		jval, err := d.Read()
+		jval, err := o.decoder.Read()
 		if !nerr.Merge(err) {
 			return err
 		}
@@ -350,20 +350,20 @@ func (d decoder) unmarshalKnownValue(m pref.Message) error {
 
 	case json.StartObject:
 		m := knownFields.NewMessage(fieldnum.Value_StructValue)
-		if err := d.unmarshalStruct(m); !nerr.Merge(err) {
+		if err := o.unmarshalStruct(m); !nerr.Merge(err) {
 			return err
 		}
 		knownFields.Set(fieldnum.Value_StructValue, pref.ValueOf(m))
 
 	case json.StartArray:
 		m := knownFields.NewMessage(fieldnum.Value_ListValue)
-		if err := d.unmarshalListValue(m); !nerr.Merge(err) {
+		if err := o.unmarshalListValue(m); !nerr.Merge(err) {
 			return err
 		}
 		knownFields.Set(fieldnum.Value_ListValue, pref.ValueOf(m))
 
 	default:
-		jval, err := d.Read()
+		jval, err := o.decoder.Read()
 		if err != nil {
 			return err
 		}
@@ -390,7 +390,7 @@ const (
 	maxSecondsInDuration = 315576000000
 )
 
-func (e encoder) marshalDuration(m pref.Message) error {
+func (o MarshalOptions) marshalDuration(m pref.Message) error {
 	msgType := m.Type()
 	knownFields := m.KnownFields()
 
@@ -420,13 +420,13 @@ func (e encoder) marshalDuration(m pref.Message) error {
 	x = strings.TrimSuffix(x, "000")
 	x = strings.TrimSuffix(x, "000")
 	x = strings.TrimSuffix(x, ".000")
-	e.WriteString(x + "s")
+	o.encoder.WriteString(x + "s")
 	return nil
 }
 
-func (d decoder) unmarshalDuration(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalDuration(m pref.Message) error {
 	var nerr errors.NonFatal
-	jval, err := d.Read()
+	jval, err := o.decoder.Read()
 	if !nerr.Merge(err) {
 		return err
 	}
@@ -527,7 +527,7 @@ const (
 	minTimestampSeconds = -62135596800
 )
 
-func (e encoder) marshalTimestamp(m pref.Message) error {
+func (o MarshalOptions) marshalTimestamp(m pref.Message) error {
 	msgType := m.Type()
 	knownFields := m.KnownFields()
 
@@ -548,13 +548,13 @@ func (e encoder) marshalTimestamp(m pref.Message) error {
 	x = strings.TrimSuffix(x, "000")
 	x = strings.TrimSuffix(x, "000")
 	x = strings.TrimSuffix(x, ".000")
-	e.WriteString(x + "Z")
+	o.encoder.WriteString(x + "Z")
 	return nil
 }
 
-func (d decoder) unmarshalTimestamp(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalTimestamp(m pref.Message) error {
 	var nerr errors.NonFatal
-	jval, err := d.Read()
+	jval, err := o.decoder.Read()
 	if !nerr.Merge(err) {
 		return err
 	}
@@ -586,7 +586,7 @@ func (d decoder) unmarshalTimestamp(m pref.Message) error {
 // lower-camel naming conventions. Encoding should fail if the path name would
 // end up differently after a round-trip.
 
-func (e encoder) marshalFieldMask(m pref.Message) error {
+func (o MarshalOptions) marshalFieldMask(m pref.Message) error {
 	msgType := m.Type()
 	knownFields := m.KnownFields()
 	name := msgType.FullName()
@@ -605,13 +605,13 @@ func (e encoder) marshalFieldMask(m pref.Message) error {
 		paths = append(paths, cc)
 	}
 
-	e.WriteString(strings.Join(paths, ","))
+	o.encoder.WriteString(strings.Join(paths, ","))
 	return nil
 }
 
-func (d decoder) unmarshalFieldMask(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalFieldMask(m pref.Message) error {
 	var nerr errors.NonFatal
-	jval, err := d.Read()
+	jval, err := o.decoder.Read()
 	if !nerr.Merge(err) {
 		return err
 	}

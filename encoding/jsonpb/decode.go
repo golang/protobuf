@@ -33,6 +33,8 @@ type UnmarshalOptions struct {
 	// and processing Any. If Resolver is not set, unmarshaling will default to
 	// using protoregistry.GlobalTypes.
 	Resolver *protoregistry.Types
+
+	decoder *json.Decoder
 }
 
 // Unmarshal reads the given []byte and populates the given proto.Message using
@@ -46,22 +48,18 @@ func (o UnmarshalOptions) Unmarshal(m proto.Message, b []byte) error {
 	// marshaling.
 	resetMessage(mr)
 
-	resolver := o.Resolver
-	if resolver == nil {
-		resolver = protoregistry.GlobalTypes
+	if o.Resolver == nil {
+		o.Resolver = protoregistry.GlobalTypes
 	}
+	o.decoder = json.NewDecoder(b)
 
-	dec := decoder{
-		Decoder:  json.NewDecoder(b),
-		resolver: resolver,
-	}
 	var nerr errors.NonFatal
-	if err := dec.unmarshalMessage(mr); !nerr.Merge(err) {
+	if err := o.unmarshalMessage(mr); !nerr.Merge(err) {
 		return err
 	}
 
 	// Check for EOF.
-	val, err := dec.Read()
+	val, err := o.decoder.Read()
 	if err != nil {
 		return err
 	}
@@ -91,8 +89,8 @@ func resetMessage(m pref.Message) {
 }
 
 // unexpectedJSONError is an error that contains the unexpected json.Value. This
-// is used by decoder methods to provide callers the read json.Value that it
-// did not expect.
+// is returned by methods to provide callers the read json.Value that it did not
+// expect.
 // TODO: Consider moving this to internal/encoding/json for consistency with
 // errors that package returns.
 type unexpectedJSONError struct {
@@ -122,21 +120,15 @@ func newError(f string, x ...interface{}) error {
 	return e
 }
 
-// decoder decodes JSON into protoreflect values.
-type decoder struct {
-	*json.Decoder
-	resolver *protoregistry.Types
-}
-
 // unmarshalMessage unmarshals a message into the given protoreflect.Message.
-func (d decoder) unmarshalMessage(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalMessage(m pref.Message) error {
 	var nerr errors.NonFatal
 
 	if isCustomType(m.Type().FullName()) {
-		return d.unmarshalCustomType(m)
+		return o.unmarshalCustomType(m)
 	}
 
-	jval, err := d.Read()
+	jval, err := o.decoder.Read()
 	if !nerr.Merge(err) {
 		return err
 	}
@@ -144,7 +136,7 @@ func (d decoder) unmarshalMessage(m pref.Message) error {
 		return unexpectedJSONError{jval}
 	}
 
-	if err := d.unmarshalFields(m); !nerr.Merge(err) {
+	if err := o.unmarshalFields(m); !nerr.Merge(err) {
 		return err
 	}
 
@@ -152,7 +144,7 @@ func (d decoder) unmarshalMessage(m pref.Message) error {
 }
 
 // unmarshalFields unmarshals the fields into the given protoreflect.Message.
-func (d decoder) unmarshalFields(m pref.Message) error {
+func (o UnmarshalOptions) unmarshalFields(m pref.Message) error {
 	var nerr errors.NonFatal
 	var reqNums set.Ints
 	var seenNums set.Ints
@@ -165,7 +157,7 @@ func (d decoder) unmarshalFields(m pref.Message) error {
 Loop:
 	for {
 		// Read field name.
-		jval, err := d.Read()
+		jval, err := o.decoder.Read()
 		if !nerr.Merge(err) {
 			return err
 		}
@@ -190,7 +182,7 @@ Loop:
 			xtName := pref.FullName(name[1 : len(name)-1])
 			xt := xtTypes.ByName(xtName)
 			if xt == nil {
-				xt, err = d.findExtension(xtName)
+				xt, err = o.findExtension(xtName)
 				if err != nil && err != protoregistry.NotFound {
 					return errors.New("unable to resolve [%v]: %v", xtName, err)
 				}
@@ -222,19 +214,19 @@ Loop:
 
 		// No need to set values for JSON null unless the field type is
 		// google.protobuf.Value.
-		if d.Peek() == json.Null && !isKnownValue(fd) {
-			d.Read()
+		if o.decoder.Peek() == json.Null && !isKnownValue(fd) {
+			o.decoder.Read()
 			continue
 		}
 
 		if cardinality := fd.Cardinality(); cardinality == pref.Repeated {
 			// Map or list fields have cardinality of repeated.
-			if err := d.unmarshalRepeated(knownFields, fd); !nerr.Merge(err) {
+			if err := o.unmarshalRepeated(knownFields, fd); !nerr.Merge(err) {
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)
 			}
 		} else {
 			// Required or optional fields.
-			if err := d.unmarshalSingular(knownFields, fd); !nerr.Merge(err) {
+			if err := o.unmarshalSingular(knownFields, fd); !nerr.Merge(err) {
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)
 			}
 			if cardinality == pref.Required {
@@ -257,14 +249,14 @@ Loop:
 }
 
 // findExtension returns protoreflect.ExtensionType from the resolver if found.
-func (d decoder) findExtension(xtName pref.FullName) (pref.ExtensionType, error) {
-	xt, err := d.resolver.FindExtensionByName(xtName)
+func (o UnmarshalOptions) findExtension(xtName pref.FullName) (pref.ExtensionType, error) {
+	xt, err := o.Resolver.FindExtensionByName(xtName)
 	if err == nil {
 		return xt, nil
 	}
 
 	// Check if this is a MessageSet extension field.
-	xt, err = d.resolver.FindExtensionByName(xtName + ".message_set_extension")
+	xt, err = o.Resolver.FindExtensionByName(xtName + ".message_set_extension")
 	if err == nil && isMessageSetExtension(xt) {
 		return xt, nil
 	}
@@ -273,7 +265,7 @@ func (d decoder) findExtension(xtName pref.FullName) (pref.ExtensionType, error)
 
 // unmarshalSingular unmarshals to the non-repeated field specified by the given
 // FieldDescriptor.
-func (d decoder) unmarshalSingular(knownFields pref.KnownFields, fd pref.FieldDescriptor) error {
+func (o UnmarshalOptions) unmarshalSingular(knownFields pref.KnownFields, fd pref.FieldDescriptor) error {
 	var val pref.Value
 	var err error
 	num := fd.Number()
@@ -281,10 +273,10 @@ func (d decoder) unmarshalSingular(knownFields pref.KnownFields, fd pref.FieldDe
 	switch fd.Kind() {
 	case pref.MessageKind, pref.GroupKind:
 		m := knownFields.NewMessage(num)
-		err = d.unmarshalMessage(m)
+		err = o.unmarshalMessage(m)
 		val = pref.ValueOf(m)
 	default:
-		val, err = d.unmarshalScalar(fd)
+		val, err = o.unmarshalScalar(fd)
 	}
 
 	var nerr errors.NonFatal
@@ -297,12 +289,12 @@ func (d decoder) unmarshalSingular(knownFields pref.KnownFields, fd pref.FieldDe
 
 // unmarshalScalar unmarshals to a scalar/enum protoreflect.Value specified by
 // the given FieldDescriptor.
-func (d decoder) unmarshalScalar(fd pref.FieldDescriptor) (pref.Value, error) {
+func (o UnmarshalOptions) unmarshalScalar(fd pref.FieldDescriptor) (pref.Value, error) {
 	const b32 int = 32
 	const b64 int = 64
 
 	var nerr errors.NonFatal
-	jval, err := d.Read()
+	jval, err := o.decoder.Read()
 	if !nerr.Merge(err) {
 		return pref.Value{}, err
 	}
@@ -509,16 +501,16 @@ func unmarshalEnum(jval json.Value, fd pref.FieldDescriptor) (pref.Value, error)
 }
 
 // unmarshalRepeated unmarshals into a repeated field.
-func (d decoder) unmarshalRepeated(knownFields pref.KnownFields, fd pref.FieldDescriptor) error {
+func (o UnmarshalOptions) unmarshalRepeated(knownFields pref.KnownFields, fd pref.FieldDescriptor) error {
 	var nerr errors.NonFatal
 	num := fd.Number()
 	val := knownFields.Get(num)
 	if !fd.IsMap() {
-		if err := d.unmarshalList(val.List(), fd); !nerr.Merge(err) {
+		if err := o.unmarshalList(val.List(), fd); !nerr.Merge(err) {
 			return err
 		}
 	} else {
-		if err := d.unmarshalMap(val.Map(), fd); !nerr.Merge(err) {
+		if err := o.unmarshalMap(val.Map(), fd); !nerr.Merge(err) {
 			return err
 		}
 	}
@@ -526,9 +518,9 @@ func (d decoder) unmarshalRepeated(knownFields pref.KnownFields, fd pref.FieldDe
 }
 
 // unmarshalList unmarshals into given protoreflect.List.
-func (d decoder) unmarshalList(list pref.List, fd pref.FieldDescriptor) error {
+func (o UnmarshalOptions) unmarshalList(list pref.List, fd pref.FieldDescriptor) error {
 	var nerr errors.NonFatal
-	jval, err := d.Read()
+	jval, err := o.decoder.Read()
 	if !nerr.Merge(err) {
 		return err
 	}
@@ -540,7 +532,7 @@ func (d decoder) unmarshalList(list pref.List, fd pref.FieldDescriptor) error {
 	case pref.MessageKind, pref.GroupKind:
 		for {
 			m := list.NewMessage()
-			err := d.unmarshalMessage(m)
+			err := o.unmarshalMessage(m)
 			if !nerr.Merge(err) {
 				if e, ok := err.(unexpectedJSONError); ok {
 					if e.value.Type() == json.EndArray {
@@ -554,7 +546,7 @@ func (d decoder) unmarshalList(list pref.List, fd pref.FieldDescriptor) error {
 		}
 	default:
 		for {
-			val, err := d.unmarshalScalar(fd)
+			val, err := o.unmarshalScalar(fd)
 			if !nerr.Merge(err) {
 				if e, ok := err.(unexpectedJSONError); ok {
 					if e.value.Type() == json.EndArray {
@@ -571,10 +563,10 @@ func (d decoder) unmarshalList(list pref.List, fd pref.FieldDescriptor) error {
 }
 
 // unmarshalMap unmarshals into given protoreflect.Map.
-func (d decoder) unmarshalMap(mmap pref.Map, fd pref.FieldDescriptor) error {
+func (o UnmarshalOptions) unmarshalMap(mmap pref.Map, fd pref.FieldDescriptor) error {
 	var nerr errors.NonFatal
 
-	jval, err := d.Read()
+	jval, err := o.decoder.Read()
 	if !nerr.Merge(err) {
 		return err
 	}
@@ -590,14 +582,14 @@ func (d decoder) unmarshalMap(mmap pref.Map, fd pref.FieldDescriptor) error {
 	// order to call the appropriate unmarshalMapValue func inside the for loop
 	// below.
 	unmarshalMapValue := func() (pref.Value, error) {
-		return d.unmarshalScalar(valDesc)
+		return o.unmarshalScalar(valDesc)
 	}
 	switch valDesc.Kind() {
 	case pref.MessageKind, pref.GroupKind:
 		unmarshalMapValue = func() (pref.Value, error) {
 			var nerr errors.NonFatal
 			m := mmap.NewMessage()
-			if err := d.unmarshalMessage(m); !nerr.Merge(err) {
+			if err := o.unmarshalMessage(m); !nerr.Merge(err) {
 				return pref.Value{}, err
 			}
 			return pref.ValueOf(m), nerr.E
@@ -607,7 +599,7 @@ func (d decoder) unmarshalMap(mmap pref.Map, fd pref.FieldDescriptor) error {
 Loop:
 	for {
 		// Read field name.
-		jval, err := d.Read()
+		jval, err := o.decoder.Read()
 		if !nerr.Merge(err) {
 			return err
 		}
