@@ -1631,8 +1631,6 @@ func TestMarshal(t *testing.T) {
   "value": true
 }`,
 	}, {
-		// TODO: Need clarification on the specification for this. See
-		// https://github.com/protocolbuffers/protobuf/issues/5390
 		desc: "Any with Empty",
 		mo: jsonpb.MarshalOptions{
 			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
@@ -1649,7 +1647,8 @@ func TestMarshal(t *testing.T) {
 			}
 		}(),
 		want: `{
-  "@type": "type.googleapis.com/google.protobuf.Empty"
+  "@type": "type.googleapis.com/google.protobuf.Empty",
+  "value": {}
 }`,
 	}, {
 		desc: "Any with StringValue containing invalid UTF8",
@@ -1843,7 +1842,8 @@ func TestMarshal(t *testing.T) {
   "optValue": "world",
   "optEmpty": {},
   "optAny": {
-    "@type": "google.protobuf.Empty"
+    "@type": "google.protobuf.Empty",
+    "value": {}
   },
   "optFieldmask": "fooBar,barFoo"
 }`,

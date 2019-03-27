@@ -34,6 +34,7 @@ func isCustomType(name pref.FullName) bool {
 		"google.protobuf.UInt64Value",
 		"google.protobuf.StringValue",
 		"google.protobuf.BytesValue",
+		"google.protobuf.Empty",
 		"google.protobuf.Struct",
 		"google.protobuf.ListValue",
 		"google.protobuf.Value",
@@ -64,6 +65,9 @@ func (o MarshalOptions) marshalCustomType(m pref.Message) error {
 		"google.protobuf.StringValue",
 		"google.protobuf.BytesValue":
 		return o.marshalWrapperType(m)
+
+	case "google.protobuf.Empty":
+		return o.marshalEmpty(m)
 
 	case "google.protobuf.Struct":
 		return o.marshalStruct(m)
@@ -106,6 +110,9 @@ func (o UnmarshalOptions) unmarshalCustomType(m pref.Message) error {
 		"google.protobuf.StringValue",
 		"google.protobuf.BytesValue":
 		return o.unmarshalWrapperType(m)
+
+	case "google.protobuf.Empty":
+		return o.unmarshalEmpty(m)
 
 	case "google.protobuf.Struct":
 		return o.unmarshalStruct(m)
@@ -222,6 +229,32 @@ func (o UnmarshalOptions) unmarshalWrapperType(m pref.Message) error {
 	}
 	knownFields.Set(num, val)
 	return nerr.E
+}
+
+// The JSON representation for Empty is an empty JSON object.
+
+func (o MarshalOptions) marshalEmpty(pref.Message) error {
+	o.encoder.StartObject()
+	o.encoder.EndObject()
+	return nil
+}
+
+func (o UnmarshalOptions) unmarshalEmpty(pref.Message) error {
+	jval, err := o.decoder.Read()
+	if err != nil {
+		return err
+	}
+	if jval.Type() != json.StartObject {
+		return unexpectedJSONError{jval}
+	}
+	jval, err = o.decoder.Read()
+	if err != nil {
+		return err
+	}
+	if jval.Type() != json.EndObject {
+		return unexpectedJSONError{jval}
+	}
+	return nil
 }
 
 // The JSON representation for Struct is a JSON object that contains the encoded
