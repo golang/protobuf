@@ -8,7 +8,10 @@ import (
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type Enum1 int32
 
@@ -53,7 +56,7 @@ func (x *Enum1) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use Enum1.Type instead.
 func (Enum1) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_test_proto_rawDescGZIP(), []int{0}
 }
 
 type Enum2 int32
@@ -99,7 +102,7 @@ func (x *Enum2) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use Enum2.Type instead.
 func (Enum2) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_test_proto_rawDescGZIP(), []int{1}
 }
 
 type Enum3 int32
@@ -145,7 +148,7 @@ func (x *Enum3) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use Enum3.Type instead.
 func (Enum3) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test_proto_rawdesc_gzipped, []int{2}
+	return xxx_File_test_proto_rawDescGZIP(), []int{2}
 }
 
 type Message1 struct {
@@ -164,7 +167,7 @@ func (*Message1) ProtoMessage()    {}
 
 // Deprecated: Use Message1.ProtoReflect.Type instead.
 func (*Message1) Descriptor() ([]byte, []int) {
-	return xxx_File_test_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_test_proto_rawDescGZIP(), []int{0}
 }
 
 var extRange_Message1 = []protoiface.ExtensionRangeV1{
@@ -191,7 +194,7 @@ func (*Message2) ProtoMessage()    {}
 
 // Deprecated: Use Message2.ProtoReflect.Type instead.
 func (*Message2) Descriptor() ([]byte, []int) {
-	return xxx_File_test_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_test_proto_rawDescGZIP(), []int{1}
 }
 
 type Message3 struct {
@@ -209,7 +212,7 @@ func (*Message3) ProtoMessage()    {}
 
 // Deprecated: Use Message3.ProtoReflect.Type instead.
 func (*Message3) Descriptor() ([]byte, []int) {
-	return xxx_File_test_proto_rawdesc_gzipped, []int{2}
+	return xxx_File_test_proto_rawDescGZIP(), []int{2}
 }
 
 type Message4 struct {
@@ -228,7 +231,7 @@ func (*Message4) ProtoMessage()    {}
 
 // Deprecated: Use Message4.ProtoReflect.Type instead.
 func (*Message4) Descriptor() ([]byte, []int) {
-	return xxx_File_test_proto_rawdesc_gzipped, []int{3}
+	return xxx_File_test_proto_rawDescGZIP(), []int{3}
 }
 
 func (m *Message4) GetBoolField() bool {
@@ -307,8 +310,9 @@ var (
 	// extend testprotos.Message1 { optional string string_field = 23; }
 	E_Message4_StringField = &xxx_File_test_proto_extDescs[5]
 )
-var xxx_File_test_proto_rawdesc = []byte{
-	// 653 bytes of the wire-encoded FileDescriptorProto
+var File_test_proto protoreflect.FileDescriptor
+
+var xxx_File_test_proto_rawDesc = []byte{
 	0x0a, 0x0a, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0a, 0x74, 0x65,
 	0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x22, 0x14, 0x0a, 0x08, 0x4d, 0x65, 0x73, 0x73,
 	0x61, 0x67, 0x65, 0x31, 0x2a, 0x08, 0x08, 0x0a, 0x10, 0x80, 0x80, 0x80, 0x80, 0x02, 0x22, 0x0a,
@@ -352,11 +356,17 @@ var xxx_File_test_proto_rawdesc = []byte{
 	0x72, 0x79, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73,
 }
 
-var xxx_File_test_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_test_proto_rawdesc)
+var (
+	xxx_File_test_proto_rawDesc_once sync.Once
+	xxx_File_test_proto_rawDesc_data = xxx_File_test_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_test_proto protoreflect.FileDescriptor
+func xxx_File_test_proto_rawDescGZIP() []byte {
+	xxx_File_test_proto_rawDesc_once.Do(func() {
+		xxx_File_test_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_test_proto_rawDesc_data)
+	})
+	return xxx_File_test_proto_rawDesc_data
+}
 
 var xxx_File_test_proto_enumTypes = make([]protoreflect.EnumType, 3)
 var xxx_File_test_proto_messageTypes = make([]protoimpl.MessageType, 4)
@@ -389,7 +399,7 @@ func xxx_File_test_proto_init() {
 	}
 	extensionTypes := make([]protoreflect.ExtensionType, 6)
 	File_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:        xxx_File_test_proto_rawdesc,
+		RawDescriptor:        xxx_File_test_proto_rawDesc,
 		GoTypes:              xxx_File_test_proto_goTypes,
 		DependencyIndexes:    xxx_File_test_proto_depIdxs,
 		LegacyExtensions:     xxx_File_test_proto_extDescs,
@@ -399,6 +409,7 @@ func xxx_File_test_proto_init() {
 		FilesRegistry:        protoregistry.GlobalFiles,
 		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_test_proto_rawDesc = nil
 	xxx_File_test_proto_goTypes = nil
 	xxx_File_test_proto_depIdxs = nil
 }

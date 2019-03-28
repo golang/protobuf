@@ -7,7 +7,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // A Timestamp represents a point in time independent of any time zone or local
 // calendar, encoded as a count of seconds and fractions of seconds at
@@ -115,7 +118,7 @@ func (*Timestamp) ProtoMessage()    {}
 
 // Deprecated: Use Timestamp.ProtoReflect.Type instead.
 func (*Timestamp) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_timestamp_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_google_protobuf_timestamp_proto_rawDescGZIP(), []int{0}
 }
 
 func (*Timestamp) XXX_WellKnownType() string { return "Timestamp" }
@@ -134,8 +137,9 @@ func (m *Timestamp) GetNanos() int32 {
 	return 0
 }
 
-var xxx_File_google_protobuf_timestamp_proto_rawdesc = []byte{
-	// 258 bytes of the wire-encoded FileDescriptorProto
+var File_google_protobuf_timestamp_proto protoreflect.FileDescriptor
+
+var xxx_File_google_protobuf_timestamp_proto_rawDesc = []byte{
 	0x0a, 0x1f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x12, 0x0f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
@@ -155,11 +159,17 @@ var xxx_File_google_protobuf_timestamp_proto_rawdesc = []byte{
 	0x6f, 0x33,
 }
 
-var xxx_File_google_protobuf_timestamp_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_timestamp_proto_rawdesc)
+var (
+	xxx_File_google_protobuf_timestamp_proto_rawDesc_once sync.Once
+	xxx_File_google_protobuf_timestamp_proto_rawDesc_data = xxx_File_google_protobuf_timestamp_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_google_protobuf_timestamp_proto protoreflect.FileDescriptor
+func xxx_File_google_protobuf_timestamp_proto_rawDescGZIP() []byte {
+	xxx_File_google_protobuf_timestamp_proto_rawDesc_once.Do(func() {
+		xxx_File_google_protobuf_timestamp_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_timestamp_proto_rawDesc_data)
+	})
+	return xxx_File_google_protobuf_timestamp_proto_rawDesc_data
+}
 
 var xxx_File_google_protobuf_timestamp_proto_messageTypes = make([]protoimpl.MessageType, 1)
 var xxx_File_google_protobuf_timestamp_proto_goTypes = []interface{}{
@@ -173,13 +183,14 @@ func xxx_File_google_protobuf_timestamp_proto_init() {
 		return
 	}
 	File_google_protobuf_timestamp_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_timestamp_proto_rawdesc,
+		RawDescriptor:      xxx_File_google_protobuf_timestamp_proto_rawDesc,
 		GoTypes:            xxx_File_google_protobuf_timestamp_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_timestamp_proto_depIdxs,
 		MessageOutputTypes: xxx_File_google_protobuf_timestamp_proto_messageTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_google_protobuf_timestamp_proto_rawDesc = nil
 	xxx_File_google_protobuf_timestamp_proto_goTypes = nil
 	xxx_File_google_protobuf_timestamp_proto_depIdxs = nil
 }

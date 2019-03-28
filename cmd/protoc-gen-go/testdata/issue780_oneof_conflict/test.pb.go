@@ -7,7 +7,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type Foo struct {
 	// Types that are valid to be assigned to Bar:
@@ -27,7 +30,7 @@ func (*Foo) ProtoMessage()    {}
 
 // Deprecated: Use Foo.ProtoReflect.Type instead.
 func (*Foo) Descriptor() ([]byte, []int) {
-	return xxx_File_issue780_oneof_conflict_test_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_issue780_oneof_conflict_test_proto_rawDescGZIP(), []int{0}
 }
 
 type isFoo_Bar interface {
@@ -61,8 +64,9 @@ func (*Foo) XXX_OneofWrappers() []interface{} {
 	}
 }
 
-var xxx_File_issue780_oneof_conflict_test_proto_rawdesc = []byte{
-	// 88 bytes of the wire-encoded FileDescriptorProto
+var File_issue780_oneof_conflict_test_proto protoreflect.FileDescriptor
+
+var xxx_File_issue780_oneof_conflict_test_proto_rawDesc = []byte{
 	0x0a, 0x22, 0x69, 0x73, 0x73, 0x75, 0x65, 0x37, 0x38, 0x30, 0x5f, 0x6f, 0x6e, 0x65, 0x6f, 0x66,
 	0x5f, 0x63, 0x6f, 0x6e, 0x66, 0x6c, 0x69, 0x63, 0x74, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x6f, 0x6e, 0x65, 0x6f, 0x66, 0x74, 0x65, 0x73, 0x74, 0x22,
@@ -71,11 +75,17 @@ var xxx_File_issue780_oneof_conflict_test_proto_rawdesc = []byte{
 	0x72, 0x42, 0x05, 0x0a, 0x03, 0x62, 0x61, 0x72,
 }
 
-var xxx_File_issue780_oneof_conflict_test_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_issue780_oneof_conflict_test_proto_rawdesc)
+var (
+	xxx_File_issue780_oneof_conflict_test_proto_rawDesc_once sync.Once
+	xxx_File_issue780_oneof_conflict_test_proto_rawDesc_data = xxx_File_issue780_oneof_conflict_test_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_issue780_oneof_conflict_test_proto protoreflect.FileDescriptor
+func xxx_File_issue780_oneof_conflict_test_proto_rawDescGZIP() []byte {
+	xxx_File_issue780_oneof_conflict_test_proto_rawDesc_once.Do(func() {
+		xxx_File_issue780_oneof_conflict_test_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_issue780_oneof_conflict_test_proto_rawDesc_data)
+	})
+	return xxx_File_issue780_oneof_conflict_test_proto_rawDesc_data
+}
 
 var xxx_File_issue780_oneof_conflict_test_proto_messageTypes = make([]protoimpl.MessageType, 1)
 var xxx_File_issue780_oneof_conflict_test_proto_goTypes = []interface{}{
@@ -89,13 +99,14 @@ func xxx_File_issue780_oneof_conflict_test_proto_init() {
 		return
 	}
 	File_issue780_oneof_conflict_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_issue780_oneof_conflict_test_proto_rawdesc,
+		RawDescriptor:      xxx_File_issue780_oneof_conflict_test_proto_rawDesc,
 		GoTypes:            xxx_File_issue780_oneof_conflict_test_proto_goTypes,
 		DependencyIndexes:  xxx_File_issue780_oneof_conflict_test_proto_depIdxs,
 		MessageOutputTypes: xxx_File_issue780_oneof_conflict_test_proto_messageTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_issue780_oneof_conflict_test_proto_rawDesc = nil
 	xxx_File_issue780_oneof_conflict_test_proto_goTypes = nil
 	xxx_File_issue780_oneof_conflict_test_proto_depIdxs = nil
 }

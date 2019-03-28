@@ -9,7 +9,10 @@ import (
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type FieldDescriptorProto_Type int32
 
@@ -116,7 +119,7 @@ func (x *FieldDescriptorProto_Type) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use FieldDescriptorProto_Type.Type instead.
 func (FieldDescriptorProto_Type) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{4, 0}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{4, 0}
 }
 
 type FieldDescriptorProto_Label int32
@@ -169,7 +172,7 @@ func (x *FieldDescriptorProto_Label) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use FieldDescriptorProto_Label.Type instead.
 func (FieldDescriptorProto_Label) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{4, 1}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{4, 1}
 }
 
 // Generated classes can be optimized for speed or code size.
@@ -223,7 +226,7 @@ func (x *FileOptions_OptimizeMode) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use FileOptions_OptimizeMode.Type instead.
 func (FileOptions_OptimizeMode) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{10, 0}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{10, 0}
 }
 
 type FieldOptions_CType int32
@@ -276,7 +279,7 @@ func (x *FieldOptions_CType) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use FieldOptions_CType.Type instead.
 func (FieldOptions_CType) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{12, 0}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{12, 0}
 }
 
 type FieldOptions_JSType int32
@@ -331,7 +334,7 @@ func (x *FieldOptions_JSType) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use FieldOptions_JSType.Type instead.
 func (FieldOptions_JSType) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{12, 1}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{12, 1}
 }
 
 // Is this method side-effect-free (or safe in HTTP parlance), or idempotent,
@@ -386,7 +389,7 @@ func (x *MethodOptions_IdempotencyLevel) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use MethodOptions_IdempotencyLevel.Type instead.
 func (MethodOptions_IdempotencyLevel) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{17, 0}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{17, 0}
 }
 
 // The protocol compiler can output a FileDescriptorSet containing the .proto
@@ -407,7 +410,7 @@ func (*FileDescriptorSet) ProtoMessage()    {}
 
 // Deprecated: Use FileDescriptorSet.ProtoReflect.Type instead.
 func (*FileDescriptorSet) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{0}
 }
 
 func (m *FileDescriptorSet) GetFile() []*FileDescriptorProto {
@@ -456,7 +459,7 @@ func (*FileDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use FileDescriptorProto.ProtoReflect.Type instead.
 func (*FileDescriptorProto) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{1}
 }
 
 func (m *FileDescriptorProto) GetName() string {
@@ -571,7 +574,7 @@ func (*DescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use DescriptorProto.ProtoReflect.Type instead.
 func (*DescriptorProto) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{2}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{2}
 }
 
 func (m *DescriptorProto) GetName() string {
@@ -662,7 +665,7 @@ func (*ExtensionRangeOptions) ProtoMessage()    {}
 
 // Deprecated: Use ExtensionRangeOptions.ProtoReflect.Type instead.
 func (*ExtensionRangeOptions) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{3}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{3}
 }
 
 var extRange_ExtensionRangeOptions = []protoiface.ExtensionRangeV1{
@@ -727,7 +730,7 @@ func (*FieldDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use FieldDescriptorProto.ProtoReflect.Type instead.
 func (*FieldDescriptorProto) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{4}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{4}
 }
 
 func (m *FieldDescriptorProto) GetName() string {
@@ -818,7 +821,7 @@ func (*OneofDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use OneofDescriptorProto.ProtoReflect.Type instead.
 func (*OneofDescriptorProto) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{5}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{5}
 }
 
 func (m *OneofDescriptorProto) GetName() string {
@@ -861,7 +864,7 @@ func (*EnumDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use EnumDescriptorProto.ProtoReflect.Type instead.
 func (*EnumDescriptorProto) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{6}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{6}
 }
 
 func (m *EnumDescriptorProto) GetName() string {
@@ -918,7 +921,7 @@ func (*EnumValueDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use EnumValueDescriptorProto.ProtoReflect.Type instead.
 func (*EnumValueDescriptorProto) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{7}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{7}
 }
 
 func (m *EnumValueDescriptorProto) GetName() string {
@@ -961,7 +964,7 @@ func (*ServiceDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use ServiceDescriptorProto.ProtoReflect.Type instead.
 func (*ServiceDescriptorProto) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{8}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{8}
 }
 
 func (m *ServiceDescriptorProto) GetName() string {
@@ -1011,7 +1014,7 @@ func (*MethodDescriptorProto) ProtoMessage()    {}
 
 // Deprecated: Use MethodDescriptorProto.ProtoReflect.Type instead.
 func (*MethodDescriptorProto) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{9}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{9}
 }
 
 const Default_MethodDescriptorProto_ClientStreaming bool = false
@@ -1159,7 +1162,7 @@ func (*FileOptions) ProtoMessage()    {}
 
 // Deprecated: Use FileOptions.ProtoReflect.Type instead.
 func (*FileOptions) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{10}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{10}
 }
 
 var extRange_FileOptions = []protoiface.ExtensionRangeV1{
@@ -1397,7 +1400,7 @@ func (*MessageOptions) ProtoMessage()    {}
 
 // Deprecated: Use MessageOptions.ProtoReflect.Type instead.
 func (*MessageOptions) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{11}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{11}
 }
 
 var extRange_MessageOptions = []protoiface.ExtensionRangeV1{
@@ -1525,7 +1528,7 @@ func (*FieldOptions) ProtoMessage()    {}
 
 // Deprecated: Use FieldOptions.ProtoReflect.Type instead.
 func (*FieldOptions) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{12}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{12}
 }
 
 var extRange_FieldOptions = []protoiface.ExtensionRangeV1{
@@ -1610,7 +1613,7 @@ func (*OneofOptions) ProtoMessage()    {}
 
 // Deprecated: Use OneofOptions.ProtoReflect.Type instead.
 func (*OneofOptions) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{13}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{13}
 }
 
 var extRange_OneofOptions = []protoiface.ExtensionRangeV1{
@@ -1655,7 +1658,7 @@ func (*EnumOptions) ProtoMessage()    {}
 
 // Deprecated: Use EnumOptions.ProtoReflect.Type instead.
 func (*EnumOptions) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{14}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{14}
 }
 
 var extRange_EnumOptions = []protoiface.ExtensionRangeV1{
@@ -1713,7 +1716,7 @@ func (*EnumValueOptions) ProtoMessage()    {}
 
 // Deprecated: Use EnumValueOptions.ProtoReflect.Type instead.
 func (*EnumValueOptions) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{15}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{15}
 }
 
 var extRange_EnumValueOptions = []protoiface.ExtensionRangeV1{
@@ -1764,7 +1767,7 @@ func (*ServiceOptions) ProtoMessage()    {}
 
 // Deprecated: Use ServiceOptions.ProtoReflect.Type instead.
 func (*ServiceOptions) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{16}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{16}
 }
 
 var extRange_ServiceOptions = []protoiface.ExtensionRangeV1{
@@ -1816,7 +1819,7 @@ func (*MethodOptions) ProtoMessage()    {}
 
 // Deprecated: Use MethodOptions.ProtoReflect.Type instead.
 func (*MethodOptions) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{17}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{17}
 }
 
 var extRange_MethodOptions = []protoiface.ExtensionRangeV1{
@@ -1882,7 +1885,7 @@ func (*UninterpretedOption) ProtoMessage()    {}
 
 // Deprecated: Use UninterpretedOption.ProtoReflect.Type instead.
 func (*UninterpretedOption) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{18}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{18}
 }
 
 func (m *UninterpretedOption) GetName() []*UninterpretedOption_NamePart {
@@ -1995,7 +1998,7 @@ func (*SourceCodeInfo) ProtoMessage()    {}
 
 // Deprecated: Use SourceCodeInfo.ProtoReflect.Type instead.
 func (*SourceCodeInfo) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{19}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{19}
 }
 
 func (m *SourceCodeInfo) GetLocation() []*SourceCodeInfo_Location {
@@ -2026,7 +2029,7 @@ func (*GeneratedCodeInfo) ProtoMessage()    {}
 
 // Deprecated: Use GeneratedCodeInfo.ProtoReflect.Type instead.
 func (*GeneratedCodeInfo) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{20}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{20}
 }
 
 func (m *GeneratedCodeInfo) GetAnnotation() []*GeneratedCodeInfo_Annotation {
@@ -2054,7 +2057,7 @@ func (*DescriptorProto_ExtensionRange) ProtoMessage()    {}
 
 // Deprecated: Use DescriptorProto_ExtensionRange.ProtoReflect.Type instead.
 func (*DescriptorProto_ExtensionRange) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{2, 0}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{2, 0}
 }
 
 func (m *DescriptorProto_ExtensionRange) GetStart() int32 {
@@ -2098,7 +2101,7 @@ func (*DescriptorProto_ReservedRange) ProtoMessage()    {}
 
 // Deprecated: Use DescriptorProto_ReservedRange.ProtoReflect.Type instead.
 func (*DescriptorProto_ReservedRange) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{2, 1}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{2, 1}
 }
 
 func (m *DescriptorProto_ReservedRange) GetStart() int32 {
@@ -2138,7 +2141,7 @@ func (*EnumDescriptorProto_EnumReservedRange) ProtoMessage()    {}
 
 // Deprecated: Use EnumDescriptorProto_EnumReservedRange.ProtoReflect.Type instead.
 func (*EnumDescriptorProto_EnumReservedRange) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{6, 0}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{6, 0}
 }
 
 func (m *EnumDescriptorProto_EnumReservedRange) GetStart() int32 {
@@ -2177,7 +2180,7 @@ func (*UninterpretedOption_NamePart) ProtoMessage()    {}
 
 // Deprecated: Use UninterpretedOption_NamePart.ProtoReflect.Type instead.
 func (*UninterpretedOption_NamePart) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{18, 0}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{18, 0}
 }
 
 func (m *UninterpretedOption_NamePart) GetNamePart() string {
@@ -2289,7 +2292,7 @@ func (*SourceCodeInfo_Location) ProtoMessage()    {}
 
 // Deprecated: Use SourceCodeInfo_Location.ProtoReflect.Type instead.
 func (*SourceCodeInfo_Location) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{19, 0}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{19, 0}
 }
 
 func (m *SourceCodeInfo_Location) GetPath() []int32 {
@@ -2354,7 +2357,7 @@ func (*GeneratedCodeInfo_Annotation) ProtoMessage()    {}
 
 // Deprecated: Use GeneratedCodeInfo_Annotation.ProtoReflect.Type instead.
 func (*GeneratedCodeInfo_Annotation) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped, []int{20, 0}
+	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{20, 0}
 }
 
 func (m *GeneratedCodeInfo_Annotation) GetPath() []int32 {
@@ -2385,8 +2388,9 @@ func (m *GeneratedCodeInfo_Annotation) GetEnd() int32 {
 	return 0
 }
 
-var xxx_File_google_protobuf_descriptor_proto_rawdesc = []byte{
-	// 7580 bytes of the wire-encoded FileDescriptorProto
+var File_google_protobuf_descriptor_proto protoreflect.FileDescriptor
+
+var xxx_File_google_protobuf_descriptor_proto_rawDesc = []byte{
 	0x0a, 0x20, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x6f, 0x72, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x12, 0x0f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
@@ -2863,11 +2867,17 @@ var xxx_File_google_protobuf_descriptor_proto_rawdesc = []byte{
 	0x66, 0x2e, 0x52, 0x65, 0x66, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
 }
 
-var xxx_File_google_protobuf_descriptor_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_descriptor_proto_rawdesc)
+var (
+	xxx_File_google_protobuf_descriptor_proto_rawDesc_once sync.Once
+	xxx_File_google_protobuf_descriptor_proto_rawDesc_data = xxx_File_google_protobuf_descriptor_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_google_protobuf_descriptor_proto protoreflect.FileDescriptor
+func xxx_File_google_protobuf_descriptor_proto_rawDescGZIP() []byte {
+	xxx_File_google_protobuf_descriptor_proto_rawDesc_once.Do(func() {
+		xxx_File_google_protobuf_descriptor_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_descriptor_proto_rawDesc_data)
+	})
+	return xxx_File_google_protobuf_descriptor_proto_rawDesc_data
+}
 
 var xxx_File_google_protobuf_descriptor_proto_enumTypes = make([]protoreflect.EnumType, 6)
 var xxx_File_google_protobuf_descriptor_proto_messageTypes = make([]protoimpl.MessageType, 27)
@@ -2958,7 +2968,7 @@ func xxx_File_google_protobuf_descriptor_proto_init() {
 		return
 	}
 	File_google_protobuf_descriptor_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_descriptor_proto_rawdesc,
+		RawDescriptor:      xxx_File_google_protobuf_descriptor_proto_rawDesc,
 		GoTypes:            xxx_File_google_protobuf_descriptor_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_descriptor_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_google_protobuf_descriptor_proto_enumTypes,
@@ -2975,6 +2985,7 @@ func xxx_File_google_protobuf_descriptor_proto_init() {
 	prototype.X.RegisterEnumValueOptions((*EnumValueOptions)(nil))
 	prototype.X.RegisterServiceOptions((*ServiceOptions)(nil))
 	prototype.X.RegisterMethodOptions((*MethodOptions)(nil))
+	xxx_File_google_protobuf_descriptor_proto_rawDesc = nil
 	xxx_File_google_protobuf_descriptor_proto_goTypes = nil
 	xxx_File_google_protobuf_descriptor_proto_depIdxs = nil
 }

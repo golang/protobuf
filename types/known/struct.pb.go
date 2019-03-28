@@ -7,7 +7,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // `NullValue` is a singleton enumeration to represent the null value for the
 // `Value` type union.
@@ -43,7 +46,7 @@ func (x NullValue) String() string {
 
 // Deprecated: Use NullValue.Type instead.
 func (NullValue) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_struct_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_google_protobuf_struct_proto_rawDescGZIP(), []int{0}
 }
 
 func (NullValue) XXX_WellKnownType() string { return "NullValue" }
@@ -73,7 +76,7 @@ func (*Struct) ProtoMessage()    {}
 
 // Deprecated: Use Struct.ProtoReflect.Type instead.
 func (*Struct) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_struct_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_google_protobuf_struct_proto_rawDescGZIP(), []int{0}
 }
 
 func (*Struct) XXX_WellKnownType() string { return "Struct" }
@@ -122,7 +125,7 @@ func (*Value) ProtoMessage()    {}
 
 // Deprecated: Use Value.ProtoReflect.Type instead.
 func (*Value) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_struct_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_google_protobuf_struct_proto_rawDescGZIP(), []int{1}
 }
 
 func (*Value) XXX_WellKnownType() string { return "Value" }
@@ -248,7 +251,7 @@ func (*ListValue) ProtoMessage()    {}
 
 // Deprecated: Use ListValue.ProtoReflect.Type instead.
 func (*ListValue) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_struct_proto_rawdesc_gzipped, []int{2}
+	return xxx_File_google_protobuf_struct_proto_rawDescGZIP(), []int{2}
 }
 
 func (*ListValue) XXX_WellKnownType() string { return "ListValue" }
@@ -260,8 +263,9 @@ func (m *ListValue) GetValues() []*Value {
 	return nil
 }
 
-var xxx_File_google_protobuf_struct_proto_rawdesc = []byte{
-	// 745 bytes of the wire-encoded FileDescriptorProto
+var File_google_protobuf_struct_proto protoreflect.FileDescriptor
+
+var xxx_File_google_protobuf_struct_proto_rawDesc = []byte{
 	0x0a, 0x1c, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0f,
 	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x22,
@@ -311,11 +315,17 @@ var xxx_File_google_protobuf_struct_proto_rawdesc = []byte{
 	0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_google_protobuf_struct_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_struct_proto_rawdesc)
+var (
+	xxx_File_google_protobuf_struct_proto_rawDesc_once sync.Once
+	xxx_File_google_protobuf_struct_proto_rawDesc_data = xxx_File_google_protobuf_struct_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_google_protobuf_struct_proto protoreflect.FileDescriptor
+func xxx_File_google_protobuf_struct_proto_rawDescGZIP() []byte {
+	xxx_File_google_protobuf_struct_proto_rawDesc_once.Do(func() {
+		xxx_File_google_protobuf_struct_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_struct_proto_rawDesc_data)
+	})
+	return xxx_File_google_protobuf_struct_proto_rawDesc_data
+}
 
 var xxx_File_google_protobuf_struct_proto_enumTypes = make([]protoreflect.EnumType, 1)
 var xxx_File_google_protobuf_struct_proto_messageTypes = make([]protoimpl.MessageType, 4)
@@ -341,7 +351,7 @@ func xxx_File_google_protobuf_struct_proto_init() {
 		return
 	}
 	File_google_protobuf_struct_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_struct_proto_rawdesc,
+		RawDescriptor:      xxx_File_google_protobuf_struct_proto_rawDesc,
 		GoTypes:            xxx_File_google_protobuf_struct_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_struct_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_google_protobuf_struct_proto_enumTypes,
@@ -349,6 +359,7 @@ func xxx_File_google_protobuf_struct_proto_init() {
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_google_protobuf_struct_proto_rawDesc = nil
 	xxx_File_google_protobuf_struct_proto_goTypes = nil
 	xxx_File_google_protobuf_struct_proto_depIdxs = nil
 }

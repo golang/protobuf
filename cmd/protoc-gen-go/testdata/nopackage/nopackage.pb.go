@@ -7,7 +7,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type Enum int32
 
@@ -52,7 +55,7 @@ func (x *Enum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_nopackage_nopackage_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_nopackage_nopackage_proto_rawDescGZIP(), []int{0}
 }
 
 type Message struct {
@@ -72,7 +75,7 @@ func (*Message) ProtoMessage()    {}
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
-	return xxx_File_nopackage_nopackage_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_nopackage_nopackage_proto_rawDescGZIP(), []int{0}
 }
 
 const Default_Message_EnumField Enum = Enum_ZERO
@@ -91,8 +94,9 @@ func (m *Message) GetEnumField() Enum {
 	return Default_Message_EnumField
 }
 
-var xxx_File_nopackage_nopackage_proto_rawdesc = []byte{
-	// 135 bytes of the wire-encoded FileDescriptorProto
+var File_nopackage_nopackage_proto protoreflect.FileDescriptor
+
+var xxx_File_nopackage_nopackage_proto_rawDesc = []byte{
 	0x0a, 0x19, 0x6e, 0x6f, 0x70, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x2f, 0x6e, 0x6f, 0x70, 0x61,
 	0x63, 0x6b, 0x61, 0x67, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x58, 0x0a, 0x07, 0x4d,
 	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67,
@@ -104,11 +108,17 @@ var xxx_File_nopackage_nopackage_proto_rawdesc = []byte{
 	0x04, 0x5a, 0x45, 0x52, 0x4f, 0x10, 0x00,
 }
 
-var xxx_File_nopackage_nopackage_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_nopackage_nopackage_proto_rawdesc)
+var (
+	xxx_File_nopackage_nopackage_proto_rawDesc_once sync.Once
+	xxx_File_nopackage_nopackage_proto_rawDesc_data = xxx_File_nopackage_nopackage_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_nopackage_nopackage_proto protoreflect.FileDescriptor
+func xxx_File_nopackage_nopackage_proto_rawDescGZIP() []byte {
+	xxx_File_nopackage_nopackage_proto_rawDesc_once.Do(func() {
+		xxx_File_nopackage_nopackage_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_nopackage_nopackage_proto_rawDesc_data)
+	})
+	return xxx_File_nopackage_nopackage_proto_rawDesc_data
+}
 
 var xxx_File_nopackage_nopackage_proto_enumTypes = make([]protoreflect.EnumType, 1)
 var xxx_File_nopackage_nopackage_proto_messageTypes = make([]protoimpl.MessageType, 1)
@@ -126,7 +136,7 @@ func xxx_File_nopackage_nopackage_proto_init() {
 		return
 	}
 	File_nopackage_nopackage_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_nopackage_nopackage_proto_rawdesc,
+		RawDescriptor:      xxx_File_nopackage_nopackage_proto_rawDesc,
 		GoTypes:            xxx_File_nopackage_nopackage_proto_goTypes,
 		DependencyIndexes:  xxx_File_nopackage_nopackage_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_nopackage_nopackage_proto_enumTypes,
@@ -134,6 +144,7 @@ func xxx_File_nopackage_nopackage_proto_init() {
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_nopackage_nopackage_proto_rawDesc = nil
 	xxx_File_nopackage_nopackage_proto_goTypes = nil
 	xxx_File_nopackage_nopackage_proto_depIdxs = nil
 }

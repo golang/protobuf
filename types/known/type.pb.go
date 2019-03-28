@@ -7,7 +7,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // The syntax in which a protocol buffer element is defined.
 type Syntax int32
@@ -44,7 +47,7 @@ func (x Syntax) String() string {
 
 // Deprecated: Use Syntax.Type instead.
 func (Syntax) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{0}
 }
 
 // Basic field types.
@@ -150,7 +153,7 @@ func (x Field_Kind) String() string {
 
 // Deprecated: Use Field_Kind.Type instead.
 func (Field_Kind) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{1, 0}
+	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{1, 0}
 }
 
 // Whether a field is optional, required, or repeated.
@@ -196,7 +199,7 @@ func (x Field_Cardinality) String() string {
 
 // Deprecated: Use Field_Cardinality.Type instead.
 func (Field_Cardinality) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{1, 1}
+	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{1, 1}
 }
 
 // A protocol buffer message type.
@@ -227,7 +230,7 @@ func (*Type) ProtoMessage()    {}
 
 // Deprecated: Use Type.ProtoReflect.Type instead.
 func (*Type) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{0}
 }
 
 func (m *Type) GetName() string {
@@ -310,7 +313,7 @@ func (*Field) ProtoMessage()    {}
 
 // Deprecated: Use Field.ProtoReflect.Type instead.
 func (*Field) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{1}
 }
 
 func (m *Field) GetKind() Field_Kind {
@@ -409,7 +412,7 @@ func (*Enum) ProtoMessage()    {}
 
 // Deprecated: Use Enum.ProtoReflect.Type instead.
 func (*Enum) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{2}
+	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{2}
 }
 
 func (m *Enum) GetName() string {
@@ -469,7 +472,7 @@ func (*EnumValue) ProtoMessage()    {}
 
 // Deprecated: Use EnumValue.ProtoReflect.Type instead.
 func (*EnumValue) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{3}
+	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{3}
 }
 
 func (m *EnumValue) GetName() string {
@@ -520,7 +523,7 @@ func (*Option) ProtoMessage()    {}
 
 // Deprecated: Use Option.ProtoReflect.Type instead.
 func (*Option) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawdesc_gzipped, []int{4}
+	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{4}
 }
 
 func (m *Option) GetName() string {
@@ -537,8 +540,9 @@ func (m *Option) GetValue() *Any {
 	return nil
 }
 
-var xxx_File_google_protobuf_type_proto_rawdesc = []byte{
-	// 1835 bytes of the wire-encoded FileDescriptorProto
+var File_google_protobuf_type_proto protoreflect.FileDescriptor
+
+var xxx_File_google_protobuf_type_proto_rawDesc = []byte{
 	0x0a, 0x1a, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0f, 0x67, 0x6f,
 	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x1a, 0x19, 0x67,
@@ -656,11 +660,17 @@ var xxx_File_google_protobuf_type_proto_rawdesc = []byte{
 	0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_google_protobuf_type_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_type_proto_rawdesc)
+var (
+	xxx_File_google_protobuf_type_proto_rawDesc_once sync.Once
+	xxx_File_google_protobuf_type_proto_rawDesc_data = xxx_File_google_protobuf_type_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_google_protobuf_type_proto protoreflect.FileDescriptor
+func xxx_File_google_protobuf_type_proto_rawDescGZIP() []byte {
+	xxx_File_google_protobuf_type_proto_rawDesc_once.Do(func() {
+		xxx_File_google_protobuf_type_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_type_proto_rawDesc_data)
+	})
+	return xxx_File_google_protobuf_type_proto_rawDesc_data
+}
 
 var xxx_File_google_protobuf_type_proto_enumTypes = make([]protoreflect.EnumType, 3)
 var xxx_File_google_protobuf_type_proto_messageTypes = make([]protoimpl.MessageType, 5)
@@ -700,7 +710,7 @@ func xxx_File_google_protobuf_type_proto_init() {
 	xxx_File_google_protobuf_any_proto_init()
 	xxx_File_google_protobuf_source_context_proto_init()
 	File_google_protobuf_type_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_type_proto_rawdesc,
+		RawDescriptor:      xxx_File_google_protobuf_type_proto_rawDesc,
 		GoTypes:            xxx_File_google_protobuf_type_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_type_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_google_protobuf_type_proto_enumTypes,
@@ -708,6 +718,7 @@ func xxx_File_google_protobuf_type_proto_init() {
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_google_protobuf_type_proto_rawDesc = nil
 	xxx_File_google_protobuf_type_proto_goTypes = nil
 	xxx_File_google_protobuf_type_proto_depIdxs = nil
 }

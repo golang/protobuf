@@ -7,7 +7,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type WeakImportMessage struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -24,11 +27,12 @@ func (*WeakImportMessage) ProtoMessage()    {}
 
 // Deprecated: Use WeakImportMessage.ProtoReflect.Type instead.
 func (*WeakImportMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_weak_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_test_test_weak_proto_rawDescGZIP(), []int{0}
 }
 
-var xxx_File_test_test_weak_proto_rawdesc = []byte{
-	// 121 bytes of the wire-encoded FileDescriptorProto
+var File_test_test_weak_proto protoreflect.FileDescriptor
+
+var xxx_File_test_test_weak_proto_rawDesc = []byte{
 	0x0a, 0x14, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x77, 0x65, 0x61, 0x6b,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x12, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x74, 0x65, 0x73, 0x74, 0x22, 0x13, 0x0a, 0x11, 0x57, 0x65,
@@ -39,11 +43,17 @@ var xxx_File_test_test_weak_proto_rawdesc = []byte{
 	0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x74, 0x65, 0x73, 0x74,
 }
 
-var xxx_File_test_test_weak_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_test_test_weak_proto_rawdesc)
+var (
+	xxx_File_test_test_weak_proto_rawDesc_once sync.Once
+	xxx_File_test_test_weak_proto_rawDesc_data = xxx_File_test_test_weak_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_test_test_weak_proto protoreflect.FileDescriptor
+func xxx_File_test_test_weak_proto_rawDescGZIP() []byte {
+	xxx_File_test_test_weak_proto_rawDesc_once.Do(func() {
+		xxx_File_test_test_weak_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_test_test_weak_proto_rawDesc_data)
+	})
+	return xxx_File_test_test_weak_proto_rawDesc_data
+}
 
 var xxx_File_test_test_weak_proto_messageTypes = make([]protoimpl.MessageType, 1)
 var xxx_File_test_test_weak_proto_goTypes = []interface{}{
@@ -57,13 +67,14 @@ func xxx_File_test_test_weak_proto_init() {
 		return
 	}
 	File_test_test_weak_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_test_test_weak_proto_rawdesc,
+		RawDescriptor:      xxx_File_test_test_weak_proto_rawDesc,
 		GoTypes:            xxx_File_test_test_weak_proto_goTypes,
 		DependencyIndexes:  xxx_File_test_test_weak_proto_depIdxs,
 		MessageOutputTypes: xxx_File_test_test_weak_proto_messageTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_test_test_weak_proto_rawDesc = nil
 	xxx_File_test_test_weak_proto_goTypes = nil
 	xxx_File_test_test_weak_proto_depIdxs = nil
 }

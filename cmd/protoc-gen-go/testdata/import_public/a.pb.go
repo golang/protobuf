@@ -9,7 +9,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // Symbols defined in public import of import_public/sub/a.proto
 
@@ -71,7 +74,7 @@ func (*Public) ProtoMessage()    {}
 
 // Deprecated: Use Public.ProtoReflect.Type instead.
 func (*Public) Descriptor() ([]byte, []int) {
-	return xxx_File_import_public_a_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_import_public_a_proto_rawDescGZIP(), []int{0}
 }
 
 func (m *Public) GetM() *sub.M {
@@ -95,8 +98,9 @@ func (m *Public) GetLocal() *Local {
 	return nil
 }
 
-var xxx_File_import_public_a_proto_rawdesc = []byte{
-	// 383 bytes of the wire-encoded FileDescriptorProto
+var File_import_public_a_proto protoreflect.FileDescriptor
+
+var xxx_File_import_public_a_proto_rawDesc = []byte{
 	0x0a, 0x15, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x2f,
 	0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1c, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x70,
@@ -123,11 +127,17 @@ var xxx_File_import_public_a_proto_rawdesc = []byte{
 	0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x50, 0x00, 0x50, 0x01, 0x50, 0x02,
 }
 
-var xxx_File_import_public_a_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_import_public_a_proto_rawdesc)
+var (
+	xxx_File_import_public_a_proto_rawDesc_once sync.Once
+	xxx_File_import_public_a_proto_rawDesc_data = xxx_File_import_public_a_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_import_public_a_proto protoreflect.FileDescriptor
+func xxx_File_import_public_a_proto_rawDescGZIP() []byte {
+	xxx_File_import_public_a_proto_rawDesc_once.Do(func() {
+		xxx_File_import_public_a_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_import_public_a_proto_rawDesc_data)
+	})
+	return xxx_File_import_public_a_proto_rawDesc_data
+}
 
 var xxx_File_import_public_a_proto_messageTypes = make([]protoimpl.MessageType, 1)
 var xxx_File_import_public_a_proto_goTypes = []interface{}{
@@ -149,13 +159,14 @@ func xxx_File_import_public_a_proto_init() {
 	}
 	xxx_File_import_public_b_proto_init()
 	File_import_public_a_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_import_public_a_proto_rawdesc,
+		RawDescriptor:      xxx_File_import_public_a_proto_rawDesc,
 		GoTypes:            xxx_File_import_public_a_proto_goTypes,
 		DependencyIndexes:  xxx_File_import_public_a_proto_depIdxs,
 		MessageOutputTypes: xxx_File_import_public_a_proto_messageTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_import_public_a_proto_rawDesc = nil
 	xxx_File_import_public_a_proto_goTypes = nil
 	xxx_File_import_public_a_proto_depIdxs = nil
 }

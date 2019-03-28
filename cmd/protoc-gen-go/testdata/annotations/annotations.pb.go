@@ -7,7 +7,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type AnnotationsTestEnum int32
 
@@ -52,7 +55,7 @@ func (x *AnnotationsTestEnum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use AnnotationsTestEnum.Type instead.
 func (AnnotationsTestEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_annotations_annotations_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_annotations_annotations_proto_rawDescGZIP(), []int{0}
 }
 
 type AnnotationsTestMessage struct {
@@ -71,7 +74,7 @@ func (*AnnotationsTestMessage) ProtoMessage()    {}
 
 // Deprecated: Use AnnotationsTestMessage.ProtoReflect.Type instead.
 func (*AnnotationsTestMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_annotations_annotations_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_annotations_annotations_proto_rawDescGZIP(), []int{0}
 }
 
 func (m *AnnotationsTestMessage) GetAnnotationsTestField() string {
@@ -81,8 +84,9 @@ func (m *AnnotationsTestMessage) GetAnnotationsTestField() string {
 	return ""
 }
 
-var xxx_File_annotations_annotations_proto_rawdesc = []byte{
-	// 265 bytes of the wire-encoded FileDescriptorProto
+var File_annotations_annotations_proto protoreflect.FileDescriptor
+
+var xxx_File_annotations_annotations_proto_rawDesc = []byte{
 	0x0a, 0x1d, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x61, 0x6e,
 	0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
 	0x1a, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e,
@@ -102,11 +106,17 @@ var xxx_File_annotations_annotations_proto_rawdesc = []byte{
 	0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73,
 }
 
-var xxx_File_annotations_annotations_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_annotations_annotations_proto_rawdesc)
+var (
+	xxx_File_annotations_annotations_proto_rawDesc_once sync.Once
+	xxx_File_annotations_annotations_proto_rawDesc_data = xxx_File_annotations_annotations_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_annotations_annotations_proto protoreflect.FileDescriptor
+func xxx_File_annotations_annotations_proto_rawDescGZIP() []byte {
+	xxx_File_annotations_annotations_proto_rawDesc_once.Do(func() {
+		xxx_File_annotations_annotations_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_annotations_annotations_proto_rawDesc_data)
+	})
+	return xxx_File_annotations_annotations_proto_rawDesc_data
+}
 
 var xxx_File_annotations_annotations_proto_enumTypes = make([]protoreflect.EnumType, 1)
 var xxx_File_annotations_annotations_proto_messageTypes = make([]protoimpl.MessageType, 1)
@@ -122,7 +132,7 @@ func xxx_File_annotations_annotations_proto_init() {
 		return
 	}
 	File_annotations_annotations_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_annotations_annotations_proto_rawdesc,
+		RawDescriptor:      xxx_File_annotations_annotations_proto_rawDesc,
 		GoTypes:            xxx_File_annotations_annotations_proto_goTypes,
 		DependencyIndexes:  xxx_File_annotations_annotations_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_annotations_annotations_proto_enumTypes,
@@ -130,6 +140,7 @@ func xxx_File_annotations_annotations_proto_init() {
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_annotations_annotations_proto_rawDesc = nil
 	xxx_File_annotations_annotations_proto_goTypes = nil
 	xxx_File_annotations_annotations_proto_depIdxs = nil
 }

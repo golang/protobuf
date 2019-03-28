@@ -9,30 +9,20 @@ import (
 	"math"
 	"strings"
 
+	"github.com/golang/protobuf/v2/proto"
 	"github.com/golang/protobuf/v2/protogen"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
+
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
-
-// TODO: Remove special-casing for descriptor proto.
-func isDescriptor(f *protogen.File) bool {
-	return f.Desc.Path() == "google/protobuf/descriptor.proto" && f.Desc.Package() == "google.protobuf"
-}
-
-// minimumVersion is minimum version of the v2 proto package that is required.
-// This is incremented every time the generated code relies on some property
-// in the proto package that was introduced in a later version.
-const minimumVersion = 0
 
 // TODO: Add support for proto options.
 
 func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
-	// Emit a static check that enforces a minimum version of the proto package.
-	// TODO: This should appear higher up in the Go source file.
-	g.P("const _ = ", protoimplPackage.Ident("EnforceVersion"), "(", protoimplPackage.Ident("Version"), " - ", minimumVersion, ")")
-
 	g.P("var ", f.GoDescriptorIdent, " ", protoreflectPackage.Ident("FileDescriptor"))
 	g.P()
 
+	genFileDescriptor(gen, g, f)
 	if len(f.allEnums) > 0 {
 		g.P("var ", enumTypesVarName(f), " = make([]", protoreflectPackage.Ident("EnumType"), ",", len(f.allEnums), ")")
 	}
@@ -154,7 +144,7 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 	}
 
 	g.P(f.GoDescriptorIdent, " = ", protoimplPackage.Ident("FileBuilder"), "{")
-	g.P("RawDescriptor: ", f.descriptorRawVar, ",")
+	g.P("RawDescriptor: ", rawDescVarName(f), ",")
 	g.P("GoTypes: ", goTypesVarName(f), ",")
 	g.P("DependencyIndexes: ", depIdxsVarName(f), ",")
 	if len(f.allExtensions) > 0 {
@@ -186,9 +176,67 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		}
 	}
 
-	g.P(goTypesVarName(f), " = nil") // allow GC to reclaim resource
-	g.P(depIdxsVarName(f), " = nil") // allow GC to reclaim resource
+	// Set inputs to nil to allow GC to reclaim resources.
+	g.P(rawDescVarName(f), " = nil")
+	g.P(goTypesVarName(f), " = nil")
+	g.P(depIdxsVarName(f), " = nil")
 	g.P("}")
+}
+
+func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo) {
+	// TODO: Replace this with v2 Clone.
+	descProto := new(descriptorpb.FileDescriptorProto)
+	b, err := proto.Marshal(f.Proto)
+	if err != nil {
+		gen.Error(err)
+		return
+	}
+	if err := proto.Unmarshal(b, descProto); err != nil {
+		gen.Error(err)
+		return
+	}
+
+	// Trim the source_code_info from the descriptor.
+	descProto.SourceCodeInfo = nil
+	b, err = proto.MarshalOptions{Deterministic: true}.Marshal(descProto)
+	if err != nil {
+		gen.Error(err)
+		return
+	}
+
+	g.P("var ", rawDescVarName(f), " = []byte{")
+	for len(b) > 0 {
+		n := 16
+		if n > len(b) {
+			n = len(b)
+		}
+
+		s := ""
+		for _, c := range b[:n] {
+			s += fmt.Sprintf("0x%02x,", c)
+		}
+		g.P(s)
+
+		b = b[n:]
+	}
+	g.P("}")
+	g.P()
+
+	onceVar := rawDescVarName(f) + "_once"
+	dataVar := rawDescVarName(f) + "_data"
+	g.P("var (")
+	g.P(onceVar, " ", syncPackage.Ident("Once"))
+	g.P(dataVar, " = ", rawDescVarName(f))
+	g.P(")")
+	g.P()
+
+	g.P("func ", rawDescVarName(f), "GZIP() []byte {")
+	g.P(onceVar, ".Do(func() {")
+	g.P(dataVar, " = ", protoimplPackage.Ident("X"), ".CompressGZIP(", dataVar, ")")
+	g.P("})")
+	g.P("return ", dataVar)
+	g.P("}")
+	g.P()
 }
 
 func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum *protogen.Enum) {
@@ -210,6 +258,9 @@ func genReflectMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 	g.P("}")
 }
 
+func rawDescVarName(f *fileInfo) string {
+	return "xxx_" + f.GoDescriptorIdent.GoName + "_rawDesc"
+}
 func goTypesVarName(f *fileInfo) string {
 	return "xxx_" + f.GoDescriptorIdent.GoName + "_goTypes"
 }

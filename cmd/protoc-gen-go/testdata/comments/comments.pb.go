@@ -9,7 +9,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // COMMENT: Message1
 type Message1 struct {
@@ -35,7 +38,7 @@ func (*Message1) ProtoMessage()    {}
 
 // Deprecated: Use Message1.ProtoReflect.Type instead.
 func (*Message1) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{0}
 }
 
 func (m *Message1) GetField1A() string {
@@ -92,7 +95,7 @@ func (*Message2) ProtoMessage()    {}
 
 // Deprecated: Use Message2.ProtoReflect.Type instead.
 func (*Message2) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{1}
 }
 
 // COMMENT: Message1A
@@ -111,7 +114,7 @@ func (*Message1_Message1A) ProtoMessage()    {}
 
 // Deprecated: Use Message1_Message1A.ProtoReflect.Type instead.
 func (*Message1_Message1A) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{0, 0}
+	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{0, 0}
 }
 
 // COMMENT: Message1B
@@ -130,7 +133,7 @@ func (*Message1_Message1B) ProtoMessage()    {}
 
 // Deprecated: Use Message1_Message1B.ProtoReflect.Type instead.
 func (*Message1_Message1B) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{0, 1}
+	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{0, 1}
 }
 
 // COMMENT: Message2A
@@ -149,7 +152,7 @@ func (*Message2_Message2A) ProtoMessage()    {}
 
 // Deprecated: Use Message2_Message2A.ProtoReflect.Type instead.
 func (*Message2_Message2A) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{1, 0}
+	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{1, 0}
 }
 
 // COMMENT: Message2B
@@ -168,11 +171,12 @@ func (*Message2_Message2B) ProtoMessage()    {}
 
 // Deprecated: Use Message2_Message2B.ProtoReflect.Type instead.
 func (*Message2_Message2B) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawdesc_gzipped, []int{1, 1}
+	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{1, 1}
 }
 
-var xxx_File_comments_comments_proto_rawdesc = []byte{
-	// 272 bytes of the wire-encoded FileDescriptorProto
+var File_comments_comments_proto protoreflect.FileDescriptor
+
+var xxx_File_comments_comments_proto_rawDesc = []byte{
 	0x0a, 0x17, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
 	0x6e, 0x74, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x17, 0x67, 0x6f, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e,
@@ -192,11 +196,17 @@ var xxx_File_comments_comments_proto_rawdesc = []byte{
 	0x65, 0x73, 0x74, 0x64, 0x61, 0x74, 0x61, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73,
 }
 
-var xxx_File_comments_comments_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_comments_comments_proto_rawdesc)
+var (
+	xxx_File_comments_comments_proto_rawDesc_once sync.Once
+	xxx_File_comments_comments_proto_rawDesc_data = xxx_File_comments_comments_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_comments_comments_proto protoreflect.FileDescriptor
+func xxx_File_comments_comments_proto_rawDescGZIP() []byte {
+	xxx_File_comments_comments_proto_rawDesc_once.Do(func() {
+		xxx_File_comments_comments_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_comments_comments_proto_rawDesc_data)
+	})
+	return xxx_File_comments_comments_proto_rawDesc_data
+}
 
 var xxx_File_comments_comments_proto_messageTypes = make([]protoimpl.MessageType, 6)
 var xxx_File_comments_comments_proto_goTypes = []interface{}{
@@ -215,13 +225,14 @@ func xxx_File_comments_comments_proto_init() {
 		return
 	}
 	File_comments_comments_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_comments_comments_proto_rawdesc,
+		RawDescriptor:      xxx_File_comments_comments_proto_rawDesc,
 		GoTypes:            xxx_File_comments_comments_proto_goTypes,
 		DependencyIndexes:  xxx_File_comments_comments_proto_depIdxs,
 		MessageOutputTypes: xxx_File_comments_comments_proto_messageTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_comments_comments_proto_rawDesc = nil
 	xxx_File_comments_comments_proto_goTypes = nil
 	xxx_File_comments_comments_proto_depIdxs = nil
 }

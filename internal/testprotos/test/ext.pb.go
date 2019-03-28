@@ -8,7 +8,10 @@ import (
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 var xxx_File_test_ext_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
@@ -24,8 +27,9 @@ var (
 	// extend goproto.proto.test.TestAllExtensions { optional int32 foreign_int32_extension = 2000; }
 	E_ForeignInt32Extension = &xxx_File_test_ext_proto_extDescs[0]
 )
-var xxx_File_test_ext_proto_rawdesc = []byte{
-	// 207 bytes of the wire-encoded FileDescriptorProto
+var File_test_ext_proto protoreflect.FileDescriptor
+
+var xxx_File_test_ext_proto_rawDesc = []byte{
 	0x0a, 0x0e, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x65, 0x78, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x12, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
 	0x74, 0x65, 0x73, 0x74, 0x1a, 0x0f, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e,
@@ -41,11 +45,17 @@ var xxx_File_test_ext_proto_rawdesc = []byte{
 	0x74, 0x65, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x74, 0x65, 0x73, 0x74,
 }
 
-var xxx_File_test_ext_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_test_ext_proto_rawdesc)
+var (
+	xxx_File_test_ext_proto_rawDesc_once sync.Once
+	xxx_File_test_ext_proto_rawDesc_data = xxx_File_test_ext_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_test_ext_proto protoreflect.FileDescriptor
+func xxx_File_test_ext_proto_rawDescGZIP() []byte {
+	xxx_File_test_ext_proto_rawDesc_once.Do(func() {
+		xxx_File_test_ext_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_test_ext_proto_rawDesc_data)
+	})
+	return xxx_File_test_ext_proto_rawDesc_data
+}
 
 var xxx_File_test_ext_proto_goTypes = []interface{}{
 	(*TestAllExtensions)(nil), // 0: goproto.proto.test.TestAllExtensions
@@ -62,7 +72,7 @@ func xxx_File_test_ext_proto_init() {
 	xxx_File_test_test_proto_init()
 	extensionTypes := make([]protoreflect.ExtensionType, 1)
 	File_test_ext_proto = protoimpl.FileBuilder{
-		RawDescriptor:        xxx_File_test_ext_proto_rawdesc,
+		RawDescriptor:        xxx_File_test_ext_proto_rawDesc,
 		GoTypes:              xxx_File_test_ext_proto_goTypes,
 		DependencyIndexes:    xxx_File_test_ext_proto_depIdxs,
 		LegacyExtensions:     xxx_File_test_ext_proto_extDescs,
@@ -70,6 +80,7 @@ func xxx_File_test_ext_proto_init() {
 		FilesRegistry:        protoregistry.GlobalFiles,
 		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_test_ext_proto_rawDesc = nil
 	xxx_File_test_ext_proto_goTypes = nil
 	xxx_File_test_ext_proto_depIdxs = nil
 }

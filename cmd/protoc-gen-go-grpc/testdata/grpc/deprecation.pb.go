@@ -7,10 +7,14 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
 
-var xxx_File_grpc_deprecation_proto_rawdesc = []byte{
-	// 245 bytes of the wire-encoded FileDescriptorProto
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+
+var File_grpc_deprecation_proto protoreflect.FileDescriptor
+
+var xxx_File_grpc_deprecation_proto_rawDesc = []byte{
 	0x0a, 0x16, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x64, 0x65, 0x70, 0x72, 0x65, 0x63, 0x61, 0x74, 0x69,
 	0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x13, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x1a, 0x0f, 0x67,
@@ -29,11 +33,17 @@ var xxx_File_grpc_deprecation_proto_rawdesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_grpc_deprecation_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_grpc_deprecation_proto_rawdesc)
+var (
+	xxx_File_grpc_deprecation_proto_rawDesc_once sync.Once
+	xxx_File_grpc_deprecation_proto_rawDesc_data = xxx_File_grpc_deprecation_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_grpc_deprecation_proto protoreflect.FileDescriptor
+func xxx_File_grpc_deprecation_proto_rawDescGZIP() []byte {
+	xxx_File_grpc_deprecation_proto_rawDesc_once.Do(func() {
+		xxx_File_grpc_deprecation_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_grpc_deprecation_proto_rawDesc_data)
+	})
+	return xxx_File_grpc_deprecation_proto_rawDesc_data
+}
 
 var xxx_File_grpc_deprecation_proto_goTypes = []interface{}{
 	(*Request)(nil),  // 0: goproto.protoc.grpc.Request
@@ -51,12 +61,13 @@ func xxx_File_grpc_deprecation_proto_init() {
 	}
 	xxx_File_grpc_grpc_proto_init()
 	File_grpc_deprecation_proto = protoimpl.FileBuilder{
-		RawDescriptor:     xxx_File_grpc_deprecation_proto_rawdesc,
+		RawDescriptor:     xxx_File_grpc_deprecation_proto_rawDesc,
 		GoTypes:           xxx_File_grpc_deprecation_proto_goTypes,
 		DependencyIndexes: xxx_File_grpc_deprecation_proto_depIdxs,
 		FilesRegistry:     protoregistry.GlobalFiles,
 		TypesRegistry:     protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_grpc_deprecation_proto_rawDesc = nil
 	xxx_File_grpc_deprecation_proto_goTypes = nil
 	xxx_File_grpc_deprecation_proto_depIdxs = nil
 }

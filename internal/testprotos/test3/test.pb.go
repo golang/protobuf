@@ -7,7 +7,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type ForeignEnum int32
 
@@ -47,7 +50,7 @@ func (x ForeignEnum) String() string {
 
 // Deprecated: Use ForeignEnum.Type instead.
 func (ForeignEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test3_test_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_test3_test_proto_rawDescGZIP(), []int{0}
 }
 
 type TestAllTypes_NestedEnum int32
@@ -88,7 +91,7 @@ func (x TestAllTypes_NestedEnum) String() string {
 
 // Deprecated: Use TestAllTypes_NestedEnum.Type instead.
 func (TestAllTypes_NestedEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test3_test_proto_rawdesc_gzipped, []int{0, 0}
+	return xxx_File_test3_test_proto_rawDescGZIP(), []int{0, 0}
 }
 
 type TestAllTypes struct {
@@ -176,7 +179,7 @@ func (*TestAllTypes) ProtoMessage()    {}
 
 // Deprecated: Use TestAllTypes.ProtoReflect.Type instead.
 func (*TestAllTypes) Descriptor() ([]byte, []int) {
-	return xxx_File_test3_test_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_test3_test_proto_rawDescGZIP(), []int{0}
 }
 
 func (m *TestAllTypes) GetOptionalInt32() int32 {
@@ -752,7 +755,7 @@ func (*ForeignMessage) ProtoMessage()    {}
 
 // Deprecated: Use ForeignMessage.ProtoReflect.Type instead.
 func (*ForeignMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_test3_test_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_test3_test_proto_rawDescGZIP(), []int{1}
 }
 
 func (m *ForeignMessage) GetC() int32 {
@@ -786,7 +789,7 @@ func (*TestAllTypes_NestedMessage) ProtoMessage()    {}
 
 // Deprecated: Use TestAllTypes_NestedMessage.ProtoReflect.Type instead.
 func (*TestAllTypes_NestedMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_test3_test_proto_rawdesc_gzipped, []int{0, 0}
+	return xxx_File_test3_test_proto_rawDescGZIP(), []int{0, 0}
 }
 
 func (m *TestAllTypes_NestedMessage) GetA() int32 {
@@ -803,8 +806,9 @@ func (m *TestAllTypes_NestedMessage) GetCorecursive() *TestAllTypes {
 	return nil
 }
 
-var xxx_File_test3_test_proto_rawdesc = []byte{
-	// 6222 bytes of the wire-encoded FileDescriptorProto
+var File_test3_test_proto protoreflect.FileDescriptor
+
+var xxx_File_test3_test_proto_rawDesc = []byte{
 	0x0a, 0x10, 0x74, 0x65, 0x73, 0x74, 0x33, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x12, 0x13, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x2e, 0x74, 0x65, 0x73, 0x74, 0x33, 0x1a, 0x17, 0x74, 0x65, 0x73, 0x74, 0x33, 0x2f, 0x74,
@@ -1196,11 +1200,17 @@ var xxx_File_test3_test_proto_rawdesc = []byte{
 	0x2f, 0x74, 0x65, 0x73, 0x74, 0x33, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_test3_test_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_test3_test_proto_rawdesc)
+var (
+	xxx_File_test3_test_proto_rawDesc_once sync.Once
+	xxx_File_test3_test_proto_rawDesc_data = xxx_File_test3_test_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_test3_test_proto protoreflect.FileDescriptor
+func xxx_File_test3_test_proto_rawDescGZIP() []byte {
+	xxx_File_test3_test_proto_rawDesc_once.Do(func() {
+		xxx_File_test3_test_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_test3_test_proto_rawDesc_data)
+	})
+	return xxx_File_test3_test_proto_rawDesc_data
+}
 
 var xxx_File_test3_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
 var xxx_File_test3_test_proto_messageTypes = make([]protoimpl.MessageType, 20)
@@ -1274,7 +1284,7 @@ func xxx_File_test3_test_proto_init() {
 	}
 	xxx_File_test3_test_import_proto_init()
 	File_test3_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_test3_test_proto_rawdesc,
+		RawDescriptor:      xxx_File_test3_test_proto_rawDesc,
 		GoTypes:            xxx_File_test3_test_proto_goTypes,
 		DependencyIndexes:  xxx_File_test3_test_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_test3_test_proto_enumTypes,
@@ -1282,6 +1292,7 @@ func xxx_File_test3_test_proto_init() {
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_test3_test_proto_rawDesc = nil
 	xxx_File_test3_test_proto_goTypes = nil
 	xxx_File_test3_test_proto_depIdxs = nil
 }

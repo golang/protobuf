@@ -7,7 +7,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type FieldTestMessage_Enum int32
 
@@ -38,7 +41,7 @@ func (x FieldTestMessage_Enum) String() string {
 
 // Deprecated: Use FieldTestMessage_Enum.Type instead.
 func (FieldTestMessage_Enum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_proto3_fields_proto_rawdesc_gzipped, []int{0, 0}
+	return xxx_File_proto3_fields_proto_rawDescGZIP(), []int{0, 0}
 }
 
 type FieldTestMessage struct {
@@ -93,7 +96,7 @@ func (*FieldTestMessage) ProtoMessage()    {}
 
 // Deprecated: Use FieldTestMessage.ProtoReflect.Type instead.
 func (*FieldTestMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_proto3_fields_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_proto3_fields_proto_rawDescGZIP(), []int{0}
 }
 
 func (m *FieldTestMessage) GetOptionalBool() string {
@@ -370,11 +373,12 @@ func (*FieldTestMessage_Message) ProtoMessage()    {}
 
 // Deprecated: Use FieldTestMessage_Message.ProtoReflect.Type instead.
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
-	return xxx_File_proto3_fields_proto_rawdesc_gzipped, []int{0, 3}
+	return xxx_File_proto3_fields_proto_rawDescGZIP(), []int{0, 3}
 }
 
-var xxx_File_proto3_fields_proto_rawdesc = []byte{
-	// 2378 bytes of the wire-encoded FileDescriptorProto
+var File_proto3_fields_proto protoreflect.FileDescriptor
+
+var xxx_File_proto3_fields_proto_rawDesc = []byte{
 	0x0a, 0x13, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x2f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x15, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x22, 0xd0, 0x11, 0x0a,
@@ -526,11 +530,17 @@ var xxx_File_proto3_fields_proto_rawdesc = []byte{
 	0x6f, 0x33, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var xxx_File_proto3_fields_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_proto3_fields_proto_rawdesc)
+var (
+	xxx_File_proto3_fields_proto_rawDesc_once sync.Once
+	xxx_File_proto3_fields_proto_rawDesc_data = xxx_File_proto3_fields_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_proto3_fields_proto protoreflect.FileDescriptor
+func xxx_File_proto3_fields_proto_rawDescGZIP() []byte {
+	xxx_File_proto3_fields_proto_rawDesc_once.Do(func() {
+		xxx_File_proto3_fields_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_proto3_fields_proto_rawDesc_data)
+	})
+	return xxx_File_proto3_fields_proto_rawDesc_data
+}
 
 var xxx_File_proto3_fields_proto_enumTypes = make([]protoreflect.EnumType, 1)
 var xxx_File_proto3_fields_proto_messageTypes = make([]protoimpl.MessageType, 5)
@@ -560,7 +570,7 @@ func xxx_File_proto3_fields_proto_init() {
 		return
 	}
 	File_proto3_fields_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_proto3_fields_proto_rawdesc,
+		RawDescriptor:      xxx_File_proto3_fields_proto_rawDesc,
 		GoTypes:            xxx_File_proto3_fields_proto_goTypes,
 		DependencyIndexes:  xxx_File_proto3_fields_proto_depIdxs,
 		EnumOutputTypes:    xxx_File_proto3_fields_proto_enumTypes,
@@ -568,6 +578,7 @@ func xxx_File_proto3_fields_proto_init() {
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_proto3_fields_proto_rawDesc = nil
 	xxx_File_proto3_fields_proto_goTypes = nil
 	xxx_File_proto3_fields_proto_depIdxs = nil
 }

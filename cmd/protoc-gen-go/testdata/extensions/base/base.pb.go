@@ -8,7 +8,10 @@ import (
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type BaseMessage struct {
 	Field                  *string                     `protobuf:"bytes,1,opt,name=field" json:"field,omitempty"`
@@ -27,7 +30,7 @@ func (*BaseMessage) ProtoMessage()    {}
 
 // Deprecated: Use BaseMessage.ProtoReflect.Type instead.
 func (*BaseMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_base_base_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_extensions_base_base_proto_rawDescGZIP(), []int{0}
 }
 
 var extRange_BaseMessage = []protoiface.ExtensionRangeV1{
@@ -63,7 +66,7 @@ func (*MessageSetWireFormatMessage) ProtoMessage()    {}
 
 // Deprecated: Use MessageSetWireFormatMessage.ProtoReflect.Type instead.
 func (*MessageSetWireFormatMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_base_base_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_extensions_base_base_proto_rawDescGZIP(), []int{1}
 }
 
 var extRange_MessageSetWireFormatMessage = []protoiface.ExtensionRangeV1{
@@ -75,8 +78,9 @@ func (*MessageSetWireFormatMessage) ExtensionRangeArray() []protoiface.Extension
 	return extRange_MessageSetWireFormatMessage
 }
 
-var xxx_File_extensions_base_base_proto_rawdesc = []byte{
-	// 233 bytes of the wire-encoded FileDescriptorProto
+var File_extensions_base_base_proto protoreflect.FileDescriptor
+
+var xxx_File_extensions_base_base_proto_rawDesc = []byte{
 	0x0a, 0x1a, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x62, 0x61, 0x73,
 	0x65, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1d, 0x67, 0x6f,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x65, 0x78, 0x74,
@@ -94,11 +98,17 @@ var xxx_File_extensions_base_base_proto_rawdesc = []byte{
 	0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x62, 0x61, 0x73, 0x65,
 }
 
-var xxx_File_extensions_base_base_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_extensions_base_base_proto_rawdesc)
+var (
+	xxx_File_extensions_base_base_proto_rawDesc_once sync.Once
+	xxx_File_extensions_base_base_proto_rawDesc_data = xxx_File_extensions_base_base_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_extensions_base_base_proto protoreflect.FileDescriptor
+func xxx_File_extensions_base_base_proto_rawDescGZIP() []byte {
+	xxx_File_extensions_base_base_proto_rawDesc_once.Do(func() {
+		xxx_File_extensions_base_base_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_extensions_base_base_proto_rawDesc_data)
+	})
+	return xxx_File_extensions_base_base_proto_rawDesc_data
+}
 
 var xxx_File_extensions_base_base_proto_messageTypes = make([]protoimpl.MessageType, 2)
 var xxx_File_extensions_base_base_proto_goTypes = []interface{}{
@@ -113,13 +123,14 @@ func xxx_File_extensions_base_base_proto_init() {
 		return
 	}
 	File_extensions_base_base_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_extensions_base_base_proto_rawdesc,
+		RawDescriptor:      xxx_File_extensions_base_base_proto_rawDesc,
 		GoTypes:            xxx_File_extensions_base_base_proto_goTypes,
 		DependencyIndexes:  xxx_File_extensions_base_base_proto_depIdxs,
 		MessageOutputTypes: xxx_File_extensions_base_base_proto_messageTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_extensions_base_base_proto_rawDesc = nil
 	xxx_File_extensions_base_base_proto_goTypes = nil
 	xxx_File_extensions_base_base_proto_depIdxs = nil
 }

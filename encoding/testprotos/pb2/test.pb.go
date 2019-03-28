@@ -9,7 +9,10 @@ import (
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	known "github.com/golang/protobuf/v2/types/known"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type Enum int32
 
@@ -60,7 +63,7 @@ func (x *Enum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{0}
 }
 
 type Enums_NestedEnum int32
@@ -112,7 +115,7 @@ func (x *Enums_NestedEnum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use Enums_NestedEnum.Type instead.
 func (Enums_NestedEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{1, 0}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{1, 0}
 }
 
 // Scalars contains optional scalar fields.
@@ -146,7 +149,7 @@ func (*Scalars) ProtoMessage()    {}
 
 // Deprecated: Use Scalars.ProtoReflect.Type instead.
 func (*Scalars) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{0}
 }
 
 func (m *Scalars) GetOptBool() bool {
@@ -274,7 +277,7 @@ func (*Enums) ProtoMessage()    {}
 
 // Deprecated: Use Enums.ProtoReflect.Type instead.
 func (*Enums) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{1}
 }
 
 func (m *Enums) GetOptEnum() Enum {
@@ -330,7 +333,7 @@ func (*Repeats) ProtoMessage()    {}
 
 // Deprecated: Use Repeats.ProtoReflect.Type instead.
 func (*Repeats) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{2}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{2}
 }
 
 func (m *Repeats) GetRptBool() []bool {
@@ -414,7 +417,7 @@ func (*Nested) ProtoMessage()    {}
 
 // Deprecated: Use Nested.ProtoReflect.Type instead.
 func (*Nested) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{3}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{3}
 }
 
 func (m *Nested) GetOptString() string {
@@ -451,7 +454,7 @@ func (*Nests) ProtoMessage()    {}
 
 // Deprecated: Use Nests.ProtoReflect.Type instead.
 func (*Nests) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4}
 }
 
 func (m *Nests) GetOptNested() *Nested {
@@ -504,7 +507,7 @@ func (*Requireds) ProtoMessage()    {}
 
 // Deprecated: Use Requireds.ProtoReflect.Type instead.
 func (*Requireds) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{5}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{5}
 }
 
 func (m *Requireds) GetReqBool() bool {
@@ -567,7 +570,7 @@ func (*PartialRequired) ProtoMessage()    {}
 
 // Deprecated: Use PartialRequired.ProtoReflect.Type instead.
 func (*PartialRequired) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{6}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{6}
 }
 
 func (m *PartialRequired) GetReqString() string {
@@ -600,7 +603,7 @@ func (*NestedWithRequired) ProtoMessage()    {}
 
 // Deprecated: Use NestedWithRequired.ProtoReflect.Type instead.
 func (*NestedWithRequired) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{7}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{7}
 }
 
 func (m *NestedWithRequired) GetReqString() string {
@@ -631,7 +634,7 @@ func (*IndirectRequired) ProtoMessage()    {}
 
 // Deprecated: Use IndirectRequired.ProtoReflect.Type instead.
 func (*IndirectRequired) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{8}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{8}
 }
 
 func (m *IndirectRequired) GetOptNested() *NestedWithRequired {
@@ -705,7 +708,7 @@ func (*Extensions) ProtoMessage()    {}
 
 // Deprecated: Use Extensions.ProtoReflect.Type instead.
 func (*Extensions) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{9}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{9}
 }
 
 var extRange_Extensions = []protoiface.ExtensionRangeV1{
@@ -753,7 +756,7 @@ func (*ExtensionsContainer) ProtoMessage()    {}
 
 // Deprecated: Use ExtensionsContainer.ProtoReflect.Type instead.
 func (*ExtensionsContainer) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{10}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{10}
 }
 
 type MessageSet struct {
@@ -772,7 +775,7 @@ func (*MessageSet) ProtoMessage()    {}
 
 // Deprecated: Use MessageSet.ProtoReflect.Type instead.
 func (*MessageSet) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{11}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{11}
 }
 
 var extRange_MessageSet = []protoiface.ExtensionRangeV1{
@@ -800,7 +803,7 @@ func (*MessageSetExtension) ProtoMessage()    {}
 
 // Deprecated: Use MessageSetExtension.ProtoReflect.Type instead.
 func (*MessageSetExtension) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{12}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{12}
 }
 
 func (m *MessageSetExtension) GetOptString() string {
@@ -826,7 +829,7 @@ func (*FakeMessageSet) ProtoMessage()    {}
 
 // Deprecated: Use FakeMessageSet.ProtoReflect.Type instead.
 func (*FakeMessageSet) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{13}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{13}
 }
 
 var extRange_FakeMessageSet = []protoiface.ExtensionRangeV1{
@@ -854,7 +857,7 @@ func (*FakeMessageSetExtension) ProtoMessage()    {}
 
 // Deprecated: Use FakeMessageSetExtension.ProtoReflect.Type instead.
 func (*FakeMessageSetExtension) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{14}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{14}
 }
 
 func (m *FakeMessageSetExtension) GetOptString() string {
@@ -897,7 +900,7 @@ func (*KnownTypes) ProtoMessage()    {}
 
 // Deprecated: Use KnownTypes.ProtoReflect.Type instead.
 func (*KnownTypes) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{15}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{15}
 }
 
 func (m *KnownTypes) GetOptBool() *known.BoolValue {
@@ -1037,7 +1040,7 @@ func (*Nests_OptGroup) ProtoMessage()    {}
 
 // Deprecated: Use Nests_OptGroup.ProtoReflect.Type instead.
 func (*Nests_OptGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4, 0}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4, 0}
 }
 
 func (m *Nests_OptGroup) GetOptString() string {
@@ -1077,7 +1080,7 @@ func (*Nests_RptGroup) ProtoMessage()    {}
 
 // Deprecated: Use Nests_RptGroup.ProtoReflect.Type instead.
 func (*Nests_RptGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4, 1}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4, 1}
 }
 
 func (m *Nests_RptGroup) GetRptString() []string {
@@ -1103,7 +1106,7 @@ func (*Nests_OptGroup_OptNestedGroup) ProtoMessage()    {}
 
 // Deprecated: Use Nests_OptGroup_OptNestedGroup.ProtoReflect.Type instead.
 func (*Nests_OptGroup_OptNestedGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawdesc_gzipped, []int{4, 0, 0}
+	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4, 0, 0}
 }
 
 func (m *Nests_OptGroup_OptNestedGroup) GetOptFixed32() uint32 {
@@ -1325,8 +1328,9 @@ var (
 	// extend pb2.FakeMessageSet { optional pb2.FakeMessageSetExtension message_set_extension = 10; }
 	E_FakeMessageSetExtension_MessageSetExtension = &xxx_File_pb2_test_proto_extDescs[18]
 )
-var xxx_File_pb2_test_proto_rawdesc = []byte{
-	// 5225 bytes of the wire-encoded FileDescriptorProto
+var File_pb2_test_proto protoreflect.FileDescriptor
+
+var xxx_File_pb2_test_proto_rawDesc = []byte{
 	0x0a, 0x0e, 0x70, 0x62, 0x32, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x03, 0x70, 0x62, 0x32, 0x1a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
@@ -1656,11 +1660,17 @@ var xxx_File_pb2_test_proto_rawdesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x70, 0x62, 0x32,
 }
 
-var xxx_File_pb2_test_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_pb2_test_proto_rawdesc)
+var (
+	xxx_File_pb2_test_proto_rawDesc_once sync.Once
+	xxx_File_pb2_test_proto_rawDesc_data = xxx_File_pb2_test_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_pb2_test_proto protoreflect.FileDescriptor
+func xxx_File_pb2_test_proto_rawDescGZIP() []byte {
+	xxx_File_pb2_test_proto_rawDesc_once.Do(func() {
+		xxx_File_pb2_test_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_pb2_test_proto_rawDesc_data)
+	})
+	return xxx_File_pb2_test_proto_rawDesc_data
+}
 
 var xxx_File_pb2_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
 var xxx_File_pb2_test_proto_messageTypes = make([]protoimpl.MessageType, 20)
@@ -1782,7 +1792,7 @@ func xxx_File_pb2_test_proto_init() {
 	}
 	extensionTypes := make([]protoreflect.ExtensionType, 19)
 	File_pb2_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:        xxx_File_pb2_test_proto_rawdesc,
+		RawDescriptor:        xxx_File_pb2_test_proto_rawDesc,
 		GoTypes:              xxx_File_pb2_test_proto_goTypes,
 		DependencyIndexes:    xxx_File_pb2_test_proto_depIdxs,
 		LegacyExtensions:     xxx_File_pb2_test_proto_extDescs,
@@ -1792,6 +1802,7 @@ func xxx_File_pb2_test_proto_init() {
 		FilesRegistry:        protoregistry.GlobalFiles,
 		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_pb2_test_proto_rawDesc = nil
 	xxx_File_pb2_test_proto_goTypes = nil
 	xxx_File_pb2_test_proto_depIdxs = nil
 }

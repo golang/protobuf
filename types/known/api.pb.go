@@ -7,7 +7,10 @@ import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // Api is a light-weight descriptor for an API Interface.
 //
@@ -69,7 +72,7 @@ func (*Api) ProtoMessage()    {}
 
 // Deprecated: Use Api.ProtoReflect.Type instead.
 func (*Api) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_api_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_google_protobuf_api_proto_rawDescGZIP(), []int{0}
 }
 
 func (m *Api) GetName() string {
@@ -151,7 +154,7 @@ func (*Method) ProtoMessage()    {}
 
 // Deprecated: Use Method.ProtoReflect.Type instead.
 func (*Method) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_api_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_google_protobuf_api_proto_rawDescGZIP(), []int{1}
 }
 
 func (m *Method) GetName() string {
@@ -301,7 +304,7 @@ func (*Mixin) ProtoMessage()    {}
 
 // Deprecated: Use Mixin.ProtoReflect.Type instead.
 func (*Mixin) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_api_proto_rawdesc_gzipped, []int{2}
+	return xxx_File_google_protobuf_api_proto_rawDescGZIP(), []int{2}
 }
 
 func (m *Mixin) GetName() string {
@@ -318,8 +321,9 @@ func (m *Mixin) GetRoot() string {
 	return ""
 }
 
-var xxx_File_google_protobuf_api_proto_rawdesc = []byte{
-	// 929 bytes of the wire-encoded FileDescriptorProto
+var File_google_protobuf_api_proto protoreflect.FileDescriptor
+
+var xxx_File_google_protobuf_api_proto_rawDesc = []byte{
 	0x0a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0f, 0x67, 0x6f, 0x6f,
 	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x1a, 0x24, 0x67, 0x6f,
@@ -381,11 +385,17 @@ var xxx_File_google_protobuf_api_proto_rawdesc = []byte{
 	0x33,
 }
 
-var xxx_File_google_protobuf_api_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_api_proto_rawdesc)
+var (
+	xxx_File_google_protobuf_api_proto_rawDesc_once sync.Once
+	xxx_File_google_protobuf_api_proto_rawDesc_data = xxx_File_google_protobuf_api_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_google_protobuf_api_proto protoreflect.FileDescriptor
+func xxx_File_google_protobuf_api_proto_rawDescGZIP() []byte {
+	xxx_File_google_protobuf_api_proto_rawDesc_once.Do(func() {
+		xxx_File_google_protobuf_api_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_api_proto_rawDesc_data)
+	})
+	return xxx_File_google_protobuf_api_proto_rawDesc_data
+}
 
 var xxx_File_google_protobuf_api_proto_messageTypes = make([]protoimpl.MessageType, 3)
 var xxx_File_google_protobuf_api_proto_goTypes = []interface{}{
@@ -414,13 +424,14 @@ func xxx_File_google_protobuf_api_proto_init() {
 	xxx_File_google_protobuf_source_context_proto_init()
 	xxx_File_google_protobuf_type_proto_init()
 	File_google_protobuf_api_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_api_proto_rawdesc,
+		RawDescriptor:      xxx_File_google_protobuf_api_proto_rawDesc,
 		GoTypes:            xxx_File_google_protobuf_api_proto_goTypes,
 		DependencyIndexes:  xxx_File_google_protobuf_api_proto_depIdxs,
 		MessageOutputTypes: xxx_File_google_protobuf_api_proto_messageTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_google_protobuf_api_proto_rawDesc = nil
 	xxx_File_google_protobuf_api_proto_goTypes = nil
 	xxx_File_google_protobuf_api_proto_depIdxs = nil
 }

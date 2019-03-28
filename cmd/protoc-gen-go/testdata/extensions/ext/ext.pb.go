@@ -10,7 +10,10 @@ import (
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	sync "sync"
 )
+
+const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type Enum int32
 
@@ -55,7 +58,7 @@ func (x *Enum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{0}
 }
 
 type Message struct {
@@ -74,7 +77,7 @@ func (*Message) ProtoMessage()    {}
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{0}
+	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{0}
 }
 
 func (m *Message) GetData() []byte {
@@ -100,7 +103,7 @@ func (*ExtensionGroup) ProtoMessage()    {}
 
 // Deprecated: Use ExtensionGroup.ProtoReflect.Type instead.
 func (*ExtensionGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{1}
+	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{1}
 }
 
 func (m *ExtensionGroup) GetExtensionGroup() string {
@@ -126,7 +129,7 @@ func (*ExtendingMessage) ProtoMessage()    {}
 
 // Deprecated: Use ExtendingMessage.ProtoReflect.Type instead.
 func (*ExtendingMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{2}
+	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{2}
 }
 
 type RepeatedGroup struct {
@@ -145,7 +148,7 @@ func (*RepeatedGroup) ProtoMessage()    {}
 
 // Deprecated: Use RepeatedGroup.ProtoReflect.Type instead.
 func (*RepeatedGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{3}
+	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{3}
 }
 
 func (m *RepeatedGroup) GetRepeatedXGroup() []string {
@@ -172,7 +175,7 @@ func (*Extendable) ProtoMessage()    {}
 
 // Deprecated: Use Extendable.ProtoReflect.Type instead.
 func (*Extendable) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{4}
+	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{4}
 }
 
 var extRange_Extendable = []protoiface.ExtensionRangeV1{
@@ -200,7 +203,7 @@ func (*MessageSetWireFormatExtension) ProtoMessage()    {}
 
 // Deprecated: Use MessageSetWireFormatExtension.ProtoReflect.Type instead.
 func (*MessageSetWireFormatExtension) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{5}
+	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{5}
 }
 
 type Message_M struct {
@@ -218,7 +221,7 @@ func (*Message_M) ProtoMessage()    {}
 
 // Deprecated: Use Message_M.ProtoReflect.Type instead.
 func (*Message_M) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{0, 0}
+	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{0, 0}
 }
 
 type ExtendingMessage_ExtendingMessageSubmessage struct {
@@ -240,7 +243,7 @@ func (*ExtendingMessage_ExtendingMessageSubmessage) ProtoMessage() {}
 
 // Deprecated: Use ExtendingMessage_ExtendingMessageSubmessage.ProtoReflect.Type instead.
 func (*ExtendingMessage_ExtendingMessageSubmessage) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_ext_ext_proto_rawdesc_gzipped, []int{2, 0}
+	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{2, 0}
 }
 
 var xxx_File_extensions_ext_ext_proto_extDescs = []protoiface.ExtensionDescV1{
@@ -730,8 +733,9 @@ var (
 	// extend goproto.protoc.extension.base.MessageSetWireFormatMessage { optional goproto.protoc.extension.ext.MessageSetWireFormatExtension message_set_extension = 100; }
 	E_MessageSetWireFormatExtension_MessageSetExtension = &xxx_File_extensions_ext_ext_proto_extDescs[43]
 )
-var xxx_File_extensions_ext_ext_proto_rawdesc = []byte{
-	// 4996 bytes of the wire-encoded FileDescriptorProto
+var File_extensions_ext_ext_proto protoreflect.FileDescriptor
+
+var xxx_File_extensions_ext_ext_proto_rawDesc = []byte{
 	0x0a, 0x18, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x65, 0x78, 0x74,
 	0x2f, 0x65, 0x78, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1c, 0x67, 0x6f, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x65, 0x78, 0x74, 0x65, 0x6e,
@@ -1047,11 +1051,17 @@ var xxx_File_extensions_ext_ext_proto_rawdesc = []byte{
 	0x2f, 0x65, 0x78, 0x74,
 }
 
-var xxx_File_extensions_ext_ext_proto_rawdesc_gzipped = protoimpl.X.CompressGZIP(xxx_File_extensions_ext_ext_proto_rawdesc)
+var (
+	xxx_File_extensions_ext_ext_proto_rawDesc_once sync.Once
+	xxx_File_extensions_ext_ext_proto_rawDesc_data = xxx_File_extensions_ext_ext_proto_rawDesc
+)
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
-
-var File_extensions_ext_ext_proto protoreflect.FileDescriptor
+func xxx_File_extensions_ext_ext_proto_rawDescGZIP() []byte {
+	xxx_File_extensions_ext_ext_proto_rawDesc_once.Do(func() {
+		xxx_File_extensions_ext_ext_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_extensions_ext_ext_proto_rawDesc_data)
+	})
+	return xxx_File_extensions_ext_ext_proto_rawDesc_data
+}
 
 var xxx_File_extensions_ext_ext_proto_enumTypes = make([]protoreflect.EnumType, 1)
 var xxx_File_extensions_ext_ext_proto_messageTypes = make([]protoimpl.MessageType, 8)
@@ -1135,7 +1145,7 @@ func xxx_File_extensions_ext_ext_proto_init() {
 	}
 	extensionTypes := make([]protoreflect.ExtensionType, 44)
 	File_extensions_ext_ext_proto = protoimpl.FileBuilder{
-		RawDescriptor:        xxx_File_extensions_ext_ext_proto_rawdesc,
+		RawDescriptor:        xxx_File_extensions_ext_ext_proto_rawDesc,
 		GoTypes:              xxx_File_extensions_ext_ext_proto_goTypes,
 		DependencyIndexes:    xxx_File_extensions_ext_ext_proto_depIdxs,
 		LegacyExtensions:     xxx_File_extensions_ext_ext_proto_extDescs,
@@ -1145,6 +1155,7 @@ func xxx_File_extensions_ext_ext_proto_init() {
 		FilesRegistry:        protoregistry.GlobalFiles,
 		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
+	xxx_File_extensions_ext_ext_proto_rawDesc = nil
 	xxx_File_extensions_ext_ext_proto_goTypes = nil
 	xxx_File_extensions_ext_ext_proto_depIdxs = nil
 }
