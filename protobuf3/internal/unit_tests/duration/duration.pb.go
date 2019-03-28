@@ -13,7 +13,7 @@ It has these top-level messages:
 */
 package duration
 
-import proto "github.com/mistsys/protobuf3/proto"
+import proto "github.com/mistsys/protobuf3/protobuf3/internal/unit_tests/proto"
 import fmt "fmt"
 import math "math"
 

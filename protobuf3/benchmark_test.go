@@ -36,8 +36,8 @@ package protobuf3_test
 import (
 	"testing"
 
-	"github.com/mistsys/protobuf3/proto"
 	"github.com/mistsys/protobuf3/protobuf3"
+	"github.com/mistsys/protobuf3/protobuf3/internal/unit_tests/proto"
 )
 
 func BenchmarkEncodeSmallVarint(b *testing.B) {
