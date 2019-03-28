@@ -202,12 +202,13 @@ type Marshaler interface {
 // Marshal takes the protocol buffer
 // and encodes it into the wire format, returning the data.
 func Marshal(pb Message) ([]byte, error) {
-	p := NewBuffer(nil)
-	err := p.Marshal(pb)
+	buf := newBuffer(nil)
+	err := buf.Marshal(pb)
+	bytes := buf.release()
 	if err != nil {
 		return nil, err
 	}
-	return p.buf, nil
+	return bytes, nil
 }
 
 // Marshal takes the protocol buffer
@@ -550,7 +551,7 @@ func (o *Buffer) enc_slice_packed_int(p *Properties, base unsafe.Pointer) {
 	if l == 0 {
 		return
 	}
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, uint64(x))
 	}
@@ -558,6 +559,7 @@ func (o *Buffer) enc_slice_packed_int(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode a slice of uint ([]uint) in packed format.
@@ -567,7 +569,7 @@ func (o *Buffer) enc_slice_packed_uint(p *Properties, base unsafe.Pointer) {
 	if l == 0 {
 		return
 	}
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, uint64(x))
 	}
@@ -575,6 +577,7 @@ func (o *Buffer) enc_slice_packed_uint(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode a slice of int8s ([]int8) in packed format.
@@ -584,7 +587,7 @@ func (o *Buffer) enc_slice_packed_int8(p *Properties, base unsafe.Pointer) {
 	if l == 0 {
 		return
 	}
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, uint64(x))
 	}
@@ -592,6 +595,7 @@ func (o *Buffer) enc_slice_packed_int8(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode a slice of int16s ([]int16) in packed format.
@@ -601,7 +605,7 @@ func (o *Buffer) enc_slice_packed_int16(p *Properties, base unsafe.Pointer) {
 	if l == 0 {
 		return
 	}
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, uint64(x))
 	}
@@ -609,6 +613,7 @@ func (o *Buffer) enc_slice_packed_int16(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode a slice of uint16s ([]uint16) in packed format.
@@ -618,7 +623,7 @@ func (o *Buffer) enc_slice_packed_uint16(p *Properties, base unsafe.Pointer) {
 	if l == 0 {
 		return
 	}
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, uint64(x))
 	}
@@ -626,6 +631,7 @@ func (o *Buffer) enc_slice_packed_uint16(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode a slice of int32s ([]int32) in packed format.
@@ -635,7 +641,7 @@ func (o *Buffer) enc_slice_packed_int32(p *Properties, base unsafe.Pointer) {
 	if l == 0 {
 		return
 	}
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, uint64(x))
 	}
@@ -643,6 +649,7 @@ func (o *Buffer) enc_slice_packed_int32(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode an array of int32s ([length]int32) in packed format.
@@ -650,7 +657,7 @@ func (o *Buffer) enc_array_packed_int32(p *Properties, base unsafe.Pointer) {
 	n := p.length
 	s := ((*[maxLen / 4]int32)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
 
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, uint64(x))
 	}
@@ -658,6 +665,7 @@ func (o *Buffer) enc_array_packed_int32(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode a slice of uint32s ([]uint32) in packed format.
@@ -668,7 +676,7 @@ func (o *Buffer) enc_slice_packed_uint32(p *Properties, base unsafe.Pointer) {
 	if l == 0 {
 		return
 	}
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, uint64(x))
 	}
@@ -676,6 +684,7 @@ func (o *Buffer) enc_slice_packed_uint32(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode an array of uint32s ([length]uint32) in packed format.
@@ -683,7 +692,7 @@ func (o *Buffer) enc_array_packed_uint32(p *Properties, base unsafe.Pointer) {
 	n := p.length
 	s := ((*[maxLen / 4]uint32)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
 
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, uint64(x))
 	}
@@ -691,6 +700,7 @@ func (o *Buffer) enc_array_packed_uint32(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode a slice of int64s or uint64s ([](u)int64) in packed format.
@@ -700,7 +710,7 @@ func (o *Buffer) enc_slice_packed_int64(p *Properties, base unsafe.Pointer) {
 	if l == 0 {
 		return
 	}
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, x)
 	}
@@ -708,6 +718,7 @@ func (o *Buffer) enc_slice_packed_int64(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode an array of int64s ([n]int64) in packed format.
@@ -715,7 +726,7 @@ func (o *Buffer) enc_array_packed_int64(p *Properties, base unsafe.Pointer) {
 	n := p.length
 	s := ((*[maxLen / 8]uint64)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
 
-	buf := NewBuffer(nil)
+	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, x)
 	}
@@ -723,6 +734,7 @@ func (o *Buffer) enc_array_packed_int64(p *Properties, base unsafe.Pointer) {
 	o.buf = append(o.buf, p.tagcode...)
 	o.EncodeVarint(uint64(len(buf.buf)))
 	o.buf = append(o.buf, buf.buf...)
+	buf.release()
 }
 
 // Encode a slice of slice of bytes ([][]byte).

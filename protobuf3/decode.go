@@ -397,8 +397,11 @@ func (p *Buffer) SkipRawBytes() error {
 // (both because they know the type (making it more efficient for the CPU), and it avoids forcing
 // everyone to define a Reset() method for the Message interface (making it more efficient for
 // the developer, me!)), our Unmarshal() matches the behavior of encoding/json.Unmarshal()
-func Unmarshal(buf []byte, pb Message) error {
-	return NewBuffer(buf).Unmarshal(pb)
+func Unmarshal(bytes []byte, pb Message) error {
+	buf := newBuffer(bytes)
+	err := buf.Unmarshal(pb)
+	buf.release()
+	return err
 }
 
 // Unmarshal parses the protocol buffer representation in the
@@ -1458,7 +1461,7 @@ func (o *Buffer) dec_Duration(p *Properties) (time.Duration, error) {
 	}
 
 	// restrict ourselves to p.index:end
-	oo := NewBuffer(o.buf[o.index:end:end])
+	oo := newBuffer(o.buf[o.index:end:end])
 
 	var secs, nanos uint64
 	for oo.index < len(oo.buf) {
@@ -1479,6 +1482,7 @@ func (o *Buffer) dec_Duration(p *Properties) (time.Duration, error) {
 			return 0, err
 		}
 	}
+	oo.release()
 
 	o.index = end
 

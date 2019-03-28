@@ -46,6 +46,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 	"unsafe"
 )
 
@@ -83,6 +84,29 @@ func (p *Buffer) Reset() {
 	p.index = 0        // for reading
 	p.err = nil
 	p.array_indexes = nil
+}
+
+var buffer_pool = sync.Pool{
+	New: func() interface{} { return NewBuffer(nil) },
+}
+
+// newBuffer gets a new buffer from our private buffer_pool
+func newBuffer(e []byte) *Buffer {
+	p := buffer_pool.Get().(*Buffer)
+	p.buf = e
+	return p
+}
+
+// release returns the buffer to the pool and returns the now detached inner []byte
+func (p *Buffer) release() []byte {
+	bytes := p.buf
+	p.buf = nil
+	p.index = 0
+	p.Immutable = false
+	p.err = nil
+	p.array_indexes = nil
+	buffer_pool.Put(p)
+	return bytes
 }
 
 // save the first error; toss the rest
