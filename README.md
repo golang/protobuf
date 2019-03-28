@@ -28,5 +28,6 @@ At this point very little of the original is left, and this package can
 be used stand-alone.
 
 Orignal code before the fork is Copyright 2010 The Go Authors.
+
 Modifications are Copyright 2016-2019 Mist Systems.
 
