@@ -43,9 +43,9 @@ emits would be.
 package protobuf3
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
+	"strings"
 	"unsafe"
 )
 
@@ -244,7 +244,7 @@ func DebugPrint(b []byte) string {
 	p := NewBuffer(b)
 	depth := 0
 
-	var out bytes.Buffer
+	var out strings.Builder
 
 out:
 	for {
