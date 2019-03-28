@@ -43,10 +43,10 @@ import (
 	"time"
 
 	"github.com/mistsys/protobuf3/proto"
-	pb3 "github.com/mistsys/protobuf3/proto/proto3_proto"
 	"github.com/mistsys/protobuf3/protobuf3"
-	"github.com/mistsys/protobuf3/ptypes/duration"
-	"github.com/mistsys/protobuf3/ptypes/timestamp"
+	"github.com/mistsys/protobuf3/protobuf3/internal/unit_test_types/duration"
+	pb3 "github.com/mistsys/protobuf3/protobuf3/internal/unit_test_types/proto3_proto"
+	"github.com/mistsys/protobuf3/protobuf3/internal/unit_test_types/timestamp"
 )
 
 func TestProto3ZeroValues(t *testing.T) {

@@ -1,6 +1,7 @@
-// Protocol Buffers - Google's data interchange format
-// Copyright 2008 Google Inc.  All rights reserved.
-// https://developers.google.com/protocol-buffers/
+// Go support for Protocol Buffers - Google's data interchange format
+//
+// Copyright 2014 The Go Authors.  All rights reserved.
+// https://github.com/golang/protobuf
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -30,24 +31,48 @@
 
 syntax = "proto3";
 
-package google.protobuf;
+import "google/protobuf/any.proto";
+import "testdata/test.proto";
 
-option csharp_namespace = "Google.Protobuf.WellKnownTypes";
-option go_package = "github.com/golang/protobuf/ptypes/empty";
-option java_package = "com.google.protobuf";
-option java_outer_classname = "EmptyProto";
-option java_multiple_files = true;
-option java_generate_equals_and_hash = true;
-option objc_class_prefix = "GPB";
-option cc_enable_arenas = true;
+package proto3_proto;
 
-// A generic empty message that you can re-use to avoid defining duplicated
-// empty messages in your APIs. A typical example is to use it as the request
-// or the response type of an API method. For instance:
-//
-//     service Foo {
-//       rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);
-//     }
-//
-// The JSON representation for `Empty` is empty JSON object `{}`.
-message Empty {}
+message Message {
+  enum Humour {
+    UNKNOWN = 0;
+    PUNS = 1;
+    SLAPSTICK = 2;
+    BILL_BAILEY = 3;
+  }
+
+  string name = 1;
+  Humour hilarity = 2;
+  uint32 height_in_cm = 3;
+  bytes data = 4;
+  int64 result_count = 7;
+  bool true_scotsman = 8;
+  float score = 9;
+
+  repeated uint64 key = 5;
+  repeated int32 short_key = 19;
+  Nested nested = 6;
+  repeated Humour r_funny = 16;
+
+  map<string, Nested> terrain = 10;
+  testdata.SubDefaults proto2_field = 11;
+  map<string, testdata.SubDefaults> proto2_value = 13;
+
+  google.protobuf.Any anything = 14;
+  repeated google.protobuf.Any many_things = 15;
+
+  Message submessage = 17;
+  repeated Message children = 18;
+}
+
+message Nested {
+  string bunny = 1;
+  bool cute = 2;
+}
+
+message MessageWithMap {
+  map<bool, bytes> byte_mapping = 1;
+}
