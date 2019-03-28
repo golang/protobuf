@@ -43,22 +43,22 @@ import (
 	"time"
 
 	"github.com/mistsys/protobuf3/proto"
-	pb "github.com/mistsys/protobuf3/proto/proto3_proto"
+	pb3 "github.com/mistsys/protobuf3/proto/proto3_proto"
 	"github.com/mistsys/protobuf3/protobuf3"
 	"github.com/mistsys/protobuf3/ptypes/duration"
 	"github.com/mistsys/protobuf3/ptypes/timestamp"
 )
 
 func TestProto3ZeroValues(t *testing.T) {
-	protobuf3.XXXHack = true // needed b/c of pb.Message.Proto2Field.XXX_unrecognized
+	protobuf3.XXXHack = true // needed b/c of pb3.Message.Proto2Field.XXX_unrecognized
 	defer func() { protobuf3.XXXHack = false }()
 
 	tests := []struct {
 		desc string
 		m    proto.Message
 	}{
-		{"zero message", &pb.Message{}},
-		{"empty bytes field", &pb.Message{Data: []byte{}}},
+		{"zero message", &pb3.Message{}},
+		{"empty bytes field", &pb3.Message{Data: []byte{}}},
 	}
 	for _, test := range tests {
 		b, err := protobuf3.Marshal(test.m)
@@ -73,12 +73,12 @@ func TestProto3ZeroValues(t *testing.T) {
 }
 
 func TestRoundTripProto3(t *testing.T) {
-	protobuf3.XXXHack = true // needed b/c of pb.Message.Proto2Field.XXX_unrecognized
+	protobuf3.XXXHack = true // needed b/c of pb3.Message.Proto2Field.XXX_unrecognized
 	defer func() { protobuf3.XXXHack = false }()
 
-	m := &pb.Message{
+	m := &pb3.Message{
 		Name:         "David",          // (2 | 1<<3): 0x0a 0x05 "David"
-		Hilarity:     pb.Message_PUNS,  // (0 | 2<<3): 0x10 0x01
+		Hilarity:     pb3.Message_PUNS, // (0 | 2<<3): 0x10 0x01
 		HeightInCm:   178,              // (0 | 3<<3): 0x18 0xb2 0x01
 		Data:         []byte("roboto"), // (2 | 4<<3): 0x20 0x06 "roboto"
 		ResultCount:  47,               // (0 | 7<<3): 0x38 0x2f
@@ -86,7 +86,7 @@ func TestRoundTripProto3(t *testing.T) {
 		Score:        8.1,              // (5 | 9<<3): 0x4d <8.1>
 
 		Key: []uint64{1, 0xdeadbeef},
-		Nested: &pb.Nested{
+		Nested: &pb3.Nested{
 			Bunny: "Monty",
 		},
 	}
@@ -102,7 +102,7 @@ func TestRoundTripProto3(t *testing.T) {
 	c, err := proto.Marshal(m)
 	t.Logf(" c: % x", c)
 
-	m2 := new(pb.Message)
+	m2 := new(pb3.Message)
 	if err := proto.Unmarshal(b, m2); err != nil {
 		t.Fatalf("proto.Unmarshal: %v", err)
 	}
