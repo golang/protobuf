@@ -35,11 +35,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/mistsys/protobuf3/proto"
 
-	pb "github.com/golang/protobuf/proto/proto3_proto"
-	testpb "github.com/golang/protobuf/proto/testdata"
-	anypb "github.com/golang/protobuf/ptypes/any"
+	pb "github.com/mistsys/protobuf3/proto/proto3_proto"
+	testpb "github.com/mistsys/protobuf3/proto/testdata"
+	anypb "github.com/mistsys/protobuf3/ptypes/any"
 )
 
 var (

@@ -15,11 +15,11 @@ It has these top-level messages:
 */
 package proto3_proto
 
-import proto "github.com/golang/protobuf/proto"
+import proto "github.com/mistsys/protobuf3/proto"
 import fmt "fmt"
 import math "math"
-import google_protobuf "github.com/golang/protobuf/ptypes/any"
-import testdata "github.com/golang/protobuf/proto/testdata"
+import google_protobuf "github.com/mistsys/protobuf3/ptypes/any"
+import testdata "github.com/mistsys/protobuf3/proto/testdata"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal

@@ -34,9 +34,9 @@ package ptypes
 import (
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	pb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/golang/protobuf/ptypes/any"
+	"github.com/mistsys/protobuf3/proto"
+	pb "github.com/mistsys/protobuf3/protoc-gen-go/descriptor"
+	"github.com/mistsys/protobuf3/ptypes/any"
 )
 
 func TestMarshalUnmarshal(t *testing.T) {

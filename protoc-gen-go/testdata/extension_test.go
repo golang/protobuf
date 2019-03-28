@@ -40,7 +40,7 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/mistsys/protobuf3/proto"
 	base "extension_base.pb"
 	user "extension_user.pb"
 )

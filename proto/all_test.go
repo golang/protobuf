@@ -44,8 +44,8 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/golang/protobuf/proto"
-	. "github.com/golang/protobuf/proto/testdata"
+	. "github.com/mistsys/protobuf3/proto"
+	. "github.com/mistsys/protobuf3/proto/testdata"
 )
 
 var globalO *Buffer
@@ -2120,7 +2120,7 @@ func TestOneof(t *testing.T) {
 }
 
 func TestInefficientPackedBool(t *testing.T) {
-	// https://github.com/golang/protobuf/issues/76
+	// https://github.com/mistsys/protobuf3/issues/76
 	inp := []byte{
 		0x12, 0x02, // 0x12 = 2<<3|2; 2 bytes
 		// Usually a bool should take a single byte,

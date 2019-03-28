@@ -35,9 +35,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	tpb "github.com/golang/protobuf/proto/proto3_proto"
-	"github.com/golang/protobuf/ptypes"
+	"github.com/mistsys/protobuf3/proto"
+	tpb "github.com/mistsys/protobuf3/proto/proto3_proto"
+	"github.com/mistsys/protobuf3/ptypes"
 )
 
 var (

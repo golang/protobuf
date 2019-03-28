@@ -21,10 +21,10 @@ It has these top-level messages:
 */
 package my_test
 
-import proto "github.com/golang/protobuf/proto"
+import proto "github.com/mistsys/protobuf3/proto"
 import fmt "fmt"
 import math "math"
-import _ "github.com/golang/protobuf/protoc-gen-go/testdata/multi"
+import _ "github.com/mistsys/protobuf3/protoc-gen-go/testdata/multi"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal

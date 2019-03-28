@@ -39,8 +39,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/any"
+	"github.com/mistsys/protobuf3/proto"
+	"github.com/mistsys/protobuf3/ptypes/any"
 )
 
 const googleApis = "type.googleapis.com/"

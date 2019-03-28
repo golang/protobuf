@@ -50,7 +50,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/mistsys/protobuf3/proto"
 )
 
 // Marshaler is a configurable object for converting between

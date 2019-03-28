@@ -39,7 +39,7 @@ import (
 	"fmt"
 	"time"
 
-	durpb "github.com/golang/protobuf/ptypes/duration"
+	durpb "github.com/mistsys/protobuf3/ptypes/duration"
 )
 
 const (

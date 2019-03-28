@@ -36,9 +36,9 @@ import (
 	"reflect"
 	"testing"
 
-	. "github.com/golang/protobuf/proto"
-	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
-	. "github.com/golang/protobuf/proto/testdata"
+	. "github.com/mistsys/protobuf3/proto"
+	proto3pb "github.com/mistsys/protobuf3/proto/proto3_proto"
+	. "github.com/mistsys/protobuf3/proto/testdata"
 )
 
 type UnmarshalTextTest struct {

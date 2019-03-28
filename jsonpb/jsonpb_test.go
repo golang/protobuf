@@ -39,15 +39,15 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/mistsys/protobuf3/proto"
 
-	pb "github.com/golang/protobuf/jsonpb/jsonpb_test_proto"
-	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
-	anypb "github.com/golang/protobuf/ptypes/any"
-	durpb "github.com/golang/protobuf/ptypes/duration"
-	stpb "github.com/golang/protobuf/ptypes/struct"
-	tspb "github.com/golang/protobuf/ptypes/timestamp"
-	wpb "github.com/golang/protobuf/ptypes/wrappers"
+	pb "github.com/mistsys/protobuf3/jsonpb/jsonpb_test_proto"
+	proto3pb "github.com/mistsys/protobuf3/proto/proto3_proto"
+	anypb "github.com/mistsys/protobuf3/ptypes/any"
+	durpb "github.com/mistsys/protobuf3/ptypes/duration"
+	stpb "github.com/mistsys/protobuf3/ptypes/struct"
+	tspb "github.com/mistsys/protobuf3/ptypes/timestamp"
+	wpb "github.com/mistsys/protobuf3/ptypes/wrappers"
 )
 
 var (
