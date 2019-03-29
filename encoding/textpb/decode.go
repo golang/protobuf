@@ -10,6 +10,7 @@ import (
 
 	"github.com/golang/protobuf/v2/internal/encoding/text"
 	"github.com/golang/protobuf/v2/internal/errors"
+	"github.com/golang/protobuf/v2/internal/fieldnum"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/internal/set"
 	"github.com/golang/protobuf/v2/proto"
@@ -497,8 +498,8 @@ func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, knownFields pref.Kn
 		return err
 	}
 
-	knownFields.Set(pref.FieldNumber(1), pref.ValueOf(typeURL))
-	knownFields.Set(pref.FieldNumber(2), pref.ValueOf(b))
+	knownFields.Set(fieldnum.Any_TypeUrl, pref.ValueOf(typeURL))
+	knownFields.Set(fieldnum.Any_Value, pref.ValueOf(b))
 
 	return nerr.E
 }
