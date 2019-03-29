@@ -439,23 +439,30 @@ func TestUnmarshal(t *testing.T) {
 		desc:         "enum set to number string",
 		inputMessage: &pb3.Enums{},
 		inputText: `{
-  "sEnum": "1",
+  "sEnum": "1"
 }`,
 		wantErr: true,
 	}, {
 		desc:         "enum set to invalid named",
 		inputMessage: &pb3.Enums{},
 		inputText: `{
-  "sEnum": "UNNAMED",
+  "sEnum": "UNNAMED"
 }`,
 		wantErr: true,
 	}, {
 		desc:         "enum set to not enum",
 		inputMessage: &pb3.Enums{},
 		inputText: `{
-  "sEnum": true,
+  "sEnum": true
 }`,
 		wantErr: true,
+	}, {
+		desc:         "enum set to JSON null",
+		inputMessage: &pb3.Enums{},
+		inputText: `{
+  "sEnum": null
+}`,
+		wantMessage: &pb3.Enums{},
 	}, {
 		desc:         "proto name",
 		inputMessage: &pb3.JSONNames{},
@@ -1477,6 +1484,20 @@ func TestUnmarshal(t *testing.T) {
 			OptString: &knownpb.StringValue{Value: "abc\xff"},
 		},
 		wantErr: true,
+	}, {
+		desc:         "NullValue field with JSON null",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optNull": null
+}`,
+		wantMessage: &pb2.KnownTypes{OptNull: new(knownpb.NullValue)},
+	}, {
+		desc:         "NullValue field with string",
+		inputMessage: &pb2.KnownTypes{},
+		inputText: `{
+  "optNull": "NULL_VALUE"
+}`,
+		wantMessage: &pb2.KnownTypes{OptNull: new(knownpb.NullValue)},
 	}, {
 		desc:         "BytesValue",
 		inputMessage: &knownpb.BytesValue{},

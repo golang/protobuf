@@ -547,11 +547,6 @@ func (o MarshalOptions) marshalKnownValue(m pref.Message) error {
 	return errors.New("%s: none of the variants is set", msgType.FullName())
 }
 
-func isKnownValue(fd pref.FieldDescriptor) bool {
-	md := fd.MessageType()
-	return md != nil && md.FullName() == "google.protobuf.Value"
-}
-
 func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 	var nerr errors.NonFatal
 	knownFields := m.KnownFields()

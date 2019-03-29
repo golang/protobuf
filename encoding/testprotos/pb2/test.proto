@@ -213,9 +213,12 @@ message KnownTypes {
 
   optional google.protobuf.Duration opt_duration = 20;
   optional google.protobuf.Timestamp opt_timestamp = 21;
+
   optional google.protobuf.Struct opt_struct = 25;
   optional google.protobuf.ListValue opt_list = 26;
   optional google.protobuf.Value opt_value = 27;
+  optional google.protobuf.NullValue opt_null = 28;
+
   optional google.protobuf.Empty opt_empty = 30;
   optional google.protobuf.Any opt_any = 32;
 

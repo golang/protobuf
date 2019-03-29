@@ -225,8 +225,8 @@ Loop:
 		seenNums.Set(num)
 
 		// No need to set values for JSON null unless the field type is
-		// google.protobuf.Value.
-		if o.decoder.Peek() == json.Null && !isKnownValue(fd) {
+		// google.protobuf.Value or google.protobuf.NullValue.
+		if o.decoder.Peek() == json.Null && !isKnownValue(fd) && !isNullValue(fd) {
 			o.decoder.Read()
 			continue
 		}
@@ -275,6 +275,16 @@ func (o UnmarshalOptions) findExtension(xtName pref.FullName) (pref.ExtensionTyp
 		return xt, nil
 	}
 	return nil, protoregistry.NotFound
+}
+
+func isKnownValue(fd pref.FieldDescriptor) bool {
+	md := fd.MessageType()
+	return md != nil && md.FullName() == "google.protobuf.Value"
+}
+
+func isNullValue(fd pref.FieldDescriptor) bool {
+	ed := fd.EnumType()
+	return ed != nil && ed.FullName() == "google.protobuf.NullValue"
 }
 
 // unmarshalSingular unmarshals to the non-repeated field specified by the given
@@ -509,6 +519,12 @@ func unmarshalEnum(jval json.Value, fd pref.FieldDescriptor) (pref.Value, error)
 			return pref.Value{}, err
 		}
 		return pref.ValueOf(pref.EnumNumber(n)), nil
+
+	case json.Null:
+		// This is only valid for google.protobuf.NullValue.
+		if isNullValue(fd) {
+			return pref.ValueOf(pref.EnumNumber(0)), nil
+		}
 	}
 
 	return pref.Value{}, unexpectedJSONError{jval}

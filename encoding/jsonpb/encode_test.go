@@ -1177,6 +1177,12 @@ func TestMarshal(t *testing.T) {
 		input: &knownpb.Empty{},
 		want:  `{}`,
 	}, {
+		desc:  "NullValue field",
+		input: &pb2.KnownTypes{OptNull: new(knownpb.NullValue)},
+		want: `{
+  "optNull": null
+}`,
+	}, {
 		desc:    "Value empty",
 		input:   &knownpb.Value{},
 		wantErr: true,
