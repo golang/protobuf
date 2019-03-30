@@ -1757,6 +1757,11 @@ func TestUnmarshal(t *testing.T) {
 		inputText:    `"-3s"`,
 		wantMessage:  &knownpb.Duration{Seconds: -3},
 	}, {
+		desc:         "Duration with plus sign",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"+3s"`,
+		wantMessage:  &knownpb.Duration{Seconds: 3},
+	}, {
 		desc:         "Duration with nanos",
 		inputMessage: &knownpb.Duration{},
 		inputText:    `"0.001s"`,
@@ -1766,6 +1771,16 @@ func TestUnmarshal(t *testing.T) {
 		inputMessage: &knownpb.Duration{},
 		inputText:    `"-0.001s"`,
 		wantMessage:  &knownpb.Duration{Nanos: -1e6},
+	}, {
+		desc:         "Duration with -nanos",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"-.001s"`,
+		wantMessage:  &knownpb.Duration{Nanos: -1e6},
+	}, {
+		desc:         "Duration with +nanos",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"+.001s"`,
+		wantMessage:  &knownpb.Duration{Nanos: 1e6},
 	}, {
 		desc:         "Duration with -secs -nanos",
 		inputMessage: &knownpb.Duration{},
@@ -1799,12 +1814,27 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc:         "Duration with nanos beyond 9 digits",
 		inputMessage: &knownpb.Duration{},
-		inputText:    `"0.9999999990s"`,
+		inputText:    `"0.1000000000s"`,
 		wantErr:      true,
 	}, {
 		desc:         "Duration without suffix s",
 		inputMessage: &knownpb.Duration{},
 		inputText:    `"123"`,
+		wantErr:      true,
+	}, {
+		desc:         "Duration invalid signed fraction",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"123.+123s"`,
+		wantErr:      true,
+	}, {
+		desc:         "Duration invalid multiple .",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"123.123.s"`,
+		wantErr:      true,
+	}, {
+		desc:         "Duration invalid integer",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"01s"`,
 		wantErr:      true,
 	}, {
 		desc:         "Timestamp zero",

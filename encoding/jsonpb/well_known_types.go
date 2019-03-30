@@ -7,7 +7,6 @@ package jsonpb
 import (
 	"bytes"
 	"fmt"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -699,50 +698,103 @@ func (o UnmarshalOptions) unmarshalDuration(m pref.Message) error {
 	return nerr.E
 }
 
-// Regular expression for Duration type in JSON format. This allows for values
-// like 1s, 0.1s, 1.s, .1s. It limits fractional part to 9 digits only for
+// parseDuration parses the given input string for seconds and nanoseconds value
+// for the Duration JSON format. The format is a decimal number with a suffix
+// 's'. It can have optional plus/minus sign. There needs to be at least an
+// integer or fractional part. Fractional part is limited to 9 digits only for
 // nanoseconds precision, regardless of whether there are trailing zero digits.
-var durationRE = regexp.MustCompile(`^-?([0-9]|[1-9][0-9]+)?(\.[0-9]{0,9})?s$`)
-
+// Example values are 1s, 0.1s, 1.s, .1s, +1s, -1s, -.1s.
 func parseDuration(input string) (int64, int32, bool) {
 	b := []byte(input)
-	// TODO: Parse input directly instead of using a regular expression.
-	matched := durationRE.FindSubmatch(b)
-	if len(matched) != 3 {
+	size := len(b)
+	if size < 2 {
 		return 0, 0, false
 	}
+	if b[size-1] != 's' {
+		return 0, 0, false
+	}
+	b = b[:size-1]
 
+	// Read optional plus/minus symbol.
 	var neg bool
-	if b[0] == '-' {
+	switch b[0] {
+	case '-':
 		neg = true
+		b = b[1:]
+	case '+':
+		b = b[1:]
 	}
-	var secb []byte
-	if len(matched[1]) == 0 {
-		secb = []byte{'0'}
-	} else {
-		secb = matched[1]
+	if len(b) == 0 {
+		return 0, 0, false
 	}
-	var nanob []byte
-	if len(matched[2]) <= 1 {
-		nanob = []byte{'0'}
-	} else {
-		nanob = matched[2][1:]
-		// Right-pad with 0s for nanosecond-precision.
-		for i := len(nanob); i < 9; i++ {
-			nanob = append(nanob, '0')
+
+	// Read the integer part.
+	var intp []byte
+	switch {
+	case b[0] == '0':
+		b = b[1:]
+
+	case '1' <= b[0] && b[0] <= '9':
+		intp = b[0:]
+		b = b[1:]
+		n := 1
+		for len(b) > 0 && '0' <= b[0] && b[0] <= '9' {
+			n++
+			b = b[1:]
 		}
-		// Remove unnecessary 0s in the left.
-		nanob = bytes.TrimLeft(nanob, "0")
-	}
+		intp = intp[:n]
 
-	secs, err := strconv.ParseInt(string(secb), 10, 64)
-	if err != nil {
+	case b[0] == '.':
+		// Continue below.
+
+	default:
 		return 0, 0, false
 	}
 
-	nanos, err := strconv.ParseInt(string(nanob), 10, 32)
-	if err != nil {
-		return 0, 0, false
+	hasFrac := false
+	var frac [9]byte
+	if len(b) > 0 {
+		if b[0] != '.' {
+			return 0, 0, false
+		}
+		// Read the fractional part.
+		b = b[1:]
+		n := 0
+		for len(b) > 0 && n < 9 && '0' <= b[0] && b[0] <= '9' {
+			frac[n] = b[0]
+			n++
+			b = b[1:]
+		}
+		// It is not valid if there are more bytes left.
+		if len(b) > 0 {
+			return 0, 0, false
+		}
+		// Pad fractional part with 0s.
+		for i := n; i < 9; i++ {
+			frac[i] = '0'
+		}
+		hasFrac = true
+	}
+
+	var secs int64
+	if len(intp) > 0 {
+		var err error
+		secs, err = strconv.ParseInt(string(intp), 10, 64)
+		if err != nil {
+			return 0, 0, false
+		}
+	}
+
+	var nanos int64
+	if hasFrac {
+		nanob := bytes.TrimLeft(frac[:], "0")
+		if len(nanob) > 0 {
+			var err error
+			nanos, err = strconv.ParseInt(string(nanob), 10, 32)
+			if err != nil {
+				return 0, 0, false
+			}
+		}
 	}
 
 	if neg {
