@@ -67,6 +67,10 @@ func (x *Message) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_proto3_ext3_proto_messageTypes[0].MessageOf(x)
 }
 
+func (m *Message) XXX_Methods() *protoiface.Methods {
+	return xxx_File_extensions_proto3_ext3_proto_messageTypes[0].Methods()
+}
+
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_proto3_ext3_proto_rawDescGZIP(), []int{0}

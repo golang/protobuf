@@ -6,6 +6,7 @@ package pb3
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -130,6 +131,10 @@ func (*Scalars) ProtoMessage() {}
 
 func (x *Scalars) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *Scalars) XXX_Methods() *protoiface.Methods {
+	return xxx_File_pb3_test_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use Scalars.ProtoReflect.Type instead.
@@ -265,6 +270,10 @@ func (x *Enums) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[1].MessageOf(x)
 }
 
+func (m *Enums) XXX_Methods() *protoiface.Methods {
+	return xxx_File_pb3_test_proto_messageTypes[1].Methods()
+}
+
 // Deprecated: Use Enums.ProtoReflect.Type instead.
 func (*Enums) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{1}
@@ -306,6 +315,10 @@ func (x *Nests) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[2].MessageOf(x)
 }
 
+func (m *Nests) XXX_Methods() *protoiface.Methods {
+	return xxx_File_pb3_test_proto_messageTypes[2].Methods()
+}
+
 // Deprecated: Use Nests.ProtoReflect.Type instead.
 func (*Nests) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{2}
@@ -339,6 +352,10 @@ func (*Nested) ProtoMessage() {}
 
 func (x *Nested) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[3].MessageOf(x)
+}
+
+func (m *Nested) XXX_Methods() *protoiface.Methods {
+	return xxx_File_pb3_test_proto_messageTypes[3].Methods()
 }
 
 // Deprecated: Use Nested.ProtoReflect.Type instead.
@@ -384,6 +401,10 @@ func (*Oneofs) ProtoMessage() {}
 
 func (x *Oneofs) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[4].MessageOf(x)
+}
+
+func (m *Oneofs) XXX_Methods() *protoiface.Methods {
+	return xxx_File_pb3_test_proto_messageTypes[4].Methods()
 }
 
 // Deprecated: Use Oneofs.ProtoReflect.Type instead.
@@ -476,6 +497,10 @@ func (x *Maps) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[5].MessageOf(x)
 }
 
+func (m *Maps) XXX_Methods() *protoiface.Methods {
+	return xxx_File_pb3_test_proto_messageTypes[5].Methods()
+}
+
 // Deprecated: Use Maps.ProtoReflect.Type instead.
 func (*Maps) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{5}
@@ -536,6 +561,10 @@ func (*JSONNames) ProtoMessage() {}
 
 func (x *JSONNames) ProtoReflect() protoreflect.Message {
 	return xxx_File_pb3_test_proto_messageTypes[6].MessageOf(x)
+}
+
+func (m *JSONNames) XXX_Methods() *protoiface.Methods {
+	return xxx_File_pb3_test_proto_messageTypes[6].Methods()
 }
 
 // Deprecated: Use JSONNames.ProtoReflect.Type instead.

@@ -13,7 +13,19 @@ import (
 
 // Size returns the size in bytes of the wire-format encoding of m.
 func Size(m Message) int {
+	if size, err := sizeMessageFast(m); err == nil {
+		return size
+	}
 	return sizeMessage(m.ProtoReflect())
+}
+
+func sizeMessageFast(m Message) (int, error) {
+	// TODO: Pass MarshalOptions to size to permit disabling fast path?
+	methods := protoMethods(m)
+	if methods == nil || methods.Size == nil {
+		return 0, errInternalNoFast
+	}
+	return methods.Size(m), nil
 }
 
 func sizeMessage(m protoreflect.Message) (size int) {

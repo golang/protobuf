@@ -6,6 +6,7 @@ package known_proto
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -39,6 +40,10 @@ func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_empty_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *Empty) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_empty_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use Empty.ProtoReflect.Type instead.

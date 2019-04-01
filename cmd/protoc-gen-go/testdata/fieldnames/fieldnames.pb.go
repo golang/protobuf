@@ -6,6 +6,7 @@ package fieldnames
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -69,6 +70,10 @@ func (*Message) ProtoMessage() {}
 
 func (x *Message) ProtoReflect() protoreflect.Message {
 	return xxx_File_fieldnames_fieldnames_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *Message) XXX_Methods() *protoiface.Methods {
+	return xxx_File_fieldnames_fieldnames_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
@@ -287,6 +292,10 @@ func (*Message_OneofMessageConflict) ProtoMessage() {}
 
 func (x *Message_OneofMessageConflict) ProtoReflect() protoreflect.Message {
 	return xxx_File_fieldnames_fieldnames_proto_messageTypes[1].MessageOf(x)
+}
+
+func (m *Message_OneofMessageConflict) XXX_Methods() *protoiface.Methods {
+	return xxx_File_fieldnames_fieldnames_proto_messageTypes[1].Methods()
 }
 
 // Deprecated: Use Message_OneofMessageConflict.ProtoReflect.Type instead.

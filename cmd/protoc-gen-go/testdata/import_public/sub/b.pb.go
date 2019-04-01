@@ -6,6 +6,7 @@ package sub
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -30,6 +31,10 @@ func (*M2) ProtoMessage() {}
 
 func (x *M2) ProtoReflect() protoreflect.Message {
 	return xxx_File_import_public_sub_b_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *M2) XXX_Methods() *protoiface.Methods {
+	return xxx_File_import_public_sub_b_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use M2.ProtoReflect.Type instead.

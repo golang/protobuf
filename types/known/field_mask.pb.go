@@ -6,6 +6,7 @@ package known_proto
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -231,6 +232,10 @@ func (*FieldMask) ProtoMessage() {}
 
 func (x *FieldMask) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_field_mask_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *FieldMask) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_field_mask_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use FieldMask.ProtoReflect.Type instead.

@@ -8,6 +8,7 @@ package comments
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -41,6 +42,10 @@ func (*Message1) ProtoMessage() {}
 
 func (x *Message1) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *Message1) XXX_Methods() *protoiface.Methods {
+	return xxx_File_comments_comments_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use Message1.ProtoReflect.Type instead.
@@ -107,6 +112,10 @@ func (x *Message2) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[1].MessageOf(x)
 }
 
+func (m *Message2) XXX_Methods() *protoiface.Methods {
+	return xxx_File_comments_comments_proto_messageTypes[1].Methods()
+}
+
 // Deprecated: Use Message2.ProtoReflect.Type instead.
 func (*Message2) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{1}
@@ -131,6 +140,10 @@ func (*Message1_Message1A) ProtoMessage() {}
 
 func (x *Message1_Message1A) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[2].MessageOf(x)
+}
+
+func (m *Message1_Message1A) XXX_Methods() *protoiface.Methods {
+	return xxx_File_comments_comments_proto_messageTypes[2].Methods()
 }
 
 // Deprecated: Use Message1_Message1A.ProtoReflect.Type instead.
@@ -159,6 +172,10 @@ func (x *Message1_Message1B) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[3].MessageOf(x)
 }
 
+func (m *Message1_Message1B) XXX_Methods() *protoiface.Methods {
+	return xxx_File_comments_comments_proto_messageTypes[3].Methods()
+}
+
 // Deprecated: Use Message1_Message1B.ProtoReflect.Type instead.
 func (*Message1_Message1B) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{0, 1}
@@ -185,6 +202,10 @@ func (x *Message2_Message2A) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[4].MessageOf(x)
 }
 
+func (m *Message2_Message2A) XXX_Methods() *protoiface.Methods {
+	return xxx_File_comments_comments_proto_messageTypes[4].Methods()
+}
+
 // Deprecated: Use Message2_Message2A.ProtoReflect.Type instead.
 func (*Message2_Message2A) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{1, 0}
@@ -209,6 +230,10 @@ func (*Message2_Message2B) ProtoMessage() {}
 
 func (x *Message2_Message2B) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_comments_proto_messageTypes[5].MessageOf(x)
+}
+
+func (m *Message2_Message2B) XXX_Methods() *protoiface.Methods {
+	return xxx_File_comments_comments_proto_messageTypes[5].Methods()
 }
 
 // Deprecated: Use Message2_Message2B.ProtoReflect.Type instead.

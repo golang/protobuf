@@ -7,6 +7,7 @@ import (
 	sub "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/import_public/sub"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -33,6 +34,10 @@ func (*Local) ProtoMessage() {}
 
 func (x *Local) ProtoReflect() protoreflect.Message {
 	return xxx_File_import_public_b_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *Local) XXX_Methods() *protoiface.Methods {
+	return xxx_File_import_public_b_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use Local.ProtoReflect.Type instead.

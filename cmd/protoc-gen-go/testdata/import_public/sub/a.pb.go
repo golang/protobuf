@@ -190,6 +190,10 @@ func (x *M) ProtoReflect() protoreflect.Message {
 	return xxx_File_import_public_sub_a_proto_messageTypes[0].MessageOf(x)
 }
 
+func (m *M) XXX_Methods() *protoiface.Methods {
+	return xxx_File_import_public_sub_a_proto_messageTypes[0].Methods()
+}
+
 // Deprecated: Use M.ProtoReflect.Type instead.
 func (*M) Descriptor() ([]byte, []int) {
 	return xxx_File_import_public_sub_a_proto_rawDescGZIP(), []int{0}
@@ -304,6 +308,10 @@ func (*M_Submessage) ProtoMessage() {}
 
 func (x *M_Submessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_import_public_sub_a_proto_messageTypes[1].MessageOf(x)
+}
+
+func (m *M_Submessage) XXX_Methods() *protoiface.Methods {
+	return xxx_File_import_public_sub_a_proto_messageTypes[1].Methods()
 }
 
 // Deprecated: Use M_Submessage.ProtoReflect.Type instead.

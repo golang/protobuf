@@ -6,6 +6,7 @@ package test_a_1
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -65,6 +66,10 @@ func (x *M1) ProtoReflect() protoreflect.Message {
 	return xxx_File_imports_test_a_1_m1_proto_messageTypes[0].MessageOf(x)
 }
 
+func (m *M1) XXX_Methods() *protoiface.Methods {
+	return xxx_File_imports_test_a_1_m1_proto_messageTypes[0].Methods()
+}
+
 // Deprecated: Use M1.ProtoReflect.Type instead.
 func (*M1) Descriptor() ([]byte, []int) {
 	return xxx_File_imports_test_a_1_m1_proto_rawDescGZIP(), []int{0}
@@ -89,6 +94,10 @@ func (*M1_1) ProtoMessage() {}
 
 func (x *M1_1) ProtoReflect() protoreflect.Message {
 	return xxx_File_imports_test_a_1_m1_proto_messageTypes[1].MessageOf(x)
+}
+
+func (m *M1_1) XXX_Methods() *protoiface.Methods {
+	return xxx_File_imports_test_a_1_m1_proto_messageTypes[1].Methods()
 }
 
 // Deprecated: Use M1_1.ProtoReflect.Type instead.

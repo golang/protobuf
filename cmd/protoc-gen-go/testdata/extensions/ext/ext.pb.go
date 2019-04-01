@@ -83,6 +83,10 @@ func (x *Message) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_ext_ext_proto_messageTypes[0].MessageOf(x)
 }
 
+func (m *Message) XXX_Methods() *protoiface.Methods {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[0].Methods()
+}
+
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{0}
@@ -114,6 +118,10 @@ func (*ExtensionGroup) ProtoMessage() {}
 
 func (x *ExtensionGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_ext_ext_proto_messageTypes[1].MessageOf(x)
+}
+
+func (m *ExtensionGroup) XXX_Methods() *protoiface.Methods {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[1].Methods()
 }
 
 // Deprecated: Use ExtensionGroup.ProtoReflect.Type instead.
@@ -149,6 +157,10 @@ func (x *ExtendingMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_ext_ext_proto_messageTypes[2].MessageOf(x)
 }
 
+func (m *ExtendingMessage) XXX_Methods() *protoiface.Methods {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[2].Methods()
+}
+
 // Deprecated: Use ExtendingMessage.ProtoReflect.Type instead.
 func (*ExtendingMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{2}
@@ -173,6 +185,10 @@ func (*RepeatedGroup) ProtoMessage() {}
 
 func (x *RepeatedGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_ext_ext_proto_messageTypes[3].MessageOf(x)
+}
+
+func (m *RepeatedGroup) XXX_Methods() *protoiface.Methods {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[3].Methods()
 }
 
 // Deprecated: Use RepeatedGroup.ProtoReflect.Type instead.
@@ -207,6 +223,10 @@ func (*Extendable) ProtoMessage() {}
 
 func (x *Extendable) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_ext_ext_proto_messageTypes[4].MessageOf(x)
+}
+
+func (m *Extendable) XXX_Methods() *protoiface.Methods {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[4].Methods()
 }
 
 // Deprecated: Use Extendable.ProtoReflect.Type instead.
@@ -244,6 +264,10 @@ func (x *MessageSetWireFormatExtension) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_ext_ext_proto_messageTypes[5].MessageOf(x)
 }
 
+func (m *MessageSetWireFormatExtension) XXX_Methods() *protoiface.Methods {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[5].Methods()
+}
+
 // Deprecated: Use MessageSetWireFormatExtension.ProtoReflect.Type instead.
 func (*MessageSetWireFormatExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{5}
@@ -269,6 +293,10 @@ func (x *Message_M) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_ext_ext_proto_messageTypes[6].MessageOf(x)
 }
 
+func (m *Message_M) XXX_Methods() *protoiface.Methods {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[6].Methods()
+}
+
 // Deprecated: Use Message_M.ProtoReflect.Type instead.
 func (*Message_M) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{0, 0}
@@ -292,6 +320,10 @@ func (*ExtendingMessage_ExtendingMessageSubmessage) ProtoMessage() {}
 
 func (x *ExtendingMessage_ExtendingMessageSubmessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_extensions_ext_ext_proto_messageTypes[7].MessageOf(x)
+}
+
+func (m *ExtendingMessage_ExtendingMessageSubmessage) XXX_Methods() *protoiface.Methods {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[7].Methods()
 }
 
 // Deprecated: Use ExtendingMessage_ExtendingMessageSubmessage.ProtoReflect.Type instead.

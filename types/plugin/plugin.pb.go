@@ -6,6 +6,7 @@ package plugin_proto
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	descriptor "github.com/golang/protobuf/v2/types/descriptor"
 	sync "sync"
@@ -38,6 +39,10 @@ func (*Version) ProtoMessage() {}
 
 func (x *Version) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *Version) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use Version.ProtoReflect.Type instead.
@@ -117,6 +122,10 @@ func (x *CodeGeneratorRequest) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[1].MessageOf(x)
 }
 
+func (m *CodeGeneratorRequest) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[1].Methods()
+}
+
 // Deprecated: Use CodeGeneratorRequest.ProtoReflect.Type instead.
 func (*CodeGeneratorRequest) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{1}
@@ -179,6 +188,10 @@ func (*CodeGeneratorResponse) ProtoMessage() {}
 
 func (x *CodeGeneratorResponse) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[2].MessageOf(x)
+}
+
+func (m *CodeGeneratorResponse) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[2].Methods()
 }
 
 // Deprecated: Use CodeGeneratorResponse.ProtoReflect.Type instead.
@@ -271,6 +284,10 @@ func (*CodeGeneratorResponse_File) ProtoMessage() {}
 
 func (x *CodeGeneratorResponse_File) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[3].MessageOf(x)
+}
+
+func (m *CodeGeneratorResponse_File) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[3].Methods()
 }
 
 // Deprecated: Use CodeGeneratorResponse_File.ProtoReflect.Type instead.

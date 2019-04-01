@@ -6,6 +6,7 @@ package known_proto
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -75,6 +76,10 @@ func (*Api) ProtoMessage() {}
 
 func (x *Api) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_api_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *Api) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_api_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use Api.ProtoReflect.Type instead.
@@ -164,6 +169,10 @@ func (*Method) ProtoMessage() {}
 
 func (x *Method) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_api_proto_messageTypes[1].MessageOf(x)
+}
+
+func (m *Method) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_api_proto_messageTypes[1].Methods()
 }
 
 // Deprecated: Use Method.ProtoReflect.Type instead.
@@ -321,6 +330,10 @@ func (*Mixin) ProtoMessage() {}
 
 func (x *Mixin) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_api_proto_messageTypes[2].MessageOf(x)
+}
+
+func (m *Mixin) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_api_proto_messageTypes[2].Methods()
 }
 
 // Deprecated: Use Mixin.ProtoReflect.Type instead.

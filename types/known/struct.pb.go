@@ -6,6 +6,7 @@ package known_proto
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -82,6 +83,10 @@ func (x *Struct) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_struct_proto_messageTypes[0].MessageOf(x)
 }
 
+func (m *Struct) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_struct_proto_messageTypes[0].Methods()
+}
+
 // Deprecated: Use Struct.ProtoReflect.Type instead.
 func (*Struct) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_struct_proto_rawDescGZIP(), []int{0}
@@ -136,6 +141,10 @@ func (*Value) ProtoMessage() {}
 
 func (x *Value) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_struct_proto_messageTypes[1].MessageOf(x)
+}
+
+func (m *Value) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_struct_proto_messageTypes[1].Methods()
 }
 
 // Deprecated: Use Value.ProtoReflect.Type instead.
@@ -269,6 +278,10 @@ func (*ListValue) ProtoMessage() {}
 
 func (x *ListValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_struct_proto_messageTypes[2].MessageOf(x)
+}
+
+func (m *ListValue) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_struct_proto_messageTypes[2].Methods()
 }
 
 // Deprecated: Use ListValue.ProtoReflect.Type instead.

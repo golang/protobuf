@@ -12,6 +12,7 @@ import (
 	"github.com/golang/protobuf/v2/internal/mapsort"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/runtime/protoiface"
 )
 
 // MarshalOptions configures the marshaler.
@@ -40,8 +41,14 @@ type MarshalOptions struct {
 	// detail and subject to change.
 	Deterministic bool
 
+	// Reflection forces use of the reflection-based encoder, even for
+	// messages which implement fast-path serialization.
+	Reflection bool
+
 	pragma.NoUnkeyedLiterals
 }
+
+var _ = protoiface.MarshalOptions(MarshalOptions{})
 
 // Marshal returns the wire-format encoding of m.
 func Marshal(m Message) ([]byte, error) {
@@ -50,13 +57,37 @@ func Marshal(m Message) ([]byte, error) {
 
 // Marshal returns the wire-format encoding of m.
 func (o MarshalOptions) Marshal(m Message) ([]byte, error) {
-	return o.marshalMessage(nil, m.ProtoReflect())
+	return o.MarshalAppend(nil, m)
 }
 
 // MarshalAppend appends the wire-format encoding of m to b,
 // returning the result.
 func (o MarshalOptions) MarshalAppend(b []byte, m Message) ([]byte, error) {
+	if b, err := o.marshalMessageFast(b, m); err != errInternalNoFast {
+		return b, err
+	}
 	return o.marshalMessage(b, m.ProtoReflect())
+}
+
+func (o MarshalOptions) marshalMessageFast(b []byte, m Message) ([]byte, error) {
+	if o.Reflection {
+		return nil, errInternalNoFast
+	}
+	methods := protoMethods(m)
+	if methods == nil ||
+		methods.MarshalAppend == nil ||
+		(o.Deterministic && methods.Flags&protoiface.MethodFlagDeterministicMarshal == 0) {
+		return nil, errInternalNoFast
+	}
+	if methods.Size != nil {
+		sz := methods.Size(m)
+		if cap(b) < len(b)+sz {
+			x := make([]byte, len(b), len(b)+sz)
+			copy(x, b)
+			b = x
+		}
+	}
+	return methods.MarshalAppend(b, m, protoiface.MarshalOptions(o))
 }
 
 func (o MarshalOptions) marshalMessage(b []byte, m protoreflect.Message) ([]byte, error) {

@@ -6,6 +6,7 @@ package proto2
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -329,6 +330,10 @@ func (x *EnumContainerMessage1) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_enum_proto_messageTypes[0].MessageOf(x)
 }
 
+func (m *EnumContainerMessage1) XXX_Methods() *protoiface.Methods {
+	return xxx_File_proto2_enum_proto_messageTypes[0].Methods()
+}
+
 // Deprecated: Use EnumContainerMessage1.ProtoReflect.Type instead.
 func (*EnumContainerMessage1) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_enum_proto_rawDescGZIP(), []int{0}
@@ -369,6 +374,10 @@ func (*EnumContainerMessage1_EnumContainerMessage2) ProtoMessage() {}
 
 func (x *EnumContainerMessage1_EnumContainerMessage2) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_enum_proto_messageTypes[1].MessageOf(x)
+}
+
+func (m *EnumContainerMessage1_EnumContainerMessage2) XXX_Methods() *protoiface.Methods {
+	return xxx_File_proto2_enum_proto_messageTypes[1].Methods()
 }
 
 // Deprecated: Use EnumContainerMessage1_EnumContainerMessage2.ProtoReflect.Type instead.

@@ -6,6 +6,7 @@ package proto3
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -100,6 +101,10 @@ func (*FieldTestMessage) ProtoMessage() {}
 
 func (x *FieldTestMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto3_fields_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *FieldTestMessage) XXX_Methods() *protoiface.Methods {
+	return xxx_File_proto3_fields_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use FieldTestMessage.ProtoReflect.Type instead.
@@ -384,6 +389,10 @@ func (*FieldTestMessage_Message) ProtoMessage() {}
 
 func (x *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto3_fields_proto_messageTypes[4].MessageOf(x)
+}
+
+func (m *FieldTestMessage_Message) XXX_Methods() *protoiface.Methods {
+	return xxx_File_proto3_fields_proto_messageTypes[4].Methods()
 }
 
 // Deprecated: Use FieldTestMessage_Message.ProtoReflect.Type instead.

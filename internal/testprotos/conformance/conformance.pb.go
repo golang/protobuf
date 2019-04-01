@@ -6,6 +6,7 @@ package conformance_proto
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -137,6 +138,10 @@ func (x *FailureSet) ProtoReflect() protoreflect.Message {
 	return xxx_File_conformance_conformance_proto_messageTypes[0].MessageOf(x)
 }
 
+func (m *FailureSet) XXX_Methods() *protoiface.Methods {
+	return xxx_File_conformance_conformance_proto_messageTypes[0].Methods()
+}
+
 // Deprecated: Use FailureSet.ProtoReflect.Type instead.
 func (*FailureSet) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{0}
@@ -199,6 +204,10 @@ func (*ConformanceRequest) ProtoMessage() {}
 
 func (x *ConformanceRequest) ProtoReflect() protoreflect.Message {
 	return xxx_File_conformance_conformance_proto_messageTypes[1].MessageOf(x)
+}
+
+func (m *ConformanceRequest) XXX_Methods() *protoiface.Methods {
+	return xxx_File_conformance_conformance_proto_messageTypes[1].Methods()
 }
 
 // Deprecated: Use ConformanceRequest.ProtoReflect.Type instead.
@@ -360,6 +369,10 @@ func (x *ConformanceResponse) ProtoReflect() protoreflect.Message {
 	return xxx_File_conformance_conformance_proto_messageTypes[2].MessageOf(x)
 }
 
+func (m *ConformanceResponse) XXX_Methods() *protoiface.Methods {
+	return xxx_File_conformance_conformance_proto_messageTypes[2].Methods()
+}
+
 // Deprecated: Use ConformanceResponse.ProtoReflect.Type instead.
 func (*ConformanceResponse) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{2}
@@ -515,6 +528,10 @@ func (*JspbEncodingConfig) ProtoMessage() {}
 
 func (x *JspbEncodingConfig) ProtoReflect() protoreflect.Message {
 	return xxx_File_conformance_conformance_proto_messageTypes[3].MessageOf(x)
+}
+
+func (m *JspbEncodingConfig) XXX_Methods() *protoiface.Methods {
+	return xxx_File_conformance_conformance_proto_messageTypes[3].Methods()
 }
 
 // Deprecated: Use JspbEncodingConfig.ProtoReflect.Type instead.

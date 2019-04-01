@@ -6,6 +6,7 @@ package annotations
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -78,6 +79,10 @@ func (*AnnotationsTestMessage) ProtoMessage() {}
 
 func (x *AnnotationsTestMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_annotations_annotations_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *AnnotationsTestMessage) XXX_Methods() *protoiface.Methods {
+	return xxx_File_annotations_annotations_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use AnnotationsTestMessage.ProtoReflect.Type instead.

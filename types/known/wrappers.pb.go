@@ -6,6 +6,7 @@ package known_proto
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -35,6 +36,10 @@ func (*DoubleValue) ProtoMessage() {}
 
 func (x *DoubleValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *DoubleValue) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use DoubleValue.ProtoReflect.Type instead.
@@ -76,6 +81,10 @@ func (x *FloatValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[1].MessageOf(x)
 }
 
+func (m *FloatValue) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[1].Methods()
+}
+
 // Deprecated: Use FloatValue.ProtoReflect.Type instead.
 func (*FloatValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{1}
@@ -113,6 +122,10 @@ func (*Int64Value) ProtoMessage() {}
 
 func (x *Int64Value) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[2].MessageOf(x)
+}
+
+func (m *Int64Value) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[2].Methods()
 }
 
 // Deprecated: Use Int64Value.ProtoReflect.Type instead.
@@ -154,6 +167,10 @@ func (x *UInt64Value) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[3].MessageOf(x)
 }
 
+func (m *UInt64Value) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[3].Methods()
+}
+
 // Deprecated: Use UInt64Value.ProtoReflect.Type instead.
 func (*UInt64Value) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{3}
@@ -191,6 +208,10 @@ func (*Int32Value) ProtoMessage() {}
 
 func (x *Int32Value) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[4].MessageOf(x)
+}
+
+func (m *Int32Value) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[4].Methods()
 }
 
 // Deprecated: Use Int32Value.ProtoReflect.Type instead.
@@ -232,6 +253,10 @@ func (x *UInt32Value) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[5].MessageOf(x)
 }
 
+func (m *UInt32Value) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[5].Methods()
+}
+
 // Deprecated: Use UInt32Value.ProtoReflect.Type instead.
 func (*UInt32Value) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{5}
@@ -269,6 +294,10 @@ func (*BoolValue) ProtoMessage() {}
 
 func (x *BoolValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[6].MessageOf(x)
+}
+
+func (m *BoolValue) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[6].Methods()
 }
 
 // Deprecated: Use BoolValue.ProtoReflect.Type instead.
@@ -310,6 +339,10 @@ func (x *StringValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[7].MessageOf(x)
 }
 
+func (m *StringValue) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[7].Methods()
+}
+
 // Deprecated: Use StringValue.ProtoReflect.Type instead.
 func (*StringValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{7}
@@ -347,6 +380,10 @@ func (*BytesValue) ProtoMessage() {}
 
 func (x *BytesValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_wrappers_proto_messageTypes[8].MessageOf(x)
+}
+
+func (m *BytesValue) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[8].Methods()
 }
 
 // Deprecated: Use BytesValue.ProtoReflect.Type instead.

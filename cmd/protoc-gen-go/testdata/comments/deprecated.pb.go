@@ -6,6 +6,7 @@ package comments
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -64,6 +65,10 @@ func (*DeprecatedMessage) ProtoMessage() {}
 
 func (x *DeprecatedMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_comments_deprecated_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *DeprecatedMessage) XXX_Methods() *protoiface.Methods {
+	return xxx_File_comments_deprecated_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use DeprecatedMessage.ProtoReflect.Type instead.

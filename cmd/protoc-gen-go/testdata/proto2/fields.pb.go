@@ -6,6 +6,7 @@ package proto2
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	math "math"
 	sync "sync"
@@ -187,6 +188,10 @@ func (*FieldTestMessage) ProtoMessage() {}
 
 func (x *FieldTestMessage) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[0].MessageOf(x)
+}
+
+func (m *FieldTestMessage) XXX_Methods() *protoiface.Methods {
+	return xxx_File_proto2_fields_proto_messageTypes[0].Methods()
 }
 
 // Deprecated: Use FieldTestMessage.ProtoReflect.Type instead.
@@ -1132,6 +1137,10 @@ func (x *FieldTestMessage_OptionalGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[1].MessageOf(x)
 }
 
+func (m *FieldTestMessage_OptionalGroup) XXX_Methods() *protoiface.Methods {
+	return xxx_File_proto2_fields_proto_messageTypes[1].Methods()
+}
+
 // Deprecated: Use FieldTestMessage_OptionalGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_OptionalGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawDescGZIP(), []int{0, 0}
@@ -1163,6 +1172,10 @@ func (*FieldTestMessage_RequiredGroup) ProtoMessage() {}
 
 func (x *FieldTestMessage_RequiredGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[2].MessageOf(x)
+}
+
+func (m *FieldTestMessage_RequiredGroup) XXX_Methods() *protoiface.Methods {
+	return xxx_File_proto2_fields_proto_messageTypes[2].Methods()
 }
 
 // Deprecated: Use FieldTestMessage_RequiredGroup.ProtoReflect.Type instead.
@@ -1198,6 +1211,10 @@ func (x *FieldTestMessage_RepeatedGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[3].MessageOf(x)
 }
 
+func (m *FieldTestMessage_RepeatedGroup) XXX_Methods() *protoiface.Methods {
+	return xxx_File_proto2_fields_proto_messageTypes[3].Methods()
+}
+
 // Deprecated: Use FieldTestMessage_RepeatedGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_RepeatedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawDescGZIP(), []int{0, 2}
@@ -1231,6 +1248,10 @@ func (x *FieldTestMessage_OneofGroup) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[7].MessageOf(x)
 }
 
+func (m *FieldTestMessage_OneofGroup) XXX_Methods() *protoiface.Methods {
+	return xxx_File_proto2_fields_proto_messageTypes[7].Methods()
+}
+
 // Deprecated: Use FieldTestMessage_OneofGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_OneofGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawDescGZIP(), []int{0, 6}
@@ -1261,6 +1282,10 @@ func (*FieldTestMessage_Message) ProtoMessage() {}
 
 func (x *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
 	return xxx_File_proto2_fields_proto_messageTypes[8].MessageOf(x)
+}
+
+func (m *FieldTestMessage_Message) XXX_Methods() *protoiface.Methods {
+	return xxx_File_proto2_fields_proto_messageTypes[8].Methods()
 }
 
 // Deprecated: Use FieldTestMessage_Message.ProtoReflect.Type instead.

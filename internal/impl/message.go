@@ -13,6 +13,7 @@ import (
 
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	piface "github.com/golang/protobuf/v2/runtime/protoiface"
 )
 
 // MessageType provides protobuf related functionality for a given Go type
@@ -148,6 +149,10 @@ func (mi *MessageType) MessageOf(p interface{}) pref.Message {
 	return (*messageReflectWrapper)(mi.dataTypeOf(p))
 }
 
+func (mi *MessageType) Methods() *piface.Methods {
+	return nil
+}
+
 func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
 	// TODO: Remove this check? This API is primarily used by generated code,
 	// and should not violate this assumption. Leave this check in for now to
@@ -212,6 +217,9 @@ type messageIfaceWrapper messageDataType
 
 func (m *messageIfaceWrapper) ProtoReflect() pref.Message {
 	return (*messageReflectWrapper)(m)
+}
+func (m *messageIfaceWrapper) XXX_Methods() *piface.Methods {
+	return m.mi.Methods()
 }
 func (m *messageIfaceWrapper) ProtoUnwrap() interface{} {
 	return m.p.AsIfaceOf(m.mi.GoType.Elem())

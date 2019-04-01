@@ -421,6 +421,10 @@ func (x *FileDescriptorSet) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[0].MessageOf(x)
 }
 
+func (m *FileDescriptorSet) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[0].Methods()
+}
+
 // Deprecated: Use FileDescriptorSet.ProtoReflect.Type instead.
 func (*FileDescriptorSet) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{0}
@@ -475,6 +479,10 @@ func (*FileDescriptorProto) ProtoMessage() {}
 
 func (x *FileDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[1].MessageOf(x)
+}
+
+func (m *FileDescriptorProto) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[1].Methods()
 }
 
 // Deprecated: Use FileDescriptorProto.ProtoReflect.Type instead.
@@ -599,6 +607,10 @@ func (x *DescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[2].MessageOf(x)
 }
 
+func (m *DescriptorProto) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[2].Methods()
+}
+
 // Deprecated: Use DescriptorProto.ProtoReflect.Type instead.
 func (*DescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{2}
@@ -697,6 +709,10 @@ func (x *ExtensionRangeOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[3].MessageOf(x)
 }
 
+func (m *ExtensionRangeOptions) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[3].Methods()
+}
+
 // Deprecated: Use ExtensionRangeOptions.ProtoReflect.Type instead.
 func (*ExtensionRangeOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{3}
@@ -767,6 +783,10 @@ func (*FieldDescriptorProto) ProtoMessage() {}
 
 func (x *FieldDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[4].MessageOf(x)
+}
+
+func (m *FieldDescriptorProto) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[4].Methods()
 }
 
 // Deprecated: Use FieldDescriptorProto.ProtoReflect.Type instead.
@@ -867,6 +887,10 @@ func (x *OneofDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[5].MessageOf(x)
 }
 
+func (m *OneofDescriptorProto) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[5].Methods()
+}
+
 // Deprecated: Use OneofDescriptorProto.ProtoReflect.Type instead.
 func (*OneofDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{5}
@@ -915,6 +939,10 @@ func (*EnumDescriptorProto) ProtoMessage() {}
 
 func (x *EnumDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[6].MessageOf(x)
+}
+
+func (m *EnumDescriptorProto) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[6].Methods()
 }
 
 // Deprecated: Use EnumDescriptorProto.ProtoReflect.Type instead.
@@ -981,6 +1009,10 @@ func (x *EnumValueDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[7].MessageOf(x)
 }
 
+func (m *EnumValueDescriptorProto) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[7].Methods()
+}
+
 // Deprecated: Use EnumValueDescriptorProto.ProtoReflect.Type instead.
 func (*EnumValueDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{7}
@@ -1029,6 +1061,10 @@ func (*ServiceDescriptorProto) ProtoMessage() {}
 
 func (x *ServiceDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[8].MessageOf(x)
+}
+
+func (m *ServiceDescriptorProto) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[8].Methods()
 }
 
 // Deprecated: Use ServiceDescriptorProto.ProtoReflect.Type instead.
@@ -1086,6 +1122,10 @@ func (*MethodDescriptorProto) ProtoMessage() {}
 
 func (x *MethodDescriptorProto) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[9].MessageOf(x)
+}
+
+func (m *MethodDescriptorProto) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[9].Methods()
 }
 
 // Deprecated: Use MethodDescriptorProto.ProtoReflect.Type instead.
@@ -1241,6 +1281,10 @@ func (*FileOptions) ProtoMessage() {}
 
 func (x *FileOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[10].MessageOf(x)
+}
+
+func (m *FileOptions) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[10].Methods()
 }
 
 // Deprecated: Use FileOptions.ProtoReflect.Type instead.
@@ -1488,6 +1532,10 @@ func (x *MessageOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[11].MessageOf(x)
 }
 
+func (m *MessageOptions) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[11].Methods()
+}
+
 // Deprecated: Use MessageOptions.ProtoReflect.Type instead.
 func (*MessageOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{11}
@@ -1623,6 +1671,10 @@ func (x *FieldOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[12].MessageOf(x)
 }
 
+func (m *FieldOptions) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[12].Methods()
+}
+
 // Deprecated: Use FieldOptions.ProtoReflect.Type instead.
 func (*FieldOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{12}
@@ -1715,6 +1767,10 @@ func (x *OneofOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[13].MessageOf(x)
 }
 
+func (m *OneofOptions) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[13].Methods()
+}
+
 // Deprecated: Use OneofOptions.ProtoReflect.Type instead.
 func (*OneofOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{13}
@@ -1765,6 +1821,10 @@ func (*EnumOptions) ProtoMessage() {}
 
 func (x *EnumOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[14].MessageOf(x)
+}
+
+func (m *EnumOptions) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[14].Methods()
 }
 
 // Deprecated: Use EnumOptions.ProtoReflect.Type instead.
@@ -1832,6 +1892,10 @@ func (x *EnumValueOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[15].MessageOf(x)
 }
 
+func (m *EnumValueOptions) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[15].Methods()
+}
+
 // Deprecated: Use EnumValueOptions.ProtoReflect.Type instead.
 func (*EnumValueOptions) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{15}
@@ -1888,6 +1952,10 @@ func (*ServiceOptions) ProtoMessage() {}
 
 func (x *ServiceOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[16].MessageOf(x)
+}
+
+func (m *ServiceOptions) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[16].Methods()
 }
 
 // Deprecated: Use ServiceOptions.ProtoReflect.Type instead.
@@ -1947,6 +2015,10 @@ func (*MethodOptions) ProtoMessage() {}
 
 func (x *MethodOptions) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[17].MessageOf(x)
+}
+
+func (m *MethodOptions) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[17].Methods()
 }
 
 // Deprecated: Use MethodOptions.ProtoReflect.Type instead.
@@ -2020,6 +2092,10 @@ func (*UninterpretedOption) ProtoMessage() {}
 
 func (x *UninterpretedOption) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[18].MessageOf(x)
+}
+
+func (m *UninterpretedOption) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[18].Methods()
 }
 
 // Deprecated: Use UninterpretedOption.ProtoReflect.Type instead.
@@ -2142,6 +2218,10 @@ func (x *SourceCodeInfo) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[19].MessageOf(x)
 }
 
+func (m *SourceCodeInfo) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[19].Methods()
+}
+
 // Deprecated: Use SourceCodeInfo.ProtoReflect.Type instead.
 func (*SourceCodeInfo) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{19}
@@ -2180,6 +2260,10 @@ func (x *GeneratedCodeInfo) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[20].MessageOf(x)
 }
 
+func (m *GeneratedCodeInfo) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[20].Methods()
+}
+
 // Deprecated: Use GeneratedCodeInfo.ProtoReflect.Type instead.
 func (*GeneratedCodeInfo) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{20}
@@ -2213,6 +2297,10 @@ func (*DescriptorProto_ExtensionRange) ProtoMessage() {}
 
 func (x *DescriptorProto_ExtensionRange) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[21].MessageOf(x)
+}
+
+func (m *DescriptorProto_ExtensionRange) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[21].Methods()
 }
 
 // Deprecated: Use DescriptorProto_ExtensionRange.ProtoReflect.Type instead.
@@ -2266,6 +2354,10 @@ func (x *DescriptorProto_ReservedRange) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[22].MessageOf(x)
 }
 
+func (m *DescriptorProto_ReservedRange) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[22].Methods()
+}
+
 // Deprecated: Use DescriptorProto_ReservedRange.ProtoReflect.Type instead.
 func (*DescriptorProto_ReservedRange) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{2, 1}
@@ -2313,6 +2405,10 @@ func (x *EnumDescriptorProto_EnumReservedRange) ProtoReflect() protoreflect.Mess
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[23].MessageOf(x)
 }
 
+func (m *EnumDescriptorProto_EnumReservedRange) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[23].Methods()
+}
+
 // Deprecated: Use EnumDescriptorProto_EnumReservedRange.ProtoReflect.Type instead.
 func (*EnumDescriptorProto_EnumReservedRange) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{6, 0}
@@ -2357,6 +2453,10 @@ func (*UninterpretedOption_NamePart) ProtoMessage() {}
 
 func (x *UninterpretedOption_NamePart) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[24].MessageOf(x)
+}
+
+func (m *UninterpretedOption_NamePart) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[24].Methods()
 }
 
 // Deprecated: Use UninterpretedOption_NamePart.ProtoReflect.Type instead.
@@ -2478,6 +2578,10 @@ func (x *SourceCodeInfo_Location) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[25].MessageOf(x)
 }
 
+func (m *SourceCodeInfo_Location) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[25].Methods()
+}
+
 // Deprecated: Use SourceCodeInfo_Location.ProtoReflect.Type instead.
 func (*SourceCodeInfo_Location) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{19, 0}
@@ -2548,6 +2652,10 @@ func (*GeneratedCodeInfo_Annotation) ProtoMessage() {}
 
 func (x *GeneratedCodeInfo_Annotation) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_descriptor_proto_messageTypes[26].MessageOf(x)
+}
+
+func (m *GeneratedCodeInfo_Annotation) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[26].Methods()
 }
 
 // Deprecated: Use GeneratedCodeInfo_Annotation.ProtoReflect.Type instead.

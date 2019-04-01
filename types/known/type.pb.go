@@ -6,6 +6,7 @@ package known_proto
 import (
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
+	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
 	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
 	sync "sync"
 )
@@ -238,6 +239,10 @@ func (x *Type) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_type_proto_messageTypes[0].MessageOf(x)
 }
 
+func (m *Type) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_type_proto_messageTypes[0].Methods()
+}
+
 // Deprecated: Use Type.ProtoReflect.Type instead.
 func (*Type) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{0}
@@ -326,6 +331,10 @@ func (*Field) ProtoMessage() {}
 
 func (x *Field) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_type_proto_messageTypes[1].MessageOf(x)
+}
+
+func (m *Field) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_type_proto_messageTypes[1].Methods()
 }
 
 // Deprecated: Use Field.ProtoReflect.Type instead.
@@ -434,6 +443,10 @@ func (x *Enum) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_type_proto_messageTypes[2].MessageOf(x)
 }
 
+func (m *Enum) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_type_proto_messageTypes[2].Methods()
+}
+
 // Deprecated: Use Enum.ProtoReflect.Type instead.
 func (*Enum) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{2}
@@ -501,6 +514,10 @@ func (x *EnumValue) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_type_proto_messageTypes[3].MessageOf(x)
 }
 
+func (m *EnumValue) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_type_proto_messageTypes[3].Methods()
+}
+
 // Deprecated: Use EnumValue.ProtoReflect.Type instead.
 func (*EnumValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{3}
@@ -557,6 +574,10 @@ func (*Option) ProtoMessage() {}
 
 func (x *Option) ProtoReflect() protoreflect.Message {
 	return xxx_File_google_protobuf_type_proto_messageTypes[4].MessageOf(x)
+}
+
+func (m *Option) XXX_Methods() *protoiface.Methods {
+	return xxx_File_google_protobuf_type_proto_messageTypes[4].Methods()
 }
 
 // Deprecated: Use Option.ProtoReflect.Type instead.

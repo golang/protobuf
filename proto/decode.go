@@ -10,6 +10,7 @@ import (
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/runtime/protoiface"
 )
 
 // UnmarshalOptions configures the unmarshaler.
@@ -20,8 +21,14 @@ type UnmarshalOptions struct {
 	// If DiscardUnknown is set, unknown fields are ignored.
 	DiscardUnknown bool
 
+	// Reflection forces use of the reflection-based decoder, even for
+	// messages which implement fast-path deserialization.
+	Reflection bool
+
 	pragma.NoUnkeyedLiterals
 }
+
+var _ = protoiface.UnmarshalOptions(UnmarshalOptions{})
 
 // Unmarshal parses the wire-format message in b and places the result in m.
 func Unmarshal(b []byte, m Message) error {
@@ -31,7 +38,21 @@ func Unmarshal(b []byte, m Message) error {
 // Unmarshal parses the wire-format message in b and places the result in m.
 func (o UnmarshalOptions) Unmarshal(b []byte, m Message) error {
 	// TODO: Reset m?
+	if err := o.unmarshalMessageFast(b, m); err != errInternalNoFast {
+		return err
+	}
 	return o.unmarshalMessage(b, m.ProtoReflect())
+}
+
+func (o UnmarshalOptions) unmarshalMessageFast(b []byte, m Message) error {
+	if o.Reflection {
+		return errInternalNoFast
+	}
+	methods := protoMethods(m)
+	if methods == nil || methods.Unmarshal == nil {
+		return errInternalNoFast
+	}
+	return methods.Unmarshal(b, m, protoiface.UnmarshalOptions(o))
 }
 
 func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) error {

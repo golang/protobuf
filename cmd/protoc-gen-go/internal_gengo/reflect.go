@@ -265,6 +265,9 @@ func genReflectMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 	g.P("return ", typesVar, "[", idx, "].MessageOf(x)")
 	g.P("}")
 	g.P()
+	g.P("func (m *", message.GoIdent, ") XXX_Methods() *", protoifacePackage.Ident("Methods"), " {")
+	g.P("return ", typesVar, "[", idx, "].Methods()")
+	g.P("}")
 }
 
 func rawDescVarName(f *fileInfo) string {
