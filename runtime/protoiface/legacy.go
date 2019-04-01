@@ -51,7 +51,7 @@ type ExtensionDescV1 struct {
 	// Field is the field number of the extension.
 	//
 	// Deprecated: Use Type.Number instead.
-	Field int32 // field number
+	Field int32
 
 	// Name is the fully qualified name of extension.
 	//
