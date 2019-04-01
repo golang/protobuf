@@ -163,7 +163,7 @@ func (d *Decoder) parseNext() (value Value, n int, err error) {
 
 	in := d.in
 	if len(in) == 0 {
-		return d.newValue(EOF, nil, nil), 0, nil
+		return d.newValue(nil, EOF), 0, nil
 	}
 
 	switch in[0] {
@@ -174,11 +174,11 @@ func (d *Decoder) parseNext() (value Value, n int, err error) {
 		}
 		switch in[0] {
 		case 'n':
-			return d.newValue(Null, in[:n], nil), n, nil
+			return d.newValue(in[:n], Null), n, nil
 		case 't':
-			return d.newValue(Bool, in[:n], true), n, nil
+			return d.newBoolValue(in[:n], true), n, nil
 		case 'f':
-			return d.newValue(Bool, in[:n], false), n, nil
+			return d.newBoolValue(in[:n], false), n, nil
 		}
 
 	case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -186,7 +186,7 @@ func (d *Decoder) parseNext() (value Value, n int, err error) {
 		if !ok {
 			return Value{}, 0, d.newSyntaxError("invalid number %s", errRegexp.Find(in))
 		}
-		return d.newValue(Number, in[:n], nil), n, nil
+		return d.newValue(in[:n], Number), n, nil
 
 	case '"':
 		var nerr errors.NonFatal
@@ -194,22 +194,22 @@ func (d *Decoder) parseNext() (value Value, n int, err error) {
 		if !nerr.Merge(err) {
 			return Value{}, 0, err
 		}
-		return d.newValue(String, in[:n], s), n, nerr.E
+		return d.newStringValue(in[:n], s), n, nerr.E
 
 	case '{':
-		return d.newValue(StartObject, in[:1], nil), 1, nil
+		return d.newValue(in[:1], StartObject), 1, nil
 
 	case '}':
-		return d.newValue(EndObject, in[:1], nil), 1, nil
+		return d.newValue(in[:1], EndObject), 1, nil
 
 	case '[':
-		return d.newValue(StartArray, in[:1], nil), 1, nil
+		return d.newValue(in[:1], StartArray), 1, nil
 
 	case ']':
-		return d.newValue(EndArray, in[:1], nil), 1, nil
+		return d.newValue(in[:1], EndArray), 1, nil
 
 	case ',':
-		return d.newValue(comma, in[:1], nil), 1, nil
+		return d.newValue(in[:1], comma), 1, nil
 	}
 	return Value{}, 0, d.newSyntaxError("invalid value %s", errRegexp.Find(in))
 }
@@ -288,30 +288,53 @@ func (d *Decoder) isValueNext() bool {
 		d.value.typ, start))
 }
 
-// newValue constructs a Value.
-func (d *Decoder) newValue(typ Type, input []byte, value interface{}) Value {
+// newValue constructs a Value for given Type.
+func (d *Decoder) newValue(input []byte, typ Type) Value {
 	line, column := d.position()
 	return Value{
 		input:  input,
 		line:   line,
 		column: column,
 		typ:    typ,
-		value:  value,
+	}
+}
+
+// newBoolValue constructs a Value for a JSON boolean.
+func (d *Decoder) newBoolValue(input []byte, b bool) Value {
+	line, column := d.position()
+	return Value{
+		input:  input,
+		line:   line,
+		column: column,
+		typ:    Bool,
+		boo:    b,
+	}
+}
+
+// newStringValue constructs a Value for a JSON string.
+func (d *Decoder) newStringValue(input []byte, s string) Value {
+	line, column := d.position()
+	return Value{
+		input:  input,
+		line:   line,
+		column: column,
+		typ:    String,
+		str:    s,
 	}
 }
 
 // Value contains a JSON type and value parsed from calling Decoder.Read.
+// For JSON boolean and string, it holds the converted value in boo and str
+// fields respectively. For JSON number, input field holds a valid number which
+// is converted only in Int or Float. Other JSON types do not require any
+// additional data.
 type Value struct {
 	input  []byte
 	line   int
 	column int
 	typ    Type
-	// value will be set to the following Go type based on the type field:
-	//    Bool   => bool
-	//    String => string
-	//    Name   => string
-	// It will be nil if none of the above.
-	value interface{}
+	boo    bool
+	str    string
 }
 
 func (v Value) newError(f string, x ...interface{}) error {
@@ -334,7 +357,7 @@ func (v Value) Bool() (bool, error) {
 	if v.typ != Bool {
 		return false, v.newError("%s is not a bool", v.input)
 	}
-	return v.value.(bool), nil
+	return v.boo, nil
 }
 
 // String returns the string value for a JSON string token or the read value in
@@ -343,7 +366,7 @@ func (v Value) String() string {
 	if v.typ != String {
 		return string(v.input)
 	}
-	return v.value.(string)
+	return v.str
 }
 
 // Name returns the object name if token is Name, else it will return an error.
@@ -351,7 +374,7 @@ func (v Value) Name() (string, error) {
 	if v.typ != Name {
 		return "", v.newError("%s is not an object name", v.input)
 	}
-	return v.value.(string), nil
+	return v.str, nil
 }
 
 // Float returns the floating-point number if token is Number, else it will
