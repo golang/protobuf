@@ -9,18 +9,26 @@ import (
 	"math"
 	"reflect"
 
+	"google.golang.org/protobuf/internal/encoding/wire"
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type fieldInfo struct {
-	// TODO: specialize marshal and unmarshal functions?
-
+	// These fields are used for protobuf reflection support.
 	has        func(pointer) bool
 	get        func(pointer) pref.Value
 	set        func(pointer, pref.Value)
 	clear      func(pointer)
 	newMessage func() pref.Message
+
+	// These fields are used for fast-path functions.
+	funcs     pointerCoderFuncs // fast-path per-field functions
+	num       pref.FieldNumber  // field number
+	offset    offset            // struct field offset
+	wiretag   uint64            // field tag (number + wire type)
+	tagsize   int               // size of the varint-encoded tag
+	isPointer bool              // true if IsNil may be called on the struct field
 }
 
 func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot reflect.Type) fieldInfo {
@@ -82,6 +90,8 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 			// This is only valid for messages and panics for other kinds.
 			return conv.MessageType.New()
 		},
+		offset:    fieldOffset,
+		isPointer: true,
 	}
 }
 
@@ -92,6 +102,7 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 	}
 	keyConv := pvalue.NewLegacyConverter(ft.Key(), fd.MapKey().Kind(), legacyWrapper)
 	valConv := pvalue.NewLegacyConverter(ft.Elem(), fd.MapValue().Kind(), legacyWrapper)
+	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
@@ -118,6 +129,11 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
+		funcs:     encoderFuncsForMap(fd, ft),
+		offset:    fieldOffset,
+		wiretag:   wiretag,
+		tagsize:   wire.SizeVarint(wiretag),
+		isPointer: true,
 	}
 }
 
@@ -127,6 +143,12 @@ func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 		panic(fmt.Sprintf("invalid type: got %v, want slice kind", ft))
 	}
 	conv := pvalue.NewLegacyConverter(ft.Elem(), fd.Kind(), legacyWrapper)
+	var wiretag uint64
+	if !fd.IsPacked() {
+		wiretag = wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
+	} else {
+		wiretag = wire.EncodeTag(fd.Number(), wire.BytesType)
+	}
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
@@ -153,6 +175,11 @@ func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
+		funcs:     fieldCoder(fd, ft),
+		offset:    fieldOffset,
+		wiretag:   wiretag,
+		tagsize:   wire.SizeVarint(wiretag),
+		isPointer: true,
 	}
 }
 
@@ -160,6 +187,7 @@ var emptyBytes = reflect.ValueOf([]byte{})
 
 func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
 	ft := fs.Type
+	funcs := fieldCoder(fd, ft)
 	nullable := fd.Syntax() == pref.Proto2
 	if nullable {
 		if ft.Kind() != reflect.Ptr && ft.Kind() != reflect.Slice {
@@ -171,6 +199,7 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 	}
 	conv := pvalue.NewLegacyConverter(ft, fd.Kind(), legacyWrapper)
 	fieldOffset := offsetOf(fs)
+	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
 		has: func(p pointer) bool {
@@ -228,6 +257,11 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
+		funcs:     funcs,
+		offset:    fieldOffset,
+		isPointer: nullable,
+		wiretag:   wiretag,
+		tagsize:   wire.SizeVarint(wiretag),
 	}
 }
 
@@ -236,6 +270,7 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 	conv := pvalue.NewLegacyConverter(ft, fd.Kind(), legacyWrapper)
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
+	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
 	return fieldInfo{
 		has: func(p pointer) bool {
 			if p.IsNil() {
@@ -268,6 +303,11 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 		newMessage: func() pref.Message {
 			return conv.MessageType.New()
 		},
+		funcs:     fieldCoder(fd, ft),
+		offset:    fieldOffset,
+		isPointer: true,
+		wiretag:   wiretag,
+		tagsize:   wire.SizeVarint(wiretag),
 	}
 }
 

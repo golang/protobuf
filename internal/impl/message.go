@@ -7,9 +7,11 @@ package impl
 import (
 	"fmt"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
@@ -28,29 +30,102 @@ type MessageType struct {
 	// Once set, this field must never be mutated.
 	PBType pref.MessageType
 
-	once sync.Once // protects all unexported fields
+	initMu   sync.Mutex // protects all unexported fields
+	initDone uint32
 
-	// TODO: Split fields into dense and sparse maps similar to the current
-	// table-driven implementation in v1?
-	fields map[pref.FieldNumber]*fieldInfo
+	// Keep a separate slice of fields for efficient field encoding in tag order
+	// and because iterating over a slice is substantially faster than a map.
+	fields        map[pref.FieldNumber]*fieldInfo
+	fieldsOrdered []*fieldInfo
+
 	oneofs map[pref.Name]*oneofInfo
 
 	unknownFields   func(*messageDataType) pref.UnknownFields
 	extensionFields func(*messageDataType) pref.KnownFields
+	methods         piface.Methods
+
+	extensionOffset       offset
+	sizecacheOffset       offset
+	unknownOffset         offset
+	extensionFieldInfosMu sync.RWMutex
+	extensionFieldInfos   map[*piface.ExtensionDescV1]*extensionFieldInfo
+}
+
+var prefMessageType = reflect.TypeOf((*pref.Message)(nil)).Elem()
+
+// getMessageType returns the MessageType (if any) for a type.
+//
+// We find the MessageType by calling the ProtoReflect method on the type's
+// zero value and looking at the returned type to see if it is a
+// messageReflectWrapper. Note that the MessageType may still be uninitialized
+// at this point.
+func getMessageType(mt reflect.Type) (mi *MessageType, ok bool) {
+	method, ok := mt.MethodByName("ProtoReflect")
+	if !ok {
+		return nil, false
+	}
+	if method.Type.NumIn() != 1 || method.Type.NumOut() != 1 || method.Type.Out(0) != prefMessageType {
+		return nil, false
+	}
+	ret := reflect.Zero(mt).Method(method.Index).Call(nil)
+	m, ok := ret[0].Elem().Interface().(*messageReflectWrapper)
+	if !ok {
+		return nil, ok
+	}
+	return m.mi, true
 }
 
 func (mi *MessageType) init() {
-	mi.once.Do(func() {
-		t := mi.GoType
-		if t.Kind() != reflect.Ptr && t.Elem().Kind() != reflect.Struct {
-			panic(fmt.Sprintf("got %v, want *struct kind", t))
-		}
+	// This function is called in the hot path. Inline the sync.Once
+	// logic, since allocating a closure for Once.Do is expensive.
+	// Keep init small to ensure that it can be inlined.
+	if atomic.LoadUint32(&mi.initDone) == 1 {
+		return
+	}
+	mi.initOnce()
+}
 
-		si := mi.makeStructInfo(t.Elem())
-		mi.makeKnownFieldsFunc(si)
-		mi.makeUnknownFieldsFunc(t.Elem())
-		mi.makeExtensionFieldsFunc(t.Elem())
-	})
+func (mi *MessageType) initOnce() {
+	mi.initMu.Lock()
+	defer mi.initMu.Unlock()
+	if mi.initDone == 1 {
+		return
+	}
+
+	t := mi.GoType
+	if t.Kind() != reflect.Ptr && t.Elem().Kind() != reflect.Struct {
+		panic(fmt.Sprintf("got %v, want *struct kind", t))
+	}
+
+	si := mi.makeStructInfo(t.Elem())
+	mi.makeKnownFieldsFunc(si)
+	mi.makeUnknownFieldsFunc(t.Elem())
+	mi.makeExtensionFieldsFunc(t.Elem())
+	mi.makeMethods(t.Elem())
+
+	atomic.StoreUint32(&mi.initDone, 1)
+}
+
+var sizecacheType = reflect.TypeOf(int32(0))
+
+func (mi *MessageType) makeMethods(t reflect.Type) {
+	mi.extensionOffset = invalidOffset
+	if fx, _ := t.FieldByName("XXX_InternalExtensions"); fx.Type == extType {
+		mi.extensionOffset = offsetOf(fx)
+	} else if fx, _ = t.FieldByName("XXX_extensions"); fx.Type == extType {
+		mi.extensionOffset = offsetOf(fx)
+	}
+	mi.sizecacheOffset = invalidOffset
+	if fx, _ := t.FieldByName("XXX_sizecache"); fx.Type == sizecacheType {
+		mi.sizecacheOffset = offsetOf(fx)
+	}
+	mi.unknownOffset = invalidOffset
+	if fx, _ := t.FieldByName("XXX_unrecognized"); fx.Type == bytesType {
+		mi.unknownOffset = offsetOf(fx)
+	}
+	mi.methods.Flags = piface.MethodFlagDeterministicMarshal
+	mi.methods.MarshalAppend = mi.marshalAppend
+	mi.methods.Size = mi.size
 }
 
 type structInfo struct {
@@ -113,6 +188,7 @@ fieldLoop:
 // any discrepancies.
 func (mi *MessageType) makeKnownFieldsFunc(si structInfo) {
 	mi.fields = map[pref.FieldNumber]*fieldInfo{}
+	mi.fieldsOrdered = make([]*fieldInfo, 0, mi.PBType.Fields().Len())
 	for i := 0; i < mi.PBType.Descriptor().Fields().Len(); i++ {
 		fd := mi.PBType.Descriptor().Fields().Get(i)
 		fs := si.fieldsByNumber[fd.Number()]
@@ -120,6 +196,16 @@ func (mi *MessageType) makeKnownFieldsFunc(si structInfo) {
 		switch {
 		case fd.ContainingOneof() != nil:
 			fi = fieldInfoForOneof(fd, si.oneofsByName[fd.ContainingOneof().Name()], si.oneofWrappersByNumber[fd.Number()])
+			// There is one fieldInfo for each proto message field, but only one struct
+			// field for all message fields in a oneof. We install the encoder functions
+			// on the fieldInfo for the first field in the oneof.
+			//
+			// A slightly simpler approach would be to have each fieldInfo's encoder
+			// handle the case where that field is set, but this would require more
+			// checks  against the current oneof type than a single map lookup.
+			if fd.ContainingOneof().Fields().Get(0).Name() == fd.Name() {
+				fi.funcs = makeOneofFieldCoder(si.oneofsByName[fd.ContainingOneof().Name()], fd.ContainingOneof(), si.fieldsByNumber, si.oneofWrappersByNumber)
+			}
 		case fd.IsMap():
 			fi = fieldInfoForMap(fd, fs)
 		case fd.IsList():
@@ -129,8 +215,13 @@ func (mi *MessageType) makeKnownFieldsFunc(si structInfo) {
 		default:
 			fi = fieldInfoForScalar(fd, fs)
 		}
+		fi.num = fd.Number()
 		mi.fields[fd.Number()] = &fi
+		mi.fieldsOrdered = append(mi.fieldsOrdered, &fi)
 	}
+	sort.Slice(mi.fieldsOrdered, func(i, j int) bool {
+		return mi.fieldsOrdered[i].num < mi.fieldsOrdered[j].num
+	})
 
 	mi.oneofs = map[pref.Name]*oneofInfo{}
 	for i := 0; i < mi.PBType.Descriptor().Oneofs().Len(); i++ {
@@ -164,7 +255,8 @@ func (mi *MessageType) MessageOf(p interface{}) pref.Message {
 }
 
 func (mi *MessageType) Methods() *piface.Methods {
-	return nil
+	mi.init()
+	return &mi.methods
 }
 
 func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
@@ -230,7 +322,6 @@ func (m *messageReflectWrapper) Interface() pref.ProtoMessage {
 func (m *messageReflectWrapper) ProtoUnwrap() interface{} {
 	return m.p.AsIfaceOf(m.mi.GoType.Elem())
 }
-func (m *messageReflectWrapper) ProtoMutable() {}
 
 var _ pvalue.Unwrapper = (*messageReflectWrapper)(nil)
 
@@ -240,10 +331,22 @@ func (m *messageIfaceWrapper) ProtoReflect() pref.Message {
 	return (*messageReflectWrapper)(m)
 }
 func (m *messageIfaceWrapper) XXX_Methods() *piface.Methods {
-	return m.mi.Methods()
+	// TODO: Consider not recreating this on every call.
+	m.mi.init()
+	return &piface.Methods{
+		Flags:         piface.MethodFlagDeterministicMarshal,
+		MarshalAppend: m.marshalAppend,
+		Size:          m.size,
+	}
 }
 func (m *messageIfaceWrapper) ProtoUnwrap() interface{} {
 	return m.p.AsIfaceOf(m.mi.GoType.Elem())
+}
+func (m *messageIfaceWrapper) marshalAppend(b []byte, _ pref.ProtoMessage, opts piface.MarshalOptions) ([]byte, error) {
+	return m.mi.marshalAppendPointer(b, m.p, newMarshalOptions(opts))
+}
+func (m *messageIfaceWrapper) size(msg pref.ProtoMessage) (size int) {
+	return m.mi.sizePointer(m.p, 0)
 }
 
 type knownFields messageDataType

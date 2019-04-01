@@ -4,7 +4,10 @@
 
 package main
 
-import "text/template"
+import (
+	"strings"
+	"text/template"
+)
 
 type WireType string
 
@@ -27,11 +30,64 @@ func (w WireType) Packable() bool {
 	return w == WireVarint || w == WireFixed32 || w == WireFixed64
 }
 
+func (w WireType) ConstSize() bool {
+	return w == WireFixed32 || w == WireFixed64
+}
+
+type GoType string
+
+const (
+	GoBool    = "bool"
+	GoInt32   = "int32"
+	GoUint32  = "uint32"
+	GoInt64   = "int64"
+	GoUint64  = "uint64"
+	GoFloat32 = "float32"
+	GoFloat64 = "float64"
+	GoString  = "string"
+	GoBytes   = "[]byte"
+)
+
+func (g GoType) Zero() Expr {
+	switch g {
+	case GoBool:
+		return "false"
+	case GoString:
+		return `""`
+	case GoBytes:
+		return "nil"
+	}
+	return "0"
+}
+
+// Kind is the reflect.Kind of the type.
+func (g GoType) Kind() Expr {
+	if g == "" || g == GoBytes {
+		return ""
+	}
+	return "reflect." + Expr(strings.ToUpper(string(g[:1]))+string(g[1:]))
+}
+
+// PointerMethod is the "internal/impl".pointer method used to access a pointer to this type.
+func (g GoType) PointerMethod() Expr {
+	if g == GoBytes {
+		return "Bytes"
+	}
+	return Expr(strings.ToUpper(string(g[:1])) + string(g[1:]))
+}
+
 type ProtoKind struct {
-	Name      string
-	WireType  WireType
+	Name     string
+	WireType WireType
+
+	// Conversions to/from protoreflect.Value.
 	ToValue   Expr
 	FromValue Expr
+
+	// Conversions to/from generated structures.
+	GoType     GoType
+	FromGoType Expr
+	NoPointer  bool
 }
 
 func (k ProtoKind) Expr() Expr {
@@ -40,10 +96,12 @@ func (k ProtoKind) Expr() Expr {
 
 var ProtoKinds = []ProtoKind{
 	{
-		Name:      "Bool",
-		WireType:  WireVarint,
-		ToValue:   "wire.DecodeBool(v)",
-		FromValue: "wire.EncodeBool(v.Bool())",
+		Name:       "Bool",
+		WireType:   WireVarint,
+		ToValue:    "wire.DecodeBool(v)",
+		FromValue:  "wire.EncodeBool(v.Bool())",
+		GoType:     GoBool,
+		FromGoType: "wire.EncodeBool(v)",
 	},
 	{
 		Name:      "Enum",
@@ -52,88 +110,117 @@ var ProtoKinds = []ProtoKind{
 		FromValue: "uint64(v.Enum())",
 	},
 	{
-		Name:      "Int32",
-		WireType:  WireVarint,
-		ToValue:   "int32(v)",
-		FromValue: "uint64(int32(v.Int()))",
+		Name:       "Int32",
+		WireType:   WireVarint,
+		ToValue:    "int32(v)",
+		FromValue:  "uint64(int32(v.Int()))",
+		GoType:     GoInt32,
+		FromGoType: "uint64(v)",
 	},
 	{
-		Name:      "Sint32",
-		WireType:  WireVarint,
-		ToValue:   "int32(wire.DecodeZigZag(v & math.MaxUint32))",
-		FromValue: "wire.EncodeZigZag(int64(int32(v.Int())))",
+		Name:       "Sint32",
+		WireType:   WireVarint,
+		ToValue:    "int32(wire.DecodeZigZag(v & math.MaxUint32))",
+		FromValue:  "wire.EncodeZigZag(int64(int32(v.Int())))",
+		GoType:     GoInt32,
+		FromGoType: "wire.EncodeZigZag(int64(v))",
 	},
 	{
-		Name:      "Uint32",
-		WireType:  WireVarint,
-		ToValue:   "uint32(v)",
-		FromValue: "uint64(uint32(v.Uint()))",
+		Name:       "Uint32",
+		WireType:   WireVarint,
+		ToValue:    "uint32(v)",
+		FromValue:  "uint64(uint32(v.Uint()))",
+		GoType:     GoUint32,
+		FromGoType: "uint64(v)",
 	},
 	{
-		Name:      "Int64",
-		WireType:  WireVarint,
-		ToValue:   "int64(v)",
-		FromValue: "uint64(v.Int())",
+		Name:       "Int64",
+		WireType:   WireVarint,
+		ToValue:    "int64(v)",
+		FromValue:  "uint64(v.Int())",
+		GoType:     GoInt64,
+		FromGoType: "uint64(v)",
 	},
 	{
-		Name:      "Sint64",
-		WireType:  WireVarint,
-		ToValue:   "wire.DecodeZigZag(v)",
-		FromValue: "wire.EncodeZigZag(v.Int())",
+		Name:       "Sint64",
+		WireType:   WireVarint,
+		ToValue:    "wire.DecodeZigZag(v)",
+		FromValue:  "wire.EncodeZigZag(v.Int())",
+		GoType:     GoInt64,
+		FromGoType: "wire.EncodeZigZag(v)",
 	},
 	{
-		Name:      "Uint64",
-		WireType:  WireVarint,
-		ToValue:   "v",
-		FromValue: "v.Uint()",
+		Name:       "Uint64",
+		WireType:   WireVarint,
+		ToValue:    "v",
+		FromValue:  "v.Uint()",
+		GoType:     GoUint64,
+		FromGoType: "v",
 	},
 	{
-		Name:      "Sfixed32",
-		WireType:  WireFixed32,
-		ToValue:   "int32(v)",
-		FromValue: "uint32(v.Int())",
+		Name:       "Sfixed32",
+		WireType:   WireFixed32,
+		ToValue:    "int32(v)",
+		FromValue:  "uint32(v.Int())",
+		GoType:     GoInt32,
+		FromGoType: "uint32(v)",
 	},
 	{
-		Name:      "Fixed32",
-		WireType:  WireFixed32,
-		ToValue:   "uint32(v)",
-		FromValue: "uint32(v.Uint())",
+		Name:       "Fixed32",
+		WireType:   WireFixed32,
+		ToValue:    "uint32(v)",
+		FromValue:  "uint32(v.Uint())",
+		GoType:     GoUint32,
+		FromGoType: "v",
 	},
 	{
-		Name:      "Float",
-		WireType:  WireFixed32,
-		ToValue:   "math.Float32frombits(uint32(v))",
-		FromValue: "math.Float32bits(float32(v.Float()))",
+		Name:       "Float",
+		WireType:   WireFixed32,
+		ToValue:    "math.Float32frombits(uint32(v))",
+		FromValue:  "math.Float32bits(float32(v.Float()))",
+		GoType:     GoFloat32,
+		FromGoType: "math.Float32bits(v)",
 	},
 	{
-		Name:      "Sfixed64",
-		WireType:  WireFixed64,
-		ToValue:   "int64(v)",
-		FromValue: "uint64(v.Int())",
+		Name:       "Sfixed64",
+		WireType:   WireFixed64,
+		ToValue:    "int64(v)",
+		FromValue:  "uint64(v.Int())",
+		GoType:     GoInt64,
+		FromGoType: "uint64(v)",
 	},
 	{
-		Name:      "Fixed64",
-		WireType:  WireFixed64,
-		ToValue:   "v",
-		FromValue: "v.Uint()",
+		Name:       "Fixed64",
+		WireType:   WireFixed64,
+		ToValue:    "v",
+		FromValue:  "v.Uint()",
+		GoType:     GoUint64,
+		FromGoType: "v",
 	},
 	{
-		Name:      "Double",
-		WireType:  WireFixed64,
-		ToValue:   "math.Float64frombits(v)",
-		FromValue: "math.Float64bits(v.Float())",
+		Name:       "Double",
+		WireType:   WireFixed64,
+		ToValue:    "math.Float64frombits(v)",
+		FromValue:  "math.Float64bits(v.Float())",
+		GoType:     GoFloat64,
+		FromGoType: "math.Float64bits(v)",
 	},
 	{
-		Name:      "String",
-		WireType:  WireBytes,
-		ToValue:   "string(v)",
-		FromValue: "[]byte(v.String())",
+		Name:       "String",
+		WireType:   WireBytes,
+		ToValue:    "string(v)",
+		FromValue:  "[]byte(v.String())",
+		GoType:     GoString,
+		FromGoType: "[]byte(v)",
 	},
 	{
-		Name:      "Bytes",
-		WireType:  WireBytes,
-		ToValue:   "append(([]byte)(nil), v...)",
-		FromValue: "v.Bytes()",
+		Name:       "Bytes",
+		WireType:   WireBytes,
+		ToValue:    "append(([]byte)(nil), v...)",
+		FromValue:  "v.Bytes()",
+		GoType:     GoBytes,
+		FromGoType: "v",
+		NoPointer:  true,
 	},
 	{
 		Name:      "Message",

@@ -85,6 +85,10 @@ func (o MarshalOptions) Marshal(m Message) ([]byte, error) {
 // MarshalAppend appends the wire-format encoding of m to b,
 // returning the result.
 func (o MarshalOptions) MarshalAppend(b []byte, m Message) ([]byte, error) {
+	// Set AllowPartial in recursive calls to marshal to avoid duplicating
+	// effort with the single initialization check below.
+	allowPartial := o.AllowPartial
+	o.AllowPartial = true
 	out, err := o.marshalMessageFast(b, m)
 	if err == errInternalNoFast {
 		out, err = o.marshalMessage(b, m.ProtoReflect())
@@ -93,7 +97,7 @@ func (o MarshalOptions) MarshalAppend(b []byte, m Message) ([]byte, error) {
 	if !nerr.Merge(err) {
 		return out, err
 	}
-	if !o.AllowPartial {
+	if !allowPartial {
 		nerr.Merge(IsInitialized(m))
 	}
 	return out, nerr.E

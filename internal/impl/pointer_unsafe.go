@@ -20,6 +20,15 @@ func offsetOf(f reflect.StructField) offset {
 	return offset(f.Offset)
 }
 
+// IsValid reports whether the offset is valid.
+func (f offset) IsValid() bool { return f != invalidOffset }
+
+// invalidOffset is an invalid field offset.
+var invalidOffset = ^offset(0)
+
+// zeroOffset is a noop when calling pointer.Apply.
+var zeroOffset = offset(0)
+
 // pointer is a pointer to a message struct or field.
 type pointer struct{ p unsafe.Pointer }
 
@@ -62,4 +71,45 @@ func (p pointer) AsValueOf(t reflect.Type) reflect.Value {
 func (p pointer) AsIfaceOf(t reflect.Type) interface{} {
 	// TODO: Use tricky unsafe magic to directly create ifaceHeader.
 	return p.AsValueOf(t).Interface()
+}
+
+func (p pointer) Bool() *bool                     { return (*bool)(p.p) }
+func (p pointer) BoolPtr() **bool                 { return (**bool)(p.p) }
+func (p pointer) BoolSlice() *[]bool              { return (*[]bool)(p.p) }
+func (p pointer) Int32() *int32                   { return (*int32)(p.p) }
+func (p pointer) Int32Ptr() **int32               { return (**int32)(p.p) }
+func (p pointer) Int32Slice() *[]int32            { return (*[]int32)(p.p) }
+func (p pointer) Int64() *int64                   { return (*int64)(p.p) }
+func (p pointer) Int64Ptr() **int64               { return (**int64)(p.p) }
+func (p pointer) Int64Slice() *[]int64            { return (*[]int64)(p.p) }
+func (p pointer) Uint32() *uint32                 { return (*uint32)(p.p) }
+func (p pointer) Uint32Ptr() **uint32             { return (**uint32)(p.p) }
+func (p pointer) Uint32Slice() *[]uint32          { return (*[]uint32)(p.p) }
+func (p pointer) Uint64() *uint64                 { return (*uint64)(p.p) }
+func (p pointer) Uint64Ptr() **uint64             { return (**uint64)(p.p) }
+func (p pointer) Uint64Slice() *[]uint64          { return (*[]uint64)(p.p) }
+func (p pointer) Float32() *float32               { return (*float32)(p.p) }
+func (p pointer) Float32Ptr() **float32           { return (**float32)(p.p) }
+func (p pointer) Float32Slice() *[]float32        { return (*[]float32)(p.p) }
+func (p pointer) Float64() *float64               { return (*float64)(p.p) }
+func (p pointer) Float64Ptr() **float64           { return (**float64)(p.p) }
+func (p pointer) Float64Slice() *[]float64        { return (*[]float64)(p.p) }
+func (p pointer) String() *string                 { return (*string)(p.p) }
+func (p pointer) StringPtr() **string             { return (**string)(p.p) }
+func (p pointer) StringSlice() *[]string          { return (*[]string)(p.p) }
+func (p pointer) Bytes() *[]byte                  { return (*[]byte)(p.p) }
+func (p pointer) BytesSlice() *[][]byte           { return (*[][]byte)(p.p) }
+func (p pointer) Extensions() *legacyExtensionMap { return (*legacyExtensionMap)(p.p) }
+
+func (p pointer) Elem() pointer {
+	return pointer{p: *(*unsafe.Pointer)(p.p)}
+}
+
+// PointerSlice loads []*T from p as a []pointer.
+// The value returned is aliased with the original slice.
+// This behavior differs from the implementation in pointer_reflect.go.
+func (p pointer) PointerSlice() []pointer {
+	// Super-tricky - p should point to a []*T where T is a
+	// message type. We load it as []pointer.
+	return *(*[]pointer)(p.p)
 }
