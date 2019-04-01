@@ -20,21 +20,28 @@ type A1M1 struct {
 	XXX_sizecache        int32        `json:"-"`
 }
 
-func (m *A1M1) ProtoReflect() protoreflect.Message {
-	return xxx_File_imports_test_import_a1m1_proto_messageTypes[0].MessageOf(m)
+func (x *A1M1) Reset() {
+	*x = A1M1{}
 }
-func (m *A1M1) Reset()         { *m = A1M1{} }
-func (m *A1M1) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*A1M1) ProtoMessage()    {}
+
+func (x *A1M1) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*A1M1) ProtoMessage() {}
+
+func (x *A1M1) ProtoReflect() protoreflect.Message {
+	return xxx_File_imports_test_import_a1m1_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use A1M1.ProtoReflect.Type instead.
 func (*A1M1) Descriptor() ([]byte, []int) {
 	return xxx_File_imports_test_import_a1m1_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *A1M1) GetF() *test_a_1.M1 {
-	if m != nil {
-		return m.F
+func (x *A1M1) GetF() *test_a_1.M1 {
+	if x != nil {
+		return x.F
 	}
 	return nil
 }

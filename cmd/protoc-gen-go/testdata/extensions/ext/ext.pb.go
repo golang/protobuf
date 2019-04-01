@@ -21,13 +21,6 @@ const (
 	Enum_ZERO Enum = 0
 )
 
-func (e Enum) Type() protoreflect.EnumType {
-	return xxx_File_extensions_ext_ext_proto_enumTypes[0]
-}
-func (e Enum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0: "ZERO",
@@ -44,6 +37,14 @@ func (x Enum) Enum() *Enum {
 
 func (x Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Enum) Type() protoreflect.EnumType {
+	return xxx_File_extensions_ext_ext_proto_enumTypes[0]
+}
+
+func (x Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -68,21 +69,28 @@ type Message struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_ext_ext_proto_messageTypes[0].MessageOf(m)
+func (x *Message) Reset() {
+	*x = Message{}
 }
-func (m *Message) Reset()         { *m = Message{} }
-func (m *Message) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message) ProtoMessage()    {}
+
+func (x *Message) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message) ProtoMessage() {}
+
+func (x *Message) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Message) GetData() []byte {
-	if m != nil {
-		return m.Data
+func (x *Message) GetData() []byte {
+	if x != nil {
+		return x.Data
 	}
 	return nil
 }
@@ -94,21 +102,28 @@ type ExtensionGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ExtensionGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_ext_ext_proto_messageTypes[1].MessageOf(m)
+func (x *ExtensionGroup) Reset() {
+	*x = ExtensionGroup{}
 }
-func (m *ExtensionGroup) Reset()         { *m = ExtensionGroup{} }
-func (m *ExtensionGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ExtensionGroup) ProtoMessage()    {}
+
+func (x *ExtensionGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExtensionGroup) ProtoMessage() {}
+
+func (x *ExtensionGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use ExtensionGroup.ProtoReflect.Type instead.
 func (*ExtensionGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{1}
 }
 
-func (m *ExtensionGroup) GetExtensionGroup() string {
-	if m != nil && m.ExtensionGroup != nil {
-		return *m.ExtensionGroup
+func (x *ExtensionGroup) GetExtensionGroup() string {
+	if x != nil && x.ExtensionGroup != nil {
+		return *x.ExtensionGroup
 	}
 	return ""
 }
@@ -120,12 +135,19 @@ type ExtendingMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ExtendingMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_ext_ext_proto_messageTypes[2].MessageOf(m)
+func (x *ExtendingMessage) Reset() {
+	*x = ExtendingMessage{}
 }
-func (m *ExtendingMessage) Reset()         { *m = ExtendingMessage{} }
-func (m *ExtendingMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ExtendingMessage) ProtoMessage()    {}
+
+func (x *ExtendingMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExtendingMessage) ProtoMessage() {}
+
+func (x *ExtendingMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use ExtendingMessage.ProtoReflect.Type instead.
 func (*ExtendingMessage) Descriptor() ([]byte, []int) {
@@ -139,21 +161,28 @@ type RepeatedGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *RepeatedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_ext_ext_proto_messageTypes[3].MessageOf(m)
+func (x *RepeatedGroup) Reset() {
+	*x = RepeatedGroup{}
 }
-func (m *RepeatedGroup) Reset()         { *m = RepeatedGroup{} }
-func (m *RepeatedGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*RepeatedGroup) ProtoMessage()    {}
+
+func (x *RepeatedGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RepeatedGroup) ProtoMessage() {}
+
+func (x *RepeatedGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use RepeatedGroup.ProtoReflect.Type instead.
 func (*RepeatedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_ext_ext_proto_rawDescGZIP(), []int{3}
 }
 
-func (m *RepeatedGroup) GetRepeatedXGroup() []string {
-	if m != nil {
-		return m.RepeatedXGroup
+func (x *RepeatedGroup) GetRepeatedXGroup() []string {
+	if x != nil {
+		return x.RepeatedXGroup
 	}
 	return nil
 }
@@ -166,12 +195,19 @@ type Extendable struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *Extendable) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_ext_ext_proto_messageTypes[4].MessageOf(m)
+func (x *Extendable) Reset() {
+	*x = Extendable{}
 }
-func (m *Extendable) Reset()         { *m = Extendable{} }
-func (m *Extendable) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Extendable) ProtoMessage()    {}
+
+func (x *Extendable) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Extendable) ProtoMessage() {}
+
+func (x *Extendable) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[4].MessageOf(x)
+}
 
 // Deprecated: Use Extendable.ProtoReflect.Type instead.
 func (*Extendable) Descriptor() ([]byte, []int) {
@@ -194,12 +230,19 @@ type MessageSetWireFormatExtension struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *MessageSetWireFormatExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_ext_ext_proto_messageTypes[5].MessageOf(m)
+func (x *MessageSetWireFormatExtension) Reset() {
+	*x = MessageSetWireFormatExtension{}
 }
-func (m *MessageSetWireFormatExtension) Reset()         { *m = MessageSetWireFormatExtension{} }
-func (m *MessageSetWireFormatExtension) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*MessageSetWireFormatExtension) ProtoMessage()    {}
+
+func (x *MessageSetWireFormatExtension) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MessageSetWireFormatExtension) ProtoMessage() {}
+
+func (x *MessageSetWireFormatExtension) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[5].MessageOf(x)
+}
 
 // Deprecated: Use MessageSetWireFormatExtension.ProtoReflect.Type instead.
 func (*MessageSetWireFormatExtension) Descriptor() ([]byte, []int) {
@@ -212,12 +255,19 @@ type Message_M struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message_M) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_ext_ext_proto_messageTypes[6].MessageOf(m)
+func (x *Message_M) Reset() {
+	*x = Message_M{}
 }
-func (m *Message_M) Reset()         { *m = Message_M{} }
-func (m *Message_M) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message_M) ProtoMessage()    {}
+
+func (x *Message_M) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message_M) ProtoMessage() {}
+
+func (x *Message_M) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[6].MessageOf(x)
+}
 
 // Deprecated: Use Message_M.ProtoReflect.Type instead.
 func (*Message_M) Descriptor() ([]byte, []int) {
@@ -230,16 +280,19 @@ type ExtendingMessage_ExtendingMessageSubmessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ExtendingMessage_ExtendingMessageSubmessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_ext_ext_proto_messageTypes[7].MessageOf(m)
+func (x *ExtendingMessage_ExtendingMessageSubmessage) Reset() {
+	*x = ExtendingMessage_ExtendingMessageSubmessage{}
 }
-func (m *ExtendingMessage_ExtendingMessageSubmessage) Reset() {
-	*m = ExtendingMessage_ExtendingMessageSubmessage{}
+
+func (x *ExtendingMessage_ExtendingMessageSubmessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
 }
-func (m *ExtendingMessage_ExtendingMessageSubmessage) String() string {
-	return protoimpl.X.MessageStringOf(m)
-}
+
 func (*ExtendingMessage_ExtendingMessageSubmessage) ProtoMessage() {}
+
+func (x *ExtendingMessage_ExtendingMessageSubmessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_ext_ext_proto_messageTypes[7].MessageOf(x)
+}
 
 // Deprecated: Use ExtendingMessage_ExtendingMessageSubmessage.ProtoReflect.Type instead.
 func (*ExtendingMessage_ExtendingMessageSubmessage) Descriptor() ([]byte, []int) {

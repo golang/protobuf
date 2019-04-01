@@ -48,13 +48,6 @@ const (
 	FieldDescriptorProto_TYPE_SINT64   FieldDescriptorProto_Type = 18
 )
 
-func (e FieldDescriptorProto_Type) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_descriptor_proto_enumTypes[0]
-}
-func (e FieldDescriptorProto_Type) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use FieldDescriptorProto_Type.Type.Values instead.
 var FieldDescriptorProto_Type_name = map[int32]string{
 	1:  "TYPE_DOUBLE",
@@ -107,6 +100,14 @@ func (x FieldDescriptorProto_Type) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+func (FieldDescriptorProto_Type) Type() protoreflect.EnumType {
+	return xxx_File_google_protobuf_descriptor_proto_enumTypes[0]
+}
+
+func (x FieldDescriptorProto_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 // Deprecated: Do not use.
 func (x *FieldDescriptorProto_Type) UnmarshalJSON(b []byte) error {
 	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
@@ -131,13 +132,6 @@ const (
 	FieldDescriptorProto_LABEL_REPEATED FieldDescriptorProto_Label = 3
 )
 
-func (e FieldDescriptorProto_Label) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_descriptor_proto_enumTypes[1]
-}
-func (e FieldDescriptorProto_Label) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use FieldDescriptorProto_Label.Type.Values instead.
 var FieldDescriptorProto_Label_name = map[int32]string{
 	1: "LABEL_OPTIONAL",
@@ -158,6 +152,14 @@ func (x FieldDescriptorProto_Label) Enum() *FieldDescriptorProto_Label {
 
 func (x FieldDescriptorProto_Label) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (FieldDescriptorProto_Label) Type() protoreflect.EnumType {
+	return xxx_File_google_protobuf_descriptor_proto_enumTypes[1]
+}
+
+func (x FieldDescriptorProto_Label) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -185,13 +187,6 @@ const (
 	FileOptions_LITE_RUNTIME FileOptions_OptimizeMode = 3
 )
 
-func (e FileOptions_OptimizeMode) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_descriptor_proto_enumTypes[2]
-}
-func (e FileOptions_OptimizeMode) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use FileOptions_OptimizeMode.Type.Values instead.
 var FileOptions_OptimizeMode_name = map[int32]string{
 	1: "SPEED",
@@ -212,6 +207,14 @@ func (x FileOptions_OptimizeMode) Enum() *FileOptions_OptimizeMode {
 
 func (x FileOptions_OptimizeMode) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (FileOptions_OptimizeMode) Type() protoreflect.EnumType {
+	return xxx_File_google_protobuf_descriptor_proto_enumTypes[2]
+}
+
+func (x FileOptions_OptimizeMode) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -238,13 +241,6 @@ const (
 	FieldOptions_STRING_PIECE FieldOptions_CType = 2
 )
 
-func (e FieldOptions_CType) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_descriptor_proto_enumTypes[3]
-}
-func (e FieldOptions_CType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use FieldOptions_CType.Type.Values instead.
 var FieldOptions_CType_name = map[int32]string{
 	0: "STRING",
@@ -265,6 +261,14 @@ func (x FieldOptions_CType) Enum() *FieldOptions_CType {
 
 func (x FieldOptions_CType) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (FieldOptions_CType) Type() protoreflect.EnumType {
+	return xxx_File_google_protobuf_descriptor_proto_enumTypes[3]
+}
+
+func (x FieldOptions_CType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -293,13 +297,6 @@ const (
 	FieldOptions_JS_NUMBER FieldOptions_JSType = 2
 )
 
-func (e FieldOptions_JSType) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_descriptor_proto_enumTypes[4]
-}
-func (e FieldOptions_JSType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use FieldOptions_JSType.Type.Values instead.
 var FieldOptions_JSType_name = map[int32]string{
 	0: "JS_NORMAL",
@@ -320,6 +317,14 @@ func (x FieldOptions_JSType) Enum() *FieldOptions_JSType {
 
 func (x FieldOptions_JSType) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (FieldOptions_JSType) Type() protoreflect.EnumType {
+	return xxx_File_google_protobuf_descriptor_proto_enumTypes[4]
+}
+
+func (x FieldOptions_JSType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -348,13 +353,6 @@ const (
 	MethodOptions_IDEMPOTENT          MethodOptions_IdempotencyLevel = 2
 )
 
-func (e MethodOptions_IdempotencyLevel) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_descriptor_proto_enumTypes[5]
-}
-func (e MethodOptions_IdempotencyLevel) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use MethodOptions_IdempotencyLevel.Type.Values instead.
 var MethodOptions_IdempotencyLevel_name = map[int32]string{
 	0: "IDEMPOTENCY_UNKNOWN",
@@ -375,6 +373,14 @@ func (x MethodOptions_IdempotencyLevel) Enum() *MethodOptions_IdempotencyLevel {
 
 func (x MethodOptions_IdempotencyLevel) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (MethodOptions_IdempotencyLevel) Type() protoreflect.EnumType {
+	return xxx_File_google_protobuf_descriptor_proto_enumTypes[5]
+}
+
+func (x MethodOptions_IdempotencyLevel) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -401,21 +407,28 @@ type FileDescriptorSet struct {
 	XXX_sizecache        int32                  `json:"-"`
 }
 
-func (m *FileDescriptorSet) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[0].MessageOf(m)
+func (x *FileDescriptorSet) Reset() {
+	*x = FileDescriptorSet{}
 }
-func (m *FileDescriptorSet) Reset()         { *m = FileDescriptorSet{} }
-func (m *FileDescriptorSet) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FileDescriptorSet) ProtoMessage()    {}
+
+func (x *FileDescriptorSet) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FileDescriptorSet) ProtoMessage() {}
+
+func (x *FileDescriptorSet) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use FileDescriptorSet.ProtoReflect.Type instead.
 func (*FileDescriptorSet) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *FileDescriptorSet) GetFile() []*FileDescriptorProto {
-	if m != nil {
-		return m.File
+func (x *FileDescriptorSet) GetFile() []*FileDescriptorProto {
+	if x != nil {
+		return x.File
 	}
 	return nil
 }
@@ -450,98 +463,105 @@ type FileDescriptorProto struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FileDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[1].MessageOf(m)
+func (x *FileDescriptorProto) Reset() {
+	*x = FileDescriptorProto{}
 }
-func (m *FileDescriptorProto) Reset()         { *m = FileDescriptorProto{} }
-func (m *FileDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FileDescriptorProto) ProtoMessage()    {}
+
+func (x *FileDescriptorProto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FileDescriptorProto) ProtoMessage() {}
+
+func (x *FileDescriptorProto) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use FileDescriptorProto.ProtoReflect.Type instead.
 func (*FileDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{1}
 }
 
-func (m *FileDescriptorProto) GetName() string {
-	if m != nil && m.Name != nil {
-		return *m.Name
+func (x *FileDescriptorProto) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
 	}
 	return ""
 }
 
-func (m *FileDescriptorProto) GetPackage() string {
-	if m != nil && m.Package != nil {
-		return *m.Package
+func (x *FileDescriptorProto) GetPackage() string {
+	if x != nil && x.Package != nil {
+		return *x.Package
 	}
 	return ""
 }
 
-func (m *FileDescriptorProto) GetDependency() []string {
-	if m != nil {
-		return m.Dependency
+func (x *FileDescriptorProto) GetDependency() []string {
+	if x != nil {
+		return x.Dependency
 	}
 	return nil
 }
 
-func (m *FileDescriptorProto) GetPublicDependency() []int32 {
-	if m != nil {
-		return m.PublicDependency
+func (x *FileDescriptorProto) GetPublicDependency() []int32 {
+	if x != nil {
+		return x.PublicDependency
 	}
 	return nil
 }
 
-func (m *FileDescriptorProto) GetWeakDependency() []int32 {
-	if m != nil {
-		return m.WeakDependency
+func (x *FileDescriptorProto) GetWeakDependency() []int32 {
+	if x != nil {
+		return x.WeakDependency
 	}
 	return nil
 }
 
-func (m *FileDescriptorProto) GetMessageType() []*DescriptorProto {
-	if m != nil {
-		return m.MessageType
+func (x *FileDescriptorProto) GetMessageType() []*DescriptorProto {
+	if x != nil {
+		return x.MessageType
 	}
 	return nil
 }
 
-func (m *FileDescriptorProto) GetEnumType() []*EnumDescriptorProto {
-	if m != nil {
-		return m.EnumType
+func (x *FileDescriptorProto) GetEnumType() []*EnumDescriptorProto {
+	if x != nil {
+		return x.EnumType
 	}
 	return nil
 }
 
-func (m *FileDescriptorProto) GetService() []*ServiceDescriptorProto {
-	if m != nil {
-		return m.Service
+func (x *FileDescriptorProto) GetService() []*ServiceDescriptorProto {
+	if x != nil {
+		return x.Service
 	}
 	return nil
 }
 
-func (m *FileDescriptorProto) GetExtension() []*FieldDescriptorProto {
-	if m != nil {
-		return m.Extension
+func (x *FileDescriptorProto) GetExtension() []*FieldDescriptorProto {
+	if x != nil {
+		return x.Extension
 	}
 	return nil
 }
 
-func (m *FileDescriptorProto) GetOptions() *FileOptions {
-	if m != nil {
-		return m.Options
+func (x *FileDescriptorProto) GetOptions() *FileOptions {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
 
-func (m *FileDescriptorProto) GetSourceCodeInfo() *SourceCodeInfo {
-	if m != nil {
-		return m.SourceCodeInfo
+func (x *FileDescriptorProto) GetSourceCodeInfo() *SourceCodeInfo {
+	if x != nil {
+		return x.SourceCodeInfo
 	}
 	return nil
 }
 
-func (m *FileDescriptorProto) GetSyntax() string {
-	if m != nil && m.Syntax != nil {
-		return *m.Syntax
+func (x *FileDescriptorProto) GetSyntax() string {
+	if x != nil && x.Syntax != nil {
+		return *x.Syntax
 	}
 	return ""
 }
@@ -565,84 +585,91 @@ type DescriptorProto struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[2].MessageOf(m)
+func (x *DescriptorProto) Reset() {
+	*x = DescriptorProto{}
 }
-func (m *DescriptorProto) Reset()         { *m = DescriptorProto{} }
-func (m *DescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*DescriptorProto) ProtoMessage()    {}
+
+func (x *DescriptorProto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DescriptorProto) ProtoMessage() {}
+
+func (x *DescriptorProto) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use DescriptorProto.ProtoReflect.Type instead.
 func (*DescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{2}
 }
 
-func (m *DescriptorProto) GetName() string {
-	if m != nil && m.Name != nil {
-		return *m.Name
+func (x *DescriptorProto) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
 	}
 	return ""
 }
 
-func (m *DescriptorProto) GetField() []*FieldDescriptorProto {
-	if m != nil {
-		return m.Field
+func (x *DescriptorProto) GetField() []*FieldDescriptorProto {
+	if x != nil {
+		return x.Field
 	}
 	return nil
 }
 
-func (m *DescriptorProto) GetExtension() []*FieldDescriptorProto {
-	if m != nil {
-		return m.Extension
+func (x *DescriptorProto) GetExtension() []*FieldDescriptorProto {
+	if x != nil {
+		return x.Extension
 	}
 	return nil
 }
 
-func (m *DescriptorProto) GetNestedType() []*DescriptorProto {
-	if m != nil {
-		return m.NestedType
+func (x *DescriptorProto) GetNestedType() []*DescriptorProto {
+	if x != nil {
+		return x.NestedType
 	}
 	return nil
 }
 
-func (m *DescriptorProto) GetEnumType() []*EnumDescriptorProto {
-	if m != nil {
-		return m.EnumType
+func (x *DescriptorProto) GetEnumType() []*EnumDescriptorProto {
+	if x != nil {
+		return x.EnumType
 	}
 	return nil
 }
 
-func (m *DescriptorProto) GetExtensionRange() []*DescriptorProto_ExtensionRange {
-	if m != nil {
-		return m.ExtensionRange
+func (x *DescriptorProto) GetExtensionRange() []*DescriptorProto_ExtensionRange {
+	if x != nil {
+		return x.ExtensionRange
 	}
 	return nil
 }
 
-func (m *DescriptorProto) GetOneofDecl() []*OneofDescriptorProto {
-	if m != nil {
-		return m.OneofDecl
+func (x *DescriptorProto) GetOneofDecl() []*OneofDescriptorProto {
+	if x != nil {
+		return x.OneofDecl
 	}
 	return nil
 }
 
-func (m *DescriptorProto) GetOptions() *MessageOptions {
-	if m != nil {
-		return m.Options
+func (x *DescriptorProto) GetOptions() *MessageOptions {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
 
-func (m *DescriptorProto) GetReservedRange() []*DescriptorProto_ReservedRange {
-	if m != nil {
-		return m.ReservedRange
+func (x *DescriptorProto) GetReservedRange() []*DescriptorProto_ReservedRange {
+	if x != nil {
+		return x.ReservedRange
 	}
 	return nil
 }
 
-func (m *DescriptorProto) GetReservedName() []string {
-	if m != nil {
-		return m.ReservedName
+func (x *DescriptorProto) GetReservedName() []string {
+	if x != nil {
+		return x.ReservedName
 	}
 	return nil
 }
@@ -656,12 +683,19 @@ type ExtensionRangeOptions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *ExtensionRangeOptions) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[3].MessageOf(m)
+func (x *ExtensionRangeOptions) Reset() {
+	*x = ExtensionRangeOptions{}
 }
-func (m *ExtensionRangeOptions) Reset()         { *m = ExtensionRangeOptions{} }
-func (m *ExtensionRangeOptions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ExtensionRangeOptions) ProtoMessage()    {}
+
+func (x *ExtensionRangeOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExtensionRangeOptions) ProtoMessage() {}
+
+func (x *ExtensionRangeOptions) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use ExtensionRangeOptions.ProtoReflect.Type instead.
 func (*ExtensionRangeOptions) Descriptor() ([]byte, []int) {
@@ -677,9 +711,9 @@ func (*ExtensionRangeOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV
 	return extRange_ExtensionRangeOptions
 }
 
-func (m *ExtensionRangeOptions) GetUninterpretedOption() []*UninterpretedOption {
-	if m != nil {
-		return m.UninterpretedOption
+func (x *ExtensionRangeOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if x != nil {
+		return x.UninterpretedOption
 	}
 	return nil
 }
@@ -721,84 +755,91 @@ type FieldDescriptorProto struct {
 	XXX_sizecache        int32         `json:"-"`
 }
 
-func (m *FieldDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[4].MessageOf(m)
+func (x *FieldDescriptorProto) Reset() {
+	*x = FieldDescriptorProto{}
 }
-func (m *FieldDescriptorProto) Reset()         { *m = FieldDescriptorProto{} }
-func (m *FieldDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldDescriptorProto) ProtoMessage()    {}
+
+func (x *FieldDescriptorProto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldDescriptorProto) ProtoMessage() {}
+
+func (x *FieldDescriptorProto) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[4].MessageOf(x)
+}
 
 // Deprecated: Use FieldDescriptorProto.ProtoReflect.Type instead.
 func (*FieldDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{4}
 }
 
-func (m *FieldDescriptorProto) GetName() string {
-	if m != nil && m.Name != nil {
-		return *m.Name
+func (x *FieldDescriptorProto) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
 	}
 	return ""
 }
 
-func (m *FieldDescriptorProto) GetNumber() int32 {
-	if m != nil && m.Number != nil {
-		return *m.Number
+func (x *FieldDescriptorProto) GetNumber() int32 {
+	if x != nil && x.Number != nil {
+		return *x.Number
 	}
 	return 0
 }
 
-func (m *FieldDescriptorProto) GetLabel() FieldDescriptorProto_Label {
-	if m != nil && m.Label != nil {
-		return *m.Label
+func (x *FieldDescriptorProto) GetLabel() FieldDescriptorProto_Label {
+	if x != nil && x.Label != nil {
+		return *x.Label
 	}
 	return FieldDescriptorProto_LABEL_OPTIONAL
 }
 
-func (m *FieldDescriptorProto) GetType() FieldDescriptorProto_Type {
-	if m != nil && m.Type != nil {
-		return *m.Type
+func (x *FieldDescriptorProto) GetType() FieldDescriptorProto_Type {
+	if x != nil && x.Type != nil {
+		return *x.Type
 	}
 	return FieldDescriptorProto_TYPE_DOUBLE
 }
 
-func (m *FieldDescriptorProto) GetTypeName() string {
-	if m != nil && m.TypeName != nil {
-		return *m.TypeName
+func (x *FieldDescriptorProto) GetTypeName() string {
+	if x != nil && x.TypeName != nil {
+		return *x.TypeName
 	}
 	return ""
 }
 
-func (m *FieldDescriptorProto) GetExtendee() string {
-	if m != nil && m.Extendee != nil {
-		return *m.Extendee
+func (x *FieldDescriptorProto) GetExtendee() string {
+	if x != nil && x.Extendee != nil {
+		return *x.Extendee
 	}
 	return ""
 }
 
-func (m *FieldDescriptorProto) GetDefaultValue() string {
-	if m != nil && m.DefaultValue != nil {
-		return *m.DefaultValue
+func (x *FieldDescriptorProto) GetDefaultValue() string {
+	if x != nil && x.DefaultValue != nil {
+		return *x.DefaultValue
 	}
 	return ""
 }
 
-func (m *FieldDescriptorProto) GetOneofIndex() int32 {
-	if m != nil && m.OneofIndex != nil {
-		return *m.OneofIndex
+func (x *FieldDescriptorProto) GetOneofIndex() int32 {
+	if x != nil && x.OneofIndex != nil {
+		return *x.OneofIndex
 	}
 	return 0
 }
 
-func (m *FieldDescriptorProto) GetJsonName() string {
-	if m != nil && m.JsonName != nil {
-		return *m.JsonName
+func (x *FieldDescriptorProto) GetJsonName() string {
+	if x != nil && x.JsonName != nil {
+		return *x.JsonName
 	}
 	return ""
 }
 
-func (m *FieldDescriptorProto) GetOptions() *FieldOptions {
-	if m != nil {
-		return m.Options
+func (x *FieldDescriptorProto) GetOptions() *FieldOptions {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
@@ -812,28 +853,35 @@ type OneofDescriptorProto struct {
 	XXX_sizecache        int32         `json:"-"`
 }
 
-func (m *OneofDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[5].MessageOf(m)
+func (x *OneofDescriptorProto) Reset() {
+	*x = OneofDescriptorProto{}
 }
-func (m *OneofDescriptorProto) Reset()         { *m = OneofDescriptorProto{} }
-func (m *OneofDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*OneofDescriptorProto) ProtoMessage()    {}
+
+func (x *OneofDescriptorProto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OneofDescriptorProto) ProtoMessage() {}
+
+func (x *OneofDescriptorProto) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[5].MessageOf(x)
+}
 
 // Deprecated: Use OneofDescriptorProto.ProtoReflect.Type instead.
 func (*OneofDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{5}
 }
 
-func (m *OneofDescriptorProto) GetName() string {
-	if m != nil && m.Name != nil {
-		return *m.Name
+func (x *OneofDescriptorProto) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
 	}
 	return ""
 }
 
-func (m *OneofDescriptorProto) GetOptions() *OneofOptions {
-	if m != nil {
-		return m.Options
+func (x *OneofDescriptorProto) GetOptions() *OneofOptions {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
@@ -855,49 +903,56 @@ type EnumDescriptorProto struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EnumDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[6].MessageOf(m)
+func (x *EnumDescriptorProto) Reset() {
+	*x = EnumDescriptorProto{}
 }
-func (m *EnumDescriptorProto) Reset()         { *m = EnumDescriptorProto{} }
-func (m *EnumDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*EnumDescriptorProto) ProtoMessage()    {}
+
+func (x *EnumDescriptorProto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EnumDescriptorProto) ProtoMessage() {}
+
+func (x *EnumDescriptorProto) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[6].MessageOf(x)
+}
 
 // Deprecated: Use EnumDescriptorProto.ProtoReflect.Type instead.
 func (*EnumDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{6}
 }
 
-func (m *EnumDescriptorProto) GetName() string {
-	if m != nil && m.Name != nil {
-		return *m.Name
+func (x *EnumDescriptorProto) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
 	}
 	return ""
 }
 
-func (m *EnumDescriptorProto) GetValue() []*EnumValueDescriptorProto {
-	if m != nil {
-		return m.Value
+func (x *EnumDescriptorProto) GetValue() []*EnumValueDescriptorProto {
+	if x != nil {
+		return x.Value
 	}
 	return nil
 }
 
-func (m *EnumDescriptorProto) GetOptions() *EnumOptions {
-	if m != nil {
-		return m.Options
+func (x *EnumDescriptorProto) GetOptions() *EnumOptions {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
 
-func (m *EnumDescriptorProto) GetReservedRange() []*EnumDescriptorProto_EnumReservedRange {
-	if m != nil {
-		return m.ReservedRange
+func (x *EnumDescriptorProto) GetReservedRange() []*EnumDescriptorProto_EnumReservedRange {
+	if x != nil {
+		return x.ReservedRange
 	}
 	return nil
 }
 
-func (m *EnumDescriptorProto) GetReservedName() []string {
-	if m != nil {
-		return m.ReservedName
+func (x *EnumDescriptorProto) GetReservedName() []string {
+	if x != nil {
+		return x.ReservedName
 	}
 	return nil
 }
@@ -912,35 +967,42 @@ type EnumValueDescriptorProto struct {
 	XXX_sizecache        int32             `json:"-"`
 }
 
-func (m *EnumValueDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[7].MessageOf(m)
+func (x *EnumValueDescriptorProto) Reset() {
+	*x = EnumValueDescriptorProto{}
 }
-func (m *EnumValueDescriptorProto) Reset()         { *m = EnumValueDescriptorProto{} }
-func (m *EnumValueDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*EnumValueDescriptorProto) ProtoMessage()    {}
+
+func (x *EnumValueDescriptorProto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EnumValueDescriptorProto) ProtoMessage() {}
+
+func (x *EnumValueDescriptorProto) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[7].MessageOf(x)
+}
 
 // Deprecated: Use EnumValueDescriptorProto.ProtoReflect.Type instead.
 func (*EnumValueDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{7}
 }
 
-func (m *EnumValueDescriptorProto) GetName() string {
-	if m != nil && m.Name != nil {
-		return *m.Name
+func (x *EnumValueDescriptorProto) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
 	}
 	return ""
 }
 
-func (m *EnumValueDescriptorProto) GetNumber() int32 {
-	if m != nil && m.Number != nil {
-		return *m.Number
+func (x *EnumValueDescriptorProto) GetNumber() int32 {
+	if x != nil && x.Number != nil {
+		return *x.Number
 	}
 	return 0
 }
 
-func (m *EnumValueDescriptorProto) GetOptions() *EnumValueOptions {
-	if m != nil {
-		return m.Options
+func (x *EnumValueDescriptorProto) GetOptions() *EnumValueOptions {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
@@ -955,35 +1017,42 @@ type ServiceDescriptorProto struct {
 	XXX_sizecache        int32                    `json:"-"`
 }
 
-func (m *ServiceDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[8].MessageOf(m)
+func (x *ServiceDescriptorProto) Reset() {
+	*x = ServiceDescriptorProto{}
 }
-func (m *ServiceDescriptorProto) Reset()         { *m = ServiceDescriptorProto{} }
-func (m *ServiceDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ServiceDescriptorProto) ProtoMessage()    {}
+
+func (x *ServiceDescriptorProto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ServiceDescriptorProto) ProtoMessage() {}
+
+func (x *ServiceDescriptorProto) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[8].MessageOf(x)
+}
 
 // Deprecated: Use ServiceDescriptorProto.ProtoReflect.Type instead.
 func (*ServiceDescriptorProto) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{8}
 }
 
-func (m *ServiceDescriptorProto) GetName() string {
-	if m != nil && m.Name != nil {
-		return *m.Name
+func (x *ServiceDescriptorProto) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
 	}
 	return ""
 }
 
-func (m *ServiceDescriptorProto) GetMethod() []*MethodDescriptorProto {
-	if m != nil {
-		return m.Method
+func (x *ServiceDescriptorProto) GetMethod() []*MethodDescriptorProto {
+	if x != nil {
+		return x.Method
 	}
 	return nil
 }
 
-func (m *ServiceDescriptorProto) GetOptions() *ServiceOptions {
-	if m != nil {
-		return m.Options
+func (x *ServiceDescriptorProto) GetOptions() *ServiceOptions {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
@@ -1005,12 +1074,19 @@ type MethodDescriptorProto struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *MethodDescriptorProto) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[9].MessageOf(m)
+func (x *MethodDescriptorProto) Reset() {
+	*x = MethodDescriptorProto{}
 }
-func (m *MethodDescriptorProto) Reset()         { *m = MethodDescriptorProto{} }
-func (m *MethodDescriptorProto) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*MethodDescriptorProto) ProtoMessage()    {}
+
+func (x *MethodDescriptorProto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MethodDescriptorProto) ProtoMessage() {}
+
+func (x *MethodDescriptorProto) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[9].MessageOf(x)
+}
 
 // Deprecated: Use MethodDescriptorProto.ProtoReflect.Type instead.
 func (*MethodDescriptorProto) Descriptor() ([]byte, []int) {
@@ -1020,44 +1096,44 @@ func (*MethodDescriptorProto) Descriptor() ([]byte, []int) {
 const Default_MethodDescriptorProto_ClientStreaming bool = false
 const Default_MethodDescriptorProto_ServerStreaming bool = false
 
-func (m *MethodDescriptorProto) GetName() string {
-	if m != nil && m.Name != nil {
-		return *m.Name
+func (x *MethodDescriptorProto) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
 	}
 	return ""
 }
 
-func (m *MethodDescriptorProto) GetInputType() string {
-	if m != nil && m.InputType != nil {
-		return *m.InputType
+func (x *MethodDescriptorProto) GetInputType() string {
+	if x != nil && x.InputType != nil {
+		return *x.InputType
 	}
 	return ""
 }
 
-func (m *MethodDescriptorProto) GetOutputType() string {
-	if m != nil && m.OutputType != nil {
-		return *m.OutputType
+func (x *MethodDescriptorProto) GetOutputType() string {
+	if x != nil && x.OutputType != nil {
+		return *x.OutputType
 	}
 	return ""
 }
 
-func (m *MethodDescriptorProto) GetOptions() *MethodOptions {
-	if m != nil {
-		return m.Options
+func (x *MethodDescriptorProto) GetOptions() *MethodOptions {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
 
-func (m *MethodDescriptorProto) GetClientStreaming() bool {
-	if m != nil && m.ClientStreaming != nil {
-		return *m.ClientStreaming
+func (x *MethodDescriptorProto) GetClientStreaming() bool {
+	if x != nil && x.ClientStreaming != nil {
+		return *x.ClientStreaming
 	}
 	return Default_MethodDescriptorProto_ClientStreaming
 }
 
-func (m *MethodDescriptorProto) GetServerStreaming() bool {
-	if m != nil && m.ServerStreaming != nil {
-		return *m.ServerStreaming
+func (x *MethodDescriptorProto) GetServerStreaming() bool {
+	if x != nil && x.ServerStreaming != nil {
+		return *x.ServerStreaming
 	}
 	return Default_MethodDescriptorProto_ServerStreaming
 }
@@ -1153,12 +1229,19 @@ type FileOptions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *FileOptions) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[10].MessageOf(m)
+func (x *FileOptions) Reset() {
+	*x = FileOptions{}
 }
-func (m *FileOptions) Reset()         { *m = FileOptions{} }
-func (m *FileOptions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FileOptions) ProtoMessage()    {}
+
+func (x *FileOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FileOptions) ProtoMessage() {}
+
+func (x *FileOptions) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[10].MessageOf(x)
+}
 
 // Deprecated: Use FileOptions.ProtoReflect.Type instead.
 func (*FileOptions) Descriptor() ([]byte, []int) {
@@ -1184,150 +1267,150 @@ const Default_FileOptions_PhpGenericServices bool = false
 const Default_FileOptions_Deprecated bool = false
 const Default_FileOptions_CcEnableArenas bool = false
 
-func (m *FileOptions) GetJavaPackage() string {
-	if m != nil && m.JavaPackage != nil {
-		return *m.JavaPackage
+func (x *FileOptions) GetJavaPackage() string {
+	if x != nil && x.JavaPackage != nil {
+		return *x.JavaPackage
 	}
 	return ""
 }
 
-func (m *FileOptions) GetJavaOuterClassname() string {
-	if m != nil && m.JavaOuterClassname != nil {
-		return *m.JavaOuterClassname
+func (x *FileOptions) GetJavaOuterClassname() string {
+	if x != nil && x.JavaOuterClassname != nil {
+		return *x.JavaOuterClassname
 	}
 	return ""
 }
 
-func (m *FileOptions) GetJavaMultipleFiles() bool {
-	if m != nil && m.JavaMultipleFiles != nil {
-		return *m.JavaMultipleFiles
+func (x *FileOptions) GetJavaMultipleFiles() bool {
+	if x != nil && x.JavaMultipleFiles != nil {
+		return *x.JavaMultipleFiles
 	}
 	return Default_FileOptions_JavaMultipleFiles
 }
 
 // Deprecated: Do not use.
-func (m *FileOptions) GetJavaGenerateEqualsAndHash() bool {
-	if m != nil && m.JavaGenerateEqualsAndHash != nil {
-		return *m.JavaGenerateEqualsAndHash
+func (x *FileOptions) GetJavaGenerateEqualsAndHash() bool {
+	if x != nil && x.JavaGenerateEqualsAndHash != nil {
+		return *x.JavaGenerateEqualsAndHash
 	}
 	return false
 }
 
-func (m *FileOptions) GetJavaStringCheckUtf8() bool {
-	if m != nil && m.JavaStringCheckUtf8 != nil {
-		return *m.JavaStringCheckUtf8
+func (x *FileOptions) GetJavaStringCheckUtf8() bool {
+	if x != nil && x.JavaStringCheckUtf8 != nil {
+		return *x.JavaStringCheckUtf8
 	}
 	return Default_FileOptions_JavaStringCheckUtf8
 }
 
-func (m *FileOptions) GetOptimizeFor() FileOptions_OptimizeMode {
-	if m != nil && m.OptimizeFor != nil {
-		return *m.OptimizeFor
+func (x *FileOptions) GetOptimizeFor() FileOptions_OptimizeMode {
+	if x != nil && x.OptimizeFor != nil {
+		return *x.OptimizeFor
 	}
 	return Default_FileOptions_OptimizeFor
 }
 
-func (m *FileOptions) GetGoPackage() string {
-	if m != nil && m.GoPackage != nil {
-		return *m.GoPackage
+func (x *FileOptions) GetGoPackage() string {
+	if x != nil && x.GoPackage != nil {
+		return *x.GoPackage
 	}
 	return ""
 }
 
-func (m *FileOptions) GetCcGenericServices() bool {
-	if m != nil && m.CcGenericServices != nil {
-		return *m.CcGenericServices
+func (x *FileOptions) GetCcGenericServices() bool {
+	if x != nil && x.CcGenericServices != nil {
+		return *x.CcGenericServices
 	}
 	return Default_FileOptions_CcGenericServices
 }
 
-func (m *FileOptions) GetJavaGenericServices() bool {
-	if m != nil && m.JavaGenericServices != nil {
-		return *m.JavaGenericServices
+func (x *FileOptions) GetJavaGenericServices() bool {
+	if x != nil && x.JavaGenericServices != nil {
+		return *x.JavaGenericServices
 	}
 	return Default_FileOptions_JavaGenericServices
 }
 
-func (m *FileOptions) GetPyGenericServices() bool {
-	if m != nil && m.PyGenericServices != nil {
-		return *m.PyGenericServices
+func (x *FileOptions) GetPyGenericServices() bool {
+	if x != nil && x.PyGenericServices != nil {
+		return *x.PyGenericServices
 	}
 	return Default_FileOptions_PyGenericServices
 }
 
-func (m *FileOptions) GetPhpGenericServices() bool {
-	if m != nil && m.PhpGenericServices != nil {
-		return *m.PhpGenericServices
+func (x *FileOptions) GetPhpGenericServices() bool {
+	if x != nil && x.PhpGenericServices != nil {
+		return *x.PhpGenericServices
 	}
 	return Default_FileOptions_PhpGenericServices
 }
 
-func (m *FileOptions) GetDeprecated() bool {
-	if m != nil && m.Deprecated != nil {
-		return *m.Deprecated
+func (x *FileOptions) GetDeprecated() bool {
+	if x != nil && x.Deprecated != nil {
+		return *x.Deprecated
 	}
 	return Default_FileOptions_Deprecated
 }
 
-func (m *FileOptions) GetCcEnableArenas() bool {
-	if m != nil && m.CcEnableArenas != nil {
-		return *m.CcEnableArenas
+func (x *FileOptions) GetCcEnableArenas() bool {
+	if x != nil && x.CcEnableArenas != nil {
+		return *x.CcEnableArenas
 	}
 	return Default_FileOptions_CcEnableArenas
 }
 
-func (m *FileOptions) GetObjcClassPrefix() string {
-	if m != nil && m.ObjcClassPrefix != nil {
-		return *m.ObjcClassPrefix
+func (x *FileOptions) GetObjcClassPrefix() string {
+	if x != nil && x.ObjcClassPrefix != nil {
+		return *x.ObjcClassPrefix
 	}
 	return ""
 }
 
-func (m *FileOptions) GetCsharpNamespace() string {
-	if m != nil && m.CsharpNamespace != nil {
-		return *m.CsharpNamespace
+func (x *FileOptions) GetCsharpNamespace() string {
+	if x != nil && x.CsharpNamespace != nil {
+		return *x.CsharpNamespace
 	}
 	return ""
 }
 
-func (m *FileOptions) GetSwiftPrefix() string {
-	if m != nil && m.SwiftPrefix != nil {
-		return *m.SwiftPrefix
+func (x *FileOptions) GetSwiftPrefix() string {
+	if x != nil && x.SwiftPrefix != nil {
+		return *x.SwiftPrefix
 	}
 	return ""
 }
 
-func (m *FileOptions) GetPhpClassPrefix() string {
-	if m != nil && m.PhpClassPrefix != nil {
-		return *m.PhpClassPrefix
+func (x *FileOptions) GetPhpClassPrefix() string {
+	if x != nil && x.PhpClassPrefix != nil {
+		return *x.PhpClassPrefix
 	}
 	return ""
 }
 
-func (m *FileOptions) GetPhpNamespace() string {
-	if m != nil && m.PhpNamespace != nil {
-		return *m.PhpNamespace
+func (x *FileOptions) GetPhpNamespace() string {
+	if x != nil && x.PhpNamespace != nil {
+		return *x.PhpNamespace
 	}
 	return ""
 }
 
-func (m *FileOptions) GetPhpMetadataNamespace() string {
-	if m != nil && m.PhpMetadataNamespace != nil {
-		return *m.PhpMetadataNamespace
+func (x *FileOptions) GetPhpMetadataNamespace() string {
+	if x != nil && x.PhpMetadataNamespace != nil {
+		return *x.PhpMetadataNamespace
 	}
 	return ""
 }
 
-func (m *FileOptions) GetRubyPackage() string {
-	if m != nil && m.RubyPackage != nil {
-		return *m.RubyPackage
+func (x *FileOptions) GetRubyPackage() string {
+	if x != nil && x.RubyPackage != nil {
+		return *x.RubyPackage
 	}
 	return ""
 }
 
-func (m *FileOptions) GetUninterpretedOption() []*UninterpretedOption {
-	if m != nil {
-		return m.UninterpretedOption
+func (x *FileOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if x != nil {
+		return x.UninterpretedOption
 	}
 	return nil
 }
@@ -1391,12 +1474,19 @@ type MessageOptions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *MessageOptions) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[11].MessageOf(m)
+func (x *MessageOptions) Reset() {
+	*x = MessageOptions{}
 }
-func (m *MessageOptions) Reset()         { *m = MessageOptions{} }
-func (m *MessageOptions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*MessageOptions) ProtoMessage()    {}
+
+func (x *MessageOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MessageOptions) ProtoMessage() {}
+
+func (x *MessageOptions) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[11].MessageOf(x)
+}
 
 // Deprecated: Use MessageOptions.ProtoReflect.Type instead.
 func (*MessageOptions) Descriptor() ([]byte, []int) {
@@ -1416,37 +1506,37 @@ const Default_MessageOptions_MessageSetWireFormat bool = false
 const Default_MessageOptions_NoStandardDescriptorAccessor bool = false
 const Default_MessageOptions_Deprecated bool = false
 
-func (m *MessageOptions) GetMessageSetWireFormat() bool {
-	if m != nil && m.MessageSetWireFormat != nil {
-		return *m.MessageSetWireFormat
+func (x *MessageOptions) GetMessageSetWireFormat() bool {
+	if x != nil && x.MessageSetWireFormat != nil {
+		return *x.MessageSetWireFormat
 	}
 	return Default_MessageOptions_MessageSetWireFormat
 }
 
-func (m *MessageOptions) GetNoStandardDescriptorAccessor() bool {
-	if m != nil && m.NoStandardDescriptorAccessor != nil {
-		return *m.NoStandardDescriptorAccessor
+func (x *MessageOptions) GetNoStandardDescriptorAccessor() bool {
+	if x != nil && x.NoStandardDescriptorAccessor != nil {
+		return *x.NoStandardDescriptorAccessor
 	}
 	return Default_MessageOptions_NoStandardDescriptorAccessor
 }
 
-func (m *MessageOptions) GetDeprecated() bool {
-	if m != nil && m.Deprecated != nil {
-		return *m.Deprecated
+func (x *MessageOptions) GetDeprecated() bool {
+	if x != nil && x.Deprecated != nil {
+		return *x.Deprecated
 	}
 	return Default_MessageOptions_Deprecated
 }
 
-func (m *MessageOptions) GetMapEntry() bool {
-	if m != nil && m.MapEntry != nil {
-		return *m.MapEntry
+func (x *MessageOptions) GetMapEntry() bool {
+	if x != nil && x.MapEntry != nil {
+		return *x.MapEntry
 	}
 	return false
 }
 
-func (m *MessageOptions) GetUninterpretedOption() []*UninterpretedOption {
-	if m != nil {
-		return m.UninterpretedOption
+func (x *MessageOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if x != nil {
+		return x.UninterpretedOption
 	}
 	return nil
 }
@@ -1519,12 +1609,19 @@ type FieldOptions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *FieldOptions) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[12].MessageOf(m)
+func (x *FieldOptions) Reset() {
+	*x = FieldOptions{}
 }
-func (m *FieldOptions) Reset()         { *m = FieldOptions{} }
-func (m *FieldOptions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldOptions) ProtoMessage()    {}
+
+func (x *FieldOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldOptions) ProtoMessage() {}
+
+func (x *FieldOptions) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[12].MessageOf(x)
+}
 
 // Deprecated: Use FieldOptions.ProtoReflect.Type instead.
 func (*FieldOptions) Descriptor() ([]byte, []int) {
@@ -1546,51 +1643,51 @@ const Default_FieldOptions_Lazy bool = false
 const Default_FieldOptions_Deprecated bool = false
 const Default_FieldOptions_Weak bool = false
 
-func (m *FieldOptions) GetCtype() FieldOptions_CType {
-	if m != nil && m.Ctype != nil {
-		return *m.Ctype
+func (x *FieldOptions) GetCtype() FieldOptions_CType {
+	if x != nil && x.Ctype != nil {
+		return *x.Ctype
 	}
 	return Default_FieldOptions_Ctype
 }
 
-func (m *FieldOptions) GetPacked() bool {
-	if m != nil && m.Packed != nil {
-		return *m.Packed
+func (x *FieldOptions) GetPacked() bool {
+	if x != nil && x.Packed != nil {
+		return *x.Packed
 	}
 	return false
 }
 
-func (m *FieldOptions) GetJstype() FieldOptions_JSType {
-	if m != nil && m.Jstype != nil {
-		return *m.Jstype
+func (x *FieldOptions) GetJstype() FieldOptions_JSType {
+	if x != nil && x.Jstype != nil {
+		return *x.Jstype
 	}
 	return Default_FieldOptions_Jstype
 }
 
-func (m *FieldOptions) GetLazy() bool {
-	if m != nil && m.Lazy != nil {
-		return *m.Lazy
+func (x *FieldOptions) GetLazy() bool {
+	if x != nil && x.Lazy != nil {
+		return *x.Lazy
 	}
 	return Default_FieldOptions_Lazy
 }
 
-func (m *FieldOptions) GetDeprecated() bool {
-	if m != nil && m.Deprecated != nil {
-		return *m.Deprecated
+func (x *FieldOptions) GetDeprecated() bool {
+	if x != nil && x.Deprecated != nil {
+		return *x.Deprecated
 	}
 	return Default_FieldOptions_Deprecated
 }
 
-func (m *FieldOptions) GetWeak() bool {
-	if m != nil && m.Weak != nil {
-		return *m.Weak
+func (x *FieldOptions) GetWeak() bool {
+	if x != nil && x.Weak != nil {
+		return *x.Weak
 	}
 	return Default_FieldOptions_Weak
 }
 
-func (m *FieldOptions) GetUninterpretedOption() []*UninterpretedOption {
-	if m != nil {
-		return m.UninterpretedOption
+func (x *FieldOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if x != nil {
+		return x.UninterpretedOption
 	}
 	return nil
 }
@@ -1604,12 +1701,19 @@ type OneofOptions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *OneofOptions) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[13].MessageOf(m)
+func (x *OneofOptions) Reset() {
+	*x = OneofOptions{}
 }
-func (m *OneofOptions) Reset()         { *m = OneofOptions{} }
-func (m *OneofOptions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*OneofOptions) ProtoMessage()    {}
+
+func (x *OneofOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OneofOptions) ProtoMessage() {}
+
+func (x *OneofOptions) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[13].MessageOf(x)
+}
 
 // Deprecated: Use OneofOptions.ProtoReflect.Type instead.
 func (*OneofOptions) Descriptor() ([]byte, []int) {
@@ -1625,9 +1729,9 @@ func (*OneofOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_OneofOptions
 }
 
-func (m *OneofOptions) GetUninterpretedOption() []*UninterpretedOption {
-	if m != nil {
-		return m.UninterpretedOption
+func (x *OneofOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if x != nil {
+		return x.UninterpretedOption
 	}
 	return nil
 }
@@ -1649,12 +1753,19 @@ type EnumOptions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *EnumOptions) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[14].MessageOf(m)
+func (x *EnumOptions) Reset() {
+	*x = EnumOptions{}
 }
-func (m *EnumOptions) Reset()         { *m = EnumOptions{} }
-func (m *EnumOptions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*EnumOptions) ProtoMessage()    {}
+
+func (x *EnumOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EnumOptions) ProtoMessage() {}
+
+func (x *EnumOptions) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[14].MessageOf(x)
+}
 
 // Deprecated: Use EnumOptions.ProtoReflect.Type instead.
 func (*EnumOptions) Descriptor() ([]byte, []int) {
@@ -1672,23 +1783,23 @@ func (*EnumOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 
 const Default_EnumOptions_Deprecated bool = false
 
-func (m *EnumOptions) GetAllowAlias() bool {
-	if m != nil && m.AllowAlias != nil {
-		return *m.AllowAlias
+func (x *EnumOptions) GetAllowAlias() bool {
+	if x != nil && x.AllowAlias != nil {
+		return *x.AllowAlias
 	}
 	return false
 }
 
-func (m *EnumOptions) GetDeprecated() bool {
-	if m != nil && m.Deprecated != nil {
-		return *m.Deprecated
+func (x *EnumOptions) GetDeprecated() bool {
+	if x != nil && x.Deprecated != nil {
+		return *x.Deprecated
 	}
 	return Default_EnumOptions_Deprecated
 }
 
-func (m *EnumOptions) GetUninterpretedOption() []*UninterpretedOption {
-	if m != nil {
-		return m.UninterpretedOption
+func (x *EnumOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if x != nil {
+		return x.UninterpretedOption
 	}
 	return nil
 }
@@ -1707,12 +1818,19 @@ type EnumValueOptions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *EnumValueOptions) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[15].MessageOf(m)
+func (x *EnumValueOptions) Reset() {
+	*x = EnumValueOptions{}
 }
-func (m *EnumValueOptions) Reset()         { *m = EnumValueOptions{} }
-func (m *EnumValueOptions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*EnumValueOptions) ProtoMessage()    {}
+
+func (x *EnumValueOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EnumValueOptions) ProtoMessage() {}
+
+func (x *EnumValueOptions) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[15].MessageOf(x)
+}
 
 // Deprecated: Use EnumValueOptions.ProtoReflect.Type instead.
 func (*EnumValueOptions) Descriptor() ([]byte, []int) {
@@ -1730,16 +1848,16 @@ func (*EnumValueOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 
 const Default_EnumValueOptions_Deprecated bool = false
 
-func (m *EnumValueOptions) GetDeprecated() bool {
-	if m != nil && m.Deprecated != nil {
-		return *m.Deprecated
+func (x *EnumValueOptions) GetDeprecated() bool {
+	if x != nil && x.Deprecated != nil {
+		return *x.Deprecated
 	}
 	return Default_EnumValueOptions_Deprecated
 }
 
-func (m *EnumValueOptions) GetUninterpretedOption() []*UninterpretedOption {
-	if m != nil {
-		return m.UninterpretedOption
+func (x *EnumValueOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if x != nil {
+		return x.UninterpretedOption
 	}
 	return nil
 }
@@ -1758,12 +1876,19 @@ type ServiceOptions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *ServiceOptions) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[16].MessageOf(m)
+func (x *ServiceOptions) Reset() {
+	*x = ServiceOptions{}
 }
-func (m *ServiceOptions) Reset()         { *m = ServiceOptions{} }
-func (m *ServiceOptions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ServiceOptions) ProtoMessage()    {}
+
+func (x *ServiceOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ServiceOptions) ProtoMessage() {}
+
+func (x *ServiceOptions) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[16].MessageOf(x)
+}
 
 // Deprecated: Use ServiceOptions.ProtoReflect.Type instead.
 func (*ServiceOptions) Descriptor() ([]byte, []int) {
@@ -1781,16 +1906,16 @@ func (*ServiceOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 
 const Default_ServiceOptions_Deprecated bool = false
 
-func (m *ServiceOptions) GetDeprecated() bool {
-	if m != nil && m.Deprecated != nil {
-		return *m.Deprecated
+func (x *ServiceOptions) GetDeprecated() bool {
+	if x != nil && x.Deprecated != nil {
+		return *x.Deprecated
 	}
 	return Default_ServiceOptions_Deprecated
 }
 
-func (m *ServiceOptions) GetUninterpretedOption() []*UninterpretedOption {
-	if m != nil {
-		return m.UninterpretedOption
+func (x *ServiceOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if x != nil {
+		return x.UninterpretedOption
 	}
 	return nil
 }
@@ -1810,12 +1935,19 @@ type MethodOptions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *MethodOptions) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[17].MessageOf(m)
+func (x *MethodOptions) Reset() {
+	*x = MethodOptions{}
 }
-func (m *MethodOptions) Reset()         { *m = MethodOptions{} }
-func (m *MethodOptions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*MethodOptions) ProtoMessage()    {}
+
+func (x *MethodOptions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MethodOptions) ProtoMessage() {}
+
+func (x *MethodOptions) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[17].MessageOf(x)
+}
 
 // Deprecated: Use MethodOptions.ProtoReflect.Type instead.
 func (*MethodOptions) Descriptor() ([]byte, []int) {
@@ -1834,23 +1966,23 @@ func (*MethodOptions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 const Default_MethodOptions_Deprecated bool = false
 const Default_MethodOptions_IdempotencyLevel MethodOptions_IdempotencyLevel = MethodOptions_IDEMPOTENCY_UNKNOWN
 
-func (m *MethodOptions) GetDeprecated() bool {
-	if m != nil && m.Deprecated != nil {
-		return *m.Deprecated
+func (x *MethodOptions) GetDeprecated() bool {
+	if x != nil && x.Deprecated != nil {
+		return *x.Deprecated
 	}
 	return Default_MethodOptions_Deprecated
 }
 
-func (m *MethodOptions) GetIdempotencyLevel() MethodOptions_IdempotencyLevel {
-	if m != nil && m.IdempotencyLevel != nil {
-		return *m.IdempotencyLevel
+func (x *MethodOptions) GetIdempotencyLevel() MethodOptions_IdempotencyLevel {
+	if x != nil && x.IdempotencyLevel != nil {
+		return *x.IdempotencyLevel
 	}
 	return Default_MethodOptions_IdempotencyLevel
 }
 
-func (m *MethodOptions) GetUninterpretedOption() []*UninterpretedOption {
-	if m != nil {
-		return m.UninterpretedOption
+func (x *MethodOptions) GetUninterpretedOption() []*UninterpretedOption {
+	if x != nil {
+		return x.UninterpretedOption
 	}
 	return nil
 }
@@ -1876,63 +2008,70 @@ type UninterpretedOption struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *UninterpretedOption) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[18].MessageOf(m)
+func (x *UninterpretedOption) Reset() {
+	*x = UninterpretedOption{}
 }
-func (m *UninterpretedOption) Reset()         { *m = UninterpretedOption{} }
-func (m *UninterpretedOption) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*UninterpretedOption) ProtoMessage()    {}
+
+func (x *UninterpretedOption) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UninterpretedOption) ProtoMessage() {}
+
+func (x *UninterpretedOption) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[18].MessageOf(x)
+}
 
 // Deprecated: Use UninterpretedOption.ProtoReflect.Type instead.
 func (*UninterpretedOption) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{18}
 }
 
-func (m *UninterpretedOption) GetName() []*UninterpretedOption_NamePart {
-	if m != nil {
-		return m.Name
+func (x *UninterpretedOption) GetName() []*UninterpretedOption_NamePart {
+	if x != nil {
+		return x.Name
 	}
 	return nil
 }
 
-func (m *UninterpretedOption) GetIdentifierValue() string {
-	if m != nil && m.IdentifierValue != nil {
-		return *m.IdentifierValue
+func (x *UninterpretedOption) GetIdentifierValue() string {
+	if x != nil && x.IdentifierValue != nil {
+		return *x.IdentifierValue
 	}
 	return ""
 }
 
-func (m *UninterpretedOption) GetPositiveIntValue() uint64 {
-	if m != nil && m.PositiveIntValue != nil {
-		return *m.PositiveIntValue
+func (x *UninterpretedOption) GetPositiveIntValue() uint64 {
+	if x != nil && x.PositiveIntValue != nil {
+		return *x.PositiveIntValue
 	}
 	return 0
 }
 
-func (m *UninterpretedOption) GetNegativeIntValue() int64 {
-	if m != nil && m.NegativeIntValue != nil {
-		return *m.NegativeIntValue
+func (x *UninterpretedOption) GetNegativeIntValue() int64 {
+	if x != nil && x.NegativeIntValue != nil {
+		return *x.NegativeIntValue
 	}
 	return 0
 }
 
-func (m *UninterpretedOption) GetDoubleValue() float64 {
-	if m != nil && m.DoubleValue != nil {
-		return *m.DoubleValue
+func (x *UninterpretedOption) GetDoubleValue() float64 {
+	if x != nil && x.DoubleValue != nil {
+		return *x.DoubleValue
 	}
 	return 0
 }
 
-func (m *UninterpretedOption) GetStringValue() []byte {
-	if m != nil {
-		return m.StringValue
+func (x *UninterpretedOption) GetStringValue() []byte {
+	if x != nil {
+		return x.StringValue
 	}
 	return nil
 }
 
-func (m *UninterpretedOption) GetAggregateValue() string {
-	if m != nil && m.AggregateValue != nil {
-		return *m.AggregateValue
+func (x *UninterpretedOption) GetAggregateValue() string {
+	if x != nil && x.AggregateValue != nil {
+		return *x.AggregateValue
 	}
 	return ""
 }
@@ -1989,21 +2128,28 @@ type SourceCodeInfo struct {
 	XXX_sizecache        int32                      `json:"-"`
 }
 
-func (m *SourceCodeInfo) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[19].MessageOf(m)
+func (x *SourceCodeInfo) Reset() {
+	*x = SourceCodeInfo{}
 }
-func (m *SourceCodeInfo) Reset()         { *m = SourceCodeInfo{} }
-func (m *SourceCodeInfo) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*SourceCodeInfo) ProtoMessage()    {}
+
+func (x *SourceCodeInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SourceCodeInfo) ProtoMessage() {}
+
+func (x *SourceCodeInfo) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[19].MessageOf(x)
+}
 
 // Deprecated: Use SourceCodeInfo.ProtoReflect.Type instead.
 func (*SourceCodeInfo) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{19}
 }
 
-func (m *SourceCodeInfo) GetLocation() []*SourceCodeInfo_Location {
-	if m != nil {
-		return m.Location
+func (x *SourceCodeInfo) GetLocation() []*SourceCodeInfo_Location {
+	if x != nil {
+		return x.Location
 	}
 	return nil
 }
@@ -2020,21 +2166,28 @@ type GeneratedCodeInfo struct {
 	XXX_sizecache        int32                           `json:"-"`
 }
 
-func (m *GeneratedCodeInfo) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[20].MessageOf(m)
+func (x *GeneratedCodeInfo) Reset() {
+	*x = GeneratedCodeInfo{}
 }
-func (m *GeneratedCodeInfo) Reset()         { *m = GeneratedCodeInfo{} }
-func (m *GeneratedCodeInfo) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*GeneratedCodeInfo) ProtoMessage()    {}
+
+func (x *GeneratedCodeInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GeneratedCodeInfo) ProtoMessage() {}
+
+func (x *GeneratedCodeInfo) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[20].MessageOf(x)
+}
 
 // Deprecated: Use GeneratedCodeInfo.ProtoReflect.Type instead.
 func (*GeneratedCodeInfo) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{20}
 }
 
-func (m *GeneratedCodeInfo) GetAnnotation() []*GeneratedCodeInfo_Annotation {
-	if m != nil {
-		return m.Annotation
+func (x *GeneratedCodeInfo) GetAnnotation() []*GeneratedCodeInfo_Annotation {
+	if x != nil {
+		return x.Annotation
 	}
 	return nil
 }
@@ -2048,35 +2201,42 @@ type DescriptorProto_ExtensionRange struct {
 	XXX_sizecache        int32                  `json:"-"`
 }
 
-func (m *DescriptorProto_ExtensionRange) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[21].MessageOf(m)
+func (x *DescriptorProto_ExtensionRange) Reset() {
+	*x = DescriptorProto_ExtensionRange{}
 }
-func (m *DescriptorProto_ExtensionRange) Reset()         { *m = DescriptorProto_ExtensionRange{} }
-func (m *DescriptorProto_ExtensionRange) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*DescriptorProto_ExtensionRange) ProtoMessage()    {}
+
+func (x *DescriptorProto_ExtensionRange) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DescriptorProto_ExtensionRange) ProtoMessage() {}
+
+func (x *DescriptorProto_ExtensionRange) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[21].MessageOf(x)
+}
 
 // Deprecated: Use DescriptorProto_ExtensionRange.ProtoReflect.Type instead.
 func (*DescriptorProto_ExtensionRange) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{2, 0}
 }
 
-func (m *DescriptorProto_ExtensionRange) GetStart() int32 {
-	if m != nil && m.Start != nil {
-		return *m.Start
+func (x *DescriptorProto_ExtensionRange) GetStart() int32 {
+	if x != nil && x.Start != nil {
+		return *x.Start
 	}
 	return 0
 }
 
-func (m *DescriptorProto_ExtensionRange) GetEnd() int32 {
-	if m != nil && m.End != nil {
-		return *m.End
+func (x *DescriptorProto_ExtensionRange) GetEnd() int32 {
+	if x != nil && x.End != nil {
+		return *x.End
 	}
 	return 0
 }
 
-func (m *DescriptorProto_ExtensionRange) GetOptions() *ExtensionRangeOptions {
-	if m != nil {
-		return m.Options
+func (x *DescriptorProto_ExtensionRange) GetOptions() *ExtensionRangeOptions {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
@@ -2092,28 +2252,35 @@ type DescriptorProto_ReservedRange struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DescriptorProto_ReservedRange) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[22].MessageOf(m)
+func (x *DescriptorProto_ReservedRange) Reset() {
+	*x = DescriptorProto_ReservedRange{}
 }
-func (m *DescriptorProto_ReservedRange) Reset()         { *m = DescriptorProto_ReservedRange{} }
-func (m *DescriptorProto_ReservedRange) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*DescriptorProto_ReservedRange) ProtoMessage()    {}
+
+func (x *DescriptorProto_ReservedRange) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DescriptorProto_ReservedRange) ProtoMessage() {}
+
+func (x *DescriptorProto_ReservedRange) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[22].MessageOf(x)
+}
 
 // Deprecated: Use DescriptorProto_ReservedRange.ProtoReflect.Type instead.
 func (*DescriptorProto_ReservedRange) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{2, 1}
 }
 
-func (m *DescriptorProto_ReservedRange) GetStart() int32 {
-	if m != nil && m.Start != nil {
-		return *m.Start
+func (x *DescriptorProto_ReservedRange) GetStart() int32 {
+	if x != nil && x.Start != nil {
+		return *x.Start
 	}
 	return 0
 }
 
-func (m *DescriptorProto_ReservedRange) GetEnd() int32 {
-	if m != nil && m.End != nil {
-		return *m.End
+func (x *DescriptorProto_ReservedRange) GetEnd() int32 {
+	if x != nil && x.End != nil {
+		return *x.End
 	}
 	return 0
 }
@@ -2132,28 +2299,35 @@ type EnumDescriptorProto_EnumReservedRange struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EnumDescriptorProto_EnumReservedRange) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[23].MessageOf(m)
+func (x *EnumDescriptorProto_EnumReservedRange) Reset() {
+	*x = EnumDescriptorProto_EnumReservedRange{}
 }
-func (m *EnumDescriptorProto_EnumReservedRange) Reset()         { *m = EnumDescriptorProto_EnumReservedRange{} }
-func (m *EnumDescriptorProto_EnumReservedRange) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*EnumDescriptorProto_EnumReservedRange) ProtoMessage()    {}
+
+func (x *EnumDescriptorProto_EnumReservedRange) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EnumDescriptorProto_EnumReservedRange) ProtoMessage() {}
+
+func (x *EnumDescriptorProto_EnumReservedRange) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[23].MessageOf(x)
+}
 
 // Deprecated: Use EnumDescriptorProto_EnumReservedRange.ProtoReflect.Type instead.
 func (*EnumDescriptorProto_EnumReservedRange) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{6, 0}
 }
 
-func (m *EnumDescriptorProto_EnumReservedRange) GetStart() int32 {
-	if m != nil && m.Start != nil {
-		return *m.Start
+func (x *EnumDescriptorProto_EnumReservedRange) GetStart() int32 {
+	if x != nil && x.Start != nil {
+		return *x.Start
 	}
 	return 0
 }
 
-func (m *EnumDescriptorProto_EnumReservedRange) GetEnd() int32 {
-	if m != nil && m.End != nil {
-		return *m.End
+func (x *EnumDescriptorProto_EnumReservedRange) GetEnd() int32 {
+	if x != nil && x.End != nil {
+		return *x.End
 	}
 	return 0
 }
@@ -2171,28 +2345,35 @@ type UninterpretedOption_NamePart struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *UninterpretedOption_NamePart) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[24].MessageOf(m)
+func (x *UninterpretedOption_NamePart) Reset() {
+	*x = UninterpretedOption_NamePart{}
 }
-func (m *UninterpretedOption_NamePart) Reset()         { *m = UninterpretedOption_NamePart{} }
-func (m *UninterpretedOption_NamePart) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*UninterpretedOption_NamePart) ProtoMessage()    {}
+
+func (x *UninterpretedOption_NamePart) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UninterpretedOption_NamePart) ProtoMessage() {}
+
+func (x *UninterpretedOption_NamePart) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[24].MessageOf(x)
+}
 
 // Deprecated: Use UninterpretedOption_NamePart.ProtoReflect.Type instead.
 func (*UninterpretedOption_NamePart) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{18, 0}
 }
 
-func (m *UninterpretedOption_NamePart) GetNamePart() string {
-	if m != nil && m.NamePart != nil {
-		return *m.NamePart
+func (x *UninterpretedOption_NamePart) GetNamePart() string {
+	if x != nil && x.NamePart != nil {
+		return *x.NamePart
 	}
 	return ""
 }
 
-func (m *UninterpretedOption_NamePart) GetIsExtension() bool {
-	if m != nil && m.IsExtension != nil {
-		return *m.IsExtension
+func (x *UninterpretedOption_NamePart) GetIsExtension() bool {
+	if x != nil && x.IsExtension != nil {
+		return *x.IsExtension
 	}
 	return false
 }
@@ -2283,49 +2464,56 @@ type SourceCodeInfo_Location struct {
 	XXX_sizecache           int32    `json:"-"`
 }
 
-func (m *SourceCodeInfo_Location) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[25].MessageOf(m)
+func (x *SourceCodeInfo_Location) Reset() {
+	*x = SourceCodeInfo_Location{}
 }
-func (m *SourceCodeInfo_Location) Reset()         { *m = SourceCodeInfo_Location{} }
-func (m *SourceCodeInfo_Location) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*SourceCodeInfo_Location) ProtoMessage()    {}
+
+func (x *SourceCodeInfo_Location) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SourceCodeInfo_Location) ProtoMessage() {}
+
+func (x *SourceCodeInfo_Location) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[25].MessageOf(x)
+}
 
 // Deprecated: Use SourceCodeInfo_Location.ProtoReflect.Type instead.
 func (*SourceCodeInfo_Location) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{19, 0}
 }
 
-func (m *SourceCodeInfo_Location) GetPath() []int32 {
-	if m != nil {
-		return m.Path
+func (x *SourceCodeInfo_Location) GetPath() []int32 {
+	if x != nil {
+		return x.Path
 	}
 	return nil
 }
 
-func (m *SourceCodeInfo_Location) GetSpan() []int32 {
-	if m != nil {
-		return m.Span
+func (x *SourceCodeInfo_Location) GetSpan() []int32 {
+	if x != nil {
+		return x.Span
 	}
 	return nil
 }
 
-func (m *SourceCodeInfo_Location) GetLeadingComments() string {
-	if m != nil && m.LeadingComments != nil {
-		return *m.LeadingComments
+func (x *SourceCodeInfo_Location) GetLeadingComments() string {
+	if x != nil && x.LeadingComments != nil {
+		return *x.LeadingComments
 	}
 	return ""
 }
 
-func (m *SourceCodeInfo_Location) GetTrailingComments() string {
-	if m != nil && m.TrailingComments != nil {
-		return *m.TrailingComments
+func (x *SourceCodeInfo_Location) GetTrailingComments() string {
+	if x != nil && x.TrailingComments != nil {
+		return *x.TrailingComments
 	}
 	return ""
 }
 
-func (m *SourceCodeInfo_Location) GetLeadingDetachedComments() []string {
-	if m != nil {
-		return m.LeadingDetachedComments
+func (x *SourceCodeInfo_Location) GetLeadingDetachedComments() []string {
+	if x != nil {
+		return x.LeadingDetachedComments
 	}
 	return nil
 }
@@ -2348,42 +2536,49 @@ type GeneratedCodeInfo_Annotation struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GeneratedCodeInfo_Annotation) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_descriptor_proto_messageTypes[26].MessageOf(m)
+func (x *GeneratedCodeInfo_Annotation) Reset() {
+	*x = GeneratedCodeInfo_Annotation{}
 }
-func (m *GeneratedCodeInfo_Annotation) Reset()         { *m = GeneratedCodeInfo_Annotation{} }
-func (m *GeneratedCodeInfo_Annotation) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*GeneratedCodeInfo_Annotation) ProtoMessage()    {}
+
+func (x *GeneratedCodeInfo_Annotation) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GeneratedCodeInfo_Annotation) ProtoMessage() {}
+
+func (x *GeneratedCodeInfo_Annotation) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_descriptor_proto_messageTypes[26].MessageOf(x)
+}
 
 // Deprecated: Use GeneratedCodeInfo_Annotation.ProtoReflect.Type instead.
 func (*GeneratedCodeInfo_Annotation) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_descriptor_proto_rawDescGZIP(), []int{20, 0}
 }
 
-func (m *GeneratedCodeInfo_Annotation) GetPath() []int32 {
-	if m != nil {
-		return m.Path
+func (x *GeneratedCodeInfo_Annotation) GetPath() []int32 {
+	if x != nil {
+		return x.Path
 	}
 	return nil
 }
 
-func (m *GeneratedCodeInfo_Annotation) GetSourceFile() string {
-	if m != nil && m.SourceFile != nil {
-		return *m.SourceFile
+func (x *GeneratedCodeInfo_Annotation) GetSourceFile() string {
+	if x != nil && x.SourceFile != nil {
+		return *x.SourceFile
 	}
 	return ""
 }
 
-func (m *GeneratedCodeInfo_Annotation) GetBegin() int32 {
-	if m != nil && m.Begin != nil {
-		return *m.Begin
+func (x *GeneratedCodeInfo_Annotation) GetBegin() int32 {
+	if x != nil && x.Begin != nil {
+		return *x.Begin
 	}
 	return 0
 }
 
-func (m *GeneratedCodeInfo_Annotation) GetEnd() int32 {
-	if m != nil && m.End != nil {
-		return *m.End
+func (x *GeneratedCodeInfo_Annotation) GetEnd() int32 {
+	if x != nil && x.End != nil {
+		return *x.End
 	}
 	return 0
 }

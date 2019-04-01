@@ -23,12 +23,19 @@ type DoubleValue struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DoubleValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[0].MessageOf(m)
+func (x *DoubleValue) Reset() {
+	*x = DoubleValue{}
 }
-func (m *DoubleValue) Reset()         { *m = DoubleValue{} }
-func (m *DoubleValue) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*DoubleValue) ProtoMessage()    {}
+
+func (x *DoubleValue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DoubleValue) ProtoMessage() {}
+
+func (x *DoubleValue) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use DoubleValue.ProtoReflect.Type instead.
 func (*DoubleValue) Descriptor() ([]byte, []int) {
@@ -37,9 +44,9 @@ func (*DoubleValue) Descriptor() ([]byte, []int) {
 
 func (*DoubleValue) XXX_WellKnownType() string { return "DoubleValue" }
 
-func (m *DoubleValue) GetValue() float64 {
-	if m != nil {
-		return m.Value
+func (x *DoubleValue) GetValue() float64 {
+	if x != nil {
+		return x.Value
 	}
 	return 0
 }
@@ -55,12 +62,19 @@ type FloatValue struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FloatValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[1].MessageOf(m)
+func (x *FloatValue) Reset() {
+	*x = FloatValue{}
 }
-func (m *FloatValue) Reset()         { *m = FloatValue{} }
-func (m *FloatValue) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FloatValue) ProtoMessage()    {}
+
+func (x *FloatValue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FloatValue) ProtoMessage() {}
+
+func (x *FloatValue) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use FloatValue.ProtoReflect.Type instead.
 func (*FloatValue) Descriptor() ([]byte, []int) {
@@ -69,9 +83,9 @@ func (*FloatValue) Descriptor() ([]byte, []int) {
 
 func (*FloatValue) XXX_WellKnownType() string { return "FloatValue" }
 
-func (m *FloatValue) GetValue() float32 {
-	if m != nil {
-		return m.Value
+func (x *FloatValue) GetValue() float32 {
+	if x != nil {
+		return x.Value
 	}
 	return 0
 }
@@ -87,12 +101,19 @@ type Int64Value struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Int64Value) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[2].MessageOf(m)
+func (x *Int64Value) Reset() {
+	*x = Int64Value{}
 }
-func (m *Int64Value) Reset()         { *m = Int64Value{} }
-func (m *Int64Value) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Int64Value) ProtoMessage()    {}
+
+func (x *Int64Value) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Int64Value) ProtoMessage() {}
+
+func (x *Int64Value) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use Int64Value.ProtoReflect.Type instead.
 func (*Int64Value) Descriptor() ([]byte, []int) {
@@ -101,9 +122,9 @@ func (*Int64Value) Descriptor() ([]byte, []int) {
 
 func (*Int64Value) XXX_WellKnownType() string { return "Int64Value" }
 
-func (m *Int64Value) GetValue() int64 {
-	if m != nil {
-		return m.Value
+func (x *Int64Value) GetValue() int64 {
+	if x != nil {
+		return x.Value
 	}
 	return 0
 }
@@ -119,12 +140,19 @@ type UInt64Value struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *UInt64Value) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[3].MessageOf(m)
+func (x *UInt64Value) Reset() {
+	*x = UInt64Value{}
 }
-func (m *UInt64Value) Reset()         { *m = UInt64Value{} }
-func (m *UInt64Value) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*UInt64Value) ProtoMessage()    {}
+
+func (x *UInt64Value) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UInt64Value) ProtoMessage() {}
+
+func (x *UInt64Value) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use UInt64Value.ProtoReflect.Type instead.
 func (*UInt64Value) Descriptor() ([]byte, []int) {
@@ -133,9 +161,9 @@ func (*UInt64Value) Descriptor() ([]byte, []int) {
 
 func (*UInt64Value) XXX_WellKnownType() string { return "UInt64Value" }
 
-func (m *UInt64Value) GetValue() uint64 {
-	if m != nil {
-		return m.Value
+func (x *UInt64Value) GetValue() uint64 {
+	if x != nil {
+		return x.Value
 	}
 	return 0
 }
@@ -151,12 +179,19 @@ type Int32Value struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Int32Value) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[4].MessageOf(m)
+func (x *Int32Value) Reset() {
+	*x = Int32Value{}
 }
-func (m *Int32Value) Reset()         { *m = Int32Value{} }
-func (m *Int32Value) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Int32Value) ProtoMessage()    {}
+
+func (x *Int32Value) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Int32Value) ProtoMessage() {}
+
+func (x *Int32Value) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[4].MessageOf(x)
+}
 
 // Deprecated: Use Int32Value.ProtoReflect.Type instead.
 func (*Int32Value) Descriptor() ([]byte, []int) {
@@ -165,9 +200,9 @@ func (*Int32Value) Descriptor() ([]byte, []int) {
 
 func (*Int32Value) XXX_WellKnownType() string { return "Int32Value" }
 
-func (m *Int32Value) GetValue() int32 {
-	if m != nil {
-		return m.Value
+func (x *Int32Value) GetValue() int32 {
+	if x != nil {
+		return x.Value
 	}
 	return 0
 }
@@ -183,12 +218,19 @@ type UInt32Value struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *UInt32Value) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[5].MessageOf(m)
+func (x *UInt32Value) Reset() {
+	*x = UInt32Value{}
 }
-func (m *UInt32Value) Reset()         { *m = UInt32Value{} }
-func (m *UInt32Value) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*UInt32Value) ProtoMessage()    {}
+
+func (x *UInt32Value) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UInt32Value) ProtoMessage() {}
+
+func (x *UInt32Value) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[5].MessageOf(x)
+}
 
 // Deprecated: Use UInt32Value.ProtoReflect.Type instead.
 func (*UInt32Value) Descriptor() ([]byte, []int) {
@@ -197,9 +239,9 @@ func (*UInt32Value) Descriptor() ([]byte, []int) {
 
 func (*UInt32Value) XXX_WellKnownType() string { return "UInt32Value" }
 
-func (m *UInt32Value) GetValue() uint32 {
-	if m != nil {
-		return m.Value
+func (x *UInt32Value) GetValue() uint32 {
+	if x != nil {
+		return x.Value
 	}
 	return 0
 }
@@ -215,12 +257,19 @@ type BoolValue struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *BoolValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[6].MessageOf(m)
+func (x *BoolValue) Reset() {
+	*x = BoolValue{}
 }
-func (m *BoolValue) Reset()         { *m = BoolValue{} }
-func (m *BoolValue) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*BoolValue) ProtoMessage()    {}
+
+func (x *BoolValue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BoolValue) ProtoMessage() {}
+
+func (x *BoolValue) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[6].MessageOf(x)
+}
 
 // Deprecated: Use BoolValue.ProtoReflect.Type instead.
 func (*BoolValue) Descriptor() ([]byte, []int) {
@@ -229,9 +278,9 @@ func (*BoolValue) Descriptor() ([]byte, []int) {
 
 func (*BoolValue) XXX_WellKnownType() string { return "BoolValue" }
 
-func (m *BoolValue) GetValue() bool {
-	if m != nil {
-		return m.Value
+func (x *BoolValue) GetValue() bool {
+	if x != nil {
+		return x.Value
 	}
 	return false
 }
@@ -247,12 +296,19 @@ type StringValue struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *StringValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[7].MessageOf(m)
+func (x *StringValue) Reset() {
+	*x = StringValue{}
 }
-func (m *StringValue) Reset()         { *m = StringValue{} }
-func (m *StringValue) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*StringValue) ProtoMessage()    {}
+
+func (x *StringValue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StringValue) ProtoMessage() {}
+
+func (x *StringValue) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[7].MessageOf(x)
+}
 
 // Deprecated: Use StringValue.ProtoReflect.Type instead.
 func (*StringValue) Descriptor() ([]byte, []int) {
@@ -261,9 +317,9 @@ func (*StringValue) Descriptor() ([]byte, []int) {
 
 func (*StringValue) XXX_WellKnownType() string { return "StringValue" }
 
-func (m *StringValue) GetValue() string {
-	if m != nil {
-		return m.Value
+func (x *StringValue) GetValue() string {
+	if x != nil {
+		return x.Value
 	}
 	return ""
 }
@@ -279,12 +335,19 @@ type BytesValue struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *BytesValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[8].MessageOf(m)
+func (x *BytesValue) Reset() {
+	*x = BytesValue{}
 }
-func (m *BytesValue) Reset()         { *m = BytesValue{} }
-func (m *BytesValue) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*BytesValue) ProtoMessage()    {}
+
+func (x *BytesValue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BytesValue) ProtoMessage() {}
+
+func (x *BytesValue) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_wrappers_proto_messageTypes[8].MessageOf(x)
+}
 
 // Deprecated: Use BytesValue.ProtoReflect.Type instead.
 func (*BytesValue) Descriptor() ([]byte, []int) {
@@ -293,9 +356,9 @@ func (*BytesValue) Descriptor() ([]byte, []int) {
 
 func (*BytesValue) XXX_WellKnownType() string { return "BytesValue" }
 
-func (m *BytesValue) GetValue() []byte {
-	if m != nil {
-		return m.Value
+func (x *BytesValue) GetValue() []byte {
+	if x != nil {
+		return x.Value
 	}
 	return nil
 }

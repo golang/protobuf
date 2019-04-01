@@ -27,12 +27,19 @@ type Empty struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Empty) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_empty_proto_messageTypes[0].MessageOf(m)
+func (x *Empty) Reset() {
+	*x = Empty{}
 }
-func (m *Empty) Reset()         { *m = Empty{} }
-func (m *Empty) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Empty) ProtoMessage()    {}
+
+func (x *Empty) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Empty) ProtoMessage() {}
+
+func (x *Empty) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_empty_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Empty.ProtoReflect.Type instead.
 func (*Empty) Descriptor() ([]byte, []int) {

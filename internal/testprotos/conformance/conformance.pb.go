@@ -22,13 +22,6 @@ const (
 	WireFormat_TEXT_FORMAT WireFormat = 4
 )
 
-func (e WireFormat) Type() protoreflect.EnumType {
-	return xxx_File_conformance_conformance_proto_enumTypes[0]
-}
-func (e WireFormat) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use WireFormat.Type.Values instead.
 var WireFormat_name = map[int32]string{
 	0: "UNSPECIFIED",
@@ -49,6 +42,14 @@ var WireFormat_value = map[string]int32{
 
 func (x WireFormat) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (WireFormat) Type() protoreflect.EnumType {
+	return xxx_File_conformance_conformance_proto_enumTypes[0]
+}
+
+func (x WireFormat) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Use WireFormat.Type instead.
@@ -75,13 +76,6 @@ const (
 	TestCategory_TEXT_FORMAT_TEST TestCategory = 5
 )
 
-func (e TestCategory) Type() protoreflect.EnumType {
-	return xxx_File_conformance_conformance_proto_enumTypes[1]
-}
-func (e TestCategory) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use TestCategory.Type.Values instead.
 var TestCategory_name = map[int32]string{
 	0: "UNSPECIFIED_TEST",
@@ -106,6 +100,14 @@ func (x TestCategory) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+func (TestCategory) Type() protoreflect.EnumType {
+	return xxx_File_conformance_conformance_proto_enumTypes[1]
+}
+
+func (x TestCategory) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 // Deprecated: Use TestCategory.Type instead.
 func (TestCategory) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{1}
@@ -121,21 +123,28 @@ type FailureSet struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FailureSet) ProtoReflect() protoreflect.Message {
-	return xxx_File_conformance_conformance_proto_messageTypes[0].MessageOf(m)
+func (x *FailureSet) Reset() {
+	*x = FailureSet{}
 }
-func (m *FailureSet) Reset()         { *m = FailureSet{} }
-func (m *FailureSet) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FailureSet) ProtoMessage()    {}
+
+func (x *FailureSet) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FailureSet) ProtoMessage() {}
+
+func (x *FailureSet) ProtoReflect() protoreflect.Message {
+	return xxx_File_conformance_conformance_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use FailureSet.ProtoReflect.Type instead.
 func (*FailureSet) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *FailureSet) GetFailure() []string {
-	if m != nil {
-		return m.Failure
+func (x *FailureSet) GetFailure() []string {
+	if x != nil {
+		return x.Failure
 	}
 	return nil
 }
@@ -178,12 +187,19 @@ type ConformanceRequest struct {
 	XXX_sizecache        int32               `json:"-"`
 }
 
-func (m *ConformanceRequest) ProtoReflect() protoreflect.Message {
-	return xxx_File_conformance_conformance_proto_messageTypes[1].MessageOf(m)
+func (x *ConformanceRequest) Reset() {
+	*x = ConformanceRequest{}
 }
-func (m *ConformanceRequest) Reset()         { *m = ConformanceRequest{} }
-func (m *ConformanceRequest) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ConformanceRequest) ProtoMessage()    {}
+
+func (x *ConformanceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConformanceRequest) ProtoMessage() {}
+
+func (x *ConformanceRequest) ProtoReflect() protoreflect.Message {
+	return xxx_File_conformance_conformance_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use ConformanceRequest.ProtoReflect.Type instead.
 func (*ConformanceRequest) Descriptor() ([]byte, []int) {
@@ -225,58 +241,58 @@ func (m *ConformanceRequest) GetPayload() isConformanceRequest_Payload {
 	return nil
 }
 
-func (m *ConformanceRequest) GetProtobufPayload() []byte {
-	if x, ok := m.GetPayload().(*ConformanceRequest_ProtobufPayload); ok {
+func (x *ConformanceRequest) GetProtobufPayload() []byte {
+	if x, ok := x.GetPayload().(*ConformanceRequest_ProtobufPayload); ok {
 		return x.ProtobufPayload
 	}
 	return nil
 }
 
-func (m *ConformanceRequest) GetJsonPayload() string {
-	if x, ok := m.GetPayload().(*ConformanceRequest_JsonPayload); ok {
+func (x *ConformanceRequest) GetJsonPayload() string {
+	if x, ok := x.GetPayload().(*ConformanceRequest_JsonPayload); ok {
 		return x.JsonPayload
 	}
 	return ""
 }
 
-func (m *ConformanceRequest) GetJspbPayload() string {
-	if x, ok := m.GetPayload().(*ConformanceRequest_JspbPayload); ok {
+func (x *ConformanceRequest) GetJspbPayload() string {
+	if x, ok := x.GetPayload().(*ConformanceRequest_JspbPayload); ok {
 		return x.JspbPayload
 	}
 	return ""
 }
 
-func (m *ConformanceRequest) GetTextPayload() string {
-	if x, ok := m.GetPayload().(*ConformanceRequest_TextPayload); ok {
+func (x *ConformanceRequest) GetTextPayload() string {
+	if x, ok := x.GetPayload().(*ConformanceRequest_TextPayload); ok {
 		return x.TextPayload
 	}
 	return ""
 }
 
-func (m *ConformanceRequest) GetRequestedOutputFormat() WireFormat {
-	if m != nil {
-		return m.RequestedOutputFormat
+func (x *ConformanceRequest) GetRequestedOutputFormat() WireFormat {
+	if x != nil {
+		return x.RequestedOutputFormat
 	}
 	return WireFormat_UNSPECIFIED
 }
 
-func (m *ConformanceRequest) GetMessageType() string {
-	if m != nil {
-		return m.MessageType
+func (x *ConformanceRequest) GetMessageType() string {
+	if x != nil {
+		return x.MessageType
 	}
 	return ""
 }
 
-func (m *ConformanceRequest) GetTestCategory() TestCategory {
-	if m != nil {
-		return m.TestCategory
+func (x *ConformanceRequest) GetTestCategory() TestCategory {
+	if x != nil {
+		return x.TestCategory
 	}
 	return TestCategory_UNSPECIFIED_TEST
 }
 
-func (m *ConformanceRequest) GetJspbEncodingOptions() *JspbEncodingConfig {
-	if m != nil {
-		return m.JspbEncodingOptions
+func (x *ConformanceRequest) GetJspbEncodingOptions() *JspbEncodingConfig {
+	if x != nil {
+		return x.JspbEncodingOptions
 	}
 	return nil
 }
@@ -330,12 +346,19 @@ type ConformanceResponse struct {
 	XXX_sizecache        int32                        `json:"-"`
 }
 
-func (m *ConformanceResponse) ProtoReflect() protoreflect.Message {
-	return xxx_File_conformance_conformance_proto_messageTypes[2].MessageOf(m)
+func (x *ConformanceResponse) Reset() {
+	*x = ConformanceResponse{}
 }
-func (m *ConformanceResponse) Reset()         { *m = ConformanceResponse{} }
-func (m *ConformanceResponse) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ConformanceResponse) ProtoMessage()    {}
+
+func (x *ConformanceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConformanceResponse) ProtoMessage() {}
+
+func (x *ConformanceResponse) ProtoReflect() protoreflect.Message {
+	return xxx_File_conformance_conformance_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use ConformanceResponse.ProtoReflect.Type instead.
 func (*ConformanceResponse) Descriptor() ([]byte, []int) {
@@ -401,57 +424,57 @@ func (m *ConformanceResponse) GetResult() isConformanceResponse_Result {
 	return nil
 }
 
-func (m *ConformanceResponse) GetParseError() string {
-	if x, ok := m.GetResult().(*ConformanceResponse_ParseError); ok {
+func (x *ConformanceResponse) GetParseError() string {
+	if x, ok := x.GetResult().(*ConformanceResponse_ParseError); ok {
 		return x.ParseError
 	}
 	return ""
 }
 
-func (m *ConformanceResponse) GetSerializeError() string {
-	if x, ok := m.GetResult().(*ConformanceResponse_SerializeError); ok {
+func (x *ConformanceResponse) GetSerializeError() string {
+	if x, ok := x.GetResult().(*ConformanceResponse_SerializeError); ok {
 		return x.SerializeError
 	}
 	return ""
 }
 
-func (m *ConformanceResponse) GetRuntimeError() string {
-	if x, ok := m.GetResult().(*ConformanceResponse_RuntimeError); ok {
+func (x *ConformanceResponse) GetRuntimeError() string {
+	if x, ok := x.GetResult().(*ConformanceResponse_RuntimeError); ok {
 		return x.RuntimeError
 	}
 	return ""
 }
 
-func (m *ConformanceResponse) GetProtobufPayload() []byte {
-	if x, ok := m.GetResult().(*ConformanceResponse_ProtobufPayload); ok {
+func (x *ConformanceResponse) GetProtobufPayload() []byte {
+	if x, ok := x.GetResult().(*ConformanceResponse_ProtobufPayload); ok {
 		return x.ProtobufPayload
 	}
 	return nil
 }
 
-func (m *ConformanceResponse) GetJsonPayload() string {
-	if x, ok := m.GetResult().(*ConformanceResponse_JsonPayload); ok {
+func (x *ConformanceResponse) GetJsonPayload() string {
+	if x, ok := x.GetResult().(*ConformanceResponse_JsonPayload); ok {
 		return x.JsonPayload
 	}
 	return ""
 }
 
-func (m *ConformanceResponse) GetSkipped() string {
-	if x, ok := m.GetResult().(*ConformanceResponse_Skipped); ok {
+func (x *ConformanceResponse) GetSkipped() string {
+	if x, ok := x.GetResult().(*ConformanceResponse_Skipped); ok {
 		return x.Skipped
 	}
 	return ""
 }
 
-func (m *ConformanceResponse) GetJspbPayload() string {
-	if x, ok := m.GetResult().(*ConformanceResponse_JspbPayload); ok {
+func (x *ConformanceResponse) GetJspbPayload() string {
+	if x, ok := x.GetResult().(*ConformanceResponse_JspbPayload); ok {
 		return x.JspbPayload
 	}
 	return ""
 }
 
-func (m *ConformanceResponse) GetTextPayload() string {
-	if x, ok := m.GetResult().(*ConformanceResponse_TextPayload); ok {
+func (x *ConformanceResponse) GetTextPayload() string {
+	if x, ok := x.GetResult().(*ConformanceResponse_TextPayload); ok {
 		return x.TextPayload
 	}
 	return ""
@@ -480,21 +503,28 @@ type JspbEncodingConfig struct {
 	XXX_sizecache         int32    `json:"-"`
 }
 
-func (m *JspbEncodingConfig) ProtoReflect() protoreflect.Message {
-	return xxx_File_conformance_conformance_proto_messageTypes[3].MessageOf(m)
+func (x *JspbEncodingConfig) Reset() {
+	*x = JspbEncodingConfig{}
 }
-func (m *JspbEncodingConfig) Reset()         { *m = JspbEncodingConfig{} }
-func (m *JspbEncodingConfig) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*JspbEncodingConfig) ProtoMessage()    {}
+
+func (x *JspbEncodingConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JspbEncodingConfig) ProtoMessage() {}
+
+func (x *JspbEncodingConfig) ProtoReflect() protoreflect.Message {
+	return xxx_File_conformance_conformance_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use JspbEncodingConfig.ProtoReflect.Type instead.
 func (*JspbEncodingConfig) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{3}
 }
 
-func (m *JspbEncodingConfig) GetUseJspbArrayAnyFormat() bool {
-	if m != nil {
-		return m.UseJspbArrayAnyFormat
+func (x *JspbEncodingConfig) GetUseJspbArrayAnyFormat() bool {
+	if x != nil {
+		return x.UseJspbArrayAnyFormat
 	}
 	return false
 }

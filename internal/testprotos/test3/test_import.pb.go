@@ -18,13 +18,6 @@ const (
 	ImportEnum_IMPORT_ZERO ImportEnum = 0
 )
 
-func (e ImportEnum) Type() protoreflect.EnumType {
-	return xxx_File_test3_test_import_proto_enumTypes[0]
-}
-func (e ImportEnum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use ImportEnum.Type.Values instead.
 var ImportEnum_name = map[int32]string{
 	0: "IMPORT_ZERO",
@@ -39,6 +32,14 @@ func (x ImportEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+func (ImportEnum) Type() protoreflect.EnumType {
+	return xxx_File_test3_test_import_proto_enumTypes[0]
+}
+
+func (x ImportEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 // Deprecated: Use ImportEnum.Type instead.
 func (ImportEnum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_test3_test_import_proto_rawDescGZIP(), []int{0}
@@ -50,12 +51,19 @@ type ImportMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ImportMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test3_test_import_proto_messageTypes[0].MessageOf(m)
+func (x *ImportMessage) Reset() {
+	*x = ImportMessage{}
 }
-func (m *ImportMessage) Reset()         { *m = ImportMessage{} }
-func (m *ImportMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ImportMessage) ProtoMessage()    {}
+
+func (x *ImportMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImportMessage) ProtoMessage() {}
+
+func (x *ImportMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test3_test_import_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use ImportMessage.ProtoReflect.Type instead.
 func (*ImportMessage) Descriptor() ([]byte, []int) {

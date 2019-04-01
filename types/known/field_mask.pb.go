@@ -219,21 +219,28 @@ type FieldMask struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FieldMask) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_field_mask_proto_messageTypes[0].MessageOf(m)
+func (x *FieldMask) Reset() {
+	*x = FieldMask{}
 }
-func (m *FieldMask) Reset()         { *m = FieldMask{} }
-func (m *FieldMask) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldMask) ProtoMessage()    {}
+
+func (x *FieldMask) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldMask) ProtoMessage() {}
+
+func (x *FieldMask) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_field_mask_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use FieldMask.ProtoReflect.Type instead.
 func (*FieldMask) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_field_mask_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *FieldMask) GetPaths() []string {
-	if m != nil {
-		return m.Paths
+func (x *FieldMask) GetPaths() []string {
+	if x != nil {
+		return x.Paths
 	}
 	return nil
 }

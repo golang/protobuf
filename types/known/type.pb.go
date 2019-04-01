@@ -22,13 +22,6 @@ const (
 	Syntax_SYNTAX_PROTO3 Syntax = 1
 )
 
-func (e Syntax) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_type_proto_enumTypes[0]
-}
-func (e Syntax) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Syntax.Type.Values instead.
 var Syntax_name = map[int32]string{
 	0: "SYNTAX_PROTO2",
@@ -43,6 +36,14 @@ var Syntax_value = map[string]int32{
 
 func (x Syntax) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Syntax) Type() protoreflect.EnumType {
+	return xxx_File_google_protobuf_type_proto_enumTypes[0]
+}
+
+func (x Syntax) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Use Syntax.Type instead.
@@ -94,13 +95,6 @@ const (
 	Field_TYPE_SINT64 Field_Kind = 18
 )
 
-func (e Field_Kind) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_type_proto_enumTypes[1]
-}
-func (e Field_Kind) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Field_Kind.Type.Values instead.
 var Field_Kind_name = map[int32]string{
 	0:  "TYPE_UNKNOWN",
@@ -151,6 +145,14 @@ func (x Field_Kind) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+func (Field_Kind) Type() protoreflect.EnumType {
+	return xxx_File_google_protobuf_type_proto_enumTypes[1]
+}
+
+func (x Field_Kind) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 // Deprecated: Use Field_Kind.Type instead.
 func (Field_Kind) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{1, 0}
@@ -170,13 +172,6 @@ const (
 	Field_CARDINALITY_REPEATED Field_Cardinality = 3
 )
 
-func (e Field_Cardinality) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_type_proto_enumTypes[2]
-}
-func (e Field_Cardinality) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Field_Cardinality.Type.Values instead.
 var Field_Cardinality_name = map[int32]string{
 	0: "CARDINALITY_UNKNOWN",
@@ -195,6 +190,14 @@ var Field_Cardinality_value = map[string]int32{
 
 func (x Field_Cardinality) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Field_Cardinality) Type() protoreflect.EnumType {
+	return xxx_File_google_protobuf_type_proto_enumTypes[2]
+}
+
+func (x Field_Cardinality) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Use Field_Cardinality.Type instead.
@@ -221,56 +224,63 @@ type Type struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Type) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_type_proto_messageTypes[0].MessageOf(m)
+func (x *Type) Reset() {
+	*x = Type{}
 }
-func (m *Type) Reset()         { *m = Type{} }
-func (m *Type) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Type) ProtoMessage()    {}
+
+func (x *Type) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Type) ProtoMessage() {}
+
+func (x *Type) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_type_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Type.ProtoReflect.Type instead.
 func (*Type) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Type) GetName() string {
-	if m != nil {
-		return m.Name
+func (x *Type) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-func (m *Type) GetFields() []*Field {
-	if m != nil {
-		return m.Fields
+func (x *Type) GetFields() []*Field {
+	if x != nil {
+		return x.Fields
 	}
 	return nil
 }
 
-func (m *Type) GetOneofs() []string {
-	if m != nil {
-		return m.Oneofs
+func (x *Type) GetOneofs() []string {
+	if x != nil {
+		return x.Oneofs
 	}
 	return nil
 }
 
-func (m *Type) GetOptions() []*Option {
-	if m != nil {
-		return m.Options
+func (x *Type) GetOptions() []*Option {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
 
-func (m *Type) GetSourceContext() *SourceContext {
-	if m != nil {
-		return m.SourceContext
+func (x *Type) GetSourceContext() *SourceContext {
+	if x != nil {
+		return x.SourceContext
 	}
 	return nil
 }
 
-func (m *Type) GetSyntax() Syntax {
-	if m != nil {
-		return m.Syntax
+func (x *Type) GetSyntax() Syntax {
+	if x != nil {
+		return x.Syntax
 	}
 	return Syntax_SYNTAX_PROTO2
 }
@@ -304,84 +314,91 @@ type Field struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Field) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_type_proto_messageTypes[1].MessageOf(m)
+func (x *Field) Reset() {
+	*x = Field{}
 }
-func (m *Field) Reset()         { *m = Field{} }
-func (m *Field) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Field) ProtoMessage()    {}
+
+func (x *Field) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Field) ProtoMessage() {}
+
+func (x *Field) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_type_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use Field.ProtoReflect.Type instead.
 func (*Field) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{1}
 }
 
-func (m *Field) GetKind() Field_Kind {
-	if m != nil {
-		return m.Kind
+func (x *Field) GetKind() Field_Kind {
+	if x != nil {
+		return x.Kind
 	}
 	return Field_TYPE_UNKNOWN
 }
 
-func (m *Field) GetCardinality() Field_Cardinality {
-	if m != nil {
-		return m.Cardinality
+func (x *Field) GetCardinality() Field_Cardinality {
+	if x != nil {
+		return x.Cardinality
 	}
 	return Field_CARDINALITY_UNKNOWN
 }
 
-func (m *Field) GetNumber() int32 {
-	if m != nil {
-		return m.Number
+func (x *Field) GetNumber() int32 {
+	if x != nil {
+		return x.Number
 	}
 	return 0
 }
 
-func (m *Field) GetName() string {
-	if m != nil {
-		return m.Name
+func (x *Field) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-func (m *Field) GetTypeUrl() string {
-	if m != nil {
-		return m.TypeUrl
+func (x *Field) GetTypeUrl() string {
+	if x != nil {
+		return x.TypeUrl
 	}
 	return ""
 }
 
-func (m *Field) GetOneofIndex() int32 {
-	if m != nil {
-		return m.OneofIndex
+func (x *Field) GetOneofIndex() int32 {
+	if x != nil {
+		return x.OneofIndex
 	}
 	return 0
 }
 
-func (m *Field) GetPacked() bool {
-	if m != nil {
-		return m.Packed
+func (x *Field) GetPacked() bool {
+	if x != nil {
+		return x.Packed
 	}
 	return false
 }
 
-func (m *Field) GetOptions() []*Option {
-	if m != nil {
-		return m.Options
+func (x *Field) GetOptions() []*Option {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
 
-func (m *Field) GetJsonName() string {
-	if m != nil {
-		return m.JsonName
+func (x *Field) GetJsonName() string {
+	if x != nil {
+		return x.JsonName
 	}
 	return ""
 }
 
-func (m *Field) GetDefaultValue() string {
-	if m != nil {
-		return m.DefaultValue
+func (x *Field) GetDefaultValue() string {
+	if x != nil {
+		return x.DefaultValue
 	}
 	return ""
 }
@@ -403,49 +420,56 @@ type Enum struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Enum) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_type_proto_messageTypes[2].MessageOf(m)
+func (x *Enum) Reset() {
+	*x = Enum{}
 }
-func (m *Enum) Reset()         { *m = Enum{} }
-func (m *Enum) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Enum) ProtoMessage()    {}
+
+func (x *Enum) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Enum) ProtoMessage() {}
+
+func (x *Enum) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_type_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use Enum.ProtoReflect.Type instead.
 func (*Enum) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{2}
 }
 
-func (m *Enum) GetName() string {
-	if m != nil {
-		return m.Name
+func (x *Enum) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-func (m *Enum) GetEnumvalue() []*EnumValue {
-	if m != nil {
-		return m.Enumvalue
+func (x *Enum) GetEnumvalue() []*EnumValue {
+	if x != nil {
+		return x.Enumvalue
 	}
 	return nil
 }
 
-func (m *Enum) GetOptions() []*Option {
-	if m != nil {
-		return m.Options
+func (x *Enum) GetOptions() []*Option {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
 
-func (m *Enum) GetSourceContext() *SourceContext {
-	if m != nil {
-		return m.SourceContext
+func (x *Enum) GetSourceContext() *SourceContext {
+	if x != nil {
+		return x.SourceContext
 	}
 	return nil
 }
 
-func (m *Enum) GetSyntax() Syntax {
-	if m != nil {
-		return m.Syntax
+func (x *Enum) GetSyntax() Syntax {
+	if x != nil {
+		return x.Syntax
 	}
 	return Syntax_SYNTAX_PROTO2
 }
@@ -463,35 +487,42 @@ type EnumValue struct {
 	XXX_sizecache        int32     `json:"-"`
 }
 
-func (m *EnumValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_type_proto_messageTypes[3].MessageOf(m)
+func (x *EnumValue) Reset() {
+	*x = EnumValue{}
 }
-func (m *EnumValue) Reset()         { *m = EnumValue{} }
-func (m *EnumValue) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*EnumValue) ProtoMessage()    {}
+
+func (x *EnumValue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EnumValue) ProtoMessage() {}
+
+func (x *EnumValue) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_type_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use EnumValue.ProtoReflect.Type instead.
 func (*EnumValue) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{3}
 }
 
-func (m *EnumValue) GetName() string {
-	if m != nil {
-		return m.Name
+func (x *EnumValue) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-func (m *EnumValue) GetNumber() int32 {
-	if m != nil {
-		return m.Number
+func (x *EnumValue) GetNumber() int32 {
+	if x != nil {
+		return x.Number
 	}
 	return 0
 }
 
-func (m *EnumValue) GetOptions() []*Option {
-	if m != nil {
-		return m.Options
+func (x *EnumValue) GetOptions() []*Option {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
@@ -514,28 +545,35 @@ type Option struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Option) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_type_proto_messageTypes[4].MessageOf(m)
+func (x *Option) Reset() {
+	*x = Option{}
 }
-func (m *Option) Reset()         { *m = Option{} }
-func (m *Option) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Option) ProtoMessage()    {}
+
+func (x *Option) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Option) ProtoMessage() {}
+
+func (x *Option) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_type_proto_messageTypes[4].MessageOf(x)
+}
 
 // Deprecated: Use Option.ProtoReflect.Type instead.
 func (*Option) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{4}
 }
 
-func (m *Option) GetName() string {
-	if m != nil {
-		return m.Name
+func (x *Option) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-func (m *Option) GetValue() *Any {
-	if m != nil {
-		return m.Value
+func (x *Option) GetValue() *Any {
+	if x != nil {
+		return x.Value
 	}
 	return nil
 }

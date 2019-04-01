@@ -21,28 +21,35 @@ type Local struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Local) ProtoReflect() protoreflect.Message {
-	return xxx_File_import_public_b_proto_messageTypes[0].MessageOf(m)
+func (x *Local) Reset() {
+	*x = Local{}
 }
-func (m *Local) Reset()         { *m = Local{} }
-func (m *Local) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Local) ProtoMessage()    {}
+
+func (x *Local) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Local) ProtoMessage() {}
+
+func (x *Local) ProtoReflect() protoreflect.Message {
+	return xxx_File_import_public_b_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Local.ProtoReflect.Type instead.
 func (*Local) Descriptor() ([]byte, []int) {
 	return xxx_File_import_public_b_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Local) GetM() *sub.M {
-	if m != nil {
-		return m.M
+func (x *Local) GetM() *sub.M {
+	if x != nil {
+		return x.M
 	}
 	return nil
 }
 
-func (m *Local) GetE() sub.E {
-	if m != nil && m.E != nil {
-		return *m.E
+func (x *Local) GetE() sub.E {
+	if x != nil && x.E != nil {
+		return *x.E
 	}
 	return sub.E_ZERO
 }

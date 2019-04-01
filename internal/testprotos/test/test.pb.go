@@ -21,13 +21,6 @@ const (
 	ForeignEnum_FOREIGN_BAZ ForeignEnum = 6
 )
 
-func (e ForeignEnum) Type() protoreflect.EnumType {
-	return xxx_File_test_test_proto_enumTypes[0]
-}
-func (e ForeignEnum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use ForeignEnum.Type.Values instead.
 var ForeignEnum_name = map[int32]string{
 	4: "FOREIGN_FOO",
@@ -48,6 +41,14 @@ func (x ForeignEnum) Enum() *ForeignEnum {
 
 func (x ForeignEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (ForeignEnum) Type() protoreflect.EnumType {
+	return xxx_File_test_test_proto_enumTypes[0]
+}
+
+func (x ForeignEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -71,13 +72,6 @@ const (
 	TestReservedEnumFields_RESERVED_ENUM TestReservedEnumFields = 0
 )
 
-func (e TestReservedEnumFields) Type() protoreflect.EnumType {
-	return xxx_File_test_test_proto_enumTypes[1]
-}
-func (e TestReservedEnumFields) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use TestReservedEnumFields.Type.Values instead.
 var TestReservedEnumFields_name = map[int32]string{
 	0: "RESERVED_ENUM",
@@ -94,6 +88,14 @@ func (x TestReservedEnumFields) Enum() *TestReservedEnumFields {
 
 func (x TestReservedEnumFields) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (TestReservedEnumFields) Type() protoreflect.EnumType {
+	return xxx_File_test_test_proto_enumTypes[1]
+}
+
+func (x TestReservedEnumFields) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -120,13 +122,6 @@ const (
 	TestAllTypes_NEG TestAllTypes_NestedEnum = -1
 )
 
-func (e TestAllTypes_NestedEnum) Type() protoreflect.EnumType {
-	return xxx_File_test_test_proto_enumTypes[2]
-}
-func (e TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use TestAllTypes_NestedEnum.Type.Values instead.
 var TestAllTypes_NestedEnum_name = map[int32]string{
 	0:  "FOO",
@@ -151,6 +146,14 @@ func (x TestAllTypes_NestedEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+func (TestAllTypes_NestedEnum) Type() protoreflect.EnumType {
+	return xxx_File_test_test_proto_enumTypes[2]
+}
+
+func (x TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 // Deprecated: Do not use.
 func (x *TestAllTypes_NestedEnum) UnmarshalJSON(b []byte) error {
 	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
@@ -171,13 +174,6 @@ const (
 	TestDeprecatedMessage_DEPRECATED TestDeprecatedMessage_DeprecatedEnum = 0 // Deprecated: Do not use.
 )
 
-func (e TestDeprecatedMessage_DeprecatedEnum) Type() protoreflect.EnumType {
-	return xxx_File_test_test_proto_enumTypes[3]
-}
-func (e TestDeprecatedMessage_DeprecatedEnum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use TestDeprecatedMessage_DeprecatedEnum.Type.Values instead.
 var TestDeprecatedMessage_DeprecatedEnum_name = map[int32]string{
 	0: "DEPRECATED",
@@ -194,6 +190,14 @@ func (x TestDeprecatedMessage_DeprecatedEnum) Enum() *TestDeprecatedMessage_Depr
 
 func (x TestDeprecatedMessage_DeprecatedEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (TestDeprecatedMessage_DeprecatedEnum) Type() protoreflect.EnumType {
+	return xxx_File_test_test_proto_enumTypes[3]
+}
+
+func (x TestDeprecatedMessage_DeprecatedEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -307,12 +311,19 @@ type TestAllTypes struct {
 	XXX_sizecache        int32                     `json:"-"`
 }
 
-func (m *TestAllTypes) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[0].MessageOf(m)
+func (x *TestAllTypes) Reset() {
+	*x = TestAllTypes{}
 }
-func (m *TestAllTypes) Reset()         { *m = TestAllTypes{} }
-func (m *TestAllTypes) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*TestAllTypes) ProtoMessage()    {}
+
+func (x *TestAllTypes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TestAllTypes) ProtoMessage() {}
+
+func (x *TestAllTypes) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use TestAllTypes.ProtoReflect.Type instead.
 func (*TestAllTypes) Descriptor() ([]byte, []int) {
@@ -339,548 +350,548 @@ var Default_TestAllTypes_DefaultBytes []byte = []byte("world")
 const Default_TestAllTypes_DefaultNestedEnum TestAllTypes_NestedEnum = TestAllTypes_BAR
 const Default_TestAllTypes_DefaultForeignEnum ForeignEnum = ForeignEnum_FOREIGN_BAR
 
-func (m *TestAllTypes) GetOptionalInt32() int32 {
-	if m != nil && m.OptionalInt32 != nil {
-		return *m.OptionalInt32
+func (x *TestAllTypes) GetOptionalInt32() int32 {
+	if x != nil && x.OptionalInt32 != nil {
+		return *x.OptionalInt32
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalInt64() int64 {
-	if m != nil && m.OptionalInt64 != nil {
-		return *m.OptionalInt64
+func (x *TestAllTypes) GetOptionalInt64() int64 {
+	if x != nil && x.OptionalInt64 != nil {
+		return *x.OptionalInt64
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalUint32() uint32 {
-	if m != nil && m.OptionalUint32 != nil {
-		return *m.OptionalUint32
+func (x *TestAllTypes) GetOptionalUint32() uint32 {
+	if x != nil && x.OptionalUint32 != nil {
+		return *x.OptionalUint32
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalUint64() uint64 {
-	if m != nil && m.OptionalUint64 != nil {
-		return *m.OptionalUint64
+func (x *TestAllTypes) GetOptionalUint64() uint64 {
+	if x != nil && x.OptionalUint64 != nil {
+		return *x.OptionalUint64
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalSint32() int32 {
-	if m != nil && m.OptionalSint32 != nil {
-		return *m.OptionalSint32
+func (x *TestAllTypes) GetOptionalSint32() int32 {
+	if x != nil && x.OptionalSint32 != nil {
+		return *x.OptionalSint32
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalSint64() int64 {
-	if m != nil && m.OptionalSint64 != nil {
-		return *m.OptionalSint64
+func (x *TestAllTypes) GetOptionalSint64() int64 {
+	if x != nil && x.OptionalSint64 != nil {
+		return *x.OptionalSint64
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalFixed32() uint32 {
-	if m != nil && m.OptionalFixed32 != nil {
-		return *m.OptionalFixed32
+func (x *TestAllTypes) GetOptionalFixed32() uint32 {
+	if x != nil && x.OptionalFixed32 != nil {
+		return *x.OptionalFixed32
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalFixed64() uint64 {
-	if m != nil && m.OptionalFixed64 != nil {
-		return *m.OptionalFixed64
+func (x *TestAllTypes) GetOptionalFixed64() uint64 {
+	if x != nil && x.OptionalFixed64 != nil {
+		return *x.OptionalFixed64
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalSfixed32() int32 {
-	if m != nil && m.OptionalSfixed32 != nil {
-		return *m.OptionalSfixed32
+func (x *TestAllTypes) GetOptionalSfixed32() int32 {
+	if x != nil && x.OptionalSfixed32 != nil {
+		return *x.OptionalSfixed32
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalSfixed64() int64 {
-	if m != nil && m.OptionalSfixed64 != nil {
-		return *m.OptionalSfixed64
+func (x *TestAllTypes) GetOptionalSfixed64() int64 {
+	if x != nil && x.OptionalSfixed64 != nil {
+		return *x.OptionalSfixed64
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalFloat() float32 {
-	if m != nil && m.OptionalFloat != nil {
-		return *m.OptionalFloat
+func (x *TestAllTypes) GetOptionalFloat() float32 {
+	if x != nil && x.OptionalFloat != nil {
+		return *x.OptionalFloat
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalDouble() float64 {
-	if m != nil && m.OptionalDouble != nil {
-		return *m.OptionalDouble
+func (x *TestAllTypes) GetOptionalDouble() float64 {
+	if x != nil && x.OptionalDouble != nil {
+		return *x.OptionalDouble
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOptionalBool() bool {
-	if m != nil && m.OptionalBool != nil {
-		return *m.OptionalBool
+func (x *TestAllTypes) GetOptionalBool() bool {
+	if x != nil && x.OptionalBool != nil {
+		return *x.OptionalBool
 	}
 	return false
 }
 
-func (m *TestAllTypes) GetOptionalString() string {
-	if m != nil && m.OptionalString != nil {
-		return *m.OptionalString
+func (x *TestAllTypes) GetOptionalString() string {
+	if x != nil && x.OptionalString != nil {
+		return *x.OptionalString
 	}
 	return ""
 }
 
-func (m *TestAllTypes) GetOptionalBytes() []byte {
-	if m != nil {
-		return m.OptionalBytes
+func (x *TestAllTypes) GetOptionalBytes() []byte {
+	if x != nil {
+		return x.OptionalBytes
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetOptionalgroup() *TestAllTypes_OptionalGroup {
-	if m != nil {
-		return m.Optionalgroup
+func (x *TestAllTypes) GetOptionalgroup() *TestAllTypes_OptionalGroup {
+	if x != nil {
+		return x.Optionalgroup
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetOptionalNestedMessage() *TestAllTypes_NestedMessage {
-	if m != nil {
-		return m.OptionalNestedMessage
+func (x *TestAllTypes) GetOptionalNestedMessage() *TestAllTypes_NestedMessage {
+	if x != nil {
+		return x.OptionalNestedMessage
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetOptionalForeignMessage() *ForeignMessage {
-	if m != nil {
-		return m.OptionalForeignMessage
+func (x *TestAllTypes) GetOptionalForeignMessage() *ForeignMessage {
+	if x != nil {
+		return x.OptionalForeignMessage
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetOptionalImportMessage() *ImportMessage {
-	if m != nil {
-		return m.OptionalImportMessage
+func (x *TestAllTypes) GetOptionalImportMessage() *ImportMessage {
+	if x != nil {
+		return x.OptionalImportMessage
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetOptionalNestedEnum() TestAllTypes_NestedEnum {
-	if m != nil && m.OptionalNestedEnum != nil {
-		return *m.OptionalNestedEnum
+func (x *TestAllTypes) GetOptionalNestedEnum() TestAllTypes_NestedEnum {
+	if x != nil && x.OptionalNestedEnum != nil {
+		return *x.OptionalNestedEnum
 	}
 	return TestAllTypes_FOO
 }
 
-func (m *TestAllTypes) GetOptionalForeignEnum() ForeignEnum {
-	if m != nil && m.OptionalForeignEnum != nil {
-		return *m.OptionalForeignEnum
+func (x *TestAllTypes) GetOptionalForeignEnum() ForeignEnum {
+	if x != nil && x.OptionalForeignEnum != nil {
+		return *x.OptionalForeignEnum
 	}
 	return ForeignEnum_FOREIGN_FOO
 }
 
-func (m *TestAllTypes) GetOptionalImportEnum() ImportEnum {
-	if m != nil && m.OptionalImportEnum != nil {
-		return *m.OptionalImportEnum
+func (x *TestAllTypes) GetOptionalImportEnum() ImportEnum {
+	if x != nil && x.OptionalImportEnum != nil {
+		return *x.OptionalImportEnum
 	}
 	return ImportEnum_IMPORT_ZERO
 }
 
-func (m *TestAllTypes) GetRepeatedInt32() []int32 {
-	if m != nil {
-		return m.RepeatedInt32
+func (x *TestAllTypes) GetRepeatedInt32() []int32 {
+	if x != nil {
+		return x.RepeatedInt32
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedInt64() []int64 {
-	if m != nil {
-		return m.RepeatedInt64
+func (x *TestAllTypes) GetRepeatedInt64() []int64 {
+	if x != nil {
+		return x.RepeatedInt64
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedUint32() []uint32 {
-	if m != nil {
-		return m.RepeatedUint32
+func (x *TestAllTypes) GetRepeatedUint32() []uint32 {
+	if x != nil {
+		return x.RepeatedUint32
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedUint64() []uint64 {
-	if m != nil {
-		return m.RepeatedUint64
+func (x *TestAllTypes) GetRepeatedUint64() []uint64 {
+	if x != nil {
+		return x.RepeatedUint64
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedSint32() []int32 {
-	if m != nil {
-		return m.RepeatedSint32
+func (x *TestAllTypes) GetRepeatedSint32() []int32 {
+	if x != nil {
+		return x.RepeatedSint32
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedSint64() []int64 {
-	if m != nil {
-		return m.RepeatedSint64
+func (x *TestAllTypes) GetRepeatedSint64() []int64 {
+	if x != nil {
+		return x.RepeatedSint64
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedFixed32() []uint32 {
-	if m != nil {
-		return m.RepeatedFixed32
+func (x *TestAllTypes) GetRepeatedFixed32() []uint32 {
+	if x != nil {
+		return x.RepeatedFixed32
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedFixed64() []uint64 {
-	if m != nil {
-		return m.RepeatedFixed64
+func (x *TestAllTypes) GetRepeatedFixed64() []uint64 {
+	if x != nil {
+		return x.RepeatedFixed64
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedSfixed32() []int32 {
-	if m != nil {
-		return m.RepeatedSfixed32
+func (x *TestAllTypes) GetRepeatedSfixed32() []int32 {
+	if x != nil {
+		return x.RepeatedSfixed32
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedSfixed64() []int64 {
-	if m != nil {
-		return m.RepeatedSfixed64
+func (x *TestAllTypes) GetRepeatedSfixed64() []int64 {
+	if x != nil {
+		return x.RepeatedSfixed64
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedFloat() []float32 {
-	if m != nil {
-		return m.RepeatedFloat
+func (x *TestAllTypes) GetRepeatedFloat() []float32 {
+	if x != nil {
+		return x.RepeatedFloat
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedDouble() []float64 {
-	if m != nil {
-		return m.RepeatedDouble
+func (x *TestAllTypes) GetRepeatedDouble() []float64 {
+	if x != nil {
+		return x.RepeatedDouble
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedBool() []bool {
-	if m != nil {
-		return m.RepeatedBool
+func (x *TestAllTypes) GetRepeatedBool() []bool {
+	if x != nil {
+		return x.RepeatedBool
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedString() []string {
-	if m != nil {
-		return m.RepeatedString
+func (x *TestAllTypes) GetRepeatedString() []string {
+	if x != nil {
+		return x.RepeatedString
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedBytes() [][]byte {
-	if m != nil {
-		return m.RepeatedBytes
+func (x *TestAllTypes) GetRepeatedBytes() [][]byte {
+	if x != nil {
+		return x.RepeatedBytes
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedgroup() []*TestAllTypes_RepeatedGroup {
-	if m != nil {
-		return m.Repeatedgroup
+func (x *TestAllTypes) GetRepeatedgroup() []*TestAllTypes_RepeatedGroup {
+	if x != nil {
+		return x.Repeatedgroup
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedNestedMessage() []*TestAllTypes_NestedMessage {
-	if m != nil {
-		return m.RepeatedNestedMessage
+func (x *TestAllTypes) GetRepeatedNestedMessage() []*TestAllTypes_NestedMessage {
+	if x != nil {
+		return x.RepeatedNestedMessage
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedForeignMessage() []*ForeignMessage {
-	if m != nil {
-		return m.RepeatedForeignMessage
+func (x *TestAllTypes) GetRepeatedForeignMessage() []*ForeignMessage {
+	if x != nil {
+		return x.RepeatedForeignMessage
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedImportmessage() []*ImportMessage {
-	if m != nil {
-		return m.RepeatedImportmessage
+func (x *TestAllTypes) GetRepeatedImportmessage() []*ImportMessage {
+	if x != nil {
+		return x.RepeatedImportmessage
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedNestedEnum() []TestAllTypes_NestedEnum {
-	if m != nil {
-		return m.RepeatedNestedEnum
+func (x *TestAllTypes) GetRepeatedNestedEnum() []TestAllTypes_NestedEnum {
+	if x != nil {
+		return x.RepeatedNestedEnum
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedForeignEnum() []ForeignEnum {
-	if m != nil {
-		return m.RepeatedForeignEnum
+func (x *TestAllTypes) GetRepeatedForeignEnum() []ForeignEnum {
+	if x != nil {
+		return x.RepeatedForeignEnum
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetRepeatedImportenum() []ImportEnum {
-	if m != nil {
-		return m.RepeatedImportenum
+func (x *TestAllTypes) GetRepeatedImportenum() []ImportEnum {
+	if x != nil {
+		return x.RepeatedImportenum
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapInt32Int32() map[int32]int32 {
-	if m != nil {
-		return m.MapInt32Int32
+func (x *TestAllTypes) GetMapInt32Int32() map[int32]int32 {
+	if x != nil {
+		return x.MapInt32Int32
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapInt64Int64() map[int64]int64 {
-	if m != nil {
-		return m.MapInt64Int64
+func (x *TestAllTypes) GetMapInt64Int64() map[int64]int64 {
+	if x != nil {
+		return x.MapInt64Int64
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapUint32Uint32() map[uint32]uint32 {
-	if m != nil {
-		return m.MapUint32Uint32
+func (x *TestAllTypes) GetMapUint32Uint32() map[uint32]uint32 {
+	if x != nil {
+		return x.MapUint32Uint32
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapUint64Uint64() map[uint64]uint64 {
-	if m != nil {
-		return m.MapUint64Uint64
+func (x *TestAllTypes) GetMapUint64Uint64() map[uint64]uint64 {
+	if x != nil {
+		return x.MapUint64Uint64
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapSint32Sint32() map[int32]int32 {
-	if m != nil {
-		return m.MapSint32Sint32
+func (x *TestAllTypes) GetMapSint32Sint32() map[int32]int32 {
+	if x != nil {
+		return x.MapSint32Sint32
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapSint64Sint64() map[int64]int64 {
-	if m != nil {
-		return m.MapSint64Sint64
+func (x *TestAllTypes) GetMapSint64Sint64() map[int64]int64 {
+	if x != nil {
+		return x.MapSint64Sint64
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapFixed32Fixed32() map[uint32]uint32 {
-	if m != nil {
-		return m.MapFixed32Fixed32
+func (x *TestAllTypes) GetMapFixed32Fixed32() map[uint32]uint32 {
+	if x != nil {
+		return x.MapFixed32Fixed32
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapFixed64Fixed64() map[uint64]uint64 {
-	if m != nil {
-		return m.MapFixed64Fixed64
+func (x *TestAllTypes) GetMapFixed64Fixed64() map[uint64]uint64 {
+	if x != nil {
+		return x.MapFixed64Fixed64
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapSfixed32Sfixed32() map[int32]int32 {
-	if m != nil {
-		return m.MapSfixed32Sfixed32
+func (x *TestAllTypes) GetMapSfixed32Sfixed32() map[int32]int32 {
+	if x != nil {
+		return x.MapSfixed32Sfixed32
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapSfixed64Sfixed64() map[int64]int64 {
-	if m != nil {
-		return m.MapSfixed64Sfixed64
+func (x *TestAllTypes) GetMapSfixed64Sfixed64() map[int64]int64 {
+	if x != nil {
+		return x.MapSfixed64Sfixed64
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapInt32Float() map[int32]float32 {
-	if m != nil {
-		return m.MapInt32Float
+func (x *TestAllTypes) GetMapInt32Float() map[int32]float32 {
+	if x != nil {
+		return x.MapInt32Float
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapInt32Double() map[int32]float64 {
-	if m != nil {
-		return m.MapInt32Double
+func (x *TestAllTypes) GetMapInt32Double() map[int32]float64 {
+	if x != nil {
+		return x.MapInt32Double
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapBoolBool() map[bool]bool {
-	if m != nil {
-		return m.MapBoolBool
+func (x *TestAllTypes) GetMapBoolBool() map[bool]bool {
+	if x != nil {
+		return x.MapBoolBool
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapStringString() map[string]string {
-	if m != nil {
-		return m.MapStringString
+func (x *TestAllTypes) GetMapStringString() map[string]string {
+	if x != nil {
+		return x.MapStringString
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapStringBytes() map[string][]byte {
-	if m != nil {
-		return m.MapStringBytes
+func (x *TestAllTypes) GetMapStringBytes() map[string][]byte {
+	if x != nil {
+		return x.MapStringBytes
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapStringNestedMessage() map[string]*TestAllTypes_NestedMessage {
-	if m != nil {
-		return m.MapStringNestedMessage
+func (x *TestAllTypes) GetMapStringNestedMessage() map[string]*TestAllTypes_NestedMessage {
+	if x != nil {
+		return x.MapStringNestedMessage
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetMapStringNestedEnum() map[string]TestAllTypes_NestedEnum {
-	if m != nil {
-		return m.MapStringNestedEnum
+func (x *TestAllTypes) GetMapStringNestedEnum() map[string]TestAllTypes_NestedEnum {
+	if x != nil {
+		return x.MapStringNestedEnum
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetDefaultInt32() int32 {
-	if m != nil && m.DefaultInt32 != nil {
-		return *m.DefaultInt32
+func (x *TestAllTypes) GetDefaultInt32() int32 {
+	if x != nil && x.DefaultInt32 != nil {
+		return *x.DefaultInt32
 	}
 	return Default_TestAllTypes_DefaultInt32
 }
 
-func (m *TestAllTypes) GetDefaultInt64() int64 {
-	if m != nil && m.DefaultInt64 != nil {
-		return *m.DefaultInt64
+func (x *TestAllTypes) GetDefaultInt64() int64 {
+	if x != nil && x.DefaultInt64 != nil {
+		return *x.DefaultInt64
 	}
 	return Default_TestAllTypes_DefaultInt64
 }
 
-func (m *TestAllTypes) GetDefaultUint32() uint32 {
-	if m != nil && m.DefaultUint32 != nil {
-		return *m.DefaultUint32
+func (x *TestAllTypes) GetDefaultUint32() uint32 {
+	if x != nil && x.DefaultUint32 != nil {
+		return *x.DefaultUint32
 	}
 	return Default_TestAllTypes_DefaultUint32
 }
 
-func (m *TestAllTypes) GetDefaultUint64() uint64 {
-	if m != nil && m.DefaultUint64 != nil {
-		return *m.DefaultUint64
+func (x *TestAllTypes) GetDefaultUint64() uint64 {
+	if x != nil && x.DefaultUint64 != nil {
+		return *x.DefaultUint64
 	}
 	return Default_TestAllTypes_DefaultUint64
 }
 
-func (m *TestAllTypes) GetDefaultSint32() int32 {
-	if m != nil && m.DefaultSint32 != nil {
-		return *m.DefaultSint32
+func (x *TestAllTypes) GetDefaultSint32() int32 {
+	if x != nil && x.DefaultSint32 != nil {
+		return *x.DefaultSint32
 	}
 	return Default_TestAllTypes_DefaultSint32
 }
 
-func (m *TestAllTypes) GetDefaultSint64() int64 {
-	if m != nil && m.DefaultSint64 != nil {
-		return *m.DefaultSint64
+func (x *TestAllTypes) GetDefaultSint64() int64 {
+	if x != nil && x.DefaultSint64 != nil {
+		return *x.DefaultSint64
 	}
 	return Default_TestAllTypes_DefaultSint64
 }
 
-func (m *TestAllTypes) GetDefaultFixed32() uint32 {
-	if m != nil && m.DefaultFixed32 != nil {
-		return *m.DefaultFixed32
+func (x *TestAllTypes) GetDefaultFixed32() uint32 {
+	if x != nil && x.DefaultFixed32 != nil {
+		return *x.DefaultFixed32
 	}
 	return Default_TestAllTypes_DefaultFixed32
 }
 
-func (m *TestAllTypes) GetDefaultFixed64() uint64 {
-	if m != nil && m.DefaultFixed64 != nil {
-		return *m.DefaultFixed64
+func (x *TestAllTypes) GetDefaultFixed64() uint64 {
+	if x != nil && x.DefaultFixed64 != nil {
+		return *x.DefaultFixed64
 	}
 	return Default_TestAllTypes_DefaultFixed64
 }
 
-func (m *TestAllTypes) GetDefaultSfixed32() int32 {
-	if m != nil && m.DefaultSfixed32 != nil {
-		return *m.DefaultSfixed32
+func (x *TestAllTypes) GetDefaultSfixed32() int32 {
+	if x != nil && x.DefaultSfixed32 != nil {
+		return *x.DefaultSfixed32
 	}
 	return Default_TestAllTypes_DefaultSfixed32
 }
 
-func (m *TestAllTypes) GetDefaultSfixed64() int64 {
-	if m != nil && m.DefaultSfixed64 != nil {
-		return *m.DefaultSfixed64
+func (x *TestAllTypes) GetDefaultSfixed64() int64 {
+	if x != nil && x.DefaultSfixed64 != nil {
+		return *x.DefaultSfixed64
 	}
 	return Default_TestAllTypes_DefaultSfixed64
 }
 
-func (m *TestAllTypes) GetDefaultFloat() float32 {
-	if m != nil && m.DefaultFloat != nil {
-		return *m.DefaultFloat
+func (x *TestAllTypes) GetDefaultFloat() float32 {
+	if x != nil && x.DefaultFloat != nil {
+		return *x.DefaultFloat
 	}
 	return Default_TestAllTypes_DefaultFloat
 }
 
-func (m *TestAllTypes) GetDefaultDouble() float64 {
-	if m != nil && m.DefaultDouble != nil {
-		return *m.DefaultDouble
+func (x *TestAllTypes) GetDefaultDouble() float64 {
+	if x != nil && x.DefaultDouble != nil {
+		return *x.DefaultDouble
 	}
 	return Default_TestAllTypes_DefaultDouble
 }
 
-func (m *TestAllTypes) GetDefaultBool() bool {
-	if m != nil && m.DefaultBool != nil {
-		return *m.DefaultBool
+func (x *TestAllTypes) GetDefaultBool() bool {
+	if x != nil && x.DefaultBool != nil {
+		return *x.DefaultBool
 	}
 	return Default_TestAllTypes_DefaultBool
 }
 
-func (m *TestAllTypes) GetDefaultString() string {
-	if m != nil && m.DefaultString != nil {
-		return *m.DefaultString
+func (x *TestAllTypes) GetDefaultString() string {
+	if x != nil && x.DefaultString != nil {
+		return *x.DefaultString
 	}
 	return Default_TestAllTypes_DefaultString
 }
 
-func (m *TestAllTypes) GetDefaultBytes() []byte {
-	if m != nil && m.DefaultBytes != nil {
-		return m.DefaultBytes
+func (x *TestAllTypes) GetDefaultBytes() []byte {
+	if x != nil && x.DefaultBytes != nil {
+		return x.DefaultBytes
 	}
 	return append([]byte(nil), Default_TestAllTypes_DefaultBytes...)
 }
 
-func (m *TestAllTypes) GetDefaultNestedEnum() TestAllTypes_NestedEnum {
-	if m != nil && m.DefaultNestedEnum != nil {
-		return *m.DefaultNestedEnum
+func (x *TestAllTypes) GetDefaultNestedEnum() TestAllTypes_NestedEnum {
+	if x != nil && x.DefaultNestedEnum != nil {
+		return *x.DefaultNestedEnum
 	}
 	return Default_TestAllTypes_DefaultNestedEnum
 }
 
-func (m *TestAllTypes) GetDefaultForeignEnum() ForeignEnum {
-	if m != nil && m.DefaultForeignEnum != nil {
-		return *m.DefaultForeignEnum
+func (x *TestAllTypes) GetDefaultForeignEnum() ForeignEnum {
+	if x != nil && x.DefaultForeignEnum != nil {
+		return *x.DefaultForeignEnum
 	}
 	return Default_TestAllTypes_DefaultForeignEnum
 }
@@ -950,64 +961,64 @@ func (m *TestAllTypes) GetOneofField() isTestAllTypes_OneofField {
 	return nil
 }
 
-func (m *TestAllTypes) GetOneofUint32() uint32 {
-	if x, ok := m.GetOneofField().(*TestAllTypes_OneofUint32); ok {
+func (x *TestAllTypes) GetOneofUint32() uint32 {
+	if x, ok := x.GetOneofField().(*TestAllTypes_OneofUint32); ok {
 		return x.OneofUint32
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOneofNestedMessage() *TestAllTypes_NestedMessage {
-	if x, ok := m.GetOneofField().(*TestAllTypes_OneofNestedMessage); ok {
+func (x *TestAllTypes) GetOneofNestedMessage() *TestAllTypes_NestedMessage {
+	if x, ok := x.GetOneofField().(*TestAllTypes_OneofNestedMessage); ok {
 		return x.OneofNestedMessage
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetOneofString() string {
-	if x, ok := m.GetOneofField().(*TestAllTypes_OneofString); ok {
+func (x *TestAllTypes) GetOneofString() string {
+	if x, ok := x.GetOneofField().(*TestAllTypes_OneofString); ok {
 		return x.OneofString
 	}
 	return ""
 }
 
-func (m *TestAllTypes) GetOneofBytes() []byte {
-	if x, ok := m.GetOneofField().(*TestAllTypes_OneofBytes); ok {
+func (x *TestAllTypes) GetOneofBytes() []byte {
+	if x, ok := x.GetOneofField().(*TestAllTypes_OneofBytes); ok {
 		return x.OneofBytes
 	}
 	return nil
 }
 
-func (m *TestAllTypes) GetOneofBool() bool {
-	if x, ok := m.GetOneofField().(*TestAllTypes_OneofBool); ok {
+func (x *TestAllTypes) GetOneofBool() bool {
+	if x, ok := x.GetOneofField().(*TestAllTypes_OneofBool); ok {
 		return x.OneofBool
 	}
 	return false
 }
 
-func (m *TestAllTypes) GetOneofUint64() uint64 {
-	if x, ok := m.GetOneofField().(*TestAllTypes_OneofUint64); ok {
+func (x *TestAllTypes) GetOneofUint64() uint64 {
+	if x, ok := x.GetOneofField().(*TestAllTypes_OneofUint64); ok {
 		return x.OneofUint64
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOneofFloat() float32 {
-	if x, ok := m.GetOneofField().(*TestAllTypes_OneofFloat); ok {
+func (x *TestAllTypes) GetOneofFloat() float32 {
+	if x, ok := x.GetOneofField().(*TestAllTypes_OneofFloat); ok {
 		return x.OneofFloat
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOneofDouble() float64 {
-	if x, ok := m.GetOneofField().(*TestAllTypes_OneofDouble); ok {
+func (x *TestAllTypes) GetOneofDouble() float64 {
+	if x, ok := x.GetOneofField().(*TestAllTypes_OneofDouble); ok {
 		return x.OneofDouble
 	}
 	return 0
 }
 
-func (m *TestAllTypes) GetOneofEnum() TestAllTypes_NestedEnum {
-	if x, ok := m.GetOneofField().(*TestAllTypes_OneofEnum); ok {
+func (x *TestAllTypes) GetOneofEnum() TestAllTypes_NestedEnum {
+	if x, ok := x.GetOneofField().(*TestAllTypes_OneofEnum); ok {
 		return x.OneofEnum
 	}
 	return TestAllTypes_FOO
@@ -1039,12 +1050,19 @@ type TestDeprecatedMessage struct {
 	XXX_sizecache        int32                                   `json:"-"`
 }
 
-func (m *TestDeprecatedMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[1].MessageOf(m)
+func (x *TestDeprecatedMessage) Reset() {
+	*x = TestDeprecatedMessage{}
 }
-func (m *TestDeprecatedMessage) Reset()         { *m = TestDeprecatedMessage{} }
-func (m *TestDeprecatedMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*TestDeprecatedMessage) ProtoMessage()    {}
+
+func (x *TestDeprecatedMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TestDeprecatedMessage) ProtoMessage() {}
+
+func (x *TestDeprecatedMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use TestDeprecatedMessage.ProtoReflect.Type instead.
 func (*TestDeprecatedMessage) Descriptor() ([]byte, []int) {
@@ -1052,9 +1070,9 @@ func (*TestDeprecatedMessage) Descriptor() ([]byte, []int) {
 }
 
 // Deprecated: Do not use.
-func (m *TestDeprecatedMessage) GetDeprecatedInt32() int32 {
-	if m != nil && m.DeprecatedInt32 != nil {
-		return *m.DeprecatedInt32
+func (x *TestDeprecatedMessage) GetDeprecatedInt32() int32 {
+	if x != nil && x.DeprecatedInt32 != nil {
+		return *x.DeprecatedInt32
 	}
 	return 0
 }
@@ -1077,8 +1095,8 @@ func (m *TestDeprecatedMessage) GetDeprecatedOneof() isTestDeprecatedMessage_Dep
 }
 
 // Deprecated: Do not use.
-func (m *TestDeprecatedMessage) GetDeprecatedOneofField() int32 {
-	if x, ok := m.GetDeprecatedOneof().(*TestDeprecatedMessage_DeprecatedOneofField); ok {
+func (x *TestDeprecatedMessage) GetDeprecatedOneofField() int32 {
+	if x, ok := x.GetDeprecatedOneof().(*TestDeprecatedMessage_DeprecatedOneofField); ok {
 		return x.DeprecatedOneofField
 	}
 	return 0
@@ -1099,28 +1117,35 @@ type ForeignMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ForeignMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[2].MessageOf(m)
+func (x *ForeignMessage) Reset() {
+	*x = ForeignMessage{}
 }
-func (m *ForeignMessage) Reset()         { *m = ForeignMessage{} }
-func (m *ForeignMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ForeignMessage) ProtoMessage()    {}
+
+func (x *ForeignMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ForeignMessage) ProtoMessage() {}
+
+func (x *ForeignMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use ForeignMessage.ProtoReflect.Type instead.
 func (*ForeignMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawDescGZIP(), []int{2}
 }
 
-func (m *ForeignMessage) GetC() int32 {
-	if m != nil && m.C != nil {
-		return *m.C
+func (x *ForeignMessage) GetC() int32 {
+	if x != nil && x.C != nil {
+		return *x.C
 	}
 	return 0
 }
 
-func (m *ForeignMessage) GetD() int32 {
-	if m != nil && m.D != nil {
-		return *m.D
+func (x *ForeignMessage) GetD() int32 {
+	if x != nil && x.D != nil {
+		return *x.D
 	}
 	return 0
 }
@@ -1131,12 +1156,19 @@ type TestReservedFields struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *TestReservedFields) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[3].MessageOf(m)
+func (x *TestReservedFields) Reset() {
+	*x = TestReservedFields{}
 }
-func (m *TestReservedFields) Reset()         { *m = TestReservedFields{} }
-func (m *TestReservedFields) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*TestReservedFields) ProtoMessage()    {}
+
+func (x *TestReservedFields) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TestReservedFields) ProtoMessage() {}
+
+func (x *TestReservedFields) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use TestReservedFields.ProtoReflect.Type instead.
 func (*TestReservedFields) Descriptor() ([]byte, []int) {
@@ -1150,12 +1182,19 @@ type TestAllExtensions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *TestAllExtensions) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[4].MessageOf(m)
+func (x *TestAllExtensions) Reset() {
+	*x = TestAllExtensions{}
 }
-func (m *TestAllExtensions) Reset()         { *m = TestAllExtensions{} }
-func (m *TestAllExtensions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*TestAllExtensions) ProtoMessage()    {}
+
+func (x *TestAllExtensions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TestAllExtensions) ProtoMessage() {}
+
+func (x *TestAllExtensions) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[4].MessageOf(x)
+}
 
 // Deprecated: Use TestAllExtensions.ProtoReflect.Type instead.
 func (*TestAllExtensions) Descriptor() ([]byte, []int) {
@@ -1178,21 +1217,28 @@ type OptionalGroupExtension struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *OptionalGroupExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[5].MessageOf(m)
+func (x *OptionalGroupExtension) Reset() {
+	*x = OptionalGroupExtension{}
 }
-func (m *OptionalGroupExtension) Reset()         { *m = OptionalGroupExtension{} }
-func (m *OptionalGroupExtension) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*OptionalGroupExtension) ProtoMessage()    {}
+
+func (x *OptionalGroupExtension) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OptionalGroupExtension) ProtoMessage() {}
+
+func (x *OptionalGroupExtension) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[5].MessageOf(x)
+}
 
 // Deprecated: Use OptionalGroupExtension.ProtoReflect.Type instead.
 func (*OptionalGroupExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawDescGZIP(), []int{5}
 }
 
-func (m *OptionalGroupExtension) GetA() int32 {
-	if m != nil && m.A != nil {
-		return *m.A
+func (x *OptionalGroupExtension) GetA() int32 {
+	if x != nil && x.A != nil {
+		return *x.A
 	}
 	return 0
 }
@@ -1204,21 +1250,28 @@ type RepeatedGroupExtension struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *RepeatedGroupExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[6].MessageOf(m)
+func (x *RepeatedGroupExtension) Reset() {
+	*x = RepeatedGroupExtension{}
 }
-func (m *RepeatedGroupExtension) Reset()         { *m = RepeatedGroupExtension{} }
-func (m *RepeatedGroupExtension) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*RepeatedGroupExtension) ProtoMessage()    {}
+
+func (x *RepeatedGroupExtension) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RepeatedGroupExtension) ProtoMessage() {}
+
+func (x *RepeatedGroupExtension) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[6].MessageOf(x)
+}
 
 // Deprecated: Use RepeatedGroupExtension.ProtoReflect.Type instead.
 func (*RepeatedGroupExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawDescGZIP(), []int{6}
 }
 
-func (m *RepeatedGroupExtension) GetA() int32 {
-	if m != nil && m.A != nil {
-		return *m.A
+func (x *RepeatedGroupExtension) GetA() int32 {
+	if x != nil && x.A != nil {
+		return *x.A
 	}
 	return 0
 }
@@ -1229,12 +1282,19 @@ type TestNestedExtension struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *TestNestedExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[7].MessageOf(m)
+func (x *TestNestedExtension) Reset() {
+	*x = TestNestedExtension{}
 }
-func (m *TestNestedExtension) Reset()         { *m = TestNestedExtension{} }
-func (m *TestNestedExtension) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*TestNestedExtension) ProtoMessage()    {}
+
+func (x *TestNestedExtension) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TestNestedExtension) ProtoMessage() {}
+
+func (x *TestNestedExtension) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[7].MessageOf(x)
+}
 
 // Deprecated: Use TestNestedExtension.ProtoReflect.Type instead.
 func (*TestNestedExtension) Descriptor() ([]byte, []int) {
@@ -1248,12 +1308,19 @@ type FooRequest struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FooRequest) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[8].MessageOf(m)
+func (x *FooRequest) Reset() {
+	*x = FooRequest{}
 }
-func (m *FooRequest) Reset()         { *m = FooRequest{} }
-func (m *FooRequest) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FooRequest) ProtoMessage()    {}
+
+func (x *FooRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FooRequest) ProtoMessage() {}
+
+func (x *FooRequest) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[8].MessageOf(x)
+}
 
 // Deprecated: Use FooRequest.ProtoReflect.Type instead.
 func (*FooRequest) Descriptor() ([]byte, []int) {
@@ -1266,12 +1333,19 @@ type FooResponse struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FooResponse) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[9].MessageOf(m)
+func (x *FooResponse) Reset() {
+	*x = FooResponse{}
 }
-func (m *FooResponse) Reset()         { *m = FooResponse{} }
-func (m *FooResponse) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FooResponse) ProtoMessage()    {}
+
+func (x *FooResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FooResponse) ProtoMessage() {}
+
+func (x *FooResponse) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[9].MessageOf(x)
+}
 
 // Deprecated: Use FooResponse.ProtoReflect.Type instead.
 func (*FooResponse) Descriptor() ([]byte, []int) {
@@ -1286,28 +1360,35 @@ type TestAllTypes_NestedMessage struct {
 	XXX_sizecache        int32         `json:"-"`
 }
 
-func (m *TestAllTypes_NestedMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[10].MessageOf(m)
+func (x *TestAllTypes_NestedMessage) Reset() {
+	*x = TestAllTypes_NestedMessage{}
 }
-func (m *TestAllTypes_NestedMessage) Reset()         { *m = TestAllTypes_NestedMessage{} }
-func (m *TestAllTypes_NestedMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*TestAllTypes_NestedMessage) ProtoMessage()    {}
+
+func (x *TestAllTypes_NestedMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TestAllTypes_NestedMessage) ProtoMessage() {}
+
+func (x *TestAllTypes_NestedMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[10].MessageOf(x)
+}
 
 // Deprecated: Use TestAllTypes_NestedMessage.ProtoReflect.Type instead.
 func (*TestAllTypes_NestedMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawDescGZIP(), []int{0, 0}
 }
 
-func (m *TestAllTypes_NestedMessage) GetA() int32 {
-	if m != nil && m.A != nil {
-		return *m.A
+func (x *TestAllTypes_NestedMessage) GetA() int32 {
+	if x != nil && x.A != nil {
+		return *x.A
 	}
 	return 0
 }
 
-func (m *TestAllTypes_NestedMessage) GetCorecursive() *TestAllTypes {
-	if m != nil {
-		return m.Corecursive
+func (x *TestAllTypes_NestedMessage) GetCorecursive() *TestAllTypes {
+	if x != nil {
+		return x.Corecursive
 	}
 	return nil
 }
@@ -1319,21 +1400,28 @@ type TestAllTypes_OptionalGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *TestAllTypes_OptionalGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[11].MessageOf(m)
+func (x *TestAllTypes_OptionalGroup) Reset() {
+	*x = TestAllTypes_OptionalGroup{}
 }
-func (m *TestAllTypes_OptionalGroup) Reset()         { *m = TestAllTypes_OptionalGroup{} }
-func (m *TestAllTypes_OptionalGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*TestAllTypes_OptionalGroup) ProtoMessage()    {}
+
+func (x *TestAllTypes_OptionalGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TestAllTypes_OptionalGroup) ProtoMessage() {}
+
+func (x *TestAllTypes_OptionalGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[11].MessageOf(x)
+}
 
 // Deprecated: Use TestAllTypes_OptionalGroup.ProtoReflect.Type instead.
 func (*TestAllTypes_OptionalGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawDescGZIP(), []int{0, 1}
 }
 
-func (m *TestAllTypes_OptionalGroup) GetA() int32 {
-	if m != nil && m.A != nil {
-		return *m.A
+func (x *TestAllTypes_OptionalGroup) GetA() int32 {
+	if x != nil && x.A != nil {
+		return *x.A
 	}
 	return 0
 }
@@ -1345,21 +1433,28 @@ type TestAllTypes_RepeatedGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *TestAllTypes_RepeatedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[12].MessageOf(m)
+func (x *TestAllTypes_RepeatedGroup) Reset() {
+	*x = TestAllTypes_RepeatedGroup{}
 }
-func (m *TestAllTypes_RepeatedGroup) Reset()         { *m = TestAllTypes_RepeatedGroup{} }
-func (m *TestAllTypes_RepeatedGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*TestAllTypes_RepeatedGroup) ProtoMessage()    {}
+
+func (x *TestAllTypes_RepeatedGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TestAllTypes_RepeatedGroup) ProtoMessage() {}
+
+func (x *TestAllTypes_RepeatedGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_proto_messageTypes[12].MessageOf(x)
+}
 
 // Deprecated: Use TestAllTypes_RepeatedGroup.ProtoReflect.Type instead.
 func (*TestAllTypes_RepeatedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_test_test_proto_rawDescGZIP(), []int{0, 2}
 }
 
-func (m *TestAllTypes_RepeatedGroup) GetA() int32 {
-	if m != nil && m.A != nil {
-		return *m.A
+func (x *TestAllTypes_RepeatedGroup) GetA() int32 {
+	if x != nil && x.A != nil {
+		return *x.A
 	}
 	return 0
 }

@@ -20,13 +20,6 @@ const (
 	Enum_ZERO Enum = 0
 )
 
-func (e Enum) Type() protoreflect.EnumType {
-	return xxx_File_extensions_proto3_ext3_proto_enumTypes[0]
-}
-func (e Enum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0: "ZERO",
@@ -41,6 +34,14 @@ func (x Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+func (Enum) Type() protoreflect.EnumType {
+	return xxx_File_extensions_proto3_ext3_proto_enumTypes[0]
+}
+
+func (x Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 // Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_extensions_proto3_ext3_proto_rawDescGZIP(), []int{0}
@@ -52,12 +53,19 @@ type Message struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_proto3_ext3_proto_messageTypes[0].MessageOf(m)
+func (x *Message) Reset() {
+	*x = Message{}
 }
-func (m *Message) Reset()         { *m = Message{} }
-func (m *Message) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message) ProtoMessage()    {}
+
+func (x *Message) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message) ProtoMessage() {}
+
+func (x *Message) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_proto3_ext3_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {

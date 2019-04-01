@@ -17,13 +17,6 @@ const (
 	DeprecatedEnum_DEPRECATED DeprecatedEnum = 0 // Deprecated: Do not use.
 )
 
-func (e DeprecatedEnum) Type() protoreflect.EnumType {
-	return xxx_File_comments_deprecated_proto_enumTypes[0]
-}
-func (e DeprecatedEnum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use DeprecatedEnum.Type.Values instead.
 var DeprecatedEnum_name = map[int32]string{
 	0: "DEPRECATED",
@@ -36,6 +29,14 @@ var DeprecatedEnum_value = map[string]int32{
 
 func (x DeprecatedEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (DeprecatedEnum) Type() protoreflect.EnumType {
+	return xxx_File_comments_deprecated_proto_enumTypes[0]
+}
+
+func (x DeprecatedEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Use DeprecatedEnum.Type instead.
@@ -51,12 +52,19 @@ type DeprecatedMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DeprecatedMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_deprecated_proto_messageTypes[0].MessageOf(m)
+func (x *DeprecatedMessage) Reset() {
+	*x = DeprecatedMessage{}
 }
-func (m *DeprecatedMessage) Reset()         { *m = DeprecatedMessage{} }
-func (m *DeprecatedMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*DeprecatedMessage) ProtoMessage()    {}
+
+func (x *DeprecatedMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeprecatedMessage) ProtoMessage() {}
+
+func (x *DeprecatedMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_comments_deprecated_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use DeprecatedMessage.ProtoReflect.Type instead.
 func (*DeprecatedMessage) Descriptor() ([]byte, []int) {
@@ -64,9 +72,9 @@ func (*DeprecatedMessage) Descriptor() ([]byte, []int) {
 }
 
 // Deprecated: Do not use.
-func (m *DeprecatedMessage) GetDeprecatedField() string {
-	if m != nil {
-		return m.DeprecatedField
+func (x *DeprecatedMessage) GetDeprecatedField() string {
+	if x != nil {
+		return x.DeprecatedField
 	}
 	return ""
 }

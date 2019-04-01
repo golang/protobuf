@@ -207,10 +207,13 @@ func genImport(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, imp
 }
 
 func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum *protogen.Enum) {
+	// Enum type declaration.
 	g.PrintLeadingComments(enum.Location)
 	g.Annotate(enum.GoIdent.GoName, enum.Location)
 	g.P("type ", enum.GoIdent, " int32",
 		deprecationComment(enum.Desc.Options().(*descriptorpb.EnumOptions).GetDeprecated()))
+
+	// Enum value constants.
 	g.P("const (")
 	for _, value := range enum.Values {
 		g.PrintLeadingComments(value.Location)
@@ -221,9 +224,7 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	g.P(")")
 	g.P()
 
-	// Generate support for protobuf reflection.
-	genReflectEnum(gen, g, f, enum)
-
+	// Enum value mapping (number -> name).
 	nameMap := enum.GoIdent.GoName + "_name"
 	g.P("// Deprecated: Use ", enum.GoIdent.GoName, ".Type.Values instead.")
 	g.P("var ", nameMap, " = map[int32]string{")
@@ -239,6 +240,7 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	g.P("}")
 	g.P()
 
+	// Enum value mapping (name -> number).
 	valueMap := enum.GoIdent.GoName + "_value"
 	g.P("// Deprecated: Use ", enum.GoIdent.GoName, ".Type.Values instead.")
 	g.P("var ", valueMap, " = map[string]int32{")
@@ -248,17 +250,22 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	g.P("}")
 	g.P()
 
+	// Enum method.
 	if enum.Desc.Syntax() != protoreflect.Proto3 {
 		g.P("func (x ", enum.GoIdent, ") Enum() *", enum.GoIdent, " {")
 		g.P("return &x")
 		g.P("}")
 		g.P()
 	}
+	// String method.
 	g.P("func (x ", enum.GoIdent, ") String() string {")
 	g.P("return ", protoimplPackage.Ident("X"), ".EnumStringOf(x.Type(), ", protoreflectPackage.Ident("EnumNumber"), "(x))")
 	g.P("}")
 	g.P()
 
+	genReflectEnum(gen, g, f, enum)
+
+	// UnmarshalJSON method.
 	if enum.Desc.Syntax() == protoreflect.Proto2 {
 		g.P("// Deprecated: Do not use.")
 		g.P("func (x *", enum.GoIdent, ") UnmarshalJSON(b []byte) error {")
@@ -272,6 +279,7 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 		g.P()
 	}
 
+	// EnumDescriptor method.
 	var indexes []string
 	for i := 1; i < len(enum.Location.Path); i += 2 {
 		indexes = append(indexes, strconv.Itoa(int(enum.Location.Path[i])))
@@ -285,13 +293,12 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	genWellKnownType(g, "", enum.GoIdent, enum.Desc)
 }
 
-// enumRegistryName returns the name used to register an enum with the proto
-// package registry.
+// enumLegacyName returns the name used by the v1 proto package.
 //
 // Confusingly, this is <proto_package>.<go_ident>. This probably should have
 // been the full name of the proto enum type instead, but changing it at this
 // point would require thought.
-func enumRegistryName(enum *protogen.Enum) string {
+func enumLegacyName(enum *protogen.Enum) string {
 	// Find the FileDescriptor for this enum.
 	var desc protoreflect.Descriptor = enum.Desc
 	for {
@@ -313,6 +320,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		return
 	}
 
+	// Message type declaration.
 	hasComment := g.PrintLeadingComments(message.Location)
 	if message.Desc.Options().(*descriptorpb.MessageOptions).GetDeprecated() {
 		if hasComment {
@@ -369,16 +377,23 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	g.P("}")
 	g.P()
 
-	// Generate support for protobuf reflection.
+	// Reset method.
+	g.P("func (x *", message.GoIdent, ") Reset() {")
+	g.P("*x = ", message.GoIdent, "{}")
+	g.P("}")
+	g.P()
+	// String method.
+	g.P("func (x *", message.GoIdent, ") String() string {")
+	g.P("return ", protoimplPackage.Ident("X"), ".MessageStringOf(x)")
+	g.P("}")
+	g.P()
+	// ProtoMessage method.
+	g.P("func (*", message.GoIdent, ") ProtoMessage() {}")
+	g.P()
+
 	genReflectMessage(gen, g, f, message)
 
-	// Reset
-	g.P("func (m *", message.GoIdent, ") Reset() { *m = ", message.GoIdent, "{} }")
-	// String
-	g.P("func (m *", message.GoIdent, ") String() string { return ", protoimplPackage.Ident("X"), ".MessageStringOf(m) }")
-	// ProtoMessage
-	g.P("func (*", message.GoIdent, ") ProtoMessage() {}")
-	// Descriptor
+	// Descriptor method.
 	var indexes []string
 	for i := 1; i < len(message.Location.Path); i += 2 {
 		indexes = append(indexes, strconv.Itoa(int(message.Location.Path[i])))
@@ -389,7 +404,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	g.P("}")
 	g.P()
 
-	// ExtensionRangeArray
+	// ExtensionRangeArray method.
 	if extranges := message.Desc.ExtensionRanges(); extranges.Len() > 0 {
 		protoExtRange := protoifacePackage.Ident("ExtensionRangeV1")
 		extRangeVar := "extRange_" + message.GoIdent.GoName
@@ -459,7 +474,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	}
 	g.P()
 
-	// Getters.
+	// Getter methods.
 	for _, field := range message.Fields {
 		if field.OneofType != nil {
 			if field == field.OneofType.Fields[0] {
@@ -472,22 +487,22 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 			g.P(deprecationComment(true))
 		}
 		g.Annotate(message.GoIdent.GoName+".Get"+field.GoName, field.Location)
-		g.P("func (m *", message.GoIdent, ") Get", field.GoName, "() ", goType, " {")
+		g.P("func (x *", message.GoIdent, ") Get", field.GoName, "() ", goType, " {")
 		if field.OneofType != nil {
-			g.P("if x, ok := m.Get", field.OneofType.GoName, "().(*", fieldOneofType(field), "); ok {")
+			g.P("if x, ok := x.Get", field.OneofType.GoName, "().(*", fieldOneofType(field), "); ok {")
 			g.P("return x.", field.GoName)
 			g.P("}")
 		} else {
 			if field.Desc.Syntax() == protoreflect.Proto3 || defaultValue == "nil" {
-				g.P("if m != nil {")
+				g.P("if x != nil {")
 			} else {
-				g.P("if m != nil && m.", field.GoName, " != nil {")
+				g.P("if x != nil && x.", field.GoName, " != nil {")
 			}
 			star := ""
 			if pointer {
 				star = "*"
 			}
-			g.P("return ", star, " m.", field.GoName)
+			g.P("return ", star, " x.", field.GoName)
 			g.P("}")
 		}
 		g.P("return ", defaultValue)
@@ -550,7 +565,7 @@ func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType strin
 func fieldProtobufTag(field *protogen.Field) string {
 	var enumName string
 	if field.Desc.Kind() == protoreflect.EnumKind {
-		enumName = enumRegistryName(field.EnumType)
+		enumName = enumLegacyName(field.EnumType)
 	}
 	return tag.Marshal(field.Desc, enumName)
 }
@@ -679,6 +694,8 @@ func deprecationComment(deprecated bool) string {
 	return "// Deprecated: Do not use."
 }
 
+// TODO: Remove this. This was added to aid jsonpb, but jsonpb does this work
+// through the use of protobuf reflection now.
 func genWellKnownType(g *protogen.GeneratedFile, ptr string, ident protogen.GoIdent, desc protoreflect.Descriptor) {
 	if wellKnownTypes[desc.FullName()] {
 		g.P("func (", ptr, ident, `) XXX_WellKnownType() string { return "`, desc.Name(), `" }`)

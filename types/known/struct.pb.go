@@ -23,13 +23,6 @@ const (
 	NullValue_NULL_VALUE NullValue = 0
 )
 
-func (e NullValue) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_struct_proto_enumTypes[0]
-}
-func (e NullValue) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use NullValue.Type.Values instead.
 var NullValue_name = map[int32]string{
 	0: "NULL_VALUE",
@@ -42,6 +35,14 @@ var NullValue_value = map[string]int32{
 
 func (x NullValue) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (NullValue) Type() protoreflect.EnumType {
+	return xxx_File_google_protobuf_struct_proto_enumTypes[0]
+}
+
+func (x NullValue) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Use NullValue.Type instead.
@@ -67,12 +68,19 @@ type Struct struct {
 	XXX_sizecache        int32             `json:"-"`
 }
 
-func (m *Struct) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_struct_proto_messageTypes[0].MessageOf(m)
+func (x *Struct) Reset() {
+	*x = Struct{}
 }
-func (m *Struct) Reset()         { *m = Struct{} }
-func (m *Struct) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Struct) ProtoMessage()    {}
+
+func (x *Struct) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Struct) ProtoMessage() {}
+
+func (x *Struct) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_struct_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Struct.ProtoReflect.Type instead.
 func (*Struct) Descriptor() ([]byte, []int) {
@@ -81,9 +89,9 @@ func (*Struct) Descriptor() ([]byte, []int) {
 
 func (*Struct) XXX_WellKnownType() string { return "Struct" }
 
-func (m *Struct) GetFields() map[string]*Value {
-	if m != nil {
-		return m.Fields
+func (x *Struct) GetFields() map[string]*Value {
+	if x != nil {
+		return x.Fields
 	}
 	return nil
 }
@@ -116,12 +124,19 @@ type Value struct {
 	XXX_sizecache        int32        `json:"-"`
 }
 
-func (m *Value) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_struct_proto_messageTypes[1].MessageOf(m)
+func (x *Value) Reset() {
+	*x = Value{}
 }
-func (m *Value) Reset()         { *m = Value{} }
-func (m *Value) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Value) ProtoMessage()    {}
+
+func (x *Value) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Value) ProtoMessage() {}
+
+func (x *Value) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_struct_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use Value.ProtoReflect.Type instead.
 func (*Value) Descriptor() ([]byte, []int) {
@@ -177,43 +192,43 @@ func (m *Value) GetKind() isValue_Kind {
 	return nil
 }
 
-func (m *Value) GetNullValue() NullValue {
-	if x, ok := m.GetKind().(*Value_NullValue); ok {
+func (x *Value) GetNullValue() NullValue {
+	if x, ok := x.GetKind().(*Value_NullValue); ok {
 		return x.NullValue
 	}
 	return NullValue_NULL_VALUE
 }
 
-func (m *Value) GetNumberValue() float64 {
-	if x, ok := m.GetKind().(*Value_NumberValue); ok {
+func (x *Value) GetNumberValue() float64 {
+	if x, ok := x.GetKind().(*Value_NumberValue); ok {
 		return x.NumberValue
 	}
 	return 0
 }
 
-func (m *Value) GetStringValue() string {
-	if x, ok := m.GetKind().(*Value_StringValue); ok {
+func (x *Value) GetStringValue() string {
+	if x, ok := x.GetKind().(*Value_StringValue); ok {
 		return x.StringValue
 	}
 	return ""
 }
 
-func (m *Value) GetBoolValue() bool {
-	if x, ok := m.GetKind().(*Value_BoolValue); ok {
+func (x *Value) GetBoolValue() bool {
+	if x, ok := x.GetKind().(*Value_BoolValue); ok {
 		return x.BoolValue
 	}
 	return false
 }
 
-func (m *Value) GetStructValue() *Struct {
-	if x, ok := m.GetKind().(*Value_StructValue); ok {
+func (x *Value) GetStructValue() *Struct {
+	if x, ok := x.GetKind().(*Value_StructValue); ok {
 		return x.StructValue
 	}
 	return nil
 }
 
-func (m *Value) GetListValue() *ListValue {
-	if x, ok := m.GetKind().(*Value_ListValue); ok {
+func (x *Value) GetListValue() *ListValue {
+	if x, ok := x.GetKind().(*Value_ListValue); ok {
 		return x.ListValue
 	}
 	return nil
@@ -242,12 +257,19 @@ type ListValue struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ListValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_struct_proto_messageTypes[2].MessageOf(m)
+func (x *ListValue) Reset() {
+	*x = ListValue{}
 }
-func (m *ListValue) Reset()         { *m = ListValue{} }
-func (m *ListValue) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ListValue) ProtoMessage()    {}
+
+func (x *ListValue) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListValue) ProtoMessage() {}
+
+func (x *ListValue) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_struct_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use ListValue.ProtoReflect.Type instead.
 func (*ListValue) Descriptor() ([]byte, []int) {
@@ -256,9 +278,9 @@ func (*ListValue) Descriptor() ([]byte, []int) {
 
 func (*ListValue) XXX_WellKnownType() string { return "ListValue" }
 
-func (m *ListValue) GetValues() []*Value {
-	if m != nil {
-		return m.Values
+func (x *ListValue) GetValues() []*Value {
+	if x != nil {
+		return x.Values
 	}
 	return nil
 }

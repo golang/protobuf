@@ -18,13 +18,6 @@ const (
 	FieldTestMessage_ZERO FieldTestMessage_Enum = 0
 )
 
-func (e FieldTestMessage_Enum) Type() protoreflect.EnumType {
-	return xxx_File_proto3_fields_proto_enumTypes[0]
-}
-func (e FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use FieldTestMessage_Enum.Type.Values instead.
 var FieldTestMessage_Enum_name = map[int32]string{
 	0: "ZERO",
@@ -37,6 +30,14 @@ var FieldTestMessage_Enum_value = map[string]int32{
 
 func (x FieldTestMessage_Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (FieldTestMessage_Enum) Type() protoreflect.EnumType {
+	return xxx_File_proto3_fields_proto_enumTypes[0]
+}
+
+func (x FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Use FieldTestMessage_Enum.Type instead.
@@ -87,273 +88,280 @@ type FieldTestMessage struct {
 	XXX_sizecache        int32                                `json:"-"`
 }
 
-func (m *FieldTestMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto3_fields_proto_messageTypes[0].MessageOf(m)
+func (x *FieldTestMessage) Reset() {
+	*x = FieldTestMessage{}
 }
-func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
-func (m *FieldTestMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldTestMessage) ProtoMessage()    {}
+
+func (x *FieldTestMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldTestMessage) ProtoMessage() {}
+
+func (x *FieldTestMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto3_fields_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use FieldTestMessage.ProtoReflect.Type instead.
 func (*FieldTestMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_proto3_fields_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *FieldTestMessage) GetOptionalBool() string {
-	if m != nil {
-		return m.OptionalBool
+func (x *FieldTestMessage) GetOptionalBool() string {
+	if x != nil {
+		return x.OptionalBool
 	}
 	return ""
 }
 
-func (m *FieldTestMessage) GetOptionalEnum() FieldTestMessage_Enum {
-	if m != nil {
-		return m.OptionalEnum
+func (x *FieldTestMessage) GetOptionalEnum() FieldTestMessage_Enum {
+	if x != nil {
+		return x.OptionalEnum
 	}
 	return FieldTestMessage_ZERO
 }
 
-func (m *FieldTestMessage) GetOptionalInt32() int32 {
-	if m != nil {
-		return m.OptionalInt32
+func (x *FieldTestMessage) GetOptionalInt32() int32 {
+	if x != nil {
+		return x.OptionalInt32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalSint32() int32 {
-	if m != nil {
-		return m.OptionalSint32
+func (x *FieldTestMessage) GetOptionalSint32() int32 {
+	if x != nil {
+		return x.OptionalSint32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalUint32() uint32 {
-	if m != nil {
-		return m.OptionalUint32
+func (x *FieldTestMessage) GetOptionalUint32() uint32 {
+	if x != nil {
+		return x.OptionalUint32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalInt64() int64 {
-	if m != nil {
-		return m.OptionalInt64
+func (x *FieldTestMessage) GetOptionalInt64() int64 {
+	if x != nil {
+		return x.OptionalInt64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalSint64() int64 {
-	if m != nil {
-		return m.OptionalSint64
+func (x *FieldTestMessage) GetOptionalSint64() int64 {
+	if x != nil {
+		return x.OptionalSint64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalUint64() uint64 {
-	if m != nil {
-		return m.OptionalUint64
+func (x *FieldTestMessage) GetOptionalUint64() uint64 {
+	if x != nil {
+		return x.OptionalUint64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalSfixed32() int32 {
-	if m != nil {
-		return m.OptionalSfixed32
+func (x *FieldTestMessage) GetOptionalSfixed32() int32 {
+	if x != nil {
+		return x.OptionalSfixed32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalFixed32() uint32 {
-	if m != nil {
-		return m.OptionalFixed32
+func (x *FieldTestMessage) GetOptionalFixed32() uint32 {
+	if x != nil {
+		return x.OptionalFixed32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalFloat() float32 {
-	if m != nil {
-		return m.OptionalFloat
+func (x *FieldTestMessage) GetOptionalFloat() float32 {
+	if x != nil {
+		return x.OptionalFloat
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalSfixed64() int64 {
-	if m != nil {
-		return m.OptionalSfixed64
+func (x *FieldTestMessage) GetOptionalSfixed64() int64 {
+	if x != nil {
+		return x.OptionalSfixed64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalFixed64() uint64 {
-	if m != nil {
-		return m.OptionalFixed64
+func (x *FieldTestMessage) GetOptionalFixed64() uint64 {
+	if x != nil {
+		return x.OptionalFixed64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalDouble() float64 {
-	if m != nil {
-		return m.OptionalDouble
+func (x *FieldTestMessage) GetOptionalDouble() float64 {
+	if x != nil {
+		return x.OptionalDouble
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalString() string {
-	if m != nil {
-		return m.OptionalString
+func (x *FieldTestMessage) GetOptionalString() string {
+	if x != nil {
+		return x.OptionalString
 	}
 	return ""
 }
 
-func (m *FieldTestMessage) GetOptionalBytes() []byte {
-	if m != nil {
-		return m.OptionalBytes
+func (x *FieldTestMessage) GetOptionalBytes() []byte {
+	if x != nil {
+		return x.OptionalBytes
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetOptional_Message() *FieldTestMessage_Message {
-	if m != nil {
-		return m.Optional_Message
+func (x *FieldTestMessage) GetOptional_Message() *FieldTestMessage_Message {
+	if x != nil {
+		return x.Optional_Message
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedBool() []bool {
-	if m != nil {
-		return m.RepeatedBool
+func (x *FieldTestMessage) GetRepeatedBool() []bool {
+	if x != nil {
+		return x.RepeatedBool
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedEnum() []FieldTestMessage_Enum {
-	if m != nil {
-		return m.RepeatedEnum
+func (x *FieldTestMessage) GetRepeatedEnum() []FieldTestMessage_Enum {
+	if x != nil {
+		return x.RepeatedEnum
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedInt32() []int32 {
-	if m != nil {
-		return m.RepeatedInt32
+func (x *FieldTestMessage) GetRepeatedInt32() []int32 {
+	if x != nil {
+		return x.RepeatedInt32
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedSint32() []int32 {
-	if m != nil {
-		return m.RepeatedSint32
+func (x *FieldTestMessage) GetRepeatedSint32() []int32 {
+	if x != nil {
+		return x.RepeatedSint32
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedUint32() []uint32 {
-	if m != nil {
-		return m.RepeatedUint32
+func (x *FieldTestMessage) GetRepeatedUint32() []uint32 {
+	if x != nil {
+		return x.RepeatedUint32
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedInt64() []int64 {
-	if m != nil {
-		return m.RepeatedInt64
+func (x *FieldTestMessage) GetRepeatedInt64() []int64 {
+	if x != nil {
+		return x.RepeatedInt64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedSint64() []int64 {
-	if m != nil {
-		return m.RepeatedSint64
+func (x *FieldTestMessage) GetRepeatedSint64() []int64 {
+	if x != nil {
+		return x.RepeatedSint64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedUint64() []uint64 {
-	if m != nil {
-		return m.RepeatedUint64
+func (x *FieldTestMessage) GetRepeatedUint64() []uint64 {
+	if x != nil {
+		return x.RepeatedUint64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedSfixed32() []int32 {
-	if m != nil {
-		return m.RepeatedSfixed32
+func (x *FieldTestMessage) GetRepeatedSfixed32() []int32 {
+	if x != nil {
+		return x.RepeatedSfixed32
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedFixed32() []uint32 {
-	if m != nil {
-		return m.RepeatedFixed32
+func (x *FieldTestMessage) GetRepeatedFixed32() []uint32 {
+	if x != nil {
+		return x.RepeatedFixed32
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedFloat() []float32 {
-	if m != nil {
-		return m.RepeatedFloat
+func (x *FieldTestMessage) GetRepeatedFloat() []float32 {
+	if x != nil {
+		return x.RepeatedFloat
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedSfixed64() []int64 {
-	if m != nil {
-		return m.RepeatedSfixed64
+func (x *FieldTestMessage) GetRepeatedSfixed64() []int64 {
+	if x != nil {
+		return x.RepeatedSfixed64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedFixed64() []uint64 {
-	if m != nil {
-		return m.RepeatedFixed64
+func (x *FieldTestMessage) GetRepeatedFixed64() []uint64 {
+	if x != nil {
+		return x.RepeatedFixed64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedDouble() []float64 {
-	if m != nil {
-		return m.RepeatedDouble
+func (x *FieldTestMessage) GetRepeatedDouble() []float64 {
+	if x != nil {
+		return x.RepeatedDouble
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedString() []string {
-	if m != nil {
-		return m.RepeatedString
+func (x *FieldTestMessage) GetRepeatedString() []string {
+	if x != nil {
+		return x.RepeatedString
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedBytes() [][]byte {
-	if m != nil {
-		return m.RepeatedBytes
+func (x *FieldTestMessage) GetRepeatedBytes() [][]byte {
+	if x != nil {
+		return x.RepeatedBytes
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeated_Message() []*FieldTestMessage_Message {
-	if m != nil {
-		return m.Repeated_Message
+func (x *FieldTestMessage) GetRepeated_Message() []*FieldTestMessage_Message {
+	if x != nil {
+		return x.Repeated_Message
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetMapInt32Int64() map[int32]int64 {
-	if m != nil {
-		return m.MapInt32Int64
+func (x *FieldTestMessage) GetMapInt32Int64() map[int32]int64 {
+	if x != nil {
+		return x.MapInt32Int64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetMapStringMessage() map[string]*FieldTestMessage_Message {
-	if m != nil {
-		return m.MapStringMessage
+func (x *FieldTestMessage) GetMapStringMessage() map[string]*FieldTestMessage_Message {
+	if x != nil {
+		return x.MapStringMessage
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetMapFixed64Enum() map[uint64]FieldTestMessage_Enum {
-	if m != nil {
-		return m.MapFixed64Enum
+func (x *FieldTestMessage) GetMapFixed64Enum() map[uint64]FieldTestMessage_Enum {
+	if x != nil {
+		return x.MapFixed64Enum
 	}
 	return nil
 }
@@ -364,12 +372,19 @@ type FieldTestMessage_Message struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto3_fields_proto_messageTypes[4].MessageOf(m)
+func (x *FieldTestMessage_Message) Reset() {
+	*x = FieldTestMessage_Message{}
 }
-func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
-func (m *FieldTestMessage_Message) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldTestMessage_Message) ProtoMessage()    {}
+
+func (x *FieldTestMessage_Message) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldTestMessage_Message) ProtoMessage() {}
+
+func (x *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto3_fields_proto_messageTypes[4].MessageOf(x)
+}
 
 // Deprecated: Use FieldTestMessage_Message.ProtoReflect.Type instead.
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {

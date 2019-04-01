@@ -20,28 +20,35 @@ type Layer1 struct {
 	XXX_sizecache        int32                 `json:"-"`
 }
 
-func (m *Layer1) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_nested_messages_proto_messageTypes[0].MessageOf(m)
+func (x *Layer1) Reset() {
+	*x = Layer1{}
 }
-func (m *Layer1) Reset()         { *m = Layer1{} }
-func (m *Layer1) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Layer1) ProtoMessage()    {}
+
+func (x *Layer1) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Layer1) ProtoMessage() {}
+
+func (x *Layer1) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_nested_messages_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Layer1.ProtoReflect.Type instead.
 func (*Layer1) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_nested_messages_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Layer1) GetL2() *Layer1_Layer2 {
-	if m != nil {
-		return m.L2
+func (x *Layer1) GetL2() *Layer1_Layer2 {
+	if x != nil {
+		return x.L2
 	}
 	return nil
 }
 
-func (m *Layer1) GetL3() *Layer1_Layer2_Layer3 {
-	if m != nil {
-		return m.L3
+func (x *Layer1) GetL3() *Layer1_Layer2_Layer3 {
+	if x != nil {
+		return x.L3
 	}
 	return nil
 }
@@ -53,21 +60,28 @@ type Layer1_Layer2 struct {
 	XXX_sizecache        int32                 `json:"-"`
 }
 
-func (m *Layer1_Layer2) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_nested_messages_proto_messageTypes[1].MessageOf(m)
+func (x *Layer1_Layer2) Reset() {
+	*x = Layer1_Layer2{}
 }
-func (m *Layer1_Layer2) Reset()         { *m = Layer1_Layer2{} }
-func (m *Layer1_Layer2) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Layer1_Layer2) ProtoMessage()    {}
+
+func (x *Layer1_Layer2) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Layer1_Layer2) ProtoMessage() {}
+
+func (x *Layer1_Layer2) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_nested_messages_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use Layer1_Layer2.ProtoReflect.Type instead.
 func (*Layer1_Layer2) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_nested_messages_proto_rawDescGZIP(), []int{0, 0}
 }
 
-func (m *Layer1_Layer2) GetL3() *Layer1_Layer2_Layer3 {
-	if m != nil {
-		return m.L3
+func (x *Layer1_Layer2) GetL3() *Layer1_Layer2_Layer3 {
+	if x != nil {
+		return x.L3
 	}
 	return nil
 }
@@ -78,12 +92,19 @@ type Layer1_Layer2_Layer3 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Layer1_Layer2_Layer3) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_nested_messages_proto_messageTypes[2].MessageOf(m)
+func (x *Layer1_Layer2_Layer3) Reset() {
+	*x = Layer1_Layer2_Layer3{}
 }
-func (m *Layer1_Layer2_Layer3) Reset()         { *m = Layer1_Layer2_Layer3{} }
-func (m *Layer1_Layer2_Layer3) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Layer1_Layer2_Layer3) ProtoMessage()    {}
+
+func (x *Layer1_Layer2_Layer3) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Layer1_Layer2_Layer3) ProtoMessage() {}
+
+func (x *Layer1_Layer2_Layer3) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_nested_messages_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use Layer1_Layer2_Layer3.ProtoReflect.Type instead.
 func (*Layer1_Layer2_Layer3) Descriptor() ([]byte, []int) {

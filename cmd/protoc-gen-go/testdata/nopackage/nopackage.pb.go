@@ -18,13 +18,6 @@ const (
 	Enum_ZERO Enum = 0
 )
 
-func (e Enum) Type() protoreflect.EnumType {
-	return xxx_File_nopackage_nopackage_proto_enumTypes[0]
-}
-func (e Enum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0: "ZERO",
@@ -41,6 +34,14 @@ func (x Enum) Enum() *Enum {
 
 func (x Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Enum) Type() protoreflect.EnumType {
+	return xxx_File_nopackage_nopackage_proto_enumTypes[0]
+}
+
+func (x Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -66,12 +67,19 @@ type Message struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message) ProtoReflect() protoreflect.Message {
-	return xxx_File_nopackage_nopackage_proto_messageTypes[0].MessageOf(m)
+func (x *Message) Reset() {
+	*x = Message{}
 }
-func (m *Message) Reset()         { *m = Message{} }
-func (m *Message) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message) ProtoMessage()    {}
+
+func (x *Message) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message) ProtoMessage() {}
+
+func (x *Message) ProtoReflect() protoreflect.Message {
+	return xxx_File_nopackage_nopackage_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
@@ -80,16 +88,16 @@ func (*Message) Descriptor() ([]byte, []int) {
 
 const Default_Message_EnumField Enum = Enum_ZERO
 
-func (m *Message) GetStringField() string {
-	if m != nil && m.StringField != nil {
-		return *m.StringField
+func (x *Message) GetStringField() string {
+	if x != nil && x.StringField != nil {
+		return *x.StringField
 	}
 	return ""
 }
 
-func (m *Message) GetEnumField() Enum {
-	if m != nil && m.EnumField != nil {
-		return *m.EnumField
+func (x *Message) GetEnumField() Enum {
+	if x != nil && x.EnumField != nil {
+		return *x.EnumField
 	}
 	return Default_Message_EnumField
 }

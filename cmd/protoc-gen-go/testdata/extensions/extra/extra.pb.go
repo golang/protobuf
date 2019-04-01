@@ -19,21 +19,28 @@ type ExtraMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ExtraMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_extra_extra_proto_messageTypes[0].MessageOf(m)
+func (x *ExtraMessage) Reset() {
+	*x = ExtraMessage{}
 }
-func (m *ExtraMessage) Reset()         { *m = ExtraMessage{} }
-func (m *ExtraMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ExtraMessage) ProtoMessage()    {}
+
+func (x *ExtraMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExtraMessage) ProtoMessage() {}
+
+func (x *ExtraMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_extra_extra_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use ExtraMessage.ProtoReflect.Type instead.
 func (*ExtraMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_extensions_extra_extra_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *ExtraMessage) GetData() []byte {
-	if m != nil {
-		return m.Data
+func (x *ExtraMessage) GetData() []byte {
+	if x != nil {
+		return x.Data
 	}
 	return nil
 }

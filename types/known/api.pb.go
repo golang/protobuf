@@ -63,63 +63,70 @@ type Api struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Api) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_api_proto_messageTypes[0].MessageOf(m)
+func (x *Api) Reset() {
+	*x = Api{}
 }
-func (m *Api) Reset()         { *m = Api{} }
-func (m *Api) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Api) ProtoMessage()    {}
+
+func (x *Api) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Api) ProtoMessage() {}
+
+func (x *Api) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_api_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Api.ProtoReflect.Type instead.
 func (*Api) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Api) GetName() string {
-	if m != nil {
-		return m.Name
+func (x *Api) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-func (m *Api) GetMethods() []*Method {
-	if m != nil {
-		return m.Methods
+func (x *Api) GetMethods() []*Method {
+	if x != nil {
+		return x.Methods
 	}
 	return nil
 }
 
-func (m *Api) GetOptions() []*Option {
-	if m != nil {
-		return m.Options
+func (x *Api) GetOptions() []*Option {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
 
-func (m *Api) GetVersion() string {
-	if m != nil {
-		return m.Version
+func (x *Api) GetVersion() string {
+	if x != nil {
+		return x.Version
 	}
 	return ""
 }
 
-func (m *Api) GetSourceContext() *SourceContext {
-	if m != nil {
-		return m.SourceContext
+func (x *Api) GetSourceContext() *SourceContext {
+	if x != nil {
+		return x.SourceContext
 	}
 	return nil
 }
 
-func (m *Api) GetMixins() []*Mixin {
-	if m != nil {
-		return m.Mixins
+func (x *Api) GetMixins() []*Mixin {
+	if x != nil {
+		return x.Mixins
 	}
 	return nil
 }
 
-func (m *Api) GetSyntax() Syntax {
-	if m != nil {
-		return m.Syntax
+func (x *Api) GetSyntax() Syntax {
+	if x != nil {
+		return x.Syntax
 	}
 	return Syntax_SYNTAX_PROTO2
 }
@@ -145,63 +152,70 @@ type Method struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Method) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_api_proto_messageTypes[1].MessageOf(m)
+func (x *Method) Reset() {
+	*x = Method{}
 }
-func (m *Method) Reset()         { *m = Method{} }
-func (m *Method) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Method) ProtoMessage()    {}
+
+func (x *Method) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Method) ProtoMessage() {}
+
+func (x *Method) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_api_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use Method.ProtoReflect.Type instead.
 func (*Method) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (m *Method) GetName() string {
-	if m != nil {
-		return m.Name
+func (x *Method) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-func (m *Method) GetRequestTypeUrl() string {
-	if m != nil {
-		return m.RequestTypeUrl
+func (x *Method) GetRequestTypeUrl() string {
+	if x != nil {
+		return x.RequestTypeUrl
 	}
 	return ""
 }
 
-func (m *Method) GetRequestStreaming() bool {
-	if m != nil {
-		return m.RequestStreaming
+func (x *Method) GetRequestStreaming() bool {
+	if x != nil {
+		return x.RequestStreaming
 	}
 	return false
 }
 
-func (m *Method) GetResponseTypeUrl() string {
-	if m != nil {
-		return m.ResponseTypeUrl
+func (x *Method) GetResponseTypeUrl() string {
+	if x != nil {
+		return x.ResponseTypeUrl
 	}
 	return ""
 }
 
-func (m *Method) GetResponseStreaming() bool {
-	if m != nil {
-		return m.ResponseStreaming
+func (x *Method) GetResponseStreaming() bool {
+	if x != nil {
+		return x.ResponseStreaming
 	}
 	return false
 }
 
-func (m *Method) GetOptions() []*Option {
-	if m != nil {
-		return m.Options
+func (x *Method) GetOptions() []*Option {
+	if x != nil {
+		return x.Options
 	}
 	return nil
 }
 
-func (m *Method) GetSyntax() Syntax {
-	if m != nil {
-		return m.Syntax
+func (x *Method) GetSyntax() Syntax {
+	if x != nil {
+		return x.Syntax
 	}
 	return Syntax_SYNTAX_PROTO2
 }
@@ -295,28 +309,35 @@ type Mixin struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Mixin) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_api_proto_messageTypes[2].MessageOf(m)
+func (x *Mixin) Reset() {
+	*x = Mixin{}
 }
-func (m *Mixin) Reset()         { *m = Mixin{} }
-func (m *Mixin) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Mixin) ProtoMessage()    {}
+
+func (x *Mixin) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Mixin) ProtoMessage() {}
+
+func (x *Mixin) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_api_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use Mixin.ProtoReflect.Type instead.
 func (*Mixin) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_api_proto_rawDescGZIP(), []int{2}
 }
 
-func (m *Mixin) GetName() string {
-	if m != nil {
-		return m.Name
+func (x *Mixin) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-func (m *Mixin) GetRoot() string {
-	if m != nil {
-		return m.Root
+func (x *Mixin) GetRoot() string {
+	if x != nil {
+		return x.Root
 	}
 	return ""
 }

@@ -18,12 +18,19 @@ type M3 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *M3) ProtoReflect() protoreflect.Message {
-	return xxx_File_imports_test_a_2_m3_proto_messageTypes[0].MessageOf(m)
+func (x *M3) Reset() {
+	*x = M3{}
 }
-func (m *M3) Reset()         { *m = M3{} }
-func (m *M3) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*M3) ProtoMessage()    {}
+
+func (x *M3) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*M3) ProtoMessage() {}
+
+func (x *M3) ProtoReflect() protoreflect.Message {
+	return xxx_File_imports_test_a_2_m3_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use M3.ProtoReflect.Type instead.
 func (*M3) Descriptor() ([]byte, []int) {

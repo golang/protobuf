@@ -26,42 +26,49 @@ type Version struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Version) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[0].MessageOf(m)
+func (x *Version) Reset() {
+	*x = Version{}
 }
-func (m *Version) Reset()         { *m = Version{} }
-func (m *Version) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Version) ProtoMessage()    {}
+
+func (x *Version) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Version) ProtoMessage() {}
+
+func (x *Version) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Version.ProtoReflect.Type instead.
 func (*Version) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Version) GetMajor() int32 {
-	if m != nil && m.Major != nil {
-		return *m.Major
+func (x *Version) GetMajor() int32 {
+	if x != nil && x.Major != nil {
+		return *x.Major
 	}
 	return 0
 }
 
-func (m *Version) GetMinor() int32 {
-	if m != nil && m.Minor != nil {
-		return *m.Minor
+func (x *Version) GetMinor() int32 {
+	if x != nil && x.Minor != nil {
+		return *x.Minor
 	}
 	return 0
 }
 
-func (m *Version) GetPatch() int32 {
-	if m != nil && m.Patch != nil {
-		return *m.Patch
+func (x *Version) GetPatch() int32 {
+	if x != nil && x.Patch != nil {
+		return *x.Patch
 	}
 	return 0
 }
 
-func (m *Version) GetSuffix() string {
-	if m != nil && m.Suffix != nil {
-		return *m.Suffix
+func (x *Version) GetSuffix() string {
+	if x != nil && x.Suffix != nil {
+		return *x.Suffix
 	}
 	return ""
 }
@@ -96,42 +103,49 @@ type CodeGeneratorRequest struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *CodeGeneratorRequest) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[1].MessageOf(m)
+func (x *CodeGeneratorRequest) Reset() {
+	*x = CodeGeneratorRequest{}
 }
-func (m *CodeGeneratorRequest) Reset()         { *m = CodeGeneratorRequest{} }
-func (m *CodeGeneratorRequest) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*CodeGeneratorRequest) ProtoMessage()    {}
+
+func (x *CodeGeneratorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CodeGeneratorRequest) ProtoMessage() {}
+
+func (x *CodeGeneratorRequest) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use CodeGeneratorRequest.ProtoReflect.Type instead.
 func (*CodeGeneratorRequest) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{1}
 }
 
-func (m *CodeGeneratorRequest) GetFileToGenerate() []string {
-	if m != nil {
-		return m.FileToGenerate
+func (x *CodeGeneratorRequest) GetFileToGenerate() []string {
+	if x != nil {
+		return x.FileToGenerate
 	}
 	return nil
 }
 
-func (m *CodeGeneratorRequest) GetParameter() string {
-	if m != nil && m.Parameter != nil {
-		return *m.Parameter
+func (x *CodeGeneratorRequest) GetParameter() string {
+	if x != nil && x.Parameter != nil {
+		return *x.Parameter
 	}
 	return ""
 }
 
-func (m *CodeGeneratorRequest) GetProtoFile() []*descriptor.FileDescriptorProto {
-	if m != nil {
-		return m.ProtoFile
+func (x *CodeGeneratorRequest) GetProtoFile() []*descriptor.FileDescriptorProto {
+	if x != nil {
+		return x.ProtoFile
 	}
 	return nil
 }
 
-func (m *CodeGeneratorRequest) GetCompilerVersion() *Version {
-	if m != nil {
-		return m.CompilerVersion
+func (x *CodeGeneratorRequest) GetCompilerVersion() *Version {
+	if x != nil {
+		return x.CompilerVersion
 	}
 	return nil
 }
@@ -153,28 +167,35 @@ type CodeGeneratorResponse struct {
 	XXX_sizecache        int32                         `json:"-"`
 }
 
-func (m *CodeGeneratorResponse) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[2].MessageOf(m)
+func (x *CodeGeneratorResponse) Reset() {
+	*x = CodeGeneratorResponse{}
 }
-func (m *CodeGeneratorResponse) Reset()         { *m = CodeGeneratorResponse{} }
-func (m *CodeGeneratorResponse) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*CodeGeneratorResponse) ProtoMessage()    {}
+
+func (x *CodeGeneratorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CodeGeneratorResponse) ProtoMessage() {}
+
+func (x *CodeGeneratorResponse) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use CodeGeneratorResponse.ProtoReflect.Type instead.
 func (*CodeGeneratorResponse) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{2}
 }
 
-func (m *CodeGeneratorResponse) GetError() string {
-	if m != nil && m.Error != nil {
-		return *m.Error
+func (x *CodeGeneratorResponse) GetError() string {
+	if x != nil && x.Error != nil {
+		return *x.Error
 	}
 	return ""
 }
 
-func (m *CodeGeneratorResponse) GetFile() []*CodeGeneratorResponse_File {
-	if m != nil {
-		return m.File
+func (x *CodeGeneratorResponse) GetFile() []*CodeGeneratorResponse_File {
+	if x != nil {
+		return x.File
 	}
 	return nil
 }
@@ -238,35 +259,42 @@ type CodeGeneratorResponse_File struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *CodeGeneratorResponse_File) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[3].MessageOf(m)
+func (x *CodeGeneratorResponse_File) Reset() {
+	*x = CodeGeneratorResponse_File{}
 }
-func (m *CodeGeneratorResponse_File) Reset()         { *m = CodeGeneratorResponse_File{} }
-func (m *CodeGeneratorResponse_File) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*CodeGeneratorResponse_File) ProtoMessage()    {}
+
+func (x *CodeGeneratorResponse_File) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CodeGeneratorResponse_File) ProtoMessage() {}
+
+func (x *CodeGeneratorResponse_File) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use CodeGeneratorResponse_File.ProtoReflect.Type instead.
 func (*CodeGeneratorResponse_File) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{2, 0}
 }
 
-func (m *CodeGeneratorResponse_File) GetName() string {
-	if m != nil && m.Name != nil {
-		return *m.Name
+func (x *CodeGeneratorResponse_File) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
 	}
 	return ""
 }
 
-func (m *CodeGeneratorResponse_File) GetInsertionPoint() string {
-	if m != nil && m.InsertionPoint != nil {
-		return *m.InsertionPoint
+func (x *CodeGeneratorResponse_File) GetInsertionPoint() string {
+	if x != nil && x.InsertionPoint != nil {
+		return *x.InsertionPoint
 	}
 	return ""
 }
 
-func (m *CodeGeneratorResponse_File) GetContent() string {
-	if m != nil && m.Content != nil {
-		return *m.Content
+func (x *CodeGeneratorResponse_File) GetContent() string {
+	if x != nil && x.Content != nil {
+		return *x.Content
 	}
 	return ""
 }

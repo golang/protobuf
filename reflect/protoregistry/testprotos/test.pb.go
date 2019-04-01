@@ -19,13 +19,6 @@ const (
 	Enum1_ONE Enum1 = 1
 )
 
-func (e Enum1) Type() protoreflect.EnumType {
-	return xxx_File_test_proto_enumTypes[0]
-}
-func (e Enum1) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Enum1.Type.Values instead.
 var Enum1_name = map[int32]string{
 	1: "ONE",
@@ -42,6 +35,14 @@ func (x Enum1) Enum() *Enum1 {
 
 func (x Enum1) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Enum1) Type() protoreflect.EnumType {
+	return xxx_File_test_proto_enumTypes[0]
+}
+
+func (x Enum1) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -65,13 +66,6 @@ const (
 	Enum2_UNO Enum2 = 1
 )
 
-func (e Enum2) Type() protoreflect.EnumType {
-	return xxx_File_test_proto_enumTypes[1]
-}
-func (e Enum2) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Enum2.Type.Values instead.
 var Enum2_name = map[int32]string{
 	1: "UNO",
@@ -88,6 +82,14 @@ func (x Enum2) Enum() *Enum2 {
 
 func (x Enum2) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Enum2) Type() protoreflect.EnumType {
+	return xxx_File_test_proto_enumTypes[1]
+}
+
+func (x Enum2) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -111,13 +113,6 @@ const (
 	Enum3_YI Enum3 = 1
 )
 
-func (e Enum3) Type() protoreflect.EnumType {
-	return xxx_File_test_proto_enumTypes[2]
-}
-func (e Enum3) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Enum3.Type.Values instead.
 var Enum3_name = map[int32]string{
 	1: "YI",
@@ -134,6 +129,14 @@ func (x Enum3) Enum() *Enum3 {
 
 func (x Enum3) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Enum3) Type() protoreflect.EnumType {
+	return xxx_File_test_proto_enumTypes[2]
+}
+
+func (x Enum3) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -158,12 +161,19 @@ type Message1 struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *Message1) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_proto_messageTypes[0].MessageOf(m)
+func (x *Message1) Reset() {
+	*x = Message1{}
 }
-func (m *Message1) Reset()         { *m = Message1{} }
-func (m *Message1) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message1) ProtoMessage()    {}
+
+func (x *Message1) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message1) ProtoMessage() {}
+
+func (x *Message1) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Message1.ProtoReflect.Type instead.
 func (*Message1) Descriptor() ([]byte, []int) {
@@ -185,12 +195,19 @@ type Message2 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message2) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_proto_messageTypes[1].MessageOf(m)
+func (x *Message2) Reset() {
+	*x = Message2{}
 }
-func (m *Message2) Reset()         { *m = Message2{} }
-func (m *Message2) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message2) ProtoMessage()    {}
+
+func (x *Message2) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message2) ProtoMessage() {}
+
+func (x *Message2) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use Message2.ProtoReflect.Type instead.
 func (*Message2) Descriptor() ([]byte, []int) {
@@ -203,12 +220,19 @@ type Message3 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message3) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_proto_messageTypes[2].MessageOf(m)
+func (x *Message3) Reset() {
+	*x = Message3{}
 }
-func (m *Message3) Reset()         { *m = Message3{} }
-func (m *Message3) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message3) ProtoMessage()    {}
+
+func (x *Message3) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message3) ProtoMessage() {}
+
+func (x *Message3) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use Message3.ProtoReflect.Type instead.
 func (*Message3) Descriptor() ([]byte, []int) {
@@ -222,21 +246,28 @@ type Message4 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message4) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_proto_messageTypes[3].MessageOf(m)
+func (x *Message4) Reset() {
+	*x = Message4{}
 }
-func (m *Message4) Reset()         { *m = Message4{} }
-func (m *Message4) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message4) ProtoMessage()    {}
+
+func (x *Message4) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message4) ProtoMessage() {}
+
+func (x *Message4) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use Message4.ProtoReflect.Type instead.
 func (*Message4) Descriptor() ([]byte, []int) {
 	return xxx_File_test_proto_rawDescGZIP(), []int{3}
 }
 
-func (m *Message4) GetBoolField() bool {
-	if m != nil && m.BoolField != nil {
-		return *m.BoolField
+func (x *Message4) GetBoolField() bool {
+	if x != nil && x.BoolField != nil {
+		return *x.BoolField
 	}
 	return false
 }

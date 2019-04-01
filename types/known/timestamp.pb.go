@@ -109,12 +109,19 @@ type Timestamp struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Timestamp) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_timestamp_proto_messageTypes[0].MessageOf(m)
+func (x *Timestamp) Reset() {
+	*x = Timestamp{}
 }
-func (m *Timestamp) Reset()         { *m = Timestamp{} }
-func (m *Timestamp) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Timestamp) ProtoMessage()    {}
+
+func (x *Timestamp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Timestamp) ProtoMessage() {}
+
+func (x *Timestamp) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_timestamp_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Timestamp.ProtoReflect.Type instead.
 func (*Timestamp) Descriptor() ([]byte, []int) {
@@ -123,16 +130,16 @@ func (*Timestamp) Descriptor() ([]byte, []int) {
 
 func (*Timestamp) XXX_WellKnownType() string { return "Timestamp" }
 
-func (m *Timestamp) GetSeconds() int64 {
-	if m != nil {
-		return m.Seconds
+func (x *Timestamp) GetSeconds() int64 {
+	if x != nil {
+		return x.Seconds
 	}
 	return 0
 }
 
-func (m *Timestamp) GetNanos() int32 {
-	if m != nil {
-		return m.Nanos
+func (x *Timestamp) GetNanos() int32 {
+	if x != nil {
+		return x.Nanos
 	}
 	return 0
 }

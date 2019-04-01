@@ -21,12 +21,19 @@ type BaseMessage struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *BaseMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_base_base_proto_messageTypes[0].MessageOf(m)
+func (x *BaseMessage) Reset() {
+	*x = BaseMessage{}
 }
-func (m *BaseMessage) Reset()         { *m = BaseMessage{} }
-func (m *BaseMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*BaseMessage) ProtoMessage()    {}
+
+func (x *BaseMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BaseMessage) ProtoMessage() {}
+
+func (x *BaseMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_base_base_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use BaseMessage.ProtoReflect.Type instead.
 func (*BaseMessage) Descriptor() ([]byte, []int) {
@@ -43,9 +50,9 @@ func (*BaseMessage) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_BaseMessage
 }
 
-func (m *BaseMessage) GetField() string {
-	if m != nil && m.Field != nil {
-		return *m.Field
+func (x *BaseMessage) GetField() string {
+	if x != nil && x.Field != nil {
+		return *x.Field
 	}
 	return ""
 }
@@ -57,12 +64,19 @@ type MessageSetWireFormatMessage struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *MessageSetWireFormatMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_base_base_proto_messageTypes[1].MessageOf(m)
+func (x *MessageSetWireFormatMessage) Reset() {
+	*x = MessageSetWireFormatMessage{}
 }
-func (m *MessageSetWireFormatMessage) Reset()         { *m = MessageSetWireFormatMessage{} }
-func (m *MessageSetWireFormatMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*MessageSetWireFormatMessage) ProtoMessage()    {}
+
+func (x *MessageSetWireFormatMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MessageSetWireFormatMessage) ProtoMessage() {}
+
+func (x *MessageSetWireFormatMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_extensions_base_base_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use MessageSetWireFormatMessage.ProtoReflect.Type instead.
 func (*MessageSetWireFormatMessage) Descriptor() ([]byte, []int) {

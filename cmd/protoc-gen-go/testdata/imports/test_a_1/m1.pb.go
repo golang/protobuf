@@ -18,13 +18,6 @@ const (
 	E1_E1_ZERO E1 = 0
 )
 
-func (e E1) Type() protoreflect.EnumType {
-	return xxx_File_imports_test_a_1_m1_proto_enumTypes[0]
-}
-func (e E1) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use E1.Type.Values instead.
 var E1_name = map[int32]string{
 	0: "E1_ZERO",
@@ -39,6 +32,14 @@ func (x E1) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+func (E1) Type() protoreflect.EnumType {
+	return xxx_File_imports_test_a_1_m1_proto_enumTypes[0]
+}
+
+func (x E1) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 // Deprecated: Use E1.Type instead.
 func (E1) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_imports_test_a_1_m1_proto_rawDescGZIP(), []int{0}
@@ -50,12 +51,19 @@ type M1 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *M1) ProtoReflect() protoreflect.Message {
-	return xxx_File_imports_test_a_1_m1_proto_messageTypes[0].MessageOf(m)
+func (x *M1) Reset() {
+	*x = M1{}
 }
-func (m *M1) Reset()         { *m = M1{} }
-func (m *M1) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*M1) ProtoMessage()    {}
+
+func (x *M1) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*M1) ProtoMessage() {}
+
+func (x *M1) ProtoReflect() protoreflect.Message {
+	return xxx_File_imports_test_a_1_m1_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use M1.ProtoReflect.Type instead.
 func (*M1) Descriptor() ([]byte, []int) {
@@ -69,21 +77,28 @@ type M1_1 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *M1_1) ProtoReflect() protoreflect.Message {
-	return xxx_File_imports_test_a_1_m1_proto_messageTypes[1].MessageOf(m)
+func (x *M1_1) Reset() {
+	*x = M1_1{}
 }
-func (m *M1_1) Reset()         { *m = M1_1{} }
-func (m *M1_1) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*M1_1) ProtoMessage()    {}
+
+func (x *M1_1) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*M1_1) ProtoMessage() {}
+
+func (x *M1_1) ProtoReflect() protoreflect.Message {
+	return xxx_File_imports_test_a_1_m1_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use M1_1.ProtoReflect.Type instead.
 func (*M1_1) Descriptor() ([]byte, []int) {
 	return xxx_File_imports_test_a_1_m1_proto_rawDescGZIP(), []int{1}
 }
 
-func (m *M1_1) GetM1() *M1 {
-	if m != nil {
-		return m.M1
+func (x *M1_1) GetM1() *M1 {
+	if x != nil {
+		return x.M1
 	}
 	return nil
 }

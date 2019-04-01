@@ -23,21 +23,28 @@ type SourceContext struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *SourceContext) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_source_context_proto_messageTypes[0].MessageOf(m)
+func (x *SourceContext) Reset() {
+	*x = SourceContext{}
 }
-func (m *SourceContext) Reset()         { *m = SourceContext{} }
-func (m *SourceContext) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*SourceContext) ProtoMessage()    {}
+
+func (x *SourceContext) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SourceContext) ProtoMessage() {}
+
+func (x *SourceContext) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_source_context_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use SourceContext.ProtoReflect.Type instead.
 func (*SourceContext) Descriptor() ([]byte, []int) {
 	return xxx_File_google_protobuf_source_context_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *SourceContext) GetFileName() string {
-	if m != nil {
-		return m.FileName
+func (x *SourceContext) GetFileName() string {
+	if x != nil {
+		return x.FileName
 	}
 	return ""
 }

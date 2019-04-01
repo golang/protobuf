@@ -47,7 +47,7 @@ func TestAnnotations(t *testing.T) {
 		"\t", "AnnotationsTestField", " ",
 		[]int32{fieldnum.FileDescriptorProto_MessageType, 0, fieldnum.DescriptorProto_Field, 0},
 	}, {
-		"func (m *AnnotationsTestMessage) ", "GetAnnotationsTestField", "() string {",
+		"func (x *AnnotationsTestMessage) ", "GetAnnotationsTestField", "() string {",
 		[]int32{fieldnum.FileDescriptorProto_MessageType, 0, fieldnum.DescriptorProto_Field, 0},
 	}} {
 		s := want.prefix + want.text + want.suffix

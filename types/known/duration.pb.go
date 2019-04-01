@@ -89,12 +89,19 @@ type Duration struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Duration) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_duration_proto_messageTypes[0].MessageOf(m)
+func (x *Duration) Reset() {
+	*x = Duration{}
 }
-func (m *Duration) Reset()         { *m = Duration{} }
-func (m *Duration) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Duration) ProtoMessage()    {}
+
+func (x *Duration) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Duration) ProtoMessage() {}
+
+func (x *Duration) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_duration_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Duration.ProtoReflect.Type instead.
 func (*Duration) Descriptor() ([]byte, []int) {
@@ -103,16 +110,16 @@ func (*Duration) Descriptor() ([]byte, []int) {
 
 func (*Duration) XXX_WellKnownType() string { return "Duration" }
 
-func (m *Duration) GetSeconds() int64 {
-	if m != nil {
-		return m.Seconds
+func (x *Duration) GetSeconds() int64 {
+	if x != nil {
+		return x.Seconds
 	}
 	return 0
 }
 
-func (m *Duration) GetNanos() int32 {
-	if m != nil {
-		return m.Nanos
+func (x *Duration) GetNanos() int32 {
+	if x != nil {
+		return x.Nanos
 	}
 	return 0
 }

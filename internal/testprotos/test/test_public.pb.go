@@ -18,12 +18,19 @@ type PublicImportMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *PublicImportMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_public_proto_messageTypes[0].MessageOf(m)
+func (x *PublicImportMessage) Reset() {
+	*x = PublicImportMessage{}
 }
-func (m *PublicImportMessage) Reset()         { *m = PublicImportMessage{} }
-func (m *PublicImportMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*PublicImportMessage) ProtoMessage()    {}
+
+func (x *PublicImportMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PublicImportMessage) ProtoMessage() {}
+
+func (x *PublicImportMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_public_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use PublicImportMessage.ProtoReflect.Type instead.
 func (*PublicImportMessage) Descriptor() ([]byte, []int) {

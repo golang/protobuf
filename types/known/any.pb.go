@@ -129,12 +129,19 @@ type Any struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Any) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_any_proto_messageTypes[0].MessageOf(m)
+func (x *Any) Reset() {
+	*x = Any{}
 }
-func (m *Any) Reset()         { *m = Any{} }
-func (m *Any) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Any) ProtoMessage()    {}
+
+func (x *Any) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Any) ProtoMessage() {}
+
+func (x *Any) ProtoReflect() protoreflect.Message {
+	return xxx_File_google_protobuf_any_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Any.ProtoReflect.Type instead.
 func (*Any) Descriptor() ([]byte, []int) {
@@ -143,16 +150,16 @@ func (*Any) Descriptor() ([]byte, []int) {
 
 func (*Any) XXX_WellKnownType() string { return "Any" }
 
-func (m *Any) GetTypeUrl() string {
-	if m != nil {
-		return m.TypeUrl
+func (x *Any) GetTypeUrl() string {
+	if x != nil {
+		return x.TypeUrl
 	}
 	return ""
 }
 
-func (m *Any) GetValue() []byte {
-	if m != nil {
-		return m.Value
+func (x *Any) GetValue() []byte {
+	if x != nil {
+		return x.Value
 	}
 	return nil
 }

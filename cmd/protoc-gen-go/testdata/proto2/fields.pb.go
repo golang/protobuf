@@ -20,13 +20,6 @@ const (
 	FieldTestMessage_ONE  FieldTestMessage_Enum = 1
 )
 
-func (e FieldTestMessage_Enum) Type() protoreflect.EnumType {
-	return xxx_File_proto2_fields_proto_enumTypes[0]
-}
-func (e FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use FieldTestMessage_Enum.Type.Values instead.
 var FieldTestMessage_Enum_name = map[int32]string{
 	0: "ZERO",
@@ -45,6 +38,14 @@ func (x FieldTestMessage_Enum) Enum() *FieldTestMessage_Enum {
 
 func (x FieldTestMessage_Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (FieldTestMessage_Enum) Type() protoreflect.EnumType {
+	return xxx_File_proto2_fields_proto_enumTypes[0]
+}
+
+func (x FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -174,12 +175,19 @@ type FieldTestMessage struct {
 	XXX_sizecache        int32                       `json:"-"`
 }
 
-func (m *FieldTestMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_fields_proto_messageTypes[0].MessageOf(m)
+func (x *FieldTestMessage) Reset() {
+	*x = FieldTestMessage{}
 }
-func (m *FieldTestMessage) Reset()         { *m = FieldTestMessage{} }
-func (m *FieldTestMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldTestMessage) ProtoMessage()    {}
+
+func (x *FieldTestMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldTestMessage) ProtoMessage() {}
+
+func (x *FieldTestMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_fields_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use FieldTestMessage.ProtoReflect.Type instead.
 func (*FieldTestMessage) Descriptor() ([]byte, []int) {
@@ -214,569 +222,569 @@ var Default_FieldTestMessage_DefaultDoubleNeginf float64 = math.Inf(-1)
 var Default_FieldTestMessage_DefaultDoublePosinf float64 = math.Inf(1)
 var Default_FieldTestMessage_DefaultDoubleNan float64 = math.NaN()
 
-func (m *FieldTestMessage) GetOptionalBool() bool {
-	if m != nil && m.OptionalBool != nil {
-		return *m.OptionalBool
+func (x *FieldTestMessage) GetOptionalBool() bool {
+	if x != nil && x.OptionalBool != nil {
+		return *x.OptionalBool
 	}
 	return false
 }
 
-func (m *FieldTestMessage) GetOptionalEnum() FieldTestMessage_Enum {
-	if m != nil && m.OptionalEnum != nil {
-		return *m.OptionalEnum
+func (x *FieldTestMessage) GetOptionalEnum() FieldTestMessage_Enum {
+	if x != nil && x.OptionalEnum != nil {
+		return *x.OptionalEnum
 	}
 	return FieldTestMessage_ZERO
 }
 
-func (m *FieldTestMessage) GetOptionalInt32() int32 {
-	if m != nil && m.OptionalInt32 != nil {
-		return *m.OptionalInt32
+func (x *FieldTestMessage) GetOptionalInt32() int32 {
+	if x != nil && x.OptionalInt32 != nil {
+		return *x.OptionalInt32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalSint32() int32 {
-	if m != nil && m.OptionalSint32 != nil {
-		return *m.OptionalSint32
+func (x *FieldTestMessage) GetOptionalSint32() int32 {
+	if x != nil && x.OptionalSint32 != nil {
+		return *x.OptionalSint32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalUint32() uint32 {
-	if m != nil && m.OptionalUint32 != nil {
-		return *m.OptionalUint32
+func (x *FieldTestMessage) GetOptionalUint32() uint32 {
+	if x != nil && x.OptionalUint32 != nil {
+		return *x.OptionalUint32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalInt64() int64 {
-	if m != nil && m.OptionalInt64 != nil {
-		return *m.OptionalInt64
+func (x *FieldTestMessage) GetOptionalInt64() int64 {
+	if x != nil && x.OptionalInt64 != nil {
+		return *x.OptionalInt64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalSint64() int64 {
-	if m != nil && m.OptionalSint64 != nil {
-		return *m.OptionalSint64
+func (x *FieldTestMessage) GetOptionalSint64() int64 {
+	if x != nil && x.OptionalSint64 != nil {
+		return *x.OptionalSint64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalUint64() uint64 {
-	if m != nil && m.OptionalUint64 != nil {
-		return *m.OptionalUint64
+func (x *FieldTestMessage) GetOptionalUint64() uint64 {
+	if x != nil && x.OptionalUint64 != nil {
+		return *x.OptionalUint64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalSfixed32() int32 {
-	if m != nil && m.OptionalSfixed32 != nil {
-		return *m.OptionalSfixed32
+func (x *FieldTestMessage) GetOptionalSfixed32() int32 {
+	if x != nil && x.OptionalSfixed32 != nil {
+		return *x.OptionalSfixed32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalFixed32() uint32 {
-	if m != nil && m.OptionalFixed32 != nil {
-		return *m.OptionalFixed32
+func (x *FieldTestMessage) GetOptionalFixed32() uint32 {
+	if x != nil && x.OptionalFixed32 != nil {
+		return *x.OptionalFixed32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalFloat() float32 {
-	if m != nil && m.OptionalFloat != nil {
-		return *m.OptionalFloat
+func (x *FieldTestMessage) GetOptionalFloat() float32 {
+	if x != nil && x.OptionalFloat != nil {
+		return *x.OptionalFloat
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalSfixed64() int64 {
-	if m != nil && m.OptionalSfixed64 != nil {
-		return *m.OptionalSfixed64
+func (x *FieldTestMessage) GetOptionalSfixed64() int64 {
+	if x != nil && x.OptionalSfixed64 != nil {
+		return *x.OptionalSfixed64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalFixed64() uint64 {
-	if m != nil && m.OptionalFixed64 != nil {
-		return *m.OptionalFixed64
+func (x *FieldTestMessage) GetOptionalFixed64() uint64 {
+	if x != nil && x.OptionalFixed64 != nil {
+		return *x.OptionalFixed64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalDouble() float64 {
-	if m != nil && m.OptionalDouble != nil {
-		return *m.OptionalDouble
+func (x *FieldTestMessage) GetOptionalDouble() float64 {
+	if x != nil && x.OptionalDouble != nil {
+		return *x.OptionalDouble
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOptionalString() string {
-	if m != nil && m.OptionalString != nil {
-		return *m.OptionalString
+func (x *FieldTestMessage) GetOptionalString() string {
+	if x != nil && x.OptionalString != nil {
+		return *x.OptionalString
 	}
 	return ""
 }
 
-func (m *FieldTestMessage) GetOptionalBytes() []byte {
-	if m != nil {
-		return m.OptionalBytes
+func (x *FieldTestMessage) GetOptionalBytes() []byte {
+	if x != nil {
+		return x.OptionalBytes
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetOptional_Message() *FieldTestMessage_Message {
-	if m != nil {
-		return m.Optional_Message
+func (x *FieldTestMessage) GetOptional_Message() *FieldTestMessage_Message {
+	if x != nil {
+		return x.Optional_Message
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetOptionalgroup() *FieldTestMessage_OptionalGroup {
-	if m != nil {
-		return m.Optionalgroup
+func (x *FieldTestMessage) GetOptionalgroup() *FieldTestMessage_OptionalGroup {
+	if x != nil {
+		return x.Optionalgroup
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRequiredBool() bool {
-	if m != nil && m.RequiredBool != nil {
-		return *m.RequiredBool
+func (x *FieldTestMessage) GetRequiredBool() bool {
+	if x != nil && x.RequiredBool != nil {
+		return *x.RequiredBool
 	}
 	return false
 }
 
-func (m *FieldTestMessage) GetRequiredEnum() FieldTestMessage_Enum {
-	if m != nil && m.RequiredEnum != nil {
-		return *m.RequiredEnum
+func (x *FieldTestMessage) GetRequiredEnum() FieldTestMessage_Enum {
+	if x != nil && x.RequiredEnum != nil {
+		return *x.RequiredEnum
 	}
 	return FieldTestMessage_ZERO
 }
 
-func (m *FieldTestMessage) GetRequiredInt32() int32 {
-	if m != nil && m.RequiredInt32 != nil {
-		return *m.RequiredInt32
+func (x *FieldTestMessage) GetRequiredInt32() int32 {
+	if x != nil && x.RequiredInt32 != nil {
+		return *x.RequiredInt32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredSint32() int32 {
-	if m != nil && m.RequiredSint32 != nil {
-		return *m.RequiredSint32
+func (x *FieldTestMessage) GetRequiredSint32() int32 {
+	if x != nil && x.RequiredSint32 != nil {
+		return *x.RequiredSint32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredUint32() uint32 {
-	if m != nil && m.RequiredUint32 != nil {
-		return *m.RequiredUint32
+func (x *FieldTestMessage) GetRequiredUint32() uint32 {
+	if x != nil && x.RequiredUint32 != nil {
+		return *x.RequiredUint32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredInt64() int64 {
-	if m != nil && m.RequiredInt64 != nil {
-		return *m.RequiredInt64
+func (x *FieldTestMessage) GetRequiredInt64() int64 {
+	if x != nil && x.RequiredInt64 != nil {
+		return *x.RequiredInt64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredSint64() int64 {
-	if m != nil && m.RequiredSint64 != nil {
-		return *m.RequiredSint64
+func (x *FieldTestMessage) GetRequiredSint64() int64 {
+	if x != nil && x.RequiredSint64 != nil {
+		return *x.RequiredSint64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredUint64() uint64 {
-	if m != nil && m.RequiredUint64 != nil {
-		return *m.RequiredUint64
+func (x *FieldTestMessage) GetRequiredUint64() uint64 {
+	if x != nil && x.RequiredUint64 != nil {
+		return *x.RequiredUint64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredSfixed32() int32 {
-	if m != nil && m.RequiredSfixed32 != nil {
-		return *m.RequiredSfixed32
+func (x *FieldTestMessage) GetRequiredSfixed32() int32 {
+	if x != nil && x.RequiredSfixed32 != nil {
+		return *x.RequiredSfixed32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredFixed32() uint32 {
-	if m != nil && m.RequiredFixed32 != nil {
-		return *m.RequiredFixed32
+func (x *FieldTestMessage) GetRequiredFixed32() uint32 {
+	if x != nil && x.RequiredFixed32 != nil {
+		return *x.RequiredFixed32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredFloat() float32 {
-	if m != nil && m.RequiredFloat != nil {
-		return *m.RequiredFloat
+func (x *FieldTestMessage) GetRequiredFloat() float32 {
+	if x != nil && x.RequiredFloat != nil {
+		return *x.RequiredFloat
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredSfixed64() int64 {
-	if m != nil && m.RequiredSfixed64 != nil {
-		return *m.RequiredSfixed64
+func (x *FieldTestMessage) GetRequiredSfixed64() int64 {
+	if x != nil && x.RequiredSfixed64 != nil {
+		return *x.RequiredSfixed64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredFixed64() uint64 {
-	if m != nil && m.RequiredFixed64 != nil {
-		return *m.RequiredFixed64
+func (x *FieldTestMessage) GetRequiredFixed64() uint64 {
+	if x != nil && x.RequiredFixed64 != nil {
+		return *x.RequiredFixed64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredDouble() float64 {
-	if m != nil && m.RequiredDouble != nil {
-		return *m.RequiredDouble
+func (x *FieldTestMessage) GetRequiredDouble() float64 {
+	if x != nil && x.RequiredDouble != nil {
+		return *x.RequiredDouble
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetRequiredString() string {
-	if m != nil && m.RequiredString != nil {
-		return *m.RequiredString
+func (x *FieldTestMessage) GetRequiredString() string {
+	if x != nil && x.RequiredString != nil {
+		return *x.RequiredString
 	}
 	return ""
 }
 
-func (m *FieldTestMessage) GetRequiredBytes() []byte {
-	if m != nil {
-		return m.RequiredBytes
+func (x *FieldTestMessage) GetRequiredBytes() []byte {
+	if x != nil {
+		return x.RequiredBytes
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRequired_Message() *FieldTestMessage_Message {
-	if m != nil {
-		return m.Required_Message
+func (x *FieldTestMessage) GetRequired_Message() *FieldTestMessage_Message {
+	if x != nil {
+		return x.Required_Message
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRequiredgroup() *FieldTestMessage_RequiredGroup {
-	if m != nil {
-		return m.Requiredgroup
+func (x *FieldTestMessage) GetRequiredgroup() *FieldTestMessage_RequiredGroup {
+	if x != nil {
+		return x.Requiredgroup
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedBool() []bool {
-	if m != nil {
-		return m.RepeatedBool
+func (x *FieldTestMessage) GetRepeatedBool() []bool {
+	if x != nil {
+		return x.RepeatedBool
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedEnum() []FieldTestMessage_Enum {
-	if m != nil {
-		return m.RepeatedEnum
+func (x *FieldTestMessage) GetRepeatedEnum() []FieldTestMessage_Enum {
+	if x != nil {
+		return x.RepeatedEnum
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedInt32() []int32 {
-	if m != nil {
-		return m.RepeatedInt32
+func (x *FieldTestMessage) GetRepeatedInt32() []int32 {
+	if x != nil {
+		return x.RepeatedInt32
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedSint32() []int32 {
-	if m != nil {
-		return m.RepeatedSint32
+func (x *FieldTestMessage) GetRepeatedSint32() []int32 {
+	if x != nil {
+		return x.RepeatedSint32
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedUint32() []uint32 {
-	if m != nil {
-		return m.RepeatedUint32
+func (x *FieldTestMessage) GetRepeatedUint32() []uint32 {
+	if x != nil {
+		return x.RepeatedUint32
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedInt64() []int64 {
-	if m != nil {
-		return m.RepeatedInt64
+func (x *FieldTestMessage) GetRepeatedInt64() []int64 {
+	if x != nil {
+		return x.RepeatedInt64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedSint64() []int64 {
-	if m != nil {
-		return m.RepeatedSint64
+func (x *FieldTestMessage) GetRepeatedSint64() []int64 {
+	if x != nil {
+		return x.RepeatedSint64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedUint64() []uint64 {
-	if m != nil {
-		return m.RepeatedUint64
+func (x *FieldTestMessage) GetRepeatedUint64() []uint64 {
+	if x != nil {
+		return x.RepeatedUint64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedSfixed32() []int32 {
-	if m != nil {
-		return m.RepeatedSfixed32
+func (x *FieldTestMessage) GetRepeatedSfixed32() []int32 {
+	if x != nil {
+		return x.RepeatedSfixed32
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedFixed32() []uint32 {
-	if m != nil {
-		return m.RepeatedFixed32
+func (x *FieldTestMessage) GetRepeatedFixed32() []uint32 {
+	if x != nil {
+		return x.RepeatedFixed32
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedFloat() []float32 {
-	if m != nil {
-		return m.RepeatedFloat
+func (x *FieldTestMessage) GetRepeatedFloat() []float32 {
+	if x != nil {
+		return x.RepeatedFloat
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedSfixed64() []int64 {
-	if m != nil {
-		return m.RepeatedSfixed64
+func (x *FieldTestMessage) GetRepeatedSfixed64() []int64 {
+	if x != nil {
+		return x.RepeatedSfixed64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedFixed64() []uint64 {
-	if m != nil {
-		return m.RepeatedFixed64
+func (x *FieldTestMessage) GetRepeatedFixed64() []uint64 {
+	if x != nil {
+		return x.RepeatedFixed64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedDouble() []float64 {
-	if m != nil {
-		return m.RepeatedDouble
+func (x *FieldTestMessage) GetRepeatedDouble() []float64 {
+	if x != nil {
+		return x.RepeatedDouble
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedString() []string {
-	if m != nil {
-		return m.RepeatedString
+func (x *FieldTestMessage) GetRepeatedString() []string {
+	if x != nil {
+		return x.RepeatedString
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedBytes() [][]byte {
-	if m != nil {
-		return m.RepeatedBytes
+func (x *FieldTestMessage) GetRepeatedBytes() [][]byte {
+	if x != nil {
+		return x.RepeatedBytes
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeated_Message() []*FieldTestMessage_Message {
-	if m != nil {
-		return m.Repeated_Message
+func (x *FieldTestMessage) GetRepeated_Message() []*FieldTestMessage_Message {
+	if x != nil {
+		return x.Repeated_Message
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetRepeatedgroup() []*FieldTestMessage_RepeatedGroup {
-	if m != nil {
-		return m.Repeatedgroup
+func (x *FieldTestMessage) GetRepeatedgroup() []*FieldTestMessage_RepeatedGroup {
+	if x != nil {
+		return x.Repeatedgroup
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetDefaultBool() bool {
-	if m != nil && m.DefaultBool != nil {
-		return *m.DefaultBool
+func (x *FieldTestMessage) GetDefaultBool() bool {
+	if x != nil && x.DefaultBool != nil {
+		return *x.DefaultBool
 	}
 	return Default_FieldTestMessage_DefaultBool
 }
 
-func (m *FieldTestMessage) GetDefaultEnum() FieldTestMessage_Enum {
-	if m != nil && m.DefaultEnum != nil {
-		return *m.DefaultEnum
+func (x *FieldTestMessage) GetDefaultEnum() FieldTestMessage_Enum {
+	if x != nil && x.DefaultEnum != nil {
+		return *x.DefaultEnum
 	}
 	return Default_FieldTestMessage_DefaultEnum
 }
 
-func (m *FieldTestMessage) GetDefaultInt32() int32 {
-	if m != nil && m.DefaultInt32 != nil {
-		return *m.DefaultInt32
+func (x *FieldTestMessage) GetDefaultInt32() int32 {
+	if x != nil && x.DefaultInt32 != nil {
+		return *x.DefaultInt32
 	}
 	return Default_FieldTestMessage_DefaultInt32
 }
 
-func (m *FieldTestMessage) GetDefaultSint32() int32 {
-	if m != nil && m.DefaultSint32 != nil {
-		return *m.DefaultSint32
+func (x *FieldTestMessage) GetDefaultSint32() int32 {
+	if x != nil && x.DefaultSint32 != nil {
+		return *x.DefaultSint32
 	}
 	return Default_FieldTestMessage_DefaultSint32
 }
 
-func (m *FieldTestMessage) GetDefaultUint32() uint32 {
-	if m != nil && m.DefaultUint32 != nil {
-		return *m.DefaultUint32
+func (x *FieldTestMessage) GetDefaultUint32() uint32 {
+	if x != nil && x.DefaultUint32 != nil {
+		return *x.DefaultUint32
 	}
 	return Default_FieldTestMessage_DefaultUint32
 }
 
-func (m *FieldTestMessage) GetDefaultInt64() int64 {
-	if m != nil && m.DefaultInt64 != nil {
-		return *m.DefaultInt64
+func (x *FieldTestMessage) GetDefaultInt64() int64 {
+	if x != nil && x.DefaultInt64 != nil {
+		return *x.DefaultInt64
 	}
 	return Default_FieldTestMessage_DefaultInt64
 }
 
-func (m *FieldTestMessage) GetDefaultSint64() int64 {
-	if m != nil && m.DefaultSint64 != nil {
-		return *m.DefaultSint64
+func (x *FieldTestMessage) GetDefaultSint64() int64 {
+	if x != nil && x.DefaultSint64 != nil {
+		return *x.DefaultSint64
 	}
 	return Default_FieldTestMessage_DefaultSint64
 }
 
-func (m *FieldTestMessage) GetDefaultUint64() uint64 {
-	if m != nil && m.DefaultUint64 != nil {
-		return *m.DefaultUint64
+func (x *FieldTestMessage) GetDefaultUint64() uint64 {
+	if x != nil && x.DefaultUint64 != nil {
+		return *x.DefaultUint64
 	}
 	return Default_FieldTestMessage_DefaultUint64
 }
 
-func (m *FieldTestMessage) GetDefaultSfixed32() int32 {
-	if m != nil && m.DefaultSfixed32 != nil {
-		return *m.DefaultSfixed32
+func (x *FieldTestMessage) GetDefaultSfixed32() int32 {
+	if x != nil && x.DefaultSfixed32 != nil {
+		return *x.DefaultSfixed32
 	}
 	return Default_FieldTestMessage_DefaultSfixed32
 }
 
-func (m *FieldTestMessage) GetDefaultFixed32() uint32 {
-	if m != nil && m.DefaultFixed32 != nil {
-		return *m.DefaultFixed32
+func (x *FieldTestMessage) GetDefaultFixed32() uint32 {
+	if x != nil && x.DefaultFixed32 != nil {
+		return *x.DefaultFixed32
 	}
 	return Default_FieldTestMessage_DefaultFixed32
 }
 
-func (m *FieldTestMessage) GetDefaultFloat() float32 {
-	if m != nil && m.DefaultFloat != nil {
-		return *m.DefaultFloat
+func (x *FieldTestMessage) GetDefaultFloat() float32 {
+	if x != nil && x.DefaultFloat != nil {
+		return *x.DefaultFloat
 	}
 	return Default_FieldTestMessage_DefaultFloat
 }
 
-func (m *FieldTestMessage) GetDefaultSfixed64() int64 {
-	if m != nil && m.DefaultSfixed64 != nil {
-		return *m.DefaultSfixed64
+func (x *FieldTestMessage) GetDefaultSfixed64() int64 {
+	if x != nil && x.DefaultSfixed64 != nil {
+		return *x.DefaultSfixed64
 	}
 	return Default_FieldTestMessage_DefaultSfixed64
 }
 
-func (m *FieldTestMessage) GetDefaultFixed64() uint64 {
-	if m != nil && m.DefaultFixed64 != nil {
-		return *m.DefaultFixed64
+func (x *FieldTestMessage) GetDefaultFixed64() uint64 {
+	if x != nil && x.DefaultFixed64 != nil {
+		return *x.DefaultFixed64
 	}
 	return Default_FieldTestMessage_DefaultFixed64
 }
 
-func (m *FieldTestMessage) GetDefaultDouble() float64 {
-	if m != nil && m.DefaultDouble != nil {
-		return *m.DefaultDouble
+func (x *FieldTestMessage) GetDefaultDouble() float64 {
+	if x != nil && x.DefaultDouble != nil {
+		return *x.DefaultDouble
 	}
 	return Default_FieldTestMessage_DefaultDouble
 }
 
-func (m *FieldTestMessage) GetDefaultString() string {
-	if m != nil && m.DefaultString != nil {
-		return *m.DefaultString
+func (x *FieldTestMessage) GetDefaultString() string {
+	if x != nil && x.DefaultString != nil {
+		return *x.DefaultString
 	}
 	return Default_FieldTestMessage_DefaultString
 }
 
-func (m *FieldTestMessage) GetDefaultBytes() []byte {
-	if m != nil && m.DefaultBytes != nil {
-		return m.DefaultBytes
+func (x *FieldTestMessage) GetDefaultBytes() []byte {
+	if x != nil && x.DefaultBytes != nil {
+		return x.DefaultBytes
 	}
 	return append([]byte(nil), Default_FieldTestMessage_DefaultBytes...)
 }
 
-func (m *FieldTestMessage) GetDefaultZeroString() string {
-	if m != nil && m.DefaultZeroString != nil {
-		return *m.DefaultZeroString
+func (x *FieldTestMessage) GetDefaultZeroString() string {
+	if x != nil && x.DefaultZeroString != nil {
+		return *x.DefaultZeroString
 	}
 	return Default_FieldTestMessage_DefaultZeroString
 }
 
-func (m *FieldTestMessage) GetDefaultZeroBytes() []byte {
-	if m != nil && m.DefaultZeroBytes != nil {
-		return m.DefaultZeroBytes
+func (x *FieldTestMessage) GetDefaultZeroBytes() []byte {
+	if x != nil && x.DefaultZeroBytes != nil {
+		return x.DefaultZeroBytes
 	}
 	return append([]byte(nil), Default_FieldTestMessage_DefaultZeroBytes...)
 }
 
-func (m *FieldTestMessage) GetDefaultFloatNeginf() float32 {
-	if m != nil && m.DefaultFloatNeginf != nil {
-		return *m.DefaultFloatNeginf
+func (x *FieldTestMessage) GetDefaultFloatNeginf() float32 {
+	if x != nil && x.DefaultFloatNeginf != nil {
+		return *x.DefaultFloatNeginf
 	}
 	return Default_FieldTestMessage_DefaultFloatNeginf
 }
 
-func (m *FieldTestMessage) GetDefaultFloatPosinf() float32 {
-	if m != nil && m.DefaultFloatPosinf != nil {
-		return *m.DefaultFloatPosinf
+func (x *FieldTestMessage) GetDefaultFloatPosinf() float32 {
+	if x != nil && x.DefaultFloatPosinf != nil {
+		return *x.DefaultFloatPosinf
 	}
 	return Default_FieldTestMessage_DefaultFloatPosinf
 }
 
-func (m *FieldTestMessage) GetDefaultFloatNan() float32 {
-	if m != nil && m.DefaultFloatNan != nil {
-		return *m.DefaultFloatNan
+func (x *FieldTestMessage) GetDefaultFloatNan() float32 {
+	if x != nil && x.DefaultFloatNan != nil {
+		return *x.DefaultFloatNan
 	}
 	return Default_FieldTestMessage_DefaultFloatNan
 }
 
-func (m *FieldTestMessage) GetDefaultDoubleNeginf() float64 {
-	if m != nil && m.DefaultDoubleNeginf != nil {
-		return *m.DefaultDoubleNeginf
+func (x *FieldTestMessage) GetDefaultDoubleNeginf() float64 {
+	if x != nil && x.DefaultDoubleNeginf != nil {
+		return *x.DefaultDoubleNeginf
 	}
 	return Default_FieldTestMessage_DefaultDoubleNeginf
 }
 
-func (m *FieldTestMessage) GetDefaultDoublePosinf() float64 {
-	if m != nil && m.DefaultDoublePosinf != nil {
-		return *m.DefaultDoublePosinf
+func (x *FieldTestMessage) GetDefaultDoublePosinf() float64 {
+	if x != nil && x.DefaultDoublePosinf != nil {
+		return *x.DefaultDoublePosinf
 	}
 	return Default_FieldTestMessage_DefaultDoublePosinf
 }
 
-func (m *FieldTestMessage) GetDefaultDoubleNan() float64 {
-	if m != nil && m.DefaultDoubleNan != nil {
-		return *m.DefaultDoubleNan
+func (x *FieldTestMessage) GetDefaultDoubleNan() float64 {
+	if x != nil && x.DefaultDoubleNan != nil {
+		return *x.DefaultDoubleNan
 	}
 	return Default_FieldTestMessage_DefaultDoubleNan
 }
 
-func (m *FieldTestMessage) GetMapInt32Int64() map[int32]int64 {
-	if m != nil {
-		return m.MapInt32Int64
+func (x *FieldTestMessage) GetMapInt32Int64() map[int32]int64 {
+	if x != nil {
+		return x.MapInt32Int64
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetMapStringMessage() map[string]*FieldTestMessage_Message {
-	if m != nil {
-		return m.MapStringMessage
+func (x *FieldTestMessage) GetMapStringMessage() map[string]*FieldTestMessage_Message {
+	if x != nil {
+		return x.MapStringMessage
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetMapFixed64Enum() map[uint64]FieldTestMessage_Enum {
-	if m != nil {
-		return m.MapFixed64Enum
+func (x *FieldTestMessage) GetMapFixed64Enum() map[uint64]FieldTestMessage_Enum {
+	if x != nil {
+		return x.MapFixed64Enum
 	}
 	return nil
 }
@@ -906,134 +914,134 @@ func (m *FieldTestMessage) GetOneofField() isFieldTestMessage_OneofField {
 	return nil
 }
 
-func (m *FieldTestMessage) GetOneofBool() bool {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofBool); ok {
+func (x *FieldTestMessage) GetOneofBool() bool {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofBool); ok {
 		return x.OneofBool
 	}
 	return false
 }
 
-func (m *FieldTestMessage) GetOneofEnum() FieldTestMessage_Enum {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofEnum); ok {
+func (x *FieldTestMessage) GetOneofEnum() FieldTestMessage_Enum {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofEnum); ok {
 		return x.OneofEnum
 	}
 	return FieldTestMessage_ZERO
 }
 
-func (m *FieldTestMessage) GetOneofInt32() int32 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofInt32); ok {
+func (x *FieldTestMessage) GetOneofInt32() int32 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofInt32); ok {
 		return x.OneofInt32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofSint32() int32 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofSint32); ok {
+func (x *FieldTestMessage) GetOneofSint32() int32 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofSint32); ok {
 		return x.OneofSint32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofUint32() uint32 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofUint32); ok {
+func (x *FieldTestMessage) GetOneofUint32() uint32 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofUint32); ok {
 		return x.OneofUint32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofInt64() int64 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofInt64); ok {
+func (x *FieldTestMessage) GetOneofInt64() int64 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofInt64); ok {
 		return x.OneofInt64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofSint64() int64 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofSint64); ok {
+func (x *FieldTestMessage) GetOneofSint64() int64 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofSint64); ok {
 		return x.OneofSint64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofUint64() uint64 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofUint64); ok {
+func (x *FieldTestMessage) GetOneofUint64() uint64 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofUint64); ok {
 		return x.OneofUint64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofSfixed32() int32 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofSfixed32); ok {
+func (x *FieldTestMessage) GetOneofSfixed32() int32 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofSfixed32); ok {
 		return x.OneofSfixed32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofFixed32() uint32 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofFixed32); ok {
+func (x *FieldTestMessage) GetOneofFixed32() uint32 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofFixed32); ok {
 		return x.OneofFixed32
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofFloat() float32 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofFloat); ok {
+func (x *FieldTestMessage) GetOneofFloat() float32 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofFloat); ok {
 		return x.OneofFloat
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofSfixed64() int64 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofSfixed64); ok {
+func (x *FieldTestMessage) GetOneofSfixed64() int64 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofSfixed64); ok {
 		return x.OneofSfixed64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofFixed64() uint64 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofFixed64); ok {
+func (x *FieldTestMessage) GetOneofFixed64() uint64 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofFixed64); ok {
 		return x.OneofFixed64
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofDouble() float64 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofDouble); ok {
+func (x *FieldTestMessage) GetOneofDouble() float64 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofDouble); ok {
 		return x.OneofDouble
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofString() string {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofString); ok {
+func (x *FieldTestMessage) GetOneofString() string {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofString); ok {
 		return x.OneofString
 	}
 	return ""
 }
 
-func (m *FieldTestMessage) GetOneofBytes() []byte {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofBytes); ok {
+func (x *FieldTestMessage) GetOneofBytes() []byte {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofBytes); ok {
 		return x.OneofBytes
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetOneof_Message() *FieldTestMessage_Message {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_Oneof_Message); ok {
+func (x *FieldTestMessage) GetOneof_Message() *FieldTestMessage_Message {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_Oneof_Message); ok {
 		return x.Oneof_Message
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetOneofgroup() *FieldTestMessage_OneofGroup {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_Oneofgroup); ok {
+func (x *FieldTestMessage) GetOneofgroup() *FieldTestMessage_OneofGroup {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_Oneofgroup); ok {
 		return x.Oneofgroup
 	}
 	return nil
 }
 
-func (m *FieldTestMessage) GetOneofLargestTag() int32 {
-	if x, ok := m.GetOneofField().(*FieldTestMessage_OneofLargestTag); ok {
+func (x *FieldTestMessage) GetOneofLargestTag() int32 {
+	if x, ok := x.GetOneofField().(*FieldTestMessage_OneofLargestTag); ok {
 		return x.OneofLargestTag
 	}
 	return 0
@@ -1062,15 +1070,15 @@ func (m *FieldTestMessage) GetOneofTwo() isFieldTestMessage_OneofTwo {
 	return nil
 }
 
-func (m *FieldTestMessage) GetOneofTwo_1() int32 {
-	if x, ok := m.GetOneofTwo().(*FieldTestMessage_OneofTwo_1); ok {
+func (x *FieldTestMessage) GetOneofTwo_1() int32 {
+	if x, ok := x.GetOneofTwo().(*FieldTestMessage_OneofTwo_1); ok {
 		return x.OneofTwo_1
 	}
 	return 0
 }
 
-func (m *FieldTestMessage) GetOneofTwo_2() int64 {
-	if x, ok := m.GetOneofTwo().(*FieldTestMessage_OneofTwo_2); ok {
+func (x *FieldTestMessage) GetOneofTwo_2() int64 {
+	if x, ok := x.GetOneofTwo().(*FieldTestMessage_OneofTwo_2); ok {
 		return x.OneofTwo_2
 	}
 	return 0
@@ -1110,21 +1118,28 @@ type FieldTestMessage_OptionalGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FieldTestMessage_OptionalGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_fields_proto_messageTypes[1].MessageOf(m)
+func (x *FieldTestMessage_OptionalGroup) Reset() {
+	*x = FieldTestMessage_OptionalGroup{}
 }
-func (m *FieldTestMessage_OptionalGroup) Reset()         { *m = FieldTestMessage_OptionalGroup{} }
-func (m *FieldTestMessage_OptionalGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldTestMessage_OptionalGroup) ProtoMessage()    {}
+
+func (x *FieldTestMessage_OptionalGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldTestMessage_OptionalGroup) ProtoMessage() {}
+
+func (x *FieldTestMessage_OptionalGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_fields_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use FieldTestMessage_OptionalGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_OptionalGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawDescGZIP(), []int{0, 0}
 }
 
-func (m *FieldTestMessage_OptionalGroup) GetOptionalGroup() string {
-	if m != nil && m.OptionalGroup != nil {
-		return *m.OptionalGroup
+func (x *FieldTestMessage_OptionalGroup) GetOptionalGroup() string {
+	if x != nil && x.OptionalGroup != nil {
+		return *x.OptionalGroup
 	}
 	return ""
 }
@@ -1136,21 +1151,28 @@ type FieldTestMessage_RequiredGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FieldTestMessage_RequiredGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_fields_proto_messageTypes[2].MessageOf(m)
+func (x *FieldTestMessage_RequiredGroup) Reset() {
+	*x = FieldTestMessage_RequiredGroup{}
 }
-func (m *FieldTestMessage_RequiredGroup) Reset()         { *m = FieldTestMessage_RequiredGroup{} }
-func (m *FieldTestMessage_RequiredGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldTestMessage_RequiredGroup) ProtoMessage()    {}
+
+func (x *FieldTestMessage_RequiredGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldTestMessage_RequiredGroup) ProtoMessage() {}
+
+func (x *FieldTestMessage_RequiredGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_fields_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use FieldTestMessage_RequiredGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_RequiredGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawDescGZIP(), []int{0, 1}
 }
 
-func (m *FieldTestMessage_RequiredGroup) GetRequiredGroup() string {
-	if m != nil && m.RequiredGroup != nil {
-		return *m.RequiredGroup
+func (x *FieldTestMessage_RequiredGroup) GetRequiredGroup() string {
+	if x != nil && x.RequiredGroup != nil {
+		return *x.RequiredGroup
 	}
 	return ""
 }
@@ -1162,21 +1184,28 @@ type FieldTestMessage_RepeatedGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FieldTestMessage_RepeatedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_fields_proto_messageTypes[3].MessageOf(m)
+func (x *FieldTestMessage_RepeatedGroup) Reset() {
+	*x = FieldTestMessage_RepeatedGroup{}
 }
-func (m *FieldTestMessage_RepeatedGroup) Reset()         { *m = FieldTestMessage_RepeatedGroup{} }
-func (m *FieldTestMessage_RepeatedGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldTestMessage_RepeatedGroup) ProtoMessage()    {}
+
+func (x *FieldTestMessage_RepeatedGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldTestMessage_RepeatedGroup) ProtoMessage() {}
+
+func (x *FieldTestMessage_RepeatedGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_fields_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use FieldTestMessage_RepeatedGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_RepeatedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawDescGZIP(), []int{0, 2}
 }
 
-func (m *FieldTestMessage_RepeatedGroup) GetRepeatedGroup() []string {
-	if m != nil {
-		return m.RepeatedGroup
+func (x *FieldTestMessage_RepeatedGroup) GetRepeatedGroup() []string {
+	if x != nil {
+		return x.RepeatedGroup
 	}
 	return nil
 }
@@ -1188,21 +1217,28 @@ type FieldTestMessage_OneofGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FieldTestMessage_OneofGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_fields_proto_messageTypes[7].MessageOf(m)
+func (x *FieldTestMessage_OneofGroup) Reset() {
+	*x = FieldTestMessage_OneofGroup{}
 }
-func (m *FieldTestMessage_OneofGroup) Reset()         { *m = FieldTestMessage_OneofGroup{} }
-func (m *FieldTestMessage_OneofGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldTestMessage_OneofGroup) ProtoMessage()    {}
+
+func (x *FieldTestMessage_OneofGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldTestMessage_OneofGroup) ProtoMessage() {}
+
+func (x *FieldTestMessage_OneofGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_fields_proto_messageTypes[7].MessageOf(x)
+}
 
 // Deprecated: Use FieldTestMessage_OneofGroup.ProtoReflect.Type instead.
 func (*FieldTestMessage_OneofGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_fields_proto_rawDescGZIP(), []int{0, 6}
 }
 
-func (m *FieldTestMessage_OneofGroup) GetOneofGroupField() string {
-	if m != nil && m.OneofGroupField != nil {
-		return *m.OneofGroupField
+func (x *FieldTestMessage_OneofGroup) GetOneofGroupField() string {
+	if x != nil && x.OneofGroupField != nil {
+		return *x.OneofGroupField
 	}
 	return ""
 }
@@ -1213,12 +1249,19 @@ type FieldTestMessage_Message struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_fields_proto_messageTypes[8].MessageOf(m)
+func (x *FieldTestMessage_Message) Reset() {
+	*x = FieldTestMessage_Message{}
 }
-func (m *FieldTestMessage_Message) Reset()         { *m = FieldTestMessage_Message{} }
-func (m *FieldTestMessage_Message) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FieldTestMessage_Message) ProtoMessage()    {}
+
+func (x *FieldTestMessage_Message) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FieldTestMessage_Message) ProtoMessage() {}
+
+func (x *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_fields_proto_messageTypes[8].MessageOf(x)
+}
 
 // Deprecated: Use FieldTestMessage_Message.ProtoReflect.Type instead.
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {

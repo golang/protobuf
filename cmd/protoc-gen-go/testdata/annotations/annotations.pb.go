@@ -18,13 +18,6 @@ const (
 	AnnotationsTestEnum_ANNOTATIONS_TEST_ENUM_VALUE AnnotationsTestEnum = 0
 )
 
-func (e AnnotationsTestEnum) Type() protoreflect.EnumType {
-	return xxx_File_annotations_annotations_proto_enumTypes[0]
-}
-func (e AnnotationsTestEnum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use AnnotationsTestEnum.Type.Values instead.
 var AnnotationsTestEnum_name = map[int32]string{
 	0: "ANNOTATIONS_TEST_ENUM_VALUE",
@@ -41,6 +34,14 @@ func (x AnnotationsTestEnum) Enum() *AnnotationsTestEnum {
 
 func (x AnnotationsTestEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (AnnotationsTestEnum) Type() protoreflect.EnumType {
+	return xxx_File_annotations_annotations_proto_enumTypes[0]
+}
+
+func (x AnnotationsTestEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -65,21 +66,28 @@ type AnnotationsTestMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AnnotationsTestMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_annotations_annotations_proto_messageTypes[0].MessageOf(m)
+func (x *AnnotationsTestMessage) Reset() {
+	*x = AnnotationsTestMessage{}
 }
-func (m *AnnotationsTestMessage) Reset()         { *m = AnnotationsTestMessage{} }
-func (m *AnnotationsTestMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*AnnotationsTestMessage) ProtoMessage()    {}
+
+func (x *AnnotationsTestMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AnnotationsTestMessage) ProtoMessage() {}
+
+func (x *AnnotationsTestMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_annotations_annotations_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use AnnotationsTestMessage.ProtoReflect.Type instead.
 func (*AnnotationsTestMessage) Descriptor() ([]byte, []int) {
 	return xxx_File_annotations_annotations_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *AnnotationsTestMessage) GetAnnotationsTestField() string {
-	if m != nil && m.AnnotationsTestField != nil {
-		return *m.AnnotationsTestField
+func (x *AnnotationsTestMessage) GetAnnotationsTestField() string {
+	if x != nil && x.AnnotationsTestField != nil {
+		return *x.AnnotationsTestField
 	}
 	return ""
 }

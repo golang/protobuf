@@ -22,13 +22,6 @@ const (
 	EnumType1_TWO EnumType1 = 2
 )
 
-func (e EnumType1) Type() protoreflect.EnumType {
-	return xxx_File_proto2_enum_proto_enumTypes[0]
-}
-func (e EnumType1) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use EnumType1.Type.Values instead.
 var EnumType1_name = map[int32]string{
 	1: "ONE",
@@ -47,6 +40,14 @@ func (x EnumType1) Enum() *EnumType1 {
 
 func (x EnumType1) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (EnumType1) Type() protoreflect.EnumType {
+	return xxx_File_proto2_enum_proto_enumTypes[0]
+}
+
+func (x EnumType1) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -71,13 +72,6 @@ const (
 	EnumType2_duplicate2 EnumType2 = 1
 )
 
-func (e EnumType2) Type() protoreflect.EnumType {
-	return xxx_File_proto2_enum_proto_enumTypes[1]
-}
-func (e EnumType2) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use EnumType2.Type.Values instead.
 var EnumType2_name = map[int32]string{
 	1: "duplicate1",
@@ -96,6 +90,14 @@ func (x EnumType2) Enum() *EnumType2 {
 
 func (x EnumType2) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (EnumType2) Type() protoreflect.EnumType {
+	return xxx_File_proto2_enum_proto_enumTypes[1]
+}
+
+func (x EnumType2) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -121,13 +123,6 @@ const (
 	EnumContainerMessage1_NESTED_1A_VALUE EnumContainerMessage1_NestedEnumType1A = 0
 )
 
-func (e EnumContainerMessage1_NestedEnumType1A) Type() protoreflect.EnumType {
-	return xxx_File_proto2_enum_proto_enumTypes[2]
-}
-func (e EnumContainerMessage1_NestedEnumType1A) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use EnumContainerMessage1_NestedEnumType1A.Type.Values instead.
 var EnumContainerMessage1_NestedEnumType1A_name = map[int32]string{
 	0: "NESTED_1A_VALUE",
@@ -144,6 +139,14 @@ func (x EnumContainerMessage1_NestedEnumType1A) Enum() *EnumContainerMessage1_Ne
 
 func (x EnumContainerMessage1_NestedEnumType1A) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (EnumContainerMessage1_NestedEnumType1A) Type() protoreflect.EnumType {
+	return xxx_File_proto2_enum_proto_enumTypes[2]
+}
+
+func (x EnumContainerMessage1_NestedEnumType1A) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -167,13 +170,6 @@ const (
 	EnumContainerMessage1_NESTED_1B_VALUE EnumContainerMessage1_NestedEnumType1B = 0
 )
 
-func (e EnumContainerMessage1_NestedEnumType1B) Type() protoreflect.EnumType {
-	return xxx_File_proto2_enum_proto_enumTypes[3]
-}
-func (e EnumContainerMessage1_NestedEnumType1B) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use EnumContainerMessage1_NestedEnumType1B.Type.Values instead.
 var EnumContainerMessage1_NestedEnumType1B_name = map[int32]string{
 	0: "NESTED_1B_VALUE",
@@ -190,6 +186,14 @@ func (x EnumContainerMessage1_NestedEnumType1B) Enum() *EnumContainerMessage1_Ne
 
 func (x EnumContainerMessage1_NestedEnumType1B) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (EnumContainerMessage1_NestedEnumType1B) Type() protoreflect.EnumType {
+	return xxx_File_proto2_enum_proto_enumTypes[3]
+}
+
+func (x EnumContainerMessage1_NestedEnumType1B) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -215,13 +219,6 @@ const (
 	EnumContainerMessage1_EnumContainerMessage2_NESTED_2A_VALUE EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A = 0
 )
 
-func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Type() protoreflect.EnumType {
-	return xxx_File_proto2_enum_proto_enumTypes[4]
-}
-func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A.Type.Values instead.
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_name = map[int32]string{
 	0: "NESTED_2A_VALUE",
@@ -238,6 +235,14 @@ func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Enum() *En
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Type() protoreflect.EnumType {
+	return xxx_File_proto2_enum_proto_enumTypes[4]
+}
+
+func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -261,13 +266,6 @@ const (
 	EnumContainerMessage1_EnumContainerMessage2_NESTED_2B_VALUE EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B = 0
 )
 
-func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Type() protoreflect.EnumType {
-	return xxx_File_proto2_enum_proto_enumTypes[5]
-}
-func (e EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B.Type.Values instead.
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_name = map[int32]string{
 	0: "NESTED_2B_VALUE",
@@ -284,6 +282,14 @@ func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Enum() *En
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Type() protoreflect.EnumType {
+	return xxx_File_proto2_enum_proto_enumTypes[5]
+}
+
+func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -309,12 +315,19 @@ type EnumContainerMessage1 struct {
 	XXX_sizecache        int32      `json:"-"`
 }
 
-func (m *EnumContainerMessage1) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_enum_proto_messageTypes[0].MessageOf(m)
+func (x *EnumContainerMessage1) Reset() {
+	*x = EnumContainerMessage1{}
 }
-func (m *EnumContainerMessage1) Reset()         { *m = EnumContainerMessage1{} }
-func (m *EnumContainerMessage1) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*EnumContainerMessage1) ProtoMessage()    {}
+
+func (x *EnumContainerMessage1) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EnumContainerMessage1) ProtoMessage() {}
+
+func (x *EnumContainerMessage1) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_enum_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use EnumContainerMessage1.ProtoReflect.Type instead.
 func (*EnumContainerMessage1) Descriptor() ([]byte, []int) {
@@ -324,16 +337,16 @@ func (*EnumContainerMessage1) Descriptor() ([]byte, []int) {
 const Default_EnumContainerMessage1_DefaultDuplicate1 EnumType2 = EnumType2_duplicate1
 const Default_EnumContainerMessage1_DefaultDuplicate2 EnumType2 = EnumType2_duplicate2
 
-func (m *EnumContainerMessage1) GetDefaultDuplicate1() EnumType2 {
-	if m != nil && m.DefaultDuplicate1 != nil {
-		return *m.DefaultDuplicate1
+func (x *EnumContainerMessage1) GetDefaultDuplicate1() EnumType2 {
+	if x != nil && x.DefaultDuplicate1 != nil {
+		return *x.DefaultDuplicate1
 	}
 	return Default_EnumContainerMessage1_DefaultDuplicate1
 }
 
-func (m *EnumContainerMessage1) GetDefaultDuplicate2() EnumType2 {
-	if m != nil && m.DefaultDuplicate2 != nil {
-		return *m.DefaultDuplicate2
+func (x *EnumContainerMessage1) GetDefaultDuplicate2() EnumType2 {
+	if x != nil && x.DefaultDuplicate2 != nil {
+		return *x.DefaultDuplicate2
 	}
 	return Default_EnumContainerMessage1_DefaultDuplicate2
 }
@@ -344,16 +357,19 @@ type EnumContainerMessage1_EnumContainerMessage2 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EnumContainerMessage1_EnumContainerMessage2) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_enum_proto_messageTypes[1].MessageOf(m)
+func (x *EnumContainerMessage1_EnumContainerMessage2) Reset() {
+	*x = EnumContainerMessage1_EnumContainerMessage2{}
 }
-func (m *EnumContainerMessage1_EnumContainerMessage2) Reset() {
-	*m = EnumContainerMessage1_EnumContainerMessage2{}
+
+func (x *EnumContainerMessage1_EnumContainerMessage2) String() string {
+	return protoimpl.X.MessageStringOf(x)
 }
-func (m *EnumContainerMessage1_EnumContainerMessage2) String() string {
-	return protoimpl.X.MessageStringOf(m)
-}
+
 func (*EnumContainerMessage1_EnumContainerMessage2) ProtoMessage() {}
+
+func (x *EnumContainerMessage1_EnumContainerMessage2) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_enum_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use EnumContainerMessage1_EnumContainerMessage2.ProtoReflect.Type instead.
 func (*EnumContainerMessage1_EnumContainerMessage2) Descriptor() ([]byte, []int) {

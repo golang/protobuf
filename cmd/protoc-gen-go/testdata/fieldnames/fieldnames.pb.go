@@ -57,112 +57,119 @@ type Message struct {
 	XXX_sizecache        int32                    `json:"-"`
 }
 
-func (m *Message) ProtoReflect() protoreflect.Message {
-	return xxx_File_fieldnames_fieldnames_proto_messageTypes[0].MessageOf(m)
+func (x *Message) Reset() {
+	*x = Message{}
 }
-func (m *Message) Reset()         { *m = Message{} }
-func (m *Message) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message) ProtoMessage()    {}
+
+func (x *Message) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message) ProtoMessage() {}
+
+func (x *Message) ProtoReflect() protoreflect.Message {
+	return xxx_File_fieldnames_fieldnames_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_fieldnames_fieldnames_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Message) GetFieldOne() string {
-	if m != nil && m.FieldOne != nil {
-		return *m.FieldOne
+func (x *Message) GetFieldOne() string {
+	if x != nil && x.FieldOne != nil {
+		return *x.FieldOne
 	}
 	return ""
 }
 
-func (m *Message) GetFieldTwo() string {
-	if m != nil && m.FieldTwo != nil {
-		return *m.FieldTwo
+func (x *Message) GetFieldTwo() string {
+	if x != nil && x.FieldTwo != nil {
+		return *x.FieldTwo
 	}
 	return ""
 }
 
-func (m *Message) GetFieldThree() string {
-	if m != nil && m.FieldThree != nil {
-		return *m.FieldThree
+func (x *Message) GetFieldThree() string {
+	if x != nil && x.FieldThree != nil {
+		return *x.FieldThree
 	}
 	return ""
 }
 
-func (m *Message) GetField_Four() string {
-	if m != nil && m.Field_Four != nil {
-		return *m.Field_Four
+func (x *Message) GetField_Four() string {
+	if x != nil && x.Field_Four != nil {
+		return *x.Field_Four
 	}
 	return ""
 }
 
-func (m *Message) GetDescriptor_() string {
-	if m != nil && m.Descriptor_ != nil {
-		return *m.Descriptor_
+func (x *Message) GetDescriptor_() string {
+	if x != nil && x.Descriptor_ != nil {
+		return *x.Descriptor_
 	}
 	return ""
 }
 
-func (m *Message) GetMarshal_() string {
-	if m != nil && m.Marshal_ != nil {
-		return *m.Marshal_
+func (x *Message) GetMarshal_() string {
+	if x != nil && x.Marshal_ != nil {
+		return *x.Marshal_
 	}
 	return ""
 }
 
-func (m *Message) GetUnmarshal_() string {
-	if m != nil && m.Unmarshal_ != nil {
-		return *m.Unmarshal_
+func (x *Message) GetUnmarshal_() string {
+	if x != nil && x.Unmarshal_ != nil {
+		return *x.Unmarshal_
 	}
 	return ""
 }
 
-func (m *Message) GetProtoMessage_() string {
-	if m != nil && m.ProtoMessage_ != nil {
-		return *m.ProtoMessage_
+func (x *Message) GetProtoMessage_() string {
+	if x != nil && x.ProtoMessage_ != nil {
+		return *x.ProtoMessage_
 	}
 	return ""
 }
 
-func (m *Message) GetCamelCase() string {
-	if m != nil && m.CamelCase != nil {
-		return *m.CamelCase
+func (x *Message) GetCamelCase() string {
+	if x != nil && x.CamelCase != nil {
+		return *x.CamelCase
 	}
 	return ""
 }
 
-func (m *Message) GetCamelCase_() string {
-	if m != nil && m.CamelCase_ != nil {
-		return *m.CamelCase_
+func (x *Message) GetCamelCase_() string {
+	if x != nil && x.CamelCase_ != nil {
+		return *x.CamelCase_
 	}
 	return ""
 }
 
-func (m *Message) GetCamelCase__() string {
-	if m != nil && m.CamelCase__ != nil {
-		return *m.CamelCase__
+func (x *Message) GetCamelCase__() string {
+	if x != nil && x.CamelCase__ != nil {
+		return *x.CamelCase__
 	}
 	return ""
 }
 
-func (m *Message) GetCamelCase___() string {
-	if m != nil && m.CamelCase___ != nil {
-		return *m.CamelCase___
+func (x *Message) GetCamelCase___() string {
+	if x != nil && x.CamelCase___ != nil {
+		return *x.CamelCase___
 	}
 	return ""
 }
 
-func (m *Message) GetGetName() string {
-	if m != nil && m.GetName != nil {
-		return *m.GetName
+func (x *Message) GetGetName() string {
+	if x != nil && x.GetName != nil {
+		return *x.GetName
 	}
 	return ""
 }
 
-func (m *Message) GetName_() string {
-	if m != nil && m.Name_ != nil {
-		return *m.Name_
+func (x *Message) GetName_() string {
+	if x != nil && x.Name_ != nil {
+		return *x.Name_
 	}
 	return ""
 }
@@ -184,8 +191,8 @@ func (m *Message) GetOneofConflictA_() isMessage_OneofConflictA_ {
 	return nil
 }
 
-func (m *Message) GetOneofConflictA() string {
-	if x, ok := m.GetOneofConflictA_().(*Message_OneofConflictA); ok {
+func (x *Message) GetOneofConflictA() string {
+	if x, ok := x.GetOneofConflictA_().(*Message_OneofConflictA); ok {
 		return x.OneofConflictA
 	}
 	return ""
@@ -214,15 +221,15 @@ func (m *Message) GetOneofConflictB() isMessage_OneofConflictB {
 	return nil
 }
 
-func (m *Message) GetOneofNoConflict() string {
-	if x, ok := m.GetOneofConflictB().(*Message_OneofNoConflict); ok {
+func (x *Message) GetOneofNoConflict() string {
+	if x, ok := x.GetOneofConflictB().(*Message_OneofNoConflict); ok {
 		return x.OneofNoConflict
 	}
 	return ""
 }
 
-func (m *Message) GetOneofConflictB_() string {
-	if x, ok := m.GetOneofConflictB().(*Message_OneofConflictB_); ok {
+func (x *Message) GetOneofConflictB_() string {
+	if x, ok := x.GetOneofConflictB().(*Message_OneofConflictB_); ok {
 		return x.OneofConflictB_
 	}
 	return ""
@@ -245,8 +252,8 @@ func (m *Message) GetOneofConflictC() isMessage_OneofConflictC {
 	return nil
 }
 
-func (m *Message) GetOneofMessageConflict() string {
-	if x, ok := m.GetOneofConflictC().(*Message_OneofMessageConflict_); ok {
+func (x *Message) GetOneofMessageConflict() string {
+	if x, ok := x.GetOneofConflictC().(*Message_OneofMessageConflict_); ok {
 		return x.OneofMessageConflict
 	}
 	return ""
@@ -268,12 +275,19 @@ type Message_OneofMessageConflict struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message_OneofMessageConflict) ProtoReflect() protoreflect.Message {
-	return xxx_File_fieldnames_fieldnames_proto_messageTypes[1].MessageOf(m)
+func (x *Message_OneofMessageConflict) Reset() {
+	*x = Message_OneofMessageConflict{}
 }
-func (m *Message_OneofMessageConflict) Reset()         { *m = Message_OneofMessageConflict{} }
-func (m *Message_OneofMessageConflict) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message_OneofMessageConflict) ProtoMessage()    {}
+
+func (x *Message_OneofMessageConflict) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message_OneofMessageConflict) ProtoMessage() {}
+
+func (x *Message_OneofMessageConflict) ProtoReflect() protoreflect.Message {
+	return xxx_File_fieldnames_fieldnames_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use Message_OneofMessageConflict.ProtoReflect.Type instead.
 func (*Message_OneofMessageConflict) Descriptor() ([]byte, []int) {

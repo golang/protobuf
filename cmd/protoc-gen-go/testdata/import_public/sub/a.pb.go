@@ -25,13 +25,6 @@ const (
 	E_ZERO E = 0
 )
 
-func (e E) Type() protoreflect.EnumType {
-	return xxx_File_import_public_sub_a_proto_enumTypes[0]
-}
-func (e E) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use E.Type.Values instead.
 var E_name = map[int32]string{
 	0: "ZERO",
@@ -48,6 +41,14 @@ func (x E) Enum() *E {
 
 func (x E) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (E) Type() protoreflect.EnumType {
+	return xxx_File_import_public_sub_a_proto_enumTypes[0]
+}
+
+func (x E) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -71,13 +72,6 @@ const (
 	M_M_ZERO M_Subenum = 0
 )
 
-func (e M_Subenum) Type() protoreflect.EnumType {
-	return xxx_File_import_public_sub_a_proto_enumTypes[1]
-}
-func (e M_Subenum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use M_Subenum.Type.Values instead.
 var M_Subenum_name = map[int32]string{
 	0: "M_ZERO",
@@ -94,6 +88,14 @@ func (x M_Subenum) Enum() *M_Subenum {
 
 func (x M_Subenum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (M_Subenum) Type() protoreflect.EnumType {
+	return xxx_File_import_public_sub_a_proto_enumTypes[1]
+}
+
+func (x M_Subenum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -117,13 +119,6 @@ const (
 	M_Submessage_M_SUBMESSAGE_ZERO M_Submessage_Submessage_Subenum = 0
 )
 
-func (e M_Submessage_Submessage_Subenum) Type() protoreflect.EnumType {
-	return xxx_File_import_public_sub_a_proto_enumTypes[2]
-}
-func (e M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use M_Submessage_Submessage_Subenum.Type.Values instead.
 var M_Submessage_Submessage_Subenum_name = map[int32]string{
 	0: "M_SUBMESSAGE_ZERO",
@@ -140,6 +135,14 @@ func (x M_Submessage_Submessage_Subenum) Enum() *M_Submessage_Submessage_Subenum
 
 func (x M_Submessage_Submessage_Subenum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (M_Submessage_Submessage_Subenum) Type() protoreflect.EnumType {
+	return xxx_File_import_public_sub_a_proto_enumTypes[2]
+}
+
+func (x M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -173,12 +176,19 @@ type M struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *M) ProtoReflect() protoreflect.Message {
-	return xxx_File_import_public_sub_a_proto_messageTypes[0].MessageOf(m)
+func (x *M) Reset() {
+	*x = M{}
 }
-func (m *M) Reset()         { *m = M{} }
-func (m *M) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*M) ProtoMessage()    {}
+
+func (x *M) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*M) ProtoMessage() {}
+
+func (x *M) ProtoReflect() protoreflect.Message {
+	return xxx_File_import_public_sub_a_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use M.ProtoReflect.Type instead.
 func (*M) Descriptor() ([]byte, []int) {
@@ -199,30 +209,30 @@ const Default_M_S string = "default"
 var Default_M_B []byte = []byte("default")
 var Default_M_F float64 = math.NaN()
 
-func (m *M) GetM2() *M2 {
-	if m != nil {
-		return m.M2
+func (x *M) GetM2() *M2 {
+	if x != nil {
+		return x.M2
 	}
 	return nil
 }
 
-func (m *M) GetS() string {
-	if m != nil && m.S != nil {
-		return *m.S
+func (x *M) GetS() string {
+	if x != nil && x.S != nil {
+		return *x.S
 	}
 	return Default_M_S
 }
 
-func (m *M) GetB() []byte {
-	if m != nil && m.B != nil {
-		return m.B
+func (x *M) GetB() []byte {
+	if x != nil && x.B != nil {
+		return x.B
 	}
 	return append([]byte(nil), Default_M_B...)
 }
 
-func (m *M) GetF() float64 {
-	if m != nil && m.F != nil {
-		return *m.F
+func (x *M) GetF() float64 {
+	if x != nil && x.F != nil {
+		return *x.F
 	}
 	return Default_M_F
 }
@@ -250,15 +260,15 @@ func (m *M) GetOneofField() isM_OneofField {
 	return nil
 }
 
-func (m *M) GetOneofInt32() int32 {
-	if x, ok := m.GetOneofField().(*M_OneofInt32); ok {
+func (x *M) GetOneofInt32() int32 {
+	if x, ok := x.GetOneofField().(*M_OneofInt32); ok {
 		return x.OneofInt32
 	}
 	return 0
 }
 
-func (m *M) GetOneofInt64() int64 {
-	if x, ok := m.GetOneofField().(*M_OneofInt64); ok {
+func (x *M) GetOneofInt64() int64 {
+	if x, ok := x.GetOneofField().(*M_OneofInt64); ok {
 		return x.OneofInt64
 	}
 	return 0
@@ -282,12 +292,19 @@ type M_Submessage struct {
 	XXX_sizecache        int32                               `json:"-"`
 }
 
-func (m *M_Submessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_import_public_sub_a_proto_messageTypes[1].MessageOf(m)
+func (x *M_Submessage) Reset() {
+	*x = M_Submessage{}
 }
-func (m *M_Submessage) Reset()         { *m = M_Submessage{} }
-func (m *M_Submessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*M_Submessage) ProtoMessage()    {}
+
+func (x *M_Submessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*M_Submessage) ProtoMessage() {}
+
+func (x *M_Submessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_import_public_sub_a_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use M_Submessage.ProtoReflect.Type instead.
 func (*M_Submessage) Descriptor() ([]byte, []int) {
@@ -317,15 +334,15 @@ func (m *M_Submessage) GetSubmessageOneofField() isM_Submessage_SubmessageOneofF
 	return nil
 }
 
-func (m *M_Submessage) GetSubmessageOneofInt32() int32 {
-	if x, ok := m.GetSubmessageOneofField().(*M_Submessage_SubmessageOneofInt32); ok {
+func (x *M_Submessage) GetSubmessageOneofInt32() int32 {
+	if x, ok := x.GetSubmessageOneofField().(*M_Submessage_SubmessageOneofInt32); ok {
 		return x.SubmessageOneofInt32
 	}
 	return 0
 }
 
-func (m *M_Submessage) GetSubmessageOneofInt64() int64 {
-	if x, ok := m.GetSubmessageOneofField().(*M_Submessage_SubmessageOneofInt64); ok {
+func (x *M_Submessage) GetSubmessageOneofInt64() int64 {
+	if x, ok := x.GetSubmessageOneofField().(*M_Submessage_SubmessageOneofInt64); ok {
 		return x.SubmessageOneofInt64
 	}
 	return 0

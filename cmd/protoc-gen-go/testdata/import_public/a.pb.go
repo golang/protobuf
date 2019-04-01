@@ -65,35 +65,42 @@ type Public struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Public) ProtoReflect() protoreflect.Message {
-	return xxx_File_import_public_a_proto_messageTypes[0].MessageOf(m)
+func (x *Public) Reset() {
+	*x = Public{}
 }
-func (m *Public) Reset()         { *m = Public{} }
-func (m *Public) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Public) ProtoMessage()    {}
+
+func (x *Public) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Public) ProtoMessage() {}
+
+func (x *Public) ProtoReflect() protoreflect.Message {
+	return xxx_File_import_public_a_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Public.ProtoReflect.Type instead.
 func (*Public) Descriptor() ([]byte, []int) {
 	return xxx_File_import_public_a_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Public) GetM() *sub.M {
-	if m != nil {
-		return m.M
+func (x *Public) GetM() *sub.M {
+	if x != nil {
+		return x.M
 	}
 	return nil
 }
 
-func (m *Public) GetE() sub.E {
-	if m != nil && m.E != nil {
-		return *m.E
+func (x *Public) GetE() sub.E {
+	if x != nil && x.E != nil {
+		return *x.E
 	}
 	return sub.E_ZERO
 }
 
-func (m *Public) GetLocal() *Local {
-	if m != nil {
-		return m.Local
+func (x *Public) GetLocal() *Local {
+	if x != nil {
+		return x.Local
 	}
 	return nil
 }

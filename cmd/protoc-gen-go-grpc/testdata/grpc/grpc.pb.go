@@ -18,12 +18,19 @@ type Request struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Request) ProtoReflect() protoreflect.Message {
-	return xxx_File_grpc_grpc_proto_messageTypes[0].MessageOf(m)
+func (x *Request) Reset() {
+	*x = Request{}
 }
-func (m *Request) Reset()         { *m = Request{} }
-func (m *Request) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Request) ProtoMessage()    {}
+
+func (x *Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Request) ProtoMessage() {}
+
+func (x *Request) ProtoReflect() protoreflect.Message {
+	return xxx_File_grpc_grpc_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Request.ProtoReflect.Type instead.
 func (*Request) Descriptor() ([]byte, []int) {
@@ -36,12 +43,19 @@ type Response struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Response) ProtoReflect() protoreflect.Message {
-	return xxx_File_grpc_grpc_proto_messageTypes[1].MessageOf(m)
+func (x *Response) Reset() {
+	*x = Response{}
 }
-func (m *Response) Reset()         { *m = Response{} }
-func (m *Response) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Response) ProtoMessage()    {}
+
+func (x *Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Response) ProtoMessage() {}
+
+func (x *Response) ProtoReflect() protoreflect.Message {
+	return xxx_File_grpc_grpc_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use Response.ProtoReflect.Type instead.
 func (*Response) Descriptor() ([]byte, []int) {

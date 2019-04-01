@@ -21,13 +21,6 @@ const (
 	Enum_TEN  Enum = 10
 )
 
-func (e Enum) Type() protoreflect.EnumType {
-	return xxx_File_pb3_test_proto_enumTypes[0]
-}
-func (e Enum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0:  "ZERO",
@@ -48,6 +41,14 @@ func (x Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
 }
 
+func (Enum) Type() protoreflect.EnumType {
+	return xxx_File_pb3_test_proto_enumTypes[0]
+}
+
+func (x Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 // Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{0}
@@ -61,13 +62,6 @@ const (
 	Enums_DOS  Enums_NestedEnum = 2
 	Enums_DIEZ Enums_NestedEnum = 10
 )
-
-func (e Enums_NestedEnum) Type() protoreflect.EnumType {
-	return xxx_File_pb3_test_proto_enumTypes[1]
-}
-func (e Enums_NestedEnum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
 
 // Deprecated: Use Enums_NestedEnum.Type.Values instead.
 var Enums_NestedEnum_name = map[int32]string{
@@ -87,6 +81,14 @@ var Enums_NestedEnum_value = map[string]int32{
 
 func (x Enums_NestedEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Enums_NestedEnum) Type() protoreflect.EnumType {
+	return xxx_File_pb3_test_proto_enumTypes[1]
+}
+
+func (x Enums_NestedEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Use Enums_NestedEnum.Type instead.
@@ -116,119 +118,126 @@ type Scalars struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Scalars) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb3_test_proto_messageTypes[0].MessageOf(m)
+func (x *Scalars) Reset() {
+	*x = Scalars{}
 }
-func (m *Scalars) Reset()         { *m = Scalars{} }
-func (m *Scalars) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Scalars) ProtoMessage()    {}
+
+func (x *Scalars) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Scalars) ProtoMessage() {}
+
+func (x *Scalars) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb3_test_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Scalars.ProtoReflect.Type instead.
 func (*Scalars) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Scalars) GetSBool() bool {
-	if m != nil {
-		return m.SBool
+func (x *Scalars) GetSBool() bool {
+	if x != nil {
+		return x.SBool
 	}
 	return false
 }
 
-func (m *Scalars) GetSInt32() int32 {
-	if m != nil {
-		return m.SInt32
+func (x *Scalars) GetSInt32() int32 {
+	if x != nil {
+		return x.SInt32
 	}
 	return 0
 }
 
-func (m *Scalars) GetSInt64() int64 {
-	if m != nil {
-		return m.SInt64
+func (x *Scalars) GetSInt64() int64 {
+	if x != nil {
+		return x.SInt64
 	}
 	return 0
 }
 
-func (m *Scalars) GetSUint32() uint32 {
-	if m != nil {
-		return m.SUint32
+func (x *Scalars) GetSUint32() uint32 {
+	if x != nil {
+		return x.SUint32
 	}
 	return 0
 }
 
-func (m *Scalars) GetSUint64() uint64 {
-	if m != nil {
-		return m.SUint64
+func (x *Scalars) GetSUint64() uint64 {
+	if x != nil {
+		return x.SUint64
 	}
 	return 0
 }
 
-func (m *Scalars) GetSSint32() int32 {
-	if m != nil {
-		return m.SSint32
+func (x *Scalars) GetSSint32() int32 {
+	if x != nil {
+		return x.SSint32
 	}
 	return 0
 }
 
-func (m *Scalars) GetSSint64() int64 {
-	if m != nil {
-		return m.SSint64
+func (x *Scalars) GetSSint64() int64 {
+	if x != nil {
+		return x.SSint64
 	}
 	return 0
 }
 
-func (m *Scalars) GetSFixed32() uint32 {
-	if m != nil {
-		return m.SFixed32
+func (x *Scalars) GetSFixed32() uint32 {
+	if x != nil {
+		return x.SFixed32
 	}
 	return 0
 }
 
-func (m *Scalars) GetSFixed64() uint64 {
-	if m != nil {
-		return m.SFixed64
+func (x *Scalars) GetSFixed64() uint64 {
+	if x != nil {
+		return x.SFixed64
 	}
 	return 0
 }
 
-func (m *Scalars) GetSSfixed32() int32 {
-	if m != nil {
-		return m.SSfixed32
+func (x *Scalars) GetSSfixed32() int32 {
+	if x != nil {
+		return x.SSfixed32
 	}
 	return 0
 }
 
-func (m *Scalars) GetSSfixed64() int64 {
-	if m != nil {
-		return m.SSfixed64
+func (x *Scalars) GetSSfixed64() int64 {
+	if x != nil {
+		return x.SSfixed64
 	}
 	return 0
 }
 
-func (m *Scalars) GetSFloat() float32 {
-	if m != nil {
-		return m.SFloat
+func (x *Scalars) GetSFloat() float32 {
+	if x != nil {
+		return x.SFloat
 	}
 	return 0
 }
 
-func (m *Scalars) GetSDouble() float64 {
-	if m != nil {
-		return m.SDouble
+func (x *Scalars) GetSDouble() float64 {
+	if x != nil {
+		return x.SDouble
 	}
 	return 0
 }
 
-func (m *Scalars) GetSBytes() []byte {
-	if m != nil {
-		return m.SBytes
+func (x *Scalars) GetSBytes() []byte {
+	if x != nil {
+		return x.SBytes
 	}
 	return nil
 }
 
-func (m *Scalars) GetSString() string {
-	if m != nil {
-		return m.SString
+func (x *Scalars) GetSString() string {
+	if x != nil {
+		return x.SString
 	}
 	return ""
 }
@@ -242,28 +251,35 @@ type Enums struct {
 	XXX_sizecache        int32            `json:"-"`
 }
 
-func (m *Enums) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb3_test_proto_messageTypes[1].MessageOf(m)
+func (x *Enums) Reset() {
+	*x = Enums{}
 }
-func (m *Enums) Reset()         { *m = Enums{} }
-func (m *Enums) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Enums) ProtoMessage()    {}
+
+func (x *Enums) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Enums) ProtoMessage() {}
+
+func (x *Enums) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb3_test_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use Enums.ProtoReflect.Type instead.
 func (*Enums) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{1}
 }
 
-func (m *Enums) GetSEnum() Enum {
-	if m != nil {
-		return m.SEnum
+func (x *Enums) GetSEnum() Enum {
+	if x != nil {
+		return x.SEnum
 	}
 	return Enum_ZERO
 }
 
-func (m *Enums) GetSNestedEnum() Enums_NestedEnum {
-	if m != nil {
-		return m.SNestedEnum
+func (x *Enums) GetSNestedEnum() Enums_NestedEnum {
+	if x != nil {
+		return x.SNestedEnum
 	}
 	return Enums_CERO
 }
@@ -276,21 +292,28 @@ type Nests struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Nests) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb3_test_proto_messageTypes[2].MessageOf(m)
+func (x *Nests) Reset() {
+	*x = Nests{}
 }
-func (m *Nests) Reset()         { *m = Nests{} }
-func (m *Nests) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Nests) ProtoMessage()    {}
+
+func (x *Nests) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Nests) ProtoMessage() {}
+
+func (x *Nests) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb3_test_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use Nests.ProtoReflect.Type instead.
 func (*Nests) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{2}
 }
 
-func (m *Nests) GetSNested() *Nested {
-	if m != nil {
-		return m.SNested
+func (x *Nests) GetSNested() *Nested {
+	if x != nil {
+		return x.SNested
 	}
 	return nil
 }
@@ -304,28 +327,35 @@ type Nested struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Nested) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb3_test_proto_messageTypes[3].MessageOf(m)
+func (x *Nested) Reset() {
+	*x = Nested{}
 }
-func (m *Nested) Reset()         { *m = Nested{} }
-func (m *Nested) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Nested) ProtoMessage()    {}
+
+func (x *Nested) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Nested) ProtoMessage() {}
+
+func (x *Nested) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb3_test_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use Nested.ProtoReflect.Type instead.
 func (*Nested) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{3}
 }
 
-func (m *Nested) GetSString() string {
-	if m != nil {
-		return m.SString
+func (x *Nested) GetSString() string {
+	if x != nil {
+		return x.SString
 	}
 	return ""
 }
 
-func (m *Nested) GetSNested() *Nested {
-	if m != nil {
-		return m.SNested
+func (x *Nested) GetSNested() *Nested {
+	if x != nil {
+		return x.SNested
 	}
 	return nil
 }
@@ -342,12 +372,19 @@ type Oneofs struct {
 	XXX_sizecache        int32          `json:"-"`
 }
 
-func (m *Oneofs) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb3_test_proto_messageTypes[4].MessageOf(m)
+func (x *Oneofs) Reset() {
+	*x = Oneofs{}
 }
-func (m *Oneofs) Reset()         { *m = Oneofs{} }
-func (m *Oneofs) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Oneofs) ProtoMessage()    {}
+
+func (x *Oneofs) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Oneofs) ProtoMessage() {}
+
+func (x *Oneofs) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb3_test_proto_messageTypes[4].MessageOf(x)
+}
 
 // Deprecated: Use Oneofs.ProtoReflect.Type instead.
 func (*Oneofs) Descriptor() ([]byte, []int) {
@@ -383,22 +420,22 @@ func (m *Oneofs) GetUnion() isOneofs_Union {
 	return nil
 }
 
-func (m *Oneofs) GetOneofEnum() Enum {
-	if x, ok := m.GetUnion().(*Oneofs_OneofEnum); ok {
+func (x *Oneofs) GetOneofEnum() Enum {
+	if x, ok := x.GetUnion().(*Oneofs_OneofEnum); ok {
 		return x.OneofEnum
 	}
 	return Enum_ZERO
 }
 
-func (m *Oneofs) GetOneofString() string {
-	if x, ok := m.GetUnion().(*Oneofs_OneofString); ok {
+func (x *Oneofs) GetOneofString() string {
+	if x, ok := x.GetUnion().(*Oneofs_OneofString); ok {
 		return x.OneofString
 	}
 	return ""
 }
 
-func (m *Oneofs) GetOneofNested() *Nested {
-	if x, ok := m.GetUnion().(*Oneofs_OneofNested); ok {
+func (x *Oneofs) GetOneofNested() *Nested {
+	if x, ok := x.GetUnion().(*Oneofs_OneofNested); ok {
 		return x.OneofNested
 	}
 	return nil
@@ -425,49 +462,56 @@ type Maps struct {
 	XXX_sizecache        int32              `json:"-"`
 }
 
-func (m *Maps) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb3_test_proto_messageTypes[5].MessageOf(m)
+func (x *Maps) Reset() {
+	*x = Maps{}
 }
-func (m *Maps) Reset()         { *m = Maps{} }
-func (m *Maps) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Maps) ProtoMessage()    {}
+
+func (x *Maps) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Maps) ProtoMessage() {}
+
+func (x *Maps) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb3_test_proto_messageTypes[5].MessageOf(x)
+}
 
 // Deprecated: Use Maps.ProtoReflect.Type instead.
 func (*Maps) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{5}
 }
 
-func (m *Maps) GetInt32ToStr() map[int32]string {
-	if m != nil {
-		return m.Int32ToStr
+func (x *Maps) GetInt32ToStr() map[int32]string {
+	if x != nil {
+		return x.Int32ToStr
 	}
 	return nil
 }
 
-func (m *Maps) GetBoolToUint32() map[bool]uint32 {
-	if m != nil {
-		return m.BoolToUint32
+func (x *Maps) GetBoolToUint32() map[bool]uint32 {
+	if x != nil {
+		return x.BoolToUint32
 	}
 	return nil
 }
 
-func (m *Maps) GetUint64ToEnum() map[uint64]Enum {
-	if m != nil {
-		return m.Uint64ToEnum
+func (x *Maps) GetUint64ToEnum() map[uint64]Enum {
+	if x != nil {
+		return x.Uint64ToEnum
 	}
 	return nil
 }
 
-func (m *Maps) GetStrToNested() map[string]*Nested {
-	if m != nil {
-		return m.StrToNested
+func (x *Maps) GetStrToNested() map[string]*Nested {
+	if x != nil {
+		return x.StrToNested
 	}
 	return nil
 }
 
-func (m *Maps) GetStrToOneofs() map[string]*Oneofs {
-	if m != nil {
-		return m.StrToOneofs
+func (x *Maps) GetStrToOneofs() map[string]*Oneofs {
+	if x != nil {
+		return x.StrToOneofs
 	}
 	return nil
 }
@@ -480,21 +524,28 @@ type JSONNames struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *JSONNames) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb3_test_proto_messageTypes[6].MessageOf(m)
+func (x *JSONNames) Reset() {
+	*x = JSONNames{}
 }
-func (m *JSONNames) Reset()         { *m = JSONNames{} }
-func (m *JSONNames) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*JSONNames) ProtoMessage()    {}
+
+func (x *JSONNames) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JSONNames) ProtoMessage() {}
+
+func (x *JSONNames) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb3_test_proto_messageTypes[6].MessageOf(x)
+}
 
 // Deprecated: Use JSONNames.ProtoReflect.Type instead.
 func (*JSONNames) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{6}
 }
 
-func (m *JSONNames) GetSString() string {
-	if m != nil {
-		return m.SString
+func (x *JSONNames) GetSString() string {
+	if x != nil {
+		return x.SString
 	}
 	return ""
 }

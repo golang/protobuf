@@ -21,12 +21,19 @@ type Foo struct {
 	XXX_sizecache        int32     `json:"-"`
 }
 
-func (m *Foo) ProtoReflect() protoreflect.Message {
-	return xxx_File_issue780_oneof_conflict_test_proto_messageTypes[0].MessageOf(m)
+func (x *Foo) Reset() {
+	*x = Foo{}
 }
-func (m *Foo) Reset()         { *m = Foo{} }
-func (m *Foo) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Foo) ProtoMessage()    {}
+
+func (x *Foo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Foo) ProtoMessage() {}
+
+func (x *Foo) ProtoReflect() protoreflect.Message {
+	return xxx_File_issue780_oneof_conflict_test_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Foo.ProtoReflect.Type instead.
 func (*Foo) Descriptor() ([]byte, []int) {
@@ -50,8 +57,8 @@ func (m *Foo) GetBar() isFoo_Bar {
 	return nil
 }
 
-func (m *Foo) GetGetBar() string {
-	if x, ok := m.GetBar().(*Foo_GetBar); ok {
+func (x *Foo) GetGetBar() string {
+	if x, ok := x.GetBar().(*Foo_GetBar); ok {
 		return x.GetBar
 	}
 	return ""

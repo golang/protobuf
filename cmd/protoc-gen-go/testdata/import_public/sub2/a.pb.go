@@ -18,12 +18,19 @@ type Sub2Message struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Sub2Message) ProtoReflect() protoreflect.Message {
-	return xxx_File_import_public_sub2_a_proto_messageTypes[0].MessageOf(m)
+func (x *Sub2Message) Reset() {
+	*x = Sub2Message{}
 }
-func (m *Sub2Message) Reset()         { *m = Sub2Message{} }
-func (m *Sub2Message) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Sub2Message) ProtoMessage()    {}
+
+func (x *Sub2Message) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Sub2Message) ProtoMessage() {}
+
+func (x *Sub2Message) ProtoReflect() protoreflect.Message {
+	return xxx_File_import_public_sub2_a_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Sub2Message.ProtoReflect.Type instead.
 func (*Sub2Message) Descriptor() ([]byte, []int) {

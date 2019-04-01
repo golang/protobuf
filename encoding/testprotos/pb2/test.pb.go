@@ -22,13 +22,6 @@ const (
 	Enum_TEN Enum = 10
 )
 
-func (e Enum) Type() protoreflect.EnumType {
-	return xxx_File_pb2_test_proto_enumTypes[0]
-}
-func (e Enum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	1:  "ONE",
@@ -49,6 +42,14 @@ func (x Enum) Enum() *Enum {
 
 func (x Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Enum) Type() protoreflect.EnumType {
+	return xxx_File_pb2_test_proto_enumTypes[0]
+}
+
+func (x Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -74,13 +75,6 @@ const (
 	Enums_DIEZ Enums_NestedEnum = 10
 )
 
-func (e Enums_NestedEnum) Type() protoreflect.EnumType {
-	return xxx_File_pb2_test_proto_enumTypes[1]
-}
-func (e Enums_NestedEnum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Enums_NestedEnum.Type.Values instead.
 var Enums_NestedEnum_name = map[int32]string{
 	1:  "UNO",
@@ -101,6 +95,14 @@ func (x Enums_NestedEnum) Enum() *Enums_NestedEnum {
 
 func (x Enums_NestedEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Enums_NestedEnum) Type() protoreflect.EnumType {
+	return xxx_File_pb2_test_proto_enumTypes[1]
+}
+
+func (x Enums_NestedEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Do not use.
@@ -140,119 +142,126 @@ type Scalars struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Scalars) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[0].MessageOf(m)
+func (x *Scalars) Reset() {
+	*x = Scalars{}
 }
-func (m *Scalars) Reset()         { *m = Scalars{} }
-func (m *Scalars) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Scalars) ProtoMessage()    {}
+
+func (x *Scalars) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Scalars) ProtoMessage() {}
+
+func (x *Scalars) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Scalars.ProtoReflect.Type instead.
 func (*Scalars) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Scalars) GetOptBool() bool {
-	if m != nil && m.OptBool != nil {
-		return *m.OptBool
+func (x *Scalars) GetOptBool() bool {
+	if x != nil && x.OptBool != nil {
+		return *x.OptBool
 	}
 	return false
 }
 
-func (m *Scalars) GetOptInt32() int32 {
-	if m != nil && m.OptInt32 != nil {
-		return *m.OptInt32
+func (x *Scalars) GetOptInt32() int32 {
+	if x != nil && x.OptInt32 != nil {
+		return *x.OptInt32
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptInt64() int64 {
-	if m != nil && m.OptInt64 != nil {
-		return *m.OptInt64
+func (x *Scalars) GetOptInt64() int64 {
+	if x != nil && x.OptInt64 != nil {
+		return *x.OptInt64
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptUint32() uint32 {
-	if m != nil && m.OptUint32 != nil {
-		return *m.OptUint32
+func (x *Scalars) GetOptUint32() uint32 {
+	if x != nil && x.OptUint32 != nil {
+		return *x.OptUint32
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptUint64() uint64 {
-	if m != nil && m.OptUint64 != nil {
-		return *m.OptUint64
+func (x *Scalars) GetOptUint64() uint64 {
+	if x != nil && x.OptUint64 != nil {
+		return *x.OptUint64
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptSint32() int32 {
-	if m != nil && m.OptSint32 != nil {
-		return *m.OptSint32
+func (x *Scalars) GetOptSint32() int32 {
+	if x != nil && x.OptSint32 != nil {
+		return *x.OptSint32
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptSint64() int64 {
-	if m != nil && m.OptSint64 != nil {
-		return *m.OptSint64
+func (x *Scalars) GetOptSint64() int64 {
+	if x != nil && x.OptSint64 != nil {
+		return *x.OptSint64
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptFixed32() uint32 {
-	if m != nil && m.OptFixed32 != nil {
-		return *m.OptFixed32
+func (x *Scalars) GetOptFixed32() uint32 {
+	if x != nil && x.OptFixed32 != nil {
+		return *x.OptFixed32
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptFixed64() uint64 {
-	if m != nil && m.OptFixed64 != nil {
-		return *m.OptFixed64
+func (x *Scalars) GetOptFixed64() uint64 {
+	if x != nil && x.OptFixed64 != nil {
+		return *x.OptFixed64
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptSfixed32() int32 {
-	if m != nil && m.OptSfixed32 != nil {
-		return *m.OptSfixed32
+func (x *Scalars) GetOptSfixed32() int32 {
+	if x != nil && x.OptSfixed32 != nil {
+		return *x.OptSfixed32
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptSfixed64() int64 {
-	if m != nil && m.OptSfixed64 != nil {
-		return *m.OptSfixed64
+func (x *Scalars) GetOptSfixed64() int64 {
+	if x != nil && x.OptSfixed64 != nil {
+		return *x.OptSfixed64
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptFloat() float32 {
-	if m != nil && m.OptFloat != nil {
-		return *m.OptFloat
+func (x *Scalars) GetOptFloat() float32 {
+	if x != nil && x.OptFloat != nil {
+		return *x.OptFloat
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptDouble() float64 {
-	if m != nil && m.OptDouble != nil {
-		return *m.OptDouble
+func (x *Scalars) GetOptDouble() float64 {
+	if x != nil && x.OptDouble != nil {
+		return *x.OptDouble
 	}
 	return 0
 }
 
-func (m *Scalars) GetOptBytes() []byte {
-	if m != nil {
-		return m.OptBytes
+func (x *Scalars) GetOptBytes() []byte {
+	if x != nil {
+		return x.OptBytes
 	}
 	return nil
 }
 
-func (m *Scalars) GetOptString() string {
-	if m != nil && m.OptString != nil {
-		return *m.OptString
+func (x *Scalars) GetOptString() string {
+	if x != nil && x.OptString != nil {
+		return *x.OptString
 	}
 	return ""
 }
@@ -268,42 +277,49 @@ type Enums struct {
 	XXX_sizecache        int32              `json:"-"`
 }
 
-func (m *Enums) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[1].MessageOf(m)
+func (x *Enums) Reset() {
+	*x = Enums{}
 }
-func (m *Enums) Reset()         { *m = Enums{} }
-func (m *Enums) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Enums) ProtoMessage()    {}
+
+func (x *Enums) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Enums) ProtoMessage() {}
+
+func (x *Enums) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use Enums.ProtoReflect.Type instead.
 func (*Enums) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{1}
 }
 
-func (m *Enums) GetOptEnum() Enum {
-	if m != nil && m.OptEnum != nil {
-		return *m.OptEnum
+func (x *Enums) GetOptEnum() Enum {
+	if x != nil && x.OptEnum != nil {
+		return *x.OptEnum
 	}
 	return Enum_ONE
 }
 
-func (m *Enums) GetRptEnum() []Enum {
-	if m != nil {
-		return m.RptEnum
+func (x *Enums) GetRptEnum() []Enum {
+	if x != nil {
+		return x.RptEnum
 	}
 	return nil
 }
 
-func (m *Enums) GetOptNestedEnum() Enums_NestedEnum {
-	if m != nil && m.OptNestedEnum != nil {
-		return *m.OptNestedEnum
+func (x *Enums) GetOptNestedEnum() Enums_NestedEnum {
+	if x != nil && x.OptNestedEnum != nil {
+		return *x.OptNestedEnum
 	}
 	return Enums_UNO
 }
 
-func (m *Enums) GetRptNestedEnum() []Enums_NestedEnum {
-	if m != nil {
-		return m.RptNestedEnum
+func (x *Enums) GetRptNestedEnum() []Enums_NestedEnum {
+	if x != nil {
+		return x.RptNestedEnum
 	}
 	return nil
 }
@@ -324,77 +340,84 @@ type Repeats struct {
 	XXX_sizecache        int32     `json:"-"`
 }
 
-func (m *Repeats) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[2].MessageOf(m)
+func (x *Repeats) Reset() {
+	*x = Repeats{}
 }
-func (m *Repeats) Reset()         { *m = Repeats{} }
-func (m *Repeats) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Repeats) ProtoMessage()    {}
+
+func (x *Repeats) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Repeats) ProtoMessage() {}
+
+func (x *Repeats) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use Repeats.ProtoReflect.Type instead.
 func (*Repeats) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{2}
 }
 
-func (m *Repeats) GetRptBool() []bool {
-	if m != nil {
-		return m.RptBool
+func (x *Repeats) GetRptBool() []bool {
+	if x != nil {
+		return x.RptBool
 	}
 	return nil
 }
 
-func (m *Repeats) GetRptInt32() []int32 {
-	if m != nil {
-		return m.RptInt32
+func (x *Repeats) GetRptInt32() []int32 {
+	if x != nil {
+		return x.RptInt32
 	}
 	return nil
 }
 
-func (m *Repeats) GetRptInt64() []int64 {
-	if m != nil {
-		return m.RptInt64
+func (x *Repeats) GetRptInt64() []int64 {
+	if x != nil {
+		return x.RptInt64
 	}
 	return nil
 }
 
-func (m *Repeats) GetRptUint32() []uint32 {
-	if m != nil {
-		return m.RptUint32
+func (x *Repeats) GetRptUint32() []uint32 {
+	if x != nil {
+		return x.RptUint32
 	}
 	return nil
 }
 
-func (m *Repeats) GetRptUint64() []uint64 {
-	if m != nil {
-		return m.RptUint64
+func (x *Repeats) GetRptUint64() []uint64 {
+	if x != nil {
+		return x.RptUint64
 	}
 	return nil
 }
 
-func (m *Repeats) GetRptFloat() []float32 {
-	if m != nil {
-		return m.RptFloat
+func (x *Repeats) GetRptFloat() []float32 {
+	if x != nil {
+		return x.RptFloat
 	}
 	return nil
 }
 
-func (m *Repeats) GetRptDouble() []float64 {
-	if m != nil {
-		return m.RptDouble
+func (x *Repeats) GetRptDouble() []float64 {
+	if x != nil {
+		return x.RptDouble
 	}
 	return nil
 }
 
-func (m *Repeats) GetRptString() []string {
-	if m != nil {
-		return m.RptString
+func (x *Repeats) GetRptString() []string {
+	if x != nil {
+		return x.RptString
 	}
 	return nil
 }
 
-func (m *Repeats) GetRptBytes() [][]byte {
-	if m != nil {
-		return m.RptBytes
+func (x *Repeats) GetRptBytes() [][]byte {
+	if x != nil {
+		return x.RptBytes
 	}
 	return nil
 }
@@ -408,28 +431,35 @@ type Nested struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Nested) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[3].MessageOf(m)
+func (x *Nested) Reset() {
+	*x = Nested{}
 }
-func (m *Nested) Reset()         { *m = Nested{} }
-func (m *Nested) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Nested) ProtoMessage()    {}
+
+func (x *Nested) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Nested) ProtoMessage() {}
+
+func (x *Nested) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use Nested.ProtoReflect.Type instead.
 func (*Nested) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{3}
 }
 
-func (m *Nested) GetOptString() string {
-	if m != nil && m.OptString != nil {
-		return *m.OptString
+func (x *Nested) GetOptString() string {
+	if x != nil && x.OptString != nil {
+		return *x.OptString
 	}
 	return ""
 }
 
-func (m *Nested) GetOptNested() *Nested {
-	if m != nil {
-		return m.OptNested
+func (x *Nested) GetOptNested() *Nested {
+	if x != nil {
+		return x.OptNested
 	}
 	return nil
 }
@@ -445,42 +475,49 @@ type Nests struct {
 	XXX_sizecache        int32             `json:"-"`
 }
 
-func (m *Nests) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[4].MessageOf(m)
+func (x *Nests) Reset() {
+	*x = Nests{}
 }
-func (m *Nests) Reset()         { *m = Nests{} }
-func (m *Nests) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Nests) ProtoMessage()    {}
+
+func (x *Nests) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Nests) ProtoMessage() {}
+
+func (x *Nests) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[4].MessageOf(x)
+}
 
 // Deprecated: Use Nests.ProtoReflect.Type instead.
 func (*Nests) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4}
 }
 
-func (m *Nests) GetOptNested() *Nested {
-	if m != nil {
-		return m.OptNested
+func (x *Nests) GetOptNested() *Nested {
+	if x != nil {
+		return x.OptNested
 	}
 	return nil
 }
 
-func (m *Nests) GetOptgroup() *Nests_OptGroup {
-	if m != nil {
-		return m.Optgroup
+func (x *Nests) GetOptgroup() *Nests_OptGroup {
+	if x != nil {
+		return x.Optgroup
 	}
 	return nil
 }
 
-func (m *Nests) GetRptNested() []*Nested {
-	if m != nil {
-		return m.RptNested
+func (x *Nests) GetRptNested() []*Nested {
+	if x != nil {
+		return x.RptNested
 	}
 	return nil
 }
 
-func (m *Nests) GetRptgroup() []*Nests_RptGroup {
-	if m != nil {
-		return m.Rptgroup
+func (x *Nests) GetRptgroup() []*Nests_RptGroup {
+	if x != nil {
+		return x.Rptgroup
 	}
 	return nil
 }
@@ -498,56 +535,63 @@ type Requireds struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Requireds) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[5].MessageOf(m)
+func (x *Requireds) Reset() {
+	*x = Requireds{}
 }
-func (m *Requireds) Reset()         { *m = Requireds{} }
-func (m *Requireds) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Requireds) ProtoMessage()    {}
+
+func (x *Requireds) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Requireds) ProtoMessage() {}
+
+func (x *Requireds) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[5].MessageOf(x)
+}
 
 // Deprecated: Use Requireds.ProtoReflect.Type instead.
 func (*Requireds) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{5}
 }
 
-func (m *Requireds) GetReqBool() bool {
-	if m != nil && m.ReqBool != nil {
-		return *m.ReqBool
+func (x *Requireds) GetReqBool() bool {
+	if x != nil && x.ReqBool != nil {
+		return *x.ReqBool
 	}
 	return false
 }
 
-func (m *Requireds) GetReqSfixed64() int64 {
-	if m != nil && m.ReqSfixed64 != nil {
-		return *m.ReqSfixed64
+func (x *Requireds) GetReqSfixed64() int64 {
+	if x != nil && x.ReqSfixed64 != nil {
+		return *x.ReqSfixed64
 	}
 	return 0
 }
 
-func (m *Requireds) GetReqDouble() float64 {
-	if m != nil && m.ReqDouble != nil {
-		return *m.ReqDouble
+func (x *Requireds) GetReqDouble() float64 {
+	if x != nil && x.ReqDouble != nil {
+		return *x.ReqDouble
 	}
 	return 0
 }
 
-func (m *Requireds) GetReqString() string {
-	if m != nil && m.ReqString != nil {
-		return *m.ReqString
+func (x *Requireds) GetReqString() string {
+	if x != nil && x.ReqString != nil {
+		return *x.ReqString
 	}
 	return ""
 }
 
-func (m *Requireds) GetReqEnum() Enum {
-	if m != nil && m.ReqEnum != nil {
-		return *m.ReqEnum
+func (x *Requireds) GetReqEnum() Enum {
+	if x != nil && x.ReqEnum != nil {
+		return *x.ReqEnum
 	}
 	return Enum_ONE
 }
 
-func (m *Requireds) GetReqNested() *Nested {
-	if m != nil {
-		return m.ReqNested
+func (x *Requireds) GetReqNested() *Nested {
+	if x != nil {
+		return x.ReqNested
 	}
 	return nil
 }
@@ -561,28 +605,35 @@ type PartialRequired struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *PartialRequired) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[6].MessageOf(m)
+func (x *PartialRequired) Reset() {
+	*x = PartialRequired{}
 }
-func (m *PartialRequired) Reset()         { *m = PartialRequired{} }
-func (m *PartialRequired) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*PartialRequired) ProtoMessage()    {}
+
+func (x *PartialRequired) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PartialRequired) ProtoMessage() {}
+
+func (x *PartialRequired) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[6].MessageOf(x)
+}
 
 // Deprecated: Use PartialRequired.ProtoReflect.Type instead.
 func (*PartialRequired) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{6}
 }
 
-func (m *PartialRequired) GetReqString() string {
-	if m != nil && m.ReqString != nil {
-		return *m.ReqString
+func (x *PartialRequired) GetReqString() string {
+	if x != nil && x.ReqString != nil {
+		return *x.ReqString
 	}
 	return ""
 }
 
-func (m *PartialRequired) GetOptString() string {
-	if m != nil && m.OptString != nil {
-		return *m.OptString
+func (x *PartialRequired) GetOptString() string {
+	if x != nil && x.OptString != nil {
+		return *x.OptString
 	}
 	return ""
 }
@@ -594,21 +645,28 @@ type NestedWithRequired struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *NestedWithRequired) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[7].MessageOf(m)
+func (x *NestedWithRequired) Reset() {
+	*x = NestedWithRequired{}
 }
-func (m *NestedWithRequired) Reset()         { *m = NestedWithRequired{} }
-func (m *NestedWithRequired) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*NestedWithRequired) ProtoMessage()    {}
+
+func (x *NestedWithRequired) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NestedWithRequired) ProtoMessage() {}
+
+func (x *NestedWithRequired) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[7].MessageOf(x)
+}
 
 // Deprecated: Use NestedWithRequired.ProtoReflect.Type instead.
 func (*NestedWithRequired) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{7}
 }
 
-func (m *NestedWithRequired) GetReqString() string {
-	if m != nil && m.ReqString != nil {
-		return *m.ReqString
+func (x *NestedWithRequired) GetReqString() string {
+	if x != nil && x.ReqString != nil {
+		return *x.ReqString
 	}
 	return ""
 }
@@ -625,35 +683,42 @@ type IndirectRequired struct {
 	XXX_sizecache        int32                    `json:"-"`
 }
 
-func (m *IndirectRequired) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[8].MessageOf(m)
+func (x *IndirectRequired) Reset() {
+	*x = IndirectRequired{}
 }
-func (m *IndirectRequired) Reset()         { *m = IndirectRequired{} }
-func (m *IndirectRequired) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*IndirectRequired) ProtoMessage()    {}
+
+func (x *IndirectRequired) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IndirectRequired) ProtoMessage() {}
+
+func (x *IndirectRequired) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[8].MessageOf(x)
+}
 
 // Deprecated: Use IndirectRequired.ProtoReflect.Type instead.
 func (*IndirectRequired) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{8}
 }
 
-func (m *IndirectRequired) GetOptNested() *NestedWithRequired {
-	if m != nil {
-		return m.OptNested
+func (x *IndirectRequired) GetOptNested() *NestedWithRequired {
+	if x != nil {
+		return x.OptNested
 	}
 	return nil
 }
 
-func (m *IndirectRequired) GetRptNested() []*NestedWithRequired {
-	if m != nil {
-		return m.RptNested
+func (x *IndirectRequired) GetRptNested() []*NestedWithRequired {
+	if x != nil {
+		return x.RptNested
 	}
 	return nil
 }
 
-func (m *IndirectRequired) GetStrToNested() map[string]*NestedWithRequired {
-	if m != nil {
-		return m.StrToNested
+func (x *IndirectRequired) GetStrToNested() map[string]*NestedWithRequired {
+	if x != nil {
+		return x.StrToNested
 	}
 	return nil
 }
@@ -675,8 +740,8 @@ func (m *IndirectRequired) GetUnion() isIndirectRequired_Union {
 	return nil
 }
 
-func (m *IndirectRequired) GetOneofNested() *NestedWithRequired {
-	if x, ok := m.GetUnion().(*IndirectRequired_OneofNested); ok {
+func (x *IndirectRequired) GetOneofNested() *NestedWithRequired {
+	if x, ok := x.GetUnion().(*IndirectRequired_OneofNested); ok {
 		return x.OneofNested
 	}
 	return nil
@@ -699,12 +764,19 @@ type Extensions struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *Extensions) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[9].MessageOf(m)
+func (x *Extensions) Reset() {
+	*x = Extensions{}
 }
-func (m *Extensions) Reset()         { *m = Extensions{} }
-func (m *Extensions) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Extensions) ProtoMessage()    {}
+
+func (x *Extensions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Extensions) ProtoMessage() {}
+
+func (x *Extensions) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[9].MessageOf(x)
+}
 
 // Deprecated: Use Extensions.ProtoReflect.Type instead.
 func (*Extensions) Descriptor() ([]byte, []int) {
@@ -720,23 +792,23 @@ func (*Extensions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 	return extRange_Extensions
 }
 
-func (m *Extensions) GetOptString() string {
-	if m != nil && m.OptString != nil {
-		return *m.OptString
+func (x *Extensions) GetOptString() string {
+	if x != nil && x.OptString != nil {
+		return *x.OptString
 	}
 	return ""
 }
 
-func (m *Extensions) GetOptBool() bool {
-	if m != nil && m.OptBool != nil {
-		return *m.OptBool
+func (x *Extensions) GetOptBool() bool {
+	if x != nil && x.OptBool != nil {
+		return *x.OptBool
 	}
 	return false
 }
 
-func (m *Extensions) GetOptInt32() int32 {
-	if m != nil && m.OptInt32 != nil {
-		return *m.OptInt32
+func (x *Extensions) GetOptInt32() int32 {
+	if x != nil && x.OptInt32 != nil {
+		return *x.OptInt32
 	}
 	return 0
 }
@@ -747,12 +819,19 @@ type ExtensionsContainer struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ExtensionsContainer) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[10].MessageOf(m)
+func (x *ExtensionsContainer) Reset() {
+	*x = ExtensionsContainer{}
 }
-func (m *ExtensionsContainer) Reset()         { *m = ExtensionsContainer{} }
-func (m *ExtensionsContainer) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*ExtensionsContainer) ProtoMessage()    {}
+
+func (x *ExtensionsContainer) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExtensionsContainer) ProtoMessage() {}
+
+func (x *ExtensionsContainer) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[10].MessageOf(x)
+}
 
 // Deprecated: Use ExtensionsContainer.ProtoReflect.Type instead.
 func (*ExtensionsContainer) Descriptor() ([]byte, []int) {
@@ -766,12 +845,19 @@ type MessageSet struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *MessageSet) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[11].MessageOf(m)
+func (x *MessageSet) Reset() {
+	*x = MessageSet{}
 }
-func (m *MessageSet) Reset()         { *m = MessageSet{} }
-func (m *MessageSet) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*MessageSet) ProtoMessage()    {}
+
+func (x *MessageSet) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MessageSet) ProtoMessage() {}
+
+func (x *MessageSet) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[11].MessageOf(x)
+}
 
 // Deprecated: Use MessageSet.ProtoReflect.Type instead.
 func (*MessageSet) Descriptor() ([]byte, []int) {
@@ -794,21 +880,28 @@ type MessageSetExtension struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *MessageSetExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[12].MessageOf(m)
+func (x *MessageSetExtension) Reset() {
+	*x = MessageSetExtension{}
 }
-func (m *MessageSetExtension) Reset()         { *m = MessageSetExtension{} }
-func (m *MessageSetExtension) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*MessageSetExtension) ProtoMessage()    {}
+
+func (x *MessageSetExtension) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MessageSetExtension) ProtoMessage() {}
+
+func (x *MessageSetExtension) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[12].MessageOf(x)
+}
 
 // Deprecated: Use MessageSetExtension.ProtoReflect.Type instead.
 func (*MessageSetExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{12}
 }
 
-func (m *MessageSetExtension) GetOptString() string {
-	if m != nil && m.OptString != nil {
-		return *m.OptString
+func (x *MessageSetExtension) GetOptString() string {
+	if x != nil && x.OptString != nil {
+		return *x.OptString
 	}
 	return ""
 }
@@ -820,12 +913,19 @@ type FakeMessageSet struct {
 	XXX_sizecache          int32                       `json:"-"`
 }
 
-func (m *FakeMessageSet) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[13].MessageOf(m)
+func (x *FakeMessageSet) Reset() {
+	*x = FakeMessageSet{}
 }
-func (m *FakeMessageSet) Reset()         { *m = FakeMessageSet{} }
-func (m *FakeMessageSet) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FakeMessageSet) ProtoMessage()    {}
+
+func (x *FakeMessageSet) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FakeMessageSet) ProtoMessage() {}
+
+func (x *FakeMessageSet) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[13].MessageOf(x)
+}
 
 // Deprecated: Use FakeMessageSet.ProtoReflect.Type instead.
 func (*FakeMessageSet) Descriptor() ([]byte, []int) {
@@ -848,21 +948,28 @@ type FakeMessageSetExtension struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *FakeMessageSetExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[14].MessageOf(m)
+func (x *FakeMessageSetExtension) Reset() {
+	*x = FakeMessageSetExtension{}
 }
-func (m *FakeMessageSetExtension) Reset()         { *m = FakeMessageSetExtension{} }
-func (m *FakeMessageSetExtension) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*FakeMessageSetExtension) ProtoMessage()    {}
+
+func (x *FakeMessageSetExtension) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FakeMessageSetExtension) ProtoMessage() {}
+
+func (x *FakeMessageSetExtension) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[14].MessageOf(x)
+}
 
 // Deprecated: Use FakeMessageSetExtension.ProtoReflect.Type instead.
 func (*FakeMessageSetExtension) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{14}
 }
 
-func (m *FakeMessageSetExtension) GetOptString() string {
-	if m != nil && m.OptString != nil {
-		return *m.OptString
+func (x *FakeMessageSetExtension) GetOptString() string {
+	if x != nil && x.OptString != nil {
+		return *x.OptString
 	}
 	return ""
 }
@@ -891,133 +998,140 @@ type KnownTypes struct {
 	XXX_sizecache        int32              `json:"-"`
 }
 
-func (m *KnownTypes) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[15].MessageOf(m)
+func (x *KnownTypes) Reset() {
+	*x = KnownTypes{}
 }
-func (m *KnownTypes) Reset()         { *m = KnownTypes{} }
-func (m *KnownTypes) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*KnownTypes) ProtoMessage()    {}
+
+func (x *KnownTypes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KnownTypes) ProtoMessage() {}
+
+func (x *KnownTypes) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[15].MessageOf(x)
+}
 
 // Deprecated: Use KnownTypes.ProtoReflect.Type instead.
 func (*KnownTypes) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{15}
 }
 
-func (m *KnownTypes) GetOptBool() *known.BoolValue {
-	if m != nil {
-		return m.OptBool
+func (x *KnownTypes) GetOptBool() *known.BoolValue {
+	if x != nil {
+		return x.OptBool
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptInt32() *known.Int32Value {
-	if m != nil {
-		return m.OptInt32
+func (x *KnownTypes) GetOptInt32() *known.Int32Value {
+	if x != nil {
+		return x.OptInt32
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptInt64() *known.Int64Value {
-	if m != nil {
-		return m.OptInt64
+func (x *KnownTypes) GetOptInt64() *known.Int64Value {
+	if x != nil {
+		return x.OptInt64
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptUint32() *known.UInt32Value {
-	if m != nil {
-		return m.OptUint32
+func (x *KnownTypes) GetOptUint32() *known.UInt32Value {
+	if x != nil {
+		return x.OptUint32
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptUint64() *known.UInt64Value {
-	if m != nil {
-		return m.OptUint64
+func (x *KnownTypes) GetOptUint64() *known.UInt64Value {
+	if x != nil {
+		return x.OptUint64
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptFloat() *known.FloatValue {
-	if m != nil {
-		return m.OptFloat
+func (x *KnownTypes) GetOptFloat() *known.FloatValue {
+	if x != nil {
+		return x.OptFloat
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptDouble() *known.DoubleValue {
-	if m != nil {
-		return m.OptDouble
+func (x *KnownTypes) GetOptDouble() *known.DoubleValue {
+	if x != nil {
+		return x.OptDouble
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptString() *known.StringValue {
-	if m != nil {
-		return m.OptString
+func (x *KnownTypes) GetOptString() *known.StringValue {
+	if x != nil {
+		return x.OptString
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptBytes() *known.BytesValue {
-	if m != nil {
-		return m.OptBytes
+func (x *KnownTypes) GetOptBytes() *known.BytesValue {
+	if x != nil {
+		return x.OptBytes
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptDuration() *known.Duration {
-	if m != nil {
-		return m.OptDuration
+func (x *KnownTypes) GetOptDuration() *known.Duration {
+	if x != nil {
+		return x.OptDuration
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptTimestamp() *known.Timestamp {
-	if m != nil {
-		return m.OptTimestamp
+func (x *KnownTypes) GetOptTimestamp() *known.Timestamp {
+	if x != nil {
+		return x.OptTimestamp
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptStruct() *known.Struct {
-	if m != nil {
-		return m.OptStruct
+func (x *KnownTypes) GetOptStruct() *known.Struct {
+	if x != nil {
+		return x.OptStruct
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptList() *known.ListValue {
-	if m != nil {
-		return m.OptList
+func (x *KnownTypes) GetOptList() *known.ListValue {
+	if x != nil {
+		return x.OptList
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptValue() *known.Value {
-	if m != nil {
-		return m.OptValue
+func (x *KnownTypes) GetOptValue() *known.Value {
+	if x != nil {
+		return x.OptValue
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptEmpty() *known.Empty {
-	if m != nil {
-		return m.OptEmpty
+func (x *KnownTypes) GetOptEmpty() *known.Empty {
+	if x != nil {
+		return x.OptEmpty
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptAny() *known.Any {
-	if m != nil {
-		return m.OptAny
+func (x *KnownTypes) GetOptAny() *known.Any {
+	if x != nil {
+		return x.OptAny
 	}
 	return nil
 }
 
-func (m *KnownTypes) GetOptFieldmask() *known.FieldMask {
-	if m != nil {
-		return m.OptFieldmask
+func (x *KnownTypes) GetOptFieldmask() *known.FieldMask {
+	if x != nil {
+		return x.OptFieldmask
 	}
 	return nil
 }
@@ -1031,35 +1145,42 @@ type Nests_OptGroup struct {
 	XXX_sizecache        int32                          `json:"-"`
 }
 
-func (m *Nests_OptGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[16].MessageOf(m)
+func (x *Nests_OptGroup) Reset() {
+	*x = Nests_OptGroup{}
 }
-func (m *Nests_OptGroup) Reset()         { *m = Nests_OptGroup{} }
-func (m *Nests_OptGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Nests_OptGroup) ProtoMessage()    {}
+
+func (x *Nests_OptGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Nests_OptGroup) ProtoMessage() {}
+
+func (x *Nests_OptGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[16].MessageOf(x)
+}
 
 // Deprecated: Use Nests_OptGroup.ProtoReflect.Type instead.
 func (*Nests_OptGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4, 0}
 }
 
-func (m *Nests_OptGroup) GetOptString() string {
-	if m != nil && m.OptString != nil {
-		return *m.OptString
+func (x *Nests_OptGroup) GetOptString() string {
+	if x != nil && x.OptString != nil {
+		return *x.OptString
 	}
 	return ""
 }
 
-func (m *Nests_OptGroup) GetOptNested() *Nested {
-	if m != nil {
-		return m.OptNested
+func (x *Nests_OptGroup) GetOptNested() *Nested {
+	if x != nil {
+		return x.OptNested
 	}
 	return nil
 }
 
-func (m *Nests_OptGroup) GetOptnestedgroup() *Nests_OptGroup_OptNestedGroup {
-	if m != nil {
-		return m.Optnestedgroup
+func (x *Nests_OptGroup) GetOptnestedgroup() *Nests_OptGroup_OptNestedGroup {
+	if x != nil {
+		return x.Optnestedgroup
 	}
 	return nil
 }
@@ -1071,21 +1192,28 @@ type Nests_RptGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Nests_RptGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[17].MessageOf(m)
+func (x *Nests_RptGroup) Reset() {
+	*x = Nests_RptGroup{}
 }
-func (m *Nests_RptGroup) Reset()         { *m = Nests_RptGroup{} }
-func (m *Nests_RptGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Nests_RptGroup) ProtoMessage()    {}
+
+func (x *Nests_RptGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Nests_RptGroup) ProtoMessage() {}
+
+func (x *Nests_RptGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[17].MessageOf(x)
+}
 
 // Deprecated: Use Nests_RptGroup.ProtoReflect.Type instead.
 func (*Nests_RptGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4, 1}
 }
 
-func (m *Nests_RptGroup) GetRptString() []string {
-	if m != nil {
-		return m.RptString
+func (x *Nests_RptGroup) GetRptString() []string {
+	if x != nil {
+		return x.RptString
 	}
 	return nil
 }
@@ -1097,21 +1225,28 @@ type Nests_OptGroup_OptNestedGroup struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Nests_OptGroup_OptNestedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[18].MessageOf(m)
+func (x *Nests_OptGroup_OptNestedGroup) Reset() {
+	*x = Nests_OptGroup_OptNestedGroup{}
 }
-func (m *Nests_OptGroup_OptNestedGroup) Reset()         { *m = Nests_OptGroup_OptNestedGroup{} }
-func (m *Nests_OptGroup_OptNestedGroup) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Nests_OptGroup_OptNestedGroup) ProtoMessage()    {}
+
+func (x *Nests_OptGroup_OptNestedGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Nests_OptGroup_OptNestedGroup) ProtoMessage() {}
+
+func (x *Nests_OptGroup_OptNestedGroup) ProtoReflect() protoreflect.Message {
+	return xxx_File_pb2_test_proto_messageTypes[18].MessageOf(x)
+}
 
 // Deprecated: Use Nests_OptGroup_OptNestedGroup.ProtoReflect.Type instead.
 func (*Nests_OptGroup_OptNestedGroup) Descriptor() ([]byte, []int) {
 	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4, 0, 0}
 }
 
-func (m *Nests_OptGroup_OptNestedGroup) GetOptFixed32() uint32 {
-	if m != nil && m.OptFixed32 != nil {
-		return *m.OptFixed32
+func (x *Nests_OptGroup_OptNestedGroup) GetOptFixed32() uint32 {
+	if x != nil && x.OptFixed32 != nil {
+		return *x.OptFixed32
 	}
 	return 0
 }

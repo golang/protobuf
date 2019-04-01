@@ -42,98 +42,105 @@ type Legacy struct {
 	XXX_sizecache        int32                 `json:"-"`
 }
 
-func (m *Legacy) ProtoReflect() protoreflect.Message {
-	return xxx_File_legacy_legacy_proto_messageTypes[0].MessageOf(m)
+func (x *Legacy) Reset() {
+	*x = Legacy{}
 }
-func (m *Legacy) Reset()         { *m = Legacy{} }
-func (m *Legacy) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Legacy) ProtoMessage()    {}
+
+func (x *Legacy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Legacy) ProtoMessage() {}
+
+func (x *Legacy) ProtoReflect() protoreflect.Message {
+	return xxx_File_legacy_legacy_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Legacy.ProtoReflect.Type instead.
 func (*Legacy) Descriptor() ([]byte, []int) {
 	return xxx_File_legacy_legacy_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Legacy) GetF1() *proto2_v0_0.Message {
-	if m != nil {
-		return m.F1
+func (x *Legacy) GetF1() *proto2_v0_0.Message {
+	if x != nil {
+		return x.F1
 	}
 	return nil
 }
 
-func (m *Legacy) GetF2() *proto3_v0_0.Message {
-	if m != nil {
-		return m.F2
+func (x *Legacy) GetF2() *proto3_v0_0.Message {
+	if x != nil {
+		return x.F2
 	}
 	return nil
 }
 
-func (m *Legacy) GetF3() *proto2_v0_01.Message {
-	if m != nil {
-		return m.F3
+func (x *Legacy) GetF3() *proto2_v0_01.Message {
+	if x != nil {
+		return x.F3
 	}
 	return nil
 }
 
-func (m *Legacy) GetF4() *proto3_v0_01.Message {
-	if m != nil {
-		return m.F4
+func (x *Legacy) GetF4() *proto3_v0_01.Message {
+	if x != nil {
+		return x.F4
 	}
 	return nil
 }
 
-func (m *Legacy) GetF5() *proto2_v1_0.Message {
-	if m != nil {
-		return m.F5
+func (x *Legacy) GetF5() *proto2_v1_0.Message {
+	if x != nil {
+		return x.F5
 	}
 	return nil
 }
 
-func (m *Legacy) GetF6() *proto3_v1_0.Message {
-	if m != nil {
-		return m.F6
+func (x *Legacy) GetF6() *proto3_v1_0.Message {
+	if x != nil {
+		return x.F6
 	}
 	return nil
 }
 
-func (m *Legacy) GetF7() *proto2_v1_1.Message {
-	if m != nil {
-		return m.F7
+func (x *Legacy) GetF7() *proto2_v1_1.Message {
+	if x != nil {
+		return x.F7
 	}
 	return nil
 }
 
-func (m *Legacy) GetF8() *proto3_v1_1.Message {
-	if m != nil {
-		return m.F8
+func (x *Legacy) GetF8() *proto3_v1_1.Message {
+	if x != nil {
+		return x.F8
 	}
 	return nil
 }
 
-func (m *Legacy) GetF9() *proto2_v1_2.Message {
-	if m != nil {
-		return m.F9
+func (x *Legacy) GetF9() *proto2_v1_2.Message {
+	if x != nil {
+		return x.F9
 	}
 	return nil
 }
 
-func (m *Legacy) GetF10() *proto3_v1_2.Message {
-	if m != nil {
-		return m.F10
+func (x *Legacy) GetF10() *proto3_v1_2.Message {
+	if x != nil {
+		return x.F10
 	}
 	return nil
 }
 
-func (m *Legacy) GetF11() *proto2_v1_21.Message {
-	if m != nil {
-		return m.F11
+func (x *Legacy) GetF11() *proto2_v1_21.Message {
+	if x != nil {
+		return x.F11
 	}
 	return nil
 }
 
-func (m *Legacy) GetF12() *proto3_v1_21.Message {
-	if m != nil {
-		return m.F12
+func (x *Legacy) GetF12() *proto3_v1_21.Message {
+	if x != nil {
+		return x.F12
 	}
 	return nil
 }

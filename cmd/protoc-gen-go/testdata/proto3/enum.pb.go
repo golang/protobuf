@@ -20,13 +20,6 @@ const (
 	Enum_TWO  Enum = 2
 )
 
-func (e Enum) Type() protoreflect.EnumType {
-	return xxx_File_proto3_enum_proto_enumTypes[0]
-}
-func (e Enum) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(e)
-}
-
 // Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0: "ZERO",
@@ -43,6 +36,14 @@ var Enum_value = map[string]int32{
 
 func (x Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+}
+
+func (Enum) Type() protoreflect.EnumType {
+	return xxx_File_proto3_enum_proto_enumTypes[0]
+}
+
+func (x Enum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
 }
 
 // Deprecated: Use Enum.Type instead.

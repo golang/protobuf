@@ -242,20 +242,29 @@ func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum *protogen.Enum) {
 	idx := f.allEnumsByPtr[enum]
 	typesVar := enumTypesVarName(f)
-	g.P("func (e ", enum.GoIdent, ") Type() ", protoreflectPackage.Ident("EnumType"), " {")
+
+	// Type method.
+	g.P("func (", enum.GoIdent, ") Type() ", protoreflectPackage.Ident("EnumType"), " {")
 	g.P("return ", typesVar, "[", idx, "]")
 	g.P("}")
-	g.P("func (e ", enum.GoIdent, ") Number() ", protoreflectPackage.Ident("EnumNumber"), " {")
-	g.P("return ", protoreflectPackage.Ident("EnumNumber"), "(e)")
+	g.P()
+
+	// Number method.
+	g.P("func (x ", enum.GoIdent, ") Number() ", protoreflectPackage.Ident("EnumNumber"), " {")
+	g.P("return ", protoreflectPackage.Ident("EnumNumber"), "(x)")
 	g.P("}")
+	g.P()
 }
 
 func genReflectMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message) {
 	idx := f.allMessagesByPtr[message]
 	typesVar := messageTypesVarName(f)
-	g.P("func (m *", message.GoIdent, ") ProtoReflect() ", protoreflectPackage.Ident("Message"), " {")
-	g.P("return ", typesVar, "[", idx, "].MessageOf(m)")
+
+	// ProtoReflect method.
+	g.P("func (x *", message.GoIdent, ") ProtoReflect() ", protoreflectPackage.Ident("Message"), " {")
+	g.P("return ", typesVar, "[", idx, "].MessageOf(x)")
 	g.P("}")
+	g.P()
 }
 
 func rawDescVarName(f *fileInfo) string {

@@ -27,49 +27,56 @@ type All struct {
 	XXX_sizecache        int32        `json:"-"`
 }
 
-func (m *All) ProtoReflect() protoreflect.Message {
-	return xxx_File_imports_test_import_all_proto_messageTypes[0].MessageOf(m)
+func (x *All) Reset() {
+	*x = All{}
 }
-func (m *All) Reset()         { *m = All{} }
-func (m *All) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*All) ProtoMessage()    {}
+
+func (x *All) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*All) ProtoMessage() {}
+
+func (x *All) ProtoReflect() protoreflect.Message {
+	return xxx_File_imports_test_import_all_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use All.ProtoReflect.Type instead.
 func (*All) Descriptor() ([]byte, []int) {
 	return xxx_File_imports_test_import_all_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *All) GetAm1() *test_a_1.M1 {
-	if m != nil {
-		return m.Am1
+func (x *All) GetAm1() *test_a_1.M1 {
+	if x != nil {
+		return x.Am1
 	}
 	return nil
 }
 
-func (m *All) GetAm2() *test_a_1.M2 {
-	if m != nil {
-		return m.Am2
+func (x *All) GetAm2() *test_a_1.M2 {
+	if x != nil {
+		return x.Am2
 	}
 	return nil
 }
 
-func (m *All) GetBm1() *test_b_1.M1 {
-	if m != nil {
-		return m.Bm1
+func (x *All) GetBm1() *test_b_1.M1 {
+	if x != nil {
+		return x.Bm1
 	}
 	return nil
 }
 
-func (m *All) GetBm2() *test_b_1.M2 {
-	if m != nil {
-		return m.Bm2
+func (x *All) GetBm2() *test_b_1.M2 {
+	if x != nil {
+		return x.Bm2
 	}
 	return nil
 }
 
-func (m *All) GetFmt() *fmt.M {
-	if m != nil {
-		return m.Fmt
+func (x *All) GetFmt() *fmt.M {
+	if x != nil {
+		return x.Fmt
 	}
 	return nil
 }

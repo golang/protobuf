@@ -20,28 +20,35 @@ type Message struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto2_proto2_proto_messageTypes[0].MessageOf(m)
+func (x *Message) Reset() {
+	*x = Message{}
 }
-func (m *Message) Reset()         { *m = Message{} }
-func (m *Message) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message) ProtoMessage()    {}
+
+func (x *Message) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message) ProtoMessage() {}
+
+func (x *Message) ProtoReflect() protoreflect.Message {
+	return xxx_File_proto2_proto2_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
 	return xxx_File_proto2_proto2_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Message) GetI32() int32 {
-	if m != nil && m.I32 != nil {
-		return *m.I32
+func (x *Message) GetI32() int32 {
+	if x != nil && x.I32 != nil {
+		return *x.I32
 	}
 	return 0
 }
 
-func (m *Message) GetM() *Message {
-	if m != nil {
-		return m.M
+func (x *Message) GetM() *Message {
+	if x != nil {
+		return x.M
 	}
 	return nil
 }

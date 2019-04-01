@@ -29,21 +29,28 @@ type Message1 struct {
 	XXX_sizecache        int32              `json:"-"`
 }
 
-func (m *Message1) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[0].MessageOf(m)
+func (x *Message1) Reset() {
+	*x = Message1{}
 }
-func (m *Message1) Reset()         { *m = Message1{} }
-func (m *Message1) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message1) ProtoMessage()    {}
+
+func (x *Message1) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message1) ProtoMessage() {}
+
+func (x *Message1) ProtoReflect() protoreflect.Message {
+	return xxx_File_comments_comments_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use Message1.ProtoReflect.Type instead.
 func (*Message1) Descriptor() ([]byte, []int) {
 	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{0}
 }
 
-func (m *Message1) GetField1A() string {
-	if m != nil && m.Field1A != nil {
-		return *m.Field1A
+func (x *Message1) GetField1A() string {
+	if x != nil && x.Field1A != nil {
+		return *x.Field1A
 	}
 	return ""
 }
@@ -65,8 +72,8 @@ func (m *Message1) GetOneof1A() isMessage1_Oneof1A {
 	return nil
 }
 
-func (m *Message1) GetOneof1AField1() string {
-	if x, ok := m.GetOneof1A().(*Message1_Oneof1AField1); ok {
+func (x *Message1) GetOneof1AField1() string {
+	if x, ok := x.GetOneof1A().(*Message1_Oneof1AField1); ok {
 		return x.Oneof1AField1
 	}
 	return ""
@@ -86,12 +93,19 @@ type Message2 struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message2) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[1].MessageOf(m)
+func (x *Message2) Reset() {
+	*x = Message2{}
 }
-func (m *Message2) Reset()         { *m = Message2{} }
-func (m *Message2) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message2) ProtoMessage()    {}
+
+func (x *Message2) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message2) ProtoMessage() {}
+
+func (x *Message2) ProtoReflect() protoreflect.Message {
+	return xxx_File_comments_comments_proto_messageTypes[1].MessageOf(x)
+}
 
 // Deprecated: Use Message2.ProtoReflect.Type instead.
 func (*Message2) Descriptor() ([]byte, []int) {
@@ -105,12 +119,19 @@ type Message1_Message1A struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message1_Message1A) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[2].MessageOf(m)
+func (x *Message1_Message1A) Reset() {
+	*x = Message1_Message1A{}
 }
-func (m *Message1_Message1A) Reset()         { *m = Message1_Message1A{} }
-func (m *Message1_Message1A) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message1_Message1A) ProtoMessage()    {}
+
+func (x *Message1_Message1A) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message1_Message1A) ProtoMessage() {}
+
+func (x *Message1_Message1A) ProtoReflect() protoreflect.Message {
+	return xxx_File_comments_comments_proto_messageTypes[2].MessageOf(x)
+}
 
 // Deprecated: Use Message1_Message1A.ProtoReflect.Type instead.
 func (*Message1_Message1A) Descriptor() ([]byte, []int) {
@@ -124,12 +145,19 @@ type Message1_Message1B struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message1_Message1B) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[3].MessageOf(m)
+func (x *Message1_Message1B) Reset() {
+	*x = Message1_Message1B{}
 }
-func (m *Message1_Message1B) Reset()         { *m = Message1_Message1B{} }
-func (m *Message1_Message1B) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message1_Message1B) ProtoMessage()    {}
+
+func (x *Message1_Message1B) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message1_Message1B) ProtoMessage() {}
+
+func (x *Message1_Message1B) ProtoReflect() protoreflect.Message {
+	return xxx_File_comments_comments_proto_messageTypes[3].MessageOf(x)
+}
 
 // Deprecated: Use Message1_Message1B.ProtoReflect.Type instead.
 func (*Message1_Message1B) Descriptor() ([]byte, []int) {
@@ -143,12 +171,19 @@ type Message2_Message2A struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message2_Message2A) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[4].MessageOf(m)
+func (x *Message2_Message2A) Reset() {
+	*x = Message2_Message2A{}
 }
-func (m *Message2_Message2A) Reset()         { *m = Message2_Message2A{} }
-func (m *Message2_Message2A) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message2_Message2A) ProtoMessage()    {}
+
+func (x *Message2_Message2A) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message2_Message2A) ProtoMessage() {}
+
+func (x *Message2_Message2A) ProtoReflect() protoreflect.Message {
+	return xxx_File_comments_comments_proto_messageTypes[4].MessageOf(x)
+}
 
 // Deprecated: Use Message2_Message2A.ProtoReflect.Type instead.
 func (*Message2_Message2A) Descriptor() ([]byte, []int) {
@@ -162,12 +197,19 @@ type Message2_Message2B struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Message2_Message2B) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[5].MessageOf(m)
+func (x *Message2_Message2B) Reset() {
+	*x = Message2_Message2B{}
 }
-func (m *Message2_Message2B) Reset()         { *m = Message2_Message2B{} }
-func (m *Message2_Message2B) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*Message2_Message2B) ProtoMessage()    {}
+
+func (x *Message2_Message2B) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message2_Message2B) ProtoMessage() {}
+
+func (x *Message2_Message2B) ProtoReflect() protoreflect.Message {
+	return xxx_File_comments_comments_proto_messageTypes[5].MessageOf(x)
+}
 
 // Deprecated: Use Message2_Message2B.ProtoReflect.Type instead.
 func (*Message2_Message2B) Descriptor() ([]byte, []int) {

@@ -18,12 +18,19 @@ type WeakImportMessage struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *WeakImportMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_weak_proto_messageTypes[0].MessageOf(m)
+func (x *WeakImportMessage) Reset() {
+	*x = WeakImportMessage{}
 }
-func (m *WeakImportMessage) Reset()         { *m = WeakImportMessage{} }
-func (m *WeakImportMessage) String() string { return protoimpl.X.MessageStringOf(m) }
-func (*WeakImportMessage) ProtoMessage()    {}
+
+func (x *WeakImportMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WeakImportMessage) ProtoMessage() {}
+
+func (x *WeakImportMessage) ProtoReflect() protoreflect.Message {
+	return xxx_File_test_test_weak_proto_messageTypes[0].MessageOf(x)
+}
 
 // Deprecated: Use WeakImportMessage.ProtoReflect.Type instead.
 func (*WeakImportMessage) Descriptor() ([]byte, []int) {
