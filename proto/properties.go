@@ -38,7 +38,6 @@ package proto
 import (
 	"fmt"
 	"log"
-	"os"
 	"reflect"
 	"sort"
 	"strconv"
