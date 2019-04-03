@@ -153,6 +153,7 @@ func (o UnmarshalOptions) unmarshalFields(m pref.Message, skipTypeURL bool) erro
 	var nerr errors.NonFatal
 	var reqNums set.Ints
 	var seenNums set.Ints
+	var seenOneofs set.Ints
 
 	msgType := m.Type()
 	knownFields := m.KnownFields()
@@ -237,6 +238,15 @@ Loop:
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)
 			}
 		} else {
+			// If field is a oneof, check if it has already been set.
+			if od := fd.OneofType(); od != nil {
+				idx := uint64(od.Index())
+				if seenOneofs.Has(idx) {
+					return errors.New("%v: oneof is already set", od.FullName())
+				}
+				seenOneofs.Set(idx)
+			}
+
 			// Required or optional fields.
 			if err := o.unmarshalSingular(knownFields, fd); !nerr.Merge(err) {
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)

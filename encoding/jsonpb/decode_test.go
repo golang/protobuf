@@ -678,6 +678,26 @@ func TestUnmarshal(t *testing.T) {
 			},
 		},
 	}, {
+		desc:         "oneof set to more than one field",
+		inputMessage: &pb3.Oneofs{},
+		inputText: `{
+  "oneofEnum": "ZERO",
+  "oneofString": "hello"
+}`,
+		wantErr: true,
+	}, {
+		desc:         "oneof set to null and value",
+		inputMessage: &pb3.Oneofs{},
+		inputText: `{
+  "oneofEnum": "ZERO",
+  "oneofString": null
+}`,
+		wantMessage: &pb3.Oneofs{
+			Union: &pb3.Oneofs_OneofEnum{
+				OneofEnum: pb3.Enum_ZERO,
+			},
+		},
+	}, {
 		desc:         "repeated null fields",
 		inputMessage: &pb2.Repeats{},
 		inputText: `{

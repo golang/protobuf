@@ -104,6 +104,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 	xtTypes := knownFields.ExtensionTypes()
 	var reqNums set.Ints
 	var seenNums set.Ints
+	var seenOneofs set.Ints
 
 	for _, tfield := range tmsg {
 		tkey := tfield[0]
@@ -158,6 +159,15 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 				return err
 			}
 		} else {
+			// If field is a oneof, check if it has already been set.
+			if od := fd.OneofType(); od != nil {
+				idx := uint64(od.Index())
+				if seenOneofs.Has(idx) {
+					return errors.New("oneof %v is already set", od.FullName())
+				}
+				seenOneofs.Set(idx)
+			}
+
 			// Required or optional fields.
 			num := uint64(fd.Number())
 			if seenNums.Has(num) {

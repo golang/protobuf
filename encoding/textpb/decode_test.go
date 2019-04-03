@@ -523,20 +523,13 @@ oneof_nested: {
 			},
 		},
 	}, {
-		desc:         "oneof set to last value",
+		desc:         "oneof set to more than one field",
 		inputMessage: &pb3.Oneofs{},
 		inputText: `
-oneof_nested: {
-  s_string: "nested message"
-}
-oneof_enum: TEN
-oneof_string: "wins"
+oneof_enum: ZERO
+oneof_string: "hello"
 `,
-		wantMessage: &pb3.Oneofs{
-			Union: &pb3.Oneofs_OneofString{
-				OneofString: "wins",
-			},
-		},
+		wantErr: true,
 	}, {
 		desc:         "repeated scalar using same field name",
 		inputMessage: &pb2.Repeats{},
