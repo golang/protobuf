@@ -28,8 +28,8 @@ import (
 var (
 	regenerate = flag.Bool("regenerate", false, "regenerate files")
 
-	protobufVersion = "3.7.0"
-	golangVersions  = []string{"1.9.7", "1.10.8", "1.11.5", "1.12"}
+	protobufVersion = "3.7.1"
+	golangVersions  = []string{"1.9.7", "1.10.8", "1.11.6", "1.12.1"}
 	golangLatest    = golangVersions[len(golangVersions)-1]
 
 	// purgeTimeout determines the maximum age of unused sub-directories.
