@@ -146,6 +146,7 @@ extend Extensions {
   optional string opt_ext_string = 22;
   optional Enum opt_ext_enum = 23;
   optional Nested opt_ext_nested = 24;
+  optional PartialRequired opt_ext_partial = 25;
 
   repeated fixed32 rpt_ext_fixed32 = 31;
   repeated Enum rpt_ext_enum = 32;
@@ -158,6 +159,7 @@ message ExtensionsContainer {
     optional string opt_ext_string = 52;
     optional Enum opt_ext_enum = 53;
     optional Nested opt_ext_nested = 54;
+    optional PartialRequired opt_ext_partial = 55;
 
     repeated string rpt_ext_string = 61;
     repeated Enum rpt_ext_enum = 62;

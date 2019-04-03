@@ -919,6 +919,40 @@ opt_int32: 42
 [pb2.opt_ext_string]: "extension field"
 `,
 	}, {
+		desc: "extension partial returns error",
+		input: func() proto.Message {
+			m := &pb2.Extensions{}
+			setExtension(m, pb2.E_OptExtPartial, &pb2.PartialRequired{
+				OptString: scalar.String("partial1"),
+			})
+			setExtension(m, pb2.E_ExtensionsContainer_OptExtPartial, &pb2.PartialRequired{
+				OptString: scalar.String("partial2"),
+			})
+			return m
+		}(),
+		want: `[pb2.ExtensionsContainer.opt_ext_partial]: {
+  opt_string: "partial2"
+}
+[pb2.opt_ext_partial]: {
+  opt_string: "partial1"
+}
+`,
+		wantErr: true,
+	}, {
+		desc: "extension partial with AllowPartial",
+		mo:   textpb.MarshalOptions{AllowPartial: true},
+		input: func() proto.Message {
+			m := &pb2.Extensions{}
+			setExtension(m, pb2.E_OptExtPartial, &pb2.PartialRequired{
+				OptString: scalar.String("partial1"),
+			})
+			return m
+		}(),
+		want: `[pb2.opt_ext_partial]: {
+  opt_string: "partial1"
+}
+`,
+	}, {
 		desc: "extension message field set to nil",
 		input: func() proto.Message {
 			m := &pb2.Extensions{}
