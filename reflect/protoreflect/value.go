@@ -92,6 +92,10 @@ type KnownFields interface {
 	// a known field or extension field.
 	Clear(FieldNumber)
 
+	// WhichOneof reports which field within the named oneof is populated.
+	// It returns 0 if the oneof does not exist or no fields are populated.
+	WhichOneof(Name) FieldNumber
+
 	// Range iterates over every populated field in an undefined order,
 	// calling f for each field number and value encountered.
 	// Range calls f Len times unless f returns false, which stops iteration.

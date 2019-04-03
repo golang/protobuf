@@ -290,3 +290,23 @@ func defaultValueOf(fd pref.FieldDescriptor) pref.Value {
 	}
 	return pv
 }
+
+type oneofInfo struct {
+	which func(pointer) pref.FieldNumber
+}
+
+func makeOneofInfo(od pref.OneofDescriptor, fs reflect.StructField, wrappersByType map[reflect.Type]pref.FieldNumber) *oneofInfo {
+	fieldOffset := offsetOf(fs)
+	return &oneofInfo{
+		which: func(p pointer) pref.FieldNumber {
+			if p.IsNil() {
+				return 0
+			}
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
+			if rv.IsNil() {
+				return 0
+			}
+			return wrappersByType[rv.Elem().Type().Elem()]
+		},
+	}
+}

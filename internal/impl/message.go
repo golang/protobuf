@@ -33,6 +33,7 @@ type MessageType struct {
 	// TODO: Split fields into dense and sparse maps similar to the current
 	// table-driven implementation in v1?
 	fields map[pref.FieldNumber]*fieldInfo
+	oneofs map[pref.Name]*oneofInfo
 
 	unknownFields   func(*messageDataType) pref.UnknownFields
 	extensionFields func(*messageDataType) pref.KnownFields
@@ -59,27 +60,30 @@ func (mi *MessageType) init() {
 // any discrepancies.
 func (mi *MessageType) makeKnownFieldsFunc(t reflect.Type) {
 	// Generate a mapping of field numbers and names to Go struct field or type.
-	fields := map[pref.FieldNumber]reflect.StructField{}
-	oneofs := map[pref.Name]reflect.StructField{}
-	oneofFields := map[pref.FieldNumber]reflect.Type{}
-	special := map[string]reflect.StructField{}
+	var (
+		fieldsByNumber        = map[pref.FieldNumber]reflect.StructField{}
+		oneofsByName          = map[pref.Name]reflect.StructField{}
+		oneofWrappersByType   = map[reflect.Type]pref.FieldNumber{}
+		oneofWrappersByNumber = map[pref.FieldNumber]reflect.Type{}
+		specialByName         = map[string]reflect.StructField{}
+	)
 fieldLoop:
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		for _, s := range strings.Split(f.Tag.Get("protobuf"), ",") {
 			if len(s) > 0 && strings.Trim(s, "0123456789") == "" {
 				n, _ := strconv.ParseUint(s, 10, 64)
-				fields[pref.FieldNumber(n)] = f
+				fieldsByNumber[pref.FieldNumber(n)] = f
 				continue fieldLoop
 			}
 		}
 		if s := f.Tag.Get("protobuf_oneof"); len(s) > 0 {
-			oneofs[pref.Name(s)] = f
+			oneofsByName[pref.Name(s)] = f
 			continue fieldLoop
 		}
 		switch f.Name {
 		case "XXX_weak", "XXX_unrecognized", "XXX_sizecache", "XXX_extensions", "XXX_InternalExtensions":
-			special[f.Name] = f
+			specialByName[f.Name] = f
 			continue fieldLoop
 		}
 	}
@@ -96,7 +100,8 @@ fieldLoop:
 		for _, s := range strings.Split(f.Tag.Get("protobuf"), ",") {
 			if len(s) > 0 && strings.Trim(s, "0123456789") == "" {
 				n, _ := strconv.ParseUint(s, 10, 64)
-				oneofFields[pref.FieldNumber(n)] = tf
+				oneofWrappersByType[tf] = pref.FieldNumber(n)
+				oneofWrappersByNumber[pref.FieldNumber(n)] = tf
 				break
 			}
 		}
@@ -105,13 +110,13 @@ fieldLoop:
 	mi.fields = map[pref.FieldNumber]*fieldInfo{}
 	for i := 0; i < mi.PBType.Fields().Len(); i++ {
 		fd := mi.PBType.Fields().Get(i)
-		fs := fields[fd.Number()]
+		fs := fieldsByNumber[fd.Number()]
 		var fi fieldInfo
 		switch {
 		case fd.IsWeak():
-			fi = fieldInfoForWeak(fd, special["XXX_weak"])
+			fi = fieldInfoForWeak(fd, specialByName["XXX_weak"])
 		case fd.OneofType() != nil:
-			fi = fieldInfoForOneof(fd, oneofs[fd.OneofType().Name()], oneofFields[fd.Number()])
+			fi = fieldInfoForOneof(fd, oneofsByName[fd.OneofType().Name()], oneofWrappersByNumber[fd.Number()])
 		case fd.IsMap():
 			fi = fieldInfoForMap(fd, fs)
 		case fd.Cardinality() == pref.Repeated:
@@ -122,6 +127,12 @@ fieldLoop:
 			fi = fieldInfoForScalar(fd, fs)
 		}
 		mi.fields[fd.Number()] = &fi
+	}
+
+	mi.oneofs = map[pref.Name]*oneofInfo{}
+	for i := 0; i < mi.PBType.Oneofs().Len(); i++ {
+		od := mi.PBType.Oneofs().Get(i)
+		mi.oneofs[od.Name()] = makeOneofInfo(od, oneofsByName[od.Name()], oneofWrappersByType)
 	}
 }
 
@@ -268,6 +279,12 @@ func (fs *knownFields) Clear(n pref.FieldNumber) {
 		return
 	}
 }
+func (fs *knownFields) WhichOneof(s pref.Name) pref.FieldNumber {
+	if oi := fs.mi.oneofs[s]; oi != nil {
+		return oi.which(fs.p)
+	}
+	return 0
+}
 func (fs *knownFields) Range(f func(pref.FieldNumber, pref.Value) bool) {
 	for n, fi := range fs.mi.fields {
 		if fi.has(fs.p) {
@@ -309,6 +326,7 @@ func (emptyExtensionFields) Has(pref.FieldNumber) bool                     { ret
 func (emptyExtensionFields) Get(pref.FieldNumber) pref.Value               { return pref.Value{} }
 func (emptyExtensionFields) Set(pref.FieldNumber, pref.Value)              { panic("extensions not supported") }
 func (emptyExtensionFields) Clear(pref.FieldNumber)                        { return } // noop
+func (emptyExtensionFields) WhichOneof(pref.Name) pref.FieldNumber         { return 0 }
 func (emptyExtensionFields) Range(func(pref.FieldNumber, pref.Value) bool) { return }
 func (emptyExtensionFields) NewMessage(pref.FieldNumber) pref.Message {
 	panic("extensions not supported")

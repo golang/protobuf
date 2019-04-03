@@ -52,6 +52,8 @@ type (
 	setFields map[pref.FieldNumber]pref.Value
 	// clear specific fields in the message
 	clearFields []pref.FieldNumber
+	// check for the presence of specific oneof member fields.
+	whichOneofs map[pref.Name]pref.FieldNumber
 	// apply messageOps on each specified message field
 	messageFields map[pref.FieldNumber]messageOps
 	// apply listOps on each specified list field
@@ -67,6 +69,7 @@ func (hasFields) isMessageOp()     {}
 func (getFields) isMessageOp()     {}
 func (setFields) isMessageOp()     {}
 func (clearFields) isMessageOp()   {}
+func (whichOneofs) isMessageOp()   {}
 func (messageFields) isMessageOp() {}
 func (listFields) isMessageOp()    {}
 func (mapFields) isMessageOp()     {}
@@ -919,6 +922,7 @@ func TestOneofs(t *testing.T) {
 	testMessage(t, nil, &OneofScalars{}, messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false},
 		getFields{1: V(bool(true)), 2: V(int32(2)), 3: V(int64(3)), 4: V(uint32(4)), 5: V(uint64(5)), 6: V(float32(6)), 7: V(float64(7)), 8: V(string("8")), 9: V(string("9")), 10: V(string("10")), 11: V([]byte("11")), 12: V([]byte("12")), 13: V([]byte("13"))},
+		whichOneofs{"union": 0, "Union": 0},
 
 		setFields{1: V(bool(true))}, hasFields{1: true}, equalMessage{want1},
 		setFields{2: V(int32(20))}, hasFields{2: true}, equalMessage{want2},
@@ -927,6 +931,10 @@ func TestOneofs(t *testing.T) {
 		setFields{5: V(uint64(50))}, hasFields{5: true}, equalMessage{want5},
 		setFields{6: V(float32(60))}, hasFields{6: true}, equalMessage{want6},
 		setFields{7: V(float64(70))}, hasFields{7: true}, equalMessage{want7},
+
+		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: true, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false},
+		whichOneofs{"union": 7, "Union": 0},
+
 		setFields{8: V(string("80"))}, hasFields{8: true}, equalMessage{want8},
 		setFields{9: V(string("90"))}, hasFields{9: true}, equalMessage{want9},
 		setFields{10: V(string("100"))}, hasFields{10: true}, equalMessage{want10},
@@ -937,8 +945,10 @@ func TestOneofs(t *testing.T) {
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: true},
 		getFields{1: V(bool(true)), 2: V(int32(2)), 3: V(int64(3)), 4: V(uint32(4)), 5: V(uint64(5)), 6: V(float32(6)), 7: V(float64(7)), 8: V(string("8")), 9: V(string("9")), 10: V(string("10")), 11: V([]byte("11")), 12: V([]byte("12")), 13: V([]byte("130"))},
 		clearFields{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},
+		whichOneofs{"union": 13, "Union": 0},
 		equalMessage{want13},
 		clearFields{13},
+		whichOneofs{"union": 0, "Union": 0},
 		equalMessage{empty},
 	})
 
@@ -1239,6 +1249,15 @@ func testMessage(t *testing.T, p path, m pref.Message, tt messageOps) {
 		case clearFields:
 			for _, n := range op {
 				fs.Clear(n)
+			}
+		case whichOneofs:
+			got := map[pref.Name]pref.FieldNumber{}
+			want := map[pref.Name]pref.FieldNumber(op)
+			for s := range want {
+				got[s] = fs.WhichOneof(s)
+			}
+			if diff := cmp.Diff(want, got); diff != "" {
+				t.Errorf("operation %v, KnownFields.WhichOneof mismatch (-want, +got):\n%s", p, diff)
 			}
 		case messageFields:
 			for n, tt := range op {

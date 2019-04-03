@@ -119,6 +119,10 @@ func (p legacyExtensionFields) Clear(n pref.FieldNumber) {
 	p.x.Set(n, x)
 }
 
+func (p legacyExtensionFields) WhichOneof(pref.Name) pref.FieldNumber {
+	return 0
+}
+
 func (p legacyExtensionFields) Range(f func(pref.FieldNumber, pref.Value) bool) {
 	p.x.Range(func(n pref.FieldNumber, x ExtensionFieldV1) bool {
 		if p.Has(n) {
