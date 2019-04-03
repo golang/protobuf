@@ -178,7 +178,9 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 
 	em := emt.New()
 	// TODO: Need to set types registry in binary unmarshaling.
-	err = proto.Unmarshal(valueVal.Bytes(), em.Interface())
+	err = proto.UnmarshalOptions{
+		AllowPartial: o.AllowPartial,
+	}.Unmarshal(valueVal.Bytes(), em.Interface())
 	if !nerr.Merge(err) {
 		return errors.New("%s: unable to unmarshal %q: %v", msgType.FullName(), typeURL, err)
 	}
@@ -243,7 +245,10 @@ func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
 	}
 	// Serialize the embedded message and assign the resulting bytes to the
 	// proto value field.
-	b, err := proto.MarshalOptions{Deterministic: true}.Marshal(em.Interface())
+	b, err := proto.MarshalOptions{
+		AllowPartial:  o.AllowPartial,
+		Deterministic: true,
+	}.Marshal(em.Interface())
 	if !nerr.Merge(err) {
 		return errors.New("google.protobuf.Any: %v", err)
 	}

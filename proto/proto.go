@@ -5,8 +5,7 @@
 package proto
 
 import (
-	"errors"
-
+	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/runtime/protoiface"
 )
@@ -15,11 +14,22 @@ import (
 type Message = protoreflect.ProtoMessage
 
 // errInternalNoFast indicates that fast-path operations are not available for a message.
-var errInternalNoFast = errors.New("proto: BUG: internal error (errInternalNoFast)")
+var errInternalNoFast = errors.New("BUG: internal error (errInternalNoFast)")
 
 func protoMethods(m Message) *protoiface.Methods {
 	if x, ok := m.(protoiface.Methoder); ok {
 		return x.XXX_Methods()
 	}
 	return nil
+}
+
+func checkRequiredFields(m protoreflect.Message, nerr *errors.NonFatal) {
+	req := m.Type().RequiredNumbers()
+	knownFields := m.KnownFields()
+	for i, reqLen := 0, req.Len(); i < reqLen; i++ {
+		num := req.Get(i)
+		if !knownFields.Has(num) {
+			nerr.AppendRequiredNotSet(string(m.Type().Fields().ByNumber(num).FullName()))
+		}
+	}
 }

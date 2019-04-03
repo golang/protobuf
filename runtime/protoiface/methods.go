@@ -49,6 +49,7 @@ const (
 //
 // This type is identical to the one in package proto.
 type MarshalOptions struct {
+	AllowPartial  bool
 	Deterministic bool
 	Reflection    bool
 
@@ -59,6 +60,7 @@ type MarshalOptions struct {
 //
 // This type is identical to the one in package proto.
 type UnmarshalOptions struct {
+	AllowPartial   bool
 	DiscardUnknown bool
 	Reflection     bool
 

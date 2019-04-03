@@ -353,7 +353,9 @@ func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
 	}
 	em := emt.New().Interface()
 	// TODO: Need to set types registry in binary unmarshaling.
-	err = proto.Unmarshal(value.Bytes(), em)
+	err = proto.UnmarshalOptions{
+		AllowPartial: o.AllowPartial,
+	}.Unmarshal(value.Bytes(), em)
 	if !nerr.Merge(err) {
 		return text.Value{}, err
 	}

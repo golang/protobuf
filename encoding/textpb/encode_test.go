@@ -1160,9 +1160,10 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 			m := &pb2.PartialRequired{
 				OptString: scalar.String("embedded inside Any"),
 			}
-			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
-			// TODO: Marshal may fail due to required field not set at some
-			// point. Need to ignore required not set error here.
+			b, err := proto.MarshalOptions{
+				AllowPartial:  true,
+				Deterministic: true,
+			}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}

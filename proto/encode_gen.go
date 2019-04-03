@@ -36,6 +36,7 @@ var wireTypes = map[protoreflect.Kind]wire.Type{
 }
 
 func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoreflect.Kind, v protoreflect.Value) ([]byte, error) {
+	var nerr errors.NonFatal
 	switch kind {
 	case protoreflect.BoolKind:
 		b = wire.AppendVarint(b, wire.EncodeBool(v.Bool()))
@@ -74,19 +75,19 @@ func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoref
 		var err error
 		b, pos = appendSpeculativeLength(b)
 		b, err = o.marshalMessage(b, v.Message())
-		if err != nil {
-			return nil, err
+		if !nerr.Merge(err) {
+			return b, err
 		}
 		b = finishSpeculativeLength(b, pos)
 	case protoreflect.GroupKind:
 		var err error
 		b, err = o.marshalMessage(b, v.Message())
-		if err != nil {
-			return nil, err
+		if !nerr.Merge(err) {
+			return b, err
 		}
 		b = wire.AppendVarint(b, wire.EncodeTag(num, wire.EndGroupType))
 	default:
-		return nil, errors.New("invalid kind %v", kind)
+		return b, errors.New("invalid kind %v", kind)
 	}
-	return b, nil
+	return b, nerr.E
 }

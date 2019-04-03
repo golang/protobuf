@@ -180,6 +180,7 @@ func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Num
 }
 
 func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Number, list protoreflect.List, kind protoreflect.Kind) (n int, err error) {
+	var nerr errors.NonFatal
 	switch kind {
 	{{- range .}}
 	case {{.Expr}}:
@@ -213,14 +214,14 @@ func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Numbe
 		}
 		{{if or (eq .Name "Message") (eq .Name "Group") -}}
 		m := list.NewMessage()
-		if err := o.unmarshalMessage(v, m); err != nil {
+		if err := o.unmarshalMessage(v, m); !nerr.Merge(err) {
 			return 0, err
 		}
 		list.Append(protoreflect.ValueOf(m))
 		{{- else -}}
 		list.Append(protoreflect.ValueOf({{.ToValue}}))
 		{{- end}}
-		return n, nil
+		return n, nerr.E
 	{{- end}}
 	default:
 		return 0, errUnknown
@@ -240,6 +241,7 @@ var wireTypes = map[protoreflect.Kind]wire.Type{
 }
 
 func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoreflect.Kind, v protoreflect.Value) ([]byte, error) {
+	var nerr errors.NonFatal
 	switch kind {
 	{{- range .}}
 	case {{.Expr}}:
@@ -248,15 +250,15 @@ func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoref
 		var err error
 		b, pos = appendSpeculativeLength(b)
 		b, err = o.marshalMessage(b, v.Message())
-		if err != nil {
-			return nil, err
+		if !nerr.Merge(err) {
+			return b, err
 		}
 		b = finishSpeculativeLength(b, pos)
 		{{- else if (eq .Name "Group") -}}
 		var err error
 		b, err = o.marshalMessage(b, v.Message())
-		if err != nil {
-			return nil, err
+		if !nerr.Merge(err) {
+			return b, err
 		}
 		b = wire.AppendVarint(b, wire.EncodeTag(num, wire.EndGroupType))
 		{{- else -}}
@@ -264,9 +266,9 @@ func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoref
 		{{- end}}
 	{{- end}}
 	default:
-		return nil, errors.New("invalid kind %v", kind)
+		return b, errors.New("invalid kind %v", kind)
 	}
-	return b, nil
+	return b, nerr.E
 }
 `))
 

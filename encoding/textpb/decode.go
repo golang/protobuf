@@ -503,7 +503,10 @@ func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, knownFields pref.Kn
 		return err
 	}
 	// Serialize the embedded message and assign the resulting bytes to the value field.
-	b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m.Interface())
+	b, err := proto.MarshalOptions{
+		AllowPartial:  o.AllowPartial,
+		Deterministic: true,
+	}.Marshal(m.Interface())
 	if !nerr.Merge(err) {
 		return err
 	}
