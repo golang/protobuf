@@ -333,11 +333,11 @@ type newUnmarshaler interface {
 // to preserve and append to existing data.
 func Unmarshal(buf []byte, pb Message) error {
 	pb.Reset()
-	if u, ok := pb.(newUnmarshaler); ok {
-		return u.XXX_Unmarshal(buf)
-	}
 	if u, ok := pb.(Unmarshaler); ok {
 		return u.Unmarshal(buf)
+	}
+	if u, ok := pb.(newUnmarshaler); ok {
+		return u.XXX_Unmarshal(buf)
 	}
 	return NewBuffer(buf).Unmarshal(pb)
 }
