@@ -55,7 +55,6 @@ const (
 type MarshalOptions struct {
 	AllowPartial  bool
 	Deterministic bool
-	Reflection    bool
 
 	pragma.NoUnkeyedLiterals
 }
@@ -66,7 +65,6 @@ type MarshalOptions struct {
 type UnmarshalOptions struct {
 	AllowPartial   bool
 	DiscardUnknown bool
-	Reflection     bool
 
 	pragma.NoUnkeyedLiterals
 }

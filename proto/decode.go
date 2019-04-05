@@ -25,10 +25,6 @@ type UnmarshalOptions struct {
 	// If DiscardUnknown is set, unknown fields are ignored.
 	DiscardUnknown bool
 
-	// Reflection forces use of the reflection-based decoder, even for
-	// messages which implement fast-path deserialization.
-	Reflection bool
-
 	pragma.NoUnkeyedLiterals
 }
 
@@ -57,9 +53,6 @@ func (o UnmarshalOptions) Unmarshal(b []byte, m Message) error {
 }
 
 func (o UnmarshalOptions) unmarshalMessageFast(b []byte, m Message) error {
-	if o.Reflection {
-		return errInternalNoFast
-	}
 	methods := protoMethods(m)
 	if methods == nil || methods.Unmarshal == nil {
 		return errInternalNoFast

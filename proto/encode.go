@@ -47,10 +47,6 @@ type MarshalOptions struct {
 	// detail and subject to change.
 	Deterministic bool
 
-	// Reflection forces use of the reflection-based encoder, even for
-	// messages which implement fast-path serialization.
-	Reflection bool
-
 	pragma.NoUnkeyedLiterals
 }
 
@@ -84,9 +80,6 @@ func (o MarshalOptions) MarshalAppend(b []byte, m Message) ([]byte, error) {
 }
 
 func (o MarshalOptions) marshalMessageFast(b []byte, m Message) ([]byte, error) {
-	if o.Reflection {
-		return nil, errInternalNoFast
-	}
 	methods := protoMethods(m)
 	if methods == nil ||
 		methods.MarshalAppend == nil ||

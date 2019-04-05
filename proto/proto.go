@@ -7,7 +7,6 @@ package proto
 import (
 	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/runtime/protoiface"
 )
 
 // Message is the top-level interface that all messages must implement.
@@ -15,10 +14,3 @@ type Message = protoreflect.ProtoMessage
 
 // errInternalNoFast indicates that fast-path operations are not available for a message.
 var errInternalNoFast = errors.New("BUG: internal error (errInternalNoFast)")
-
-func protoMethods(m Message) *protoiface.Methods {
-	if x, ok := m.(protoiface.Methoder); ok {
-		return x.XXX_Methods()
-	}
-	return nil
-}
