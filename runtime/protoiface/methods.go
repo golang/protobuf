@@ -21,6 +21,7 @@ type Methods struct {
 	Flags MethodFlag
 
 	// MarshalAppend appends the wire-format encoding of m to b, returning the result.
+	// It does not perform required field checks.
 	MarshalAppend func(b []byte, m protoreflect.ProtoMessage, opts MarshalOptions) ([]byte, error)
 
 	// Size returns the size in bytes of the wire-format encoding of m.
@@ -31,8 +32,11 @@ type Methods struct {
 	CachedSize func(m protoreflect.ProtoMessage) int
 
 	// Unmarshal parses the wire-format message in b and places the result in m.
-	// It does not reset m.
+	// It does not reset m or perform required field checks.
 	Unmarshal func(b []byte, m protoreflect.ProtoMessage, opts UnmarshalOptions) error
+
+	// IsInitialized returns an error if any required fields in m are not set.
+	IsInitialized func(m protoreflect.ProtoMessage) error
 
 	pragma.NoUnkeyedLiterals
 }

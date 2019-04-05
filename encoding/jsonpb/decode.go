@@ -71,6 +71,10 @@ func (o UnmarshalOptions) Unmarshal(m proto.Message, b []byte) error {
 	if val.Type() != json.EOF {
 		return unexpectedJSONError{val}
 	}
+
+	if !o.AllowPartial {
+		nerr.Merge(proto.IsInitialized(m))
+	}
 	return nerr.E
 }
 
@@ -151,7 +155,6 @@ func (o UnmarshalOptions) unmarshalMessage(m pref.Message, skipTypeURL bool) err
 // unmarshalFields unmarshals the fields into the given protoreflect.Message.
 func (o UnmarshalOptions) unmarshalFields(m pref.Message, skipTypeURL bool) error {
 	var nerr errors.NonFatal
-	var reqNums set.Ints
 	var seenNums set.Ints
 	var seenOneofs set.Ints
 
@@ -250,21 +253,6 @@ Loop:
 			// Required or optional fields.
 			if err := o.unmarshalSingular(knownFields, fd); !nerr.Merge(err) {
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)
-			}
-			if !o.AllowPartial && cardinality == pref.Required {
-				reqNums.Set(num)
-			}
-		}
-	}
-
-	if !o.AllowPartial {
-		// Check for any missing required fields.
-		allReqNums := msgType.RequiredNumbers()
-		if reqNums.Len() != allReqNums.Len() {
-			for i := 0; i < allReqNums.Len(); i++ {
-				if num := allReqNums.Get(i); !reqNums.Has(uint64(num)) {
-					nerr.AppendRequiredNotSet(string(fieldDescs.ByNumber(num).FullName()))
-				}
 			}
 		}
 	}

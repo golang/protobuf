@@ -64,6 +64,10 @@ func (o UnmarshalOptions) Unmarshal(m proto.Message, b []byte) error {
 		return err
 	}
 
+	if !o.AllowPartial {
+		nerr.Merge(proto.IsInitialized(m))
+	}
+
 	return nerr.E
 }
 
@@ -102,7 +106,6 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 	fieldDescs := msgType.Fields()
 	reservedNames := msgType.ReservedNames()
 	xtTypes := knownFields.ExtensionTypes()
-	var reqNums set.Ints
 	var seenNums set.Ints
 	var seenOneofs set.Ints
 
@@ -176,22 +179,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 			if err := o.unmarshalSingular(tval, fd, knownFields); !nerr.Merge(err) {
 				return err
 			}
-			if !o.AllowPartial && cardinality == pref.Required {
-				reqNums.Set(num)
-			}
 			seenNums.Set(num)
-		}
-	}
-
-	if !o.AllowPartial {
-		// Check for any missing required fields.
-		allReqNums := msgType.RequiredNumbers()
-		if reqNums.Len() != allReqNums.Len() {
-			for i := 0; i < allReqNums.Len(); i++ {
-				if num := allReqNums.Get(i); !reqNums.Has(uint64(num)) {
-					nerr.AppendRequiredNotSet(string(fieldDescs.ByNumber(num).FullName()))
-				}
-			}
 		}
 	}
 

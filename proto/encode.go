@@ -69,10 +69,18 @@ func (o MarshalOptions) Marshal(m Message) ([]byte, error) {
 // MarshalAppend appends the wire-format encoding of m to b,
 // returning the result.
 func (o MarshalOptions) MarshalAppend(b []byte, m Message) ([]byte, error) {
-	if b, err := o.marshalMessageFast(b, m); err != errInternalNoFast {
+	b, err := o.marshalMessageFast(b, m)
+	if err == errInternalNoFast {
+		b, err = o.marshalMessage(b, m.ProtoReflect())
+	}
+	var nerr errors.NonFatal
+	if !nerr.Merge(err) {
 		return b, err
 	}
-	return o.marshalMessage(b, m.ProtoReflect())
+	if !o.AllowPartial {
+		nerr.Merge(IsInitialized(m))
+	}
+	return b, nerr.E
 }
 
 func (o MarshalOptions) marshalMessageFast(b []byte, m Message) ([]byte, error) {
@@ -129,9 +137,6 @@ func (o MarshalOptions) marshalMessage(b []byte, m protoreflect.Message) ([]byte
 		b = append(b, raw...)
 		return true
 	})
-	if !o.AllowPartial {
-		checkRequiredFields(m, &nerr)
-	}
 	return b, nerr.E
 }
 

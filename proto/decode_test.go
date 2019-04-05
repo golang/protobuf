@@ -944,23 +944,20 @@ var testProtos = []testProto{
 			}),
 		}.Marshal(),
 	},
-	// TODO: Handle this case.
-	/*
-		{
-			desc: "required field in optional message set (split across multiple tags)",
-			decodeTo: []proto.Message{&testpb.TestRequiredForeign{
-				OptionalMessage: &testpb.TestRequired{
-					RequiredField: scalar.Int32(1),
-				},
-			}},
-			wire: pack.Message{
-				pack.Tag{1, pack.BytesType}, pack.LengthPrefix(pack.Message{}),
-				pack.Tag{1, pack.BytesType}, pack.LengthPrefix(pack.Message{
-					pack.Tag{1, pack.VarintType}, pack.Varint(1),
-				}),
-			}.Marshal(),
-		},
-	*/
+	{
+		desc: "required field in optional message set (split across multiple tags)",
+		decodeTo: []proto.Message{&testpb.TestRequiredForeign{
+			OptionalMessage: &testpb.TestRequired{
+				RequiredField: scalar.Int32(1),
+			},
+		}},
+		wire: pack.Message{
+			pack.Tag{1, pack.BytesType}, pack.LengthPrefix(pack.Message{}),
+			pack.Tag{1, pack.BytesType}, pack.LengthPrefix(pack.Message{
+				pack.Tag{1, pack.VarintType}, pack.Varint(1),
+			}),
+		}.Marshal(),
+	},
 	{
 		desc:    "required field in repeated message unset",
 		partial: true,

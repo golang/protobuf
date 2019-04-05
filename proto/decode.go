@@ -42,10 +42,18 @@ func Unmarshal(b []byte, m Message) error {
 // Unmarshal parses the wire-format message in b and places the result in m.
 func (o UnmarshalOptions) Unmarshal(b []byte, m Message) error {
 	// TODO: Reset m?
-	if err := o.unmarshalMessageFast(b, m); err != errInternalNoFast {
+	err := o.unmarshalMessageFast(b, m)
+	if err == errInternalNoFast {
+		err = o.unmarshalMessage(b, m.ProtoReflect())
+	}
+	var nerr errors.NonFatal
+	if !nerr.Merge(err) {
 		return err
 	}
-	return o.unmarshalMessage(b, m.ProtoReflect())
+	if !o.AllowPartial {
+		nerr.Merge(IsInitialized(m))
+	}
+	return nerr.E
 }
 
 func (o UnmarshalOptions) unmarshalMessageFast(b []byte, m Message) error {
@@ -99,9 +107,6 @@ func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) err
 			return err
 		}
 		b = b[tagLen+valLen:]
-	}
-	if !o.AllowPartial {
-		checkRequiredFields(m, &nerr)
 	}
 	return nerr.E
 }
@@ -204,9 +209,6 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number
 	if !haveVal {
 		switch valField.Kind() {
 		case protoreflect.GroupKind, protoreflect.MessageKind:
-			if !o.AllowPartial {
-				checkRequiredFields(val.Message(), &nerr)
-			}
 		default:
 			val = valField.Default()
 		}

@@ -63,6 +63,9 @@ func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
 	if !nerr.Merge(err) {
 		return nil, err
 	}
+	if !o.AllowPartial {
+		nerr.Merge(proto.IsInitialized(m))
+	}
 	return o.encoder.Bytes(), nerr.E
 }
 
@@ -95,10 +98,6 @@ func (o MarshalOptions) marshalFields(m pref.Message) error {
 		num := fd.Number()
 
 		if !knownFields.Has(num) {
-			if !o.AllowPartial && fd.Cardinality() == pref.Required {
-				// Treat unset required fields as a non-fatal error.
-				nerr.AppendRequiredNotSet(string(fd.FullName()))
-			}
 			continue
 		}
 

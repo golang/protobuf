@@ -22,14 +22,3 @@ func protoMethods(m Message) *protoiface.Methods {
 	}
 	return nil
 }
-
-func checkRequiredFields(m protoreflect.Message, nerr *errors.NonFatal) {
-	req := m.Type().RequiredNumbers()
-	knownFields := m.KnownFields()
-	for i, reqLen := 0, req.Len(); i < reqLen; i++ {
-		num := req.Get(i)
-		if !knownFields.Has(num) {
-			nerr.AppendRequiredNotSet(string(m.Type().Fields().ByNumber(num).FullName()))
-		}
-	}
-}
