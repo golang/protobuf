@@ -127,7 +127,7 @@ type numberParts struct {
 
 // parseNumber constructs numberParts from given []byte. The logic here is
 // similar to consumeNumber above with the difference of having to construct
-// numberParts.
+// numberParts. The slice fields in numberParts are subslices of the input.
 func parseNumber(input []byte) (numberParts, bool) {
 	var neg bool
 	var intp []byte
@@ -155,12 +155,14 @@ func parseNumber(input []byte) (numberParts, bool) {
 		s = s[1:]
 
 	case '1' <= s[0] && s[0] <= '9':
-		intp = append(intp, s[0])
+		intp = s
+		n := 1
 		s = s[1:]
 		for len(s) > 0 && '0' <= s[0] && s[0] <= '9' {
-			intp = append(intp, s[0])
 			s = s[1:]
+			n++
 		}
+		intp = intp[:n]
 
 	default:
 		return numberParts{}, false
@@ -168,29 +170,34 @@ func parseNumber(input []byte) (numberParts, bool) {
 
 	// . followed by 1 or more digits.
 	if len(s) >= 2 && s[0] == '.' && '0' <= s[1] && s[1] <= '9' {
-		frac = append(frac, s[1])
+		frac = s[1:]
+		n := 1
 		s = s[2:]
 		for len(s) > 0 && '0' <= s[0] && s[0] <= '9' {
-			frac = append(frac, s[0])
 			s = s[1:]
+			n++
 		}
+		frac = frac[:n]
 	}
 
 	// e or E followed by an optional - or + and
 	// 1 or more digits.
 	if len(s) >= 2 && (s[0] == 'e' || s[0] == 'E') {
 		s = s[1:]
+		exp = s
+		n := 0
 		if s[0] == '+' || s[0] == '-' {
-			exp = append(exp, s[0])
 			s = s[1:]
+			n++
 			if len(s) == 0 {
 				return numberParts{}, false
 			}
 		}
 		for len(s) > 0 && '0' <= s[0] && s[0] <= '9' {
-			exp = append(exp, s[0])
 			s = s[1:]
+			n++
 		}
+		exp = exp[:n]
 	}
 
 	return numberParts{
@@ -205,8 +212,7 @@ func parseNumber(input []byte) (numberParts, bool) {
 // E-notation for given numberParts. It will return false if it is not an
 // integer or if the exponent exceeds than max/min int value.
 func normalizeToIntString(n numberParts) (string, bool) {
-	num := n.intp
-	intpSize := len(num)
+	intpSize := len(n.intp)
 	fracSize := len(n.frac)
 
 	if intpSize == 0 && fracSize == 0 {
@@ -222,16 +228,19 @@ func normalizeToIntString(n numberParts) (string, bool) {
 		exp = int(i)
 	}
 
+	var num []byte
 	if exp >= 0 {
 		// For positive E, shift fraction digits into integer part and also pad
 		// with zeroes as needed.
 
-		// If there are more digits in fraction than the E value, then number is
-		// not an integer.
+		// If there are more digits in fraction than the E value, then the
+		// number is not an integer.
 		if fracSize > exp {
 			return "", false
 		}
 
+		// Set cap to make a copy of integer part when appended.
+		num = n.intp[:len(n.intp):len(n.intp)]
 		num = append(num, n.frac...)
 		for i := 0; i < exp-fracSize; i++ {
 			num = append(num, '0')
@@ -240,18 +249,21 @@ func normalizeToIntString(n numberParts) (string, bool) {
 	} else {
 		// For negative E, shift digits in integer part out.
 
-		// If there are any fractions to begin with, then number is not an
-		// integer.
+		// If there are fractions, then the number is not an integer.
 		if fracSize > 0 {
 			return "", false
 		}
 
+		// index is where the decimal point will be after adjusting for negative
+		// exponent.
 		index := intpSize + exp
 		if index < 0 {
 			return "", false
 		}
-		// If any of the digits being shifted out is non-zero, then number is
-		// not an integer.
+
+		num = n.intp
+		// If any of the digits being shifted to the right of the decimal point
+		// is non-zero, then the number is not an integer.
 		for i := index; i < intpSize; i++ {
 			if num[i] != '0' {
 				return "", false
