@@ -9,6 +9,8 @@ import (
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/proto"
 	"github.com/google/go-cmp/cmp"
+
+	test3pb "github.com/golang/protobuf/v2/internal/testprotos/test3"
 )
 
 func TestEncode(t *testing.T) {
@@ -103,5 +105,19 @@ func TestEncodeRequiredFieldChecks(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestMarshalAppend(t *testing.T) {
+	want := []byte("prefix")
+	got := append([]byte(nil), want...)
+	got, err := proto.MarshalOptions{}.MarshalAppend(got, &test3pb.TestAllTypes{
+		OptionalString: "value",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.HasPrefix(got, want) {
+		t.Fatalf("MarshalAppend modified prefix: got %v, want prefix %v", got, want)
 	}
 }
