@@ -215,34 +215,6 @@ func (*ConformanceRequest) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{1}
 }
 
-type isConformanceRequest_Payload interface {
-	isConformanceRequest_Payload()
-}
-
-type ConformanceRequest_ProtobufPayload struct {
-	ProtobufPayload []byte `protobuf:"bytes,1,opt,name=protobuf_payload,json=protobufPayload,proto3,oneof"`
-}
-
-type ConformanceRequest_JsonPayload struct {
-	JsonPayload string `protobuf:"bytes,2,opt,name=json_payload,json=jsonPayload,proto3,oneof"`
-}
-
-type ConformanceRequest_JspbPayload struct {
-	JspbPayload string `protobuf:"bytes,7,opt,name=jspb_payload,json=jspbPayload,proto3,oneof"`
-}
-
-type ConformanceRequest_TextPayload struct {
-	TextPayload string `protobuf:"bytes,8,opt,name=text_payload,json=textPayload,proto3,oneof"`
-}
-
-func (*ConformanceRequest_ProtobufPayload) isConformanceRequest_Payload() {}
-
-func (*ConformanceRequest_JsonPayload) isConformanceRequest_Payload() {}
-
-func (*ConformanceRequest_JspbPayload) isConformanceRequest_Payload() {}
-
-func (*ConformanceRequest_TextPayload) isConformanceRequest_Payload() {}
-
 func (m *ConformanceRequest) GetPayload() isConformanceRequest_Payload {
 	if m != nil {
 		return m.Payload
@@ -316,6 +288,34 @@ func (*ConformanceRequest) XXX_OneofWrappers() []interface{} {
 	}
 }
 
+type isConformanceRequest_Payload interface {
+	isConformanceRequest_Payload()
+}
+
+type ConformanceRequest_ProtobufPayload struct {
+	ProtobufPayload []byte `protobuf:"bytes,1,opt,name=protobuf_payload,json=protobufPayload,proto3,oneof"`
+}
+
+type ConformanceRequest_JsonPayload struct {
+	JsonPayload string `protobuf:"bytes,2,opt,name=json_payload,json=jsonPayload,proto3,oneof"`
+}
+
+type ConformanceRequest_JspbPayload struct {
+	JspbPayload string `protobuf:"bytes,7,opt,name=jspb_payload,json=jspbPayload,proto3,oneof"`
+}
+
+type ConformanceRequest_TextPayload struct {
+	TextPayload string `protobuf:"bytes,8,opt,name=text_payload,json=textPayload,proto3,oneof"`
+}
+
+func (*ConformanceRequest_ProtobufPayload) isConformanceRequest_Payload() {}
+
+func (*ConformanceRequest_JsonPayload) isConformanceRequest_Payload() {}
+
+func (*ConformanceRequest_JspbPayload) isConformanceRequest_Payload() {}
+
+func (*ConformanceRequest_TextPayload) isConformanceRequest_Payload() {}
+
 // Represents a single test case's output.
 type ConformanceResponse struct {
 	// Types that are valid to be assigned to Result:
@@ -377,58 +377,6 @@ func (m *ConformanceResponse) XXX_Methods() *protoiface.Methods {
 func (*ConformanceResponse) Descriptor() ([]byte, []int) {
 	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{2}
 }
-
-type isConformanceResponse_Result interface {
-	isConformanceResponse_Result()
-}
-
-type ConformanceResponse_ParseError struct {
-	ParseError string `protobuf:"bytes,1,opt,name=parse_error,json=parseError,proto3,oneof"`
-}
-
-type ConformanceResponse_SerializeError struct {
-	SerializeError string `protobuf:"bytes,6,opt,name=serialize_error,json=serializeError,proto3,oneof"`
-}
-
-type ConformanceResponse_RuntimeError struct {
-	RuntimeError string `protobuf:"bytes,2,opt,name=runtime_error,json=runtimeError,proto3,oneof"`
-}
-
-type ConformanceResponse_ProtobufPayload struct {
-	ProtobufPayload []byte `protobuf:"bytes,3,opt,name=protobuf_payload,json=protobufPayload,proto3,oneof"`
-}
-
-type ConformanceResponse_JsonPayload struct {
-	JsonPayload string `protobuf:"bytes,4,opt,name=json_payload,json=jsonPayload,proto3,oneof"`
-}
-
-type ConformanceResponse_Skipped struct {
-	Skipped string `protobuf:"bytes,5,opt,name=skipped,proto3,oneof"`
-}
-
-type ConformanceResponse_JspbPayload struct {
-	JspbPayload string `protobuf:"bytes,7,opt,name=jspb_payload,json=jspbPayload,proto3,oneof"`
-}
-
-type ConformanceResponse_TextPayload struct {
-	TextPayload string `protobuf:"bytes,8,opt,name=text_payload,json=textPayload,proto3,oneof"`
-}
-
-func (*ConformanceResponse_ParseError) isConformanceResponse_Result() {}
-
-func (*ConformanceResponse_SerializeError) isConformanceResponse_Result() {}
-
-func (*ConformanceResponse_RuntimeError) isConformanceResponse_Result() {}
-
-func (*ConformanceResponse_ProtobufPayload) isConformanceResponse_Result() {}
-
-func (*ConformanceResponse_JsonPayload) isConformanceResponse_Result() {}
-
-func (*ConformanceResponse_Skipped) isConformanceResponse_Result() {}
-
-func (*ConformanceResponse_JspbPayload) isConformanceResponse_Result() {}
-
-func (*ConformanceResponse_TextPayload) isConformanceResponse_Result() {}
 
 func (m *ConformanceResponse) GetResult() isConformanceResponse_Result {
 	if m != nil {
@@ -506,6 +454,58 @@ func (*ConformanceResponse) XXX_OneofWrappers() []interface{} {
 		(*ConformanceResponse_TextPayload)(nil),
 	}
 }
+
+type isConformanceResponse_Result interface {
+	isConformanceResponse_Result()
+}
+
+type ConformanceResponse_ParseError struct {
+	ParseError string `protobuf:"bytes,1,opt,name=parse_error,json=parseError,proto3,oneof"`
+}
+
+type ConformanceResponse_SerializeError struct {
+	SerializeError string `protobuf:"bytes,6,opt,name=serialize_error,json=serializeError,proto3,oneof"`
+}
+
+type ConformanceResponse_RuntimeError struct {
+	RuntimeError string `protobuf:"bytes,2,opt,name=runtime_error,json=runtimeError,proto3,oneof"`
+}
+
+type ConformanceResponse_ProtobufPayload struct {
+	ProtobufPayload []byte `protobuf:"bytes,3,opt,name=protobuf_payload,json=protobufPayload,proto3,oneof"`
+}
+
+type ConformanceResponse_JsonPayload struct {
+	JsonPayload string `protobuf:"bytes,4,opt,name=json_payload,json=jsonPayload,proto3,oneof"`
+}
+
+type ConformanceResponse_Skipped struct {
+	Skipped string `protobuf:"bytes,5,opt,name=skipped,proto3,oneof"`
+}
+
+type ConformanceResponse_JspbPayload struct {
+	JspbPayload string `protobuf:"bytes,7,opt,name=jspb_payload,json=jspbPayload,proto3,oneof"`
+}
+
+type ConformanceResponse_TextPayload struct {
+	TextPayload string `protobuf:"bytes,8,opt,name=text_payload,json=textPayload,proto3,oneof"`
+}
+
+func (*ConformanceResponse_ParseError) isConformanceResponse_Result() {}
+
+func (*ConformanceResponse_SerializeError) isConformanceResponse_Result() {}
+
+func (*ConformanceResponse_RuntimeError) isConformanceResponse_Result() {}
+
+func (*ConformanceResponse_ProtobufPayload) isConformanceResponse_Result() {}
+
+func (*ConformanceResponse_JsonPayload) isConformanceResponse_Result() {}
+
+func (*ConformanceResponse_Skipped) isConformanceResponse_Result() {}
+
+func (*ConformanceResponse_JspbPayload) isConformanceResponse_Result() {}
+
+func (*ConformanceResponse_TextPayload) isConformanceResponse_Result() {}
 
 // Encoding options for jspb format.
 type JspbEncodingConfig struct {

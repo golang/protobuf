@@ -241,22 +241,6 @@ func (x *M) GetF() float64 {
 	return Default_M_F
 }
 
-type isM_OneofField interface {
-	isM_OneofField()
-}
-
-type M_OneofInt32 struct {
-	OneofInt32 int32 `protobuf:"varint,2,opt,name=oneof_int32,json=oneofInt32,oneof"`
-}
-
-type M_OneofInt64 struct {
-	OneofInt64 int64 `protobuf:"varint,3,opt,name=oneof_int64,json=oneofInt64,oneof"`
-}
-
-func (*M_OneofInt32) isM_OneofField() {}
-
-func (*M_OneofInt64) isM_OneofField() {}
-
 func (m *M) GetOneofField() isM_OneofField {
 	if m != nil {
 		return m.OneofField
@@ -285,6 +269,22 @@ func (*M) XXX_OneofWrappers() []interface{} {
 		(*M_OneofInt64)(nil),
 	}
 }
+
+type isM_OneofField interface {
+	isM_OneofField()
+}
+
+type M_OneofInt32 struct {
+	OneofInt32 int32 `protobuf:"varint,2,opt,name=oneof_int32,json=oneofInt32,oneof"`
+}
+
+type M_OneofInt64 struct {
+	OneofInt64 int64 `protobuf:"varint,3,opt,name=oneof_int64,json=oneofInt64,oneof"`
+}
+
+func (*M_OneofInt32) isM_OneofField() {}
+
+func (*M_OneofInt64) isM_OneofField() {}
 
 type M_Submessage struct {
 	// Types that are valid to be assigned to SubmessageOneofField:
@@ -319,22 +319,6 @@ func (*M_Submessage) Descriptor() ([]byte, []int) {
 	return xxx_File_import_public_sub_a_proto_rawDescGZIP(), []int{0, 0}
 }
 
-type isM_Submessage_SubmessageOneofField interface {
-	isM_Submessage_SubmessageOneofField()
-}
-
-type M_Submessage_SubmessageOneofInt32 struct {
-	SubmessageOneofInt32 int32 `protobuf:"varint,1,opt,name=submessage_oneof_int32,json=submessageOneofInt32,oneof"`
-}
-
-type M_Submessage_SubmessageOneofInt64 struct {
-	SubmessageOneofInt64 int64 `protobuf:"varint,2,opt,name=submessage_oneof_int64,json=submessageOneofInt64,oneof"`
-}
-
-func (*M_Submessage_SubmessageOneofInt32) isM_Submessage_SubmessageOneofField() {}
-
-func (*M_Submessage_SubmessageOneofInt64) isM_Submessage_SubmessageOneofField() {}
-
 func (m *M_Submessage) GetSubmessageOneofField() isM_Submessage_SubmessageOneofField {
 	if m != nil {
 		return m.SubmessageOneofField
@@ -363,6 +347,22 @@ func (*M_Submessage) XXX_OneofWrappers() []interface{} {
 		(*M_Submessage_SubmessageOneofInt64)(nil),
 	}
 }
+
+type isM_Submessage_SubmessageOneofField interface {
+	isM_Submessage_SubmessageOneofField()
+}
+
+type M_Submessage_SubmessageOneofInt32 struct {
+	SubmessageOneofInt32 int32 `protobuf:"varint,1,opt,name=submessage_oneof_int32,json=submessageOneofInt32,oneof"`
+}
+
+type M_Submessage_SubmessageOneofInt64 struct {
+	SubmessageOneofInt64 int64 `protobuf:"varint,2,opt,name=submessage_oneof_int64,json=submessageOneofInt64,oneof"`
+}
+
+func (*M_Submessage_SubmessageOneofInt32) isM_Submessage_SubmessageOneofField() {}
+
+func (*M_Submessage_SubmessageOneofInt64) isM_Submessage_SubmessageOneofField() {}
 
 var xxx_File_import_public_sub_a_proto_extDescs = []protoiface.ExtensionDescV1{
 	{

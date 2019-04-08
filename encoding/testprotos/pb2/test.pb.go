@@ -759,16 +759,6 @@ func (x *IndirectRequired) GetStrToNested() map[string]*NestedWithRequired {
 	return nil
 }
 
-type isIndirectRequired_Union interface {
-	isIndirectRequired_Union()
-}
-
-type IndirectRequired_OneofNested struct {
-	OneofNested *NestedWithRequired `protobuf:"bytes,4,opt,name=oneof_nested,json=oneofNested,oneof"`
-}
-
-func (*IndirectRequired_OneofNested) isIndirectRequired_Union() {}
-
 func (m *IndirectRequired) GetUnion() isIndirectRequired_Union {
 	if m != nil {
 		return m.Union
@@ -789,6 +779,16 @@ func (*IndirectRequired) XXX_OneofWrappers() []interface{} {
 		(*IndirectRequired_OneofNested)(nil),
 	}
 }
+
+type isIndirectRequired_Union interface {
+	isIndirectRequired_Union()
+}
+
+type IndirectRequired_OneofNested struct {
+	OneofNested *NestedWithRequired `protobuf:"bytes,4,opt,name=oneof_nested,json=oneofNested,oneof"`
+}
+
+func (*IndirectRequired_OneofNested) isIndirectRequired_Union() {}
 
 type Extensions struct {
 	OptString              *string                     `protobuf:"bytes,1,opt,name=opt_string,json=optString" json:"opt_string,omitempty"`

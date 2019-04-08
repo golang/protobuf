@@ -476,10 +476,8 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 
 	// Getter methods.
 	for _, field := range message.Fields {
-		if field.OneofType != nil {
-			if field == field.OneofType.Fields[0] {
-				genOneofTypes(gen, g, f, message, field.OneofType)
-			}
+		if isFirstOneofField(field) {
+			genOneofGetter(gen, g, f, message, field.OneofType)
 		}
 		goType, pointer := fieldGoType(g, field)
 		defaultValue := fieldDefaultValue(g, message, field)
@@ -510,8 +508,14 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		g.P()
 	}
 
+	// XXX_OneofWrappers method.
 	if len(message.Oneofs) > 0 {
 		genOneofWrappers(gen, g, f, message)
+	}
+
+	// Oneof wrapper types.
+	for _, oneof := range message.Oneofs {
+		genOneofTypes(gen, g, f, message, oneof)
 	}
 }
 
@@ -739,11 +743,35 @@ func genOneofField(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo,
 	g.P(oneofFieldName(oneof), " ", oneofInterfaceName(oneof), " `protobuf_oneof:\"", oneof.Desc.Name(), "\"`")
 }
 
+// genOneofGetter generate a Get method for a oneof.
+func genOneofGetter(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message, oneof *protogen.Oneof) {
+	g.Annotate(message.GoIdent.GoName+".Get"+oneof.GoName, oneof.Location)
+	g.P("func (m *", message.GoIdent.GoName, ") Get", oneof.GoName, "() ", oneofInterfaceName(oneof), " {")
+	g.P("if m != nil {")
+	g.P("return m.", oneofFieldName(oneof))
+	g.P("}")
+	g.P("return nil")
+	g.P("}")
+	g.P()
+}
+
+// genOneofWrappers generates the XXX_OneofWrappers method for a message.
+func genOneofWrappers(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message) {
+	g.P("// XXX_OneofWrappers is for the internal use of the proto package.")
+	g.P("func (*", message.GoIdent.GoName, ") XXX_OneofWrappers() []interface{} {")
+	g.P("return []interface{}{")
+	for _, oneof := range message.Oneofs {
+		for _, field := range oneof.Fields {
+			g.P("(*", fieldOneofType(field), ")(nil),")
+		}
+	}
+	g.P("}")
+	g.P("}")
+	g.P()
+}
+
 // genOneofTypes generates the interface type used for a oneof field,
 // and the wrapper types that satisfy that interface.
-//
-// It also generates the getter method for the parent oneof field
-// (but not the member fields).
 func genOneofTypes(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message, oneof *protogen.Oneof) {
 	ifName := oneofInterfaceName(oneof)
 	g.P("type ", ifName, " interface {")
@@ -767,14 +795,11 @@ func genOneofTypes(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo,
 		g.P("func (*", fieldOneofType(field), ") ", ifName, "() {}")
 		g.P()
 	}
-	g.Annotate(message.GoIdent.GoName+".Get"+oneof.GoName, oneof.Location)
-	g.P("func (m *", message.GoIdent.GoName, ") Get", oneof.GoName, "() ", ifName, " {")
-	g.P("if m != nil {")
-	g.P("return m.", oneofFieldName(oneof))
-	g.P("}")
-	g.P("return nil")
-	g.P("}")
-	g.P()
+}
+
+// isFirstOneofField reports whether this is the first field in a oneof.
+func isFirstOneofField(field *protogen.Field) bool {
+	return field.OneofType != nil && field.OneofType.Fields[0] == field
 }
 
 // oneofFieldName returns the name of the struct field holding the oneof value.
@@ -789,21 +814,6 @@ func oneofFieldName(oneof *protogen.Oneof) string {
 // the oneof field value types.
 func oneofInterfaceName(oneof *protogen.Oneof) string {
 	return fmt.Sprintf("is%s_%s", oneof.ParentMessage.GoIdent.GoName, oneof.GoName)
-}
-
-// genOneofWrappers generates the XXX_OneofWrappers method for a message.
-func genOneofWrappers(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, message *protogen.Message) {
-	g.P("// XXX_OneofWrappers is for the internal use of the proto package.")
-	g.P("func (*", message.GoIdent.GoName, ") XXX_OneofWrappers() []interface{} {")
-	g.P("return []interface{}{")
-	for _, oneof := range message.Oneofs {
-		for _, field := range oneof.Fields {
-			g.P("(*", fieldOneofType(field), ")(nil),")
-		}
-	}
-	g.P("}")
-	g.P("}")
-	g.P()
 }
 
 // fieldOneofType returns the wrapper type used to represent a field in a oneof.

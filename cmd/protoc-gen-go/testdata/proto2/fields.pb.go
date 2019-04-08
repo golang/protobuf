@@ -794,124 +794,6 @@ func (x *FieldTestMessage) GetMapFixed64Enum() map[uint64]FieldTestMessage_Enum 
 	return nil
 }
 
-type isFieldTestMessage_OneofField interface {
-	isFieldTestMessage_OneofField()
-}
-
-type FieldTestMessage_OneofBool struct {
-	OneofBool bool `protobuf:"varint,601,opt,name=oneof_bool,json=oneofBool,oneof"`
-}
-
-type FieldTestMessage_OneofEnum struct {
-	OneofEnum FieldTestMessage_Enum `protobuf:"varint,602,opt,name=oneof_enum,json=oneofEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum,oneof"`
-}
-
-type FieldTestMessage_OneofInt32 struct {
-	OneofInt32 int32 `protobuf:"varint,603,opt,name=oneof_int32,json=oneofInt32,oneof"`
-}
-
-type FieldTestMessage_OneofSint32 struct {
-	OneofSint32 int32 `protobuf:"zigzag32,604,opt,name=oneof_sint32,json=oneofSint32,oneof"`
-}
-
-type FieldTestMessage_OneofUint32 struct {
-	OneofUint32 uint32 `protobuf:"varint,605,opt,name=oneof_uint32,json=oneofUint32,oneof"`
-}
-
-type FieldTestMessage_OneofInt64 struct {
-	OneofInt64 int64 `protobuf:"varint,606,opt,name=oneof_int64,json=oneofInt64,oneof"`
-}
-
-type FieldTestMessage_OneofSint64 struct {
-	OneofSint64 int64 `protobuf:"zigzag64,607,opt,name=oneof_sint64,json=oneofSint64,oneof"`
-}
-
-type FieldTestMessage_OneofUint64 struct {
-	OneofUint64 uint64 `protobuf:"varint,608,opt,name=oneof_uint64,json=oneofUint64,oneof"`
-}
-
-type FieldTestMessage_OneofSfixed32 struct {
-	OneofSfixed32 int32 `protobuf:"fixed32,609,opt,name=oneof_sfixed32,json=oneofSfixed32,oneof"`
-}
-
-type FieldTestMessage_OneofFixed32 struct {
-	OneofFixed32 uint32 `protobuf:"fixed32,610,opt,name=oneof_fixed32,json=oneofFixed32,oneof"`
-}
-
-type FieldTestMessage_OneofFloat struct {
-	OneofFloat float32 `protobuf:"fixed32,611,opt,name=oneof_float,json=oneofFloat,oneof"`
-}
-
-type FieldTestMessage_OneofSfixed64 struct {
-	OneofSfixed64 int64 `protobuf:"fixed64,612,opt,name=oneof_sfixed64,json=oneofSfixed64,oneof"`
-}
-
-type FieldTestMessage_OneofFixed64 struct {
-	OneofFixed64 uint64 `protobuf:"fixed64,613,opt,name=oneof_fixed64,json=oneofFixed64,oneof"`
-}
-
-type FieldTestMessage_OneofDouble struct {
-	OneofDouble float64 `protobuf:"fixed64,614,opt,name=oneof_double,json=oneofDouble,oneof"`
-}
-
-type FieldTestMessage_OneofString struct {
-	OneofString string `protobuf:"bytes,615,opt,name=oneof_string,json=oneofString,oneof"`
-}
-
-type FieldTestMessage_OneofBytes struct {
-	OneofBytes []byte `protobuf:"bytes,616,opt,name=oneof_bytes,json=oneofBytes,oneof"`
-}
-
-type FieldTestMessage_Oneof_Message struct {
-	Oneof_Message *FieldTestMessage_Message `protobuf:"bytes,617,opt,name=oneof_Message,json=oneofMessage,oneof"`
-}
-
-type FieldTestMessage_Oneofgroup struct {
-	Oneofgroup *FieldTestMessage_OneofGroup `protobuf:"group,618,opt,name=OneofGroup,json=oneofgroup,oneof"`
-}
-
-type FieldTestMessage_OneofLargestTag struct {
-	OneofLargestTag int32 `protobuf:"varint,536870911,opt,name=oneof_largest_tag,json=oneofLargestTag,oneof"`
-}
-
-func (*FieldTestMessage_OneofBool) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofEnum) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofInt32) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofSint32) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofUint32) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofInt64) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofSint64) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofUint64) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofSfixed32) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofFixed32) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofFloat) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofSfixed64) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofFixed64) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofDouble) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofString) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofBytes) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_Oneof_Message) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_Oneofgroup) isFieldTestMessage_OneofField() {}
-
-func (*FieldTestMessage_OneofLargestTag) isFieldTestMessage_OneofField() {}
-
 func (m *FieldTestMessage) GetOneofField() isFieldTestMessage_OneofField {
 	if m != nil {
 		return m.OneofField
@@ -1052,22 +934,6 @@ func (x *FieldTestMessage) GetOneofLargestTag() int32 {
 	return 0
 }
 
-type isFieldTestMessage_OneofTwo interface {
-	isFieldTestMessage_OneofTwo()
-}
-
-type FieldTestMessage_OneofTwo_1 struct {
-	OneofTwo_1 int32 `protobuf:"varint,700,opt,name=oneof_two_1,json=oneofTwo1,oneof"`
-}
-
-type FieldTestMessage_OneofTwo_2 struct {
-	OneofTwo_2 int64 `protobuf:"varint,701,opt,name=oneof_two_2,json=oneofTwo2,oneof"`
-}
-
-func (*FieldTestMessage_OneofTwo_1) isFieldTestMessage_OneofTwo() {}
-
-func (*FieldTestMessage_OneofTwo_2) isFieldTestMessage_OneofTwo() {}
-
 func (m *FieldTestMessage) GetOneofTwo() isFieldTestMessage_OneofTwo {
 	if m != nil {
 		return m.OneofTwo
@@ -1115,6 +981,140 @@ func (*FieldTestMessage) XXX_OneofWrappers() []interface{} {
 		(*FieldTestMessage_OneofTwo_2)(nil),
 	}
 }
+
+type isFieldTestMessage_OneofField interface {
+	isFieldTestMessage_OneofField()
+}
+
+type FieldTestMessage_OneofBool struct {
+	OneofBool bool `protobuf:"varint,601,opt,name=oneof_bool,json=oneofBool,oneof"`
+}
+
+type FieldTestMessage_OneofEnum struct {
+	OneofEnum FieldTestMessage_Enum `protobuf:"varint,602,opt,name=oneof_enum,json=oneofEnum,enum=goproto.protoc.proto2.FieldTestMessage_Enum,oneof"`
+}
+
+type FieldTestMessage_OneofInt32 struct {
+	OneofInt32 int32 `protobuf:"varint,603,opt,name=oneof_int32,json=oneofInt32,oneof"`
+}
+
+type FieldTestMessage_OneofSint32 struct {
+	OneofSint32 int32 `protobuf:"zigzag32,604,opt,name=oneof_sint32,json=oneofSint32,oneof"`
+}
+
+type FieldTestMessage_OneofUint32 struct {
+	OneofUint32 uint32 `protobuf:"varint,605,opt,name=oneof_uint32,json=oneofUint32,oneof"`
+}
+
+type FieldTestMessage_OneofInt64 struct {
+	OneofInt64 int64 `protobuf:"varint,606,opt,name=oneof_int64,json=oneofInt64,oneof"`
+}
+
+type FieldTestMessage_OneofSint64 struct {
+	OneofSint64 int64 `protobuf:"zigzag64,607,opt,name=oneof_sint64,json=oneofSint64,oneof"`
+}
+
+type FieldTestMessage_OneofUint64 struct {
+	OneofUint64 uint64 `protobuf:"varint,608,opt,name=oneof_uint64,json=oneofUint64,oneof"`
+}
+
+type FieldTestMessage_OneofSfixed32 struct {
+	OneofSfixed32 int32 `protobuf:"fixed32,609,opt,name=oneof_sfixed32,json=oneofSfixed32,oneof"`
+}
+
+type FieldTestMessage_OneofFixed32 struct {
+	OneofFixed32 uint32 `protobuf:"fixed32,610,opt,name=oneof_fixed32,json=oneofFixed32,oneof"`
+}
+
+type FieldTestMessage_OneofFloat struct {
+	OneofFloat float32 `protobuf:"fixed32,611,opt,name=oneof_float,json=oneofFloat,oneof"`
+}
+
+type FieldTestMessage_OneofSfixed64 struct {
+	OneofSfixed64 int64 `protobuf:"fixed64,612,opt,name=oneof_sfixed64,json=oneofSfixed64,oneof"`
+}
+
+type FieldTestMessage_OneofFixed64 struct {
+	OneofFixed64 uint64 `protobuf:"fixed64,613,opt,name=oneof_fixed64,json=oneofFixed64,oneof"`
+}
+
+type FieldTestMessage_OneofDouble struct {
+	OneofDouble float64 `protobuf:"fixed64,614,opt,name=oneof_double,json=oneofDouble,oneof"`
+}
+
+type FieldTestMessage_OneofString struct {
+	OneofString string `protobuf:"bytes,615,opt,name=oneof_string,json=oneofString,oneof"`
+}
+
+type FieldTestMessage_OneofBytes struct {
+	OneofBytes []byte `protobuf:"bytes,616,opt,name=oneof_bytes,json=oneofBytes,oneof"`
+}
+
+type FieldTestMessage_Oneof_Message struct {
+	Oneof_Message *FieldTestMessage_Message `protobuf:"bytes,617,opt,name=oneof_Message,json=oneofMessage,oneof"`
+}
+
+type FieldTestMessage_Oneofgroup struct {
+	Oneofgroup *FieldTestMessage_OneofGroup `protobuf:"group,618,opt,name=OneofGroup,json=oneofgroup,oneof"`
+}
+
+type FieldTestMessage_OneofLargestTag struct {
+	OneofLargestTag int32 `protobuf:"varint,536870911,opt,name=oneof_largest_tag,json=oneofLargestTag,oneof"`
+}
+
+func (*FieldTestMessage_OneofBool) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofEnum) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofInt32) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofSint32) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofUint32) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofInt64) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofSint64) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofUint64) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofSfixed32) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofFixed32) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofFloat) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofSfixed64) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofFixed64) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofDouble) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofString) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofBytes) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_Oneof_Message) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_Oneofgroup) isFieldTestMessage_OneofField() {}
+
+func (*FieldTestMessage_OneofLargestTag) isFieldTestMessage_OneofField() {}
+
+type isFieldTestMessage_OneofTwo interface {
+	isFieldTestMessage_OneofTwo()
+}
+
+type FieldTestMessage_OneofTwo_1 struct {
+	OneofTwo_1 int32 `protobuf:"varint,700,opt,name=oneof_two_1,json=oneofTwo1,oneof"`
+}
+
+type FieldTestMessage_OneofTwo_2 struct {
+	OneofTwo_2 int64 `protobuf:"varint,701,opt,name=oneof_two_2,json=oneofTwo2,oneof"`
+}
+
+func (*FieldTestMessage_OneofTwo_1) isFieldTestMessage_OneofTwo() {}
+
+func (*FieldTestMessage_OneofTwo_2) isFieldTestMessage_OneofTwo() {}
 
 type FieldTestMessage_OptionalGroup struct {
 	OptionalGroup        *string  `protobuf:"bytes,19,opt,name=optional_group,json=optionalGroup" json:"optional_group,omitempty"`

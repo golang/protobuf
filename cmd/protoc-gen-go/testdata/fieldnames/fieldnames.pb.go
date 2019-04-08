@@ -179,16 +179,6 @@ func (x *Message) GetName_() string {
 	return ""
 }
 
-type isMessage_OneofConflictA_ interface {
-	isMessage_OneofConflictA_()
-}
-
-type Message_OneofConflictA struct {
-	OneofConflictA string `protobuf:"bytes,40,opt,name=OneofConflictA,oneof"`
-}
-
-func (*Message_OneofConflictA) isMessage_OneofConflictA_() {}
-
 func (m *Message) GetOneofConflictA_() isMessage_OneofConflictA_ {
 	if m != nil {
 		return m.OneofConflictA_
@@ -202,22 +192,6 @@ func (x *Message) GetOneofConflictA() string {
 	}
 	return ""
 }
-
-type isMessage_OneofConflictB interface {
-	isMessage_OneofConflictB()
-}
-
-type Message_OneofNoConflict struct {
-	OneofNoConflict string `protobuf:"bytes,50,opt,name=oneof_no_conflict,json=oneofNoConflict,oneof"`
-}
-
-type Message_OneofConflictB_ struct {
-	OneofConflictB_ string `protobuf:"bytes,51,opt,name=OneofConflictB,oneof"`
-}
-
-func (*Message_OneofNoConflict) isMessage_OneofConflictB() {}
-
-func (*Message_OneofConflictB_) isMessage_OneofConflictB() {}
 
 func (m *Message) GetOneofConflictB() isMessage_OneofConflictB {
 	if m != nil {
@@ -239,16 +213,6 @@ func (x *Message) GetOneofConflictB_() string {
 	}
 	return ""
 }
-
-type isMessage_OneofConflictC interface {
-	isMessage_OneofConflictC()
-}
-
-type Message_OneofMessageConflict_ struct {
-	OneofMessageConflict string `protobuf:"bytes,60,opt,name=oneof_message_conflict,json=oneofMessageConflict,oneof"`
-}
-
-func (*Message_OneofMessageConflict_) isMessage_OneofConflictC() {}
 
 func (m *Message) GetOneofConflictC() isMessage_OneofConflictC {
 	if m != nil {
@@ -273,6 +237,42 @@ func (*Message) XXX_OneofWrappers() []interface{} {
 		(*Message_OneofMessageConflict_)(nil),
 	}
 }
+
+type isMessage_OneofConflictA_ interface {
+	isMessage_OneofConflictA_()
+}
+
+type Message_OneofConflictA struct {
+	OneofConflictA string `protobuf:"bytes,40,opt,name=OneofConflictA,oneof"`
+}
+
+func (*Message_OneofConflictA) isMessage_OneofConflictA_() {}
+
+type isMessage_OneofConflictB interface {
+	isMessage_OneofConflictB()
+}
+
+type Message_OneofNoConflict struct {
+	OneofNoConflict string `protobuf:"bytes,50,opt,name=oneof_no_conflict,json=oneofNoConflict,oneof"`
+}
+
+type Message_OneofConflictB_ struct {
+	OneofConflictB_ string `protobuf:"bytes,51,opt,name=OneofConflictB,oneof"`
+}
+
+func (*Message_OneofNoConflict) isMessage_OneofConflictB() {}
+
+func (*Message_OneofConflictB_) isMessage_OneofConflictB() {}
+
+type isMessage_OneofConflictC interface {
+	isMessage_OneofConflictC()
+}
+
+type Message_OneofMessageConflict_ struct {
+	OneofMessageConflict string `protobuf:"bytes,60,opt,name=oneof_message_conflict,json=oneofMessageConflict,oneof"`
+}
+
+func (*Message_OneofMessageConflict_) isMessage_OneofConflictC() {}
 
 type Message_OneofMessageConflict struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`

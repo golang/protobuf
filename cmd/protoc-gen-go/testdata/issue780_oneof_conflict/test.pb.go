@@ -45,16 +45,6 @@ func (*Foo) Descriptor() ([]byte, []int) {
 	return xxx_File_issue780_oneof_conflict_test_proto_rawDescGZIP(), []int{0}
 }
 
-type isFoo_Bar interface {
-	isFoo_Bar()
-}
-
-type Foo_GetBar struct {
-	GetBar string `protobuf:"bytes,1,opt,name=get_bar,json=getBar,oneof"`
-}
-
-func (*Foo_GetBar) isFoo_Bar() {}
-
 func (m *Foo) GetBar() isFoo_Bar {
 	if m != nil {
 		return m.Bar
@@ -75,6 +65,16 @@ func (*Foo) XXX_OneofWrappers() []interface{} {
 		(*Foo_GetBar)(nil),
 	}
 }
+
+type isFoo_Bar interface {
+	isFoo_Bar()
+}
+
+type Foo_GetBar struct {
+	GetBar string `protobuf:"bytes,1,opt,name=get_bar,json=getBar,oneof"`
+}
+
+func (*Foo_GetBar) isFoo_Bar() {}
 
 var File_issue780_oneof_conflict_test_proto protoreflect.FileDescriptor
 

@@ -412,28 +412,6 @@ func (*Oneofs) Descriptor() ([]byte, []int) {
 	return xxx_File_pb3_test_proto_rawDescGZIP(), []int{4}
 }
 
-type isOneofs_Union interface {
-	isOneofs_Union()
-}
-
-type Oneofs_OneofEnum struct {
-	OneofEnum Enum `protobuf:"varint,1,opt,name=oneof_enum,json=oneofEnum,proto3,enum=pb3.Enum,oneof"`
-}
-
-type Oneofs_OneofString struct {
-	OneofString string `protobuf:"bytes,2,opt,name=oneof_string,json=oneofString,proto3,oneof"`
-}
-
-type Oneofs_OneofNested struct {
-	OneofNested *Nested `protobuf:"bytes,3,opt,name=oneof_nested,json=oneofNested,proto3,oneof"`
-}
-
-func (*Oneofs_OneofEnum) isOneofs_Union() {}
-
-func (*Oneofs_OneofString) isOneofs_Union() {}
-
-func (*Oneofs_OneofNested) isOneofs_Union() {}
-
 func (m *Oneofs) GetUnion() isOneofs_Union {
 	if m != nil {
 		return m.Union
@@ -470,6 +448,28 @@ func (*Oneofs) XXX_OneofWrappers() []interface{} {
 		(*Oneofs_OneofNested)(nil),
 	}
 }
+
+type isOneofs_Union interface {
+	isOneofs_Union()
+}
+
+type Oneofs_OneofEnum struct {
+	OneofEnum Enum `protobuf:"varint,1,opt,name=oneof_enum,json=oneofEnum,proto3,enum=pb3.Enum,oneof"`
+}
+
+type Oneofs_OneofString struct {
+	OneofString string `protobuf:"bytes,2,opt,name=oneof_string,json=oneofString,proto3,oneof"`
+}
+
+type Oneofs_OneofNested struct {
+	OneofNested *Nested `protobuf:"bytes,3,opt,name=oneof_nested,json=oneofNested,proto3,oneof"`
+}
+
+func (*Oneofs_OneofEnum) isOneofs_Union() {}
+
+func (*Oneofs_OneofString) isOneofs_Union() {}
+
+func (*Oneofs_OneofNested) isOneofs_Union() {}
 
 // Message contains map fields.
 type Maps struct {

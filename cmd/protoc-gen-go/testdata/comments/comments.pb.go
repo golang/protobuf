@@ -60,16 +60,6 @@ func (x *Message1) GetField1A() string {
 	return ""
 }
 
-type isMessage1_Oneof1A interface {
-	isMessage1_Oneof1A()
-}
-
-type Message1_Oneof1AField1 struct {
-	Oneof1AField1 string `protobuf:"bytes,2,opt,name=Oneof1AField1,oneof"`
-}
-
-func (*Message1_Oneof1AField1) isMessage1_Oneof1A() {}
-
 func (m *Message1) GetOneof1A() isMessage1_Oneof1A {
 	if m != nil {
 		return m.Oneof1A
@@ -90,6 +80,16 @@ func (*Message1) XXX_OneofWrappers() []interface{} {
 		(*Message1_Oneof1AField1)(nil),
 	}
 }
+
+type isMessage1_Oneof1A interface {
+	isMessage1_Oneof1A()
+}
+
+type Message1_Oneof1AField1 struct {
+	Oneof1AField1 string `protobuf:"bytes,2,opt,name=Oneof1AField1,oneof"`
+}
+
+func (*Message1_Oneof1AField1) isMessage1_Oneof1A() {}
 
 // COMMENT: Message2
 type Message2 struct {

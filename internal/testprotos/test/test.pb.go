@@ -900,64 +900,6 @@ func (x *TestAllTypes) GetDefaultForeignEnum() ForeignEnum {
 	return Default_TestAllTypes_DefaultForeignEnum
 }
 
-type isTestAllTypes_OneofField interface {
-	isTestAllTypes_OneofField()
-}
-
-type TestAllTypes_OneofUint32 struct {
-	OneofUint32 uint32 `protobuf:"varint,111,opt,name=oneof_uint32,json=oneofUint32,oneof"`
-}
-
-type TestAllTypes_OneofNestedMessage struct {
-	OneofNestedMessage *TestAllTypes_NestedMessage `protobuf:"bytes,112,opt,name=oneof_nested_message,json=oneofNestedMessage,oneof"`
-}
-
-type TestAllTypes_OneofString struct {
-	OneofString string `protobuf:"bytes,113,opt,name=oneof_string,json=oneofString,oneof"`
-}
-
-type TestAllTypes_OneofBytes struct {
-	OneofBytes []byte `protobuf:"bytes,114,opt,name=oneof_bytes,json=oneofBytes,oneof"`
-}
-
-type TestAllTypes_OneofBool struct {
-	OneofBool bool `protobuf:"varint,115,opt,name=oneof_bool,json=oneofBool,oneof"`
-}
-
-type TestAllTypes_OneofUint64 struct {
-	OneofUint64 uint64 `protobuf:"varint,116,opt,name=oneof_uint64,json=oneofUint64,oneof"`
-}
-
-type TestAllTypes_OneofFloat struct {
-	OneofFloat float32 `protobuf:"fixed32,117,opt,name=oneof_float,json=oneofFloat,oneof"`
-}
-
-type TestAllTypes_OneofDouble struct {
-	OneofDouble float64 `protobuf:"fixed64,118,opt,name=oneof_double,json=oneofDouble,oneof"`
-}
-
-type TestAllTypes_OneofEnum struct {
-	OneofEnum TestAllTypes_NestedEnum `protobuf:"varint,119,opt,name=oneof_enum,json=oneofEnum,enum=goproto.proto.test.TestAllTypes_NestedEnum,oneof"`
-}
-
-func (*TestAllTypes_OneofUint32) isTestAllTypes_OneofField() {}
-
-func (*TestAllTypes_OneofNestedMessage) isTestAllTypes_OneofField() {}
-
-func (*TestAllTypes_OneofString) isTestAllTypes_OneofField() {}
-
-func (*TestAllTypes_OneofBytes) isTestAllTypes_OneofField() {}
-
-func (*TestAllTypes_OneofBool) isTestAllTypes_OneofField() {}
-
-func (*TestAllTypes_OneofUint64) isTestAllTypes_OneofField() {}
-
-func (*TestAllTypes_OneofFloat) isTestAllTypes_OneofField() {}
-
-func (*TestAllTypes_OneofDouble) isTestAllTypes_OneofField() {}
-
-func (*TestAllTypes_OneofEnum) isTestAllTypes_OneofField() {}
-
 func (m *TestAllTypes) GetOneofField() isTestAllTypes_OneofField {
 	if m != nil {
 		return m.OneofField
@@ -1043,6 +985,64 @@ func (*TestAllTypes) XXX_OneofWrappers() []interface{} {
 	}
 }
 
+type isTestAllTypes_OneofField interface {
+	isTestAllTypes_OneofField()
+}
+
+type TestAllTypes_OneofUint32 struct {
+	OneofUint32 uint32 `protobuf:"varint,111,opt,name=oneof_uint32,json=oneofUint32,oneof"`
+}
+
+type TestAllTypes_OneofNestedMessage struct {
+	OneofNestedMessage *TestAllTypes_NestedMessage `protobuf:"bytes,112,opt,name=oneof_nested_message,json=oneofNestedMessage,oneof"`
+}
+
+type TestAllTypes_OneofString struct {
+	OneofString string `protobuf:"bytes,113,opt,name=oneof_string,json=oneofString,oneof"`
+}
+
+type TestAllTypes_OneofBytes struct {
+	OneofBytes []byte `protobuf:"bytes,114,opt,name=oneof_bytes,json=oneofBytes,oneof"`
+}
+
+type TestAllTypes_OneofBool struct {
+	OneofBool bool `protobuf:"varint,115,opt,name=oneof_bool,json=oneofBool,oneof"`
+}
+
+type TestAllTypes_OneofUint64 struct {
+	OneofUint64 uint64 `protobuf:"varint,116,opt,name=oneof_uint64,json=oneofUint64,oneof"`
+}
+
+type TestAllTypes_OneofFloat struct {
+	OneofFloat float32 `protobuf:"fixed32,117,opt,name=oneof_float,json=oneofFloat,oneof"`
+}
+
+type TestAllTypes_OneofDouble struct {
+	OneofDouble float64 `protobuf:"fixed64,118,opt,name=oneof_double,json=oneofDouble,oneof"`
+}
+
+type TestAllTypes_OneofEnum struct {
+	OneofEnum TestAllTypes_NestedEnum `protobuf:"varint,119,opt,name=oneof_enum,json=oneofEnum,enum=goproto.proto.test.TestAllTypes_NestedEnum,oneof"`
+}
+
+func (*TestAllTypes_OneofUint32) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofNestedMessage) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofString) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofBytes) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofBool) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofUint64) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofFloat) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofDouble) isTestAllTypes_OneofField() {}
+
+func (*TestAllTypes_OneofEnum) isTestAllTypes_OneofField() {}
+
 // Deprecated: Do not use.
 type TestDeprecatedMessage struct {
 	DeprecatedInt32 *int32 `protobuf:"varint,1,opt,name=deprecated_int32,json=deprecatedInt32" json:"deprecated_int32,omitempty"` // Deprecated: Do not use.
@@ -1085,16 +1085,6 @@ func (x *TestDeprecatedMessage) GetDeprecatedInt32() int32 {
 	return 0
 }
 
-type isTestDeprecatedMessage_DeprecatedOneof interface {
-	isTestDeprecatedMessage_DeprecatedOneof()
-}
-
-type TestDeprecatedMessage_DeprecatedOneofField struct {
-	DeprecatedOneofField int32 `protobuf:"varint,2,opt,name=deprecated_oneof_field,json=deprecatedOneofField,oneof"`
-}
-
-func (*TestDeprecatedMessage_DeprecatedOneofField) isTestDeprecatedMessage_DeprecatedOneof() {}
-
 func (m *TestDeprecatedMessage) GetDeprecatedOneof() isTestDeprecatedMessage_DeprecatedOneof {
 	if m != nil {
 		return m.DeprecatedOneof
@@ -1116,6 +1106,16 @@ func (*TestDeprecatedMessage) XXX_OneofWrappers() []interface{} {
 		(*TestDeprecatedMessage_DeprecatedOneofField)(nil),
 	}
 }
+
+type isTestDeprecatedMessage_DeprecatedOneof interface {
+	isTestDeprecatedMessage_DeprecatedOneof()
+}
+
+type TestDeprecatedMessage_DeprecatedOneofField struct {
+	DeprecatedOneofField int32 `protobuf:"varint,2,opt,name=deprecated_oneof_field,json=deprecatedOneofField,oneof"`
+}
+
+func (*TestDeprecatedMessage_DeprecatedOneofField) isTestDeprecatedMessage_DeprecatedOneof() {}
 
 type ForeignMessage struct {
 	C                    *int32   `protobuf:"varint,1,opt,name=c" json:"c,omitempty"`
