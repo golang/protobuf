@@ -47,6 +47,26 @@ type MarshalOptions struct {
 	// detail and subject to change.
 	Deterministic bool
 
+	// UseCachedSize indicates that the result of a previous Size call
+	// may be reused.
+	//
+	// Setting this option asserts that:
+	//
+	// 1. Size has previously been called on this message with identical
+	// options (except for UseCachedSize itself).
+	//
+	// 2. The message and all its submessages have not changed in any
+	// way since the Size call.
+	//
+	// If either of these invariants is broken, the results are undefined
+	// but may include panics or invalid output.
+	//
+	// Implementations MAY take this option into account to provide
+	// better performance, but there is no guarantee that they will do so.
+	// There is absolutely no guarantee that Size followed by Marshal with
+	// UseCachedSize set will perform equivalently to Marshal alone.
+	UseCachedSize bool
+
 	pragma.NoUnkeyedLiterals
 }
 
@@ -93,6 +113,7 @@ func (o MarshalOptions) marshalMessageFast(b []byte, m Message) ([]byte, error) 
 			copy(x, b)
 			b = x
 		}
+		o.UseCachedSize = true
 	}
 	return methods.MarshalAppend(b, m, protoiface.MarshalOptions(o))
 }

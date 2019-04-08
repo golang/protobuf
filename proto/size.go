@@ -13,6 +13,11 @@ import (
 
 // Size returns the size in bytes of the wire-format encoding of m.
 func Size(m Message) int {
+	return MarshalOptions{}.Size(m)
+}
+
+// Size returns the size in bytes of the wire-format encoding of m.
+func (o MarshalOptions) Size(m Message) int {
 	if size, err := sizeMessageFast(m); err == nil {
 		return size
 	}

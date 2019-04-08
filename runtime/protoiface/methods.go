@@ -27,10 +27,6 @@ type Methods struct {
 	// Size returns the size in bytes of the wire-format encoding of m.
 	Size func(m protoreflect.ProtoMessage) int
 
-	// CachedSize returns the result of the last call to Size.
-	// It must not be called if the message has been changed since the last call to Size.
-	CachedSize func(m protoreflect.ProtoMessage) int
-
 	// Unmarshal parses the wire-format message in b and places the result in m.
 	// It does not reset m or perform required field checks.
 	Unmarshal func(b []byte, m protoreflect.ProtoMessage, opts UnmarshalOptions) error
@@ -55,6 +51,7 @@ const (
 type MarshalOptions struct {
 	AllowPartial  bool
 	Deterministic bool
+	UseCachedSize bool
 
 	pragma.NoUnkeyedLiterals
 }
