@@ -10,6 +10,7 @@ import (
 
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/encoding/textpb"
+	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/internal/legacy"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
@@ -182,6 +183,14 @@ s_string: "谷歌"
 			SBytes:    []byte("\xe8\xb0\xb7\xe6\xad\x8c"),
 			SString:   "谷歌",
 		},
+	}, {
+		desc:         "string with invalid UTF-8",
+		inputMessage: &pb3.Scalars{},
+		inputText:    `s_string: "abc\xff"`,
+		wantMessage: &pb3.Scalars{
+			SString: "abc\xff",
+		},
+		wantErr: true,
 	}, {
 		desc:         "proto2 message contains unknown field",
 		inputMessage: &pb2.Scalars{},
@@ -474,6 +483,19 @@ s_nested: {
 			},
 		},
 	}, {
+		desc:         "proto3 nested message contains invalid UTF-8",
+		inputMessage: &pb3.Nests{},
+		inputText: `s_nested: {
+  s_string: "abc\xff"
+}
+`,
+		wantMessage: &pb3.Nests{
+			SNested: &pb3.Nested{
+				SString: "abc\xff",
+			},
+		},
+		wantErr: true,
+	}, {
 		desc:         "oneof set to empty string",
 		inputMessage: &pb3.Oneofs{},
 		inputText:    "oneof_string: ''",
@@ -560,6 +582,14 @@ rpt_string: "b"
 			RptString: []string{"a", "x", "y", "b"},
 			RptBool:   []bool{true, false, true},
 		},
+	}, {
+		desc:         "repeated contains invalid UTF-8",
+		inputMessage: &pb2.Repeats{},
+		inputText:    `rpt_string: "abc\xff"`,
+		wantMessage: &pb2.Repeats{
+			RptString: []string{"abc\xff"},
+		},
+		wantErr: true,
 	}, {
 		desc:         "repeated enums",
 		inputMessage: &pb2.Enums{},
@@ -871,6 +901,34 @@ int32_to_str: {}
 			},
 		},
 	}, {
+		desc:         "map field value contains invalid UTF-8",
+		inputMessage: &pb3.Maps{},
+		inputText: `int32_to_str: {
+  key: 101
+  value: "abc\xff"
+}
+`,
+		wantMessage: &pb3.Maps{
+			Int32ToStr: map[int32]string{
+				101: "abc\xff",
+			},
+		},
+		wantErr: true,
+	}, {
+		desc:         "map field key contains invalid UTF-8",
+		inputMessage: &pb3.Maps{},
+		inputText: `str_to_nested: {
+  key: "abc\xff"
+  value: {}
+}
+`,
+		wantMessage: &pb3.Maps{
+			StrToNested: map[string]*pb3.Nested{
+				"abc\xff": {},
+			},
+		},
+		wantErr: true,
+	}, {
 		desc:         "map contains unknown field",
 		inputMessage: &pb3.Maps{},
 		inputText: `
@@ -1165,6 +1223,16 @@ opt_int32: 42
 			return m
 		}(),
 	}, {
+		desc:         "extension field contains invalid UTF-8",
+		inputMessage: &pb2.Extensions{},
+		inputText:    `[pb2.opt_ext_string]: "abc\xff"`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{}
+			setExtension(m, pb2.E_OptExtString, "abc\xff")
+			return m
+		}(),
+		wantErr: true,
+	}, {
 		desc:         "extensions of repeated fields",
 		inputMessage: &pb2.Extensions{},
 		inputText: `[pb2.rpt_ext_enum]: TEN
@@ -1419,6 +1487,32 @@ value: "some bytes"
 		}(),
 		wantErr: true,
 	}, {
+		desc: "Any with invalid UTF-8",
+		umo: textpb.UnmarshalOptions{
+			Resolver: preg.NewTypes((&pb3.Nested{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `
+[pb3.Nested]: {
+  s_string: "abc\xff"
+}
+`,
+		wantMessage: func() proto.Message {
+			m := &pb3.Nested{
+				SString: "abc\xff",
+			}
+			var nerr errors.NonFatal
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if !nerr.Merge(err) {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				Value:   b,
+			}
+		}(),
+		wantErr: true,
+	}, {
 		desc:         "Any expanded with unregistered type",
 		umo:          textpb.UnmarshalOptions{Resolver: preg.NewTypes()},
 		inputMessage: &knownpb.Any{},
@@ -1459,7 +1553,6 @@ type_url: "pb2.Nested"
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
-			t.Parallel()
 			err := tt.umo.Unmarshal(tt.inputMessage, []byte(tt.inputText))
 			if err != nil && !tt.wantErr {
 				t.Errorf("Unmarshal() returned error: %v\n\n", err)

@@ -7,6 +7,7 @@ package textpb
 import (
 	"fmt"
 	"sort"
+	"unicode/utf8"
 
 	"github.com/golang/protobuf/v2/internal/encoding/text"
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
@@ -174,8 +175,17 @@ func (o MarshalOptions) marshalSingular(val pref.Value, fd pref.FieldDescriptor)
 		pref.Sfixed32Kind, pref.Fixed32Kind,
 		pref.Sfixed64Kind, pref.Fixed64Kind,
 		pref.FloatKind, pref.DoubleKind,
-		pref.StringKind, pref.BytesKind:
+		pref.BytesKind:
 		return text.ValueOf(val.Interface()), nil
+
+	case pref.StringKind:
+		s := val.String()
+		if utf8.ValidString(s) {
+			return text.ValueOf(s), nil
+		}
+		var nerr errors.NonFatal
+		nerr.AppendInvalidUTF8(string(fd.FullName()))
+		return text.ValueOf(s), nerr.E
 
 	case pref.EnumKind:
 		num := val.Enum()

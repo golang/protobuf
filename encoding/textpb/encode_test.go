@@ -170,6 +170,14 @@ opt_bytes: "谷歌"
 opt_string: "谷歌"
 `,
 	}, {
+		desc: "string with invalid UTF-8",
+		input: &pb3.Scalars{
+			SString: "abc\xff",
+		},
+		want: `s_string: "abc\xff"
+`,
+		wantErr: true,
+	}, {
 		desc: "float nan",
 		input: &pb3.Scalars{
 			SFloat: float32(math.NaN()),
@@ -364,6 +372,18 @@ OptGroup: {}
 }
 `,
 	}, {
+		desc: "proto3 nested message contains invalid UTF-8",
+		input: &pb3.Nests{
+			SNested: &pb3.Nested{
+				SString: "abc\xff",
+			},
+		},
+		want: `s_nested: {
+  s_string: "abc\xff"
+}
+`,
+		wantErr: true,
+	}, {
 		desc:  "oneof not set",
 		input: &pb3.Oneofs{},
 		want:  "\n",
@@ -472,6 +492,14 @@ rpt_string: "世界"
 rpt_bytes: "hello"
 rpt_bytes: "世界"
 `,
+	}, {
+		desc: "repeated contains invalid UTF-8",
+		input: &pb2.Repeats{
+			RptString: []string{"abc\xff"},
+		},
+		want: `rpt_string: "abc\xff"
+`,
+		wantErr: true,
 	}, {
 		desc: "repeated enums",
 		input: &pb2.Enums{
@@ -670,6 +698,32 @@ str_to_oneofs: {
   }
 }
 `,
+	}, {
+		desc: "map field value contains invalid UTF-8",
+		input: &pb3.Maps{
+			Int32ToStr: map[int32]string{
+				101: "abc\xff",
+			},
+		},
+		want: `int32_to_str: {
+  key: 101
+  value: "abc\xff"
+}
+`,
+		wantErr: true,
+	}, {
+		desc: "map field key contains invalid UTF-8",
+		input: &pb3.Maps{
+			StrToNested: map[string]*pb3.Nested{
+				"abc\xff": {},
+			},
+		},
+		want: `str_to_nested: {
+  key: "abc\xff"
+  value: {}
+}
+`,
+		wantErr: true,
 	}, {
 		desc: "map field contains nil value",
 		input: &pb3.Maps{
@@ -918,6 +972,16 @@ opt_int32: 42
 }
 [pb2.opt_ext_string]: "extension field"
 `,
+	}, {
+		desc: "extension field contains invalid UTF-8",
+		input: func() proto.Message {
+			m := &pb2.Extensions{}
+			setExtension(m, pb2.E_OptExtString, "abc\xff")
+			return m
+		}(),
+		want: `[pb2.opt_ext_string]: "abc\xff"
+`,
+		wantErr: true,
 	}, {
 		desc: "extension partial returns error",
 		input: func() proto.Message {
@@ -1174,6 +1238,29 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 		}(),
 		want: `[pb2.PartialRequired]: {
   opt_string: "embedded inside Any"
+}
+`,
+		wantErr: true,
+	}, {
+		desc: "Any with invalid UTF-8",
+		mo: textpb.MarshalOptions{
+			Resolver: preg.NewTypes((&pb3.Nested{}).ProtoReflect().Type()),
+		},
+		input: func() proto.Message {
+			m := &pb3.Nested{
+				SString: "abc\xff",
+			}
+			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
+			if err != nil {
+				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
+			}
+			return &knownpb.Any{
+				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				Value:   b,
+			}
+		}(),
+		want: `[pb3.Nested]: {
+  s_string: "abc\xff"
 }
 `,
 		wantErr: true,

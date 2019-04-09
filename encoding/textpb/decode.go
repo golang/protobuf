@@ -7,6 +7,7 @@ package textpb
 import (
 	"fmt"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/golang/protobuf/v2/internal/encoding/text"
 	"github.com/golang/protobuf/v2/internal/errors"
@@ -293,7 +294,13 @@ func unmarshalScalar(input text.Value, fd pref.FieldDescriptor) (pref.Value, err
 		}
 	case pref.StringKind:
 		if input.Type() == text.String {
-			return pref.ValueOf(string(input.String())), nil
+			s := input.String()
+			if utf8.ValidString(s) {
+				return pref.ValueOf(s), nil
+			}
+			var nerr errors.NonFatal
+			nerr.AppendInvalidUTF8(string(fd.FullName()))
+			return pref.ValueOf(s), nerr.E
 		}
 	case pref.BytesKind:
 		if input.Type() == text.String {
@@ -421,11 +428,12 @@ func unmarshalMapKey(input text.Value, fd pref.FieldDescriptor) (pref.MapKey, er
 		return fd.Default().MapKey(), nil
 	}
 
+	var nerr errors.NonFatal
 	val, err := unmarshalScalar(input, fd)
-	if err != nil {
+	if !nerr.Merge(err) {
 		return pref.MapKey{}, errors.New("%v contains invalid key: %v", fd.FullName(), input)
 	}
-	return val.MapKey(), nil
+	return val.MapKey(), nerr.E
 }
 
 // unmarshalMapMessageValue unmarshals given message-type text.Value into a protoreflect.Map for
@@ -447,18 +455,19 @@ func (o UnmarshalOptions) unmarshalMapMessageValue(input text.Value, pkey pref.M
 // unmarshalMapScalarValue unmarshals given scalar-type text.Value into a protoreflect.Map
 // for the given MapKey.
 func unmarshalMapScalarValue(input text.Value, pkey pref.MapKey, fd pref.FieldDescriptor, mmap pref.Map) error {
+	var nerr errors.NonFatal
 	var val pref.Value
 	if input.Type() == 0 {
 		val = fd.Default()
 	} else {
 		var err error
 		val, err = unmarshalScalar(input, fd)
-		if err != nil {
+		if !nerr.Merge(err) {
 			return err
 		}
 	}
 	mmap.Set(pkey, val)
-	return nil
+	return nerr.E
 }
 
 // isExpandedAny returns true if given [][2]text.Value may be an expanded Any that contains only one
