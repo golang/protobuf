@@ -27,12 +27,13 @@ type fieldInfo struct {
 	newMessage func() pref.Message
 
 	// These fields are used for fast-path functions.
-	funcs     pointerCoderFuncs // fast-path per-field functions
-	num       pref.FieldNumber  // field number
-	offset    offset            // struct field offset
-	wiretag   uint64            // field tag (number + wire type)
-	tagsize   int               // size of the varint-encoded tag
-	isPointer bool              // true if IsNil may be called on the struct field
+	funcs      pointerCoderFuncs // fast-path per-field functions
+	num        pref.FieldNumber  // field number
+	offset     offset            // struct field offset
+	wiretag    uint64            // field tag (number + wire type)
+	tagsize    int               // size of the varint-encoded tag
+	isPointer  bool              // true if IsNil may be called on the struct field
+	isRequired bool              // true if field is required
 }
 
 func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot reflect.Type) fieldInfo {
@@ -308,11 +309,12 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 				rv.Set(emptyBytes)
 			}
 		},
-		funcs:     funcs,
-		offset:    fieldOffset,
-		isPointer: nullable,
-		wiretag:   wiretag,
-		tagsize:   wire.SizeVarint(wiretag),
+		funcs:      funcs,
+		offset:     fieldOffset,
+		isPointer:  nullable,
+		isRequired: fd.Cardinality() == pref.Required,
+		wiretag:    wiretag,
+		tagsize:    wire.SizeVarint(wiretag),
 	}
 }
 
@@ -365,6 +367,7 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 		funcs:      fieldCoder(fd, ft),
 		offset:     fieldOffset,
 		isPointer:  true,
+		isRequired: fd.Cardinality() == pref.Required,
 		wiretag:    wiretag,
 		tagsize:    wire.SizeVarint(wiretag),
 	}

@@ -22,7 +22,10 @@ func appendEnum(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byt
 	return b, nil
 }
 
-var coderEnum = pointerCoderFuncs{sizeEnum, appendEnum}
+var coderEnum = pointerCoderFuncs{
+	size:    sizeEnum,
+	marshal: appendEnum,
+}
 
 func sizeEnumNoZero(p pointer, tagsize int, opts marshalOptions) (size int) {
 	if p.v.Elem().Int() == 0 {
@@ -38,7 +41,10 @@ func appendEnumNoZero(b []byte, p pointer, wiretag uint64, opts marshalOptions) 
 	return appendEnum(b, p, wiretag, opts)
 }
 
-var coderEnumNoZero = pointerCoderFuncs{sizeEnumNoZero, appendEnumNoZero}
+var coderEnumNoZero = pointerCoderFuncs{
+	size:    sizeEnumNoZero,
+	marshal: appendEnumNoZero,
+}
 
 func sizeEnumPtr(p pointer, tagsize int, opts marshalOptions) (size int) {
 	return sizeEnum(pointer{p.v.Elem()}, tagsize, opts)
@@ -48,7 +54,10 @@ func appendEnumPtr(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]
 	return appendEnum(b, pointer{p.v.Elem()}, wiretag, opts)
 }
 
-var coderEnumPtr = pointerCoderFuncs{sizeEnumPtr, appendEnumPtr}
+var coderEnumPtr = pointerCoderFuncs{
+	size:    sizeEnumPtr,
+	marshal: appendEnumPtr,
+}
 
 func sizeEnumSlice(p pointer, tagsize int, opts marshalOptions) (size int) {
 	return sizeEnumSliceReflect(p.v.Elem(), tagsize, opts)
@@ -58,7 +67,10 @@ func appendEnumSlice(b []byte, p pointer, wiretag uint64, opts marshalOptions) (
 	return appendEnumSliceReflect(b, p.v.Elem(), wiretag, opts)
 }
 
-var coderEnumSlice = pointerCoderFuncs{sizeEnumSlice, appendEnumSlice}
+var coderEnumSlice = pointerCoderFuncs{
+	size:    sizeEnumSlice,
+	marshal: appendEnumSlice,
+}
 
 func sizeEnumPackedSlice(p pointer, tagsize int, _ marshalOptions) (size int) {
 	s := p.v.Elem()
@@ -91,4 +103,7 @@ func appendEnumPackedSlice(b []byte, p pointer, wiretag uint64, opts marshalOpti
 	return b, nil
 }
 
-var coderEnumPackedSlice = pointerCoderFuncs{sizeEnumPackedSlice, appendEnumPackedSlice}
+var coderEnumPackedSlice = pointerCoderFuncs{
+	size:    sizeEnumPackedSlice,
+	marshal: appendEnumPackedSlice,
+}

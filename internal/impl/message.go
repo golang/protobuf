@@ -47,6 +47,7 @@ type MessageInfo struct {
 
 	methods piface.Methods
 
+	needsInitCheck        bool
 	sizecacheOffset       offset
 	extensionOffset       offset
 	unknownOffset         offset
@@ -101,6 +102,7 @@ func (mi *MessageInfo) initOnce() {
 	}
 
 	si := mi.makeStructInfo(t.Elem())
+	mi.needsInitCheck = needsInitCheck(mi.PBType)
 	mi.makeKnownFieldsFunc(si)
 	mi.makeUnknownFieldsFunc(t.Elem())
 	mi.makeExtensionFieldsFunc(t.Elem())
@@ -139,6 +141,7 @@ func (mi *MessageInfo) makeMethods(t reflect.Type) {
 	mi.methods.Flags = piface.MethodFlagDeterministicMarshal
 	mi.methods.MarshalAppend = mi.marshalAppend
 	mi.methods.Size = mi.size
+	mi.methods.IsInitialized = mi.isInitialized
 }
 
 type structInfo struct {

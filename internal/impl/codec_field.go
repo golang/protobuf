@@ -15,12 +15,14 @@ import (
 type pointerCoderFuncs struct {
 	size    func(p pointer, tagsize int, opts marshalOptions) int
 	marshal func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error)
+	isInit  func(p pointer) error
 }
 
 // ifaceCoderFuncs is a set of interface{} encoding functions.
 type ifaceCoderFuncs struct {
 	size    func(ival interface{}, tagsize int, opts marshalOptions) int
 	marshal func(b []byte, ival interface{}, wiretag uint64, opts marshalOptions) ([]byte, error)
+	isInit  func(ival interface{}) error
 }
 
 // fieldCoder returns pointer functions for a field, used for operating on

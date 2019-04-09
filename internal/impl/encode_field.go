@@ -38,32 +38,40 @@ func makeOneofFieldCoder(fs reflect.StructField, od pref.OneofDescriptor, struct
 		}
 	}
 	ft := fs.Type
+	getInfo := func(p pointer) (pointer, oneofFieldInfo) {
+		v := p.AsValueOf(ft).Elem()
+		if v.IsNil() {
+			return pointer{}, oneofFieldInfo{}
+		}
+		v = v.Elem() // interface -> *struct
+		telem := v.Elem().Type()
+		info, ok := oneofFieldInfos[telem]
+		if !ok {
+			panic(fmt.Errorf("invalid oneof type %v", telem))
+		}
+		return pointerOfValue(v).Apply(zeroOffset), info
+	}
 	return pointerCoderFuncs{
 		size: func(p pointer, _ int, opts marshalOptions) int {
-			v := p.AsValueOf(ft).Elem()
-			if v.IsNil() {
+			v, info := getInfo(p)
+			if info.funcs.size == nil {
 				return 0
 			}
-			v = v.Elem() // interface -> *struct
-			telem := v.Elem().Type()
-			info, ok := oneofFieldInfos[telem]
-			if !ok {
-				panic(fmt.Errorf("invalid oneof type %v", telem))
-			}
-			return info.funcs.size(pointerOfValue(v).Apply(zeroOffset), info.tagsize, opts)
+			return info.funcs.size(v, info.tagsize, opts)
 		},
 		marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
-			v := p.AsValueOf(ft).Elem()
-			if v.IsNil() {
+			v, info := getInfo(p)
+			if info.funcs.marshal == nil {
 				return b, nil
 			}
-			v = v.Elem() // interface -> *struct
-			telem := v.Elem().Type()
-			info, ok := oneofFieldInfos[telem]
-			if !ok {
-				panic(fmt.Errorf("invalid oneof type %v", telem))
+			return info.funcs.marshal(b, v, info.wiretag, opts)
+		},
+		isInit: func(p pointer) error {
+			v, info := getInfo(p)
+			if info.funcs.isInit == nil {
+				return nil
 			}
-			return info.funcs.marshal(b, pointerOfValue(v).Apply(zeroOffset), info.wiretag, opts)
+			return info.funcs.isInit(v)
 		},
 	}
 }
@@ -77,6 +85,9 @@ func makeMessageFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCode
 			marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
 				return appendMessageInfo(b, p, wiretag, fi, opts)
 			},
+			isInit: func(p pointer) error {
+				return fi.isInitializedPointer(p.Elem())
+			},
 		}
 	} else {
 		return pointerCoderFuncs{
@@ -87,6 +98,10 @@ func makeMessageFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCode
 			marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
 				m := asMessage(p.AsValueOf(ft).Elem())
 				return appendMessage(b, m, wiretag, opts)
+			},
+			isInit: func(p pointer) error {
+				m := asMessage(p.AsValueOf(ft).Elem())
+				return proto.IsInitialized(m)
 			},
 		}
 	}
@@ -122,9 +137,15 @@ func appendMessageIface(b []byte, ival interface{}, wiretag uint64, opts marshal
 	return appendMessage(b, m, wiretag, opts)
 }
 
+func isInitMessageIface(ival interface{}) error {
+	m := Export{}.MessageOf(ival).Interface()
+	return proto.IsInitialized(m)
+}
+
 var coderMessageIface = ifaceCoderFuncs{
 	size:    sizeMessageIface,
 	marshal: appendMessageIface,
+	isInit:  isInitMessageIface,
 }
 
 func makeGroupFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderFuncs {
@@ -136,6 +157,9 @@ func makeGroupFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderF
 			marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
 				return appendGroupType(b, p, wiretag, fi, opts)
 			},
+			isInit: func(p pointer) error {
+				return fi.isInitializedPointer(p.Elem())
+			},
 		}
 	} else {
 		return pointerCoderFuncs{
@@ -146,6 +170,10 @@ func makeGroupFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderF
 			marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
 				m := asMessage(p.AsValueOf(ft).Elem())
 				return appendGroup(b, m, wiretag, opts)
+			},
+			isInit: func(p pointer) error {
+				m := asMessage(p.AsValueOf(ft).Elem())
+				return proto.IsInitialized(m)
 			},
 		}
 	}
@@ -186,6 +214,7 @@ func appendGroupIface(b []byte, ival interface{}, wiretag uint64, opts marshalOp
 var coderGroupIface = ifaceCoderFuncs{
 	size:    sizeGroupIface,
 	marshal: appendGroupIface,
+	isInit:  isInitMessageIface,
 }
 
 func makeMessageSliceFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderFuncs {
@@ -197,6 +226,9 @@ func makeMessageSliceFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointe
 			size: func(p pointer, tagsize int, opts marshalOptions) int {
 				return sizeMessageSliceInfo(p, fi, tagsize, opts)
 			},
+			isInit: func(p pointer) error {
+				return isInitMessageSliceInfo(p, fi)
+			},
 		}
 	}
 	return pointerCoderFuncs{
@@ -205,6 +237,9 @@ func makeMessageSliceFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointe
 		},
 		marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
 			return appendMessageSlice(b, p, wiretag, ft, opts)
+		},
+		isInit: func(p pointer) error {
+			return isInitMessageSlice(p, ft)
 		},
 	}
 }
@@ -233,6 +268,16 @@ func appendMessageSliceInfo(b []byte, p pointer, wiretag uint64, mi *MessageInfo
 	return b, nil
 }
 
+func isInitMessageSliceInfo(p pointer, mi *MessageInfo) error {
+	s := p.PointerSlice()
+	for _, v := range s {
+		if err := mi.isInitializedPointer(v); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func sizeMessageSlice(p pointer, goType reflect.Type, tagsize int, _ marshalOptions) int {
 	s := p.PointerSlice()
 	n := 0
@@ -259,6 +304,17 @@ func appendMessageSlice(b []byte, p pointer, wiretag uint64, goType reflect.Type
 	return b, nil
 }
 
+func isInitMessageSlice(p pointer, goType reflect.Type) error {
+	s := p.PointerSlice()
+	for _, v := range s {
+		m := Export{}.MessageOf(v.AsValueOf(goType.Elem()).Interface()).Interface()
+		if err := proto.IsInitialized(m); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Slices of messages
 
 func sizeMessageSliceIface(ival interface{}, tagsize int, opts marshalOptions) int {
@@ -271,9 +327,15 @@ func appendMessageSliceIface(b []byte, ival interface{}, wiretag uint64, opts ma
 	return appendMessageSlice(b, p, wiretag, reflect.TypeOf(ival).Elem().Elem(), opts)
 }
 
+func isInitMessageSliceIface(ival interface{}) error {
+	p := pointerOfIface(ival)
+	return isInitMessageSlice(p, reflect.TypeOf(ival).Elem().Elem())
+}
+
 var coderMessageSliceIface = ifaceCoderFuncs{
 	size:    sizeMessageSliceIface,
 	marshal: appendMessageSliceIface,
+	isInit:  isInitMessageSliceIface,
 }
 
 func makeGroupSliceFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderFuncs {
@@ -285,6 +347,9 @@ func makeGroupSliceFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerC
 			marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
 				return appendGroupSliceInfo(b, p, wiretag, fi, opts)
 			},
+			isInit: func(p pointer) error {
+				return isInitMessageSliceInfo(p, fi)
+			},
 		}
 	}
 	return pointerCoderFuncs{
@@ -293,6 +358,9 @@ func makeGroupSliceFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerC
 		},
 		marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
 			return appendGroupSlice(b, p, wiretag, ft, opts)
+		},
+		isInit: func(p pointer) error {
+			return isInitMessageSlice(p, ft)
 		},
 	}
 }
@@ -358,6 +426,7 @@ func appendGroupSliceIface(b []byte, ival interface{}, wiretag uint64, opts mars
 var coderGroupSliceIface = ifaceCoderFuncs{
 	size:    sizeGroupSliceIface,
 	marshal: appendGroupSliceIface,
+	isInit:  isInitMessageSliceIface,
 }
 
 // Enums

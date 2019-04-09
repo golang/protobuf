@@ -247,6 +247,9 @@ message TestRequiredForeign {
   optional TestRequired    optional_message = 1;
   repeated TestRequired    repeated_message = 2;
   map<int32, TestRequired> map_message = 3;
+  oneof oneof_field {
+    TestRequired oneof_message = 4;
+  }
 }
 
 message TestRequiredGroupFields {

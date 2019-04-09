@@ -15,12 +15,13 @@ import (
 // IsInitialized returns an error if any required fields in m are not set.
 func IsInitialized(m Message) error {
 	if methods := protoMethods(m); methods != nil && methods.IsInitialized != nil {
-		// TODO: Do we need a way to disable the fast path here?
+		if err := methods.IsInitialized(m); err == nil {
+			return nil
+		}
+		// Fall through to the slow path, since the fast-path
+		// implementation doesn't produce nice errors.
 		//
-		// TODO: Should detailed information about missing
-		// fields always be provided by the slow-but-informative
-		// reflective implementation?
-		return methods.IsInitialized(m)
+		// TODO: Consider producing better errors from the fast path.
 	}
 	return isInitialized(m.ProtoReflect(), nil)
 }

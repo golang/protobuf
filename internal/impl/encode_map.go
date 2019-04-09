@@ -25,7 +25,7 @@ func encoderFuncsForMap(fd pref.FieldDescriptor, ft reflect.Type) (funcs pointer
 	keyFuncs := encoderFuncsForValue(keyField, ft.Key())
 	valFuncs := encoderFuncsForValue(valField, ft.Elem())
 
-	return pointerCoderFuncs{
+	funcs = pointerCoderFuncs{
 		size: func(p pointer, tagsize int, opts marshalOptions) int {
 			return sizeMap(p, tagsize, ft, keyFuncs, valFuncs, opts)
 		},
@@ -33,6 +33,12 @@ func encoderFuncsForMap(fd pref.FieldDescriptor, ft reflect.Type) (funcs pointer
 			return appendMap(b, p, wiretag, keyWiretag, valWiretag, ft, keyFuncs, valFuncs, opts)
 		},
 	}
+	if valFuncs.isInit != nil {
+		funcs.isInit = func(p pointer) error {
+			return isInitMap(p, ft, valFuncs.isInit)
+		}
+	}
+	return funcs
 }
 
 const (
@@ -101,6 +107,20 @@ func appendMapElement(b []byte, key, value reflect.Value, wiretag, keyWiretag, v
 		return b, err
 	}
 	return b, nil
+}
+
+func isInitMap(p pointer, goType reflect.Type, isInit func(interface{}) error) error {
+	m := p.AsValueOf(goType).Elem()
+	if m.Len() == 0 {
+		return nil
+	}
+	iter := mapRange(m)
+	for iter.Next() {
+		if err := isInit(iter.Value().Interface()); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // mapKeys returns a sort.Interface to be used for sorting the map keys.

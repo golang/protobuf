@@ -1139,6 +1139,29 @@ var testProtos = []testProto{
 		}.Marshal(),
 	},
 	{
+		desc:    "required field in oneof message unset",
+		partial: true,
+		decodeTo: []proto.Message{
+			&testpb.TestRequiredForeign{OneofField: &testpb.TestRequiredForeign_OneofMessage{
+				&testpb.TestRequired{},
+			}},
+		},
+		wire: pack.Message{pack.Tag{4, pack.BytesType}, pack.LengthPrefix(pack.Message{})}.Marshal(),
+	},
+	{
+		desc: "required field in oneof message set",
+		decodeTo: []proto.Message{
+			&testpb.TestRequiredForeign{OneofField: &testpb.TestRequiredForeign_OneofMessage{
+				&testpb.TestRequired{
+					RequiredField: scalar.Int32(1),
+				},
+			}},
+		},
+		wire: pack.Message{pack.Tag{4, pack.BytesType}, pack.LengthPrefix(pack.Message{
+			pack.Tag{1, pack.VarintType}, pack.Varint(1),
+		})}.Marshal(),
+	},
+	{
 		desc:              "required field in extension message unset",
 		partial:           true,
 		invalidExtensions: true,
