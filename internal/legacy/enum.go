@@ -13,8 +13,6 @@ import (
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 // wrapEnum wraps v as a protoreflect.Enum,
@@ -107,7 +105,7 @@ func LoadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 	}
 	if ed, ok := ev.(enumV1); ok {
 		b, idxs := ed.EnumDescriptor()
-		fd := LoadFileDesc(b)
+		fd := loadFileDesc(b)
 
 		// Derive syntax.
 		switch fd.GetSyntax() {
@@ -118,7 +116,7 @@ func LoadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 		}
 
 		// Derive the full name and correct enum descriptor.
-		var ed *descriptorpb.EnumDescriptorProto
+		var ed *enumDescriptorProto
 		e.FullName = pref.FullName(fd.GetPackage())
 		if len(idxs) == 1 {
 			ed = fd.EnumType[idxs[0]]
@@ -135,7 +133,7 @@ func LoadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 		}
 
 		// Derive the enum values.
-		for _, vd := range ed.GetValue() {
+		for _, vd := range ed.Value {
 			e.Values = append(e.Values, ptype.EnumValue{
 				Name:   pref.Name(vd.GetName()),
 				Number: pref.EnumNumber(vd.GetNumber()),

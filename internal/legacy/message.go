@@ -126,7 +126,7 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 	}
 	if md, ok := mv.(messageV1); ok {
 		b, idxs := md.Descriptor()
-		fd := LoadFileDesc(b)
+		fd := loadFileDesc(b)
 
 		// Derive syntax.
 		switch fd.GetSyntax() {

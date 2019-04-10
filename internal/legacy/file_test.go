@@ -5,13 +5,18 @@
 package legacy_test
 
 import (
+	"bytes"
+	"compress/gzip"
+	"io/ioutil"
 	"reflect"
 	"testing"
 
 	legacy "github.com/golang/protobuf/v2/internal/legacy"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
+	"github.com/golang/protobuf/v2/proto"
 	pdesc "github.com/golang/protobuf/v2/reflect/protodesc"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 	cmp "github.com/google/go-cmp/cmp"
 
 	proto2_20160225 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v0.0.0-20160225-2fc053c5"
@@ -29,7 +34,20 @@ import (
 )
 
 func mustLoadFileDesc(b []byte, _ []int) pref.FileDescriptor {
-	fd, err := pdesc.NewFile(legacy.LoadFileDesc(b), nil)
+	zr, err := gzip.NewReader(bytes.NewReader(b))
+	if err != nil {
+		panic(err)
+	}
+	b, err = ioutil.ReadAll(zr)
+	if err != nil {
+		panic(err)
+	}
+	p := new(descriptorpb.FileDescriptorProto)
+	err = proto.UnmarshalOptions{DiscardUnknown: true}.Unmarshal(b, p)
+	if err != nil {
+		panic(err)
+	}
+	fd, err := pdesc.NewFile(p, nil)
 	if err != nil {
 		panic(err)
 	}
