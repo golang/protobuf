@@ -533,22 +533,16 @@ func (o UnmarshalOptions) unmarshalListValue(m pref.Message) error {
 
 func (o MarshalOptions) marshalKnownValue(m pref.Message) error {
 	msgType := m.Type()
-	fieldDescs := msgType.Oneofs().Get(0).Fields()
 	knownFields := m.KnownFields()
-
-	for i := 0; i < fieldDescs.Len(); i++ {
-		fd := fieldDescs.Get(i)
-		num := fd.Number()
-		if !knownFields.Has(num) {
-			continue
-		}
-		// Only one field should be set.
-		val := knownFields.Get(num)
-		return o.marshalSingular(val, fd)
+	num := knownFields.WhichOneof("kind")
+	if num == 0 {
+		// Return error if none of the fields is set.
+		return errors.New("%s: none of the oneof fields is set", msgType.FullName())
 	}
 
-	// Return error if none of the fields are set.
-	return errors.New("%s: none of the variants is set", msgType.FullName())
+	fd := msgType.Fields().ByNumber(num)
+	val := knownFields.Get(num)
+	return o.marshalSingular(val, fd)
 }
 
 func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
