@@ -47,7 +47,7 @@ type File struct {
 	Path    string
 	Package protoreflect.FullName
 	Imports []protoreflect.FileImport
-	Options protoreflect.OptionsMessage
+	Options protoreflect.ProtoMessage
 
 	Enums      []Enum
 	Messages   []Message
@@ -111,8 +111,8 @@ type Message struct {
 	ReservedNames         []protoreflect.Name
 	ReservedRanges        [][2]protoreflect.FieldNumber
 	ExtensionRanges       [][2]protoreflect.FieldNumber
-	ExtensionRangeOptions []protoreflect.OptionsMessage
-	Options               protoreflect.OptionsMessage
+	ExtensionRangeOptions []protoreflect.ProtoMessage
+	Options               protoreflect.ProtoMessage
 	IsMapEntry            bool
 
 	Enums      []Enum
@@ -141,7 +141,7 @@ type Field struct {
 	OneofName   protoreflect.Name
 	MessageType protoreflect.MessageDescriptor
 	EnumType    protoreflect.EnumDescriptor
-	Options     protoreflect.OptionsMessage
+	Options     protoreflect.ProtoMessage
 	IsPacked    OptionalBool
 	IsWeak      bool
 
@@ -151,7 +151,7 @@ type Field struct {
 // Oneof is a constructor for protoreflect.OneofDescriptor.
 type Oneof struct {
 	Name    protoreflect.Name
-	Options protoreflect.OptionsMessage
+	Options protoreflect.ProtoMessage
 
 	*oneofMeta
 }
@@ -166,7 +166,7 @@ type Extension struct {
 	MessageType  protoreflect.MessageDescriptor
 	EnumType     protoreflect.EnumDescriptor
 	ExtendedType protoreflect.MessageDescriptor
-	Options      protoreflect.OptionsMessage
+	Options      protoreflect.ProtoMessage
 	IsPacked     OptionalBool
 
 	*extensionMeta
@@ -178,7 +178,7 @@ type Enum struct {
 	Values         []EnumValue
 	ReservedNames  []protoreflect.Name
 	ReservedRanges [][2]protoreflect.EnumNumber
-	Options        protoreflect.OptionsMessage
+	Options        protoreflect.ProtoMessage
 
 	*enumMeta
 }
@@ -195,7 +195,7 @@ func (e *Enum) Reference() protoreflect.EnumDescriptor {
 type EnumValue struct {
 	Name    protoreflect.Name
 	Number  protoreflect.EnumNumber
-	Options protoreflect.OptionsMessage
+	Options protoreflect.ProtoMessage
 
 	*enumValueMeta
 }
@@ -204,7 +204,7 @@ type EnumValue struct {
 type Service struct {
 	Name    protoreflect.Name
 	Methods []Method
-	Options protoreflect.OptionsMessage
+	Options protoreflect.ProtoMessage
 
 	*serviceMeta
 }
@@ -216,7 +216,7 @@ type Method struct {
 	OutputType        protoreflect.MessageDescriptor
 	IsStreamingClient bool
 	IsStreamingServer bool
-	Options           protoreflect.OptionsMessage
+	Options           protoreflect.ProtoMessage
 
 	*methodMeta
 }

@@ -7,7 +7,6 @@ package internal_gengo
 import (
 	"fmt"
 	"math"
-	"strings"
 
 	"github.com/golang/protobuf/v2/proto"
 	"github.com/golang/protobuf/v2/protogen"
@@ -162,19 +161,6 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 	g.P("FilesRegistry: ", protoregistryPackage.Ident("GlobalFiles"), ",")
 	g.P("TypesRegistry: ", protoregistryPackage.Ident("GlobalTypes"), ",")
 	g.P("}.Init()")
-
-	// The descriptor proto needs to register the option types with the
-	// prototype so that the package can properly handle those option types.
-	//
-	// TODO: Should this be handled by fileinit at runtime?
-	if f.Desc.Path() == "google/protobuf/descriptor.proto" && f.Desc.Package() == "google.protobuf" {
-		for _, m := range f.allMessages {
-			name := m.GoIdent.GoName
-			if strings.HasSuffix(name, "Options") {
-				g.P(prototypePackage.Ident("X"), ".Register", name, "((*", name, ")(nil))")
-			}
-		}
-	}
 
 	// Set inputs to nil to allow GC to reclaim resources.
 	g.P(rawDescVarName(f), " = nil")

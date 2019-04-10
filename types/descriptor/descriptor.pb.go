@@ -4,7 +4,6 @@
 package descriptor_proto
 
 import (
-	prototype "github.com/golang/protobuf/v2/internal/prototype"
 	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
 	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
 	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
@@ -3291,15 +3290,6 @@ func xxx_File_google_protobuf_descriptor_proto_init() {
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	prototype.X.RegisterExtensionRangeOptions((*ExtensionRangeOptions)(nil))
-	prototype.X.RegisterFileOptions((*FileOptions)(nil))
-	prototype.X.RegisterMessageOptions((*MessageOptions)(nil))
-	prototype.X.RegisterFieldOptions((*FieldOptions)(nil))
-	prototype.X.RegisterOneofOptions((*OneofOptions)(nil))
-	prototype.X.RegisterEnumOptions((*EnumOptions)(nil))
-	prototype.X.RegisterEnumValueOptions((*EnumValueOptions)(nil))
-	prototype.X.RegisterServiceOptions((*ServiceOptions)(nil))
-	prototype.X.RegisterMethodOptions((*MethodOptions)(nil))
 	xxx_File_google_protobuf_descriptor_proto_rawDesc = nil
 	xxx_File_google_protobuf_descriptor_proto_goTypes = nil
 	xxx_File_google_protobuf_descriptor_proto_depIdxs = nil

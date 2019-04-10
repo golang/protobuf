@@ -114,7 +114,7 @@ func TestFile(t *testing.T) {
 			ReservedNames:   []pref.Name{"fizz", "buzz"},
 			ReservedRanges:  [][2]pref.FieldNumber{{100, 200}, {300, 301}},
 			ExtensionRanges: [][2]pref.FieldNumber{{1000, 2000}, {3000, 3001}},
-			ExtensionRangeOptions: []pref.OptionsMessage{
+			ExtensionRangeOptions: []pref.ProtoMessage{
 				0: (*descriptorpb.ExtensionRangeOptions)(nil),
 				1: new(descriptorpb.ExtensionRangeOptions),
 			},

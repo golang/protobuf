@@ -100,14 +100,10 @@ type Descriptor interface {
 	//
 	// This method returns a typed nil-pointer if no options are present.
 	// The caller must import the descriptor package to use this.
-	Options() OptionsMessage
+	Options() ProtoMessage
 
 	doNotImplement
 }
-
-// An OptionsMessage is a google.protobuf.XXXOptions message, defined here
-// as an interface value to avoid a dependency cycle.
-type OptionsMessage interface{}
 
 // FileDescriptor describes the types in a complete proto file and
 // corresponds with the google.protobuf.FileDescriptorProto message.
@@ -215,7 +211,7 @@ type MessageDescriptor interface {
 	// The caller must not modify the returned message.
 	//
 	// This method may return a nil interface value if no options are present.
-	ExtensionRangeOptions(i int) OptionsMessage
+	ExtensionRangeOptions(i int) ProtoMessage
 
 	// Messages is a list of nested message declarations.
 	Messages() MessageDescriptors

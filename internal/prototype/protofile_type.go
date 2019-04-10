@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 
+	descopts "github.com/golang/protobuf/v2/internal/descopts"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
@@ -48,7 +49,7 @@ type fileMeta struct {
 type fileDesc struct{ f *File }
 
 // altOptions returns m as is if it is non-nil. Otherwise, it returns alt.
-func altOptions(m, alt pref.OptionsMessage) pref.OptionsMessage {
+func altOptions(m, alt pref.ProtoMessage) pref.ProtoMessage {
 	if m != nil {
 		return m
 	}
@@ -68,7 +69,7 @@ func (t fileDesc) Syntax() pref.Syntax                              { return t.f
 func (t fileDesc) Name() pref.Name                                  { return t.f.Package.Name() }
 func (t fileDesc) FullName() pref.FullName                          { return t.f.Package }
 func (t fileDesc) IsPlaceholder() bool                              { return false }
-func (t fileDesc) Options() pref.OptionsMessage                     { return altOptions(t.f.Options, optionTypes.File) }
+func (t fileDesc) Options() pref.ProtoMessage                       { return altOptions(t.f.Options, descopts.File) }
 func (t fileDesc) Path() string                                     { return t.f.Path }
 func (t fileDesc) Package() pref.FullName                           { return t.f.Package }
 func (t fileDesc) Imports() pref.FileImports                        { return (*fileImports)(&t.f.Imports) }
@@ -174,8 +175,8 @@ func (t messageDesc) Syntax() pref.Syntax             { return t.m.syntax }
 func (t messageDesc) Name() pref.Name                 { return t.m.Name }
 func (t messageDesc) FullName() pref.FullName         { return t.m.fullName }
 func (t messageDesc) IsPlaceholder() bool             { return false }
-func (t messageDesc) Options() pref.OptionsMessage {
-	return altOptions(t.m.Options, optionTypes.Message)
+func (t messageDesc) Options() pref.ProtoMessage {
+	return altOptions(t.m.Options, descopts.Message)
 }
 func (t messageDesc) IsMapEntry() bool                   { return t.m.IsMapEntry }
 func (t messageDesc) Fields() pref.FieldDescriptors      { return t.m.fs.lazyInit(t, t.m.Fields) }
@@ -184,7 +185,7 @@ func (t messageDesc) ReservedNames() pref.Names          { return (*names)(&t.m.
 func (t messageDesc) ReservedRanges() pref.FieldRanges   { return (*fieldRanges)(&t.m.ReservedRanges) }
 func (t messageDesc) RequiredNumbers() pref.FieldNumbers { return t.m.ns.lazyInit(t.m.Fields) }
 func (t messageDesc) ExtensionRanges() pref.FieldRanges  { return (*fieldRanges)(&t.m.ExtensionRanges) }
-func (t messageDesc) ExtensionRangeOptions(i int) pref.OptionsMessage {
+func (t messageDesc) ExtensionRangeOptions(i int) pref.ProtoMessage {
 	return extensionRangeOptions(i, len(t.m.ExtensionRanges), t.m.ExtensionRangeOptions)
 }
 func (t messageDesc) Enums() pref.EnumDescriptors           { return t.m.es.lazyInit(t, t.m.Enums) }
@@ -194,16 +195,16 @@ func (t messageDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s,
 func (t messageDesc) ProtoType(pref.MessageDescriptor)      {}
 func (t messageDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
-func extensionRangeOptions(i, n int, ms []pref.OptionsMessage) pref.OptionsMessage {
+func extensionRangeOptions(i, n int, ms []pref.ProtoMessage) pref.ProtoMessage {
 	if i < 0 || i >= n {
 		panic("out of bounds")
 	}
-	var m pref.OptionsMessage
+	var m pref.ProtoMessage
 	if i < len(ms) {
 		m = ms[i]
 	}
 	if m == nil {
-		m = optionTypes.ExtensionRange
+		m = descopts.ExtensionRange
 	}
 	return m
 }
@@ -225,7 +226,7 @@ func (t fieldDesc) Syntax() pref.Syntax             { return t.f.syntax }
 func (t fieldDesc) Name() pref.Name                 { return t.f.Name }
 func (t fieldDesc) FullName() pref.FullName         { return t.f.fullName }
 func (t fieldDesc) IsPlaceholder() bool             { return false }
-func (t fieldDesc) Options() pref.OptionsMessage    { return altOptions(t.f.Options, optionTypes.Field) }
+func (t fieldDesc) Options() pref.ProtoMessage      { return altOptions(t.f.Options, descopts.Field) }
 func (t fieldDesc) Number() pref.FieldNumber        { return t.f.Number }
 func (t fieldDesc) Cardinality() pref.Cardinality   { return t.f.Cardinality }
 func (t fieldDesc) Kind() pref.Kind                 { return t.f.Kind }
@@ -326,7 +327,7 @@ func (t oneofDesc) Syntax() pref.Syntax                 { return t.o.syntax }
 func (t oneofDesc) Name() pref.Name                     { return t.o.Name }
 func (t oneofDesc) FullName() pref.FullName             { return t.o.fullName }
 func (t oneofDesc) IsPlaceholder() bool                 { return false }
-func (t oneofDesc) Options() pref.OptionsMessage        { return altOptions(t.o.Options, optionTypes.Oneof) }
+func (t oneofDesc) Options() pref.ProtoMessage          { return altOptions(t.o.Options, descopts.Oneof) }
 func (t oneofDesc) Fields() pref.FieldDescriptors       { return t.o.fs.lazyInit(t) }
 func (t oneofDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
 func (t oneofDesc) ProtoType(pref.OneofDescriptor)      {}
@@ -348,8 +349,8 @@ func (t extensionDesc) Index() int                      { return t.x.index }
 func (t extensionDesc) Name() pref.Name                 { return t.x.Name }
 func (t extensionDesc) FullName() pref.FullName         { return t.x.fullName }
 func (t extensionDesc) IsPlaceholder() bool             { return false }
-func (t extensionDesc) Options() pref.OptionsMessage {
-	return altOptions(t.x.Options, optionTypes.Field)
+func (t extensionDesc) Options() pref.ProtoMessage {
+	return altOptions(t.x.Options, descopts.Field)
 }
 func (t extensionDesc) Number() pref.FieldNumber      { return t.x.Number }
 func (t extensionDesc) Cardinality() pref.Cardinality { return t.x.Cardinality }
@@ -390,7 +391,7 @@ func (t enumDesc) Syntax() pref.Syntax                 { return t.e.syntax }
 func (t enumDesc) Name() pref.Name                     { return t.e.Name }
 func (t enumDesc) FullName() pref.FullName             { return t.e.fullName }
 func (t enumDesc) IsPlaceholder() bool                 { return false }
-func (t enumDesc) Options() pref.OptionsMessage        { return altOptions(t.e.Options, optionTypes.Enum) }
+func (t enumDesc) Options() pref.ProtoMessage          { return altOptions(t.e.Options, descopts.Enum) }
 func (t enumDesc) Values() pref.EnumValueDescriptors   { return t.e.vs.lazyInit(t, t.e.Values) }
 func (t enumDesc) ReservedNames() pref.Names           { return (*names)(&t.e.ReservedNames) }
 func (t enumDesc) ReservedRanges() pref.EnumRanges     { return (*enumRanges)(&t.e.ReservedRanges) }
@@ -409,8 +410,8 @@ func (t enumValueDesc) Syntax() pref.Syntax             { return t.v.syntax }
 func (t enumValueDesc) Name() pref.Name                 { return t.v.Name }
 func (t enumValueDesc) FullName() pref.FullName         { return t.v.fullName }
 func (t enumValueDesc) IsPlaceholder() bool             { return false }
-func (t enumValueDesc) Options() pref.OptionsMessage {
-	return altOptions(t.v.Options, optionTypes.EnumValue)
+func (t enumValueDesc) Options() pref.ProtoMessage {
+	return altOptions(t.v.Options, descopts.EnumValue)
 }
 func (t enumValueDesc) Number() pref.EnumNumber             { return t.v.Number }
 func (t enumValueDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
@@ -430,8 +431,8 @@ func (t serviceDesc) Syntax() pref.Syntax             { return t.s.syntax }
 func (t serviceDesc) Name() pref.Name                 { return t.s.Name }
 func (t serviceDesc) FullName() pref.FullName         { return t.s.fullName }
 func (t serviceDesc) IsPlaceholder() bool             { return false }
-func (t serviceDesc) Options() pref.OptionsMessage {
-	return altOptions(t.s.Options, optionTypes.Service)
+func (t serviceDesc) Options() pref.ProtoMessage {
+	return altOptions(t.s.Options, descopts.Service)
 }
 func (t serviceDesc) Methods() pref.MethodDescriptors     { return t.s.ms.lazyInit(t, t.s.Methods) }
 func (t serviceDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
@@ -452,7 +453,7 @@ func (t methodDesc) Syntax() pref.Syntax                 { return t.m.syntax }
 func (t methodDesc) Name() pref.Name                     { return t.m.Name }
 func (t methodDesc) FullName() pref.FullName             { return t.m.fullName }
 func (t methodDesc) IsPlaceholder() bool                 { return false }
-func (t methodDesc) Options() pref.OptionsMessage        { return altOptions(t.m.Options, optionTypes.Method) }
+func (t methodDesc) Options() pref.ProtoMessage          { return altOptions(t.m.Options, descopts.Method) }
 func (t methodDesc) InputType() pref.MessageDescriptor   { return t.m.mit.lazyInit(t, &t.m.InputType) }
 func (t methodDesc) OutputType() pref.MessageDescriptor  { return t.m.mot.lazyInit(t, &t.m.OutputType) }
 func (t methodDesc) IsStreamingClient() bool             { return t.m.IsStreamingClient }

@@ -36,7 +36,6 @@ const (
 	protoimplPackage     = protogen.GoImportPath("github.com/golang/protobuf/v2/runtime/protoimpl")
 	protoreflectPackage  = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoreflect")
 	protoregistryPackage = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoregistry")
-	prototypePackage     = protogen.GoImportPath("github.com/golang/protobuf/v2/internal/prototype")
 )
 
 type fileInfo struct {

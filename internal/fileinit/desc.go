@@ -13,9 +13,9 @@ import (
 	"reflect"
 	"sync"
 
+	descopts "github.com/golang/protobuf/v2/internal/descopts"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
 	"github.com/golang/protobuf/v2/proto"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
@@ -158,6 +158,33 @@ func (fb FileBuilder) Init() pref.FileDescriptor {
 		fb.ExtensionOutputTypes[i] = &fd.allExtensions[i]
 	}
 
+	// As a special-case for descriptor.proto,
+	// locally register concrete message type for the options.
+	if fd.Path() == "google/protobuf/descriptor.proto" && fd.Package() == "google.protobuf" {
+		for i := range fd.allMessages {
+			switch fd.allMessages[i].Name() {
+			case "FileOptions":
+				descopts.File = messageGoTypes[i].(pref.ProtoMessage)
+			case "EnumOptions":
+				descopts.Enum = messageGoTypes[i].(pref.ProtoMessage)
+			case "EnumValueOptions":
+				descopts.EnumValue = messageGoTypes[i].(pref.ProtoMessage)
+			case "MessageOptions":
+				descopts.Message = messageGoTypes[i].(pref.ProtoMessage)
+			case "FieldOptions":
+				descopts.Field = messageGoTypes[i].(pref.ProtoMessage)
+			case "OneofOptions":
+				descopts.Oneof = messageGoTypes[i].(pref.ProtoMessage)
+			case "ExtensionRangeOptions":
+				descopts.ExtensionRange = messageGoTypes[i].(pref.ProtoMessage)
+			case "ServiceOptions":
+				descopts.Service = messageGoTypes[i].(pref.ProtoMessage)
+			case "MethodOptions":
+				descopts.Method = messageGoTypes[i].(pref.ProtoMessage)
+			}
+		}
+	}
+
 	// Register file and type descriptors.
 	if fb.FilesRegistry != nil {
 		if err := fb.FilesRegistry.Register(fd); err != nil {
@@ -230,8 +257,8 @@ func (fd *fileDesc) Syntax() pref.Syntax             { return fd.lazyInit().synt
 func (fd *fileDesc) Name() pref.Name                 { return fd.Package().Name() }
 func (fd *fileDesc) FullName() pref.FullName         { return fd.Package() }
 func (fd *fileDesc) IsPlaceholder() bool             { return false }
-func (fd *fileDesc) Options() pref.OptionsMessage {
-	return unmarshalOptions(ptype.X.FileOptions(), fd.lazyInit().options)
+func (fd *fileDesc) Options() pref.ProtoMessage {
+	return unmarshalOptions(descopts.File, fd.lazyInit().options)
 }
 func (fd *fileDesc) Path() string                                     { return fd.path }
 func (fd *fileDesc) Package() pref.FullName                           { return fd.protoPackage }
@@ -270,8 +297,8 @@ type (
 
 func (ed *enumDesc) GoType() reflect.Type            { return ed.lazyInit().typ }
 func (ed *enumDesc) New(n pref.EnumNumber) pref.Enum { return ed.lazyInit().new(n) }
-func (ed *enumDesc) Options() pref.OptionsMessage {
-	return unmarshalOptions(ptype.X.EnumOptions(), ed.lazyInit().options)
+func (ed *enumDesc) Options() pref.ProtoMessage {
+	return unmarshalOptions(descopts.Enum, ed.lazyInit().options)
 }
 func (ed *enumDesc) Values() pref.EnumValueDescriptors { return &ed.lazyInit().values }
 func (ed *enumDesc) ReservedNames() pref.Names         { return &ed.lazyInit().resvNames }
@@ -283,8 +310,8 @@ func (ed *enumDesc) lazyInit() *enumLazy {
 	return ed.lazy
 }
 
-func (ed *enumValueDesc) Options() pref.OptionsMessage {
-	return unmarshalOptions(ptype.X.EnumValueOptions(), ed.options)
+func (ed *enumValueDesc) Options() pref.ProtoMessage {
+	return unmarshalOptions(descopts.EnumValue, ed.options)
 }
 func (ed *enumValueDesc) Number() pref.EnumNumber            { return ed.number }
 func (ed *enumValueDesc) Format(s fmt.State, r rune)         { pfmt.FormatDesc(s, r, ed) }
@@ -346,8 +373,8 @@ type (
 	}
 )
 
-func (md *messageDesc) options() pref.OptionsMessage {
-	return unmarshalOptions(ptype.X.MessageOptions(), md.lazyInit().options)
+func (md *messageDesc) options() pref.ProtoMessage {
+	return unmarshalOptions(descopts.Message, md.lazyInit().options)
 }
 func (md *messageDesc) IsMapEntry() bool                   { return md.isMapEntry }
 func (md *messageDesc) Fields() pref.FieldDescriptors      { return &md.lazyInit().fields }
@@ -356,8 +383,8 @@ func (md *messageDesc) ReservedNames() pref.Names          { return &md.lazyInit
 func (md *messageDesc) ReservedRanges() pref.FieldRanges   { return &md.lazyInit().resvRanges }
 func (md *messageDesc) RequiredNumbers() pref.FieldNumbers { return &md.lazyInit().reqNumbers }
 func (md *messageDesc) ExtensionRanges() pref.FieldRanges  { return &md.lazyInit().extRanges }
-func (md *messageDesc) ExtensionRangeOptions(i int) pref.OptionsMessage {
-	return unmarshalOptions(ptype.X.ExtensionRangeOptions(), md.lazyInit().extRangeOptions[i])
+func (md *messageDesc) ExtensionRangeOptions(i int) pref.ProtoMessage {
+	return unmarshalOptions(descopts.ExtensionRange, md.lazyInit().extRangeOptions[i])
 }
 func (md *messageDesc) Enums() pref.EnumDescriptors           { return &md.enums }
 func (md *messageDesc) Messages() pref.MessageDescriptors     { return &md.messages }
@@ -386,13 +413,13 @@ func (mb *messageDesc) asDesc() pref.MessageDescriptor {
 	}
 	return messageDescriptor{mb}
 }
-func (mt messageType) GoType() reflect.Type               { return mt.lazyInit().typ }
-func (mt messageType) New() pref.Message                  { return mt.lazyInit().new() }
-func (mt messageType) Options() pref.OptionsMessage       { return mt.options() }
-func (md messageDescriptor) Options() pref.OptionsMessage { return md.options() }
+func (mt messageType) GoType() reflect.Type             { return mt.lazyInit().typ }
+func (mt messageType) New() pref.Message                { return mt.lazyInit().new() }
+func (mt messageType) Options() pref.ProtoMessage       { return mt.options() }
+func (md messageDescriptor) Options() pref.ProtoMessage { return md.options() }
 
-func (fd *fieldDesc) Options() pref.OptionsMessage {
-	return unmarshalOptions(ptype.X.FieldOptions(), fd.options)
+func (fd *fieldDesc) Options() pref.ProtoMessage {
+	return unmarshalOptions(descopts.Field, fd.options)
 }
 func (fd *fieldDesc) Number() pref.FieldNumber                   { return fd.number }
 func (fd *fieldDesc) Cardinality() pref.Cardinality              { return fd.cardinality }
@@ -412,8 +439,8 @@ func (fd *fieldDesc) MessageType() pref.MessageDescriptor        { return fd.mes
 func (fd *fieldDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, fd) }
 func (fd *fieldDesc) ProtoType(pref.FieldDescriptor)             {}
 
-func (od *oneofDesc) Options() pref.OptionsMessage {
-	return unmarshalOptions(ptype.X.OneofOptions(), od.options)
+func (od *oneofDesc) Options() pref.ProtoMessage {
+	return unmarshalOptions(descopts.Oneof, od.options)
 }
 func (od *oneofDesc) Fields() pref.FieldDescriptors  { return &od.fields }
 func (od *oneofDesc) Format(s fmt.State, r rune)     { pfmt.FormatDesc(s, r, od) }
@@ -458,8 +485,8 @@ func (xd *extensionDesc) GoType() reflect.Type                 { return xd.lazyI
 func (xd *extensionDesc) New() pref.Value                      { return xd.lazyInit().new() }
 func (xd *extensionDesc) ValueOf(v interface{}) pref.Value     { return xd.lazyInit().valueOf(v) }
 func (xd *extensionDesc) InterfaceOf(v pref.Value) interface{} { return xd.lazyInit().interfaceOf(v) }
-func (xd *extensionDesc) Options() pref.OptionsMessage {
-	return unmarshalOptions(ptype.X.FieldOptions(), xd.lazyInit().options)
+func (xd *extensionDesc) Options() pref.ProtoMessage {
+	return unmarshalOptions(descopts.Field, xd.lazyInit().options)
 }
 func (xd *extensionDesc) Number() pref.FieldNumber                   { return xd.number }
 func (xd *extensionDesc) Cardinality() pref.Cardinality              { return xd.lazyInit().cardinality }
@@ -514,8 +541,8 @@ type (
 	}
 )
 
-func (sd *serviceDesc) Options() pref.OptionsMessage {
-	return unmarshalOptions(ptype.X.ServiceOptions(), sd.lazyInit().options)
+func (sd *serviceDesc) Options() pref.ProtoMessage {
+	return unmarshalOptions(descopts.Service, sd.lazyInit().options)
 }
 func (sd *serviceDesc) Methods() pref.MethodDescriptors     { return &sd.lazyInit().methods }
 func (sd *serviceDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, sd) }
@@ -526,8 +553,8 @@ func (sd *serviceDesc) lazyInit() *serviceLazy {
 	return sd.lazy
 }
 
-func (md *methodDesc) Options() pref.OptionsMessage {
-	return unmarshalOptions(ptype.X.MethodOptions(), md.options)
+func (md *methodDesc) Options() pref.ProtoMessage {
+	return unmarshalOptions(descopts.Method, md.options)
 }
 func (md *methodDesc) InputType() pref.MessageDescriptor   { return md.inputType }
 func (md *methodDesc) OutputType() pref.MessageDescriptor  { return md.outputType }
@@ -558,10 +585,10 @@ type fullName struct {
 func (s *fullName) Name() pref.Name         { return pref.Name(s.fullName[len(s.fullName)-s.shortLen:]) }
 func (s *fullName) FullName() pref.FullName { return s.fullName }
 
-func unmarshalOptions(p pref.OptionsMessage, b []byte) pref.OptionsMessage {
+func unmarshalOptions(p pref.ProtoMessage, b []byte) pref.ProtoMessage {
 	if b != nil {
 		// TODO: Consider caching the unmarshaled options message.
-		p = reflect.New(reflect.TypeOf(p).Elem()).Interface().(pref.OptionsMessage)
+		p = reflect.New(reflect.TypeOf(p).Elem()).Interface().(pref.ProtoMessage)
 		if err := proto.Unmarshal(b, p.(proto.Message)); err != nil {
 			panic(err)
 		}
