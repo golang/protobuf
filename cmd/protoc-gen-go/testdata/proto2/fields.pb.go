@@ -34,7 +34,9 @@ var FieldTestMessage_Enum_value = map[string]int32{
 }
 
 func (x FieldTestMessage_Enum) Enum() *FieldTestMessage_Enum {
-	return &x
+	p := new(FieldTestMessage_Enum)
+	*p = x
+	return p
 }
 
 func (x FieldTestMessage_Enum) String() string {

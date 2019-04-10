@@ -32,7 +32,9 @@ var Enum_value = map[string]int32{
 }
 
 func (x Enum) Enum() *Enum {
-	return &x
+	p := new(Enum)
+	*p = x
+	return p
 }
 
 func (x Enum) String() string {

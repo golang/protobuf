@@ -37,7 +37,9 @@ var Enum_value = map[string]int32{
 }
 
 func (x Enum) Enum() *Enum {
-	return &x
+	p := new(Enum)
+	*p = x
+	return p
 }
 
 func (x Enum) String() string {
@@ -90,7 +92,9 @@ var Enums_NestedEnum_value = map[string]int32{
 }
 
 func (x Enums_NestedEnum) Enum() *Enums_NestedEnum {
-	return &x
+	p := new(Enums_NestedEnum)
+	*p = x
+	return p
 }
 
 func (x Enums_NestedEnum) String() string {

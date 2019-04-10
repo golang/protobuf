@@ -93,7 +93,9 @@ var FieldDescriptorProto_Type_value = map[string]int32{
 }
 
 func (x FieldDescriptorProto_Type) Enum() *FieldDescriptorProto_Type {
-	return &x
+	p := new(FieldDescriptorProto_Type)
+	*p = x
+	return p
 }
 
 func (x FieldDescriptorProto_Type) String() string {
@@ -147,7 +149,9 @@ var FieldDescriptorProto_Label_value = map[string]int32{
 }
 
 func (x FieldDescriptorProto_Label) Enum() *FieldDescriptorProto_Label {
-	return &x
+	p := new(FieldDescriptorProto_Label)
+	*p = x
+	return p
 }
 
 func (x FieldDescriptorProto_Label) String() string {
@@ -202,7 +206,9 @@ var FileOptions_OptimizeMode_value = map[string]int32{
 }
 
 func (x FileOptions_OptimizeMode) Enum() *FileOptions_OptimizeMode {
-	return &x
+	p := new(FileOptions_OptimizeMode)
+	*p = x
+	return p
 }
 
 func (x FileOptions_OptimizeMode) String() string {
@@ -256,7 +262,9 @@ var FieldOptions_CType_value = map[string]int32{
 }
 
 func (x FieldOptions_CType) Enum() *FieldOptions_CType {
-	return &x
+	p := new(FieldOptions_CType)
+	*p = x
+	return p
 }
 
 func (x FieldOptions_CType) String() string {
@@ -312,7 +320,9 @@ var FieldOptions_JSType_value = map[string]int32{
 }
 
 func (x FieldOptions_JSType) Enum() *FieldOptions_JSType {
-	return &x
+	p := new(FieldOptions_JSType)
+	*p = x
+	return p
 }
 
 func (x FieldOptions_JSType) String() string {
@@ -368,7 +378,9 @@ var MethodOptions_IdempotencyLevel_value = map[string]int32{
 }
 
 func (x MethodOptions_IdempotencyLevel) Enum() *MethodOptions_IdempotencyLevel {
-	return &x
+	p := new(MethodOptions_IdempotencyLevel)
+	*p = x
+	return p
 }
 
 func (x MethodOptions_IdempotencyLevel) String() string {

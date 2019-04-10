@@ -36,7 +36,9 @@ var EnumType1_value = map[string]int32{
 }
 
 func (x EnumType1) Enum() *EnumType1 {
-	return &x
+	p := new(EnumType1)
+	*p = x
+	return p
 }
 
 func (x EnumType1) String() string {
@@ -86,7 +88,9 @@ var EnumType2_value = map[string]int32{
 }
 
 func (x EnumType2) Enum() *EnumType2 {
-	return &x
+	p := new(EnumType2)
+	*p = x
+	return p
 }
 
 func (x EnumType2) String() string {
@@ -135,7 +139,9 @@ var EnumContainerMessage1_NestedEnumType1A_value = map[string]int32{
 }
 
 func (x EnumContainerMessage1_NestedEnumType1A) Enum() *EnumContainerMessage1_NestedEnumType1A {
-	return &x
+	p := new(EnumContainerMessage1_NestedEnumType1A)
+	*p = x
+	return p
 }
 
 func (x EnumContainerMessage1_NestedEnumType1A) String() string {
@@ -182,7 +188,9 @@ var EnumContainerMessage1_NestedEnumType1B_value = map[string]int32{
 }
 
 func (x EnumContainerMessage1_NestedEnumType1B) Enum() *EnumContainerMessage1_NestedEnumType1B {
-	return &x
+	p := new(EnumContainerMessage1_NestedEnumType1B)
+	*p = x
+	return p
 }
 
 func (x EnumContainerMessage1_NestedEnumType1B) String() string {
@@ -231,7 +239,9 @@ var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_value = map[str
 }
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Enum() *EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A {
-	return &x
+	p := new(EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A)
+	*p = x
+	return p
 }
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) String() string {
@@ -278,7 +288,9 @@ var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_value = map[str
 }
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Enum() *EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B {
-	return &x
+	p := new(EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B)
+	*p = x
+	return p
 }
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) String() string {

@@ -36,7 +36,9 @@ var ForeignEnum_value = map[string]int32{
 }
 
 func (x ForeignEnum) Enum() *ForeignEnum {
-	return &x
+	p := new(ForeignEnum)
+	*p = x
+	return p
 }
 
 func (x ForeignEnum) String() string {
@@ -83,7 +85,9 @@ var TestReservedEnumFields_value = map[string]int32{
 }
 
 func (x TestReservedEnumFields) Enum() *TestReservedEnumFields {
-	return &x
+	p := new(TestReservedEnumFields)
+	*p = x
+	return p
 }
 
 func (x TestReservedEnumFields) String() string {
@@ -139,7 +143,9 @@ var TestAllTypes_NestedEnum_value = map[string]int32{
 }
 
 func (x TestAllTypes_NestedEnum) Enum() *TestAllTypes_NestedEnum {
-	return &x
+	p := new(TestAllTypes_NestedEnum)
+	*p = x
+	return p
 }
 
 func (x TestAllTypes_NestedEnum) String() string {
@@ -185,7 +191,9 @@ var TestDeprecatedMessage_DeprecatedEnum_value = map[string]int32{
 }
 
 func (x TestDeprecatedMessage_DeprecatedEnum) Enum() *TestDeprecatedMessage_DeprecatedEnum {
-	return &x
+	p := new(TestDeprecatedMessage_DeprecatedEnum)
+	*p = x
+	return p
 }
 
 func (x TestDeprecatedMessage_DeprecatedEnum) String() string {

@@ -253,7 +253,9 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	// Enum method.
 	if enum.Desc.Syntax() != protoreflect.Proto3 {
 		g.P("func (x ", enum.GoIdent, ") Enum() *", enum.GoIdent, " {")
-		g.P("return &x")
+		g.P("p := new(", enum.GoIdent, ")")
+		g.P("*p = x")
+		g.P("return p")
 		g.P("}")
 		g.P()
 	}

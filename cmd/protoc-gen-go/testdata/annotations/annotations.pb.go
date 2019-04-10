@@ -30,7 +30,9 @@ var AnnotationsTestEnum_value = map[string]int32{
 }
 
 func (x AnnotationsTestEnum) Enum() *AnnotationsTestEnum {
-	return &x
+	p := new(AnnotationsTestEnum)
+	*p = x
+	return p
 }
 
 func (x AnnotationsTestEnum) String() string {

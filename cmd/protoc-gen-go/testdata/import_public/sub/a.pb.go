@@ -36,7 +36,9 @@ var E_value = map[string]int32{
 }
 
 func (x E) Enum() *E {
-	return &x
+	p := new(E)
+	*p = x
+	return p
 }
 
 func (x E) String() string {
@@ -83,7 +85,9 @@ var M_Subenum_value = map[string]int32{
 }
 
 func (x M_Subenum) Enum() *M_Subenum {
-	return &x
+	p := new(M_Subenum)
+	*p = x
+	return p
 }
 
 func (x M_Subenum) String() string {
@@ -130,7 +134,9 @@ var M_Submessage_Submessage_Subenum_value = map[string]int32{
 }
 
 func (x M_Submessage_Submessage_Subenum) Enum() *M_Submessage_Submessage_Subenum {
-	return &x
+	p := new(M_Submessage_Submessage_Subenum)
+	*p = x
+	return p
 }
 
 func (x M_Submessage_Submessage_Subenum) String() string {

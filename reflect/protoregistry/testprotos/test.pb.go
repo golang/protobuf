@@ -30,7 +30,9 @@ var Enum1_value = map[string]int32{
 }
 
 func (x Enum1) Enum() *Enum1 {
-	return &x
+	p := new(Enum1)
+	*p = x
+	return p
 }
 
 func (x Enum1) String() string {
@@ -77,7 +79,9 @@ var Enum2_value = map[string]int32{
 }
 
 func (x Enum2) Enum() *Enum2 {
-	return &x
+	p := new(Enum2)
+	*p = x
+	return p
 }
 
 func (x Enum2) String() string {
@@ -124,7 +128,9 @@ var Enum3_value = map[string]int32{
 }
 
 func (x Enum3) Enum() *Enum3 {
-	return &x
+	p := new(Enum3)
+	*p = x
+	return p
 }
 
 func (x Enum3) String() string {

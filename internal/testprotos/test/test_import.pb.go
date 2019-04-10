@@ -30,7 +30,9 @@ var ImportEnum_value = map[string]int32{
 }
 
 func (x ImportEnum) Enum() *ImportEnum {
-	return &x
+	p := new(ImportEnum)
+	*p = x
+	return p
 }
 
 func (x ImportEnum) String() string {
