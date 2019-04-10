@@ -338,8 +338,8 @@ func (p *textParser) consumeToken(s string) error {
 	return nil
 }
 
-// Return a RequiredNotSetError indicating which required field was not set.
-func (p *textParser) missingRequiredFieldError(sv reflect.Value) *RequiredNotSetError {
+// Return a requiredNotSetError indicating which required field was not set.
+func (p *textParser) missingRequiredFieldError(sv reflect.Value) *requiredNotSetError {
 	st := sv.Type()
 	sprops := GetProperties(st)
 	for i := 0; i < st.NumField(); i++ {
@@ -349,10 +349,10 @@ func (p *textParser) missingRequiredFieldError(sv reflect.Value) *RequiredNotSet
 
 		props := sprops.Prop[i]
 		if props.Required {
-			return &RequiredNotSetError{fmt.Sprintf("%v.%v", st, props.OrigName)}
+			return &requiredNotSetError{fmt.Sprintf("%v.%v", st, props.OrigName)}
 		}
 	}
-	return &RequiredNotSetError{fmt.Sprintf("%v.<unknown field name>", st)} // should not happen
+	return &requiredNotSetError{fmt.Sprintf("%v.<unknown field name>", st)} // should not happen
 }
 
 // Returns the index in the struct for the named field, as well as the parsed tag properties.
@@ -549,7 +549,7 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 				ext = reflect.New(typ.Elem()).Elem()
 			}
 			if err := p.readAny(ext, props); err != nil {
-				if _, ok := err.(*RequiredNotSetError); !ok {
+				if _, ok := err.(*requiredNotSetError); !ok {
 					return err
 				}
 				reqFieldErr = err
@@ -675,7 +675,7 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 		// Parse into the field.
 		fieldSet[name] = true
 		if err := p.readAny(dst, props); err != nil {
-			if _, ok := err.(*RequiredNotSetError); !ok {
+			if _, ok := err.(*requiredNotSetError); !ok {
 				return err
 			}
 			reqFieldErr = err
@@ -876,8 +876,11 @@ func (p *textParser) readAny(v reflect.Value, props *Properties) error {
 // UnmarshalText reads a protocol buffer in Text format. UnmarshalText resets pb
 // before starting to unmarshal, so any existing data in pb is always removed.
 // If a required field is not set and no other error occurs,
-// UnmarshalText returns *RequiredNotSetError.
+// UnmarshalText returns *requiredNotSetError.
 func UnmarshalText(s string, pb Message) error {
+	if unmarshalTextAlt != nil {
+		return unmarshalTextAlt(s, pb) // populated by hooks_enabled.go
+	}
 	if um, ok := pb.(encoding.TextUnmarshaler); ok {
 		return um.UnmarshalText([]byte(s))
 	}

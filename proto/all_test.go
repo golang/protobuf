@@ -179,6 +179,15 @@ func overify(t *testing.T, pb *GoTest, expected string) {
 	}
 }
 
+// When hooks are enabled, RequiredNotSetError is typed alias to internal/proto
+// package. Binary serialization has not been wrapped yet and hence produces
+// requiredNotSetError instead. This function is a work-around to identify both
+// aliased and non-aliased types.
+func isRequiredNotSetError(err error) bool {
+	e, ok := err.(interface{ RequiredNotSet() bool })
+	return ok && e.RequiredNotSet()
+}
+
 // Simple tests for numeric encode/decode primitives (varint, etc.)
 func TestNumericPrimitives(t *testing.T) {
 	for i := uint64(0); i < 1e6; i += 111 {
@@ -1249,7 +1258,7 @@ func TestRequiredFieldEnforcement(t *testing.T) {
 	_, err := Marshal(pb)
 	if err == nil {
 		t.Error("marshal: expected error, got nil")
-	} else if _, ok := err.(*RequiredNotSetError); !ok || !strings.Contains(err.Error(), "Label") {
+	} else if !isRequiredNotSetError(err) {
 		t.Errorf("marshal: bad error type: %v", err)
 	}
 
@@ -1260,7 +1269,7 @@ func TestRequiredFieldEnforcement(t *testing.T) {
 	err = Unmarshal(buf, pb)
 	if err == nil {
 		t.Error("unmarshal: expected error, got nil")
-	} else if _, ok := err.(*RequiredNotSetError); !ok || !strings.Contains(err.Error(), "Type") && !strings.Contains(err.Error(), "{Unknown}") {
+	} else if !isRequiredNotSetError(err) {
 		// TODO: remove unknown cases once we commit to the new unmarshaler.
 		t.Errorf("unmarshal: bad error type: %v", err)
 	}
@@ -1271,14 +1280,14 @@ func TestRequiredFieldEnforcementGroups(t *testing.T) {
 	pb := &GoTestRequiredGroupField{Group: &GoTestRequiredGroupField_Group{}}
 	if _, err := Marshal(pb); err == nil {
 		t.Error("marshal: expected error, got nil")
-	} else if _, ok := err.(*RequiredNotSetError); !ok || !strings.Contains(err.Error(), "Group.Field") {
+	} else if !isRequiredNotSetError(err) {
 		t.Errorf("marshal: bad error type: %v", err)
 	}
 
 	buf := []byte{11, 12}
 	if err := Unmarshal(buf, pb); err == nil {
 		t.Error("unmarshal: expected error, got nil")
-	} else if _, ok := err.(*RequiredNotSetError); !ok || !strings.Contains(err.Error(), "Group.Field") && !strings.Contains(err.Error(), "Group.{Unknown}") {
+	} else if !isRequiredNotSetError(err) {
 		t.Errorf("unmarshal: bad error type: %v", err)
 	}
 }
@@ -1837,7 +1846,7 @@ func TestRequiredNotSetError(t *testing.T) {
 
 	o := old()
 	bytes, err := Marshal(pb)
-	if _, ok := err.(*RequiredNotSetError); !ok {
+	if !isRequiredNotSetError(err) {
 		fmt.Printf("marshal-1 err = %v, want *RequiredNotSetError", err)
 		o.DebugPrint("", bytes)
 		t.Fatalf("expected = %s", expected)
@@ -1853,7 +1862,7 @@ func TestRequiredNotSetError(t *testing.T) {
 	// Now test Unmarshal by recreating the original buffer.
 	pbd := new(GoTest)
 	err = Unmarshal(bytes, pbd)
-	if _, ok := err.(*RequiredNotSetError); !ok {
+	if !isRequiredNotSetError(err) {
 		t.Fatalf("unmarshal err = %v, want *RequiredNotSetError", err)
 		o.DebugPrint("", bytes)
 		t.Fatalf("string = %s", expected)
@@ -1862,7 +1871,7 @@ func TestRequiredNotSetError(t *testing.T) {
 		t.Errorf("unmarshal wrong err msg: %v", err)
 	}
 	bytes, err = Marshal(pbd)
-	if _, ok := err.(*RequiredNotSetError); !ok {
+	if !isRequiredNotSetError(err) {
 		t.Errorf("marshal-2 err = %v, want *RequiredNotSetError", err)
 		o.DebugPrint("", bytes)
 		t.Fatalf("string = %s", expected)
@@ -2302,7 +2311,7 @@ func TestRequired(t *testing.T) {
 	// It should still be handled even after multiple required field violations.
 	m := &GoTest{F_BoolRequired: Bool(true)}
 	got, err := Marshal(m)
-	if _, ok := err.(*RequiredNotSetError); !ok {
+	if !isRequiredNotSetError(err) {
 		t.Errorf("Marshal() = %v, want RequiredNotSetError error", err)
 	}
 	if want := []byte{0x50, 0x01}; !bytes.Equal(got, want) {
@@ -2311,7 +2320,7 @@ func TestRequired(t *testing.T) {
 
 	m = new(GoTest)
 	err = Unmarshal(got, m)
-	if _, ok := err.(*RequiredNotSetError); !ok {
+	if !isRequiredNotSetError(err) {
 		t.Errorf("Marshal() = %v, want RequiredNotSetError error", err)
 	}
 	if !m.GetF_BoolRequired() {

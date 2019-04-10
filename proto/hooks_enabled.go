@@ -28,4 +28,19 @@ var (
 	fileDescriptorAlt       = proto.FileDescriptor
 	registerExtensionAlt    = proto.RegisterExtension
 	registeredExtensionsAlt = proto.RegisteredExtensions
+
+	// Hooks for text.go
+	marshalTextAlt       = proto.MarshalText
+	marshalTextStringAlt = proto.MarshalTextString
+	compactTextAlt       = proto.CompactText
+	compactTextStringAlt = proto.CompactTextString
+
+	// Hooks for text_parser.go
+	unmarshalTextAlt = proto.UnmarshalText
 )
+
+// Hooks for lib.go.
+type RequiredNotSetError = proto.RequiredNotSetError
+
+// Hooks for text.go
+type TextMarshaler = proto.TextMarshaler

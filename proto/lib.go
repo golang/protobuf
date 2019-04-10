@@ -34,18 +34,18 @@ type extensionFields = interface {
 	sync.Locker
 }
 
-// RequiredNotSetError is an error type returned by either Marshal or Unmarshal.
+// requiredNotSetError is an error type returned by either Marshal or Unmarshal.
 // Marshal reports this when a required field is not initialized.
 // Unmarshal reports this when a required field is missing from the wire data.
-type RequiredNotSetError struct{ field string }
+type requiredNotSetError struct{ field string }
 
-func (e *RequiredNotSetError) Error() string {
+func (e *requiredNotSetError) Error() string {
 	if e.field == "" {
 		return fmt.Sprintf("proto: required field not set")
 	}
 	return fmt.Sprintf("proto: required field %q not set", e.field)
 }
-func (e *RequiredNotSetError) RequiredNotSet() bool {
+func (e *requiredNotSetError) RequiredNotSet() bool {
 	return true
 }
 

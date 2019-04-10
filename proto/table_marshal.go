@@ -234,7 +234,7 @@ func (u *marshalInfo) marshal(b []byte, ptr pointer, deterministic bool) ([]byte
 				// Required field is not set.
 				// We record the error but keep going, to give a complete marshaling.
 				if errLater == nil {
-					errLater = &RequiredNotSetError{f.name}
+					errLater = &requiredNotSetError{f.name}
 				}
 				continue
 			}
@@ -245,11 +245,11 @@ func (u *marshalInfo) marshal(b []byte, ptr pointer, deterministic bool) ([]byte
 		}
 		b, err = f.marshaler(b, ptr.offset(f.field), f.wiretag, deterministic)
 		if err != nil {
-			if err1, ok := err.(*RequiredNotSetError); ok {
+			if err1, ok := err.(*requiredNotSetError); ok {
 				// Required field in submessage is not set.
 				// We record the error but keep going, to give a complete marshaling.
 				if errLater == nil {
-					errLater = &RequiredNotSetError{f.name + "." + err1.field}
+					errLater = &requiredNotSetError{f.name + "." + err1.field}
 				}
 				continue
 			}

@@ -151,7 +151,7 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 				reqMask |= f.reqMask
 				continue
 			}
-			if r, ok := err.(*RequiredNotSetError); ok {
+			if r, ok := err.(*requiredNotSetError); ok {
 				// Remember this error, but keep parsing. We need to produce
 				// a full parse even if a required field is missing.
 				if errLater == nil {
@@ -227,7 +227,7 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		// A required field of this message is missing.
 		for _, n := range u.reqFields {
 			if reqMask&1 == 0 {
-				errLater = &RequiredNotSetError{n}
+				errLater = &requiredNotSetError{n}
 			}
 			reqMask >>= 1
 		}
@@ -1618,7 +1618,7 @@ func makeUnmarshalMessagePtr(sub *unmarshalInfo, name string) unmarshaler {
 		}
 		err := sub.unmarshal(v, b[:x])
 		if err != nil {
-			if r, ok := err.(*RequiredNotSetError); ok {
+			if r, ok := err.(*requiredNotSetError); ok {
 				r.field = name + "." + r.field
 			} else {
 				return nil, err
@@ -1644,7 +1644,7 @@ func makeUnmarshalMessageSlicePtr(sub *unmarshalInfo, name string) unmarshaler {
 		v := valToPointer(reflect.New(sub.typ))
 		err := sub.unmarshal(v, b[:x])
 		if err != nil {
-			if r, ok := err.(*RequiredNotSetError); ok {
+			if r, ok := err.(*requiredNotSetError); ok {
 				r.field = name + "." + r.field
 			} else {
 				return nil, err
@@ -1671,7 +1671,7 @@ func makeUnmarshalGroupPtr(sub *unmarshalInfo, name string) unmarshaler {
 		}
 		err := sub.unmarshal(v, b[:x])
 		if err != nil {
-			if r, ok := err.(*RequiredNotSetError); ok {
+			if r, ok := err.(*requiredNotSetError); ok {
 				r.field = name + "." + r.field
 			} else {
 				return nil, err
@@ -1693,7 +1693,7 @@ func makeUnmarshalGroupSlicePtr(sub *unmarshalInfo, name string) unmarshaler {
 		v := valToPointer(reflect.New(sub.typ))
 		err := sub.unmarshal(v, b[:x])
 		if err != nil {
-			if r, ok := err.(*RequiredNotSetError); ok {
+			if r, ok := err.(*requiredNotSetError); ok {
 				r.field = name + "." + r.field
 			} else {
 				return nil, err
