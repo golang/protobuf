@@ -14,10 +14,7 @@ import (
 	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
 )
 
 // wrapMessage wraps v as a protoreflect.ProtoMessage,
@@ -247,7 +244,6 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 			m := &ptype.StandaloneMessage{
 				Syntax:     parent.Syntax,
 				FullName:   parent.FullName.Append(mapEntryName(f.Name)),
-				Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
 				IsMapEntry: true,
 				Fields: []ptype.Field{
 					ms.parseField(tagKey, "", "", t.Key(), nil),
