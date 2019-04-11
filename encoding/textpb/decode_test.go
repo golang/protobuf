@@ -11,45 +11,14 @@ import (
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/errors"
-	"github.com/golang/protobuf/v2/internal/legacy"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
-	"github.com/golang/protobuf/v2/runtime/protoiface"
 
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
 	knownpb "github.com/golang/protobuf/v2/types/known"
 )
-
-func init() {
-	// TODO: remove these registerExtension calls when generated code registers
-	// to V2 global registry.
-	registerExtension(pb2.E_OptExtBool)
-	registerExtension(pb2.E_OptExtString)
-	registerExtension(pb2.E_OptExtEnum)
-	registerExtension(pb2.E_OptExtNested)
-	registerExtension(pb2.E_RptExtFixed32)
-	registerExtension(pb2.E_RptExtEnum)
-	registerExtension(pb2.E_RptExtNested)
-	registerExtension(pb2.E_ExtensionsContainer_OptExtBool)
-	registerExtension(pb2.E_ExtensionsContainer_OptExtString)
-	registerExtension(pb2.E_ExtensionsContainer_OptExtEnum)
-	registerExtension(pb2.E_ExtensionsContainer_OptExtNested)
-	registerExtension(pb2.E_ExtensionsContainer_RptExtString)
-	registerExtension(pb2.E_ExtensionsContainer_RptExtEnum)
-	registerExtension(pb2.E_ExtensionsContainer_RptExtNested)
-	registerExtension(pb2.E_MessageSetExtension)
-	registerExtension(pb2.E_MessageSetExtension_MessageSetExtension)
-	registerExtension(pb2.E_MessageSetExtension_NotMessageSetExtension)
-	registerExtension(pb2.E_MessageSetExtension_ExtNested)
-	registerExtension(pb2.E_FakeMessageSetExtension_MessageSetExtension)
-}
-
-func registerExtension(xd *protoiface.ExtensionDescV1) {
-	xt := legacy.Export{}.ExtensionTypeFromDesc(xd)
-	preg.GlobalTypes.Register(xt)
-}
 
 func TestUnmarshal(t *testing.T) {
 	tests := []struct {

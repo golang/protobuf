@@ -12,11 +12,9 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	"github.com/golang/protobuf/v2/internal/legacy"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
-	piface "github.com/golang/protobuf/v2/runtime/protoiface"
 
 	testpb "github.com/golang/protobuf/v2/reflect/protoregistry/testprotos"
 )
@@ -317,10 +315,6 @@ func TestFiles(t *testing.T) {
 	}
 }
 
-func extensionType(xd *piface.ExtensionDescV1) pref.ExtensionType {
-	return legacy.Export{}.ExtensionTypeFromDesc(xd)
-}
-
 func TestTypes(t *testing.T) {
 	// Suffix 1 in registry, 2 in parent, 3 in resolver.
 	mt1 := (&testpb.Message1{}).ProtoReflect().Type()
@@ -330,12 +324,12 @@ func TestTypes(t *testing.T) {
 	et2 := testpb.Enum2_UNO.Type()
 	et3 := testpb.Enum3_YI.Type()
 	// Suffix indicates field number.
-	xt11 := extensionType(testpb.E_StringField)
-	xt12 := extensionType(testpb.E_EnumField)
-	xt13 := extensionType(testpb.E_MessageField)
-	xt21 := extensionType(testpb.E_Message4_MessageField)
-	xt22 := extensionType(testpb.E_Message4_EnumField)
-	xt23 := extensionType(testpb.E_Message4_StringField)
+	xt11 := testpb.E_StringField.Type
+	xt12 := testpb.E_EnumField.Type
+	xt13 := testpb.E_MessageField.Type
+	xt21 := testpb.E_Message4_MessageField.Type
+	xt22 := testpb.E_Message4_EnumField.Type
+	xt23 := testpb.E_Message4_StringField.Type
 	parent := &preg.Types{}
 	if err := parent.Register(mt2, et2, xt12, xt22); err != nil {
 		t.Fatalf("parent.Register() returns unexpected error: %v", err)

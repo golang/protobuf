@@ -21,9 +21,6 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	// This legacy package is still needed when importing legacy message.
-	_ "github.com/golang/protobuf/v2/internal/legacy"
-
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
 	knownpb "github.com/golang/protobuf/v2/types/known"
