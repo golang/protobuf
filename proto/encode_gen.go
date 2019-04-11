@@ -8,6 +8,7 @@ package proto
 
 import (
 	"math"
+	"unicode/utf8"
 
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
 	"github.com/golang/protobuf/v2/internal/errors"
@@ -35,9 +36,9 @@ var wireTypes = map[protoreflect.Kind]wire.Type{
 	protoreflect.GroupKind:    wire.StartGroupType,
 }
 
-func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoreflect.Kind, v protoreflect.Value) ([]byte, error) {
+func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, field protoreflect.FieldDescriptor, v protoreflect.Value) ([]byte, error) {
 	var nerr errors.NonFatal
-	switch kind {
+	switch field.Kind() {
 	case protoreflect.BoolKind:
 		b = wire.AppendVarint(b, wire.EncodeBool(v.Bool()))
 	case protoreflect.EnumKind:
@@ -67,6 +68,9 @@ func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoref
 	case protoreflect.DoubleKind:
 		b = wire.AppendFixed64(b, math.Float64bits(v.Float()))
 	case protoreflect.StringKind:
+		if field.Syntax() == protoreflect.Proto3 && !utf8.ValidString(v.String()) {
+			nerr.AppendInvalidUTF8(string(field.FullName()))
+		}
 		b = wire.AppendBytes(b, []byte(v.String()))
 	case protoreflect.BytesKind:
 		b = wire.AppendBytes(b, v.Bytes())
@@ -87,7 +91,7 @@ func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoref
 		}
 		b = wire.AppendVarint(b, wire.EncodeTag(num, wire.EndGroupType))
 	default:
-		return b, errors.New("invalid kind %v", kind)
+		return b, errors.New("invalid kind %v", field.Kind())
 	}
 	return b, nerr.E
 }

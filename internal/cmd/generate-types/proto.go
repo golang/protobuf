@@ -157,8 +157,8 @@ var protoDecodeTemplate = template.Must(template.New("").Parse(`
 // unmarshalScalar decodes a value of the given kind.
 //
 // Message values are decoded into a []byte which aliases the input data.
-func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Number, kind protoreflect.Kind) (val protoreflect.Value, n int, err error) {
-	switch kind {
+func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Number, field protoreflect.FieldDescriptor) (val protoreflect.Value, n int, err error) {
+	switch field.Kind() {
 	{{- range .}}
 	case {{.Expr}}:
 		if wtyp != {{.WireType.Expr}} {
@@ -172,6 +172,13 @@ func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Num
 		if n < 0 {
 			return val, 0, wire.ParseError(n)
 		}
+		{{if (eq .Name "String") -}}
+		if field.Syntax() == protoreflect.Proto3 && !utf8.Valid(v) {
+			var nerr errors.NonFatal
+			nerr.AppendInvalidUTF8(string(field.FullName()))
+			return protoreflect.ValueOf(string(v)), n, nerr.E
+		}
+		{{end -}}
 		return protoreflect.ValueOf({{.ToValue}}), n, nil
 	{{- end}}
 	default:
@@ -179,9 +186,9 @@ func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Num
 	}
 }
 
-func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Number, list protoreflect.List, kind protoreflect.Kind) (n int, err error) {
+func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Number, list protoreflect.List, field protoreflect.FieldDescriptor) (n int, err error) {
 	var nerr errors.NonFatal
-	switch kind {
+	switch field.Kind() {
 	{{- range .}}
 	case {{.Expr}}:
 		{{- if .WireType.Packable}}
@@ -212,6 +219,11 @@ func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Numbe
 		if n < 0 {
 			return 0, wire.ParseError(n)
 		}
+		{{if (eq .Name "String") -}}
+		if field.Syntax() == protoreflect.Proto3 && !utf8.Valid(v) {
+			nerr.AppendInvalidUTF8(string(field.FullName()))
+		}
+		{{end -}}
 		{{if or (eq .Name "Message") (eq .Name "Group") -}}
 		m := list.NewMessage()
 		if err := o.unmarshalMessage(v, m); !nerr.Merge(err) {
@@ -240,12 +252,17 @@ var wireTypes = map[protoreflect.Kind]wire.Type{
 {{- end}}
 }
 
-func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoreflect.Kind, v protoreflect.Value) ([]byte, error) {
+func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, field protoreflect.FieldDescriptor, v protoreflect.Value) ([]byte, error) {
 	var nerr errors.NonFatal
-	switch kind {
+	switch field.Kind() {
 	{{- range .}}
 	case {{.Expr}}:
-		{{if (eq .Name "Message") -}}
+		{{- if (eq .Name "String") }}
+		if field.Syntax() == protoreflect.Proto3 && !utf8.ValidString(v.String()) {
+			nerr.AppendInvalidUTF8(string(field.FullName()))
+		}
+		{{end -}}
+		{{- if (eq .Name "Message") -}}
 		var pos int
 		var err error
 		b, pos = appendSpeculativeLength(b)
@@ -266,7 +283,7 @@ func (o MarshalOptions) marshalSingular(b []byte, num wire.Number, kind protoref
 		{{- end}}
 	{{- end}}
 	default:
-		return b, errors.New("invalid kind %v", kind)
+		return b, errors.New("invalid kind %v", field.Kind())
 	}
 	return b, nerr.E
 }

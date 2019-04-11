@@ -86,7 +86,7 @@ func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) err
 		case fieldType.Cardinality() != protoreflect.Repeated:
 			valLen, err = o.unmarshalScalarField(b[tagLen:], wtyp, num, knownFields, fieldType)
 		case !fieldType.IsMap():
-			valLen, err = o.unmarshalList(b[tagLen:], wtyp, num, knownFields.Get(num).List(), fieldType.Kind())
+			valLen, err = o.unmarshalList(b[tagLen:], wtyp, num, knownFields.Get(num).List(), fieldType)
 		default:
 			valLen, err = o.unmarshalMap(b[tagLen:], wtyp, num, knownFields.Get(num).Map(), fieldType)
 		}
@@ -105,8 +105,9 @@ func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) err
 }
 
 func (o UnmarshalOptions) unmarshalScalarField(b []byte, wtyp wire.Type, num wire.Number, knownFields protoreflect.KnownFields, field protoreflect.FieldDescriptor) (n int, err error) {
-	v, n, err := o.unmarshalScalar(b, wtyp, num, field.Kind())
-	if err != nil {
+	var nerr errors.NonFatal
+	v, n, err := o.unmarshalScalar(b, wtyp, num, field)
+	if !nerr.Merge(err) {
 		return 0, err
 	}
 	switch field.Kind() {
@@ -124,12 +125,14 @@ func (o UnmarshalOptions) unmarshalScalarField(b []byte, wtyp wire.Type, num wir
 			knownFields.Set(num, protoreflect.ValueOf(m))
 		}
 		// Pass up errors (fatal and otherwise).
-		err = o.unmarshalMessage(v.Bytes(), m)
+		if err := o.unmarshalMessage(v.Bytes(), m); !nerr.Merge(err) {
+			return n, err
+		}
 	default:
 		// Non-message scalars replace the previous value.
 		knownFields.Set(num, v)
 	}
-	return n, err
+	return n, nerr.E
 }
 
 func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number, mapv protoreflect.Map, field protoreflect.FieldDescriptor) (n int, err error) {
@@ -164,17 +167,19 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number
 		err = errUnknown
 		switch num {
 		case 1:
-			key, n, err = o.unmarshalScalar(b, wtyp, num, keyField.Kind())
-			if err != nil {
+			key, n, err = o.unmarshalScalar(b, wtyp, num, keyField)
+			if !nerr.Merge(err) {
 				break
 			}
+			err = nil
 			haveKey = true
 		case 2:
 			var v protoreflect.Value
-			v, n, err = o.unmarshalScalar(b, wtyp, num, valField.Kind())
-			if err != nil {
+			v, n, err = o.unmarshalScalar(b, wtyp, num, valField)
+			if !nerr.Merge(err) {
 				break
 			}
+			err = nil
 			switch valField.Kind() {
 			case protoreflect.GroupKind, protoreflect.MessageKind:
 				if err := o.unmarshalMessage(v.Bytes(), val.Message()); !nerr.Merge(err) {
@@ -190,7 +195,7 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number
 			if n < 0 {
 				return 0, wire.ParseError(n)
 			}
-		} else if !nerr.Merge(err) {
+		} else if err != nil {
 			return 0, err
 		}
 		b = b[n:]

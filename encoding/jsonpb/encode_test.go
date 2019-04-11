@@ -5,6 +5,7 @@
 package jsonpb_test
 
 import (
+	"bytes"
 	"encoding/hex"
 	"math"
 	"strings"
@@ -1687,14 +1688,14 @@ func TestMarshal(t *testing.T) {
 			Resolver: preg.NewTypes((&knownpb.StringValue{}).ProtoReflect().Type()),
 		},
 		input: func() proto.Message {
-			m := &knownpb.StringValue{Value: "abc\xff"}
+			m := &knownpb.StringValue{Value: "abcd"}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &knownpb.Any{
 				TypeUrl: "google.protobuf.StringValue",
-				Value:   b,
+				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
 			}
 		}(),
 		want: `{
@@ -1765,14 +1766,14 @@ func TestMarshal(t *testing.T) {
 			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
 		},
 		input: func() proto.Message {
-			m := &knownpb.Value{Kind: &knownpb.Value_StringValue{"abc\xff"}}
+			m := &knownpb.Value{Kind: &knownpb.Value_StringValue{"abcd"}}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &knownpb.Any{
 				TypeUrl: "type.googleapis.com/google.protobuf.Value",
-				Value:   b,
+				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
 			}
 		}(),
 		want: `{

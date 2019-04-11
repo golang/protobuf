@@ -312,6 +312,7 @@ func writeSource(file, src string) {
 		"fmt",
 		"math",
 		"sync",
+		"unicode/utf8",
 		"",
 		"github.com/golang/protobuf/v2/internal/encoding/wire",
 		"github.com/golang/protobuf/v2/internal/errors",

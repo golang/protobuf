@@ -5,6 +5,7 @@
 package textpb_test
 
 import (
+	"bytes"
 	"encoding/hex"
 	"math"
 	"strings"
@@ -1248,7 +1249,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 		},
 		input: func() proto.Message {
 			m := &pb3.Nested{
-				SString: "abc\xff",
+				SString: "abcd",
 			}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
@@ -1256,7 +1257,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 			}
 			return &knownpb.Any{
 				TypeUrl: string(m.ProtoReflect().Type().FullName()),
-				Value:   b,
+				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
 			}
 		}(),
 		want: `[pb3.Nested]: {

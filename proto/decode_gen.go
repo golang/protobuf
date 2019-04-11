@@ -8,6 +8,7 @@ package proto
 
 import (
 	"math"
+	"unicode/utf8"
 
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
 	"github.com/golang/protobuf/v2/internal/errors"
@@ -17,8 +18,8 @@ import (
 // unmarshalScalar decodes a value of the given kind.
 //
 // Message values are decoded into a []byte which aliases the input data.
-func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Number, kind protoreflect.Kind) (val protoreflect.Value, n int, err error) {
-	switch kind {
+func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Number, field protoreflect.FieldDescriptor) (val protoreflect.Value, n int, err error) {
+	switch field.Kind() {
 	case protoreflect.BoolKind:
 		if wtyp != wire.VarintType {
 			return val, 0, errUnknown
@@ -153,6 +154,11 @@ func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Num
 		if n < 0 {
 			return val, 0, wire.ParseError(n)
 		}
+		if field.Syntax() == protoreflect.Proto3 && !utf8.Valid(v) {
+			var nerr errors.NonFatal
+			nerr.AppendInvalidUTF8(string(field.FullName()))
+			return protoreflect.ValueOf(string(v)), n, nerr.E
+		}
 		return protoreflect.ValueOf(string(v)), n, nil
 	case protoreflect.BytesKind:
 		if wtyp != wire.BytesType {
@@ -186,9 +192,9 @@ func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Num
 	}
 }
 
-func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Number, list protoreflect.List, kind protoreflect.Kind) (n int, err error) {
+func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Number, list protoreflect.List, field protoreflect.FieldDescriptor) (n int, err error) {
 	var nerr errors.NonFatal
-	switch kind {
+	switch field.Kind() {
 	case protoreflect.BoolKind:
 		if wtyp == wire.BytesType {
 			buf, n := wire.ConsumeBytes(b)
@@ -546,6 +552,9 @@ func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Numbe
 		v, n := wire.ConsumeBytes(b)
 		if n < 0 {
 			return 0, wire.ParseError(n)
+		}
+		if field.Syntax() == protoreflect.Proto3 && !utf8.Valid(v) {
+			nerr.AppendInvalidUTF8(string(field.FullName()))
 		}
 		list.Append(protoreflect.ValueOf(string(v)))
 		return n, nerr.E

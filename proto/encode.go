@@ -182,13 +182,13 @@ func (o MarshalOptions) marshalField(b []byte, field protoreflect.FieldDescripto
 	switch {
 	case field.Cardinality() != protoreflect.Repeated:
 		b = wire.AppendTag(b, num, wireTypes[kind])
-		return o.marshalSingular(b, num, kind, value)
+		return o.marshalSingular(b, num, field, value)
 	case field.IsMap():
 		return o.marshalMap(b, num, kind, field.MessageType(), value.Map())
 	case field.IsPacked():
-		return o.marshalPacked(b, num, kind, value.List())
+		return o.marshalPacked(b, num, field, value.List())
 	default:
-		return o.marshalList(b, num, kind, value.List())
+		return o.marshalList(b, num, field, value.List())
 	}
 }
 
@@ -229,13 +229,13 @@ func (o MarshalOptions) rangeMap(mapv protoreflect.Map, kind protoreflect.Kind, 
 	mapsort.Range(mapv, kind, f)
 }
 
-func (o MarshalOptions) marshalPacked(b []byte, num wire.Number, kind protoreflect.Kind, list protoreflect.List) ([]byte, error) {
+func (o MarshalOptions) marshalPacked(b []byte, num wire.Number, field protoreflect.FieldDescriptor, list protoreflect.List) ([]byte, error) {
 	b = wire.AppendTag(b, num, wire.BytesType)
 	b, pos := appendSpeculativeLength(b)
 	var nerr errors.NonFatal
 	for i, llen := 0, list.Len(); i < llen; i++ {
 		var err error
-		b, err = o.marshalSingular(b, num, kind, list.Get(i))
+		b, err = o.marshalSingular(b, num, field, list.Get(i))
 		if !nerr.Merge(err) {
 			return b, err
 		}
@@ -244,12 +244,13 @@ func (o MarshalOptions) marshalPacked(b []byte, num wire.Number, kind protorefle
 	return b, nerr.E
 }
 
-func (o MarshalOptions) marshalList(b []byte, num wire.Number, kind protoreflect.Kind, list protoreflect.List) ([]byte, error) {
+func (o MarshalOptions) marshalList(b []byte, num wire.Number, field protoreflect.FieldDescriptor, list protoreflect.List) ([]byte, error) {
+	kind := field.Kind()
 	var nerr errors.NonFatal
 	for i, llen := 0, list.Len(); i < llen; i++ {
 		var err error
 		b = wire.AppendTag(b, num, wireTypes[kind])
-		b, err = o.marshalSingular(b, num, kind, list.Get(i))
+		b, err = o.marshalSingular(b, num, field, list.Get(i))
 		if !nerr.Merge(err) {
 			return b, err
 		}
