@@ -371,6 +371,9 @@ func (md *messageDesc) lazyInit() *messageLazy {
 
 // IsMessageSet is a pseudo-internal API for checking whether a message
 // should serialize in the proto1 message format.
+//
+// WARNING: This method is exempt from the compatibility promise and may be
+// removed in the future without warning.
 func (md *messageDesc) IsMessageSet() bool {
 	return md.lazyInit().isMessageSet
 }
@@ -483,7 +486,12 @@ func (xd *extensionDesc) lazyInit() *extensionLazy {
 
 // ProtoLegacyExtensionDesc is a pseudo-internal API for allowing the v1 code
 // to be able to retrieve a v1 ExtensionDesc.
-func (xd *extensionDesc) ProtoLegacyExtensionDesc() *piface.ExtensionDescV1 { return xd.legacyDesc }
+//
+// WARNING: This method is exempt from the compatibility promise and may be
+// removed in the future without warning.
+func (xd *extensionDesc) ProtoLegacyExtensionDesc() *piface.ExtensionDescV1 {
+	return xd.legacyDesc
+}
 
 type (
 	serviceDesc struct {
