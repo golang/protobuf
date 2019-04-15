@@ -43,7 +43,7 @@ func (x ForeignEnum) String() string {
 }
 
 func (ForeignEnum) Type() protoreflect.EnumType {
-	return xxx_File_test3_test_proto_enumTypes[0]
+	return file_test3_test_proto_enumTypes[0]
 }
 
 func (x ForeignEnum) Number() protoreflect.EnumNumber {
@@ -52,7 +52,7 @@ func (x ForeignEnum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ForeignEnum.Type instead.
 func (ForeignEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test3_test_proto_rawDescGZIP(), []int{0}
+	return file_test3_test_proto_rawDescGZIP(), []int{0}
 }
 
 type TestAllTypes_NestedEnum int32
@@ -85,7 +85,7 @@ func (x TestAllTypes_NestedEnum) String() string {
 }
 
 func (TestAllTypes_NestedEnum) Type() protoreflect.EnumType {
-	return xxx_File_test3_test_proto_enumTypes[1]
+	return file_test3_test_proto_enumTypes[1]
 }
 
 func (x TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
@@ -94,7 +94,7 @@ func (x TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use TestAllTypes_NestedEnum.Type instead.
 func (TestAllTypes_NestedEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test3_test_proto_rawDescGZIP(), []int{0, 0}
+	return file_test3_test_proto_rawDescGZIP(), []int{0, 0}
 }
 
 type TestAllTypes struct {
@@ -184,16 +184,16 @@ func (x *TestAllTypes) String() string {
 func (*TestAllTypes) ProtoMessage() {}
 
 func (x *TestAllTypes) ProtoReflect() protoreflect.Message {
-	return xxx_File_test3_test_proto_messageTypes[0].MessageOf(x)
+	return file_test3_test_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *TestAllTypes) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test3_test_proto_messageTypes[0].Methods()
+	return file_test3_test_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use TestAllTypes.ProtoReflect.Type instead.
 func (*TestAllTypes) Descriptor() ([]byte, []int) {
-	return xxx_File_test3_test_proto_rawDescGZIP(), []int{0}
+	return file_test3_test_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *TestAllTypes) GetOptionalInt32() int32 {
@@ -771,16 +771,16 @@ func (x *ForeignMessage) String() string {
 func (*ForeignMessage) ProtoMessage() {}
 
 func (x *ForeignMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test3_test_proto_messageTypes[1].MessageOf(x)
+	return file_test3_test_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *ForeignMessage) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test3_test_proto_messageTypes[1].Methods()
+	return file_test3_test_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use ForeignMessage.ProtoReflect.Type instead.
 func (*ForeignMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_test3_test_proto_rawDescGZIP(), []int{1}
+	return file_test3_test_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ForeignMessage) GetC() int32 {
@@ -816,16 +816,16 @@ func (x *TestAllTypes_NestedMessage) String() string {
 func (*TestAllTypes_NestedMessage) ProtoMessage() {}
 
 func (x *TestAllTypes_NestedMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test3_test_proto_messageTypes[2].MessageOf(x)
+	return file_test3_test_proto_msgTypes[2].MessageOf(x)
 }
 
 func (m *TestAllTypes_NestedMessage) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test3_test_proto_messageTypes[2].Methods()
+	return file_test3_test_proto_msgTypes[2].Methods()
 }
 
 // Deprecated: Use TestAllTypes_NestedMessage.ProtoReflect.Type instead.
 func (*TestAllTypes_NestedMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_test3_test_proto_rawDescGZIP(), []int{0, 0}
+	return file_test3_test_proto_rawDescGZIP(), []int{0, 0}
 }
 
 func (x *TestAllTypes_NestedMessage) GetA() int32 {
@@ -844,7 +844,7 @@ func (x *TestAllTypes_NestedMessage) GetCorecursive() *TestAllTypes {
 
 var File_test3_test_proto protoreflect.FileDescriptor
 
-var xxx_File_test3_test_proto_rawDesc = []byte{
+var file_test3_test_proto_rawDesc = []byte{
 	0x0a, 0x10, 0x74, 0x65, 0x73, 0x74, 0x33, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x12, 0x13, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x2e, 0x74, 0x65, 0x73, 0x74, 0x33, 0x1a, 0x17, 0x74, 0x65, 0x73, 0x74, 0x33, 0x2f, 0x74,
@@ -1237,20 +1237,20 @@ var xxx_File_test3_test_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_test3_test_proto_rawDesc_once sync.Once
-	xxx_File_test3_test_proto_rawDesc_data = xxx_File_test3_test_proto_rawDesc
+	file_test3_test_proto_rawDescOnce sync.Once
+	file_test3_test_proto_rawDescData = file_test3_test_proto_rawDesc
 )
 
-func xxx_File_test3_test_proto_rawDescGZIP() []byte {
-	xxx_File_test3_test_proto_rawDesc_once.Do(func() {
-		xxx_File_test3_test_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_test3_test_proto_rawDesc_data)
+func file_test3_test_proto_rawDescGZIP() []byte {
+	file_test3_test_proto_rawDescOnce.Do(func() {
+		file_test3_test_proto_rawDescData = protoimpl.X.CompressGZIP(file_test3_test_proto_rawDescData)
 	})
-	return xxx_File_test3_test_proto_rawDesc_data
+	return file_test3_test_proto_rawDescData
 }
 
-var xxx_File_test3_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
-var xxx_File_test3_test_proto_messageTypes = make([]protoimpl.MessageType, 20)
-var xxx_File_test3_test_proto_goTypes = []interface{}{
+var file_test3_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
+var file_test3_test_proto_msgTypes = make([]protoimpl.MessageType, 20)
+var file_test3_test_proto_goTypes = []interface{}{
 	(ForeignEnum)(0),                   // 0: goproto.proto.test3.ForeignEnum
 	(TestAllTypes_NestedEnum)(0),       // 1: goproto.proto.test3.TestAllTypes.NestedEnum
 	(*TestAllTypes)(nil),               // 2: goproto.proto.test3.TestAllTypes
@@ -1276,7 +1276,7 @@ var xxx_File_test3_test_proto_goTypes = []interface{}{
 	(*ImportMessage)(nil),              // 22: goproto.proto.test3.ImportMessage
 	(ImportEnum)(0),                    // 23: goproto.proto.test3.ImportEnum
 }
-var xxx_File_test3_test_proto_depIdxs = []int32{
+var file_test3_test_proto_depIdxs = []int32{
 	4,  // goproto.proto.test3.TestAllTypes.optional_nested_message:type_name -> goproto.proto.test3.TestAllTypes.NestedMessage
 	3,  // goproto.proto.test3.TestAllTypes.optional_foreign_message:type_name -> goproto.proto.test3.ForeignMessage
 	22, // goproto.proto.test3.TestAllTypes.optional_import_message:type_name -> goproto.proto.test3.ImportMessage
@@ -1313,22 +1313,22 @@ var xxx_File_test3_test_proto_depIdxs = []int32{
 	1,  // goproto.proto.test3.TestAllTypes.MapStringNestedEnumEntry.value:type_name -> goproto.proto.test3.TestAllTypes.NestedEnum
 }
 
-func init() { xxx_File_test3_test_proto_init() }
-func xxx_File_test3_test_proto_init() {
+func init() { file_test3_test_proto_init() }
+func file_test3_test_proto_init() {
 	if File_test3_test_proto != nil {
 		return
 	}
-	xxx_File_test3_test_import_proto_init()
+	file_test3_test_import_proto_init()
 	File_test3_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_test3_test_proto_rawDesc,
-		GoTypes:            xxx_File_test3_test_proto_goTypes,
-		DependencyIndexes:  xxx_File_test3_test_proto_depIdxs,
-		EnumOutputTypes:    xxx_File_test3_test_proto_enumTypes,
-		MessageOutputTypes: xxx_File_test3_test_proto_messageTypes,
+		RawDescriptor:      file_test3_test_proto_rawDesc,
+		GoTypes:            file_test3_test_proto_goTypes,
+		DependencyIndexes:  file_test3_test_proto_depIdxs,
+		EnumOutputTypes:    file_test3_test_proto_enumTypes,
+		MessageOutputTypes: file_test3_test_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_test3_test_proto_rawDesc = nil
-	xxx_File_test3_test_proto_goTypes = nil
-	xxx_File_test3_test_proto_depIdxs = nil
+	file_test3_test_proto_rawDesc = nil
+	file_test3_test_proto_goTypes = nil
+	file_test3_test_proto_depIdxs = nil
 }

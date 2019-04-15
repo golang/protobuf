@@ -47,7 +47,7 @@ func (x Enum) String() string {
 }
 
 func (Enum) Type() protoreflect.EnumType {
-	return xxx_File_pb2_test_proto_enumTypes[0]
+	return file_pb2_test_proto_enumTypes[0]
 }
 
 func (x Enum) Number() protoreflect.EnumNumber {
@@ -66,7 +66,7 @@ func (x *Enum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use Enum.Type instead.
 func (Enum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{0}
+	return file_pb2_test_proto_rawDescGZIP(), []int{0}
 }
 
 type Enums_NestedEnum int32
@@ -102,7 +102,7 @@ func (x Enums_NestedEnum) String() string {
 }
 
 func (Enums_NestedEnum) Type() protoreflect.EnumType {
-	return xxx_File_pb2_test_proto_enumTypes[1]
+	return file_pb2_test_proto_enumTypes[1]
 }
 
 func (x Enums_NestedEnum) Number() protoreflect.EnumNumber {
@@ -121,7 +121,7 @@ func (x *Enums_NestedEnum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use Enums_NestedEnum.Type instead.
 func (Enums_NestedEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{1, 0}
+	return file_pb2_test_proto_rawDescGZIP(), []int{1, 0}
 }
 
 // Scalars contains optional scalar fields.
@@ -157,16 +157,16 @@ func (x *Scalars) String() string {
 func (*Scalars) ProtoMessage() {}
 
 func (x *Scalars) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[0].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *Scalars) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[0].Methods()
+	return file_pb2_test_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use Scalars.ProtoReflect.Type instead.
 func (*Scalars) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{0}
+	return file_pb2_test_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Scalars) GetOptBool() bool {
@@ -296,16 +296,16 @@ func (x *Enums) String() string {
 func (*Enums) ProtoMessage() {}
 
 func (x *Enums) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[1].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *Enums) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[1].Methods()
+	return file_pb2_test_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use Enums.ProtoReflect.Type instead.
 func (*Enums) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{1}
+	return file_pb2_test_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Enums) GetOptEnum() Enum {
@@ -363,16 +363,16 @@ func (x *Repeats) String() string {
 func (*Repeats) ProtoMessage() {}
 
 func (x *Repeats) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[2].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[2].MessageOf(x)
 }
 
 func (m *Repeats) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[2].Methods()
+	return file_pb2_test_proto_msgTypes[2].Methods()
 }
 
 // Deprecated: Use Repeats.ProtoReflect.Type instead.
 func (*Repeats) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{2}
+	return file_pb2_test_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Repeats) GetRptBool() []bool {
@@ -458,16 +458,16 @@ func (x *Nested) String() string {
 func (*Nested) ProtoMessage() {}
 
 func (x *Nested) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[3].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[3].MessageOf(x)
 }
 
 func (m *Nested) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[3].Methods()
+	return file_pb2_test_proto_msgTypes[3].Methods()
 }
 
 // Deprecated: Use Nested.ProtoReflect.Type instead.
 func (*Nested) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{3}
+	return file_pb2_test_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Nested) GetOptString() string {
@@ -506,16 +506,16 @@ func (x *Nests) String() string {
 func (*Nests) ProtoMessage() {}
 
 func (x *Nests) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[4].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[4].MessageOf(x)
 }
 
 func (m *Nests) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[4].Methods()
+	return file_pb2_test_proto_msgTypes[4].Methods()
 }
 
 // Deprecated: Use Nests.ProtoReflect.Type instead.
 func (*Nests) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4}
+	return file_pb2_test_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Nests) GetOptNested() *Nested {
@@ -570,16 +570,16 @@ func (x *Requireds) String() string {
 func (*Requireds) ProtoMessage() {}
 
 func (x *Requireds) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[5].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[5].MessageOf(x)
 }
 
 func (m *Requireds) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[5].Methods()
+	return file_pb2_test_proto_msgTypes[5].Methods()
 }
 
 // Deprecated: Use Requireds.ProtoReflect.Type instead.
 func (*Requireds) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{5}
+	return file_pb2_test_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Requireds) GetReqBool() bool {
@@ -644,16 +644,16 @@ func (x *PartialRequired) String() string {
 func (*PartialRequired) ProtoMessage() {}
 
 func (x *PartialRequired) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[6].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[6].MessageOf(x)
 }
 
 func (m *PartialRequired) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[6].Methods()
+	return file_pb2_test_proto_msgTypes[6].Methods()
 }
 
 // Deprecated: Use PartialRequired.ProtoReflect.Type instead.
 func (*PartialRequired) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{6}
+	return file_pb2_test_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *PartialRequired) GetReqString() string {
@@ -688,16 +688,16 @@ func (x *NestedWithRequired) String() string {
 func (*NestedWithRequired) ProtoMessage() {}
 
 func (x *NestedWithRequired) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[7].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[7].MessageOf(x)
 }
 
 func (m *NestedWithRequired) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[7].Methods()
+	return file_pb2_test_proto_msgTypes[7].Methods()
 }
 
 // Deprecated: Use NestedWithRequired.ProtoReflect.Type instead.
 func (*NestedWithRequired) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{7}
+	return file_pb2_test_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *NestedWithRequired) GetReqString() string {
@@ -730,16 +730,16 @@ func (x *IndirectRequired) String() string {
 func (*IndirectRequired) ProtoMessage() {}
 
 func (x *IndirectRequired) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[8].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[8].MessageOf(x)
 }
 
 func (m *IndirectRequired) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[8].Methods()
+	return file_pb2_test_proto_msgTypes[8].Methods()
 }
 
 // Deprecated: Use IndirectRequired.ProtoReflect.Type instead.
 func (*IndirectRequired) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{8}
+	return file_pb2_test_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *IndirectRequired) GetOptNested() *NestedWithRequired {
@@ -815,16 +815,16 @@ func (x *Extensions) String() string {
 func (*Extensions) ProtoMessage() {}
 
 func (x *Extensions) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[9].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[9].MessageOf(x)
 }
 
 func (m *Extensions) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[9].Methods()
+	return file_pb2_test_proto_msgTypes[9].Methods()
 }
 
 // Deprecated: Use Extensions.ProtoReflect.Type instead.
 func (*Extensions) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{9}
+	return file_pb2_test_proto_rawDescGZIP(), []int{9}
 }
 
 var extRange_Extensions = []protoiface.ExtensionRangeV1{
@@ -874,16 +874,16 @@ func (x *ExtensionsContainer) String() string {
 func (*ExtensionsContainer) ProtoMessage() {}
 
 func (x *ExtensionsContainer) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[10].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[10].MessageOf(x)
 }
 
 func (m *ExtensionsContainer) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[10].Methods()
+	return file_pb2_test_proto_msgTypes[10].Methods()
 }
 
 // Deprecated: Use ExtensionsContainer.ProtoReflect.Type instead.
 func (*ExtensionsContainer) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{10}
+	return file_pb2_test_proto_rawDescGZIP(), []int{10}
 }
 
 type MessageSet struct {
@@ -904,16 +904,16 @@ func (x *MessageSet) String() string {
 func (*MessageSet) ProtoMessage() {}
 
 func (x *MessageSet) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[11].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[11].MessageOf(x)
 }
 
 func (m *MessageSet) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[11].Methods()
+	return file_pb2_test_proto_msgTypes[11].Methods()
 }
 
 // Deprecated: Use MessageSet.ProtoReflect.Type instead.
 func (*MessageSet) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{11}
+	return file_pb2_test_proto_rawDescGZIP(), []int{11}
 }
 
 var extRange_MessageSet = []protoiface.ExtensionRangeV1{
@@ -943,16 +943,16 @@ func (x *MessageSetExtension) String() string {
 func (*MessageSetExtension) ProtoMessage() {}
 
 func (x *MessageSetExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[12].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[12].MessageOf(x)
 }
 
 func (m *MessageSetExtension) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[12].Methods()
+	return file_pb2_test_proto_msgTypes[12].Methods()
 }
 
 // Deprecated: Use MessageSetExtension.ProtoReflect.Type instead.
 func (*MessageSetExtension) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{12}
+	return file_pb2_test_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *MessageSetExtension) GetOptString() string {
@@ -980,16 +980,16 @@ func (x *FakeMessageSet) String() string {
 func (*FakeMessageSet) ProtoMessage() {}
 
 func (x *FakeMessageSet) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[13].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[13].MessageOf(x)
 }
 
 func (m *FakeMessageSet) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[13].Methods()
+	return file_pb2_test_proto_msgTypes[13].Methods()
 }
 
 // Deprecated: Use FakeMessageSet.ProtoReflect.Type instead.
 func (*FakeMessageSet) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{13}
+	return file_pb2_test_proto_rawDescGZIP(), []int{13}
 }
 
 var extRange_FakeMessageSet = []protoiface.ExtensionRangeV1{
@@ -1019,16 +1019,16 @@ func (x *FakeMessageSetExtension) String() string {
 func (*FakeMessageSetExtension) ProtoMessage() {}
 
 func (x *FakeMessageSetExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[14].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[14].MessageOf(x)
 }
 
 func (m *FakeMessageSetExtension) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[14].Methods()
+	return file_pb2_test_proto_msgTypes[14].Methods()
 }
 
 // Deprecated: Use FakeMessageSetExtension.ProtoReflect.Type instead.
 func (*FakeMessageSetExtension) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{14}
+	return file_pb2_test_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *FakeMessageSetExtension) GetOptString() string {
@@ -1074,16 +1074,16 @@ func (x *KnownTypes) String() string {
 func (*KnownTypes) ProtoMessage() {}
 
 func (x *KnownTypes) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[15].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[15].MessageOf(x)
 }
 
 func (m *KnownTypes) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[15].Methods()
+	return file_pb2_test_proto_msgTypes[15].Methods()
 }
 
 // Deprecated: Use KnownTypes.ProtoReflect.Type instead.
 func (*KnownTypes) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{15}
+	return file_pb2_test_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *KnownTypes) GetOptBool() *known.BoolValue {
@@ -1232,16 +1232,16 @@ func (x *Nests_OptGroup) String() string {
 func (*Nests_OptGroup) ProtoMessage() {}
 
 func (x *Nests_OptGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[16].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[16].MessageOf(x)
 }
 
 func (m *Nests_OptGroup) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[16].Methods()
+	return file_pb2_test_proto_msgTypes[16].Methods()
 }
 
 // Deprecated: Use Nests_OptGroup.ProtoReflect.Type instead.
 func (*Nests_OptGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4, 0}
+	return file_pb2_test_proto_rawDescGZIP(), []int{4, 0}
 }
 
 func (x *Nests_OptGroup) GetOptString() string {
@@ -1283,16 +1283,16 @@ func (x *Nests_RptGroup) String() string {
 func (*Nests_RptGroup) ProtoMessage() {}
 
 func (x *Nests_RptGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[17].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[17].MessageOf(x)
 }
 
 func (m *Nests_RptGroup) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[17].Methods()
+	return file_pb2_test_proto_msgTypes[17].Methods()
 }
 
 // Deprecated: Use Nests_RptGroup.ProtoReflect.Type instead.
 func (*Nests_RptGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4, 1}
+	return file_pb2_test_proto_rawDescGZIP(), []int{4, 1}
 }
 
 func (x *Nests_RptGroup) GetRptString() []string {
@@ -1320,16 +1320,16 @@ func (x *Nests_OptGroup_OptNestedGroup) String() string {
 func (*Nests_OptGroup_OptNestedGroup) ProtoMessage() {}
 
 func (x *Nests_OptGroup_OptNestedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_pb2_test_proto_messageTypes[18].MessageOf(x)
+	return file_pb2_test_proto_msgTypes[18].MessageOf(x)
 }
 
 func (m *Nests_OptGroup_OptNestedGroup) XXX_Methods() *protoiface.Methods {
-	return xxx_File_pb2_test_proto_messageTypes[18].Methods()
+	return file_pb2_test_proto_msgTypes[18].Methods()
 }
 
 // Deprecated: Use Nests_OptGroup_OptNestedGroup.ProtoReflect.Type instead.
 func (*Nests_OptGroup_OptNestedGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_pb2_test_proto_rawDescGZIP(), []int{4, 0, 0}
+	return file_pb2_test_proto_rawDescGZIP(), []int{4, 0, 0}
 }
 
 func (x *Nests_OptGroup_OptNestedGroup) GetOptFixed32() uint32 {
@@ -1339,7 +1339,7 @@ func (x *Nests_OptGroup_OptNestedGroup) GetOptFixed32() uint32 {
 	return 0
 }
 
-var xxx_File_pb2_test_proto_extDescs = []protoiface.ExtensionDescV1{
+var file_pb2_test_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*Extensions)(nil),
 		ExtensionType: (*bool)(nil),
@@ -1511,71 +1511,71 @@ var xxx_File_pb2_test_proto_extDescs = []protoiface.ExtensionDescV1{
 }
 var (
 	// extend pb2.Extensions { optional bool opt_ext_bool = 21; }
-	E_OptExtBool = &xxx_File_pb2_test_proto_extDescs[0]
+	E_OptExtBool = &file_pb2_test_proto_extDescs[0]
 
 	// extend pb2.Extensions { optional string opt_ext_string = 22; }
-	E_OptExtString = &xxx_File_pb2_test_proto_extDescs[1]
+	E_OptExtString = &file_pb2_test_proto_extDescs[1]
 
 	// extend pb2.Extensions { optional pb2.Enum opt_ext_enum = 23; }
-	E_OptExtEnum = &xxx_File_pb2_test_proto_extDescs[2]
+	E_OptExtEnum = &file_pb2_test_proto_extDescs[2]
 
 	// extend pb2.Extensions { optional pb2.Nested opt_ext_nested = 24; }
-	E_OptExtNested = &xxx_File_pb2_test_proto_extDescs[3]
+	E_OptExtNested = &file_pb2_test_proto_extDescs[3]
 
 	// extend pb2.Extensions { optional pb2.PartialRequired opt_ext_partial = 25; }
-	E_OptExtPartial = &xxx_File_pb2_test_proto_extDescs[4]
+	E_OptExtPartial = &file_pb2_test_proto_extDescs[4]
 
 	// extend pb2.Extensions { repeated fixed32 rpt_ext_fixed32 = 31; }
-	E_RptExtFixed32 = &xxx_File_pb2_test_proto_extDescs[5]
+	E_RptExtFixed32 = &file_pb2_test_proto_extDescs[5]
 
 	// extend pb2.Extensions { repeated pb2.Enum rpt_ext_enum = 32; }
-	E_RptExtEnum = &xxx_File_pb2_test_proto_extDescs[6]
+	E_RptExtEnum = &file_pb2_test_proto_extDescs[6]
 
 	// extend pb2.Extensions { repeated pb2.Nested rpt_ext_nested = 33; }
-	E_RptExtNested = &xxx_File_pb2_test_proto_extDescs[7]
+	E_RptExtNested = &file_pb2_test_proto_extDescs[7]
 
 	// extend pb2.MessageSet { optional pb2.FakeMessageSetExtension message_set_extension = 50; }
-	E_MessageSetExtension = &xxx_File_pb2_test_proto_extDescs[8]
+	E_MessageSetExtension = &file_pb2_test_proto_extDescs[8]
 
 	// extend pb2.Extensions { optional bool opt_ext_bool = 51; }
-	E_ExtensionsContainer_OptExtBool = &xxx_File_pb2_test_proto_extDescs[9]
+	E_ExtensionsContainer_OptExtBool = &file_pb2_test_proto_extDescs[9]
 
 	// extend pb2.Extensions { optional string opt_ext_string = 52; }
-	E_ExtensionsContainer_OptExtString = &xxx_File_pb2_test_proto_extDescs[10]
+	E_ExtensionsContainer_OptExtString = &file_pb2_test_proto_extDescs[10]
 
 	// extend pb2.Extensions { optional pb2.Enum opt_ext_enum = 53; }
-	E_ExtensionsContainer_OptExtEnum = &xxx_File_pb2_test_proto_extDescs[11]
+	E_ExtensionsContainer_OptExtEnum = &file_pb2_test_proto_extDescs[11]
 
 	// extend pb2.Extensions { optional pb2.Nested opt_ext_nested = 54; }
-	E_ExtensionsContainer_OptExtNested = &xxx_File_pb2_test_proto_extDescs[12]
+	E_ExtensionsContainer_OptExtNested = &file_pb2_test_proto_extDescs[12]
 
 	// extend pb2.Extensions { optional pb2.PartialRequired opt_ext_partial = 55; }
-	E_ExtensionsContainer_OptExtPartial = &xxx_File_pb2_test_proto_extDescs[13]
+	E_ExtensionsContainer_OptExtPartial = &file_pb2_test_proto_extDescs[13]
 
 	// extend pb2.Extensions { repeated string rpt_ext_string = 61; }
-	E_ExtensionsContainer_RptExtString = &xxx_File_pb2_test_proto_extDescs[14]
+	E_ExtensionsContainer_RptExtString = &file_pb2_test_proto_extDescs[14]
 
 	// extend pb2.Extensions { repeated pb2.Enum rpt_ext_enum = 62; }
-	E_ExtensionsContainer_RptExtEnum = &xxx_File_pb2_test_proto_extDescs[15]
+	E_ExtensionsContainer_RptExtEnum = &file_pb2_test_proto_extDescs[15]
 
 	// extend pb2.Extensions { repeated pb2.Nested rpt_ext_nested = 63; }
-	E_ExtensionsContainer_RptExtNested = &xxx_File_pb2_test_proto_extDescs[16]
+	E_ExtensionsContainer_RptExtNested = &file_pb2_test_proto_extDescs[16]
 
 	// extend pb2.MessageSet { optional pb2.MessageSetExtension message_set_extension = 10; }
-	E_MessageSetExtension_MessageSetExtension = &xxx_File_pb2_test_proto_extDescs[17]
+	E_MessageSetExtension_MessageSetExtension = &file_pb2_test_proto_extDescs[17]
 
 	// extend pb2.MessageSet { optional pb2.MessageSetExtension not_message_set_extension = 20; }
-	E_MessageSetExtension_NotMessageSetExtension = &xxx_File_pb2_test_proto_extDescs[18]
+	E_MessageSetExtension_NotMessageSetExtension = &file_pb2_test_proto_extDescs[18]
 
 	// extend pb2.MessageSet { optional pb2.Nested ext_nested = 30; }
-	E_MessageSetExtension_ExtNested = &xxx_File_pb2_test_proto_extDescs[19]
+	E_MessageSetExtension_ExtNested = &file_pb2_test_proto_extDescs[19]
 
 	// extend pb2.FakeMessageSet { optional pb2.FakeMessageSetExtension message_set_extension = 10; }
-	E_FakeMessageSetExtension_MessageSetExtension = &xxx_File_pb2_test_proto_extDescs[20]
+	E_FakeMessageSetExtension_MessageSetExtension = &file_pb2_test_proto_extDescs[20]
 )
 var File_pb2_test_proto protoreflect.FileDescriptor
 
-var xxx_File_pb2_test_proto_rawDesc = []byte{
+var file_pb2_test_proto_rawDesc = []byte{
 	0x0a, 0x0e, 0x70, 0x62, 0x32, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x03, 0x70, 0x62, 0x32, 0x1a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
@@ -1919,20 +1919,20 @@ var xxx_File_pb2_test_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_pb2_test_proto_rawDesc_once sync.Once
-	xxx_File_pb2_test_proto_rawDesc_data = xxx_File_pb2_test_proto_rawDesc
+	file_pb2_test_proto_rawDescOnce sync.Once
+	file_pb2_test_proto_rawDescData = file_pb2_test_proto_rawDesc
 )
 
-func xxx_File_pb2_test_proto_rawDescGZIP() []byte {
-	xxx_File_pb2_test_proto_rawDesc_once.Do(func() {
-		xxx_File_pb2_test_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_pb2_test_proto_rawDesc_data)
+func file_pb2_test_proto_rawDescGZIP() []byte {
+	file_pb2_test_proto_rawDescOnce.Do(func() {
+		file_pb2_test_proto_rawDescData = protoimpl.X.CompressGZIP(file_pb2_test_proto_rawDescData)
 	})
-	return xxx_File_pb2_test_proto_rawDesc_data
+	return file_pb2_test_proto_rawDescData
 }
 
-var xxx_File_pb2_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
-var xxx_File_pb2_test_proto_messageTypes = make([]protoimpl.MessageType, 20)
-var xxx_File_pb2_test_proto_goTypes = []interface{}{
+var file_pb2_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
+var file_pb2_test_proto_msgTypes = make([]protoimpl.MessageType, 20)
+var file_pb2_test_proto_goTypes = []interface{}{
 	(Enum)(0),                             // 0: pb2.Enum
 	(Enums_NestedEnum)(0),                 // 1: pb2.Enums.NestedEnum
 	(*Scalars)(nil),                       // 2: pb2.Scalars
@@ -1974,7 +1974,7 @@ var xxx_File_pb2_test_proto_goTypes = []interface{}{
 	(*known.Any)(nil),                     // 38: google.protobuf.Any
 	(*known.FieldMask)(nil),               // 39: google.protobuf.FieldMask
 }
-var xxx_File_pb2_test_proto_depIdxs = []int32{
+var file_pb2_test_proto_depIdxs = []int32{
 	11, // pb2.opt_ext_bool:extendee -> pb2.Extensions
 	11, // pb2.opt_ext_string:extendee -> pb2.Extensions
 	11, // pb2.opt_ext_enum:extendee -> pb2.Extensions
@@ -2049,24 +2049,24 @@ var xxx_File_pb2_test_proto_depIdxs = []int32{
 	16, // pb2.FakeMessageSetExtension.message_set_extension:type_name -> pb2.FakeMessageSetExtension
 }
 
-func init() { xxx_File_pb2_test_proto_init() }
-func xxx_File_pb2_test_proto_init() {
+func init() { file_pb2_test_proto_init() }
+func file_pb2_test_proto_init() {
 	if File_pb2_test_proto != nil {
 		return
 	}
 	extensionTypes := make([]protoreflect.ExtensionType, 21)
 	File_pb2_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:        xxx_File_pb2_test_proto_rawDesc,
-		GoTypes:              xxx_File_pb2_test_proto_goTypes,
-		DependencyIndexes:    xxx_File_pb2_test_proto_depIdxs,
-		LegacyExtensions:     xxx_File_pb2_test_proto_extDescs,
-		EnumOutputTypes:      xxx_File_pb2_test_proto_enumTypes,
-		MessageOutputTypes:   xxx_File_pb2_test_proto_messageTypes,
+		RawDescriptor:        file_pb2_test_proto_rawDesc,
+		GoTypes:              file_pb2_test_proto_goTypes,
+		DependencyIndexes:    file_pb2_test_proto_depIdxs,
+		LegacyExtensions:     file_pb2_test_proto_extDescs,
+		EnumOutputTypes:      file_pb2_test_proto_enumTypes,
+		MessageOutputTypes:   file_pb2_test_proto_msgTypes,
 		ExtensionOutputTypes: extensionTypes,
 		FilesRegistry:        protoregistry.GlobalFiles,
 		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_pb2_test_proto_rawDesc = nil
-	xxx_File_pb2_test_proto_goTypes = nil
-	xxx_File_pb2_test_proto_depIdxs = nil
+	file_pb2_test_proto_rawDesc = nil
+	file_pb2_test_proto_goTypes = nil
+	file_pb2_test_proto_depIdxs = nil
 }

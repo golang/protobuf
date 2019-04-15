@@ -77,16 +77,16 @@ func (x *Public) String() string {
 func (*Public) ProtoMessage() {}
 
 func (x *Public) ProtoReflect() protoreflect.Message {
-	return xxx_File_import_public_a_proto_messageTypes[0].MessageOf(x)
+	return file_import_public_a_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *Public) XXX_Methods() *protoiface.Methods {
-	return xxx_File_import_public_a_proto_messageTypes[0].Methods()
+	return file_import_public_a_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use Public.ProtoReflect.Type instead.
 func (*Public) Descriptor() ([]byte, []int) {
-	return xxx_File_import_public_a_proto_rawDescGZIP(), []int{0}
+	return file_import_public_a_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Public) GetM() *sub.M {
@@ -112,7 +112,7 @@ func (x *Public) GetLocal() *Local {
 
 var File_import_public_a_proto protoreflect.FileDescriptor
 
-var xxx_File_import_public_a_proto_rawDesc = []byte{
+var file_import_public_a_proto_rawDesc = []byte{
 	0x0a, 0x15, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x2f,
 	0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1c, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x70,
@@ -140,45 +140,45 @@ var xxx_File_import_public_a_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_import_public_a_proto_rawDesc_once sync.Once
-	xxx_File_import_public_a_proto_rawDesc_data = xxx_File_import_public_a_proto_rawDesc
+	file_import_public_a_proto_rawDescOnce sync.Once
+	file_import_public_a_proto_rawDescData = file_import_public_a_proto_rawDesc
 )
 
-func xxx_File_import_public_a_proto_rawDescGZIP() []byte {
-	xxx_File_import_public_a_proto_rawDesc_once.Do(func() {
-		xxx_File_import_public_a_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_import_public_a_proto_rawDesc_data)
+func file_import_public_a_proto_rawDescGZIP() []byte {
+	file_import_public_a_proto_rawDescOnce.Do(func() {
+		file_import_public_a_proto_rawDescData = protoimpl.X.CompressGZIP(file_import_public_a_proto_rawDescData)
 	})
-	return xxx_File_import_public_a_proto_rawDesc_data
+	return file_import_public_a_proto_rawDescData
 }
 
-var xxx_File_import_public_a_proto_messageTypes = make([]protoimpl.MessageType, 1)
-var xxx_File_import_public_a_proto_goTypes = []interface{}{
+var file_import_public_a_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_import_public_a_proto_goTypes = []interface{}{
 	(*Public)(nil), // 0: goproto.protoc.import_public.Public
 	(*sub.M)(nil),  // 1: goproto.protoc.import_public.sub.M
 	(sub.E)(0),     // 2: goproto.protoc.import_public.sub.E
 	(*Local)(nil),  // 3: goproto.protoc.import_public.Local
 }
-var xxx_File_import_public_a_proto_depIdxs = []int32{
+var file_import_public_a_proto_depIdxs = []int32{
 	1, // goproto.protoc.import_public.Public.m:type_name -> goproto.protoc.import_public.sub.M
 	2, // goproto.protoc.import_public.Public.e:type_name -> goproto.protoc.import_public.sub.E
 	3, // goproto.protoc.import_public.Public.local:type_name -> goproto.protoc.import_public.Local
 }
 
-func init() { xxx_File_import_public_a_proto_init() }
-func xxx_File_import_public_a_proto_init() {
+func init() { file_import_public_a_proto_init() }
+func file_import_public_a_proto_init() {
 	if File_import_public_a_proto != nil {
 		return
 	}
-	xxx_File_import_public_b_proto_init()
+	file_import_public_b_proto_init()
 	File_import_public_a_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_import_public_a_proto_rawDesc,
-		GoTypes:            xxx_File_import_public_a_proto_goTypes,
-		DependencyIndexes:  xxx_File_import_public_a_proto_depIdxs,
-		MessageOutputTypes: xxx_File_import_public_a_proto_messageTypes,
+		RawDescriptor:      file_import_public_a_proto_rawDesc,
+		GoTypes:            file_import_public_a_proto_goTypes,
+		DependencyIndexes:  file_import_public_a_proto_depIdxs,
+		MessageOutputTypes: file_import_public_a_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_import_public_a_proto_rawDesc = nil
-	xxx_File_import_public_a_proto_goTypes = nil
-	xxx_File_import_public_a_proto_depIdxs = nil
+	file_import_public_a_proto_rawDesc = nil
+	file_import_public_a_proto_goTypes = nil
+	file_import_public_a_proto_depIdxs = nil
 }

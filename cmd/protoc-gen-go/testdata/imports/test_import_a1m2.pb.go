@@ -32,16 +32,16 @@ func (x *A1M2) String() string {
 func (*A1M2) ProtoMessage() {}
 
 func (x *A1M2) ProtoReflect() protoreflect.Message {
-	return xxx_File_imports_test_import_a1m2_proto_messageTypes[0].MessageOf(x)
+	return file_imports_test_import_a1m2_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *A1M2) XXX_Methods() *protoiface.Methods {
-	return xxx_File_imports_test_import_a1m2_proto_messageTypes[0].Methods()
+	return file_imports_test_import_a1m2_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use A1M2.ProtoReflect.Type instead.
 func (*A1M2) Descriptor() ([]byte, []int) {
-	return xxx_File_imports_test_import_a1m2_proto_rawDescGZIP(), []int{0}
+	return file_imports_test_import_a1m2_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *A1M2) GetF() *test_a_1.M2 {
@@ -53,7 +53,7 @@ func (x *A1M2) GetF() *test_a_1.M2 {
 
 var File_imports_test_import_a1m2_proto protoreflect.FileDescriptor
 
-var xxx_File_imports_test_import_a1m2_proto_rawDesc = []byte{
+var file_imports_test_import_a1m2_proto_rawDesc = []byte{
 	0x0a, 0x1e, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x69,
 	0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x61, 0x31, 0x6d, 0x32, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x04, 0x74, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x2f,
@@ -68,40 +68,40 @@ var xxx_File_imports_test_import_a1m2_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_imports_test_import_a1m2_proto_rawDesc_once sync.Once
-	xxx_File_imports_test_import_a1m2_proto_rawDesc_data = xxx_File_imports_test_import_a1m2_proto_rawDesc
+	file_imports_test_import_a1m2_proto_rawDescOnce sync.Once
+	file_imports_test_import_a1m2_proto_rawDescData = file_imports_test_import_a1m2_proto_rawDesc
 )
 
-func xxx_File_imports_test_import_a1m2_proto_rawDescGZIP() []byte {
-	xxx_File_imports_test_import_a1m2_proto_rawDesc_once.Do(func() {
-		xxx_File_imports_test_import_a1m2_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_imports_test_import_a1m2_proto_rawDesc_data)
+func file_imports_test_import_a1m2_proto_rawDescGZIP() []byte {
+	file_imports_test_import_a1m2_proto_rawDescOnce.Do(func() {
+		file_imports_test_import_a1m2_proto_rawDescData = protoimpl.X.CompressGZIP(file_imports_test_import_a1m2_proto_rawDescData)
 	})
-	return xxx_File_imports_test_import_a1m2_proto_rawDesc_data
+	return file_imports_test_import_a1m2_proto_rawDescData
 }
 
-var xxx_File_imports_test_import_a1m2_proto_messageTypes = make([]protoimpl.MessageType, 1)
-var xxx_File_imports_test_import_a1m2_proto_goTypes = []interface{}{
+var file_imports_test_import_a1m2_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_imports_test_import_a1m2_proto_goTypes = []interface{}{
 	(*A1M2)(nil),        // 0: test.A1M2
 	(*test_a_1.M2)(nil), // 1: test.a.M2
 }
-var xxx_File_imports_test_import_a1m2_proto_depIdxs = []int32{
+var file_imports_test_import_a1m2_proto_depIdxs = []int32{
 	1, // test.A1M2.f:type_name -> test.a.M2
 }
 
-func init() { xxx_File_imports_test_import_a1m2_proto_init() }
-func xxx_File_imports_test_import_a1m2_proto_init() {
+func init() { file_imports_test_import_a1m2_proto_init() }
+func file_imports_test_import_a1m2_proto_init() {
 	if File_imports_test_import_a1m2_proto != nil {
 		return
 	}
 	File_imports_test_import_a1m2_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_imports_test_import_a1m2_proto_rawDesc,
-		GoTypes:            xxx_File_imports_test_import_a1m2_proto_goTypes,
-		DependencyIndexes:  xxx_File_imports_test_import_a1m2_proto_depIdxs,
-		MessageOutputTypes: xxx_File_imports_test_import_a1m2_proto_messageTypes,
+		RawDescriptor:      file_imports_test_import_a1m2_proto_rawDesc,
+		GoTypes:            file_imports_test_import_a1m2_proto_goTypes,
+		DependencyIndexes:  file_imports_test_import_a1m2_proto_depIdxs,
+		MessageOutputTypes: file_imports_test_import_a1m2_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_imports_test_import_a1m2_proto_rawDesc = nil
-	xxx_File_imports_test_import_a1m2_proto_goTypes = nil
-	xxx_File_imports_test_import_a1m2_proto_depIdxs = nil
+	file_imports_test_import_a1m2_proto_rawDesc = nil
+	file_imports_test_import_a1m2_proto_goTypes = nil
+	file_imports_test_import_a1m2_proto_depIdxs = nil
 }

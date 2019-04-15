@@ -231,16 +231,16 @@ func (x *FieldMask) String() string {
 func (*FieldMask) ProtoMessage() {}
 
 func (x *FieldMask) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_field_mask_proto_messageTypes[0].MessageOf(x)
+	return file_google_protobuf_field_mask_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *FieldMask) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_field_mask_proto_messageTypes[0].Methods()
+	return file_google_protobuf_field_mask_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use FieldMask.ProtoReflect.Type instead.
 func (*FieldMask) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_field_mask_proto_rawDescGZIP(), []int{0}
+	return file_google_protobuf_field_mask_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *FieldMask) GetPaths() []string {
@@ -252,7 +252,7 @@ func (x *FieldMask) GetPaths() []string {
 
 var File_google_protobuf_field_mask_proto protoreflect.FileDescriptor
 
-var xxx_File_google_protobuf_field_mask_proto_rawDesc = []byte{
+var file_google_protobuf_field_mask_proto_rawDesc = []byte{
 	0x0a, 0x20, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x5f, 0x6d, 0x61, 0x73, 0x6b, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x12, 0x0f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
@@ -271,37 +271,37 @@ var xxx_File_google_protobuf_field_mask_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_google_protobuf_field_mask_proto_rawDesc_once sync.Once
-	xxx_File_google_protobuf_field_mask_proto_rawDesc_data = xxx_File_google_protobuf_field_mask_proto_rawDesc
+	file_google_protobuf_field_mask_proto_rawDescOnce sync.Once
+	file_google_protobuf_field_mask_proto_rawDescData = file_google_protobuf_field_mask_proto_rawDesc
 )
 
-func xxx_File_google_protobuf_field_mask_proto_rawDescGZIP() []byte {
-	xxx_File_google_protobuf_field_mask_proto_rawDesc_once.Do(func() {
-		xxx_File_google_protobuf_field_mask_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_field_mask_proto_rawDesc_data)
+func file_google_protobuf_field_mask_proto_rawDescGZIP() []byte {
+	file_google_protobuf_field_mask_proto_rawDescOnce.Do(func() {
+		file_google_protobuf_field_mask_proto_rawDescData = protoimpl.X.CompressGZIP(file_google_protobuf_field_mask_proto_rawDescData)
 	})
-	return xxx_File_google_protobuf_field_mask_proto_rawDesc_data
+	return file_google_protobuf_field_mask_proto_rawDescData
 }
 
-var xxx_File_google_protobuf_field_mask_proto_messageTypes = make([]protoimpl.MessageType, 1)
-var xxx_File_google_protobuf_field_mask_proto_goTypes = []interface{}{
+var file_google_protobuf_field_mask_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_google_protobuf_field_mask_proto_goTypes = []interface{}{
 	(*FieldMask)(nil), // 0: google.protobuf.FieldMask
 }
-var xxx_File_google_protobuf_field_mask_proto_depIdxs = []int32{}
+var file_google_protobuf_field_mask_proto_depIdxs = []int32{}
 
-func init() { xxx_File_google_protobuf_field_mask_proto_init() }
-func xxx_File_google_protobuf_field_mask_proto_init() {
+func init() { file_google_protobuf_field_mask_proto_init() }
+func file_google_protobuf_field_mask_proto_init() {
 	if File_google_protobuf_field_mask_proto != nil {
 		return
 	}
 	File_google_protobuf_field_mask_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_field_mask_proto_rawDesc,
-		GoTypes:            xxx_File_google_protobuf_field_mask_proto_goTypes,
-		DependencyIndexes:  xxx_File_google_protobuf_field_mask_proto_depIdxs,
-		MessageOutputTypes: xxx_File_google_protobuf_field_mask_proto_messageTypes,
+		RawDescriptor:      file_google_protobuf_field_mask_proto_rawDesc,
+		GoTypes:            file_google_protobuf_field_mask_proto_goTypes,
+		DependencyIndexes:  file_google_protobuf_field_mask_proto_depIdxs,
+		MessageOutputTypes: file_google_protobuf_field_mask_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_google_protobuf_field_mask_proto_rawDesc = nil
-	xxx_File_google_protobuf_field_mask_proto_goTypes = nil
-	xxx_File_google_protobuf_field_mask_proto_depIdxs = nil
+	file_google_protobuf_field_mask_proto_rawDesc = nil
+	file_google_protobuf_field_mask_proto_goTypes = nil
+	file_google_protobuf_field_mask_proto_depIdxs = nil
 }

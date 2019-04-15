@@ -69,16 +69,16 @@ func (x *Message) String() string {
 func (*Message) ProtoMessage() {}
 
 func (x *Message) ProtoReflect() protoreflect.Message {
-	return xxx_File_fieldnames_fieldnames_proto_messageTypes[0].MessageOf(x)
+	return file_fieldnames_fieldnames_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *Message) XXX_Methods() *protoiface.Methods {
-	return xxx_File_fieldnames_fieldnames_proto_messageTypes[0].Methods()
+	return file_fieldnames_fieldnames_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use Message.ProtoReflect.Type instead.
 func (*Message) Descriptor() ([]byte, []int) {
-	return xxx_File_fieldnames_fieldnames_proto_rawDescGZIP(), []int{0}
+	return file_fieldnames_fieldnames_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Message) GetFieldOne() string {
@@ -291,21 +291,21 @@ func (x *Message_OneofMessageConflict) String() string {
 func (*Message_OneofMessageConflict) ProtoMessage() {}
 
 func (x *Message_OneofMessageConflict) ProtoReflect() protoreflect.Message {
-	return xxx_File_fieldnames_fieldnames_proto_messageTypes[1].MessageOf(x)
+	return file_fieldnames_fieldnames_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *Message_OneofMessageConflict) XXX_Methods() *protoiface.Methods {
-	return xxx_File_fieldnames_fieldnames_proto_messageTypes[1].Methods()
+	return file_fieldnames_fieldnames_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use Message_OneofMessageConflict.ProtoReflect.Type instead.
 func (*Message_OneofMessageConflict) Descriptor() ([]byte, []int) {
-	return xxx_File_fieldnames_fieldnames_proto_rawDescGZIP(), []int{0, 0}
+	return file_fieldnames_fieldnames_proto_rawDescGZIP(), []int{0, 0}
 }
 
 var File_fieldnames_fieldnames_proto protoreflect.FileDescriptor
 
-var xxx_File_fieldnames_fieldnames_proto_rawDesc = []byte{
+var file_fieldnames_fieldnames_proto_rawDesc = []byte{
 	0x0a, 0x1b, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x2f, 0x66, 0x69, 0x65,
 	0x6c, 0x64, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x19, 0x67,
 	0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x66, 0x69,
@@ -361,38 +361,38 @@ var xxx_File_fieldnames_fieldnames_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_fieldnames_fieldnames_proto_rawDesc_once sync.Once
-	xxx_File_fieldnames_fieldnames_proto_rawDesc_data = xxx_File_fieldnames_fieldnames_proto_rawDesc
+	file_fieldnames_fieldnames_proto_rawDescOnce sync.Once
+	file_fieldnames_fieldnames_proto_rawDescData = file_fieldnames_fieldnames_proto_rawDesc
 )
 
-func xxx_File_fieldnames_fieldnames_proto_rawDescGZIP() []byte {
-	xxx_File_fieldnames_fieldnames_proto_rawDesc_once.Do(func() {
-		xxx_File_fieldnames_fieldnames_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_fieldnames_fieldnames_proto_rawDesc_data)
+func file_fieldnames_fieldnames_proto_rawDescGZIP() []byte {
+	file_fieldnames_fieldnames_proto_rawDescOnce.Do(func() {
+		file_fieldnames_fieldnames_proto_rawDescData = protoimpl.X.CompressGZIP(file_fieldnames_fieldnames_proto_rawDescData)
 	})
-	return xxx_File_fieldnames_fieldnames_proto_rawDesc_data
+	return file_fieldnames_fieldnames_proto_rawDescData
 }
 
-var xxx_File_fieldnames_fieldnames_proto_messageTypes = make([]protoimpl.MessageType, 2)
-var xxx_File_fieldnames_fieldnames_proto_goTypes = []interface{}{
+var file_fieldnames_fieldnames_proto_msgTypes = make([]protoimpl.MessageType, 2)
+var file_fieldnames_fieldnames_proto_goTypes = []interface{}{
 	(*Message)(nil),                      // 0: goproto.protoc.fieldnames.Message
 	(*Message_OneofMessageConflict)(nil), // 1: goproto.protoc.fieldnames.Message.OneofMessageConflict
 }
-var xxx_File_fieldnames_fieldnames_proto_depIdxs = []int32{}
+var file_fieldnames_fieldnames_proto_depIdxs = []int32{}
 
-func init() { xxx_File_fieldnames_fieldnames_proto_init() }
-func xxx_File_fieldnames_fieldnames_proto_init() {
+func init() { file_fieldnames_fieldnames_proto_init() }
+func file_fieldnames_fieldnames_proto_init() {
 	if File_fieldnames_fieldnames_proto != nil {
 		return
 	}
 	File_fieldnames_fieldnames_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_fieldnames_fieldnames_proto_rawDesc,
-		GoTypes:            xxx_File_fieldnames_fieldnames_proto_goTypes,
-		DependencyIndexes:  xxx_File_fieldnames_fieldnames_proto_depIdxs,
-		MessageOutputTypes: xxx_File_fieldnames_fieldnames_proto_messageTypes,
+		RawDescriptor:      file_fieldnames_fieldnames_proto_rawDesc,
+		GoTypes:            file_fieldnames_fieldnames_proto_goTypes,
+		DependencyIndexes:  file_fieldnames_fieldnames_proto_depIdxs,
+		MessageOutputTypes: file_fieldnames_fieldnames_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_fieldnames_fieldnames_proto_rawDesc = nil
-	xxx_File_fieldnames_fieldnames_proto_goTypes = nil
-	xxx_File_fieldnames_fieldnames_proto_depIdxs = nil
+	file_fieldnames_fieldnames_proto_rawDesc = nil
+	file_fieldnames_fieldnames_proto_goTypes = nil
+	file_fieldnames_fieldnames_proto_depIdxs = nil
 }

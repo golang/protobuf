@@ -35,16 +35,16 @@ func (x *DoubleValue) String() string {
 func (*DoubleValue) ProtoMessage() {}
 
 func (x *DoubleValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[0].MessageOf(x)
+	return file_google_protobuf_wrappers_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *DoubleValue) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[0].Methods()
+	return file_google_protobuf_wrappers_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use DoubleValue.ProtoReflect.Type instead.
 func (*DoubleValue) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{0}
+	return file_google_protobuf_wrappers_proto_rawDescGZIP(), []int{0}
 }
 
 func (*DoubleValue) XXX_WellKnownType() string { return "DoubleValue" }
@@ -78,16 +78,16 @@ func (x *FloatValue) String() string {
 func (*FloatValue) ProtoMessage() {}
 
 func (x *FloatValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[1].MessageOf(x)
+	return file_google_protobuf_wrappers_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *FloatValue) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[1].Methods()
+	return file_google_protobuf_wrappers_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use FloatValue.ProtoReflect.Type instead.
 func (*FloatValue) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{1}
+	return file_google_protobuf_wrappers_proto_rawDescGZIP(), []int{1}
 }
 
 func (*FloatValue) XXX_WellKnownType() string { return "FloatValue" }
@@ -121,16 +121,16 @@ func (x *Int64Value) String() string {
 func (*Int64Value) ProtoMessage() {}
 
 func (x *Int64Value) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[2].MessageOf(x)
+	return file_google_protobuf_wrappers_proto_msgTypes[2].MessageOf(x)
 }
 
 func (m *Int64Value) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[2].Methods()
+	return file_google_protobuf_wrappers_proto_msgTypes[2].Methods()
 }
 
 // Deprecated: Use Int64Value.ProtoReflect.Type instead.
 func (*Int64Value) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{2}
+	return file_google_protobuf_wrappers_proto_rawDescGZIP(), []int{2}
 }
 
 func (*Int64Value) XXX_WellKnownType() string { return "Int64Value" }
@@ -164,16 +164,16 @@ func (x *UInt64Value) String() string {
 func (*UInt64Value) ProtoMessage() {}
 
 func (x *UInt64Value) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[3].MessageOf(x)
+	return file_google_protobuf_wrappers_proto_msgTypes[3].MessageOf(x)
 }
 
 func (m *UInt64Value) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[3].Methods()
+	return file_google_protobuf_wrappers_proto_msgTypes[3].Methods()
 }
 
 // Deprecated: Use UInt64Value.ProtoReflect.Type instead.
 func (*UInt64Value) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{3}
+	return file_google_protobuf_wrappers_proto_rawDescGZIP(), []int{3}
 }
 
 func (*UInt64Value) XXX_WellKnownType() string { return "UInt64Value" }
@@ -207,16 +207,16 @@ func (x *Int32Value) String() string {
 func (*Int32Value) ProtoMessage() {}
 
 func (x *Int32Value) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[4].MessageOf(x)
+	return file_google_protobuf_wrappers_proto_msgTypes[4].MessageOf(x)
 }
 
 func (m *Int32Value) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[4].Methods()
+	return file_google_protobuf_wrappers_proto_msgTypes[4].Methods()
 }
 
 // Deprecated: Use Int32Value.ProtoReflect.Type instead.
 func (*Int32Value) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{4}
+	return file_google_protobuf_wrappers_proto_rawDescGZIP(), []int{4}
 }
 
 func (*Int32Value) XXX_WellKnownType() string { return "Int32Value" }
@@ -250,16 +250,16 @@ func (x *UInt32Value) String() string {
 func (*UInt32Value) ProtoMessage() {}
 
 func (x *UInt32Value) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[5].MessageOf(x)
+	return file_google_protobuf_wrappers_proto_msgTypes[5].MessageOf(x)
 }
 
 func (m *UInt32Value) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[5].Methods()
+	return file_google_protobuf_wrappers_proto_msgTypes[5].Methods()
 }
 
 // Deprecated: Use UInt32Value.ProtoReflect.Type instead.
 func (*UInt32Value) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{5}
+	return file_google_protobuf_wrappers_proto_rawDescGZIP(), []int{5}
 }
 
 func (*UInt32Value) XXX_WellKnownType() string { return "UInt32Value" }
@@ -293,16 +293,16 @@ func (x *BoolValue) String() string {
 func (*BoolValue) ProtoMessage() {}
 
 func (x *BoolValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[6].MessageOf(x)
+	return file_google_protobuf_wrappers_proto_msgTypes[6].MessageOf(x)
 }
 
 func (m *BoolValue) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[6].Methods()
+	return file_google_protobuf_wrappers_proto_msgTypes[6].Methods()
 }
 
 // Deprecated: Use BoolValue.ProtoReflect.Type instead.
 func (*BoolValue) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{6}
+	return file_google_protobuf_wrappers_proto_rawDescGZIP(), []int{6}
 }
 
 func (*BoolValue) XXX_WellKnownType() string { return "BoolValue" }
@@ -336,16 +336,16 @@ func (x *StringValue) String() string {
 func (*StringValue) ProtoMessage() {}
 
 func (x *StringValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[7].MessageOf(x)
+	return file_google_protobuf_wrappers_proto_msgTypes[7].MessageOf(x)
 }
 
 func (m *StringValue) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[7].Methods()
+	return file_google_protobuf_wrappers_proto_msgTypes[7].Methods()
 }
 
 // Deprecated: Use StringValue.ProtoReflect.Type instead.
 func (*StringValue) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{7}
+	return file_google_protobuf_wrappers_proto_rawDescGZIP(), []int{7}
 }
 
 func (*StringValue) XXX_WellKnownType() string { return "StringValue" }
@@ -379,16 +379,16 @@ func (x *BytesValue) String() string {
 func (*BytesValue) ProtoMessage() {}
 
 func (x *BytesValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[8].MessageOf(x)
+	return file_google_protobuf_wrappers_proto_msgTypes[8].MessageOf(x)
 }
 
 func (m *BytesValue) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_wrappers_proto_messageTypes[8].Methods()
+	return file_google_protobuf_wrappers_proto_msgTypes[8].Methods()
 }
 
 // Deprecated: Use BytesValue.ProtoReflect.Type instead.
 func (*BytesValue) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_wrappers_proto_rawDescGZIP(), []int{8}
+	return file_google_protobuf_wrappers_proto_rawDescGZIP(), []int{8}
 }
 
 func (*BytesValue) XXX_WellKnownType() string { return "BytesValue" }
@@ -402,7 +402,7 @@ func (x *BytesValue) GetValue() []byte {
 
 var File_google_protobuf_wrappers_proto protoreflect.FileDescriptor
 
-var xxx_File_google_protobuf_wrappers_proto_rawDesc = []byte{
+var file_google_protobuf_wrappers_proto_rawDesc = []byte{
 	0x0a, 0x1e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x77, 0x72, 0x61, 0x70, 0x70, 0x65, 0x72, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x0f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
@@ -439,19 +439,19 @@ var xxx_File_google_protobuf_wrappers_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_google_protobuf_wrappers_proto_rawDesc_once sync.Once
-	xxx_File_google_protobuf_wrappers_proto_rawDesc_data = xxx_File_google_protobuf_wrappers_proto_rawDesc
+	file_google_protobuf_wrappers_proto_rawDescOnce sync.Once
+	file_google_protobuf_wrappers_proto_rawDescData = file_google_protobuf_wrappers_proto_rawDesc
 )
 
-func xxx_File_google_protobuf_wrappers_proto_rawDescGZIP() []byte {
-	xxx_File_google_protobuf_wrappers_proto_rawDesc_once.Do(func() {
-		xxx_File_google_protobuf_wrappers_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_wrappers_proto_rawDesc_data)
+func file_google_protobuf_wrappers_proto_rawDescGZIP() []byte {
+	file_google_protobuf_wrappers_proto_rawDescOnce.Do(func() {
+		file_google_protobuf_wrappers_proto_rawDescData = protoimpl.X.CompressGZIP(file_google_protobuf_wrappers_proto_rawDescData)
 	})
-	return xxx_File_google_protobuf_wrappers_proto_rawDesc_data
+	return file_google_protobuf_wrappers_proto_rawDescData
 }
 
-var xxx_File_google_protobuf_wrappers_proto_messageTypes = make([]protoimpl.MessageType, 9)
-var xxx_File_google_protobuf_wrappers_proto_goTypes = []interface{}{
+var file_google_protobuf_wrappers_proto_msgTypes = make([]protoimpl.MessageType, 9)
+var file_google_protobuf_wrappers_proto_goTypes = []interface{}{
 	(*DoubleValue)(nil), // 0: google.protobuf.DoubleValue
 	(*FloatValue)(nil),  // 1: google.protobuf.FloatValue
 	(*Int64Value)(nil),  // 2: google.protobuf.Int64Value
@@ -462,22 +462,22 @@ var xxx_File_google_protobuf_wrappers_proto_goTypes = []interface{}{
 	(*StringValue)(nil), // 7: google.protobuf.StringValue
 	(*BytesValue)(nil),  // 8: google.protobuf.BytesValue
 }
-var xxx_File_google_protobuf_wrappers_proto_depIdxs = []int32{}
+var file_google_protobuf_wrappers_proto_depIdxs = []int32{}
 
-func init() { xxx_File_google_protobuf_wrappers_proto_init() }
-func xxx_File_google_protobuf_wrappers_proto_init() {
+func init() { file_google_protobuf_wrappers_proto_init() }
+func file_google_protobuf_wrappers_proto_init() {
 	if File_google_protobuf_wrappers_proto != nil {
 		return
 	}
 	File_google_protobuf_wrappers_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_wrappers_proto_rawDesc,
-		GoTypes:            xxx_File_google_protobuf_wrappers_proto_goTypes,
-		DependencyIndexes:  xxx_File_google_protobuf_wrappers_proto_depIdxs,
-		MessageOutputTypes: xxx_File_google_protobuf_wrappers_proto_messageTypes,
+		RawDescriptor:      file_google_protobuf_wrappers_proto_rawDesc,
+		GoTypes:            file_google_protobuf_wrappers_proto_goTypes,
+		DependencyIndexes:  file_google_protobuf_wrappers_proto_depIdxs,
+		MessageOutputTypes: file_google_protobuf_wrappers_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_google_protobuf_wrappers_proto_rawDesc = nil
-	xxx_File_google_protobuf_wrappers_proto_goTypes = nil
-	xxx_File_google_protobuf_wrappers_proto_depIdxs = nil
+	file_google_protobuf_wrappers_proto_rawDesc = nil
+	file_google_protobuf_wrappers_proto_goTypes = nil
+	file_google_protobuf_wrappers_proto_depIdxs = nil
 }

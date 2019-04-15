@@ -38,16 +38,16 @@ func (x *Version) String() string {
 func (*Version) ProtoMessage() {}
 
 func (x *Version) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[0].MessageOf(x)
+	return file_google_protobuf_compiler_plugin_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *Version) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[0].Methods()
+	return file_google_protobuf_compiler_plugin_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use Version.ProtoReflect.Type instead.
 func (*Version) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{0}
+	return file_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Version) GetMajor() int32 {
@@ -119,16 +119,16 @@ func (x *CodeGeneratorRequest) String() string {
 func (*CodeGeneratorRequest) ProtoMessage() {}
 
 func (x *CodeGeneratorRequest) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[1].MessageOf(x)
+	return file_google_protobuf_compiler_plugin_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *CodeGeneratorRequest) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[1].Methods()
+	return file_google_protobuf_compiler_plugin_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use CodeGeneratorRequest.ProtoReflect.Type instead.
 func (*CodeGeneratorRequest) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{1}
+	return file_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CodeGeneratorRequest) GetFileToGenerate() []string {
@@ -187,16 +187,16 @@ func (x *CodeGeneratorResponse) String() string {
 func (*CodeGeneratorResponse) ProtoMessage() {}
 
 func (x *CodeGeneratorResponse) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[2].MessageOf(x)
+	return file_google_protobuf_compiler_plugin_proto_msgTypes[2].MessageOf(x)
 }
 
 func (m *CodeGeneratorResponse) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[2].Methods()
+	return file_google_protobuf_compiler_plugin_proto_msgTypes[2].Methods()
 }
 
 // Deprecated: Use CodeGeneratorResponse.ProtoReflect.Type instead.
 func (*CodeGeneratorResponse) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{2}
+	return file_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CodeGeneratorResponse) GetError() string {
@@ -283,16 +283,16 @@ func (x *CodeGeneratorResponse_File) String() string {
 func (*CodeGeneratorResponse_File) ProtoMessage() {}
 
 func (x *CodeGeneratorResponse_File) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[3].MessageOf(x)
+	return file_google_protobuf_compiler_plugin_proto_msgTypes[3].MessageOf(x)
 }
 
 func (m *CodeGeneratorResponse_File) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_compiler_plugin_proto_messageTypes[3].Methods()
+	return file_google_protobuf_compiler_plugin_proto_msgTypes[3].Methods()
 }
 
 // Deprecated: Use CodeGeneratorResponse_File.ProtoReflect.Type instead.
 func (*CodeGeneratorResponse_File) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{2, 0}
+	return file_google_protobuf_compiler_plugin_proto_rawDescGZIP(), []int{2, 0}
 }
 
 func (x *CodeGeneratorResponse_File) GetName() string {
@@ -318,7 +318,7 @@ func (x *CodeGeneratorResponse_File) GetContent() string {
 
 var File_google_protobuf_compiler_plugin_proto protoreflect.FileDescriptor
 
-var xxx_File_google_protobuf_compiler_plugin_proto_rawDesc = []byte{
+var file_google_protobuf_compiler_plugin_proto_rawDesc = []byte{
 	0x0a, 0x25, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x63, 0x6f, 0x6d, 0x70, 0x69, 0x6c, 0x65, 0x72, 0x2f, 0x70, 0x6c, 0x75, 0x67, 0x69,
 	0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x18, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
@@ -370,45 +370,45 @@ var xxx_File_google_protobuf_compiler_plugin_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_google_protobuf_compiler_plugin_proto_rawDesc_once sync.Once
-	xxx_File_google_protobuf_compiler_plugin_proto_rawDesc_data = xxx_File_google_protobuf_compiler_plugin_proto_rawDesc
+	file_google_protobuf_compiler_plugin_proto_rawDescOnce sync.Once
+	file_google_protobuf_compiler_plugin_proto_rawDescData = file_google_protobuf_compiler_plugin_proto_rawDesc
 )
 
-func xxx_File_google_protobuf_compiler_plugin_proto_rawDescGZIP() []byte {
-	xxx_File_google_protobuf_compiler_plugin_proto_rawDesc_once.Do(func() {
-		xxx_File_google_protobuf_compiler_plugin_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_compiler_plugin_proto_rawDesc_data)
+func file_google_protobuf_compiler_plugin_proto_rawDescGZIP() []byte {
+	file_google_protobuf_compiler_plugin_proto_rawDescOnce.Do(func() {
+		file_google_protobuf_compiler_plugin_proto_rawDescData = protoimpl.X.CompressGZIP(file_google_protobuf_compiler_plugin_proto_rawDescData)
 	})
-	return xxx_File_google_protobuf_compiler_plugin_proto_rawDesc_data
+	return file_google_protobuf_compiler_plugin_proto_rawDescData
 }
 
-var xxx_File_google_protobuf_compiler_plugin_proto_messageTypes = make([]protoimpl.MessageType, 4)
-var xxx_File_google_protobuf_compiler_plugin_proto_goTypes = []interface{}{
+var file_google_protobuf_compiler_plugin_proto_msgTypes = make([]protoimpl.MessageType, 4)
+var file_google_protobuf_compiler_plugin_proto_goTypes = []interface{}{
 	(*Version)(nil),                        // 0: google.protobuf.compiler.Version
 	(*CodeGeneratorRequest)(nil),           // 1: google.protobuf.compiler.CodeGeneratorRequest
 	(*CodeGeneratorResponse)(nil),          // 2: google.protobuf.compiler.CodeGeneratorResponse
 	(*CodeGeneratorResponse_File)(nil),     // 3: google.protobuf.compiler.CodeGeneratorResponse.File
 	(*descriptor.FileDescriptorProto)(nil), // 4: google.protobuf.FileDescriptorProto
 }
-var xxx_File_google_protobuf_compiler_plugin_proto_depIdxs = []int32{
+var file_google_protobuf_compiler_plugin_proto_depIdxs = []int32{
 	4, // google.protobuf.compiler.CodeGeneratorRequest.proto_file:type_name -> google.protobuf.FileDescriptorProto
 	0, // google.protobuf.compiler.CodeGeneratorRequest.compiler_version:type_name -> google.protobuf.compiler.Version
 	3, // google.protobuf.compiler.CodeGeneratorResponse.file:type_name -> google.protobuf.compiler.CodeGeneratorResponse.File
 }
 
-func init() { xxx_File_google_protobuf_compiler_plugin_proto_init() }
-func xxx_File_google_protobuf_compiler_plugin_proto_init() {
+func init() { file_google_protobuf_compiler_plugin_proto_init() }
+func file_google_protobuf_compiler_plugin_proto_init() {
 	if File_google_protobuf_compiler_plugin_proto != nil {
 		return
 	}
 	File_google_protobuf_compiler_plugin_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_compiler_plugin_proto_rawDesc,
-		GoTypes:            xxx_File_google_protobuf_compiler_plugin_proto_goTypes,
-		DependencyIndexes:  xxx_File_google_protobuf_compiler_plugin_proto_depIdxs,
-		MessageOutputTypes: xxx_File_google_protobuf_compiler_plugin_proto_messageTypes,
+		RawDescriptor:      file_google_protobuf_compiler_plugin_proto_rawDesc,
+		GoTypes:            file_google_protobuf_compiler_plugin_proto_goTypes,
+		DependencyIndexes:  file_google_protobuf_compiler_plugin_proto_depIdxs,
+		MessageOutputTypes: file_google_protobuf_compiler_plugin_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_google_protobuf_compiler_plugin_proto_rawDesc = nil
-	xxx_File_google_protobuf_compiler_plugin_proto_goTypes = nil
-	xxx_File_google_protobuf_compiler_plugin_proto_depIdxs = nil
+	file_google_protobuf_compiler_plugin_proto_rawDesc = nil
+	file_google_protobuf_compiler_plugin_proto_goTypes = nil
+	file_google_protobuf_compiler_plugin_proto_depIdxs = nil
 }

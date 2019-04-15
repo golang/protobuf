@@ -75,16 +75,16 @@ func (x *Api) String() string {
 func (*Api) ProtoMessage() {}
 
 func (x *Api) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_api_proto_messageTypes[0].MessageOf(x)
+	return file_google_protobuf_api_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *Api) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_api_proto_messageTypes[0].Methods()
+	return file_google_protobuf_api_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use Api.ProtoReflect.Type instead.
 func (*Api) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_api_proto_rawDescGZIP(), []int{0}
+	return file_google_protobuf_api_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Api) GetName() string {
@@ -168,16 +168,16 @@ func (x *Method) String() string {
 func (*Method) ProtoMessage() {}
 
 func (x *Method) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_api_proto_messageTypes[1].MessageOf(x)
+	return file_google_protobuf_api_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *Method) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_api_proto_messageTypes[1].Methods()
+	return file_google_protobuf_api_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use Method.ProtoReflect.Type instead.
 func (*Method) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_api_proto_rawDescGZIP(), []int{1}
+	return file_google_protobuf_api_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Method) GetName() string {
@@ -329,16 +329,16 @@ func (x *Mixin) String() string {
 func (*Mixin) ProtoMessage() {}
 
 func (x *Mixin) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_api_proto_messageTypes[2].MessageOf(x)
+	return file_google_protobuf_api_proto_msgTypes[2].MessageOf(x)
 }
 
 func (m *Mixin) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_api_proto_messageTypes[2].Methods()
+	return file_google_protobuf_api_proto_msgTypes[2].Methods()
 }
 
 // Deprecated: Use Mixin.ProtoReflect.Type instead.
 func (*Mixin) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_api_proto_rawDescGZIP(), []int{2}
+	return file_google_protobuf_api_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Mixin) GetName() string {
@@ -357,7 +357,7 @@ func (x *Mixin) GetRoot() string {
 
 var File_google_protobuf_api_proto protoreflect.FileDescriptor
 
-var xxx_File_google_protobuf_api_proto_rawDesc = []byte{
+var file_google_protobuf_api_proto_rawDesc = []byte{
 	0x0a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0f, 0x67, 0x6f, 0x6f,
 	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x1a, 0x24, 0x67, 0x6f,
@@ -420,19 +420,19 @@ var xxx_File_google_protobuf_api_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_google_protobuf_api_proto_rawDesc_once sync.Once
-	xxx_File_google_protobuf_api_proto_rawDesc_data = xxx_File_google_protobuf_api_proto_rawDesc
+	file_google_protobuf_api_proto_rawDescOnce sync.Once
+	file_google_protobuf_api_proto_rawDescData = file_google_protobuf_api_proto_rawDesc
 )
 
-func xxx_File_google_protobuf_api_proto_rawDescGZIP() []byte {
-	xxx_File_google_protobuf_api_proto_rawDesc_once.Do(func() {
-		xxx_File_google_protobuf_api_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_api_proto_rawDesc_data)
+func file_google_protobuf_api_proto_rawDescGZIP() []byte {
+	file_google_protobuf_api_proto_rawDescOnce.Do(func() {
+		file_google_protobuf_api_proto_rawDescData = protoimpl.X.CompressGZIP(file_google_protobuf_api_proto_rawDescData)
 	})
-	return xxx_File_google_protobuf_api_proto_rawDesc_data
+	return file_google_protobuf_api_proto_rawDescData
 }
 
-var xxx_File_google_protobuf_api_proto_messageTypes = make([]protoimpl.MessageType, 3)
-var xxx_File_google_protobuf_api_proto_goTypes = []interface{}{
+var file_google_protobuf_api_proto_msgTypes = make([]protoimpl.MessageType, 3)
+var file_google_protobuf_api_proto_goTypes = []interface{}{
 	(*Api)(nil),           // 0: google.protobuf.Api
 	(*Method)(nil),        // 1: google.protobuf.Method
 	(*Mixin)(nil),         // 2: google.protobuf.Mixin
@@ -440,7 +440,7 @@ var xxx_File_google_protobuf_api_proto_goTypes = []interface{}{
 	(*SourceContext)(nil), // 4: google.protobuf.SourceContext
 	(Syntax)(0),           // 5: google.protobuf.Syntax
 }
-var xxx_File_google_protobuf_api_proto_depIdxs = []int32{
+var file_google_protobuf_api_proto_depIdxs = []int32{
 	1, // google.protobuf.Api.methods:type_name -> google.protobuf.Method
 	3, // google.protobuf.Api.options:type_name -> google.protobuf.Option
 	4, // google.protobuf.Api.source_context:type_name -> google.protobuf.SourceContext
@@ -450,22 +450,22 @@ var xxx_File_google_protobuf_api_proto_depIdxs = []int32{
 	5, // google.protobuf.Method.syntax:type_name -> google.protobuf.Syntax
 }
 
-func init() { xxx_File_google_protobuf_api_proto_init() }
-func xxx_File_google_protobuf_api_proto_init() {
+func init() { file_google_protobuf_api_proto_init() }
+func file_google_protobuf_api_proto_init() {
 	if File_google_protobuf_api_proto != nil {
 		return
 	}
-	xxx_File_google_protobuf_source_context_proto_init()
-	xxx_File_google_protobuf_type_proto_init()
+	file_google_protobuf_source_context_proto_init()
+	file_google_protobuf_type_proto_init()
 	File_google_protobuf_api_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_api_proto_rawDesc,
-		GoTypes:            xxx_File_google_protobuf_api_proto_goTypes,
-		DependencyIndexes:  xxx_File_google_protobuf_api_proto_depIdxs,
-		MessageOutputTypes: xxx_File_google_protobuf_api_proto_messageTypes,
+		RawDescriptor:      file_google_protobuf_api_proto_rawDesc,
+		GoTypes:            file_google_protobuf_api_proto_goTypes,
+		DependencyIndexes:  file_google_protobuf_api_proto_depIdxs,
+		MessageOutputTypes: file_google_protobuf_api_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_google_protobuf_api_proto_rawDesc = nil
-	xxx_File_google_protobuf_api_proto_goTypes = nil
-	xxx_File_google_protobuf_api_proto_depIdxs = nil
+	file_google_protobuf_api_proto_rawDesc = nil
+	file_google_protobuf_api_proto_goTypes = nil
+	file_google_protobuf_api_proto_depIdxs = nil
 }

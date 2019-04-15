@@ -7,6 +7,8 @@ package internal_gengo
 import (
 	"fmt"
 	"math"
+	"strings"
+	"unicode/utf8"
 
 	"github.com/golang/protobuf/v2/proto"
 	"github.com/golang/protobuf/v2/protogen"
@@ -208,8 +210,8 @@ func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 	g.P("}")
 	g.P()
 
-	onceVar := rawDescVarName(f) + "_once"
-	dataVar := rawDescVarName(f) + "_data"
+	onceVar := rawDescVarName(f) + "Once"
+	dataVar := rawDescVarName(f) + "Data"
 	g.P("var (")
 	g.P(onceVar, " ", syncPackage.Ident("Once"))
 	g.P(dataVar, " = ", rawDescVarName(f))
@@ -256,24 +258,30 @@ func genReflectMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 	g.P("}")
 }
 
+func fileVarName(f *protogen.File, suffix string) string {
+	prefix := f.GoDescriptorIdent.GoName
+	_, n := utf8.DecodeRuneInString(prefix)
+	prefix = strings.ToLower(prefix[:n]) + prefix[n:]
+	return prefix + "_" + suffix
+}
 func rawDescVarName(f *fileInfo) string {
-	return "xxx_" + f.GoDescriptorIdent.GoName + "_rawDesc"
+	return fileVarName(f.File, "rawDesc")
 }
 func goTypesVarName(f *fileInfo) string {
-	return "xxx_" + f.GoDescriptorIdent.GoName + "_goTypes"
+	return fileVarName(f.File, "goTypes")
 }
 func depIdxsVarName(f *fileInfo) string {
-	return "xxx_" + f.GoDescriptorIdent.GoName + "_depIdxs"
+	return fileVarName(f.File, "depIdxs")
 }
 func enumTypesVarName(f *fileInfo) string {
-	return "xxx_" + f.GoDescriptorIdent.GoName + "_enumTypes"
+	return fileVarName(f.File, "enumTypes")
 }
 func messageTypesVarName(f *fileInfo) string {
-	return "xxx_" + f.GoDescriptorIdent.GoName + "_messageTypes"
+	return fileVarName(f.File, "msgTypes")
 }
 func extDecsVarName(f *fileInfo) string {
-	return "xxx_" + f.GoDescriptorIdent.GoName + "_extDescs"
+	return fileVarName(f.File, "extDescs")
 }
 func initFuncName(f *protogen.File) string {
-	return "xxx_" + f.GoDescriptorIdent.GoName + "_init"
+	return fileVarName(f, "init")
 }

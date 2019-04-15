@@ -13,7 +13,7 @@ import (
 
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
-var xxx_File_test_ext_proto_extDescs = []protoiface.ExtensionDescV1{
+var file_test_ext_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*TestAllExtensions)(nil),
 		ExtensionType: (*int32)(nil),
@@ -25,11 +25,11 @@ var xxx_File_test_ext_proto_extDescs = []protoiface.ExtensionDescV1{
 }
 var (
 	// extend goproto.proto.test.TestAllExtensions { optional int32 foreign_int32_extension = 2000; }
-	E_ForeignInt32Extension = &xxx_File_test_ext_proto_extDescs[0]
+	E_ForeignInt32Extension = &file_test_ext_proto_extDescs[0]
 )
 var File_test_ext_proto protoreflect.FileDescriptor
 
-var xxx_File_test_ext_proto_rawDesc = []byte{
+var file_test_ext_proto_rawDesc = []byte{
 	0x0a, 0x0e, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x65, 0x78, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x12, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
 	0x74, 0x65, 0x73, 0x74, 0x1a, 0x0f, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e,
@@ -46,41 +46,41 @@ var xxx_File_test_ext_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_test_ext_proto_rawDesc_once sync.Once
-	xxx_File_test_ext_proto_rawDesc_data = xxx_File_test_ext_proto_rawDesc
+	file_test_ext_proto_rawDescOnce sync.Once
+	file_test_ext_proto_rawDescData = file_test_ext_proto_rawDesc
 )
 
-func xxx_File_test_ext_proto_rawDescGZIP() []byte {
-	xxx_File_test_ext_proto_rawDesc_once.Do(func() {
-		xxx_File_test_ext_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_test_ext_proto_rawDesc_data)
+func file_test_ext_proto_rawDescGZIP() []byte {
+	file_test_ext_proto_rawDescOnce.Do(func() {
+		file_test_ext_proto_rawDescData = protoimpl.X.CompressGZIP(file_test_ext_proto_rawDescData)
 	})
-	return xxx_File_test_ext_proto_rawDesc_data
+	return file_test_ext_proto_rawDescData
 }
 
-var xxx_File_test_ext_proto_goTypes = []interface{}{
+var file_test_ext_proto_goTypes = []interface{}{
 	(*TestAllExtensions)(nil), // 0: goproto.proto.test.TestAllExtensions
 }
-var xxx_File_test_ext_proto_depIdxs = []int32{
+var file_test_ext_proto_depIdxs = []int32{
 	0, // goproto.proto.test.foreign_int32_extension:extendee -> goproto.proto.test.TestAllExtensions
 }
 
-func init() { xxx_File_test_ext_proto_init() }
-func xxx_File_test_ext_proto_init() {
+func init() { file_test_ext_proto_init() }
+func file_test_ext_proto_init() {
 	if File_test_ext_proto != nil {
 		return
 	}
-	xxx_File_test_test_proto_init()
+	file_test_test_proto_init()
 	extensionTypes := make([]protoreflect.ExtensionType, 1)
 	File_test_ext_proto = protoimpl.FileBuilder{
-		RawDescriptor:        xxx_File_test_ext_proto_rawDesc,
-		GoTypes:              xxx_File_test_ext_proto_goTypes,
-		DependencyIndexes:    xxx_File_test_ext_proto_depIdxs,
-		LegacyExtensions:     xxx_File_test_ext_proto_extDescs,
+		RawDescriptor:        file_test_ext_proto_rawDesc,
+		GoTypes:              file_test_ext_proto_goTypes,
+		DependencyIndexes:    file_test_ext_proto_depIdxs,
+		LegacyExtensions:     file_test_ext_proto_extDescs,
 		ExtensionOutputTypes: extensionTypes,
 		FilesRegistry:        protoregistry.GlobalFiles,
 		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_test_ext_proto_rawDesc = nil
-	xxx_File_test_ext_proto_goTypes = nil
-	xxx_File_test_ext_proto_depIdxs = nil
+	file_test_ext_proto_rawDesc = nil
+	file_test_ext_proto_goTypes = nil
+	file_test_ext_proto_depIdxs = nil
 }

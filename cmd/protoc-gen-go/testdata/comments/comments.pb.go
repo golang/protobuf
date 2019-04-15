@@ -41,16 +41,16 @@ func (x *Message1) String() string {
 func (*Message1) ProtoMessage() {}
 
 func (x *Message1) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[0].MessageOf(x)
+	return file_comments_comments_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *Message1) XXX_Methods() *protoiface.Methods {
-	return xxx_File_comments_comments_proto_messageTypes[0].Methods()
+	return file_comments_comments_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use Message1.ProtoReflect.Type instead.
 func (*Message1) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{0}
+	return file_comments_comments_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Message1) GetField1A() string {
@@ -109,16 +109,16 @@ func (x *Message2) String() string {
 func (*Message2) ProtoMessage() {}
 
 func (x *Message2) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[1].MessageOf(x)
+	return file_comments_comments_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *Message2) XXX_Methods() *protoiface.Methods {
-	return xxx_File_comments_comments_proto_messageTypes[1].Methods()
+	return file_comments_comments_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use Message2.ProtoReflect.Type instead.
 func (*Message2) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{1}
+	return file_comments_comments_proto_rawDescGZIP(), []int{1}
 }
 
 // COMMENT: Message1A
@@ -139,16 +139,16 @@ func (x *Message1_Message1A) String() string {
 func (*Message1_Message1A) ProtoMessage() {}
 
 func (x *Message1_Message1A) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[2].MessageOf(x)
+	return file_comments_comments_proto_msgTypes[2].MessageOf(x)
 }
 
 func (m *Message1_Message1A) XXX_Methods() *protoiface.Methods {
-	return xxx_File_comments_comments_proto_messageTypes[2].Methods()
+	return file_comments_comments_proto_msgTypes[2].Methods()
 }
 
 // Deprecated: Use Message1_Message1A.ProtoReflect.Type instead.
 func (*Message1_Message1A) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{0, 0}
+	return file_comments_comments_proto_rawDescGZIP(), []int{0, 0}
 }
 
 // COMMENT: Message1B
@@ -169,16 +169,16 @@ func (x *Message1_Message1B) String() string {
 func (*Message1_Message1B) ProtoMessage() {}
 
 func (x *Message1_Message1B) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[3].MessageOf(x)
+	return file_comments_comments_proto_msgTypes[3].MessageOf(x)
 }
 
 func (m *Message1_Message1B) XXX_Methods() *protoiface.Methods {
-	return xxx_File_comments_comments_proto_messageTypes[3].Methods()
+	return file_comments_comments_proto_msgTypes[3].Methods()
 }
 
 // Deprecated: Use Message1_Message1B.ProtoReflect.Type instead.
 func (*Message1_Message1B) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{0, 1}
+	return file_comments_comments_proto_rawDescGZIP(), []int{0, 1}
 }
 
 // COMMENT: Message2A
@@ -199,16 +199,16 @@ func (x *Message2_Message2A) String() string {
 func (*Message2_Message2A) ProtoMessage() {}
 
 func (x *Message2_Message2A) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[4].MessageOf(x)
+	return file_comments_comments_proto_msgTypes[4].MessageOf(x)
 }
 
 func (m *Message2_Message2A) XXX_Methods() *protoiface.Methods {
-	return xxx_File_comments_comments_proto_messageTypes[4].Methods()
+	return file_comments_comments_proto_msgTypes[4].Methods()
 }
 
 // Deprecated: Use Message2_Message2A.ProtoReflect.Type instead.
 func (*Message2_Message2A) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{1, 0}
+	return file_comments_comments_proto_rawDescGZIP(), []int{1, 0}
 }
 
 // COMMENT: Message2B
@@ -229,21 +229,21 @@ func (x *Message2_Message2B) String() string {
 func (*Message2_Message2B) ProtoMessage() {}
 
 func (x *Message2_Message2B) ProtoReflect() protoreflect.Message {
-	return xxx_File_comments_comments_proto_messageTypes[5].MessageOf(x)
+	return file_comments_comments_proto_msgTypes[5].MessageOf(x)
 }
 
 func (m *Message2_Message2B) XXX_Methods() *protoiface.Methods {
-	return xxx_File_comments_comments_proto_messageTypes[5].Methods()
+	return file_comments_comments_proto_msgTypes[5].Methods()
 }
 
 // Deprecated: Use Message2_Message2B.ProtoReflect.Type instead.
 func (*Message2_Message2B) Descriptor() ([]byte, []int) {
-	return xxx_File_comments_comments_proto_rawDescGZIP(), []int{1, 1}
+	return file_comments_comments_proto_rawDescGZIP(), []int{1, 1}
 }
 
 var File_comments_comments_proto protoreflect.FileDescriptor
 
-var xxx_File_comments_comments_proto_rawDesc = []byte{
+var file_comments_comments_proto_rawDesc = []byte{
 	0x0a, 0x17, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
 	0x6e, 0x74, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x17, 0x67, 0x6f, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e,
@@ -264,19 +264,19 @@ var xxx_File_comments_comments_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_comments_comments_proto_rawDesc_once sync.Once
-	xxx_File_comments_comments_proto_rawDesc_data = xxx_File_comments_comments_proto_rawDesc
+	file_comments_comments_proto_rawDescOnce sync.Once
+	file_comments_comments_proto_rawDescData = file_comments_comments_proto_rawDesc
 )
 
-func xxx_File_comments_comments_proto_rawDescGZIP() []byte {
-	xxx_File_comments_comments_proto_rawDesc_once.Do(func() {
-		xxx_File_comments_comments_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_comments_comments_proto_rawDesc_data)
+func file_comments_comments_proto_rawDescGZIP() []byte {
+	file_comments_comments_proto_rawDescOnce.Do(func() {
+		file_comments_comments_proto_rawDescData = protoimpl.X.CompressGZIP(file_comments_comments_proto_rawDescData)
 	})
-	return xxx_File_comments_comments_proto_rawDesc_data
+	return file_comments_comments_proto_rawDescData
 }
 
-var xxx_File_comments_comments_proto_messageTypes = make([]protoimpl.MessageType, 6)
-var xxx_File_comments_comments_proto_goTypes = []interface{}{
+var file_comments_comments_proto_msgTypes = make([]protoimpl.MessageType, 6)
+var file_comments_comments_proto_goTypes = []interface{}{
 	(*Message1)(nil),           // 0: goproto.protoc.comments.Message1
 	(*Message2)(nil),           // 1: goproto.protoc.comments.Message2
 	(*Message1_Message1A)(nil), // 2: goproto.protoc.comments.Message1.Message1A
@@ -284,22 +284,22 @@ var xxx_File_comments_comments_proto_goTypes = []interface{}{
 	(*Message2_Message2A)(nil), // 4: goproto.protoc.comments.Message2.Message2A
 	(*Message2_Message2B)(nil), // 5: goproto.protoc.comments.Message2.Message2B
 }
-var xxx_File_comments_comments_proto_depIdxs = []int32{}
+var file_comments_comments_proto_depIdxs = []int32{}
 
-func init() { xxx_File_comments_comments_proto_init() }
-func xxx_File_comments_comments_proto_init() {
+func init() { file_comments_comments_proto_init() }
+func file_comments_comments_proto_init() {
 	if File_comments_comments_proto != nil {
 		return
 	}
 	File_comments_comments_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_comments_comments_proto_rawDesc,
-		GoTypes:            xxx_File_comments_comments_proto_goTypes,
-		DependencyIndexes:  xxx_File_comments_comments_proto_depIdxs,
-		MessageOutputTypes: xxx_File_comments_comments_proto_messageTypes,
+		RawDescriptor:      file_comments_comments_proto_rawDesc,
+		GoTypes:            file_comments_comments_proto_goTypes,
+		DependencyIndexes:  file_comments_comments_proto_depIdxs,
+		MessageOutputTypes: file_comments_comments_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_comments_comments_proto_rawDesc = nil
-	xxx_File_comments_comments_proto_goTypes = nil
-	xxx_File_comments_comments_proto_depIdxs = nil
+	file_comments_comments_proto_rawDesc = nil
+	file_comments_comments_proto_goTypes = nil
+	file_comments_comments_proto_depIdxs = nil
 }

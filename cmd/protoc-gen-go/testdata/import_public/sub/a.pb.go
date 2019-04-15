@@ -46,7 +46,7 @@ func (x E) String() string {
 }
 
 func (E) Type() protoreflect.EnumType {
-	return xxx_File_import_public_sub_a_proto_enumTypes[0]
+	return file_import_public_sub_a_proto_enumTypes[0]
 }
 
 func (x E) Number() protoreflect.EnumNumber {
@@ -65,7 +65,7 @@ func (x *E) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use E.Type instead.
 func (E) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_import_public_sub_a_proto_rawDescGZIP(), []int{0}
+	return file_import_public_sub_a_proto_rawDescGZIP(), []int{0}
 }
 
 type M_Subenum int32
@@ -95,7 +95,7 @@ func (x M_Subenum) String() string {
 }
 
 func (M_Subenum) Type() protoreflect.EnumType {
-	return xxx_File_import_public_sub_a_proto_enumTypes[1]
+	return file_import_public_sub_a_proto_enumTypes[1]
 }
 
 func (x M_Subenum) Number() protoreflect.EnumNumber {
@@ -114,7 +114,7 @@ func (x *M_Subenum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use M_Subenum.Type instead.
 func (M_Subenum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_import_public_sub_a_proto_rawDescGZIP(), []int{0, 0}
+	return file_import_public_sub_a_proto_rawDescGZIP(), []int{0, 0}
 }
 
 type M_Submessage_Submessage_Subenum int32
@@ -144,7 +144,7 @@ func (x M_Submessage_Submessage_Subenum) String() string {
 }
 
 func (M_Submessage_Submessage_Subenum) Type() protoreflect.EnumType {
-	return xxx_File_import_public_sub_a_proto_enumTypes[2]
+	return file_import_public_sub_a_proto_enumTypes[2]
 }
 
 func (x M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
@@ -163,7 +163,7 @@ func (x *M_Submessage_Submessage_Subenum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use M_Submessage_Submessage_Subenum.Type instead.
 func (M_Submessage_Submessage_Subenum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_import_public_sub_a_proto_rawDescGZIP(), []int{0, 0, 0}
+	return file_import_public_sub_a_proto_rawDescGZIP(), []int{0, 0, 0}
 }
 
 type M struct {
@@ -193,16 +193,16 @@ func (x *M) String() string {
 func (*M) ProtoMessage() {}
 
 func (x *M) ProtoReflect() protoreflect.Message {
-	return xxx_File_import_public_sub_a_proto_messageTypes[0].MessageOf(x)
+	return file_import_public_sub_a_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *M) XXX_Methods() *protoiface.Methods {
-	return xxx_File_import_public_sub_a_proto_messageTypes[0].Methods()
+	return file_import_public_sub_a_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use M.ProtoReflect.Type instead.
 func (*M) Descriptor() ([]byte, []int) {
-	return xxx_File_import_public_sub_a_proto_rawDescGZIP(), []int{0}
+	return file_import_public_sub_a_proto_rawDescGZIP(), []int{0}
 }
 
 var extRange_M = []protoiface.ExtensionRangeV1{
@@ -313,16 +313,16 @@ func (x *M_Submessage) String() string {
 func (*M_Submessage) ProtoMessage() {}
 
 func (x *M_Submessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_import_public_sub_a_proto_messageTypes[1].MessageOf(x)
+	return file_import_public_sub_a_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *M_Submessage) XXX_Methods() *protoiface.Methods {
-	return xxx_File_import_public_sub_a_proto_messageTypes[1].Methods()
+	return file_import_public_sub_a_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use M_Submessage.ProtoReflect.Type instead.
 func (*M_Submessage) Descriptor() ([]byte, []int) {
-	return xxx_File_import_public_sub_a_proto_rawDescGZIP(), []int{0, 0}
+	return file_import_public_sub_a_proto_rawDescGZIP(), []int{0, 0}
 }
 
 func (m *M_Submessage) GetSubmessageOneofField() isM_Submessage_SubmessageOneofField {
@@ -370,7 +370,7 @@ func (*M_Submessage_SubmessageOneofInt32) isM_Submessage_SubmessageOneofField() 
 
 func (*M_Submessage_SubmessageOneofInt64) isM_Submessage_SubmessageOneofField() {}
 
-var xxx_File_import_public_sub_a_proto_extDescs = []protoiface.ExtensionDescV1{
+var file_import_public_sub_a_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*M)(nil),
 		ExtensionType: (*string)(nil),
@@ -382,11 +382,11 @@ var xxx_File_import_public_sub_a_proto_extDescs = []protoiface.ExtensionDescV1{
 }
 var (
 	// extend goproto.protoc.import_public.sub.M { optional string extension_field = 100; }
-	E_ExtensionField = &xxx_File_import_public_sub_a_proto_extDescs[0]
+	E_ExtensionField = &file_import_public_sub_a_proto_extDescs[0]
 )
 var File_import_public_sub_a_proto protoreflect.FileDescriptor
 
-var xxx_File_import_public_sub_a_proto_rawDesc = []byte{
+var file_import_public_sub_a_proto_rawDesc = []byte{
 	0x0a, 0x19, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x2f,
 	0x73, 0x75, 0x62, 0x2f, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x20, 0x67, 0x6f, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x69, 0x6d, 0x70, 0x6f,
@@ -436,20 +436,20 @@ var xxx_File_import_public_sub_a_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_import_public_sub_a_proto_rawDesc_once sync.Once
-	xxx_File_import_public_sub_a_proto_rawDesc_data = xxx_File_import_public_sub_a_proto_rawDesc
+	file_import_public_sub_a_proto_rawDescOnce sync.Once
+	file_import_public_sub_a_proto_rawDescData = file_import_public_sub_a_proto_rawDesc
 )
 
-func xxx_File_import_public_sub_a_proto_rawDescGZIP() []byte {
-	xxx_File_import_public_sub_a_proto_rawDesc_once.Do(func() {
-		xxx_File_import_public_sub_a_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_import_public_sub_a_proto_rawDesc_data)
+func file_import_public_sub_a_proto_rawDescGZIP() []byte {
+	file_import_public_sub_a_proto_rawDescOnce.Do(func() {
+		file_import_public_sub_a_proto_rawDescData = protoimpl.X.CompressGZIP(file_import_public_sub_a_proto_rawDescData)
 	})
-	return xxx_File_import_public_sub_a_proto_rawDesc_data
+	return file_import_public_sub_a_proto_rawDescData
 }
 
-var xxx_File_import_public_sub_a_proto_enumTypes = make([]protoreflect.EnumType, 3)
-var xxx_File_import_public_sub_a_proto_messageTypes = make([]protoimpl.MessageType, 2)
-var xxx_File_import_public_sub_a_proto_goTypes = []interface{}{
+var file_import_public_sub_a_proto_enumTypes = make([]protoreflect.EnumType, 3)
+var file_import_public_sub_a_proto_msgTypes = make([]protoimpl.MessageType, 2)
+var file_import_public_sub_a_proto_goTypes = []interface{}{
 	(E)(0),                               // 0: goproto.protoc.import_public.sub.E
 	(M_Subenum)(0),                       // 1: goproto.protoc.import_public.sub.M.Subenum
 	(M_Submessage_Submessage_Subenum)(0), // 2: goproto.protoc.import_public.sub.M.Submessage.Submessage_Subenum
@@ -457,30 +457,30 @@ var xxx_File_import_public_sub_a_proto_goTypes = []interface{}{
 	(*M_Submessage)(nil),                 // 4: goproto.protoc.import_public.sub.M.Submessage
 	(*M2)(nil),                           // 5: goproto.protoc.import_public.sub.M2
 }
-var xxx_File_import_public_sub_a_proto_depIdxs = []int32{
+var file_import_public_sub_a_proto_depIdxs = []int32{
 	3, // goproto.protoc.import_public.sub.extension_field:extendee -> goproto.protoc.import_public.sub.M
 	5, // goproto.protoc.import_public.sub.M.m2:type_name -> goproto.protoc.import_public.sub.M2
 }
 
-func init() { xxx_File_import_public_sub_a_proto_init() }
-func xxx_File_import_public_sub_a_proto_init() {
+func init() { file_import_public_sub_a_proto_init() }
+func file_import_public_sub_a_proto_init() {
 	if File_import_public_sub_a_proto != nil {
 		return
 	}
-	xxx_File_import_public_sub_b_proto_init()
+	file_import_public_sub_b_proto_init()
 	extensionTypes := make([]protoreflect.ExtensionType, 1)
 	File_import_public_sub_a_proto = protoimpl.FileBuilder{
-		RawDescriptor:        xxx_File_import_public_sub_a_proto_rawDesc,
-		GoTypes:              xxx_File_import_public_sub_a_proto_goTypes,
-		DependencyIndexes:    xxx_File_import_public_sub_a_proto_depIdxs,
-		LegacyExtensions:     xxx_File_import_public_sub_a_proto_extDescs,
-		EnumOutputTypes:      xxx_File_import_public_sub_a_proto_enumTypes,
-		MessageOutputTypes:   xxx_File_import_public_sub_a_proto_messageTypes,
+		RawDescriptor:        file_import_public_sub_a_proto_rawDesc,
+		GoTypes:              file_import_public_sub_a_proto_goTypes,
+		DependencyIndexes:    file_import_public_sub_a_proto_depIdxs,
+		LegacyExtensions:     file_import_public_sub_a_proto_extDescs,
+		EnumOutputTypes:      file_import_public_sub_a_proto_enumTypes,
+		MessageOutputTypes:   file_import_public_sub_a_proto_msgTypes,
 		ExtensionOutputTypes: extensionTypes,
 		FilesRegistry:        protoregistry.GlobalFiles,
 		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_import_public_sub_a_proto_rawDesc = nil
-	xxx_File_import_public_sub_a_proto_goTypes = nil
-	xxx_File_import_public_sub_a_proto_depIdxs = nil
+	file_import_public_sub_a_proto_rawDesc = nil
+	file_import_public_sub_a_proto_goTypes = nil
+	file_import_public_sub_a_proto_depIdxs = nil
 }

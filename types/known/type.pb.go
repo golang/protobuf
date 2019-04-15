@@ -40,7 +40,7 @@ func (x Syntax) String() string {
 }
 
 func (Syntax) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_type_proto_enumTypes[0]
+	return file_google_protobuf_type_proto_enumTypes[0]
 }
 
 func (x Syntax) Number() protoreflect.EnumNumber {
@@ -49,7 +49,7 @@ func (x Syntax) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Syntax.Type instead.
 func (Syntax) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{0}
+	return file_google_protobuf_type_proto_rawDescGZIP(), []int{0}
 }
 
 // Basic field types.
@@ -147,7 +147,7 @@ func (x Field_Kind) String() string {
 }
 
 func (Field_Kind) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_type_proto_enumTypes[1]
+	return file_google_protobuf_type_proto_enumTypes[1]
 }
 
 func (x Field_Kind) Number() protoreflect.EnumNumber {
@@ -156,7 +156,7 @@ func (x Field_Kind) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Field_Kind.Type instead.
 func (Field_Kind) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{1, 0}
+	return file_google_protobuf_type_proto_rawDescGZIP(), []int{1, 0}
 }
 
 // Whether a field is optional, required, or repeated.
@@ -194,7 +194,7 @@ func (x Field_Cardinality) String() string {
 }
 
 func (Field_Cardinality) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_type_proto_enumTypes[2]
+	return file_google_protobuf_type_proto_enumTypes[2]
 }
 
 func (x Field_Cardinality) Number() protoreflect.EnumNumber {
@@ -203,7 +203,7 @@ func (x Field_Cardinality) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Field_Cardinality.Type instead.
 func (Field_Cardinality) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{1, 1}
+	return file_google_protobuf_type_proto_rawDescGZIP(), []int{1, 1}
 }
 
 // A protocol buffer message type.
@@ -236,16 +236,16 @@ func (x *Type) String() string {
 func (*Type) ProtoMessage() {}
 
 func (x *Type) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_type_proto_messageTypes[0].MessageOf(x)
+	return file_google_protobuf_type_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *Type) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_type_proto_messageTypes[0].Methods()
+	return file_google_protobuf_type_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use Type.ProtoReflect.Type instead.
 func (*Type) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{0}
+	return file_google_protobuf_type_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Type) GetName() string {
@@ -330,16 +330,16 @@ func (x *Field) String() string {
 func (*Field) ProtoMessage() {}
 
 func (x *Field) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_type_proto_messageTypes[1].MessageOf(x)
+	return file_google_protobuf_type_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *Field) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_type_proto_messageTypes[1].Methods()
+	return file_google_protobuf_type_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use Field.ProtoReflect.Type instead.
 func (*Field) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{1}
+	return file_google_protobuf_type_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Field) GetKind() Field_Kind {
@@ -440,16 +440,16 @@ func (x *Enum) String() string {
 func (*Enum) ProtoMessage() {}
 
 func (x *Enum) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_type_proto_messageTypes[2].MessageOf(x)
+	return file_google_protobuf_type_proto_msgTypes[2].MessageOf(x)
 }
 
 func (m *Enum) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_type_proto_messageTypes[2].Methods()
+	return file_google_protobuf_type_proto_msgTypes[2].Methods()
 }
 
 // Deprecated: Use Enum.ProtoReflect.Type instead.
 func (*Enum) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{2}
+	return file_google_protobuf_type_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Enum) GetName() string {
@@ -511,16 +511,16 @@ func (x *EnumValue) String() string {
 func (*EnumValue) ProtoMessage() {}
 
 func (x *EnumValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_type_proto_messageTypes[3].MessageOf(x)
+	return file_google_protobuf_type_proto_msgTypes[3].MessageOf(x)
 }
 
 func (m *EnumValue) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_type_proto_messageTypes[3].Methods()
+	return file_google_protobuf_type_proto_msgTypes[3].Methods()
 }
 
 // Deprecated: Use EnumValue.ProtoReflect.Type instead.
 func (*EnumValue) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{3}
+	return file_google_protobuf_type_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *EnumValue) GetName() string {
@@ -573,16 +573,16 @@ func (x *Option) String() string {
 func (*Option) ProtoMessage() {}
 
 func (x *Option) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_type_proto_messageTypes[4].MessageOf(x)
+	return file_google_protobuf_type_proto_msgTypes[4].MessageOf(x)
 }
 
 func (m *Option) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_type_proto_messageTypes[4].Methods()
+	return file_google_protobuf_type_proto_msgTypes[4].Methods()
 }
 
 // Deprecated: Use Option.ProtoReflect.Type instead.
 func (*Option) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_type_proto_rawDescGZIP(), []int{4}
+	return file_google_protobuf_type_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Option) GetName() string {
@@ -601,7 +601,7 @@ func (x *Option) GetValue() *Any {
 
 var File_google_protobuf_type_proto protoreflect.FileDescriptor
 
-var xxx_File_google_protobuf_type_proto_rawDesc = []byte{
+var file_google_protobuf_type_proto_rawDesc = []byte{
 	0x0a, 0x1a, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0f, 0x67, 0x6f,
 	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x1a, 0x19, 0x67,
@@ -720,20 +720,20 @@ var xxx_File_google_protobuf_type_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_google_protobuf_type_proto_rawDesc_once sync.Once
-	xxx_File_google_protobuf_type_proto_rawDesc_data = xxx_File_google_protobuf_type_proto_rawDesc
+	file_google_protobuf_type_proto_rawDescOnce sync.Once
+	file_google_protobuf_type_proto_rawDescData = file_google_protobuf_type_proto_rawDesc
 )
 
-func xxx_File_google_protobuf_type_proto_rawDescGZIP() []byte {
-	xxx_File_google_protobuf_type_proto_rawDesc_once.Do(func() {
-		xxx_File_google_protobuf_type_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_type_proto_rawDesc_data)
+func file_google_protobuf_type_proto_rawDescGZIP() []byte {
+	file_google_protobuf_type_proto_rawDescOnce.Do(func() {
+		file_google_protobuf_type_proto_rawDescData = protoimpl.X.CompressGZIP(file_google_protobuf_type_proto_rawDescData)
 	})
-	return xxx_File_google_protobuf_type_proto_rawDesc_data
+	return file_google_protobuf_type_proto_rawDescData
 }
 
-var xxx_File_google_protobuf_type_proto_enumTypes = make([]protoreflect.EnumType, 3)
-var xxx_File_google_protobuf_type_proto_messageTypes = make([]protoimpl.MessageType, 5)
-var xxx_File_google_protobuf_type_proto_goTypes = []interface{}{
+var file_google_protobuf_type_proto_enumTypes = make([]protoreflect.EnumType, 3)
+var file_google_protobuf_type_proto_msgTypes = make([]protoimpl.MessageType, 5)
+var file_google_protobuf_type_proto_goTypes = []interface{}{
 	(Syntax)(0),            // 0: google.protobuf.Syntax
 	(Field_Kind)(0),        // 1: google.protobuf.Field.Kind
 	(Field_Cardinality)(0), // 2: google.protobuf.Field.Cardinality
@@ -745,7 +745,7 @@ var xxx_File_google_protobuf_type_proto_goTypes = []interface{}{
 	(*SourceContext)(nil),  // 8: google.protobuf.SourceContext
 	(*Any)(nil),            // 9: google.protobuf.Any
 }
-var xxx_File_google_protobuf_type_proto_depIdxs = []int32{
+var file_google_protobuf_type_proto_depIdxs = []int32{
 	4, // google.protobuf.Type.fields:type_name -> google.protobuf.Field
 	7, // google.protobuf.Type.options:type_name -> google.protobuf.Option
 	8, // google.protobuf.Type.source_context:type_name -> google.protobuf.SourceContext
@@ -761,23 +761,23 @@ var xxx_File_google_protobuf_type_proto_depIdxs = []int32{
 	9, // google.protobuf.Option.value:type_name -> google.protobuf.Any
 }
 
-func init() { xxx_File_google_protobuf_type_proto_init() }
-func xxx_File_google_protobuf_type_proto_init() {
+func init() { file_google_protobuf_type_proto_init() }
+func file_google_protobuf_type_proto_init() {
 	if File_google_protobuf_type_proto != nil {
 		return
 	}
-	xxx_File_google_protobuf_any_proto_init()
-	xxx_File_google_protobuf_source_context_proto_init()
+	file_google_protobuf_any_proto_init()
+	file_google_protobuf_source_context_proto_init()
 	File_google_protobuf_type_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_type_proto_rawDesc,
-		GoTypes:            xxx_File_google_protobuf_type_proto_goTypes,
-		DependencyIndexes:  xxx_File_google_protobuf_type_proto_depIdxs,
-		EnumOutputTypes:    xxx_File_google_protobuf_type_proto_enumTypes,
-		MessageOutputTypes: xxx_File_google_protobuf_type_proto_messageTypes,
+		RawDescriptor:      file_google_protobuf_type_proto_rawDesc,
+		GoTypes:            file_google_protobuf_type_proto_goTypes,
+		DependencyIndexes:  file_google_protobuf_type_proto_depIdxs,
+		EnumOutputTypes:    file_google_protobuf_type_proto_enumTypes,
+		MessageOutputTypes: file_google_protobuf_type_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_google_protobuf_type_proto_rawDesc = nil
-	xxx_File_google_protobuf_type_proto_goTypes = nil
-	xxx_File_google_protobuf_type_proto_depIdxs = nil
+	file_google_protobuf_type_proto_rawDesc = nil
+	file_google_protobuf_type_proto_goTypes = nil
+	file_google_protobuf_type_proto_depIdxs = nil
 }

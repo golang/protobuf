@@ -32,16 +32,16 @@ func (x *BaseMessage) String() string {
 func (*BaseMessage) ProtoMessage() {}
 
 func (x *BaseMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_base_base_proto_messageTypes[0].MessageOf(x)
+	return file_extensions_base_base_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *BaseMessage) XXX_Methods() *protoiface.Methods {
-	return xxx_File_extensions_base_base_proto_messageTypes[0].Methods()
+	return file_extensions_base_base_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use BaseMessage.ProtoReflect.Type instead.
 func (*BaseMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_base_base_proto_rawDescGZIP(), []int{0}
+	return file_extensions_base_base_proto_rawDescGZIP(), []int{0}
 }
 
 var extRange_BaseMessage = []protoiface.ExtensionRangeV1{
@@ -79,16 +79,16 @@ func (x *MessageSetWireFormatMessage) String() string {
 func (*MessageSetWireFormatMessage) ProtoMessage() {}
 
 func (x *MessageSetWireFormatMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_extensions_base_base_proto_messageTypes[1].MessageOf(x)
+	return file_extensions_base_base_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *MessageSetWireFormatMessage) XXX_Methods() *protoiface.Methods {
-	return xxx_File_extensions_base_base_proto_messageTypes[1].Methods()
+	return file_extensions_base_base_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use MessageSetWireFormatMessage.ProtoReflect.Type instead.
 func (*MessageSetWireFormatMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_extensions_base_base_proto_rawDescGZIP(), []int{1}
+	return file_extensions_base_base_proto_rawDescGZIP(), []int{1}
 }
 
 var extRange_MessageSetWireFormatMessage = []protoiface.ExtensionRangeV1{
@@ -102,7 +102,7 @@ func (*MessageSetWireFormatMessage) ExtensionRangeArray() []protoiface.Extension
 
 var File_extensions_base_base_proto protoreflect.FileDescriptor
 
-var xxx_File_extensions_base_base_proto_rawDesc = []byte{
+var file_extensions_base_base_proto_rawDesc = []byte{
 	0x0a, 0x1a, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x62, 0x61, 0x73,
 	0x65, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1d, 0x67, 0x6f,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x65, 0x78, 0x74,
@@ -121,38 +121,38 @@ var xxx_File_extensions_base_base_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_extensions_base_base_proto_rawDesc_once sync.Once
-	xxx_File_extensions_base_base_proto_rawDesc_data = xxx_File_extensions_base_base_proto_rawDesc
+	file_extensions_base_base_proto_rawDescOnce sync.Once
+	file_extensions_base_base_proto_rawDescData = file_extensions_base_base_proto_rawDesc
 )
 
-func xxx_File_extensions_base_base_proto_rawDescGZIP() []byte {
-	xxx_File_extensions_base_base_proto_rawDesc_once.Do(func() {
-		xxx_File_extensions_base_base_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_extensions_base_base_proto_rawDesc_data)
+func file_extensions_base_base_proto_rawDescGZIP() []byte {
+	file_extensions_base_base_proto_rawDescOnce.Do(func() {
+		file_extensions_base_base_proto_rawDescData = protoimpl.X.CompressGZIP(file_extensions_base_base_proto_rawDescData)
 	})
-	return xxx_File_extensions_base_base_proto_rawDesc_data
+	return file_extensions_base_base_proto_rawDescData
 }
 
-var xxx_File_extensions_base_base_proto_messageTypes = make([]protoimpl.MessageType, 2)
-var xxx_File_extensions_base_base_proto_goTypes = []interface{}{
+var file_extensions_base_base_proto_msgTypes = make([]protoimpl.MessageType, 2)
+var file_extensions_base_base_proto_goTypes = []interface{}{
 	(*BaseMessage)(nil),                 // 0: goproto.protoc.extension.base.BaseMessage
 	(*MessageSetWireFormatMessage)(nil), // 1: goproto.protoc.extension.base.MessageSetWireFormatMessage
 }
-var xxx_File_extensions_base_base_proto_depIdxs = []int32{}
+var file_extensions_base_base_proto_depIdxs = []int32{}
 
-func init() { xxx_File_extensions_base_base_proto_init() }
-func xxx_File_extensions_base_base_proto_init() {
+func init() { file_extensions_base_base_proto_init() }
+func file_extensions_base_base_proto_init() {
 	if File_extensions_base_base_proto != nil {
 		return
 	}
 	File_extensions_base_base_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_extensions_base_base_proto_rawDesc,
-		GoTypes:            xxx_File_extensions_base_base_proto_goTypes,
-		DependencyIndexes:  xxx_File_extensions_base_base_proto_depIdxs,
-		MessageOutputTypes: xxx_File_extensions_base_base_proto_messageTypes,
+		RawDescriptor:      file_extensions_base_base_proto_rawDesc,
+		GoTypes:            file_extensions_base_base_proto_goTypes,
+		DependencyIndexes:  file_extensions_base_base_proto_depIdxs,
+		MessageOutputTypes: file_extensions_base_base_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_extensions_base_base_proto_rawDesc = nil
-	xxx_File_extensions_base_base_proto_goTypes = nil
-	xxx_File_extensions_base_base_proto_depIdxs = nil
+	file_extensions_base_base_proto_rawDesc = nil
+	file_extensions_base_base_proto_goTypes = nil
+	file_extensions_base_base_proto_depIdxs = nil
 }

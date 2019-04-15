@@ -34,7 +34,7 @@ func (x FieldTestMessage_Enum) String() string {
 }
 
 func (FieldTestMessage_Enum) Type() protoreflect.EnumType {
-	return xxx_File_proto3_fields_proto_enumTypes[0]
+	return file_proto3_fields_proto_enumTypes[0]
 }
 
 func (x FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
@@ -43,7 +43,7 @@ func (x FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use FieldTestMessage_Enum.Type instead.
 func (FieldTestMessage_Enum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_proto3_fields_proto_rawDescGZIP(), []int{0, 0}
+	return file_proto3_fields_proto_rawDescGZIP(), []int{0, 0}
 }
 
 type FieldTestMessage struct {
@@ -100,16 +100,16 @@ func (x *FieldTestMessage) String() string {
 func (*FieldTestMessage) ProtoMessage() {}
 
 func (x *FieldTestMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto3_fields_proto_messageTypes[0].MessageOf(x)
+	return file_proto3_fields_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *FieldTestMessage) XXX_Methods() *protoiface.Methods {
-	return xxx_File_proto3_fields_proto_messageTypes[0].Methods()
+	return file_proto3_fields_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use FieldTestMessage.ProtoReflect.Type instead.
 func (*FieldTestMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_proto3_fields_proto_rawDescGZIP(), []int{0}
+	return file_proto3_fields_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *FieldTestMessage) GetOptionalBool() string {
@@ -388,21 +388,21 @@ func (x *FieldTestMessage_Message) String() string {
 func (*FieldTestMessage_Message) ProtoMessage() {}
 
 func (x *FieldTestMessage_Message) ProtoReflect() protoreflect.Message {
-	return xxx_File_proto3_fields_proto_messageTypes[4].MessageOf(x)
+	return file_proto3_fields_proto_msgTypes[4].MessageOf(x)
 }
 
 func (m *FieldTestMessage_Message) XXX_Methods() *protoiface.Methods {
-	return xxx_File_proto3_fields_proto_messageTypes[4].Methods()
+	return file_proto3_fields_proto_msgTypes[4].Methods()
 }
 
 // Deprecated: Use FieldTestMessage_Message.ProtoReflect.Type instead.
 func (*FieldTestMessage_Message) Descriptor() ([]byte, []int) {
-	return xxx_File_proto3_fields_proto_rawDescGZIP(), []int{0, 3}
+	return file_proto3_fields_proto_rawDescGZIP(), []int{0, 3}
 }
 
 var File_proto3_fields_proto protoreflect.FileDescriptor
 
-var xxx_File_proto3_fields_proto_rawDesc = []byte{
+var file_proto3_fields_proto_rawDesc = []byte{
 	0x0a, 0x13, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x2f, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x15, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x22, 0xd0, 0x11, 0x0a,
@@ -555,20 +555,20 @@ var xxx_File_proto3_fields_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_proto3_fields_proto_rawDesc_once sync.Once
-	xxx_File_proto3_fields_proto_rawDesc_data = xxx_File_proto3_fields_proto_rawDesc
+	file_proto3_fields_proto_rawDescOnce sync.Once
+	file_proto3_fields_proto_rawDescData = file_proto3_fields_proto_rawDesc
 )
 
-func xxx_File_proto3_fields_proto_rawDescGZIP() []byte {
-	xxx_File_proto3_fields_proto_rawDesc_once.Do(func() {
-		xxx_File_proto3_fields_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_proto3_fields_proto_rawDesc_data)
+func file_proto3_fields_proto_rawDescGZIP() []byte {
+	file_proto3_fields_proto_rawDescOnce.Do(func() {
+		file_proto3_fields_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto3_fields_proto_rawDescData)
 	})
-	return xxx_File_proto3_fields_proto_rawDesc_data
+	return file_proto3_fields_proto_rawDescData
 }
 
-var xxx_File_proto3_fields_proto_enumTypes = make([]protoreflect.EnumType, 1)
-var xxx_File_proto3_fields_proto_messageTypes = make([]protoimpl.MessageType, 5)
-var xxx_File_proto3_fields_proto_goTypes = []interface{}{
+var file_proto3_fields_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var file_proto3_fields_proto_msgTypes = make([]protoimpl.MessageType, 5)
+var file_proto3_fields_proto_goTypes = []interface{}{
 	(FieldTestMessage_Enum)(0),       // 0: goproto.protoc.proto3.FieldTestMessage.Enum
 	(*FieldTestMessage)(nil),         // 1: goproto.protoc.proto3.FieldTestMessage
 	nil,                              // 2: goproto.protoc.proto3.FieldTestMessage.MapInt32Int64Entry
@@ -576,7 +576,7 @@ var xxx_File_proto3_fields_proto_goTypes = []interface{}{
 	nil,                              // 4: goproto.protoc.proto3.FieldTestMessage.MapFixed64EnumEntry
 	(*FieldTestMessage_Message)(nil), // 5: goproto.protoc.proto3.FieldTestMessage.Message
 }
-var xxx_File_proto3_fields_proto_depIdxs = []int32{
+var file_proto3_fields_proto_depIdxs = []int32{
 	0, // goproto.protoc.proto3.FieldTestMessage.optional_enum:type_name -> goproto.protoc.proto3.FieldTestMessage.Enum
 	5, // goproto.protoc.proto3.FieldTestMessage.optional_Message:type_name -> goproto.protoc.proto3.FieldTestMessage.Message
 	0, // goproto.protoc.proto3.FieldTestMessage.repeated_enum:type_name -> goproto.protoc.proto3.FieldTestMessage.Enum
@@ -588,21 +588,21 @@ var xxx_File_proto3_fields_proto_depIdxs = []int32{
 	0, // goproto.protoc.proto3.FieldTestMessage.MapFixed64EnumEntry.value:type_name -> goproto.protoc.proto3.FieldTestMessage.Enum
 }
 
-func init() { xxx_File_proto3_fields_proto_init() }
-func xxx_File_proto3_fields_proto_init() {
+func init() { file_proto3_fields_proto_init() }
+func file_proto3_fields_proto_init() {
 	if File_proto3_fields_proto != nil {
 		return
 	}
 	File_proto3_fields_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_proto3_fields_proto_rawDesc,
-		GoTypes:            xxx_File_proto3_fields_proto_goTypes,
-		DependencyIndexes:  xxx_File_proto3_fields_proto_depIdxs,
-		EnumOutputTypes:    xxx_File_proto3_fields_proto_enumTypes,
-		MessageOutputTypes: xxx_File_proto3_fields_proto_messageTypes,
+		RawDescriptor:      file_proto3_fields_proto_rawDesc,
+		GoTypes:            file_proto3_fields_proto_goTypes,
+		DependencyIndexes:  file_proto3_fields_proto_depIdxs,
+		EnumOutputTypes:    file_proto3_fields_proto_enumTypes,
+		MessageOutputTypes: file_proto3_fields_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_proto3_fields_proto_rawDesc = nil
-	xxx_File_proto3_fields_proto_goTypes = nil
-	xxx_File_proto3_fields_proto_depIdxs = nil
+	file_proto3_fields_proto_rawDesc = nil
+	file_proto3_fields_proto_goTypes = nil
+	file_proto3_fields_proto_depIdxs = nil
 }

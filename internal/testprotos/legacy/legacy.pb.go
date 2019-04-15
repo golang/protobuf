@@ -54,16 +54,16 @@ func (x *Legacy) String() string {
 func (*Legacy) ProtoMessage() {}
 
 func (x *Legacy) ProtoReflect() protoreflect.Message {
-	return xxx_File_legacy_legacy_proto_messageTypes[0].MessageOf(x)
+	return file_legacy_legacy_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *Legacy) XXX_Methods() *protoiface.Methods {
-	return xxx_File_legacy_legacy_proto_messageTypes[0].Methods()
+	return file_legacy_legacy_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use Legacy.ProtoReflect.Type instead.
 func (*Legacy) Descriptor() ([]byte, []int) {
-	return xxx_File_legacy_legacy_proto_rawDescGZIP(), []int{0}
+	return file_legacy_legacy_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Legacy) GetF1() *proto2_v0_0.Message {
@@ -152,7 +152,7 @@ func (x *Legacy) GetF12() *proto3_v1_21.Message {
 
 var File_legacy_legacy_proto protoreflect.FileDescriptor
 
-var xxx_File_legacy_legacy_proto_rawDesc = []byte{
+var file_legacy_legacy_proto_rawDesc = []byte{
 	0x0a, 0x13, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x2f, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x11, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x67, 0x6f,
 	0x6c, 0x61, 0x6e, 0x67, 0x2e, 0x6f, 0x72, 0x67, 0x1a, 0x31, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79,
@@ -248,19 +248,19 @@ var xxx_File_legacy_legacy_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_legacy_legacy_proto_rawDesc_once sync.Once
-	xxx_File_legacy_legacy_proto_rawDesc_data = xxx_File_legacy_legacy_proto_rawDesc
+	file_legacy_legacy_proto_rawDescOnce sync.Once
+	file_legacy_legacy_proto_rawDescData = file_legacy_legacy_proto_rawDesc
 )
 
-func xxx_File_legacy_legacy_proto_rawDescGZIP() []byte {
-	xxx_File_legacy_legacy_proto_rawDesc_once.Do(func() {
-		xxx_File_legacy_legacy_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_legacy_legacy_proto_rawDesc_data)
+func file_legacy_legacy_proto_rawDescGZIP() []byte {
+	file_legacy_legacy_proto_rawDescOnce.Do(func() {
+		file_legacy_legacy_proto_rawDescData = protoimpl.X.CompressGZIP(file_legacy_legacy_proto_rawDescData)
 	})
-	return xxx_File_legacy_legacy_proto_rawDesc_data
+	return file_legacy_legacy_proto_rawDescData
 }
 
-var xxx_File_legacy_legacy_proto_messageTypes = make([]protoimpl.MessageType, 1)
-var xxx_File_legacy_legacy_proto_goTypes = []interface{}{
+var file_legacy_legacy_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_legacy_legacy_proto_goTypes = []interface{}{
 	(*Legacy)(nil),               // 0: google.golang.org.Legacy
 	(*proto2_v0_0.Message)(nil),  // 1: google.golang.org.proto2_20160225.Message
 	(*proto3_v0_0.Message)(nil),  // 2: google.golang.org.proto3_20160225.Message
@@ -275,7 +275,7 @@ var xxx_File_legacy_legacy_proto_goTypes = []interface{}{
 	(*proto2_v1_21.Message)(nil), // 11: google.golang.org.proto2_20181126.Message
 	(*proto3_v1_21.Message)(nil), // 12: google.golang.org.proto3_20181126.Message
 }
-var xxx_File_legacy_legacy_proto_depIdxs = []int32{
+var file_legacy_legacy_proto_depIdxs = []int32{
 	1,  // google.golang.org.Legacy.f1:type_name -> google.golang.org.proto2_20160225.Message
 	2,  // google.golang.org.Legacy.f2:type_name -> google.golang.org.proto3_20160225.Message
 	3,  // google.golang.org.Legacy.f3:type_name -> google.golang.org.proto2_20160519.Message
@@ -290,20 +290,20 @@ var xxx_File_legacy_legacy_proto_depIdxs = []int32{
 	12, // google.golang.org.Legacy.f12:type_name -> google.golang.org.proto3_20181126.Message
 }
 
-func init() { xxx_File_legacy_legacy_proto_init() }
-func xxx_File_legacy_legacy_proto_init() {
+func init() { file_legacy_legacy_proto_init() }
+func file_legacy_legacy_proto_init() {
 	if File_legacy_legacy_proto != nil {
 		return
 	}
 	File_legacy_legacy_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_legacy_legacy_proto_rawDesc,
-		GoTypes:            xxx_File_legacy_legacy_proto_goTypes,
-		DependencyIndexes:  xxx_File_legacy_legacy_proto_depIdxs,
-		MessageOutputTypes: xxx_File_legacy_legacy_proto_messageTypes,
+		RawDescriptor:      file_legacy_legacy_proto_rawDesc,
+		GoTypes:            file_legacy_legacy_proto_goTypes,
+		DependencyIndexes:  file_legacy_legacy_proto_depIdxs,
+		MessageOutputTypes: file_legacy_legacy_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_legacy_legacy_proto_rawDesc = nil
-	xxx_File_legacy_legacy_proto_goTypes = nil
-	xxx_File_legacy_legacy_proto_depIdxs = nil
+	file_legacy_legacy_proto_rawDesc = nil
+	file_legacy_legacy_proto_goTypes = nil
+	file_legacy_legacy_proto_depIdxs = nil
 }

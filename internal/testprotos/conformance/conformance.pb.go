@@ -46,7 +46,7 @@ func (x WireFormat) String() string {
 }
 
 func (WireFormat) Type() protoreflect.EnumType {
-	return xxx_File_conformance_conformance_proto_enumTypes[0]
+	return file_conformance_conformance_proto_enumTypes[0]
 }
 
 func (x WireFormat) Number() protoreflect.EnumNumber {
@@ -55,7 +55,7 @@ func (x WireFormat) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use WireFormat.Type instead.
 func (WireFormat) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{0}
+	return file_conformance_conformance_proto_rawDescGZIP(), []int{0}
 }
 
 type TestCategory int32
@@ -102,7 +102,7 @@ func (x TestCategory) String() string {
 }
 
 func (TestCategory) Type() protoreflect.EnumType {
-	return xxx_File_conformance_conformance_proto_enumTypes[1]
+	return file_conformance_conformance_proto_enumTypes[1]
 }
 
 func (x TestCategory) Number() protoreflect.EnumNumber {
@@ -111,7 +111,7 @@ func (x TestCategory) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use TestCategory.Type instead.
 func (TestCategory) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{1}
+	return file_conformance_conformance_proto_rawDescGZIP(), []int{1}
 }
 
 // The conformance runner will request a list of failures as the first request.
@@ -135,16 +135,16 @@ func (x *FailureSet) String() string {
 func (*FailureSet) ProtoMessage() {}
 
 func (x *FailureSet) ProtoReflect() protoreflect.Message {
-	return xxx_File_conformance_conformance_proto_messageTypes[0].MessageOf(x)
+	return file_conformance_conformance_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *FailureSet) XXX_Methods() *protoiface.Methods {
-	return xxx_File_conformance_conformance_proto_messageTypes[0].Methods()
+	return file_conformance_conformance_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use FailureSet.ProtoReflect.Type instead.
 func (*FailureSet) Descriptor() ([]byte, []int) {
-	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{0}
+	return file_conformance_conformance_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *FailureSet) GetFailure() []string {
@@ -203,16 +203,16 @@ func (x *ConformanceRequest) String() string {
 func (*ConformanceRequest) ProtoMessage() {}
 
 func (x *ConformanceRequest) ProtoReflect() protoreflect.Message {
-	return xxx_File_conformance_conformance_proto_messageTypes[1].MessageOf(x)
+	return file_conformance_conformance_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *ConformanceRequest) XXX_Methods() *protoiface.Methods {
-	return xxx_File_conformance_conformance_proto_messageTypes[1].Methods()
+	return file_conformance_conformance_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use ConformanceRequest.ProtoReflect.Type instead.
 func (*ConformanceRequest) Descriptor() ([]byte, []int) {
-	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{1}
+	return file_conformance_conformance_proto_rawDescGZIP(), []int{1}
 }
 
 func (m *ConformanceRequest) GetPayload() isConformanceRequest_Payload {
@@ -366,16 +366,16 @@ func (x *ConformanceResponse) String() string {
 func (*ConformanceResponse) ProtoMessage() {}
 
 func (x *ConformanceResponse) ProtoReflect() protoreflect.Message {
-	return xxx_File_conformance_conformance_proto_messageTypes[2].MessageOf(x)
+	return file_conformance_conformance_proto_msgTypes[2].MessageOf(x)
 }
 
 func (m *ConformanceResponse) XXX_Methods() *protoiface.Methods {
-	return xxx_File_conformance_conformance_proto_messageTypes[2].Methods()
+	return file_conformance_conformance_proto_msgTypes[2].Methods()
 }
 
 // Deprecated: Use ConformanceResponse.ProtoReflect.Type instead.
 func (*ConformanceResponse) Descriptor() ([]byte, []int) {
-	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{2}
+	return file_conformance_conformance_proto_rawDescGZIP(), []int{2}
 }
 
 func (m *ConformanceResponse) GetResult() isConformanceResponse_Result {
@@ -527,16 +527,16 @@ func (x *JspbEncodingConfig) String() string {
 func (*JspbEncodingConfig) ProtoMessage() {}
 
 func (x *JspbEncodingConfig) ProtoReflect() protoreflect.Message {
-	return xxx_File_conformance_conformance_proto_messageTypes[3].MessageOf(x)
+	return file_conformance_conformance_proto_msgTypes[3].MessageOf(x)
 }
 
 func (m *JspbEncodingConfig) XXX_Methods() *protoiface.Methods {
-	return xxx_File_conformance_conformance_proto_messageTypes[3].Methods()
+	return file_conformance_conformance_proto_msgTypes[3].Methods()
 }
 
 // Deprecated: Use JspbEncodingConfig.ProtoReflect.Type instead.
 func (*JspbEncodingConfig) Descriptor() ([]byte, []int) {
-	return xxx_File_conformance_conformance_proto_rawDescGZIP(), []int{3}
+	return file_conformance_conformance_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *JspbEncodingConfig) GetUseJspbArrayAnyFormat() bool {
@@ -548,7 +548,7 @@ func (x *JspbEncodingConfig) GetUseJspbArrayAnyFormat() bool {
 
 var File_conformance_conformance_proto protoreflect.FileDescriptor
 
-var xxx_File_conformance_conformance_proto_rawDesc = []byte{
+var file_conformance_conformance_proto_rawDesc = []byte{
 	0x0a, 0x1d, 0x63, 0x6f, 0x6e, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x6e, 0x63, 0x65, 0x2f, 0x63, 0x6f,
 	0x6e, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x6e, 0x63, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
 	0x0b, 0x63, 0x6f, 0x6e, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x6e, 0x63, 0x65, 0x22, 0x26, 0x0a, 0x0a,
@@ -634,20 +634,20 @@ var xxx_File_conformance_conformance_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_conformance_conformance_proto_rawDesc_once sync.Once
-	xxx_File_conformance_conformance_proto_rawDesc_data = xxx_File_conformance_conformance_proto_rawDesc
+	file_conformance_conformance_proto_rawDescOnce sync.Once
+	file_conformance_conformance_proto_rawDescData = file_conformance_conformance_proto_rawDesc
 )
 
-func xxx_File_conformance_conformance_proto_rawDescGZIP() []byte {
-	xxx_File_conformance_conformance_proto_rawDesc_once.Do(func() {
-		xxx_File_conformance_conformance_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_conformance_conformance_proto_rawDesc_data)
+func file_conformance_conformance_proto_rawDescGZIP() []byte {
+	file_conformance_conformance_proto_rawDescOnce.Do(func() {
+		file_conformance_conformance_proto_rawDescData = protoimpl.X.CompressGZIP(file_conformance_conformance_proto_rawDescData)
 	})
-	return xxx_File_conformance_conformance_proto_rawDesc_data
+	return file_conformance_conformance_proto_rawDescData
 }
 
-var xxx_File_conformance_conformance_proto_enumTypes = make([]protoreflect.EnumType, 2)
-var xxx_File_conformance_conformance_proto_messageTypes = make([]protoimpl.MessageType, 4)
-var xxx_File_conformance_conformance_proto_goTypes = []interface{}{
+var file_conformance_conformance_proto_enumTypes = make([]protoreflect.EnumType, 2)
+var file_conformance_conformance_proto_msgTypes = make([]protoimpl.MessageType, 4)
+var file_conformance_conformance_proto_goTypes = []interface{}{
 	(WireFormat)(0),             // 0: conformance.WireFormat
 	(TestCategory)(0),           // 1: conformance.TestCategory
 	(*FailureSet)(nil),          // 2: conformance.FailureSet
@@ -655,27 +655,27 @@ var xxx_File_conformance_conformance_proto_goTypes = []interface{}{
 	(*ConformanceResponse)(nil), // 4: conformance.ConformanceResponse
 	(*JspbEncodingConfig)(nil),  // 5: conformance.JspbEncodingConfig
 }
-var xxx_File_conformance_conformance_proto_depIdxs = []int32{
+var file_conformance_conformance_proto_depIdxs = []int32{
 	0, // conformance.ConformanceRequest.requested_output_format:type_name -> conformance.WireFormat
 	1, // conformance.ConformanceRequest.test_category:type_name -> conformance.TestCategory
 	5, // conformance.ConformanceRequest.jspb_encoding_options:type_name -> conformance.JspbEncodingConfig
 }
 
-func init() { xxx_File_conformance_conformance_proto_init() }
-func xxx_File_conformance_conformance_proto_init() {
+func init() { file_conformance_conformance_proto_init() }
+func file_conformance_conformance_proto_init() {
 	if File_conformance_conformance_proto != nil {
 		return
 	}
 	File_conformance_conformance_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_conformance_conformance_proto_rawDesc,
-		GoTypes:            xxx_File_conformance_conformance_proto_goTypes,
-		DependencyIndexes:  xxx_File_conformance_conformance_proto_depIdxs,
-		EnumOutputTypes:    xxx_File_conformance_conformance_proto_enumTypes,
-		MessageOutputTypes: xxx_File_conformance_conformance_proto_messageTypes,
+		RawDescriptor:      file_conformance_conformance_proto_rawDesc,
+		GoTypes:            file_conformance_conformance_proto_goTypes,
+		DependencyIndexes:  file_conformance_conformance_proto_depIdxs,
+		EnumOutputTypes:    file_conformance_conformance_proto_enumTypes,
+		MessageOutputTypes: file_conformance_conformance_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_conformance_conformance_proto_rawDesc = nil
-	xxx_File_conformance_conformance_proto_goTypes = nil
-	xxx_File_conformance_conformance_proto_depIdxs = nil
+	file_conformance_conformance_proto_rawDesc = nil
+	file_conformance_conformance_proto_goTypes = nil
+	file_conformance_conformance_proto_depIdxs = nil
 }

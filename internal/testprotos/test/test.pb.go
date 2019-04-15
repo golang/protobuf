@@ -46,7 +46,7 @@ func (x ForeignEnum) String() string {
 }
 
 func (ForeignEnum) Type() protoreflect.EnumType {
-	return xxx_File_test_test_proto_enumTypes[0]
+	return file_test_test_proto_enumTypes[0]
 }
 
 func (x ForeignEnum) Number() protoreflect.EnumNumber {
@@ -65,7 +65,7 @@ func (x *ForeignEnum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use ForeignEnum.Type instead.
 func (ForeignEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{0}
+	return file_test_test_proto_rawDescGZIP(), []int{0}
 }
 
 type TestReservedEnumFields int32
@@ -95,7 +95,7 @@ func (x TestReservedEnumFields) String() string {
 }
 
 func (TestReservedEnumFields) Type() protoreflect.EnumType {
-	return xxx_File_test_test_proto_enumTypes[1]
+	return file_test_test_proto_enumTypes[1]
 }
 
 func (x TestReservedEnumFields) Number() protoreflect.EnumNumber {
@@ -114,7 +114,7 @@ func (x *TestReservedEnumFields) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use TestReservedEnumFields.Type instead.
 func (TestReservedEnumFields) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{1}
+	return file_test_test_proto_rawDescGZIP(), []int{1}
 }
 
 type TestAllTypes_NestedEnum int32
@@ -153,7 +153,7 @@ func (x TestAllTypes_NestedEnum) String() string {
 }
 
 func (TestAllTypes_NestedEnum) Type() protoreflect.EnumType {
-	return xxx_File_test_test_proto_enumTypes[2]
+	return file_test_test_proto_enumTypes[2]
 }
 
 func (x TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
@@ -172,7 +172,7 @@ func (x *TestAllTypes_NestedEnum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use TestAllTypes_NestedEnum.Type instead.
 func (TestAllTypes_NestedEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{0, 0}
+	return file_test_test_proto_rawDescGZIP(), []int{0, 0}
 }
 
 type TestDeprecatedMessage_DeprecatedEnum int32 // Deprecated: Do not use.
@@ -201,7 +201,7 @@ func (x TestDeprecatedMessage_DeprecatedEnum) String() string {
 }
 
 func (TestDeprecatedMessage_DeprecatedEnum) Type() protoreflect.EnumType {
-	return xxx_File_test_test_proto_enumTypes[3]
+	return file_test_test_proto_enumTypes[3]
 }
 
 func (x TestDeprecatedMessage_DeprecatedEnum) Number() protoreflect.EnumNumber {
@@ -220,7 +220,7 @@ func (x *TestDeprecatedMessage_DeprecatedEnum) UnmarshalJSON(b []byte) error {
 
 // Deprecated: Use TestDeprecatedMessage_DeprecatedEnum.Type instead.
 func (TestDeprecatedMessage_DeprecatedEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{1, 0}
+	return file_test_test_proto_rawDescGZIP(), []int{1, 0}
 }
 
 type TestAllTypes struct {
@@ -330,16 +330,16 @@ func (x *TestAllTypes) String() string {
 func (*TestAllTypes) ProtoMessage() {}
 
 func (x *TestAllTypes) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[0].MessageOf(x)
+	return file_test_test_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *TestAllTypes) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[0].Methods()
+	return file_test_test_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use TestAllTypes.ProtoReflect.Type instead.
 func (*TestAllTypes) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{0}
+	return file_test_test_proto_rawDescGZIP(), []int{0}
 }
 
 const Default_TestAllTypes_DefaultInt32 int32 = 81
@@ -1073,16 +1073,16 @@ func (x *TestDeprecatedMessage) String() string {
 func (*TestDeprecatedMessage) ProtoMessage() {}
 
 func (x *TestDeprecatedMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[1].MessageOf(x)
+	return file_test_test_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *TestDeprecatedMessage) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[1].Methods()
+	return file_test_test_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use TestDeprecatedMessage.ProtoReflect.Type instead.
 func (*TestDeprecatedMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{1}
+	return file_test_test_proto_rawDescGZIP(), []int{1}
 }
 
 // Deprecated: Do not use.
@@ -1144,16 +1144,16 @@ func (x *ForeignMessage) String() string {
 func (*ForeignMessage) ProtoMessage() {}
 
 func (x *ForeignMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[2].MessageOf(x)
+	return file_test_test_proto_msgTypes[2].MessageOf(x)
 }
 
 func (m *ForeignMessage) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[2].Methods()
+	return file_test_test_proto_msgTypes[2].Methods()
 }
 
 // Deprecated: Use ForeignMessage.ProtoReflect.Type instead.
 func (*ForeignMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{2}
+	return file_test_test_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ForeignMessage) GetC() int32 {
@@ -1187,16 +1187,16 @@ func (x *TestReservedFields) String() string {
 func (*TestReservedFields) ProtoMessage() {}
 
 func (x *TestReservedFields) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[3].MessageOf(x)
+	return file_test_test_proto_msgTypes[3].MessageOf(x)
 }
 
 func (m *TestReservedFields) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[3].Methods()
+	return file_test_test_proto_msgTypes[3].Methods()
 }
 
 // Deprecated: Use TestReservedFields.ProtoReflect.Type instead.
 func (*TestReservedFields) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{3}
+	return file_test_test_proto_rawDescGZIP(), []int{3}
 }
 
 type TestAllExtensions struct {
@@ -1217,16 +1217,16 @@ func (x *TestAllExtensions) String() string {
 func (*TestAllExtensions) ProtoMessage() {}
 
 func (x *TestAllExtensions) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[4].MessageOf(x)
+	return file_test_test_proto_msgTypes[4].MessageOf(x)
 }
 
 func (m *TestAllExtensions) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[4].Methods()
+	return file_test_test_proto_msgTypes[4].Methods()
 }
 
 // Deprecated: Use TestAllExtensions.ProtoReflect.Type instead.
 func (*TestAllExtensions) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{4}
+	return file_test_test_proto_rawDescGZIP(), []int{4}
 }
 
 var extRange_TestAllExtensions = []protoiface.ExtensionRangeV1{
@@ -1256,16 +1256,16 @@ func (x *OptionalGroupExtension) String() string {
 func (*OptionalGroupExtension) ProtoMessage() {}
 
 func (x *OptionalGroupExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[5].MessageOf(x)
+	return file_test_test_proto_msgTypes[5].MessageOf(x)
 }
 
 func (m *OptionalGroupExtension) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[5].Methods()
+	return file_test_test_proto_msgTypes[5].Methods()
 }
 
 // Deprecated: Use OptionalGroupExtension.ProtoReflect.Type instead.
 func (*OptionalGroupExtension) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{5}
+	return file_test_test_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *OptionalGroupExtension) GetA() int32 {
@@ -1293,16 +1293,16 @@ func (x *RepeatedGroupExtension) String() string {
 func (*RepeatedGroupExtension) ProtoMessage() {}
 
 func (x *RepeatedGroupExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[6].MessageOf(x)
+	return file_test_test_proto_msgTypes[6].MessageOf(x)
 }
 
 func (m *RepeatedGroupExtension) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[6].Methods()
+	return file_test_test_proto_msgTypes[6].Methods()
 }
 
 // Deprecated: Use RepeatedGroupExtension.ProtoReflect.Type instead.
 func (*RepeatedGroupExtension) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{6}
+	return file_test_test_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *RepeatedGroupExtension) GetA() int32 {
@@ -1329,16 +1329,16 @@ func (x *TestNestedExtension) String() string {
 func (*TestNestedExtension) ProtoMessage() {}
 
 func (x *TestNestedExtension) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[7].MessageOf(x)
+	return file_test_test_proto_msgTypes[7].MessageOf(x)
 }
 
 func (m *TestNestedExtension) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[7].Methods()
+	return file_test_test_proto_msgTypes[7].Methods()
 }
 
 // Deprecated: Use TestNestedExtension.ProtoReflect.Type instead.
 func (*TestNestedExtension) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{7}
+	return file_test_test_proto_rawDescGZIP(), []int{7}
 }
 
 type TestRequired struct {
@@ -1359,16 +1359,16 @@ func (x *TestRequired) String() string {
 func (*TestRequired) ProtoMessage() {}
 
 func (x *TestRequired) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[8].MessageOf(x)
+	return file_test_test_proto_msgTypes[8].MessageOf(x)
 }
 
 func (m *TestRequired) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[8].Methods()
+	return file_test_test_proto_msgTypes[8].Methods()
 }
 
 // Deprecated: Use TestRequired.ProtoReflect.Type instead.
 func (*TestRequired) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{8}
+	return file_test_test_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *TestRequired) GetRequiredField() int32 {
@@ -1398,16 +1398,16 @@ func (x *TestRequiredForeign) String() string {
 func (*TestRequiredForeign) ProtoMessage() {}
 
 func (x *TestRequiredForeign) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[9].MessageOf(x)
+	return file_test_test_proto_msgTypes[9].MessageOf(x)
 }
 
 func (m *TestRequiredForeign) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[9].Methods()
+	return file_test_test_proto_msgTypes[9].Methods()
 }
 
 // Deprecated: Use TestRequiredForeign.ProtoReflect.Type instead.
 func (*TestRequiredForeign) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{9}
+	return file_test_test_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *TestRequiredForeign) GetOptionalMessage() *TestRequired {
@@ -1450,16 +1450,16 @@ func (x *TestRequiredGroupFields) String() string {
 func (*TestRequiredGroupFields) ProtoMessage() {}
 
 func (x *TestRequiredGroupFields) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[10].MessageOf(x)
+	return file_test_test_proto_msgTypes[10].MessageOf(x)
 }
 
 func (m *TestRequiredGroupFields) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[10].Methods()
+	return file_test_test_proto_msgTypes[10].Methods()
 }
 
 // Deprecated: Use TestRequiredGroupFields.ProtoReflect.Type instead.
 func (*TestRequiredGroupFields) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{10}
+	return file_test_test_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *TestRequiredGroupFields) GetOptionalgroup() *TestRequiredGroupFields_OptionalGroup {
@@ -1494,16 +1494,16 @@ func (x *FooRequest) String() string {
 func (*FooRequest) ProtoMessage() {}
 
 func (x *FooRequest) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[11].MessageOf(x)
+	return file_test_test_proto_msgTypes[11].MessageOf(x)
 }
 
 func (m *FooRequest) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[11].Methods()
+	return file_test_test_proto_msgTypes[11].Methods()
 }
 
 // Deprecated: Use FooRequest.ProtoReflect.Type instead.
 func (*FooRequest) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{11}
+	return file_test_test_proto_rawDescGZIP(), []int{11}
 }
 
 type FooResponse struct {
@@ -1523,16 +1523,16 @@ func (x *FooResponse) String() string {
 func (*FooResponse) ProtoMessage() {}
 
 func (x *FooResponse) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[12].MessageOf(x)
+	return file_test_test_proto_msgTypes[12].MessageOf(x)
 }
 
 func (m *FooResponse) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[12].Methods()
+	return file_test_test_proto_msgTypes[12].Methods()
 }
 
 // Deprecated: Use FooResponse.ProtoReflect.Type instead.
 func (*FooResponse) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{12}
+	return file_test_test_proto_rawDescGZIP(), []int{12}
 }
 
 type TestAllTypes_NestedMessage struct {
@@ -1554,16 +1554,16 @@ func (x *TestAllTypes_NestedMessage) String() string {
 func (*TestAllTypes_NestedMessage) ProtoMessage() {}
 
 func (x *TestAllTypes_NestedMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[13].MessageOf(x)
+	return file_test_test_proto_msgTypes[13].MessageOf(x)
 }
 
 func (m *TestAllTypes_NestedMessage) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[13].Methods()
+	return file_test_test_proto_msgTypes[13].Methods()
 }
 
 // Deprecated: Use TestAllTypes_NestedMessage.ProtoReflect.Type instead.
 func (*TestAllTypes_NestedMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{0, 0}
+	return file_test_test_proto_rawDescGZIP(), []int{0, 0}
 }
 
 func (x *TestAllTypes_NestedMessage) GetA() int32 {
@@ -1598,16 +1598,16 @@ func (x *TestAllTypes_OptionalGroup) String() string {
 func (*TestAllTypes_OptionalGroup) ProtoMessage() {}
 
 func (x *TestAllTypes_OptionalGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[14].MessageOf(x)
+	return file_test_test_proto_msgTypes[14].MessageOf(x)
 }
 
 func (m *TestAllTypes_OptionalGroup) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[14].Methods()
+	return file_test_test_proto_msgTypes[14].Methods()
 }
 
 // Deprecated: Use TestAllTypes_OptionalGroup.ProtoReflect.Type instead.
 func (*TestAllTypes_OptionalGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{0, 1}
+	return file_test_test_proto_rawDescGZIP(), []int{0, 1}
 }
 
 func (x *TestAllTypes_OptionalGroup) GetA() int32 {
@@ -1635,16 +1635,16 @@ func (x *TestAllTypes_RepeatedGroup) String() string {
 func (*TestAllTypes_RepeatedGroup) ProtoMessage() {}
 
 func (x *TestAllTypes_RepeatedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[15].MessageOf(x)
+	return file_test_test_proto_msgTypes[15].MessageOf(x)
 }
 
 func (m *TestAllTypes_RepeatedGroup) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[15].Methods()
+	return file_test_test_proto_msgTypes[15].Methods()
 }
 
 // Deprecated: Use TestAllTypes_RepeatedGroup.ProtoReflect.Type instead.
 func (*TestAllTypes_RepeatedGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{0, 2}
+	return file_test_test_proto_rawDescGZIP(), []int{0, 2}
 }
 
 func (x *TestAllTypes_RepeatedGroup) GetA() int32 {
@@ -1672,16 +1672,16 @@ func (x *TestRequiredGroupFields_OptionalGroup) String() string {
 func (*TestRequiredGroupFields_OptionalGroup) ProtoMessage() {}
 
 func (x *TestRequiredGroupFields_OptionalGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[34].MessageOf(x)
+	return file_test_test_proto_msgTypes[34].MessageOf(x)
 }
 
 func (m *TestRequiredGroupFields_OptionalGroup) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[34].Methods()
+	return file_test_test_proto_msgTypes[34].Methods()
 }
 
 // Deprecated: Use TestRequiredGroupFields_OptionalGroup.ProtoReflect.Type instead.
 func (*TestRequiredGroupFields_OptionalGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{10, 0}
+	return file_test_test_proto_rawDescGZIP(), []int{10, 0}
 }
 
 func (x *TestRequiredGroupFields_OptionalGroup) GetA() int32 {
@@ -1709,16 +1709,16 @@ func (x *TestRequiredGroupFields_RepeatedGroup) String() string {
 func (*TestRequiredGroupFields_RepeatedGroup) ProtoMessage() {}
 
 func (x *TestRequiredGroupFields_RepeatedGroup) ProtoReflect() protoreflect.Message {
-	return xxx_File_test_test_proto_messageTypes[35].MessageOf(x)
+	return file_test_test_proto_msgTypes[35].MessageOf(x)
 }
 
 func (m *TestRequiredGroupFields_RepeatedGroup) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test_test_proto_messageTypes[35].Methods()
+	return file_test_test_proto_msgTypes[35].Methods()
 }
 
 // Deprecated: Use TestRequiredGroupFields_RepeatedGroup.ProtoReflect.Type instead.
 func (*TestRequiredGroupFields_RepeatedGroup) Descriptor() ([]byte, []int) {
-	return xxx_File_test_test_proto_rawDescGZIP(), []int{10, 1}
+	return file_test_test_proto_rawDescGZIP(), []int{10, 1}
 }
 
 func (x *TestRequiredGroupFields_RepeatedGroup) GetA() int32 {
@@ -1728,7 +1728,7 @@ func (x *TestRequiredGroupFields_RepeatedGroup) GetA() int32 {
 	return 0
 }
 
-var xxx_File_test_test_proto_extDescs = []protoiface.ExtensionDescV1{
+var file_test_test_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
 		ExtendedType:  (*TestAllExtensions)(nil),
 		ExtensionType: (*int32)(nil),
@@ -2044,125 +2044,125 @@ var xxx_File_test_test_proto_extDescs = []protoiface.ExtensionDescV1{
 }
 var (
 	// extend goproto.proto.test.TestAllExtensions { optional int32 optional_int32_extension = 1; }
-	E_OptionalInt32Extension = &xxx_File_test_test_proto_extDescs[0]
+	E_OptionalInt32Extension = &file_test_test_proto_extDescs[0]
 
 	// extend goproto.proto.test.TestAllExtensions { optional int64 optional_int64_extension = 2; }
-	E_OptionalInt64Extension = &xxx_File_test_test_proto_extDescs[1]
+	E_OptionalInt64Extension = &file_test_test_proto_extDescs[1]
 
 	// extend goproto.proto.test.TestAllExtensions { optional uint32 optional_uint32_extension = 3; }
-	E_OptionalUint32Extension = &xxx_File_test_test_proto_extDescs[2]
+	E_OptionalUint32Extension = &file_test_test_proto_extDescs[2]
 
 	// extend goproto.proto.test.TestAllExtensions { optional uint64 optional_uint64_extension = 4; }
-	E_OptionalUint64Extension = &xxx_File_test_test_proto_extDescs[3]
+	E_OptionalUint64Extension = &file_test_test_proto_extDescs[3]
 
 	// extend goproto.proto.test.TestAllExtensions { optional sint32 optional_sint32_extension = 5; }
-	E_OptionalSint32Extension = &xxx_File_test_test_proto_extDescs[4]
+	E_OptionalSint32Extension = &file_test_test_proto_extDescs[4]
 
 	// extend goproto.proto.test.TestAllExtensions { optional sint64 optional_sint64_extension = 6; }
-	E_OptionalSint64Extension = &xxx_File_test_test_proto_extDescs[5]
+	E_OptionalSint64Extension = &file_test_test_proto_extDescs[5]
 
 	// extend goproto.proto.test.TestAllExtensions { optional fixed32 optional_fixed32_extension = 7; }
-	E_OptionalFixed32Extension = &xxx_File_test_test_proto_extDescs[6]
+	E_OptionalFixed32Extension = &file_test_test_proto_extDescs[6]
 
 	// extend goproto.proto.test.TestAllExtensions { optional fixed64 optional_fixed64_extension = 8; }
-	E_OptionalFixed64Extension = &xxx_File_test_test_proto_extDescs[7]
+	E_OptionalFixed64Extension = &file_test_test_proto_extDescs[7]
 
 	// extend goproto.proto.test.TestAllExtensions { optional sfixed32 optional_sfixed32_extension = 9; }
-	E_OptionalSfixed32Extension = &xxx_File_test_test_proto_extDescs[8]
+	E_OptionalSfixed32Extension = &file_test_test_proto_extDescs[8]
 
 	// extend goproto.proto.test.TestAllExtensions { optional sfixed64 optional_sfixed64_extension = 10; }
-	E_OptionalSfixed64Extension = &xxx_File_test_test_proto_extDescs[9]
+	E_OptionalSfixed64Extension = &file_test_test_proto_extDescs[9]
 
 	// extend goproto.proto.test.TestAllExtensions { optional float optional_float_extension = 11; }
-	E_OptionalFloatExtension = &xxx_File_test_test_proto_extDescs[10]
+	E_OptionalFloatExtension = &file_test_test_proto_extDescs[10]
 
 	// extend goproto.proto.test.TestAllExtensions { optional double optional_double_extension = 12; }
-	E_OptionalDoubleExtension = &xxx_File_test_test_proto_extDescs[11]
+	E_OptionalDoubleExtension = &file_test_test_proto_extDescs[11]
 
 	// extend goproto.proto.test.TestAllExtensions { optional bool optional_bool_extension = 13; }
-	E_OptionalBoolExtension = &xxx_File_test_test_proto_extDescs[12]
+	E_OptionalBoolExtension = &file_test_test_proto_extDescs[12]
 
 	// extend goproto.proto.test.TestAllExtensions { optional string optional_string_extension = 14; }
-	E_OptionalStringExtension = &xxx_File_test_test_proto_extDescs[13]
+	E_OptionalStringExtension = &file_test_test_proto_extDescs[13]
 
 	// extend goproto.proto.test.TestAllExtensions { optional bytes optional_bytes_extension = 15; }
-	E_OptionalBytesExtension = &xxx_File_test_test_proto_extDescs[14]
+	E_OptionalBytesExtension = &file_test_test_proto_extDescs[14]
 
 	// extend goproto.proto.test.TestAllExtensions { optional goproto.proto.test.OptionalGroup_extension optionalgroup_extension = 16; }
-	E_OptionalgroupExtension = &xxx_File_test_test_proto_extDescs[15]
+	E_OptionalgroupExtension = &file_test_test_proto_extDescs[15]
 
 	// extend goproto.proto.test.TestAllExtensions { optional goproto.proto.test.TestAllTypes.NestedMessage optional_nested_message_extension = 18; }
-	E_OptionalNestedMessageExtension = &xxx_File_test_test_proto_extDescs[16]
+	E_OptionalNestedMessageExtension = &file_test_test_proto_extDescs[16]
 
 	// extend goproto.proto.test.TestAllExtensions { optional goproto.proto.test.TestAllTypes.NestedEnum optional_nested_enum_extension = 21; }
-	E_OptionalNestedEnumExtension = &xxx_File_test_test_proto_extDescs[17]
+	E_OptionalNestedEnumExtension = &file_test_test_proto_extDescs[17]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated int32 repeated_int32_extension = 31; }
-	E_RepeatedInt32Extension = &xxx_File_test_test_proto_extDescs[18]
+	E_RepeatedInt32Extension = &file_test_test_proto_extDescs[18]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated int64 repeated_int64_extension = 32; }
-	E_RepeatedInt64Extension = &xxx_File_test_test_proto_extDescs[19]
+	E_RepeatedInt64Extension = &file_test_test_proto_extDescs[19]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated uint32 repeated_uint32_extension = 33; }
-	E_RepeatedUint32Extension = &xxx_File_test_test_proto_extDescs[20]
+	E_RepeatedUint32Extension = &file_test_test_proto_extDescs[20]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated uint64 repeated_uint64_extension = 34; }
-	E_RepeatedUint64Extension = &xxx_File_test_test_proto_extDescs[21]
+	E_RepeatedUint64Extension = &file_test_test_proto_extDescs[21]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated sint32 repeated_sint32_extension = 35; }
-	E_RepeatedSint32Extension = &xxx_File_test_test_proto_extDescs[22]
+	E_RepeatedSint32Extension = &file_test_test_proto_extDescs[22]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated sint64 repeated_sint64_extension = 36; }
-	E_RepeatedSint64Extension = &xxx_File_test_test_proto_extDescs[23]
+	E_RepeatedSint64Extension = &file_test_test_proto_extDescs[23]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated fixed32 repeated_fixed32_extension = 37; }
-	E_RepeatedFixed32Extension = &xxx_File_test_test_proto_extDescs[24]
+	E_RepeatedFixed32Extension = &file_test_test_proto_extDescs[24]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated fixed64 repeated_fixed64_extension = 38; }
-	E_RepeatedFixed64Extension = &xxx_File_test_test_proto_extDescs[25]
+	E_RepeatedFixed64Extension = &file_test_test_proto_extDescs[25]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated sfixed32 repeated_sfixed32_extension = 39; }
-	E_RepeatedSfixed32Extension = &xxx_File_test_test_proto_extDescs[26]
+	E_RepeatedSfixed32Extension = &file_test_test_proto_extDescs[26]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated sfixed64 repeated_sfixed64_extension = 40; }
-	E_RepeatedSfixed64Extension = &xxx_File_test_test_proto_extDescs[27]
+	E_RepeatedSfixed64Extension = &file_test_test_proto_extDescs[27]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated float repeated_float_extension = 41; }
-	E_RepeatedFloatExtension = &xxx_File_test_test_proto_extDescs[28]
+	E_RepeatedFloatExtension = &file_test_test_proto_extDescs[28]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated double repeated_double_extension = 42; }
-	E_RepeatedDoubleExtension = &xxx_File_test_test_proto_extDescs[29]
+	E_RepeatedDoubleExtension = &file_test_test_proto_extDescs[29]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated bool repeated_bool_extension = 43; }
-	E_RepeatedBoolExtension = &xxx_File_test_test_proto_extDescs[30]
+	E_RepeatedBoolExtension = &file_test_test_proto_extDescs[30]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated string repeated_string_extension = 44; }
-	E_RepeatedStringExtension = &xxx_File_test_test_proto_extDescs[31]
+	E_RepeatedStringExtension = &file_test_test_proto_extDescs[31]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated bytes repeated_bytes_extension = 45; }
-	E_RepeatedBytesExtension = &xxx_File_test_test_proto_extDescs[32]
+	E_RepeatedBytesExtension = &file_test_test_proto_extDescs[32]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated goproto.proto.test.RepeatedGroup_extension repeatedgroup_extension = 46; }
-	E_RepeatedgroupExtension = &xxx_File_test_test_proto_extDescs[33]
+	E_RepeatedgroupExtension = &file_test_test_proto_extDescs[33]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated goproto.proto.test.TestAllTypes.NestedMessage repeated_nested_message_extension = 48; }
-	E_RepeatedNestedMessageExtension = &xxx_File_test_test_proto_extDescs[34]
+	E_RepeatedNestedMessageExtension = &file_test_test_proto_extDescs[34]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated goproto.proto.test.TestAllTypes.NestedEnum repeated_nested_enum_extension = 51; }
-	E_RepeatedNestedEnumExtension = &xxx_File_test_test_proto_extDescs[35]
+	E_RepeatedNestedEnumExtension = &file_test_test_proto_extDescs[35]
 
 	// extend goproto.proto.test.TestAllExtensions { optional string nested_string_extension = 1003; }
-	E_TestNestedExtension_NestedStringExtension = &xxx_File_test_test_proto_extDescs[36]
+	E_TestNestedExtension_NestedStringExtension = &file_test_test_proto_extDescs[36]
 
 	// extend goproto.proto.test.TestAllExtensions { optional goproto.proto.test.TestRequired single = 1000; }
-	E_TestRequired_Single = &xxx_File_test_test_proto_extDescs[37]
+	E_TestRequired_Single = &file_test_test_proto_extDescs[37]
 
 	// extend goproto.proto.test.TestAllExtensions { repeated goproto.proto.test.TestRequired multi = 1001; }
-	E_TestRequired_Multi = &xxx_File_test_test_proto_extDescs[38]
+	E_TestRequired_Multi = &file_test_test_proto_extDescs[38]
 )
 var File_test_test_proto protoreflect.FileDescriptor
 
-var xxx_File_test_test_proto_rawDesc = []byte{
+var file_test_test_proto_rawDesc = []byte{
 	0x0a, 0x0f, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x12, 0x12, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x2e, 0x74, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x74, 0x65, 0x73, 0x74, 0x2f, 0x74, 0x65, 0x73, 0x74,
@@ -2977,20 +2977,20 @@ var xxx_File_test_test_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_test_test_proto_rawDesc_once sync.Once
-	xxx_File_test_test_proto_rawDesc_data = xxx_File_test_test_proto_rawDesc
+	file_test_test_proto_rawDescOnce sync.Once
+	file_test_test_proto_rawDescData = file_test_test_proto_rawDesc
 )
 
-func xxx_File_test_test_proto_rawDescGZIP() []byte {
-	xxx_File_test_test_proto_rawDesc_once.Do(func() {
-		xxx_File_test_test_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_test_test_proto_rawDesc_data)
+func file_test_test_proto_rawDescGZIP() []byte {
+	file_test_test_proto_rawDescOnce.Do(func() {
+		file_test_test_proto_rawDescData = protoimpl.X.CompressGZIP(file_test_test_proto_rawDescData)
 	})
-	return xxx_File_test_test_proto_rawDesc_data
+	return file_test_test_proto_rawDescData
 }
 
-var xxx_File_test_test_proto_enumTypes = make([]protoreflect.EnumType, 4)
-var xxx_File_test_test_proto_messageTypes = make([]protoimpl.MessageType, 36)
-var xxx_File_test_test_proto_goTypes = []interface{}{
+var file_test_test_proto_enumTypes = make([]protoreflect.EnumType, 4)
+var file_test_test_proto_msgTypes = make([]protoimpl.MessageType, 36)
+var file_test_test_proto_goTypes = []interface{}{
 	(ForeignEnum)(0),                          // 0: goproto.proto.test.ForeignEnum
 	(TestReservedEnumFields)(0),               // 1: goproto.proto.test.TestReservedEnumFields
 	(TestAllTypes_NestedEnum)(0),              // 2: goproto.proto.test.TestAllTypes.NestedEnum
@@ -3034,7 +3034,7 @@ var xxx_File_test_test_proto_goTypes = []interface{}{
 	(*ImportMessage)(nil),                         // 40: goproto.proto.test.ImportMessage
 	(ImportEnum)(0),                               // 41: goproto.proto.test.ImportEnum
 }
-var xxx_File_test_test_proto_depIdxs = []int32{
+var file_test_test_proto_depIdxs = []int32{
 	8,  // goproto.proto.test.optional_int32_extension:extendee -> goproto.proto.test.TestAllExtensions
 	8,  // goproto.proto.test.optional_int64_extension:extendee -> goproto.proto.test.TestAllExtensions
 	8,  // goproto.proto.test.optional_uint32_extension:extendee -> goproto.proto.test.TestAllExtensions
@@ -3134,27 +3134,27 @@ var xxx_File_test_test_proto_depIdxs = []int32{
 	5,  // goproto.proto.test.TestDeprecatedService.Deprecated:output_type -> goproto.proto.test.TestDeprecatedMessage
 }
 
-func init() { xxx_File_test_test_proto_init() }
-func xxx_File_test_test_proto_init() {
+func init() { file_test_test_proto_init() }
+func file_test_test_proto_init() {
 	if File_test_test_proto != nil {
 		return
 	}
-	xxx_File_test_test_import_proto_init()
-	xxx_File_test_test_public_proto_init()
-	xxx_File_test_test_weak_proto_init()
+	file_test_test_import_proto_init()
+	file_test_test_public_proto_init()
+	file_test_test_weak_proto_init()
 	extensionTypes := make([]protoreflect.ExtensionType, 39)
 	File_test_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:        xxx_File_test_test_proto_rawDesc,
-		GoTypes:              xxx_File_test_test_proto_goTypes,
-		DependencyIndexes:    xxx_File_test_test_proto_depIdxs,
-		LegacyExtensions:     xxx_File_test_test_proto_extDescs,
-		EnumOutputTypes:      xxx_File_test_test_proto_enumTypes,
-		MessageOutputTypes:   xxx_File_test_test_proto_messageTypes,
+		RawDescriptor:        file_test_test_proto_rawDesc,
+		GoTypes:              file_test_test_proto_goTypes,
+		DependencyIndexes:    file_test_test_proto_depIdxs,
+		LegacyExtensions:     file_test_test_proto_extDescs,
+		EnumOutputTypes:      file_test_test_proto_enumTypes,
+		MessageOutputTypes:   file_test_test_proto_msgTypes,
 		ExtensionOutputTypes: extensionTypes,
 		FilesRegistry:        protoregistry.GlobalFiles,
 		TypesRegistry:        protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_test_test_proto_rawDesc = nil
-	xxx_File_test_test_proto_goTypes = nil
-	xxx_File_test_test_proto_depIdxs = nil
+	file_test_test_proto_rawDesc = nil
+	file_test_test_proto_goTypes = nil
+	file_test_test_proto_depIdxs = nil
 }

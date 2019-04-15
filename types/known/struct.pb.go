@@ -39,7 +39,7 @@ func (x NullValue) String() string {
 }
 
 func (NullValue) Type() protoreflect.EnumType {
-	return xxx_File_google_protobuf_struct_proto_enumTypes[0]
+	return file_google_protobuf_struct_proto_enumTypes[0]
 }
 
 func (x NullValue) Number() protoreflect.EnumNumber {
@@ -48,7 +48,7 @@ func (x NullValue) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use NullValue.Type instead.
 func (NullValue) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_struct_proto_rawDescGZIP(), []int{0}
+	return file_google_protobuf_struct_proto_rawDescGZIP(), []int{0}
 }
 
 func (NullValue) XXX_WellKnownType() string { return "NullValue" }
@@ -80,16 +80,16 @@ func (x *Struct) String() string {
 func (*Struct) ProtoMessage() {}
 
 func (x *Struct) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_struct_proto_messageTypes[0].MessageOf(x)
+	return file_google_protobuf_struct_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *Struct) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_struct_proto_messageTypes[0].Methods()
+	return file_google_protobuf_struct_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use Struct.ProtoReflect.Type instead.
 func (*Struct) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_struct_proto_rawDescGZIP(), []int{0}
+	return file_google_protobuf_struct_proto_rawDescGZIP(), []int{0}
 }
 
 func (*Struct) XXX_WellKnownType() string { return "Struct" }
@@ -140,16 +140,16 @@ func (x *Value) String() string {
 func (*Value) ProtoMessage() {}
 
 func (x *Value) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_struct_proto_messageTypes[1].MessageOf(x)
+	return file_google_protobuf_struct_proto_msgTypes[1].MessageOf(x)
 }
 
 func (m *Value) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_struct_proto_messageTypes[1].Methods()
+	return file_google_protobuf_struct_proto_msgTypes[1].Methods()
 }
 
 // Deprecated: Use Value.ProtoReflect.Type instead.
 func (*Value) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_struct_proto_rawDescGZIP(), []int{1}
+	return file_google_protobuf_struct_proto_rawDescGZIP(), []int{1}
 }
 
 func (*Value) XXX_WellKnownType() string { return "Value" }
@@ -277,16 +277,16 @@ func (x *ListValue) String() string {
 func (*ListValue) ProtoMessage() {}
 
 func (x *ListValue) ProtoReflect() protoreflect.Message {
-	return xxx_File_google_protobuf_struct_proto_messageTypes[2].MessageOf(x)
+	return file_google_protobuf_struct_proto_msgTypes[2].MessageOf(x)
 }
 
 func (m *ListValue) XXX_Methods() *protoiface.Methods {
-	return xxx_File_google_protobuf_struct_proto_messageTypes[2].Methods()
+	return file_google_protobuf_struct_proto_msgTypes[2].Methods()
 }
 
 // Deprecated: Use ListValue.ProtoReflect.Type instead.
 func (*ListValue) Descriptor() ([]byte, []int) {
-	return xxx_File_google_protobuf_struct_proto_rawDescGZIP(), []int{2}
+	return file_google_protobuf_struct_proto_rawDescGZIP(), []int{2}
 }
 
 func (*ListValue) XXX_WellKnownType() string { return "ListValue" }
@@ -300,7 +300,7 @@ func (x *ListValue) GetValues() []*Value {
 
 var File_google_protobuf_struct_proto protoreflect.FileDescriptor
 
-var xxx_File_google_protobuf_struct_proto_rawDesc = []byte{
+var file_google_protobuf_struct_proto_rawDesc = []byte{
 	0x0a, 0x1c, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
 	0x66, 0x2f, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0f,
 	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x22,
@@ -351,27 +351,27 @@ var xxx_File_google_protobuf_struct_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_google_protobuf_struct_proto_rawDesc_once sync.Once
-	xxx_File_google_protobuf_struct_proto_rawDesc_data = xxx_File_google_protobuf_struct_proto_rawDesc
+	file_google_protobuf_struct_proto_rawDescOnce sync.Once
+	file_google_protobuf_struct_proto_rawDescData = file_google_protobuf_struct_proto_rawDesc
 )
 
-func xxx_File_google_protobuf_struct_proto_rawDescGZIP() []byte {
-	xxx_File_google_protobuf_struct_proto_rawDesc_once.Do(func() {
-		xxx_File_google_protobuf_struct_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_google_protobuf_struct_proto_rawDesc_data)
+func file_google_protobuf_struct_proto_rawDescGZIP() []byte {
+	file_google_protobuf_struct_proto_rawDescOnce.Do(func() {
+		file_google_protobuf_struct_proto_rawDescData = protoimpl.X.CompressGZIP(file_google_protobuf_struct_proto_rawDescData)
 	})
-	return xxx_File_google_protobuf_struct_proto_rawDesc_data
+	return file_google_protobuf_struct_proto_rawDescData
 }
 
-var xxx_File_google_protobuf_struct_proto_enumTypes = make([]protoreflect.EnumType, 1)
-var xxx_File_google_protobuf_struct_proto_messageTypes = make([]protoimpl.MessageType, 4)
-var xxx_File_google_protobuf_struct_proto_goTypes = []interface{}{
+var file_google_protobuf_struct_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var file_google_protobuf_struct_proto_msgTypes = make([]protoimpl.MessageType, 4)
+var file_google_protobuf_struct_proto_goTypes = []interface{}{
 	(NullValue)(0),    // 0: google.protobuf.NullValue
 	(*Struct)(nil),    // 1: google.protobuf.Struct
 	(*Value)(nil),     // 2: google.protobuf.Value
 	(*ListValue)(nil), // 3: google.protobuf.ListValue
 	nil,               // 4: google.protobuf.Struct.FieldsEntry
 }
-var xxx_File_google_protobuf_struct_proto_depIdxs = []int32{
+var file_google_protobuf_struct_proto_depIdxs = []int32{
 	4, // google.protobuf.Struct.fields:type_name -> google.protobuf.Struct.FieldsEntry
 	0, // google.protobuf.Value.null_value:type_name -> google.protobuf.NullValue
 	1, // google.protobuf.Value.struct_value:type_name -> google.protobuf.Struct
@@ -380,21 +380,21 @@ var xxx_File_google_protobuf_struct_proto_depIdxs = []int32{
 	2, // google.protobuf.Struct.FieldsEntry.value:type_name -> google.protobuf.Value
 }
 
-func init() { xxx_File_google_protobuf_struct_proto_init() }
-func xxx_File_google_protobuf_struct_proto_init() {
+func init() { file_google_protobuf_struct_proto_init() }
+func file_google_protobuf_struct_proto_init() {
 	if File_google_protobuf_struct_proto != nil {
 		return
 	}
 	File_google_protobuf_struct_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_google_protobuf_struct_proto_rawDesc,
-		GoTypes:            xxx_File_google_protobuf_struct_proto_goTypes,
-		DependencyIndexes:  xxx_File_google_protobuf_struct_proto_depIdxs,
-		EnumOutputTypes:    xxx_File_google_protobuf_struct_proto_enumTypes,
-		MessageOutputTypes: xxx_File_google_protobuf_struct_proto_messageTypes,
+		RawDescriptor:      file_google_protobuf_struct_proto_rawDesc,
+		GoTypes:            file_google_protobuf_struct_proto_goTypes,
+		DependencyIndexes:  file_google_protobuf_struct_proto_depIdxs,
+		EnumOutputTypes:    file_google_protobuf_struct_proto_enumTypes,
+		MessageOutputTypes: file_google_protobuf_struct_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_google_protobuf_struct_proto_rawDesc = nil
-	xxx_File_google_protobuf_struct_proto_goTypes = nil
-	xxx_File_google_protobuf_struct_proto_depIdxs = nil
+	file_google_protobuf_struct_proto_rawDesc = nil
+	file_google_protobuf_struct_proto_goTypes = nil
+	file_google_protobuf_struct_proto_depIdxs = nil
 }

@@ -34,7 +34,7 @@ func (x ImportEnum) String() string {
 }
 
 func (ImportEnum) Type() protoreflect.EnumType {
-	return xxx_File_test3_test_import_proto_enumTypes[0]
+	return file_test3_test_import_proto_enumTypes[0]
 }
 
 func (x ImportEnum) Number() protoreflect.EnumNumber {
@@ -43,7 +43,7 @@ func (x ImportEnum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ImportEnum.Type instead.
 func (ImportEnum) EnumDescriptor() ([]byte, []int) {
-	return xxx_File_test3_test_import_proto_rawDescGZIP(), []int{0}
+	return file_test3_test_import_proto_rawDescGZIP(), []int{0}
 }
 
 type ImportMessage struct {
@@ -63,21 +63,21 @@ func (x *ImportMessage) String() string {
 func (*ImportMessage) ProtoMessage() {}
 
 func (x *ImportMessage) ProtoReflect() protoreflect.Message {
-	return xxx_File_test3_test_import_proto_messageTypes[0].MessageOf(x)
+	return file_test3_test_import_proto_msgTypes[0].MessageOf(x)
 }
 
 func (m *ImportMessage) XXX_Methods() *protoiface.Methods {
-	return xxx_File_test3_test_import_proto_messageTypes[0].Methods()
+	return file_test3_test_import_proto_msgTypes[0].Methods()
 }
 
 // Deprecated: Use ImportMessage.ProtoReflect.Type instead.
 func (*ImportMessage) Descriptor() ([]byte, []int) {
-	return xxx_File_test3_test_import_proto_rawDescGZIP(), []int{0}
+	return file_test3_test_import_proto_rawDescGZIP(), []int{0}
 }
 
 var File_test3_test_import_proto protoreflect.FileDescriptor
 
-var xxx_File_test3_test_import_proto_rawDesc = []byte{
+var file_test3_test_import_proto_rawDesc = []byte{
 	0x0a, 0x17, 0x74, 0x65, 0x73, 0x74, 0x33, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x69, 0x6d, 0x70,
 	0x6f, 0x72, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x13, 0x67, 0x6f, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x74, 0x65, 0x73, 0x74, 0x33, 0x22, 0x0f,
@@ -92,40 +92,40 @@ var xxx_File_test3_test_import_proto_rawDesc = []byte{
 }
 
 var (
-	xxx_File_test3_test_import_proto_rawDesc_once sync.Once
-	xxx_File_test3_test_import_proto_rawDesc_data = xxx_File_test3_test_import_proto_rawDesc
+	file_test3_test_import_proto_rawDescOnce sync.Once
+	file_test3_test_import_proto_rawDescData = file_test3_test_import_proto_rawDesc
 )
 
-func xxx_File_test3_test_import_proto_rawDescGZIP() []byte {
-	xxx_File_test3_test_import_proto_rawDesc_once.Do(func() {
-		xxx_File_test3_test_import_proto_rawDesc_data = protoimpl.X.CompressGZIP(xxx_File_test3_test_import_proto_rawDesc_data)
+func file_test3_test_import_proto_rawDescGZIP() []byte {
+	file_test3_test_import_proto_rawDescOnce.Do(func() {
+		file_test3_test_import_proto_rawDescData = protoimpl.X.CompressGZIP(file_test3_test_import_proto_rawDescData)
 	})
-	return xxx_File_test3_test_import_proto_rawDesc_data
+	return file_test3_test_import_proto_rawDescData
 }
 
-var xxx_File_test3_test_import_proto_enumTypes = make([]protoreflect.EnumType, 1)
-var xxx_File_test3_test_import_proto_messageTypes = make([]protoimpl.MessageType, 1)
-var xxx_File_test3_test_import_proto_goTypes = []interface{}{
+var file_test3_test_import_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var file_test3_test_import_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_test3_test_import_proto_goTypes = []interface{}{
 	(ImportEnum)(0),       // 0: goproto.proto.test3.ImportEnum
 	(*ImportMessage)(nil), // 1: goproto.proto.test3.ImportMessage
 }
-var xxx_File_test3_test_import_proto_depIdxs = []int32{}
+var file_test3_test_import_proto_depIdxs = []int32{}
 
-func init() { xxx_File_test3_test_import_proto_init() }
-func xxx_File_test3_test_import_proto_init() {
+func init() { file_test3_test_import_proto_init() }
+func file_test3_test_import_proto_init() {
 	if File_test3_test_import_proto != nil {
 		return
 	}
 	File_test3_test_import_proto = protoimpl.FileBuilder{
-		RawDescriptor:      xxx_File_test3_test_import_proto_rawDesc,
-		GoTypes:            xxx_File_test3_test_import_proto_goTypes,
-		DependencyIndexes:  xxx_File_test3_test_import_proto_depIdxs,
-		EnumOutputTypes:    xxx_File_test3_test_import_proto_enumTypes,
-		MessageOutputTypes: xxx_File_test3_test_import_proto_messageTypes,
+		RawDescriptor:      file_test3_test_import_proto_rawDesc,
+		GoTypes:            file_test3_test_import_proto_goTypes,
+		DependencyIndexes:  file_test3_test_import_proto_depIdxs,
+		EnumOutputTypes:    file_test3_test_import_proto_enumTypes,
+		MessageOutputTypes: file_test3_test_import_proto_msgTypes,
 		FilesRegistry:      protoregistry.GlobalFiles,
 		TypesRegistry:      protoregistry.GlobalTypes,
 	}.Init()
-	xxx_File_test3_test_import_proto_rawDesc = nil
-	xxx_File_test3_test_import_proto_goTypes = nil
-	xxx_File_test3_test_import_proto_depIdxs = nil
+	file_test3_test_import_proto_rawDesc = nil
+	file_test3_test_import_proto_goTypes = nil
+	file_test3_test_import_proto_depIdxs = nil
 }
