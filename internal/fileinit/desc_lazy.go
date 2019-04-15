@@ -333,7 +333,7 @@ func (fd *fileDesc) unmarshalFull(b []byte) {
 
 	var hasSyntax bool
 	var enumIdx, messageIdx, extensionIdx, serviceIdx int
-	fd.lazy = &fileLazy{byName: make(map[pref.FullName]pref.Descriptor)}
+	fd.lazy = &fileLazy{}
 	for len(b) > 0 {
 		num, typ, n := wire.ConsumeTag(b)
 		b = b[n:]
@@ -424,8 +424,6 @@ func (ed *enumDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 			ed.lazy.values.list[i].unmarshalFull(b, nb, ed.parentFile, ed, i)
 		}
 	}
-
-	ed.parentFile.lazy.byName[ed.FullName()] = ed
 }
 
 func unmarshalEnumReservedRange(b []byte) (r [2]pref.EnumNumber) {
@@ -480,8 +478,6 @@ func (vd *enumValueDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, 
 			b = b[m:]
 		}
 	}
-
-	vd.parentFile.lazy.byName[vd.FullName()] = vd
 }
 
 func (md *messageDesc) unmarshalFull(b []byte, nb *nameBuilder) {
@@ -546,8 +542,6 @@ func (md *messageDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 	if isMapEntry != md.isMapEntry {
 		panic("mismatching map entry property")
 	}
-
-	md.parentFile.lazy.byName[md.FullName()] = md.asDesc()
 }
 
 func (md *messageDesc) unmarshalOptions(b []byte, isMapEntry *bool) {
@@ -694,8 +688,6 @@ func (fd *fieldDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 		}
 		fd.messageType = ptype.PlaceholderMessage(pref.FullName(rawTypeName[1:]))
 	}
-
-	fd.parentFile.lazy.byName[fd.FullName()] = fd
 }
 
 func (fd *fieldDesc) unmarshalOptions(b []byte) {
@@ -744,8 +736,6 @@ func (od *oneofDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 			b = b[m:]
 		}
 	}
-
-	od.parentFile.lazy.byName[od.FullName()] = od
 }
 
 func (xd *extensionDesc) unmarshalFull(b []byte, nb *nameBuilder) {
@@ -790,8 +780,6 @@ func (xd *extensionDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 			panic(err)
 		}
 	}
-
-	xd.parentFile.lazy.byName[xd.FullName()] = xd
 }
 
 func (xd *extensionDesc) unmarshalOptions(b []byte) {
@@ -842,8 +830,6 @@ func (sd *serviceDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 			sd.lazy.methods.list[i].unmarshalFull(b, nb, sd.parentFile, sd, i)
 		}
 	}
-
-	sd.parentFile.lazy.byName[sd.FullName()] = sd
 }
 
 func (md *methodDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd pref.Descriptor, i int) {
@@ -878,6 +864,4 @@ func (md *methodDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd 
 			b = b[m:]
 		}
 	}
-
-	md.parentFile.lazy.byName[md.FullName()] = md
 }

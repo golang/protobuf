@@ -18,7 +18,6 @@ package protoregistry
 import (
 	"fmt"
 	"reflect"
-	"sort"
 	"strings"
 
 	"github.com/golang/protobuf/v2/internal/errors"
@@ -44,25 +43,22 @@ var NotFound = errors.New("not found")
 // descriptors contained within them.
 // The Find and Range methods are safe for concurrent use.
 type Files struct {
-	filesByPackage filesByPackage
-	filesByPath    filesByPath
+	// The map of descs contains:
+	//	EnumDescriptor
+	//	MessageDescriptor
+	//	ExtensionDescriptor
+	//	ServiceDescriptor
+	//	*packageDescriptor
+	//
+	// Note that files are stored as a slice, since a package may contain
+	// multiple files.
+	descs       map[protoreflect.FullName]interface{}
+	filesByPath map[string][]protoreflect.FileDescriptor
 }
 
-type (
-	filesByPackage struct {
-		// files is a list of files all in the same package.
-		files []protoreflect.FileDescriptor
-		// subs is a tree of files all in a sub-package scope.
-		// It also maps all top-level identifiers declared in files
-		// as the notProtoPackage sentinel value.
-		subs map[protoreflect.Name]*filesByPackage // invariant: len(Name) > 0
-	}
-	filesByPath map[string][]protoreflect.FileDescriptor
-)
-
-// notProtoPackage is a sentinel value to indicate that some identifier maps
-// to an actual protobuf declaration and is not a sub-package.
-var notProtoPackage = new(filesByPackage)
+type packageDescriptor struct {
+	files []protoreflect.FileDescriptor
+}
 
 // NewFiles returns a registry initialized with the provided set of files.
 // If there are duplicates, the first one takes precedence.
@@ -88,119 +84,105 @@ func NewFiles(files ...protoreflect.FileDescriptor) *Files {
 //
 // It is permitted for multiple files to have the same file path.
 func (r *Files) Register(files ...protoreflect.FileDescriptor) error {
+	if r.descs == nil {
+		r.descs = map[protoreflect.FullName]interface{}{
+			"": &packageDescriptor{},
+		}
+		r.filesByPath = make(map[string][]protoreflect.FileDescriptor)
+	}
 	var firstErr error
-fileLoop:
 	for _, file := range files {
-		if file.IsPlaceholder() {
-			continue // TODO: Should this be an error instead?
+		if err := r.registerFile(file); err != nil && firstErr == nil {
+			firstErr = err
 		}
-
-		// Register the file into the filesByPackage tree.
-		//
-		// The prototype package validates that a FileDescriptor is internally
-		// consistent such it does not have conflicts within itself.
-		// However, we need to ensure that the inserted file does not conflict
-		// with other previously inserted files.
-		pkg := file.Package()
-		root := &r.filesByPackage
-		for len(pkg) > 0 {
-			var prefix protoreflect.Name
-			prefix, pkg = splitPrefix(pkg)
-
-			// Add a new sub-package segment.
-			switch nextRoot := root.subs[prefix]; nextRoot {
-			case nil:
-				nextRoot = new(filesByPackage)
-				if root.subs == nil {
-					root.subs = make(map[protoreflect.Name]*filesByPackage)
-				}
-				root.subs[prefix] = nextRoot
-				root = nextRoot
-			case notProtoPackage:
-				if firstErr == nil {
-					name := strings.TrimSuffix(strings.TrimSuffix(string(file.Package()), string(pkg)), ".")
-					firstErr = errors.New("file %q has a name conflict over %v", file.Path(), name)
-				}
-				continue fileLoop
-			default:
-				root = nextRoot
-			}
-		}
-
-		// Check for top-level conflicts within the same package.
-		// The current file cannot add any top-level declaration that conflict
-		// with another top-level declaration or sub-package name.
-		var conflicts []protoreflect.Name
-		rangeTopLevelDeclarations(file, func(s protoreflect.Name) {
-			if root.subs[s] == nil {
-				if root.subs == nil {
-					root.subs = make(map[protoreflect.Name]*filesByPackage)
-				}
-				root.subs[s] = notProtoPackage
-			} else {
-				conflicts = append(conflicts, s)
-			}
-		})
-		if len(conflicts) > 0 {
-			// Remove inserted identifiers to make registration failure atomic.
-			sort.Slice(conflicts, func(i, j int) bool { return conflicts[i] < conflicts[j] })
-			rangeTopLevelDeclarations(file, func(s protoreflect.Name) {
-				i := sort.Search(len(conflicts), func(i int) bool { return conflicts[i] >= s })
-				if has := i < len(conflicts) && conflicts[i] == s; !has {
-					delete(root.subs, s) // remove everything not in conflicts
-				}
-			})
-
-			if firstErr == nil {
-				name := file.Package().Append(conflicts[0])
-				firstErr = errors.New("file %q has a name conflict over %v", file.Path(), name)
-			}
-			continue fileLoop
-		}
-		root.files = append(root.files, file)
-
-		// Register the file into the filesByPath map.
-		//
-		// There is no check for conflicts in file path since the path is
-		// heavily dependent on how protoc is invoked. When protoc is being
-		// invoked by different parties in a distributed manner, it is
-		// unreasonable to assume nor ensure that the path is unique.
-		if r.filesByPath == nil {
-			r.filesByPath = make(filesByPath)
-		}
-		r.filesByPath[file.Path()] = append(r.filesByPath[file.Path()], file)
 	}
 	return firstErr
 }
+func (r *Files) registerFile(file protoreflect.FileDescriptor) error {
+	for name := file.Package(); name != ""; name = name.Parent() {
+		switch r.descs[name].(type) {
+		case nil, *packageDescriptor:
+		default:
+			return errors.New("file %q has a name conflict over %v", file.Path(), name)
+		}
+	}
+	var err error
+	rangeRegisteredDescriptors(file, func(desc protoreflect.Descriptor) {
+		if r.descs[desc.FullName()] != nil {
+			err = errors.New("file %q has a name conflict over %v", file.Path(), desc.FullName())
+		}
+	})
+	if err != nil {
+		return err
+	}
 
-// FindDescriptorByName looks up any descriptor (except files) by its full name.
-// Files are not handled since multiple file descriptors may belong in
-// the same package and have the same full name (see RangeFilesByPackage).
+	path := file.Path()
+	r.filesByPath[path] = append(r.filesByPath[path], file)
+
+	for name := file.Package(); name != ""; name = name.Parent() {
+		if r.descs[name] == nil {
+			r.descs[name] = &packageDescriptor{}
+		}
+	}
+	p := r.descs[file.Package()].(*packageDescriptor)
+	p.files = append(p.files, file)
+	rangeRegisteredDescriptors(file, func(desc protoreflect.Descriptor) {
+		r.descs[desc.FullName()] = desc
+	})
+	return nil
+}
+
+// FindEnumByName looks up an enum by the enum's full name.
 //
-// This return (nil, NotFound) if not found.
-func (r *Files) FindDescriptorByName(name protoreflect.FullName) (protoreflect.Descriptor, error) {
+// This returns (nil, NotFound) if not found.
+func (r *Files) FindEnumByName(name protoreflect.FullName) (protoreflect.EnumDescriptor, error) {
 	if r == nil {
 		return nil, NotFound
 	}
-	pkg := name
-	root := &r.filesByPackage
-	for len(pkg) > 0 {
-		var prefix protoreflect.Name
-		prefix, pkg = splitPrefix(pkg)
-		switch nextRoot := root.subs[prefix]; nextRoot {
-		case nil:
-			return nil, NotFound
-		case notProtoPackage:
-			// Search current root's package for the descriptor.
-			for _, fd := range root.files {
-				if d := fd.DescriptorByName(name); d != nil {
-					return d, nil
-				}
-			}
-			return nil, NotFound
-		default:
-			root = nextRoot
-		}
+	if d, ok := r.descs[name].(protoreflect.EnumDescriptor); ok {
+		return d, nil
+	}
+	return nil, NotFound
+}
+
+// FindMessageByName looks up a message by the message's full name.
+//
+// This returns (nil, NotFound) if not found.
+func (r *Files) FindMessageByName(name protoreflect.FullName) (protoreflect.MessageDescriptor, error) {
+	if r == nil {
+		return nil, NotFound
+	}
+	if d, ok := r.descs[name].(protoreflect.MessageDescriptor); ok {
+		return d, nil
+	}
+	return nil, NotFound
+}
+
+// FindExtensionByName looks up an extension field by the field's full name.
+// Note that this is the full name of the field as determined by
+// where the extension is declared and is unrelated to the full name of the
+// message being extended.
+//
+// This returns (nil, NotFound) if not found.
+func (r *Files) FindExtensionByName(name protoreflect.FullName) (protoreflect.ExtensionDescriptor, error) {
+	if r == nil {
+		return nil, NotFound
+	}
+	if d, ok := r.descs[name].(protoreflect.ExtensionDescriptor); ok {
+		return d, nil
+	}
+	return nil, NotFound
+}
+
+// FindServiceByName looks up a service by the service's full name.
+//
+// This returns (nil, NotFound) if not found.
+func (r *Files) FindServiceByName(name protoreflect.FullName) (protoreflect.ServiceDescriptor, error) {
+	if r == nil {
+		return nil, NotFound
+	}
+	if d, ok := r.descs[name].(protoreflect.ServiceDescriptor); ok {
+		return d, nil
 	}
 	return nil, NotFound
 }
@@ -208,45 +190,18 @@ func (r *Files) FindDescriptorByName(name protoreflect.FullName) (protoreflect.D
 // RangeFiles iterates over all registered files.
 // The iteration order is undefined.
 func (r *Files) RangeFiles(f func(protoreflect.FileDescriptor) bool) {
-	r.RangeFilesByPackage("", f) // empty package is a prefix for all packages
-}
-
-// RangeFilesByPackage iterates over all registered files filtered by
-// the given proto package prefix. It iterates over files with an exact package
-// match before iterating over files with general prefix match.
-// The iteration order is undefined within exact matches or prefix matches.
-func (r *Files) RangeFilesByPackage(pkg protoreflect.FullName, f func(protoreflect.FileDescriptor) bool) {
 	if r == nil {
 		return
 	}
-	if strings.HasSuffix(string(pkg), ".") {
-		return // avoid edge case where splitPrefix allows trailing dot
-	}
-	root := &r.filesByPackage
-	for len(pkg) > 0 && root != nil {
-		var prefix protoreflect.Name
-		prefix, pkg = splitPrefix(pkg)
-		root = root.subs[prefix]
-	}
-	rangeFiles(root, f)
-}
-func rangeFiles(fs *filesByPackage, f func(protoreflect.FileDescriptor) bool) bool {
-	if fs == nil {
-		return true
-	}
-	// Iterate over exact matches.
-	for _, fd := range fs.files { // TODO: iterate non-deterministically
-		if !f(fd) {
-			return false
+	for _, d := range r.descs {
+		if p, ok := d.(*packageDescriptor); ok {
+			for _, file := range p.files {
+				if !f(file) {
+					return
+				}
+			}
 		}
 	}
-	// Iterate over prefix matches.
-	for _, fs := range fs.subs {
-		if !rangeFiles(fs, f) {
-			return false
-		}
-	}
-	return true
 }
 
 // RangeFilesByPath iterates over all registered files filtered by
@@ -255,46 +210,57 @@ func (r *Files) RangeFilesByPath(path string, f func(protoreflect.FileDescriptor
 	if r == nil {
 		return
 	}
-	for _, fd := range r.filesByPath[path] { // TODO: iterate non-deterministically
-		if !f(fd) {
+	for _, file := range r.filesByPath[path] {
+		if !f(file) {
 			return
 		}
 	}
 }
 
-func splitPrefix(name protoreflect.FullName) (protoreflect.Name, protoreflect.FullName) {
-	if i := strings.IndexByte(string(name), '.'); i >= 0 {
-		return protoreflect.Name(name[:i]), name[i+len("."):]
+// RangeFilesByPackage iterates over all registered files in a give proto package.
+// The iteration order is undefined.
+func (r *Files) RangeFilesByPackage(name protoreflect.FullName, f func(protoreflect.FileDescriptor) bool) {
+	if r == nil {
+		return
 	}
-	return protoreflect.Name(name), ""
-}
-
-// rangeTopLevelDeclarations iterates over the name of all top-level
-// declarations in the proto file.
-func rangeTopLevelDeclarations(fd protoreflect.FileDescriptor, f func(protoreflect.Name)) {
-	for i := 0; i < fd.Enums().Len(); i++ {
-		e := fd.Enums().Get(i)
-		f(e.Name())
-
-		// TODO: Drop ranging over top-level enum values. The current
-		// implementation of fileinit.FileBuilder does not initialize the names
-		// for enum values in enums. Doing so reduces init time considerably.
-		// If we drop this, it means that conflict checks in the registry
-		// is not complete. However, this may be okay since the most common
-		// reason for a conflict is due to vendored proto files, which are
-		// most certainly going to have a name conflict on the parent enum.
-		for i := 0; i < e.Values().Len(); i++ {
-			f(e.Values().Get(i).Name())
+	p, ok := r.descs[name].(*packageDescriptor)
+	if !ok {
+		return
+	}
+	for _, file := range p.files {
+		if !f(file) {
+			return
 		}
 	}
-	for i := 0; i < fd.Messages().Len(); i++ {
-		f(fd.Messages().Get(i).Name())
+}
+
+// rangeRegisteredDescriptors iterates over all descriptors in a file which
+// will be entered into the registry: enums, messages, extensions, and services.
+func rangeRegisteredDescriptors(fd protoreflect.FileDescriptor, f func(protoreflect.Descriptor)) {
+	rangeRegisteredMessageDescriptors(fd.Messages(), f)
+	for i := 0; i < fd.Enums().Len(); i++ {
+		e := fd.Enums().Get(i)
+		f(e)
 	}
 	for i := 0; i < fd.Extensions().Len(); i++ {
-		f(fd.Extensions().Get(i).Name())
+		f(fd.Extensions().Get(i))
 	}
 	for i := 0; i < fd.Services().Len(); i++ {
-		f(fd.Services().Get(i).Name())
+		f(fd.Services().Get(i))
+	}
+}
+func rangeRegisteredMessageDescriptors(messages protoreflect.MessageDescriptors, f func(protoreflect.Descriptor)) {
+	for i := 0; i < messages.Len(); i++ {
+		md := messages.Get(i)
+		f(md)
+		rangeRegisteredMessageDescriptors(md.Messages(), f)
+		for i := 0; i < md.Enums().Len(); i++ {
+			e := md.Enums().Get(i)
+			f(e)
+		}
+		for i := 0; i < md.Extensions().Len(); i++ {
+			f(md.Extensions().Get(i))
+		}
 	}
 }
 

@@ -129,9 +129,6 @@ type FileDescriptor interface {
 	Extensions() ExtensionDescriptors
 	// Services is a list of the top-level service declarations.
 	Services() ServiceDescriptors
-	// DescriptorByName looks up any descriptor declared within this file
-	// by full name. It returns nil if not found.
-	DescriptorByName(FullName) Descriptor
 
 	isFileDescriptor
 }

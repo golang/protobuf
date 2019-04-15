@@ -44,7 +44,6 @@ type fileMeta struct {
 	es enumsMeta
 	xs extensionsMeta
 	ss servicesMeta
-	ds descriptorsMeta
 }
 type fileDesc struct{ f *File }
 
@@ -63,99 +62,23 @@ func newFile(f *File) fileDesc {
 	f.fileMeta = new(fileMeta)
 	return fileDesc{f}
 }
-func (t fileDesc) Parent() (pref.Descriptor, bool)                  { return nil, false }
-func (t fileDesc) Index() int                                       { return 0 }
-func (t fileDesc) Syntax() pref.Syntax                              { return t.f.Syntax }
-func (t fileDesc) Name() pref.Name                                  { return t.f.Package.Name() }
-func (t fileDesc) FullName() pref.FullName                          { return t.f.Package }
-func (t fileDesc) IsPlaceholder() bool                              { return false }
-func (t fileDesc) Options() pref.ProtoMessage                       { return altOptions(t.f.Options, descopts.File) }
-func (t fileDesc) Path() string                                     { return t.f.Path }
-func (t fileDesc) Package() pref.FullName                           { return t.f.Package }
-func (t fileDesc) Imports() pref.FileImports                        { return (*fileImports)(&t.f.Imports) }
-func (t fileDesc) Enums() pref.EnumDescriptors                      { return t.f.es.lazyInit(t, t.f.Enums) }
-func (t fileDesc) Messages() pref.MessageDescriptors                { return t.f.ms.lazyInit(t, t.f.Messages) }
-func (t fileDesc) Extensions() pref.ExtensionDescriptors            { return t.f.xs.lazyInit(t, t.f.Extensions) }
-func (t fileDesc) Services() pref.ServiceDescriptors                { return t.f.ss.lazyInit(t, t.f.Services) }
-func (t fileDesc) DescriptorByName(s pref.FullName) pref.Descriptor { return t.f.ds.lookup(t, s) }
-func (t fileDesc) Format(s fmt.State, r rune)                       { pfmt.FormatDesc(s, r, t) }
-func (t fileDesc) ProtoType(pref.FileDescriptor)                    {}
-func (t fileDesc) ProtoInternal(pragma.DoNotImplement)              {}
-
-// descriptorsMeta is a lazily initialized map of all descriptors declared in
-// the file by full name.
-type descriptorsMeta struct {
-	once sync.Once
-	m    map[pref.FullName]pref.Descriptor
-}
-
-func (m *descriptorsMeta) lookup(fd pref.FileDescriptor, s pref.FullName) pref.Descriptor {
-	m.once.Do(func() {
-		m.m = make(map[pref.FullName]pref.Descriptor)
-		m.initMap(fd)
-		delete(m.m, fd.Package()) // avoid registering the file descriptor itself
-	})
-	return m.m[s]
-}
-func (m *descriptorsMeta) initMap(d pref.Descriptor) {
-	m.m[d.FullName()] = d
-	if ds, ok := d.(interface {
-		Enums() pref.EnumDescriptors
-	}); ok {
-		for i := 0; i < ds.Enums().Len(); i++ {
-			m.initMap(ds.Enums().Get(i))
-		}
-	}
-	if ds, ok := d.(interface {
-		Values() pref.EnumValueDescriptors
-	}); ok {
-		for i := 0; i < ds.Values().Len(); i++ {
-			m.initMap(ds.Values().Get(i))
-		}
-	}
-	if ds, ok := d.(interface {
-		Messages() pref.MessageDescriptors
-	}); ok {
-		for i := 0; i < ds.Messages().Len(); i++ {
-			m.initMap(ds.Messages().Get(i))
-		}
-	}
-	if ds, ok := d.(interface {
-		Fields() pref.FieldDescriptors
-	}); ok {
-		for i := 0; i < ds.Fields().Len(); i++ {
-			m.initMap(ds.Fields().Get(i))
-		}
-	}
-	if ds, ok := d.(interface {
-		Oneofs() pref.OneofDescriptors
-	}); ok {
-		for i := 0; i < ds.Oneofs().Len(); i++ {
-			m.initMap(ds.Oneofs().Get(i))
-		}
-	}
-	if ds, ok := d.(interface {
-		Extensions() pref.ExtensionDescriptors
-	}); ok {
-		for i := 0; i < ds.Extensions().Len(); i++ {
-			m.initMap(ds.Extensions().Get(i))
-		}
-	}
-	if ds, ok := d.(interface {
-		Services() pref.ServiceDescriptors
-	}); ok {
-		for i := 0; i < ds.Services().Len(); i++ {
-			m.initMap(ds.Services().Get(i))
-		}
-	}
-	if ds, ok := d.(interface {
-		Methods() pref.MethodDescriptors
-	}); ok {
-		for i := 0; i < ds.Methods().Len(); i++ {
-			m.initMap(ds.Methods().Get(i))
-		}
-	}
-}
+func (t fileDesc) Parent() (pref.Descriptor, bool)       { return nil, false }
+func (t fileDesc) Index() int                            { return 0 }
+func (t fileDesc) Syntax() pref.Syntax                   { return t.f.Syntax }
+func (t fileDesc) Name() pref.Name                       { return t.f.Package.Name() }
+func (t fileDesc) FullName() pref.FullName               { return t.f.Package }
+func (t fileDesc) IsPlaceholder() bool                   { return false }
+func (t fileDesc) Options() pref.ProtoMessage            { return altOptions(t.f.Options, descopts.File) }
+func (t fileDesc) Path() string                          { return t.f.Path }
+func (t fileDesc) Package() pref.FullName                { return t.f.Package }
+func (t fileDesc) Imports() pref.FileImports             { return (*fileImports)(&t.f.Imports) }
+func (t fileDesc) Enums() pref.EnumDescriptors           { return t.f.es.lazyInit(t, t.f.Enums) }
+func (t fileDesc) Messages() pref.MessageDescriptors     { return t.f.ms.lazyInit(t, t.f.Messages) }
+func (t fileDesc) Extensions() pref.ExtensionDescriptors { return t.f.xs.lazyInit(t, t.f.Extensions) }
+func (t fileDesc) Services() pref.ServiceDescriptors     { return t.f.ss.lazyInit(t, t.f.Services) }
+func (t fileDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
+func (t fileDesc) ProtoType(pref.FileDescriptor)         {}
+func (t fileDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
 type messageMeta struct {
 	inheritedMeta

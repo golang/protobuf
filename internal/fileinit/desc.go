@@ -246,7 +246,6 @@ type (
 	fileLazy struct {
 		syntax  pref.Syntax
 		imports fileImports
-		byName  map[pref.FullName]pref.Descriptor
 		options []byte
 	}
 )
@@ -260,17 +259,16 @@ func (fd *fileDesc) IsPlaceholder() bool             { return false }
 func (fd *fileDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.File, fd.lazyInit().options)
 }
-func (fd *fileDesc) Path() string                                     { return fd.path }
-func (fd *fileDesc) Package() pref.FullName                           { return fd.protoPackage }
-func (fd *fileDesc) Imports() pref.FileImports                        { return &fd.lazyInit().imports }
-func (fd *fileDesc) Enums() pref.EnumDescriptors                      { return &fd.enums }
-func (fd *fileDesc) Messages() pref.MessageDescriptors                { return &fd.messages }
-func (fd *fileDesc) Extensions() pref.ExtensionDescriptors            { return &fd.extensions }
-func (fd *fileDesc) Services() pref.ServiceDescriptors                { return &fd.services }
-func (fd *fileDesc) DescriptorByName(s pref.FullName) pref.Descriptor { return fd.lazyInit().byName[s] }
-func (fd *fileDesc) Format(s fmt.State, r rune)                       { pfmt.FormatDesc(s, r, fd) }
-func (fd *fileDesc) ProtoType(pref.FileDescriptor)                    {}
-func (fd *fileDesc) ProtoInternal(pragma.DoNotImplement)              {}
+func (fd *fileDesc) Path() string                          { return fd.path }
+func (fd *fileDesc) Package() pref.FullName                { return fd.protoPackage }
+func (fd *fileDesc) Imports() pref.FileImports             { return &fd.lazyInit().imports }
+func (fd *fileDesc) Enums() pref.EnumDescriptors           { return &fd.enums }
+func (fd *fileDesc) Messages() pref.MessageDescriptors     { return &fd.messages }
+func (fd *fileDesc) Extensions() pref.ExtensionDescriptors { return &fd.extensions }
+func (fd *fileDesc) Services() pref.ServiceDescriptors     { return &fd.services }
+func (fd *fileDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, fd) }
+func (fd *fileDesc) ProtoType(pref.FileDescriptor)         {}
+func (fd *fileDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
 type (
 	enumDesc struct {

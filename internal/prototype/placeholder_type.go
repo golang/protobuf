@@ -43,17 +43,16 @@ type placeholderFile struct {
 	placeholderName
 }
 
-func (t placeholderFile) Options() pref.ProtoMessage                     { return descopts.File }
-func (t placeholderFile) Path() string                                   { return t.path }
-func (t placeholderFile) Package() pref.FullName                         { return t.FullName() }
-func (t placeholderFile) Imports() pref.FileImports                      { return &emptyFiles }
-func (t placeholderFile) Enums() pref.EnumDescriptors                    { return &emptyEnums }
-func (t placeholderFile) Messages() pref.MessageDescriptors              { return &emptyMessages }
-func (t placeholderFile) Extensions() pref.ExtensionDescriptors          { return &emptyExtensions }
-func (t placeholderFile) Services() pref.ServiceDescriptors              { return &emptyServices }
-func (t placeholderFile) DescriptorByName(pref.FullName) pref.Descriptor { return nil }
-func (t placeholderFile) Format(s fmt.State, r rune)                     { pfmt.FormatDesc(s, r, t) }
-func (t placeholderFile) ProtoType(pref.FileDescriptor)                  {}
+func (t placeholderFile) Options() pref.ProtoMessage            { return descopts.File }
+func (t placeholderFile) Path() string                          { return t.path }
+func (t placeholderFile) Package() pref.FullName                { return t.FullName() }
+func (t placeholderFile) Imports() pref.FileImports             { return &emptyFiles }
+func (t placeholderFile) Enums() pref.EnumDescriptors           { return &emptyEnums }
+func (t placeholderFile) Messages() pref.MessageDescriptors     { return &emptyMessages }
+func (t placeholderFile) Extensions() pref.ExtensionDescriptors { return &emptyExtensions }
+func (t placeholderFile) Services() pref.ServiceDescriptors     { return &emptyServices }
+func (t placeholderFile) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
+func (t placeholderFile) ProtoType(pref.FileDescriptor)         {}
 
 type placeholderMessage struct {
 	placeholderName

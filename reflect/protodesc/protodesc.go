@@ -311,18 +311,11 @@ func findMessageDescriptor(s string, r *protoregistry.Files) (protoreflect.Messa
 		return nil, errors.New("identifier name must be fully qualified with a leading dot: %v", s)
 	}
 	name := protoreflect.FullName(strings.TrimPrefix(s, "."))
-	switch m, err := r.FindDescriptorByName(name); {
-	case err == nil:
-		m, ok := m.(protoreflect.MessageDescriptor)
-		if !ok {
-			return nil, errors.New("resolved wrong type: got %v, want message", typeName(m))
-		}
-		return m, nil
-	case err == protoregistry.NotFound:
+	md, err := r.FindMessageByName(name)
+	if err != nil {
 		return prototype.PlaceholderMessage(name), nil
-	default:
-		return nil, err
 	}
+	return md, nil
 }
 
 func findEnumDescriptor(s string, r *protoregistry.Files) (protoreflect.EnumDescriptor, error) {
@@ -330,18 +323,11 @@ func findEnumDescriptor(s string, r *protoregistry.Files) (protoreflect.EnumDesc
 		return nil, errors.New("identifier name must be fully qualified with a leading dot: %v", s)
 	}
 	name := protoreflect.FullName(strings.TrimPrefix(s, "."))
-	switch e, err := r.FindDescriptorByName(name); {
-	case err == nil:
-		e, ok := e.(protoreflect.EnumDescriptor)
-		if !ok {
-			return nil, errors.New("resolved wrong type: got %T, want enum", typeName(e))
-		}
-		return e, nil
-	case err == protoregistry.NotFound:
+	ed, err := r.FindEnumByName(name)
+	if err != nil {
 		return prototype.PlaceholderEnum(name), nil
-	default:
-		return nil, err
 	}
+	return ed, nil
 }
 
 func typeName(t protoreflect.Descriptor) string {

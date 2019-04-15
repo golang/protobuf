@@ -16,6 +16,7 @@ import (
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 
+	test2pb "github.com/golang/protobuf/v2/internal/testprotos/test"
 	testpb "github.com/golang/protobuf/v2/reflect/protoregistry/testprotos"
 )
 
@@ -29,10 +30,6 @@ func TestFiles(t *testing.T) {
 			inFile  *ptype.File
 			wantErr string
 		}
-		testFindDesc struct {
-			inName pref.FullName
-			wantOk bool
-		}
 		testRangePkg struct {
 			inPkg     pref.FullName
 			wantFiles []file
@@ -45,7 +42,6 @@ func TestFiles(t *testing.T) {
 
 	tests := []struct {
 		files      []testFile
-		findDescs  []testFindDesc
 		rangePkgs  []testRangePkg
 		rangePaths []testRangePath
 	}{{
@@ -63,27 +59,20 @@ func TestFiles(t *testing.T) {
 			inPkg: "nothing",
 		}, {
 			inPkg: "",
-			wantFiles: []file{
-				{"", "foo.bar"},
-				{"", "foo.bar"},
-				{"foo/bar/test.proto", "foo.bar.baz"},
-				{"foo/bar/test.proto", "my.test"},
-				{"", "my.test.package"},
-				{"foo/bar/baz/../test.proto", "my.test"},
-			},
 		}, {
 			inPkg: ".",
 		}, {
 			inPkg: "foo",
-			wantFiles: []file{
-				{"", "foo.bar"},
-				{"", "foo.bar"},
-				{"foo/bar/test.proto", "foo.bar.baz"},
-			},
 		}, {
 			inPkg: "foo.",
 		}, {
 			inPkg: "foo..",
+		}, {
+			inPkg: "foo.bar",
+			wantFiles: []file{
+				{"", "foo.bar"},
+				{"", "foo.bar"},
+			},
 		}, {
 			inPkg: "foo.bar.baz",
 			wantFiles: []file{
@@ -182,23 +171,6 @@ func TestFiles(t *testing.T) {
 				}},
 			},
 		}, {
-			// Conflict over a single declaration.
-			inFile: &ptype.File{
-				Syntax:  pref.Proto2,
-				Package: "fizz.buzz",
-				Enums: []ptype.Enum{{
-					Name:   "Enum1",
-					Values: []ptype.EnumValue{{Name: "EnumValue1", Number: 0}},
-				}, {
-					Name:   "Enum2",
-					Values: []ptype.EnumValue{{Name: "EnumValue2", Number: 0}},
-				}, {
-					Name:   "Enum3",
-					Values: []ptype.EnumValue{{Name: "Enum", Number: 0}}, // conflict
-				}},
-			},
-			wantErr: "name conflict over fizz.buzz.Enum",
-		}, {
 			// Previously failed registration should not pollute the namespace.
 			inFile: &ptype.File{
 				Syntax:  pref.Proto2,
@@ -226,28 +198,6 @@ func TestFiles(t *testing.T) {
 				}},
 			},
 		}},
-
-		findDescs: []testFindDesc{
-			{"", false},
-			{"Enum", false},
-			{"Message", true},
-			{"Message.", false},
-			{"Message.Message", true},
-			{"Message.Message.Message", true},
-			{"Message.Message.Message.Message", false},
-			{"fizz.buzz", false},
-			{"fizz.buzz.Enum", true},
-			{"fizz.buzz.Enum1", true},
-			{"fizz.buzz.Enum1.EnumValue", false},
-			{"fizz.buzz.EnumValue", true},
-			{"fizz.buzz.Message", true},
-			{"fizz.buzz.Message.Field", true},
-			{"fizz.buzz.Message.Oneof", true},
-			{"fizz.buzz.Extension", true},
-			{"fizz.buzz.Service", true},
-			{"fizz.buzz.Service.Method", true},
-			{"fizz.buzz.Method", false},
-		},
 	}}
 
 	sortFiles := cmpopts.SortSlices(func(x, y file) bool {
@@ -264,29 +214,6 @@ func TestFiles(t *testing.T) {
 				gotErr := files.Register(fd)
 				if (gotErr == nil && tc.wantErr != "") || !strings.Contains(fmt.Sprint(gotErr), tc.wantErr) {
 					t.Errorf("file %d, Register() = %v, want %v", i, gotErr, tc.wantErr)
-				}
-			}
-
-			for _, tc := range tt.findDescs {
-				got, err := files.FindDescriptorByName(tc.inName)
-				if (got == nil) == (err == nil) {
-					if tc.wantOk {
-						t.Errorf("FindDescriptorByName(%v) = (%v, %v), want (non-nil, nil)", tc.inName, got, err)
-					} else {
-						t.Errorf("FindDescriptorByName(%v) = (%v, %v), want (nil, NotFound)", tc.inName, got, err)
-					}
-				}
-
-				gotName := pref.FullName("<nil>")
-				if got != nil {
-					gotName = got.FullName()
-				}
-				wantName := pref.FullName("<nil>")
-				if tc.wantOk {
-					wantName = tc.inName
-				}
-				if gotName != wantName {
-					t.Errorf("FindDescriptorByName(%v) = %v, want %v", tc.inName, gotName, wantName)
 				}
 			}
 
@@ -312,6 +239,64 @@ func TestFiles(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestFilesLookup(t *testing.T) {
+	files := []pref.FileDescriptor{
+		test2pb.File_test_test_proto,
+		test2pb.File_test_test_import_proto,
+	}
+	r := preg.NewFiles(files...)
+	checkEnums := func(enums pref.EnumDescriptors) {
+		for i := 0; i < enums.Len(); i++ {
+			want := enums.Get(i)
+			if got, err := r.FindEnumByName(want.FullName()); err != nil {
+				t.Errorf("FindEnumByName(%q): unexpected error: %v", want.FullName(), err)
+			} else if got != want {
+				t.Errorf("FindEnumByName(%q): found descriptor %v (%p), %p", want.FullName(), got.FullName(), got, want)
+			}
+		}
+	}
+	checkExtensions := func(exts pref.ExtensionDescriptors) {
+		for i := 0; i < exts.Len(); i++ {
+			want := exts.Get(i)
+			if got, err := r.FindExtensionByName(want.FullName()); err != nil {
+				t.Errorf("FindExtensionByName(%q): unexpected error: %v", want.FullName(), err)
+			} else if got != want {
+				t.Errorf("FindExtensionByName(%q): found descriptor %v (%p), %p", want.FullName(), got.FullName(), got, want)
+			}
+		}
+	}
+	var checkMessages func(pref.MessageDescriptors)
+	checkMessages = func(messages pref.MessageDescriptors) {
+		for i := 0; i < messages.Len(); i++ {
+			want := messages.Get(i)
+			if got, err := r.FindMessageByName(want.FullName()); err != nil {
+				t.Errorf("FindMessageByName(%q): unexpected error: %v", want.FullName(), err)
+			} else if got != want {
+				t.Errorf("FindMessageByName(%q): found descriptor %v (%p), %p", want.FullName(), got.FullName(), got, want)
+			}
+			checkEnums(want.Enums())
+			checkExtensions(want.Extensions())
+			checkMessages(want.Messages())
+		}
+	}
+	checkServices := func(services pref.ServiceDescriptors) {
+		for i := 0; i < services.Len(); i++ {
+			want := services.Get(i)
+			if got, err := r.FindServiceByName(want.FullName()); err != nil {
+				t.Errorf("FindServiceByName(%q): unexpected error: %v", want.FullName(), err)
+			} else if got != want {
+				t.Errorf("FindServiceByName(%q): found descriptor %v (%p), %p", want.FullName(), got.FullName(), got, want)
+			}
+		}
+	}
+	for _, fd := range files {
+		checkEnums(fd.Enums())
+		checkExtensions(fd.Extensions())
+		checkMessages(fd.Messages())
+		checkServices(fd.Services())
 	}
 }
 
