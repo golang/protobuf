@@ -118,7 +118,7 @@ func (o UnmarshalOptions) unmarshalScalarField(b []byte, wtyp wire.Type, num wir
 		// TODO: C++ merges into oneofs, while v1 does not.
 		// Evaluate which behavior to pick.
 		var m protoreflect.Message
-		if knownFields.Has(num) && field.OneofType() == nil {
+		if knownFields.Has(num) && field.Oneof() == nil {
 			m = knownFields.Get(num).Message()
 		} else {
 			m = knownFields.NewMessage(num)
@@ -144,8 +144,8 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number
 		return 0, wire.ParseError(n)
 	}
 	var (
-		keyField = field.MessageType().Fields().ByNumber(1)
-		valField = field.MessageType().Fields().ByNumber(2)
+		keyField = field.Message().Fields().ByNumber(1)
+		valField = field.Message().Fields().ByNumber(2)
 		key      protoreflect.Value
 		val      protoreflect.Value
 		haveKey  bool

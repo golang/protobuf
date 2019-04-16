@@ -297,26 +297,39 @@ type FieldDescriptor interface {
 	// The Value type is determined by the Kind.
 	Default() Value
 
-	// DefaultEnumValue returns the EnummValueDescriptor for the default value
+	// DefaultEnumValue returns the EnumValueDescriptor for the default value
 	// of an enum field, and is nil for any other kind of field.
 	DefaultEnumValue() EnumValueDescriptor
 
-	// OneofType is the containing oneof that this field belongs to,
+	// Oneof is the containing oneof that this field belongs to,
 	// and is nil if this field is not part of a oneof.
-	OneofType() OneofDescriptor
+	Oneof() OneofDescriptor
 
-	// ExtendedType returns a MessageDescriptor for the extended message
+	// Extendee returns a message descriptor for the extended message
 	// that this extension field belongs in.
 	// It returns nil if this field is not an extension.
+	Extendee() MessageDescriptor
+
+	// Enum is the enum descriptor if Kind is EnumKind.
+	// It returns nil for any other Kind.
+	Enum() EnumDescriptor
+
+	// Message is the message descriptor if Kind is
+	// MessageKind or GroupKind. It returns nil for any other Kind.
+	Message() MessageDescriptor
+
+	// OneofType has been renamed to Oneof.
+	// Deprecated: Use Oneof instead; this will be removed.
+	OneofType() OneofDescriptor
+	// ExtendedType has been renamed to Extendee.
+	// Deprecated: Use Extendee instead; this will be removed.
 	ExtendedType() MessageDescriptor
-
-	// MessageType is the message type if Kind is MessageKind or GroupKind.
-	// It returns nil for any other Kind.
-	MessageType() MessageDescriptor
-
-	// EnumType is the enum type if Kind is EnumKind.
-	// It returns nil for any other Kind.
+	// EnumType has been renamed to Enum.
+	// Deprecated: Use Enum instead; this will be removed.
 	EnumType() EnumDescriptor
+	// MessageType has been renamed to Message.
+	// Deprecated: Use Message instead; this will be removed.
+	MessageType() MessageDescriptor
 
 	isFieldDescriptor
 }
@@ -387,7 +400,7 @@ type ExtensionDescriptors interface {
 //
 // While a normal field is a member of the parent message that it is declared
 // within (see Descriptor.Parent), an extension field is a member of some other
-// target message (see ExtensionDescriptor.ExtendedType) and may have no
+// target message (see ExtensionDescriptor.Extendee) and may have no
 // relationship with the parent. However, the full name of an extension field is
 // relative to the parent that it is declared within.
 //
@@ -550,14 +563,21 @@ type ServiceDescriptors interface {
 type MethodDescriptor interface {
 	Descriptor
 
-	// InputType is the input message type.
-	InputType() MessageDescriptor
-	// OutputType is the output message type.
-	OutputType() MessageDescriptor
+	// Input is the input message descriptor.
+	Input() MessageDescriptor
+	// Output is the output message descriptor.
+	Output() MessageDescriptor
 	// IsStreamingClient reports whether the client streams multiple messages.
 	IsStreamingClient() bool
 	// IsStreamingServer reports whether the server streams multiple messages.
 	IsStreamingServer() bool
+
+	// InputType has been renamed to Input.
+	// Deprecated: Use Input instead; this will be removed.
+	InputType() MessageDescriptor
+	// OutputType has been renamed to Output.
+	// Deprecated: Use Output instead; this will be removed.
+	OutputType() MessageDescriptor
 
 	isMethodDescriptor
 }

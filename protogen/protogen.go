@@ -582,12 +582,12 @@ func newMessage(gen *Plugin, f *File, parent *Message, desc protoreflect.Message
 	seenOneofs := make(map[int]bool)
 	for _, field := range message.Fields {
 		field.GoName = makeNameUnique(field.GoName, true)
-		if field.OneofType != nil {
-			if !seenOneofs[field.OneofType.Desc.Index()] {
+		if field.Oneof != nil {
+			if !seenOneofs[field.Oneof.Desc.Index()] {
 				// If this is a field in a oneof that we haven't seen before,
 				// make the name for that oneof unique as well.
-				field.OneofType.GoName = makeNameUnique(field.OneofType.GoName, false)
-				seenOneofs[field.OneofType.Desc.Index()] = true
+				field.Oneof.GoName = makeNameUnique(field.Oneof.GoName, false)
+				seenOneofs[field.Oneof.Desc.Index()] = true
 			}
 		}
 	}
@@ -626,32 +626,32 @@ type Field struct {
 	// '{{GoName}}' and a getter method named 'Get{{GoName}}'.
 	GoName string
 
-	ParentMessage *Message // message in which this field is defined; nil if top-level extension
-	ExtendedType  *Message // extended message for extension fields; nil otherwise
-	MessageType   *Message // type for message or group fields; nil otherwise
-	EnumType      *Enum    // type for enum fields; nil otherwise
-	OneofType     *Oneof   // containing oneof; nil if not part of a oneof
-	Location      Location // location of this field
+	Parent   *Message // message in which this field is defined; nil if top-level extension
+	Oneof    *Oneof   // containing oneof; nil if not part of a oneof
+	Extendee *Message // extended message for extension fields; nil otherwise
+	Enum     *Enum    // type for enum fields; nil otherwise
+	Message  *Message // type for message or group fields; nil otherwise
+	Location Location // location of this field
 }
 
 func newField(gen *Plugin, f *File, message *Message, desc protoreflect.FieldDescriptor) *Field {
 	var loc Location
 	switch {
-	case desc.ExtendedType() != nil && message == nil:
+	case desc.Extendee() != nil && message == nil:
 		loc = f.location(fieldnum.FileDescriptorProto_Extension, int32(desc.Index()))
-	case desc.ExtendedType() != nil && message != nil:
+	case desc.Extendee() != nil && message != nil:
 		loc = message.Location.appendPath(fieldnum.DescriptorProto_Extension, int32(desc.Index()))
 	default:
 		loc = message.Location.appendPath(fieldnum.DescriptorProto_Field, int32(desc.Index()))
 	}
 	field := &Field{
-		Desc:          desc,
-		GoName:        camelCase(string(desc.Name())),
-		ParentMessage: message,
-		Location:      loc,
+		Desc:     desc,
+		GoName:   camelCase(string(desc.Name())),
+		Parent:   message,
+		Location: loc,
 	}
-	if desc.OneofType() != nil {
-		field.OneofType = message.Oneofs[desc.OneofType().Index()]
+	if desc.Oneof() != nil {
+		field.Oneof = message.Oneofs[desc.Oneof().Index()]
 	}
 	return field
 }
@@ -663,27 +663,27 @@ func (field *Field) init(gen *Plugin) error {
 	desc := field.Desc
 	switch desc.Kind() {
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		mname := desc.MessageType().FullName()
+		mname := desc.Message().FullName()
 		message, ok := gen.messagesByName[mname]
 		if !ok {
 			return fmt.Errorf("field %v: no descriptor for type %v", desc.FullName(), mname)
 		}
-		field.MessageType = message
+		field.Message = message
 	case protoreflect.EnumKind:
-		ename := field.Desc.EnumType().FullName()
+		ename := field.Desc.Enum().FullName()
 		enum, ok := gen.enumsByName[ename]
 		if !ok {
 			return fmt.Errorf("field %v: no descriptor for enum %v", desc.FullName(), ename)
 		}
-		field.EnumType = enum
+		field.Enum = enum
 	}
-	if desc.ExtendedType() != nil {
-		mname := desc.ExtendedType().FullName()
+	if desc.Extendee() != nil {
+		mname := desc.Extendee().FullName()
 		message, ok := gen.messagesByName[mname]
 		if !ok {
 			return fmt.Errorf("field %v: no descriptor for type %v", desc.FullName(), mname)
 		}
-		field.ExtendedType = message
+		field.Extendee = message
 	}
 	return nil
 }
@@ -692,18 +692,19 @@ func (field *Field) init(gen *Plugin) error {
 type Oneof struct {
 	Desc protoreflect.OneofDescriptor
 
-	GoName        string   // Go field name of this oneof
-	ParentMessage *Message // message in which this oneof occurs
-	Fields        []*Field // fields that are part of this oneof
-	Location      Location // location of this oneof
+	GoName string   // Go field name of this oneof
+	Parent *Message // message in which this oneof occurs
+	Fields []*Field // fields that are part of this oneof
+
+	Location Location // location of this oneof
 }
 
 func newOneof(gen *Plugin, f *File, message *Message, desc protoreflect.OneofDescriptor) *Oneof {
 	return &Oneof{
-		Desc:          desc,
-		ParentMessage: message,
-		GoName:        camelCase(string(desc.Name())),
-		Location:      message.Location.appendPath(fieldnum.DescriptorProto_OneofDecl, int32(desc.Index())),
+		Desc:     desc,
+		Parent:   message,
+		GoName:   camelCase(string(desc.Name())),
+		Location: message.Location.appendPath(fieldnum.DescriptorProto_OneofDecl, int32(desc.Index())),
 	}
 }
 
@@ -717,9 +718,10 @@ func (oneof *Oneof) init(gen *Plugin, parent *Message) {
 type Enum struct {
 	Desc protoreflect.EnumDescriptor
 
-	GoIdent  GoIdent      // name of the generated Go type
-	Values   []*EnumValue // enum values
-	Location Location     // location of this enum
+	GoIdent GoIdent      // name of the generated Go type
+	Values  []*EnumValue // enum values
+
+	Location Location // location of this enum
 }
 
 func newEnum(gen *Plugin, f *File, parent *Message, desc protoreflect.EnumDescriptor) *Enum {
@@ -745,7 +747,8 @@ func newEnum(gen *Plugin, f *File, parent *Message, desc protoreflect.EnumDescri
 type EnumValue struct {
 	Desc protoreflect.EnumValueDescriptor
 
-	GoIdent  GoIdent  // name of the generated Go type
+	GoIdent GoIdent // name of the generated Go type
+
 	Location Location // location of this enum value
 }
 
@@ -770,9 +773,10 @@ func newEnumValue(gen *Plugin, f *File, message *Message, enum *Enum, desc proto
 type Service struct {
 	Desc protoreflect.ServiceDescriptor
 
-	GoName   string
-	Location Location  // location of this service
-	Methods  []*Method // service method definitions
+	GoName  string
+	Methods []*Method // service method definitions
+
+	Location Location // location of this service
 }
 
 func newService(gen *Plugin, f *File, desc protoreflect.ServiceDescriptor) *Service {
@@ -791,19 +795,20 @@ func newService(gen *Plugin, f *File, desc protoreflect.ServiceDescriptor) *Serv
 type Method struct {
 	Desc protoreflect.MethodDescriptor
 
-	GoName        string
-	ParentService *Service
-	Location      Location // location of this method
-	InputType     *Message
-	OutputType    *Message
+	GoName string
+	Parent *Service
+	Input  *Message
+	Output *Message
+
+	Location Location // location of this method
 }
 
 func newMethod(gen *Plugin, f *File, service *Service, desc protoreflect.MethodDescriptor) *Method {
 	method := &Method{
-		Desc:          desc,
-		GoName:        camelCase(string(desc.Name())),
-		ParentService: service,
-		Location:      service.Location.appendPath(fieldnum.ServiceDescriptorProto_Method, int32(desc.Index())),
+		Desc:     desc,
+		GoName:   camelCase(string(desc.Name())),
+		Parent:   service,
+		Location: service.Location.appendPath(fieldnum.ServiceDescriptorProto_Method, int32(desc.Index())),
 	}
 	return method
 }
@@ -811,19 +816,19 @@ func newMethod(gen *Plugin, f *File, service *Service, desc protoreflect.MethodD
 func (method *Method) init(gen *Plugin) error {
 	desc := method.Desc
 
-	inName := desc.InputType().FullName()
+	inName := desc.Input().FullName()
 	in, ok := gen.messagesByName[inName]
 	if !ok {
 		return fmt.Errorf("method %v: no descriptor for type %v", desc.FullName(), inName)
 	}
-	method.InputType = in
+	method.Input = in
 
-	outName := desc.OutputType().FullName()
+	outName := desc.Output().FullName()
 	out, ok := gen.messagesByName[outName]
 	if !ok {
 		return fmt.Errorf("method %v: no descriptor for type %v", desc.FullName(), outName)
 	}
-	method.OutputType = out
+	method.Output = out
 
 	return nil
 }

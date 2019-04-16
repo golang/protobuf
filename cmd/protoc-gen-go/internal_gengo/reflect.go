@@ -82,7 +82,7 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 	}
 	for _, extension := range f.allExtensions {
 		source := string(extension.Desc.FullName())
-		genMessage(extension.ExtendedType, source+":extendee")
+		genMessage(extension.Extendee, source+":extendee")
 	}
 	for _, message := range f.allMessages {
 		for _, field := range message.Fields {
@@ -90,20 +90,20 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 				continue
 			}
 			source := string(field.Desc.FullName())
-			genEnum(field.EnumType, source+":type_name")
-			genMessage(field.MessageType, source+":type_name")
+			genEnum(field.Enum, source+":type_name")
+			genMessage(field.Message, source+":type_name")
 		}
 	}
 	for _, extension := range f.allExtensions {
 		source := string(extension.Desc.FullName())
-		genEnum(extension.EnumType, source+":type_name")
-		genMessage(extension.MessageType, source+":type_name")
+		genEnum(extension.Enum, source+":type_name")
+		genMessage(extension.Message, source+":type_name")
 	}
 	for _, service := range f.Services {
 		for _, method := range service.Methods {
 			source := string(method.Desc.FullName())
-			genMessage(method.InputType, source+":input_type")
-			genMessage(method.OutputType, source+":output_type")
+			genMessage(method.Input, source+":input_type")
+			genMessage(method.Output, source+":output_type")
 		}
 	}
 	if len(depIdxs) > math.MaxInt32 {

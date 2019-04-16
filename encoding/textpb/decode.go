@@ -164,7 +164,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 			}
 		} else {
 			// If field is a oneof, check if it has already been set.
-			if od := fd.OneofType(); od != nil {
+			if od := fd.Oneof(); od != nil {
 				idx := uint64(od.Index())
 				if seenOneofs.Has(idx) {
 					return errors.New("oneof %v is already set", od.FullName())
@@ -313,7 +313,7 @@ func unmarshalScalar(input text.Value, fd pref.FieldDescriptor) (pref.Value, err
 		}
 		if name, ok := input.Name(); ok {
 			// Lookup EnumNumber based on name.
-			if enumVal := fd.EnumType().Values().ByName(name); enumVal != nil {
+			if enumVal := fd.Enum().Values().ByName(name); enumVal != nil {
 				return pref.ValueOf(enumVal.Number()), nil
 			}
 		}
@@ -356,7 +356,7 @@ func (o UnmarshalOptions) unmarshalList(inputList []text.Value, fd pref.FieldDes
 // unmarshalMap unmarshals given []text.Value into given protoreflect.Map.
 func (o UnmarshalOptions) unmarshalMap(input []text.Value, fd pref.FieldDescriptor, mmap pref.Map) error {
 	var nerr errors.NonFatal
-	fields := fd.MessageType().Fields()
+	fields := fd.Message().Fields()
 	keyDesc := fields.ByNumber(1)
 	valDesc := fields.ByNumber(2)
 

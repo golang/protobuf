@@ -439,12 +439,18 @@ func (fd *fieldDesc) IsMap() bool                                { return fd.isM
 func (fd *fieldDesc) HasDefault() bool                           { return fd.defVal.has }
 func (fd *fieldDesc) Default() pref.Value                        { return fd.defVal.get() }
 func (fd *fieldDesc) DefaultEnumValue() pref.EnumValueDescriptor { return fd.defVal.enum }
-func (fd *fieldDesc) OneofType() pref.OneofDescriptor            { return fd.oneofType }
-func (fd *fieldDesc) ExtendedType() pref.MessageDescriptor       { return nil }
-func (fd *fieldDesc) EnumType() pref.EnumDescriptor              { return fd.enumType }
-func (fd *fieldDesc) MessageType() pref.MessageDescriptor        { return fd.messageType }
+func (fd *fieldDesc) Oneof() pref.OneofDescriptor                { return fd.oneofType }
+func (fd *fieldDesc) Extendee() pref.MessageDescriptor           { return nil }
+func (fd *fieldDesc) Enum() pref.EnumDescriptor                  { return fd.enumType }
+func (fd *fieldDesc) Message() pref.MessageDescriptor            { return fd.messageType }
 func (fd *fieldDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, fd) }
 func (fd *fieldDesc) ProtoType(pref.FieldDescriptor)             {}
+
+// TODO: Remove these methods.
+func (fd *fieldDesc) OneofType() pref.OneofDescriptor      { return fd.Oneof() }
+func (fd *fieldDesc) ExtendedType() pref.MessageDescriptor { return fd.Extendee() }
+func (fd *fieldDesc) EnumType() pref.EnumDescriptor        { return fd.Enum() }
+func (fd *fieldDesc) MessageType() pref.MessageDescriptor  { return fd.Message() }
 
 func (od *oneofDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.Oneof, od.options)
@@ -506,10 +512,10 @@ func (xd *extensionDesc) IsMap() bool                                { return fa
 func (xd *extensionDesc) HasDefault() bool                           { return xd.lazyInit().defVal.has }
 func (xd *extensionDesc) Default() pref.Value                        { return xd.lazyInit().defVal.get() }
 func (xd *extensionDesc) DefaultEnumValue() pref.EnumValueDescriptor { return xd.lazyInit().defVal.enum }
-func (xd *extensionDesc) OneofType() pref.OneofDescriptor            { return nil }
-func (xd *extensionDesc) ExtendedType() pref.MessageDescriptor       { return xd.extendedType }
-func (xd *extensionDesc) EnumType() pref.EnumDescriptor              { return xd.lazyInit().enumType }
-func (xd *extensionDesc) MessageType() pref.MessageDescriptor        { return xd.lazyInit().messageType }
+func (xd *extensionDesc) Oneof() pref.OneofDescriptor                { return nil }
+func (xd *extensionDesc) Extendee() pref.MessageDescriptor           { return xd.extendedType }
+func (xd *extensionDesc) Enum() pref.EnumDescriptor                  { return xd.lazyInit().enumType }
+func (xd *extensionDesc) Message() pref.MessageDescriptor            { return xd.lazyInit().messageType }
 func (xd *extensionDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, xd) }
 func (xd *extensionDesc) ProtoType(pref.FieldDescriptor)             {}
 func (xd *extensionDesc) ProtoInternal(pragma.DoNotImplement)        {}
@@ -526,6 +532,12 @@ func (xd *extensionDesc) lazyInit() *extensionLazy {
 func (xd *extensionDesc) ProtoLegacyExtensionDesc() *piface.ExtensionDescV1 {
 	return xd.legacyDesc
 }
+
+// TODO: Remove these methods.
+func (xd *extensionDesc) OneofType() pref.OneofDescriptor      { return xd.Oneof() }
+func (xd *extensionDesc) ExtendedType() pref.MessageDescriptor { return xd.Extendee() }
+func (xd *extensionDesc) EnumType() pref.EnumDescriptor        { return xd.Enum() }
+func (xd *extensionDesc) MessageType() pref.MessageDescriptor  { return xd.Message() }
 
 type (
 	serviceDesc struct {
@@ -563,13 +575,17 @@ func (sd *serviceDesc) lazyInit() *serviceLazy {
 func (md *methodDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.Method, md.options)
 }
-func (md *methodDesc) InputType() pref.MessageDescriptor   { return md.inputType }
-func (md *methodDesc) OutputType() pref.MessageDescriptor  { return md.outputType }
+func (md *methodDesc) Input() pref.MessageDescriptor       { return md.inputType }
+func (md *methodDesc) Output() pref.MessageDescriptor      { return md.outputType }
 func (md *methodDesc) IsStreamingClient() bool             { return md.isStreamingClient }
 func (md *methodDesc) IsStreamingServer() bool             { return md.isStreamingServer }
 func (md *methodDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, md) }
 func (md *methodDesc) ProtoType(pref.MethodDescriptor)     {}
 func (md *methodDesc) ProtoInternal(pragma.DoNotImplement) {}
+
+// TODO: Remove these methods.
+func (md *methodDesc) InputType() pref.MessageDescriptor  { return md.Input() }
+func (md *methodDesc) OutputType() pref.MessageDescriptor { return md.Output() }
 
 type baseDesc struct {
 	parentFile *fileDesc

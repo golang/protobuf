@@ -64,7 +64,7 @@ func extensionDescFromType(t pref.ExtensionType) *piface.ExtensionDescV1 {
 
 	// Determine the parent type if possible.
 	var parent piface.MessageV1
-	if mt, ok := t.ExtendedType().(pref.MessageType); ok {
+	if mt, ok := t.Extendee().(pref.MessageType); ok {
 		// Create a new parent message and unwrap it if possible.
 		mv := mt.New().Interface()
 		t := reflect.TypeOf(mv)
@@ -97,7 +97,7 @@ func extensionDescFromType(t pref.ExtensionType) *piface.ExtensionDescV1 {
 	if t.Kind() == pref.EnumKind {
 		// Derive Go type name.
 		// For legacy enums, unwrap the wrapper to get the underlying Go type.
-		et := t.EnumType().(pref.EnumType)
+		et := t.Enum().(pref.EnumType)
 		var ev interface{} = et.New(0)
 		if u, ok := ev.(pvalue.Unwrapper); ok {
 			ev = u.ProtoUnwrap()

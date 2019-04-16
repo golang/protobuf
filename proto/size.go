@@ -61,7 +61,7 @@ func sizeField(field protoreflect.FieldDescriptor, value protoreflect.Value) (si
 	case field.Cardinality() != protoreflect.Repeated:
 		return wire.SizeTag(num) + sizeSingular(num, kind, value)
 	case field.IsMap():
-		return sizeMap(num, kind, field.MessageType(), value.Map())
+		return sizeMap(num, kind, field.Message(), value.Map())
 	case field.IsPacked():
 		return sizePacked(num, kind, value.List())
 	default:

@@ -234,9 +234,9 @@ func generateFieldNumbers(gen *protogen.Plugin, file *protogen.File) {
 				typeName := fd.Kind().String()
 				switch fd.Kind() {
 				case protoreflect.EnumKind:
-					typeName = string(fd.EnumType().FullName())
+					typeName = string(fd.Enum().FullName())
 				case protoreflect.MessageKind, protoreflect.GroupKind:
-					typeName = string(fd.MessageType().FullName())
+					typeName = string(fd.Message().FullName())
 				}
 				g.P(message.GoIdent.GoName, "_", field.GoName, "=", fd.Number(), "// ", fd.Cardinality(), " ", typeName)
 			}

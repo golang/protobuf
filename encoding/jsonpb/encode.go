@@ -178,19 +178,16 @@ func (o MarshalOptions) marshalSingular(val pref.Value, fd pref.FieldDescriptor)
 		}
 
 	case pref.EnumKind:
-		enumType := fd.EnumType()
-		num := val.Enum()
-
-		if enumType.FullName() == "google.protobuf.NullValue" {
+		if fd.Enum().FullName() == "google.protobuf.NullValue" {
 			o.encoder.WriteNull()
-		} else if desc := enumType.Values().ByNumber(num); desc != nil {
+		} else if desc := fd.Enum().Values().ByNumber(val.Enum()); desc != nil {
 			err := o.encoder.WriteString(string(desc.Name()))
 			if !nerr.Merge(err) {
 				return err
 			}
 		} else {
 			// Use numeric value if there is no enum value descriptor.
-			o.encoder.WriteInt(int64(num))
+			o.encoder.WriteInt(int64(val.Enum()))
 		}
 
 	case pref.MessageKind, pref.GroupKind:
@@ -229,7 +226,7 @@ func (o MarshalOptions) marshalMap(mmap pref.Map, fd pref.FieldDescriptor) error
 	o.encoder.StartObject()
 	defer o.encoder.EndObject()
 
-	msgFields := fd.MessageType().Fields()
+	msgFields := fd.Message().Fields()
 	keyType := msgFields.ByNumber(1)
 	valType := msgFields.ByNumber(2)
 
@@ -286,7 +283,7 @@ func (o MarshalOptions) marshalExtensions(knownFields pref.KnownFields) error {
 		name := xt.FullName()
 		// If extended type is a MessageSet, set field name to be the message type name.
 		if isMessageSetExtension(xt) {
-			name = xt.MessageType().FullName()
+			name = xt.Message().FullName()
 		}
 
 		num := xt.Number()
@@ -328,13 +325,13 @@ func isMessageSetExtension(xt pref.ExtensionType) bool {
 	if xt.Name() != "message_set_extension" {
 		return false
 	}
-	mt := xt.MessageType()
-	if mt == nil {
+	md := xt.Message()
+	if md == nil {
 		return false
 	}
-	if xt.FullName().Parent() != mt.FullName() {
+	if xt.FullName().Parent() != md.FullName() {
 		return false
 	}
-	xmt, ok := xt.ExtendedType().(interface{ IsMessageSet() bool })
-	return ok && xmt.IsMessageSet()
+	xmd, ok := xt.Extendee().(interface{ IsMessageSet() bool })
+	return ok && xmd.IsMessageSet()
 }

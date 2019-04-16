@@ -101,11 +101,11 @@ type oneofFields oneofFieldsMeta
 
 func (p *oneofFieldsMeta) lazyInit(parent pref.Descriptor) *oneofFields {
 	p.once.Do(func() {
-		otyp := parent.(pref.OneofDescriptor)
-		mtyp, _ := parent.Parent()
-		fs := mtyp.(pref.MessageDescriptor).Fields()
+		od := parent.(pref.OneofDescriptor)
+		md, _ := parent.Parent()
+		fs := md.(pref.MessageDescriptor).Fields()
 		for i := 0; i < fs.Len(); i++ {
-			if f := fs.Get(i); otyp == f.OneofType() {
+			if f := fs.Get(i); od == f.Oneof() {
 				p.typs = append(p.typs, f)
 			}
 		}

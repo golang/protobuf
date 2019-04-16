@@ -391,42 +391,42 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 				"Fields": M{
 					"Len": 2,
 					"ByNumber:1": M{
-						"Parent":       M{"FullName": pref.FullName("test.A")},
-						"Index":        0,
-						"Name":         pref.Name("key"),
-						"FullName":     pref.FullName("test.A.key"),
-						"Number":       pref.FieldNumber(1),
-						"Cardinality":  pref.Optional,
-						"Kind":         pref.StringKind,
-						"Options":      &descriptorpb.FieldOptions{Deprecated: scalar.Bool(true)},
-						"HasJSONName":  false,
-						"JSONName":     "key",
-						"IsPacked":     false,
-						"IsMap":        false,
-						"IsWeak":       false,
-						"Default":      "",
-						"OneofType":    nil,
-						"ExtendedType": nil,
-						"MessageType":  nil,
-						"EnumType":     nil,
+						"Parent":      M{"FullName": pref.FullName("test.A")},
+						"Index":       0,
+						"Name":        pref.Name("key"),
+						"FullName":    pref.FullName("test.A.key"),
+						"Number":      pref.FieldNumber(1),
+						"Cardinality": pref.Optional,
+						"Kind":        pref.StringKind,
+						"Options":     &descriptorpb.FieldOptions{Deprecated: scalar.Bool(true)},
+						"HasJSONName": false,
+						"JSONName":    "key",
+						"IsPacked":    false,
+						"IsMap":       false,
+						"IsWeak":      false,
+						"Default":     "",
+						"Oneof":       nil,
+						"Extendee":    nil,
+						"Message":     nil,
+						"Enum":        nil,
 					},
 					"ByNumber:2": M{
-						"Parent":       M{"FullName": pref.FullName("test.A")},
-						"Index":        1,
-						"Name":         pref.Name("value"),
-						"FullName":     pref.FullName("test.A.value"),
-						"Number":       pref.FieldNumber(2),
-						"Cardinality":  pref.Optional,
-						"Kind":         pref.MessageKind,
-						"JSONName":     "value",
-						"IsPacked":     false,
-						"IsMap":        false,
-						"IsWeak":       false,
-						"Default":      nil,
-						"OneofType":    nil,
-						"ExtendedType": nil,
-						"MessageType":  M{"FullName": pref.FullName("test.B"), "IsPlaceholder": false},
-						"EnumType":     nil,
+						"Parent":      M{"FullName": pref.FullName("test.A")},
+						"Index":       1,
+						"Name":        pref.Name("value"),
+						"FullName":    pref.FullName("test.A.value"),
+						"Number":      pref.FieldNumber(2),
+						"Cardinality": pref.Optional,
+						"Kind":        pref.MessageKind,
+						"JSONName":    "value",
+						"IsPacked":    false,
+						"IsMap":       false,
+						"IsWeak":      false,
+						"Default":     nil,
+						"Oneof":       nil,
+						"Extendee":    nil,
+						"Message":     M{"FullName": pref.FullName("test.B"), "IsPlaceholder": false},
+						"Enum":        nil,
 					},
 					"ByNumber:3": nil,
 				},
@@ -444,11 +444,11 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					"Len":                  6,
 					"ByJSONName:field_one": nil,
 					"ByJSONName:fieldOne": M{
-						"Name":      pref.Name("field_one"),
-						"Index":     0,
-						"JSONName":  "fieldOne",
-						"Default":   "hello, \"world!\"\n",
-						"OneofType": M{"Name": pref.Name("O1"), "IsPlaceholder": false},
+						"Name":     pref.Name("field_one"),
+						"Index":    0,
+						"JSONName": "fieldOne",
+						"Default":  "hello, \"world!\"\n",
+						"Oneof":    M{"Name": pref.Name("O1"), "IsPlaceholder": false},
 					},
 					"ByJSONName:fieldTwo": nil,
 					"ByJSONName:Field2": M{
@@ -457,20 +457,20 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 						"HasJSONName": true,
 						"JSONName":    "Field2",
 						"Default":     pref.EnumNumber(1),
-						"OneofType":   M{"Name": pref.Name("O2"), "IsPlaceholder": false},
+						"Oneof":       M{"Name": pref.Name("O2"), "IsPlaceholder": false},
 					},
 					"ByName:fieldThree": nil,
 					"ByName:field_three": M{
-						"IsMap":       false,
-						"MessageType": M{"FullName": pref.FullName("test.C"), "IsPlaceholder": false},
-						"OneofType":   M{"Name": pref.Name("O2"), "IsPlaceholder": false},
+						"IsMap":   false,
+						"Message": M{"FullName": pref.FullName("test.C"), "IsPlaceholder": false},
+						"Oneof":   M{"Name": pref.Name("O2"), "IsPlaceholder": false},
 					},
 					"ByNumber:12": nil,
 					"ByNumber:4": M{
 						"Cardinality": pref.Repeated,
 						"IsMap":       true,
 						"Default":     nil,
-						"MessageType": M{"FullName": pref.FullName("test.A"), "IsPlaceholder": false},
+						"Message":     M{"FullName": pref.FullName("test.A"), "IsPlaceholder": false},
 					},
 					"ByNumber:5": M{
 						"Cardinality": pref.Repeated,
@@ -481,7 +481,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 					"ByNumber:6": M{
 						"Cardinality": pref.Required,
 						"Default":     []byte(nil),
-						"OneofType":   nil,
+						"Oneof":       nil,
 					},
 				},
 				"Oneofs": M{
@@ -601,14 +601,14 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 		"Extensions": M{
 			"Len": 1,
 			"ByName:X": M{
-				"Name":         pref.Name("X"),
-				"Number":       pref.FieldNumber(1000),
-				"Cardinality":  pref.Repeated,
-				"Kind":         pref.MessageKind,
-				"IsPacked":     false,
-				"MessageType":  M{"FullName": pref.FullName("test.C"), "IsPlaceholder": false},
-				"ExtendedType": M{"FullName": pref.FullName("test.B"), "IsPlaceholder": false},
-				"Options":      &descriptorpb.FieldOptions{Packed: scalar.Bool(true)},
+				"Name":        pref.Name("X"),
+				"Number":      pref.FieldNumber(1000),
+				"Cardinality": pref.Repeated,
+				"Kind":        pref.MessageKind,
+				"IsPacked":    false,
+				"Message":     M{"FullName": pref.FullName("test.C"), "IsPlaceholder": false},
+				"Extendee":    M{"FullName": pref.FullName("test.B"), "IsPlaceholder": false},
+				"Options":     &descriptorpb.FieldOptions{Packed: scalar.Bool(true)},
 			},
 		},
 		"Services": M{
@@ -625,8 +625,8 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 						"Parent":            M{"FullName": pref.FullName("test.S")},
 						"Name":              pref.Name("M"),
 						"FullName":          pref.FullName("test.S.M"),
-						"InputType":         M{"FullName": pref.FullName("test.A"), "IsPlaceholder": false},
-						"OutputType":        M{"FullName": pref.FullName("test.C.A"), "IsPlaceholder": false},
+						"Input":             M{"FullName": pref.FullName("test.A"), "IsPlaceholder": false},
+						"Output":            M{"FullName": pref.FullName("test.C.A"), "IsPlaceholder": false},
 						"IsStreamingClient": true,
 						"IsStreamingServer": true,
 						"Options":           &descriptorpb.MethodOptions{Deprecated: scalar.Bool(true)},
@@ -728,7 +728,7 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			Cardinality: optional
 			Kind:        message
 			JSONName:    "value"
-			MessageType: test.B
+			Message:     test.B
 		}]
 	}, {
 		Name: B
@@ -740,7 +740,7 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			JSONName:    "fieldOne"
 			HasDefault:  true
 			Default:     "hello, \"world!\"\n"
-			OneofType:   O1
+			Oneof:       O1
 		}, {
 			Name:        field_two
 			Number:      2
@@ -750,16 +750,16 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			JSONName:    "Field2"
 			HasDefault:  true
 			Default:     1
-			OneofType:   O2
-			EnumType:    test.E1
+			Oneof:       O2
+			Enum:        test.E1
 		}, {
 			Name:        field_three
 			Number:      3
 			Cardinality: optional
 			Kind:        message
 			JSONName:    "fieldThree"
-			OneofType:   O2
-			MessageType: test.C
+			Oneof:       O2
+			Message:     test.C
 		}, {
 			Name:        field_four
 			Number:      4
@@ -768,7 +768,7 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			HasJSONName: true
 			JSONName:    "Field4"
 			IsMap:       true
-			MessageType: test.A
+			Message:     test.A
 		}, {
 			Name:        field_five
 			Number:      5
@@ -817,12 +817,12 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			]
 		}]
 		Extensions: [{
-			Name:         X
-			Number:       1000
-			Cardinality:  repeated
-			Kind:         message
-			ExtendedType: test.B
-			MessageType:  test.C
+			Name:        X
+			Number:      1000
+			Cardinality: repeated
+			Kind:        message
+			Extendee:    test.B
+			Message:     test.C
 		}]
 	}]
 	Enums: [{
@@ -835,19 +835,19 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 		ReservedRanges: [10:20, 30]
 	}]
 	Extensions: [{
-		Name:         X
-		Number:       1000
-		Cardinality:  repeated
-		Kind:         message
-		ExtendedType: test.B
-		MessageType:  test.C
+		Name:        X
+		Number:      1000
+		Cardinality: repeated
+		Kind:        message
+		Extendee:    test.B
+		Message:     test.C
 	}]
 	Services: [{
 		Name: S
 		Methods: [{
 			Name:              M
-			InputType:         test.A
-			OutputType:        test.C.A
+			Input:             test.A
+			Output:            test.C.A
 			IsStreamingClient: true
 			IsStreamingServer: true
 		}]

@@ -125,7 +125,7 @@ func setList(list pref.List, fd pref.FieldDescriptor, level int) {
 }
 
 func setMap(mmap pref.Map, fd pref.FieldDescriptor, level int) {
-	fields := fd.MessageType().Fields()
+	fields := fd.Message().Fields()
 	keyDesc := fields.ByNumber(1)
 	valDesc := fields.ByNumber(2)
 

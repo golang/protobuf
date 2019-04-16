@@ -48,12 +48,12 @@ func isInitialized(m pref.Message, stack []interface{}) error {
 		}
 		// Look for fields containing a message: Messages, groups, and maps
 		// with a message or group value.
-		ft := field.MessageType()
-		if ft == nil {
+		md := field.Message()
+		if md == nil {
 			return true
 		}
 		if field.IsMap() {
-			if ft.Fields().ByNumber(2).MessageType() == nil {
+			if md.Fields().ByNumber(2).Message() == nil {
 				return true
 			}
 		}

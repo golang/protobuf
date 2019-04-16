@@ -101,7 +101,7 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 		name := text.ValueOf(fd.Name())
 		// Use type name for group field name.
 		if fd.Kind() == pref.GroupKind {
-			name = text.ValueOf(fd.MessageType().Name())
+			name = text.ValueOf(fd.Message().Name())
 		}
 		pval := knownFields.Get(num)
 		var err error
@@ -189,7 +189,7 @@ func (o MarshalOptions) marshalSingular(val pref.Value, fd pref.FieldDescriptor)
 
 	case pref.EnumKind:
 		num := val.Enum()
-		if desc := fd.EnumType().Values().ByNumber(num); desc != nil {
+		if desc := fd.Enum().Values().ByNumber(num); desc != nil {
 			return text.ValueOf(desc.Name()), nil
 		}
 		// Use numeric value if there is no enum description.
@@ -231,7 +231,7 @@ func (o MarshalOptions) marshalMap(mmap pref.Map, fd pref.FieldDescriptor) ([]te
 	var nerr errors.NonFatal
 	// values is a list of messages.
 	values := make([]text.Value, 0, mmap.Len())
-	msgFields := fd.MessageType().Fields()
+	msgFields := fd.Message().Fields()
 	keyType := msgFields.ByNumber(1)
 	valType := msgFields.ByNumber(2)
 
@@ -274,7 +274,7 @@ func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, knownFields 
 		name := xt.FullName()
 		// If extended type is a MessageSet, set field name to be the message type name.
 		if isMessageSetExtension(xt) {
-			name = xt.MessageType().FullName()
+			name = xt.Message().FullName()
 		}
 
 		num := xt.Number()
@@ -306,15 +306,15 @@ func isMessageSetExtension(xt pref.ExtensionType) bool {
 	if xt.Name() != "message_set_extension" {
 		return false
 	}
-	mt := xt.MessageType()
-	if mt == nil {
+	md := xt.Message()
+	if md == nil {
 		return false
 	}
-	if xt.FullName().Parent() != mt.FullName() {
+	if xt.FullName().Parent() != md.FullName() {
 		return false
 	}
-	xmt, ok := xt.ExtendedType().(interface{ IsMessageSet() bool })
-	return ok && xmt.IsMessageSet()
+	xmd, ok := xt.Extendee().(interface{ IsMessageSet() bool })
+	return ok && xmd.IsMessageSet()
 }
 
 // appendUnknown parses the given []byte and appends field(s) into the given fields slice.

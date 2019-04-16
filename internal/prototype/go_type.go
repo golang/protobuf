@@ -118,12 +118,12 @@ func (t *goMessage) Format(s fmt.State, r rune) {
 // The type M is the concrete message type returned by NewMessage,
 // which is often, but not required to be, a pointer to a named struct type.
 func GoExtension(xd protoreflect.ExtensionDescriptor, et protoreflect.EnumType, mt protoreflect.MessageType) protoreflect.ExtensionType {
-	if xd.ExtendedType() == nil {
+	if xd.Extendee() == nil {
 		panic("field descriptor does not extend a message")
 	}
 	switch xd.Kind() {
 	case protoreflect.EnumKind:
-		if et2, ok := xd.EnumType().(protoreflect.EnumType); ok && et == nil {
+		if et2, ok := xd.Enum().(protoreflect.EnumType); ok && et == nil {
 			et = et2
 		}
 		if et == nil {
@@ -133,7 +133,7 @@ func GoExtension(xd protoreflect.ExtensionDescriptor, et protoreflect.EnumType, 
 			panic("message type provided for enum kind")
 		}
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		if mt2, ok := xd.MessageType().(protoreflect.MessageType); ok && mt == nil {
+		if mt2, ok := xd.Message().(protoreflect.MessageType); ok && mt == nil {
 			mt = mt2
 		}
 		if et != nil {

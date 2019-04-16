@@ -160,19 +160,25 @@ func (t fieldDesc) IsPacked() bool {
 }
 func (t fieldDesc) IsWeak() bool { return t.f.IsWeak }
 func (t fieldDesc) IsMap() bool {
-	mt := t.MessageType()
+	mt := t.Message()
 	return mt != nil && mt.IsMapEntry()
 }
 func (t fieldDesc) HasDefault() bool                           { return t.f.Default.IsValid() }
 func (t fieldDesc) Default() pref.Value                        { return t.f.dv.value(t, t.f.Default) }
 func (t fieldDesc) DefaultEnumValue() pref.EnumValueDescriptor { return t.f.dv.enum(t, t.f.Default) }
-func (t fieldDesc) OneofType() pref.OneofDescriptor            { return t.f.ot.lazyInit(t, t.f.OneofName) }
-func (t fieldDesc) ExtendedType() pref.MessageDescriptor       { return nil }
-func (t fieldDesc) MessageType() pref.MessageDescriptor        { return t.f.mt.lazyInit(t, &t.f.MessageType) }
-func (t fieldDesc) EnumType() pref.EnumDescriptor              { return t.f.et.lazyInit(t, &t.f.EnumType) }
+func (t fieldDesc) Oneof() pref.OneofDescriptor                { return t.f.ot.lazyInit(t, t.f.OneofName) }
+func (t fieldDesc) Extendee() pref.MessageDescriptor           { return nil }
+func (t fieldDesc) Enum() pref.EnumDescriptor                  { return t.f.et.lazyInit(t, &t.f.EnumType) }
+func (t fieldDesc) Message() pref.MessageDescriptor            { return t.f.mt.lazyInit(t, &t.f.MessageType) }
 func (t fieldDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, t) }
 func (t fieldDesc) ProtoType(pref.FieldDescriptor)             {}
 func (t fieldDesc) ProtoInternal(pragma.DoNotImplement)        {}
+
+// TODO: Remove these methods.
+func (t fieldDesc) OneofType() pref.OneofDescriptor      { return t.Oneof() }
+func (t fieldDesc) ExtendedType() pref.MessageDescriptor { return t.Extendee() }
+func (t fieldDesc) EnumType() pref.EnumDescriptor        { return t.Enum() }
+func (t fieldDesc) MessageType() pref.MessageDescriptor  { return t.Message() }
 
 func isPacked(packed OptionalBool, s pref.Syntax, c pref.Cardinality, k pref.Kind) bool {
 	if packed == False || (packed == DefaultBool && s == pref.Proto2) {
@@ -289,17 +295,19 @@ func (t extensionDesc) IsMap() bool                                { return fals
 func (t extensionDesc) HasDefault() bool                           { return t.x.Default.IsValid() }
 func (t extensionDesc) Default() pref.Value                        { return t.x.dv.value(t, t.x.Default) }
 func (t extensionDesc) DefaultEnumValue() pref.EnumValueDescriptor { return t.x.dv.enum(t, t.x.Default) }
-func (t extensionDesc) OneofType() pref.OneofDescriptor            { return nil }
-func (t extensionDesc) ExtendedType() pref.MessageDescriptor {
-	return t.x.xt.lazyInit(t, &t.x.ExtendedType)
-}
-func (t extensionDesc) MessageType() pref.MessageDescriptor {
-	return t.x.mt.lazyInit(t, &t.x.MessageType)
-}
-func (t extensionDesc) EnumType() pref.EnumDescriptor       { return t.x.et.lazyInit(t, &t.x.EnumType) }
-func (t extensionDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
-func (t extensionDesc) ProtoType(pref.FieldDescriptor)      {}
-func (t extensionDesc) ProtoInternal(pragma.DoNotImplement) {}
+func (t extensionDesc) Oneof() pref.OneofDescriptor                { return nil }
+func (t extensionDesc) Extendee() pref.MessageDescriptor           { return t.x.xt.lazyInit(t, &t.x.ExtendedType) }
+func (t extensionDesc) Enum() pref.EnumDescriptor                  { return t.x.et.lazyInit(t, &t.x.EnumType) }
+func (t extensionDesc) Message() pref.MessageDescriptor            { return t.x.mt.lazyInit(t, &t.x.MessageType) }
+func (t extensionDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, t) }
+func (t extensionDesc) ProtoType(pref.FieldDescriptor)             {}
+func (t extensionDesc) ProtoInternal(pragma.DoNotImplement)        {}
+
+// TODO: Remove these methods.
+func (t extensionDesc) OneofType() pref.OneofDescriptor      { return t.Oneof() }
+func (t extensionDesc) ExtendedType() pref.MessageDescriptor { return t.Extendee() }
+func (t extensionDesc) EnumType() pref.EnumDescriptor        { return t.Enum() }
+func (t extensionDesc) MessageType() pref.MessageDescriptor  { return t.Message() }
 
 type enumMeta struct {
 	inheritedMeta
@@ -377,13 +385,17 @@ func (t methodDesc) Name() pref.Name                     { return t.m.Name }
 func (t methodDesc) FullName() pref.FullName             { return t.m.fullName }
 func (t methodDesc) IsPlaceholder() bool                 { return false }
 func (t methodDesc) Options() pref.ProtoMessage          { return altOptions(t.m.Options, descopts.Method) }
-func (t methodDesc) InputType() pref.MessageDescriptor   { return t.m.mit.lazyInit(t, &t.m.InputType) }
-func (t methodDesc) OutputType() pref.MessageDescriptor  { return t.m.mot.lazyInit(t, &t.m.OutputType) }
+func (t methodDesc) Input() pref.MessageDescriptor       { return t.m.mit.lazyInit(t, &t.m.InputType) }
+func (t methodDesc) Output() pref.MessageDescriptor      { return t.m.mot.lazyInit(t, &t.m.OutputType) }
 func (t methodDesc) IsStreamingClient() bool             { return t.m.IsStreamingClient }
 func (t methodDesc) IsStreamingServer() bool             { return t.m.IsStreamingServer }
 func (t methodDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
 func (t methodDesc) ProtoType(pref.MethodDescriptor)     {}
 func (t methodDesc) ProtoInternal(pragma.DoNotImplement) {}
+
+// TODO: Remove these methods.
+func (t methodDesc) InputType() pref.MessageDescriptor  { return t.Input() }
+func (t methodDesc) OutputType() pref.MessageDescriptor { return t.Output() }
 
 type defaultValue struct {
 	once sync.Once
@@ -417,12 +429,12 @@ func (p *defaultValue) lazyInit(t pref.FieldDescriptor, v pref.Value) {
 				// default value for an enum value is the wrong type.
 				switch v := v.Interface().(type) {
 				case string:
-					if ev := t.EnumType().Values().ByName(pref.Name(v)); ev != nil {
+					if ev := t.Enum().Values().ByName(pref.Name(v)); ev != nil {
 						p.eval = ev
 						p.val = pref.ValueOf(p.eval.Number())
 					}
 				case pref.EnumNumber:
-					p.eval = t.EnumType().Values().ByNumber(v)
+					p.eval = t.Enum().Values().ByNumber(v)
 				}
 			case pref.BytesKind:
 				// Store a copy of the default bytes, so that we can detect
@@ -455,8 +467,8 @@ func (p *defaultValue) lazyInit(t pref.FieldDescriptor, v pref.Value) {
 		case pref.EnumKind:
 			p.val = zeroEnum
 			if t.Syntax() == pref.Proto2 {
-				if et := t.EnumType(); et != nil {
-					if vs := et.Values(); vs.Len() > 0 {
+				if ed := t.Enum(); ed != nil {
+					if vs := ed.Values(); vs.Len() > 0 {
 						p.val = pref.ValueOf(vs.Get(0).Number())
 					}
 				}

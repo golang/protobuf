@@ -70,7 +70,7 @@ func TestInit(t *testing.T) {
 
 	// Verify that message descriptors for map entries have no Go type info.
 	mapEntryName := protoreflect.FullName("goproto.proto.test.TestAllTypes.MapInt32Int32Entry")
-	d := testpb.File_test_test_proto.Messages().ByName("TestAllTypes").Fields().ByName("map_int32_int32").MessageType()
+	d := testpb.File_test_test_proto.Messages().ByName("TestAllTypes").Fields().ByName("map_int32_int32").Message()
 	if gotName, wantName := d.FullName(), mapEntryName; gotName != wantName {
 		t.Fatalf("looked up wrong descriptor: got %v, want %v", gotName, wantName)
 	}

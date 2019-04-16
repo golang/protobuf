@@ -115,8 +115,8 @@ fieldLoop:
 		switch {
 		case fd.IsWeak():
 			fi = fieldInfoForWeak(fd, specialByName["XXX_weak"])
-		case fd.OneofType() != nil:
-			fi = fieldInfoForOneof(fd, oneofsByName[fd.OneofType().Name()], oneofWrappersByNumber[fd.Number()])
+		case fd.Oneof() != nil:
+			fi = fieldInfoForOneof(fd, oneofsByName[fd.Oneof().Name()], oneofWrappersByNumber[fd.Number()])
 		case fd.IsMap():
 			fi = fieldInfoForMap(fd, fs)
 		case fd.Cardinality() == pref.Repeated:

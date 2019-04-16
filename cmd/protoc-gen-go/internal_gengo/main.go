@@ -350,13 +350,13 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	g.Annotate(message.GoIdent.GoName, message.Location)
 	g.P("type ", message.GoIdent, " struct {")
 	for _, field := range message.Fields {
-		if field.OneofType != nil {
+		if field.Oneof != nil {
 			// It would be a bit simpler to iterate over the oneofs below,
 			// but generating the field here keeps the contents of the Go
 			// struct in the same order as the contents of the source
 			// .proto file.
-			if field == field.OneofType.Fields[0] {
-				genOneofField(gen, g, f, message, field.OneofType)
+			if field == field.Oneof.Fields[0] {
+				genOneofField(gen, g, f, message, field.Oneof)
 			}
 			continue
 		}
@@ -370,8 +370,8 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 			fmt.Sprintf("json:%q", fieldJSONTag(field)),
 		}
 		if field.Desc.IsMap() {
-			key := field.MessageType.Fields[0]
-			val := field.MessageType.Fields[1]
+			key := field.Message.Fields[0]
+			val := field.Message.Fields[1]
 			tags = append(tags,
 				fmt.Sprintf("protobuf_key:%q", fieldProtobufTag(key)),
 				fmt.Sprintf("protobuf_val:%q", fieldProtobufTag(val)),
@@ -459,9 +459,9 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 			g.P("var ", defVarName, " []byte = []byte(", strconv.Quote(string(def.Bytes())), ")")
 		case protoreflect.EnumKind:
 			evalueDesc := field.Desc.DefaultEnumValue()
-			enum := field.EnumType
+			enum := field.Enum
 			evalue := enum.Values[evalueDesc.Index()]
-			g.P("const ", defVarName, " ", field.EnumType.GoIdent, " = ", evalue.GoIdent)
+			g.P("const ", defVarName, " ", field.Enum.GoIdent, " = ", evalue.GoIdent)
 		case protoreflect.FloatKind, protoreflect.DoubleKind:
 			// Floating point numbers need extra handling for -Inf/Inf/NaN.
 			f := field.Desc.Default().Float()
@@ -498,7 +498,7 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	// Getter methods.
 	for _, field := range message.Fields {
 		if isFirstOneofField(field) {
-			genOneofGetter(gen, g, f, message, field.OneofType)
+			genOneofGetter(gen, g, f, message, field.Oneof)
 		}
 		goType, pointer := fieldGoType(g, field)
 		defaultValue := fieldDefaultValue(g, message, field)
@@ -507,8 +507,8 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 		}
 		g.Annotate(message.GoIdent.GoName+".Get"+field.GoName, field.Location)
 		g.P("func (x *", message.GoIdent, ") Get", field.GoName, "() ", goType, " {")
-		if field.OneofType != nil {
-			g.P("if x, ok := x.Get", field.OneofType.GoName, "().(*", fieldOneofType(field), "); ok {")
+		if field.Oneof != nil {
+			g.P("if x, ok := x.Get", field.Oneof.GoName, "().(*", fieldOneofType(field), "); ok {")
 			g.P("return x.", field.GoName)
 			g.P("}")
 		} else {
@@ -549,7 +549,7 @@ func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType strin
 	case protoreflect.BoolKind:
 		goType = "bool"
 	case protoreflect.EnumKind:
-		goType = g.QualifiedGoIdent(field.EnumType.GoIdent)
+		goType = g.QualifiedGoIdent(field.Enum.GoIdent)
 	case protoreflect.Int32Kind, protoreflect.Sint32Kind, protoreflect.Sfixed32Kind:
 		goType = "int32"
 	case protoreflect.Uint32Kind, protoreflect.Fixed32Kind:
@@ -569,11 +569,11 @@ func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType strin
 		pointer = false
 	case protoreflect.MessageKind, protoreflect.GroupKind:
 		if field.Desc.IsMap() {
-			keyType, _ := fieldGoType(g, field.MessageType.Fields[0])
-			valType, _ := fieldGoType(g, field.MessageType.Fields[1])
+			keyType, _ := fieldGoType(g, field.Message.Fields[0])
+			valType, _ := fieldGoType(g, field.Message.Fields[1])
 			return fmt.Sprintf("map[%v]%v", keyType, valType), false
 		}
-		goType = "*" + g.QualifiedGoIdent(field.MessageType.GoIdent)
+		goType = "*" + g.QualifiedGoIdent(field.Message.GoIdent)
 		pointer = false
 	}
 	if field.Desc.Cardinality() == protoreflect.Repeated {
@@ -581,7 +581,7 @@ func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType strin
 		pointer = false
 	}
 	// Extension fields always have pointer type, even when defined in a proto3 file.
-	if field.Desc.Syntax() == protoreflect.Proto3 && field.Desc.ExtendedType() == nil {
+	if field.Desc.Syntax() == protoreflect.Proto3 && field.Desc.Extendee() == nil {
 		pointer = false
 	}
 	return goType, pointer
@@ -590,7 +590,7 @@ func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType strin
 func fieldProtobufTag(field *protogen.Field) string {
 	var enumName string
 	if field.Desc.Kind() == protoreflect.EnumKind {
-		enumName = enumLegacyName(field.EnumType)
+		enumName = enumLegacyName(field.Enum)
 	}
 	return tag.Marshal(field.Desc, enumName)
 }
@@ -614,7 +614,7 @@ func fieldDefaultValue(g *protogen.GeneratedFile, message *protogen.Message, fie
 	case protoreflect.MessageKind, protoreflect.GroupKind, protoreflect.BytesKind:
 		return "nil"
 	case protoreflect.EnumKind:
-		return g.QualifiedGoIdent(field.EnumType.Values[0].GoIdent)
+		return g.QualifiedGoIdent(field.Enum.Values[0].GoIdent)
 	default:
 		return "0"
 	}
@@ -645,7 +645,7 @@ func genExtensions(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo)
 		}
 
 		g.P("{")
-		g.P("ExtendedType: (*", extension.ExtendedType.GoIdent, ")(nil),")
+		g.P("ExtendedType: (*", extension.Extendee.GoIdent, ")(nil),")
 		goType, pointer := fieldGoType(g, extension)
 		if pointer {
 			goType = "*" + goType
@@ -662,13 +662,13 @@ func genExtensions(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo)
 	g.P("var (")
 	for i, extension := range f.allExtensions {
 		ed := extension.Desc
-		targetName := string(ed.ExtendedType().FullName())
+		targetName := string(ed.Extendee().FullName())
 		typeName := ed.Kind().String()
 		switch ed.Kind() {
 		case protoreflect.EnumKind:
-			typeName = string(ed.EnumType().FullName())
+			typeName = string(ed.Enum().FullName())
 		case protoreflect.MessageKind, protoreflect.GroupKind:
-			typeName = string(ed.MessageType().FullName())
+			typeName = string(ed.Message().FullName())
 		}
 		fieldName := string(ed.Name())
 		g.P("// extend ", targetName, " { ", ed.Cardinality().String(), " ", typeName, " ", fieldName, " = ", ed.Number(), "; }")
@@ -681,11 +681,11 @@ func genExtensions(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo)
 // isExtensionMessageSetELement returns the adjusted name of an extension
 // which extends proto2.bridge.MessageSet.
 func isExtensionMessageSetElement(extension *protogen.Extension) (name protoreflect.FullName, ok bool) {
-	opts := extension.ExtendedType.Desc.Options().(*descriptorpb.MessageOptions)
+	opts := extension.Extendee.Desc.Options().(*descriptorpb.MessageOptions)
 	if !opts.GetMessageSetWireFormat() || extension.Desc.Name() != "message_set_extension" {
 		return "", false
 	}
-	if extension.ParentMessage == nil {
+	if extension.Parent == nil {
 		// This case shouldn't be given special handling at all--we're
 		// only supposed to drop the ".message_set_extension" for
 		// extensions defined within a message (i.e., the extension
@@ -704,8 +704,8 @@ func isExtensionMessageSetElement(extension *protogen.Extension) (name protorefl
 // extensionVar returns the var holding the ExtensionDesc for an extension.
 func extensionVar(f *protogen.File, extension *protogen.Extension) protogen.GoIdent {
 	name := "E_"
-	if extension.ParentMessage != nil {
-		name += extension.ParentMessage.GoIdent.GoName + "_"
+	if extension.Parent != nil {
+		name += extension.Parent.GoIdent.GoName + "_"
 	}
 	name += extension.GoName
 	return f.GoImportPath.Ident(name)
@@ -820,7 +820,7 @@ func genOneofTypes(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo,
 
 // isFirstOneofField reports whether this is the first field in a oneof.
 func isFirstOneofField(field *protogen.Field) bool {
-	return field.OneofType != nil && field.OneofType.Fields[0] == field
+	return field.Oneof != nil && field.Oneof.Fields[0] == field
 }
 
 // oneofFieldName returns the name of the struct field holding the oneof value.
@@ -834,14 +834,14 @@ func oneofFieldName(oneof *protogen.Oneof) string {
 // oneofInterfaceName returns the name of the interface type implemented by
 // the oneof field value types.
 func oneofInterfaceName(oneof *protogen.Oneof) string {
-	return fmt.Sprintf("is%s_%s", oneof.ParentMessage.GoIdent.GoName, oneof.GoName)
+	return fmt.Sprintf("is%s_%s", oneof.Parent.GoIdent.GoName, oneof.GoName)
 }
 
 // fieldOneofType returns the wrapper type used to represent a field in a oneof.
 func fieldOneofType(field *protogen.Field) protogen.GoIdent {
 	ident := protogen.GoIdent{
-		GoImportPath: field.ParentMessage.GoIdent.GoImportPath,
-		GoName:       field.ParentMessage.GoIdent.GoName + "_" + field.GoName,
+		GoImportPath: field.Parent.GoIdent.GoImportPath,
+		GoName:       field.Parent.GoIdent.GoName + "_" + field.GoName,
 	}
 	// Check for collisions with nested messages or enums.
 	//
@@ -853,13 +853,13 @@ func fieldOneofType(field *protogen.Field) protogen.GoIdent {
 	// field and type names in mostly unpredictable ways.
 Loop:
 	for {
-		for _, message := range field.ParentMessage.Messages {
+		for _, message := range field.Parent.Messages {
 			if message.GoIdent == ident {
 				ident.GoName += "_"
 				continue Loop
 			}
 		}
-		for _, enum := range field.ParentMessage.Enums {
+		for _, enum := range field.Parent.Enums {
 			if enum.GoIdent == ident {
 				ident.GoName += "_"
 				continue Loop

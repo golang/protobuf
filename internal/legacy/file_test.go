@@ -431,11 +431,17 @@ func TestDescriptor(t *testing.T) {
 					case "HasJSONName":
 						// Ignore this since the semantics of the field has
 						// changed across protoc and protoc-gen-go releases.
-					case "OneofType", "ExtendedType", "EnumType", "MessageType":
+					case "Oneof", "Extendee", "Enum", "Message":
 						// Avoid descending into a dependency to avoid a cycle.
 						// Just record the full name if available.
 						//
 						// TODO: Cycle support in cmp would be useful here.
+						v := m.Call(nil)[0]
+						if !v.IsNil() {
+							out[name] = v.Interface().(pref.Descriptor).FullName()
+						}
+					// TODO: Remove this when the methods are deleted.
+					case "OneofType", "ExtendedType", "EnumType", "MessageType":
 						v := m.Call(nil)[0]
 						if !v.IsNil() {
 							out[name] = v.Interface().(pref.Descriptor).FullName()

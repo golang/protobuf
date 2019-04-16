@@ -55,24 +55,24 @@ func TestConcurrentInit(t *testing.T) {
 
 	var (
 		wantMTA = messageATypes[0]
-		wantMDA = messageATypes[0].Fields().ByNumber(1).MessageType()
+		wantMDA = messageATypes[0].Fields().ByNumber(1).Message()
 		wantMTB = messageBTypes[0]
-		wantMDB = messageBTypes[0].Fields().ByNumber(2).MessageType()
+		wantMDB = messageBTypes[0].Fields().ByNumber(2).Message()
 		wantET  = enumTypes[0]
-		wantED  = messageATypes[0].Fields().ByNumber(3).EnumType()
+		wantED  = messageATypes[0].Fields().ByNumber(3).Enum()
 	)
 
 	for _, gotMT := range messageATypes[1:] {
 		if gotMT != wantMTA {
 			t.Error("MessageType(MessageA) mismatch")
 		}
-		if gotMDA := gotMT.Fields().ByNumber(1).MessageType(); gotMDA != wantMDA {
+		if gotMDA := gotMT.Fields().ByNumber(1).Message(); gotMDA != wantMDA {
 			t.Error("MessageDescriptor(MessageA) mismatch")
 		}
-		if gotMDB := gotMT.Fields().ByNumber(2).MessageType(); gotMDB != wantMDB {
+		if gotMDB := gotMT.Fields().ByNumber(2).Message(); gotMDB != wantMDB {
 			t.Error("MessageDescriptor(MessageB) mismatch")
 		}
-		if gotED := gotMT.Fields().ByNumber(3).EnumType(); gotED != wantED {
+		if gotED := gotMT.Fields().ByNumber(3).Enum(); gotED != wantED {
 			t.Error("EnumDescriptor(Enum) mismatch")
 		}
 	}
@@ -80,13 +80,13 @@ func TestConcurrentInit(t *testing.T) {
 		if gotMT != wantMTB {
 			t.Error("MessageType(MessageB) mismatch")
 		}
-		if gotMDA := gotMT.Fields().ByNumber(1).MessageType(); gotMDA != wantMDA {
+		if gotMDA := gotMT.Fields().ByNumber(1).Message(); gotMDA != wantMDA {
 			t.Error("MessageDescriptor(MessageA) mismatch")
 		}
-		if gotMDB := gotMT.Fields().ByNumber(2).MessageType(); gotMDB != wantMDB {
+		if gotMDB := gotMT.Fields().ByNumber(2).Message(); gotMDB != wantMDB {
 			t.Error("MessageDescriptor(MessageB) mismatch")
 		}
-		if gotED := gotMT.Fields().ByNumber(3).EnumType(); gotED != wantED {
+		if gotED := gotMT.Fields().ByNumber(3).Enum(); gotED != wantED {
 			t.Error("EnumDescriptor(Enum) mismatch")
 		}
 	}

@@ -184,7 +184,7 @@ func (o MarshalOptions) marshalField(b []byte, field protoreflect.FieldDescripto
 		b = wire.AppendTag(b, num, wireTypes[kind])
 		return o.marshalSingular(b, num, field, value)
 	case field.IsMap():
-		return o.marshalMap(b, num, kind, field.MessageType(), value.Map())
+		return o.marshalMap(b, num, kind, field.Message(), value.Map())
 	case field.IsPacked():
 		return o.marshalPacked(b, num, field, value.List())
 	default:

@@ -100,14 +100,14 @@ func ToFieldDescriptorProto(field protoreflect.FieldDescriptor) *descriptorpb.Fi
 		Number:   scalar.Int32(int32(field.Number())),
 		Label:    descriptorpb.FieldDescriptorProto_Label(field.Cardinality()).Enum(),
 		Type:     descriptorpb.FieldDescriptorProto_Type(field.Kind()).Enum(),
-		Extendee: fullNameOf(field.ExtendedType()),
+		Extendee: fullNameOf(field.Extendee()),
 		Options:  field.Options().(*descriptorpb.FieldOptions),
 	}
 	switch field.Kind() {
 	case protoreflect.EnumKind:
-		p.TypeName = fullNameOf(field.EnumType())
+		p.TypeName = fullNameOf(field.Enum())
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		p.TypeName = fullNameOf(field.MessageType())
+		p.TypeName = fullNameOf(field.Message())
 	}
 	if field.HasJSONName() {
 		p.JsonName = scalar.String(field.JSONName())
@@ -125,7 +125,7 @@ func ToFieldDescriptorProto(field protoreflect.FieldDescriptor) *descriptorpb.Fi
 			p.DefaultValue = scalar.String(def)
 		}
 	}
-	if oneof := field.OneofType(); oneof != nil {
+	if oneof := field.Oneof(); oneof != nil {
 		p.OneofIndex = scalar.Int32(int32(oneof.Index()))
 	}
 	return p
@@ -191,8 +191,8 @@ func ToServiceDescriptorProto(service protoreflect.ServiceDescriptor) *descripto
 func ToMethodDescriptorProto(method protoreflect.MethodDescriptor) *descriptorpb.MethodDescriptorProto {
 	p := &descriptorpb.MethodDescriptorProto{
 		Name:       scalar.String(string(method.Name())),
-		InputType:  fullNameOf(method.InputType()),
-		OutputType: fullNameOf(method.OutputType()),
+		InputType:  fullNameOf(method.Input()),
+		OutputType: fullNameOf(method.Output()),
 		Options:    method.Options().(*descriptorpb.MethodOptions),
 	}
 	if method.IsStreamingClient() {

@@ -242,7 +242,7 @@ Loop:
 			}
 		} else {
 			// If field is a oneof, check if it has already been set.
-			if od := fd.OneofType(); od != nil {
+			if od := fd.Oneof(); od != nil {
 				idx := uint64(od.Index())
 				if seenOneofs.Has(idx) {
 					return errors.New("%v: oneof is already set", od.FullName())
@@ -276,12 +276,12 @@ func (o UnmarshalOptions) findExtension(xtName pref.FullName) (pref.ExtensionTyp
 }
 
 func isKnownValue(fd pref.FieldDescriptor) bool {
-	md := fd.MessageType()
+	md := fd.Message()
 	return md != nil && md.FullName() == "google.protobuf.Value"
 }
 
 func isNullValue(fd pref.FieldDescriptor) bool {
-	ed := fd.EnumType()
+	ed := fd.Enum()
 	return ed != nil && ed.FullName() == "google.protobuf.NullValue"
 }
 
@@ -506,7 +506,7 @@ func unmarshalEnum(jval json.Value, fd pref.FieldDescriptor) (pref.Value, error)
 	case json.String:
 		// Lookup EnumNumber based on name.
 		s := jval.String()
-		if enumVal := fd.EnumType().Values().ByName(pref.Name(s)); enumVal != nil {
+		if enumVal := fd.Enum().Values().ByName(pref.Name(s)); enumVal != nil {
 			return pref.ValueOf(enumVal.Number()), nil
 		}
 		return pref.Value{}, newError("invalid enum value %q", jval)
@@ -602,7 +602,7 @@ func (o UnmarshalOptions) unmarshalMap(mmap pref.Map, fd pref.FieldDescriptor) e
 		return unexpectedJSONError{jval}
 	}
 
-	fields := fd.MessageType().Fields()
+	fields := fd.Message().Fields()
 	keyDesc := fields.ByNumber(1)
 	valDesc := fields.ByNumber(2)
 

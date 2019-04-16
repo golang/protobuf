@@ -149,7 +149,7 @@ func (p legacyExtensionTypes) Len() (n int) {
 }
 
 func (p legacyExtensionTypes) Register(t pref.ExtensionType) {
-	if p.mi.PBType.FullName() != t.ExtendedType().FullName() {
+	if p.mi.PBType.FullName() != t.Extendee().FullName() {
 		panic("extended type mismatch")
 	}
 	if !p.mi.PBType.ExtensionRanges().Has(t.Number()) {

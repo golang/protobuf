@@ -325,7 +325,7 @@ func (p *parser) parseMessage(msgDesc protoreflect.MessageDescriptor, group bool
 				kind = fieldDesc.Kind()
 				switch kind {
 				case protoreflect.MessageKind, protoreflect.GroupKind:
-					subDesc = fieldDesc.MessageType()
+					subDesc = fieldDesc.Message()
 					if subDesc == nil || subDesc.IsPlaceholder() {
 						kind = 0
 					}

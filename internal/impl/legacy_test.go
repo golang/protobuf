@@ -769,11 +769,17 @@ func TestExtensionConvert(t *testing.T) {
 								// Ignore New since it a constructor.
 							case "Options":
 								// Ignore descriptor options since protos are not cmperable.
-							case "EnumType", "MessageType", "ExtendedType":
+							case "Oneof", "Extendee", "Enum", "Message":
 								// Avoid descending into a dependency to avoid a cycle.
 								// Just record the full name if available.
 								//
 								// TODO: Cycle support in cmp would be useful here.
+								v := m.Call(nil)[0]
+								if !v.IsNil() {
+									out[name] = v.Interface().(pref.Descriptor).FullName()
+								}
+							// TODO: Remove this when the methods are deleted.
+							case "OneofType", "ExtendedType", "EnumType", "MessageType":
 								v := m.Call(nil)[0]
 								if !v.IsNil() {
 									out[name] = v.Interface().(pref.Descriptor).FullName()
