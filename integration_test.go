@@ -63,7 +63,6 @@ func Test(t *testing.T) {
 				})
 			}
 			workDir := filepath.Join(goPath, "src", modulePath)
-			runGo("Build", workDir, "go", "build", "./...")
 			runGo("TestNormal", workDir, "go", "test", "-race", "./...")
 			runGo("TestPureGo", workDir, "go", "test", "-race", "-tags", "purego", "./...")
 			runGo("TestReflect", workDir, "go", "test", "-race", "-tags", "protoreflect", "./...")
