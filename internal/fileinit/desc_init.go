@@ -12,10 +12,9 @@ import (
 
 func newFileDesc(fb FileBuilder) *fileDesc {
 	file := &fileDesc{fileInit: fileInit{
-		RawDescriptor:     fb.RawDescriptor,
 		GoTypes:           fb.GoTypes,
 		DependencyIndexes: fb.DependencyIndexes,
-	}}
+	}, rawDesc: fb.RawDescriptor}
 	file.initDecls(len(fb.EnumOutputTypes), len(fb.MessageOutputTypes), len(fb.ExtensionOutputTypes))
 	file.unmarshalSeed(fb.RawDescriptor)
 

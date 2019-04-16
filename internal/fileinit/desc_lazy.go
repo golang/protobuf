@@ -20,7 +20,7 @@ import (
 
 func (file *fileDesc) lazyInit() *fileLazy {
 	file.once.Do(func() {
-		file.unmarshalFull(file.RawDescriptor)
+		file.unmarshalFull(file.rawDesc)
 		file.resolveImports()
 		file.resolveEnums()
 		file.resolveMessages()

@@ -218,12 +218,12 @@ type (
 	// fileInit contains a copy of certain fields in FileBuilder for use during
 	// lazy initialization upon first use.
 	fileInit struct {
-		RawDescriptor     []byte
 		GoTypes           []interface{}
 		DependencyIndexes []int32
 	}
 	fileDesc struct {
 		fileInit
+		rawDesc []byte
 
 		path         string
 		protoPackage pref.FullName
@@ -269,6 +269,15 @@ func (fd *fileDesc) Services() pref.ServiceDescriptors     { return &fd.services
 func (fd *fileDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, fd) }
 func (fd *fileDesc) ProtoType(pref.FileDescriptor)         {}
 func (fd *fileDesc) ProtoInternal(pragma.DoNotImplement)   {}
+
+// ProtoLegacyRawDesc is a pseudo-internal API for allowing the v1 code
+// to be able to retrieve the raw descriptor.
+//
+// WARNING: This method is exempt from the compatibility promise and may be
+// removed in the future without warning.
+func (fd *fileDesc) ProtoLegacyRawDesc() []byte {
+	return fd.rawDesc
+}
 
 type (
 	enumDesc struct {
