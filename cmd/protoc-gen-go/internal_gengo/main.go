@@ -30,6 +30,18 @@ import (
 const minimumVersion = 0
 
 const (
+	// generateEnumMapVars specifies whether to generate enum maps,
+	// which provide a bi-directional mapping between enum numbers and names.
+	generateEnumMapVars = true
+
+	// generateRawDescMethods specifies whether to generate EnumDescriptor and
+	// Descriptor methods for enums and messages. These methods return the
+	// GZIP'd contents of the raw file descriptor and the path from the root
+	// to the given enum or message descriptor.
+	generateRawDescMethods = true
+)
+
+const (
 	syncPackage          = protogen.GoImportPath("sync")
 	mathPackage          = protogen.GoImportPath("math")
 	protoifacePackage    = protogen.GoImportPath("github.com/golang/protobuf/v2/runtime/protoiface")
@@ -224,30 +236,34 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	g.P()
 
 	// Enum value mapping (number -> name).
-	nameMap := enum.GoIdent.GoName + "_name"
-	g.P("// Deprecated: Use ", enum.GoIdent.GoName, ".Type.Values instead.")
-	g.P("var ", nameMap, " = map[int32]string{")
-	generated := make(map[protoreflect.EnumNumber]bool)
-	for _, value := range enum.Values {
-		duplicate := ""
-		if _, present := generated[value.Desc.Number()]; present {
-			duplicate = "// Duplicate value: "
+	if generateEnumMapVars {
+		nameMap := enum.GoIdent.GoName + "_name"
+		g.P("// Deprecated: Use ", enum.GoIdent.GoName, ".Type.Values instead.")
+		g.P("var ", nameMap, " = map[int32]string{")
+		generated := make(map[protoreflect.EnumNumber]bool)
+		for _, value := range enum.Values {
+			duplicate := ""
+			if _, present := generated[value.Desc.Number()]; present {
+				duplicate = "// Duplicate value: "
+			}
+			g.P(duplicate, value.Desc.Number(), ": ", strconv.Quote(string(value.Desc.Name())), ",")
+			generated[value.Desc.Number()] = true
 		}
-		g.P(duplicate, value.Desc.Number(), ": ", strconv.Quote(string(value.Desc.Name())), ",")
-		generated[value.Desc.Number()] = true
+		g.P("}")
+		g.P()
 	}
-	g.P("}")
-	g.P()
 
 	// Enum value mapping (name -> number).
-	valueMap := enum.GoIdent.GoName + "_value"
-	g.P("// Deprecated: Use ", enum.GoIdent.GoName, ".Type.Values instead.")
-	g.P("var ", valueMap, " = map[string]int32{")
-	for _, value := range enum.Values {
-		g.P(strconv.Quote(string(value.Desc.Name())), ": ", value.Desc.Number(), ",")
+	if generateEnumMapVars {
+		valueMap := enum.GoIdent.GoName + "_value"
+		g.P("// Deprecated: Use ", enum.GoIdent.GoName, ".Type.Values instead.")
+		g.P("var ", valueMap, " = map[string]int32{")
+		for _, value := range enum.Values {
+			g.P(strconv.Quote(string(value.Desc.Name())), ": ", value.Desc.Number(), ",")
+		}
+		g.P("}")
+		g.P()
 	}
-	g.P("}")
-	g.P()
 
 	// Enum method.
 	if enum.Desc.Syntax() != protoreflect.Proto3 {
@@ -281,15 +297,17 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	}
 
 	// EnumDescriptor method.
-	var indexes []string
-	for i := 1; i < len(enum.Location.Path); i += 2 {
-		indexes = append(indexes, strconv.Itoa(int(enum.Location.Path[i])))
+	if generateRawDescMethods {
+		var indexes []string
+		for i := 1; i < len(enum.Location.Path); i += 2 {
+			indexes = append(indexes, strconv.Itoa(int(enum.Location.Path[i])))
+		}
+		g.P("// Deprecated: Use ", enum.GoIdent, ".Type instead.")
+		g.P("func (", enum.GoIdent, ") EnumDescriptor() ([]byte, []int) {")
+		g.P("return ", rawDescVarName(f), "GZIP(), []int{", strings.Join(indexes, ","), "}")
+		g.P("}")
+		g.P()
 	}
-	g.P("// Deprecated: Use ", enum.GoIdent, ".Type instead.")
-	g.P("func (", enum.GoIdent, ") EnumDescriptor() ([]byte, []int) {")
-	g.P("return ", rawDescVarName(f), "GZIP(), []int{", strings.Join(indexes, ","), "}")
-	g.P("}")
-	g.P()
 
 	genWellKnownType(g, "", enum.GoIdent, enum.Desc)
 }
@@ -395,15 +413,17 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 	genReflectMessage(gen, g, f, message)
 
 	// Descriptor method.
-	var indexes []string
-	for i := 1; i < len(message.Location.Path); i += 2 {
-		indexes = append(indexes, strconv.Itoa(int(message.Location.Path[i])))
+	if generateRawDescMethods {
+		var indexes []string
+		for i := 1; i < len(message.Location.Path); i += 2 {
+			indexes = append(indexes, strconv.Itoa(int(message.Location.Path[i])))
+		}
+		g.P("// Deprecated: Use ", message.GoIdent, ".ProtoReflect.Type instead.")
+		g.P("func (*", message.GoIdent, ") Descriptor() ([]byte, []int) {")
+		g.P("return ", rawDescVarName(f), "GZIP(), []int{", strings.Join(indexes, ","), "}")
+		g.P("}")
+		g.P()
 	}
-	g.P("// Deprecated: Use ", message.GoIdent, ".ProtoReflect.Type instead.")
-	g.P("func (*", message.GoIdent, ") Descriptor() ([]byte, []int) {")
-	g.P("return ", rawDescVarName(f), "GZIP(), []int{", strings.Join(indexes, ","), "}")
-	g.P("}")
-	g.P()
 
 	// ExtensionRangeArray method.
 	if extranges := message.Desc.ExtensionRanges(); extranges.Len() > 0 {

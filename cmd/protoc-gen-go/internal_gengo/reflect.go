@@ -210,21 +210,23 @@ func genFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileI
 	g.P("}")
 	g.P()
 
-	onceVar := rawDescVarName(f) + "Once"
-	dataVar := rawDescVarName(f) + "Data"
-	g.P("var (")
-	g.P(onceVar, " ", syncPackage.Ident("Once"))
-	g.P(dataVar, " = ", rawDescVarName(f))
-	g.P(")")
-	g.P()
+	if generateRawDescMethods {
+		onceVar := rawDescVarName(f) + "Once"
+		dataVar := rawDescVarName(f) + "Data"
+		g.P("var (")
+		g.P(onceVar, " ", syncPackage.Ident("Once"))
+		g.P(dataVar, " = ", rawDescVarName(f))
+		g.P(")")
+		g.P()
 
-	g.P("func ", rawDescVarName(f), "GZIP() []byte {")
-	g.P(onceVar, ".Do(func() {")
-	g.P(dataVar, " = ", protoimplPackage.Ident("X"), ".CompressGZIP(", dataVar, ")")
-	g.P("})")
-	g.P("return ", dataVar)
-	g.P("}")
-	g.P()
+		g.P("func ", rawDescVarName(f), "GZIP() []byte {")
+		g.P(onceVar, ".Do(func() {")
+		g.P(dataVar, " = ", protoimplPackage.Ident("X"), ".CompressGZIP(", dataVar, ")")
+		g.P("})")
+		g.P("return ", dataVar)
+		g.P("}")
+		g.P()
+	}
 }
 
 func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum *protogen.Enum) {
