@@ -25,35 +25,27 @@ func makeLegacyExtensionFieldsFunc(t reflect.Type) func(p *messageDataType) pref
 	}
 }
 
-var (
-	extTypeA = reflect.TypeOf(map[int32]ExtensionFieldV1(nil))
-	extTypeB = reflect.TypeOf(ExtensionFieldsV1{})
-)
+var extType = reflect.TypeOf(ExtensionFieldsV1{})
 
-func makeLegacyExtensionMapFunc(t reflect.Type) func(*messageDataType) legacyExtensionFieldsIface {
-	fx1, _ := t.FieldByName("XXX_extensions")
-	fx2, _ := t.FieldByName("XXX_InternalExtensions")
-	switch {
-	case fx1.Type == extTypeA:
-		fieldOffset := offsetOf(fx1)
-		return func(p *messageDataType) legacyExtensionFieldsIface {
-			v := p.p.Apply(fieldOffset).AsValueOf(fx1.Type).Interface()
-			return Export{}.ExtensionFieldsOf(v)
-		}
-	case fx2.Type == extTypeB:
-		fieldOffset := offsetOf(fx2)
-		return func(p *messageDataType) legacyExtensionFieldsIface {
-			v := p.p.Apply(fieldOffset).AsValueOf(fx2.Type).Interface()
-			return Export{}.ExtensionFieldsOf(v)
-		}
-	default:
+func makeLegacyExtensionMapFunc(t reflect.Type) func(*messageDataType) *legacyExtensionMap {
+	fx, _ := t.FieldByName("XXX_extensions")
+	if fx.Type != extType {
+		fx, _ = t.FieldByName("XXX_InternalExtensions")
+	}
+	if fx.Type != extType {
 		return nil
+	}
+
+	fieldOffset := offsetOf(fx)
+	return func(p *messageDataType) *legacyExtensionMap {
+		v := p.p.Apply(fieldOffset).AsValueOf(fx.Type).Interface()
+		return (*legacyExtensionMap)(v.(*ExtensionFieldsV1))
 	}
 }
 
 type legacyExtensionFields struct {
 	mi *MessageType
-	x  legacyExtensionFieldsIface
+	x  *legacyExtensionMap
 }
 
 func (p legacyExtensionFields) Len() (n int) {
@@ -263,8 +255,9 @@ type legacyExtensionFieldsIface = interface {
 }
 
 type ExtensionFieldV1 struct {
-	// TODO: Unexport these fields when v1 no longer interacts with the
-	// extension data structures directly.
+	// TODO: We should turn this into a type alias to an unnamed type,
+	// which means that v1 can have the same struct, and we no longer have to
+	// export this from the v2 API.
 
 	// When an extension is stored in a message using SetExtension
 	// only desc and value are set. When the message is marshaled
@@ -294,68 +287,12 @@ type ExtensionFieldV1 struct {
 	// Raw is the raw encoded bytes for the extension field.
 	// It is possible for Raw to be populated irrespective of whether the
 	// other fields are populated.
-	Raw []byte // TODO: switch to protoreflect.RawFields
+	Raw []byte // TODO: remove; let this be handled by XXX_unrecognized
 }
 
-type ExtensionFieldsV1 legacyExtensionSyncMap
-type legacyExtensionSyncMap struct {
-	p *struct {
-		mu sync.Mutex
-		m  legacyExtensionMap
-	}
-}
+type ExtensionFieldsV1 = map[int32]ExtensionFieldV1
 
-func (m legacyExtensionSyncMap) Len() int {
-	if m.p == nil {
-		return 0
-	}
-	return m.p.m.Len()
-}
-func (m legacyExtensionSyncMap) Has(n pref.FieldNumber) bool {
-	if m.p == nil {
-		return false
-	}
-	return m.p.m.Has(n)
-}
-func (m legacyExtensionSyncMap) Get(n pref.FieldNumber) ExtensionFieldV1 {
-	if m.p == nil {
-		return ExtensionFieldV1{}
-	}
-	return m.p.m.Get(n)
-}
-func (m *legacyExtensionSyncMap) Set(n pref.FieldNumber, x ExtensionFieldV1) {
-	if m.p == nil {
-		m.p = new(struct {
-			mu sync.Mutex
-			m  legacyExtensionMap
-		})
-	}
-	m.p.m.Set(n, x)
-}
-func (m legacyExtensionSyncMap) Clear(n pref.FieldNumber) {
-	if m.p == nil {
-		return
-	}
-	m.p.m.Clear(n)
-}
-func (m legacyExtensionSyncMap) Range(f func(pref.FieldNumber, ExtensionFieldV1) bool) {
-	if m.p == nil {
-		return
-	}
-	m.p.m.Range(f)
-}
-
-func (m legacyExtensionSyncMap) HasInit() bool {
-	return m.p != nil
-}
-func (m legacyExtensionSyncMap) Lock() {
-	m.p.mu.Lock()
-}
-func (m legacyExtensionSyncMap) Unlock() {
-	m.p.mu.Unlock()
-}
-
-type legacyExtensionMap map[int32]ExtensionFieldV1
+type legacyExtensionMap ExtensionFieldsV1
 
 func (m legacyExtensionMap) Len() int {
 	return len(m)
@@ -384,17 +321,8 @@ func (m legacyExtensionMap) Range(f func(pref.FieldNumber, ExtensionFieldV1) boo
 	}
 }
 
-var legacyExtensionLock sync.Mutex
-
 func (m legacyExtensionMap) HasInit() bool {
 	return m != nil
 }
-func (m legacyExtensionMap) Lock() {
-	if !m.HasInit() {
-		panic("cannot lock an uninitialized map")
-	}
-	legacyExtensionLock.Lock()
-}
-func (m legacyExtensionMap) Unlock() {
-	legacyExtensionLock.Unlock()
-}
+func (m legacyExtensionMap) Lock()   {} // noop
+func (m legacyExtensionMap) Unlock() {} // noop

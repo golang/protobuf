@@ -46,7 +46,7 @@ func makeLegacyUnknownFieldsFunc(t reflect.Type) func(p *messageDataType) pref.U
 // and also the extension field map.
 type legacyUnknownBytesAndExtensionMap struct {
 	u pref.UnknownFields
-	x legacyExtensionFieldsIface
+	x *legacyExtensionMap
 	r pref.FieldRanges
 }
 

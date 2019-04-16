@@ -79,14 +79,12 @@ func (Export) CompressGZIP(in []byte) (out []byte) {
 // ExtensionFieldsOf returns an interface abstraction over various
 // internal representations of extension fields.
 //
-// TODO: Delete this once v1 no longer needs to interact with the low-level
-// extensions data structure.
+// TODO: Delete this once v1 no longer needs this.
+// Remember to delete the HasInit, Lock, and Unlock methods.
 func (Export) ExtensionFieldsOf(p interface{}) legacyExtensionFieldsIface {
 	switch p := p.(type) {
-	case *map[int32]ExtensionFieldV1:
-		return (*legacyExtensionMap)(p)
 	case *ExtensionFieldsV1:
-		return (*legacyExtensionSyncMap)(p)
+		return (*legacyExtensionMap)(p)
 	default:
 		panic(fmt.Sprintf("invalid extension fields type: %T", p))
 	}
