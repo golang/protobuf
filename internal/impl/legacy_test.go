@@ -29,7 +29,7 @@ import (
 
 type legacyTestMessage struct {
 	XXX_unrecognized       []byte
-	XXX_InternalExtensions pimpl.ExtensionFieldsV1
+	XXX_InternalExtensions map[int32]pimpl.ExtensionFieldV1
 }
 
 func (*legacyTestMessage) Reset()         {}

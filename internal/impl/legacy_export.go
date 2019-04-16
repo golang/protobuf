@@ -7,7 +7,6 @@ package impl
 import (
 	"encoding/binary"
 	"encoding/json"
-	"fmt"
 	"hash/crc32"
 	"math"
 
@@ -74,18 +73,4 @@ func (Export) CompressGZIP(in []byte) (out []byte) {
 	}
 	out = append(out, gzipFooter[:]...)
 	return out
-}
-
-// ExtensionFieldsOf returns an interface abstraction over various
-// internal representations of extension fields.
-//
-// TODO: Delete this once v1 no longer needs this.
-// Remember to delete the HasInit, Lock, and Unlock methods.
-func (Export) ExtensionFieldsOf(p interface{}) legacyExtensionFieldsIface {
-	switch p := p.(type) {
-	case *ExtensionFieldsV1:
-		return (*legacyExtensionMap)(p)
-	default:
-		panic(fmt.Sprintf("invalid extension fields type: %T", p))
-	}
 }

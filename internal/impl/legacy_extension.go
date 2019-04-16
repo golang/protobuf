@@ -6,7 +6,6 @@ package impl
 
 import (
 	"reflect"
-	"sync"
 
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	piface "github.com/golang/protobuf/v2/runtime/protoiface"
@@ -25,7 +24,7 @@ func makeLegacyExtensionFieldsFunc(t reflect.Type) func(p *messageDataType) pref
 	}
 }
 
-var extType = reflect.TypeOf(ExtensionFieldsV1{})
+var extType = reflect.TypeOf(map[int32]ExtensionFieldV1{})
 
 func makeLegacyExtensionMapFunc(t reflect.Type) func(*messageDataType) *legacyExtensionMap {
 	fx, _ := t.FieldByName("XXX_extensions")
@@ -39,7 +38,7 @@ func makeLegacyExtensionMapFunc(t reflect.Type) func(*messageDataType) *legacyEx
 	fieldOffset := offsetOf(fx)
 	return func(p *messageDataType) *legacyExtensionMap {
 		v := p.p.Apply(fieldOffset).AsValueOf(fx.Type).Interface()
-		return (*legacyExtensionMap)(v.(*ExtensionFieldsV1))
+		return (*legacyExtensionMap)(v.(*map[int32]ExtensionFieldV1))
 	}
 }
 
@@ -240,20 +239,6 @@ func extensionTypeFromDesc(desc *piface.ExtensionDescV1) pref.ExtensionType {
 	return legacyWrapper.ExtensionTypeFromDesc(desc)
 }
 
-type legacyExtensionFieldsIface = interface {
-	Len() int
-	Has(pref.FieldNumber) bool
-	Get(pref.FieldNumber) ExtensionFieldV1
-	Set(pref.FieldNumber, ExtensionFieldV1)
-	Clear(pref.FieldNumber)
-	Range(f func(pref.FieldNumber, ExtensionFieldV1) bool)
-
-	// HasInit and Locker are used by v1 GetExtension to provide
-	// an artificial degree of concurrent safety.
-	HasInit() bool
-	sync.Locker
-}
-
 type ExtensionFieldV1 struct {
 	// TODO: We should turn this into a type alias to an unnamed type,
 	// which means that v1 can have the same struct, and we no longer have to
@@ -290,9 +275,7 @@ type ExtensionFieldV1 struct {
 	Raw []byte // TODO: remove; let this be handled by XXX_unrecognized
 }
 
-type ExtensionFieldsV1 = map[int32]ExtensionFieldV1
-
-type legacyExtensionMap ExtensionFieldsV1
+type legacyExtensionMap map[int32]ExtensionFieldV1
 
 func (m legacyExtensionMap) Len() int {
 	return len(m)
@@ -320,9 +303,3 @@ func (m legacyExtensionMap) Range(f func(pref.FieldNumber, ExtensionFieldV1) boo
 		}
 	}
 }
-
-func (m legacyExtensionMap) HasInit() bool {
-	return m != nil
-}
-func (m legacyExtensionMap) Lock()   {} // noop
-func (m legacyExtensionMap) Unlock() {} // noop

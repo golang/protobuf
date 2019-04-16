@@ -46,6 +46,5 @@ type (
 	UnknownFields   = []byte
 	SizeCache       = int32
 
-	ExtensionFieldV1  = impl.ExtensionFieldV1
-	ExtensionFieldsV1 = impl.ExtensionFieldsV1
+	ExtensionFieldV1 = impl.ExtensionFieldV1
 )
