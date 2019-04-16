@@ -23,7 +23,43 @@ import (
 // ErrMissingExtension is the error returned by GetExtension if the named extension is not in the message.
 var ErrMissingExtension = errors.New("proto: missing extension")
 
-func extendable(p interface{}) (extensionFields, error) {
+func extensionFieldsOf(p interface{}) *extensionMap {
+	if p, ok := p.(*map[int32]Extension); ok {
+		return (*extensionMap)(p)
+	}
+	panic(fmt.Sprintf("invalid extension fields type: %T", p))
+}
+
+type extensionMap map[int32]Extension
+
+func (m extensionMap) Len() int {
+	return len(m)
+}
+func (m extensionMap) Has(n protoreflect.FieldNumber) bool {
+	_, ok := m[int32(n)]
+	return ok
+}
+func (m extensionMap) Get(n protoreflect.FieldNumber) Extension {
+	return m[int32(n)]
+}
+func (m *extensionMap) Set(n protoreflect.FieldNumber, x Extension) {
+	if *m == nil {
+		*m = make(map[int32]Extension)
+	}
+	(*m)[int32(n)] = x
+}
+func (m *extensionMap) Clear(n protoreflect.FieldNumber) {
+	delete(*m, int32(n))
+}
+func (m extensionMap) Range(f func(protoreflect.FieldNumber, Extension) bool) {
+	for n, x := range m {
+		if !f(protoreflect.FieldNumber(n), x) {
+			return
+		}
+	}
+}
+
+func extendable(p interface{}) (*extensionMap, error) {
 	type extendableProto interface {
 		Message
 		ExtensionRangeArray() []ExtensionRange
@@ -33,10 +69,10 @@ func extendable(p interface{}) (extensionFields, error) {
 		if v.Kind() == reflect.Ptr && !v.IsNil() {
 			v = v.Elem()
 			if v := v.FieldByName("XXX_InternalExtensions"); v.IsValid() {
-				return protoimpl.X.ExtensionFieldsOf(v.Addr().Interface()), nil
+				return extensionFieldsOf(v.Addr().Interface()), nil
 			}
 			if v := v.FieldByName("XXX_extensions"); v.IsValid() {
-				return protoimpl.X.ExtensionFieldsOf(v.Addr().Interface()), nil
+				return extensionFieldsOf(v.Addr().Interface()), nil
 			}
 		}
 	}
@@ -51,7 +87,7 @@ type (
 	ExtensionRange         = protoiface.ExtensionRangeV1
 	ExtensionDesc          = protoiface.ExtensionDescV1
 	Extension              = protoimpl.ExtensionFieldV1
-	XXX_InternalExtensions = protoimpl.ExtensionFieldsV1
+	XXX_InternalExtensions = protoimpl.ExtensionFields
 )
 
 func isRepeatedExtension(ed *ExtensionDesc) bool {
@@ -139,11 +175,9 @@ func HasExtension(pb Message, extension *ExtensionDesc) bool {
 	if err != nil {
 		return false
 	}
-	if !epb.HasInit() {
+	if epb == nil {
 		return false
 	}
-	epb.Lock()
-	defer epb.Unlock()
 	return epb.Has(protoreflect.FieldNumber(extension.Field))
 }
 
@@ -177,11 +211,9 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 		return nil, err
 	}
 
-	if !epb.HasInit() {
+	if epb == nil {
 		return defaultExtensionValue(pb, extension)
 	}
-	epb.Lock()
-	defer epb.Unlock()
 	if !epb.Has(protoreflect.FieldNumber(extension.Field)) {
 		// defaultExtensionValue returns the default value or
 		// ErrMissingExtension if there is no default.
@@ -319,11 +351,9 @@ func ExtensionDescs(pb Message) ([]*ExtensionDesc, error) {
 	}
 	registeredExtensions := RegisteredExtensions(pb)
 
-	if !epb.HasInit() {
+	if epb == nil {
 		return nil, nil
 	}
-	epb.Lock()
-	defer epb.Unlock()
 	extensions := make([]*ExtensionDesc, 0, epb.Len())
 	epb.Range(func(extid protoreflect.FieldNumber, e Extension) bool {
 		desc := e.Desc

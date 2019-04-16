@@ -15,24 +15,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/runtime/protoiface"
-	"github.com/golang/protobuf/v2/runtime/protoimpl"
 )
-
-type extensionFields = interface {
-	Len() int
-	Has(protoreflect.FieldNumber) bool
-	Get(protoreflect.FieldNumber) protoimpl.ExtensionFieldV1
-	Set(protoreflect.FieldNumber, protoimpl.ExtensionFieldV1)
-	Clear(protoreflect.FieldNumber)
-	Range(f func(protoreflect.FieldNumber, protoimpl.ExtensionFieldV1) bool)
-
-	// HasInit and Locker are used by v1 GetExtension to provide
-	// an artificial degree of concurrent safety.
-	HasInit() bool
-	sync.Locker
-}
 
 // requiredNotSetError is an error type returned by either Marshal or Unmarshal.
 // Marshal reports this when a required field is not initialized.

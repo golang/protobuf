@@ -1,3 +1,3 @@
 module github.com/golang/protobuf
 
-require github.com/golang/protobuf/v2 v2.0.0-20190409211845-4ec39c766335
+require github.com/golang/protobuf/v2 v2.0.0-20190416222953-ab61d41ec93f

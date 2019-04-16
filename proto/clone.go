@@ -85,10 +85,8 @@ func mergeStruct(out, in reflect.Value) {
 
 	if emIn, err := extendable(in.Addr().Interface()); err == nil {
 		emOut, _ := extendable(out.Addr().Interface())
-		if emIn.HasInit() {
-			emIn.Lock()
+		if emIn != nil {
 			mergeExtension(emOut, emIn)
-			emIn.Unlock()
 		}
 	}
 
@@ -208,7 +206,7 @@ func mergeAny(out, in reflect.Value, viaPtr bool, prop *Properties) {
 	}
 }
 
-func mergeExtension(out, in extensionFields) {
+func mergeExtension(out, in *extensionMap) {
 	in.Range(func(extNum protoreflect.FieldNumber, eIn Extension) bool {
 		eOut := Extension{Desc: eIn.Desc}
 		if eIn.Value != nil {

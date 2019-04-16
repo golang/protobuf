@@ -12,7 +12,6 @@ import (
 	"errors"
 
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/runtime/protoimpl"
 )
 
 // errNoMessageTypeID occurs when a protocol buffer does not have a message type ID.
@@ -118,7 +117,7 @@ func skipVarint(buf []byte) []byte {
 // unmarshalMessageSet decodes the extension map encoded in buf in the message set wire format.
 // It is called by Unmarshal methods on protocol buffer messages with the message_set_wire_format option.
 func unmarshalMessageSet(buf []byte, exts interface{}) error {
-	m := protoimpl.X.ExtensionFieldsOf(exts)
+	m := extensionFieldsOf(exts)
 
 	ms := new(messageSet)
 	if err := Unmarshal(buf, ms); err != nil {

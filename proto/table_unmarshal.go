@@ -17,7 +17,6 @@ import (
 	"unicode/utf8"
 
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/runtime/protoimpl"
 )
 
 // Unmarshal is the entry point from the generated .pb.go files.
@@ -188,21 +187,21 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		// Keep unrecognized data around.
 		// maybe in extensions, maybe in the unrecognized field.
 		z := m.offset(u.unrecognized).toBytes()
-		var emap extensionFields
+		var emap *extensionMap
 		var e Extension
 		for _, r := range u.extensionRanges {
 			if uint64(r.Start) <= tag && tag <= uint64(r.End) {
 				hasExtensions = true
 				if u.extensions.IsValid() {
 					mp := m.offset(u.extensions).toExtensions()
-					emap = protoimpl.X.ExtensionFieldsOf(mp)
+					emap = extensionFieldsOf(mp)
 					e = emap.Get(protoreflect.FieldNumber(tag))
 					z = &e.Raw
 					break
 				}
 				if u.oldExtensions.IsValid() {
 					p := m.offset(u.oldExtensions).toOldExtensions()
-					emap = protoimpl.X.ExtensionFieldsOf(p)
+					emap = extensionFieldsOf(p)
 					e = emap.Get(protoreflect.FieldNumber(tag))
 					z = &e.Raw
 					break

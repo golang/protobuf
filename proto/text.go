@@ -658,17 +658,15 @@ func (tm *textMarshaler) writeExtensions(w *textWriter, pv reflect.Value) error 
 	// Order the extensions by ID.
 	// This isn't strictly necessary, but it will give us
 	// canonical output, which will also make testing easier.
-	if !ep.HasInit() {
+	if ep == nil {
 		return nil
 	}
-	ep.Lock()
 	ids := make([]protoreflect.FieldNumber, 0, ep.Len())
 	ep.Range(func(id protoreflect.FieldNumber, _ Extension) bool {
 		ids = append(ids, id)
 		return true
 	})
 	sort.Sort(fieldNumSlice(ids))
-	ep.Unlock()
 
 	for _, extNum := range ids {
 		ext := ep.Get(extNum)

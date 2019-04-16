@@ -13,7 +13,6 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/runtime/protoimpl"
 )
 
 /*
@@ -94,8 +93,8 @@ func equalStruct(v1, v2 reflect.Value) bool {
 
 	if em1 := v1.FieldByName("XXX_InternalExtensions"); em1.IsValid() {
 		em2 := v2.FieldByName("XXX_InternalExtensions")
-		m1 := protoimpl.X.ExtensionFieldsOf(em1.Addr().Interface())
-		m2 := protoimpl.X.ExtensionFieldsOf(em2.Addr().Interface())
+		m1 := extensionFieldsOf(em1.Addr().Interface())
+		m2 := extensionFieldsOf(em2.Addr().Interface())
 		if !equalExtensions(v1.Type(), m1, m2) {
 			return false
 		}
@@ -103,8 +102,8 @@ func equalStruct(v1, v2 reflect.Value) bool {
 
 	if em1 := v1.FieldByName("XXX_extensions"); em1.IsValid() {
 		em2 := v2.FieldByName("XXX_extensions")
-		m1 := protoimpl.X.ExtensionFieldsOf(em1.Addr().Interface())
-		m2 := protoimpl.X.ExtensionFieldsOf(em2.Addr().Interface())
+		m1 := extensionFieldsOf(em1.Addr().Interface())
+		m2 := extensionFieldsOf(em2.Addr().Interface())
 		if !equalExtensions(v1.Type(), m1, m2) {
 			return false
 		}
@@ -207,7 +206,7 @@ func equalAny(v1, v2 reflect.Value, prop *Properties) bool {
 	return false
 }
 
-func equalExtensions(base reflect.Type, em1, em2 extensionFields) bool {
+func equalExtensions(base reflect.Type, em1, em2 *extensionMap) bool {
 	if em1.Len() != em2.Len() {
 		return false
 	}
