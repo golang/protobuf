@@ -33,7 +33,7 @@ func appendString(out []byte, v Value, outputASCII bool) ([]byte, error) {
 	in := v.String()
 
 	out = append(out, '"')
-	i := indexNeedEscape(in)
+	i := indexNeedEscapeInString(in)
 	in, out = in[i:], append(out, in[:i]...)
 	for len(in) > 0 {
 		switch r, n := utf8.DecodeRuneInString(in); {
@@ -72,7 +72,7 @@ func appendString(out []byte, v Value, outputASCII bool) ([]byte, error) {
 			}
 			in = in[n:]
 		default:
-			i := indexNeedEscape(in[n:])
+			i := indexNeedEscapeInString(in[n:])
 			in, out = in[n+i:], append(out, in[:n+i]...)
 		}
 	}
@@ -96,7 +96,7 @@ func consumeString(in []byte) (Value, int, error) {
 		return Value{}, 0, newSyntaxError("invalid character %q at start of string", in[0])
 	}
 	in = in[1:]
-	i := indexNeedEscape(string(in))
+	i := indexNeedEscapeInBytes(in)
 	in, out := in[i:], in[:i:i] // set cap to prevent mutations
 	for len(in) > 0 {
 		switch r, n := utf8.DecodeRune(in); {
@@ -185,7 +185,7 @@ func consumeString(in []byte) (Value, int, error) {
 				return Value{}, 0, newSyntaxError("invalid escape code %q in string", in[:2])
 			}
 		default:
-			i := indexNeedEscape(string(in[n:]))
+			i := indexNeedEscapeInBytes(in[n:])
 			in, out = in[n+i:], append(out, in[:n+i]...)
 		}
 	}
@@ -217,13 +217,28 @@ func (p *decoder) unmarshalStrings() (Value, error) {
 	return rawValueOf(strings.Join(ss, ""), b[:len(b):len(b)]), nil
 }
 
-// indexNeedEscape returns the index of the next character that needs escaping.
-// If no characters need escaping, this returns the input length.
-func indexNeedEscape(s string) int {
+// indexNeedEscapeInString returns the index of the character that needs
+// escaping. If no characters need escaping, this returns the input length.
+func indexNeedEscapeInString(s string) int {
 	for i := 0; i < len(s); i++ {
 		if c := s[i]; c < ' ' || c == '"' || c == '\'' || c == '\\' || c >= utf8.RuneSelf {
 			return i
 		}
 	}
 	return len(s)
+}
+
+// indexNeedEscapeInBytes returns the index of the character that needs
+// escaping. If no characters need escaping, this returns the input length.
+// TODO: Remove this duplicate function when https://golang.org/issue/31506 gets
+// resolved.
+func indexNeedEscapeInBytes(b []byte) int {
+	for i := 0; i < len(b); {
+		c, size := utf8.DecodeRune(b[i:])
+		if c < ' ' || c == '"' || c == '\'' || c == '\\' || c >= utf8.RuneSelf {
+			return i
+		}
+		i += size
+	}
+	return len(b)
 }

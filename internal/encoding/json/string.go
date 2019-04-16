@@ -18,7 +18,7 @@ import (
 func appendString(out []byte, in string) ([]byte, error) {
 	var nerr errors.NonFatal
 	out = append(out, '"')
-	i := indexNeedEscape(in)
+	i := indexNeedEscapeInString(in)
 	in, out = in[i:], append(out, in[:i]...)
 	for len(in) > 0 {
 		switch r, n := utf8.DecodeRuneInString(in); {
@@ -47,7 +47,7 @@ func appendString(out []byte, in string) ([]byte, error) {
 			}
 			in = in[n:]
 		default:
-			i := indexNeedEscape(in[n:])
+			i := indexNeedEscapeInString(in[n:])
 			in, out = in[n+i:], append(out, in[:n+i]...)
 		}
 	}
@@ -65,7 +65,7 @@ func (d *Decoder) parseString(in []byte) (string, int, error) {
 		return "", 0, d.newSyntaxError("invalid character %q at start of string", in[0])
 	}
 	in = in[1:]
-	i := indexNeedEscape(string(in))
+	i := indexNeedEscapeInBytes(in)
 	in, out := in[i:], in[:i:i] // set cap to prevent mutations
 	for len(in) > 0 {
 		switch r, n := utf8.DecodeRune(in); {
@@ -123,20 +123,35 @@ func (d *Decoder) parseString(in []byte) (string, int, error) {
 				return "", 0, d.newSyntaxError("invalid escape code %q in string", in[:2])
 			}
 		default:
-			i := indexNeedEscape(string(in[n:]))
+			i := indexNeedEscapeInBytes(in[n:])
 			in, out = in[n+i:], append(out, in[:n+i]...)
 		}
 	}
 	return "", 0, io.ErrUnexpectedEOF
 }
 
-// indexNeedEscape returns the index of the next character that needs escaping.
-// If no characters need escaping, this returns the input length.
-func indexNeedEscape(s string) int {
+// indexNeedEscapeInString returns the index of the character that needs
+// escaping. If no characters need escaping, this returns the input length.
+func indexNeedEscapeInString(s string) int {
 	for i, r := range s {
 		if r < ' ' || r == '\\' || r == '"' || r == utf8.RuneError {
 			return i
 		}
 	}
 	return len(s)
+}
+
+// indexNeedEscapeInBytes returns the index of the character that needs
+// escaping. If no characters need escaping, this returns the input length.
+// TODO: Remove this duplicate function when https://golang.org/issue/31506 gets
+// resolved.
+func indexNeedEscapeInBytes(b []byte) int {
+	for i := 0; i < len(b); {
+		r, n := utf8.DecodeRune(b[i:])
+		if r < ' ' || r == '\\' || r == '"' || r == utf8.RuneError {
+			return i
+		}
+		i += n
+	}
+	return len(b)
 }
