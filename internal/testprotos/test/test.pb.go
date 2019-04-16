@@ -315,8 +315,8 @@ type TestAllTypes struct {
 	//	*TestAllTypes_OneofEnum
 	OneofField           isTestAllTypes_OneofField `protobuf_oneof:"oneof_field"`
 	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
-	XXX_unrecognized     []byte                    `json:"-"`
-	XXX_sizecache        int32                     `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields   `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache       `json:"-"`
 }
 
 func (x *TestAllTypes) Reset() {
@@ -1058,8 +1058,8 @@ type TestDeprecatedMessage struct {
 	//	*TestDeprecatedMessage_DeprecatedOneofField
 	DeprecatedOneof      isTestDeprecatedMessage_DeprecatedOneof `protobuf_oneof:"deprecated_oneof"`
 	XXX_NoUnkeyedLiteral struct{}                                `json:"-"`
-	XXX_unrecognized     []byte                                  `json:"-"`
-	XXX_sizecache        int32                                   `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields                 `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache                     `json:"-"`
 }
 
 func (x *TestDeprecatedMessage) Reset() {
@@ -1126,11 +1126,11 @@ type TestDeprecatedMessage_DeprecatedOneofField struct {
 func (*TestDeprecatedMessage_DeprecatedOneofField) isTestDeprecatedMessage_DeprecatedOneof() {}
 
 type ForeignMessage struct {
-	C                    *int32   `protobuf:"varint,1,opt,name=c" json:"c,omitempty"`
-	D                    *int32   `protobuf:"varint,2,opt,name=d" json:"d,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	C                    *int32                  `protobuf:"varint,1,opt,name=c" json:"c,omitempty"`
+	D                    *int32                  `protobuf:"varint,2,opt,name=d" json:"d,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *ForeignMessage) Reset() {
@@ -1171,9 +1171,9 @@ func (x *ForeignMessage) GetD() int32 {
 }
 
 type TestReservedFields struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *TestReservedFields) Reset() {
@@ -1200,10 +1200,10 @@ func (*TestReservedFields) Descriptor() ([]byte, []int) {
 }
 
 type TestAllExtensions struct {
-	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
-	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
-	XXX_unrecognized       []byte                      `json:"-"`
-	XXX_sizecache          int32                       `json:"-"`
+	XXX_NoUnkeyedLiteral   struct{}                  `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFields `json:"-"`
+	XXX_unrecognized       protoimpl.UnknownFields   `json:"-"`
+	XXX_sizecache          protoimpl.SizeCache       `json:"-"`
 }
 
 func (x *TestAllExtensions) Reset() {
@@ -1239,10 +1239,10 @@ func (*TestAllExtensions) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 }
 
 type OptionalGroupExtension struct {
-	A                    *int32   `protobuf:"varint,17,opt,name=a" json:"a,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	A                    *int32                  `protobuf:"varint,17,opt,name=a" json:"a,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *OptionalGroupExtension) Reset() {
@@ -1276,10 +1276,10 @@ func (x *OptionalGroupExtension) GetA() int32 {
 }
 
 type RepeatedGroupExtension struct {
-	A                    *int32   `protobuf:"varint,47,opt,name=a" json:"a,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	A                    *int32                  `protobuf:"varint,47,opt,name=a" json:"a,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *RepeatedGroupExtension) Reset() {
@@ -1313,9 +1313,9 @@ func (x *RepeatedGroupExtension) GetA() int32 {
 }
 
 type TestNestedExtension struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *TestNestedExtension) Reset() {
@@ -1342,10 +1342,10 @@ func (*TestNestedExtension) Descriptor() ([]byte, []int) {
 }
 
 type TestRequired struct {
-	RequiredField        *int32   `protobuf:"varint,1,req,name=required_field,json=requiredField" json:"required_field,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	RequiredField        *int32                  `protobuf:"varint,1,req,name=required_field,json=requiredField" json:"required_field,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *TestRequired) Reset() {
@@ -1383,8 +1383,8 @@ type TestRequiredForeign struct {
 	RepeatedMessage      []*TestRequired         `protobuf:"bytes,2,rep,name=repeated_message,json=repeatedMessage" json:"repeated_message,omitempty"`
 	MapMessage           map[int32]*TestRequired `protobuf:"bytes,3,rep,name=map_message,json=mapMessage" json:"map_message,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *TestRequiredForeign) Reset() {
@@ -1435,8 +1435,8 @@ type TestRequiredGroupFields struct {
 	Optionalgroup        *TestRequiredGroupFields_OptionalGroup   `protobuf:"group,1,opt,name=OptionalGroup,json=optionalgroup" json:"optionalgroup,omitempty"`
 	Repeatedgroup        []*TestRequiredGroupFields_RepeatedGroup `protobuf:"group,3,rep,name=RepeatedGroup,json=repeatedgroup" json:"repeatedgroup,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                                 `json:"-"`
-	XXX_unrecognized     []byte                                   `json:"-"`
-	XXX_sizecache        int32                                    `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields                  `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache                      `json:"-"`
 }
 
 func (x *TestRequiredGroupFields) Reset() {
@@ -1478,9 +1478,9 @@ func (x *TestRequiredGroupFields) GetRepeatedgroup() []*TestRequiredGroupFields_
 
 // Test that RPC services work.
 type FooRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *FooRequest) Reset() {
@@ -1507,9 +1507,9 @@ func (*FooRequest) Descriptor() ([]byte, []int) {
 }
 
 type FooResponse struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *FooResponse) Reset() {
@@ -1536,11 +1536,11 @@ func (*FooResponse) Descriptor() ([]byte, []int) {
 }
 
 type TestAllTypes_NestedMessage struct {
-	A                    *int32        `protobuf:"varint,1,opt,name=a" json:"a,omitempty"`
-	Corecursive          *TestAllTypes `protobuf:"bytes,2,opt,name=corecursive" json:"corecursive,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
+	A                    *int32                  `protobuf:"varint,1,opt,name=a" json:"a,omitempty"`
+	Corecursive          *TestAllTypes           `protobuf:"bytes,2,opt,name=corecursive" json:"corecursive,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *TestAllTypes_NestedMessage) Reset() {
@@ -1581,10 +1581,10 @@ func (x *TestAllTypes_NestedMessage) GetCorecursive() *TestAllTypes {
 }
 
 type TestAllTypes_OptionalGroup struct {
-	A                    *int32   `protobuf:"varint,17,opt,name=a" json:"a,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	A                    *int32                  `protobuf:"varint,17,opt,name=a" json:"a,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *TestAllTypes_OptionalGroup) Reset() {
@@ -1618,10 +1618,10 @@ func (x *TestAllTypes_OptionalGroup) GetA() int32 {
 }
 
 type TestAllTypes_RepeatedGroup struct {
-	A                    *int32   `protobuf:"varint,47,opt,name=a" json:"a,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	A                    *int32                  `protobuf:"varint,47,opt,name=a" json:"a,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *TestAllTypes_RepeatedGroup) Reset() {
@@ -1655,10 +1655,10 @@ func (x *TestAllTypes_RepeatedGroup) GetA() int32 {
 }
 
 type TestRequiredGroupFields_OptionalGroup struct {
-	A                    *int32   `protobuf:"varint,2,req,name=a" json:"a,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	A                    *int32                  `protobuf:"varint,2,req,name=a" json:"a,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *TestRequiredGroupFields_OptionalGroup) Reset() {
@@ -1692,10 +1692,10 @@ func (x *TestRequiredGroupFields_OptionalGroup) GetA() int32 {
 }
 
 type TestRequiredGroupFields_RepeatedGroup struct {
-	A                    *int32   `protobuf:"varint,4,req,name=a" json:"a,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	A                    *int32                  `protobuf:"varint,4,req,name=a" json:"a,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *TestRequiredGroupFields_RepeatedGroup) Reset() {

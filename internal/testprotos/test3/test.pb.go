@@ -169,8 +169,8 @@ type TestAllTypes struct {
 	//	*TestAllTypes_OneofEnum
 	OneofField           isTestAllTypes_OneofField `protobuf_oneof:"oneof_field"`
 	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
-	XXX_unrecognized     []byte                    `json:"-"`
-	XXX_sizecache        int32                     `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields   `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache       `json:"-"`
 }
 
 func (x *TestAllTypes) Reset() {
@@ -753,11 +753,11 @@ func (*TestAllTypes_OneofDouble) isTestAllTypes_OneofField() {}
 func (*TestAllTypes_OneofEnum) isTestAllTypes_OneofField() {}
 
 type ForeignMessage struct {
-	C                    int32    `protobuf:"varint,1,opt,name=c,proto3" json:"c,omitempty"`
-	D                    int32    `protobuf:"varint,2,opt,name=d,proto3" json:"d,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	C                    int32                   `protobuf:"varint,1,opt,name=c,proto3" json:"c,omitempty"`
+	D                    int32                   `protobuf:"varint,2,opt,name=d,proto3" json:"d,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *ForeignMessage) Reset() {
@@ -798,11 +798,11 @@ func (x *ForeignMessage) GetD() int32 {
 }
 
 type TestAllTypes_NestedMessage struct {
-	A                    int32         `protobuf:"varint,1,opt,name=a,proto3" json:"a,omitempty"`
-	Corecursive          *TestAllTypes `protobuf:"bytes,2,opt,name=corecursive,proto3" json:"corecursive,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
+	A                    int32                   `protobuf:"varint,1,opt,name=a,proto3" json:"a,omitempty"`
+	Corecursive          *TestAllTypes           `protobuf:"bytes,2,opt,name=corecursive,proto3" json:"corecursive,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *TestAllTypes_NestedMessage) Reset() {

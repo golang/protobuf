@@ -14,10 +14,10 @@ import (
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type ExtraMessage struct {
-	Data                 []byte   `protobuf:"bytes,1,opt,name=data" json:"data,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Data                 []byte                  `protobuf:"bytes,1,opt,name=data" json:"data,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *ExtraMessage) Reset() {

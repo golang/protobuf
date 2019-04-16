@@ -54,8 +54,8 @@ type Message struct {
 	//	*Message_OneofMessageConflict_
 	OneofConflictC       isMessage_OneofConflictC `protobuf_oneof:"oneof_conflict_c"`
 	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
-	XXX_unrecognized     []byte                   `json:"-"`
-	XXX_sizecache        int32                    `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields  `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache      `json:"-"`
 }
 
 func (x *Message) Reset() {
@@ -275,9 +275,9 @@ type Message_OneofMessageConflict_ struct {
 func (*Message_OneofMessageConflict_) isMessage_OneofConflictC() {}
 
 type Message_OneofMessageConflict struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message_OneofMessageConflict) Reset() {

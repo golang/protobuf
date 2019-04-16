@@ -14,11 +14,11 @@ import (
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type Message struct {
-	I32                  *int32   `protobuf:"varint,1,opt,name=i32" json:"i32,omitempty"`
-	M                    *Message `protobuf:"bytes,2,opt,name=m" json:"m,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	I32                  *int32                  `protobuf:"varint,1,opt,name=i32" json:"i32,omitempty"`
+	M                    *Message                `protobuf:"bytes,2,opt,name=m" json:"m,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message) Reset() {

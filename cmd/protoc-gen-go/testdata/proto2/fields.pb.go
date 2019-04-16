@@ -174,8 +174,8 @@ type FieldTestMessage struct {
 	//	*FieldTestMessage_OneofTwo_2
 	OneofTwo             isFieldTestMessage_OneofTwo `protobuf_oneof:"oneof_two"`
 	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
-	XXX_unrecognized     []byte                      `json:"-"`
-	XXX_sizecache        int32                       `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields     `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache         `json:"-"`
 }
 
 func (x *FieldTestMessage) Reset() {
@@ -1119,10 +1119,10 @@ func (*FieldTestMessage_OneofTwo_1) isFieldTestMessage_OneofTwo() {}
 func (*FieldTestMessage_OneofTwo_2) isFieldTestMessage_OneofTwo() {}
 
 type FieldTestMessage_OptionalGroup struct {
-	OptionalGroup        *string  `protobuf:"bytes,19,opt,name=optional_group,json=optionalGroup" json:"optional_group,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	OptionalGroup        *string                 `protobuf:"bytes,19,opt,name=optional_group,json=optionalGroup" json:"optional_group,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *FieldTestMessage_OptionalGroup) Reset() {
@@ -1156,10 +1156,10 @@ func (x *FieldTestMessage_OptionalGroup) GetOptionalGroup() string {
 }
 
 type FieldTestMessage_RequiredGroup struct {
-	RequiredGroup        *string  `protobuf:"bytes,119,req,name=required_group,json=requiredGroup" json:"required_group,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	RequiredGroup        *string                 `protobuf:"bytes,119,req,name=required_group,json=requiredGroup" json:"required_group,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *FieldTestMessage_RequiredGroup) Reset() {
@@ -1193,10 +1193,10 @@ func (x *FieldTestMessage_RequiredGroup) GetRequiredGroup() string {
 }
 
 type FieldTestMessage_RepeatedGroup struct {
-	RepeatedGroup        []string `protobuf:"bytes,219,rep,name=repeated_group,json=repeatedGroup" json:"repeated_group,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	RepeatedGroup        []string                `protobuf:"bytes,219,rep,name=repeated_group,json=repeatedGroup" json:"repeated_group,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *FieldTestMessage_RepeatedGroup) Reset() {
@@ -1230,10 +1230,10 @@ func (x *FieldTestMessage_RepeatedGroup) GetRepeatedGroup() []string {
 }
 
 type FieldTestMessage_OneofGroup struct {
-	OneofGroupField      *string  `protobuf:"bytes,619,opt,name=oneof_group_field,json=oneofGroupField" json:"oneof_group_field,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	OneofGroupField      *string                 `protobuf:"bytes,619,opt,name=oneof_group_field,json=oneofGroupField" json:"oneof_group_field,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *FieldTestMessage_OneofGroup) Reset() {
@@ -1267,9 +1267,9 @@ func (x *FieldTestMessage_OneofGroup) GetOneofGroupField() string {
 }
 
 type FieldTestMessage_Message struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *FieldTestMessage_Message) Reset() {

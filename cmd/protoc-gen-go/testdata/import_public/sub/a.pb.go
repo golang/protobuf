@@ -175,11 +175,11 @@ type M struct {
 	// Types that are valid to be assigned to OneofField:
 	//	*M_OneofInt32
 	//	*M_OneofInt64
-	OneofField             isM_OneofField              `protobuf_oneof:"oneof_field"`
-	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
-	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
-	XXX_unrecognized       []byte                      `json:"-"`
-	XXX_sizecache          int32                       `json:"-"`
+	OneofField             isM_OneofField            `protobuf_oneof:"oneof_field"`
+	XXX_NoUnkeyedLiteral   struct{}                  `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFields `json:"-"`
+	XXX_unrecognized       protoimpl.UnknownFields   `json:"-"`
+	XXX_sizecache          protoimpl.SizeCache       `json:"-"`
 }
 
 func (x *M) Reset() {
@@ -298,8 +298,8 @@ type M_Submessage struct {
 	//	*M_Submessage_SubmessageOneofInt64
 	SubmessageOneofField isM_Submessage_SubmessageOneofField `protobuf_oneof:"submessage_oneof_field"`
 	XXX_NoUnkeyedLiteral struct{}                            `json:"-"`
-	XXX_unrecognized     []byte                              `json:"-"`
-	XXX_sizecache        int32                               `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields             `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache                 `json:"-"`
 }
 
 func (x *M_Submessage) Reset() {

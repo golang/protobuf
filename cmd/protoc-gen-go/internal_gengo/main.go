@@ -371,10 +371,10 @@ func genMessage(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, me
 			tags = append(tags, `protobuf_messageset:"1"`)
 		}
 		tags = append(tags, `json:"-"`)
-		g.P("XXX_InternalExtensions ", protoimplPackage.Ident("ExtensionFieldsV1"), " `", strings.Join(tags, " "), "`")
+		g.P("XXX_InternalExtensions ", protoimplPackage.Ident("ExtensionFields"), " `", strings.Join(tags, " "), "`")
 	}
-	g.P("XXX_unrecognized []byte `json:\"-\"`")
-	g.P("XXX_sizecache int32 `json:\"-\"`")
+	g.P("XXX_unrecognized ", protoimplPackage.Ident("UnknownFields"), " `json:\"-\"`")
+	g.P("XXX_sizecache ", protoimplPackage.Ident("SizeCache"), " `json:\"-\"`")
 	g.P("}")
 	g.P()
 

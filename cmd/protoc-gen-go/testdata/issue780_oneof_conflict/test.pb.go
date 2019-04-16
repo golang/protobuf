@@ -16,10 +16,10 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 type Foo struct {
 	// Types that are valid to be assigned to Bar:
 	//	*Foo_GetBar
-	Bar                  isFoo_Bar `protobuf_oneof:"bar"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
+	Bar                  isFoo_Bar               `protobuf_oneof:"bar"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Foo) Reset() {

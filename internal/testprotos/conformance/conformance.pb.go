@@ -118,10 +118,10 @@ func (TestCategory) EnumDescriptor() ([]byte, []int) {
 // This will be known by message_type == "conformance.FailureSet", a conformance
 // test should return a serialized FailureSet in protobuf_payload.
 type FailureSet struct {
-	Failure              []string `protobuf:"bytes,1,rep,name=failure,proto3" json:"failure,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Failure              []string                `protobuf:"bytes,1,rep,name=failure,proto3" json:"failure,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *FailureSet) Reset() {
@@ -186,10 +186,10 @@ type ConformanceRequest struct {
 	// for more information.
 	TestCategory TestCategory `protobuf:"varint,5,opt,name=test_category,json=testCategory,proto3,enum=conformance.TestCategory" json:"test_category,omitempty"`
 	// Specify details for how to encode jspb.
-	JspbEncodingOptions  *JspbEncodingConfig `protobuf:"bytes,6,opt,name=jspb_encoding_options,json=jspbEncodingOptions,proto3" json:"jspb_encoding_options,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
-	XXX_unrecognized     []byte              `json:"-"`
-	XXX_sizecache        int32               `json:"-"`
+	JspbEncodingOptions  *JspbEncodingConfig     `protobuf:"bytes,6,opt,name=jspb_encoding_options,json=jspbEncodingOptions,proto3" json:"jspb_encoding_options,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *ConformanceRequest) Reset() {
@@ -351,8 +351,8 @@ type ConformanceResponse struct {
 	//	*ConformanceResponse_TextPayload
 	Result               isConformanceResponse_Result `protobuf_oneof:"result"`
 	XXX_NoUnkeyedLiteral struct{}                     `json:"-"`
-	XXX_unrecognized     []byte                       `json:"-"`
-	XXX_sizecache        int32                        `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields      `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache          `json:"-"`
 }
 
 func (x *ConformanceResponse) Reset() {
@@ -510,10 +510,10 @@ func (*ConformanceResponse_TextPayload) isConformanceResponse_Result() {}
 // Encoding options for jspb format.
 type JspbEncodingConfig struct {
 	// Encode the value field of Any as jspb array if ture, otherwise binary.
-	UseJspbArrayAnyFormat bool     `protobuf:"varint,1,opt,name=use_jspb_array_any_format,json=useJspbArrayAnyFormat,proto3" json:"use_jspb_array_any_format,omitempty"`
-	XXX_NoUnkeyedLiteral  struct{} `json:"-"`
-	XXX_unrecognized      []byte   `json:"-"`
-	XXX_sizecache         int32    `json:"-"`
+	UseJspbArrayAnyFormat bool                    `protobuf:"varint,1,opt,name=use_jspb_array_any_format,json=useJspbArrayAnyFormat,proto3" json:"use_jspb_array_any_format,omitempty"`
+	XXX_NoUnkeyedLiteral  struct{}                `json:"-"`
+	XXX_unrecognized      protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache         protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *JspbEncodingConfig) Reset() {

@@ -58,12 +58,12 @@ var E_ExtensionField = sub.E_ExtensionField
 type Sub2Message = sub2.Sub2Message
 
 type Public struct {
-	M                    *sub.M   `protobuf:"bytes,1,opt,name=m" json:"m,omitempty"`
-	E                    *sub.E   `protobuf:"varint,2,opt,name=e,enum=goproto.protoc.import_public.sub.E" json:"e,omitempty"`
-	Local                *Local   `protobuf:"bytes,3,opt,name=local" json:"local,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	M                    *sub.M                  `protobuf:"bytes,1,opt,name=m" json:"m,omitempty"`
+	E                    *sub.E                  `protobuf:"varint,2,opt,name=e,enum=goproto.protoc.import_public.sub.E" json:"e,omitempty"`
+	Local                *Local                  `protobuf:"bytes,3,opt,name=local" json:"local,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Public) Reset() {

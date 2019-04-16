@@ -26,21 +26,21 @@ import (
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type Legacy struct {
-	F1                   *proto2_v0_0.Message  `protobuf:"bytes,1,opt,name=f1,proto3" json:"f1,omitempty"`
-	F2                   *proto3_v0_0.Message  `protobuf:"bytes,2,opt,name=f2,proto3" json:"f2,omitempty"`
-	F3                   *proto2_v0_01.Message `protobuf:"bytes,3,opt,name=f3,proto3" json:"f3,omitempty"`
-	F4                   *proto3_v0_01.Message `protobuf:"bytes,4,opt,name=f4,proto3" json:"f4,omitempty"`
-	F5                   *proto2_v1_0.Message  `protobuf:"bytes,5,opt,name=f5,proto3" json:"f5,omitempty"`
-	F6                   *proto3_v1_0.Message  `protobuf:"bytes,6,opt,name=f6,proto3" json:"f6,omitempty"`
-	F7                   *proto2_v1_1.Message  `protobuf:"bytes,7,opt,name=f7,proto3" json:"f7,omitempty"`
-	F8                   *proto3_v1_1.Message  `protobuf:"bytes,8,opt,name=f8,proto3" json:"f8,omitempty"`
-	F9                   *proto2_v1_2.Message  `protobuf:"bytes,9,opt,name=f9,proto3" json:"f9,omitempty"`
-	F10                  *proto3_v1_2.Message  `protobuf:"bytes,10,opt,name=f10,proto3" json:"f10,omitempty"`
-	F11                  *proto2_v1_21.Message `protobuf:"bytes,11,opt,name=f11,proto3" json:"f11,omitempty"`
-	F12                  *proto3_v1_21.Message `protobuf:"bytes,12,opt,name=f12,proto3" json:"f12,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
-	XXX_unrecognized     []byte                `json:"-"`
-	XXX_sizecache        int32                 `json:"-"`
+	F1                   *proto2_v0_0.Message    `protobuf:"bytes,1,opt,name=f1,proto3" json:"f1,omitempty"`
+	F2                   *proto3_v0_0.Message    `protobuf:"bytes,2,opt,name=f2,proto3" json:"f2,omitempty"`
+	F3                   *proto2_v0_01.Message   `protobuf:"bytes,3,opt,name=f3,proto3" json:"f3,omitempty"`
+	F4                   *proto3_v0_01.Message   `protobuf:"bytes,4,opt,name=f4,proto3" json:"f4,omitempty"`
+	F5                   *proto2_v1_0.Message    `protobuf:"bytes,5,opt,name=f5,proto3" json:"f5,omitempty"`
+	F6                   *proto3_v1_0.Message    `protobuf:"bytes,6,opt,name=f6,proto3" json:"f6,omitempty"`
+	F7                   *proto2_v1_1.Message    `protobuf:"bytes,7,opt,name=f7,proto3" json:"f7,omitempty"`
+	F8                   *proto3_v1_1.Message    `protobuf:"bytes,8,opt,name=f8,proto3" json:"f8,omitempty"`
+	F9                   *proto2_v1_2.Message    `protobuf:"bytes,9,opt,name=f9,proto3" json:"f9,omitempty"`
+	F10                  *proto3_v1_2.Message    `protobuf:"bytes,10,opt,name=f10,proto3" json:"f10,omitempty"`
+	F11                  *proto2_v1_21.Message   `protobuf:"bytes,11,opt,name=f11,proto3" json:"f11,omitempty"`
+	F12                  *proto3_v1_21.Message   `protobuf:"bytes,12,opt,name=f12,proto3" json:"f12,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Legacy) Reset() {

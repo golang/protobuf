@@ -14,11 +14,11 @@ import (
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type BaseMessage struct {
-	Field                  *string                     `protobuf:"bytes,1,opt,name=field" json:"field,omitempty"`
-	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
-	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
-	XXX_unrecognized       []byte                      `json:"-"`
-	XXX_sizecache          int32                       `json:"-"`
+	Field                  *string                   `protobuf:"bytes,1,opt,name=field" json:"field,omitempty"`
+	XXX_NoUnkeyedLiteral   struct{}                  `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFields `json:"-"`
+	XXX_unrecognized       protoimpl.UnknownFields   `json:"-"`
+	XXX_sizecache          protoimpl.SizeCache       `json:"-"`
 }
 
 func (x *BaseMessage) Reset() {
@@ -62,10 +62,10 @@ func (x *BaseMessage) GetField() string {
 }
 
 type MessageSetWireFormatMessage struct {
-	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
-	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `protobuf_messageset:"1" json:"-"`
-	XXX_unrecognized       []byte                      `json:"-"`
-	XXX_sizecache          int32                       `json:"-"`
+	XXX_NoUnkeyedLiteral   struct{}                  `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFields `protobuf_messageset:"1" json:"-"`
+	XXX_unrecognized       protoimpl.UnknownFields   `json:"-"`
+	XXX_sizecache          protoimpl.SizeCache       `json:"-"`
 }
 
 func (x *MessageSetWireFormatMessage) Reset() {

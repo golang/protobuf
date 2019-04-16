@@ -161,10 +161,10 @@ func (Enum3) EnumDescriptor() ([]byte, []int) {
 }
 
 type Message1 struct {
-	XXX_NoUnkeyedLiteral   struct{}                    `json:"-"`
-	XXX_InternalExtensions protoimpl.ExtensionFieldsV1 `json:"-"`
-	XXX_unrecognized       []byte                      `json:"-"`
-	XXX_sizecache          int32                       `json:"-"`
+	XXX_NoUnkeyedLiteral   struct{}                  `json:"-"`
+	XXX_InternalExtensions protoimpl.ExtensionFields `json:"-"`
+	XXX_unrecognized       protoimpl.UnknownFields   `json:"-"`
+	XXX_sizecache          protoimpl.SizeCache       `json:"-"`
 }
 
 func (x *Message1) Reset() {
@@ -200,9 +200,9 @@ func (*Message1) ExtensionRangeArray() []protoiface.ExtensionRangeV1 {
 }
 
 type Message2 struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message2) Reset() {
@@ -229,9 +229,9 @@ func (*Message2) Descriptor() ([]byte, []int) {
 }
 
 type Message3 struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message3) Reset() {
@@ -258,10 +258,10 @@ func (*Message3) Descriptor() ([]byte, []int) {
 }
 
 type Message4 struct {
-	BoolField            *bool    `protobuf:"varint,30,opt,name=bool_field,json=boolField" json:"bool_field,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	BoolField            *bool                   `protobuf:"varint,30,opt,name=bool_field,json=boolField" json:"bool_field,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message4) Reset() {

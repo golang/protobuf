@@ -15,10 +15,10 @@ import (
 const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 type A1M1 struct {
-	F                    *test_a_1.M1 `protobuf:"bytes,1,opt,name=f,proto3" json:"f,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
-	XXX_unrecognized     []byte       `json:"-"`
-	XXX_sizecache        int32        `json:"-"`
+	F                    *test_a_1.M1            `protobuf:"bytes,1,opt,name=f,proto3" json:"f,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *A1M1) Reset() {

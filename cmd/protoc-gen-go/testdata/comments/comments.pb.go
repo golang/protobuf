@@ -24,10 +24,10 @@ type Message1 struct {
 	// Types that are valid to be assigned to Oneof1A:
 	// COMMENT: Oneof1AField1
 	//	*Message1_Oneof1AField1
-	Oneof1A              isMessage1_Oneof1A `protobuf_oneof:"Oneof1a"`
-	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `json:"-"`
-	XXX_sizecache        int32              `json:"-"`
+	Oneof1A              isMessage1_Oneof1A      `protobuf_oneof:"Oneof1a"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message1) Reset() {
@@ -93,9 +93,9 @@ func (*Message1_Oneof1AField1) isMessage1_Oneof1A() {}
 
 // COMMENT: Message2
 type Message2 struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message2) Reset() {
@@ -123,9 +123,9 @@ func (*Message2) Descriptor() ([]byte, []int) {
 
 // COMMENT: Message1A
 type Message1_Message1A struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message1_Message1A) Reset() {
@@ -153,9 +153,9 @@ func (*Message1_Message1A) Descriptor() ([]byte, []int) {
 
 // COMMENT: Message1B
 type Message1_Message1B struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message1_Message1B) Reset() {
@@ -183,9 +183,9 @@ func (*Message1_Message1B) Descriptor() ([]byte, []int) {
 
 // COMMENT: Message2A
 type Message2_Message2A struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message2_Message2A) Reset() {
@@ -213,9 +213,9 @@ func (*Message2_Message2A) Descriptor() ([]byte, []int) {
 
 // COMMENT: Message2B
 type Message2_Message2B struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
+	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
 }
 
 func (x *Message2_Message2B) Reset() {

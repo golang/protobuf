@@ -41,6 +41,11 @@ type (
 	MessageType = impl.MessageType
 	FileBuilder = fileinit.FileBuilder
 
+	// TODO: Change these to more efficient data structures.
+	ExtensionFields = map[int32]impl.ExtensionFieldV1
+	UnknownFields   = []byte
+	SizeCache       = int32
+
 	ExtensionFieldV1  = impl.ExtensionFieldV1
 	ExtensionFieldsV1 = impl.ExtensionFieldsV1
 )
