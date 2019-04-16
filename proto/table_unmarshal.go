@@ -116,6 +116,7 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 	}
 	var reqMask uint64 // bitmask of required fields we've seen.
 	var errLater error
+	var hasExtensions bool
 	for len(b) > 0 {
 		// Read tag and wire type.
 		// Special case 1 and 2 byte varints.
@@ -191,6 +192,7 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		var e Extension
 		for _, r := range u.extensionRanges {
 			if uint64(r.Start) <= tag && tag <= uint64(r.End) {
+				hasExtensions = true
 				if u.extensions.IsValid() {
 					mp := m.offset(u.extensions).toExtensions()
 					emap = protoimpl.X.ExtensionFieldsOf(mp)
@@ -223,6 +225,35 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 			emap.Set(protoreflect.FieldNumber(tag), e)
 		}
 	}
+
+	// If there were unknown extensions, eagerly unmarshal them.
+	if hasExtensions {
+		mi := m.asPointerTo(u.typ).Interface().(Message)
+		ep, _ := extendable(mi)
+		if ep != nil {
+			var errFatal error
+			emap := RegisteredExtensions(mi) // map[int32]*ExtensionDesc
+			ep.Range(func(id protoreflect.FieldNumber, ef Extension) bool {
+				ed := emap[int32(id)]
+				if ed != nil {
+					_, err := GetExtension(mi, ed)
+					var nerr nonFatal
+					if !nerr.Merge(err) {
+						errFatal = err
+						return false
+					}
+					if errLater == nil {
+						errLater = nerr.E
+					}
+				}
+				return true
+			})
+			if errFatal != nil {
+				return errFatal
+			}
+		}
+	}
+
 	if reqMask != u.reqMask && errLater == nil {
 		// A required field of this message is missing.
 		for _, n := range u.reqFields {
