@@ -61,8 +61,8 @@ func (d *Decoder) Peek() Type {
 }
 
 // Read returns the next JSON value. It will return an error if there is no
-// valid value.  For String types containing invalid UTF8 characters, a
-// non-fatal error is returned and caller can call Read for the next value.
+// valid value. For String types containing invalid UTF8 characters, a non-fatal
+// error is returned and caller can call Read for the next value.
 func (d *Decoder) Read() (Value, error) {
 	defer func() { d.lastCall = readCall }()
 	if d.lastCall == peekCall {
@@ -70,10 +70,11 @@ func (d *Decoder) Read() (Value, error) {
 	}
 
 	var nerr errors.NonFatal
-	value, n, err := d.parseNext()
+	value, err := d.parseNext()
 	if !nerr.Merge(err) {
 		return Value{}, err
 	}
+	n := value.size
 
 	switch value.typ {
 	case EOF:
@@ -137,9 +138,8 @@ func (d *Decoder) Read() (Value, error) {
 		}
 	}
 
-	// Update lastType only after validating value to be in the right
-	// sequence.
-	d.value.typ = value.typ
+	// Update d.value only after validating value to be in the right sequence.
+	d.value = value
 	d.in = d.in[n:]
 
 	if d.value.typ == comma {
@@ -148,77 +148,79 @@ func (d *Decoder) Read() (Value, error) {
 	return value, nerr.E
 }
 
-var (
-	literalRegexp = regexp.MustCompile(`^(null|true|false)`)
-	// Any sequence that looks like a non-delimiter (for error reporting).
-	errRegexp = regexp.MustCompile(`^([-+._a-zA-Z0-9]{1,32}|.)`)
-)
+// Any sequence that looks like a non-delimiter (for error reporting).
+var errRegexp = regexp.MustCompile(`^([-+._a-zA-Z0-9]{1,32}|.)`)
 
 // parseNext parses for the next JSON value. It returns a Value object for
-// different types, except for Name. It also returns the size that was parsed.
-// It does not handle whether the next value is in a valid sequence or not, it
-// only ensures that the value is a valid one.
-func (d *Decoder) parseNext() (value Value, n int, err error) {
+// different types, except for Name. It does not handle whether the next value
+// is in a valid sequence or not.
+func (d *Decoder) parseNext() (value Value, err error) {
 	// Trim leading spaces.
 	d.consume(0)
 
 	in := d.in
 	if len(in) == 0 {
-		return d.newValue(nil, EOF), 0, nil
+		return d.newValue(EOF, nil, 0), nil
 	}
 
 	switch in[0] {
-	case 'n', 't', 'f':
-		n := matchWithDelim(literalRegexp, in)
+	case 'n':
+		n := matchWithDelim("null", in)
 		if n == 0 {
-			return Value{}, 0, d.newSyntaxError("invalid value %s", errRegexp.Find(in))
+			return Value{}, d.newSyntaxError("invalid value %s", errRegexp.Find(in))
 		}
-		switch in[0] {
-		case 'n':
-			return d.newValue(in[:n], Null), n, nil
-		case 't':
-			return d.newBoolValue(in[:n], true), n, nil
-		case 'f':
-			return d.newBoolValue(in[:n], false), n, nil
+		return d.newValue(Null, in, n), nil
+
+	case 't':
+		n := matchWithDelim("true", in)
+		if n == 0 {
+			return Value{}, d.newSyntaxError("invalid value %s", errRegexp.Find(in))
 		}
+		return d.newBoolValue(in, n, true), nil
+
+	case 'f':
+		n := matchWithDelim("false", in)
+		if n == 0 {
+			return Value{}, d.newSyntaxError("invalid value %s", errRegexp.Find(in))
+		}
+		return d.newBoolValue(in, n, false), nil
 
 	case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		n, ok := consumeNumber(in)
 		if !ok {
-			return Value{}, 0, d.newSyntaxError("invalid number %s", errRegexp.Find(in))
+			return Value{}, d.newSyntaxError("invalid number %s", errRegexp.Find(in))
 		}
-		return d.newValue(in[:n], Number), n, nil
+		return d.newValue(Number, in, n), nil
 
 	case '"':
 		var nerr errors.NonFatal
 		s, n, err := d.parseString(in)
 		if !nerr.Merge(err) {
-			return Value{}, 0, err
+			return Value{}, err
 		}
-		return d.newStringValue(in[:n], s), n, nerr.E
+		return d.newStringValue(in, n, s), nerr.E
 
 	case '{':
-		return d.newValue(in[:1], StartObject), 1, nil
+		return d.newValue(StartObject, in, 1), nil
 
 	case '}':
-		return d.newValue(in[:1], EndObject), 1, nil
+		return d.newValue(EndObject, in, 1), nil
 
 	case '[':
-		return d.newValue(in[:1], StartArray), 1, nil
+		return d.newValue(StartArray, in, 1), nil
 
 	case ']':
-		return d.newValue(in[:1], EndArray), 1, nil
+		return d.newValue(EndArray, in, 1), nil
 
 	case ',':
-		return d.newValue(in[:1], comma), 1, nil
+		return d.newValue(comma, in, 1), nil
 	}
-	return Value{}, 0, d.newSyntaxError("invalid value %s", errRegexp.Find(in))
+	return Value{}, d.newSyntaxError("invalid value %s", errRegexp.Find(in))
 }
 
-// position returns line and column number of parsed bytes.
-func (d *Decoder) position() (int, int) {
-	// Calculate line and column of consumed input.
-	b := d.orig[:len(d.orig)-len(d.in)]
+// position returns line and column number of index in given orig slice.
+func position(orig []byte, idx int) (int, int) {
+	b := orig[:idx]
 	line := bytes.Count(b, []byte("\n")) + 1
 	if i := bytes.LastIndexByte(b, '\n'); i >= 0 {
 		b = b[i+1:]
@@ -231,20 +233,22 @@ func (d *Decoder) position() (int, int) {
 // syntax errors.
 func (d *Decoder) newSyntaxError(f string, x ...interface{}) error {
 	e := errors.New(f, x...)
-	line, column := d.position()
+	line, column := position(d.orig, len(d.orig)-len(d.in))
 	return errors.New("syntax error (line %d:%d): %v", line, column, e)
 }
 
-// matchWithDelim matches r with the input b and verifies that the match
+// matchWithDelim matches s with the input b and verifies that the match
 // terminates with a delimiter of some form (e.g., r"[^-+_.a-zA-Z0-9]").
-// As a special case, EOF is considered a delimiter.
-func matchWithDelim(r *regexp.Regexp, b []byte) int {
-	n := len(r.Find(b))
-	if n < len(b) {
-		// Check that the next character is a delimiter.
-		if isNotDelim(b[n]) {
-			return 0
-		}
+// As a special case, EOF is considered a delimiter. It returns the length of s
+// if there is a match, else 0.
+func matchWithDelim(s string, b []byte) int {
+	if !bytes.HasPrefix(b, []byte(s)) {
+		return 0
+	}
+
+	n := len(s)
+	if n < len(b) && isNotDelim(b[n]) {
+		return 0
 	}
 	return n
 }
@@ -290,37 +294,34 @@ func (d *Decoder) isValueNext() bool {
 }
 
 // newValue constructs a Value for given Type.
-func (d *Decoder) newValue(input []byte, typ Type) Value {
-	line, column := d.position()
+func (d *Decoder) newValue(typ Type, input []byte, size int) Value {
 	return Value{
-		input:  input,
-		line:   line,
-		column: column,
-		typ:    typ,
+		typ:   typ,
+		input: d.orig,
+		start: len(d.orig) - len(input),
+		size:  size,
 	}
 }
 
 // newBoolValue constructs a Value for a JSON boolean.
-func (d *Decoder) newBoolValue(input []byte, b bool) Value {
-	line, column := d.position()
+func (d *Decoder) newBoolValue(input []byte, size int, b bool) Value {
 	return Value{
-		input:  input,
-		line:   line,
-		column: column,
-		typ:    Bool,
-		boo:    b,
+		typ:   Bool,
+		input: d.orig,
+		start: len(d.orig) - len(input),
+		size:  size,
+		boo:   b,
 	}
 }
 
 // newStringValue constructs a Value for a JSON string.
-func (d *Decoder) newStringValue(input []byte, s string) Value {
-	line, column := d.position()
+func (d *Decoder) newStringValue(input []byte, size int, s string) Value {
 	return Value{
-		input:  input,
-		line:   line,
-		column: column,
-		typ:    String,
-		str:    s,
+		typ:   String,
+		input: d.orig,
+		start: len(d.orig) - len(input),
+		size:  size,
+		str:   s,
 	}
 }
 
@@ -332,23 +333,29 @@ func (d *Decoder) Clone() *Decoder {
 	return &ret
 }
 
-// Value contains a JSON type and value parsed from calling Decoder.Read.
+// Value provides a parsed JSON type and value.
+//
+// The original input slice is stored in this struct in order to compute for
+// position as needed. The raw JSON value is derived from the original input
+// slice given start and size.
+//
 // For JSON boolean and string, it holds the converted value in boo and str
-// fields respectively. For JSON number, input field holds a valid number which
-// is converted only in Int or Float. Other JSON types do not require any
+// fields respectively. For JSON number, the raw JSON value holds a valid number
+// which is converted only in Int or Float. Other JSON types do not require any
 // additional data.
 type Value struct {
-	input  []byte
-	line   int
-	column int
-	typ    Type
-	boo    bool
-	str    string
+	typ   Type
+	input []byte
+	start int
+	size  int
+	boo   bool
+	str   string
 }
 
 func (v Value) newError(f string, x ...interface{}) error {
 	e := errors.New(f, x...)
-	return errors.New("error (line %d:%d): %v", v.line, v.column, e)
+	line, col := v.Position()
+	return errors.New("error (line %d:%d): %v", line, col, e)
 }
 
 // Type returns the JSON type.
@@ -358,13 +365,13 @@ func (v Value) Type() Type {
 
 // Position returns the line and column of the value.
 func (v Value) Position() (int, int) {
-	return v.line, v.column
+	return position(v.input, v.start)
 }
 
 // Bool returns the bool value if token is Bool, else it will return an error.
 func (v Value) Bool() (bool, error) {
 	if v.typ != Bool {
-		return false, v.newError("%s is not a bool", v.input)
+		return false, v.newError("%s is not a bool", v.Raw())
 	}
 	return v.boo, nil
 }
@@ -373,7 +380,7 @@ func (v Value) Bool() (bool, error) {
 // string if token is not a string.
 func (v Value) String() string {
 	if v.typ != String {
-		return string(v.input)
+		return v.Raw()
 	}
 	return v.str
 }
@@ -381,14 +388,14 @@ func (v Value) String() string {
 // Name returns the object name if token is Name, else it will return an error.
 func (v Value) Name() (string, error) {
 	if v.typ != Name {
-		return "", v.newError("%s is not an object name", v.input)
+		return "", v.newError("%s is not an object name", v.Raw())
 	}
 	return v.str, nil
 }
 
 // Raw returns the read value in string.
 func (v Value) Raw() string {
-	return string(v.input)
+	return string(v.input[v.start : v.start+v.size])
 }
 
 // Float returns the floating-point number if token is Number, else it will
@@ -401,9 +408,9 @@ func (v Value) Raw() string {
 // bitSize.
 func (v Value) Float(bitSize int) (float64, error) {
 	if v.typ != Number {
-		return 0, v.newError("%s is not a number", v.input)
+		return 0, v.newError("%s is not a number", v.Raw())
 	}
-	f, err := strconv.ParseFloat(string(v.input), bitSize)
+	f, err := strconv.ParseFloat(v.Raw(), bitSize)
 	if err != nil {
 		return 0, v.newError("%v", err)
 	}
@@ -450,7 +457,7 @@ func (v Value) getIntStr() (string, error) {
 	if v.typ != Number {
 		return "", v.newError("%s is not a number", v.input)
 	}
-	parts, ok := parseNumber(v.input)
+	parts, ok := parseNumber(v.input[v.start : v.start+v.size])
 	if !ok {
 		return "", v.newError("%s is not a number", v.input)
 	}
