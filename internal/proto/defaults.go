@@ -49,7 +49,7 @@ func setDefaults(m pref.Message) {
 			}
 		// Handle map of messages.
 		default:
-			k := fd.MessageType().Fields().ByNumber(2).Kind()
+			k := fd.Message().Fields().ByNumber(2).Kind()
 			if k == pref.MessageKind || k == pref.GroupKind {
 				ms := knownFields.Get(num).Map()
 				ms.Range(func(_ pref.MapKey, v pref.Value) bool {
