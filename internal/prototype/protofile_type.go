@@ -174,12 +174,6 @@ func (t fieldDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc
 func (t fieldDesc) ProtoType(pref.FieldDescriptor)             {}
 func (t fieldDesc) ProtoInternal(pragma.DoNotImplement)        {}
 
-// TODO: Remove these methods.
-func (t fieldDesc) OneofType() pref.OneofDescriptor      { return t.Oneof() }
-func (t fieldDesc) ExtendedType() pref.MessageDescriptor { return t.Extendee() }
-func (t fieldDesc) EnumType() pref.EnumDescriptor        { return t.Enum() }
-func (t fieldDesc) MessageType() pref.MessageDescriptor  { return t.Message() }
-
 func isPacked(packed OptionalBool, s pref.Syntax, c pref.Cardinality, k pref.Kind) bool {
 	if packed == False || (packed == DefaultBool && s == pref.Proto2) {
 		return false
@@ -303,12 +297,6 @@ func (t extensionDesc) Format(s fmt.State, r rune)                 { pfmt.Format
 func (t extensionDesc) ProtoType(pref.FieldDescriptor)             {}
 func (t extensionDesc) ProtoInternal(pragma.DoNotImplement)        {}
 
-// TODO: Remove these methods.
-func (t extensionDesc) OneofType() pref.OneofDescriptor      { return t.Oneof() }
-func (t extensionDesc) ExtendedType() pref.MessageDescriptor { return t.Extendee() }
-func (t extensionDesc) EnumType() pref.EnumDescriptor        { return t.Enum() }
-func (t extensionDesc) MessageType() pref.MessageDescriptor  { return t.Message() }
-
 type enumMeta struct {
 	inheritedMeta
 
@@ -392,10 +380,6 @@ func (t methodDesc) IsStreamingServer() bool             { return t.m.IsStreamin
 func (t methodDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
 func (t methodDesc) ProtoType(pref.MethodDescriptor)     {}
 func (t methodDesc) ProtoInternal(pragma.DoNotImplement) {}
-
-// TODO: Remove these methods.
-func (t methodDesc) InputType() pref.MessageDescriptor  { return t.Input() }
-func (t methodDesc) OutputType() pref.MessageDescriptor { return t.Output() }
 
 type defaultValue struct {
 	once sync.Once

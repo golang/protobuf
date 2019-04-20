@@ -96,9 +96,3 @@ func (t standaloneExtension) Message() pref.MessageDescriptor     { return t.x.M
 func (t standaloneExtension) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
 func (t standaloneExtension) ProtoType(pref.FieldDescriptor)      {}
 func (t standaloneExtension) ProtoInternal(pragma.DoNotImplement) {}
-
-// TODO: Remove these methods.
-func (t standaloneExtension) OneofType() pref.OneofDescriptor      { return t.Oneof() }
-func (t standaloneExtension) ExtendedType() pref.MessageDescriptor { return t.Extendee() }
-func (t standaloneExtension) EnumType() pref.EnumDescriptor        { return t.Enum() }
-func (t standaloneExtension) MessageType() pref.MessageDescriptor  { return t.Message() }

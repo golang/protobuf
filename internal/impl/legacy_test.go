@@ -778,12 +778,6 @@ func TestExtensionConvert(t *testing.T) {
 								if !v.IsNil() {
 									out[name] = v.Interface().(pref.Descriptor).FullName()
 								}
-							// TODO: Remove this when the methods are deleted.
-							case "OneofType", "ExtendedType", "EnumType", "MessageType":
-								v := m.Call(nil)[0]
-								if !v.IsNil() {
-									out[name] = v.Interface().(pref.Descriptor).FullName()
-								}
 							default:
 								out[name] = m.Call(nil)[0].Interface()
 							}

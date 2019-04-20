@@ -318,19 +318,6 @@ type FieldDescriptor interface {
 	// MessageKind or GroupKind. It returns nil for any other Kind.
 	Message() MessageDescriptor
 
-	// OneofType has been renamed to Oneof.
-	// Deprecated: Use Oneof instead; this will be removed.
-	OneofType() OneofDescriptor
-	// ExtendedType has been renamed to Extendee.
-	// Deprecated: Use Extendee instead; this will be removed.
-	ExtendedType() MessageDescriptor
-	// EnumType has been renamed to Enum.
-	// Deprecated: Use Enum instead; this will be removed.
-	EnumType() EnumDescriptor
-	// MessageType has been renamed to Message.
-	// Deprecated: Use Message instead; this will be removed.
-	MessageType() MessageDescriptor
-
 	isFieldDescriptor
 }
 type isFieldDescriptor interface{ ProtoType(FieldDescriptor) }
@@ -571,13 +558,6 @@ type MethodDescriptor interface {
 	IsStreamingClient() bool
 	// IsStreamingServer reports whether the server streams multiple messages.
 	IsStreamingServer() bool
-
-	// InputType has been renamed to Input.
-	// Deprecated: Use Input instead; this will be removed.
-	InputType() MessageDescriptor
-	// OutputType has been renamed to Output.
-	// Deprecated: Use Output instead; this will be removed.
-	OutputType() MessageDescriptor
 
 	isMethodDescriptor
 }

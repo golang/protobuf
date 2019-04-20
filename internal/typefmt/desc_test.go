@@ -27,14 +27,6 @@ func TestDescriptorAccessors(t *testing.T) {
 		"DescriptorProto":       true,
 		"ExtensionRangeOptions": true,
 		"Options":               true,
-
-		// TODO: Remove these when the methods are removed.
-		"OneofType":    true,
-		"ExtendedType": true,
-		"EnumType":     true,
-		"MessageType":  true,
-		"InputType":    true,
-		"OutputType":   true,
 	}
 
 	for rt, m := range descriptorAccessors {

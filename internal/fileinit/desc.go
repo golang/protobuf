@@ -446,12 +446,6 @@ func (fd *fieldDesc) Message() pref.MessageDescriptor            { return fd.mes
 func (fd *fieldDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, fd) }
 func (fd *fieldDesc) ProtoType(pref.FieldDescriptor)             {}
 
-// TODO: Remove these methods.
-func (fd *fieldDesc) OneofType() pref.OneofDescriptor      { return fd.Oneof() }
-func (fd *fieldDesc) ExtendedType() pref.MessageDescriptor { return fd.Extendee() }
-func (fd *fieldDesc) EnumType() pref.EnumDescriptor        { return fd.Enum() }
-func (fd *fieldDesc) MessageType() pref.MessageDescriptor  { return fd.Message() }
-
 func (od *oneofDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.Oneof, od.options)
 }
@@ -533,12 +527,6 @@ func (xd *extensionDesc) ProtoLegacyExtensionDesc() *piface.ExtensionDescV1 {
 	return xd.legacyDesc
 }
 
-// TODO: Remove these methods.
-func (xd *extensionDesc) OneofType() pref.OneofDescriptor      { return xd.Oneof() }
-func (xd *extensionDesc) ExtendedType() pref.MessageDescriptor { return xd.Extendee() }
-func (xd *extensionDesc) EnumType() pref.EnumDescriptor        { return xd.Enum() }
-func (xd *extensionDesc) MessageType() pref.MessageDescriptor  { return xd.Message() }
-
 type (
 	serviceDesc struct {
 		baseDesc
@@ -582,10 +570,6 @@ func (md *methodDesc) IsStreamingServer() bool             { return md.isStreami
 func (md *methodDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, md) }
 func (md *methodDesc) ProtoType(pref.MethodDescriptor)     {}
 func (md *methodDesc) ProtoInternal(pragma.DoNotImplement) {}
-
-// TODO: Remove these methods.
-func (md *methodDesc) InputType() pref.MessageDescriptor  { return md.Input() }
-func (md *methodDesc) OutputType() pref.MessageDescriptor { return md.Output() }
 
 type baseDesc struct {
 	parentFile *fileDesc
