@@ -6,6 +6,7 @@ package impl
 
 import (
 	"fmt"
+	"math"
 	"reflect"
 
 	"github.com/golang/protobuf/v2/internal/flags"
@@ -197,7 +198,7 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			case reflect.Uint32, reflect.Uint64:
 				return rv.Uint() != 0
 			case reflect.Float32, reflect.Float64:
-				return rv.Float() != 0
+				return rv.Float() != 0 || math.Signbit(rv.Float())
 			case reflect.String, reflect.Slice:
 				return rv.Len() > 0
 			default:

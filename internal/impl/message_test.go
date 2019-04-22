@@ -387,6 +387,11 @@ func TestScalarProto3(t *testing.T) {
 		},
 		clearFields{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22},
 		equalMessage{&ScalarProto3{}},
+
+		// Verify that -0 triggers proper Has behavior.
+		hasFields{6: false, 7: false},
+		setFields{6: V(float32(math.Copysign(0, -1))), 7: V(float64(math.Copysign(0, -1)))},
+		hasFields{6: true, 7: true},
 	})
 
 	// Test read-only operations on nil message.
