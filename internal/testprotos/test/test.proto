@@ -210,6 +210,22 @@ extend TestAllExtensions {
 
   repeated TestAllTypes.NestedMessage repeated_nested_message_extension = 48;
   repeated TestAllTypes.NestedEnum repeated_nested_enum_extension = 51;
+
+  optional int32    default_int32_extension    = 81 [default =  81    ];
+  optional int64    default_int64_extension    = 82 [default =  82    ];
+  optional uint32   default_uint32_extension   = 83 [default =  83    ];
+  optional uint64   default_uint64_extension   = 84 [default =  84    ];
+  optional sint32   default_sint32_extension   = 85 [default = -85    ];
+  optional sint64   default_sint64_extension   = 86 [default =  86    ];
+  optional fixed32  default_fixed32_extension  = 87 [default =  87    ];
+  optional fixed64  default_fixed64_extension  = 88 [default =  88    ];
+  optional sfixed32 default_sfixed32_extension = 89 [default =  89    ];
+  optional sfixed64 default_sfixed64_extension = 80 [default = -90    ];
+  optional float    default_float_extension    = 91 [default =  91.5  ];
+  optional double   default_double_extension   = 92 [default =  92e3  ];
+  optional bool     default_bool_extension     = 93 [default = true   ];
+  optional string   default_string_extension   = 94 [default = "hello"];
+  optional bytes    default_bytes_extension    = 95 [default = "world"];
 }
 
 message TestNestedExtension {
