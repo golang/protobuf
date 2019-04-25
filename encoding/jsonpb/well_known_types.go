@@ -644,10 +644,10 @@ func (o MarshalOptions) marshalDuration(m pref.Message) error {
 	secs := secsVal.Int()
 	nanos := nanosVal.Int()
 	if secs < -maxSecondsInDuration || secs > maxSecondsInDuration {
-		return errors.New("%s: seconds out of range", msgType.FullName())
+		return errors.New("%s: seconds out of range %v", msgType.FullName(), secs)
 	}
-	if nanos <= -secondsInNanos || nanos >= secondsInNanos {
-		return errors.New("%s: nanos out of range", msgType.FullName())
+	if nanos < -secondsInNanos || nanos > secondsInNanos {
+		return errors.New("%s: nanos out of range %v", msgType.FullName(), nanos)
 	}
 	if (secs > 0 && nanos < 0) || (secs < 0 && nanos > 0) {
 		return errors.New("%s: signs of seconds and nanos do not match", msgType.FullName())
@@ -834,10 +834,10 @@ func (o MarshalOptions) marshalTimestamp(m pref.Message) error {
 	secs := secsVal.Int()
 	nanos := nanosVal.Int()
 	if secs < minTimestampSeconds || secs > maxTimestampSeconds {
-		return errors.New("%s: seconds out of range %q", msgType.FullName(), secs)
+		return errors.New("%s: seconds out of range %v", msgType.FullName(), secs)
 	}
-	if nanos < 0 || nanos >= secondsInNanos {
-		return errors.New("%s: nanos out of range %q", msgType.FullName(), nanos)
+	if nanos < 0 || nanos > secondsInNanos {
+		return errors.New("%s: nanos out of range %v", msgType.FullName(), nanos)
 	}
 	// Uses RFC 3339, where generated output will be Z-normalized and uses 0, 3,
 	// 6 or 9 fractional digits.

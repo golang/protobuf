@@ -1422,6 +1422,14 @@ func TestMarshal(t *testing.T) {
 		input: &knownpb.Duration{Seconds: -123, Nanos: -450},
 		want:  `"-123.000000450s"`,
 	}, {
+		desc:  "Duration max value",
+		input: &knownpb.Duration{Seconds: 315576000000, Nanos: 999999999},
+		want:  `"315576000000.999999999s"`,
+	}, {
+		desc:  "Duration min value",
+		input: &knownpb.Duration{Seconds: -315576000000, Nanos: -999999999},
+		want:  `"-315576000000.999999999s"`,
+	}, {
 		desc:    "Duration with +secs -nanos",
 		input:   &knownpb.Duration{Seconds: 1, Nanos: -1},
 		wantErr: true,
@@ -1465,6 +1473,14 @@ func TestMarshal(t *testing.T) {
 		desc:  "Timestamp with 3-digit nanos",
 		input: &knownpb.Timestamp{Nanos: 1e7},
 		want:  `"1970-01-01T00:00:00.010Z"`,
+	}, {
+		desc:  "Timestamp max value",
+		input: &knownpb.Timestamp{Seconds: 253402300799, Nanos: 999999999},
+		want:  `"9999-12-31T23:59:59.999999999Z"`,
+	}, {
+		desc:  "Timestamp min value",
+		input: &knownpb.Timestamp{Seconds: -62135596800},
+		want:  `"0001-01-01T00:00:00Z"`,
 	}, {
 		desc:    "Timestamp with +secs out of range",
 		input:   &knownpb.Timestamp{Seconds: 253402300800},

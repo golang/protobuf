@@ -1823,6 +1823,16 @@ func TestUnmarshal(t *testing.T) {
 		inputText:    `"0.5s"`,
 		wantMessage:  &knownpb.Duration{Nanos: 5e8},
 	}, {
+		desc:         "Duration max value",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"315576000000.999999999s"`,
+		wantMessage:  &knownpb.Duration{Seconds: 315576000000, Nanos: 999999999},
+	}, {
+		desc:         "Duration min value",
+		inputMessage: &knownpb.Duration{},
+		inputText:    `"-315576000000.999999999s"`,
+		wantMessage:  &knownpb.Duration{Seconds: -315576000000, Nanos: -999999999},
+	}, {
 		desc:         "Duration with +secs out of range",
 		inputMessage: &knownpb.Duration{},
 		inputText:    `"315576000001s"`,
@@ -1883,22 +1893,22 @@ func TestUnmarshal(t *testing.T) {
 		inputText:    `"2019-03-19T23:03:21.000000001Z"`,
 		wantMessage:  &knownpb.Timestamp{Seconds: 1553036601, Nanos: 1},
 	}, {
-		desc:         "Timestamp upper limit",
+		desc:         "Timestamp max value",
 		inputMessage: &knownpb.Timestamp{},
 		inputText:    `"9999-12-31T23:59:59.999999999Z"`,
 		wantMessage:  &knownpb.Timestamp{Seconds: 253402300799, Nanos: 999999999},
 	}, {
-		desc:         "Timestamp above upper limit",
+		desc:         "Timestamp above max value",
 		inputMessage: &knownpb.Timestamp{},
 		inputText:    `"9999-12-31T23:59:59-01:00"`,
 		wantErr:      true,
 	}, {
-		desc:         "Timestamp lower limit",
+		desc:         "Timestamp min value",
 		inputMessage: &knownpb.Timestamp{},
 		inputText:    `"0001-01-01T00:00:00Z"`,
 		wantMessage:  &knownpb.Timestamp{Seconds: -62135596800},
 	}, {
-		desc:         "Timestamp below lower limit",
+		desc:         "Timestamp below min value",
 		inputMessage: &knownpb.Timestamp{},
 		inputText:    `"0001-01-01T00:00:00+01:00"`,
 		wantErr:      true,
