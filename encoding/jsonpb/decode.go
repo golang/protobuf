@@ -376,7 +376,11 @@ func unmarshalInt(jval json.Value, bitSize int) (pref.Value, error) {
 
 	case json.String:
 		// Decode number from string.
-		dec := json.NewDecoder([]byte(jval.String()))
+		s := strings.TrimSpace(jval.String())
+		if len(s) != len(jval.String()) {
+			return pref.Value{}, errors.New("invalid number %v", jval.Raw())
+		}
+		dec := json.NewDecoder([]byte(s))
 		var nerr errors.NonFatal
 		jval, err := dec.Read()
 		if !nerr.Merge(err) {
@@ -405,7 +409,11 @@ func unmarshalUint(jval json.Value, bitSize int) (pref.Value, error) {
 
 	case json.String:
 		// Decode number from string.
-		dec := json.NewDecoder([]byte(jval.String()))
+		s := strings.TrimSpace(jval.String())
+		if len(s) != len(jval.String()) {
+			return pref.Value{}, errors.New("invalid number %v", jval.Raw())
+		}
+		dec := json.NewDecoder([]byte(s))
 		var nerr errors.NonFatal
 		jval, err := dec.Read()
 		if !nerr.Merge(err) {
@@ -452,6 +460,9 @@ func unmarshalFloat(jval json.Value, bitSize int) (pref.Value, error) {
 			return pref.ValueOf(math.Inf(-1)), nil
 		}
 		// Decode number from string.
+		if len(s) != len(strings.TrimSpace(s)) {
+			return pref.Value{}, errors.New("invalid number %v", jval.Raw())
+		}
 		dec := json.NewDecoder([]byte(s))
 		var nerr errors.NonFatal
 		jval, err := dec.Read()

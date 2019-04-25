@@ -253,6 +253,16 @@ func TestUnmarshal(t *testing.T) {
 			SDouble: math.Inf(-1),
 		},
 	}, {
+		desc:         "float string with leading space",
+		inputMessage: &pb3.Scalars{},
+		inputText:    `{"sFloat": " 1.234"}`,
+		wantErr:      true,
+	}, {
+		desc:         "double string with trailing space",
+		inputMessage: &pb3.Scalars{},
+		inputText:    `{"sDouble": "5.678 "}`,
+		wantErr:      true,
+	}, {
 		desc:         "not float",
 		inputMessage: &pb3.Scalars{},
 		inputText:    `{"sFloat": true}`,
@@ -323,6 +333,16 @@ func TestUnmarshal(t *testing.T) {
 		wantMessage: &pb3.Scalars{
 			SInt32: 12,
 		},
+	}, {
+		desc:         "integer string with leading space",
+		inputMessage: &pb3.Scalars{},
+		inputText:    `{"sInt32": " 1234"}`,
+		wantErr:      true,
+	}, {
+		desc:         "integer string with trailing space",
+		inputMessage: &pb3.Scalars{},
+		inputText:    `{"sUint32": "1e2 "}`,
+		wantErr:      true,
 	}, {
 		desc:         "number is not an integer",
 		inputMessage: &pb3.Scalars{},
