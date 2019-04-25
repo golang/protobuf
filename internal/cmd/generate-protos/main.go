@@ -185,6 +185,8 @@ func generateRemoteProtos() {
 		{"src", "google/protobuf/field_mask.proto"},
 		{"src", "google/protobuf/source_context.proto"},
 		{"src", "google/protobuf/struct.proto"},
+		{"src", "google/protobuf/test_messages_proto2.proto"},
+		{"src", "google/protobuf/test_messages_proto3.proto"},
 		{"src", "google/protobuf/timestamp.proto"},
 		{"src", "google/protobuf/type.proto"},
 		{"src", "google/protobuf/wrappers.proto"},

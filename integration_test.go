@@ -36,8 +36,9 @@ var (
 	purgeTimeout = 30 * 24 * time.Hour // 1 month
 
 	// Variables initialized by mustInitDeps.
-	goPath     string
-	modulePath string
+	goPath       string
+	modulePath   string
+	protobufPath string
 )
 
 func Test(t *testing.T) {
@@ -74,6 +75,13 @@ func Test(t *testing.T) {
 		})
 	}
 
+	t.Run("ConformanceTests", func(t *testing.T) {
+		driverPath := filepath.Join("internal", "cmd", "conformance")
+		driver := filepath.Join(driverPath, "conformance.sh")
+		failureList := filepath.Join(driverPath, "failure_list_go.txt")
+		runner := filepath.Join(protobufPath, "conformance", "conformance-test-runner")
+		mustRunCommand(t, ".", runner, "--failure_list", failureList, "--enforce_recommended", driver)
+	})
 	t.Run("GeneratedGoFiles", func(t *testing.T) {
 		diff := mustRunCommand(t, ".", "go", "run", "./internal/cmd/generate-types")
 		if strings.TrimSpace(diff) != "" {
@@ -184,21 +192,22 @@ func mustInitDeps(t *testing.T) {
 	// We avoid downloading the pre-compiled binaries since they do not contain
 	// the conformance test runner.
 	workingDir = filepath.Join(testDir, "protobuf-"+protobufVersion)
-	if _, err := os.Stat(workingDir); err != nil {
-		fmt.Printf("download %v\n", filepath.Base(workingDir))
+	protobufPath = workingDir
+	if _, err := os.Stat(protobufPath); err != nil {
+		fmt.Printf("download %v\n", filepath.Base(protobufPath))
 		url := fmt.Sprintf("https://github.com/google/protobuf/releases/download/v%v/protobuf-all-%v.tar.gz", protobufVersion, protobufVersion)
-		downloadArchive(check, workingDir, url, "protobuf-"+protobufVersion)
+		downloadArchive(check, protobufPath, url, "protobuf-"+protobufVersion)
 
-		fmt.Printf("build %v\n", filepath.Base(workingDir))
-		mustRunCommand(t, workingDir, "./autogen.sh")
-		mustRunCommand(t, workingDir, "./configure")
-		mustRunCommand(t, workingDir, "make")
-		mustRunCommand(t, filepath.Join(workingDir, "conformance"), "make")
+		fmt.Printf("build %v\n", filepath.Base(protobufPath))
+		mustRunCommand(t, protobufPath, "./autogen.sh")
+		mustRunCommand(t, protobufPath, "./configure")
+		mustRunCommand(t, protobufPath, "make")
+		mustRunCommand(t, filepath.Join(protobufPath, "conformance"), "make")
 	}
-	patchProtos(check, workingDir)
-	check(os.Setenv("PROTOBUF_ROOT", workingDir)) // for generate-protos
-	registerBinary("conform-test-runner", filepath.Join(workingDir, "conformance", "conformance-test-runner"))
-	registerBinary("protoc", filepath.Join(workingDir, "src", "protoc"))
+	patchProtos(check, protobufPath)
+	check(os.Setenv("PROTOBUF_ROOT", protobufPath)) // for generate-protos
+	registerBinary("conform-test-runner", filepath.Join(protobufPath, "conformance", "conformance-test-runner"))
+	registerBinary("protoc", filepath.Join(protobufPath, "src", "protoc"))
 	workingDir = ""
 
 	// Download each Go toolchain version.
@@ -281,19 +290,21 @@ func patchProtos(check func(error), repoRoot string) {
 	javaPackageRx := regexp.MustCompile(`^option\s+java_package\s*=\s*".*"\s*;\s*$`)
 	goPackageRx := regexp.MustCompile(`^option\s+go_package\s*=\s*".*"\s*;\s*$`)
 	files := map[string]string{
-		"src/google/protobuf/any.proto":             "github.com/golang/protobuf/v2/types/known;known_proto",
-		"src/google/protobuf/api.proto":             "github.com/golang/protobuf/v2/types/known;known_proto",
-		"src/google/protobuf/duration.proto":        "github.com/golang/protobuf/v2/types/known;known_proto",
-		"src/google/protobuf/empty.proto":           "github.com/golang/protobuf/v2/types/known;known_proto",
-		"src/google/protobuf/field_mask.proto":      "github.com/golang/protobuf/v2/types/known;known_proto",
-		"src/google/protobuf/source_context.proto":  "github.com/golang/protobuf/v2/types/known;known_proto",
-		"src/google/protobuf/struct.proto":          "github.com/golang/protobuf/v2/types/known;known_proto",
-		"src/google/protobuf/timestamp.proto":       "github.com/golang/protobuf/v2/types/known;known_proto",
-		"src/google/protobuf/type.proto":            "github.com/golang/protobuf/v2/types/known;known_proto",
-		"src/google/protobuf/wrappers.proto":        "github.com/golang/protobuf/v2/types/known;known_proto",
-		"src/google/protobuf/descriptor.proto":      "github.com/golang/protobuf/v2/types/descriptor;descriptor_proto",
-		"src/google/protobuf/compiler/plugin.proto": "github.com/golang/protobuf/v2/types/plugin;plugin_proto",
-		"conformance/conformance.proto":             "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance_proto",
+		"src/google/protobuf/any.proto":                  "github.com/golang/protobuf/v2/types/known;known_proto",
+		"src/google/protobuf/api.proto":                  "github.com/golang/protobuf/v2/types/known;known_proto",
+		"src/google/protobuf/duration.proto":             "github.com/golang/protobuf/v2/types/known;known_proto",
+		"src/google/protobuf/empty.proto":                "github.com/golang/protobuf/v2/types/known;known_proto",
+		"src/google/protobuf/field_mask.proto":           "github.com/golang/protobuf/v2/types/known;known_proto",
+		"src/google/protobuf/source_context.proto":       "github.com/golang/protobuf/v2/types/known;known_proto",
+		"src/google/protobuf/struct.proto":               "github.com/golang/protobuf/v2/types/known;known_proto",
+		"src/google/protobuf/timestamp.proto":            "github.com/golang/protobuf/v2/types/known;known_proto",
+		"src/google/protobuf/type.proto":                 "github.com/golang/protobuf/v2/types/known;known_proto",
+		"src/google/protobuf/wrappers.proto":             "github.com/golang/protobuf/v2/types/known;known_proto",
+		"src/google/protobuf/descriptor.proto":           "github.com/golang/protobuf/v2/types/descriptor;descriptor_proto",
+		"src/google/protobuf/compiler/plugin.proto":      "github.com/golang/protobuf/v2/types/plugin;plugin_proto",
+		"conformance/conformance.proto":                  "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance_proto",
+		"src/google/protobuf/test_messages_proto2.proto": "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance_proto",
+		"src/google/protobuf/test_messages_proto3.proto": "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance_proto",
 	}
 	for pbpath, gopath := range files {
 		b, err := ioutil.ReadFile(filepath.Join(repoRoot, pbpath))
