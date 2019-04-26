@@ -6,9 +6,6 @@ package protoreflect
 
 import "reflect"
 
-// TODO: For all ByX methods (e.g., ByName, ByJSONName, ByNumber, etc),
-// should they use a (v, ok) signature for the return value?
-
 // Descriptor provides a set of accessors that are common to every descriptor.
 // Each descriptor type wraps the equivalent google.protobuf.XXXDescriptorProto,
 // but provides efficient lookup and immutability.
@@ -231,8 +228,6 @@ type isMessageDescriptor interface{ ProtoType(MessageDescriptor) }
 
 // MessageType encapsulates a MessageDescriptor with a concrete Go implementation.
 type MessageType interface {
-	// TODO: Remove this.
-	// Deprecated: Do not rely on these methods.
 	MessageDescriptor
 
 	// New returns a newly allocated empty message.
@@ -444,8 +439,6 @@ type ExtensionDescriptors interface {
 // Field "bar_field" is an extension of FooMessage, but its full name is
 // "example.BarMessage.bar_field" instead of "example.FooMessage.bar_field".
 type ExtensionType interface {
-	// TODO: Remove this.
-	// Deprecated: Do not rely on these methods.
 	ExtensionDescriptor
 
 	// New returns a new value for the field.
@@ -475,7 +468,8 @@ type ExtensionType interface {
 
 	// InterfaceOf completely unwraps the Value to the underlying Go type.
 	// InterfaceOf panics if the input is nil or does not represent the
-	// appropriate underlying Go type.
+	// appropriate underlying Go type. For composite types, it panics if the
+	// value is not mutable.
 	//
 	// InterfaceOf is able to unwrap the Value further than Value.Interface
 	// as it has more type information available.
@@ -504,8 +498,6 @@ type isEnumDescriptor interface{ ProtoType(EnumDescriptor) }
 
 // EnumType encapsulates an EnumDescriptor with a concrete Go implementation.
 type EnumType interface {
-	// TODO: Remove this.
-	// Deprecated: Do not rely on these methods.
 	EnumDescriptor
 
 	// New returns an instance of this enum type with its value set to n.

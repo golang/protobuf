@@ -16,11 +16,14 @@ import (
 )
 
 type fieldInfo struct {
+	fieldDesc pref.FieldDescriptor
+
 	// These fields are used for protobuf reflection support.
 	has        func(pointer) bool
+	clear      func(pointer)
 	get        func(pointer) pref.Value
 	set        func(pointer, pref.Value)
-	clear      func(pointer)
+	mutable    func(pointer) pref.Value
 	newMessage func() pref.Message
 
 	// These fields are used for fast-path functions.
@@ -44,13 +47,19 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 		panic(fmt.Sprintf("invalid type: %v does not implement %v", ot, ft))
 	}
 	conv, _ := newConverter(ot.Field(0).Type, fd.Kind())
-	fieldOffset := offsetOf(fs)
+	var frozenEmpty pref.Value
+	if conv.NewMessage != nil {
+		frozenEmpty = pref.ValueOf(frozenMessage{conv.NewMessage()})
+	}
+
 	// TODO: Implement unsafe fast path?
+	fieldOffset := offsetOf(fs)
 	return fieldInfo{
 		// NOTE: The logic below intentionally assumes that oneof fields are
 		// well-formatted. That is, the oneof interface never contains a
 		// typed nil pointer to one of the wrapper structs.
 
+		fieldDesc: fd,
 		has: func(p pointer) bool {
 			if p.IsNil() {
 				return false
@@ -61,12 +70,25 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 			}
 			return true
 		},
+		clear: func(p pointer) {
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
+			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
+				return
+			}
+			rv.Set(reflect.Zero(rv.Type()))
+		},
 		get: func(p pointer) pref.Value {
 			if p.IsNil() {
+				if frozenEmpty.IsValid() {
+					return frozenEmpty
+				}
 				return defaultValueOf(fd)
 			}
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
+				if frozenEmpty.IsValid() {
+					return frozenEmpty
+				}
 				return defaultValueOf(fd)
 			}
 			rv = rv.Elem().Elem().Field(0)
@@ -80,12 +102,19 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 			rv = rv.Elem().Elem().Field(0)
 			rv.Set(conv.GoValueOf(v))
 		},
-		clear: func(p pointer) {
+		mutable: func(p pointer) pref.Value {
+			if conv.NewMessage == nil {
+				panic("invalid Mutable on field with non-composite type")
+			}
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if rv.IsNil() || rv.Elem().Type().Elem() != ot {
-				return
+				rv.Set(reflect.New(ot))
 			}
-			rv.Set(reflect.Zero(rv.Type()))
+			rv = rv.Elem().Elem().Field(0)
+			if rv.IsNil() {
+				rv.Set(conv.GoValueOf(pref.ValueOf(conv.NewMessage())))
+			}
+			return conv.PBValueOf(rv)
 		},
 		newMessage: conv.NewMessage,
 		offset:     fieldOffset,
@@ -101,9 +130,14 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 	keyConv, _ := newConverter(ft.Key(), fd.MapKey().Kind())
 	valConv, _ := newConverter(ft.Elem(), fd.MapValue().Kind())
 	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
-	fieldOffset := offsetOf(fs)
+	frozenEmpty := pref.ValueOf(frozenMap{
+		pvalue.MapOf(reflect.Zero(reflect.PtrTo(fs.Type)).Interface(), keyConv, valConv),
+	})
+
 	// TODO: Implement unsafe fast path?
+	fieldOffset := offsetOf(fs)
 	return fieldInfo{
+		fieldDesc: fd,
 		has: func(p pointer) bool {
 			if p.IsNil() {
 				return false
@@ -111,21 +145,27 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			return rv.Len() > 0
 		},
+		clear: func(p pointer) {
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
+			rv.Set(reflect.Zero(rv.Type()))
+		},
 		get: func(p pointer) pref.Value {
 			if p.IsNil() {
-				v := reflect.Zero(reflect.PtrTo(fs.Type)).Interface()
-				return pref.ValueOf(pvalue.MapOf(v, keyConv, valConv))
+				return frozenEmpty
 			}
-			v := p.Apply(fieldOffset).AsIfaceOf(fs.Type)
-			return pref.ValueOf(pvalue.MapOf(v, keyConv, valConv))
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
+			if rv.IsNil() {
+				return frozenEmpty
+			}
+			return pref.ValueOf(pvalue.MapOf(rv.Addr().Interface(), keyConv, valConv))
 		},
 		set: func(p pointer, v pref.Value) {
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.ValueOf(v.Map().(pvalue.Unwrapper).ProtoUnwrap()).Elem())
 		},
-		clear: func(p pointer) {
-			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
-			rv.Set(reflect.Zero(rv.Type()))
+		mutable: func(p pointer) pref.Value {
+			v := p.Apply(fieldOffset).AsIfaceOf(fs.Type)
+			return pref.ValueOf(pvalue.MapOf(v, keyConv, valConv))
 		},
 		funcs:     encoderFuncsForMap(fd, ft),
 		offset:    fieldOffset,
@@ -147,9 +187,14 @@ func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 	} else {
 		wiretag = wire.EncodeTag(fd.Number(), wire.BytesType)
 	}
-	fieldOffset := offsetOf(fs)
+	frozenEmpty := pref.ValueOf(frozenList{
+		pvalue.ListOf(reflect.Zero(reflect.PtrTo(fs.Type)).Interface(), conv),
+	})
+
 	// TODO: Implement unsafe fast path?
+	fieldOffset := offsetOf(fs)
 	return fieldInfo{
+		fieldDesc: fd,
 		has: func(p pointer) bool {
 			if p.IsNil() {
 				return false
@@ -157,21 +202,27 @@ func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			return rv.Len() > 0
 		},
+		clear: func(p pointer) {
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
+			rv.Set(reflect.Zero(rv.Type()))
+		},
 		get: func(p pointer) pref.Value {
 			if p.IsNil() {
-				v := reflect.Zero(reflect.PtrTo(fs.Type)).Interface()
-				return pref.ValueOf(pvalue.ListOf(v, conv))
+				return frozenEmpty
 			}
-			v := p.Apply(fieldOffset).AsIfaceOf(fs.Type)
-			return pref.ValueOf(pvalue.ListOf(v, conv))
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
+			if rv.Len() == 0 {
+				return frozenEmpty
+			}
+			return pref.ValueOf(pvalue.ListOf(rv.Addr().Interface(), conv))
 		},
 		set: func(p pointer, v pref.Value) {
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.ValueOf(v.List().(pvalue.Unwrapper).ProtoUnwrap()).Elem())
 		},
-		clear: func(p pointer) {
-			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
-			rv.Set(reflect.Zero(rv.Type()))
+		mutable: func(p pointer) pref.Value {
+			v := p.Apply(fieldOffset).AsIfaceOf(fs.Type)
+			return pref.ValueOf(pvalue.ListOf(v, conv))
 		},
 		funcs:     fieldCoder(fd, ft),
 		offset:    fieldOffset,
@@ -196,10 +247,12 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 		}
 	}
 	conv, _ := newConverter(ft, fd.Kind())
-	fieldOffset := offsetOf(fs)
 	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
+
 	// TODO: Implement unsafe fast path?
+	fieldOffset := offsetOf(fs)
 	return fieldInfo{
+		fieldDesc: fd,
 		has: func(p pointer) bool {
 			if p.IsNil() {
 				return false
@@ -222,6 +275,10 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			default:
 				panic(fmt.Sprintf("invalid type: %v", rv.Type())) // should never happen
 			}
+		},
+		clear: func(p pointer) {
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
+			rv.Set(reflect.Zero(rv.Type()))
 		},
 		get: func(p pointer) pref.Value {
 			if p.IsNil() {
@@ -251,10 +308,6 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 				rv.Set(emptyBytes)
 			}
 		},
-		clear: func(p pointer) {
-			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
-			rv.Set(reflect.Zero(rv.Type()))
-		},
 		funcs:     funcs,
 		offset:    fieldOffset,
 		isPointer: nullable,
@@ -266,10 +319,13 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
 	ft := fs.Type
 	conv, _ := newConverter(ft, fd.Kind())
-	fieldOffset := offsetOf(fs)
-	// TODO: Implement unsafe fast path?
 	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
+	frozenEmpty := pref.ValueOf(frozenMessage{conv.NewMessage()})
+
+	// TODO: Implement unsafe fast path?
+	fieldOffset := offsetOf(fs)
 	return fieldInfo{
+		fieldDesc: fd,
 		has: func(p pointer) bool {
 			if p.IsNil() {
 				return false
@@ -277,13 +333,17 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			return !rv.IsNil()
 		},
+		clear: func(p pointer) {
+			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
+			rv.Set(reflect.Zero(rv.Type()))
+		},
 		get: func(p pointer) pref.Value {
 			if p.IsNil() {
-				return pref.Value{}
+				return frozenEmpty
 			}
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			if rv.IsNil() {
-				return pref.Value{}
+				return frozenEmpty
 			}
 			return conv.PBValueOf(rv)
 		},
@@ -294,9 +354,12 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 				panic("invalid nil pointer")
 			}
 		},
-		clear: func(p pointer) {
+		mutable: func(p pointer) pref.Value {
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
-			rv.Set(reflect.Zero(rv.Type()))
+			if rv.IsNil() {
+				rv.Set(conv.GoValueOf(pref.ValueOf(conv.NewMessage())))
+			}
+			return conv.PBValueOf(rv)
 		},
 		newMessage: conv.NewMessage,
 		funcs:      fieldCoder(fd, ft),
@@ -307,25 +370,15 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 	}
 }
 
-// defaultValueOf returns the default value for the field.
-func defaultValueOf(fd pref.FieldDescriptor) pref.Value {
-	if fd == nil {
-		return pref.Value{}
-	}
-	pv := fd.Default() // invalid Value for messages and repeated fields
-	if fd.Kind() == pref.BytesKind && pv.IsValid() && len(pv.Bytes()) > 0 {
-		return pref.ValueOf(append([]byte(nil), pv.Bytes()...)) // copy default bytes for safety
-	}
-	return pv
-}
-
 type oneofInfo struct {
-	which func(pointer) pref.FieldNumber
+	oneofDesc pref.OneofDescriptor
+	which     func(pointer) pref.FieldNumber
 }
 
 func makeOneofInfo(od pref.OneofDescriptor, fs reflect.StructField, wrappersByType map[reflect.Type]pref.FieldNumber) *oneofInfo {
 	fieldOffset := offsetOf(fs)
 	return &oneofInfo{
+		oneofDesc: od,
 		which: func(p pointer) pref.FieldNumber {
 			if p.IsNil() {
 				return 0
@@ -388,3 +441,76 @@ func newConverter(t reflect.Type, k pref.Kind) (conv pvalue.Converter, isLegacy 
 	}
 	return pvalue.NewConverter(t, k), false
 }
+
+// defaultValueOf returns the default value for the field.
+func defaultValueOf(fd pref.FieldDescriptor) pref.Value {
+	if fd == nil {
+		return pref.Value{}
+	}
+	pv := fd.Default() // invalid Value for messages and repeated fields
+	if fd.Kind() == pref.BytesKind && pv.IsValid() && len(pv.Bytes()) > 0 {
+		return pref.ValueOf(append([]byte(nil), pv.Bytes()...)) // copy default bytes for safety
+	}
+	return pv
+}
+
+// frozenValueOf returns a frozen version of any composite value.
+func frozenValueOf(v pref.Value) pref.Value {
+	switch v := v.Interface().(type) {
+	case pref.Message:
+		if _, ok := v.(frozenMessage); !ok {
+			return pref.ValueOf(frozenMessage{v})
+		}
+	case pref.List:
+		if _, ok := v.(frozenList); !ok {
+			return pref.ValueOf(frozenList{v})
+		}
+	case pref.Map:
+		if _, ok := v.(frozenMap); !ok {
+			return pref.ValueOf(frozenMap{v})
+		}
+	}
+	return v
+}
+
+type frozenMessage struct{ pref.Message }
+
+func (m frozenMessage) ProtoReflect() pref.Message   { return m }
+func (m frozenMessage) Interface() pref.ProtoMessage { return m }
+func (m frozenMessage) Range(f func(pref.FieldDescriptor, pref.Value) bool) {
+	m.Message.Range(func(fd pref.FieldDescriptor, v pref.Value) bool {
+		return f(fd, frozenValueOf(v))
+	})
+}
+func (m frozenMessage) Get(fd pref.FieldDescriptor) pref.Value {
+	v := m.Message.Get(fd)
+	return frozenValueOf(v)
+}
+func (frozenMessage) Clear(pref.FieldDescriptor)              { panic("invalid on read-only Message") }
+func (frozenMessage) Set(pref.FieldDescriptor, pref.Value)    { panic("invalid on read-only Message") }
+func (frozenMessage) Mutable(pref.FieldDescriptor) pref.Value { panic("invalid on read-only Message") }
+func (frozenMessage) SetUnknown(pref.RawFields)               { panic("invalid on read-only Message") }
+
+type frozenList struct{ pref.List }
+
+func (ls frozenList) Get(i int) pref.Value {
+	v := ls.List.Get(i)
+	return frozenValueOf(v)
+}
+func (frozenList) Set(i int, v pref.Value) { panic("invalid on read-only List") }
+func (frozenList) Append(v pref.Value)     { panic("invalid on read-only List") }
+func (frozenList) Truncate(i int)          { panic("invalid on read-only List") }
+
+type frozenMap struct{ pref.Map }
+
+func (ms frozenMap) Get(k pref.MapKey) pref.Value {
+	v := ms.Map.Get(k)
+	return frozenValueOf(v)
+}
+func (ms frozenMap) Range(f func(pref.MapKey, pref.Value) bool) {
+	ms.Map.Range(func(k pref.MapKey, v pref.Value) bool {
+		return f(k, frozenValueOf(v))
+	})
+}
+func (frozenMap) Set(k pref.MapKey, v pref.Value) { panic("invalid n read-only Map") }
+func (frozenMap) Clear(k pref.MapKey)             { panic("invalid on read-only Map") }

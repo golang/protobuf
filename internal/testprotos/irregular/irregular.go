@@ -21,92 +21,70 @@ func (m *IrregularMessage) ProtoReflect() pref.Message { return (*message)(m) }
 type message IrregularMessage
 
 func (m *message) Descriptor() pref.MessageDescriptor { return descriptor.Messages().Get(0) }
-func (m *message) Type() pref.MessageType             { return nil }
-func (m *message) KnownFields() pref.KnownFields      { return (*known)(m) }
-func (m *message) UnknownFields() pref.UnknownFields  { return (*unknown)(m) }
 func (m *message) New() pref.Message                  { return &message{} }
 func (m *message) Interface() pref.ProtoMessage       { return (*IrregularMessage)(m) }
 
-type known IrregularMessage
+var fieldDescS = descriptor.Messages().Get(0).Fields().Get(0)
 
-func (m *known) Len() int {
+func (m *message) Len() int {
 	if m.set {
 		return 1
 	}
 	return 0
 }
 
-func (m *known) Has(num pref.FieldNumber) bool {
-	switch num {
-	case fieldS:
+func (m *message) Range(f func(pref.FieldDescriptor, pref.Value) bool) {
+	if m.set {
+		f(fieldDescS, pref.ValueOf(m.value))
+	}
+}
+
+func (m *message) Has(fd pref.FieldDescriptor) bool {
+	if fd == fieldDescS {
 		return m.set
 	}
-	return false
+	panic("invalid field descriptor")
 }
 
-func (m *known) Get(num pref.FieldNumber) pref.Value {
-	switch num {
-	case fieldS:
-		return pref.ValueOf(m.value)
-	}
-	return pref.Value{}
-}
-
-func (m *known) Set(num pref.FieldNumber, v pref.Value) {
-	switch num {
-	case fieldS:
-		m.value = v.String()
-	default:
-		panic("unknown field")
-	}
-}
-
-func (m *known) Clear(num pref.FieldNumber) {
-	switch num {
-	case fieldS:
+func (m *message) Clear(fd pref.FieldDescriptor) {
+	if fd == fieldDescS {
 		m.value = ""
 		m.set = false
-	default:
-		panic("unknown field")
+		return
 	}
+	panic("invalid field descriptor")
 }
 
-func (m *known) WhichOneof(name pref.Name) pref.FieldNumber {
-	return 0
-}
-
-func (m *known) Range(f func(pref.FieldNumber, pref.Value) bool) {
-	if m.set {
-		f(fieldS, pref.ValueOf(m.value))
+func (m *message) Get(fd pref.FieldDescriptor) pref.Value {
+	if fd == fieldDescS {
+		return pref.ValueOf(m.value)
 	}
+	panic("invalid field descriptor")
 }
 
-func (m *known) NewMessage(num pref.FieldNumber) pref.Message {
-	panic("not a message field")
+func (m *message) Set(fd pref.FieldDescriptor, v pref.Value) {
+	if fd == fieldDescS {
+		m.value = v.String()
+		m.set = true
+		return
+	}
+	panic("invalid field descriptor")
 }
 
-func (m *known) ExtensionTypes() pref.ExtensionFieldTypes {
-	return (*exttypes)(m)
+func (m *message) Mutable(pref.FieldDescriptor) pref.Value {
+	panic("invalid field descriptor")
 }
 
-type unknown IrregularMessage
+func (m *message) NewMessage(pref.FieldDescriptor) pref.Message {
+	panic("invalid field descriptor")
+}
 
-func (m *unknown) Len() int                                          { return 0 }
-func (m *unknown) Get(pref.FieldNumber) pref.RawFields               { return nil }
-func (m *unknown) Set(pref.FieldNumber, pref.RawFields)              {}
-func (m *unknown) Range(func(pref.FieldNumber, pref.RawFields) bool) {}
-func (m *unknown) IsSupported() bool                                 { return false }
+func (m *message) WhichOneof(pref.OneofDescriptor) pref.FieldDescriptor {
+	panic("invalid oneof descriptor")
+}
 
-type exttypes IrregularMessage
-
-func (m *exttypes) Len() int                                     { return 0 }
-func (m *exttypes) Register(pref.ExtensionType)                  { panic("not extendable") }
-func (m *exttypes) Remove(pref.ExtensionType)                    {}
-func (m *exttypes) ByNumber(pref.FieldNumber) pref.ExtensionType { return nil }
-func (m *exttypes) ByName(pref.FullName) pref.ExtensionType      { return nil }
-func (m *exttypes) Range(func(pref.ExtensionType) bool)          {}
-
-const fieldS = pref.FieldNumber(1)
+func (m *message) GetUnknown() pref.RawFields { return nil }
+func (m *message) SetUnknown(pref.RawFields)  { return }
 
 var descriptor = func() pref.FileDescriptor {
 	p := &descriptorpb.FileDescriptorProto{}

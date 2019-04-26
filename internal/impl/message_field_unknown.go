@@ -12,12 +12,16 @@ import (
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
+// TODO: Remove this file.
+
 var bytesType = reflect.TypeOf([]byte(nil))
 
 func makeLegacyUnknownFieldsFunc(t reflect.Type) func(p *messageDataType) pref.UnknownFields {
 	fu, ok := t.FieldByName("XXX_unrecognized")
 	if !ok || fu.Type != bytesType {
-		return nil
+		return func(*messageDataType) pref.UnknownFields {
+			return emptyUnknownFields{}
+		}
 	}
 	fieldOffset := offsetOf(fu)
 	return func(p *messageDataType) pref.UnknownFields {

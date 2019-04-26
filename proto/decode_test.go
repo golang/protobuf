@@ -16,7 +16,6 @@ import (
 	"google.golang.org/protobuf/internal/scalar"
 	"google.golang.org/protobuf/proto"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/runtime/protoimpl"
 
 	legacypb "google.golang.org/protobuf/internal/testprotos/legacy"
 	legacy1pb "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v0.0.0-20160225-2fc053c5"
@@ -910,12 +909,12 @@ var testProtos = []testProto{
 		desc: "unknown fields",
 		decodeTo: []proto.Message{build(
 			&testpb.TestAllTypes{},
-			unknown(100000, pack.Message{
+			unknown(pack.Message{
 				pack.Tag{100000, pack.VarintType}, pack.Varint(1),
 			}.Marshal()),
 		), build(
 			&test3pb.TestAllTypes{},
-			unknown(100000, pack.Message{
+			unknown(pack.Message{
 				pack.Tag{100000, pack.VarintType}, pack.Varint(1),
 			}.Marshal()),
 		)},
@@ -927,12 +926,12 @@ var testProtos = []testProto{
 		desc: "field type mismatch",
 		decodeTo: []proto.Message{build(
 			&testpb.TestAllTypes{},
-			unknown(1, pack.Message{
+			unknown(pack.Message{
 				pack.Tag{1, pack.BytesType}, pack.String("string"),
 			}.Marshal()),
 		), build(
 			&test3pb.TestAllTypes{},
-			unknown(1, pack.Message{
+			unknown(pack.Message{
 				pack.Tag{1, pack.BytesType}, pack.String("string"),
 			}.Marshal()),
 		)},
@@ -1345,16 +1344,9 @@ func build(m proto.Message, opts ...buildOpt) proto.Message {
 
 type buildOpt func(proto.Message)
 
-func unknown(num pref.FieldNumber, raw pref.RawFields) buildOpt {
+func unknown(raw pref.RawFields) buildOpt {
 	return func(m proto.Message) {
-		m.ProtoReflect().UnknownFields().Set(num, raw)
-	}
-}
-
-func registerExtension(desc *protoV1.ExtensionDesc) buildOpt {
-	return func(m proto.Message) {
-		et := protoimpl.X.ExtensionTypeFromDesc(desc)
-		m.ProtoReflect().KnownFields().ExtensionTypes().Register(et)
+		m.ProtoReflect().SetUnknown(raw)
 	}
 }
 

@@ -82,14 +82,11 @@ func TestInit(t *testing.T) {
 
 // visitFields calls f for every field set in m and its children.
 func visitFields(m protoreflect.Message, f func(protoreflect.FieldDescriptor)) {
-	fieldDescs := m.Descriptor().Fields()
-	k := m.KnownFields()
-	k.Range(func(num protoreflect.FieldNumber, value protoreflect.Value) bool {
-		field := fieldDescs.ByNumber(num)
-		f(field)
-		switch field.Kind() {
+	m.Range(func(fd protoreflect.FieldDescriptor, value protoreflect.Value) bool {
+		f(fd)
+		switch fd.Kind() {
 		case protoreflect.MessageKind, protoreflect.GroupKind:
-			if field.IsList() {
+			if fd.IsList() {
 				for i, list := 0, value.List(); i < list.Len(); i++ {
 					visitFields(list.Get(i).Message(), f)
 				}

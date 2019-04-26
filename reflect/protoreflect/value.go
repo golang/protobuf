@@ -13,294 +13,225 @@ import "google.golang.org/protobuf/internal/encoding/wire"
 type Enum interface {
 	Descriptor() EnumDescriptor
 
-	// TODO: Remove this.
-	// Deprecated: Use Descriptor instead.
-	Type() EnumType
-
 	// Number returns the enum value as an integer.
 	Number() EnumNumber
+
+	deprecatedEnum
 }
 
 // Message is a reflective interface for a concrete message value,
-// which provides type information and getters/setters for individual fields.
+// encapsulating both type and value information for the message.
 //
-// Concrete types may implement interfaces defined in proto/protoiface,
-// which provide specialized, performant implementations of high-level
-// operations such as Marshal and Unmarshal.
+// Accessor/mutators for individual fields are keyed by FieldDescriptor.
+// For non-extension fields, the descriptor must exactly match the
+// field known by the parent message.
+// For extension fields, the descriptor must implement ExtensionType,
+// extend the parent message (i.e., have the same message FullName), and
+// be within the parent's extension range.
+//
+// Each field Value can be a scalar or a composite type (Message, List, or Map).
+// See Value for the Go types associated with a FieldDescriptor.
+// Providing a Value that is invalid or of an incorrect type panics.
 type Message interface {
 	Descriptor() MessageDescriptor
 
-	// TODO: Remove this.
-	// Deprecated: Use Descriptor instead.
-	Type() MessageType
-
-	// KnownFields returns an interface to access/mutate known fields.
-	KnownFields() KnownFields
-
-	// UnknownFields returns an interface to access/mutate unknown fields.
-	UnknownFields() UnknownFields
-
-	// New returns a newly allocated empty message.
+	// New returns a newly allocated and mutable empty message.
 	New() Message
 
 	// Interface unwraps the message reflection interface and
-	// returns the underlying proto.Message interface.
+	// returns the underlying ProtoMessage interface.
 	Interface() ProtoMessage
-}
 
-// KnownFields provides accessor and mutator methods for known fields.
-//
-// Each field Value can either be a scalar, Message, List, or Map.
-// The field is a List or Map if FieldDescriptor.Cardinality is Repeated and
-// a Map if and only if FieldDescriptor.IsMap is true. The scalar type or
-// underlying repeated element type is determined by the FieldDescriptor.Kind.
-// See Value for a list of Go types associated with each Kind.
-//
-// Field extensions are handled as known fields once the extension type has been
-// registered with KnownFields.ExtensionTypes.
-//
-// Len, Has, Get, Range, and ExtensionTypes are safe for concurrent use.
-type KnownFields interface {
-	// Len reports the number of fields that are populated.
+	// Len reports the number of populated fields (i.e., Has reports true).
 	Len() int
+
+	// Range iterates over every populated field in an undefined order,
+	// calling f for each field descriptor and value encountered.
+	// Range calls f Len times unless f returns false, which stops iteration.
+	// While iterating, mutating operations may only be performed
+	// on the current field descriptor.
+	Range(f func(FieldDescriptor, Value) bool)
 
 	// Has reports whether a field is populated.
 	//
 	// Some fields have the property of nullability where it is possible to
 	// distinguish between the default value of a field and whether the field
-	// was explicitly populated with the default value. Only scalars in proto2,
-	// member fields of a oneof, and singular messages are nullable.
+	// was explicitly populated with the default value. Singular message fields,
+	// member fields of a oneof, proto2 scalar fields, and extension fields
+	// are nullable. Such fields are populated only if explicitly set.
 	//
-	// A nullable field is populated only if explicitly set.
-	// A scalar field in proto3 is populated if it contains a non-zero value.
-	// A repeated field is populated only if it is non-empty.
-	Has(FieldNumber) bool
+	// In other cases (aside from the nullable cases above),
+	// a proto3 scalar field is populated if it contains a non-zero value, and
+	// a repeated field is populated if it is non-empty.
+	Has(FieldDescriptor) bool
 
-	// Get retrieves the value for a field with the given field number.
-	// If the field is unpopulated, it returns the default value for scalars,
-	// a mutable empty List for empty repeated fields, a mutable empty Map for
-	// empty map fields, and an invalid value for message fields.
-	// If the field is unknown (does not appear in MessageDescriptor.Fields
-	// or ExtensionFieldTypes), it returns an invalid value.
-	Get(FieldNumber) Value
-
-	// Set stores the value for a field with the given field number.
-	// Setting a field belonging to a oneof implicitly clears any other field
-	// that may be currently set by the same oneof.
+	// Clear clears the field such that a subsequent Has call reports false.
 	//
-	// When setting a composite type, it is unspecified whether the set
-	// value aliases the source's memory in any way.
+	// Clearing an extension field clears both the extension type and value
+	// associated with the given field number.
 	//
-	// It panics if the field number does not correspond with a known field
-	// in MessageDescriptor.Fields or an extension field in ExtensionTypes.
-	Set(FieldNumber, Value)
+	// Clear is a mutating operation and unsafe for concurrent use.
+	Clear(FieldDescriptor)
 
-	// TODO: Document memory aliasing behavior when a field is cleared?
-	// For example, if Mutable is called later, can it reuse memory?
+	// Get retrieves the value for a field.
+	//
+	// For unpopulated scalars, it returns the default value, where
+	// the default value of a bytes scalar is guaranteed to be a copy.
+	// For unpopulated composite types, it returns an empty, read-only view
+	// of the value; to obtain a mutable reference, use Mutable.
+	Get(FieldDescriptor) Value
 
-	// Clear clears the field such that a subsequent call to Has reports false.
-	// The operation does nothing if the field number does not correspond with
-	// a known field or extension field.
-	Clear(FieldNumber)
+	// TODO: Should Set of a empty, read-only value be equivalent to Clear?
 
-	// WhichOneof reports which field within the named oneof is populated.
-	// It returns 0 if the oneof does not exist or no fields are populated.
-	WhichOneof(Name) FieldNumber
+	// Set stores the value for a field.
+	//
+	// For a field belonging to a oneof, it implicitly clears any other field
+	// that may be currently set within the same oneof.
+	// For extension fields, it implicitly stores the provided ExtensionType.
+	// When setting a composite type, it is unspecified whether the stored value
+	// aliases the source's memory in any way. If the composite value is an
+	// empty, read-only value, then it panics.
+	//
+	// Set is a mutating operation and unsafe for concurrent use.
+	Set(FieldDescriptor, Value)
 
-	// Range iterates over every populated field in an undefined order,
-	// calling f for each field number and value encountered.
-	// Range calls f Len times unless f returns false, which stops iteration.
-	// While iterating, mutating operations through Set, Clear, or Mutable
-	// may only be performed on the current field number.
-	Range(f func(FieldNumber, Value) bool)
+	// Mutable returns a mutable reference to a composite type.
+	//
+	// If the field is unpopulated, it may allocate a composite value.
+	// For a field belonging to a oneof, it implicitly clears any other field
+	// that may be currently set within the same oneof.
+	// For extension fields, it implicitly stores the provided ExtensionType
+	// if not already stored.
+	// It panics if the field does not contain a composite type.
+	//
+	// Mutable is a mutating operation and unsafe for concurrent use.
+	Mutable(FieldDescriptor) Value
 
 	// NewMessage returns a newly allocated empty message assignable to
-	// the field of the given number.
+	// the field of the given descriptor.
 	// It panics if the field is not a singular message.
-	NewMessage(FieldNumber) Message
+	NewMessage(FieldDescriptor) Message
 
-	// ExtensionTypes are extension field types that are known by this
-	// specific message instance.
-	ExtensionTypes() ExtensionFieldTypes
-}
+	// WhichOneof reports which field within the oneof is populated,
+	// returning nil if none are populated.
+	// It panics if the oneof descriptor does not belong to this message.
+	WhichOneof(OneofDescriptor) FieldDescriptor
 
-// UnknownFields are a list of unknown or unparsed fields and may contain
-// field numbers corresponding with defined fields or extension fields.
-// The ordering of fields is maintained for fields of the same field number.
-// However, the relative ordering of fields with different field numbers
-// is undefined.
-//
-// Len, Get, and Range are safe for concurrent use.
-type UnknownFields interface {
-	// Len reports the number of fields that are populated.
-	Len() int
+	// GetUnknown retrieves the entire list of unknown fields.
+	// The caller may only mutate the contents of the RawFields
+	// if the mutated bytes are stored back into the message with SetUnknown.
+	GetUnknown() RawFields
 
-	// Get retrieves the raw bytes of fields with the given field number.
-	// It returns an empty RawFields if there are no populated fields.
-	//
-	// The caller must not mutate the content of the retrieved RawFields.
-	Get(FieldNumber) RawFields
-
-	// Set stores the raw bytes of fields with the given field number.
-	// The RawFields must be valid and correspond with the given field number;
-	// an implementation may panic if the fields are invalid.
+	// SetUnknown stores an entire list of unknown fields.
+	// The raw fields must be syntactically valid according to the wire format.
+	// An implementation may panic if this is not the case.
+	// Once stored, the caller must not mutate the content of the RawFields.
 	// An empty RawFields may be passed to clear the fields.
 	//
-	// The caller must not mutate the content of the RawFields being stored.
-	Set(FieldNumber, RawFields)
+	// SetUnknown is a mutating operation and unsafe for concurrent use.
+	SetUnknown(RawFields)
 
-	// Range iterates over every populated field in an undefined order,
-	// calling f for each field number and raw field value encountered.
-	// Range calls f Len times unless f returns false, which stops iteration.
-	// While iterating, mutating operations through Set may only be performed
-	// on the current field number.
-	//
-	// While the iteration order is undefined, it is deterministic.
-	// It is recommended, but not required, that fields be presented
-	// in the order that they were encountered in the wire data.
-	Range(f func(FieldNumber, RawFields) bool)
+	// TODO: Add method to retrieve ExtensionType by FieldNumber?
 
-	// TODO: Should IsSupported be renamed as ReadOnly?
-	// TODO: Should IsSupported panic on Set instead of silently ignore?
-
-	// IsSupported reports whether this message supports unknown fields.
-	// If false, UnknownFields ignores all Set operations.
-	IsSupported() bool
+	deprecatedMessage
 }
 
 // RawFields is the raw bytes for an ordered sequence of fields.
 // Each field contains both the tag (representing field number and wire type),
 // and also the wire data itself.
-//
-// Once stored, the content of a RawFields must be treated as immutable.
-// The capacity of RawFields may be treated as mutable only for the use-case of
-// appending additional data to store back into UnknownFields.
 type RawFields []byte
 
-// IsValid reports whether RawFields is syntactically correct wire format.
-// All fields must belong to the same field number.
+// IsValid reports whether b is syntactically correct wire format.
 func (b RawFields) IsValid() bool {
-	var want FieldNumber
 	for len(b) > 0 {
-		got, _, n := wire.ConsumeField(b)
-		if n < 0 || (want > 0 && got != want) {
+		_, _, n := wire.ConsumeField(b)
+		if n < 0 {
 			return false
 		}
-		want = got
 		b = b[n:]
 	}
 	return true
 }
 
-// ExtensionFieldTypes are the extension field types that this message instance
-// has been extended with.
-//
-// Len, Get, and Range are safe for concurrent use.
-type ExtensionFieldTypes interface {
-	// Len reports the number of field extensions.
-	Len() int
-
-	// Register stores an ExtensionType.
-	// The ExtensionType.ExtendedType must match the containing message type
-	// and the field number must be within the valid extension ranges
-	// (see MessageDescriptor.ExtensionRanges).
-	// It panics if the extension has already been registered (i.e.,
-	// a conflict by number or by full name).
-	Register(ExtensionType)
-
-	// Remove removes the ExtensionType.
-	// It panics if a value for this extension field is still populated.
-	// The operation does nothing if there is no associated type to remove.
-	Remove(ExtensionType)
-
-	// ByNumber looks up an extension by field number.
-	// It returns nil if not found.
-	ByNumber(FieldNumber) ExtensionType
-
-	// ByName looks up an extension field by full name.
-	// It returns nil if not found.
-	ByName(FullName) ExtensionType
-
-	// Range iterates over every registered field in an undefined order,
-	// calling f for each extension descriptor encountered.
-	// Range calls f Len times unless f returns false, which stops iteration.
-	// While iterating, mutating operations through Remove may only
-	// be performed on the current descriptor.
-	Range(f func(ExtensionType) bool)
-}
-
-// List is an ordered list. Every element is considered populated
-// (i.e., Get never provides and Set never accepts invalid Values).
-// The element Value type is determined by the associated FieldDescriptor.Kind
-// and cannot be a Map or List.
-//
-// Len and Get are safe for concurrent use.
+// List is a zero-indexed, ordered list.
+// The element Value type is determined by FieldDescriptor.Kind.
+// Providing a Value that is invalid or of an incorrect type panics.
 type List interface {
 	// Len reports the number of entries in the List.
-	// Get, Set, Mutable, and Truncate panic with out of bound indexes.
+	// Get, Set, and Truncate panic with out of bound indexes.
 	Len() int
 
 	// Get retrieves the value at the given index.
+	// It never returns an invalid value.
 	Get(int) Value
 
 	// Set stores a value for the given index.
-	//
 	// When setting a composite type, it is unspecified whether the set
 	// value aliases the source's memory in any way.
+	//
+	// Set is a mutating operation and unsafe for concurrent use.
 	Set(int, Value)
 
 	// Append appends the provided value to the end of the list.
-	//
 	// When appending a composite type, it is unspecified whether the appended
 	// value aliases the source's memory in any way.
+	//
+	// Append is a mutating operation and unsafe for concurrent use.
 	Append(Value)
+
+	// TODO: Should there be a Mutable and MutableAppend method?
 
 	// TODO: Should truncate accept two indexes similar to slicing?
 
 	// Truncate truncates the list to a smaller length.
+	//
+	// Truncate is a mutating operation and unsafe for concurrent use.
 	Truncate(int)
 
-	// NewMessage returns a newly allocated empty message assignable to a list entry.
+	// NewMessage returns a newly allocated empty message assignable as a list entry.
 	// It panics if the list entry type is not a message.
 	NewMessage() Message
 }
 
-// Map is an unordered, associative map. Only elements within the map
-// is considered populated. The entry Value type is determined by the associated
-// FieldDescripto.Kind and cannot be a Map or List.
-//
-// Len, Has, Get, and Range are safe for concurrent use.
+// Map is an unordered, associative map.
+// The entry MapKey type is determined by FieldDescriptor.MapKey.Kind.
+// The entry Value type is determined by FieldDescriptor.MapValue.Kind.
+// Providing a MapKey or Value that is invalid or of an incorrect type panics.
 type Map interface {
 	// Len reports the number of elements in the map.
 	Len() int
 
+	// Range iterates over every map entry in an undefined order,
+	// calling f for each key and value encountered.
+	// Range calls f Len times unless f returns false, which stops iteration.
+	// While iterating, mutating operations may only be performed
+	// on the current map key.
+	Range(f func(MapKey, Value) bool)
+
 	// Has reports whether an entry with the given key is in the map.
 	Has(MapKey) bool
+
+	// Clear clears the entry associated with they given key.
+	// The operation does nothing if there is no entry associated with the key.
+	//
+	// Clear is a mutating operation and unsafe for concurrent use.
+	Clear(MapKey)
 
 	// Get retrieves the value for an entry with the given key.
 	// It returns an invalid value for non-existent entries.
 	Get(MapKey) Value
 
 	// Set stores the value for an entry with the given key.
-	//
+	// It panics when given a key or value that is invalid or the wrong type.
 	// When setting a composite type, it is unspecified whether the set
 	// value aliases the source's memory in any way.
 	//
-	// It panics if either the key or value are invalid.
+	// Set is a mutating operation and unsafe for concurrent use.
 	Set(MapKey, Value)
 
-	// Clear clears the entry associated with they given key.
-	// The operation does nothing if there is no entry associated with the key.
-	Clear(MapKey)
+	// TODO: Should there be a Mutable method?
 
-	// Range iterates over every map entry in an undefined order,
-	// calling f for each key and value encountered.
-	// Range calls f Len times unless f returns false, which stops iteration.
-	// While iterating, mutating operations through Set, Clear, or Mutable
-	// may only be performed on the current map key.
-	Range(f func(MapKey, Value) bool)
-
-	// NewMessage returns a newly allocated empty message assignable to a map value.
+	// NewMessage returns a newly allocated empty message assignable as a map value.
 	// It panics if the map value type is not a message.
 	NewMessage() Message
 }

@@ -58,14 +58,11 @@ type (
 	// being a compilation failure (guaranteed by the Go specification).
 	EnforceVersion uint
 
-	MessageInfo = impl.MessageInfo
-	FileBuilder = fileinit.FileBuilder
-
-	// TODO: Change these to more efficient data structures.
-	ExtensionFields = map[int32]impl.ExtensionField
-	UnknownFields   = []byte
-	SizeCache       = int32
-
+	FileBuilder      = fileinit.FileBuilder
+	MessageInfo      = impl.MessageInfo
+	SizeCache        = impl.SizeCache
+	UnknownFields    = impl.UnknownFields
+	ExtensionFields  = impl.ExtensionFields
 	ExtensionFieldV1 = impl.ExtensionField
 )
 

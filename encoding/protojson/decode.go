@@ -52,11 +52,10 @@ type UnmarshalOptions struct {
 // setting the fields. If it returns an error, the given message may be
 // partially set.
 func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
-	mr := m.ProtoReflect()
 	// TODO: Determine if we would like to have an option for merging or only
-	// have merging behavior.  We should at least be consistent with textproto
+	// have merging behavior. We should at least be consistent with textproto
 	// marshaling.
-	resetMessage(mr)
+	proto.Reset(m)
 
 	if o.Resolver == nil {
 		o.Resolver = protoregistry.GlobalTypes
@@ -64,7 +63,7 @@ func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 	o.decoder = json.NewDecoder(b)
 
 	var nerr errors.NonFatal
-	if err := o.unmarshalMessage(mr, false); !nerr.Merge(err) {
+	if err := o.unmarshalMessage(m.ProtoReflect(), false); !nerr.Merge(err) {
 		return err
 	}
 
@@ -81,25 +80,6 @@ func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 		nerr.Merge(proto.IsInitialized(m))
 	}
 	return nerr.E
-}
-
-// resetMessage clears all fields of given protoreflect.Message.
-func resetMessage(m pref.Message) {
-	knownFields := m.KnownFields()
-	knownFields.Range(func(num pref.FieldNumber, _ pref.Value) bool {
-		knownFields.Clear(num)
-		return true
-	})
-	unknownFields := m.UnknownFields()
-	unknownFields.Range(func(num pref.FieldNumber, _ pref.RawFields) bool {
-		unknownFields.Set(num, nil)
-		return true
-	})
-	extTypes := knownFields.ExtensionTypes()
-	extTypes.Range(func(xt pref.ExtensionType) bool {
-		extTypes.Remove(xt)
-		return true
-	})
 }
 
 // unexpectedJSONError is an error that contains the unexpected json.Value. This
@@ -164,9 +144,7 @@ func (o UnmarshalOptions) unmarshalFields(m pref.Message, skipTypeURL bool) erro
 	var seenOneofs set.Ints
 
 	messageDesc := m.Descriptor()
-	knownFields := m.KnownFields()
 	fieldDescs := messageDesc.Fields()
-	xtTypes := knownFields.ExtensionTypes()
 
 Loop:
 	for {
@@ -200,20 +178,12 @@ Loop:
 		var fd pref.FieldDescriptor
 		if strings.HasPrefix(name, "[") && strings.HasSuffix(name, "]") {
 			// Only extension names are in [name] format.
-			xtName := pref.FullName(name[1 : len(name)-1])
-			xt := xtTypes.ByName(xtName)
-			if xt == nil {
-				xt, err = o.findExtension(xtName)
-				if err != nil && err != protoregistry.NotFound {
-					return errors.New("unable to resolve [%v]: %v", xtName, err)
-				}
-				if xt != nil {
-					xtTypes.Register(xt)
-				}
+			extName := pref.FullName(name[1 : len(name)-1])
+			extType, err := o.findExtension(extName)
+			if err != nil && err != protoregistry.NotFound {
+				return errors.New("unable to resolve [%v]: %v", extName, err)
 			}
-			if xt != nil {
-				fd = xt.Descriptor()
-			}
+			fd = extType
 		} else {
 			// The name can either be the JSON name or the proto field name.
 			fd = fieldDescs.ByJSONName(name)
@@ -249,12 +219,12 @@ Loop:
 
 		switch {
 		case fd.IsList():
-			list := knownFields.Get(fd.Number()).List()
+			list := m.Mutable(fd).List()
 			if err := o.unmarshalList(list, fd); !nerr.Merge(err) {
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)
 			}
 		case fd.IsMap():
-			mmap := knownFields.Get(fd.Number()).Map()
+			mmap := m.Mutable(fd).Map()
 			if err := o.unmarshalMap(mmap, fd); !nerr.Merge(err) {
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)
 			}
@@ -269,7 +239,7 @@ Loop:
 			}
 
 			// Required or optional fields.
-			if err := o.unmarshalSingular(knownFields, fd); !nerr.Merge(err) {
+			if err := o.unmarshalSingular(m, fd); !nerr.Merge(err) {
 				return errors.New("%v|%q: %v", fd.FullName(), name, err)
 			}
 		}
@@ -305,16 +275,14 @@ func isNullValue(fd pref.FieldDescriptor) bool {
 
 // unmarshalSingular unmarshals to the non-repeated field specified by the given
 // FieldDescriptor.
-func (o UnmarshalOptions) unmarshalSingular(knownFields pref.KnownFields, fd pref.FieldDescriptor) error {
+func (o UnmarshalOptions) unmarshalSingular(m pref.Message, fd pref.FieldDescriptor) error {
 	var val pref.Value
 	var err error
-	num := fd.Number()
-
 	switch fd.Kind() {
 	case pref.MessageKind, pref.GroupKind:
-		m := knownFields.NewMessage(num)
-		err = o.unmarshalMessage(m, false)
-		val = pref.ValueOf(m)
+		m2 := m.NewMessage(fd)
+		err = o.unmarshalMessage(m2, false)
+		val = pref.ValueOf(m2)
 	default:
 		val, err = o.unmarshalScalar(fd)
 	}
@@ -323,7 +291,7 @@ func (o UnmarshalOptions) unmarshalSingular(knownFields pref.KnownFields, fd pre
 	if !nerr.Merge(err) {
 		return err
 	}
-	knownFields.Set(num, val)
+	m.Set(fd, val)
 	return nerr.E
 }
 

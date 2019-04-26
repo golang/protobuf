@@ -371,22 +371,22 @@ var inequalities = []struct{ a, b proto.Message }{
 	},
 	// Unknown fields.
 	{
-		build(&testpb.TestAllTypes{}, unknown(100000, pack.Message{
+		build(&testpb.TestAllTypes{}, unknown(pack.Message{
 			pack.Tag{100000, pack.VarintType}, pack.Varint(1),
 		}.Marshal())),
-		build(&testpb.TestAllTypes{}, unknown(100000, pack.Message{
+		build(&testpb.TestAllTypes{}, unknown(pack.Message{
 			pack.Tag{100000, pack.VarintType}, pack.Varint(2),
 		}.Marshal())),
 	},
 	{
-		build(&testpb.TestAllTypes{}, unknown(100000, pack.Message{
+		build(&testpb.TestAllTypes{}, unknown(pack.Message{
 			pack.Tag{100000, pack.VarintType}, pack.Varint(1),
 		}.Marshal())),
 		&testpb.TestAllTypes{},
 	},
 	{
 		&testpb.TestAllTypes{},
-		build(&testpb.TestAllTypes{}, unknown(100000, pack.Message{
+		build(&testpb.TestAllTypes{}, unknown(pack.Message{
 			pack.Tag{100000, pack.VarintType}, pack.Varint(1),
 		}.Marshal())),
 	},
@@ -400,31 +400,9 @@ var inequalities = []struct{ a, b proto.Message }{
 		),
 	},
 	{
-		build(&testpb.TestAllExtensions{},
-			registerExtension(testpb.E_OptionalInt32Extension),
-		),
-		build(&testpb.TestAllExtensions{},
-			extend(testpb.E_OptionalInt32Extension, scalar.Int32(2)),
-		),
-	},
-	{
-		build(&testpb.TestAllExtensions{},
-			extend(testpb.E_OptionalInt32Extension, scalar.Int32(1)),
-		),
-		build(&testpb.TestAllExtensions{},
-			registerExtension(testpb.E_OptionalInt32Extension),
-		),
-	},
-	{
 		&testpb.TestAllExtensions{},
 		build(&testpb.TestAllExtensions{},
 			extend(testpb.E_OptionalInt32Extension, scalar.Int32(2)),
-		),
-	},
-	{
-		&testpb.TestAllExtensions{},
-		build(&testpb.TestAllExtensions{},
-			registerExtension(testpb.E_OptionalInt32Extension),
 		),
 	},
 	// Proto2 default values are not considered by Equal, so the following are still unequal.
@@ -495,22 +473,5 @@ var inequalities = []struct{ a, b proto.Message }{
 	{
 		&testpb.TestAllTypes{},
 		&testpb.TestAllTypes{DefaultNestedEnum: testpb.TestAllTypes_BAR.Enum()},
-	},
-	// Extension ddefault values are not considered by Equal, so the following are still unequal.
-	{
-		build(&testpb.TestAllExtensions{},
-			registerExtension(testpb.E_DefaultInt32Extension),
-		),
-		build(&testpb.TestAllExtensions{},
-			extend(testpb.E_DefaultInt32Extension, scalar.Int32(81)),
-		),
-	},
-	{
-		build(&testpb.TestAllExtensions{},
-			extend(testpb.E_DefaultInt32Extension, scalar.Int32(81)),
-		),
-		build(&testpb.TestAllExtensions{},
-			registerExtension(testpb.E_DefaultInt32Extension),
-		),
 	},
 }

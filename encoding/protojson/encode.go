@@ -88,20 +88,17 @@ func (o MarshalOptions) marshalMessage(m pref.Message) error {
 // marshalFields marshals the fields in the given protoreflect.Message.
 func (o MarshalOptions) marshalFields(m pref.Message) error {
 	var nerr errors.NonFatal
-	fieldDescs := m.Descriptor().Fields()
-	knownFields := m.KnownFields()
 
 	// Marshal out known fields.
+	fieldDescs := m.Descriptor().Fields()
 	for i := 0; i < fieldDescs.Len(); i++ {
 		fd := fieldDescs.Get(i)
-		num := fd.Number()
-
-		if !knownFields.Has(num) {
+		if !m.Has(fd) {
 			continue
 		}
 
 		name := fd.JSONName()
-		val := knownFields.Get(num)
+		val := m.Get(fd)
 		if err := o.encoder.WriteName(name); !nerr.Merge(err) {
 			return err
 		}
@@ -111,7 +108,7 @@ func (o MarshalOptions) marshalFields(m pref.Message) error {
 	}
 
 	// Marshal out extensions.
-	if err := o.marshalExtensions(knownFields); !nerr.Merge(err) {
+	if err := o.marshalExtensions(m); !nerr.Merge(err) {
 		return err
 	}
 	return nerr.E
@@ -254,34 +251,33 @@ func sortMap(keyKind pref.Kind, values []mapEntry) {
 }
 
 // marshalExtensions marshals extension fields.
-func (o MarshalOptions) marshalExtensions(knownFields pref.KnownFields) error {
-	type xtEntry struct {
-		key    string
-		value  pref.Value
-		xtType pref.ExtensionType
+func (o MarshalOptions) marshalExtensions(m pref.Message) error {
+	type entry struct {
+		key   string
+		value pref.Value
+		desc  pref.FieldDescriptor
 	}
 
-	xtTypes := knownFields.ExtensionTypes()
-
 	// Get a sorted list based on field key first.
-	entries := make([]xtEntry, 0, xtTypes.Len())
-	xtTypes.Range(func(xt pref.ExtensionType) bool {
-		name := xt.Descriptor().FullName()
+	var entries []entry
+	m.Range(func(fd pref.FieldDescriptor, v pref.Value) bool {
+		if !fd.IsExtension() {
+			return true
+		}
+		xt := fd.(pref.ExtensionType)
+
 		// If extended type is a MessageSet, set field name to be the message type name.
+		name := xt.Descriptor().FullName()
 		if isMessageSetExtension(xt) {
 			name = xt.Descriptor().Message().FullName()
 		}
 
-		num := xt.Descriptor().Number()
-		if knownFields.Has(num) {
-			// Use [name] format for JSON field name.
-			pval := knownFields.Get(num)
-			entries = append(entries, xtEntry{
-				key:    string(name),
-				value:  pval,
-				xtType: xt,
-			})
-		}
+		// Use [name] format for JSON field name.
+		entries = append(entries, entry{
+			key:   string(name),
+			value: v,
+			desc:  fd,
+		})
 		return true
 	})
 
@@ -299,7 +295,7 @@ func (o MarshalOptions) marshalExtensions(knownFields pref.KnownFields) error {
 		if err := o.encoder.WriteName("[" + entry.key + "]"); !nerr.Merge(err) {
 			return err
 		}
-		if err := o.marshalValue(entry.value, entry.xtType.Descriptor()); !nerr.Merge(err) {
+		if err := o.marshalValue(entry.value, entry.desc); !nerr.Merge(err) {
 			return err
 		}
 	}

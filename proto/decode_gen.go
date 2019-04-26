@@ -18,8 +18,8 @@ import (
 // unmarshalScalar decodes a value of the given kind.
 //
 // Message values are decoded into a []byte which aliases the input data.
-func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Number, field protoreflect.FieldDescriptor) (val protoreflect.Value, n int, err error) {
-	switch field.Kind() {
+func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, fd protoreflect.FieldDescriptor) (val protoreflect.Value, n int, err error) {
+	switch fd.Kind() {
 	case protoreflect.BoolKind:
 		if wtyp != wire.VarintType {
 			return val, 0, errUnknown
@@ -154,9 +154,9 @@ func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Num
 		if n < 0 {
 			return val, 0, wire.ParseError(n)
 		}
-		if field.Syntax() == protoreflect.Proto3 && !utf8.Valid(v) {
+		if fd.Syntax() == protoreflect.Proto3 && !utf8.Valid(v) {
 			var nerr errors.NonFatal
-			nerr.AppendInvalidUTF8(string(field.FullName()))
+			nerr.AppendInvalidUTF8(string(fd.FullName()))
 			return protoreflect.ValueOf(string(v)), n, nerr.E
 		}
 		return protoreflect.ValueOf(string(v)), n, nil
@@ -182,7 +182,7 @@ func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Num
 		if wtyp != wire.StartGroupType {
 			return val, 0, errUnknown
 		}
-		v, n := wire.ConsumeGroup(num, b)
+		v, n := wire.ConsumeGroup(fd.Number(), b)
 		if n < 0 {
 			return val, 0, wire.ParseError(n)
 		}
@@ -192,9 +192,9 @@ func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, num wire.Num
 	}
 }
 
-func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Number, list protoreflect.List, field protoreflect.FieldDescriptor) (n int, err error) {
+func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, list protoreflect.List, fd protoreflect.FieldDescriptor) (n int, err error) {
 	var nerr errors.NonFatal
-	switch field.Kind() {
+	switch fd.Kind() {
 	case protoreflect.BoolKind:
 		if wtyp == wire.BytesType {
 			buf, n := wire.ConsumeBytes(b)
@@ -553,8 +553,8 @@ func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Numbe
 		if n < 0 {
 			return 0, wire.ParseError(n)
 		}
-		if field.Syntax() == protoreflect.Proto3 && !utf8.Valid(v) {
-			nerr.AppendInvalidUTF8(string(field.FullName()))
+		if fd.Syntax() == protoreflect.Proto3 && !utf8.Valid(v) {
+			nerr.AppendInvalidUTF8(string(fd.FullName()))
 		}
 		list.Append(protoreflect.ValueOf(string(v)))
 		return n, nerr.E
@@ -586,7 +586,7 @@ func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, num wire.Numbe
 		if wtyp != wire.StartGroupType {
 			return 0, errUnknown
 		}
-		v, n := wire.ConsumeGroup(num, b)
+		v, n := wire.ConsumeGroup(fd.Number(), b)
 		if n < 0 {
 			return 0, wire.ParseError(n)
 		}

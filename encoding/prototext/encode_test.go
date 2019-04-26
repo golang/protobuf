@@ -8,15 +8,12 @@ import (
 	"bytes"
 	"encoding/hex"
 	"math"
-	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/internal/detrand"
 	"google.golang.org/protobuf/internal/encoding/pack"
-	"google.golang.org/protobuf/internal/encoding/wire"
 	pimpl "google.golang.org/protobuf/internal/impl"
 	"google.golang.org/protobuf/internal/scalar"
 	"google.golang.org/protobuf/proto"
@@ -33,11 +30,6 @@ func init() {
 	detrand.Disable()
 }
 
-// splitLines is a cmpopts.Option for comparing strings with line breaks.
-var splitLines = cmpopts.AcyclicTransformer("SplitLines", func(s string) []string {
-	return strings.Split(s, "\n")
-})
-
 func pb2Enum(i int32) *pb2.Enum {
 	p := new(pb2.Enum)
 	*p = pb2.Enum(i)
@@ -50,15 +42,9 @@ func pb2Enums_NestedEnum(i int32) *pb2.Enums_NestedEnum {
 	return p
 }
 
+// TODO: Use proto.SetExtension when available.
 func setExtension(m proto.Message, xd *protoiface.ExtensionDescV1, val interface{}) {
-	knownFields := m.ProtoReflect().KnownFields()
-	extTypes := knownFields.ExtensionTypes()
-	extTypes.Register(xd.Type)
-	if val == nil {
-		return
-	}
-	pval := xd.Type.ValueOf(val)
-	knownFields.Set(wire.Number(xd.Field), pval)
+	m.ProtoReflect().Set(xd.Type, xd.Type.ValueOf(val))
 }
 
 // dhex decodes a hex-string and returns the bytes and panics if s is invalid.
@@ -938,8 +924,8 @@ req_nested: {}
 			}.Marshal(),
 		},
 		want: `101: "\x01\x00\x01"
-101: 1
 102: "hello"
+101: 1
 102: "世界"
 `,
 	}, {
@@ -1018,14 +1004,6 @@ opt_int32: 42
   opt_string: "partial1"
 }
 `,
-	}, {
-		desc: "extension message field set to nil",
-		input: func() proto.Message {
-			m := &pb2.Extensions{}
-			setExtension(m, pb2.E_OptExtNested, nil)
-			return m
-		}(),
-		want: "\n",
 	}, {
 		desc: "extensions of repeated fields",
 		input: func() proto.Message {
@@ -1295,7 +1273,7 @@ value: "\x80"
 			got := string(b)
 			if tt.want != "" && got != tt.want {
 				t.Errorf("Marshal()\n<got>\n%v\n<want>\n%v\n", got, tt.want)
-				if diff := cmp.Diff(tt.want, got, splitLines); diff != "" {
+				if diff := cmp.Diff(tt.want, got); diff != "" {
 					t.Errorf("Marshal() diff -want +got\n%v\n", diff)
 				}
 			}

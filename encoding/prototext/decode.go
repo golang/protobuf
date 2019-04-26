@@ -47,12 +47,11 @@ type UnmarshalOptions struct {
 func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 	var nerr errors.NonFatal
 
-	mr := m.ProtoReflect()
 	// Clear all fields before populating it.
 	// TODO: Determine if this needs to be consistent with protojson and binary unmarshal where
 	// behavior is to merge values into existing message. If decision is to not clear the fields
 	// ahead, code will need to be updated properly when merging nested messages.
-	resetMessage(mr)
+	proto.Reset(m)
 
 	// Parse into text.Value of message type.
 	val, err := text.Unmarshal(b)
@@ -63,7 +62,7 @@ func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 	if o.Resolver == nil {
 		o.Resolver = protoregistry.GlobalTypes
 	}
-	err = o.unmarshalMessage(val.Message(), mr)
+	err = o.unmarshalMessage(val.Message(), m.ProtoReflect())
 	if !nerr.Merge(err) {
 		return err
 	}
@@ -75,41 +74,19 @@ func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 	return nerr.E
 }
 
-// resetMessage clears all fields of given protoreflect.Message.
-// TODO: This should go into the proto package.
-func resetMessage(m pref.Message) {
-	knownFields := m.KnownFields()
-	knownFields.Range(func(num pref.FieldNumber, _ pref.Value) bool {
-		knownFields.Clear(num)
-		return true
-	})
-	unknownFields := m.UnknownFields()
-	unknownFields.Range(func(num pref.FieldNumber, _ pref.RawFields) bool {
-		unknownFields.Set(num, nil)
-		return true
-	})
-	extTypes := knownFields.ExtensionTypes()
-	extTypes.Range(func(xt pref.ExtensionType) bool {
-		extTypes.Remove(xt)
-		return true
-	})
-}
-
 // unmarshalMessage unmarshals a [][2]text.Value message into the given protoreflect.Message.
 func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message) error {
 	var nerr errors.NonFatal
 
 	messageDesc := m.Descriptor()
-	knownFields := m.KnownFields()
 
 	// Handle expanded Any message.
 	if messageDesc.FullName() == "google.protobuf.Any" && isExpandedAny(tmsg) {
-		return o.unmarshalAny(tmsg[0], knownFields)
+		return o.unmarshalAny(tmsg[0], m)
 	}
 
 	fieldDescs := messageDesc.Fields()
 	reservedNames := messageDesc.ReservedNames()
-	xtTypes := knownFields.ExtensionTypes()
 	var seenNums set.Ints
 	var seenOneofs set.Ints
 
@@ -134,23 +111,14 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 			}
 			// Extensions have to be registered first in the message's
 			// ExtensionTypes before setting a value to it.
-			xtName := pref.FullName(tkey.String())
+			extName := pref.FullName(tkey.String())
 			// Check first if it is already registered. This is the case for
 			// repeated fields.
-			xt := xtTypes.ByName(xtName)
-			if xt == nil {
-				var err error
-				xt, err = o.findExtension(xtName)
-				if err != nil && err != protoregistry.NotFound {
-					return errors.New("unable to resolve [%v]: %v", xtName, err)
-				}
-				if xt != nil {
-					xtTypes.Register(xt)
-				}
+			xt, err := o.findExtension(extName)
+			if err != nil && err != protoregistry.NotFound {
+				return errors.New("unable to resolve [%v]: %v", extName, err)
 			}
-			if xt != nil {
-				fd = xt.Descriptor()
-			}
+			fd = xt
 		}
 
 		if fd == nil {
@@ -172,7 +140,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 				items = tval.List()
 			}
 
-			list := knownFields.Get(fd.Number()).List()
+			list := m.Mutable(fd).List()
 			if err := o.unmarshalList(items, fd, list); !nerr.Merge(err) {
 				return err
 			}
@@ -185,7 +153,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 				items = tval.List()
 			}
 
-			mmap := knownFields.Get(fd.Number()).Map()
+			mmap := m.Mutable(fd).Map()
 			if err := o.unmarshalMap(items, fd, mmap); !nerr.Merge(err) {
 				return err
 			}
@@ -204,7 +172,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 			if seenNums.Has(num) {
 				return errors.New("non-repeated field %v is repeated", fd.FullName())
 			}
-			if err := o.unmarshalSingular(tval, fd, knownFields); !nerr.Merge(err) {
+			if err := o.unmarshalSingular(tval, fd, m); !nerr.Merge(err) {
 				return err
 			}
 			seenNums.Set(num)
@@ -230,9 +198,7 @@ func (o UnmarshalOptions) findExtension(xtName pref.FullName) (pref.ExtensionTyp
 }
 
 // unmarshalSingular unmarshals given text.Value into the non-repeated field.
-func (o UnmarshalOptions) unmarshalSingular(input text.Value, fd pref.FieldDescriptor, knownFields pref.KnownFields) error {
-	num := fd.Number()
-
+func (o UnmarshalOptions) unmarshalSingular(input text.Value, fd pref.FieldDescriptor, m pref.Message) error {
 	var nerr errors.NonFatal
 	var val pref.Value
 	switch fd.Kind() {
@@ -240,11 +206,11 @@ func (o UnmarshalOptions) unmarshalSingular(input text.Value, fd pref.FieldDescr
 		if input.Type() != text.Message {
 			return errors.New("%v contains invalid message/group value: %v", fd.FullName(), input)
 		}
-		m := knownFields.NewMessage(num)
-		if err := o.unmarshalMessage(input.Message(), m); !nerr.Merge(err) {
+		m2 := m.NewMessage(fd)
+		if err := o.unmarshalMessage(input.Message(), m2); !nerr.Merge(err) {
 			return err
 		}
-		val = pref.ValueOf(m)
+		val = pref.ValueOf(m2)
 	default:
 		var err error
 		val, err = unmarshalScalar(input, fd)
@@ -252,7 +218,7 @@ func (o UnmarshalOptions) unmarshalSingular(input text.Value, fd pref.FieldDescr
 			return err
 		}
 	}
-	knownFields.Set(num, val)
+	m.Set(fd, val)
 
 	return nerr.E
 }
@@ -480,7 +446,7 @@ func isExpandedAny(tmsg [][2]text.Value) bool {
 
 // unmarshalAny unmarshals an expanded Any textproto. This method assumes that the given
 // tfield has key type of text.String and value type of text.Message.
-func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, knownFields pref.KnownFields) error {
+func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, m pref.Message) error {
 	var nerr errors.NonFatal
 
 	typeURL := tfield[0].String()
@@ -492,8 +458,8 @@ func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, knownFields pref.Kn
 	}
 	// Create new message for the embedded message type and unmarshal the
 	// value into it.
-	m := mt.New()
-	if err := o.unmarshalMessage(value, m); !nerr.Merge(err) {
+	m2 := mt.New()
+	if err := o.unmarshalMessage(value, m2); !nerr.Merge(err) {
 		return err
 	}
 	// Serialize the embedded message and assign the resulting bytes to the value field.
@@ -503,13 +469,17 @@ func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, knownFields pref.Kn
 	b, err := proto.MarshalOptions{
 		AllowPartial:  o.AllowPartial,
 		Deterministic: true,
-	}.Marshal(m.Interface())
+	}.Marshal(m2.Interface())
 	if !nerr.Merge(err) {
 		return err
 	}
 
-	knownFields.Set(fieldnum.Any_TypeUrl, pref.ValueOf(typeURL))
-	knownFields.Set(fieldnum.Any_Value, pref.ValueOf(b))
+	fds := m.Descriptor().Fields()
+	fdType := fds.ByNumber(fieldnum.Any_TypeUrl)
+	fdValue := fds.ByNumber(fieldnum.Any_Value)
+
+	m.Set(fdType, pref.ValueOf(typeURL))
+	m.Set(fdValue, pref.ValueOf(b))
 
 	return nerr.E
 }

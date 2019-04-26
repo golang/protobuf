@@ -10,10 +10,16 @@ import (
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
+// TODO: Remove this file.
+
+var extType = reflect.TypeOf(map[int32]ExtensionField(nil))
+
 func makeLegacyExtensionFieldsFunc(t reflect.Type) func(p *messageDataType) pref.KnownFields {
 	f := makeLegacyExtensionMapFunc(t)
 	if f == nil {
-		return nil
+		return func(*messageDataType) pref.KnownFields {
+			return emptyExtensionFields{}
+		}
 	}
 	return func(p *messageDataType) pref.KnownFields {
 		if p.p.IsNil() {
@@ -22,8 +28,6 @@ func makeLegacyExtensionFieldsFunc(t reflect.Type) func(p *messageDataType) pref
 		return legacyExtensionFields{p.mi, f(p)}
 	}
 }
-
-var extType = reflect.TypeOf(map[int32]ExtensionField{})
 
 func makeLegacyExtensionMapFunc(t reflect.Type) func(*messageDataType) *legacyExtensionMap {
 	fx, _ := t.FieldByName("XXX_extensions")

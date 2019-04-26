@@ -12,7 +12,7 @@ import (
 
 // Value is a union where only one Go type may be set at a time.
 // The Value is used to represent all possible values a field may take.
-// The following shows what Go type is used to represent each proto Kind:
+// The following shows which Go type is used to represent each proto Kind:
 //
 //	+------------+-------------------------------------+
 //	| Go type    | Protobuf kind                       |
@@ -27,10 +27,7 @@ import (
 //	| string     | StringKind                          |
 //	| []byte     | BytesKind                           |
 //	| EnumNumber | EnumKind                            |
-//	+------------+-------------------------------------+
 //	| Message    | MessageKind, GroupKind              |
-//	| List       |                                     |
-//	| Map        |                                     |
 //	+------------+-------------------------------------+
 //
 // Multiple protobuf Kinds may be represented by a single Go type if the type
@@ -38,9 +35,9 @@ import (
 // Int64Kind, Sint64Kind, and Sfixed64Kind are all represented by int64,
 // but use different integer encoding methods.
 //
-// The List or Map types are used if the FieldDescriptor.Cardinality of the
-// corresponding field is Repeated and a Map if and only if
-// FieldDescriptor.IsMap is true.
+// The List or Map types are used if the field cardinality is repeated.
+// A field is a List if FieldDescriptor.IsList reports true.
+// A field is a Map if FieldDescriptor.IsMap reports true.
 //
 // Converting to/from a Value and a concrete Go value panics on type mismatch.
 // For example, ValueOf("hello").Int() panics because this attempts to
@@ -63,8 +60,6 @@ type Value value
 // ValueOf returns a Value initialized with the concrete value stored in v.
 // This panics if the type does not match one of the allowed types in the
 // Value union.
-//
-// After calling ValueOf on a []byte, the slice must no longer be mutated.
 func ValueOf(v interface{}) Value {
 	switch v := v.(type) {
 	case nil:
@@ -108,7 +103,6 @@ func (v Value) IsValid() bool {
 }
 
 // Interface returns v as an interface{}.
-// Returned []byte values must not be mutated.
 //
 // Invariant: v == ValueOf(v).Interface()
 func (v Value) Interface() interface{} {
@@ -192,7 +186,6 @@ func (v Value) String() string {
 }
 
 // Bytes returns v as a []byte and panics if the type is not a []byte.
-// The returned slice must not be mutated.
 func (v Value) Bytes() []byte {
 	switch v.typ {
 	case bytesType:

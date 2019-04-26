@@ -15,7 +15,6 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/internal/encoding/pack"
-	"google.golang.org/protobuf/internal/encoding/wire"
 	pimpl "google.golang.org/protobuf/internal/impl"
 	"google.golang.org/protobuf/internal/scalar"
 	"google.golang.org/protobuf/proto"
@@ -50,15 +49,9 @@ func pb2Enums_NestedEnum(i int32) *pb2.Enums_NestedEnum {
 	return p
 }
 
+// TODO: Replace this with proto.SetExtension.
 func setExtension(m proto.Message, xd *protoiface.ExtensionDescV1, val interface{}) {
-	knownFields := m.ProtoReflect().KnownFields()
-	extTypes := knownFields.ExtensionTypes()
-	extTypes.Register(xd.Type)
-	if val == nil {
-		return
-	}
-	pval := xd.Type.ValueOf(val)
-	knownFields.Set(wire.Number(xd.Field), pval)
+	m.ProtoReflect().Set(xd.Type, xd.Type.ValueOf(val))
 }
 
 // dhex decodes a hex-string and returns the bytes and panics if s is invalid.
@@ -944,14 +937,6 @@ func TestMarshal(t *testing.T) {
   },
   "[pb2.opt_ext_string]": "extension field"
 }`,
-	}, {
-		desc: "extension message field set to nil",
-		input: func() proto.Message {
-			m := &pb2.Extensions{}
-			setExtension(m, pb2.E_OptExtNested, nil)
-			return m
-		}(),
-		want: "{}",
 	}, {
 		desc: "extensions of repeated fields",
 		input: func() proto.Message {

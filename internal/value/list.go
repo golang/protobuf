@@ -10,13 +10,15 @@ import (
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
+// ListOf returns a protoreflect.List view of p, which must be a *[]T.
+// If p is nil, this returns an empty, read-only list.
 func ListOf(p interface{}, c Converter) interface {
 	pref.List
 	Unwrapper
 } {
 	// TODO: Validate that p is a *[]T?
 	rv := reflect.ValueOf(p)
-	return listReflect{rv, c}
+	return &listReflect{rv, c}
 }
 
 type listReflect struct {
@@ -24,27 +26,27 @@ type listReflect struct {
 	conv Converter
 }
 
-func (ls listReflect) Len() int {
+func (ls *listReflect) Len() int {
 	if ls.v.IsNil() {
 		return 0
 	}
 	return ls.v.Elem().Len()
 }
-func (ls listReflect) Get(i int) pref.Value {
+func (ls *listReflect) Get(i int) pref.Value {
 	return ls.conv.PBValueOf(ls.v.Elem().Index(i))
 }
-func (ls listReflect) Set(i int, v pref.Value) {
+func (ls *listReflect) Set(i int, v pref.Value) {
 	ls.v.Elem().Index(i).Set(ls.conv.GoValueOf(v))
 }
-func (ls listReflect) Append(v pref.Value) {
+func (ls *listReflect) Append(v pref.Value) {
 	ls.v.Elem().Set(reflect.Append(ls.v.Elem(), ls.conv.GoValueOf(v)))
 }
-func (ls listReflect) Truncate(i int) {
+func (ls *listReflect) Truncate(i int) {
 	ls.v.Elem().Set(ls.v.Elem().Slice(0, i))
 }
-func (ls listReflect) NewMessage() pref.Message {
+func (ls *listReflect) NewMessage() pref.Message {
 	return ls.conv.NewMessage()
 }
-func (ls listReflect) ProtoUnwrap() interface{} {
+func (ls *listReflect) ProtoUnwrap() interface{} {
 	return ls.v.Interface()
 }

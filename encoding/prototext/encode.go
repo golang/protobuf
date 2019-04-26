@@ -88,13 +88,10 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 
 	// Handle known fields.
 	fieldDescs := messageDesc.Fields()
-	knownFields := m.KnownFields()
 	size := fieldDescs.Len()
 	for i := 0; i < size; i++ {
 		fd := fieldDescs.Get(i)
-		num := fd.Number()
-
-		if !knownFields.Has(num) {
+		if !m.Has(fd) {
 			continue
 		}
 
@@ -103,7 +100,7 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 		if fd.Kind() == pref.GroupKind {
 			name = text.ValueOf(fd.Message().Name())
 		}
-		pval := knownFields.Get(num)
+		pval := m.Get(fd)
 		var err error
 		msgFields, err = o.appendField(msgFields, name, pval, fd)
 		if !nerr.Merge(err) {
@@ -113,17 +110,14 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 
 	// Handle extensions.
 	var err error
-	msgFields, err = o.appendExtensions(msgFields, knownFields)
+	msgFields, err = o.appendExtensions(msgFields, m)
 	if !nerr.Merge(err) {
 		return text.Value{}, err
 	}
 
 	// Handle unknown fields.
 	// TODO: Provide option to exclude or include unknown fields.
-	m.UnknownFields().Range(func(_ pref.FieldNumber, raw pref.RawFields) bool {
-		msgFields = appendUnknown(msgFields, raw)
-		return true
-	})
+	msgFields = appendUnknown(msgFields, m.GetUnknown())
 
 	return text.ValueOf(msgFields), nerr.E
 }
@@ -259,30 +253,29 @@ func (o MarshalOptions) marshalMap(mmap pref.Map, fd pref.FieldDescriptor) ([]te
 }
 
 // appendExtensions marshals extension fields and appends them to the given [][2]text.Value.
-func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, knownFields pref.KnownFields) ([][2]text.Value, error) {
-	xtTypes := knownFields.ExtensionTypes()
-	xtFields := make([][2]text.Value, 0, xtTypes.Len())
-
+func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, m pref.Message) ([][2]text.Value, error) {
 	var nerr errors.NonFatal
 	var err error
-	xtTypes.Range(func(xt pref.ExtensionType) bool {
-		name := xt.Descriptor().FullName()
+	var entries [][2]text.Value
+	m.Range(func(fd pref.FieldDescriptor, v pref.Value) bool {
+		if !fd.IsExtension() {
+			return true
+		}
+		xt := fd.(pref.ExtensionType)
+
 		// If extended type is a MessageSet, set field name to be the message type name.
+		name := xt.Descriptor().FullName()
 		if isMessageSetExtension(xt) {
 			name = xt.Descriptor().Message().FullName()
 		}
 
-		num := xt.Descriptor().Number()
-		if knownFields.Has(num) {
-			// Use string type to produce [name] format.
-			tname := text.ValueOf(string(name))
-			pval := knownFields.Get(num)
-			xtFields, err = o.appendField(xtFields, tname, pval, xt.Descriptor())
-			if !nerr.Merge(err) {
-				return false
-			}
-			err = nil
+		// Use string type to produce [name] format.
+		tname := text.ValueOf(string(name))
+		entries, err = o.appendField(entries, tname, v, xt)
+		if !nerr.Merge(err) {
+			return false
 		}
+		err = nil
 		return true
 	})
 	if err != nil {
@@ -290,10 +283,10 @@ func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, knownFields 
 	}
 
 	// Sort extensions lexicographically and append to output.
-	sort.SliceStable(xtFields, func(i, j int) bool {
-		return xtFields[i][0].String() < xtFields[j][0].String()
+	sort.SliceStable(entries, func(i, j int) bool {
+		return entries[i][0].String() < entries[j][0].String()
 	})
-	return append(msgFields, xtFields...), nerr.E
+	return append(msgFields, entries...), nerr.E
 }
 
 // isMessageSetExtension reports whether extension extends a message set.
@@ -347,11 +340,14 @@ func appendUnknown(fields [][2]text.Value, b []byte) [][2]text.Value {
 
 // marshalAny converts a google.protobuf.Any protoreflect.Message to a text.Value.
 func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
-	var nerr errors.NonFatal
-	knownFields := m.KnownFields()
-	typeURL := knownFields.Get(fieldnum.Any_TypeUrl).String()
-	value := knownFields.Get(fieldnum.Any_Value)
+	fds := m.Descriptor().Fields()
+	fdType := fds.ByNumber(fieldnum.Any_TypeUrl)
+	fdValue := fds.ByNumber(fieldnum.Any_Value)
 
+	typeURL := m.Get(fdType).String()
+	value := m.Get(fdValue)
+
+	var nerr errors.NonFatal
 	emt, err := o.Resolver.FindMessageByURL(typeURL)
 	if !nerr.Merge(err) {
 		return text.Value{}, err

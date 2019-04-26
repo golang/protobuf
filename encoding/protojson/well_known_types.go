@@ -142,25 +142,26 @@ func (o UnmarshalOptions) unmarshalCustomType(m pref.Message) error {
 // field `value` which holds the custom JSON in addition to the `@type` field.
 
 func (o MarshalOptions) marshalAny(m pref.Message) error {
-	messageDesc := m.Descriptor()
-	knownFields := m.KnownFields()
+	fds := m.Descriptor().Fields()
+	fdType := fds.ByNumber(fieldnum.Any_TypeUrl)
+	fdValue := fds.ByNumber(fieldnum.Any_Value)
 
 	// Start writing the JSON object.
 	o.encoder.StartObject()
 	defer o.encoder.EndObject()
 
-	if !knownFields.Has(fieldnum.Any_TypeUrl) {
-		if !knownFields.Has(fieldnum.Any_Value) {
+	if !m.Has(fdType) {
+		if !m.Has(fdValue) {
 			// If message is empty, marshal out empty JSON object.
 			return nil
 		} else {
 			// Return error if type_url field is not set, but value is set.
-			return errors.New("%s: type_url is not set", messageDesc.FullName())
+			return errors.New("%s: type_url is not set", m.Descriptor().FullName())
 		}
 	}
 
-	typeVal := knownFields.Get(fieldnum.Any_TypeUrl)
-	valueVal := knownFields.Get(fieldnum.Any_Value)
+	typeVal := m.Get(fdType)
+	valueVal := m.Get(fdValue)
 
 	// Marshal out @type field.
 	typeURL := typeVal.String()
@@ -173,7 +174,7 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 	// Resolve the type in order to unmarshal value field.
 	emt, err := o.Resolver.FindMessageByURL(typeURL)
 	if !nerr.Merge(err) {
-		return errors.New("%s: unable to resolve %q: %v", messageDesc.FullName(), typeURL, err)
+		return errors.New("%s: unable to resolve %q: %v", m.Descriptor().FullName(), typeURL, err)
 	}
 
 	em := emt.New()
@@ -185,7 +186,7 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 		AllowPartial: o.AllowPartial,
 	}.Unmarshal(valueVal.Bytes(), em.Interface())
 	if !nerr.Merge(err) {
-		return errors.New("%s: unable to unmarshal %q: %v", messageDesc.FullName(), typeURL, err)
+		return errors.New("%s: unable to unmarshal %q: %v", m.Descriptor().FullName(), typeURL, err)
 	}
 
 	// If type of value has custom JSON encoding, marshal out a field "value"
@@ -263,9 +264,12 @@ func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
 		return errors.New("google.protobuf.Any: %v", err)
 	}
 
-	knownFields := m.KnownFields()
-	knownFields.Set(fieldnum.Any_TypeUrl, pref.ValueOf(typeURL))
-	knownFields.Set(fieldnum.Any_Value, pref.ValueOf(b))
+	fds := m.Descriptor().Fields()
+	fdType := fds.ByNumber(fieldnum.Any_TypeUrl)
+	fdValue := fds.ByNumber(fieldnum.Any_Value)
+
+	m.Set(fdType, pref.ValueOf(typeURL))
+	m.Set(fdValue, pref.ValueOf(b))
 	return nerr.E
 }
 
@@ -446,7 +450,7 @@ const wrapperFieldNumber = fieldnum.BoolValue_Value
 
 func (o MarshalOptions) marshalWrapperType(m pref.Message) error {
 	fd := m.Descriptor().Fields().ByNumber(wrapperFieldNumber)
-	val := m.KnownFields().Get(wrapperFieldNumber)
+	val := m.Get(fd)
 	return o.marshalSingular(val, fd)
 }
 
@@ -457,7 +461,7 @@ func (o UnmarshalOptions) unmarshalWrapperType(m pref.Message) error {
 	if !nerr.Merge(err) {
 		return err
 	}
-	m.KnownFields().Set(wrapperFieldNumber, val)
+	m.Set(fd, val)
 	return nerr.E
 }
 
@@ -509,14 +513,12 @@ func (o UnmarshalOptions) unmarshalEmpty(pref.Message) error {
 
 func (o MarshalOptions) marshalStruct(m pref.Message) error {
 	fd := m.Descriptor().Fields().ByNumber(fieldnum.Struct_Fields)
-	val := m.KnownFields().Get(fieldnum.Struct_Fields)
-	return o.marshalMap(val.Map(), fd)
+	return o.marshalMap(m.Get(fd).Map(), fd)
 }
 
 func (o UnmarshalOptions) unmarshalStruct(m pref.Message) error {
 	fd := m.Descriptor().Fields().ByNumber(fieldnum.Struct_Fields)
-	val := m.KnownFields().Get(fieldnum.Struct_Fields)
-	return o.unmarshalMap(val.Map(), fd)
+	return o.unmarshalMap(m.Mutable(fd).Map(), fd)
 }
 
 // The JSON representation for ListValue is JSON array that contains the encoded
@@ -525,14 +527,12 @@ func (o UnmarshalOptions) unmarshalStruct(m pref.Message) error {
 
 func (o MarshalOptions) marshalListValue(m pref.Message) error {
 	fd := m.Descriptor().Fields().ByNumber(fieldnum.ListValue_Values)
-	val := m.KnownFields().Get(fieldnum.ListValue_Values)
-	return o.marshalList(val.List(), fd)
+	return o.marshalList(m.Get(fd).List(), fd)
 }
 
 func (o UnmarshalOptions) unmarshalListValue(m pref.Message) error {
 	fd := m.Descriptor().Fields().ByNumber(fieldnum.ListValue_Values)
-	val := m.KnownFields().Get(fieldnum.ListValue_Values)
-	return o.unmarshalList(val.List(), fd)
+	return o.unmarshalList(m.Mutable(fd).List(), fd)
 }
 
 // The JSON representation for a Value is dependent on the oneof field that is
@@ -540,27 +540,21 @@ func (o UnmarshalOptions) unmarshalListValue(m pref.Message) error {
 // Value message needs to be a oneof field set, else it is an error.
 
 func (o MarshalOptions) marshalKnownValue(m pref.Message) error {
-	messageDesc := m.Descriptor()
-	knownFields := m.KnownFields()
-	num := knownFields.WhichOneof("kind")
-	if num == 0 {
-		// Return error if none of the fields is set.
-		return errors.New("%s: none of the oneof fields is set", messageDesc.FullName())
+	od := m.Descriptor().Oneofs().ByName("kind")
+	fd := m.WhichOneof(od)
+	if fd == nil {
+		return errors.New("%s: none of the oneof fields is set", m.Descriptor().FullName())
 	}
-
-	fd := messageDesc.Fields().ByNumber(num)
-	val := knownFields.Get(num)
-	return o.marshalSingular(val, fd)
+	return o.marshalSingular(m.Get(fd), fd)
 }
 
 func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 	var nerr errors.NonFatal
-	knownFields := m.KnownFields()
-
 	switch o.decoder.Peek() {
 	case json.Null:
 		o.decoder.Read()
-		knownFields.Set(fieldnum.Value_NullValue, pref.ValueOf(pref.EnumNumber(0)))
+		fd := m.Descriptor().Fields().ByNumber(fieldnum.Value_NullValue)
+		m.Set(fd, pref.ValueOf(pref.EnumNumber(0)))
 
 	case json.Bool:
 		jval, err := o.decoder.Read()
@@ -571,7 +565,8 @@ func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 		if err != nil {
 			return err
 		}
-		knownFields.Set(fieldnum.Value_BoolValue, val)
+		fd := m.Descriptor().Fields().ByNumber(fieldnum.Value_BoolValue)
+		m.Set(fd, val)
 
 	case json.Number:
 		jval, err := o.decoder.Read()
@@ -582,7 +577,8 @@ func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 		if err != nil {
 			return err
 		}
-		knownFields.Set(fieldnum.Value_NumberValue, val)
+		fd := m.Descriptor().Fields().ByNumber(fieldnum.Value_NumberValue)
+		m.Set(fd, val)
 
 	case json.String:
 		// A JSON string may have been encoded from the number_value field,
@@ -599,21 +595,24 @@ func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 		if !nerr.Merge(err) {
 			return err
 		}
-		knownFields.Set(fieldnum.Value_StringValue, val)
+		fd := m.Descriptor().Fields().ByNumber(fieldnum.Value_StringValue)
+		m.Set(fd, val)
 
 	case json.StartObject:
-		m := knownFields.NewMessage(fieldnum.Value_StructValue)
-		if err := o.unmarshalStruct(m); !nerr.Merge(err) {
+		fd := m.Descriptor().Fields().ByNumber(fieldnum.Value_StructValue)
+		m2 := m.NewMessage(fd)
+		if err := o.unmarshalStruct(m2); !nerr.Merge(err) {
 			return err
 		}
-		knownFields.Set(fieldnum.Value_StructValue, pref.ValueOf(m))
+		m.Set(fd, pref.ValueOf(m2))
 
 	case json.StartArray:
-		m := knownFields.NewMessage(fieldnum.Value_ListValue)
-		if err := o.unmarshalListValue(m); !nerr.Merge(err) {
+		fd := m.Descriptor().Fields().ByNumber(fieldnum.Value_ListValue)
+		m2 := m.NewMessage(fd)
+		if err := o.unmarshalListValue(m2); !nerr.Merge(err) {
 			return err
 		}
-		knownFields.Set(fieldnum.Value_ListValue, pref.ValueOf(m))
+		m.Set(fd, pref.ValueOf(m2))
 
 	default:
 		jval, err := o.decoder.Read()
@@ -622,7 +621,6 @@ func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 		}
 		return unexpectedJSONError{jval}
 	}
-
 	return nerr.E
 }
 
@@ -644,21 +642,22 @@ const (
 )
 
 func (o MarshalOptions) marshalDuration(m pref.Message) error {
-	messageDesc := m.Descriptor()
-	knownFields := m.KnownFields()
+	fds := m.Descriptor().Fields()
+	fdSeconds := fds.ByNumber(fieldnum.Duration_Seconds)
+	fdNanos := fds.ByNumber(fieldnum.Duration_Nanos)
 
-	secsVal := knownFields.Get(fieldnum.Duration_Seconds)
-	nanosVal := knownFields.Get(fieldnum.Duration_Nanos)
+	secsVal := m.Get(fdSeconds)
+	nanosVal := m.Get(fdNanos)
 	secs := secsVal.Int()
 	nanos := nanosVal.Int()
 	if secs < -maxSecondsInDuration || secs > maxSecondsInDuration {
-		return errors.New("%s: seconds out of range %v", messageDesc.FullName(), secs)
+		return errors.New("%s: seconds out of range %v", m.Descriptor().FullName(), secs)
 	}
 	if nanos < -secondsInNanos || nanos > secondsInNanos {
-		return errors.New("%s: nanos out of range %v", messageDesc.FullName(), nanos)
+		return errors.New("%s: nanos out of range %v", m.Descriptor().FullName(), nanos)
 	}
 	if (secs > 0 && nanos < 0) || (secs < 0 && nanos > 0) {
-		return errors.New("%s: signs of seconds and nanos do not match", messageDesc.FullName())
+		return errors.New("%s: signs of seconds and nanos do not match", m.Descriptor().FullName())
 	}
 	// Generated output always contains 0, 3, 6, or 9 fractional digits,
 	// depending on required precision, followed by the suffix "s".
@@ -687,21 +686,23 @@ func (o UnmarshalOptions) unmarshalDuration(m pref.Message) error {
 		return unexpectedJSONError{jval}
 	}
 
-	messageDesc := m.Descriptor()
 	input := jval.String()
 	secs, nanos, ok := parseDuration(input)
 	if !ok {
-		return errors.New("%s: invalid duration value %q", messageDesc.FullName(), input)
+		return errors.New("%s: invalid duration value %q", m.Descriptor().FullName(), input)
 	}
 	// Validate seconds. No need to validate nanos because parseDuration would
 	// have covered that already.
 	if secs < -maxSecondsInDuration || secs > maxSecondsInDuration {
-		return errors.New("%s: out of range %q", messageDesc.FullName(), input)
+		return errors.New("%s: out of range %q", m.Descriptor().FullName(), input)
 	}
 
-	knownFields := m.KnownFields()
-	knownFields.Set(fieldnum.Duration_Seconds, pref.ValueOf(secs))
-	knownFields.Set(fieldnum.Duration_Nanos, pref.ValueOf(nanos))
+	fds := m.Descriptor().Fields()
+	fdSeconds := fds.ByNumber(fieldnum.Duration_Seconds)
+	fdNanos := fds.ByNumber(fieldnum.Duration_Nanos)
+
+	m.Set(fdSeconds, pref.ValueOf(secs))
+	m.Set(fdNanos, pref.ValueOf(nanos))
 	return nerr.E
 }
 
@@ -834,18 +835,19 @@ const (
 )
 
 func (o MarshalOptions) marshalTimestamp(m pref.Message) error {
-	messageDesc := m.Descriptor()
-	knownFields := m.KnownFields()
+	fds := m.Descriptor().Fields()
+	fdSeconds := fds.ByNumber(fieldnum.Timestamp_Seconds)
+	fdNanos := fds.ByNumber(fieldnum.Timestamp_Nanos)
 
-	secsVal := knownFields.Get(fieldnum.Timestamp_Seconds)
-	nanosVal := knownFields.Get(fieldnum.Timestamp_Nanos)
+	secsVal := m.Get(fdSeconds)
+	nanosVal := m.Get(fdNanos)
 	secs := secsVal.Int()
 	nanos := nanosVal.Int()
 	if secs < minTimestampSeconds || secs > maxTimestampSeconds {
-		return errors.New("%s: seconds out of range %v", messageDesc.FullName(), secs)
+		return errors.New("%s: seconds out of range %v", m.Descriptor().FullName(), secs)
 	}
 	if nanos < 0 || nanos > secondsInNanos {
-		return errors.New("%s: nanos out of range %v", messageDesc.FullName(), nanos)
+		return errors.New("%s: nanos out of range %v", m.Descriptor().FullName(), nanos)
 	}
 	// Uses RFC 3339, where generated output will be Z-normalized and uses 0, 3,
 	// 6 or 9 fractional digits.
@@ -868,22 +870,24 @@ func (o UnmarshalOptions) unmarshalTimestamp(m pref.Message) error {
 		return unexpectedJSONError{jval}
 	}
 
-	messageDesc := m.Descriptor()
 	input := jval.String()
 	t, err := time.Parse(time.RFC3339Nano, input)
 	if err != nil {
-		return errors.New("%s: invalid timestamp value %q", messageDesc.FullName(), input)
+		return errors.New("%s: invalid timestamp value %q", m.Descriptor().FullName(), input)
 	}
 	// Validate seconds. No need to validate nanos because time.Parse would have
 	// covered that already.
 	secs := t.Unix()
 	if secs < minTimestampSeconds || secs > maxTimestampSeconds {
-		return errors.New("%s: out of range %q", messageDesc.FullName(), input)
+		return errors.New("%s: out of range %q", m.Descriptor().FullName(), input)
 	}
 
-	knownFields := m.KnownFields()
-	knownFields.Set(fieldnum.Timestamp_Seconds, pref.ValueOf(secs))
-	knownFields.Set(fieldnum.Timestamp_Nanos, pref.ValueOf(int32(t.Nanosecond())))
+	fds := m.Descriptor().Fields()
+	fdSeconds := fds.ByNumber(fieldnum.Timestamp_Seconds)
+	fdNanos := fds.ByNumber(fieldnum.Timestamp_Nanos)
+
+	m.Set(fdSeconds, pref.ValueOf(secs))
+	m.Set(fdNanos, pref.ValueOf(int32(t.Nanosecond())))
 	return nerr.E
 }
 
@@ -893,8 +897,8 @@ func (o UnmarshalOptions) unmarshalTimestamp(m pref.Message) error {
 // end up differently after a round-trip.
 
 func (o MarshalOptions) marshalFieldMask(m pref.Message) error {
-	val := m.KnownFields().Get(fieldnum.FieldMask_Paths)
-	list := val.List()
+	fd := m.Descriptor().Fields().ByNumber(fieldnum.FieldMask_Paths)
+	list := m.Get(fd).List()
 	paths := make([]string, 0, list.Len())
 
 	for i := 0; i < list.Len(); i++ {
@@ -926,8 +930,8 @@ func (o UnmarshalOptions) unmarshalFieldMask(m pref.Message) error {
 	}
 	paths := strings.Split(str, ",")
 
-	val := m.KnownFields().Get(fieldnum.FieldMask_Paths)
-	list := val.List()
+	fd := m.Descriptor().Fields().ByNumber(fieldnum.FieldMask_Paths)
+	list := m.Mutable(fd).List()
 
 	for _, s := range paths {
 		s = strings.TrimSpace(s)

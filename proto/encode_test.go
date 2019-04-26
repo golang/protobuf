@@ -7,13 +7,11 @@ package proto_test
 import (
 	"bytes"
 	"fmt"
-	"reflect"
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	"google.golang.org/protobuf/proto"
-	pref "google.golang.org/protobuf/reflect/protoreflect"
 
 	test3pb "google.golang.org/protobuf/internal/testprotos/test3"
 )
@@ -35,7 +33,7 @@ func TestEncode(t *testing.T) {
 					t.Errorf("Size and marshal disagree: Size(m)=%v; len(Marshal(m))=%v\nMessage:\n%v", size, len(wire), marshalText(want))
 				}
 
-				got := newMessage(want)
+				got := want.ProtoReflect().New().Interface()
 				uopts := proto.UnmarshalOptions{
 					AllowPartial: test.partial,
 				}
@@ -76,7 +74,7 @@ func TestEncodeDeterministic(t *testing.T) {
 					t.Fatalf("deterministic marshal returned varying results:\n%v", cmp.Diff(wire, wire2))
 				}
 
-				got := newMessage(want)
+				got := want.ProtoReflect().New().Interface()
 				uopts := proto.UnmarshalOptions{
 					AllowPartial: test.partial,
 				}
@@ -105,7 +103,7 @@ func TestEncodeInvalidUTF8(t *testing.T) {
 				if !isErrInvalidUTF8(err) {
 					t.Errorf("Marshal did not return expected error for invalid UTF8: %v\nMessage:\n%v", err, marshalText(want))
 				}
-				got := newMessage(want)
+				got := want.ProtoReflect().New().Interface()
 				if err := proto.Unmarshal(wire, got); !isErrInvalidUTF8(err) {
 					t.Errorf("Unmarshal error: %v\nMessage:\n%v", err, marshalText(want))
 					return
@@ -146,14 +144,4 @@ func TestMarshalAppend(t *testing.T) {
 	if !bytes.HasPrefix(got, want) {
 		t.Fatalf("MarshalAppend modified prefix: got %v, want prefix %v", got, want)
 	}
-}
-
-// newMessage returns a new message with the same type and extension fields as m.
-func newMessage(m proto.Message) proto.Message {
-	n := reflect.New(reflect.TypeOf(m).Elem()).Interface().(proto.Message)
-	m.ProtoReflect().KnownFields().ExtensionTypes().Range(func(xt pref.ExtensionType) bool {
-		n.ProtoReflect().KnownFields().ExtensionTypes().Register(xt)
-		return true
-	})
-	return n
 }

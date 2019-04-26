@@ -44,31 +44,28 @@ func fillMessage(m pref.Message, level int) {
 		return
 	}
 
-	knownFields := m.KnownFields()
 	fieldDescs := m.Descriptor().Fields()
 	for i := 0; i < fieldDescs.Len(); i++ {
 		fd := fieldDescs.Get(i)
-		num := fd.Number()
 		switch {
 		case fd.IsList():
-			setList(knownFields.Get(num).List(), fd, level)
+			setList(m.Mutable(fd).List(), fd, level)
 		case fd.IsMap():
-			setMap(knownFields.Get(num).Map(), fd, level)
+			setMap(m.Mutable(fd).Map(), fd, level)
 		default:
-			setScalarField(knownFields, fd, level)
+			setScalarField(m, fd, level)
 		}
 	}
 }
 
-func setScalarField(knownFields pref.KnownFields, fd pref.FieldDescriptor, level int) {
-	num := fd.Number()
+func setScalarField(m pref.Message, fd pref.FieldDescriptor, level int) {
 	switch fd.Kind() {
 	case pref.MessageKind, pref.GroupKind:
-		m := knownFields.NewMessage(num)
-		fillMessage(m, level+1)
-		knownFields.Set(num, pref.ValueOf(m))
+		m2 := m.NewMessage(fd)
+		fillMessage(m2, level+1)
+		m.Set(fd, pref.ValueOf(m2))
 	default:
-		knownFields.Set(num, scalarField(fd.Kind()))
+		m.Set(fd, scalarField(fd.Kind()))
 	}
 }
 

@@ -74,8 +74,6 @@ func (o UnmarshalOptions) unmarshalMessageFast(b []byte, m Message) error {
 func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) error {
 	messageDesc := m.Descriptor()
 	fieldDescs := messageDesc.Fields()
-	knownFields := m.KnownFields()
-	unknownFields := m.UnknownFields()
 	var nerr errors.NonFatal
 	for len(b) > 0 {
 		// Parse the tag (field number and wire type).
@@ -85,41 +83,32 @@ func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) err
 		}
 
 		// Parse the field value.
-		fieldDesc := fieldDescs.ByNumber(num)
-		if fieldDesc == nil {
-			extType := knownFields.ExtensionTypes().ByNumber(num)
-			if extType == nil && messageDesc.ExtensionRanges().Has(num) {
-				var err error
-				extType, err = o.Resolver.FindExtensionByNumber(messageDesc.FullName(), num)
-				if err != nil && err != protoregistry.NotFound {
-					return err
-				}
-				if extType != nil {
-					knownFields.ExtensionTypes().Register(extType)
-				}
+		fd := fieldDescs.ByNumber(num)
+		if fd == nil && messageDesc.ExtensionRanges().Has(num) {
+			extType, err := o.Resolver.FindExtensionByNumber(messageDesc.FullName(), num)
+			if err != nil && err != protoregistry.NotFound {
+				return err
 			}
-			if extType != nil {
-				fieldDesc = extType.Descriptor()
-			}
+			fd = extType
 		}
 		var err error
 		var valLen int
 		switch {
-		case fieldDesc == nil:
+		case fd == nil:
 			err = errUnknown
-		case fieldDesc.IsList():
-			valLen, err = o.unmarshalList(b[tagLen:], wtyp, num, knownFields.Get(num).List(), fieldDesc)
-		case fieldDesc.IsMap():
-			valLen, err = o.unmarshalMap(b[tagLen:], wtyp, num, knownFields.Get(num).Map(), fieldDesc)
+		case fd.IsList():
+			valLen, err = o.unmarshalList(b[tagLen:], wtyp, m.Mutable(fd).List(), fd)
+		case fd.IsMap():
+			valLen, err = o.unmarshalMap(b[tagLen:], wtyp, m.Mutable(fd).Map(), fd)
 		default:
-			valLen, err = o.unmarshalScalarField(b[tagLen:], wtyp, num, knownFields, fieldDesc)
+			valLen, err = o.unmarshalSingular(b[tagLen:], wtyp, m, fd)
 		}
 		if err == errUnknown {
 			valLen = wire.ConsumeFieldValue(num, wtyp, b[tagLen:])
 			if valLen < 0 {
 				return wire.ParseError(valLen)
 			}
-			unknownFields.Set(num, append(unknownFields.Get(num), b[:tagLen+valLen]...))
+			m.SetUnknown(append(m.GetUnknown(), b[:tagLen+valLen]...))
 		} else if !nerr.Merge(err) {
 			return err
 		}
@@ -128,38 +117,38 @@ func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) err
 	return nerr.E
 }
 
-func (o UnmarshalOptions) unmarshalScalarField(b []byte, wtyp wire.Type, num wire.Number, knownFields protoreflect.KnownFields, field protoreflect.FieldDescriptor) (n int, err error) {
+func (o UnmarshalOptions) unmarshalSingular(b []byte, wtyp wire.Type, m protoreflect.Message, fd protoreflect.FieldDescriptor) (n int, err error) {
 	var nerr errors.NonFatal
-	v, n, err := o.unmarshalScalar(b, wtyp, num, field)
+	v, n, err := o.unmarshalScalar(b, wtyp, fd)
 	if !nerr.Merge(err) {
 		return 0, err
 	}
-	switch field.Kind() {
+	switch fd.Kind() {
 	case protoreflect.GroupKind, protoreflect.MessageKind:
 		// Messages are merged with any existing message value,
 		// unless the message is part of a oneof.
 		//
 		// TODO: C++ merges into oneofs, while v1 does not.
 		// Evaluate which behavior to pick.
-		var m protoreflect.Message
-		if knownFields.Has(num) && field.ContainingOneof() == nil {
-			m = knownFields.Get(num).Message()
+		var m2 protoreflect.Message
+		if m.Has(fd) && fd.ContainingOneof() == nil {
+			m2 = m.Mutable(fd).Message()
 		} else {
-			m = knownFields.NewMessage(num)
-			knownFields.Set(num, protoreflect.ValueOf(m))
+			m2 = m.NewMessage(fd)
+			m.Set(fd, protoreflect.ValueOf(m2))
 		}
 		// Pass up errors (fatal and otherwise).
-		if err := o.unmarshalMessage(v.Bytes(), m); !nerr.Merge(err) {
+		if err := o.unmarshalMessage(v.Bytes(), m2); !nerr.Merge(err) {
 			return n, err
 		}
 	default:
 		// Non-message scalars replace the previous value.
-		knownFields.Set(num, v)
+		m.Set(fd, v)
 	}
 	return n, nerr.E
 }
 
-func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number, mapv protoreflect.Map, field protoreflect.FieldDescriptor) (n int, err error) {
+func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, mapv protoreflect.Map, fd protoreflect.FieldDescriptor) (n int, err error) {
 	if wtyp != wire.BytesType {
 		return 0, errUnknown
 	}
@@ -168,8 +157,8 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number
 		return 0, wire.ParseError(n)
 	}
 	var (
-		keyField = field.MapKey()
-		valField = field.MapValue()
+		keyField = fd.MapKey()
+		valField = fd.MapValue()
 		key      protoreflect.Value
 		val      protoreflect.Value
 		haveKey  bool
@@ -191,7 +180,7 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number
 		err = errUnknown
 		switch num {
 		case 1:
-			key, n, err = o.unmarshalScalar(b, wtyp, num, keyField)
+			key, n, err = o.unmarshalScalar(b, wtyp, keyField)
 			if !nerr.Merge(err) {
 				break
 			}
@@ -199,7 +188,7 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number
 			haveKey = true
 		case 2:
 			var v protoreflect.Value
-			v, n, err = o.unmarshalScalar(b, wtyp, num, valField)
+			v, n, err = o.unmarshalScalar(b, wtyp, valField)
 			if !nerr.Merge(err) {
 				break
 			}

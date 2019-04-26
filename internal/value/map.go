@@ -10,13 +10,15 @@ import (
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
+// MapOf returns a protoreflect.Map view of p, which must a *map[K]V.
+// If p is nil, this returns an empty, read-only map.
 func MapOf(p interface{}, kc, kv Converter) interface {
 	pref.Map
 	Unwrapper
 } {
 	// TODO: Validate that p is a *map[K]V?
 	rv := reflect.ValueOf(p)
-	return mapReflect{rv, kc, kv}
+	return &mapReflect{rv, kc, kv}
 }
 
 type mapReflect struct {
@@ -25,13 +27,13 @@ type mapReflect struct {
 	valConv Converter
 }
 
-func (ms mapReflect) Len() int {
+func (ms *mapReflect) Len() int {
 	if ms.v.IsNil() {
 		return 0
 	}
 	return ms.v.Elem().Len()
 }
-func (ms mapReflect) Has(k pref.MapKey) bool {
+func (ms *mapReflect) Has(k pref.MapKey) bool {
 	if ms.v.IsNil() {
 		return false
 	}
@@ -39,7 +41,7 @@ func (ms mapReflect) Has(k pref.MapKey) bool {
 	rv := ms.v.Elem().MapIndex(rk)
 	return rv.IsValid()
 }
-func (ms mapReflect) Get(k pref.MapKey) pref.Value {
+func (ms *mapReflect) Get(k pref.MapKey) pref.Value {
 	if ms.v.IsNil() {
 		return pref.Value{}
 	}
@@ -50,7 +52,7 @@ func (ms mapReflect) Get(k pref.MapKey) pref.Value {
 	}
 	return ms.valConv.PBValueOf(rv)
 }
-func (ms mapReflect) Set(k pref.MapKey, v pref.Value) {
+func (ms *mapReflect) Set(k pref.MapKey, v pref.Value) {
 	if ms.v.Elem().IsNil() {
 		ms.v.Elem().Set(reflect.MakeMap(ms.v.Elem().Type()))
 	}
@@ -58,11 +60,11 @@ func (ms mapReflect) Set(k pref.MapKey, v pref.Value) {
 	rv := ms.valConv.GoValueOf(v)
 	ms.v.Elem().SetMapIndex(rk, rv)
 }
-func (ms mapReflect) Clear(k pref.MapKey) {
+func (ms *mapReflect) Clear(k pref.MapKey) {
 	rk := ms.keyConv.GoValueOf(k.Value())
 	ms.v.Elem().SetMapIndex(rk, reflect.Value{})
 }
-func (ms mapReflect) Range(f func(pref.MapKey, pref.Value) bool) {
+func (ms *mapReflect) Range(f func(pref.MapKey, pref.Value) bool) {
 	if ms.v.IsNil() {
 		return
 	}
@@ -76,9 +78,9 @@ func (ms mapReflect) Range(f func(pref.MapKey, pref.Value) bool) {
 		}
 	}
 }
-func (ms mapReflect) NewMessage() pref.Message {
+func (ms *mapReflect) NewMessage() pref.Message {
 	return ms.valConv.NewMessage()
 }
-func (ms mapReflect) ProtoUnwrap() interface{} {
+func (ms *mapReflect) ProtoUnwrap() interface{} {
 	return ms.v.Interface()
 }

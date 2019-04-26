@@ -1371,19 +1371,6 @@ func TestUnmarshal(t *testing.T) {
 			return m
 		}(),
 	}, {
-		desc:         "extension field set to null",
-		inputMessage: &pb2.Extensions{},
-		inputText: `{
-  "[pb2.ExtensionsContainer.opt_ext_bool]": null,
-  "[pb2.ExtensionsContainer.opt_ext_nested]": null
-}`,
-		wantMessage: func() proto.Message {
-			m := &pb2.Extensions{}
-			setExtension(m, pb2.E_ExtensionsContainer_OptExtBool, nil)
-			setExtension(m, pb2.E_ExtensionsContainer_OptExtNested, nil)
-			return m
-		}(),
-	}, {
 		desc:         "extensions of repeated field contains null",
 		inputMessage: &pb2.Extensions{},
 		inputText: `{

@@ -5,8 +5,6 @@
 package proto
 
 import (
-	"fmt"
-
 	"google.golang.org/protobuf/internal/encoding/wire"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -34,23 +32,11 @@ func sizeMessageFast(m Message) (int, error) {
 }
 
 func sizeMessage(m protoreflect.Message) (size int) {
-	fieldDescs := m.Descriptor().Fields()
-	knownFields := m.KnownFields()
-	m.KnownFields().Range(func(num protoreflect.FieldNumber, value protoreflect.Value) bool {
-		field := fieldDescs.ByNumber(num)
-		if field == nil {
-			field = knownFields.ExtensionTypes().ByNumber(num).Descriptor()
-			if field == nil {
-				panic(fmt.Errorf("no descriptor for field %d in %q", num, m.Descriptor().FullName()))
-			}
-		}
-		size += sizeField(field, value)
+	m.Range(func(fd protoreflect.FieldDescriptor, v protoreflect.Value) bool {
+		size += sizeField(fd, v)
 		return true
 	})
-	m.UnknownFields().Range(func(_ protoreflect.FieldNumber, raw protoreflect.RawFields) bool {
-		size += len(raw)
-		return true
-	})
+	size += len(m.GetUnknown())
 	return size
 }
 
@@ -67,7 +53,7 @@ func sizeField(fd protoreflect.FieldDescriptor, value protoreflect.Value) (size 
 }
 
 func sizeList(num wire.Number, fd protoreflect.FieldDescriptor, list protoreflect.List) (size int) {
-	if fd.IsPacked() {
+	if fd.IsPacked() && list.Len() > 0 {
 		content := 0
 		for i, llen := 0, list.Len(); i < llen; i++ {
 			content += sizeSingular(num, fd.Kind(), list.Get(i))

@@ -5,19 +5,16 @@
 package impl_test
 
 import (
-	"bytes"
-	"math"
 	"reflect"
 	"sync"
 	"testing"
 
-	cmp "github.com/google/go-cmp/cmp"
-	cmpopts "github.com/google/go-cmp/cmp/cmpopts"
-	pack "google.golang.org/protobuf/internal/encoding/pack"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	pimpl "google.golang.org/protobuf/internal/impl"
 	pragma "google.golang.org/protobuf/internal/pragma"
 	ptype "google.golang.org/protobuf/internal/prototype"
-	scalar "google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/internal/scalar"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	preg "google.golang.org/protobuf/reflect/protoregistry"
 	piface "google.golang.org/protobuf/runtime/protoiface"
@@ -40,136 +37,6 @@ func (*legacyTestMessage) ExtensionRangeArray() []piface.ExtensionRangeV1 {
 func init() {
 	mt := pimpl.Export{}.MessageTypeOf(&legacyTestMessage{})
 	preg.GlobalTypes.Register(mt)
-}
-
-func TestLegacyUnknown(t *testing.T) {
-	rawOf := func(toks ...pack.Token) pref.RawFields {
-		return pref.RawFields(pack.Message(toks).Marshal())
-	}
-	raw1 := rawOf(pack.Tag{1, pack.BytesType}, pack.Bytes("1"))                      // 0a0131
-	raw1a := rawOf(pack.Tag{1, pack.VarintType}, pack.Svarint(-4321))                // 08c143
-	raw1b := rawOf(pack.Tag{1, pack.Fixed32Type}, pack.Uint32(0xdeadbeef))           // 0defbeadde
-	raw1c := rawOf(pack.Tag{1, pack.Fixed64Type}, pack.Float64(math.Pi))             // 09182d4454fb210940
-	raw2a := rawOf(pack.Tag{2, pack.BytesType}, pack.String("hello, world!"))        // 120d68656c6c6f2c20776f726c6421
-	raw2b := rawOf(pack.Tag{2, pack.VarintType}, pack.Uvarint(1234))                 // 10d209
-	raw3a := rawOf(pack.Tag{3, pack.StartGroupType}, pack.Tag{3, pack.EndGroupType}) // 1b1c
-	raw3b := rawOf(pack.Tag{3, pack.BytesType}, pack.Bytes("\xde\xad\xbe\xef"))      // 1a04deadbeef
-
-	joinRaw := func(bs ...pref.RawFields) (out []byte) {
-		for _, b := range bs {
-			out = append(out, b...)
-		}
-		return out
-	}
-
-	m := new(legacyTestMessage)
-	fs := pimpl.Export{}.MessageOf(m).UnknownFields()
-
-	if got, want := fs.Len(), 0; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
-
-	fs.Set(1, raw1a)
-	fs.Set(1, append(fs.Get(1), raw1b...))
-	fs.Set(1, append(fs.Get(1), raw1c...))
-	if got, want := fs.Len(), 1; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(raw1a, raw1b, raw1c); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
-
-	fs.Set(2, raw2a)
-	if got, want := fs.Len(), 2; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(raw1a, raw1b, raw1c, raw2a); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
-
-	if got, want := fs.Get(1), joinRaw(raw1a, raw1b, raw1c); !bytes.Equal(got, want) {
-		t.Errorf("Get(%d) = %x, want %x", 1, got, want)
-	}
-	if got, want := fs.Get(2), joinRaw(raw2a); !bytes.Equal(got, want) {
-		t.Errorf("Get(%d) = %x, want %x", 2, got, want)
-	}
-	if got, want := fs.Get(3), joinRaw(); !bytes.Equal(got, want) {
-		t.Errorf("Get(%d) = %x, want %x", 3, got, want)
-	}
-
-	fs.Set(1, nil) // remove field 1
-	if got, want := fs.Len(), 1; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(raw2a); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
-
-	// Simulate manual appending of raw field data.
-	m.XXX_unrecognized = append(m.XXX_unrecognized, joinRaw(raw3a, raw1a, raw1b, raw2b, raw3b, raw1c)...)
-	if got, want := fs.Len(), 3; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-
-	// Verify range iteration order.
-	var i int
-	want := []struct {
-		num pref.FieldNumber
-		raw pref.RawFields
-	}{
-		{2, joinRaw(raw2a, raw2b)},
-		{3, joinRaw(raw3a, raw3b)},
-		{1, joinRaw(raw1a, raw1b, raw1c)},
-	}
-	fs.Range(func(num pref.FieldNumber, raw pref.RawFields) bool {
-		if i < len(want) {
-			if num != want[i].num || !bytes.Equal(raw, want[i].raw) {
-				t.Errorf("Range(%d) = (%d, %x), want (%d, %x)", i, num, raw, want[i].num, want[i].raw)
-			}
-		} else {
-			t.Errorf("unexpected Range iteration: %d", i)
-		}
-		i++
-		return true
-	})
-
-	fs.Set(2, fs.Get(2)) // moves field 2 to the end
-	if got, want := fs.Len(), 3; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(raw3a, raw1a, raw1b, raw3b, raw1c, raw2a, raw2b); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
-	fs.Set(1, nil) // remove field 1
-	if got, want := fs.Len(), 2; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(raw3a, raw3b, raw2a, raw2b); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
-
-	// Remove all fields.
-	fs.Range(func(n pref.FieldNumber, b pref.RawFields) bool {
-		fs.Set(n, nil)
-		return true
-	})
-	if got, want := fs.Len(), 0; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
-
-	fs.Set(1, raw1)
-	if got, want := fs.Len(), 1; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(raw1); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
 }
 
 var (
@@ -466,63 +333,41 @@ func TestLegacyExtensions(t *testing.T) {
 		return x == y // pointer compare messages for object identity
 	})}
 
-	m := new(legacyTestMessage)
-	fs := pimpl.Export{}.MessageOf(m).KnownFields()
-	ts := fs.ExtensionTypes()
+	m := pimpl.Export{}.MessageOf(new(legacyTestMessage))
 
-	if n := fs.Len(); n != 0 {
+	if n := m.Len(); n != 0 {
 		t.Errorf("KnownFields.Len() = %v, want 0", n)
-	}
-	if n := ts.Len(); n != 0 {
-		t.Errorf("ExtensionFieldTypes.Len() = %v, want 0", n)
-	}
-
-	// Register all the extension types.
-	for _, xt := range extensionTypes {
-		ts.Register(xt)
 	}
 
 	// Check that getting the zero value returns the default value for scalars,
 	// nil for singular messages, and an empty list for repeated fields.
-	defaultValues := []interface{}{
-		bool(true),
-		int32(-12345),
-		uint32(3200),
-		float32(3.14159),
-		string("hello, \"world!\"\n"),
-		[]byte("dead\xde\xad\xbe\xefbeef"),
-		proto2_20180125.Message_ALPHA,
-		nil,
-		EnumProto2(0xdead),
-		nil,
-		new([]bool),
-		new([]int32),
-		new([]uint32),
-		new([]float32),
-		new([]string),
-		new([][]byte),
-		new([]proto2_20180125.Message_ChildEnum),
-		new([]*proto2_20180125.Message_ChildMessage),
-		new([]EnumProto2),
-		new([]*EnumMessages),
+	defaultValues := map[int]interface{}{
+		0: bool(true),
+		1: int32(-12345),
+		2: uint32(3200),
+		3: float32(3.14159),
+		4: string("hello, \"world!\"\n"),
+		5: []byte("dead\xde\xad\xbe\xefbeef"),
+		6: proto2_20180125.Message_ALPHA,
+		7: nil,
+		8: EnumProto2(0xdead),
+		9: nil,
 	}
 	for i, xt := range extensionTypes {
 		var got interface{}
-		num := xt.Descriptor().Number()
-		if v := fs.Get(num); v.IsValid() {
-			got = xt.InterfaceOf(v)
+		if !(xt.IsList() || xt.IsMap() || xt.Message() != nil) {
+			got = xt.InterfaceOf(m.Get(xt))
 		}
 		want := defaultValues[i]
 		if diff := cmp.Diff(want, got, opts); diff != "" {
-			t.Errorf("KnownFields.Get(%d) mismatch (-want +got):\n%v", num, diff)
+			t.Errorf("Message.Get(%d) mismatch (-want +got):\n%v", xt.Number(), diff)
 		}
 	}
 
 	// All fields should be unpopulated.
 	for _, xt := range extensionTypes {
-		num := xt.Descriptor().Number()
-		if fs.Has(num) {
-			t.Errorf("KnownFields.Has(%d) = true, want false", num)
+		if m.Has(xt) {
+			t.Errorf("Message.Has(%d) = true, want false", xt.Number())
 		}
 	}
 
@@ -531,102 +376,88 @@ func TestLegacyExtensions(t *testing.T) {
 	m1b := &proto2_20180125.Message_ChildMessage{F1: scalar.String("m2b")}
 	m2a := &EnumMessages{EnumP2: EnumProto2(0x1b).Enum()}
 	m2b := &EnumMessages{EnumP2: EnumProto2(0x2b).Enum()}
-	setValues := []interface{}{
-		bool(false),
-		int32(-54321),
-		uint32(6400),
-		float32(2.71828),
-		string("goodbye, \"world!\"\n"),
-		[]byte("live\xde\xad\xbe\xefchicken"),
-		proto2_20180125.Message_CHARLIE,
-		m1a,
-		EnumProto2(0xbeef),
-		m2a,
-		&[]bool{true},
-		&[]int32{-1000},
-		&[]uint32{1280},
-		&[]float32{1.6180},
-		&[]string{"zero"},
-		&[][]byte{[]byte("zero")},
-		&[]proto2_20180125.Message_ChildEnum{proto2_20180125.Message_BRAVO},
-		&[]*proto2_20180125.Message_ChildMessage{m1b},
-		&[]EnumProto2{0xdead},
-		&[]*EnumMessages{m2b},
+	setValues := map[int]interface{}{
+		0:  bool(false),
+		1:  int32(-54321),
+		2:  uint32(6400),
+		3:  float32(2.71828),
+		4:  string("goodbye, \"world!\"\n"),
+		5:  []byte("live\xde\xad\xbe\xefchicken"),
+		6:  proto2_20180125.Message_CHARLIE,
+		7:  m1a,
+		8:  EnumProto2(0xbeef),
+		9:  m2a,
+		10: &[]bool{true},
+		11: &[]int32{-1000},
+		12: &[]uint32{1280},
+		13: &[]float32{1.6180},
+		14: &[]string{"zero"},
+		15: &[][]byte{[]byte("zero")},
+		16: &[]proto2_20180125.Message_ChildEnum{proto2_20180125.Message_BRAVO},
+		17: &[]*proto2_20180125.Message_ChildMessage{m1b},
+		18: &[]EnumProto2{0xdead},
+		19: &[]*EnumMessages{m2b},
 	}
 	for i, xt := range extensionTypes {
-		fs.Set(xt.Descriptor().Number(), xt.ValueOf(setValues[i]))
+		m.Set(xt, xt.ValueOf(setValues[i]))
 	}
 	for i, xt := range extensionTypes[len(extensionTypes)/2:] {
 		v := extensionTypes[i].ValueOf(setValues[i])
-		fs.Get(xt.Descriptor().Number()).List().Append(v)
+		m.Get(xt).List().Append(v)
 	}
 
 	// Get the values and check for equality.
-	getValues := []interface{}{
-		bool(false),
-		int32(-54321),
-		uint32(6400),
-		float32(2.71828),
-		string("goodbye, \"world!\"\n"),
-		[]byte("live\xde\xad\xbe\xefchicken"),
-		proto2_20180125.Message_ChildEnum(proto2_20180125.Message_CHARLIE),
-		m1a,
-		EnumProto2(0xbeef),
-		m2a,
-		&[]bool{true, false},
-		&[]int32{-1000, -54321},
-		&[]uint32{1280, 6400},
-		&[]float32{1.6180, 2.71828},
-		&[]string{"zero", "goodbye, \"world!\"\n"},
-		&[][]byte{[]byte("zero"), []byte("live\xde\xad\xbe\xefchicken")},
-		&[]proto2_20180125.Message_ChildEnum{proto2_20180125.Message_BRAVO, proto2_20180125.Message_CHARLIE},
-		&[]*proto2_20180125.Message_ChildMessage{m1b, m1a},
-		&[]EnumProto2{0xdead, 0xbeef},
-		&[]*EnumMessages{m2b, m2a},
+	getValues := map[int]interface{}{
+		0:  bool(false),
+		1:  int32(-54321),
+		2:  uint32(6400),
+		3:  float32(2.71828),
+		4:  string("goodbye, \"world!\"\n"),
+		5:  []byte("live\xde\xad\xbe\xefchicken"),
+		6:  proto2_20180125.Message_ChildEnum(proto2_20180125.Message_CHARLIE),
+		7:  m1a,
+		8:  EnumProto2(0xbeef),
+		9:  m2a,
+		10: &[]bool{true, false},
+		11: &[]int32{-1000, -54321},
+		12: &[]uint32{1280, 6400},
+		13: &[]float32{1.6180, 2.71828},
+		14: &[]string{"zero", "goodbye, \"world!\"\n"},
+		15: &[][]byte{[]byte("zero"), []byte("live\xde\xad\xbe\xefchicken")},
+		16: &[]proto2_20180125.Message_ChildEnum{proto2_20180125.Message_BRAVO, proto2_20180125.Message_CHARLIE},
+		17: &[]*proto2_20180125.Message_ChildMessage{m1b, m1a},
+		18: &[]EnumProto2{0xdead, 0xbeef},
+		19: &[]*EnumMessages{m2b, m2a},
 	}
 	for i, xt := range extensionTypes {
-		num := xt.Descriptor().Number()
-		got := xt.InterfaceOf(fs.Get(num))
+		got := xt.InterfaceOf(m.Get(xt))
 		want := getValues[i]
 		if diff := cmp.Diff(want, got, opts); diff != "" {
-			t.Errorf("KnownFields.Get(%d) mismatch (-want +got):\n%v", num, diff)
+			t.Errorf("Message.Get(%d) mismatch (-want +got):\n%v", xt.Number(), diff)
 		}
 	}
 
-	if n := fs.Len(); n != 20 {
-		t.Errorf("KnownFields.Len() = %v, want 0", n)
-	}
-	if n := ts.Len(); n != 20 {
-		t.Errorf("ExtensionFieldTypes.Len() = %v, want 20", n)
+	if n := m.Len(); n != 20 {
+		t.Errorf("Message.Len() = %v, want 0", n)
 	}
 
-	// Clear the field for all extension types.
+	// Clear all singular fields and truncate all repeated fields.
 	for _, xt := range extensionTypes[:len(extensionTypes)/2] {
-		fs.Clear(xt.Descriptor().Number())
+		m.Clear(xt)
 	}
-	for i, xt := range extensionTypes[len(extensionTypes)/2:] {
-		if i%2 == 0 {
-			fs.Clear(xt.Descriptor().Number())
-		} else {
-			fs.Get(xt.Descriptor().Number()).List().Truncate(0)
-		}
+	for _, xt := range extensionTypes[len(extensionTypes)/2:] {
+		m.Get(xt).List().Truncate(0)
 	}
-	if n := fs.Len(); n != 0 {
-		t.Errorf("KnownFields.Len() = %v, want 0", n)
-	}
-	if n := ts.Len(); n != 20 {
-		t.Errorf("ExtensionFieldTypes.Len() = %v, want 20", n)
+	if n := m.Len(); n != 10 {
+		t.Errorf("Message.Len() = %v, want 10", n)
 	}
 
-	// De-register all extension types.
-	for _, xt := range extensionTypes {
-		ts.Remove(xt)
+	// Clear all repeated fields.
+	for _, xt := range extensionTypes[len(extensionTypes)/2:] {
+		m.Clear(xt)
 	}
-	if n := fs.Len(); n != 0 {
-		t.Errorf("KnownFields.Len() = %v, want 0", n)
-	}
-	if n := ts.Len(); n != 0 {
-		t.Errorf("ExtensionFieldTypes.Len() = %v, want 0", n)
+	if n := m.Len(); n != 0 {
+		t.Errorf("Message.Len() = %v, want 0", n)
 	}
 }
 

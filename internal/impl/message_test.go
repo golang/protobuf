@@ -17,7 +17,6 @@ import (
 	pimpl "google.golang.org/protobuf/internal/impl"
 	ptype "google.golang.org/protobuf/internal/prototype"
 	scalar "google.golang.org/protobuf/internal/scalar"
-	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/prototype"
 
@@ -52,25 +51,31 @@ type (
 	// check for the presence of specific oneof member fields.
 	whichOneofs map[pref.Name]pref.FieldNumber
 	// apply messageOps on each specified message field
-	messageFields map[pref.FieldNumber]messageOps
+	messageFields        map[pref.FieldNumber]messageOps
+	messageFieldsMutable map[pref.FieldNumber]messageOps
 	// apply listOps on each specified list field
-	listFields map[pref.FieldNumber]listOps
+	listFields        map[pref.FieldNumber]listOps
+	listFieldsMutable map[pref.FieldNumber]listOps
 	// apply mapOps on each specified map fields
-	mapFields map[pref.FieldNumber]mapOps
+	mapFields        map[pref.FieldNumber]mapOps
+	mapFieldsMutable map[pref.FieldNumber]mapOps
 	// range through all fields and check that they match
 	rangeFields map[pref.FieldNumber]pref.Value
 )
 
-func (equalMessage) isMessageOp()  {}
-func (hasFields) isMessageOp()     {}
-func (getFields) isMessageOp()     {}
-func (setFields) isMessageOp()     {}
-func (clearFields) isMessageOp()   {}
-func (whichOneofs) isMessageOp()   {}
-func (messageFields) isMessageOp() {}
-func (listFields) isMessageOp()    {}
-func (mapFields) isMessageOp()     {}
-func (rangeFields) isMessageOp()   {}
+func (equalMessage) isMessageOp()         {}
+func (hasFields) isMessageOp()            {}
+func (getFields) isMessageOp()            {}
+func (setFields) isMessageOp()            {}
+func (clearFields) isMessageOp()          {}
+func (whichOneofs) isMessageOp()          {}
+func (messageFields) isMessageOp()        {}
+func (messageFieldsMutable) isMessageOp() {}
+func (listFields) isMessageOp()           {}
+func (listFieldsMutable) isMessageOp()    {}
+func (mapFields) isMessageOp()            {}
+func (mapFieldsMutable) isMessageOp()     {}
+func (rangeFields) isMessageOp()          {}
 
 // Test operations performed on a list.
 type (
@@ -221,27 +226,14 @@ var scalarProto2Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto2
 		},
 	}),
 	NewMessage: func() pref.Message {
-		return new(ScalarProto2)
+		return pref.ProtoMessage(new(ScalarProto2)).ProtoReflect()
 	},
 }}
 
-// TODO: Remove this.
-func (m *ScalarProto2) Type() pref.MessageType { return scalarProto2Type.PBType }
-func (m *ScalarProto2) Descriptor() pref.MessageDescriptor {
-	return scalarProto2Type.PBType.Descriptor()
-}
-func (m *ScalarProto2) KnownFields() pref.KnownFields {
-	return scalarProto2Type.MessageOf(m).KnownFields()
-}
-func (m *ScalarProto2) UnknownFields() pref.UnknownFields {
-	return scalarProto2Type.MessageOf(m).UnknownFields()
-}
-func (m *ScalarProto2) New() pref.Message            { return new(ScalarProto2) }
-func (m *ScalarProto2) Interface() pref.ProtoMessage { return m }
-func (m *ScalarProto2) ProtoReflect() pref.Message   { return m }
+func (m *ScalarProto2) ProtoReflect() pref.Message { return scalarProto2Type.MessageOf(m) }
 
 func TestScalarProto2(t *testing.T) {
-	testMessage(t, nil, &ScalarProto2{}, messageOps{
+	testMessage(t, nil, new(ScalarProto2).ProtoReflect(), messageOps{
 		hasFields{
 			1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false,
 			12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false,
@@ -258,16 +250,16 @@ func TestScalarProto2(t *testing.T) {
 			1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true,
 			12: true, 13: true, 14: true, 15: true, 16: true, 17: true, 18: true, 19: true, 20: true, 21: true, 22: true,
 		},
-		equalMessage{&ScalarProto2{
+		equalMessage{(&ScalarProto2{
 			new(bool), new(int32), new(int64), new(uint32), new(uint64), new(float32), new(float64), new(string), []byte{}, []byte{}, new(string),
 			new(MyBool), new(MyInt32), new(MyInt64), new(MyUint32), new(MyUint64), new(MyFloat32), new(MyFloat64), new(MyString), MyBytes{}, MyBytes{}, new(MyString),
-		}},
+		}).ProtoReflect()},
 		clearFields{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22},
-		equalMessage{&ScalarProto2{}},
+		equalMessage{new(ScalarProto2).ProtoReflect()},
 	})
 
 	// Test read-only operations on nil message.
-	testMessage(t, nil, (*ScalarProto2)(nil), messageOps{
+	testMessage(t, nil, (*ScalarProto2)(nil).ProtoReflect(), messageOps{
 		hasFields{
 			1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false,
 			12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false,
@@ -336,27 +328,14 @@ var scalarProto3Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto3
 		},
 	}),
 	NewMessage: func() pref.Message {
-		return new(ScalarProto3)
+		return pref.ProtoMessage(new(ScalarProto3)).ProtoReflect()
 	},
 }}
 
-// TODO: Remove this.
-func (m *ScalarProto3) Type() pref.MessageType { return scalarProto3Type.PBType }
-func (m *ScalarProto3) Descriptor() pref.MessageDescriptor {
-	return scalarProto3Type.PBType.Descriptor()
-}
-func (m *ScalarProto3) KnownFields() pref.KnownFields {
-	return scalarProto3Type.MessageOf(m).KnownFields()
-}
-func (m *ScalarProto3) UnknownFields() pref.UnknownFields {
-	return scalarProto3Type.MessageOf(m).UnknownFields()
-}
-func (m *ScalarProto3) New() pref.Message            { return new(ScalarProto3) }
-func (m *ScalarProto3) Interface() pref.ProtoMessage { return m }
-func (m *ScalarProto3) ProtoReflect() pref.Message   { return m }
+func (m *ScalarProto3) ProtoReflect() pref.Message { return scalarProto3Type.MessageOf(m) }
 
 func TestScalarProto3(t *testing.T) {
-	testMessage(t, nil, &ScalarProto3{}, messageOps{
+	testMessage(t, nil, new(ScalarProto3).ProtoReflect(), messageOps{
 		hasFields{
 			1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false,
 			12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false,
@@ -373,7 +352,7 @@ func TestScalarProto3(t *testing.T) {
 			1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false,
 			12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false,
 		},
-		equalMessage{&ScalarProto3{}},
+		equalMessage{new(ScalarProto3).ProtoReflect()},
 		setFields{
 			1: V(bool(true)), 2: V(int32(2)), 3: V(int64(3)), 4: V(uint32(4)), 5: V(uint64(5)), 6: V(float32(6)), 7: V(float64(7)), 8: V(string("8")), 9: V(string("9")), 10: V([]byte("10")), 11: V([]byte("11")),
 			12: V(bool(true)), 13: V(int32(13)), 14: V(int64(14)), 15: V(uint32(15)), 16: V(uint64(16)), 17: V(float32(17)), 18: V(float64(18)), 19: V(string("19")), 20: V(string("20")), 21: V([]byte("21")), 22: V([]byte("22")),
@@ -382,10 +361,10 @@ func TestScalarProto3(t *testing.T) {
 			1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true,
 			12: true, 13: true, 14: true, 15: true, 16: true, 17: true, 18: true, 19: true, 20: true, 21: true, 22: true,
 		},
-		equalMessage{&ScalarProto3{
+		equalMessage{(&ScalarProto3{
 			true, 2, 3, 4, 5, 6, 7, "8", []byte("9"), []byte("10"), "11",
 			true, 13, 14, 15, 16, 17, 18, "19", []byte("20"), []byte("21"), "22",
-		}},
+		}).ProtoReflect()},
 		setFields{
 			2: V(int32(-2)), 3: V(int64(-3)), 6: V(float32(math.Inf(-1))), 7: V(float64(math.NaN())),
 		},
@@ -393,7 +372,7 @@ func TestScalarProto3(t *testing.T) {
 			2: true, 3: true, 6: true, 7: true,
 		},
 		clearFields{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22},
-		equalMessage{&ScalarProto3{}},
+		equalMessage{new(ScalarProto3).ProtoReflect()},
 
 		// Verify that -0 triggers proper Has behavior.
 		hasFields{6: false, 7: false},
@@ -402,7 +381,7 @@ func TestScalarProto3(t *testing.T) {
 	})
 
 	// Test read-only operations on nil message.
-	testMessage(t, nil, (*ScalarProto3)(nil), messageOps{
+	testMessage(t, nil, (*ScalarProto3)(nil).ProtoReflect(), messageOps{
 		hasFields{
 			1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false,
 			12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false,
@@ -467,28 +446,15 @@ var listScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ListScalars))
 		},
 	}),
 	NewMessage: func() pref.Message {
-		return new(ListScalars)
+		return pref.ProtoMessage(new(ListScalars)).ProtoReflect()
 	},
 }}
 
-// TODO: Remove this.
-func (m *ListScalars) Type() pref.MessageType             { return listScalarsType.PBType }
-func (m *ListScalars) Descriptor() pref.MessageDescriptor { return listScalarsType.PBType.Descriptor() }
-func (m *ListScalars) KnownFields() pref.KnownFields {
-	return listScalarsType.MessageOf(m).KnownFields()
-}
-func (m *ListScalars) UnknownFields() pref.UnknownFields {
-	return listScalarsType.MessageOf(m).UnknownFields()
-}
-func (m *ListScalars) New() pref.Message            { return new(ListScalars) }
-func (m *ListScalars) Interface() pref.ProtoMessage { return m }
-func (m *ListScalars) ProtoReflect() pref.Message   { return m }
+func (m *ListScalars) ProtoReflect() pref.Message { return listScalarsType.MessageOf(m) }
 
 func TestListScalars(t *testing.T) {
-	empty := &ListScalars{}
-	emptyFS := empty.KnownFields()
-
-	want := &ListScalars{
+	empty := new(ListScalars).ProtoReflect()
+	want := (&ListScalars{
 		Bools:    []bool{true, false, true},
 		Int32s:   []int32{2, math.MinInt32, math.MaxInt32},
 		Int64s:   []int64{3, math.MinInt64, math.MaxInt64},
@@ -510,19 +476,18 @@ func TestListScalars(t *testing.T) {
 		MyStrings4: ListBytes{[]byte("17"), nil, []byte("seventeen")},
 		MyBytes3:   ListBytes{[]byte("18"), nil, []byte("eighteen")},
 		MyBytes4:   ListStrings{"19", "", "nineteen"},
-	}
-	wantFS := want.KnownFields()
+	}).ProtoReflect()
 
-	testMessage(t, nil, &ListScalars{}, messageOps{
+	testMessage(t, nil, new(ListScalars).ProtoReflect(), messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false},
-		getFields{1: emptyFS.Get(1), 3: emptyFS.Get(3), 5: emptyFS.Get(5), 7: emptyFS.Get(7), 9: emptyFS.Get(9), 11: emptyFS.Get(11), 13: emptyFS.Get(13), 15: emptyFS.Get(15), 17: emptyFS.Get(17), 19: emptyFS.Get(19)},
-		setFields{1: wantFS.Get(1), 3: wantFS.Get(3), 5: wantFS.Get(5), 7: wantFS.Get(7), 9: wantFS.Get(9), 11: wantFS.Get(11), 13: wantFS.Get(13), 15: wantFS.Get(15), 17: wantFS.Get(17), 19: wantFS.Get(19)},
-		listFields{
+		getFields{1: getField(empty, 1), 3: getField(empty, 3), 5: getField(empty, 5), 7: getField(empty, 7), 9: getField(empty, 9), 11: getField(empty, 11), 13: getField(empty, 13), 15: getField(empty, 15), 17: getField(empty, 17), 19: getField(empty, 19)},
+		setFields{1: getField(want, 1), 3: getField(want, 3), 5: getField(want, 5), 7: getField(want, 7), 9: getField(want, 9), 11: getField(want, 11), 13: getField(want, 13), 15: getField(want, 15), 17: getField(want, 17), 19: getField(want, 19)},
+		listFieldsMutable{
 			2: {
 				lenList(0),
 				appendList{V(int32(2)), V(int32(math.MinInt32)), V(int32(math.MaxInt32))},
 				getList{0: V(int32(2)), 1: V(int32(math.MinInt32)), 2: V(int32(math.MaxInt32))},
-				equalList{wantFS.Get(2).List()},
+				equalList{getField(want, 2).List()},
 			},
 			4: {
 				appendList{V(uint32(0)), V(uint32(0)), V(uint32(0))},
@@ -531,39 +496,39 @@ func TestListScalars(t *testing.T) {
 			},
 			6: {
 				appendList{V(float32(6)), V(float32(math.SmallestNonzeroFloat32)), V(float32(math.NaN())), V(float32(math.MaxFloat32))},
-				equalList{wantFS.Get(6).List()},
+				equalList{getField(want, 6).List()},
 			},
 			8: {
 				appendList{V(""), V(""), V(""), V(""), V(""), V("")},
 				lenList(6),
 				setList{0: V("8"), 2: V("eight")},
 				truncList(3),
-				equalList{wantFS.Get(8).List()},
+				equalList{getField(want, 8).List()},
 			},
 			10: {
 				appendList{V([]byte(nil)), V([]byte(nil))},
 				setList{0: V([]byte("10"))},
 				appendList{V([]byte("wrong"))},
 				setList{2: V([]byte("ten"))},
-				equalList{wantFS.Get(10).List()},
+				equalList{getField(want, 10).List()},
 			},
 			12: {
 				appendList{V("12"), V("wrong"), V("twelve")},
 				setList{1: V("")},
-				equalList{wantFS.Get(12).List()},
+				equalList{getField(want, 12).List()},
 			},
 			14: {
 				appendList{V([]byte("14")), V([]byte(nil)), V([]byte("fourteen"))},
-				equalList{wantFS.Get(14).List()},
+				equalList{getField(want, 14).List()},
 			},
 			16: {
 				appendList{V("16"), V(""), V("sixteen"), V("extra")},
 				truncList(3),
-				equalList{wantFS.Get(16).List()},
+				equalList{getField(want, 16).List()},
 			},
 			18: {
 				appendList{V([]byte("18")), V([]byte(nil)), V([]byte("eighteen"))},
-				equalList{wantFS.Get(18).List()},
+				equalList{getField(want, 18).List()},
 			},
 		},
 		hasFields{1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true, 12: true, 13: true, 14: true, 15: true, 16: true, 17: true, 18: true, 19: true},
@@ -573,7 +538,7 @@ func TestListScalars(t *testing.T) {
 	})
 
 	// Test read-only operations on nil message.
-	testMessage(t, nil, (*ListScalars)(nil), messageOps{
+	testMessage(t, nil, (*ListScalars)(nil).ProtoReflect(), messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false},
 		listFields{2: {lenList(0)}, 4: {lenList(0)}, 6: {lenList(0)}, 8: {lenList(0)}, 10: {lenList(0)}, 12: {lenList(0)}, 14: {lenList(0)}, 16: {lenList(0)}, 18: {lenList(0)}},
 	})
@@ -665,28 +630,15 @@ var mapScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(MapScalars)), 
 		},
 	}),
 	NewMessage: func() pref.Message {
-		return new(MapScalars)
+		return pref.ProtoMessage(new(MapScalars)).ProtoReflect()
 	},
 }}
 
-// TODO: Remove this.
-func (m *MapScalars) Type() pref.MessageType             { return mapScalarsType.PBType }
-func (m *MapScalars) Descriptor() pref.MessageDescriptor { return mapScalarsType.PBType.Descriptor() }
-func (m *MapScalars) KnownFields() pref.KnownFields {
-	return mapScalarsType.MessageOf(m).KnownFields()
-}
-func (m *MapScalars) UnknownFields() pref.UnknownFields {
-	return mapScalarsType.MessageOf(m).UnknownFields()
-}
-func (m *MapScalars) New() pref.Message            { return new(MapScalars) }
-func (m *MapScalars) Interface() pref.ProtoMessage { return m }
-func (m *MapScalars) ProtoReflect() pref.Message   { return m }
+func (m *MapScalars) ProtoReflect() pref.Message { return mapScalarsType.MessageOf(m) }
 
 func TestMapScalars(t *testing.T) {
-	empty := &MapScalars{}
-	emptyFS := empty.KnownFields()
-
-	want := &MapScalars{
+	empty := new(MapScalars).ProtoReflect()
+	want := (&MapScalars{
 		KeyBools:   map[bool]string{true: "true", false: "false"},
 		KeyInt32s:  map[int32]string{0: "zero", -1: "one", 2: "two"},
 		KeyInt64s:  map[int64]string{0: "zero", -10: "ten", 20: "twenty"},
@@ -715,14 +667,13 @@ func TestMapScalars(t *testing.T) {
 		MyStrings4: MapBytes{"s1": []byte("s1"), "s2": []byte("s2")},
 		MyBytes3:   MapBytes{"s1": []byte("s1"), "s2": []byte("s2")},
 		MyBytes4:   MapStrings{"s1": "s1", "s2": "s2"},
-	}
-	wantFS := want.KnownFields()
+	}).ProtoReflect()
 
-	testMessage(t, nil, &MapScalars{}, messageOps{
+	testMessage(t, nil, new(MapScalars).ProtoReflect(), messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false, 23: false, 24: false, 25: false},
-		getFields{1: emptyFS.Get(1), 3: emptyFS.Get(3), 5: emptyFS.Get(5), 7: emptyFS.Get(7), 9: emptyFS.Get(9), 11: emptyFS.Get(11), 13: emptyFS.Get(13), 15: emptyFS.Get(15), 17: emptyFS.Get(17), 19: emptyFS.Get(19), 21: emptyFS.Get(21), 23: emptyFS.Get(23), 25: emptyFS.Get(25)},
-		setFields{1: wantFS.Get(1), 3: wantFS.Get(3), 5: wantFS.Get(5), 7: wantFS.Get(7), 9: wantFS.Get(9), 11: wantFS.Get(11), 13: wantFS.Get(13), 15: wantFS.Get(15), 17: wantFS.Get(17), 19: wantFS.Get(19), 21: wantFS.Get(21), 23: wantFS.Get(23), 25: wantFS.Get(25)},
-		mapFields{
+		getFields{1: getField(empty, 1), 3: getField(empty, 3), 5: getField(empty, 5), 7: getField(empty, 7), 9: getField(empty, 9), 11: getField(empty, 11), 13: getField(empty, 13), 15: getField(empty, 15), 17: getField(empty, 17), 19: getField(empty, 19), 21: getField(empty, 21), 23: getField(empty, 23), 25: getField(empty, 25)},
+		setFields{1: getField(want, 1), 3: getField(want, 3), 5: getField(want, 5), 7: getField(want, 7), 9: getField(want, 9), 11: getField(want, 11), 13: getField(want, 13), 15: getField(want, 15), 17: getField(want, 17), 19: getField(want, 19), 21: getField(want, 21), 23: getField(want, 23), 25: getField(want, 25)},
+		mapFieldsMutable{
 			2: {
 				lenMap(0),
 				hasMap{int32(0): false, int32(-1): false, int32(2): false},
@@ -738,7 +689,7 @@ func TestMapScalars(t *testing.T) {
 			},
 			4: {
 				setMap{uint32(0): V("zero"), uint32(1): V("one"), uint32(2): V("two")},
-				equalMap{wantFS.Get(4).Map()},
+				equalMap{getField(want, 4).Map()},
 			},
 			6: {
 				clearMap{"noexist"},
@@ -749,13 +700,13 @@ func TestMapScalars(t *testing.T) {
 				clearMap{"extra", "noexist"},
 			},
 			8: {
-				equalMap{emptyFS.Get(8).Map()},
+				equalMap{getField(empty, 8).Map()},
 				setMap{"one": V(int32(1)), "two": V(int32(2)), "three": V(int32(3))},
 			},
 			10: {
 				setMap{"0x00": V(uint32(0x00)), "0xff": V(uint32(0xff)), "0xdead": V(uint32(0xdead))},
 				lenMap(3),
-				equalMap{wantFS.Get(10).Map()},
+				equalMap{getField(want, 10).Map()},
 				getMap{"0x00": V(uint32(0x00)), "0xff": V(uint32(0xff)), "0xdead": V(uint32(0xdead)), "0xdeadbeef": V(nil)},
 			},
 			12: {
@@ -764,12 +715,12 @@ func TestMapScalars(t *testing.T) {
 				rangeMap{"nan": V(float32(math.NaN())), "pi": V(float32(math.Pi))},
 			},
 			14: {
-				equalMap{emptyFS.Get(14).Map()},
+				equalMap{getField(empty, 14).Map()},
 				setMap{"s1": V("s1"), "s2": V("s2")},
 			},
 			16: {
 				setMap{"s1": V([]byte("s1")), "s2": V([]byte("s2"))},
-				equalMap{wantFS.Get(16).Map()},
+				equalMap{getField(want, 16).Map()},
 			},
 			18: {
 				hasMap{"s1": false, "s2": false, "s3": false},
@@ -777,7 +728,7 @@ func TestMapScalars(t *testing.T) {
 				hasMap{"s1": true, "s2": true, "s3": false},
 			},
 			20: {
-				equalMap{emptyFS.Get(20).Map()},
+				equalMap{getField(empty, 20).Map()},
 				setMap{"s1": V([]byte("s1")), "s2": V([]byte("s2"))},
 			},
 			22: {
@@ -788,7 +739,7 @@ func TestMapScalars(t *testing.T) {
 			},
 			24: {
 				setMap{"s1": V([]byte("s1")), "s2": V([]byte("s2"))},
-				equalMap{wantFS.Get(24).Map()},
+				equalMap{getField(want, 24).Map()},
 			},
 		},
 		hasFields{1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true, 12: true, 13: true, 14: true, 15: true, 16: true, 17: true, 18: true, 19: true, 20: true, 21: true, 22: true, 23: true, 24: true, 25: true},
@@ -798,7 +749,7 @@ func TestMapScalars(t *testing.T) {
 	})
 
 	// Test read-only operations on nil message.
-	testMessage(t, nil, (*MapScalars)(nil), messageOps{
+	testMessage(t, nil, (*MapScalars)(nil).ProtoReflect(), messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false, 14: false, 15: false, 16: false, 17: false, 18: false, 19: false, 20: false, 21: false, 22: false, 23: false, 24: false, 25: false},
 		mapFields{2: {lenMap(0)}, 4: {lenMap(0)}, 6: {lenMap(0)}, 8: {lenMap(0)}, 10: {lenMap(0)}, 12: {lenMap(0)}, 14: {lenMap(0)}, 16: {lenMap(0)}, 18: {lenMap(0)}, 20: {lenMap(0)}, 22: {lenMap(0)}, 24: {lenMap(0)}},
 	})
@@ -830,24 +781,11 @@ var oneofScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(OneofScalars
 		Oneofs: []ptype.Oneof{{Name: "union"}},
 	}),
 	NewMessage: func() pref.Message {
-		return new(OneofScalars)
+		return pref.ProtoMessage(new(OneofScalars)).ProtoReflect()
 	},
 }}
 
-// TODO: Remove this.
-func (m *OneofScalars) Type() pref.MessageType { return oneofScalarsType.PBType }
-func (m *OneofScalars) Descriptor() pref.MessageDescriptor {
-	return oneofScalarsType.PBType.Descriptor()
-}
-func (m *OneofScalars) KnownFields() pref.KnownFields {
-	return oneofScalarsType.MessageOf(m).KnownFields()
-}
-func (m *OneofScalars) UnknownFields() pref.UnknownFields {
-	return oneofScalarsType.MessageOf(m).UnknownFields()
-}
-func (m *OneofScalars) New() pref.Message            { return new(OneofScalars) }
-func (m *OneofScalars) Interface() pref.ProtoMessage { return m }
-func (m *OneofScalars) ProtoReflect() pref.Message   { return m }
+func (m *OneofScalars) ProtoReflect() pref.Message { return oneofScalarsType.MessageOf(m) }
 
 func (*OneofScalars) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
@@ -942,41 +880,41 @@ func TestOneofs(t *testing.T) {
 	want12 := &OneofScalars{Union: &OneofScalars_BytesA{string("120")}}
 	want13 := &OneofScalars{Union: &OneofScalars_BytesB{MyBytes("130")}}
 
-	testMessage(t, nil, &OneofScalars{}, messageOps{
+	testMessage(t, nil, new(OneofScalars).ProtoReflect(), messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false},
 		getFields{1: V(bool(true)), 2: V(int32(2)), 3: V(int64(3)), 4: V(uint32(4)), 5: V(uint64(5)), 6: V(float32(6)), 7: V(float64(7)), 8: V(string("8")), 9: V(string("9")), 10: V(string("10")), 11: V([]byte("11")), 12: V([]byte("12")), 13: V([]byte("13"))},
-		whichOneofs{"union": 0, "Union": 0},
+		whichOneofs{"union": 0},
 
-		setFields{1: V(bool(true))}, hasFields{1: true}, equalMessage{want1},
-		setFields{2: V(int32(20))}, hasFields{2: true}, equalMessage{want2},
-		setFields{3: V(int64(30))}, hasFields{3: true}, equalMessage{want3},
-		setFields{4: V(uint32(40))}, hasFields{4: true}, equalMessage{want4},
-		setFields{5: V(uint64(50))}, hasFields{5: true}, equalMessage{want5},
-		setFields{6: V(float32(60))}, hasFields{6: true}, equalMessage{want6},
-		setFields{7: V(float64(70))}, hasFields{7: true}, equalMessage{want7},
+		setFields{1: V(bool(true))}, hasFields{1: true}, equalMessage{want1.ProtoReflect()},
+		setFields{2: V(int32(20))}, hasFields{2: true}, equalMessage{want2.ProtoReflect()},
+		setFields{3: V(int64(30))}, hasFields{3: true}, equalMessage{want3.ProtoReflect()},
+		setFields{4: V(uint32(40))}, hasFields{4: true}, equalMessage{want4.ProtoReflect()},
+		setFields{5: V(uint64(50))}, hasFields{5: true}, equalMessage{want5.ProtoReflect()},
+		setFields{6: V(float32(60))}, hasFields{6: true}, equalMessage{want6.ProtoReflect()},
+		setFields{7: V(float64(70))}, hasFields{7: true}, equalMessage{want7.ProtoReflect()},
 
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: true, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false},
-		whichOneofs{"union": 7, "Union": 0},
+		whichOneofs{"union": 7},
 
-		setFields{8: V(string("80"))}, hasFields{8: true}, equalMessage{want8},
-		setFields{9: V(string("90"))}, hasFields{9: true}, equalMessage{want9},
-		setFields{10: V(string("100"))}, hasFields{10: true}, equalMessage{want10},
-		setFields{11: V([]byte("110"))}, hasFields{11: true}, equalMessage{want11},
-		setFields{12: V([]byte("120"))}, hasFields{12: true}, equalMessage{want12},
-		setFields{13: V([]byte("130"))}, hasFields{13: true}, equalMessage{want13},
+		setFields{8: V(string("80"))}, hasFields{8: true}, equalMessage{want8.ProtoReflect()},
+		setFields{9: V(string("90"))}, hasFields{9: true}, equalMessage{want9.ProtoReflect()},
+		setFields{10: V(string("100"))}, hasFields{10: true}, equalMessage{want10.ProtoReflect()},
+		setFields{11: V([]byte("110"))}, hasFields{11: true}, equalMessage{want11.ProtoReflect()},
+		setFields{12: V([]byte("120"))}, hasFields{12: true}, equalMessage{want12.ProtoReflect()},
+		setFields{13: V([]byte("130"))}, hasFields{13: true}, equalMessage{want13.ProtoReflect()},
 
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: true},
 		getFields{1: V(bool(true)), 2: V(int32(2)), 3: V(int64(3)), 4: V(uint32(4)), 5: V(uint64(5)), 6: V(float32(6)), 7: V(float64(7)), 8: V(string("8")), 9: V(string("9")), 10: V(string("10")), 11: V([]byte("11")), 12: V([]byte("12")), 13: V([]byte("130"))},
 		clearFields{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},
-		whichOneofs{"union": 13, "Union": 0},
-		equalMessage{want13},
+		whichOneofs{"union": 13},
+		equalMessage{want13.ProtoReflect()},
 		clearFields{13},
-		whichOneofs{"union": 0, "Union": 0},
-		equalMessage{empty},
+		whichOneofs{"union": 0},
+		equalMessage{empty.ProtoReflect()},
 	})
 
 	// Test read-only operations on nil message.
-	testMessage(t, nil, (*OneofScalars)(nil), messageOps{
+	testMessage(t, nil, (*OneofScalars)(nil).ProtoReflect(), messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false, 13: false},
 		getFields{1: V(bool(true)), 2: V(int32(2)), 3: V(int64(3)), 4: V(uint32(4)), 5: V(uint64(5)), 6: V(float32(6)), 7: V(float64(7)), 8: V(string("8")), 9: V(string("9")), 10: V(string("10")), 11: V([]byte("11")), 12: V([]byte("12")), 13: V([]byte("13"))},
 	})
@@ -1053,7 +991,7 @@ var enumMessagesType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(EnumMessages
 		Oneofs: []ptype.Oneof{{Name: "union"}},
 	}),
 	NewMessage: func() pref.Message {
-		return new(EnumMessages)
+		return pref.ProtoMessage(new(EnumMessages)).ProtoReflect()
 	},
 }}
 
@@ -1079,20 +1017,7 @@ var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 	IsMapEntry: true,
 })
 
-// TODO: Remove this.
-func (m *EnumMessages) Type() pref.MessageType { return enumMessagesType.PBType }
-func (m *EnumMessages) Descriptor() pref.MessageDescriptor {
-	return enumMessagesType.PBType.Descriptor()
-}
-func (m *EnumMessages) KnownFields() pref.KnownFields {
-	return enumMessagesType.MessageOf(m).KnownFields()
-}
-func (m *EnumMessages) UnknownFields() pref.UnknownFields {
-	return enumMessagesType.MessageOf(m).UnknownFields()
-}
-func (m *EnumMessages) New() pref.Message            { return new(EnumMessages) }
-func (m *EnumMessages) Interface() pref.ProtoMessage { return m }
-func (m *EnumMessages) ProtoReflect() pref.Message   { return m }
+func (m *EnumMessages) ProtoReflect() pref.Message { return enumMessagesType.MessageOf(m) }
 
 func (*EnumMessages) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
@@ -1127,22 +1052,27 @@ func (*EnumMessages_OneofM2) isEnumMessages_Union() {}
 func (*EnumMessages_OneofM3) isEnumMessages_Union() {}
 
 func TestEnumMessages(t *testing.T) {
+	emptyL := pimpl.Export{}.MessageOf(new(proto2_20180125.Message))
+	emptyM := new(EnumMessages).ProtoReflect()
+	emptyM2 := new(ScalarProto2).ProtoReflect()
+	emptyM3 := new(ScalarProto3).ProtoReflect()
+
 	wantL := pimpl.Export{}.MessageOf(&proto2_20180125.Message{OptionalFloat: scalar.Float32(math.E)})
-	wantM := &EnumMessages{EnumP2: EnumProto2(1234).Enum()}
+	wantM := (&EnumMessages{EnumP2: EnumProto2(1234).Enum()}).ProtoReflect()
 	wantM2a := &ScalarProto2{Float32: scalar.Float32(math.Pi)}
 	wantM2b := &ScalarProto2{Float32: scalar.Float32(math.Phi)}
 	wantM3a := &ScalarProto3{Float32: math.Pi}
 	wantM3b := &ScalarProto3{Float32: math.Ln2}
 
-	wantList5 := (&EnumMessages{EnumList: []EnumProto2{333, 222}}).KnownFields().Get(5)
-	wantList6 := (&EnumMessages{MessageList: []*ScalarProto2{wantM2a, wantM2b}}).KnownFields().Get(6)
+	wantList5 := getField((&EnumMessages{EnumList: []EnumProto2{333, 222}}).ProtoReflect(), 5)
+	wantList6 := getField((&EnumMessages{MessageList: []*ScalarProto2{wantM2a, wantM2b}}).ProtoReflect(), 6)
 
-	wantMap7 := (&EnumMessages{EnumMap: map[string]EnumProto3{"one": 1, "two": 2}}).KnownFields().Get(7)
-	wantMap8 := (&EnumMessages{MessageMap: map[string]*ScalarProto3{"pi": wantM3a, "ln2": wantM3b}}).KnownFields().Get(8)
+	wantMap7 := getField((&EnumMessages{EnumMap: map[string]EnumProto3{"one": 1, "two": 2}}).ProtoReflect(), 7)
+	wantMap8 := getField((&EnumMessages{MessageMap: map[string]*ScalarProto3{"pi": wantM3a, "ln2": wantM3b}}).ProtoReflect(), 8)
 
-	testMessage(t, nil, &EnumMessages{}, messageOps{
+	testMessage(t, nil, new(EnumMessages).ProtoReflect(), messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false},
-		getFields{1: VE(0xbeef), 2: VE(1), 3: V(nil), 4: V(nil), 9: VE(0xbeef), 10: VE(1)},
+		getFields{1: VE(0xbeef), 2: VE(1), 3: V(emptyL), 4: V(emptyM), 9: VE(0xbeef), 10: VE(1)},
 
 		// Test singular enums.
 		setFields{1: VE(0xdead), 2: VE(0)},
@@ -1150,8 +1080,8 @@ func TestEnumMessages(t *testing.T) {
 		hasFields{1: true, 2: true},
 
 		// Test singular messages.
-		messageFields{3: messageOps{setFields{109: V(float32(math.E))}}},
-		messageFields{4: messageOps{setFields{1: VE(1234)}}},
+		messageFieldsMutable{3: messageOps{setFields{109: V(float32(math.E))}}},
+		messageFieldsMutable{4: messageOps{setFields{1: VE(1234)}}},
 		getFields{3: V(wantL), 4: V(wantM)},
 		clearFields{3, 4},
 		hasFields{3: false, 4: false},
@@ -1159,7 +1089,7 @@ func TestEnumMessages(t *testing.T) {
 		hasFields{3: true, 4: true},
 
 		// Test list of enums and messages.
-		listFields{
+		listFieldsMutable{
 			5: listOps{
 				appendList{VE(111), VE(222)},
 				setList{0: VE(333)},
@@ -1169,8 +1099,8 @@ func TestEnumMessages(t *testing.T) {
 			6: listOps{
 				appendMessageList{setFields{4: V(uint32(1e6))}},
 				appendMessageList{setFields{6: V(float32(math.Phi))}},
-				setList{0: V(wantM2a)},
-				getList{0: V(wantM2a), 1: V(wantM2b)},
+				setList{0: V(wantM2a.ProtoReflect())},
+				getList{0: V(wantM2a.ProtoReflect()), 1: V(wantM2b.ProtoReflect())},
 			},
 		},
 		getFields{5: wantList5, 6: wantList6},
@@ -1179,7 +1109,7 @@ func TestEnumMessages(t *testing.T) {
 		hasFields{5: false, 6: true},
 
 		// Test maps of enums and messages.
-		mapFields{
+		mapFieldsMutable{
 			7: mapOps{
 				setMap{"one": VE(1), "two": VE(2)},
 				hasMap{"one": true, "two": true, "three": false},
@@ -1187,8 +1117,8 @@ func TestEnumMessages(t *testing.T) {
 			},
 			8: mapOps{
 				messageMap{"pi": messageOps{setFields{6: V(float32(math.Pi))}}},
-				setMap{"ln2": V(wantM3b)},
-				getMap{"pi": V(wantM3a), "ln2": V(wantM3b), "none": V(nil)},
+				setMap{"ln2": V(wantM3b.ProtoReflect())},
+				getMap{"pi": V(wantM3a.ProtoReflect()), "ln2": V(wantM3b.ProtoReflect()), "none": V(nil)},
 				lenMap(2),
 			},
 		},
@@ -1202,32 +1132,32 @@ func TestEnumMessages(t *testing.T) {
 		hasFields{1: true, 2: true, 9: true, 10: false, 11: false, 12: false},
 		setFields{10: VE(0)},
 		hasFields{1: true, 2: true, 9: false, 10: true, 11: false, 12: false},
-		messageFields{11: messageOps{setFields{6: V(float32(math.Pi))}}},
-		getFields{11: V(wantM2a)},
+		messageFieldsMutable{11: messageOps{setFields{6: V(float32(math.Pi))}}},
+		getFields{11: V(wantM2a.ProtoReflect())},
 		hasFields{1: true, 2: true, 9: false, 10: false, 11: true, 12: false},
-		messageFields{12: messageOps{setFields{6: V(float32(math.Pi))}}},
-		getFields{12: V(wantM3a)},
+		messageFieldsMutable{12: messageOps{setFields{6: V(float32(math.Pi))}}},
+		getFields{12: V(wantM3a.ProtoReflect())},
 		hasFields{1: true, 2: true, 9: false, 10: false, 11: false, 12: true},
 
 		// Check entire message.
-		rangeFields{1: VE(0xdead), 2: VE(0), 3: V(wantL), 4: V(wantM), 6: wantList6, 7: wantMap7, 12: V(wantM3a)},
-		equalMessage{&EnumMessages{
+		rangeFields{1: VE(0xdead), 2: VE(0), 3: V(wantL), 4: V(wantM), 6: wantList6, 7: wantMap7, 12: V(wantM3a.ProtoReflect())},
+		equalMessage{(&EnumMessages{
 			EnumP2:        EnumProto2(0xdead).Enum(),
 			EnumP3:        EnumProto3(0).Enum(),
 			MessageLegacy: &proto2_20180125.Message{OptionalFloat: scalar.Float32(math.E)},
-			MessageCycle:  wantM,
+			MessageCycle:  wantM.Interface().(*EnumMessages),
 			MessageList:   []*ScalarProto2{wantM2a, wantM2b},
 			EnumMap:       map[string]EnumProto3{"one": 1, "two": 2},
 			Union:         &EnumMessages_OneofM3{wantM3a},
-		}},
+		}).ProtoReflect()},
 		clearFields{1, 2, 3, 4, 6, 7, 12},
-		equalMessage{&EnumMessages{}},
+		equalMessage{new(EnumMessages).ProtoReflect()},
 	})
 
 	// Test read-only operations on nil message.
-	testMessage(t, nil, (*EnumMessages)(nil), messageOps{
+	testMessage(t, nil, (*EnumMessages)(nil).ProtoReflect(), messageOps{
 		hasFields{1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: false, 10: false, 11: false, 12: false},
-		getFields{1: VE(0xbeef), 2: VE(1), 3: V(nil), 4: V(nil), 9: VE(0xbeef), 10: VE(1), 11: V(nil), 12: V(nil)},
+		getFields{1: VE(0xbeef), 2: VE(1), 3: V(emptyL), 4: V(emptyM), 9: VE(0xbeef), 10: VE(1), 11: V(emptyM2), 12: V(emptyM3)},
 		listFields{5: {lenList(0)}, 6: {lenList(0)}},
 		mapFields{7: {lenMap(0)}, 8: {lenMap(0)}},
 	})
@@ -1238,89 +1168,141 @@ var cmpOpts = cmp.Options{
 		return protoV1.Equal(x, y)
 	}),
 	cmp.Transformer("UnwrapValue", func(pv pref.Value) interface{} {
-		return pv.Interface()
-	}),
-	cmp.Transformer("UnwrapGeneric", func(x pvalue.Unwrapper) interface{} {
-		return x.ProtoUnwrap()
+		switch v := pv.Interface().(type) {
+		case pref.Message:
+			out := make(map[pref.FieldNumber]pref.Value)
+			v.Range(func(fd pref.FieldDescriptor, v pref.Value) bool {
+				out[fd.Number()] = v
+				return true
+			})
+			return out
+		case pref.List:
+			var out []pref.Value
+			for i := 0; i < v.Len(); i++ {
+				out = append(out, v.Get(i))
+			}
+			return out
+		case pref.Map:
+			out := make(map[interface{}]pref.Value)
+			v.Range(func(k pref.MapKey, v pref.Value) bool {
+				out[k.Interface()] = v
+				return true
+			})
+			return out
+		default:
+			return v
+		}
 	}),
 	cmpopts.EquateNaNs(),
 	cmpopts.EquateEmpty(),
 }
 
 func testMessage(t *testing.T, p path, m pref.Message, tt messageOps) {
-	fs := m.KnownFields()
+	fieldDescs := m.Descriptor().Fields()
+	oneofDescs := m.Descriptor().Oneofs()
 	for i, op := range tt {
 		p.Push(i)
 		switch op := op.(type) {
 		case equalMessage:
-			if diff := cmp.Diff(op.Message, m, cmpOpts); diff != "" {
+			if diff := cmp.Diff(V(op.Message), V(m), cmpOpts); diff != "" {
 				t.Errorf("operation %v, message mismatch (-want, +got):\n%s", p, diff)
 			}
 		case hasFields:
 			got := map[pref.FieldNumber]bool{}
 			want := map[pref.FieldNumber]bool(op)
 			for n := range want {
-				got[n] = fs.Has(n)
+				fd := fieldDescs.ByNumber(n)
+				got[n] = m.Has(fd)
 			}
 			if diff := cmp.Diff(want, got); diff != "" {
-				t.Errorf("operation %v, KnownFields.Has mismatch (-want, +got):\n%s", p, diff)
+				t.Errorf("operation %v, Message.Has mismatch (-want, +got):\n%s", p, diff)
 			}
 		case getFields:
 			got := map[pref.FieldNumber]pref.Value{}
 			want := map[pref.FieldNumber]pref.Value(op)
 			for n := range want {
-				got[n] = fs.Get(n)
+				fd := fieldDescs.ByNumber(n)
+				got[n] = m.Get(fd)
 			}
 			if diff := cmp.Diff(want, got, cmpOpts); diff != "" {
-				t.Errorf("operation %v, KnownFields.Get mismatch (-want, +got):\n%s", p, diff)
+				t.Errorf("operation %v, Message.Get mismatch (-want, +got):\n%s", p, diff)
 			}
 		case setFields:
 			for n, v := range op {
-				fs.Set(n, v)
+				fd := fieldDescs.ByNumber(n)
+				m.Set(fd, v)
 			}
 		case clearFields:
 			for _, n := range op {
-				fs.Clear(n)
+				fd := fieldDescs.ByNumber(n)
+				m.Clear(fd)
 			}
 		case whichOneofs:
 			got := map[pref.Name]pref.FieldNumber{}
 			want := map[pref.Name]pref.FieldNumber(op)
 			for s := range want {
-				got[s] = fs.WhichOneof(s)
+				od := oneofDescs.ByName(s)
+				fd := m.WhichOneof(od)
+				if fd == nil {
+					got[s] = 0
+				} else {
+					got[s] = fd.Number()
+				}
 			}
 			if diff := cmp.Diff(want, got); diff != "" {
-				t.Errorf("operation %v, KnownFields.WhichOneof mismatch (-want, +got):\n%s", p, diff)
+				t.Errorf("operation %v, Message.WhichOneof mismatch (-want, +got):\n%s", p, diff)
 			}
 		case messageFields:
 			for n, tt := range op {
 				p.Push(int(n))
-				if !fs.Has(n) {
-					fs.Set(n, V(fs.NewMessage(n)))
-				}
-				testMessage(t, p, fs.Get(n).Message(), tt)
+				fd := fieldDescs.ByNumber(n)
+				testMessage(t, p, m.Get(fd).Message(), tt)
+				p.Pop()
+			}
+		case messageFieldsMutable:
+			for n, tt := range op {
+				p.Push(int(n))
+				fd := fieldDescs.ByNumber(n)
+				testMessage(t, p, m.Mutable(fd).Message(), tt)
 				p.Pop()
 			}
 		case listFields:
 			for n, tt := range op {
 				p.Push(int(n))
-				testLists(t, p, fs.Get(n).List(), tt)
+				fd := fieldDescs.ByNumber(n)
+				testLists(t, p, m.Get(fd).List(), tt)
+				p.Pop()
+			}
+		case listFieldsMutable:
+			for n, tt := range op {
+				p.Push(int(n))
+				fd := fieldDescs.ByNumber(n)
+				testLists(t, p, m.Mutable(fd).List(), tt)
 				p.Pop()
 			}
 		case mapFields:
 			for n, tt := range op {
 				p.Push(int(n))
-				testMaps(t, p, fs.Get(n).Map(), tt)
+				fd := fieldDescs.ByNumber(n)
+				testMaps(t, p, m.Get(fd).Map(), tt)
+				p.Pop()
+			}
+		case mapFieldsMutable:
+			for n, tt := range op {
+				p.Push(int(n))
+				fd := fieldDescs.ByNumber(n)
+				testMaps(t, p, m.Mutable(fd).Map(), tt)
 				p.Pop()
 			}
 		case rangeFields:
 			got := map[pref.FieldNumber]pref.Value{}
 			want := map[pref.FieldNumber]pref.Value(op)
-			fs.Range(func(n pref.FieldNumber, v pref.Value) bool {
-				got[n] = v
+			m.Range(func(fd pref.FieldDescriptor, v pref.Value) bool {
+				got[fd.Number()] = v
 				return true
 			})
 			if diff := cmp.Diff(want, got, cmpOpts); diff != "" {
-				t.Errorf("operation %v, KnownFields.Range mismatch (-want, +got):\n%s", p, diff)
+				t.Errorf("operation %v, Message.Range mismatch (-want, +got):\n%s", p, diff)
 			}
 		default:
 			t.Fatalf("operation %v, invalid operation: %T", p, op)
@@ -1334,7 +1316,7 @@ func testLists(t *testing.T, p path, v pref.List, tt listOps) {
 		p.Push(i)
 		switch op := op.(type) {
 		case equalList:
-			if diff := cmp.Diff(op.List, v, cmpOpts); diff != "" {
+			if diff := cmp.Diff(V(op.List), V(v), cmpOpts); diff != "" {
 				t.Errorf("operation %v, list mismatch (-want, +got):\n%s", p, diff)
 			}
 		case lenList:
@@ -1376,7 +1358,7 @@ func testMaps(t *testing.T, p path, m pref.Map, tt mapOps) {
 		p.Push(i)
 		switch op := op.(type) {
 		case equalMap:
-			if diff := cmp.Diff(op.Map, m, cmpOpts); diff != "" {
+			if diff := cmp.Diff(V(op.Map), V(m), cmpOpts); diff != "" {
 				t.Errorf("operation %v, map mismatch (-want, +got):\n%s", p, diff)
 			}
 		case lenMap:
@@ -1432,6 +1414,11 @@ func testMaps(t *testing.T, p path, m pref.Map, tt mapOps) {
 		}
 		p.Pop()
 	}
+}
+
+func getField(m pref.Message, n pref.FieldNumber) pref.Value {
+	fd := m.Descriptor().Fields().ByNumber(n)
+	return m.Get(fd)
 }
 
 type path []int
