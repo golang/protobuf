@@ -219,6 +219,10 @@ func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
 		o.decoder.Read() // Read json.EndObject.
 		return nil
 	}
+	if o.DiscardUnknown && err == errMissingType {
+		// Treat all fields as unknowns, similar to an empty object.
+		return skipJSONValue(o.decoder)
+	}
 	var nerr errors.NonFatal
 	if !nerr.Merge(err) {
 		return errors.New("google.protobuf.Any: %v", err)
@@ -260,6 +264,7 @@ func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
 }
 
 var errEmptyObject = errors.New(`empty object`)
+var errMissingType = errors.New(`missing "@type" field`)
 
 // findTypeURL returns the "@type" field value from the given JSON bytes. It is
 // expected that the given bytes start with json.StartObject. It returns
@@ -284,7 +289,7 @@ Loop:
 			if typeURL == "" {
 				// Did not find @type field.
 				if numFields > 0 {
-					return "", errors.New(`missing "@type" field`)
+					return "", errMissingType
 				}
 				return "", errEmptyObject
 			}
@@ -298,7 +303,7 @@ Loop:
 			}
 			if name != "@type" {
 				// Skip value.
-				if err := skipJSONValue(dec); err != nil {
+				if err := skipJSONValue(dec); !nerr.Merge(err) {
 					return "", err
 				}
 				continue
@@ -331,7 +336,6 @@ Loop:
 // JSON value. It relies on Decoder.Read returning an error if the types are
 // not in valid sequence.
 func skipJSONValue(dec *json.Decoder) error {
-	// Ignore non-fatal errors, do not return nerr.E.
 	var nerr errors.NonFatal
 	jval, err := dec.Read()
 	if !nerr.Merge(err) {
@@ -350,7 +354,7 @@ func skipJSONValue(dec *json.Decoder) error {
 				return nil
 			case json.Name:
 				// Skip object field value.
-				if err := skipJSONValue(dec); err != nil {
+				if err := skipJSONValue(dec); !nerr.Merge(err) {
 					return err
 				}
 			}
@@ -367,13 +371,13 @@ func skipJSONValue(dec *json.Decoder) error {
 				return err
 			default:
 				// Skip array item.
-				if err := skipJSONValue(dec); err != nil {
+				if err := skipJSONValue(dec); !nerr.Merge(err) {
 					return err
 				}
 			}
 		}
 	}
-	return nil
+	return nerr.E
 }
 
 // unmarshalAnyValue unmarshals the given custom-type message from the JSON
@@ -403,6 +407,12 @@ func (o UnmarshalOptions) unmarshalAnyValue(m pref.Message) error {
 			}
 			switch name {
 			default:
+				if o.DiscardUnknown {
+					if err := skipJSONValue(o.decoder); !nerr.Merge(err) {
+						return err
+					}
+					continue
+				}
 				return errors.New("unknown field %q", name)
 
 			case "@type":
@@ -463,6 +473,7 @@ func (o MarshalOptions) marshalEmpty(pref.Message) error {
 }
 
 func (o UnmarshalOptions) unmarshalEmpty(pref.Message) error {
+	var nerr errors.NonFatal
 	jval, err := o.decoder.Read()
 	if err != nil {
 		return err
@@ -470,14 +481,30 @@ func (o UnmarshalOptions) unmarshalEmpty(pref.Message) error {
 	if jval.Type() != json.StartObject {
 		return unexpectedJSONError{jval}
 	}
-	jval, err = o.decoder.Read()
-	if err != nil {
-		return err
+
+	for {
+		jval, err := o.decoder.Read()
+		if !nerr.Merge(err) {
+			return err
+		}
+		switch jval.Type() {
+		case json.EndObject:
+			return nerr.E
+
+		case json.Name:
+			if o.DiscardUnknown {
+				if err := skipJSONValue(o.decoder); !nerr.Merge(err) {
+					return err
+				}
+				continue
+			}
+			name, _ := jval.Name()
+			return errors.New("unknown field %q", name)
+
+		default:
+			return unexpectedJSONError{jval}
+		}
 	}
-	if jval.Type() != json.EndObject {
-		return unexpectedJSONError{jval}
-	}
-	return nil
 }
 
 // The JSON representation for Struct is a JSON object that contains the encoded

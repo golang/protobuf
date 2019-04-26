@@ -2008,18 +2008,14 @@ func TestUnmarshal(t *testing.T) {
 			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
 		},
 		inputMessage: &knownpb.Any{},
-		inputText: `{
-  "@type": "foo/pb2.Nested"
-}`,
-		wantMessage: &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
+		inputText:    `{"@type": "foo/pb2.Nested"}`,
+		wantMessage:  &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
 	}, {
 		desc:         "Any without registered type",
 		umo:          jsonpb.UnmarshalOptions{Resolver: preg.NewTypes()},
 		inputMessage: &knownpb.Any{},
-		inputText: `{
-  "@type": "foo/pb2.Nested"
-}`,
-		wantErr: true,
+		inputText:    `{"@type": "foo/pb2.Nested"}`,
+		wantErr:      true,
 	}, {
 		desc: "Any with missing required error",
 		umo: jsonpb.UnmarshalOptions{
@@ -2129,17 +2125,9 @@ func TestUnmarshal(t *testing.T) {
   "value": {},
   "@type": "type.googleapis.com/google.protobuf.Empty"
 }`,
-		wantMessage: func() proto.Message {
-			m := &knownpb.Empty{}
-			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
-			if err != nil {
-				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
-			}
-			return &knownpb.Any{
-				TypeUrl: "type.googleapis.com/google.protobuf.Empty",
-				Value:   b,
-			}
-		}(),
+		wantMessage: &knownpb.Any{
+			TypeUrl: "type.googleapis.com/google.protobuf.Empty",
+		},
 	}, {
 		desc: "Any with missing Empty",
 		umo: jsonpb.UnmarshalOptions{
@@ -2498,6 +2486,109 @@ func TestUnmarshal(t *testing.T) {
 			OptFieldmask: &knownpb.FieldMask{
 				Paths: []string{"foo_bar", "bar_foo"},
 			},
+		},
+	}, {
+		desc:         "DiscardUnknown: regular messages",
+		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		inputMessage: &pb3.Nests{},
+		inputText: `{
+  "sNested": {
+    "unknown": {
+      "foo": 1,
+	  "bar": [1, 2, 3]
+    }
+  },
+  "unknown": "not known"
+}`,
+		wantMessage: &pb3.Nests{SNested: &pb3.Nested{}},
+	}, {
+		desc:         "DiscardUnknown: repeated",
+		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		inputMessage: &pb2.Nests{},
+		inputText: `{
+  "rptNested": [
+    {"unknown": "blah"},
+	{"optString": "hello"}
+  ]
+}`,
+		wantMessage: &pb2.Nests{
+			RptNested: []*pb2.Nested{
+				{},
+				{OptString: scalar.String("hello")},
+			},
+		},
+	}, {
+		desc:         "DiscardUnknown: map",
+		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		inputMessage: &pb3.Maps{},
+		inputText: `{
+  "strToNested": {
+    "nested_one": {
+	  "unknown": "what you see is not"
+    }
+  }
+}`,
+		wantMessage: &pb3.Maps{
+			StrToNested: map[string]*pb3.Nested{
+				"nested_one": {},
+			},
+		},
+	}, {
+		desc:         "DiscardUnknown: extension",
+		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		inputMessage: &pb2.Extensions{},
+		inputText: `{
+  "[pb2.opt_ext_nested]": {
+	"unknown": []
+  }
+}`,
+		wantMessage: func() proto.Message {
+			m := &pb2.Extensions{}
+			setExtension(m, pb2.E_OptExtNested, &pb2.Nested{})
+			return m
+		}(),
+	}, {
+		desc:         "DiscardUnknown: Empty",
+		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		inputMessage: &knownpb.Empty{},
+		inputText:    `{"unknown": "something"}`,
+		wantMessage:  &knownpb.Empty{},
+	}, {
+		desc:         "DiscardUnknown: Any without type",
+		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "value": {"foo": "bar"},
+  "unknown": true
+}`,
+		wantMessage: &knownpb.Any{},
+	}, {
+		desc: "DiscardUnknown: Any",
+		umo: jsonpb.UnmarshalOptions{
+			DiscardUnknown: true,
+			Resolver:       preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "foo/pb2.Nested",
+  "unknown": "none"
+}`,
+		wantMessage: &knownpb.Any{
+			TypeUrl: "foo/pb2.Nested",
+		},
+	}, {
+		desc: "DiscardUnknown: Any with Empty",
+		umo: jsonpb.UnmarshalOptions{
+			DiscardUnknown: true,
+			Resolver:       preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+		},
+		inputMessage: &knownpb.Any{},
+		inputText: `{
+  "@type": "type.googleapis.com/google.protobuf.Empty",
+  "value": {"unknown": 47}
+}`,
+		wantMessage: &knownpb.Any{
+			TypeUrl: "type.googleapis.com/google.protobuf.Empty",
 		},
 	}}
 

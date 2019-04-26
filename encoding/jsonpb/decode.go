@@ -29,10 +29,12 @@ func Unmarshal(m proto.Message, b []byte) error {
 type UnmarshalOptions struct {
 	pragma.NoUnkeyedLiterals
 
-	// AllowPartial accepts input for messages that will result in missing
-	// required fields. If AllowPartial is false (the default), Unmarshal will
-	// return error if there are any missing required fields.
+	// If AllowPartial is set, input for messages that will result in missing
+	// required fields will not return an error.
 	AllowPartial bool
+
+	// If DiscardUnknown is set, unknown fields are ignored.
+	DiscardUnknown bool
 
 	// Resolver is the registry used for type lookups when unmarshaling extensions
 	// and processing Any. If Resolver is not set, unmarshaling will default to
@@ -217,7 +219,12 @@ Loop:
 
 		if fd == nil {
 			// Field is unknown.
-			// TODO: Provide option to ignore unknown message fields.
+			if o.DiscardUnknown {
+				if err := skipJSONValue(o.decoder); !nerr.Merge(err) {
+					return err
+				}
+				continue
+			}
 			return newError("%v contains unknown field %s", msgType.FullName(), jval)
 		}
 

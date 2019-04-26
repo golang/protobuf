@@ -69,7 +69,9 @@ func handle(req *pb.ConformanceRequest) *pb.ConformanceResponse {
 	case *pb.ConformanceRequest_ProtobufPayload:
 		err = proto.Unmarshal(p.ProtobufPayload, msg)
 	case *pb.ConformanceRequest_JsonPayload:
-		err = jsonpb.Unmarshal(msg, []byte(p.JsonPayload))
+		err = jsonpb.UnmarshalOptions{
+			DiscardUnknown: req.TestCategory == pb.TestCategory_JSON_IGNORE_UNKNOWN_PARSING_TEST,
+		}.Unmarshal(msg, []byte(p.JsonPayload))
 	default:
 		return &pb.ConformanceResponse{
 			Result: &pb.ConformanceResponse_RuntimeError{
