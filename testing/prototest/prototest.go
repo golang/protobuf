@@ -319,16 +319,27 @@ func testFieldFloat(t testing.TB, m pref.Message, fd pref.FieldDescriptor) {
 
 // testOneof tests the behavior of fields in a oneof.
 func testOneof(t testing.TB, m pref.Message, od pref.OneofDescriptor) {
-	for i := 0; i < od.Fields().Len(); i++ {
-		fda := od.Fields().Get(i)
-		m.Set(fda, newValue(m, fda, 1, nil))
-		if got, want := m.WhichOneof(od), fda; got != want {
-			t.Errorf("after setting oneof field %q:\nWhichOneof(%q) = %v, want %v", fda.FullName(), fda.Name(), got, want)
-		}
-		for j := 0; j < od.Fields().Len(); j++ {
-			fdb := od.Fields().Get(j)
-			if got, want := m.Has(fdb), i == j; got != want {
-				t.Errorf("after setting oneof field %q:\nGet(%q) = %v, want %v", fda.FullName(), fdb.FullName(), got, want)
+	for _, mutable := range []bool{false, true} {
+		for i := 0; i < od.Fields().Len(); i++ {
+			fda := od.Fields().Get(i)
+			if mutable {
+				// Set fields by requesting a mutable reference.
+				if !fda.IsMap() && !fda.IsList() && fda.Message() == nil {
+					continue
+				}
+				_ = m.Mutable(fda)
+			} else {
+				// Set fields explicitly.
+				m.Set(fda, newValue(m, fda, 1, nil))
+			}
+			if got, want := m.WhichOneof(od), fda; got != want {
+				t.Errorf("after setting oneof field %q:\nWhichOneof(%q) = %v, want %v", fda.FullName(), fda.Name(), got, want)
+			}
+			for j := 0; j < od.Fields().Len(); j++ {
+				fdb := od.Fields().Get(j)
+				if got, want := m.Has(fdb), i == j; got != want {
+					t.Errorf("after setting oneof field %q:\nGet(%q) = %v, want %v", fda.FullName(), fdb.FullName(), got, want)
+				}
 			}
 		}
 	}
