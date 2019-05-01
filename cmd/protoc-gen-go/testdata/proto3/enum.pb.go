@@ -35,9 +35,14 @@ var Enum_value = map[string]int32{
 }
 
 func (x Enum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (Enum) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto3_enum_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (Enum) Type() protoreflect.EnumType {
 	return file_proto3_enum_proto_enumTypes[0]
 }

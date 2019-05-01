@@ -36,9 +36,14 @@ func (x Enum1) Enum() *Enum1 {
 }
 
 func (x Enum1) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (Enum1) Descriptor() protoreflect.EnumDescriptor {
+	return file_test_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (Enum1) Type() protoreflect.EnumType {
 	return file_test_proto_enumTypes[0]
 }
@@ -49,7 +54,7 @@ func (x Enum1) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *Enum1) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -85,9 +90,14 @@ func (x Enum2) Enum() *Enum2 {
 }
 
 func (x Enum2) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (Enum2) Descriptor() protoreflect.EnumDescriptor {
+	return file_test_proto_enumTypes[1].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (Enum2) Type() protoreflect.EnumType {
 	return file_test_proto_enumTypes[1]
 }
@@ -98,7 +108,7 @@ func (x Enum2) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *Enum2) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -134,9 +144,14 @@ func (x Enum3) Enum() *Enum3 {
 }
 
 func (x Enum3) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (Enum3) Descriptor() protoreflect.EnumDescriptor {
+	return file_test_proto_enumTypes[2].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (Enum3) Type() protoreflect.EnumType {
 	return file_test_proto_enumTypes[2]
 }
@@ -147,7 +162,7 @@ func (x Enum3) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *Enum3) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}

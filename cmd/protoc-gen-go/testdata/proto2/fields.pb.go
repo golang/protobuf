@@ -40,9 +40,14 @@ func (x FieldTestMessage_Enum) Enum() *FieldTestMessage_Enum {
 }
 
 func (x FieldTestMessage_Enum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (FieldTestMessage_Enum) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto2_fields_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (FieldTestMessage_Enum) Type() protoreflect.EnumType {
 	return file_proto2_fields_proto_enumTypes[0]
 }
@@ -53,7 +58,7 @@ func (x FieldTestMessage_Enum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *FieldTestMessage_Enum) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}

@@ -70,8 +70,8 @@ func (o UnmarshalOptions) unmarshalMessageFast(b []byte, m Message) error {
 }
 
 func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) error {
-	messageType := m.Type()
-	fieldTypes := messageType.Fields()
+	messageDesc := m.Descriptor()
+	fieldDescs := messageDesc.Fields()
 	knownFields := m.KnownFields()
 	unknownFields := m.UnknownFields()
 	var nerr errors.NonFatal
@@ -83,31 +83,34 @@ func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) err
 		}
 
 		// Parse the field value.
-		fieldType := fieldTypes.ByNumber(num)
-		if fieldType == nil {
-			fieldType = knownFields.ExtensionTypes().ByNumber(num)
-			if fieldType == nil && messageType.ExtensionRanges().Has(num) {
-				extType, err := o.Resolver.FindExtensionByNumber(messageType.FullName(), num)
+		fieldDesc := fieldDescs.ByNumber(num)
+		if fieldDesc == nil {
+			extType := knownFields.ExtensionTypes().ByNumber(num)
+			if extType == nil && messageDesc.ExtensionRanges().Has(num) {
+				var err error
+				extType, err = o.Resolver.FindExtensionByNumber(messageDesc.FullName(), num)
 				if err != nil && err != protoregistry.NotFound {
 					return err
 				}
 				if extType != nil {
 					knownFields.ExtensionTypes().Register(extType)
-					fieldType = extType
 				}
+			}
+			if extType != nil {
+				fieldDesc = extType.Descriptor()
 			}
 		}
 		var err error
 		var valLen int
 		switch {
-		case fieldType == nil:
+		case fieldDesc == nil:
 			err = errUnknown
-		case fieldType.Cardinality() != protoreflect.Repeated:
-			valLen, err = o.unmarshalScalarField(b[tagLen:], wtyp, num, knownFields, fieldType)
-		case !fieldType.IsMap():
-			valLen, err = o.unmarshalList(b[tagLen:], wtyp, num, knownFields.Get(num).List(), fieldType)
+		case fieldDesc.Cardinality() != protoreflect.Repeated:
+			valLen, err = o.unmarshalScalarField(b[tagLen:], wtyp, num, knownFields, fieldDesc)
+		case !fieldDesc.IsMap():
+			valLen, err = o.unmarshalList(b[tagLen:], wtyp, num, knownFields.Get(num).List(), fieldDesc)
 		default:
-			valLen, err = o.unmarshalMap(b[tagLen:], wtyp, num, knownFields.Get(num).Map(), fieldType)
+			valLen, err = o.unmarshalMap(b[tagLen:], wtyp, num, knownFields.Get(num).Map(), fieldDesc)
 		}
 		if err == errUnknown {
 			valLen = wire.ConsumeFieldValue(num, wtyp, b[tagLen:])

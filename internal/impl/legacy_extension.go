@@ -63,7 +63,8 @@ func (p legacyExtensionFields) Has(n pref.FieldNumber) bool {
 		return false
 	}
 	t := extensionTypeFromDesc(x.Desc)
-	if t.Cardinality() == pref.Repeated {
+	d := t.Descriptor()
+	if d.Cardinality() == pref.Repeated {
 		return t.ValueOf(x.Value).List().Len() > 0
 	}
 	return true
@@ -75,13 +76,14 @@ func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 		return pref.Value{}
 	}
 	t := extensionTypeFromDesc(x.Desc)
+	d := t.Descriptor()
 	if x.Value == nil {
 		// NOTE: x.Value is never nil for Lists since they are always populated
 		// during ExtensionFieldTypes.Register.
-		if t.Kind() == pref.MessageKind || t.Kind() == pref.GroupKind {
+		if d.Kind() == pref.MessageKind || d.Kind() == pref.GroupKind {
 			return pref.Value{}
 		}
-		return t.Default()
+		return d.Default()
 	}
 	return t.ValueOf(x.Value)
 }
@@ -102,7 +104,8 @@ func (p legacyExtensionFields) Clear(n pref.FieldNumber) {
 		return
 	}
 	t := extensionTypeFromDesc(x.Desc)
-	if t.Cardinality() == pref.Repeated {
+	d := t.Descriptor()
+	if d.Cardinality() == pref.Repeated {
 		t.ValueOf(x.Value).List().Truncate(0)
 		return
 	}
@@ -149,31 +152,33 @@ func (p legacyExtensionTypes) Len() (n int) {
 }
 
 func (p legacyExtensionTypes) Register(t pref.ExtensionType) {
-	if p.mi.PBType.FullName() != t.Extendee().FullName() {
+	d := t.Descriptor()
+	if p.mi.PBType.Descriptor().FullName() != d.Extendee().FullName() {
 		panic("extended type mismatch")
 	}
-	if !p.mi.PBType.ExtensionRanges().Has(t.Number()) {
+	if !p.mi.PBType.Descriptor().ExtensionRanges().Has(d.Number()) {
 		panic("invalid extension field number")
 	}
-	x := p.x.Get(t.Number())
+	x := p.x.Get(d.Number())
 	if x.Desc != nil {
 		panic("extension descriptor already registered")
 	}
 	x.Desc = extensionDescFromType(t)
-	if t.Cardinality() == pref.Repeated {
+	if d.Cardinality() == pref.Repeated {
 		// If the field is repeated, initialize the entry with an empty list
 		// so that future Get operations can return a mutable and concrete list.
 		x.Value = t.InterfaceOf(t.New())
 	}
-	p.x.Set(t.Number(), x)
+	p.x.Set(d.Number(), x)
 }
 
 func (p legacyExtensionTypes) Remove(t pref.ExtensionType) {
-	if !p.mi.PBType.ExtensionRanges().Has(t.Number()) {
+	d := t.Descriptor()
+	if !p.mi.PBType.Descriptor().ExtensionRanges().Has(d.Number()) {
 		return
 	}
-	x := p.x.Get(t.Number())
-	if t.Cardinality() == pref.Repeated {
+	x := p.x.Get(d.Number())
+	if d.Cardinality() == pref.Repeated {
 		// Treat an empty repeated field as unpopulated.
 		v := reflect.ValueOf(x.Value)
 		if x.Value == nil || v.IsNil() || v.Elem().Len() == 0 {
@@ -183,7 +188,7 @@ func (p legacyExtensionTypes) Remove(t pref.ExtensionType) {
 	if x.Value != nil {
 		panic("value for extension descriptor still populated")
 	}
-	p.x.Clear(t.Number())
+	p.x.Clear(d.Number())
 }
 
 func (p legacyExtensionTypes) ByNumber(n pref.FieldNumber) pref.ExtensionType {

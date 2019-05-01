@@ -35,9 +35,14 @@ var NullValue_value = map[string]int32{
 }
 
 func (x NullValue) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (NullValue) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_struct_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (NullValue) Type() protoreflect.EnumType {
 	return file_google_protobuf_struct_proto_enumTypes[0]
 }

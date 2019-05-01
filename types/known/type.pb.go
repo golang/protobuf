@@ -36,9 +36,14 @@ var Syntax_value = map[string]int32{
 }
 
 func (x Syntax) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (Syntax) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_type_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (Syntax) Type() protoreflect.EnumType {
 	return file_google_protobuf_type_proto_enumTypes[0]
 }
@@ -143,9 +148,14 @@ var Field_Kind_value = map[string]int32{
 }
 
 func (x Field_Kind) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (Field_Kind) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_type_proto_enumTypes[1].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (Field_Kind) Type() protoreflect.EnumType {
 	return file_google_protobuf_type_proto_enumTypes[1]
 }
@@ -190,9 +200,14 @@ var Field_Cardinality_value = map[string]int32{
 }
 
 func (x Field_Cardinality) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (Field_Cardinality) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_type_proto_enumTypes[2].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (Field_Cardinality) Type() protoreflect.EnumType {
 	return file_google_protobuf_type_proto_enumTypes[2]
 }

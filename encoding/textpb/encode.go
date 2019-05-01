@@ -74,10 +74,10 @@ func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
 func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 	var nerr errors.NonFatal
 	var msgFields [][2]text.Value
-	msgType := m.Type()
+	messageDesc := m.Descriptor()
 
 	// Handle Any expansion.
-	if msgType.FullName() == "google.protobuf.Any" {
+	if messageDesc.FullName() == "google.protobuf.Any" {
 		msg, err := o.marshalAny(m)
 		if err == nil || nerr.Merge(err) {
 			// Return as is for nil or non-fatal error.
@@ -87,7 +87,7 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 	}
 
 	// Handle known fields.
-	fieldDescs := msgType.Fields()
+	fieldDescs := messageDesc.Fields()
 	knownFields := m.KnownFields()
 	size := fieldDescs.Len()
 	for i := 0; i < size; i++ {
@@ -271,18 +271,18 @@ func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, knownFields 
 	var nerr errors.NonFatal
 	var err error
 	xtTypes.Range(func(xt pref.ExtensionType) bool {
-		name := xt.FullName()
+		name := xt.Descriptor().FullName()
 		// If extended type is a MessageSet, set field name to be the message type name.
 		if isMessageSetExtension(xt) {
-			name = xt.Message().FullName()
+			name = xt.Descriptor().Message().FullName()
 		}
 
-		num := xt.Number()
+		num := xt.Descriptor().Number()
 		if knownFields.Has(num) {
 			// Use string type to produce [name] format.
 			tname := text.ValueOf(string(name))
 			pval := knownFields.Get(num)
-			xtFields, err = o.appendField(xtFields, tname, pval, xt)
+			xtFields, err = o.appendField(xtFields, tname, pval, xt.Descriptor())
 			if !nerr.Merge(err) {
 				return false
 			}
@@ -303,17 +303,18 @@ func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, knownFields 
 
 // isMessageSetExtension reports whether extension extends a message set.
 func isMessageSetExtension(xt pref.ExtensionType) bool {
-	if xt.Name() != "message_set_extension" {
+	xd := xt.Descriptor()
+	if xd.Name() != "message_set_extension" {
 		return false
 	}
-	md := xt.Message()
+	md := xd.Message()
 	if md == nil {
 		return false
 	}
-	if xt.FullName().Parent() != md.FullName() {
+	if xd.FullName().Parent() != md.FullName() {
 		return false
 	}
-	xmd, ok := xt.Extendee().(interface{ IsMessageSet() bool })
+	xmd, ok := xd.Extendee().(interface{ IsMessageSet() bool })
 	return ok && xmd.IsMessageSet()
 }
 

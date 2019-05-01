@@ -29,9 +29,14 @@ var DeprecatedEnum_value = map[string]int32{
 }
 
 func (x DeprecatedEnum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (DeprecatedEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_comments_deprecated_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (DeprecatedEnum) Type() protoreflect.EnumType {
 	return file_comments_deprecated_proto_enumTypes[0]
 }

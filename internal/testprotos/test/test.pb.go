@@ -43,9 +43,14 @@ func (x ForeignEnum) Enum() *ForeignEnum {
 }
 
 func (x ForeignEnum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (ForeignEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_test_test_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (ForeignEnum) Type() protoreflect.EnumType {
 	return file_test_test_proto_enumTypes[0]
 }
@@ -56,7 +61,7 @@ func (x ForeignEnum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *ForeignEnum) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -92,9 +97,14 @@ func (x TestReservedEnumFields) Enum() *TestReservedEnumFields {
 }
 
 func (x TestReservedEnumFields) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (TestReservedEnumFields) Descriptor() protoreflect.EnumDescriptor {
+	return file_test_test_proto_enumTypes[1].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (TestReservedEnumFields) Type() protoreflect.EnumType {
 	return file_test_test_proto_enumTypes[1]
 }
@@ -105,7 +115,7 @@ func (x TestReservedEnumFields) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *TestReservedEnumFields) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -150,9 +160,14 @@ func (x TestAllTypes_NestedEnum) Enum() *TestAllTypes_NestedEnum {
 }
 
 func (x TestAllTypes_NestedEnum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (TestAllTypes_NestedEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_test_test_proto_enumTypes[2].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (TestAllTypes_NestedEnum) Type() protoreflect.EnumType {
 	return file_test_test_proto_enumTypes[2]
 }
@@ -163,7 +178,7 @@ func (x TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *TestAllTypes_NestedEnum) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -198,9 +213,14 @@ func (x TestDeprecatedMessage_DeprecatedEnum) Enum() *TestDeprecatedMessage_Depr
 }
 
 func (x TestDeprecatedMessage_DeprecatedEnum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (TestDeprecatedMessage_DeprecatedEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_test_test_proto_enumTypes[3].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (TestDeprecatedMessage_DeprecatedEnum) Type() protoreflect.EnumType {
 	return file_test_test_proto_enumTypes[3]
 }
@@ -211,7 +231,7 @@ func (x TestDeprecatedMessage_DeprecatedEnum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *TestDeprecatedMessage_DeprecatedEnum) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}

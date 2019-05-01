@@ -125,16 +125,16 @@ func (o MarshalOptions) marshalMessage(b []byte, m protoreflect.Message) ([]byte
 	// defined order.
 	//
 	// When using deterministic serialization, we sort the known fields by field number.
-	fields := m.Type().Fields()
+	fieldDescs := m.Descriptor().Fields()
 	knownFields := m.KnownFields()
 	var err error
 	var nerr errors.NonFatal
 	o.rangeKnown(knownFields, func(num protoreflect.FieldNumber, value protoreflect.Value) bool {
-		field := fields.ByNumber(num)
+		field := fieldDescs.ByNumber(num)
 		if field == nil {
-			field = knownFields.ExtensionTypes().ByNumber(num)
+			field = knownFields.ExtensionTypes().ByNumber(num).Descriptor()
 			if field == nil {
-				panic(fmt.Errorf("no descriptor for field %d in %q", num, m.Type().FullName()))
+				panic(fmt.Errorf("no descriptor for field %d in %q", num, m.Descriptor().FullName()))
 			}
 		}
 		b, err = o.marshalField(b, field, value)

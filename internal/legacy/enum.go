@@ -55,11 +55,15 @@ type enumWrapper struct {
 	goTyp reflect.Type
 }
 
-func (e *enumWrapper) Number() pref.EnumNumber {
-	return e.num
-}
+// TODO: Remove this.
 func (e *enumWrapper) Type() pref.EnumType {
 	return e.pbTyp
+}
+func (e *enumWrapper) Descriptor() pref.EnumDescriptor {
+	return e.pbTyp.Descriptor()
+}
+func (e *enumWrapper) Number() pref.EnumNumber {
+	return e.num
 }
 func (e *enumWrapper) ProtoReflect() pref.Enum {
 	return e

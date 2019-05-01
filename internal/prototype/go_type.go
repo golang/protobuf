@@ -31,6 +31,9 @@ type goEnum struct {
 	typ  reflect.Type
 }
 
+func (t *goEnum) Descriptor() protoreflect.EnumDescriptor {
+	return t.EnumDescriptor
+}
 func (t *goEnum) GoType() reflect.Type {
 	t.New(0) // initialize t.typ
 	return t.typ
@@ -66,6 +69,9 @@ type goMessage struct {
 	typ  reflect.Type
 }
 
+func (t *goMessage) Descriptor() protoreflect.MessageDescriptor {
+	return t.MessageDescriptor
+}
 func (t *goMessage) GoType() reflect.Type {
 	t.New() // initialize t.typ
 	return t.typ
@@ -162,11 +168,20 @@ type goExtension struct {
 	interfaceOf func(v protoreflect.Value) interface{}
 }
 
+func (t *goExtension) Descriptor() protoreflect.ExtensionDescriptor {
+	return t.ExtensionDescriptor
+}
 func (t *goExtension) EnumType() protoreflect.EnumDescriptor {
-	return t.enumType
+	if t.enumType == nil {
+		return nil
+	}
+	return t.enumType.Descriptor()
 }
 func (t *goExtension) MessageType() protoreflect.MessageDescriptor {
-	return t.messageType
+	if t.messageType == nil {
+		return nil
+	}
+	return t.messageType.Descriptor()
 }
 func (t *goExtension) GoType() reflect.Type {
 	t.lazyInit()

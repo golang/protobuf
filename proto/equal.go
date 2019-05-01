@@ -21,7 +21,7 @@ func Equal(a, b Message) bool {
 
 // equalMessage compares two messages.
 func equalMessage(a, b pref.Message) bool {
-	mda, mdb := a.Type(), b.Type()
+	mda, mdb := a.Descriptor(), b.Descriptor()
 	if mda != mdb && mda.FullName() != mdb.FullName() {
 		return false
 	}
@@ -77,7 +77,7 @@ func equalMessage(a, b pref.Message) bool {
 		return true
 	}
 	xtypesa.Range(func(xt pref.ExtensionType) bool {
-		num := xt.Number()
+		num := xt.Descriptor().Number()
 		if xtypesb.ByNumber(num) != xt {
 			equal = false
 			return false
@@ -86,7 +86,7 @@ func equalMessage(a, b pref.Message) bool {
 		if !hasa && !hasb {
 			return true
 		}
-		if hasa != hasb || !equalFields(xt, knowna.Get(num), knownb.Get(num)) {
+		if hasa != hasb || !equalFields(xt.Descriptor(), knowna.Get(num), knownb.Get(num)) {
 			equal = false
 			return false
 		}

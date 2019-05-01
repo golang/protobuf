@@ -15,6 +15,7 @@ import (
 	"github.com/golang/protobuf/v2/internal/detrand"
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
+	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -1191,7 +1192,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 	}, {
 		desc: "Any expanded",
 		mo: textpb.MarshalOptions{
-			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: func() proto.Message {
 			m := &pb2.Nested{
@@ -1219,7 +1220,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 	}, {
 		desc: "Any expanded with missing required error",
 		mo: textpb.MarshalOptions{
-			Resolver: preg.NewTypes((&pb2.PartialRequired{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
 		input: func() proto.Message {
 			m := &pb2.PartialRequired{
@@ -1233,7 +1234,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &knownpb.Any{
-				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   b,
 			}
 		}(),
@@ -1245,7 +1246,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 	}, {
 		desc: "Any with invalid UTF-8",
 		mo: textpb.MarshalOptions{
-			Resolver: preg.NewTypes((&pb3.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb3.Nested{})),
 		},
 		input: func() proto.Message {
 			m := &pb3.Nested{
@@ -1256,7 +1257,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &knownpb.Any{
-				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
 			}
 		}(),
@@ -1268,7 +1269,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 	}, {
 		desc: "Any with invalid value",
 		mo: textpb.MarshalOptions{
-			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: &knownpb.Any{
 			TypeUrl: "foo/pb2.Nested",

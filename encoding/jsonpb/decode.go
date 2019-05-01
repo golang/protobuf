@@ -135,7 +135,7 @@ func newError(f string, x ...interface{}) error {
 func (o UnmarshalOptions) unmarshalMessage(m pref.Message, skipTypeURL bool) error {
 	var nerr errors.NonFatal
 
-	if isCustomType(m.Type().FullName()) {
+	if isCustomType(m.Descriptor().FullName()) {
 		return o.unmarshalCustomType(m)
 	}
 
@@ -160,9 +160,9 @@ func (o UnmarshalOptions) unmarshalFields(m pref.Message, skipTypeURL bool) erro
 	var seenNums set.Ints
 	var seenOneofs set.Ints
 
-	msgType := m.Type()
+	messageDesc := m.Descriptor()
 	knownFields := m.KnownFields()
-	fieldDescs := msgType.Fields()
+	fieldDescs := messageDesc.Fields()
 	xtTypes := knownFields.ExtensionTypes()
 
 Loop:
@@ -208,7 +208,9 @@ Loop:
 					xtTypes.Register(xt)
 				}
 			}
-			fd = xt
+			if xt != nil {
+				fd = xt.Descriptor()
+			}
 		} else {
 			// The name can either be the JSON name or the proto field name.
 			fd = fieldDescs.ByJSONName(name)
@@ -225,13 +227,13 @@ Loop:
 				}
 				continue
 			}
-			return newError("%v contains unknown field %s", msgType.FullName(), jval)
+			return newError("%v contains unknown field %s", messageDesc.FullName(), jval)
 		}
 
 		// Do not allow duplicate fields.
 		num := uint64(fd.Number())
 		if seenNums.Has(num) {
-			return newError("%v contains repeated field %s", msgType.FullName(), jval)
+			return newError("%v contains repeated field %s", messageDesc.FullName(), jval)
 		}
 		seenNums.Set(num)
 

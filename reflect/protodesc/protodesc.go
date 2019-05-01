@@ -7,7 +7,6 @@
 package protodesc
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/golang/protobuf/v2/internal/encoding/defval"
@@ -409,15 +408,4 @@ func findEnumDescriptor(s string, imps importSet, r *protoregistry.Files) (proto
 		return nil, err
 	}
 	return ed, nil
-}
-
-func typeName(t protoreflect.Descriptor) string {
-	switch t.(type) {
-	case protoreflect.EnumType:
-		return "enum"
-	case protoreflect.MessageType:
-		return "message"
-	default:
-		return fmt.Sprintf("%T", t)
-	}
 }

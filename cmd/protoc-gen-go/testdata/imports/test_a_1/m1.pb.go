@@ -30,9 +30,14 @@ var E1_value = map[string]int32{
 }
 
 func (x E1) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (E1) Descriptor() protoreflect.EnumDescriptor {
+	return file_imports_test_a_1_m1_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (E1) Type() protoreflect.EnumType {
 	return file_imports_test_a_1_m1_proto_enumTypes[0]
 }

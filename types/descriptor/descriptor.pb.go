@@ -98,9 +98,14 @@ func (x FieldDescriptorProto_Type) Enum() *FieldDescriptorProto_Type {
 }
 
 func (x FieldDescriptorProto_Type) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (FieldDescriptorProto_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_descriptor_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (FieldDescriptorProto_Type) Type() protoreflect.EnumType {
 	return file_google_protobuf_descriptor_proto_enumTypes[0]
 }
@@ -111,7 +116,7 @@ func (x FieldDescriptorProto_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *FieldDescriptorProto_Type) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -154,9 +159,14 @@ func (x FieldDescriptorProto_Label) Enum() *FieldDescriptorProto_Label {
 }
 
 func (x FieldDescriptorProto_Label) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (FieldDescriptorProto_Label) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_descriptor_proto_enumTypes[1].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (FieldDescriptorProto_Label) Type() protoreflect.EnumType {
 	return file_google_protobuf_descriptor_proto_enumTypes[1]
 }
@@ -167,7 +177,7 @@ func (x FieldDescriptorProto_Label) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *FieldDescriptorProto_Label) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -211,9 +221,14 @@ func (x FileOptions_OptimizeMode) Enum() *FileOptions_OptimizeMode {
 }
 
 func (x FileOptions_OptimizeMode) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (FileOptions_OptimizeMode) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_descriptor_proto_enumTypes[2].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (FileOptions_OptimizeMode) Type() protoreflect.EnumType {
 	return file_google_protobuf_descriptor_proto_enumTypes[2]
 }
@@ -224,7 +239,7 @@ func (x FileOptions_OptimizeMode) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *FileOptions_OptimizeMode) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -267,9 +282,14 @@ func (x FieldOptions_CType) Enum() *FieldOptions_CType {
 }
 
 func (x FieldOptions_CType) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (FieldOptions_CType) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_descriptor_proto_enumTypes[3].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (FieldOptions_CType) Type() protoreflect.EnumType {
 	return file_google_protobuf_descriptor_proto_enumTypes[3]
 }
@@ -280,7 +300,7 @@ func (x FieldOptions_CType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *FieldOptions_CType) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -325,9 +345,14 @@ func (x FieldOptions_JSType) Enum() *FieldOptions_JSType {
 }
 
 func (x FieldOptions_JSType) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (FieldOptions_JSType) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_descriptor_proto_enumTypes[4].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (FieldOptions_JSType) Type() protoreflect.EnumType {
 	return file_google_protobuf_descriptor_proto_enumTypes[4]
 }
@@ -338,7 +363,7 @@ func (x FieldOptions_JSType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *FieldOptions_JSType) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -383,9 +408,14 @@ func (x MethodOptions_IdempotencyLevel) Enum() *MethodOptions_IdempotencyLevel {
 }
 
 func (x MethodOptions_IdempotencyLevel) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (MethodOptions_IdempotencyLevel) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_descriptor_proto_enumTypes[5].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (MethodOptions_IdempotencyLevel) Type() protoreflect.EnumType {
 	return file_google_protobuf_descriptor_proto_enumTypes[5]
 }
@@ -396,7 +426,7 @@ func (x MethodOptions_IdempotencyLevel) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *MethodOptions_IdempotencyLevel) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}

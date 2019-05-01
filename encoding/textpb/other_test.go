@@ -6,6 +6,7 @@ import (
 	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/v2/encoding/textpb"
 	"github.com/golang/protobuf/v2/internal/impl"
+	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -157,15 +158,15 @@ func TestRoundTrip(t *testing.T) {
 			}
 			return &pb2.KnownTypes{
 				OptAny: &knownpb.Any{
-					TypeUrl: string(m.ProtoReflect().Type().FullName()),
+					TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 					Value:   b,
 				},
 			}
 		}(),
 	}, {
 		desc:     "Any field with registered type",
-		resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
-		message: func() proto.Message {
+		resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
+		message: func() *pb2.KnownTypes {
 			m := &pb2.Nested{
 				OptString: scalar.String("embedded inside Any"),
 				OptNested: &pb2.Nested{
@@ -178,7 +179,7 @@ func TestRoundTrip(t *testing.T) {
 			}
 			return &pb2.KnownTypes{
 				OptAny: &knownpb.Any{
-					TypeUrl: string(m.ProtoReflect().Type().FullName()),
+					TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 					Value:   b,
 				},
 			}
@@ -186,11 +187,11 @@ func TestRoundTrip(t *testing.T) {
 	}, {
 		desc: "Any field containing Any message",
 		resolver: func() *preg.Types {
-			mt1 := (&pb2.Nested{}).ProtoReflect().Type()
+			mt1 := impl.Export{}.MessageTypeOf(&pb2.Nested{})
 			mt2 := impl.Export{}.MessageTypeOf(&knownpb.Any{})
 			return preg.NewTypes(mt1, mt2)
 		}(),
-		message: func() proto.Message {
+		message: func() *pb2.KnownTypes {
 			m1 := &pb2.Nested{
 				OptString: scalar.String("message inside Any of another Any field"),
 			}
@@ -219,20 +220,18 @@ func TestRoundTrip(t *testing.T) {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
 			t.Parallel()
-			mo := textpb.MarshalOptions{Resolver: tt.resolver}
-			umo := textpb.UnmarshalOptions{Resolver: tt.resolver}
-
-			b, err := mo.Marshal(tt.message)
+			b, err := textpb.MarshalOptions{Resolver: tt.resolver}.Marshal(tt.message)
 			if err != nil {
 				t.Errorf("Marshal() returned error: %v\n\n", err)
 			}
-			gotMessage := tt.message.ProtoReflect().Type().New().Interface()
-			err = umo.Unmarshal(gotMessage, b)
+
+			gotMessage := new(pb2.KnownTypes)
+			err = textpb.UnmarshalOptions{Resolver: tt.resolver}.Unmarshal(gotMessage, b)
 			if err != nil {
 				t.Errorf("Unmarshal() returned error: %v\n\n", err)
 			}
 
-			if !protoV1.Equal(gotMessage.(protoV1.Message), tt.message.(protoV1.Message)) {
+			if !protoV1.Equal(gotMessage, tt.message.(protoV1.Message)) {
 				t.Errorf("Unmarshal()\n<got>\n%v\n<want>\n%v\n", gotMessage, tt.message)
 			}
 		})

@@ -267,7 +267,6 @@ func rangeRegisteredMessageDescriptors(messages protoreflect.MessageDescriptors,
 // Type is an interface satisfied by protoreflect.EnumType,
 // protoreflect.MessageType, or protoreflect.ExtensionType.
 type Type interface {
-	protoreflect.Descriptor
 	GoType() reflect.Type
 }
 
@@ -361,7 +360,17 @@ typeLoop:
 		switch typ.(type) {
 		case protoreflect.EnumType, protoreflect.MessageType, protoreflect.ExtensionType:
 			// Check for conflicts in typesByName.
-			name := typ.FullName()
+			var name protoreflect.FullName
+			switch t := typ.(type) {
+			case protoreflect.EnumType:
+				name = t.Descriptor().FullName()
+			case protoreflect.MessageType:
+				name = t.Descriptor().FullName()
+			case protoreflect.ExtensionType:
+				name = t.Descriptor().FullName()
+			default:
+				panic(fmt.Sprintf("invalid type: %T", t))
+			}
 			if r.typesByName[name] != nil {
 				if firstErr == nil {
 					firstErr = errors.New("%v %v is already registered", typeName(typ), name)
@@ -371,8 +380,8 @@ typeLoop:
 
 			// Check for conflicts in extensionsByMessage.
 			if xt, _ := typ.(protoreflect.ExtensionType); xt != nil {
-				field := xt.Number()
-				message := xt.Extendee().FullName()
+				field := xt.Descriptor().Number()
+				message := xt.Descriptor().Extendee().FullName()
 				if r.extensionsByMessage[message][field] != nil {
 					if firstErr == nil {
 						firstErr = errors.New("extension %v is already registered on message %v", name, message)

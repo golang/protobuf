@@ -34,14 +34,14 @@ func sizeMessageFast(m Message) (int, error) {
 }
 
 func sizeMessage(m protoreflect.Message) (size int) {
-	fields := m.Type().Fields()
+	fieldDescs := m.Descriptor().Fields()
 	knownFields := m.KnownFields()
 	m.KnownFields().Range(func(num protoreflect.FieldNumber, value protoreflect.Value) bool {
-		field := fields.ByNumber(num)
+		field := fieldDescs.ByNumber(num)
 		if field == nil {
-			field = knownFields.ExtensionTypes().ByNumber(num)
+			field = knownFields.ExtensionTypes().ByNumber(num).Descriptor()
 			if field == nil {
-				panic(fmt.Errorf("no descriptor for field %d in %q", num, m.Type().FullName()))
+				panic(fmt.Errorf("no descriptor for field %d in %q", num, m.Descriptor().FullName()))
 			}
 		}
 		size += sizeField(field, value)

@@ -45,7 +45,7 @@ func fillMessage(m pref.Message, level int) {
 	}
 
 	knownFields := m.KnownFields()
-	fieldDescs := m.Type().Fields()
+	fieldDescs := m.Descriptor().Fields()
 	for i := 0; i < fieldDescs.Len(); i++ {
 		fd := fieldDescs.Get(i)
 		num := fd.Number()

@@ -56,11 +56,11 @@ type (
 	LegacyWrapper interface {
 		EnumOf(interface{}) LegacyEnum
 		EnumTypeOf(interface{}) pref.EnumType
+		EnumDescriptorOf(interface{}) pref.EnumDescriptor
 
 		MessageOf(interface{}) LegacyMessage
 		MessageTypeOf(interface{}) pref.MessageType
-
-		ExtensionTypeOf(pref.ExtensionDescriptor, interface{}) pref.ExtensionType
+		MessageDescriptorOf(interface{}) pref.MessageDescriptor
 
 		// TODO: Remove these eventually.
 		// See the TODOs in internal/impl/legacy_extension.go.
@@ -121,31 +121,14 @@ func NewLegacyConverter(t reflect.Type, k pref.Kind, w LegacyWrapper) Converter 
 			return makeScalarConverter(t, bytesType)
 		}
 	case pref.EnumKind:
-		// Handle v2 enums, which must satisfy the proto.Enum interface.
-		if t.Kind() != reflect.Ptr && t.Implements(enumIfaceV2) {
-			et := reflect.Zero(t).Interface().(pref.Enum).Type()
-			return Converter{
-				PBValueOf: func(v reflect.Value) pref.Value {
-					if v.Type() != t {
-						panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
-					}
-					e := v.Interface().(pref.Enum)
-					return pref.ValueOf(e.Number())
-				},
-				GoValueOf: func(v pref.Value) reflect.Value {
-					rv := reflect.ValueOf(et.New(v.Enum()))
-					if rv.Type() != t {
-						panic(fmt.Sprintf("invalid type: got %v, want %v", rv.Type(), t))
-					}
-					return rv
-				},
-				EnumType: et,
+		// Handle enums, which must be a named int32 type.
+		if t.PkgPath() != "" && t.Kind() == reflect.Int32 {
+			var et pref.EnumType
+			if t.Implements(enumIfaceV2) {
+				et = &enumType{reflect.Zero(t).Interface().(pref.Enum).Descriptor(), t}
+			} else {
+				et = w.EnumTypeOf(reflect.Zero(t).Interface())
 			}
-		}
-
-		// Handle v1 enums, which we identify as simply a named int32 type.
-		if w != nil && t.PkgPath() != "" && t.Kind() == reflect.Int32 {
-			et := w.EnumTypeOf(reflect.Zero(t).Interface())
 			return Converter{
 				PBValueOf: func(v reflect.Value) pref.Value {
 					if v.Type() != t {
@@ -157,13 +140,14 @@ func NewLegacyConverter(t reflect.Type, k pref.Kind, w LegacyWrapper) Converter 
 					return reflect.ValueOf(v.Enum()).Convert(t)
 				},
 				EnumType: et,
-				IsLegacy: true,
+				IsLegacy: !t.Implements(enumIfaceV2),
 			}
 		}
 	case pref.MessageKind, pref.GroupKind:
 		// Handle v2 messages, which must satisfy the proto.Message interface.
 		if t.Kind() == reflect.Ptr && t.Implements(messageIfaceV2) {
-			mt := reflect.Zero(t).Interface().(pref.ProtoMessage).ProtoReflect().Type()
+			md := reflect.Zero(t).Interface().(pref.ProtoMessage).ProtoReflect().Descriptor()
+			mt := &messageType{md, t}
 			return Converter{
 				PBValueOf: func(v reflect.Value) pref.Value {
 					if v.Type() != t {
@@ -239,4 +223,30 @@ type Converter struct {
 	EnumType    pref.EnumType
 	MessageType pref.MessageType
 	IsLegacy    bool
+}
+
+// TODO: This needs to be centralized in a package.
+type enumType struct {
+	// TODO: Remove me as an embedded field.
+	pref.EnumDescriptor
+	typ reflect.Type // must implement protoreflect.Enum
+}
+
+func (t *enumType) Descriptor() pref.EnumDescriptor { return t.EnumDescriptor }
+func (t *enumType) GoType() reflect.Type            { return t.typ }
+func (t *enumType) New(n pref.EnumNumber) pref.Enum {
+	return reflect.ValueOf(n).Convert(t.typ).Interface().(pref.Enum)
+}
+
+// TODO: This needs to be centralized in a package.
+type messageType struct {
+	// TODO: Remove me as an embedded field.
+	pref.MessageDescriptor
+	typ reflect.Type // must implement protoreflect.ProtoMessage
+}
+
+func (t *messageType) Descriptor() pref.MessageDescriptor { return t.MessageDescriptor }
+func (t *messageType) GoType() reflect.Type               { return t.typ }
+func (t *messageType) New() pref.Message {
+	return reflect.New(t.typ.Elem()).Interface().(pref.ProtoMessage).ProtoReflect()
 }

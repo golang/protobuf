@@ -27,7 +27,7 @@ func IsInitialized(m Message) error {
 
 // IsInitialized returns an error if any required fields in m are not set.
 func isInitialized(m pref.Message, stack []interface{}) error {
-	md := m.Type()
+	md := m.Descriptor()
 	known := m.KnownFields()
 	fields := md.Fields()
 	for i, nums := 0, md.RequiredNumbers(); i < nums.Len(); i++ {
@@ -41,7 +41,7 @@ func isInitialized(m pref.Message, stack []interface{}) error {
 	known.Range(func(num pref.FieldNumber, v pref.Value) bool {
 		field := fields.ByNumber(num)
 		if field == nil {
-			field = known.ExtensionTypes().ByNumber(num)
+			field = known.ExtensionTypes().ByNumber(num).Descriptor()
 		}
 		if field == nil {
 			panic(fmt.Errorf("no descriptor for field %d in %q", num, md.FullName()))

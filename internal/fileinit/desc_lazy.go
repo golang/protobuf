@@ -116,6 +116,7 @@ func (file *fileDesc) resolveExtensions() {
 		case pref.Optional:
 			switch xd.lazy.kind {
 			case pref.EnumKind:
+				et := pimpl.Export{}.EnumTypeOf(reflect.Zero(typ).Interface())
 				xd.lazy.typ = typ
 				xd.lazy.new = func() pref.Value {
 					return xd.lazy.defVal.get()
@@ -125,12 +126,13 @@ func (file *fileDesc) resolveExtensions() {
 					return pref.ValueOf(ev.Number())
 				}
 				xd.lazy.interfaceOf = func(pv pref.Value) interface{} {
-					return xd.lazy.enumType.New(pv.Enum())
+					return et.New(pv.Enum())
 				}
 			case pref.MessageKind, pref.GroupKind:
+				mt := pimpl.Export{}.MessageTypeOf(reflect.Zero(typ).Interface())
 				xd.lazy.typ = typ
 				xd.lazy.new = func() pref.Value {
-					return pref.ValueOf(xd.lazy.messageType.New())
+					return pref.ValueOf(mt.New())
 				}
 				xd.lazy.valueOf = func(v interface{}) pref.Value {
 					mv := v.(pref.ProtoMessage).ProtoReflect()
@@ -171,9 +173,9 @@ func (file *fileDesc) resolveExtensions() {
 		// Resolve extension field dependency.
 		switch xd.lazy.kind {
 		case pref.EnumKind:
-			xd.lazy.enumType = file.popEnumDependency().(pref.EnumType)
+			xd.lazy.enumType = file.popEnumDependency()
 		case pref.MessageKind, pref.GroupKind:
-			xd.lazy.messageType = file.popMessageDependency().(pref.MessageType)
+			xd.lazy.messageType = file.popMessageDependency()
 		}
 		xd.lazy.defVal.lazyInit(xd.lazy.kind, file.enumValuesOf(xd.lazy.enumType))
 	}
@@ -241,7 +243,7 @@ func (fd *fileDesc) popEnumDependency() pref.EnumDescriptor {
 	if depIdx < len(fd.allEnums)+len(fd.allMessages) {
 		return &fd.allEnums[depIdx]
 	} else {
-		return pimpl.Export{}.EnumTypeOf(fd.GoTypes[depIdx])
+		return pimpl.Export{}.EnumDescriptorOf(fd.GoTypes[depIdx])
 	}
 }
 
@@ -250,7 +252,7 @@ func (fd *fileDesc) popMessageDependency() pref.MessageDescriptor {
 	if depIdx < len(fd.allEnums)+len(fd.allMessages) {
 		return fd.allMessages[depIdx-len(fd.allEnums)].asDesc()
 	} else {
-		return pimpl.Export{}.MessageTypeOf(fd.GoTypes[depIdx])
+		return pimpl.Export{}.MessageDescriptorOf(fd.GoTypes[depIdx])
 	}
 }
 

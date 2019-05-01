@@ -42,9 +42,14 @@ func (x ForeignEnumProto2) Enum() *ForeignEnumProto2 {
 }
 
 func (x ForeignEnumProto2) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (ForeignEnumProto2) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_test_messages_proto2_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (ForeignEnumProto2) Type() protoreflect.EnumType {
 	return file_google_protobuf_test_messages_proto2_proto_enumTypes[0]
 }
@@ -55,7 +60,7 @@ func (x ForeignEnumProto2) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *ForeignEnumProto2) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -100,9 +105,14 @@ func (x TestAllTypesProto2_NestedEnum) Enum() *TestAllTypesProto2_NestedEnum {
 }
 
 func (x TestAllTypesProto2_NestedEnum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (TestAllTypesProto2_NestedEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_test_messages_proto2_proto_enumTypes[1].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (TestAllTypesProto2_NestedEnum) Type() protoreflect.EnumType {
 	return file_google_protobuf_test_messages_proto2_proto_enumTypes[1]
 }
@@ -113,7 +123,7 @@ func (x TestAllTypesProto2_NestedEnum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *TestAllTypesProto2_NestedEnum) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}

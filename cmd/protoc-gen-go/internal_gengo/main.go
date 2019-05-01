@@ -276,7 +276,7 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	}
 	// String method.
 	g.P("func (x ", enum.GoIdent, ") String() string {")
-	g.P("return ", protoimplPackage.Ident("X"), ".EnumStringOf(x.Type(), ", protoreflectPackage.Ident("EnumNumber"), "(x))")
+	g.P("return ", protoimplPackage.Ident("X"), ".EnumStringOf(x.Descriptor(), ", protoreflectPackage.Ident("EnumNumber"), "(x))")
 	g.P("}")
 	g.P()
 
@@ -286,7 +286,7 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	if enum.Desc.Syntax() == protoreflect.Proto2 {
 		g.P("// Deprecated: Do not use.")
 		g.P("func (x *", enum.GoIdent, ") UnmarshalJSON(b []byte) error {")
-		g.P("num, err := ", protoimplPackage.Ident("X"), ".UnmarshalJSONEnum(x.Type(), b)")
+		g.P("num, err := ", protoimplPackage.Ident("X"), ".UnmarshalJSONEnum(x.Descriptor(), b)")
 		g.P("if err != nil {")
 		g.P("return err")
 		g.P("}")

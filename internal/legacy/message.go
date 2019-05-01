@@ -232,14 +232,14 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 	// Populate EnumType and MessageType.
 	if f.EnumType == nil && f.Kind == pref.EnumKind {
 		if ev, ok := reflect.Zero(t).Interface().(pref.Enum); ok {
-			f.EnumType = ev.Type()
+			f.EnumType = ev.Descriptor()
 		} else {
 			f.EnumType = LoadEnumDesc(t)
 		}
 	}
 	if f.MessageType == nil && (f.Kind == pref.MessageKind || f.Kind == pref.GroupKind) {
 		if mv, ok := reflect.Zero(t).Interface().(pref.ProtoMessage); ok {
-			f.MessageType = mv.ProtoReflect().Type()
+			f.MessageType = mv.ProtoReflect().Descriptor()
 		} else if t.Kind() == reflect.Map {
 			m := &ptype.StandaloneMessage{
 				Syntax:     parent.Syntax,

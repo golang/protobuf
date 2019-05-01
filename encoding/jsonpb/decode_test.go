@@ -13,6 +13,7 @@ import (
 	"github.com/golang/protobuf/v2/encoding/jsonpb"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
 	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
+	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -1976,7 +1977,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with non-custom message",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2005,7 +2006,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with empty embedded message",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText:    `{"@type": "foo/pb2.Nested"}`,
@@ -2019,7 +2020,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with missing required error",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&pb2.PartialRequired{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2038,7 +2039,7 @@ func TestUnmarshal(t *testing.T) {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &knownpb.Any{
-				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   b,
 			}
 		}(),
@@ -2047,7 +2048,7 @@ func TestUnmarshal(t *testing.T) {
 		desc: "Any with partial required and AllowPartial",
 		umo: jsonpb.UnmarshalOptions{
 			AllowPartial: true,
-			Resolver:     preg.NewTypes((&pb2.PartialRequired{}).ProtoReflect().Type()),
+			Resolver:     preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2066,14 +2067,14 @@ func TestUnmarshal(t *testing.T) {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &knownpb.Any{
-				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   b,
 			}
 		}(),
 	}, {
 		desc: "Any with invalid UTF8",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2097,7 +2098,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with BoolValue",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.BoolValue{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2118,7 +2119,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with Empty",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2131,7 +2132,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with missing Empty",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2141,7 +2142,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with StringValue containing invalid UTF8",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.StringValue{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2163,7 +2164,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with Int64Value",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Int64Value{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Int64Value{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2184,7 +2185,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with invalid Int64Value",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Int64Value{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Int64Value{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2195,7 +2196,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with invalid UInt64Value",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.UInt64Value{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.UInt64Value{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2206,7 +2207,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with Duration",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Duration{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Duration{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2227,7 +2228,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with Value of StringValue",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2249,7 +2250,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with Value of NullValue",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2271,11 +2272,11 @@ func TestUnmarshal(t *testing.T) {
 		desc: "Any with Struct",
 		umo: jsonpb.UnmarshalOptions{
 			Resolver: preg.NewTypes(
-				(&knownpb.Struct{}).ProtoReflect().Type(),
-				(&knownpb.Value{}).ProtoReflect().Type(),
-				(&knownpb.BoolValue{}).ProtoReflect().Type(),
-				knownpb.NullValue_NULL_VALUE.Type(),
-				(&knownpb.StringValue{}).ProtoReflect().Type(),
+				pimpl.Export{}.MessageTypeOf(&knownpb.Struct{}),
+				pimpl.Export{}.MessageTypeOf(&knownpb.Value{}),
+				pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{}),
+				pimpl.Export{}.EnumTypeOf(knownpb.NullValue_NULL_VALUE),
+				pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{}),
 			),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2335,8 +2336,8 @@ func TestUnmarshal(t *testing.T) {
 		desc: "Any with duplicate @type",
 		umo: jsonpb.UnmarshalOptions{
 			Resolver: preg.NewTypes(
-				(&pb2.Nested{}).ProtoReflect().Type(),
-				(&knownpb.StringValue{}).ProtoReflect().Type(),
+				pimpl.Export{}.MessageTypeOf(&pb2.Nested{}),
+				pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{}),
 			),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2349,7 +2350,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with duplicate value",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.StringValue{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2361,7 +2362,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "Any with unknown field",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2374,9 +2375,9 @@ func TestUnmarshal(t *testing.T) {
 		desc: "Any with embedded type containing Any",
 		umo: jsonpb.UnmarshalOptions{
 			Resolver: preg.NewTypes(
-				(&pb2.KnownTypes{}).ProtoReflect().Type(),
-				(&knownpb.Any{}).ProtoReflect().Type(),
-				(&knownpb.StringValue{}).ProtoReflect().Type(),
+				pimpl.Export{}.MessageTypeOf(&pb2.KnownTypes{}),
+				pimpl.Export{}.MessageTypeOf(&knownpb.Any{}),
+				pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{}),
 			),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2411,7 +2412,7 @@ func TestUnmarshal(t *testing.T) {
 	}, {
 		desc: "well known types as field values",
 		umo: jsonpb.UnmarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		inputMessage: &pb2.KnownTypes{},
 		inputText: `{
@@ -2566,7 +2567,7 @@ func TestUnmarshal(t *testing.T) {
 		desc: "DiscardUnknown: Any",
 		umo: jsonpb.UnmarshalOptions{
 			DiscardUnknown: true,
-			Resolver:       preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver:       preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
@@ -2580,7 +2581,7 @@ func TestUnmarshal(t *testing.T) {
 		desc: "DiscardUnknown: Any with Empty",
 		umo: jsonpb.UnmarshalOptions{
 			DiscardUnknown: true,
-			Resolver:       preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+			Resolver:       preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		inputMessage: &knownpb.Any{},
 		inputText: `{

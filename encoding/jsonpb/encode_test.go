@@ -14,6 +14,7 @@ import (
 	"github.com/golang/protobuf/v2/encoding/jsonpb"
 	"github.com/golang/protobuf/v2/internal/encoding/pack"
 	"github.com/golang/protobuf/v2/internal/encoding/wire"
+	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	"github.com/golang/protobuf/v2/internal/scalar"
 	"github.com/golang/protobuf/v2/proto"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -1531,7 +1532,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with non-custom message",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: func() proto.Message {
 			m := &pb2.Nested{
@@ -1559,7 +1560,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with empty embedded message",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
 		want: `{
@@ -1573,7 +1574,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with missing required error",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&pb2.PartialRequired{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
 		input: func() proto.Message {
 			m := &pb2.PartialRequired{
@@ -1587,7 +1588,7 @@ func TestMarshal(t *testing.T) {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &knownpb.Any{
-				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   b,
 			}
 		}(),
@@ -1600,7 +1601,7 @@ func TestMarshal(t *testing.T) {
 		desc: "Any with partial required and AllowPartial",
 		mo: jsonpb.MarshalOptions{
 			AllowPartial: true,
-			Resolver:     preg.NewTypes((&pb2.PartialRequired{}).ProtoReflect().Type()),
+			Resolver:     preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
 		input: func() proto.Message {
 			m := &pb2.PartialRequired{
@@ -1614,7 +1615,7 @@ func TestMarshal(t *testing.T) {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
 			return &knownpb.Any{
-				TypeUrl: string(m.ProtoReflect().Type().FullName()),
+				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   b,
 			}
 		}(),
@@ -1625,7 +1626,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with invalid UTF8",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: func() proto.Message {
 			m := &pb2.Nested{
@@ -1648,7 +1649,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with invalid value",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&pb2.Nested{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: &knownpb.Any{
 			TypeUrl: "foo/pb2.Nested",
@@ -1658,7 +1659,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with BoolValue",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.BoolValue{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{})),
 		},
 		input: func() proto.Message {
 			m := &knownpb.BoolValue{Value: true}
@@ -1678,7 +1679,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with Empty",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		input: func() proto.Message {
 			m := &knownpb.Empty{}
@@ -1698,7 +1699,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with StringValue containing invalid UTF8",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.StringValue{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{})),
 		},
 		input: func() proto.Message {
 			m := &knownpb.StringValue{Value: "abcd"}
@@ -1719,7 +1720,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with Int64Value",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Int64Value{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Int64Value{})),
 		},
 		input: func() proto.Message {
 			m := &knownpb.Int64Value{Value: 42}
@@ -1739,7 +1740,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with Duration",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Duration{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Duration{})),
 		},
 		input: func() proto.Message {
 			m := &knownpb.Duration{}
@@ -1759,7 +1760,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with empty Value",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
 		},
 		input: func() proto.Message {
 			m := &knownpb.Value{}
@@ -1776,7 +1777,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with Value of StringValue",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
 		},
 		input: func() proto.Message {
 			m := &knownpb.Value{Kind: &knownpb.Value_StringValue{"abcd"}}
@@ -1797,7 +1798,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with Value of NullValue",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Value{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
 		},
 		input: func() proto.Message {
 			m := &knownpb.Value{Kind: &knownpb.Value_NullValue{}}
@@ -1818,11 +1819,11 @@ func TestMarshal(t *testing.T) {
 		desc: "Any with Struct",
 		mo: jsonpb.MarshalOptions{
 			Resolver: preg.NewTypes(
-				(&knownpb.Struct{}).ProtoReflect().Type(),
-				(&knownpb.Value{}).ProtoReflect().Type(),
-				(&knownpb.BoolValue{}).ProtoReflect().Type(),
-				knownpb.NullValue_NULL_VALUE.Type(),
-				(&knownpb.StringValue{}).ProtoReflect().Type(),
+				pimpl.Export{}.MessageTypeOf(&knownpb.Struct{}),
+				pimpl.Export{}.MessageTypeOf(&knownpb.Value{}),
+				pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{}),
+				pimpl.Export{}.EnumTypeOf(knownpb.NullValue_NULL_VALUE),
+				pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{}),
 			),
 		},
 		input: func() proto.Message {
@@ -1865,7 +1866,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with missing type_url",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.BoolValue{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{})),
 		},
 		input: func() proto.Message {
 			m := &knownpb.BoolValue{Value: true}
@@ -1881,7 +1882,7 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "well known types as field values",
 		mo: jsonpb.MarshalOptions{
-			Resolver: preg.NewTypes((&knownpb.Empty{}).ProtoReflect().Type()),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		input: &pb2.KnownTypes{
 			OptBool:      &knownpb.BoolValue{Value: false},

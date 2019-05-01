@@ -31,7 +31,7 @@ func TestConcurrentInit(t *testing.T) {
 	const numParallel = 5
 	var messageATypes [numParallel]protoreflect.MessageType
 	var messageBTypes [numParallel]protoreflect.MessageType
-	var enumTypes [numParallel]protoreflect.EnumType
+	var enumDescs [numParallel]protoreflect.EnumDescriptor
 
 	// Concurrently load message and enum types.
 	var wg sync.WaitGroup
@@ -48,31 +48,30 @@ func TestConcurrentInit(t *testing.T) {
 		}()
 		go func() {
 			defer wg.Done()
-			enumTypes[i] = Export{}.EnumTypeOf(Enum(0))
+			enumDescs[i] = Export{}.EnumDescriptorOf(Enum(0))
 		}()
 	}
 	wg.Wait()
 
 	var (
 		wantMTA = messageATypes[0]
-		wantMDA = messageATypes[0].Fields().ByNumber(1).Message()
+		wantMDA = messageATypes[0].Descriptor().Fields().ByNumber(1).Message()
 		wantMTB = messageBTypes[0]
-		wantMDB = messageBTypes[0].Fields().ByNumber(2).Message()
-		wantET  = enumTypes[0]
-		wantED  = messageATypes[0].Fields().ByNumber(3).Enum()
+		wantMDB = messageBTypes[0].Descriptor().Fields().ByNumber(2).Message()
+		wantED  = messageATypes[0].Descriptor().Fields().ByNumber(3).Enum()
 	)
 
 	for _, gotMT := range messageATypes[1:] {
 		if gotMT != wantMTA {
 			t.Error("MessageType(MessageA) mismatch")
 		}
-		if gotMDA := gotMT.Fields().ByNumber(1).Message(); gotMDA != wantMDA {
+		if gotMDA := gotMT.Descriptor().Fields().ByNumber(1).Message(); gotMDA != wantMDA {
 			t.Error("MessageDescriptor(MessageA) mismatch")
 		}
-		if gotMDB := gotMT.Fields().ByNumber(2).Message(); gotMDB != wantMDB {
+		if gotMDB := gotMT.Descriptor().Fields().ByNumber(2).Message(); gotMDB != wantMDB {
 			t.Error("MessageDescriptor(MessageB) mismatch")
 		}
-		if gotED := gotMT.Fields().ByNumber(3).Enum(); gotED != wantED {
+		if gotED := gotMT.Descriptor().Fields().ByNumber(3).Enum(); gotED != wantED {
 			t.Error("EnumDescriptor(Enum) mismatch")
 		}
 	}
@@ -80,18 +79,18 @@ func TestConcurrentInit(t *testing.T) {
 		if gotMT != wantMTB {
 			t.Error("MessageType(MessageB) mismatch")
 		}
-		if gotMDA := gotMT.Fields().ByNumber(1).Message(); gotMDA != wantMDA {
+		if gotMDA := gotMT.Descriptor().Fields().ByNumber(1).Message(); gotMDA != wantMDA {
 			t.Error("MessageDescriptor(MessageA) mismatch")
 		}
-		if gotMDB := gotMT.Fields().ByNumber(2).Message(); gotMDB != wantMDB {
+		if gotMDB := gotMT.Descriptor().Fields().ByNumber(2).Message(); gotMDB != wantMDB {
 			t.Error("MessageDescriptor(MessageB) mismatch")
 		}
-		if gotED := gotMT.Fields().ByNumber(3).Enum(); gotED != wantED {
+		if gotED := gotMT.Descriptor().Fields().ByNumber(3).Enum(); gotED != wantED {
 			t.Error("EnumDescriptor(Enum) mismatch")
 		}
 	}
-	for _, gotET := range enumTypes[1:] {
-		if gotET != wantET {
+	for _, gotED := range enumDescs[1:] {
+		if gotED != wantED {
 			t.Error("EnumType(Enum) mismatch")
 		}
 	}

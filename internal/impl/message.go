@@ -113,8 +113,8 @@ fieldLoop:
 // any discrepancies.
 func (mi *MessageType) makeKnownFieldsFunc(si structInfo) {
 	mi.fields = map[pref.FieldNumber]*fieldInfo{}
-	for i := 0; i < mi.PBType.Fields().Len(); i++ {
-		fd := mi.PBType.Fields().Get(i)
+	for i := 0; i < mi.PBType.Descriptor().Fields().Len(); i++ {
+		fd := mi.PBType.Descriptor().Fields().Get(i)
 		fs := si.fieldsByNumber[fd.Number()]
 		var fi fieldInfo
 		switch {
@@ -133,8 +133,8 @@ func (mi *MessageType) makeKnownFieldsFunc(si structInfo) {
 	}
 
 	mi.oneofs = map[pref.Name]*oneofInfo{}
-	for i := 0; i < mi.PBType.Oneofs().Len(); i++ {
-		od := mi.PBType.Oneofs().Get(i)
+	for i := 0; i < mi.PBType.Descriptor().Oneofs().Len(); i++ {
+		od := mi.PBType.Descriptor().Oneofs().Get(i)
 		mi.oneofs[od.Name()] = makeOneofInfo(od, si.oneofsByName[od.Name()], si.oneofWrappersByType)
 	}
 }
@@ -203,8 +203,12 @@ type messageDataType struct {
 
 type messageReflectWrapper messageDataType
 
+// TODO: Remove this.
 func (m *messageReflectWrapper) Type() pref.MessageType {
 	return m.mi.PBType
+}
+func (m *messageReflectWrapper) Descriptor() pref.MessageDescriptor {
+	return m.mi.PBType.Descriptor()
 }
 func (m *messageReflectWrapper) KnownFields() pref.KnownFields {
 	m.mi.init()
@@ -213,6 +217,9 @@ func (m *messageReflectWrapper) KnownFields() pref.KnownFields {
 func (m *messageReflectWrapper) UnknownFields() pref.UnknownFields {
 	m.mi.init()
 	return m.mi.unknownFields((*messageDataType)(m))
+}
+func (m *messageReflectWrapper) New() pref.Message {
+	return m.mi.PBType.New()
 }
 func (m *messageReflectWrapper) Interface() pref.ProtoMessage {
 	if m, ok := m.ProtoUnwrap().(pref.ProtoMessage); ok {
@@ -266,7 +273,7 @@ func (fs *knownFields) Set(n pref.FieldNumber, v pref.Value) {
 		fi.set(fs.p, v)
 		return
 	}
-	if fs.mi.PBType.ExtensionRanges().Has(n) {
+	if fs.mi.PBType.Descriptor().ExtensionRanges().Has(n) {
 		fs.extensionFields().Set(n, v)
 		return
 	}
@@ -277,7 +284,7 @@ func (fs *knownFields) Clear(n pref.FieldNumber) {
 		fi.clear(fs.p)
 		return
 	}
-	if fs.mi.PBType.ExtensionRanges().Has(n) {
+	if fs.mi.PBType.Descriptor().ExtensionRanges().Has(n) {
 		fs.extensionFields().Clear(n)
 		return
 	}
@@ -302,7 +309,7 @@ func (fs *knownFields) NewMessage(n pref.FieldNumber) pref.Message {
 	if fi := fs.mi.fields[n]; fi != nil {
 		return fi.newMessage()
 	}
-	if fs.mi.PBType.ExtensionRanges().Has(n) {
+	if fs.mi.PBType.Descriptor().ExtensionRanges().Has(n) {
 		return fs.extensionFields().NewMessage(n)
 	}
 	panic(fmt.Sprintf("invalid field: %d", n))

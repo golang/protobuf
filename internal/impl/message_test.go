@@ -228,13 +228,18 @@ var scalarProto2Type = pimpl.MessageType{GoType: reflect.TypeOf(new(ScalarProto2
 	},
 )}
 
+// TODO: Remove this.
 func (m *ScalarProto2) Type() pref.MessageType { return scalarProto2Type.PBType }
+func (m *ScalarProto2) Descriptor() pref.MessageDescriptor {
+	return scalarProto2Type.PBType.Descriptor()
+}
 func (m *ScalarProto2) KnownFields() pref.KnownFields {
 	return scalarProto2Type.MessageOf(m).KnownFields()
 }
 func (m *ScalarProto2) UnknownFields() pref.UnknownFields {
 	return scalarProto2Type.MessageOf(m).UnknownFields()
 }
+func (m *ScalarProto2) New() pref.Message            { return new(ScalarProto2) }
 func (m *ScalarProto2) Interface() pref.ProtoMessage { return m }
 func (m *ScalarProto2) ProtoReflect() pref.Message   { return m }
 
@@ -338,13 +343,18 @@ var scalarProto3Type = pimpl.MessageType{GoType: reflect.TypeOf(new(ScalarProto3
 	},
 )}
 
+// TODO: Remove this.
 func (m *ScalarProto3) Type() pref.MessageType { return scalarProto3Type.PBType }
+func (m *ScalarProto3) Descriptor() pref.MessageDescriptor {
+	return scalarProto3Type.PBType.Descriptor()
+}
 func (m *ScalarProto3) KnownFields() pref.KnownFields {
 	return scalarProto3Type.MessageOf(m).KnownFields()
 }
 func (m *ScalarProto3) UnknownFields() pref.UnknownFields {
 	return scalarProto3Type.MessageOf(m).UnknownFields()
 }
+func (m *ScalarProto3) New() pref.Message            { return new(ScalarProto3) }
 func (m *ScalarProto3) Interface() pref.ProtoMessage { return m }
 func (m *ScalarProto3) ProtoReflect() pref.Message   { return m }
 
@@ -464,13 +474,16 @@ var listScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(ListScalars))
 	},
 )}
 
-func (m *ListScalars) Type() pref.MessageType { return listScalarsType.PBType }
+// TODO: Remove this.
+func (m *ListScalars) Type() pref.MessageType             { return listScalarsType.PBType }
+func (m *ListScalars) Descriptor() pref.MessageDescriptor { return listScalarsType.PBType.Descriptor() }
 func (m *ListScalars) KnownFields() pref.KnownFields {
 	return listScalarsType.MessageOf(m).KnownFields()
 }
 func (m *ListScalars) UnknownFields() pref.UnknownFields {
 	return listScalarsType.MessageOf(m).UnknownFields()
 }
+func (m *ListScalars) New() pref.Message            { return new(ListScalars) }
 func (m *ListScalars) Interface() pref.ProtoMessage { return m }
 func (m *ListScalars) ProtoReflect() pref.Message   { return m }
 
@@ -659,13 +672,16 @@ var mapScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(MapScalars)), 
 	},
 )}
 
-func (m *MapScalars) Type() pref.MessageType { return mapScalarsType.PBType }
+// TODO: Remove this.
+func (m *MapScalars) Type() pref.MessageType             { return mapScalarsType.PBType }
+func (m *MapScalars) Descriptor() pref.MessageDescriptor { return mapScalarsType.PBType.Descriptor() }
 func (m *MapScalars) KnownFields() pref.KnownFields {
 	return mapScalarsType.MessageOf(m).KnownFields()
 }
 func (m *MapScalars) UnknownFields() pref.UnknownFields {
 	return mapScalarsType.MessageOf(m).UnknownFields()
 }
+func (m *MapScalars) New() pref.Message            { return new(MapScalars) }
 func (m *MapScalars) Interface() pref.ProtoMessage { return m }
 func (m *MapScalars) ProtoReflect() pref.Message   { return m }
 
@@ -821,13 +837,18 @@ var oneofScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(OneofScalars
 	},
 )}
 
+// TODO: Remove this.
 func (m *OneofScalars) Type() pref.MessageType { return oneofScalarsType.PBType }
+func (m *OneofScalars) Descriptor() pref.MessageDescriptor {
+	return oneofScalarsType.PBType.Descriptor()
+}
 func (m *OneofScalars) KnownFields() pref.KnownFields {
 	return oneofScalarsType.MessageOf(m).KnownFields()
 }
 func (m *OneofScalars) UnknownFields() pref.UnknownFields {
 	return oneofScalarsType.MessageOf(m).UnknownFields()
 }
+func (m *OneofScalars) New() pref.Message            { return new(OneofScalars) }
 func (m *OneofScalars) Interface() pref.ProtoMessage { return m }
 func (m *OneofScalars) ProtoReflect() pref.Message   { return m }
 
@@ -977,9 +998,11 @@ var enumProto2Type = ptype.GoEnum(
 	},
 )
 
-func (e EnumProto2) Enum() *EnumProto2       { return &e }
-func (e EnumProto2) Type() pref.EnumType     { return enumProto2Type }
-func (e EnumProto2) Number() pref.EnumNumber { return pref.EnumNumber(e) }
+// TODO: Remove this.
+func (e EnumProto2) Type() pref.EnumType             { return enumProto2Type }
+func (e EnumProto2) Descriptor() pref.EnumDescriptor { return enumProto2Type.Descriptor() }
+func (e EnumProto2) Enum() *EnumProto2               { return &e }
+func (e EnumProto2) Number() pref.EnumNumber         { return pref.EnumNumber(e) }
 
 type EnumProto3 int32
 
@@ -994,9 +1017,11 @@ var enumProto3Type = ptype.GoEnum(
 	},
 )
 
-func (e EnumProto3) Enum() *EnumProto3       { return &e }
-func (e EnumProto3) Type() pref.EnumType     { return enumProto3Type }
-func (e EnumProto3) Number() pref.EnumNumber { return pref.EnumNumber(e) }
+// TODO: Remove this.
+func (e EnumProto3) Type() pref.EnumType             { return enumProto3Type }
+func (e EnumProto3) Descriptor() pref.EnumDescriptor { return enumProto3Type.Descriptor() }
+func (e EnumProto3) Enum() *EnumProto3               { return &e }
+func (e EnumProto3) Number() pref.EnumNumber         { return pref.EnumNumber(e) }
 
 type EnumMessages struct {
 	EnumP2        *EnumProto2              `protobuf:"1"`
@@ -1015,18 +1040,18 @@ var enumMessagesType = pimpl.MessageType{GoType: reflect.TypeOf(new(EnumMessages
 		Syntax:   pref.Proto2,
 		FullName: "EnumMessages",
 		Fields: []ptype.Field{
-			{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BEEF"), EnumType: enumProto2Type},
-			{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BRAVO"), EnumType: enumProto3Type},
-			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: pimpl.Export{}.MessageOf(new(proto2_20180125.Message)).Type()},
+			{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BEEF"), EnumType: enumProto2Type.Descriptor()},
+			{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BRAVO"), EnumType: enumProto3Type.Descriptor()},
+			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: pimpl.Export{}.MessageDescriptorOf(new(proto2_20180125.Message))},
 			{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: ptype.PlaceholderMessage("EnumMessages")},
-			{Name: "f5", Number: 5, Cardinality: pref.Repeated, Kind: pref.EnumKind, EnumType: enumProto2Type},
-			{Name: "f6", Number: 6, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: scalarProto2Type.PBType},
+			{Name: "f5", Number: 5, Cardinality: pref.Repeated, Kind: pref.EnumKind, EnumType: enumProto2Type.Descriptor()},
+			{Name: "f6", Number: 6, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: scalarProto2Type.PBType.Descriptor()},
 			{Name: "f7", Number: 7, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: enumMapDesc},
 			{Name: "f8", Number: 8, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: messageMapDesc},
-			{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BEEF"), OneofName: "union", EnumType: enumProto2Type},
-			{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BRAVO"), OneofName: "union", EnumType: enumProto3Type},
-			{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.MessageKind, OneofName: "union", MessageType: scalarProto2Type.PBType},
-			{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.MessageKind, OneofName: "union", MessageType: scalarProto3Type.PBType},
+			{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BEEF"), OneofName: "union", EnumType: enumProto2Type.Descriptor()},
+			{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BRAVO"), OneofName: "union", EnumType: enumProto3Type.Descriptor()},
+			{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.MessageKind, OneofName: "union", MessageType: scalarProto2Type.PBType.Descriptor()},
+			{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.MessageKind, OneofName: "union", MessageType: scalarProto3Type.PBType.Descriptor()},
 		},
 		Oneofs: []ptype.Oneof{{Name: "union"}},
 	}),
@@ -1040,7 +1065,7 @@ var enumMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 	FullName: "EnumMessages.F7Entry",
 	Fields: []ptype.Field{
 		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
-		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.EnumKind, EnumType: enumProto3Type},
+		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.EnumKind, EnumType: enumProto3Type.Descriptor()},
 	},
 	Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
 	IsMapEntry: true,
@@ -1051,19 +1076,24 @@ var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 	FullName: "EnumMessages.F8Entry",
 	Fields: []ptype.Field{
 		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
-		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: scalarProto3Type.PBType},
+		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: scalarProto3Type.PBType.Descriptor()},
 	},
 	Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
 	IsMapEntry: true,
 })
 
+// TODO: Remove this.
 func (m *EnumMessages) Type() pref.MessageType { return enumMessagesType.PBType }
+func (m *EnumMessages) Descriptor() pref.MessageDescriptor {
+	return enumMessagesType.PBType.Descriptor()
+}
 func (m *EnumMessages) KnownFields() pref.KnownFields {
 	return enumMessagesType.MessageOf(m).KnownFields()
 }
 func (m *EnumMessages) UnknownFields() pref.UnknownFields {
 	return enumMessagesType.MessageOf(m).UnknownFields()
 }
+func (m *EnumMessages) New() pref.Message            { return new(EnumMessages) }
 func (m *EnumMessages) Interface() pref.ProtoMessage { return m }
 func (m *EnumMessages) ProtoReflect() pref.Message   { return m }
 

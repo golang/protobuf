@@ -42,9 +42,14 @@ func (x E) Enum() *E {
 }
 
 func (x E) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (E) Descriptor() protoreflect.EnumDescriptor {
+	return file_import_public_sub_a_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (E) Type() protoreflect.EnumType {
 	return file_import_public_sub_a_proto_enumTypes[0]
 }
@@ -55,7 +60,7 @@ func (x E) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *E) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -91,9 +96,14 @@ func (x M_Subenum) Enum() *M_Subenum {
 }
 
 func (x M_Subenum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (M_Subenum) Descriptor() protoreflect.EnumDescriptor {
+	return file_import_public_sub_a_proto_enumTypes[1].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (M_Subenum) Type() protoreflect.EnumType {
 	return file_import_public_sub_a_proto_enumTypes[1]
 }
@@ -104,7 +114,7 @@ func (x M_Subenum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *M_Subenum) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}
@@ -140,9 +150,14 @@ func (x M_Submessage_Submessage_Subenum) Enum() *M_Submessage_Submessage_Subenum
 }
 
 func (x M_Submessage_Submessage_Subenum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (M_Submessage_Submessage_Subenum) Descriptor() protoreflect.EnumDescriptor {
+	return file_import_public_sub_a_proto_enumTypes[2].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (M_Submessage_Submessage_Subenum) Type() protoreflect.EnumType {
 	return file_import_public_sub_a_proto_enumTypes[2]
 }
@@ -153,7 +168,7 @@ func (x M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *M_Submessage_Submessage_Subenum) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}

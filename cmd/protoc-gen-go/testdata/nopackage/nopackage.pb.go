@@ -36,9 +36,14 @@ func (x Enum) Enum() *Enum {
 }
 
 func (x Enum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (Enum) Descriptor() protoreflect.EnumDescriptor {
+	return file_nopackage_nopackage_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (Enum) Type() protoreflect.EnumType {
 	return file_nopackage_nopackage_proto_enumTypes[0]
 }
@@ -49,7 +54,7 @@ func (x Enum) Number() protoreflect.EnumNumber {
 
 // Deprecated: Do not use.
 func (x *Enum) UnmarshalJSON(b []byte) error {
-	num, err := protoimpl.X.UnmarshalJSONEnum(x.Type(), b)
+	num, err := protoimpl.X.UnmarshalJSONEnum(x.Descriptor(), b)
 	if err != nil {
 		return err
 	}

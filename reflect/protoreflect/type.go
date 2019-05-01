@@ -221,8 +221,10 @@ type MessageDescriptor interface {
 }
 type isMessageDescriptor interface{ ProtoType(MessageDescriptor) }
 
-// MessageType extends a MessageDescriptor with Go specific type information.
+// MessageType encapsulates a MessageDescriptor with a concrete Go implementation.
 type MessageType interface {
+	// TODO: Remove this.
+	// Deprecated: Do not rely on these methods.
 	MessageDescriptor
 
 	// New returns a newly allocated empty message.
@@ -232,6 +234,11 @@ type MessageType interface {
 	//
 	// Invariant: t.GoType() == reflect.TypeOf(t.New().Interface())
 	GoType() reflect.Type
+
+	// Descriptor returns the message descriptor.
+	//
+	// Invariant: t.Descriptor() == t.New().Descriptor()
+	Descriptor() MessageDescriptor
 }
 
 // MessageDescriptors is a list of message declarations.
@@ -382,8 +389,8 @@ type ExtensionDescriptors interface {
 	doNotImplement
 }
 
-// ExtensionType extends a ExtensionDescriptor with Go type information.
-// The embedded field descriptor must be for a extension field.
+// ExtensionType encapsulates an ExtensionDescriptor with a concrete
+// Go implementation. The nested field descriptor must be for a extension field.
 //
 // While a normal field is a member of the parent message that it is declared
 // within (see Descriptor.Parent), an extension field is a member of some other
@@ -404,6 +411,8 @@ type ExtensionDescriptors interface {
 // Field "bar_field" is an extension of FooMessage, but its full name is
 // "example.BarMessage.bar_field" instead of "example.FooMessage.bar_field".
 type ExtensionType interface {
+	// TODO: Remove this.
+	// Deprecated: Do not rely on these methods.
 	ExtensionDescriptor
 
 	// New returns a new value for the field.
@@ -415,6 +424,9 @@ type ExtensionType interface {
 	// Invariants:
 	//	t.GoType() == reflect.TypeOf(t.InterfaceOf(t.New()))
 	GoType() reflect.Type
+
+	// Descriptor returns the extension descriptor.
+	Descriptor() ExtensionDescriptor
 
 	// TODO: What to do with nil?
 	//	Should ValueOf(nil) return Value{}?
@@ -457,8 +469,10 @@ type EnumDescriptor interface {
 }
 type isEnumDescriptor interface{ ProtoType(EnumDescriptor) }
 
-// EnumType extends a EnumDescriptor with Go specific type information.
+// EnumType encapsulates an EnumDescriptor with a concrete Go implementation.
 type EnumType interface {
+	// TODO: Remove this.
+	// Deprecated: Do not rely on these methods.
 	EnumDescriptor
 
 	// New returns an instance of this enum type with its value set to n.
@@ -468,6 +482,11 @@ type EnumType interface {
 	//
 	// Invariants: t.GoType() == reflect.TypeOf(t.New(0))
 	GoType() reflect.Type
+
+	// Descriptor returns the enum descriptor.
+	//
+	// Invariant: t.Descriptor() == t.New(0).Descriptor()
+	Descriptor() EnumDescriptor
 }
 
 // EnumDescriptors is a list of enum declarations.

@@ -12,6 +12,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
+	pimpl "github.com/golang/protobuf/v2/internal/impl"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
@@ -302,12 +303,12 @@ func TestFilesLookup(t *testing.T) {
 
 func TestTypes(t *testing.T) {
 	// Suffix 1 in registry, 2 in parent, 3 in resolver.
-	mt1 := (&testpb.Message1{}).ProtoReflect().Type()
-	mt2 := (&testpb.Message2{}).ProtoReflect().Type()
-	mt3 := (&testpb.Message3{}).ProtoReflect().Type()
-	et1 := testpb.Enum1_ONE.Type()
-	et2 := testpb.Enum2_UNO.Type()
-	et3 := testpb.Enum3_YI.Type()
+	mt1 := pimpl.Export{}.MessageTypeOf(&testpb.Message1{})
+	mt2 := pimpl.Export{}.MessageTypeOf(&testpb.Message2{})
+	mt3 := pimpl.Export{}.MessageTypeOf(&testpb.Message3{})
+	et1 := pimpl.Export{}.EnumTypeOf(testpb.Enum1_ONE)
+	et2 := pimpl.Export{}.EnumTypeOf(testpb.Enum2_UNO)
+	et3 := pimpl.Export{}.EnumTypeOf(testpb.Enum3_YI)
 	// Suffix indicates field number.
 	xt11 := testpb.E_StringField.Type
 	xt12 := testpb.E_EnumField.Type
@@ -582,8 +583,20 @@ func TestTypes(t *testing.T) {
 		}
 	})
 
+	fullName := func(t preg.Type) pref.FullName {
+		switch t := t.(type) {
+		case pref.EnumType:
+			return t.Descriptor().FullName()
+		case pref.MessageType:
+			return t.Descriptor().FullName()
+		case pref.ExtensionType:
+			return t.Descriptor().FullName()
+		default:
+			panic("invalid type")
+		}
+	}
 	sortTypes := cmpopts.SortSlices(func(x, y preg.Type) bool {
-		return x.FullName() < y.FullName()
+		return fullName(x) < fullName(y)
 	})
 	compare := cmp.Comparer(func(x, y preg.Type) bool {
 		return x == y

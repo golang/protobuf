@@ -49,7 +49,7 @@ func isCustomType(name pref.FullName) bool {
 // JSON conversion rules. It needs to be a message type where isCustomType
 // returns true, else it will panic.
 func (o MarshalOptions) marshalCustomType(m pref.Message) error {
-	name := m.Type().FullName()
+	name := m.Descriptor().FullName()
 	switch name {
 	case "google.protobuf.Any":
 		return o.marshalAny(m)
@@ -94,7 +94,7 @@ func (o MarshalOptions) marshalCustomType(m pref.Message) error {
 // special JSON conversion rules. It needs to be a message type where
 // isCustomType returns true, else it will panic.
 func (o UnmarshalOptions) unmarshalCustomType(m pref.Message) error {
-	name := m.Type().FullName()
+	name := m.Descriptor().FullName()
 	switch name {
 	case "google.protobuf.Any":
 		return o.unmarshalAny(m)
@@ -142,7 +142,7 @@ func (o UnmarshalOptions) unmarshalCustomType(m pref.Message) error {
 // field `value` which holds the custom JSON in addition to the `@type` field.
 
 func (o MarshalOptions) marshalAny(m pref.Message) error {
-	msgType := m.Type()
+	messageDesc := m.Descriptor()
 	knownFields := m.KnownFields()
 
 	// Start writing the JSON object.
@@ -155,7 +155,7 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 			return nil
 		} else {
 			// Return error if type_url field is not set, but value is set.
-			return errors.New("%s: type_url is not set", msgType.FullName())
+			return errors.New("%s: type_url is not set", messageDesc.FullName())
 		}
 	}
 
@@ -173,7 +173,7 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 	// Resolve the type in order to unmarshal value field.
 	emt, err := o.Resolver.FindMessageByURL(typeURL)
 	if !nerr.Merge(err) {
-		return errors.New("%s: unable to resolve %q: %v", msgType.FullName(), typeURL, err)
+		return errors.New("%s: unable to resolve %q: %v", messageDesc.FullName(), typeURL, err)
 	}
 
 	em := emt.New()
@@ -185,13 +185,13 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 		AllowPartial: o.AllowPartial,
 	}.Unmarshal(valueVal.Bytes(), em.Interface())
 	if !nerr.Merge(err) {
-		return errors.New("%s: unable to unmarshal %q: %v", msgType.FullName(), typeURL, err)
+		return errors.New("%s: unable to unmarshal %q: %v", messageDesc.FullName(), typeURL, err)
 	}
 
 	// If type of value has custom JSON encoding, marshal out a field "value"
 	// with corresponding custom JSON encoding of the embedded message as a
 	// field.
-	if isCustomType(emt.FullName()) {
+	if isCustomType(emt.Descriptor().FullName()) {
 		o.encoder.WriteName("value")
 		return o.marshalCustomType(em)
 	}
@@ -238,7 +238,7 @@ func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
 
 	// Create new message for the embedded message type and unmarshal into it.
 	em := emt.New()
-	if isCustomType(emt.FullName()) {
+	if isCustomType(emt.Descriptor().FullName()) {
 		// If embedded message is a custom type, unmarshal the JSON "value" field
 		// into it.
 		if err := o.unmarshalAnyValue(em); !nerr.Merge(err) {
@@ -441,32 +441,23 @@ func (o UnmarshalOptions) unmarshalAnyValue(m pref.Message) error {
 
 // Wrapper types are encoded as JSON primitives like string, number or boolean.
 
-func (o MarshalOptions) marshalWrapperType(m pref.Message) error {
-	msgType := m.Type()
-	fieldDescs := msgType.Fields()
-	knownFields := m.KnownFields()
+// The "value" field has the same field number for all wrapper types.
+const wrapperFieldNumber = fieldnum.BoolValue_Value
 
-	// The "value" field has the same field number for all wrapper types.
-	const num = fieldnum.BoolValue_Value
-	fd := fieldDescs.ByNumber(num)
-	val := knownFields.Get(num)
+func (o MarshalOptions) marshalWrapperType(m pref.Message) error {
+	fd := m.Descriptor().Fields().ByNumber(wrapperFieldNumber)
+	val := m.KnownFields().Get(wrapperFieldNumber)
 	return o.marshalSingular(val, fd)
 }
 
 func (o UnmarshalOptions) unmarshalWrapperType(m pref.Message) error {
-	var nerr errors.NonFatal
-	msgType := m.Type()
-	fieldDescs := msgType.Fields()
-	knownFields := m.KnownFields()
-
-	// The "value" field has the same field number for all wrapper types.
-	const num = fieldnum.BoolValue_Value
-	fd := fieldDescs.ByNumber(num)
+	fd := m.Descriptor().Fields().ByNumber(wrapperFieldNumber)
 	val, err := o.unmarshalScalar(fd)
+	var nerr errors.NonFatal
 	if !nerr.Merge(err) {
 		return err
 	}
-	knownFields.Set(num, val)
+	m.KnownFields().Set(wrapperFieldNumber, val)
 	return nerr.E
 }
 
@@ -517,22 +508,14 @@ func (o UnmarshalOptions) unmarshalEmpty(pref.Message) error {
 // Struct.fields map and follows the serialization rules for a map.
 
 func (o MarshalOptions) marshalStruct(m pref.Message) error {
-	msgType := m.Type()
-	fieldDescs := msgType.Fields()
-	knownFields := m.KnownFields()
-
-	fd := fieldDescs.ByNumber(fieldnum.Struct_Fields)
-	val := knownFields.Get(fieldnum.Struct_Fields)
+	fd := m.Descriptor().Fields().ByNumber(fieldnum.Struct_Fields)
+	val := m.KnownFields().Get(fieldnum.Struct_Fields)
 	return o.marshalMap(val.Map(), fd)
 }
 
 func (o UnmarshalOptions) unmarshalStruct(m pref.Message) error {
-	msgType := m.Type()
-	fieldDescs := msgType.Fields()
-	knownFields := m.KnownFields()
-
-	fd := fieldDescs.ByNumber(fieldnum.Struct_Fields)
-	val := knownFields.Get(fieldnum.Struct_Fields)
+	fd := m.Descriptor().Fields().ByNumber(fieldnum.Struct_Fields)
+	val := m.KnownFields().Get(fieldnum.Struct_Fields)
 	return o.unmarshalMap(val.Map(), fd)
 }
 
@@ -541,22 +524,14 @@ func (o UnmarshalOptions) unmarshalStruct(m pref.Message) error {
 // repeated field.
 
 func (o MarshalOptions) marshalListValue(m pref.Message) error {
-	msgType := m.Type()
-	fieldDescs := msgType.Fields()
-	knownFields := m.KnownFields()
-
-	fd := fieldDescs.ByNumber(fieldnum.ListValue_Values)
-	val := knownFields.Get(fieldnum.ListValue_Values)
+	fd := m.Descriptor().Fields().ByNumber(fieldnum.ListValue_Values)
+	val := m.KnownFields().Get(fieldnum.ListValue_Values)
 	return o.marshalList(val.List(), fd)
 }
 
 func (o UnmarshalOptions) unmarshalListValue(m pref.Message) error {
-	msgType := m.Type()
-	fieldDescs := msgType.Fields()
-	knownFields := m.KnownFields()
-
-	fd := fieldDescs.ByNumber(fieldnum.ListValue_Values)
-	val := knownFields.Get(fieldnum.ListValue_Values)
+	fd := m.Descriptor().Fields().ByNumber(fieldnum.ListValue_Values)
+	val := m.KnownFields().Get(fieldnum.ListValue_Values)
 	return o.unmarshalList(val.List(), fd)
 }
 
@@ -565,15 +540,15 @@ func (o UnmarshalOptions) unmarshalListValue(m pref.Message) error {
 // Value message needs to be a oneof field set, else it is an error.
 
 func (o MarshalOptions) marshalKnownValue(m pref.Message) error {
-	msgType := m.Type()
+	messageDesc := m.Descriptor()
 	knownFields := m.KnownFields()
 	num := knownFields.WhichOneof("kind")
 	if num == 0 {
 		// Return error if none of the fields is set.
-		return errors.New("%s: none of the oneof fields is set", msgType.FullName())
+		return errors.New("%s: none of the oneof fields is set", messageDesc.FullName())
 	}
 
-	fd := msgType.Fields().ByNumber(num)
+	fd := messageDesc.Fields().ByNumber(num)
 	val := knownFields.Get(num)
 	return o.marshalSingular(val, fd)
 }
@@ -669,7 +644,7 @@ const (
 )
 
 func (o MarshalOptions) marshalDuration(m pref.Message) error {
-	msgType := m.Type()
+	messageDesc := m.Descriptor()
 	knownFields := m.KnownFields()
 
 	secsVal := knownFields.Get(fieldnum.Duration_Seconds)
@@ -677,13 +652,13 @@ func (o MarshalOptions) marshalDuration(m pref.Message) error {
 	secs := secsVal.Int()
 	nanos := nanosVal.Int()
 	if secs < -maxSecondsInDuration || secs > maxSecondsInDuration {
-		return errors.New("%s: seconds out of range %v", msgType.FullName(), secs)
+		return errors.New("%s: seconds out of range %v", messageDesc.FullName(), secs)
 	}
 	if nanos < -secondsInNanos || nanos > secondsInNanos {
-		return errors.New("%s: nanos out of range %v", msgType.FullName(), nanos)
+		return errors.New("%s: nanos out of range %v", messageDesc.FullName(), nanos)
 	}
 	if (secs > 0 && nanos < 0) || (secs < 0 && nanos > 0) {
-		return errors.New("%s: signs of seconds and nanos do not match", msgType.FullName())
+		return errors.New("%s: signs of seconds and nanos do not match", messageDesc.FullName())
 	}
 	// Generated output always contains 0, 3, 6, or 9 fractional digits,
 	// depending on required precision, followed by the suffix "s".
@@ -712,16 +687,16 @@ func (o UnmarshalOptions) unmarshalDuration(m pref.Message) error {
 		return unexpectedJSONError{jval}
 	}
 
-	msgType := m.Type()
+	messageDesc := m.Descriptor()
 	input := jval.String()
 	secs, nanos, ok := parseDuration(input)
 	if !ok {
-		return errors.New("%s: invalid duration value %q", msgType.FullName(), input)
+		return errors.New("%s: invalid duration value %q", messageDesc.FullName(), input)
 	}
 	// Validate seconds. No need to validate nanos because parseDuration would
 	// have covered that already.
 	if secs < -maxSecondsInDuration || secs > maxSecondsInDuration {
-		return errors.New("%s: out of range %q", msgType.FullName(), input)
+		return errors.New("%s: out of range %q", messageDesc.FullName(), input)
 	}
 
 	knownFields := m.KnownFields()
@@ -859,7 +834,7 @@ const (
 )
 
 func (o MarshalOptions) marshalTimestamp(m pref.Message) error {
-	msgType := m.Type()
+	messageDesc := m.Descriptor()
 	knownFields := m.KnownFields()
 
 	secsVal := knownFields.Get(fieldnum.Timestamp_Seconds)
@@ -867,10 +842,10 @@ func (o MarshalOptions) marshalTimestamp(m pref.Message) error {
 	secs := secsVal.Int()
 	nanos := nanosVal.Int()
 	if secs < minTimestampSeconds || secs > maxTimestampSeconds {
-		return errors.New("%s: seconds out of range %v", msgType.FullName(), secs)
+		return errors.New("%s: seconds out of range %v", messageDesc.FullName(), secs)
 	}
 	if nanos < 0 || nanos > secondsInNanos {
-		return errors.New("%s: nanos out of range %v", msgType.FullName(), nanos)
+		return errors.New("%s: nanos out of range %v", messageDesc.FullName(), nanos)
 	}
 	// Uses RFC 3339, where generated output will be Z-normalized and uses 0, 3,
 	// 6 or 9 fractional digits.
@@ -893,17 +868,17 @@ func (o UnmarshalOptions) unmarshalTimestamp(m pref.Message) error {
 		return unexpectedJSONError{jval}
 	}
 
-	msgType := m.Type()
+	messageDesc := m.Descriptor()
 	input := jval.String()
 	t, err := time.Parse(time.RFC3339Nano, input)
 	if err != nil {
-		return errors.New("%s: invalid timestamp value %q", msgType.FullName(), input)
+		return errors.New("%s: invalid timestamp value %q", messageDesc.FullName(), input)
 	}
 	// Validate seconds. No need to validate nanos because time.Parse would have
 	// covered that already.
 	secs := t.Unix()
 	if secs < minTimestampSeconds || secs > maxTimestampSeconds {
-		return errors.New("%s: out of range %q", msgType.FullName(), input)
+		return errors.New("%s: out of range %q", messageDesc.FullName(), input)
 	}
 
 	knownFields := m.KnownFields()
@@ -918,11 +893,7 @@ func (o UnmarshalOptions) unmarshalTimestamp(m pref.Message) error {
 // end up differently after a round-trip.
 
 func (o MarshalOptions) marshalFieldMask(m pref.Message) error {
-	msgType := m.Type()
-	knownFields := m.KnownFields()
-	name := msgType.FullName()
-
-	val := knownFields.Get(fieldnum.FieldMask_Paths)
+	val := m.KnownFields().Get(fieldnum.FieldMask_Paths)
 	list := val.List()
 	paths := make([]string, 0, list.Len())
 
@@ -931,7 +902,7 @@ func (o MarshalOptions) marshalFieldMask(m pref.Message) error {
 		// Return error if conversion to camelCase is not reversible.
 		cc := camelCase(s)
 		if s != snakeCase(cc) {
-			return errors.New("%s.paths contains irreversible value %q", name, s)
+			return errors.New("%s.paths contains irreversible value %q", m.Descriptor().FullName(), s)
 		}
 		paths = append(paths, cc)
 	}
@@ -955,8 +926,7 @@ func (o UnmarshalOptions) unmarshalFieldMask(m pref.Message) error {
 	}
 	paths := strings.Split(str, ",")
 
-	knownFields := m.KnownFields()
-	val := knownFields.Get(fieldnum.FieldMask_Paths)
+	val := m.KnownFields().Get(fieldnum.FieldMask_Paths)
 	list := val.List()
 
 	for _, s := range paths {

@@ -25,6 +25,10 @@ func (Export) EnumTypeOf(e interface{}) pref.EnumType {
 	return loadEnumType(reflect.TypeOf(e))
 }
 
+func (Export) EnumDescriptorOf(e interface{}) pref.EnumDescriptor {
+	return LoadEnumDesc(reflect.TypeOf(e))
+}
+
 func (Export) MessageOf(m interface{}) pvalue.LegacyMessage {
 	return wrapMessage(reflect.ValueOf(m)).ProtoReflect().(pvalue.LegacyMessage)
 }
@@ -33,8 +37,8 @@ func (Export) MessageTypeOf(m interface{}) pref.MessageType {
 	return loadMessageType(reflect.TypeOf(m)).PBType
 }
 
-func (Export) ExtensionTypeOf(d pref.ExtensionDescriptor, t interface{}) pref.ExtensionType {
-	return extensionTypeOf(d, reflect.TypeOf(t))
+func (Export) MessageDescriptorOf(m interface{}) pref.MessageDescriptor {
+	return LoadMessageDesc(reflect.TypeOf(m))
 }
 
 func (Export) ExtensionDescFromType(t pref.ExtensionType) *piface.ExtensionDescV1 {

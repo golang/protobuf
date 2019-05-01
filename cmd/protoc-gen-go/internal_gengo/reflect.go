@@ -233,7 +233,15 @@ func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo
 	idx := f.allEnumsByPtr[enum]
 	typesVar := enumTypesVarName(f)
 
+	// Descriptor method.
+	g.P("func (", enum.GoIdent, ") Descriptor() ", protoreflectPackage.Ident("EnumDescriptor"), " {")
+	g.P("return ", typesVar, "[", idx, "].Descriptor()")
+	g.P("}")
+	g.P()
+
 	// Type method.
+	// TODO: Remove this.
+	g.P("// Deprecated: Use Descriptor instead.")
 	g.P("func (", enum.GoIdent, ") Type() ", protoreflectPackage.Ident("EnumType"), " {")
 	g.P("return ", typesVar, "[", idx, "]")
 	g.P("}")

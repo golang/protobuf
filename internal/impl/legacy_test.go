@@ -12,17 +12,15 @@ import (
 
 	pack "github.com/golang/protobuf/v2/internal/encoding/pack"
 	pimpl "github.com/golang/protobuf/v2/internal/impl"
+	plegacy "github.com/golang/protobuf/v2/internal/legacy"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	scalar "github.com/golang/protobuf/v2/internal/scalar"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 	piface "github.com/golang/protobuf/v2/runtime/protoiface"
 	cmp "github.com/google/go-cmp/cmp"
 	cmpopts "github.com/google/go-cmp/cmp/cmpopts"
-
-	// The legacy package must be imported prior to use of any legacy messages.
-	// TODO: Remove this when protoV1 registers these hooks for you.
-	plegacy "github.com/golang/protobuf/v2/internal/legacy"
 
 	proto2_20180125 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
 )
@@ -37,6 +35,11 @@ func (*legacyTestMessage) String() string { return "" }
 func (*legacyTestMessage) ProtoMessage()  {}
 func (*legacyTestMessage) ExtensionRangeArray() []piface.ExtensionRangeV1 {
 	return []piface.ExtensionRangeV1{{Start: 10, End: 20}, {Start: 40, End: 80}, {Start: 10000, End: 20000}}
+}
+
+func init() {
+	mt := pimpl.Export{}.MessageTypeOf(&legacyTestMessage{})
+	preg.GlobalTypes.Register(mt)
 }
 
 func TestLegacyUnknown(t *testing.T) {
@@ -174,15 +177,15 @@ func mustMakeExtensionType(x *ptype.StandaloneExtension, v interface{}) pref.Ext
 	if err != nil {
 		panic(xd)
 	}
-	return pimpl.Export{}.ExtensionTypeOf(xd, v)
+	return plegacy.ExtensionTypeOf(xd, reflect.TypeOf(v))
 }
 
 var (
-	parentType    = pimpl.Export{}.MessageTypeOf((*legacyTestMessage)(nil))
-	enumV1Type    = pimpl.Export{}.EnumTypeOf(proto2_20180125.Message_ChildEnum(0))
-	messageV1Type = pimpl.Export{}.MessageTypeOf((*proto2_20180125.Message_ChildMessage)(nil))
-	enumV2Type    = enumProto2Type
-	messageV2Type = enumMessagesType.PBType
+	parentDesc    = pimpl.Export{}.MessageDescriptorOf((*legacyTestMessage)(nil))
+	enumV1Desc    = pimpl.Export{}.EnumDescriptorOf(proto2_20180125.Message_ChildEnum(0))
+	messageV1Desc = pimpl.Export{}.MessageDescriptorOf((*proto2_20180125.Message_ChildMessage)(nil))
+	enumV2Desc    = enumProto2Type.Descriptor()
+	messageV2Desc = enumMessagesType.PBType.Descriptor()
 
 	extensionTypes = []pref.ExtensionType{
 		mustMakeExtensionType(&ptype.StandaloneExtension{
@@ -191,7 +194,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.BoolKind,
 			Default:      pref.ValueOf(true),
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_int32",
@@ -199,7 +202,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.Int32Kind,
 			Default:      pref.ValueOf(int32(-12345)),
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_uint32",
@@ -207,7 +210,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.Uint32Kind,
 			Default:      pref.ValueOf(uint32(3200)),
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_float",
@@ -215,7 +218,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.FloatKind,
 			Default:      pref.ValueOf(float32(3.14159)),
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_string",
@@ -223,7 +226,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.StringKind,
 			Default:      pref.ValueOf(string("hello, \"world!\"\n")),
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_bytes",
@@ -231,7 +234,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.BytesKind,
 			Default:      pref.ValueOf([]byte("dead\xde\xad\xbe\xefbeef")),
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_enum_v1",
@@ -239,16 +242,16 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.EnumKind,
 			Default:      pref.ValueOf(pref.EnumNumber(0)),
-			EnumType:     enumV1Type,
-			ExtendedType: parentType,
+			EnumType:     enumV1Desc,
+			ExtendedType: parentDesc,
 		}, proto2_20180125.Message_ChildEnum(0)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_message_v1",
 			Number:       10007,
 			Cardinality:  pref.Optional,
 			Kind:         pref.MessageKind,
-			MessageType:  messageV1Type,
-			ExtendedType: parentType,
+			MessageType:  messageV1Desc,
+			ExtendedType: parentDesc,
 		}, (*proto2_20180125.Message_ChildMessage)(nil)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_enum_v2",
@@ -256,90 +259,90 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.EnumKind,
 			Default:      pref.ValueOf(pref.EnumNumber(57005)),
-			EnumType:     enumV2Type,
-			ExtendedType: parentType,
+			EnumType:     enumV2Desc,
+			ExtendedType: parentDesc,
 		}, EnumProto2(0)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_message_v2",
 			Number:       10009,
 			Cardinality:  pref.Optional,
 			Kind:         pref.MessageKind,
-			MessageType:  messageV2Type,
-			ExtendedType: parentType,
+			MessageType:  messageV2Desc,
+			ExtendedType: parentDesc,
 		}, (*EnumMessages)(nil)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_bool",
 			Number:       10010,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.BoolKind,
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_int32",
 			Number:       10011,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.Int32Kind,
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_uint32",
 			Number:       10012,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.Uint32Kind,
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_float",
 			Number:       10013,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.FloatKind,
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_string",
 			Number:       10014,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.StringKind,
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_bytes",
 			Number:       10015,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.BytesKind,
-			ExtendedType: parentType,
+			ExtendedType: parentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_enum_v1",
 			Number:       10016,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.EnumKind,
-			EnumType:     enumV1Type,
-			ExtendedType: parentType,
+			EnumType:     enumV1Desc,
+			ExtendedType: parentDesc,
 		}, proto2_20180125.Message_ChildEnum(0)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_message_v1",
 			Number:       10017,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.MessageKind,
-			MessageType:  messageV1Type,
-			ExtendedType: parentType,
+			MessageType:  messageV1Desc,
+			ExtendedType: parentDesc,
 		}, (*proto2_20180125.Message_ChildMessage)(nil)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_enum_v2",
 			Number:       10018,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.EnumKind,
-			EnumType:     enumV2Type,
-			ExtendedType: parentType,
+			EnumType:     enumV2Desc,
+			ExtendedType: parentDesc,
 		}, EnumProto2(0)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_message_v2",
 			Number:       10019,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.MessageKind,
-			MessageType:  messageV2Type,
-			ExtendedType: parentType,
+			MessageType:  messageV2Desc,
+			ExtendedType: parentDesc,
 		}, (*EnumMessages)(nil)),
 	}
 
@@ -513,19 +516,21 @@ func TestLegacyExtensions(t *testing.T) {
 	}
 	for i, xt := range extensionTypes {
 		var got interface{}
-		if v := fs.Get(xt.Number()); v.IsValid() {
+		num := xt.Descriptor().Number()
+		if v := fs.Get(num); v.IsValid() {
 			got = xt.InterfaceOf(v)
 		}
 		want := defaultValues[i]
 		if diff := cmp.Diff(want, got, opts); diff != "" {
-			t.Errorf("KnownFields.Get(%d) mismatch (-want +got):\n%v", xt.Number(), diff)
+			t.Errorf("KnownFields.Get(%d) mismatch (-want +got):\n%v", num, diff)
 		}
 	}
 
 	// All fields should be unpopulated.
 	for _, xt := range extensionTypes {
-		if fs.Has(xt.Number()) {
-			t.Errorf("KnownFields.Has(%d) = true, want false", xt.Number())
+		num := xt.Descriptor().Number()
+		if fs.Has(num) {
+			t.Errorf("KnownFields.Has(%d) = true, want false", num)
 		}
 	}
 
@@ -557,11 +562,11 @@ func TestLegacyExtensions(t *testing.T) {
 		&[]*EnumMessages{m2b},
 	}
 	for i, xt := range extensionTypes {
-		fs.Set(xt.Number(), xt.ValueOf(setValues[i]))
+		fs.Set(xt.Descriptor().Number(), xt.ValueOf(setValues[i]))
 	}
 	for i, xt := range extensionTypes[len(extensionTypes)/2:] {
 		v := extensionTypes[i].ValueOf(setValues[i])
-		fs.Get(xt.Number()).List().Append(v)
+		fs.Get(xt.Descriptor().Number()).List().Append(v)
 	}
 
 	// Get the values and check for equality.
@@ -588,10 +593,11 @@ func TestLegacyExtensions(t *testing.T) {
 		&[]*EnumMessages{m2b, m2a},
 	}
 	for i, xt := range extensionTypes {
-		got := xt.InterfaceOf(fs.Get(xt.Number()))
+		num := xt.Descriptor().Number()
+		got := xt.InterfaceOf(fs.Get(num))
 		want := getValues[i]
 		if diff := cmp.Diff(want, got, opts); diff != "" {
-			t.Errorf("KnownFields.Get(%d) mismatch (-want +got):\n%v", xt.Number(), diff)
+			t.Errorf("KnownFields.Get(%d) mismatch (-want +got):\n%v", num, diff)
 		}
 	}
 
@@ -604,13 +610,13 @@ func TestLegacyExtensions(t *testing.T) {
 
 	// Clear the field for all extension types.
 	for _, xt := range extensionTypes[:len(extensionTypes)/2] {
-		fs.Clear(xt.Number())
+		fs.Clear(xt.Descriptor().Number())
 	}
 	for i, xt := range extensionTypes[len(extensionTypes)/2:] {
 		if i%2 == 0 {
-			fs.Clear(xt.Number())
+			fs.Clear(xt.Descriptor().Number())
 		} else {
-			fs.Get(xt.Number()).List().Truncate(0)
+			fs.Get(xt.Descriptor().Number()).List().Truncate(0)
 		}
 	}
 	if n := fs.Len(); n != 0 {
@@ -661,6 +667,13 @@ func TestExtensionConvert(t *testing.T) {
 					}
 					return out
 				}),
+				// TODO: Add this when ExtensionType no longer implements
+				// ExtensionDescriptor.
+				/*
+					cmp.Transformer("", func(x pref.ExtensionType) pref.ExtensionDescriptor {
+						return x.Descriptor()
+					}),
+				*/
 				cmp.Transformer("", func(x pref.Descriptor) map[string]interface{} {
 					out := make(map[string]interface{})
 					v := reflect.ValueOf(x)

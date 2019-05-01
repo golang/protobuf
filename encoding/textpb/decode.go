@@ -96,16 +96,16 @@ func resetMessage(m pref.Message) {
 func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message) error {
 	var nerr errors.NonFatal
 
-	msgType := m.Type()
+	messageDesc := m.Descriptor()
 	knownFields := m.KnownFields()
 
 	// Handle expanded Any message.
-	if msgType.FullName() == "google.protobuf.Any" && isExpandedAny(tmsg) {
+	if messageDesc.FullName() == "google.protobuf.Any" && isExpandedAny(tmsg) {
 		return o.unmarshalAny(tmsg[0], knownFields)
 	}
 
-	fieldDescs := msgType.Fields()
-	reservedNames := msgType.ReservedNames()
+	fieldDescs := messageDesc.Fields()
+	reservedNames := messageDesc.ReservedNames()
 	xtTypes := knownFields.ExtensionTypes()
 	var seenNums set.Ints
 	var seenOneofs set.Ints
@@ -126,7 +126,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 			}
 		case text.String:
 			// Handle extensions only. This code path is not for Any.
-			if msgType.FullName() == "google.protobuf.Any" {
+			if messageDesc.FullName() == "google.protobuf.Any" {
 				break
 			}
 			// Extensions have to be registered first in the message's
@@ -145,7 +145,9 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 					xtTypes.Register(xt)
 				}
 			}
-			fd = xt
+			if xt != nil {
+				fd = xt.Descriptor()
+			}
 		}
 
 		if fd == nil {
@@ -154,7 +156,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 				continue
 			}
 			// TODO: Can provide option to ignore unknown message fields.
-			return errors.New("%v contains unknown field: %v", msgType.FullName(), tkey)
+			return errors.New("%v contains unknown field: %v", messageDesc.FullName(), tkey)
 		}
 
 		if cardinality := fd.Cardinality(); cardinality == pref.Repeated {

@@ -37,9 +37,14 @@ var ForeignEnum_value = map[string]int32{
 }
 
 func (x ForeignEnum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (ForeignEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_test_messages_proto3_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (ForeignEnum) Type() protoreflect.EnumType {
 	return file_google_protobuf_test_messages_proto3_proto_enumTypes[0]
 }
@@ -79,9 +84,14 @@ var TestAllTypesProto3_NestedEnum_value = map[string]int32{
 }
 
 func (x TestAllTypesProto3_NestedEnum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (TestAllTypesProto3_NestedEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_test_messages_proto3_proto_enumTypes[1].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (TestAllTypesProto3_NestedEnum) Type() protoreflect.EnumType {
 	return file_google_protobuf_test_messages_proto3_proto_enumTypes[1]
 }
@@ -127,9 +137,14 @@ var TestAllTypesProto3_AliasedEnum_value = map[string]int32{
 }
 
 func (x TestAllTypesProto3_AliasedEnum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (TestAllTypesProto3_AliasedEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_google_protobuf_test_messages_proto3_proto_enumTypes[2].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (TestAllTypesProto3_AliasedEnum) Type() protoreflect.EnumType {
 	return file_google_protobuf_test_messages_proto3_proto_enumTypes[2]
 }

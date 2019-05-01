@@ -20,9 +20,9 @@ import (
 // TestMessage runs the provided message through a series of tests
 // exercising the protobuf reflection API.
 func TestMessage(t testing.TB, message proto.Message) {
-	md := message.ProtoReflect().Type()
+	md := message.ProtoReflect().Descriptor()
 
-	m := md.New()
+	m := message.ProtoReflect().New()
 	for i := 0; i < md.Fields().Len(); i++ {
 		fd := md.Fields().Get(i)
 		switch {
@@ -67,13 +67,13 @@ func TestMessage(t testing.TB, message proto.Message) {
 	// TODO: Extensions, unknown fields.
 
 	// Test round-trip marshal/unmarshal.
-	m1 := md.New().Interface()
+	m1 := message.ProtoReflect().New().Interface()
 	populateMessage(m1.ProtoReflect(), 1, nil)
 	b, err := proto.Marshal(m1)
 	if err != nil {
 		t.Errorf("Marshal() = %v, want nil\n%v", err, marshalText(m1))
 	}
-	m2 := md.New().Interface()
+	m2 := message.ProtoReflect().New().Interface()
 	if err := proto.Unmarshal(b, m2); err != nil {
 		t.Errorf("Unmarshal() = %v, want nil\n%v", err, marshalText(m1))
 	}
@@ -350,7 +350,7 @@ func formatValue(v pref.Value) string {
 		if err != nil {
 			return fmt.Sprintf("<%v>", err)
 		}
-		return fmt.Sprintf("%v{%v}", v.Type().FullName(), string(b))
+		return fmt.Sprintf("%v{%v}", v.Descriptor().FullName(), string(b))
 	case string:
 		return fmt.Sprintf("%q", v)
 	default:
@@ -418,11 +418,11 @@ const (
 //
 // The stack parameter is used to avoid infinite recursion when populating circular
 // data structures.
-func newValue(m pref.Message, fd pref.FieldDescriptor, n seed, stack []pref.MessageType) pref.Value {
+func newValue(m pref.Message, fd pref.FieldDescriptor, n seed, stack []pref.MessageDescriptor) pref.Value {
 	num := fd.Number()
 	switch {
 	case fd.IsMap():
-		mapv := m.Type().New().KnownFields().Get(num).Map()
+		mapv := m.New().KnownFields().Get(num).Map()
 		if n == 0 {
 			return pref.ValueOf(mapv)
 		}
@@ -432,7 +432,7 @@ func newValue(m pref.Message, fd pref.FieldDescriptor, n seed, stack []pref.Mess
 		mapv.Set(newMapKey(fd, n), newMapValue(fd, mapv, 10*n, stack))
 		return pref.ValueOf(mapv)
 	case fd.Cardinality() == pref.Repeated:
-		list := m.Type().New().KnownFields().Get(num).List()
+		list := m.New().KnownFields().Get(num).List()
 		if n == 0 {
 			return pref.ValueOf(list)
 		}
@@ -448,7 +448,7 @@ func newValue(m pref.Message, fd pref.FieldDescriptor, n seed, stack []pref.Mess
 	}
 }
 
-func newListElement(fd pref.FieldDescriptor, list pref.List, n seed, stack []pref.MessageType) pref.Value {
+func newListElement(fd pref.FieldDescriptor, list pref.List, n seed, stack []pref.MessageDescriptor) pref.Value {
 	if fd.Message() == nil {
 		return newScalarValue(fd, n)
 	}
@@ -460,7 +460,7 @@ func newMapKey(fd pref.FieldDescriptor, n seed) pref.MapKey {
 	return newScalarValue(kd, n).MapKey()
 }
 
-func newMapValue(fd pref.FieldDescriptor, mapv pref.Map, n seed, stack []pref.MessageType) pref.Value {
+func newMapValue(fd pref.FieldDescriptor, mapv pref.Map, n seed, stack []pref.MessageDescriptor) pref.Value {
 	vd := fd.Message().Fields().ByNumber(2)
 	if vd.Message() == nil {
 		return newScalarValue(vd, n)
@@ -545,11 +545,11 @@ func newScalarValue(fd pref.FieldDescriptor, n seed) pref.Value {
 	panic("unhandled kind")
 }
 
-func populateMessage(m pref.Message, n seed, stack []pref.MessageType) pref.Value {
+func populateMessage(m pref.Message, n seed, stack []pref.MessageDescriptor) pref.Value {
 	if n == 0 {
 		return pref.ValueOf(m)
 	}
-	md := m.Type()
+	md := m.Descriptor()
 	for _, x := range stack {
 		if md == x {
 			return pref.ValueOf(m)

@@ -302,6 +302,7 @@ type (
 	}
 )
 
+func (ed *enumDesc) Descriptor() pref.EnumDescriptor { return ed }
 func (ed *enumDesc) GoType() reflect.Type            { return ed.lazyInit().typ }
 func (ed *enumDesc) New(n pref.EnumNumber) pref.Enum { return ed.lazyInit().new(n) }
 func (ed *enumDesc) Options() pref.ProtoMessage {
@@ -420,10 +421,11 @@ func (mb *messageDesc) asDesc() pref.MessageDescriptor {
 	}
 	return messageDescriptor{mb}
 }
-func (mt messageType) GoType() reflect.Type             { return mt.lazyInit().typ }
-func (mt messageType) New() pref.Message                { return mt.lazyInit().new() }
-func (mt messageType) Options() pref.ProtoMessage       { return mt.options() }
-func (md messageDescriptor) Options() pref.ProtoMessage { return md.options() }
+func (mt messageType) Descriptor() pref.MessageDescriptor { return messageDescriptor{mt.messageDesc} }
+func (mt messageType) GoType() reflect.Type               { return mt.lazyInit().typ }
+func (mt messageType) New() pref.Message                  { return mt.lazyInit().new() }
+func (mt messageType) Options() pref.ProtoMessage         { return mt.options() }
+func (md messageDescriptor) Options() pref.ProtoMessage   { return md.options() }
 
 func (fd *fieldDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.Field, fd.options)
@@ -482,12 +484,13 @@ type (
 		jsonName    string
 		isPacked    bool
 		defVal      defaultValue
-		enumType    pref.EnumType
-		messageType pref.MessageType
+		enumType    pref.EnumDescriptor
+		messageType pref.MessageDescriptor
 		options     []byte
 	}
 )
 
+func (xd *extensionDesc) Descriptor() pref.ExtensionDescriptor { return xd }
 func (xd *extensionDesc) GoType() reflect.Type                 { return xd.lazyInit().typ }
 func (xd *extensionDesc) New() pref.Value                      { return xd.lazyInit().new() }
 func (xd *extensionDesc) ValueOf(v interface{}) pref.Value     { return xd.lazyInit().valueOf(v) }

@@ -39,9 +39,14 @@ var Enum_value = map[string]int32{
 }
 
 func (x Enum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (Enum) Descriptor() protoreflect.EnumDescriptor {
+	return file_pb3_test_proto_enumTypes[0].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (Enum) Type() protoreflect.EnumType {
 	return file_pb3_test_proto_enumTypes[0]
 }
@@ -81,9 +86,14 @@ var Enums_NestedEnum_value = map[string]int32{
 }
 
 func (x Enums_NestedEnum) String() string {
-	return protoimpl.X.EnumStringOf(x.Type(), protoreflect.EnumNumber(x))
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
+func (Enums_NestedEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_pb3_test_proto_enumTypes[1].Descriptor()
+}
+
+// Deprecated: Use Descriptor instead.
 func (Enums_NestedEnum) Type() protoreflect.EnumType {
 	return file_pb3_test_proto_enumTypes[1]
 }

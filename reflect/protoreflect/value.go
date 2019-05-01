@@ -11,6 +11,10 @@ import "github.com/golang/protobuf/v2/internal/encoding/wire"
 // Enum does not provide a mutable API since enums are commonly backed by
 // Go constants, which are not addressable.
 type Enum interface {
+	Descriptor() EnumDescriptor
+
+	// TODO: Remove this.
+	// Deprecated: Use Descriptor instead.
 	Type() EnumType
 
 	// Number returns the enum value as an integer.
@@ -24,6 +28,10 @@ type Enum interface {
 // which provide specialized, performant implementations of high-level
 // operations such as Marshal and Unmarshal.
 type Message interface {
+	Descriptor() MessageDescriptor
+
+	// TODO: Remove this.
+	// Deprecated: Use Descriptor instead.
 	Type() MessageType
 
 	// KnownFields returns an interface to access/mutate known fields.
@@ -31,6 +39,9 @@ type Message interface {
 
 	// UnknownFields returns an interface to access/mutate unknown fields.
 	UnknownFields() UnknownFields
+
+	// New returns a newly allocated empty message.
+	New() Message
 
 	// Interface unwraps the message reflection interface and
 	// returns the underlying proto.Message interface.
