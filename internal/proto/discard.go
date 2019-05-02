@@ -28,12 +28,12 @@ func DiscardUnknown(m Message) {
 }
 
 func discardUnknown(m pref.Message) {
-	fieldTypes := m.Type().Fields()
+	fieldDescs := m.Descriptor().Fields()
 	knownFields := m.KnownFields()
 	knownFields.Range(func(num pref.FieldNumber, val pref.Value) bool {
-		fd := fieldTypes.ByNumber(num)
+		fd := fieldDescs.ByNumber(num)
 		if fd == nil {
-			fd = knownFields.ExtensionTypes().ByNumber(num)
+			fd = knownFields.ExtensionTypes().ByNumber(num).Descriptor()
 		}
 		switch {
 		// Handle singular message.
@@ -63,7 +63,7 @@ func discardUnknown(m pref.Message) {
 		return true
 	})
 
-	extRanges := m.Type().ExtensionRanges()
+	extRanges := m.Descriptor().ExtensionRanges()
 	unknownFields := m.UnknownFields()
 	unknownFields.Range(func(num pref.FieldNumber, _ pref.RawFields) bool {
 		// NOTE: Historically, this function did not discard unknown fields

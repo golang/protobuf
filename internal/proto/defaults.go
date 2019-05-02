@@ -18,10 +18,10 @@ func SetDefaults(m Message) {
 }
 
 func setDefaults(m pref.Message) {
-	fieldTypes := m.Type().Fields()
+	fieldDescs := m.Descriptor().Fields()
 	knownFields := m.KnownFields()
-	for i := 0; i < fieldTypes.Len(); i++ {
-		fd := fieldTypes.Get(i)
+	for i := 0; i < fieldDescs.Len(); i++ {
+		fd := fieldDescs.Get(i)
 		num := fd.Number()
 		if !knownFields.Has(num) {
 			if fd.HasDefault() {

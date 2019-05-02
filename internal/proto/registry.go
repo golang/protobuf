@@ -17,7 +17,6 @@ import (
 
 	protoV2 "github.com/golang/protobuf/v2/proto"
 	"github.com/golang/protobuf/v2/reflect/protodesc"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/reflect/protoregistry"
 	"github.com/golang/protobuf/v2/runtime/protoimpl"
@@ -81,7 +80,7 @@ func FileDescriptor(s filePath) (d fileDescGZIP) {
 
 	// Find the descriptor in the v2 registry.
 	var n int
-	protoregistry.GlobalFiles.RangeFilesByPath(s, func(fd protoreflect.FileDescriptor) bool {
+	protoregistry.GlobalFiles.RangeFilesByPath(s, func(fd pref.FileDescriptor) bool {
 		n++
 
 		// Convert the structured file descriptor to the raw descriptor proto.
@@ -151,12 +150,12 @@ func EnumValueMap(s enumName) (m enumsByName) {
 	}
 
 	// Construct the mapping from a v2 enum descriptor.
-	var protoPkg protoreflect.FullName
+	var protoPkg pref.FullName
 	if i := strings.LastIndexByte(s, '.'); i >= 0 {
-		protoPkg = protoreflect.FullName(s[:i])
+		protoPkg = pref.FullName(s[:i])
 	}
-	protoregistry.GlobalFiles.RangeFilesByPackage(protoreflect.FullName(protoPkg), func(fd protoreflect.FileDescriptor) bool {
-		return walkEnums(fd, func(ed protoreflect.EnumDescriptor) bool {
+	protoregistry.GlobalFiles.RangeFilesByPackage(pref.FullName(protoPkg), func(fd pref.FileDescriptor) bool {
+		return walkEnums(fd, func(ed pref.EnumDescriptor) bool {
 			if s == hybridEnumName(ed) {
 				m = make(enumsByName)
 				evs := ed.Values()
@@ -178,9 +177,9 @@ func EnumValueMap(s enumName) (m enumsByName) {
 
 // walkEnums recursively walks all enums declared in d.
 func walkEnums(d interface {
-	Enums() protoreflect.EnumDescriptors
-	Messages() protoreflect.MessageDescriptors
-}, f func(protoreflect.EnumDescriptor) bool) bool {
+	Enums() pref.EnumDescriptors
+	Messages() pref.MessageDescriptors
+}, f func(pref.EnumDescriptor) bool) bool {
 	cont := true
 	eds := d.Enums()
 	for i := eds.Len() - 1; cont && i >= 0; i-- {
@@ -255,8 +254,8 @@ var messageTypeCache sync.Map // map[messageName]reflect.Type
 // Deprecated: Use protoregistry.GlobalTypes.Register instead.
 func RegisterType(m Message, s messageName) {
 	mt := protoimpl.X.MessageTypeOf(m)
-	if s != messageName(mt.FullName()) {
-		panic(fmt.Sprintf("proto: inconsistent message name: got %v, want %v", s, mt.FullName()))
+	if s != messageName(mt.Descriptor().FullName()) {
+		panic(fmt.Sprintf("proto: inconsistent message name: got %v, want %v", s, mt.Descriptor().FullName()))
 	}
 	if err := protoregistry.GlobalTypes.Register(mt); err != nil {
 		printWarning(err)
@@ -292,7 +291,7 @@ func MessageType(s messageName) reflect.Type {
 
 	// Derive the message type from the v2 registry.
 	var t reflect.Type
-	mt, _ := protoregistry.GlobalTypes.FindMessageByName(protoreflect.FullName(s))
+	mt, _ := protoregistry.GlobalTypes.FindMessageByName(pref.FullName(s))
 	if mt != nil {
 		t = mt.GoType()
 	}
@@ -306,14 +305,14 @@ func MessageType(s messageName) reflect.Type {
 
 // MessageName returns the full protobuf name for the given message type.
 //
-// Deprecated: Use protoreflect.MessageDescriptor.FullName instead.
+// Deprecated: Use pref.MessageDescriptor.FullName instead.
 func MessageName(m Message) messageName {
 	if m, ok := m.(interface {
 		XXX_MessageName() messageName
 	}); ok {
 		return m.XXX_MessageName()
 	}
-	return messageName(protoimpl.X.MessageTypeOf(m).FullName())
+	return messageName(protoimpl.X.MessageDescriptorOf(m).FullName())
 }
 
 // RegisterExtension is called from the generated code and registers
@@ -342,11 +341,11 @@ func RegisteredExtensions(m Message) extensionsByNumber {
 	}
 
 	var xs extensionsByNumber
-	protoregistry.GlobalTypes.RangeExtensionsByMessage(protoreflect.FullName(s), func(xt protoreflect.ExtensionType) bool {
+	protoregistry.GlobalTypes.RangeExtensionsByMessage(pref.FullName(s), func(xt pref.ExtensionType) bool {
 		if xs == nil {
 			xs = make(extensionsByNumber)
 		}
-		xs[int32(xt.Number())] = protolegacy.X.ExtensionDescFromType(xt)
+		xs[int32(xt.Descriptor().Number())] = protolegacy.X.ExtensionDescFromType(xt)
 		return true
 	})
 
