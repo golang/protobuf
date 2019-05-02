@@ -302,9 +302,9 @@ func patchProtos(check func(error), repoRoot string) {
 		"src/google/protobuf/wrappers.proto":             "github.com/golang/protobuf/v2/types/known;known_proto",
 		"src/google/protobuf/descriptor.proto":           "github.com/golang/protobuf/v2/types/descriptor;descriptor_proto",
 		"src/google/protobuf/compiler/plugin.proto":      "github.com/golang/protobuf/v2/types/plugin;plugin_proto",
-		"conformance/conformance.proto":                  "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance_proto",
-		"src/google/protobuf/test_messages_proto2.proto": "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance_proto",
-		"src/google/protobuf/test_messages_proto3.proto": "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance_proto",
+		"conformance/conformance.proto":                  "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance",
+		"src/google/protobuf/test_messages_proto2.proto": "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance",
+		"src/google/protobuf/test_messages_proto3.proto": "github.com/golang/protobuf/v2/internal/testprotos/conformance;conformance",
 	}
 	for pbpath, gopath := range files {
 		b, err := ioutil.ReadFile(filepath.Join(repoRoot, pbpath))
