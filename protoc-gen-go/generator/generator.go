@@ -408,6 +408,7 @@ type Generator struct {
 	Param             map[string]string // Command-line parameters.
 	PackageImportPath string            // Go import path of the package we're generating code for
 	ImportPrefix      string            // String to prefix to imported package file names.
+	ProtoImportPrefix string            // String to prefix to imported package file names. This applyies when proto includes another proto file. Not core source code.
 	ImportMap         map[string]string // Mapping from .proto file name to import path
 
 	Pkg map[string]string // The names under which we import support packages
@@ -479,6 +480,11 @@ func (g *Generator) CommandLineParameters(parameter string) {
 		switch k {
 		case "import_prefix":
 			g.ImportPrefix = v
+			if g.ProtoImportPrefix == "" {
+				g.ProtoImportPrefix = v
+			}
+		case "proto_import_prefix":
+			g.ProtoImportPrefix = v
 		case "import_path":
 			g.PackageImportPath = v
 		case "paths":
@@ -1320,7 +1326,7 @@ func (g *Generator) generateImports() {
 	g.P(g.Pkg["math"] + ` "math"`)
 	g.P(g.Pkg["proto"]+" ", GoImportPath(g.ImportPrefix)+"github.com/golang/protobuf/proto")
 	for importPath, packageName := range imports {
-		g.P(packageName, " ", GoImportPath(g.ImportPrefix)+importPath)
+		g.P(packageName, " ", GoImportPath(g.ProtoImportPrefix)+importPath)
 	}
 	g.P(")")
 	g.P()
