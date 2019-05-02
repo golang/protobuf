@@ -227,6 +227,8 @@ The following parameters are deprecated and should not be used:
 
 - `import_prefix=xxx` - a prefix that is added onto the beginning of
   all imports.
+- `proto_import_prefix=xxx` - a prefix that is added onto the beggining of
+  only those imports that come from one .proto file including another. Useful if you don't want to use go_package option and want to generate all files under a custom location.
 - `import_path=foo/bar` - used as the package if no input files
   declare `go_package`. If it contains slashes, everything up to the
   rightmost slash is ignored.
