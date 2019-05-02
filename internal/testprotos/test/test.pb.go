@@ -55,11 +55,6 @@ func (ForeignEnum) Descriptor() protoreflect.EnumDescriptor {
 	return file_test_test_proto_enumTypes[0].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (ForeignEnum) Type() protoreflect.EnumType {
-	return file_test_test_proto_enumTypes[0]
-}
-
 func (x ForeignEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
@@ -107,11 +102,6 @@ func (x TestReservedEnumFields) String() string {
 
 func (TestReservedEnumFields) Descriptor() protoreflect.EnumDescriptor {
 	return file_test_test_proto_enumTypes[1].Descriptor()
-}
-
-// Deprecated: Use Descriptor instead.
-func (TestReservedEnumFields) Type() protoreflect.EnumType {
-	return file_test_test_proto_enumTypes[1]
 }
 
 func (x TestReservedEnumFields) Number() protoreflect.EnumNumber {
@@ -172,11 +162,6 @@ func (TestAllTypes_NestedEnum) Descriptor() protoreflect.EnumDescriptor {
 	return file_test_test_proto_enumTypes[2].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (TestAllTypes_NestedEnum) Type() protoreflect.EnumType {
-	return file_test_test_proto_enumTypes[2]
-}
-
 func (x TestAllTypes_NestedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
@@ -223,11 +208,6 @@ func (x TestDeprecatedMessage_DeprecatedEnum) String() string {
 
 func (TestDeprecatedMessage_DeprecatedEnum) Descriptor() protoreflect.EnumDescriptor {
 	return file_test_test_proto_enumTypes[3].Descriptor()
-}
-
-// Deprecated: Use Descriptor instead.
-func (TestDeprecatedMessage_DeprecatedEnum) Type() protoreflect.EnumType {
-	return file_test_test_proto_enumTypes[3]
 }
 
 func (x TestDeprecatedMessage_DeprecatedEnum) Number() protoreflect.EnumNumber {

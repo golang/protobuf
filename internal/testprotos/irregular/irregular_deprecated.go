@@ -8,8 +8,6 @@ import (
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
-// TODO: Remove this.
-func (m *message) Type() pref.MessageType            { return nil }
 func (m *message) KnownFields() pref.KnownFields     { return (*known)(m) }
 func (m *message) UnknownFields() pref.UnknownFields { return (*unknown)(m) }
 

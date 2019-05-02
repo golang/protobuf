@@ -48,11 +48,6 @@ func (Enum1) Descriptor() protoreflect.EnumDescriptor {
 	return file_test_proto_enumTypes[0].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (Enum1) Type() protoreflect.EnumType {
-	return file_test_proto_enumTypes[0]
-}
-
 func (x Enum1) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
@@ -102,11 +97,6 @@ func (Enum2) Descriptor() protoreflect.EnumDescriptor {
 	return file_test_proto_enumTypes[1].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (Enum2) Type() protoreflect.EnumType {
-	return file_test_proto_enumTypes[1]
-}
-
 func (x Enum2) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
@@ -154,11 +144,6 @@ func (x Enum3) String() string {
 
 func (Enum3) Descriptor() protoreflect.EnumDescriptor {
 	return file_test_proto_enumTypes[2].Descriptor()
-}
-
-// Deprecated: Use Descriptor instead.
-func (Enum3) Type() protoreflect.EnumType {
-	return file_test_proto_enumTypes[2]
 }
 
 func (x Enum3) Number() protoreflect.EnumNumber {

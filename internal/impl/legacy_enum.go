@@ -60,10 +60,6 @@ type legacyEnumWrapper struct {
 	goTyp reflect.Type
 }
 
-// TODO: Remove this.
-func (e *legacyEnumWrapper) Type() pref.EnumType {
-	return e.pbTyp
-}
 func (e *legacyEnumWrapper) Descriptor() pref.EnumDescriptor {
 	return e.pbTyp.Descriptor()
 }

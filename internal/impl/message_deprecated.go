@@ -13,11 +13,6 @@ import (
 // TODO: Remove this file.
 
 // TODO: Remove this.
-func (m *messageReflectWrapper) Type() pref.MessageType {
-	return m.mi.PBType
-}
-
-// TODO: Remove this.
 func (m *messageReflectWrapper) KnownFields() pref.KnownFields {
 	m.mi.init()
 	return (*knownFields)(m)

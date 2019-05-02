@@ -60,11 +60,6 @@ func (WireFormat) Descriptor() protoreflect.EnumDescriptor {
 	return file_conformance_conformance_proto_enumTypes[0].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (WireFormat) Type() protoreflect.EnumType {
-	return file_conformance_conformance_proto_enumTypes[0]
-}
-
 func (x WireFormat) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
@@ -125,11 +120,6 @@ func (x TestCategory) String() string {
 
 func (TestCategory) Descriptor() protoreflect.EnumDescriptor {
 	return file_conformance_conformance_proto_enumTypes[1].Descriptor()
-}
-
-// Deprecated: Use Descriptor instead.
-func (TestCategory) Type() protoreflect.EnumType {
-	return file_conformance_conformance_proto_enumTypes[1]
 }
 
 func (x TestCategory) Number() protoreflect.EnumNumber {

@@ -15,8 +15,6 @@ type Enum interface {
 
 	// Number returns the enum value as an integer.
 	Number() EnumNumber
-
-	deprecatedEnum
 }
 
 // Message is a reflective interface for a concrete message value,

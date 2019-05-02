@@ -56,11 +56,6 @@ func (Syntax) Descriptor() protoreflect.EnumDescriptor {
 	return file_google_protobuf_type_proto_enumTypes[0].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (Syntax) Type() protoreflect.EnumType {
-	return file_google_protobuf_type_proto_enumTypes[0]
-}
-
 func (x Syntax) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
@@ -174,11 +169,6 @@ func (Field_Kind) Descriptor() protoreflect.EnumDescriptor {
 	return file_google_protobuf_type_proto_enumTypes[1].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (Field_Kind) Type() protoreflect.EnumType {
-	return file_google_protobuf_type_proto_enumTypes[1]
-}
-
 func (x Field_Kind) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
@@ -230,11 +220,6 @@ func (x Field_Cardinality) String() string {
 
 func (Field_Cardinality) Descriptor() protoreflect.EnumDescriptor {
 	return file_google_protobuf_type_proto_enumTypes[2].Descriptor()
-}
-
-// Deprecated: Use Descriptor instead.
-func (Field_Cardinality) Type() protoreflect.EnumType {
-	return file_google_protobuf_type_proto_enumTypes[2]
 }
 
 func (x Field_Cardinality) Number() protoreflect.EnumNumber {

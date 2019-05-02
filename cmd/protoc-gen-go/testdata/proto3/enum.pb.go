@@ -53,11 +53,6 @@ func (Enum) Descriptor() protoreflect.EnumDescriptor {
 	return file_proto3_enum_proto_enumTypes[0].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (Enum) Type() protoreflect.EnumType {
-	return file_proto3_enum_proto_enumTypes[0]
-}
-
 func (x Enum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }

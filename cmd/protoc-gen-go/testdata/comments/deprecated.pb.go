@@ -47,11 +47,6 @@ func (DeprecatedEnum) Descriptor() protoreflect.EnumDescriptor {
 	return file_comments_deprecated_proto_enumTypes[0].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (DeprecatedEnum) Type() protoreflect.EnumType {
-	return file_comments_deprecated_proto_enumTypes[0]
-}
-
 func (x DeprecatedEnum) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }

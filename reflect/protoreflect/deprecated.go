@@ -7,14 +7,7 @@ package protoreflect
 // TODO: Remove this file.
 
 type (
-	deprecatedEnum interface {
-		// Deprecated: Use Descriptor instead.
-		Type() EnumType
-	}
-
 	deprecatedMessage interface {
-		// Deprecated: Use Descriptor instead.
-		Type() MessageType
 		// Deprecated: Use methods on Message directly.
 		KnownFields() KnownFields
 		// Deprecated: Use methods on Message directly.

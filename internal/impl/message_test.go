@@ -933,8 +933,6 @@ var enumProto2Type = &prototype.Enum{
 	},
 }
 
-// TODO: Remove this.
-func (e EnumProto2) Type() pref.EnumType             { return enumProto2Type }
 func (e EnumProto2) Descriptor() pref.EnumDescriptor { return enumProto2Type.Descriptor() }
 func (e EnumProto2) Enum() *EnumProto2               { return &e }
 func (e EnumProto2) Number() pref.EnumNumber         { return pref.EnumNumber(e) }
@@ -952,8 +950,6 @@ var enumProto3Type = &prototype.Enum{
 	},
 }
 
-// TODO: Remove this.
-func (e EnumProto3) Type() pref.EnumType             { return enumProto3Type }
 func (e EnumProto3) Descriptor() pref.EnumDescriptor { return enumProto3Type.Descriptor() }
 func (e EnumProto3) Enum() *EnumProto3               { return &e }
 func (e EnumProto3) Number() pref.EnumNumber         { return pref.EnumNumber(e) }

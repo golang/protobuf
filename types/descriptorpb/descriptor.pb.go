@@ -110,11 +110,6 @@ func (FieldDescriptorProto_Type) Descriptor() protoreflect.EnumDescriptor {
 	return file_google_protobuf_descriptor_proto_enumTypes[0].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (FieldDescriptorProto_Type) Type() protoreflect.EnumType {
-	return file_google_protobuf_descriptor_proto_enumTypes[0]
-}
-
 func (x FieldDescriptorProto_Type) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
@@ -169,11 +164,6 @@ func (x FieldDescriptorProto_Label) String() string {
 
 func (FieldDescriptorProto_Label) Descriptor() protoreflect.EnumDescriptor {
 	return file_google_protobuf_descriptor_proto_enumTypes[1].Descriptor()
-}
-
-// Deprecated: Use Descriptor instead.
-func (FieldDescriptorProto_Label) Type() protoreflect.EnumType {
-	return file_google_protobuf_descriptor_proto_enumTypes[1]
 }
 
 func (x FieldDescriptorProto_Label) Number() protoreflect.EnumNumber {
@@ -233,11 +223,6 @@ func (FileOptions_OptimizeMode) Descriptor() protoreflect.EnumDescriptor {
 	return file_google_protobuf_descriptor_proto_enumTypes[2].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (FileOptions_OptimizeMode) Type() protoreflect.EnumType {
-	return file_google_protobuf_descriptor_proto_enumTypes[2]
-}
-
 func (x FileOptions_OptimizeMode) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
@@ -292,11 +277,6 @@ func (x FieldOptions_CType) String() string {
 
 func (FieldOptions_CType) Descriptor() protoreflect.EnumDescriptor {
 	return file_google_protobuf_descriptor_proto_enumTypes[3].Descriptor()
-}
-
-// Deprecated: Use Descriptor instead.
-func (FieldOptions_CType) Type() protoreflect.EnumType {
-	return file_google_protobuf_descriptor_proto_enumTypes[3]
 }
 
 func (x FieldOptions_CType) Number() protoreflect.EnumNumber {
@@ -357,11 +337,6 @@ func (FieldOptions_JSType) Descriptor() protoreflect.EnumDescriptor {
 	return file_google_protobuf_descriptor_proto_enumTypes[4].Descriptor()
 }
 
-// Deprecated: Use Descriptor instead.
-func (FieldOptions_JSType) Type() protoreflect.EnumType {
-	return file_google_protobuf_descriptor_proto_enumTypes[4]
-}
-
 func (x FieldOptions_JSType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
@@ -418,11 +393,6 @@ func (x MethodOptions_IdempotencyLevel) String() string {
 
 func (MethodOptions_IdempotencyLevel) Descriptor() protoreflect.EnumDescriptor {
 	return file_google_protobuf_descriptor_proto_enumTypes[5].Descriptor()
-}
-
-// Deprecated: Use Descriptor instead.
-func (MethodOptions_IdempotencyLevel) Type() protoreflect.EnumType {
-	return file_google_protobuf_descriptor_proto_enumTypes[5]
 }
 
 func (x MethodOptions_IdempotencyLevel) Number() protoreflect.EnumNumber {
