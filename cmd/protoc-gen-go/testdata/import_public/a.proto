@@ -9,7 +9,6 @@ package goproto.protoc.import_public;
 option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/import_public";
 
 import public "import_public/sub/a.proto";  // Different Go package.
-import public "import_public/sub2/a.proto"; // Different Go package.
 import public "import_public/b.proto";      // Same Go package.
 
 message Public {

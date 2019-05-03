@@ -29,6 +29,9 @@ func (p *names) Has(s pref.Name) bool {
 func (p *names) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
 func (p *names) ProtoInternal(pragma.DoNotImplement) {}
 
+// Names returns a Names list from a slice of names.
+func Names(s []pref.Name) pref.Names { return (*names)(&s) }
+
 type numbersMeta struct {
 	once sync.Once
 	ns   []pref.FieldNumber
@@ -68,6 +71,9 @@ func (p *fieldRanges) Has(n pref.FieldNumber) bool {
 func (p *fieldRanges) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
 func (p *fieldRanges) ProtoInternal(pragma.DoNotImplement) {}
 
+// FieldRanges returns a FieldRanges list from a slice of ranges.
+func FieldRanges(s [][2]pref.FieldNumber) pref.FieldRanges { return (*fieldRanges)(&s) }
+
 type enumRanges [][2]pref.EnumNumber
 
 func (p *enumRanges) Len() int                     { return len(*p) }
@@ -82,6 +88,9 @@ func (p *enumRanges) Has(n pref.EnumNumber) bool {
 }
 func (p *enumRanges) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
 func (p *enumRanges) ProtoInternal(pragma.DoNotImplement) {}
+
+// EnumRanges returns an EnumRanges list from a slice of ranges.
+func EnumRanges(s [][2]pref.EnumNumber) pref.EnumRanges { return (*enumRanges)(&s) }
 
 type fileImports []pref.FileImport
 
