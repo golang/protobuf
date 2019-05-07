@@ -9,6 +9,7 @@ import (
 	"github.com/golang/protobuf/v2/internal/errors"
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoregistry"
 	"github.com/golang/protobuf/v2/runtime/protoiface"
 )
 
@@ -25,6 +26,10 @@ type UnmarshalOptions struct {
 	// If DiscardUnknown is set, unknown fields are ignored.
 	DiscardUnknown bool
 
+	// Resolver is used for looking up types when unmarshaling extension fields.
+	// If nil, this defaults to using protoregistry.GlobalTypes.
+	Resolver *protoregistry.Types
+
 	pragma.NoUnkeyedLiterals
 }
 
@@ -37,6 +42,10 @@ func Unmarshal(b []byte, m Message) error {
 
 // Unmarshal parses the wire-format message in b and places the result in m.
 func (o UnmarshalOptions) Unmarshal(b []byte, m Message) error {
+	if o.Resolver == nil {
+		o.Resolver = protoregistry.GlobalTypes
+	}
+
 	// TODO: Reset m?
 	err := o.unmarshalMessageFast(b, m)
 	if err == errInternalNoFast {
@@ -77,6 +86,16 @@ func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) err
 		fieldType := fieldTypes.ByNumber(num)
 		if fieldType == nil {
 			fieldType = knownFields.ExtensionTypes().ByNumber(num)
+			if fieldType == nil && messageType.ExtensionRanges().Has(num) {
+				extType, err := o.Resolver.FindExtensionByNumber(messageType.FullName(), num)
+				if err != nil && err != protoregistry.NotFound {
+					return err
+				}
+				if extType != nil {
+					knownFields.ExtensionTypes().Register(extType)
+					fieldType = extType
+				}
+			}
 		}
 		var err error
 		var valLen int

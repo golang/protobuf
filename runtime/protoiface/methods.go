@@ -7,6 +7,7 @@ package protoiface
 import (
 	"github.com/golang/protobuf/v2/internal/pragma"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/v2/reflect/protoregistry"
 )
 
 // Methoder is an optional interface implemented by generated messages to
@@ -62,6 +63,7 @@ type MarshalOptions struct {
 type UnmarshalOptions struct {
 	AllowPartial   bool
 	DiscardUnknown bool
+	Resolver       *protoregistry.Types
 
 	pragma.NoUnkeyedLiterals
 }
