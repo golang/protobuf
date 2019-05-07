@@ -183,12 +183,7 @@ func (p legacyExtensionTypes) Remove(t pref.ExtensionType) {
 	if x.Value != nil {
 		panic("value for extension descriptor still populated")
 	}
-	x.Desc = nil
-	if len(x.Raw) == 0 {
-		p.x.Clear(t.Number())
-	} else {
-		p.x.Set(t.Number(), x)
-	}
+	p.x.Clear(t.Number())
 }
 
 func (p legacyExtensionTypes) ByNumber(n pref.FieldNumber) pref.ExtensionType {
@@ -269,9 +264,6 @@ type ExtensionFieldV1 struct {
 	// The Value may only be populated if Desc is also populated.
 	Value interface{} // TODO: switch to protoreflect.Value
 
-	// Raw is the raw encoded bytes for the extension field.
-	// It is possible for Raw to be populated irrespective of whether the
-	// other fields are populated.
 	Raw []byte // TODO: remove; let this be handled by XXX_unrecognized
 }
 

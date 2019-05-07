@@ -43,6 +43,7 @@ func TestLegacyUnknown(t *testing.T) {
 	rawOf := func(toks ...pack.Token) pref.RawFields {
 		return pref.RawFields(pack.Message(toks).Marshal())
 	}
+	raw1 := rawOf(pack.Tag{1, pack.BytesType}, pack.Bytes("1"))                      // 0a0131
 	raw1a := rawOf(pack.Tag{1, pack.VarintType}, pack.Svarint(-4321))                // 08c143
 	raw1b := rawOf(pack.Tag{1, pack.Fixed32Type}, pack.Uint32(0xdeadbeef))           // 0defbeadde
 	raw1c := rawOf(pack.Tag{1, pack.Fixed64Type}, pack.Float64(math.Pi))             // 09182d4454fb210940
@@ -50,17 +51,6 @@ func TestLegacyUnknown(t *testing.T) {
 	raw2b := rawOf(pack.Tag{2, pack.VarintType}, pack.Uvarint(1234))                 // 10d209
 	raw3a := rawOf(pack.Tag{3, pack.StartGroupType}, pack.Tag{3, pack.EndGroupType}) // 1b1c
 	raw3b := rawOf(pack.Tag{3, pack.BytesType}, pack.Bytes("\xde\xad\xbe\xef"))      // 1a04deadbeef
-
-	raw1 := rawOf(pack.Tag{1, pack.BytesType}, pack.Bytes("1"))    // 0a0131
-	raw3 := rawOf(pack.Tag{3, pack.BytesType}, pack.Bytes("3"))    // 1a0133
-	raw10 := rawOf(pack.Tag{10, pack.BytesType}, pack.Bytes("10")) // 52023130 - extension
-	raw15 := rawOf(pack.Tag{15, pack.BytesType}, pack.Bytes("15")) // 7a023135 - extension
-	raw26 := rawOf(pack.Tag{26, pack.BytesType}, pack.Bytes("26")) // d201023236
-	raw32 := rawOf(pack.Tag{32, pack.BytesType}, pack.Bytes("32")) // 8202023332
-	raw45 := rawOf(pack.Tag{45, pack.BytesType}, pack.Bytes("45")) // ea02023435 - extension
-	raw46 := rawOf(pack.Tag{45, pack.BytesType}, pack.Bytes("46")) // ea02023436 - extension
-	raw47 := rawOf(pack.Tag{45, pack.BytesType}, pack.Bytes("47")) // ea02023437 - extension
-	raw99 := rawOf(pack.Tag{99, pack.BytesType}, pack.Bytes("99")) // 9a06023939
 
 	joinRaw := func(bs ...pref.RawFields) (out []byte) {
 		for _, b := range bs {
@@ -177,93 +167,6 @@ func TestLegacyUnknown(t *testing.T) {
 	if got, want := m.XXX_unrecognized, joinRaw(raw1); !bytes.Equal(got, want) {
 		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
 	}
-
-	fs.Set(45, raw45)
-	fs.Set(10, raw10) // extension
-	fs.Set(32, raw32)
-	fs.Set(1, nil) // deletion
-	fs.Set(26, raw26)
-	fs.Set(47, raw47) // extension
-	fs.Set(46, raw46) // extension
-	if got, want := fs.Len(), 6; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(raw32, raw26); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
-
-	// Verify iteration order.
-	i = 0
-	want = []struct {
-		num pref.FieldNumber
-		raw pref.RawFields
-	}{
-		{32, raw32},
-		{26, raw26},
-		{10, raw10}, // extension
-		{45, raw45}, // extension
-		{46, raw46}, // extension
-		{47, raw47}, // extension
-	}
-	fs.Range(func(num pref.FieldNumber, raw pref.RawFields) bool {
-		if i < len(want) {
-			if num != want[i].num || !bytes.Equal(raw, want[i].raw) {
-				t.Errorf("Range(%d) = (%d, %x), want (%d, %x)", i, num, raw, want[i].num, want[i].raw)
-			}
-		} else {
-			t.Errorf("unexpected Range iteration: %d", i)
-		}
-		i++
-		return true
-	})
-
-	// Perform partial deletion while iterating.
-	i = 0
-	fs.Range(func(num pref.FieldNumber, raw pref.RawFields) bool {
-		if i%2 == 0 {
-			fs.Set(num, nil)
-		}
-		i++
-		return true
-	})
-
-	if got, want := fs.Len(), 3; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(raw26); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
-
-	fs.Set(15, raw15) // extension
-	fs.Set(3, raw3)
-	fs.Set(99, raw99)
-	if got, want := fs.Len(), 6; got != want {
-		t.Errorf("Len() = %d, want %d", got, want)
-	}
-	if got, want := m.XXX_unrecognized, joinRaw(raw26, raw3, raw99); !bytes.Equal(got, want) {
-		t.Errorf("data mismatch:\ngot:  %x\nwant: %x", got, want)
-	}
-
-	// Perform partial iteration.
-	i = 0
-	want = []struct {
-		num pref.FieldNumber
-		raw pref.RawFields
-	}{
-		{26, raw26},
-		{3, raw3},
-	}
-	fs.Range(func(num pref.FieldNumber, raw pref.RawFields) bool {
-		if i < len(want) {
-			if num != want[i].num || !bytes.Equal(raw, want[i].raw) {
-				t.Errorf("Range(%d) = (%d, %x), want (%d, %x)", i, num, raw, want[i].num, want[i].raw)
-			}
-		} else {
-			t.Errorf("unexpected Range iteration: %d", i)
-		}
-		i++
-		return i < 2
-	})
 }
 
 func mustMakeExtensionType(x *ptype.StandaloneExtension, v interface{}) pref.ExtensionType {
