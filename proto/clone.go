@@ -214,10 +214,6 @@ func mergeExtension(out, in *extensionMap) {
 			mergeAny(v, reflect.ValueOf(eIn.Value), false, nil)
 			eOut.Value = v.Interface()
 		}
-		if eIn.Raw != nil {
-			eOut.Raw = make([]byte, len(eIn.Raw))
-			copy(eOut.Raw, eIn.Raw)
-		}
 
 		out.Set(extNum, eOut)
 		return true

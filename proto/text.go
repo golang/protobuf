@@ -669,16 +669,11 @@ func (tm *textMarshaler) writeExtensions(w *textWriter, pv reflect.Value) error 
 	sort.Sort(fieldNumSlice(ids))
 
 	for _, extNum := range ids {
-		ext := ep.Get(extNum)
 		var desc *ExtensionDesc
 		if emap != nil {
 			desc = emap[int32(extNum)]
 		}
 		if desc == nil {
-			// Unknown extension.
-			if err := writeUnknownStruct(w, ext.Raw); err != nil {
-				return err
-			}
 			continue
 		}
 

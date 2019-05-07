@@ -15,6 +15,7 @@ import (
 	"reflect"
 	"sync"
 
+	"github.com/golang/protobuf/internal/wire"
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/golang/protobuf/v2/runtime/protoiface"
 	"github.com/golang/protobuf/v2/runtime/protoimpl"
@@ -97,11 +98,38 @@ func isRepeatedExtension(ed *ExtensionDesc) bool {
 
 // SetRawExtension is for testing only.
 func SetRawExtension(base Message, id int32, b []byte) {
-	epb, err := extendable(base)
-	if err != nil {
+	v := reflect.ValueOf(base)
+	if !v.IsValid() || v.Kind() != reflect.Ptr || v.IsNil() || v.Elem().Kind() != reflect.Struct {
 		return
 	}
-	epb.Set(protoreflect.FieldNumber(id), Extension{Raw: b})
+	v = v.Elem().FieldByName("XXX_unrecognized")
+	if !v.IsValid() {
+		return
+	}
+
+	// Verify that the raw field is valid.
+	for b0 := b; len(b0) > 0; {
+		fieldNum, _, n := wire.ConsumeField(b0)
+		if int32(fieldNum) != id {
+			panic(fmt.Sprintf("mismatching field number: got %d, want %d", fieldNum, id))
+		}
+		b0 = b0[n:]
+	}
+
+	fnum := protoreflect.FieldNumber(id)
+	v.SetBytes(append(removeRawFields(v.Bytes(), fnum), b...))
+}
+
+func removeRawFields(b []byte, fnum protoreflect.FieldNumber) []byte {
+	out := b[:0]
+	for len(b) > 0 {
+		got, _, n := wire.ConsumeField(b)
+		if got != fnum {
+			out = append(out, b[:n]...)
+		}
+		b = b[n:]
+	}
+	return out
 }
 
 // isExtensionField returns true iff the given field number is in an extension range.
@@ -172,13 +200,24 @@ func extensionProperties(pb Message, ed *ExtensionDesc) *Properties {
 func HasExtension(pb Message, extension *ExtensionDesc) bool {
 	// TODO: Check types, field numbers, etc.?
 	epb, err := extendable(pb)
-	if err != nil {
+	if err != nil || epb == nil {
 		return false
 	}
-	if epb == nil {
-		return false
+	if epb.Has(protoreflect.FieldNumber(extension.Field)) {
+		return true
 	}
-	return epb.Has(protoreflect.FieldNumber(extension.Field))
+
+	// Check whether this field exists in raw form.
+	unrecognized := reflect.ValueOf(pb).Elem().FieldByName("XXX_unrecognized")
+	fnum := protoreflect.FieldNumber(extension.Field)
+	for b := unrecognized.Bytes(); len(b) > 0; {
+		got, _, n := wire.ConsumeField(b)
+		if got == fnum {
+			return true
+		}
+		b = b[n:]
+	}
+	return false
 }
 
 // ClearExtension removes the given extension from pb.
@@ -211,16 +250,24 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 		return nil, err
 	}
 
-	if epb == nil {
-		return defaultExtensionValue(pb, extension)
+	unrecognized := reflect.ValueOf(pb).Elem().FieldByName("XXX_unrecognized")
+	var out []byte
+	fnum := protoreflect.FieldNumber(extension.Field)
+	for b := unrecognized.Bytes(); len(b) > 0; {
+		got, _, n := wire.ConsumeField(b)
+		if got == fnum {
+			out = append(out, b[:n]...)
+		}
+		b = b[n:]
 	}
-	if !epb.Has(protoreflect.FieldNumber(extension.Field)) {
+
+	if !epb.Has(protoreflect.FieldNumber(extension.Field)) && len(out) == 0 {
 		// defaultExtensionValue returns the default value or
 		// ErrMissingExtension if there is no default.
 		return defaultExtensionValue(pb, extension)
 	}
-	e := epb.Get(protoreflect.FieldNumber(extension.Field))
 
+	e := epb.Get(protoreflect.FieldNumber(extension.Field))
 	if e.Value != nil {
 		// Already decoded. Check the descriptor, though.
 		if e.Desc != extension {
@@ -232,12 +279,13 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 		return extensionAsLegacyType(e.Value), nil
 	}
 
+	// Descriptor without type information.
 	if extension.ExtensionType == nil {
-		// incomplete descriptor
-		return e.Raw, nil
+		return out, nil
 	}
 
-	v, err := decodeExtension(e.Raw, extension)
+	// TODO: Remove this logic for automatically unmarshaling the unknown fields.
+	v, err := decodeExtension(out, extension)
 	if err != nil {
 		return nil, err
 	}
@@ -246,7 +294,7 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 	// That way it is safe to mutate what we return.
 	e.Value = extensionAsStorageType(v)
 	e.Desc = extension
-	e.Raw = nil
+	unrecognized.SetBytes(removeRawFields(unrecognized.Bytes(), fnum))
 	epb.Set(protoreflect.FieldNumber(extension.Field), e)
 	return extensionAsLegacyType(e.Value), nil
 }
@@ -367,6 +415,27 @@ func ExtensionDescs(pb Message) ([]*ExtensionDesc, error) {
 		extensions = append(extensions, desc)
 		return true
 	})
+
+	unrecognized := reflect.ValueOf(pb).Elem().FieldByName("XXX_unrecognized")
+	if b := unrecognized.Bytes(); len(b) > 0 {
+		fieldNums := make(map[int32]bool)
+		for len(b) > 0 {
+			fnum, _, n := wire.ConsumeField(b)
+			if isExtensionField(pb, int32(fnum)) {
+				fieldNums[int32(fnum)] = true
+			}
+			b = b[n:]
+		}
+
+		for id := range fieldNums {
+			desc := registeredExtensions[id]
+			if desc == nil {
+				desc = &ExtensionDesc{Field: id}
+			}
+			extensions = append(extensions, desc)
+		}
+	}
+
 	return extensions, nil
 }
 

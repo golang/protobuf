@@ -7,7 +7,6 @@ package proto_test
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"reflect"
 	"sort"
 	"strings"
@@ -36,17 +35,6 @@ func TestGetExtensionsWithMissingExtensions(t *testing.T) {
 	}
 	if exts[1] != nil {
 		t.Errorf("ext2 in returned extensions: %T %v", exts[1], exts[1])
-	}
-}
-
-func TestGetExtensionWithEmptyBuffer(t *testing.T) {
-	// Make sure that GetExtension returns an error if its
-	// undecoded buffer is empty.
-	msg := &pb.MyMessage{}
-	proto.SetRawExtension(msg, pb.E_Ext_More.Field, []byte{})
-	_, err := proto.GetExtension(msg, pb.E_Ext_More)
-	if want := io.ErrUnexpectedEOF; err != want {
-		t.Errorf("unexpected error in GetExtension from empty buffer: got %v, want %v", err, want)
 	}
 }
 

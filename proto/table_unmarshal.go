@@ -16,7 +16,7 @@ import (
 	"sync/atomic"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"github.com/golang/protobuf/internal/wire"
 )
 
 // Unmarshal is the entry point from the generated .pb.go files.
@@ -111,7 +111,7 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		u.computeUnmarshalInfo()
 	}
 	if u.isMessageSet {
-		return unmarshalMessageSet(b, m.offset(u.extensions).toExtensions())
+		return unmarshalMessageSet(b, m.asPointerTo(u.typ).Interface().(Message), m.offset(u.extensions).toExtensions())
 	}
 	var reqMask uint64 // bitmask of required fields we've seen.
 	var errLater error
@@ -187,26 +187,9 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		// Keep unrecognized data around.
 		// maybe in extensions, maybe in the unrecognized field.
 		z := m.offset(u.unrecognized).toBytes()
-		var emap *extensionMap
-		var e Extension
 		for _, r := range u.extensionRanges {
 			if uint64(r.Start) <= tag && tag <= uint64(r.End) {
 				hasExtensions = true
-				if u.extensions.IsValid() {
-					mp := m.offset(u.extensions).toExtensions()
-					emap = extensionFieldsOf(mp)
-					e = emap.Get(protoreflect.FieldNumber(tag))
-					z = &e.Raw
-					break
-				}
-				if u.oldExtensions.IsValid() {
-					p := m.offset(u.oldExtensions).toOldExtensions()
-					emap = extensionFieldsOf(p)
-					e = emap.Get(protoreflect.FieldNumber(tag))
-					z = &e.Raw
-					break
-				}
-				panic("no extensions field available")
 			}
 		}
 
@@ -219,37 +202,15 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		}
 		*z = encodeVarint(*z, tag<<3|uint64(wire))
 		*z = append(*z, b0[:len(b0)-len(b)]...)
-
-		if emap != nil {
-			emap.Set(protoreflect.FieldNumber(tag), e)
-		}
 	}
 
 	// If there were unknown extensions, eagerly unmarshal them.
 	if hasExtensions {
+		var nerr nonFatal
 		mi := m.asPointerTo(u.typ).Interface().(Message)
-		ep, _ := extendable(mi)
-		if ep != nil {
-			var errFatal error
-			emap := RegisteredExtensions(mi) // map[int32]*ExtensionDesc
-			ep.Range(func(id protoreflect.FieldNumber, ef Extension) bool {
-				ed := emap[int32(id)]
-				if ed != nil {
-					_, err := GetExtension(mi, ed)
-					var nerr nonFatal
-					if !nerr.Merge(err) {
-						errFatal = err
-						return false
-					}
-					if errLater == nil {
-						errLater = nerr.E
-					}
-				}
-				return true
-			})
-			if errFatal != nil {
-				return errFatal
-			}
+		unrecognized := m.offset(u.unrecognized).toBytes()
+		if err := unmarshalExtensions(mi, unrecognized); !nerr.Merge(err) {
+			return err
 		}
 	}
 
@@ -263,6 +224,67 @@ func (u *unmarshalInfo) unmarshal(m pointer, b []byte) error {
 		}
 	}
 	return errLater
+}
+
+func unmarshalExtensions(mi Message, unrecognized *[]byte) error {
+	extFields, _ := extendable(mi)
+	if extFields == nil {
+		return nil
+	}
+
+	emap := RegisteredExtensions(mi) // map[int32]*ExtensionDesc
+	oldUnknownFields := *unrecognized
+	newUnknownFields := oldUnknownFields[:0]
+
+	for len(oldUnknownFields) > 0 {
+		fieldNum, wireTyp, tagLen := wire.ConsumeTag(oldUnknownFields)
+		if tagLen < 0 {
+			return wire.ParseError(tagLen)
+		}
+		extDesc, ok := emap[int32(fieldNum)]
+		if !ok || extDesc.ExtensionType == nil {
+			valLen := wire.ConsumeFieldValue(fieldNum, wireTyp, oldUnknownFields[tagLen:])
+			if valLen < 0 {
+				return wire.ParseError(valLen)
+			}
+
+			newUnknownFields = append(newUnknownFields, oldUnknownFields[:tagLen+valLen]...)
+			oldUnknownFields = oldUnknownFields[tagLen+valLen:]
+			continue
+		}
+		oldUnknownFields = oldUnknownFields[tagLen:]
+
+		if err := checkExtensionTypeAndRanges(mi, extDesc); err != nil {
+			return err
+		}
+
+		// Create a new value or reuse an existing one.
+		fieldType := reflect.TypeOf(extDesc.ExtensionType)
+		fieldVal := reflect.New(fieldType).Elem() // E.g., *int32, *Message, []T
+		if extField := extFields.Get(fieldNum); extField.Value != nil {
+			fieldVal.Set(reflect.ValueOf(extensionAsLegacyType(extField.Value)))
+		}
+
+		// Unmarshal the value.
+		var err error
+		var nerr nonFatal
+		unmarshal := typeUnmarshaler(fieldType, extDesc.Tag)
+		if oldUnknownFields, err = unmarshal(oldUnknownFields, valToPointer(fieldVal.Addr()), int(wireTyp)); !nerr.Merge(err) {
+			return err
+		}
+
+		// Store the value into the extension field.
+		extFields.Set(fieldNum, Extension{
+			Desc:  extDesc,
+			Value: extensionAsStorageType(fieldVal.Interface()),
+		})
+	}
+
+	if len(newUnknownFields) == 0 {
+		newUnknownFields = nil // NOTE: code actually depends on this...
+	}
+	*unrecognized = newUnknownFields
+	return nil
 }
 
 // computeUnmarshalInfo fills in u with information for use

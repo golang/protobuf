@@ -10,6 +10,7 @@ package proto
 
 import (
 	"errors"
+	"reflect"
 
 	"github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -116,35 +117,24 @@ func skipVarint(buf []byte) []byte {
 
 // unmarshalMessageSet decodes the extension map encoded in buf in the message set wire format.
 // It is called by Unmarshal methods on protocol buffer messages with the message_set_wire_format option.
-func unmarshalMessageSet(buf []byte, exts interface{}) error {
-	m := extensionFieldsOf(exts)
-
+func unmarshalMessageSet(buf []byte, mi Message, exts interface{}) error {
 	ms := new(messageSet)
 	if err := Unmarshal(buf, ms); err != nil {
 		return err
 	}
+	unrecognized := reflect.ValueOf(mi).Elem().FieldByName("XXX_unrecognized").Addr().Interface().(*[]byte)
+
 	for _, item := range ms.Item {
 		id := protoreflect.FieldNumber(*item.TypeId)
 		msg := item.Message
 
 		// Restore wire type and field number varint, plus length varint.
-		// Be careful to preserve duplicate items.
 		b := EncodeVarint(uint64(id)<<3 | WireBytes)
-		if m.Has(id) {
-			ext := m.Get(id)
-
-			// Existing data; rip off the tag and length varint
-			// so we join the new data correctly.
-			// We can assume that ext.Raw is set because we are unmarshaling.
-			o := ext.Raw[len(b):]   // skip wire type and field number
-			_, n := DecodeVarint(o) // calculate length of length varint
-			o = o[n:]               // skip length varint
-			msg = append(o, msg...) // join old data and new data
-		}
 		b = append(b, EncodeVarint(uint64(len(msg)))...)
 		b = append(b, msg...)
 
-		m.Set(id, Extension{Raw: b})
+		*unrecognized = append(*unrecognized, b...)
 	}
-	return nil
+
+	return unmarshalExtensions(mi, unrecognized)
 }

@@ -223,12 +223,7 @@ func equalExtensions(base reflect.Type, em1, em2 *extensionMap) bool {
 		m2 := extensionAsLegacyType(e2.Value)
 
 		if m1 == nil && m2 == nil {
-			// Both have only encoded form.
-			if bytes.Equal(e1.Raw, e2.Raw) {
-				return true
-			}
-			// The bytes are different, but the extensions might still be
-			// equal. We need to decode them to compare.
+			return true
 		}
 
 		if m1 != nil && m2 != nil {
@@ -240,40 +235,8 @@ func equalExtensions(base reflect.Type, em1, em2 *extensionMap) bool {
 			return true
 		}
 
-		// At least one is encoded. To do a semantically correct comparison
-		// we need to unmarshal them first.
-		var desc *ExtensionDesc
-		mz := reflect.Zero(reflect.PtrTo(base)).Interface().(Message)
-		if m := RegisteredExtensions(mz); m != nil {
-			desc = m[int32(extNum)]
-		}
-		if desc == nil {
-			// If both have only encoded form and the bytes are the same,
-			// it is handled above. We get here when the bytes are different.
-			// We don't know how to decode it, so just compare them as byte
-			// slices.
-			log.Printf("proto: don't know how to compare extension %d of %v", extNum, base)
-			equal = false
-			return false
-		}
-		var err error
-		if m1 == nil {
-			m1, err = decodeExtension(e1.Raw, desc)
-		}
-		if m2 == nil && err == nil {
-			m2, err = decodeExtension(e2.Raw, desc)
-		}
-		if err != nil {
-			// The encoded form is invalid.
-			log.Printf("proto: badly encoded extension %d of %v: %v", extNum, base, err)
-			equal = false
-			return false
-		}
-		if !equalAny(reflect.ValueOf(m1), reflect.ValueOf(m2), nil) {
-			equal = false
-			return false
-		}
-		return true
+		equal = false
+		return false
 	})
 
 	return equal
