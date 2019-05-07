@@ -263,8 +263,6 @@ type ExtensionFieldV1 struct {
 	//
 	// The Value may only be populated if Desc is also populated.
 	Value interface{} // TODO: switch to protoreflect.Value
-
-	Raw []byte // TODO: remove; let this be handled by XXX_unrecognized
 }
 
 type legacyExtensionMap map[int32]ExtensionFieldV1
