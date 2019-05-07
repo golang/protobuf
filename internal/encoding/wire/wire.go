@@ -9,9 +9,11 @@ package wire
 
 import (
 	"io"
+	"math"
 	"math/bits"
 
 	"github.com/golang/protobuf/v2/internal/errors"
+	"github.com/golang/protobuf/v2/internal/flags"
 )
 
 // Number represents the field number.
@@ -479,11 +481,17 @@ func SizeGroup(num Number, n int) int {
 // The Number is -1 if the decoded field number overflows.
 // Other than overflow, this does not check for field number validity.
 func DecodeTag(x uint64) (Number, Type) {
-	num := Number(x >> 3)
-	if num > MaxValidNumber {
-		num = -1
+	// NOTE: MessageSet allows for larger field numbers than normal.
+	if flags.Proto1Legacy {
+		if x>>3 > uint64(math.MaxInt32) {
+			return -1, 0
+		}
+	} else {
+		if x>>3 > uint64(MaxValidNumber) {
+			return -1, 0
+		}
 	}
-	return num, Type(x & 7)
+	return Number(x >> 3), Type(x & 7)
 }
 
 // EncodeTag encodes the field Number and wire Type into its unified form.

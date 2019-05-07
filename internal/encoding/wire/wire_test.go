@@ -136,8 +136,8 @@ func TestTag(t *testing.T) {
 		wantRaw:    dhex("f8ffffff0f"),
 		consumeOps: ops{consumeTag{wantNum: MaxValidNumber, wantType: VarintType, wantCnt: 5}},
 	}, {
-		appendOps:  ops{appendTag{inNum: MaxValidNumber + 1, inType: VarintType}},
-		wantRaw:    dhex("8080808010"),
+		appendOps:  ops{appendVarint{inVal: ((math.MaxInt32+1)<<3 | uint64(VarintType))}},
+		wantRaw:    dhex("8080808040"),
 		consumeOps: ops{consumeTag{wantErr: errFieldNumber}},
 	}})
 }
