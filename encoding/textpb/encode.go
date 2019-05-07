@@ -362,6 +362,9 @@ func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
 	}
 	em := emt.New().Interface()
 	// TODO: Need to set types registry in binary unmarshaling.
+	// TODO: If binary unmarshaling returns required not set error, need to
+	// return another required not set error that contains both the path to this
+	// field and the path inside the embedded message.
 	err = proto.UnmarshalOptions{
 		AllowPartial: o.AllowPartial,
 	}.Unmarshal(value.Bytes(), em)
