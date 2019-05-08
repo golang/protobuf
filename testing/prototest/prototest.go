@@ -26,9 +26,6 @@ func TestMessage(t testing.TB, message proto.Message) {
 	for i := 0; i < md.Fields().Len(); i++ {
 		fd := md.Fields().Get(i)
 		switch {
-		case fd.IsWeak():
-			// TODO: Weak field support.
-			continue
 		case fd.IsMap():
 			testFieldMap(t, m, fd)
 		case fd.Cardinality() == pref.Repeated:

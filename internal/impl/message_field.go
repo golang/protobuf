@@ -9,7 +9,6 @@ import (
 	"math"
 	"reflect"
 
-	"github.com/golang/protobuf/v2/internal/flags"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
@@ -22,14 +21,6 @@ type fieldInfo struct {
 	set        func(pointer, pref.Value)
 	clear      func(pointer)
 	newMessage func() pref.Message
-}
-
-func fieldInfoForWeak(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
-	if !flags.Proto1Legacy {
-		panic("weak fields not supported")
-	}
-	// TODO: support weak fields.
-	panic(fmt.Sprintf("invalid field: %v", fd))
 }
 
 func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot reflect.Type) fieldInfo {

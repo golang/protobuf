@@ -113,8 +113,6 @@ fieldLoop:
 		fs := fieldsByNumber[fd.Number()]
 		var fi fieldInfo
 		switch {
-		case fd.IsWeak():
-			fi = fieldInfoForWeak(fd, specialByName["XXX_weak"])
 		case fd.Oneof() != nil:
 			fi = fieldInfoForOneof(fd, oneofsByName[fd.Oneof().Name()], oneofWrappersByNumber[fd.Number()])
 		case fd.IsMap():

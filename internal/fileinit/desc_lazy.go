@@ -16,6 +16,7 @@ import (
 	ptype "github.com/golang/protobuf/v2/internal/prototype"
 	pvalue "github.com/golang/protobuf/v2/internal/value"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
 )
 
 func (file *fileDesc) lazyInit() *fileLazy {
@@ -686,7 +687,12 @@ func (fd *fieldDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 		if len(rawTypeName) == 0 || rawTypeName[0] != '.' {
 			panic("weak target name must be fully qualified")
 		}
-		fd.messageType = ptype.PlaceholderMessage(pref.FullName(rawTypeName[1:]))
+		// Consult the global registry for weak messages.
+		name := pref.FullName(rawTypeName[1:])
+		fd.messageType, _ = preg.GlobalFiles.FindMessageByName(name)
+		if fd.messageType == nil {
+			fd.messageType = ptype.PlaceholderMessage(pref.FullName(rawTypeName[1:]))
+		}
 	}
 }
 

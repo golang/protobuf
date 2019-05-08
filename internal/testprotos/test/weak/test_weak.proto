@@ -4,9 +4,10 @@
 
 syntax = "proto2";
 
-package goproto.proto.test;
+package goproto.proto.test.weak;
 
-option go_package = "github.com/golang/protobuf/v2/internal/testprotos/test";
+option go_package = "github.com/golang/protobuf/v2/internal/testprotos/test/weak";
 
 message WeakImportMessage {
+	optional int32 a = 1;
 }

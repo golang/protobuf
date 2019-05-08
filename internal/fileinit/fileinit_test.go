@@ -99,3 +99,17 @@ func visitFields(m protoreflect.Message, f func(protoreflect.FieldDescriptor)) {
 		return true
 	})
 }
+
+func TestWeakInit(t *testing.T) {
+	file := testpb.File_test_test_proto
+	fd := file.Messages().ByName("TestWeak").Fields().ByName("weak_message")
+	if want, got := fd.IsWeak(), true; got != want {
+		t.Errorf("field %v: IsWeak() = %v, want %v", fd.FullName(), want, got)
+	}
+	if want, got := fd.Message().IsPlaceholder(), false; got != want {
+		t.Errorf("field %v: Message.IsPlaceholder() = %v, want %v", fd.FullName(), want, got)
+	}
+	if fd.Message().Fields().Len() == 0 {
+		t.Errorf("field %v: Message().Fields().Len() == 0, want >0", fd.FullName())
+	}
+}

@@ -8,7 +8,7 @@ package goproto.proto.test;
 
 import "test/test_import.proto";
 import public "test/test_public.proto";
-import weak "test/test_weak.proto";
+import weak "test/weak/test_weak.proto";
 
 option go_package = "github.com/golang/protobuf/v2/internal/testprotos/test";
 
@@ -256,6 +256,10 @@ message TestRequiredGroupFields {
   repeated group RepeatedGroup = 3 {
     required int32 a = 4;
   }
+}
+
+message TestWeak {
+  optional goproto.proto.test.weak.WeakImportMessage weak_message = 1 [weak=true];
 }
 
 // Test that RPC services work.

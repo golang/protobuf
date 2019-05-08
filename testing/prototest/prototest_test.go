@@ -19,6 +19,7 @@ func Test(t *testing.T) {
 		(*testpb.TestAllTypes)(nil),
 		(*test3pb.TestAllTypes)(nil),
 		(*testpb.TestRequired)(nil),
+		(*testpb.TestWeak)(nil),
 	} {
 		t.Run(fmt.Sprintf("%T", m), func(t *testing.T) {
 			prototest.TestMessage(t, m)
