@@ -195,11 +195,8 @@ func walkEnums(d interface {
 // hybridEnumName returns the legacy enum identifier.
 func hybridEnumName(ed pref.EnumDescriptor) enumName {
 	var protoPkg string
-	for parent, _ := ed.Parent(); parent != nil; parent, _ = parent.Parent() {
-		if fd, ok := parent.(pref.FileDescriptor); ok {
-			protoPkg = string(fd.Package())
-			break
-		}
+	if fd := ed.ParentFile(); fd != nil {
+		protoPkg = string(fd.Package())
 	}
 	if protoPkg == "" {
 		return camelCase(string(ed.FullName()))
