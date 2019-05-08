@@ -553,6 +553,41 @@ func TestNewFile_ValidationOK(t *testing.T) {
 				}},
 			}},
 		},
+	}, {
+		name: "external type from weak import",
+		deps: []*descriptorpb.FileDescriptorProto{{
+			Name:    scalar.String("weak.proto"),
+			Syntax:  scalar.String("proto2"),
+			Package: scalar.String("foo"),
+			MessageType: []*descriptorpb.DescriptorProto{{
+				Name: scalar.String("WeakMessage"),
+			}},
+		}},
+		fd: &descriptorpb.FileDescriptorProto{
+			Name:           scalar.String("external-type-from-weak-import.proto"),
+			Syntax:         scalar.String("proto2"),
+			Package:        scalar.String("bar"),
+			Dependency:     []string{"weak.proto"},
+			WeakDependency: []int32{0},
+			MessageType: []*descriptorpb.DescriptorProto{{
+				Name: scalar.String("Bar"),
+				Field: []*descriptorpb.FieldDescriptorProto{{
+					Name:   scalar.String("id"),
+					Number: scalar.Int32(1),
+					Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				}, {
+					Name:     scalar.String("weak_message"),
+					Number:   scalar.Int32(2),
+					Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					TypeName: scalar.String(".foo.WeakMessage"),
+					Options: &descriptorpb.FieldOptions{
+						Weak: scalar.Bool(true),
+					},
+				}},
+			}},
+		},
 	}}
 
 	for _, tc := range testCases {

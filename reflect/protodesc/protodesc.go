@@ -112,13 +112,13 @@ func NewFile(fd *descriptorpb.FileDescriptorProto, r *protoregistry.Files) (prot
 	return prototype.NewFile(&f)
 }
 
-type importSet map[protoreflect.FileDescriptor]bool
+type importSet map[string]bool
 
 func importedFiles(imps []protoreflect.FileImport) importSet {
 	ret := make(importSet)
 	for _, imp := range imps {
-		ret[imp.FileDescriptor] = true
-		addPublicImports(imp.FileDescriptor, ret)
+		ret[imp.Path()] = true
+		addPublicImports(imp, ret)
 	}
 	return ret
 }
@@ -128,8 +128,8 @@ func addPublicImports(fd protoreflect.FileDescriptor, out importSet) {
 	for i := 0; i < imps.Len(); i++ {
 		imp := imps.Get(i)
 		if imp.IsPublic {
-			out[imp.FileDescriptor] = true
-			addPublicImports(imp.FileDescriptor, out)
+			out[imp.Path()] = true
+			addPublicImports(imp, out)
 		}
 	}
 }
@@ -381,7 +381,7 @@ func validateFileInImports(d protoreflect.Descriptor, imps importSet) error {
 	if fd == nil {
 		return errors.New("%v has no parent FileDescriptor", d.FullName())
 	}
-	if !imps[fd] {
+	if !imps[fd.Path()] {
 		return errors.New("reference to type %v without import of %v", d.FullName(), fd.Path())
 	}
 	return nil
