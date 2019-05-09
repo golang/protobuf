@@ -51,8 +51,8 @@ func (p pointer) Apply(f offset) pointer {
 // AsValueOf treats p as a pointer to an object of type t and returns the value.
 // It is equivalent to reflect.ValueOf(p.AsIfaceOf(t))
 func (p pointer) AsValueOf(t reflect.Type) reflect.Value {
-	if p.v.Type().Elem() != t {
-		panic(fmt.Sprintf("invalid type: got %v, want %v", p.v.Type(), t))
+	if got := p.v.Type().Elem(); got != t {
+		panic(fmt.Sprintf("invalid type: got %v, want %v", got, t))
 	}
 	return p.v
 }
