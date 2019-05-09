@@ -46,44 +46,40 @@ func (mi *MessageType) init() {
 			panic(fmt.Sprintf("got %v, want *struct kind", t))
 		}
 
-		mi.makeKnownFieldsFunc(t.Elem())
+		si := mi.makeStructInfo(t.Elem())
+		mi.makeKnownFieldsFunc(si)
 		mi.makeUnknownFieldsFunc(t.Elem())
 		mi.makeExtensionFieldsFunc(t.Elem())
 	})
 }
 
-// makeKnownFieldsFunc generates functions for operations that can be performed
-// on each protobuf message field. It takes in a reflect.Type representing the
-// Go struct and matches message fields with struct fields.
-//
-// This code assumes that the struct is well-formed and panics if there are
-// any discrepancies.
-func (mi *MessageType) makeKnownFieldsFunc(t reflect.Type) {
+type structInfo struct {
+	fieldsByNumber        map[pref.FieldNumber]reflect.StructField
+	oneofsByName          map[pref.Name]reflect.StructField
+	oneofWrappersByType   map[reflect.Type]pref.FieldNumber
+	oneofWrappersByNumber map[pref.FieldNumber]reflect.Type
+}
+
+func (mi *MessageType) makeStructInfo(t reflect.Type) structInfo {
 	// Generate a mapping of field numbers and names to Go struct field or type.
-	var (
-		fieldsByNumber        = map[pref.FieldNumber]reflect.StructField{}
-		oneofsByName          = map[pref.Name]reflect.StructField{}
-		oneofWrappersByType   = map[reflect.Type]pref.FieldNumber{}
-		oneofWrappersByNumber = map[pref.FieldNumber]reflect.Type{}
-		specialByName         = map[string]reflect.StructField{}
-	)
+	si := structInfo{
+		fieldsByNumber:        map[pref.FieldNumber]reflect.StructField{},
+		oneofsByName:          map[pref.Name]reflect.StructField{},
+		oneofWrappersByType:   map[reflect.Type]pref.FieldNumber{},
+		oneofWrappersByNumber: map[pref.FieldNumber]reflect.Type{},
+	}
 fieldLoop:
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 		for _, s := range strings.Split(f.Tag.Get("protobuf"), ",") {
 			if len(s) > 0 && strings.Trim(s, "0123456789") == "" {
 				n, _ := strconv.ParseUint(s, 10, 64)
-				fieldsByNumber[pref.FieldNumber(n)] = f
+				si.fieldsByNumber[pref.FieldNumber(n)] = f
 				continue fieldLoop
 			}
 		}
 		if s := f.Tag.Get("protobuf_oneof"); len(s) > 0 {
-			oneofsByName[pref.Name(s)] = f
-			continue fieldLoop
-		}
-		switch f.Name {
-		case "XXX_weak", "XXX_unrecognized", "XXX_sizecache", "XXX_extensions", "XXX_InternalExtensions":
-			specialByName[f.Name] = f
+			si.oneofsByName[pref.Name(s)] = f
 			continue fieldLoop
 		}
 	}
@@ -100,21 +96,30 @@ fieldLoop:
 		for _, s := range strings.Split(f.Tag.Get("protobuf"), ",") {
 			if len(s) > 0 && strings.Trim(s, "0123456789") == "" {
 				n, _ := strconv.ParseUint(s, 10, 64)
-				oneofWrappersByType[tf] = pref.FieldNumber(n)
-				oneofWrappersByNumber[pref.FieldNumber(n)] = tf
+				si.oneofWrappersByType[tf] = pref.FieldNumber(n)
+				si.oneofWrappersByNumber[pref.FieldNumber(n)] = tf
 				break
 			}
 		}
 	}
+	return si
+}
 
+// makeKnownFieldsFunc generates functions for operations that can be performed
+// on each protobuf message field. It takes in a reflect.Type representing the
+// Go struct and matches message fields with struct fields.
+//
+// This code assumes that the struct is well-formed and panics if there are
+// any discrepancies.
+func (mi *MessageType) makeKnownFieldsFunc(si structInfo) {
 	mi.fields = map[pref.FieldNumber]*fieldInfo{}
 	for i := 0; i < mi.PBType.Fields().Len(); i++ {
 		fd := mi.PBType.Fields().Get(i)
-		fs := fieldsByNumber[fd.Number()]
+		fs := si.fieldsByNumber[fd.Number()]
 		var fi fieldInfo
 		switch {
 		case fd.Oneof() != nil:
-			fi = fieldInfoForOneof(fd, oneofsByName[fd.Oneof().Name()], oneofWrappersByNumber[fd.Number()])
+			fi = fieldInfoForOneof(fd, si.oneofsByName[fd.Oneof().Name()], si.oneofWrappersByNumber[fd.Number()])
 		case fd.IsMap():
 			fi = fieldInfoForMap(fd, fs)
 		case fd.Cardinality() == pref.Repeated:
@@ -130,7 +135,7 @@ fieldLoop:
 	mi.oneofs = map[pref.Name]*oneofInfo{}
 	for i := 0; i < mi.PBType.Oneofs().Len(); i++ {
 		od := mi.PBType.Oneofs().Get(i)
-		mi.oneofs[od.Name()] = makeOneofInfo(od, oneofsByName[od.Name()], oneofWrappersByType)
+		mi.oneofs[od.Name()] = makeOneofInfo(od, si.oneofsByName[od.Name()], si.oneofWrappersByType)
 	}
 }
 
