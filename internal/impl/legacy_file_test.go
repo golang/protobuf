@@ -421,8 +421,8 @@ func TestDescriptor(t *testing.T) {
 				name := v.Type().Method(i).Name
 				if m := v.Method(i); m.Type().NumIn() == 0 && m.Type().NumOut() == 1 {
 					switch name {
-					case "ParentFile":
-						// Ignore parent file to avoid recursive cycle.
+					case "ParentFile", "Parent":
+						// Ignore parents to avoid recursive cycle.
 					case "Index":
 						// Ignore index since legacy descriptors have no parent.
 					case "Options":

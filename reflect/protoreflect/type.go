@@ -45,8 +45,8 @@ type Descriptor interface {
 	//	| MethodDescriptor    | ServiceDescriptor                 |
 	//	+---------------------+-----------------------------------+
 	//
-	// Support for this functionality is optional and may return (nil, false).
-	Parent() (Descriptor, bool)
+	// Support for this functionality is optional and may return nil.
+	Parent() Descriptor
 
 	// Index returns the the index of this descriptor within its parent.
 	// It returns 0 if the descriptor does not have a parent or if the parent

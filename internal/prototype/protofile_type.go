@@ -64,7 +64,7 @@ func newFile(f *File) fileDesc {
 	return fileDesc{f}
 }
 func (t fileDesc) ParentFile() pref.FileDescriptor       { return t }
-func (t fileDesc) Parent() (pref.Descriptor, bool)       { return nil, false }
+func (t fileDesc) Parent() pref.Descriptor               { return nil }
 func (t fileDesc) Index() int                            { return 0 }
 func (t fileDesc) Syntax() pref.Syntax                   { return t.f.Syntax }
 func (t fileDesc) Name() pref.Name                       { return t.f.Package.Name() }
@@ -83,7 +83,7 @@ func (t fileDesc) ProtoType(pref.FileDescriptor)         {}
 func (t fileDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
 func parentFile(d protoreflect.Descriptor) protoreflect.FileDescriptor {
-	for ; d != nil; d, _ = d.Parent() {
+	for ; d != nil; d = d.Parent() {
 		if fd, ok := d.(protoreflect.FileDescriptor); ok {
 			return fd
 		}
@@ -104,7 +104,7 @@ type messageMeta struct {
 type messageDesc struct{ m *Message }
 
 func (t messageDesc) ParentFile() pref.FileDescriptor { return parentFile(t) }
-func (t messageDesc) Parent() (pref.Descriptor, bool) { return t.m.parent, true }
+func (t messageDesc) Parent() pref.Descriptor         { return t.m.parent }
 func (t messageDesc) Index() int                      { return t.m.index }
 func (t messageDesc) Syntax() pref.Syntax             { return t.m.syntax }
 func (t messageDesc) Name() pref.Name                 { return t.m.Name }
@@ -156,7 +156,7 @@ type fieldMeta struct {
 type fieldDesc struct{ f *Field }
 
 func (t fieldDesc) ParentFile() pref.FileDescriptor { return parentFile(t) }
-func (t fieldDesc) Parent() (pref.Descriptor, bool) { return t.f.parent, true }
+func (t fieldDesc) Parent() pref.Descriptor         { return t.f.parent }
 func (t fieldDesc) Index() int                      { return t.f.index }
 func (t fieldDesc) Syntax() pref.Syntax             { return t.f.syntax }
 func (t fieldDesc) Name() pref.Name                 { return t.f.Name }
@@ -264,8 +264,7 @@ type oneofReference struct {
 func (p *oneofReference) lazyInit(parent pref.Descriptor, name pref.Name) pref.OneofDescriptor {
 	p.once.Do(func() {
 		if name != "" {
-			mtyp, _ := parent.Parent()
-			p.otyp = mtyp.(pref.MessageDescriptor).Oneofs().ByName(name)
+			p.otyp = parent.Parent().(pref.MessageDescriptor).Oneofs().ByName(name)
 			// TODO: We need validate to detect this mismatch.
 		}
 	})
@@ -280,7 +279,7 @@ type oneofMeta struct {
 type oneofDesc struct{ o *Oneof }
 
 func (t oneofDesc) ParentFile() pref.FileDescriptor     { return parentFile(t) }
-func (t oneofDesc) Parent() (pref.Descriptor, bool)     { return t.o.parent, true }
+func (t oneofDesc) Parent() pref.Descriptor             { return t.o.parent }
 func (t oneofDesc) Index() int                          { return t.o.index }
 func (t oneofDesc) Syntax() pref.Syntax                 { return t.o.syntax }
 func (t oneofDesc) Name() pref.Name                     { return t.o.Name }
@@ -303,7 +302,7 @@ type extensionMeta struct {
 type extensionDesc struct{ x *Extension }
 
 func (t extensionDesc) ParentFile() pref.FileDescriptor { return parentFile(t) }
-func (t extensionDesc) Parent() (pref.Descriptor, bool) { return t.x.parent, true }
+func (t extensionDesc) Parent() pref.Descriptor         { return t.x.parent }
 func (t extensionDesc) Syntax() pref.Syntax             { return t.x.syntax }
 func (t extensionDesc) Index() int                      { return t.x.index }
 func (t extensionDesc) Name() pref.Name                 { return t.x.Name }
@@ -352,7 +351,7 @@ type enumMeta struct {
 type enumDesc struct{ e *Enum }
 
 func (t enumDesc) ParentFile() pref.FileDescriptor     { return parentFile(t) }
-func (t enumDesc) Parent() (pref.Descriptor, bool)     { return t.e.parent, true }
+func (t enumDesc) Parent() pref.Descriptor             { return t.e.parent }
 func (t enumDesc) Index() int                          { return t.e.index }
 func (t enumDesc) Syntax() pref.Syntax                 { return t.e.syntax }
 func (t enumDesc) Name() pref.Name                     { return t.e.Name }
@@ -372,7 +371,7 @@ type enumValueMeta struct {
 type enumValueDesc struct{ v *EnumValue }
 
 func (t enumValueDesc) ParentFile() pref.FileDescriptor { return parentFile(t) }
-func (t enumValueDesc) Parent() (pref.Descriptor, bool) { return t.v.parent, true }
+func (t enumValueDesc) Parent() pref.Descriptor         { return t.v.parent }
 func (t enumValueDesc) Index() int                      { return t.v.index }
 func (t enumValueDesc) Syntax() pref.Syntax             { return t.v.syntax }
 func (t enumValueDesc) Name() pref.Name                 { return t.v.Name }
@@ -394,7 +393,7 @@ type serviceMeta struct {
 type serviceDesc struct{ s *Service }
 
 func (t serviceDesc) ParentFile() pref.FileDescriptor { return parentFile(t) }
-func (t serviceDesc) Parent() (pref.Descriptor, bool) { return t.s.parent, true }
+func (t serviceDesc) Parent() pref.Descriptor         { return t.s.parent }
 func (t serviceDesc) Index() int                      { return t.s.index }
 func (t serviceDesc) Syntax() pref.Syntax             { return t.s.syntax }
 func (t serviceDesc) Name() pref.Name                 { return t.s.Name }
@@ -417,7 +416,7 @@ type methodMeta struct {
 type methodDesc struct{ m *Method }
 
 func (t methodDesc) ParentFile() pref.FileDescriptor     { return parentFile(t) }
-func (t methodDesc) Parent() (pref.Descriptor, bool)     { return t.m.parent, true }
+func (t methodDesc) Parent() pref.Descriptor             { return t.m.parent }
 func (t methodDesc) Index() int                          { return t.m.index }
 func (t methodDesc) Syntax() pref.Syntax                 { return t.m.syntax }
 func (t methodDesc) Name() pref.Name                     { return t.m.Name }
@@ -577,7 +576,7 @@ func resolveReference(parent pref.Descriptor, refName pref.FullName) pref.Descri
 			}
 			// No match. (e.g., refName: foo.firetruck, curName: foo.fire)
 		}
-		cur, _ = cur.Parent() // nil after ascending above FileDescriptor
+		cur = cur.Parent() // nil after ascending above FileDescriptor
 	}
 
 	// Descend downwards to resolve all relative names.

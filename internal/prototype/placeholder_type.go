@@ -31,7 +31,7 @@ var (
 type placeholderName pref.FullName
 
 func (t placeholderName) ParentFile() pref.FileDescriptor     { return nil }
-func (t placeholderName) Parent() (pref.Descriptor, bool)     { return nil, false }
+func (t placeholderName) Parent() pref.Descriptor             { return nil }
 func (t placeholderName) Index() int                          { return 0 }
 func (t placeholderName) Syntax() pref.Syntax                 { return 0 }
 func (t placeholderName) Name() pref.Name                     { return pref.FullName(t).Name() }
