@@ -30,6 +30,7 @@ var (
 
 type placeholderName pref.FullName
 
+func (t placeholderName) ParentFile() pref.FileDescriptor     { return nil }
 func (t placeholderName) Parent() (pref.Descriptor, bool)     { return nil, false }
 func (t placeholderName) Index() int                          { return 0 }
 func (t placeholderName) Syntax() pref.Syntax                 { return 0 }
@@ -43,6 +44,7 @@ type placeholderFile struct {
 	placeholderName
 }
 
+func (t placeholderFile) ParentFile() pref.FileDescriptor       { return t }
 func (t placeholderFile) Options() pref.ProtoMessage            { return descopts.File }
 func (t placeholderFile) Path() string                          { return t.path }
 func (t placeholderFile) Package() pref.FullName                { return t.FullName() }

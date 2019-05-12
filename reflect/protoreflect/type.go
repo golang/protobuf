@@ -24,6 +24,14 @@ import "reflect"
 // This can occur if a descriptor type is created dynamically, or multiple
 // versions of the same proto type are linked into the Go binary.
 type Descriptor interface {
+	// ParentFile returns the parent file descriptor that this descriptor
+	// is declared within. The parent file for the file descriptor is itself.
+	//
+	// Support for this functionality is optional and may return nil.
+	ParentFile() FileDescriptor
+
+	// TODO: Switch the signature of Parent to drop the bool.
+
 	// Parent returns the parent containing this descriptor declaration.
 	// The following shows the mapping from child type to possible parent types:
 	//

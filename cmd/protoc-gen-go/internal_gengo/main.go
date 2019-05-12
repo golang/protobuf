@@ -318,16 +318,7 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 // been the full name of the proto enum type instead, but changing it at this
 // point would require thought.
 func enumLegacyName(enum *protogen.Enum) string {
-	// Find the FileDescriptor for this enum.
-	var desc protoreflect.Descriptor = enum.Desc
-	for {
-		p, ok := desc.Parent()
-		if !ok {
-			break
-		}
-		desc = p
-	}
-	fdesc := desc.(protoreflect.FileDescriptor)
+	fdesc := enum.Desc.ParentFile()
 	if fdesc.Package() == "" {
 		return enum.GoIdent.GoName
 	}

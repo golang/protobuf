@@ -106,7 +106,7 @@ func extensionDescFromType(xt pref.ExtensionType) *piface.ExtensionDescV1 {
 		// Derive the proto package name.
 		// For legacy enums, obtain the proto package from the raw descriptor.
 		var protoPkg string
-		if fd := parentFileDescriptor(xt.Descriptor().Enum()); fd != nil {
+		if fd := xt.Descriptor().Enum().ParentFile(); fd != nil {
 			protoPkg = string(fd.Package())
 		}
 		if ed, ok := reflect.Zero(t).Interface().(enumV1); ok && protoPkg == "" {
@@ -121,7 +121,7 @@ func extensionDescFromType(xt pref.ExtensionType) *piface.ExtensionDescV1 {
 
 	// Derive the proto file that the extension was declared within.
 	var filename string
-	if fd := parentFileDescriptor(xt.Descriptor()); fd != nil {
+	if fd := xt.Descriptor().ParentFile(); fd != nil {
 		filename = fd.Path()
 	}
 

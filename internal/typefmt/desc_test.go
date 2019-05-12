@@ -11,6 +11,7 @@ import (
 // TestDescriptorAccessors tests that descriptorAccessors is up-to-date.
 func TestDescriptorAccessors(t *testing.T) {
 	ignore := map[string]bool{
+		"ParentFile":    true,
 		"Parent":        true,
 		"Index":         true,
 		"Syntax":        true,

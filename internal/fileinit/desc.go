@@ -250,6 +250,7 @@ type (
 	}
 )
 
+func (fd *fileDesc) ParentFile() pref.FileDescriptor { return fd }
 func (fd *fileDesc) Parent() (pref.Descriptor, bool) { return nil, false }
 func (fd *fileDesc) Index() int                      { return 0 }
 func (fd *fileDesc) Syntax() pref.Syntax             { return fd.lazyInit().syntax }
@@ -581,6 +582,7 @@ type baseDesc struct {
 	fullName
 }
 
+func (d *baseDesc) ParentFile() pref.FileDescriptor     { return d.parentFile }
 func (d *baseDesc) Parent() (pref.Descriptor, bool)     { return d.parent, true }
 func (d *baseDesc) Index() int                          { return d.index }
 func (d *baseDesc) Syntax() pref.Syntax                 { return d.parentFile.Syntax() }

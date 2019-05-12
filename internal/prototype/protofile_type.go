@@ -13,6 +13,7 @@ import (
 	descopts "github.com/golang/protobuf/v2/internal/descopts"
 	pragma "github.com/golang/protobuf/v2/internal/pragma"
 	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
+	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 )
 
@@ -62,6 +63,7 @@ func newFile(f *File) fileDesc {
 	f.fileMeta = new(fileMeta)
 	return fileDesc{f}
 }
+func (t fileDesc) ParentFile() pref.FileDescriptor       { return t }
 func (t fileDesc) Parent() (pref.Descriptor, bool)       { return nil, false }
 func (t fileDesc) Index() int                            { return 0 }
 func (t fileDesc) Syntax() pref.Syntax                   { return t.f.Syntax }
@@ -80,6 +82,15 @@ func (t fileDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r,
 func (t fileDesc) ProtoType(pref.FileDescriptor)         {}
 func (t fileDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
+func parentFile(d protoreflect.Descriptor) protoreflect.FileDescriptor {
+	for ; d != nil; d, _ = d.Parent() {
+		if fd, ok := d.(protoreflect.FileDescriptor); ok {
+			return fd
+		}
+	}
+	return nil
+}
+
 type messageMeta struct {
 	inheritedMeta
 
@@ -92,6 +103,7 @@ type messageMeta struct {
 }
 type messageDesc struct{ m *Message }
 
+func (t messageDesc) ParentFile() pref.FileDescriptor { return parentFile(t) }
 func (t messageDesc) Parent() (pref.Descriptor, bool) { return t.m.parent, true }
 func (t messageDesc) Index() int                      { return t.m.index }
 func (t messageDesc) Syntax() pref.Syntax             { return t.m.syntax }
@@ -143,6 +155,7 @@ type fieldMeta struct {
 }
 type fieldDesc struct{ f *Field }
 
+func (t fieldDesc) ParentFile() pref.FileDescriptor { return parentFile(t) }
 func (t fieldDesc) Parent() (pref.Descriptor, bool) { return t.f.parent, true }
 func (t fieldDesc) Index() int                      { return t.f.index }
 func (t fieldDesc) Syntax() pref.Syntax             { return t.f.syntax }
@@ -244,6 +257,7 @@ type oneofMeta struct {
 }
 type oneofDesc struct{ o *Oneof }
 
+func (t oneofDesc) ParentFile() pref.FileDescriptor     { return parentFile(t) }
 func (t oneofDesc) Parent() (pref.Descriptor, bool)     { return t.o.parent, true }
 func (t oneofDesc) Index() int                          { return t.o.index }
 func (t oneofDesc) Syntax() pref.Syntax                 { return t.o.syntax }
@@ -266,6 +280,7 @@ type extensionMeta struct {
 }
 type extensionDesc struct{ x *Extension }
 
+func (t extensionDesc) ParentFile() pref.FileDescriptor { return parentFile(t) }
 func (t extensionDesc) Parent() (pref.Descriptor, bool) { return t.x.parent, true }
 func (t extensionDesc) Syntax() pref.Syntax             { return t.x.syntax }
 func (t extensionDesc) Index() int                      { return t.x.index }
@@ -304,6 +319,7 @@ type enumMeta struct {
 }
 type enumDesc struct{ e *Enum }
 
+func (t enumDesc) ParentFile() pref.FileDescriptor     { return parentFile(t) }
 func (t enumDesc) Parent() (pref.Descriptor, bool)     { return t.e.parent, true }
 func (t enumDesc) Index() int                          { return t.e.index }
 func (t enumDesc) Syntax() pref.Syntax                 { return t.e.syntax }
@@ -323,6 +339,7 @@ type enumValueMeta struct {
 }
 type enumValueDesc struct{ v *EnumValue }
 
+func (t enumValueDesc) ParentFile() pref.FileDescriptor { return parentFile(t) }
 func (t enumValueDesc) Parent() (pref.Descriptor, bool) { return t.v.parent, true }
 func (t enumValueDesc) Index() int                      { return t.v.index }
 func (t enumValueDesc) Syntax() pref.Syntax             { return t.v.syntax }
@@ -344,6 +361,7 @@ type serviceMeta struct {
 }
 type serviceDesc struct{ s *Service }
 
+func (t serviceDesc) ParentFile() pref.FileDescriptor { return parentFile(t) }
 func (t serviceDesc) Parent() (pref.Descriptor, bool) { return t.s.parent, true }
 func (t serviceDesc) Index() int                      { return t.s.index }
 func (t serviceDesc) Syntax() pref.Syntax             { return t.s.syntax }
@@ -366,6 +384,7 @@ type methodMeta struct {
 }
 type methodDesc struct{ m *Method }
 
+func (t methodDesc) ParentFile() pref.FileDescriptor     { return parentFile(t) }
 func (t methodDesc) Parent() (pref.Descriptor, bool)     { return t.m.parent, true }
 func (t methodDesc) Index() int                          { return t.m.index }
 func (t methodDesc) Syntax() pref.Syntax                 { return t.m.syntax }

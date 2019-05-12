@@ -375,26 +375,6 @@ func findMessageDescriptor(s string, imps importSet, r *protoregistry.Files) (pr
 	return md, nil
 }
 
-func validateFileInImports(d protoreflect.Descriptor, imps importSet) error {
-	fd := fileDescriptor(d)
-	if fd == nil {
-		return errors.New("%v has no parent FileDescriptor", d.FullName())
-	}
-	if !imps[fd.Path()] {
-		return errors.New("reference to type %v without import of %v", d.FullName(), fd.Path())
-	}
-	return nil
-}
-
-func fileDescriptor(d protoreflect.Descriptor) protoreflect.FileDescriptor {
-	for ; d != nil; d, _ = d.Parent() {
-		if fd, ok := d.(protoreflect.FileDescriptor); ok {
-			return fd
-		}
-	}
-	return nil
-}
-
 func findEnumDescriptor(s string, imps importSet, r *protoregistry.Files) (protoreflect.EnumDescriptor, error) {
 	if !strings.HasPrefix(s, ".") {
 		return nil, errors.New("identifier name must be fully qualified with a leading dot: %v", s)
@@ -408,4 +388,15 @@ func findEnumDescriptor(s string, imps importSet, r *protoregistry.Files) (proto
 		return nil, err
 	}
 	return ed, nil
+}
+
+func validateFileInImports(d protoreflect.Descriptor, imps importSet) error {
+	fd := d.ParentFile()
+	if fd == nil {
+		return errors.New("%v has no parent FileDescriptor", d.FullName())
+	}
+	if !imps[fd.Path()] {
+		return errors.New("reference to type %v without import of %v", d.FullName(), fd.Path())
+	}
+	return nil
 }
