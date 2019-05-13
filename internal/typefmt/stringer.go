@@ -106,7 +106,7 @@ func formatListOpt(vs list, isRoot, allowMulti bool) string {
 var descriptorAccessors = map[reflect.Type][]string{
 	reflect.TypeOf((*pref.FileDescriptor)(nil)).Elem():      {"Path", "Package", "Imports", "Messages", "Enums", "Extensions", "Services"},
 	reflect.TypeOf((*pref.MessageDescriptor)(nil)).Elem():   {"IsMapEntry", "Fields", "Oneofs", "ReservedNames", "ReservedRanges", "RequiredNumbers", "ExtensionRanges", "Messages", "Enums", "Extensions"},
-	reflect.TypeOf((*pref.FieldDescriptor)(nil)).Elem():     {"Number", "Cardinality", "Kind", "HasJSONName", "JSONName", "IsPacked", "IsMap", "IsWeak", "HasDefault", "Default", "Oneof", "Extendee", "Message", "Enum"},
+	reflect.TypeOf((*pref.FieldDescriptor)(nil)).Elem():     {"Number", "Cardinality", "Kind", "HasJSONName", "JSONName", "IsPacked", "IsExtension", "IsWeak", "IsList", "IsMap", "MapKey", "MapValue", "HasDefault", "Default", "ContainingOneof", "ContainingMessage", "Message", "Enum"},
 	reflect.TypeOf((*pref.OneofDescriptor)(nil)).Elem():     {"Fields"}, // not directly used; must keep in sync with formatDescOpt
 	reflect.TypeOf((*pref.EnumDescriptor)(nil)).Elem():      {"Values", "ReservedNames", "ReservedRanges"},
 	reflect.TypeOf((*pref.EnumValueDescriptor)(nil)).Elem(): {"Number"},
@@ -143,7 +143,42 @@ func formatDescOpt(t pref.Descriptor, isRoot, allowMulti bool) string {
 		default:
 			rs.Append(rv, "Name")
 		}
-		if t, ok := t.(pref.OneofDescriptor); ok {
+		switch t := t.(type) {
+		case pref.FieldDescriptor:
+			for _, s := range descriptorAccessors[rt] {
+				switch s {
+				case "MapKey":
+					if k := t.MapKey(); k != nil {
+						rs.recs = append(rs.recs, [2]string{"MapKey", k.Kind().String()})
+					}
+				case "MapValue":
+					if v := t.MapValue(); v != nil {
+						switch v.Kind() {
+						case pref.EnumKind:
+							rs.recs = append(rs.recs, [2]string{"MapValue", string(v.Enum().FullName())})
+						case pref.MessageKind, pref.GroupKind:
+							rs.recs = append(rs.recs, [2]string{"MapValue", string(v.Message().FullName())})
+						default:
+							rs.recs = append(rs.recs, [2]string{"MapValue", v.Kind().String()})
+						}
+					}
+				case "ContainingOneof":
+					if od := t.ContainingOneof(); od != nil {
+						rs.recs = append(rs.recs, [2]string{"Oneof", string(od.Name())})
+					}
+				case "ContainingMessage":
+					if t.IsExtension() {
+						rs.recs = append(rs.recs, [2]string{"Extendee", string(t.ContainingMessage().FullName())})
+					}
+				case "Message":
+					if !t.IsMap() {
+						rs.Append(rv, s)
+					}
+				default:
+					rs.Append(rv, s)
+				}
+			}
+		case pref.OneofDescriptor:
 			var ss []string
 			fs := t.Fields()
 			for i := 0; i < fs.Len(); i++ {
@@ -152,7 +187,7 @@ func formatDescOpt(t pref.Descriptor, isRoot, allowMulti bool) string {
 			if len(ss) > 0 {
 				rs.recs = append(rs.recs, [2]string{"Fields", "[" + joinStrings(ss, false) + "]"})
 			}
-		} else {
+		default:
 			rs.Append(rv, descriptorAccessors[rt]...)
 		}
 		if rv.MethodByName("GoType").IsValid() {

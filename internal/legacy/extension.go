@@ -65,7 +65,8 @@ func extensionDescFromType(xt pref.ExtensionType) *piface.ExtensionDescV1 {
 
 	// Determine the parent type if possible.
 	var parent piface.MessageV1
-	if mt, _ := preg.GlobalTypes.FindMessageByName(xt.Descriptor().Extendee().FullName()); mt != nil {
+	messageName := xt.Descriptor().ContainingMessage().FullName()
+	if mt, _ := preg.GlobalTypes.FindMessageByName(messageName); mt != nil {
 		// Create a new parent message and unwrap it if possible.
 		mv := mt.New().Interface()
 		t := reflect.TypeOf(mv)

@@ -559,20 +559,21 @@ func fieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType strin
 		goType = "[]byte"
 		pointer = false
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		if field.Desc.IsMap() {
-			keyType, _ := fieldGoType(g, field.Message.Fields[0])
-			valType, _ := fieldGoType(g, field.Message.Fields[1])
-			return fmt.Sprintf("map[%v]%v", keyType, valType), false
-		}
 		goType = "*" + g.QualifiedGoIdent(field.Message.GoIdent)
 		pointer = false
 	}
-	if field.Desc.Cardinality() == protoreflect.Repeated {
+	switch {
+	case field.Desc.IsList():
 		goType = "[]" + goType
 		pointer = false
+	case field.Desc.IsMap():
+		keyType, _ := fieldGoType(g, field.Message.Fields[0])
+		valType, _ := fieldGoType(g, field.Message.Fields[1])
+		return fmt.Sprintf("map[%v]%v", keyType, valType), false
 	}
+
 	// Extension fields always have pointer type, even when defined in a proto3 file.
-	if field.Desc.Syntax() == protoreflect.Proto3 && field.Desc.Extendee() == nil {
+	if field.Desc.Syntax() == protoreflect.Proto3 && !field.Desc.IsExtension() {
 		pointer = false
 	}
 	return goType, pointer
@@ -587,7 +588,7 @@ func fieldProtobufTag(field *protogen.Field) string {
 }
 
 func fieldDefaultValue(g *protogen.GeneratedFile, message *protogen.Message, field *protogen.Field) string {
-	if field.Desc.Cardinality() == protoreflect.Repeated {
+	if field.Desc.IsList() {
 		return "nil"
 	}
 	if field.Desc.HasDefault() {
@@ -653,7 +654,7 @@ func genExtensions(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo)
 	g.P("var (")
 	for i, extension := range f.allExtensions {
 		ed := extension.Desc
-		targetName := string(ed.Extendee().FullName())
+		targetName := string(ed.ContainingMessage().FullName())
 		typeName := ed.Kind().String()
 		switch ed.Kind() {
 		case protoreflect.EnumKind:

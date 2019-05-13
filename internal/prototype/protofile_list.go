@@ -114,7 +114,7 @@ func (p *oneofFieldsMeta) lazyInit(parent pref.Descriptor) *oneofFields {
 		md, _ := parent.Parent()
 		fs := md.(pref.MessageDescriptor).Fields()
 		for i := 0; i < fs.Len(); i++ {
-			if f := fs.Get(i); od == f.Oneof() {
+			if f := fs.Get(i); od == f.ContainingOneof() {
 				p.typs = append(p.typs, f)
 			}
 		}

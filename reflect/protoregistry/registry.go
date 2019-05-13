@@ -381,7 +381,7 @@ typeLoop:
 			// Check for conflicts in extensionsByMessage.
 			if xt, _ := typ.(protoreflect.ExtensionType); xt != nil {
 				field := xt.Descriptor().Number()
-				message := xt.Descriptor().Extendee().FullName()
+				message := xt.Descriptor().ContainingMessage().FullName()
 				if r.extensionsByMessage[message][field] != nil {
 					if firstErr == nil {
 						firstErr = errors.New("extension %v is already registered on message %v", name, message)

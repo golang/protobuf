@@ -90,8 +90,8 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 	if ft.Kind() != reflect.Map {
 		panic(fmt.Sprintf("invalid type: got %v, want map kind", ft))
 	}
-	keyConv := pvalue.NewLegacyConverter(ft.Key(), fd.Message().Fields().ByNumber(1).Kind(), legacyWrapper)
-	valConv := pvalue.NewLegacyConverter(ft.Elem(), fd.Message().Fields().ByNumber(2).Kind(), legacyWrapper)
+	keyConv := pvalue.NewLegacyConverter(ft.Key(), fd.MapKey().Kind(), legacyWrapper)
+	valConv := pvalue.NewLegacyConverter(ft.Elem(), fd.MapValue().Kind(), legacyWrapper)
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{

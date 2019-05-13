@@ -23,6 +23,12 @@ func TestDescriptorAccessors(t *testing.T) {
 
 		"DescriptorByName": true, // specific to FileDescriptor
 		"DefaultEnumValue": true, // specific to FieldDescriptor
+		"MapKey":           true, // specific to FieldDescriptor
+		"MapValue":         true, // specific to FieldDescriptor
+
+		// TODO: Remove this.
+		"Oneof":    true, // specific to FieldDescriptor
+		"Extendee": true, // specific to FieldDescriptor
 
 		// TODO: These should be removed or handled.
 		"DescriptorProto":       true,

@@ -98,10 +98,10 @@ func equalMessage(a, b pref.Message) bool {
 // equalFields compares two fields.
 func equalFields(fd pref.FieldDescriptor, a, b pref.Value) bool {
 	switch {
+	case fd.IsList():
+		return equalList(fd, a.List(), b.List())
 	case fd.IsMap():
 		return equalMap(fd, a.Map(), b.Map())
-	case fd.Cardinality() == pref.Repeated:
-		return equalList(fd, a.List(), b.List())
 	default:
 		return equalValue(fd, a, b)
 	}
@@ -109,7 +109,6 @@ func equalFields(fd pref.FieldDescriptor, a, b pref.Value) bool {
 
 // equalMap compares a map field.
 func equalMap(fd pref.FieldDescriptor, a, b pref.Map) bool {
-	fdv := fd.Message().Fields().ByNumber(2)
 	alen := a.Len()
 	if alen != b.Len() {
 		return false
@@ -117,7 +116,7 @@ func equalMap(fd pref.FieldDescriptor, a, b pref.Map) bool {
 	equal := true
 	a.Range(func(k pref.MapKey, va pref.Value) bool {
 		vb := b.Get(k)
-		if !vb.IsValid() || !equalValue(fdv, va, vb) {
+		if !vb.IsValid() || !equalValue(fd.MapValue(), va, vb) {
 			equal = false
 			return false
 		}

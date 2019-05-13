@@ -118,25 +118,14 @@ func (o MarshalOptions) marshalFields(m pref.Message) error {
 
 // marshalValue marshals the given protoreflect.Value.
 func (o MarshalOptions) marshalValue(val pref.Value, fd pref.FieldDescriptor) error {
-	var nerr errors.NonFatal
-	if fd.Cardinality() == pref.Repeated {
-		// Map or repeated fields.
-		if fd.IsMap() {
-			if err := o.marshalMap(val.Map(), fd); !nerr.Merge(err) {
-				return err
-			}
-		} else {
-			if err := o.marshalList(val.List(), fd); !nerr.Merge(err) {
-				return err
-			}
-		}
-	} else {
-		// Required or optional fields.
-		if err := o.marshalSingular(val, fd); !nerr.Merge(err) {
-			return err
-		}
+	switch {
+	case fd.IsList():
+		return o.marshalList(val.List(), fd)
+	case fd.IsMap():
+		return o.marshalMap(val.Map(), fd)
+	default:
+		return o.marshalSingular(val, fd)
 	}
-	return nerr.E
 }
 
 // marshalSingular marshals the given non-repeated field value. This includes
@@ -226,17 +215,13 @@ func (o MarshalOptions) marshalMap(mmap pref.Map, fd pref.FieldDescriptor) error
 	o.encoder.StartObject()
 	defer o.encoder.EndObject()
 
-	msgFields := fd.Message().Fields()
-	keyType := msgFields.ByNumber(1)
-	valType := msgFields.ByNumber(2)
-
 	// Get a sorted list based on keyType first.
 	entries := make([]mapEntry, 0, mmap.Len())
 	mmap.Range(func(key pref.MapKey, val pref.Value) bool {
 		entries = append(entries, mapEntry{key: key, value: val})
 		return true
 	})
-	sortMap(keyType.Kind(), entries)
+	sortMap(fd.MapKey().Kind(), entries)
 
 	// Write out sorted list.
 	var nerr errors.NonFatal
@@ -244,7 +229,7 @@ func (o MarshalOptions) marshalMap(mmap pref.Map, fd pref.FieldDescriptor) error
 		if err := o.encoder.WriteName(entry.key.String()); !nerr.Merge(err) {
 			return err
 		}
-		if err := o.marshalSingular(entry.value, valType); !nerr.Merge(err) {
+		if err := o.marshalSingular(entry.value, fd.MapValue()); !nerr.Merge(err) {
 			return err
 		}
 	}
@@ -333,6 +318,6 @@ func isMessageSetExtension(xt pref.ExtensionType) bool {
 	if xd.FullName().Parent() != md.FullName() {
 		return false
 	}
-	xmd, ok := xd.Extendee().(interface{ IsMessageSet() bool })
+	xmd, ok := xd.ContainingMessage().(interface{ IsMessageSet() bool })
 	return ok && xmd.IsMessageSet()
 }

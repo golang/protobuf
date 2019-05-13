@@ -118,11 +118,11 @@ func (mi *MessageType) makeKnownFieldsFunc(si structInfo) {
 		fs := si.fieldsByNumber[fd.Number()]
 		var fi fieldInfo
 		switch {
-		case fd.Oneof() != nil:
-			fi = fieldInfoForOneof(fd, si.oneofsByName[fd.Oneof().Name()], si.oneofWrappersByNumber[fd.Number()])
+		case fd.ContainingOneof() != nil:
+			fi = fieldInfoForOneof(fd, si.oneofsByName[fd.ContainingOneof().Name()], si.oneofWrappersByNumber[fd.Number()])
 		case fd.IsMap():
 			fi = fieldInfoForMap(fd, fs)
-		case fd.Cardinality() == pref.Repeated:
+		case fd.IsList():
 			fi = fieldInfoForList(fd, fs)
 		case fd.Kind() == pref.MessageKind || fd.Kind() == pref.GroupKind:
 			fi = fieldInfoForMessage(fd, fs)

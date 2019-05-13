@@ -175,13 +175,13 @@ func Marshal(fd pref.FieldDescriptor, enumName string) string {
 	// The previous implementation does not tag extension fields as proto3,
 	// even when the field is defined in a proto3 file. Match that behavior
 	// for consistency.
-	if fd.Syntax() == pref.Proto3 && fd.Extendee() == nil {
+	if fd.Syntax() == pref.Proto3 && !fd.IsExtension() {
 		tag = append(tag, "proto3")
 	}
 	if fd.Kind() == pref.EnumKind && enumName != "" {
 		tag = append(tag, "enum="+enumName)
 	}
-	if fd.Oneof() != nil {
+	if fd.ContainingOneof() != nil {
 		tag = append(tag, "oneof")
 	}
 	// This must appear last in the tag, since commas in strings aren't escaped.

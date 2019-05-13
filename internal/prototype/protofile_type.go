@@ -171,21 +171,43 @@ func (t fieldDesc) JSONName() string                { return t.f.js.lazyInit(t.f
 func (t fieldDesc) IsPacked() bool {
 	return isPacked(t.f.IsPacked, t.f.syntax, t.f.Cardinality, t.f.Kind)
 }
-func (t fieldDesc) IsWeak() bool { return t.f.IsWeak }
+func (t fieldDesc) IsExtension() bool { return false }
+func (t fieldDesc) IsWeak() bool      { return t.f.IsWeak }
+func (t fieldDesc) IsList() bool {
+	return t.f.Cardinality == pref.Repeated && !t.IsMap()
+}
 func (t fieldDesc) IsMap() bool {
 	mt := t.Message()
 	return mt != nil && mt.IsMapEntry()
 }
+func (t fieldDesc) MapKey() pref.FieldDescriptor {
+	if !t.IsMap() {
+		return nil
+	}
+	return t.Message().Fields().ByNumber(1)
+}
+func (t fieldDesc) MapValue() pref.FieldDescriptor {
+	if !t.IsMap() {
+		return nil
+	}
+	return t.Message().Fields().ByNumber(2)
+}
 func (t fieldDesc) HasDefault() bool                           { return t.f.Default.IsValid() }
 func (t fieldDesc) Default() pref.Value                        { return t.f.dv.value(t, t.f.Default) }
 func (t fieldDesc) DefaultEnumValue() pref.EnumValueDescriptor { return t.f.dv.enum(t, t.f.Default) }
-func (t fieldDesc) Oneof() pref.OneofDescriptor                { return t.f.ot.lazyInit(t, t.f.OneofName) }
-func (t fieldDesc) Extendee() pref.MessageDescriptor           { return nil }
-func (t fieldDesc) Enum() pref.EnumDescriptor                  { return t.f.et.lazyInit(t, &t.f.EnumType) }
-func (t fieldDesc) Message() pref.MessageDescriptor            { return t.f.mt.lazyInit(t, &t.f.MessageType) }
-func (t fieldDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, t) }
-func (t fieldDesc) ProtoType(pref.FieldDescriptor)             {}
-func (t fieldDesc) ProtoInternal(pragma.DoNotImplement)        {}
+func (t fieldDesc) ContainingOneof() pref.OneofDescriptor      { return t.f.ot.lazyInit(t, t.f.OneofName) }
+func (t fieldDesc) ContainingMessage() pref.MessageDescriptor {
+	return t.f.parent.(pref.MessageDescriptor)
+}
+func (t fieldDesc) Enum() pref.EnumDescriptor           { return t.f.et.lazyInit(t, &t.f.EnumType) }
+func (t fieldDesc) Message() pref.MessageDescriptor     { return t.f.mt.lazyInit(t, &t.f.MessageType) }
+func (t fieldDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t fieldDesc) ProtoType(pref.FieldDescriptor)      {}
+func (t fieldDesc) ProtoInternal(pragma.DoNotImplement) {}
+
+// TODO: Remove this.
+func (t fieldDesc) Oneof() pref.OneofDescriptor      { return t.f.ot.lazyInit(t, t.f.OneofName) }
+func (t fieldDesc) Extendee() pref.MessageDescriptor { return nil }
 
 func isPacked(packed OptionalBool, s pref.Syntax, c pref.Cardinality, k pref.Kind) bool {
 	if packed == False || (packed == DefaultBool && s == pref.Proto2) {
@@ -299,18 +321,28 @@ func (t extensionDesc) IsPacked() bool {
 	// Extensions always use proto2 defaults for packing.
 	return isPacked(t.x.IsPacked, pref.Proto2, t.x.Cardinality, t.x.Kind)
 }
+func (t extensionDesc) IsExtension() bool                          { return true }
 func (t extensionDesc) IsWeak() bool                               { return false }
+func (t extensionDesc) IsList() bool                               { return t.x.Cardinality == pref.Repeated }
 func (t extensionDesc) IsMap() bool                                { return false }
+func (t extensionDesc) MapKey() pref.FieldDescriptor               { return nil }
+func (t extensionDesc) MapValue() pref.FieldDescriptor             { return nil }
 func (t extensionDesc) HasDefault() bool                           { return t.x.Default.IsValid() }
 func (t extensionDesc) Default() pref.Value                        { return t.x.dv.value(t, t.x.Default) }
 func (t extensionDesc) DefaultEnumValue() pref.EnumValueDescriptor { return t.x.dv.enum(t, t.x.Default) }
-func (t extensionDesc) Oneof() pref.OneofDescriptor                { return nil }
-func (t extensionDesc) Extendee() pref.MessageDescriptor           { return t.x.xt.lazyInit(t, &t.x.ExtendedType) }
-func (t extensionDesc) Enum() pref.EnumDescriptor                  { return t.x.et.lazyInit(t, &t.x.EnumType) }
-func (t extensionDesc) Message() pref.MessageDescriptor            { return t.x.mt.lazyInit(t, &t.x.MessageType) }
-func (t extensionDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, t) }
-func (t extensionDesc) ProtoType(pref.FieldDescriptor)             {}
-func (t extensionDesc) ProtoInternal(pragma.DoNotImplement)        {}
+func (t extensionDesc) ContainingOneof() pref.OneofDescriptor      { return nil }
+func (t extensionDesc) ContainingMessage() pref.MessageDescriptor {
+	return t.x.xt.lazyInit(t, &t.x.ExtendedType)
+}
+func (t extensionDesc) Enum() pref.EnumDescriptor           { return t.x.et.lazyInit(t, &t.x.EnumType) }
+func (t extensionDesc) Message() pref.MessageDescriptor     { return t.x.mt.lazyInit(t, &t.x.MessageType) }
+func (t extensionDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t extensionDesc) ProtoType(pref.FieldDescriptor)      {}
+func (t extensionDesc) ProtoInternal(pragma.DoNotImplement) {}
+
+// TODO: Remove this.
+func (t extensionDesc) Oneof() pref.OneofDescriptor      { return nil }
+func (t extensionDesc) Extendee() pref.MessageDescriptor { return t.x.xt.lazyInit(t, &t.x.ExtendedType) }
 
 type enumMeta struct {
 	inheritedMeta

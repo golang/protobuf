@@ -105,12 +105,12 @@ func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) err
 		switch {
 		case fieldDesc == nil:
 			err = errUnknown
-		case fieldDesc.Cardinality() != protoreflect.Repeated:
-			valLen, err = o.unmarshalScalarField(b[tagLen:], wtyp, num, knownFields, fieldDesc)
-		case !fieldDesc.IsMap():
+		case fieldDesc.IsList():
 			valLen, err = o.unmarshalList(b[tagLen:], wtyp, num, knownFields.Get(num).List(), fieldDesc)
-		default:
+		case fieldDesc.IsMap():
 			valLen, err = o.unmarshalMap(b[tagLen:], wtyp, num, knownFields.Get(num).Map(), fieldDesc)
+		default:
+			valLen, err = o.unmarshalScalarField(b[tagLen:], wtyp, num, knownFields, fieldDesc)
 		}
 		if err == errUnknown {
 			valLen = wire.ConsumeFieldValue(num, wtyp, b[tagLen:])
@@ -140,7 +140,7 @@ func (o UnmarshalOptions) unmarshalScalarField(b []byte, wtyp wire.Type, num wir
 		// TODO: C++ merges into oneofs, while v1 does not.
 		// Evaluate which behavior to pick.
 		var m protoreflect.Message
-		if knownFields.Has(num) && field.Oneof() == nil {
+		if knownFields.Has(num) && field.ContainingOneof() == nil {
 			m = knownFields.Get(num).Message()
 		} else {
 			m = knownFields.NewMessage(num)
@@ -166,8 +166,8 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, num wire.Number
 		return 0, wire.ParseError(n)
 	}
 	var (
-		keyField = field.Message().Fields().ByNumber(1)
-		valField = field.Message().Fields().ByNumber(2)
+		keyField = field.MapKey()
+		valField = field.MapValue()
 		key      protoreflect.Value
 		val      protoreflect.Value
 		haveKey  bool

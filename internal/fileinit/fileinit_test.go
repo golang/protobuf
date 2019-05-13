@@ -88,7 +88,7 @@ func visitFields(m protoreflect.Message, f func(protoreflect.FieldDescriptor)) {
 		f(field)
 		switch field.Kind() {
 		case protoreflect.MessageKind, protoreflect.GroupKind:
-			if field.Cardinality() == protoreflect.Repeated {
+			if field.IsList() {
 				for i, list := 0, value.List(); i < list.Len(); i++ {
 					visitFields(list.Get(i).Message(), f)
 				}

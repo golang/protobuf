@@ -96,12 +96,14 @@ func ToDescriptorProto(message protoreflect.MessageDescriptor) *descriptorpb.Des
 // google.protobuf.FieldDescriptorProto.
 func ToFieldDescriptorProto(field protoreflect.FieldDescriptor) *descriptorpb.FieldDescriptorProto {
 	p := &descriptorpb.FieldDescriptorProto{
-		Name:     scalar.String(string(field.Name())),
-		Number:   scalar.Int32(int32(field.Number())),
-		Label:    descriptorpb.FieldDescriptorProto_Label(field.Cardinality()).Enum(),
-		Type:     descriptorpb.FieldDescriptorProto_Type(field.Kind()).Enum(),
-		Extendee: fullNameOf(field.Extendee()),
-		Options:  field.Options().(*descriptorpb.FieldOptions),
+		Name:    scalar.String(string(field.Name())),
+		Number:  scalar.Int32(int32(field.Number())),
+		Label:   descriptorpb.FieldDescriptorProto_Label(field.Cardinality()).Enum(),
+		Type:    descriptorpb.FieldDescriptorProto_Type(field.Kind()).Enum(),
+		Options: field.Options().(*descriptorpb.FieldOptions),
+	}
+	if field.IsExtension() {
+		p.Extendee = fullNameOf(field.ContainingMessage())
 	}
 	switch field.Kind() {
 	case protoreflect.EnumKind:
@@ -125,7 +127,7 @@ func ToFieldDescriptorProto(field protoreflect.FieldDescriptor) *descriptorpb.Fi
 			p.DefaultValue = scalar.String(def)
 		}
 	}
-	if oneof := field.Oneof(); oneof != nil {
+	if oneof := field.ContainingOneof(); oneof != nil {
 		p.OneofIndex = scalar.Int32(int32(oneof.Index()))
 	}
 	return p

@@ -85,17 +85,25 @@ func (t standaloneExtension) JSONName() string              { return "" }
 func (t standaloneExtension) IsPacked() bool {
 	return isPacked(t.x.IsPacked, pref.Proto2, t.x.Cardinality, t.x.Kind)
 }
-func (t standaloneExtension) IsWeak() bool        { return false }
-func (t standaloneExtension) IsMap() bool         { return false }
-func (t standaloneExtension) HasDefault() bool    { return t.x.Default.IsValid() }
-func (t standaloneExtension) Default() pref.Value { return t.x.dv.value(t, t.x.Default) }
+func (t standaloneExtension) IsExtension() bool              { return true }
+func (t standaloneExtension) IsWeak() bool                   { return false }
+func (t standaloneExtension) IsList() bool                   { return t.x.Cardinality == pref.Repeated }
+func (t standaloneExtension) IsMap() bool                    { return false }
+func (t standaloneExtension) MapKey() pref.FieldDescriptor   { return nil }
+func (t standaloneExtension) MapValue() pref.FieldDescriptor { return nil }
+func (t standaloneExtension) HasDefault() bool               { return t.x.Default.IsValid() }
+func (t standaloneExtension) Default() pref.Value            { return t.x.dv.value(t, t.x.Default) }
 func (t standaloneExtension) DefaultEnumValue() pref.EnumValueDescriptor {
 	return t.x.dv.enum(t, t.x.Default)
 }
-func (t standaloneExtension) Oneof() pref.OneofDescriptor         { return nil }
-func (t standaloneExtension) Extendee() pref.MessageDescriptor    { return t.x.ExtendedType }
-func (t standaloneExtension) Enum() pref.EnumDescriptor           { return t.x.EnumType }
-func (t standaloneExtension) Message() pref.MessageDescriptor     { return t.x.MessageType }
-func (t standaloneExtension) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
-func (t standaloneExtension) ProtoType(pref.FieldDescriptor)      {}
-func (t standaloneExtension) ProtoInternal(pragma.DoNotImplement) {}
+func (t standaloneExtension) ContainingOneof() pref.OneofDescriptor     { return nil }
+func (t standaloneExtension) ContainingMessage() pref.MessageDescriptor { return t.x.ExtendedType }
+func (t standaloneExtension) Enum() pref.EnumDescriptor                 { return t.x.EnumType }
+func (t standaloneExtension) Message() pref.MessageDescriptor           { return t.x.MessageType }
+func (t standaloneExtension) Format(s fmt.State, r rune)                { pfmt.FormatDesc(s, r, t) }
+func (t standaloneExtension) ProtoType(pref.FieldDescriptor)            {}
+func (t standaloneExtension) ProtoInternal(pragma.DoNotImplement)       {}
+
+// TODO: Remove this.
+func (t standaloneExtension) Oneof() pref.OneofDescriptor      { return nil }
+func (t standaloneExtension) Extendee() pref.MessageDescriptor { return t.x.ExtendedType }

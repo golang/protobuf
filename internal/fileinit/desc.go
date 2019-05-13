@@ -431,23 +431,43 @@ func (md messageDescriptor) Options() pref.ProtoMessage   { return md.options() 
 func (fd *fieldDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.Field, fd.options)
 }
-func (fd *fieldDesc) Number() pref.FieldNumber                   { return fd.number }
-func (fd *fieldDesc) Cardinality() pref.Cardinality              { return fd.cardinality }
-func (fd *fieldDesc) Kind() pref.Kind                            { return fd.kind }
-func (fd *fieldDesc) HasJSONName() bool                          { return fd.hasJSONName }
-func (fd *fieldDesc) JSONName() string                           { return fd.jsonName }
-func (fd *fieldDesc) IsPacked() bool                             { return fd.isPacked }
-func (fd *fieldDesc) IsWeak() bool                               { return fd.isWeak }
-func (fd *fieldDesc) IsMap() bool                                { return fd.isMap }
+func (fd *fieldDesc) Number() pref.FieldNumber      { return fd.number }
+func (fd *fieldDesc) Cardinality() pref.Cardinality { return fd.cardinality }
+func (fd *fieldDesc) Kind() pref.Kind               { return fd.kind }
+func (fd *fieldDesc) HasJSONName() bool             { return fd.hasJSONName }
+func (fd *fieldDesc) JSONName() string              { return fd.jsonName }
+func (fd *fieldDesc) IsPacked() bool                { return fd.isPacked }
+func (fd *fieldDesc) IsExtension() bool             { return false }
+func (fd *fieldDesc) IsWeak() bool                  { return fd.isWeak }
+func (fd *fieldDesc) IsList() bool                  { return fd.cardinality == pref.Repeated && !fd.IsMap() }
+func (fd *fieldDesc) IsMap() bool                   { return fd.isMap }
+func (fd *fieldDesc) MapKey() pref.FieldDescriptor {
+	if !fd.isMap {
+		return nil
+	}
+	return fd.Message().Fields().ByNumber(1)
+}
+func (fd *fieldDesc) MapValue() pref.FieldDescriptor {
+	if !fd.isMap {
+		return nil
+	}
+	return fd.Message().Fields().ByNumber(2)
+}
 func (fd *fieldDesc) HasDefault() bool                           { return fd.defVal.has }
 func (fd *fieldDesc) Default() pref.Value                        { return fd.defVal.get() }
 func (fd *fieldDesc) DefaultEnumValue() pref.EnumValueDescriptor { return fd.defVal.enum }
-func (fd *fieldDesc) Oneof() pref.OneofDescriptor                { return fd.oneofType }
-func (fd *fieldDesc) Extendee() pref.MessageDescriptor           { return nil }
-func (fd *fieldDesc) Enum() pref.EnumDescriptor                  { return fd.enumType }
-func (fd *fieldDesc) Message() pref.MessageDescriptor            { return fd.messageType }
-func (fd *fieldDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, fd) }
-func (fd *fieldDesc) ProtoType(pref.FieldDescriptor)             {}
+func (fd *fieldDesc) ContainingOneof() pref.OneofDescriptor      { return fd.oneofType }
+func (fd *fieldDesc) ContainingMessage() pref.MessageDescriptor {
+	return fd.parent.(pref.MessageDescriptor)
+}
+func (fd *fieldDesc) Enum() pref.EnumDescriptor       { return fd.enumType }
+func (fd *fieldDesc) Message() pref.MessageDescriptor { return fd.messageType }
+func (fd *fieldDesc) Format(s fmt.State, r rune)      { pfmt.FormatDesc(s, r, fd) }
+func (fd *fieldDesc) ProtoType(pref.FieldDescriptor)  {}
+
+// TODO: Remove this.
+func (fd *fieldDesc) Oneof() pref.OneofDescriptor      { return fd.oneofType }
+func (fd *fieldDesc) Extendee() pref.MessageDescriptor { return nil }
 
 func (od *oneofDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.Oneof, od.options)
@@ -505,13 +525,17 @@ func (xd *extensionDesc) Kind() pref.Kind                            { return xd
 func (xd *extensionDesc) HasJSONName() bool                          { return xd.lazyInit().hasJSONName }
 func (xd *extensionDesc) JSONName() string                           { return xd.lazyInit().jsonName }
 func (xd *extensionDesc) IsPacked() bool                             { return xd.lazyInit().isPacked }
+func (xd *extensionDesc) IsExtension() bool                          { return true }
 func (xd *extensionDesc) IsWeak() bool                               { return false }
+func (xd *extensionDesc) IsList() bool                               { return xd.Cardinality() == pref.Repeated }
 func (xd *extensionDesc) IsMap() bool                                { return false }
+func (xd *extensionDesc) MapKey() pref.FieldDescriptor               { return nil }
+func (xd *extensionDesc) MapValue() pref.FieldDescriptor             { return nil }
 func (xd *extensionDesc) HasDefault() bool                           { return xd.lazyInit().defVal.has }
 func (xd *extensionDesc) Default() pref.Value                        { return xd.lazyInit().defVal.get() }
 func (xd *extensionDesc) DefaultEnumValue() pref.EnumValueDescriptor { return xd.lazyInit().defVal.enum }
-func (xd *extensionDesc) Oneof() pref.OneofDescriptor                { return nil }
-func (xd *extensionDesc) Extendee() pref.MessageDescriptor           { return xd.extendedType }
+func (xd *extensionDesc) ContainingOneof() pref.OneofDescriptor      { return nil }
+func (xd *extensionDesc) ContainingMessage() pref.MessageDescriptor  { return xd.extendedType }
 func (xd *extensionDesc) Enum() pref.EnumDescriptor                  { return xd.lazyInit().enumType }
 func (xd *extensionDesc) Message() pref.MessageDescriptor            { return xd.lazyInit().messageType }
 func (xd *extensionDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, xd) }
@@ -530,6 +554,10 @@ func (xd *extensionDesc) lazyInit() *extensionLazy {
 func (xd *extensionDesc) ProtoLegacyExtensionDesc() *piface.ExtensionDescV1 {
 	return xd.legacyDesc
 }
+
+// TODO: Remove this.
+func (xd *extensionDesc) Oneof() pref.OneofDescriptor      { return nil }
+func (xd *extensionDesc) Extendee() pref.MessageDescriptor { return xd.extendedType }
 
 type (
 	serviceDesc struct {

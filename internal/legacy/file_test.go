@@ -433,7 +433,7 @@ func TestDescriptor(t *testing.T) {
 					case "HasJSONName":
 						// Ignore this since the semantics of the field has
 						// changed across protoc and protoc-gen-go releases.
-					case "Oneof", "Extendee", "Enum", "Message":
+					case "ContainingOneof", "ContainingMessage", "Enum", "Message":
 						// Avoid descending into a dependency to avoid a cycle.
 						// Just record the full name if available.
 						//
@@ -442,6 +442,8 @@ func TestDescriptor(t *testing.T) {
 						if !v.IsNil() {
 							out[name] = v.Interface().(pref.Descriptor).FullName()
 						}
+					case "Oneof", "Extendee":
+						// TODO: Remove this.
 					default:
 						out[name] = m.Call(nil)[0].Interface()
 					}

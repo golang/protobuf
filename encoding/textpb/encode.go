@@ -132,28 +132,26 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 func (o MarshalOptions) appendField(msgFields [][2]text.Value, name text.Value, pval pref.Value, fd pref.FieldDescriptor) ([][2]text.Value, error) {
 	var nerr errors.NonFatal
 
-	if fd.Cardinality() == pref.Repeated {
-		// Map or repeated fields.
-		var items []text.Value
-		var err error
-		if fd.IsMap() {
-			items, err = o.marshalMap(pval.Map(), fd)
-			if !nerr.Merge(err) {
-				return msgFields, err
-			}
-		} else {
-			items, err = o.marshalList(pval.List(), fd)
-			if !nerr.Merge(err) {
-				return msgFields, err
-			}
+	switch {
+	case fd.IsList():
+		items, err := o.marshalList(pval.List(), fd)
+		if !nerr.Merge(err) {
+			return msgFields, err
 		}
 
-		// Add each item as key: value field.
 		for _, item := range items {
 			msgFields = append(msgFields, [2]text.Value{name, item})
 		}
-	} else {
-		// Required or optional fields.
+	case fd.IsMap():
+		items, err := o.marshalMap(pval.Map(), fd)
+		if !nerr.Merge(err) {
+			return msgFields, err
+		}
+
+		for _, item := range items {
+			msgFields = append(msgFields, [2]text.Value{name, item})
+		}
+	default:
 		tval, err := o.marshalSingular(pval, fd)
 		if !nerr.Merge(err) {
 			return msgFields, err
@@ -231,19 +229,16 @@ func (o MarshalOptions) marshalMap(mmap pref.Map, fd pref.FieldDescriptor) ([]te
 	var nerr errors.NonFatal
 	// values is a list of messages.
 	values := make([]text.Value, 0, mmap.Len())
-	msgFields := fd.Message().Fields()
-	keyType := msgFields.ByNumber(1)
-	valType := msgFields.ByNumber(2)
 
 	var err error
-	mapsort.Range(mmap, keyType.Kind(), func(key pref.MapKey, val pref.Value) bool {
+	mapsort.Range(mmap, fd.MapKey().Kind(), func(key pref.MapKey, val pref.Value) bool {
 		var keyTxtVal text.Value
-		keyTxtVal, err = o.marshalSingular(key.Value(), keyType)
+		keyTxtVal, err = o.marshalSingular(key.Value(), fd.MapKey())
 		if !nerr.Merge(err) {
 			return false
 		}
 		var valTxtVal text.Value
-		valTxtVal, err = o.marshalSingular(val, valType)
+		valTxtVal, err = o.marshalSingular(val, fd.MapValue())
 		if !nerr.Merge(err) {
 			return false
 		}
@@ -314,7 +309,7 @@ func isMessageSetExtension(xt pref.ExtensionType) bool {
 	if xd.FullName().Parent() != md.FullName() {
 		return false
 	}
-	xmd, ok := xd.Extendee().(interface{ IsMessageSet() bool })
+	xmd, ok := xd.ContainingMessage().(interface{ IsMessageSet() bool })
 	return ok && xmd.IsMessageSet()
 }
 

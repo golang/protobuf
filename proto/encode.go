@@ -176,25 +176,52 @@ func (o MarshalOptions) rangeKnown(knownFields protoreflect.KnownFields, f func(
 	}
 }
 
-func (o MarshalOptions) marshalField(b []byte, field protoreflect.FieldDescriptor, value protoreflect.Value) ([]byte, error) {
-	num := field.Number()
-	kind := field.Kind()
+func (o MarshalOptions) marshalField(b []byte, fd protoreflect.FieldDescriptor, value protoreflect.Value) ([]byte, error) {
+	num := fd.Number()
+	kind := fd.Kind()
 	switch {
-	case field.Cardinality() != protoreflect.Repeated:
-		b = wire.AppendTag(b, num, wireTypes[kind])
-		return o.marshalSingular(b, num, field, value)
-	case field.IsMap():
-		return o.marshalMap(b, num, kind, field.Message(), value.Map())
-	case field.IsPacked():
-		return o.marshalPacked(b, num, field, value.List())
+	case fd.IsList():
+		return o.marshalList(b, num, fd, value.List())
+	case fd.IsMap():
+		return o.marshalMap(b, num, fd, value.Map())
 	default:
-		return o.marshalList(b, num, field, value.List())
+		b = wire.AppendTag(b, num, wireTypes[kind])
+		return o.marshalSingular(b, num, fd, value)
 	}
 }
 
-func (o MarshalOptions) marshalMap(b []byte, num wire.Number, kind protoreflect.Kind, mdesc protoreflect.MessageDescriptor, mapv protoreflect.Map) ([]byte, error) {
-	keyf := mdesc.Fields().ByNumber(1)
-	valf := mdesc.Fields().ByNumber(2)
+func (o MarshalOptions) marshalList(b []byte, num wire.Number, fd protoreflect.FieldDescriptor, list protoreflect.List) ([]byte, error) {
+	if fd.IsPacked() {
+		b = wire.AppendTag(b, num, wire.BytesType)
+		b, pos := appendSpeculativeLength(b)
+		var nerr errors.NonFatal
+		for i, llen := 0, list.Len(); i < llen; i++ {
+			var err error
+			b, err = o.marshalSingular(b, num, fd, list.Get(i))
+			if !nerr.Merge(err) {
+				return b, err
+			}
+		}
+		b = finishSpeculativeLength(b, pos)
+		return b, nerr.E
+	}
+
+	kind := fd.Kind()
+	var nerr errors.NonFatal
+	for i, llen := 0, list.Len(); i < llen; i++ {
+		var err error
+		b = wire.AppendTag(b, num, wireTypes[kind])
+		b, err = o.marshalSingular(b, num, fd, list.Get(i))
+		if !nerr.Merge(err) {
+			return b, err
+		}
+	}
+	return b, nerr.E
+}
+
+func (o MarshalOptions) marshalMap(b []byte, num wire.Number, fd protoreflect.FieldDescriptor, mapv protoreflect.Map) ([]byte, error) {
+	keyf := fd.MapKey()
+	valf := fd.MapValue()
 	var nerr errors.NonFatal
 	var err error
 	o.rangeMap(mapv, keyf.Kind(), func(key protoreflect.MapKey, value protoreflect.Value) bool {
@@ -227,35 +254,6 @@ func (o MarshalOptions) rangeMap(mapv protoreflect.Map, kind protoreflect.Kind, 
 		return
 	}
 	mapsort.Range(mapv, kind, f)
-}
-
-func (o MarshalOptions) marshalPacked(b []byte, num wire.Number, field protoreflect.FieldDescriptor, list protoreflect.List) ([]byte, error) {
-	b = wire.AppendTag(b, num, wire.BytesType)
-	b, pos := appendSpeculativeLength(b)
-	var nerr errors.NonFatal
-	for i, llen := 0, list.Len(); i < llen; i++ {
-		var err error
-		b, err = o.marshalSingular(b, num, field, list.Get(i))
-		if !nerr.Merge(err) {
-			return b, err
-		}
-	}
-	b = finishSpeculativeLength(b, pos)
-	return b, nerr.E
-}
-
-func (o MarshalOptions) marshalList(b []byte, num wire.Number, field protoreflect.FieldDescriptor, list protoreflect.List) ([]byte, error) {
-	kind := field.Kind()
-	var nerr errors.NonFatal
-	for i, llen := 0, list.Len(); i < llen; i++ {
-		var err error
-		b = wire.AppendTag(b, num, wireTypes[kind])
-		b, err = o.marshalSingular(b, num, field, list.Get(i))
-		if !nerr.Merge(err) {
-			return b, err
-		}
-	}
-	return b, nerr.E
 }
 
 // When encoding length-prefixed fields, we speculatively set aside some number of bytes

@@ -49,13 +49,12 @@ func fillMessage(m pref.Message, level int) {
 	for i := 0; i < fieldDescs.Len(); i++ {
 		fd := fieldDescs.Get(i)
 		num := fd.Number()
-		if cardinality := fd.Cardinality(); cardinality == pref.Repeated {
-			if !fd.IsMap() {
-				setList(knownFields.Get(num).List(), fd, level)
-			} else {
-				setMap(knownFields.Get(num).Map(), fd, level)
-			}
-		} else {
+		switch {
+		case fd.IsList():
+			setList(knownFields.Get(num).List(), fd, level)
+		case fd.IsMap():
+			setMap(knownFields.Get(num).Map(), fd, level)
+		default:
 			setScalarField(knownFields, fd, level)
 		}
 	}

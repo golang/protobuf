@@ -637,9 +637,9 @@ type Field struct {
 func newField(gen *Plugin, f *File, message *Message, desc protoreflect.FieldDescriptor) *Field {
 	var loc Location
 	switch {
-	case desc.Extendee() != nil && message == nil:
+	case desc.IsExtension() && message == nil:
 		loc = f.location(fieldnum.FileDescriptorProto_Extension, int32(desc.Index()))
-	case desc.Extendee() != nil && message != nil:
+	case desc.IsExtension() && message != nil:
 		loc = message.Location.appendPath(fieldnum.DescriptorProto_Extension, int32(desc.Index()))
 	default:
 		loc = message.Location.appendPath(fieldnum.DescriptorProto_Field, int32(desc.Index()))
@@ -650,8 +650,8 @@ func newField(gen *Plugin, f *File, message *Message, desc protoreflect.FieldDes
 		Parent:   message,
 		Location: loc,
 	}
-	if desc.Oneof() != nil {
-		field.Oneof = message.Oneofs[desc.Oneof().Index()]
+	if desc.ContainingOneof() != nil {
+		field.Oneof = message.Oneofs[desc.ContainingOneof().Index()]
 	}
 	return field
 }
@@ -677,8 +677,8 @@ func (field *Field) init(gen *Plugin) error {
 		}
 		field.Enum = enum
 	}
-	if desc.Extendee() != nil {
-		mname := desc.Extendee().FullName()
+	if desc.IsExtension() {
+		mname := desc.ContainingMessage().FullName()
 		message, ok := gen.messagesByName[mname]
 		if !ok {
 			return fmt.Errorf("field %v: no descriptor for type %v", desc.FullName(), mname)

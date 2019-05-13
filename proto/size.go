@@ -54,43 +54,38 @@ func sizeMessage(m protoreflect.Message) (size int) {
 	return size
 }
 
-func sizeField(field protoreflect.FieldDescriptor, value protoreflect.Value) (size int) {
-	num := field.Number()
-	kind := field.Kind()
+func sizeField(fd protoreflect.FieldDescriptor, value protoreflect.Value) (size int) {
+	num := fd.Number()
 	switch {
-	case field.Cardinality() != protoreflect.Repeated:
-		return wire.SizeTag(num) + sizeSingular(num, kind, value)
-	case field.IsMap():
-		return sizeMap(num, kind, field.Message(), value.Map())
-	case field.IsPacked():
-		return sizePacked(num, kind, value.List())
+	case fd.IsList():
+		return sizeList(num, fd, value.List())
+	case fd.IsMap():
+		return sizeMap(num, fd, value.Map())
 	default:
-		return sizeList(num, kind, value.List())
+		return wire.SizeTag(num) + sizeSingular(num, fd.Kind(), value)
 	}
 }
 
-func sizeMap(num wire.Number, kind protoreflect.Kind, mdesc protoreflect.MessageDescriptor, mapv protoreflect.Map) (size int) {
-	keyf := mdesc.Fields().ByNumber(1)
-	valf := mdesc.Fields().ByNumber(2)
-	mapv.Range(func(key protoreflect.MapKey, value protoreflect.Value) bool {
-		size += wire.SizeTag(num)
-		size += wire.SizeBytes(sizeField(keyf, key.Value()) + sizeField(valf, value))
-		return true
-	})
+func sizeList(num wire.Number, fd protoreflect.FieldDescriptor, list protoreflect.List) (size int) {
+	if fd.IsPacked() {
+		content := 0
+		for i, llen := 0, list.Len(); i < llen; i++ {
+			content += sizeSingular(num, fd.Kind(), list.Get(i))
+		}
+		return wire.SizeTag(num) + wire.SizeBytes(content)
+	}
+
+	for i, llen := 0, list.Len(); i < llen; i++ {
+		size += wire.SizeTag(num) + sizeSingular(num, fd.Kind(), list.Get(i))
+	}
 	return size
 }
 
-func sizePacked(num wire.Number, kind protoreflect.Kind, list protoreflect.List) (size int) {
-	content := 0
-	for i, llen := 0, list.Len(); i < llen; i++ {
-		content += sizeSingular(num, kind, list.Get(i))
-	}
-	return wire.SizeTag(num) + wire.SizeBytes(content)
-}
-
-func sizeList(num wire.Number, kind protoreflect.Kind, list protoreflect.List) (size int) {
-	for i, llen := 0, list.Len(); i < llen; i++ {
-		size += wire.SizeTag(num) + sizeSingular(num, kind, list.Get(i))
-	}
+func sizeMap(num wire.Number, fd protoreflect.FieldDescriptor, mapv protoreflect.Map) (size int) {
+	mapv.Range(func(key protoreflect.MapKey, value protoreflect.Value) bool {
+		size += wire.SizeTag(num)
+		size += wire.SizeBytes(sizeField(fd.MapKey(), key.Value()) + sizeField(fd.MapValue(), value))
+		return true
+	})
 	return size
 }

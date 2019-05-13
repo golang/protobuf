@@ -159,14 +159,36 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 			return errors.New("%v contains unknown field: %v", messageDesc.FullName(), tkey)
 		}
 
-		if cardinality := fd.Cardinality(); cardinality == pref.Repeated {
-			// Map or list fields have cardinality of repeated.
-			if err := o.unmarshalRepeated(tval, fd, knownFields); !nerr.Merge(err) {
+		switch {
+		case fd.IsList():
+			// If input is not a list, turn it into a list.
+			var items []text.Value
+			if tval.Type() != text.List {
+				items = []text.Value{tval}
+			} else {
+				items = tval.List()
+			}
+
+			list := knownFields.Get(fd.Number()).List()
+			if err := o.unmarshalList(items, fd, list); !nerr.Merge(err) {
 				return err
 			}
-		} else {
+		case fd.IsMap():
+			// If input is not a list, turn it into a list.
+			var items []text.Value
+			if tval.Type() != text.List {
+				items = []text.Value{tval}
+			} else {
+				items = tval.List()
+			}
+
+			mmap := knownFields.Get(fd.Number()).Map()
+			if err := o.unmarshalMap(items, fd, mmap); !nerr.Merge(err) {
+				return err
+			}
+		default:
 			// If field is a oneof, check if it has already been set.
-			if od := fd.Oneof(); od != nil {
+			if od := fd.ContainingOneof(); od != nil {
 				idx := uint64(od.Index())
 				if seenOneofs.Has(idx) {
 					return errors.New("oneof %v is already set", od.FullName())
@@ -228,33 +250,6 @@ func (o UnmarshalOptions) unmarshalSingular(input text.Value, fd pref.FieldDescr
 		}
 	}
 	knownFields.Set(num, val)
-
-	return nerr.E
-}
-
-// unmarshalRepeated unmarshals given text.Value into a repeated field. Caller should only
-// call this for cardinality=repeated.
-func (o UnmarshalOptions) unmarshalRepeated(input text.Value, fd pref.FieldDescriptor, knownFields pref.KnownFields) error {
-	var items []text.Value
-	// If input is not a list, turn it into a list.
-	if input.Type() != text.List {
-		items = []text.Value{input}
-	} else {
-		items = input.List()
-	}
-
-	var nerr errors.NonFatal
-	num := fd.Number()
-	val := knownFields.Get(num)
-	if !fd.IsMap() {
-		if err := o.unmarshalList(items, fd, val.List()); !nerr.Merge(err) {
-			return err
-		}
-	} else {
-		if err := o.unmarshalMap(items, fd, val.Map()); !nerr.Merge(err) {
-			return err
-		}
-	}
 
 	return nerr.E
 }
@@ -358,14 +353,11 @@ func (o UnmarshalOptions) unmarshalList(inputList []text.Value, fd pref.FieldDes
 // unmarshalMap unmarshals given []text.Value into given protoreflect.Map.
 func (o UnmarshalOptions) unmarshalMap(input []text.Value, fd pref.FieldDescriptor, mmap pref.Map) error {
 	var nerr errors.NonFatal
-	fields := fd.Message().Fields()
-	keyDesc := fields.ByNumber(1)
-	valDesc := fields.ByNumber(2)
 
 	// Determine ahead whether map entry is a scalar type or a message type in order to call the
 	// appropriate unmarshalMapValue func inside the for loop below.
 	unmarshalMapValue := unmarshalMapScalarValue
-	switch valDesc.Kind() {
+	switch fd.MapValue().Kind() {
 	case pref.MessageKind, pref.GroupKind:
 		unmarshalMapValue = o.unmarshalMapMessageValue
 	}
@@ -378,11 +370,11 @@ func (o UnmarshalOptions) unmarshalMap(input []text.Value, fd pref.FieldDescript
 		if !nerr.Merge(err) {
 			return err
 		}
-		pkey, err := unmarshalMapKey(tkey, keyDesc)
+		pkey, err := unmarshalMapKey(tkey, fd.MapKey())
 		if !nerr.Merge(err) {
 			return err
 		}
-		err = unmarshalMapValue(tval, pkey, valDesc, mmap)
+		err = unmarshalMapValue(tval, pkey, fd.MapValue(), mmap)
 		if !nerr.Merge(err) {
 			return err
 		}

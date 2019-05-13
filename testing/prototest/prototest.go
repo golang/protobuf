@@ -26,10 +26,10 @@ func TestMessage(t testing.TB, message proto.Message) {
 	for i := 0; i < md.Fields().Len(); i++ {
 		fd := md.Fields().Get(i)
 		switch {
+		case fd.IsList():
+			testFieldList(t, m, fd)
 		case fd.IsMap():
 			testFieldMap(t, m, fd)
-		case fd.Cardinality() == pref.Repeated:
-			testFieldList(t, m, fd)
 		case fd.Kind() == pref.FloatKind || fd.Kind() == pref.DoubleKind:
 			testFieldFloat(t, m, fd)
 		}
@@ -105,7 +105,7 @@ func testField(t testing.TB, m pref.Message, fd pref.FieldDescriptor) {
 			if fd.Cardinality() == pref.Repeated {
 				wantHas = false
 			}
-			if fd.Oneof() != nil {
+			if fd.ContainingOneof() != nil {
 				wantHas = true
 			}
 		}
@@ -122,12 +122,12 @@ func testField(t testing.TB, m pref.Message, fd pref.FieldDescriptor) {
 		t.Errorf("after clearing %q:\nHas(%v) = %v, want %v", name, num, got, want)
 	}
 	switch {
-	case fd.IsMap():
-		if got := known.Get(num); got.Map().Len() != 0 {
+	case fd.IsList():
+		if got := known.Get(num); got.List().Len() != 0 {
 			t.Errorf("after clearing %q:\nGet(%v) = %v, want empty list", name, num, formatValue(got))
 		}
-	case fd.Cardinality() == pref.Repeated:
-		if got := known.Get(num); got.List().Len() != 0 {
+	case fd.IsMap():
+		if got := known.Get(num); got.Map().Len() != 0 {
 			t.Errorf("after clearing %q:\nGet(%v) = %v, want empty list", name, num, formatValue(got))
 		}
 	default:
@@ -421,6 +421,16 @@ const (
 func newValue(m pref.Message, fd pref.FieldDescriptor, n seed, stack []pref.MessageDescriptor) pref.Value {
 	num := fd.Number()
 	switch {
+	case fd.IsList():
+		list := m.New().KnownFields().Get(num).List()
+		if n == 0 {
+			return pref.ValueOf(list)
+		}
+		list.Append(newListElement(fd, list, 0, stack))
+		list.Append(newListElement(fd, list, minVal, stack))
+		list.Append(newListElement(fd, list, maxVal, stack))
+		list.Append(newListElement(fd, list, n, stack))
+		return pref.ValueOf(list)
 	case fd.IsMap():
 		mapv := m.New().KnownFields().Get(num).Map()
 		if n == 0 {
@@ -431,16 +441,6 @@ func newValue(m pref.Message, fd pref.FieldDescriptor, n seed, stack []pref.Mess
 		mapv.Set(newMapKey(fd, maxVal), newMapValue(fd, mapv, maxVal, stack))
 		mapv.Set(newMapKey(fd, n), newMapValue(fd, mapv, 10*n, stack))
 		return pref.ValueOf(mapv)
-	case fd.Cardinality() == pref.Repeated:
-		list := m.New().KnownFields().Get(num).List()
-		if n == 0 {
-			return pref.ValueOf(list)
-		}
-		list.Append(newListElement(fd, list, 0, stack))
-		list.Append(newListElement(fd, list, minVal, stack))
-		list.Append(newListElement(fd, list, maxVal, stack))
-		list.Append(newListElement(fd, list, n, stack))
-		return pref.ValueOf(list)
 	case fd.Message() != nil:
 		return populateMessage(m.KnownFields().NewMessage(num), n, stack)
 	default:
@@ -456,12 +456,12 @@ func newListElement(fd pref.FieldDescriptor, list pref.List, n seed, stack []pre
 }
 
 func newMapKey(fd pref.FieldDescriptor, n seed) pref.MapKey {
-	kd := fd.Message().Fields().ByNumber(1)
+	kd := fd.MapKey()
 	return newScalarValue(kd, n).MapKey()
 }
 
 func newMapValue(fd pref.FieldDescriptor, mapv pref.Map, n seed, stack []pref.MessageDescriptor) pref.Value {
-	vd := fd.Message().Fields().ByNumber(2)
+	vd := fd.MapValue()
 	if vd.Message() == nil {
 		return newScalarValue(vd, n)
 	}

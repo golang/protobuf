@@ -53,20 +53,14 @@ func isInitialized(m pref.Message, stack []interface{}) error {
 			return true
 		}
 		if field.IsMap() {
-			if md.Fields().ByNumber(2).Message() == nil {
+			if field.MapValue().Message() == nil {
 				return true
 			}
 		}
 		// Recurse into the field
 		stack := append(stack, field.Name())
 		switch {
-		case field.IsMap():
-			v.Map().Range(func(key pref.MapKey, v pref.Value) bool {
-				stack := append(stack, "[", key, "].")
-				err = isInitialized(v.Message(), stack)
-				return err == nil
-			})
-		case field.Cardinality() == pref.Repeated:
+		case field.IsList():
 			for i, list := 0, v.List(); i < list.Len(); i++ {
 				stack := append(stack, "[", i, "].")
 				err = isInitialized(list.Get(i).Message(), stack)
@@ -74,6 +68,12 @@ func isInitialized(m pref.Message, stack []interface{}) error {
 					break
 				}
 			}
+		case field.IsMap():
+			v.Map().Range(func(key pref.MapKey, v pref.Value) bool {
+				stack := append(stack, "[", key, "].")
+				err = isInitialized(v.Message(), stack)
+				return err == nil
+			})
 		default:
 			stack := append(stack, ".")
 			err = isInitialized(v.Message(), stack)

@@ -285,22 +285,40 @@ type FieldDescriptor interface {
 	// It is usually the camel-cased form of the field name.
 	JSONName() string
 
-	// IsPacked reports whether repeated primitive numeric kinds should be
-	// serialized using a packed encoding.
-	// If true, then it implies Cardinality is Repeated.
-	IsPacked() bool
+	// IsExtension reports whether this is an extension field. If false,
+	// then Parent and ContainingMessage refer to the same message.
+	// Otherwise, ContainingMessage and Parent almost certainly differ.
+	IsExtension() bool
 
 	// IsWeak reports whether this is a weak field, which does not impose a
 	// direct dependency on the target type.
 	// If true, then MessageDescriptor returns a placeholder type.
 	IsWeak() bool
 
-	// IsMap reports whether this field represents a map.
-	// The value type for the associated field is a Map instead of a List.
-	//
-	// If true, it implies that Kind is MessageKind, Cardinality is Repeated,
-	// and MessageDescriptor.IsMapEntry is true.
+	// IsPacked reports whether repeated primitive numeric kinds should be
+	// serialized using a packed encoding.
+	// If true, then it implies Cardinality is Repeated.
+	IsPacked() bool
+
+	// IsList reports whether this field represents a list,
+	// where the value type for the associated field is a List.
+	// It is equivalent to checking whether Cardinality is Repeated and
+	// that IsMap reports false.
+	IsList() bool
+
+	// IsMap reports whether this field represents a map,
+	// where the value type for the associated field is a Map.
+	// It is equivalent to checking whether Cardinality is Repeated,
+	// that the Kind is MessageKind, and that Message.IsMapEntry reports true.
 	IsMap() bool
+
+	// MapKey returns the field descriptor for the key in the map entry.
+	// It returns nil if IsMap reports false.
+	MapKey() FieldDescriptor
+
+	// MapValue returns the field descriptor for the value in the map entry.
+	// It returns nil if IsMap reports false.
+	MapValue() FieldDescriptor
 
 	// HasDefault reports whether this field has a default value.
 	HasDefault() bool
@@ -312,18 +330,25 @@ type FieldDescriptor interface {
 	// The Value type is determined by the Kind.
 	Default() Value
 
-	// DefaultEnumValue returns the EnumValueDescriptor for the default value
+	// DefaultEnumValue returns the enum value descriptor for the default value
 	// of an enum field, and is nil for any other kind of field.
 	DefaultEnumValue() EnumValueDescriptor
 
-	// Oneof is the containing oneof that this field belongs to,
-	// and is nil if this field is not part of a oneof.
+	// TODO: Remove this.
+	// Deprecated: Use ContainingOneof instead.
 	Oneof() OneofDescriptor
-
-	// Extendee returns a message descriptor for the extended message
-	// that this extension field belongs in.
-	// It returns nil if this field is not an extension.
+	// TODO: Remove this.
+	// Deprecated: Use ContainingMessage instead.
 	Extendee() MessageDescriptor
+
+	// ContainingOneof is the containing oneof that this field belongs to,
+	// and is nil if this field is not part of a oneof.
+	ContainingOneof() OneofDescriptor
+
+	// ContainingMessage is the containing message that this field belongs to.
+	// For extension fields, this may not necessarily be the parent message
+	// that the field is declared within.
+	ContainingMessage() MessageDescriptor
 
 	// Enum is the enum descriptor if Kind is EnumKind.
 	// It returns nil for any other Kind.
