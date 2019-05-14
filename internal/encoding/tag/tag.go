@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	defval "github.com/golang/protobuf/v2/internal/encoding/defval"
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	defval "google.golang.org/protobuf/internal/encoding/defval"
+	ptype "google.golang.org/protobuf/internal/prototype"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 var byteType = reflect.TypeOf(byte(0))

@@ -10,16 +10,16 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/v2/encoding/jsonpb"
-	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
-	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	"github.com/golang/protobuf/v2/internal/scalar"
-	"github.com/golang/protobuf/v2/proto"
-	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
-	"github.com/golang/protobuf/v2/runtime/protoiface"
+	"google.golang.org/protobuf/encoding/jsonpb"
+	"google.golang.org/protobuf/encoding/testprotos/pb2"
+	"google.golang.org/protobuf/encoding/testprotos/pb3"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	"google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/proto"
+	preg "google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/runtime/protoiface"
 
-	knownpb "github.com/golang/protobuf/v2/types/known"
+	knownpb "google.golang.org/protobuf/types/known"
 )
 
 func init() {

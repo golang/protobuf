@@ -16,12 +16,12 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/v2/internal/encoding/tag"
-	"github.com/golang/protobuf/v2/internal/fieldnum"
-	"github.com/golang/protobuf/v2/protogen"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/encoding/tag"
+	"google.golang.org/protobuf/internal/fieldnum"
+	"google.golang.org/protobuf/protogen"
+	"google.golang.org/protobuf/reflect/protoreflect"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )
 
 // minimumVersion is minimum version of the v2 proto package that is required.
@@ -44,10 +44,10 @@ const (
 const (
 	syncPackage          = protogen.GoImportPath("sync")
 	mathPackage          = protogen.GoImportPath("math")
-	protoifacePackage    = protogen.GoImportPath("github.com/golang/protobuf/v2/runtime/protoiface")
-	protoimplPackage     = protogen.GoImportPath("github.com/golang/protobuf/v2/runtime/protoimpl")
-	protoreflectPackage  = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoreflect")
-	protoregistryPackage = protogen.GoImportPath("github.com/golang/protobuf/v2/reflect/protoregistry")
+	protoifacePackage    = protogen.GoImportPath("google.golang.org/protobuf/runtime/protoiface")
+	protoimplPackage     = protogen.GoImportPath("google.golang.org/protobuf/runtime/protoimpl")
+	protoreflectPackage  = protogen.GoImportPath("google.golang.org/protobuf/reflect/protoreflect")
+	protoregistryPackage = protogen.GoImportPath("google.golang.org/protobuf/reflect/protoregistry")
 )
 
 type fileInfo struct {

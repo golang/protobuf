@@ -9,7 +9,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/v2/internal/encoding/json"
+	"google.golang.org/protobuf/internal/encoding/json"
 )
 
 type R struct {

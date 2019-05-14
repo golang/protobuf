@@ -13,14 +13,14 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	detrand "github.com/golang/protobuf/v2/internal/detrand"
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	scalar "github.com/golang/protobuf/v2/internal/scalar"
-	pdesc "github.com/golang/protobuf/v2/reflect/protodesc"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/google/go-cmp/cmp"
+	detrand "google.golang.org/protobuf/internal/detrand"
+	ptype "google.golang.org/protobuf/internal/prototype"
+	scalar "google.golang.org/protobuf/internal/scalar"
+	pdesc "google.golang.org/protobuf/reflect/protodesc"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )
 
 func init() {

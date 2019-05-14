@@ -7,7 +7,7 @@ package proto
 import (
 	"bytes"
 
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // Equal returns true of two messages are equal.

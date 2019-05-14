@@ -9,15 +9,15 @@ import (
 	"sort"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/v2/internal/encoding/text"
-	"github.com/golang/protobuf/v2/internal/encoding/wire"
-	"github.com/golang/protobuf/v2/internal/errors"
-	"github.com/golang/protobuf/v2/internal/fieldnum"
-	"github.com/golang/protobuf/v2/internal/mapsort"
-	"github.com/golang/protobuf/v2/internal/pragma"
-	"github.com/golang/protobuf/v2/proto"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/reflect/protoregistry"
+	"google.golang.org/protobuf/internal/encoding/text"
+	"google.golang.org/protobuf/internal/encoding/wire"
+	"google.golang.org/protobuf/internal/errors"
+	"google.golang.org/protobuf/internal/fieldnum"
+	"google.golang.org/protobuf/internal/mapsort"
+	"google.golang.org/protobuf/internal/pragma"
+	"google.golang.org/protobuf/proto"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 // Marshal writes the given proto.Message in textproto format using default options.

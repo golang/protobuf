@@ -8,8 +8,8 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/golang/protobuf/v2/encoding/textpb"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/encoding/textpb"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // Export is a zero-length named type that exists only to export a set of

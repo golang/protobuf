@@ -6,7 +6,7 @@ syntax = "proto2";
 
 package goproto.proto.test;
 
-option go_package = "github.com/golang/protobuf/v2/internal/testprotos/test";
+option go_package = "google.golang.org/protobuf/internal/testprotos/test";
 
 message PublicImportMessage {
 }

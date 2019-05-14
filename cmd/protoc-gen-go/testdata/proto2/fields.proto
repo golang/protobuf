@@ -6,7 +6,7 @@ syntax = "proto2";
 
 package goproto.protoc.proto2;
 
-option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/proto2";
+option go_package = "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/proto2";
 
 message FieldTestMessage {
   optional bool     optional_bool     = 1;

@@ -12,7 +12,7 @@ import (
 	"unicode/utf16"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/v2/internal/errors"
+	"google.golang.org/protobuf/internal/errors"
 )
 
 func appendString(out []byte, in string) ([]byte, error) {

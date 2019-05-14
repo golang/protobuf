@@ -4,7 +4,7 @@
 
 package prototype
 
-import "github.com/golang/protobuf/v2/reflect/protoreflect"
+import "google.golang.org/protobuf/reflect/protoreflect"
 
 // PlaceholderFile returns a placeholder protoreflect.FileType where
 // only the Path and Package accessors are valid.

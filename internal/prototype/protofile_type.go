@@ -10,11 +10,11 @@ import (
 	"strings"
 	"sync"
 
-	descopts "github.com/golang/protobuf/v2/internal/descopts"
-	pragma "github.com/golang/protobuf/v2/internal/pragma"
-	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	descopts "google.golang.org/protobuf/internal/descopts"
+	pragma "google.golang.org/protobuf/internal/pragma"
+	pfmt "google.golang.org/protobuf/internal/typefmt"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // inheritedMeta is information inherited from the parent.

@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/v2/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 // The results of these microbenchmarks are unlikely to correspond well

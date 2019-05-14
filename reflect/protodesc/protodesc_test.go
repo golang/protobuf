@@ -4,10 +4,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/v2/internal/scalar"
-	"github.com/golang/protobuf/v2/reflect/protoregistry"
+	"google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/reflect/protoregistry"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )
 
 // Tests validation logic for malformed descriptors.

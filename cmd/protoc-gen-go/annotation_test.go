@@ -10,10 +10,10 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/v2/internal/fieldnum"
-	"github.com/golang/protobuf/v2/internal/scalar"
+	"google.golang.org/protobuf/internal/fieldnum"
+	"google.golang.org/protobuf/internal/scalar"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )
 
 func TestAnnotations(t *testing.T) {

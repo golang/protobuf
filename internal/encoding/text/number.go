@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/golang/protobuf/v2/internal/errors"
+	"google.golang.org/protobuf/internal/errors"
 )
 
 // marshalNumber encodes v as either a Bool, Int, Uint, Float32, or Float64.

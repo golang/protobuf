@@ -7,8 +7,8 @@ package jsonpb_test
 import (
 	"testing"
 
-	"github.com/golang/protobuf/v2/encoding/jsonpb"
-	knownpb "github.com/golang/protobuf/v2/types/known"
+	"google.golang.org/protobuf/encoding/jsonpb"
+	knownpb "google.golang.org/protobuf/types/known"
 )
 
 func BenchmarkUnmarshal_Duration(b *testing.B) {

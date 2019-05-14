@@ -9,9 +9,9 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/golang/protobuf/v2/internal/typefmt"
-	"github.com/golang/protobuf/v2/internal/value"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/typefmt"
+	"google.golang.org/protobuf/internal/value"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // GoEnum creates a new protoreflect.EnumType by combining the provided

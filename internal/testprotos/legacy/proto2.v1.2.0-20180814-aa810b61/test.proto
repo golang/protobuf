@@ -5,7 +5,7 @@
 syntax = "proto2";
 
 package google.golang.org.proto2_20180814;
-option go_package = "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.2.0-20180814-aa810b61";
+option go_package = "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.2.0-20180814-aa810b61";
 
 enum SiblingEnum {
 	ALPHA   = 0;

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/golang/protobuf/v2/internal/errors"
+	"google.golang.org/protobuf/internal/errors"
 )
 
 // Encoder provides methods to write out JSON constructs and values. The user is

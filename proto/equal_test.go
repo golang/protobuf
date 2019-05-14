@@ -7,11 +7,11 @@ package proto_test
 import (
 	"testing"
 
-	"github.com/golang/protobuf/v2/internal/encoding/pack"
-	"github.com/golang/protobuf/v2/internal/scalar"
-	testpb "github.com/golang/protobuf/v2/internal/testprotos/test"
-	test3pb "github.com/golang/protobuf/v2/internal/testprotos/test3"
-	"github.com/golang/protobuf/v2/proto"
+	"google.golang.org/protobuf/internal/encoding/pack"
+	"google.golang.org/protobuf/internal/scalar"
+	testpb "google.golang.org/protobuf/internal/testprotos/test"
+	test3pb "google.golang.org/protobuf/internal/testprotos/test3"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestEqual(t *testing.T) {

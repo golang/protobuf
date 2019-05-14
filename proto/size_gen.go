@@ -7,8 +7,8 @@
 package proto
 
 import (
-	"github.com/golang/protobuf/v2/internal/encoding/wire"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/encoding/wire"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 func sizeSingular(num wire.Number, kind protoreflect.Kind, v protoreflect.Value) int {

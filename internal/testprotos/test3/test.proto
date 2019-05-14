@@ -8,7 +8,7 @@ package goproto.proto.test3;
 
 import "test3/test_import.proto";
 
-option go_package = "github.com/golang/protobuf/v2/internal/testprotos/test3";
+option go_package = "google.golang.org/protobuf/internal/testprotos/test3";
 
 message TestAllTypes {
   message NestedMessage {

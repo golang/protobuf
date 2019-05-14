@@ -11,10 +11,10 @@ import (
 	"sync"
 	"unicode"
 
-	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	ptag "google.golang.org/protobuf/internal/encoding/tag"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	ptype "google.golang.org/protobuf/internal/prototype"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // wrapMessage wraps v as a protoreflect.ProtoMessage,

@@ -11,11 +11,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golang/protobuf/v2/internal/encoding/json"
-	"github.com/golang/protobuf/v2/internal/errors"
-	"github.com/golang/protobuf/v2/internal/fieldnum"
-	"github.com/golang/protobuf/v2/proto"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/encoding/json"
+	"google.golang.org/protobuf/internal/errors"
+	"google.golang.org/protobuf/internal/fieldnum"
+	"google.golang.org/protobuf/proto"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // isCustomType returns true if type name has special JSON conversion rules.

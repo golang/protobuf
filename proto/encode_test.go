@@ -7,11 +7,11 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/v2/proto"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/google/go-cmp/cmp"
+	"google.golang.org/protobuf/proto"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 
-	test3pb "github.com/golang/protobuf/v2/internal/testprotos/test3"
+	test3pb "google.golang.org/protobuf/internal/testprotos/test3"
 )
 
 func TestEncode(t *testing.T) {

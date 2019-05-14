@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/golang/protobuf/v2/internal/pragma"
-	"github.com/golang/protobuf/v2/internal/typefmt"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/pragma"
+	"google.golang.org/protobuf/internal/typefmt"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type enumDescs struct {

@@ -12,8 +12,8 @@ import (
 	"math"
 	"math/bits"
 
-	"github.com/golang/protobuf/v2/internal/errors"
-	"github.com/golang/protobuf/v2/internal/flags"
+	"google.golang.org/protobuf/internal/errors"
+	"google.golang.org/protobuf/internal/flags"
 )
 
 // Number represents the field number.

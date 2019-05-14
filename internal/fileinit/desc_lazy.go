@@ -9,14 +9,14 @@ import (
 	"fmt"
 	"reflect"
 
-	defval "github.com/golang/protobuf/v2/internal/encoding/defval"
-	wire "github.com/golang/protobuf/v2/internal/encoding/wire"
-	fieldnum "github.com/golang/protobuf/v2/internal/fieldnum"
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	pvalue "github.com/golang/protobuf/v2/internal/value"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
+	defval "google.golang.org/protobuf/internal/encoding/defval"
+	wire "google.golang.org/protobuf/internal/encoding/wire"
+	fieldnum "google.golang.org/protobuf/internal/fieldnum"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	ptype "google.golang.org/protobuf/internal/prototype"
+	pvalue "google.golang.org/protobuf/internal/value"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	preg "google.golang.org/protobuf/reflect/protoregistry"
 )
 
 func (file *fileDesc) lazyInit() *fileLazy {

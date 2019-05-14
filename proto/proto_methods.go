@@ -7,7 +7,7 @@
 
 package proto
 
-import "github.com/golang/protobuf/v2/runtime/protoiface"
+import "google.golang.org/protobuf/runtime/protoiface"
 
 func protoMethods(m Message) *protoiface.Methods {
 	if x, ok := m.(protoiface.Methoder); ok {

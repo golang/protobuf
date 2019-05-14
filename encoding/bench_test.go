@@ -11,11 +11,11 @@ import (
 
 	jsonpbV1 "github.com/golang/protobuf/jsonpb"
 	protoV1 "github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/v2/encoding/jsonpb"
-	"github.com/golang/protobuf/v2/encoding/textpb"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/encoding/jsonpb"
+	"google.golang.org/protobuf/encoding/textpb"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 
-	tpb "github.com/golang/protobuf/v2/internal/testprotos/test"
+	tpb "google.golang.org/protobuf/internal/testprotos/test"
 )
 
 // The results of these microbenchmarks are unlikely to correspond well

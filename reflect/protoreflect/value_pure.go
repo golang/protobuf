@@ -6,7 +6,7 @@
 
 package protoreflect
 
-import "github.com/golang/protobuf/v2/internal/pragma"
+import "google.golang.org/protobuf/internal/pragma"
 
 type valueType int
 

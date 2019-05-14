@@ -7,7 +7,7 @@ syntax = "proto3";
 package goproto.protoc.comments;
 
 option deprecated = true;
-option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/comments";
+option go_package = "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/comments";
 
 message DeprecatedMessage {
   option deprecated = true;

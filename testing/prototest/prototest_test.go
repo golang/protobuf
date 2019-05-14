@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"testing"
 
-	testpb "github.com/golang/protobuf/v2/internal/testprotos/test"
-	test3pb "github.com/golang/protobuf/v2/internal/testprotos/test3"
-	"github.com/golang/protobuf/v2/proto"
-	"github.com/golang/protobuf/v2/testing/prototest"
+	testpb "google.golang.org/protobuf/internal/testprotos/test"
+	test3pb "google.golang.org/protobuf/internal/testprotos/test3"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/testing/prototest"
 )
 
 func Test(t *testing.T) {

@@ -9,16 +9,16 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/v2/encoding/textpb"
-	"github.com/golang/protobuf/v2/internal/errors"
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	"github.com/golang/protobuf/v2/internal/scalar"
-	"github.com/golang/protobuf/v2/proto"
-	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
+	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/internal/errors"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	"google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/proto"
+	preg "google.golang.org/protobuf/reflect/protoregistry"
 
-	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
-	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
-	knownpb "github.com/golang/protobuf/v2/types/known"
+	"google.golang.org/protobuf/encoding/testprotos/pb2"
+	"google.golang.org/protobuf/encoding/testprotos/pb3"
+	knownpb "google.golang.org/protobuf/types/known"
 )
 
 func TestUnmarshal(t *testing.T) {

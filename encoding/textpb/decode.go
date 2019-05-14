@@ -9,14 +9,14 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/v2/internal/encoding/text"
-	"github.com/golang/protobuf/v2/internal/errors"
-	"github.com/golang/protobuf/v2/internal/fieldnum"
-	"github.com/golang/protobuf/v2/internal/pragma"
-	"github.com/golang/protobuf/v2/internal/set"
-	"github.com/golang/protobuf/v2/proto"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/reflect/protoregistry"
+	"google.golang.org/protobuf/internal/encoding/text"
+	"google.golang.org/protobuf/internal/errors"
+	"google.golang.org/protobuf/internal/fieldnum"
+	"google.golang.org/protobuf/internal/pragma"
+	"google.golang.org/protobuf/internal/set"
+	"google.golang.org/protobuf/proto"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 // Unmarshal reads the given []byte into the given proto.Message.

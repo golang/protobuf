@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/golang/protobuf/v2/internal/scalar"
-	"github.com/golang/protobuf/v2/proto"
+	"google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/proto"
 
-	testpb "github.com/golang/protobuf/v2/internal/testprotos/test"
+	testpb "google.golang.org/protobuf/internal/testprotos/test"
 )
 
 func TestIsInitializedErrors(t *testing.T) {

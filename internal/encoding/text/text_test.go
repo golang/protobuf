@@ -11,11 +11,11 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/v2/internal/detrand"
-	"github.com/golang/protobuf/v2/internal/flags"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"google.golang.org/protobuf/internal/detrand"
+	"google.golang.org/protobuf/internal/flags"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // Disable detrand to enable direct comparisons on outputs.

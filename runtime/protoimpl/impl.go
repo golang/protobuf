@@ -12,8 +12,8 @@
 package protoimpl
 
 import (
-	"github.com/golang/protobuf/v2/internal/fileinit"
-	"github.com/golang/protobuf/v2/internal/impl"
+	"google.golang.org/protobuf/internal/fileinit"
+	"google.golang.org/protobuf/internal/impl"
 )
 
 // Version is the current minor version of the package.
@@ -29,7 +29,7 @@ type (
 	// needs to be updated to a more recent version.
 	//
 	// This package can be upgraded by running:
-	//	go get -u github.com/golang/protobuf/v2/...
+	//	go get -u google.golang.org/protobuf/...
 	//
 	// Example usage by generated code:
 	//	const _ = protoimpl.EnforceVersion(protoimpl.Version - genVersion)

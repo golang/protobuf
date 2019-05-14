@@ -4,7 +4,7 @@
 
 package impl
 
-import pvalue "github.com/golang/protobuf/v2/internal/value"
+import pvalue "google.golang.org/protobuf/internal/value"
 
 // TODO: Add a default LegacyWrapper that panics with a more helpful message?
 var legacyWrapper pvalue.LegacyWrapper

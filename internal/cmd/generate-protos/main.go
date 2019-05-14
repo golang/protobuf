@@ -19,11 +19,11 @@ import (
 	"sort"
 	"strings"
 
-	gengogrpc "github.com/golang/protobuf/v2/cmd/protoc-gen-go-grpc/internal_gengogrpc"
-	gengo "github.com/golang/protobuf/v2/cmd/protoc-gen-go/internal_gengo"
-	"github.com/golang/protobuf/v2/internal/detrand"
-	"github.com/golang/protobuf/v2/protogen"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	gengogrpc "google.golang.org/protobuf/cmd/protoc-gen-go-grpc/internal_gengogrpc"
+	gengo "google.golang.org/protobuf/cmd/protoc-gen-go/internal_gengo"
+	"google.golang.org/protobuf/internal/detrand"
+	"google.golang.org/protobuf/protogen"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 func init() {

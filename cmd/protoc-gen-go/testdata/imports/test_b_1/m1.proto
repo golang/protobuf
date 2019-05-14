@@ -4,5 +4,5 @@
 
 syntax = "proto3";
 package test.b.part1;
-option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/imports/test_b_1;beta";
+option go_package = "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/imports/test_b_1;beta";
 message M1 {}

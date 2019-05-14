@@ -12,20 +12,20 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	scalar "github.com/golang/protobuf/v2/internal/scalar"
-	pvalue "github.com/golang/protobuf/v2/internal/value"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
 	cmp "github.com/google/go-cmp/cmp"
 	cmpopts "github.com/google/go-cmp/cmp/cmpopts"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	ptype "google.golang.org/protobuf/internal/prototype"
+	scalar "google.golang.org/protobuf/internal/scalar"
+	pvalue "google.golang.org/protobuf/internal/value"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 
 	// The legacy package must be imported prior to use of any legacy messages.
 	// TODO: Remove this when protoV1 registers these hooks for you.
-	_ "github.com/golang/protobuf/v2/internal/legacy"
+	_ "google.golang.org/protobuf/internal/legacy"
 
-	proto2_20180125 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	proto2_20180125 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )
 
 // List of test operations to perform on messages, lists, or maps.

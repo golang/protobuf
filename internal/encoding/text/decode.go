@@ -10,8 +10,8 @@ import (
 	"regexp"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/v2/internal/errors"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/errors"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type syntaxError struct{ error }

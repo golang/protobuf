@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // TestDescriptors tests that the implementations do not declare additional

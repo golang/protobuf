@@ -8,8 +8,8 @@ import (
 	"container/list"
 	"reflect"
 
-	"github.com/golang/protobuf/v2/internal/encoding/wire"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/encoding/wire"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 var bytesType = reflect.TypeOf([]byte(nil))

@@ -5,8 +5,8 @@
 package legacy
 
 import (
-	"github.com/golang/protobuf/v2/internal/encoding/wire"
-	"github.com/golang/protobuf/v2/internal/fieldnum"
+	"google.golang.org/protobuf/internal/encoding/wire"
+	"google.golang.org/protobuf/internal/fieldnum"
 )
 
 // To avoid a dependency from legacy to descriptor.proto, use a hand-written parser

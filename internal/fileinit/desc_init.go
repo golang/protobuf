@@ -5,9 +5,9 @@
 package fileinit
 
 import (
-	wire "github.com/golang/protobuf/v2/internal/encoding/wire"
-	fieldnum "github.com/golang/protobuf/v2/internal/fieldnum"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	wire "google.golang.org/protobuf/internal/encoding/wire"
+	fieldnum "google.golang.org/protobuf/internal/fieldnum"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 func newFileDesc(fb FileBuilder) *fileDesc {

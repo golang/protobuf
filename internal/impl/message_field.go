@@ -9,8 +9,8 @@ import (
 	"math"
 	"reflect"
 
-	pvalue "github.com/golang/protobuf/v2/internal/value"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	pvalue "google.golang.org/protobuf/internal/value"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type fieldInfo struct {

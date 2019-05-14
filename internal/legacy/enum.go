@@ -10,9 +10,9 @@ import (
 	"reflect"
 	"sync"
 
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	pvalue "github.com/golang/protobuf/v2/internal/value"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	ptype "google.golang.org/protobuf/internal/prototype"
+	pvalue "google.golang.org/protobuf/internal/value"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // wrapEnum wraps v as a protoreflect.Enum,

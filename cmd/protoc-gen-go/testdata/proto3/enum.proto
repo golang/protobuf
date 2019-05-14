@@ -6,7 +6,7 @@ syntax = "proto3";
 
 package goproto.protoc.proto3;
 
-option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/proto3";
+option go_package = "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/proto3";
 
 enum Enum {
   ZERO = 0;

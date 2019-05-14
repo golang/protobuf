@@ -8,8 +8,8 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/golang/protobuf/v2/internal/detrand"
-	"github.com/golang/protobuf/v2/internal/errors"
+	"google.golang.org/protobuf/internal/detrand"
+	"google.golang.org/protobuf/internal/errors"
 )
 
 // Marshal serializes v as the proto text format, where v must be a Message.

@@ -9,7 +9,7 @@
 // descriptor proto package).
 package descopts
 
-import pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+import pref "google.golang.org/protobuf/reflect/protoreflect"
 
 // These variables are set by the init function in descriptor.pb.go via logic
 // in internal/fileinit. In other words, so long as the descriptor proto package

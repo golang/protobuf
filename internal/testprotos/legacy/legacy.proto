@@ -5,7 +5,7 @@
 syntax = "proto3";
 
 package google.golang.org;
-option go_package = "github.com/golang/protobuf/v2/internal/testprotos/legacy";
+option go_package = "google.golang.org/protobuf/internal/testprotos/legacy";
 
 // This file imports other files generated from a build of protoc-gen-go
 // locked to a specific version. For all imports, they were built using

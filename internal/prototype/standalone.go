@@ -5,8 +5,8 @@
 package prototype
 
 import (
-	"github.com/golang/protobuf/v2/internal/errors"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/errors"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // TODO: Should the constructors take in a value rather than a pointer?

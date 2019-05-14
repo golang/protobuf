@@ -8,7 +8,7 @@ package mapsort
 import (
 	"sort"
 
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // Range iterates over every map entry in sorted key order,

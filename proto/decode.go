@@ -5,12 +5,12 @@
 package proto
 
 import (
-	"github.com/golang/protobuf/v2/internal/encoding/wire"
-	"github.com/golang/protobuf/v2/internal/errors"
-	"github.com/golang/protobuf/v2/internal/pragma"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/reflect/protoregistry"
-	"github.com/golang/protobuf/v2/runtime/protoiface"
+	"google.golang.org/protobuf/internal/encoding/wire"
+	"google.golang.org/protobuf/internal/errors"
+	"google.golang.org/protobuf/internal/pragma"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/runtime/protoiface"
 )
 
 // UnmarshalOptions configures the unmarshaler.

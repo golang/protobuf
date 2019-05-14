@@ -7,5 +7,5 @@
 package main
 
 import (
-	_ "github.com/golang/protobuf/v2/cmd/protoc-gen-go-grpc/testdata/grpc"
+	_ "google.golang.org/protobuf/cmd/protoc-gen-go-grpc/testdata/grpc"
 )

@@ -7,7 +7,7 @@ package value
 import (
 	"reflect"
 
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 func MapOf(p interface{}, kc, kv Converter) interface {

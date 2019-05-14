@@ -6,7 +6,7 @@ syntax = "proto2";
 
 package goproto.protoc.fieldnames;
 
-option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/fieldnames";
+option go_package = "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/fieldnames";
 
 // Assorted edge cases in field name conflict resolution.
 //

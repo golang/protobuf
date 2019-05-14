@@ -6,10 +6,10 @@ package protodesc
 import (
 	"fmt"
 
-	"github.com/golang/protobuf/v2/internal/encoding/defval"
-	"github.com/golang/protobuf/v2/internal/scalar"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	"google.golang.org/protobuf/internal/encoding/defval"
+	"google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )
 
 // ToFileDescriptorProto converts a FileDescriptor to a

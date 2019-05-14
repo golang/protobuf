@@ -7,10 +7,10 @@ package prototype
 import (
 	"fmt"
 
-	descopts "github.com/golang/protobuf/v2/internal/descopts"
-	pragma "github.com/golang/protobuf/v2/internal/pragma"
-	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	descopts "google.golang.org/protobuf/internal/descopts"
+	pragma "google.golang.org/protobuf/internal/pragma"
+	pfmt "google.golang.org/protobuf/internal/typefmt"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type standaloneMessage struct{ m *StandaloneMessage }

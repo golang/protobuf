@@ -8,7 +8,7 @@ package goproto.protoc.grpc;
 
 import "grpc/grpc.proto";
 
-option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/grpc";
+option go_package = "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/grpc";
 
 service DeprecatedService {
   option deprecated = true;

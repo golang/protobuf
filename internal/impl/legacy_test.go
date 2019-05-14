@@ -10,19 +10,19 @@ import (
 	"reflect"
 	"testing"
 
-	pack "github.com/golang/protobuf/v2/internal/encoding/pack"
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	plegacy "github.com/golang/protobuf/v2/internal/legacy"
-	pragma "github.com/golang/protobuf/v2/internal/pragma"
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	scalar "github.com/golang/protobuf/v2/internal/scalar"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
-	piface "github.com/golang/protobuf/v2/runtime/protoiface"
 	cmp "github.com/google/go-cmp/cmp"
 	cmpopts "github.com/google/go-cmp/cmp/cmpopts"
+	pack "google.golang.org/protobuf/internal/encoding/pack"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	plegacy "google.golang.org/protobuf/internal/legacy"
+	pragma "google.golang.org/protobuf/internal/pragma"
+	ptype "google.golang.org/protobuf/internal/prototype"
+	scalar "google.golang.org/protobuf/internal/scalar"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	preg "google.golang.org/protobuf/reflect/protoregistry"
+	piface "google.golang.org/protobuf/runtime/protoiface"
 
-	proto2_20180125 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
+	proto2_20180125 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
 )
 
 type legacyTestMessage struct {

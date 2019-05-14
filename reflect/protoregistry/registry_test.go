@@ -12,13 +12,13 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	ptype "google.golang.org/protobuf/internal/prototype"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	preg "google.golang.org/protobuf/reflect/protoregistry"
 
-	test2pb "github.com/golang/protobuf/v2/internal/testprotos/test"
-	testpb "github.com/golang/protobuf/v2/reflect/protoregistry/testprotos"
+	test2pb "google.golang.org/protobuf/internal/testprotos/test"
+	testpb "google.golang.org/protobuf/reflect/protoregistry/testprotos"
 )
 
 func TestFiles(t *testing.T) {

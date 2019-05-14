@@ -13,14 +13,14 @@ import (
 	"reflect"
 	"sync"
 
-	descopts "github.com/golang/protobuf/v2/internal/descopts"
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	pragma "github.com/golang/protobuf/v2/internal/pragma"
-	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
-	"github.com/golang/protobuf/v2/proto"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
-	piface "github.com/golang/protobuf/v2/runtime/protoiface"
+	descopts "google.golang.org/protobuf/internal/descopts"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	pragma "google.golang.org/protobuf/internal/pragma"
+	pfmt "google.golang.org/protobuf/internal/typefmt"
+	"google.golang.org/protobuf/proto"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	preg "google.golang.org/protobuf/reflect/protoregistry"
+	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
 // FileBuilder construct a protoreflect.FileDescriptor from the

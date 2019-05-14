@@ -6,7 +6,7 @@
 syntax = "proto2";
 
 package testprotos;
-option go_package = "github.com/golang/protobuf/v2/reflect/protoregistry/testprotos";
+option go_package = "google.golang.org/protobuf/reflect/protoregistry/testprotos";
 
 message Message1 {
   extensions 10 to max;

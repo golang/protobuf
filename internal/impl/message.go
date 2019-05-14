@@ -11,9 +11,9 @@ import (
 	"strings"
 	"sync"
 
-	pvalue "github.com/golang/protobuf/v2/internal/value"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	piface "github.com/golang/protobuf/v2/runtime/protoiface"
+	pvalue "google.golang.org/protobuf/internal/value"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
 // MessageType provides protobuf related functionality for a given Go type

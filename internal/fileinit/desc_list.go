@@ -9,9 +9,9 @@ import (
 	"sort"
 	"sync"
 
-	pragma "github.com/golang/protobuf/v2/internal/pragma"
-	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	pragma "google.golang.org/protobuf/internal/pragma"
+	pfmt "google.golang.org/protobuf/internal/typefmt"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type fileImports []pref.FileImport

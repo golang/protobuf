@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/v2/internal/errors"
+	"google.golang.org/protobuf/internal/errors"
 )
 
 // call specifies which Decoder method was invoked.

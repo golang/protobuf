@@ -7,7 +7,7 @@ package prototype
 import (
 	"testing"
 
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 func TestResolve(t *testing.T) {

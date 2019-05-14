@@ -12,9 +12,9 @@ import (
 	"sort"
 	"testing"
 
-	textpb "github.com/golang/protobuf/v2/encoding/textpb"
-	"github.com/golang/protobuf/v2/proto"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	textpb "google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/proto"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // TestMessage runs the provided message through a series of tests

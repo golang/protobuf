@@ -4,10 +4,10 @@
 package oneoftest
 
 import (
-	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
-	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
-	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
-	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	protoiface "google.golang.org/protobuf/runtime/protoiface"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
 )
 

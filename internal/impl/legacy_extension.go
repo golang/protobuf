@@ -7,8 +7,8 @@ package impl
 import (
 	"reflect"
 
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	piface "github.com/golang/protobuf/v2/runtime/protoiface"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
 func makeLegacyExtensionFieldsFunc(t reflect.Type) func(p *messageDataType) pref.KnownFields {

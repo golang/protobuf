@@ -4,22 +4,22 @@
 package legacy
 
 import (
-	proto2_v0_0 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v0.0.0-20160225-2fc053c5"
-	proto2_v0_01 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v0.0.0-20160519-a4ab9ec5"
-	proto2_v1_0 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
-	proto2_v1_1 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.1.0-20180430-b4deda09"
-	proto2_v1_2 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.2.0-20180814-aa810b61"
-	proto2_v1_21 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.2.1-20181126-8d0c54c1"
-	proto3_v0_0 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v0.0.0-20160225-2fc053c5"
-	proto3_v0_01 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v0.0.0-20160519-a4ab9ec5"
-	proto3_v1_0 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v1.0.0-20180125-92554152"
-	proto3_v1_1 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v1.1.0-20180430-b4deda09"
-	proto3_v1_2 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v1.2.0-20180814-aa810b61"
-	proto3_v1_21 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto3.v1.2.1-20181126-8d0c54c1"
-	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
-	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
-	protoiface "github.com/golang/protobuf/v2/runtime/protoiface"
-	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
+	proto2_v0_0 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v0.0.0-20160225-2fc053c5"
+	proto2_v0_01 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v0.0.0-20160519-a4ab9ec5"
+	proto2_v1_0 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
+	proto2_v1_1 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.1.0-20180430-b4deda09"
+	proto2_v1_2 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.2.0-20180814-aa810b61"
+	proto2_v1_21 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.2.1-20181126-8d0c54c1"
+	proto3_v0_0 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v0.0.0-20160225-2fc053c5"
+	proto3_v0_01 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v0.0.0-20160519-a4ab9ec5"
+	proto3_v1_0 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v1.0.0-20180125-92554152"
+	proto3_v1_1 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v1.1.0-20180430-b4deda09"
+	proto3_v1_2 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v1.2.0-20180814-aa810b61"
+	proto3_v1_21 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v1.2.1-20181126-8d0c54c1"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	protoiface "google.golang.org/protobuf/runtime/protoiface"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
 )
 
@@ -239,12 +239,11 @@ var file_legacy_legacy_proto_rawDesc = []byte{
 	0x3c, 0x0a, 0x03, 0x66, 0x31, 0x32, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x67,
 	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67, 0x2e, 0x6f, 0x72, 0x67,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x5f, 0x32, 0x30, 0x31, 0x38, 0x31, 0x31, 0x32, 0x36,
-	0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x03, 0x66, 0x31, 0x32, 0x42, 0x3a, 0x5a,
-	0x38, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x6f, 0x6c, 0x61,
-	0x6e, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x76, 0x32, 0x2f, 0x69,
-	0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x73, 0x2f, 0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x03, 0x66, 0x31, 0x32, 0x42, 0x37, 0x5a,
+	0x35, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67, 0x2e, 0x6f,
+	0x72, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x69, 0x6e, 0x74, 0x65,
+	0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x74, 0x65, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f,
+	0x6c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

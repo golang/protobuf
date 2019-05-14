@@ -6,7 +6,7 @@
 syntax = "proto3";
 
 package pb3;
-option go_package = "github.com/golang/protobuf/v2/encoding/testprotos/pb3";
+option go_package = "google.golang.org/protobuf/encoding/testprotos/pb3";
 
 // Scalars contains scalar field types.
 message Scalars {

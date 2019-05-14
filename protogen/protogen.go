@@ -28,16 +28,16 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/golang/protobuf/v2/encoding/textpb"
-	"github.com/golang/protobuf/v2/internal/fieldnum"
-	"github.com/golang/protobuf/v2/internal/scalar"
-	"github.com/golang/protobuf/v2/proto"
-	"github.com/golang/protobuf/v2/reflect/protodesc"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/reflect/protoregistry"
+	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/internal/fieldnum"
+	"google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protodesc"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
-	pluginpb "github.com/golang/protobuf/v2/types/plugin"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
+	pluginpb "google.golang.org/protobuf/types/plugin"
 )
 
 // Run executes a function as a protoc plugin.

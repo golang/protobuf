@@ -9,12 +9,12 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/golang/protobuf/v2/internal/scalar"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
 	"github.com/google/go-cmp/cmp"
+	"google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/reflect/protoreflect"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
-	pluginpb "github.com/golang/protobuf/v2/types/plugin"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
+	pluginpb "google.golang.org/protobuf/types/plugin"
 )
 
 func TestPluginParameters(t *testing.T) {

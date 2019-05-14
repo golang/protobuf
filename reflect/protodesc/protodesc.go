@@ -9,13 +9,13 @@ package protodesc
 import (
 	"strings"
 
-	"github.com/golang/protobuf/v2/internal/encoding/defval"
-	"github.com/golang/protobuf/v2/internal/errors"
-	"github.com/golang/protobuf/v2/internal/prototype"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/reflect/protoregistry"
+	"google.golang.org/protobuf/internal/encoding/defval"
+	"google.golang.org/protobuf/internal/errors"
+	"google.golang.org/protobuf/internal/prototype"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )
 
 // TODO: Should we be responsible for validating other parts of the descriptor

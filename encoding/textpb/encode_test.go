@@ -11,21 +11,21 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/v2/encoding/textpb"
-	"github.com/golang/protobuf/v2/internal/detrand"
-	"github.com/golang/protobuf/v2/internal/encoding/pack"
-	"github.com/golang/protobuf/v2/internal/encoding/wire"
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	"github.com/golang/protobuf/v2/internal/scalar"
-	"github.com/golang/protobuf/v2/proto"
-	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
-	"github.com/golang/protobuf/v2/runtime/protoiface"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/internal/detrand"
+	"google.golang.org/protobuf/internal/encoding/pack"
+	"google.golang.org/protobuf/internal/encoding/wire"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	"google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/proto"
+	preg "google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/runtime/protoiface"
 
-	"github.com/golang/protobuf/v2/encoding/testprotos/pb2"
-	"github.com/golang/protobuf/v2/encoding/testprotos/pb3"
-	knownpb "github.com/golang/protobuf/v2/types/known"
+	"google.golang.org/protobuf/encoding/testprotos/pb2"
+	"google.golang.org/protobuf/encoding/testprotos/pb3"
+	knownpb "google.golang.org/protobuf/types/known"
 )
 
 func init() {

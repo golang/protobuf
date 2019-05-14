@@ -8,9 +8,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/golang/protobuf/v2/internal/mapsort"
-	"github.com/golang/protobuf/v2/internal/value"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/mapsort"
+	"google.golang.org/protobuf/internal/value"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 func TestRange(t *testing.T) {

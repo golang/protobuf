@@ -6,7 +6,7 @@
 syntax = "proto2";
 
 package pb2;
-option go_package = "github.com/golang/protobuf/v2/encoding/testprotos/pb2";
+option go_package = "google.golang.org/protobuf/encoding/testprotos/pb2";
 
 import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";

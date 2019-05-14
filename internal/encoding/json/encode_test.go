@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/v2/internal/encoding/json"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"google.golang.org/protobuf/internal/encoding/json"
 )
 
 // splitLines is a cmpopts.Option for comparing strings with line breaks.

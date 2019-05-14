@@ -7,10 +7,10 @@ import (
 	"testing"
 
 	proto "github.com/golang/protobuf/proto"
-	testpb "github.com/golang/protobuf/v2/internal/testprotos/test"
-	"github.com/golang/protobuf/v2/reflect/protodesc"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	testpb "google.golang.org/protobuf/internal/testprotos/test"
+	"google.golang.org/protobuf/reflect/protodesc"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )
 
 func TestInit(t *testing.T) {

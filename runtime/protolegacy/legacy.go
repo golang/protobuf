@@ -11,6 +11,6 @@
 // usages of this package are not the author's responsibility.
 package protolegacy
 
-import "github.com/golang/protobuf/v2/internal/legacy"
+import "google.golang.org/protobuf/internal/legacy"
 
 var X legacy.Export

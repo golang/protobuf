@@ -10,8 +10,8 @@ import (
 	"hash/crc32"
 	"math"
 
-	"github.com/golang/protobuf/v2/internal/errors"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/errors"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // These functions exist to support exported APIs in generated protobufs.

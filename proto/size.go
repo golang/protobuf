@@ -7,8 +7,8 @@ package proto
 import (
 	"fmt"
 
-	"github.com/golang/protobuf/v2/internal/encoding/wire"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/encoding/wire"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // Size returns the size in bytes of the wire-format encoding of m.

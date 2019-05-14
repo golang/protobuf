@@ -10,7 +10,7 @@ import "test/test_import.proto";
 import public "test/test_public.proto";
 import weak "test/weak/test_weak.proto";
 
-option go_package = "github.com/golang/protobuf/v2/internal/testprotos/test";
+option go_package = "google.golang.org/protobuf/internal/testprotos/test";
 
 message TestAllTypes {
   message NestedMessage {

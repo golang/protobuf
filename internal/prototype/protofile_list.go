@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"sync"
 
-	pragma "github.com/golang/protobuf/v2/internal/pragma"
-	pset "github.com/golang/protobuf/v2/internal/set"
-	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
+	pragma "google.golang.org/protobuf/internal/pragma"
+	pset "google.golang.org/protobuf/internal/set"
+	pfmt "google.golang.org/protobuf/internal/typefmt"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type names []pref.Name

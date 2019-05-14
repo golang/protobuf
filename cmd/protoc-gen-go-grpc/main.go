@@ -7,8 +7,8 @@
 package main
 
 import (
-	"github.com/golang/protobuf/v2/cmd/protoc-gen-go-grpc/internal_gengogrpc"
-	"github.com/golang/protobuf/v2/protogen"
+	"google.golang.org/protobuf/cmd/protoc-gen-go-grpc/internal_gengogrpc"
+	"google.golang.org/protobuf/protogen"
 )
 
 func main() {

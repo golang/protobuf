@@ -9,14 +9,14 @@ import (
 	"reflect"
 	"sync"
 
-	ptag "github.com/golang/protobuf/v2/internal/encoding/tag"
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	pfmt "github.com/golang/protobuf/v2/internal/typefmt"
-	pvalue "github.com/golang/protobuf/v2/internal/value"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
-	piface "github.com/golang/protobuf/v2/runtime/protoiface"
+	ptag "google.golang.org/protobuf/internal/encoding/tag"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	ptype "google.golang.org/protobuf/internal/prototype"
+	pfmt "google.golang.org/protobuf/internal/typefmt"
+	pvalue "google.golang.org/protobuf/internal/value"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	preg "google.golang.org/protobuf/reflect/protoregistry"
+	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
 // extensionDescKey is a comparable version of protoiface.ExtensionDescV1

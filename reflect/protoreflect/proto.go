@@ -30,8 +30,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/golang/protobuf/v2/internal/encoding/wire"
-	"github.com/golang/protobuf/v2/internal/pragma"
+	"google.golang.org/protobuf/internal/encoding/wire"
+	"google.golang.org/protobuf/internal/pragma"
 )
 
 type doNotImplement pragma.DoNotImplement

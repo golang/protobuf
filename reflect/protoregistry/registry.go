@@ -20,8 +20,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/golang/protobuf/v2/internal/errors"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/internal/errors"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // TODO: Perhaps Register should record the frame of where the function was

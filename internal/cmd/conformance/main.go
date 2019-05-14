@@ -12,10 +12,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/golang/protobuf/v2/encoding/jsonpb"
-	"github.com/golang/protobuf/v2/proto"
+	"google.golang.org/protobuf/encoding/jsonpb"
+	"google.golang.org/protobuf/proto"
 
-	pb "github.com/golang/protobuf/v2/internal/testprotos/conformance"
+	pb "google.golang.org/protobuf/internal/testprotos/conformance"
 )
 
 func main() {

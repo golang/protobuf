@@ -10,7 +10,7 @@
 package protoiface
 
 import (
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type MessageV1 interface {

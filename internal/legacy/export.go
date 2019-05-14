@@ -7,10 +7,10 @@ package legacy
 import (
 	"reflect"
 
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	pvalue "github.com/golang/protobuf/v2/internal/value"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	piface "github.com/golang/protobuf/v2/runtime/protoiface"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	pvalue "google.golang.org/protobuf/internal/value"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
 // Export is a zero-length named type that exists only to export a set of

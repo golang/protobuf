@@ -6,7 +6,7 @@ syntax = "proto2";
 
 package goproto.protoc.extension.extra;
 
-option go_package = "github.com/golang/protobuf/v2/cmd/protoc-gen-go/testdata/extensions/extra";
+option go_package = "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/extensions/extra";
 
 message ExtraMessage {
   optional bytes data = 1;

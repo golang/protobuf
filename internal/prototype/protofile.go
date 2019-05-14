@@ -23,7 +23,7 @@
 // as a field of the corresponding type (e.g., prototype.Message.MapEntry).
 package prototype
 
-import "github.com/golang/protobuf/v2/reflect/protoreflect"
+import "google.golang.org/protobuf/reflect/protoreflect"
 
 // Every struct has a "meta" struct embedded within it as a pointer.
 // The meta type provides additional data structures for efficient lookup on

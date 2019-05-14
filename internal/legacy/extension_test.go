@@ -8,13 +8,13 @@ import (
 	"reflect"
 	"testing"
 
-	pimpl "github.com/golang/protobuf/v2/internal/impl"
-	plegacy "github.com/golang/protobuf/v2/internal/legacy"
-	ptype "github.com/golang/protobuf/v2/internal/prototype"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	piface "github.com/golang/protobuf/v2/runtime/protoiface"
+	pimpl "google.golang.org/protobuf/internal/impl"
+	plegacy "google.golang.org/protobuf/internal/legacy"
+	ptype "google.golang.org/protobuf/internal/prototype"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	piface "google.golang.org/protobuf/runtime/protoiface"
 
-	proto2_20180125 "github.com/golang/protobuf/v2/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
+	proto2_20180125 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
 )
 
 type legacyTestMessage struct {
