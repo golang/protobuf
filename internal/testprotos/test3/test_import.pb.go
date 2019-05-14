@@ -29,6 +29,12 @@ var ImportEnum_value = map[string]int32{
 	"IMPORT_ZERO": 0,
 }
 
+func (x ImportEnum) Enum() *ImportEnum {
+	p := new(ImportEnum)
+	*p = x
+	return p
+}
+
 func (x ImportEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }

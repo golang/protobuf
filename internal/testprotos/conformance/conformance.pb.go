@@ -41,6 +41,12 @@ var WireFormat_value = map[string]int32{
 	"TEXT_FORMAT": 4,
 }
 
+func (x WireFormat) Enum() *WireFormat {
+	p := new(WireFormat)
+	*p = x
+	return p
+}
+
 func (x WireFormat) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
@@ -100,6 +106,12 @@ var TestCategory_value = map[string]int32{
 	"JSON_IGNORE_UNKNOWN_PARSING_TEST": 3,
 	"JSPB_TEST":                        4,
 	"TEXT_FORMAT_TEST":                 5,
+}
+
+func (x TestCategory) Enum() *TestCategory {
+	p := new(TestCategory)
+	*p = x
+	return p
 }
 
 func (x TestCategory) String() string {

@@ -28,6 +28,12 @@ var DeprecatedEnum_value = map[string]int32{
 	"DEPRECATED": 0,
 }
 
+func (x DeprecatedEnum) Enum() *DeprecatedEnum {
+	p := new(DeprecatedEnum)
+	*p = x
+	return p
+}
+
 func (x DeprecatedEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }

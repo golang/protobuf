@@ -38,6 +38,12 @@ var Enum_value = map[string]int32{
 	"TEN":  10,
 }
 
+func (x Enum) Enum() *Enum {
+	p := new(Enum)
+	*p = x
+	return p
+}
+
 func (x Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
@@ -83,6 +89,12 @@ var Enums_NestedEnum_value = map[string]int32{
 	"UNO":  1,
 	"DOS":  2,
 	"DIEZ": 10,
+}
+
+func (x Enums_NestedEnum) Enum() *Enums_NestedEnum {
+	p := new(Enums_NestedEnum)
+	*p = x
+	return p
 }
 
 func (x Enums_NestedEnum) String() string {

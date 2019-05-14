@@ -38,6 +38,12 @@ var ForeignEnum_value = map[string]int32{
 	"FOREIGN_BAZ":  6,
 }
 
+func (x ForeignEnum) Enum() *ForeignEnum {
+	p := new(ForeignEnum)
+	*p = x
+	return p
+}
+
 func (x ForeignEnum) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
@@ -83,6 +89,12 @@ var TestAllTypes_NestedEnum_value = map[string]int32{
 	"BAR": 1,
 	"BAZ": 2,
 	"NEG": -1,
+}
+
+func (x TestAllTypes_NestedEnum) Enum() *TestAllTypes_NestedEnum {
+	p := new(TestAllTypes_NestedEnum)
+	*p = x
+	return p
 }
 
 func (x TestAllTypes_NestedEnum) String() string {

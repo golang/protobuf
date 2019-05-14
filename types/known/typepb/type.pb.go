@@ -37,6 +37,12 @@ var Syntax_value = map[string]int32{
 	"SYNTAX_PROTO3": 1,
 }
 
+func (x Syntax) Enum() *Syntax {
+	p := new(Syntax)
+	*p = x
+	return p
+}
+
 func (x Syntax) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
@@ -149,6 +155,12 @@ var Field_Kind_value = map[string]int32{
 	"TYPE_SINT64":   18,
 }
 
+func (x Field_Kind) Enum() *Field_Kind {
+	p := new(Field_Kind)
+	*p = x
+	return p
+}
+
 func (x Field_Kind) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
@@ -199,6 +211,12 @@ var Field_Cardinality_value = map[string]int32{
 	"CARDINALITY_OPTIONAL": 1,
 	"CARDINALITY_REQUIRED": 2,
 	"CARDINALITY_REPEATED": 3,
+}
+
+func (x Field_Cardinality) Enum() *Field_Cardinality {
+	p := new(Field_Cardinality)
+	*p = x
+	return p
 }
 
 func (x Field_Cardinality) String() string {

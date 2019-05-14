@@ -29,6 +29,12 @@ var FieldTestMessage_Enum_value = map[string]int32{
 	"ZERO": 0,
 }
 
+func (x FieldTestMessage_Enum) Enum() *FieldTestMessage_Enum {
+	p := new(FieldTestMessage_Enum)
+	*p = x
+	return p
+}
+
 func (x FieldTestMessage_Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }

@@ -30,6 +30,12 @@ var Enum_value = map[string]int32{
 	"ZERO": 0,
 }
 
+func (x Enum) Enum() *Enum {
+	p := new(Enum)
+	*p = x
+	return p
+}
+
 func (x Enum) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }

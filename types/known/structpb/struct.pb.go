@@ -34,6 +34,12 @@ var NullValue_value = map[string]int32{
 	"NULL_VALUE": 0,
 }
 
+func (x NullValue) Enum() *NullValue {
+	p := new(NullValue)
+	*p = x
+	return p
+}
+
 func (x NullValue) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }

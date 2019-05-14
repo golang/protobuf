@@ -266,14 +266,17 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	}
 
 	// Enum method.
-	if enum.Desc.Syntax() != protoreflect.Proto3 {
-		g.P("func (x ", enum.GoIdent, ") Enum() *", enum.GoIdent, " {")
-		g.P("p := new(", enum.GoIdent, ")")
-		g.P("*p = x")
-		g.P("return p")
-		g.P("}")
-		g.P()
-	}
+	//
+	// NOTE: A pointer value is needed to represent presence in proto2.
+	// Since a proto2 message can reference a proto3 enum, it is useful to
+	// always generate this method (even on proto3 enums) to support that case.
+	g.P("func (x ", enum.GoIdent, ") Enum() *", enum.GoIdent, " {")
+	g.P("p := new(", enum.GoIdent, ")")
+	g.P("*p = x")
+	g.P("return p")
+	g.P("}")
+	g.P()
+
 	// String method.
 	g.P("func (x ", enum.GoIdent, ") String() string {")
 	g.P("return ", protoimplPackage.Ident("X"), ".EnumStringOf(x.Descriptor(), ", protoreflectPackage.Ident("EnumNumber"), "(x))")
