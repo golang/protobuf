@@ -63,7 +63,9 @@ type MarshalOptions struct {
 type UnmarshalOptions struct {
 	AllowPartial   bool
 	DiscardUnknown bool
-	Resolver       *protoregistry.Types
+	Resolver       interface {
+		protoregistry.ExtensionTypeResolver
+	}
 
 	pragma.NoUnkeyedLiterals
 }

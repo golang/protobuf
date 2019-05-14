@@ -33,10 +33,13 @@ type UnmarshalOptions struct {
 	// return error if there are any missing required fields.
 	AllowPartial bool
 
-	// Resolver is the registry used for type lookups when unmarshaling extensions
-	// and processing Any. If Resolver is not set, unmarshaling will default to
-	// using protoregistry.GlobalTypes.
-	Resolver *protoregistry.Types
+	// Resolver is used for looking up types when unmarshaling
+	// google.protobuf.Any messages or extension fields.
+	// If nil, this defaults to using protoregistry.GlobalTypes.
+	Resolver interface {
+		protoregistry.MessageTypeResolver
+		protoregistry.ExtensionTypeResolver
+	}
 }
 
 // Unmarshal reads the given []byte and populates the given proto.Message using options in

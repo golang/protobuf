@@ -36,10 +36,11 @@ type MarshalOptions struct {
 	// composed of space or tab characters.
 	Indent string
 
-	// Resolver is the registry used for type lookups when marshaling
-	// google.protobuf.Any messages. If Resolver is not set, marshaling will
-	// default to using protoregistry.GlobalTypes.
-	Resolver *protoregistry.Types
+	// Resolver is used for looking up types when expanding google.protobuf.Any
+	// messages. If nil, this defaults to using protoregistry.GlobalTypes.
+	Resolver interface {
+		protoregistry.MessageTypeResolver
+	}
 
 	encoder *json.Encoder
 }

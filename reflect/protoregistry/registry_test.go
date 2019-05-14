@@ -302,41 +302,12 @@ func TestFilesLookup(t *testing.T) {
 }
 
 func TestTypes(t *testing.T) {
-	// Suffix 1 in registry, 2 in parent, 3 in resolver.
 	mt1 := pimpl.Export{}.MessageTypeOf(&testpb.Message1{})
-	mt2 := pimpl.Export{}.MessageTypeOf(&testpb.Message2{})
-	mt3 := pimpl.Export{}.MessageTypeOf(&testpb.Message3{})
 	et1 := pimpl.Export{}.EnumTypeOf(testpb.Enum1_ONE)
-	et2 := pimpl.Export{}.EnumTypeOf(testpb.Enum2_UNO)
-	et3 := pimpl.Export{}.EnumTypeOf(testpb.Enum3_YI)
-	// Suffix indicates field number.
-	xt11 := testpb.E_StringField.Type
-	xt12 := testpb.E_EnumField.Type
-	xt13 := testpb.E_MessageField.Type
-	xt21 := testpb.E_Message4_MessageField.Type
-	xt22 := testpb.E_Message4_EnumField.Type
-	xt23 := testpb.E_Message4_StringField.Type
-	parent := &preg.Types{}
-	if err := parent.Register(mt2, et2, xt12, xt22); err != nil {
-		t.Fatalf("parent.Register() returns unexpected error: %v", err)
-	}
-	registry := &preg.Types{
-		Parent: parent,
-		Resolver: func(url string) (preg.Type, error) {
-			switch {
-			case strings.HasSuffix(url, "testprotos.Message3"):
-				return mt3, nil
-			case strings.HasSuffix(url, "testprotos.Enum3"):
-				return et3, nil
-			case strings.HasSuffix(url, "testprotos.message_field"):
-				return xt13, nil
-			case strings.HasSuffix(url, "testprotos.Message4.string_field"):
-				return xt23, nil
-			}
-			return nil, preg.NotFound
-		},
-	}
-	if err := registry.Register(mt1, et1, xt11, xt21); err != nil {
+	xt1 := testpb.E_StringField.Type
+	xt2 := testpb.E_Message4_MessageField.Type
+	registry := new(preg.Types)
+	if err := registry.Register(mt1, et1, xt1, xt2); err != nil {
 		t.Fatalf("registry.Register() returns unexpected error: %v", err)
 	}
 
@@ -349,12 +320,6 @@ func TestTypes(t *testing.T) {
 		}{{
 			name:        "testprotos.Message1",
 			messageType: mt1,
-		}, {
-			name:        "testprotos.Message2",
-			messageType: mt2,
-		}, {
-			name:        "testprotos.Message3",
-			messageType: mt3,
 		}, {
 			name:         "testprotos.NoSuchMessage",
 			wantErr:      true,
@@ -396,12 +361,6 @@ func TestTypes(t *testing.T) {
 			name:        "testprotos.Message1",
 			messageType: mt1,
 		}, {
-			name:        "foo.com/testprotos.Message2",
-			messageType: mt2,
-		}, {
-			name:        "/testprotos.Message3",
-			messageType: mt3,
-		}, {
 			name:         "type.googleapis.com/testprotos.Nada",
 			wantErr:      true,
 			wantNotFound: true,
@@ -436,12 +395,6 @@ func TestTypes(t *testing.T) {
 			name:     "testprotos.Enum1",
 			enumType: et1,
 		}, {
-			name:     "testprotos.Enum2",
-			enumType: et2,
-		}, {
-			name:     "testprotos.Enum3",
-			enumType: et3,
-		}, {
 			name:         "testprotos.None",
 			wantErr:      true,
 			wantNotFound: true,
@@ -474,22 +427,10 @@ func TestTypes(t *testing.T) {
 			wantNotFound  bool
 		}{{
 			name:          "testprotos.string_field",
-			extensionType: xt11,
-		}, {
-			name:          "testprotos.enum_field",
-			extensionType: xt12,
-		}, {
-			name:          "testprotos.message_field",
-			extensionType: xt13,
+			extensionType: xt1,
 		}, {
 			name:          "testprotos.Message4.message_field",
-			extensionType: xt21,
-		}, {
-			name:          "testprotos.Message4.enum_field",
-			extensionType: xt22,
-		}, {
-			name:          "testprotos.Message4.string_field",
-			extensionType: xt23,
+			extensionType: xt2,
 		}, {
 			name:         "testprotos.None",
 			wantErr:      true,
@@ -525,13 +466,8 @@ func TestTypes(t *testing.T) {
 		}{{
 			parent:        "testprotos.Message1",
 			number:        11,
-			extensionType: xt11,
+			extensionType: xt1,
 		}, {
-			parent:        "testprotos.Message1",
-			number:        12,
-			extensionType: xt12,
-		}, {
-			// FindExtensionByNumber does not use Resolver.
 			parent:       "testprotos.Message1",
 			number:       13,
 			wantErr:      true,
@@ -539,13 +475,8 @@ func TestTypes(t *testing.T) {
 		}, {
 			parent:        "testprotos.Message1",
 			number:        21,
-			extensionType: xt21,
+			extensionType: xt2,
 		}, {
-			parent:        "testprotos.Message1",
-			number:        22,
-			extensionType: xt22,
-		}, {
-			// FindExtensionByNumber does not use Resolver.
 			parent:       "testprotos.Message1",
 			number:       23,
 			wantErr:      true,
@@ -603,8 +534,7 @@ func TestTypes(t *testing.T) {
 	})
 
 	t.Run("RangeMessages", func(t *testing.T) {
-		// RangeMessages do not include messages from Resolver.
-		want := []preg.Type{mt1, mt2}
+		want := []preg.Type{mt1}
 		var got []preg.Type
 		registry.RangeMessages(func(mt pref.MessageType) bool {
 			got = append(got, mt)
@@ -618,8 +548,7 @@ func TestTypes(t *testing.T) {
 	})
 
 	t.Run("RangeEnums", func(t *testing.T) {
-		// RangeEnums do not include enums from Resolver.
-		want := []preg.Type{et1, et2}
+		want := []preg.Type{et1}
 		var got []preg.Type
 		registry.RangeEnums(func(et pref.EnumType) bool {
 			got = append(got, et)
@@ -633,8 +562,7 @@ func TestTypes(t *testing.T) {
 	})
 
 	t.Run("RangeExtensions", func(t *testing.T) {
-		// RangeExtensions do not include messages from Resolver.
-		want := []preg.Type{xt11, xt12, xt21, xt22}
+		want := []preg.Type{xt1, xt2}
 		var got []preg.Type
 		registry.RangeExtensions(func(xt pref.ExtensionType) bool {
 			got = append(got, xt)
@@ -648,8 +576,7 @@ func TestTypes(t *testing.T) {
 	})
 
 	t.Run("RangeExtensionsByMessage", func(t *testing.T) {
-		// RangeExtensions do not include messages from Resolver.
-		want := []preg.Type{xt11, xt12, xt21, xt22}
+		want := []preg.Type{xt1, xt2}
 		var got []preg.Type
 		registry.RangeExtensionsByMessage(pref.FullName("testprotos.Message1"), func(xt pref.ExtensionType) bool {
 			got = append(got, xt)

@@ -276,38 +276,56 @@ var (
 	_ Type = protoreflect.ExtensionType(nil)
 )
 
+// MessageTypeResolver is an interface for looking up messages.
+//
+// A compliant implementation must deterministically return the same type
+// if no error is encountered.
+//
+// The Types type implements this interface.
+type MessageTypeResolver interface {
+	// FindMessageByName looks up a message by its full name.
+	// E.g., "google.protobuf.Any"
+	//
+	// This return (nil, NotFound) if not found.
+	FindMessageByName(message protoreflect.FullName) (protoreflect.MessageType, error)
+
+	// FindMessageByURL looks up a message by a URL identifier.
+	// See documentation on google.protobuf.Any.type_url for the URL format.
+	//
+	// This returns (nil, NotFound) if not found.
+	FindMessageByURL(url string) (protoreflect.MessageType, error)
+}
+
+// ExtensionTypeResolver is an interface for looking up extensions.
+//
+// A compliant implementation must deterministically return the same type
+// if no error is encountered.
+//
+// The Types type implements this interface.
+type ExtensionTypeResolver interface {
+	// FindExtensionByName looks up a extension field by the field's full name.
+	// Note that this is the full name of the field as determined by
+	// where the extension is declared and is unrelated to the full name of the
+	// message being extended.
+	//
+	// This returns (nil, NotFound) if not found.
+	FindExtensionByName(field protoreflect.FullName) (protoreflect.ExtensionType, error)
+
+	// FindExtensionByNumber looks up a extension field by the field number
+	// within some parent message, identified by full name.
+	//
+	// This returns (nil, NotFound) if not found.
+	FindExtensionByNumber(message protoreflect.FullName, field protoreflect.FieldNumber) (protoreflect.ExtensionType, error)
+}
+
+var (
+	_ MessageTypeResolver   = (*Types)(nil)
+	_ ExtensionTypeResolver = (*Types)(nil)
+)
+
 // Types is a registry for looking up or iterating over descriptor types.
 // The Find and Range methods are safe for concurrent use.
 type Types struct {
-	// Parent sets the parent registry to consult if a find operation
-	// could not locate the appropriate entry.
-	//
-	// Setting a parent results in each Range operation also iterating over the
-	// entries contained within the parent. In such a case, it is possible for
-	// Range to emit duplicates (since they may exist in both child and parent).
-	// Range iteration is guaranteed to iterate over local entries before
-	// iterating over parent entries.
-	Parent *Types
-
-	// Resolver sets the local resolver to consult if the local registry does
-	// not contain an entry. The resolver takes precedence over the parent.
-	//
-	// The url is a URL where the full name of the type is the last segment
-	// of the path (i.e. string following the last '/' character).
-	// When missing a '/' character, the URL is the full name of the type.
-	// See documentation on the google.protobuf.Any.type_url field for details.
-	//
-	// If the resolver returns a result, it is not automatically registered
-	// into the local registry. Thus, a resolver function should cache results
-	// such that it deterministically returns the same result given the
-	// same URL assuming the error returned is nil or NotFound.
-	//
-	// If the resolver returns the NotFound error, the registry will consult the
-	// parent registry if it is set.
-	//
-	// Setting a resolver has no effect on the result of each Range operation.
-	Resolver func(url string) (Type, error)
-
 	// TODO: The syntax of the URL is ill-defined and the protobuf team recently
 	// changed the documented semantics in a way that breaks prior usages.
 	// I do not believe they can do this and need to sync up with the
@@ -342,7 +360,6 @@ type (
 // NewTypes returns a registry initialized with the provided set of types.
 // If there are conflicts, the first one takes precedence.
 func NewTypes(typs ...Type) *Types {
-	// TODO: Allow setting resolver and parent via constructor?
 	r := new(Types)
 	r.Register(typs...) // ignore errors; first takes precedence
 	return r
@@ -418,25 +435,17 @@ typeLoop:
 //
 // This returns (nil, NotFound) if not found.
 func (r *Types) FindEnumByName(enum protoreflect.FullName) (protoreflect.EnumType, error) {
-	r.globalCheck()
 	if r == nil {
 		return nil, NotFound
 	}
 	v, _ := r.typesByName[enum]
-	if v == nil && r.Resolver != nil {
-		var err error
-		v, err = r.Resolver(string(enum))
-		if err != nil && err != NotFound {
-			return nil, err
-		}
-	}
 	if v != nil {
 		if et, _ := v.(protoreflect.EnumType); et != nil {
 			return et, nil
 		}
 		return nil, errors.New("found wrong type: got %v, want enum", typeName(v))
 	}
-	return r.Parent.FindEnumByName(enum)
+	return nil, NotFound
 }
 
 // FindMessageByName looks up a message by its full name.
@@ -449,11 +458,10 @@ func (r *Types) FindMessageByName(message protoreflect.FullName) (protoreflect.M
 }
 
 // FindMessageByURL looks up a message by a URL identifier.
-// See Resolver for the format of the URL.
+// See documentation on google.protobuf.Any.type_url for the URL format.
 //
 // This returns (nil, NotFound) if not found.
 func (r *Types) FindMessageByURL(url string) (protoreflect.MessageType, error) {
-	r.globalCheck()
 	if r == nil {
 		return nil, NotFound
 	}
@@ -463,20 +471,13 @@ func (r *Types) FindMessageByURL(url string) (protoreflect.MessageType, error) {
 	}
 
 	v, _ := r.typesByName[message]
-	if v == nil && r.Resolver != nil {
-		var err error
-		v, err = r.Resolver(url)
-		if err != nil && err != NotFound {
-			return nil, err
-		}
-	}
 	if v != nil {
 		if mt, _ := v.(protoreflect.MessageType); mt != nil {
 			return mt, nil
 		}
 		return nil, errors.New("found wrong type: got %v, want message", typeName(v))
 	}
-	return r.Parent.FindMessageByURL(url)
+	return nil, NotFound
 }
 
 // FindExtensionByName looks up a extension field by the field's full name.
@@ -486,25 +487,17 @@ func (r *Types) FindMessageByURL(url string) (protoreflect.MessageType, error) {
 //
 // This returns (nil, NotFound) if not found.
 func (r *Types) FindExtensionByName(field protoreflect.FullName) (protoreflect.ExtensionType, error) {
-	r.globalCheck()
 	if r == nil {
 		return nil, NotFound
 	}
 	v, _ := r.typesByName[field]
-	if v == nil && r.Resolver != nil {
-		var err error
-		v, err = r.Resolver(string(field))
-		if err != nil && err != NotFound {
-			return nil, err
-		}
-	}
 	if v != nil {
 		if xt, _ := v.(protoreflect.ExtensionType); xt != nil {
 			return xt, nil
 		}
 		return nil, errors.New("found wrong type: got %v, want extension", typeName(v))
 	}
-	return r.Parent.FindExtensionByName(field)
+	return nil, NotFound
 }
 
 // FindExtensionByNumber looks up a extension field by the field number
@@ -512,20 +505,18 @@ func (r *Types) FindExtensionByName(field protoreflect.FullName) (protoreflect.E
 //
 // This returns (nil, NotFound) if not found.
 func (r *Types) FindExtensionByNumber(message protoreflect.FullName, field protoreflect.FieldNumber) (protoreflect.ExtensionType, error) {
-	r.globalCheck()
 	if r == nil {
 		return nil, NotFound
 	}
 	if xt, ok := r.extensionsByMessage[message][field]; ok {
 		return xt, nil
 	}
-	return r.Parent.FindExtensionByNumber(message, field)
+	return nil, NotFound
 }
 
 // RangeEnums iterates over all registered enums.
 // Iteration order is undefined.
 func (r *Types) RangeEnums(f func(protoreflect.EnumType) bool) {
-	r.globalCheck()
 	if r == nil {
 		return
 	}
@@ -536,13 +527,11 @@ func (r *Types) RangeEnums(f func(protoreflect.EnumType) bool) {
 			}
 		}
 	}
-	r.Parent.RangeEnums(f)
 }
 
 // RangeMessages iterates over all registered messages.
 // Iteration order is undefined.
 func (r *Types) RangeMessages(f func(protoreflect.MessageType) bool) {
-	r.globalCheck()
 	if r == nil {
 		return
 	}
@@ -553,13 +542,11 @@ func (r *Types) RangeMessages(f func(protoreflect.MessageType) bool) {
 			}
 		}
 	}
-	r.Parent.RangeMessages(f)
 }
 
 // RangeExtensions iterates over all registered extensions.
 // Iteration order is undefined.
 func (r *Types) RangeExtensions(f func(protoreflect.ExtensionType) bool) {
-	r.globalCheck()
 	if r == nil {
 		return
 	}
@@ -570,13 +557,11 @@ func (r *Types) RangeExtensions(f func(protoreflect.ExtensionType) bool) {
 			}
 		}
 	}
-	r.Parent.RangeExtensions(f)
 }
 
 // RangeExtensionsByMessage iterates over all registered extensions filtered
 // by a given message type. Iteration order is undefined.
 func (r *Types) RangeExtensionsByMessage(message protoreflect.FullName, f func(protoreflect.ExtensionType) bool) {
-	r.globalCheck()
 	if r == nil {
 		return
 	}
@@ -584,13 +569,6 @@ func (r *Types) RangeExtensionsByMessage(message protoreflect.FullName, f func(p
 		if !f(xt) {
 			return
 		}
-	}
-	r.Parent.RangeExtensionsByMessage(message, f)
-}
-
-func (r *Types) globalCheck() {
-	if r == GlobalTypes && (r.Parent != nil || r.Resolver != nil) {
-		panic("GlobalTypes.Parent and GlobalTypes.Resolver cannot be set")
 	}
 }
 
