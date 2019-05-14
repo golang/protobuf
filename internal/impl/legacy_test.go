@@ -519,8 +519,6 @@ func TestExtensionConvert(t *testing.T) {
 								if !v.IsNil() {
 									out[name] = v.Interface().(pref.Descriptor).FullName()
 								}
-							case "Oneof", "Extendee":
-								// TODO: Remove this.
 							default:
 								out[name] = m.Call(nil)[0].Interface()
 							}

@@ -329,13 +329,6 @@ type FieldDescriptor interface {
 	// of an enum field, and is nil for any other kind of field.
 	DefaultEnumValue() EnumValueDescriptor
 
-	// TODO: Remove this.
-	// Deprecated: Use ContainingOneof instead.
-	Oneof() OneofDescriptor
-	// TODO: Remove this.
-	// Deprecated: Use ContainingMessage instead.
-	Extendee() MessageDescriptor
-
 	// ContainingOneof is the containing oneof that this field belongs to,
 	// and is nil if this field is not part of a oneof.
 	ContainingOneof() OneofDescriptor

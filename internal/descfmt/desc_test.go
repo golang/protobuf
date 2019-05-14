@@ -26,10 +26,6 @@ func TestDescriptorAccessors(t *testing.T) {
 		"MapKey":           true, // specific to FieldDescriptor
 		"MapValue":         true, // specific to FieldDescriptor
 
-		// TODO: Remove this.
-		"Oneof":    true, // specific to FieldDescriptor
-		"Extendee": true, // specific to FieldDescriptor
-
 		// TODO: These should be removed or handled.
 		"DescriptorProto":       true,
 		"ExtensionRangeOptions": true,

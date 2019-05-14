@@ -205,10 +205,6 @@ func (t fieldDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, 
 func (t fieldDesc) ProtoType(pref.FieldDescriptor)      {}
 func (t fieldDesc) ProtoInternal(pragma.DoNotImplement) {}
 
-// TODO: Remove this.
-func (t fieldDesc) Oneof() pref.OneofDescriptor      { return t.f.ot.lazyInit(t, t.f.OneofName) }
-func (t fieldDesc) Extendee() pref.MessageDescriptor { return nil }
-
 func isPacked(packed OptionalBool, s pref.Syntax, c pref.Cardinality, k pref.Kind) bool {
 	if packed == False || (packed == DefaultBool && s == pref.Proto2) {
 		return false
@@ -338,10 +334,6 @@ func (t extensionDesc) Message() pref.MessageDescriptor     { return t.x.mt.lazy
 func (t extensionDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, t) }
 func (t extensionDesc) ProtoType(pref.FieldDescriptor)      {}
 func (t extensionDesc) ProtoInternal(pragma.DoNotImplement) {}
-
-// TODO: Remove this.
-func (t extensionDesc) Oneof() pref.OneofDescriptor      { return nil }
-func (t extensionDesc) Extendee() pref.MessageDescriptor { return t.x.xt.lazyInit(t, &t.x.ExtendedType) }
 
 type enumMeta struct {
 	inheritedMeta

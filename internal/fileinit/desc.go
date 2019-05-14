@@ -465,10 +465,6 @@ func (fd *fieldDesc) Message() pref.MessageDescriptor { return fd.messageType }
 func (fd *fieldDesc) Format(s fmt.State, r rune)      { descfmt.FormatDesc(s, r, fd) }
 func (fd *fieldDesc) ProtoType(pref.FieldDescriptor)  {}
 
-// TODO: Remove this.
-func (fd *fieldDesc) Oneof() pref.OneofDescriptor      { return fd.oneofType }
-func (fd *fieldDesc) Extendee() pref.MessageDescriptor { return nil }
-
 func (od *oneofDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.Oneof, od.options)
 }
@@ -554,10 +550,6 @@ func (xd *extensionDesc) lazyInit() *extensionLazy {
 func (xd *extensionDesc) ProtoLegacyExtensionDesc() *piface.ExtensionDescV1 {
 	return xd.legacyDesc
 }
-
-// TODO: Remove this.
-func (xd *extensionDesc) Oneof() pref.OneofDescriptor      { return nil }
-func (xd *extensionDesc) Extendee() pref.MessageDescriptor { return xd.extendedType }
 
 type (
 	serviceDesc struct {

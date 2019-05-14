@@ -103,7 +103,3 @@ func (t standaloneExtension) Message() pref.MessageDescriptor           { return
 func (t standaloneExtension) Format(s fmt.State, r rune)                { descfmt.FormatDesc(s, r, t) }
 func (t standaloneExtension) ProtoType(pref.FieldDescriptor)            {}
 func (t standaloneExtension) ProtoInternal(pragma.DoNotImplement)       {}
-
-// TODO: Remove this.
-func (t standaloneExtension) Oneof() pref.OneofDescriptor      { return nil }
-func (t standaloneExtension) Extendee() pref.MessageDescriptor { return t.x.ExtendedType }
