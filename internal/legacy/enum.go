@@ -152,7 +152,7 @@ func LoadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 		// golang/protobuf so the enum may not even be found in the registry.
 		//
 		// Instead, create a bogus enum descriptor to ensure that
-		// most operations continue to work. For example, textpb and jsonpb
+		// most operations continue to work. For example, prototext and protojson
 		// will be unable to parse a message with an enum value by name.
 		e.Syntax = pref.Proto2
 		e.FullName = deriveFullName(t)

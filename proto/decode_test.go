@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/internal/encoding/pack"
 	"google.golang.org/protobuf/internal/errors"
 	"google.golang.org/protobuf/internal/scalar"
@@ -1271,7 +1271,7 @@ func extend(desc *protoV1.ExtensionDesc, value interface{}) buildOpt {
 }
 
 func marshalText(m proto.Message) string {
-	b, _ := textpb.Marshal(m)
+	b, _ := prototext.Marshal(m)
 	return string(b)
 }
 

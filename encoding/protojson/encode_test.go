@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package jsonpb_test
+package protojson_test
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"google.golang.org/protobuf/encoding/jsonpb"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/internal/encoding/pack"
 	"google.golang.org/protobuf/internal/encoding/wire"
 	pimpl "google.golang.org/protobuf/internal/impl"
@@ -67,7 +67,7 @@ func dhex(s string) []byte {
 func TestMarshal(t *testing.T) {
 	tests := []struct {
 		desc    string
-		mo      jsonpb.MarshalOptions
+		mo      protojson.MarshalOptions
 		input   proto.Message
 		want    string
 		wantErr bool // TODO: Verify error message substring.
@@ -749,7 +749,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "required fields not set with AllowPartial",
-		mo:   jsonpb.MarshalOptions{AllowPartial: true},
+		mo:   protojson.MarshalOptions{AllowPartial: true},
 		input: &pb2.Requireds{
 			ReqBool:     scalar.Bool(false),
 			ReqSfixed64: scalar.Int64(0),
@@ -793,7 +793,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "indirect required field with AllowPartial",
-		mo:   jsonpb.MarshalOptions{AllowPartial: true},
+		mo:   protojson.MarshalOptions{AllowPartial: true},
 		input: &pb2.IndirectRequired{
 			OptNested: &pb2.NestedWithRequired{},
 		},
@@ -821,7 +821,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "indirect required field in repeated with AllowPartial",
-		mo:   jsonpb.MarshalOptions{AllowPartial: true},
+		mo:   protojson.MarshalOptions{AllowPartial: true},
 		input: &pb2.IndirectRequired{
 			RptNested: []*pb2.NestedWithRequired{
 				&pb2.NestedWithRequired{},
@@ -853,7 +853,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "indirect required field in map with AllowPartial",
-		mo:   jsonpb.MarshalOptions{AllowPartial: true},
+		mo:   protojson.MarshalOptions{AllowPartial: true},
 		input: &pb2.IndirectRequired{
 			StrToNested: map[string]*pb2.NestedWithRequired{
 				"fail": &pb2.NestedWithRequired{},
@@ -877,7 +877,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "indirect required field in oneof with AllowPartial",
-		mo:   jsonpb.MarshalOptions{AllowPartial: true},
+		mo:   protojson.MarshalOptions{AllowPartial: true},
 		input: &pb2.IndirectRequired{
 			Union: &pb2.IndirectRequired_OneofNested{
 				OneofNested: &pb2.NestedWithRequired{},
@@ -1531,7 +1531,7 @@ func TestMarshal(t *testing.T) {
 		want:  `{}`,
 	}, {
 		desc: "Any with non-custom message",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: func() proto.Message {
@@ -1559,7 +1559,7 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc: "Any with empty embedded message",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
@@ -1568,12 +1568,12 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc:    "Any without registered type",
-		mo:      jsonpb.MarshalOptions{Resolver: preg.NewTypes()},
+		mo:      protojson.MarshalOptions{Resolver: preg.NewTypes()},
 		input:   &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
 		wantErr: true,
 	}, {
 		desc: "Any with missing required error",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
 		input: func() proto.Message {
@@ -1599,7 +1599,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with partial required and AllowPartial",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			AllowPartial: true,
 			Resolver:     preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
@@ -1625,7 +1625,7 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc: "Any with invalid UTF8",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: func() proto.Message {
@@ -1648,7 +1648,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with invalid value",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: &knownpb.Any{
@@ -1658,7 +1658,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with BoolValue",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{})),
 		},
 		input: func() proto.Message {
@@ -1678,7 +1678,7 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc: "Any with Empty",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		input: func() proto.Message {
@@ -1698,7 +1698,7 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc: "Any with StringValue containing invalid UTF8",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{})),
 		},
 		input: func() proto.Message {
@@ -1719,7 +1719,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with Int64Value",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Int64Value{})),
 		},
 		input: func() proto.Message {
@@ -1739,7 +1739,7 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc: "Any with Duration",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Duration{})),
 		},
 		input: func() proto.Message {
@@ -1759,7 +1759,7 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc: "Any with empty Value",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
 		},
 		input: func() proto.Message {
@@ -1776,7 +1776,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with Value of StringValue",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
 		},
 		input: func() proto.Message {
@@ -1797,7 +1797,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with Value of NullValue",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
 		},
 		input: func() proto.Message {
@@ -1817,7 +1817,7 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc: "Any with Struct",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(
 				pimpl.Export{}.MessageTypeOf(&knownpb.Struct{}),
 				pimpl.Export{}.MessageTypeOf(&knownpb.Value{}),
@@ -1865,7 +1865,7 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc: "Any with missing type_url",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{})),
 		},
 		input: func() proto.Message {
@@ -1881,7 +1881,7 @@ func TestMarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "well known types as field values",
-		mo: jsonpb.MarshalOptions{
+		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		input: &pb2.KnownTypes{

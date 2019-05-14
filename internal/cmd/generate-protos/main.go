@@ -21,8 +21,8 @@ import (
 
 	gengogrpc "google.golang.org/protobuf/cmd/protoc-gen-go-grpc/internal_gengogrpc"
 	gengo "google.golang.org/protobuf/cmd/protoc-gen-go/internal_gengo"
+	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/internal/detrand"
-	"google.golang.org/protobuf/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 

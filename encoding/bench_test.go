@@ -11,8 +11,8 @@ import (
 
 	jsonpbV1 "github.com/golang/protobuf/jsonpb"
 	protoV1 "github.com/golang/protobuf/proto"
-	"google.golang.org/protobuf/encoding/jsonpb"
-	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/encoding/prototext"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 
 	tpb "google.golang.org/protobuf/internal/testprotos/test"
@@ -145,7 +145,7 @@ func BenchmarkTextEncode(b *testing.B) {
 		if *benchV1 {
 			protoV1.MarshalTextString(m)
 		} else {
-			_, err := textpb.MarshalOptions{Indent: "  "}.Marshal(m)
+			_, err := prototext.MarshalOptions{Indent: "  "}.Marshal(m)
 			if err != nil {
 				b.Fatal(err)
 			}
@@ -155,7 +155,7 @@ func BenchmarkTextEncode(b *testing.B) {
 
 func BenchmarkTextDecode(b *testing.B) {
 	m := makeProto()
-	in, err := textpb.MarshalOptions{Indent: "  "}.Marshal(m)
+	in, err := prototext.MarshalOptions{Indent: "  "}.Marshal(m)
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -166,7 +166,7 @@ func BenchmarkTextDecode(b *testing.B) {
 		if *benchV1 {
 			err = protoV1.UnmarshalText(string(in), m)
 		} else {
-			err = textpb.Unmarshal(m, in)
+			err = prototext.Unmarshal(m, in)
 		}
 		if err != nil {
 			b.Fatal(err)
@@ -182,7 +182,7 @@ func BenchmarkJSONEncode(b *testing.B) {
 			jsm := &jsonpbV1.Marshaler{Indent: "  "}
 			_, err = jsm.MarshalToString(m)
 		} else {
-			_, err = jsonpb.MarshalOptions{Indent: "  "}.Marshal(m)
+			_, err = protojson.MarshalOptions{Indent: "  "}.Marshal(m)
 		}
 		if err != nil {
 			b.Fatal(err)
@@ -192,7 +192,7 @@ func BenchmarkJSONEncode(b *testing.B) {
 
 func BenchmarkJSONDecode(b *testing.B) {
 	m := makeProto()
-	out, err := jsonpb.MarshalOptions{Indent: "  "}.Marshal(m)
+	out, err := protojson.MarshalOptions{Indent: "  "}.Marshal(m)
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -203,7 +203,7 @@ func BenchmarkJSONDecode(b *testing.B) {
 		if *benchV1 {
 			err = jsonpbV1.UnmarshalString(string(out), m)
 		} else {
-			err = jsonpb.Unmarshal(m, out)
+			err = protojson.Unmarshal(m, out)
 		}
 		if err != nil {
 			b.Fatal(err)

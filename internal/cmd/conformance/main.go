@@ -12,7 +12,7 @@ import (
 	"log"
 	"os"
 
-	"google.golang.org/protobuf/encoding/jsonpb"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 
 	pb "google.golang.org/protobuf/internal/testprotos/conformance"
@@ -69,7 +69,7 @@ func handle(req *pb.ConformanceRequest) *pb.ConformanceResponse {
 	case *pb.ConformanceRequest_ProtobufPayload:
 		err = proto.Unmarshal(p.ProtobufPayload, msg)
 	case *pb.ConformanceRequest_JsonPayload:
-		err = jsonpb.UnmarshalOptions{
+		err = protojson.UnmarshalOptions{
 			DiscardUnknown: req.TestCategory == pb.TestCategory_JSON_IGNORE_UNKNOWN_PARSING_TEST,
 		}.Unmarshal(msg, []byte(p.JsonPayload))
 	default:
@@ -103,7 +103,7 @@ func handle(req *pb.ConformanceRequest) *pb.ConformanceResponse {
 			},
 		}
 	case pb.WireFormat_JSON:
-		p, err := jsonpb.Marshal(msg)
+		p, err := protojson.Marshal(msg)
 		if err != nil {
 			return &pb.ConformanceResponse{
 				Result: &pb.ConformanceResponse_SerializeError{

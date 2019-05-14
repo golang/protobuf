@@ -10,8 +10,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
 	descriptorpb "google.golang.org/protobuf/types/descriptor"

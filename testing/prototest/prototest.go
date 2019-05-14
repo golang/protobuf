@@ -12,7 +12,7 @@ import (
 	"sort"
 	"testing"
 
-	textpb "google.golang.org/protobuf/encoding/textpb"
+	prototext "google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/proto"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -83,7 +83,7 @@ func TestMessage(t testing.TB, message proto.Message) {
 }
 
 func marshalText(m proto.Message) string {
-	b, _ := textpb.MarshalOptions{Indent: "  "}.Marshal(m)
+	b, _ := prototext.MarshalOptions{Indent: "  "}.Marshal(m)
 	return string(b)
 }
 
@@ -346,7 +346,7 @@ func formatValue(v pref.Value) string {
 		buf.WriteString("]")
 		return buf.String()
 	case pref.Message:
-		b, err := textpb.Marshal(v.Interface())
+		b, err := prototext.Marshal(v.Interface())
 		if err != nil {
 			return fmt.Sprintf("<%v>", err)
 		}

@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package jsonpb marshals and unmarshals protocol buffer messages as JSON
+// Package protojson marshals and unmarshals protocol buffer messages as JSON
 // format. It follows the guide at
 // https://developers.google.com/protocol-buffers/docs/proto3#json.
 //
 // This package produces a different output than the standard "encoding/json"
 // package, which does not operate correctly on protocol buffer messages.
-package jsonpb
+package protojson

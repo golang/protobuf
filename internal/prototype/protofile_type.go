@@ -230,7 +230,7 @@ type jsonName struct {
 
 func (p *jsonName) lazyInit(f *Field) string {
 	p.once.Do(func() {
-		// TODO: We may need to share this logic with jsonpb for implementation
+		// TODO: We may need to share this logic with protojson for implementation
 		// of the FieldMask well-known type.
 		if f.JSONName != "" {
 			p.name = f.JSONName

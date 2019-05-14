@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"google.golang.org/protobuf/protogen"
+	"google.golang.org/protobuf/compiler/protogen"
 
 	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )

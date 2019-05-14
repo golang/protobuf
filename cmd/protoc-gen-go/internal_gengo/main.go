@@ -16,9 +16,9 @@ import (
 	"unicode"
 	"unicode/utf8"
 
+	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/internal/encoding/tag"
 	"google.golang.org/protobuf/internal/fieldnum"
-	"google.golang.org/protobuf/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
 	descriptorpb "google.golang.org/protobuf/types/descriptor"
@@ -711,7 +711,7 @@ func deprecationComment(deprecated bool) string {
 	return "// Deprecated: Do not use."
 }
 
-// TODO: Remove this. This was added to aid jsonpb, but jsonpb does this work
+// TODO: Remove this. This was added to aid protojson, but protojson does this work
 // through the use of protobuf reflection now.
 func genWellKnownType(g *protogen.GeneratedFile, ptr string, ident protogen.GoIdent, desc protoreflect.Descriptor) {
 	if wellKnownTypes[desc.FullName()] {

@@ -28,7 +28,7 @@ import (
 	"strconv"
 	"strings"
 
-	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/internal/fieldnum"
 	"google.golang.org/protobuf/internal/scalar"
 	"google.golang.org/protobuf/proto"
@@ -1115,7 +1115,7 @@ func (g *GeneratedFile) metaFile(content []byte) (string, error) {
 		}
 	}
 
-	b, err := textpb.Marshal(info)
+	b, err := prototext.Marshal(info)
 	if err != nil {
 		return "", err
 	}

@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"strconv"
 
-	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/encoding/prototext"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -111,6 +111,6 @@ func (Export) MessageDescriptorOf(m message) pref.MessageDescriptor {
 // MessageStringOf returns the message value as a string,
 // which is the message serialized in the protobuf text format.
 func (Export) MessageStringOf(m pref.ProtoMessage) string {
-	b, _ := textpb.MarshalOptions{AllowPartial: true}.Marshal(m)
+	b, _ := prototext.MarshalOptions{AllowPartial: true}.Marshal(m)
 	return string(b)
 }

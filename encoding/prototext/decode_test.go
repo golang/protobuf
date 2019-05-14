@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package textpb_test
+package prototext_test
 
 import (
 	"math"
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/internal/errors"
 	pimpl "google.golang.org/protobuf/internal/impl"
 	"google.golang.org/protobuf/internal/scalar"
@@ -24,7 +24,7 @@ import (
 func TestUnmarshal(t *testing.T) {
 	tests := []struct {
 		desc         string
-		umo          textpb.UnmarshalOptions
+		umo          prototext.UnmarshalOptions
 		inputMessage proto.Message
 		inputText    string
 		wantMessage  proto.Message
@@ -1001,7 +1001,7 @@ req_enum: ONE
 		wantErr: true,
 	}, {
 		desc:         "required fields partially set with AllowPartial",
-		umo:          textpb.UnmarshalOptions{AllowPartial: true},
+		umo:          prototext.UnmarshalOptions{AllowPartial: true},
 		inputMessage: &pb2.Requireds{},
 		inputText: `
 req_bool: false
@@ -1044,7 +1044,7 @@ req_nested: {}
 		wantErr: true,
 	}, {
 		desc:         "indirect required field with AllowPartial",
-		umo:          textpb.UnmarshalOptions{AllowPartial: true},
+		umo:          prototext.UnmarshalOptions{AllowPartial: true},
 		inputMessage: &pb2.IndirectRequired{},
 		inputText:    "opt_nested: {}",
 		wantMessage: &pb2.IndirectRequired{
@@ -1070,7 +1070,7 @@ rpt_nested: {}
 		wantErr: true,
 	}, {
 		desc:         "indirect required field in repeated with AllowPartial",
-		umo:          textpb.UnmarshalOptions{AllowPartial: true},
+		umo:          prototext.UnmarshalOptions{AllowPartial: true},
 		inputMessage: &pb2.IndirectRequired{},
 		inputText: `
 rpt_nested: {
@@ -1111,7 +1111,7 @@ str_to_nested: {
 		wantErr: true,
 	}, {
 		desc:         "indirect required field in map with AllowPartial",
-		umo:          textpb.UnmarshalOptions{AllowPartial: true},
+		umo:          prototext.UnmarshalOptions{AllowPartial: true},
 		inputMessage: &pb2.IndirectRequired{},
 		inputText: `
 str_to_nested: {
@@ -1145,7 +1145,7 @@ str_to_nested: {
 		wantErr: true,
 	}, {
 		desc:         "indirect required field in oneof with AllowPartial",
-		umo:          textpb.UnmarshalOptions{AllowPartial: true},
+		umo:          prototext.UnmarshalOptions{AllowPartial: true},
 		inputMessage: &pb2.IndirectRequired{},
 		inputText: `oneof_nested: {}
 `,
@@ -1390,7 +1390,7 @@ value: "some bytes"
 		},
 	}, {
 		desc: "Any expanded",
-		umo: textpb.UnmarshalOptions{
+		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -1420,7 +1420,7 @@ value: "some bytes"
 		}(),
 	}, {
 		desc: "Any expanded with empty value",
-		umo: textpb.UnmarshalOptions{
+		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -1430,7 +1430,7 @@ value: "some bytes"
 		},
 	}, {
 		desc: "Any expanded with missing required error",
-		umo: textpb.UnmarshalOptions{
+		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -1458,7 +1458,7 @@ value: "some bytes"
 		wantErr: true,
 	}, {
 		desc: "Any with invalid UTF-8",
-		umo: textpb.UnmarshalOptions{
+		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb3.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -1484,13 +1484,13 @@ value: "some bytes"
 		wantErr: true,
 	}, {
 		desc:         "Any expanded with unregistered type",
-		umo:          textpb.UnmarshalOptions{Resolver: preg.NewTypes()},
+		umo:          prototext.UnmarshalOptions{Resolver: preg.NewTypes()},
 		inputMessage: &knownpb.Any{},
 		inputText:    `[SomeMessage]: {}`,
 		wantErr:      true,
 	}, {
 		desc: "Any expanded with invalid value",
-		umo: textpb.UnmarshalOptions{
+		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -1498,7 +1498,7 @@ value: "some bytes"
 		wantErr:      true,
 	}, {
 		desc: "Any expanded with unknown fields",
-		umo: textpb.UnmarshalOptions{
+		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -1509,7 +1509,7 @@ unknown: ""
 		wantErr: true,
 	}, {
 		desc: "Any contains expanded and unexpanded fields",
-		umo: textpb.UnmarshalOptions{
+		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},

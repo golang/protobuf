@@ -1,10 +1,10 @@
-package textpb_test
+package prototext_test
 
 import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/internal/impl"
 	pimpl "google.golang.org/protobuf/internal/impl"
 	"google.golang.org/protobuf/internal/scalar"
@@ -220,13 +220,13 @@ func TestRoundTrip(t *testing.T) {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
 			t.Parallel()
-			b, err := textpb.MarshalOptions{Resolver: tt.resolver}.Marshal(tt.message)
+			b, err := prototext.MarshalOptions{Resolver: tt.resolver}.Marshal(tt.message)
 			if err != nil {
 				t.Errorf("Marshal() returned error: %v\n\n", err)
 			}
 
 			gotMessage := new(pb2.KnownTypes)
-			err = textpb.UnmarshalOptions{Resolver: tt.resolver}.Unmarshal(gotMessage, b)
+			err = prototext.UnmarshalOptions{Resolver: tt.resolver}.Unmarshal(gotMessage, b)
 			if err != nil {
 				t.Errorf("Unmarshal() returned error: %v\n\n", err)
 			}

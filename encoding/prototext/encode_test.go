@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package textpb_test
+package prototext_test
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/internal/detrand"
 	"google.golang.org/protobuf/internal/encoding/pack"
 	"google.golang.org/protobuf/internal/encoding/wire"
@@ -73,7 +73,7 @@ func dhex(s string) []byte {
 func TestMarshal(t *testing.T) {
 	tests := []struct {
 		desc    string
-		mo      textpb.MarshalOptions
+		mo      prototext.MarshalOptions
 		input   proto.Message
 		want    string
 		wantErr bool // TODO: Verify error message content.
@@ -761,7 +761,7 @@ req_enum: ONE
 		wantErr: true,
 	}, {
 		desc: "required fields not set with AllowPartial",
-		mo:   textpb.MarshalOptions{AllowPartial: true},
+		mo:   prototext.MarshalOptions{AllowPartial: true},
 		input: &pb2.Requireds{
 			ReqBool:     scalar.Bool(false),
 			ReqSfixed64: scalar.Int64(0xbeefcafe),
@@ -801,7 +801,7 @@ req_nested: {}
 		wantErr: true,
 	}, {
 		desc: "indirect required field with AllowPartial",
-		mo:   textpb.MarshalOptions{AllowPartial: true},
+		mo:   prototext.MarshalOptions{AllowPartial: true},
 		input: &pb2.IndirectRequired{
 			OptNested: &pb2.NestedWithRequired{},
 		},
@@ -823,7 +823,7 @@ req_nested: {}
 		wantErr: true,
 	}, {
 		desc: "indirect required field in repeated with AllowPartial",
-		mo:   textpb.MarshalOptions{AllowPartial: true},
+		mo:   prototext.MarshalOptions{AllowPartial: true},
 		input: &pb2.IndirectRequired{
 			RptNested: []*pb2.NestedWithRequired{
 				&pb2.NestedWithRequired{},
@@ -851,7 +851,7 @@ req_nested: {}
 		wantErr: true,
 	}, {
 		desc: "indirect required field in map with AllowPartial",
-		mo:   textpb.MarshalOptions{AllowPartial: true},
+		mo:   prototext.MarshalOptions{AllowPartial: true},
 		input: &pb2.IndirectRequired{
 			StrToNested: map[string]*pb2.NestedWithRequired{
 				"fail": &pb2.NestedWithRequired{},
@@ -873,7 +873,7 @@ req_nested: {}
 		wantErr: true,
 	}, {
 		desc: "indirect required field in oneof with AllowPartial",
-		mo:   textpb.MarshalOptions{AllowPartial: true},
+		mo:   prototext.MarshalOptions{AllowPartial: true},
 		input: &pb2.IndirectRequired{
 			Union: &pb2.IndirectRequired_OneofNested{
 				OneofNested: &pb2.NestedWithRequired{},
@@ -1006,7 +1006,7 @@ opt_int32: 42
 		wantErr: true,
 	}, {
 		desc: "extension partial with AllowPartial",
-		mo:   textpb.MarshalOptions{AllowPartial: true},
+		mo:   prototext.MarshalOptions{AllowPartial: true},
 		input: func() proto.Message {
 			m := &pb2.Extensions{}
 			setExtension(m, pb2.E_OptExtPartial, &pb2.PartialRequired{
@@ -1167,7 +1167,7 @@ opt_int32: 42
 `,
 	}, {
 		desc: "Any not expanded",
-		mo: textpb.MarshalOptions{
+		mo: prototext.MarshalOptions{
 			Resolver: preg.NewTypes(),
 		},
 		input: func() proto.Message {
@@ -1191,7 +1191,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 `,
 	}, {
 		desc: "Any expanded",
-		mo: textpb.MarshalOptions{
+		mo: prototext.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: func() proto.Message {
@@ -1219,7 +1219,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 `,
 	}, {
 		desc: "Any expanded with missing required error",
-		mo: textpb.MarshalOptions{
+		mo: prototext.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
 		input: func() proto.Message {
@@ -1245,7 +1245,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 		wantErr: true,
 	}, {
 		desc: "Any with invalid UTF-8",
-		mo: textpb.MarshalOptions{
+		mo: prototext.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb3.Nested{})),
 		},
 		input: func() proto.Message {
@@ -1268,7 +1268,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 		wantErr: true,
 	}, {
 		desc: "Any with invalid value",
-		mo: textpb.MarshalOptions{
+		mo: prototext.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		input: &knownpb.Any{

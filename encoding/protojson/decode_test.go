@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package jsonpb_test
+package protojson_test
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	protoV1 "github.com/golang/protobuf/proto"
-	"google.golang.org/protobuf/encoding/jsonpb"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/encoding/testprotos/pb2"
 	"google.golang.org/protobuf/encoding/testprotos/pb3"
 	pimpl "google.golang.org/protobuf/internal/impl"
@@ -53,7 +53,7 @@ func registerExtension(xd *protoiface.ExtensionDescV1) {
 func TestUnmarshal(t *testing.T) {
 	tests := []struct {
 		desc         string
-		umo          jsonpb.UnmarshalOptions
+		umo          protojson.UnmarshalOptions
 		inputMessage proto.Message
 		inputText    string
 		wantMessage  proto.Message
@@ -1065,7 +1065,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc:         "required fields partially set with AllowPartial",
-		umo:          jsonpb.UnmarshalOptions{AllowPartial: true},
+		umo:          protojson.UnmarshalOptions{AllowPartial: true},
 		inputMessage: &pb2.Requireds{},
 		inputText: `{
   "reqBool": false,
@@ -1110,7 +1110,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc:         "indirect required field with AllowPartial",
-		umo:          jsonpb.UnmarshalOptions{AllowPartial: true},
+		umo:          protojson.UnmarshalOptions{AllowPartial: true},
 		inputMessage: &pb2.IndirectRequired{},
 		inputText: `{
   "optNested": {}
@@ -1138,7 +1138,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc:         "indirect required field in repeated with AllowPartial",
-		umo:          jsonpb.UnmarshalOptions{AllowPartial: true},
+		umo:          protojson.UnmarshalOptions{AllowPartial: true},
 		inputMessage: &pb2.IndirectRequired{},
 		inputText: `{
   "rptNested": [
@@ -1176,7 +1176,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc:         "indirect required field in map with AllowPartial",
-		umo:          jsonpb.UnmarshalOptions{AllowPartial: true},
+		umo:          protojson.UnmarshalOptions{AllowPartial: true},
 		inputMessage: &pb2.IndirectRequired{},
 		inputText: `{
   "strToNested": {
@@ -1208,7 +1208,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc:         "indirect required field in oneof with AllowPartial",
-		umo:          jsonpb.UnmarshalOptions{AllowPartial: true},
+		umo:          protojson.UnmarshalOptions{AllowPartial: true},
 		inputMessage: &pb2.IndirectRequired{},
 		inputText: `{
   "oneofNested": {}
@@ -1976,7 +1976,7 @@ func TestUnmarshal(t *testing.T) {
 		wantMessage:  &knownpb.Any{},
 	}, {
 		desc: "Any with non-custom message",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2005,7 +2005,7 @@ func TestUnmarshal(t *testing.T) {
 		}(),
 	}, {
 		desc: "Any with empty embedded message",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2013,13 +2013,13 @@ func TestUnmarshal(t *testing.T) {
 		wantMessage:  &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
 	}, {
 		desc:         "Any without registered type",
-		umo:          jsonpb.UnmarshalOptions{Resolver: preg.NewTypes()},
+		umo:          protojson.UnmarshalOptions{Resolver: preg.NewTypes()},
 		inputMessage: &knownpb.Any{},
 		inputText:    `{"@type": "foo/pb2.Nested"}`,
 		wantErr:      true,
 	}, {
 		desc: "Any with missing required error",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2046,7 +2046,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with partial required and AllowPartial",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			AllowPartial: true,
 			Resolver:     preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
@@ -2073,7 +2073,7 @@ func TestUnmarshal(t *testing.T) {
 		}(),
 	}, {
 		desc: "Any with invalid UTF8",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2097,7 +2097,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with BoolValue",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2118,7 +2118,7 @@ func TestUnmarshal(t *testing.T) {
 		}(),
 	}, {
 		desc: "Any with Empty",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2131,7 +2131,7 @@ func TestUnmarshal(t *testing.T) {
 		},
 	}, {
 		desc: "Any with missing Empty",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2141,7 +2141,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with StringValue containing invalid UTF8",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2163,7 +2163,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with Int64Value",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Int64Value{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2184,7 +2184,7 @@ func TestUnmarshal(t *testing.T) {
 		}(),
 	}, {
 		desc: "Any with invalid Int64Value",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Int64Value{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2195,7 +2195,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with invalid UInt64Value",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.UInt64Value{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2206,7 +2206,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with Duration",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Duration{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2227,7 +2227,7 @@ func TestUnmarshal(t *testing.T) {
 		}(),
 	}, {
 		desc: "Any with Value of StringValue",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2249,7 +2249,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with Value of NullValue",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2270,7 +2270,7 @@ func TestUnmarshal(t *testing.T) {
 		}(),
 	}, {
 		desc: "Any with Struct",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(
 				pimpl.Export{}.MessageTypeOf(&knownpb.Struct{}),
 				pimpl.Export{}.MessageTypeOf(&knownpb.Value{}),
@@ -2319,7 +2319,7 @@ func TestUnmarshal(t *testing.T) {
 		}(),
 	}, {
 		desc:         "Any with missing @type",
-		umo:          jsonpb.UnmarshalOptions{},
+		umo:          protojson.UnmarshalOptions{},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
   "value": {}
@@ -2334,7 +2334,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with duplicate @type",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(
 				pimpl.Export{}.MessageTypeOf(&pb2.Nested{}),
 				pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{}),
@@ -2349,7 +2349,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with duplicate value",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2361,7 +2361,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with unknown field",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
 		inputMessage: &knownpb.Any{},
@@ -2373,7 +2373,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "Any with embedded type containing Any",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(
 				pimpl.Export{}.MessageTypeOf(&pb2.KnownTypes{}),
 				pimpl.Export{}.MessageTypeOf(&knownpb.Any{}),
@@ -2411,7 +2411,7 @@ func TestUnmarshal(t *testing.T) {
 		wantErr: true,
 	}, {
 		desc: "well known types as field values",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},
 		inputMessage: &pb2.KnownTypes{},
@@ -2490,7 +2490,7 @@ func TestUnmarshal(t *testing.T) {
 		},
 	}, {
 		desc:         "DiscardUnknown: regular messages",
-		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		umo:          protojson.UnmarshalOptions{DiscardUnknown: true},
 		inputMessage: &pb3.Nests{},
 		inputText: `{
   "sNested": {
@@ -2504,7 +2504,7 @@ func TestUnmarshal(t *testing.T) {
 		wantMessage: &pb3.Nests{SNested: &pb3.Nested{}},
 	}, {
 		desc:         "DiscardUnknown: repeated",
-		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		umo:          protojson.UnmarshalOptions{DiscardUnknown: true},
 		inputMessage: &pb2.Nests{},
 		inputText: `{
   "rptNested": [
@@ -2520,7 +2520,7 @@ func TestUnmarshal(t *testing.T) {
 		},
 	}, {
 		desc:         "DiscardUnknown: map",
-		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		umo:          protojson.UnmarshalOptions{DiscardUnknown: true},
 		inputMessage: &pb3.Maps{},
 		inputText: `{
   "strToNested": {
@@ -2536,7 +2536,7 @@ func TestUnmarshal(t *testing.T) {
 		},
 	}, {
 		desc:         "DiscardUnknown: extension",
-		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		umo:          protojson.UnmarshalOptions{DiscardUnknown: true},
 		inputMessage: &pb2.Extensions{},
 		inputText: `{
   "[pb2.opt_ext_nested]": {
@@ -2550,13 +2550,13 @@ func TestUnmarshal(t *testing.T) {
 		}(),
 	}, {
 		desc:         "DiscardUnknown: Empty",
-		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		umo:          protojson.UnmarshalOptions{DiscardUnknown: true},
 		inputMessage: &knownpb.Empty{},
 		inputText:    `{"unknown": "something"}`,
 		wantMessage:  &knownpb.Empty{},
 	}, {
 		desc:         "DiscardUnknown: Any without type",
-		umo:          jsonpb.UnmarshalOptions{DiscardUnknown: true},
+		umo:          protojson.UnmarshalOptions{DiscardUnknown: true},
 		inputMessage: &knownpb.Any{},
 		inputText: `{
   "value": {"foo": "bar"},
@@ -2565,7 +2565,7 @@ func TestUnmarshal(t *testing.T) {
 		wantMessage: &knownpb.Any{},
 	}, {
 		desc: "DiscardUnknown: Any",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			DiscardUnknown: true,
 			Resolver:       preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
@@ -2579,7 +2579,7 @@ func TestUnmarshal(t *testing.T) {
 		},
 	}, {
 		desc: "DiscardUnknown: Any with Empty",
-		umo: jsonpb.UnmarshalOptions{
+		umo: protojson.UnmarshalOptions{
 			DiscardUnknown: true,
 			Resolver:       preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
 		},

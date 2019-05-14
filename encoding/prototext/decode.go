@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package textpb
+package prototext
 
 import (
 	"fmt"
@@ -46,7 +46,7 @@ func (o UnmarshalOptions) Unmarshal(m proto.Message, b []byte) error {
 
 	mr := m.ProtoReflect()
 	// Clear all fields before populating it.
-	// TODO: Determine if this needs to be consistent with jsonpb and binary unmarshal where
+	// TODO: Determine if this needs to be consistent with protojson and binary unmarshal where
 	// behavior is to merge values into existing message. If decision is to not clear the fields
 	// ahead, code will need to be updated properly when merging nested messages.
 	resetMessage(mr)
