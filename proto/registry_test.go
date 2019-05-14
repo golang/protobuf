@@ -10,7 +10,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )
 
 func TestRegistry(t *testing.T) {

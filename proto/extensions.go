@@ -16,9 +16,9 @@ import (
 	"sync"
 
 	"github.com/golang/protobuf/internal/wire"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/runtime/protoiface"
-	"github.com/golang/protobuf/v2/runtime/protoimpl"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/runtime/protoiface"
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 // ErrMissingExtension is the error returned by GetExtension if the named extension is not in the message.

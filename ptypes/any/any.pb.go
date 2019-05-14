@@ -4,10 +4,10 @@
 package any
 
 import (
-	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
-	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
-	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	known "github.com/golang/protobuf/v2/types/known"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	known "google.golang.org/protobuf/types/known"
 	sync "sync"
 )
 

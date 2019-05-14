@@ -5,8 +5,8 @@
 package proto
 
 import (
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/runtime/protoimpl"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 // SetDefaults sets unset protocol buffer fields to their default values.

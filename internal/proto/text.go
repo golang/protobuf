@@ -12,9 +12,9 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/golang/protobuf/v2/encoding/textpb"
-	preg "github.com/golang/protobuf/v2/reflect/protoregistry"
-	"github.com/golang/protobuf/v2/runtime/protoimpl"
+	"google.golang.org/protobuf/encoding/textpb"
+	preg "google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 // TextMarshaler is a configurable text format marshaler.

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/golang/protobuf/v2/runtime/protoimpl"
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 // Constants that identify the encoding of a value on the wire.

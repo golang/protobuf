@@ -10,8 +10,8 @@ import (
 	"io"
 	"reflect"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
-	knownpb "github.com/golang/protobuf/v2/types/known"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
+	knownpb "google.golang.org/protobuf/types/known"
 )
 
 var (

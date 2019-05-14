@@ -17,14 +17,14 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/proto"
-	gengo "github.com/golang/protobuf/v2/cmd/protoc-gen-go/internal_gengo"
-	"github.com/golang/protobuf/v2/protogen"
-	"github.com/golang/protobuf/v2/reflect/protodesc"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	gengo "google.golang.org/protobuf/cmd/protoc-gen-go/internal_gengo"
+	"google.golang.org/protobuf/protogen"
+	"google.golang.org/protobuf/reflect/protodesc"
+	"google.golang.org/protobuf/reflect/protoreflect"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
-	knownpb "github.com/golang/protobuf/v2/types/known"
-	pluginpb "github.com/golang/protobuf/v2/types/plugin"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
+	knownpb "google.golang.org/protobuf/types/known"
+	pluginpb "google.golang.org/protobuf/types/plugin"
 )
 
 func main() {

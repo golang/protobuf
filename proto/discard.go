@@ -11,7 +11,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type generatedDiscarder interface {

@@ -4,10 +4,10 @@
 package plugin_go
 
 import (
-	protoreflect "github.com/golang/protobuf/v2/reflect/protoreflect"
-	protoregistry "github.com/golang/protobuf/v2/reflect/protoregistry"
-	protoimpl "github.com/golang/protobuf/v2/runtime/protoimpl"
-	plugin "github.com/golang/protobuf/v2/types/plugin"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	plugin "google.golang.org/protobuf/types/plugin"
 	sync "sync"
 )
 

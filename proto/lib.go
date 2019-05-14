@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/golang/protobuf/v2/runtime/protoiface"
+	"google.golang.org/protobuf/runtime/protoiface"
 )
 
 // requiredNotSetError is an error type returned by either Marshal or Unmarshal.

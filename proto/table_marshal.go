@@ -17,7 +17,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/golang/protobuf/internal/wire"
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // a sizer takes a pointer to a field and the size of its tag, computes the size of

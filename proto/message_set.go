@@ -12,7 +12,7 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // errNoMessageTypeID occurs when a protocol buffer does not have a message type ID.

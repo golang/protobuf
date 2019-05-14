@@ -13,7 +13,7 @@ import (
 	"math"
 	"math/bits"
 
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // Number represents the field number.

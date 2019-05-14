@@ -19,7 +19,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/golang/protobuf/v2/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 var (

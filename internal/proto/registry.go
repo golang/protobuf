@@ -15,14 +15,14 @@ import (
 	"strings"
 	"sync"
 
-	protoV2 "github.com/golang/protobuf/v2/proto"
-	"github.com/golang/protobuf/v2/reflect/protodesc"
-	pref "github.com/golang/protobuf/v2/reflect/protoreflect"
-	"github.com/golang/protobuf/v2/reflect/protoregistry"
-	"github.com/golang/protobuf/v2/runtime/protoimpl"
-	"github.com/golang/protobuf/v2/runtime/protolegacy"
+	protoV2 "google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protodesc"
+	pref "google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/runtime/protoimpl"
+	"google.golang.org/protobuf/runtime/protolegacy"
 
-	descriptorpb "github.com/golang/protobuf/v2/types/descriptor"
+	descriptorpb "google.golang.org/protobuf/types/descriptor"
 )
 
 // filePath is the path to the proto source file.

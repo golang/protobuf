@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/golang/protobuf/v2/runtime/protoiface"
-	_ "github.com/golang/protobuf/v2/runtime/protolegacy"
+	"google.golang.org/protobuf/runtime/protoiface"
+	_ "google.golang.org/protobuf/runtime/protolegacy"
 )
 
 type (
