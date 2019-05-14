@@ -21,8 +21,8 @@ import (
 )
 
 // Unmarshal reads the given []byte into the given proto.Message.
-func Unmarshal(m proto.Message, b []byte) error {
-	return UnmarshalOptions{}.Unmarshal(m, b)
+func Unmarshal(b []byte, m proto.Message) error {
+	return UnmarshalOptions{}.Unmarshal(b, m)
 }
 
 // UnmarshalOptions is a configurable JSON format parser.
@@ -48,7 +48,7 @@ type UnmarshalOptions struct {
 // options in UnmarshalOptions object. It will clear the message first before
 // setting the fields. If it returns an error, the given message may be
 // partially set.
-func (o UnmarshalOptions) Unmarshal(m proto.Message, b []byte) error {
+func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 	mr := m.ProtoReflect()
 	// TODO: Determine if we would like to have an option for merging or only
 	// have merging behavior.  We should at least be consistent with textproto

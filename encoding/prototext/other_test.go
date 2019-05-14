@@ -226,7 +226,7 @@ func TestRoundTrip(t *testing.T) {
 			}
 
 			gotMessage := new(pb2.KnownTypes)
-			err = prototext.UnmarshalOptions{Resolver: tt.resolver}.Unmarshal(gotMessage, b)
+			err = prototext.UnmarshalOptions{Resolver: tt.resolver}.Unmarshal(b, gotMessage)
 			if err != nil {
 				t.Errorf("Unmarshal() returned error: %v\n\n", err)
 			}

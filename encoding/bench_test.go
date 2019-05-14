@@ -166,7 +166,7 @@ func BenchmarkTextDecode(b *testing.B) {
 		if *benchV1 {
 			err = protoV1.UnmarshalText(string(in), m)
 		} else {
-			err = prototext.Unmarshal(m, in)
+			err = prototext.Unmarshal(in, m)
 		}
 		if err != nil {
 			b.Fatal(err)
@@ -203,7 +203,7 @@ func BenchmarkJSONDecode(b *testing.B) {
 		if *benchV1 {
 			err = jsonpbV1.UnmarshalString(string(out), m)
 		} else {
-			err = protojson.Unmarshal(m, out)
+			err = protojson.Unmarshal(out, m)
 		}
 		if err != nil {
 			b.Fatal(err)

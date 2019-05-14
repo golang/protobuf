@@ -1523,7 +1523,7 @@ type_url: "pb2.Nested"
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.desc, func(t *testing.T) {
-			err := tt.umo.Unmarshal(tt.inputMessage, []byte(tt.inputText))
+			err := tt.umo.Unmarshal([]byte(tt.inputText), tt.inputMessage)
 			if err != nil && !tt.wantErr {
 				t.Errorf("Unmarshal() returned error: %v\n\n", err)
 			}

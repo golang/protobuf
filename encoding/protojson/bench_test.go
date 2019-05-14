@@ -15,7 +15,7 @@ func BenchmarkUnmarshal_Duration(b *testing.B) {
 	input := []byte(`"-123456789.123456789s"`)
 
 	for i := 0; i < b.N; i++ {
-		err := protojson.Unmarshal(&knownpb.Duration{}, input)
+		err := protojson.Unmarshal(input, &knownpb.Duration{})
 		if err != nil {
 			b.Fatal(err)
 		}

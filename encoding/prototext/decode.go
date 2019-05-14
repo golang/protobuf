@@ -20,8 +20,8 @@ import (
 )
 
 // Unmarshal reads the given []byte into the given proto.Message.
-func Unmarshal(m proto.Message, b []byte) error {
-	return UnmarshalOptions{}.Unmarshal(m, b)
+func Unmarshal(b []byte, m proto.Message) error {
+	return UnmarshalOptions{}.Unmarshal(b, m)
 }
 
 // UnmarshalOptions is a configurable textproto format unmarshaler.
@@ -41,7 +41,7 @@ type UnmarshalOptions struct {
 
 // Unmarshal reads the given []byte and populates the given proto.Message using options in
 // UnmarshalOptions object.
-func (o UnmarshalOptions) Unmarshal(m proto.Message, b []byte) error {
+func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 	var nerr errors.NonFatal
 
 	mr := m.ProtoReflect()

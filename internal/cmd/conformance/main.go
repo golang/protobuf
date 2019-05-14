@@ -71,7 +71,7 @@ func handle(req *pb.ConformanceRequest) *pb.ConformanceResponse {
 	case *pb.ConformanceRequest_JsonPayload:
 		err = protojson.UnmarshalOptions{
 			DiscardUnknown: req.TestCategory == pb.TestCategory_JSON_IGNORE_UNKNOWN_PARSING_TEST,
-		}.Unmarshal(msg, []byte(p.JsonPayload))
+		}.Unmarshal([]byte(p.JsonPayload), msg)
 	default:
 		return &pb.ConformanceResponse{
 			Result: &pb.ConformanceResponse_RuntimeError{
