@@ -12,7 +12,7 @@ import (
 	"io"
 	"reflect"
 
-	"google.golang.org/protobuf/encoding/textpb"
+	"google.golang.org/protobuf/encoding/prototext"
 	preg "google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/runtime/protoimpl"
 )
@@ -49,7 +49,7 @@ func (tm *TextMarshaler) Marshal(w io.Writer, pb Message) error {
 	if !tm.Compact {
 		ind = "  "
 	}
-	mo := textpb.MarshalOptions{
+	mo := prototext.MarshalOptions{
 		AllowPartial: true,
 		Indent:       ind,
 	}
@@ -101,7 +101,7 @@ func UnmarshalText(s string, m Message) error {
 	if um, ok := m.(encoding.TextUnmarshaler); ok {
 		return um.UnmarshalText([]byte(s))
 	}
-	err := textpb.Unmarshal(protoimpl.X.MessageOf(m).Interface(), []byte(s))
+	err := prototext.Unmarshal([]byte(s), protoimpl.X.MessageOf(m).Interface())
 	// Return RequiredNotSetError for required not set errors and ignore invalid
 	// UTF-8 errors.
 	mask := nonFatalErrors(err)

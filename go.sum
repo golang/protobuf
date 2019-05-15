@@ -1,2 +1,6 @@
+github.com/golang/protobuf v1.2.1-0.20190514181236-7800af189d76/go.mod h1:Zfz6qcDoDBESdv6JsKsGpgNHnkvwJAJwcA9eL+mOkgc=
+github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 google.golang.org/protobuf v0.0.0-20190514172829-e89e6244e0e8 h1:W21IHLlUZTOSWPAugb7YF/zA4lu4QlPm7T5JwlKYstQ=
 google.golang.org/protobuf v0.0.0-20190514172829-e89e6244e0e8/go.mod h1:791zQGC15vDqjpmPRn1uGPu5oHy/Jzw/Q1n5JsgIIcY=
+google.golang.org/protobuf v0.0.0-20190514231807-cdb777356907 h1:KmA4pf+bs1ucZ/8YCj/VXK0/mkK1olh/jzYhKYiebFE=
+google.golang.org/protobuf v0.0.0-20190514231807-cdb777356907/go.mod h1:HeRLsKXv4+wE27dOIGwnqcOgq6a1O/GJ7mGhiEPnBrU=
