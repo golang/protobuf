@@ -257,15 +257,18 @@ func (t *goExtension) lazyInit() {
 			}
 		case protoreflect.Repeated:
 			var typ reflect.Type
+			var c value.Converter
 			switch t.Kind() {
 			case protoreflect.EnumKind:
 				typ = t.enumType.GoType()
+				c = value.NewEnumConverter(t.enumType)
 			case protoreflect.MessageKind, protoreflect.GroupKind:
 				typ = t.messageType.GoType()
+				c = value.NewMessageConverter(t.messageType)
 			default:
 				typ = goTypeForPBKind[t.Kind()]
+				c = value.NewConverter(typ, t.Kind())
 			}
-			c := value.NewConverter(typ, t.Kind())
 			t.typ = reflect.PtrTo(reflect.SliceOf(typ))
 			t.new = func() protoreflect.Value {
 				v := reflect.New(t.typ.Elem()).Interface()

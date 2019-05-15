@@ -148,22 +148,7 @@ func NewLegacyConverter(t reflect.Type, k pref.Kind, w LegacyWrapper) Converter 
 		if t.Kind() == reflect.Ptr && t.Implements(messageIfaceV2) {
 			md := reflect.Zero(t).Interface().(pref.ProtoMessage).ProtoReflect().Descriptor()
 			mt := &messageType{md, t}
-			return Converter{
-				PBValueOf: func(v reflect.Value) pref.Value {
-					if v.Type() != t {
-						panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
-					}
-					return pref.ValueOf(v.Interface().(pref.ProtoMessage).ProtoReflect())
-				},
-				GoValueOf: func(v pref.Value) reflect.Value {
-					rv := reflect.ValueOf(v.Message().Interface())
-					if rv.Type() != t {
-						panic(fmt.Sprintf("invalid type: got %v, want %v", rv.Type(), t))
-					}
-					return rv
-				},
-				MessageType: mt,
-			}
+			return NewMessageConverter(mt)
 		}
 
 		// Handle v1 messages, which we need to wrap as a v2 message.
@@ -212,6 +197,51 @@ func makeScalarConverter(goType, pbType reflect.Type) Converter {
 			}
 			return rv.Convert(goType)
 		},
+	}
+}
+
+// NewEnumConverter returns a converter for an EnumType, whose GoType must implement protoreflect.Enum.
+func NewEnumConverter(et pref.EnumType) Converter {
+	t := et.GoType()
+	if !t.Implements(enumIfaceV2) {
+		panic(fmt.Sprintf("invalid type: %v does not implement %v", t, enumIfaceV2))
+	}
+	return Converter{
+		PBValueOf: func(v reflect.Value) pref.Value {
+			if v.Type() != t {
+				panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
+			}
+			e := v.Interface().(pref.Enum)
+			return pref.ValueOf(e.Number())
+		},
+		GoValueOf: func(v pref.Value) reflect.Value {
+			return reflect.ValueOf(et.New(v.Enum()))
+		},
+		EnumType: et,
+	}
+}
+
+// NewMessageConverter returns a converter for a MessageType, whose GoType must implement protoreflect.ProtoMessage.
+func NewMessageConverter(mt pref.MessageType) Converter {
+	t := mt.GoType()
+	if !t.Implements(messageIfaceV2) {
+		panic(fmt.Sprintf("invalid type: %v does not implement %v", t, messageIfaceV2))
+	}
+	return Converter{
+		PBValueOf: func(v reflect.Value) pref.Value {
+			if v.Type() != t {
+				panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
+			}
+			return pref.ValueOf(v.Interface().(pref.ProtoMessage).ProtoReflect())
+		},
+		GoValueOf: func(v pref.Value) reflect.Value {
+			rv := reflect.ValueOf(v.Message().Interface())
+			if rv.Type() != t {
+				panic(fmt.Sprintf("invalid type: got %v, want %v", rv.Type(), t))
+			}
+			return rv
+		},
+		MessageType: mt,
 	}
 }
 
