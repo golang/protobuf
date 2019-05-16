@@ -7,7 +7,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	known "google.golang.org/protobuf/types/known"
+	structpb "google.golang.org/protobuf/types/known/structpb"
 	sync "sync"
 )
 
@@ -15,22 +15,22 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // Symbols defined in public import of google/protobuf/struct.proto
 
-type NullValue = known.NullValue
+type NullValue = structpb.NullValue
 
-const NullValue_NULL_VALUE = known.NullValue_NULL_VALUE
+const NullValue_NULL_VALUE = structpb.NullValue_NULL_VALUE
 
-var NullValue_name = known.NullValue_name
-var NullValue_value = known.NullValue_value
+var NullValue_name = structpb.NullValue_name
+var NullValue_value = structpb.NullValue_value
 
-type Struct = known.Struct
-type Value = known.Value
-type Value_NullValue = known.Value_NullValue
-type Value_NumberValue = known.Value_NumberValue
-type Value_StringValue = known.Value_StringValue
-type Value_BoolValue = known.Value_BoolValue
-type Value_StructValue = known.Value_StructValue
-type Value_ListValue = known.Value_ListValue
-type ListValue = known.ListValue
+type Struct = structpb.Struct
+type Value = structpb.Value
+type Value_NullValue = structpb.Value_NullValue
+type Value_NumberValue = structpb.Value_NumberValue
+type Value_StringValue = structpb.Value_StringValue
+type Value_BoolValue = structpb.Value_BoolValue
+type Value_StructValue = structpb.Value_StructValue
+type Value_ListValue = structpb.Value_ListValue
+type ListValue = structpb.ListValue
 
 var File_github_com_golang_protobuf_ptypes_struct_struct_proto protoreflect.FileDescriptor
 

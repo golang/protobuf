@@ -7,7 +7,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	known "google.golang.org/protobuf/types/known"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	sync "sync"
 )
 
@@ -15,15 +15,15 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // Symbols defined in public import of google/protobuf/wrappers.proto
 
-type DoubleValue = known.DoubleValue
-type FloatValue = known.FloatValue
-type Int64Value = known.Int64Value
-type UInt64Value = known.UInt64Value
-type Int32Value = known.Int32Value
-type UInt32Value = known.UInt32Value
-type BoolValue = known.BoolValue
-type StringValue = known.StringValue
-type BytesValue = known.BytesValue
+type DoubleValue = wrapperspb.DoubleValue
+type FloatValue = wrapperspb.FloatValue
+type Int64Value = wrapperspb.Int64Value
+type UInt64Value = wrapperspb.UInt64Value
+type Int32Value = wrapperspb.Int32Value
+type UInt32Value = wrapperspb.UInt32Value
+type BoolValue = wrapperspb.BoolValue
+type StringValue = wrapperspb.StringValue
+type BytesValue = wrapperspb.BytesValue
 
 var File_github_com_golang_protobuf_ptypes_wrappers_wrappers_proto protoreflect.FileDescriptor
 

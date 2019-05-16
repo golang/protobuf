@@ -22,9 +22,14 @@ import (
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
-	knownpb "google.golang.org/protobuf/types/known"
-	pluginpb "google.golang.org/protobuf/types/plugin"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/known/anypb"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 func main() {
@@ -43,22 +48,22 @@ func main() {
 		pbDesc: pluginpb.File_google_protobuf_compiler_plugin_proto,
 	}, {
 		goPkg:  "github.com/golang/protobuf/ptypes/any;any",
-		pbDesc: knownpb.File_google_protobuf_any_proto,
+		pbDesc: anypb.File_google_protobuf_any_proto,
 	}, {
 		goPkg:  "github.com/golang/protobuf/ptypes/duration;duration",
-		pbDesc: knownpb.File_google_protobuf_duration_proto,
+		pbDesc: durationpb.File_google_protobuf_duration_proto,
 	}, {
 		goPkg:  "github.com/golang/protobuf/ptypes/timestamp;timestamp",
-		pbDesc: knownpb.File_google_protobuf_timestamp_proto,
+		pbDesc: timestamppb.File_google_protobuf_timestamp_proto,
 	}, {
 		goPkg:  "github.com/golang/protobuf/ptypes/wrappers;wrappers",
-		pbDesc: knownpb.File_google_protobuf_wrappers_proto,
+		pbDesc: wrapperspb.File_google_protobuf_wrappers_proto,
 	}, {
 		goPkg:  "github.com/golang/protobuf/ptypes/struct;structpb",
-		pbDesc: knownpb.File_google_protobuf_struct_proto,
+		pbDesc: structpb.File_google_protobuf_struct_proto,
 	}, {
 		goPkg:  "github.com/golang/protobuf/ptypes/empty;empty",
-		pbDesc: knownpb.File_google_protobuf_empty_proto,
+		pbDesc: emptypb.File_google_protobuf_empty_proto,
 	}}
 
 	// For each package, construct a proto file that public imports the package.

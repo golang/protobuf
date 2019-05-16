@@ -7,7 +7,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	known "google.golang.org/protobuf/types/known"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	sync "sync"
 )
 
@@ -15,7 +15,7 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // Symbols defined in public import of google/protobuf/duration.proto
 
-type Duration = known.Duration
+type Duration = durationpb.Duration
 
 var File_github_com_golang_protobuf_ptypes_duration_duration_proto protoreflect.FileDescriptor
 

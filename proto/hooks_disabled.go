@@ -10,8 +10,17 @@ import (
 	"io"
 	"reflect"
 
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
-	knownpb "google.golang.org/protobuf/types/known"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/known/anypb"
+	"google.golang.org/protobuf/types/known/apipb"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
+	"google.golang.org/protobuf/types/known/sourcecontextpb"
+	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/typepb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 var (
@@ -92,52 +101,52 @@ func init() {
 	RegisterType((*descriptorpb.GeneratedCodeInfo_Annotation)(nil), "google.protobuf.GeneratedCodeInfo.Annotation")
 
 	// any.proto
-	RegisterType((*knownpb.Any)(nil), "google.protobuf.Any")
+	RegisterType((*anypb.Any)(nil), "google.protobuf.Any")
 
 	// api.proto
-	RegisterType((*knownpb.Api)(nil), "google.protobuf.Api")
-	RegisterType((*knownpb.Method)(nil), "google.protobuf.Method")
-	RegisterType((*knownpb.Mixin)(nil), "google.protobuf.Mixin")
+	RegisterType((*apipb.Api)(nil), "google.protobuf.Api")
+	RegisterType((*apipb.Method)(nil), "google.protobuf.Method")
+	RegisterType((*apipb.Mixin)(nil), "google.protobuf.Mixin")
 
 	// duration.proto
-	RegisterType((*knownpb.Duration)(nil), "google.protobuf.Duration")
+	RegisterType((*durationpb.Duration)(nil), "google.protobuf.Duration")
 
 	// empty.proto
-	RegisterType((*knownpb.Empty)(nil), "google.protobuf.Empty")
+	RegisterType((*emptypb.Empty)(nil), "google.protobuf.Empty")
 
 	// field_mask.proto
-	RegisterType((*knownpb.FieldMask)(nil), "google.protobuf.FieldMask")
+	RegisterType((*fieldmaskpb.FieldMask)(nil), "google.protobuf.FieldMask")
 
 	// source_context.proto
-	RegisterType((*knownpb.SourceContext)(nil), "google.protobuf.SourceContext")
+	RegisterType((*sourcecontextpb.SourceContext)(nil), "google.protobuf.SourceContext")
 
 	// struct.proto
-	RegisterEnum("google.protobuf.NullValue", knownpb.NullValue_name, knownpb.NullValue_value)
-	RegisterType((*knownpb.Struct)(nil), "google.protobuf.Struct")
-	RegisterType((*knownpb.Value)(nil), "google.protobuf.Value")
-	RegisterType((*knownpb.ListValue)(nil), "google.protobuf.ListValue")
+	RegisterEnum("google.protobuf.NullValue", structpb.NullValue_name, structpb.NullValue_value)
+	RegisterType((*structpb.Struct)(nil), "google.protobuf.Struct")
+	RegisterType((*structpb.Value)(nil), "google.protobuf.Value")
+	RegisterType((*structpb.ListValue)(nil), "google.protobuf.ListValue")
 
 	// timestamp.proto
-	RegisterType((*knownpb.Timestamp)(nil), "google.protobuf.Timestamp")
+	RegisterType((*timestamppb.Timestamp)(nil), "google.protobuf.Timestamp")
 
 	// type.proto
-	RegisterEnum("google.protobuf.Syntax", knownpb.Syntax_name, knownpb.Syntax_value)
-	RegisterEnum("google.protobuf.Field_Kind", knownpb.Field_Kind_name, knownpb.Field_Kind_value)
-	RegisterEnum("google.protobuf.Field_Cardinality", knownpb.Field_Cardinality_name, knownpb.Field_Cardinality_value)
-	RegisterType((*knownpb.Type)(nil), "google.protobuf.Type")
-	RegisterType((*knownpb.Field)(nil), "google.protobuf.Field")
-	RegisterType((*knownpb.Enum)(nil), "google.protobuf.Enum")
-	RegisterType((*knownpb.EnumValue)(nil), "google.protobuf.EnumValue")
-	RegisterType((*knownpb.Option)(nil), "google.protobuf.Option")
+	RegisterEnum("google.protobuf.Syntax", typepb.Syntax_name, typepb.Syntax_value)
+	RegisterEnum("google.protobuf.Field_Kind", typepb.Field_Kind_name, typepb.Field_Kind_value)
+	RegisterEnum("google.protobuf.Field_Cardinality", typepb.Field_Cardinality_name, typepb.Field_Cardinality_value)
+	RegisterType((*typepb.Type)(nil), "google.protobuf.Type")
+	RegisterType((*typepb.Field)(nil), "google.protobuf.Field")
+	RegisterType((*typepb.Enum)(nil), "google.protobuf.Enum")
+	RegisterType((*typepb.EnumValue)(nil), "google.protobuf.EnumValue")
+	RegisterType((*typepb.Option)(nil), "google.protobuf.Option")
 
 	// wrapper.proto
-	RegisterType((*knownpb.DoubleValue)(nil), "google.protobuf.DoubleValue")
-	RegisterType((*knownpb.FloatValue)(nil), "google.protobuf.FloatValue")
-	RegisterType((*knownpb.Int64Value)(nil), "google.protobuf.Int64Value")
-	RegisterType((*knownpb.UInt64Value)(nil), "google.protobuf.UInt64Value")
-	RegisterType((*knownpb.Int32Value)(nil), "google.protobuf.Int32Value")
-	RegisterType((*knownpb.UInt32Value)(nil), "google.protobuf.UInt32Value")
-	RegisterType((*knownpb.BoolValue)(nil), "google.protobuf.BoolValue")
-	RegisterType((*knownpb.StringValue)(nil), "google.protobuf.StringValue")
-	RegisterType((*knownpb.BytesValue)(nil), "google.protobuf.BytesValue")
+	RegisterType((*wrapperspb.DoubleValue)(nil), "google.protobuf.DoubleValue")
+	RegisterType((*wrapperspb.FloatValue)(nil), "google.protobuf.FloatValue")
+	RegisterType((*wrapperspb.Int64Value)(nil), "google.protobuf.Int64Value")
+	RegisterType((*wrapperspb.UInt64Value)(nil), "google.protobuf.UInt64Value")
+	RegisterType((*wrapperspb.Int32Value)(nil), "google.protobuf.Int32Value")
+	RegisterType((*wrapperspb.UInt32Value)(nil), "google.protobuf.UInt32Value")
+	RegisterType((*wrapperspb.BoolValue)(nil), "google.protobuf.BoolValue")
+	RegisterType((*wrapperspb.StringValue)(nil), "google.protobuf.StringValue")
+	RegisterType((*wrapperspb.BytesValue)(nil), "google.protobuf.BytesValue")
 }

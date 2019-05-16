@@ -22,7 +22,7 @@ import (
 	"google.golang.org/protobuf/runtime/protoimpl"
 	"google.golang.org/protobuf/runtime/protolegacy"
 
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 // filePath is the path to the proto source file.

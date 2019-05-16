@@ -7,7 +7,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	known "google.golang.org/protobuf/types/known"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	sync "sync"
 )
 
@@ -15,7 +15,7 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // Symbols defined in public import of google/protobuf/timestamp.proto
 
-type Timestamp = known.Timestamp
+type Timestamp = timestamppb.Timestamp
 
 var File_github_com_golang_protobuf_ptypes_timestamp_timestamp_proto protoreflect.FileDescriptor
 

@@ -7,7 +7,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	plugin "google.golang.org/protobuf/types/plugin"
+	pluginpb "google.golang.org/protobuf/types/pluginpb"
 	sync "sync"
 )
 
@@ -15,10 +15,10 @@ const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
 
 // Symbols defined in public import of google/protobuf/compiler/plugin.proto
 
-type Version = plugin.Version
-type CodeGeneratorRequest = plugin.CodeGeneratorRequest
-type CodeGeneratorResponse = plugin.CodeGeneratorResponse
-type CodeGeneratorResponse_File = plugin.CodeGeneratorResponse_File
+type Version = pluginpb.Version
+type CodeGeneratorRequest = pluginpb.CodeGeneratorRequest
+type CodeGeneratorResponse = pluginpb.CodeGeneratorResponse
+type CodeGeneratorResponse_File = pluginpb.CodeGeneratorResponse_File
 
 var File_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto protoreflect.FileDescriptor
 
