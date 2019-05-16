@@ -268,7 +268,7 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 	}
 
 	e := epb.Get(protoreflect.FieldNumber(extension.Field))
-	if e.Value != nil {
+	if e.HasValue() {
 		// Already decoded. Check the descriptor, though.
 		if e.Desc != extension {
 			// This shouldn't happen. If it does, it means that
@@ -276,7 +276,7 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 			// descriptors with the same field number.
 			return nil, errors.New("proto: descriptor conflict")
 		}
-		return extensionAsLegacyType(e.Value), nil
+		return extensionAsLegacyType(e.GetValue()), nil
 	}
 
 	// Descriptor without type information.
@@ -292,11 +292,11 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 
 	// Remember the decoded version and drop the encoded version.
 	// That way it is safe to mutate what we return.
-	e.Value = extensionAsStorageType(v)
 	e.Desc = extension
+	e.SetEagerValue(extensionAsStorageType(v))
 	unrecognized.SetBytes(removeRawFields(unrecognized.Bytes(), fnum))
 	epb.Set(protoreflect.FieldNumber(extension.Field), e)
-	return extensionAsLegacyType(e.Value), nil
+	return extensionAsLegacyType(e.GetValue()), nil
 }
 
 // defaultExtensionValue returns the default value for extension.
@@ -461,10 +461,9 @@ func SetExtension(pb Message, extension *ExtensionDesc, value interface{}) error
 		return fmt.Errorf("proto: SetExtension called with nil value of type %T", value)
 	}
 
-	epb.Set(protoreflect.FieldNumber(extension.Field), Extension{
-		Desc:  extension,
-		Value: extensionAsStorageType(value),
-	})
+	x := Extension{Desc: extension}
+	x.SetEagerValue(extensionAsStorageType(value))
+	epb.Set(protoreflect.FieldNumber(extension.Field), x)
 	return nil
 }
 

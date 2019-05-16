@@ -209,10 +209,10 @@ func mergeAny(out, in reflect.Value, viaPtr bool, prop *Properties) {
 func mergeExtension(out, in *extensionMap) {
 	in.Range(func(extNum protoreflect.FieldNumber, eIn Extension) bool {
 		eOut := Extension{Desc: eIn.Desc}
-		if eIn.Value != nil {
-			v := reflect.New(reflect.TypeOf(eIn.Value)).Elem()
-			mergeAny(v, reflect.ValueOf(eIn.Value), false, nil)
-			eOut.Value = v.Interface()
+		if eIn.HasValue() {
+			v := reflect.New(reflect.TypeOf(eIn.GetValue())).Elem()
+			mergeAny(v, reflect.ValueOf(eIn.GetValue()), false, nil)
+			eOut.SetEagerValue(v.Interface())
 		}
 
 		out.Set(extNum, eOut)

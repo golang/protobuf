@@ -219,8 +219,8 @@ func equalExtensions(base reflect.Type, em1, em2 *extensionMap) bool {
 		}
 		e2 := em2.Get(extNum)
 
-		m1 := extensionAsLegacyType(e1.Value)
-		m2 := extensionAsLegacyType(e2.Value)
+		m1 := extensionAsLegacyType(e1.GetValue())
+		m2 := extensionAsLegacyType(e2.GetValue())
 
 		if m1 == nil && m2 == nil {
 			return true

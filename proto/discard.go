@@ -104,7 +104,7 @@ func (di *discardInfo) discard(src pointer) {
 	// that have been accessed via GetExtension.
 	if em, err := extendable(src.asPointerTo(di.typ).Interface()); err == nil {
 		em.Range(func(_ protoreflect.FieldNumber, mx Extension) bool {
-			if m, ok := mx.Value.(Message); ok {
+			if m, ok := mx.GetValue().(Message); ok {
 				DiscardUnknown(m)
 			}
 			return true
@@ -319,7 +319,7 @@ func discardLegacy(m Message) {
 	// that have been accessed via GetExtension.
 	if em, err := extendable(m); err == nil {
 		em.Range(func(_ protoreflect.FieldNumber, mx Extension) bool {
-			if m, ok := mx.Value.(Message); ok {
+			if m, ok := mx.GetValue().(Message); ok {
 				discardLegacy(m)
 			}
 			return true

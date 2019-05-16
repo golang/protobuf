@@ -261,8 +261,8 @@ func unmarshalExtensions(mi Message, unrecognized *[]byte) error {
 		// Create a new value or reuse an existing one.
 		fieldType := reflect.TypeOf(extDesc.ExtensionType)
 		fieldVal := reflect.New(fieldType).Elem() // E.g., *int32, *Message, []T
-		if extField := extFields.Get(fieldNum); extField.Value != nil {
-			fieldVal.Set(reflect.ValueOf(extensionAsLegacyType(extField.Value)))
+		if extField := extFields.Get(fieldNum); extField.HasValue() {
+			fieldVal.Set(reflect.ValueOf(extensionAsLegacyType(extField.GetValue())))
 		}
 
 		// Unmarshal the value.
@@ -274,10 +274,9 @@ func unmarshalExtensions(mi Message, unrecognized *[]byte) error {
 		}
 
 		// Store the value into the extension field.
-		extFields.Set(fieldNum, Extension{
-			Desc:  extDesc,
-			Value: extensionAsStorageType(fieldVal.Interface()),
-		})
+		x := Extension{Desc: extDesc}
+		x.SetEagerValue(extensionAsStorageType(fieldVal.Interface()))
+		extFields.Set(fieldNum, x)
 	}
 
 	if len(newUnknownFields) == 0 {
