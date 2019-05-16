@@ -258,15 +258,13 @@ type ExtensionFieldV1 struct {
 
 	// value is either the value of GetValue,
 	// or a *lazyExtensionValue that then returns the value of GetValue.
-	//
-	// TODO: unexport this.
-	Value interface{}
+	value interface{}
 }
 
 // HasValue reports whether a value is set for the extension field.
 // This may be called concurrently.
 func (f ExtensionFieldV1) HasValue() bool {
-	return f.Value != nil
+	return f.value != nil
 }
 
 // GetValue returns the concrete value for the extension field.
@@ -287,23 +285,23 @@ func (f ExtensionFieldV1) HasValue() bool {
 //
 // TODO: switch interface{} to protoreflect.Value
 func (f ExtensionFieldV1) GetValue() interface{} {
-	if f, ok := f.Value.(*lazyExtensionValue); ok {
+	if f, ok := f.value.(*lazyExtensionValue); ok {
 		return f.GetValue()
 	}
-	return f.Value
+	return f.value
 }
 
 // SetEagerValue sets the current value of the extension.
 // This must not be called concurrently.
 func (f *ExtensionFieldV1) SetEagerValue(v interface{}) {
-	f.Value = v
+	f.value = v
 }
 
 // SetLazyValue sets a value that is to be lazily evaluated upon first use.
 // The returned value must not be nil.
 // This must not be called concurrently.
 func (f *ExtensionFieldV1) SetLazyValue(v func() interface{}) {
-	f.Value = &lazyExtensionValue{value: v}
+	f.value = &lazyExtensionValue{value: v}
 }
 
 type lazyExtensionValue struct {
