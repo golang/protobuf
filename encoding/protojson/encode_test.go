@@ -24,7 +24,13 @@ import (
 
 	"google.golang.org/protobuf/encoding/testprotos/pb2"
 	"google.golang.org/protobuf/encoding/testprotos/pb3"
-	knownpb "google.golang.org/protobuf/types/known"
+	"google.golang.org/protobuf/types/known/anypb"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
+	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // splitLines is a cmpopts.Option for comparing strings with line breaks.
@@ -1105,125 +1111,125 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc:  "BoolValue empty",
-		input: &knownpb.BoolValue{},
+		input: &wrapperspb.BoolValue{},
 		want:  `false`,
 	}, {
 		desc:  "BoolValue",
-		input: &knownpb.BoolValue{Value: true},
+		input: &wrapperspb.BoolValue{Value: true},
 		want:  `true`,
 	}, {
 		desc:  "Int32Value empty",
-		input: &knownpb.Int32Value{},
+		input: &wrapperspb.Int32Value{},
 		want:  `0`,
 	}, {
 		desc:  "Int32Value",
-		input: &knownpb.Int32Value{Value: 42},
+		input: &wrapperspb.Int32Value{Value: 42},
 		want:  `42`,
 	}, {
 		desc:  "Int64Value",
-		input: &knownpb.Int64Value{Value: 42},
+		input: &wrapperspb.Int64Value{Value: 42},
 		want:  `"42"`,
 	}, {
 		desc:  "UInt32Value",
-		input: &knownpb.UInt32Value{Value: 42},
+		input: &wrapperspb.UInt32Value{Value: 42},
 		want:  `42`,
 	}, {
 		desc:  "UInt64Value",
-		input: &knownpb.UInt64Value{Value: 42},
+		input: &wrapperspb.UInt64Value{Value: 42},
 		want:  `"42"`,
 	}, {
 		desc:  "FloatValue",
-		input: &knownpb.FloatValue{Value: 1.02},
+		input: &wrapperspb.FloatValue{Value: 1.02},
 		want:  `1.02`,
 	}, {
 		desc:  "FloatValue Infinity",
-		input: &knownpb.FloatValue{Value: float32(math.Inf(-1))},
+		input: &wrapperspb.FloatValue{Value: float32(math.Inf(-1))},
 		want:  `"-Infinity"`,
 	}, {
 		desc:  "DoubleValue",
-		input: &knownpb.DoubleValue{Value: 1.02},
+		input: &wrapperspb.DoubleValue{Value: 1.02},
 		want:  `1.02`,
 	}, {
 		desc:  "DoubleValue NaN",
-		input: &knownpb.DoubleValue{Value: math.NaN()},
+		input: &wrapperspb.DoubleValue{Value: math.NaN()},
 		want:  `"NaN"`,
 	}, {
 		desc:  "StringValue empty",
-		input: &knownpb.StringValue{},
+		input: &wrapperspb.StringValue{},
 		want:  `""`,
 	}, {
 		desc:  "StringValue",
-		input: &knownpb.StringValue{Value: "谷歌"},
+		input: &wrapperspb.StringValue{Value: "谷歌"},
 		want:  `"谷歌"`,
 	}, {
 		desc:    "StringValue with invalid UTF8 error",
-		input:   &knownpb.StringValue{Value: "abc\xff"},
+		input:   &wrapperspb.StringValue{Value: "abc\xff"},
 		want:    "\"abc\xff\"",
 		wantErr: true,
 	}, {
 		desc: "StringValue field with invalid UTF8 error",
 		input: &pb2.KnownTypes{
-			OptString: &knownpb.StringValue{Value: "abc\xff"},
+			OptString: &wrapperspb.StringValue{Value: "abc\xff"},
 		},
 		want:    "{\n  \"optString\": \"abc\xff\"\n}",
 		wantErr: true,
 	}, {
 		desc:  "BytesValue",
-		input: &knownpb.BytesValue{Value: []byte("hello")},
+		input: &wrapperspb.BytesValue{Value: []byte("hello")},
 		want:  `"aGVsbG8="`,
 	}, {
 		desc:  "Empty",
-		input: &knownpb.Empty{},
+		input: &emptypb.Empty{},
 		want:  `{}`,
 	}, {
 		desc:  "NullValue field",
-		input: &pb2.KnownTypes{OptNull: new(knownpb.NullValue)},
+		input: &pb2.KnownTypes{OptNull: new(structpb.NullValue)},
 		want: `{
   "optNull": null
 }`,
 	}, {
 		desc:    "Value empty",
-		input:   &knownpb.Value{},
+		input:   &structpb.Value{},
 		wantErr: true,
 	}, {
 		desc: "Value empty field",
 		input: &pb2.KnownTypes{
-			OptValue: &knownpb.Value{},
+			OptValue: &structpb.Value{},
 		},
 		wantErr: true,
 	}, {
 		desc:  "Value contains NullValue",
-		input: &knownpb.Value{Kind: &knownpb.Value_NullValue{}},
+		input: &structpb.Value{Kind: &structpb.Value_NullValue{}},
 		want:  `null`,
 	}, {
 		desc:  "Value contains BoolValue",
-		input: &knownpb.Value{Kind: &knownpb.Value_BoolValue{}},
+		input: &structpb.Value{Kind: &structpb.Value_BoolValue{}},
 		want:  `false`,
 	}, {
 		desc:  "Value contains NumberValue",
-		input: &knownpb.Value{Kind: &knownpb.Value_NumberValue{1.02}},
+		input: &structpb.Value{Kind: &structpb.Value_NumberValue{1.02}},
 		want:  `1.02`,
 	}, {
 		desc:  "Value contains StringValue",
-		input: &knownpb.Value{Kind: &knownpb.Value_StringValue{"hello"}},
+		input: &structpb.Value{Kind: &structpb.Value_StringValue{"hello"}},
 		want:  `"hello"`,
 	}, {
 		desc:    "Value contains StringValue with invalid UTF8",
-		input:   &knownpb.Value{Kind: &knownpb.Value_StringValue{"\xff"}},
+		input:   &structpb.Value{Kind: &structpb.Value_StringValue{"\xff"}},
 		want:    "\"\xff\"",
 		wantErr: true,
 	}, {
 		desc: "Value contains Struct",
-		input: &knownpb.Value{
-			Kind: &knownpb.Value_StructValue{
-				&knownpb.Struct{
-					Fields: map[string]*knownpb.Value{
-						"null":   {Kind: &knownpb.Value_NullValue{}},
-						"number": {Kind: &knownpb.Value_NumberValue{}},
-						"string": {Kind: &knownpb.Value_StringValue{}},
-						"struct": {Kind: &knownpb.Value_StructValue{}},
-						"list":   {Kind: &knownpb.Value_ListValue{}},
-						"bool":   {Kind: &knownpb.Value_BoolValue{}},
+		input: &structpb.Value{
+			Kind: &structpb.Value_StructValue{
+				&structpb.Struct{
+					Fields: map[string]*structpb.Value{
+						"null":   {Kind: &structpb.Value_NullValue{}},
+						"number": {Kind: &structpb.Value_NumberValue{}},
+						"string": {Kind: &structpb.Value_StringValue{}},
+						"struct": {Kind: &structpb.Value_StructValue{}},
+						"list":   {Kind: &structpb.Value_ListValue{}},
+						"bool":   {Kind: &structpb.Value_BoolValue{}},
 					},
 				},
 			},
@@ -1238,16 +1244,16 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc: "Value contains ListValue",
-		input: &knownpb.Value{
-			Kind: &knownpb.Value_ListValue{
-				&knownpb.ListValue{
-					Values: []*knownpb.Value{
-						{Kind: &knownpb.Value_BoolValue{}},
-						{Kind: &knownpb.Value_NullValue{}},
-						{Kind: &knownpb.Value_NumberValue{}},
-						{Kind: &knownpb.Value_StringValue{}},
-						{Kind: &knownpb.Value_StructValue{}},
-						{Kind: &knownpb.Value_ListValue{}},
+		input: &structpb.Value{
+			Kind: &structpb.Value_ListValue{
+				&structpb.ListValue{
+					Values: []*structpb.Value{
+						{Kind: &structpb.Value_BoolValue{}},
+						{Kind: &structpb.Value_NullValue{}},
+						{Kind: &structpb.Value_NumberValue{}},
+						{Kind: &structpb.Value_StringValue{}},
+						{Kind: &structpb.Value_StructValue{}},
+						{Kind: &structpb.Value_ListValue{}},
 					},
 				},
 			},
@@ -1262,38 +1268,38 @@ func TestMarshal(t *testing.T) {
 ]`,
 	}, {
 		desc:  "Struct with nil map",
-		input: &knownpb.Struct{},
+		input: &structpb.Struct{},
 		want:  `{}`,
 	}, {
 		desc: "Struct with empty map",
-		input: &knownpb.Struct{
-			Fields: map[string]*knownpb.Value{},
+		input: &structpb.Struct{
+			Fields: map[string]*structpb.Value{},
 		},
 		want: `{}`,
 	}, {
 		desc: "Struct",
-		input: &knownpb.Struct{
-			Fields: map[string]*knownpb.Value{
-				"bool":   {Kind: &knownpb.Value_BoolValue{true}},
-				"null":   {Kind: &knownpb.Value_NullValue{}},
-				"number": {Kind: &knownpb.Value_NumberValue{3.1415}},
-				"string": {Kind: &knownpb.Value_StringValue{"hello"}},
+		input: &structpb.Struct{
+			Fields: map[string]*structpb.Value{
+				"bool":   {Kind: &structpb.Value_BoolValue{true}},
+				"null":   {Kind: &structpb.Value_NullValue{}},
+				"number": {Kind: &structpb.Value_NumberValue{3.1415}},
+				"string": {Kind: &structpb.Value_StringValue{"hello"}},
 				"struct": {
-					Kind: &knownpb.Value_StructValue{
-						&knownpb.Struct{
-							Fields: map[string]*knownpb.Value{
-								"string": {Kind: &knownpb.Value_StringValue{"world"}},
+					Kind: &structpb.Value_StructValue{
+						&structpb.Struct{
+							Fields: map[string]*structpb.Value{
+								"string": {Kind: &structpb.Value_StringValue{"world"}},
 							},
 						},
 					},
 				},
 				"list": {
-					Kind: &knownpb.Value_ListValue{
-						&knownpb.ListValue{
-							Values: []*knownpb.Value{
-								{Kind: &knownpb.Value_BoolValue{}},
-								{Kind: &knownpb.Value_NullValue{}},
-								{Kind: &knownpb.Value_NumberValue{}},
+					Kind: &structpb.Value_ListValue{
+						&structpb.ListValue{
+							Values: []*structpb.Value{
+								{Kind: &structpb.Value_BoolValue{}},
+								{Kind: &structpb.Value_NullValue{}},
+								{Kind: &structpb.Value_NumberValue{}},
 							},
 						},
 					},
@@ -1316,47 +1322,47 @@ func TestMarshal(t *testing.T) {
 }`,
 	}, {
 		desc: "Struct message with invalid UTF8 string",
-		input: &knownpb.Struct{
-			Fields: map[string]*knownpb.Value{
-				"string": {Kind: &knownpb.Value_StringValue{"\xff"}},
+		input: &structpb.Struct{
+			Fields: map[string]*structpb.Value{
+				"string": {Kind: &structpb.Value_StringValue{"\xff"}},
 			},
 		},
 		want:    "{\n  \"string\": \"\xff\"\n}",
 		wantErr: true,
 	}, {
 		desc:  "ListValue with nil values",
-		input: &knownpb.ListValue{},
+		input: &structpb.ListValue{},
 		want:  `[]`,
 	}, {
 		desc: "ListValue with empty values",
-		input: &knownpb.ListValue{
-			Values: []*knownpb.Value{},
+		input: &structpb.ListValue{
+			Values: []*structpb.Value{},
 		},
 		want: `[]`,
 	}, {
 		desc: "ListValue",
-		input: &knownpb.ListValue{
-			Values: []*knownpb.Value{
-				{Kind: &knownpb.Value_BoolValue{true}},
-				{Kind: &knownpb.Value_NullValue{}},
-				{Kind: &knownpb.Value_NumberValue{3.1415}},
-				{Kind: &knownpb.Value_StringValue{"hello"}},
+		input: &structpb.ListValue{
+			Values: []*structpb.Value{
+				{Kind: &structpb.Value_BoolValue{true}},
+				{Kind: &structpb.Value_NullValue{}},
+				{Kind: &structpb.Value_NumberValue{3.1415}},
+				{Kind: &structpb.Value_StringValue{"hello"}},
 				{
-					Kind: &knownpb.Value_ListValue{
-						&knownpb.ListValue{
-							Values: []*knownpb.Value{
-								{Kind: &knownpb.Value_BoolValue{}},
-								{Kind: &knownpb.Value_NullValue{}},
-								{Kind: &knownpb.Value_NumberValue{}},
+					Kind: &structpb.Value_ListValue{
+						&structpb.ListValue{
+							Values: []*structpb.Value{
+								{Kind: &structpb.Value_BoolValue{}},
+								{Kind: &structpb.Value_NullValue{}},
+								{Kind: &structpb.Value_NumberValue{}},
 							},
 						},
 					},
 				},
 				{
-					Kind: &knownpb.Value_StructValue{
-						&knownpb.Struct{
-							Fields: map[string]*knownpb.Value{
-								"string": {Kind: &knownpb.Value_StringValue{"world"}},
+					Kind: &structpb.Value_StructValue{
+						&structpb.Struct{
+							Fields: map[string]*structpb.Value{
+								"string": {Kind: &structpb.Value_StringValue{"world"}},
 							},
 						},
 					},
@@ -1379,132 +1385,132 @@ func TestMarshal(t *testing.T) {
 ]`,
 	}, {
 		desc: "ListValue with invalid UTF8 string",
-		input: &knownpb.ListValue{
-			Values: []*knownpb.Value{
-				{Kind: &knownpb.Value_StringValue{"\xff"}},
+		input: &structpb.ListValue{
+			Values: []*structpb.Value{
+				{Kind: &structpb.Value_StringValue{"\xff"}},
 			},
 		},
 		want:    "[\n  \"\xff\"\n]",
 		wantErr: true,
 	}, {
 		desc:  "Duration empty",
-		input: &knownpb.Duration{},
+		input: &durationpb.Duration{},
 		want:  `"0s"`,
 	}, {
 		desc:  "Duration with secs",
-		input: &knownpb.Duration{Seconds: 3},
+		input: &durationpb.Duration{Seconds: 3},
 		want:  `"3s"`,
 	}, {
 		desc:  "Duration with -secs",
-		input: &knownpb.Duration{Seconds: -3},
+		input: &durationpb.Duration{Seconds: -3},
 		want:  `"-3s"`,
 	}, {
 		desc:  "Duration with nanos",
-		input: &knownpb.Duration{Nanos: 1e6},
+		input: &durationpb.Duration{Nanos: 1e6},
 		want:  `"0.001s"`,
 	}, {
 		desc:  "Duration with -nanos",
-		input: &knownpb.Duration{Nanos: -1e6},
+		input: &durationpb.Duration{Nanos: -1e6},
 		want:  `"-0.001s"`,
 	}, {
 		desc:  "Duration with large secs",
-		input: &knownpb.Duration{Seconds: 1e10, Nanos: 1},
+		input: &durationpb.Duration{Seconds: 1e10, Nanos: 1},
 		want:  `"10000000000.000000001s"`,
 	}, {
 		desc:  "Duration with 6-digit nanos",
-		input: &knownpb.Duration{Nanos: 1e4},
+		input: &durationpb.Duration{Nanos: 1e4},
 		want:  `"0.000010s"`,
 	}, {
 		desc:  "Duration with 3-digit nanos",
-		input: &knownpb.Duration{Nanos: 1e6},
+		input: &durationpb.Duration{Nanos: 1e6},
 		want:  `"0.001s"`,
 	}, {
 		desc:  "Duration with -secs -nanos",
-		input: &knownpb.Duration{Seconds: -123, Nanos: -450},
+		input: &durationpb.Duration{Seconds: -123, Nanos: -450},
 		want:  `"-123.000000450s"`,
 	}, {
 		desc:  "Duration max value",
-		input: &knownpb.Duration{Seconds: 315576000000, Nanos: 999999999},
+		input: &durationpb.Duration{Seconds: 315576000000, Nanos: 999999999},
 		want:  `"315576000000.999999999s"`,
 	}, {
 		desc:  "Duration min value",
-		input: &knownpb.Duration{Seconds: -315576000000, Nanos: -999999999},
+		input: &durationpb.Duration{Seconds: -315576000000, Nanos: -999999999},
 		want:  `"-315576000000.999999999s"`,
 	}, {
 		desc:    "Duration with +secs -nanos",
-		input:   &knownpb.Duration{Seconds: 1, Nanos: -1},
+		input:   &durationpb.Duration{Seconds: 1, Nanos: -1},
 		wantErr: true,
 	}, {
 		desc:    "Duration with -secs +nanos",
-		input:   &knownpb.Duration{Seconds: -1, Nanos: 1},
+		input:   &durationpb.Duration{Seconds: -1, Nanos: 1},
 		wantErr: true,
 	}, {
 		desc:    "Duration with +secs out of range",
-		input:   &knownpb.Duration{Seconds: 315576000001},
+		input:   &durationpb.Duration{Seconds: 315576000001},
 		wantErr: true,
 	}, {
 		desc:    "Duration with -secs out of range",
-		input:   &knownpb.Duration{Seconds: -315576000001},
+		input:   &durationpb.Duration{Seconds: -315576000001},
 		wantErr: true,
 	}, {
 		desc:    "Duration with +nanos out of range",
-		input:   &knownpb.Duration{Seconds: 0, Nanos: 1e9},
+		input:   &durationpb.Duration{Seconds: 0, Nanos: 1e9},
 		wantErr: true,
 	}, {
 		desc:    "Duration with -nanos out of range",
-		input:   &knownpb.Duration{Seconds: 0, Nanos: -1e9},
+		input:   &durationpb.Duration{Seconds: 0, Nanos: -1e9},
 		wantErr: true,
 	}, {
 		desc:  "Timestamp zero",
-		input: &knownpb.Timestamp{},
+		input: &timestamppb.Timestamp{},
 		want:  `"1970-01-01T00:00:00Z"`,
 	}, {
 		desc:  "Timestamp",
-		input: &knownpb.Timestamp{Seconds: 1553036601},
+		input: &timestamppb.Timestamp{Seconds: 1553036601},
 		want:  `"2019-03-19T23:03:21Z"`,
 	}, {
 		desc:  "Timestamp with nanos",
-		input: &knownpb.Timestamp{Seconds: 1553036601, Nanos: 1},
+		input: &timestamppb.Timestamp{Seconds: 1553036601, Nanos: 1},
 		want:  `"2019-03-19T23:03:21.000000001Z"`,
 	}, {
 		desc:  "Timestamp with 6-digit nanos",
-		input: &knownpb.Timestamp{Nanos: 1e3},
+		input: &timestamppb.Timestamp{Nanos: 1e3},
 		want:  `"1970-01-01T00:00:00.000001Z"`,
 	}, {
 		desc:  "Timestamp with 3-digit nanos",
-		input: &knownpb.Timestamp{Nanos: 1e7},
+		input: &timestamppb.Timestamp{Nanos: 1e7},
 		want:  `"1970-01-01T00:00:00.010Z"`,
 	}, {
 		desc:  "Timestamp max value",
-		input: &knownpb.Timestamp{Seconds: 253402300799, Nanos: 999999999},
+		input: &timestamppb.Timestamp{Seconds: 253402300799, Nanos: 999999999},
 		want:  `"9999-12-31T23:59:59.999999999Z"`,
 	}, {
 		desc:  "Timestamp min value",
-		input: &knownpb.Timestamp{Seconds: -62135596800},
+		input: &timestamppb.Timestamp{Seconds: -62135596800},
 		want:  `"0001-01-01T00:00:00Z"`,
 	}, {
 		desc:    "Timestamp with +secs out of range",
-		input:   &knownpb.Timestamp{Seconds: 253402300800},
+		input:   &timestamppb.Timestamp{Seconds: 253402300800},
 		wantErr: true,
 	}, {
 		desc:    "Timestamp with -secs out of range",
-		input:   &knownpb.Timestamp{Seconds: -62135596801},
+		input:   &timestamppb.Timestamp{Seconds: -62135596801},
 		wantErr: true,
 	}, {
 		desc:    "Timestamp with -nanos",
-		input:   &knownpb.Timestamp{Nanos: -1},
+		input:   &timestamppb.Timestamp{Nanos: -1},
 		wantErr: true,
 	}, {
 		desc:    "Timestamp with +nanos out of range",
-		input:   &knownpb.Timestamp{Nanos: 1e9},
+		input:   &timestamppb.Timestamp{Nanos: 1e9},
 		wantErr: true,
 	}, {
 		desc:  "FieldMask empty",
-		input: &knownpb.FieldMask{},
+		input: &fieldmaskpb.FieldMask{},
 		want:  `""`,
 	}, {
 		desc: "FieldMask",
-		input: &knownpb.FieldMask{
+		input: &fieldmaskpb.FieldMask{
 			Paths: []string{
 				"foo",
 				"foo_bar",
@@ -1515,19 +1521,19 @@ func TestMarshal(t *testing.T) {
 		want: `"foo,fooBar,foo.barQux,Foo"`,
 	}, {
 		desc: "FieldMask error 1",
-		input: &knownpb.FieldMask{
+		input: &fieldmaskpb.FieldMask{
 			Paths: []string{"foo_"},
 		},
 		wantErr: true,
 	}, {
 		desc: "FieldMask error 2",
-		input: &knownpb.FieldMask{
+		input: &fieldmaskpb.FieldMask{
 			Paths: []string{"foo__bar"},
 		},
 		wantErr: true,
 	}, {
 		desc:  "Any empty",
-		input: &knownpb.Any{},
+		input: &anypb.Any{},
 		want:  `{}`,
 	}, {
 		desc: "Any with non-custom message",
@@ -1545,7 +1551,7 @@ func TestMarshal(t *testing.T) {
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "foo/pb2.Nested",
 				Value:   b,
 			}
@@ -1562,14 +1568,14 @@ func TestMarshal(t *testing.T) {
 		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
-		input: &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
+		input: &anypb.Any{TypeUrl: "foo/pb2.Nested"},
 		want: `{
   "@type": "foo/pb2.Nested"
 }`,
 	}, {
 		desc:    "Any without registered type",
 		mo:      protojson.MarshalOptions{Resolver: preg.NewTypes()},
-		input:   &knownpb.Any{TypeUrl: "foo/pb2.Nested"},
+		input:   &anypb.Any{TypeUrl: "foo/pb2.Nested"},
 		wantErr: true,
 	}, {
 		desc: "Any with missing required error",
@@ -1587,7 +1593,7 @@ func TestMarshal(t *testing.T) {
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   b,
 			}
@@ -1614,7 +1620,7 @@ func TestMarshal(t *testing.T) {
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   b,
 			}
@@ -1636,7 +1642,7 @@ func TestMarshal(t *testing.T) {
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "foo/pb2.Nested",
 				Value:   b,
 			}
@@ -1651,7 +1657,7 @@ func TestMarshal(t *testing.T) {
 		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
-		input: &knownpb.Any{
+		input: &anypb.Any{
 			TypeUrl: "foo/pb2.Nested",
 			Value:   dhex("80"),
 		},
@@ -1659,15 +1665,15 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with BoolValue",
 		mo: protojson.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{})),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&wrapperspb.BoolValue{})),
 		},
 		input: func() proto.Message {
-			m := &knownpb.BoolValue{Value: true}
+			m := &wrapperspb.BoolValue{Value: true}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "type.googleapis.com/google.protobuf.BoolValue",
 				Value:   b,
 			}
@@ -1679,15 +1685,15 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with Empty",
 		mo: protojson.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&emptypb.Empty{})),
 		},
 		input: func() proto.Message {
-			m := &knownpb.Empty{}
+			m := &emptypb.Empty{}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "type.googleapis.com/google.protobuf.Empty",
 				Value:   b,
 			}
@@ -1699,15 +1705,15 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with StringValue containing invalid UTF8",
 		mo: protojson.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{})),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&wrapperspb.StringValue{})),
 		},
 		input: func() proto.Message {
-			m := &knownpb.StringValue{Value: "abcd"}
+			m := &wrapperspb.StringValue{Value: "abcd"}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "google.protobuf.StringValue",
 				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
 			}
@@ -1720,15 +1726,15 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with Int64Value",
 		mo: protojson.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Int64Value{})),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&wrapperspb.Int64Value{})),
 		},
 		input: func() proto.Message {
-			m := &knownpb.Int64Value{Value: 42}
+			m := &wrapperspb.Int64Value{Value: 42}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "google.protobuf.Int64Value",
 				Value:   b,
 			}
@@ -1740,15 +1746,15 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with Duration",
 		mo: protojson.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Duration{})),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&durationpb.Duration{})),
 		},
 		input: func() proto.Message {
-			m := &knownpb.Duration{}
+			m := &durationpb.Duration{}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "type.googleapis.com/google.protobuf.Duration",
 				Value:   b,
 			}
@@ -1760,15 +1766,15 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with empty Value",
 		mo: protojson.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&structpb.Value{})),
 		},
 		input: func() proto.Message {
-			m := &knownpb.Value{}
+			m := &structpb.Value{}
 			b, err := proto.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "type.googleapis.com/google.protobuf.Value",
 				Value:   b,
 			}
@@ -1777,15 +1783,15 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with Value of StringValue",
 		mo: protojson.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&structpb.Value{})),
 		},
 		input: func() proto.Message {
-			m := &knownpb.Value{Kind: &knownpb.Value_StringValue{"abcd"}}
+			m := &structpb.Value{Kind: &structpb.Value_StringValue{"abcd"}}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "type.googleapis.com/google.protobuf.Value",
 				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
 			}
@@ -1798,15 +1804,15 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with Value of NullValue",
 		mo: protojson.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Value{})),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&structpb.Value{})),
 		},
 		input: func() proto.Message {
-			m := &knownpb.Value{Kind: &knownpb.Value_NullValue{}}
+			m := &structpb.Value{Kind: &structpb.Value_NullValue{}}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "type.googleapis.com/google.protobuf.Value",
 				Value:   b,
 			}
@@ -1819,24 +1825,24 @@ func TestMarshal(t *testing.T) {
 		desc: "Any with Struct",
 		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(
-				pimpl.Export{}.MessageTypeOf(&knownpb.Struct{}),
-				pimpl.Export{}.MessageTypeOf(&knownpb.Value{}),
-				pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{}),
-				pimpl.Export{}.EnumTypeOf(knownpb.NullValue_NULL_VALUE),
-				pimpl.Export{}.MessageTypeOf(&knownpb.StringValue{}),
+				pimpl.Export{}.MessageTypeOf(&structpb.Struct{}),
+				pimpl.Export{}.MessageTypeOf(&structpb.Value{}),
+				pimpl.Export{}.MessageTypeOf(&wrapperspb.BoolValue{}),
+				pimpl.Export{}.EnumTypeOf(structpb.NullValue_NULL_VALUE),
+				pimpl.Export{}.MessageTypeOf(&wrapperspb.StringValue{}),
 			),
 		},
 		input: func() proto.Message {
-			m := &knownpb.Struct{
-				Fields: map[string]*knownpb.Value{
-					"bool":   {Kind: &knownpb.Value_BoolValue{true}},
-					"null":   {Kind: &knownpb.Value_NullValue{}},
-					"string": {Kind: &knownpb.Value_StringValue{"hello"}},
+			m := &structpb.Struct{
+				Fields: map[string]*structpb.Value{
+					"bool":   {Kind: &structpb.Value_BoolValue{true}},
+					"null":   {Kind: &structpb.Value_NullValue{}},
+					"string": {Kind: &structpb.Value_StringValue{"hello"}},
 					"struct": {
-						Kind: &knownpb.Value_StructValue{
-							&knownpb.Struct{
-								Fields: map[string]*knownpb.Value{
-									"string": {Kind: &knownpb.Value_StringValue{"world"}},
+						Kind: &structpb.Value_StructValue{
+							&structpb.Struct{
+								Fields: map[string]*structpb.Value{
+									"string": {Kind: &structpb.Value_StringValue{"world"}},
 								},
 							},
 						},
@@ -1847,7 +1853,7 @@ func TestMarshal(t *testing.T) {
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "google.protobuf.Struct",
 				Value:   b,
 			}
@@ -1866,15 +1872,15 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "Any with missing type_url",
 		mo: protojson.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.BoolValue{})),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&wrapperspb.BoolValue{})),
 		},
 		input: func() proto.Message {
-			m := &knownpb.BoolValue{Value: true}
+			m := &wrapperspb.BoolValue{Value: true}
 			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				Value: b,
 			}
 		}(),
@@ -1882,41 +1888,41 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc: "well known types as field values",
 		mo: protojson.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&knownpb.Empty{})),
+			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&emptypb.Empty{})),
 		},
 		input: &pb2.KnownTypes{
-			OptBool:      &knownpb.BoolValue{Value: false},
-			OptInt32:     &knownpb.Int32Value{Value: 42},
-			OptInt64:     &knownpb.Int64Value{Value: 42},
-			OptUint32:    &knownpb.UInt32Value{Value: 42},
-			OptUint64:    &knownpb.UInt64Value{Value: 42},
-			OptFloat:     &knownpb.FloatValue{Value: 1.23},
-			OptDouble:    &knownpb.DoubleValue{Value: 3.1415},
-			OptString:    &knownpb.StringValue{Value: "hello"},
-			OptBytes:     &knownpb.BytesValue{Value: []byte("hello")},
-			OptDuration:  &knownpb.Duration{Seconds: 123},
-			OptTimestamp: &knownpb.Timestamp{Seconds: 1553036601},
-			OptStruct: &knownpb.Struct{
-				Fields: map[string]*knownpb.Value{
-					"string": {Kind: &knownpb.Value_StringValue{"hello"}},
+			OptBool:      &wrapperspb.BoolValue{Value: false},
+			OptInt32:     &wrapperspb.Int32Value{Value: 42},
+			OptInt64:     &wrapperspb.Int64Value{Value: 42},
+			OptUint32:    &wrapperspb.UInt32Value{Value: 42},
+			OptUint64:    &wrapperspb.UInt64Value{Value: 42},
+			OptFloat:     &wrapperspb.FloatValue{Value: 1.23},
+			OptDouble:    &wrapperspb.DoubleValue{Value: 3.1415},
+			OptString:    &wrapperspb.StringValue{Value: "hello"},
+			OptBytes:     &wrapperspb.BytesValue{Value: []byte("hello")},
+			OptDuration:  &durationpb.Duration{Seconds: 123},
+			OptTimestamp: &timestamppb.Timestamp{Seconds: 1553036601},
+			OptStruct: &structpb.Struct{
+				Fields: map[string]*structpb.Value{
+					"string": {Kind: &structpb.Value_StringValue{"hello"}},
 				},
 			},
-			OptList: &knownpb.ListValue{
-				Values: []*knownpb.Value{
-					{Kind: &knownpb.Value_NullValue{}},
-					{Kind: &knownpb.Value_StringValue{}},
-					{Kind: &knownpb.Value_StructValue{}},
-					{Kind: &knownpb.Value_ListValue{}},
+			OptList: &structpb.ListValue{
+				Values: []*structpb.Value{
+					{Kind: &structpb.Value_NullValue{}},
+					{Kind: &structpb.Value_StringValue{}},
+					{Kind: &structpb.Value_StructValue{}},
+					{Kind: &structpb.Value_ListValue{}},
 				},
 			},
-			OptValue: &knownpb.Value{
-				Kind: &knownpb.Value_StringValue{"world"},
+			OptValue: &structpb.Value{
+				Kind: &structpb.Value_StringValue{"world"},
 			},
-			OptEmpty: &knownpb.Empty{},
-			OptAny: &knownpb.Any{
+			OptEmpty: &emptypb.Empty{},
+			OptAny: &anypb.Any{
 				TypeUrl: "google.protobuf.Empty",
 			},
-			OptFieldmask: &knownpb.FieldMask{
+			OptFieldmask: &fieldmaskpb.FieldMask{
 				Paths: []string{"foo_bar", "bar_foo"},
 			},
 		},

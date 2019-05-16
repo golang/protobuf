@@ -15,7 +15,7 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 // TODO: Should we be responsible for validating other parts of the descriptor

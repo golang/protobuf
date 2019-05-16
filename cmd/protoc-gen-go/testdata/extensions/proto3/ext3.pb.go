@@ -8,7 +8,7 @@ import (
 	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	descriptor "google.golang.org/protobuf/types/descriptor"
+	descriptorpb "google.golang.org/protobuf/types/descriptorpb"
 	sync "sync"
 )
 
@@ -83,7 +83,7 @@ func (*Message) Descriptor() ([]byte, []int) {
 
 var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         1001,
 		Name:          "goproto.protoc.extension.proto3.extension_bool",
@@ -91,7 +91,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*Enum)(nil),
 		Field:         1002,
 		Name:          "goproto.protoc.extension.proto3.extension_enum",
@@ -99,7 +99,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*int32)(nil),
 		Field:         1003,
 		Name:          "goproto.protoc.extension.proto3.extension_int32",
@@ -107,7 +107,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*int32)(nil),
 		Field:         1004,
 		Name:          "goproto.protoc.extension.proto3.extension_sint32",
@@ -115,7 +115,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*uint32)(nil),
 		Field:         1005,
 		Name:          "goproto.protoc.extension.proto3.extension_uint32",
@@ -123,7 +123,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*int64)(nil),
 		Field:         1006,
 		Name:          "goproto.protoc.extension.proto3.extension_int64",
@@ -131,7 +131,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*int64)(nil),
 		Field:         1007,
 		Name:          "goproto.protoc.extension.proto3.extension_sint64",
@@ -139,7 +139,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*uint64)(nil),
 		Field:         1008,
 		Name:          "goproto.protoc.extension.proto3.extension_uint64",
@@ -147,7 +147,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*int32)(nil),
 		Field:         1009,
 		Name:          "goproto.protoc.extension.proto3.extension_sfixed32",
@@ -155,7 +155,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*uint32)(nil),
 		Field:         1010,
 		Name:          "goproto.protoc.extension.proto3.extension_fixed32",
@@ -163,7 +163,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*float32)(nil),
 		Field:         1011,
 		Name:          "goproto.protoc.extension.proto3.extension_float",
@@ -171,7 +171,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*int64)(nil),
 		Field:         1012,
 		Name:          "goproto.protoc.extension.proto3.extension_sfixed64",
@@ -179,7 +179,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*uint64)(nil),
 		Field:         1013,
 		Name:          "goproto.protoc.extension.proto3.extension_fixed64",
@@ -187,7 +187,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*float64)(nil),
 		Field:         1014,
 		Name:          "goproto.protoc.extension.proto3.extension_double",
@@ -195,7 +195,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*string)(nil),
 		Field:         1015,
 		Name:          "goproto.protoc.extension.proto3.extension_string",
@@ -203,7 +203,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]byte)(nil),
 		Field:         1016,
 		Name:          "goproto.protoc.extension.proto3.extension_bytes",
@@ -211,7 +211,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: (*Message)(nil),
 		Field:         1017,
 		Name:          "goproto.protoc.extension.proto3.extension_Message",
@@ -219,7 +219,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]bool)(nil),
 		Field:         2001,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_bool",
@@ -227,7 +227,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]Enum)(nil),
 		Field:         2002,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_enum",
@@ -235,7 +235,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]int32)(nil),
 		Field:         2003,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_int32",
@@ -243,7 +243,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]int32)(nil),
 		Field:         2004,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_sint32",
@@ -251,7 +251,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]uint32)(nil),
 		Field:         2005,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_uint32",
@@ -259,7 +259,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]int64)(nil),
 		Field:         2006,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_int64",
@@ -267,7 +267,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]int64)(nil),
 		Field:         2007,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_sint64",
@@ -275,7 +275,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]uint64)(nil),
 		Field:         2008,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_uint64",
@@ -283,7 +283,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]int32)(nil),
 		Field:         2009,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_sfixed32",
@@ -291,7 +291,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]uint32)(nil),
 		Field:         2010,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_fixed32",
@@ -299,7 +299,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]float32)(nil),
 		Field:         2011,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_float",
@@ -307,7 +307,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]int64)(nil),
 		Field:         2012,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_sfixed64",
@@ -315,7 +315,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]uint64)(nil),
 		Field:         2013,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_fixed64",
@@ -323,7 +323,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]float64)(nil),
 		Field:         2014,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_double",
@@ -331,7 +331,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]string)(nil),
 		Field:         2015,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_string",
@@ -339,7 +339,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([][]byte)(nil),
 		Field:         2016,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_bytes",
@@ -347,7 +347,7 @@ var file_extensions_proto3_ext3_proto_extDescs = []protoiface.ExtensionDescV1{
 		Filename:      "extensions/proto3/ext3.proto",
 	},
 	{
-		ExtendedType:  (*descriptor.MessageOptions)(nil),
+		ExtendedType:  (*descriptorpb.MessageOptions)(nil),
 		ExtensionType: ([]*Message)(nil),
 		Field:         2017,
 		Name:          "goproto.protoc.extension.proto3.repeated_extension_Message",
@@ -683,9 +683,9 @@ func file_extensions_proto3_ext3_proto_rawDescGZIP() []byte {
 var file_extensions_proto3_ext3_proto_enumTypes = make([]protoreflect.EnumType, 1)
 var file_extensions_proto3_ext3_proto_msgTypes = make([]protoimpl.MessageType, 1)
 var file_extensions_proto3_ext3_proto_goTypes = []interface{}{
-	(Enum)(0),                         // 0: goproto.protoc.extension.proto3.Enum
-	(*Message)(nil),                   // 1: goproto.protoc.extension.proto3.Message
-	(*descriptor.MessageOptions)(nil), // 2: google.protobuf.MessageOptions
+	(Enum)(0),                           // 0: goproto.protoc.extension.proto3.Enum
+	(*Message)(nil),                     // 1: goproto.protoc.extension.proto3.Message
+	(*descriptorpb.MessageOptions)(nil), // 2: google.protobuf.MessageOptions
 }
 var file_extensions_proto3_ext3_proto_depIdxs = []int32{
 	2, // goproto.protoc.extension.proto3.extension_bool:extendee -> google.protobuf.MessageOptions

@@ -8,7 +8,13 @@ import (
 	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	known "google.golang.org/protobuf/types/known"
+	anypb "google.golang.org/protobuf/types/known/anypb"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
+	structpb "google.golang.org/protobuf/types/known/structpb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	sync "sync"
 )
 
@@ -1050,24 +1056,24 @@ func (x *FakeMessageSetExtension) GetOptString() string {
 
 // Message contains well-known type fields.
 type KnownTypes struct {
-	OptBool              *known.BoolValue        `protobuf:"bytes,1,opt,name=opt_bool,json=optBool" json:"opt_bool,omitempty"`
-	OptInt32             *known.Int32Value       `protobuf:"bytes,2,opt,name=opt_int32,json=optInt32" json:"opt_int32,omitempty"`
-	OptInt64             *known.Int64Value       `protobuf:"bytes,3,opt,name=opt_int64,json=optInt64" json:"opt_int64,omitempty"`
-	OptUint32            *known.UInt32Value      `protobuf:"bytes,4,opt,name=opt_uint32,json=optUint32" json:"opt_uint32,omitempty"`
-	OptUint64            *known.UInt64Value      `protobuf:"bytes,5,opt,name=opt_uint64,json=optUint64" json:"opt_uint64,omitempty"`
-	OptFloat             *known.FloatValue       `protobuf:"bytes,6,opt,name=opt_float,json=optFloat" json:"opt_float,omitempty"`
-	OptDouble            *known.DoubleValue      `protobuf:"bytes,7,opt,name=opt_double,json=optDouble" json:"opt_double,omitempty"`
-	OptString            *known.StringValue      `protobuf:"bytes,8,opt,name=opt_string,json=optString" json:"opt_string,omitempty"`
-	OptBytes             *known.BytesValue       `protobuf:"bytes,9,opt,name=opt_bytes,json=optBytes" json:"opt_bytes,omitempty"`
-	OptDuration          *known.Duration         `protobuf:"bytes,20,opt,name=opt_duration,json=optDuration" json:"opt_duration,omitempty"`
-	OptTimestamp         *known.Timestamp        `protobuf:"bytes,21,opt,name=opt_timestamp,json=optTimestamp" json:"opt_timestamp,omitempty"`
-	OptStruct            *known.Struct           `protobuf:"bytes,25,opt,name=opt_struct,json=optStruct" json:"opt_struct,omitempty"`
-	OptList              *known.ListValue        `protobuf:"bytes,26,opt,name=opt_list,json=optList" json:"opt_list,omitempty"`
-	OptValue             *known.Value            `protobuf:"bytes,27,opt,name=opt_value,json=optValue" json:"opt_value,omitempty"`
-	OptNull              *known.NullValue        `protobuf:"varint,28,opt,name=opt_null,json=optNull,enum=google.protobuf.NullValue" json:"opt_null,omitempty"`
-	OptEmpty             *known.Empty            `protobuf:"bytes,30,opt,name=opt_empty,json=optEmpty" json:"opt_empty,omitempty"`
-	OptAny               *known.Any              `protobuf:"bytes,32,opt,name=opt_any,json=optAny" json:"opt_any,omitempty"`
-	OptFieldmask         *known.FieldMask        `protobuf:"bytes,40,opt,name=opt_fieldmask,json=optFieldmask" json:"opt_fieldmask,omitempty"`
+	OptBool              *wrapperspb.BoolValue   `protobuf:"bytes,1,opt,name=opt_bool,json=optBool" json:"opt_bool,omitempty"`
+	OptInt32             *wrapperspb.Int32Value  `protobuf:"bytes,2,opt,name=opt_int32,json=optInt32" json:"opt_int32,omitempty"`
+	OptInt64             *wrapperspb.Int64Value  `protobuf:"bytes,3,opt,name=opt_int64,json=optInt64" json:"opt_int64,omitempty"`
+	OptUint32            *wrapperspb.UInt32Value `protobuf:"bytes,4,opt,name=opt_uint32,json=optUint32" json:"opt_uint32,omitempty"`
+	OptUint64            *wrapperspb.UInt64Value `protobuf:"bytes,5,opt,name=opt_uint64,json=optUint64" json:"opt_uint64,omitempty"`
+	OptFloat             *wrapperspb.FloatValue  `protobuf:"bytes,6,opt,name=opt_float,json=optFloat" json:"opt_float,omitempty"`
+	OptDouble            *wrapperspb.DoubleValue `protobuf:"bytes,7,opt,name=opt_double,json=optDouble" json:"opt_double,omitempty"`
+	OptString            *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=opt_string,json=optString" json:"opt_string,omitempty"`
+	OptBytes             *wrapperspb.BytesValue  `protobuf:"bytes,9,opt,name=opt_bytes,json=optBytes" json:"opt_bytes,omitempty"`
+	OptDuration          *durationpb.Duration    `protobuf:"bytes,20,opt,name=opt_duration,json=optDuration" json:"opt_duration,omitempty"`
+	OptTimestamp         *timestamppb.Timestamp  `protobuf:"bytes,21,opt,name=opt_timestamp,json=optTimestamp" json:"opt_timestamp,omitempty"`
+	OptStruct            *structpb.Struct        `protobuf:"bytes,25,opt,name=opt_struct,json=optStruct" json:"opt_struct,omitempty"`
+	OptList              *structpb.ListValue     `protobuf:"bytes,26,opt,name=opt_list,json=optList" json:"opt_list,omitempty"`
+	OptValue             *structpb.Value         `protobuf:"bytes,27,opt,name=opt_value,json=optValue" json:"opt_value,omitempty"`
+	OptNull              *structpb.NullValue     `protobuf:"varint,28,opt,name=opt_null,json=optNull,enum=google.protobuf.NullValue" json:"opt_null,omitempty"`
+	OptEmpty             *emptypb.Empty          `protobuf:"bytes,30,opt,name=opt_empty,json=optEmpty" json:"opt_empty,omitempty"`
+	OptAny               *anypb.Any              `protobuf:"bytes,32,opt,name=opt_any,json=optAny" json:"opt_any,omitempty"`
+	OptFieldmask         *fieldmaskpb.FieldMask  `protobuf:"bytes,40,opt,name=opt_fieldmask,json=optFieldmask" json:"opt_fieldmask,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
 	XXX_unrecognized     protoimpl.UnknownFields `json:"-"`
 	XXX_sizecache        protoimpl.SizeCache     `json:"-"`
@@ -1096,126 +1102,126 @@ func (*KnownTypes) Descriptor() ([]byte, []int) {
 	return file_pb2_test_proto_rawDescGZIP(), []int{15}
 }
 
-func (x *KnownTypes) GetOptBool() *known.BoolValue {
+func (x *KnownTypes) GetOptBool() *wrapperspb.BoolValue {
 	if x != nil {
 		return x.OptBool
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptInt32() *known.Int32Value {
+func (x *KnownTypes) GetOptInt32() *wrapperspb.Int32Value {
 	if x != nil {
 		return x.OptInt32
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptInt64() *known.Int64Value {
+func (x *KnownTypes) GetOptInt64() *wrapperspb.Int64Value {
 	if x != nil {
 		return x.OptInt64
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptUint32() *known.UInt32Value {
+func (x *KnownTypes) GetOptUint32() *wrapperspb.UInt32Value {
 	if x != nil {
 		return x.OptUint32
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptUint64() *known.UInt64Value {
+func (x *KnownTypes) GetOptUint64() *wrapperspb.UInt64Value {
 	if x != nil {
 		return x.OptUint64
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptFloat() *known.FloatValue {
+func (x *KnownTypes) GetOptFloat() *wrapperspb.FloatValue {
 	if x != nil {
 		return x.OptFloat
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptDouble() *known.DoubleValue {
+func (x *KnownTypes) GetOptDouble() *wrapperspb.DoubleValue {
 	if x != nil {
 		return x.OptDouble
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptString() *known.StringValue {
+func (x *KnownTypes) GetOptString() *wrapperspb.StringValue {
 	if x != nil {
 		return x.OptString
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptBytes() *known.BytesValue {
+func (x *KnownTypes) GetOptBytes() *wrapperspb.BytesValue {
 	if x != nil {
 		return x.OptBytes
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptDuration() *known.Duration {
+func (x *KnownTypes) GetOptDuration() *durationpb.Duration {
 	if x != nil {
 		return x.OptDuration
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptTimestamp() *known.Timestamp {
+func (x *KnownTypes) GetOptTimestamp() *timestamppb.Timestamp {
 	if x != nil {
 		return x.OptTimestamp
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptStruct() *known.Struct {
+func (x *KnownTypes) GetOptStruct() *structpb.Struct {
 	if x != nil {
 		return x.OptStruct
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptList() *known.ListValue {
+func (x *KnownTypes) GetOptList() *structpb.ListValue {
 	if x != nil {
 		return x.OptList
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptValue() *known.Value {
+func (x *KnownTypes) GetOptValue() *structpb.Value {
 	if x != nil {
 		return x.OptValue
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptNull() known.NullValue {
+func (x *KnownTypes) GetOptNull() structpb.NullValue {
 	if x != nil && x.OptNull != nil {
 		return *x.OptNull
 	}
-	return known.NullValue_NULL_VALUE
+	return structpb.NullValue_NULL_VALUE
 }
 
-func (x *KnownTypes) GetOptEmpty() *known.Empty {
+func (x *KnownTypes) GetOptEmpty() *emptypb.Empty {
 	if x != nil {
 		return x.OptEmpty
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptAny() *known.Any {
+func (x *KnownTypes) GetOptAny() *anypb.Any {
 	if x != nil {
 		return x.OptAny
 	}
 	return nil
 }
 
-func (x *KnownTypes) GetOptFieldmask() *known.FieldMask {
+func (x *KnownTypes) GetOptFieldmask() *fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.OptFieldmask
 	}
@@ -1965,24 +1971,24 @@ var file_pb2_test_proto_goTypes = []interface{}{
 	(*Nests_RptGroup)(nil),                // 19: pb2.Nests.RptGroup
 	(*Nests_OptGroup_OptNestedGroup)(nil), // 20: pb2.Nests.OptGroup.OptNestedGroup
 	nil,                                   // 21: pb2.IndirectRequired.StrToNestedEntry
-	(*known.BoolValue)(nil),               // 22: google.protobuf.BoolValue
-	(*known.Int32Value)(nil),              // 23: google.protobuf.Int32Value
-	(*known.Int64Value)(nil),              // 24: google.protobuf.Int64Value
-	(*known.UInt32Value)(nil),             // 25: google.protobuf.UInt32Value
-	(*known.UInt64Value)(nil),             // 26: google.protobuf.UInt64Value
-	(*known.FloatValue)(nil),              // 27: google.protobuf.FloatValue
-	(*known.DoubleValue)(nil),             // 28: google.protobuf.DoubleValue
-	(*known.StringValue)(nil),             // 29: google.protobuf.StringValue
-	(*known.BytesValue)(nil),              // 30: google.protobuf.BytesValue
-	(*known.Duration)(nil),                // 31: google.protobuf.Duration
-	(*known.Timestamp)(nil),               // 32: google.protobuf.Timestamp
-	(*known.Struct)(nil),                  // 33: google.protobuf.Struct
-	(*known.ListValue)(nil),               // 34: google.protobuf.ListValue
-	(*known.Value)(nil),                   // 35: google.protobuf.Value
-	(known.NullValue)(0),                  // 36: google.protobuf.NullValue
-	(*known.Empty)(nil),                   // 37: google.protobuf.Empty
-	(*known.Any)(nil),                     // 38: google.protobuf.Any
-	(*known.FieldMask)(nil),               // 39: google.protobuf.FieldMask
+	(*wrapperspb.BoolValue)(nil),          // 22: google.protobuf.BoolValue
+	(*wrapperspb.Int32Value)(nil),         // 23: google.protobuf.Int32Value
+	(*wrapperspb.Int64Value)(nil),         // 24: google.protobuf.Int64Value
+	(*wrapperspb.UInt32Value)(nil),        // 25: google.protobuf.UInt32Value
+	(*wrapperspb.UInt64Value)(nil),        // 26: google.protobuf.UInt64Value
+	(*wrapperspb.FloatValue)(nil),         // 27: google.protobuf.FloatValue
+	(*wrapperspb.DoubleValue)(nil),        // 28: google.protobuf.DoubleValue
+	(*wrapperspb.StringValue)(nil),        // 29: google.protobuf.StringValue
+	(*wrapperspb.BytesValue)(nil),         // 30: google.protobuf.BytesValue
+	(*durationpb.Duration)(nil),           // 31: google.protobuf.Duration
+	(*timestamppb.Timestamp)(nil),         // 32: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),               // 33: google.protobuf.Struct
+	(*structpb.ListValue)(nil),            // 34: google.protobuf.ListValue
+	(*structpb.Value)(nil),                // 35: google.protobuf.Value
+	(structpb.NullValue)(0),               // 36: google.protobuf.NullValue
+	(*emptypb.Empty)(nil),                 // 37: google.protobuf.Empty
+	(*anypb.Any)(nil),                     // 38: google.protobuf.Any
+	(*fieldmaskpb.FieldMask)(nil),         // 39: google.protobuf.FieldMask
 }
 var file_pb2_test_proto_depIdxs = []int32{
 	11, // pb2.opt_ext_bool:extendee -> pb2.Extensions

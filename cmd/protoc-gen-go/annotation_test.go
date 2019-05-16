@@ -13,7 +13,7 @@ import (
 	"google.golang.org/protobuf/internal/fieldnum"
 	"google.golang.org/protobuf/internal/scalar"
 
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 func TestAnnotations(t *testing.T) {

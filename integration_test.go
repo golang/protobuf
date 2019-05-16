@@ -290,21 +290,21 @@ func patchProtos(check func(error), repoRoot string) {
 	javaPackageRx := regexp.MustCompile(`^option\s+java_package\s*=\s*".*"\s*;\s*$`)
 	goPackageRx := regexp.MustCompile(`^option\s+go_package\s*=\s*".*"\s*;\s*$`)
 	files := map[string]string{
-		"src/google/protobuf/any.proto":                  "google.golang.org/protobuf/types/known;known_proto",
-		"src/google/protobuf/api.proto":                  "google.golang.org/protobuf/types/known;known_proto",
-		"src/google/protobuf/duration.proto":             "google.golang.org/protobuf/types/known;known_proto",
-		"src/google/protobuf/empty.proto":                "google.golang.org/protobuf/types/known;known_proto",
-		"src/google/protobuf/field_mask.proto":           "google.golang.org/protobuf/types/known;known_proto",
-		"src/google/protobuf/source_context.proto":       "google.golang.org/protobuf/types/known;known_proto",
-		"src/google/protobuf/struct.proto":               "google.golang.org/protobuf/types/known;known_proto",
-		"src/google/protobuf/timestamp.proto":            "google.golang.org/protobuf/types/known;known_proto",
-		"src/google/protobuf/type.proto":                 "google.golang.org/protobuf/types/known;known_proto",
-		"src/google/protobuf/wrappers.proto":             "google.golang.org/protobuf/types/known;known_proto",
-		"src/google/protobuf/descriptor.proto":           "google.golang.org/protobuf/types/descriptor;descriptor_proto",
-		"src/google/protobuf/compiler/plugin.proto":      "google.golang.org/protobuf/types/plugin;plugin_proto",
-		"conformance/conformance.proto":                  "google.golang.org/protobuf/internal/testprotos/conformance;conformance",
-		"src/google/protobuf/test_messages_proto2.proto": "google.golang.org/protobuf/internal/testprotos/conformance;conformance",
-		"src/google/protobuf/test_messages_proto3.proto": "google.golang.org/protobuf/internal/testprotos/conformance;conformance",
+		"src/google/protobuf/any.proto":                  "google.golang.org/protobuf/types/known/anypb",
+		"src/google/protobuf/api.proto":                  "google.golang.org/protobuf/types/known/apipb",
+		"src/google/protobuf/duration.proto":             "google.golang.org/protobuf/types/known/durationpb",
+		"src/google/protobuf/empty.proto":                "google.golang.org/protobuf/types/known/emptypb",
+		"src/google/protobuf/field_mask.proto":           "google.golang.org/protobuf/types/known/fieldmaskpb",
+		"src/google/protobuf/source_context.proto":       "google.golang.org/protobuf/types/known/sourcecontextpb",
+		"src/google/protobuf/struct.proto":               "google.golang.org/protobuf/types/known/structpb",
+		"src/google/protobuf/timestamp.proto":            "google.golang.org/protobuf/types/known/timestamppb",
+		"src/google/protobuf/type.proto":                 "google.golang.org/protobuf/types/known/typepb",
+		"src/google/protobuf/wrappers.proto":             "google.golang.org/protobuf/types/known/wrapperspb",
+		"src/google/protobuf/descriptor.proto":           "google.golang.org/protobuf/types/descriptorpb",
+		"src/google/protobuf/compiler/plugin.proto":      "google.golang.org/protobuf/types/pluginpb",
+		"conformance/conformance.proto":                  "google.golang.org/protobuf/internal/testprotos/conformance",
+		"src/google/protobuf/test_messages_proto2.proto": "google.golang.org/protobuf/internal/testprotos/conformance",
+		"src/google/protobuf/test_messages_proto3.proto": "google.golang.org/protobuf/internal/testprotos/conformance",
 	}
 	for pbpath, gopath := range files {
 		b, err := ioutil.ReadFile(filepath.Join(repoRoot, pbpath))

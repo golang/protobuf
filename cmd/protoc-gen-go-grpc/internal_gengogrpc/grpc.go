@@ -12,7 +12,7 @@ import (
 
 	"google.golang.org/protobuf/compiler/protogen"
 
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 const (

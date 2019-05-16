@@ -9,7 +9,8 @@ import (
 	"google.golang.org/protobuf/internal/encoding/defval"
 	"google.golang.org/protobuf/internal/scalar"
 	"google.golang.org/protobuf/reflect/protoreflect"
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
+
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 // ToFileDescriptorProto converts a FileDescriptor to a

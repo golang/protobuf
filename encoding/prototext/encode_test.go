@@ -25,7 +25,7 @@ import (
 
 	"google.golang.org/protobuf/encoding/testprotos/pb2"
 	"google.golang.org/protobuf/encoding/testprotos/pb3"
-	knownpb "google.golang.org/protobuf/types/known"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 func init() {
@@ -1181,7 +1181,7 @@ opt_int32: 42
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "pb2.Nested",
 				Value:   b,
 			}
@@ -1205,7 +1205,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "foo/pb2.Nested",
 				Value:   b,
 			}
@@ -1233,7 +1233,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   b,
 			}
@@ -1256,7 +1256,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
 			}
@@ -1271,7 +1271,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 		mo: prototext.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
-		input: &knownpb.Any{
+		input: &anypb.Any{
 			TypeUrl: "foo/pb2.Nested",
 			Value:   dhex("80"),
 		},

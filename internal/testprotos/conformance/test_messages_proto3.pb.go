@@ -8,7 +8,12 @@ import (
 	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	known "google.golang.org/protobuf/types/known"
+	anypb "google.golang.org/protobuf/types/known/anypb"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
+	structpb "google.golang.org/protobuf/types/known/structpb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	sync "sync"
 )
 
@@ -244,37 +249,37 @@ type TestAllTypesProto3 struct {
 	//	*TestAllTypesProto3_OneofEnum
 	OneofField isTestAllTypesProto3_OneofField `protobuf_oneof:"oneof_field"`
 	// Well-known types
-	OptionalBoolWrapper   *known.BoolValue     `protobuf:"bytes,201,opt,name=optional_bool_wrapper,json=optionalBoolWrapper,proto3" json:"optional_bool_wrapper,omitempty"`
-	OptionalInt32Wrapper  *known.Int32Value    `protobuf:"bytes,202,opt,name=optional_int32_wrapper,json=optionalInt32Wrapper,proto3" json:"optional_int32_wrapper,omitempty"`
-	OptionalInt64Wrapper  *known.Int64Value    `protobuf:"bytes,203,opt,name=optional_int64_wrapper,json=optionalInt64Wrapper,proto3" json:"optional_int64_wrapper,omitempty"`
-	OptionalUint32Wrapper *known.UInt32Value   `protobuf:"bytes,204,opt,name=optional_uint32_wrapper,json=optionalUint32Wrapper,proto3" json:"optional_uint32_wrapper,omitempty"`
-	OptionalUint64Wrapper *known.UInt64Value   `protobuf:"bytes,205,opt,name=optional_uint64_wrapper,json=optionalUint64Wrapper,proto3" json:"optional_uint64_wrapper,omitempty"`
-	OptionalFloatWrapper  *known.FloatValue    `protobuf:"bytes,206,opt,name=optional_float_wrapper,json=optionalFloatWrapper,proto3" json:"optional_float_wrapper,omitempty"`
-	OptionalDoubleWrapper *known.DoubleValue   `protobuf:"bytes,207,opt,name=optional_double_wrapper,json=optionalDoubleWrapper,proto3" json:"optional_double_wrapper,omitempty"`
-	OptionalStringWrapper *known.StringValue   `protobuf:"bytes,208,opt,name=optional_string_wrapper,json=optionalStringWrapper,proto3" json:"optional_string_wrapper,omitempty"`
-	OptionalBytesWrapper  *known.BytesValue    `protobuf:"bytes,209,opt,name=optional_bytes_wrapper,json=optionalBytesWrapper,proto3" json:"optional_bytes_wrapper,omitempty"`
-	RepeatedBoolWrapper   []*known.BoolValue   `protobuf:"bytes,211,rep,name=repeated_bool_wrapper,json=repeatedBoolWrapper,proto3" json:"repeated_bool_wrapper,omitempty"`
-	RepeatedInt32Wrapper  []*known.Int32Value  `protobuf:"bytes,212,rep,name=repeated_int32_wrapper,json=repeatedInt32Wrapper,proto3" json:"repeated_int32_wrapper,omitempty"`
-	RepeatedInt64Wrapper  []*known.Int64Value  `protobuf:"bytes,213,rep,name=repeated_int64_wrapper,json=repeatedInt64Wrapper,proto3" json:"repeated_int64_wrapper,omitempty"`
-	RepeatedUint32Wrapper []*known.UInt32Value `protobuf:"bytes,214,rep,name=repeated_uint32_wrapper,json=repeatedUint32Wrapper,proto3" json:"repeated_uint32_wrapper,omitempty"`
-	RepeatedUint64Wrapper []*known.UInt64Value `protobuf:"bytes,215,rep,name=repeated_uint64_wrapper,json=repeatedUint64Wrapper,proto3" json:"repeated_uint64_wrapper,omitempty"`
-	RepeatedFloatWrapper  []*known.FloatValue  `protobuf:"bytes,216,rep,name=repeated_float_wrapper,json=repeatedFloatWrapper,proto3" json:"repeated_float_wrapper,omitempty"`
-	RepeatedDoubleWrapper []*known.DoubleValue `protobuf:"bytes,217,rep,name=repeated_double_wrapper,json=repeatedDoubleWrapper,proto3" json:"repeated_double_wrapper,omitempty"`
-	RepeatedStringWrapper []*known.StringValue `protobuf:"bytes,218,rep,name=repeated_string_wrapper,json=repeatedStringWrapper,proto3" json:"repeated_string_wrapper,omitempty"`
-	RepeatedBytesWrapper  []*known.BytesValue  `protobuf:"bytes,219,rep,name=repeated_bytes_wrapper,json=repeatedBytesWrapper,proto3" json:"repeated_bytes_wrapper,omitempty"`
-	OptionalDuration      *known.Duration      `protobuf:"bytes,301,opt,name=optional_duration,json=optionalDuration,proto3" json:"optional_duration,omitempty"`
-	OptionalTimestamp     *known.Timestamp     `protobuf:"bytes,302,opt,name=optional_timestamp,json=optionalTimestamp,proto3" json:"optional_timestamp,omitempty"`
-	OptionalFieldMask     *known.FieldMask     `protobuf:"bytes,303,opt,name=optional_field_mask,json=optionalFieldMask,proto3" json:"optional_field_mask,omitempty"`
-	OptionalStruct        *known.Struct        `protobuf:"bytes,304,opt,name=optional_struct,json=optionalStruct,proto3" json:"optional_struct,omitempty"`
-	OptionalAny           *known.Any           `protobuf:"bytes,305,opt,name=optional_any,json=optionalAny,proto3" json:"optional_any,omitempty"`
-	OptionalValue         *known.Value         `protobuf:"bytes,306,opt,name=optional_value,json=optionalValue,proto3" json:"optional_value,omitempty"`
-	RepeatedDuration      []*known.Duration    `protobuf:"bytes,311,rep,name=repeated_duration,json=repeatedDuration,proto3" json:"repeated_duration,omitempty"`
-	RepeatedTimestamp     []*known.Timestamp   `protobuf:"bytes,312,rep,name=repeated_timestamp,json=repeatedTimestamp,proto3" json:"repeated_timestamp,omitempty"`
-	RepeatedFieldmask     []*known.FieldMask   `protobuf:"bytes,313,rep,name=repeated_fieldmask,json=repeatedFieldmask,proto3" json:"repeated_fieldmask,omitempty"`
-	RepeatedStruct        []*known.Struct      `protobuf:"bytes,324,rep,name=repeated_struct,json=repeatedStruct,proto3" json:"repeated_struct,omitempty"`
-	RepeatedAny           []*known.Any         `protobuf:"bytes,315,rep,name=repeated_any,json=repeatedAny,proto3" json:"repeated_any,omitempty"`
-	RepeatedValue         []*known.Value       `protobuf:"bytes,316,rep,name=repeated_value,json=repeatedValue,proto3" json:"repeated_value,omitempty"`
-	RepeatedListValue     []*known.ListValue   `protobuf:"bytes,317,rep,name=repeated_list_value,json=repeatedListValue,proto3" json:"repeated_list_value,omitempty"`
+	OptionalBoolWrapper   *wrapperspb.BoolValue     `protobuf:"bytes,201,opt,name=optional_bool_wrapper,json=optionalBoolWrapper,proto3" json:"optional_bool_wrapper,omitempty"`
+	OptionalInt32Wrapper  *wrapperspb.Int32Value    `protobuf:"bytes,202,opt,name=optional_int32_wrapper,json=optionalInt32Wrapper,proto3" json:"optional_int32_wrapper,omitempty"`
+	OptionalInt64Wrapper  *wrapperspb.Int64Value    `protobuf:"bytes,203,opt,name=optional_int64_wrapper,json=optionalInt64Wrapper,proto3" json:"optional_int64_wrapper,omitempty"`
+	OptionalUint32Wrapper *wrapperspb.UInt32Value   `protobuf:"bytes,204,opt,name=optional_uint32_wrapper,json=optionalUint32Wrapper,proto3" json:"optional_uint32_wrapper,omitempty"`
+	OptionalUint64Wrapper *wrapperspb.UInt64Value   `protobuf:"bytes,205,opt,name=optional_uint64_wrapper,json=optionalUint64Wrapper,proto3" json:"optional_uint64_wrapper,omitempty"`
+	OptionalFloatWrapper  *wrapperspb.FloatValue    `protobuf:"bytes,206,opt,name=optional_float_wrapper,json=optionalFloatWrapper,proto3" json:"optional_float_wrapper,omitempty"`
+	OptionalDoubleWrapper *wrapperspb.DoubleValue   `protobuf:"bytes,207,opt,name=optional_double_wrapper,json=optionalDoubleWrapper,proto3" json:"optional_double_wrapper,omitempty"`
+	OptionalStringWrapper *wrapperspb.StringValue   `protobuf:"bytes,208,opt,name=optional_string_wrapper,json=optionalStringWrapper,proto3" json:"optional_string_wrapper,omitempty"`
+	OptionalBytesWrapper  *wrapperspb.BytesValue    `protobuf:"bytes,209,opt,name=optional_bytes_wrapper,json=optionalBytesWrapper,proto3" json:"optional_bytes_wrapper,omitempty"`
+	RepeatedBoolWrapper   []*wrapperspb.BoolValue   `protobuf:"bytes,211,rep,name=repeated_bool_wrapper,json=repeatedBoolWrapper,proto3" json:"repeated_bool_wrapper,omitempty"`
+	RepeatedInt32Wrapper  []*wrapperspb.Int32Value  `protobuf:"bytes,212,rep,name=repeated_int32_wrapper,json=repeatedInt32Wrapper,proto3" json:"repeated_int32_wrapper,omitempty"`
+	RepeatedInt64Wrapper  []*wrapperspb.Int64Value  `protobuf:"bytes,213,rep,name=repeated_int64_wrapper,json=repeatedInt64Wrapper,proto3" json:"repeated_int64_wrapper,omitempty"`
+	RepeatedUint32Wrapper []*wrapperspb.UInt32Value `protobuf:"bytes,214,rep,name=repeated_uint32_wrapper,json=repeatedUint32Wrapper,proto3" json:"repeated_uint32_wrapper,omitempty"`
+	RepeatedUint64Wrapper []*wrapperspb.UInt64Value `protobuf:"bytes,215,rep,name=repeated_uint64_wrapper,json=repeatedUint64Wrapper,proto3" json:"repeated_uint64_wrapper,omitempty"`
+	RepeatedFloatWrapper  []*wrapperspb.FloatValue  `protobuf:"bytes,216,rep,name=repeated_float_wrapper,json=repeatedFloatWrapper,proto3" json:"repeated_float_wrapper,omitempty"`
+	RepeatedDoubleWrapper []*wrapperspb.DoubleValue `protobuf:"bytes,217,rep,name=repeated_double_wrapper,json=repeatedDoubleWrapper,proto3" json:"repeated_double_wrapper,omitempty"`
+	RepeatedStringWrapper []*wrapperspb.StringValue `protobuf:"bytes,218,rep,name=repeated_string_wrapper,json=repeatedStringWrapper,proto3" json:"repeated_string_wrapper,omitempty"`
+	RepeatedBytesWrapper  []*wrapperspb.BytesValue  `protobuf:"bytes,219,rep,name=repeated_bytes_wrapper,json=repeatedBytesWrapper,proto3" json:"repeated_bytes_wrapper,omitempty"`
+	OptionalDuration      *durationpb.Duration      `protobuf:"bytes,301,opt,name=optional_duration,json=optionalDuration,proto3" json:"optional_duration,omitempty"`
+	OptionalTimestamp     *timestamppb.Timestamp    `protobuf:"bytes,302,opt,name=optional_timestamp,json=optionalTimestamp,proto3" json:"optional_timestamp,omitempty"`
+	OptionalFieldMask     *fieldmaskpb.FieldMask    `protobuf:"bytes,303,opt,name=optional_field_mask,json=optionalFieldMask,proto3" json:"optional_field_mask,omitempty"`
+	OptionalStruct        *structpb.Struct          `protobuf:"bytes,304,opt,name=optional_struct,json=optionalStruct,proto3" json:"optional_struct,omitempty"`
+	OptionalAny           *anypb.Any                `protobuf:"bytes,305,opt,name=optional_any,json=optionalAny,proto3" json:"optional_any,omitempty"`
+	OptionalValue         *structpb.Value           `protobuf:"bytes,306,opt,name=optional_value,json=optionalValue,proto3" json:"optional_value,omitempty"`
+	RepeatedDuration      []*durationpb.Duration    `protobuf:"bytes,311,rep,name=repeated_duration,json=repeatedDuration,proto3" json:"repeated_duration,omitempty"`
+	RepeatedTimestamp     []*timestamppb.Timestamp  `protobuf:"bytes,312,rep,name=repeated_timestamp,json=repeatedTimestamp,proto3" json:"repeated_timestamp,omitempty"`
+	RepeatedFieldmask     []*fieldmaskpb.FieldMask  `protobuf:"bytes,313,rep,name=repeated_fieldmask,json=repeatedFieldmask,proto3" json:"repeated_fieldmask,omitempty"`
+	RepeatedStruct        []*structpb.Struct        `protobuf:"bytes,324,rep,name=repeated_struct,json=repeatedStruct,proto3" json:"repeated_struct,omitempty"`
+	RepeatedAny           []*anypb.Any              `protobuf:"bytes,315,rep,name=repeated_any,json=repeatedAny,proto3" json:"repeated_any,omitempty"`
+	RepeatedValue         []*structpb.Value         `protobuf:"bytes,316,rep,name=repeated_value,json=repeatedValue,proto3" json:"repeated_value,omitempty"`
+	RepeatedListValue     []*structpb.ListValue     `protobuf:"bytes,317,rep,name=repeated_list_value,json=repeatedListValue,proto3" json:"repeated_list_value,omitempty"`
 	// Test field-name-to-JSON-name convention.
 	// (protobuf says names can be any valid C/C++ identifier.)
 	Fieldname1           int32                   `protobuf:"varint,401,opt,name=fieldname1,proto3" json:"fieldname1,omitempty"`
@@ -834,217 +839,217 @@ func (x *TestAllTypesProto3) GetOneofEnum() TestAllTypesProto3_NestedEnum {
 	return TestAllTypesProto3_FOO
 }
 
-func (x *TestAllTypesProto3) GetOptionalBoolWrapper() *known.BoolValue {
+func (x *TestAllTypesProto3) GetOptionalBoolWrapper() *wrapperspb.BoolValue {
 	if x != nil {
 		return x.OptionalBoolWrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalInt32Wrapper() *known.Int32Value {
+func (x *TestAllTypesProto3) GetOptionalInt32Wrapper() *wrapperspb.Int32Value {
 	if x != nil {
 		return x.OptionalInt32Wrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalInt64Wrapper() *known.Int64Value {
+func (x *TestAllTypesProto3) GetOptionalInt64Wrapper() *wrapperspb.Int64Value {
 	if x != nil {
 		return x.OptionalInt64Wrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalUint32Wrapper() *known.UInt32Value {
+func (x *TestAllTypesProto3) GetOptionalUint32Wrapper() *wrapperspb.UInt32Value {
 	if x != nil {
 		return x.OptionalUint32Wrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalUint64Wrapper() *known.UInt64Value {
+func (x *TestAllTypesProto3) GetOptionalUint64Wrapper() *wrapperspb.UInt64Value {
 	if x != nil {
 		return x.OptionalUint64Wrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalFloatWrapper() *known.FloatValue {
+func (x *TestAllTypesProto3) GetOptionalFloatWrapper() *wrapperspb.FloatValue {
 	if x != nil {
 		return x.OptionalFloatWrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalDoubleWrapper() *known.DoubleValue {
+func (x *TestAllTypesProto3) GetOptionalDoubleWrapper() *wrapperspb.DoubleValue {
 	if x != nil {
 		return x.OptionalDoubleWrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalStringWrapper() *known.StringValue {
+func (x *TestAllTypesProto3) GetOptionalStringWrapper() *wrapperspb.StringValue {
 	if x != nil {
 		return x.OptionalStringWrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalBytesWrapper() *known.BytesValue {
+func (x *TestAllTypesProto3) GetOptionalBytesWrapper() *wrapperspb.BytesValue {
 	if x != nil {
 		return x.OptionalBytesWrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedBoolWrapper() []*known.BoolValue {
+func (x *TestAllTypesProto3) GetRepeatedBoolWrapper() []*wrapperspb.BoolValue {
 	if x != nil {
 		return x.RepeatedBoolWrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedInt32Wrapper() []*known.Int32Value {
+func (x *TestAllTypesProto3) GetRepeatedInt32Wrapper() []*wrapperspb.Int32Value {
 	if x != nil {
 		return x.RepeatedInt32Wrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedInt64Wrapper() []*known.Int64Value {
+func (x *TestAllTypesProto3) GetRepeatedInt64Wrapper() []*wrapperspb.Int64Value {
 	if x != nil {
 		return x.RepeatedInt64Wrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedUint32Wrapper() []*known.UInt32Value {
+func (x *TestAllTypesProto3) GetRepeatedUint32Wrapper() []*wrapperspb.UInt32Value {
 	if x != nil {
 		return x.RepeatedUint32Wrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedUint64Wrapper() []*known.UInt64Value {
+func (x *TestAllTypesProto3) GetRepeatedUint64Wrapper() []*wrapperspb.UInt64Value {
 	if x != nil {
 		return x.RepeatedUint64Wrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedFloatWrapper() []*known.FloatValue {
+func (x *TestAllTypesProto3) GetRepeatedFloatWrapper() []*wrapperspb.FloatValue {
 	if x != nil {
 		return x.RepeatedFloatWrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedDoubleWrapper() []*known.DoubleValue {
+func (x *TestAllTypesProto3) GetRepeatedDoubleWrapper() []*wrapperspb.DoubleValue {
 	if x != nil {
 		return x.RepeatedDoubleWrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedStringWrapper() []*known.StringValue {
+func (x *TestAllTypesProto3) GetRepeatedStringWrapper() []*wrapperspb.StringValue {
 	if x != nil {
 		return x.RepeatedStringWrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedBytesWrapper() []*known.BytesValue {
+func (x *TestAllTypesProto3) GetRepeatedBytesWrapper() []*wrapperspb.BytesValue {
 	if x != nil {
 		return x.RepeatedBytesWrapper
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalDuration() *known.Duration {
+func (x *TestAllTypesProto3) GetOptionalDuration() *durationpb.Duration {
 	if x != nil {
 		return x.OptionalDuration
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalTimestamp() *known.Timestamp {
+func (x *TestAllTypesProto3) GetOptionalTimestamp() *timestamppb.Timestamp {
 	if x != nil {
 		return x.OptionalTimestamp
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalFieldMask() *known.FieldMask {
+func (x *TestAllTypesProto3) GetOptionalFieldMask() *fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.OptionalFieldMask
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalStruct() *known.Struct {
+func (x *TestAllTypesProto3) GetOptionalStruct() *structpb.Struct {
 	if x != nil {
 		return x.OptionalStruct
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalAny() *known.Any {
+func (x *TestAllTypesProto3) GetOptionalAny() *anypb.Any {
 	if x != nil {
 		return x.OptionalAny
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetOptionalValue() *known.Value {
+func (x *TestAllTypesProto3) GetOptionalValue() *structpb.Value {
 	if x != nil {
 		return x.OptionalValue
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedDuration() []*known.Duration {
+func (x *TestAllTypesProto3) GetRepeatedDuration() []*durationpb.Duration {
 	if x != nil {
 		return x.RepeatedDuration
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedTimestamp() []*known.Timestamp {
+func (x *TestAllTypesProto3) GetRepeatedTimestamp() []*timestamppb.Timestamp {
 	if x != nil {
 		return x.RepeatedTimestamp
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedFieldmask() []*known.FieldMask {
+func (x *TestAllTypesProto3) GetRepeatedFieldmask() []*fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.RepeatedFieldmask
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedStruct() []*known.Struct {
+func (x *TestAllTypesProto3) GetRepeatedStruct() []*structpb.Struct {
 	if x != nil {
 		return x.RepeatedStruct
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedAny() []*known.Any {
+func (x *TestAllTypesProto3) GetRepeatedAny() []*anypb.Any {
 	if x != nil {
 		return x.RepeatedAny
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedValue() []*known.Value {
+func (x *TestAllTypesProto3) GetRepeatedValue() []*structpb.Value {
 	if x != nil {
 		return x.RepeatedValue
 	}
 	return nil
 }
 
-func (x *TestAllTypesProto3) GetRepeatedListValue() []*known.ListValue {
+func (x *TestAllTypesProto3) GetRepeatedListValue() []*structpb.ListValue {
 	if x != nil {
 		return x.RepeatedListValue
 	}
@@ -1993,16 +1998,15 @@ var file_google_protobuf_test_messages_proto3_proto_rawDesc = []byte{
 	0x69, 0x67, 0x6e, 0x45, 0x6e, 0x75, 0x6d, 0x12, 0x0f, 0x0a, 0x0b, 0x46, 0x4f, 0x52, 0x45, 0x49,
 	0x47, 0x4e, 0x5f, 0x46, 0x4f, 0x4f, 0x10, 0x00, 0x12, 0x0f, 0x0a, 0x0b, 0x46, 0x4f, 0x52, 0x45,
 	0x49, 0x47, 0x4e, 0x5f, 0x42, 0x41, 0x52, 0x10, 0x01, 0x12, 0x0f, 0x0a, 0x0b, 0x46, 0x4f, 0x52,
-	0x45, 0x49, 0x47, 0x4e, 0x5f, 0x42, 0x41, 0x5a, 0x10, 0x02, 0x42, 0x80, 0x01, 0x0a, 0x28, 0x63,
-	0x6f, 0x6d, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
-	0x75, 0x66, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x48, 0x01, 0x5a, 0x46, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
-	0x65, 0x2e, 0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67, 0x2e, 0x6f, 0x72, 0x67, 0x2f, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x74,
-	0x65, 0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x6f, 0x72,
-	0x6d, 0x61, 0x6e, 0x63, 0x65, 0x3b, 0x63, 0x6f, 0x6e, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x6e, 0x63,
-	0x65, 0xf8, 0x01, 0x01, 0xa2, 0x02, 0x06, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x45, 0x49, 0x47, 0x4e, 0x5f, 0x42, 0x41, 0x5a, 0x10, 0x02, 0x42, 0x74, 0x0a, 0x28, 0x63, 0x6f,
+	0x6d, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33, 0x48, 0x01, 0x5a, 0x3a, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
+	0x2e, 0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67, 0x2e, 0x6f, 0x72, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x74, 0x65,
+	0x73, 0x74, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x6f, 0x72, 0x6d,
+	0x61, 0x6e, 0x63, 0x65, 0xf8, 0x01, 0x01, 0xa2, 0x02, 0x06, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -2045,22 +2049,22 @@ var file_google_protobuf_test_messages_proto3_proto_goTypes = []interface{}{
 	nil,                                      // 22: protobuf_test_messages.proto3.TestAllTypesProto3.MapStringForeignMessageEntry
 	nil,                                      // 23: protobuf_test_messages.proto3.TestAllTypesProto3.MapStringNestedEnumEntry
 	nil,                                      // 24: protobuf_test_messages.proto3.TestAllTypesProto3.MapStringForeignEnumEntry
-	(*known.BoolValue)(nil),                  // 25: google.protobuf.BoolValue
-	(*known.Int32Value)(nil),                 // 26: google.protobuf.Int32Value
-	(*known.Int64Value)(nil),                 // 27: google.protobuf.Int64Value
-	(*known.UInt32Value)(nil),                // 28: google.protobuf.UInt32Value
-	(*known.UInt64Value)(nil),                // 29: google.protobuf.UInt64Value
-	(*known.FloatValue)(nil),                 // 30: google.protobuf.FloatValue
-	(*known.DoubleValue)(nil),                // 31: google.protobuf.DoubleValue
-	(*known.StringValue)(nil),                // 32: google.protobuf.StringValue
-	(*known.BytesValue)(nil),                 // 33: google.protobuf.BytesValue
-	(*known.Duration)(nil),                   // 34: google.protobuf.Duration
-	(*known.Timestamp)(nil),                  // 35: google.protobuf.Timestamp
-	(*known.FieldMask)(nil),                  // 36: google.protobuf.FieldMask
-	(*known.Struct)(nil),                     // 37: google.protobuf.Struct
-	(*known.Any)(nil),                        // 38: google.protobuf.Any
-	(*known.Value)(nil),                      // 39: google.protobuf.Value
-	(*known.ListValue)(nil),                  // 40: google.protobuf.ListValue
+	(*wrapperspb.BoolValue)(nil),             // 25: google.protobuf.BoolValue
+	(*wrapperspb.Int32Value)(nil),            // 26: google.protobuf.Int32Value
+	(*wrapperspb.Int64Value)(nil),            // 27: google.protobuf.Int64Value
+	(*wrapperspb.UInt32Value)(nil),           // 28: google.protobuf.UInt32Value
+	(*wrapperspb.UInt64Value)(nil),           // 29: google.protobuf.UInt64Value
+	(*wrapperspb.FloatValue)(nil),            // 30: google.protobuf.FloatValue
+	(*wrapperspb.DoubleValue)(nil),           // 31: google.protobuf.DoubleValue
+	(*wrapperspb.StringValue)(nil),           // 32: google.protobuf.StringValue
+	(*wrapperspb.BytesValue)(nil),            // 33: google.protobuf.BytesValue
+	(*durationpb.Duration)(nil),              // 34: google.protobuf.Duration
+	(*timestamppb.Timestamp)(nil),            // 35: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil),            // 36: google.protobuf.FieldMask
+	(*structpb.Struct)(nil),                  // 37: google.protobuf.Struct
+	(*anypb.Any)(nil),                        // 38: google.protobuf.Any
+	(*structpb.Value)(nil),                   // 39: google.protobuf.Value
+	(*structpb.ListValue)(nil),               // 40: google.protobuf.ListValue
 }
 var file_google_protobuf_test_messages_proto3_proto_depIdxs = []int32{
 	5,  // protobuf_test_messages.proto3.TestAllTypesProto3.optional_nested_message:type_name -> protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage

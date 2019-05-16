@@ -7,7 +7,7 @@ import (
 	"google.golang.org/protobuf/internal/scalar"
 	"google.golang.org/protobuf/reflect/protoregistry"
 
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 // Tests validation logic for malformed descriptors.

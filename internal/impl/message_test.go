@@ -20,12 +20,8 @@ import (
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 
-	// The legacy package must be imported prior to use of any legacy messages.
-	// TODO: Remove this when protoV1 registers these hooks for you.
-	_ "google.golang.org/protobuf/internal/legacy"
-
 	proto2_20180125 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 // List of test operations to perform on messages, lists, or maps.

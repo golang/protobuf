@@ -13,8 +13,8 @@ import (
 	"google.golang.org/protobuf/internal/scalar"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
-	pluginpb "google.golang.org/protobuf/types/plugin"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 func TestPluginParameters(t *testing.T) {

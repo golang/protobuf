@@ -17,7 +17,6 @@ import (
 	"google.golang.org/protobuf/proto"
 	pdesc "google.golang.org/protobuf/reflect/protodesc"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
 
 	proto2_20160225 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v0.0.0-20160225-2fc053c5"
 	proto2_20160519 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v0.0.0-20160519-a4ab9ec5"
@@ -31,6 +30,7 @@ import (
 	proto3_20180430 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v1.1.0-20180430-b4deda09"
 	proto3_20180814 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v1.2.0-20180814-aa810b61"
 	proto3_20181126 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v1.2.1-20181126-8d0c54c1"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 func mustLoadFileDesc(b []byte, _ []int) pref.FileDescriptor {

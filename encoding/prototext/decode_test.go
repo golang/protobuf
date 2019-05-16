@@ -18,7 +18,7 @@ import (
 
 	"google.golang.org/protobuf/encoding/testprotos/pb2"
 	"google.golang.org/protobuf/encoding/testprotos/pb3"
-	knownpb "google.golang.org/protobuf/types/known"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 func TestUnmarshal(t *testing.T) {
@@ -1365,27 +1365,27 @@ opt_int32: 42
 		}(),
 	}, {
 		desc:         "Any not expanded",
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText: `
 type_url: "pb2.Nested"
 value: "some bytes"
 `,
-		wantMessage: &knownpb.Any{
+		wantMessage: &anypb.Any{
 			TypeUrl: "pb2.Nested",
 			Value:   []byte("some bytes"),
 		},
 	}, {
 		desc:         "Any not expanded missing value",
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText:    `type_url: "pb2.Nested"`,
-		wantMessage: &knownpb.Any{
+		wantMessage: &anypb.Any{
 			TypeUrl: "pb2.Nested",
 		},
 	}, {
 		desc:         "Any not expanded missing type_url",
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText:    `value: "some bytes"`,
-		wantMessage: &knownpb.Any{
+		wantMessage: &anypb.Any{
 			Value: []byte("some bytes"),
 		},
 	}, {
@@ -1393,7 +1393,7 @@ value: "some bytes"
 		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText: `
 [foobar/pb2.Nested]: {
   opt_string: "embedded inside Any"
@@ -1413,7 +1413,7 @@ value: "some bytes"
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "foobar/pb2.Nested",
 				Value:   b,
 			}
@@ -1423,9 +1423,9 @@ value: "some bytes"
 		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText:    `[foo.com/pb2.Nested]: {}`,
-		wantMessage: &knownpb.Any{
+		wantMessage: &anypb.Any{
 			TypeUrl: "foo.com/pb2.Nested",
 		},
 	}, {
@@ -1433,7 +1433,7 @@ value: "some bytes"
 		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText: `
 [pb2.PartialRequired]: {
   opt_string: "embedded inside Any"
@@ -1450,7 +1450,7 @@ value: "some bytes"
 			if err != nil {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: "pb2.PartialRequired",
 				Value:   b,
 			}
@@ -1461,7 +1461,7 @@ value: "some bytes"
 		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb3.Nested{})),
 		},
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText: `
 [pb3.Nested]: {
   s_string: "abc\xff"
@@ -1476,7 +1476,7 @@ value: "some bytes"
 			if !nerr.Merge(err) {
 				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
 			}
-			return &knownpb.Any{
+			return &anypb.Any{
 				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
 				Value:   b,
 			}
@@ -1485,7 +1485,7 @@ value: "some bytes"
 	}, {
 		desc:         "Any expanded with unregistered type",
 		umo:          prototext.UnmarshalOptions{Resolver: preg.NewTypes()},
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText:    `[SomeMessage]: {}`,
 		wantErr:      true,
 	}, {
@@ -1493,7 +1493,7 @@ value: "some bytes"
 		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText:    `[pb2.Nested]: 123`,
 		wantErr:      true,
 	}, {
@@ -1501,7 +1501,7 @@ value: "some bytes"
 		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText: `
 [pb2.Nested]: {}
 unknown: ""
@@ -1512,7 +1512,7 @@ unknown: ""
 		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.Nested{})),
 		},
-		inputMessage: &knownpb.Any{},
+		inputMessage: &anypb.Any{},
 		inputText: `
 [pb2.Nested]: {}
 type_url: "pb2.Nested"

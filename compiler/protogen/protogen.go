@@ -36,8 +36,8 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 
-	descriptorpb "google.golang.org/protobuf/types/descriptor"
-	pluginpb "google.golang.org/protobuf/types/plugin"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 // Run executes a function as a protoc plugin.
