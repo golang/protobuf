@@ -6,6 +6,8 @@ package impl
 
 import (
 	"reflect"
+	"sync"
+	"sync/atomic"
 
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	piface "google.golang.org/protobuf/runtime/protoiface"
@@ -59,13 +61,13 @@ func (p legacyExtensionFields) Len() (n int) {
 
 func (p legacyExtensionFields) Has(n pref.FieldNumber) bool {
 	x := p.x.Get(n)
-	if x.Value == nil {
+	if !x.HasValue() {
 		return false
 	}
 	t := extensionTypeFromDesc(x.Desc)
 	d := t.Descriptor()
 	if d.IsList() {
-		return t.ValueOf(x.Value).List().Len() > 0
+		return t.ValueOf(x.GetValue()).List().Len() > 0
 	}
 	return true
 }
@@ -77,7 +79,7 @@ func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 	}
 	t := extensionTypeFromDesc(x.Desc)
 	d := t.Descriptor()
-	if x.Value == nil {
+	if !x.HasValue() {
 		// NOTE: x.Value is never nil for Lists since they are always populated
 		// during ExtensionFieldTypes.Register.
 		if d.Kind() == pref.MessageKind || d.Kind() == pref.GroupKind {
@@ -85,7 +87,7 @@ func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 		}
 		return d.Default()
 	}
-	return t.ValueOf(x.Value)
+	return t.ValueOf(x.GetValue())
 }
 
 func (p legacyExtensionFields) Set(n pref.FieldNumber, v pref.Value) {
@@ -94,7 +96,7 @@ func (p legacyExtensionFields) Set(n pref.FieldNumber, v pref.Value) {
 		panic("no extension descriptor registered")
 	}
 	t := extensionTypeFromDesc(x.Desc)
-	x.Value = t.InterfaceOf(v)
+	x.SetEagerValue(t.InterfaceOf(v))
 	p.x.Set(n, x)
 }
 
@@ -106,10 +108,10 @@ func (p legacyExtensionFields) Clear(n pref.FieldNumber) {
 	t := extensionTypeFromDesc(x.Desc)
 	d := t.Descriptor()
 	if d.IsList() {
-		t.ValueOf(x.Value).List().Truncate(0)
+		t.ValueOf(x.GetValue()).List().Truncate(0)
 		return
 	}
-	x.Value = nil
+	x.SetEagerValue(nil)
 	p.x.Set(n, x)
 }
 
@@ -167,7 +169,7 @@ func (p legacyExtensionTypes) Register(t pref.ExtensionType) {
 	if d.IsList() {
 		// If the field is repeated, initialize the entry with an empty list
 		// so that future Get operations can return a mutable and concrete list.
-		x.Value = t.InterfaceOf(t.New())
+		x.SetEagerValue(t.InterfaceOf(t.New()))
 	}
 	p.x.Set(d.Number(), x)
 }
@@ -180,12 +182,12 @@ func (p legacyExtensionTypes) Remove(t pref.ExtensionType) {
 	x := p.x.Get(d.Number())
 	if d.IsList() {
 		// Treat an empty repeated field as unpopulated.
-		v := reflect.ValueOf(x.Value)
-		if x.Value == nil || v.IsNil() || v.Elem().Len() == 0 {
-			x.Value = nil
+		v := reflect.ValueOf(x.GetValue())
+		if !x.HasValue() || v.IsNil() || v.Elem().Len() == 0 {
+			x.SetEagerValue(nil)
 		}
 	}
-	if x.Value != nil {
+	if x.GetValue() != nil {
 		panic("value for extension descriptor still populated")
 	}
 	p.x.Clear(d.Number())
@@ -254,20 +256,72 @@ type ExtensionFieldV1 struct {
 	// will be set.
 	Desc *piface.ExtensionDescV1 // TODO: switch to protoreflect.ExtensionType
 
-	// Value is a concrete value for the extension field. Let the type of
-	// Desc.ExtensionType be the "API type" and the type of Value be the
-	// "storage type". The API type and storage type are the same except:
-	//	* for scalars (except []byte), where the API type uses *T,
-	//	while the storage type uses T.
-	//	* for repeated fields, where the API type uses []T,
-	//	while the storage type uses *[]T.
+	// value is either the value of GetValue,
+	// or a *lazyExtensionValue that then returns the value of GetValue.
 	//
-	// The reason for the divergence is so that the storage type more naturally
-	// matches what is expected of when retrieving the values through the
-	// protobuf reflection APIs.
-	//
-	// The Value may only be populated if Desc is also populated.
-	Value interface{} // TODO: switch to protoreflect.Value
+	// TODO: unexport this.
+	Value interface{}
+}
+
+// HasValue reports whether a value is set for the extension field.
+// This may be called concurrently.
+func (f ExtensionFieldV1) HasValue() bool {
+	return f.Value != nil
+}
+
+// GetValue returns the concrete value for the extension field.
+// Let the type of Desc.ExtensionType be the "API type" and
+// the type of GetValue be the "storage type".
+// The API type and storage type are the same except:
+//	* for scalars (except []byte), where the API type uses *T,
+//	while the storage type uses T.
+//	* for repeated fields, where the API type uses []T,
+//	while the storage type uses *[]T.
+//
+// The reason for the divergence is so that the storage type more naturally
+// matches what is expected of when retrieving the values through the
+// protobuf reflection APIs.
+//
+// GetValue is only populated if Desc is also populated.
+// This may be called concurrently.
+//
+// TODO: switch interface{} to protoreflect.Value
+func (f ExtensionFieldV1) GetValue() interface{} {
+	if f, ok := f.Value.(*lazyExtensionValue); ok {
+		return f.GetValue()
+	}
+	return f.Value
+}
+
+// SetEagerValue sets the current value of the extension.
+// This must not be called concurrently.
+func (f *ExtensionFieldV1) SetEagerValue(v interface{}) {
+	f.Value = v
+}
+
+// SetLazyValue sets a value that is to be lazily evaluated upon first use.
+// The returned value must not be nil.
+// This must not be called concurrently.
+func (f *ExtensionFieldV1) SetLazyValue(v func() interface{}) {
+	f.Value = &lazyExtensionValue{value: v}
+}
+
+type lazyExtensionValue struct {
+	once  uint32      // atomically set if value is valid
+	mu    sync.Mutex  // protects value
+	value interface{} // either the value itself or a func() interface{}
+}
+
+func (v *lazyExtensionValue) GetValue() interface{} {
+	if atomic.LoadUint32(&v.once) == 0 {
+		v.mu.Lock()
+		if f, ok := v.value.(func() interface{}); ok {
+			v.value = f()
+		}
+		atomic.StoreUint32(&v.once, 1)
+		v.mu.Unlock()
+	}
+	return v.value
 }
 
 type legacyExtensionMap map[int32]ExtensionFieldV1
