@@ -393,9 +393,12 @@ func valueEqual(a, b pref.Value) bool {
 		return equal
 	case []byte:
 		return bytes.Equal(a.Bytes(), b.Bytes())
-	case float32, float64:
+	case float32:
 		// NaNs are equal, but must be the same NaN.
-		return math.Float64bits(a.Float()) == math.Float64bits(a.Float())
+		return math.Float32bits(ai.(float32)) == math.Float32bits(bi.(float32))
+	case float64:
+		// NaNs are equal, but must be the same NaN.
+		return math.Float64bits(ai.(float64)) == math.Float64bits(bi.(float64))
 	default:
 		return ai == bi
 	}
