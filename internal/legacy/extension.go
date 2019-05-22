@@ -16,6 +16,7 @@ import (
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	preg "google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/reflect/prototype"
 	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
@@ -171,12 +172,19 @@ func extensionTypeFromDesc(d *piface.ExtensionDescV1) pref.ExtensionType {
 	// Construct a v2 ExtensionType.
 	var ed pref.EnumDescriptor
 	var md pref.MessageDescriptor
-	conv := pvalue.NewLegacyConverter(t, f.Kind, Export{})
-	if conv.EnumType != nil {
-		ed = conv.EnumType.Descriptor()
-	}
-	if conv.MessageType != nil {
-		md = conv.MessageType.Descriptor()
+	switch f.Kind {
+	case pref.EnumKind:
+		if e, ok := reflect.Zero(t).Interface().(pref.Enum); ok {
+			ed = e.Descriptor()
+		} else {
+			ed = LoadEnumDesc(t)
+		}
+	case pref.MessageKind, pref.GroupKind:
+		if m, ok := reflect.Zero(t).Interface().(pref.ProtoMessage); ok {
+			md = m.ProtoReflect().Descriptor()
+		} else {
+			md = LoadMessageDesc(t)
+		}
 	}
 	xd, err := ptype.NewExtension(&ptype.StandaloneExtension{
 		FullName:     pref.FullName(d.Name),
@@ -207,17 +215,21 @@ func extensionTypeFromDesc(d *piface.ExtensionDescV1) pref.ExtensionType {
 //
 // This is exported for testing purposes.
 func ExtensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.ExtensionType {
-	// Extension types for non-enums and non-messages are simple.
+	var conv pvalue.Converter
+	var isLegacy bool
+	xt := &prototype.Extension{ExtensionDescriptor: xd}
 	switch xd.Kind() {
-	case pref.EnumKind, pref.MessageKind, pref.GroupKind:
+	case pref.EnumKind:
+		conv, isLegacy = newConverter(t, xd.Kind())
+		xt.NewEnum = conv.NewEnum
+	case pref.MessageKind, pref.GroupKind:
+		conv, isLegacy = newConverter(t, xd.Kind())
+		xt.NewMessage = conv.NewMessage
 	default:
-		return ptype.GoExtension(xd, nil, nil)
+		// Extension types for non-enums and non-messages are simple.
+		return &prototype.Extension{ExtensionDescriptor: xd}
 	}
-
-	// Create an ExtensionType where GoType is the wrapper type.
-	conv := pvalue.NewLegacyConverter(t, xd.Kind(), Export{})
-	xt := ptype.GoExtension(xd, conv.EnumType, conv.MessageType)
-	if !conv.IsLegacy {
+	if !isLegacy {
 		return xt
 	}
 

@@ -101,6 +101,8 @@ func (file *fileDesc) resolveMessages() {
 }
 
 func (file *fileDesc) resolveExtensions() {
+	// TODO: Delete this and use reflect/prototype instead.
+
 	for i := range file.allExtensions {
 		xd := &file.allExtensions[i]
 

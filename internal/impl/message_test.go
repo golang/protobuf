@@ -19,6 +19,7 @@ import (
 	scalar "google.golang.org/protobuf/internal/scalar"
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/prototype"
 
 	proto2_20180125 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -189,8 +190,8 @@ type (
 	MapBytes   map[MyString]MyBytes
 )
 
-var scalarProto2Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto2)), PBType: ptype.GoMessage(
-	mustMakeMessageDesc(ptype.StandaloneMessage{
+var scalarProto2Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto2)), PBType: &prototype.Message{
+	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "ScalarProto2",
 		Fields: []ptype.Field{
@@ -219,10 +220,10 @@ var scalarProto2Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto2
 			{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("22"))},
 		},
 	}),
-	func(pref.MessageType) pref.Message {
+	NewMessage: func() pref.Message {
 		return new(ScalarProto2)
 	},
-)}
+}}
 
 // TODO: Remove this.
 func (m *ScalarProto2) Type() pref.MessageType { return scalarProto2Type.PBType }
@@ -304,8 +305,8 @@ type ScalarProto3 struct {
 	MyBytesA  MyString  `protobuf:"22"`
 }
 
-var scalarProto3Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto3)), PBType: ptype.GoMessage(
-	mustMakeMessageDesc(ptype.StandaloneMessage{
+var scalarProto3Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto3)), PBType: &prototype.Message{
+	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto3,
 		FullName: "ScalarProto3",
 		Fields: []ptype.Field{
@@ -334,10 +335,10 @@ var scalarProto3Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto3
 			{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind},
 		},
 	}),
-	func(pref.MessageType) pref.Message {
+	NewMessage: func() pref.Message {
 		return new(ScalarProto3)
 	},
-)}
+}}
 
 // TODO: Remove this.
 func (m *ScalarProto3) Type() pref.MessageType { return scalarProto3Type.PBType }
@@ -437,8 +438,8 @@ type ListScalars struct {
 	MyBytes4   ListStrings `protobuf:"19"`
 }
 
-var listScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ListScalars)), PBType: ptype.GoMessage(
-	mustMakeMessageDesc(ptype.StandaloneMessage{
+var listScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ListScalars)), PBType: &prototype.Message{
+	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "ListScalars",
 		Fields: []ptype.Field{
@@ -465,10 +466,10 @@ var listScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ListScalars))
 			{Name: "f19", Number: 19, Cardinality: pref.Repeated, Kind: pref.BytesKind},
 		},
 	}),
-	func(pref.MessageType) pref.Message {
+	NewMessage: func() pref.Message {
 		return new(ListScalars)
 	},
-)}
+}}
 
 // TODO: Remove this.
 func (m *ListScalars) Type() pref.MessageType             { return listScalarsType.PBType }
@@ -628,8 +629,8 @@ func mustMakeMapEntry(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Fiel
 	}
 }
 
-var mapScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(MapScalars)), PBType: ptype.GoMessage(
-	mustMakeMessageDesc(ptype.StandaloneMessage{
+var mapScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(MapScalars)), PBType: &prototype.Message{
+	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "MapScalars",
 		Fields: []ptype.Field{
@@ -663,10 +664,10 @@ var mapScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(MapScalars)), 
 			mustMakeMapEntry(25, pref.StringKind, pref.BytesKind),
 		},
 	}),
-	func(pref.MessageType) pref.Message {
+	NewMessage: func() pref.Message {
 		return new(MapScalars)
 	},
-)}
+}}
 
 // TODO: Remove this.
 func (m *MapScalars) Type() pref.MessageType             { return mapScalarsType.PBType }
@@ -807,8 +808,8 @@ type OneofScalars struct {
 	Union isOneofScalars_Union `protobuf_oneof:"union"`
 }
 
-var oneofScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(OneofScalars)), PBType: ptype.GoMessage(
-	mustMakeMessageDesc(ptype.StandaloneMessage{
+var oneofScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(OneofScalars)), PBType: &prototype.Message{
+	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "OneofScalars",
 		Fields: []ptype.Field{
@@ -828,10 +829,10 @@ var oneofScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(OneofScalars
 		},
 		Oneofs: []ptype.Oneof{{Name: "union"}},
 	}),
-	func(pref.MessageType) pref.Message {
+	NewMessage: func() pref.Message {
 		return new(OneofScalars)
 	},
-)}
+}}
 
 // TODO: Remove this.
 func (m *OneofScalars) Type() pref.MessageType { return oneofScalarsType.PBType }
@@ -983,16 +984,16 @@ func TestOneofs(t *testing.T) {
 
 type EnumProto2 int32
 
-var enumProto2Type = ptype.GoEnum(
-	mustMakeEnumDesc(ptype.StandaloneEnum{
+var enumProto2Type = &prototype.Enum{
+	EnumDescriptor: mustMakeEnumDesc(ptype.StandaloneEnum{
 		Syntax:   pref.Proto2,
 		FullName: "EnumProto2",
 		Values:   []ptype.EnumValue{{Name: "DEAD", Number: 0xdead}, {Name: "BEEF", Number: 0xbeef}},
 	}),
-	func(_ pref.EnumType, n pref.EnumNumber) pref.Enum {
+	NewEnum: func(n pref.EnumNumber) pref.Enum {
 		return EnumProto2(n)
 	},
-)
+}
 
 // TODO: Remove this.
 func (e EnumProto2) Type() pref.EnumType             { return enumProto2Type }
@@ -1002,16 +1003,16 @@ func (e EnumProto2) Number() pref.EnumNumber         { return pref.EnumNumber(e)
 
 type EnumProto3 int32
 
-var enumProto3Type = ptype.GoEnum(
-	mustMakeEnumDesc(ptype.StandaloneEnum{
+var enumProto3Type = &prototype.Enum{
+	EnumDescriptor: mustMakeEnumDesc(ptype.StandaloneEnum{
 		Syntax:   pref.Proto3,
 		FullName: "EnumProto3",
 		Values:   []ptype.EnumValue{{Name: "ALPHA", Number: 0}, {Name: "BRAVO", Number: 1}},
 	}),
-	func(_ pref.EnumType, n pref.EnumNumber) pref.Enum {
+	NewEnum: func(n pref.EnumNumber) pref.Enum {
 		return EnumProto3(n)
 	},
-)
+}
 
 // TODO: Remove this.
 func (e EnumProto3) Type() pref.EnumType             { return enumProto3Type }
@@ -1031,8 +1032,8 @@ type EnumMessages struct {
 	Union         isEnumMessages_Union     `protobuf_oneof:"union"`
 }
 
-var enumMessagesType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(EnumMessages)), PBType: ptype.GoMessage(
-	mustMakeMessageDesc(ptype.StandaloneMessage{
+var enumMessagesType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(EnumMessages)), PBType: &prototype.Message{
+	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "EnumMessages",
 		Fields: []ptype.Field{
@@ -1051,10 +1052,10 @@ var enumMessagesType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(EnumMessages
 		},
 		Oneofs: []ptype.Oneof{{Name: "union"}},
 	}),
-	func(pref.MessageType) pref.Message {
+	NewMessage: func() pref.Message {
 		return new(EnumMessages)
 	},
-)}
+}}
 
 var enumMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
 	Syntax:   pref.Proto2,

@@ -13,6 +13,7 @@ import (
 	ptype "google.golang.org/protobuf/internal/prototype"
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/prototype"
 )
 
 // wrapEnum wraps v as a protoreflect.Enum,
@@ -33,16 +34,20 @@ func loadEnumType(t reflect.Type) pref.EnumType {
 	}
 
 	// Slow-path: derive enum descriptor and initialize EnumType.
+	var et pref.EnumType
 	var m sync.Map // map[protoreflect.EnumNumber]proto.Enum
 	ed := LoadEnumDesc(t)
-	et := ptype.GoEnum(ed, func(et pref.EnumType, n pref.EnumNumber) pref.Enum {
-		if e, ok := m.Load(n); ok {
-			return e.(pref.Enum)
-		}
-		e := &enumWrapper{num: n, pbTyp: et, goTyp: t}
-		m.Store(n, e)
-		return e
-	})
+	et = &prototype.Enum{
+		EnumDescriptor: ed,
+		NewEnum: func(n pref.EnumNumber) pref.Enum {
+			if e, ok := m.Load(n); ok {
+				return e.(pref.Enum)
+			}
+			e := &enumWrapper{num: n, pbTyp: et, goTyp: t}
+			m.Store(n, e)
+			return e
+		},
+	}
 	if et, ok := enumTypeCache.LoadOrStore(t, et); ok {
 		return et.(pref.EnumType)
 	}

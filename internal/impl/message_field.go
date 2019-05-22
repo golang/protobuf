@@ -42,7 +42,7 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 	if !reflect.PtrTo(ot).Implements(ft) {
 		panic(fmt.Sprintf("invalid type: %v does not implement %v", ot, ft))
 	}
-	conv := pvalue.NewLegacyConverter(ot.Field(0).Type, fd.Kind(), legacyWrapper)
+	conv := newConverter(ot.Field(0).Type, fd.Kind())
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
@@ -86,12 +86,9 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 			}
 			rv.Set(reflect.Zero(rv.Type()))
 		},
-		newMessage: func() pref.Message {
-			// This is only valid for messages and panics for other kinds.
-			return conv.MessageType.New()
-		},
-		offset:    fieldOffset,
-		isPointer: true,
+		newMessage: conv.NewMessage,
+		offset:     fieldOffset,
+		isPointer:  true,
 	}
 }
 
@@ -100,8 +97,8 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 	if ft.Kind() != reflect.Map {
 		panic(fmt.Sprintf("invalid type: got %v, want map kind", ft))
 	}
-	keyConv := pvalue.NewLegacyConverter(ft.Key(), fd.MapKey().Kind(), legacyWrapper)
-	valConv := pvalue.NewLegacyConverter(ft.Elem(), fd.MapValue().Kind(), legacyWrapper)
+	keyConv := newConverter(ft.Key(), fd.MapKey().Kind())
+	valConv := newConverter(ft.Elem(), fd.MapValue().Kind())
 	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
@@ -142,7 +139,7 @@ func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 	if ft.Kind() != reflect.Slice {
 		panic(fmt.Sprintf("invalid type: got %v, want slice kind", ft))
 	}
-	conv := pvalue.NewLegacyConverter(ft.Elem(), fd.Kind(), legacyWrapper)
+	conv := newConverter(ft.Elem(), fd.Kind())
 	var wiretag uint64
 	if !fd.IsPacked() {
 		wiretag = wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
@@ -197,7 +194,7 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			ft = ft.Elem()
 		}
 	}
-	conv := pvalue.NewLegacyConverter(ft, fd.Kind(), legacyWrapper)
+	conv := newConverter(ft, fd.Kind())
 	fieldOffset := offsetOf(fs)
 	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
 	// TODO: Implement unsafe fast path?
@@ -267,7 +264,7 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 
 func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
 	ft := fs.Type
-	conv := pvalue.NewLegacyConverter(ft, fd.Kind(), legacyWrapper)
+	conv := newConverter(ft, fd.Kind())
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
@@ -300,14 +297,12 @@ func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldI
 			rv := p.Apply(fieldOffset).AsValueOf(fs.Type).Elem()
 			rv.Set(reflect.Zero(rv.Type()))
 		},
-		newMessage: func() pref.Message {
-			return conv.MessageType.New()
-		},
-		funcs:     fieldCoder(fd, ft),
-		offset:    fieldOffset,
-		isPointer: true,
-		wiretag:   wiretag,
-		tagsize:   wire.SizeVarint(wiretag),
+		newMessage: conv.NewMessage,
+		funcs:      fieldCoder(fd, ft),
+		offset:     fieldOffset,
+		isPointer:  true,
+		wiretag:    wiretag,
+		tagsize:    wire.SizeVarint(wiretag),
 	}
 }
 
@@ -341,4 +336,11 @@ func makeOneofInfo(od pref.OneofDescriptor, fs reflect.StructField, wrappersByTy
 			return wrappersByType[rv.Elem().Type().Elem()]
 		},
 	}
+}
+
+func newConverter(t reflect.Type, k pref.Kind) pvalue.Converter {
+	if legacyWrapper != nil {
+		return legacyWrapper.NewConverter(t, k)
+	}
+	return pvalue.NewConverter(t, k)
 }

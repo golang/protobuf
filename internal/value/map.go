@@ -77,7 +77,7 @@ func (ms mapReflect) Range(f func(pref.MapKey, pref.Value) bool) {
 	}
 }
 func (ms mapReflect) NewMessage() pref.Message {
-	return ms.valConv.MessageType.New()
+	return ms.valConv.NewMessage()
 }
 func (ms mapReflect) ProtoUnwrap() interface{} {
 	return ms.v.Interface()

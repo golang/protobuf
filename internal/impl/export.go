@@ -10,6 +10,7 @@ import (
 
 	"google.golang.org/protobuf/encoding/prototext"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/prototype"
 )
 
 // Export is a zero-length named type that exists only to export a set of
@@ -31,22 +32,14 @@ func (Export) EnumOf(e enum) pref.Enum {
 // EnumTypeOf returns the protoreflect.EnumType for e.
 func (Export) EnumTypeOf(e enum) pref.EnumType {
 	if ev, ok := e.(pref.Enum); ok {
-		return &enumType{ev.Descriptor(), reflect.TypeOf(e)}
+		return &prototype.Enum{
+			EnumDescriptor: ev.Descriptor(),
+			NewEnum: func(n pref.EnumNumber) pref.Enum {
+				return reflect.ValueOf(n).Convert(reflect.TypeOf(e)).Interface().(pref.Enum)
+			},
+		}
 	}
 	return legacyWrapper.EnumTypeOf(e)
-}
-
-// TODO: This needs to be centralized in a package.
-type enumType struct {
-	// TODO: Remove me as an embedded field.
-	pref.EnumDescriptor
-	typ reflect.Type // must implement protoreflect.Enum
-}
-
-func (t *enumType) Descriptor() pref.EnumDescriptor { return t.EnumDescriptor }
-func (t *enumType) GoType() reflect.Type            { return t.typ }
-func (t *enumType) New(n pref.EnumNumber) pref.Enum {
-	return reflect.ValueOf(n).Convert(t.typ).Interface().(pref.Enum)
 }
 
 // EnumDescriptorOf returns the protoreflect.EnumDescriptor for e.
@@ -82,22 +75,14 @@ func (Export) MessageOf(m message) pref.Message {
 // MessageTypeOf returns the protoreflect.MessageType for m.
 func (Export) MessageTypeOf(m message) pref.MessageType {
 	if mv, ok := m.(pref.ProtoMessage); ok {
-		return &messageType{mv.ProtoReflect().Descriptor(), reflect.TypeOf(m)}
+		return &prototype.Message{
+			MessageDescriptor: mv.ProtoReflect().Descriptor(),
+			NewMessage: func() pref.Message {
+				return reflect.New(reflect.TypeOf(m).Elem()).Interface().(pref.ProtoMessage).ProtoReflect()
+			},
+		}
 	}
 	return legacyWrapper.MessageTypeOf(m)
-}
-
-// TODO: This needs to be centralized in a package.
-type messageType struct {
-	// TODO: Remove me as an embedded field.
-	pref.MessageDescriptor
-	typ reflect.Type // must implement protoreflect.ProtoMessage
-}
-
-func (t *messageType) Descriptor() pref.MessageDescriptor { return t.MessageDescriptor }
-func (t *messageType) GoType() reflect.Type               { return t.typ }
-func (t *messageType) New() pref.Message {
-	return reflect.New(t.typ.Elem()).Interface().(pref.ProtoMessage).ProtoReflect()
 }
 
 // MessageDescriptorOf returns the protoreflect.MessageDescriptor for m.

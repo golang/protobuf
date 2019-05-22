@@ -15,6 +15,7 @@ import (
 	pimpl "google.golang.org/protobuf/internal/impl"
 	ptype "google.golang.org/protobuf/internal/prototype"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/prototype"
 )
 
 // wrapMessage wraps v as a protoreflect.ProtoMessage,
@@ -38,10 +39,12 @@ func loadMessageInfo(t reflect.Type) *pimpl.MessageInfo {
 	md := LoadMessageDesc(t)
 	mt := new(pimpl.MessageInfo)
 	mt.GoType = t
-	mt.PBType = ptype.GoMessage(md, func(pref.MessageType) pref.Message {
-		p := reflect.New(t.Elem()).Interface()
-		return mt.MessageOf(p)
-	})
+	mt.PBType = &prototype.Message{
+		MessageDescriptor: md,
+		NewMessage: func() pref.Message {
+			return mt.MessageOf(reflect.New(t.Elem()).Interface())
+		},
+	}
 	if mt, ok := messageTypeCache.LoadOrStore(t, mt); ok {
 		return mt.(*pimpl.MessageInfo)
 	}
