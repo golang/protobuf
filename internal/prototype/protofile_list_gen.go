@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"sync"
 
+	"google.golang.org/protobuf/internal/descfmt"
 	"google.golang.org/protobuf/internal/pragma"
-	"google.golang.org/protobuf/internal/typefmt"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -58,7 +58,7 @@ func (p *messages) ByName(s protoreflect.Name) protoreflect.MessageDescriptor {
 	}
 	return messageDesc{t}
 }
-func (p *messages) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
+func (p *messages) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *messages) ProtoInternal(pragma.DoNotImplement) {}
 
 type fieldsMeta struct {
@@ -145,7 +145,7 @@ func (p *fields) ByNumber(n protoreflect.FieldNumber) protoreflect.FieldDescript
 	}
 	return fieldDesc{t}
 }
-func (p *fields) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
+func (p *fields) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *fields) ProtoInternal(pragma.DoNotImplement) {}
 
 type oneofsMeta struct {
@@ -191,7 +191,7 @@ func (p *oneofs) ByName(s protoreflect.Name) protoreflect.OneofDescriptor {
 	}
 	return oneofDesc{t}
 }
-func (p *oneofs) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
+func (p *oneofs) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *oneofs) ProtoInternal(pragma.DoNotImplement) {}
 
 type extensionsMeta struct {
@@ -237,7 +237,7 @@ func (p *extensions) ByName(s protoreflect.Name) protoreflect.ExtensionDescripto
 	}
 	return extensionDesc{t}
 }
-func (p *extensions) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
+func (p *extensions) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *extensions) ProtoInternal(pragma.DoNotImplement) {}
 
 type enumsMeta struct {
@@ -283,7 +283,7 @@ func (p *enums) ByName(s protoreflect.Name) protoreflect.EnumDescriptor {
 	}
 	return enumDesc{t}
 }
-func (p *enums) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
+func (p *enums) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *enums) ProtoInternal(pragma.DoNotImplement) {}
 
 type enumValuesMeta struct {
@@ -349,7 +349,7 @@ func (p *enumValues) ByNumber(n protoreflect.EnumNumber) protoreflect.EnumValueD
 	}
 	return enumValueDesc{t}
 }
-func (p *enumValues) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
+func (p *enumValues) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *enumValues) ProtoInternal(pragma.DoNotImplement) {}
 
 type servicesMeta struct {
@@ -395,7 +395,7 @@ func (p *services) ByName(s protoreflect.Name) protoreflect.ServiceDescriptor {
 	}
 	return serviceDesc{t}
 }
-func (p *services) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
+func (p *services) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *services) ProtoInternal(pragma.DoNotImplement) {}
 
 type methodsMeta struct {
@@ -441,5 +441,5 @@ func (p *methods) ByName(s protoreflect.Name) protoreflect.MethodDescriptor {
 	}
 	return methodDesc{t}
 }
-func (p *methods) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
+func (p *methods) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *methods) ProtoInternal(pragma.DoNotImplement) {}

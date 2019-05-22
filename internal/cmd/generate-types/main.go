@@ -193,7 +193,7 @@ var listTypesTemplate = template.Must(template.New("").Funcs(template.FuncMap{
 		return {{$nameDesc}}{t}
 	}
 	{{- end}}
-	func (p *{{$nameList}}) Format(s fmt.State, r rune)          { typefmt.FormatList(s, r, p) }
+	func (p *{{$nameList}}) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 	func (p *{{$nameList}}) ProtoInternal(pragma.DoNotImplement) {}
 	{{- end}}
 `))
@@ -262,7 +262,7 @@ var fileinitDescListTemplate = template.Must(template.New("").Funcs(template.Fun
 	}
 	{{- end}}
 	func (p *{{$nameList}}) Format(s fmt.State, r rune) {
-		typefmt.FormatList(s, r, p)
+		descfmt.FormatList(s, r, p)
 	}
 	func (p *{{$nameList}}) ProtoInternal(pragma.DoNotImplement) {}
 	func (p *{{$nameList}}) lazyInit() *{{$nameList}} {
@@ -316,10 +316,10 @@ func writeSource(file, src string) {
 		"sync",
 		"unicode/utf8",
 		"",
+		"google.golang.org/protobuf/internal/descfmt",
 		"google.golang.org/protobuf/internal/encoding/wire",
 		"google.golang.org/protobuf/internal/errors",
 		"google.golang.org/protobuf/internal/pragma",
-		"google.golang.org/protobuf/internal/typefmt",
 		"google.golang.org/protobuf/reflect/protoreflect",
 		"google.golang.org/protobuf/runtime/protoiface",
 	} {

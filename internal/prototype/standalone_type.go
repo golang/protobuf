@@ -7,9 +7,9 @@ package prototype
 import (
 	"fmt"
 
-	descopts "google.golang.org/protobuf/internal/descopts"
-	pragma "google.golang.org/protobuf/internal/pragma"
-	pfmt "google.golang.org/protobuf/internal/typefmt"
+	"google.golang.org/protobuf/internal/descfmt"
+	"google.golang.org/protobuf/internal/descopts"
+	"google.golang.org/protobuf/internal/pragma"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -42,7 +42,7 @@ func (t standaloneMessage) ExtensionRangeOptions(i int) pref.ProtoMessage {
 func (t standaloneMessage) Enums() pref.EnumDescriptors           { return &emptyEnums }
 func (t standaloneMessage) Messages() pref.MessageDescriptors     { return &emptyMessages }
 func (t standaloneMessage) Extensions() pref.ExtensionDescriptors { return &emptyExtensions }
-func (t standaloneMessage) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
+func (t standaloneMessage) Format(s fmt.State, r rune)            { descfmt.FormatDesc(s, r, t) }
 func (t standaloneMessage) ProtoType(pref.MessageDescriptor)      {}
 func (t standaloneMessage) ProtoInternal(pragma.DoNotImplement)   {}
 
@@ -61,7 +61,7 @@ func (t standaloneEnum) Options() pref.ProtoMessage {
 func (t standaloneEnum) Values() pref.EnumValueDescriptors   { return t.e.vals.lazyInit(t, t.e.Values) }
 func (t standaloneEnum) ReservedNames() pref.Names           { return (*names)(&t.e.ReservedNames) }
 func (t standaloneEnum) ReservedRanges() pref.EnumRanges     { return (*enumRanges)(&t.e.ReservedRanges) }
-func (t standaloneEnum) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t standaloneEnum) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, t) }
 func (t standaloneEnum) ProtoType(pref.EnumDescriptor)       {}
 func (t standaloneEnum) ProtoInternal(pragma.DoNotImplement) {}
 
@@ -100,7 +100,7 @@ func (t standaloneExtension) ContainingOneof() pref.OneofDescriptor     { return
 func (t standaloneExtension) ContainingMessage() pref.MessageDescriptor { return t.x.ExtendedType }
 func (t standaloneExtension) Enum() pref.EnumDescriptor                 { return t.x.EnumType }
 func (t standaloneExtension) Message() pref.MessageDescriptor           { return t.x.MessageType }
-func (t standaloneExtension) Format(s fmt.State, r rune)                { pfmt.FormatDesc(s, r, t) }
+func (t standaloneExtension) Format(s fmt.State, r rune)                { descfmt.FormatDesc(s, r, t) }
 func (t standaloneExtension) ProtoType(pref.FieldDescriptor)            {}
 func (t standaloneExtension) ProtoInternal(pragma.DoNotImplement)       {}
 

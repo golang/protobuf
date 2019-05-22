@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"sync"
 
+	"google.golang.org/protobuf/internal/descfmt"
 	"google.golang.org/protobuf/internal/pragma"
-	"google.golang.org/protobuf/internal/typefmt"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -34,7 +34,7 @@ func (p *enumDescs) ByName(s protoreflect.Name) protoreflect.EnumDescriptor {
 	return nil
 }
 func (p *enumDescs) Format(s fmt.State, r rune) {
-	typefmt.FormatList(s, r, p)
+	descfmt.FormatList(s, r, p)
 }
 func (p *enumDescs) ProtoInternal(pragma.DoNotImplement) {}
 func (p *enumDescs) lazyInit() *enumDescs {
@@ -78,7 +78,7 @@ func (p *enumValueDescs) ByNumber(n protoreflect.EnumNumber) protoreflect.EnumVa
 	return nil
 }
 func (p *enumValueDescs) Format(s fmt.State, r rune) {
-	typefmt.FormatList(s, r, p)
+	descfmt.FormatList(s, r, p)
 }
 func (p *enumValueDescs) ProtoInternal(pragma.DoNotImplement) {}
 func (p *enumValueDescs) lazyInit() *enumValueDescs {
@@ -119,7 +119,7 @@ func (p *messageDescs) ByName(s protoreflect.Name) protoreflect.MessageDescripto
 	return nil
 }
 func (p *messageDescs) Format(s fmt.State, r rune) {
-	typefmt.FormatList(s, r, p)
+	descfmt.FormatList(s, r, p)
 }
 func (p *messageDescs) ProtoInternal(pragma.DoNotImplement) {}
 func (p *messageDescs) lazyInit() *messageDescs {
@@ -170,7 +170,7 @@ func (p *fieldDescs) ByNumber(n protoreflect.FieldNumber) protoreflect.FieldDesc
 	return nil
 }
 func (p *fieldDescs) Format(s fmt.State, r rune) {
-	typefmt.FormatList(s, r, p)
+	descfmt.FormatList(s, r, p)
 }
 func (p *fieldDescs) ProtoInternal(pragma.DoNotImplement) {}
 func (p *fieldDescs) lazyInit() *fieldDescs {
@@ -215,7 +215,7 @@ func (p *oneofDescs) ByName(s protoreflect.Name) protoreflect.OneofDescriptor {
 	return nil
 }
 func (p *oneofDescs) Format(s fmt.State, r rune) {
-	typefmt.FormatList(s, r, p)
+	descfmt.FormatList(s, r, p)
 }
 func (p *oneofDescs) ProtoInternal(pragma.DoNotImplement) {}
 func (p *oneofDescs) lazyInit() *oneofDescs {
@@ -252,7 +252,7 @@ func (p *extensionDescs) ByName(s protoreflect.Name) protoreflect.ExtensionDescr
 	return nil
 }
 func (p *extensionDescs) Format(s fmt.State, r rune) {
-	typefmt.FormatList(s, r, p)
+	descfmt.FormatList(s, r, p)
 }
 func (p *extensionDescs) ProtoInternal(pragma.DoNotImplement) {}
 func (p *extensionDescs) lazyInit() *extensionDescs {
@@ -289,7 +289,7 @@ func (p *serviceDescs) ByName(s protoreflect.Name) protoreflect.ServiceDescripto
 	return nil
 }
 func (p *serviceDescs) Format(s fmt.State, r rune) {
-	typefmt.FormatList(s, r, p)
+	descfmt.FormatList(s, r, p)
 }
 func (p *serviceDescs) ProtoInternal(pragma.DoNotImplement) {}
 func (p *serviceDescs) lazyInit() *serviceDescs {
@@ -326,7 +326,7 @@ func (p *methodDescs) ByName(s protoreflect.Name) protoreflect.MethodDescriptor 
 	return nil
 }
 func (p *methodDescs) Format(s fmt.State, r rune) {
-	typefmt.FormatList(s, r, p)
+	descfmt.FormatList(s, r, p)
 }
 func (p *methodDescs) ProtoInternal(pragma.DoNotImplement) {}
 func (p *methodDescs) lazyInit() *methodDescs {

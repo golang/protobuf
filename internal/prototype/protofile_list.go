@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"sync"
 
-	pragma "google.golang.org/protobuf/internal/pragma"
-	pset "google.golang.org/protobuf/internal/set"
-	pfmt "google.golang.org/protobuf/internal/typefmt"
+	"google.golang.org/protobuf/internal/descfmt"
+	"google.golang.org/protobuf/internal/pragma"
+	"google.golang.org/protobuf/internal/set"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -26,7 +26,7 @@ func (p *names) Has(s pref.Name) bool {
 	}
 	return false
 }
-func (p *names) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
+func (p *names) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *names) ProtoInternal(pragma.DoNotImplement) {}
 
 // Names returns a Names list from a slice of names.
@@ -35,7 +35,7 @@ func Names(s []pref.Name) pref.Names { return (*names)(&s) }
 type numbersMeta struct {
 	once sync.Once
 	ns   []pref.FieldNumber
-	nss  pset.Ints
+	nss  set.Ints
 }
 type numbers numbersMeta
 
@@ -53,7 +53,7 @@ func (p *numbersMeta) lazyInit(fs []Field) *numbers {
 func (p *numbers) Len() int                            { return len(p.ns) }
 func (p *numbers) Get(i int) pref.FieldNumber          { return p.ns[i] }
 func (p *numbers) Has(n pref.FieldNumber) bool         { return p.nss.Has(uint64(n)) }
-func (p *numbers) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
+func (p *numbers) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *numbers) ProtoInternal(pragma.DoNotImplement) {}
 
 type fieldRanges [][2]pref.FieldNumber
@@ -68,7 +68,7 @@ func (p *fieldRanges) Has(n pref.FieldNumber) bool {
 	}
 	return false
 }
-func (p *fieldRanges) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
+func (p *fieldRanges) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *fieldRanges) ProtoInternal(pragma.DoNotImplement) {}
 
 // FieldRanges returns a FieldRanges list from a slice of ranges.
@@ -86,7 +86,7 @@ func (p *enumRanges) Has(n pref.EnumNumber) bool {
 	}
 	return false
 }
-func (p *enumRanges) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
+func (p *enumRanges) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *enumRanges) ProtoInternal(pragma.DoNotImplement) {}
 
 // EnumRanges returns an EnumRanges list from a slice of ranges.
@@ -96,7 +96,7 @@ type fileImports []pref.FileImport
 
 func (p *fileImports) Len() int                            { return len(*p) }
 func (p *fileImports) Get(i int) pref.FileImport           { return (*p)[i] }
-func (p *fileImports) Format(s fmt.State, r rune)          { pfmt.FormatList(s, r, p) }
+func (p *fileImports) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
 func (p *fileImports) ProtoInternal(pragma.DoNotImplement) {}
 
 type oneofFieldsMeta struct {
@@ -136,5 +136,5 @@ func (p *oneofFields) Get(i int) pref.FieldDescriptor                   { return
 func (p *oneofFields) ByName(s pref.Name) pref.FieldDescriptor          { return p.byName[s] }
 func (p *oneofFields) ByJSONName(s string) pref.FieldDescriptor         { return p.byJSON[s] }
 func (p *oneofFields) ByNumber(n pref.FieldNumber) pref.FieldDescriptor { return p.byNum[n] }
-func (p *oneofFields) Format(s fmt.State, r rune)                       { pfmt.FormatList(s, r, p) }
+func (p *oneofFields) Format(s fmt.State, r rune)                       { descfmt.FormatList(s, r, p) }
 func (p *oneofFields) ProtoInternal(pragma.DoNotImplement)              {}

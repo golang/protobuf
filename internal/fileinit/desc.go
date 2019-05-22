@@ -13,10 +13,10 @@ import (
 	"reflect"
 	"sync"
 
-	descopts "google.golang.org/protobuf/internal/descopts"
+	"google.golang.org/protobuf/internal/descfmt"
+	"google.golang.org/protobuf/internal/descopts"
 	pimpl "google.golang.org/protobuf/internal/impl"
-	pragma "google.golang.org/protobuf/internal/pragma"
-	pfmt "google.golang.org/protobuf/internal/typefmt"
+	"google.golang.org/protobuf/internal/pragma"
 	"google.golang.org/protobuf/proto"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	preg "google.golang.org/protobuf/reflect/protoregistry"
@@ -267,7 +267,7 @@ func (fd *fileDesc) Enums() pref.EnumDescriptors           { return &fd.enums }
 func (fd *fileDesc) Messages() pref.MessageDescriptors     { return &fd.messages }
 func (fd *fileDesc) Extensions() pref.ExtensionDescriptors { return &fd.extensions }
 func (fd *fileDesc) Services() pref.ServiceDescriptors     { return &fd.services }
-func (fd *fileDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, fd) }
+func (fd *fileDesc) Format(s fmt.State, r rune)            { descfmt.FormatDesc(s, r, fd) }
 func (fd *fileDesc) ProtoType(pref.FileDescriptor)         {}
 func (fd *fileDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
@@ -312,7 +312,7 @@ func (ed *enumDesc) Options() pref.ProtoMessage {
 func (ed *enumDesc) Values() pref.EnumValueDescriptors { return &ed.lazyInit().values }
 func (ed *enumDesc) ReservedNames() pref.Names         { return &ed.lazyInit().resvNames }
 func (ed *enumDesc) ReservedRanges() pref.EnumRanges   { return &ed.lazyInit().resvRanges }
-func (ed *enumDesc) Format(s fmt.State, r rune)        { pfmt.FormatDesc(s, r, ed) }
+func (ed *enumDesc) Format(s fmt.State, r rune)        { descfmt.FormatDesc(s, r, ed) }
 func (ed *enumDesc) ProtoType(pref.EnumDescriptor)     {}
 func (ed *enumDesc) lazyInit() *enumLazy {
 	ed.parentFile.lazyInit() // implicitly initializes enumLazy
@@ -323,7 +323,7 @@ func (ed *enumValueDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.EnumValue, ed.options)
 }
 func (ed *enumValueDesc) Number() pref.EnumNumber            { return ed.number }
-func (ed *enumValueDesc) Format(s fmt.State, r rune)         { pfmt.FormatDesc(s, r, ed) }
+func (ed *enumValueDesc) Format(s fmt.State, r rune)         { descfmt.FormatDesc(s, r, ed) }
 func (ed *enumValueDesc) ProtoType(pref.EnumValueDescriptor) {}
 
 type (
@@ -399,7 +399,7 @@ func (md *messageDesc) Enums() pref.EnumDescriptors           { return &md.enums
 func (md *messageDesc) Messages() pref.MessageDescriptors     { return &md.messages }
 func (md *messageDesc) Extensions() pref.ExtensionDescriptors { return &md.extensions }
 func (md *messageDesc) ProtoType(pref.MessageDescriptor)      {}
-func (md *messageDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, md.asDesc()) }
+func (md *messageDesc) Format(s fmt.State, r rune)            { descfmt.FormatDesc(s, r, md.asDesc()) }
 func (md *messageDesc) lazyInit() *messageLazy {
 	md.parentFile.lazyInit() // implicitly initializes messageLazy
 	return md.lazy
@@ -462,7 +462,7 @@ func (fd *fieldDesc) ContainingMessage() pref.MessageDescriptor {
 }
 func (fd *fieldDesc) Enum() pref.EnumDescriptor       { return fd.enumType }
 func (fd *fieldDesc) Message() pref.MessageDescriptor { return fd.messageType }
-func (fd *fieldDesc) Format(s fmt.State, r rune)      { pfmt.FormatDesc(s, r, fd) }
+func (fd *fieldDesc) Format(s fmt.State, r rune)      { descfmt.FormatDesc(s, r, fd) }
 func (fd *fieldDesc) ProtoType(pref.FieldDescriptor)  {}
 
 // TODO: Remove this.
@@ -473,7 +473,7 @@ func (od *oneofDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.Oneof, od.options)
 }
 func (od *oneofDesc) Fields() pref.FieldDescriptors  { return &od.fields }
-func (od *oneofDesc) Format(s fmt.State, r rune)     { pfmt.FormatDesc(s, r, od) }
+func (od *oneofDesc) Format(s fmt.State, r rune)     { descfmt.FormatDesc(s, r, od) }
 func (od *oneofDesc) ProtoType(pref.OneofDescriptor) {}
 
 type (
@@ -538,7 +538,7 @@ func (xd *extensionDesc) ContainingOneof() pref.OneofDescriptor      { return ni
 func (xd *extensionDesc) ContainingMessage() pref.MessageDescriptor  { return xd.extendedType }
 func (xd *extensionDesc) Enum() pref.EnumDescriptor                  { return xd.lazyInit().enumType }
 func (xd *extensionDesc) Message() pref.MessageDescriptor            { return xd.lazyInit().messageType }
-func (xd *extensionDesc) Format(s fmt.State, r rune)                 { pfmt.FormatDesc(s, r, xd) }
+func (xd *extensionDesc) Format(s fmt.State, r rune)                 { descfmt.FormatDesc(s, r, xd) }
 func (xd *extensionDesc) ProtoType(pref.FieldDescriptor)             {}
 func (xd *extensionDesc) ProtoInternal(pragma.DoNotImplement)        {}
 func (xd *extensionDesc) lazyInit() *extensionLazy {
@@ -584,7 +584,7 @@ func (sd *serviceDesc) Options() pref.ProtoMessage {
 	return unmarshalOptions(descopts.Service, sd.lazyInit().options)
 }
 func (sd *serviceDesc) Methods() pref.MethodDescriptors     { return &sd.lazyInit().methods }
-func (sd *serviceDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, sd) }
+func (sd *serviceDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, sd) }
 func (sd *serviceDesc) ProtoType(pref.ServiceDescriptor)    {}
 func (sd *serviceDesc) ProtoInternal(pragma.DoNotImplement) {}
 func (sd *serviceDesc) lazyInit() *serviceLazy {
@@ -599,7 +599,7 @@ func (md *methodDesc) Input() pref.MessageDescriptor       { return md.inputType
 func (md *methodDesc) Output() pref.MessageDescriptor      { return md.outputType }
 func (md *methodDesc) IsStreamingClient() bool             { return md.isStreamingClient }
 func (md *methodDesc) IsStreamingServer() bool             { return md.isStreamingServer }
-func (md *methodDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, md) }
+func (md *methodDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, md) }
 func (md *methodDesc) ProtoType(pref.MethodDescriptor)     {}
 func (md *methodDesc) ProtoInternal(pragma.DoNotImplement) {}
 

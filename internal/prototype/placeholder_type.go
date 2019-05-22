@@ -7,9 +7,9 @@ package prototype
 import (
 	"fmt"
 
-	descopts "google.golang.org/protobuf/internal/descopts"
-	pragma "google.golang.org/protobuf/internal/pragma"
-	pfmt "google.golang.org/protobuf/internal/typefmt"
+	descfmt "google.golang.org/protobuf/internal/descfmt"
+	"google.golang.org/protobuf/internal/descopts"
+	"google.golang.org/protobuf/internal/pragma"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -53,7 +53,7 @@ func (t placeholderFile) Enums() pref.EnumDescriptors           { return &emptyE
 func (t placeholderFile) Messages() pref.MessageDescriptors     { return &emptyMessages }
 func (t placeholderFile) Extensions() pref.ExtensionDescriptors { return &emptyExtensions }
 func (t placeholderFile) Services() pref.ServiceDescriptors     { return &emptyServices }
-func (t placeholderFile) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
+func (t placeholderFile) Format(s fmt.State, r rune)            { descfmt.FormatDesc(s, r, t) }
 func (t placeholderFile) ProtoType(pref.FileDescriptor)         {}
 
 type placeholderMessage struct {
@@ -72,7 +72,7 @@ func (t placeholderMessage) ExtensionRangeOptions(int) pref.ProtoMessage { panic
 func (t placeholderMessage) Enums() pref.EnumDescriptors                 { return &emptyEnums }
 func (t placeholderMessage) Messages() pref.MessageDescriptors           { return &emptyMessages }
 func (t placeholderMessage) Extensions() pref.ExtensionDescriptors       { return &emptyExtensions }
-func (t placeholderMessage) Format(s fmt.State, r rune)                  { pfmt.FormatDesc(s, r, t) }
+func (t placeholderMessage) Format(s fmt.State, r rune)                  { descfmt.FormatDesc(s, r, t) }
 func (t placeholderMessage) ProtoType(pref.MessageDescriptor)            {}
 
 type placeholderEnum struct {
@@ -83,5 +83,5 @@ func (t placeholderEnum) Options() pref.ProtoMessage        { return descopts.En
 func (t placeholderEnum) Values() pref.EnumValueDescriptors { return &emptyEnumValues }
 func (t placeholderEnum) ReservedNames() pref.Names         { return &emptyNames }
 func (t placeholderEnum) ReservedRanges() pref.EnumRanges   { return &emptyEnumRanges }
-func (t placeholderEnum) Format(s fmt.State, r rune)        { pfmt.FormatDesc(s, r, t) }
+func (t placeholderEnum) Format(s fmt.State, r rune)        { descfmt.FormatDesc(s, r, t) }
 func (t placeholderEnum) ProtoType(pref.EnumDescriptor)     {}

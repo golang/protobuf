@@ -9,10 +9,10 @@ import (
 	"reflect"
 	"sync"
 
+	"google.golang.org/protobuf/internal/descfmt"
 	ptag "google.golang.org/protobuf/internal/encoding/tag"
 	pimpl "google.golang.org/protobuf/internal/impl"
 	ptype "google.golang.org/protobuf/internal/prototype"
-	pfmt "google.golang.org/protobuf/internal/typefmt"
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	preg "google.golang.org/protobuf/reflect/protoregistry"
@@ -276,4 +276,4 @@ func (x *extensionType) GoType() reflect.Type                 { return x.typ }
 func (x *extensionType) New() pref.Value                      { return x.new() }
 func (x *extensionType) ValueOf(v interface{}) pref.Value     { return x.valueOf(v) }
 func (x *extensionType) InterfaceOf(v pref.Value) interface{} { return x.interfaceOf(v) }
-func (x *extensionType) Format(s fmt.State, r rune)           { pfmt.FormatDesc(s, r, x.Descriptor()) }
+func (x *extensionType) Format(s fmt.State, r rune)           { descfmt.FormatDesc(s, r, x.Descriptor()) }

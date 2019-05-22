@@ -10,9 +10,9 @@ import (
 	"strings"
 	"sync"
 
-	descopts "google.golang.org/protobuf/internal/descopts"
-	pragma "google.golang.org/protobuf/internal/pragma"
-	pfmt "google.golang.org/protobuf/internal/typefmt"
+	"google.golang.org/protobuf/internal/descfmt"
+	"google.golang.org/protobuf/internal/descopts"
+	"google.golang.org/protobuf/internal/pragma"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -78,7 +78,7 @@ func (t fileDesc) Enums() pref.EnumDescriptors           { return t.f.es.lazyIni
 func (t fileDesc) Messages() pref.MessageDescriptors     { return t.f.ms.lazyInit(t, t.f.Messages) }
 func (t fileDesc) Extensions() pref.ExtensionDescriptors { return t.f.xs.lazyInit(t, t.f.Extensions) }
 func (t fileDesc) Services() pref.ServiceDescriptors     { return t.f.ss.lazyInit(t, t.f.Services) }
-func (t fileDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
+func (t fileDesc) Format(s fmt.State, r rune)            { descfmt.FormatDesc(s, r, t) }
 func (t fileDesc) ProtoType(pref.FileDescriptor)         {}
 func (t fileDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
@@ -126,7 +126,7 @@ func (t messageDesc) ExtensionRangeOptions(i int) pref.ProtoMessage {
 func (t messageDesc) Enums() pref.EnumDescriptors           { return t.m.es.lazyInit(t, t.m.Enums) }
 func (t messageDesc) Messages() pref.MessageDescriptors     { return t.m.ms.lazyInit(t, t.m.Messages) }
 func (t messageDesc) Extensions() pref.ExtensionDescriptors { return t.m.xs.lazyInit(t, t.m.Extensions) }
-func (t messageDesc) Format(s fmt.State, r rune)            { pfmt.FormatDesc(s, r, t) }
+func (t messageDesc) Format(s fmt.State, r rune)            { descfmt.FormatDesc(s, r, t) }
 func (t messageDesc) ProtoType(pref.MessageDescriptor)      {}
 func (t messageDesc) ProtoInternal(pragma.DoNotImplement)   {}
 
@@ -201,7 +201,7 @@ func (t fieldDesc) ContainingMessage() pref.MessageDescriptor {
 }
 func (t fieldDesc) Enum() pref.EnumDescriptor           { return t.f.et.lazyInit(t, &t.f.EnumType) }
 func (t fieldDesc) Message() pref.MessageDescriptor     { return t.f.mt.lazyInit(t, &t.f.MessageType) }
-func (t fieldDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t fieldDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, t) }
 func (t fieldDesc) ProtoType(pref.FieldDescriptor)      {}
 func (t fieldDesc) ProtoInternal(pragma.DoNotImplement) {}
 
@@ -288,7 +288,7 @@ func (t oneofDesc) FullName() pref.FullName             { return t.o.fullName }
 func (t oneofDesc) IsPlaceholder() bool                 { return false }
 func (t oneofDesc) Options() pref.ProtoMessage          { return altOptions(t.o.Options, descopts.Oneof) }
 func (t oneofDesc) Fields() pref.FieldDescriptors       { return t.o.fs.lazyInit(t) }
-func (t oneofDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t oneofDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, t) }
 func (t oneofDesc) ProtoType(pref.OneofDescriptor)      {}
 func (t oneofDesc) ProtoInternal(pragma.DoNotImplement) {}
 
@@ -336,7 +336,7 @@ func (t extensionDesc) ContainingMessage() pref.MessageDescriptor {
 }
 func (t extensionDesc) Enum() pref.EnumDescriptor           { return t.x.et.lazyInit(t, &t.x.EnumType) }
 func (t extensionDesc) Message() pref.MessageDescriptor     { return t.x.mt.lazyInit(t, &t.x.MessageType) }
-func (t extensionDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t extensionDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, t) }
 func (t extensionDesc) ProtoType(pref.FieldDescriptor)      {}
 func (t extensionDesc) ProtoInternal(pragma.DoNotImplement) {}
 
@@ -362,7 +362,7 @@ func (t enumDesc) Options() pref.ProtoMessage          { return altOptions(t.e.O
 func (t enumDesc) Values() pref.EnumValueDescriptors   { return t.e.vs.lazyInit(t, t.e.Values) }
 func (t enumDesc) ReservedNames() pref.Names           { return (*names)(&t.e.ReservedNames) }
 func (t enumDesc) ReservedRanges() pref.EnumRanges     { return (*enumRanges)(&t.e.ReservedRanges) }
-func (t enumDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t enumDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, t) }
 func (t enumDesc) ProtoType(pref.EnumDescriptor)       {}
 func (t enumDesc) ProtoInternal(pragma.DoNotImplement) {}
 
@@ -382,7 +382,7 @@ func (t enumValueDesc) Options() pref.ProtoMessage {
 	return altOptions(t.v.Options, descopts.EnumValue)
 }
 func (t enumValueDesc) Number() pref.EnumNumber             { return t.v.Number }
-func (t enumValueDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t enumValueDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, t) }
 func (t enumValueDesc) ProtoType(pref.EnumValueDescriptor)  {}
 func (t enumValueDesc) ProtoInternal(pragma.DoNotImplement) {}
 
@@ -404,7 +404,7 @@ func (t serviceDesc) Options() pref.ProtoMessage {
 	return altOptions(t.s.Options, descopts.Service)
 }
 func (t serviceDesc) Methods() pref.MethodDescriptors     { return t.s.ms.lazyInit(t, t.s.Methods) }
-func (t serviceDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t serviceDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, t) }
 func (t serviceDesc) ProtoType(pref.ServiceDescriptor)    {}
 func (t serviceDesc) ProtoInternal(pragma.DoNotImplement) {}
 
@@ -428,7 +428,7 @@ func (t methodDesc) Input() pref.MessageDescriptor       { return t.m.mit.lazyIn
 func (t methodDesc) Output() pref.MessageDescriptor      { return t.m.mot.lazyInit(t, &t.m.OutputType) }
 func (t methodDesc) IsStreamingClient() bool             { return t.m.IsStreamingClient }
 func (t methodDesc) IsStreamingServer() bool             { return t.m.IsStreamingServer }
-func (t methodDesc) Format(s fmt.State, r rune)          { pfmt.FormatDesc(s, r, t) }
+func (t methodDesc) Format(s fmt.State, r rune)          { descfmt.FormatDesc(s, r, t) }
 func (t methodDesc) ProtoType(pref.MethodDescriptor)     {}
 func (t methodDesc) ProtoInternal(pragma.DoNotImplement) {}
 
