@@ -8,13 +8,13 @@ import (
 	"bytes"
 	"math"
 	"reflect"
+	"sync"
 	"testing"
 
 	cmp "github.com/google/go-cmp/cmp"
 	cmpopts "github.com/google/go-cmp/cmp/cmpopts"
 	pack "google.golang.org/protobuf/internal/encoding/pack"
 	pimpl "google.golang.org/protobuf/internal/impl"
-	plegacy "google.golang.org/protobuf/internal/legacy"
 	pragma "google.golang.org/protobuf/internal/pragma"
 	ptype "google.golang.org/protobuf/internal/prototype"
 	scalar "google.golang.org/protobuf/internal/scalar"
@@ -172,20 +172,12 @@ func TestLegacyUnknown(t *testing.T) {
 	}
 }
 
-func mustMakeExtensionType(x *ptype.StandaloneExtension, v interface{}) pref.ExtensionType {
-	xd, err := ptype.NewExtension(x)
-	if err != nil {
-		panic(xd)
-	}
-	return plegacy.ExtensionTypeOf(xd, reflect.TypeOf(v))
-}
-
 var (
-	parentDesc    = pimpl.Export{}.MessageDescriptorOf((*legacyTestMessage)(nil))
-	enumV1Desc    = pimpl.Export{}.EnumDescriptorOf(proto2_20180125.Message_ChildEnum(0))
-	messageV1Desc = pimpl.Export{}.MessageDescriptorOf((*proto2_20180125.Message_ChildMessage)(nil))
-	enumV2Desc    = enumProto2Type.Descriptor()
-	messageV2Desc = enumMessagesType.PBType.Descriptor()
+	testParentDesc    = pimpl.Export{}.MessageDescriptorOf((*legacyTestMessage)(nil))
+	testEnumV1Desc    = pimpl.Export{}.EnumDescriptorOf(proto2_20180125.Message_ChildEnum(0))
+	testMessageV1Desc = pimpl.Export{}.MessageDescriptorOf((*proto2_20180125.Message_ChildMessage)(nil))
+	testEnumV2Desc    = enumProto2Type.Descriptor()
+	testMessageV2Desc = enumMessagesType.PBType.Descriptor()
 
 	extensionTypes = []pref.ExtensionType{
 		mustMakeExtensionType(&ptype.StandaloneExtension{
@@ -194,7 +186,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.BoolKind,
 			Default:      pref.ValueOf(true),
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_int32",
@@ -202,7 +194,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.Int32Kind,
 			Default:      pref.ValueOf(int32(-12345)),
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_uint32",
@@ -210,7 +202,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.Uint32Kind,
 			Default:      pref.ValueOf(uint32(3200)),
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_float",
@@ -218,7 +210,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.FloatKind,
 			Default:      pref.ValueOf(float32(3.14159)),
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_string",
@@ -226,7 +218,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.StringKind,
 			Default:      pref.ValueOf(string("hello, \"world!\"\n")),
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_bytes",
@@ -234,7 +226,7 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.BytesKind,
 			Default:      pref.ValueOf([]byte("dead\xde\xad\xbe\xefbeef")),
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_enum_v1",
@@ -242,16 +234,16 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.EnumKind,
 			Default:      pref.ValueOf(pref.EnumNumber(0)),
-			EnumType:     enumV1Desc,
-			ExtendedType: parentDesc,
+			EnumType:     testEnumV1Desc,
+			ExtendedType: testParentDesc,
 		}, proto2_20180125.Message_ChildEnum(0)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_message_v1",
 			Number:       10007,
 			Cardinality:  pref.Optional,
 			Kind:         pref.MessageKind,
-			MessageType:  messageV1Desc,
-			ExtendedType: parentDesc,
+			MessageType:  testMessageV1Desc,
+			ExtendedType: testParentDesc,
 		}, (*proto2_20180125.Message_ChildMessage)(nil)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_enum_v2",
@@ -259,90 +251,90 @@ var (
 			Cardinality:  pref.Optional,
 			Kind:         pref.EnumKind,
 			Default:      pref.ValueOf(pref.EnumNumber(57005)),
-			EnumType:     enumV2Desc,
-			ExtendedType: parentDesc,
+			EnumType:     testEnumV2Desc,
+			ExtendedType: testParentDesc,
 		}, EnumProto2(0)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.optional_message_v2",
 			Number:       10009,
 			Cardinality:  pref.Optional,
 			Kind:         pref.MessageKind,
-			MessageType:  messageV2Desc,
-			ExtendedType: parentDesc,
+			MessageType:  testMessageV2Desc,
+			ExtendedType: testParentDesc,
 		}, (*EnumMessages)(nil)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_bool",
 			Number:       10010,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.BoolKind,
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_int32",
 			Number:       10011,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.Int32Kind,
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_uint32",
 			Number:       10012,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.Uint32Kind,
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_float",
 			Number:       10013,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.FloatKind,
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_string",
 			Number:       10014,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.StringKind,
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_bytes",
 			Number:       10015,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.BytesKind,
-			ExtendedType: parentDesc,
+			ExtendedType: testParentDesc,
 		}, nil),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_enum_v1",
 			Number:       10016,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.EnumKind,
-			EnumType:     enumV1Desc,
-			ExtendedType: parentDesc,
+			EnumType:     testEnumV1Desc,
+			ExtendedType: testParentDesc,
 		}, proto2_20180125.Message_ChildEnum(0)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_message_v1",
 			Number:       10017,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.MessageKind,
-			MessageType:  messageV1Desc,
-			ExtendedType: parentDesc,
+			MessageType:  testMessageV1Desc,
+			ExtendedType: testParentDesc,
 		}, (*proto2_20180125.Message_ChildMessage)(nil)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_enum_v2",
 			Number:       10018,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.EnumKind,
-			EnumType:     enumV2Desc,
-			ExtendedType: parentDesc,
+			EnumType:     testEnumV2Desc,
+			ExtendedType: testParentDesc,
 		}, EnumProto2(0)),
 		mustMakeExtensionType(&ptype.StandaloneExtension{
 			FullName:     "fizz.buzz.repeated_message_v2",
 			Number:       10019,
 			Cardinality:  pref.Repeated,
 			Kind:         pref.MessageKind,
-			MessageType:  messageV2Desc,
-			ExtendedType: parentDesc,
+			MessageType:  testMessageV2Desc,
+			ExtendedType: testParentDesc,
 		}, (*EnumMessages)(nil)),
 	}
 
@@ -646,8 +638,8 @@ func TestExtensionConvert(t *testing.T) {
 
 			wantType := extensionTypes[i]
 			wantDesc := extensionDescs[i]
-			gotType := plegacy.Export{}.ExtensionTypeFromDesc(wantDesc)
-			gotDesc := plegacy.Export{}.ExtensionDescFromType(wantType)
+			gotType := pimpl.Export{}.ExtensionTypeFromDesc(wantDesc)
+			gotDesc := pimpl.Export{}.ExtensionDescFromType(wantType)
 
 			// TODO: We need a test package to compare descriptors.
 			type list interface {
@@ -718,5 +710,90 @@ func TestExtensionConvert(t *testing.T) {
 				t.Errorf("ExtensionDesc mismatch (-want, +got):\n%v", diff)
 			}
 		})
+	}
+}
+
+type (
+	MessageA struct {
+		A1 *MessageA `protobuf:"bytes,1,req,name=a1"`
+		A2 *MessageB `protobuf:"bytes,2,req,name=a2"`
+		A3 Enum      `protobuf:"varint,3,opt,name=a3,enum=legacy.Enum"`
+	}
+	MessageB struct {
+		B1 *MessageA `protobuf:"bytes,1,req,name=b1"`
+		B2 *MessageB `protobuf:"bytes,2,req,name=b2"`
+		B3 Enum      `protobuf:"varint,3,opt,name=b3,enum=legacy.Enum"`
+	}
+	Enum int32
+)
+
+// TestConcurrentInit tests that concurrent wrapping of multiple legacy types
+// results in the exact same descriptor being created.
+func TestConcurrentInit(t *testing.T) {
+	const numParallel = 5
+	var messageATypes [numParallel]pref.MessageType
+	var messageBTypes [numParallel]pref.MessageType
+	var enumDescs [numParallel]pref.EnumDescriptor
+
+	// Concurrently load message and enum types.
+	var wg sync.WaitGroup
+	for i := 0; i < numParallel; i++ {
+		i := i
+		wg.Add(3)
+		go func() {
+			defer wg.Done()
+			messageATypes[i] = pimpl.Export{}.MessageTypeOf((*MessageA)(nil))
+		}()
+		go func() {
+			defer wg.Done()
+			messageBTypes[i] = pimpl.Export{}.MessageTypeOf((*MessageB)(nil))
+		}()
+		go func() {
+			defer wg.Done()
+			enumDescs[i] = pimpl.Export{}.EnumDescriptorOf(Enum(0))
+		}()
+	}
+	wg.Wait()
+
+	var (
+		wantMTA = messageATypes[0]
+		wantMDA = messageATypes[0].Descriptor().Fields().ByNumber(1).Message()
+		wantMTB = messageBTypes[0]
+		wantMDB = messageBTypes[0].Descriptor().Fields().ByNumber(2).Message()
+		wantED  = messageATypes[0].Descriptor().Fields().ByNumber(3).Enum()
+	)
+
+	for _, gotMT := range messageATypes[1:] {
+		if gotMT != wantMTA {
+			t.Error("MessageType(MessageA) mismatch")
+		}
+		if gotMDA := gotMT.Descriptor().Fields().ByNumber(1).Message(); gotMDA != wantMDA {
+			t.Error("MessageDescriptor(MessageA) mismatch")
+		}
+		if gotMDB := gotMT.Descriptor().Fields().ByNumber(2).Message(); gotMDB != wantMDB {
+			t.Error("MessageDescriptor(MessageB) mismatch")
+		}
+		if gotED := gotMT.Descriptor().Fields().ByNumber(3).Enum(); gotED != wantED {
+			t.Error("EnumDescriptor(Enum) mismatch")
+		}
+	}
+	for _, gotMT := range messageBTypes[1:] {
+		if gotMT != wantMTB {
+			t.Error("MessageType(MessageB) mismatch")
+		}
+		if gotMDA := gotMT.Descriptor().Fields().ByNumber(1).Message(); gotMDA != wantMDA {
+			t.Error("MessageDescriptor(MessageA) mismatch")
+		}
+		if gotMDB := gotMT.Descriptor().Fields().ByNumber(2).Message(); gotMDB != wantMDB {
+			t.Error("MessageDescriptor(MessageB) mismatch")
+		}
+		if gotED := gotMT.Descriptor().Fields().ByNumber(3).Enum(); gotED != wantED {
+			t.Error("EnumDescriptor(Enum) mismatch")
+		}
+	}
+	for _, gotED := range enumDescs[1:] {
+		if gotED != wantED {
+			t.Error("EnumType(Enum) mismatch")
+		}
 	}
 }

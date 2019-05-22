@@ -11,6 +11,7 @@ import (
 	"google.golang.org/protobuf/encoding/prototext"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/prototype"
+	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
 // Export is a zero-length named type that exists only to export a set of
@@ -26,7 +27,7 @@ func (Export) EnumOf(e enum) pref.Enum {
 	if ev, ok := e.(pref.Enum); ok {
 		return ev
 	}
-	return legacyWrapper.EnumOf(e)
+	return legacyWrapEnum(reflect.ValueOf(e))
 }
 
 // EnumTypeOf returns the protoreflect.EnumType for e.
@@ -39,7 +40,7 @@ func (Export) EnumTypeOf(e enum) pref.EnumType {
 			},
 		}
 	}
-	return legacyWrapper.EnumTypeOf(e)
+	return legacyLoadEnumType(reflect.TypeOf(e))
 }
 
 // EnumDescriptorOf returns the protoreflect.EnumDescriptor for e.
@@ -47,7 +48,7 @@ func (Export) EnumDescriptorOf(e enum) pref.EnumDescriptor {
 	if ev, ok := e.(pref.Enum); ok {
 		return ev.Descriptor()
 	}
-	return legacyWrapper.EnumDescriptorOf(e)
+	return LegacyLoadEnumDesc(reflect.TypeOf(e))
 }
 
 // EnumStringOf returns the enum value as a string, either as the name if
@@ -69,7 +70,7 @@ func (Export) MessageOf(m message) pref.Message {
 	if mv, ok := m.(pref.ProtoMessage); ok {
 		return mv.ProtoReflect()
 	}
-	return legacyWrapper.MessageOf(m)
+	return legacyWrapMessage(reflect.ValueOf(m)).ProtoReflect()
 }
 
 // MessageTypeOf returns the protoreflect.MessageType for m.
@@ -82,7 +83,7 @@ func (Export) MessageTypeOf(m message) pref.MessageType {
 			},
 		}
 	}
-	return legacyWrapper.MessageTypeOf(m)
+	return legacyLoadMessageInfo(reflect.TypeOf(m)).PBType
 }
 
 // MessageDescriptorOf returns the protoreflect.MessageDescriptor for m.
@@ -90,7 +91,7 @@ func (Export) MessageDescriptorOf(m message) pref.MessageDescriptor {
 	if mv, ok := m.(pref.ProtoMessage); ok {
 		return mv.ProtoReflect().Descriptor()
 	}
-	return legacyWrapper.MessageDescriptorOf(m)
+	return LegacyLoadMessageDesc(reflect.TypeOf(m))
 }
 
 // MessageStringOf returns the message value as a string,
@@ -98,4 +99,14 @@ func (Export) MessageDescriptorOf(m message) pref.MessageDescriptor {
 func (Export) MessageStringOf(m pref.ProtoMessage) string {
 	b, _ := prototext.MarshalOptions{AllowPartial: true}.Marshal(m)
 	return string(b)
+}
+
+// ExtensionDescFromType returns the legacy protoiface.ExtensionDescV1 for t.
+func (Export) ExtensionDescFromType(t pref.ExtensionType) *piface.ExtensionDescV1 {
+	return legacyExtensionDescFromType(t)
+}
+
+// ExtensionTypeFromDesc returns the v2 protoreflect.ExtensionType for d.
+func (Export) ExtensionTypeFromDesc(d *piface.ExtensionDescV1) pref.ExtensionType {
+	return legacyExtensionTypeFromDesc(d)
 }

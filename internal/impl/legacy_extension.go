@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package legacy
+package impl
 
 import (
 	"fmt"
@@ -11,7 +11,6 @@ import (
 
 	"google.golang.org/protobuf/internal/descfmt"
 	ptag "google.golang.org/protobuf/internal/encoding/tag"
-	pimpl "google.golang.org/protobuf/internal/impl"
 	ptype "google.golang.org/protobuf/internal/prototype"
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
@@ -20,9 +19,9 @@ import (
 	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
-// extensionDescKey is a comparable version of protoiface.ExtensionDescV1
+// legacyExtensionDescKey is a comparable version of protoiface.ExtensionDescV1
 // suitable for use as a key in a map.
-type extensionDescKey struct {
+type legacyExtensionDescKey struct {
 	typeV2        pref.ExtensionType
 	extendedType  reflect.Type
 	extensionType reflect.Type
@@ -32,8 +31,8 @@ type extensionDescKey struct {
 	filename      string
 }
 
-func extensionDescKeyOf(d *piface.ExtensionDescV1) extensionDescKey {
-	return extensionDescKey{
+func legacyExtensionDescKeyOf(d *piface.ExtensionDescV1) legacyExtensionDescKey {
+	return legacyExtensionDescKey{
 		d.Type,
 		reflect.TypeOf(d.ExtendedType),
 		reflect.TypeOf(d.ExtensionType),
@@ -42,13 +41,13 @@ func extensionDescKeyOf(d *piface.ExtensionDescV1) extensionDescKey {
 }
 
 var (
-	extensionTypeCache sync.Map // map[extensionDescKey]protoreflect.ExtensionType
-	extensionDescCache sync.Map // map[protoreflect.ExtensionType]*protoiface.ExtensionDescV1
+	legacyExtensionTypeCache sync.Map // map[legacyExtensionDescKey]protoreflect.ExtensionType
+	legacyExtensionDescCache sync.Map // map[protoreflect.ExtensionType]*protoiface.ExtensionDescV1
 )
 
-// extensionDescFromType converts a v2 protoreflect.ExtensionType to a
+// legacyExtensionDescFromType converts a v2 protoreflect.ExtensionType to a
 // protoiface.ExtensionDescV1. The returned ExtensionDesc must not be mutated.
-func extensionDescFromType(xt pref.ExtensionType) *piface.ExtensionDescV1 {
+func legacyExtensionDescFromType(xt pref.ExtensionType) *piface.ExtensionDescV1 {
 	// Fast-path: check whether an extension desc is already nested within.
 	if xt, ok := xt.(interface {
 		ProtoLegacyExtensionDesc() *piface.ExtensionDescV1
@@ -60,7 +59,7 @@ func extensionDescFromType(xt pref.ExtensionType) *piface.ExtensionDescV1 {
 
 	// Fast-path: check the cache for whether this ExtensionType has already
 	// been converted to a legacy descriptor.
-	if d, ok := extensionDescCache.Load(xt); ok {
+	if d, ok := legacyExtensionDescCache.Load(xt); ok {
 		return d.(*piface.ExtensionDescV1)
 	}
 
@@ -113,7 +112,7 @@ func extensionDescFromType(xt pref.ExtensionType) *piface.ExtensionDescV1 {
 		}
 		if ed, ok := reflect.Zero(t).Interface().(enumV1); ok && protoPkg == "" {
 			b, _ := ed.EnumDescriptor()
-			protoPkg = loadFileDesc(b).GetPackage()
+			protoPkg = legacyLoadFileDesc(b).GetPackage()
 		}
 
 		if protoPkg != "" {
@@ -137,17 +136,17 @@ func extensionDescFromType(xt pref.ExtensionType) *piface.ExtensionDescV1 {
 		Tag:           ptag.Marshal(xt.Descriptor(), enumName),
 		Filename:      filename,
 	}
-	if d, ok := extensionDescCache.LoadOrStore(xt, d); ok {
+	if d, ok := legacyExtensionDescCache.LoadOrStore(xt, d); ok {
 		return d.(*piface.ExtensionDescV1)
 	}
 	return d
 }
 
-// extensionTypeFromDesc converts a protoiface.ExtensionDescV1 to a
+// legacyExtensionTypeFromDesc converts a protoiface.ExtensionDescV1 to a
 // v2 protoreflect.ExtensionType. The returned descriptor type takes ownership
 // of the input extension desc. The input must not be mutated so long as the
 // returned type is still in use.
-func extensionTypeFromDesc(d *piface.ExtensionDescV1) pref.ExtensionType {
+func legacyExtensionTypeFromDesc(d *piface.ExtensionDescV1) pref.ExtensionType {
 	// Fast-path: check whether an extension type is already nested within.
 	if d.Type != nil {
 		return d.Type
@@ -155,8 +154,8 @@ func extensionTypeFromDesc(d *piface.ExtensionDescV1) pref.ExtensionType {
 
 	// Fast-path: check the cache for whether this ExtensionType has already
 	// been converted from a legacy descriptor.
-	dk := extensionDescKeyOf(d)
-	if t, ok := extensionTypeCache.Load(dk); ok {
+	dk := legacyExtensionDescKeyOf(d)
+	if t, ok := legacyExtensionTypeCache.Load(dk); ok {
 		return t.(pref.ExtensionType)
 	}
 
@@ -177,13 +176,13 @@ func extensionTypeFromDesc(d *piface.ExtensionDescV1) pref.ExtensionType {
 		if e, ok := reflect.Zero(t).Interface().(pref.Enum); ok {
 			ed = e.Descriptor()
 		} else {
-			ed = LoadEnumDesc(t)
+			ed = LegacyLoadEnumDesc(t)
 		}
 	case pref.MessageKind, pref.GroupKind:
 		if m, ok := reflect.Zero(t).Interface().(pref.ProtoMessage); ok {
 			md = m.ProtoReflect().Descriptor()
 		} else {
-			md = LoadMessageDesc(t)
+			md = LegacyLoadMessageDesc(t)
 		}
 	}
 	xd, err := ptype.NewExtension(&ptype.StandaloneExtension{
@@ -195,26 +194,27 @@ func extensionTypeFromDesc(d *piface.ExtensionDescV1) pref.ExtensionType {
 		Options:      f.Options,
 		EnumType:     ed,
 		MessageType:  md,
-		ExtendedType: pimpl.Export{}.MessageDescriptorOf(d.ExtendedType),
+		ExtendedType: Export{}.MessageDescriptorOf(d.ExtendedType),
 	})
 	if err != nil {
 		panic(err)
 	}
-	xt := ExtensionTypeOf(xd, t)
+	xt := LegacyExtensionTypeOf(xd, t)
 
 	// Cache the conversion for both directions.
-	extensionDescCache.LoadOrStore(xt, d)
-	if xt, ok := extensionTypeCache.LoadOrStore(dk, xt); ok {
+	legacyExtensionDescCache.LoadOrStore(xt, d)
+	if xt, ok := legacyExtensionTypeCache.LoadOrStore(dk, xt); ok {
 		return xt.(pref.ExtensionType)
 	}
 	return xt
 }
 
-// ExtensionTypeOf returns a protoreflect.ExtensionType where the type of the
-// field is t. The type t must be provided if the field is an enum or message.
+// LegacyExtensionTypeOf returns a protoreflect.ExtensionType where the
+// element type of the field is t. The type t must be provided if the field
+// is an enum or message.
 //
 // This is exported for testing purposes.
-func ExtensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.ExtensionType {
+func LegacyExtensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.ExtensionType {
 	var conv pvalue.Converter
 	var isLegacy bool
 	xt := &prototype.Extension{ExtensionDescriptor: xd}
@@ -234,7 +234,7 @@ func ExtensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.Extension
 	}
 
 	// Wrap ExtensionType such that GoType presents the legacy Go type.
-	xt2 := &extensionType{ExtensionType: xt}
+	xt2 := &legacyExtensionType{ExtensionType: xt}
 	if xd.Cardinality() != pref.Repeated {
 		xt2.typ = t
 		xt2.new = func() pref.Value {
@@ -276,7 +276,7 @@ func ExtensionTypeOf(xd pref.ExtensionDescriptor, t reflect.Type) pref.Extension
 	return xt2
 }
 
-type extensionType struct {
+type legacyExtensionType struct {
 	pref.ExtensionType
 	typ         reflect.Type
 	new         func() pref.Value
@@ -284,8 +284,8 @@ type extensionType struct {
 	interfaceOf func(pref.Value) interface{}
 }
 
-func (x *extensionType) GoType() reflect.Type                 { return x.typ }
-func (x *extensionType) New() pref.Value                      { return x.new() }
-func (x *extensionType) ValueOf(v interface{}) pref.Value     { return x.valueOf(v) }
-func (x *extensionType) InterfaceOf(v pref.Value) interface{} { return x.interfaceOf(v) }
-func (x *extensionType) Format(s fmt.State, r rune)           { descfmt.FormatDesc(s, r, x.Descriptor()) }
+func (x *legacyExtensionType) GoType() reflect.Type                 { return x.typ }
+func (x *legacyExtensionType) New() pref.Value                      { return x.new() }
+func (x *legacyExtensionType) ValueOf(v interface{}) pref.Value     { return x.valueOf(v) }
+func (x *legacyExtensionType) InterfaceOf(v pref.Value) interface{} { return x.interfaceOf(v) }
+func (x *legacyExtensionType) Format(s fmt.State, r rune)           { descfmt.FormatDesc(s, r, x.Descriptor()) }

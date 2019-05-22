@@ -231,14 +231,14 @@ func extensionDescFromType(typ pref.ExtensionType) *piface.ExtensionDescV1 {
 			return desc
 		}
 	}
-	return legacyWrapper.ExtensionDescFromType(typ)
+	return Export{}.ExtensionDescFromType(typ)
 }
 
 func extensionTypeFromDesc(desc *piface.ExtensionDescV1) pref.ExtensionType {
 	if desc.Type != nil {
 		return desc.Type
 	}
-	return legacyWrapper.ExtensionTypeFromDesc(desc)
+	return Export{}.ExtensionTypeFromDesc(desc)
 }
 
 type ExtensionFieldV1 struct {

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package legacy
+package impl
 
 import (
 	"fmt"
@@ -12,32 +12,31 @@ import (
 	"unicode"
 
 	ptag "google.golang.org/protobuf/internal/encoding/tag"
-	pimpl "google.golang.org/protobuf/internal/impl"
 	ptype "google.golang.org/protobuf/internal/prototype"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/prototype"
 )
 
-// wrapMessage wraps v as a protoreflect.ProtoMessage,
+// legacyWrapMessage wraps v as a protoreflect.ProtoMessage,
 // where v must be a *struct kind and not implement the v2 API already.
-func wrapMessage(v reflect.Value) pref.ProtoMessage {
-	mt := loadMessageInfo(v.Type())
+func legacyWrapMessage(v reflect.Value) pref.ProtoMessage {
+	mt := legacyLoadMessageInfo(v.Type())
 	return mt.MessageOf(v.Interface()).Interface()
 }
 
-var messageTypeCache sync.Map // map[reflect.Type]*MessageInfo
+var legacyMessageTypeCache sync.Map // map[reflect.Type]*MessageInfo
 
-// loadMessageInfo dynamically loads a *MessageInfo for t,
+// legacyLoadMessageInfo dynamically loads a *MessageInfo for t,
 // where t must be a *struct kind and not implement the v2 API already.
-func loadMessageInfo(t reflect.Type) *pimpl.MessageInfo {
+func legacyLoadMessageInfo(t reflect.Type) *MessageInfo {
 	// Fast-path: check if a MessageInfo is cached for this concrete type.
-	if mt, ok := messageTypeCache.Load(t); ok {
-		return mt.(*pimpl.MessageInfo)
+	if mt, ok := legacyMessageTypeCache.Load(t); ok {
+		return mt.(*MessageInfo)
 	}
 
 	// Slow-path: derive message descriptor and initialize MessageInfo.
-	md := LoadMessageDesc(t)
-	mt := new(pimpl.MessageInfo)
+	md := LegacyLoadMessageDesc(t)
+	mt := new(MessageInfo)
 	mt.GoType = t
 	mt.PBType = &prototype.Message{
 		MessageDescriptor: md,
@@ -45,32 +44,34 @@ func loadMessageInfo(t reflect.Type) *pimpl.MessageInfo {
 			return mt.MessageOf(reflect.New(t.Elem()).Interface())
 		},
 	}
-	if mt, ok := messageTypeCache.LoadOrStore(t, mt); ok {
-		return mt.(*pimpl.MessageInfo)
+	if mt, ok := legacyMessageTypeCache.LoadOrStore(t, mt); ok {
+		return mt.(*MessageInfo)
 	}
 	return mt
 }
 
-var messageDescLock sync.Mutex
-var messageDescCache sync.Map // map[reflect.Type]protoreflect.MessageDescriptor
+var (
+	legacyMessageDescLock  sync.Mutex
+	legacyMessageDescCache sync.Map // map[reflect.Type]protoreflect.MessageDescriptor
+)
 
-// LoadMessageDesc returns an MessageDescriptor derived from the Go type,
+// LegacyLoadMessageDesc returns an MessageDescriptor derived from the Go type,
 // which must be a *struct kind and not implement the v2 API already.
 //
 // This is exported for testing purposes.
-func LoadMessageDesc(t reflect.Type) pref.MessageDescriptor {
-	return messageDescSet{}.Load(t)
+func LegacyLoadMessageDesc(t reflect.Type) pref.MessageDescriptor {
+	return legacyMessageDescSet{}.Load(t)
 }
 
-type messageDescSet struct {
+type legacyMessageDescSet struct {
 	visited map[reflect.Type]*ptype.StandaloneMessage
 	descs   []*ptype.StandaloneMessage
 	types   []reflect.Type
 }
 
-func (ms messageDescSet) Load(t reflect.Type) pref.MessageDescriptor {
+func (ms legacyMessageDescSet) Load(t reflect.Type) pref.MessageDescriptor {
 	// Fast-path: check if a MessageDescriptor is cached for this concrete type.
-	if mi, ok := messageDescCache.Load(t); ok {
+	if mi, ok := legacyMessageDescCache.Load(t); ok {
 		return mi.(pref.MessageDescriptor)
 	}
 
@@ -79,9 +80,9 @@ func (ms messageDescSet) Load(t reflect.Type) pref.MessageDescriptor {
 	// Hold a global lock during message creation to ensure that each Go type
 	// maps to exactly one MessageDescriptor. After obtaining the lock, we must
 	// check again whether the message has already been handled.
-	messageDescLock.Lock()
-	defer messageDescLock.Unlock()
-	if mi, ok := messageDescCache.Load(t); ok {
+	legacyMessageDescLock.Lock()
+	defer legacyMessageDescLock.Unlock()
+	if mi, ok := legacyMessageDescCache.Load(t); ok {
 		return mi.(pref.MessageDescriptor)
 	}
 
@@ -101,13 +102,13 @@ func (ms messageDescSet) Load(t reflect.Type) pref.MessageDescriptor {
 		// pseudo-messages (has a descriptor, but no generated Go type).
 		// Avoid caching these fake messages.
 		if t := ms.types[i]; t.Kind() != reflect.Map {
-			messageDescCache.Store(t, md)
+			legacyMessageDescCache.Store(t, md)
 		}
 	}
 	return mds[0]
 }
 
-func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor {
+func (ms *legacyMessageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor {
 	// Fast-path: Obtain a placeholder if the message is already processed.
 	if m, ok := ms.visited[t]; ok {
 		return ptype.PlaceholderMessage(m.FullName)
@@ -126,7 +127,7 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 	}
 	if md, ok := mv.(messageV1); ok {
 		b, idxs := md.Descriptor()
-		fd := loadFileDesc(b)
+		fd := legacyLoadFileDesc(b)
 
 		// Derive syntax.
 		switch fd.GetSyntax() {
@@ -148,7 +149,7 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 		// obtain the full name is through the registry. However, this is
 		// unreliable as some generated messages register with a fork of
 		// golang/protobuf, so the registry may not have this information.
-		m.FullName = deriveFullName(t.Elem())
+		m.FullName = legacyDeriveFullName(t.Elem())
 		m.Syntax = pref.Proto2
 
 		// Try to determine if the message is using proto3 by checking scalars.
@@ -223,7 +224,7 @@ func (ms *messageDescSet) processMessage(t reflect.Type) pref.MessageDescriptor 
 	return ptype.PlaceholderMessage(m.FullName)
 }
 
-func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.Type, parent *ptype.StandaloneMessage) ptype.Field {
+func (ms *legacyMessageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.Type, parent *ptype.StandaloneMessage) ptype.Field {
 	t := goType
 	isOptional := t.Kind() == reflect.Ptr && t.Elem().Kind() != reflect.Struct
 	isRepeated := t.Kind() == reflect.Slice && t.Elem().Kind() != reflect.Uint8
@@ -237,7 +238,7 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 		if ev, ok := reflect.Zero(t).Interface().(pref.Enum); ok {
 			f.EnumType = ev.Descriptor()
 		} else {
-			f.EnumType = LoadEnumDesc(t)
+			f.EnumType = LegacyLoadEnumDesc(t)
 		}
 	}
 	if f.MessageType == nil && (f.Kind == pref.MessageKind || f.Kind == pref.GroupKind) {
@@ -246,7 +247,7 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 		} else if t.Kind() == reflect.Map {
 			m := &ptype.StandaloneMessage{
 				Syntax:     parent.Syntax,
-				FullName:   parent.FullName.Append(mapEntryName(f.Name)),
+				FullName:   parent.FullName.Append(legacyMapEntryName(f.Name)),
 				IsMapEntry: true,
 				Fields: []ptype.Field{
 					ms.parseField(tagKey, "", "", t.Key(), nil),
@@ -255,7 +256,7 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 			}
 			ms.visit(m, t)
 			f.MessageType = ptype.PlaceholderMessage(m.FullName)
-		} else if mv, ok := messageDescCache.Load(t); ok {
+		} else if mv, ok := legacyMessageDescCache.Load(t); ok {
 			f.MessageType = mv.(pref.MessageDescriptor)
 		} else {
 			f.MessageType = ms.processMessage(t)
@@ -264,7 +265,7 @@ func (ms *messageDescSet) parseField(tag, tagKey, tagVal string, goType reflect.
 	return f
 }
 
-func (ms *messageDescSet) visit(m *ptype.StandaloneMessage, t reflect.Type) {
+func (ms *legacyMessageDescSet) visit(m *ptype.StandaloneMessage, t reflect.Type) {
 	if ms.visited == nil {
 		ms.visited = make(map[reflect.Type]*ptype.StandaloneMessage)
 	}
@@ -275,10 +276,10 @@ func (ms *messageDescSet) visit(m *ptype.StandaloneMessage, t reflect.Type) {
 	ms.types = append(ms.types, t)
 }
 
-// deriveFullName derives a fully qualified protobuf name for the given Go type
+// legacyDeriveFullName derives a fully qualified protobuf name for the given Go type
 // The provided name is not guaranteed to be stable nor universally unique.
 // It should be sufficiently unique within a program.
-func deriveFullName(t reflect.Type) pref.FullName {
+func legacyDeriveFullName(t reflect.Type) pref.FullName {
 	sanitize := func(r rune) rune {
 		switch {
 		case r == '/':
@@ -304,9 +305,9 @@ func deriveFullName(t reflect.Type) pref.FullName {
 	return pref.FullName(strings.Join(ss, "."))
 }
 
-// mapEntryName derives the message name for a map field of a given name.
+// legacyMapEntryName derives the message name for a map field of a given name.
 // This is identical to MapEntryName from parser.cc in the protoc source.
-func mapEntryName(s pref.Name) pref.Name {
+func legacyMapEntryName(s pref.Name) pref.Name {
 	var b []byte
 	nextUpper := true
 	for i := 0; i < len(s); i++ {

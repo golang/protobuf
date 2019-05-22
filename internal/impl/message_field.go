@@ -12,6 +12,7 @@ import (
 	"google.golang.org/protobuf/internal/encoding/wire"
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
+	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
 type fieldInfo struct {
@@ -42,7 +43,7 @@ func fieldInfoForOneof(fd pref.FieldDescriptor, fs reflect.StructField, ot refle
 	if !reflect.PtrTo(ot).Implements(ft) {
 		panic(fmt.Sprintf("invalid type: %v does not implement %v", ot, ft))
 	}
-	conv := newConverter(ot.Field(0).Type, fd.Kind())
+	conv, _ := newConverter(ot.Field(0).Type, fd.Kind())
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	return fieldInfo{
@@ -97,8 +98,8 @@ func fieldInfoForMap(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo 
 	if ft.Kind() != reflect.Map {
 		panic(fmt.Sprintf("invalid type: got %v, want map kind", ft))
 	}
-	keyConv := newConverter(ft.Key(), fd.MapKey().Kind())
-	valConv := newConverter(ft.Elem(), fd.MapValue().Kind())
+	keyConv, _ := newConverter(ft.Key(), fd.MapKey().Kind())
+	valConv, _ := newConverter(ft.Elem(), fd.MapValue().Kind())
 	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
@@ -139,7 +140,7 @@ func fieldInfoForList(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo
 	if ft.Kind() != reflect.Slice {
 		panic(fmt.Sprintf("invalid type: got %v, want slice kind", ft))
 	}
-	conv := newConverter(ft.Elem(), fd.Kind())
+	conv, _ := newConverter(ft.Elem(), fd.Kind())
 	var wiretag uint64
 	if !fd.IsPacked() {
 		wiretag = wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
@@ -194,7 +195,7 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 			ft = ft.Elem()
 		}
 	}
-	conv := newConverter(ft, fd.Kind())
+	conv, _ := newConverter(ft, fd.Kind())
 	fieldOffset := offsetOf(fs)
 	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
 	// TODO: Implement unsafe fast path?
@@ -264,7 +265,7 @@ func fieldInfoForScalar(fd pref.FieldDescriptor, fs reflect.StructField) fieldIn
 
 func fieldInfoForMessage(fd pref.FieldDescriptor, fs reflect.StructField) fieldInfo {
 	ft := fs.Type
-	conv := newConverter(ft, fd.Kind())
+	conv, _ := newConverter(ft, fd.Kind())
 	fieldOffset := offsetOf(fs)
 	// TODO: Implement unsafe fast path?
 	wiretag := wire.EncodeTag(fd.Number(), wireTypes[fd.Kind()])
@@ -338,9 +339,52 @@ func makeOneofInfo(od pref.OneofDescriptor, fs reflect.StructField, wrappersByTy
 	}
 }
 
-func newConverter(t reflect.Type, k pref.Kind) pvalue.Converter {
-	if legacyWrapper != nil {
-		return legacyWrapper.NewConverter(t, k)
+var (
+	enumIfaceV2    = reflect.TypeOf((*pref.Enum)(nil)).Elem()
+	messageIfaceV1 = reflect.TypeOf((*piface.MessageV1)(nil)).Elem()
+	messageIfaceV2 = reflect.TypeOf((*pref.ProtoMessage)(nil)).Elem()
+)
+
+func newConverter(t reflect.Type, k pref.Kind) (conv pvalue.Converter, isLegacy bool) {
+	switch k {
+	case pref.EnumKind:
+		if t.Kind() == reflect.Int32 && !t.Implements(enumIfaceV2) {
+			return pvalue.Converter{
+				PBValueOf: func(v reflect.Value) pref.Value {
+					if v.Type() != t {
+						panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
+					}
+					return pref.ValueOf(pref.EnumNumber(v.Int()))
+				},
+				GoValueOf: func(v pref.Value) reflect.Value {
+					return reflect.ValueOf(v.Enum()).Convert(t)
+				},
+				NewEnum: func(n pref.EnumNumber) pref.Enum {
+					return legacyWrapEnum(reflect.ValueOf(n).Convert(t))
+				},
+			}, true
+		}
+	case pref.MessageKind, pref.GroupKind:
+		if t.Kind() == reflect.Ptr && t.Implements(messageIfaceV1) && !t.Implements(messageIfaceV2) {
+			return pvalue.Converter{
+				PBValueOf: func(v reflect.Value) pref.Value {
+					if v.Type() != t {
+						panic(fmt.Sprintf("invalid type: got %v, want %v", v.Type(), t))
+					}
+					return pref.ValueOf(Export{}.MessageOf(v.Interface()))
+				},
+				GoValueOf: func(v pref.Value) reflect.Value {
+					rv := reflect.ValueOf(v.Message().(pvalue.Unwrapper).ProtoUnwrap())
+					if rv.Type() != t {
+						panic(fmt.Sprintf("invalid type: got %v, want %v", rv.Type(), t))
+					}
+					return rv
+				},
+				NewMessage: func() pref.Message {
+					return legacyWrapMessage(reflect.New(t.Elem())).ProtoReflect()
+				},
+			}, true
+		}
 	}
-	return pvalue.NewConverter(t, k)
+	return pvalue.NewConverter(t, k), false
 }
