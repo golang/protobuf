@@ -20,7 +20,6 @@ import (
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/runtime/protoimpl"
-	"google.golang.org/protobuf/runtime/protolegacy"
 
 	"google.golang.org/protobuf/types/descriptorpb"
 )
@@ -317,7 +316,7 @@ func MessageName(m Message) messageName {
 //
 // Deprecated: Use protoregistry.GlobalTypes.Register instead.
 func RegisterExtension(d *ExtensionDesc) {
-	xt := protolegacy.X.ExtensionTypeFromDesc(d)
+	xt := protoimpl.X.ExtensionTypeFromDesc(d)
 	if err := protoregistry.GlobalTypes.Register(xt); err != nil {
 		panic(err)
 	}
@@ -342,7 +341,7 @@ func RegisteredExtensions(m Message) extensionsByNumber {
 		if xs == nil {
 			xs = make(extensionsByNumber)
 		}
-		xs[int32(xt.Descriptor().Number())] = protolegacy.X.ExtensionDescFromType(xt)
+		xs[int32(xt.Descriptor().Number())] = protoimpl.X.ExtensionDescFromType(xt)
 		return true
 	})
 

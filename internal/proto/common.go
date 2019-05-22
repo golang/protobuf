@@ -13,7 +13,6 @@ import (
 	"reflect"
 
 	"google.golang.org/protobuf/runtime/protoiface"
-	_ "google.golang.org/protobuf/runtime/protolegacy"
 )
 
 type (
