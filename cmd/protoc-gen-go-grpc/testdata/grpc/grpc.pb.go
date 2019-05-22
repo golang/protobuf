@@ -117,7 +117,7 @@ func file_grpc_grpc_proto_rawDescGZIP() []byte {
 	return file_grpc_grpc_proto_rawDescData
 }
 
-var file_grpc_grpc_proto_msgTypes = make([]protoimpl.MessageType, 2)
+var file_grpc_grpc_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_grpc_grpc_proto_goTypes = []interface{}{
 	(*Request)(nil),  // 0: goproto.protoc.grpc.Request
 	(*Response)(nil), // 1: goproto.protoc.grpc.Response

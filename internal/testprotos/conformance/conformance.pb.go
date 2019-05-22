@@ -667,7 +667,7 @@ func file_conformance_conformance_proto_rawDescGZIP() []byte {
 }
 
 var file_conformance_conformance_proto_enumTypes = make([]protoreflect.EnumType, 2)
-var file_conformance_conformance_proto_msgTypes = make([]protoimpl.MessageType, 4)
+var file_conformance_conformance_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_conformance_conformance_proto_goTypes = []interface{}{
 	(WireFormat)(0),             // 0: conformance.WireFormat
 	(TestCategory)(0),           // 1: conformance.TestCategory

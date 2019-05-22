@@ -1271,7 +1271,7 @@ func file_test3_test_proto_rawDescGZIP() []byte {
 }
 
 var file_test3_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
-var file_test3_test_proto_msgTypes = make([]protoimpl.MessageType, 20)
+var file_test3_test_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_test3_test_proto_goTypes = []interface{}{
 	(ForeignEnum)(0),                   // 0: goproto.proto.test3.ForeignEnum
 	(TestAllTypes_NestedEnum)(0),       // 1: goproto.proto.test3.TestAllTypes.NestedEnum

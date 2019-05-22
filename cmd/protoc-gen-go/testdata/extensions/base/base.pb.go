@@ -132,7 +132,7 @@ func file_extensions_base_base_proto_rawDescGZIP() []byte {
 	return file_extensions_base_base_proto_rawDescData
 }
 
-var file_extensions_base_base_proto_msgTypes = make([]protoimpl.MessageType, 2)
+var file_extensions_base_base_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_extensions_base_base_proto_goTypes = []interface{}{
 	(*BaseMessage)(nil),                 // 0: goproto.protoc.extension.base.BaseMessage
 	(*MessageSetWireFormatMessage)(nil), // 1: goproto.protoc.extension.base.MessageSetWireFormatMessage

@@ -687,7 +687,7 @@ func file_extensions_proto3_ext3_proto_rawDescGZIP() []byte {
 }
 
 var file_extensions_proto3_ext3_proto_enumTypes = make([]protoreflect.EnumType, 1)
-var file_extensions_proto3_ext3_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_extensions_proto3_ext3_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_extensions_proto3_ext3_proto_goTypes = []interface{}{
 	(Enum)(0),                           // 0: goproto.protoc.extension.proto3.Enum
 	(*Message)(nil),                     // 1: goproto.protoc.extension.proto3.Message

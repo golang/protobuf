@@ -111,7 +111,7 @@ type FileBuilder struct {
 	// MessageOutputTypes is where Init stores all initialized message types
 	// in "flattened ordering". This includes slots for map entry messages,
 	// which are skipped over.
-	MessageOutputTypes []pimpl.MessageType
+	MessageOutputTypes []pimpl.MessageInfo
 	// ExtensionOutputTypes is where Init stores all initialized extension types
 	// in "flattened ordering".
 	ExtensionOutputTypes []pref.ExtensionType

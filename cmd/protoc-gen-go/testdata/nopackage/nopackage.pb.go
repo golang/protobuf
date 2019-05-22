@@ -141,7 +141,7 @@ func file_nopackage_nopackage_proto_rawDescGZIP() []byte {
 }
 
 var file_nopackage_nopackage_proto_enumTypes = make([]protoreflect.EnumType, 1)
-var file_nopackage_nopackage_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_nopackage_nopackage_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_nopackage_nopackage_proto_goTypes = []interface{}{
 	(Enum)(0),       // 0: Enum
 	(*Message)(nil), // 1: Message

@@ -45,7 +45,7 @@ func makeLegacyExtensionMapFunc(t reflect.Type) func(*messageDataType) *legacyEx
 }
 
 type legacyExtensionFields struct {
-	mi *MessageType
+	mi *MessageInfo
 	x  *legacyExtensionMap
 }
 

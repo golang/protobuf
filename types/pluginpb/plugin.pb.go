@@ -380,7 +380,7 @@ func file_google_protobuf_compiler_plugin_proto_rawDescGZIP() []byte {
 	return file_google_protobuf_compiler_plugin_proto_rawDescData
 }
 
-var file_google_protobuf_compiler_plugin_proto_msgTypes = make([]protoimpl.MessageType, 4)
+var file_google_protobuf_compiler_plugin_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_google_protobuf_compiler_plugin_proto_goTypes = []interface{}{
 	(*Version)(nil),                          // 0: google.protobuf.compiler.Version
 	(*CodeGeneratorRequest)(nil),             // 1: google.protobuf.compiler.CodeGeneratorRequest

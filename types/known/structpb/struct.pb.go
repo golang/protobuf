@@ -374,7 +374,7 @@ func file_google_protobuf_struct_proto_rawDescGZIP() []byte {
 }
 
 var file_google_protobuf_struct_proto_enumTypes = make([]protoreflect.EnumType, 1)
-var file_google_protobuf_struct_proto_msgTypes = make([]protoimpl.MessageType, 4)
+var file_google_protobuf_struct_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_google_protobuf_struct_proto_goTypes = []interface{}{
 	(NullValue)(0),    // 0: google.protobuf.NullValue
 	(*Struct)(nil),    // 1: google.protobuf.Struct

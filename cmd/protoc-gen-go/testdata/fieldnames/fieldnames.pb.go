@@ -372,7 +372,7 @@ func file_fieldnames_fieldnames_proto_rawDescGZIP() []byte {
 	return file_fieldnames_fieldnames_proto_rawDescData
 }
 
-var file_fieldnames_fieldnames_proto_msgTypes = make([]protoimpl.MessageType, 2)
+var file_fieldnames_fieldnames_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_fieldnames_fieldnames_proto_goTypes = []interface{}{
 	(*Message)(nil),                      // 0: goproto.protoc.fieldnames.Message
 	(*Message_OneofMessageConflict)(nil), // 1: goproto.protoc.fieldnames.Message.OneofMessageConflict

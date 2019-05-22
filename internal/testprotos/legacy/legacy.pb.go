@@ -258,7 +258,7 @@ func file_legacy_legacy_proto_rawDescGZIP() []byte {
 	return file_legacy_legacy_proto_rawDescData
 }
 
-var file_legacy_legacy_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_legacy_legacy_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_legacy_legacy_proto_goTypes = []interface{}{
 	(*Legacy)(nil),               // 0: google.golang.org.Legacy
 	(*proto2_v0_0.Message)(nil),  // 1: google.golang.org.proto2_20160225.Message

@@ -99,7 +99,7 @@ func file_issue780_oneof_conflict_test_proto_rawDescGZIP() []byte {
 	return file_issue780_oneof_conflict_test_proto_rawDescData
 }
 
-var file_issue780_oneof_conflict_test_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_issue780_oneof_conflict_test_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_issue780_oneof_conflict_test_proto_goTypes = []interface{}{
 	(*Foo)(nil), // 0: oneoftest.Foo
 }

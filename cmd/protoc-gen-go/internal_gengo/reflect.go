@@ -28,7 +28,7 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		g.P("var ", enumTypesVarName(f), " = make([]", protoreflectPackage.Ident("EnumType"), ",", len(f.allEnums), ")")
 	}
 	if len(f.allMessages) > 0 {
-		g.P("var ", messageTypesVarName(f), " = make([]", protoimplPackage.Ident("MessageType"), ",", len(f.allMessages), ")")
+		g.P("var ", messageTypesVarName(f), " = make([]", protoimplPackage.Ident("MessageInfo"), ",", len(f.allMessages), ")")
 	}
 
 	// Generate a unique list of Go types for all declarations and dependencies,

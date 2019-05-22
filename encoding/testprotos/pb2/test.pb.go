@@ -1947,7 +1947,7 @@ func file_pb2_test_proto_rawDescGZIP() []byte {
 }
 
 var file_pb2_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
-var file_pb2_test_proto_msgTypes = make([]protoimpl.MessageType, 20)
+var file_pb2_test_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_pb2_test_proto_goTypes = []interface{}{
 	(Enum)(0),                             // 0: pb2.Enum
 	(Enums_NestedEnum)(0),                 // 1: pb2.Enums.NestedEnum

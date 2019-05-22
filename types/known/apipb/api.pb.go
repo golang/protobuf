@@ -432,7 +432,7 @@ func file_google_protobuf_api_proto_rawDescGZIP() []byte {
 	return file_google_protobuf_api_proto_rawDescData
 }
 
-var file_google_protobuf_api_proto_msgTypes = make([]protoimpl.MessageType, 3)
+var file_google_protobuf_api_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_google_protobuf_api_proto_goTypes = []interface{}{
 	(*Api)(nil),                           // 0: google.protobuf.Api
 	(*Method)(nil),                        // 1: google.protobuf.Method

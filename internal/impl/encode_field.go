@@ -70,13 +70,13 @@ func makeOneofFieldCoder(fs reflect.StructField, od pref.OneofDescriptor, struct
 }
 
 func makeMessageFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderFuncs {
-	if fi, ok := getMessageType(ft); ok {
+	if fi, ok := getMessageInfo(ft); ok {
 		return pointerCoderFuncs{
 			size: func(p pointer, tagsize int, opts marshalOptions) int {
-				return sizeMessageType(p, fi, tagsize, opts)
+				return sizeMessageInfo(p, fi, tagsize, opts)
 			},
 			marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
-				return appendMessageType(b, p, wiretag, fi, opts)
+				return appendMessageInfo(b, p, wiretag, fi, opts)
 			},
 		}
 	} else {
@@ -93,11 +93,11 @@ func makeMessageFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCode
 	}
 }
 
-func sizeMessageType(p pointer, mi *MessageType, tagsize int, opts marshalOptions) int {
+func sizeMessageInfo(p pointer, mi *MessageInfo, tagsize int, opts marshalOptions) int {
 	return wire.SizeBytes(mi.sizePointer(p.Elem(), opts)) + tagsize
 }
 
-func appendMessageType(b []byte, p pointer, wiretag uint64, mi *MessageType, opts marshalOptions) ([]byte, error) {
+func appendMessageInfo(b []byte, p pointer, wiretag uint64, mi *MessageInfo, opts marshalOptions) ([]byte, error) {
 	b = wire.AppendVarint(b, wiretag)
 	b = wire.AppendVarint(b, uint64(mi.sizePointer(p.Elem(), opts)))
 	return mi.marshalAppendPointer(b, p.Elem(), opts)
@@ -129,7 +129,7 @@ var coderMessageIface = ifaceCoderFuncs{
 }
 
 func makeGroupFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderFuncs {
-	if fi, ok := getMessageType(ft); ok {
+	if fi, ok := getMessageInfo(ft); ok {
 		return pointerCoderFuncs{
 			size: func(p pointer, tagsize int, opts marshalOptions) int {
 				return sizeGroupType(p, fi, tagsize, opts)
@@ -152,11 +152,11 @@ func makeGroupFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderF
 	}
 }
 
-func sizeGroupType(p pointer, mi *MessageType, tagsize int, opts marshalOptions) int {
+func sizeGroupType(p pointer, mi *MessageInfo, tagsize int, opts marshalOptions) int {
 	return 2*tagsize + mi.sizePointer(p.Elem(), opts)
 }
 
-func appendGroupType(b []byte, p pointer, wiretag uint64, mi *MessageType, opts marshalOptions) ([]byte, error) {
+func appendGroupType(b []byte, p pointer, wiretag uint64, mi *MessageInfo, opts marshalOptions) ([]byte, error) {
 	b = wire.AppendVarint(b, wiretag) // start group
 	b, err := mi.marshalAppendPointer(b, p.Elem(), opts)
 	b = wire.AppendVarint(b, wiretag+1) // end group
@@ -190,7 +190,7 @@ var coderGroupIface = ifaceCoderFuncs{
 }
 
 func makeMessageSliceFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderFuncs {
-	if fi, ok := getMessageType(ft); ok {
+	if fi, ok := getMessageInfo(ft); ok {
 		return pointerCoderFuncs{
 			marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
 				return appendMessageSliceInfo(b, p, wiretag, fi, opts)
@@ -210,7 +210,7 @@ func makeMessageSliceFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointe
 	}
 }
 
-func sizeMessageSliceInfo(p pointer, mi *MessageType, tagsize int, opts marshalOptions) int {
+func sizeMessageSliceInfo(p pointer, mi *MessageInfo, tagsize int, opts marshalOptions) int {
 	s := p.PointerSlice()
 	n := 0
 	for _, v := range s {
@@ -219,7 +219,7 @@ func sizeMessageSliceInfo(p pointer, mi *MessageType, tagsize int, opts marshalO
 	return n
 }
 
-func appendMessageSliceInfo(b []byte, p pointer, wiretag uint64, mi *MessageType, opts marshalOptions) ([]byte, error) {
+func appendMessageSliceInfo(b []byte, p pointer, wiretag uint64, mi *MessageInfo, opts marshalOptions) ([]byte, error) {
 	s := p.PointerSlice()
 	var nerr errors.NonFatal
 	var err error
@@ -280,7 +280,7 @@ var coderMessageSliceIface = ifaceCoderFuncs{
 }
 
 func makeGroupSliceFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderFuncs {
-	if fi, ok := getMessageType(ft); ok {
+	if fi, ok := getMessageInfo(ft); ok {
 		return pointerCoderFuncs{
 			size: func(p pointer, tagsize int, opts marshalOptions) int {
 				return sizeGroupSliceInfo(p, fi, tagsize, opts)
@@ -326,7 +326,7 @@ func appendGroupSlice(b []byte, p pointer, wiretag uint64, messageType reflect.T
 	return b, nerr.E
 }
 
-func sizeGroupSliceInfo(p pointer, mi *MessageType, tagsize int, opts marshalOptions) int {
+func sizeGroupSliceInfo(p pointer, mi *MessageInfo, tagsize int, opts marshalOptions) int {
 	s := p.PointerSlice()
 	n := 0
 	for _, v := range s {
@@ -335,7 +335,7 @@ func sizeGroupSliceInfo(p pointer, mi *MessageType, tagsize int, opts marshalOpt
 	return n
 }
 
-func appendGroupSliceInfo(b []byte, p pointer, wiretag uint64, mi *MessageType, opts marshalOptions) ([]byte, error) {
+func appendGroupSliceInfo(b []byte, p pointer, wiretag uint64, mi *MessageInfo, opts marshalOptions) ([]byte, error) {
 	s := p.PointerSlice()
 	var nerr errors.NonFatal
 	var err error

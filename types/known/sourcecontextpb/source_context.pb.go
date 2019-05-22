@@ -87,7 +87,7 @@ func file_google_protobuf_source_context_proto_rawDescGZIP() []byte {
 	return file_google_protobuf_source_context_proto_rawDescData
 }
 
-var file_google_protobuf_source_context_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_google_protobuf_source_context_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_google_protobuf_source_context_proto_goTypes = []interface{}{
 	(*SourceContext)(nil), // 0: google.protobuf.SourceContext
 }

@@ -463,7 +463,7 @@ func file_import_public_sub_a_proto_rawDescGZIP() []byte {
 }
 
 var file_import_public_sub_a_proto_enumTypes = make([]protoreflect.EnumType, 3)
-var file_import_public_sub_a_proto_msgTypes = make([]protoimpl.MessageType, 2)
+var file_import_public_sub_a_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_import_public_sub_a_proto_goTypes = []interface{}{
 	(E)(0),                               // 0: goproto.protoc.import_public.sub.E
 	(M_Subenum)(0),                       // 1: goproto.protoc.import_public.sub.M.Subenum

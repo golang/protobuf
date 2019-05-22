@@ -49,11 +49,11 @@ func (o marshalOptions) Deterministic() bool { return o&marshalDeterministic != 
 func (o marshalOptions) UseCachedSize() bool { return o&marshalUseCachedSize != 0 }
 
 // size is protoreflect.Methods.Size.
-func (mi *MessageType) size(msg pref.ProtoMessage) (size int) {
+func (mi *MessageInfo) size(msg pref.ProtoMessage) (size int) {
 	return mi.sizePointer(pointerOfIface(msg), 0)
 }
 
-func (mi *MessageType) sizePointer(p pointer, opts marshalOptions) (size int) {
+func (mi *MessageInfo) sizePointer(p pointer, opts marshalOptions) (size int) {
 	mi.init()
 	if p.IsNil() {
 		return 0
@@ -64,7 +64,7 @@ func (mi *MessageType) sizePointer(p pointer, opts marshalOptions) (size int) {
 	return mi.sizePointerSlow(p, opts)
 }
 
-func (mi *MessageType) sizePointerSlow(p pointer, opts marshalOptions) (size int) {
+func (mi *MessageInfo) sizePointerSlow(p pointer, opts marshalOptions) (size int) {
 	if mi.extensionOffset.IsValid() {
 		e := p.Apply(mi.extensionOffset).Extensions()
 		size += mi.sizeExtensions(e, opts)
@@ -90,11 +90,11 @@ func (mi *MessageType) sizePointerSlow(p pointer, opts marshalOptions) (size int
 }
 
 // marshalAppend is protoreflect.Methods.MarshalAppend.
-func (mi *MessageType) marshalAppend(b []byte, msg pref.ProtoMessage, opts piface.MarshalOptions) ([]byte, error) {
+func (mi *MessageInfo) marshalAppend(b []byte, msg pref.ProtoMessage, opts piface.MarshalOptions) ([]byte, error) {
 	return mi.marshalAppendPointer(b, pointerOfIface(msg), newMarshalOptions(opts))
 }
 
-func (mi *MessageType) marshalAppendPointer(b []byte, p pointer, opts marshalOptions) ([]byte, error) {
+func (mi *MessageInfo) marshalAppendPointer(b []byte, p pointer, opts marshalOptions) ([]byte, error) {
 	mi.init()
 	if p.IsNil() {
 		return b, nil
@@ -130,7 +130,7 @@ func (mi *MessageType) marshalAppendPointer(b []byte, p pointer, opts marshalOpt
 	return b, nerr.E
 }
 
-func (mi *MessageType) sizeExtensions(ext *legacyExtensionMap, opts marshalOptions) (n int) {
+func (mi *MessageInfo) sizeExtensions(ext *legacyExtensionMap, opts marshalOptions) (n int) {
 	if ext == nil {
 		return 0
 	}
@@ -144,7 +144,7 @@ func (mi *MessageType) sizeExtensions(ext *legacyExtensionMap, opts marshalOptio
 	return n
 }
 
-func (mi *MessageType) appendExtensions(b []byte, ext *legacyExtensionMap, opts marshalOptions) ([]byte, error) {
+func (mi *MessageInfo) appendExtensions(b []byte, ext *legacyExtensionMap, opts marshalOptions) ([]byte, error) {
 	if ext == nil {
 		return b, nil
 	}

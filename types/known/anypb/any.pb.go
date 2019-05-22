@@ -201,7 +201,7 @@ func file_google_protobuf_any_proto_rawDescGZIP() []byte {
 	return file_google_protobuf_any_proto_rawDescData
 }
 
-var file_google_protobuf_any_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_google_protobuf_any_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_google_protobuf_any_proto_goTypes = []interface{}{
 	(*Any)(nil), // 0: google.protobuf.Any
 }

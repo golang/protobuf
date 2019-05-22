@@ -3223,7 +3223,7 @@ func file_google_protobuf_descriptor_proto_rawDescGZIP() []byte {
 }
 
 var file_google_protobuf_descriptor_proto_enumTypes = make([]protoreflect.EnumType, 6)
-var file_google_protobuf_descriptor_proto_msgTypes = make([]protoimpl.MessageType, 27)
+var file_google_protobuf_descriptor_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_google_protobuf_descriptor_proto_goTypes = []interface{}{
 	(FieldDescriptorProto_Type)(0),                // 0: google.protobuf.FieldDescriptorProto.Type
 	(FieldDescriptorProto_Label)(0),               // 1: google.protobuf.FieldDescriptorProto.Label

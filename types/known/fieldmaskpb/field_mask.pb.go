@@ -282,7 +282,7 @@ func file_google_protobuf_field_mask_proto_rawDescGZIP() []byte {
 	return file_google_protobuf_field_mask_proto_rawDescData
 }
 
-var file_google_protobuf_field_mask_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_google_protobuf_field_mask_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_google_protobuf_field_mask_proto_goTypes = []interface{}{
 	(*FieldMask)(nil), // 0: google.protobuf.FieldMask
 }

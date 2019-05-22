@@ -767,7 +767,7 @@ func file_google_protobuf_type_proto_rawDescGZIP() []byte {
 }
 
 var file_google_protobuf_type_proto_enumTypes = make([]protoreflect.EnumType, 3)
-var file_google_protobuf_type_proto_msgTypes = make([]protoimpl.MessageType, 5)
+var file_google_protobuf_type_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_google_protobuf_type_proto_goTypes = []interface{}{
 	(Syntax)(0),                           // 0: google.protobuf.Syntax
 	(Field_Kind)(0),                       // 1: google.protobuf.Field.Kind

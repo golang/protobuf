@@ -450,7 +450,7 @@ func file_google_protobuf_wrappers_proto_rawDescGZIP() []byte {
 	return file_google_protobuf_wrappers_proto_rawDescData
 }
 
-var file_google_protobuf_wrappers_proto_msgTypes = make([]protoimpl.MessageType, 9)
+var file_google_protobuf_wrappers_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_google_protobuf_wrappers_proto_goTypes = []interface{}{
 	(*DoubleValue)(nil), // 0: google.protobuf.DoubleValue
 	(*FloatValue)(nil),  // 1: google.protobuf.FloatValue

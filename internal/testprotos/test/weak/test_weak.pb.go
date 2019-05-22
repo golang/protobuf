@@ -77,7 +77,7 @@ func file_test_weak_test_weak_proto_rawDescGZIP() []byte {
 	return file_test_weak_test_weak_proto_rawDescData
 }
 
-var file_test_weak_test_weak_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_test_weak_test_weak_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_test_weak_test_weak_proto_goTypes = []interface{}{
 	(*WeakImportMessage)(nil), // 0: goproto.proto.test.weak.WeakImportMessage
 }

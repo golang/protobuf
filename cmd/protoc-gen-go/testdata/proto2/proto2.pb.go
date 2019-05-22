@@ -87,7 +87,7 @@ func file_proto2_proto2_proto_rawDescGZIP() []byte {
 	return file_proto2_proto2_proto_rawDescData
 }
 
-var file_proto2_proto2_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_proto2_proto2_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_proto2_proto2_proto_goTypes = []interface{}{
 	(*Message)(nil), // 0: goproto.protoc.proto2.Message
 }

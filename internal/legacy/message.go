@@ -20,30 +20,30 @@ import (
 // wrapMessage wraps v as a protoreflect.ProtoMessage,
 // where v must be a *struct kind and not implement the v2 API already.
 func wrapMessage(v reflect.Value) pref.ProtoMessage {
-	mt := loadMessageType(v.Type())
+	mt := loadMessageInfo(v.Type())
 	return mt.MessageOf(v.Interface()).Interface()
 }
 
-var messageTypeCache sync.Map // map[reflect.Type]*MessageType
+var messageTypeCache sync.Map // map[reflect.Type]*MessageInfo
 
-// loadMessageType dynamically loads a *MessageType for t,
+// loadMessageInfo dynamically loads a *MessageInfo for t,
 // where t must be a *struct kind and not implement the v2 API already.
-func loadMessageType(t reflect.Type) *pimpl.MessageType {
-	// Fast-path: check if a MessageType is cached for this concrete type.
+func loadMessageInfo(t reflect.Type) *pimpl.MessageInfo {
+	// Fast-path: check if a MessageInfo is cached for this concrete type.
 	if mt, ok := messageTypeCache.Load(t); ok {
-		return mt.(*pimpl.MessageType)
+		return mt.(*pimpl.MessageInfo)
 	}
 
-	// Slow-path: derive message descriptor and initialize MessageType.
+	// Slow-path: derive message descriptor and initialize MessageInfo.
 	md := LoadMessageDesc(t)
-	mt := new(pimpl.MessageType)
+	mt := new(pimpl.MessageInfo)
 	mt.GoType = t
 	mt.PBType = ptype.GoMessage(md, func(pref.MessageType) pref.Message {
 		p := reflect.New(t.Elem()).Interface()
 		return mt.MessageOf(p)
 	})
 	if mt, ok := messageTypeCache.LoadOrStore(t, mt); ok {
-		return mt.(*pimpl.MessageType)
+		return mt.(*pimpl.MessageInfo)
 	}
 	return mt
 }

@@ -189,7 +189,7 @@ type (
 	MapBytes   map[MyString]MyBytes
 )
 
-var scalarProto2Type = pimpl.MessageType{GoType: reflect.TypeOf(new(ScalarProto2)), PBType: ptype.GoMessage(
+var scalarProto2Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto2)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "ScalarProto2",
@@ -304,7 +304,7 @@ type ScalarProto3 struct {
 	MyBytesA  MyString  `protobuf:"22"`
 }
 
-var scalarProto3Type = pimpl.MessageType{GoType: reflect.TypeOf(new(ScalarProto3)), PBType: ptype.GoMessage(
+var scalarProto3Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto3)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto3,
 		FullName: "ScalarProto3",
@@ -437,7 +437,7 @@ type ListScalars struct {
 	MyBytes4   ListStrings `protobuf:"19"`
 }
 
-var listScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(ListScalars)), PBType: ptype.GoMessage(
+var listScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ListScalars)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "ListScalars",
@@ -628,7 +628,7 @@ func mustMakeMapEntry(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Fiel
 	}
 }
 
-var mapScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(MapScalars)), PBType: ptype.GoMessage(
+var mapScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(MapScalars)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "MapScalars",
@@ -807,7 +807,7 @@ type OneofScalars struct {
 	Union isOneofScalars_Union `protobuf_oneof:"union"`
 }
 
-var oneofScalarsType = pimpl.MessageType{GoType: reflect.TypeOf(new(OneofScalars)), PBType: ptype.GoMessage(
+var oneofScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(OneofScalars)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "OneofScalars",
@@ -1031,7 +1031,7 @@ type EnumMessages struct {
 	Union         isEnumMessages_Union     `protobuf_oneof:"union"`
 }
 
-var enumMessagesType = pimpl.MessageType{GoType: reflect.TypeOf(new(EnumMessages)), PBType: ptype.GoMessage(
+var enumMessagesType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(EnumMessages)), PBType: ptype.GoMessage(
 	mustMakeMessageDesc(ptype.StandaloneMessage{
 		Syntax:   pref.Proto2,
 		FullName: "EnumMessages",

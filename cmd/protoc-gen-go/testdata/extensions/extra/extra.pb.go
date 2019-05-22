@@ -78,7 +78,7 @@ func file_extensions_extra_extra_proto_rawDescGZIP() []byte {
 	return file_extensions_extra_extra_proto_rawDescData
 }
 
-var file_extensions_extra_extra_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_extensions_extra_extra_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_extensions_extra_extra_proto_goTypes = []interface{}{
 	(*ExtraMessage)(nil), // 0: goproto.protoc.extension.extra.ExtraMessage
 }

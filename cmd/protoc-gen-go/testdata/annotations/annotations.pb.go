@@ -139,7 +139,7 @@ func file_annotations_annotations_proto_rawDescGZIP() []byte {
 }
 
 var file_annotations_annotations_proto_enumTypes = make([]protoreflect.EnumType, 1)
-var file_annotations_annotations_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_annotations_annotations_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_annotations_annotations_proto_goTypes = []interface{}{
 	(AnnotationsTestEnum)(0),       // 0: goproto.protoc.annotations.AnnotationsTestEnum
 	(*AnnotationsTestMessage)(nil), // 1: goproto.protoc.annotations.AnnotationsTestMessage

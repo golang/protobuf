@@ -153,7 +153,7 @@ func file_imports_test_a_1_m1_proto_rawDescGZIP() []byte {
 }
 
 var file_imports_test_a_1_m1_proto_enumTypes = make([]protoreflect.EnumType, 1)
-var file_imports_test_a_1_m1_proto_msgTypes = make([]protoimpl.MessageType, 2)
+var file_imports_test_a_1_m1_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_imports_test_a_1_m1_proto_goTypes = []interface{}{
 	(E1)(0),      // 0: test.a.E1
 	(*M1)(nil),   // 1: test.a.M1

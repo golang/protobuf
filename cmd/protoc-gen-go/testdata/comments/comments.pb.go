@@ -275,7 +275,7 @@ func file_comments_comments_proto_rawDescGZIP() []byte {
 	return file_comments_comments_proto_rawDescData
 }
 
-var file_comments_comments_proto_msgTypes = make([]protoimpl.MessageType, 6)
+var file_comments_comments_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_comments_comments_proto_goTypes = []interface{}{
 	(*Message1)(nil),           // 0: goproto.protoc.comments.Message1
 	(*Message2)(nil),           // 1: goproto.protoc.comments.Message2

@@ -129,7 +129,7 @@ func file_comments_deprecated_proto_rawDescGZIP() []byte {
 }
 
 var file_comments_deprecated_proto_enumTypes = make([]protoreflect.EnumType, 1)
-var file_comments_deprecated_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_comments_deprecated_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_comments_deprecated_proto_goTypes = []interface{}{
 	(DeprecatedEnum)(0),       // 0: goproto.protoc.comments.DeprecatedEnum
 	(*DeprecatedMessage)(nil), // 1: goproto.protoc.comments.DeprecatedMessage

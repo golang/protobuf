@@ -578,7 +578,7 @@ func file_proto3_fields_proto_rawDescGZIP() []byte {
 }
 
 var file_proto3_fields_proto_enumTypes = make([]protoreflect.EnumType, 1)
-var file_proto3_fields_proto_msgTypes = make([]protoimpl.MessageType, 5)
+var file_proto3_fields_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_proto3_fields_proto_goTypes = []interface{}{
 	(FieldTestMessage_Enum)(0),       // 0: goproto.protoc.proto3.FieldTestMessage.Enum
 	(*FieldTestMessage)(nil),         // 1: goproto.protoc.proto3.FieldTestMessage

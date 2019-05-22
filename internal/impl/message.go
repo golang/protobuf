@@ -18,10 +18,10 @@ import (
 	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
-// MessageType provides protobuf related functionality for a given Go type
-// that represents a message. A given instance of MessageType is tied to
+// MessageInfo provides protobuf related functionality for a given Go type
+// that represents a message. A given instance of MessageInfo is tied to
 // exactly one Go type, which must be a pointer to a struct type.
-type MessageType struct {
+type MessageInfo struct {
 	// GoType is the underlying message Go type and must be populated.
 	// Once set, this field must never be mutated.
 	GoType reflect.Type // pointer to struct
@@ -53,13 +53,13 @@ type MessageType struct {
 
 var prefMessageType = reflect.TypeOf((*pref.Message)(nil)).Elem()
 
-// getMessageType returns the MessageType (if any) for a type.
+// getMessageInfo returns the MessageInfo (if any) for a type.
 //
-// We find the MessageType by calling the ProtoReflect method on the type's
+// We find the MessageInfo by calling the ProtoReflect method on the type's
 // zero value and looking at the returned type to see if it is a
-// messageReflectWrapper. Note that the MessageType may still be uninitialized
+// messageReflectWrapper. Note that the MessageInfo may still be uninitialized
 // at this point.
-func getMessageType(mt reflect.Type) (mi *MessageType, ok bool) {
+func getMessageInfo(mt reflect.Type) (mi *MessageInfo, ok bool) {
 	method, ok := mt.MethodByName("ProtoReflect")
 	if !ok {
 		return nil, false
@@ -75,7 +75,7 @@ func getMessageType(mt reflect.Type) (mi *MessageType, ok bool) {
 	return m.mi, true
 }
 
-func (mi *MessageType) init() {
+func (mi *MessageInfo) init() {
 	// This function is called in the hot path. Inline the sync.Once
 	// logic, since allocating a closure for Once.Do is expensive.
 	// Keep init small to ensure that it can be inlined.
@@ -85,7 +85,7 @@ func (mi *MessageType) init() {
 	mi.initOnce()
 }
 
-func (mi *MessageType) initOnce() {
+func (mi *MessageInfo) initOnce() {
 	mi.initMu.Lock()
 	defer mi.initMu.Unlock()
 	if mi.initDone == 1 {
@@ -108,7 +108,7 @@ func (mi *MessageType) initOnce() {
 
 var sizecacheType = reflect.TypeOf(int32(0))
 
-func (mi *MessageType) makeMethods(t reflect.Type) {
+func (mi *MessageInfo) makeMethods(t reflect.Type) {
 	mi.extensionOffset = invalidOffset
 	if fx, _ := t.FieldByName("XXX_InternalExtensions"); fx.Type == extType {
 		mi.extensionOffset = offsetOf(fx)
@@ -135,7 +135,7 @@ type structInfo struct {
 	oneofWrappersByNumber map[pref.FieldNumber]reflect.Type
 }
 
-func (mi *MessageType) makeStructInfo(t reflect.Type) structInfo {
+func (mi *MessageInfo) makeStructInfo(t reflect.Type) structInfo {
 	// Generate a mapping of field numbers and names to Go struct field or type.
 	si := structInfo{
 		fieldsByNumber:        map[pref.FieldNumber]reflect.StructField{},
@@ -186,7 +186,7 @@ fieldLoop:
 //
 // This code assumes that the struct is well-formed and panics if there are
 // any discrepancies.
-func (mi *MessageType) makeKnownFieldsFunc(si structInfo) {
+func (mi *MessageInfo) makeKnownFieldsFunc(si structInfo) {
 	mi.fields = map[pref.FieldNumber]*fieldInfo{}
 	mi.fieldsOrdered = make([]*fieldInfo, 0, mi.PBType.Fields().Len())
 	for i := 0; i < mi.PBType.Descriptor().Fields().Len(); i++ {
@@ -230,7 +230,7 @@ func (mi *MessageType) makeKnownFieldsFunc(si structInfo) {
 	}
 }
 
-func (mi *MessageType) makeUnknownFieldsFunc(t reflect.Type) {
+func (mi *MessageInfo) makeUnknownFieldsFunc(t reflect.Type) {
 	if f := makeLegacyUnknownFieldsFunc(t); f != nil {
 		mi.unknownFields = f
 		return
@@ -240,7 +240,7 @@ func (mi *MessageType) makeUnknownFieldsFunc(t reflect.Type) {
 	}
 }
 
-func (mi *MessageType) makeExtensionFieldsFunc(t reflect.Type) {
+func (mi *MessageInfo) makeExtensionFieldsFunc(t reflect.Type) {
 	if f := makeLegacyExtensionFieldsFunc(t); f != nil {
 		mi.extensionFields = f
 		return
@@ -250,16 +250,16 @@ func (mi *MessageType) makeExtensionFieldsFunc(t reflect.Type) {
 	}
 }
 
-func (mi *MessageType) MessageOf(p interface{}) pref.Message {
+func (mi *MessageInfo) MessageOf(p interface{}) pref.Message {
 	return (*messageReflectWrapper)(mi.dataTypeOf(p))
 }
 
-func (mi *MessageType) Methods() *piface.Methods {
+func (mi *MessageInfo) Methods() *piface.Methods {
 	mi.init()
 	return &mi.methods
 }
 
-func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
+func (mi *MessageInfo) dataTypeOf(p interface{}) *messageDataType {
 	// TODO: Remove this check? This API is primarily used by generated code,
 	// and should not violate this assumption. Leave this check in for now to
 	// provide some sanity checks during development. This can be removed if
@@ -273,14 +273,14 @@ func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
 // messageDataType is a tuple of a pointer to the message data and
 // a pointer to the message type.
 //
-// TODO: Unfortunately, we need to close over a pointer and MessageType,
+// TODO: Unfortunately, we need to close over a pointer and MessageInfo,
 // which incurs an an allocation. This pair is similar to a Go interface,
 // which is essentially a tuple of the same thing. We can make this efficient
 // with reflect.NamedOf (see https://golang.org/issues/16522).
 //
 // With that hypothetical API, we could dynamically create a new named type
-// that has the same underlying type as MessageType.GoType, and
-// dynamically create methods that close over MessageType.
+// that has the same underlying type as MessageInfo.GoType, and
+// dynamically create methods that close over MessageInfo.
 // Since the new type would have the same underlying type, we could directly
 // convert between pointers of those types, giving us an efficient way to swap
 // out the method set.
@@ -290,7 +290,7 @@ func (mi *MessageType) dataTypeOf(p interface{}) *messageDataType {
 //	2. generate more types and methods, at the expense of binary size increase.
 type messageDataType struct {
 	p  pointer
-	mi *MessageType
+	mi *MessageInfo
 }
 
 type messageReflectWrapper messageDataType

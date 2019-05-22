@@ -15,7 +15,7 @@ type extensionFieldInfo struct {
 	funcs   ifaceCoderFuncs
 }
 
-func (mi *MessageType) extensionFieldInfo(desc *piface.ExtensionDescV1) *extensionFieldInfo {
+func (mi *MessageInfo) extensionFieldInfo(desc *piface.ExtensionDescV1) *extensionFieldInfo {
 	// As of this time (Go 1.12, linux/amd64), an RWMutex benchmarks as faster
 	// than a sync.Map.
 	mi.extensionFieldInfosMu.RLock()

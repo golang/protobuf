@@ -67,7 +67,7 @@ func file_test_test_public_proto_rawDescGZIP() []byte {
 	return file_test_test_public_proto_rawDescData
 }
 
-var file_test_test_public_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_test_test_public_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_test_test_public_proto_goTypes = []interface{}{
 	(*PublicImportMessage)(nil), // 0: goproto.proto.test.PublicImportMessage
 }

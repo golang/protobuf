@@ -79,7 +79,7 @@ func file_imports_test_import_a1m2_proto_rawDescGZIP() []byte {
 	return file_imports_test_import_a1m2_proto_rawDescData
 }
 
-var file_imports_test_import_a1m2_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_imports_test_import_a1m2_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_imports_test_import_a1m2_proto_goTypes = []interface{}{
 	(*A1M2)(nil),        // 0: test.A1M2
 	(*test_a_1.M2)(nil), // 1: test.a.M2

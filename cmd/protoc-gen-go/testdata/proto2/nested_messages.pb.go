@@ -162,7 +162,7 @@ func file_proto2_nested_messages_proto_rawDescGZIP() []byte {
 	return file_proto2_nested_messages_proto_rawDescData
 }
 
-var file_proto2_nested_messages_proto_msgTypes = make([]protoimpl.MessageType, 3)
+var file_proto2_nested_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_proto2_nested_messages_proto_goTypes = []interface{}{
 	(*Layer1)(nil),               // 0: goproto.protoc.proto2.Layer1
 	(*Layer1_Layer2)(nil),        // 1: goproto.protoc.proto2.Layer1.Layer2

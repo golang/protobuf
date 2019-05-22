@@ -98,7 +98,7 @@ func file_import_public_c_proto_rawDescGZIP() []byte {
 	return file_import_public_c_proto_rawDescData
 }
 
-var file_import_public_c_proto_msgTypes = make([]protoimpl.MessageType, 1)
+var file_import_public_c_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_import_public_c_proto_goTypes = []interface{}{
 	(*UsingPublicImport)(nil), // 0: goproto.protoc.import_public.UsingPublicImport
 	(*Local)(nil),             // 1: goproto.protoc.import_public.Local

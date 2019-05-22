@@ -34,7 +34,7 @@ func (Export) MessageOf(m interface{}) pvalue.LegacyMessage {
 }
 
 func (Export) MessageTypeOf(m interface{}) pref.MessageType {
-	return loadMessageType(reflect.TypeOf(m)).PBType
+	return loadMessageInfo(reflect.TypeOf(m)).PBType
 }
 
 func (Export) MessageDescriptorOf(m interface{}) pref.MessageDescriptor {

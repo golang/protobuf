@@ -2040,7 +2040,7 @@ func file_google_protobuf_test_messages_proto3_proto_rawDescGZIP() []byte {
 }
 
 var file_google_protobuf_test_messages_proto3_proto_enumTypes = make([]protoreflect.EnumType, 3)
-var file_google_protobuf_test_messages_proto3_proto_msgTypes = make([]protoimpl.MessageType, 22)
+var file_google_protobuf_test_messages_proto3_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_google_protobuf_test_messages_proto3_proto_goTypes = []interface{}{
 	(ForeignEnum)(0),                         // 0: protobuf_test_messages.proto3.ForeignEnum
 	(TestAllTypesProto3_NestedEnum)(0),       // 1: protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum

@@ -437,7 +437,7 @@ func file_test_proto_rawDescGZIP() []byte {
 }
 
 var file_test_proto_enumTypes = make([]protoreflect.EnumType, 3)
-var file_test_proto_msgTypes = make([]protoimpl.MessageType, 4)
+var file_test_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_test_proto_goTypes = []interface{}{
 	(Enum1)(0),       // 0: testprotos.Enum1
 	(Enum2)(0),       // 1: testprotos.Enum2

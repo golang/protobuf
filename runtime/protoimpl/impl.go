@@ -38,7 +38,7 @@ type (
 	// integer overflow failure when evaluating the uint constant.
 	EnforceVersion uint
 
-	MessageType = impl.MessageType
+	MessageInfo = impl.MessageInfo
 	FileBuilder = fileinit.FileBuilder
 
 	// TODO: Change these to more efficient data structures.
