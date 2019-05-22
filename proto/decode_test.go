@@ -16,7 +16,7 @@ import (
 	"google.golang.org/protobuf/internal/scalar"
 	"google.golang.org/protobuf/proto"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/runtime/protolegacy"
+	"google.golang.org/protobuf/runtime/protoimpl"
 
 	legacypb "google.golang.org/protobuf/internal/testprotos/legacy"
 	legacy1pb "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v0.0.0-20160225-2fc053c5"
@@ -1353,7 +1353,7 @@ func unknown(num pref.FieldNumber, raw pref.RawFields) buildOpt {
 
 func registerExtension(desc *protoV1.ExtensionDesc) buildOpt {
 	return func(m proto.Message) {
-		et := protolegacy.X.ExtensionTypeFromDesc(desc)
+		et := protoimpl.X.ExtensionTypeFromDesc(desc)
 		m.ProtoReflect().KnownFields().ExtensionTypes().Register(et)
 	}
 }
