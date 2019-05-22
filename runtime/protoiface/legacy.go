@@ -2,11 +2,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package protoiface contains types referenced by generated messages.
-//
-// WARNING: This package should only ever be imported by generated messages.
-// The compatibility agreement covers nothing except for functionality needed
-// to keep existing generated messages operational.
 package protoiface
 
 import (

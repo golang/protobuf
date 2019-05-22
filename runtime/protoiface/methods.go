@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Package protoiface contains types referenced or implemented by messages.
+//
+// WARNING: This package should only be imported by message implementations.
+// The functionality found in this package should be accessed through
+// higher-level abstractions provided by the proto package.
 package protoiface
 
 import (
