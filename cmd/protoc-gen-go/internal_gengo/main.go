@@ -20,14 +20,10 @@ import (
 	"google.golang.org/protobuf/internal/encoding/tag"
 	"google.golang.org/protobuf/internal/fieldnum"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/runtime/protoimpl"
 
 	"google.golang.org/protobuf/types/descriptorpb"
 )
-
-// minimumVersion is minimum version of the v2 proto package that is required.
-// This is incremented every time the generated code relies on some property
-// in the proto package that was introduced in a later version.
-const minimumVersion = 0
 
 const (
 	// generateEnumMapVars specifies whether to generate enum maps,
@@ -110,7 +106,12 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 	g.P()
 
 	// Emit a static check that enforces a minimum version of the proto package.
-	g.P("const _ = ", protoimplPackage.Ident("EnforceVersion"), "(", protoimplPackage.Ident("Version"), " - ", minimumVersion, ")")
+	g.P("const (")
+	g.P("// Verify that runtime/protoimpl is sufficiently up-to-date.")
+	g.P("_ = ", protoimplPackage.Ident("EnforceVersion"), "(", protoimplPackage.Ident("MaxVersion"), " - ", protoimpl.Version, ")")
+	g.P("// Verify that this generated code is sufficiently up-to-date.")
+	g.P("_ = ", protoimplPackage.Ident("EnforceVersion"), "(", protoimpl.Version, " - ", protoimplPackage.Ident("MinVersion"), ")")
+	g.P(")")
 	g.P()
 
 	for i, imps := 0, f.Desc.Imports(); i < imps.Len(); i++ {

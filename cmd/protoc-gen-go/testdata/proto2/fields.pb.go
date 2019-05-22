@@ -12,7 +12,12 @@ import (
 	sync "sync"
 )
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+const (
+	// Verify that runtime/protoimpl is sufficiently up-to-date.
+	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 0)
+	// Verify that this generated code is sufficiently up-to-date.
+	_ = protoimpl.EnforceVersion(0 - protoimpl.MinVersion)
+)
 
 type FieldTestMessage_Enum int32
 

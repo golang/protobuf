@@ -15,7 +15,12 @@ import (
 	sync "sync"
 )
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+const (
+	// Verify that runtime/protoimpl is sufficiently up-to-date.
+	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 0)
+	// Verify that this generated code is sufficiently up-to-date.
+	_ = protoimpl.EnforceVersion(0 - protoimpl.MinVersion)
+)
 
 type All struct {
 	Am1                  *test_a_1.M1            `protobuf:"bytes,1,opt,name=am1,proto3" json:"am1,omitempty"`

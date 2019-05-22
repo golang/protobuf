@@ -23,7 +23,12 @@ import (
 	sync "sync"
 )
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+const (
+	// Verify that runtime/protoimpl is sufficiently up-to-date.
+	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 0)
+	// Verify that this generated code is sufficiently up-to-date.
+	_ = protoimpl.EnforceVersion(0 - protoimpl.MinVersion)
+)
 
 type Legacy struct {
 	F1                   *proto2_v0_0.Message    `protobuf:"bytes,1,opt,name=f1,proto3" json:"f1,omitempty"`

@@ -11,7 +11,12 @@ import (
 	sync "sync"
 )
 
-const _ = protoimpl.EnforceVersion(protoimpl.Version - 0)
+const (
+	// Verify that runtime/protoimpl is sufficiently up-to-date.
+	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 0)
+	// Verify that this generated code is sufficiently up-to-date.
+	_ = protoimpl.EnforceVersion(0 - protoimpl.MinVersion)
+)
 
 type Message struct {
 	I32                  *int32                  `protobuf:"varint,1,opt,name=i32" json:"i32,omitempty"`
