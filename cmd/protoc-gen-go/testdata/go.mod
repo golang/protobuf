@@ -1,7 +1,7 @@
 module google.golang.org/protobuf/cmd/protoc-gen-go/testdata
 
 require (
-	github.com/golang/protobuf v1.2.1-0.20190516215712-ae2eaafab405
+	github.com/golang/protobuf v1.2.1-0.20190523175523-a1331f0b4ab4
 	google.golang.org/protobuf v1.0.0
 )
 
