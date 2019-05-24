@@ -477,10 +477,10 @@ func newFile(gen *Plugin, p *descriptorpb.FileDescriptorProto, packageName GoPac
 	return f, nil
 }
 
-func (f *File) location(path ...int32) Location {
+func (f *File) location(idxPath ...int32) Location {
 	return Location{
 		SourceFile: f.Desc.Path(),
-		Path:       path,
+		Path:       idxPath,
 	}
 }
 
@@ -1155,9 +1155,9 @@ type pathKey struct {
 }
 
 // newPathKey converts a location path to a pathKey.
-func newPathKey(path []int32) pathKey {
-	buf := make([]byte, 4*len(path))
-	for i, x := range path {
+func newPathKey(idxPath []int32) pathKey {
+	buf := make([]byte, 4*len(idxPath))
+	for i, x := range idxPath {
 		binary.LittleEndian.PutUint32(buf[i*4:], uint32(x))
 	}
 	return pathKey{string(buf)}
