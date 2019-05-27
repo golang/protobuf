@@ -327,6 +327,9 @@ func (u *unmarshalInfo) computeUnmarshalInfo() {
 		}
 
 		tags := f.Tag.Get("protobuf")
+		if tags == "" {
+			continue
+		}
 		tagArray := strings.Split(tags, ",")
 		if len(tagArray) < 2 {
 			panic("protobuf tag not enough fields in " + t.Name() + "." + f.Name + ": " + tags)
