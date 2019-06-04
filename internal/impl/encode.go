@@ -130,21 +130,21 @@ func (mi *MessageInfo) marshalAppendPointer(b []byte, p pointer, opts marshalOpt
 	return b, nerr.E
 }
 
-func (mi *MessageInfo) sizeExtensions(ext *legacyExtensionMap, opts marshalOptions) (n int) {
+func (mi *MessageInfo) sizeExtensions(ext *map[int32]ExtensionField, opts marshalOptions) (n int) {
 	if ext == nil {
 		return 0
 	}
-	for _, e := range *ext {
-		ei := mi.extensionFieldInfo(e.Desc)
-		if ei.funcs.size == nil {
+	for _, x := range *ext {
+		xi := mi.extensionFieldInfo(x.GetType())
+		if xi.funcs.size == nil {
 			continue
 		}
-		n += ei.funcs.size(e.value, ei.tagsize, opts)
+		n += xi.funcs.size(x.GetValue(), xi.tagsize, opts)
 	}
 	return n
 }
 
-func (mi *MessageInfo) appendExtensions(b []byte, ext *legacyExtensionMap, opts marshalOptions) ([]byte, error) {
+func (mi *MessageInfo) appendExtensions(b []byte, ext *map[int32]ExtensionField, opts marshalOptions) ([]byte, error) {
 	if ext == nil {
 		return b, nil
 	}
@@ -155,9 +155,9 @@ func (mi *MessageInfo) appendExtensions(b []byte, ext *legacyExtensionMap, opts 
 	case 1:
 		// Fast-path for one extension: Don't bother sorting the keys.
 		var err error
-		for _, e := range *ext {
-			ei := mi.extensionFieldInfo(e.Desc)
-			b, err = ei.funcs.marshal(b, e.value, ei.wiretag, opts)
+		for _, x := range *ext {
+			xi := mi.extensionFieldInfo(x.GetType())
+			b, err = xi.funcs.marshal(b, x.GetValue(), xi.wiretag, opts)
 		}
 		return b, err
 	default:
@@ -171,9 +171,9 @@ func (mi *MessageInfo) appendExtensions(b []byte, ext *legacyExtensionMap, opts 
 		var err error
 		var nerr errors.NonFatal
 		for _, k := range keys {
-			e := (*ext)[int32(k)]
-			ei := mi.extensionFieldInfo(e.Desc)
-			b, err = ei.funcs.marshal(b, e.value, ei.wiretag, opts)
+			x := (*ext)[int32(k)]
+			xi := mi.extensionFieldInfo(x.GetType())
+			b, err = xi.funcs.marshal(b, x.GetValue(), xi.wiretag, opts)
 			if !nerr.Merge(err) {
 				return b, err
 			}

@@ -62,11 +62,11 @@ type (
 	FileBuilder = fileinit.FileBuilder
 
 	// TODO: Change these to more efficient data structures.
-	ExtensionFields = map[int32]impl.ExtensionFieldV1
+	ExtensionFields = map[int32]impl.ExtensionField
 	UnknownFields   = []byte
 	SizeCache       = int32
 
-	ExtensionFieldV1 = impl.ExtensionFieldV1
+	ExtensionFieldV1 = impl.ExtensionField
 )
 
 var X impl.Export

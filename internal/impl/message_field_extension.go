@@ -6,11 +6,8 @@ package impl
 
 import (
 	"reflect"
-	"sync"
-	"sync/atomic"
 
 	pref "google.golang.org/protobuf/reflect/protoreflect"
-	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
 func makeLegacyExtensionFieldsFunc(t reflect.Type) func(p *messageDataType) pref.KnownFields {
@@ -26,7 +23,7 @@ func makeLegacyExtensionFieldsFunc(t reflect.Type) func(p *messageDataType) pref
 	}
 }
 
-var extType = reflect.TypeOf(map[int32]ExtensionFieldV1{})
+var extType = reflect.TypeOf(map[int32]ExtensionField{})
 
 func makeLegacyExtensionMapFunc(t reflect.Type) func(*messageDataType) *legacyExtensionMap {
 	fx, _ := t.FieldByName("XXX_extensions")
@@ -40,7 +37,7 @@ func makeLegacyExtensionMapFunc(t reflect.Type) func(*messageDataType) *legacyEx
 	fieldOffset := offsetOf(fx)
 	return func(p *messageDataType) *legacyExtensionMap {
 		v := p.p.Apply(fieldOffset).AsValueOf(fx.Type).Interface()
-		return (*legacyExtensionMap)(v.(*map[int32]ExtensionFieldV1))
+		return (*legacyExtensionMap)(v.(*map[int32]ExtensionField))
 	}
 }
 
@@ -50,7 +47,7 @@ type legacyExtensionFields struct {
 }
 
 func (p legacyExtensionFields) Len() (n int) {
-	p.x.Range(func(num pref.FieldNumber, _ ExtensionFieldV1) bool {
+	p.x.Range(func(num pref.FieldNumber, _ ExtensionField) bool {
 		if p.Has(pref.FieldNumber(num)) {
 			n++
 		}
@@ -64,7 +61,7 @@ func (p legacyExtensionFields) Has(n pref.FieldNumber) bool {
 	if !x.HasValue() {
 		return false
 	}
-	t := extensionTypeFromDesc(x.Desc)
+	t := x.GetType()
 	d := t.Descriptor()
 	if d.IsList() {
 		return t.ValueOf(x.GetValue()).List().Len() > 0
@@ -74,10 +71,10 @@ func (p legacyExtensionFields) Has(n pref.FieldNumber) bool {
 
 func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 	x := p.x.Get(n)
-	if x.Desc == nil {
+	if !x.HasType() {
 		return pref.Value{}
 	}
-	t := extensionTypeFromDesc(x.Desc)
+	t := x.GetType()
 	d := t.Descriptor()
 	if !x.HasValue() {
 		// NOTE: x.Value is never nil for Lists since they are always populated
@@ -92,20 +89,20 @@ func (p legacyExtensionFields) Get(n pref.FieldNumber) pref.Value {
 
 func (p legacyExtensionFields) Set(n pref.FieldNumber, v pref.Value) {
 	x := p.x.Get(n)
-	if x.Desc == nil {
+	if !x.HasType() {
 		panic("no extension descriptor registered")
 	}
-	t := extensionTypeFromDesc(x.Desc)
+	t := x.GetType()
 	x.SetEagerValue(t.InterfaceOf(v))
 	p.x.Set(n, x)
 }
 
 func (p legacyExtensionFields) Clear(n pref.FieldNumber) {
 	x := p.x.Get(n)
-	if x.Desc == nil {
+	if !x.HasType() {
 		return
 	}
-	t := extensionTypeFromDesc(x.Desc)
+	t := x.GetType()
 	d := t.Descriptor()
 	if d.IsList() {
 		t.ValueOf(x.GetValue()).List().Truncate(0)
@@ -120,7 +117,7 @@ func (p legacyExtensionFields) WhichOneof(pref.Name) pref.FieldNumber {
 }
 
 func (p legacyExtensionFields) Range(f func(pref.FieldNumber, pref.Value) bool) {
-	p.x.Range(func(n pref.FieldNumber, x ExtensionFieldV1) bool {
+	p.x.Range(func(n pref.FieldNumber, x ExtensionField) bool {
 		if p.Has(n) {
 			return f(n, p.Get(n))
 		}
@@ -130,10 +127,10 @@ func (p legacyExtensionFields) Range(f func(pref.FieldNumber, pref.Value) bool) 
 
 func (p legacyExtensionFields) NewMessage(n pref.FieldNumber) pref.Message {
 	x := p.x.Get(n)
-	if x.Desc == nil {
+	if !x.HasType() {
 		panic("no extension descriptor registered")
 	}
-	xt := extensionTypeFromDesc(x.Desc)
+	xt := x.GetType()
 	return xt.New().Message()
 }
 
@@ -144,8 +141,8 @@ func (p legacyExtensionFields) ExtensionTypes() pref.ExtensionFieldTypes {
 type legacyExtensionTypes legacyExtensionFields
 
 func (p legacyExtensionTypes) Len() (n int) {
-	p.x.Range(func(_ pref.FieldNumber, x ExtensionFieldV1) bool {
-		if x.Desc != nil {
+	p.x.Range(func(_ pref.FieldNumber, x ExtensionField) bool {
+		if x.HasType() {
 			n++
 		}
 		return true
@@ -162,10 +159,10 @@ func (p legacyExtensionTypes) Register(t pref.ExtensionType) {
 		panic("invalid extension field number")
 	}
 	x := p.x.Get(d.Number())
-	if x.Desc != nil {
+	if x.HasType() {
 		panic("extension descriptor already registered")
 	}
-	x.Desc = extensionDescFromType(t)
+	x.SetType(t)
 	if d.IsList() {
 		// If the field is repeated, initialize the entry with an empty list
 		// so that future Get operations can return a mutable and concrete list.
@@ -195,16 +192,16 @@ func (p legacyExtensionTypes) Remove(t pref.ExtensionType) {
 
 func (p legacyExtensionTypes) ByNumber(n pref.FieldNumber) pref.ExtensionType {
 	x := p.x.Get(n)
-	if x.Desc != nil {
-		return extensionTypeFromDesc(x.Desc)
+	if x.HasType() {
+		return x.GetType()
 	}
 	return nil
 }
 
 func (p legacyExtensionTypes) ByName(s pref.FullName) (t pref.ExtensionType) {
-	p.x.Range(func(_ pref.FieldNumber, x ExtensionFieldV1) bool {
-		if x.Desc != nil && x.Desc.Name == string(s) {
-			t = extensionTypeFromDesc(x.Desc)
+	p.x.Range(func(_ pref.FieldNumber, x ExtensionField) bool {
+		if x.HasType() && x.GetType().FullName() == s {
+			t = x.GetType()
 			return false
 		}
 		return true
@@ -213,9 +210,9 @@ func (p legacyExtensionTypes) ByName(s pref.FullName) (t pref.ExtensionType) {
 }
 
 func (p legacyExtensionTypes) Range(f func(pref.ExtensionType) bool) {
-	p.x.Range(func(_ pref.FieldNumber, x ExtensionFieldV1) bool {
-		if x.Desc != nil {
-			if !f(extensionTypeFromDesc(x.Desc)) {
+	p.x.Range(func(_ pref.FieldNumber, x ExtensionField) bool {
+		if x.HasType() {
+			if !f(x.GetType()) {
 				return false
 			}
 		}
@@ -223,106 +220,7 @@ func (p legacyExtensionTypes) Range(f func(pref.ExtensionType) bool) {
 	})
 }
 
-func extensionDescFromType(typ pref.ExtensionType) *piface.ExtensionDescV1 {
-	if xt, ok := typ.(interface {
-		ProtoLegacyExtensionDesc() *piface.ExtensionDescV1
-	}); ok {
-		if desc := xt.ProtoLegacyExtensionDesc(); desc != nil {
-			return desc
-		}
-	}
-	return Export{}.ExtensionDescFromType(typ)
-}
-
-func extensionTypeFromDesc(desc *piface.ExtensionDescV1) pref.ExtensionType {
-	if desc.Type != nil {
-		return desc.Type
-	}
-	return Export{}.ExtensionTypeFromDesc(desc)
-}
-
-type ExtensionFieldV1 struct {
-	// TODO: We should turn this into a type alias to an unnamed type,
-	// which means that v1 can have the same struct, and we no longer have to
-	// export this from the v2 API.
-
-	// When an extension is stored in a message using SetExtension
-	// only desc and value are set. When the message is marshaled
-	// Raw will be set to the encoded form of the message.
-	//
-	// When a message is unmarshaled and contains extensions, each
-	// extension will have only Raw set. When such an extension is
-	// accessed using GetExtension (or GetExtensions) desc and value
-	// will be set.
-	Desc *piface.ExtensionDescV1 // TODO: switch to protoreflect.ExtensionType
-
-	// value is either the value of GetValue,
-	// or a *lazyExtensionValue that then returns the value of GetValue.
-	value interface{}
-}
-
-// HasValue reports whether a value is set for the extension field.
-// This may be called concurrently.
-func (f ExtensionFieldV1) HasValue() bool {
-	return f.value != nil
-}
-
-// GetValue returns the concrete value for the extension field.
-// Let the type of Desc.ExtensionType be the "API type" and
-// the type of GetValue be the "storage type".
-// The API type and storage type are the same except:
-//	* for scalars (except []byte), where the API type uses *T,
-//	while the storage type uses T.
-//	* for repeated fields, where the API type uses []T,
-//	while the storage type uses *[]T.
-//
-// The reason for the divergence is so that the storage type more naturally
-// matches what is expected of when retrieving the values through the
-// protobuf reflection APIs.
-//
-// GetValue is only populated if Desc is also populated.
-// This may be called concurrently.
-//
-// TODO: switch interface{} to protoreflect.Value
-func (f ExtensionFieldV1) GetValue() interface{} {
-	if f, ok := f.value.(*lazyExtensionValue); ok {
-		return f.GetValue()
-	}
-	return f.value
-}
-
-// SetEagerValue sets the current value of the extension.
-// This must not be called concurrently.
-func (f *ExtensionFieldV1) SetEagerValue(v interface{}) {
-	f.value = v
-}
-
-// SetLazyValue sets a value that is to be lazily evaluated upon first use.
-// The returned value must not be nil.
-// This must not be called concurrently.
-func (f *ExtensionFieldV1) SetLazyValue(v func() interface{}) {
-	f.value = &lazyExtensionValue{value: v}
-}
-
-type lazyExtensionValue struct {
-	once  uint32      // atomically set if value is valid
-	mu    sync.Mutex  // protects value
-	value interface{} // either the value itself or a func() interface{}
-}
-
-func (v *lazyExtensionValue) GetValue() interface{} {
-	if atomic.LoadUint32(&v.once) == 0 {
-		v.mu.Lock()
-		if f, ok := v.value.(func() interface{}); ok {
-			v.value = f()
-		}
-		atomic.StoreUint32(&v.once, 1)
-		v.mu.Unlock()
-	}
-	return v.value
-}
-
-type legacyExtensionMap map[int32]ExtensionFieldV1
+type legacyExtensionMap map[int32]ExtensionField
 
 func (m legacyExtensionMap) Len() int {
 	return len(m)
@@ -331,19 +229,19 @@ func (m legacyExtensionMap) Has(n pref.FieldNumber) bool {
 	_, ok := m[int32(n)]
 	return ok
 }
-func (m legacyExtensionMap) Get(n pref.FieldNumber) ExtensionFieldV1 {
+func (m legacyExtensionMap) Get(n pref.FieldNumber) ExtensionField {
 	return m[int32(n)]
 }
-func (m *legacyExtensionMap) Set(n pref.FieldNumber, x ExtensionFieldV1) {
+func (m *legacyExtensionMap) Set(n pref.FieldNumber, x ExtensionField) {
 	if *m == nil {
-		*m = make(map[int32]ExtensionFieldV1)
+		*m = make(map[int32]ExtensionField)
 	}
 	(*m)[int32(n)] = x
 }
 func (m *legacyExtensionMap) Clear(n pref.FieldNumber) {
 	delete(*m, int32(n))
 }
-func (m legacyExtensionMap) Range(f func(pref.FieldNumber, ExtensionFieldV1) bool) {
+func (m legacyExtensionMap) Range(f func(pref.FieldNumber, ExtensionField) bool) {
 	for n, x := range m {
 		if !f(pref.FieldNumber(n), x) {
 			return

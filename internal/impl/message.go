@@ -48,7 +48,7 @@ type MessageInfo struct {
 	sizecacheOffset       offset
 	unknownOffset         offset
 	extensionFieldInfosMu sync.RWMutex
-	extensionFieldInfos   map[*piface.ExtensionDescV1]*extensionFieldInfo
+	extensionFieldInfos   map[pref.ExtensionType]*extensionFieldInfo
 }
 
 var prefMessageType = reflect.TypeOf((*pref.Message)(nil)).Elem()
