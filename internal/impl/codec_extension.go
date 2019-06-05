@@ -10,7 +10,6 @@ import (
 
 	"google.golang.org/protobuf/internal/encoding/wire"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
-	piface "google.golang.org/protobuf/runtime/protoiface"
 )
 
 type extensionFieldInfo struct {
@@ -46,9 +45,7 @@ func (mi *MessageInfo) extensionFieldInfo(xt pref.ExtensionType) *extensionField
 }
 
 type ExtensionField struct {
-	// Desc is the descriptor information for the extension field.
-	// It must be populated if value is populated.
-	Desc *piface.ExtensionDescV1 // TODO: unexport and switch to protoreflect.ExtensionType
+	typ pref.ExtensionType
 
 	// value is either the value of GetValue,
 	// or a *lazyExtensionValue that then returns the value of GetValue.
@@ -56,13 +53,13 @@ type ExtensionField struct {
 }
 
 func (f ExtensionField) HasType() bool {
-	return f.Desc != nil
+	return f.typ != nil
 }
 func (f ExtensionField) GetType() pref.ExtensionType {
-	return legacyExtensionTypeFromDesc(f.Desc)
+	return f.typ
 }
 func (f *ExtensionField) SetType(t pref.ExtensionType) {
-	f.Desc = legacyExtensionDescFromType(t)
+	f.typ = t
 }
 
 // HasValue reports whether a value is set for the extension field.
