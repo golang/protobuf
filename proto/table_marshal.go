@@ -18,6 +18,7 @@ import (
 
 	"github.com/golang/protobuf/internal/wire"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 // a sizer takes a pointer to a field and the size of its tag, computes the size of
@@ -2373,14 +2374,14 @@ func (u *marshalInfo) sizeExtensions(ext *XXX_InternalExtensions) int {
 
 	n := 0
 	m.Range(func(_ protoreflect.FieldNumber, e Extension) bool {
-		if e.Desc == nil || !e.HasValue() {
+		if !e.HasType() || !e.HasValue() {
 			return true // should never happen
 		}
 
 		// We don't skip extensions that have an encoded form set,
 		// because the extension value may have been mutated after
 		// the last time this function was called.
-		ei := u.getExtElemInfo(e.Desc)
+		ei := u.getExtElemInfo(protoimpl.X.ExtensionDescFromType(e.GetType()))
 		v := e.GetValue()
 		p := toAddrPointer(&v, ei.isptr, ei.deref)
 		n += ei.sizer(p, ei.tagsize)
@@ -2403,7 +2404,7 @@ func (u *marshalInfo) appendExtensions(b []byte, ext *XXX_InternalExtensions, de
 	// Don't bother sorting the keys.
 	if m.Len() <= 1 {
 		m.Range(func(_ protoreflect.FieldNumber, e Extension) bool {
-			if e.Desc == nil || !e.HasValue() {
+			if !e.HasType() || !e.HasValue() {
 				return true // should never happen
 			}
 
@@ -2411,7 +2412,7 @@ func (u *marshalInfo) appendExtensions(b []byte, ext *XXX_InternalExtensions, de
 			// because the extension value may have been mutated after
 			// the last time this function was called.
 
-			ei := u.getExtElemInfo(e.Desc)
+			ei := u.getExtElemInfo(protoimpl.X.ExtensionDescFromType(e.GetType()))
 			v := e.GetValue()
 			p := toAddrPointer(&v, ei.isptr, ei.deref)
 			b, err = ei.marshaler(b, p, ei.wiretag, deterministic)
@@ -2435,7 +2436,7 @@ func (u *marshalInfo) appendExtensions(b []byte, ext *XXX_InternalExtensions, de
 
 	for _, k := range keys {
 		e := m.Get(protoreflect.FieldNumber(k))
-		if e.Desc == nil || !e.HasValue() {
+		if !e.HasType() || !e.HasValue() {
 			continue // should never happen
 		}
 
@@ -2443,7 +2444,7 @@ func (u *marshalInfo) appendExtensions(b []byte, ext *XXX_InternalExtensions, de
 		// because the extension value may have been mutated after
 		// the last time this function was called.
 
-		ei := u.getExtElemInfo(e.Desc)
+		ei := u.getExtElemInfo(protoimpl.X.ExtensionDescFromType(e.GetType()))
 		v := e.GetValue()
 		p := toAddrPointer(&v, ei.isptr, ei.deref)
 		b, err = ei.marshaler(b, p, ei.wiretag, deterministic)
@@ -2475,7 +2476,7 @@ func (u *marshalInfo) sizeMessageSet(ext *XXX_InternalExtensions, unk []byte) in
 		n += 2                          // start group, end group. tag = 1 (size=1)
 		n += SizeVarint(uint64(id)) + 1 // type_id, tag = 2 (size=1)
 
-		if e.Desc == nil || !e.HasValue() {
+		if !e.HasType() || !e.HasValue() {
 			return true // should never happen
 		}
 
@@ -2483,7 +2484,7 @@ func (u *marshalInfo) sizeMessageSet(ext *XXX_InternalExtensions, unk []byte) in
 		// because the extension value may have been mutated after
 		// the last time this function was called.
 
-		ei := u.getExtElemInfo(e.Desc)
+		ei := u.getExtElemInfo(protoimpl.X.ExtensionDescFromType(e.GetType()))
 		v := e.GetValue()
 		p := toAddrPointer(&v, ei.isptr, ei.deref)
 		n += ei.sizer(p, 1) // message, tag = 3 (size=1)
@@ -2528,7 +2529,7 @@ func (u *marshalInfo) appendMessageSet(b []byte, ext *XXX_InternalExtensions, un
 			b = append(b, 2<<3|WireVarint)
 			b = appendVarint(b, uint64(id))
 
-			if e.Desc == nil || !e.HasValue() {
+			if !e.HasType() || !e.HasValue() {
 				return true // should never happen
 			}
 
@@ -2536,7 +2537,7 @@ func (u *marshalInfo) appendMessageSet(b []byte, ext *XXX_InternalExtensions, un
 			// because the extension value may have been mutated after
 			// the last time this function was called.
 
-			ei := u.getExtElemInfo(e.Desc)
+			ei := u.getExtElemInfo(protoimpl.X.ExtensionDescFromType(e.GetType()))
 			v := e.GetValue()
 			p := toAddrPointer(&v, ei.isptr, ei.deref)
 			b, err = ei.marshaler(b, p, 3<<3|WireBytes, deterministic)
@@ -2583,7 +2584,7 @@ func (u *marshalInfo) appendMessageSet(b []byte, ext *XXX_InternalExtensions, un
 		b = append(b, 2<<3|WireVarint)
 		b = appendVarint(b, uint64(id))
 
-		if e.Desc == nil || !e.HasValue() {
+		if !e.HasType() || !e.HasValue() {
 			continue // should never happen
 		}
 
@@ -2591,7 +2592,7 @@ func (u *marshalInfo) appendMessageSet(b []byte, ext *XXX_InternalExtensions, un
 		// because the extension value may have been mutated after
 		// the last time this function was called.
 
-		ei := u.getExtElemInfo(e.Desc)
+		ei := u.getExtElemInfo(protoimpl.X.ExtensionDescFromType(e.GetType()))
 		v := e.GetValue()
 		p := toAddrPointer(&v, ei.isptr, ei.deref)
 		b, err = ei.marshaler(b, p, 3<<3|WireBytes, deterministic)
@@ -2630,7 +2631,7 @@ func (u *marshalInfo) sizeV1Extensions(m map[int32]Extension) int {
 
 	n := 0
 	for _, e := range m {
-		if e.Desc == nil || !e.HasValue() {
+		if !e.HasType() || !e.HasValue() {
 			continue // should never happen
 		}
 
@@ -2638,7 +2639,7 @@ func (u *marshalInfo) sizeV1Extensions(m map[int32]Extension) int {
 		// because the extension value may have been mutated after
 		// the last time this function was called.
 
-		ei := u.getExtElemInfo(e.Desc)
+		ei := u.getExtElemInfo(protoimpl.X.ExtensionDescFromType(e.GetType()))
 		v := e.GetValue()
 		p := toAddrPointer(&v, ei.isptr, ei.deref)
 		n += ei.sizer(p, ei.tagsize)
@@ -2663,7 +2664,7 @@ func (u *marshalInfo) appendV1Extensions(b []byte, m map[int32]Extension, determ
 	var nerr nonFatal
 	for _, k := range keys {
 		e := m[int32(k)]
-		if e.Desc == nil || !e.HasValue() {
+		if !e.HasType() || !e.HasValue() {
 			continue // should never happen
 		}
 
@@ -2671,7 +2672,7 @@ func (u *marshalInfo) appendV1Extensions(b []byte, m map[int32]Extension, determ
 		// because the extension value may have been mutated after
 		// the last time this function was called.
 
-		ei := u.getExtElemInfo(e.Desc)
+		ei := u.getExtElemInfo(protoimpl.X.ExtensionDescFromType(e.GetType()))
 		v := e.GetValue()
 		p := toAddrPointer(&v, ei.isptr, ei.deref)
 		b, err = ei.marshaler(b, p, ei.wiretag, deterministic)

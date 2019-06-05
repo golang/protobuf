@@ -270,7 +270,7 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 	e := epb.Get(protoreflect.FieldNumber(extension.Field))
 	if e.HasValue() {
 		// Already decoded. Check the descriptor, though.
-		if e.Desc != extension {
+		if protoimpl.X.ExtensionDescFromType(e.GetType()) != extension {
 			// This shouldn't happen. If it does, it means that
 			// GetExtension was called twice with two different
 			// descriptors with the same field number.
@@ -292,7 +292,7 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 
 	// Remember the decoded version and drop the encoded version.
 	// That way it is safe to mutate what we return.
-	e.Desc = extension
+	e.SetType(protoimpl.X.ExtensionTypeFromDesc(extension))
 	e.SetEagerValue(extensionAsStorageType(v))
 	unrecognized.SetBytes(removeRawFields(unrecognized.Bytes(), fnum))
 	epb.Set(protoreflect.FieldNumber(extension.Field), e)
@@ -404,7 +404,7 @@ func ExtensionDescs(pb Message) ([]*ExtensionDesc, error) {
 	}
 	extensions := make([]*ExtensionDesc, 0, epb.Len())
 	epb.Range(func(extid protoreflect.FieldNumber, e Extension) bool {
-		desc := e.Desc
+		desc := protoimpl.X.ExtensionDescFromType(e.GetType())
 		if desc == nil {
 			desc = registeredExtensions[int32(extid)]
 			if desc == nil {
@@ -461,7 +461,8 @@ func SetExtension(pb Message, extension *ExtensionDesc, value interface{}) error
 		return fmt.Errorf("proto: SetExtension called with nil value of type %T", value)
 	}
 
-	x := Extension{Desc: extension}
+	var x Extension
+	x.SetType(protoimpl.X.ExtensionTypeFromDesc(extension))
 	x.SetEagerValue(extensionAsStorageType(value))
 	epb.Set(protoreflect.FieldNumber(extension.Field), x)
 	return nil
