@@ -5,7 +5,6 @@ package grpc
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
 )
@@ -57,6 +56,11 @@ var file_grpc_deprecation_proto_goTypes = []interface{}{
 var file_grpc_deprecation_proto_depIdxs = []int32{
 	0, // goproto.protoc.grpc.DeprecatedService.DeprecatedCall:input_type -> goproto.protoc.grpc.Request
 	1, // goproto.protoc.grpc.DeprecatedService.DeprecatedCall:output_type -> goproto.protoc.grpc.Response
+	1, // starting offset of method output_type sub-list
+	0, // starting offset of method input_type sub-list
+	0, // starting offset of extension type_name sub-list
+	0, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_grpc_deprecation_proto_init() }
@@ -65,13 +69,18 @@ func file_grpc_deprecation_proto_init() {
 		return
 	}
 	file_grpc_grpc_proto_init()
-	File_grpc_deprecation_proto = protoimpl.FileBuilder{
-		RawDescriptor:     file_grpc_deprecation_proto_rawDesc,
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_grpc_deprecation_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   0,
+			NumExtensions: 0,
+			NumServices:   1,
+		},
 		GoTypes:           file_grpc_deprecation_proto_goTypes,
 		DependencyIndexes: file_grpc_deprecation_proto_depIdxs,
-		FilesRegistry:     protoregistry.GlobalFiles,
-		TypesRegistry:     protoregistry.GlobalTypes,
-	}.Init()
+	}.Build()
+	File_grpc_deprecation_proto = out.File
 	file_grpc_deprecation_proto_rawDesc = nil
 	file_grpc_deprecation_proto_goTypes = nil
 	file_grpc_deprecation_proto_depIdxs = nil

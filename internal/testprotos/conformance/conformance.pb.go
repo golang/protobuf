@@ -5,7 +5,7 @@ package conformance
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -57,7 +57,7 @@ func (x WireFormat) String() string {
 }
 
 func (WireFormat) Descriptor() protoreflect.EnumDescriptor {
-	return file_conformance_conformance_proto_enumTypes[0].Descriptor()
+	return file_conformance_conformance_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x WireFormat) Number() protoreflect.EnumNumber {
@@ -119,7 +119,7 @@ func (x TestCategory) String() string {
 }
 
 func (TestCategory) Descriptor() protoreflect.EnumDescriptor {
-	return file_conformance_conformance_proto_enumTypes[1].Descriptor()
+	return file_conformance_conformance_proto_enumTypes[1].EnumDescriptor
 }
 
 func (x TestCategory) Number() protoreflect.EnumNumber {
@@ -661,7 +661,7 @@ func file_conformance_conformance_proto_rawDescGZIP() []byte {
 	return file_conformance_conformance_proto_rawDescData
 }
 
-var file_conformance_conformance_proto_enumTypes = make([]protoreflect.EnumType, 2)
+var file_conformance_conformance_proto_enumTypes = make([]prototype.Enum, 2)
 var file_conformance_conformance_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_conformance_conformance_proto_goTypes = []interface{}{
 	(WireFormat)(0),             // 0: conformance.WireFormat
@@ -675,6 +675,11 @@ var file_conformance_conformance_proto_depIdxs = []int32{
 	0, // conformance.ConformanceRequest.requested_output_format:type_name -> conformance.WireFormat
 	1, // conformance.ConformanceRequest.test_category:type_name -> conformance.TestCategory
 	5, // conformance.ConformanceRequest.jspb_encoding_options:type_name -> conformance.JspbEncodingConfig
+	3, // starting offset of method output_type sub-list
+	3, // starting offset of method input_type sub-list
+	3, // starting offset of extension type_name sub-list
+	3, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_conformance_conformance_proto_init() }
@@ -682,15 +687,20 @@ func file_conformance_conformance_proto_init() {
 	if File_conformance_conformance_proto != nil {
 		return
 	}
-	File_conformance_conformance_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_conformance_conformance_proto_rawDesc,
-		GoTypes:            file_conformance_conformance_proto_goTypes,
-		DependencyIndexes:  file_conformance_conformance_proto_depIdxs,
-		EnumOutputTypes:    file_conformance_conformance_proto_enumTypes,
-		MessageOutputTypes: file_conformance_conformance_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_conformance_conformance_proto_rawDesc,
+			NumEnums:      2,
+			NumMessages:   4,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_conformance_conformance_proto_goTypes,
+		DependencyIndexes: file_conformance_conformance_proto_depIdxs,
+		MessageInfos:      file_conformance_conformance_proto_msgTypes,
+	}.Build()
+	File_conformance_conformance_proto = out.File
+	file_conformance_conformance_proto_enumTypes = out.Enums
 	file_conformance_conformance_proto_rawDesc = nil
 	file_conformance_conformance_proto_goTypes = nil
 	file_conformance_conformance_proto_depIdxs = nil

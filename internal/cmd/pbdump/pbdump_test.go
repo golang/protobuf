@@ -9,12 +9,21 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
-
-	ptype "google.golang.org/protobuf/internal/prototype"
+	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/proto"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
+
+	"google.golang.org/protobuf/types/descriptorpb"
 )
+
+func mustMakeMessage(s string) *descriptorpb.DescriptorProto {
+	s = fmt.Sprintf(`name:"test.proto" syntax:"proto2" message_type:[{%s}]`, s)
+	pb := new(descriptorpb.FileDescriptorProto)
+	if err := prototext.Unmarshal([]byte(s), pb); err != nil {
+		panic(err)
+	}
+	return pb.MessageType[0]
+}
 
 func TestFields(t *testing.T) {
 	type fieldsKind struct {
@@ -23,11 +32,11 @@ func TestFields(t *testing.T) {
 	}
 	tests := []struct {
 		inFields []fieldsKind
-		wantMsg  ptype.Message
+		wantMsg  *descriptorpb.DescriptorProto
 		wantErr  string
 	}{{
 		inFields: []fieldsKind{{pref.MessageKind, ""}},
-		wantMsg:  ptype.Message{Name: "M"},
+		wantMsg:  mustMakeMessage(`name:"M"`),
 	}, {
 		inFields: []fieldsKind{{pref.MessageKind, "987654321"}},
 		wantErr:  "invalid field: 987654321",
@@ -52,44 +61,33 @@ func TestFields(t *testing.T) {
 			{pref.MessageKind, "  10.20.30, 10.21   "},
 			{pref.GroupKind, "10"},
 		},
-		wantMsg: ptype.Message{
-			Name: "M",
-			Fields: []ptype.Field{
-				{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.GroupKind, MessageType: ptype.PlaceholderMessage("M.M10")},
-			},
-			Messages: []ptype.Message{{
-				Name: "M10",
-				Fields: []ptype.Field{
-					{Name: "f20", Number: 20, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: ptype.PlaceholderMessage("M.M10.M20")},
-					{Name: "f21", Number: 21, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: ptype.PlaceholderMessage("M.M10.M21")},
-				},
-				Messages: []ptype.Message{{
-					Name: "M20",
-					Fields: []ptype.Field{
-						{Name: "f30", Number: 30, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: ptype.PlaceholderMessage("M.M10.M20.M30")},
-						{Name: "f31", Number: 31, Cardinality: pref.Repeated, Kind: pref.Int32Kind},
-					},
-					Messages: []ptype.Message{{
-						Name: "M30",
-					}},
+		wantMsg: mustMakeMessage(`
+			name: "M"
+			field: [
+				{name:"f10" number:10 label:LABEL_OPTIONAL type:TYPE_GROUP type_name:".M.M10"}
+			]
+			nested_type: [{
+				name: "M10"
+				field: [
+					{name:"f20" number:20 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".M.M10.M20"},
+					{name:"f21" number:21 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".M.M10.M21"}
+				]
+				nested_type: [{
+					name: "M20"
+					field:[
+						{name:"f30" number:30 label:LABEL_OPTIONAL type:TYPE_MESSAGE, type_name:".M.M10.M20.M30"},
+						{name:"f31" number:31 label:LABEL_REPEATED type:TYPE_INT32 options:{packed:true}}
+					]
+					nested_type: [{
+						name: "M30"
+					}]
 				}, {
-					Name: "M21",
-				}},
-			}},
-		},
+					name: "M21"
+				}]
+			}]
+		`),
 	}}
 
-	opts := cmp.Options{
-		cmp.Comparer(func(x, y pref.Descriptor) bool {
-			if x == nil || y == nil {
-				return x == nil && y == nil
-			}
-			return x.FullName() == y.FullName()
-		}),
-		cmpopts.IgnoreFields(ptype.Field{}, "Default"),
-		cmpopts.IgnoreFields(ptype.Field{}, "Options"),
-		cmpopts.IgnoreUnexported(ptype.Message{}, ptype.Field{}),
-	}
 	for _, tt := range tests {
 		t.Run("", func(t *testing.T) {
 			var fields fields
@@ -106,8 +104,8 @@ func TestFields(t *testing.T) {
 				t.Errorf("all Set calls succeeded, want %v error", tt.wantErr)
 			}
 			gotMsg := fields.messageDescriptor("M")
-			if diff := cmp.Diff(tt.wantMsg, gotMsg, opts); diff != "" {
-				t.Errorf("messageDescriptor() mismatch (-want +got):\n%v", diff)
+			if !proto.Equal(gotMsg, tt.wantMsg) {
+				t.Errorf("messageDescriptor() mismatch:\ngot  %v\nwant %v", gotMsg, tt.wantMsg)
 			}
 			if _, err := fields.Descriptor(); err != nil {
 				t.Errorf("Descriptor() = %v, want nil error", err)

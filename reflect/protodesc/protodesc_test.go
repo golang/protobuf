@@ -1,3 +1,7 @@
+// Copyright 2019 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package protodesc
 
 import (
@@ -439,7 +443,7 @@ func TestNewFile_ValidationOK(t *testing.T) {
 					Name:     scalar.String("nested_message"),
 					Number:   scalar.Int32(4),
 					Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-					Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
 					TypeName: scalar.String(".foo.TopLevelMessage.NestedMessage"),
 				}},
 			}},
@@ -596,14 +600,14 @@ func TestNewFile_ValidationOK(t *testing.T) {
 			for _, dep := range tc.deps {
 				f, err := NewFile(dep, r)
 				if err != nil {
-					t.Fatalf("Error creating dependency: %v", err)
+					t.Fatalf("error creating dependency: %v", err)
 				}
 				if err := r.Register(f); err != nil {
-					t.Fatalf("Error adding dependency: %v", err)
+					t.Fatalf("error adding dependency: %v", err)
 				}
 			}
 			if _, err := NewFile(tc.fd, r); err != nil {
-				t.Errorf("NewFile: got err = %v", err)
+				t.Errorf("unexpected NewFile error: %v", err)
 			}
 		})
 	}

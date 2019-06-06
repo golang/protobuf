@@ -25,7 +25,7 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 
 	genFileDescriptor(gen, g, f)
 	if len(f.allEnums) > 0 {
-		g.P("var ", enumTypesVarName(f), " = make([]", protoreflectPackage.Ident("EnumType"), ",", len(f.allEnums), ")")
+		g.P("var ", enumTypesVarName(f), " = make([]", prototypePackage.Ident("Enum"), ",", len(f.allEnums), ")")
 	}
 	if len(f.allMessages) > 0 {
 		g.P("var ", messageTypesVarName(f), " = make([]", protoimplPackage.Ident("MessageInfo"), ",", len(f.allMessages), ")")
@@ -73,17 +73,16 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		}
 	}
 
-	// This ordering is significant. See protoimpl.FileBuilder.GoTypes.
+	// This ordering is significant.
+	// See filetype.TypeBuilder.DependencyIndexes.
+	var depOffsets []string
 	for _, enum := range f.allEnums {
 		genEnum(enum, "")
 	}
 	for _, message := range f.allMessages {
 		genMessage(message, "")
 	}
-	for _, extension := range f.allExtensions {
-		source := string(extension.Desc.FullName())
-		genMessage(extension.Extendee, source+":extendee")
-	}
+	depOffsets = append(depOffsets, fmt.Sprintf("%d, // starting offset of field type_name sub-list", len(depIdxs)))
 	for _, message := range f.allMessages {
 		for _, field := range message.Fields {
 			if field.Desc.IsWeak() {
@@ -94,17 +93,33 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 			genMessage(field.Message, source+":type_name")
 		}
 	}
+	depOffsets = append(depOffsets, fmt.Sprintf("%d, // starting offset of extension extendee sub-list", len(depIdxs)))
+	for _, extension := range f.allExtensions {
+		source := string(extension.Desc.FullName())
+		genMessage(extension.Extendee, source+":extendee")
+	}
+	depOffsets = append(depOffsets, fmt.Sprintf("%d, // starting offset of extension type_name sub-list", len(depIdxs)))
 	for _, extension := range f.allExtensions {
 		source := string(extension.Desc.FullName())
 		genEnum(extension.Enum, source+":type_name")
 		genMessage(extension.Message, source+":type_name")
 	}
+	depOffsets = append(depOffsets, fmt.Sprintf("%d, // starting offset of method input_type sub-list", len(depIdxs)))
 	for _, service := range f.Services {
 		for _, method := range service.Methods {
 			source := string(method.Desc.FullName())
 			genMessage(method.Input, source+":input_type")
+		}
+	}
+	depOffsets = append(depOffsets, fmt.Sprintf("%d, // starting offset of method output_type sub-list", len(depIdxs)))
+	for _, service := range f.Services {
+		for _, method := range service.Methods {
+			source := string(method.Desc.FullName())
 			genMessage(method.Output, source+":output_type")
 		}
+	}
+	for i := len(depOffsets) - 1; i >= 0; i-- {
+		depIdxs = append(depIdxs, depOffsets[i])
 	}
 	if len(depIdxs) > math.MaxInt32 {
 		panic("too many dependencies") // sanity check
@@ -140,29 +155,27 @@ func genReflectFileDescriptor(gen *protogen.Plugin, g *protogen.GeneratedFile, f
 		g.P(initFuncName(impFile), "()")
 	}
 
-	if len(f.allExtensions) > 0 {
-		g.P("extensionTypes := make([]", protoreflectPackage.Ident("ExtensionType"), ",", len(f.allExtensions), ")")
-	}
-
-	g.P(f.GoDescriptorIdent, " = ", protoimplPackage.Ident("FileBuilder"), "{")
+	g.P("out := ", protoimplPackage.Ident("TypeBuilder"), "{")
+	g.P("File: ", protoimplPackage.Ident("DescBuilder"), "{")
 	g.P("RawDescriptor: ", rawDescVarName(f), ",")
+	g.P("NumEnums: ", len(f.allEnums), ",")
+	g.P("NumMessages: ", len(f.allMessages), ",")
+	g.P("NumExtensions: ", len(f.allExtensions), ",")
+	g.P("NumServices: ", len(f.Services), ",")
+	g.P("},")
 	g.P("GoTypes: ", goTypesVarName(f), ",")
 	g.P("DependencyIndexes: ", depIdxsVarName(f), ",")
-	if len(f.allExtensions) > 0 {
-		g.P("LegacyExtensions: ", extDecsVarName(f), ",")
-	}
-	if len(f.allEnums) > 0 {
-		g.P("EnumOutputTypes: ", enumTypesVarName(f), ",")
-	}
 	if len(f.allMessages) > 0 {
-		g.P("MessageOutputTypes: ", messageTypesVarName(f), ",")
+		g.P("MessageInfos: ", messageTypesVarName(f), ",")
 	}
 	if len(f.allExtensions) > 0 {
-		g.P("ExtensionOutputTypes: extensionTypes,")
+		g.P("LegacyExtensions: ", extDescsVarName(f), ",")
 	}
-	g.P("FilesRegistry: ", protoregistryPackage.Ident("GlobalFiles"), ",")
-	g.P("TypesRegistry: ", protoregistryPackage.Ident("GlobalTypes"), ",")
-	g.P("}.Init()")
+	g.P("}.Build()")
+	g.P(f.GoDescriptorIdent, " = out.File")
+	if len(f.allEnums) > 0 {
+		g.P(enumTypesVarName(f), " = out.Enums")
+	}
 
 	// Set inputs to nil to allow GC to reclaim resources.
 	g.P(rawDescVarName(f), " = nil")
@@ -235,7 +248,7 @@ func genReflectEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo
 
 	// Descriptor method.
 	g.P("func (", enum.GoIdent, ") Descriptor() ", protoreflectPackage.Ident("EnumDescriptor"), " {")
-	g.P("return ", typesVar, "[", idx, "].Descriptor()")
+	g.P("return ", typesVar, "[", idx, "].EnumDescriptor")
 	g.P("}")
 	g.P()
 
@@ -281,7 +294,7 @@ func enumTypesVarName(f *fileInfo) string {
 func messageTypesVarName(f *fileInfo) string {
 	return fileVarName(f.File, "msgTypes")
 }
-func extDecsVarName(f *fileInfo) string {
+func extDescsVarName(f *fileInfo) string {
 	return fileVarName(f.File, "extDescs")
 }
 func initFuncName(f *protogen.File) string {

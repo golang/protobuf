@@ -11,13 +11,15 @@ import (
 	"strings"
 	"testing"
 
-	protoV1 "github.com/golang/protobuf/proto"
 	cmp "github.com/google/go-cmp/cmp"
 	cmpopts "github.com/google/go-cmp/cmp/cmpopts"
+	"google.golang.org/protobuf/encoding/prototext"
 	pimpl "google.golang.org/protobuf/internal/impl"
-	ptype "google.golang.org/protobuf/internal/prototype"
 	scalar "google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/proto"
+	pdesc "google.golang.org/protobuf/reflect/protodesc"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/reflect/prototype"
 
 	proto2_20180125 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
@@ -158,20 +160,30 @@ type ScalarProto2 struct {
 	MyBytesA  *MyString  `protobuf:"22"`
 }
 
-func mustMakeEnumDesc(t ptype.StandaloneEnum) pref.EnumDescriptor {
-	ed, err := ptype.NewEnum(&t)
+func mustMakeEnumDesc(path string, syntax pref.Syntax, enumDesc string) pref.EnumDescriptor {
+	s := fmt.Sprintf(`name:%q syntax:%q enum_type:[{%s}]`, path, syntax, enumDesc)
+	pb := new(descriptorpb.FileDescriptorProto)
+	if err := prototext.Unmarshal([]byte(s), pb); err != nil {
+		panic(err)
+	}
+	fd, err := pdesc.NewFile(pb, nil)
 	if err != nil {
 		panic(err)
 	}
-	return ed
+	return fd.Enums().Get(0)
 }
 
-func mustMakeMessageDesc(t ptype.StandaloneMessage) pref.MessageDescriptor {
-	md, err := ptype.NewMessage(&t)
+func mustMakeMessageDesc(path string, syntax pref.Syntax, fileDesc, msgDesc string, r pdesc.Resolver) pref.MessageDescriptor {
+	s := fmt.Sprintf(`name:%q syntax:%q %s message_type:[{%s}]`, path, syntax, fileDesc, msgDesc)
+	pb := new(descriptorpb.FileDescriptorProto)
+	if err := prototext.Unmarshal([]byte(s), pb); err != nil {
+		panic(err)
+	}
+	fd, err := pdesc.NewFile(pb, r)
 	if err != nil {
 		panic(err)
 	}
-	return md
+	return fd.Messages().Get(0)
 }
 
 var V = pref.ValueOf
@@ -196,35 +208,34 @@ type (
 )
 
 var scalarProto2Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto2)), PBType: &prototype.Message{
-	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
-		Syntax:   pref.Proto2,
-		FullName: "ScalarProto2",
-		Fields: []ptype.Field{
-			{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.BoolKind, Default: V(bool(true))},
-			{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.Int32Kind, Default: V(int32(2))},
-			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.Int64Kind, Default: V(int64(3))},
-			{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.Uint32Kind, Default: V(uint32(4))},
-			{Name: "f5", Number: 5, Cardinality: pref.Optional, Kind: pref.Uint64Kind, Default: V(uint64(5))},
-			{Name: "f6", Number: 6, Cardinality: pref.Optional, Kind: pref.FloatKind, Default: V(float32(6))},
-			{Name: "f7", Number: 7, Cardinality: pref.Optional, Kind: pref.DoubleKind, Default: V(float64(7))},
-			{Name: "f8", Number: 8, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("8"))},
-			{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("9"))},
-			{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("10"))},
-			{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("11"))},
+	MessageDescriptor: mustMakeMessageDesc("scalar2.proto", pref.Proto2, "", `
+		name: "ScalarProto2"
+		field: [
+			{name:"f1"  number:1  label:LABEL_OPTIONAL type:TYPE_BOOL   default_value:"true"},
+			{name:"f2"  number:2  label:LABEL_OPTIONAL type:TYPE_INT32  default_value:"2"},
+			{name:"f3"  number:3  label:LABEL_OPTIONAL type:TYPE_INT64  default_value:"3"},
+			{name:"f4"  number:4  label:LABEL_OPTIONAL type:TYPE_UINT32 default_value:"4"},
+			{name:"f5"  number:5  label:LABEL_OPTIONAL type:TYPE_UINT64 default_value:"5"},
+			{name:"f6"  number:6  label:LABEL_OPTIONAL type:TYPE_FLOAT  default_value:"6"},
+			{name:"f7"  number:7  label:LABEL_OPTIONAL type:TYPE_DOUBLE default_value:"7"},
+			{name:"f8"  number:8  label:LABEL_OPTIONAL type:TYPE_STRING default_value:"8"},
+			{name:"f9"  number:9  label:LABEL_OPTIONAL type:TYPE_STRING default_value:"9"},
+			{name:"f10" number:10 label:LABEL_OPTIONAL type:TYPE_BYTES  default_value:"10"},
+			{name:"f11" number:11 label:LABEL_OPTIONAL type:TYPE_BYTES  default_value:"11"},
 
-			{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.BoolKind, Default: V(bool(true))},
-			{Name: "f13", Number: 13, Cardinality: pref.Optional, Kind: pref.Int32Kind, Default: V(int32(13))},
-			{Name: "f14", Number: 14, Cardinality: pref.Optional, Kind: pref.Int64Kind, Default: V(int64(14))},
-			{Name: "f15", Number: 15, Cardinality: pref.Optional, Kind: pref.Uint32Kind, Default: V(uint32(15))},
-			{Name: "f16", Number: 16, Cardinality: pref.Optional, Kind: pref.Uint64Kind, Default: V(uint64(16))},
-			{Name: "f17", Number: 17, Cardinality: pref.Optional, Kind: pref.FloatKind, Default: V(float32(17))},
-			{Name: "f18", Number: 18, Cardinality: pref.Optional, Kind: pref.DoubleKind, Default: V(float64(18))},
-			{Name: "f19", Number: 19, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("19"))},
-			{Name: "f20", Number: 20, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("20"))},
-			{Name: "f21", Number: 21, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("21"))},
-			{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("22"))},
-		},
-	}),
+			{name:"f12" number:12 label:LABEL_OPTIONAL type:TYPE_BOOL   default_value:"true"},
+			{name:"f13" number:13 label:LABEL_OPTIONAL type:TYPE_INT32  default_value:"13"},
+			{name:"f14" number:14 label:LABEL_OPTIONAL type:TYPE_INT64  default_value:"14"},
+			{name:"f15" number:15 label:LABEL_OPTIONAL type:TYPE_UINT32 default_value:"15"},
+			{name:"f16" number:16 label:LABEL_OPTIONAL type:TYPE_UINT64 default_value:"16"},
+			{name:"f17" number:17 label:LABEL_OPTIONAL type:TYPE_FLOAT  default_value:"17"},
+			{name:"f18" number:18 label:LABEL_OPTIONAL type:TYPE_DOUBLE default_value:"18"},
+			{name:"f19" number:19 label:LABEL_OPTIONAL type:TYPE_STRING default_value:"19"},
+			{name:"f20" number:20 label:LABEL_OPTIONAL type:TYPE_STRING default_value:"20"},
+			{name:"f21" number:21 label:LABEL_OPTIONAL type:TYPE_BYTES  default_value:"21"},
+			{name:"f22" number:22 label:LABEL_OPTIONAL type:TYPE_BYTES  default_value:"22"}
+		]
+	`, nil),
 	NewMessage: func() pref.Message {
 		return pref.ProtoMessage(new(ScalarProto2)).ProtoReflect()
 	},
@@ -298,35 +309,34 @@ type ScalarProto3 struct {
 }
 
 var scalarProto3Type = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ScalarProto3)), PBType: &prototype.Message{
-	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
-		Syntax:   pref.Proto3,
-		FullName: "ScalarProto3",
-		Fields: []ptype.Field{
-			{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.BoolKind},
-			{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.Int32Kind},
-			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.Int64Kind},
-			{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.Uint32Kind},
-			{Name: "f5", Number: 5, Cardinality: pref.Optional, Kind: pref.Uint64Kind},
-			{Name: "f6", Number: 6, Cardinality: pref.Optional, Kind: pref.FloatKind},
-			{Name: "f7", Number: 7, Cardinality: pref.Optional, Kind: pref.DoubleKind},
-			{Name: "f8", Number: 8, Cardinality: pref.Optional, Kind: pref.StringKind},
-			{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.StringKind},
-			{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.BytesKind},
-			{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.BytesKind},
+	MessageDescriptor: mustMakeMessageDesc("scalar3.proto", pref.Proto3, "", `
+		name: "ScalarProto3"
+		field: [
+			{name:"f1"  number:1  label:LABEL_OPTIONAL type:TYPE_BOOL},
+			{name:"f2"  number:2  label:LABEL_OPTIONAL type:TYPE_INT32},
+			{name:"f3"  number:3  label:LABEL_OPTIONAL type:TYPE_INT64},
+			{name:"f4"  number:4  label:LABEL_OPTIONAL type:TYPE_UINT32},
+			{name:"f5"  number:5  label:LABEL_OPTIONAL type:TYPE_UINT64},
+			{name:"f6"  number:6  label:LABEL_OPTIONAL type:TYPE_FLOAT},
+			{name:"f7"  number:7  label:LABEL_OPTIONAL type:TYPE_DOUBLE},
+			{name:"f8"  number:8  label:LABEL_OPTIONAL type:TYPE_STRING},
+			{name:"f9"  number:9  label:LABEL_OPTIONAL type:TYPE_STRING},
+			{name:"f10" number:10 label:LABEL_OPTIONAL type:TYPE_BYTES},
+			{name:"f11" number:11 label:LABEL_OPTIONAL type:TYPE_BYTES},
 
-			{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.BoolKind},
-			{Name: "f13", Number: 13, Cardinality: pref.Optional, Kind: pref.Int32Kind},
-			{Name: "f14", Number: 14, Cardinality: pref.Optional, Kind: pref.Int64Kind},
-			{Name: "f15", Number: 15, Cardinality: pref.Optional, Kind: pref.Uint32Kind},
-			{Name: "f16", Number: 16, Cardinality: pref.Optional, Kind: pref.Uint64Kind},
-			{Name: "f17", Number: 17, Cardinality: pref.Optional, Kind: pref.FloatKind},
-			{Name: "f18", Number: 18, Cardinality: pref.Optional, Kind: pref.DoubleKind},
-			{Name: "f19", Number: 19, Cardinality: pref.Optional, Kind: pref.StringKind},
-			{Name: "f20", Number: 20, Cardinality: pref.Optional, Kind: pref.StringKind},
-			{Name: "f21", Number: 21, Cardinality: pref.Optional, Kind: pref.BytesKind},
-			{Name: "f22", Number: 22, Cardinality: pref.Optional, Kind: pref.BytesKind},
-		},
-	}),
+			{name:"f12" number:12 label:LABEL_OPTIONAL type:TYPE_BOOL},
+			{name:"f13" number:13 label:LABEL_OPTIONAL type:TYPE_INT32},
+			{name:"f14" number:14 label:LABEL_OPTIONAL type:TYPE_INT64},
+			{name:"f15" number:15 label:LABEL_OPTIONAL type:TYPE_UINT32},
+			{name:"f16" number:16 label:LABEL_OPTIONAL type:TYPE_UINT64},
+			{name:"f17" number:17 label:LABEL_OPTIONAL type:TYPE_FLOAT},
+			{name:"f18" number:18 label:LABEL_OPTIONAL type:TYPE_DOUBLE},
+			{name:"f19" number:19 label:LABEL_OPTIONAL type:TYPE_STRING},
+			{name:"f20" number:20 label:LABEL_OPTIONAL type:TYPE_STRING},
+			{name:"f21" number:21 label:LABEL_OPTIONAL type:TYPE_BYTES},
+			{name:"f22" number:22 label:LABEL_OPTIONAL type:TYPE_BYTES}
+		]
+	`, nil),
 	NewMessage: func() pref.Message {
 		return pref.ProtoMessage(new(ScalarProto3)).ProtoReflect()
 	},
@@ -418,33 +428,32 @@ type ListScalars struct {
 }
 
 var listScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(ListScalars)), PBType: &prototype.Message{
-	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
-		Syntax:   pref.Proto2,
-		FullName: "ListScalars",
-		Fields: []ptype.Field{
-			{Name: "f1", Number: 1, Cardinality: pref.Repeated, Kind: pref.BoolKind},
-			{Name: "f2", Number: 2, Cardinality: pref.Repeated, Kind: pref.Int32Kind},
-			{Name: "f3", Number: 3, Cardinality: pref.Repeated, Kind: pref.Int64Kind},
-			{Name: "f4", Number: 4, Cardinality: pref.Repeated, Kind: pref.Uint32Kind},
-			{Name: "f5", Number: 5, Cardinality: pref.Repeated, Kind: pref.Uint64Kind},
-			{Name: "f6", Number: 6, Cardinality: pref.Repeated, Kind: pref.FloatKind},
-			{Name: "f7", Number: 7, Cardinality: pref.Repeated, Kind: pref.DoubleKind},
-			{Name: "f8", Number: 8, Cardinality: pref.Repeated, Kind: pref.StringKind},
-			{Name: "f9", Number: 9, Cardinality: pref.Repeated, Kind: pref.StringKind},
-			{Name: "f10", Number: 10, Cardinality: pref.Repeated, Kind: pref.BytesKind},
-			{Name: "f11", Number: 11, Cardinality: pref.Repeated, Kind: pref.BytesKind},
+	MessageDescriptor: mustMakeMessageDesc("list-scalars.proto", pref.Proto2, "", `
+		name: "ListScalars"
+		field: [
+			{name:"f1"  number:1  label:LABEL_REPEATED type:TYPE_BOOL},
+			{name:"f2"  number:2  label:LABEL_REPEATED type:TYPE_INT32},
+			{name:"f3"  number:3  label:LABEL_REPEATED type:TYPE_INT64},
+			{name:"f4"  number:4  label:LABEL_REPEATED type:TYPE_UINT32},
+			{name:"f5"  number:5  label:LABEL_REPEATED type:TYPE_UINT64},
+			{name:"f6"  number:6  label:LABEL_REPEATED type:TYPE_FLOAT},
+			{name:"f7"  number:7  label:LABEL_REPEATED type:TYPE_DOUBLE},
+			{name:"f8"  number:8  label:LABEL_REPEATED type:TYPE_STRING},
+			{name:"f9"  number:9  label:LABEL_REPEATED type:TYPE_STRING},
+			{name:"f10" number:10 label:LABEL_REPEATED type:TYPE_BYTES},
+			{name:"f11" number:11 label:LABEL_REPEATED type:TYPE_BYTES},
 
-			{Name: "f12", Number: 12, Cardinality: pref.Repeated, Kind: pref.StringKind},
-			{Name: "f13", Number: 13, Cardinality: pref.Repeated, Kind: pref.StringKind},
-			{Name: "f14", Number: 14, Cardinality: pref.Repeated, Kind: pref.BytesKind},
-			{Name: "f15", Number: 15, Cardinality: pref.Repeated, Kind: pref.BytesKind},
+			{name:"f12" number:12 label:LABEL_REPEATED type:TYPE_STRING},
+			{name:"f13" number:13 label:LABEL_REPEATED type:TYPE_STRING},
+			{name:"f14" number:14 label:LABEL_REPEATED type:TYPE_BYTES},
+			{name:"f15" number:15 label:LABEL_REPEATED type:TYPE_BYTES},
 
-			{Name: "f16", Number: 16, Cardinality: pref.Repeated, Kind: pref.StringKind},
-			{Name: "f17", Number: 17, Cardinality: pref.Repeated, Kind: pref.StringKind},
-			{Name: "f18", Number: 18, Cardinality: pref.Repeated, Kind: pref.BytesKind},
-			{Name: "f19", Number: 19, Cardinality: pref.Repeated, Kind: pref.BytesKind},
-		},
-	}),
+			{name:"f16" number:16 label:LABEL_REPEATED type:TYPE_STRING},
+			{name:"f17" number:17 label:LABEL_REPEATED type:TYPE_STRING},
+			{name:"f18" number:18 label:LABEL_REPEATED type:TYPE_BYTES},
+			{name:"f19" number:19 label:LABEL_REPEATED type:TYPE_BYTES}
+		]
+	`, nil),
 	NewMessage: func() pref.Message {
 		return pref.ProtoMessage(new(ListScalars)).ProtoReflect()
 	},
@@ -575,60 +584,70 @@ type MapScalars struct {
 	MyBytes4   MapStrings `protobuf:"25"`
 }
 
-func mustMakeMapEntry(n pref.FieldNumber, keyKind, valKind pref.Kind) ptype.Field {
-	return ptype.Field{
-		Name:        pref.Name(fmt.Sprintf("f%d", n)),
-		Number:      n,
-		Cardinality: pref.Repeated,
-		Kind:        pref.MessageKind,
-		MessageType: mustMakeMessageDesc(ptype.StandaloneMessage{
-			Syntax:   pref.Proto2,
-			FullName: pref.FullName(fmt.Sprintf("MapScalars.F%dEntry", n)),
-			Fields: []ptype.Field{
-				{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: keyKind},
-				{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: valKind},
-			},
-			Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
-			IsMapEntry: true,
-		}),
-	}
-}
-
 var mapScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(MapScalars)), PBType: &prototype.Message{
-	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
-		Syntax:   pref.Proto2,
-		FullName: "MapScalars",
-		Fields: []ptype.Field{
-			mustMakeMapEntry(1, pref.BoolKind, pref.StringKind),
-			mustMakeMapEntry(2, pref.Int32Kind, pref.StringKind),
-			mustMakeMapEntry(3, pref.Int64Kind, pref.StringKind),
-			mustMakeMapEntry(4, pref.Uint32Kind, pref.StringKind),
-			mustMakeMapEntry(5, pref.Uint64Kind, pref.StringKind),
-			mustMakeMapEntry(6, pref.StringKind, pref.StringKind),
+	MessageDescriptor: mustMakeMessageDesc("map-scalars.proto", pref.Proto2, "", `
+		name: "MapScalars"
+		field: [
+			{name:"f1"  number:1  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F1Entry"},
+			{name:"f2"  number:2  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F2Entry"},
+			{name:"f3"  number:3  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F3Entry"},
+			{name:"f4"  number:4  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F4Entry"},
+			{name:"f5"  number:5  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F5Entry"},
+			{name:"f6"  number:6  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F6Entry"},
 
-			mustMakeMapEntry(7, pref.StringKind, pref.BoolKind),
-			mustMakeMapEntry(8, pref.StringKind, pref.Int32Kind),
-			mustMakeMapEntry(9, pref.StringKind, pref.Int64Kind),
-			mustMakeMapEntry(10, pref.StringKind, pref.Uint32Kind),
-			mustMakeMapEntry(11, pref.StringKind, pref.Uint64Kind),
-			mustMakeMapEntry(12, pref.StringKind, pref.FloatKind),
-			mustMakeMapEntry(13, pref.StringKind, pref.DoubleKind),
-			mustMakeMapEntry(14, pref.StringKind, pref.StringKind),
-			mustMakeMapEntry(15, pref.StringKind, pref.StringKind),
-			mustMakeMapEntry(16, pref.StringKind, pref.BytesKind),
-			mustMakeMapEntry(17, pref.StringKind, pref.BytesKind),
+			{name:"f7"  number:7  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F7Entry"},
+			{name:"f8"  number:8  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F8Entry"},
+			{name:"f9"  number:9  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F9Entry"},
+			{name:"f10" number:10 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F10Entry"},
+			{name:"f11" number:11 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F11Entry"},
+			{name:"f12" number:12 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F12Entry"},
+			{name:"f13" number:13 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F13Entry"},
+			{name:"f14" number:14 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F14Entry"},
+			{name:"f15" number:15 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F15Entry"},
+			{name:"f16" number:16 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F16Entry"},
+			{name:"f17" number:17 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F17Entry"},
 
-			mustMakeMapEntry(18, pref.StringKind, pref.StringKind),
-			mustMakeMapEntry(19, pref.StringKind, pref.StringKind),
-			mustMakeMapEntry(20, pref.StringKind, pref.BytesKind),
-			mustMakeMapEntry(21, pref.StringKind, pref.BytesKind),
+			{name:"f18" number:18 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F18Entry"},
+			{name:"f19" number:19 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F19Entry"},
+			{name:"f20" number:20 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F20Entry"},
+			{name:"f21" number:21 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F21Entry"},
 
-			mustMakeMapEntry(22, pref.StringKind, pref.StringKind),
-			mustMakeMapEntry(23, pref.StringKind, pref.StringKind),
-			mustMakeMapEntry(24, pref.StringKind, pref.BytesKind),
-			mustMakeMapEntry(25, pref.StringKind, pref.BytesKind),
-		},
-	}),
+			{name:"f22" number:22 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F22Entry"},
+			{name:"f23" number:23 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F23Entry"},
+			{name:"f24" number:24 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F24Entry"},
+			{name:"f25" number:25 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".MapScalars.F25Entry"}
+		]
+		nested_type: [
+			{name:"F1Entry"  field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_BOOL},   {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F2Entry"  field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_INT32},  {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F3Entry"  field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_INT64},  {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F4Entry"  field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_UINT32}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F5Entry"  field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_UINT64}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F6Entry"  field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+
+			{name:"F7Entry"  field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_BOOL}]   options:{map_entry:true}},
+			{name:"F8Entry"  field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_INT32}]  options:{map_entry:true}},
+			{name:"F9Entry"  field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_INT64}]  options:{map_entry:true}},
+			{name:"F10Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_UINT32}] options:{map_entry:true}},
+			{name:"F11Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_UINT64}] options:{map_entry:true}},
+			{name:"F12Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_FLOAT}]  options:{map_entry:true}},
+			{name:"F13Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_DOUBLE}] options:{map_entry:true}},
+			{name:"F14Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F15Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F16Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_BYTES}]  options:{map_entry:true}},
+			{name:"F17Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_BYTES}]  options:{map_entry:true}},
+
+			{name:"F18Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F19Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F20Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_BYTES}]  options:{map_entry:true}},
+			{name:"F21Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_BYTES}]  options:{map_entry:true}},
+
+			{name:"F22Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F23Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}] options:{map_entry:true}},
+			{name:"F24Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_BYTES}]  options:{map_entry:true}},
+			{name:"F25Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_BYTES}]  options:{map_entry:true}}
+		]
+	`, nil),
 	NewMessage: func() pref.Message {
 		return pref.ProtoMessage(new(MapScalars)).ProtoReflect()
 	},
@@ -760,26 +779,25 @@ type OneofScalars struct {
 }
 
 var oneofScalarsType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(OneofScalars)), PBType: &prototype.Message{
-	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
-		Syntax:   pref.Proto2,
-		FullName: "OneofScalars",
-		Fields: []ptype.Field{
-			{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.BoolKind, Default: V(bool(true)), OneofName: "union"},
-			{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.Int32Kind, Default: V(int32(2)), OneofName: "union"},
-			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.Int64Kind, Default: V(int64(3)), OneofName: "union"},
-			{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.Uint32Kind, Default: V(uint32(4)), OneofName: "union"},
-			{Name: "f5", Number: 5, Cardinality: pref.Optional, Kind: pref.Uint64Kind, Default: V(uint64(5)), OneofName: "union"},
-			{Name: "f6", Number: 6, Cardinality: pref.Optional, Kind: pref.FloatKind, Default: V(float32(6)), OneofName: "union"},
-			{Name: "f7", Number: 7, Cardinality: pref.Optional, Kind: pref.DoubleKind, Default: V(float64(7)), OneofName: "union"},
-			{Name: "f8", Number: 8, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("8")), OneofName: "union"},
-			{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("9")), OneofName: "union"},
-			{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.StringKind, Default: V(string("10")), OneofName: "union"},
-			{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("11")), OneofName: "union"},
-			{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("12")), OneofName: "union"},
-			{Name: "f13", Number: 13, Cardinality: pref.Optional, Kind: pref.BytesKind, Default: V([]byte("13")), OneofName: "union"},
-		},
-		Oneofs: []ptype.Oneof{{Name: "union"}},
-	}),
+	MessageDescriptor: mustMakeMessageDesc("oneof-scalars.proto", pref.Proto2, "", `
+		name: "OneofScalars"
+		field: [
+			{name:"f1"  number:1  label:LABEL_OPTIONAL type:TYPE_BOOL   default_value:"true" oneof_index:0},
+			{name:"f2"  number:2  label:LABEL_OPTIONAL type:TYPE_INT32  default_value:"2"    oneof_index:0},
+			{name:"f3"  number:3  label:LABEL_OPTIONAL type:TYPE_INT64  default_value:"3"    oneof_index:0},
+			{name:"f4"  number:4  label:LABEL_OPTIONAL type:TYPE_UINT32 default_value:"4"    oneof_index:0},
+			{name:"f5"  number:5  label:LABEL_OPTIONAL type:TYPE_UINT64 default_value:"5"    oneof_index:0},
+			{name:"f6"  number:6  label:LABEL_OPTIONAL type:TYPE_FLOAT  default_value:"6"    oneof_index:0},
+			{name:"f7"  number:7  label:LABEL_OPTIONAL type:TYPE_DOUBLE default_value:"7"    oneof_index:0},
+			{name:"f8"  number:8  label:LABEL_OPTIONAL type:TYPE_STRING default_value:"8"    oneof_index:0},
+			{name:"f9"  number:9  label:LABEL_OPTIONAL type:TYPE_STRING default_value:"9"    oneof_index:0},
+			{name:"f10" number:10 label:LABEL_OPTIONAL type:TYPE_STRING default_value:"10"   oneof_index:0},
+			{name:"f11" number:11 label:LABEL_OPTIONAL type:TYPE_BYTES  default_value:"11"   oneof_index:0},
+			{name:"f12" number:12 label:LABEL_OPTIONAL type:TYPE_BYTES  default_value:"12"   oneof_index:0},
+			{name:"f13" number:13 label:LABEL_OPTIONAL type:TYPE_BYTES  default_value:"13"   oneof_index:0}
+		]
+		oneof_decl: [{name:"union"}]
+	`, nil),
 	NewMessage: func() pref.Message {
 		return pref.ProtoMessage(new(OneofScalars)).ProtoReflect()
 	},
@@ -923,11 +941,10 @@ func TestOneofs(t *testing.T) {
 type EnumProto2 int32
 
 var enumProto2Type = &prototype.Enum{
-	EnumDescriptor: mustMakeEnumDesc(ptype.StandaloneEnum{
-		Syntax:   pref.Proto2,
-		FullName: "EnumProto2",
-		Values:   []ptype.EnumValue{{Name: "DEAD", Number: 0xdead}, {Name: "BEEF", Number: 0xbeef}},
-	}),
+	EnumDescriptor: mustMakeEnumDesc("enum2.proto", pref.Proto2, `
+		name:  "EnumProto2"
+		value: [{name:"DEAD" number:0xdead}, {name:"BEEF" number:0xbeef}]
+	`),
 	NewEnum: func(n pref.EnumNumber) pref.Enum {
 		return EnumProto2(n)
 	},
@@ -940,11 +957,10 @@ func (e EnumProto2) Number() pref.EnumNumber         { return pref.EnumNumber(e)
 type EnumProto3 int32
 
 var enumProto3Type = &prototype.Enum{
-	EnumDescriptor: mustMakeEnumDesc(ptype.StandaloneEnum{
-		Syntax:   pref.Proto3,
-		FullName: "EnumProto3",
-		Values:   []ptype.EnumValue{{Name: "ALPHA", Number: 0}, {Name: "BRAVO", Number: 1}},
-	}),
+	EnumDescriptor: mustMakeEnumDesc("enum3.proto", pref.Proto3, `
+		name:  "EnumProto3",
+		value: [{name:"ALPHA" number:0}, {name:"BRAVO" number:1}]
+	`),
 	NewEnum: func(n pref.EnumNumber) pref.Enum {
 		return EnumProto3(n)
 	},
@@ -967,51 +983,40 @@ type EnumMessages struct {
 }
 
 var enumMessagesType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(EnumMessages)), PBType: &prototype.Message{
-	MessageDescriptor: mustMakeMessageDesc(ptype.StandaloneMessage{
-		Syntax:   pref.Proto2,
-		FullName: "EnumMessages",
-		Fields: []ptype.Field{
-			{Name: "f1", Number: 1, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BEEF"), EnumType: enumProto2Type.Descriptor()},
-			{Name: "f2", Number: 2, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BRAVO"), EnumType: enumProto3Type.Descriptor()},
-			{Name: "f3", Number: 3, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: pimpl.Export{}.MessageDescriptorOf(new(proto2_20180125.Message))},
-			{Name: "f4", Number: 4, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: ptype.PlaceholderMessage("EnumMessages")},
-			{Name: "f5", Number: 5, Cardinality: pref.Repeated, Kind: pref.EnumKind, EnumType: enumProto2Type.Descriptor()},
-			{Name: "f6", Number: 6, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: scalarProto2Type.PBType.Descriptor()},
-			{Name: "f7", Number: 7, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: enumMapDesc},
-			{Name: "f8", Number: 8, Cardinality: pref.Repeated, Kind: pref.MessageKind, MessageType: messageMapDesc},
-			{Name: "f9", Number: 9, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BEEF"), OneofName: "union", EnumType: enumProto2Type.Descriptor()},
-			{Name: "f10", Number: 10, Cardinality: pref.Optional, Kind: pref.EnumKind, Default: V("BRAVO"), OneofName: "union", EnumType: enumProto3Type.Descriptor()},
-			{Name: "f11", Number: 11, Cardinality: pref.Optional, Kind: pref.MessageKind, OneofName: "union", MessageType: scalarProto2Type.PBType.Descriptor()},
-			{Name: "f12", Number: 12, Cardinality: pref.Optional, Kind: pref.MessageKind, OneofName: "union", MessageType: scalarProto3Type.PBType.Descriptor()},
-		},
-		Oneofs: []ptype.Oneof{{Name: "union"}},
-	}),
+	MessageDescriptor: mustMakeMessageDesc("enum-messages.proto", pref.Proto2, `
+		dependency: ["enum2.proto", "enum3.proto", "scalar2.proto", "scalar3.proto", "proto2.v1.0.0-20180125-92554152/test.proto"]
+	`, `
+		name: "EnumMessages"
+		field: [
+			{name:"f1"  number:1  label:LABEL_OPTIONAL type:TYPE_ENUM    type_name:".EnumProto2" default_value:"BEEF"},
+			{name:"f2"  number:2  label:LABEL_OPTIONAL type:TYPE_ENUM    type_name:".EnumProto3" default_value:"BRAVO"},
+			{name:"f3"  number:3  label:LABEL_OPTIONAL type:TYPE_MESSAGE type_Name:".google.golang.org.proto2_20180125.Message"},
+			{name:"f4"  number:4  label:LABEL_OPTIONAL type:TYPE_MESSAGE type_Name:".EnumMessages"},
+			{name:"f5"  number:5  label:LABEL_REPEATED type:TYPE_ENUM    type_name:".EnumProto2"},
+			{name:"f6"  number:6  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".ScalarProto2"},
+			{name:"f7"  number:7  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".EnumMessages.F7Entry"},
+			{name:"f8"  number:8  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".EnumMessages.F8Entry"},
+			{name:"f9"  number:9  label:LABEL_OPTIONAL type:TYPE_ENUM    type_name:".EnumProto2"   oneof_index:0 default_value:"BEEF"},
+			{name:"f10" number:10 label:LABEL_OPTIONAL type:TYPE_ENUM    type_name:".EnumProto3"   oneof_index:0 default_value:"BRAVO"},
+			{name:"f11" number:11 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".ScalarProto2" oneof_index:0},
+			{name:"f12" number:12 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".ScalarProto3" oneof_index:0}
+		]
+		oneof_decl: [{name:"union"}]
+		nested_type: [
+			{name:"F7Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_ENUM    type_name:".EnumProto3"}]   options:{map_entry:true}},
+			{name:"F8Entry" field:[{name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}, {name:"value" number:2 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".ScalarProto3"}] options:{map_entry:true}}
+		]
+	`, protoregistry.NewFiles(
+		EnumProto2(0).Descriptor().ParentFile(),
+		EnumProto3(0).Descriptor().ParentFile(),
+		((*ScalarProto2)(nil)).ProtoReflect().Descriptor().ParentFile(),
+		((*ScalarProto3)(nil)).ProtoReflect().Descriptor().ParentFile(),
+		pimpl.Export{}.MessageDescriptorOf((*proto2_20180125.Message)(nil)).ParentFile(),
+	)),
 	NewMessage: func() pref.Message {
 		return pref.ProtoMessage(new(EnumMessages)).ProtoReflect()
 	},
 }}
-
-var enumMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
-	Syntax:   pref.Proto2,
-	FullName: "EnumMessages.F7Entry",
-	Fields: []ptype.Field{
-		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
-		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.EnumKind, EnumType: enumProto3Type.Descriptor()},
-	},
-	Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
-	IsMapEntry: true,
-})
-
-var messageMapDesc = mustMakeMessageDesc(ptype.StandaloneMessage{
-	Syntax:   pref.Proto2,
-	FullName: "EnumMessages.F8Entry",
-	Fields: []ptype.Field{
-		{Name: "key", Number: 1, Cardinality: pref.Optional, Kind: pref.StringKind},
-		{Name: "value", Number: 2, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: scalarProto3Type.PBType.Descriptor()},
-	},
-	Options:    &descriptorpb.MessageOptions{MapEntry: scalar.Bool(true)},
-	IsMapEntry: true,
-})
 
 func (m *EnumMessages) ProtoReflect() pref.Message { return enumMessagesType.MessageOf(m) }
 
@@ -1161,7 +1166,9 @@ func TestEnumMessages(t *testing.T) {
 
 var cmpOpts = cmp.Options{
 	cmp.Comparer(func(x, y *proto2_20180125.Message) bool {
-		return protoV1.Equal(x, y)
+		mx := pimpl.Export{}.MessageOf(x).Interface()
+		my := pimpl.Export{}.MessageOf(y).Interface()
+		return proto.Equal(mx, my)
 	}),
 	cmp.Transformer("UnwrapValue", func(pv pref.Value) interface{} {
 		switch v := pv.Interface().(type) {

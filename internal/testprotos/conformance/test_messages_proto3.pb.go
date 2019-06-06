@@ -5,7 +5,7 @@ package conformance
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
@@ -57,7 +57,7 @@ func (x ForeignEnum) String() string {
 }
 
 func (ForeignEnum) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_test_messages_proto3_proto_enumTypes[0].Descriptor()
+	return file_google_protobuf_test_messages_proto3_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x ForeignEnum) Number() protoreflect.EnumNumber {
@@ -105,7 +105,7 @@ func (x TestAllTypesProto3_NestedEnum) String() string {
 }
 
 func (TestAllTypesProto3_NestedEnum) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_test_messages_proto3_proto_enumTypes[1].Descriptor()
+	return file_google_protobuf_test_messages_proto3_proto_enumTypes[1].EnumDescriptor
 }
 
 func (x TestAllTypesProto3_NestedEnum) Number() protoreflect.EnumNumber {
@@ -159,7 +159,7 @@ func (x TestAllTypesProto3_AliasedEnum) String() string {
 }
 
 func (TestAllTypesProto3_AliasedEnum) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_test_messages_proto3_proto_enumTypes[2].Descriptor()
+	return file_google_protobuf_test_messages_proto3_proto_enumTypes[2].EnumDescriptor
 }
 
 func (x TestAllTypesProto3_AliasedEnum) Number() protoreflect.EnumNumber {
@@ -2029,7 +2029,7 @@ func file_google_protobuf_test_messages_proto3_proto_rawDescGZIP() []byte {
 	return file_google_protobuf_test_messages_proto3_proto_rawDescData
 }
 
-var file_google_protobuf_test_messages_proto3_proto_enumTypes = make([]protoreflect.EnumType, 3)
+var file_google_protobuf_test_messages_proto3_proto_enumTypes = make([]prototype.Enum, 3)
 var file_google_protobuf_test_messages_proto3_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_google_protobuf_test_messages_proto3_proto_goTypes = []interface{}{
 	(ForeignEnum)(0),                         // 0: protobuf_test_messages.proto3.ForeignEnum
@@ -2142,6 +2142,11 @@ var file_google_protobuf_test_messages_proto3_proto_depIdxs = []int32{
 	4,  // protobuf_test_messages.proto3.TestAllTypesProto3.MapStringForeignMessageEntry.value:type_name -> protobuf_test_messages.proto3.ForeignMessage
 	1,  // protobuf_test_messages.proto3.TestAllTypesProto3.MapStringNestedEnumEntry.value:type_name -> protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum
 	0,  // protobuf_test_messages.proto3.TestAllTypesProto3.MapStringForeignEnumEntry.value:type_name -> protobuf_test_messages.proto3.ForeignEnum
+	67, // starting offset of method output_type sub-list
+	67, // starting offset of method input_type sub-list
+	67, // starting offset of extension type_name sub-list
+	67, // starting offset of extension extendee sub-list
+	0,  // starting offset of field type_name sub-list
 }
 
 func init() { file_google_protobuf_test_messages_proto3_proto_init() }
@@ -2149,15 +2154,20 @@ func file_google_protobuf_test_messages_proto3_proto_init() {
 	if File_google_protobuf_test_messages_proto3_proto != nil {
 		return
 	}
-	File_google_protobuf_test_messages_proto3_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_google_protobuf_test_messages_proto3_proto_rawDesc,
-		GoTypes:            file_google_protobuf_test_messages_proto3_proto_goTypes,
-		DependencyIndexes:  file_google_protobuf_test_messages_proto3_proto_depIdxs,
-		EnumOutputTypes:    file_google_protobuf_test_messages_proto3_proto_enumTypes,
-		MessageOutputTypes: file_google_protobuf_test_messages_proto3_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_google_protobuf_test_messages_proto3_proto_rawDesc,
+			NumEnums:      3,
+			NumMessages:   22,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_google_protobuf_test_messages_proto3_proto_goTypes,
+		DependencyIndexes: file_google_protobuf_test_messages_proto3_proto_depIdxs,
+		MessageInfos:      file_google_protobuf_test_messages_proto3_proto_msgTypes,
+	}.Build()
+	File_google_protobuf_test_messages_proto3_proto = out.File
+	file_google_protobuf_test_messages_proto3_proto_enumTypes = out.Enums
 	file_google_protobuf_test_messages_proto3_proto_rawDesc = nil
 	file_google_protobuf_test_messages_proto3_proto_goTypes = nil
 	file_google_protobuf_test_messages_proto3_proto_depIdxs = nil

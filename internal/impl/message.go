@@ -283,6 +283,9 @@ func (mi *MessageInfo) makeExtensionFieldsFunc(t reflect.Type) {
 	if fx.Type == extensionFieldsType {
 		fieldOffset := offsetOf(fx)
 		mi.extensionMap = func(p pointer) *extensionMap {
+			if p.IsNil() {
+				return (*extensionMap)(nil)
+			}
 			v := p.Apply(fieldOffset).AsValueOf(extensionFieldsType)
 			return (*extensionMap)(v.Interface().(*map[int32]ExtensionField))
 		}

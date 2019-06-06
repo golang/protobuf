@@ -5,7 +5,6 @@ package oneoftest
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -108,21 +107,32 @@ var file_issue780_oneof_conflict_test_proto_msgTypes = make([]protoimpl.MessageI
 var file_issue780_oneof_conflict_test_proto_goTypes = []interface{}{
 	(*Foo)(nil), // 0: oneoftest.Foo
 }
-var file_issue780_oneof_conflict_test_proto_depIdxs = []int32{}
+var file_issue780_oneof_conflict_test_proto_depIdxs = []int32{
+	0, // starting offset of method output_type sub-list
+	0, // starting offset of method input_type sub-list
+	0, // starting offset of extension type_name sub-list
+	0, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
+}
 
 func init() { file_issue780_oneof_conflict_test_proto_init() }
 func file_issue780_oneof_conflict_test_proto_init() {
 	if File_issue780_oneof_conflict_test_proto != nil {
 		return
 	}
-	File_issue780_oneof_conflict_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_issue780_oneof_conflict_test_proto_rawDesc,
-		GoTypes:            file_issue780_oneof_conflict_test_proto_goTypes,
-		DependencyIndexes:  file_issue780_oneof_conflict_test_proto_depIdxs,
-		MessageOutputTypes: file_issue780_oneof_conflict_test_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_issue780_oneof_conflict_test_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   1,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_issue780_oneof_conflict_test_proto_goTypes,
+		DependencyIndexes: file_issue780_oneof_conflict_test_proto_depIdxs,
+		MessageInfos:      file_issue780_oneof_conflict_test_proto_msgTypes,
+	}.Build()
+	File_issue780_oneof_conflict_test_proto = out.File
 	file_issue780_oneof_conflict_test_proto_rawDesc = nil
 	file_issue780_oneof_conflict_test_proto_goTypes = nil
 	file_issue780_oneof_conflict_test_proto_depIdxs = nil

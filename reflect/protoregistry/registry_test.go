@@ -12,14 +12,28 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
+	"google.golang.org/protobuf/encoding/prototext"
 	pimpl "google.golang.org/protobuf/internal/impl"
-	ptype "google.golang.org/protobuf/internal/prototype"
+	pdesc "google.golang.org/protobuf/reflect/protodesc"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	preg "google.golang.org/protobuf/reflect/protoregistry"
 
 	test2pb "google.golang.org/protobuf/internal/testprotos/test"
 	testpb "google.golang.org/protobuf/reflect/protoregistry/testprotos"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
+
+func mustMakeFile(s string) pref.FileDescriptor {
+	pb := new(descriptorpb.FileDescriptorProto)
+	if err := prototext.Unmarshal([]byte(s), pb); err != nil {
+		panic(err)
+	}
+	fd, err := pdesc.NewFile(pb, nil)
+	if err != nil {
+		panic(err)
+	}
+	return fd
+}
 
 func TestFiles(t *testing.T) {
 	type (
@@ -28,7 +42,7 @@ func TestFiles(t *testing.T) {
 			Pkg  pref.FullName
 		}
 		testFile struct {
-			inFile  *ptype.File
+			inFile  pref.FileDescriptor
 			wantErr string
 		}
 		testRangePkg struct {
@@ -48,12 +62,12 @@ func TestFiles(t *testing.T) {
 	}{{
 		// Test that overlapping packages and files are permitted.
 		files: []testFile{
-			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "test1.proto", Package: "foo.bar"}},
-			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "foo/bar/test.proto", Package: "my.test"}},
-			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "foo/bar/test.proto", Package: "foo.bar.baz"}, wantErr: "already registered"},
-			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "test2.proto", Package: "my.test.package"}},
-			{inFile: &ptype.File{Syntax: pref.Proto2, Package: "foo.bar"}},
-			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "foo/bar/baz/../test.proto", Package: "my.test"}},
+			{inFile: mustMakeFile(`syntax:"proto2" name:"test1.proto" package:"foo.bar"`)},
+			{inFile: mustMakeFile(`syntax:"proto2" name:"foo/bar/test.proto" package:"my.test"`)},
+			{inFile: mustMakeFile(`syntax:"proto2" name:"foo/bar/test.proto" package:"foo.bar.baz"`), wantErr: "already registered"},
+			{inFile: mustMakeFile(`syntax:"proto2" name:"test2.proto" package:"my.test.package"`)},
+			{inFile: mustMakeFile(`syntax:"proto2" name:"" package:"foo.bar"`)},
+			{inFile: mustMakeFile(`syntax:"proto2" name:"foo/bar/baz/../test.proto" package:"my.test"`)},
 		},
 
 		rangePkgs: []testRangePkg{{
@@ -100,104 +114,96 @@ func TestFiles(t *testing.T) {
 	}, {
 		// Test when new enum conflicts with existing package.
 		files: []testFile{{
-			inFile: &ptype.File{Syntax: pref.Proto2, Path: "test1a.proto", Package: "foo.bar.baz"},
+			inFile: mustMakeFile(`syntax:"proto2" name:"test1a.proto" package:"foo.bar.baz"`),
 		}, {
-			inFile:  &ptype.File{Syntax: pref.Proto2, Path: "test1b.proto", Enums: []ptype.Enum{{Name: "foo"}}},
+			inFile:  mustMakeFile(`syntax:"proto2" name:"test1b.proto" enum_type:[{name:"foo"}]`),
 			wantErr: `file "test1b.proto" has a name conflict over foo`,
 		}},
 	}, {
 		// Test when new package conflicts with existing enum.
 		files: []testFile{{
-			inFile: &ptype.File{Syntax: pref.Proto2, Path: "test2a.proto", Enums: []ptype.Enum{{Name: "foo"}}},
+			inFile: mustMakeFile(`syntax:"proto2" name:"test2a.proto" enum_type:[{name:"foo"}]`),
 		}, {
-			inFile:  &ptype.File{Syntax: pref.Proto2, Path: "test2b.proto", Package: "foo.bar.baz"},
+			inFile:  mustMakeFile(`syntax:"proto2" name:"test2b.proto" package:"foo.bar.baz"`),
 			wantErr: `file "test2b.proto" has a name conflict over foo`,
 		}},
 	}, {
 		// Test when new enum conflicts with existing enum in same package.
 		files: []testFile{{
-			inFile: &ptype.File{Syntax: pref.Proto2, Path: "test3a.proto", Package: "foo", Enums: []ptype.Enum{{Name: "BAR"}}},
+			inFile: mustMakeFile(`syntax:"proto2" name:"test3a.proto" package:"foo" enum_type:[{name:"BAR"}]`),
 		}, {
-			inFile:  &ptype.File{Syntax: pref.Proto2, Path: "test3b.proto", Package: "foo", Enums: []ptype.Enum{{Name: "BAR"}}},
+			inFile:  mustMakeFile(`syntax:"proto2" name:"test3b.proto" package:"foo" enum_type:[{name:"BAR"}]`),
 			wantErr: `file "test3b.proto" has a name conflict over foo.BAR`,
 		}},
 	}, {
 		files: []testFile{{
-			inFile: &ptype.File{
-				Syntax:  pref.Proto2,
-				Path:    "test1.proto",
-				Package: "fizz.buzz",
-				Messages: []ptype.Message{{
-					Name: "Message",
-					Fields: []ptype.Field{{
-						Name:        "Field",
-						Number:      1,
-						Cardinality: pref.Optional,
-						Kind:        pref.StringKind,
-						OneofName:   "Oneof",
-					}},
-					Oneofs:          []ptype.Oneof{{Name: "Oneof"}},
-					ExtensionRanges: [][2]pref.FieldNumber{{1000, 2000}},
-				}},
-				Enums: []ptype.Enum{{
-					Name:   "Enum",
-					Values: []ptype.EnumValue{{Name: "EnumValue", Number: 0}},
-				}},
-				Extensions: []ptype.Extension{{
-					Name:         "Extension",
-					Number:       1000,
-					Cardinality:  pref.Optional,
-					Kind:         pref.StringKind,
-					ExtendedType: ptype.PlaceholderMessage("fizz.buzz.Message"),
-				}},
-				Services: []ptype.Service{{
-					Name: "Service",
-					Methods: []ptype.Method{{
-						Name:              "Method",
-						InputType:         ptype.PlaceholderMessage("fizz.buzz.Message"),
-						OutputType:        ptype.PlaceholderMessage("fizz.buzz.Message"),
-						IsStreamingClient: true,
-						IsStreamingServer: true,
-					}},
-				}},
-			},
+			inFile: mustMakeFile(`
+				syntax:  "proto2"
+				name:    "test1.proto"
+				package: "fizz.buzz"
+				message_type: [{
+					name: "Message"
+					field: [
+						{name:"Field" number:1 label:LABEL_OPTIONAL type:TYPE_STRING oneof_index:0}
+					]
+					oneof_decl:      [{name:"Oneof"}]
+					extension_range: [{start:1000 end:2000}]
+				}]
+				enum_type: [{
+					name:  "Enum"
+					Value: [{name:"EnumValue" number:0}]
+				}]
+				extension: [
+					{name:"Extension" number:1000 label:LABEL_OPTIONAL type:TYPE_STRING extendee:".fizz.buzz.Message"}
+				]
+				service: [{
+					name: "Service"
+					method: [{
+						name:             "Method"
+						input_type:       ".fizz.buzz.Message"
+						output_type:      ".fizz.buzz.Message"
+						client_streaming: true
+						server_streaming: true
+					}]
+				}]
+			`),
 		}, {
-			inFile: &ptype.File{
-				Syntax:  pref.Proto2,
-				Path:    "test2.proto",
-				Package: "fizz.buzz.gazz",
-				Enums: []ptype.Enum{{
-					Name:   "Enum",
-					Values: []ptype.EnumValue{{Name: "EnumValue", Number: 0}},
-				}},
-			},
+			inFile: mustMakeFile(`
+				syntax:  "proto2"
+				name:    "test2.proto"
+				package: "fizz.buzz.gazz"
+				enum_type: [{
+					name:  "Enum"
+					value: [{name:"EnumValue" number:0}]
+				}]
+			`),
 		}, {
-			inFile: &ptype.File{
-				Syntax:  pref.Proto2,
-				Path:    "test3.proto",
-				Package: "fizz.buzz",
-				Enums: []ptype.Enum{{
-					Name:   "Enum1",
-					Values: []ptype.EnumValue{{Name: "EnumValue1", Number: 0}},
+			inFile: mustMakeFile(`
+				syntax:  "proto2"
+				name:    "test3.proto"
+				package: "fizz.buzz"
+				enum_type: [{
+					name:  "Enum1"
+					value: [{name:"EnumValue1" number:0}]
 				}, {
-					Name:   "Enum2",
-					Values: []ptype.EnumValue{{Name: "EnumValue2", Number: 0}},
-				}},
-			},
+					name:  "Enum2"
+					value: [{name:"EnumValue2" number:0}]
+				}]
+			`),
 		}, {
 			// Make sure we can register without package name.
-			inFile: &ptype.File{
-				Syntax: pref.Proto2,
-				Messages: []ptype.Message{{
-					Name: "Message",
-					Messages: []ptype.Message{{
-						Name: "Message",
-						Messages: []ptype.Message{{
-							Name: "Message",
-						}},
-					}},
-				}},
-			},
+			inFile: mustMakeFile(`
+				syntax: "proto2"
+				message_type: [{
+					name: "Message"
+					nested_type: [{
+						name: "Message"
+						nested_type: [{
+							name: "Message"
+						}]
+					}]
+				}]
+			`),
 		}},
 	}}
 
@@ -208,11 +214,7 @@ func TestFiles(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			var files preg.Files
 			for i, tc := range tt.files {
-				fd, err := ptype.NewFile(tc.inFile)
-				if err != nil {
-					t.Fatalf("file %d, prototype.NewFile() error: %v", i, err)
-				}
-				gotErr := files.Register(fd)
+				gotErr := files.Register(tc.inFile)
 				if ((gotErr == nil) != (tc.wantErr == "")) || !strings.Contains(fmt.Sprint(gotErr), tc.wantErr) {
 					t.Errorf("file %d, Register() = %v, want %v", i, gotErr, tc.wantErr)
 				}

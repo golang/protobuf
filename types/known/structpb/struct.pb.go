@@ -5,7 +5,7 @@ package structpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -50,7 +50,7 @@ func (x NullValue) String() string {
 }
 
 func (NullValue) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_struct_proto_enumTypes[0].Descriptor()
+	return file_google_protobuf_struct_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x NullValue) Number() protoreflect.EnumNumber {
@@ -373,7 +373,7 @@ func file_google_protobuf_struct_proto_rawDescGZIP() []byte {
 	return file_google_protobuf_struct_proto_rawDescData
 }
 
-var file_google_protobuf_struct_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var file_google_protobuf_struct_proto_enumTypes = make([]prototype.Enum, 1)
 var file_google_protobuf_struct_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_google_protobuf_struct_proto_goTypes = []interface{}{
 	(NullValue)(0),    // 0: google.protobuf.NullValue
@@ -389,6 +389,11 @@ var file_google_protobuf_struct_proto_depIdxs = []int32{
 	3, // google.protobuf.Value.list_value:type_name -> google.protobuf.ListValue
 	2, // google.protobuf.ListValue.values:type_name -> google.protobuf.Value
 	2, // google.protobuf.Struct.FieldsEntry.value:type_name -> google.protobuf.Value
+	6, // starting offset of method output_type sub-list
+	6, // starting offset of method input_type sub-list
+	6, // starting offset of extension type_name sub-list
+	6, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_google_protobuf_struct_proto_init() }
@@ -396,15 +401,20 @@ func file_google_protobuf_struct_proto_init() {
 	if File_google_protobuf_struct_proto != nil {
 		return
 	}
-	File_google_protobuf_struct_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_google_protobuf_struct_proto_rawDesc,
-		GoTypes:            file_google_protobuf_struct_proto_goTypes,
-		DependencyIndexes:  file_google_protobuf_struct_proto_depIdxs,
-		EnumOutputTypes:    file_google_protobuf_struct_proto_enumTypes,
-		MessageOutputTypes: file_google_protobuf_struct_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_google_protobuf_struct_proto_rawDesc,
+			NumEnums:      1,
+			NumMessages:   4,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_google_protobuf_struct_proto_goTypes,
+		DependencyIndexes: file_google_protobuf_struct_proto_depIdxs,
+		MessageInfos:      file_google_protobuf_struct_proto_msgTypes,
+	}.Build()
+	File_google_protobuf_struct_proto = out.File
+	file_google_protobuf_struct_proto_enumTypes = out.Enums
 	file_google_protobuf_struct_proto_rawDesc = nil
 	file_google_protobuf_struct_proto_goTypes = nil
 	file_google_protobuf_struct_proto_depIdxs = nil

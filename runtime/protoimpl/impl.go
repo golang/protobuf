@@ -12,7 +12,9 @@
 package protoimpl
 
 import (
+	"google.golang.org/protobuf/internal/filedesc"
 	"google.golang.org/protobuf/internal/fileinit"
+	"google.golang.org/protobuf/internal/filetype"
 	"google.golang.org/protobuf/internal/impl"
 )
 
@@ -58,7 +60,9 @@ type (
 	// being a compilation failure (guaranteed by the Go specification).
 	EnforceVersion uint
 
-	FileBuilder      = fileinit.FileBuilder
+	FileBuilder      = fileinit.FileBuilder // TODO: Remove this.
+	DescBuilder      = filedesc.DescBuilder
+	TypeBuilder      = filetype.TypeBuilder
 	MessageInfo      = impl.MessageInfo
 	SizeCache        = impl.SizeCache
 	UnknownFields    = impl.UnknownFields

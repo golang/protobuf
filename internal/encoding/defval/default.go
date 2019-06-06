@@ -34,54 +34,55 @@ const (
 )
 
 // Unmarshal deserializes the default string s according to the given kind k.
-// When using the Descriptor format on an enum kind, a Value of type string
-// representing the enum identifier is returned. It is the caller's
-// responsibility to verify that the identifier is valid.
-func Unmarshal(s string, k pref.Kind, f Format) (pref.Value, error) {
+// When k is an enum, a list of enum value descriptors must be provided.
+func Unmarshal(s string, k pref.Kind, evs pref.EnumValueDescriptors, f Format) (pref.Value, pref.EnumValueDescriptor, error) {
 	switch k {
 	case pref.BoolKind:
 		if f == GoTag {
 			switch s {
 			case "1":
-				return pref.ValueOf(true), nil
+				return pref.ValueOf(true), nil, nil
 			case "0":
-				return pref.ValueOf(false), nil
+				return pref.ValueOf(false), nil, nil
 			}
 		} else {
 			switch s {
 			case "true":
-				return pref.ValueOf(true), nil
+				return pref.ValueOf(true), nil, nil
 			case "false":
-				return pref.ValueOf(false), nil
+				return pref.ValueOf(false), nil, nil
 			}
 		}
 	case pref.EnumKind:
 		if f == GoTag {
-			// Go tags used the numeric form of the enum value.
+			// Go tags use the numeric form of the enum value.
 			if n, err := strconv.ParseInt(s, 10, 32); err == nil {
-				return pref.ValueOf(pref.EnumNumber(n)), nil
+				if ev := evs.ByNumber(pref.EnumNumber(n)); ev != nil {
+					return pref.ValueOf(ev.Number()), ev, nil
+				}
 			}
 		} else {
-			// Descriptor default_value used the enum identifier.
-			if pref.Name(s).IsValid() {
-				return pref.ValueOf(s), nil
+			// Descriptor default_value use the enum identifier.
+			ev := evs.ByName(pref.Name(s))
+			if ev != nil {
+				return pref.ValueOf(ev.Number()), ev, nil
 			}
 		}
 	case pref.Int32Kind, pref.Sint32Kind, pref.Sfixed32Kind:
 		if v, err := strconv.ParseInt(s, 10, 32); err == nil {
-			return pref.ValueOf(int32(v)), nil
+			return pref.ValueOf(int32(v)), nil, nil
 		}
 	case pref.Int64Kind, pref.Sint64Kind, pref.Sfixed64Kind:
 		if v, err := strconv.ParseInt(s, 10, 64); err == nil {
-			return pref.ValueOf(int64(v)), nil
+			return pref.ValueOf(int64(v)), nil, nil
 		}
 	case pref.Uint32Kind, pref.Fixed32Kind:
 		if v, err := strconv.ParseUint(s, 10, 32); err == nil {
-			return pref.ValueOf(uint32(v)), nil
+			return pref.ValueOf(uint32(v)), nil, nil
 		}
 	case pref.Uint64Kind, pref.Fixed64Kind:
 		if v, err := strconv.ParseUint(s, 10, 64); err == nil {
-			return pref.ValueOf(uint64(v)), nil
+			return pref.ValueOf(uint64(v)), nil, nil
 		}
 	case pref.FloatKind, pref.DoubleKind:
 		var v float64
@@ -98,25 +99,26 @@ func Unmarshal(s string, k pref.Kind, f Format) (pref.Value, error) {
 		}
 		if err == nil {
 			if k == pref.FloatKind {
-				return pref.ValueOf(float32(v)), nil
+				return pref.ValueOf(float32(v)), nil, nil
 			} else {
-				return pref.ValueOf(float64(v)), nil
+				return pref.ValueOf(float64(v)), nil, nil
 			}
 		}
 	case pref.StringKind:
 		// String values are already unescaped and can be used as is.
-		return pref.ValueOf(s), nil
+		return pref.ValueOf(s), nil, nil
 	case pref.BytesKind:
 		if b, ok := unmarshalBytes(s); ok {
-			return pref.ValueOf(b), nil
+			return pref.ValueOf(b), nil, nil
 		}
 	}
-	return pref.Value{}, errors.New("invalid default value for %v: %q", k, s)
+	return pref.Value{}, nil, errors.New("invalid default value for %v: %q", k, s)
 }
 
 // Marshal serializes v as the default string according to the given kind k.
-// Enums are serialized in numeric form regardless of format chosen.
-func Marshal(v pref.Value, k pref.Kind, f Format) (string, error) {
+// When specifying the Descriptor format for an enum kind, the associated
+// enum value descriptor must be provided.
+func Marshal(v pref.Value, ev pref.EnumValueDescriptor, k pref.Kind, f Format) (string, error) {
 	switch k {
 	case pref.BoolKind:
 		if f == GoTag {
@@ -133,7 +135,11 @@ func Marshal(v pref.Value, k pref.Kind, f Format) (string, error) {
 			}
 		}
 	case pref.EnumKind:
-		return strconv.FormatInt(int64(v.Enum()), 10), nil
+		if f == GoTag {
+			return strconv.FormatInt(int64(v.Enum()), 10), nil
+		} else {
+			return string(ev.Name()), nil
+		}
 	case pref.Int32Kind, pref.Sint32Kind, pref.Sfixed32Kind, pref.Int64Kind, pref.Sint64Kind, pref.Sfixed64Kind:
 		return strconv.FormatInt(v.Int(), 10), nil
 	case pref.Uint32Kind, pref.Fixed32Kind, pref.Uint64Kind, pref.Fixed64Kind:

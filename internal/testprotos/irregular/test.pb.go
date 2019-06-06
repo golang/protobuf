@@ -5,7 +5,6 @@ package irregular
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -186,6 +185,11 @@ var file_irregular_test_proto_depIdxs = []int32{
 	1, // goproto.proto.irregular.Message.map_message:type_name -> goproto.proto.irregular.Message.MapMessageEntry
 	2, // goproto.proto.irregular.Message.oneof_message:type_name -> goproto.proto.irregular.IrregularMessage
 	2, // goproto.proto.irregular.Message.MapMessageEntry.value:type_name -> goproto.proto.irregular.IrregularMessage
+	6, // starting offset of method output_type sub-list
+	6, // starting offset of method input_type sub-list
+	6, // starting offset of extension type_name sub-list
+	6, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_irregular_test_proto_init() }
@@ -194,14 +198,19 @@ func file_irregular_test_proto_init() {
 		return
 	}
 	file_irregular_irregular_proto_init()
-	File_irregular_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_irregular_test_proto_rawDesc,
-		GoTypes:            file_irregular_test_proto_goTypes,
-		DependencyIndexes:  file_irregular_test_proto_depIdxs,
-		MessageOutputTypes: file_irregular_test_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_irregular_test_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   2,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_irregular_test_proto_goTypes,
+		DependencyIndexes: file_irregular_test_proto_depIdxs,
+		MessageInfos:      file_irregular_test_proto_msgTypes,
+	}.Build()
+	File_irregular_test_proto = out.File
 	file_irregular_test_proto_rawDesc = nil
 	file_irregular_test_proto_goTypes = nil
 	file_irregular_test_proto_depIdxs = nil

@@ -5,7 +5,7 @@ package test_a_1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -45,7 +45,7 @@ func (x E1) String() string {
 }
 
 func (E1) Descriptor() protoreflect.EnumDescriptor {
-	return file_imports_test_a_1_m1_proto_enumTypes[0].Descriptor()
+	return file_imports_test_a_1_m1_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x E1) Number() protoreflect.EnumNumber {
@@ -152,7 +152,7 @@ func file_imports_test_a_1_m1_proto_rawDescGZIP() []byte {
 	return file_imports_test_a_1_m1_proto_rawDescData
 }
 
-var file_imports_test_a_1_m1_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var file_imports_test_a_1_m1_proto_enumTypes = make([]prototype.Enum, 1)
 var file_imports_test_a_1_m1_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_imports_test_a_1_m1_proto_goTypes = []interface{}{
 	(E1)(0),      // 0: test.a.E1
@@ -161,6 +161,11 @@ var file_imports_test_a_1_m1_proto_goTypes = []interface{}{
 }
 var file_imports_test_a_1_m1_proto_depIdxs = []int32{
 	1, // test.a.M1_1.m1:type_name -> test.a.M1
+	1, // starting offset of method output_type sub-list
+	1, // starting offset of method input_type sub-list
+	1, // starting offset of extension type_name sub-list
+	1, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_imports_test_a_1_m1_proto_init() }
@@ -168,15 +173,20 @@ func file_imports_test_a_1_m1_proto_init() {
 	if File_imports_test_a_1_m1_proto != nil {
 		return
 	}
-	File_imports_test_a_1_m1_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_imports_test_a_1_m1_proto_rawDesc,
-		GoTypes:            file_imports_test_a_1_m1_proto_goTypes,
-		DependencyIndexes:  file_imports_test_a_1_m1_proto_depIdxs,
-		EnumOutputTypes:    file_imports_test_a_1_m1_proto_enumTypes,
-		MessageOutputTypes: file_imports_test_a_1_m1_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_imports_test_a_1_m1_proto_rawDesc,
+			NumEnums:      1,
+			NumMessages:   2,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_imports_test_a_1_m1_proto_goTypes,
+		DependencyIndexes: file_imports_test_a_1_m1_proto_depIdxs,
+		MessageInfos:      file_imports_test_a_1_m1_proto_msgTypes,
+	}.Build()
+	File_imports_test_a_1_m1_proto = out.File
+	file_imports_test_a_1_m1_proto_enumTypes = out.Enums
 	file_imports_test_a_1_m1_proto_rawDesc = nil
 	file_imports_test_a_1_m1_proto_goTypes = nil
 	file_imports_test_a_1_m1_proto_depIdxs = nil

@@ -117,17 +117,11 @@ func ToFieldDescriptorProto(field protoreflect.FieldDescriptor) *descriptorpb.Fi
 		p.JsonName = scalar.String(field.JSONName())
 	}
 	if field.HasDefault() {
-		if field.Kind() == protoreflect.EnumKind {
-			// TODO: defval.Marshal should probably take a FieldDescriptor
-			// instead of a Kind and do this itself.
-			p.DefaultValue = scalar.String(string(field.DefaultEnumValue().Name()))
-		} else {
-			def, err := defval.Marshal(field.Default(), field.Kind(), defval.Descriptor)
-			if err != nil {
-				panic(fmt.Sprintf("%v: %v", field.FullName(), err))
-			}
-			p.DefaultValue = scalar.String(def)
+		def, err := defval.Marshal(field.Default(), field.DefaultEnumValue(), field.Kind(), defval.Descriptor)
+		if err != nil {
+			panic(fmt.Sprintf("%v: %v", field.FullName(), err))
 		}
+		p.DefaultValue = scalar.String(def)
 	}
 	if oneof := field.ContainingOneof(); oneof != nil {
 		p.OneofIndex = scalar.Int32(int32(oneof.Index()))

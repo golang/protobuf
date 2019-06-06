@@ -5,7 +5,6 @@ package grpc
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -129,13 +128,18 @@ var file_grpc_grpc_proto_goTypes = []interface{}{
 }
 var file_grpc_grpc_proto_depIdxs = []int32{
 	0, // goproto.protoc.grpc.test_service.unary_call:input_type -> goproto.protoc.grpc.Request
-	1, // goproto.protoc.grpc.test_service.unary_call:output_type -> goproto.protoc.grpc.Response
 	0, // goproto.protoc.grpc.test_service.downstream_call:input_type -> goproto.protoc.grpc.Request
-	1, // goproto.protoc.grpc.test_service.downstream_call:output_type -> goproto.protoc.grpc.Response
 	0, // goproto.protoc.grpc.test_service.upstream_call:input_type -> goproto.protoc.grpc.Request
-	1, // goproto.protoc.grpc.test_service.upstream_call:output_type -> goproto.protoc.grpc.Response
 	0, // goproto.protoc.grpc.test_service.bidi_call:input_type -> goproto.protoc.grpc.Request
+	1, // goproto.protoc.grpc.test_service.unary_call:output_type -> goproto.protoc.grpc.Response
+	1, // goproto.protoc.grpc.test_service.downstream_call:output_type -> goproto.protoc.grpc.Response
+	1, // goproto.protoc.grpc.test_service.upstream_call:output_type -> goproto.protoc.grpc.Response
 	1, // goproto.protoc.grpc.test_service.bidi_call:output_type -> goproto.protoc.grpc.Response
+	4, // starting offset of method output_type sub-list
+	0, // starting offset of method input_type sub-list
+	0, // starting offset of extension type_name sub-list
+	0, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_grpc_grpc_proto_init() }
@@ -143,14 +147,19 @@ func file_grpc_grpc_proto_init() {
 	if File_grpc_grpc_proto != nil {
 		return
 	}
-	File_grpc_grpc_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_grpc_grpc_proto_rawDesc,
-		GoTypes:            file_grpc_grpc_proto_goTypes,
-		DependencyIndexes:  file_grpc_grpc_proto_depIdxs,
-		MessageOutputTypes: file_grpc_grpc_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_grpc_grpc_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   2,
+			NumExtensions: 0,
+			NumServices:   1,
+		},
+		GoTypes:           file_grpc_grpc_proto_goTypes,
+		DependencyIndexes: file_grpc_grpc_proto_depIdxs,
+		MessageInfos:      file_grpc_grpc_proto_msgTypes,
+	}.Build()
+	File_grpc_grpc_proto = out.File
 	file_grpc_grpc_proto_rawDesc = nil
 	file_grpc_grpc_proto_goTypes = nil
 	file_grpc_grpc_proto_depIdxs = nil

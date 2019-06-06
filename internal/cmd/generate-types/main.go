@@ -20,7 +20,6 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
-	"unicode"
 )
 
 var (
@@ -38,8 +37,7 @@ func main() {
 	repoRoot = strings.TrimSpace(string(out))
 
 	chdirRoot()
-	writeSource("internal/fileinit/desc_list_gen.go", generateFileinitDescList())
-	writeSource("internal/prototype/protofile_list_gen.go", generateListTypes())
+	writeSource("internal/filedesc/desc_list_gen.go", generateDescListTypes())
 	writeSource("internal/impl/encode_gen.go", generateImplEncode())
 	writeSource("proto/decode_gen.go", generateProtoDecode())
 	writeSource("proto/encode_gen.go", generateProtoEncode())
@@ -83,138 +81,19 @@ func (d DescriptorType) NumberExpr() Expr {
 	}
 }
 
-func generateListTypes() string {
-	// TODO: If Go2 has generics, replace this with a single container type.
-	return mustExecute(listTypesTemplate, []DescriptorType{
-		MessageDesc, FieldDesc, OneofDesc, ExtensionDesc, EnumDesc, EnumValueDesc, ServiceDesc, MethodDesc,
-	})
-}
-
-var listTypesTemplate = template.Must(template.New("").Funcs(template.FuncMap{
-	"unexport": func(t DescriptorType) Expr {
-		return Expr(string(unicode.ToLower(rune(t[0]))) + string(t[1:]))
-	},
-}).Parse(`
-	{{- range .}}
-	{{$nameList     := (printf "%ss"     (unexport .))}} {{/* e.g., "messages" */}}
-	{{$nameListMeta := (printf "%ssMeta" (unexport .))}} {{/* e.g., "messagesMeta" */}}
-	{{$nameMeta     := (printf "%sMeta"  (unexport .))}} {{/* e.g., "messageMeta" */}}
-	{{$nameDesc     := (printf "%sDesc"  (unexport .))}} {{/* e.g., "messageDesc" */}}
-
-	type {{$nameListMeta}} struct {
-		once     sync.Once
-		typs     []{{.}}
-		nameOnce sync.Once
-		byName   map[protoreflect.Name]*{{.}}
-		{{- if (eq . "Field")}}
-		jsonOnce sync.Once
-		byJSON   map[string]*{{.}}
-		{{- end}}
-		{{- if .NumberExpr}}
-		numOnce  sync.Once
-		byNum    map[{{.NumberExpr}}]*{{.}}
-		{{- end}}
-	}
-	type {{$nameList}} {{$nameListMeta}}
-
-	func (p *{{$nameListMeta}}) lazyInit(parent protoreflect.Descriptor, ts []{{.}}) *{{$nameList}} {
-		p.once.Do(func() {
-			nb := getNameBuilder()
-			defer putNameBuilder(nb)
-			metas := make([]{{$nameMeta}}, len(ts))
-			for i := range ts {
-				t := &ts[i]
-				if t.{{$nameMeta}} != nil {
-					panic("already initialized")
-				}
-				t.{{$nameMeta}} = &metas[i]
-				t.inheritedMeta.init(nb, parent, i, t.Name, {{printf "%v" (eq . "EnumValue")}})
-			}
-			p.typs = ts
-		})
-		return (*{{$nameList}})(p)
-	}
-	func (p *{{$nameList}}) Len() int            { return len(p.typs) }
-	func (p *{{$nameList}}) Get(i int) {{.Expr}} { return {{$nameDesc}}{&p.typs[i]} }
-	func (p *{{$nameList}}) ByName(s protoreflect.Name) {{.Expr}} {
-		p.nameOnce.Do(func() {
-			if len(p.typs) > 0 {
-				p.byName = make(map[protoreflect.Name]*{{.}}, len(p.typs))
-				for i := range p.typs {
-					t := &p.typs[i]
-					p.byName[t.Name] = t
-				}
-			}
-		})
-		t := p.byName[s]
-		if t == nil {
-			return nil
-		}
-		return {{$nameDesc}}{t}
-	}
-	{{- if (eq . "Field")}}
-	func (p *{{$nameList}}) ByJSONName(s string) {{.Expr}} {
-		p.jsonOnce.Do(func() {
-			if len(p.typs) > 0 {
-				p.byJSON = make(map[string]*{{.}}, len(p.typs))
-				for i := range p.typs {
-					t := &p.typs[i]
-					s := {{$nameDesc}}{t}.JSONName()
-					if _, ok := p.byJSON[s]; !ok {
-						p.byJSON[s] = t
-					}
-				}
-			}
-		})
-		t := p.byJSON[s]
-		if t == nil {
-			return nil
-		}
-		return {{$nameDesc}}{t}
-	}
-	{{- end}}
-	{{- if .NumberExpr}}
-	func (p *{{$nameList}}) ByNumber(n {{.NumberExpr}}) {{.Expr}} {
-		p.numOnce.Do(func() {
-			if len(p.typs) > 0 {
-				p.byNum = make(map[{{.NumberExpr}}]*{{.}}, len(p.typs))
-				for i := range p.typs {
-					t := &p.typs[i]
-					if _, ok := p.byNum[t.Number]; !ok {
-						p.byNum[t.Number] = t
-					}
-				}
-			}
-		})
-		t := p.byNum[n]
-		if t == nil {
-			return nil
-		}
-		return {{$nameDesc}}{t}
-	}
-	{{- end}}
-	func (p *{{$nameList}}) Format(s fmt.State, r rune)          { descfmt.FormatList(s, r, p) }
-	func (p *{{$nameList}}) ProtoInternal(pragma.DoNotImplement) {}
-	{{- end}}
-`))
-
-func generateFileinitDescList() string {
-	return mustExecute(fileinitDescListTemplate, []DescriptorType{
+func generateDescListTypes() string {
+	return mustExecute(descListTypesTemplate, []DescriptorType{
 		EnumDesc, EnumValueDesc, MessageDesc, FieldDesc, OneofDesc, ExtensionDesc, ServiceDesc, MethodDesc,
 	})
 }
 
-var fileinitDescListTemplate = template.Must(template.New("").Funcs(template.FuncMap{
-	"unexport": func(t DescriptorType) Expr {
-		return Expr(string(unicode.ToLower(rune(t[0]))) + string(t[1:]))
-	},
-}).Parse(`
+var descListTypesTemplate = template.Must(template.New("").Parse(`
 	{{- range .}}
-	{{$nameList := (printf "%sDescs" (unexport .))}} {{/* e.g., "messageDescs" */}}
-	{{$nameDesc := (printf "%sDesc"  (unexport .))}} {{/* e.g., "messageDesc" */}}
+	{{$nameList := (printf "%ss" .)}} {{/* e.g., "Messages" */}}
+	{{$nameDesc := (printf "%s"  .)}} {{/* e.g., "Message" */}}
 
 	type {{$nameList}} struct {
-		list   []{{$nameDesc}}
+		List   []{{$nameDesc}}
 		once   sync.Once
 		byName map[protoreflect.Name]*{{$nameDesc}} // protected by once
 		{{- if (eq . "Field")}}
@@ -226,22 +105,14 @@ var fileinitDescListTemplate = template.Must(template.New("").Funcs(template.Fun
 	}
 
 	func (p *{{$nameList}}) Len() int {
-		return len(p.list)
+		return len(p.List)
 	}
 	func (p *{{$nameList}}) Get(i int) {{.Expr}} {
-		{{- if (eq . "Message")}}
-		return p.list[i].asDesc()
-		{{- else}}
-		return &p.list[i]
-		{{- end}}
+		return &p.List[i]
 	}
 	func (p *{{$nameList}}) ByName(s protoreflect.Name) {{.Expr}} {
 		if d := p.lazyInit().byName[s]; d != nil {
-			{{- if (eq . "Message")}}
-			return d.asDesc()
-			{{- else}}
 			return d
-			{{- end}}
 		}
 		return nil
 	}
@@ -267,16 +138,16 @@ var fileinitDescListTemplate = template.Must(template.New("").Funcs(template.Fun
 	func (p *{{$nameList}}) ProtoInternal(pragma.DoNotImplement) {}
 	func (p *{{$nameList}}) lazyInit() *{{$nameList}} {
 		p.once.Do(func() {
-			if len(p.list) > 0 {
-				p.byName = make(map[protoreflect.Name]*{{$nameDesc}}, len(p.list))
+			if len(p.List) > 0 {
+				p.byName = make(map[protoreflect.Name]*{{$nameDesc}}, len(p.List))
 				{{- if (eq . "Field")}}
-				p.byJSON = make(map[string]*{{$nameDesc}}, len(p.list))
+				p.byJSON = make(map[string]*{{$nameDesc}}, len(p.List))
 				{{- end}}
 				{{- if .NumberExpr}}
-				p.byNum = make(map[{{.NumberExpr}}]*{{$nameDesc}}, len(p.list))
+				p.byNum = make(map[{{.NumberExpr}}]*{{$nameDesc}}, len(p.List))
 				{{- end}}
-				for i := range p.list {
-					d := &p.list[i]
+				for i := range p.List {
+					d := &p.List[i]
 					if _, ok := p.byName[d.Name()]; !ok {
 						p.byName[d.Name()] = d
 					}

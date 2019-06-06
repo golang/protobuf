@@ -5,7 +5,7 @@ package comments
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -44,7 +44,7 @@ func (x DeprecatedEnum) String() string {
 }
 
 func (DeprecatedEnum) Descriptor() protoreflect.EnumDescriptor {
-	return file_comments_deprecated_proto_enumTypes[0].Descriptor()
+	return file_comments_deprecated_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x DeprecatedEnum) Number() protoreflect.EnumNumber {
@@ -128,28 +128,39 @@ func file_comments_deprecated_proto_rawDescGZIP() []byte {
 	return file_comments_deprecated_proto_rawDescData
 }
 
-var file_comments_deprecated_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var file_comments_deprecated_proto_enumTypes = make([]prototype.Enum, 1)
 var file_comments_deprecated_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_comments_deprecated_proto_goTypes = []interface{}{
 	(DeprecatedEnum)(0),       // 0: goproto.protoc.comments.DeprecatedEnum
 	(*DeprecatedMessage)(nil), // 1: goproto.protoc.comments.DeprecatedMessage
 }
-var file_comments_deprecated_proto_depIdxs = []int32{}
+var file_comments_deprecated_proto_depIdxs = []int32{
+	0, // starting offset of method output_type sub-list
+	0, // starting offset of method input_type sub-list
+	0, // starting offset of extension type_name sub-list
+	0, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
+}
 
 func init() { file_comments_deprecated_proto_init() }
 func file_comments_deprecated_proto_init() {
 	if File_comments_deprecated_proto != nil {
 		return
 	}
-	File_comments_deprecated_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_comments_deprecated_proto_rawDesc,
-		GoTypes:            file_comments_deprecated_proto_goTypes,
-		DependencyIndexes:  file_comments_deprecated_proto_depIdxs,
-		EnumOutputTypes:    file_comments_deprecated_proto_enumTypes,
-		MessageOutputTypes: file_comments_deprecated_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_comments_deprecated_proto_rawDesc,
+			NumEnums:      1,
+			NumMessages:   1,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_comments_deprecated_proto_goTypes,
+		DependencyIndexes: file_comments_deprecated_proto_depIdxs,
+		MessageInfos:      file_comments_deprecated_proto_msgTypes,
+	}.Build()
+	File_comments_deprecated_proto = out.File
+	file_comments_deprecated_proto_enumTypes = out.Enums
 	file_comments_deprecated_proto_rawDesc = nil
 	file_comments_deprecated_proto_goTypes = nil
 	file_comments_deprecated_proto_depIdxs = nil

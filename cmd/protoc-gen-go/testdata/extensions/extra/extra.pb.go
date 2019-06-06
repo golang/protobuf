@@ -5,7 +5,6 @@ package extra
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -87,21 +86,32 @@ var file_extensions_extra_extra_proto_msgTypes = make([]protoimpl.MessageInfo, 1
 var file_extensions_extra_extra_proto_goTypes = []interface{}{
 	(*ExtraMessage)(nil), // 0: goproto.protoc.extension.extra.ExtraMessage
 }
-var file_extensions_extra_extra_proto_depIdxs = []int32{}
+var file_extensions_extra_extra_proto_depIdxs = []int32{
+	0, // starting offset of method output_type sub-list
+	0, // starting offset of method input_type sub-list
+	0, // starting offset of extension type_name sub-list
+	0, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
+}
 
 func init() { file_extensions_extra_extra_proto_init() }
 func file_extensions_extra_extra_proto_init() {
 	if File_extensions_extra_extra_proto != nil {
 		return
 	}
-	File_extensions_extra_extra_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_extensions_extra_extra_proto_rawDesc,
-		GoTypes:            file_extensions_extra_extra_proto_goTypes,
-		DependencyIndexes:  file_extensions_extra_extra_proto_depIdxs,
-		MessageOutputTypes: file_extensions_extra_extra_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_extensions_extra_extra_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   1,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_extensions_extra_extra_proto_goTypes,
+		DependencyIndexes: file_extensions_extra_extra_proto_depIdxs,
+		MessageInfos:      file_extensions_extra_extra_proto_msgTypes,
+	}.Build()
+	File_extensions_extra_extra_proto = out.File
 	file_extensions_extra_extra_proto_rawDesc = nil
 	file_extensions_extra_extra_proto_goTypes = nil
 	file_extensions_extra_extra_proto_depIdxs = nil

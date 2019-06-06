@@ -5,7 +5,7 @@ package descriptorpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -107,7 +107,7 @@ func (x FieldDescriptorProto_Type) String() string {
 }
 
 func (FieldDescriptorProto_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_descriptor_proto_enumTypes[0].Descriptor()
+	return file_google_protobuf_descriptor_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x FieldDescriptorProto_Type) Number() protoreflect.EnumNumber {
@@ -163,7 +163,7 @@ func (x FieldDescriptorProto_Label) String() string {
 }
 
 func (FieldDescriptorProto_Label) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_descriptor_proto_enumTypes[1].Descriptor()
+	return file_google_protobuf_descriptor_proto_enumTypes[1].EnumDescriptor
 }
 
 func (x FieldDescriptorProto_Label) Number() protoreflect.EnumNumber {
@@ -220,7 +220,7 @@ func (x FileOptions_OptimizeMode) String() string {
 }
 
 func (FileOptions_OptimizeMode) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_descriptor_proto_enumTypes[2].Descriptor()
+	return file_google_protobuf_descriptor_proto_enumTypes[2].EnumDescriptor
 }
 
 func (x FileOptions_OptimizeMode) Number() protoreflect.EnumNumber {
@@ -276,7 +276,7 @@ func (x FieldOptions_CType) String() string {
 }
 
 func (FieldOptions_CType) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_descriptor_proto_enumTypes[3].Descriptor()
+	return file_google_protobuf_descriptor_proto_enumTypes[3].EnumDescriptor
 }
 
 func (x FieldOptions_CType) Number() protoreflect.EnumNumber {
@@ -334,7 +334,7 @@ func (x FieldOptions_JSType) String() string {
 }
 
 func (FieldOptions_JSType) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_descriptor_proto_enumTypes[4].Descriptor()
+	return file_google_protobuf_descriptor_proto_enumTypes[4].EnumDescriptor
 }
 
 func (x FieldOptions_JSType) Number() protoreflect.EnumNumber {
@@ -392,7 +392,7 @@ func (x MethodOptions_IdempotencyLevel) String() string {
 }
 
 func (MethodOptions_IdempotencyLevel) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_descriptor_proto_enumTypes[5].Descriptor()
+	return file_google_protobuf_descriptor_proto_enumTypes[5].EnumDescriptor
 }
 
 func (x MethodOptions_IdempotencyLevel) Number() protoreflect.EnumNumber {
@@ -3197,7 +3197,7 @@ func file_google_protobuf_descriptor_proto_rawDescGZIP() []byte {
 	return file_google_protobuf_descriptor_proto_rawDescData
 }
 
-var file_google_protobuf_descriptor_proto_enumTypes = make([]protoreflect.EnumType, 6)
+var file_google_protobuf_descriptor_proto_enumTypes = make([]prototype.Enum, 6)
 var file_google_protobuf_descriptor_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_google_protobuf_descriptor_proto_goTypes = []interface{}{
 	(FieldDescriptorProto_Type)(0),                // 0: google.protobuf.FieldDescriptorProto.Type
@@ -3278,6 +3278,11 @@ var file_google_protobuf_descriptor_proto_depIdxs = []int32{
 	31, // google.protobuf.SourceCodeInfo.location:type_name -> google.protobuf.SourceCodeInfo.Location
 	32, // google.protobuf.GeneratedCodeInfo.annotation:type_name -> google.protobuf.GeneratedCodeInfo.Annotation
 	9,  // google.protobuf.DescriptorProto.ExtensionRange.options:type_name -> google.protobuf.ExtensionRangeOptions
+	43, // starting offset of method output_type sub-list
+	43, // starting offset of method input_type sub-list
+	43, // starting offset of extension type_name sub-list
+	43, // starting offset of extension extendee sub-list
+	0,  // starting offset of field type_name sub-list
 }
 
 func init() { file_google_protobuf_descriptor_proto_init() }
@@ -3285,15 +3290,20 @@ func file_google_protobuf_descriptor_proto_init() {
 	if File_google_protobuf_descriptor_proto != nil {
 		return
 	}
-	File_google_protobuf_descriptor_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_google_protobuf_descriptor_proto_rawDesc,
-		GoTypes:            file_google_protobuf_descriptor_proto_goTypes,
-		DependencyIndexes:  file_google_protobuf_descriptor_proto_depIdxs,
-		EnumOutputTypes:    file_google_protobuf_descriptor_proto_enumTypes,
-		MessageOutputTypes: file_google_protobuf_descriptor_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_google_protobuf_descriptor_proto_rawDesc,
+			NumEnums:      6,
+			NumMessages:   27,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_google_protobuf_descriptor_proto_goTypes,
+		DependencyIndexes: file_google_protobuf_descriptor_proto_depIdxs,
+		MessageInfos:      file_google_protobuf_descriptor_proto_msgTypes,
+	}.Build()
+	File_google_protobuf_descriptor_proto = out.File
+	file_google_protobuf_descriptor_proto_enumTypes = out.Enums
 	file_google_protobuf_descriptor_proto_rawDesc = nil
 	file_google_protobuf_descriptor_proto_goTypes = nil
 	file_google_protobuf_descriptor_proto_depIdxs = nil

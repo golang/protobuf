@@ -6,7 +6,7 @@ package sub
 import (
 	sub2 "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/import_public/sub2"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	math "math"
@@ -51,7 +51,7 @@ func (x E) String() string {
 }
 
 func (E) Descriptor() protoreflect.EnumDescriptor {
-	return file_import_public_sub_a_proto_enumTypes[0].Descriptor()
+	return file_import_public_sub_a_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x E) Number() protoreflect.EnumNumber {
@@ -100,7 +100,7 @@ func (x M_Subenum) String() string {
 }
 
 func (M_Subenum) Descriptor() protoreflect.EnumDescriptor {
-	return file_import_public_sub_a_proto_enumTypes[1].Descriptor()
+	return file_import_public_sub_a_proto_enumTypes[1].EnumDescriptor
 }
 
 func (x M_Subenum) Number() protoreflect.EnumNumber {
@@ -149,7 +149,7 @@ func (x M_Submessage_Submessage_Subenum) String() string {
 }
 
 func (M_Submessage_Submessage_Subenum) Descriptor() protoreflect.EnumDescriptor {
-	return file_import_public_sub_a_proto_enumTypes[2].Descriptor()
+	return file_import_public_sub_a_proto_enumTypes[2].EnumDescriptor
 }
 
 func (x M_Submessage_Submessage_Subenum) Number() protoreflect.EnumNumber {
@@ -452,7 +452,7 @@ func file_import_public_sub_a_proto_rawDescGZIP() []byte {
 	return file_import_public_sub_a_proto_rawDescData
 }
 
-var file_import_public_sub_a_proto_enumTypes = make([]protoreflect.EnumType, 3)
+var file_import_public_sub_a_proto_enumTypes = make([]prototype.Enum, 3)
 var file_import_public_sub_a_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_import_public_sub_a_proto_goTypes = []interface{}{
 	(E)(0),                               // 0: goproto.protoc.import_public.sub.E
@@ -463,8 +463,13 @@ var file_import_public_sub_a_proto_goTypes = []interface{}{
 	(*M2)(nil),                           // 5: goproto.protoc.import_public.sub.M2
 }
 var file_import_public_sub_a_proto_depIdxs = []int32{
-	3, // goproto.protoc.import_public.sub.extension_field:extendee -> goproto.protoc.import_public.sub.M
 	5, // goproto.protoc.import_public.sub.M.m2:type_name -> goproto.protoc.import_public.sub.M2
+	3, // goproto.protoc.import_public.sub.extension_field:extendee -> goproto.protoc.import_public.sub.M
+	2, // starting offset of method output_type sub-list
+	2, // starting offset of method input_type sub-list
+	2, // starting offset of extension type_name sub-list
+	1, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_import_public_sub_a_proto_init() }
@@ -473,18 +478,21 @@ func file_import_public_sub_a_proto_init() {
 		return
 	}
 	file_import_public_sub_b_proto_init()
-	extensionTypes := make([]protoreflect.ExtensionType, 1)
-	File_import_public_sub_a_proto = protoimpl.FileBuilder{
-		RawDescriptor:        file_import_public_sub_a_proto_rawDesc,
-		GoTypes:              file_import_public_sub_a_proto_goTypes,
-		DependencyIndexes:    file_import_public_sub_a_proto_depIdxs,
-		LegacyExtensions:     file_import_public_sub_a_proto_extDescs,
-		EnumOutputTypes:      file_import_public_sub_a_proto_enumTypes,
-		MessageOutputTypes:   file_import_public_sub_a_proto_msgTypes,
-		ExtensionOutputTypes: extensionTypes,
-		FilesRegistry:        protoregistry.GlobalFiles,
-		TypesRegistry:        protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_import_public_sub_a_proto_rawDesc,
+			NumEnums:      3,
+			NumMessages:   2,
+			NumExtensions: 1,
+			NumServices:   0,
+		},
+		GoTypes:           file_import_public_sub_a_proto_goTypes,
+		DependencyIndexes: file_import_public_sub_a_proto_depIdxs,
+		MessageInfos:      file_import_public_sub_a_proto_msgTypes,
+		LegacyExtensions:  file_import_public_sub_a_proto_extDescs,
+	}.Build()
+	File_import_public_sub_a_proto = out.File
+	file_import_public_sub_a_proto_enumTypes = out.Enums
 	file_import_public_sub_a_proto_rawDesc = nil
 	file_import_public_sub_a_proto_goTypes = nil
 	file_import_public_sub_a_proto_depIdxs = nil

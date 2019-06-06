@@ -1,4 +1,8 @@
-package fileinit_test
+// Copyright 2018 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+package filedesc_test
 
 import (
 	"bytes"
@@ -17,10 +21,10 @@ import (
 func TestInit(t *testing.T) {
 	// Compare the FileDescriptorProto for the same test file from two different sources:
 	//
-	// 1. The result of passing the fileinit-produced FileDescriptor through protodesc.
+	// 1. The result of passing the filedesc-produced FileDescriptor through protodesc.
 	// 2. The protoc-generated wire-encoded message.
 	//
-	// This serves as a test of both fileinit and protodesc.
+	// This serves as a test of both filedesc and protodesc.
 	got := protodesc.ToFileDescriptorProto(testpb.File_test_test_proto)
 
 	want := &descriptorpb.FileDescriptorProto{}

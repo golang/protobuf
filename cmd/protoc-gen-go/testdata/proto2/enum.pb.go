@@ -5,7 +5,7 @@ package proto2
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -51,7 +51,7 @@ func (x EnumType1) String() string {
 }
 
 func (EnumType1) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto2_enum_proto_enumTypes[0].Descriptor()
+	return file_proto2_enum_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x EnumType1) Number() protoreflect.EnumNumber {
@@ -103,7 +103,7 @@ func (x EnumType2) String() string {
 }
 
 func (EnumType2) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto2_enum_proto_enumTypes[1].Descriptor()
+	return file_proto2_enum_proto_enumTypes[1].EnumDescriptor
 }
 
 func (x EnumType2) Number() protoreflect.EnumNumber {
@@ -154,7 +154,7 @@ func (x EnumContainerMessage1_NestedEnumType1A) String() string {
 }
 
 func (EnumContainerMessage1_NestedEnumType1A) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto2_enum_proto_enumTypes[2].Descriptor()
+	return file_proto2_enum_proto_enumTypes[2].EnumDescriptor
 }
 
 func (x EnumContainerMessage1_NestedEnumType1A) Number() protoreflect.EnumNumber {
@@ -203,7 +203,7 @@ func (x EnumContainerMessage1_NestedEnumType1B) String() string {
 }
 
 func (EnumContainerMessage1_NestedEnumType1B) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto2_enum_proto_enumTypes[3].Descriptor()
+	return file_proto2_enum_proto_enumTypes[3].EnumDescriptor
 }
 
 func (x EnumContainerMessage1_NestedEnumType1B) Number() protoreflect.EnumNumber {
@@ -254,7 +254,7 @@ func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) String() s
 }
 
 func (EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto2_enum_proto_enumTypes[4].Descriptor()
+	return file_proto2_enum_proto_enumTypes[4].EnumDescriptor
 }
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A) Number() protoreflect.EnumNumber {
@@ -303,7 +303,7 @@ func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) String() s
 }
 
 func (EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto2_enum_proto_enumTypes[5].Descriptor()
+	return file_proto2_enum_proto_enumTypes[5].EnumDescriptor
 }
 
 func (x EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B) Number() protoreflect.EnumNumber {
@@ -458,7 +458,7 @@ func file_proto2_enum_proto_rawDescGZIP() []byte {
 	return file_proto2_enum_proto_rawDescData
 }
 
-var file_proto2_enum_proto_enumTypes = make([]protoreflect.EnumType, 6)
+var file_proto2_enum_proto_enumTypes = make([]prototype.Enum, 6)
 var file_proto2_enum_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_proto2_enum_proto_goTypes = []interface{}{
 	(EnumType1)(0), // 0: goproto.protoc.proto2.EnumType1
@@ -473,6 +473,11 @@ var file_proto2_enum_proto_goTypes = []interface{}{
 var file_proto2_enum_proto_depIdxs = []int32{
 	1, // goproto.protoc.proto2.EnumContainerMessage1.default_duplicate1:type_name -> goproto.protoc.proto2.EnumType2
 	1, // goproto.protoc.proto2.EnumContainerMessage1.default_duplicate2:type_name -> goproto.protoc.proto2.EnumType2
+	2, // starting offset of method output_type sub-list
+	2, // starting offset of method input_type sub-list
+	2, // starting offset of extension type_name sub-list
+	2, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_proto2_enum_proto_init() }
@@ -480,15 +485,20 @@ func file_proto2_enum_proto_init() {
 	if File_proto2_enum_proto != nil {
 		return
 	}
-	File_proto2_enum_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_proto2_enum_proto_rawDesc,
-		GoTypes:            file_proto2_enum_proto_goTypes,
-		DependencyIndexes:  file_proto2_enum_proto_depIdxs,
-		EnumOutputTypes:    file_proto2_enum_proto_enumTypes,
-		MessageOutputTypes: file_proto2_enum_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_proto2_enum_proto_rawDesc,
+			NumEnums:      6,
+			NumMessages:   2,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_proto2_enum_proto_goTypes,
+		DependencyIndexes: file_proto2_enum_proto_depIdxs,
+		MessageInfos:      file_proto2_enum_proto_msgTypes,
+	}.Build()
+	File_proto2_enum_proto = out.File
+	file_proto2_enum_proto_enumTypes = out.Enums
 	file_proto2_enum_proto_rawDesc = nil
 	file_proto2_enum_proto_goTypes = nil
 	file_proto2_enum_proto_depIdxs = nil

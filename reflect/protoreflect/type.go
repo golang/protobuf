@@ -85,6 +85,8 @@ type Descriptor interface {
 	// For FileDescriptor, the Path and Package are also valid.
 	IsPlaceholder() bool
 
+	// TODO: Decide memory ownership of Options.
+
 	// Options returns the descriptor options. The caller must not modify
 	// the returned value.
 	//

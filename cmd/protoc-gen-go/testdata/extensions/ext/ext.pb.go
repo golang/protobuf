@@ -7,7 +7,7 @@ import (
 	base "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/extensions/base"
 	extra "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/extensions/extra"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -47,7 +47,7 @@ func (x Enum) String() string {
 }
 
 func (Enum) Descriptor() protoreflect.EnumDescriptor {
-	return file_extensions_ext_ext_proto_enumTypes[0].Descriptor()
+	return file_extensions_ext_ext_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x Enum) Number() protoreflect.EnumNumber {
@@ -1155,7 +1155,7 @@ func file_extensions_ext_ext_proto_rawDescGZIP() []byte {
 	return file_extensions_ext_ext_proto_rawDescData
 }
 
-var file_extensions_ext_ext_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var file_extensions_ext_ext_proto_enumTypes = make([]prototype.Enum, 1)
 var file_extensions_ext_ext_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_extensions_ext_ext_proto_goTypes = []interface{}{
 	(Enum)(0),                             // 0: goproto.protoc.extension.ext.Enum
@@ -1228,6 +1228,11 @@ var file_extensions_ext_ext_proto_depIdxs = []int32{
 	6,  // goproto.protoc.extension.ext.message_set_extension:type_name -> goproto.protoc.extension.ext.MessageSetWireFormatExtension
 	8,  // goproto.protoc.extension.ext.ExtendingMessage.extending_message_submessage:type_name -> goproto.protoc.extension.ext.ExtendingMessage.ExtendingMessageSubmessage
 	6,  // goproto.protoc.extension.ext.MessageSetWireFormatExtension.message_set_extension:type_name -> goproto.protoc.extension.ext.MessageSetWireFormatExtension
+	56, // starting offset of method output_type sub-list
+	56, // starting offset of method input_type sub-list
+	44, // starting offset of extension type_name sub-list
+	0,  // starting offset of extension extendee sub-list
+	0,  // starting offset of field type_name sub-list
 }
 
 func init() { file_extensions_ext_ext_proto_init() }
@@ -1235,18 +1240,21 @@ func file_extensions_ext_ext_proto_init() {
 	if File_extensions_ext_ext_proto != nil {
 		return
 	}
-	extensionTypes := make([]protoreflect.ExtensionType, 44)
-	File_extensions_ext_ext_proto = protoimpl.FileBuilder{
-		RawDescriptor:        file_extensions_ext_ext_proto_rawDesc,
-		GoTypes:              file_extensions_ext_ext_proto_goTypes,
-		DependencyIndexes:    file_extensions_ext_ext_proto_depIdxs,
-		LegacyExtensions:     file_extensions_ext_ext_proto_extDescs,
-		EnumOutputTypes:      file_extensions_ext_ext_proto_enumTypes,
-		MessageOutputTypes:   file_extensions_ext_ext_proto_msgTypes,
-		ExtensionOutputTypes: extensionTypes,
-		FilesRegistry:        protoregistry.GlobalFiles,
-		TypesRegistry:        protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_extensions_ext_ext_proto_rawDesc,
+			NumEnums:      1,
+			NumMessages:   8,
+			NumExtensions: 44,
+			NumServices:   0,
+		},
+		GoTypes:           file_extensions_ext_ext_proto_goTypes,
+		DependencyIndexes: file_extensions_ext_ext_proto_depIdxs,
+		MessageInfos:      file_extensions_ext_ext_proto_msgTypes,
+		LegacyExtensions:  file_extensions_ext_ext_proto_extDescs,
+	}.Build()
+	File_extensions_ext_ext_proto = out.File
+	file_extensions_ext_ext_proto_enumTypes = out.Enums
 	file_extensions_ext_ext_proto_rawDesc = nil
 	file_extensions_ext_ext_proto_goTypes = nil
 	file_extensions_ext_ext_proto_depIdxs = nil

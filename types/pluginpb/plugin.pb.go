@@ -5,7 +5,6 @@ package pluginpb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	descriptorpb "google.golang.org/protobuf/types/descriptorpb"
@@ -397,6 +396,11 @@ var file_google_protobuf_compiler_plugin_proto_depIdxs = []int32{
 	4, // google.protobuf.compiler.CodeGeneratorRequest.proto_file:type_name -> google.protobuf.FileDescriptorProto
 	0, // google.protobuf.compiler.CodeGeneratorRequest.compiler_version:type_name -> google.protobuf.compiler.Version
 	3, // google.protobuf.compiler.CodeGeneratorResponse.file:type_name -> google.protobuf.compiler.CodeGeneratorResponse.File
+	3, // starting offset of method output_type sub-list
+	3, // starting offset of method input_type sub-list
+	3, // starting offset of extension type_name sub-list
+	3, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_google_protobuf_compiler_plugin_proto_init() }
@@ -404,14 +408,19 @@ func file_google_protobuf_compiler_plugin_proto_init() {
 	if File_google_protobuf_compiler_plugin_proto != nil {
 		return
 	}
-	File_google_protobuf_compiler_plugin_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_google_protobuf_compiler_plugin_proto_rawDesc,
-		GoTypes:            file_google_protobuf_compiler_plugin_proto_goTypes,
-		DependencyIndexes:  file_google_protobuf_compiler_plugin_proto_depIdxs,
-		MessageOutputTypes: file_google_protobuf_compiler_plugin_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_google_protobuf_compiler_plugin_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   4,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_google_protobuf_compiler_plugin_proto_goTypes,
+		DependencyIndexes: file_google_protobuf_compiler_plugin_proto_depIdxs,
+		MessageInfos:      file_google_protobuf_compiler_plugin_proto_msgTypes,
+	}.Build()
+	File_google_protobuf_compiler_plugin_proto = out.File
 	file_google_protobuf_compiler_plugin_proto_rawDesc = nil
 	file_google_protobuf_compiler_plugin_proto_goTypes = nil
 	file_google_protobuf_compiler_plugin_proto_depIdxs = nil

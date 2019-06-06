@@ -6,7 +6,6 @@ package imports
 import (
 	test_a_1 "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/imports/test_a_1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -91,6 +90,11 @@ var file_imports_test_import_a1m1_proto_goTypes = []interface{}{
 }
 var file_imports_test_import_a1m1_proto_depIdxs = []int32{
 	1, // test.A1M1.f:type_name -> test.a.M1
+	1, // starting offset of method output_type sub-list
+	1, // starting offset of method input_type sub-list
+	1, // starting offset of extension type_name sub-list
+	1, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_imports_test_import_a1m1_proto_init() }
@@ -98,14 +102,19 @@ func file_imports_test_import_a1m1_proto_init() {
 	if File_imports_test_import_a1m1_proto != nil {
 		return
 	}
-	File_imports_test_import_a1m1_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_imports_test_import_a1m1_proto_rawDesc,
-		GoTypes:            file_imports_test_import_a1m1_proto_goTypes,
-		DependencyIndexes:  file_imports_test_import_a1m1_proto_depIdxs,
-		MessageOutputTypes: file_imports_test_import_a1m1_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_imports_test_import_a1m1_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   1,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_imports_test_import_a1m1_proto_goTypes,
+		DependencyIndexes: file_imports_test_import_a1m1_proto_depIdxs,
+		MessageInfos:      file_imports_test_import_a1m1_proto_msgTypes,
+	}.Build()
+	File_imports_test_import_a1m1_proto = out.File
 	file_imports_test_import_a1m1_proto_rawDesc = nil
 	file_imports_test_import_a1m1_proto_goTypes = nil
 	file_imports_test_import_a1m1_proto_depIdxs = nil

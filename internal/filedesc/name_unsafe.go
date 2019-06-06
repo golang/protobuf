@@ -4,10 +4,9 @@
 
 // +build !purego,!appengine
 
-package prototype
+package filedesc
 
 import (
-	"strings"
 	"sync"
 	"unsafe"
 
@@ -29,22 +28,48 @@ type nameBuilder struct {
 	sb stringBuilder
 }
 
-// Append is equivalent to protoreflect.FullName.Append, but is optimized for
-// large batches of operations where each name has a shared lifetime.
-func (b *nameBuilder) Append(prefix pref.FullName, name pref.Name) pref.FullName {
-	const batchSize = 1 << 12
+// MakeFullName converts b to a protoreflect.FullName,
+// where b must start with a leading dot.
+func (nb *nameBuilder) MakeFullName(b []byte) pref.FullName {
+	if len(b) == 0 || b[0] != '.' {
+		panic("name reference must be fully qualified")
+	}
+	return pref.FullName(nb.MakeString(b[1:]))
+}
+
+// AppendFullName is equivalent to protoreflect.FullName.Append,
+// but optimized for large batches where each name has a shared lifetime.
+func (nb *nameBuilder) AppendFullName(prefix pref.FullName, name []byte) pref.FullName {
 	n := len(prefix) + len(".") + len(name)
-	if b.sb.Cap()-b.sb.Len() < n {
-		b.sb.Reset()
-		b.sb.Grow(batchSize)
+	if len(prefix) == 0 {
+		n -= len(".")
 	}
-	if !strings.HasSuffix(b.sb.String(), string(prefix)) {
-		b.sb.WriteString(string(prefix))
+	nb.grow(n)
+	nb.sb.WriteString(string(prefix))
+	nb.sb.WriteByte('.')
+	nb.sb.Write(name)
+	return pref.FullName(nb.last(n))
+}
+
+// MakeString is equivalent to string(b), but optimized for large batches
+// with a shared lifetime.
+func (nb *nameBuilder) MakeString(b []byte) string {
+	nb.grow(len(b))
+	nb.sb.Write(b)
+	return nb.last(len(b))
+}
+
+func (nb *nameBuilder) last(n int) string {
+	s := nb.sb.String()
+	return s[len(s)-n:]
+}
+
+func (nb *nameBuilder) grow(n int) {
+	const batchSize = 1 << 16
+	if nb.sb.Cap()-nb.sb.Len() < n {
+		nb.sb.Reset()
+		nb.sb.Grow(batchSize)
 	}
-	b.sb.WriteByte('.')
-	b.sb.WriteString(string(name))
-	s := b.sb.String()
-	return pref.FullName(strings.TrimPrefix(s[len(s)-n:], "."))
 }
 
 // stringsBuilder is a simplified copy of the strings.Builder from Go1.12:

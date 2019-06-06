@@ -11,7 +11,7 @@ import (
 
 	"google.golang.org/protobuf/internal/encoding/defval"
 	"google.golang.org/protobuf/internal/errors"
-	"google.golang.org/protobuf/internal/prototype"
+	"google.golang.org/protobuf/internal/filedesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 
@@ -42,6 +42,27 @@ type Resolver interface {
 // However, this will complicate future work for validation since File may now
 // diverge from the stored descriptor proto (see above TODO).
 
+// TODO: This is important to prevent users from creating invalid types,
+// but is not functionality needed now.
+//
+// Things to verify:
+//	* Weak fields are only used if flags.Proto1Legacy is set
+//	* Weak fields can only reference singular messages
+//	(check if this the case for oneof fields)
+//	* FieldDescriptor.MessageType cannot reference a remote type when the
+//	remote name is a type within the local file.
+//	* Default enum identifiers resolve to a declared number.
+//	* Default values are only allowed in proto2.
+//	* Default strings are valid UTF-8? Note that protoc does not check this.
+//	* Field extensions are only valid in proto2, except when extending the
+//	descriptor options.
+//	* Remote enum and message types are actually found in imported files.
+//	* Placeholder messages and types may only be for weak fields.
+//	* Placeholder full names must be valid.
+//	* The name of each descriptor must be valid.
+//	* Options are of the correct Go type (e.g. *descriptorpb.MessageOptions).
+// 	* len(ExtensionRangeOptions) <= len(ExtensionRanges)
+
 // NewFile creates a new protoreflect.FileDescriptor from the provided
 // file descriptor message. The file must represent a valid proto file according
 // to protobuf semantics.
@@ -57,306 +78,431 @@ func NewFile(fd *descriptorpb.FileDescriptorProto, r Resolver) (protoreflect.Fil
 	if r == nil {
 		r = (*protoregistry.Files)(nil) // empty resolver
 	}
-	var f prototype.File
+	f := &filedesc.File{L2: &filedesc.FileL2{}}
 	switch fd.GetSyntax() {
 	case "proto2", "":
-		f.Syntax = protoreflect.Proto2
+		f.L1.Syntax = protoreflect.Proto2
 	case "proto3":
-		f.Syntax = protoreflect.Proto3
+		f.L1.Syntax = protoreflect.Proto3
 	default:
 		return nil, errors.New("invalid syntax: %v", fd.GetSyntax())
 	}
-	f.Path = fd.GetName()
-	f.Package = protoreflect.FullName(fd.GetPackage())
-	f.Options = fd.GetOptions()
+	f.L1.Path = fd.GetName()
+	f.L1.Package = protoreflect.FullName(fd.GetPackage())
+	if opts := fd.GetOptions(); opts != nil {
+		f.L2.Options = func() protoreflect.ProtoMessage { return opts }
+	}
 
-	f.Imports = make([]protoreflect.FileImport, len(fd.GetDependency()))
+	f.L2.Imports = make(filedesc.FileImports, len(fd.GetDependency()))
 	for _, i := range fd.GetPublicDependency() {
-		if int(i) >= len(f.Imports) || f.Imports[i].IsPublic {
+		if int(i) >= len(f.L2.Imports) || f.L2.Imports[i].IsPublic {
 			return nil, errors.New("invalid or duplicate public import index: %d", i)
 		}
-		f.Imports[i].IsPublic = true
+		f.L2.Imports[i].IsPublic = true
 	}
 	for _, i := range fd.GetWeakDependency() {
-		if int(i) >= len(f.Imports) || f.Imports[i].IsWeak {
+		if int(i) >= len(f.L2.Imports) || f.L2.Imports[i].IsWeak {
 			return nil, errors.New("invalid or duplicate weak import index: %d", i)
 		}
-		f.Imports[i].IsWeak = true
+		f.L2.Imports[i].IsWeak = true
 	}
 	for i, path := range fd.GetDependency() {
-		imp := &f.Imports[i]
-		fd, err := r.FindFileByPath(path)
+		imp := &f.L2.Imports[i]
+		f, err := r.FindFileByPath(path)
 		if err != nil {
-			fd = prototype.PlaceholderFile(path, "")
+			// TODO: This should be an error.
+			f = filedesc.PlaceholderFile(path)
 		}
-		imp.FileDescriptor = fd
+		imp.FileDescriptor = f
 	}
 
-	imps := importedFiles(f.Imports)
+	// Step 1: Pre-initialize all declared enums and messages.
+	// This enables step 2 to properly resolve references to locally defined
+	// enums and messages.
+	rl := make(descsByName)
+	f.L1.Enums.List = rl.initEnumsFromDescriptorProto(fd.GetEnumType(), f)
+	f.L1.Messages.List = rl.initMessagesFromDescriptorProto(fd.GetMessageType(), f)
+	f.L1.Extensions.List = rl.initExtensionsFromDescriptorProto(fd.GetExtension(), f)
+	f.L1.Services.List = rl.initServicesFromDescriptorProto(fd.GetService(), f)
 
-	var err error
-	f.Messages, err = messagesFromDescriptorProto(fd.GetMessageType(), imps, r)
-	if err != nil {
+	// Step 2: Handle every enum, message, extension, or service declaration.
+	r = resolver{local: rl, remote: r} // wrap remote resolver with local declarations
+	imps := importSet{f.L1.Path: true}
+	imps.importFiles(f.L2.Imports)
+	if err := enumsFromDescriptorProto(f.L1.Enums.List, fd.GetEnumType(), imps, r); err != nil {
 		return nil, err
 	}
-	f.Enums, err = enumsFromDescriptorProto(fd.GetEnumType(), r)
-	if err != nil {
+	if err := messagesFromDescriptorProto(f.L1.Messages.List, fd.GetMessageType(), imps, r); err != nil {
 		return nil, err
 	}
-	f.Extensions, err = extensionsFromDescriptorProto(fd.GetExtension(), imps, r)
-	if err != nil {
+	if err := extensionsFromDescriptorProto(f.L1.Extensions.List, fd.GetExtension(), imps, r); err != nil {
 		return nil, err
 	}
-	f.Services, err = servicesFromDescriptorProto(fd.GetService(), imps, r)
-	if err != nil {
+	if err := servicesFromDescriptorProto(f.L1.Services.List, fd.GetService(), imps, r); err != nil {
 		return nil, err
 	}
 
-	return prototype.NewFile(&f)
+	return f, nil
 }
 
-type importSet map[string]bool
+type descsByName map[protoreflect.FullName]protoreflect.Descriptor
 
-func importedFiles(imps []protoreflect.FileImport) importSet {
-	ret := make(importSet)
-	for _, imp := range imps {
-		ret[imp.Path()] = true
-		addPublicImports(imp, ret)
+func (r descsByName) initEnumsFromDescriptorProto(eds []*descriptorpb.EnumDescriptorProto, parent protoreflect.Descriptor) []filedesc.Enum {
+	es := make([]filedesc.Enum, len(eds)) // allocate up-front to ensure stable pointers
+	for i, ed := range eds {
+		e := &es[i]
+		e.L0 = makeBase(parent, ed.GetName(), i)
+		r[e.FullName()] = e
 	}
-	return ret
+	return es
 }
 
-func addPublicImports(fd protoreflect.FileDescriptor, out importSet) {
-	imps := fd.Imports()
-	for i := 0; i < imps.Len(); i++ {
-		imp := imps.Get(i)
-		if imp.IsPublic {
-			out[imp.Path()] = true
-			addPublicImports(imp, out)
+func (r descsByName) initMessagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, parent protoreflect.Descriptor) []filedesc.Message {
+	ms := make([]filedesc.Message, len(mds)) // allocate up-front to ensure stable pointers
+	for i, md := range mds {
+		m := &ms[i]
+		m.L0 = makeBase(parent, md.GetName(), i)
+		m.L1.Enums.List = r.initEnumsFromDescriptorProto(md.GetEnumType(), m)
+		m.L1.Messages.List = r.initMessagesFromDescriptorProto(md.GetNestedType(), m)
+		m.L1.Extensions.List = r.initExtensionsFromDescriptorProto(md.GetExtension(), m)
+		r[m.FullName()] = m
+	}
+	return ms
+}
+
+func (r descsByName) initExtensionsFromDescriptorProto(xds []*descriptorpb.FieldDescriptorProto, parent protoreflect.Descriptor) []filedesc.Extension {
+	xs := make([]filedesc.Extension, len(xds)) // allocate up-front to ensure stable pointers
+	for i, xd := range xds {
+		x := &xs[i]
+		x.L0 = makeBase(parent, xd.GetName(), i)
+		r[x.FullName()] = x
+	}
+	return xs
+}
+
+func (r descsByName) initServicesFromDescriptorProto(sds []*descriptorpb.ServiceDescriptorProto, parent protoreflect.Descriptor) []filedesc.Service {
+	ss := make([]filedesc.Service, len(sds)) // allocate up-front to ensure stable pointers
+	for i, sd := range sds {
+		s := &ss[i]
+		s.L0 = makeBase(parent, sd.GetName(), i)
+		r[s.FullName()] = s
+	}
+	return ss
+}
+
+func makeBase(parent protoreflect.Descriptor, name string, idx int) filedesc.BaseL0 {
+	return filedesc.BaseL0{
+		FullName:   parent.FullName().Append(protoreflect.Name(name)),
+		ParentFile: parent.ParentFile().(*filedesc.File),
+		Parent:     parent,
+		Index:      idx,
+	}
+}
+
+func enumsFromDescriptorProto(es []filedesc.Enum, eds []*descriptorpb.EnumDescriptorProto, imps importSet, r Resolver) error {
+	for i, ed := range eds {
+		e := &es[i]
+		e.L2 = new(filedesc.EnumL2)
+		if opts := ed.GetOptions(); opts != nil {
+			e.L2.Options = func() protoreflect.ProtoMessage { return opts }
+		}
+		for _, s := range ed.GetReservedName() {
+			e.L2.ReservedNames.List = append(e.L2.ReservedNames.List, protoreflect.Name(s))
+		}
+		for _, rr := range ed.GetReservedRange() {
+			e.L2.ReservedRanges.List = append(e.L2.ReservedRanges.List, [2]protoreflect.EnumNumber{
+				protoreflect.EnumNumber(rr.GetStart()),
+				protoreflect.EnumNumber(rr.GetEnd()),
+			})
+		}
+		e.L2.Values.List = make([]filedesc.EnumValue, len(ed.GetValue()))
+		for j, vd := range ed.GetValue() {
+			v := &e.L2.Values.List[j]
+			v.L0 = makeBase(e, vd.GetName(), j)
+			v.L0.FullName = e.L0.Parent.FullName().Append(protoreflect.Name(vd.GetName())) // enum values are in the same scope as the enum itself
+			if opts := vd.GetOptions(); opts != nil {
+				v.L1.Options = func() protoreflect.ProtoMessage { return opts }
+			}
+			v.L1.Number = protoreflect.EnumNumber(vd.GetNumber())
+			if e.L2.ReservedNames.Has(v.Name()) {
+				return errors.New("enum %v contains value with reserved name %q", e.Name(), v.Name())
+			}
+			if e.L2.ReservedRanges.Has(v.Number()) {
+				return errors.New("enum %v contains value with reserved number %d", e.Name(), v.Number())
+			}
 		}
 	}
+	return nil
 }
 
-func messagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, imps importSet, r Resolver) (ms []prototype.Message, err error) {
-	for _, md := range mds {
-		var m prototype.Message
-		m.Name = protoreflect.Name(md.GetName())
-		m.Options = md.GetOptions()
-		m.IsMapEntry = md.GetOptions().GetMapEntry()
+func messagesFromDescriptorProto(ms []filedesc.Message, mds []*descriptorpb.DescriptorProto, imps importSet, r Resolver) error {
+	for i, md := range mds {
+		m := &ms[i]
 
+		// Handle nested declarations. All enums must be handled before handling
+		// any messages since an enum field may have a default value that is
+		// specified in the same file being constructed.
+		if err := enumsFromDescriptorProto(m.L1.Enums.List, md.GetEnumType(), imps, r); err != nil {
+			return err
+		}
+		if err := messagesFromDescriptorProto(m.L1.Messages.List, md.GetNestedType(), imps, r); err != nil {
+			return err
+		}
+		if err := extensionsFromDescriptorProto(m.L1.Extensions.List, md.GetExtension(), imps, r); err != nil {
+			return err
+		}
+
+		// Handle the message descriptor itself.
+		m.L2 = new(filedesc.MessageL2)
+		if opts := md.GetOptions(); opts != nil {
+			m.L2.Options = func() protoreflect.ProtoMessage { return opts }
+			m.L2.IsMapEntry = opts.GetMapEntry()
+			m.L2.IsMessageSet = opts.GetMessageSetWireFormat()
+		}
 		for _, s := range md.GetReservedName() {
-			m.ReservedNames = append(m.ReservedNames, protoreflect.Name(s))
+			m.L2.ReservedNames.List = append(m.L2.ReservedNames.List, protoreflect.Name(s))
 		}
 		for _, rr := range md.GetReservedRange() {
-			m.ReservedRanges = append(m.ReservedRanges, [2]protoreflect.FieldNumber{
+			m.L2.ReservedRanges.List = append(m.L2.ReservedRanges.List, [2]protoreflect.FieldNumber{
 				protoreflect.FieldNumber(rr.GetStart()),
 				protoreflect.FieldNumber(rr.GetEnd()),
 			})
 		}
 		for _, xr := range md.GetExtensionRange() {
-			m.ExtensionRanges = append(m.ExtensionRanges, [2]protoreflect.FieldNumber{
+			m.L2.ExtensionRanges.List = append(m.L2.ExtensionRanges.List, [2]protoreflect.FieldNumber{
 				protoreflect.FieldNumber(xr.GetStart()),
 				protoreflect.FieldNumber(xr.GetEnd()),
 			})
-			m.ExtensionRangeOptions = append(m.ExtensionRangeOptions, xr.GetOptions())
+			var optsFunc func() protoreflect.ProtoMessage
+			if opts := xr.GetOptions(); opts != nil {
+				optsFunc = func() protoreflect.ProtoMessage { return opts }
+			}
+			m.L2.ExtensionRangeOptions = append(m.L2.ExtensionRangeOptions, optsFunc)
 		}
-		resNames := prototype.Names(m.ReservedNames)
-		resRanges := prototype.FieldRanges(m.ReservedRanges)
-		extRanges := prototype.FieldRanges(m.ExtensionRanges)
-
-		for _, fd := range md.GetField() {
-			if fd.GetExtendee() != "" {
-				return nil, errors.New("message field may not have extendee")
+		m.L2.Fields.List = make([]filedesc.Field, len(md.GetField()))
+		m.L2.Oneofs.List = make([]filedesc.Oneof, len(md.GetOneofDecl()))
+		for j, fd := range md.GetField() {
+			f := &m.L2.Fields.List[j]
+			f.L0 = makeBase(m, fd.GetName(), j)
+			if opts := fd.GetOptions(); opts != nil {
+				f.L1.Options = func() protoreflect.ProtoMessage { return opts }
+				f.L1.IsWeak = opts.GetWeak()
+				f.L1.HasPacked = opts.Packed != nil
+				f.L1.IsPacked = opts.GetPacked()
 			}
-			var f prototype.Field
-			f.Name = protoreflect.Name(fd.GetName())
-			if resNames.Has(f.Name) {
-				return nil, errors.New("%v contains field with reserved name %q", m.Name, f.Name)
+			if m.L2.ReservedNames.Has(f.Name()) {
+				return errors.New("%v contains field with reserved name %q", m.Name(), f.Name())
 			}
-			f.Number = protoreflect.FieldNumber(fd.GetNumber())
-			if resRanges.Has(f.Number) {
-				return nil, errors.New("%v contains field with reserved number %d", m.Name, f.Number)
+			f.L1.Number = protoreflect.FieldNumber(fd.GetNumber())
+			if m.L2.ReservedRanges.Has(f.Number()) {
+				return errors.New("%v contains field with reserved number %d", m.Name(), f.Number())
 			}
-			if extRanges.Has(f.Number) {
-				return nil, errors.New("%v contains field with number %d in extension range", m.Name, f.Number)
+			if m.L2.ExtensionRanges.Has(f.Number()) {
+				return errors.New("%v contains field with number %d in extension range", m.Name(), f.Number())
 			}
-			f.Cardinality = protoreflect.Cardinality(fd.GetLabel())
-			f.Kind = protoreflect.Kind(fd.GetType())
-			opts := fd.GetOptions()
-			f.Options = opts
-			if opts != nil && opts.Packed != nil {
-				if *opts.Packed {
-					f.IsPacked = prototype.True
-				} else {
-					f.IsPacked = prototype.False
-				}
+			f.L1.Cardinality = protoreflect.Cardinality(fd.GetLabel())
+			if f.L1.Cardinality == protoreflect.Required {
+				m.L2.RequiredNumbers.List = append(m.L2.RequiredNumbers.List, f.L1.Number)
 			}
-			f.IsWeak = opts.GetWeak()
-			f.JSONName = fd.GetJsonName()
-			if fd.DefaultValue != nil {
-				f.Default, err = defval.Unmarshal(fd.GetDefaultValue(), f.Kind, defval.Descriptor)
-				if err != nil {
-					return nil, err
-				}
+			f.L1.Kind = protoreflect.Kind(fd.GetType())
+			if fd.JsonName != nil {
+				f.L1.JSONName = filedesc.JSONName(fd.GetJsonName())
 			}
 			if fd.OneofIndex != nil {
-				i := int(fd.GetOneofIndex())
-				if i >= len(md.GetOneofDecl()) {
-					return nil, errors.New("invalid oneof index: %d", i)
+				k := int(fd.GetOneofIndex())
+				if k >= len(md.GetOneofDecl()) {
+					return errors.New("invalid oneof index: %d", k)
 				}
-				f.OneofName = protoreflect.Name(md.GetOneofDecl()[i].GetName())
+				o := &m.L2.Oneofs.List[k]
+				f.L1.ContainingOneof = o
+				o.L1.Fields.List = append(o.L1.Fields.List, f)
 			}
-			switch f.Kind {
+			if fd.GetExtendee() != "" {
+				return errors.New("message field may not have extendee")
+			}
+			switch f.L1.Kind {
 			case protoreflect.EnumKind:
-				f.EnumType, err = findEnumDescriptor(fd.GetTypeName(), imps, r)
+				ed, err := findEnumDescriptor(fd.GetTypeName(), f.L1.IsWeak, imps, r)
 				if err != nil {
-					return nil, err
+					return err
 				}
-				if opts.GetWeak() && !f.EnumType.IsPlaceholder() {
-					f.EnumType = prototype.PlaceholderEnum(f.EnumType.FullName())
-				}
+				f.L1.Enum = ed
 			case protoreflect.MessageKind, protoreflect.GroupKind:
-				f.MessageType, err = findMessageDescriptor(fd.GetTypeName(), imps, r)
+				md, err := findMessageDescriptor(fd.GetTypeName(), f.L1.IsWeak, imps, r)
 				if err != nil {
-					return nil, err
+					return err
 				}
-				if opts.GetWeak() && !f.MessageType.IsPlaceholder() {
-					f.MessageType = prototype.PlaceholderMessage(f.MessageType.FullName())
-				}
+				f.L1.Message = md
 			default:
 				if fd.GetTypeName() != "" {
-					return nil, errors.New("field of kind %v has type_name set", f.Kind)
+					return errors.New("field of kind %v has type_name set", f.L1.Kind)
 				}
 			}
-			m.Fields = append(m.Fields, f)
+			if fd.DefaultValue != nil {
+				// Handle default value after resolving the enum since the
+				// list of enum values is needed to resolve enums by name.
+				var evs protoreflect.EnumValueDescriptors
+				if f.L1.Kind == protoreflect.EnumKind {
+					evs = f.L1.Enum.Values()
+				}
+				v, ev, err := defval.Unmarshal(fd.GetDefaultValue(), f.L1.Kind, evs, defval.Descriptor)
+				if err != nil {
+					return err
+				}
+				f.L1.Default = filedesc.DefaultValue(v, ev)
+			}
 		}
-		for _, od := range md.GetOneofDecl() {
-			m.Oneofs = append(m.Oneofs, prototype.Oneof{
-				Name:    protoreflect.Name(od.GetName()),
-				Options: od.Options,
-			})
+		for j, od := range md.GetOneofDecl() {
+			o := &m.L2.Oneofs.List[j]
+			o.L0 = makeBase(m, od.GetName(), j)
+			if opts := od.GetOptions(); opts != nil {
+				o.L1.Options = func() protoreflect.ProtoMessage { return opts }
+			}
 		}
-
-		m.Messages, err = messagesFromDescriptorProto(md.GetNestedType(), imps, r)
-		if err != nil {
-			return nil, err
-		}
-		m.Enums, err = enumsFromDescriptorProto(md.GetEnumType(), r)
-		if err != nil {
-			return nil, err
-		}
-		m.Extensions, err = extensionsFromDescriptorProto(md.GetExtension(), imps, r)
-		if err != nil {
-			return nil, err
-		}
-
-		ms = append(ms, m)
 	}
-	return ms, nil
+	return nil
 }
 
-func enumsFromDescriptorProto(eds []*descriptorpb.EnumDescriptorProto, r Resolver) (es []prototype.Enum, err error) {
-	for _, ed := range eds {
-		var e prototype.Enum
-		e.Name = protoreflect.Name(ed.GetName())
-		e.Options = ed.GetOptions()
-		for _, s := range ed.GetReservedName() {
-			e.ReservedNames = append(e.ReservedNames, protoreflect.Name(s))
+func extensionsFromDescriptorProto(xs []filedesc.Extension, xds []*descriptorpb.FieldDescriptorProto, imps importSet, r Resolver) error {
+	for i, xd := range xds {
+		x := &xs[i]
+		x.L2 = new(filedesc.ExtensionL2)
+		if opts := xd.GetOptions(); opts != nil {
+			x.L2.Options = func() protoreflect.ProtoMessage { return opts }
+			x.L2.IsPacked = opts.GetPacked()
 		}
-		for _, rr := range ed.GetReservedRange() {
-			e.ReservedRanges = append(e.ReservedRanges, [2]protoreflect.EnumNumber{
-				protoreflect.EnumNumber(rr.GetStart()),
-				protoreflect.EnumNumber(rr.GetEnd()),
-			})
+		x.L1.Number = protoreflect.FieldNumber(xd.GetNumber())
+		x.L2.Cardinality = protoreflect.Cardinality(xd.GetLabel())
+		x.L1.Kind = protoreflect.Kind(xd.GetType())
+		if xd.JsonName != nil {
+			x.L2.JSONName = filedesc.JSONName(xd.GetJsonName())
 		}
-		resNames := prototype.Names(e.ReservedNames)
-		resRanges := prototype.EnumRanges(e.ReservedRanges)
-
-		for _, vd := range ed.GetValue() {
-			v := prototype.EnumValue{
-				Name:    protoreflect.Name(vd.GetName()),
-				Number:  protoreflect.EnumNumber(vd.GetNumber()),
-				Options: vd.Options,
-			}
-			if resNames.Has(v.Name) {
-				return nil, errors.New("enum %v contains value with reserved name %q", e.Name, v.Name)
-			}
-			if resRanges.Has(v.Number) {
-				return nil, errors.New("enum %v contains value with reserved number %d", e.Name, v.Number)
-			}
-			e.Values = append(e.Values, v)
-		}
-		es = append(es, e)
-	}
-	return es, nil
-}
-
-func extensionsFromDescriptorProto(xds []*descriptorpb.FieldDescriptorProto, imps importSet, r Resolver) (xs []prototype.Extension, err error) {
-	for _, xd := range xds {
 		if xd.OneofIndex != nil {
-			return nil, errors.New("extension may not have oneof_index")
+			return errors.New("extension may not have oneof_index")
 		}
-		var x prototype.Extension
-		x.Name = protoreflect.Name(xd.GetName())
-		x.Number = protoreflect.FieldNumber(xd.GetNumber())
-		x.Cardinality = protoreflect.Cardinality(xd.GetLabel())
-		x.Kind = protoreflect.Kind(xd.GetType())
-		x.Options = xd.GetOptions()
-		if xd.DefaultValue != nil {
-			x.Default, err = defval.Unmarshal(xd.GetDefaultValue(), x.Kind, defval.Descriptor)
-			if err != nil {
-				return nil, err
-			}
+		md, err := findMessageDescriptor(xd.GetExtendee(), false, imps, r)
+		if err != nil {
+			return err
 		}
-		switch x.Kind {
+		x.L1.Extendee = md
+		switch x.L1.Kind {
 		case protoreflect.EnumKind:
-			x.EnumType, err = findEnumDescriptor(xd.GetTypeName(), imps, r)
+			ed, err := findEnumDescriptor(xd.GetTypeName(), false, imps, r)
 			if err != nil {
-				return nil, err
+				return err
 			}
+			x.L2.Enum = ed
 		case protoreflect.MessageKind, protoreflect.GroupKind:
-			x.MessageType, err = findMessageDescriptor(xd.GetTypeName(), imps, r)
+			md, err := findMessageDescriptor(xd.GetTypeName(), false, imps, r)
 			if err != nil {
-				return nil, err
+				return err
 			}
+			x.L2.Message = md
 		default:
 			if xd.GetTypeName() != "" {
-				return nil, errors.New("extension of kind %v has type_name set", x.Kind)
+				return errors.New("field of kind %v has type_name set", x.L1.Kind)
 			}
 		}
-		x.ExtendedType, err = findMessageDescriptor(xd.GetExtendee(), imps, r)
-		if err != nil {
-			return nil, err
+		if xd.DefaultValue != nil {
+			// Handle default value after resolving the enum since the
+			// list of enum values is needed to resolve enums by name.
+			var evs protoreflect.EnumValueDescriptors
+			if x.L1.Kind == protoreflect.EnumKind {
+				evs = x.L2.Enum.Values()
+			}
+			v, ev, err := defval.Unmarshal(xd.GetDefaultValue(), x.L1.Kind, evs, defval.Descriptor)
+			if err != nil {
+				return err
+			}
+			x.L2.Default = filedesc.DefaultValue(v, ev)
 		}
-		xs = append(xs, x)
 	}
-	return xs, nil
+	return nil
 }
 
-func servicesFromDescriptorProto(sds []*descriptorpb.ServiceDescriptorProto, imps importSet, r Resolver) (ss []prototype.Service, err error) {
-	for _, sd := range sds {
-		var s prototype.Service
-		s.Name = protoreflect.Name(sd.GetName())
-		s.Options = sd.GetOptions()
-		for _, md := range sd.GetMethod() {
-			var m prototype.Method
-			m.Name = protoreflect.Name(md.GetName())
-			m.Options = md.GetOptions()
-			m.InputType, err = findMessageDescriptor(md.GetInputType(), imps, r)
-			if err != nil {
-				return nil, err
-			}
-			m.OutputType, err = findMessageDescriptor(md.GetOutputType(), imps, r)
-			if err != nil {
-				return nil, err
-			}
-			m.IsStreamingClient = md.GetClientStreaming()
-			m.IsStreamingServer = md.GetServerStreaming()
-			s.Methods = append(s.Methods, m)
+func servicesFromDescriptorProto(ss []filedesc.Service, sds []*descriptorpb.ServiceDescriptorProto, imps importSet, r Resolver) (err error) {
+	for i, sd := range sds {
+		s := &ss[i]
+		s.L2 = new(filedesc.ServiceL2)
+		if opts := sd.GetOptions(); opts != nil {
+			s.L2.Options = func() protoreflect.ProtoMessage { return opts }
 		}
-		ss = append(ss, s)
+		s.L2.Methods.List = make([]filedesc.Method, len(sd.GetMethod()))
+		for j, md := range sd.GetMethod() {
+			m := &s.L2.Methods.List[j]
+			m.L0 = makeBase(s, md.GetName(), j)
+			if opts := md.GetOptions(); opts != nil {
+				m.L1.Options = func() protoreflect.ProtoMessage { return opts }
+			}
+			m.L1.Input, err = findMessageDescriptor(md.GetInputType(), false, imps, r)
+			if err != nil {
+				return err
+			}
+			m.L1.Output, err = findMessageDescriptor(md.GetOutputType(), false, imps, r)
+			if err != nil {
+				return err
+			}
+			m.L1.IsStreamingClient = md.GetClientStreaming()
+			m.L1.IsStreamingServer = md.GetServerStreaming()
+		}
 	}
-	return ss, nil
+	return nil
+}
+
+type resolver struct {
+	local  descsByName
+	remote Resolver
+}
+
+func (r resolver) FindFileByPath(s string) (protoreflect.FileDescriptor, error) {
+	return r.remote.FindFileByPath(s)
+}
+
+func (r resolver) FindEnumByName(s protoreflect.FullName) (protoreflect.EnumDescriptor, error) {
+	if d, ok := r.local[s]; ok {
+		if ed, ok := d.(protoreflect.EnumDescriptor); ok {
+			return ed, nil
+		}
+		return nil, errors.New("found wrong type")
+	}
+	return r.remote.FindEnumByName(s)
+}
+
+func (r resolver) FindMessageByName(s protoreflect.FullName) (protoreflect.MessageDescriptor, error) {
+	if d, ok := r.local[s]; ok {
+		if md, ok := d.(protoreflect.MessageDescriptor); ok {
+			return md, nil
+		}
+		return nil, errors.New("found wrong type")
+	}
+	return r.remote.FindMessageByName(s)
+}
+
+type importSet map[string]bool
+
+func (is importSet) importFiles(files []protoreflect.FileImport) {
+	for _, imp := range files {
+		is[imp.Path()] = true
+		is.importPublic(imp)
+	}
+}
+
+func (is importSet) importPublic(fd protoreflect.FileDescriptor) {
+	imps := fd.Imports()
+	for i := 0; i < imps.Len(); i++ {
+		if imp := imps.Get(i); imp.IsPublic {
+			is[imp.Path()] = true
+			is.importPublic(imp)
+		}
+	}
+}
+
+// check returns an error if d does not belong to a currently imported file.
+func (is importSet) check(d protoreflect.Descriptor) error {
+	if !is[d.ParentFile().Path()] {
+		return errors.New("reference to type %v without import of %v", d.FullName(), d.ParentFile().Path())
+	}
+	return nil
 }
 
 // TODO: Should we allow relative names? The protoc compiler has emitted
@@ -364,43 +510,48 @@ func servicesFromDescriptorProto(sds []*descriptorpb.ServiceDescriptorProto, imp
 // simplifies our implementation as we won't need to implement C++'s namespace
 // scoping rules.
 
-func findMessageDescriptor(s string, imps importSet, r Resolver) (protoreflect.MessageDescriptor, error) {
-	if !strings.HasPrefix(s, ".") {
-		return nil, errors.New("identifier name must be fully qualified with a leading dot: %v", s)
-	}
-	name := protoreflect.FullName(strings.TrimPrefix(s, "."))
-	md, err := r.FindMessageByName(name)
-	if err != nil {
-		return prototype.PlaceholderMessage(name), nil
-	}
-	if err := validateFileInImports(md, imps); err != nil {
-		return nil, err
-	}
-	return md, nil
-}
-
-func findEnumDescriptor(s string, imps importSet, r Resolver) (protoreflect.EnumDescriptor, error) {
+func findEnumDescriptor(s string, isWeak bool, imps importSet, r Resolver) (protoreflect.EnumDescriptor, error) {
 	if !strings.HasPrefix(s, ".") {
 		return nil, errors.New("identifier name must be fully qualified with a leading dot: %v", s)
 	}
 	name := protoreflect.FullName(strings.TrimPrefix(s, "."))
 	ed, err := r.FindEnumByName(name)
 	if err != nil {
-		return prototype.PlaceholderEnum(name), nil
+		if err == protoregistry.NotFound {
+			if isWeak {
+				return filedesc.PlaceholderEnum(name), nil
+			}
+			// TODO: This should be an error.
+			return filedesc.PlaceholderEnum(name), nil
+			// return nil, errors.New("could not resolve enum: %v", name)
+		}
+		return nil, err
 	}
-	if err := validateFileInImports(ed, imps); err != nil {
+	if err := imps.check(ed); err != nil {
 		return nil, err
 	}
 	return ed, nil
 }
 
-func validateFileInImports(d protoreflect.Descriptor, imps importSet) error {
-	fd := d.ParentFile()
-	if fd == nil {
-		return errors.New("%v has no parent FileDescriptor", d.FullName())
+func findMessageDescriptor(s string, isWeak bool, imps importSet, r Resolver) (protoreflect.MessageDescriptor, error) {
+	if !strings.HasPrefix(s, ".") {
+		return nil, errors.New("identifier name must be fully qualified with a leading dot: %v", s)
 	}
-	if !imps[fd.Path()] {
-		return errors.New("reference to type %v without import of %v", d.FullName(), fd.Path())
+	name := protoreflect.FullName(strings.TrimPrefix(s, "."))
+	md, err := r.FindMessageByName(name)
+	if err != nil {
+		if err == protoregistry.NotFound {
+			if isWeak {
+				return filedesc.PlaceholderMessage(name), nil
+			}
+			// TODO: This should be an error.
+			return filedesc.PlaceholderMessage(name), nil
+			// return nil, errors.New("could not resolve message: %v", name)
+		}
+		return nil, err
 	}
-	return nil
+	if err := imps.check(md); err != nil {
+		return nil, err
+	}
+	return md, nil
 }

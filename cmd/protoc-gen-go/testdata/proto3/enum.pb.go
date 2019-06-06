@@ -5,7 +5,7 @@ package proto3
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
 )
@@ -50,7 +50,7 @@ func (x Enum) String() string {
 }
 
 func (Enum) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto3_enum_proto_enumTypes[0].Descriptor()
+	return file_proto3_enum_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x Enum) Number() protoreflect.EnumNumber {
@@ -89,25 +89,36 @@ func file_proto3_enum_proto_rawDescGZIP() []byte {
 	return file_proto3_enum_proto_rawDescData
 }
 
-var file_proto3_enum_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var file_proto3_enum_proto_enumTypes = make([]prototype.Enum, 1)
 var file_proto3_enum_proto_goTypes = []interface{}{
 	(Enum)(0), // 0: goproto.protoc.proto3.Enum
 }
-var file_proto3_enum_proto_depIdxs = []int32{}
+var file_proto3_enum_proto_depIdxs = []int32{
+	0, // starting offset of method output_type sub-list
+	0, // starting offset of method input_type sub-list
+	0, // starting offset of extension type_name sub-list
+	0, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
+}
 
 func init() { file_proto3_enum_proto_init() }
 func file_proto3_enum_proto_init() {
 	if File_proto3_enum_proto != nil {
 		return
 	}
-	File_proto3_enum_proto = protoimpl.FileBuilder{
-		RawDescriptor:     file_proto3_enum_proto_rawDesc,
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_proto3_enum_proto_rawDesc,
+			NumEnums:      1,
+			NumMessages:   0,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
 		GoTypes:           file_proto3_enum_proto_goTypes,
 		DependencyIndexes: file_proto3_enum_proto_depIdxs,
-		EnumOutputTypes:   file_proto3_enum_proto_enumTypes,
-		FilesRegistry:     protoregistry.GlobalFiles,
-		TypesRegistry:     protoregistry.GlobalTypes,
-	}.Init()
+	}.Build()
+	File_proto3_enum_proto = out.File
+	file_proto3_enum_proto_enumTypes = out.Enums
 	file_proto3_enum_proto_rawDesc = nil
 	file_proto3_enum_proto_goTypes = nil
 	file_proto3_enum_proto_depIdxs = nil

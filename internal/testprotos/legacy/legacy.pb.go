@@ -17,7 +17,6 @@ import (
 	proto3_v1_2 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v1.2.0-20180814-aa810b61"
 	proto3_v1_21 "google.golang.org/protobuf/internal/testprotos/legacy/proto3.v1.2.1-20181126-8d0c54c1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -292,6 +291,11 @@ var file_legacy_legacy_proto_depIdxs = []int32{
 	10, // google.golang.org.Legacy.f10:type_name -> google.golang.org.proto3_20180814.Message
 	11, // google.golang.org.Legacy.f11:type_name -> google.golang.org.proto2_20181126.Message
 	12, // google.golang.org.Legacy.f12:type_name -> google.golang.org.proto3_20181126.Message
+	12, // starting offset of method output_type sub-list
+	12, // starting offset of method input_type sub-list
+	12, // starting offset of extension type_name sub-list
+	12, // starting offset of extension extendee sub-list
+	0,  // starting offset of field type_name sub-list
 }
 
 func init() { file_legacy_legacy_proto_init() }
@@ -299,14 +303,19 @@ func file_legacy_legacy_proto_init() {
 	if File_legacy_legacy_proto != nil {
 		return
 	}
-	File_legacy_legacy_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_legacy_legacy_proto_rawDesc,
-		GoTypes:            file_legacy_legacy_proto_goTypes,
-		DependencyIndexes:  file_legacy_legacy_proto_depIdxs,
-		MessageOutputTypes: file_legacy_legacy_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_legacy_legacy_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   1,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_legacy_legacy_proto_goTypes,
+		DependencyIndexes: file_legacy_legacy_proto_depIdxs,
+		MessageInfos:      file_legacy_legacy_proto_msgTypes,
+	}.Build()
+	File_legacy_legacy_proto = out.File
 	file_legacy_legacy_proto_rawDesc = nil
 	file_legacy_legacy_proto_goTypes = nil
 	file_legacy_legacy_proto_depIdxs = nil

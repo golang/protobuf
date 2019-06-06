@@ -12,8 +12,8 @@ import (
 	defval "google.golang.org/protobuf/internal/encoding/defval"
 	wire "google.golang.org/protobuf/internal/encoding/wire"
 	fieldnum "google.golang.org/protobuf/internal/fieldnum"
+	fdesc "google.golang.org/protobuf/internal/filedesc"
 	pimpl "google.golang.org/protobuf/internal/impl"
-	ptype "google.golang.org/protobuf/internal/prototype"
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	preg "google.golang.org/protobuf/reflect/protoregistry"
@@ -95,7 +95,11 @@ func (file *fileDesc) resolveMessages() {
 					fd.isPacked = true
 				}
 			}
-			fd.defVal.lazyInit(fd.kind, file.enumValuesOf(fd.enumType))
+
+			// Default is resolved here since it depends on Enum being resolved.
+			if v := fd.defVal.val; v.IsValid() {
+				fd.defVal = unmarshalDefault(v.Bytes(), fd.kind, file, fd.enumType)
+			}
 		}
 	}
 }
@@ -121,7 +125,7 @@ func (file *fileDesc) resolveExtensions() {
 				et := pimpl.Export{}.EnumTypeOf(reflect.Zero(typ).Interface())
 				xd.lazy.typ = typ
 				xd.lazy.new = func() pref.Value {
-					return xd.lazy.defVal.get()
+					return xd.lazy.defVal.get(xd)
 				}
 				xd.lazy.valueOf = func(v interface{}) pref.Value {
 					ev := v.(pref.Enum)
@@ -146,7 +150,7 @@ func (file *fileDesc) resolveExtensions() {
 			default:
 				xd.lazy.typ = goTypeForPBKind[xd.lazy.kind]
 				xd.lazy.new = func() pref.Value {
-					return xd.lazy.defVal.get()
+					return xd.lazy.defVal.get(xd)
 				}
 				xd.lazy.valueOf = func(v interface{}) pref.Value {
 					return pref.ValueOf(v)
@@ -179,7 +183,11 @@ func (file *fileDesc) resolveExtensions() {
 		case pref.MessageKind, pref.GroupKind:
 			xd.lazy.messageType = file.popMessageDependency()
 		}
-		xd.lazy.defVal.lazyInit(xd.lazy.kind, file.enumValuesOf(xd.lazy.enumType))
+
+		// Default is resolved here since it depends on Enum being resolved.
+		if v := xd.lazy.defVal.val; v.IsValid() {
+			xd.lazy.defVal = unmarshalDefault(v.Bytes(), xd.lazy.kind, file, xd.lazy.enumType)
+		}
 	}
 }
 
@@ -271,65 +279,82 @@ func (fi *fileInit) finishInit() {
 	*fi = fileInit{} // clear fileInit for GC to reclaim resources
 }
 
+func DefaultValue(v pref.Value, ev pref.EnumValueDescriptor) defaultValue {
+	dv := defaultValue{has: v.IsValid(), val: v, enum: ev}
+	if b, ok := v.Interface().([]byte); ok {
+		// Store a copy of the default bytes, so that we can detect
+		// accidental mutations of the original value.
+		dv.bytes = append([]byte(nil), b...)
+	}
+	return dv
+}
+
+func unmarshalDefault(b []byte, k pref.Kind, pf *fileDesc, ed pref.EnumDescriptor) defaultValue {
+	var evs pref.EnumValueDescriptors
+	if k == pref.EnumKind {
+		// If the enum is declared within the same file, be careful not to
+		// blindly call the Values method, lest we bind ourselves in a deadlock.
+		if ed, ok := ed.(*enumDesc); ok && ed.parentFile == pf {
+			evs = &ed.lazy.values
+		} else {
+			evs = ed.Values()
+		}
+	}
+
+	v, ev, err := defval.Unmarshal(string(b), k, evs, defval.Descriptor)
+	if err != nil {
+		panic(err)
+	}
+	dv := defaultValue{has: v.IsValid(), val: v, enum: ev}
+	if b, ok := v.Interface().([]byte); ok {
+		// Store a copy of the default bytes, so that we can detect
+		// accidental mutations of the original value.
+		dv.bytes = append([]byte(nil), b...)
+	}
+	return dv
+}
+
 type defaultValue struct {
 	has   bool
 	val   pref.Value
 	enum  pref.EnumValueDescriptor
-	check func() // only set for non-empty bytes
+	bytes []byte
 }
 
-func (dv *defaultValue) get() pref.Value {
-	if dv.check != nil {
-		dv.check()
+func (dv *defaultValue) get(fd pref.FieldDescriptor) pref.Value {
+	// Return the zero value as the default if unpopulated.
+	if !dv.has {
+		switch fd.Kind() {
+		case pref.BoolKind:
+			return pref.ValueOf(false)
+		case pref.Int32Kind, pref.Sint32Kind, pref.Sfixed32Kind:
+			return pref.ValueOf(int32(0))
+		case pref.Int64Kind, pref.Sint64Kind, pref.Sfixed64Kind:
+			return pref.ValueOf(int64(0))
+		case pref.Uint32Kind, pref.Fixed32Kind:
+			return pref.ValueOf(uint32(0))
+		case pref.Uint64Kind, pref.Fixed64Kind:
+			return pref.ValueOf(uint64(0))
+		case pref.FloatKind:
+			return pref.ValueOf(float32(0))
+		case pref.DoubleKind:
+			return pref.ValueOf(float64(0))
+		case pref.StringKind:
+			return pref.ValueOf(string(""))
+		case pref.BytesKind:
+			return pref.ValueOf([]byte(nil))
+		case pref.EnumKind:
+			return pref.ValueOf(fd.Enum().Values().Get(0).Number())
+		}
+	}
+
+	if len(dv.bytes) > 0 && !bytes.Equal(dv.bytes, dv.val.Bytes()) {
+		// TODO: Avoid panic if we're running with the race detector
+		// and instead spawn a goroutine that periodically resets
+		// this value back to the original to induce a race.
+		panic("detected mutation on the default bytes")
 	}
 	return dv.val
-}
-
-func (dv *defaultValue) lazyInit(k pref.Kind, eds pref.EnumValueDescriptors) {
-	if dv.has {
-		switch k {
-		case pref.EnumKind:
-			// File descriptors always store default enums by name.
-			dv.enum = eds.ByName(pref.Name(dv.val.String()))
-			dv.val = pref.ValueOf(dv.enum.Number())
-		case pref.BytesKind:
-			// Store a copy of the default bytes, so that we can detect
-			// accidental mutations of the original value.
-			b := append([]byte(nil), dv.val.Bytes()...)
-			dv.check = func() {
-				if !bytes.Equal(b, dv.val.Bytes()) {
-					// TODO: Avoid panic if we're running with the race detector
-					// and instead spawn a goroutine that periodically resets
-					// this value back to the original to induce a race.
-					panic("detected mutation on the default bytes")
-				}
-			}
-		}
-	} else {
-		switch k {
-		case pref.BoolKind:
-			dv.val = pref.ValueOf(false)
-		case pref.Int32Kind, pref.Sint32Kind, pref.Sfixed32Kind:
-			dv.val = pref.ValueOf(int32(0))
-		case pref.Int64Kind, pref.Sint64Kind, pref.Sfixed64Kind:
-			dv.val = pref.ValueOf(int64(0))
-		case pref.Uint32Kind, pref.Fixed32Kind:
-			dv.val = pref.ValueOf(uint32(0))
-		case pref.Uint64Kind, pref.Fixed64Kind:
-			dv.val = pref.ValueOf(uint64(0))
-		case pref.FloatKind:
-			dv.val = pref.ValueOf(float32(0))
-		case pref.DoubleKind:
-			dv.val = pref.ValueOf(float64(0))
-		case pref.StringKind:
-			dv.val = pref.ValueOf(string(""))
-		case pref.BytesKind:
-			dv.val = pref.ValueOf([]byte(nil))
-		case pref.EnumKind:
-			dv.enum = eds.Get(0)
-			dv.val = pref.ValueOf(dv.enum.Number())
-		}
-	}
 }
 
 func (fd *fileDesc) unmarshalFull(b []byte) {
@@ -368,7 +393,7 @@ func (fd *fileDesc) unmarshalFull(b []byte) {
 				}
 			case fieldnum.FileDescriptorProto_Dependency:
 				fd.lazy.imports = append(fd.lazy.imports, pref.FileImport{
-					FileDescriptor: ptype.PlaceholderFile(nb.MakeString(v), ""),
+					FileDescriptor: fdesc.PlaceholderFile(nb.MakeString(v)),
 				})
 			case fieldnum.FileDescriptorProto_EnumType:
 				fd.enums.list[enumIdx].unmarshalFull(v, nb)
@@ -627,7 +652,6 @@ func (fd *fieldDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 	fd.parent = pd
 	fd.index = i
 
-	var rawDefVal []byte
 	var rawTypeName []byte
 	for len(b) > 0 {
 		num, typ, n := wire.ConsumeTag(b)
@@ -664,8 +688,7 @@ func (fd *fieldDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 				fd.hasJSONName = true
 				fd.jsonName = nb.MakeString(v)
 			case fieldnum.FieldDescriptorProto_DefaultValue:
-				fd.defVal.has = true
-				rawDefVal = v
+				fd.defVal.val = pref.ValueOf(v) // temporarily store as bytes; later resolved in resolveMessages
 			case fieldnum.FieldDescriptorProto_TypeName:
 				rawTypeName = v
 			case fieldnum.FieldDescriptorProto_Options:
@@ -680,13 +703,6 @@ func (fd *fieldDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 	if !fd.hasJSONName {
 		fd.jsonName = nb.MakeJSONName(fd.Name())
 	}
-	if rawDefVal != nil {
-		var err error
-		fd.defVal.val, err = defval.Unmarshal(string(rawDefVal), fd.kind, defval.Descriptor)
-		if err != nil {
-			panic(err)
-		}
-	}
 	if fd.isWeak {
 		if len(rawTypeName) == 0 || rawTypeName[0] != '.' {
 			panic("weak target name must be fully qualified")
@@ -695,7 +711,7 @@ func (fd *fieldDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 		name := pref.FullName(rawTypeName[1:])
 		fd.messageType, _ = preg.GlobalFiles.FindMessageByName(name)
 		if fd.messageType == nil {
-			fd.messageType = ptype.PlaceholderMessage(pref.FullName(rawTypeName[1:]))
+			fd.messageType = fdesc.PlaceholderMessage(pref.FullName(rawTypeName[1:]))
 		}
 	}
 }
@@ -749,7 +765,6 @@ func (od *oneofDesc) unmarshalFull(b []byte, nb *nameBuilder, pf *fileDesc, pd p
 }
 
 func (xd *extensionDesc) unmarshalFull(b []byte, nb *nameBuilder) {
-	var rawDefVal []byte
 	xd.lazy = new(extensionLazy)
 	for len(b) > 0 {
 		num, typ, n := wire.ConsumeTag(b)
@@ -772,22 +787,13 @@ func (xd *extensionDesc) unmarshalFull(b []byte, nb *nameBuilder) {
 				xd.lazy.hasJSONName = true
 				xd.lazy.jsonName = nb.MakeString(v)
 			case fieldnum.FieldDescriptorProto_DefaultValue:
-				xd.lazy.defVal.has = true
-				rawDefVal = v
+				xd.lazy.defVal.val = pref.ValueOf(v) // temporarily store as bytes; later resolved in resolveExtensions
 			case fieldnum.FieldDescriptorProto_Options:
 				xd.unmarshalOptions(v)
 			}
 		default:
 			m := wire.ConsumeFieldValue(num, typ, b)
 			b = b[m:]
-		}
-	}
-
-	if rawDefVal != nil {
-		var err error
-		xd.lazy.defVal.val, err = defval.Unmarshal(string(rawDefVal), xd.lazy.kind, defval.Descriptor)
-		if err != nil {
-			panic(err)
 		}
 	}
 }

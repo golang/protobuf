@@ -5,7 +5,7 @@ package testprotos
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -45,7 +45,7 @@ func (x Enum1) String() string {
 }
 
 func (Enum1) Descriptor() protoreflect.EnumDescriptor {
-	return file_test_proto_enumTypes[0].Descriptor()
+	return file_test_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x Enum1) Number() protoreflect.EnumNumber {
@@ -94,7 +94,7 @@ func (x Enum2) String() string {
 }
 
 func (Enum2) Descriptor() protoreflect.EnumDescriptor {
-	return file_test_proto_enumTypes[1].Descriptor()
+	return file_test_proto_enumTypes[1].EnumDescriptor
 }
 
 func (x Enum2) Number() protoreflect.EnumNumber {
@@ -143,7 +143,7 @@ func (x Enum3) String() string {
 }
 
 func (Enum3) Descriptor() protoreflect.EnumDescriptor {
-	return file_test_proto_enumTypes[2].Descriptor()
+	return file_test_proto_enumTypes[2].EnumDescriptor
 }
 
 func (x Enum3) Number() protoreflect.EnumNumber {
@@ -426,7 +426,7 @@ func file_test_proto_rawDescGZIP() []byte {
 	return file_test_proto_rawDescData
 }
 
-var file_test_proto_enumTypes = make([]protoreflect.EnumType, 3)
+var file_test_proto_enumTypes = make([]prototype.Enum, 3)
 var file_test_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_test_proto_goTypes = []interface{}{
 	(Enum1)(0),       // 0: testprotos.Enum1
@@ -438,16 +438,21 @@ var file_test_proto_goTypes = []interface{}{
 	(*Message4)(nil), // 6: testprotos.Message4
 }
 var file_test_proto_depIdxs = []int32{
-	3, // testprotos.string_field:extendee -> testprotos.Message1
-	3, // testprotos.enum_field:extendee -> testprotos.Message1
-	3, // testprotos.message_field:extendee -> testprotos.Message1
-	3, // testprotos.Message4.message_field:extendee -> testprotos.Message1
-	3, // testprotos.Message4.enum_field:extendee -> testprotos.Message1
-	3, // testprotos.Message4.string_field:extendee -> testprotos.Message1
-	0, // testprotos.enum_field:type_name -> testprotos.Enum1
-	4, // testprotos.message_field:type_name -> testprotos.Message2
-	4, // testprotos.Message4.message_field:type_name -> testprotos.Message2
-	0, // testprotos.Message4.enum_field:type_name -> testprotos.Enum1
+	3,  // testprotos.string_field:extendee -> testprotos.Message1
+	3,  // testprotos.enum_field:extendee -> testprotos.Message1
+	3,  // testprotos.message_field:extendee -> testprotos.Message1
+	3,  // testprotos.Message4.message_field:extendee -> testprotos.Message1
+	3,  // testprotos.Message4.enum_field:extendee -> testprotos.Message1
+	3,  // testprotos.Message4.string_field:extendee -> testprotos.Message1
+	0,  // testprotos.enum_field:type_name -> testprotos.Enum1
+	4,  // testprotos.message_field:type_name -> testprotos.Message2
+	4,  // testprotos.Message4.message_field:type_name -> testprotos.Message2
+	0,  // testprotos.Message4.enum_field:type_name -> testprotos.Enum1
+	10, // starting offset of method output_type sub-list
+	10, // starting offset of method input_type sub-list
+	6,  // starting offset of extension type_name sub-list
+	0,  // starting offset of extension extendee sub-list
+	0,  // starting offset of field type_name sub-list
 }
 
 func init() { file_test_proto_init() }
@@ -455,18 +460,21 @@ func file_test_proto_init() {
 	if File_test_proto != nil {
 		return
 	}
-	extensionTypes := make([]protoreflect.ExtensionType, 6)
-	File_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:        file_test_proto_rawDesc,
-		GoTypes:              file_test_proto_goTypes,
-		DependencyIndexes:    file_test_proto_depIdxs,
-		LegacyExtensions:     file_test_proto_extDescs,
-		EnumOutputTypes:      file_test_proto_enumTypes,
-		MessageOutputTypes:   file_test_proto_msgTypes,
-		ExtensionOutputTypes: extensionTypes,
-		FilesRegistry:        protoregistry.GlobalFiles,
-		TypesRegistry:        protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_test_proto_rawDesc,
+			NumEnums:      3,
+			NumMessages:   4,
+			NumExtensions: 6,
+			NumServices:   0,
+		},
+		GoTypes:           file_test_proto_goTypes,
+		DependencyIndexes: file_test_proto_depIdxs,
+		MessageInfos:      file_test_proto_msgTypes,
+		LegacyExtensions:  file_test_proto_extDescs,
+	}.Build()
+	File_test_proto = out.File
+	file_test_proto_enumTypes = out.Enums
 	file_test_proto_rawDesc = nil
 	file_test_proto_goTypes = nil
 	file_test_proto_depIdxs = nil

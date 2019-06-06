@@ -5,7 +5,6 @@ package test
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -67,6 +66,11 @@ var file_test_ext_proto_goTypes = []interface{}{
 }
 var file_test_ext_proto_depIdxs = []int32{
 	0, // goproto.proto.test.foreign_int32_extension:extendee -> goproto.proto.test.TestAllExtensions
+	1, // starting offset of method output_type sub-list
+	1, // starting offset of method input_type sub-list
+	1, // starting offset of extension type_name sub-list
+	0, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_test_ext_proto_init() }
@@ -75,16 +79,19 @@ func file_test_ext_proto_init() {
 		return
 	}
 	file_test_test_proto_init()
-	extensionTypes := make([]protoreflect.ExtensionType, 1)
-	File_test_ext_proto = protoimpl.FileBuilder{
-		RawDescriptor:        file_test_ext_proto_rawDesc,
-		GoTypes:              file_test_ext_proto_goTypes,
-		DependencyIndexes:    file_test_ext_proto_depIdxs,
-		LegacyExtensions:     file_test_ext_proto_extDescs,
-		ExtensionOutputTypes: extensionTypes,
-		FilesRegistry:        protoregistry.GlobalFiles,
-		TypesRegistry:        protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_test_ext_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   0,
+			NumExtensions: 1,
+			NumServices:   0,
+		},
+		GoTypes:           file_test_ext_proto_goTypes,
+		DependencyIndexes: file_test_ext_proto_depIdxs,
+		LegacyExtensions:  file_test_ext_proto_extDescs,
+	}.Build()
+	File_test_ext_proto = out.File
 	file_test_ext_proto_rawDesc = nil
 	file_test_ext_proto_goTypes = nil
 	file_test_ext_proto_depIdxs = nil

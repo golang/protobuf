@@ -5,7 +5,7 @@ package pb2
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
@@ -58,7 +58,7 @@ func (x Enum) String() string {
 }
 
 func (Enum) Descriptor() protoreflect.EnumDescriptor {
-	return file_pb2_test_proto_enumTypes[0].Descriptor()
+	return file_pb2_test_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x Enum) Number() protoreflect.EnumNumber {
@@ -113,7 +113,7 @@ func (x Enums_NestedEnum) String() string {
 }
 
 func (Enums_NestedEnum) Descriptor() protoreflect.EnumDescriptor {
-	return file_pb2_test_proto_enumTypes[1].Descriptor()
+	return file_pb2_test_proto_enumTypes[1].EnumDescriptor
 }
 
 func (x Enums_NestedEnum) Number() protoreflect.EnumNumber {
@@ -1941,7 +1941,7 @@ func file_pb2_test_proto_rawDescGZIP() []byte {
 	return file_pb2_test_proto_rawDescData
 }
 
-var file_pb2_test_proto_enumTypes = make([]protoreflect.EnumType, 2)
+var file_pb2_test_proto_enumTypes = make([]prototype.Enum, 2)
 var file_pb2_test_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_pb2_test_proto_goTypes = []interface{}{
 	(Enum)(0),                             // 0: pb2.Enum
@@ -1986,27 +1986,6 @@ var file_pb2_test_proto_goTypes = []interface{}{
 	(*fieldmaskpb.FieldMask)(nil),         // 39: google.protobuf.FieldMask
 }
 var file_pb2_test_proto_depIdxs = []int32{
-	11, // pb2.opt_ext_bool:extendee -> pb2.Extensions
-	11, // pb2.opt_ext_string:extendee -> pb2.Extensions
-	11, // pb2.opt_ext_enum:extendee -> pb2.Extensions
-	11, // pb2.opt_ext_nested:extendee -> pb2.Extensions
-	11, // pb2.opt_ext_partial:extendee -> pb2.Extensions
-	11, // pb2.rpt_ext_fixed32:extendee -> pb2.Extensions
-	11, // pb2.rpt_ext_enum:extendee -> pb2.Extensions
-	11, // pb2.rpt_ext_nested:extendee -> pb2.Extensions
-	13, // pb2.message_set_extension:extendee -> pb2.MessageSet
-	11, // pb2.ExtensionsContainer.opt_ext_bool:extendee -> pb2.Extensions
-	11, // pb2.ExtensionsContainer.opt_ext_string:extendee -> pb2.Extensions
-	11, // pb2.ExtensionsContainer.opt_ext_enum:extendee -> pb2.Extensions
-	11, // pb2.ExtensionsContainer.opt_ext_nested:extendee -> pb2.Extensions
-	11, // pb2.ExtensionsContainer.opt_ext_partial:extendee -> pb2.Extensions
-	11, // pb2.ExtensionsContainer.rpt_ext_string:extendee -> pb2.Extensions
-	11, // pb2.ExtensionsContainer.rpt_ext_enum:extendee -> pb2.Extensions
-	11, // pb2.ExtensionsContainer.rpt_ext_nested:extendee -> pb2.Extensions
-	13, // pb2.MessageSetExtension.message_set_extension:extendee -> pb2.MessageSet
-	13, // pb2.MessageSetExtension.not_message_set_extension:extendee -> pb2.MessageSet
-	13, // pb2.MessageSetExtension.ext_nested:extendee -> pb2.MessageSet
-	15, // pb2.FakeMessageSetExtension.message_set_extension:extendee -> pb2.FakeMessageSet
 	0,  // pb2.Enums.opt_enum:type_name -> pb2.Enum
 	0,  // pb2.Enums.rpt_enum:type_name -> pb2.Enum
 	1,  // pb2.Enums.opt_nested_enum:type_name -> pb2.Enums.NestedEnum
@@ -2043,6 +2022,27 @@ var file_pb2_test_proto_depIdxs = []int32{
 	5,  // pb2.Nests.OptGroup.opt_nested:type_name -> pb2.Nested
 	20, // pb2.Nests.OptGroup.optnestedgroup:type_name -> pb2.Nests.OptGroup.OptNestedGroup
 	9,  // pb2.IndirectRequired.StrToNestedEntry.value:type_name -> pb2.NestedWithRequired
+	11, // pb2.opt_ext_bool:extendee -> pb2.Extensions
+	11, // pb2.opt_ext_string:extendee -> pb2.Extensions
+	11, // pb2.opt_ext_enum:extendee -> pb2.Extensions
+	11, // pb2.opt_ext_nested:extendee -> pb2.Extensions
+	11, // pb2.opt_ext_partial:extendee -> pb2.Extensions
+	11, // pb2.rpt_ext_fixed32:extendee -> pb2.Extensions
+	11, // pb2.rpt_ext_enum:extendee -> pb2.Extensions
+	11, // pb2.rpt_ext_nested:extendee -> pb2.Extensions
+	13, // pb2.message_set_extension:extendee -> pb2.MessageSet
+	11, // pb2.ExtensionsContainer.opt_ext_bool:extendee -> pb2.Extensions
+	11, // pb2.ExtensionsContainer.opt_ext_string:extendee -> pb2.Extensions
+	11, // pb2.ExtensionsContainer.opt_ext_enum:extendee -> pb2.Extensions
+	11, // pb2.ExtensionsContainer.opt_ext_nested:extendee -> pb2.Extensions
+	11, // pb2.ExtensionsContainer.opt_ext_partial:extendee -> pb2.Extensions
+	11, // pb2.ExtensionsContainer.rpt_ext_string:extendee -> pb2.Extensions
+	11, // pb2.ExtensionsContainer.rpt_ext_enum:extendee -> pb2.Extensions
+	11, // pb2.ExtensionsContainer.rpt_ext_nested:extendee -> pb2.Extensions
+	13, // pb2.MessageSetExtension.message_set_extension:extendee -> pb2.MessageSet
+	13, // pb2.MessageSetExtension.not_message_set_extension:extendee -> pb2.MessageSet
+	13, // pb2.MessageSetExtension.ext_nested:extendee -> pb2.MessageSet
+	15, // pb2.FakeMessageSetExtension.message_set_extension:extendee -> pb2.FakeMessageSet
 	0,  // pb2.opt_ext_enum:type_name -> pb2.Enum
 	5,  // pb2.opt_ext_nested:type_name -> pb2.Nested
 	8,  // pb2.opt_ext_partial:type_name -> pb2.PartialRequired
@@ -2058,6 +2058,11 @@ var file_pb2_test_proto_depIdxs = []int32{
 	14, // pb2.MessageSetExtension.not_message_set_extension:type_name -> pb2.MessageSetExtension
 	5,  // pb2.MessageSetExtension.ext_nested:type_name -> pb2.Nested
 	16, // pb2.FakeMessageSetExtension.message_set_extension:type_name -> pb2.FakeMessageSetExtension
+	72, // starting offset of method output_type sub-list
+	72, // starting offset of method input_type sub-list
+	57, // starting offset of extension type_name sub-list
+	36, // starting offset of extension extendee sub-list
+	0,  // starting offset of field type_name sub-list
 }
 
 func init() { file_pb2_test_proto_init() }
@@ -2065,18 +2070,21 @@ func file_pb2_test_proto_init() {
 	if File_pb2_test_proto != nil {
 		return
 	}
-	extensionTypes := make([]protoreflect.ExtensionType, 21)
-	File_pb2_test_proto = protoimpl.FileBuilder{
-		RawDescriptor:        file_pb2_test_proto_rawDesc,
-		GoTypes:              file_pb2_test_proto_goTypes,
-		DependencyIndexes:    file_pb2_test_proto_depIdxs,
-		LegacyExtensions:     file_pb2_test_proto_extDescs,
-		EnumOutputTypes:      file_pb2_test_proto_enumTypes,
-		MessageOutputTypes:   file_pb2_test_proto_msgTypes,
-		ExtensionOutputTypes: extensionTypes,
-		FilesRegistry:        protoregistry.GlobalFiles,
-		TypesRegistry:        protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_pb2_test_proto_rawDesc,
+			NumEnums:      2,
+			NumMessages:   20,
+			NumExtensions: 21,
+			NumServices:   0,
+		},
+		GoTypes:           file_pb2_test_proto_goTypes,
+		DependencyIndexes: file_pb2_test_proto_depIdxs,
+		MessageInfos:      file_pb2_test_proto_msgTypes,
+		LegacyExtensions:  file_pb2_test_proto_extDescs,
+	}.Build()
+	File_pb2_test_proto = out.File
+	file_pb2_test_proto_enumTypes = out.Enums
 	file_pb2_test_proto_rawDesc = nil
 	file_pb2_test_proto_goTypes = nil
 	file_pb2_test_proto_depIdxs = nil

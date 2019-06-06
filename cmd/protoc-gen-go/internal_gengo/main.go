@@ -44,6 +44,7 @@ const (
 	protoimplPackage     = protogen.GoImportPath("google.golang.org/protobuf/runtime/protoimpl")
 	protoreflectPackage  = protogen.GoImportPath("google.golang.org/protobuf/reflect/protoreflect")
 	protoregistryPackage = protogen.GoImportPath("google.golang.org/protobuf/reflect/protoregistry")
+	prototypePackage     = protogen.GoImportPath("google.golang.org/protobuf/reflect/prototype")
 )
 
 type fileInfo struct {
@@ -65,7 +66,7 @@ func GenerateFile(gen *protogen.Plugin, file *protogen.File) *protogen.Generated
 	}
 
 	// Collect all enums, messages, and extensions in "flattened ordering".
-	// See fileinit.FileBuilder.
+	// See filetype.TypeBuilder.
 	f.allEnums = append(f.allEnums, f.Enums...)
 	f.allMessages = append(f.allMessages, f.Messages...)
 	f.allExtensions = append(f.allExtensions, f.Extensions...)
@@ -625,7 +626,7 @@ func genExtensions(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo)
 		return
 	}
 
-	g.P("var ", extDecsVarName(f), " = []", protoifacePackage.Ident("ExtensionDescV1"), "{")
+	g.P("var ", extDescsVarName(f), " = []", protoifacePackage.Ident("ExtensionDescV1"), "{")
 	for _, extension := range f.allExtensions {
 		// Special case for proto2 message sets: If this extension is extending
 		// proto2.bridge.MessageSet, and its final name component is "message_set_extension",
@@ -668,7 +669,7 @@ func genExtensions(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo)
 		}
 		fieldName := string(ed.Name())
 		g.P("// extend ", targetName, " { ", ed.Cardinality().String(), " ", typeName, " ", fieldName, " = ", ed.Number(), "; }")
-		g.P(extensionVar(f.File, extension), " = &", extDecsVarName(f), "[", i, "]")
+		g.P(extensionVar(f.File, extension), " = &", extDescsVarName(f), "[", i, "]")
 		g.P()
 	}
 	g.P(")")

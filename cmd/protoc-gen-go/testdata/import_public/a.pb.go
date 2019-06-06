@@ -6,7 +6,6 @@ package import_public
 import (
 	sub "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/import_public/sub"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -160,6 +159,11 @@ var file_import_public_a_proto_depIdxs = []int32{
 	1, // goproto.protoc.import_public.Public.m:type_name -> goproto.protoc.import_public.sub.M
 	2, // goproto.protoc.import_public.Public.e:type_name -> goproto.protoc.import_public.sub.E
 	3, // goproto.protoc.import_public.Public.local:type_name -> goproto.protoc.import_public.Local
+	3, // starting offset of method output_type sub-list
+	3, // starting offset of method input_type sub-list
+	3, // starting offset of extension type_name sub-list
+	3, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_import_public_a_proto_init() }
@@ -168,14 +172,19 @@ func file_import_public_a_proto_init() {
 		return
 	}
 	file_import_public_b_proto_init()
-	File_import_public_a_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_import_public_a_proto_rawDesc,
-		GoTypes:            file_import_public_a_proto_goTypes,
-		DependencyIndexes:  file_import_public_a_proto_depIdxs,
-		MessageOutputTypes: file_import_public_a_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_import_public_a_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   1,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_import_public_a_proto_goTypes,
+		DependencyIndexes: file_import_public_a_proto_depIdxs,
+		MessageInfos:      file_import_public_a_proto_msgTypes,
+	}.Build()
+	File_import_public_a_proto = out.File
 	file_import_public_a_proto_rawDesc = nil
 	file_import_public_a_proto_goTypes = nil
 	file_import_public_a_proto_depIdxs = nil

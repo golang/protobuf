@@ -454,7 +454,7 @@ func (fd *fieldDesc) MapValue() pref.FieldDescriptor {
 	return fd.Message().Fields().ByNumber(2)
 }
 func (fd *fieldDesc) HasDefault() bool                           { return fd.defVal.has }
-func (fd *fieldDesc) Default() pref.Value                        { return fd.defVal.get() }
+func (fd *fieldDesc) Default() pref.Value                        { return fd.defVal.get(fd) }
 func (fd *fieldDesc) DefaultEnumValue() pref.EnumValueDescriptor { return fd.defVal.enum }
 func (fd *fieldDesc) ContainingOneof() pref.OneofDescriptor      { return fd.oneofType }
 func (fd *fieldDesc) ContainingMessage() pref.MessageDescriptor {
@@ -528,7 +528,7 @@ func (xd *extensionDesc) IsMap() bool                                { return fa
 func (xd *extensionDesc) MapKey() pref.FieldDescriptor               { return nil }
 func (xd *extensionDesc) MapValue() pref.FieldDescriptor             { return nil }
 func (xd *extensionDesc) HasDefault() bool                           { return xd.lazyInit().defVal.has }
-func (xd *extensionDesc) Default() pref.Value                        { return xd.lazyInit().defVal.get() }
+func (xd *extensionDesc) Default() pref.Value                        { return xd.lazyInit().defVal.get(xd) }
 func (xd *extensionDesc) DefaultEnumValue() pref.EnumValueDescriptor { return xd.lazyInit().defVal.enum }
 func (xd *extensionDesc) ContainingOneof() pref.OneofDescriptor      { return nil }
 func (xd *extensionDesc) ContainingMessage() pref.MessageDescriptor  { return xd.extendedType }

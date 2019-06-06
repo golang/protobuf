@@ -5,7 +5,7 @@ package nopackage
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -45,7 +45,7 @@ func (x Enum) String() string {
 }
 
 func (Enum) Descriptor() protoreflect.EnumDescriptor {
-	return file_nopackage_nopackage_proto_enumTypes[0].Descriptor()
+	return file_nopackage_nopackage_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x Enum) Number() protoreflect.EnumNumber {
@@ -140,7 +140,7 @@ func file_nopackage_nopackage_proto_rawDescGZIP() []byte {
 	return file_nopackage_nopackage_proto_rawDescData
 }
 
-var file_nopackage_nopackage_proto_enumTypes = make([]protoreflect.EnumType, 1)
+var file_nopackage_nopackage_proto_enumTypes = make([]prototype.Enum, 1)
 var file_nopackage_nopackage_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_nopackage_nopackage_proto_goTypes = []interface{}{
 	(Enum)(0),       // 0: Enum
@@ -148,6 +148,11 @@ var file_nopackage_nopackage_proto_goTypes = []interface{}{
 }
 var file_nopackage_nopackage_proto_depIdxs = []int32{
 	0, // Message.enum_field:type_name -> Enum
+	1, // starting offset of method output_type sub-list
+	1, // starting offset of method input_type sub-list
+	1, // starting offset of extension type_name sub-list
+	1, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_nopackage_nopackage_proto_init() }
@@ -155,15 +160,20 @@ func file_nopackage_nopackage_proto_init() {
 	if File_nopackage_nopackage_proto != nil {
 		return
 	}
-	File_nopackage_nopackage_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_nopackage_nopackage_proto_rawDesc,
-		GoTypes:            file_nopackage_nopackage_proto_goTypes,
-		DependencyIndexes:  file_nopackage_nopackage_proto_depIdxs,
-		EnumOutputTypes:    file_nopackage_nopackage_proto_enumTypes,
-		MessageOutputTypes: file_nopackage_nopackage_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_nopackage_nopackage_proto_rawDesc,
+			NumEnums:      1,
+			NumMessages:   1,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_nopackage_nopackage_proto_goTypes,
+		DependencyIndexes: file_nopackage_nopackage_proto_depIdxs,
+		MessageInfos:      file_nopackage_nopackage_proto_msgTypes,
+	}.Build()
+	File_nopackage_nopackage_proto = out.File
+	file_nopackage_nopackage_proto_enumTypes = out.Enums
 	file_nopackage_nopackage_proto_rawDesc = nil
 	file_nopackage_nopackage_proto_goTypes = nil
 	file_nopackage_nopackage_proto_depIdxs = nil

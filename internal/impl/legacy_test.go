@@ -5,326 +5,333 @@
 package impl_test
 
 import (
+	"fmt"
 	"reflect"
 	"sync"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"google.golang.org/protobuf/encoding/prototext"
 	pimpl "google.golang.org/protobuf/internal/impl"
-	pragma "google.golang.org/protobuf/internal/pragma"
-	ptype "google.golang.org/protobuf/internal/prototype"
+	"google.golang.org/protobuf/internal/pragma"
 	"google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/proto"
+	pdesc "google.golang.org/protobuf/reflect/protodesc"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	preg "google.golang.org/protobuf/reflect/protoregistry"
 	piface "google.golang.org/protobuf/runtime/protoiface"
 
 	proto2_20180125 "google.golang.org/protobuf/internal/testprotos/legacy/proto2.v1.0.0-20180125-92554152"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-type legacyTestMessage struct {
+type LegacyTestMessage struct {
 	XXX_unrecognized       []byte
 	XXX_InternalExtensions map[int32]pimpl.ExtensionField
 }
 
-func (*legacyTestMessage) Reset()         {}
-func (*legacyTestMessage) String() string { return "" }
-func (*legacyTestMessage) ProtoMessage()  {}
-func (*legacyTestMessage) ExtensionRangeArray() []piface.ExtensionRangeV1 {
+func (*LegacyTestMessage) Reset()         {}
+func (*LegacyTestMessage) String() string { return "" }
+func (*LegacyTestMessage) ProtoMessage()  {}
+func (*LegacyTestMessage) ExtensionRangeArray() []piface.ExtensionRangeV1 {
 	return []piface.ExtensionRangeV1{{Start: 10, End: 20}, {Start: 40, End: 80}, {Start: 10000, End: 20000}}
 }
+func (*LegacyTestMessage) Descriptor() ([]byte, []int) { return legacyFD, []int{0} }
+
+var legacyFD = func() []byte {
+	b, _ := proto.Marshal(pdesc.ToFileDescriptorProto(mustMakeFileDesc(`
+		name:   "legacy.proto"
+		syntax: "proto2"
+		message_type: [{
+			name:            "LegacyTestMessage"
+			extension_range: [{start:10 end:20}, {start:40 end:80}, {start:10000 end:20000}]
+		}]
+	`, nil)))
+	return pimpl.Export{}.CompressGZIP(b)
+}()
 
 func init() {
-	mt := pimpl.Export{}.MessageTypeOf(&legacyTestMessage{})
+	mt := pimpl.Export{}.MessageTypeOf((*LegacyTestMessage)(nil))
+	preg.GlobalFiles.Register(mt.ParentFile())
 	preg.GlobalTypes.Register(mt)
 }
 
+func mustMakeExtensionType(fileDesc, extDesc string, t interface{}, r pdesc.Resolver) pref.ExtensionType {
+	s := fmt.Sprintf(`name:"test.proto" syntax:"proto2" %s extension:[{%s}]`, fileDesc, extDesc)
+	xd := mustMakeFileDesc(s, r).Extensions().Get(0)
+	return pimpl.LegacyExtensionTypeOf(xd, reflect.TypeOf(t))
+}
+
+func mustMakeFileDesc(s string, r pdesc.Resolver) pref.FileDescriptor {
+	pb := new(descriptorpb.FileDescriptorProto)
+	if err := prototext.Unmarshal([]byte(s), pb); err != nil {
+		panic(err)
+	}
+	fd, err := pdesc.NewFile(pb, r)
+	if err != nil {
+		panic(err)
+	}
+	return fd
+}
+
 var (
-	testParentDesc    = pimpl.Export{}.MessageDescriptorOf((*legacyTestMessage)(nil))
+	testParentDesc    = pimpl.Export{}.MessageDescriptorOf((*LegacyTestMessage)(nil))
 	testEnumV1Desc    = pimpl.Export{}.EnumDescriptorOf(proto2_20180125.Message_ChildEnum(0))
 	testMessageV1Desc = pimpl.Export{}.MessageDescriptorOf((*proto2_20180125.Message_ChildMessage)(nil))
 	testEnumV2Desc    = enumProto2Type.Descriptor()
 	testMessageV2Desc = enumMessagesType.PBType.Descriptor()
 
+	depReg = preg.NewFiles(
+		testParentDesc.ParentFile(),
+		testEnumV1Desc.ParentFile(),
+		testMessageV1Desc.ParentFile(),
+		testEnumV2Desc.ParentFile(),
+		testMessageV2Desc.ParentFile(),
+	)
 	extensionTypes = []pref.ExtensionType{
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.optional_bool",
-			Number:       10000,
-			Cardinality:  pref.Optional,
-			Kind:         pref.BoolKind,
-			Default:      pref.ValueOf(true),
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.optional_int32",
-			Number:       10001,
-			Cardinality:  pref.Optional,
-			Kind:         pref.Int32Kind,
-			Default:      pref.ValueOf(int32(-12345)),
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.optional_uint32",
-			Number:       10002,
-			Cardinality:  pref.Optional,
-			Kind:         pref.Uint32Kind,
-			Default:      pref.ValueOf(uint32(3200)),
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.optional_float",
-			Number:       10003,
-			Cardinality:  pref.Optional,
-			Kind:         pref.FloatKind,
-			Default:      pref.ValueOf(float32(3.14159)),
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.optional_string",
-			Number:       10004,
-			Cardinality:  pref.Optional,
-			Kind:         pref.StringKind,
-			Default:      pref.ValueOf(string("hello, \"world!\"\n")),
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.optional_bytes",
-			Number:       10005,
-			Cardinality:  pref.Optional,
-			Kind:         pref.BytesKind,
-			Default:      pref.ValueOf([]byte("dead\xde\xad\xbe\xefbeef")),
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.optional_enum_v1",
-			Number:       10006,
-			Cardinality:  pref.Optional,
-			Kind:         pref.EnumKind,
-			Default:      pref.ValueOf(pref.EnumNumber(0)),
-			EnumType:     testEnumV1Desc,
-			ExtendedType: testParentDesc,
-		}, proto2_20180125.Message_ChildEnum(0)),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.optional_message_v1",
-			Number:       10007,
-			Cardinality:  pref.Optional,
-			Kind:         pref.MessageKind,
-			MessageType:  testMessageV1Desc,
-			ExtendedType: testParentDesc,
-		}, (*proto2_20180125.Message_ChildMessage)(nil)),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.optional_enum_v2",
-			Number:       10008,
-			Cardinality:  pref.Optional,
-			Kind:         pref.EnumKind,
-			Default:      pref.ValueOf(pref.EnumNumber(57005)),
-			EnumType:     testEnumV2Desc,
-			ExtendedType: testParentDesc,
-		}, EnumProto2(0)),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.optional_message_v2",
-			Number:       10009,
-			Cardinality:  pref.Optional,
-			Kind:         pref.MessageKind,
-			MessageType:  testMessageV2Desc,
-			ExtendedType: testParentDesc,
-		}, (*EnumMessages)(nil)),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.repeated_bool",
-			Number:       10010,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.BoolKind,
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.repeated_int32",
-			Number:       10011,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.Int32Kind,
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.repeated_uint32",
-			Number:       10012,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.Uint32Kind,
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.repeated_float",
-			Number:       10013,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.FloatKind,
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.repeated_string",
-			Number:       10014,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.StringKind,
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.repeated_bytes",
-			Number:       10015,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.BytesKind,
-			ExtendedType: testParentDesc,
-		}, nil),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.repeated_enum_v1",
-			Number:       10016,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.EnumKind,
-			EnumType:     testEnumV1Desc,
-			ExtendedType: testParentDesc,
-		}, proto2_20180125.Message_ChildEnum(0)),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.repeated_message_v1",
-			Number:       10017,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.MessageKind,
-			MessageType:  testMessageV1Desc,
-			ExtendedType: testParentDesc,
-		}, (*proto2_20180125.Message_ChildMessage)(nil)),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.repeated_enum_v2",
-			Number:       10018,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.EnumKind,
-			EnumType:     testEnumV2Desc,
-			ExtendedType: testParentDesc,
-		}, EnumProto2(0)),
-		mustMakeExtensionType(&ptype.StandaloneExtension{
-			FullName:     "fizz.buzz.repeated_message_v2",
-			Number:       10019,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.MessageKind,
-			MessageType:  testMessageV2Desc,
-			ExtendedType: testParentDesc,
-		}, (*EnumMessages)(nil)),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"optional_bool" number:10000 label:LABEL_OPTIONAL type:TYPE_BOOL default_value:"true" extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"optional_int32" number:10001 label:LABEL_OPTIONAL type:TYPE_INT32 default_value:"-12345" extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"optional_uint32" number:10002 label:LABEL_OPTIONAL type:TYPE_UINT32 default_value:"3200" extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"optional_float" number:10003 label:LABEL_OPTIONAL type:TYPE_FLOAT default_value:"3.14159" extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"optional_string" number:10004 label:LABEL_OPTIONAL type:TYPE_STRING default_value:"hello, \"world!\"\n" extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"optional_bytes" number:10005 label:LABEL_OPTIONAL type:TYPE_BYTES default_value:"dead\\336\\255\\276\\357beef" extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:["legacy.proto", "proto2.v1.0.0-20180125-92554152/test.proto"]`,
+			`name:"optional_enum_v1" number:10006 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".google.golang.org.proto2_20180125.Message.ChildEnum" default_value:"ALPHA" extendee:".LegacyTestMessage"`,
+			proto2_20180125.Message_ChildEnum(0), depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:["legacy.proto", "proto2.v1.0.0-20180125-92554152/test.proto"]`,
+			`name:"optional_message_v1" number:10007 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.golang.org.proto2_20180125.Message.ChildMessage" extendee:".LegacyTestMessage"`,
+			(*proto2_20180125.Message_ChildMessage)(nil), depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:["legacy.proto", "enum2.proto"]`,
+			`name:"optional_enum_v2" number:10008 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".EnumProto2" default_value:"DEAD" extendee:".LegacyTestMessage"`,
+			EnumProto2(0), depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:["legacy.proto", "enum-messages.proto"]`,
+			`name:"optional_message_v2" number:10009 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".EnumMessages" extendee:".LegacyTestMessage"`,
+			(*EnumMessages)(nil), depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"repeated_bool" number:10010 label:LABEL_REPEATED type:TYPE_BOOL extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"repeated_int32" number:10011 label:LABEL_REPEATED type:TYPE_INT32 extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"repeated_uint32" number:10012 label:LABEL_REPEATED type:TYPE_UINT32 extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"repeated_float" number:10013 label:LABEL_REPEATED type:TYPE_FLOAT extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"repeated_string" number:10014 label:LABEL_REPEATED type:TYPE_STRING extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:"legacy.proto"`,
+			`name:"repeated_bytes" number:10015 label:LABEL_REPEATED type:TYPE_BYTES extendee:".LegacyTestMessage"`,
+			nil, depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:["legacy.proto", "proto2.v1.0.0-20180125-92554152/test.proto"]`,
+			`name:"repeated_enum_v1" number:10016 label:LABEL_REPEATED type:TYPE_ENUM type_name:".google.golang.org.proto2_20180125.Message.ChildEnum" extendee:".LegacyTestMessage"`,
+			proto2_20180125.Message_ChildEnum(0), depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:["legacy.proto", "proto2.v1.0.0-20180125-92554152/test.proto"]`,
+			`name:"repeated_message_v1" number:10017 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".google.golang.org.proto2_20180125.Message.ChildMessage" extendee:".LegacyTestMessage"`,
+			(*proto2_20180125.Message_ChildMessage)(nil), depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:["legacy.proto", "enum2.proto"]`,
+			`name:"repeated_enum_v2" number:10018 label:LABEL_REPEATED type:TYPE_ENUM type_name:".EnumProto2" extendee:".LegacyTestMessage"`,
+			EnumProto2(0), depReg,
+		),
+		mustMakeExtensionType(
+			`package:"fizz.buzz" dependency:["legacy.proto", "enum-messages.proto"]`,
+			`name:"repeated_message_v2" number:10019 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".EnumMessages" extendee:".LegacyTestMessage"`,
+			(*EnumMessages)(nil), depReg,
+		),
 	}
 
 	extensionDescs = []*piface.ExtensionDescV1{{
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         10000,
 		Name:          "fizz.buzz.optional_bool",
 		Tag:           "varint,10000,opt,name=optional_bool,def=1",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: (*int32)(nil),
 		Field:         10001,
 		Name:          "fizz.buzz.optional_int32",
 		Tag:           "varint,10001,opt,name=optional_int32,def=-12345",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: (*uint32)(nil),
 		Field:         10002,
 		Name:          "fizz.buzz.optional_uint32",
 		Tag:           "varint,10002,opt,name=optional_uint32,def=3200",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: (*float32)(nil),
 		Field:         10003,
 		Name:          "fizz.buzz.optional_float",
 		Tag:           "fixed32,10003,opt,name=optional_float,def=3.14159",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: (*string)(nil),
 		Field:         10004,
 		Name:          "fizz.buzz.optional_string",
 		Tag:           "bytes,10004,opt,name=optional_string,def=hello, \"world!\"\n",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([]byte)(nil),
 		Field:         10005,
 		Name:          "fizz.buzz.optional_bytes",
 		Tag:           "bytes,10005,opt,name=optional_bytes,def=dead\\336\\255\\276\\357beef",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: (*proto2_20180125.Message_ChildEnum)(nil),
 		Field:         10006,
 		Name:          "fizz.buzz.optional_enum_v1",
 		Tag:           "varint,10006,opt,name=optional_enum_v1,enum=google.golang.org.proto2_20180125.Message_ChildEnum,def=0",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: (*proto2_20180125.Message_ChildMessage)(nil),
 		Field:         10007,
 		Name:          "fizz.buzz.optional_message_v1",
 		Tag:           "bytes,10007,opt,name=optional_message_v1",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: (*EnumProto2)(nil),
 		Field:         10008,
 		Name:          "fizz.buzz.optional_enum_v2",
 		Tag:           "varint,10008,opt,name=optional_enum_v2,enum=EnumProto2,def=57005",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: (*EnumMessages)(nil),
 		Field:         10009,
 		Name:          "fizz.buzz.optional_message_v2",
 		Tag:           "bytes,10009,opt,name=optional_message_v2",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([]bool)(nil),
 		Field:         10010,
 		Name:          "fizz.buzz.repeated_bool",
 		Tag:           "varint,10010,rep,name=repeated_bool",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([]int32)(nil),
 		Field:         10011,
 		Name:          "fizz.buzz.repeated_int32",
 		Tag:           "varint,10011,rep,name=repeated_int32",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([]uint32)(nil),
 		Field:         10012,
 		Name:          "fizz.buzz.repeated_uint32",
 		Tag:           "varint,10012,rep,name=repeated_uint32",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([]float32)(nil),
 		Field:         10013,
 		Name:          "fizz.buzz.repeated_float",
 		Tag:           "fixed32,10013,rep,name=repeated_float",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([]string)(nil),
 		Field:         10014,
 		Name:          "fizz.buzz.repeated_string",
 		Tag:           "bytes,10014,rep,name=repeated_string",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([][]byte)(nil),
 		Field:         10015,
 		Name:          "fizz.buzz.repeated_bytes",
 		Tag:           "bytes,10015,rep,name=repeated_bytes",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([]proto2_20180125.Message_ChildEnum)(nil),
 		Field:         10016,
 		Name:          "fizz.buzz.repeated_enum_v1",
 		Tag:           "varint,10016,rep,name=repeated_enum_v1,enum=google.golang.org.proto2_20180125.Message_ChildEnum",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([]*proto2_20180125.Message_ChildMessage)(nil),
 		Field:         10017,
 		Name:          "fizz.buzz.repeated_message_v1",
 		Tag:           "bytes,10017,rep,name=repeated_message_v1",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([]EnumProto2)(nil),
 		Field:         10018,
 		Name:          "fizz.buzz.repeated_enum_v2",
 		Tag:           "varint,10018,rep,name=repeated_enum_v2,enum=EnumProto2",
+		Filename:      "test.proto",
 	}, {
-		ExtendedType:  (*legacyTestMessage)(nil),
+		ExtendedType:  (*LegacyTestMessage)(nil),
 		ExtensionType: ([]*EnumMessages)(nil),
 		Field:         10019,
 		Name:          "fizz.buzz.repeated_message_v2",
 		Tag:           "bytes,10019,rep,name=repeated_message_v2",
+		Filename:      "test.proto",
 	}}
 )
 
@@ -333,7 +340,7 @@ func TestLegacyExtensions(t *testing.T) {
 		return x == y // pointer compare messages for object identity
 	})}
 
-	m := pimpl.Export{}.MessageOf(new(legacyTestMessage))
+	m := pimpl.Export{}.MessageOf(new(LegacyTestMessage))
 
 	if n := m.Len(); n != 0 {
 		t.Errorf("KnownFields.Len() = %v, want 0", n)
@@ -490,13 +497,6 @@ func TestExtensionConvert(t *testing.T) {
 					}
 					return out
 				}),
-				// TODO: Add this when ExtensionType no longer implements
-				// ExtensionDescriptor.
-				/*
-					cmp.Transformer("", func(x pref.ExtensionType) pref.ExtensionDescriptor {
-						return x.Descriptor()
-					}),
-				*/
 				cmp.Transformer("", func(x pref.Descriptor) map[string]interface{} {
 					out := make(map[string]interface{})
 					v := reflect.ValueOf(x)
@@ -557,6 +557,38 @@ type (
 	}
 	Enum int32
 )
+
+func (*MessageA) Descriptor() ([]byte, []int) { return concurrentFD, []int{0} }
+func (*MessageB) Descriptor() ([]byte, []int) { return concurrentFD, []int{1} }
+func (Enum) EnumDescriptor() ([]byte, []int)  { return concurrentFD, []int{0} }
+
+var concurrentFD = func() []byte {
+	b, _ := proto.Marshal(pdesc.ToFileDescriptorProto(mustMakeFileDesc(`
+		name:    "concurrent.proto"
+		syntax:  "proto2"
+		package: "legacy"
+		message_type: [{
+			name: "MessageA"
+			field: [
+				{name:"a1" number:1 label:LABEL_REQUIRED type:TYPE_MESSAGE type_name:".legacy.MessageA"},
+				{name:"a2" number:2 label:LABEL_REQUIRED type:TYPE_MESSAGE type_name:".legacy.MessageB"},
+				{name:"a3" number:3 label:LABEL_OPTIONAL type:TYPE_ENUM    type_name:".legacy.Enum"}
+			]
+		}, {
+			name: "MessageB"
+			field: [
+				{name:"a1" number:1 label:LABEL_REQUIRED type:TYPE_MESSAGE type_name:".legacy.MessageA"},
+				{name:"a2" number:2 label:LABEL_REQUIRED type:TYPE_MESSAGE type_name:".legacy.MessageB"},
+				{name:"a3" number:3 label:LABEL_OPTIONAL type:TYPE_ENUM    type_name:".legacy.Enum"}
+			]
+		}]
+		enum_type: [{
+			name:  "Enum"
+			value: [{name:"FOO" number:500}]
+		}]
+	`, nil)))
+	return pimpl.Export{}.CompressGZIP(b)
+}()
 
 // TestConcurrentInit tests that concurrent wrapping of multiple legacy types
 // results in the exact same descriptor being created.

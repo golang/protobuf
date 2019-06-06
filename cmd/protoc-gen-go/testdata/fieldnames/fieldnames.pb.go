@@ -5,7 +5,6 @@ package fieldnames
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -382,21 +381,32 @@ var file_fieldnames_fieldnames_proto_goTypes = []interface{}{
 	(*Message)(nil),                      // 0: goproto.protoc.fieldnames.Message
 	(*Message_OneofMessageConflict)(nil), // 1: goproto.protoc.fieldnames.Message.OneofMessageConflict
 }
-var file_fieldnames_fieldnames_proto_depIdxs = []int32{}
+var file_fieldnames_fieldnames_proto_depIdxs = []int32{
+	0, // starting offset of method output_type sub-list
+	0, // starting offset of method input_type sub-list
+	0, // starting offset of extension type_name sub-list
+	0, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
+}
 
 func init() { file_fieldnames_fieldnames_proto_init() }
 func file_fieldnames_fieldnames_proto_init() {
 	if File_fieldnames_fieldnames_proto != nil {
 		return
 	}
-	File_fieldnames_fieldnames_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_fieldnames_fieldnames_proto_rawDesc,
-		GoTypes:            file_fieldnames_fieldnames_proto_goTypes,
-		DependencyIndexes:  file_fieldnames_fieldnames_proto_depIdxs,
-		MessageOutputTypes: file_fieldnames_fieldnames_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_fieldnames_fieldnames_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   2,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_fieldnames_fieldnames_proto_goTypes,
+		DependencyIndexes: file_fieldnames_fieldnames_proto_depIdxs,
+		MessageInfos:      file_fieldnames_fieldnames_proto_msgTypes,
+	}.Build()
+	File_fieldnames_fieldnames_proto = out.File
 	file_fieldnames_fieldnames_proto_rawDesc = nil
 	file_fieldnames_fieldnames_proto_goTypes = nil
 	file_fieldnames_fieldnames_proto_depIdxs = nil

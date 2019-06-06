@@ -5,7 +5,6 @@ package apipb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sourcecontextpb "google.golang.org/protobuf/types/known/sourcecontextpb"
@@ -454,6 +453,11 @@ var file_google_protobuf_api_proto_depIdxs = []int32{
 	5, // google.protobuf.Api.syntax:type_name -> google.protobuf.Syntax
 	3, // google.protobuf.Method.options:type_name -> google.protobuf.Option
 	5, // google.protobuf.Method.syntax:type_name -> google.protobuf.Syntax
+	7, // starting offset of method output_type sub-list
+	7, // starting offset of method input_type sub-list
+	7, // starting offset of extension type_name sub-list
+	7, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_google_protobuf_api_proto_init() }
@@ -461,14 +465,19 @@ func file_google_protobuf_api_proto_init() {
 	if File_google_protobuf_api_proto != nil {
 		return
 	}
-	File_google_protobuf_api_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_google_protobuf_api_proto_rawDesc,
-		GoTypes:            file_google_protobuf_api_proto_goTypes,
-		DependencyIndexes:  file_google_protobuf_api_proto_depIdxs,
-		MessageOutputTypes: file_google_protobuf_api_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_google_protobuf_api_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   3,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_google_protobuf_api_proto_goTypes,
+		DependencyIndexes: file_google_protobuf_api_proto_depIdxs,
+		MessageInfos:      file_google_protobuf_api_proto_msgTypes,
+	}.Build()
+	File_google_protobuf_api_proto = out.File
 	file_google_protobuf_api_proto_rawDesc = nil
 	file_google_protobuf_api_proto_goTypes = nil
 	file_google_protobuf_api_proto_depIdxs = nil

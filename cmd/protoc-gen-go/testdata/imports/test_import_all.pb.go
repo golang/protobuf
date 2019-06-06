@@ -9,7 +9,6 @@ import (
 	_ "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/imports/test_a_2"
 	test_b_1 "google.golang.org/protobuf/cmd/protoc-gen-go/testdata/imports/test_b_1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -152,6 +151,11 @@ var file_imports_test_import_all_proto_depIdxs = []int32{
 	3, // test.All.bm1:type_name -> test.b.part1.M1
 	4, // test.All.bm2:type_name -> test.b.part2.M2
 	5, // test.All.fmt:type_name -> fmt.M
+	5, // starting offset of method output_type sub-list
+	5, // starting offset of method input_type sub-list
+	5, // starting offset of extension type_name sub-list
+	5, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_imports_test_import_all_proto_init() }
@@ -159,14 +163,19 @@ func file_imports_test_import_all_proto_init() {
 	if File_imports_test_import_all_proto != nil {
 		return
 	}
-	File_imports_test_import_all_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_imports_test_import_all_proto_rawDesc,
-		GoTypes:            file_imports_test_import_all_proto_goTypes,
-		DependencyIndexes:  file_imports_test_import_all_proto_depIdxs,
-		MessageOutputTypes: file_imports_test_import_all_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_imports_test_import_all_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   1,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_imports_test_import_all_proto_goTypes,
+		DependencyIndexes: file_imports_test_import_all_proto_depIdxs,
+		MessageInfos:      file_imports_test_import_all_proto_msgTypes,
+	}.Build()
+	File_imports_test_import_all_proto = out.File
 	file_imports_test_import_all_proto_rawDesc = nil
 	file_imports_test_import_all_proto_goTypes = nil
 	file_imports_test_import_all_proto_depIdxs = nil

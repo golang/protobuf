@@ -5,7 +5,6 @@ package proto2
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	sync "sync"
@@ -177,6 +176,11 @@ var file_proto2_nested_messages_proto_depIdxs = []int32{
 	1, // goproto.protoc.proto2.Layer1.l2:type_name -> goproto.protoc.proto2.Layer1.Layer2
 	2, // goproto.protoc.proto2.Layer1.l3:type_name -> goproto.protoc.proto2.Layer1.Layer2.Layer3
 	2, // goproto.protoc.proto2.Layer1.Layer2.l3:type_name -> goproto.protoc.proto2.Layer1.Layer2.Layer3
+	3, // starting offset of method output_type sub-list
+	3, // starting offset of method input_type sub-list
+	3, // starting offset of extension type_name sub-list
+	3, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
 }
 
 func init() { file_proto2_nested_messages_proto_init() }
@@ -184,14 +188,19 @@ func file_proto2_nested_messages_proto_init() {
 	if File_proto2_nested_messages_proto != nil {
 		return
 	}
-	File_proto2_nested_messages_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_proto2_nested_messages_proto_rawDesc,
-		GoTypes:            file_proto2_nested_messages_proto_goTypes,
-		DependencyIndexes:  file_proto2_nested_messages_proto_depIdxs,
-		MessageOutputTypes: file_proto2_nested_messages_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_proto2_nested_messages_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   3,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_proto2_nested_messages_proto_goTypes,
+		DependencyIndexes: file_proto2_nested_messages_proto_depIdxs,
+		MessageInfos:      file_proto2_nested_messages_proto_msgTypes,
+	}.Build()
+	File_proto2_nested_messages_proto = out.File
 	file_proto2_nested_messages_proto_rawDesc = nil
 	file_proto2_nested_messages_proto_goTypes = nil
 	file_proto2_nested_messages_proto_depIdxs = nil

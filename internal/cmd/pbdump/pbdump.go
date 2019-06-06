@@ -19,8 +19,8 @@ import (
 
 	"google.golang.org/protobuf/internal/encoding/pack"
 	"google.golang.org/protobuf/internal/encoding/wire"
-	"google.golang.org/protobuf/internal/prototype"
 	"google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -202,41 +202,43 @@ func (fs fields) set(prefix, s string, k protoreflect.Kind) error {
 
 // Descriptor returns the field tree as a message descriptor.
 func (fs fields) Descriptor() (protoreflect.MessageDescriptor, error) {
-	ftyp, err := prototype.NewFile(&prototype.File{
-		Syntax:   protoreflect.Proto2,
-		Messages: []prototype.Message{fs.messageDescriptor("M")},
-	})
+	fd, err := protodesc.NewFile(&descriptorpb.FileDescriptorProto{
+		Name:        scalar.String("dump.proto"),
+		Syntax:      scalar.String("proto2"),
+		MessageType: []*descriptorpb.DescriptorProto{fs.messageDescriptor("M")},
+	}, nil)
 	if err != nil {
 		return nil, err
 	}
-	return ftyp.Messages().Get(0), nil
+	return fd.Messages().Get(0), nil
 }
-func (fs fields) messageDescriptor(name protoreflect.FullName) prototype.Message {
-	m := prototype.Message{Name: name.Name()}
+func (fs fields) messageDescriptor(name protoreflect.FullName) *descriptorpb.DescriptorProto {
+	m := &descriptorpb.DescriptorProto{Name: scalar.String(string(name.Name()))}
 	for _, n := range fs.sortedNums() {
-		f := prototype.Field{
-			Name:        protoreflect.Name(fmt.Sprintf("f%d", n)),
-			Number:      n,
-			Cardinality: protoreflect.Optional,
-			Kind:        fs[n].kind,
+		k := fs[n].kind
+		if !k.IsValid() {
+			k = protoreflect.MessageKind
 		}
-		if !f.Kind.IsValid() {
-			f.Kind = protoreflect.MessageKind
+		f := &descriptorpb.FieldDescriptorProto{
+			Name:   scalar.String(fmt.Sprintf("f%d", n)),
+			Number: scalar.Int32(int32(n)),
+			Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+			Type:   descriptorpb.FieldDescriptorProto_Type(k).Enum(),
 		}
-		switch f.Kind {
+		switch k {
 		case protoreflect.BoolKind, protoreflect.EnumKind,
 			protoreflect.Int32Kind, protoreflect.Sint32Kind, protoreflect.Uint32Kind,
 			protoreflect.Int64Kind, protoreflect.Sint64Kind, protoreflect.Uint64Kind,
 			protoreflect.Sfixed32Kind, protoreflect.Fixed32Kind, protoreflect.FloatKind,
 			protoreflect.Sfixed64Kind, protoreflect.Fixed64Kind, protoreflect.DoubleKind:
-			f.Cardinality = protoreflect.Repeated
+			f.Label = descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum()
 			f.Options = &descriptorpb.FieldOptions{Packed: scalar.Bool(true)}
 		case protoreflect.MessageKind, protoreflect.GroupKind:
 			s := name.Append(protoreflect.Name(fmt.Sprintf("M%d", n)))
-			f.MessageType = prototype.PlaceholderMessage(s)
-			m.Messages = append(m.Messages, fs[n].sub.messageDescriptor(s))
+			f.TypeName = scalar.String(string("." + s))
+			m.NestedType = append(m.NestedType, fs[n].sub.messageDescriptor(s))
 		}
-		m.Fields = append(m.Fields, f)
+		m.Field = append(m.Field, f)
 	}
 	return m
 }

@@ -11,35 +11,47 @@ import (
 	"math"
 	"testing"
 
-	cmp "github.com/google/go-cmp/cmp"
-	ptype "google.golang.org/protobuf/internal/prototype"
+	"github.com/google/go-cmp/cmp"
+	"google.golang.org/protobuf/encoding/prototext"
+	pdesc "google.golang.org/protobuf/reflect/protodesc"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
+
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 var msgDesc = func() pref.MessageDescriptor {
-	mtyp, err := ptype.NewMessage(&ptype.StandaloneMessage{
-		Syntax:   pref.Proto2,
-		FullName: "Message",
-		Fields: []ptype.Field{
-			{Name: "F1", Number: 1, Cardinality: pref.Repeated, Kind: pref.BoolKind, IsPacked: ptype.True},
-			{Name: "F2", Number: 2, Cardinality: pref.Repeated, Kind: pref.Int64Kind, IsPacked: ptype.True},
-			{Name: "F3", Number: 3, Cardinality: pref.Repeated, Kind: pref.Sint64Kind, IsPacked: ptype.True},
-			{Name: "F4", Number: 4, Cardinality: pref.Repeated, Kind: pref.Uint64Kind, IsPacked: ptype.True},
-			{Name: "F5", Number: 5, Cardinality: pref.Repeated, Kind: pref.Fixed32Kind, IsPacked: ptype.True},
-			{Name: "F6", Number: 6, Cardinality: pref.Repeated, Kind: pref.Sfixed32Kind, IsPacked: ptype.True},
-			{Name: "F7", Number: 7, Cardinality: pref.Repeated, Kind: pref.FloatKind, IsPacked: ptype.True},
-			{Name: "F8", Number: 8, Cardinality: pref.Repeated, Kind: pref.Fixed64Kind, IsPacked: ptype.True},
-			{Name: "F9", Number: 9, Cardinality: pref.Repeated, Kind: pref.Sfixed64Kind, IsPacked: ptype.True},
-			{Name: "F10", Number: 10, Cardinality: pref.Repeated, Kind: pref.DoubleKind, IsPacked: ptype.True},
-			{Name: "F11", Number: 11, Cardinality: pref.Optional, Kind: pref.StringKind},
-			{Name: "F12", Number: 12, Cardinality: pref.Optional, Kind: pref.BytesKind},
-			{Name: "F13", Number: 13, Cardinality: pref.Optional, Kind: pref.MessageKind, MessageType: ptype.PlaceholderMessage("Message")},
-			{Name: "F14", Number: 14, Cardinality: pref.Optional, Kind: pref.GroupKind, MessageType: ptype.PlaceholderMessage("Message")}},
-	})
+	const s = `
+		name:   "test.proto"
+		syntax: "proto2"
+		message_type: [{
+			name: "Message"
+			field: [
+				{name:"F1"  number:1  label:LABEL_REPEATED type:TYPE_BOOL     options:{packed:true}},
+				{name:"F2"  number:2  label:LABEL_REPEATED type:TYPE_INT64    options:{packed:true}},
+				{name:"F3"  number:3  label:LABEL_REPEATED type:TYPE_SINT64   options:{packed:true}},
+				{name:"F4"  number:4  label:LABEL_REPEATED type:TYPE_UINT64   options:{packed:true}},
+				{name:"F5"  number:5  label:LABEL_REPEATED type:TYPE_FIXED32  options:{packed:true}},
+				{name:"F6"  number:6  label:LABEL_REPEATED type:TYPE_SFIXED32 options:{packed:true}},
+				{name:"F7"  number:7  label:LABEL_REPEATED type:TYPE_FLOAT    options:{packed:true}},
+				{name:"F8"  number:8  label:LABEL_REPEATED type:TYPE_FIXED64  options:{packed:true}},
+				{name:"F9"  number:9  label:LABEL_REPEATED type:TYPE_SFIXED64 options:{packed:true}},
+				{name:"F10" number:10 label:LABEL_REPEATED type:TYPE_DOUBLE   options:{packed:true}},
+				{name:"F11" number:11 label:LABEL_OPTIONAL type:TYPE_STRING},
+				{name:"F12" number:12 label:LABEL_OPTIONAL type:TYPE_BYTES},
+				{name:"F13" number:13 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".Message"},
+				{name:"F14" number:14 label:LABEL_OPTIONAL type:TYPE_GROUP   type_name:".Message"}
+			]
+		}]
+	`
+	pb := new(descriptorpb.FileDescriptorProto)
+	if err := prototext.Unmarshal([]byte(s), pb); err != nil {
+		panic(err)
+	}
+	fd, err := pdesc.NewFile(pb, nil)
 	if err != nil {
 		panic(err)
 	}
-	return mtyp
+	return fd.Messages().Get(0)
 }()
 
 // dhex decodes a hex-string and returns the bytes and panics if s is invalid.

@@ -6,12 +6,11 @@ package impl
 
 import (
 	"fmt"
-	"math"
 	"reflect"
 	"sync"
 
-	ptype "google.golang.org/protobuf/internal/prototype"
 	pvalue "google.golang.org/protobuf/internal/value"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/prototype"
 )
@@ -94,78 +93,29 @@ func LegacyLoadEnumDesc(t reflect.Type) pref.EnumDescriptor {
 		return ed.(pref.EnumDescriptor)
 	}
 
-	// Slow-path: initialize EnumDescriptor from the proto descriptor.
-	if t.Kind() != reflect.Int32 || t.PkgPath() == "" {
-		panic(fmt.Sprintf("got %v, want named int32 kind", t))
-	}
-	if t == legacyEnumNumberType {
-		panic(fmt.Sprintf("cannot be %v", t))
-	}
-
-	// Derive the enum descriptor from the raw descriptor proto.
-	e := new(ptype.StandaloneEnum)
+	// Slow-path: initialize EnumDescriptor from the raw descriptor.
 	ev := reflect.Zero(t).Interface()
 	if _, ok := ev.(pref.Enum); ok {
 		panic(fmt.Sprintf("%v already implements proto.Enum", t))
 	}
-	if ed, ok := ev.(enumV1); ok {
-		b, idxs := ed.EnumDescriptor()
-		fd := legacyLoadFileDesc(b)
-
-		// Derive syntax.
-		switch fd.GetSyntax() {
-		case "proto2", "":
-			e.Syntax = pref.Proto2
-		case "proto3":
-			e.Syntax = pref.Proto3
-		}
-
-		// Derive the full name and correct enum descriptor.
-		var ed *legacyEnumDescriptorProto
-		e.FullName = pref.FullName(fd.GetPackage())
-		if len(idxs) == 1 {
-			ed = fd.EnumType[idxs[0]]
-			e.FullName = e.FullName.Append(pref.Name(ed.GetName()))
-		} else {
-			md := fd.MessageType[idxs[0]]
-			e.FullName = e.FullName.Append(pref.Name(md.GetName()))
-			for _, i := range idxs[1 : len(idxs)-1] {
-				md = md.NestedType[i]
-				e.FullName = e.FullName.Append(pref.Name(md.GetName()))
-			}
-			ed = md.EnumType[idxs[len(idxs)-1]]
-			e.FullName = e.FullName.Append(pref.Name(ed.GetName()))
-		}
-
-		// Derive the enum values.
-		for _, vd := range ed.Value {
-			e.Values = append(e.Values, ptype.EnumValue{
-				Name:   pref.Name(vd.GetName()),
-				Number: pref.EnumNumber(vd.GetNumber()),
-			})
-		}
-	} else {
-		// If the type does not implement enumV1, then there is no reliable
-		// way to derive the original protobuf type information.
-		// We are unable to use the global enum registry since it is
-		// unfortunately keyed by the full name, which we do not know.
-		// Furthermore, some generated enums register with a fork of
-		// golang/protobuf so the enum may not even be found in the registry.
-		//
-		// Instead, create a bogus enum descriptor to ensure that
-		// most operations continue to work. For example, prototext and protojson
-		// will be unable to parse a message with an enum value by name.
-		e.Syntax = pref.Proto2
-		e.FullName = legacyDeriveFullName(t)
-		e.Values = []ptype.EnumValue{{Name: "INVALID", Number: math.MinInt32}}
+	edV1, ok := ev.(enumV1)
+	if !ok {
+		panic(fmt.Sprintf("enum %v is no longer supported; please regenerate", t))
 	}
+	b, idxs := edV1.EnumDescriptor()
 
-	ed, err := ptype.NewEnum(e)
-	if err != nil {
-		panic(err)
+	var ed pref.EnumDescriptor
+	if len(idxs) == 1 {
+		ed = legacyLoadFileDesc(b).Enums().Get(idxs[0])
+	} else {
+		md := legacyLoadFileDesc(b).Messages().Get(idxs[0])
+		for _, i := range idxs[1 : len(idxs)-1] {
+			md = md.Messages().Get(i)
+		}
+		ed = md.Enums().Get(idxs[len(idxs)-1])
 	}
 	if ed, ok := legacyEnumDescCache.LoadOrStore(t, ed); ok {
-		return ed.(pref.EnumDescriptor)
+		return ed.(protoreflect.EnumDescriptor)
 	}
 	return ed
 }

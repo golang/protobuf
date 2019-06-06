@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package prototype_test
+package filedesc_test
 
 import (
 	"fmt"
@@ -12,11 +12,11 @@ import (
 	"strings"
 	"testing"
 
-	protoV1 "github.com/golang/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 	detrand "google.golang.org/protobuf/internal/detrand"
-	ptype "google.golang.org/protobuf/internal/prototype"
+	"google.golang.org/protobuf/internal/filedesc"
 	scalar "google.golang.org/protobuf/internal/scalar"
+	"google.golang.org/protobuf/proto"
 	pdesc "google.golang.org/protobuf/reflect/protodesc"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 
@@ -31,158 +31,7 @@ func init() {
 // TODO: Test protodesc.NewFile with imported files.
 
 func TestFile(t *testing.T) {
-	f1 := &ptype.File{
-		Syntax:  pref.Proto2,
-		Path:    "path/to/file.proto",
-		Package: "test",
-		Options: &descriptorpb.FileOptions{Deprecated: scalar.Bool(true)},
-		Messages: []ptype.Message{{
-			Name: "A", // "test.A"
-			Options: &descriptorpb.MessageOptions{
-				MapEntry:   scalar.Bool(true),
-				Deprecated: scalar.Bool(true),
-			},
-			IsMapEntry: true,
-			Fields: []ptype.Field{{
-				Name:        "key", // "test.A.key"
-				Number:      1,
-				Options:     &descriptorpb.FieldOptions{Deprecated: scalar.Bool(true)},
-				Cardinality: pref.Optional,
-				Kind:        pref.StringKind,
-			}, {
-				Name:        "value", // "test.A.value"
-				Number:      2,
-				Cardinality: pref.Optional,
-				Kind:        pref.MessageKind,
-				MessageType: ptype.PlaceholderMessage("test.B"),
-			}},
-		}, {
-			Name: "B", // "test.B"
-			Fields: []ptype.Field{{
-				Name:        "field_one", // "test.B.field_one"
-				Number:      1,
-				Cardinality: pref.Optional,
-				Kind:        pref.StringKind,
-				Default:     pref.ValueOf("hello, \"world!\"\n"),
-				OneofName:   "O1",
-			}, {
-				Name:        "field_two", // "test.B.field_two"
-				JSONName:    "Field2",
-				Number:      2,
-				Cardinality: pref.Optional,
-				Kind:        pref.EnumKind,
-				Default:     pref.ValueOf(pref.EnumNumber(1)),
-				EnumType:    ptype.PlaceholderEnum("test.E1"),
-				OneofName:   "O2",
-			}, {
-				Name:        "field_three", // "test.B.field_three"
-				Number:      3,
-				Cardinality: pref.Optional,
-				Kind:        pref.MessageKind,
-				MessageType: ptype.PlaceholderMessage("test.C"),
-				OneofName:   "O2",
-			}, {
-				Name:        "field_four", // "test.B.field_four"
-				JSONName:    "Field4",
-				Number:      4,
-				Cardinality: pref.Repeated,
-				Kind:        pref.MessageKind,
-				MessageType: ptype.PlaceholderMessage("test.A"),
-			}, {
-				Name:        "field_five", // "test.B.field_five"
-				Number:      5,
-				Cardinality: pref.Repeated,
-				Kind:        pref.Int32Kind,
-				Options:     &descriptorpb.FieldOptions{Packed: scalar.Bool(true)},
-				IsPacked:    ptype.True,
-			}, {
-				Name:        "field_six", // "test.B.field_six"
-				Number:      6,
-				Cardinality: pref.Required,
-				Kind:        pref.BytesKind,
-			}},
-			Oneofs: []ptype.Oneof{
-				{
-					Name: "O1", // "test.B.O1"
-					Options: &descriptorpb.OneofOptions{
-						UninterpretedOption: []*descriptorpb.UninterpretedOption{
-							{StringValue: []byte("option")},
-						},
-					},
-				},
-				{Name: "O2"}, // "test.B.O2"
-			},
-			ReservedNames:   []pref.Name{"fizz", "buzz"},
-			ReservedRanges:  [][2]pref.FieldNumber{{100, 200}, {300, 301}},
-			ExtensionRanges: [][2]pref.FieldNumber{{1000, 2000}, {3000, 3001}},
-			ExtensionRangeOptions: []pref.ProtoMessage{
-				0: (*descriptorpb.ExtensionRangeOptions)(nil),
-				1: new(descriptorpb.ExtensionRangeOptions),
-			},
-		}, {
-			Name: "C", // "test.C"
-			Messages: []ptype.Message{{
-				Name:   "A", // "test.C.A"
-				Fields: []ptype.Field{{Name: "F", Number: 1, Cardinality: pref.Required, Kind: pref.BytesKind, Default: pref.ValueOf([]byte("dead\xbe\xef"))}},
-			}},
-			Enums: []ptype.Enum{{
-				Name:   "E1", // "test.C.E1"
-				Values: []ptype.EnumValue{{Name: "FOO", Number: 0}, {Name: "BAR", Number: 1}},
-			}},
-			Extensions: []ptype.Extension{{
-				Name:         "X", // "test.C.X"
-				Number:       1000,
-				Cardinality:  pref.Repeated,
-				Kind:         pref.MessageKind,
-				Options:      &descriptorpb.FieldOptions{Packed: scalar.Bool(false)},
-				IsPacked:     ptype.False,
-				MessageType:  ptype.PlaceholderMessage("test.C"),
-				ExtendedType: ptype.PlaceholderMessage("test.B"),
-			}},
-		}},
-		Enums: []ptype.Enum{{
-			Name:    "E1", // "test.E1"
-			Options: &descriptorpb.EnumOptions{Deprecated: scalar.Bool(true)},
-			Values: []ptype.EnumValue{
-				{
-					Name:    "FOO",
-					Number:  0,
-					Options: &descriptorpb.EnumValueOptions{Deprecated: scalar.Bool(true)},
-				},
-				{Name: "BAR", Number: 1},
-			},
-			ReservedNames:  []pref.Name{"FIZZ", "BUZZ"},
-			ReservedRanges: [][2]pref.EnumNumber{{10, 19}, {30, 30}},
-		}},
-		Extensions: []ptype.Extension{{
-			Name:         "X", // "test.X"
-			Number:       1000,
-			Cardinality:  pref.Repeated,
-			Kind:         pref.MessageKind,
-			Options:      &descriptorpb.FieldOptions{Packed: scalar.Bool(true)},
-			IsPacked:     ptype.True,
-			MessageType:  ptype.PlaceholderMessage("test.C"),
-			ExtendedType: ptype.PlaceholderMessage("test.B"),
-		}},
-		Services: []ptype.Service{{
-			Name:    "S", // "test.S"
-			Options: &descriptorpb.ServiceOptions{Deprecated: scalar.Bool(true)},
-			Methods: []ptype.Method{{
-				Name:              "M", // "test.S.M"
-				InputType:         ptype.PlaceholderMessage("test.A"),
-				OutputType:        ptype.PlaceholderMessage("test.C.A"),
-				IsStreamingClient: true,
-				IsStreamingServer: true,
-				Options:           &descriptorpb.MethodOptions{Deprecated: scalar.Bool(true)},
-			}},
-		}},
-	}
-	fd1, err := ptype.NewFile(f1)
-	if err != nil {
-		t.Fatalf("prototype.NewFile() error: %v", err)
-	}
-
-	f2 := &descriptorpb.FileDescriptorProto{
+	f1 := &descriptorpb.FileDescriptorProto{
 		Syntax:  scalar.String("proto2"),
 		Name:    scalar.String("path/to/file.proto"),
 		Package: scalar.String("test"),
@@ -337,17 +186,23 @@ func TestFile(t *testing.T) {
 			}},
 		}},
 	}
-	fd2, err := pdesc.NewFile(f2, nil)
+	fd1, err := pdesc.NewFile(f1, nil)
 	if err != nil {
 		t.Fatalf("protodesc.NewFile() error: %v", err)
 	}
+
+	b, err := proto.Marshal(f1)
+	if err != nil {
+		t.Fatalf("proto.Marshal() error: %v", err)
+	}
+	fd2 := filedesc.DescBuilder{RawDescriptor: b}.Build().File
 
 	tests := []struct {
 		name string
 		desc pref.FileDescriptor
 	}{
-		{"prototype.NewFile", fd1},
-		{"protodesc.NewFile", fd2},
+		{"protodesc.NewFile", fd1},
+		{"filedesc.DescBuilder.Build", fd2},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -622,7 +477,7 @@ func testFileAccessors(t *testing.T, fd pref.FileDescriptor) {
 				"Cardinality":       pref.Repeated,
 				"Kind":              pref.MessageKind,
 				"IsExtension":       true,
-				"IsPacked":          false,
+				"IsPacked":          true,
 				"IsList":            true,
 				"IsMap":             false,
 				"MapKey":            nil,
@@ -715,11 +570,18 @@ func checkAccessors(t *testing.T, p string, rv reflect.Value, want map[string]in
 		}
 
 		// Compare with proto.Equal if possible.
-		gotMsg, gotMsgOK := got.(protoV1.Message)
-		wantMsg, wantMsgOK := v.(protoV1.Message)
+		gotMsg, gotMsgOK := got.(proto.Message)
+		wantMsg, wantMsgOK := v.(proto.Message)
 		if gotMsgOK && wantMsgOK {
-			if !protoV1.Equal(gotMsg, wantMsg) {
-				t.Errorf("%v = %v, want %v", p, got, want)
+			gotNil := reflect.ValueOf(gotMsg).IsNil()
+			wantNil := reflect.ValueOf(wantMsg).IsNil()
+			switch {
+			case !gotNil && wantNil:
+				t.Errorf("%v = non-nil, want nil", p)
+			case gotNil && !wantNil:
+				t.Errorf("%v = nil, want non-nil", p)
+			case !proto.Equal(gotMsg, wantMsg):
+				t.Errorf("%v = %v, want %v", p, gotMsg, wantMsg)
 			}
 			continue
 		}
@@ -845,6 +707,7 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 			Number:      1000
 			Cardinality: repeated
 			Kind:        message
+			JSONName:    "X"
 			IsExtension: true
 			IsList:      true
 			Extendee:    test.B
@@ -865,6 +728,8 @@ func testFileFormat(t *testing.T, fd pref.FileDescriptor) {
 		Number:      1000
 		Cardinality: repeated
 		Kind:        message
+		JSONName:    "X"
+		IsPacked:    true
 		IsExtension: true
 		IsList:      true
 		Extendee:    test.B

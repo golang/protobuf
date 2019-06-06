@@ -5,7 +5,7 @@ package typepb
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
+	prototype "google.golang.org/protobuf/reflect/prototype"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
@@ -53,7 +53,7 @@ func (x Syntax) String() string {
 }
 
 func (Syntax) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_type_proto_enumTypes[0].Descriptor()
+	return file_google_protobuf_type_proto_enumTypes[0].EnumDescriptor
 }
 
 func (x Syntax) Number() protoreflect.EnumNumber {
@@ -166,7 +166,7 @@ func (x Field_Kind) String() string {
 }
 
 func (Field_Kind) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_type_proto_enumTypes[1].Descriptor()
+	return file_google_protobuf_type_proto_enumTypes[1].EnumDescriptor
 }
 
 func (x Field_Kind) Number() protoreflect.EnumNumber {
@@ -219,7 +219,7 @@ func (x Field_Cardinality) String() string {
 }
 
 func (Field_Cardinality) Descriptor() protoreflect.EnumDescriptor {
-	return file_google_protobuf_type_proto_enumTypes[2].Descriptor()
+	return file_google_protobuf_type_proto_enumTypes[2].EnumDescriptor
 }
 
 func (x Field_Cardinality) Number() protoreflect.EnumNumber {
@@ -756,7 +756,7 @@ func file_google_protobuf_type_proto_rawDescGZIP() []byte {
 	return file_google_protobuf_type_proto_rawDescData
 }
 
-var file_google_protobuf_type_proto_enumTypes = make([]protoreflect.EnumType, 3)
+var file_google_protobuf_type_proto_enumTypes = make([]prototype.Enum, 3)
 var file_google_protobuf_type_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_google_protobuf_type_proto_goTypes = []interface{}{
 	(Syntax)(0),                           // 0: google.protobuf.Syntax
@@ -771,19 +771,24 @@ var file_google_protobuf_type_proto_goTypes = []interface{}{
 	(*anypb.Any)(nil),                     // 9: google.protobuf.Any
 }
 var file_google_protobuf_type_proto_depIdxs = []int32{
-	4, // google.protobuf.Type.fields:type_name -> google.protobuf.Field
-	7, // google.protobuf.Type.options:type_name -> google.protobuf.Option
-	8, // google.protobuf.Type.source_context:type_name -> google.protobuf.SourceContext
-	0, // google.protobuf.Type.syntax:type_name -> google.protobuf.Syntax
-	1, // google.protobuf.Field.kind:type_name -> google.protobuf.Field.Kind
-	2, // google.protobuf.Field.cardinality:type_name -> google.protobuf.Field.Cardinality
-	7, // google.protobuf.Field.options:type_name -> google.protobuf.Option
-	6, // google.protobuf.Enum.enumvalue:type_name -> google.protobuf.EnumValue
-	7, // google.protobuf.Enum.options:type_name -> google.protobuf.Option
-	8, // google.protobuf.Enum.source_context:type_name -> google.protobuf.SourceContext
-	0, // google.protobuf.Enum.syntax:type_name -> google.protobuf.Syntax
-	7, // google.protobuf.EnumValue.options:type_name -> google.protobuf.Option
-	9, // google.protobuf.Option.value:type_name -> google.protobuf.Any
+	4,  // google.protobuf.Type.fields:type_name -> google.protobuf.Field
+	7,  // google.protobuf.Type.options:type_name -> google.protobuf.Option
+	8,  // google.protobuf.Type.source_context:type_name -> google.protobuf.SourceContext
+	0,  // google.protobuf.Type.syntax:type_name -> google.protobuf.Syntax
+	1,  // google.protobuf.Field.kind:type_name -> google.protobuf.Field.Kind
+	2,  // google.protobuf.Field.cardinality:type_name -> google.protobuf.Field.Cardinality
+	7,  // google.protobuf.Field.options:type_name -> google.protobuf.Option
+	6,  // google.protobuf.Enum.enumvalue:type_name -> google.protobuf.EnumValue
+	7,  // google.protobuf.Enum.options:type_name -> google.protobuf.Option
+	8,  // google.protobuf.Enum.source_context:type_name -> google.protobuf.SourceContext
+	0,  // google.protobuf.Enum.syntax:type_name -> google.protobuf.Syntax
+	7,  // google.protobuf.EnumValue.options:type_name -> google.protobuf.Option
+	9,  // google.protobuf.Option.value:type_name -> google.protobuf.Any
+	13, // starting offset of method output_type sub-list
+	13, // starting offset of method input_type sub-list
+	13, // starting offset of extension type_name sub-list
+	13, // starting offset of extension extendee sub-list
+	0,  // starting offset of field type_name sub-list
 }
 
 func init() { file_google_protobuf_type_proto_init() }
@@ -791,15 +796,20 @@ func file_google_protobuf_type_proto_init() {
 	if File_google_protobuf_type_proto != nil {
 		return
 	}
-	File_google_protobuf_type_proto = protoimpl.FileBuilder{
-		RawDescriptor:      file_google_protobuf_type_proto_rawDesc,
-		GoTypes:            file_google_protobuf_type_proto_goTypes,
-		DependencyIndexes:  file_google_protobuf_type_proto_depIdxs,
-		EnumOutputTypes:    file_google_protobuf_type_proto_enumTypes,
-		MessageOutputTypes: file_google_protobuf_type_proto_msgTypes,
-		FilesRegistry:      protoregistry.GlobalFiles,
-		TypesRegistry:      protoregistry.GlobalTypes,
-	}.Init()
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_google_protobuf_type_proto_rawDesc,
+			NumEnums:      3,
+			NumMessages:   5,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
+		GoTypes:           file_google_protobuf_type_proto_goTypes,
+		DependencyIndexes: file_google_protobuf_type_proto_depIdxs,
+		MessageInfos:      file_google_protobuf_type_proto_msgTypes,
+	}.Build()
+	File_google_protobuf_type_proto = out.File
+	file_google_protobuf_type_proto_enumTypes = out.Enums
 	file_google_protobuf_type_proto_rawDesc = nil
 	file_google_protobuf_type_proto_goTypes = nil
 	file_google_protobuf_type_proto_depIdxs = nil

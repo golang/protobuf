@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	defval "google.golang.org/protobuf/internal/encoding/defval"
-	ptype "google.golang.org/protobuf/internal/prototype"
+	fdesc "google.golang.org/protobuf/internal/filedesc"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -24,11 +24,13 @@ var byteType = reflect.TypeOf(byte(0))
 // tag does not record sufficient information to determine that.
 // The type is the underlying field type (e.g., a repeated field may be
 // represented by []T, but the Go type passed in is just T).
-// This does not populate the EnumType or MessageType (except for weak message).
+// A list of enum value descriptors must be provided for enum fields.
+// This does not populate the Enum or Message (except for weak message).
 //
 // This function is a best effort attempt; parsing errors are ignored.
-func Unmarshal(tag string, goType reflect.Type) ptype.Field {
-	f := ptype.Field{}
+func Unmarshal(tag string, goType reflect.Type, evs pref.EnumValueDescriptors) pref.FieldDescriptor {
+	f := new(fdesc.Field)
+	f.L0.ParentFile = fdesc.SurrogateProto2
 	for len(tag) > 0 {
 		i := strings.IndexByte(tag, ',')
 		if i < 0 {
@@ -36,88 +38,92 @@ func Unmarshal(tag string, goType reflect.Type) ptype.Field {
 		}
 		switch s := tag[:i]; {
 		case strings.HasPrefix(s, "name="):
-			f.Name = pref.Name(s[len("name="):])
+			f.L0.FullName = pref.FullName(s[len("name="):])
 		case strings.Trim(s, "0123456789") == "":
 			n, _ := strconv.ParseUint(s, 10, 32)
-			f.Number = pref.FieldNumber(n)
+			f.L1.Number = pref.FieldNumber(n)
 		case s == "opt":
-			f.Cardinality = pref.Optional
+			f.L1.Cardinality = pref.Optional
 		case s == "req":
-			f.Cardinality = pref.Required
+			f.L1.Cardinality = pref.Required
 		case s == "rep":
-			f.Cardinality = pref.Repeated
+			f.L1.Cardinality = pref.Repeated
 		case s == "varint":
 			switch goType.Kind() {
 			case reflect.Bool:
-				f.Kind = pref.BoolKind
+				f.L1.Kind = pref.BoolKind
 			case reflect.Int32:
-				f.Kind = pref.Int32Kind
+				f.L1.Kind = pref.Int32Kind
 			case reflect.Int64:
-				f.Kind = pref.Int64Kind
+				f.L1.Kind = pref.Int64Kind
 			case reflect.Uint32:
-				f.Kind = pref.Uint32Kind
+				f.L1.Kind = pref.Uint32Kind
 			case reflect.Uint64:
-				f.Kind = pref.Uint64Kind
+				f.L1.Kind = pref.Uint64Kind
 			}
 		case s == "zigzag32":
 			if goType.Kind() == reflect.Int32 {
-				f.Kind = pref.Sint32Kind
+				f.L1.Kind = pref.Sint32Kind
 			}
 		case s == "zigzag64":
 			if goType.Kind() == reflect.Int64 {
-				f.Kind = pref.Sint64Kind
+				f.L1.Kind = pref.Sint64Kind
 			}
 		case s == "fixed32":
 			switch goType.Kind() {
 			case reflect.Int32:
-				f.Kind = pref.Sfixed32Kind
+				f.L1.Kind = pref.Sfixed32Kind
 			case reflect.Uint32:
-				f.Kind = pref.Fixed32Kind
+				f.L1.Kind = pref.Fixed32Kind
 			case reflect.Float32:
-				f.Kind = pref.FloatKind
+				f.L1.Kind = pref.FloatKind
 			}
 		case s == "fixed64":
 			switch goType.Kind() {
 			case reflect.Int64:
-				f.Kind = pref.Sfixed64Kind
+				f.L1.Kind = pref.Sfixed64Kind
 			case reflect.Uint64:
-				f.Kind = pref.Fixed64Kind
+				f.L1.Kind = pref.Fixed64Kind
 			case reflect.Float64:
-				f.Kind = pref.DoubleKind
+				f.L1.Kind = pref.DoubleKind
 			}
 		case s == "bytes":
 			switch {
 			case goType.Kind() == reflect.String:
-				f.Kind = pref.StringKind
+				f.L1.Kind = pref.StringKind
 			case goType.Kind() == reflect.Slice && goType.Elem() == byteType:
-				f.Kind = pref.BytesKind
+				f.L1.Kind = pref.BytesKind
 			default:
-				f.Kind = pref.MessageKind
+				f.L1.Kind = pref.MessageKind
 			}
 		case s == "group":
-			f.Kind = pref.GroupKind
+			f.L1.Kind = pref.GroupKind
 		case strings.HasPrefix(s, "enum="):
-			f.Kind = pref.EnumKind
+			f.L1.Kind = pref.EnumKind
 		case strings.HasPrefix(s, "json="):
-			f.JSONName = s[len("json="):]
+			f.L1.JSONName = fdesc.JSONName(s[len("json="):])
 		case s == "packed":
-			f.IsPacked = ptype.True
+			f.L1.HasPacked = true
+			f.L1.IsPacked = true
 		case strings.HasPrefix(s, "weak="):
-			f.IsWeak = true
-			f.MessageType = ptype.PlaceholderMessage(pref.FullName(s[len("weak="):]))
+			f.L1.IsWeak = true
+			f.L1.Message = fdesc.PlaceholderMessage(pref.FullName(s[len("weak="):]))
 		case strings.HasPrefix(s, "def="):
 			// The default tag is special in that everything afterwards is the
 			// default regardless of the presence of commas.
 			s, i = tag[len("def="):], len(tag)
-			f.Default, _ = defval.Unmarshal(s, f.Kind, defval.GoTag)
+			v, ev, _ := defval.Unmarshal(s, f.L1.Kind, evs, defval.GoTag)
+			f.L1.Default = fdesc.DefaultValue(v, ev)
+		case s == "proto3":
+			f.L0.ParentFile = fdesc.SurrogateProto3
 		}
 		tag = strings.TrimPrefix(tag[i:], ",")
 	}
 
 	// The generator uses the group message name instead of the field name.
 	// We obtain the real field name by lowercasing the group name.
-	if f.Kind == pref.GroupKind {
-		f.Name = pref.Name(strings.ToLower(string(f.Name)))
+	if f.L1.Kind == pref.GroupKind {
+		f.L0.FullName = pref.FullName(strings.ToLower(string(f.L0.FullName)))
 	}
 	return f
 }
@@ -169,7 +175,8 @@ func Marshal(fd pref.FieldDescriptor, enumName string) string {
 		name = string(fd.Message().Name())
 	}
 	tag = append(tag, "name="+name)
-	if jsonName := fd.JSONName(); jsonName != "" && jsonName != name {
+	if jsonName := fd.JSONName(); jsonName != "" && jsonName != name && !fd.IsExtension() {
+		// TODO: The jsonName != name condition looks wrong.
 		tag = append(tag, "json="+jsonName)
 	}
 	// The previous implementation does not tag extension fields as proto3,
@@ -186,7 +193,7 @@ func Marshal(fd pref.FieldDescriptor, enumName string) string {
 	}
 	// This must appear last in the tag, since commas in strings aren't escaped.
 	if fd.HasDefault() {
-		def, _ := defval.Marshal(fd.Default(), fd.Kind(), defval.GoTag)
+		def, _ := defval.Marshal(fd.Default(), fd.DefaultEnumValue(), fd.Kind(), defval.GoTag)
 		tag = append(tag, "def="+def)
 	}
 	return strings.Join(tag, ",")

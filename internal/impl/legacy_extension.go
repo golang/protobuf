@@ -11,7 +11,7 @@ import (
 
 	"google.golang.org/protobuf/internal/descfmt"
 	ptag "google.golang.org/protobuf/internal/encoding/tag"
-	ptype "google.golang.org/protobuf/internal/prototype"
+	"google.golang.org/protobuf/internal/filedesc"
 	pvalue "google.golang.org/protobuf/internal/value"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	preg "google.golang.org/protobuf/reflect/protoregistry"
@@ -112,7 +112,7 @@ func legacyExtensionDescFromType(xt pref.ExtensionType) *piface.ExtensionDescV1 
 		}
 		if ed, ok := reflect.Zero(t).Interface().(enumV1); ok && protoPkg == "" {
 			b, _ := ed.EnumDescriptor()
-			protoPkg = legacyLoadFileDesc(b).GetPackage()
+			protoPkg = string(legacyLoadFileDesc(b).Package())
 		}
 
 		if protoPkg != "" {
@@ -159,46 +159,45 @@ func legacyExtensionTypeFromDesc(d *piface.ExtensionDescV1) pref.ExtensionType {
 		return t.(pref.ExtensionType)
 	}
 
-	// Derive basic field information from the struct tag.
+	// Resolve enum or message dependencies.
+	var ed pref.EnumDescriptor
+	var md pref.MessageDescriptor
 	t := reflect.TypeOf(d.ExtensionType)
 	isOptional := t.Kind() == reflect.Ptr && t.Elem().Kind() != reflect.Struct
 	isRepeated := t.Kind() == reflect.Slice && t.Elem().Kind() != reflect.Uint8
 	if isOptional || isRepeated {
 		t = t.Elem()
 	}
-	f := ptag.Unmarshal(d.Tag, t)
+	switch v := reflect.Zero(t).Interface().(type) {
+	case pref.Enum:
+		ed = v.Descriptor()
+	case enumV1:
+		ed = LegacyLoadEnumDesc(t)
+	case pref.ProtoMessage:
+		md = v.ProtoReflect().Descriptor()
+	case messageV1:
+		md = LegacyLoadMessageDesc(t)
+	}
+
+	// Derive basic field information from the struct tag.
+	var evs pref.EnumValueDescriptors
+	if ed != nil {
+		evs = ed.Values()
+	}
+	fd := ptag.Unmarshal(d.Tag, t, evs).(*filedesc.Field)
 
 	// Construct a v2 ExtensionType.
-	var ed pref.EnumDescriptor
-	var md pref.MessageDescriptor
-	switch f.Kind {
-	case pref.EnumKind:
-		if e, ok := reflect.Zero(t).Interface().(pref.Enum); ok {
-			ed = e.Descriptor()
-		} else {
-			ed = LegacyLoadEnumDesc(t)
-		}
-	case pref.MessageKind, pref.GroupKind:
-		if m, ok := reflect.Zero(t).Interface().(pref.ProtoMessage); ok {
-			md = m.ProtoReflect().Descriptor()
-		} else {
-			md = LegacyLoadMessageDesc(t)
-		}
-	}
-	xd, err := ptype.NewExtension(&ptype.StandaloneExtension{
-		FullName:     pref.FullName(d.Name),
-		Number:       pref.FieldNumber(d.Field),
-		Cardinality:  f.Cardinality,
-		Kind:         f.Kind,
-		Default:      f.Default,
-		Options:      f.Options,
-		EnumType:     ed,
-		MessageType:  md,
-		ExtendedType: Export{}.MessageDescriptorOf(d.ExtendedType),
-	})
-	if err != nil {
-		panic(err)
-	}
+	xd := &filedesc.Extension{L2: new(filedesc.ExtensionL2)}
+	xd.L0.ParentFile = filedesc.SurrogateProto2
+	xd.L0.FullName = pref.FullName(d.Name)
+	xd.L1.Number = pref.FieldNumber(d.Field)
+	xd.L2.Cardinality = fd.L1.Cardinality
+	xd.L1.Kind = fd.L1.Kind
+	xd.L2.IsPacked = fd.L1.IsPacked
+	xd.L2.Default = fd.L1.Default
+	xd.L1.Extendee = Export{}.MessageDescriptorOf(d.ExtendedType)
+	xd.L2.Enum = ed
+	xd.L2.Message = md
 	xt := LegacyExtensionTypeOf(xd, t)
 
 	// Cache the conversion for both directions.
