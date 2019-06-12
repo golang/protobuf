@@ -5,6 +5,7 @@
 package proto
 
 import (
+	"github.com/golang/protobuf/internal/wire"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/runtime/protoimpl"
 )
@@ -28,32 +29,25 @@ func DiscardUnknown(m Message) {
 }
 
 func discardUnknown(m pref.Message) {
-	fieldDescs := m.Descriptor().Fields()
-	knownFields := m.KnownFields()
-	knownFields.Range(func(num pref.FieldNumber, val pref.Value) bool {
-		fd := fieldDescs.ByNumber(num)
-		if fd == nil {
-			fd = knownFields.ExtensionTypes().ByNumber(num).Descriptor()
-		}
+	m.Range(func(fd pref.FieldDescriptor, val pref.Value) bool {
 		switch {
 		// Handle singular message.
 		case fd.Cardinality() != pref.Repeated:
-			if k := fd.Kind(); k == pref.MessageKind || k == pref.GroupKind {
-				discardUnknown(knownFields.Get(num).Message())
+			if fd.Message() != nil {
+				discardUnknown(m.Get(fd).Message())
 			}
 		// Handle list of messages.
-		case !fd.IsMap():
-			if k := fd.Kind(); k == pref.MessageKind || k == pref.GroupKind {
-				ls := knownFields.Get(num).List()
+		case fd.IsList():
+			if fd.Message() != nil {
+				ls := m.Get(fd).List()
 				for i := 0; i < ls.Len(); i++ {
 					discardUnknown(ls.Get(i).Message())
 				}
 			}
 		// Handle map of messages.
-		default:
-			k := fd.Message().Fields().ByNumber(2).Kind()
-			if k == pref.MessageKind || k == pref.GroupKind {
-				ms := knownFields.Get(num).Map()
+		case fd.IsMap():
+			if fd.MapValue().Message() != nil {
+				ms := m.Get(fd).Map()
 				ms.Range(func(_ pref.MapKey, v pref.Value) bool {
 					discardUnknown(v.Message())
 					return true
@@ -63,14 +57,19 @@ func discardUnknown(m pref.Message) {
 		return true
 	})
 
+	// Discard unknown fields.
+	var bo pref.RawFields
 	extRanges := m.Descriptor().ExtensionRanges()
-	unknownFields := m.UnknownFields()
-	unknownFields.Range(func(num pref.FieldNumber, _ pref.RawFields) bool {
+	for bi := m.GetUnknown(); len(bi) > 0; {
 		// NOTE: Historically, this function did not discard unknown fields
 		// that were within the extension field ranges.
-		if !extRanges.Has(num) {
-			unknownFields.Set(num, nil)
+		num, _, n := wire.ConsumeField(bi)
+		if extRanges.Has(num) {
+			bo = append(bo, bi[:n]...)
 		}
-		return true
-	})
+		bi = bi[n:]
+	}
+	if bi := m.GetUnknown(); len(bi) != len(bo) {
+		m.SetUnknown(bo)
+	}
 }

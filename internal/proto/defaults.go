@@ -19,17 +19,15 @@ func SetDefaults(m Message) {
 
 func setDefaults(m pref.Message) {
 	fieldDescs := m.Descriptor().Fields()
-	knownFields := m.KnownFields()
 	for i := 0; i < fieldDescs.Len(); i++ {
 		fd := fieldDescs.Get(i)
-		num := fd.Number()
-		if !knownFields.Has(num) {
+		if !m.Has(fd) {
 			if fd.HasDefault() {
 				v := fd.Default()
 				if fd.Kind() == pref.BytesKind {
 					v = pref.ValueOf(append([]byte(nil), v.Bytes()...)) // copy the default bytes
 				}
-				knownFields.Set(num, v)
+				m.Set(fd, v)
 			}
 			continue
 		}
@@ -37,12 +35,12 @@ func setDefaults(m pref.Message) {
 		// Handle singular message.
 		case fd.Cardinality() != pref.Repeated:
 			if k := fd.Kind(); k == pref.MessageKind || k == pref.GroupKind {
-				setDefaults(knownFields.Get(num).Message())
+				setDefaults(m.Get(fd).Message())
 			}
 		// Handle list of messages.
 		case !fd.IsMap():
 			if k := fd.Kind(); k == pref.MessageKind || k == pref.GroupKind {
-				ls := knownFields.Get(num).List()
+				ls := m.Get(fd).List()
 				for i := 0; i < ls.Len(); i++ {
 					setDefaults(ls.Get(i).Message())
 				}
@@ -51,7 +49,7 @@ func setDefaults(m pref.Message) {
 		default:
 			k := fd.Message().Fields().ByNumber(2).Kind()
 			if k == pref.MessageKind || k == pref.GroupKind {
-				ms := knownFields.Get(num).Map()
+				ms := m.Get(fd).Map()
 				ms.Range(func(_ pref.MapKey, v pref.Value) bool {
 					setDefaults(v.Message())
 					return true
