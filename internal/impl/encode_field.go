@@ -82,11 +82,11 @@ func makeMessageFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCode
 	} else {
 		return pointerCoderFuncs{
 			size: func(p pointer, tagsize int, opts marshalOptions) int {
-				m := legacyWrapMessage(p.AsValueOf(ft).Elem())
+				m := asMessage(p.AsValueOf(ft).Elem())
 				return sizeMessage(m, tagsize, opts)
 			},
 			marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
-				m := legacyWrapMessage(p.AsValueOf(ft).Elem())
+				m := asMessage(p.AsValueOf(ft).Elem())
 				return appendMessage(b, m, wiretag, opts)
 			},
 		}
@@ -141,11 +141,11 @@ func makeGroupFieldCoder(fd pref.FieldDescriptor, ft reflect.Type) pointerCoderF
 	} else {
 		return pointerCoderFuncs{
 			size: func(p pointer, tagsize int, opts marshalOptions) int {
-				m := legacyWrapMessage(p.AsValueOf(ft).Elem())
+				m := asMessage(p.AsValueOf(ft).Elem())
 				return sizeGroup(m, tagsize, opts)
 			},
 			marshal: func(b []byte, p pointer, wiretag uint64, opts marshalOptions) ([]byte, error) {
-				m := legacyWrapMessage(p.AsValueOf(ft).Elem())
+				m := asMessage(p.AsValueOf(ft).Elem())
 				return appendGroup(b, m, wiretag, opts)
 			},
 		}
@@ -491,4 +491,11 @@ func appendStringIfaceValidateUTF8(b []byte, ival interface{}, wiretag uint64, _
 var coderStringIfaceValidateUTF8 = ifaceCoderFuncs{
 	size:    sizeStringIfaceValidateUTF8,
 	marshal: appendStringIfaceValidateUTF8,
+}
+
+func asMessage(v reflect.Value) pref.ProtoMessage {
+	if m, ok := v.Interface().(pref.ProtoMessage); ok {
+		return m
+	}
+	return legacyWrapMessage(v)
 }

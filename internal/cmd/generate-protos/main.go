@@ -105,10 +105,11 @@ func generateLocalProtos() {
 		path        string
 		grpcPlugin  bool
 		annotateFor map[string]bool
+		exclude     map[string]bool
 	}{
 		{path: "cmd/protoc-gen-go/testdata", annotateFor: map[string]bool{"annotations/annotations.proto": true}},
 		{path: "cmd/protoc-gen-go-grpc/testdata", grpcPlugin: true},
-		{path: "internal/testprotos"},
+		{path: "internal/testprotos", exclude: map[string]bool{"irregular/irregular.proto": true}},
 		{path: "encoding/testprotos"},
 		{path: "reflect/protoregistry/testprotos"},
 	}
@@ -127,6 +128,10 @@ func generateLocalProtos() {
 			relPath, err := filepath.Rel(srcDir, srcPath)
 			check(err)
 			subDirs[filepath.Dir(relPath)] = true
+
+			if d.exclude[filepath.ToSlash(relPath)] {
+				return nil
+			}
 
 			// Emit a .meta file for certain files.
 			var opts string

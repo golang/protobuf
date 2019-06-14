@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"testing"
 
+	irregularpb "google.golang.org/protobuf/internal/testprotos/irregular"
 	testpb "google.golang.org/protobuf/internal/testprotos/test"
 	test3pb "google.golang.org/protobuf/internal/testprotos/test3"
 	"google.golang.org/protobuf/proto"
@@ -20,6 +21,7 @@ func Test(t *testing.T) {
 		(*test3pb.TestAllTypes)(nil),
 		(*testpb.TestRequired)(nil),
 		(*testpb.TestWeak)(nil),
+		(*irregularpb.Message)(nil),
 	} {
 		t.Run(fmt.Sprintf("%T", m), func(t *testing.T) {
 			prototest.TestMessage(t, m)
