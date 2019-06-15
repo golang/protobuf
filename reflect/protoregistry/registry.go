@@ -53,7 +53,7 @@ type Files struct {
 	// Note that files are stored as a slice, since a package may contain
 	// multiple files.
 	descs       map[protoreflect.FullName]interface{}
-	filesByPath map[string][]protoreflect.FileDescriptor
+	filesByPath map[string]protoreflect.FileDescriptor
 }
 
 type packageDescriptor struct {
@@ -88,7 +88,7 @@ func (r *Files) Register(files ...protoreflect.FileDescriptor) error {
 		r.descs = map[protoreflect.FullName]interface{}{
 			"": &packageDescriptor{},
 		}
-		r.filesByPath = make(map[string][]protoreflect.FileDescriptor)
+		r.filesByPath = make(map[string]protoreflect.FileDescriptor)
 	}
 	var firstErr error
 	for _, file := range files {
@@ -99,6 +99,11 @@ func (r *Files) Register(files ...protoreflect.FileDescriptor) error {
 	return firstErr
 }
 func (r *Files) registerFile(file protoreflect.FileDescriptor) error {
+	path := file.Path()
+	if r.filesByPath[path] != nil {
+		return errors.New("file %q is already registered", file.Path())
+	}
+
 	for name := file.Package(); name != ""; name = name.Parent() {
 		switch r.descs[name].(type) {
 		case nil, *packageDescriptor:
@@ -116,9 +121,6 @@ func (r *Files) registerFile(file protoreflect.FileDescriptor) error {
 		return err
 	}
 
-	path := file.Path()
-	r.filesByPath[path] = append(r.filesByPath[path], file)
-
 	for name := file.Package(); name != ""; name = name.Parent() {
 		if r.descs[name] == nil {
 			r.descs[name] = &packageDescriptor{}
@@ -129,6 +131,7 @@ func (r *Files) registerFile(file protoreflect.FileDescriptor) error {
 	rangeRegisteredDescriptors(file, func(desc protoreflect.Descriptor) {
 		r.descs[desc.FullName()] = desc
 	})
+	r.filesByPath[path] = file
 	return nil
 }
 
@@ -187,6 +190,19 @@ func (r *Files) FindServiceByName(name protoreflect.FullName) (protoreflect.Serv
 	return nil, NotFound
 }
 
+// FindFileByPath looks up a file by the path.
+//
+// This returns (nil, NotFound) if not found.
+func (r *Files) FindFileByPath(path string) (protoreflect.FileDescriptor, error) {
+	if r == nil {
+		return nil, NotFound
+	}
+	if fd, ok := r.filesByPath[path]; ok {
+		return fd, nil
+	}
+	return nil, NotFound
+}
+
 // RangeFiles iterates over all registered files.
 // The iteration order is undefined.
 func (r *Files) RangeFiles(f func(protoreflect.FileDescriptor) bool) {
@@ -206,14 +222,14 @@ func (r *Files) RangeFiles(f func(protoreflect.FileDescriptor) bool) {
 
 // RangeFilesByPath iterates over all registered files filtered by
 // the given proto path. The iteration order is undefined.
+//
+// Deprecated: Use FindFileByPath instead.
 func (r *Files) RangeFilesByPath(path string, f func(protoreflect.FileDescriptor) bool) {
 	if r == nil {
 		return
 	}
-	for _, file := range r.filesByPath[path] {
-		if !f(file) {
-			return
-		}
+	if fd, ok := r.filesByPath[path]; ok {
+		f(fd)
 	}
 }
 

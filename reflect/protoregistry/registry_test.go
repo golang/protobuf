@@ -35,23 +35,23 @@ func TestFiles(t *testing.T) {
 			inPkg     pref.FullName
 			wantFiles []file
 		}
-		testRangePath struct {
+		testFindPath struct {
 			inPath    string
 			wantFiles []file
 		}
 	)
 
 	tests := []struct {
-		files      []testFile
-		rangePkgs  []testRangePkg
-		rangePaths []testRangePath
+		files     []testFile
+		rangePkgs []testRangePkg
+		findPaths []testFindPath
 	}{{
 		// Test that overlapping packages and files are permitted.
 		files: []testFile{
-			{inFile: &ptype.File{Syntax: pref.Proto2, Package: "foo.bar"}},
+			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "test1.proto", Package: "foo.bar"}},
 			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "foo/bar/test.proto", Package: "my.test"}},
-			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "foo/bar/test.proto", Package: "foo.bar.baz"}},
-			{inFile: &ptype.File{Syntax: pref.Proto2, Package: "my.test.package"}},
+			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "foo/bar/test.proto", Package: "foo.bar.baz"}, wantErr: "already registered"},
+			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "test2.proto", Package: "my.test.package"}},
 			{inFile: &ptype.File{Syntax: pref.Proto2, Package: "foo.bar"}},
 			{inFile: &ptype.File{Syntax: pref.Proto2, Path: "foo/bar/baz/../test.proto", Package: "my.test"}},
 		},
@@ -71,31 +71,29 @@ func TestFiles(t *testing.T) {
 		}, {
 			inPkg: "foo.bar",
 			wantFiles: []file{
-				{"", "foo.bar"},
+				{"test1.proto", "foo.bar"},
 				{"", "foo.bar"},
 			},
 		}, {
-			inPkg: "foo.bar.baz",
+			inPkg: "my.test",
 			wantFiles: []file{
-				{"foo/bar/test.proto", "foo.bar.baz"},
+				{"foo/bar/baz/../test.proto", "my.test"},
+				{"foo/bar/test.proto", "my.test"},
 			},
 		}, {
 			inPkg: "fo",
 		}},
 
-		rangePaths: []testRangePath{{
+		findPaths: []testFindPath{{
 			inPath: "nothing",
 		}, {
 			inPath: "",
 			wantFiles: []file{
 				{"", "foo.bar"},
-				{"", "foo.bar"},
-				{"", "my.test.package"},
 			},
 		}, {
 			inPath: "foo/bar/test.proto",
 			wantFiles: []file{
-				{"foo/bar/test.proto", "foo.bar.baz"},
 				{"foo/bar/test.proto", "my.test"},
 			},
 		}},
@@ -127,6 +125,7 @@ func TestFiles(t *testing.T) {
 		files: []testFile{{
 			inFile: &ptype.File{
 				Syntax:  pref.Proto2,
+				Path:    "test1.proto",
 				Package: "fizz.buzz",
 				Messages: []ptype.Message{{
 					Name: "Message",
@@ -165,6 +164,7 @@ func TestFiles(t *testing.T) {
 		}, {
 			inFile: &ptype.File{
 				Syntax:  pref.Proto2,
+				Path:    "test2.proto",
 				Package: "fizz.buzz.gazz",
 				Enums: []ptype.Enum{{
 					Name:   "Enum",
@@ -172,9 +172,9 @@ func TestFiles(t *testing.T) {
 				}},
 			},
 		}, {
-			// Previously failed registration should not pollute the namespace.
 			inFile: &ptype.File{
 				Syntax:  pref.Proto2,
+				Path:    "test3.proto",
 				Package: "fizz.buzz",
 				Enums: []ptype.Enum{{
 					Name:   "Enum1",
@@ -213,7 +213,7 @@ func TestFiles(t *testing.T) {
 					t.Fatalf("file %d, prototype.NewFile() error: %v", i, err)
 				}
 				gotErr := files.Register(fd)
-				if (gotErr == nil && tc.wantErr != "") || !strings.Contains(fmt.Sprint(gotErr), tc.wantErr) {
+				if ((gotErr == nil) != (tc.wantErr == "")) || !strings.Contains(fmt.Sprint(gotErr), tc.wantErr) {
 					t.Errorf("file %d, Register() = %v, want %v", i, gotErr, tc.wantErr)
 				}
 			}
@@ -229,14 +229,13 @@ func TestFiles(t *testing.T) {
 				}
 			}
 
-			for _, tc := range tt.rangePaths {
+			for _, tc := range tt.findPaths {
 				var gotFiles []file
-				files.RangeFilesByPath(tc.inPath, func(fd pref.FileDescriptor) bool {
+				if fd, err := files.FindFileByPath(tc.inPath); err == nil {
 					gotFiles = append(gotFiles, file{fd.Path(), fd.Package()})
-					return true
-				})
+				}
 				if diff := cmp.Diff(tc.wantFiles, gotFiles, sortFiles); diff != "" {
-					t.Errorf("RangeFilesByPath(%v) mismatch (-want +got):\n%v", tc.inPath, diff)
+					t.Errorf("FindFileByPath(%v) mismatch (-want +got):\n%v", tc.inPath, diff)
 				}
 			}
 		})

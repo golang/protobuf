@@ -73,19 +73,12 @@ func NewFile(fd *descriptorpb.FileDescriptorProto, r *protoregistry.Files) (prot
 		f.Imports[i].IsWeak = true
 	}
 	for i, path := range fd.GetDependency() {
-		var n int
 		imp := &f.Imports[i]
-		r.RangeFilesByPath(path, func(fd protoreflect.FileDescriptor) bool {
-			imp.FileDescriptor = fd
-			n++
-			return true
-		})
-		if n > 1 {
-			return nil, errors.New("duplicate files for import %q", path)
+		fd, err := r.FindFileByPath(path)
+		if err != nil {
+			fd = prototype.PlaceholderFile(path, "")
 		}
-		if imp.IsWeak || imp.FileDescriptor == nil {
-			imp.FileDescriptor = prototype.PlaceholderFile(path, "")
-		}
+		imp.FileDescriptor = fd
 	}
 
 	imps := importedFiles(f.Imports)
