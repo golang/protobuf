@@ -220,19 +220,6 @@ func (r *Files) RangeFiles(f func(protoreflect.FileDescriptor) bool) {
 	}
 }
 
-// RangeFilesByPath iterates over all registered files filtered by
-// the given proto path. The iteration order is undefined.
-//
-// Deprecated: Use FindFileByPath instead.
-func (r *Files) RangeFilesByPath(path string, f func(protoreflect.FileDescriptor) bool) {
-	if r == nil {
-		return
-	}
-	if fd, ok := r.filesByPath[path]; ok {
-		f(fd)
-	}
-}
-
 // RangeFilesByPackage iterates over all registered files in a give proto package.
 // The iteration order is undefined.
 func (r *Files) RangeFilesByPackage(name protoreflect.FullName, f func(protoreflect.FileDescriptor) bool) {
