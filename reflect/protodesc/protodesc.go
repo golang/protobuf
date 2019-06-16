@@ -13,10 +13,17 @@ import (
 	"google.golang.org/protobuf/internal/errors"
 	"google.golang.org/protobuf/internal/prototype"
 	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/reflect/protoregistry"
 
 	"google.golang.org/protobuf/types/descriptorpb"
 )
+
+// Resolver is the resolver used by NewFile to resolve dependencies.
+// It is implemented by protoregistry.Files.
+type Resolver interface {
+	FindFileByPath(string) (protoreflect.FileDescriptor, error)
+	FindEnumByName(protoreflect.FullName) (protoreflect.EnumDescriptor, error)
+	FindMessageByName(protoreflect.FullName) (protoreflect.MessageDescriptor, error)
+}
 
 // TODO: Should we be responsible for validating other parts of the descriptor
 // that we don't directly use?
@@ -45,7 +52,7 @@ import (
 //
 // The caller must relinquish full ownership of the input fd and must not
 // access or mutate any fields.
-func NewFile(fd *descriptorpb.FileDescriptorProto, r *protoregistry.Files) (protoreflect.FileDescriptor, error) {
+func NewFile(fd *descriptorpb.FileDescriptorProto, r Resolver) (protoreflect.FileDescriptor, error) {
 	var f prototype.File
 	switch fd.GetSyntax() {
 	case "proto2", "":
@@ -126,7 +133,7 @@ func addPublicImports(fd protoreflect.FileDescriptor, out importSet) {
 	}
 }
 
-func messagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, imps importSet, r *protoregistry.Files) (ms []prototype.Message, err error) {
+func messagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, imps importSet, r Resolver) (ms []prototype.Message, err error) {
 	for _, md := range mds {
 		var m prototype.Message
 		m.Name = protoreflect.Name(md.GetName())
@@ -244,7 +251,7 @@ func messagesFromDescriptorProto(mds []*descriptorpb.DescriptorProto, imps impor
 	return ms, nil
 }
 
-func enumsFromDescriptorProto(eds []*descriptorpb.EnumDescriptorProto, r *protoregistry.Files) (es []prototype.Enum, err error) {
+func enumsFromDescriptorProto(eds []*descriptorpb.EnumDescriptorProto, r Resolver) (es []prototype.Enum, err error) {
 	for _, ed := range eds {
 		var e prototype.Enum
 		e.Name = protoreflect.Name(ed.GetName())
@@ -280,7 +287,7 @@ func enumsFromDescriptorProto(eds []*descriptorpb.EnumDescriptorProto, r *protor
 	return es, nil
 }
 
-func extensionsFromDescriptorProto(xds []*descriptorpb.FieldDescriptorProto, imps importSet, r *protoregistry.Files) (xs []prototype.Extension, err error) {
+func extensionsFromDescriptorProto(xds []*descriptorpb.FieldDescriptorProto, imps importSet, r Resolver) (xs []prototype.Extension, err error) {
 	for _, xd := range xds {
 		if xd.OneofIndex != nil {
 			return nil, errors.New("extension may not have oneof_index")
@@ -322,7 +329,7 @@ func extensionsFromDescriptorProto(xds []*descriptorpb.FieldDescriptorProto, imp
 	return xs, nil
 }
 
-func servicesFromDescriptorProto(sds []*descriptorpb.ServiceDescriptorProto, imps importSet, r *protoregistry.Files) (ss []prototype.Service, err error) {
+func servicesFromDescriptorProto(sds []*descriptorpb.ServiceDescriptorProto, imps importSet, r Resolver) (ss []prototype.Service, err error) {
 	for _, sd := range sds {
 		var s prototype.Service
 		s.Name = protoreflect.Name(sd.GetName())
@@ -353,7 +360,7 @@ func servicesFromDescriptorProto(sds []*descriptorpb.ServiceDescriptorProto, imp
 // simplifies our implementation as we won't need to implement C++'s namespace
 // scoping rules.
 
-func findMessageDescriptor(s string, imps importSet, r *protoregistry.Files) (protoreflect.MessageDescriptor, error) {
+func findMessageDescriptor(s string, imps importSet, r Resolver) (protoreflect.MessageDescriptor, error) {
 	if !strings.HasPrefix(s, ".") {
 		return nil, errors.New("identifier name must be fully qualified with a leading dot: %v", s)
 	}
@@ -368,7 +375,7 @@ func findMessageDescriptor(s string, imps importSet, r *protoregistry.Files) (pr
 	return md, nil
 }
 
-func findEnumDescriptor(s string, imps importSet, r *protoregistry.Files) (protoreflect.EnumDescriptor, error) {
+func findEnumDescriptor(s string, imps importSet, r Resolver) (protoreflect.EnumDescriptor, error) {
 	if !strings.HasPrefix(s, ".") {
 		return nil, errors.New("identifier name must be fully qualified with a leading dot: %v", s)
 	}
