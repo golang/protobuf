@@ -78,11 +78,7 @@ func FileDescriptor(s filePath) (d fileDescGZIP) {
 	}
 
 	// Find the descriptor in the v2 registry.
-	var n int
-	protoregistry.GlobalFiles.RangeFilesByPath(s, func(fd pref.FileDescriptor) bool {
-		n++
-
-		// Convert the structured file descriptor to the raw descriptor proto.
+	if fd, _ := protoregistry.GlobalFiles.FindFileByPath(s); fd != nil {
 		pb := protodesc.ToFileDescriptorProto(fd)
 		b, err := protoV2.Marshal(pb)
 		if err != nil {
@@ -97,10 +93,6 @@ func FileDescriptor(s filePath) (d fileDescGZIP) {
 			panic(fmt.Sprintf("proto: compression failure: %v", err))
 		}
 		d = bb.Bytes()
-		return true
-	})
-	if n > 1 {
-		return d // best-effort; may be non-deterministic
 	}
 
 	// Locally cache the raw descriptor form for the file.
