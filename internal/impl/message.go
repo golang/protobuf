@@ -45,9 +45,7 @@ type MessageInfo struct {
 
 	extensionMap func(pointer) *extensionMap
 
-	unknownFields   func(*messageDataType) pref.UnknownFields
-	extensionFields func(*messageDataType) pref.KnownFields
-	methods         piface.Methods
+	methods piface.Methods
 
 	sizecacheOffset       offset
 	extensionOffset       offset
@@ -246,8 +244,6 @@ func (mi *MessageInfo) makeKnownFieldsFunc(si structInfo) {
 }
 
 func (mi *MessageInfo) makeUnknownFieldsFunc(t reflect.Type) {
-	mi.unknownFields = makeLegacyUnknownFieldsFunc(t)
-
 	mi.getUnknown = func(pointer) pref.RawFields { return nil }
 	mi.setUnknown = func(pointer, pref.RawFields) { return }
 	fu, _ := t.FieldByName("XXX_unrecognized")
@@ -280,8 +276,6 @@ func (mi *MessageInfo) makeUnknownFieldsFunc(t reflect.Type) {
 }
 
 func (mi *MessageInfo) makeExtensionFieldsFunc(t reflect.Type) {
-	mi.extensionFields = makeLegacyExtensionFieldsFunc(t)
-
 	fx, _ := t.FieldByName("XXX_extensions")
 	if fx.Type != extensionFieldsType {
 		fx, _ = t.FieldByName("XXX_InternalExtensions")

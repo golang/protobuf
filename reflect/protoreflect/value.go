@@ -130,8 +130,6 @@ type Message interface {
 	SetUnknown(RawFields)
 
 	// TODO: Add method to retrieve ExtensionType by FieldNumber?
-
-	deprecatedMessage
 }
 
 // RawFields is the raw bytes for an ordered sequence of fields.
