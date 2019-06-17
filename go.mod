@@ -1,4 +1,4 @@
-module google.golang.org/protobuf
+module google.golang.org/protobuf/v2
 
 go 1.9
 
