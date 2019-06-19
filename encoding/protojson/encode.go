@@ -39,6 +39,7 @@ type MarshalOptions struct {
 	// Resolver is used for looking up types when expanding google.protobuf.Any
 	// messages. If nil, this defaults to using protoregistry.GlobalTypes.
 	Resolver interface {
+		protoregistry.ExtensionTypeResolver
 		protoregistry.MessageTypeResolver
 	}
 

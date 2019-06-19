@@ -42,6 +42,7 @@ type MarshalOptions struct {
 	// Resolver is used for looking up types when expanding google.protobuf.Any
 	// messages. If nil, this defaults to using protoregistry.GlobalTypes.
 	Resolver interface {
+		protoregistry.ExtensionTypeResolver
 		protoregistry.MessageTypeResolver
 	}
 }
@@ -353,12 +354,12 @@ func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
 		return text.Value{}, err
 	}
 	em := emt.New().Interface()
-	// TODO: Need to set types registry in binary unmarshaling.
 	// TODO: If binary unmarshaling returns required not set error, need to
 	// return another required not set error that contains both the path to this
 	// field and the path inside the embedded message.
 	err = proto.UnmarshalOptions{
 		AllowPartial: o.AllowPartial,
+		Resolver:     o.Resolver,
 	}.Unmarshal(value.Bytes(), em)
 	if !nerr.Merge(err) {
 		return text.Value{}, err
