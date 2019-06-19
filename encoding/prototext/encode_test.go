@@ -1196,7 +1196,7 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
 }
 `,
 	}, {
-		desc: "Any expanded with missing required error",
+		desc: "Any expanded with missing required",
 		mo: prototext.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
@@ -1220,7 +1220,6 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
   opt_string: "embedded inside Any"
 }
 `,
-		wantErr: true,
 	}, {
 		desc: "Any with invalid UTF-8",
 		mo: prototext.MarshalOptions{

@@ -1429,7 +1429,7 @@ value: "some bytes"
 			TypeUrl: "foo.com/pb2.Nested",
 		},
 	}, {
-		desc: "Any expanded with missing required error",
+		desc: "Any expanded with missing required",
 		umo: prototext.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
@@ -1455,7 +1455,6 @@ value: "some bytes"
 				Value:   b,
 			}
 		}(),
-		wantErr: true,
 	}, {
 		desc: "Any with invalid UTF-8",
 		umo: prototext.UnmarshalOptions{

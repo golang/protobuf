@@ -1563,7 +1563,7 @@ func TestMarshal(t *testing.T) {
 		input:   &anypb.Any{TypeUrl: "foo/pb2.Nested"},
 		wantErr: true,
 	}, {
-		desc: "Any with missing required error",
+		desc: "Any with missing required",
 		mo: protojson.MarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
@@ -1587,7 +1587,6 @@ func TestMarshal(t *testing.T) {
   "@type": "pb2.PartialRequired",
   "optString": "embedded inside Any"
 }`,
-		wantErr: true,
 	}, {
 		desc: "Any with partial required and AllowPartial",
 		mo: protojson.MarshalOptions{

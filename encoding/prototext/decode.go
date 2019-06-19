@@ -463,11 +463,8 @@ func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, m pref.Message) err
 		return err
 	}
 	// Serialize the embedded message and assign the resulting bytes to the value field.
-	// TODO: If binary marshaling returns required not set error, need to
-	// return another required not set error that contains both the path to this
-	// field and the path inside the embedded message.
 	b, err := proto.MarshalOptions{
-		AllowPartial:  o.AllowPartial,
+		AllowPartial:  true, // never check required fields inside an Any
 		Deterministic: true,
 	}.Marshal(m2.Interface())
 	if !nerr.Merge(err) {

@@ -2011,7 +2011,7 @@ func TestUnmarshal(t *testing.T) {
 		inputText:    `{"@type": "foo/pb2.Nested"}`,
 		wantErr:      true,
 	}, {
-		desc: "Any with missing required error",
+		desc: "Any with missing required",
 		umo: protojson.UnmarshalOptions{
 			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb2.PartialRequired{})),
 		},
@@ -2036,7 +2036,6 @@ func TestUnmarshal(t *testing.T) {
 				Value:   b,
 			}
 		}(),
-		wantErr: true,
 	}, {
 		desc: "Any with partial required and AllowPartial",
 		umo: protojson.UnmarshalOptions{

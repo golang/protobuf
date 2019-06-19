@@ -354,11 +354,8 @@ func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
 		return text.Value{}, err
 	}
 	em := emt.New().Interface()
-	// TODO: If binary unmarshaling returns required not set error, need to
-	// return another required not set error that contains both the path to this
-	// field and the path inside the embedded message.
 	err = proto.UnmarshalOptions{
-		AllowPartial: o.AllowPartial,
+		AllowPartial: true,
 		Resolver:     o.Resolver,
 	}.Unmarshal(value.Bytes(), em)
 	if !nerr.Merge(err) {
