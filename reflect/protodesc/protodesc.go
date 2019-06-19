@@ -13,6 +13,7 @@ import (
 	"google.golang.org/protobuf/internal/errors"
 	"google.golang.org/protobuf/internal/prototype"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 
 	"google.golang.org/protobuf/types/descriptorpb"
 )
@@ -53,6 +54,9 @@ type Resolver interface {
 // The caller must relinquish full ownership of the input fd and must not
 // access or mutate any fields.
 func NewFile(fd *descriptorpb.FileDescriptorProto, r Resolver) (protoreflect.FileDescriptor, error) {
+	if r == nil {
+		r = (*protoregistry.Files)(nil) // empty resolver
+	}
 	var f prototype.File
 	switch fd.GetSyntax() {
 	case "proto2", "":
