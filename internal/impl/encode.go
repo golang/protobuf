@@ -8,7 +8,6 @@ import (
 	"sort"
 	"sync/atomic"
 
-	"google.golang.org/protobuf/internal/errors"
 	proto "google.golang.org/protobuf/proto"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	piface "google.golang.org/protobuf/runtime/protoiface"
@@ -100,13 +99,12 @@ func (mi *MessageInfo) marshalAppendPointer(b []byte, p pointer, opts marshalOpt
 		return b, nil
 	}
 	var err error
-	var nerr errors.NonFatal
 	// The old marshaler encodes extensions at beginning.
 	if mi.extensionOffset.IsValid() {
 		e := p.Apply(mi.extensionOffset).Extensions()
 		// TODO: Special handling for MessageSet?
 		b, err = mi.appendExtensions(b, e, opts)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 	}
@@ -119,7 +117,7 @@ func (mi *MessageInfo) marshalAppendPointer(b []byte, p pointer, opts marshalOpt
 			continue
 		}
 		b, err = f.funcs.marshal(b, fptr, f.wiretag, opts)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 	}
@@ -127,7 +125,7 @@ func (mi *MessageInfo) marshalAppendPointer(b []byte, p pointer, opts marshalOpt
 		u := *p.Apply(mi.unknownOffset).Bytes()
 		b = append(b, u...)
 	}
-	return b, nerr.E
+	return b, nil
 }
 
 func (mi *MessageInfo) sizeExtensions(ext *map[int32]ExtensionField, opts marshalOptions) (n int) {
@@ -169,15 +167,14 @@ func (mi *MessageInfo) appendExtensions(b []byte, ext *map[int32]ExtensionField,
 		}
 		sort.Ints(keys)
 		var err error
-		var nerr errors.NonFatal
 		for _, k := range keys {
 			x := (*ext)[int32(k)]
 			xi := mi.extensionFieldInfo(x.GetType())
 			b, err = xi.funcs.marshal(b, x.GetValue(), xi.wiretag, opts)
-			if !nerr.Merge(err) {
+			if err != nil {
 				return b, err
 			}
 		}
-		return b, nerr.E
+		return b, nil
 	}
 }

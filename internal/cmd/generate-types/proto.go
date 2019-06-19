@@ -261,9 +261,7 @@ func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, fd protorefl
 		}
 		{{if (eq .Name "String") -}}
 		if fd.Syntax() == protoreflect.Proto3 && !utf8.Valid(v) {
-			var nerr errors.NonFatal
-			nerr.AppendInvalidUTF8(string(fd.FullName()))
-			return protoreflect.ValueOf(string(v)), n, nerr.E
+			return protoreflect.Value{}, 0, errors.InvalidUTF8(string(fd.FullName()))
 		}
 		{{end -}}
 		return protoreflect.ValueOf({{.ToValue}}), n, nil
@@ -274,7 +272,6 @@ func (o UnmarshalOptions) unmarshalScalar(b []byte, wtyp wire.Type, fd protorefl
 }
 
 func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, list protoreflect.List, fd protoreflect.FieldDescriptor) (n int, err error) {
-	var nerr errors.NonFatal
 	switch fd.Kind() {
 	{{- range .}}
 	case {{.Expr}}:
@@ -308,19 +305,19 @@ func (o UnmarshalOptions) unmarshalList(b []byte, wtyp wire.Type, list protorefl
 		}
 		{{if (eq .Name "String") -}}
 		if fd.Syntax() == protoreflect.Proto3 && !utf8.Valid(v) {
-			nerr.AppendInvalidUTF8(string(fd.FullName()))
+			return 0, errors.InvalidUTF8(string(fd.FullName()))
 		}
 		{{end -}}
 		{{if or (eq .Name "Message") (eq .Name "Group") -}}
 		m := list.NewMessage()
-		if err := o.unmarshalMessage(v, m); !nerr.Merge(err) {
+		if err := o.unmarshalMessage(v, m); err != nil {
 			return 0, err
 		}
 		list.Append(protoreflect.ValueOf(m))
 		{{- else -}}
 		list.Append(protoreflect.ValueOf({{.ToValue}}))
 		{{- end}}
-		return n, nerr.E
+		return n, nil
 	{{- end}}
 	default:
 		return 0, errUnknown
@@ -340,13 +337,12 @@ var wireTypes = map[protoreflect.Kind]wire.Type{
 }
 
 func (o MarshalOptions) marshalSingular(b []byte, fd protoreflect.FieldDescriptor, v protoreflect.Value) ([]byte, error) {
-	var nerr errors.NonFatal
 	switch fd.Kind() {
 	{{- range .}}
 	case {{.Expr}}:
 		{{- if (eq .Name "String") }}
 		if fd.Syntax() == protoreflect.Proto3 && !utf8.ValidString(v.String()) {
-			nerr.AppendInvalidUTF8(string(fd.FullName()))
+			return b, errors.InvalidUTF8(string(fd.FullName()))
 		}
 		{{end -}}
 		{{- if (eq .Name "Message") -}}
@@ -354,14 +350,14 @@ func (o MarshalOptions) marshalSingular(b []byte, fd protoreflect.FieldDescripto
 		var err error
 		b, pos = appendSpeculativeLength(b)
 		b, err = o.marshalMessage(b, v.Message())
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 		b = finishSpeculativeLength(b, pos)
 		{{- else if (eq .Name "Group") -}}
 		var err error
 		b, err = o.marshalMessage(b, v.Message())
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 		b = wire.AppendVarint(b, wire.EncodeTag(fd.Number(), wire.EndGroupType))
@@ -372,7 +368,7 @@ func (o MarshalOptions) marshalSingular(b []byte, fd protoreflect.FieldDescripto
 	default:
 		return b, errors.New("invalid kind %v", fd.Kind())
 	}
-	return b, nerr.E
+	return b, nil
 }
 `))
 

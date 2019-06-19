@@ -53,38 +53,35 @@ func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
 		o.Resolver = protoregistry.GlobalTypes
 	}
 
-	var nerr errors.NonFatal
 	v, err := o.marshalMessage(m.ProtoReflect())
-	if !nerr.Merge(err) {
+	if err != nil {
 		return nil, err
 	}
 
 	delims := [2]byte{'{', '}'}
 	const outputASCII = false
 	b, err := text.Marshal(v, o.Indent, delims, outputASCII)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return nil, err
 	}
-	if !o.AllowPartial {
-		nerr.Merge(proto.IsInitialized(m))
+	if o.AllowPartial {
+		return b, nil
 	}
-	return b, nerr.E
+	return b, proto.IsInitialized(m)
 }
 
 // marshalMessage converts a protoreflect.Message to a text.Value.
 func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
-	var nerr errors.NonFatal
 	var msgFields [][2]text.Value
 	messageDesc := m.Descriptor()
 
 	// Handle Any expansion.
 	if messageDesc.FullName() == "google.protobuf.Any" {
-		msg, err := o.marshalAny(m)
-		if err == nil || nerr.Merge(err) {
-			// Return as is for nil or non-fatal error.
-			return msg, nerr.E
+		if msg, err := o.marshalAny(m); err == nil {
+			// Return as is if no error.
+			return msg, nil
 		}
-		// For other errors, continue on to marshal Any as a regular message.
+		// Otherwise continue on to marshal Any as a regular message.
 	}
 
 	// Handle known fields.
@@ -104,7 +101,7 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 		pval := m.Get(fd)
 		var err error
 		msgFields, err = o.appendField(msgFields, name, pval, fd)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return text.Value{}, err
 		}
 	}
@@ -112,7 +109,7 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 	// Handle extensions.
 	var err error
 	msgFields, err = o.appendExtensions(msgFields, m)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return text.Value{}, err
 	}
 
@@ -120,17 +117,15 @@ func (o MarshalOptions) marshalMessage(m pref.Message) (text.Value, error) {
 	// TODO: Provide option to exclude or include unknown fields.
 	msgFields = appendUnknown(msgFields, m.GetUnknown())
 
-	return text.ValueOf(msgFields), nerr.E
+	return text.ValueOf(msgFields), nil
 }
 
 // appendField marshals a protoreflect.Value and appends it to the given [][2]text.Value.
 func (o MarshalOptions) appendField(msgFields [][2]text.Value, name text.Value, pval pref.Value, fd pref.FieldDescriptor) ([][2]text.Value, error) {
-	var nerr errors.NonFatal
-
 	switch {
 	case fd.IsList():
 		items, err := o.marshalList(pval.List(), fd)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return msgFields, err
 		}
 
@@ -139,7 +134,7 @@ func (o MarshalOptions) appendField(msgFields [][2]text.Value, name text.Value, 
 		}
 	case fd.IsMap():
 		items, err := o.marshalMap(pval.Map(), fd)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return msgFields, err
 		}
 
@@ -148,13 +143,13 @@ func (o MarshalOptions) appendField(msgFields [][2]text.Value, name text.Value, 
 		}
 	default:
 		tval, err := o.marshalSingular(pval, fd)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return msgFields, err
 		}
 		msgFields = append(msgFields, [2]text.Value{name, tval})
 	}
 
-	return msgFields, nerr.E
+	return msgFields, nil
 }
 
 // marshalSingular converts a non-repeated field value to text.Value.
@@ -173,12 +168,10 @@ func (o MarshalOptions) marshalSingular(val pref.Value, fd pref.FieldDescriptor)
 
 	case pref.StringKind:
 		s := val.String()
-		if utf8.ValidString(s) {
-			return text.ValueOf(s), nil
+		if !utf8.ValidString(s) {
+			return text.Value{}, errors.InvalidUTF8(string(fd.FullName()))
 		}
-		var nerr errors.NonFatal
-		nerr.AppendInvalidUTF8(string(fd.FullName()))
-		return text.ValueOf(s), nerr.E
+		return text.ValueOf(s), nil
 
 	case pref.EnumKind:
 		num := val.Enum()
@@ -197,21 +190,20 @@ func (o MarshalOptions) marshalSingular(val pref.Value, fd pref.FieldDescriptor)
 
 // marshalList converts a protoreflect.List to []text.Value.
 func (o MarshalOptions) marshalList(list pref.List, fd pref.FieldDescriptor) ([]text.Value, error) {
-	var nerr errors.NonFatal
 	size := list.Len()
 	values := make([]text.Value, 0, size)
 
 	for i := 0; i < size; i++ {
 		item := list.Get(i)
 		val, err := o.marshalSingular(item, fd)
-		if !nerr.Merge(err) {
+		if err != nil {
 			// Return already marshaled values.
 			return values, err
 		}
 		values = append(values, val)
 	}
 
-	return values, nerr.E
+	return values, nil
 }
 
 var (
@@ -221,7 +213,6 @@ var (
 
 // marshalMap converts a protoreflect.Map to []text.Value.
 func (o MarshalOptions) marshalMap(mmap pref.Map, fd pref.FieldDescriptor) ([]text.Value, error) {
-	var nerr errors.NonFatal
 	// values is a list of messages.
 	values := make([]text.Value, 0, mmap.Len())
 
@@ -229,12 +220,12 @@ func (o MarshalOptions) marshalMap(mmap pref.Map, fd pref.FieldDescriptor) ([]te
 	mapsort.Range(mmap, fd.MapKey().Kind(), func(key pref.MapKey, val pref.Value) bool {
 		var keyTxtVal text.Value
 		keyTxtVal, err = o.marshalSingular(key.Value(), fd.MapKey())
-		if !nerr.Merge(err) {
+		if err != nil {
 			return false
 		}
 		var valTxtVal text.Value
 		valTxtVal, err = o.marshalSingular(val, fd.MapValue())
-		if !nerr.Merge(err) {
+		if err != nil {
 			return false
 		}
 		// Map entry (message) contains 2 fields, first field for key and second field for value.
@@ -250,12 +241,11 @@ func (o MarshalOptions) marshalMap(mmap pref.Map, fd pref.FieldDescriptor) ([]te
 		return nil, err
 	}
 
-	return values, nerr.E
+	return values, nil
 }
 
 // appendExtensions marshals extension fields and appends them to the given [][2]text.Value.
 func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, m pref.Message) ([][2]text.Value, error) {
-	var nerr errors.NonFatal
 	var err error
 	var entries [][2]text.Value
 	m.Range(func(fd pref.FieldDescriptor, v pref.Value) bool {
@@ -273,7 +263,7 @@ func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, m pref.Messa
 		// Use string type to produce [name] format.
 		tname := text.ValueOf(string(name))
 		entries, err = o.appendField(entries, tname, v, xt)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return false
 		}
 		err = nil
@@ -287,7 +277,7 @@ func (o MarshalOptions) appendExtensions(msgFields [][2]text.Value, m pref.Messa
 	sort.SliceStable(entries, func(i, j int) bool {
 		return entries[i][0].String() < entries[j][0].String()
 	})
-	return append(msgFields, entries...), nerr.E
+	return append(msgFields, entries...), nil
 }
 
 // isMessageSetExtension reports whether extension extends a message set.
@@ -348,9 +338,8 @@ func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
 	typeURL := m.Get(fdType).String()
 	value := m.Get(fdValue)
 
-	var nerr errors.NonFatal
 	emt, err := o.Resolver.FindMessageByURL(typeURL)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return text.Value{}, err
 	}
 	em := emt.New().Interface()
@@ -358,12 +347,12 @@ func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
 		AllowPartial: true,
 		Resolver:     o.Resolver,
 	}.Unmarshal(value.Bytes(), em)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return text.Value{}, err
 	}
 
 	msg, err := o.marshalMessage(em.ProtoReflect())
-	if !nerr.Merge(err) {
+	if err != nil {
 		return text.Value{}, err
 	}
 	// Expanded Any field value contains only a single field with the type_url field value as the
@@ -374,5 +363,5 @@ func (o MarshalOptions) marshalAny(m pref.Message) (text.Value, error) {
 			msg,
 		},
 	}
-	return text.ValueOf(msgFields), nerr.E
+	return text.ValueOf(msgFields), nil
 }

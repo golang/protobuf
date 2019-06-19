@@ -16,15 +16,13 @@ import (
 )
 
 func appendString(out []byte, in string) ([]byte, error) {
-	var nerr errors.NonFatal
 	out = append(out, '"')
 	i := indexNeedEscapeInString(in)
 	in, out = in[i:], append(out, in[:i]...)
 	for len(in) > 0 {
 		switch r, n := utf8.DecodeRuneInString(in); {
 		case r == utf8.RuneError && n == 1:
-			nerr.AppendInvalidUTF8("")
-			in, out = in[1:], append(out, in[0]) // preserve invalid byte
+			return out, errors.InvalidUTF8("")
 		case r < ' ' || r == '"' || r == '\\':
 			out = append(out, '\\')
 			switch r {
@@ -52,11 +50,10 @@ func appendString(out []byte, in string) ([]byte, error) {
 		}
 	}
 	out = append(out, '"')
-	return out, nerr.E
+	return out, nil
 }
 
 func (d *Decoder) parseString(in []byte) (string, int, error) {
-	var nerr errors.NonFatal
 	in0 := in
 	if len(in) == 0 {
 		return "", 0, io.ErrUnexpectedEOF
@@ -70,14 +67,13 @@ func (d *Decoder) parseString(in []byte) (string, int, error) {
 	for len(in) > 0 {
 		switch r, n := utf8.DecodeRune(in); {
 		case r == utf8.RuneError && n == 1:
-			nerr.AppendInvalidUTF8("")
-			in, out = in[1:], append(out, in[0]) // preserve invalid byte
+			return "", 0, d.newSyntaxError("invalid UTF-8 in string")
 		case r < ' ':
 			return "", 0, d.newSyntaxError("invalid character %q in string", r)
 		case r == '"':
 			in = in[1:]
 			n := len(in0) - len(in)
-			return string(out), n, nerr.E
+			return string(out), n, nil
 		case r == '\\':
 			if len(in) < 2 {
 				return "", 0, io.ErrUnexpectedEOF

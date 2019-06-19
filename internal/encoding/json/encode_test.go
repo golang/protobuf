@@ -349,19 +349,6 @@ func TestEncoder(t *testing.T) {
 		]
 	]
 }`,
-		},
-		{
-			desc: "string contains rune error",
-			write: func(e *json.Encoder) {
-				// WriteString returns non-fatal error for invalid UTF sequence, but
-				// should still output the written value. See TestWriteStringError
-				// below that checks for this.
-				e.StartObject()
-				e.WriteName("invalid rune")
-				e.WriteString("abc\xff")
-				e.EndObject()
-			},
-			wantOut: "{\"invalid rune\":\"abc\xff\"}",
 		}}
 
 	for _, tc := range tests {

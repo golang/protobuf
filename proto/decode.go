@@ -53,14 +53,13 @@ func (o UnmarshalOptions) Unmarshal(b []byte, m Message) error {
 	if err == errInternalNoFast {
 		err = o.unmarshalMessage(b, m.ProtoReflect())
 	}
-	var nerr errors.NonFatal
-	if !nerr.Merge(err) {
+	if err != nil {
 		return err
 	}
-	if !o.AllowPartial {
-		nerr.Merge(IsInitialized(m))
+	if o.AllowPartial {
+		return nil
 	}
-	return nerr.E
+	return IsInitialized(m)
 }
 
 func (o UnmarshalOptions) unmarshalMessageFast(b []byte, m Message) error {
@@ -74,7 +73,6 @@ func (o UnmarshalOptions) unmarshalMessageFast(b []byte, m Message) error {
 func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) error {
 	messageDesc := m.Descriptor()
 	fieldDescs := messageDesc.Fields()
-	var nerr errors.NonFatal
 	for len(b) > 0 {
 		// Parse the tag (field number and wire type).
 		num, wtyp, tagLen := wire.ConsumeTag(b)
@@ -109,18 +107,17 @@ func (o UnmarshalOptions) unmarshalMessage(b []byte, m protoreflect.Message) err
 				return wire.ParseError(valLen)
 			}
 			m.SetUnknown(append(m.GetUnknown(), b[:tagLen+valLen]...))
-		} else if !nerr.Merge(err) {
+		} else if err != nil {
 			return err
 		}
 		b = b[tagLen+valLen:]
 	}
-	return nerr.E
+	return nil
 }
 
 func (o UnmarshalOptions) unmarshalSingular(b []byte, wtyp wire.Type, m protoreflect.Message, fd protoreflect.FieldDescriptor) (n int, err error) {
-	var nerr errors.NonFatal
 	v, n, err := o.unmarshalScalar(b, wtyp, fd)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return 0, err
 	}
 	switch fd.Kind() {
@@ -138,14 +135,14 @@ func (o UnmarshalOptions) unmarshalSingular(b []byte, wtyp wire.Type, m protoref
 			m.Set(fd, protoreflect.ValueOf(m2))
 		}
 		// Pass up errors (fatal and otherwise).
-		if err := o.unmarshalMessage(v.Bytes(), m2); !nerr.Merge(err) {
+		if err := o.unmarshalMessage(v.Bytes(), m2); err != nil {
 			return n, err
 		}
 	default:
 		// Non-message scalars replace the previous value.
 		m.Set(fd, v)
 	}
-	return n, nerr.E
+	return n, nil
 }
 
 func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, mapv protoreflect.Map, fd protoreflect.FieldDescriptor) (n int, err error) {
@@ -170,7 +167,6 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, mapv protorefle
 	}
 	// Map entries are represented as a two-element message with fields
 	// containing the key and value.
-	var nerr errors.NonFatal
 	for len(b) > 0 {
 		num, wtyp, n := wire.ConsumeTag(b)
 		if n < 0 {
@@ -181,21 +177,19 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, mapv protorefle
 		switch num {
 		case 1:
 			key, n, err = o.unmarshalScalar(b, wtyp, keyField)
-			if !nerr.Merge(err) {
+			if err != nil {
 				break
 			}
-			err = nil
 			haveKey = true
 		case 2:
 			var v protoreflect.Value
 			v, n, err = o.unmarshalScalar(b, wtyp, valField)
-			if !nerr.Merge(err) {
+			if err != nil {
 				break
 			}
-			err = nil
 			switch valField.Kind() {
 			case protoreflect.GroupKind, protoreflect.MessageKind:
-				if err := o.unmarshalMessage(v.Bytes(), val.Message()); !nerr.Merge(err) {
+				if err := o.unmarshalMessage(v.Bytes(), val.Message()); err != nil {
 					return 0, err
 				}
 			default:
@@ -225,7 +219,7 @@ func (o UnmarshalOptions) unmarshalMap(b []byte, wtyp wire.Type, mapv protorefle
 		}
 	}
 	mapv.Set(key.MapKey(), val)
-	return n, nerr.E
+	return n, nil
 }
 
 // errUnknown is used internally to indicate fields which should be added

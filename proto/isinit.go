@@ -75,7 +75,5 @@ func newRequiredNotSetError(stack []interface{}) error {
 	for _, s := range stack {
 		fmt.Fprint(&buf, s)
 	}
-	var nerr errors.NonFatal
-	nerr.AppendRequiredNotSet(buf.String())
-	return nerr.E
+	return errors.RequiredNotSet(buf.String())
 }

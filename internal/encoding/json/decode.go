@@ -69,9 +69,8 @@ func (d *Decoder) Read() (Value, error) {
 		return d.value, d.err
 	}
 
-	var nerr errors.NonFatal
 	value, err := d.parseNext()
-	if !nerr.Merge(err) {
+	if err != nil {
 		return Value{}, err
 	}
 	n := value.size
@@ -145,7 +144,7 @@ func (d *Decoder) Read() (Value, error) {
 	if d.value.typ == comma {
 		return d.Read()
 	}
-	return value, nerr.E
+	return value, nil
 }
 
 // Any sequence that looks like a non-delimiter (for error reporting).
@@ -193,12 +192,11 @@ func (d *Decoder) parseNext() (value Value, err error) {
 		return d.newValue(Number, in, n), nil
 
 	case '"':
-		var nerr errors.NonFatal
 		s, n, err := d.parseString(in)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return Value{}, err
 		}
-		return d.newStringValue(in, n, s), nerr.E
+		return d.newStringValue(in, n, s), nil
 
 	case '{':
 		return d.newValue(StartObject, in, 1), nil

@@ -354,32 +354,20 @@ func Test(t *testing.T) {
 		wantOut:      `str:"\x01\x02\x03\x04\x05\x06\x07\x08\t\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !\"#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_` + "`abcdefghijklmnopqrstuvwxyz{|}~\x7f\"",
 		wantOutASCII: `str:"\x01\x02\x03\x04\x05\x06\x07\x08\t\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !\"#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_` + "`abcdefghijklmnopqrstuvwxyz{|}~\x7f\"",
 	}, {
-		in:           "str: '\xde\xad\xbe\xef'",
-		wantVal:      V(Msg{{ID("str"), V("\xde\xad\xbe\xef")}}),
-		wantOut:      "str:\"\u07ad\\xbe\\xef\"",
-		wantOutASCII: `str:"\u07ad\xbe\xef"`,
-		wantErr:      "invalid UTF-8 detected",
+		in:      "str: '\xde\xad\xbe\xef'",
+		wantErr: "invalid UTF-8 detected",
 	}, {
 		// Valid UTF-8 wire encoding, but sub-optimal encoding.
-		in:           "str: '\xc0\x80'",
-		wantVal:      V(Msg{{ID("str"), V("\xc0\x80")}}),
-		wantOut:      `str:"\xc0\x80"`,
-		wantOutASCII: `str:"\xc0\x80"`,
-		wantErr:      "invalid UTF-8 detected",
+		in:      "str: '\xc0\x80'",
+		wantErr: "invalid UTF-8 detected",
 	}, {
 		// Valid UTF-8 wire encoding, but invalid rune (surrogate pair).
-		in:           "str: '\xed\xa0\x80'",
-		wantVal:      V(Msg{{ID("str"), V("\xed\xa0\x80")}}),
-		wantOut:      `str:"\xed\xa0\x80"`,
-		wantOutASCII: `str:"\xed\xa0\x80"`,
-		wantErr:      "invalid UTF-8 detected",
+		in:      "str: '\xed\xa0\x80'",
+		wantErr: "invalid UTF-8 detected",
 	}, {
 		// Valid UTF-8 wire encoding, but invalid rune (above max rune).
-		in:           "str: '\xf7\xbf\xbf\xbf'",
-		wantVal:      V(Msg{{ID("str"), V("\xf7\xbf\xbf\xbf")}}),
-		wantOut:      `str:"\xf7\xbf\xbf\xbf"`,
-		wantOutASCII: `str:"\xf7\xbf\xbf\xbf"`,
-		wantErr:      "invalid UTF-8 detected",
+		in:      "str: '\xf7\xbf\xbf\xbf'",
+		wantErr: "invalid UTF-8 detected",
 	}, {
 		// Valid UTF-8 wire encoding of the RuneError rune.
 		in:           "str: '\xef\xbf\xbd'",

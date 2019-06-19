@@ -5,7 +5,6 @@
 package protojson_test
 
 import (
-	"bytes"
 	"math"
 	"testing"
 
@@ -391,10 +390,7 @@ func TestUnmarshal(t *testing.T) {
 		desc:         "string with invalid UTF-8",
 		inputMessage: &pb3.Scalars{},
 		inputText:    "{\"sString\": \"\xff\"}",
-		wantMessage: &pb3.Scalars{
-			SString: "\xff",
-		},
-		wantErr: true,
+		wantErr:      true,
 	}, {
 		desc:         "not string",
 		inputMessage: &pb2.Scalars{},
@@ -814,18 +810,12 @@ func TestUnmarshal(t *testing.T) {
 		desc:         "repeated string contains invalid UTF8",
 		inputMessage: &pb2.Repeats{},
 		inputText:    `{"rptString": ["` + "abc\xff" + `"]}`,
-		wantMessage: &pb2.Repeats{
-			RptString: []string{"abc\xff"},
-		},
-		wantErr: true,
+		wantErr:      true,
 	}, {
 		desc:         "repeated messages contain invalid UTF8",
 		inputMessage: &pb2.Nests{},
 		inputText:    `{"rptNested": [{"optString": "` + "abc\xff" + `"}]}`,
-		wantMessage: &pb2.Nests{
-			RptNested: []*pb2.Nested{{OptString: scalar.String("abc\xff")}},
-		},
-		wantErr: true,
+		wantErr:      true,
 	}, {
 		desc:         "repeated scalars contain invalid type",
 		inputMessage: &pb2.Repeats{},
@@ -1020,11 +1010,6 @@ func TestUnmarshal(t *testing.T) {
 	}
   }
 }`,
-		wantMessage: &pb3.Maps{
-			StrToNested: map[string]*pb3.Nested{
-				"hello": {SString: "abc\xff"},
-			},
-		},
 		wantErr: true,
 	}, {
 		desc:         "map key contains invalid UTF8",
@@ -1034,11 +1019,6 @@ func TestUnmarshal(t *testing.T) {
     "` + "abc\xff" + `": {}
   }
 }`,
-		wantMessage: &pb3.Maps{
-			StrToNested: map[string]*pb3.Nested{
-				"abc\xff": {},
-			},
-		},
 		wantErr: true,
 	}, {
 		desc:         "required fields not set",
@@ -1509,16 +1489,12 @@ func TestUnmarshal(t *testing.T) {
 		desc:         "StringValue with invalid UTF8 error",
 		inputMessage: &wrapperspb.StringValue{},
 		inputText:    "\"abc\xff\"",
-		wantMessage:  &wrapperspb.StringValue{Value: "abc\xff"},
 		wantErr:      true,
 	}, {
 		desc:         "StringValue field with invalid UTF8 error",
 		inputMessage: &pb2.KnownTypes{},
 		inputText:    "{\n  \"optString\": \"abc\xff\"\n}",
-		wantMessage: &pb2.KnownTypes{
-			OptString: &wrapperspb.StringValue{Value: "abc\xff"},
-		},
-		wantErr: true,
+		wantErr:      true,
 	}, {
 		desc:         "NullValue field with JSON null",
 		inputMessage: &pb2.KnownTypes{},
@@ -1589,7 +1565,6 @@ func TestUnmarshal(t *testing.T) {
 		desc:         "Value string with invalid UTF8",
 		inputMessage: &structpb.Value{},
 		inputText:    "\"\xff\"",
-		wantMessage:  &structpb.Value{Kind: &structpb.Value_StringValue{"\xff"}},
 		wantErr:      true,
 	}, {
 		desc:         "Value field string",
@@ -1606,9 +1581,6 @@ func TestUnmarshal(t *testing.T) {
 		inputText: `{
   "optValue": "` + "\xff" + `"
 }`,
-		wantMessage: &pb2.KnownTypes{
-			OptValue: &structpb.Value{Kind: &structpb.Value_StringValue{"\xff"}},
-		},
 		wantErr: true,
 	}, {
 		desc:         "Value empty struct",
@@ -1660,16 +1632,7 @@ func TestUnmarshal(t *testing.T) {
 		desc:         "Value struct with invalid UTF8 string",
 		inputMessage: &structpb.Value{},
 		inputText:    "{\"string\": \"abc\xff\"}",
-		wantMessage: &structpb.Value{
-			Kind: &structpb.Value_StructValue{
-				&structpb.Struct{
-					Fields: map[string]*structpb.Value{
-						"string": {Kind: &structpb.Value_StringValue{"abc\xff"}},
-					},
-				},
-			},
-		},
-		wantErr: true,
+		wantErr:      true,
 	}, {
 		desc:         "Value field struct",
 		inputMessage: &pb2.KnownTypes{},
@@ -1743,33 +1706,13 @@ func TestUnmarshal(t *testing.T) {
 		desc:         "Value list with invalid UTF8 string",
 		inputMessage: &structpb.Value{},
 		inputText:    "[\"abc\xff\"]",
-		wantMessage: &structpb.Value{
-			Kind: &structpb.Value_ListValue{
-				&structpb.ListValue{
-					Values: []*structpb.Value{
-						{Kind: &structpb.Value_StringValue{"abc\xff"}},
-					},
-				},
-			},
-		},
-		wantErr: true,
+		wantErr:      true,
 	}, {
 		desc:         "Value field list with invalid UTF8 string",
 		inputMessage: &pb2.KnownTypes{},
 		inputText: `{
   "optValue": [ "` + "abc\xff" + `"]
 }`,
-		wantMessage: &pb2.KnownTypes{
-			OptValue: &structpb.Value{
-				Kind: &structpb.Value_ListValue{
-					&structpb.ListValue{
-						Values: []*structpb.Value{
-							{Kind: &structpb.Value_StringValue{"abc\xff"}},
-						},
-					},
-				},
-			},
-		},
 		wantErr: true,
 	}, {
 		desc:         "Duration empty string",
@@ -2073,19 +2016,6 @@ func TestUnmarshal(t *testing.T) {
   "optString": "` + "abc\xff" + `",
   "@type": "foo/pb2.Nested"
 }`,
-		wantMessage: func() proto.Message {
-			m := &pb2.Nested{
-				OptString: scalar.String("abc\xff"),
-			}
-			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
-			if err != nil {
-				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
-			}
-			return &anypb.Any{
-				TypeUrl: "foo/pb2.Nested",
-				Value:   b,
-			}
-		}(),
 		wantErr: true,
 	}, {
 		desc: "Any with BoolValue",
@@ -2141,17 +2071,6 @@ func TestUnmarshal(t *testing.T) {
   "@type": "google.protobuf.StringValue",
   "value": "` + "abc\xff" + `"
 }`,
-		wantMessage: func() proto.Message {
-			m := &wrapperspb.StringValue{Value: "abcd"}
-			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
-			if err != nil {
-				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
-			}
-			return &anypb.Any{
-				TypeUrl: "google.protobuf.StringValue",
-				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
-			}
-		}(),
 		wantErr: true,
 	}, {
 		desc: "Any with Int64Value",
@@ -2227,17 +2146,6 @@ func TestUnmarshal(t *testing.T) {
   "@type": "google.protobuf.Value",
   "value": "` + "abc\xff" + `"
 }`,
-		wantMessage: func() proto.Message {
-			m := &structpb.Value{Kind: &structpb.Value_StringValue{"abcd"}}
-			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
-			if err != nil {
-				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
-			}
-			return &anypb.Any{
-				TypeUrl: "google.protobuf.Value",
-				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
-			}
-		}(),
 		wantErr: true,
 	}, {
 		desc: "Any with Value of NullValue",
@@ -2380,26 +2288,6 @@ func TestUnmarshal(t *testing.T) {
 	"value": "` + "abc\xff" + `"
   }
 }`,
-		wantMessage: func() proto.Message {
-			m1 := &wrapperspb.StringValue{Value: "abcd"}
-			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m1)
-			if err != nil {
-				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
-			}
-			m2 := &anypb.Any{
-				TypeUrl: "google.protobuf.StringValue",
-				Value:   b,
-			}
-			m3 := &pb2.KnownTypes{OptAny: m2}
-			b, err = proto.MarshalOptions{Deterministic: true}.Marshal(m3)
-			if err != nil {
-				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
-			}
-			return &anypb.Any{
-				TypeUrl: "pb2.KnownTypes",
-				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
-			}
-		}(),
 		wantErr: true,
 	}, {
 		desc: "well known types as field values",

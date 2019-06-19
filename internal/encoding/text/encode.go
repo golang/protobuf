@@ -45,18 +45,17 @@ func Marshal(v Value, indent string, delims [2]byte, outputASCII bool) ([]byte, 
 	p.outputASCII = outputASCII
 
 	err := p.marshalMessage(v, false)
-	if !p.nerr.Merge(err) {
+	if err != nil {
 		return nil, err
 	}
 	if len(indent) > 0 {
-		return append(bytes.TrimRight(p.out, "\n"), '\n'), p.nerr.E
+		return append(bytes.TrimRight(p.out, "\n"), '\n'), nil
 	}
-	return p.out, p.nerr.E
+	return p.out, nil
 }
 
 type encoder struct {
-	nerr errors.NonFatal
-	out  []byte
+	out []byte
 
 	indent      string
 	indents     []byte
@@ -77,7 +76,7 @@ func (p *encoder) marshalList(v Value) error {
 	}
 	for i, elem := range elems {
 		p.out = append(p.out, p.indents...)
-		if err := p.marshalValue(elem); !p.nerr.Merge(err) {
+		if err := p.marshalValue(elem); err != nil {
 			return err
 		}
 		if i < len(elems)-1 {
@@ -107,7 +106,7 @@ func (p *encoder) marshalMessage(v Value, emitDelims bool) error {
 	}
 	for i, item := range items {
 		p.out = append(p.out, p.indents...)
-		if err := p.marshalKey(item[0]); !p.nerr.Merge(err) {
+		if err := p.marshalKey(item[0]); err != nil {
 			return err
 		}
 		p.out = append(p.out, ':')
@@ -120,7 +119,7 @@ func (p *encoder) marshalMessage(v Value, emitDelims bool) error {
 			p.out = append(p.out, ' ')
 		}
 
-		if err := p.marshalValue(item[1]); !p.nerr.Merge(err) {
+		if err := p.marshalValue(item[1]); err != nil {
 			return err
 		}
 		if i < len(items)-1 && len(p.indent) == 0 {

@@ -5,7 +5,6 @@
 package prototext_test
 
 import (
-	"bytes"
 	"encoding/hex"
 	"math"
 	"testing"
@@ -162,8 +161,6 @@ opt_string: "谷歌"
 		input: &pb3.Scalars{
 			SString: "abc\xff",
 		},
-		want: `s_string: "abc\xff"
-`,
 		wantErr: true,
 	}, {
 		desc: "float nan",
@@ -366,10 +363,6 @@ OptGroup: {}
 				SString: "abc\xff",
 			},
 		},
-		want: `s_nested: {
-  s_string: "abc\xff"
-}
-`,
 		wantErr: true,
 	}, {
 		desc:  "oneof not set",
@@ -485,8 +478,6 @@ rpt_bytes: "世界"
 		input: &pb2.Repeats{
 			RptString: []string{"abc\xff"},
 		},
-		want: `rpt_string: "abc\xff"
-`,
 		wantErr: true,
 	}, {
 		desc: "repeated enums",
@@ -693,11 +684,6 @@ str_to_oneofs: {
 				101: "abc\xff",
 			},
 		},
-		want: `int32_to_str: {
-  key: 101
-  value: "abc\xff"
-}
-`,
 		wantErr: true,
 	}, {
 		desc: "map field key contains invalid UTF-8",
@@ -706,11 +692,6 @@ str_to_oneofs: {
 				"abc\xff": {},
 			},
 		},
-		want: `str_to_nested: {
-  key: "abc\xff"
-  value: {}
-}
-`,
 		wantErr: true,
 	}, {
 		desc: "map field contains nil value",
@@ -967,8 +948,6 @@ opt_int32: 42
 			setExtension(m, pb2.E_OptExtString, "abc\xff")
 			return m
 		}(),
-		want: `[pb2.opt_ext_string]: "abc\xff"
-`,
 		wantErr: true,
 	}, {
 		desc: "extension partial returns error",
@@ -1220,29 +1199,6 @@ value: "\n\x13embedded inside Any\x12\x0b\n\tinception"
   opt_string: "embedded inside Any"
 }
 `,
-	}, {
-		desc: "Any with invalid UTF-8",
-		mo: prototext.MarshalOptions{
-			Resolver: preg.NewTypes(pimpl.Export{}.MessageTypeOf(&pb3.Nested{})),
-		},
-		input: func() proto.Message {
-			m := &pb3.Nested{
-				SString: "abcd",
-			}
-			b, err := proto.MarshalOptions{Deterministic: true}.Marshal(m)
-			if err != nil {
-				t.Fatalf("error in binary marshaling message for Any.value: %v", err)
-			}
-			return &anypb.Any{
-				TypeUrl: string(m.ProtoReflect().Descriptor().FullName()),
-				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
-			}
-		}(),
-		want: `[pb3.Nested]: {
-  s_string: "abc\xff"
-}
-`,
-		wantErr: true,
 	}, {
 		desc: "Any with invalid value",
 		mo: prototext.MarshalOptions{

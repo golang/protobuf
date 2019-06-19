@@ -10,7 +10,6 @@ import (
 	"unicode/utf8"
 
 	"google.golang.org/protobuf/internal/encoding/wire"
-	"google.golang.org/protobuf/internal/errors"
 	"google.golang.org/protobuf/proto"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -221,18 +220,17 @@ func sizeMessageSliceInfo(p pointer, mi *MessageInfo, tagsize int, opts marshalO
 
 func appendMessageSliceInfo(b []byte, p pointer, wiretag uint64, mi *MessageInfo, opts marshalOptions) ([]byte, error) {
 	s := p.PointerSlice()
-	var nerr errors.NonFatal
 	var err error
 	for _, v := range s {
 		b = wire.AppendVarint(b, wiretag)
 		siz := mi.sizePointer(v, opts)
 		b = wire.AppendVarint(b, uint64(siz))
 		b, err = mi.marshalAppendPointer(b, v, opts)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 	}
-	return b, nerr.E
+	return b, nil
 }
 
 func sizeMessageSlice(p pointer, goType reflect.Type, tagsize int, _ marshalOptions) int {
@@ -247,7 +245,6 @@ func sizeMessageSlice(p pointer, goType reflect.Type, tagsize int, _ marshalOpti
 
 func appendMessageSlice(b []byte, p pointer, wiretag uint64, goType reflect.Type, opts marshalOptions) ([]byte, error) {
 	s := p.PointerSlice()
-	var nerr errors.NonFatal
 	var err error
 	for _, v := range s {
 		m := Export{}.MessageOf(v.AsValueOf(goType.Elem()).Interface()).Interface()
@@ -255,11 +252,11 @@ func appendMessageSlice(b []byte, p pointer, wiretag uint64, goType reflect.Type
 		siz := proto.Size(m)
 		b = wire.AppendVarint(b, uint64(siz))
 		b, err = opts.Options().MarshalAppend(b, m)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 	}
-	return b, nerr.E
+	return b, nil
 }
 
 // Slices of messages
@@ -312,18 +309,17 @@ func sizeGroupSlice(p pointer, messageType reflect.Type, tagsize int, _ marshalO
 
 func appendGroupSlice(b []byte, p pointer, wiretag uint64, messageType reflect.Type, opts marshalOptions) ([]byte, error) {
 	s := p.PointerSlice()
-	var nerr errors.NonFatal
 	var err error
 	for _, v := range s {
 		m := Export{}.MessageOf(v.AsValueOf(messageType.Elem()).Interface()).Interface()
 		b = wire.AppendVarint(b, wiretag) // start group
 		b, err = opts.Options().MarshalAppend(b, m)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 		b = wire.AppendVarint(b, wiretag+1) // end group
 	}
-	return b, nerr.E
+	return b, nil
 }
 
 func sizeGroupSliceInfo(p pointer, mi *MessageInfo, tagsize int, opts marshalOptions) int {
@@ -337,17 +333,16 @@ func sizeGroupSliceInfo(p pointer, mi *MessageInfo, tagsize int, opts marshalOpt
 
 func appendGroupSliceInfo(b []byte, p pointer, wiretag uint64, mi *MessageInfo, opts marshalOptions) ([]byte, error) {
 	s := p.PointerSlice()
-	var nerr errors.NonFatal
 	var err error
 	for _, v := range s {
 		b = wire.AppendVarint(b, wiretag) // start group
 		b, err = mi.marshalAppendPointer(b, v, opts)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 		b = wire.AppendVarint(b, wiretag+1) // end group
 	}
-	return b, nerr.E
+	return b, nil
 }
 
 func sizeGroupSliceIface(ival interface{}, tagsize int, opts marshalOptions) int {

@@ -10,7 +10,6 @@ import (
 	"sort"
 
 	"google.golang.org/protobuf/internal/encoding/json"
-	"google.golang.org/protobuf/internal/errors"
 	"google.golang.org/protobuf/internal/pragma"
 	"google.golang.org/protobuf/proto"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
@@ -58,38 +57,33 @@ func (o MarshalOptions) Marshal(m proto.Message) ([]byte, error) {
 		o.Resolver = protoregistry.GlobalTypes
 	}
 
-	var nerr errors.NonFatal
 	err = o.marshalMessage(m.ProtoReflect())
-	if !nerr.Merge(err) {
+	if err != nil {
 		return nil, err
 	}
-	if !o.AllowPartial {
-		nerr.Merge(proto.IsInitialized(m))
+	if o.AllowPartial {
+		return o.encoder.Bytes(), nil
 	}
-	return o.encoder.Bytes(), nerr.E
+	return o.encoder.Bytes(), proto.IsInitialized(m)
 }
 
 // marshalMessage marshals the given protoreflect.Message.
 func (o MarshalOptions) marshalMessage(m pref.Message) error {
-	var nerr errors.NonFatal
-
 	if isCustomType(m.Descriptor().FullName()) {
 		return o.marshalCustomType(m)
 	}
 
 	o.encoder.StartObject()
 	defer o.encoder.EndObject()
-	if err := o.marshalFields(m); !nerr.Merge(err) {
+	if err := o.marshalFields(m); err != nil {
 		return err
 	}
 
-	return nerr.E
+	return nil
 }
 
 // marshalFields marshals the fields in the given protoreflect.Message.
 func (o MarshalOptions) marshalFields(m pref.Message) error {
-	var nerr errors.NonFatal
-
 	// Marshal out known fields.
 	fieldDescs := m.Descriptor().Fields()
 	for i := 0; i < fieldDescs.Len(); i++ {
@@ -100,19 +94,19 @@ func (o MarshalOptions) marshalFields(m pref.Message) error {
 
 		name := fd.JSONName()
 		val := m.Get(fd)
-		if err := o.encoder.WriteName(name); !nerr.Merge(err) {
+		if err := o.encoder.WriteName(name); err != nil {
 			return err
 		}
-		if err := o.marshalValue(val, fd); !nerr.Merge(err) {
+		if err := o.marshalValue(val, fd); err != nil {
 			return err
 		}
 	}
 
 	// Marshal out extensions.
-	if err := o.marshalExtensions(m); !nerr.Merge(err) {
+	if err := o.marshalExtensions(m); err != nil {
 		return err
 	}
-	return nerr.E
+	return nil
 }
 
 // marshalValue marshals the given protoreflect.Value.
@@ -130,13 +124,12 @@ func (o MarshalOptions) marshalValue(val pref.Value, fd pref.FieldDescriptor) er
 // marshalSingular marshals the given non-repeated field value. This includes
 // all scalar types, enums, messages, and groups.
 func (o MarshalOptions) marshalSingular(val pref.Value, fd pref.FieldDescriptor) error {
-	var nerr errors.NonFatal
 	switch kind := fd.Kind(); kind {
 	case pref.BoolKind:
 		o.encoder.WriteBool(val.Bool())
 
 	case pref.StringKind:
-		if err := o.encoder.WriteString(val.String()); !nerr.Merge(err) {
+		if err := o.encoder.WriteString(val.String()); err != nil {
 			return err
 		}
 
@@ -161,7 +154,7 @@ func (o MarshalOptions) marshalSingular(val pref.Value, fd pref.FieldDescriptor)
 
 	case pref.BytesKind:
 		err := o.encoder.WriteString(base64.StdEncoding.EncodeToString(val.Bytes()))
-		if !nerr.Merge(err) {
+		if err != nil {
 			return err
 		}
 
@@ -170,7 +163,7 @@ func (o MarshalOptions) marshalSingular(val pref.Value, fd pref.FieldDescriptor)
 			o.encoder.WriteNull()
 		} else if desc := fd.Enum().Values().ByNumber(val.Enum()); desc != nil {
 			err := o.encoder.WriteString(string(desc.Name()))
-			if !nerr.Merge(err) {
+			if err != nil {
 				return err
 			}
 		} else {
@@ -179,14 +172,14 @@ func (o MarshalOptions) marshalSingular(val pref.Value, fd pref.FieldDescriptor)
 		}
 
 	case pref.MessageKind, pref.GroupKind:
-		if err := o.marshalMessage(val.Message()); !nerr.Merge(err) {
+		if err := o.marshalMessage(val.Message()); err != nil {
 			return err
 		}
 
 	default:
 		panic(fmt.Sprintf("%v has unknown kind: %v", fd.FullName(), kind))
 	}
-	return nerr.E
+	return nil
 }
 
 // marshalList marshals the given protoreflect.List.
@@ -194,14 +187,13 @@ func (o MarshalOptions) marshalList(list pref.List, fd pref.FieldDescriptor) err
 	o.encoder.StartArray()
 	defer o.encoder.EndArray()
 
-	var nerr errors.NonFatal
 	for i := 0; i < list.Len(); i++ {
 		item := list.Get(i)
-		if err := o.marshalSingular(item, fd); !nerr.Merge(err) {
+		if err := o.marshalSingular(item, fd); err != nil {
 			return err
 		}
 	}
-	return nerr.E
+	return nil
 }
 
 type mapEntry struct {
@@ -223,16 +215,15 @@ func (o MarshalOptions) marshalMap(mmap pref.Map, fd pref.FieldDescriptor) error
 	sortMap(fd.MapKey().Kind(), entries)
 
 	// Write out sorted list.
-	var nerr errors.NonFatal
 	for _, entry := range entries {
-		if err := o.encoder.WriteName(entry.key.String()); !nerr.Merge(err) {
+		if err := o.encoder.WriteName(entry.key.String()); err != nil {
 			return err
 		}
-		if err := o.marshalSingular(entry.value, fd.MapValue()); !nerr.Merge(err) {
+		if err := o.marshalSingular(entry.value, fd.MapValue()); err != nil {
 			return err
 		}
 	}
-	return nerr.E
+	return nil
 }
 
 // sortMap orders list based on value of key field for deterministic ordering.
@@ -288,19 +279,18 @@ func (o MarshalOptions) marshalExtensions(m pref.Message) error {
 	})
 
 	// Write out sorted list.
-	var nerr errors.NonFatal
 	for _, entry := range entries {
 		// JSON field name is the proto field name enclosed in [], similar to
 		// textproto. This is consistent with Go v1 lib. C++ lib v3.7.0 does not
 		// marshal out extension fields.
-		if err := o.encoder.WriteName("[" + entry.key + "]"); !nerr.Merge(err) {
+		if err := o.encoder.WriteName("[" + entry.key + "]"); err != nil {
 			return err
 		}
-		if err := o.marshalValue(entry.value, entry.desc); !nerr.Merge(err) {
+		if err := o.marshalValue(entry.value, entry.desc); err != nil {
 			return err
 		}
 	}
-	return nerr.E
+	return nil
 }
 
 // isMessageSetExtension reports whether extension extends a message set.

@@ -10,7 +10,6 @@ import (
 	"sort"
 
 	"google.golang.org/protobuf/internal/encoding/wire"
-	"google.golang.org/protobuf/internal/errors"
 	"google.golang.org/protobuf/proto"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -59,7 +58,6 @@ func sizeMap(p pointer, tagsize int, goType reflect.Type, keyFuncs, valFuncs ifa
 
 func appendMap(b []byte, p pointer, wiretag, keyWiretag, valWiretag uint64, goType reflect.Type, keyFuncs, valFuncs ifaceCoderFuncs, opts marshalOptions) ([]byte, error) {
 	m := p.AsValueOf(goType).Elem()
-	var nerr errors.NonFatal
 	var err error
 
 	if m.Len() == 0 {
@@ -71,21 +69,21 @@ func appendMap(b []byte, p pointer, wiretag, keyWiretag, valWiretag uint64, goTy
 		sort.Sort(mapKeys(keys))
 		for _, k := range keys {
 			b, err = appendMapElement(b, k, m.MapIndex(k), wiretag, keyWiretag, valWiretag, keyFuncs, valFuncs, opts)
-			if !nerr.Merge(err) {
+			if err != nil {
 				return b, err
 			}
 		}
-		return b, nerr.E
+		return b, nil
 	}
 
 	iter := mapRange(m)
 	for iter.Next() {
 		b, err = appendMapElement(b, iter.Key(), iter.Value(), wiretag, keyWiretag, valWiretag, keyFuncs, valFuncs, opts)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 	}
-	return b, nerr.E
+	return b, nil
 }
 
 func appendMapElement(b []byte, key, value reflect.Value, wiretag, keyWiretag, valWiretag uint64, keyFuncs, valFuncs ifaceCoderFuncs, opts marshalOptions) ([]byte, error) {
@@ -94,16 +92,15 @@ func appendMapElement(b []byte, key, value reflect.Value, wiretag, keyWiretag, v
 	b = wire.AppendVarint(b, wiretag)
 	size := keyFuncs.size(ki, mapKeyTagSize, opts) + valFuncs.size(vi, mapValTagSize, opts)
 	b = wire.AppendVarint(b, uint64(size))
-	var nerr errors.NonFatal
 	b, err := keyFuncs.marshal(b, ki, keyWiretag, opts)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return b, err
 	}
 	b, err = valFuncs.marshal(b, vi, valWiretag, opts)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return b, err
 	}
-	return b, nerr.E
+	return b, nil
 }
 
 // mapKeys returns a sort.Interface to be used for sorting the map keys.

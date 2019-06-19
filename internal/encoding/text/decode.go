@@ -26,7 +26,7 @@ func Unmarshal(b []byte) (Value, error) {
 	p := decoder{in: b}
 	p.consume(0) // trim leading spaces or comments
 	v, err := p.unmarshalMessage(false)
-	if !p.nerr.Merge(err) {
+	if err != nil {
 		if e, ok := err.(syntaxError); ok {
 			b = b[:len(b)-len(p.in)] // consumed input
 			line := bytes.Count(b, []byte("\n")) + 1
@@ -41,12 +41,11 @@ func Unmarshal(b []byte) (Value, error) {
 	if len(p.in) > 0 {
 		return Value{}, errors.New("%d bytes of unconsumed input", len(p.in))
 	}
-	return v, p.nerr.E
+	return v, nil
 }
 
 type decoder struct {
-	nerr errors.NonFatal
-	in   []byte
+	in []byte
 }
 
 func (p *decoder) unmarshalList() (Value, error) {
@@ -58,7 +57,7 @@ func (p *decoder) unmarshalList() (Value, error) {
 	if len(p.in) > 0 && p.in[0] != ']' {
 		for len(p.in) > 0 {
 			v, err := p.unmarshalValue()
-			if !p.nerr.Merge(err) {
+			if err != nil {
 				return Value{}, err
 			}
 			elems = append(elems, v)
@@ -91,14 +90,14 @@ func (p *decoder) unmarshalMessage(checkDelims bool) (Value, error) {
 			break
 		}
 		k, err := p.unmarshalKey()
-		if !p.nerr.Merge(err) {
+		if err != nil {
 			return Value{}, err
 		}
 		if !p.tryConsumeChar(':') && len(p.in) > 0 && p.in[0] != '{' && p.in[0] != '<' {
 			return Value{}, newSyntaxError("expected ':' after message key")
 		}
 		v, err := p.unmarshalValue()
-		if !p.nerr.Merge(err) {
+		if err != nil {
 			return Value{}, err
 		}
 		if p.tryConsumeChar(';') || p.tryConsumeChar(',') {
@@ -132,7 +131,7 @@ func (p *decoder) unmarshalKey() (v Value, err error) {
 			// This is specific to Go and contrary to the C++ implementation,
 			// which does not support strings for the Any type URL.
 			v, err = p.unmarshalString()
-			if !p.nerr.Merge(err) {
+			if err != nil {
 				return Value{}, err
 			}
 		} else if n := matchWithDelim(urlRegexp, p.in); n > 0 {

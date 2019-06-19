@@ -327,7 +327,7 @@ func (v Value) Raw() []byte {
 		return v.raw
 	}
 	p := encoder{}
-	if err := p.marshalValue(v); !p.nerr.Merge(err) {
+	if err := p.marshalValue(v); err != nil {
 		return []byte("<invalid>")
 	}
 	return p.out

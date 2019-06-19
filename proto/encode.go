@@ -8,7 +8,6 @@ import (
 	"sort"
 
 	"google.golang.org/protobuf/internal/encoding/wire"
-	"google.golang.org/protobuf/internal/errors"
 	"google.golang.org/protobuf/internal/mapsort"
 	"google.golang.org/protobuf/internal/pragma"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -92,14 +91,13 @@ func (o MarshalOptions) MarshalAppend(b []byte, m Message) ([]byte, error) {
 	if err == errInternalNoFast {
 		out, err = o.marshalMessage(b, m.ProtoReflect())
 	}
-	var nerr errors.NonFatal
-	if !nerr.Merge(err) {
-		return out, err
+	if err != nil {
+		return nil, err
 	}
-	if !allowPartial {
-		nerr.Merge(IsInitialized(m))
+	if allowPartial {
+		return out, nil
 	}
-	return out, nerr.E
+	return out, IsInitialized(m)
 }
 
 func (o MarshalOptions) marshalMessageFast(b []byte, m Message) ([]byte, error) {
@@ -129,20 +127,15 @@ func (o MarshalOptions) marshalMessage(b []byte, m protoreflect.Message) ([]byte
 	//
 	// When using deterministic serialization, we sort the known fields by field number.
 	var err error
-	var nerr errors.NonFatal
 	o.rangeFields(m, func(fd protoreflect.FieldDescriptor, v protoreflect.Value) bool {
 		b, err = o.marshalField(b, fd, v)
-		if nerr.Merge(err) {
-			err = nil
-			return true
-		}
-		return false
+		return err == nil
 	})
 	if err != nil {
 		return b, err
 	}
 	b = append(b, m.GetUnknown()...)
-	return b, nerr.E
+	return b, nil
 }
 
 // rangeFields visits fields in field number order when deterministic
@@ -183,35 +176,32 @@ func (o MarshalOptions) marshalList(b []byte, fd protoreflect.FieldDescriptor, l
 	if fd.IsPacked() && list.Len() > 0 {
 		b = wire.AppendTag(b, fd.Number(), wire.BytesType)
 		b, pos := appendSpeculativeLength(b)
-		var nerr errors.NonFatal
 		for i, llen := 0, list.Len(); i < llen; i++ {
 			var err error
 			b, err = o.marshalSingular(b, fd, list.Get(i))
-			if !nerr.Merge(err) {
+			if err != nil {
 				return b, err
 			}
 		}
 		b = finishSpeculativeLength(b, pos)
-		return b, nerr.E
+		return b, nil
 	}
 
 	kind := fd.Kind()
-	var nerr errors.NonFatal
 	for i, llen := 0, list.Len(); i < llen; i++ {
 		var err error
 		b = wire.AppendTag(b, fd.Number(), wireTypes[kind])
 		b, err = o.marshalSingular(b, fd, list.Get(i))
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 	}
-	return b, nerr.E
+	return b, nil
 }
 
 func (o MarshalOptions) marshalMap(b []byte, fd protoreflect.FieldDescriptor, mapv protoreflect.Map) ([]byte, error) {
 	keyf := fd.MapKey()
 	valf := fd.MapValue()
-	var nerr errors.NonFatal
 	var err error
 	o.rangeMap(mapv, keyf.Kind(), func(key protoreflect.MapKey, value protoreflect.Value) bool {
 		b = wire.AppendTag(b, fd.Number(), wire.BytesType)
@@ -219,22 +209,17 @@ func (o MarshalOptions) marshalMap(b []byte, fd protoreflect.FieldDescriptor, ma
 		b, pos = appendSpeculativeLength(b)
 
 		b, err = o.marshalField(b, keyf, key.Value())
-		if !nerr.Merge(err) {
+		if err != nil {
 			return false
 		}
 		b, err = o.marshalField(b, valf, value)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return false
 		}
-		err = nil
-
 		b = finishSpeculativeLength(b, pos)
 		return true
 	})
-	if err != nil {
-		return b, err
-	}
-	return b, nerr.E
+	return b, err
 }
 
 func (o MarshalOptions) rangeMap(mapv protoreflect.Map, kind protoreflect.Kind, f func(protoreflect.MapKey, protoreflect.Value) bool) {

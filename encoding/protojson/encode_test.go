@@ -159,7 +159,6 @@ func TestMarshal(t *testing.T) {
 		input: &pb3.Scalars{
 			SString: "abc\xff",
 		},
-		want:    "{\n  \"sString\": \"abc\xff\"\n}",
 		wantErr: true,
 	}, {
 		desc: "float nan",
@@ -1149,14 +1148,12 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc:    "StringValue with invalid UTF8 error",
 		input:   &wrapperspb.StringValue{Value: "abc\xff"},
-		want:    "\"abc\xff\"",
 		wantErr: true,
 	}, {
 		desc: "StringValue field with invalid UTF8 error",
 		input: &pb2.KnownTypes{
 			OptString: &wrapperspb.StringValue{Value: "abc\xff"},
 		},
-		want:    "{\n  \"optString\": \"abc\xff\"\n}",
 		wantErr: true,
 	}, {
 		desc:  "BytesValue",
@@ -1201,7 +1198,6 @@ func TestMarshal(t *testing.T) {
 	}, {
 		desc:    "Value contains StringValue with invalid UTF8",
 		input:   &structpb.Value{Kind: &structpb.Value_StringValue{"\xff"}},
-		want:    "\"\xff\"",
 		wantErr: true,
 	}, {
 		desc: "Value contains Struct",
@@ -1312,7 +1308,6 @@ func TestMarshal(t *testing.T) {
 				"string": {Kind: &structpb.Value_StringValue{"\xff"}},
 			},
 		},
-		want:    "{\n  \"string\": \"\xff\"\n}",
 		wantErr: true,
 	}, {
 		desc:  "ListValue with nil values",
@@ -1375,7 +1370,6 @@ func TestMarshal(t *testing.T) {
 				{Kind: &structpb.Value_StringValue{"\xff"}},
 			},
 		},
-		want:    "[\n  \"\xff\"\n]",
 		wantErr: true,
 	}, {
 		desc:  "Duration empty",
@@ -1631,10 +1625,6 @@ func TestMarshal(t *testing.T) {
 				Value:   b,
 			}
 		}(),
-		want: `{
-  "@type": "foo/pb2.Nested",
-  "optString": "` + "abc\xff" + `"
-}`,
 		wantErr: true,
 	}, {
 		desc: "Any with invalid value",
@@ -1702,10 +1692,6 @@ func TestMarshal(t *testing.T) {
 				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
 			}
 		}(),
-		want: `{
-  "@type": "google.protobuf.StringValue",
-  "value": "` + "abc\xff" + `"
-}`,
 		wantErr: true,
 	}, {
 		desc: "Any with Int64Value",
@@ -1780,10 +1766,6 @@ func TestMarshal(t *testing.T) {
 				Value:   bytes.Replace(b, []byte("abcd"), []byte("abc\xff"), -1),
 			}
 		}(),
-		want: `{
-  "@type": "type.googleapis.com/google.protobuf.Value",
-  "value": "` + "abc\xff" + `"
-}`,
 		wantErr: true,
 	}, {
 		desc: "Any with Value of NullValue",

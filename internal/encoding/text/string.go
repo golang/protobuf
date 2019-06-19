@@ -86,7 +86,6 @@ func (p *decoder) unmarshalString() (Value, error) {
 	return v, err
 }
 func consumeString(in []byte) (Value, int, error) {
-	var nerr errors.NonFatal
 	in0 := in
 	if len(in) == 0 {
 		return Value{}, 0, io.ErrUnexpectedEOF
@@ -101,15 +100,14 @@ func consumeString(in []byte) (Value, int, error) {
 	for len(in) > 0 {
 		switch r, n := utf8.DecodeRune(in); {
 		case r == utf8.RuneError && n == 1:
-			nerr.AppendInvalidUTF8("")
-			in, out = in[1:], append(out, in[0]) // preserve invalid byte
+			return Value{}, 0, newSyntaxError("invalid UTF-8 detected")
 		case r == 0 || r == '\n':
 			return Value{}, 0, newSyntaxError("invalid character %q in string", r)
 		case r == rune(quote):
 			in = in[1:]
 			n := len(in0) - len(in)
 			v := rawValueOf(string(out), in0[:n:n])
-			return v, n, nerr.E
+			return v, n, nil
 		case r == '\\':
 			if len(in) < 2 {
 				return Value{}, 0, io.ErrUnexpectedEOF
@@ -208,7 +206,7 @@ func (p *decoder) unmarshalStrings() (Value, error) {
 	var ss []string
 	for len(p.in) > 0 && (p.in[0] == '"' || p.in[0] == '\'') {
 		v, err := p.unmarshalString()
-		if !p.nerr.Merge(err) {
+		if err != nil {
 			return Value{}, err
 		}
 		ss = append(ss, v.String())

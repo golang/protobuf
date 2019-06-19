@@ -166,14 +166,13 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 	// Marshal out @type field.
 	typeURL := typeVal.String()
 	o.encoder.WriteName("@type")
-	var nerr errors.NonFatal
-	if err := o.encoder.WriteString(typeURL); !nerr.Merge(err) {
+	if err := o.encoder.WriteString(typeURL); err != nil {
 		return err
 	}
 
 	// Resolve the type in order to unmarshal value field.
 	emt, err := o.Resolver.FindMessageByURL(typeURL)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return errors.New("%s: unable to resolve %q: %v", m.Descriptor().FullName(), typeURL, err)
 	}
 
@@ -182,7 +181,7 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 		AllowPartial: true, // never check required fields inside an Any
 		Resolver:     o.Resolver,
 	}.Unmarshal(valueVal.Bytes(), em.Interface())
-	if !nerr.Merge(err) {
+	if err != nil {
 		return errors.New("%s: unable to unmarshal %q: %v", m.Descriptor().FullName(), typeURL, err)
 	}
 
@@ -195,11 +194,11 @@ func (o MarshalOptions) marshalAny(m pref.Message) error {
 	}
 
 	// Else, marshal out the embedded message's fields in this Any object.
-	if err := o.marshalFields(em); !nerr.Merge(err) {
+	if err := o.marshalFields(em); err != nil {
 		return err
 	}
 
-	return nerr.E
+	return nil
 }
 
 func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
@@ -224,8 +223,7 @@ func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
 		// Treat all fields as unknowns, similar to an empty object.
 		return skipJSONValue(o.decoder)
 	}
-	var nerr errors.NonFatal
-	if !nerr.Merge(err) {
+	if err != nil {
 		return errors.New("google.protobuf.Any: %v", err)
 	}
 
@@ -239,12 +237,12 @@ func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
 	if isCustomType(emt.Descriptor().FullName()) {
 		// If embedded message is a custom type, unmarshal the JSON "value" field
 		// into it.
-		if err := o.unmarshalAnyValue(em); !nerr.Merge(err) {
+		if err := o.unmarshalAnyValue(em); err != nil {
 			return errors.New("google.protobuf.Any: %v", err)
 		}
 	} else {
 		// Else unmarshal the current JSON object into it.
-		if err := o.unmarshalMessage(em, true); !nerr.Merge(err) {
+		if err := o.unmarshalMessage(em, true); err != nil {
 			return errors.New("google.protobuf.Any: %v", err)
 		}
 	}
@@ -254,7 +252,7 @@ func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
 		AllowPartial:  true, // never check required fields inside an Any
 		Deterministic: true,
 	}.Marshal(em.Interface())
-	if !nerr.Merge(err) {
+	if err != nil {
 		return errors.New("google.protobuf.Any: %v", err)
 	}
 
@@ -264,7 +262,7 @@ func (o UnmarshalOptions) unmarshalAny(m pref.Message) error {
 
 	m.Set(fdType, pref.ValueOf(typeURL))
 	m.Set(fdValue, pref.ValueOf(b))
-	return nerr.E
+	return nil
 }
 
 var errEmptyObject = errors.New(`empty object`)
@@ -276,7 +274,6 @@ var errMissingType = errors.New(`missing "@type" field`)
 // does not contain the field or other decoding problems.
 func findTypeURL(dec *json.Decoder) (string, error) {
 	var typeURL string
-	var nerr errors.NonFatal
 	numFields := 0
 	// Skip start object.
 	dec.Read()
@@ -284,7 +281,7 @@ func findTypeURL(dec *json.Decoder) (string, error) {
 Loop:
 	for {
 		jval, err := dec.Read()
-		if !nerr.Merge(err) {
+		if err != nil {
 			return "", err
 		}
 
@@ -302,12 +299,12 @@ Loop:
 		case json.Name:
 			numFields++
 			name, err := jval.Name()
-			if !nerr.Merge(err) {
+			if err != nil {
 				return "", err
 			}
 			if name != "@type" {
 				// Skip value.
-				if err := skipJSONValue(dec); !nerr.Merge(err) {
+				if err := skipJSONValue(dec); err != nil {
 					return "", err
 				}
 				continue
@@ -319,7 +316,7 @@ Loop:
 			}
 			// Read field value.
 			jval, err := dec.Read()
-			if !nerr.Merge(err) {
+			if err != nil {
 				return "", err
 			}
 			if jval.Type() != json.String {
@@ -332,7 +329,7 @@ Loop:
 		}
 	}
 
-	return typeURL, nerr.E
+	return typeURL, nil
 }
 
 // skipJSONValue makes the given decoder parse a JSON value (null, boolean,
@@ -340,9 +337,8 @@ Loop:
 // JSON value. It relies on Decoder.Read returning an error if the types are
 // not in valid sequence.
 func skipJSONValue(dec *json.Decoder) error {
-	var nerr errors.NonFatal
 	jval, err := dec.Read()
-	if !nerr.Merge(err) {
+	if err != nil {
 		return err
 	}
 	// Only need to continue reading for objects and arrays.
@@ -350,7 +346,7 @@ func skipJSONValue(dec *json.Decoder) error {
 	case json.StartObject:
 		for {
 			jval, err := dec.Read()
-			if !nerr.Merge(err) {
+			if err != nil {
 				return err
 			}
 			switch jval.Type() {
@@ -358,7 +354,7 @@ func skipJSONValue(dec *json.Decoder) error {
 				return nil
 			case json.Name:
 				// Skip object field value.
-				if err := skipJSONValue(dec); !nerr.Merge(err) {
+				if err := skipJSONValue(dec); err != nil {
 					return err
 				}
 			}
@@ -375,26 +371,25 @@ func skipJSONValue(dec *json.Decoder) error {
 				return err
 			default:
 				// Skip array item.
-				if err := skipJSONValue(dec); !nerr.Merge(err) {
+				if err := skipJSONValue(dec); err != nil {
 					return err
 				}
 			}
 		}
 	}
-	return nerr.E
+	return nil
 }
 
 // unmarshalAnyValue unmarshals the given custom-type message from the JSON
 // object's "value" field.
 func (o UnmarshalOptions) unmarshalAnyValue(m pref.Message) error {
-	var nerr errors.NonFatal
 	// Skip StartObject, and start reading the fields.
 	o.decoder.Read()
 
 	var found bool // Used for detecting duplicate "value".
 	for {
 		jval, err := o.decoder.Read()
-		if !nerr.Merge(err) {
+		if err != nil {
 			return err
 		}
 		switch jval.Type() {
@@ -402,17 +397,17 @@ func (o UnmarshalOptions) unmarshalAnyValue(m pref.Message) error {
 			if !found {
 				return errors.New(`missing "value" field`)
 			}
-			return nerr.E
+			return nil
 
 		case json.Name:
 			name, err := jval.Name()
-			if !nerr.Merge(err) {
+			if err != nil {
 				return err
 			}
 			switch name {
 			default:
 				if o.DiscardUnknown {
-					if err := skipJSONValue(o.decoder); !nerr.Merge(err) {
+					if err := skipJSONValue(o.decoder); err != nil {
 						return err
 					}
 					continue
@@ -428,7 +423,7 @@ func (o UnmarshalOptions) unmarshalAnyValue(m pref.Message) error {
 					return errors.New(`duplicate "value" field`)
 				}
 				// Unmarshal the field value into the given message.
-				if err := o.unmarshalCustomType(m); !nerr.Merge(err) {
+				if err := o.unmarshalCustomType(m); err != nil {
 					return err
 				}
 				found = true
@@ -451,12 +446,11 @@ func (o MarshalOptions) marshalWrapperType(m pref.Message) error {
 func (o UnmarshalOptions) unmarshalWrapperType(m pref.Message) error {
 	fd := m.Descriptor().Fields().ByNumber(wrapperFieldNumber)
 	val, err := o.unmarshalScalar(fd)
-	var nerr errors.NonFatal
-	if !nerr.Merge(err) {
+	if err != nil {
 		return err
 	}
 	m.Set(fd, val)
-	return nerr.E
+	return nil
 }
 
 // The JSON representation for Empty is an empty JSON object.
@@ -468,7 +462,6 @@ func (o MarshalOptions) marshalEmpty(pref.Message) error {
 }
 
 func (o UnmarshalOptions) unmarshalEmpty(pref.Message) error {
-	var nerr errors.NonFatal
 	jval, err := o.decoder.Read()
 	if err != nil {
 		return err
@@ -479,16 +472,16 @@ func (o UnmarshalOptions) unmarshalEmpty(pref.Message) error {
 
 	for {
 		jval, err := o.decoder.Read()
-		if !nerr.Merge(err) {
+		if err != nil {
 			return err
 		}
 		switch jval.Type() {
 		case json.EndObject:
-			return nerr.E
+			return nil
 
 		case json.Name:
 			if o.DiscardUnknown {
-				if err := skipJSONValue(o.decoder); !nerr.Merge(err) {
+				if err := skipJSONValue(o.decoder); err != nil {
 					return err
 				}
 				continue
@@ -543,7 +536,6 @@ func (o MarshalOptions) marshalKnownValue(m pref.Message) error {
 }
 
 func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
-	var nerr errors.NonFatal
 	switch o.decoder.Peek() {
 	case json.Null:
 		o.decoder.Read()
@@ -582,11 +574,11 @@ func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 		// always assigned to the string_value field, which means that certain
 		// encoding cannot be parsed back to the same field.
 		jval, err := o.decoder.Read()
-		if !nerr.Merge(err) {
+		if err != nil {
 			return err
 		}
 		val, err := unmarshalString(jval)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return err
 		}
 		fd := m.Descriptor().Fields().ByNumber(fieldnum.Value_StringValue)
@@ -595,7 +587,7 @@ func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 	case json.StartObject:
 		fd := m.Descriptor().Fields().ByNumber(fieldnum.Value_StructValue)
 		m2 := m.NewMessage(fd)
-		if err := o.unmarshalStruct(m2); !nerr.Merge(err) {
+		if err := o.unmarshalStruct(m2); err != nil {
 			return err
 		}
 		m.Set(fd, pref.ValueOf(m2))
@@ -603,7 +595,7 @@ func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 	case json.StartArray:
 		fd := m.Descriptor().Fields().ByNumber(fieldnum.Value_ListValue)
 		m2 := m.NewMessage(fd)
-		if err := o.unmarshalListValue(m2); !nerr.Merge(err) {
+		if err := o.unmarshalListValue(m2); err != nil {
 			return err
 		}
 		m.Set(fd, pref.ValueOf(m2))
@@ -615,7 +607,7 @@ func (o UnmarshalOptions) unmarshalKnownValue(m pref.Message) error {
 		}
 		return unexpectedJSONError{jval}
 	}
-	return nerr.E
+	return nil
 }
 
 // The JSON representation for a Duration is a JSON string that ends in the
@@ -671,9 +663,8 @@ func (o MarshalOptions) marshalDuration(m pref.Message) error {
 }
 
 func (o UnmarshalOptions) unmarshalDuration(m pref.Message) error {
-	var nerr errors.NonFatal
 	jval, err := o.decoder.Read()
-	if !nerr.Merge(err) {
+	if err != nil {
 		return err
 	}
 	if jval.Type() != json.String {
@@ -697,7 +688,7 @@ func (o UnmarshalOptions) unmarshalDuration(m pref.Message) error {
 
 	m.Set(fdSeconds, pref.ValueOf(secs))
 	m.Set(fdNanos, pref.ValueOf(nanos))
-	return nerr.E
+	return nil
 }
 
 // parseDuration parses the given input string for seconds and nanoseconds value
@@ -855,9 +846,8 @@ func (o MarshalOptions) marshalTimestamp(m pref.Message) error {
 }
 
 func (o UnmarshalOptions) unmarshalTimestamp(m pref.Message) error {
-	var nerr errors.NonFatal
 	jval, err := o.decoder.Read()
-	if !nerr.Merge(err) {
+	if err != nil {
 		return err
 	}
 	if jval.Type() != json.String {
@@ -882,7 +872,7 @@ func (o UnmarshalOptions) unmarshalTimestamp(m pref.Message) error {
 
 	m.Set(fdSeconds, pref.ValueOf(secs))
 	m.Set(fdNanos, pref.ValueOf(int32(t.Nanosecond())))
-	return nerr.E
+	return nil
 }
 
 // The JSON representation for a FieldMask is a JSON string where paths are
@@ -910,9 +900,8 @@ func (o MarshalOptions) marshalFieldMask(m pref.Message) error {
 }
 
 func (o UnmarshalOptions) unmarshalFieldMask(m pref.Message) error {
-	var nerr errors.NonFatal
 	jval, err := o.decoder.Read()
-	if !nerr.Merge(err) {
+	if err != nil {
 		return err
 	}
 	if jval.Type() != json.String {

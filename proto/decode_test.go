@@ -12,7 +12,6 @@ import (
 	protoV1 "github.com/golang/protobuf/proto"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/internal/encoding/pack"
-	"google.golang.org/protobuf/internal/errors"
 	"google.golang.org/protobuf/internal/scalar"
 	"google.golang.org/protobuf/proto"
 	pref "google.golang.org/protobuf/reflect/protoreflect"
@@ -89,11 +88,8 @@ func TestDecodeInvalidUTF8(t *testing.T) {
 			t.Run(fmt.Sprintf("%s (%T)", test.desc, want), func(t *testing.T) {
 				got := reflect.New(reflect.TypeOf(want).Elem()).Interface().(proto.Message)
 				err := proto.Unmarshal(test.wire, got)
-				if !isErrInvalidUTF8(err) {
+				if err == nil {
 					t.Errorf("Unmarshal did not return expected error for invalid UTF8: %v\nMessage:\n%v", err, marshalText(want))
-				}
-				if !protoV1.Equal(got.(protoV1.Message), want.(protoV1.Message)) {
-					t.Errorf("Unmarshal returned unexpected result; got:\n%v\nwant:\n%v", marshalText(got), marshalText(want))
 				}
 			})
 		}
@@ -1361,18 +1357,4 @@ func extend(desc *protoV1.ExtensionDesc, value interface{}) buildOpt {
 func marshalText(m proto.Message) string {
 	b, _ := prototext.Marshal(m)
 	return string(b)
-}
-
-func isErrInvalidUTF8(err error) bool {
-	nerr, ok := err.(errors.NonFatalErrors)
-	if !ok || len(nerr) == 0 {
-		return false
-	}
-	for _, err := range nerr {
-		if e, ok := err.(interface{ InvalidUTF8() bool }); ok && e.InvalidUTF8() {
-			continue
-		}
-		return false
-	}
-	return true
 }

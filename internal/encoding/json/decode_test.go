@@ -121,10 +121,7 @@ func TestDecoder(t *testing.T) {
 		{
 			// Invalid UTF-8 error is returned in ReadString instead of Read.
 			input: "\"\xff\"",
-			want: []R{
-				{T: json.String, E: `invalid UTF-8 detected`, V: string("\xff")},
-				{T: json.EOF},
-			},
+			want:  []R{{E: `syntax error (line 1:1): invalid UTF-8 in string`}},
 		},
 		{
 			input: `"` + string(utf8.RuneError) + `"`,

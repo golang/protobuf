@@ -45,8 +45,6 @@ type UnmarshalOptions struct {
 // Unmarshal reads the given []byte and populates the given proto.Message using options in
 // UnmarshalOptions object.
 func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
-	var nerr errors.NonFatal
-
 	// Clear all fields before populating it.
 	// TODO: Determine if this needs to be consistent with protojson and binary unmarshal where
 	// behavior is to merge values into existing message. If decision is to not clear the fields
@@ -55,7 +53,7 @@ func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 
 	// Parse into text.Value of message type.
 	val, err := text.Unmarshal(b)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return err
 	}
 
@@ -63,21 +61,18 @@ func (o UnmarshalOptions) Unmarshal(b []byte, m proto.Message) error {
 		o.Resolver = protoregistry.GlobalTypes
 	}
 	err = o.unmarshalMessage(val.Message(), m.ProtoReflect())
-	if !nerr.Merge(err) {
+	if err != nil {
 		return err
 	}
 
-	if !o.AllowPartial {
-		nerr.Merge(proto.IsInitialized(m))
+	if o.AllowPartial {
+		return nil
 	}
-
-	return nerr.E
+	return proto.IsInitialized(m)
 }
 
 // unmarshalMessage unmarshals a [][2]text.Value message into the given protoreflect.Message.
 func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message) error {
-	var nerr errors.NonFatal
-
 	messageDesc := m.Descriptor()
 
 	// Handle expanded Any message.
@@ -141,7 +136,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 			}
 
 			list := m.Mutable(fd).List()
-			if err := o.unmarshalList(items, fd, list); !nerr.Merge(err) {
+			if err := o.unmarshalList(items, fd, list); err != nil {
 				return err
 			}
 		case fd.IsMap():
@@ -154,7 +149,7 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 			}
 
 			mmap := m.Mutable(fd).Map()
-			if err := o.unmarshalMap(items, fd, mmap); !nerr.Merge(err) {
+			if err := o.unmarshalMap(items, fd, mmap); err != nil {
 				return err
 			}
 		default:
@@ -172,14 +167,14 @@ func (o UnmarshalOptions) unmarshalMessage(tmsg [][2]text.Value, m pref.Message)
 			if seenNums.Has(num) {
 				return errors.New("non-repeated field %v is repeated", fd.FullName())
 			}
-			if err := o.unmarshalSingular(tval, fd, m); !nerr.Merge(err) {
+			if err := o.unmarshalSingular(tval, fd, m); err != nil {
 				return err
 			}
 			seenNums.Set(num)
 		}
 	}
 
-	return nerr.E
+	return nil
 }
 
 // findExtension returns protoreflect.ExtensionType from the Resolver if found.
@@ -199,7 +194,6 @@ func (o UnmarshalOptions) findExtension(xtName pref.FullName) (pref.ExtensionTyp
 
 // unmarshalSingular unmarshals given text.Value into the non-repeated field.
 func (o UnmarshalOptions) unmarshalSingular(input text.Value, fd pref.FieldDescriptor, m pref.Message) error {
-	var nerr errors.NonFatal
 	var val pref.Value
 	switch fd.Kind() {
 	case pref.MessageKind, pref.GroupKind:
@@ -207,20 +201,20 @@ func (o UnmarshalOptions) unmarshalSingular(input text.Value, fd pref.FieldDescr
 			return errors.New("%v contains invalid message/group value: %v", fd.FullName(), input)
 		}
 		m2 := m.NewMessage(fd)
-		if err := o.unmarshalMessage(input.Message(), m2); !nerr.Merge(err) {
+		if err := o.unmarshalMessage(input.Message(), m2); err != nil {
 			return err
 		}
 		val = pref.ValueOf(m2)
 	default:
 		var err error
 		val, err = unmarshalScalar(input, fd)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return err
 		}
 	}
 	m.Set(fd, val)
 
-	return nerr.E
+	return nil
 }
 
 // unmarshalScalar converts the given text.Value to a scalar/enum protoreflect.Value specified in
@@ -264,9 +258,7 @@ func unmarshalScalar(input text.Value, fd pref.FieldDescriptor) (pref.Value, err
 			if utf8.ValidString(s) {
 				return pref.ValueOf(s), nil
 			}
-			var nerr errors.NonFatal
-			nerr.AppendInvalidUTF8(string(fd.FullName()))
-			return pref.ValueOf(s), nerr.E
+			return pref.Value{}, errors.InvalidUTF8(string(fd.FullName()))
 		}
 	case pref.BytesKind:
 		if input.Type() == text.String {
@@ -292,8 +284,6 @@ func unmarshalScalar(input text.Value, fd pref.FieldDescriptor) (pref.Value, err
 
 // unmarshalList unmarshals given []text.Value into given protoreflect.List.
 func (o UnmarshalOptions) unmarshalList(inputList []text.Value, fd pref.FieldDescriptor, list pref.List) error {
-	var nerr errors.NonFatal
-
 	switch fd.Kind() {
 	case pref.MessageKind, pref.GroupKind:
 		for _, input := range inputList {
@@ -301,7 +291,7 @@ func (o UnmarshalOptions) unmarshalList(inputList []text.Value, fd pref.FieldDes
 				return errors.New("%v contains invalid message/group value: %v", fd.FullName(), input)
 			}
 			m := list.NewMessage()
-			if err := o.unmarshalMessage(input.Message(), m); !nerr.Merge(err) {
+			if err := o.unmarshalMessage(input.Message(), m); err != nil {
 				return err
 			}
 			list.Append(pref.ValueOf(m))
@@ -309,20 +299,18 @@ func (o UnmarshalOptions) unmarshalList(inputList []text.Value, fd pref.FieldDes
 	default:
 		for _, input := range inputList {
 			val, err := unmarshalScalar(input, fd)
-			if !nerr.Merge(err) {
+			if err != nil {
 				return err
 			}
 			list.Append(val)
 		}
 	}
 
-	return nerr.E
+	return nil
 }
 
 // unmarshalMap unmarshals given []text.Value into given protoreflect.Map.
 func (o UnmarshalOptions) unmarshalMap(input []text.Value, fd pref.FieldDescriptor, mmap pref.Map) error {
-	var nerr errors.NonFatal
-
 	// Determine ahead whether map entry is a scalar type or a message type in order to call the
 	// appropriate unmarshalMapValue func inside the for loop below.
 	unmarshalMapValue := unmarshalMapScalarValue
@@ -336,20 +324,20 @@ func (o UnmarshalOptions) unmarshalMap(input []text.Value, fd pref.FieldDescript
 			return errors.New("%v contains invalid map entry: %v", fd.FullName(), entry)
 		}
 		tkey, tval, err := parseMapEntry(entry.Message(), fd.FullName())
-		if !nerr.Merge(err) {
+		if err != nil {
 			return err
 		}
 		pkey, err := unmarshalMapKey(tkey, fd.MapKey())
-		if !nerr.Merge(err) {
+		if err != nil {
 			return err
 		}
 		err = unmarshalMapValue(tval, pkey, fd.MapValue(), mmap)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return err
 		}
 	}
 
-	return nerr.E
+	return nil
 }
 
 // parseMapEntry parses [][2]text.Value for field names key and value, and return corresponding
@@ -391,46 +379,43 @@ func unmarshalMapKey(input text.Value, fd pref.FieldDescriptor) (pref.MapKey, er
 		return fd.Default().MapKey(), nil
 	}
 
-	var nerr errors.NonFatal
 	val, err := unmarshalScalar(input, fd)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return pref.MapKey{}, errors.New("%v contains invalid key: %v", fd.FullName(), input)
 	}
-	return val.MapKey(), nerr.E
+	return val.MapKey(), nil
 }
 
 // unmarshalMapMessageValue unmarshals given message-type text.Value into a protoreflect.Map for
 // the given MapKey.
 func (o UnmarshalOptions) unmarshalMapMessageValue(input text.Value, pkey pref.MapKey, _ pref.FieldDescriptor, mmap pref.Map) error {
-	var nerr errors.NonFatal
 	var value [][2]text.Value
 	if input.Type() != 0 {
 		value = input.Message()
 	}
 	m := mmap.NewMessage()
-	if err := o.unmarshalMessage(value, m); !nerr.Merge(err) {
+	if err := o.unmarshalMessage(value, m); err != nil {
 		return err
 	}
 	mmap.Set(pkey, pref.ValueOf(m))
-	return nerr.E
+	return nil
 }
 
 // unmarshalMapScalarValue unmarshals given scalar-type text.Value into a protoreflect.Map
 // for the given MapKey.
 func unmarshalMapScalarValue(input text.Value, pkey pref.MapKey, fd pref.FieldDescriptor, mmap pref.Map) error {
-	var nerr errors.NonFatal
 	var val pref.Value
 	if input.Type() == 0 {
 		val = fd.Default()
 	} else {
 		var err error
 		val, err = unmarshalScalar(input, fd)
-		if !nerr.Merge(err) {
+		if err != nil {
 			return err
 		}
 	}
 	mmap.Set(pkey, val)
-	return nerr.E
+	return nil
 }
 
 // isExpandedAny returns true if given [][2]text.Value may be an expanded Any that contains only one
@@ -447,19 +432,17 @@ func isExpandedAny(tmsg [][2]text.Value) bool {
 // unmarshalAny unmarshals an expanded Any textproto. This method assumes that the given
 // tfield has key type of text.String and value type of text.Message.
 func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, m pref.Message) error {
-	var nerr errors.NonFatal
-
 	typeURL := tfield[0].String()
 	value := tfield[1].Message()
 
 	mt, err := o.Resolver.FindMessageByURL(typeURL)
-	if !nerr.Merge(err) {
+	if err != nil {
 		return errors.New("unable to resolve message [%v]: %v", typeURL, err)
 	}
 	// Create new message for the embedded message type and unmarshal the
 	// value into it.
 	m2 := mt.New()
-	if err := o.unmarshalMessage(value, m2); !nerr.Merge(err) {
+	if err := o.unmarshalMessage(value, m2); err != nil {
 		return err
 	}
 	// Serialize the embedded message and assign the resulting bytes to the value field.
@@ -467,7 +450,7 @@ func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, m pref.Message) err
 		AllowPartial:  true, // never check required fields inside an Any
 		Deterministic: true,
 	}.Marshal(m2.Interface())
-	if !nerr.Merge(err) {
+	if err != nil {
 		return err
 	}
 
@@ -478,5 +461,5 @@ func (o UnmarshalOptions) unmarshalAny(tfield [2]text.Value, m pref.Message) err
 	m.Set(fdType, pref.ValueOf(typeURL))
 	m.Set(fdValue, pref.ValueOf(b))
 
-	return nerr.E
+	return nil
 }

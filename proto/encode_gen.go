@@ -37,7 +37,6 @@ var wireTypes = map[protoreflect.Kind]wire.Type{
 }
 
 func (o MarshalOptions) marshalSingular(b []byte, fd protoreflect.FieldDescriptor, v protoreflect.Value) ([]byte, error) {
-	var nerr errors.NonFatal
 	switch fd.Kind() {
 	case protoreflect.BoolKind:
 		b = wire.AppendVarint(b, wire.EncodeBool(v.Bool()))
@@ -69,7 +68,7 @@ func (o MarshalOptions) marshalSingular(b []byte, fd protoreflect.FieldDescripto
 		b = wire.AppendFixed64(b, math.Float64bits(v.Float()))
 	case protoreflect.StringKind:
 		if fd.Syntax() == protoreflect.Proto3 && !utf8.ValidString(v.String()) {
-			nerr.AppendInvalidUTF8(string(fd.FullName()))
+			return b, errors.InvalidUTF8(string(fd.FullName()))
 		}
 		b = wire.AppendBytes(b, []byte(v.String()))
 	case protoreflect.BytesKind:
@@ -79,19 +78,19 @@ func (o MarshalOptions) marshalSingular(b []byte, fd protoreflect.FieldDescripto
 		var err error
 		b, pos = appendSpeculativeLength(b)
 		b, err = o.marshalMessage(b, v.Message())
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 		b = finishSpeculativeLength(b, pos)
 	case protoreflect.GroupKind:
 		var err error
 		b, err = o.marshalMessage(b, v.Message())
-		if !nerr.Merge(err) {
+		if err != nil {
 			return b, err
 		}
 		b = wire.AppendVarint(b, wire.EncodeTag(fd.Number(), wire.EndGroupType))
 	default:
 		return b, errors.New("invalid kind %v", fd.Kind())
 	}
-	return b, nerr.E
+	return b, nil
 }
