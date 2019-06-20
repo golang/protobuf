@@ -14,11 +14,18 @@ func Reset(m Message) {
 }
 
 func resetMessage(m protoreflect.Message) {
+	// Clear all known fields.
+	fds := m.Descriptor().Fields()
+	for i := 0; i < fds.Len(); i++ {
+		m.Clear(fds.Get(i))
+	}
+
+	// Clear extension fields.
 	m.Range(func(fd protoreflect.FieldDescriptor, _ protoreflect.Value) bool {
 		m.Clear(fd)
 		return true
 	})
-	if m.GetUnknown() != nil {
-		m.SetUnknown(nil)
-	}
+
+	// Clear unknown fields.
+	m.SetUnknown(nil)
 }
