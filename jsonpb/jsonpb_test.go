@@ -6,6 +6,7 @@ package jsonpb
 
 import (
 	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"io"
 	"math"
@@ -17,6 +18,7 @@ import (
 
 	pb "github.com/golang/protobuf/jsonpb/jsonpb_test_proto"
 	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/ptypes"
 	anypb "github.com/golang/protobuf/ptypes/any"
 	durpb "github.com/golang/protobuf/ptypes/duration"
@@ -1046,6 +1048,10 @@ func (m *ptrFieldMessage) String() string {
 func (m *ptrFieldMessage) ProtoMessage() {
 }
 
+func (m *ptrFieldMessage) Descriptor() ([]byte, []int) {
+	return testMessageFD, []int{0}
+}
+
 type stringField struct {
 	IsSet       bool   `protobuf:"varint,1,opt,name=isSet"`
 	StringValue string `protobuf:"bytes,2,opt,name=stringValue"`
@@ -1059,6 +1065,10 @@ func (s *stringField) String() string {
 }
 
 func (s *stringField) ProtoMessage() {
+}
+
+func (s *stringField) Descriptor() ([]byte, []int) {
+	return testMessageFD, []int{1}
 }
 
 func (s *stringField) UnmarshalJSONPB(jum *Unmarshaler, js []byte) error {
@@ -1088,6 +1098,10 @@ func (m *dynamicMessage) String() string {
 func (m *dynamicMessage) ProtoMessage() {
 }
 
+func (m *dynamicMessage) Descriptor() ([]byte, []int) {
+	return testMessageFD, []int{2}
+}
+
 func (m *dynamicMessage) MarshalJSONPB(jm *Marshaler) ([]byte, error) {
 	return []byte(m.RawJson), nil
 }
@@ -1096,6 +1110,39 @@ func (m *dynamicMessage) UnmarshalJSONPB(jum *Unmarshaler, js []byte) error {
 	m.RawJson = string(js)
 	return nil
 }
+
+var testMessageFD = func() []byte {
+	fd := new(descriptorpb.FileDescriptorProto)
+	proto.UnmarshalText(`
+		name:    "jsonpb.proto"
+		package: "github_com.golang.protobuf.jsonpb"
+		syntax:  "proto3"
+		message_type: [{
+			name: "ptrFieldMessage"
+			field: [
+				{name:"stringField" number:1 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".github_com.golang.protobuf.jsonpb.stringField"}
+			]
+		}, {
+			name: "stringField"
+			field: [
+				{name:"isSet"       number:1 label:LABEL_OPTIONAL type:TYPE_BOOL},
+				{name:"stringValue" number:2 label:LABEL_OPTIONAL type:TYPE_STRING}
+			]
+		}, {
+			name: "dynamicMessage"
+			field: [
+				{name:"rawJson" number:1 label:LABEL_OPTIONAL type:TYPE_BYTES},
+				{name:"dummy"   number:2 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".github_com.golang.protobuf.jsonpb.dynamicMessage"}
+			]
+		}]
+	`, fd)
+	b, _ := proto.Marshal(fd)
+	var buf bytes.Buffer
+	zw := gzip.NewWriter(&buf)
+	zw.Write(b)
+	zw.Close()
+	return buf.Bytes()
+}()
 
 // Test unmarshaling message containing unset required fields should produce error.
 func TestUnmarshalUnsetRequiredFields(t *testing.T) {

@@ -5,7 +5,6 @@ package descriptor
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoregistry "google.golang.org/protobuf/reflect/protoregistry"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	descriptorpb "google.golang.org/protobuf/types/descriptorpb"
 	sync "sync"
@@ -187,20 +186,31 @@ func file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_r
 }
 
 var file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_goTypes = []interface{}{}
-var file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_depIdxs = []int32{}
+var file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_depIdxs = []int32{
+	0, // starting offset of method output_type sub-list
+	0, // starting offset of method input_type sub-list
+	0, // starting offset of extension type_name sub-list
+	0, // starting offset of extension extendee sub-list
+	0, // starting offset of field type_name sub-list
+}
 
 func init() { file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_init() }
 func file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_init() {
 	if File_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto != nil {
 		return
 	}
-	File_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto = protoimpl.FileBuilder{
-		RawDescriptor:     file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDesc,
+	out := protoimpl.TypeBuilder{
+		File: protoimpl.DescBuilder{
+			RawDescriptor: file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDesc,
+			NumEnums:      0,
+			NumMessages:   0,
+			NumExtensions: 0,
+			NumServices:   0,
+		},
 		GoTypes:           file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_goTypes,
 		DependencyIndexes: file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_depIdxs,
-		FilesRegistry:     protoregistry.GlobalFiles,
-		TypesRegistry:     protoregistry.GlobalTypes,
-	}.Init()
+	}.Build()
+	File_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto = out.File
 	file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDesc = nil
 	file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_goTypes = nil
 	file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_depIdxs = nil
