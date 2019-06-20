@@ -1063,6 +1063,18 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		inputValue = inputValue[1 : len(inputValue)-1]
 	}
 
+	// Numbers need to be decodeable as string in order to not lose information
+	if targetType.Kind() == reflect.String {
+		var number json.Number
+		dec := json.NewDecoder(strings.NewReader(string(inputValue)))
+		err := dec.Decode(&number)
+		if err == nil {
+			target.SetString(number.String())
+			return nil
+		}
+		// Best effort only
+	}
+
 	// Use the encoding/json for parsing other value types.
 	return json.Unmarshal(inputValue, target.Addr().Interface())
 }

@@ -841,6 +841,8 @@ var unmarshalingTests = []struct {
 	{"null StringValue", Unmarshaler{}, `{"str":null}`, &pb.KnownTypes{Str: nil}},
 	{"null BytesValue", Unmarshaler{}, `{"bytes":null}`, &pb.KnownTypes{Bytes: nil}},
 
+	{"Big Number", Unmarshaler{}, `{"str":9223372036854775808}`, &pb.KnownTypes{Str: &wpb.StringValue{Value: "9223372036854775808"}}},
+
 	{"required", Unmarshaler{}, `{"str":"hello"}`, &pb.MsgWithRequired{Str: proto.String("hello")}},
 	{"required bytes", Unmarshaler{}, `{"byts": []}`, &pb.MsgWithRequiredBytes{Byts: []byte{}}},
 }
