@@ -182,8 +182,26 @@ func generateRemoteProtos() {
 	// Generate all remote proto files.
 	files := []struct{ prefix, path string }{
 		{"", "conformance/conformance.proto"},
+		{"benchmarks", "benchmarks.proto"},
+		{"benchmarks", "datasets/google_message1/proto2/benchmark_message1_proto2.proto"},
+		{"benchmarks", "datasets/google_message1/proto3/benchmark_message1_proto3.proto"},
+		{"benchmarks", "datasets/google_message2/benchmark_message2.proto"},
+		{"benchmarks", "datasets/google_message3/benchmark_message3.proto"},
+		{"benchmarks", "datasets/google_message3/benchmark_message3_1.proto"},
+		{"benchmarks", "datasets/google_message3/benchmark_message3_2.proto"},
+		{"benchmarks", "datasets/google_message3/benchmark_message3_3.proto"},
+		{"benchmarks", "datasets/google_message3/benchmark_message3_4.proto"},
+		{"benchmarks", "datasets/google_message3/benchmark_message3_5.proto"},
+		{"benchmarks", "datasets/google_message3/benchmark_message3_6.proto"},
+		{"benchmarks", "datasets/google_message3/benchmark_message3_7.proto"},
+		{"benchmarks", "datasets/google_message3/benchmark_message3_8.proto"},
+		{"benchmarks", "datasets/google_message4/benchmark_message4.proto"},
+		{"benchmarks", "datasets/google_message4/benchmark_message4_1.proto"},
+		{"benchmarks", "datasets/google_message4/benchmark_message4_2.proto"},
+		{"benchmarks", "datasets/google_message4/benchmark_message4_3.proto"},
 		{"src", "google/protobuf/any.proto"},
 		{"src", "google/protobuf/api.proto"},
+		{"src", "google/protobuf/compiler/plugin.proto"},
 		{"src", "google/protobuf/descriptor.proto"},
 		{"src", "google/protobuf/duration.proto"},
 		{"src", "google/protobuf/empty.proto"},
@@ -195,7 +213,6 @@ func generateRemoteProtos() {
 		{"src", "google/protobuf/timestamp.proto"},
 		{"src", "google/protobuf/type.proto"},
 		{"src", "google/protobuf/wrappers.proto"},
-		{"src", "google/protobuf/compiler/plugin.proto"},
 	}
 	for _, f := range files {
 		protoc("go", "-I"+filepath.Join(protoRoot, f.prefix), "--go_out="+tmpDir, f.path)

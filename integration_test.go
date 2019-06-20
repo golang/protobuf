@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -204,6 +205,27 @@ func mustInitDeps(t *testing.T) {
 		mustRunCommand(t, protobufPath, "make")
 		mustRunCommand(t, filepath.Join(protobufPath, "conformance"), "make")
 	}
+	// The benchmark directory isn't present in the release download,
+	// so fetch needed files directly.
+	for _, path := range benchmarkProtos {
+		src := fmt.Sprintf("https://raw.githubusercontent.com/protocolbuffers/protobuf/v%v/%v", protobufVersion, path)
+		dst := filepath.Join(protobufPath, path)
+		if _, err := os.Stat(dst); err != nil {
+			downloadFile(check, dst, src)
+		}
+	}
+	benchdataPath := filepath.Join(testDir, "benchdata")
+	for _, path := range []string{
+		"benchmarks/datasets/google_message1/proto2/dataset.google_message1_proto2.pb",
+		"benchmarks/datasets/google_message1/proto3/dataset.google_message1_proto3.pb",
+		"benchmarks/datasets/google_message2/dataset.google_message2.pb",
+	} {
+		src := fmt.Sprintf("https://raw.githubusercontent.com/protocolbuffers/protobuf/v%v/%v", protobufVersion, path)
+		dst := filepath.Join(benchdataPath, filepath.Base(path))
+		if _, err := os.Stat(dst); err != nil {
+			downloadFile(check, dst, src)
+		}
+	}
 	patchProtos(check, protobufPath)
 	check(os.Setenv("PROTOBUF_ROOT", protobufPath)) // for generate-protos
 	registerBinary("conform-test-runner", filepath.Join(protobufPath, "conformance", "conformance-test-runner"))
@@ -240,6 +262,19 @@ func mustInitDeps(t *testing.T) {
 	mustRunCommand(t, repoRoot, "go", "mod", "tidy")
 	mustRunCommand(t, repoRoot, "go", "mod", "vendor")
 	check(os.Setenv("GOPATH", goPath))
+}
+
+func downloadFile(check func(error), dstPath, srcURL string) {
+	resp, err := http.Get(srcURL)
+	check(err)
+	defer resp.Body.Close()
+
+	check(os.MkdirAll(filepath.Dir(dstPath), 0775))
+	f, err := os.Create(dstPath)
+	check(err)
+
+	_, err = io.Copy(f, resp.Body)
+	check(err)
 }
 
 func downloadArchive(check func(error), dstPath, srcURL, skipPrefix string) {
@@ -306,6 +341,9 @@ func patchProtos(check func(error), repoRoot string) {
 		"src/google/protobuf/test_messages_proto2.proto": "google.golang.org/protobuf/internal/testprotos/conformance",
 		"src/google/protobuf/test_messages_proto3.proto": "google.golang.org/protobuf/internal/testprotos/conformance",
 	}
+	for _, p := range benchmarkProtos {
+		files[p] = path.Dir("google.golang.org/protobuf/internal/testprotos/" + p)
+	}
 	for pbpath, gopath := range files {
 		b, err := ioutil.ReadFile(filepath.Join(repoRoot, pbpath))
 		check(err)
@@ -353,4 +391,24 @@ func mustRunCommand(t *testing.T, dir string, args ...string) string {
 		t.Fatalf("executing (%v): %v\n%s%s", strings.Join(args, " "), err, stdout.String(), stderr.String())
 	}
 	return stdout.String()
+}
+
+var benchmarkProtos = []string{
+	"benchmarks/benchmarks.proto",
+	"benchmarks/datasets/google_message1/proto2/benchmark_message1_proto2.proto",
+	"benchmarks/datasets/google_message1/proto3/benchmark_message1_proto3.proto",
+	"benchmarks/datasets/google_message2/benchmark_message2.proto",
+	"benchmarks/datasets/google_message3/benchmark_message3.proto",
+	"benchmarks/datasets/google_message3/benchmark_message3_1.proto",
+	"benchmarks/datasets/google_message3/benchmark_message3_2.proto",
+	"benchmarks/datasets/google_message3/benchmark_message3_3.proto",
+	"benchmarks/datasets/google_message3/benchmark_message3_4.proto",
+	"benchmarks/datasets/google_message3/benchmark_message3_5.proto",
+	"benchmarks/datasets/google_message3/benchmark_message3_6.proto",
+	"benchmarks/datasets/google_message3/benchmark_message3_7.proto",
+	"benchmarks/datasets/google_message3/benchmark_message3_8.proto",
+	"benchmarks/datasets/google_message4/benchmark_message4.proto",
+	"benchmarks/datasets/google_message4/benchmark_message4_1.proto",
+	"benchmarks/datasets/google_message4/benchmark_message4_2.proto",
+	"benchmarks/datasets/google_message4/benchmark_message4_3.proto",
 }
