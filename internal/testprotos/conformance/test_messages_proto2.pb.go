@@ -26,14 +26,12 @@ const (
 	ForeignEnumProto2_FOREIGN_BAZ ForeignEnumProto2 = 2
 )
 
-// Deprecated: Use ForeignEnumProto2.Type.Values instead.
 var ForeignEnumProto2_name = map[int32]string{
 	0: "FOREIGN_FOO",
 	1: "FOREIGN_BAR",
 	2: "FOREIGN_BAZ",
 }
 
-// Deprecated: Use ForeignEnumProto2.Type.Values instead.
 var ForeignEnumProto2_value = map[string]int32{
 	"FOREIGN_FOO": 0,
 	"FOREIGN_BAR": 1,
@@ -82,7 +80,6 @@ const (
 	TestAllTypesProto2_NEG TestAllTypesProto2_NestedEnum = -1
 )
 
-// Deprecated: Use TestAllTypesProto2_NestedEnum.Type.Values instead.
 var TestAllTypesProto2_NestedEnum_name = map[int32]string{
 	0:  "FOO",
 	1:  "BAR",
@@ -90,7 +87,6 @@ var TestAllTypesProto2_NestedEnum_name = map[int32]string{
 	-1: "NEG",
 }
 
-// Deprecated: Use TestAllTypesProto2_NestedEnum.Type.Values instead.
 var TestAllTypesProto2_NestedEnum_value = map[string]int32{
 	"FOO": 0,
 	"BAR": 1,

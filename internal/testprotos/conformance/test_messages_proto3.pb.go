@@ -32,14 +32,12 @@ const (
 	ForeignEnum_FOREIGN_BAZ ForeignEnum = 2
 )
 
-// Deprecated: Use ForeignEnum.Type.Values instead.
 var ForeignEnum_name = map[int32]string{
 	0: "FOREIGN_FOO",
 	1: "FOREIGN_BAR",
 	2: "FOREIGN_BAZ",
 }
 
-// Deprecated: Use ForeignEnum.Type.Values instead.
 var ForeignEnum_value = map[string]int32{
 	"FOREIGN_FOO": 0,
 	"FOREIGN_BAR": 1,
@@ -78,7 +76,6 @@ const (
 	TestAllTypesProto3_NEG TestAllTypesProto3_NestedEnum = -1
 )
 
-// Deprecated: Use TestAllTypesProto3_NestedEnum.Type.Values instead.
 var TestAllTypesProto3_NestedEnum_name = map[int32]string{
 	0:  "FOO",
 	1:  "BAR",
@@ -86,7 +83,6 @@ var TestAllTypesProto3_NestedEnum_name = map[int32]string{
 	-1: "NEG",
 }
 
-// Deprecated: Use TestAllTypesProto3_NestedEnum.Type.Values instead.
 var TestAllTypesProto3_NestedEnum_value = map[string]int32{
 	"FOO": 0,
 	"BAR": 1,
@@ -128,7 +124,6 @@ const (
 	TestAllTypesProto3_bAz       TestAllTypesProto3_AliasedEnum = 2
 )
 
-// Deprecated: Use TestAllTypesProto3_AliasedEnum.Type.Values instead.
 var TestAllTypesProto3_AliasedEnum_name = map[int32]string{
 	0: "ALIAS_FOO",
 	1: "ALIAS_BAR",
@@ -138,7 +133,6 @@ var TestAllTypesProto3_AliasedEnum_name = map[int32]string{
 	// Duplicate value: 2: "bAz",
 }
 
-// Deprecated: Use TestAllTypesProto3_AliasedEnum.Type.Values instead.
 var TestAllTypesProto3_AliasedEnum_value = map[string]int32{
 	"ALIAS_FOO": 0,
 	"ALIAS_BAR": 1,

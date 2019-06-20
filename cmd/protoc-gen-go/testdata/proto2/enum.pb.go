@@ -28,13 +28,11 @@ const (
 	EnumType1_TWO EnumType1 = 2
 )
 
-// Deprecated: Use EnumType1.Type.Values instead.
 var EnumType1_name = map[int32]string{
 	1: "ONE",
 	2: "TWO",
 }
 
-// Deprecated: Use EnumType1.Type.Values instead.
 var EnumType1_value = map[string]int32{
 	"ONE": 1,
 	"TWO": 2,
@@ -80,13 +78,11 @@ const (
 	EnumType2_duplicate2 EnumType2 = 1
 )
 
-// Deprecated: Use EnumType2.Type.Values instead.
 var EnumType2_name = map[int32]string{
 	1: "duplicate1",
 	// Duplicate value: 1: "duplicate2",
 }
 
-// Deprecated: Use EnumType2.Type.Values instead.
 var EnumType2_value = map[string]int32{
 	"duplicate1": 1,
 	"duplicate2": 1,
@@ -133,12 +129,10 @@ const (
 	EnumContainerMessage1_NESTED_1A_VALUE EnumContainerMessage1_NestedEnumType1A = 0
 )
 
-// Deprecated: Use EnumContainerMessage1_NestedEnumType1A.Type.Values instead.
 var EnumContainerMessage1_NestedEnumType1A_name = map[int32]string{
 	0: "NESTED_1A_VALUE",
 }
 
-// Deprecated: Use EnumContainerMessage1_NestedEnumType1A.Type.Values instead.
 var EnumContainerMessage1_NestedEnumType1A_value = map[string]int32{
 	"NESTED_1A_VALUE": 0,
 }
@@ -182,12 +176,10 @@ const (
 	EnumContainerMessage1_NESTED_1B_VALUE EnumContainerMessage1_NestedEnumType1B = 0
 )
 
-// Deprecated: Use EnumContainerMessage1_NestedEnumType1B.Type.Values instead.
 var EnumContainerMessage1_NestedEnumType1B_name = map[int32]string{
 	0: "NESTED_1B_VALUE",
 }
 
-// Deprecated: Use EnumContainerMessage1_NestedEnumType1B.Type.Values instead.
 var EnumContainerMessage1_NestedEnumType1B_value = map[string]int32{
 	"NESTED_1B_VALUE": 0,
 }
@@ -233,12 +225,10 @@ const (
 	EnumContainerMessage1_EnumContainerMessage2_NESTED_2A_VALUE EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A = 0
 )
 
-// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A.Type.Values instead.
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_name = map[int32]string{
 	0: "NESTED_2A_VALUE",
 }
 
-// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A.Type.Values instead.
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2A_value = map[string]int32{
 	"NESTED_2A_VALUE": 0,
 }
@@ -282,12 +272,10 @@ const (
 	EnumContainerMessage1_EnumContainerMessage2_NESTED_2B_VALUE EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B = 0
 )
 
-// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B.Type.Values instead.
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_name = map[int32]string{
 	0: "NESTED_2B_VALUE",
 }
 
-// Deprecated: Use EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B.Type.Values instead.
 var EnumContainerMessage1_EnumContainerMessage2_NestedEnumType2B_value = map[string]int32{
 	"NESTED_2B_VALUE": 0,
 }

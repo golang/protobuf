@@ -240,7 +240,6 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	// Enum value mapping (number -> name).
 	if generateEnumMapVars {
 		nameMap := enum.GoIdent.GoName + "_name"
-		g.P("// Deprecated: Use ", enum.GoIdent.GoName, ".Type.Values instead.")
 		g.P("var ", nameMap, " = map[int32]string{")
 		generated := make(map[protoreflect.EnumNumber]bool)
 		for _, value := range enum.Values {
@@ -258,7 +257,6 @@ func genEnum(gen *protogen.Plugin, g *protogen.GeneratedFile, f *fileInfo, enum 
 	// Enum value mapping (name -> number).
 	if generateEnumMapVars {
 		valueMap := enum.GoIdent.GoName + "_value"
-		g.P("// Deprecated: Use ", enum.GoIdent.GoName, ".Type.Values instead.")
 		g.P("var ", valueMap, " = map[string]int32{")
 		for _, value := range enum.Values {
 			g.P(strconv.Quote(string(value.Desc.Name())), ": ", value.Desc.Number(), ",")

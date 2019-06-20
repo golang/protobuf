@@ -24,12 +24,10 @@ const (
 	FieldTestMessage_ZERO FieldTestMessage_Enum = 0
 )
 
-// Deprecated: Use FieldTestMessage_Enum.Type.Values instead.
 var FieldTestMessage_Enum_name = map[int32]string{
 	0: "ZERO",
 }
 
-// Deprecated: Use FieldTestMessage_Enum.Type.Values instead.
 var FieldTestMessage_Enum_value = map[string]int32{
 	"ZERO": 0,
 }

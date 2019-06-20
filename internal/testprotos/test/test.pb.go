@@ -27,14 +27,12 @@ const (
 	ForeignEnum_FOREIGN_BAZ ForeignEnum = 6
 )
 
-// Deprecated: Use ForeignEnum.Type.Values instead.
 var ForeignEnum_name = map[int32]string{
 	4: "FOREIGN_FOO",
 	5: "FOREIGN_BAR",
 	6: "FOREIGN_BAZ",
 }
 
-// Deprecated: Use ForeignEnum.Type.Values instead.
 var ForeignEnum_value = map[string]int32{
 	"FOREIGN_FOO": 4,
 	"FOREIGN_BAR": 5,
@@ -80,12 +78,10 @@ const (
 	TestReservedEnumFields_RESERVED_ENUM TestReservedEnumFields = 0
 )
 
-// Deprecated: Use TestReservedEnumFields.Type.Values instead.
 var TestReservedEnumFields_name = map[int32]string{
 	0: "RESERVED_ENUM",
 }
 
-// Deprecated: Use TestReservedEnumFields.Type.Values instead.
 var TestReservedEnumFields_value = map[string]int32{
 	"RESERVED_ENUM": 0,
 }
@@ -132,7 +128,6 @@ const (
 	TestAllTypes_NEG TestAllTypes_NestedEnum = -1
 )
 
-// Deprecated: Use TestAllTypes_NestedEnum.Type.Values instead.
 var TestAllTypes_NestedEnum_name = map[int32]string{
 	0:  "FOO",
 	1:  "BAR",
@@ -140,7 +135,6 @@ var TestAllTypes_NestedEnum_name = map[int32]string{
 	-1: "NEG",
 }
 
-// Deprecated: Use TestAllTypes_NestedEnum.Type.Values instead.
 var TestAllTypes_NestedEnum_value = map[string]int32{
 	"FOO": 0,
 	"BAR": 1,
@@ -186,12 +180,10 @@ const (
 	TestDeprecatedMessage_DEPRECATED TestDeprecatedMessage_DeprecatedEnum = 0 // Deprecated: Do not use.
 )
 
-// Deprecated: Use TestDeprecatedMessage_DeprecatedEnum.Type.Values instead.
 var TestDeprecatedMessage_DeprecatedEnum_name = map[int32]string{
 	0: "DEPRECATED",
 }
 
-// Deprecated: Use TestDeprecatedMessage_DeprecatedEnum.Type.Values instead.
 var TestDeprecatedMessage_DeprecatedEnum_value = map[string]int32{
 	"DEPRECATED": 0,
 }

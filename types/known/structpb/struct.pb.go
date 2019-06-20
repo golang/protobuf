@@ -29,12 +29,10 @@ const (
 	NullValue_NULL_VALUE NullValue = 0
 )
 
-// Deprecated: Use NullValue.Type.Values instead.
 var NullValue_name = map[int32]string{
 	0: "NULL_VALUE",
 }
 
-// Deprecated: Use NullValue.Type.Values instead.
 var NullValue_value = map[string]int32{
 	"NULL_VALUE": 0,
 }

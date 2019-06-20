@@ -30,13 +30,11 @@ const (
 	Syntax_SYNTAX_PROTO3 Syntax = 1
 )
 
-// Deprecated: Use Syntax.Type.Values instead.
 var Syntax_name = map[int32]string{
 	0: "SYNTAX_PROTO2",
 	1: "SYNTAX_PROTO3",
 }
 
-// Deprecated: Use Syntax.Type.Values instead.
 var Syntax_value = map[string]int32{
 	"SYNTAX_PROTO2": 0,
 	"SYNTAX_PROTO3": 1,
@@ -109,7 +107,6 @@ const (
 	Field_TYPE_SINT64 Field_Kind = 18
 )
 
-// Deprecated: Use Field_Kind.Type.Values instead.
 var Field_Kind_name = map[int32]string{
 	0:  "TYPE_UNKNOWN",
 	1:  "TYPE_DOUBLE",
@@ -132,7 +129,6 @@ var Field_Kind_name = map[int32]string{
 	18: "TYPE_SINT64",
 }
 
-// Deprecated: Use Field_Kind.Type.Values instead.
 var Field_Kind_value = map[string]int32{
 	"TYPE_UNKNOWN":  0,
 	"TYPE_DOUBLE":   1,
@@ -192,7 +188,6 @@ const (
 	Field_CARDINALITY_REPEATED Field_Cardinality = 3
 )
 
-// Deprecated: Use Field_Cardinality.Type.Values instead.
 var Field_Cardinality_name = map[int32]string{
 	0: "CARDINALITY_UNKNOWN",
 	1: "CARDINALITY_OPTIONAL",
@@ -200,7 +195,6 @@ var Field_Cardinality_name = map[int32]string{
 	3: "CARDINALITY_REPEATED",
 }
 
-// Deprecated: Use Field_Cardinality.Type.Values instead.
 var Field_Cardinality_value = map[string]int32{
 	"CARDINALITY_UNKNOWN":  0,
 	"CARDINALITY_OPTIONAL": 1,

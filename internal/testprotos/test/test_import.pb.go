@@ -24,12 +24,10 @@ const (
 	ImportEnum_IMPORT_ZERO ImportEnum = 0
 )
 
-// Deprecated: Use ImportEnum.Type.Values instead.
 var ImportEnum_name = map[int32]string{
 	0: "IMPORT_ZERO",
 }
 
-// Deprecated: Use ImportEnum.Type.Values instead.
 var ImportEnum_value = map[string]int32{
 	"IMPORT_ZERO": 0,
 }

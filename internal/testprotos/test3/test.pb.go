@@ -27,7 +27,6 @@ const (
 	ForeignEnum_FOREIGN_BAZ  ForeignEnum = 6
 )
 
-// Deprecated: Use ForeignEnum.Type.Values instead.
 var ForeignEnum_name = map[int32]string{
 	0: "FOREIGN_ZERO",
 	4: "FOREIGN_FOO",
@@ -35,7 +34,6 @@ var ForeignEnum_name = map[int32]string{
 	6: "FOREIGN_BAZ",
 }
 
-// Deprecated: Use ForeignEnum.Type.Values instead.
 var ForeignEnum_value = map[string]int32{
 	"FOREIGN_ZERO": 0,
 	"FOREIGN_FOO":  4,
@@ -75,7 +73,6 @@ const (
 	TestAllTypes_NEG TestAllTypes_NestedEnum = -1
 )
 
-// Deprecated: Use TestAllTypes_NestedEnum.Type.Values instead.
 var TestAllTypes_NestedEnum_name = map[int32]string{
 	0:  "FOO",
 	1:  "BAR",
@@ -83,7 +80,6 @@ var TestAllTypes_NestedEnum_name = map[int32]string{
 	-1: "NEG",
 }
 
-// Deprecated: Use TestAllTypes_NestedEnum.Type.Values instead.
 var TestAllTypes_NestedEnum_value = map[string]int32{
 	"FOO": 0,
 	"BAR": 1,

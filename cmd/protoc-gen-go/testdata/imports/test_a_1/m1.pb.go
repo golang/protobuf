@@ -24,12 +24,10 @@ const (
 	E1_E1_ZERO E1 = 0
 )
 
-// Deprecated: Use E1.Type.Values instead.
 var E1_name = map[int32]string{
 	0: "E1_ZERO",
 }
 
-// Deprecated: Use E1.Type.Values instead.
 var E1_value = map[string]int32{
 	"E1_ZERO": 0,
 }

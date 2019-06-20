@@ -30,12 +30,10 @@ const (
 	E_ZERO E = 0
 )
 
-// Deprecated: Use E.Type.Values instead.
 var E_name = map[int32]string{
 	0: "ZERO",
 }
 
-// Deprecated: Use E.Type.Values instead.
 var E_value = map[string]int32{
 	"ZERO": 0,
 }
@@ -79,12 +77,10 @@ const (
 	M_M_ZERO M_Subenum = 0
 )
 
-// Deprecated: Use M_Subenum.Type.Values instead.
 var M_Subenum_name = map[int32]string{
 	0: "M_ZERO",
 }
 
-// Deprecated: Use M_Subenum.Type.Values instead.
 var M_Subenum_value = map[string]int32{
 	"M_ZERO": 0,
 }
@@ -128,12 +124,10 @@ const (
 	M_Submessage_M_SUBMESSAGE_ZERO M_Submessage_Submessage_Subenum = 0
 )
 
-// Deprecated: Use M_Submessage_Submessage_Subenum.Type.Values instead.
 var M_Submessage_Submessage_Subenum_name = map[int32]string{
 	0: "M_SUBMESSAGE_ZERO",
 }
 
-// Deprecated: Use M_Submessage_Submessage_Subenum.Type.Values instead.
 var M_Submessage_Submessage_Subenum_value = map[string]int32{
 	"M_SUBMESSAGE_ZERO": 0,
 }

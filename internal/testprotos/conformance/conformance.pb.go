@@ -28,7 +28,6 @@ const (
 	WireFormat_TEXT_FORMAT WireFormat = 4
 )
 
-// Deprecated: Use WireFormat.Type.Values instead.
 var WireFormat_name = map[int32]string{
 	0: "UNSPECIFIED",
 	1: "PROTOBUF",
@@ -37,7 +36,6 @@ var WireFormat_name = map[int32]string{
 	4: "TEXT_FORMAT",
 }
 
-// Deprecated: Use WireFormat.Type.Values instead.
 var WireFormat_value = map[string]int32{
 	"UNSPECIFIED": 0,
 	"PROTOBUF":    1,
@@ -88,7 +86,6 @@ const (
 	TestCategory_TEXT_FORMAT_TEST TestCategory = 5
 )
 
-// Deprecated: Use TestCategory.Type.Values instead.
 var TestCategory_name = map[int32]string{
 	0: "UNSPECIFIED_TEST",
 	1: "BINARY_TEST",
@@ -98,7 +95,6 @@ var TestCategory_name = map[int32]string{
 	5: "TEXT_FORMAT_TEST",
 }
 
-// Deprecated: Use TestCategory.Type.Values instead.
 var TestCategory_value = map[string]int32{
 	"UNSPECIFIED_TEST":                 0,
 	"BINARY_TEST":                      1,

@@ -52,7 +52,6 @@ const (
 	FieldDescriptorProto_TYPE_SINT64   FieldDescriptorProto_Type = 18
 )
 
-// Deprecated: Use FieldDescriptorProto_Type.Type.Values instead.
 var FieldDescriptorProto_Type_name = map[int32]string{
 	1:  "TYPE_DOUBLE",
 	2:  "TYPE_FLOAT",
@@ -74,7 +73,6 @@ var FieldDescriptorProto_Type_name = map[int32]string{
 	18: "TYPE_SINT64",
 }
 
-// Deprecated: Use FieldDescriptorProto_Type.Type.Values instead.
 var FieldDescriptorProto_Type_value = map[string]int32{
 	"TYPE_DOUBLE":   1,
 	"TYPE_FLOAT":    2,
@@ -138,14 +136,12 @@ const (
 	FieldDescriptorProto_LABEL_REPEATED FieldDescriptorProto_Label = 3
 )
 
-// Deprecated: Use FieldDescriptorProto_Label.Type.Values instead.
 var FieldDescriptorProto_Label_name = map[int32]string{
 	1: "LABEL_OPTIONAL",
 	2: "LABEL_REQUIRED",
 	3: "LABEL_REPEATED",
 }
 
-// Deprecated: Use FieldDescriptorProto_Label.Type.Values instead.
 var FieldDescriptorProto_Label_value = map[string]int32{
 	"LABEL_OPTIONAL": 1,
 	"LABEL_REQUIRED": 2,
@@ -195,14 +191,12 @@ const (
 	FileOptions_LITE_RUNTIME FileOptions_OptimizeMode = 3
 )
 
-// Deprecated: Use FileOptions_OptimizeMode.Type.Values instead.
 var FileOptions_OptimizeMode_name = map[int32]string{
 	1: "SPEED",
 	2: "CODE_SIZE",
 	3: "LITE_RUNTIME",
 }
 
-// Deprecated: Use FileOptions_OptimizeMode.Type.Values instead.
 var FileOptions_OptimizeMode_value = map[string]int32{
 	"SPEED":        1,
 	"CODE_SIZE":    2,
@@ -251,14 +245,12 @@ const (
 	FieldOptions_STRING_PIECE FieldOptions_CType = 2
 )
 
-// Deprecated: Use FieldOptions_CType.Type.Values instead.
 var FieldOptions_CType_name = map[int32]string{
 	0: "STRING",
 	1: "CORD",
 	2: "STRING_PIECE",
 }
 
-// Deprecated: Use FieldOptions_CType.Type.Values instead.
 var FieldOptions_CType_value = map[string]int32{
 	"STRING":       0,
 	"CORD":         1,
@@ -309,14 +301,12 @@ const (
 	FieldOptions_JS_NUMBER FieldOptions_JSType = 2
 )
 
-// Deprecated: Use FieldOptions_JSType.Type.Values instead.
 var FieldOptions_JSType_name = map[int32]string{
 	0: "JS_NORMAL",
 	1: "JS_STRING",
 	2: "JS_NUMBER",
 }
 
-// Deprecated: Use FieldOptions_JSType.Type.Values instead.
 var FieldOptions_JSType_value = map[string]int32{
 	"JS_NORMAL": 0,
 	"JS_STRING": 1,
@@ -367,14 +357,12 @@ const (
 	MethodOptions_IDEMPOTENT          MethodOptions_IdempotencyLevel = 2
 )
 
-// Deprecated: Use MethodOptions_IdempotencyLevel.Type.Values instead.
 var MethodOptions_IdempotencyLevel_name = map[int32]string{
 	0: "IDEMPOTENCY_UNKNOWN",
 	1: "NO_SIDE_EFFECTS",
 	2: "IDEMPOTENT",
 }
 
-// Deprecated: Use MethodOptions_IdempotencyLevel.Type.Values instead.
 var MethodOptions_IdempotencyLevel_value = map[string]int32{
 	"IDEMPOTENCY_UNKNOWN": 0,
 	"NO_SIDE_EFFECTS":     1,

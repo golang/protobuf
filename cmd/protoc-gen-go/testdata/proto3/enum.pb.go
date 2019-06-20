@@ -25,14 +25,12 @@ const (
 	Enum_TWO  Enum = 2
 )
 
-// Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0: "ZERO",
 	1: "ONE",
 	2: "TWO",
 }
 
-// Deprecated: Use Enum.Type.Values instead.
 var Enum_value = map[string]int32{
 	"ZERO": 0,
 	"ONE":  1,

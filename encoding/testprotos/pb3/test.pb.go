@@ -27,7 +27,6 @@ const (
 	Enum_TEN  Enum = 10
 )
 
-// Deprecated: Use Enum.Type.Values instead.
 var Enum_name = map[int32]string{
 	0:  "ZERO",
 	1:  "ONE",
@@ -35,7 +34,6 @@ var Enum_name = map[int32]string{
 	10: "TEN",
 }
 
-// Deprecated: Use Enum.Type.Values instead.
 var Enum_value = map[string]int32{
 	"ZERO": 0,
 	"ONE":  1,
@@ -75,7 +73,6 @@ const (
 	Enums_DIEZ Enums_NestedEnum = 10
 )
 
-// Deprecated: Use Enums_NestedEnum.Type.Values instead.
 var Enums_NestedEnum_name = map[int32]string{
 	0:  "CERO",
 	1:  "UNO",
@@ -83,7 +80,6 @@ var Enums_NestedEnum_name = map[int32]string{
 	10: "DIEZ",
 }
 
-// Deprecated: Use Enums_NestedEnum.Type.Values instead.
 var Enums_NestedEnum_value = map[string]int32{
 	"CERO": 0,
 	"UNO":  1,

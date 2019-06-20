@@ -24,12 +24,10 @@ const (
 	Enum1_ONE Enum1 = 1
 )
 
-// Deprecated: Use Enum1.Type.Values instead.
 var Enum1_name = map[int32]string{
 	1: "ONE",
 }
 
-// Deprecated: Use Enum1.Type.Values instead.
 var Enum1_value = map[string]int32{
 	"ONE": 1,
 }
@@ -73,12 +71,10 @@ const (
 	Enum2_UNO Enum2 = 1
 )
 
-// Deprecated: Use Enum2.Type.Values instead.
 var Enum2_name = map[int32]string{
 	1: "UNO",
 }
 
-// Deprecated: Use Enum2.Type.Values instead.
 var Enum2_value = map[string]int32{
 	"UNO": 1,
 }
@@ -122,12 +118,10 @@ const (
 	Enum3_YI Enum3 = 1
 )
 
-// Deprecated: Use Enum3.Type.Values instead.
 var Enum3_name = map[int32]string{
 	1: "YI",
 }
 
-// Deprecated: Use Enum3.Type.Values instead.
 var Enum3_value = map[string]int32{
 	"YI": 1,
 }

@@ -24,12 +24,10 @@ const (
 	AnnotationsTestEnum_ANNOTATIONS_TEST_ENUM_VALUE AnnotationsTestEnum = 0
 )
 
-// Deprecated: Use AnnotationsTestEnum.Type.Values instead.
 var AnnotationsTestEnum_name = map[int32]string{
 	0: "ANNOTATIONS_TEST_ENUM_VALUE",
 }
 
-// Deprecated: Use AnnotationsTestEnum.Type.Values instead.
 var AnnotationsTestEnum_value = map[string]int32{
 	"ANNOTATIONS_TEST_ENUM_VALUE": 0,
 }

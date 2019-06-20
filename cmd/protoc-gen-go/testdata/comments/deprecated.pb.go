@@ -23,12 +23,10 @@ const (
 	DeprecatedEnum_DEPRECATED DeprecatedEnum = 0 // Deprecated: Do not use.
 )
 
-// Deprecated: Use DeprecatedEnum.Type.Values instead.
 var DeprecatedEnum_name = map[int32]string{
 	0: "DEPRECATED",
 }
 
-// Deprecated: Use DeprecatedEnum.Type.Values instead.
 var DeprecatedEnum_value = map[string]int32{
 	"DEPRECATED": 0,
 }
