@@ -45,6 +45,7 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"os"
 	"reflect"
 	"sort"
 	"strconv"
@@ -57,6 +58,26 @@ import (
 )
 
 const secondInNanos = int64(time.Second / time.Nanosecond)
+
+// supportFieldMaskWKT is a flag which will be set based on env var SUPPORT_FIELD_MASK_WKT_JSON
+// google.protobuf.FieldMask is a well known type (wkt) with json spec defined as follows:
+// mask {
+//  paths: "user.display_name"
+//  paths: "photo"
+//}
+// JSON:
+//{
+//  mask: "user.displayName,photo"
+//}
+// Current library does not correctly serialize FieldMask, and generates following JSON
+//{
+//  mask: {paths: ["user.displayName","photo"]}
+//}
+// SUPPORT_FIELD_MASK_WKT_JSON is an environment variable to allow clients to opt in to the fix to correctly serialize FieldMask
+// if SUPPORT_FIELD_MASK_WKT_JSON is set to 1, FieldMask will be handled correctly and JSON generated will match spec
+// If undefined or unset, no change to FieldMask to JSON conversion, so that any existing users of the library do not break.
+// Fix to correctly serialize FieldMask is taken from https://github.com/golang/protobuf/blob/api-v2/encoding/protojson/well_known_types.go
+var supportFieldMaskWKT = os.Getenv("SUPPORT_FIELD_MASK_WKT_JSON") == "1"
 
 // Marshaler is a configurable object for converting between
 // protocol buffer objects and a JSON representation for them.
@@ -263,9 +284,26 @@ func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeU
 			x := kind.Elem().Elem().Field(0)
 			// TODO: pass the correct Properties if needed.
 			return m.marshalValue(out, &proto.Properties{}, x, indent)
+		case "FieldMask":
+			//Clients want to support FieldMask WKT correctly
+			if supportFieldMaskWKT {
+				list := s.Field(0)
+				paths := make([]string, 0, list.Len())
+				for i := 0; i < list.Len(); i++ {
+					s := list.Index(i).String()
+					cc := camelCase(s)
+					if s != snakeCase(cc) {
+						return fmt.Errorf("invalid field mask: %v", s)
+					}
+					paths = append(paths, cc)
+				}
+				out.write(`"`)
+				out.write(strings.Join(paths, ","))
+				out.write(`"`)
+				return nil
+			}
 		}
 	}
-
 	out.write("{")
 	if m.Indent != "" {
 		out.write("\n")
@@ -874,6 +912,22 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 				return fmt.Errorf("unrecognized type for Value %q", ivStr)
 			}
 			return nil
+		case "FieldMask":
+			//Clients want to support FieldMask WKT correctly
+			if supportFieldMaskWKT {
+				str := strings.TrimSpace(string(inputValue))
+				unq, err := unquote(str)
+				if err != nil {
+					return err
+				}
+				paths := strings.Split(unq, ",")
+				tval := target.Field(0)
+				tval.Set(reflect.ValueOf(make([]string, len(paths))))
+				for i, s := range paths {
+					tval.Index(i).Set(reflect.ValueOf(snakeCase(s)))
+				}
+				return nil
+			}
 		}
 	}
 
@@ -1273,4 +1327,50 @@ func checkRequiredFieldsInValue(v reflect.Value) error {
 		return checkRequiredFields(pm)
 	}
 	return nil
+}
+
+// camelCase converts given string into camelCase where ASCII character after _
+// is turned into uppercase and _'s are removed.
+func camelCase(s string) string {
+	var b []byte
+	var afterUnderscore bool
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if afterUnderscore {
+			if isASCIILower(c) {
+				c -= 'a' - 'A'
+			}
+		}
+		if c == '_' {
+			afterUnderscore = true
+			continue
+		}
+		afterUnderscore = false
+		b = append(b, c)
+	}
+	return string(b)
+}
+
+// snakeCase converts given string into snake_case where ASCII uppercase
+// character is turned into _ + lowercase.
+func snakeCase(s string) string {
+	var b []byte
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if isASCIIUpper(c) {
+			c += 'a' - 'A'
+			b = append(b, '_', c)
+		} else {
+			b = append(b, c)
+		}
+	}
+	return string(b)
+}
+
+func isASCIILower(c byte) bool {
+	return 'a' <= c && c <= 'z'
+}
+
+func isASCIIUpper(c byte) bool {
+	return 'A' <= c && c <= 'Z'
 }

@@ -37,7 +37,7 @@ done
 PROTO_INCLUDE=$(dirname $(dirname $(which protoc)))/include
 
 # Well-known types.
-WKT_PROTOS=(any duration empty struct timestamp wrappers)
+WKT_PROTOS=(any duration empty struct timestamp wrappers field_mask)
 for p in ${WKT_PROTOS[@]}; do
   echo "# google/protobuf/$p.proto"
   protoc --go_out=paths=source_relative:$tmpdir google/protobuf/$p.proto

@@ -47,6 +47,7 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	anypb "github.com/golang/protobuf/ptypes/any"
 	durpb "github.com/golang/protobuf/ptypes/duration"
+	fmpb "github.com/golang/protobuf/ptypes/field_mask"
 	stpb "github.com/golang/protobuf/ptypes/struct"
 	tspb "github.com/golang/protobuf/ptypes/timestamp"
 	wpb "github.com/golang/protobuf/ptypes/wrappers"
@@ -523,9 +524,11 @@ var marshalingTests = []struct {
 
 	{"required", marshaler, &pb.MsgWithRequired{Str: proto.String("hello")}, `{"str":"hello"}`},
 	{"required bytes", marshaler, &pb.MsgWithRequiredBytes{Byts: []byte{}}, `{"byts":""}`},
+	{"FieldMask", marshaler, &pb.FieldMaskWKT{FieldMask: &fmpb.FieldMask{Paths: []string{"a", "b", "c_d"}}}, `{"fieldMask":"a,b,cD"}`},
 }
 
 func TestMarshaling(t *testing.T) {
+	supportFieldMaskWKT = true
 	for _, tt := range marshalingTests {
 		json, err := tt.marshaler.MarshalToString(tt.pb)
 		if err != nil {
@@ -608,7 +611,7 @@ func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
 	}
 	// same as expected above, but pretty-printed w/ indentation
 	expected =
-`{
+		`{
   "@type": "type.googleapis.com/` + dynamicMessageName + `",
   "baz": [
     0,
@@ -622,7 +625,6 @@ func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
 		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, expected)
 	}
 }
-
 
 func TestMarshalWithCustomValidation(t *testing.T) {
 	msg := dynamicMessage{RawJson: `{ "foo": "bar", "baz": [0, 1, 2, 3] }`, Dummy: &dynamicMessage{}}
@@ -718,6 +720,27 @@ func TestMarshalUnsetRequiredFields(t *testing.T) {
 	for _, tc := range tests {
 		if _, err := tc.marshaler.MarshalToString(tc.pb); err == nil {
 			t.Errorf("%s: expecting error in marshaling with unset required fields %+v", tc.desc, tc.pb)
+		}
+	}
+}
+
+func TestMarshalIllegalFieldMask(t *testing.T) {
+	supportFieldMaskWKT = true
+	tests := []struct {
+		pb   proto.Message
+		fail bool
+	}{
+		{&pb.FieldMaskWKT{FieldMask: &fmpb.FieldMask{Paths: []string{"c__d"}}}, true},
+		{&pb.FieldMaskWKT{FieldMask: &fmpb.FieldMask{Paths: []string{"c_"}}}, true},
+	}
+	marshaler = Marshaler{}
+	for _, tt := range tests {
+		_, err := marshaler.MarshalToString(tt.pb)
+		if err == nil && tt.fail {
+			t.Errorf("marshaler.MarshalToString(%v) = _, <nil>; want _, <non-nil>", tt.pb)
+		}
+		if err != nil && !tt.fail {
+			t.Errorf("marshaler.MarshalToString(%v) = _, %v; want _, <nil>", tt.pb, err)
 		}
 	}
 }
@@ -867,9 +890,11 @@ var unmarshalingTests = []struct {
 
 	{"required", Unmarshaler{}, `{"str":"hello"}`, &pb.MsgWithRequired{Str: proto.String("hello")}},
 	{"required bytes", Unmarshaler{}, `{"byts": []}`, &pb.MsgWithRequiredBytes{Byts: []byte{}}},
+	{"FieldMask", Unmarshaler{}, `{"fieldMask":"a,b,cD"}`, &pb.FieldMaskWKT{FieldMask: &fmpb.FieldMask{Paths: []string{"a", "b", "c_d"}}}},
 }
 
 func TestUnmarshaling(t *testing.T) {
+	supportFieldMaskWKT = true
 	for _, tt := range unmarshalingTests {
 		// Make a new instance of the type of our expected object.
 		p := reflect.New(reflect.TypeOf(tt.pb).Elem()).Interface().(proto.Message)
