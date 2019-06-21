@@ -43,7 +43,11 @@ wire.Size{{.WireType}}({{.FromGoType}})
   Append is a set of statements appending 'v' to 'b'.
 */ -}}
 {{- define "Append" -}}
+{{- if eq .Name "String" -}}
+b = wire.AppendString(b, {{.FromGoType}})
+{{- else -}}
 b = wire.Append{{.WireType}}(b, {{.FromGoType}})
+{{- end -}}
 {{- end -}}
 
 {{- range .}}

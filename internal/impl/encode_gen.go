@@ -2154,14 +2154,14 @@ var coderDoubleSliceIface = ifaceCoderFuncs{
 // sizeString returns the size of wire encoding a string pointer as a String.
 func sizeString(p pointer, tagsize int, _ marshalOptions) (size int) {
 	v := *p.String()
-	return tagsize + wire.SizeBytes(len([]byte(v)))
+	return tagsize + wire.SizeBytes(len(v))
 }
 
 // appendString wire encodes a string pointer as a String.
 func appendString(b []byte, p pointer, wiretag uint64, _ marshalOptions) ([]byte, error) {
 	v := *p.String()
 	b = wire.AppendVarint(b, wiretag)
-	b = wire.AppendBytes(b, []byte(v))
+	b = wire.AppendString(b, v)
 	return b, nil
 }
 
@@ -2177,7 +2177,7 @@ func sizeStringNoZero(p pointer, tagsize int, _ marshalOptions) (size int) {
 	if len(v) == 0 {
 		return 0
 	}
-	return tagsize + wire.SizeBytes(len([]byte(v)))
+	return tagsize + wire.SizeBytes(len(v))
 }
 
 // appendString wire encodes a string pointer as a String.
@@ -2188,7 +2188,7 @@ func appendStringNoZero(b []byte, p pointer, wiretag uint64, _ marshalOptions) (
 		return b, nil
 	}
 	b = wire.AppendVarint(b, wiretag)
-	b = wire.AppendBytes(b, []byte(v))
+	b = wire.AppendString(b, v)
 	return b, nil
 }
 
@@ -2201,7 +2201,7 @@ var coderStringNoZero = pointerCoderFuncs{
 // It panics if the pointer is nil.
 func sizeStringPtr(p pointer, tagsize int, _ marshalOptions) (size int) {
 	v := **p.StringPtr()
-	return tagsize + wire.SizeBytes(len([]byte(v)))
+	return tagsize + wire.SizeBytes(len(v))
 }
 
 // appendString wire encodes a *string pointer as a String.
@@ -2209,7 +2209,7 @@ func sizeStringPtr(p pointer, tagsize int, _ marshalOptions) (size int) {
 func appendStringPtr(b []byte, p pointer, wiretag uint64, _ marshalOptions) ([]byte, error) {
 	v := **p.StringPtr()
 	b = wire.AppendVarint(b, wiretag)
-	b = wire.AppendBytes(b, []byte(v))
+	b = wire.AppendString(b, v)
 	return b, nil
 }
 
@@ -2222,7 +2222,7 @@ var coderStringPtr = pointerCoderFuncs{
 func sizeStringSlice(p pointer, tagsize int, _ marshalOptions) (size int) {
 	s := *p.StringSlice()
 	for _, v := range s {
-		size += tagsize + wire.SizeBytes(len([]byte(v)))
+		size += tagsize + wire.SizeBytes(len(v))
 	}
 	return size
 }
@@ -2232,7 +2232,7 @@ func appendStringSlice(b []byte, p pointer, wiretag uint64, _ marshalOptions) ([
 	s := *p.StringSlice()
 	for _, v := range s {
 		b = wire.AppendVarint(b, wiretag)
-		b = wire.AppendBytes(b, []byte(v))
+		b = wire.AppendString(b, v)
 	}
 	return b, nil
 }
@@ -2245,14 +2245,14 @@ var coderStringSlice = pointerCoderFuncs{
 // sizeStringIface returns the size of wire encoding a string value as a String.
 func sizeStringIface(ival interface{}, tagsize int, _ marshalOptions) int {
 	v := ival.(string)
-	return tagsize + wire.SizeBytes(len([]byte(v)))
+	return tagsize + wire.SizeBytes(len(v))
 }
 
 // appendStringIface encodes a string value as a String.
 func appendStringIface(b []byte, ival interface{}, wiretag uint64, _ marshalOptions) ([]byte, error) {
 	v := ival.(string)
 	b = wire.AppendVarint(b, wiretag)
-	b = wire.AppendBytes(b, []byte(v))
+	b = wire.AppendString(b, v)
 	return b, nil
 }
 
@@ -2265,7 +2265,7 @@ var coderStringIface = ifaceCoderFuncs{
 func sizeStringSliceIface(ival interface{}, tagsize int, _ marshalOptions) (size int) {
 	s := *ival.(*[]string)
 	for _, v := range s {
-		size += tagsize + wire.SizeBytes(len([]byte(v)))
+		size += tagsize + wire.SizeBytes(len(v))
 	}
 	return size
 }
@@ -2275,7 +2275,7 @@ func appendStringSliceIface(b []byte, ival interface{}, wiretag uint64, _ marsha
 	s := *ival.(*[]string)
 	for _, v := range s {
 		b = wire.AppendVarint(b, wiretag)
-		b = wire.AppendBytes(b, []byte(v))
+		b = wire.AppendString(b, v)
 	}
 	return b, nil
 }

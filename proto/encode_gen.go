@@ -70,7 +70,7 @@ func (o MarshalOptions) marshalSingular(b []byte, fd protoreflect.FieldDescripto
 		if fd.Syntax() == protoreflect.Proto3 && !utf8.ValidString(v.String()) {
 			return b, errors.InvalidUTF8(string(fd.FullName()))
 		}
-		b = wire.AppendBytes(b, []byte(v.String()))
+		b = wire.AppendString(b, v.String())
 	case protoreflect.BytesKind:
 		b = wire.AppendBytes(b, v.Bytes())
 	case protoreflect.MessageKind:

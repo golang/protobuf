@@ -42,7 +42,7 @@ func sizeSingular(num wire.Number, kind protoreflect.Kind, v protoreflect.Value)
 	case protoreflect.DoubleKind:
 		return wire.SizeFixed64()
 	case protoreflect.StringKind:
-		return wire.SizeBytes(len([]byte(v.String())))
+		return wire.SizeBytes(len(v.String()))
 	case protoreflect.BytesKind:
 		return wire.SizeBytes(len(v.Bytes()))
 	case protoreflect.MessageKind:

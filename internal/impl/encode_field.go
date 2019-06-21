@@ -412,7 +412,7 @@ var coderEnumSliceIface = ifaceCoderFuncs{
 func appendStringValidateUTF8(b []byte, p pointer, wiretag uint64, _ marshalOptions) ([]byte, error) {
 	v := *p.String()
 	b = wire.AppendVarint(b, wiretag)
-	b = wire.AppendBytes(b, []byte(v))
+	b = wire.AppendString(b, v)
 	if !utf8.ValidString(v) {
 		return b, errInvalidUTF8{}
 	}
@@ -430,7 +430,7 @@ func appendStringNoZeroValidateUTF8(b []byte, p pointer, wiretag uint64, _ marsh
 		return b, nil
 	}
 	b = wire.AppendVarint(b, wiretag)
-	b = wire.AppendBytes(b, []byte(v))
+	b = wire.AppendString(b, v)
 	if !utf8.ValidString(v) {
 		return b, errInvalidUTF8{}
 	}
@@ -445,7 +445,7 @@ var coderStringNoZeroValidateUTF8 = pointerCoderFuncs{
 func sizeStringSliceValidateUTF8(p pointer, tagsize int, _ marshalOptions) (size int) {
 	s := *p.StringSlice()
 	for _, v := range s {
-		size += tagsize + wire.SizeBytes(len([]byte(v)))
+		size += tagsize + wire.SizeBytes(len(v))
 	}
 	return size
 }
@@ -455,7 +455,7 @@ func appendStringSliceValidateUTF8(b []byte, p pointer, wiretag uint64, _ marsha
 	var err error
 	for _, v := range s {
 		b = wire.AppendVarint(b, wiretag)
-		b = wire.AppendBytes(b, []byte(v))
+		b = wire.AppendString(b, v)
 		if !utf8.ValidString(v) {
 			err = errInvalidUTF8{}
 		}
@@ -470,13 +470,13 @@ var coderStringSliceValidateUTF8 = pointerCoderFuncs{
 
 func sizeStringIfaceValidateUTF8(ival interface{}, tagsize int, _ marshalOptions) int {
 	v := ival.(string)
-	return tagsize + wire.SizeBytes(len([]byte(v)))
+	return tagsize + wire.SizeBytes(len(v))
 }
 
 func appendStringIfaceValidateUTF8(b []byte, ival interface{}, wiretag uint64, _ marshalOptions) ([]byte, error) {
 	v := ival.(string)
 	b = wire.AppendVarint(b, wiretag)
-	b = wire.AppendBytes(b, []byte(v))
+	b = wire.AppendString(b, v)
 	if !utf8.ValidString(v) {
 		return b, errInvalidUTF8{}
 	}

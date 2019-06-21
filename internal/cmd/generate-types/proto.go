@@ -209,9 +209,9 @@ var ProtoKinds = []ProtoKind{
 		Name:       "String",
 		WireType:   WireBytes,
 		ToValue:    "string(v)",
-		FromValue:  "[]byte(v.String())",
+		FromValue:  "v.String()",
 		GoType:     GoString,
-		FromGoType: "[]byte(v)",
+		FromGoType: "v",
 	},
 	{
 		Name:       "Bytes",
@@ -344,8 +344,8 @@ func (o MarshalOptions) marshalSingular(b []byte, fd protoreflect.FieldDescripto
 		if fd.Syntax() == protoreflect.Proto3 && !utf8.ValidString(v.String()) {
 			return b, errors.InvalidUTF8(string(fd.FullName()))
 		}
-		{{end -}}
-		{{- if (eq .Name "Message") -}}
+		b = wire.AppendString(b, {{.FromValue}})
+		{{- else if (eq .Name "Message") -}}
 		var pos int
 		var err error
 		b, pos = appendSpeculativeLength(b)

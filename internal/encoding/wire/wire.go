@@ -425,6 +425,11 @@ func AppendBytes(b []byte, v []byte) []byte {
 	return append(AppendVarint(b, uint64(len(v))), v...)
 }
 
+// AppendString appends v to b as a lenght-prefixed bytes value.
+func AppendString(b []byte, v string) []byte {
+	return append(AppendVarint(b, uint64(len(v))), v...)
+}
+
 // ConsumeBytes parses b as a length-prefixed bytes value, reporting its length.
 // This returns a negative length upon an error (see ParseError).
 func ConsumeBytes(b []byte) (v []byte, n int) {
