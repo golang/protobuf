@@ -109,7 +109,9 @@ type (
 		L1 EnumL1
 		L2 *EnumL2 // protected by fileDesc.once
 	}
-	EnumL1 struct{}
+	EnumL1 struct {
+		eagerValues bool // controls whether EnumL2.Values is already populated
+	}
 	EnumL2 struct {
 		Options        func() pref.ProtoMessage
 		Values         EnumValues
@@ -133,11 +135,16 @@ func (ed *Enum) Options() pref.ProtoMessage {
 	}
 	return descopts.Enum
 }
-func (ed *Enum) Values() pref.EnumValueDescriptors { return &ed.lazyInit().Values }
-func (ed *Enum) ReservedNames() pref.Names         { return &ed.lazyInit().ReservedNames }
-func (ed *Enum) ReservedRanges() pref.EnumRanges   { return &ed.lazyInit().ReservedRanges }
-func (ed *Enum) Format(s fmt.State, r rune)        { descfmt.FormatDesc(s, r, ed) }
-func (ed *Enum) ProtoType(pref.EnumDescriptor)     {}
+func (ed *Enum) Values() pref.EnumValueDescriptors {
+	if ed.L1.eagerValues {
+		return &ed.L2.Values
+	}
+	return &ed.lazyInit().Values
+}
+func (ed *Enum) ReservedNames() pref.Names       { return &ed.lazyInit().ReservedNames }
+func (ed *Enum) ReservedRanges() pref.EnumRanges { return &ed.lazyInit().ReservedRanges }
+func (ed *Enum) Format(s fmt.State, r rune)      { descfmt.FormatDesc(s, r, ed) }
+func (ed *Enum) ProtoType(pref.EnumDescriptor)   {}
 func (ed *Enum) lazyInit() *EnumL2 {
 	ed.L0.ParentFile.lazyInit() // implicitly initializes L2
 	return ed.L2

@@ -187,7 +187,9 @@ func (fd *File) unmarshalFull(b []byte) {
 func (ed *Enum) unmarshalFull(b []byte, nb *nameBuilder) {
 	var rawValues [][]byte
 	var rawOptions []byte
-	ed.L2 = new(EnumL2)
+	if !ed.L1.eagerValues {
+		ed.L2 = new(EnumL2)
+	}
 	for len(b) > 0 {
 		num, typ, n := wire.ConsumeTag(b)
 		b = b[n:]
@@ -210,7 +212,7 @@ func (ed *Enum) unmarshalFull(b []byte, nb *nameBuilder) {
 			b = b[m:]
 		}
 	}
-	if len(rawValues) > 0 {
+	if !ed.L1.eagerValues && len(rawValues) > 0 {
 		ed.L2.Values.List = make([]EnumValue, len(rawValues))
 		for i, b := range rawValues {
 			ed.L2.Values.List[i].unmarshalFull(b, nb, ed.L0.ParentFile, ed, i)

@@ -221,7 +221,8 @@ func (ed *Enum) unmarshalSeed(b []byte, nb *nameBuilder, pf *File, pd pref.Descr
 	ed.L0.Parent = pd
 	ed.L0.Index = i
 
-	for len(b) > 0 {
+	var numValues int
+	for b := b; len(b) > 0; {
 		num, typ, n := wire.ConsumeTag(b)
 		b = b[n:]
 		switch typ {
@@ -231,6 +232,34 @@ func (ed *Enum) unmarshalSeed(b []byte, nb *nameBuilder, pf *File, pd pref.Descr
 			switch num {
 			case fieldnum.EnumDescriptorProto_Name:
 				ed.L0.FullName = nb.AppendFullName(pd.FullName(), v)
+			case fieldnum.EnumDescriptorProto_Value:
+				numValues++
+			}
+		default:
+			m := wire.ConsumeFieldValue(num, typ, b)
+			b = b[m:]
+		}
+	}
+
+	// Only construct enum value descriptors for top-level enums since
+	// they are needed for registration.
+	if pd != pf {
+		return
+	}
+	ed.L1.eagerValues = true
+	ed.L2 = new(EnumL2)
+	ed.L2.Values.List = make([]EnumValue, numValues)
+	for i := 0; len(b) > 0; {
+		num, typ, n := wire.ConsumeTag(b)
+		b = b[n:]
+		switch typ {
+		case wire.BytesType:
+			v, m := wire.ConsumeBytes(b)
+			b = b[m:]
+			switch num {
+			case fieldnum.EnumDescriptorProto_Value:
+				ed.L2.Values.List[i].unmarshalFull(v, nb, pf, ed, i)
+				i++
 			}
 		default:
 			m := wire.ConsumeFieldValue(num, typ, b)

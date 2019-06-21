@@ -24,6 +24,8 @@ type Resolver interface {
 	FindFileByPath(string) (protoreflect.FileDescriptor, error)
 	FindEnumByName(protoreflect.FullName) (protoreflect.EnumDescriptor, error)
 	FindMessageByName(protoreflect.FullName) (protoreflect.MessageDescriptor, error)
+
+	// TODO: use FindDescriptorByName instead.
 }
 
 // TODO: Should we be responsible for validating other parts of the descriptor

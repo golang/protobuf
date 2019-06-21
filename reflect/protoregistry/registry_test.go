@@ -18,7 +18,6 @@ import (
 	pref "google.golang.org/protobuf/reflect/protoreflect"
 	preg "google.golang.org/protobuf/reflect/protoregistry"
 
-	test2pb "google.golang.org/protobuf/internal/testprotos/test"
 	testpb "google.golang.org/protobuf/reflect/protoregistry/testprotos"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
@@ -45,6 +44,10 @@ func TestFiles(t *testing.T) {
 			inFile  pref.FileDescriptor
 			wantErr string
 		}
+		testFindDesc struct {
+			inName    pref.FullName
+			wantFound bool
+		}
 		testRangePkg struct {
 			inPkg     pref.FullName
 			wantFiles []file
@@ -57,6 +60,7 @@ func TestFiles(t *testing.T) {
 
 	tests := []struct {
 		files     []testFile
+		findDescs []testFindDesc
 		rangePkgs []testRangePkg
 		findPaths []testFindPath
 	}{{
@@ -148,10 +152,20 @@ func TestFiles(t *testing.T) {
 					]
 					oneof_decl:      [{name:"Oneof"}]
 					extension_range: [{start:1000 end:2000}]
+
+					enum_type: [
+						{name:"Enum" value:[{name:"EnumValue" number:0}]}
+					]
+					nested_type: [
+						{name:"Message" field:[{name:"Field" number:1 label:LABEL_OPTIONAL type:TYPE_STRING}]}
+					]
+					extension: [
+						{name:"Extension" number:1001 label:LABEL_OPTIONAL type:TYPE_STRING extendee:".fizz.buzz.Message"}
+					]
 				}]
 				enum_type: [{
 					name:  "Enum"
-					Value: [{name:"EnumValue" number:0}]
+					value: [{name:"EnumValue" number:0}]
 				}]
 				extension: [
 					{name:"Extension" number:1000 label:LABEL_OPTIONAL type:TYPE_STRING extendee:".fizz.buzz.Message"}
@@ -205,6 +219,59 @@ func TestFiles(t *testing.T) {
 				}]
 			`),
 		}},
+		findDescs: []testFindDesc{
+			{inName: "fizz.buzz.message", wantFound: false},
+			{inName: "fizz.buzz.Message", wantFound: true},
+			{inName: "fizz.buzz.Message.X", wantFound: false},
+			{inName: "fizz.buzz.Field", wantFound: false},
+			{inName: "fizz.buzz.Oneof", wantFound: false},
+			{inName: "fizz.buzz.Message.Field", wantFound: true},
+			{inName: "fizz.buzz.Message.Field.X", wantFound: false},
+			{inName: "fizz.buzz.Message.Oneof", wantFound: true},
+			{inName: "fizz.buzz.Message.Oneof.X", wantFound: false},
+			{inName: "fizz.buzz.Message.Message", wantFound: true},
+			{inName: "fizz.buzz.Message.Message.X", wantFound: false},
+			{inName: "fizz.buzz.Message.Enum", wantFound: true},
+			{inName: "fizz.buzz.Message.Enum.X", wantFound: false},
+			{inName: "fizz.buzz.Message.EnumValue", wantFound: true},
+			{inName: "fizz.buzz.Message.EnumValue.X", wantFound: false},
+			{inName: "fizz.buzz.Message.Extension", wantFound: true},
+			{inName: "fizz.buzz.Message.Extension.X", wantFound: false},
+			{inName: "fizz.buzz.enum", wantFound: false},
+			{inName: "fizz.buzz.Enum", wantFound: true},
+			{inName: "fizz.buzz.Enum.X", wantFound: false},
+			{inName: "fizz.buzz.EnumValue", wantFound: true},
+			{inName: "fizz.buzz.EnumValue.X", wantFound: false},
+			{inName: "fizz.buzz.Enum.EnumValue", wantFound: false},
+			{inName: "fizz.buzz.Extension", wantFound: true},
+			{inName: "fizz.buzz.Extension.X", wantFound: false},
+			{inName: "fizz.buzz.service", wantFound: false},
+			{inName: "fizz.buzz.Service", wantFound: true},
+			{inName: "fizz.buzz.Service.X", wantFound: false},
+			{inName: "fizz.buzz.Method", wantFound: false},
+			{inName: "fizz.buzz.Service.Method", wantFound: true},
+			{inName: "fizz.buzz.Service.Method.X", wantFound: false},
+
+			{inName: "fizz.buzz.gazz", wantFound: false},
+			{inName: "fizz.buzz.gazz.Enum", wantFound: true},
+			{inName: "fizz.buzz.gazz.EnumValue", wantFound: true},
+			{inName: "fizz.buzz.gazz.Enum.EnumValue", wantFound: false},
+
+			{inName: "fizz.buzz", wantFound: false},
+			{inName: "fizz.buzz.Enum1", wantFound: true},
+			{inName: "fizz.buzz.EnumValue1", wantFound: true},
+			{inName: "fizz.buzz.Enum1.EnumValue1", wantFound: false},
+			{inName: "fizz.buzz.Enum2", wantFound: true},
+			{inName: "fizz.buzz.EnumValue2", wantFound: true},
+			{inName: "fizz.buzz.Enum2.EnumValue2", wantFound: false},
+			{inName: "fizz.buzz.Enum3", wantFound: false},
+
+			{inName: "", wantFound: false},
+			{inName: "Message", wantFound: true},
+			{inName: "Message.Message", wantFound: true},
+			{inName: "Message.Message.Message", wantFound: true},
+			{inName: "Message.Message.Message.Message", wantFound: false},
+		},
 	}}
 
 	sortFiles := cmpopts.SortSlices(func(x, y file) bool {
@@ -217,6 +284,14 @@ func TestFiles(t *testing.T) {
 				gotErr := files.Register(tc.inFile)
 				if ((gotErr == nil) != (tc.wantErr == "")) || !strings.Contains(fmt.Sprint(gotErr), tc.wantErr) {
 					t.Errorf("file %d, Register() = %v, want %v", i, gotErr, tc.wantErr)
+				}
+			}
+
+			for _, tc := range tt.findDescs {
+				d, _ := files.FindDescriptorByName(tc.inName)
+				gotFound := d != nil
+				if gotFound != tc.wantFound {
+					t.Errorf("FindDescriptorByName(%v) find mismatch: got %v, want %v", tc.inName, gotFound, tc.wantFound)
 				}
 			}
 
@@ -241,64 +316,6 @@ func TestFiles(t *testing.T) {
 				}
 			}
 		})
-	}
-}
-
-func TestFilesLookup(t *testing.T) {
-	files := []pref.FileDescriptor{
-		test2pb.File_test_test_proto,
-		test2pb.File_test_test_import_proto,
-	}
-	r := preg.NewFiles(files...)
-	checkEnums := func(enums pref.EnumDescriptors) {
-		for i := 0; i < enums.Len(); i++ {
-			want := enums.Get(i)
-			if got, err := r.FindEnumByName(want.FullName()); err != nil {
-				t.Errorf("FindEnumByName(%q): unexpected error: %v", want.FullName(), err)
-			} else if got != want {
-				t.Errorf("FindEnumByName(%q): found descriptor %v (%p), %p", want.FullName(), got.FullName(), got, want)
-			}
-		}
-	}
-	checkExtensions := func(exts pref.ExtensionDescriptors) {
-		for i := 0; i < exts.Len(); i++ {
-			want := exts.Get(i)
-			if got, err := r.FindExtensionByName(want.FullName()); err != nil {
-				t.Errorf("FindExtensionByName(%q): unexpected error: %v", want.FullName(), err)
-			} else if got != want {
-				t.Errorf("FindExtensionByName(%q): found descriptor %v (%p), %p", want.FullName(), got.FullName(), got, want)
-			}
-		}
-	}
-	var checkMessages func(pref.MessageDescriptors)
-	checkMessages = func(messages pref.MessageDescriptors) {
-		for i := 0; i < messages.Len(); i++ {
-			want := messages.Get(i)
-			if got, err := r.FindMessageByName(want.FullName()); err != nil {
-				t.Errorf("FindMessageByName(%q): unexpected error: %v", want.FullName(), err)
-			} else if got != want {
-				t.Errorf("FindMessageByName(%q): found descriptor %v (%p), %p", want.FullName(), got.FullName(), got, want)
-			}
-			checkEnums(want.Enums())
-			checkExtensions(want.Extensions())
-			checkMessages(want.Messages())
-		}
-	}
-	checkServices := func(services pref.ServiceDescriptors) {
-		for i := 0; i < services.Len(); i++ {
-			want := services.Get(i)
-			if got, err := r.FindServiceByName(want.FullName()); err != nil {
-				t.Errorf("FindServiceByName(%q): unexpected error: %v", want.FullName(), err)
-			} else if got != want {
-				t.Errorf("FindServiceByName(%q): found descriptor %v (%p), %p", want.FullName(), got.FullName(), got, want)
-			}
-		}
-	}
-	for _, fd := range files {
-		checkEnums(fd.Enums())
-		checkExtensions(fd.Extensions())
-		checkMessages(fd.Messages())
-		checkServices(fd.Services())
 	}
 }
 
