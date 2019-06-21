@@ -22,9 +22,10 @@ func Test(t *testing.T) {
 		(*testpb.TestRequired)(nil),
 		(*testpb.TestWeak)(nil),
 		(*irregularpb.Message)(nil),
+		(*testpb.TestAllExtensions)(nil),
 	} {
 		t.Run(fmt.Sprintf("%T", m), func(t *testing.T) {
-			prototest.TestMessage(t, m)
+			prototest.TestMessage(t, m, prototest.MessageOptions{})
 		})
 	}
 }
