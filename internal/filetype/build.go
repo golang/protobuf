@@ -274,8 +274,7 @@ type (
 	}
 	fileRegistry interface {
 		FindFileByPath(string) (pref.FileDescriptor, error)
-		FindEnumByName(pref.FullName) (pref.EnumDescriptor, error)
-		FindMessageByName(pref.FullName) (pref.MessageDescriptor, error)
+		FindDescriptorByName(pref.FullName) (pref.Descriptor, error)
 		Register(...pref.FileDescriptor) error
 	}
 )

@@ -40,8 +40,7 @@ type DescBuilder struct {
 	// If nil, it uses protoregistry.GlobalFiles.
 	FileRegistry interface {
 		FindFileByPath(string) (protoreflect.FileDescriptor, error)
-		FindEnumByName(pref.FullName) (pref.EnumDescriptor, error)
-		FindMessageByName(pref.FullName) (pref.MessageDescriptor, error)
+		FindDescriptorByName(pref.FullName) (pref.Descriptor, error)
 		Register(...pref.FileDescriptor) error
 	}
 }

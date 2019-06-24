@@ -22,10 +22,7 @@ import (
 // It is implemented by protoregistry.Files.
 type Resolver interface {
 	FindFileByPath(string) (protoreflect.FileDescriptor, error)
-	FindEnumByName(protoreflect.FullName) (protoreflect.EnumDescriptor, error)
-	FindMessageByName(protoreflect.FullName) (protoreflect.MessageDescriptor, error)
-
-	// TODO: use FindDescriptorByName instead.
+	FindDescriptorByName(protoreflect.FullName) (protoreflect.Descriptor, error)
 }
 
 // TODO: Should we be responsible for validating other parts of the descriptor
@@ -460,24 +457,11 @@ func (r resolver) FindFileByPath(s string) (protoreflect.FileDescriptor, error) 
 	return r.remote.FindFileByPath(s)
 }
 
-func (r resolver) FindEnumByName(s protoreflect.FullName) (protoreflect.EnumDescriptor, error) {
+func (r resolver) FindDescriptorByName(s protoreflect.FullName) (protoreflect.Descriptor, error) {
 	if d, ok := r.local[s]; ok {
-		if ed, ok := d.(protoreflect.EnumDescriptor); ok {
-			return ed, nil
-		}
-		return nil, errors.New("found wrong type")
+		return d, nil
 	}
-	return r.remote.FindEnumByName(s)
-}
-
-func (r resolver) FindMessageByName(s protoreflect.FullName) (protoreflect.MessageDescriptor, error) {
-	if d, ok := r.local[s]; ok {
-		if md, ok := d.(protoreflect.MessageDescriptor); ok {
-			return md, nil
-		}
-		return nil, errors.New("found wrong type")
-	}
-	return r.remote.FindMessageByName(s)
+	return r.remote.FindDescriptorByName(s)
 }
 
 type importSet map[string]bool
@@ -513,11 +497,33 @@ func (is importSet) check(d protoreflect.Descriptor) error {
 // scoping rules.
 
 func findEnumDescriptor(s string, isWeak bool, imps importSet, r Resolver) (protoreflect.EnumDescriptor, error) {
+	d, err := findDescriptor(s, isWeak, imps, r)
+	if err != nil {
+		return nil, err
+	}
+	if ed, ok := d.(protoreflect.EnumDescriptor); ok {
+		return ed, nil
+	}
+	return nil, errors.New("invalid descriptor type")
+}
+
+func findMessageDescriptor(s string, isWeak bool, imps importSet, r Resolver) (protoreflect.MessageDescriptor, error) {
+	d, err := findDescriptor(s, isWeak, imps, r)
+	if err != nil {
+		return nil, err
+	}
+	if md, ok := d.(protoreflect.MessageDescriptor); ok {
+		return md, nil
+	}
+	return nil, errors.New("invalid descriptor type")
+}
+
+func findDescriptor(s string, isWeak bool, imps importSet, r Resolver) (protoreflect.Descriptor, error) {
 	if !strings.HasPrefix(s, ".") {
 		return nil, errors.New("identifier name must be fully qualified with a leading dot: %v", s)
 	}
 	name := protoreflect.FullName(strings.TrimPrefix(s, "."))
-	ed, err := r.FindEnumByName(name)
+	d, err := r.FindDescriptorByName(name)
 	if err != nil {
 		if err == protoregistry.NotFound {
 			if isWeak {
@@ -529,31 +535,8 @@ func findEnumDescriptor(s string, isWeak bool, imps importSet, r Resolver) (prot
 		}
 		return nil, err
 	}
-	if err := imps.check(ed); err != nil {
+	if err := imps.check(d); err != nil {
 		return nil, err
 	}
-	return ed, nil
-}
-
-func findMessageDescriptor(s string, isWeak bool, imps importSet, r Resolver) (protoreflect.MessageDescriptor, error) {
-	if !strings.HasPrefix(s, ".") {
-		return nil, errors.New("identifier name must be fully qualified with a leading dot: %v", s)
-	}
-	name := protoreflect.FullName(strings.TrimPrefix(s, "."))
-	md, err := r.FindMessageByName(name)
-	if err != nil {
-		if err == protoregistry.NotFound {
-			if isWeak {
-				return filedesc.PlaceholderMessage(name), nil
-			}
-			// TODO: This should be an error.
-			return filedesc.PlaceholderMessage(name), nil
-			// return nil, errors.New("could not resolve message: %v", name)
-		}
-		return nil, err
-	}
-	if err := imps.check(md); err != nil {
-		return nil, err
-	}
-	return md, nil
+	return d, nil
 }

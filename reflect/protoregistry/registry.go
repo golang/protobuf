@@ -218,61 +218,6 @@ func (s *nameSuffix) Pop() (name protoreflect.Name) {
 	return name
 }
 
-// FindEnumByName looks up an enum by the enum's full name.
-//
-// This returns (nil, NotFound) if not found.
-//
-// Deprecated: Use FindDescriptorByName instead.
-func (r *Files) FindEnumByName(name protoreflect.FullName) (protoreflect.EnumDescriptor, error) {
-	d, _ := r.FindDescriptorByName(name)
-	if d, ok := d.(protoreflect.EnumDescriptor); ok {
-		return d, nil
-	}
-	return nil, NotFound
-}
-
-// FindMessageByName looks up a message by the message's full name.
-//
-// This returns (nil, NotFound) if not found.
-//
-// Deprecated: Use FindDescriptorByName instead.
-func (r *Files) FindMessageByName(name protoreflect.FullName) (protoreflect.MessageDescriptor, error) {
-	d, _ := r.FindDescriptorByName(name)
-	if d, ok := d.(protoreflect.MessageDescriptor); ok {
-		return d, nil
-	}
-	return nil, NotFound
-}
-
-// FindExtensionByName looks up an extension field by the field's full name.
-// Note that this is the full name of the field as determined by
-// where the extension is declared and is unrelated to the full name of the
-// message being extended.
-//
-// This returns (nil, NotFound) if not found.
-//
-// Deprecated: Use FindDescriptorByName instead.
-func (r *Files) FindExtensionByName(name protoreflect.FullName) (protoreflect.ExtensionDescriptor, error) {
-	d, _ := r.FindDescriptorByName(name)
-	if d, ok := d.(protoreflect.ExtensionDescriptor); ok {
-		return d, nil
-	}
-	return nil, NotFound
-}
-
-// FindServiceByName looks up a service by the service's full name.
-//
-// This returns (nil, NotFound) if not found.
-//
-// Deprecated: Use FindDescriptorByName instead.
-func (r *Files) FindServiceByName(name protoreflect.FullName) (protoreflect.ServiceDescriptor, error) {
-	d, _ := r.FindDescriptorByName(name)
-	if d, ok := d.(protoreflect.ServiceDescriptor); ok {
-		return d, nil
-	}
-	return nil, NotFound
-}
-
 // FindFileByPath looks up a file by the path.
 //
 // This returns (nil, NotFound) if not found.

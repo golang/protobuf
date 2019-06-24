@@ -33,8 +33,8 @@ func (file *File) resolveMessages() {
 			// Weak fields are only resolved by name.
 			if fd.L1.IsWeak {
 				r := file.builder.FileRegistry
-				if md, _ := r.FindMessageByName(fd.L1.Message.FullName()); md != nil {
-					fd.L1.Message = md
+				if d, _ := r.FindDescriptorByName(fd.L1.Message.FullName()); d != nil {
+					fd.L1.Message = d.(pref.MessageDescriptor)
 				}
 				continue
 			}
@@ -106,8 +106,8 @@ func (file *File) resolveEnumDependency(ed pref.EnumDescriptor, i, j int32) pref
 			return ed2
 		}
 	}
-	if ed2, _ := r.FindEnumByName(ed.FullName()); ed2 != nil {
-		return ed2
+	if d, _ := r.FindDescriptorByName(ed.FullName()); d != nil {
+		return d.(pref.EnumDescriptor)
 	}
 	return ed
 }
@@ -124,8 +124,8 @@ func (file *File) resolveMessageDependency(md pref.MessageDescriptor, i, j int32
 			return md2
 		}
 	}
-	if md2, _ := r.FindMessageByName(md.FullName()); md2 != nil {
-		return md2
+	if d, _ := r.FindDescriptorByName(md.FullName()); d != nil {
+		return d.(pref.MessageDescriptor)
 	}
 	return md
 }
