@@ -145,7 +145,7 @@ func (o MarshalOptions) rangeFields(m protoreflect.Message, f func(protoreflect.
 		m.Range(f)
 		return
 	}
-	fds := make([]protoreflect.FieldDescriptor, 0, m.Len())
+	var fds []protoreflect.FieldDescriptor
 	m.Range(func(fd protoreflect.FieldDescriptor, _ protoreflect.Value) bool {
 		fds = append(fds, fd)
 		return true

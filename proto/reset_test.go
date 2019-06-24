@@ -49,9 +49,6 @@ func TestReset(t *testing.T) {
 		t.Errorf("m.OneofField = %p, want nil", m.OneofField)
 	}
 
-	if got := m.ProtoReflect().Len(); got != 0 {
-		t.Errorf("m.ProtoReflect().Len() = %d, want 0", got)
-	}
 	if got := m.ProtoReflect().GetUnknown(); got != nil {
 		t.Errorf("m.ProtoReflect().GetUnknown() = %d, want nil", got)
 	}

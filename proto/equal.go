@@ -35,16 +35,23 @@ func equalMessage(mx, my pref.Message) bool {
 		return false
 	}
 
-	if mx.Len() != my.Len() {
-		return false
-	}
+	nx := 0
 	equal := true
 	mx.Range(func(fd pref.FieldDescriptor, vx pref.Value) bool {
+		nx++
 		vy := my.Get(fd)
 		equal = my.Has(fd) && equalField(fd, vx, vy)
 		return equal
 	})
 	if !equal {
+		return false
+	}
+	ny := 0
+	my.Range(func(fd pref.FieldDescriptor, vx pref.Value) bool {
+		ny++
+		return true
+	})
+	if nx != ny {
 		return false
 	}
 

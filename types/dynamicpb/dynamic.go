@@ -71,22 +71,6 @@ func (m *Message) Interface() pref.ProtoMessage {
 	return m
 }
 
-// Len returns the number of populated fields.
-// See protoreflect.Message for details.
-func (m *Message) Len() int {
-	count := 0
-	for num, v := range m.known {
-		if m.ext[num] != nil {
-			count++
-			continue
-		}
-		if isSet(m.desc.Fields().ByNumber(num), v) {
-			count++
-		}
-	}
-	return count
-}
-
 // Range visits every populated field in undefined order.
 // See protoreflect.Message for details.
 func (m *Message) Range(f func(pref.FieldDescriptor, pref.Value) bool) {

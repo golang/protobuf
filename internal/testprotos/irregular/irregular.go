@@ -26,13 +26,6 @@ func (m *message) Interface() pref.ProtoMessage       { return (*IrregularMessag
 
 var fieldDescS = descriptor.Messages().Get(0).Fields().Get(0)
 
-func (m *message) Len() int {
-	if m.set {
-		return 1
-	}
-	return 0
-}
-
 func (m *message) Range(f func(pref.FieldDescriptor, pref.Value) bool) {
 	if m.set {
 		f(fieldDescS, pref.ValueOf(m.value))

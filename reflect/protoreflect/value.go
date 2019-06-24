@@ -40,12 +40,9 @@ type Message interface {
 	// returns the underlying ProtoMessage interface.
 	Interface() ProtoMessage
 
-	// Len reports the number of populated fields (i.e., Has reports true).
-	Len() int
-
 	// Range iterates over every populated field in an undefined order,
 	// calling f for each field descriptor and value encountered.
-	// Range calls f Len times unless f returns false, which stops iteration.
+	// Range returns immediately if f returns false.
 	// While iterating, mutating operations may only be performed
 	// on the current field descriptor.
 	Range(f func(FieldDescriptor, Value) bool)

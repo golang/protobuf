@@ -360,15 +360,6 @@ func (m *messageReflectWrapper) ProtoUnwrap() interface{} {
 	return m.p.AsIfaceOf(m.mi.GoType.Elem())
 }
 
-func (m *messageReflectWrapper) Len() (cnt int) {
-	m.mi.init()
-	for _, fi := range m.mi.fields {
-		if fi.has(m.p) {
-			cnt++
-		}
-	}
-	return cnt + m.mi.extensionMap(m.p).Len()
-}
 func (m *messageReflectWrapper) Range(f func(pref.FieldDescriptor, pref.Value) bool) {
 	m.mi.init()
 	for _, fi := range m.mi.fields {
@@ -463,12 +454,6 @@ func (m *messageReflectWrapper) checkField(fd pref.FieldDescriptor) (*fieldInfo,
 
 type extensionMap map[int32]ExtensionField
 
-func (m *extensionMap) Len() int {
-	if m != nil {
-		return len(*m)
-	}
-	return 0
-}
 func (m *extensionMap) Range(f func(pref.FieldDescriptor, pref.Value) bool) {
 	if m != nil {
 		for _, x := range *m {

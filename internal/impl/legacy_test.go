@@ -342,10 +342,6 @@ func TestLegacyExtensions(t *testing.T) {
 
 	m := pimpl.Export{}.MessageOf(new(LegacyTestMessage))
 
-	if n := m.Len(); n != 0 {
-		t.Errorf("KnownFields.Len() = %v, want 0", n)
-	}
-
 	// Check that getting the zero value returns the default value for scalars,
 	// nil for singular messages, and an empty list for repeated fields.
 	defaultValues := map[int]interface{}{
@@ -444,10 +440,6 @@ func TestLegacyExtensions(t *testing.T) {
 		}
 	}
 
-	if n := m.Len(); n != 20 {
-		t.Errorf("Message.Len() = %v, want 0", n)
-	}
-
 	// Clear all singular fields and truncate all repeated fields.
 	for _, xt := range extensionTypes[:len(extensionTypes)/2] {
 		m.Clear(xt)
@@ -455,16 +447,10 @@ func TestLegacyExtensions(t *testing.T) {
 	for _, xt := range extensionTypes[len(extensionTypes)/2:] {
 		m.Get(xt).List().Truncate(0)
 	}
-	if n := m.Len(); n != 10 {
-		t.Errorf("Message.Len() = %v, want 10", n)
-	}
 
 	// Clear all repeated fields.
 	for _, xt := range extensionTypes[len(extensionTypes)/2:] {
 		m.Clear(xt)
-	}
-	if n := m.Len(); n != 0 {
-		t.Errorf("Message.Len() = %v, want 0", n)
 	}
 }
 
