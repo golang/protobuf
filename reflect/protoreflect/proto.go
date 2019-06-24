@@ -27,6 +27,7 @@
 package protoreflect
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -69,7 +70,7 @@ func (s Syntax) String() string {
 	case Proto3:
 		return "proto3"
 	default:
-		return "<unknown>"
+		return fmt.Sprintf("<unknown:%d>", s)
 	}
 }
 
@@ -81,7 +82,7 @@ func (s Syntax) GoString() string {
 	case Proto3:
 		return "Proto3"
 	default:
-		return "<unknown>"
+		return fmt.Sprintf("<unknown:%d>", s)
 	}
 }
 
@@ -117,7 +118,7 @@ func (c Cardinality) String() string {
 	case Repeated:
 		return "repeated"
 	default:
-		return "<unknown>"
+		return fmt.Sprintf("<unknown:%d>", c)
 	}
 }
 
@@ -131,7 +132,7 @@ func (c Cardinality) GoString() string {
 	case Repeated:
 		return "Repeated"
 	default:
-		return "<unknown>"
+		return fmt.Sprintf("<unknown:%d>", c)
 	}
 }
 
@@ -217,7 +218,7 @@ func (k Kind) String() string {
 	case GroupKind:
 		return "group"
 	default:
-		return "<unknown>"
+		return fmt.Sprintf("<unknown:%d>", k)
 	}
 }
 
@@ -261,7 +262,7 @@ func (k Kind) GoString() string {
 	case GroupKind:
 		return "GroupKind"
 	default:
-		return "<unknown>"
+		return fmt.Sprintf("<unknown:%d>", k)
 	}
 }
 
