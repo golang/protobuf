@@ -502,6 +502,14 @@ func findEnumDescriptor(s string, isWeak bool, imps importSet, r Resolver) (prot
 		return nil, err
 	}
 	if ed, ok := d.(protoreflect.EnumDescriptor); ok {
+		if err == protoregistry.NotFound {
+			if isWeak {
+				return filedesc.PlaceholderEnum(protoreflect.FullName(s[1:])), nil
+			}
+			// TODO: This should be an error.
+			return filedesc.PlaceholderEnum(protoreflect.FullName(s[1:])), nil
+			// return nil, errors.New("could not resolve enum: %v", name)
+		}
 		return ed, nil
 	}
 	return nil, errors.New("invalid descriptor type")
@@ -510,6 +518,14 @@ func findEnumDescriptor(s string, isWeak bool, imps importSet, r Resolver) (prot
 func findMessageDescriptor(s string, isWeak bool, imps importSet, r Resolver) (protoreflect.MessageDescriptor, error) {
 	d, err := findDescriptor(s, isWeak, imps, r)
 	if err != nil {
+		if err == protoregistry.NotFound {
+			if isWeak {
+				return filedesc.PlaceholderMessage(protoreflect.FullName(s[1:])), nil
+			}
+			// TODO: This should be an error.
+			return filedesc.PlaceholderMessage(protoreflect.FullName(s[1:])), nil
+			// return nil, errors.New("could not resolve enum: %v", name)
+		}
 		return nil, err
 	}
 	if md, ok := d.(protoreflect.MessageDescriptor); ok {
@@ -525,14 +541,6 @@ func findDescriptor(s string, isWeak bool, imps importSet, r Resolver) (protoref
 	name := protoreflect.FullName(strings.TrimPrefix(s, "."))
 	d, err := r.FindDescriptorByName(name)
 	if err != nil {
-		if err == protoregistry.NotFound {
-			if isWeak {
-				return filedesc.PlaceholderEnum(name), nil
-			}
-			// TODO: This should be an error.
-			return filedesc.PlaceholderEnum(name), nil
-			// return nil, errors.New("could not resolve enum: %v", name)
-		}
 		return nil, err
 	}
 	if err := imps.check(d); err != nil {
