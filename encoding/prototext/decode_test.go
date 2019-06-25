@@ -121,6 +121,11 @@ opt_string: "谷歌"
 			OptString:   scalar.String("谷歌"),
 		},
 	}, {
+		desc:         "case sensitive",
+		inputMessage: &pb3.Scalars{},
+		inputText:    `S_BOOL: true`,
+		wantErr:      true,
+	}, {
 		desc:         "proto3 scalars",
 		inputMessage: &pb3.Scalars{},
 		inputText: `s_bool: true
@@ -403,6 +408,11 @@ OptGroup: {}
 			OptNested: &pb2.Nested{},
 			Optgroup:  &pb2.Nests_OptGroup{},
 		},
+	}, {
+		desc:         "group field name",
+		inputMessage: &pb2.Nests{},
+		inputText:    `optgroup: {}`,
+		wantErr:      true,
 	}, {
 		desc:         "proto2 nested messages",
 		inputMessage: &pb2.Nests{},

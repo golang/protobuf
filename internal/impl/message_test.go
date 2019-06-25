@@ -990,8 +990,8 @@ var enumMessagesType = pimpl.MessageInfo{GoType: reflect.TypeOf(new(EnumMessages
 		field: [
 			{name:"f1"  number:1  label:LABEL_OPTIONAL type:TYPE_ENUM    type_name:".EnumProto2" default_value:"BEEF"},
 			{name:"f2"  number:2  label:LABEL_OPTIONAL type:TYPE_ENUM    type_name:".EnumProto3" default_value:"BRAVO"},
-			{name:"f3"  number:3  label:LABEL_OPTIONAL type:TYPE_MESSAGE type_Name:".google.golang.org.proto2_20180125.Message"},
-			{name:"f4"  number:4  label:LABEL_OPTIONAL type:TYPE_MESSAGE type_Name:".EnumMessages"},
+			{name:"f3"  number:3  label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.golang.org.proto2_20180125.Message"},
+			{name:"f4"  number:4  label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".EnumMessages"},
 			{name:"f5"  number:5  label:LABEL_REPEATED type:TYPE_ENUM    type_name:".EnumProto2"},
 			{name:"f6"  number:6  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".ScalarProto2"},
 			{name:"f7"  number:7  label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".EnumMessages.F7Entry"},
