@@ -52,6 +52,10 @@ func RegisterFile(s filePath, d fileDescGZIP) {
 	if err := protoV2.Unmarshal(b, &pb); err != nil {
 		panic(fmt.Sprintf("proto: unmarshal failure: %v", err))
 	}
+	// Some old descriptors don't include the filename.
+	if pb.Name == nil {
+		pb.Name = &s
+	}
 
 	// Convert the raw descriptor to a structured file descriptor.
 	fd, err := protodesc.NewFile(&pb, nil)
