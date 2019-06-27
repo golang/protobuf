@@ -33,6 +33,9 @@ syntax = "proto3";
 
 package jsonpb;
 
+import "google/protobuf/field_mask.proto";
+
+
 message Simple3 {
   double dub = 1;
 }
@@ -66,4 +69,11 @@ message Mappy {
   map<int64, bool> s64booly = 8;
   map<uint32, bool> u32booly = 9;
   map<uint64, bool> u64booly = 10;
+}
+
+message FieldMaskedMessage {
+  google.protobuf.FieldMask mask = 1;
+
+  string string_field = 3;
+  int64 int_field = 4;
 }

@@ -52,6 +52,8 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+	fieldmask "google.golang.org/genproto/protobuf/field_mask"
+
 
 	stpb "github.com/golang/protobuf/ptypes/struct"
 )
@@ -164,8 +166,18 @@ type wkt interface {
 	XXX_WellKnownType() string
 }
 
+func (m *Marshaler) marshalFieldMask(out *errWriter, v *fieldmask.FieldMask) error {
+	str := strings.Join(v.Paths, ",")
+	out.write(fmt.Sprintf(`"%s"`, str))
+	return nil
+}
+
 // marshalObject writes a struct to the Writer.
 func (m *Marshaler) marshalObject(out *errWriter, v proto.Message, indent, typeURL string) error {
+	if fieldMask, ok := v.(*fieldmask.FieldMask); ok {
+		return m.marshalFieldMask(out, fieldMask)
+	}
+
 	if jsm, ok := v.(JSONPBMarshaler); ok {
 		b, err := jsm.MarshalJSONPB(m)
 		if err != nil {
@@ -706,6 +718,20 @@ func UnmarshalString(str string, pb proto.Message) error {
 	return new(Unmarshaler).Unmarshal(strings.NewReader(str), pb)
 }
 
+func (u *Unmarshaler) unmarshalFieldMask(target reflect.Value, inputValue json.RawMessage) error {
+	var pathsCSV string
+	if err := json.Unmarshal(inputValue, &pathsCSV); err != nil {
+		return err
+	}
+
+	fieldMask := fieldmask.FieldMask{
+		Paths: strings.Split(pathsCSV, ","),
+	}
+
+	target.Set(reflect.ValueOf(fieldMask))
+	return nil
+}
+
 // unmarshalValue converts/copies a value into the target.
 // prop may be nil.
 func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMessage, prop *proto.Properties) error {
@@ -903,6 +929,10 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 
 	// Handle nested messages.
 	if targetType.Kind() == reflect.Struct {
+		if targetType.AssignableTo(reflect.TypeOf(fieldmask.FieldMask{})) {
+			return u.unmarshalFieldMask(target, inputValue)
+		}
+
 		var jsonFields map[string]json.RawMessage
 		if err := json.Unmarshal(inputValue, &jsonFields); err != nil {
 			return err

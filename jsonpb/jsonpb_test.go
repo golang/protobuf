@@ -41,6 +41,8 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
+	fieldmask "google.golang.org/genproto/protobuf/field_mask"
+
 
 	pb "github.com/golang/protobuf/jsonpb/jsonpb_test_proto"
 	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
@@ -80,6 +82,9 @@ var (
 		OString:    proto.String("hello \"there\""),
 		OBytes:     []byte("beep boop"),
 	}
+
+	fieldMaskMessage = &pb.FieldMaskedMessage{Mask:&fieldmask.FieldMask{Paths: []string{"field1", "field2"}}}
+	fieldMaskJSON = `{"mask":"field1,field2"}`
 
 	simpleObjectInputJSON = `{` +
 		`"oBool":true,` +
@@ -442,6 +447,7 @@ var marshalingTests = []struct {
 	{"empty map emitted", Marshaler{EmitDefaults: true}, &pb.SimpleMap3{}, `{"stringy":{}}`},
 	{"nested struct null", Marshaler{EmitDefaults: true}, &pb.SimpleNull3{}, `{"simple":null}`},
 	{"map<int64, int32>", marshaler, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, `{"nummy":{"1":2,"3":4}}`},
+	{"field mask", marshaler, fieldMaskMessage, fieldMaskJSON},
 	{"map<int64, int32>", marshalerAllOptions, &pb.Mappy{Nummy: map[int64]int32{1: 2, 3: 4}}, nummyPrettyJSON},
 	{"map<string, string>", marshaler,
 		&pb.Mappy{Strry: map[string]string{`"one"`: "two", "three": "four"}},
@@ -867,6 +873,7 @@ var unmarshalingTests = []struct {
 
 	{"required", Unmarshaler{}, `{"str":"hello"}`, &pb.MsgWithRequired{Str: proto.String("hello")}},
 	{"required bytes", Unmarshaler{}, `{"byts": []}`, &pb.MsgWithRequiredBytes{Byts: []byte{}}},
+	{"field masks", Unmarshaler{}, fieldMaskJSON, fieldMaskMessage},
 }
 
 func TestUnmarshaling(t *testing.T) {
@@ -1253,3 +1260,5 @@ func TestUnmarshalUnsetRequiredFields(t *testing.T) {
 		}
 	}
 }
+
+
