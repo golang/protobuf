@@ -874,6 +874,7 @@ var unmarshalingTests = []struct {
 
 	{"required", Unmarshaler{}, `{"str":"hello"}`, &pb.MsgWithRequired{Str: proto.String("hello")}},
 	{"required bytes", Unmarshaler{}, `{"byts": []}`, &pb.MsgWithRequiredBytes{Byts: []byte{}}},
+	{"allow invalid enum", Unmarshaler{AllowInvalidEnums: true}, `{"color":"SKY"}`, &pb.Widget{Color: pb.Widget_RED.Enum()}},
 }
 
 func TestUnmarshaling(t *testing.T) {

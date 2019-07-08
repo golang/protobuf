@@ -669,6 +669,11 @@ type Unmarshaler struct {
 	// fully-qualified type name from the type URL and pass that to
 	// proto.MessageType(string).
 	AnyResolver AnyResolver
+
+	// Allows string enums to be unmarshalled to the
+	// zero value of int32 if the string representation
+	// does not match any of the given enums.
+	AllowInvalidEnums bool
 }
 
 // UnmarshalNext unmarshals the next protocol buffer from a JSON object stream.
@@ -895,7 +900,7 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		// are from a limited character set.
 		s := inputValue[1 : len(inputValue)-1]
 		n, ok := vmap[string(s)]
-		if !ok {
+		if !ok && !u.AllowInvalidEnums {
 			return fmt.Errorf("unknown value %q for enum %s", s, prop.Enum)
 		}
 		if target.Kind() == reflect.Ptr { // proto2
