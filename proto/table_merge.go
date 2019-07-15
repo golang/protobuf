@@ -141,11 +141,11 @@ func (mi *mergeInfo) computeMergeInfo() {
 	props := GetProperties(t)
 	for i := 0; i < n; i++ {
 		f := t.Field(i)
-		if strings.HasPrefix(f.Name, "XXX_") {
+		if strings.HasPrefix(f.Name, "XXX_") || f.PkgPath != "" {
 			continue
 		}
 
-		mfi := mergeFieldInfo{field: toField(&f)}
+		mfi := mergeFieldInfo{field: toField(&f, nil)}
 		tf := f.Type
 
 		// As an optimization, we can avoid the merge function call cost
@@ -611,12 +611,19 @@ func (mi *mergeInfo) computeMergeInfo() {
 		mi.fields = append(mi.fields, mfi)
 	}
 
+	expFunc := exporterFunc(t)
 	mi.unrecognized = invalidField
 	if f, ok := t.FieldByName("XXX_unrecognized"); ok {
 		if f.Type != reflect.TypeOf([]byte{}) {
 			panic("expected XXX_unrecognized to be of type []byte")
 		}
-		mi.unrecognized = toField(&f)
+		mi.unrecognized = toField(&f, nil)
+	}
+	if f, ok := t.FieldByName("unknownFields"); ok {
+		if f.Type != reflect.TypeOf([]byte{}) {
+			panic("expected unknownFields to be of type []byte")
+		}
+		mi.unrecognized = toField(&f, expFunc)
 	}
 
 	atomic.StoreInt32(&mi.initialized, 1)

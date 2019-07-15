@@ -77,7 +77,7 @@ func mergeStruct(out, in reflect.Value) {
 	sprop := GetProperties(in.Type())
 	for i := 0; i < in.NumField(); i++ {
 		f := in.Type().Field(i)
-		if strings.HasPrefix(f.Name, "XXX_") {
+		if strings.HasPrefix(f.Name, "XXX_") || f.PkgPath != "" {
 			continue
 		}
 		mergeAny(out.Field(i), in.Field(i), false, sprop.Prop[i])
@@ -90,13 +90,13 @@ func mergeStruct(out, in reflect.Value) {
 		}
 	}
 
-	uf := in.FieldByName("XXX_unrecognized")
+	uf := unknownFieldsValue(in)
 	if !uf.IsValid() {
 		return
 	}
 	uin := uf.Bytes()
 	if len(uin) > 0 {
-		out.FieldByName("XXX_unrecognized").SetBytes(append([]byte(nil), uin...))
+		unknownFieldsValue(out).SetBytes(append([]byte(nil), uin...))
 	}
 }
 

@@ -15,7 +15,9 @@ import (
 	"strconv"
 	"sync"
 
+	protoV2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/runtime/protoiface"
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 // requiredNotSetError is an error type returned by either Marshal or Unmarshal.
@@ -94,6 +96,72 @@ type (
 		XXX_OneofWrappers() []interface{}
 	}
 )
+
+// oneofWrappers returns a list of oneof wrappers for t,
+// which must be a named struct type.
+func oneofWrappers(t reflect.Type) []interface{} {
+	var oos []interface{}
+	switch m := reflect.Zero(reflect.PtrTo(t)).Interface().(type) {
+	case oneofFuncsIface:
+		_, _, _, oos = m.XXX_OneofFuncs()
+	case oneofWrappersIface:
+		oos = m.XXX_OneofWrappers()
+	case protoV2.Message:
+		if m, ok := m.ProtoReflect().(interface{ ProtoMessageInfo() *protoimpl.MessageInfo }); ok {
+			oos = m.ProtoMessageInfo().OneofWrappers
+		}
+	}
+	return oos
+}
+
+// unknownFieldsValue retrieves the value for unknown fields from v,
+// which must be a name struct type.
+func unknownFieldsValue(v reflect.Value) reflect.Value {
+	if vf := v.FieldByName("XXX_unrecognized"); vf.IsValid() {
+		return vf
+	}
+	if vf := fieldByName(v, "unknownFields"); vf.IsValid() {
+		return vf
+	}
+	return reflect.Value{}
+}
+
+// extensionFieldsValue retrieves the value for extension fields from v,
+// which must be a name struct type.
+func extensionFieldsValue(v reflect.Value) reflect.Value {
+	if vf := v.FieldByName("XXX_InternalExtensions"); vf.IsValid() {
+		return vf
+	}
+	if vf := v.FieldByName("XXX_extensions"); vf.IsValid() {
+		return vf
+	}
+	if vf := fieldByName(v, "extensionFields"); vf.IsValid() {
+		return vf
+	}
+	return reflect.Value{}
+}
+
+// exporterFunc retrieves the field exporter function for t,
+// which must be a named struct type.
+func exporterFunc(t reflect.Type) func(interface{}, int) interface{} {
+	if m, ok := reflect.Zero(reflect.PtrTo(t)).Interface().(protoV2.Message); ok {
+		if m, ok := m.ProtoReflect().(interface{ ProtoMessageInfo() *protoimpl.MessageInfo }); ok {
+			return m.ProtoMessageInfo().Exporter
+		}
+	}
+	return nil
+}
+
+// isMessageSet determines whether t is a MessageSet message,
+// where t must be a named struct type.
+func isMessageSet(t reflect.Type) bool {
+	if m, ok := reflect.Zero(reflect.PtrTo(t)).Interface().(protoV2.Message); ok {
+		md := m.ProtoReflect().Descriptor()
+		xmd, ok := md.(interface{ IsMessageSet() bool })
+		return ok && xmd.IsMessageSet()
+	}
+	return false
+}
 
 // A Buffer is a buffer manager for marshaling and unmarshaling
 // protocol buffers.  It may be reused between invocations to

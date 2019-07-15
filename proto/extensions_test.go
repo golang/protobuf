@@ -268,47 +268,53 @@ func TestGetExtensionDefaults(t *testing.T) {
 		{pb.E_DefaultEnum, setEnum, pb.DefaultsMessage_ONE},
 	}
 
-	checkVal := func(test testcase, msg *pb.DefaultsMessage, valWant interface{}) error {
-		val, err := proto.GetExtension(msg, test.ext)
-		if err != nil {
-			if valWant != nil {
-				return fmt.Errorf("GetExtension(): %s", err)
+	checkVal := func(t *testing.T, name string, test testcase, msg *pb.DefaultsMessage, valWant interface{}) {
+		t.Run(name, func(t *testing.T) {
+			val, err := proto.GetExtension(msg, test.ext)
+			if err != nil {
+				if valWant != nil {
+					t.Errorf("GetExtension(): %s", err)
+					return
+				}
+				if want := proto.ErrMissingExtension; err != want {
+					t.Errorf("Unexpected error: got %v, want %v", err, want)
+					return
+				}
+				return
 			}
-			if want := proto.ErrMissingExtension; err != want {
-				return fmt.Errorf("Unexpected error: got %v, want %v", err, want)
+
+			// All proto2 extension values are either a pointer to a value or a slice of values.
+			ty := reflect.TypeOf(val)
+			tyWant := reflect.TypeOf(test.ext.ExtensionType)
+			if got, want := ty, tyWant; got != want {
+				t.Errorf("unexpected reflect.TypeOf(): got %v want %v", got, want)
+				return
 			}
-			return nil
-		}
+			tye := ty.Elem()
+			tyeWant := tyWant.Elem()
+			if got, want := tye, tyeWant; got != want {
+				t.Errorf("unexpected reflect.TypeOf().Elem(): got %v want %v", got, want)
+				return
+			}
 
-		// All proto2 extension values are either a pointer to a value or a slice of values.
-		ty := reflect.TypeOf(val)
-		tyWant := reflect.TypeOf(test.ext.ExtensionType)
-		if got, want := ty, tyWant; got != want {
-			return fmt.Errorf("unexpected reflect.TypeOf(): got %v want %v", got, want)
-		}
-		tye := ty.Elem()
-		tyeWant := tyWant.Elem()
-		if got, want := tye, tyeWant; got != want {
-			return fmt.Errorf("unexpected reflect.TypeOf().Elem(): got %v want %v", got, want)
-		}
+			// Check the name of the type of the value.
+			// If it is an enum it will be type int32 with the name of the enum.
+			if got, want := tye.Name(), tye.Name(); got != want {
+				t.Errorf("unexpected reflect.TypeOf().Elem().Name(): got %v want %v", got, want)
+				return
+			}
 
-		// Check the name of the type of the value.
-		// If it is an enum it will be type int32 with the name of the enum.
-		if got, want := tye.Name(), tye.Name(); got != want {
-			return fmt.Errorf("unexpected reflect.TypeOf().Elem().Name(): got %v want %v", got, want)
-		}
-
-		// Check that value is what we expect.
-		// If we have a pointer in val, get the value it points to.
-		valExp := val
-		if ty.Kind() == reflect.Ptr {
-			valExp = reflect.ValueOf(val).Elem().Interface()
-		}
-		if got, want := valExp, valWant; !reflect.DeepEqual(got, want) {
-			return fmt.Errorf("unexpected reflect.DeepEqual(): got %v want %v", got, want)
-		}
-
-		return nil
+			// Check that value is what we expect.
+			// If we have a pointer in val, get the value it points to.
+			valExp := val
+			if ty.Kind() == reflect.Ptr {
+				valExp = reflect.ValueOf(val).Elem().Interface()
+			}
+			if got, want := valExp, valWant; !reflect.DeepEqual(got, want) {
+				t.Errorf("unexpected reflect.DeepEqual(): got %v want %v", got, want)
+				return
+			}
+		})
 	}
 
 	setTo := func(test testcase) interface{} {
@@ -326,27 +332,18 @@ func TestGetExtensionDefaults(t *testing.T) {
 		name := test.ext.Name
 
 		// Check the initial value.
-		if err := checkVal(test, msg, test.def); err != nil {
-			t.Errorf("%s: %v", name, err)
-		}
+		checkVal(t, name+"/initial", test, msg, test.def)
 
 		// Set the per-type value and check value.
-		name = fmt.Sprintf("%s (set to %T %v)", name, test.want, test.want)
 		if err := proto.SetExtension(msg, test.ext, setTo(test)); err != nil {
 			t.Errorf("%s: SetExtension(): %v", name, err)
 			continue
 		}
-		if err := checkVal(test, msg, test.want); err != nil {
-			t.Errorf("%s: %v", name, err)
-			continue
-		}
+		checkVal(t, name+"/set", test, msg, test.want)
 
 		// Set and check the value.
-		name += " (cleared)"
 		proto.ClearExtension(msg, test.ext)
-		if err := checkVal(test, msg, test.def); err != nil {
-			t.Errorf("%s: %v", name, err)
-		}
+		checkVal(t, name+"/cleared", test, msg, test.def)
 	}
 }
 

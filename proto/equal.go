@@ -72,7 +72,7 @@ func equalStruct(v1, v2 reflect.Value) bool {
 	sprop := GetProperties(v1.Type())
 	for i := 0; i < v1.NumField(); i++ {
 		f := v1.Type().Field(i)
-		if strings.HasPrefix(f.Name, "XXX_") {
+		if strings.HasPrefix(f.Name, "XXX_") || f.PkgPath != "" {
 			continue
 		}
 		f1, f2 := v1.Field(i), v2.Field(i)
@@ -91,8 +91,8 @@ func equalStruct(v1, v2 reflect.Value) bool {
 		}
 	}
 
-	if em1 := v1.FieldByName("XXX_InternalExtensions"); em1.IsValid() {
-		em2 := v2.FieldByName("XXX_InternalExtensions")
+	if em1 := extensionFieldsValue(v1); em1.IsValid() {
+		em2 := extensionFieldsValue(v2)
 		m1 := extensionFieldsOf(em1.Addr().Interface())
 		m2 := extensionFieldsOf(em2.Addr().Interface())
 		if !equalExtensions(v1.Type(), m1, m2) {
@@ -100,23 +100,15 @@ func equalStruct(v1, v2 reflect.Value) bool {
 		}
 	}
 
-	if em1 := v1.FieldByName("XXX_extensions"); em1.IsValid() {
-		em2 := v2.FieldByName("XXX_extensions")
-		m1 := extensionFieldsOf(em1.Addr().Interface())
-		m2 := extensionFieldsOf(em2.Addr().Interface())
-		if !equalExtensions(v1.Type(), m1, m2) {
+	if uf := unknownFieldsValue(v1); uf.IsValid() {
+		u1 := uf.Bytes()
+		u2 := unknownFieldsValue(v2).Bytes()
+		if !bytes.Equal(u1, u2) {
 			return false
 		}
 	}
 
-	uf := v1.FieldByName("XXX_unrecognized")
-	if !uf.IsValid() {
-		return true
-	}
-
-	u1 := uf.Bytes()
-	u2 := v2.FieldByName("XXX_unrecognized").Bytes()
-	return bytes.Equal(u1, u2)
+	return true
 }
 
 // v1 and v2 are known to have the same type.

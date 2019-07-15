@@ -127,11 +127,11 @@ func (di *discardInfo) computeDiscardInfo() {
 
 	for i := 0; i < n; i++ {
 		f := t.Field(i)
-		if strings.HasPrefix(f.Name, "XXX_") {
+		if strings.HasPrefix(f.Name, "XXX_") || f.PkgPath != "" {
 			continue
 		}
 
-		dfi := discardFieldInfo{field: toField(&f)}
+		dfi := discardFieldInfo{field: toField(&f, nil)}
 		tf := f.Type
 
 		// Unwrap tf to get its most basic type.
@@ -219,12 +219,19 @@ func (di *discardInfo) computeDiscardInfo() {
 		di.fields = append(di.fields, dfi)
 	}
 
+	expFunc := exporterFunc(t)
 	di.unrecognized = invalidField
 	if f, ok := t.FieldByName("XXX_unrecognized"); ok {
 		if f.Type != reflect.TypeOf([]byte{}) {
 			panic("expected XXX_unrecognized to be of type []byte")
 		}
-		di.unrecognized = toField(&f)
+		di.unrecognized = toField(&f, nil)
+	}
+	if f, ok := t.FieldByName("unknownFields"); ok {
+		if f.Type != reflect.TypeOf([]byte{}) {
+			panic("expected unknownFields to be of type []byte")
+		}
+		di.unrecognized = toField(&f, expFunc)
 	}
 
 	atomic.StoreInt32(&di.initialized, 1)
@@ -243,7 +250,7 @@ func discardLegacy(m Message) {
 
 	for i := 0; i < v.NumField(); i++ {
 		f := t.Field(i)
-		if strings.HasPrefix(f.Name, "XXX_") {
+		if strings.HasPrefix(f.Name, "XXX_") || f.PkgPath != "" {
 			continue
 		}
 		vf := v.Field(i)
@@ -308,9 +315,9 @@ func discardLegacy(m Message) {
 		}
 	}
 
-	if vf := v.FieldByName("XXX_unrecognized"); vf.IsValid() {
+	if vf := unknownFieldsValue(v); vf.IsValid() {
 		if vf.Type() != reflect.TypeOf([]byte{}) {
-			panic("expected XXX_unrecognized to be of type []byte")
+			panic("expected unknown fields to be of type []byte")
 		}
 		vf.Set(reflect.ValueOf([]byte(nil)))
 	}

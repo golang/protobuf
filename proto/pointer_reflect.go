@@ -13,6 +13,8 @@ package proto
 import (
 	"reflect"
 	"sync"
+	"unicode"
+	"unicode/utf8"
 )
 
 const unsafeAllowed = false
@@ -20,21 +22,35 @@ const unsafeAllowed = false
 // A field identifies a field in a struct, accessible from a pointer.
 // In this implementation, a field is identified by the sequence of field indices
 // passed to reflect's FieldByIndex.
-type field []int
+type field struct {
+	index  int
+	export exporter
+}
+
+type exporter = func(interface{}, int) interface{}
 
 // toField returns a field equivalent to the given reflect field.
-func toField(f *reflect.StructField) field {
-	return f.Index
+func toField(f *reflect.StructField, x exporter) field {
+	if len(f.Index) != 1 {
+		panic("embedded structs are not supported")
+	}
+	if f.PkgPath == "" {
+		return field{index: f.Index[0]} // field is already exported
+	}
+	if x == nil {
+		panic("exporter must be provided for unexported field: " + f.Name)
+	}
+	return field{index: f.Index[0], export: x}
 }
 
 // invalidField is an invalid field identifier.
-var invalidField = field(nil)
+var invalidField = field{index: -1}
 
 // zeroField is a noop when calling pointer.offset.
-var zeroField = field([]int{})
+var zeroField = field{index: 0}
 
 // IsValid reports whether the field identifier is valid.
-func (f field) IsValid() bool { return f != nil }
+func (f field) IsValid() bool { return f.index >= 0 }
 
 // The pointer type is for the table-driven decoder.
 // The implementation here uses a reflect.Value of pointer type to
@@ -70,7 +86,12 @@ func valToPointer(v reflect.Value) pointer {
 // offset converts from a pointer to a structure to a pointer to
 // one of its fields.
 func (p pointer) offset(f field) pointer {
-	return pointer{v: p.v.Elem().FieldByIndex(f).Addr()}
+	if f.export != nil {
+		if v := reflect.ValueOf(f.export(p.v.Interface(), f.index)); v.IsValid() {
+			return pointer{v: v}
+		}
+	}
+	return pointer{v: p.v.Elem().Field(f.index).Addr()}
 }
 
 func (p pointer) isNil() bool {
@@ -331,3 +352,20 @@ func atomicStoreDiscardInfo(p **discardInfo, v *discardInfo) {
 }
 
 var atomicLock sync.Mutex
+
+// fieldByName is equivalent to reflect.Value.FieldByName, but is able to
+// descend into unexported fields for prop
+func fieldByName(v reflect.Value, s string) reflect.Value {
+	if r, _ := utf8.DecodeRuneInString(s); unicode.IsUpper(r) {
+		return v.FieldByName(s)
+	}
+	t := v.Type()
+	if x := exporterFunc(t); x != nil {
+		sf, ok := t.FieldByName(s)
+		if ok {
+			vi := x(v.Addr().Interface(), sf.Index[0])
+			return reflect.ValueOf(vi).Elem()
+		}
+	}
+	return v.FieldByName(s)
+}

@@ -209,16 +209,9 @@ func newProperties(t reflect.Type) *StructProperties {
 	}
 
 	// Construct a mapping of oneof field names to properties.
-	var oneofWrappers []interface{}
-	if fn, ok := reflect.PtrTo(t).MethodByName("XXX_OneofFuncs"); ok {
-		oneofWrappers = fn.Func.Call([]reflect.Value{reflect.Zero(fn.Type.In(0))})[3].Interface().([]interface{})
-	}
-	if fn, ok := reflect.PtrTo(t).MethodByName("XXX_OneofWrappers"); ok {
-		oneofWrappers = fn.Func.Call([]reflect.Value{reflect.Zero(fn.Type.In(0))})[0].Interface().([]interface{})
-	}
-	if len(oneofWrappers) > 0 {
+	if oneofImplementors := oneofWrappers(t); len(oneofImplementors) > 0 {
 		prop.OneofTypes = make(map[string]*OneofProperties)
-		for _, wrapper := range oneofWrappers {
+		for _, wrapper := range oneofImplementors {
 			p := &OneofProperties{
 				Type: reflect.ValueOf(wrapper).Type(), // *T
 				Prop: new(Properties),

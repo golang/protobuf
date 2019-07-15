@@ -312,6 +312,10 @@ func (u *unmarshalInfo) computeUnmarshalInfo() {
 	}
 	var oneofFields []oneofField
 
+	oneofImplementers := oneofWrappers(t)
+	u.isMessageSet = isMessageSet(t)
+	expFunc := exporterFunc(t)
+
 	for i := 0; i < n; i++ {
 		f := t.Field(i)
 		if f.Name == "XXX_unrecognized" {
@@ -319,7 +323,7 @@ func (u *unmarshalInfo) computeUnmarshalInfo() {
 			if f.Type != reflect.TypeOf(([]byte)(nil)) {
 				panic("bad type for XXX_unrecognized field: " + f.Type.Name())
 			}
-			u.unrecognized = toField(&f)
+			u.unrecognized = toField(&f, nil)
 			continue
 		}
 		if f.Name == "XXX_InternalExtensions" {
@@ -327,7 +331,7 @@ func (u *unmarshalInfo) computeUnmarshalInfo() {
 			if f.Type != reflect.TypeOf(XXX_InternalExtensions{}) {
 				panic("bad type for XXX_InternalExtensions field: " + f.Type.Name())
 			}
-			u.extensions = toField(&f)
+			u.extensions = toField(&f, nil)
 			if f.Tag.Get("protobuf_messageset") == "1" {
 				u.isMessageSet = true
 			}
@@ -338,16 +342,31 @@ func (u *unmarshalInfo) computeUnmarshalInfo() {
 			if f.Type != reflect.TypeOf((map[int32]Extension)(nil)) {
 				panic("bad type for XXX_extensions field: " + f.Type.Name())
 			}
-			u.oldExtensions = toField(&f)
+			u.oldExtensions = toField(&f, nil)
 			continue
 		}
-		if f.Name == "XXX_NoUnkeyedLiteral" || f.Name == "XXX_sizecache" {
+		if f.Name == "unknownFields" {
+			if f.Type != reflect.TypeOf(([]byte)(nil)) {
+				panic("bad type for unknownFields field: " + f.Type.Name())
+			}
+			u.unrecognized = toField(&f, expFunc)
+			continue
+		}
+		if f.Name == "extensionFields" {
+			if f.Type != reflect.TypeOf(XXX_InternalExtensions{}) {
+				panic("bad type for extensionFields field: " + f.Type.Name())
+			}
+			u.extensions = toField(&f, expFunc)
+			continue
+		}
+
+		if strings.HasPrefix(f.Name, "XXX_") || f.PkgPath != "" {
 			continue
 		}
 
 		oneof := f.Tag.Get("protobuf_oneof")
 		if oneof != "" {
-			oneofFields = append(oneofFields, oneofField{f.Type, toField(&f)})
+			oneofFields = append(oneofFields, oneofField{f.Type, toField(&f, nil)})
 			// The rest of oneof processing happens below.
 			continue
 		}
@@ -384,17 +403,10 @@ func (u *unmarshalInfo) computeUnmarshalInfo() {
 		}
 
 		// Store the info in the correct slot in the message.
-		u.setTag(tag, toField(&f), unmarshal, reqMask, name)
+		u.setTag(tag, toField(&f, nil), unmarshal, reqMask, name)
 	}
 
 	// Find any types associated with oneof fields.
-	var oneofImplementers []interface{}
-	switch m := reflect.Zero(reflect.PtrTo(t)).Interface().(type) {
-	case oneofFuncsIface:
-		_, _, _, oneofImplementers = m.XXX_OneofFuncs()
-	case oneofWrappersIface:
-		oneofImplementers = m.XXX_OneofWrappers()
-	}
 	for _, v := range oneofImplementers {
 		tptr := reflect.TypeOf(v) // *Msg_X
 		typ := tptr.Elem()        // Msg_X
@@ -1846,7 +1858,7 @@ func makeUnmarshalMap(f *reflect.StructField) unmarshaler {
 // Note that this function will be called once for each case in the oneof.
 func makeUnmarshalOneof(typ, ityp reflect.Type, unmarshal unmarshaler) unmarshaler {
 	sf := typ.Field(0)
-	field0 := toField(&sf)
+	field0 := toField(&sf, nil)
 	return func(b []byte, f pointer, w int) ([]byte, error) {
 		// Allocate holder for value.
 		v := reflect.New(typ)

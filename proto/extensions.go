@@ -69,11 +69,8 @@ func extendable(p interface{}) (*extensionMap, error) {
 		v := reflect.ValueOf(p)
 		if v.Kind() == reflect.Ptr && !v.IsNil() {
 			v = v.Elem()
-			if v := v.FieldByName("XXX_InternalExtensions"); v.IsValid() {
-				return extensionFieldsOf(v.Addr().Interface()), nil
-			}
-			if v := v.FieldByName("XXX_extensions"); v.IsValid() {
-				return extensionFieldsOf(v.Addr().Interface()), nil
+			if vf := extensionFieldsValue(v); vf.IsValid() {
+				return extensionFieldsOf(vf.Addr().Interface()), nil
 			}
 		}
 	}
@@ -102,7 +99,7 @@ func SetRawExtension(base Message, id int32, b []byte) {
 	if !v.IsValid() || v.Kind() != reflect.Ptr || v.IsNil() || v.Elem().Kind() != reflect.Struct {
 		return
 	}
-	v = v.Elem().FieldByName("XXX_unrecognized")
+	v = unknownFieldsValue(v.Elem())
 	if !v.IsValid() {
 		return
 	}
@@ -208,7 +205,7 @@ func HasExtension(pb Message, extension *ExtensionDesc) bool {
 	}
 
 	// Check whether this field exists in raw form.
-	unrecognized := reflect.ValueOf(pb).Elem().FieldByName("XXX_unrecognized")
+	unrecognized := unknownFieldsValue(reflect.ValueOf(pb).Elem())
 	fnum := protoreflect.FieldNumber(extension.Field)
 	for b := unrecognized.Bytes(); len(b) > 0; {
 		got, _, n := wire.ConsumeField(b)
@@ -250,7 +247,7 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 		return nil, err
 	}
 
-	unrecognized := reflect.ValueOf(pb).Elem().FieldByName("XXX_unrecognized")
+	unrecognized := unknownFieldsValue(reflect.ValueOf(pb).Elem())
 	var out []byte
 	fnum := protoreflect.FieldNumber(extension.Field)
 	for b := unrecognized.Bytes(); len(b) > 0; {
@@ -416,7 +413,7 @@ func ExtensionDescs(pb Message) ([]*ExtensionDesc, error) {
 		return true
 	})
 
-	unrecognized := reflect.ValueOf(pb).Elem().FieldByName("XXX_unrecognized")
+	unrecognized := unknownFieldsValue(reflect.ValueOf(pb).Elem())
 	if b := unrecognized.Bytes(); len(b) > 0 {
 		fieldNums := make(map[int32]bool)
 		for len(b) > 0 {

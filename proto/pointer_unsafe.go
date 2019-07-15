@@ -11,6 +11,8 @@ package proto
 import (
 	"reflect"
 	"sync/atomic"
+	"unicode"
+	"unicode/utf8"
 	"unsafe"
 )
 
@@ -20,8 +22,10 @@ const unsafeAllowed = true
 // In this implementation, a field is identified by its byte offset from the start of the struct.
 type field uintptr
 
+type exporter = func(interface{}, int) interface{}
+
 // toField returns a field equivalent to the given reflect field.
-func toField(f *reflect.StructField) field {
+func toField(f *reflect.StructField, x exporter) field {
 	return field(f.Offset)
 }
 
@@ -283,4 +287,17 @@ func atomicLoadDiscardInfo(p **discardInfo) *discardInfo {
 }
 func atomicStoreDiscardInfo(p **discardInfo, v *discardInfo) {
 	atomic.StorePointer((*unsafe.Pointer)(unsafe.Pointer(p)), unsafe.Pointer(v))
+}
+
+// fieldByName is equivalent to reflect.Value.FieldByName, but is able to
+// descend into unexported fields for prop
+func fieldByName(v reflect.Value, s string) reflect.Value {
+	if r, _ := utf8.DecodeRuneInString(s); unicode.IsUpper(r) {
+		return v.FieldByName(s)
+	}
+	sf, ok := v.Type().FieldByName(s)
+	if !ok {
+		return reflect.Value{}
+	}
+	return reflect.NewAt(sf.Type, unsafe.Pointer(v.UnsafeAddr()+sf.Offset)).Elem()
 }

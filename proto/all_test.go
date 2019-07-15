@@ -21,6 +21,7 @@ import (
 	. "github.com/golang/protobuf/proto"
 	pb3 "github.com/golang/protobuf/proto/proto3_proto"
 	. "github.com/golang/protobuf/proto/test_proto"
+	tpb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var globalO *Buffer
@@ -2325,6 +2326,15 @@ func TestRequired(t *testing.T) {
 	}
 	if !m.GetF_BoolRequired() {
 		t.Error("m.F_BoolRequired = false, want true")
+	}
+}
+
+func TestUnknownV2(t *testing.T) {
+	m := new(tpb.Timestamp)
+	m.ProtoReflect().SetUnknown([]byte("\x92\x4d\x12unknown field 1234"))
+	got := CompactTextString(m)
+	if !strings.Contains(got, "unknown field 1234") {
+		t.Errorf("got %q, want contains %q", got, "unknown field 1234")
 	}
 }
 

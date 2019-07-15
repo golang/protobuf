@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 
+	protoV2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
@@ -251,10 +252,10 @@ func newProperties(t reflect.Type) *StructProperties {
 			p.OrigName = tagOneof
 		}
 
-		// Rename unrelated struct fields with the "XXX_" prefix since so much
-		// user code simply checks for this to exclude special fields.
-		if tagField == "" && tagOneof == "" && !strings.HasPrefix(p.Name, "XXX_") {
-			p.Name = "XXX_invalid_" + p.Name
+		// Rename unexported struct fields with the "XXX_" prefix since so much
+		// user code simply checks for this to exclude unrelated fields.
+		if f.PkgPath != "" {
+			p.Name = "XXX_" + p.Name
 		}
 
 		prop.Prop = append(prop.Prop, p)
@@ -267,6 +268,11 @@ func newProperties(t reflect.Type) *StructProperties {
 	}
 	if fn, ok := reflect.PtrTo(t).MethodByName("XXX_OneofWrappers"); ok {
 		oneofWrappers = fn.Func.Call([]reflect.Value{reflect.Zero(fn.Type.In(0))})[0].Interface().([]interface{})
+	}
+	if m, ok := reflect.Zero(reflect.PtrTo(t)).Interface().(protoV2.Message); ok {
+		if m, ok := m.ProtoReflect().(interface{ ProtoMessageInfo() *protoimpl.MessageInfo }); ok {
+			oneofWrappers = m.ProtoMessageInfo().OneofWrappers
+		}
 	}
 	if len(oneofWrappers) > 0 {
 		prop.OneofTypes = make(map[string]*OneofProperties)

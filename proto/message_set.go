@@ -122,7 +122,7 @@ func unmarshalMessageSet(buf []byte, mi Message, exts interface{}) error {
 	if err := Unmarshal(buf, ms); err != nil {
 		return err
 	}
-	unrecognized := reflect.ValueOf(mi).Elem().FieldByName("XXX_unrecognized").Addr().Interface().(*[]byte)
+	unrecognized := unknownFieldsValue(reflect.ValueOf(mi).Elem()).Addr().Interface().(*[]byte)
 
 	for _, item := range ms.Item {
 		id := protoreflect.FieldNumber(*item.TypeId)

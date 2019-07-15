@@ -7,6 +7,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
+	reflect "reflect"
 	sync "sync"
 )
 
@@ -77,8 +78,10 @@ func file_github_com_golang_protobuf_ptypes_struct_struct_proto_init() {
 	if File_github_com_golang_protobuf_ptypes_struct_struct_proto != nil {
 		return
 	}
+	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
+			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_github_com_golang_protobuf_ptypes_struct_struct_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   0,

@@ -506,7 +506,7 @@ func TestMarshaling(t *testing.T) {
 		if err != nil {
 			t.Errorf("%s: marshaling error: %v", tt.desc, err)
 		} else if tt.json != json {
-			t.Errorf("%s: got [%v] want [%v]", tt.desc, json, tt.json)
+			t.Errorf("%s:\ngot:  %v\nwant: %v", tt.desc, json, tt.json)
 		}
 	}
 }

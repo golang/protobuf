@@ -525,6 +525,10 @@ func (p *textParser) readStruct(sv reflect.Value, terminator string) error {
 					desc = d
 					break
 				}
+				if strings.TrimSuffix(d.Name, ".message_set_extension") == extName && isMessageSet(st) {
+					desc = d
+					break
+				}
 			}
 			if desc == nil {
 				return p.errorf("unrecognized extension %q", extName)

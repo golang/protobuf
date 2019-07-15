@@ -297,37 +297,37 @@ func (u *marshalInfo) computeMarshalInfo() {
 		return
 	}
 
-	// get oneof implementers
-	var oneofImplementers []interface{}
-	switch m := reflect.Zero(reflect.PtrTo(t)).Interface().(type) {
-	case oneofFuncsIface:
-		_, _, _, oneofImplementers = m.XXX_OneofFuncs()
-	case oneofWrappersIface:
-		oneofImplementers = m.XXX_OneofWrappers()
-	}
+	oneofImplementers := oneofWrappers(t)
+	u.messageset = isMessageSet(t)
+	expFunc := exporterFunc(t)
 
 	n := t.NumField()
 
-	// deal with XXX fields first
+	// deal with XXX and unexported fields first.
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
-		if !strings.HasPrefix(f.Name, "XXX_") {
+		if !strings.HasPrefix(f.Name, "XXX_") && f.PkgPath == "" {
 			continue
 		}
 		switch f.Name {
 		case "XXX_sizecache":
-			u.sizecache = toField(&f)
+			u.sizecache = toField(&f, nil)
 		case "XXX_unrecognized":
-			u.unrecognized = toField(&f)
+			u.unrecognized = toField(&f, nil)
 		case "XXX_InternalExtensions":
-			u.extensions = toField(&f)
-			u.messageset = f.Tag.Get("protobuf_messageset") == "1"
+			u.extensions = toField(&f, nil)
+			if f.Tag.Get("protobuf_messageset") == "1" {
+				u.messageset = true
+			}
 		case "XXX_extensions":
-			u.v1extensions = toField(&f)
-		case "XXX_NoUnkeyedLiteral":
-			// nothing to do
-		default:
-			panic("unknown XXX field: " + f.Name)
+			u.v1extensions = toField(&f, nil)
+
+		case "sizeCache":
+			u.sizecache = toField(&f, expFunc)
+		case "unknownFields":
+			u.unrecognized = toField(&f, expFunc)
+		case "extensionFields":
+			u.extensions = toField(&f, expFunc)
 		}
 		n--
 	}
@@ -338,7 +338,7 @@ func (u *marshalInfo) computeMarshalInfo() {
 	for i, j := 0, 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 
-		if strings.HasPrefix(f.Name, "XXX_") {
+		if strings.HasPrefix(f.Name, "XXX_") || f.PkgPath != "" {
 			continue
 		}
 		field := &fields[j]
@@ -438,7 +438,7 @@ func (fi *marshalFieldInfo) computeMarshalFieldInfo(f *reflect.StructField) {
 }
 
 func (fi *marshalFieldInfo) computeOneofFieldInfo(f *reflect.StructField, oneofImplementers []interface{}) {
-	fi.field = toField(f)
+	fi.field = toField(f, nil)
 	fi.wiretag = math.MaxInt32 // Use a large tag number, make oneofs sorted at the end. This tag will not appear on the wire.
 	fi.isPointer = true
 	fi.sizer, fi.marshaler = makeOneOfMarshaler(fi, f)
@@ -486,7 +486,7 @@ func wiretype(encoding string) uint64 {
 
 // setTag fills up the tag (in wire format) and its size in the info of a field.
 func (fi *marshalFieldInfo) setTag(f *reflect.StructField, tag int, wt uint64) {
-	fi.field = toField(f)
+	fi.field = toField(f, nil)
 	fi.wiretag = uint64(tag)<<3 | wt
 	fi.tagsize = SizeVarint(uint64(tag) << 3)
 }
