@@ -77,6 +77,11 @@ type Marshaler struct {
 	// Whether to use the original (.proto) name for fields.
 	OrigName bool
 
+	// Skips qouting uint64, int64, and fixed64 types as strings. Default
+	// behavior is to quote per protobuf spec
+	// Ref: https://developers.google.com/protocol-buffers/docs/proto3#json
+	SkipQouteInt64 bool
+
 	// A custom URL resolver to use when marshaling Any messages to JSON.
 	// If unset, the default resolution strategy is to extract the
 	// fully-qualified type name from the type URL and pass that to
@@ -647,6 +652,7 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 		return err
 	}
 	needToQuote := string(b[0]) != `"` && (v.Kind() == reflect.Int64 || v.Kind() == reflect.Uint64)
+	needToQuote = needToQuote && !m.SkipQouteInt64
 	if needToQuote {
 		out.write(`"`)
 	}
