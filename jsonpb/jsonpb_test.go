@@ -530,6 +530,8 @@ var marshalingTests = []struct {
 
 	{"required", marshaler, &pb.MsgWithRequired{Str: proto.String("hello")}, `{"str":"hello"}`},
 	{"required bytes", marshaler, &pb.MsgWithRequiredBytes{Byts: []byte{}}, `{"byts":""}`},
+	{"int64 as number", Marshaler{SkipQuoteInt64: true}, &pb.KnownTypes{I64: &wpb.Int64Value{Value: -33}}, `{"i64":-33}`},
+	{"uint64 as number", Marshaler{SkipQuoteInt64: true}, &pb.KnownTypes{U64: &wpb.UInt64Value{Value: 33}}, `{"u64":33}`},
 }
 
 func TestMarshaling(t *testing.T) {
