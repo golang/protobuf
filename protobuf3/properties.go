@@ -1101,7 +1101,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 	i := 0
 	var tagbuf [8]byte
 	for i = 0; x > 127; i++ {
-		tagbuf[i] = 0x80 | uint8(x&0x7F)
+		tagbuf[i] = 0x80 | uint8(x)
 		x >>= 7
 	}
 	tagbuf[i] = uint8(x)
