@@ -9,6 +9,8 @@ import (
 	"log"
 	"reflect"
 	"strconv"
+
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 var enumValueMaps = make(map[string]map[string]int32)
@@ -139,6 +141,9 @@ var extensionMaps = make(map[reflect.Type]map[int32]*ExtensionDesc)
 
 // RegisterExtension is called from the generated code.
 func RegisterExtension(desc *ExtensionDesc) {
+	if desc.Type == nil {
+		desc.Type = protoimpl.X.ExtensionTypeFromDesc(desc)
+	}
 	if registerExtensionAlt != nil {
 		registerExtensionAlt(desc) // populated by hooks_enabled.go
 		return
