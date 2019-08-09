@@ -17,7 +17,6 @@ import (
 	"unicode/utf8"
 
 	"github.com/golang/protobuf/internal/wire"
-	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 // Unmarshal is the entry point from the generated .pb.go files.
@@ -276,7 +275,7 @@ func unmarshalExtensions(mi Message, unrecognized *[]byte) error {
 
 		// Store the value into the extension field.
 		var x Extension
-		x.SetType(protoimpl.X.ExtensionTypeFromDesc(extDesc))
+		x.SetType(extDesc)
 		x.SetEagerValue(extensionAsStorageType(fieldVal.Interface()))
 		extFields.Set(fieldNum, x)
 	}

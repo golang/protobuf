@@ -289,7 +289,7 @@ func GetExtension(pb Message, extension *ExtensionDesc) (interface{}, error) {
 
 	// Remember the decoded version and drop the encoded version.
 	// That way it is safe to mutate what we return.
-	e.SetType(protoimpl.X.ExtensionTypeFromDesc(extension))
+	e.SetType(extension)
 	e.SetEagerValue(extensionAsStorageType(v))
 	unrecognized.SetBytes(removeRawFields(unrecognized.Bytes(), fnum))
 	epb.Set(protoreflect.FieldNumber(extension.Field), e)
@@ -459,7 +459,7 @@ func SetExtension(pb Message, extension *ExtensionDesc, value interface{}) error
 	}
 
 	var x Extension
-	x.SetType(protoimpl.X.ExtensionTypeFromDesc(extension))
+	x.SetType(extension)
 	x.SetEagerValue(extensionAsStorageType(value))
 	epb.Set(protoreflect.FieldNumber(extension.Field), x)
 	return nil

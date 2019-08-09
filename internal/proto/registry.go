@@ -312,8 +312,7 @@ func MessageName(m Message) messageName {
 //
 // Deprecated: Use protoregistry.GlobalTypes.Register instead.
 func RegisterExtension(d *ExtensionDesc) {
-	xt := protoimpl.X.ExtensionTypeFromDesc(d)
-	if err := protoregistry.GlobalTypes.Register(xt); err != nil {
+	if err := protoregistry.GlobalTypes.Register(d); err != nil {
 		panic(err)
 	}
 }
