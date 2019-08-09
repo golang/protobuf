@@ -13,11 +13,12 @@ import (
 	"reflect"
 
 	"google.golang.org/protobuf/runtime/protoiface"
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 type (
 	Message       = protoiface.MessageV1
-	ExtensionDesc = protoiface.ExtensionDescV1
+	ExtensionDesc = protoimpl.ExtensionInfo
 )
 
 // RequiredNotSetError is an error type returned by either Marshal or Unmarshal.

@@ -83,7 +83,7 @@ var errNotExtendable = errors.New("proto: not an extendable proto.Message")
 
 type (
 	ExtensionRange         = protoiface.ExtensionRangeV1
-	ExtensionDesc          = protoiface.ExtensionDescV1
+	ExtensionDesc          = protoimpl.ExtensionInfo
 	Extension              = protoimpl.ExtensionFieldV1
 	XXX_InternalExtensions = protoimpl.ExtensionFields
 )

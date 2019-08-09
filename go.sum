@@ -21,3 +21,5 @@ google.golang.org/protobuf v0.0.0-20190717230113-f647c82cc3c7 h1:U6U+Hb+UKNGJB0e
 google.golang.org/protobuf v0.0.0-20190717230113-f647c82cc3c7/go.mod h1:yGm7aNHn9Bp1NIvj6+CVUkcJshu+Usshfd3A+YxEuI8=
 google.golang.org/protobuf v0.0.0-20190808204900-1799d1111a45 h1:SZXAIsI6RiG0T8bAF4dqHDHgdqJtOa6tkofjswKtU20=
 google.golang.org/protobuf v0.0.0-20190808204900-1799d1111a45/go.mod h1:tRqhEyKwbKqwt5CQZAuOtj09RfhLNklDOhndhYA9blU=
+google.golang.org/protobuf v0.0.0-20190820203659-c0f8c0a24ece h1:AFYGmds8FWBGNw0zddlFiGtDvkVFSnQ7J2bAdH4X9Xk=
+google.golang.org/protobuf v0.0.0-20190820203659-c0f8c0a24ece/go.mod h1:tRqhEyKwbKqwt5CQZAuOtj09RfhLNklDOhndhYA9blU=
