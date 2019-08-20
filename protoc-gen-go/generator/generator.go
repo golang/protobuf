@@ -45,6 +45,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/build"
+	"go/doc"
 	"go/parser"
 	"go/printer"
 	"go/token"
@@ -535,7 +536,7 @@ func (g *Generator) GoPackageName(importPath GoImportPath) GoPackageName {
 		return name
 	}
 	name := cleanPackageName(baseName(string(importPath)))
-	for i, orig := 1, name; g.usedPackageNames[name] || isGoPredeclaredIdentifier[string(name)]; i++ {
+	for i, orig := 1, name; g.usedPackageNames[name] || doc.IsPredeclared(string(name)); i++ {
 		name = orig + GoPackageName(strconv.Itoa(i))
 	}
 	g.packageNames[importPath] = name
@@ -567,80 +568,10 @@ func RegisterUniquePackageName(pkg string, f *FileDescriptor) string {
 	return string(name)
 }
 
-var isGoKeyword = map[string]bool{
-	"break":       true,
-	"case":        true,
-	"chan":        true,
-	"const":       true,
-	"continue":    true,
-	"default":     true,
-	"else":        true,
-	"defer":       true,
-	"fallthrough": true,
-	"for":         true,
-	"func":        true,
-	"go":          true,
-	"goto":        true,
-	"if":          true,
-	"import":      true,
-	"interface":   true,
-	"map":         true,
-	"package":     true,
-	"range":       true,
-	"return":      true,
-	"select":      true,
-	"struct":      true,
-	"switch":      true,
-	"type":        true,
-	"var":         true,
-}
-
-var isGoPredeclaredIdentifier = map[string]bool{
-	"append":     true,
-	"bool":       true,
-	"byte":       true,
-	"cap":        true,
-	"close":      true,
-	"complex":    true,
-	"complex128": true,
-	"complex64":  true,
-	"copy":       true,
-	"delete":     true,
-	"error":      true,
-	"false":      true,
-	"float32":    true,
-	"float64":    true,
-	"imag":       true,
-	"int":        true,
-	"int16":      true,
-	"int32":      true,
-	"int64":      true,
-	"int8":       true,
-	"iota":       true,
-	"len":        true,
-	"make":       true,
-	"new":        true,
-	"nil":        true,
-	"panic":      true,
-	"print":      true,
-	"println":    true,
-	"real":       true,
-	"recover":    true,
-	"rune":       true,
-	"string":     true,
-	"true":       true,
-	"uint":       true,
-	"uint16":     true,
-	"uint32":     true,
-	"uint64":     true,
-	"uint8":      true,
-	"uintptr":    true,
-}
-
 func cleanPackageName(name string) GoPackageName {
 	name = strings.Map(badToUnderscore, name)
 	// Identifier must not be keyword or predeclared identifier: insert _.
-	if isGoKeyword[name] {
+	if token.Lookup(name).IsKeyword() {
 		name = "_" + name
 	}
 	// Identifier must not begin with digit: insert _.
@@ -2264,7 +2195,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			of := oneofField{
 				fieldCommon: fieldCommon{
 					goName:     fname,
-					getterName: "Get"+fname,
+					getterName: "Get" + fname,
 					goType:     dname,
 					tags:       tag,
 					protoName:  odp.GetName(),
