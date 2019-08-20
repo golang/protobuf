@@ -10,8 +10,8 @@ PASS="\x1b[32mPASS"
 FAIL="\x1b[31mFAIL"
 RESET="\x1b[0m"
 
-echo -e "${BOLD}go test -tags proto1_legacy ./...${RESET}"
-RET_TEST0=$(go test -tags proto1_legacy ./... | egrep -v "^(ok|[?])\s+")
+echo -e "${BOLD}go test -tags protolegacy ./...${RESET}"
+RET_TEST0=$(go test -tags protolegacy ./... | egrep -v "^(ok|[?])\s+")
 if [[ ! -z "$RET_TEST0" ]]; then echo "$RET_TEST0"; echo; fi
 
 echo -e "${BOLD}go test -tags use_golang_protobuf_v1 ./...${RESET}"
