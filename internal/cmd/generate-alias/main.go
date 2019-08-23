@@ -86,6 +86,7 @@ func main() {
 	check(err)
 	for _, file := range gen.Files {
 		if file.Generate {
+			gengo.GenerateVersionMarkers = false
 			gengo.GenerateFile(gen, file)
 		}
 	}
