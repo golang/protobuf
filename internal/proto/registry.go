@@ -336,7 +336,7 @@ func RegisteredExtensions(m Message) extensionsByNumber {
 		if xs == nil {
 			xs = make(extensionsByNumber)
 		}
-		xs[int32(xt.Descriptor().Number())] = protoimpl.X.ExtensionDescFromType(xt)
+		xs[int32(xt.TypeDescriptor().Number())] = protoimpl.X.ExtensionDescFromType(xt)
 		return true
 	})
 
