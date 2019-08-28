@@ -473,7 +473,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 	p.dec = nil
 	wire := p.WireType
 
-	// since so many cases need it, decode int_encoder into a  string now
+	// since so many cases need it, decode int_encoder into a string now
 	var int32_encoder_txt, uint32_encoder_txt,
 		int64_encoder_txt, uint64_encoder_txt string
 	switch int_encoder {

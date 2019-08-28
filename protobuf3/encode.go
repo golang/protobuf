@@ -294,7 +294,7 @@ func (o *Buffer) enc_int(p *Properties, base unsafe.Pointer) {
 	p.valEnc(o, uint64(x))
 }
 
-// Encode an *int
+// Encode an *uint
 func (o *Buffer) enc_ptr_uint(p *Properties, base unsafe.Pointer) {
 	v := *(**uint)(unsafe.Pointer(uintptr(base) + p.offset))
 	if v == nil {
