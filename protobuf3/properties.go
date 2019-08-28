@@ -910,8 +910,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				// save checking the array length at encode-time by doing it now
 				// a zero-length array will always encode as nothing
 				p.enc = (*Buffer).enc_nothing
-				// and a zero-length array need not have any decoder
-				p.dec = nil
+				p.dec = (*Buffer).dec_nothing
 				break
 			}
 

@@ -1380,6 +1380,11 @@ func (o *Buffer) dec_array_marshaler(p *Properties, base unsafe.Pointer) error {
 	return err
 }
 
+// dummy no-op decoder used for decoding 0-length array types
+func (o *Buffer) dec_nothing(p *Properties, base unsafe.Pointer) error {
+	return nil
+}
+
 // custom decoder for protobuf3 standard Timestamp, decoding it into the standard go time.Time
 func (o *Buffer) dec_time_Time(p *Properties, base unsafe.Pointer) error {
 	return o.decode_time_Time((*time.Time)(unsafe.Pointer(uintptr(base) + p.offset)))
