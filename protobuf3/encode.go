@@ -314,6 +314,16 @@ func (o *Buffer) enc_uint(p *Properties, base unsafe.Pointer) {
 	p.valEnc(o, uint64(x))
 }
 
+// Encode an *int8.
+func (o *Buffer) enc_ptr_int8(p *Properties, base unsafe.Pointer) {
+	v := *(**int8)(unsafe.Pointer(uintptr(base) + p.offset))
+	if v == nil {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(*v))
+}
+
 // Encode an int8
 func (o *Buffer) enc_int8(p *Properties, base unsafe.Pointer) {
 	x := *(*int8)(unsafe.Pointer(uintptr(base) + p.offset))
@@ -322,6 +332,17 @@ func (o *Buffer) enc_int8(p *Properties, base unsafe.Pointer) {
 	}
 	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, uint64(x))
+}
+
+// Encode a *uint8.
+// Exactly the same as int8, except for no sign extension.
+func (o *Buffer) enc_ptr_uint8(p *Properties, base unsafe.Pointer) {
+	v := *(**uint8)(unsafe.Pointer(uintptr(base) + p.offset))
+	if v == nil {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(*v))
 }
 
 // Encode a uint8
@@ -334,6 +355,16 @@ func (o *Buffer) enc_uint8(p *Properties, base unsafe.Pointer) {
 	p.valEnc(o, uint64(x))
 }
 
+// Encode an *int16.
+func (o *Buffer) enc_ptr_int16(p *Properties, base unsafe.Pointer) {
+	v := *(**int16)(unsafe.Pointer(uintptr(base) + p.offset))
+	if v == nil {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(*v))
+}
+
 // Encode an int16
 func (o *Buffer) enc_int16(p *Properties, base unsafe.Pointer) {
 	x := *(*int16)(unsafe.Pointer(uintptr(base) + p.offset))
@@ -342,6 +373,17 @@ func (o *Buffer) enc_int16(p *Properties, base unsafe.Pointer) {
 	}
 	o.buf = append(o.buf, p.tagcode...)
 	p.valEnc(o, uint64(x))
+}
+
+// Encode a *uint16.
+// Exactly the same as int16, except for no sign extension.
+func (o *Buffer) enc_ptr_uint16(p *Properties, base unsafe.Pointer) {
+	v := *(**uint16)(unsafe.Pointer(uintptr(base) + p.offset))
+	if v == nil {
+		return
+	}
+	o.buf = append(o.buf, p.tagcode...)
+	p.valEnc(o, uint64(*v))
 }
 
 // Encode a uint16
@@ -616,6 +658,38 @@ func (o *Buffer) enc_slice_packed_int16(p *Properties, base unsafe.Pointer) {
 	buf.release()
 }
 
+// Encode an array of int8s ([length]int8) in packed format.
+func (o *Buffer) enc_array_packed_int8(p *Properties, base unsafe.Pointer) {
+	n := p.length
+	s := ((*[maxLen]int8)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
+
+	buf := newBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, uint64(x))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+	buf.release()
+}
+
+// Encode an array of int16s ([length]int16) in packed format.
+func (o *Buffer) enc_array_packed_int16(p *Properties, base unsafe.Pointer) {
+	n := p.length
+	s := ((*[maxLen / 2]int16)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
+
+	buf := newBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, uint64(x))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+	buf.release()
+}
+
 // Encode a slice of uint16s ([]uint16) in packed format.
 func (o *Buffer) enc_slice_packed_uint16(p *Properties, base unsafe.Pointer) {
 	s := *(*[]uint16)(unsafe.Pointer(uintptr(base) + p.offset))
@@ -623,6 +697,22 @@ func (o *Buffer) enc_slice_packed_uint16(p *Properties, base unsafe.Pointer) {
 	if l == 0 {
 		return
 	}
+	buf := newBuffer(nil)
+	for _, x := range s {
+		p.valEnc(buf, uint64(x))
+	}
+
+	o.buf = append(o.buf, p.tagcode...)
+	o.EncodeVarint(uint64(len(buf.buf)))
+	o.buf = append(o.buf, buf.buf...)
+	buf.release()
+}
+
+// Encode an array of uint16s ([length]uint16) in packed format.
+func (o *Buffer) enc_array_packed_uint16(p *Properties, base unsafe.Pointer) {
+	n := p.length
+	s := ((*[maxLen / 2]uint16)(unsafe.Pointer(uintptr(base) + p.offset)))[0:n:n]
+
 	buf := newBuffer(nil)
 	for _, x := range s {
 		p.valEnc(buf, uint64(x))

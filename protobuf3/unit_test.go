@@ -1363,3 +1363,75 @@ func TestMapOfSliceOfStruct(t *testing.T) {
 		t.Error("unmarshal(marshal(x)) != x")
 	}
 }
+
+// integers smaller than protobuf natively supports
+type SmallVarIntMsg struct {
+	i8  int8   `protobuf:"varint,30"`
+	u8  uint8  `protobuf:"varint,31"`
+	i16 int16  `protobuf:"varint,32"`
+	u16 uint16 `protobuf:"varint,33"`
+
+	pi8  *int8   `protobuf:"varint,34"`
+	pu8  *uint8  `protobuf:"varint,35"`
+	pi16 *int16  `protobuf:"varint,36"`
+	pu16 *uint16 `protobuf:"varint,37"`
+
+	si8  []int8   `protobuf:"varint,38,packed"`
+	su8  []uint8  `protobuf:"varint,39,packed"`
+	si16 []int16  `protobuf:"varint,40,packed"`
+	su16 []uint16 `protobuf:"varint,41,packed"`
+
+	ai8  [2]int8   `protobuf:"varint,42,packed"`
+	au8  [3]uint8  `protobuf:"varint,43,packed"`
+	ai16 [1]int16  `protobuf:"varint,44,packed"`
+	au16 [1]uint16 `protobuf:"varint,45,packed"`
+
+	// try a zero-length array type too
+	zu16 [0]uint16 `protobuf:"varint,46,packed"`
+}
+
+func TestSmallVarIntMsg(t *testing.T) {
+	i8 := int8(-4)
+	u8 := uint8(4)
+	i16 := int16(4567)
+	u16 := uint16(55555)
+
+	m := SmallVarIntMsg{
+		i8:  -8,
+		u8:  9,
+		i16: -10,
+		u16: 11,
+
+		pi8:  &i8,
+		pu8:  &u8,
+		pi16: &i16,
+		pu16: &u16,
+
+		si8:  []int8{-1, 2, -3},
+		su8:  []uint8{1, 127, 128, 255},
+		si16: []int16{-10000, 20000, -30000},
+		su16: []uint16{0, 30000, 60000},
+
+		ai8:  [2]int8{3, -4},
+		au8:  [3]uint8{0, 0, 99},
+		ai16: [1]int16{-0x7770},
+		au16: [1]uint16{16},
+
+		zu16: [0]uint16{},
+	}
+
+	b, err := protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var m2 SmallVarIntMsg
+	err = protobuf3.Unmarshal(b, &m2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !reflect.DeepEqual(&m, &m2) {
+		t.Error("unmarshal(marshal(x)) != x")
+	}
+}
