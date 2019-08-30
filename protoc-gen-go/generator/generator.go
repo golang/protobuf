@@ -1916,6 +1916,7 @@ func (f *oneofField) getter(g *Generator, mc *msgCtx) {
 	// The discriminator type
 	g.P("type ", f.goType, " interface {")
 	g.P(f.goType, "()")
+	g.P("OneOfValue() interface{}")
 	g.P("}")
 	g.P()
 	// The subField types, fulfilling the discriminator type contract
@@ -1927,6 +1928,11 @@ func (f *oneofField) getter(g *Generator, mc *msgCtx) {
 	}
 	for _, sf := range f.subFields {
 		g.P("func (*", sf.oneofTypeName, ") ", f.goType, "() {}")
+		g.P()
+		g.P("func (m *", sf.oneofTypeName, ") OneOfValue() interface{} {")
+		g.P("if m != nil { return m.", sf.goName, " }")
+		g.P("return nil")
+		g.P("}")
 		g.P()
 	}
 	// Getter for the oneof field
