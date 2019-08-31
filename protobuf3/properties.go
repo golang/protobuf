@@ -68,6 +68,8 @@ var MakeFieldName func(f string, t reflect.Type) string = MakeLowercaseFieldName
 // of a field named f.
 var MakeTypeName func(t reflect.Type, f string) string = MakeUppercaseTypeName
 
+// MakePackageName is a pointer to a function which returns what should be the name of the protobuf package given the go package path.
+// By default it simply returns the last component of the pkgpath.
 var MakePackageName func(pkgpath string) string = MakeSamePackageName
 
 // AsProtobuf3er is the interface which returns the protobuf v3 type equivalent to what the MarshalProtobuf3() method
@@ -219,6 +221,12 @@ func MakeSamePackageName(pkgpath string) string {
 
 // returns the type expressed in protobuf v3 format, including all dependent types and imports
 func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
+	return AsProtobufFull2(t, nil, more...)
+}
+
+// returns the type expressed in protobuf v3 format, including all dependent types and imports
+// extra_headers allow the caller to specify headers they want inserted after the `package` line.
+func AsProtobufFull2(t reflect.Type, extra_package_headers []string, more ...reflect.Type) string {
 	// dig down through any pointer types on the first type, since we'll use that one to determine the package
 	for t.Kind() == reflect.Ptr {
 		t = t.Elem()
@@ -240,6 +248,8 @@ func AsProtobufFull(t reflect.Type, more ...reflect.Type) string {
 	if pkgpath != "" {
 		headers = append(headers, fmt.Sprintf("package %s;", MakePackageName(pkgpath)))
 	} // else the type is synthesized and lacks a path; humans need to deal with the output (after all they caused this)
+
+	headers = append(headers, extra_package_headers...)
 
 	// place all the arguments in the todo table to start things off
 	todo[t] = struct{}{}
