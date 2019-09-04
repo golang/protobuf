@@ -837,6 +837,7 @@ func TestTimeMsg(t *testing.T) {
 
 type CustomMsg struct {
 	Slice CustomSlice `protobuf:"bytes,1"`
+	Int   CustomInt   `protobuf:"varint,2"`
 }
 
 type CustomSlice [][]uint32
@@ -878,8 +879,27 @@ func (s *CustomSlice) UnmarshalProtobuf3(data []byte) error {
 	return nil
 }
 
+type CustomInt uint32
+
+func (i *CustomInt) MarshalProtobuf3() ([]byte, error) {
+	var buf protobuf3.Buffer
+	buf.EncodeVarint(uint64(*i))
+	return buf.Bytes(), nil
+}
+
+func (i *CustomInt) UnmarshalProtobuf3(data []byte) error {
+	buf := protobuf3.NewBuffer(data)
+	x, err := buf.DecodeVarint()
+	if err != nil {
+		return err
+	}
+	*i = CustomInt(x)
+	return nil
+}
+
 type EquivToCustomMsg struct {
 	Custom *EquivCustomSlices `protobuf:"bytes,1"`
+	Int    uint32             `protobuf:"varint,2"`
 }
 
 type EquivCustomSlices struct {
@@ -898,6 +918,7 @@ func (m *EquivCustomSlices) Reset()         { *m = EquivCustomSlices{} }
 func TestCustomMsg(t *testing.T) {
 	m := CustomMsg{
 		Slice: CustomSlice{[]uint32{1, 2}, []uint32{3, 4, 5}},
+		Int:   54321,
 	}
 
 	o := EquivToCustomMsg{
@@ -905,6 +926,7 @@ func TestCustomMsg(t *testing.T) {
 			Slice1: []uint32{1, 2},
 			Slice2: []uint32{3, 4, 5},
 		},
+		Int: 54321,
 	}
 
 	check(&o, &o, t)
