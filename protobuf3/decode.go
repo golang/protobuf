@@ -354,13 +354,20 @@ func (p *Buffer) SkipVarint() error {
 	return errOverflow
 }
 
-// SkipFixed skips over n bytes. Useful for skipping over Fixed32 and Fixed64 with proper arguments
-func (p *Buffer) SkipFixed(n int) error {
-	p.index += n
-	if p.index > len(p.buf) {
-		p.index = len(p.buf)
+// SkipFixed skips over n bytes. Useful for skipping over Fixed32 and Fixed64 with proper arguments,
+// but also used to skip over arbitrary lengths.
+func (p *Buffer) SkipFixed(n uint64) error {
+	nb := int(n)
+	if nb < 0 || uint64(nb) != n {
+		return fmt.Errorf("protobuf3: bad skip length %d", n)
+	}
+
+	i := p.index + nb
+	if i < p.index || i > len(p.buf) {
 		return io.ErrUnexpectedEOF
 	}
+
+	p.index = i
 	return nil
 }
 
