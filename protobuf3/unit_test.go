@@ -37,6 +37,7 @@ package protobuf3_test
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
 	"reflect"
 	"testing"
@@ -836,8 +837,9 @@ func TestTimeMsg(t *testing.T) {
 }
 
 type CustomMsg struct {
-	Slice CustomSlice `protobuf:"bytes,1"`
-	Int   CustomInt   `protobuf:"varint,2"`
+	Slice  CustomSlice  `protobuf:"bytes,1"`
+	Int    CustomInt    `protobuf:"varint,2"`
+	Fixedp *CustomFixed `protobuf:"fixed32,3"`
 }
 
 type CustomSlice [][]uint32
@@ -897,9 +899,26 @@ func (i *CustomInt) UnmarshalProtobuf3(data []byte) error {
 	return nil
 }
 
+type CustomFixed uint32
+
+func (i *CustomFixed) MarshalProtobuf3() ([]byte, error) {
+	var buf [4]byte
+	binary.LittleEndian.PutUint32(buf[:], uint32(*i))
+	return buf[:], nil
+}
+
+func (i *CustomFixed) UnmarshalProtobuf3(data []byte) error {
+	if len(data) != 4 {
+		return fmt.Errorf("fixed32 data length %d is not 4", len(data))
+	}
+	*i = CustomFixed(binary.LittleEndian.Uint32(data))
+	return nil
+}
+
 type EquivToCustomMsg struct {
 	Custom *EquivCustomSlices `protobuf:"bytes,1"`
 	Int    uint32             `protobuf:"varint,2"`
+	Fixedp *uint32            `protobuf:"fixed32,3"`
 }
 
 type EquivCustomSlices struct {
@@ -916,17 +935,21 @@ func (m *EquivCustomSlices) String() string { return fmt.Sprintf("%+v", *m) }
 func (m *EquivCustomSlices) Reset()         { *m = EquivCustomSlices{} }
 
 func TestCustomMsg(t *testing.T) {
+	var custom_int = CustomFixed(7)
 	m := CustomMsg{
-		Slice: CustomSlice{[]uint32{1, 2}, []uint32{3, 4, 5}},
-		Int:   54321,
+		Slice:  CustomSlice{[]uint32{1, 2}, []uint32{3, 4, 5}},
+		Int:    5,
+		Fixedp: &custom_int,
 	}
 
+	var custom_uint32 = uint32(custom_int)
 	o := EquivToCustomMsg{
 		Custom: &EquivCustomSlices{
 			Slice1: []uint32{1, 2},
 			Slice2: []uint32{3, 4, 5},
 		},
-		Int: 54321,
+		Int:    5,
+		Fixedp: &custom_uint32,
 	}
 
 	check(&o, &o, t)
