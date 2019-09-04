@@ -221,6 +221,7 @@ func (o *Buffer) Marshal(pb Message) error {
 		if err != nil {
 			o.noteError(err)
 		}
+		// the entire message marshaled itself without us
 		o.buf = append(o.buf, data...)
 		return o.err
 	}
@@ -492,7 +493,11 @@ func (o *Buffer) enc_marshaler(p *Properties, base unsafe.Pointer) {
 		return
 	}
 	o.buf = append(o.buf, p.tagcode...)
-	o.EncodeRawBytes(data)
+	if p.WireType == WireBytes {
+		// bytes wiretype need to be prefixed by the length of the bytes array
+		o.EncodeVarint(uint64(len(data)))
+	} // the other wiretypes (varint, fixed, zigzag) encode the length implicitly
+	o.buf = append(o.buf, data...)
 }
 
 // Encode an message struct field of a message struct.
@@ -521,7 +526,10 @@ func (o *Buffer) enc_ptr_marshaler(p *Properties, base unsafe.Pointer) {
 		return
 	}
 	o.buf = append(o.buf, p.tagcode...)
-	o.EncodeRawBytes(data)
+	if p.WireType == WireBytes {
+		o.EncodeVarint(uint64(len(data)))
+	}
+	o.buf = append(o.buf, data...)
 }
 
 // Encode a *message struct.
@@ -876,7 +884,10 @@ func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base unsafe.Pointer
 			}
 			// note in a slice we always encode the data, even if it is nil, in order to preserve indexing of the slice
 			o.buf = append(o.buf, p.tagcode...)
-			o.EncodeRawBytes(data)
+			if p.WireType == WireBytes {
+				o.EncodeVarint(uint64(len(data)))
+			}
+			o.buf = append(o.buf, data...)
 		}
 		return
 	}
@@ -913,7 +924,10 @@ func (o *Buffer) enc_array_ptr_struct_message(p *Properties, base unsafe.Pointer
 			}
 			// note in an array we always encode the data, even if it is nil, in order to preserve indexing of the array
 			o.buf = append(o.buf, p.tagcode...)
-			o.EncodeRawBytes(data)
+			if p.WireType == WireBytes {
+				o.EncodeVarint(uint64(len(data)))
+			}
+			o.buf = append(o.buf, data...)
 		}
 		return
 	}
@@ -965,7 +979,10 @@ func (o *Buffer) enc_slice_marshaler(p *Properties, base unsafe.Pointer) {
 		}
 		// note in a slice we always encode the data, even if it is nil, in order to preserve indexing of the slice
 		o.buf = append(o.buf, p.tagcode...)
-		o.EncodeRawBytes(data)
+		if p.WireType == WireBytes {
+			o.EncodeVarint(uint64(len(data)))
+		}
+		o.buf = append(o.buf, data...)
 	}
 }
 
@@ -992,7 +1009,10 @@ func enc_struct_messages(o *Buffer, p *Properties, base unsafe.Pointer, n int) {
 			}
 			// note in a slice we always encode the data, even if it is nil, in order to preserve indexing of the slice
 			o.buf = append(o.buf, p.tagcode...)
-			o.EncodeRawBytes(data)
+			if p.WireType == WireBytes {
+				o.EncodeVarint(uint64(len(data)))
+			}
+			o.buf = append(o.buf, data...)
 		}
 		return
 	}

@@ -372,7 +372,7 @@ type Properties struct {
 	tagcode     string            // encoding of EncodeVarint((Tag<<3)|WireType), stored in a string for efficiency
 	stype       reflect.Type      // set for struct types only
 	sprop       *StructProperties // set for struct types only
-	isMarshaler bool
+	isMarshaler bool              // true if the type implements Marshaler and marshals/unmarshals itself
 
 	mtype    reflect.Type // set for map types only
 	mkeyprop *Properties  // set for map types only
