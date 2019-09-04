@@ -66,7 +66,7 @@ type Message interface {
 // rather than being expensive copies.
 type Buffer struct {
 	buf           []byte                 // encode/decode byte stream
-	index         int                    // read point
+	index         int                    // read position in .buf[]
 	Immutable     bool                   // true if we the caller promises the contents of buf[] are immutable, and thus we can retain references to it for types which decode into []byte
 	err           error                  // nil, or the first error which happened during operation
 	array_indexes map[unsafe.Pointer]int // map of base address of array -> index of next unfilled slot (or nil if never used)
