@@ -509,6 +509,34 @@ func (o *Buffer) skip(t reflect.Type, wire WireType) error {
 	return err
 }
 
+// Get the value of the next item in the buffer. Similar to skip() but also returns the value.
+// t can be nil
+func (o *Buffer) get(t reflect.Type, wire WireType) ([]byte, error) {
+	var err error
+
+	start := o.index
+	switch wire {
+	case WireVarint:
+		err = o.SkipVarint()
+	case WireBytes:
+		n, err := o.DecodeVarint()
+		start = o.index // reset the starting index to where the byte payload starts
+		if err == nil {
+			err = o.SkipFixed(n)
+		}
+	case WireFixed64:
+		err = o.SkipFixed(8)
+	case WireFixed32:
+		err = o.SkipFixed(4)
+	default:
+		err = fmt.Errorf("protobuf3: can't get unknown wiretype %v for %v", wire, t)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return o.buf[start:o.index:o.index], nil // set slice cap out of paranoid, should someone ever append()
+}
+
 // Individual type decoders
 // For each,
 //	u is the decoded value,
@@ -1318,7 +1346,7 @@ func (o *Buffer) dec_array_ptr_struct_message(p *Properties, base unsafe.Pointer
 
 // Decode an embedded message that can unmarshal itself
 func (o *Buffer) dec_marshaler(p *Properties, base unsafe.Pointer) error {
-	raw, err := o.DecodeRawBytes()
+	raw, err := o.get(p.stype, p.WireType)
 	if err != nil {
 		return err
 	}
@@ -1330,7 +1358,7 @@ func (o *Buffer) dec_marshaler(p *Properties, base unsafe.Pointer) error {
 
 // Decode a pointer to an embedded message that can unmarshal itself
 func (o *Buffer) dec_ptr_marshaler(p *Properties, base unsafe.Pointer) error {
-	raw, err := o.DecodeRawBytes()
+	raw, err := o.get(p.stype, p.WireType)
 	if err != nil {
 		return err
 	}
@@ -1349,7 +1377,7 @@ func (o *Buffer) dec_ptr_marshaler(p *Properties, base unsafe.Pointer) error {
 
 // Decode into slice of things which can marshal themselves
 func (o *Buffer) dec_slice_marshaler(p *Properties, base unsafe.Pointer) error {
-	raw, err := o.DecodeRawBytes()
+	raw, err := o.get(p.stype, p.WireType)
 	if err != nil {
 		return err
 	}
@@ -1369,7 +1397,7 @@ func (o *Buffer) dec_slice_marshaler(p *Properties, base unsafe.Pointer) error {
 
 // Decode into an array of Marshalers ([N]T, where T implements Marshaler)
 func (o *Buffer) dec_array_marshaler(p *Properties, base unsafe.Pointer) error {
-	raw, err := o.DecodeRawBytes()
+	raw, err := o.get(p.stype, p.WireType)
 	if err != nil {
 		return err
 	}
