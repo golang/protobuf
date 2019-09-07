@@ -329,11 +329,14 @@ func (g *grpc) generateClientMethod(servName, fullServName, serviceDescVar strin
 	methName := generator.CamelCase(method.GetName())
 	inType := g.typeName(method.GetInputType())
 	outType := g.typeName(method.GetOutputType())
+	statusPkg := string(g.gen.AddImport(statusPkgPath))
+	codePkg := string(g.gen.AddImport(codePkgPath))
 
 	if method.GetOptions().GetDeprecated() {
 		g.P(deprecationComment)
 	}
 	g.P("func (c *", unexport(servName), "Client) ", g.generateClientSignature(servName, method), "{")
+	g.P("if c.cc == nil { return nil, ", statusPkg, `.Errorf(`, codePkg, `.FailedPrecondition, "grpc connection is nil") }`)
 	if !method.GetServerStreaming() && !method.GetClientStreaming() {
 		g.P("out := new(", outType, ")")
 		// TODO: Pass descExpr to Invoke.
