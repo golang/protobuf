@@ -221,6 +221,9 @@ func NewDeprecatedServiceClient(cc *grpc.ClientConn) DeprecatedServiceClient {
 
 // Deprecated: Do not use.
 func (c *deprecatedServiceClient) DeprecatedCall(ctx context.Context, in *DeprecatedRequest, opts ...grpc.CallOption) (*DeprecatedResponse, error) {
+	if c.cc == nil {
+		return nil, status.Errorf(codes.FailedPrecondition, "grpc connection is nil")
+	}
 	out := new(DeprecatedResponse)
 	err := c.cc.Invoke(ctx, "/deprecated.DeprecatedService/DeprecatedCall", in, out, opts...)
 	if err != nil {

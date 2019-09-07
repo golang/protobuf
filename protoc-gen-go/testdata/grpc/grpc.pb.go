@@ -207,6 +207,9 @@ func NewTestClient(cc *grpc.ClientConn) TestClient {
 }
 
 func (c *testClient) UnaryCall(ctx context.Context, in *SimpleRequest, opts ...grpc.CallOption) (*SimpleResponse, error) {
+	if c.cc == nil {
+		return nil, status.Errorf(codes.FailedPrecondition, "grpc connection is nil")
+	}
 	out := new(SimpleResponse)
 	err := c.cc.Invoke(ctx, "/grpc.testing.Test/UnaryCall", in, out, opts...)
 	if err != nil {
@@ -216,6 +219,9 @@ func (c *testClient) UnaryCall(ctx context.Context, in *SimpleRequest, opts ...g
 }
 
 func (c *testClient) Downstream(ctx context.Context, in *SimpleRequest, opts ...grpc.CallOption) (Test_DownstreamClient, error) {
+	if c.cc == nil {
+		return nil, status.Errorf(codes.FailedPrecondition, "grpc connection is nil")
+	}
 	stream, err := c.cc.NewStream(ctx, &_Test_serviceDesc.Streams[0], "/grpc.testing.Test/Downstream", opts...)
 	if err != nil {
 		return nil, err
@@ -248,6 +254,9 @@ func (x *testDownstreamClient) Recv() (*StreamMsg, error) {
 }
 
 func (c *testClient) Upstream(ctx context.Context, opts ...grpc.CallOption) (Test_UpstreamClient, error) {
+	if c.cc == nil {
+		return nil, status.Errorf(codes.FailedPrecondition, "grpc connection is nil")
+	}
 	stream, err := c.cc.NewStream(ctx, &_Test_serviceDesc.Streams[1], "/grpc.testing.Test/Upstream", opts...)
 	if err != nil {
 		return nil, err
@@ -282,6 +291,9 @@ func (x *testUpstreamClient) CloseAndRecv() (*SimpleResponse, error) {
 }
 
 func (c *testClient) Bidi(ctx context.Context, opts ...grpc.CallOption) (Test_BidiClient, error) {
+	if c.cc == nil {
+		return nil, status.Errorf(codes.FailedPrecondition, "grpc connection is nil")
+	}
 	stream, err := c.cc.NewStream(ctx, &_Test_serviceDesc.Streams[2], "/grpc.testing.Test/Bidi", opts...)
 	if err != nil {
 		return nil, err
