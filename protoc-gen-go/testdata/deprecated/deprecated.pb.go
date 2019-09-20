@@ -207,6 +207,8 @@ const _ = grpc.SupportPackageIsVersion4
 // Deprecated: Do not use.
 type DeprecatedServiceClient interface {
 	// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
+	//
+	// Deprecated: Do not use.
 	DeprecatedCall(ctx context.Context, in *DeprecatedRequest, opts ...grpc.CallOption) (*DeprecatedResponse, error)
 }
 
@@ -234,6 +236,8 @@ func (c *deprecatedServiceClient) DeprecatedCall(ctx context.Context, in *Deprec
 // Deprecated: Do not use.
 type DeprecatedServiceServer interface {
 	// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
+	//
+	// Deprecated: Do not use.
 	DeprecatedCall(context.Context, *DeprecatedRequest) (*DeprecatedResponse, error)
 }
 
