@@ -204,6 +204,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 //
+// Unstable: When implementing, embed an anonymous DeprecatedServiceClient field from NewDeprecatedServiceClient for forward compatibility.
+//
 // Deprecated: Do not use.
 type DeprecatedServiceClient interface {
 	// DeprecatedCall takes a DeprecatedRequest and returns a DeprecatedResponse.
@@ -232,6 +234,8 @@ func (c *deprecatedServiceClient) DeprecatedCall(ctx context.Context, in *Deprec
 }
 
 // DeprecatedServiceServer is the server API for DeprecatedService service.
+//
+// Unstable: When implementing, embed an anonymous UnimplementedDeprecatedServiceServer field for forward compatibility.
 //
 // Deprecated: Do not use.
 type DeprecatedServiceServer interface {

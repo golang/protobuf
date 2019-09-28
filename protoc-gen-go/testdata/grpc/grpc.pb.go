@@ -188,6 +188,8 @@ const _ = grpc.SupportPackageIsVersion4
 // TestClient is the client API for Test service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+//
+// Unstable: When implementing, embed an anonymous TestClient field from NewTestClient for forward compatibility.
 type TestClient interface {
 	UnaryCall(ctx context.Context, in *SimpleRequest, opts ...grpc.CallOption) (*SimpleResponse, error)
 	// This RPC streams from the server only.
@@ -313,6 +315,8 @@ func (x *testBidiClient) Recv() (*StreamMsg2, error) {
 }
 
 // TestServer is the server API for Test service.
+//
+// Unstable: When implementing, embed an anonymous UnimplementedTestServer field for forward compatibility.
 type TestServer interface {
 	UnaryCall(context.Context, *SimpleRequest) (*SimpleResponse, error)
 	// This RPC streams from the server only.

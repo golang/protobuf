@@ -157,6 +157,8 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P(fmt.Sprintf(`// %sClient is the client API for %s service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.`, servName, servName))
+	g.P("//")
+	g.P("// Unstable: When implementing, embed an anonymous ", servName, "Client field from New", servName, "Client for forward compatibility.")
 
 	// Client interface.
 	if deprecated {
@@ -210,6 +212,8 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	// Server interface.
 	serverType := servName + "Server"
 	g.P("// ", serverType, " is the server API for ", servName, " service.")
+	g.P("//")
+	g.P("// Unstable: When implementing, embed an anonymous Unimplemented", serverType, " field for forward compatibility.")
 	if deprecated {
 		g.P("//")
 		g.P(deprecationComment)
