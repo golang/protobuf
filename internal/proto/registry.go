@@ -285,7 +285,7 @@ func MessageType(s messageName) reflect.Type {
 	var t reflect.Type
 	mt, _ := protoregistry.GlobalTypes.FindMessageByName(pref.FullName(s))
 	if mt != nil {
-		t = mt.GoType()
+		t = reflect.TypeOf(mt.Zero().Interface())
 	}
 	// TODO: Support retrieving Go map types for map entry messages?
 
