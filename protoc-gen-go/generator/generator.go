@@ -410,6 +410,8 @@ type Generator struct {
 	ImportPrefix      string            // String to prefix to imported package file names.
 	ImportMap         map[string]string // Mapping from .proto file name to import path
 
+	customJsonTag bool // enable custom json tag
+
 	Pkg map[string]string // The names under which we import support packages
 
 	outputImportPath GoImportPath                   // Package we're generating code for.
@@ -495,6 +497,10 @@ func (g *Generator) CommandLineParameters(parameter string) {
 		case "annotate_code":
 			if v == "true" {
 				g.annotateCode = true
+			}
+		case "custom_json_tag":
+			if v == "true" {
+				g.customJsonTag = true
 			}
 		default:
 			if len(k) > 0 && k[0] == 'M' {
@@ -2240,6 +2246,9 @@ func (g *Generator) generateMessage(message *Descriptor) {
 		fieldName, fieldGetterName := ns[0], ns[1]
 		typename, wiretype := g.GoType(message, field)
 		jsonName := *field.Name
+		if g.customJsonTag && field.GetJsonName() != "" {
+			jsonName = field.GetJsonName()
+		}
 		tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(message, field, wiretype), jsonName+",omitempty")
 
 		oneof := field.OneofIndex != nil
@@ -2264,7 +2273,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			of := oneofField{
 				fieldCommon: fieldCommon{
 					goName:     fname,
-					getterName: "Get"+fname,
+					getterName: "Get" + fname,
 					goType:     dname,
 					tags:       tag,
 					protoName:  odp.GetName(),
