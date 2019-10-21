@@ -590,7 +590,7 @@ func TestUnmarshalRepeatingNonRepeatedExtension(t *testing.T) {
 		var want pb.ComplexExtension
 
 		// Generate a serialized representation of a repeated extension
-		// by catenating bytes together.
+		// by concatenating bytes together.
 		for i, e := range test.ext {
 			// Merge to create the wanted proto.
 			proto.Merge(&want, e)
