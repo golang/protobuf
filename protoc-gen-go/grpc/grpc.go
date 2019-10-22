@@ -226,7 +226,7 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	g.P("}")
 	g.P()
 
-	// Server Unimplemented struct for forward compatability.
+	// Server Unimplemented struct for forward compatibility.
 	if deprecated {
 		g.P(deprecationComment)
 	}
