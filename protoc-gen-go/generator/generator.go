@@ -1997,7 +1997,6 @@ func (g *Generator) generateDefaultConstants(mc *msgCtx, topLevelFields []topLev
 		}
 		kind := "const "
 		switch {
-		case typename == "bool":
 		case typename == "string":
 			def = strconv.Quote(def)
 		case typename == "[]byte":
