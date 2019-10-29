@@ -587,7 +587,6 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 				out.write("\n")
 				out.write(indent)
 				out.write(m.Indent)
-				out.write(m.Indent)
 			}
 
 			// TODO handle map key prop properly
