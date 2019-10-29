@@ -40,16 +40,18 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/lightninglabs/protobuf/proto"
 
-	pb "github.com/golang/protobuf/jsonpb/jsonpb_test_proto"
-	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
-	"github.com/golang/protobuf/ptypes"
-	anypb "github.com/golang/protobuf/ptypes/any"
-	durpb "github.com/golang/protobuf/ptypes/duration"
-	stpb "github.com/golang/protobuf/ptypes/struct"
-	tspb "github.com/golang/protobuf/ptypes/timestamp"
-	wpb "github.com/golang/protobuf/ptypes/wrappers"
+	pb "github.com/lightninglabs/protobuf/jsonpb/jsonpb_test_proto"
+	proto3pb "github.com/lightninglabs/protobuf/proto/proto3_proto"
+	"github.com/lightninglabs/protobuf/ptypes"
+	anypb "github.com/lightninglabs/protobuf/ptypes/any"
+	durpb "github.com/lightninglabs/protobuf/ptypes/duration"
+	stpb "github.com/lightninglabs/protobuf/ptypes/struct"
+	tspb "github.com/lightninglabs/protobuf/ptypes/timestamp"
+	wpb "github.com/lightninglabs/protobuf/ptypes/wrappers"
+
+	"github.com/lightninglabs/protobuf/json"
 )
 
 var (

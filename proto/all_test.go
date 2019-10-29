@@ -45,11 +45,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/jsonpb"
-	. "github.com/golang/protobuf/proto"
-	pb3 "github.com/golang/protobuf/proto/proto3_proto"
-	. "github.com/golang/protobuf/proto/test_proto"
-	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/lightninglabs/protobuf/jsonpb"
+	. "github.com/lightninglabs/protobuf/proto"
+	pb3 "github.com/lightninglabs/protobuf/proto/proto3_proto"
+	. "github.com/lightninglabs/protobuf/proto/test_proto"
+	descriptorpb "github.com/lightninglabs/protobuf/protoc-gen-go/descriptor"
 )
 
 var globalO *Buffer

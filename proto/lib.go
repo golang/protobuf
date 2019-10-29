@@ -99,7 +99,7 @@ The resulting file, test.pb.go, is:
 
 	package example
 
-	import proto "github.com/golang/protobuf/proto"
+	import proto "github.com/lightninglabs/protobuf/proto"
 	import math "math"
 
 	type FOO int32
@@ -226,7 +226,7 @@ To create and play with a Test object:
 	import (
 		"log"
 
-		"github.com/golang/protobuf/proto"
+		"github.com/lightninglabs/protobuf/proto"
 		pb "./example.pb"
 	)
 

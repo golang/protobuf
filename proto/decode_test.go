@@ -37,8 +37,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	tpb "github.com/golang/protobuf/proto/proto3_proto"
+	"github.com/lightninglabs/protobuf/proto"
+	tpb "github.com/lightninglabs/protobuf/proto/proto3_proto"
 )
 
 var msgBlackhole = new(tpb.Message)

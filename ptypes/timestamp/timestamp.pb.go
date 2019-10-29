@@ -5,7 +5,7 @@ package timestamp
 
 import (
 	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
+	proto "github.com/lightninglabs/protobuf/proto"
 	math "math"
 )
 

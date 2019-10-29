@@ -34,10 +34,10 @@ package proto_test
 import (
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/lightninglabs/protobuf/proto"
 
-	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
-	pb "github.com/golang/protobuf/proto/test_proto"
+	proto3pb "github.com/lightninglabs/protobuf/proto/proto3_proto"
+	pb "github.com/lightninglabs/protobuf/proto/test_proto"
 )
 
 var cloneTestMessage = &pb.MyMessage{

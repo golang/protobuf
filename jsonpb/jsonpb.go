@@ -51,9 +51,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/lightninglabs/protobuf/proto"
 
-	stpb "github.com/golang/protobuf/ptypes/struct"
+	stpb "github.com/lightninglabs/protobuf/ptypes/struct"
 )
 
 const secondInNanos = int64(time.Second / time.Nanosecond)
