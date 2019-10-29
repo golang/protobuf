@@ -14,7 +14,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"fmt"
-	"internal/testenv"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -139,7 +138,7 @@ func BenchmarkMarshalBytes(b *testing.B) {
 	// 32 fits within encodeState.scratch.
 	b.Run("32", benchMarshalBytes(32))
 	// 256 doesn't fit in encodeState.scratch, but is small enough to
-	// allocate and avoid the slower base64.NewEncoder.
+	// allocate and avoid the slower hex.NewEncoder.
 	b.Run("256", benchMarshalBytes(256))
 	// 4096 is large enough that we want to avoid allocating for it.
 	b.Run("4096", benchMarshalBytes(4096))
@@ -313,9 +312,6 @@ func BenchmarkUnmapped(b *testing.B) {
 func BenchmarkTypeFieldsCache(b *testing.B) {
 	b.ReportAllocs()
 	var maxTypes int = 1e6
-	if testenv.Builder() != "" {
-		maxTypes = 1e3 // restrict cache sizes on builders
-	}
 
 	// Dynamically generate many new types.
 	types := make([]reflect.Type, maxTypes)

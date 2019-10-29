@@ -3,8 +3,9 @@
 // license that can be found in the LICENSE file.
 
 // Package json implements encoding and decoding of JSON as defined in
-// RFC 7159. The mapping between JSON and Go values is described
-// in the documentation for the Marshal and Unmarshal functions.
+// RFC 7159 WITH THE EXCEPTION that byte slices are encoded in hexidecimal
+// rather than base64. The mapping between JSON and Go values is described in
+// the documentation for the Marshal and Unmarshal functions.
 //
 // See "JSON and Go" for an introduction to this package:
 // https://golang.org/doc/articles/json_and_go.html
@@ -13,7 +14,7 @@ package json
 import (
 	"bytes"
 	"encoding"
-	"encoding/base64"
+	ehex "encoding/hex"
 	"fmt"
 	"math"
 	"reflect"
@@ -53,7 +54,7 @@ import (
 // by calling SetEscapeHTML(false).
 //
 // Array and slice values encode as JSON arrays, except that
-// []byte encodes as a base64-encoded string, and a nil slice
+// []byte encodes as a hex-encoded string, and a nil slice
 // encodes as the null JSON value.
 //
 // Struct values encode as JSON objects.
@@ -729,25 +730,24 @@ func encodeByteSlice(e *encodeState, v reflect.Value, _ encOpts) {
 	}
 	s := v.Bytes()
 	e.WriteByte('"')
-	encodedLen := base64.StdEncoding.EncodedLen(len(s))
+	encodedLen := ehex.EncodedLen(len(s))
 	if encodedLen <= len(e.scratch) {
 		// If the encoded bytes fit in e.scratch, avoid an extra
 		// allocation and use the cheaper Encoding.Encode.
 		dst := e.scratch[:encodedLen]
-		base64.StdEncoding.Encode(dst, s)
+		ehex.Encode(dst, s)
 		e.Write(dst)
 	} else if encodedLen <= 1024 {
 		// The encoded bytes are short enough to allocate for, and
 		// Encoding.Encode is still cheaper.
 		dst := make([]byte, encodedLen)
-		base64.StdEncoding.Encode(dst, s)
+		ehex.Encode(dst, s)
 		e.Write(dst)
 	} else {
 		// The encoded bytes are too long to cheaply allocate, and
 		// Encoding.Encode is no longer noticeably cheaper.
-		enc := base64.NewEncoder(base64.StdEncoding, e)
+		enc := ehex.NewEncoder(e)
 		enc.Write(s)
-		enc.Close()
 	}
 	e.WriteByte('"')
 }

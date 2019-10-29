@@ -120,7 +120,7 @@ func TestEncodeRenamedByteSlice(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	expect := `"YWJj"`
+	expect := `"616263"`
 	if string(result) != expect {
 		t.Errorf(" got %s want %s", result, expect)
 	}
@@ -756,7 +756,7 @@ func TestEncodeBytekind(t *testing.T) {
 		{textbyte(4), `"TB:4"`},
 		{jsonint(5), `{"JI":5}`},
 		{textint(1), `"TI:1"`},
-		{[]byte{0, 1}, `"AAE="`},
+		{[]byte{0, 1}, `"0001"`},
 		{[]jsonbyte{0, 1}, `[{"JB":0},{"JB":1}]`},
 		{[][]jsonbyte{{0, 1}, {3}}, `[[{"JB":0},{"JB":1}],[{"JB":3}]]`},
 		{[]textbyte{2, 3}, `["TB:2","TB:3"]`},
