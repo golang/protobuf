@@ -33,7 +33,6 @@ package jsonpb
 
 import (
 	"bytes"
-	"encoding/json"
 	"io"
 	"math"
 	"reflect"
@@ -102,7 +101,7 @@ var (
 		`"oDouble":6.02214179e+23,` +
 		`"oDoubleStr":"6.02214179e+23",` +
 		`"oString":"hello \"there\"",` +
-		`"oBytes":"YmVlcCBib29w"` +
+		`"oBytes":"6265657020626f6f70"` +
 		`}`
 
 	simpleObjectOutputJSON = `{` +
@@ -124,7 +123,7 @@ var (
 		`"oDouble":6.02214179e+23,` +
 		`"oDoubleStr":6.02214179e+23,` +
 		`"oString":"hello \"there\"",` +
-		`"oBytes":"YmVlcCBib29w"` +
+		`"oBytes":"6265657020626f6f70"` +
 		`}`
 
 	simpleObjectInputPrettyJSON = `{
@@ -146,7 +145,7 @@ var (
   "oDouble": 6.02214179e+23,
   "oDoubleStr": "6.02214179e+23",
   "oString": "hello \"there\"",
-  "oBytes": "YmVlcCBib29w"
+  "oBytes": "6265657020626f6f70"
 }`
 
 	simpleObjectOutputPrettyJSON = `{
@@ -168,7 +167,7 @@ var (
   "oDouble": 6.02214179e+23,
   "oDoubleStr": 6.02214179e+23,
   "oString": "hello \"there\"",
-  "oBytes": "YmVlcCBib29w"
+  "oBytes": "6265657020626f6f70"
 }`
 
 	repeatsObject = &pb.Repeats{
@@ -196,7 +195,7 @@ var (
 		`"rFloat":[3.14,6.28],` +
 		`"rDouble":[2.99792458e+28,6.62606957e-34],` +
 		`"rString":["happy","days"],` +
-		`"rBytes":["c2tpdHRsZXM=","bSZtJ3M="]` +
+		`"rBytes":["736b6974746c6573","6d266d2773"]` +
 		`}`
 
 	repeatsObjectPrettyJSON = `{
@@ -245,8 +244,8 @@ var (
     "days"
   ],
   "rBytes": [
-    "c2tpdHRsZXM=",
-    "bSZtJ3M="
+    "736b6974746c6573",
+    "6d266d2773"
   ]
 }`
 
@@ -528,7 +527,7 @@ var marshalingTests = []struct {
 	{"UInt32Value", marshaler, &pb.KnownTypes{U32: &wpb.UInt32Value{Value: 4}}, `{"u32":4}`},
 	{"BoolValue", marshaler, &pb.KnownTypes{Bool: &wpb.BoolValue{Value: true}}, `{"bool":true}`},
 	{"StringValue", marshaler, &pb.KnownTypes{Str: &wpb.StringValue{Value: "plush"}}, `{"str":"plush"}`},
-	{"BytesValue", marshaler, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}, `{"bytes":"d293"}`},
+	{"BytesValue", marshaler, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}, `{"bytes":"776f77"}`},
 
 	{"required", marshaler, &pb.MsgWithRequired{Str: proto.String("hello")}, `{"str":"hello"}`},
 	{"required bytes", marshaler, &pb.MsgWithRequiredBytes{Byts: []byte{}}, `{"byts":""}`},
@@ -861,7 +860,7 @@ var unmarshalingTests = []struct {
 				"unicode": {Kind: &stpb.Value_StringValue{"\u00004E16\u0000754C"}},
 			},
 		}},
-	{"BytesValue", Unmarshaler{}, `{"bytes":"d293"}`, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}},
+	{"BytesValue", Unmarshaler{}, `{"bytes":"776f77"}`, &pb.KnownTypes{Bytes: &wpb.BytesValue{Value: []byte("wow")}}},
 
 	// Ensure that `null` as a value ends up with a nil pointer instead of a [type]Value struct.
 	{"null DoubleValue", Unmarshaler{}, `{"dbl":null}`, &pb.KnownTypes{Dbl: nil}},
@@ -1017,7 +1016,7 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	} else if resolvedTypeUrls[0] != "https://foobar.com/some.random.MessageKind" {
 		t.Errorf("custom resolver was invoked with wrong URL: got %q, wanted %q", resolvedTypeUrls[0], "https://foobar.com/some.random.MessageKind")
 	}
-	wanted := `{"@type":"https://foobar.com/some.random.MessageKind","oBool":true,"oInt64":"1020304","oString":"foobar","oBytes":"AQIDBA=="}`
+	wanted := `{"@type":"https://foobar.com/some.random.MessageKind","oBool":true,"oInt64":"1020304","oString":"foobar","oBytes":"01020304"}`
 	if js != wanted {
 		t.Errorf("marshaling JSON produced incorrect output: got %s, wanted %s", js, wanted)
 	}
