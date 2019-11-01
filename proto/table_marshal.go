@@ -393,18 +393,12 @@ func (u *marshalInfo) getExtElemInfo(desc *ExtensionDesc) *marshalElemInfo {
 		t = t.Elem()
 	}
 	sizer, marshaler := typeMarshaler(t, tags, false, false)
-	var deref bool
-	if t.Kind() == reflect.Slice && t.Elem().Kind() != reflect.Uint8 {
-		t = reflect.PtrTo(t)
-		deref = true
-	}
 	e = &marshalElemInfo{
 		wiretag:   uint64(tag)<<3 | wt,
 		tagsize:   SizeVarint(uint64(tag) << 3),
 		sizer:     sizer,
 		marshaler: marshaler,
 		isptr:     t.Kind() == reflect.Ptr,
-		deref:     deref,
 	}
 
 	// update cache

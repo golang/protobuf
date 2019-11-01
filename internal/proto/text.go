@@ -51,6 +51,7 @@ func (tm *TextMarshaler) Marshal(w io.Writer, pb Message) error {
 	}
 	mo := prototext.MarshalOptions{
 		AllowPartial: true,
+		EmitUnknown:  true,
 		Indent:       ind,
 	}
 	if !tm.ExpandAny {
