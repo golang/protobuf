@@ -486,16 +486,6 @@ func extensionAsLegacyType(v interface{}) interface{} {
 		rv2 := reflect.New(rv.Type())
 		rv2.Elem().Set(rv)
 		v = rv2.Interface()
-	case reflect.Ptr:
-		// Represent slice types as the value itself.
-		switch rv.Type().Elem().Kind() {
-		case reflect.Slice:
-			if rv.IsNil() {
-				v = reflect.Zero(rv.Type().Elem()).Interface()
-			} else {
-				v = rv.Elem().Interface()
-			}
-		}
 	}
 	return v
 }
@@ -505,7 +495,7 @@ func extensionAsLegacyType(v interface{}) interface{} {
 func extensionAsStorageType(v interface{}) interface{} {
 	switch rv := reflect.ValueOf(v); rv.Kind() {
 	case reflect.Ptr:
-		// Represent slice types as the value itself.
+		// Represent non-slice types as the value itself.
 		switch rv.Type().Elem().Kind() {
 		case reflect.Bool, reflect.Int32, reflect.Int64, reflect.Uint32, reflect.Uint64, reflect.Float32, reflect.Float64, reflect.String:
 			if rv.IsNil() {
@@ -513,13 +503,6 @@ func extensionAsStorageType(v interface{}) interface{} {
 			} else {
 				v = rv.Elem().Interface()
 			}
-		}
-	case reflect.Slice:
-		// Represent slice types as a pointer to the value.
-		if rv.Type().Elem().Kind() != reflect.Uint8 {
-			rv2 := reflect.New(rv.Type())
-			rv2.Elem().Set(rv)
-			v = rv2.Interface()
 		}
 	}
 	return v
