@@ -65,7 +65,7 @@ func RegisterFile(s filePath, d fileDescGZIP) {
 	}
 
 	// Register the descriptor in the v2 registry and cache the result locally.
-	if err := protoregistry.GlobalFiles.Register(fd); err != nil {
+	if err := protoregistry.GlobalFiles.RegisterFile(fd); err != nil {
 		printWarning(err)
 		return
 	}
@@ -249,7 +249,7 @@ func RegisterType(m Message, s messageName) {
 	if s != messageName(mt.Descriptor().FullName()) {
 		panic(fmt.Sprintf("proto: inconsistent message name: got %v, want %v", s, mt.Descriptor().FullName()))
 	}
-	if err := protoregistry.GlobalTypes.Register(mt); err != nil {
+	if err := protoregistry.GlobalTypes.RegisterMessage(mt); err != nil {
 		printWarning(err)
 		return
 	}
@@ -312,7 +312,7 @@ func MessageName(m Message) messageName {
 //
 // Deprecated: Use protoregistry.GlobalTypes.Register instead.
 func RegisterExtension(d *ExtensionDesc) {
-	if err := protoregistry.GlobalTypes.Register(d); err != nil {
+	if err := protoregistry.GlobalTypes.RegisterExtension(d); err != nil {
 		panic(err)
 	}
 }

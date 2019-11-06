@@ -77,7 +77,7 @@ func (tm *TextMarshaler) Text(pb Message) string {
 }
 
 var (
-	emptyResolver        = preg.NewTypes()
+	emptyResolver        = &preg.Types{}
 	defaultTextMarshaler = TextMarshaler{}
 	compactTextMarshaler = TextMarshaler{Compact: true}
 )
