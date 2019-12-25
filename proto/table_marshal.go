@@ -106,11 +106,12 @@ func getMarshalInfo(t reflect.Type) *marshalInfo {
 		return u
 	}
 	marshalInfoLock.Lock()
-	// We don't need double check here.
-	// Only a little allocation will be introduced in parallel.
-	u = &marshalInfo{typ: t}
-	marshalInfoMap[t] = u
-	marshalInfoLock.Unlock()
+	defer marshalInfoLock.Unlock()
+	u, ok = marshalInfoMap[t]
+	if !ok {
+		u = &marshalInfo{typ: t}
+		marshalInfoMap[t] = u
+	}
 	return u
 }
 

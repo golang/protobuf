@@ -122,12 +122,13 @@ func getUnmarshalInfo(t reflect.Type) *unmarshalInfo {
 	}
 	unmarshalInfoLock.Lock()
 	defer unmarshalInfoLock.Unlock()
-	// We don't need double check here.
-	// Only a little allocation will be introduced in parallel.
-	u = &unmarshalInfo{typ: t}
-	// Note: we just set the type here. The rest of the fields
-	// will be initialized on first use.
-	unmarshalInfoMap[t] = u
+	u, ok = unmarshalInfoMap[t]
+	if !ok {
+		u = &unmarshalInfo{typ: t}
+		// Note: we just set the type here. The rest of the fields
+		// will be initialized on first use.
+		unmarshalInfoMap[t] = u
+	}
 	return u
 }
 
