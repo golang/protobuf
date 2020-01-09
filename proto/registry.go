@@ -1,166 +1,323 @@
-// Copyright 2018 The Go Authors. All rights reserved.
+// Copyright 2019 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 package proto
 
 import (
+	"bytes"
+	"compress/gzip"
 	"fmt"
-	"log"
+	"io/ioutil"
 	"reflect"
-	"strconv"
+	"strings"
+	"sync"
+
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
-var enumValueMaps = make(map[string]map[string]int32)
+// filePath is the path to the proto source file.
+type filePath = string // e.g., "google/protobuf/descriptor.proto"
 
-// RegisterEnum is called from the generated code to install the enum descriptor
-// maps into the global table to aid parsing text format protocol buffers.
-func RegisterEnum(typeName string, unusedNameMap map[int32]string, valueMap map[string]int32) {
-	if registerEnumAlt != nil {
-		registerEnumAlt(typeName, unusedNameMap, valueMap) // populated by hooks_enabled.go
-		return
+// fileDescGZIP is the compressed contents of the encoded FileDescriptorProto.
+type fileDescGZIP = []byte
+
+var fileCache sync.Map // map[filePath]fileDescGZIP
+
+// RegisterFile is called from generated code to register the compressed
+// FileDescriptorProto with the file path for a proto source file.
+//
+// Deprecated: Use protoregistry.GlobalFiles.Register instead.
+func RegisterFile(s filePath, d fileDescGZIP) {
+	// Decompress the descriptor.
+	zr, err := gzip.NewReader(bytes.NewReader(d))
+	if err != nil {
+		panic(fmt.Sprintf("proto: invalid compressed file descriptor: %v", err))
 	}
-	if _, ok := enumValueMaps[typeName]; ok {
-		panic("proto: duplicate enum registered: " + typeName)
+	b, err := ioutil.ReadAll(zr)
+	if err != nil {
+		panic(fmt.Sprintf("proto: invalid compressed file descriptor: %v", err))
 	}
-	enumValueMaps[typeName] = valueMap
+
+	// Construct a protoreflect.FileDescriptor from the raw descriptor.
+	// Note that DescBuilder.Build automatically registers the constructed
+	// file descriptor with the v2 registry.
+	protoimpl.DescBuilder{RawDescriptor: b}.Build()
+
+	// Locally cache the raw descriptor form for the file.
+	fileCache.Store(s, d)
 }
 
-// EnumValueMap returns the mapping from names to integers of the
-// enum type enumType, or a nil if not found.
-func EnumValueMap(enumType string) map[string]int32 {
-	if enumValueMapAlt != nil {
-		return enumValueMapAlt(enumType) // populated by hooks_enabled.go
+// FileDescriptor returns the compressed FileDescriptorProto given the file path
+// for a proto source file. It returns nil if not found.
+//
+// Deprecated: Use protoregistry.GlobalFiles.RangeFilesByPath instead.
+func FileDescriptor(s filePath) fileDescGZIP {
+	if v, ok := fileCache.Load(s); ok {
+		return v.(fileDescGZIP)
 	}
-	return enumValueMaps[enumType]
+
+	// Find the descriptor in the v2 registry.
+	var b []byte
+	if fd, _ := protoregistry.GlobalFiles.FindFileByPath(s); fd != nil {
+		if fd, ok := fd.(interface{ ProtoLegacyRawDesc() []byte }); ok {
+			b = fd.ProtoLegacyRawDesc()
+		} else {
+			// TODO: Use protodesc.ToFileDescriptorProto to construct
+			// a descriptorpb.FileDescriptorProto and marshal it.
+			// However, doing so causes the proto package to have a dependency
+			// on descriptorpb, leading to cyclic dependency issues.
+		}
+	}
+
+	// Locally cache the raw descriptor form for the file.
+	if len(b) > 0 {
+		v, _ := fileCache.LoadOrStore(s, protoimpl.X.CompressGZIP(b))
+		return v.(fileDescGZIP)
+	}
+	return nil
 }
 
-// A registry of all linked message types.
-// The string is a fully-qualified proto name ("pkg.Message").
-var (
-	protoTypedNils = make(map[string]Message)      // a map from proto names to typed nil pointers
-	protoMapTypes  = make(map[string]reflect.Type) // a map from proto names to map types
-	revProtoTypes  = make(map[reflect.Type]string)
-)
+// enumName is the name of an enum. For historical reasons, the enum name is
+// neither the full Go name nor the full protobuf name of the enum.
+// The name is the dot-separated combination of just the proto package that the
+// enum is declared within followed by the Go type name of the generated enum.
+type enumName = string // e.g., "my.proto.package.GoMessage_GoEnum"
 
-// RegisterType is called from generated code and maps from the fully qualified
-// proto name to the type (pointer to struct) of the protocol buffer.
-func RegisterType(x Message, name string) {
-	if registerTypeAlt != nil {
-		registerTypeAlt(x, name) // populated by hooks_enabled.go
-		return
+// enumsByName maps enum values by name to their numeric counterpart.
+type enumsByName = map[string]int32
+
+// enumsByNumber maps enum values by number to their name counterpart.
+type enumsByNumber = map[int32]string
+
+var enumCache sync.Map     // map[enumName]enumsByName
+var numFilesCache sync.Map // map[protoreflect.FullName]int
+
+// RegisterEnum is called from the generated code to register the mapping of
+// enum value names to enum numbers for the enum identified by s.
+//
+// Deprecated: Use protoregistry.GlobalTypes.Register instead.
+func RegisterEnum(s enumName, _ enumsByNumber, m enumsByName) {
+	if _, ok := enumCache.Load(s); ok {
+		panic("proto: duplicate enum registered: " + s)
 	}
-	if _, ok := protoTypedNils[name]; ok {
-		// TODO: Some day, make this a panic.
-		log.Printf("proto: duplicate proto type registered: %s", name)
-		return
-	}
-	t := reflect.TypeOf(x)
-	if v := reflect.ValueOf(x); v.Kind() == reflect.Ptr && v.Pointer() == 0 {
-		// Generated code always calls RegisterType with nil x.
-		// This check is just for extra safety.
-		protoTypedNils[name] = x
-	} else {
-		protoTypedNils[name] = reflect.Zero(t).Interface().(Message)
-	}
-	revProtoTypes[t] = name
+	enumCache.Store(s, m)
+
+	// This does not forward registration to the v2 registry since this API
+	// lacks sufficient information to construct a complete v2 enum descriptor.
 }
 
-// RegisterMapType is called from generated code and maps from the fully qualified
-// proto name to the native map type of the proto map definition.
-func RegisterMapType(x interface{}, name string) {
-	if registerMapTypeAlt != nil {
-		registerMapTypeAlt(x, name) // populated by hooks_enabled.go
-		return
+// EnumValueMap returns the mapping from enum value names to enum numbers for
+// the enum of the given name. It returns nil if not found.
+//
+// Deprecated: Use protoregistry.GlobalTypes.FindEnumByName instead.
+func EnumValueMap(s enumName) enumsByName {
+	if v, ok := enumCache.Load(s); ok {
+		return v.(enumsByName)
 	}
-	if reflect.TypeOf(x).Kind() != reflect.Map {
-		panic(fmt.Sprintf("RegisterMapType(%T, %q); want map", x, name))
-	}
-	if _, ok := protoMapTypes[name]; ok {
-		log.Printf("proto: duplicate proto type registered: %s", name)
-		return
-	}
-	t := reflect.TypeOf(x)
-	protoMapTypes[name] = t
 
-	// Avoid registering into revProtoTypes since map types are not unique.
-	// revProtoTypes[t] = name
+	// Check whether the cache is stale. If the number of files in the current
+	// package differs, then it means that some enums may have been recently
+	// registered upstream that we do not know about.
+	var protoPkg protoreflect.FullName
+	if i := strings.LastIndexByte(s, '.'); i >= 0 {
+		protoPkg = protoreflect.FullName(s[:i])
+	}
+	v, _ := numFilesCache.Load(protoPkg)
+	numFiles, _ := v.(int)
+	if protoregistry.GlobalFiles.NumFilesByPackage(protoPkg) == numFiles {
+		return nil // cache is up-to-date; was not found earlier
+	}
+
+	// Update the enum cache for all enums declared in the given proto package.
+	numFiles = 0
+	protoregistry.GlobalFiles.RangeFilesByPackage(protoPkg, func(fd protoreflect.FileDescriptor) bool {
+		walkEnums(fd, func(ed protoreflect.EnumDescriptor) {
+			name := protoimpl.X.LegacyEnumName(ed)
+			if _, ok := enumCache.Load(name); !ok {
+				m := make(enumsByName)
+				evs := ed.Values()
+				for i := evs.Len() - 1; i >= 0; i-- {
+					ev := evs.Get(i)
+					m[string(ev.Name())] = int32(ev.Number())
+				}
+				enumCache.LoadOrStore(name, m)
+			}
+		})
+		numFiles++
+		return true
+	})
+	numFilesCache.Store(protoPkg, numFiles)
+
+	// Check cache again for enum map.
+	if v, ok := enumCache.Load(s); ok {
+		return v.(enumsByName)
+	}
+	return nil
 }
 
-// MessageName returns the fully-qualified proto name for the given message type.
-func MessageName(x Message) string {
-	if messageNameAlt != nil {
-		return messageNameAlt(x) // populated by hooks_enabled.go
+// walkEnums recursively walks all enums declared in d.
+func walkEnums(d interface {
+	Enums() protoreflect.EnumDescriptors
+	Messages() protoreflect.MessageDescriptors
+}, f func(protoreflect.EnumDescriptor)) {
+	eds := d.Enums()
+	for i := eds.Len() - 1; i >= 0; i-- {
+		f(eds.Get(i))
 	}
-	type xname interface {
-		XXX_MessageName() string
+	mds := d.Messages()
+	for i := mds.Len() - 1; i >= 0; i-- {
+		walkEnums(mds.Get(i), f)
 	}
-	if m, ok := x.(xname); ok {
+}
+
+// messageName is the full name of protobuf message.
+type messageName = string
+
+var messageTypeCache sync.Map // map[messageName]reflect.Type
+
+// RegisterType is called from generated code to register the message Go type
+// for a message of the given name.
+//
+// Deprecated: Use protoregistry.GlobalTypes.Register instead.
+func RegisterType(m Message, s messageName) {
+	mt := protoimpl.X.LegacyMessageTypeOf(m, protoreflect.FullName(s))
+	if err := protoregistry.GlobalTypes.RegisterMessage(mt); err != nil {
+		panic(err)
+	}
+	messageTypeCache.Store(s, reflect.TypeOf(m))
+}
+
+// RegisterMapType is called from generated code to register the Go map type
+// for a protobuf message representing a map entry.
+//
+// Deprecated: Do not use.
+func RegisterMapType(m interface{}, s messageName) {
+	t := reflect.TypeOf(m)
+	if t.Kind() != reflect.Map {
+		panic(fmt.Sprintf("invalid map kind: %v", t))
+	}
+	if _, ok := messageTypeCache.Load(s); ok {
+		panic(fmt.Errorf("proto: duplicate proto message registered: %s", s))
+	}
+	messageTypeCache.Store(s, t)
+}
+
+// MessageType returns the message type for a named message.
+// It returns nil if not found.
+//
+// Deprecated: Use protoregistry.GlobalTypes.FindMessageByName instead.
+func MessageType(s messageName) reflect.Type {
+	if v, ok := messageTypeCache.Load(s); ok {
+		return v.(reflect.Type)
+	}
+
+	// Derive the message type from the v2 registry.
+	var t reflect.Type
+	if mt, _ := protoregistry.GlobalTypes.FindMessageByName(protoreflect.FullName(s)); mt != nil {
+		t = messageGoType(mt)
+	}
+
+	// If we could not get a concrete type, it is possible that it is a
+	// pseudo-message for a map entry.
+	if t == nil {
+		d, _ := protoregistry.GlobalFiles.FindDescriptorByName(protoreflect.FullName(s))
+		if md, _ := d.(protoreflect.MessageDescriptor); md != nil && md.IsMapEntry() {
+			kt := goTypeForField(md.Fields().ByNumber(1))
+			vt := goTypeForField(md.Fields().ByNumber(2))
+			t = reflect.MapOf(kt, vt)
+		}
+	}
+
+	// Locally cache the message type for the given name.
+	if t != nil {
+		v, _ := messageTypeCache.LoadOrStore(s, t)
+		return v.(reflect.Type)
+	}
+	return nil
+}
+
+func goTypeForField(fd protoreflect.FieldDescriptor) reflect.Type {
+	switch k := fd.Kind(); k {
+	case protoreflect.EnumKind:
+		if et, _ := protoregistry.GlobalTypes.FindEnumByName(fd.Enum().FullName()); et != nil {
+			return enumGoType(et)
+		}
+		return reflect.TypeOf(protoreflect.EnumNumber(0))
+	case protoreflect.MessageKind, protoreflect.GroupKind:
+		if mt, _ := protoregistry.GlobalTypes.FindMessageByName(fd.Message().FullName()); mt != nil {
+			return messageGoType(mt)
+		}
+		return reflect.TypeOf((*protoreflect.Message)(nil)).Elem()
+	default:
+		return reflect.TypeOf(fd.Default().Interface())
+	}
+}
+
+func enumGoType(et protoreflect.EnumType) reflect.Type {
+	return reflect.TypeOf(et.New(0))
+}
+
+func messageGoType(mt protoreflect.MessageType) reflect.Type {
+	return reflect.TypeOf(protoimpl.X.ProtoMessageV1Of(mt.New().Interface()))
+}
+
+// MessageName returns the full protobuf name for the given message type.
+//
+// Deprecated: Use protoreflect.MessageDescriptor.FullName instead.
+func MessageName(m Message) messageName {
+	if m == nil {
+		return ""
+	}
+	if m, ok := m.(interface{ XXX_MessageName() messageName }); ok {
 		return m.XXX_MessageName()
 	}
-	return revProtoTypes[reflect.TypeOf(x)]
+	return messageName(protoimpl.X.MessageDescriptorOf(m).FullName())
 }
 
-// MessageType returns the message type (pointer to struct) for a named message.
-// The type is not guaranteed to implement proto.Message if the name refers to a
-// map entry.
-func MessageType(name string) reflect.Type {
-	if messageTypeAlt != nil {
-		return messageTypeAlt(name) // populated by hooks_enabled.go
+// RegisterExtension is called from the generated code to register
+// the extension descriptor.
+//
+// Deprecated: Use protoregistry.GlobalTypes.Register instead.
+func RegisterExtension(d *ExtensionDesc) {
+	if err := protoregistry.GlobalTypes.RegisterExtension(d); err != nil {
+		panic(err)
 	}
-	if t, ok := protoTypedNils[name]; ok {
-		return reflect.TypeOf(t)
-	}
-	return protoMapTypes[name]
 }
 
-// A registry of all linked proto files.
-var protoFiles = make(map[string][]byte) // file name => fileDescriptor
+type extensionsByNumber = map[int32]*ExtensionDesc
 
-// RegisterFile is called from generated code and maps from the
-// full file name of a .proto file to its compressed FileDescriptorProto.
-func RegisterFile(filename string, fileDescriptor []byte) {
-	if registerFileAlt != nil {
-		registerFileAlt(filename, fileDescriptor) // populated by hooks_enabled.go
-		return
-	}
-	protoFiles[filename] = fileDescriptor
-}
+var extensionCache sync.Map // map[messageName]extensionsByNumber
 
-// FileDescriptor returns the compressed FileDescriptorProto for a .proto file.
-func FileDescriptor(filename string) []byte {
-	if fileDescriptorAlt != nil {
-		return fileDescriptorAlt(filename) // populated by hooks_enabled.go
+// RegisteredExtensions returns a map of the registered extensions for the
+// provided protobuf message, indexed by the extension field number.
+//
+// Deprecated: Use protoregistry.GlobalTypes.RangeExtensionsByMessage instead.
+func RegisteredExtensions(m Message) extensionsByNumber {
+	// Check whether the cache is stale. If the number of extensions for
+	// the given message differs, then it means that some extensions were
+	// recently registered upstream that we do not know about.
+	s := MessageName(m)
+	v, _ := extensionCache.Load(s)
+	xs, _ := v.(extensionsByNumber)
+	if protoregistry.GlobalTypes.NumExtensionsByMessage(protoreflect.FullName(s)) == len(xs) {
+		return xs // cache is up-to-date
 	}
-	return protoFiles[filename]
-}
 
-var extensionMaps = make(map[reflect.Type]map[int32]*ExtensionDesc)
-
-// RegisterExtension is called from the generated code.
-func RegisterExtension(desc *ExtensionDesc) {
-	if registerExtensionAlt != nil {
-		registerExtensionAlt(desc) // populated by hooks_enabled.go
-		return
-	}
-	st := reflect.TypeOf(desc.ExtendedType).Elem()
-	m := extensionMaps[st]
-	if m == nil {
-		m = make(map[int32]*ExtensionDesc)
-		extensionMaps[st] = m
-	}
-	if _, ok := m[desc.Field]; ok {
-		panic("proto: duplicate extension registered: " + st.String() + " " + strconv.Itoa(int(desc.Field)))
-	}
-	m[desc.Field] = desc
-}
-
-// RegisteredExtensions returns a map of the registered extensions of a
-// protocol buffer struct, indexed by the extension number.
-// The argument pb should be a nil pointer to the struct type.
-func RegisteredExtensions(pb Message) map[int32]*ExtensionDesc {
-	if registeredExtensionsAlt != nil {
-		return registeredExtensionsAlt(pb) // populated by hooks_enabled.go
-	}
-	return extensionMaps[reflect.TypeOf(pb).Elem()]
+	// Cache is stale, re-compute the extensions map.
+	xs = make(extensionsByNumber)
+	protoregistry.GlobalTypes.RangeExtensionsByMessage(protoreflect.FullName(s), func(xt protoreflect.ExtensionType) bool {
+		if xd, ok := xt.(*ExtensionDesc); ok {
+			xs[int32(xt.TypeDescriptor().Number())] = xd
+		} else {
+			// TODO: This implies that the protoreflect.ExtensionType is a
+			// custom type not generated by protoc-gen-go. We could try and
+			// convert the type to an ExtensionDesc.
+		}
+		return true
+	})
+	extensionCache.Store(s, xs)
+	return xs
 }

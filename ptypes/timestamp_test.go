@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+
 	tspb "github.com/golang/protobuf/ptypes/timestamp"
 )
 
@@ -97,7 +98,6 @@ func TestTimestampString(t *testing.T) {
 		// Not much testing needed because presumably time.Format is
 		// well-tested.
 		{&tspb.Timestamp{Seconds: 0, Nanos: 0}, "1970-01-01T00:00:00Z"},
-		{&tspb.Timestamp{Seconds: minValidSeconds - 1, Nanos: 0}, "(timestamp: seconds:-62135596801 before 0001-01-01)"},
 	} {
 		got := TimestampString(test.ts)
 		if got != test.want {

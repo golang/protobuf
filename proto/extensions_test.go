@@ -14,18 +14,19 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-	pb "github.com/golang/protobuf/proto/test_proto"
+
+	pb2 "github.com/golang/protobuf/internal/testprotos/proto2_proto"
 )
 
 func TestGetExtensionsWithMissingExtensions(t *testing.T) {
-	msg := &pb.MyMessage{}
-	ext1 := &pb.Ext{}
-	if err := proto.SetExtension(msg, pb.E_Ext_More, ext1); err != nil {
+	msg := &pb2.MyMessage{}
+	ext1 := &pb2.Ext{}
+	if err := proto.SetExtension(msg, pb2.E_Ext_More, ext1); err != nil {
 		t.Fatalf("Could not set ext1: %s", err)
 	}
 	exts, err := proto.GetExtensions(msg, []*proto.ExtensionDesc{
-		pb.E_Ext_More,
-		pb.E_Ext_Text,
+		pb2.E_Ext_More,
+		pb2.E_Ext_Text,
 	})
 	if err != nil {
 		t.Fatalf("GetExtensions() failed: %s", err)
@@ -39,9 +40,9 @@ func TestGetExtensionsWithMissingExtensions(t *testing.T) {
 }
 
 func TestGetExtensionForIncompleteDesc(t *testing.T) {
-	msg := &pb.MyMessage{Count: proto.Int32(0)}
+	msg := &pb2.MyMessage{Count: proto.Int32(0)}
 	extdesc1 := &proto.ExtensionDesc{
-		ExtendedType:  (*pb.MyMessage)(nil),
+		ExtendedType:  (*pb2.MyMessage)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         123456789,
 		Name:          "a.b",
@@ -52,7 +53,7 @@ func TestGetExtensionForIncompleteDesc(t *testing.T) {
 		t.Fatalf("Could not set ext1: %s", err)
 	}
 	extdesc2 := &proto.ExtensionDesc{
-		ExtendedType:  (*pb.MyMessage)(nil),
+		ExtendedType:  (*pb2.MyMessage)(nil),
 		ExtensionType: ([]byte)(nil),
 		Field:         123456790,
 		Name:          "a.c",
@@ -63,13 +64,13 @@ func TestGetExtensionForIncompleteDesc(t *testing.T) {
 		t.Fatalf("Could not set ext2: %s", err)
 	}
 	extdesc3 := &proto.ExtensionDesc{
-		ExtendedType:  (*pb.MyMessage)(nil),
-		ExtensionType: (*pb.Ext)(nil),
+		ExtendedType:  (*pb2.MyMessage)(nil),
+		ExtensionType: (*pb2.Ext)(nil),
 		Field:         123456791,
 		Name:          "a.d",
 		Tag:           "bytes,123456791,opt",
 	}
-	ext3 := &pb.Ext{Data: proto.String("foo")}
+	ext3 := &pb2.Ext{Data: proto.String("foo")}
 	if err := proto.SetExtension(msg, extdesc3, ext3); err != nil {
 		t.Fatalf("Could not set ext3: %s", err)
 	}
@@ -128,18 +129,18 @@ func TestGetExtensionForIncompleteDesc(t *testing.T) {
 }
 
 func TestExtensionDescsWithUnregisteredExtensions(t *testing.T) {
-	msg := &pb.MyMessage{Count: proto.Int32(0)}
-	extdesc1 := pb.E_Ext_More
+	msg := &pb2.MyMessage{Count: proto.Int32(0)}
+	extdesc1 := pb2.E_Ext_More
 	if descs, err := proto.ExtensionDescs(msg); len(descs) != 0 || err != nil {
 		t.Errorf("proto.ExtensionDescs: got %d descs, error %v; want 0, nil", len(descs), err)
 	}
 
-	ext1 := &pb.Ext{}
+	ext1 := &pb2.Ext{}
 	if err := proto.SetExtension(msg, extdesc1, ext1); err != nil {
 		t.Fatalf("Could not set ext1: %s", err)
 	}
 	extdesc2 := &proto.ExtensionDesc{
-		ExtendedType:  (*pb.MyMessage)(nil),
+		ExtendedType:  (*pb2.MyMessage)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         123456789,
 		Name:          "a.b",
@@ -180,20 +181,20 @@ func sortExtDescs(s []*proto.ExtensionDesc) {
 }
 
 func TestGetExtensionStability(t *testing.T) {
-	check := func(m *pb.MyMessage) bool {
-		ext1, err := proto.GetExtension(m, pb.E_Ext_More)
+	check := func(m *pb2.MyMessage) bool {
+		ext1, err := proto.GetExtension(m, pb2.E_Ext_More)
 		if err != nil {
 			t.Fatalf("GetExtension() failed: %s", err)
 		}
-		ext2, err := proto.GetExtension(m, pb.E_Ext_More)
+		ext2, err := proto.GetExtension(m, pb2.E_Ext_More)
 		if err != nil {
 			t.Fatalf("GetExtension() failed: %s", err)
 		}
 		return ext1 == ext2
 	}
-	msg := &pb.MyMessage{Count: proto.Int32(4)}
-	ext0 := &pb.Ext{}
-	if err := proto.SetExtension(msg, pb.E_Ext_More, ext0); err != nil {
+	msg := &pb2.MyMessage{Count: proto.Int32(4)}
+	ext0 := &pb2.Ext{}
+	if err := proto.SetExtension(msg, pb2.E_Ext_More, ext0); err != nil {
 		t.Fatalf("Could not set ext1: %s", ext0)
 	}
 	if !check(msg) {
@@ -203,7 +204,7 @@ func TestGetExtensionStability(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Marshal() failed: %s", err)
 	}
-	msg1 := &pb.MyMessage{}
+	msg1 := &pb2.MyMessage{}
 	err = proto.Unmarshal(bb, msg1)
 	if err != nil {
 		t.Fatalf("Unmarshal() failed: %s", err)
@@ -224,7 +225,7 @@ func TestGetExtensionDefaults(t *testing.T) {
 	var setBool2 = false
 	var setString = "Goodnight string"
 	var setBytes = []byte("Goodnight bytes")
-	var setEnum = pb.DefaultsMessage_TWO
+	var setEnum = pb2.DefaultsMessage_TWO
 
 	type testcase struct {
 		ext  *proto.ExtensionDesc // Extension we are testing.
@@ -232,43 +233,43 @@ func TestGetExtensionDefaults(t *testing.T) {
 		def  interface{}          // Expected value of extension after ClearExtension().
 	}
 	tests := []testcase{
-		{pb.E_NoDefaultDouble, setFloat64, nil},
-		{pb.E_NoDefaultFloat, setFloat32, nil},
-		{pb.E_NoDefaultInt32, setInt32, nil},
-		{pb.E_NoDefaultInt64, setInt64, nil},
-		{pb.E_NoDefaultUint32, setUint32, nil},
-		{pb.E_NoDefaultUint64, setUint64, nil},
-		{pb.E_NoDefaultSint32, setInt32, nil},
-		{pb.E_NoDefaultSint64, setInt64, nil},
-		{pb.E_NoDefaultFixed32, setUint32, nil},
-		{pb.E_NoDefaultFixed64, setUint64, nil},
-		{pb.E_NoDefaultSfixed32, setInt32, nil},
-		{pb.E_NoDefaultSfixed64, setInt64, nil},
-		{pb.E_NoDefaultBool, setBool, nil},
-		{pb.E_NoDefaultBool, setBool2, nil},
-		{pb.E_NoDefaultString, setString, nil},
-		{pb.E_NoDefaultBytes, setBytes, nil},
-		{pb.E_NoDefaultEnum, setEnum, nil},
-		{pb.E_DefaultDouble, setFloat64, float64(3.1415)},
-		{pb.E_DefaultFloat, setFloat32, float32(3.14)},
-		{pb.E_DefaultInt32, setInt32, int32(42)},
-		{pb.E_DefaultInt64, setInt64, int64(43)},
-		{pb.E_DefaultUint32, setUint32, uint32(44)},
-		{pb.E_DefaultUint64, setUint64, uint64(45)},
-		{pb.E_DefaultSint32, setInt32, int32(46)},
-		{pb.E_DefaultSint64, setInt64, int64(47)},
-		{pb.E_DefaultFixed32, setUint32, uint32(48)},
-		{pb.E_DefaultFixed64, setUint64, uint64(49)},
-		{pb.E_DefaultSfixed32, setInt32, int32(50)},
-		{pb.E_DefaultSfixed64, setInt64, int64(51)},
-		{pb.E_DefaultBool, setBool, true},
-		{pb.E_DefaultBool, setBool2, true},
-		{pb.E_DefaultString, setString, "Hello, string,def=foo"},
-		{pb.E_DefaultBytes, setBytes, []byte("Hello, bytes")},
-		{pb.E_DefaultEnum, setEnum, pb.DefaultsMessage_ONE},
+		{pb2.E_NoDefaultDouble, setFloat64, nil},
+		{pb2.E_NoDefaultFloat, setFloat32, nil},
+		{pb2.E_NoDefaultInt32, setInt32, nil},
+		{pb2.E_NoDefaultInt64, setInt64, nil},
+		{pb2.E_NoDefaultUint32, setUint32, nil},
+		{pb2.E_NoDefaultUint64, setUint64, nil},
+		{pb2.E_NoDefaultSint32, setInt32, nil},
+		{pb2.E_NoDefaultSint64, setInt64, nil},
+		{pb2.E_NoDefaultFixed32, setUint32, nil},
+		{pb2.E_NoDefaultFixed64, setUint64, nil},
+		{pb2.E_NoDefaultSfixed32, setInt32, nil},
+		{pb2.E_NoDefaultSfixed64, setInt64, nil},
+		{pb2.E_NoDefaultBool, setBool, nil},
+		{pb2.E_NoDefaultBool, setBool2, nil},
+		{pb2.E_NoDefaultString, setString, nil},
+		{pb2.E_NoDefaultBytes, setBytes, nil},
+		{pb2.E_NoDefaultEnum, setEnum, nil},
+		{pb2.E_DefaultDouble, setFloat64, float64(3.1415)},
+		{pb2.E_DefaultFloat, setFloat32, float32(3.14)},
+		{pb2.E_DefaultInt32, setInt32, int32(42)},
+		{pb2.E_DefaultInt64, setInt64, int64(43)},
+		{pb2.E_DefaultUint32, setUint32, uint32(44)},
+		{pb2.E_DefaultUint64, setUint64, uint64(45)},
+		{pb2.E_DefaultSint32, setInt32, int32(46)},
+		{pb2.E_DefaultSint64, setInt64, int64(47)},
+		{pb2.E_DefaultFixed32, setUint32, uint32(48)},
+		{pb2.E_DefaultFixed64, setUint64, uint64(49)},
+		{pb2.E_DefaultSfixed32, setInt32, int32(50)},
+		{pb2.E_DefaultSfixed64, setInt64, int64(51)},
+		{pb2.E_DefaultBool, setBool, true},
+		{pb2.E_DefaultBool, setBool2, true},
+		{pb2.E_DefaultString, setString, "Hello, string,def=foo"},
+		{pb2.E_DefaultBytes, setBytes, []byte("Hello, bytes")},
+		{pb2.E_DefaultEnum, setEnum, pb2.DefaultsMessage_ONE},
 	}
 
-	checkVal := func(t *testing.T, name string, test testcase, msg *pb.DefaultsMessage, valWant interface{}) {
+	checkVal := func(t *testing.T, name string, test testcase, msg *pb2.DefaultsMessage, valWant interface{}) {
 		t.Run(name, func(t *testing.T) {
 			val, err := proto.GetExtension(msg, test.ext)
 			if err != nil {
@@ -328,7 +329,7 @@ func TestGetExtensionDefaults(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		msg := &pb.DefaultsMessage{}
+		msg := &pb2.DefaultsMessage{}
 		name := test.ext.Name
 
 		// Check the initial value.
@@ -349,7 +350,7 @@ func TestGetExtensionDefaults(t *testing.T) {
 
 func TestNilMessage(t *testing.T) {
 	name := "nil interface"
-	if got, err := proto.GetExtension(nil, pb.E_Ext_More); err == nil {
+	if got, err := proto.GetExtension(nil, pb2.E_Ext_More); err == nil {
 		t.Errorf("%s: got %T %v, expected to fail", name, got, got)
 	} else if !strings.Contains(err.Error(), "extendable") {
 		t.Errorf("%s: got error %v, expected not-extendable error", name, err)
@@ -358,8 +359,8 @@ func TestNilMessage(t *testing.T) {
 	// Regression tests: all functions of the Extension API
 	// used to panic when passed (*M)(nil), where M is a concrete message
 	// type.  Now they handle this gracefully as a no-op or reported error.
-	var nilMsg *pb.MyMessage
-	desc := pb.E_Ext_More
+	var nilMsg *pb2.MyMessage
+	desc := pb2.E_Ext_More
 
 	isNotExtendable := func(err error) bool {
 		return strings.Contains(fmt.Sprint(err), "not an extendable")
@@ -386,58 +387,52 @@ func TestNilMessage(t *testing.T) {
 }
 
 func TestExtensionsRoundTrip(t *testing.T) {
-	msg := &pb.MyMessage{}
-	ext1 := &pb.Ext{
+	msg := &pb2.MyMessage{}
+	ext1 := &pb2.Ext{
 		Data: proto.String("hi"),
 	}
-	ext2 := &pb.Ext{
+	ext2 := &pb2.Ext{
 		Data: proto.String("there"),
 	}
-	exists := proto.HasExtension(msg, pb.E_Ext_More)
+	exists := proto.HasExtension(msg, pb2.E_Ext_More)
 	if exists {
 		t.Error("Extension More present unexpectedly")
 	}
-	if err := proto.SetExtension(msg, pb.E_Ext_More, ext1); err != nil {
+	if err := proto.SetExtension(msg, pb2.E_Ext_More, ext1); err != nil {
 		t.Error(err)
 	}
-	if err := proto.SetExtension(msg, pb.E_Ext_More, ext2); err != nil {
+	if err := proto.SetExtension(msg, pb2.E_Ext_More, ext2); err != nil {
 		t.Error(err)
 	}
-	e, err := proto.GetExtension(msg, pb.E_Ext_More)
+	e, err := proto.GetExtension(msg, pb2.E_Ext_More)
 	if err != nil {
 		t.Error(err)
 	}
-	x, ok := e.(*pb.Ext)
+	x, ok := e.(*pb2.Ext)
 	if !ok {
 		t.Errorf("e has type %T, expected test_proto.Ext", e)
 	} else if *x.Data != "there" {
 		t.Errorf("SetExtension failed to overwrite, got %+v, not 'there'", x)
 	}
-	proto.ClearExtension(msg, pb.E_Ext_More)
-	if _, err = proto.GetExtension(msg, pb.E_Ext_More); err != proto.ErrMissingExtension {
+	proto.ClearExtension(msg, pb2.E_Ext_More)
+	if _, err = proto.GetExtension(msg, pb2.E_Ext_More); err != proto.ErrMissingExtension {
 		t.Errorf("got %v, expected ErrMissingExtension", e)
 	}
-	if _, err := proto.GetExtension(msg, pb.E_X215); err == nil {
-		t.Error("expected bad extension error, got nil")
-	}
-	if err := proto.SetExtension(msg, pb.E_X215, 12); err == nil {
-		t.Error("expected extension err")
-	}
-	if err := proto.SetExtension(msg, pb.E_Ext_More, 12); err == nil {
+	if err := proto.SetExtension(msg, pb2.E_Ext_More, 12); err == nil {
 		t.Error("expected some sort of type mismatch error, got nil")
 	}
 }
 
 func TestNilExtension(t *testing.T) {
-	msg := &pb.MyMessage{
+	msg := &pb2.MyMessage{
 		Count: proto.Int32(1),
 	}
-	if err := proto.SetExtension(msg, pb.E_Ext_Text, proto.String("hello")); err != nil {
+	if err := proto.SetExtension(msg, pb2.E_Ext_Text, proto.String("hello")); err != nil {
 		t.Fatal(err)
 	}
-	if err := proto.SetExtension(msg, pb.E_Ext_More, (*pb.Ext)(nil)); err == nil {
+	if err := proto.SetExtension(msg, pb2.E_Ext_More, (*pb2.Ext)(nil)); err == nil {
 		t.Error("expected SetExtension to fail due to a nil extension")
-	} else if want := fmt.Sprintf("proto: SetExtension called with nil value of type %T", new(pb.Ext)); err.Error() != want {
+	} else if want := fmt.Sprintf("proto: SetExtension called with nil value of type %T", new(pb2.Ext)); err.Error() != want {
 		t.Errorf("expected error %v, got %v", want, err)
 	}
 	// Note: if the behavior of Marshal is ever changed to ignore nil extensions, update
@@ -448,25 +443,25 @@ func TestMarshalUnmarshalRepeatedExtension(t *testing.T) {
 	// Add a repeated extension to the result.
 	tests := []struct {
 		name string
-		ext  []*pb.ComplexExtension
+		ext  []*pb2.ComplexExtension
 	}{
 		{
 			"two fields",
-			[]*pb.ComplexExtension{
+			[]*pb2.ComplexExtension{
 				{First: proto.Int32(7)},
 				{Second: proto.Int32(11)},
 			},
 		},
 		{
 			"repeated field",
-			[]*pb.ComplexExtension{
+			[]*pb2.ComplexExtension{
 				{Third: []int32{1000}},
 				{Third: []int32{2000}},
 			},
 		},
 		{
 			"two fields and repeated field",
-			[]*pb.ComplexExtension{
+			[]*pb2.ComplexExtension{
 				{Third: []int32{1000}},
 				{First: proto.Int32(9)},
 				{Second: proto.Int32(21)},
@@ -476,8 +471,8 @@ func TestMarshalUnmarshalRepeatedExtension(t *testing.T) {
 	}
 	for _, test := range tests {
 		// Marshal message with a repeated extension.
-		msg1 := new(pb.OtherMessage)
-		err := proto.SetExtension(msg1, pb.E_RComplex, test.ext)
+		msg1 := new(pb2.OtherMessage)
+		err := proto.SetExtension(msg1, pb2.E_RComplex, test.ext)
 		if err != nil {
 			t.Fatalf("[%s] Error setting extension: %v", test.name, err)
 		}
@@ -487,16 +482,16 @@ func TestMarshalUnmarshalRepeatedExtension(t *testing.T) {
 		}
 
 		// Unmarshal and read the merged proto.
-		msg2 := new(pb.OtherMessage)
+		msg2 := new(pb2.OtherMessage)
 		err = proto.Unmarshal(b, msg2)
 		if err != nil {
 			t.Fatalf("[%s] Error unmarshaling message: %v", test.name, err)
 		}
-		e, err := proto.GetExtension(msg2, pb.E_RComplex)
+		e, err := proto.GetExtension(msg2, pb2.E_RComplex)
 		if err != nil {
 			t.Fatalf("[%s] Error getting extension: %v", test.name, err)
 		}
-		ext := e.([]*pb.ComplexExtension)
+		ext := e.([]*pb2.ComplexExtension)
 		if ext == nil {
 			t.Fatalf("[%s] Invalid extension", test.name)
 		}
@@ -517,25 +512,25 @@ func TestUnmarshalRepeatingNonRepeatedExtension(t *testing.T) {
 	// this way. Here, we verify that we merge the extensions together.
 	tests := []struct {
 		name string
-		ext  []*pb.ComplexExtension
+		ext  []*pb2.ComplexExtension
 	}{
 		{
 			"two fields",
-			[]*pb.ComplexExtension{
+			[]*pb2.ComplexExtension{
 				{First: proto.Int32(7)},
 				{Second: proto.Int32(11)},
 			},
 		},
 		{
 			"repeated field",
-			[]*pb.ComplexExtension{
+			[]*pb2.ComplexExtension{
 				{Third: []int32{1000}},
 				{Third: []int32{2000}},
 			},
 		},
 		{
 			"two fields and repeated field",
-			[]*pb.ComplexExtension{
+			[]*pb2.ComplexExtension{
 				{Third: []int32{1000}},
 				{First: proto.Int32(9)},
 				{Second: proto.Int32(21)},
@@ -545,7 +540,7 @@ func TestUnmarshalRepeatingNonRepeatedExtension(t *testing.T) {
 	}
 	for _, test := range tests {
 		var buf bytes.Buffer
-		var want pb.ComplexExtension
+		var want pb2.ComplexExtension
 
 		// Generate a serialized representation of a repeated extension
 		// by catenating bytes together.
@@ -554,8 +549,8 @@ func TestUnmarshalRepeatingNonRepeatedExtension(t *testing.T) {
 			proto.Merge(&want, e)
 
 			// serialize the message
-			msg := new(pb.OtherMessage)
-			err := proto.SetExtension(msg, pb.E_Complex, e)
+			msg := new(pb2.OtherMessage)
+			err := proto.SetExtension(msg, pb2.E_Complex, e)
 			if err != nil {
 				t.Fatalf("[%s] Error setting extension %d: %v", test.name, i, err)
 			}
@@ -567,16 +562,16 @@ func TestUnmarshalRepeatingNonRepeatedExtension(t *testing.T) {
 		}
 
 		// Unmarshal and read the merged proto.
-		msg2 := new(pb.OtherMessage)
+		msg2 := new(pb2.OtherMessage)
 		err := proto.Unmarshal(buf.Bytes(), msg2)
 		if err != nil {
 			t.Fatalf("[%s] Error unmarshaling message: %v", test.name, err)
 		}
-		e, err := proto.GetExtension(msg2, pb.E_Complex)
+		e, err := proto.GetExtension(msg2, pb2.E_Complex)
 		if err != nil {
 			t.Fatalf("[%s] Error getting extension: %v", test.name, err)
 		}
-		ext := e.(*pb.ComplexExtension)
+		ext := e.(*pb2.ComplexExtension)
 		if ext == nil {
 			t.Fatalf("[%s] Invalid extension", test.name)
 		}
@@ -589,13 +584,13 @@ func TestUnmarshalRepeatingNonRepeatedExtension(t *testing.T) {
 func TestClearAllExtensions(t *testing.T) {
 	// unregistered extension
 	desc := &proto.ExtensionDesc{
-		ExtendedType:  (*pb.MyMessage)(nil),
+		ExtendedType:  (*pb2.MyMessage)(nil),
 		ExtensionType: (*bool)(nil),
 		Field:         101010100,
 		Name:          "emptyextension",
 		Tag:           "varint,0,opt",
 	}
-	m := &pb.MyMessage{}
+	m := &pb2.MyMessage{}
 	if proto.HasExtension(m, desc) {
 		t.Errorf("proto.HasExtension(%s): got true, want false", proto.MarshalTextString(m))
 	}
@@ -612,9 +607,9 @@ func TestClearAllExtensions(t *testing.T) {
 }
 
 func TestMarshalRace(t *testing.T) {
-	ext := &pb.Ext{}
-	m := &pb.MyMessage{Count: proto.Int32(4)}
-	if err := proto.SetExtension(m, pb.E_Ext_More, ext); err != nil {
+	ext := &pb2.Ext{}
+	m := &pb2.MyMessage{Count: proto.Int32(4)}
+	if err := proto.SetExtension(m, pb2.E_Ext_More, ext); err != nil {
 		t.Fatalf("proto.SetExtension(m, desc, true): got error %q, want nil", err)
 	}
 

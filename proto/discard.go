@@ -1,22 +1,13 @@
-// Copyright 2017 The Go Authors. All rights reserved.
+// Copyright 2019 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 package proto
 
 import (
-	"fmt"
-	"reflect"
-	"strings"
-	"sync"
-	"sync/atomic"
-
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
-
-type generatedDiscarder interface {
-	XXX_DiscardUnknown()
-}
 
 // DiscardUnknown recursively discards all unknown fields from this message
 // and all embedded messages.
@@ -26,310 +17,43 @@ type generatedDiscarder interface {
 // marshal to be able to produce a message that continues to have those
 // unrecognized fields. To avoid this, DiscardUnknown is used to
 // explicitly clear the unknown fields after unmarshaling.
-//
-// For proto2 messages, the unknown fields of message extensions are only
-// discarded from messages that have been accessed via GetExtension.
 func DiscardUnknown(m Message) {
-	if discardUnknownAlt != nil {
-		discardUnknownAlt(m) // populated by hooks_enabled.go
-		return
-	}
-
-	if m, ok := m.(generatedDiscarder); ok {
-		m.XXX_DiscardUnknown()
-		return
-	}
-	// TODO: Dynamically populate a InternalMessageInfo for legacy messages,
-	// but the master branch has no implementation for InternalMessageInfo,
-	// so it would be more work to replicate that approach.
-	discardLegacy(m)
-}
-
-// DiscardUnknown recursively discards all unknown fields.
-func (a *InternalMessageInfo) DiscardUnknown(m Message) {
-	di := atomicLoadDiscardInfo(&a.discard)
-	if di == nil {
-		di = getDiscardInfo(reflect.TypeOf(m).Elem())
-		atomicStoreDiscardInfo(&a.discard, di)
-	}
-	di.discard(toPointer(&m))
-}
-
-type discardInfo struct {
-	typ reflect.Type
-
-	initialized int32 // 0: only typ is valid, 1: everything is valid
-	lock        sync.Mutex
-
-	fields       []discardFieldInfo
-	unrecognized field
-}
-
-type discardFieldInfo struct {
-	field   field // Offset of field, guaranteed to be valid
-	discard func(src pointer)
-}
-
-var (
-	discardInfoMap  = map[reflect.Type]*discardInfo{}
-	discardInfoLock sync.Mutex
-)
-
-func getDiscardInfo(t reflect.Type) *discardInfo {
-	discardInfoLock.Lock()
-	defer discardInfoLock.Unlock()
-	di := discardInfoMap[t]
-	if di == nil {
-		di = &discardInfo{typ: t}
-		discardInfoMap[t] = di
-	}
-	return di
-}
-
-func (di *discardInfo) discard(src pointer) {
-	if src.isNil() {
-		return // Nothing to do.
-	}
-
-	if atomic.LoadInt32(&di.initialized) == 0 {
-		di.computeDiscardInfo()
-	}
-
-	for _, fi := range di.fields {
-		sfp := src.offset(fi.field)
-		fi.discard(sfp)
-	}
-
-	// For proto2 messages, only discard unknown fields in message extensions
-	// that have been accessed via GetExtension.
-	if em, err := extendable(src.asPointerTo(di.typ).Interface()); err == nil {
-		em.Range(func(_ protoreflect.FieldNumber, mx Extension) bool {
-			if m, ok := mx.GetValue().(Message); ok {
-				DiscardUnknown(m)
-			}
-			return true
-		})
-	}
-
-	if di.unrecognized.IsValid() {
-		*src.offset(di.unrecognized).toBytes() = nil
+	if m != nil {
+		discardUnknown(protoimpl.X.MessageOf(m))
 	}
 }
 
-func (di *discardInfo) computeDiscardInfo() {
-	di.lock.Lock()
-	defer di.lock.Unlock()
-	if di.initialized != 0 {
-		return
-	}
-	t := di.typ
-	n := t.NumField()
-
-	for i := 0; i < n; i++ {
-		f := t.Field(i)
-		if strings.HasPrefix(f.Name, "XXX_") || f.PkgPath != "" {
-			continue
-		}
-
-		dfi := discardFieldInfo{field: toField(&f, nil)}
-		tf := f.Type
-
-		// Unwrap tf to get its most basic type.
-		var isPointer, isSlice bool
-		if tf.Kind() == reflect.Slice && tf.Elem().Kind() != reflect.Uint8 {
-			isSlice = true
-			tf = tf.Elem()
-		}
-		if tf.Kind() == reflect.Ptr {
-			isPointer = true
-			tf = tf.Elem()
-		}
-		if isPointer && isSlice && tf.Kind() != reflect.Struct {
-			panic(fmt.Sprintf("%v.%s cannot be a slice of pointers to primitive types", t, f.Name))
-		}
-
-		switch tf.Kind() {
-		case reflect.Struct:
-			switch {
-			case !isPointer:
-				panic(fmt.Sprintf("%v.%s cannot be a direct struct value", t, f.Name))
-			case isSlice: // E.g., []*pb.T
-				di := getDiscardInfo(tf)
-				dfi.discard = func(src pointer) {
-					sps := src.getPointerSlice()
-					for _, sp := range sps {
-						if !sp.isNil() {
-							di.discard(sp)
-						}
-					}
-				}
-			default: // E.g., *pb.T
-				di := getDiscardInfo(tf)
-				dfi.discard = func(src pointer) {
-					sp := src.getPointer()
-					if !sp.isNil() {
-						di.discard(sp)
-					}
+func discardUnknown(m protoreflect.Message) {
+	m.Range(func(fd protoreflect.FieldDescriptor, val protoreflect.Value) bool {
+		switch {
+		// Handle singular message.
+		case fd.Cardinality() != protoreflect.Repeated:
+			if fd.Message() != nil {
+				discardUnknown(m.Get(fd).Message())
+			}
+		// Handle list of messages.
+		case fd.IsList():
+			if fd.Message() != nil {
+				ls := m.Get(fd).List()
+				for i := 0; i < ls.Len(); i++ {
+					discardUnknown(ls.Get(i).Message())
 				}
 			}
-		case reflect.Map:
-			switch {
-			case isPointer || isSlice:
-				panic(fmt.Sprintf("%v.%s cannot be a pointer to a map or a slice of map values", t, f.Name))
-			default: // E.g., map[K]V
-				if tf.Elem().Kind() == reflect.Ptr { // Proto struct (e.g., *T)
-					dfi.discard = func(src pointer) {
-						sm := src.asPointerTo(tf).Elem()
-						if sm.Len() == 0 {
-							return
-						}
-						for _, key := range sm.MapKeys() {
-							val := sm.MapIndex(key)
-							DiscardUnknown(val.Interface().(Message))
-						}
-					}
-				} else {
-					dfi.discard = func(pointer) {} // Noop
-				}
-			}
-		case reflect.Interface:
-			// Must be oneof field.
-			switch {
-			case isPointer || isSlice:
-				panic(fmt.Sprintf("%v.%s cannot be a pointer to a interface or a slice of interface values", t, f.Name))
-			default: // E.g., interface{}
-				// TODO: Make this faster?
-				dfi.discard = func(src pointer) {
-					su := src.asPointerTo(tf).Elem()
-					if !su.IsNil() {
-						sv := su.Elem().Elem().Field(0)
-						if sv.Kind() == reflect.Ptr && sv.IsNil() {
-							return
-						}
-						switch sv.Type().Kind() {
-						case reflect.Ptr: // Proto struct (e.g., *T)
-							DiscardUnknown(sv.Interface().(Message))
-						}
-					}
-				}
-			}
-		default:
-			continue
-		}
-		di.fields = append(di.fields, dfi)
-	}
-
-	expFunc := exporterFunc(t)
-	di.unrecognized = invalidField
-	if f, ok := t.FieldByName("XXX_unrecognized"); ok {
-		if f.Type != reflect.TypeOf([]byte{}) {
-			panic("expected XXX_unrecognized to be of type []byte")
-		}
-		di.unrecognized = toField(&f, nil)
-	}
-	if f, ok := t.FieldByName("unknownFields"); ok {
-		if f.Type != reflect.TypeOf([]byte{}) {
-			panic("expected unknownFields to be of type []byte")
-		}
-		di.unrecognized = toField(&f, expFunc)
-	}
-
-	atomic.StoreInt32(&di.initialized, 1)
-}
-
-func discardLegacy(m Message) {
-	v := reflect.ValueOf(m)
-	if v.Kind() != reflect.Ptr || v.IsNil() {
-		return
-	}
-	v = v.Elem()
-	if v.Kind() != reflect.Struct {
-		return
-	}
-	t := v.Type()
-
-	for i := 0; i < v.NumField(); i++ {
-		f := t.Field(i)
-		if strings.HasPrefix(f.Name, "XXX_") || f.PkgPath != "" {
-			continue
-		}
-		vf := v.Field(i)
-		tf := f.Type
-
-		// Unwrap tf to get its most basic type.
-		var isPointer, isSlice bool
-		if tf.Kind() == reflect.Slice && tf.Elem().Kind() != reflect.Uint8 {
-			isSlice = true
-			tf = tf.Elem()
-		}
-		if tf.Kind() == reflect.Ptr {
-			isPointer = true
-			tf = tf.Elem()
-		}
-		if isPointer && isSlice && tf.Kind() != reflect.Struct {
-			panic(fmt.Sprintf("%T.%s cannot be a slice of pointers to primitive types", m, f.Name))
-		}
-
-		switch tf.Kind() {
-		case reflect.Struct:
-			switch {
-			case !isPointer:
-				panic(fmt.Sprintf("%T.%s cannot be a direct struct value", m, f.Name))
-			case isSlice: // E.g., []*pb.T
-				for j := 0; j < vf.Len(); j++ {
-					discardLegacy(vf.Index(j).Interface().(Message))
-				}
-			default: // E.g., *pb.T
-				discardLegacy(vf.Interface().(Message))
-			}
-		case reflect.Map:
-			switch {
-			case isPointer || isSlice:
-				panic(fmt.Sprintf("%T.%s cannot be a pointer to a map or a slice of map values", m, f.Name))
-			default: // E.g., map[K]V
-				tv := vf.Type().Elem()
-				if tv.Kind() == reflect.Ptr && tv.Implements(protoMessageType) { // Proto struct (e.g., *T)
-					for _, key := range vf.MapKeys() {
-						val := vf.MapIndex(key)
-						discardLegacy(val.Interface().(Message))
-					}
-				}
-			}
-		case reflect.Interface:
-			// Must be oneof field.
-			switch {
-			case isPointer || isSlice:
-				panic(fmt.Sprintf("%T.%s cannot be a pointer to a interface or a slice of interface values", m, f.Name))
-			default: // E.g., test_proto.isCommunique_Union interface
-				if !vf.IsNil() && f.Tag.Get("protobuf_oneof") != "" {
-					vf = vf.Elem() // E.g., *test_proto.Communique_Msg
-					if !vf.IsNil() {
-						vf = vf.Elem()   // E.g., test_proto.Communique_Msg
-						vf = vf.Field(0) // E.g., Proto struct (e.g., *T) or primitive value
-						if vf.Kind() == reflect.Ptr {
-							discardLegacy(vf.Interface().(Message))
-						}
-					}
-				}
+		// Handle map of messages.
+		case fd.IsMap():
+			if fd.MapValue().Message() != nil {
+				ms := m.Get(fd).Map()
+				ms.Range(func(_ protoreflect.MapKey, v protoreflect.Value) bool {
+					discardUnknown(v.Message())
+					return true
+				})
 			}
 		}
-	}
+		return true
+	})
 
-	if vf := unknownFieldsValue(v); vf.IsValid() {
-		if vf.Type() != reflect.TypeOf([]byte{}) {
-			panic("expected unknown fields to be of type []byte")
-		}
-		vf.Set(reflect.ValueOf([]byte(nil)))
-	}
-
-	// For proto2 messages, only discard unknown fields in message extensions
-	// that have been accessed via GetExtension.
-	if em, err := extendable(m); err == nil {
-		em.Range(func(_ protoreflect.FieldNumber, mx Extension) bool {
-			if m, ok := mx.GetValue().(Message); ok {
-				discardLegacy(m)
-			}
-			return true
-		})
+	// Discard unknown fields.
+	if len(m.GetUnknown()) > 0 {
+		m.SetUnknown(nil)
 	}
 }

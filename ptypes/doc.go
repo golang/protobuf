@@ -2,5 +2,5 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package ptypes contains code for interacting with well-known types.
+// Package ptypes provides functionality for interacting with well-known types.
 package ptypes

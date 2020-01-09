@@ -9,20 +9,29 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 
-	"google.golang.org/protobuf/types/descriptorpb"
+	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
 func TestRegistry(t *testing.T) {
-	if got := proto.FileDescriptor("google/protobuf/descriptor.proto"); len(got) == 0 {
-		t.Errorf(`FileDescriptor("google/protobuf/descriptor.proto") = empty, want non-empty`)
+	file := new(descpb.DescriptorProto).ProtoReflect().Descriptor().ParentFile()
+	path := file.Path()
+	pkg := file.Package()
+	if got := proto.FileDescriptor(path); len(got) == 0 {
+		t.Errorf("FileDescriptor(%q) = empty, want non-empty", path)
 	}
-	if got := proto.EnumValueMap("google.protobuf.FieldDescriptorProto_Label"); len(got) == 0 {
-		t.Errorf(`EnumValueMap("google.protobuf.FieldDescriptorProto_Label") = empty, want non-empty`)
+
+	name := protoreflect.FullName(pkg + ".FieldDescriptorProto_Label")
+	if got := proto.EnumValueMap(string(name)); len(got) == 0 {
+		t.Errorf("EnumValueMap(%q) = empty, want non-empty", name)
 	}
-	wantType := reflect.TypeOf(new(descriptorpb.EnumDescriptorProto_EnumReservedRange))
-	gotType := proto.MessageType("google.protobuf.EnumDescriptorProto.EnumReservedRange")
+
+	msg := new(descpb.EnumDescriptorProto_EnumReservedRange)
+	name = msg.ProtoReflect().Descriptor().FullName()
+	wantType := reflect.TypeOf(msg)
+	gotType := proto.MessageType(string(name))
 	if gotType != wantType {
-		t.Errorf(`MessageType("google.protobuf.EnumDescriptorProto.EnumReservedRange") = %v, want %v`, gotType, wantType)
+		t.Errorf("MessageType(%q) = %v, want %v", name, gotType, wantType)
 	}
 }

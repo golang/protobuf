@@ -40,7 +40,7 @@ import (
 
 func init() {
 	fmt.Fprint(os.Stderr,
-		"WARNING: Package github.com/golang/protobuf/protoc-gen-go/generator is deprecated.\n"+
+		"WARNING: Package \"github.com/golang/protobuf/protoc-gen-go/generator\" is deprecated.\n"+
 			"\tA future release of golang/protobuf will delete this package,\n"+
 			"\twhich has long been excluded from the compatibility promise.\n\n")
 }

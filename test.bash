@@ -10,17 +10,13 @@ PASS="\x1b[32mPASS"
 FAIL="\x1b[31mFAIL"
 RESET="\x1b[0m"
 
-echo -e "${BOLD}go test -tags protolegacy ./...${RESET}"
-RET_TEST0=$(go test -tags protolegacy ./... | egrep -v "^(ok|[?])\s+")
+echo -e "${BOLD}go test ./...${RESET}"
+RET_TEST0=$(go test ./... | egrep -v "^(ok|[?])\s+")
 if [[ ! -z "$RET_TEST0" ]]; then echo "$RET_TEST0"; echo; fi
 
-echo -e "${BOLD}go test -tags use_golang_protobuf_v1 ./...${RESET}"
-RET_TEST1=$(go test -tags use_golang_protobuf_v1 ./... | egrep -v "^(ok|[?])\s+")
+echo -e "${BOLD}go test -tags purego ./...${RESET}"
+RET_TEST1=$(go test -tags purego ./... | egrep -v "^(ok|[?])\s+")
 if [[ ! -z "$RET_TEST1" ]]; then echo "$RET_TEST1"; echo; fi
-
-echo -e "${BOLD}go test -tags "use_golang_protobuf_v1 purego" ./...${RESET}"
-RET_TEST2=$(go test -tags "use_golang_protobuf_v1 purego" ./... | egrep -v "^(ok|[?])\s+")
-if [[ ! -z "$RET_TEST2" ]]; then echo "$RET_TEST2"; echo; fi
 
 echo -e "${BOLD}go generate${RESET}"
 RET_GEN=$(go run ./internal/cmd/generate-alias 2>&1)
@@ -38,7 +34,7 @@ echo -e "${BOLD}git ls-files${RESET}"
 RET_FILES=$(git ls-files --others --exclude-standard 2>&1)
 if [[ ! -z "$RET_FILES" ]]; then echo "$RET_FILES"; echo; fi
 
-if [[ ! -z "$RET_TEST0" ]] || [[ ! -z "$RET_TEST1" ]] || [[ ! -z "$RET_TEST2" ]] || [[ ! -z "$RET_GEN" ]] || [ ! -z "$RET_FMT" ] || [[ ! -z "$RET_DIFF" ]] || [[ ! -z "$RET_FILES" ]]; then
+if [[ ! -z "$RET_TEST0" ]] || [[ ! -z "$RET_TEST1" ]] || [[ ! -z "$RET_GEN" ]] || [ ! -z "$RET_FMT" ] || [[ ! -z "$RET_DIFF" ]] || [[ ! -z "$RET_FILES" ]]; then
 	echo -e "${FAIL}${RESET}"; exit 1
 else
 	echo -e "${PASS}${RESET}"; exit 0

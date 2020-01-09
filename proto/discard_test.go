@@ -9,8 +9,8 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	proto3pb "github.com/golang/protobuf/proto/proto3_proto"
-	pb "github.com/golang/protobuf/proto/test_proto"
+	pb2 "github.com/golang/protobuf/internal/testprotos/proto2_proto"
+	pb3 "github.com/golang/protobuf/internal/testprotos/proto3_proto"
 )
 
 const rawFields = "\x2d\xc3\xd2\xe1\xf0"
@@ -24,81 +24,81 @@ func TestDiscardUnknown(t *testing.T) {
 		in:   nil, want: nil, // Should not panic
 	}, {
 		desc: "NilPtr",
-		in:   (*proto3pb.Message)(nil), want: (*proto3pb.Message)(nil), // Should not panic
+		in:   (*pb3.Message)(nil), want: (*pb3.Message)(nil), // Should not panic
 	}, {
 		desc: "Nested",
-		in: &proto3pb.Message{
+		in: &pb3.Message{
 			Name:             "Aaron",
-			Nested:           &proto3pb.Nested{Cute: true, XXX_unrecognized: []byte(rawFields)},
+			Nested:           &pb3.Nested{Cute: true, XXX_unrecognized: []byte(rawFields)},
 			XXX_unrecognized: []byte(rawFields),
 		},
-		want: &proto3pb.Message{
+		want: &pb3.Message{
 			Name:   "Aaron",
-			Nested: &proto3pb.Nested{Cute: true},
+			Nested: &pb3.Nested{Cute: true},
 		},
 	}, {
 		desc: "Slice",
-		in: &proto3pb.Message{
+		in: &pb3.Message{
 			Name: "Aaron",
-			Children: []*proto3pb.Message{
+			Children: []*pb3.Message{
 				{Name: "Sarah", XXX_unrecognized: []byte(rawFields)},
 				{Name: "Abraham", XXX_unrecognized: []byte(rawFields)},
 			},
 			XXX_unrecognized: []byte(rawFields),
 		},
-		want: &proto3pb.Message{
+		want: &pb3.Message{
 			Name: "Aaron",
-			Children: []*proto3pb.Message{
+			Children: []*pb3.Message{
 				{Name: "Sarah"},
 				{Name: "Abraham"},
 			},
 		},
 	}, {
 		desc: "OneOf",
-		in: &pb.Communique{
-			Union: &pb.Communique_Msg{&pb.Strings{
+		in: &pb2.Communique{
+			Union: &pb2.Communique_Msg{&pb2.Strings{
 				StringField:      proto.String("123"),
 				XXX_unrecognized: []byte(rawFields),
 			}},
 			XXX_unrecognized: []byte(rawFields),
 		},
-		want: &pb.Communique{
-			Union: &pb.Communique_Msg{&pb.Strings{StringField: proto.String("123")}},
+		want: &pb2.Communique{
+			Union: &pb2.Communique_Msg{&pb2.Strings{StringField: proto.String("123")}},
 		},
 	}, {
 		desc: "Map",
-		in: &pb.MessageWithMap{MsgMapping: map[int64]*pb.FloatingPoint{
-			0x4002: &pb.FloatingPoint{
+		in: &pb2.MessageWithMap{MsgMapping: map[int64]*pb2.FloatingPoint{
+			0x4002: &pb2.FloatingPoint{
 				Exact:            proto.Bool(true),
 				XXX_unrecognized: []byte(rawFields),
 			},
 		}},
-		want: &pb.MessageWithMap{MsgMapping: map[int64]*pb.FloatingPoint{
-			0x4002: &pb.FloatingPoint{Exact: proto.Bool(true)},
+		want: &pb2.MessageWithMap{MsgMapping: map[int64]*pb2.FloatingPoint{
+			0x4002: &pb2.FloatingPoint{Exact: proto.Bool(true)},
 		}},
 	}, {
 		desc: "Extension",
 		in: func() proto.Message {
-			m := &pb.MyMessage{
+			m := &pb2.MyMessage{
 				Count: proto.Int32(42),
-				Somegroup: &pb.MyMessage_SomeGroup{
+				Somegroup: &pb2.MyMessage_SomeGroup{
 					GroupField:       proto.Int32(6),
 					XXX_unrecognized: []byte(rawFields),
 				},
 				XXX_unrecognized: []byte(rawFields),
 			}
-			proto.SetExtension(m, pb.E_Ext_More, &pb.Ext{
+			proto.SetExtension(m, pb2.E_Ext_More, &pb2.Ext{
 				Data:             proto.String("extension"),
 				XXX_unrecognized: []byte(rawFields),
 			})
 			return m
 		}(),
 		want: func() proto.Message {
-			m := &pb.MyMessage{
+			m := &pb2.MyMessage{
 				Count:     proto.Int32(42),
-				Somegroup: &pb.MyMessage_SomeGroup{GroupField: proto.Int32(6)},
+				Somegroup: &pb2.MyMessage_SomeGroup{GroupField: proto.Int32(6)},
 			}
-			proto.SetExtension(m, pb.E_Ext_More, &pb.Ext{Data: proto.String("extension")})
+			proto.SetExtension(m, pb2.E_Ext_More, &pb2.Ext{Data: proto.String("extension")})
 			return m
 		}(),
 	}}

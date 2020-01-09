@@ -168,7 +168,6 @@ func SizeTag(num Number) int {
 
 // AppendVarint appends v to b as a varint-encoded uint64.
 func AppendVarint(b []byte, v uint64) []byte {
-	// TODO: Specialize for sizes 1 and 2 with mid-stack inlining.
 	switch {
 	case v < 1<<7:
 		b = append(b, byte(v))
@@ -251,7 +250,6 @@ func AppendVarint(b []byte, v uint64) []byte {
 // ConsumeVarint parses b as a varint-encoded uint64, reporting its length.
 // This returns a negative length upon an error (see ParseError).
 func ConsumeVarint(b []byte) (v uint64, n int) {
-	// TODO: Specialize for sizes 1 and 2 with mid-stack inlining.
 	var y uint64
 	if len(b) <= 0 {
 		return 0, errCodeTruncated
@@ -435,6 +433,18 @@ func SizeBytes(n int) int {
 	return SizeVarint(uint64(n)) + n
 }
 
+// AppendString appends v to b as a length-prefixed bytes value.
+func AppendString(b []byte, v string) []byte {
+	return append(AppendVarint(b, uint64(len(v))), v...)
+}
+
+// ConsumeString parses b as a length-prefixed bytes value, reporting its length.
+// This returns a negative length upon an error (see ParseError).
+func ConsumeString(b []byte) (v string, n int) {
+	bb, n := ConsumeBytes(b)
+	return string(bb), n
+}
+
 // AppendGroup appends v to b as group value, with a trailing end group marker.
 // The value v must not contain the end marker.
 func AppendGroup(b []byte, num Number, v []byte) []byte {
@@ -469,7 +479,7 @@ func SizeGroup(num Number, n int) int {
 }
 
 // DecodeTag decodes the field Number and wire Type from its unified form.
-// The Number is -1 if the decoded field number overflows.
+// The Number is -1 if the decoded field number overflows int32.
 // Other than overflow, this does not check for field number validity.
 func DecodeTag(x uint64) (Number, Type) {
 	// NOTE: MessageSet allows for larger field numbers than normal.

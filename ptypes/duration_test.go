@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+
 	durpb "github.com/golang/protobuf/ptypes/duration"
 )
 
