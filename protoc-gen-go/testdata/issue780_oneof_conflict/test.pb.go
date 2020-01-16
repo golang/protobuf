@@ -23,7 +23,7 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 type Foo struct {
 	// Types that are valid to be assigned to Bar:
 	//	*Foo_GetBar
-	Bar                  isFoo_Bar `protobuf_oneof:"bar"`
+	Bar                  isFoo_Bar `protobuf_oneof:"bar" json:"bar"`
 	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
 	XXX_unrecognized     []byte    `json:"-"`
 	XXX_sizecache        int32     `json:"-"`
@@ -59,7 +59,7 @@ type isFoo_Bar interface {
 }
 
 type Foo_GetBar struct {
-	GetBar string `protobuf:"bytes,1,opt,name=get_bar,json=getBar,oneof"`
+	GetBar string `protobuf:"bytes,1,opt,name=get_bar,json=getBar,oneof" json:"get_bar"`
 }
 
 func (*Foo_GetBar) isFoo_Bar() {}

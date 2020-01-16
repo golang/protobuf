@@ -586,7 +586,7 @@ type MsgWithOneof struct {
 	//	*MsgWithOneof_Country
 	//	*MsgWithOneof_HomeAddress
 	//	*MsgWithOneof_MsgWithRequired
-	Union                isMsgWithOneof_Union `protobuf_oneof:"union"`
+	Union                isMsgWithOneof_Union `protobuf_oneof:"union" json:"union"`
 	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
 	XXX_unrecognized     []byte               `json:"-"`
 	XXX_sizecache        int32                `json:"-"`
@@ -622,23 +622,23 @@ type isMsgWithOneof_Union interface {
 }
 
 type MsgWithOneof_Title struct {
-	Title string `protobuf:"bytes,1,opt,name=title,oneof"`
+	Title string `protobuf:"bytes,1,opt,name=title,oneof" json:"title"`
 }
 
 type MsgWithOneof_Salary struct {
-	Salary int64 `protobuf:"varint,2,opt,name=salary,oneof"`
+	Salary int64 `protobuf:"varint,2,opt,name=salary,oneof" json:"salary"`
 }
 
 type MsgWithOneof_Country struct {
-	Country string `protobuf:"bytes,3,opt,name=Country,oneof"`
+	Country string `protobuf:"bytes,3,opt,name=Country,oneof" json:"Country"`
 }
 
 type MsgWithOneof_HomeAddress struct {
-	HomeAddress string `protobuf:"bytes,4,opt,name=home_address,json=homeAddress,oneof"`
+	HomeAddress string `protobuf:"bytes,4,opt,name=home_address,json=homeAddress,oneof" json:"home_address"`
 }
 
 type MsgWithOneof_MsgWithRequired struct {
-	MsgWithRequired *MsgWithRequired `protobuf:"bytes,5,opt,name=msg_with_required,json=msgWithRequired,oneof"`
+	MsgWithRequired *MsgWithRequired `protobuf:"bytes,5,opt,name=msg_with_required,json=msgWithRequired,oneof" json:"msg_with_required"`
 }
 
 func (*MsgWithOneof_Title) isMsgWithOneof_Union() {}

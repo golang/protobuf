@@ -115,7 +115,7 @@ type Value struct {
 	//	*Value_BoolValue
 	//	*Value_StructValue
 	//	*Value_ListValue
-	Kind                 isValue_Kind `protobuf_oneof:"kind"`
+	Kind                 isValue_Kind `protobuf_oneof:"kind" json:"kind"`
 	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
 	XXX_unrecognized     []byte       `json:"-"`
 	XXX_sizecache        int32        `json:"-"`
@@ -153,27 +153,27 @@ type isValue_Kind interface {
 }
 
 type Value_NullValue struct {
-	NullValue NullValue `protobuf:"varint,1,opt,name=null_value,json=nullValue,proto3,enum=google.protobuf.NullValue,oneof"`
+	NullValue NullValue `protobuf:"varint,1,opt,name=null_value,json=nullValue,proto3,enum=google.protobuf.NullValue,oneof" json:"null_value"`
 }
 
 type Value_NumberValue struct {
-	NumberValue float64 `protobuf:"fixed64,2,opt,name=number_value,json=numberValue,proto3,oneof"`
+	NumberValue float64 `protobuf:"fixed64,2,opt,name=number_value,json=numberValue,proto3,oneof" json:"number_value"`
 }
 
 type Value_StringValue struct {
-	StringValue string `protobuf:"bytes,3,opt,name=string_value,json=stringValue,proto3,oneof"`
+	StringValue string `protobuf:"bytes,3,opt,name=string_value,json=stringValue,proto3,oneof" json:"string_value"`
 }
 
 type Value_BoolValue struct {
-	BoolValue bool `protobuf:"varint,4,opt,name=bool_value,json=boolValue,proto3,oneof"`
+	BoolValue bool `protobuf:"varint,4,opt,name=bool_value,json=boolValue,proto3,oneof" json:"bool_value"`
 }
 
 type Value_StructValue struct {
-	StructValue *Struct `protobuf:"bytes,5,opt,name=struct_value,json=structValue,proto3,oneof"`
+	StructValue *Struct `protobuf:"bytes,5,opt,name=struct_value,json=structValue,proto3,oneof" json:"struct_value"`
 }
 
 type Value_ListValue struct {
-	ListValue *ListValue `protobuf:"bytes,6,opt,name=list_value,json=listValue,proto3,oneof"`
+	ListValue *ListValue `protobuf:"bytes,6,opt,name=list_value,json=listValue,proto3,oneof" json:"list_value"`
 }
 
 func (*Value_NullValue) isValue_Kind() {}

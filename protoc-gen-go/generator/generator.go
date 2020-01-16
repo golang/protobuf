@@ -2261,10 +2261,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 
 			dname := "is" + goTypeName + "_" + fname
 			tag := `protobuf_oneof:"` + odp.GetName() + `"`
+			tag += ` json:"` + odp.GetName() + `"`
 			of := oneofField{
 				fieldCommon: fieldCommon{
 					goName:     fname,
-					getterName: "Get"+fname,
+					getterName: "Get" + fname,
 					goType:     dname,
 					tags:       tag,
 					protoName:  odp.GetName(),
@@ -2339,6 +2340,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 
 			oneofField := oFields[*field.OneofIndex]
 			tag := "protobuf:" + g.goTag(message, field, wiretype)
+			tag += ` json:"` + field.GetName() + `"`
 			sf := oneofSubField{
 				fieldCommon: fieldCommon{
 					goName:     fieldName,

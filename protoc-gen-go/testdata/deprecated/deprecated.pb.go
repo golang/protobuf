@@ -91,7 +91,7 @@ type DeprecatedResponse struct {
 	//
 	// Types that are valid to be assigned to DeprecatedOneof:
 	//	*DeprecatedResponse_DeprecatedOneofField
-	DeprecatedOneof      isDeprecatedResponse_DeprecatedOneof `protobuf_oneof:"deprecated_oneof"`
+	DeprecatedOneof      isDeprecatedResponse_DeprecatedOneof `protobuf_oneof:"deprecated_oneof" json:"deprecated_oneof"`
 	XXX_NoUnkeyedLiteral struct{}                             `json:"-"`
 	XXX_unrecognized     []byte                               `json:"-"`
 	XXX_sizecache        int32                                `json:"-"`
@@ -135,7 +135,7 @@ type isDeprecatedResponse_DeprecatedOneof interface {
 }
 
 type DeprecatedResponse_DeprecatedOneofField struct {
-	DeprecatedOneofField string `protobuf:"bytes,2,opt,name=deprecated_oneof_field,json=deprecatedOneofField,proto3,oneof"`
+	DeprecatedOneofField string `protobuf:"bytes,2,opt,name=deprecated_oneof_field,json=deprecatedOneofField,proto3,oneof" json:"deprecated_oneof_field"`
 }
 
 func (*DeprecatedResponse_DeprecatedOneofField) isDeprecatedResponse_DeprecatedOneof() {}

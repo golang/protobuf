@@ -137,7 +137,7 @@ type M struct {
 	// Types that are valid to be assigned to OneofField:
 	//	*M_OneofInt32
 	//	*M_OneofInt64
-	OneofField           isM_OneofField `protobuf_oneof:"oneof_field"`
+	OneofField           isM_OneofField `protobuf_oneof:"oneof_field" json:"oneof_field"`
 	Grouping             *M_Grouping    `protobuf:"group,4,opt,name=Grouping,json=grouping" json:"grouping,omitempty"`
 	DefaultField         *string        `protobuf:"bytes,6,opt,name=default_field,json=defaultField,def=def" json:"default_field,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
@@ -184,11 +184,11 @@ type isM_OneofField interface {
 }
 
 type M_OneofInt32 struct {
-	OneofInt32 int32 `protobuf:"varint,2,opt,name=oneof_int32,json=oneofInt32,oneof"`
+	OneofInt32 int32 `protobuf:"varint,2,opt,name=oneof_int32,json=oneofInt32,oneof" json:"oneof_int32"`
 }
 
 type M_OneofInt64 struct {
-	OneofInt64 int64 `protobuf:"varint,3,opt,name=oneof_int64,json=oneofInt64,oneof"`
+	OneofInt64 int64 `protobuf:"varint,3,opt,name=oneof_int64,json=oneofInt64,oneof" json:"oneof_int64"`
 }
 
 func (*M_OneofInt32) isM_OneofField() {}
@@ -281,7 +281,7 @@ type M_Submessage struct {
 	// Types that are valid to be assigned to SubmessageOneofField:
 	//	*M_Submessage_SubmessageOneofInt32
 	//	*M_Submessage_SubmessageOneofInt64
-	SubmessageOneofField isM_Submessage_SubmessageOneofField `protobuf_oneof:"submessage_oneof_field"`
+	SubmessageOneofField isM_Submessage_SubmessageOneofField `protobuf_oneof:"submessage_oneof_field" json:"submessage_oneof_field"`
 	XXX_NoUnkeyedLiteral struct{}                            `json:"-"`
 	XXX_unrecognized     []byte                              `json:"-"`
 	XXX_sizecache        int32                               `json:"-"`
@@ -317,11 +317,11 @@ type isM_Submessage_SubmessageOneofField interface {
 }
 
 type M_Submessage_SubmessageOneofInt32 struct {
-	SubmessageOneofInt32 int32 `protobuf:"varint,1,opt,name=submessage_oneof_int32,json=submessageOneofInt32,oneof"`
+	SubmessageOneofInt32 int32 `protobuf:"varint,1,opt,name=submessage_oneof_int32,json=submessageOneofInt32,oneof" json:"submessage_oneof_int32"`
 }
 
 type M_Submessage_SubmessageOneofInt64 struct {
-	SubmessageOneofInt64 int64 `protobuf:"varint,2,opt,name=submessage_oneof_int64,json=submessageOneofInt64,oneof"`
+	SubmessageOneofInt64 int64 `protobuf:"varint,2,opt,name=submessage_oneof_int64,json=submessageOneofInt64,oneof" json:"submessage_oneof_int64"`
 }
 
 func (*M_Submessage_SubmessageOneofInt32) isM_Submessage_SubmessageOneofField() {}

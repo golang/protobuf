@@ -405,7 +405,7 @@ type TestUTF8 struct {
 	Vector []string `protobuf:"bytes,2,rep,name=vector,proto3" json:"vector,omitempty"`
 	// Types that are valid to be assigned to Oneof:
 	//	*TestUTF8_Field
-	Oneof                isTestUTF8_Oneof `protobuf_oneof:"oneof"`
+	Oneof                isTestUTF8_Oneof `protobuf_oneof:"oneof" json:"oneof"`
 	MapKey               map[string]int64 `protobuf:"bytes,4,rep,name=map_key,json=mapKey,proto3" json:"map_key,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
 	MapValue             map[int64]string `protobuf:"bytes,5,rep,name=map_value,json=mapValue,proto3" json:"map_value,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
@@ -457,7 +457,7 @@ type isTestUTF8_Oneof interface {
 }
 
 type TestUTF8_Field struct {
-	Field string `protobuf:"bytes,3,opt,name=field,proto3,oneof"`
+	Field string `protobuf:"bytes,3,opt,name=field,proto3,oneof" json:"field"`
 }
 
 func (*TestUTF8_Field) isTestUTF8_Oneof() {}
