@@ -82,6 +82,9 @@ type Marshaler struct {
 	// fully-qualified type name from the type URL and pass that to
 	// proto.MessageType(string).
 	AnyResolver AnyResolver
+
+	// Whether to render int64 values as integer values, as opposed to string values  by default.
+	Int64AsInt bool
 }
 
 // AnyResolver takes a type URL, present in an Any message, and resolves it into
@@ -652,14 +655,14 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 	if err != nil {
 		return err
 	}
-	//needToQuote := string(b[0]) != `"` && (v.Kind() == reflect.Int64 || v.Kind() == reflect.Uint64)
-	// if needToQuote {
-	// 	out.write(`"`)
-	// }
+	needToQuote := !m.Int64AsInt && string(b[0]) != `"` && (v.Kind() == reflect.Int64 || v.Kind() == reflect.Uint64)
+	if needToQuote {
+		out.write(`"`)
+	}
 	out.write(string(b))
-	// if needToQuote {
-	// 	out.write(`"`)
-	// }
+	if needToQuote {
+		out.write(`"`)
+	}
 	return out.err
 }
 
