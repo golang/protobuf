@@ -42,7 +42,7 @@ var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // EmptyServiceClient is the client API for EmptyService service.
 //
@@ -51,10 +51,10 @@ type EmptyServiceClient interface {
 }
 
 type emptyServiceClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewEmptyServiceClient(cc *grpc.ClientConn) EmptyServiceClient {
+func NewEmptyServiceClient(cc grpc.ClientConnInterface) EmptyServiceClient {
 	return &emptyServiceClient{cc}
 }
 
