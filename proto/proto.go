@@ -19,6 +19,13 @@ import (
 	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
+const (
+	ProtoPackageIsVersion1 = true
+	ProtoPackageIsVersion2 = true
+	ProtoPackageIsVersion3 = true
+	ProtoPackageIsVersion4 = true
+)
+
 // Message is a protocol buffer message.
 type Message = protoiface.MessageV1
 

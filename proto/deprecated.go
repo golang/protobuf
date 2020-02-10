@@ -11,13 +11,6 @@ import (
 	"strconv"
 )
 
-// Deprecated: Do not use.
-const (
-	ProtoPackageIsVersion1 = true
-	ProtoPackageIsVersion2 = true
-	ProtoPackageIsVersion3 = true
-)
-
 var (
 	// Deprecated: No longer returned.
 	ErrNil = errors.New("proto: Marshal called with nil")
