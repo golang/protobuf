@@ -13,7 +13,7 @@ import (
 	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
-func TestEnumDescriptorOf(t *testing.T) {
+func TestEnumDescriptor(t *testing.T) {
 	tests := []struct {
 		enum protoreflect.Enum
 		idxs []int
@@ -37,19 +37,19 @@ func TestEnumDescriptorOf(t *testing.T) {
 	for _, tt := range tests {
 		e := struct{ protoreflect.Enum }{tt.enum} // v2-only enum
 
-		_, idxs := EnumRawDescriptorOf(e)
+		_, idxs := EnumRawDescriptor(e)
 		if diff := cmp.Diff(tt.idxs, idxs); diff != "" {
 			t.Errorf("path index mismatch (-want +got):\n%v", diff)
 		}
 
-		_, ed := EnumDescriptorProtoOf(e)
+		_, ed := EnumDescriptorProto(e)
 		if ed.GetName() != tt.name {
 			t.Errorf("mismatching enum name: got %v, want %v", ed.GetName(), tt.name)
 		}
 	}
 }
 
-func TestMessageDescriptorOf(t *testing.T) {
+func TestMessageDescriptor(t *testing.T) {
 	tests := []struct {
 		message protoreflect.ProtoMessage
 		idxs    []int
@@ -72,12 +72,12 @@ func TestMessageDescriptorOf(t *testing.T) {
 	for _, tt := range tests {
 		m := struct{ protoreflect.ProtoMessage }{tt.message} // v2-only message
 
-		_, idxs := MessageRawDescriptorOf(m)
+		_, idxs := MessageRawDescriptor(m)
 		if diff := cmp.Diff(tt.idxs, idxs); diff != "" {
 			t.Errorf("path index mismatch (-want +got):\n%v", diff)
 		}
 
-		_, md := MessageDescriptorProtoOf(m)
+		_, md := MessageDescriptorProto(m)
 		if md.GetName() != tt.name {
 			t.Errorf("mismatching message name: got %v, want %v", md.GetName(), tt.name)
 		}
