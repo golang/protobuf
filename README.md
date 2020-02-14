@@ -24,22 +24,36 @@ To use this software, you must:
 	https://golang.org/doc/install
   for details or, if you are using gccgo, follow the instructions at
 	https://golang.org/doc/install/gccgo
-- Grab the code from the repository and install the `proto` package.
+- Grab the code from the repository and install the compiler plugin.
   The simplest way is to run:
-  ```
-  go get -u github.com/golang/protobuf/protoc-gen-go
+  ```shell
+  $ go get github.com/golang/protobuf/protoc-gen-go@latest
   ```
   The compiler plugin, `protoc-gen-go`, will be installed in `$GOPATH/bin`
   unless `$GOBIN` is set. It must be in your `$PATH` for the protocol
   compiler, `protoc`, to find it.
-- If you need a particular version of `protoc-gen-go` (e.g., to match your
-  `proto` package version), one option is
-  ```shell
-  GIT_TAG="v1.2.0" # change as needed
-  go get -d -u github.com/golang/protobuf/protoc-gen-go
-  git -C "$(go env GOPATH)"/src/github.com/golang/protobuf checkout $GIT_TAG
-  go install github.com/golang/protobuf/protoc-gen-go
+- If you are using [Go Modules](https://github.com/golang/go/wiki/Modules)
+  for dependency management, you should add the `protoc-gen-go` compiler plugin
+  as a [tool dependency](https://github.com/golang/go/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module):
+  ```go
+  // +build tools
+  
+  package tools
+  
+  import (
+      _ "github.com/golang/protobuf/protoc-gen-go"
+  )
   ```
+  With this in place, you can run `go mod tidy` to resolve a version of
+  the compiler plugin and runtime library to use, and install it using:
+  ```shell
+  $ go install github.com/golang/protobuf/protoc-gen-go
+  ```
+  Using a tool dependency ensures that your compiler plugin and runtime library
+  are both kept in sync, which is essential to ensure smooth upgrades of
+  library versions. See
+  [this issue](https://github.com/golang/protobuf/issues/763#issuecomment-442434870)
+  for more discussion.
 
 This software has two parts: a 'protocol compiler plugin' that
 generates Go source files that, once compiled, can access and manage
