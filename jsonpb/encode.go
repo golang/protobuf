@@ -21,7 +21,6 @@ import (
 	protoV2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
-	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const wrapJSONMarshalV2 = false
@@ -105,10 +104,10 @@ func (jm *Marshaler) marshal(m proto.Message) ([]byte, error) {
 		if jm.AnyResolver != nil {
 			opts.Resolver = anyResolver{jm.AnyResolver}
 		}
-		return opts.Marshal(protoimpl.X.MessageOf(m).Interface())
+		return opts.Marshal(proto.MessageReflect(m).Interface())
 	} else {
 		// Check for unpopulated required fields first.
-		m2 := protoimpl.X.MessageOf(m)
+		m2 := proto.MessageReflect(m)
 		if err := protoV2.CheckInitialized(m2.Interface()); err != nil {
 			return nil, err
 		}
@@ -129,7 +128,7 @@ func (w *jsonWriter) write(s string) {
 }
 
 func (w *jsonWriter) marshalMessage(m protoreflect.Message, indent, typeURL string) error {
-	if jsm, ok := protoimpl.X.ProtoMessageV1Of(m.Interface()).(JSONPBMarshaler); ok {
+	if jsm, ok := proto.MessageV1(m.Interface()).(JSONPBMarshaler); ok {
 		b, err := jsm.MarshalJSONPB(w.Marshaler)
 		if err != nil {
 			return err
@@ -321,7 +320,7 @@ func (w *jsonWriter) marshalAny(m protoreflect.Message, indent string) error {
 		if err != nil {
 			return err
 		}
-		m2 = protoimpl.X.MessageOf(mi)
+		m2 = proto.MessageReflect(mi)
 	} else {
 		mt, err := protoregistry.GlobalTypes.FindMessageByURL(typeURL)
 		if err != nil {

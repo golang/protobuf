@@ -261,7 +261,7 @@ func enumGoType(et protoreflect.EnumType) reflect.Type {
 }
 
 func messageGoType(mt protoreflect.MessageType) reflect.Type {
-	return reflect.TypeOf(protoimpl.X.ProtoMessageV1Of(mt.New().Interface()))
+	return reflect.TypeOf(MessageV1(mt.Zero().Interface()))
 }
 
 // MessageName returns the full protobuf name for the given message type.

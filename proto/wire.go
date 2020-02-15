@@ -7,7 +7,6 @@ package proto
 import (
 	protoV2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/runtime/protoiface"
-	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 // Size returns the size in bytes of the wire-format encoding of m.
@@ -15,7 +14,7 @@ func Size(m Message) int {
 	if m == nil {
 		return 0
 	}
-	mi := protoimpl.X.ProtoMessageV2Of(m)
+	mi := MessageV2(m)
 	return protoV2.Size(mi)
 }
 
@@ -34,7 +33,7 @@ func marshalAppend(buf []byte, m Message, deterministic bool) ([]byte, error) {
 	if m == nil {
 		return nil, ErrNil
 	}
-	mi := protoimpl.X.ProtoMessageV2Of(m)
+	mi := MessageV2(m)
 	nbuf, err := protoV2.MarshalOptions{
 		Deterministic: deterministic,
 		AllowPartial:  true,
@@ -61,7 +60,7 @@ func Unmarshal(b []byte, m Message) error {
 
 // UnmarshalMerge parses a wire-format message in b and places the decoded results in m.
 func UnmarshalMerge(b []byte, m Message) error {
-	mi := protoimpl.X.ProtoMessageV2Of(m)
+	mi := MessageV2(m)
 	out, err := protoV2.UnmarshalOptions{
 		AllowPartial: true,
 		Merge:        true,

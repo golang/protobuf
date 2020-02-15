@@ -17,7 +17,6 @@ import (
 	protoV2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
-	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const wrapTextUnmarshalV2 = false
@@ -47,7 +46,7 @@ func UnmarshalText(s string, m Message) error {
 	}
 
 	m.Reset()
-	mi := protoimpl.X.ProtoMessageV2Of(m)
+	mi := MessageV2(m)
 
 	if wrapTextUnmarshalV2 {
 		err := prototext.UnmarshalOptions{

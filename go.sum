@@ -8,5 +8,5 @@ golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 h1:E7g+9GITq07hpfrRu66IV
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/protobuf v0.0.0-20200109180630-ec00e32a8dfd/go.mod h1:DFci5gLYBciE7Vtevhsrf46CRTquxDuWsQurQQe4oz8=
 google.golang.org/protobuf v0.0.0-20200221191635-4d8936d0db64/go.mod h1:kwYJMbMJ01Woi6D6+Kah6886xMZcty6N08ah7+eCXa0=
-google.golang.org/protobuf v0.0.0-20200224223749-2dabbe471100 h1:i1uRQ2Eod1FWX6jGO/l8K0oMIwtCWeEmeDtLy5YABYc=
-google.golang.org/protobuf v0.0.0-20200224223749-2dabbe471100/go.mod h1:cfTl7dwQJ+fmap5saPgwCLgHXTUD7jkjRqWcaiX5VyM=
+google.golang.org/protobuf v0.0.0-20200225203307-f6cf4925a90e h1:wrJFqPhiw6ByHbcNMcv/+6kk7HQLewtkSxANqkwtQ/0=
+google.golang.org/protobuf v0.0.0-20200225203307-f6cf4925a90e/go.mod h1:cfTl7dwQJ+fmap5saPgwCLgHXTUD7jkjRqWcaiX5VyM=

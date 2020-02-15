@@ -6,7 +6,6 @@ package proto
 
 import (
 	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 // SetDefaults sets unpopulated scalar fields to their default values.
@@ -14,7 +13,7 @@ import (
 // SetDefaults is recursively called upon any populated message fields.
 func SetDefaults(m Message) {
 	if m != nil {
-		setDefaults(protoimpl.X.MessageOf(m))
+		setDefaults(MessageReflect(m))
 	}
 }
 

@@ -18,7 +18,6 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
-	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const wrapTextMarshalV2 = false
@@ -47,7 +46,7 @@ func (tm *TextMarshaler) Text(m Message) string {
 }
 
 func (tm *TextMarshaler) marshal(m Message) ([]byte, error) {
-	mr := protoimpl.X.MessageOf(m)
+	mr := MessageReflect(m)
 	if mr == nil || !mr.IsValid() {
 		return []byte("<nil>"), nil
 	}

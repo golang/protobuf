@@ -20,7 +20,6 @@ import (
 	protoV2 "google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
-	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const wrapJSONUnmarshalV2 = false
@@ -87,7 +86,7 @@ func (u *Unmarshaler) UnmarshalNext(d *json.Decoder, m proto.Message) error {
 		return jsu.UnmarshalJSONPB(u, raw)
 	}
 
-	mr := protoimpl.X.MessageOf(m)
+	mr := proto.MessageReflect(m)
 
 	// NOTE: For historical reasons, a top-level null is treated as a noop.
 	// This is incorrect, but kept for compatibility.
@@ -109,7 +108,7 @@ func (u *Unmarshaler) UnmarshalNext(d *json.Decoder, m proto.Message) error {
 			mr = mr.New()
 
 			// Use a defer to copy all unmarshaled fields into the original message.
-			dst := protoimpl.X.MessageOf(m)
+			dst := proto.MessageReflect(m)
 			defer mr.Range(func(fd protoreflect.FieldDescriptor, v protoreflect.Value) bool {
 				dst.Set(fd, v)
 				return true
@@ -140,7 +139,7 @@ func (u *Unmarshaler) unmarshalMessage(m protoreflect.Message, in []byte) error 
 		return nil
 	}
 
-	if jsu, ok := protoimpl.X.ProtoMessageV1Of(m.Interface()).(JSONPBUnmarshaler); ok {
+	if jsu, ok := proto.MessageV1(m.Interface()).(JSONPBUnmarshaler); ok {
 		return jsu.UnmarshalJSONPB(u, in)
 	}
 
@@ -167,7 +166,7 @@ func (u *Unmarshaler) unmarshalMessage(m protoreflect.Message, in []byte) error 
 			if err != nil {
 				return err
 			}
-			m2 = protoimpl.X.MessageOf(mi)
+			m2 = proto.MessageReflect(mi)
 		} else {
 			mt, err := protoregistry.GlobalTypes.FindMessageByURL(typeURL)
 			if err != nil {

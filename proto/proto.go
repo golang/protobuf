@@ -127,14 +127,7 @@ func checkRequiredNotSet(m protoV2.Message) error {
 
 // Clone returns a deep copy of src.
 func Clone(src Message) Message {
-	srcMsg := protoimpl.X.MessageOf(src)
-	if srcMsg == nil || !srcMsg.IsValid() {
-		return src
-	}
-
-	dst := protoimpl.X.ProtoMessageV1Of(srcMsg.New().Interface())
-	Merge(dst, src)
-	return dst
+	return MessageV1(protoV2.Clone(MessageV2(src)))
 }
 
 // Merge merges src into dst, which must be messages of the same type.
@@ -146,15 +139,7 @@ func Clone(src Message) Message {
 // the corresponding map field in dst, possibly replacing existing entries.
 // The unknown fields of src are appended to the unknown fields of dst.
 func Merge(dst, src Message) {
-	// TODO: Drop this type assertion if the aberrant wrapper in v2 calls this.
-	if m, ok := dst.(Merger); ok {
-		m.Merge(src)
-		return
-	}
-	protoV2.Merge(
-		protoimpl.X.ProtoMessageV2Of(dst),
-		protoimpl.X.ProtoMessageV2Of(src),
-	)
+	protoV2.Merge(MessageV2(dst), MessageV2(src))
 }
 
 // Equal reports whether two messages are equal.
@@ -173,10 +158,7 @@ func Merge(dst, src Message) {
 // Maps are equal if they have the same set of keys, where the pair of values
 // for each key is also equal.
 func Equal(x, y Message) bool {
-	return protoV2.Equal(
-		protoimpl.X.ProtoMessageV2Of(x),
-		protoimpl.X.ProtoMessageV2Of(y),
-	)
+	return protoV2.Equal(MessageV2(x), MessageV2(y))
 }
 
 func isMessageSet(md protoreflect.MessageDescriptor) bool {

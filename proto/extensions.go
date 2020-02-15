@@ -43,7 +43,7 @@ var errNotExtendable = errors.New("proto: not an extendable proto.Message")
 // HasExtension reports whether the extension field is present in m
 // either as an explicitly populated field or as an unknown field.
 func HasExtension(m Message, xt *ExtensionDesc) (has bool) {
-	mr := protoimpl.X.MessageOf(m)
+	mr := MessageReflect(m)
 	if mr == nil || !mr.IsValid() {
 		return false
 	}
@@ -71,7 +71,7 @@ func HasExtension(m Message, xt *ExtensionDesc) (has bool) {
 // ClearExtension removes the the exntesion field from m
 // either as an explicitly populated field or as an unknown field.
 func ClearExtension(m Message, xt *ExtensionDesc) {
-	mr := protoimpl.X.MessageOf(m)
+	mr := MessageReflect(m)
 	if mr == nil || !mr.IsValid() {
 		return
 	}
@@ -94,7 +94,7 @@ func ClearExtension(m Message, xt *ExtensionDesc) {
 // ClearAllExtensions clears all extensions from m.
 // This includes populated fields and unknown fields in the extension range.
 func ClearAllExtensions(m Message) {
-	mr := protoimpl.X.MessageOf(m)
+	mr := MessageReflect(m)
 	if mr == nil || !mr.IsValid() {
 		return
 	}
@@ -118,7 +118,7 @@ func ClearAllExtensions(m Message) {
 // If the descriptor is type incomplete (i.e., ExtensionDesc.ExtensionType is nil),
 // then GetExtension returns the raw encoded bytes for the extension field.
 func GetExtension(m Message, xt *ExtensionDesc) (interface{}, error) {
-	mr := protoimpl.X.MessageOf(m)
+	mr := MessageReflect(m)
 	if mr == nil || !mr.IsValid() || mr.Descriptor().ExtensionRanges().Len() == 0 {
 		return nil, errNotExtendable
 	}
@@ -200,7 +200,7 @@ func (r extensionResolver) FindExtensionByNumber(message protoreflect.FullName, 
 // corresponding with the provided list of extension descriptors, xts.
 // If an extension is missing in m, the corresponding value is nil.
 func GetExtensions(m Message, xts []*ExtensionDesc) ([]interface{}, error) {
-	mr := protoimpl.X.MessageOf(m)
+	mr := MessageReflect(m)
 	if mr == nil || !mr.IsValid() {
 		return nil, errNotExtendable
 	}
@@ -221,7 +221,7 @@ func GetExtensions(m Message, xts []*ExtensionDesc) ([]interface{}, error) {
 
 // SetExtension sets an extension field in m to the provided value.
 func SetExtension(m Message, xt *ExtensionDesc, v interface{}) error {
-	mr := protoimpl.X.MessageOf(m)
+	mr := MessageReflect(m)
 	if mr == nil || !mr.IsValid() || mr.Descriptor().ExtensionRanges().Len() == 0 {
 		return errNotExtendable
 	}
@@ -252,7 +252,7 @@ func SetExtension(m Message, xt *ExtensionDesc, v interface{}) error {
 //
 // Deprecated: Use Message.ProtoReflect.SetUnknown instead.
 func SetRawExtension(m Message, fnum int32, b []byte) {
-	mr := protoimpl.X.MessageOf(m)
+	mr := MessageReflect(m)
 	if mr == nil || !mr.IsValid() {
 		return
 	}
@@ -277,7 +277,7 @@ func SetRawExtension(m Message, fnum int32, b []byte) {
 // the ExtensionDesc.Field field is populated.
 // The order of the extension descriptors is undefined.
 func ExtensionDescs(m Message) ([]*ExtensionDesc, error) {
-	mr := protoimpl.X.MessageOf(m)
+	mr := MessageReflect(m)
 	if mr == nil || !mr.IsValid() || mr.Descriptor().ExtensionRanges().Len() == 0 {
 		return nil, errNotExtendable
 	}

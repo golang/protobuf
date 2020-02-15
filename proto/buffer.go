@@ -130,7 +130,7 @@ func (m *unknownFields) ProtoMessage()  { panic("not implemented") }
 // DebugPrint dumps the encoded bytes of b with a header and footer including s
 // to stdout. This is only intended for debugging.
 func (*Buffer) DebugPrint(s string, b []byte) {
-	m := protoimpl.X.MessageOf(new(unknownFields))
+	m := MessageReflect(new(unknownFields))
 	m.SetUnknown(b)
 	b, _ = prototext.MarshalOptions{AllowPartial: true, Indent: "\t"}.Marshal(m.Interface())
 	fmt.Printf("==== %s ====\n%s==== %s ====\n", s, b, s)

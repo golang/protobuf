@@ -6,7 +6,6 @@ package proto
 
 import (
 	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 // DiscardUnknown recursively discards all unknown fields from this message
@@ -19,7 +18,7 @@ import (
 // explicitly clear the unknown fields after unmarshaling.
 func DiscardUnknown(m Message) {
 	if m != nil {
-		discardUnknown(protoimpl.X.MessageOf(m))
+		discardUnknown(MessageReflect(m))
 	}
 }
 

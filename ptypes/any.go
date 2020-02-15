@@ -11,7 +11,6 @@ import (
 	"github.com/golang/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
-	"google.golang.org/protobuf/runtime/protoimpl"
 
 	anypb "github.com/golang/protobuf/ptypes/any"
 )
@@ -68,7 +67,7 @@ func Empty(any *anypb.Any) (proto.Message, error) {
 	if err != nil {
 		return nil, err
 	}
-	return protoimpl.X.ProtoMessageV1Of(mt.New().Interface()), nil
+	return proto.MessageV1(mt.New().Interface()), nil
 }
 
 // UnmarshalAny unmarshals the encoded value contained in the anypb.Any message
@@ -141,7 +140,7 @@ func (m DynamicAny) ProtoReflect() protoreflect.Message {
 	if m.Message == nil {
 		return nil
 	}
-	return dynamicAny{protoimpl.X.MessageOf(m.Message)}
+	return dynamicAny{proto.MessageReflect(m.Message)}
 }
 
 type dynamicAny struct{ protoreflect.Message }
@@ -153,7 +152,7 @@ func (m dynamicAny) New() protoreflect.Message {
 	return dynamicAnyType{m.Message.Type()}.New()
 }
 func (m dynamicAny) Interface() protoreflect.ProtoMessage {
-	return DynamicAny{protoimpl.X.ProtoMessageV1Of(m.Message.Interface())}
+	return DynamicAny{proto.MessageV1(m.Message.Interface())}
 }
 
 type dynamicAnyType struct{ protoreflect.MessageType }
