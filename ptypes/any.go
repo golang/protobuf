@@ -45,6 +45,15 @@ import (
 
 const googleApis = "type.googleapis.com/"
 
+// NonLinkedInMessageError respresents a message that has not been registered.
+type NonLinkedInMessageError struct {
+	message string
+}
+
+func (e *NonLinkedInMessageError) Error() string {
+	return fmt.Sprintf("any: message type %q isn't linked in", e.message)
+}
+
 // AnyMessageName returns the name of the message contained in a google.protobuf.Any message.
 //
 // Note that regular type assertions should be done using the Is
@@ -94,7 +103,7 @@ func Empty(any *any.Any) (proto.Message, error) {
 
 	t := proto.MessageType(aname)
 	if t == nil {
-		return nil, fmt.Errorf("any: message type %q isn't linked in", aname)
+		return nil, &NonLinkedInMessageError{message: aname}
 	}
 	return reflect.New(t.Elem()).Interface().(proto.Message), nil
 }
