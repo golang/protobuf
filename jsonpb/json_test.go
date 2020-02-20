@@ -910,6 +910,8 @@ var unmarshalingShouldError = []struct {
 	{"StringValue containing invalid character", `{"str": "\U00004E16\U0000754C"}`, &pb2.KnownTypes{}},
 	{"StructValue containing invalid character", `{"str": "\U00004E16\U0000754C"}`, &stpb.Struct{}},
 	{"repeated proto3 enum with non array input", `{"rFunny":"PUNS"}`, &pb3.Message{RFunny: []pb3.Message_Humour{}}},
+	{"unknown extension field", `{"[ext_unknown]": "value"}`, &pb2.Real{}},
+	{"extension field for wrong message", `{"[jsonpb_test.name]": "value"}`, &pb2.Complex{}},
 }
 
 func TestUnmarshalingBadInput(t *testing.T) {

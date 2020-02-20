@@ -361,6 +361,9 @@ func (u *Unmarshaler) unmarshalMessage(m protoreflect.Message, in []byte) error 
 		}
 		delete(jsonObject, name)
 		fd := xt.TypeDescriptor()
+		if fd.ContainingMessage().FullName() != m.Descriptor().FullName() {
+			return fmt.Errorf("extension field %q does not extend message %q", xname, m.Descriptor().FullName())
+		}
 
 		// Unmarshal the field value.
 		if raw == nil || (string(raw) == "null" && !isSingularWellKnownValue(fd)) {

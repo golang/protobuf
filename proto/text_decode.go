@@ -236,6 +236,9 @@ func (p *textParser) unmarshalExtensionOrAny(m protoreflect.Message, seen map[pr
 		return p.errorf("unrecognized extension %q", name)
 	}
 	fd := xt.TypeDescriptor()
+	if fd.ContainingMessage().FullName() != m.Descriptor().FullName() {
+		return p.errorf("extension field %q does not extend message %q", name, m.Descriptor().FullName())
+	}
 
 	if err := p.checkForColon(fd); err != nil {
 		return err

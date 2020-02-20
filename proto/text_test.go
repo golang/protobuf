@@ -1196,6 +1196,10 @@ var unmarshalTextTests = []UnmarshalTextTest{
 	buildExtStructTest(`count: 42 [proto2_test.Ext.more] {data:"Hello, world!"}`),
 	buildExtDataTest(`count: 42 [proto2_test.Ext.text]:"Hello, world!" [proto2_test.Ext.number]:1729`),
 	buildExtRepStringTest(`count: 42 [proto2_test.greeting]:"bula" [proto2_test.greeting]:"hola"`),
+	{
+		in:  `[proto2_test.complex]:<>`,
+		err: `line 1.20: extension field "proto2_test.complex" does not extend message "proto2_test.MyMessage"`,
+	},
 
 	// Big all-in-one
 	{
