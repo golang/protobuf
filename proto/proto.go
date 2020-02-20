@@ -119,7 +119,7 @@ func (e *RequiredNotSetError) RequiredNotSet() bool {
 }
 
 func checkRequiredNotSet(m protoV2.Message) error {
-	if err := protoV2.IsInitialized(m); err != nil {
+	if err := protoV2.CheckInitialized(m); err != nil {
 		return &RequiredNotSetError{err: err}
 	}
 	return nil
