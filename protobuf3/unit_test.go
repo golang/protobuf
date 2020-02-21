@@ -1480,3 +1480,53 @@ func TestSmallVarIntMsg(t *testing.T) {
 		t.Error("unmarshal(marshal(x)) != x")
 	}
 }
+
+type AnEnum uint16
+
+const (
+	AnEnum_0 = AnEnum(iota)
+	AnEnum_1
+	AnEnum_2
+)
+
+func (*AnEnum) AsProtobuf3() (string, string) {
+	return "AnEnum", `enum AsEnum {
+  AnEnum_0 = 0;
+  AnEnum_1 = 1;
+  AnEnum_2 = 2;
+}`
+}
+
+type EnumMsg struct {
+	E AnEnum `protobuf:"varint,1"`
+}
+
+func TestCustomEnum(t *testing.T) {
+	m := EnumMsg{
+		E: AnEnum_1,
+	}
+	b, err := protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// b should be varint(1)
+	buf := protobuf3.NewBuffer(nil)
+	buf.EncodeVarint(1 << 3)
+	buf.EncodeVarint(1)
+	b2 := buf.Bytes()
+
+	if !bytes.Equal(b, b2) {
+		t.Errorf("unexpectd encoding %x != %x", b, b2)
+	}
+
+	var m2 EnumMsg
+	err = protobuf3.Unmarshal(b, &m2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !reflect.DeepEqual(&m, &m2) {
+		t.Error("unmarshal(marshal(x)) != x")
+	}
+}

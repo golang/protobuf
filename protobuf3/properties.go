@@ -317,6 +317,7 @@ func AsProtobufFull2(t reflect.Type, extra_package_headers []string, more ...ref
 
 	for _, t := range ordered {
 		// generate type t's protobuf definition
+		ptr_t := reflect.PtrTo(t)
 
 		switch {
 		case t == time_Time_type:
@@ -327,10 +328,10 @@ func AsProtobufFull2(t reflect.Type, extra_package_headers []string, more ...ref
 			// the duration type gets defined by an import
 			headers = append(headers, `import "google/protobuf/duration.proto";`)
 
-		case isMarshaler(reflect.PtrTo(t)):
+		case isMarshaler(ptr_t):
 			// we can't define a custom type automatically. see if it can tell us, and otherwise remind the human to do it.
-			it := reflect.New(t).Interface()
-			if aper, ok := it.(AsProtobuf3er); ok {
+			if isAsProtobuf3er(ptr_t) {
+				aper := reflect.NewAt(t, nil).Interface().(AsProtobuf3er)
 				_, definition := aper.AsProtobuf3()
 				if definition != "" {
 					body = append(body, "") // put a blank line between each message definition
@@ -339,6 +340,16 @@ func AsProtobufFull2(t reflect.Type, extra_package_headers []string, more ...ref
 			} else {
 				headers = append(headers, fmt.Sprintf("// TODO supply the definition of message %s", t.Name()))
 			}
+
+		case isAsProtobuf3er(ptr_t):
+			aper := reflect.NewAt(t, nil).Interface().(AsProtobuf3er)
+			_, definition := aper.AsProtobuf3()
+			if definition != "" {
+				body = append(body, "") // put a blank line between each message definition
+				body = append(body, definition)
+				break
+			}
+			fallthrough
 
 		default:
 			// save t's definition
@@ -1185,7 +1196,7 @@ func (p *Properties) stypeAsProtobuf() string {
 	var name string
 
 	// if the stype implements AsProtobuf3er and returns a type name, use that
-	if reflect.PtrTo(p.stype).Implements(asprotobuffer3Type) {
+	if isAsProtobuf3er(reflect.PtrTo(p.stype)) {
 		it := reflect.NewAt(p.stype, nil).Interface()
 		if aper, ok := it.(AsProtobuf3er); ok {
 			name, _ = aper.AsProtobuf3() // note AsProtobuf3() might return name "" anyway
@@ -1249,6 +1260,10 @@ var (
 // isMarshaler reports whether type t implements Marshaler.
 func isMarshaler(t reflect.Type) bool {
 	return t.Implements(marshalerType)
+}
+
+func isAsProtobuf3er(t reflect.Type) bool {
+	return t.Implements(asprotobuffer3Type)
 }
 
 // Init populates the properties from a protocol buffer struct tag.
