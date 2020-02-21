@@ -1,0 +1,34 @@
+// Copyright 2020 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+syntax = "proto3";
+
+package grpc.testing;
+
+option go_package = "github.com/golang/protobuf/protoc-gen-go/testdata/grpc;testing";
+
+message SimpleRequest {
+}
+
+message SimpleResponse {
+}
+
+message StreamMsg {
+}
+
+message StreamMsg2 {
+}
+
+service Test {
+  rpc UnaryCall(SimpleRequest) returns (SimpleResponse);
+
+  // This RPC streams from the server only.
+  rpc Downstream(SimpleRequest) returns (stream StreamMsg);
+
+  // This RPC streams from the client.
+  rpc Upstream(stream StreamMsg) returns (SimpleResponse);
+
+  // This one streams in both directions.
+  rpc Bidi(stream StreamMsg) returns (stream StreamMsg2);
+}

@@ -4,5 +4,6 @@
 # license that can be found in the LICENSE file.
 
 cd "$(git rev-parse --show-toplevel)"
+set -e
 go run ./internal/cmd/generate-alias -execute
-exit $?
+go test ./protoc-gen-go -regenerate
