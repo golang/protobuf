@@ -6,6 +6,7 @@ package proto
 
 import (
 	protoV2 "google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/runtime/protoiface"
 	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
@@ -61,12 +62,17 @@ func Unmarshal(b []byte, m Message) error {
 // UnmarshalMerge parses a wire-format message in b and places the decoded results in m.
 func UnmarshalMerge(b []byte, m Message) error {
 	mi := protoimpl.X.ProtoMessageV2Of(m)
-	err := protoV2.UnmarshalOptions{
+	out, err := protoV2.UnmarshalOptions{
 		AllowPartial: true,
 		Merge:        true,
-	}.Unmarshal(b, mi)
+	}.UnmarshalState(mi, protoiface.UnmarshalInput{
+		Buf: b,
+	})
 	if err != nil {
 		return err
+	}
+	if out.Flags&protoiface.UnmarshalInitialized > 0 {
+		return nil
 	}
 	return checkRequiredNotSet(mi)
 }

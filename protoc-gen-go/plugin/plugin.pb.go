@@ -8,7 +8,6 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	pluginpb "google.golang.org/protobuf/types/pluginpb"
 	reflect "reflect"
-	sync "sync"
 )
 
 // Symbols defined in public import of google/protobuf/compiler/plugin.proto.
@@ -32,18 +31,6 @@ var file_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto_rawDesc = 
 	0x62, 0x75, 0x66, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x2d, 0x67, 0x65, 0x6e, 0x2d, 0x67,
 	0x6f, 0x2f, 0x70, 0x6c, 0x75, 0x67, 0x69, 0x6e, 0x3b, 0x70, 0x6c, 0x75, 0x67, 0x69, 0x6e, 0x5f,
 	0x67, 0x6f, 0x50, 0x00, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32,
-}
-
-var (
-	file_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto_rawDescOnce sync.Once
-	file_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto_rawDescData = file_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto_rawDesc
-)
-
-func file_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto_rawDescGZIP() []byte {
-	file_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto_rawDescOnce.Do(func() {
-		file_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto_rawDescData = protoimpl.X.CompressGZIP(file_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto_rawDescData)
-	})
-	return file_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto_rawDescData
 }
 
 var file_github_com_golang_protobuf_protoc_gen_go_plugin_plugin_proto_goTypes = []interface{}{}

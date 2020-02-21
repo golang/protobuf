@@ -8,7 +8,6 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 	reflect "reflect"
-	sync "sync"
 )
 
 // Symbols defined in public import of google/protobuf/struct.proto.
@@ -43,18 +42,6 @@ var file_github_com_golang_protobuf_ptypes_struct_struct_proto_rawDesc = []byte{
 	0x62, 0x75, 0x66, 0x2f, 0x70, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2f, 0x73, 0x74, 0x72, 0x75, 0x63,
 	0x74, 0x3b, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x70, 0x62, 0x50, 0x00, 0x62, 0x06, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x33,
-}
-
-var (
-	file_github_com_golang_protobuf_ptypes_struct_struct_proto_rawDescOnce sync.Once
-	file_github_com_golang_protobuf_ptypes_struct_struct_proto_rawDescData = file_github_com_golang_protobuf_ptypes_struct_struct_proto_rawDesc
-)
-
-func file_github_com_golang_protobuf_ptypes_struct_struct_proto_rawDescGZIP() []byte {
-	file_github_com_golang_protobuf_ptypes_struct_struct_proto_rawDescOnce.Do(func() {
-		file_github_com_golang_protobuf_ptypes_struct_struct_proto_rawDescData = protoimpl.X.CompressGZIP(file_github_com_golang_protobuf_ptypes_struct_struct_proto_rawDescData)
-	})
-	return file_github_com_golang_protobuf_ptypes_struct_struct_proto_rawDescData
 }
 
 var file_github_com_golang_protobuf_ptypes_struct_struct_proto_goTypes = []interface{}{}

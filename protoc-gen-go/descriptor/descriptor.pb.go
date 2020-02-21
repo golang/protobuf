@@ -8,7 +8,6 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	descriptorpb "google.golang.org/protobuf/types/descriptorpb"
 	reflect "reflect"
-	sync "sync"
 )
 
 // Symbols defined in public import of google/protobuf/descriptor.proto.
@@ -165,18 +164,6 @@ var file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_ra
 	0x6e, 0x2d, 0x67, 0x6f, 0x2f, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x6f, 0x72, 0x3b,
 	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x6f, 0x72, 0x50, 0x00, 0x62, 0x06, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x32,
-}
-
-var (
-	file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDescOnce sync.Once
-	file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDescData = file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDesc
-)
-
-func file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDescGZIP() []byte {
-	file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDescOnce.Do(func() {
-		file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDescData = protoimpl.X.CompressGZIP(file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDescData)
-	})
-	return file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_rawDescData
 }
 
 var file_github_com_golang_protobuf_protoc_gen_go_descriptor_descriptor_proto_goTypes = []interface{}{}
