@@ -331,8 +331,7 @@ func AsProtobufFull2(t reflect.Type, extra_package_headers []string, more ...ref
 		case isMarshaler(ptr_t):
 			// we can't define a custom type automatically. see if it can tell us, and otherwise remind the human to do it.
 			if isAsProtobuf3er(ptr_t) {
-				aper := reflect.NewAt(t, nil).Interface().(AsProtobuf3er)
-				_, definition := aper.AsProtobuf3()
+				_, definition := reflect.NewAt(t, nil).Interface().(AsProtobuf3er).AsProtobuf3()
 				if definition != "" {
 					body = append(body, "") // put a blank line between each message definition
 					body = append(body, definition)
@@ -342,8 +341,7 @@ func AsProtobufFull2(t reflect.Type, extra_package_headers []string, more ...ref
 			}
 
 		case isAsProtobuf3er(ptr_t):
-			aper := reflect.NewAt(t, nil).Interface().(AsProtobuf3er)
-			_, definition := aper.AsProtobuf3()
+			_, definition := reflect.NewAt(t, nil).Interface().(AsProtobuf3er).AsProtobuf3()
 			if definition != "" {
 				body = append(body, "") // put a blank line between each message definition
 				body = append(body, definition)
@@ -516,7 +514,8 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 	}
 
 	// can t1 marshal itself?
-	if isMarshaler(reflect.PtrTo(t1)) {
+	ptr_t1 := reflect.PtrTo(t1)
+	if isMarshaler(ptr_t1) {
 		p.isMarshaler = true
 		p.stype = t1
 		p.enc = (*Buffer).enc_marshaler
@@ -1167,6 +1166,14 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 
 			p.asProtobuf = fmt.Sprintf("map<%s, %s>", p.mkeyprop.asProtobuf, p.mvalprop.asProtobuf)
 		}
+
+		// if the type overrides the protobuf definition, use that instead
+		if isAsProtobuf3er(ptr_t1) {
+			_, definition := reflect.NewAt(t1, nil).Interface().(AsProtobuf3er).AsProtobuf3()
+			if definition != "" {
+				p.asProtobuf = definition
+			}
+		}
 	}
 
 	// precalculate tag code
@@ -1197,10 +1204,7 @@ func (p *Properties) stypeAsProtobuf() string {
 
 	// if the stype implements AsProtobuf3er and returns a type name, use that
 	if isAsProtobuf3er(reflect.PtrTo(p.stype)) {
-		it := reflect.NewAt(p.stype, nil).Interface()
-		if aper, ok := it.(AsProtobuf3er); ok {
-			name, _ = aper.AsProtobuf3() // note AsProtobuf3() might return name "" anyway
-		}
+		name, _ = reflect.NewAt(p.stype, nil).Interface().(AsProtobuf3er).AsProtobuf3() // note AsProtobuf3() might return name "" anyway
 	}
 
 	if name == "" {

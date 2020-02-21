@@ -1529,4 +1529,11 @@ func TestCustomEnum(t *testing.T) {
 	if !reflect.DeepEqual(&m, &m2) {
 		t.Error("unmarshal(marshal(x)) != x")
 	}
+
+	s := protobuf3.AsProtobuf(reflect.TypeOf(m))
+	_, ap := m.E.AsProtobuf3()
+	s2 := "message EnumMsg {\n  " + ap + " e = 1;\n}"
+	if s != s2 {
+		t.Errorf("AsProtobuf unexpected: %q != %q", s, s2)
+	}
 }
