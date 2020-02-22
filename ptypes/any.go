@@ -40,7 +40,13 @@ func anyMessageName(any *anypb.Any) (protoreflect.FullName, error) {
 
 // MarshalAny marshals the given message m into an anypb.Any message.
 func MarshalAny(m proto.Message) (*anypb.Any, error) {
-	if dm, ok := m.(*DynamicAny); ok {
+	switch dm := m.(type) {
+	case DynamicAny:
+		m = dm.Message
+	case *DynamicAny:
+		if dm == nil {
+			return nil, proto.ErrNil
+		}
 		m = dm.Message
 	}
 	b, err := proto.Marshal(m)
