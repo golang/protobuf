@@ -283,6 +283,9 @@ func AsProtobufFull2(t reflect.Type, extra_package_headers []string, more ...ref
 						case pp.isMarshaler:
 							// we can't recurse further into a custom type
 							discovered[tt] = struct{}{}
+						case isAsProtobuf3er(reflect.PtrTo(tt)):
+							// this type has a custom protobuf definition. it presumably encodes its own types
+							discovered[tt] = struct{}{}
 						case tt.Kind() == reflect.Struct:
 							switch tt {
 							case time_Time_type, time_Duration_type:
@@ -659,6 +662,9 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				p.dec = (*Buffer).dec_ptr_marshaler
 				p.asProtobuf = p.stypeAsProtobuf()
 				break
+			}
+			if isAsProtobuf3er(t1) {
+				p.stype = t2
 			}
 
 			switch t2.Kind() {
@@ -1169,9 +1175,12 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 
 		// if the type overrides the protobuf definition, use that instead
 		if isAsProtobuf3er(ptr_t1) {
-			_, definition := reflect.NewAt(t1, nil).Interface().(AsProtobuf3er).AsProtobuf3()
+			name, definition := reflect.NewAt(t1, nil).Interface().(AsProtobuf3er).AsProtobuf3()
+			if name != "" {
+				p.asProtobuf = name
+			}
 			if definition != "" {
-				p.asProtobuf = definition
+				p.stype = t1
 			}
 		}
 	}

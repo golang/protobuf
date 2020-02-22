@@ -40,6 +40,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 
@@ -1490,7 +1491,7 @@ const (
 )
 
 func (*AnEnum) AsProtobuf3() (string, string) {
-	return "AnEnum", `enum AsEnum {
+	return "AnEnum", `enum AnEnum {
   AnEnum_0 = 0;
   AnEnum_1 = 1;
   AnEnum_2 = 2;
@@ -1531,9 +1532,16 @@ func TestCustomEnum(t *testing.T) {
 	}
 
 	s := protobuf3.AsProtobuf(reflect.TypeOf(m))
-	_, ap := m.E.AsProtobuf3()
-	s2 := "message EnumMsg {\n  " + ap + " e = 1;\n}"
+	t.Log(s)
+	nm, ap := m.E.AsProtobuf3()
+	s2 := "message EnumMsg {\n  " + nm + " e = 1;\n}"
 	if s != s2 {
 		t.Errorf("AsProtobuf unexpected: %q != %q", s, s2)
+	}
+
+	f := protobuf3.AsProtobufFull(reflect.TypeOf(m))
+	t.Log(f)
+	if strings.Index(f, ap) < 0 {
+		t.Errorf("AsProtobufFull doesn't define type AnEnum:\n%s", f)
 	}
 }
