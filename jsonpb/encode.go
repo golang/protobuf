@@ -109,7 +109,7 @@ func (jm *Marshaler) marshal(m proto.Message) ([]byte, error) {
 	} else {
 		// Check for unpopulated required fields first.
 		m2 := protoimpl.X.MessageOf(m)
-		if err := protoV2.IsInitialized(m2.Interface()); err != nil {
+		if err := protoV2.CheckInitialized(m2.Interface()); err != nil {
 			return nil, err
 		}
 

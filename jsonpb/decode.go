@@ -128,7 +128,7 @@ func (u *Unmarshaler) UnmarshalNext(d *json.Decoder, m proto.Message) error {
 		if err := u.unmarshalMessage(mr, raw); err != nil {
 			return err
 		}
-		return protoV2.IsInitialized(mr.Interface())
+		return protoV2.CheckInitialized(mr.Interface())
 	}
 }
 
