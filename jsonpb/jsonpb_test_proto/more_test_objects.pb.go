@@ -335,7 +335,9 @@ func init() {
 	proto.RegisterMapType((map[uint64]bool)(nil), "jsonpb.Mappy.U64boolyEntry")
 }
 
-func init() { proto.RegisterFile("more_test_objects.proto", fileDescriptor_e6c135db3023e377) }
+func init() {
+	proto.RegisterFile("more_test_objects.proto", fileDescriptor_e6c135db3023e377)
+}
 
 var fileDescriptor_e6c135db3023e377 = []byte{
 	// 526 bytes of a gzipped FileDescriptorProto
