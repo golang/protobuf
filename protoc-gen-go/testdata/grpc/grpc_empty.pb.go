@@ -22,7 +22,9 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-func init() { proto.RegisterFile("grpc/grpc_empty.proto", fileDescriptor_c580a37f1c90e9b1) }
+func init() {
+	proto.RegisterFile("grpc/grpc_empty.proto", fileDescriptor_c580a37f1c90e9b1)
+}
 
 var fileDescriptor_c580a37f1c90e9b1 = []byte{
 	// 125 bytes of a gzipped FileDescriptorProto

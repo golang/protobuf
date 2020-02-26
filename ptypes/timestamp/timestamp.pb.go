@@ -164,7 +164,9 @@ func init() {
 	proto.RegisterType((*Timestamp)(nil), "google.protobuf.Timestamp")
 }
 
-func init() { proto.RegisterFile("google/protobuf/timestamp.proto", fileDescriptor_292007bbfe81227e) }
+func init() {
+	proto.RegisterFile("google/protobuf/timestamp.proto", fileDescriptor_292007bbfe81227e)
+}
 
 var fileDescriptor_292007bbfe81227e = []byte{
 	// 191 bytes of a gzipped FileDescriptorProto

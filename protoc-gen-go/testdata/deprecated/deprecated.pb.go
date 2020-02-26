@@ -168,7 +168,9 @@ func init() {
 	proto.RegisterType((*DeprecatedResponse)(nil), "deprecated.DeprecatedResponse")
 }
 
-func init() { proto.RegisterFile("deprecated/deprecated.proto", fileDescriptor_f64ba265cd7eae3f) }
+func init() {
+	proto.RegisterFile("deprecated/deprecated.proto", fileDescriptor_f64ba265cd7eae3f)
+}
 
 var fileDescriptor_f64ba265cd7eae3f = []byte{
 	// 287 bytes of a gzipped FileDescriptorProto
