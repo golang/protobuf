@@ -55,7 +55,9 @@ func init() {
 	proto.RegisterType((*M)(nil), "fmt.M")
 }
 
-func init() { proto.RegisterFile("imports/fmt/m.proto", fileDescriptor_72c126fcd452e392) }
+func init() {
+	proto.RegisterFile("imports/fmt/m.proto", fileDescriptor_72c126fcd452e392)
+}
 
 var fileDescriptor_72c126fcd452e392 = []byte{
 	// 109 bytes of a gzipped FileDescriptorProto

@@ -4619,7 +4619,9 @@ func init() {
 	proto.RegisterExtension(E_X250)
 }
 
-func init() { proto.RegisterFile("test_proto/test.proto", fileDescriptor_8ca34d01332f1402) }
+func init() {
+	proto.RegisterFile("test_proto/test.proto", fileDescriptor_8ca34d01332f1402)
+}
 
 var fileDescriptor_8ca34d01332f1402 = []byte{
 	// 4795 bytes of a gzipped FileDescriptorProto

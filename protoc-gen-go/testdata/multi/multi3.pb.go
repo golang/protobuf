@@ -104,7 +104,9 @@ func init() {
 	proto.RegisterType((*Multi3)(nil), "multitest.Multi3")
 }
 
-func init() { proto.RegisterFile("multi/multi3.proto", fileDescriptor_580398fc0bbeeaa7) }
+func init() {
+	proto.RegisterFile("multi/multi3.proto", fileDescriptor_580398fc0bbeeaa7)
+}
 
 var fileDescriptor_580398fc0bbeeaa7 = []byte{
 	// 170 bytes of a gzipped FileDescriptorProto

@@ -155,7 +155,9 @@ func init() {
 	proto.RegisterType((*StreamMsg2)(nil), "grpc.testing.StreamMsg2")
 }
 
-func init() { proto.RegisterFile("grpc/grpc.proto", fileDescriptor_81ea47a3f88c2082) }
+func init() {
+	proto.RegisterFile("grpc/grpc.proto", fileDescriptor_81ea47a3f88c2082)
+}
 
 var fileDescriptor_81ea47a3f88c2082 = []byte{
 	// 244 bytes of a gzipped FileDescriptorProto

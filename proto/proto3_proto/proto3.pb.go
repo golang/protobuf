@@ -514,7 +514,9 @@ func init() {
 	proto.RegisterMapType((map[int64]string)(nil), "proto3_proto.TestUTF8.MapValueEntry")
 }
 
-func init() { proto.RegisterFile("proto3_proto/proto3.proto", fileDescriptor_1c50d9b824d4ac38) }
+func init() {
+	proto.RegisterFile("proto3_proto/proto3.proto", fileDescriptor_1c50d9b824d4ac38)
+}
 
 var fileDescriptor_1c50d9b824d4ac38 = []byte{
 	// 896 bytes of a gzipped FileDescriptorProto
