@@ -2,7 +2,7 @@
 
 Go protocol buffers is an open source project and accepts contributions.
 
-This project is the first major revision of Go protobufs,
+This project is the first major version of Go protobufs,
 while the next major revision of this project is located at
 [protocolbuffers/protobuf-go](https://github.com/protocolbuffers/protobuf-go).
 Most new development effort is focused on the latter project,
