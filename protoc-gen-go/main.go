@@ -45,11 +45,10 @@ func main() {
 		}
 		return importPath
 	}
-	opts := &protogen.Options{
+	protogen.Options{
 		ParamFunc:         flags.Set,
 		ImportRewriteFunc: importRewriteFunc,
-	}
-	protogen.Run(opts, func(gen *protogen.Plugin) error {
+	}.Run(func(gen *protogen.Plugin) error {
 		grpc := false
 		for _, plugin := range strings.Split(*plugins, ",") {
 			switch plugin {

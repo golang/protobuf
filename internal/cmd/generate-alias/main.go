@@ -82,7 +82,7 @@ func main() {
 	}
 
 	// Use the internal logic of protoc-gen-go to generate the files.
-	gen, err := protogen.New(&req, nil)
+	gen, err := protogen.Options{}.New(&req)
 	check(err)
 	for _, file := range gen.Files {
 		if file.Generate {
