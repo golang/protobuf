@@ -64,8 +64,9 @@ func UnmarshalMerge(b []byte, m Message) error {
 	out, err := protoV2.UnmarshalOptions{
 		AllowPartial: true,
 		Merge:        true,
-	}.UnmarshalState(mi, protoiface.UnmarshalInput{
-		Buf: b,
+	}.UnmarshalState(protoiface.UnmarshalInput{
+		Buf:     b,
+		Message: mi.ProtoReflect(),
 	})
 	if err != nil {
 		return err
