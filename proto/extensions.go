@@ -286,8 +286,10 @@ func ExtensionDescs(m Message) ([]*ExtensionDesc, error) {
 	extDescs := make(map[protoreflect.FieldNumber]*ExtensionDesc)
 	mr.Range(func(fd protoreflect.FieldDescriptor, v protoreflect.Value) bool {
 		if fd.IsExtension() {
-			xts := fd.(protoreflect.ExtensionTypeDescriptor)
-			extDescs[fd.Number()] = protoimpl.X.ExtensionDescFromType(xts.Type())
+			xt := fd.(protoreflect.ExtensionTypeDescriptor)
+			if xd, ok := xt.Type().(*ExtensionDesc); ok {
+				extDescs[fd.Number()] = xd
+			}
 		}
 		return true
 	})
