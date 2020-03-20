@@ -38,48 +38,60 @@ func main() {
 
 	// Set of generated proto packages to forward to v2.
 	files := []struct {
-		goPkg  string
-		pbDesc protoreflect.FileDescriptor
+		oldGoPkg string
+		newGoPkg string
+		pbDesc   protoreflect.FileDescriptor
 	}{{
-		goPkg:  "github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor",
-		pbDesc: descriptorpb.File_google_protobuf_descriptor_proto,
+		oldGoPkg: "github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor",
+		newGoPkg: "google.golang.org/protobuf/types/descriptorpb",
+		pbDesc:   descriptorpb.File_google_protobuf_descriptor_proto,
 	}, {
-		goPkg:  "github.com/golang/protobuf/protoc-gen-go/plugin;plugin_go",
-		pbDesc: pluginpb.File_google_protobuf_compiler_plugin_proto,
+		oldGoPkg: "github.com/golang/protobuf/protoc-gen-go/plugin;plugin_go",
+		newGoPkg: "google.golang.org/protobuf/types/pluginpb",
+		pbDesc:   pluginpb.File_google_protobuf_compiler_plugin_proto,
 	}, {
-		goPkg:  "github.com/golang/protobuf/ptypes/any;any",
-		pbDesc: anypb.File_google_protobuf_any_proto,
+		oldGoPkg: "github.com/golang/protobuf/ptypes/any;any",
+		newGoPkg: "google.golang.org/protobuf/types/known/anypb",
+		pbDesc:   anypb.File_google_protobuf_any_proto,
 	}, {
-		goPkg:  "github.com/golang/protobuf/ptypes/duration;duration",
-		pbDesc: durationpb.File_google_protobuf_duration_proto,
+		oldGoPkg: "github.com/golang/protobuf/ptypes/duration;duration",
+		newGoPkg: "google.golang.org/protobuf/types/known/durationpb",
+		pbDesc:   durationpb.File_google_protobuf_duration_proto,
 	}, {
-		goPkg:  "github.com/golang/protobuf/ptypes/timestamp;timestamp",
-		pbDesc: timestamppb.File_google_protobuf_timestamp_proto,
+		oldGoPkg: "github.com/golang/protobuf/ptypes/timestamp;timestamp",
+		newGoPkg: "google.golang.org/protobuf/types/known/timestamppb",
+		pbDesc:   timestamppb.File_google_protobuf_timestamp_proto,
 	}, {
-		goPkg:  "github.com/golang/protobuf/ptypes/wrappers;wrappers",
-		pbDesc: wrapperspb.File_google_protobuf_wrappers_proto,
+		oldGoPkg: "github.com/golang/protobuf/ptypes/wrappers;wrappers",
+		newGoPkg: "google.golang.org/protobuf/types/known/wrapperspb",
+		pbDesc:   wrapperspb.File_google_protobuf_wrappers_proto,
 	}, {
-		goPkg:  "github.com/golang/protobuf/ptypes/struct;structpb",
-		pbDesc: structpb.File_google_protobuf_struct_proto,
+		oldGoPkg: "github.com/golang/protobuf/ptypes/struct;structpb",
+		newGoPkg: "google.golang.org/protobuf/types/known/structpb",
+		pbDesc:   structpb.File_google_protobuf_struct_proto,
 	}, {
-		goPkg:  "github.com/golang/protobuf/ptypes/empty;empty",
-		pbDesc: emptypb.File_google_protobuf_empty_proto,
+		oldGoPkg: "github.com/golang/protobuf/ptypes/empty;empty",
+		newGoPkg: "google.golang.org/protobuf/types/known/emptypb",
+		pbDesc:   emptypb.File_google_protobuf_empty_proto,
 	}}
 
 	// For each package, construct a proto file that public imports the package.
 	var req pluginpb.CodeGeneratorRequest
+	var flags []string
 	for _, file := range files {
-		pkgPath := file.goPkg[:strings.IndexByte(file.goPkg, ';')]
+		pkgPath := file.oldGoPkg[:strings.IndexByte(file.oldGoPkg, ';')]
 		fd := &descriptorpb.FileDescriptorProto{
 			Name:             proto.String(pkgPath + "/" + path.Base(pkgPath) + ".proto"),
 			Syntax:           proto.String(file.pbDesc.Syntax().String()),
 			Dependency:       []string{file.pbDesc.Path()},
 			PublicDependency: []int32{0},
-			Options:          &descriptorpb.FileOptions{GoPackage: proto.String(file.goPkg)},
+			Options:          &descriptorpb.FileOptions{GoPackage: proto.String(file.oldGoPkg)},
 		}
 		req.ProtoFile = append(req.ProtoFile, protodesc.ToFileDescriptorProto(file.pbDesc), fd)
 		req.FileToGenerate = append(req.FileToGenerate, fd.GetName())
+		flags = append(flags, "M"+file.pbDesc.Path()+"="+file.newGoPkg)
 	}
+	req.Parameter = proto.String(strings.Join(flags, ","))
 
 	// Use the internal logic of protoc-gen-go to generate the files.
 	gen, err := protogen.Options{}.New(&req)
