@@ -114,6 +114,12 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConnInterface")
 	g.P()
+	
+	g.P("// grpcServer is an interface that describes the server you would register your service on.")
+	g.P("type grpcServer interface {")
+	g.P("  RegisterService(sd *", grpcPkg, ".ServiceDesc, ss interface{})
+	g.P("}")
+	g.P("")
 
 	// Assert version compatibility.
 	g.P("// This is a compile-time assertion to ensure that this generated file")
@@ -236,7 +242,7 @@ func (g *grpc) generateService(file *generator.FileDescriptor, service *pb.Servi
 	if deprecated {
 		g.P(deprecationComment)
 	}
-	g.P("func Register", servName, "Server(s *", grpcPkg, ".Server, srv ", serverType, ") {")
+	g.P("func Register", servName, "Server(s grpcServer, srv ", serverType, ") {")
 	g.P("s.RegisterService(&", serviceDescVar, `, srv)`)
 	g.P("}")
 	g.P()
