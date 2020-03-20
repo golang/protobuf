@@ -8,8 +8,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/golang/protobuf/internal/wire"
 	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
@@ -24,20 +24,20 @@ const (
 
 // EncodeVarint returns the varint encoded bytes of v.
 func EncodeVarint(v uint64) []byte {
-	return wire.AppendVarint(nil, v)
+	return protowire.AppendVarint(nil, v)
 }
 
 // SizeVarint returns the length of the varint encoded bytes of v.
 // This is equal to len(EncodeVarint(v)).
 func SizeVarint(v uint64) int {
-	return wire.SizeVarint(v)
+	return protowire.SizeVarint(v)
 }
 
 // DecodeVarint parses a varint encoded integer from b, returning the
 // integer value and the length of the varint.
 // It returns (0, 0) if there is a parse error.
 func DecodeVarint(b []byte) (uint64, int) {
-	v, n := wire.ConsumeVarint(b)
+	v, n := protowire.ConsumeVarint(b)
 	if n < 0 {
 		return 0, 0
 	}
@@ -138,7 +138,7 @@ func (*Buffer) DebugPrint(s string, b []byte) {
 
 // EncodeVarint appends an unsigned varint encoding to the buffer.
 func (b *Buffer) EncodeVarint(v uint64) error {
-	b.buf = wire.AppendVarint(b.buf, v)
+	b.buf = protowire.AppendVarint(b.buf, v)
 	return nil
 }
 
@@ -154,42 +154,42 @@ func (b *Buffer) EncodeZigzag64(v uint64) error {
 
 // EncodeFixed32 appends a 32-bit little-endian integer to the buffer.
 func (b *Buffer) EncodeFixed32(v uint64) error {
-	b.buf = wire.AppendFixed32(b.buf, uint32(v))
+	b.buf = protowire.AppendFixed32(b.buf, uint32(v))
 	return nil
 }
 
 // EncodeFixed64 appends a 64-bit little-endian integer to the buffer.
 func (b *Buffer) EncodeFixed64(v uint64) error {
-	b.buf = wire.AppendFixed64(b.buf, uint64(v))
+	b.buf = protowire.AppendFixed64(b.buf, uint64(v))
 	return nil
 }
 
 // EncodeRawBytes appends a length-prefixed raw bytes to the buffer.
 func (b *Buffer) EncodeRawBytes(v []byte) error {
-	b.buf = wire.AppendBytes(b.buf, v)
+	b.buf = protowire.AppendBytes(b.buf, v)
 	return nil
 }
 
 // EncodeStringBytes appends a length-prefixed raw bytes to the buffer.
 // It does not validate whether v contains valid UTF-8.
 func (b *Buffer) EncodeStringBytes(v string) error {
-	b.buf = wire.AppendString(b.buf, v)
+	b.buf = protowire.AppendString(b.buf, v)
 	return nil
 }
 
 // EncodeMessage appends a length-prefixed encoded message to the buffer.
 func (b *Buffer) EncodeMessage(m Message) error {
 	var err error
-	b.buf = wire.AppendVarint(b.buf, uint64(Size(m)))
+	b.buf = protowire.AppendVarint(b.buf, uint64(Size(m)))
 	b.buf, err = marshalAppend(b.buf, m, b.deterministic)
 	return err
 }
 
 // DecodeVarint consumes an encoded unsigned varint from the buffer.
 func (b *Buffer) DecodeVarint() (uint64, error) {
-	v, n := wire.ConsumeVarint(b.buf[b.idx:])
+	v, n := protowire.ConsumeVarint(b.buf[b.idx:])
 	if n < 0 {
-		return 0, wire.ParseError(n)
+		return 0, protowire.ParseError(n)
 	}
 	b.idx += n
 	return uint64(v), nil
@@ -215,9 +215,9 @@ func (b *Buffer) DecodeZigzag64() (uint64, error) {
 
 // DecodeFixed32 consumes a 32-bit little-endian integer from the buffer.
 func (b *Buffer) DecodeFixed32() (uint64, error) {
-	v, n := wire.ConsumeFixed32(b.buf[b.idx:])
+	v, n := protowire.ConsumeFixed32(b.buf[b.idx:])
 	if n < 0 {
-		return 0, wire.ParseError(n)
+		return 0, protowire.ParseError(n)
 	}
 	b.idx += n
 	return uint64(v), nil
@@ -225,9 +225,9 @@ func (b *Buffer) DecodeFixed32() (uint64, error) {
 
 // DecodeFixed64 consumes a 64-bit little-endian integer from the buffer.
 func (b *Buffer) DecodeFixed64() (uint64, error) {
-	v, n := wire.ConsumeFixed64(b.buf[b.idx:])
+	v, n := protowire.ConsumeFixed64(b.buf[b.idx:])
 	if n < 0 {
-		return 0, wire.ParseError(n)
+		return 0, protowire.ParseError(n)
 	}
 	b.idx += n
 	return uint64(v), nil
@@ -237,9 +237,9 @@ func (b *Buffer) DecodeFixed64() (uint64, error) {
 // If alloc is specified, it returns a copy the raw bytes
 // rather than a sub-slice of the buffer.
 func (b *Buffer) DecodeRawBytes(alloc bool) ([]byte, error) {
-	v, n := wire.ConsumeBytes(b.buf[b.idx:])
+	v, n := protowire.ConsumeBytes(b.buf[b.idx:])
 	if n < 0 {
-		return nil, wire.ParseError(n)
+		return nil, protowire.ParseError(n)
 	}
 	b.idx += n
 	if alloc {
@@ -251,9 +251,9 @@ func (b *Buffer) DecodeRawBytes(alloc bool) ([]byte, error) {
 // DecodeStringBytes consumes a length-prefixed raw bytes from the buffer.
 // It does not validate whether the raw bytes contain valid UTF-8.
 func (b *Buffer) DecodeStringBytes() (string, error) {
-	v, n := wire.ConsumeString(b.buf[b.idx:])
+	v, n := protowire.ConsumeString(b.buf[b.idx:])
 	if n < 0 {
-		return "", wire.ParseError(n)
+		return "", protowire.ParseError(n)
 	}
 	b.idx += n
 	return v, nil
@@ -289,31 +289,31 @@ func consumeGroup(b []byte) ([]byte, int, error) {
 	b0 := b
 	depth := 1 // assume this follows a start group marker
 	for {
-		_, wtyp, tagLen := wire.ConsumeTag(b)
+		_, wtyp, tagLen := protowire.ConsumeTag(b)
 		if tagLen < 0 {
-			return nil, 0, wire.ParseError(tagLen)
+			return nil, 0, protowire.ParseError(tagLen)
 		}
 		b = b[tagLen:]
 
 		var valLen int
 		switch wtyp {
-		case wire.VarintType:
-			_, valLen = wire.ConsumeVarint(b)
-		case wire.Fixed32Type:
-			_, valLen = wire.ConsumeFixed32(b)
-		case wire.Fixed64Type:
-			_, valLen = wire.ConsumeFixed64(b)
-		case wire.BytesType:
-			_, valLen = wire.ConsumeBytes(b)
-		case wire.StartGroupType:
+		case protowire.VarintType:
+			_, valLen = protowire.ConsumeVarint(b)
+		case protowire.Fixed32Type:
+			_, valLen = protowire.ConsumeFixed32(b)
+		case protowire.Fixed64Type:
+			_, valLen = protowire.ConsumeFixed64(b)
+		case protowire.BytesType:
+			_, valLen = protowire.ConsumeBytes(b)
+		case protowire.StartGroupType:
 			depth++
-		case wire.EndGroupType:
+		case protowire.EndGroupType:
 			depth--
 		default:
 			return nil, 0, errors.New("proto: cannot parse reserved wire type")
 		}
 		if valLen < 0 {
-			return nil, 0, wire.ParseError(valLen)
+			return nil, 0, protowire.ParseError(valLen)
 		}
 		b = b[valLen:]
 

@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/golang/protobuf/internal/wire"
+	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
@@ -61,7 +61,7 @@ func HasExtension(m Message, xt *ExtensionDesc) (has bool) {
 
 	// Check whether any unknown field matches the field number.
 	for b := mr.GetUnknown(); !has && len(b) > 0; {
-		num, _, n := wire.ConsumeField(b)
+		num, _, n := protowire.ConsumeField(b)
 		has = int32(num) == xt.Field
 		b = b[n:]
 	}
@@ -126,7 +126,7 @@ func GetExtension(m Message, xt *ExtensionDesc) (interface{}, error) {
 	// Retrieve the unknown fields for this extension field.
 	var bo protoreflect.RawFields
 	for bi := mr.GetUnknown(); len(bi) > 0; {
-		num, _, n := wire.ConsumeField(bi)
+		num, _, n := protowire.ConsumeField(bi)
 		if int32(num) == xt.Field {
 			bo = append(bo, bi[:n]...)
 		}
@@ -259,7 +259,7 @@ func SetRawExtension(m Message, fnum int32, b []byte) {
 
 	// Verify that the raw field is valid.
 	for b0 := b; len(b0) > 0; {
-		num, _, n := wire.ConsumeField(b0)
+		num, _, n := protowire.ConsumeField(b0)
 		if int32(num) != fnum {
 			panic(fmt.Sprintf("mismatching field number: got %d, want %d", num, fnum))
 		}
@@ -297,7 +297,7 @@ func ExtensionDescs(m Message) ([]*ExtensionDesc, error) {
 	// Collect a set of unknown extension descriptors.
 	extRanges := mr.Descriptor().ExtensionRanges()
 	for b := mr.GetUnknown(); len(b) > 0; {
-		num, _, n := wire.ConsumeField(b)
+		num, _, n := protowire.ConsumeField(b)
 		if extRanges.Has(num) && extDescs[num] == nil {
 			extDescs[num] = nil
 		}
@@ -338,7 +338,7 @@ func clearUnknown(m protoreflect.Message, remover interface {
 }) {
 	var bo protoreflect.RawFields
 	for bi := m.GetUnknown(); len(bi) > 0; {
-		num, _, n := wire.ConsumeField(bi)
+		num, _, n := protowire.ConsumeField(bi)
 		if !remover.Has(num) {
 			bo = append(bo, bi[:n]...)
 		}
