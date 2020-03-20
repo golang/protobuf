@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"math"
 	"math/rand"
 	"reflect"
@@ -19,33 +20,12 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/testing/protopack"
 
 	pb2 "github.com/golang/protobuf/internal/testprotos/proto2_proto"
 	pb3 "github.com/golang/protobuf/internal/testprotos/proto3_proto"
 	tspb "github.com/golang/protobuf/ptypes/timestamp"
 )
-
-var globalO *proto.Buffer
-
-func old() *proto.Buffer {
-	if globalO == nil {
-		globalO = proto.NewBuffer(nil)
-	}
-	globalO.Reset()
-	return globalO
-}
-
-func equalbytes(b1, b2 []byte, t *testing.T) {
-	if len(b1) != len(b2) {
-		t.Errorf("wrong lengths: 2*%d != %d", len(b1), len(b2))
-		return
-	}
-	for i := 0; i < len(b1); i++ {
-		if b1[i] != b2[i] {
-			t.Errorf("bad byte[%d]:%x %x: %s %s", i, b1[i], b2[i], b1, b2)
-		}
-	}
-}
 
 func initGoTestField() *pb2.GoTestField {
 	f := new(pb2.GoTestField)
@@ -117,67 +97,31 @@ func initGoTest(setdefaults bool) *pb2.GoTest {
 	return pb
 }
 
-func hex(c uint8) uint8 {
-	if '0' <= c && c <= '9' {
-		return c - '0'
-	}
-	if 'a' <= c && c <= 'f' {
-		return 10 + c - 'a'
-	}
-	if 'A' <= c && c <= 'F' {
-		return 10 + c - 'A'
-	}
-	return 0
-}
-
-func equal(b []byte, s string, t *testing.T) bool {
-	if 2*len(b) != len(s) {
-		//		fail(fmt.Sprintf("wrong lengths: 2*%d != %d", len(b), len(s)), b, s, t)
-		fmt.Printf("wrong lengths: 2*%d != %d\n", len(b), len(s))
-		return false
-	}
-	for i, j := 0, 0; i < len(b); i, j = i+1, j+2 {
-		x := hex(s[j])*16 + hex(s[j+1])
-		if b[i] != x {
-			//			fail(fmt.Sprintf("bad byte[%d]:%x %x", i, b[i], x), b, s, t)
-			fmt.Printf("bad byte[%d]:%x %x", i, b[i], x)
-			return false
-		}
-	}
-	return true
-}
-
-func overify(t *testing.T, pb *pb2.GoTest, expected string) {
-	o := old()
-	err := o.Marshal(pb)
+func overify(t *testing.T, pb *pb2.GoTest, want []byte) {
+	bb := new(proto.Buffer)
+	err := bb.Marshal(pb)
+	got := bb.Bytes()
 	if err != nil {
-		fmt.Printf("overify marshal-1 err = %v", err)
-		o.DebugPrint("", o.Bytes())
-		t.Fatalf("expected = %s", expected)
+		t.Logf("overify marshal-1 err = %v", err)
 	}
-	if !equal(o.Bytes(), expected, t) {
-		o.DebugPrint("overify neq 1", o.Bytes())
-		t.Fatalf("expected = %s", expected)
+	if !bytes.Equal(got, want) {
+		t.Fatalf("got %q\nwant  %q", got, want)
 	}
 
 	// Now test Unmarshal by recreating the original buffer.
 	pbd := new(pb2.GoTest)
-	err = o.Unmarshal(pbd)
+	err = bb.Unmarshal(pbd)
 	if err != nil {
 		t.Fatalf("overify unmarshal err = %v", err)
-		o.DebugPrint("", o.Bytes())
-		t.Fatalf("string = %s", expected)
 	}
-	o.Reset()
-	err = o.Marshal(pbd)
+	bb.Reset()
+	err = bb.Marshal(pbd)
+	got = bb.Bytes()
 	if err != nil {
-		t.Errorf("overify marshal-2 err = %v", err)
-		o.DebugPrint("", o.Bytes())
-		t.Fatalf("string = %s", expected)
+		t.Fatalf("overify marshal-2 err = %v", err)
 	}
-	if !equal(o.Bytes(), expected, t) {
-		o.DebugPrint("overify neq 2", o.Bytes())
-		t.Fatalf("string = %s", expected)
+	if !bytes.Equal(got, want) {
+		t.Fatalf("got %q\nwant  %q", got, want)
 	}
 }
 
@@ -193,7 +137,7 @@ func isRequiredNotSetError(err error) bool {
 // Simple tests for numeric encode/decode primitives (varint, etc.)
 func TestNumericPrimitives(t *testing.T) {
 	for i := uint64(0); i < 1e6; i += 111 {
-		o := old()
+		o := new(proto.Buffer)
 		if o.EncodeVarint(i) != nil {
 			t.Error("EncodeVarint")
 			break
@@ -206,7 +150,7 @@ func TestNumericPrimitives(t *testing.T) {
 			t.Fatal("varint decode fail:", i, x)
 		}
 
-		o = old()
+		o.Reset()
 		if o.EncodeFixed32(i) != nil {
 			t.Fatal("encFixed32")
 		}
@@ -218,7 +162,7 @@ func TestNumericPrimitives(t *testing.T) {
 			t.Fatal("fixed32 decode fail:", i, x)
 		}
 
-		o = old()
+		o.Reset()
 		if o.EncodeFixed64(i*1234567) != nil {
 			t.Error("encFixed64")
 			break
@@ -233,7 +177,7 @@ func TestNumericPrimitives(t *testing.T) {
 			break
 		}
 
-		o = old()
+		o.Reset()
 		i32 := int32(i - 12345)
 		if o.EncodeZigzag32(uint64(i32)) != nil {
 			t.Fatal("EncodeZigzag32")
@@ -246,7 +190,7 @@ func TestNumericPrimitives(t *testing.T) {
 			t.Fatal("zigzag32 decode fail:", i32, x)
 		}
 
-		o = old()
+		o.Reset()
 		i64 := int64(i - 12345)
 		if o.EncodeZigzag64(uint64(i64)) != nil {
 			t.Fatal("EncodeZigzag64")
@@ -377,37 +321,39 @@ func TestBufferMarshalAllocs(t *testing.T) {
 
 // Simple tests for bytes
 func TestBytesPrimitives(t *testing.T) {
-	o := old()
-	bytes := []byte{'n', 'o', 'w', ' ', 'i', 's', ' ', 't', 'h', 'e', ' ', 't', 'i', 'm', 'e'}
-	if o.EncodeRawBytes(bytes) != nil {
-		t.Error("EncodeRawBytes")
+	bb := new(proto.Buffer)
+	want := []byte("now is the time")
+	if err := bb.EncodeRawBytes(want); err != nil {
+		t.Errorf("EncodeRawBytes error: %v", err)
 	}
-	decb, e := o.DecodeRawBytes(false)
-	if e != nil {
-		t.Error("DecodeRawBytes")
+	got, err := bb.DecodeRawBytes(false)
+	if err != nil {
+		t.Errorf("DecodeRawBytes error: %v", err)
 	}
-	equalbytes(bytes, decb, t)
+	if !bytes.Equal(got, want) {
+		t.Errorf("got %q\nwant  %q", got, want)
+	}
 }
 
 // Simple tests for strings
 func TestStringPrimitives(t *testing.T) {
-	o := old()
-	s := "now is the time"
-	if o.EncodeStringBytes(s) != nil {
-		t.Error("enc_string")
+	bb := new(proto.Buffer)
+	want := "now is the time"
+	if err := bb.EncodeStringBytes(want); err != nil {
+		t.Errorf("EncodeStringBytes error: %v", err)
 	}
-	decs, e := o.DecodeStringBytes()
-	if e != nil {
-		t.Error("dec_string")
+	got, err := bb.DecodeStringBytes()
+	if err != nil {
+		t.Errorf("DecodeStringBytes error: %v", err)
 	}
-	if s != decs {
-		t.Error("string encode/decode fail:", s, decs)
+	if got != want {
+		t.Errorf("got %q\nwant  %q", got, want)
 	}
 }
 
 // Do we catch the "required bit not set" case?
 func TestRequiredBit(t *testing.T) {
-	o := old()
+	o := new(proto.Buffer)
 	pb := new(pb2.GoTest)
 	err := o.Marshal(pb)
 	if err == nil {
@@ -422,43 +368,32 @@ func TestRequiredBit(t *testing.T) {
 // different initialization property, but it once caught a compiler bug so
 // it lives.
 func checkInitialized(pb *pb2.GoTest, t *testing.T) {
-	if pb.F_BoolDefaulted != nil {
+	switch {
+	case pb.F_BoolDefaulted != nil:
 		t.Error("New or Reset did not set boolean:", *pb.F_BoolDefaulted)
-	}
-	if pb.F_Int32Defaulted != nil {
+	case pb.F_Int32Defaulted != nil:
 		t.Error("New or Reset did not set int32:", *pb.F_Int32Defaulted)
-	}
-	if pb.F_Int64Defaulted != nil {
+	case pb.F_Int64Defaulted != nil:
 		t.Error("New or Reset did not set int64:", *pb.F_Int64Defaulted)
-	}
-	if pb.F_Fixed32Defaulted != nil {
+	case pb.F_Fixed32Defaulted != nil:
 		t.Error("New or Reset did not set fixed32:", *pb.F_Fixed32Defaulted)
-	}
-	if pb.F_Fixed64Defaulted != nil {
+	case pb.F_Fixed64Defaulted != nil:
 		t.Error("New or Reset did not set fixed64:", *pb.F_Fixed64Defaulted)
-	}
-	if pb.F_Uint32Defaulted != nil {
+	case pb.F_Uint32Defaulted != nil:
 		t.Error("New or Reset did not set uint32:", *pb.F_Uint32Defaulted)
-	}
-	if pb.F_Uint64Defaulted != nil {
+	case pb.F_Uint64Defaulted != nil:
 		t.Error("New or Reset did not set uint64:", *pb.F_Uint64Defaulted)
-	}
-	if pb.F_FloatDefaulted != nil {
+	case pb.F_FloatDefaulted != nil:
 		t.Error("New or Reset did not set float:", *pb.F_FloatDefaulted)
-	}
-	if pb.F_DoubleDefaulted != nil {
+	case pb.F_DoubleDefaulted != nil:
 		t.Error("New or Reset did not set double:", *pb.F_DoubleDefaulted)
-	}
-	if pb.F_StringDefaulted != nil {
+	case pb.F_StringDefaulted != nil:
 		t.Error("New or Reset did not set string:", *pb.F_StringDefaulted)
-	}
-	if pb.F_BytesDefaulted != nil {
+	case pb.F_BytesDefaulted != nil:
 		t.Error("New or Reset did not set bytes:", string(pb.F_BytesDefaulted))
-	}
-	if pb.F_Sint32Defaulted != nil {
+	case pb.F_Sint32Defaulted != nil:
 		t.Error("New or Reset did not set int32:", *pb.F_Sint32Defaulted)
-	}
-	if pb.F_Sint64Defaulted != nil {
+	case pb.F_Sint64Defaulted != nil:
 		t.Error("New or Reset did not set int64:", *pb.F_Sint64Defaulted)
 	}
 }
@@ -488,68 +423,81 @@ func TestReset(t *testing.T) {
 func TestEncodeDecode1(t *testing.T) {
 	pb := initGoTest(false)
 	overify(t, pb,
-		"0807"+ // field 1, encoding 0, value 7
-			"220d"+"0a056c6162656c120474797065"+ // field 4, encoding 2 (GoTestField)
-			"5001"+ // field 10, encoding 0, value 1
-			"5803"+ // field 11, encoding 0, value 3
-			"6006"+ // field 12, encoding 0, value 6
-			"6d20000000"+ // field 13, encoding 5, value 0x20
-			"714000000000000000"+ // field 14, encoding 1, value 0x40
-			"78a019"+ // field 15, encoding 0, value 0xca0 = 3232
-			"8001c032"+ // field 16, encoding 0, value 0x1940 = 6464
-			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
-			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
-			"9a0106"+"737472696e67"+ // field 19, encoding 2, string "string"
-			"b304"+ // field 70, encoding 3, start group
-			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
-			"b404"+ // field 70, encoding 4, end group
-			"aa0605"+"6279746573"+ // field 101, encoding 2, string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
-			"c506e0ffffff"+ // field 104, encoding 5, -32 fixed32
-			"c906c0ffffffffffffff") // field 105, encoding 1, -64 fixed64
+		protopack.Message{
+			protopack.Tag{1, protopack.VarintType}, protopack.Uvarint(7),
+			protopack.Tag{4, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+				protopack.Tag{1, protopack.BytesType}, protopack.String("label"),
+				protopack.Tag{2, protopack.BytesType}, protopack.String("type"),
+			}),
+			protopack.Tag{10, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{11, protopack.VarintType}, protopack.Varint(3),
+			protopack.Tag{12, protopack.VarintType}, protopack.Varint(6),
+			protopack.Tag{13, protopack.Fixed32Type}, protopack.Uint32(32),
+			protopack.Tag{14, protopack.Fixed64Type}, protopack.Uint64(64),
+			protopack.Tag{15, protopack.VarintType}, protopack.Uvarint(3232),
+			protopack.Tag{16, protopack.VarintType}, protopack.Uvarint(6464),
+			protopack.Tag{17, protopack.Fixed32Type}, protopack.Float32(3232),
+			protopack.Tag{18, protopack.Fixed64Type}, protopack.Float64(6464),
+			protopack.Tag{19, protopack.BytesType}, protopack.String("string"),
+			protopack.Tag{70, protopack.StartGroupType},
+			protopack.Message{
+				protopack.Tag{71, protopack.BytesType}, protopack.String("required"),
+			},
+			protopack.Tag{70, protopack.EndGroupType},
+			protopack.Tag{101, protopack.BytesType}, protopack.Bytes("bytes"),
+			protopack.Tag{102, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{103, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{104, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{105, protopack.Fixed64Type}, protopack.Int64(-64),
+		}.Marshal())
 }
 
 // All required fields set, defaults provided.
 func TestEncodeDecode2(t *testing.T) {
 	pb := initGoTest(true)
 	overify(t, pb,
-		"0807"+ // field 1, encoding 0, value 7
-			"220d"+"0a056c6162656c120474797065"+ // field 4, encoding 2 (GoTestField)
-			"5001"+ // field 10, encoding 0, value 1
-			"5803"+ // field 11, encoding 0, value 3
-			"6006"+ // field 12, encoding 0, value 6
-			"6d20000000"+ // field 13, encoding 5, value 32
-			"714000000000000000"+ // field 14, encoding 1, value 64
-			"78a019"+ // field 15, encoding 0, value 3232
-			"8001c032"+ // field 16, encoding 0, value 6464
-			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
-			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
-			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
-			"c00201"+ // field 40, encoding 0, value 1
-			"c80220"+ // field 41, encoding 0, value 32
-			"d00240"+ // field 42, encoding 0, value 64
-			"dd0240010000"+ // field 43, encoding 5, value 320
-			"e1028002000000000000"+ // field 44, encoding 1, value 640
-			"e8028019"+ // field 45, encoding 0, value 3200
-			"f0028032"+ // field 46, encoding 0, value 6400
-			"fd02e0659948"+ // field 47, encoding 5, value 314159.0
-			"81030000000050971041"+ // field 48, encoding 1, value 271828.0
-			"8a0310"+"68656c6c6f2c2022776f726c6421220a"+ // field 49, encoding 2 string "hello, \"world!\"\n"
-			"b304"+ // start group field 70 level 1
-			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
-			"b404"+ // end group field 70 level 1
-			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
-			"c506e0ffffff"+ // field 104, encoding 5, -32 fixed32
-			"c906c0ffffffffffffff"+ // field 105, encoding 1, -64 fixed64
-			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
-			"90193f"+ // field 402, encoding 0, value 63
-			"98197f"+ // field 403, encoding 0, value 127
-			"a519e0ffffff"+ // field 404, encoding 5, -32 fixed32
-			"a919c0ffffffffffffff") // field 405, encoding 1, -64 fixed64
-
+		protopack.Message{
+			protopack.Tag{1, protopack.VarintType}, protopack.Uvarint(7),
+			protopack.Tag{4, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+				protopack.Tag{1, protopack.BytesType}, protopack.String("label"),
+				protopack.Tag{2, protopack.BytesType}, protopack.String("type"),
+			}),
+			protopack.Tag{10, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{11, protopack.VarintType}, protopack.Varint(3),
+			protopack.Tag{12, protopack.VarintType}, protopack.Varint(6),
+			protopack.Tag{13, protopack.Fixed32Type}, protopack.Uint32(32),
+			protopack.Tag{14, protopack.Fixed64Type}, protopack.Uint64(64),
+			protopack.Tag{15, protopack.VarintType}, protopack.Uvarint(3232),
+			protopack.Tag{16, protopack.VarintType}, protopack.Uvarint(6464),
+			protopack.Tag{17, protopack.Fixed32Type}, protopack.Float32(3232),
+			protopack.Tag{18, protopack.Fixed64Type}, protopack.Float64(6464),
+			protopack.Tag{19, protopack.BytesType}, protopack.String("string"),
+			protopack.Tag{40, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{41, protopack.VarintType}, protopack.Varint(32),
+			protopack.Tag{42, protopack.VarintType}, protopack.Varint(64),
+			protopack.Tag{43, protopack.Fixed32Type}, protopack.Uint32(320),
+			protopack.Tag{44, protopack.Fixed64Type}, protopack.Uint64(640),
+			protopack.Tag{45, protopack.VarintType}, protopack.Uvarint(3200),
+			protopack.Tag{46, protopack.VarintType}, protopack.Uvarint(6400),
+			protopack.Tag{47, protopack.Fixed32Type}, protopack.Float32(314159),
+			protopack.Tag{48, protopack.Fixed64Type}, protopack.Float64(271828),
+			protopack.Tag{49, protopack.BytesType}, protopack.String("hello, \"world!\"\n"),
+			protopack.Tag{70, protopack.StartGroupType},
+			protopack.Message{
+				protopack.Tag{71, protopack.BytesType}, protopack.String("required"),
+			},
+			protopack.Tag{70, protopack.EndGroupType},
+			protopack.Tag{101, protopack.BytesType}, protopack.Bytes("bytes"),
+			protopack.Tag{102, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{103, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{104, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{105, protopack.Fixed64Type}, protopack.Int64(-64),
+			protopack.Tag{401, protopack.BytesType}, protopack.Bytes("Bignose"),
+			protopack.Tag{402, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{403, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{404, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{405, protopack.Fixed64Type}, protopack.Int64(-64),
+		}.Marshal())
 }
 
 // All default fields set to their default value by hand
@@ -572,42 +520,48 @@ func TestEncodeDecode3(t *testing.T) {
 	pb.F_Sfixed64Defaulted = proto.Int64(-64)
 
 	overify(t, pb,
-		"0807"+ // field 1, encoding 0, value 7
-			"220d"+"0a056c6162656c120474797065"+ // field 4, encoding 2 (GoTestField)
-			"5001"+ // field 10, encoding 0, value 1
-			"5803"+ // field 11, encoding 0, value 3
-			"6006"+ // field 12, encoding 0, value 6
-			"6d20000000"+ // field 13, encoding 5, value 32
-			"714000000000000000"+ // field 14, encoding 1, value 64
-			"78a019"+ // field 15, encoding 0, value 3232
-			"8001c032"+ // field 16, encoding 0, value 6464
-			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
-			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
-			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
-			"c00201"+ // field 40, encoding 0, value 1
-			"c80220"+ // field 41, encoding 0, value 32
-			"d00240"+ // field 42, encoding 0, value 64
-			"dd0240010000"+ // field 43, encoding 5, value 320
-			"e1028002000000000000"+ // field 44, encoding 1, value 640
-			"e8028019"+ // field 45, encoding 0, value 3200
-			"f0028032"+ // field 46, encoding 0, value 6400
-			"fd02e0659948"+ // field 47, encoding 5, value 314159.0
-			"81030000000050971041"+ // field 48, encoding 1, value 271828.0
-			"8a0310"+"68656c6c6f2c2022776f726c6421220a"+ // field 49, encoding 2 string "hello, \"world!\"\n"
-			"b304"+ // start group field 70 level 1
-			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
-			"b404"+ // end group field 70 level 1
-			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
-			"c506e0ffffff"+ // field 104, encoding 5, -32 fixed32
-			"c906c0ffffffffffffff"+ // field 105, encoding 1, -64 fixed64
-			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
-			"90193f"+ // field 402, encoding 0, value 63
-			"98197f"+ // field 403, encoding 0, value 127
-			"a519e0ffffff"+ // field 404, encoding 5, -32 fixed32
-			"a919c0ffffffffffffff") // field 405, encoding 1, -64 fixed64
-
+		protopack.Message{
+			protopack.Tag{1, protopack.VarintType}, protopack.Uvarint(7),
+			protopack.Tag{4, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+				protopack.Tag{1, protopack.BytesType}, protopack.String("label"),
+				protopack.Tag{2, protopack.BytesType}, protopack.String("type"),
+			}),
+			protopack.Tag{10, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{11, protopack.VarintType}, protopack.Varint(3),
+			protopack.Tag{12, protopack.VarintType}, protopack.Varint(6),
+			protopack.Tag{13, protopack.Fixed32Type}, protopack.Uint32(32),
+			protopack.Tag{14, protopack.Fixed64Type}, protopack.Uint64(64),
+			protopack.Tag{15, protopack.VarintType}, protopack.Uvarint(3232),
+			protopack.Tag{16, protopack.VarintType}, protopack.Uvarint(6464),
+			protopack.Tag{17, protopack.Fixed32Type}, protopack.Float32(3232),
+			protopack.Tag{18, protopack.Fixed64Type}, protopack.Float64(6464),
+			protopack.Tag{19, protopack.BytesType}, protopack.String("string"),
+			protopack.Tag{40, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{41, protopack.VarintType}, protopack.Varint(32),
+			protopack.Tag{42, protopack.VarintType}, protopack.Varint(64),
+			protopack.Tag{43, protopack.Fixed32Type}, protopack.Uint32(320),
+			protopack.Tag{44, protopack.Fixed64Type}, protopack.Uint64(640),
+			protopack.Tag{45, protopack.VarintType}, protopack.Uvarint(3200),
+			protopack.Tag{46, protopack.VarintType}, protopack.Uvarint(6400),
+			protopack.Tag{47, protopack.Fixed32Type}, protopack.Float32(314159),
+			protopack.Tag{48, protopack.Fixed64Type}, protopack.Float64(271828),
+			protopack.Tag{49, protopack.BytesType}, protopack.String("hello, \"world!\"\n"),
+			protopack.Tag{70, protopack.StartGroupType},
+			protopack.Message{
+				protopack.Tag{71, protopack.BytesType}, protopack.String("required"),
+			},
+			protopack.Tag{70, protopack.EndGroupType},
+			protopack.Tag{101, protopack.BytesType}, protopack.Bytes("bytes"),
+			protopack.Tag{102, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{103, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{104, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{105, protopack.Fixed64Type}, protopack.Int64(-64),
+			protopack.Tag{401, protopack.BytesType}, protopack.Bytes("Bignose"),
+			protopack.Tag{402, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{403, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{404, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{405, protopack.Fixed64Type}, protopack.Int64(-64),
+		}.Marshal())
 }
 
 // All required fields set, defaults provided, all non-defaulted optional fields have values.
@@ -634,63 +588,74 @@ func TestEncodeDecode4(t *testing.T) {
 	pb.Optionalgroup = initGoTest_OptionalGroup()
 
 	overify(t, pb,
-		"0807"+ // field 1, encoding 0, value 7
-			"1205"+"68656c6c6f"+ // field 2, encoding 2, string "hello"
-			"1807"+ // field 3, encoding 0, value 7
-			"220d"+"0a056c6162656c120474797065"+ // field 4, encoding 2 (GoTestField)
-			"320d"+"0a056c6162656c120474797065"+ // field 6, encoding 2 (GoTestField)
-			"5001"+ // field 10, encoding 0, value 1
-			"5803"+ // field 11, encoding 0, value 3
-			"6006"+ // field 12, encoding 0, value 6
-			"6d20000000"+ // field 13, encoding 5, value 32
-			"714000000000000000"+ // field 14, encoding 1, value 64
-			"78a019"+ // field 15, encoding 0, value 3232
-			"8001c032"+ // field 16, encoding 0, value 6464
-			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
-			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
-			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
-			"f00101"+ // field 30, encoding 0, value 1
-			"f80120"+ // field 31, encoding 0, value 32
-			"800240"+ // field 32, encoding 0, value 64
-			"8d02a00c0000"+ // field 33, encoding 5, value 3232
-			"91024019000000000000"+ // field 34, encoding 1, value 6464
-			"9802a0dd13"+ // field 35, encoding 0, value 323232
-			"a002c0ba27"+ // field 36, encoding 0, value 646464
-			"ad0200000042"+ // field 37, encoding 5, value 32.0
-			"b1020000000000005040"+ // field 38, encoding 1, value 64.0
-			"ba0205"+"68656c6c6f"+ // field 39, encoding 2, string "hello"
-			"c00201"+ // field 40, encoding 0, value 1
-			"c80220"+ // field 41, encoding 0, value 32
-			"d00240"+ // field 42, encoding 0, value 64
-			"dd0240010000"+ // field 43, encoding 5, value 320
-			"e1028002000000000000"+ // field 44, encoding 1, value 640
-			"e8028019"+ // field 45, encoding 0, value 3200
-			"f0028032"+ // field 46, encoding 0, value 6400
-			"fd02e0659948"+ // field 47, encoding 5, value 314159.0
-			"81030000000050971041"+ // field 48, encoding 1, value 271828.0
-			"8a0310"+"68656c6c6f2c2022776f726c6421220a"+ // field 49, encoding 2 string "hello, \"world!\"\n"
-			"b304"+ // start group field 70 level 1
-			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
-			"b404"+ // end group field 70 level 1
-			"d305"+ // start group field 90 level 1
-			"da0508"+"6f7074696f6e616c"+ // field 91, encoding 2, string "optional"
-			"d405"+ // end group field 90 level 1
-			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
-			"c506e0ffffff"+ // field 104, encoding 5, -32 fixed32
-			"c906c0ffffffffffffff"+ // field 105, encoding 1, -64 fixed64
-			"ea1207"+"4269676e6f7365"+ // field 301, encoding 2, string "Bignose"
-			"f0123f"+ // field 302, encoding 0, value 63
-			"f8127f"+ // field 303, encoding 0, value 127
-			"8513e0ffffff"+ // field 304, encoding 5, -32 fixed32
-			"8913c0ffffffffffffff"+ // field 305, encoding 1, -64 fixed64
-			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
-			"90193f"+ // field 402, encoding 0, value 63
-			"98197f"+ // field 403, encoding 0, value 127
-			"a519e0ffffff"+ // field 404, encoding 5, -32 fixed32
-			"a919c0ffffffffffffff") // field 405, encoding 1, -64 fixed64
-
+		protopack.Message{
+			protopack.Tag{1, protopack.VarintType}, protopack.Uvarint(7),
+			protopack.Tag{2, protopack.BytesType}, protopack.String("hello"),
+			protopack.Tag{3, protopack.VarintType}, protopack.Varint(7),
+			protopack.Tag{4, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+				protopack.Tag{1, protopack.BytesType}, protopack.String("label"),
+				protopack.Tag{2, protopack.BytesType}, protopack.String("type"),
+			}),
+			protopack.Tag{6, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+				protopack.Tag{1, protopack.BytesType}, protopack.String("label"),
+				protopack.Tag{2, protopack.BytesType}, protopack.String("type"),
+			}),
+			protopack.Tag{10, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{11, protopack.VarintType}, protopack.Varint(3),
+			protopack.Tag{12, protopack.VarintType}, protopack.Varint(6),
+			protopack.Tag{13, protopack.Fixed32Type}, protopack.Uint32(32),
+			protopack.Tag{14, protopack.Fixed64Type}, protopack.Uint64(64),
+			protopack.Tag{15, protopack.VarintType}, protopack.Uvarint(3232),
+			protopack.Tag{16, protopack.VarintType}, protopack.Uvarint(6464),
+			protopack.Tag{17, protopack.Fixed32Type}, protopack.Float32(3232),
+			protopack.Tag{18, protopack.Fixed64Type}, protopack.Float64(6464),
+			protopack.Tag{19, protopack.BytesType}, protopack.String("string"),
+			protopack.Tag{30, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{31, protopack.VarintType}, protopack.Varint(32),
+			protopack.Tag{32, protopack.VarintType}, protopack.Varint(64),
+			protopack.Tag{33, protopack.Fixed32Type}, protopack.Uint32(3232),
+			protopack.Tag{34, protopack.Fixed64Type}, protopack.Uint64(6464),
+			protopack.Tag{35, protopack.VarintType}, protopack.Uvarint(323232),
+			protopack.Tag{36, protopack.VarintType}, protopack.Uvarint(646464),
+			protopack.Tag{37, protopack.Fixed32Type}, protopack.Float32(32),
+			protopack.Tag{38, protopack.Fixed64Type}, protopack.Float64(64),
+			protopack.Tag{39, protopack.BytesType}, protopack.String("hello"),
+			protopack.Tag{40, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{41, protopack.VarintType}, protopack.Varint(32),
+			protopack.Tag{42, protopack.VarintType}, protopack.Varint(64),
+			protopack.Tag{43, protopack.Fixed32Type}, protopack.Uint32(320),
+			protopack.Tag{44, protopack.Fixed64Type}, protopack.Uint64(640),
+			protopack.Tag{45, protopack.VarintType}, protopack.Uvarint(3200),
+			protopack.Tag{46, protopack.VarintType}, protopack.Uvarint(6400),
+			protopack.Tag{47, protopack.Fixed32Type}, protopack.Float32(314159),
+			protopack.Tag{48, protopack.Fixed64Type}, protopack.Float64(271828),
+			protopack.Tag{49, protopack.BytesType}, protopack.String("hello, \"world!\"\n"),
+			protopack.Tag{70, protopack.StartGroupType},
+			protopack.Message{
+				protopack.Tag{71, protopack.BytesType}, protopack.String("required"),
+			},
+			protopack.Tag{70, protopack.EndGroupType},
+			protopack.Tag{90, protopack.StartGroupType},
+			protopack.Message{
+				protopack.Tag{91, protopack.BytesType}, protopack.String("optional"),
+			},
+			protopack.Tag{90, protopack.EndGroupType},
+			protopack.Tag{101, protopack.BytesType}, protopack.Bytes("bytes"),
+			protopack.Tag{102, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{103, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{104, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{105, protopack.Fixed64Type}, protopack.Int64(-64),
+			protopack.Tag{301, protopack.BytesType}, protopack.Bytes("Bignose"),
+			protopack.Tag{302, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{303, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{304, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{305, protopack.Fixed64Type}, protopack.Int64(-64),
+			protopack.Tag{401, protopack.BytesType}, protopack.Bytes("Bignose"),
+			protopack.Tag{402, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{403, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{404, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{405, protopack.Fixed64Type}, protopack.Int64(-64),
+		}.Marshal())
 }
 
 // All required fields set, defaults provided, all repeated fields given two values.
@@ -715,80 +680,96 @@ func TestEncodeDecode5(t *testing.T) {
 	pb.Repeatedgroup = []*pb2.GoTest_RepeatedGroup{initGoTest_RepeatedGroup(), initGoTest_RepeatedGroup()}
 
 	overify(t, pb,
-		"0807"+ // field 1, encoding 0, value 7
-			"220d"+"0a056c6162656c120474797065"+ // field 4, encoding 2 (GoTestField)
-			"2a0d"+"0a056c6162656c120474797065"+ // field 5, encoding 2 (GoTestField)
-			"2a0d"+"0a056c6162656c120474797065"+ // field 5, encoding 2 (GoTestField)
-			"5001"+ // field 10, encoding 0, value 1
-			"5803"+ // field 11, encoding 0, value 3
-			"6006"+ // field 12, encoding 0, value 6
-			"6d20000000"+ // field 13, encoding 5, value 32
-			"714000000000000000"+ // field 14, encoding 1, value 64
-			"78a019"+ // field 15, encoding 0, value 3232
-			"8001c032"+ // field 16, encoding 0, value 6464
-			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
-			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
-			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
-			"a00100"+ // field 20, encoding 0, value 0
-			"a00101"+ // field 20, encoding 0, value 1
-			"a80120"+ // field 21, encoding 0, value 32
-			"a80121"+ // field 21, encoding 0, value 33
-			"b00140"+ // field 22, encoding 0, value 64
-			"b00141"+ // field 22, encoding 0, value 65
-			"bd01a00c0000"+ // field 23, encoding 5, value 3232
-			"bd01050d0000"+ // field 23, encoding 5, value 3333
-			"c1014019000000000000"+ // field 24, encoding 1, value 6464
-			"c101a519000000000000"+ // field 24, encoding 1, value 6565
-			"c801a0dd13"+ // field 25, encoding 0, value 323232
-			"c80195ac14"+ // field 25, encoding 0, value 333333
-			"d001c0ba27"+ // field 26, encoding 0, value 646464
-			"d001b58928"+ // field 26, encoding 0, value 656565
-			"dd0100000042"+ // field 27, encoding 5, value 32.0
-			"dd0100000442"+ // field 27, encoding 5, value 33.0
-			"e1010000000000005040"+ // field 28, encoding 1, value 64.0
-			"e1010000000000405040"+ // field 28, encoding 1, value 65.0
-			"ea0105"+"68656c6c6f"+ // field 29, encoding 2, string "hello"
-			"ea0106"+"7361696c6f72"+ // field 29, encoding 2, string "sailor"
-			"c00201"+ // field 40, encoding 0, value 1
-			"c80220"+ // field 41, encoding 0, value 32
-			"d00240"+ // field 42, encoding 0, value 64
-			"dd0240010000"+ // field 43, encoding 5, value 320
-			"e1028002000000000000"+ // field 44, encoding 1, value 640
-			"e8028019"+ // field 45, encoding 0, value 3200
-			"f0028032"+ // field 46, encoding 0, value 6400
-			"fd02e0659948"+ // field 47, encoding 5, value 314159.0
-			"81030000000050971041"+ // field 48, encoding 1, value 271828.0
-			"8a0310"+"68656c6c6f2c2022776f726c6421220a"+ // field 49, encoding 2 string "hello, \"world!\"\n"
-			"b304"+ // start group field 70 level 1
-			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
-			"b404"+ // end group field 70 level 1
-			"8305"+ // start group field 80 level 1
-			"8a0508"+"7265706561746564"+ // field 81, encoding 2, string "repeated"
-			"8405"+ // end group field 80 level 1
-			"8305"+ // start group field 80 level 1
-			"8a0508"+"7265706561746564"+ // field 81, encoding 2, string "repeated"
-			"8405"+ // end group field 80 level 1
-			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
-			"c506e0ffffff"+ // field 104, encoding 5, -32 fixed32
-			"c906c0ffffffffffffff"+ // field 105, encoding 1, -64 fixed64
-			"ca0c03"+"626967"+ // field 201, encoding 2, string "big"
-			"ca0c04"+"6e6f7365"+ // field 201, encoding 2, string "nose"
-			"d00c40"+ // field 202, encoding 0, value 32
-			"d00c3f"+ // field 202, encoding 0, value -32
-			"d80c8001"+ // field 203, encoding 0, value 64
-			"d80c7f"+ // field 203, encoding 0, value -64
-			"e50c20000000"+ // field 204, encoding 5, 32 fixed32
-			"e50ce0ffffff"+ // field 204, encoding 5, -32 fixed32
-			"e90c4000000000000000"+ // field 205, encoding 1, 64 fixed64
-			"e90cc0ffffffffffffff"+ // field 205, encoding 1, -64 fixed64
-			"8a1907"+"4269676e6f7365"+ // field 401, encoding 2, string "Bignose"
-			"90193f"+ // field 402, encoding 0, value 63
-			"98197f"+ // field 403, encoding 0, value 127
-			"a519e0ffffff"+ // field 404, encoding 5, -32 fixed32
-			"a919c0ffffffffffffff") // field 405, encoding 1, -64 fixed64
-
+		protopack.Message{
+			protopack.Tag{1, protopack.VarintType}, protopack.Uvarint(7),
+			protopack.Tag{4, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+				protopack.Tag{1, protopack.BytesType}, protopack.String("label"),
+				protopack.Tag{2, protopack.BytesType}, protopack.String("type"),
+			}),
+			protopack.Tag{5, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+				protopack.Tag{1, protopack.BytesType}, protopack.String("label"),
+				protopack.Tag{2, protopack.BytesType}, protopack.String("type"),
+			}),
+			protopack.Tag{5, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+				protopack.Tag{1, protopack.BytesType}, protopack.String("label"),
+				protopack.Tag{2, protopack.BytesType}, protopack.String("type"),
+			}),
+			protopack.Tag{10, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{11, protopack.VarintType}, protopack.Varint(3),
+			protopack.Tag{12, protopack.VarintType}, protopack.Varint(6),
+			protopack.Tag{13, protopack.Fixed32Type}, protopack.Uint32(32),
+			protopack.Tag{14, protopack.Fixed64Type}, protopack.Uint64(64),
+			protopack.Tag{15, protopack.VarintType}, protopack.Uvarint(3232),
+			protopack.Tag{16, protopack.VarintType}, protopack.Uvarint(6464),
+			protopack.Tag{17, protopack.Fixed32Type}, protopack.Float32(3232),
+			protopack.Tag{18, protopack.Fixed64Type}, protopack.Float64(6464),
+			protopack.Tag{19, protopack.BytesType}, protopack.String("string"),
+			protopack.Tag{20, protopack.VarintType}, protopack.Bool(false),
+			protopack.Tag{20, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{21, protopack.VarintType}, protopack.Varint(32),
+			protopack.Tag{21, protopack.VarintType}, protopack.Varint(33),
+			protopack.Tag{22, protopack.VarintType}, protopack.Varint(64),
+			protopack.Tag{22, protopack.VarintType}, protopack.Varint(65),
+			protopack.Tag{23, protopack.Fixed32Type}, protopack.Uint32(3232),
+			protopack.Tag{23, protopack.Fixed32Type}, protopack.Uint32(3333),
+			protopack.Tag{24, protopack.Fixed64Type}, protopack.Uint64(6464),
+			protopack.Tag{24, protopack.Fixed64Type}, protopack.Uint64(6565),
+			protopack.Tag{25, protopack.VarintType}, protopack.Uvarint(323232),
+			protopack.Tag{25, protopack.VarintType}, protopack.Uvarint(333333),
+			protopack.Tag{26, protopack.VarintType}, protopack.Uvarint(646464),
+			protopack.Tag{26, protopack.VarintType}, protopack.Uvarint(656565),
+			protopack.Tag{27, protopack.Fixed32Type}, protopack.Float32(32),
+			protopack.Tag{27, protopack.Fixed32Type}, protopack.Float32(33),
+			protopack.Tag{28, protopack.Fixed64Type}, protopack.Float64(64),
+			protopack.Tag{28, protopack.Fixed64Type}, protopack.Float64(65),
+			protopack.Tag{29, protopack.BytesType}, protopack.String("hello"),
+			protopack.Tag{29, protopack.BytesType}, protopack.String("sailor"),
+			protopack.Tag{40, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{41, protopack.VarintType}, protopack.Varint(32),
+			protopack.Tag{42, protopack.VarintType}, protopack.Varint(64),
+			protopack.Tag{43, protopack.Fixed32Type}, protopack.Uint32(320),
+			protopack.Tag{44, protopack.Fixed64Type}, protopack.Uint64(640),
+			protopack.Tag{45, protopack.VarintType}, protopack.Uvarint(3200),
+			protopack.Tag{46, protopack.VarintType}, protopack.Uvarint(6400),
+			protopack.Tag{47, protopack.Fixed32Type}, protopack.Float32(314159),
+			protopack.Tag{48, protopack.Fixed64Type}, protopack.Float64(271828),
+			protopack.Tag{49, protopack.BytesType}, protopack.String("hello, \"world!\"\n"),
+			protopack.Tag{70, protopack.StartGroupType},
+			protopack.Message{
+				protopack.Tag{71, protopack.BytesType}, protopack.String("required"),
+			},
+			protopack.Tag{70, protopack.EndGroupType},
+			protopack.Tag{80, protopack.StartGroupType},
+			protopack.Message{
+				protopack.Tag{81, protopack.BytesType}, protopack.String("repeated"),
+			},
+			protopack.Tag{80, protopack.EndGroupType},
+			protopack.Tag{80, protopack.StartGroupType},
+			protopack.Message{
+				protopack.Tag{81, protopack.BytesType}, protopack.String("repeated"),
+			},
+			protopack.Tag{80, protopack.EndGroupType},
+			protopack.Tag{101, protopack.BytesType}, protopack.Bytes("bytes"),
+			protopack.Tag{102, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{103, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{104, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{105, protopack.Fixed64Type}, protopack.Int64(-64),
+			protopack.Tag{201, protopack.BytesType}, protopack.Bytes("big"),
+			protopack.Tag{201, protopack.BytesType}, protopack.Bytes("nose"),
+			protopack.Tag{202, protopack.VarintType}, protopack.Svarint(32),
+			protopack.Tag{202, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{203, protopack.VarintType}, protopack.Svarint(64),
+			protopack.Tag{203, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{204, protopack.Fixed32Type}, protopack.Int32(32),
+			protopack.Tag{204, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{205, protopack.Fixed64Type}, protopack.Int64(64),
+			protopack.Tag{205, protopack.Fixed64Type}, protopack.Int64(-64),
+			protopack.Tag{401, protopack.BytesType}, protopack.Bytes("Bignose"),
+			protopack.Tag{402, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{403, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{404, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{405, protopack.Fixed64Type}, protopack.Int64(-64),
+		}.Marshal())
 }
 
 // All required fields set, all packed repeated fields given two values.
@@ -809,50 +790,46 @@ func TestEncodeDecode6(t *testing.T) {
 	pb.F_Sfixed64RepeatedPacked = []int64{64, -64}
 
 	overify(t, pb,
-		"0807"+ // field 1, encoding 0, value 7
-			"220d"+"0a056c6162656c120474797065"+ // field 4, encoding 2 (GoTestField)
-			"5001"+ // field 10, encoding 0, value 1
-			"5803"+ // field 11, encoding 0, value 3
-			"6006"+ // field 12, encoding 0, value 6
-			"6d20000000"+ // field 13, encoding 5, value 32
-			"714000000000000000"+ // field 14, encoding 1, value 64
-			"78a019"+ // field 15, encoding 0, value 3232
-			"8001c032"+ // field 16, encoding 0, value 6464
-			"8d0100004a45"+ // field 17, encoding 5, value 3232.0
-			"9101000000000040b940"+ // field 18, encoding 1, value 6464.0
-			"9a0106"+"737472696e67"+ // field 19, encoding 2 string "string"
-			"9203020001"+ // field 50, encoding 2, 2 bytes, value 0, value 1
-			"9a03022021"+ // field 51, encoding 2, 2 bytes, value 32, value 33
-			"a203024041"+ // field 52, encoding 2, 2 bytes, value 64, value 65
-			"aa0308"+ // field 53, encoding 2, 8 bytes
-			"a00c0000050d0000"+ // value 3232, value 3333
-			"b20310"+ // field 54, encoding 2, 16 bytes
-			"4019000000000000a519000000000000"+ // value 6464, value 6565
-			"ba0306"+ // field 55, encoding 2, 6 bytes
-			"a0dd1395ac14"+ // value 323232, value 333333
-			"c20306"+ // field 56, encoding 2, 6 bytes
-			"c0ba27b58928"+ // value 646464, value 656565
-			"ca0308"+ // field 57, encoding 2, 8 bytes
-			"0000004200000442"+ // value 32.0, value 33.0
-			"d20310"+ // field 58, encoding 2, 16 bytes
-			"00000000000050400000000000405040"+ // value 64.0, value 65.0
-			"b304"+ // start group field 70 level 1
-			"ba0408"+"7265717569726564"+ // field 71, encoding 2, string "required"
-			"b404"+ // end group field 70 level 1
-			"aa0605"+"6279746573"+ // field 101, encoding 2 string "bytes"
-			"b0063f"+ // field 102, encoding 0, 0x3f zigzag32
-			"b8067f"+ // field 103, encoding 0, 0x7f zigzag64
-			"c506e0ffffff"+ // field 104, encoding 5, -32 fixed32
-			"c906c0ffffffffffffff"+ // field 105, encoding 1, -64 fixed64
-			"b21f02"+ // field 502, encoding 2, 2 bytes
-			"403f"+ // value 32, value -32
-			"ba1f03"+ // field 503, encoding 2, 3 bytes
-			"80017f"+ // value 64, value -64
-			"c21f08"+ // field 504, encoding 2, 8 bytes
-			"20000000e0ffffff"+ // value 32, value -32
-			"ca1f10"+ // field 505, encoding 2, 16 bytes
-			"4000000000000000c0ffffffffffffff") // value 64, value -64
-
+		protopack.Message{
+			protopack.Tag{1, protopack.VarintType}, protopack.Uvarint(7),
+			protopack.Tag{4, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+				protopack.Tag{1, protopack.BytesType}, protopack.String("label"),
+				protopack.Tag{2, protopack.BytesType}, protopack.String("type"),
+			}),
+			protopack.Tag{10, protopack.VarintType}, protopack.Bool(true),
+			protopack.Tag{11, protopack.VarintType}, protopack.Varint(3),
+			protopack.Tag{12, protopack.VarintType}, protopack.Varint(6),
+			protopack.Tag{13, protopack.Fixed32Type}, protopack.Uint32(32),
+			protopack.Tag{14, protopack.Fixed64Type}, protopack.Uint64(64),
+			protopack.Tag{15, protopack.VarintType}, protopack.Uvarint(3232),
+			protopack.Tag{16, protopack.VarintType}, protopack.Uvarint(6464),
+			protopack.Tag{17, protopack.Fixed32Type}, protopack.Float32(3232),
+			protopack.Tag{18, protopack.Fixed64Type}, protopack.Float64(6464),
+			protopack.Tag{19, protopack.BytesType}, protopack.String("string"),
+			protopack.Tag{50, protopack.BytesType}, protopack.LengthPrefix{protopack.Bool(false), protopack.Bool(true)},
+			protopack.Tag{51, protopack.BytesType}, protopack.LengthPrefix{protopack.Varint(32), protopack.Varint(33)},
+			protopack.Tag{52, protopack.BytesType}, protopack.LengthPrefix{protopack.Varint(64), protopack.Varint(65)},
+			protopack.Tag{53, protopack.BytesType}, protopack.LengthPrefix{protopack.Uint32(3232), protopack.Uint32(3333)},
+			protopack.Tag{54, protopack.BytesType}, protopack.LengthPrefix{protopack.Uint64(6464), protopack.Uint64(6565)},
+			protopack.Tag{55, protopack.BytesType}, protopack.LengthPrefix{protopack.Uvarint(323232), protopack.Uvarint(333333)},
+			protopack.Tag{56, protopack.BytesType}, protopack.LengthPrefix{protopack.Uvarint(646464), protopack.Uvarint(656565)},
+			protopack.Tag{57, protopack.BytesType}, protopack.LengthPrefix{protopack.Float32(32), protopack.Float32(33)},
+			protopack.Tag{58, protopack.BytesType}, protopack.LengthPrefix{protopack.Float64(64), protopack.Float64(65)},
+			protopack.Tag{70, protopack.StartGroupType},
+			protopack.Message{
+				protopack.Tag{71, protopack.BytesType}, protopack.String("required"),
+			},
+			protopack.Tag{70, protopack.EndGroupType},
+			protopack.Tag{101, protopack.BytesType}, protopack.Bytes("bytes"),
+			protopack.Tag{102, protopack.VarintType}, protopack.Svarint(-32),
+			protopack.Tag{103, protopack.VarintType}, protopack.Svarint(-64),
+			protopack.Tag{104, protopack.Fixed32Type}, protopack.Int32(-32),
+			protopack.Tag{105, protopack.Fixed64Type}, protopack.Int64(-64),
+			protopack.Tag{502, protopack.BytesType}, protopack.LengthPrefix{protopack.Svarint(32), protopack.Svarint(-32)},
+			protopack.Tag{503, protopack.BytesType}, protopack.LengthPrefix{protopack.Svarint(64), protopack.Svarint(-64)},
+			protopack.Tag{504, protopack.BytesType}, protopack.LengthPrefix{protopack.Int32(32), protopack.Int32(-32)},
+			protopack.Tag{505, protopack.BytesType}, protopack.LengthPrefix{protopack.Int64(64), protopack.Int64(-64)},
+		}.Marshal())
 }
 
 // Test that we can encode empty bytes fields.
@@ -910,7 +887,7 @@ func TestEncodeDecodeBytes2(t *testing.T) {
 
 // All required fields set, defaults provided, all repeated fields given two values.
 func TestSkippingUnrecognizedFields(t *testing.T) {
-	o := old()
+	o := new(proto.Buffer)
 	pb := initGoTestField()
 
 	// Marshal it normally.
@@ -940,22 +917,18 @@ func TestSkippingUnrecognizedFields(t *testing.T) {
 	o.SetBuf(pbd.XXX_unrecognized)
 	o.Unmarshal(skipd)
 
-	if *skipd.SkipInt32 != *skip.SkipInt32 {
+	switch {
+	case *skipd.SkipInt32 != *skip.SkipInt32:
 		t.Error("skip int32", skipd.SkipInt32)
-	}
-	if *skipd.SkipFixed32 != *skip.SkipFixed32 {
+	case *skipd.SkipFixed32 != *skip.SkipFixed32:
 		t.Error("skip fixed32", skipd.SkipFixed32)
-	}
-	if *skipd.SkipFixed64 != *skip.SkipFixed64 {
+	case *skipd.SkipFixed64 != *skip.SkipFixed64:
 		t.Error("skip fixed64", skipd.SkipFixed64)
-	}
-	if *skipd.SkipString != *skip.SkipString {
+	case *skipd.SkipString != *skip.SkipString:
 		t.Error("skip string", *skipd.SkipString)
-	}
-	if *skipd.Skipgroup.GroupInt32 != *skip.Skipgroup.GroupInt32 {
+	case *skipd.Skipgroup.GroupInt32 != *skip.Skipgroup.GroupInt32:
 		t.Error("skip group int32", skipd.Skipgroup.GroupInt32)
-	}
-	if *skipd.Skipgroup.GroupString != *skip.Skipgroup.GroupString {
+	case *skipd.Skipgroup.GroupString != *skip.Skipgroup.GroupString:
 		t.Error("skip group string", *skipd.Skipgroup.GroupString)
 	}
 }
@@ -1096,64 +1069,77 @@ func TestBigRepeated(t *testing.T) {
 
 	// Check the checkable values
 	for i := uint64(0); i < N; i++ {
-		if pbd.Repeatedgroup[i] == nil {
+		switch {
+		case pbd.Repeatedgroup[i] == nil:
 			t.Error("pbd.Repeatedgroup bad")
-		}
-		if x := uint64(pbd.F_Sint64Repeated[i]); x != i {
-			t.Error("pbd.F_Sint64Repeated bad", x, i)
-		}
-		if x := uint64(pbd.F_Sint32Repeated[i]); x != i {
-			t.Error("pbd.F_Sint32Repeated bad", x, i)
-		}
-		s := fmt.Sprint(i)
-		equalbytes(pbd.F_BytesRepeated[i], []byte(s), t)
-		if pbd.F_StringRepeated[i] != s {
+		case uint64(pbd.F_Sint64Repeated[i]) != i:
+			t.Error("pbd.F_Sint64Repeated bad", uint64(pbd.F_Sint64Repeated[i]), i)
+		case uint64(pbd.F_Sint32Repeated[i]) != i:
+			t.Error("pbd.F_Sint32Repeated bad", uint64(pbd.F_Sint32Repeated[i]), i)
+		case !bytes.Equal(pbd.F_BytesRepeated[i], []byte(fmt.Sprint(i))):
+			t.Error("pbd.F_BytesRepeated bad", pbd.F_BytesRepeated[i], i)
+		case pbd.F_StringRepeated[i] != string(fmt.Sprint(i)):
 			t.Error("pbd.F_Sint32Repeated bad", pbd.F_StringRepeated[i], i)
-		}
-		if x := uint64(pbd.F_DoubleRepeated[i]); x != i {
-			t.Error("pbd.F_DoubleRepeated bad", x, i)
-		}
-		if x := uint64(pbd.F_FloatRepeated[i]); x != i {
-			t.Error("pbd.F_FloatRepeated bad", x, i)
-		}
-		if x := pbd.F_Uint64Repeated[i]; x != i {
-			t.Error("pbd.F_Uint64Repeated bad", x, i)
-		}
-		if x := uint64(pbd.F_Uint32Repeated[i]); x != i {
-			t.Error("pbd.F_Uint32Repeated bad", x, i)
-		}
-		if x := pbd.F_Fixed64Repeated[i]; x != i {
-			t.Error("pbd.F_Fixed64Repeated bad", x, i)
-		}
-		if x := uint64(pbd.F_Fixed32Repeated[i]); x != i {
-			t.Error("pbd.F_Fixed32Repeated bad", x, i)
-		}
-		if x := uint64(pbd.F_Int64Repeated[i]); x != i {
-			t.Error("pbd.F_Int64Repeated bad", x, i)
-		}
-		if x := uint64(pbd.F_Int32Repeated[i]); x != i {
-			t.Error("pbd.F_Int32Repeated bad", x, i)
-		}
-		if x := pbd.F_BoolRepeated[i]; x != (i%2 == 0) {
-			t.Error("pbd.F_BoolRepeated bad", x, i)
-		}
-		if pbd.RepeatedField[i] == nil {
+		case uint64(pbd.F_DoubleRepeated[i]) != i:
+			t.Error("pbd.F_DoubleRepeated bad", uint64(pbd.F_DoubleRepeated[i]), i)
+		case uint64(pbd.F_FloatRepeated[i]) != i:
+			t.Error("pbd.F_FloatRepeated bad", uint64(pbd.F_FloatRepeated[i]), i)
+		case pbd.F_Uint64Repeated[i] != i:
+			t.Error("pbd.F_Uint64Repeated bad", pbd.F_Uint64Repeated[i], i)
+		case uint64(pbd.F_Uint32Repeated[i]) != i:
+			t.Error("pbd.F_Uint32Repeated bad", uint64(pbd.F_Uint32Repeated[i]), i)
+		case pbd.F_Fixed64Repeated[i] != i:
+			t.Error("pbd.F_Fixed64Repeated bad", pbd.F_Fixed64Repeated[i], i)
+		case uint64(pbd.F_Fixed32Repeated[i]) != i:
+			t.Error("pbd.F_Fixed32Repeated bad", uint64(pbd.F_Fixed32Repeated[i]), i)
+		case uint64(pbd.F_Int64Repeated[i]) != i:
+			t.Error("pbd.F_Int64Repeated bad", uint64(pbd.F_Int64Repeated[i]), i)
+		case uint64(pbd.F_Int32Repeated[i]) != i:
+			t.Error("pbd.F_Int32Repeated bad", uint64(pbd.F_Int32Repeated[i]), i)
+		case pbd.F_BoolRepeated[i] != (i%2 == 0):
+			t.Error("pbd.F_BoolRepeated bad", pbd.F_BoolRepeated[i], i)
+		case pbd.RepeatedField[i] == nil:
 			t.Error("pbd.RepeatedField bad")
 		}
 	}
 }
 
 func TestBadWireTypeUnknown(t *testing.T) {
-	var b []byte
-	fmt.Sscanf("0a01780d00000000080b101612036161611521000000202c220362626225370000002203636363214200000000000000584d5a036464645900000000000056405d63000000", "%x", &b)
+	b := protopack.Message{
+		protopack.Tag{1, protopack.BytesType}, protopack.Bytes("x"),
+		protopack.Tag{1, protopack.Fixed32Type}, protopack.Uint32(0),
+		protopack.Tag{1, protopack.VarintType}, protopack.Varint(11),
+		protopack.Tag{2, protopack.VarintType}, protopack.Uvarint(22),
+		protopack.Tag{2, protopack.BytesType}, protopack.String("aaa"),
+		protopack.Tag{2, protopack.Fixed32Type}, protopack.Uint32(33),
+		protopack.Tag{4, protopack.VarintType}, protopack.Uvarint(44),
+		protopack.Tag{4, protopack.BytesType}, protopack.String("bbb"),
+		protopack.Tag{4, protopack.Fixed32Type}, protopack.Uint32(55),
+		protopack.Tag{4, protopack.BytesType}, protopack.String("ccc"),
+		protopack.Tag{4, protopack.Fixed64Type}, protopack.Uint64(66),
+		protopack.Tag{11, protopack.VarintType}, protopack.Uvarint(77),
+		protopack.Tag{11, protopack.BytesType}, protopack.Bytes("ddd"),
+		protopack.Tag{11, protopack.Fixed64Type}, protopack.Float64(88),
+		protopack.Tag{11, protopack.Fixed32Type}, protopack.Uint32(99),
+	}.Marshal()
 
 	m := new(pb2.MyMessage)
 	if err := proto.Unmarshal(b, m); err != nil {
 		t.Errorf("unexpected Unmarshal error: %v", err)
 	}
 
-	var unknown []byte
-	fmt.Sscanf("0a01780d0000000010161521000000202c2537000000214200000000000000584d5a036464645d63000000", "%x", &unknown)
+	unknown := protopack.Message{
+		protopack.Tag{1, protopack.BytesType}, protopack.Bytes("x"),
+		protopack.Tag{1, protopack.Fixed32Type}, protopack.Uint32(0),
+		protopack.Tag{2, protopack.VarintType}, protopack.Uvarint(22),
+		protopack.Tag{2, protopack.Fixed32Type}, protopack.Uint32(33),
+		protopack.Tag{4, protopack.VarintType}, protopack.Uvarint(44),
+		protopack.Tag{4, protopack.Fixed32Type}, protopack.Uint32(55),
+		protopack.Tag{4, protopack.Fixed64Type}, protopack.Uint64(66),
+		protopack.Tag{11, protopack.VarintType}, protopack.Uvarint(77),
+		protopack.Tag{11, protopack.BytesType}, protopack.Bytes("ddd"),
+		protopack.Tag{11, protopack.Fixed32Type}, protopack.Uint32(99),
+	}.Marshal()
 	if !bytes.Equal(m.XXX_unrecognized, unknown) {
 		t.Errorf("unknown bytes mismatch:\ngot  %x\nwant %x", m.XXX_unrecognized, unknown)
 	}
@@ -1206,7 +1192,7 @@ func TestProto1RepeatedGroup(t *testing.T) {
 		},
 	}
 
-	o := old()
+	o := new(proto.Buffer)
 	err := o.Marshal(pb)
 	if err == nil {
 		t.Fatalf("expected error when marshaling repeted nil MessageList.Message")
@@ -1222,7 +1208,7 @@ func TestProto1RepeatedGroup(t *testing.T) {
 func TestEnum(t *testing.T) {
 	pb := new(pb2.GoEnum)
 	pb.Foo = pb2.FOO_FOO1.Enum()
-	o := old()
+	o := new(proto.Buffer)
 	if err := o.Marshal(pb); err != nil {
 		t.Fatal("error encoding enum:", err)
 	}
@@ -1338,11 +1324,11 @@ func TestNilMarshaler(t *testing.T) {
 
 func TestAllSetDefaults(t *testing.T) {
 	// Exercise SetDefaults with all scalar field types.
-	m := &pb2.Defaults{
+	got := &pb2.Defaults{
 		// NaN != NaN, so override that here.
 		F_Nan: proto.Float32(1.7),
 	}
-	expected := &pb2.Defaults{
+	want := &pb2.Defaults{
 		F_Bool:    proto.Bool(true),
 		F_Int32:   proto.Int32(32),
 		F_Int64:   proto.Int64(64),
@@ -1362,9 +1348,9 @@ func TestAllSetDefaults(t *testing.T) {
 		F_Nan:     proto.Float32(1.7),
 		StrZero:   proto.String(""),
 	}
-	proto.SetDefaults(m)
-	if !proto.Equal(m, expected) {
-		t.Errorf("SetDefaults failed\n got %v\nwant %v", m, expected)
+	proto.SetDefaults(got)
+	if !proto.Equal(got, want) {
+		t.Errorf("SetDefaults failed\n got %v\nwant %v", got, want)
 	}
 }
 
@@ -1380,48 +1366,48 @@ func TestSetDefaultsWithSetField(t *testing.T) {
 }
 
 func TestSetDefaultsWithSubMessage(t *testing.T) {
-	m := &pb2.OtherMessage{
+	got := &pb2.OtherMessage{
 		Key: proto.Int64(123),
 		Inner: &pb2.InnerMessage{
 			Host: proto.String("gopher"),
 		},
 	}
-	expected := &pb2.OtherMessage{
+	want := &pb2.OtherMessage{
 		Key: proto.Int64(123),
 		Inner: &pb2.InnerMessage{
 			Host: proto.String("gopher"),
 			Port: proto.Int32(4000),
 		},
 	}
-	proto.SetDefaults(m)
-	if !proto.Equal(m, expected) {
-		t.Errorf("\n got %v\nwant %v", m, expected)
+	proto.SetDefaults(got)
+	if !proto.Equal(got, want) {
+		t.Errorf("\n got %v\nwant %v", got, want)
 	}
 }
 
 func TestSetDefaultsWithRepeatedSubMessage(t *testing.T) {
-	m := &pb2.MyMessage{
+	got := &pb2.MyMessage{
 		RepInner: []*pb2.InnerMessage{{}},
 	}
-	expected := &pb2.MyMessage{
+	want := &pb2.MyMessage{
 		RepInner: []*pb2.InnerMessage{{
 			Port: proto.Int32(4000),
 		}},
 	}
-	proto.SetDefaults(m)
-	if !proto.Equal(m, expected) {
-		t.Errorf("\n got %v\nwant %v", m, expected)
+	proto.SetDefaults(got)
+	if !proto.Equal(got, want) {
+		t.Errorf("\n got %v\nwant %v", got, want)
 	}
 }
 
 func TestSetDefaultWithRepeatedNonMessage(t *testing.T) {
-	m := &pb2.MyMessage{
+	got := &pb2.MyMessage{
 		Pet: []string{"turtle", "wombat"},
 	}
-	expected := proto.Clone(m)
-	proto.SetDefaults(m)
-	if !proto.Equal(m, expected) {
-		t.Errorf("\n got %v\nwant %v", m, expected)
+	want := proto.Clone(got)
+	proto.SetDefaults(got)
+	if !proto.Equal(got, want) {
+		t.Errorf("\n got %v\nwant %v", got, want)
 	}
 }
 
@@ -1451,15 +1437,15 @@ func TestJSON(t *testing.T) {
 		},
 		Bikeshed: pb2.MyMessage_GREEN.Enum(),
 	}
-	const expected = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"},"bikeshed":1}`
+	const want = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"},"bikeshed":1}`
 
 	b, err := json.Marshal(m)
 	if err != nil {
 		t.Fatalf("json.Marshal failed: %v", err)
 	}
 	s := string(b)
-	if s != expected {
-		t.Errorf("got  %s\nwant %s", s, expected)
+	if s != want {
+		t.Errorf("got  %s\nwant %s", s, want)
 	}
 
 	received := new(pb2.MyMessage)
@@ -1470,7 +1456,7 @@ func TestJSON(t *testing.T) {
 		t.Fatalf("got %s, want %s", received, m)
 	}
 
-	// Test unmarshalling of JSON with symbolic enum name.
+	// Test unmarshaling of JSON with symbolic enum name.
 	const old = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"},"bikeshed":"GREEN"}`
 	received.Reset()
 	if err := json.Unmarshal([]byte(old), received); err != nil {
@@ -1491,19 +1477,29 @@ func TestBadWireType(t *testing.T) {
 
 func TestBytesWithInvalidLength(t *testing.T) {
 	// If a byte sequence has an invalid (negative) length, Unmarshal should not panic.
-	b := []byte{2<<3 | proto.WireBytes, 0xff, 0xff, 0xff, 0xff, 0xff, 0}
+	b := protopack.Message{
+		protopack.Tag{2, protopack.BytesType}, protopack.Denormalized{+1, protopack.Uvarint(34359738367)},
+	}.Marshal()
 	proto.Unmarshal(b, new(pb2.MyMessage))
 }
 
 func TestLengthOverflow(t *testing.T) {
 	// Overflowing a length should not panic.
-	b := []byte{2<<3 | proto.WireBytes, 1, 1, 3<<3 | proto.WireBytes, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f, 0x01}
+	b := protopack.Message{
+		protopack.Tag{2, protopack.BytesType}, protopack.String("\x01"),
+		protopack.Tag{3, protopack.BytesType}, protopack.Uvarint(9223372036854775807),
+		protopack.Raw("\x01"),
+	}.Marshal()
 	proto.Unmarshal(b, new(pb2.MyMessage))
 }
 
 func TestVarintOverflow(t *testing.T) {
 	// Overflowing a 64-bit length should not be allowed.
-	b := []byte{1<<3 | proto.WireVarint, 0x01, 3<<3 | proto.WireBytes, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01}
+	b := protopack.Message{
+		protopack.Tag{1, protopack.VarintType}, protopack.Varint(1),
+		protopack.Tag{3, protopack.BytesType},
+		protopack.Raw("\x80\x80\x80\x80\x80\x80\x80\x80\x80\x80\x01"),
+	}.Marshal()
 	if err := proto.Unmarshal(b, new(pb2.MyMessage)); err == nil {
 		t.Fatalf("Overflowed uint64 length without error")
 	}
@@ -1511,7 +1507,13 @@ func TestVarintOverflow(t *testing.T) {
 
 func TestBytesWithInvalidLengthInGroup(t *testing.T) {
 	// Overflowing a 64-bit length should not be allowed.
-	b := []byte{0xbb, 0x30, 0xb2, 0x30, 0xb0, 0xb2, 0x83, 0xf1, 0xb0, 0xb2, 0xef, 0xbf, 0xbd, 0x01}
+	b := protopack.Message{
+		protopack.Tag{775, protopack.StartGroupType},
+		protopack.Message{
+			protopack.Tag{774, protopack.BytesType}, protopack.Uvarint(13654841034505509168),
+			protopack.Raw(""),
+		},
+	}.Marshal()
 	if err := proto.Unmarshal(b, new(pb2.MyMessage)); err == nil {
 		t.Fatalf("Overflowed uint64 length without error")
 	}
@@ -1720,54 +1722,54 @@ func TestRequiredNotSetError(t *testing.T) {
 	pb.F_Int32Required = nil
 	pb.F_Int64Required = nil
 
-	expected := "0807" + // field 1, encoding 0, value 7
-		"2206" + "120474797065" + // field 4, encoding 2 (GoTestField)
-		"5001" + // field 10, encoding 0, value 1
-		"6d20000000" + // field 13, encoding 5, value 0x20
-		"714000000000000000" + // field 14, encoding 1, value 0x40
-		"78a019" + // field 15, encoding 0, value 0xca0 = 3232
-		"8001c032" + // field 16, encoding 0, value 0x1940 = 6464
-		"8d0100004a45" + // field 17, encoding 5, value 3232.0
-		"9101000000000040b940" + // field 18, encoding 1, value 6464.0
-		"9a0106" + "737472696e67" + // field 19, encoding 2, string "string"
-		"b304" + // field 70, encoding 3, start group
-		"ba0408" + "7265717569726564" + // field 71, encoding 2, string "required"
-		"b404" + // field 70, encoding 4, end group
-		"aa0605" + "6279746573" + // field 101, encoding 2, string "bytes"
-		"b0063f" + // field 102, encoding 0, 0x3f zigzag32
-		"b8067f" + // field 103, encoding 0, 0x7f zigzag64
-		"c506e0ffffff" + // field 104, encoding 5, -32 fixed32
-		"c906c0ffffffffffffff" // field 105, encoding 1, -64 fixed64
+	want := protopack.Message{
+		protopack.Tag{1, protopack.VarintType}, protopack.Uvarint(7),
+		protopack.Tag{4, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+			protopack.Tag{2, protopack.BytesType}, protopack.String("type"),
+		}),
+		protopack.Tag{10, protopack.VarintType}, protopack.Bool(true),
+		protopack.Tag{13, protopack.Fixed32Type}, protopack.Uint32(32),
+		protopack.Tag{14, protopack.Fixed64Type}, protopack.Uint64(64),
+		protopack.Tag{15, protopack.VarintType}, protopack.Uvarint(3232),
+		protopack.Tag{16, protopack.VarintType}, protopack.Uvarint(6464),
+		protopack.Tag{17, protopack.Fixed32Type}, protopack.Float32(3232),
+		protopack.Tag{18, protopack.Fixed64Type}, protopack.Float64(6464),
+		protopack.Tag{19, protopack.BytesType}, protopack.String("string"),
+		protopack.Tag{70, protopack.StartGroupType},
+		protopack.Message{
+			protopack.Tag{71, protopack.BytesType}, protopack.String("required"),
+		},
+		protopack.Tag{70, protopack.EndGroupType},
+		protopack.Tag{101, protopack.BytesType}, protopack.Bytes("bytes"),
+		protopack.Tag{102, protopack.VarintType}, protopack.Svarint(-32),
+		protopack.Tag{103, protopack.VarintType}, protopack.Svarint(-64),
+		protopack.Tag{104, protopack.Fixed32Type}, protopack.Int32(-32),
+		protopack.Tag{105, protopack.Fixed64Type}, protopack.Int64(-64),
+	}.Marshal()
 
-	o := old()
-	bytes, err := proto.Marshal(pb)
+	got, err := proto.Marshal(pb)
 	if !isRequiredNotSetError(err) {
-		fmt.Printf("marshal-1 err = %v, want *RequiredNotSetError", err)
-		o.DebugPrint("", bytes)
-		t.Fatalf("expected = %s", expected)
+		t.Logf("marshal-1 err = %v, want *RequiredNotSetError", err)
+		t.Fatalf("got %q\nwant  %q", got, want)
 	}
-	if !equal(bytes, expected, t) {
-		o.DebugPrint("neq 1", bytes)
-		t.Fatalf("expected = %s", expected)
+	if !bytes.Equal(got, want) {
+		t.Fatalf("got %q\nwant  %q", got, want)
 	}
 
 	// Now test Unmarshal by recreating the original buffer.
 	pbd := new(pb2.GoTest)
-	err = proto.Unmarshal(bytes, pbd)
+	err = proto.Unmarshal(got, pbd)
 	if !isRequiredNotSetError(err) {
-		t.Fatalf("unmarshal err = %v, want *RequiredNotSetError", err)
-		o.DebugPrint("", bytes)
-		t.Fatalf("string = %s", expected)
+		t.Errorf("unmarshal err = %v, want *RequiredNotSetError", err)
+		t.Fatalf("got %q\nwant  %q", got, want)
 	}
-	bytes, err = proto.Marshal(pbd)
+	got, err = proto.Marshal(pbd)
 	if !isRequiredNotSetError(err) {
 		t.Errorf("marshal-2 err = %v, want *RequiredNotSetError", err)
-		o.DebugPrint("", bytes)
-		t.Fatalf("string = %s", expected)
+		t.Fatalf("got %q\nwant  %q", got, want)
 	}
-	if !equal(bytes, expected, t) {
-		o.DebugPrint("neq 2", bytes)
-		t.Fatalf("string = %s", expected)
+	if !bytes.Equal(got, want) {
+		t.Fatalf("got %q\nwant  %q", got, want)
 	}
 }
 
@@ -1970,11 +1972,11 @@ func TestDecodeMapFieldMissingKey(t *testing.T) {
 }
 
 func TestDecodeMapFieldMissingValue(t *testing.T) {
-	b := []byte{
-		0x0A, 0x02, // message, tag 1 (name_mapping), of length 2 bytes
-		0x08, 0x01, // varint key, value 1
-		// no value
-	}
+	b := protopack.Message{
+		protopack.Tag{1, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+			protopack.Tag{1, protopack.VarintType}, protopack.Uvarint(1),
+		}),
+	}.Marshal()
 	got := &pb2.MessageWithMap{}
 	err := proto.Unmarshal(b, got)
 	if err != nil {
@@ -2045,10 +2047,9 @@ func TestOneofNilBytes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Marshal failed: %v", err)
 	}
-	want := []byte{
-		7<<3 | 2, // tag 7, wire type 2
-		0,        // size
-	}
+	want := protopack.Message{
+		protopack.Tag{7, protopack.BytesType}, protopack.Bytes(""),
+	}.Marshal()
 	if !bytes.Equal(b, want) {
 		t.Errorf("Wrong result of Marshal: got %x, want %x", b, want)
 	}
@@ -2056,12 +2057,9 @@ func TestOneofNilBytes(t *testing.T) {
 
 func TestInefficientPackedBool(t *testing.T) {
 	// https://github.com/golang/protobuf/issues/76
-	inp := []byte{
-		0x12, 0x02, // 0x12 = 2<<3|2; 2 bytes
-		// Usually a bool should take a single byte,
-		// but it is permitted to be any varint.
-		0xb9, 0x30,
-	}
+	inp := protopack.Message{
+		protopack.Tag{2, protopack.BytesType}, protopack.Bytes("\xb90"),
+	}.Marshal()
 	if err := proto.Unmarshal(inp, new(pb2.MoreRepeated)); err != nil {
 		t.Error(err)
 	}
@@ -2212,8 +2210,6 @@ func TestUnknownV2(t *testing.T) {
 	}
 }
 
-// Benchmarks
-
 func testMsg() *pb2.GoTest {
 	pb := initGoTest(true)
 	const N = 1000 // Internally the library starts much smaller.
@@ -2259,102 +2255,6 @@ func benchmarkSize(b *testing.B, pb proto.Message) {
 		proto.Size(pb)
 		return nil, nil
 	})
-}
-
-func newOf(pb proto.Message) proto.Message {
-	in := reflect.ValueOf(pb)
-	if in.IsNil() {
-		return pb
-	}
-	return reflect.New(in.Type().Elem()).Interface().(proto.Message)
-}
-
-func benchmarkUnmarshal(b *testing.B, pb proto.Message, unmarshal func([]byte, proto.Message) error) {
-	d, _ := proto.Marshal(pb)
-	b.SetBytes(int64(len(d)))
-	pbd := newOf(pb)
-
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		unmarshal(d, pbd)
-	}
-}
-
-func benchmarkBufferUnmarshal(b *testing.B, pb proto.Message) {
-	p := proto.NewBuffer(nil)
-	benchmarkUnmarshal(b, pb, func(d []byte, pb0 proto.Message) error {
-		p.SetBuf(d)
-		return p.Unmarshal(pb0)
-	})
-}
-
-// Benchmark{Marshal,BufferMarshal,Size,Unmarshal,BufferUnmarshal}{,Bytes}
-
-func BenchmarkMarshal(b *testing.B) {
-	benchmarkMarshal(b, testMsg(), proto.Marshal)
-}
-
-func BenchmarkBufferMarshal(b *testing.B) {
-	benchmarkBufferMarshal(b, testMsg())
-}
-
-func BenchmarkSize(b *testing.B) {
-	benchmarkSize(b, testMsg())
-}
-
-func BenchmarkUnmarshal(b *testing.B) {
-	benchmarkUnmarshal(b, testMsg(), proto.Unmarshal)
-}
-
-func BenchmarkBufferUnmarshal(b *testing.B) {
-	benchmarkBufferUnmarshal(b, testMsg())
-}
-
-func BenchmarkMarshalBytes(b *testing.B) {
-	benchmarkMarshal(b, bytesMsg(), proto.Marshal)
-}
-
-func BenchmarkBufferMarshalBytes(b *testing.B) {
-	benchmarkBufferMarshal(b, bytesMsg())
-}
-
-func BenchmarkSizeBytes(b *testing.B) {
-	benchmarkSize(b, bytesMsg())
-}
-
-func BenchmarkUnmarshalBytes(b *testing.B) {
-	benchmarkUnmarshal(b, bytesMsg(), proto.Unmarshal)
-}
-
-func BenchmarkBufferUnmarshalBytes(b *testing.B) {
-	benchmarkBufferUnmarshal(b, bytesMsg())
-}
-
-func BenchmarkUnmarshalUnrecognizedFields(b *testing.B) {
-	b.StopTimer()
-	pb := initGoTestField()
-	skip := &pb2.GoSkipTest{
-		SkipInt32:   proto.Int32(32),
-		SkipFixed32: proto.Uint32(3232),
-		SkipFixed64: proto.Uint64(6464),
-		SkipString:  proto.String("skipper"),
-		Skipgroup: &pb2.GoSkipTest_SkipGroup{
-			GroupInt32:  proto.Int32(75),
-			GroupString: proto.String("wxyz"),
-		},
-	}
-
-	pbd := new(pb2.GoTestField)
-	p := proto.NewBuffer(nil)
-	p.Marshal(pb)
-	p.Marshal(skip)
-	p2 := proto.NewBuffer(nil)
-
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
-		p2.SetBuf(p.Bytes())
-		p2.Unmarshal(pbd)
-	}
 }
 
 func TestProto3ZeroValues(t *testing.T) {
@@ -2468,8 +2368,36 @@ func TestUnknownFieldPreservation(t *testing.T) {
 }
 
 func TestMap(t *testing.T) {
-	var b []byte
-	fmt.Sscanf("a2010c0a044b657931120456616c31a201130a044b657932120556616c3261120456616c32a201240a044b6579330d05000000120556616c33621a0556616c3361120456616c331505000000a20100a201260a044b657934130a07536f6d6555524c1209536f6d655469746c651a08536e69707065743114", "%x", &b)
+	b := protopack.Message{
+		protopack.Tag{20, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+			protopack.Tag{1, protopack.BytesType}, protopack.String("Key1"),
+			protopack.Tag{2, protopack.BytesType}, protopack.String("Val1"),
+		}),
+		protopack.Tag{20, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+			protopack.Tag{1, protopack.BytesType}, protopack.String("Key2"),
+			protopack.Tag{2, protopack.BytesType}, protopack.String("Val2a"),
+			protopack.Tag{2, protopack.BytesType}, protopack.String("Val2"),
+		}),
+		protopack.Tag{20, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+			protopack.Tag{1, protopack.BytesType}, protopack.String("Key3"),
+			protopack.Tag{1, protopack.Fixed32Type}, protopack.Uint32(5),
+			protopack.Tag{2, protopack.BytesType}, protopack.String("Val3b"),
+			protopack.Tag{3, protopack.BytesType}, protopack.Bytes("Val3a"),
+			protopack.Tag{2, protopack.BytesType}, protopack.String("Val3"),
+			protopack.Tag{2, protopack.Fixed32Type}, protopack.Uint32(5),
+		}),
+		protopack.Tag{20, protopack.BytesType}, protopack.LengthPrefix{},
+		protopack.Tag{20, protopack.BytesType}, protopack.LengthPrefix(protopack.Message{
+			protopack.Tag{1, protopack.BytesType}, protopack.String("Key4"),
+			protopack.Tag{2, protopack.StartGroupType},
+			protopack.Message{
+				protopack.Tag{1, protopack.BytesType}, protopack.Bytes("SomeURL"),
+				protopack.Tag{2, protopack.BytesType}, protopack.Bytes("SomeTitle"),
+				protopack.Tag{3, protopack.BytesType}, protopack.Bytes("Snippet1"),
+			},
+			protopack.Tag{2, protopack.EndGroupType},
+		}),
+	}.Marshal()
 
 	var m pb3.Message
 	if err := proto.Unmarshal(b, &m); err != nil {
@@ -2504,25 +2432,162 @@ func marshalled() []byte {
 	return b
 }
 
-func BenchmarkConcurrentMapUnmarshal(b *testing.B) {
-	in := marshalled()
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			var out pb3.IntMaps
-			if err := proto.Unmarshal(in, &out); err != nil {
-				b.Errorf("Can't unmarshal ppb.IntMaps: %v", err)
-			}
-		}
-	})
+var messageWithExtension1 = &pb2.MyMessage{Count: proto.Int32(7)}
+
+// messageWithExtension2 is in equal_test.go.
+var messageWithExtension3 = &pb2.MyMessage{Count: proto.Int32(8)}
+
+func init() {
+	if err := proto.SetExtension(messageWithExtension1, pb2.E_Ext_More, &pb2.Ext{Data: proto.String("Abbott")}); err != nil {
+		log.Panicf("proto.SetExtension: %v", err)
+	}
+	if err := proto.SetExtension(messageWithExtension3, pb2.E_Ext_More, &pb2.Ext{Data: proto.String("Costello")}); err != nil {
+		log.Panicf("proto.SetExtension: %v", err)
+	}
+
+	// Force messageWithExtension3 to have the extension encoded.
+	proto.Marshal(messageWithExtension3)
+
 }
 
-func BenchmarkSequentialMapUnmarshal(b *testing.B) {
-	in := marshalled()
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		var out pb3.IntMaps
-		if err := proto.Unmarshal(in, &out); err != nil {
-			b.Errorf("Can't unmarshal ppb.IntMaps: %v", err)
+// non-pointer custom message
+type nonptrMessage struct{}
+
+func (m nonptrMessage) ProtoMessage()  {}
+func (m nonptrMessage) Reset()         {}
+func (m nonptrMessage) String() string { return "" }
+
+func (m nonptrMessage) Marshal() ([]byte, error) {
+	return []byte{42}, nil
+}
+
+var SizeTests = []struct {
+	desc string
+	pb   proto.Message
+}{
+	{"empty", &pb2.OtherMessage{}},
+	// Basic types.
+	{"bool", &pb2.Defaults{F_Bool: proto.Bool(true)}},
+	{"int32", &pb2.Defaults{F_Int32: proto.Int32(12)}},
+	{"negative int32", &pb2.Defaults{F_Int32: proto.Int32(-1)}},
+	{"small int64", &pb2.Defaults{F_Int64: proto.Int64(1)}},
+	{"big int64", &pb2.Defaults{F_Int64: proto.Int64(1 << 20)}},
+	{"negative int64", &pb2.Defaults{F_Int64: proto.Int64(-1)}},
+	{"fixed32", &pb2.Defaults{F_Fixed32: proto.Uint32(71)}},
+	{"fixed64", &pb2.Defaults{F_Fixed64: proto.Uint64(72)}},
+	{"uint32", &pb2.Defaults{F_Uint32: proto.Uint32(123)}},
+	{"uint64", &pb2.Defaults{F_Uint64: proto.Uint64(124)}},
+	{"float", &pb2.Defaults{F_Float: proto.Float32(12.6)}},
+	{"double", &pb2.Defaults{F_Double: proto.Float64(13.9)}},
+	{"string", &pb2.Defaults{F_String: proto.String("niles")}},
+	{"bytes", &pb2.Defaults{F_Bytes: []byte("wowsa")}},
+	{"bytes, empty", &pb2.Defaults{F_Bytes: []byte{}}},
+	{"sint32", &pb2.Defaults{F_Sint32: proto.Int32(65)}},
+	{"sint64", &pb2.Defaults{F_Sint64: proto.Int64(67)}},
+	{"enum", &pb2.Defaults{F_Enum: pb2.Defaults_BLUE.Enum()}},
+	// Repeated.
+	{"empty repeated bool", &pb2.MoreRepeated{Bools: []bool{}}},
+	{"repeated bool", &pb2.MoreRepeated{Bools: []bool{false, true, true, false}}},
+	{"packed repeated bool", &pb2.MoreRepeated{BoolsPacked: []bool{false, true, true, false, true, true, true}}},
+	{"repeated int32", &pb2.MoreRepeated{Ints: []int32{1, 12203, 1729, -1}}},
+	{"repeated int32 packed", &pb2.MoreRepeated{IntsPacked: []int32{1, 12203, 1729}}},
+	{"repeated int64 packed", &pb2.MoreRepeated{Int64SPacked: []int64{
+		// Need enough large numbers to verify that the header is counting the number of bytes
+		// for the field, not the number of elements.
+		1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62,
+		1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62, 1 << 62,
+	}}},
+	{"repeated string", &pb2.MoreRepeated{Strings: []string{"r", "ken", "gri"}}},
+	{"repeated fixed", &pb2.MoreRepeated{Fixeds: []uint32{1, 2, 3, 4}}},
+	// Nested.
+	{"nested", &pb2.OldMessage{Nested: &pb2.OldMessage_Nested{Name: proto.String("whatever")}}},
+	{"group", &pb2.GroupOld{G: &pb2.GroupOld_G{X: proto.Int32(12345)}}},
+	// Other things.
+	{"unrecognized", &pb2.MoreRepeated{XXX_unrecognized: []byte{13<<3 | 0, 4}}},
+	{"extension (unencoded)", messageWithExtension1},
+	{"extension (encoded)", messageWithExtension3},
+	// proto3 message
+	{"proto3 empty", &pb3.Message{}},
+	{"proto3 bool", &pb3.Message{TrueScotsman: true}},
+	{"proto3 int64", &pb3.Message{ResultCount: 1}},
+	{"proto3 uint32", &pb3.Message{HeightInCm: 123}},
+	{"proto3 float", &pb3.Message{Score: 12.6}},
+	{"proto3 string", &pb3.Message{Name: "Snezana"}},
+	{"proto3 bytes", &pb3.Message{Data: []byte("wowsa")}},
+	{"proto3 bytes, empty", &pb3.Message{Data: []byte{}}},
+	{"proto3 enum", &pb3.Message{Hilarity: pb3.Message_PUNS}},
+	{"proto3 map field with empty bytes", &pb3.MessageWithMap{ByteMapping: map[bool][]byte{false: []byte{}}}},
+
+	{"map field", &pb2.MessageWithMap{NameMapping: map[int32]string{1: "Rob", 7: "Andrew"}}},
+	{"map field with message", &pb2.MessageWithMap{MsgMapping: map[int64]*pb2.FloatingPoint{0x7001: &pb2.FloatingPoint{F: proto.Float64(2.0)}}}},
+	{"map field with bytes", &pb2.MessageWithMap{ByteMapping: map[bool][]byte{true: []byte("this time for sure")}}},
+	{"map field with empty bytes", &pb2.MessageWithMap{ByteMapping: map[bool][]byte{true: []byte{}}}},
+
+	{"map field with big entry", &pb2.MessageWithMap{NameMapping: map[int32]string{8: strings.Repeat("x", 125)}}},
+	{"map field with big key and val", &pb2.MessageWithMap{StrToStr: map[string]string{strings.Repeat("x", 70): strings.Repeat("y", 70)}}},
+	{"map field with big numeric key", &pb2.MessageWithMap{NameMapping: map[int32]string{0xf00d: "om nom nom"}}},
+
+	{"oneof not set", &pb2.Oneof{}},
+	{"oneof bool", &pb2.Oneof{Union: &pb2.Oneof_F_Bool{true}}},
+	{"oneof zero int32", &pb2.Oneof{Union: &pb2.Oneof_F_Int32{0}}},
+	{"oneof big int32", &pb2.Oneof{Union: &pb2.Oneof_F_Int32{1 << 20}}},
+	{"oneof int64", &pb2.Oneof{Union: &pb2.Oneof_F_Int64{42}}},
+	{"oneof fixed32", &pb2.Oneof{Union: &pb2.Oneof_F_Fixed32{43}}},
+	{"oneof fixed64", &pb2.Oneof{Union: &pb2.Oneof_F_Fixed64{44}}},
+	{"oneof uint32", &pb2.Oneof{Union: &pb2.Oneof_F_Uint32{45}}},
+	{"oneof uint64", &pb2.Oneof{Union: &pb2.Oneof_F_Uint64{46}}},
+	{"oneof float", &pb2.Oneof{Union: &pb2.Oneof_F_Float{47.1}}},
+	{"oneof double", &pb2.Oneof{Union: &pb2.Oneof_F_Double{48.9}}},
+	{"oneof string", &pb2.Oneof{Union: &pb2.Oneof_F_String{"Rhythmic Fman"}}},
+	{"oneof bytes", &pb2.Oneof{Union: &pb2.Oneof_F_Bytes{[]byte("let go")}}},
+	{"oneof sint32", &pb2.Oneof{Union: &pb2.Oneof_F_Sint32{50}}},
+	{"oneof sint64", &pb2.Oneof{Union: &pb2.Oneof_F_Sint64{51}}},
+	{"oneof enum", &pb2.Oneof{Union: &pb2.Oneof_F_Enum{pb2.MyMessage_BLUE}}},
+	{"message for oneof", &pb2.GoTestField{Label: proto.String("k"), Type: proto.String("v")}},
+	{"oneof message", &pb2.Oneof{Union: &pb2.Oneof_F_Message{&pb2.GoTestField{Label: proto.String("k"), Type: proto.String("v")}}}},
+	{"oneof group", &pb2.Oneof{Union: &pb2.Oneof_FGroup{&pb2.Oneof_F_Group{X: proto.Int32(52)}}}},
+	{"oneof largest tag", &pb2.Oneof{Union: &pb2.Oneof_F_Largest_Tag{1}}},
+	{"multiple oneofs", &pb2.Oneof{Union: &pb2.Oneof_F_Int32{1}, Tormato: &pb2.Oneof_Value{2}}},
+
+	{"non-pointer message", nonptrMessage{}},
+}
+
+func TestSize(t *testing.T) {
+	for _, tc := range SizeTests {
+		t.Run(tc.desc, func(t *testing.T) {
+			size := proto.Size(tc.pb)
+			b, err := proto.Marshal(tc.pb)
+			if err != nil {
+				t.Errorf("%v: Marshal failed: %v", tc.desc, err)
+				return
+			}
+			if size != len(b) {
+				t.Errorf("%v: Size(%v) = %d, want %d", tc.desc, tc.pb, size, len(b))
+				t.Logf("%v: bytes: %#v", tc.desc, b)
+			}
+		})
+	}
+}
+
+func TestVarintSize(t *testing.T) {
+	// Check the edge cases carefully.
+	testCases := []struct {
+		n    uint64
+		size int
+	}{
+		{0, 1},
+		{1, 1},
+		{127, 1},
+		{128, 2},
+		{16383, 2},
+		{16384, 3},
+		{math.MaxInt64, 9},
+		{math.MaxInt64 + 1, 10},
+	}
+	for _, tc := range testCases {
+		size := proto.SizeVarint(tc.n)
+		if size != tc.size {
+			t.Errorf("sizeVarint(%d) = %d, want %d", tc.n, size, tc.size)
 		}
 	}
 }

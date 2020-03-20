@@ -8,12 +8,15 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/testing/protopack"
 
 	pb2 "github.com/golang/protobuf/internal/testprotos/proto2_proto"
 	pb3 "github.com/golang/protobuf/internal/testprotos/proto3_proto"
 )
 
-const rawFields = "\x2d\xc3\xd2\xe1\xf0"
+var rawFields = protopack.Message{
+	protopack.Tag{5, protopack.Fixed32Type}, protopack.Uint32(4041331395),
+}.Marshal()
 
 func TestDiscardUnknown(t *testing.T) {
 	tests := []struct {

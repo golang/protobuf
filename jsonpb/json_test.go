@@ -550,10 +550,10 @@ func TestMarshalJSONPBMarshaler(t *testing.T) {
 	msg := dynamicMessage{RawJson: rawJson}
 	str, err := new(Marshaler).MarshalToString(&msg)
 	if err != nil {
-		t.Errorf("an unexpected error occurred when marshalling JSONPBMarshaler: %v", err)
+		t.Errorf("an unexpected error while marshaling JSONPBMarshaler: %v", err)
 	}
 	if str != rawJson {
-		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, rawJson)
+		t.Errorf("marshaling JSON produced incorrect output: got %s, wanted %s", str, rawJson)
 	}
 }
 
@@ -561,17 +561,17 @@ func TestMarshalAnyJSONPBMarshaler(t *testing.T) {
 	msg := dynamicMessage{RawJson: `{ "foo": "bar", "baz": [0, 1, 2, 3] }`}
 	a, err := ptypes.MarshalAny(&msg)
 	if err != nil {
-		t.Errorf("an unexpected error occurred when marshalling to Any: %v", err)
+		t.Errorf("an unexpected error while marshaling to Any: %v", err)
 	}
 	str, err := new(Marshaler).MarshalToString(a)
 	if err != nil {
-		t.Errorf("an unexpected error occurred when marshalling Any to JSON: %v", err)
+		t.Errorf("an unexpected error while marshaling Any to JSON: %v", err)
 	}
 	// after custom marshaling, it's round-tripped through JSON decoding/encoding already,
 	// so the keys are sorted, whitespace is compacted, and "@type" key has been added
-	expected := `{"@type":"type.googleapis.com/` + dynamicMessageName + `","baz":[0,1,2,3],"foo":"bar"}`
-	if str != expected {
-		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", str, expected)
+	want := `{"@type":"type.googleapis.com/` + dynamicMessageName + `","baz":[0,1,2,3],"foo":"bar"}`
+	if str != want {
+		t.Errorf("marshaling JSON produced incorrect output: got %s, wanted %s", str, want)
 	}
 }
 
@@ -580,11 +580,11 @@ func TestMarshalWithCustomValidation(t *testing.T) {
 
 	js, err := new(Marshaler).MarshalToString(&msg)
 	if err != nil {
-		t.Errorf("an unexpected error occurred when marshalling to json: %v", err)
+		t.Errorf("an unexpected error while marshaling to json: %v", err)
 	}
 	err = Unmarshal(strings.NewReader(js), &msg)
 	if err != nil {
-		t.Errorf("an unexpected error occurred when unmarshalling from json: %v", err)
+		t.Errorf("an unexpected error while unmarshaling from json: %v", err)
 	}
 }
 
@@ -668,7 +668,7 @@ func TestMarshalUnsetRequiredFields(t *testing.T) {
 
 	for _, tc := range tests {
 		if _, err := tc.marshaler.MarshalToString(tc.pb); err == nil {
-			t.Errorf("%s: expecting error in marshaling with unset required fields %+v", tc.desc, tc.pb)
+			t.Errorf("%s: expected error while marshaling with unset required fields %+v", tc.desc, tc.pb)
 		}
 	}
 }
@@ -822,12 +822,12 @@ var unmarshalingTests = []struct {
 
 func TestUnmarshaling(t *testing.T) {
 	for _, tt := range unmarshalingTests {
-		// Make a new instance of the type of our expected object.
+		// Make a new instance of the type of our wanted object.
 		p := reflect.New(reflect.TypeOf(tt.pb).Elem()).Interface().(proto.Message)
 
 		err := tt.unmarshaler.Unmarshal(strings.NewReader(tt.json), p)
 		if err != nil {
-			t.Errorf("unmarshalling %s: %v", tt.desc, err)
+			t.Errorf("unmarshaling %s: %v", tt.desc, err)
 			continue
 		}
 
@@ -872,7 +872,7 @@ func TestUnmarshalNext(t *testing.T) {
 
 	dec := json.NewDecoder(&b)
 	for _, tt := range tests {
-		// Make a new instance of the type of our expected object.
+		// Make a new instance of the type of our wanted object.
 		p := reflect.New(reflect.TypeOf(tt.pb).Elem()).Interface().(proto.Message)
 
 		err := tt.unmarshaler.UnmarshalNext(dec, p)
@@ -892,7 +892,7 @@ func TestUnmarshalNext(t *testing.T) {
 	p := &pb2.Simple{}
 	err := new(Unmarshaler).UnmarshalNext(dec, p)
 	if err != io.EOF {
-		t.Errorf("eof: got %v, expected io.EOF", err)
+		t.Errorf("eof: got %v, want io.EOF", err)
 	}
 }
 
@@ -918,7 +918,7 @@ func TestUnmarshalingBadInput(t *testing.T) {
 	for _, tt := range unmarshalingShouldError {
 		err := UnmarshalString(tt.in, tt.pb)
 		if err == nil {
-			t.Errorf("an error was expected when parsing %q instead of an object", tt.desc)
+			t.Errorf("expected error while parsing %q", tt.desc)
 		}
 	}
 }
@@ -943,7 +943,7 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	}
 	msgBytes, err := proto.Marshal(msg)
 	if err != nil {
-		t.Errorf("an unexpected error occurred when marshaling message: %v", err)
+		t.Errorf("an unexpected error while marshaling message: %v", err)
 	}
 	// make an Any with a type URL that won't resolve w/out custom resolver
 	any := &anypb.Any{
@@ -954,7 +954,7 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	m := Marshaler{AnyResolver: resolver}
 	js, err := m.MarshalToString(any)
 	if err != nil {
-		t.Errorf("an unexpected error occurred when marshaling any to JSON: %v", err)
+		t.Errorf("an unexpected error while marshaling any to JSON: %v", err)
 	}
 	if len(resolvedTypeUrls) != 1 {
 		t.Errorf("custom resolver was not invoked during marshaling")
@@ -963,14 +963,14 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	}
 	wanted := `{"@type":"https://foobar.com/some.random.MessageKind","oBool":true,"oInt64":"1020304","oString":"foobar","oBytes":"AQIDBA=="}`
 	if js != wanted {
-		t.Errorf("marshalling JSON produced incorrect output: got %s, wanted %s", js, wanted)
+		t.Errorf("marshaling JSON produced incorrect output: got %s, wanted %s", js, wanted)
 	}
 
 	u := Unmarshaler{AnyResolver: resolver}
 	roundTrip := &anypb.Any{}
 	err = u.Unmarshal(bytes.NewReader([]byte(js)), roundTrip)
 	if err != nil {
-		t.Errorf("an unexpected error occurred when unmarshaling any from JSON: %v", err)
+		t.Errorf("an unexpected error while unmarshaling any from JSON: %v", err)
 	}
 	if len(resolvedTypeUrls) != 2 {
 		t.Errorf("custom resolver was not invoked during marshaling")
@@ -978,7 +978,7 @@ func TestAnyWithCustomResolver(t *testing.T) {
 		t.Errorf("custom resolver was invoked with wrong URL: got %q, wanted %q", resolvedTypeUrls[1], "https://foobar.com/some.random.MessageKind")
 	}
 	if !proto.Equal(any, roundTrip) {
-		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", roundTrip, any)
+		t.Errorf("message contents not set correctly after unmarshaling JSON: got %s, wanted %s", roundTrip, any)
 	}
 }
 
@@ -986,10 +986,10 @@ func TestUnmarshalJSONPBUnmarshaler(t *testing.T) {
 	rawJson := `{ "foo": "bar", "baz": [0, 1, 2, 3] }`
 	var msg dynamicMessage
 	if err := Unmarshal(strings.NewReader(rawJson), &msg); err != nil {
-		t.Errorf("an unexpected error occurred when parsing into JSONPBUnmarshaler: %v", err)
+		t.Errorf("an unexpected error while parsing into JSONPBUnmarshaler: %v", err)
 	}
 	if msg.RawJson != rawJson {
-		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", msg.RawJson, rawJson)
+		t.Errorf("message contents not set correctly after unmarshaling JSON: got %s, wanted %s", msg.RawJson, rawJson)
 	}
 }
 
@@ -1010,20 +1010,20 @@ func TestUnmarshalAnyJSONPBUnmarshaler(t *testing.T) {
 	rawJson := `{ "@type": "blah.com/` + dynamicMessageName + `", "foo": "bar", "baz": [0, 1, 2, 3] }`
 	var got anypb.Any
 	if err := Unmarshal(strings.NewReader(rawJson), &got); err != nil {
-		t.Errorf("an unexpected error occurred when parsing into JSONPBUnmarshaler: %v", err)
+		t.Errorf("an unexpected error while parsing into JSONPBUnmarshaler: %v", err)
 	}
 
 	dm := &dynamicMessage{RawJson: `{"baz":[0,1,2,3],"foo":"bar"}`}
 	var want anypb.Any
 	if b, err := proto.Marshal(dm); err != nil {
-		t.Errorf("an unexpected error occurred when marshaling message: %v", err)
+		t.Errorf("an unexpected error while marshaling message: %v", err)
 	} else {
 		want.TypeUrl = "blah.com/" + dynamicMessageName
 		want.Value = b
 	}
 
 	if !proto.Equal(&got, &want) {
-		t.Errorf("message contents not set correctly after unmarshalling JSON: got %v, wanted %v", &got, &want)
+		t.Errorf("message contents not set correctly after unmarshaling JSON: got %v, wanted %v", &got, &want)
 	}
 }
 
@@ -1247,7 +1247,7 @@ func TestUnmarshalUnsetRequiredFields(t *testing.T) {
 
 	for _, tc := range tests {
 		if err := UnmarshalString(tc.json, tc.pb); err == nil {
-			t.Errorf("%s: expecting error in unmarshaling with unset required fields %s", tc.desc, tc.json)
+			t.Errorf("%s: expected error while unmarshaling with unset required fields %s", tc.desc, tc.json)
 		}
 	}
 }
