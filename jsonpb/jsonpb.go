@@ -513,6 +513,9 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 		comma := ""
 		for i := 0; i < v.Len(); i++ {
 			sliceVal := v.Index(i)
+			if sliceVal.Kind() == reflect.Ptr && sliceVal.IsNil() {
+				return errors.New(fmt.Sprintf("repeated field %s has nil element", prop.Name))
+			}
 			out.write(comma)
 			if m.Indent != "" {
 				out.write("\n")

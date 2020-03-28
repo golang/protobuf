@@ -547,7 +547,31 @@ func TestMarshalingNil(t *testing.T) {
 	var msg *pb.Simple
 	m := &Marshaler{}
 	if _, err := m.MarshalToString(msg); err == nil {
-		t.Errorf("mashaling nil returned no error")
+		t.Errorf("marshaling nil returned no error")
+	}
+}
+
+func TestMarshalingNilElements(t *testing.T) {
+	msg := &pb.Widget{
+		RSimple: []*pb.Simple{
+			{},
+			nil,
+			{},
+		},
+	}
+
+	// TODO: remove, just demonstrating proto.Marshal behavior.
+	if _, err := proto.Marshal(msg); err == nil {
+		t.Errorf("marshaling nil slice element returned no error")
+	} else {
+		t.Log(err.Error())
+	}
+
+	m := &Marshaler{}
+	if _, err := m.MarshalToString(msg); err == nil {
+		t.Errorf("marshaling nil slice element returned no error")
+	} else {
+		t.Log(err.Error())
 	}
 }
 
