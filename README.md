@@ -4,7 +4,7 @@
 [![GoDoc](https://godoc.org/github.com/golang/protobuf?status.svg)](https://godoc.org/github.com/golang/protobuf)
 
 Google's data interchange format.
-Copyright 2010 The Go Authors.
+Copyright 2020 The Go Authors.
 https://github.com/golang/protobuf
 
 This package and the code it generates requires at least Go 1.9.
@@ -215,10 +215,10 @@ To create and play with a Test object from the example package,
 To pass extra parameters to the plugin, use a comma-separated
 parameter list separated from the output directory by a colon:
 
-	protoc --go_out=plugins=grpc,import_path=mypackage:. *.proto
+	protoc --go_out=plugins=grpc:. *.proto
 
 - `paths=(import | source_relative)` - specifies how the paths of
-  generated files are structured. See the "Packages and imports paths"
+  generated files are structured. See the "[Packages and input paths](#packages-and-input-paths)"
   section above. The default is `import`.
 - `plugins=plugin1+plugin2` - specifies the list of sub-plugins to
   load. The only plugin in this repo is `grpc`.
