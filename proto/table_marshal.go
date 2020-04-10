@@ -2705,28 +2705,27 @@ func Size(pb Message) int {
 	return info.Size(pb)
 }
 
+func marshal(pb Message, deterministic bool) ([]byte, error) {
+	buf := NewBuffer(nil)
+	buf.SetDeterministic(deterministic)
+	err := buf.Marshal(pb)
+	return buf.Bytes(), err
+}
+
 // Marshal takes a protocol buffer message
 // and encodes it into the wire format, returning the data.
 // This is the main entry point.
 func Marshal(pb Message) ([]byte, error) {
-	if m, ok := pb.(newMarshaler); ok {
-		siz := m.XXX_Size()
-		b := make([]byte, 0, siz)
-		return m.XXX_Marshal(b, false)
-	}
-	if m, ok := pb.(Marshaler); ok {
-		// If the message can marshal itself, let it do it, for compatibility.
-		// NOTE: This is not efficient.
-		return m.Marshal()
-	}
-	// in case somehow we didn't generate the wrapper
-	if pb == nil {
-		return nil, ErrNil
-	}
-	var info InternalMessageInfo
-	siz := info.Size(pb)
-	b := make([]byte, 0, siz)
-	return info.Marshal(b, pb, false)
+	return marshal(pb, false)
+}
+
+// MarshalDeterministic takes a protocol buffer message
+// and encodes it into the wire format, in deterministic order,
+// returning the data.
+//
+// See Buffer.SetDeterministic for more comments on determinism.
+func MarshalDeterministic(pb Message) ([]byte, error) {
+	return marshal(pb, true)
 }
 
 // Marshal takes a protocol buffer message
