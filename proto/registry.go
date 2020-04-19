@@ -53,7 +53,7 @@ func RegisterFile(s filePath, d fileDescGZIP) {
 // FileDescriptor returns the compressed FileDescriptorProto given the file path
 // for a proto source file. It returns nil if not found.
 //
-// Deprecated: Use protoregistry.GlobalFiles.RangeFilesByPath instead.
+// Deprecated: Use protoregistry.GlobalFiles.FindFileByPath instead.
 func FileDescriptor(s filePath) fileDescGZIP {
 	if v, ok := fileCache.Load(s); ok {
 		return v.(fileDescGZIP)
