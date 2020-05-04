@@ -7,7 +7,8 @@
 // This package is excluded from the Go protocol buffer compatibility guarantee
 // and may be deleted at some point in the future.
 //
-// Deprecated: Do not use.
+// Deprecated: Use the "google.golang.org/protobuf/compiler/protogen" package
+// instead to write protoc plugins in Go.
 package generator
 
 import (

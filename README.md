@@ -15,7 +15,11 @@ We recommend that new code use the `google.golang.org/protobuf` module.
 
 Versions v1.4 and later of `github.com/golang/protobuf` are implemented
 in terms of `google.golang.org/protobuf`.
-Programs which use both modules should use at least version v1.4 of this one.
+Programs which use both modules must use at least version v1.4 of this one.
+
+See the
+[developer guide for protocol buffers in Go](https://developers.google.com/protocol-buffers/docs/gotutorial)
+for a general guide for how to get started using protobufs in Go.
 
 See
 [release note documentation](https://github.com/golang/protobuf/releases)
@@ -51,7 +55,7 @@ Summary of the packages provided by this module:
     Package `wrappers` is the generated package for
     `google/protobuf/wrappers.proto`.
 *   [`ptypes/struct`](https://pkg.go.dev/github.com/golang/protobuf/ptypes/struct):
-    Package `struct` is the generated package for
+    Package `structpb` is the generated package for
     `google/protobuf/struct.proto`.
 *   [`protoc-gen-go/descriptor`](https://pkg.go.dev/github.com/golang/protobuf/protoc-gen-go/descriptor):
     Package `descriptor` is the generated package for
