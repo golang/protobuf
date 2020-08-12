@@ -112,9 +112,10 @@ func (p *Buffer) decodeVarintSlow() (x uint64, err error) {
 func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	i := p.index
 	buf := p.buf
+	n := len(buf)
 	var b uint64
 
-	if i >= len(buf) {
+	if i >= n {
 		return 0, io.ErrUnexpectedEOF
 	}
 
@@ -128,7 +129,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 
 	// the longest varint we'll successfully decode is 10 bytes. so if there are more than 9 bytes
 	// (since we've already read one) of buffer left we can decode it with fewer bounds checks
-	if len(buf)-i < 9 {
+	if n-i < 9 {
 		// there are fewer than 9 bytes left; use the slower, bounds-checking code
 		return p.decodeVarintSlow()
 	}
