@@ -126,10 +126,10 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 		goto done
 	}
 
-	// the longest varint we'll successfully decode is 9 bytes. so if there are more than 9 bytes
-	// of buffer left we can decode it with fewer bounds checks
+	// the longest varint we'll successfully decode is 10 bytes. so if there are more than 9 bytes
+	// (since we've already read one) of buffer left we can decode it with fewer bounds checks
 	if len(buf)-i < 9 {
-		// there are fewer than 8 bytes left; use the slower, bounds-checking code
+		// there are fewer than 9 bytes left; use the slower, bounds-checking code
 		return p.decodeVarintSlow()
 	}
 
@@ -139,7 +139,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	// means paying the cost of slicing buf (which is two bounds checks). That, however, ends up costing more, and
 	// especially it impacts the performance of the most important 1 and 2-byte cases. So instead we leave the bounds
 	// checks and index by `i`
-	//_ = buf[i+8] // doesn't help (makes the code slower) in go 1.8.1
+	//_ = buf[i+8] // doesn't help (makes the code slower) in go 1.8.1 (still true with go 1.14.4)
 
 	b = uint64(buf[i])
 	i++
