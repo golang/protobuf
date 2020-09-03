@@ -287,9 +287,8 @@ func ExtensionDescs(m Message) ([]*ExtensionDesc, error) {
 	mr.Range(func(fd protoreflect.FieldDescriptor, v protoreflect.Value) bool {
 		if fd.IsExtension() {
 			xt := fd.(protoreflect.ExtensionTypeDescriptor)
-			if xd, ok := xt.Type().(*ExtensionDesc); ok {
-				extDescs[fd.Number()] = xd
-			}
+			xd, _ := xt.Type().(*ExtensionDesc)
+			extDescs[fd.Number()] = xd
 		}
 		return true
 	})
