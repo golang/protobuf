@@ -448,10 +448,17 @@ var marshalingTests = []struct {
 	{"Any with message and indent", marshalerAllOptions, anySimple, anySimplePrettyJSON},
 	{"Any with WKT", marshaler, anyWellKnown, anyWellKnownJSON},
 	{"Any with WKT and indent", marshalerAllOptions, anyWellKnown, anyWellKnownPrettyJSON},
-	{"Duration", marshaler, &pb2.KnownTypes{Dur: &durpb.Duration{Seconds: 3}}, `{"dur":"3s"}`},
-	{"Duration", marshaler, &pb2.KnownTypes{Dur: &durpb.Duration{Seconds: 3, Nanos: 1e6}}, `{"dur":"3.001s"}`},
-	{"Duration beyond float64 precision", marshaler, &pb2.KnownTypes{Dur: &durpb.Duration{Seconds: 100000000, Nanos: 1}}, `{"dur":"100000000.000000001s"}`},
-	{"negative Duration", marshaler, &pb2.KnownTypes{Dur: &durpb.Duration{Seconds: -123, Nanos: -456}}, `{"dur":"-123.000000456s"}`},
+	{"Duration empty", marshaler, &durpb.Duration{}, `"0s"`},
+	{"Duration with secs", marshaler, &durpb.Duration{Seconds: 3}, `"3s"`},
+	{"Duration with -secs", marshaler, &durpb.Duration{Seconds: -3}, `"-3s"`},
+	{"Duration with nanos", marshaler, &durpb.Duration{Nanos: 1e6}, `"0.001s"`},
+	{"Duration with -nanos", marshaler, &durpb.Duration{Nanos: -1e6}, `"-0.001s"`},
+	{"Duration with large secs", marshaler, &durpb.Duration{Seconds: 1e10, Nanos: 1}, `"10000000000.000000001s"`},
+	{"Duration with 6-digit nanos", marshaler, &durpb.Duration{Nanos: 1e4}, `"0.000010s"`},
+	{"Duration with 3-digit nanos", marshaler, &durpb.Duration{Nanos: 1e6}, `"0.001s"`},
+	{"Duration with -secs -nanos", marshaler, &durpb.Duration{Seconds: -123, Nanos: -450}, `"-123.000000450s"`},
+	{"Duration max value", marshaler, &durpb.Duration{Seconds: 315576000000, Nanos: 999999999}, `"315576000000.999999999s"`},
+	{"Duration min value", marshaler, &durpb.Duration{Seconds: -315576000000, Nanos: -999999999}, `"-315576000000.999999999s"`},
 	{"Struct", marshaler, &pb2.KnownTypes{St: &stpb.Struct{
 		Fields: map[string]*stpb.Value{
 			"one": {Kind: &stpb.Value_StringValue{"loneliest number"}},
@@ -524,15 +531,17 @@ func TestMarshalIllegalTime(t *testing.T) {
 		pb   proto.Message
 		fail bool
 	}{
-		{&pb2.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: 0}}, false},
-		{&pb2.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: 0}}, false},
-		{&pb2.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: -1}}, true},
-		{&pb2.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: 1}}, true},
-		{&pb2.KnownTypes{Dur: &durpb.Duration{Seconds: 1, Nanos: 1000000000}}, true},
-		{&pb2.KnownTypes{Dur: &durpb.Duration{Seconds: -1, Nanos: -1000000000}}, true},
-		{&pb2.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: 1}}, false},
-		{&pb2.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: -1}}, true},
-		{&pb2.KnownTypes{Ts: &tspb.Timestamp{Seconds: 1, Nanos: 1000000000}}, true},
+		{&durpb.Duration{Seconds: 1, Nanos: 0}, false},
+		{&durpb.Duration{Seconds: -1, Nanos: 0}, false},
+		{&durpb.Duration{Seconds: 1, Nanos: -1}, true},
+		{&durpb.Duration{Seconds: -1, Nanos: 1}, true},
+		{&durpb.Duration{Seconds: 315576000001}, true},
+		{&durpb.Duration{Seconds: -315576000001}, true},
+		{&durpb.Duration{Seconds: 1, Nanos: 1000000000}, true},
+		{&durpb.Duration{Seconds: -1, Nanos: -1000000000}, true},
+		{&tspb.Timestamp{Seconds: 1, Nanos: 1}, false},
+		{&tspb.Timestamp{Seconds: 1, Nanos: -1}, true},
+		{&tspb.Timestamp{Seconds: 1, Nanos: 1000000000}, true},
 	}
 	for _, tt := range tests {
 		_, err := marshaler.MarshalToString(tt.pb)
