@@ -452,6 +452,7 @@ var marshalingTests = []struct {
 	{"Duration", marshaler, &pb2.KnownTypes{Dur: &durpb.Duration{Seconds: 3, Nanos: 1e6}}, `{"dur":"3.001s"}`},
 	{"Duration beyond float64 precision", marshaler, &pb2.KnownTypes{Dur: &durpb.Duration{Seconds: 100000000, Nanos: 1}}, `{"dur":"100000000.000000001s"}`},
 	{"negative Duration", marshaler, &pb2.KnownTypes{Dur: &durpb.Duration{Seconds: -123, Nanos: -456}}, `{"dur":"-123.000000456s"}`},
+	{"Duration negative nanos", marshaler, &pb2.KnownTypes{Dur: &durpb.Duration{Nanos: -1}}, `{"dur":"-0.000000001s"}`},
 	{"Struct", marshaler, &pb2.KnownTypes{St: &stpb.Struct{
 		Fields: map[string]*stpb.Value{
 			"one": {Kind: &stpb.Value_StringValue{"loneliest number"}},
