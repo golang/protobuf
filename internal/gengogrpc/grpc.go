@@ -48,6 +48,7 @@ func GenerateFileContent(gen *protogen.Plugin, file *protogen.File, g *protogen.
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPackage.Ident("Context"))
 	g.P("var _ ", grpcPackage.Ident("ClientConnInterface"))
+	g.P("var _ ", "test")
 	g.P()
 
 	g.P("// This is a compile-time assertion to ensure that this generated file")
