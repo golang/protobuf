@@ -16,12 +16,12 @@ import (
 	"io/ioutil"
 	"sync"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/MintegralTech/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/runtime/protoimpl"
 
-	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	descriptorpb "github.com/MintegralTech/protobuf/protoc-gen-go/descriptor"
 )
 
 // Message is proto.Message with a method to return its descriptor.

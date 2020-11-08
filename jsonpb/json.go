@@ -14,7 +14,7 @@
 package jsonpb
 
 import (
-	"github.com/golang/protobuf/proto"
+	"github.com/MintegralTech/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/runtime/protoimpl"

@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/MintegralTech/protobuf/proto"
 
-	durpb "github.com/golang/protobuf/ptypes/duration"
+	durpb "github.com/MintegralTech/protobuf/ptypes/duration"
 )
 
 const (

@@ -15,8 +15,8 @@ import (
 	"strconv"
 	"strings"
 
-	pb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/golang/protobuf/protoc-gen-go/generator"
+	pb "github.com/MintegralTech/protobuf/protoc-gen-go/descriptor"
+	"github.com/MintegralTech/protobuf/protoc-gen-go/generator"
 )
 
 // generatedCodeVersion indicates a version of the generated code.
@@ -92,6 +92,7 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
 	g.P("var _ ", grpcPkg, ".ClientConnInterface")
+	g.P("var _ ", mrpcPkg, ".ClientConnInterface")
 	g.P()
 
 	// Assert version compatibility.

@@ -10,7 +10,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	descpb "github.com/MintegralTech/protobuf/protoc-gen-go/descriptor"
 )
 
 func TestEnumDescriptor(t *testing.T) {

@@ -20,7 +20,7 @@ const (
 	grpcPackage    = protogen.GoImportPath("google.golang.org/grpc")
 	codesPackage   = protogen.GoImportPath("google.golang.org/grpc/codes")
 	statusPackage  = protogen.GoImportPath("google.golang.org/grpc/status")
-	mrpcPkgPath    = "gitlab.mobvista.com/voyager/mrpc"
+	mrpcPkgPath    = protogen.GoImportPath("gitlab.mobvista.com/voyager/mrpc")
 )
 
 // GenerateFile generates a _grpc.pb.go file containing gRPC service definitions.
@@ -45,11 +45,11 @@ func GenerateFileContent(gen *protogen.Plugin, file *protogen.File, g *protogen.
 	}
 
 	// TODO: Remove this. We don't need to include these references any more.
-	g.P("// Reference imports to suppress errors if they are not otherwise used.")
-	g.P("var _ ", contextPackage.Ident("Context"))
-	g.P("var _ ", grpcPackage.Ident("ClientConnInterface"))
-	g.P("var _ ", "test")
-	g.P()
+	//g.P("// Reference imports to suppress errors if they are not otherwise used.")
+	//g.P("var _ ", contextPackage.Ident("Context"))
+	//g.P("var _ ", grpcPackage.Ident("ClientConnInterface"))
+	//g.P("var _ ", "test")
+	//g.P()
 
 	g.P("// This is a compile-time assertion to ensure that this generated file")
 	g.P("// is compatible with the grpc package it is being compiled against.")

@@ -32,11 +32,11 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/protoc-gen-go/generator/internal/remap"
+	"github.com/MintegralTech/protobuf/proto"
+	"github.com/MintegralTech/protobuf/protoc-gen-go/generator/internal/remap"
 
-	"github.com/golang/protobuf/protoc-gen-go/descriptor"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/MintegralTech/protobuf/protoc-gen-go/descriptor"
+	plugin "github.com/MintegralTech/protobuf/protoc-gen-go/plugin"
 )
 
 func init() {

@@ -6,7 +6,7 @@
 
 syntax = "proto2";
 
-option go_package = "github.com/golang/protobuf/internal/testprotos/proto2_proto";
+option go_package = "github.com/MintegralTech/protobuf/internal/testprotos/proto2_proto";
 
 package proto2_test;
 

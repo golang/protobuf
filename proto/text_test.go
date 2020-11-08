@@ -12,11 +12,11 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/MintegralTech/protobuf/proto"
 	"github.com/google/go-cmp/cmp"
 
-	pb2 "github.com/golang/protobuf/internal/testprotos/proto2_proto"
-	pb3 "github.com/golang/protobuf/internal/testprotos/proto3_proto"
+	pb2 "github.com/MintegralTech/protobuf/internal/testprotos/proto2_proto"
+	pb3 "github.com/MintegralTech/protobuf/internal/testprotos/proto3_proto"
 	anypb "github.com/golang/protobuf/ptypes/any"
 )
 

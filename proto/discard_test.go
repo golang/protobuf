@@ -10,8 +10,8 @@ import (
 	"github.com/golang/protobuf/proto"
 	"google.golang.org/protobuf/testing/protopack"
 
-	pb2 "github.com/golang/protobuf/internal/testprotos/proto2_proto"
-	pb3 "github.com/golang/protobuf/internal/testprotos/proto3_proto"
+	pb2 "github.com/MintegralTech/protobuf/internal/testprotos/proto2_proto"
+	pb3 "github.com/MintegralTech/protobuf/internal/testprotos/proto3_proto"
 )
 
 var rawFields = protopack.Message{

@@ -8,10 +8,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/MintegralTech/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	descpb "github.com/MintegralTech/protobuf/protoc-gen-go/descriptor"
 )
 
 func TestRegistry(t *testing.T) {
