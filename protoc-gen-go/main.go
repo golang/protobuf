@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/golang/protobuf/internal/gengogrpc"
+	"github.com/MintegralTech/protobuf/internal/gengogrpc"
 	gengo "google.golang.org/protobuf/cmd/protoc-gen-go/internal_gengo"
 	"google.golang.org/protobuf/compiler/protogen"
 )

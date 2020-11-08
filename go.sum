@@ -1,3 +1,5 @@
+github.com/MintegralTech/protobuf v1.4.8 h1:238kL1AlFZJ1R8G3Q2NPDEfcxWeNDvP18INdtqb4Zu0=
+github.com/MintegralTech/protobuf v1.4.8/go.mod h1:+Cgu1poQ8MQ/4nQILwdlLldIQT1RVh9FmpDAbpZQ5/A=
 github.com/golang/protobuf v1.4.0-rc.1/go.mod h1:ceaxUfeHdC40wWswd/P6IGgMaK3YpKi5j83Wpe3EHw8=
 github.com/golang/protobuf v1.4.0-rc.1.0.20200221234624-67d41d38c208/go.mod h1:xKAWHe0F5eneWXFV3EuXVDTCmh+JuBKY0li0aMyXATA=
 github.com/golang/protobuf v1.4.0-rc.2/go.mod h1:LlEzMj4AhA7rCAGe4KMBDvJI+AwstrUpVNzEA03Pprs=
