@@ -30,6 +30,7 @@ const generatedCodeVersion = 6
 const (
 	contextPkgPath = "context"
 	grpcPkgPath    = "google.golang.org/grpc"
+	mrpcPkgPath    = "gitlab.mobvista.com/voyager/mrpc"
 	codePkgPath    = "google.golang.org/grpc/codes"
 	statusPkgPath  = "google.golang.org/grpc/status"
 )
@@ -55,6 +56,7 @@ func (g *grpc) Name() string {
 var (
 	contextPkg string
 	grpcPkg    string
+	mrpcPkg    string
 )
 
 // Init initializes the plugin.
@@ -85,6 +87,7 @@ func (g *grpc) Generate(file *generator.FileDescriptor) {
 
 	contextPkg = string(g.gen.AddImport(contextPkgPath))
 	grpcPkg = string(g.gen.AddImport(grpcPkgPath))
+	mrpcPkg = string(g.gen.AddImport(mrpcPkgPath))
 
 	g.P("// Reference imports to suppress errors if they are not otherwise used.")
 	g.P("var _ ", contextPkg, ".Context")
