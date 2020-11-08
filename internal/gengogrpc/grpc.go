@@ -20,6 +20,7 @@ const (
 	grpcPackage    = protogen.GoImportPath("google.golang.org/grpc")
 	codesPackage   = protogen.GoImportPath("google.golang.org/grpc/codes")
 	statusPackage  = protogen.GoImportPath("google.golang.org/grpc/status")
+	mrpcPkgPath    = "gitlab.mobvista.com/voyager/mrpc"
 )
 
 // GenerateFile generates a _grpc.pb.go file containing gRPC service definitions.
