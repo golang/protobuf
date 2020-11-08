@@ -17,9 +17,9 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 
-	pb2 "github.com/golang/protobuf/internal/testprotos/jsonpb_proto"
-	pb3 "github.com/golang/protobuf/internal/testprotos/proto3_proto"
-	descpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	pb2 "github.com/MintegralTech/protobuf/internal/testprotos/jsonpb_proto"
+	pb3 "github.com/MintegralTech/protobuf/internal/testprotos/proto3_proto"
+	descpb "github.com/MintegralTech/protobuf/protoc-gen-go/descriptor"
 	anypb "github.com/golang/protobuf/ptypes/any"
 	durpb "github.com/golang/protobuf/ptypes/duration"
 	stpb "github.com/golang/protobuf/ptypes/struct"

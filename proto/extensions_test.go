@@ -15,7 +15,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	pb2 "github.com/golang/protobuf/internal/testprotos/proto2_proto"
+	pb2 "github.com/MintegralTech/protobuf/internal/testprotos/proto2_proto"
 )
 
 func TestGetExtensionsWithMissingExtensions(t *testing.T) {

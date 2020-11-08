@@ -9,8 +9,8 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	pb2 "github.com/golang/protobuf/internal/testprotos/proto2_proto"
-	pb3 "github.com/golang/protobuf/internal/testprotos/proto3_proto"
+	pb2 "github.com/MintegralTech/protobuf/internal/testprotos/proto2_proto"
+	pb3 "github.com/MintegralTech/protobuf/internal/testprotos/proto3_proto"
 )
 
 // Four identical base messages.
