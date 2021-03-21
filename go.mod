@@ -1,3 +1,4 @@
+// Deprecated: Use the "google.golang.org/protobuf" module instead.
 module github.com/golang/protobuf
 
 go 1.9
