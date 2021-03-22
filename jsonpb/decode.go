@@ -135,12 +135,12 @@ func (u *Unmarshaler) unmarshalMessage(m protoreflect.Message, in []byte) error 
 	md := m.Descriptor()
 	fds := md.Fields()
 
-	if string(in) == "null" && md.FullName() != "google.protobuf.Value" {
-		return nil
-	}
-
 	if jsu, ok := proto.MessageV1(m.Interface()).(JSONPBUnmarshaler); ok {
 		return jsu.UnmarshalJSONPB(u, in)
+	}
+
+	if string(in) == "null" && md.FullName() != "google.protobuf.Value" {
+		return nil
 	}
 
 	switch wellKnownType(md.FullName()) {
@@ -332,11 +332,12 @@ func (u *Unmarshaler) unmarshalMessage(m protoreflect.Message, in []byte) error 
 			raw = v
 		}
 
+		field := m.NewField(fd)
 		// Unmarshal the field value.
-		if raw == nil || (string(raw) == "null" && !isSingularWellKnownValue(fd)) {
+		if raw == nil || (string(raw) == "null" && !isSingularWellKnownValue(fd) && !isUnmarshalJSONPB(field, fd)) {
 			continue
 		}
-		v, err := u.unmarshalValue(m.NewField(fd), raw, fd)
+		v, err := u.unmarshalValue(field, raw, fd)
 		if err != nil {
 			return err
 		}
@@ -388,6 +389,20 @@ func isSingularWellKnownValue(fd protoreflect.FieldDescriptor) bool {
 		return md.FullName() == "google.protobuf.Value" && fd.Cardinality() != protoreflect.Repeated
 	}
 	return false
+}
+
+func isUnmarshalJSONPB(v protoreflect.Value, fd protoreflect.FieldDescriptor) bool {
+	if fd.Kind() != protoreflect.MessageKind {
+		return false
+	}
+	if fd.Cardinality() == protoreflect.Repeated {
+		return false
+	}
+
+	i := v.Interface()
+	m := proto.MessageV1(i)
+	_, ok := m.(JSONPBUnmarshaler)
+	return ok
 }
 
 func (u *Unmarshaler) unmarshalValue(v protoreflect.Value, in []byte, fd protoreflect.FieldDescriptor) (protoreflect.Value, error) {

@@ -1009,7 +1009,7 @@ func TestUnmarshalNullWithJSONPBUnmarshaler(t *testing.T) {
 		t.Errorf("unmarshal error: %v", err)
 	}
 
-	want := ptrFieldMessage{}
+	want := ptrFieldMessage{StringField: &stringField{IsSet: true, StringValue: "null"}}
 	if !proto.Equal(&ptrFieldMsg, &want) {
 		t.Errorf("unmarshal result StringField: got %v, want %v", ptrFieldMsg, want)
 	}
