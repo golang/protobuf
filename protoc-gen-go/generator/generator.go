@@ -1852,6 +1852,7 @@ type oneofSubField struct {
 	getterDef     string                               // Default for getters, e.g. "nil", `""` or "Default_MessageType_FieldName"
 	protoDef      string                               // Default value as defined in the proto file, e.g "yoshi" or "5"
 	deprecated    string                               // Deprecation comment, if any.
+	comment       string                               // The full comment for the field
 }
 
 // typedNil prints a nil casted to the pointer to this field.
@@ -1903,7 +1904,7 @@ func (f *oneofField) getter(g *Generator, mc *msgCtx) {
 	// The subField types, fulfilling the discriminator type contract
 	for _, sf := range f.subFields {
 		g.P("type ", Annotate(mc.message.file, sf.fullPath, sf.oneofTypeName), " struct {")
-		g.P(Annotate(mc.message.file, sf.fullPath, sf.goName), " ", sf.goType, " `", sf.tags, "`")
+		g.P(sf.comment, Annotate(mc.message.file, sf.fullPath, sf.goName), " ", sf.goType, " `", sf.tags, "`")
 		g.P("}")
 		g.P()
 	}
@@ -2320,6 +2321,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 				break
 			}
 
+			fieldFullPath := fmt.Sprintf("%s,%d,%d", message.path, messageFieldPath, i)
+			c, ok := g.makeComments(fieldFullPath)
+			if ok {
+				c += "\n"
+			}
 			oneofField := oFields[*field.OneofIndex]
 			tag := "protobuf:" + g.goTag(message, field, wiretype)
 			sf := oneofSubField{
@@ -2329,7 +2335,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 					goType:     typename,
 					tags:       tag,
 					protoName:  field.GetName(),
-					fullPath:   fmt.Sprintf("%s,%d,%d", message.path, messageFieldPath, i),
+					fullPath:   fieldFullPath,
 				},
 				protoTypeName: field.GetTypeName(),
 				fieldNumber:   int(*field.Number),
@@ -2338,6 +2344,7 @@ func (g *Generator) generateMessage(message *Descriptor) {
 				protoDef:      field.GetDefaultValue(),
 				oneofTypeName: tname,
 				deprecated:    fieldDeprecated,
+				comment:       c,
 			}
 			oneofField.subFields = append(oneofField.subFields, &sf)
 			g.RecordTypeUse(field.GetTypeName())
