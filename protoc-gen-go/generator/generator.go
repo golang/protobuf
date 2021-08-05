@@ -484,7 +484,7 @@ func (g *Generator) CommandLineParameters(parameter string) {
 			}
 		}
 	}
-	if pluginList != "" {
+	if pluginList != "none" && pluginList != "" {
 		// Amend the set of plugins.
 		enabled := make(map[string]bool)
 		for _, name := range strings.Split(pluginList, "+") {
