@@ -441,6 +441,7 @@ var marshalingTests = []struct {
 		`{"mBoolSimple":{"true":{"oInt32":1}}}`},
 	{"oneof, not set", marshaler, &pb2.MsgWithOneof{}, `{}`},
 	{"oneof, set", marshaler, &pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_Title{"Grand Poobah"}}, `{"title":"Grand Poobah"}`},
+	{"oneof NullValue", marshaler, &pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_NullValue{stpb.NullValue_NULL_VALUE}}, `{"nullValue":null}`},
 	{"force orig_name", Marshaler{OrigName: true}, &pb2.Simple{OInt32: proto.Int32(4)},
 		`{"o_int32":4}`},
 	{"proto2 extension", marshaler, realNumber, realNumberJSON},
@@ -738,6 +739,7 @@ var unmarshalingTests = []struct {
 	{"oneof orig_name", Unmarshaler{}, `{"Country":"Australia"}`, &pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_Country{"Australia"}}},
 	{"oneof spec name2", Unmarshaler{}, `{"homeAddress":"Australia"}`, &pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_HomeAddress{"Australia"}}},
 	{"oneof orig_name2", Unmarshaler{}, `{"home_address":"Australia"}`, &pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_HomeAddress{"Australia"}}},
+	{"oneof NullValue", Unmarshaler{}, `{"nullValue":null}`, &pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_NullValue{stpb.NullValue_NULL_VALUE}}},
 	{"orig_name input", Unmarshaler{}, `{"o_bool":true}`, &pb2.Simple{OBool: proto.Bool(true)}},
 	{"camelName input", Unmarshaler{}, `{"oBool":true}`, &pb2.Simple{OBool: proto.Bool(true)}},
 

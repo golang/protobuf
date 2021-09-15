@@ -91,6 +91,7 @@ message MsgWithOneof {
     string Country = 3;
     string home_address = 4;
     MsgWithRequired msg_with_required = 5;
+    google.protobuf.NullValue null_value = 6;
   }
 }
 
