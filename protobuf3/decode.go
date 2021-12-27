@@ -1136,17 +1136,19 @@ func (o *Buffer) dec_new_map(p *Properties, base unsafe.Pointer) error {
 	// Decode.
 	// This parses a restricted wire format, namely the encoding of a message
 	// with two fields. See enc_new_map for the format.
+	// tagcode for key and value properties are always a single byte
+	// because they have tags 1 and 2.
+	keytag := p.mkeyprop.tagcode[0]
+	valtag := p.mvalprop.tagcode[0]
 	for o.index < oi {
-		// tagcode for key and value properties are always a single byte
-		// because they have tags 1 and 2.
 		tagcode := o.buf[o.index]
 		o.index++
 		switch tagcode {
-		case p.mkeyprop.tagcode[0]:
+		case keytag:
 			if err := p.mkeyprop.dec(o, p.mkeyprop, keybase); err != nil {
 				return err
 			}
-		case p.mvalprop.tagcode[0]:
+		case valtag:
 			if err := p.mvalprop.dec(o, p.mvalprop, valbase); err != nil {
 				return err
 			}
