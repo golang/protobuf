@@ -171,6 +171,9 @@ func (p *Buffer) Next() (id int, full []byte, val []byte, wt WireType, err error
 
 	case WireFixed64:
 		err = p.SkipFixed(8)
+
+	default:
+		err = fmt.Errorf("protobuf3: unsupported wiretype %d", int(wt))
 	}
 
 	if val == nil {
@@ -209,6 +212,9 @@ func (p *Buffer) Find(id uint, sorted bool) (position int, full []byte, val []by
 
 			case WireFixed64:
 				err = p.SkipFixed(8)
+
+			default:
+				err = fmt.Errorf("protobuf3: unsupported wiretype %d", int(wt))
 			}
 
 			if val == nil {
@@ -235,6 +241,9 @@ func (p *Buffer) Find(id uint, sorted bool) (position int, full []byte, val []by
 
 			case WireFixed64:
 				err = p.SkipFixed(8)
+
+			default:
+				err = fmt.Errorf("protobuf3: unsupported wiretype %d", int(wt))
 			}
 			if err != nil {
 				return 0, nil, nil, 0, err
