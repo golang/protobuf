@@ -1393,11 +1393,16 @@ func (o *Buffer) dec_slice_marshaler(p *Properties, base unsafe.Pointer) error {
 	slice_type := reflect.SliceOf(p.stype)
 	slice := reflect.NewAt(slice_type, ptr).Elem()
 
-	// put a zero value at the end of the slice
-	slice.Set(reflect.Append(slice, reflect.Zero(p.stype)))
+	n := slice.Len()
+	if n < slice.Cap() {
+		slice.SetLen(n + 1)
+	} else {
+		// extend the slice with a new zero value
+		slice.Set(reflect.Append(slice, reflect.Zero(p.stype)))
+	}
 
 	// and unmarshal into it
-	val := slice.Index(slice.Len() - 1)
+	val := slice.Index(n)
 	return val.Addr().Interface().(Marshaler).UnmarshalProtobuf3(raw)
 }
 
