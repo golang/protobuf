@@ -907,3 +907,78 @@ func BenchmarkUnmarshalOldMapMsg(b *testing.B) {
 		proto.Unmarshal(pb, &m)
 	}
 }
+
+type SliceOfStructMsg struct {
+	Slice []StructForSliceOfStruct `protobuf:"bytes,1"`
+}
+
+type StructForSliceOfStruct struct {
+	Int    int    `protobuf:"varint,3"`
+	String string `protobuf:"bytes,2"`
+}
+
+func BenchmarkUnmarshalSliceOfStructMsg(b *testing.B) {
+	m := SliceOfStructMsg{
+		Slice: []StructForSliceOfStruct{
+			StructForSliceOfStruct{
+				Int:    10,
+				String: "Ten",
+			},
+			StructForSliceOfStruct{
+				Int:    9,
+				String: "Nine",
+			},
+			StructForSliceOfStruct{
+				Int:    8,
+				String: "Eight",
+			},
+			StructForSliceOfStruct{
+				Int:    7,
+				String: "Seven",
+			},
+			StructForSliceOfStruct{
+				Int:    6,
+				String: "Six",
+			},
+			StructForSliceOfStruct{
+				Int:    5,
+				String: "Five",
+			},
+			StructForSliceOfStruct{
+				Int:    4,
+				String: "Four",
+			},
+			StructForSliceOfStruct{
+				Int:    3,
+				String: "Three",
+			},
+			StructForSliceOfStruct{
+				Int:    2,
+				String: "Two, main engines start",
+			},
+			StructForSliceOfStruct{
+				Int:    1,
+				String: "One",
+			},
+			StructForSliceOfStruct{
+				Int:    0,
+				String: "Liftoff",
+			},
+		},
+	}
+	for i := 0; i < 7; i++ { // x128, for a ~1000 member slice
+		m.Slice = append(m.Slice, m.Slice...)
+	}
+
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m SliceOfStructMsg
+		protobuf3.Unmarshal(pb, &m)
+	}
+}
