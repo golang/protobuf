@@ -34,6 +34,7 @@
 package protobuf3_test
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/mistsys/protobuf3/protobuf3"
@@ -893,6 +894,88 @@ func BenchmarkUnmarshalOldMapMsg(b *testing.B) {
 			"Nic":     0,
 			"Michele": 1,
 		},
+	}
+
+	pb, err := proto.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m MapMsg
+		proto.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkMarshalLargeMapMsg(b *testing.B) {
+	m := MapMsg{
+		m: make(map[string]int32),
+	}
+	for i := int32(-1000); i < 1000; i++ {
+		m.m[strconv.FormatInt(int64(i), 10)] = i
+	}
+
+	_, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		protobuf3.Marshal(&m)
+	}
+}
+
+func BenchmarkMarshalOldLargeMapMsg(b *testing.B) {
+	m := MapMsg{
+		m: make(map[string]int32),
+	}
+	for i := int32(-1000); i < 1000; i++ {
+		m.m[strconv.FormatInt(int64(i), 10)] = i
+	}
+
+	_, err := proto.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		proto.Marshal(&m)
+	}
+}
+
+func BenchmarkUnmarshalLargeMapMsg(b *testing.B) {
+	m := MapMsg{
+		m: make(map[string]int32),
+	}
+	for i := int32(-1000); i < 1000; i++ {
+		m.m[strconv.FormatInt(int64(i), 10)] = i
+	}
+
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		b.Error(err)
+		return
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		var m MapMsg
+		protobuf3.Unmarshal(pb, &m)
+	}
+}
+
+func BenchmarkUnmarshalOldLargeMapMsg(b *testing.B) {
+	m := MapMsg{
+		m: make(map[string]int32),
+	}
+	for i := int32(-1000); i < 1000; i++ {
+		m.m[strconv.FormatInt(int64(i), 10)] = i
 	}
 
 	pb, err := proto.Marshal(&m)
