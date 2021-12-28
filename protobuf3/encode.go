@@ -1073,29 +1073,14 @@ func mapEncodeScratch(mapType reflect.Type) (keycopy, valcopy reflect.Value, key
 	// Prepare addressable doubly-indirect placeholders for the key and value types.
 	// This is needed because the element-type encoders expect **T, but the map iteration produces T.
 
-	keycopy = reflect.New(mapType.Key()).Elem()                 // addressable K
-	keyptr := reflect.New(reflect.PtrTo(keycopy.Type())).Elem() // addressable *K
-	keyptr.Set(keycopy.Addr())                                  //
-	keybase = unsafe.Pointer(keyptr.UnsafeAddr())               // **K
+	keyptr := reflect.New(mapType.Key())           // *K
+	keycopy = keyptr.Elem()                        // addressable K
+	keybase = unsafe.Pointer(keycopy.UnsafeAddr()) // *K
 
-	// Value types are more varied and require special handling.
-	switch mapType.Elem().Kind() {
-	case reflect.Slice:
-		valcopy = reflect.New(mapType.Elem()).Elem() // addressable V of kind []T
-		valbase = unsafe.Pointer(valcopy.UnsafeAddr())
+	valptr := reflect.New(mapType.Elem())          // *V
+	valcopy = valptr.Elem()                        // addressable V
+	valbase = unsafe.Pointer(valcopy.UnsafeAddr()) // *V
 
-	case reflect.Ptr:
-		// message; the generated field type is map[K]*Msg (so V is *Msg),
-		// so we only need one level of indirection.
-		valcopy = reflect.New(mapType.Elem()).Elem() // addressable V
-		valbase = unsafe.Pointer(valcopy.UnsafeAddr())
-	default:
-		// everything else
-		valcopy = reflect.New(mapType.Elem()).Elem()                // addressable V
-		valptr := reflect.New(reflect.PtrTo(valcopy.Type())).Elem() // addressable *V
-		valptr.Set(valcopy.Addr())                                  //
-		valbase = unsafe.Pointer(valptr.UnsafeAddr())               // **V
-	}
 	return
 }
 

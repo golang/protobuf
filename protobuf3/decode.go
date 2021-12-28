@@ -1113,25 +1113,11 @@ func (o *Buffer) dec_new_map(p *Properties, base unsafe.Pointer) error {
 
 	// Prepare addressable doubly-indirect placeholders for the key and value types.
 	// See enc_new_map for why.
-	keyptr := reflect.New(reflect.PtrTo(p.mtype.Key())).Elem() // addressable *K
-	keybase := unsafe.Pointer(keyptr.UnsafeAddr())             // **K
+	keyptr := reflect.New(p.mtype.Key())                  // addressable *K
+	keybase := unsafe.Pointer(keyptr.Elem().UnsafeAddr()) // *K
 
-	var valbase unsafe.Pointer
-	var valptr reflect.Value
-	switch p.mtype.Elem().Kind() {
-	case reflect.Slice:
-		valptr = reflect.New(p.mtype.Elem())       // *[]T
-		valbase = unsafe.Pointer(valptr.Pointer()) // *[]byte
-	case reflect.Ptr:
-		// message; valptr is **Msg; need to allocate the intermediate pointer
-		valptr = reflect.New(reflect.PtrTo(p.mtype.Elem())).Elem() // addressable *V
-		valptr.Set(reflect.New(valptr.Type().Elem()))
-		valbase = unsafe.Pointer(valptr.Pointer())
-	default:
-		// everything else
-		valptr = reflect.New(reflect.PtrTo(p.mtype.Elem())).Elem() // addressable *V
-		valbase = unsafe.Pointer(valptr.UnsafeAddr())              // **V
-	}
+	valptr := reflect.New(p.mtype.Elem())                 // addressable *V
+	valbase := unsafe.Pointer(valptr.Elem().UnsafeAddr()) // *V
 
 	// Decode.
 	// This parses a restricted wire format, namely the encoding of a message

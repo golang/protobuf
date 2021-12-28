@@ -1125,7 +1125,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				fmt.Fprintln(os.Stderr, err) // print the error too
 				return err
 			}
-			skip, err := p.mkeyprop.init(reflect.PtrTo(p.mtype.Key()), "Key", key_tag, nil)
+			skip, err := p.mkeyprop.init(p.mtype.Key(), "Key", key_tag, nil)
 			if err != nil {
 				return fmt.Errorf("protobuf3: while parsing the proto_key tag (%s) of %s.%s: %v", key_tag, t1.String(), f.Name, err)
 			}
@@ -1142,19 +1142,13 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			}
 
 			p.mvalprop = &Properties{}
-			vtype := p.mtype.Elem()
-			if vtype.Kind() != reflect.Ptr && vtype.Kind() != reflect.Slice {
-				// The value type is not a message (*T) or a slice ([]T),
-				// so we need encoders for the pointer to this type.
-				vtype = reflect.PtrTo(vtype)
-			}
 			val_tag := f.Tag.Get("protobuf_val")
 			if val_tag == "" {
 				err := fmt.Errorf("protobuf3: %s.%s lacks a protobuf_val tag", t1.String(), f.Name)
 				fmt.Fprintln(os.Stderr, err) // print the error too
 				return err
 			}
-			skip, err = p.mvalprop.init(vtype, "Value", val_tag, nil)
+			skip, err = p.mvalprop.init(p.mtype.Elem(), "Value", val_tag, nil)
 			if err != nil {
 				return fmt.Errorf("protobuf3: while parsing the proto_val tag (%s) of %s.%s: %v", val_tag, t1.String(), f.Name, err)
 			}
