@@ -1407,6 +1407,104 @@ func TestMapOfSliceOfStruct(t *testing.T) {
 
 	if !reflect.DeepEqual(&m, &m2) {
 		t.Error("unmarshal(marshal(x)) != x")
+		t.Errorf("x = %+v", &m)
+		t.Errorf("unmarshal(marshal(x)) = %+v", &m2)
+	}
+}
+
+type MapOfPtrToStruct struct {
+	m map[int]*StructForMapOfSlice `protobuf:"bytes,1" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
+}
+
+func TestMapOfPtrToStruct(t *testing.T) {
+	var m = MapOfPtrToStruct{
+		m: make(map[int]*StructForMapOfSlice),
+	}
+	m.m[0] = nil
+	m.m[10] = &StructForMapOfSlice{s: "one.0"}
+	m.m[11] = &StructForMapOfSlice{s: "one.1"}
+	m.m[12] = &StructForMapOfSlice{s: "one.2"}
+	m.m[23] = &StructForMapOfSlice{s: "two.3"}
+
+	b, err := protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var m2 MapOfPtrToStruct
+	err = protobuf3.Unmarshal(b, &m2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !reflect.DeepEqual(&m, &m2) {
+		t.Error("unmarshal(marshal(x)) != x")
+		t.Errorf("x = %+v", &m)
+		t.Errorf("unmarshal(marshal(x)) = %+v", &m2)
+	}
+}
+
+type MapOfStruct struct {
+	m map[int]StructForMapOfSlice `protobuf:"bytes,1" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
+}
+
+func TestMapOfStruct(t *testing.T) {
+	var m = MapOfStruct{
+		m: make(map[int]StructForMapOfSlice),
+	}
+	m.m[0] = StructForMapOfSlice{}
+	m.m[10] = StructForMapOfSlice{s: "one.0"}
+	m.m[11] = StructForMapOfSlice{s: "one.1"}
+	m.m[12] = StructForMapOfSlice{s: "one.2"}
+	m.m[23] = StructForMapOfSlice{s: "two.3"}
+
+	b, err := protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var m2 MapOfStruct
+	err = protobuf3.Unmarshal(b, &m2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !reflect.DeepEqual(&m, &m2) {
+		t.Error("unmarshal(marshal(x)) != x")
+		t.Errorf("x = %+v", &m)
+		t.Errorf("unmarshal(marshal(x)) = %+v", &m2)
+	}
+}
+
+type MapOfString struct {
+	m map[string]string `protobuf:"bytes,1" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
+}
+
+func TestMapOfString(t *testing.T) {
+	var m = MapOfString{
+		m: make(map[string]string),
+	}
+	m.m["0"] = ""
+	m.m["10"] = "one.0"
+	m.m["11"] = "one.1"
+	m.m["12"] = "one.2"
+	m.m["23"] = "two.3"
+
+	b, err := protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var m2 MapOfString
+	err = protobuf3.Unmarshal(b, &m2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !reflect.DeepEqual(&m, &m2) {
+		t.Error("unmarshal(marshal(x)) != x")
+		t.Errorf("x = %+v", &m)
+		t.Errorf("unmarshal(marshal(x)) = %+v", &m2)
 	}
 }
 
