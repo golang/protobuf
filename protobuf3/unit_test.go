@@ -1379,20 +1379,21 @@ func TestBadMapMsg(t *testing.T) {
 }
 
 type MapOfSliceOfStruct struct {
-	m map[int][]StructForMapOfSlice `protobuf:"bytes,1" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
+	m map[int][]StructForMap `protobuf:"bytes,1" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
 }
 
-type StructForMapOfSlice struct {
+type StructForMap struct {
 	s string `protobuf:"bytes,1"`
+	t bool   `protobuf:"varint,2"`
 }
 
 func TestMapOfSliceOfStruct(t *testing.T) {
 	var m = MapOfSliceOfStruct{
-		m: make(map[int][]StructForMapOfSlice),
+		m: make(map[int][]StructForMap),
 	}
 	m.m[0] = nil
-	m.m[1] = []StructForMapOfSlice{StructForMapOfSlice{s: "one.0"}, StructForMapOfSlice{s: "one.1"}, StructForMapOfSlice{s: "one.2"}}
-	m.m[2] = []StructForMapOfSlice{StructForMapOfSlice{s: "two.3"}}
+	m.m[1] = []StructForMap{StructForMap{s: "one.0", t: false}, StructForMap{s: "one.1", t: true}, StructForMap{s: "one.2", t: false}}
+	m.m[2] = []StructForMap{StructForMap{s: "two.3", t: true}}
 
 	b, err := protobuf3.Marshal(&m)
 	if err != nil {
@@ -1413,18 +1414,18 @@ func TestMapOfSliceOfStruct(t *testing.T) {
 }
 
 type MapOfPtrToStruct struct {
-	m map[int]*StructForMapOfSlice `protobuf:"bytes,1" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
+	m map[int]*StructForMap `protobuf:"bytes,1" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
 }
 
 func TestMapOfPtrToStruct(t *testing.T) {
 	var m = MapOfPtrToStruct{
-		m: make(map[int]*StructForMapOfSlice),
+		m: make(map[int]*StructForMap),
 	}
 	m.m[0] = nil
-	m.m[10] = &StructForMapOfSlice{s: "one.0"}
-	m.m[11] = &StructForMapOfSlice{s: "one.1"}
-	m.m[12] = &StructForMapOfSlice{s: "one.2"}
-	m.m[23] = &StructForMapOfSlice{s: "two.3"}
+	m.m[10] = &StructForMap{s: "one.0", t: true}
+	m.m[11] = &StructForMap{s: "one.1", t: false}
+	m.m[12] = &StructForMap{s: "one.2", t: true}
+	m.m[23] = &StructForMap{s: "two.3", t: false}
 
 	b, err := protobuf3.Marshal(&m)
 	if err != nil {
@@ -1445,18 +1446,18 @@ func TestMapOfPtrToStruct(t *testing.T) {
 }
 
 type MapOfStruct struct {
-	m map[int]StructForMapOfSlice `protobuf:"bytes,1" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
+	m map[int]StructForMap `protobuf:"bytes,1" protobuf_key:"varint,1" protobuf_val:"bytes,2"`
 }
 
 func TestMapOfStruct(t *testing.T) {
 	var m = MapOfStruct{
-		m: make(map[int]StructForMapOfSlice),
+		m: make(map[int]StructForMap),
 	}
-	m.m[0] = StructForMapOfSlice{}
-	m.m[10] = StructForMapOfSlice{s: "one.0"}
-	m.m[11] = StructForMapOfSlice{s: "one.1"}
-	m.m[12] = StructForMapOfSlice{s: "one.2"}
-	m.m[23] = StructForMapOfSlice{s: "two.3"}
+	m.m[0] = StructForMap{}
+	m.m[10] = StructForMap{s: "one.0", t: true}
+	m.m[11] = StructForMap{s: "one.1", t: false}
+	m.m[12] = StructForMap{s: "one.2", t: true}
+	m.m[23] = StructForMap{s: "two.3", t: false}
 
 	b, err := protobuf3.Marshal(&m)
 	if err != nil {
