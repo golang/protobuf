@@ -1105,10 +1105,11 @@ func (o *Buffer) dec_new_map(p *Properties, base unsafe.Pointer) error {
 	oi := o.index       // index at the end of this map entry
 	o.index -= len(raw) // move buffer back to start of map entry
 
-	m := reflect.NewAt(p.mtype, unsafe.Pointer(uintptr(base)+p.offset)).Elem() // map[K]V
-	if m.IsNil() {
-		m.Set(reflect.MakeMap(p.mtype))
+	mptr := reflect.NewAt(p.mtype, unsafe.Pointer(uintptr(base)+p.offset)) // *map[K]V
+	if mptr.Elem().IsNil() {
+		mptr.Elem().Set(reflect.MakeMap(mptr.Type().Elem()))
 	}
+	v := mptr.Elem() // map[K]V
 
 	// Prepare addressable doubly-indirect placeholders for the key and value types.
 	// See enc_new_map for why.
@@ -1164,7 +1165,7 @@ func (o *Buffer) dec_new_map(p *Properties, base unsafe.Pointer) error {
 		valelem = reflect.Zero(p.mtype.Elem())
 	}
 
-	m.SetMapIndex(keyelem, valelem)
+	v.SetMapIndex(keyelem, valelem)
 	return nil
 }
 
