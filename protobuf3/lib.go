@@ -45,6 +45,7 @@ package protobuf3
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 	"unsafe"
@@ -278,6 +279,13 @@ func DebugPrint(b []byte) string {
 	depth := 0
 
 	var out strings.Builder
+
+	defer func() {
+		if x := recover(); x != nil {
+			fmt.Fprintln(os.Stderr, out.String())
+			panic(x)
+		}
+	}()
 
 out:
 	for {
