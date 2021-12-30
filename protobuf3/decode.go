@@ -136,7 +136,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 		return p.decodeVarintSlow()
 	}
 
-	x -= 0x80
+	x &^= 0x80
 
 	// note: the only way I've found to get go 1.8.1 to do bounds-check-elimination is to use constant indexes, which
 	// means paying the cost of slicing buf (which is two bounds checks). That, however, ends up costing more, and
@@ -150,7 +150,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b < 0x80 {
 		goto done
 	}
-	x -= 0x80 << 7
+	x &^= 0x80 << 7
 
 	b = uint64(buf[i])
 	i++
@@ -158,7 +158,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b < 0x80 {
 		goto done
 	}
-	x -= 0x80 << 14
+	x &^= 0x80 << 14
 
 	b = uint64(buf[i])
 	i++
@@ -166,7 +166,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b < 0x80 {
 		goto done
 	}
-	x -= 0x80 << 21
+	x &^= 0x80 << 21
 
 	b = uint64(buf[i])
 	i++
@@ -174,7 +174,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b < 0x80 {
 		goto done
 	}
-	x -= 0x80 << 28
+	x &^= 0x80 << 28
 
 	b = uint64(buf[i])
 	i++
@@ -182,7 +182,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b < 0x80 {
 		goto done
 	}
-	x -= 0x80 << 35
+	x &^= 0x80 << 35
 
 	b = uint64(buf[i])
 	i++
@@ -190,7 +190,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b < 0x80 {
 		goto done
 	}
-	x -= 0x80 << 42
+	x &^= 0x80 << 42
 
 	b = uint64(buf[i])
 	i++
@@ -198,7 +198,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b < 0x80 {
 		goto done
 	}
-	x -= 0x80 << 49
+	x &^= 0x80 << 49
 
 	b = uint64(buf[i])
 	i++
@@ -206,7 +206,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b < 0x80 {
 		goto done
 	}
-	x -= 0x80 << 56
+	x &^= 0x80 << 56
 
 	b = uint64(buf[i])
 	i++
@@ -214,7 +214,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	if b < 0x80 {
 		goto done
 	}
-	// x -= 0x80 << 63 // Always zero.
+	// x &^= 0x80 << 63 // Always zero.
 
 	return 0, errOverflow
 
