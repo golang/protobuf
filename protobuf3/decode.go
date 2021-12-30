@@ -131,7 +131,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 
 	// the longest varint we'll successfully decode is 10 bytes. so if there are more than 9 bytes
 	// (since we've already read one) of buffer left we can decode it with fewer bounds checks
-	if n-i < 9 {
+	if i+9 > n {
 		// there are fewer than 9 bytes left; use the slower, bounds-checking code
 		return p.decodeVarintSlow()
 	}
