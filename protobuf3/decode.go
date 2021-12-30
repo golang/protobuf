@@ -115,7 +115,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	i := p.index
 	buf := p.buf
 	n := len(buf)
-	var b uint64
+	var b uint8
 
 	if i >= n {
 		return 0, io.ErrUnexpectedEOF
@@ -144,73 +144,73 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	// checks and index by `i`
 	//_ = buf[i+8] // doesn't help (makes the code slower) in go 1.8.1 (still true with go 1.14.4)
 
-	b = uint64(buf[i])
+	b = (buf[i])
 	i++
-	x |= b << 7
+	x |= uint64(b) << 7
 	if b < 0x80 {
 		goto done
 	}
 	x &^= 0x80 << 7
 
-	b = uint64(buf[i])
+	b = (buf[i])
 	i++
-	x |= b << 14
+	x |= uint64(b) << 14
 	if b < 0x80 {
 		goto done
 	}
 	x &^= 0x80 << 14
 
-	b = uint64(buf[i])
+	b = (buf[i])
 	i++
-	x |= b << 21
+	x |= uint64(b) << 21
 	if b < 0x80 {
 		goto done
 	}
 	x &^= 0x80 << 21
 
-	b = uint64(buf[i])
+	b = (buf[i])
 	i++
-	x |= b << 28
+	x |= uint64(b) << 28
 	if b < 0x80 {
 		goto done
 	}
 	x &^= 0x80 << 28
 
-	b = uint64(buf[i])
+	b = (buf[i])
 	i++
-	x |= b << 35
+	x |= uint64(b) << 35
 	if b < 0x80 {
 		goto done
 	}
 	x &^= 0x80 << 35
 
-	b = uint64(buf[i])
+	b = (buf[i])
 	i++
-	x |= b << 42
+	x |= uint64(b) << 42
 	if b < 0x80 {
 		goto done
 	}
 	x &^= 0x80 << 42
 
-	b = uint64(buf[i])
+	b = (buf[i])
 	i++
-	x |= b << 49
+	x |= uint64(b) << 49
 	if b < 0x80 {
 		goto done
 	}
 	x &^= 0x80 << 49
 
-	b = uint64(buf[i])
+	b = (buf[i])
 	i++
-	x |= b << 56
+	x |= uint64(b) << 56
 	if b < 0x80 {
 		goto done
 	}
 	x &^= 0x80 << 56
 
-	b = uint64(buf[i])
+	b = (buf[i])
 	i++
-	x |= b << 63
+	x |= uint64(b) << 63
 	if b < 0x80 {
 		goto done
 	}
