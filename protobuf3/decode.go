@@ -47,6 +47,8 @@ import (
 	"reflect"
 	"time"
 	"unsafe"
+
+	"github.com/nsd20463/cpuendian"
 )
 
 // errOverflow is returned when an integer is too large to be represented.
@@ -221,48 +223,47 @@ done:
 	return x, nil
 }
 
+func le64tocpu(x uint64) uint64 {
+	if cpuendian.Big {
+		x = ((x & 0xff) << 56) | ((x & 0xff00) << 40) | ((x & 0xff0000) << 24) | ((x & 0xff000000) << 8) |
+			((x & 0xff00000000) >> 8) | ((x & 0xff0000000000) >> 24) | ((x & 0xff000000000000) >> 40) | ((x & 0xff00000000000000) >> 56)
+	}
+	return x
+}
+
+func le32tocpu(x uint32) uint32 {
+	if cpuendian.Big {
+		x = ((x & 0xff) << 24) | ((x & 0xff00) << 8) | ((x & 0xff0000) >> 8) | ((x & 0xff000000) >> 24)
+	}
+	return x
+}
+
 // DecodeFixed64 reads a 64-bit integer from the Buffer.
 // This is the format for the
 // fixed64, sfixed64, and double protocol buffer types.
-func (p *Buffer) DecodeFixed64() (x uint64, err error) {
+func (p *Buffer) DecodeFixed64() (uint64, error) {
 	// x, err already 0
 	i := p.index + 8
 	if i < 0 || i > len(p.buf) {
-		err = io.ErrUnexpectedEOF
-		return
+		return 0, io.ErrUnexpectedEOF
 	}
 	p.index = i
 
-	buf := p.buf[i-8 : i]
-	x = uint64(buf[7]) << 56
-	x |= uint64(buf[0])
-	x |= uint64(buf[1]) << 8
-	x |= uint64(buf[2]) << 16
-	x |= uint64(buf[3]) << 24
-	x |= uint64(buf[4]) << 32
-	x |= uint64(buf[5]) << 40
-	x |= uint64(buf[6]) << 48
-	return
+	return le64tocpu(*(*uint64)(unsafe.Pointer(&p.buf[i-8]))), nil
 }
 
 // DecodeFixed32 reads a 32-bit integer from the Buffer.
 // This is the format for the
 // fixed32, sfixed32, and float protocol buffer types.
-func (p *Buffer) DecodeFixed32() (x uint64, err error) {
+func (p *Buffer) DecodeFixed32() (uint64, error) {
 	// x, err already 0
 	i := p.index + 4
 	if i < 0 || i > len(p.buf) {
-		err = io.ErrUnexpectedEOF
-		return
+		return 0, io.ErrUnexpectedEOF
 	}
 	p.index = i
 
-	buf := p.buf[i-4 : i]
-	x = uint64(buf[3]) << 24
-	x |= uint64(buf[0])
-	x |= uint64(buf[1]) << 8
-	x |= uint64(buf[2]) << 16
-	return
+	return uint64(le32tocpu(*(*uint32)(unsafe.Pointer(&p.buf[i-4])))), nil
 }
 
 // DecodeZigzag64 reads a zigzag-encoded 64-bit integer
