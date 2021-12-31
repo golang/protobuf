@@ -99,6 +99,12 @@ func (p *Buffer) decodeVarintSlow() (x uint64, err error) {
 		x |= (uint64(b) & 0x7F) << shift
 		if b < 0x80 {
 			p.index = i
+			if shift == 9*7 {
+				// the 10th byte can't have any non-zero unused bits
+				if b&0xfe != 0 {
+					err = errOverflow
+				}
+			}
 			return
 		}
 	}
@@ -144,7 +150,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	// checks and index by `i`
 	//_ = buf[i+8] // doesn't help (makes the code slower) in go 1.8.1 (still true with go 1.14.4)
 
-	b = (buf[i])
+	b = buf[i]
 	i++
 	x |= uint64(b) << 7
 	if b < 0x80 {
@@ -152,7 +158,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	}
 	x &^= 0x80 << 7
 
-	b = (buf[i])
+	b = buf[i]
 	i++
 	x |= uint64(b) << 14
 	if b < 0x80 {
@@ -160,7 +166,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	}
 	x &^= 0x80 << 14
 
-	b = (buf[i])
+	b = buf[i]
 	i++
 	x |= uint64(b) << 21
 	if b < 0x80 {
@@ -168,7 +174,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	}
 	x &^= 0x80 << 21
 
-	b = (buf[i])
+	b = buf[i]
 	i++
 	x |= uint64(b) << 28
 	if b < 0x80 {
@@ -176,7 +182,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	}
 	x &^= 0x80 << 28
 
-	b = (buf[i])
+	b = buf[i]
 	i++
 	x |= uint64(b) << 35
 	if b < 0x80 {
@@ -184,7 +190,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	}
 	x &^= 0x80 << 35
 
-	b = (buf[i])
+	b = buf[i]
 	i++
 	x |= uint64(b) << 42
 	if b < 0x80 {
@@ -192,7 +198,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	}
 	x &^= 0x80 << 42
 
-	b = (buf[i])
+	b = buf[i]
 	i++
 	x |= uint64(b) << 49
 	if b < 0x80 {
@@ -200,7 +206,7 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	}
 	x &^= 0x80 << 49
 
-	b = (buf[i])
+	b = buf[i]
 	i++
 	x |= uint64(b) << 56
 	if b < 0x80 {
@@ -208,10 +214,10 @@ func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	}
 	x &^= 0x80 << 56
 
-	b = (buf[i])
+	b = buf[i]
 	i++
 	x |= uint64(b) << 63
-	if b < 0x80 {
+	if b < 2 {
 		goto done
 	}
 	// x &^= 0x80 << 63 // Always zero.

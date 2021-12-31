@@ -1644,3 +1644,254 @@ func TestCustomEnum(t *testing.T) {
 		t.Errorf("AsProtobufFull doesn't define type AnEnum:\n%s", f)
 	}
 }
+
+func TestVarint(t *testing.T) {
+	var pb, pba []byte
+	var err error
+	var x uint64
+
+	for _, pad := range [][]byte{nil, []byte{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}} {
+		// exhaustively test the first 2M varints because we can, and it doesn't take long at all
+		wb := protobuf3.NewBuffer(make([]byte, 0, 10))
+		for i := uint64(0); i < 127; i++ {
+			pb = []byte{byte(i)}
+			pba = append(pb, pad...)
+			b := protobuf3.NewBuffer(pba)
+			x, err = b.DecodeVarint()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if x != i {
+				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+			}
+
+			wb.Reset()
+			wb.EncodeVarint(i)
+			if !bytes.Equal(wb.Bytes(), pb) {
+				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+			}
+		}
+
+		for i := uint64(128); i < 127*128; i++ {
+			pb = []byte{byte(i&0x7f | 0x80), byte(i >> 7)}
+			pba = append(pb, pad...)
+			b := protobuf3.NewBuffer(pba)
+			x, err = b.DecodeVarint()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if x != i {
+				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+			}
+
+			wb.Reset()
+			wb.EncodeVarint(i)
+			if !bytes.Equal(wb.Bytes(), pb) {
+				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+			}
+		}
+
+		for i := uint64(128 * 128); i < 127*128*128; i++ {
+			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte(i >> 14)}
+			pba = append(pb, pad...)
+			b := protobuf3.NewBuffer(pba)
+			x, err = b.DecodeVarint()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if x != i {
+				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+			}
+
+			wb.Reset()
+			wb.EncodeVarint(i)
+			if !bytes.Equal(wb.Bytes(), pb) {
+				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+			}
+		}
+
+		// spotcheck some larger varints
+		for i := uint64(128 * 128 * 128); i < 127*128*128*128; i += 3 * 127 {
+			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte(i >> 21)}
+			pba = append(pb, pad...)
+			b := protobuf3.NewBuffer(pba)
+			x, err = b.DecodeVarint()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if x != i {
+				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+			}
+
+			wb.Reset()
+			wb.EncodeVarint(i)
+			if !bytes.Equal(wb.Bytes(), pb) {
+				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+			}
+		}
+
+		for i := uint64(128 * 128 * 128 * 128); i < 127*128*128*128*128; i += 3 * 127 * 127 {
+			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80), byte(i >> 28)}
+			pba = append(pb, pad...)
+			b := protobuf3.NewBuffer(pba)
+			x, err = b.DecodeVarint()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if x != i {
+				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+			}
+
+			wb.Reset()
+			wb.EncodeVarint(i)
+			if !bytes.Equal(wb.Bytes(), pb) {
+				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+			}
+		}
+
+		for i := uint64(128 * 128 * 128 * 128 * 128); i < 127*128*128*128*128*128; i += 3 * 127 * 127 * 127 {
+			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80),
+				byte((i>>28)&0x7f | 0x80), byte(i >> 35)}
+			pba = append(pb, pad...)
+			b := protobuf3.NewBuffer(pba)
+			x, err = b.DecodeVarint()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if x != i {
+				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+			}
+
+			wb.Reset()
+			wb.EncodeVarint(i)
+			if !bytes.Equal(wb.Bytes(), pb) {
+				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+			}
+		}
+
+		for i := uint64(128 * 128 * 128 * 128 * 128 * 128); i < 127*128*128*128*128*128*128; i += 3 * 127 * 127 * 127 * 127 {
+			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80),
+				byte((i>>28)&0x7f | 0x80), byte((i>>35)&0x7f | 0x80), byte(i >> 42)}
+			pba = append(pb, pad...)
+			b := protobuf3.NewBuffer(pba)
+			x, err = b.DecodeVarint()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if x != i {
+				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+			}
+
+			wb.Reset()
+			wb.EncodeVarint(i)
+			if !bytes.Equal(wb.Bytes(), pb) {
+				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+			}
+		}
+
+		for i := uint64(128 * 128 * 128 * 128 * 128 * 128 * 128); i < 127*128*128*128*128*128*128*128; i += 3 * 127 * 127 * 127 * 127 * 127 {
+			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80),
+				byte((i>>28)&0x7f | 0x80), byte((i>>35)&0x7f | 0x80), byte((i>>42)&0x7f | 0x80), byte(i >> 49)}
+			pba = append(pb, pad...)
+			b := protobuf3.NewBuffer(pba)
+			x, err = b.DecodeVarint()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if x != i {
+				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+			}
+
+			wb.Reset()
+			wb.EncodeVarint(i)
+			if !bytes.Equal(wb.Bytes(), pb) {
+				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+			}
+		}
+
+		for i := uint64(128 * 128 * 128 * 128 * 128 * 128 * 128 * 128); i < 127*128*128*128*128*128*128*128*128; i += 3 * 127 * 127 * 127 * 127 * 127 * 127 {
+			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80),
+				byte((i>>28)&0x7f | 0x80), byte((i>>35)&0x7f | 0x80), byte((i>>42)&0x7f | 0x80), byte((i>>49)&0x7f | 0x80), byte(i >> 56)}
+			pba = append(pb, pad...)
+			b := protobuf3.NewBuffer(pba)
+			x, err = b.DecodeVarint()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if x != i {
+				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+			}
+
+			wb.Reset()
+			wb.EncodeVarint(i)
+			if !bytes.Equal(wb.Bytes(), pb) {
+				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+			}
+		}
+
+		for i := uint64(128 * 128 * 128 * 128 * 128 * 128 * 128 * 128 * 128); i+1 > 0x7fffffffffffffff; i += 3 * 127 * 127 * 127 * 127 * 127 * 127 * 127 {
+			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80),
+				byte((i>>28)&0x7f | 0x80), byte((i>>35)&0x7f | 0x80), byte((i>>42)&0x7f | 0x80), byte((i>>49)&0x7f | 0x80),
+				byte((i>>56)&0x7f | 0x80), byte(i >> 63)}
+			pba = append(pb, pad...)
+			b := protobuf3.NewBuffer(pba)
+			x, err = b.DecodeVarint()
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if x != i {
+				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+			}
+
+			wb.Reset()
+			wb.EncodeVarint(i)
+			if !bytes.Equal(wb.Bytes(), pb) {
+				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+			}
+		}
+
+		// check 1<<63
+		pb = []byte{0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01}
+		pba = append(pb, pad...)
+		x, err = protobuf3.NewBuffer(pba).DecodeVarint()
+		if err != nil {
+			t.Error(err)
+		} else if x != 1<<63 {
+			t.Errorf("DecodeVarint(% x) => 0x%x; expected 1<<63", pba, x)
+		}
+
+		// check overflow is caught
+		pb = []byte{0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x02}
+		pba = append(pb, pad...)
+		_, err = protobuf3.NewBuffer(pba).DecodeVarint()
+		if err == nil {
+			t.Errorf("DecodeVarint(% x) didn't detect overflow", pba)
+		}
+
+		pb = []byte{0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x0b}
+		pba = append(pb, pad...)
+		_, err = protobuf3.NewBuffer(pba).DecodeVarint()
+		if err == nil {
+			t.Errorf("DecodeVarint(% x) didn't detect overflow", pba)
+		}
+	}
+
+	// check truncation is caught
+	pb = []byte{0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x8b}
+	for i := range pb {
+		_, err = protobuf3.NewBuffer(pb[:i]).DecodeVarint()
+		if err == nil {
+			t.Errorf("DecodeVarint(% x) didn't detect truncation", pb[:i])
+		}
+	}
+}
