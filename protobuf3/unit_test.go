@@ -1664,12 +1664,14 @@ func TestVarint(t *testing.T) {
 			}
 			if x != i {
 				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+				return
 			}
 
 			wb.Reset()
 			wb.EncodeVarint(i)
 			if !bytes.Equal(wb.Bytes(), pb) {
 				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+				return
 			}
 		}
 
@@ -1684,12 +1686,14 @@ func TestVarint(t *testing.T) {
 			}
 			if x != i {
 				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+				return
 			}
 
 			wb.Reset()
 			wb.EncodeVarint(i)
 			if !bytes.Equal(wb.Bytes(), pb) {
 				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+				return
 			}
 		}
 
@@ -1704,12 +1708,14 @@ func TestVarint(t *testing.T) {
 			}
 			if x != i {
 				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+				return
 			}
 
 			wb.Reset()
 			wb.EncodeVarint(i)
 			if !bytes.Equal(wb.Bytes(), pb) {
 				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+				return
 			}
 		}
 
@@ -1725,12 +1731,14 @@ func TestVarint(t *testing.T) {
 			}
 			if x != i {
 				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+				return
 			}
 
 			wb.Reset()
 			wb.EncodeVarint(i)
 			if !bytes.Equal(wb.Bytes(), pb) {
 				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+				return
 			}
 		}
 
@@ -1745,12 +1753,14 @@ func TestVarint(t *testing.T) {
 			}
 			if x != i {
 				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+				return
 			}
 
 			wb.Reset()
 			wb.EncodeVarint(i)
 			if !bytes.Equal(wb.Bytes(), pb) {
 				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+				return
 			}
 		}
 
@@ -1766,12 +1776,14 @@ func TestVarint(t *testing.T) {
 			}
 			if x != i {
 				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+				return
 			}
 
 			wb.Reset()
 			wb.EncodeVarint(i)
 			if !bytes.Equal(wb.Bytes(), pb) {
 				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+				return
 			}
 		}
 
@@ -1787,12 +1799,14 @@ func TestVarint(t *testing.T) {
 			}
 			if x != i {
 				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+				return
 			}
 
 			wb.Reset()
 			wb.EncodeVarint(i)
 			if !bytes.Equal(wb.Bytes(), pb) {
 				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+				return
 			}
 		}
 
@@ -1808,12 +1822,14 @@ func TestVarint(t *testing.T) {
 			}
 			if x != i {
 				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+				return
 			}
 
 			wb.Reset()
 			wb.EncodeVarint(i)
 			if !bytes.Equal(wb.Bytes(), pb) {
 				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+				return
 			}
 		}
 
@@ -1829,12 +1845,14 @@ func TestVarint(t *testing.T) {
 			}
 			if x != i {
 				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+				return
 			}
 
 			wb.Reset()
 			wb.EncodeVarint(i)
 			if !bytes.Equal(wb.Bytes(), pb) {
 				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+				return
 			}
 		}
 
@@ -1851,12 +1869,14 @@ func TestVarint(t *testing.T) {
 			}
 			if x != i {
 				t.Errorf("DecodeVarint(% x (i=%d)) => %d", pba, i, x)
+				return
 			}
 
 			wb.Reset()
 			wb.EncodeVarint(i)
 			if !bytes.Equal(wb.Bytes(), pb) {
 				t.Errorf("EncodeVarint(%d) => % x; expected % x", i, wb.Bytes(), pb)
+				return
 			}
 		}
 
@@ -1866,8 +1886,10 @@ func TestVarint(t *testing.T) {
 		x, err = protobuf3.NewBuffer(pba).DecodeVarint()
 		if err != nil {
 			t.Error(err)
+			return
 		} else if x != 1<<63 {
 			t.Errorf("DecodeVarint(% x) => 0x%x; expected 1<<63", pba, x)
+			return
 		}
 
 		// check overflow is caught
@@ -1876,6 +1898,7 @@ func TestVarint(t *testing.T) {
 		_, err = protobuf3.NewBuffer(pba).DecodeVarint()
 		if err == nil {
 			t.Errorf("DecodeVarint(% x) didn't detect overflow", pba)
+			return
 		}
 
 		pb = []byte{0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x0b}
@@ -1883,6 +1906,7 @@ func TestVarint(t *testing.T) {
 		_, err = protobuf3.NewBuffer(pba).DecodeVarint()
 		if err == nil {
 			t.Errorf("DecodeVarint(% x) didn't detect overflow", pba)
+			return
 		}
 	}
 
@@ -1892,6 +1916,7 @@ func TestVarint(t *testing.T) {
 		_, err = protobuf3.NewBuffer(pb[:i]).DecodeVarint()
 		if err == nil {
 			t.Errorf("DecodeVarint(% x) didn't detect truncation", pb[:i])
+			return
 		}
 	}
 }
