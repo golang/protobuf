@@ -459,6 +459,9 @@ func (p *Buffer) Unmarshal(pb Message) error {
 // unmarshal_struct does the work of unmarshaling a structure.
 func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base unsafe.Pointer) error {
 	var err error
+	var pidx = 0      // index into prop.props[] where we should start searching for the next tag
+	var ptag = -1     // -1, or the previous tag (matched or not, depending on whether p is nil or not)
+	var p *Properties // nil, or the p where p.Tag == ptag
 	for err == nil && o.index < len(o.buf) {
 		var u uint64
 		start := o.index
@@ -472,13 +475,25 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 			return fmt.Errorf("protobuf3: %s: illegal tag %d (wiretype %v) at index %d of %d", st, tag, wire, start, len(o.buf))
 		}
 
-		var p *Properties
-		for i := range prop.props {
-			if prop.props[i].Tag == uint32(tag) {
-				p = &prop.props[i]
-				break
+		if tag != ptag {
+			if tag < ptag {
+				// the order on the wire has jumped around. this is legal in protobuf, but unusual. in any case we need to
+				// reset the search back to the start
+				pidx = 0
 			}
-		}
+			p = nil
+			for ; pidx < len(prop.props); pidx++ {
+				q := &prop.props[pidx]
+				if q.Tag >= uint32(tag) { // props[] is sorted by Tag
+					if q.Tag == uint32(tag) {
+						p = q
+					}
+					break
+				}
+			}
+			ptag = tag
+		} // else reuse previous search result `p`
+
 		if p == nil {
 			err = o.skip(st, wire)
 			continue
