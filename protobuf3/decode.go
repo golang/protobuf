@@ -463,16 +463,31 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 	var ptag = -1     // -1, or the previous tag (matched or not, depending on whether p is nil or not)
 	var p *Properties // nil, or the p where p.Tag == ptag
 	for err == nil && o.index < len(o.buf) {
-		var u uint64
 		start := o.index
-		u, err = o.DecodeVarint()
-		if err != nil {
-			break
-		}
-		wire := WireType(u & 0x7)
-		tag := int(u >> 3)
-		if tag <= 0 {
-			return fmt.Errorf("protobuf3: %s: illegal tag %d (wiretype %v) at index %d of %d", st, tag, wire, start, len(o.buf))
+		var wire WireType
+		var tag int
+		// most tags are one byte varints, so make that a special case and don't call DecodeVarint() and avoid error checks too
+		b := uint64(o.buf[start])
+		if b < 0x80 {
+			o.index++
+			wire = WireType(b & 0x7)
+			tag = int(b >> 3)
+		} else if start+1 < len(o.buf) && o.buf[start+1] < 0x80 {
+			u := uint32(b&^0x80) + uint32(o.buf[start+1])<<7
+			wire = WireType(u & 0x7)
+			tag = int(u >> 3)
+			o.index += 2
+		} else {
+			var u uint64
+			u, err = o.DecodeVarint()
+			if err != nil {
+				break
+			}
+			wire = WireType(u & 0x7)
+			tag = int(u >> 3)
+			if tag <= 0 {
+				return fmt.Errorf("protobuf3: %s: illegal tag %d (wiretype %v) at index %d of %d", st, tag, wire, start, len(o.buf))
+			}
 		}
 
 		if tag != ptag {
@@ -492,7 +507,7 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 				}
 			}
 			ptag = tag
-		} // else reuse previous search result `p`
+		} // else re-use previous search result `p`
 
 		if p == nil {
 			err = o.skip(st, wire)
