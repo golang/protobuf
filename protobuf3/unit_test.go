@@ -832,7 +832,11 @@ func TestTimeMsg(t *testing.T) {
 
 	eq("tm", mb.tm, m.tm, t)
 	eq("dur", mb.dur, m.dur, t)
-	eq("dur2", *mb.dur2, *m.dur2, t)
+	if mb.dur2 != nil {
+		eq("dur2", *mb.dur2, *m.dur2, t)
+	} else {
+		t.Error("failed to unmarshal *time.Duration")
+	}
 	eq("dur3", mb.dur3, m.dur3, t)
 	eq("dur4", mb.dur4, m.dur4, t)
 }
