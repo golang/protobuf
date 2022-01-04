@@ -1657,7 +1657,7 @@ func TestVarint(t *testing.T) {
 	for _, pad := range [][]byte{nil, []byte{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}} {
 		// exhaustively test the first 2M varints because we can, and it doesn't take long at all
 		wb := protobuf3.NewBuffer(make([]byte, 0, 10))
-		for i := uint64(0); i < 127; i++ {
+		for i := uint64(0); i < 128; i++ {
 			pb = []byte{byte(i)}
 			pba = append(pb, pad...)
 			b := protobuf3.NewBuffer(pba)
@@ -1679,7 +1679,7 @@ func TestVarint(t *testing.T) {
 			}
 		}
 
-		for i := uint64(128); i < 127*128; i++ {
+		for i := uint64(128); i < 128*128; i++ {
 			pb = []byte{byte(i&0x7f | 0x80), byte(i >> 7)}
 			pba = append(pb, pad...)
 			b := protobuf3.NewBuffer(pba)
@@ -1701,7 +1701,7 @@ func TestVarint(t *testing.T) {
 			}
 		}
 
-		for i := uint64(128 * 128); i < 127*128*128; i++ {
+		for i := uint64(128 * 128); i < 128*128*128; i++ {
 			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte(i >> 14)}
 			pba = append(pb, pad...)
 			b := protobuf3.NewBuffer(pba)
@@ -1724,7 +1724,7 @@ func TestVarint(t *testing.T) {
 		}
 
 		// spotcheck some larger varints
-		for i := uint64(128 * 128 * 128); i < 127*128*128*128; i += 3 * 127 {
+		for i := uint64(128 * 128 * 128); i < 128*128*128*128; i += 3 * 127 {
 			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte(i >> 21)}
 			pba = append(pb, pad...)
 			b := protobuf3.NewBuffer(pba)
@@ -1746,7 +1746,7 @@ func TestVarint(t *testing.T) {
 			}
 		}
 
-		for i := uint64(128 * 128 * 128 * 128); i < 127*128*128*128*128; i += 3 * 127 * 127 {
+		for i := uint64(128 * 128 * 128 * 128); i < 128*128*128*128*128; i += 3 * 127 * 127 {
 			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80), byte(i >> 28)}
 			pba = append(pb, pad...)
 			b := protobuf3.NewBuffer(pba)
@@ -1768,7 +1768,7 @@ func TestVarint(t *testing.T) {
 			}
 		}
 
-		for i := uint64(128 * 128 * 128 * 128 * 128); i < 127*128*128*128*128*128; i += 3 * 127 * 127 * 127 {
+		for i := uint64(128 * 128 * 128 * 128 * 128); i < 128*128*128*128*128*128; i += 3 * 127 * 127 * 127 {
 			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80),
 				byte((i>>28)&0x7f | 0x80), byte(i >> 35)}
 			pba = append(pb, pad...)
@@ -1791,7 +1791,7 @@ func TestVarint(t *testing.T) {
 			}
 		}
 
-		for i := uint64(128 * 128 * 128 * 128 * 128 * 128); i < 127*128*128*128*128*128*128; i += 3 * 127 * 127 * 127 * 127 {
+		for i := uint64(128 * 128 * 128 * 128 * 128 * 128); i < 128*128*128*128*128*128*128; i += 3 * 127 * 127 * 127 * 127 {
 			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80),
 				byte((i>>28)&0x7f | 0x80), byte((i>>35)&0x7f | 0x80), byte(i >> 42)}
 			pba = append(pb, pad...)
@@ -1814,7 +1814,7 @@ func TestVarint(t *testing.T) {
 			}
 		}
 
-		for i := uint64(128 * 128 * 128 * 128 * 128 * 128 * 128); i < 127*128*128*128*128*128*128*128; i += 3 * 127 * 127 * 127 * 127 * 127 {
+		for i := uint64(128 * 128 * 128 * 128 * 128 * 128 * 128); i < 128*128*128*128*128*128*128*128; i += 3 * 127 * 127 * 127 * 127 * 127 {
 			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80),
 				byte((i>>28)&0x7f | 0x80), byte((i>>35)&0x7f | 0x80), byte((i>>42)&0x7f | 0x80), byte(i >> 49)}
 			pba = append(pb, pad...)
@@ -1837,7 +1837,7 @@ func TestVarint(t *testing.T) {
 			}
 		}
 
-		for i := uint64(128 * 128 * 128 * 128 * 128 * 128 * 128 * 128); i < 127*128*128*128*128*128*128*128*128; i += 3 * 127 * 127 * 127 * 127 * 127 * 127 {
+		for i := uint64(128 * 128 * 128 * 128 * 128 * 128 * 128 * 128); i < 128*128*128*128*128*128*128*128*128; i += 3 * 127 * 127 * 127 * 127 * 127 * 127 {
 			pb = []byte{byte(i&0x7f | 0x80), byte((i>>7)&0x7f | 0x80), byte((i>>14)&0x7f | 0x80), byte((i>>21)&0x7f | 0x80),
 				byte((i>>28)&0x7f | 0x80), byte((i>>35)&0x7f | 0x80), byte((i>>42)&0x7f | 0x80), byte((i>>49)&0x7f | 0x80), byte(i >> 56)}
 			pba = append(pb, pad...)
