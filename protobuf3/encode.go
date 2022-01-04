@@ -946,7 +946,7 @@ func (o *Buffer) enc_array_ptr_struct_message(p *Properties, base unsafe.Pointer
 // Encode a slice of message structs ([]struct).
 func (o *Buffer) enc_slice_struct_message(p *Properties, base unsafe.Pointer) {
 	s := *(*[]byte)(unsafe.Pointer(uintptr(base) + p.offset)) // note this could just as well be (*[]int) or anything
-	n := len(s)                                               // note this is the # of elements, not the # of bytes, because of the way a Slice is built in the runtime (go1.7) as { start *T, len, cap int }
+	n := ulen(s)                                              // note this is the # of elements, not the # of bytes, because of the way a Slice is built in the runtime (go1.7) as { start *T, len, cap int }
 	if n == 0 {
 		// no elements to encode. we have to treat this as a special case because &s[0] would cause a panic since it would be returning a pointer to something past the end of the underlying array
 		return
@@ -992,7 +992,7 @@ func (o *Buffer) enc_array_marshaler(p *Properties, base unsafe.Pointer) {
 }
 
 // utility function to encode a series of 'n' struct messages in a line in memory (from a slice or from an array)
-func enc_struct_messages(o *Buffer, p *Properties, base unsafe.Pointer, n int) {
+func enc_struct_messages(o *Buffer, p *Properties, base unsafe.Pointer, n uint) {
 	sz := p.stype.Size()  // size of one struct
 	nb := uintptr(n) * sz // # of bytes used by the array of structs
 

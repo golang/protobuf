@@ -87,7 +87,7 @@ func (p *Buffer) decodeVarintSlow() (x uint64, err error) {
 	// x, err already 0
 
 	i := p.index
-	l := len(p.buf)
+	l := ulen(p.buf)
 
 	for shift := uint(0); shift < 64; shift += 7 {
 		if i >= l {
@@ -120,7 +120,7 @@ func (p *Buffer) decodeVarintSlow() (x uint64, err error) {
 func (p *Buffer) DecodeVarint() (x uint64, err error) {
 	i := p.index
 	buf := p.buf
-	n := len(buf)
+	n := ulen(buf)
 	var b uint8
 
 	if i >= n {
@@ -250,7 +250,7 @@ func le32tocpu(x uint32) uint32 {
 func (p *Buffer) DecodeFixed64() (uint64, error) {
 	// x, err already 0
 	i := p.index + 8
-	if i < 0 || i > len(p.buf) {
+	if i < 8 || i > ulen(p.buf) {
 		return 0, io.ErrUnexpectedEOF
 	}
 	p.index = i
@@ -264,7 +264,7 @@ func (p *Buffer) DecodeFixed64() (uint64, error) {
 func (p *Buffer) DecodeFixed32() (uint64, error) {
 	// x, err already 0
 	i := p.index + 4
-	if i < 0 || i > len(p.buf) {
+	if i < 4 || i > ulen(p.buf) {
 		return 0, io.ErrUnexpectedEOF
 	}
 	p.index = i
@@ -314,12 +314,12 @@ func (p *Buffer) DecodeRawBytes() ([]byte, error) {
 		return nil, err
 	}
 
-	nb := int(n)
-	if nb < 0 || uint64(nb) != n {
+	nb := uint(n)
+	if uint64(nb) != n {
 		return nil, fmt.Errorf("protobuf3: bad byte length %d", n)
 	}
 	end := p.index + nb
-	if end < p.index || end > len(p.buf) {
+	if end < p.index || end > ulen(p.buf) {
 		return nil, io.ErrUnexpectedEOF
 	}
 
@@ -344,7 +344,7 @@ func (p *Buffer) DecodeStringBytes() (string, error) {
 // value returned. In practice it runs much faster.
 func (p *Buffer) SkipVarint() error {
 	i := p.index
-	l := len(p.buf)
+	l := ulen(p.buf)
 
 	for shift := uint(0); shift < 64; shift += 7 {
 		if i >= l {
@@ -365,13 +365,13 @@ func (p *Buffer) SkipVarint() error {
 // SkipFixed skips over n bytes. Useful for skipping over Fixed32 and Fixed64 with proper arguments,
 // but also used to skip over arbitrary lengths.
 func (p *Buffer) SkipFixed(n uint64) error {
-	nb := int(n)
-	if nb < 0 || uint64(nb) != n {
+	nb := uint(n)
+	if uint64(nb) != n {
 		return fmt.Errorf("protobuf3: bad skip length %d", n)
 	}
 
 	i := p.index + nb
-	if i < p.index || i > len(p.buf) {
+	if i < p.index || i > ulen(p.buf) {
 		return io.ErrUnexpectedEOF
 	}
 
@@ -388,12 +388,12 @@ func (p *Buffer) SkipRawBytes() error {
 		return err
 	}
 
-	nb := int(n)
-	if nb < 0 || uint64(nb) != n {
+	nb := uint(n)
+	if uint64(nb) != n {
 		return fmt.Errorf("protobuf3: bad byte length %d", n)
 	}
 	end := p.index + nb
-	if end < p.index || end > len(p.buf) {
+	if end < p.index || end > ulen(p.buf) {
 		return io.ErrUnexpectedEOF
 	}
 
@@ -431,7 +431,7 @@ func (p *Buffer) Unmarshal(pb Message) error {
 	// If the object can unmarshal itself, let it.
 	if m, ok := pb.(Marshaler); ok {
 		err := m.UnmarshalProtobuf3(p.buf[p.index:])
-		p.index = len(p.buf)
+		p.index = ulen(p.buf)
 		return err
 	}
 
@@ -462,7 +462,7 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 	var pidx = 0      // index into prop.props[] where we should start searching for the next tag
 	var ptag = -1     // -1, or the previous tag (matched or not, depending on whether p is nil or not)
 	var p *Properties // nil, or the p where p.Tag == ptag
-	for err == nil && o.index < len(o.buf) {
+	for err == nil && o.index < ulen(o.buf) {
 		start := o.index
 		var wire WireType
 		var tag int
@@ -472,7 +472,7 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 			o.index++
 			wire = WireType(b & 0x7)
 			tag = int(b >> 3)
-		} else if start+1 < len(o.buf) && o.buf[start+1] < 0x80 {
+		} else if start+1 < ulen(o.buf) && o.buf[start+1] < 0x80 {
 			u := uint32(b&^0x80) + uint32(o.buf[start+1])<<7
 			wire = WireType(u & 0x7)
 			tag = int(u >> 3)
@@ -770,7 +770,7 @@ func (o *Buffer) dec_slice_packed_bool(p *Properties, base unsafe.Pointer) error
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded bools
+	nb := uint(nn) // number of bytes of encoded bools
 	fin := o.index + nb
 	if fin < o.index {
 		return errOverflow
@@ -803,7 +803,7 @@ func (o *Buffer) dec_array_packed_bool(p *Properties, base unsafe.Pointer) error
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded bools
+	nb := uint(nn) // number of bytes of encoded bools
 	fin := o.index + nb
 	if fin < o.index {
 		return errOverflow
@@ -828,7 +828,7 @@ func (o *Buffer) dec_slice_packed_int8(p *Properties, base unsafe.Pointer) error
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded int8s
+	nb := uint(nn) // number of bytes of encoded int8s
 
 	fin := o.index + nb
 	if fin < o.index {
@@ -860,7 +860,7 @@ func (o *Buffer) dec_array_packed_int8(p *Properties, base unsafe.Pointer) error
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded bools
+	nb := uint(nn) // number of bytes of encoded bools
 	fin := o.index + nb
 	if fin < o.index {
 		return errOverflow
@@ -871,7 +871,7 @@ func (o *Buffer) dec_array_packed_int8(p *Properties, base unsafe.Pointer) error
 		if err != nil {
 			return err
 		}
-		if len(s) < n {
+		if uint(len(s)) < n {
 			s = append(s, int8(u))
 		}
 	}
@@ -887,7 +887,7 @@ func (o *Buffer) dec_slice_packed_int16(p *Properties, base unsafe.Pointer) erro
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded int16s
+	nb := uint(nn) // number of bytes of encoded int16s
 
 	fin := o.index + nb
 	if fin < o.index {
@@ -919,7 +919,7 @@ func (o *Buffer) dec_array_packed_int16(p *Properties, base unsafe.Pointer) erro
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded bools
+	nb := uint(nn) // number of bytes of encoded bools
 	fin := o.index + nb
 	if fin < o.index {
 		return errOverflow
@@ -930,7 +930,7 @@ func (o *Buffer) dec_array_packed_int16(p *Properties, base unsafe.Pointer) erro
 		if err != nil {
 			return err
 		}
-		if len(s) < n {
+		if uint(len(s)) < n {
 			s = append(s, int16(u))
 		}
 	}
@@ -946,7 +946,7 @@ func (o *Buffer) dec_slice_packed_int32(p *Properties, base unsafe.Pointer) erro
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded int32s
+	nb := uint(nn) // number of bytes of encoded int32s
 
 	fin := o.index + nb
 	if fin < o.index {
@@ -978,7 +978,7 @@ func (o *Buffer) dec_array_packed_int32(p *Properties, base unsafe.Pointer) erro
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded bools
+	nb := uint(nn) // number of bytes of encoded bools
 	fin := o.index + nb
 	if fin < o.index {
 		return errOverflow
@@ -989,7 +989,7 @@ func (o *Buffer) dec_array_packed_int32(p *Properties, base unsafe.Pointer) erro
 		if err != nil {
 			return err
 		}
-		if len(s) < n {
+		if uint(len(s)) < n {
 			s = append(s, int32(u))
 		}
 	}
@@ -1005,7 +1005,7 @@ func (o *Buffer) dec_slice_packed_int(p *Properties, base unsafe.Pointer) error 
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded ints
+	nb := uint(nn) // number of bytes of encoded ints
 
 	fin := o.index + nb
 	if fin < o.index {
@@ -1031,7 +1031,7 @@ func (o *Buffer) dec_slice_packed_int64(p *Properties, base unsafe.Pointer) erro
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded int64s
+	nb := uint(nn) // number of bytes of encoded int64s
 
 	fin := o.index + nb
 	if fin < o.index {
@@ -1063,7 +1063,7 @@ func (o *Buffer) dec_array_packed_int64(p *Properties, base unsafe.Pointer) erro
 	if err != nil {
 		return err
 	}
-	nb := int(nn) // number of bytes of encoded bools
+	nb := uint(nn) // number of bytes of encoded bools
 	fin := o.index + nb
 	if fin < o.index {
 		return errOverflow
@@ -1074,7 +1074,7 @@ func (o *Buffer) dec_array_packed_int64(p *Properties, base unsafe.Pointer) erro
 		if err != nil {
 			return err
 		}
-		if len(s) < n {
+		if uint(len(s)) < n {
 			s = append(s, int64(u))
 		}
 	}
@@ -1139,8 +1139,8 @@ func (o *Buffer) dec_new_map(p *Properties, base unsafe.Pointer) error {
 	if err != nil {
 		return err
 	}
-	oi := o.index       // index at the end of this map entry
-	o.index -= len(raw) // move buffer back to start of map entry
+	oi := o.index        // index at the end of this map entry
+	o.index -= ulen(raw) // move buffer back to start of map entry
 
 	mptr := reflect.NewAt(p.mtype, unsafe.Pointer(uintptr(base)+p.offset)) // *map[K]V
 	if mptr.Elem().IsNil() {
@@ -1486,7 +1486,7 @@ func (o *Buffer) decode_time_Time(t *time.Time) error {
 	o.buf, o.index = buf, 0
 
 	var secs, nanos uint64
-	for o.index < len(o.buf) {
+	for o.index < ulen(o.buf) {
 		tag, err := o.DecodeVarint()
 		if err != nil {
 			o.buf, o.index = obuf, oi
@@ -1531,9 +1531,9 @@ func (o *Buffer) dec_Duration(p *Properties) (time.Duration, error) {
 	if err != nil {
 		return 0, err
 	}
-	end := o.index + int(n)
+	end := o.index + uint(n)
 
-	if end < o.index || end > len(o.buf) {
+	if end < o.index || end > ulen(o.buf) {
 		return 0, io.ErrUnexpectedEOF
 	}
 
@@ -1541,7 +1541,7 @@ func (o *Buffer) dec_Duration(p *Properties) (time.Duration, error) {
 	oo := newBuffer(o.buf[o.index:end:end])
 
 	var secs, nanos uint64
-	for oo.index < len(oo.buf) {
+	for oo.index < ulen(oo.buf) {
 		tag, err := oo.DecodeVarint()
 		if err != nil {
 			return 0, err

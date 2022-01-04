@@ -66,11 +66,11 @@ type Message interface {
 // decode []bytes references directly into the []byte passed to NewBuffer()
 // rather than being expensive copies.
 type Buffer struct {
-	buf           []byte                 // encode/decode byte stream
-	index         int                    // read position in .buf[]
-	Immutable     bool                   // true if we the caller promises the contents of buf[] are immutable, and thus we can retain references to it for types which decode into []byte
-	err           error                  // nil, or the first error which happened during operation
-	array_indexes map[unsafe.Pointer]int // map of base address of array -> index of next unfilled slot (or nil if never used)
+	buf           []byte                  // encode/decode byte stream
+	index         uint                    // read position in .buf[]
+	Immutable     bool                    // true if we the caller promises the contents of buf[] are immutable, and thus we can retain references to it for types which decode into []byte
+	err           error                   // nil, or the first error which happened during operation
+	array_indexes map[unsafe.Pointer]uint // map of base address of array -> index of next unfilled slot (or nil if never used)
 }
 
 // NewBuffer allocates a new Buffer and initializes its internal data to
@@ -126,16 +126,19 @@ func (p *Buffer) Rewind() {
 	p.index = 0
 }
 
+// uint(len([]byte)), b/c using uint for indexing saves us some bounds checks for negative indexes
+func ulen(buf []byte) uint { return uint(len(buf)) }
+
 // returns true if we've decoded to the end of the buffer
 func (p *Buffer) EOF() bool {
-	return len(p.buf) == p.index
+	return ulen(p.buf) == p.index
 }
 
 // save our current position in decoding into an array
-func (p *Buffer) saveIndex(ptr unsafe.Pointer, idx int) {
+func (p *Buffer) saveIndex(ptr unsafe.Pointer, idx uint) {
 	if p.array_indexes == nil {
 		// the 1st time we need to allocate
-		p.array_indexes = make(map[unsafe.Pointer]int)
+		p.array_indexes = make(map[unsafe.Pointer]uint)
 	}
 	p.array_indexes[ptr] = idx
 }
@@ -145,7 +148,7 @@ func (p *Buffer) saveIndex(ptr unsafe.Pointer, idx int) {
 // If the end of the buffer is reached 0,nil,nil,0,nil is returned.
 func (p *Buffer) Next() (id int, full []byte, val []byte, wt WireType, err error) {
 	start := p.index
-	if start == len(p.buf) {
+	if start == ulen(p.buf) {
 		// end of buffer
 		return 0, nil, nil, 0, nil
 	}
@@ -189,7 +192,7 @@ func (p *Buffer) Next() (id int, full []byte, val []byte, wt WireType, err error
 // If no match is found, ErrNotFound is returned.
 // If sorted is true then this function assumes the message's fields are sorted by id, and encountering any id > 'id' short circuits the search
 func (p *Buffer) Find(id uint, sorted bool) (position int, full []byte, val []byte, wt WireType, err error) {
-	for p.index < len(p.buf) {
+	for p.index < ulen(p.buf) {
 		start := p.index
 		var vi uint64
 		vi, err = p.DecodeVarint()
@@ -222,7 +225,7 @@ func (p *Buffer) Find(id uint, sorted bool) (position int, full []byte, val []by
 				val = p.buf[val_start:p.index:p.index]
 			} // else val is already set up
 
-			return start, p.buf[start:p.index:p.index], val, wt, err
+			return int(start), p.buf[start:p.index:p.index], val, wt, err
 
 		} else if sorted && vi>>3 > uint64(id) {
 			// we've advanced past the requested id, and we're assured the message is sorted by id
@@ -294,7 +297,7 @@ out:
 		}
 
 		index := p.index
-		if index == len(p.buf) {
+		if index == ulen(p.buf) {
 			break
 		}
 

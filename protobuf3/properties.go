@@ -390,7 +390,7 @@ type Properties struct {
 	mkeyprop *Properties  // set for map types only
 	mvalprop *Properties  // set for map types only
 
-	length int // set for array types only
+	length uint // set for array types only
 
 	dec    decoder
 	valDec valueDecoder // set for bool and numeric types only
@@ -958,7 +958,7 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			}
 
 		case reflect.Array:
-			p.length = t1.Len()
+			p.length = uint(t1.Len())
 
 			if p.length == 0 {
 				// save checking the array length at encode-time by doing it now
