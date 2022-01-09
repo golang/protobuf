@@ -690,7 +690,13 @@ type IntMsg struct {
 	su16 []uint16 `protobuf:"varint,26"`
 	sz32 []int    `protobuf:"zigzag32,30"`
 	sz64 []int    `protobuf:"zigzag64,31"`
+
+	u32 U32 `protobuf:"varint,40"`
+	i32 I32 `protobuf:"varint,41"`
 }
+
+type U32 uint32
+type I32 = int32
 
 // same fields, but using types the old package can use
 type OldIntMsg struct {
@@ -711,6 +717,9 @@ type OldIntMsg struct {
 	su16 []uint32 `protobuf:"varint,26,packed"`
 	sz32 []int32  `protobuf:"zigzag32,30,packed"`
 	sz64 []int64  `protobuf:"zigzag64,31,packed"`
+
+	u32 U32 `protobuf:"varint,40"`
+	i32 I32 `protobuf:"varint,41"`
 }
 
 func (*OldIntMsg) ProtoMessage()    {}
@@ -736,6 +745,9 @@ func TestIntMsg(t *testing.T) {
 		su16: []uint16{5, 55},
 		sz32: []int{555, -555},
 		sz64: []int{-5761760885135729648, 5761760885135729648},
+
+		u32: 32,
+		i32: 33,
 	}
 
 	o := OldIntMsg{
@@ -756,6 +768,9 @@ func TestIntMsg(t *testing.T) {
 		su16: []uint32{5, 55},
 		sz32: []int32{555, -555},
 		sz64: []int64{-5761760885135729648, 5761760885135729648},
+
+		u32: 32,
+		i32: 33,
 	}
 
 	check(&o, &o, t)
