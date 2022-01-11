@@ -309,24 +309,43 @@ func (p *Buffer) DecodeZigzag32() (x uint64, err error) {
 // type and for embedded messages.
 // The returned slice points to shared memory. Treat as read-only.
 func (p *Buffer) DecodeRawBytes() ([]byte, error) {
-	n, err := p.DecodeVarint()
-	if err != nil {
-		return nil, err
+	// many strings and structs are short. it pays to have a special case for these
+	i := p.index
+	n := ulen(p.buf)
+	if i >= n {
+		return nil, io.ErrUnexpectedEOF
+	}
+	c := uint(p.buf[i])
+	i++
+	if c < 0x80 {
+		// 1-byte count
+	} else if i < n && p.buf[i] < 0x80 {
+		// 2-byte count
+		c &^= 0x80
+		c += uint(p.buf[i]) << 7
+		i++
+	} else {
+		c64, err := p.DecodeVarint()
+		if err != nil {
+			return nil, err
+		}
+		c = uint(c64)
+		if uint64(c) != c64 {
+			return nil, fmt.Errorf("protobuf3: bad byte length %d", c64)
+		}
+		i = p.index
 	}
 
-	nb := uint(n)
-	if uint64(nb) != n {
-		return nil, fmt.Errorf("protobuf3: bad byte length %d", n)
-	}
-	end := p.index + nb
-	if end < p.index || end > ulen(p.buf) {
+	end := i + c
+	if end < i || end > n {
 		return nil, io.ErrUnexpectedEOF
 	}
 
-	buf := p.buf[p.index:end:end]
+	buf := p.buf[i:end:end]
 	p.index = end
 
 	return buf, nil
+
 }
 
 // DecodeStringBytes reads an encoded string from the Buffer.
@@ -340,14 +359,15 @@ func (p *Buffer) DecodeStringBytes() (string, error) {
 }
 
 // SkipVarint skips over a varint-encoded integer from the Buffer.
-// Functionally it is identical to calling DecodeVarint and ignoring the
-// value returned. In practice it runs much faster.
+// Functionally it is similar to calling DecodeVarint and ignoring the
+// value returned, except that it doesn't worry about 64-bit overflow
+// of the varint value, and it runs much faster than DecodeVarint.
 func (p *Buffer) SkipVarint() error {
 	i := p.index
-	l := ulen(p.buf)
+	n := ulen(p.buf)
 
-	for shift := uint(0); shift < 64; shift += 7 {
-		if i >= l {
+	for {
+		if i >= n {
 			return io.ErrUnexpectedEOF
 		}
 		b := p.buf[i]
@@ -357,9 +377,6 @@ func (p *Buffer) SkipVarint() error {
 			return nil
 		}
 	}
-
-	// The number is too large to represent in a 64-bit value.
-	return errOverflow
 }
 
 // SkipFixed skips over n bytes. Useful for skipping over Fixed32 and Fixed64 with proper arguments,
@@ -383,17 +400,35 @@ func (p *Buffer) SkipFixed(n uint64) error {
 // Functionally it is identical to calling DecodeRawBytes() and ignoring
 // the value returned.
 func (p *Buffer) SkipRawBytes() error {
-	n, err := p.DecodeVarint()
-	if err != nil {
-		return err
+	// many strings and structs are short. it pays to have a special case for these
+	i := p.index
+	n := ulen(p.buf)
+	if i >= n {
+		return io.ErrUnexpectedEOF
+	}
+	c := uint(p.buf[i])
+	i++
+	if c < 0x80 {
+		// 1-byte count
+	} else if i < n && p.buf[i] < 0x80 {
+		// 2-byte count
+		c &^= 0x80
+		c += uint(p.buf[i]) << 7
+		i++
+	} else {
+		c64, err := p.DecodeVarint()
+		if err != nil {
+			return err
+		}
+		c = uint(c64)
+		if uint64(c) != c64 {
+			return fmt.Errorf("protobuf3: bad byte length %d", c64)
+		}
+		i = p.index
 	}
 
-	nb := uint(n)
-	if uint64(nb) != n {
-		return fmt.Errorf("protobuf3: bad byte length %d", n)
-	}
-	end := p.index + nb
-	if end < p.index || end > ulen(p.buf) {
+	end := i + c
+	if end < i || end > n {
 		return io.ErrUnexpectedEOF
 	}
 
@@ -530,21 +565,18 @@ func (o *Buffer) unmarshal_struct(st reflect.Type, prop *StructProperties, base 
 // Skip the next item in the buffer. Its wire type is decoded and presented as an argument.
 // t can be nil
 func (o *Buffer) skip(t reflect.Type, wire WireType) error {
-	var err error
-
 	switch wire {
 	case WireVarint:
-		err = o.SkipVarint()
+		return o.SkipVarint()
 	case WireBytes:
-		err = o.SkipRawBytes()
+		return o.SkipRawBytes()
 	case WireFixed64:
-		err = o.SkipFixed(8)
+		return o.SkipFixed(8)
 	case WireFixed32:
-		err = o.SkipFixed(4)
+		return o.SkipFixed(4)
 	default:
-		err = fmt.Errorf("protobuf3: can't skip unknown wiretype %v for %v", wire, t)
+		return fmt.Errorf("protobuf3: can't skip unknown wiretype %v for %v", wire, t)
 	}
-	return err
 }
 
 // Get the value of the next item in the buffer. Similar to skip() but also returns the value.
