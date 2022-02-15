@@ -47,9 +47,6 @@ func MarshalAny(m proto.Message) (*anypb.Any, error) {
 	case DynamicAny:
 		m = dm.Message
 	case *DynamicAny:
-		if dm == nil {
-			return nil, proto.ErrNil
-		}
 		m = dm.Message
 	}
 	b, err := proto.Marshal(m)
