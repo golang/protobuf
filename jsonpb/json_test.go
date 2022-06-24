@@ -742,10 +742,20 @@ var unmarshalingTests = []struct {
 	{"oneof NullValue", Unmarshaler{}, `{"nullValue":null}`, &pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_NullValue{stpb.NullValue_NULL_VALUE}}},
 
 	// Country wins.
-	{"oneof two fields", Unmarshaler{}, `{"Country":"Australia","title":"some title"}`, &pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_Country{"Australia"}}},
+	{
+		"oneof two fields",
+		Unmarshaler{},
+		`{"Country":"Australia","title":"some title"}`,
+		&pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_Country{"Australia"}},
+	},
 
-	// But now homeAddress wins?
-	{"oneof two fields", Unmarshaler{}, `{"Country":"Australia","homeAddress":"USA"}`, &pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_HomeAddress{"USA"}}},
+	// But now homeAddress arbitrarily wins?
+	{
+		"oneof two fields",
+		Unmarshaler{},
+		`{"Country":"Australia","homeAddress":"USA"}`,
+		&pb2.MsgWithOneof{Union: &pb2.MsgWithOneof_HomeAddress{"USA"}},
+	},
 
 	{"orig_name input", Unmarshaler{}, `{"o_bool":true}`, &pb2.Simple{OBool: proto.Bool(true)}},
 	{"camelName input", Unmarshaler{}, `{"oBool":true}`, &pb2.Simple{OBool: proto.Bool(true)}},
