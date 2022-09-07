@@ -366,7 +366,7 @@ func (w *textWriter) writeSingularValue(v protoreflect.Value, fd protoreflect.Fi
 		}
 	case protoreflect.StringKind:
 		// NOTE: This does not validate UTF-8 for historical reasons.
-		w.writeQuotedString(string(v.String()))
+		w.writeQuotedString(v.String())
 	case protoreflect.BytesKind:
 		w.writeQuotedString(string(v.Bytes()))
 	case protoreflect.MessageKind, protoreflect.GroupKind:
