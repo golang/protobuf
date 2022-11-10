@@ -132,7 +132,7 @@ func (m *unknownFields) ProtoMessage()  { panic("not implemented") }
 func (*Buffer) DebugPrint(s string, b []byte) {
 	m := MessageReflect(new(unknownFields))
 	m.SetUnknown(b)
-	b, _ = prototext.MarshalOptions{AllowPartial: true, Indent: "\t"}.Marshal(m.Interface())
+	b, _ = prototext.MarshalOptions{AllowPartial: true, Indent: "\t", EmitUnknown: true}.Marshal(m.Interface())
 	fmt.Printf("==== %s ====\n%s==== %s ====\n", s, b, s)
 }
 
