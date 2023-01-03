@@ -102,6 +102,9 @@ func TestRoundTripProto3(t *testing.T) {
 
 	// also log the correct answer
 	c, err := proto.Marshal(m)
+	if err != nil {
+		t.Fatalf("protobuf3.Marshal: %v", err)
+	}
 	t.Logf(" c: % x", c)
 
 	m2 := new(pb3.Message)
@@ -1659,7 +1662,7 @@ func TestCustomEnum(t *testing.T) {
 
 	f := protobuf3.AsProtobufFull(reflect.TypeOf(m))
 	t.Log(f)
-	if strings.Index(f, ap) < 0 {
+	if !strings.Contains(f, ap) {
 		t.Errorf("AsProtobufFull doesn't define type AnEnum:\n%s", f)
 	}
 }

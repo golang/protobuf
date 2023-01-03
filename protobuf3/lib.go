@@ -330,12 +330,12 @@ out:
 				for i := 0; i < 4; i++ {
 					out.WriteString(fmt.Sprintf(" %.2x", r[i]))
 				}
-				out.WriteString(fmt.Sprintf(" .."))
+				out.WriteString(" ..")
 				for i := len(r) - 4; i < len(r); i++ {
 					out.WriteString(fmt.Sprintf(" %.2x", r[i]))
 				}
 			}
-			out.WriteString(fmt.Sprintf("\n"))
+			out.WriteString("\n")
 
 		case WireFixed32:
 			u, err = p.DecodeFixed32()
@@ -374,7 +374,7 @@ out:
 	if depth != 0 {
 		out.WriteString(fmt.Sprintf("%3d: start-end not balanced %d\n", p.index, depth))
 	}
-	out.WriteString(fmt.Sprintf("\n"))
+	out.WriteString("\n")
 
 	return out.String()
 }

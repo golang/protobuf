@@ -589,7 +589,8 @@ func (o *Buffer) get(t reflect.Type, wire WireType) ([]byte, error) {
 	case WireVarint:
 		err = o.SkipVarint()
 	case WireBytes:
-		n, err := o.DecodeVarint()
+		var n uint64
+		n, err = o.DecodeVarint()
 		start = o.index // reset the starting index to where the byte payload starts
 		if err == nil {
 			err = o.SkipFixed(n)
