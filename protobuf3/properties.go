@@ -1276,8 +1276,6 @@ func isAsProtobuf3er(t reflect.Type) bool {
 // Init populates the properties from a protocol buffer struct tag.
 // returns (skip, error)
 func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructField) (bool, error) {
-	// "bytes,49,opt,def=hello!"
-
 	// fields without a protobuf tag are an error
 	if tag == "" {
 		// backwards compatibility HACK. canonical golang.org/protobuf ignores errors on fields with names that start with XXX_
@@ -1396,7 +1394,7 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 			// field f is embedded in type t and has the special `protobuf:"embedded"` tag. Get f's fields and then merge them into t's
 			fprop, err := getPropertiesLocked(f.Type)
 			if err != nil {
-				err := fmt.Errorf("protobuf3: Error preparing field %q of type %q: %v", name, t.Name(), err)
+				err := fmt.Errorf("protobuf3: error preparing field %q of type %q: %v", name, t.Name(), err)
 				fmt.Fprintln(os.Stderr, err) // print the error too
 				delete(propertiesMap, t)
 				return nil, err
@@ -1426,7 +1424,7 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 
 		skip, err := p.init(f.Type, name, tag, &f)
 		if err != nil {
-			err := fmt.Errorf("protobuf3: Error preparing field %q of type %q: %v", name, t.Name(), err)
+			err := fmt.Errorf("protobuf3: error preparing field %q of type %q: %v", name, t.Name(), err)
 			fmt.Fprintln(os.Stderr, err) // print the error too
 			delete(propertiesMap, t)
 			return nil, err
@@ -1450,7 +1448,7 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 			if tname == "" {
 				tname = "<anonymous struct>"
 			}
-			err := fmt.Errorf("protobuf3: Error no encoder or decoder for field %q.%q of type %q", tname, name, f.Type.Name())
+			err := fmt.Errorf("protobuf3: error no encoder or decoder for field %q.%q of type %q", tname, name, f.Type.Name())
 			fmt.Fprintln(os.Stderr, err) // print the error too
 			delete(propertiesMap, t)
 			return nil, err

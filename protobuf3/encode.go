@@ -1128,7 +1128,6 @@ func (o *Buffer) enc_len_thing(enc func()) {
 
 // dummy no-op encoder used for encoding 0-length array types
 func (o *Buffer) enc_nothing(p *Properties, base unsafe.Pointer) {
-	return
 }
 
 // custom encoder for time.Time, encoding it into the protobuf3 standard Timestamp
