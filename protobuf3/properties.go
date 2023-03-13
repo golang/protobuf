@@ -123,7 +123,8 @@ type valueDecoder func(o *Buffer) (x uint64, err error)
 
 // StructProperties represents properties for all the fields of a struct.
 type StructProperties struct {
-	props []Properties // properties for each field encoded in protobuf, ordered by tag id
+	props    []Properties // properties for each field encoded in protobuf, ordered by tag id
+	reserved []uint32     // all the reserved tags
 }
 
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
@@ -143,8 +144,42 @@ func (sp *StructProperties) asProtobuf(t reflect.Type, tname string) string {
 			lines = append(lines, fmt.Sprintf("  %s %s = %d;", pp.asProtobuf, pp.protobufFieldName(t), pp.Tag))
 		}
 	}
+	if len(sp.reserved) != 0 {
+		var b strings.Builder
+		b.WriteString("  reserved ")
+		sep := ""
+		for _, r := range sp.reserved {
+			fmt.Fprintf(&b, "%s%d", sep, r)
+			sep = ", "
+		}
+		b.WriteByte(';')
+		lines = append(lines, b.String())
+	}
 	lines = append(lines, "}")
 	return strings.Join(lines, "\n")
+}
+
+// Reserved is a special type used to indicate reserved protobuf IDs. Instead of the usual protobuf tag, the tag
+// consists of a comma separated list of reserved protobuf IDs. Using these IDs elsewhere causes an error, and
+// they are listed in the `reserved` section by asProtobuf.
+// At the moment we only support reserveing IDs. If you need to reserve field names then you'll have to implement it.
+type Reserved [0]byte
+
+var reservedType = reflect.TypeOf((*Reserved)(nil)).Elem()
+
+// parse the protobuf tag of a Reserved field
+func (sp *StructProperties) parseReserved(tag string) error {
+	for _, s := range strings.Split(tag, ",") {
+		tag, err := strconv.Atoi(s)
+		if err != nil {
+			return fmt.Errorf("protobuf3: invalid reserved tag id %q: %v", s, err)
+		}
+		if tag <= 0 { // catch any negative or 0 values
+			return fmt.Errorf("protobuf3: reserved tag id %q out of range", s)
+		}
+		sp.reserved = append(sp.reserved, uint32(tag))
+	}
+	return nil
 }
 
 // return the name of this field in protobuf
@@ -1419,6 +1454,16 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 			continue
 		}
 
+		if f.Type == reservedType {
+			err := prop.parseReserved(tag)
+			if err != nil {
+				err := fmt.Errorf("protobuf3: error parsing protobuf3.Reserved field %q of type %q: %v", name, t.Name(), err)
+				fmt.Fprintln(os.Stderr, err) // print the error too
+				return nil, err
+			}
+			continue
+		}
+
 		prop.props = append(prop.props, Properties{})
 		p := &prop.props[len(prop.props)-1]
 
@@ -1455,6 +1500,23 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 		}
 	}
 
+	// sort and de-dup the reserved IDs
+	var reserved map[uint32]struct{}
+	if len(prop.reserved) != 0 {
+		reserved = make(map[uint32]struct{}, len(prop.reserved))
+		for _, r := range prop.reserved {
+			reserved[r] = struct{}{}
+		}
+		if len(reserved) != len(prop.reserved) {
+			// there are duplicate reserved IDs. Is this a bug? Maybe. For now, redup the reserved list.
+			prop.reserved = prop.reserved[:0]
+			for r := range reserved {
+				prop.reserved = append(prop.reserved, r)
+			}
+		}
+		sort.Slice(prop.reserved, func(i, j int) bool { return prop.reserved[i] < prop.reserved[j] })
+	}
+
 	// sort prop.props by tag, so we naturally encode in tag order as suggested by protobuf documentation
 	sort.Sort(prop)
 	if debug {
@@ -1464,12 +1526,17 @@ func getPropertiesLocked(t reflect.Type) (*StructProperties, error) {
 		}
 	}
 
-	// now that they are sorted, sanity check for duplicate tags, since some of us are hand editing the tags
+	// now that they are sorted, sanity check for duplicate or reserved tags, since some of us are hand editing the tags
 	prev_tag := uint32(0)
+	var err error
 	for i := range prop.props {
 		p := &prop.props[i]
 		if prev_tag == p.Tag {
-			err := fmt.Errorf("protobuf3: Error duplicate tag id %d assigned to %s.%s", p.Tag, t.String(), p.Name)
+			err = fmt.Errorf("protobuf3: error duplicate tag id %d assigned to %s.%s", p.Tag, t.String(), p.Name)
+		} else if _, ok := reserved[p.Tag]; ok {
+			err = fmt.Errorf("protobuf3: error reserved tag id %d assigned to %s.%s", p.Tag, t.String(), p.Name)
+		}
+		if err != nil {
 			fmt.Fprintln(os.Stderr, err) // print the error too
 			delete(propertiesMap, t)
 			return nil, err

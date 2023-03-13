@@ -43,6 +43,7 @@ import (
 	"strings"
 	"testing"
 	"time"
+	"unsafe"
 
 	"github.com/mistsys/protobuf3/protobuf3"
 	"github.com/mistsys/protobuf3/protobuf3/internal/unit_tests/duration"
@@ -1940,5 +1941,58 @@ func TestVarint(t *testing.T) {
 			t.Errorf("DecodeVarint(% x) didn't detect truncation", pb[:i])
 			return
 		}
+	}
+}
+
+type ReservedMsg struct {
+	protobuf3.Reserved `protobuf:"2,3"`
+	X                  uint32             `protobuf:"varint,4"`
+	_                  protobuf3.Reserved `protobuf:"5"`
+	MyReserved         protobuf3.Reserved `protobuf:"1,6"`
+	Y                  uint32             `protobuf:"varint,7"`
+}
+
+func TestReserved(t *testing.T) {
+	ox := unsafe.Offsetof(ReservedMsg{}.X)
+	oy := unsafe.Offsetof(ReservedMsg{}.Y)
+	sz := unsafe.Sizeof(ReservedMsg{})
+	if ox != 0 || oy != 4 || sz != 8 {
+		t.Errorf("unexpected offsets or sizeof struct with protobuf3.Reserved fields: %d, %d, %d", ox, oy, sz)
+	}
+
+	var m = ReservedMsg{
+		X: 0,
+		Y: 1,
+	}
+	b, err := protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// we should have encoded only Y
+	buf := protobuf3.NewBuffer(nil)
+	buf.EncodeVarint(7 << 3)
+	buf.EncodeVarint(1)
+	b2 := buf.Bytes()
+
+	if !bytes.Equal(b, b2) {
+		t.Errorf("unexpectd encoding %x != %x", b, b2)
+	}
+
+	var m2 ReservedMsg
+	err = protobuf3.Unmarshal(b, &m2)
+	if err != nil {
+		t.Error(err)
+	}
+
+	s := protobuf3.AsProtobuf(reflect.TypeOf(m))
+	t.Log(s)
+	if s != `message ReservedMsg {
+  uint32 x = 4;
+  uint32 y = 7;
+  reserved 1, 2, 3, 5, 6;
+}` {
+		t.Errorf("unexpected AsProtobuf result with reserved fields:\n%s\n", s)
+
 	}
 }
