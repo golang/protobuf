@@ -606,6 +606,8 @@ func TestNestedStructMsg(t *testing.T) {
 type EmptyStructMsg struct {
 	zero   InnerMsg   `protobuf:"bytes,1"`
 	zslice []InnerMsg `protobuf:"bytes,2"`
+	ptr    *InnerMsg  `protobuf:"bytes,3"` // this should encode the empty InnerMsg because we need to distiguish between a nil pointer and a pointer to a zero-value
+	zptr   *InnerMsg  `protobuf:"bytes,4"`
 }
 
 func (*EmptyStructMsg) ProtoMessage()    {}
@@ -628,6 +630,27 @@ func TestEmptyStructMsg(t *testing.T) {
 	check(&m, &m, t)
 
 	var mb, mc EmptyStructMsg
+	uncheck(&m, &mb, &mc, t)
+	eq("mb", m, mb, t)
+	eq("mc", m, mc, t)
+
+	// now set one of the pointers to point to a zero-value InnerMsg and retest. this time the zero-value
+	// must be encoded, so that we end up with a non-nil pointer when we unmarshal
+	m.ptr = &InnerMsg{}
+
+	pb, err = protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error("ERROR ", err)
+		return
+	}
+	if len(pb) == 0 {
+		t.Error("empty struct with non-nil pointer should NOT have encoded to nothing")
+		return
+	}
+
+	check(&m, &m, t)
+
+	mb, mc = EmptyStructMsg{}, EmptyStructMsg{}
 	uncheck(&m, &mb, &mc, t)
 	eq("mb", m, mb, t)
 	eq("mc", m, mc, t)

@@ -543,18 +543,13 @@ func (o *Buffer) enc_ptr_marshaler(p *Properties, base unsafe.Pointer) {
 func (o *Buffer) enc_ptr_struct_message(p *Properties, base unsafe.Pointer) {
 	structp := *(*unsafe.Pointer)(unsafe.Pointer(uintptr(base) + p.offset))
 	if structp == nil {
+		// a nil pointer encodes as nothing
 		return
 	}
 
-	iTag := len(o.buf)
+	// note: since this is pointer to a message we don't elide empty values, since they represent a pointer to a zero-value, not a nil pointer
 	o.buf = append(o.buf, p.tagcode...)
-	iLen := len(o.buf)
 	o.enc_len_struct(p.sprop, structp)
-
-	// if the contents encoded to nothing (length = 0) then we can skip this field entirely
-	if len(o.buf) == iLen+1 && o.buf[iLen] == 0 {
-		o.buf = o.buf[:iTag]
-	}
 }
 
 // Encode a slice of bools ([]bool) in packed format.
