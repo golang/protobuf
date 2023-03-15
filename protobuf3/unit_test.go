@@ -519,6 +519,8 @@ type NestedPtrStructMsg struct {
 	many   []*InnerMsg `protobuf:"bytes,3"`
 	more   []*InnerMsg `protobuf:"bytes,4"`
 	some   []*InnerMsg `protobuf:"bytes,5"`
+	empty  []InnerMsg  `protobuf:"bytes,6"`
+	ptrs   []*InnerMsg `protobuf:"bytes,7"`
 }
 
 func (*NestedPtrStructMsg) ProtoMessage()    {}
@@ -541,12 +543,21 @@ func TestNestedPtrStructMsg(t *testing.T) {
 
 	var mb, mc NestedPtrStructMsg
 	uncheck(&m, &mb, &mc, t)
+
+	t.Logf("m = %#v", m)
+	t.Logf("mb = %#v", mb)
+	t.Logf("mc = %#v", mc)
+
 	eq("mb.first", m.first, mb.first, t)
 	eq("mc.first", m.first, mc.first, t)
 	eq("mb.second", m.second, mb.second, t)
 	eq("mc.second", m.second, mc.second, t)
 	eq("mb.many", m.many, mb.many, t)
 	eq("mc.many", m.many, mc.many, t)
+	eq("mb.empty", m.empty, mb.empty, t)
+	eq("mc.empty", m.empty, mc.empty, t)
+	eq("mb.ptrs", m.ptrs, mb.ptrs, t)
+	eq("mc.ptrs", m.ptrs, mc.ptrs, t)
 }
 
 type NestedStructMsg struct {
@@ -555,6 +566,8 @@ type NestedStructMsg struct {
 	many   []InnerMsg   `protobuf:"bytes,3"`
 	more   [3]InnerMsg  `protobuf:"bytes,4"`
 	some   [1]*InnerMsg `protobuf:"bytes,5"`
+	empty  []InnerMsg   `protobuf:"bytes,6"`
+	ptrs   []*InnerMsg  `protobuf:"bytes,7"`
 }
 
 func TestNestedStructMsg(t *testing.T) {
@@ -580,7 +593,43 @@ func TestNestedStructMsg(t *testing.T) {
 	var mb NestedStructMsg
 	var mc NestedPtrStructMsg
 	uncheck(&m, &mb, &mc, t)
+
+	t.Logf("a = %#v", a)
+	t.Logf("mb = %#v", mb)
 	eq("mb", a, mb, t)
+
+	t.Logf("m = %#v", m)
+	t.Logf("mc = %#v", mc)
+	eq("mc", m, mc, t)
+}
+
+type EmptyStructMsg struct {
+	zero   InnerMsg   `protobuf:"bytes,1"`
+	zslice []InnerMsg `protobuf:"bytes,2"`
+}
+
+func (*EmptyStructMsg) ProtoMessage()    {}
+func (m *EmptyStructMsg) String() string { return fmt.Sprintf("%+v", *m) }
+func (m *EmptyStructMsg) Reset()         { *m = EmptyStructMsg{} }
+
+func TestEmptyStructMsg(t *testing.T) {
+	m := EmptyStructMsg{}
+
+	pb, err := protobuf3.Marshal(&m)
+	if err != nil {
+		t.Error("ERROR ", err)
+		return
+	}
+	if len(pb) != 0 {
+		t.Error("empty struct should have encoded to nothing")
+		return
+	}
+
+	check(&m, &m, t)
+
+	var mb, mc EmptyStructMsg
+	uncheck(&m, &mb, &mc, t)
+	eq("mb", m, mb, t)
 	eq("mc", m, mc, t)
 }
 
@@ -623,7 +672,7 @@ func (m *MapMsg) String() string { return fmt.Sprintf("%+v", *m) }
 func (m *MapMsg) Reset()         { *m = MapMsg{} }
 
 func TestMapMsg(t *testing.T) {
-	for _, m := range []MapMsg{
+	for i, m := range []MapMsg{
 		MapMsg{
 			m: map[string]int32{"123": 123, "abc": 124},
 		},
@@ -649,7 +698,13 @@ func TestMapMsg(t *testing.T) {
 			t.Error("ERROR ", err)
 			return
 		}
+		if i == 2 && len(m.e) != 0 { // double check, in case someone adds more test cases
+			// we have improved our marshaling of emptys struct. we elide them completely. this means that our output is different from that of proto.Marshal
+			// and we need to account for this
+			c = []byte{0x2a, 0x03, 0x08, 0xfd, 0x01, 0x2a, 0x03, 0x08, 0xff, 0x01}
+		}
 
+		t.Logf("m = %#v", m)
 		t.Logf("b = % x", b)
 		t.Logf("c = % x", c)
 

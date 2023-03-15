@@ -505,8 +505,15 @@ func (o *Buffer) enc_struct_message(p *Properties, base unsafe.Pointer) {
 	structp := unsafe.Pointer(uintptr(base) + p.offset)
 	// note struct is embedded in base, so pointer cannot be nil
 
+	iTag := len(o.buf)
 	o.buf = append(o.buf, p.tagcode...)
+	iLen := len(o.buf)
 	o.enc_len_struct(p.sprop, structp)
+
+	// if the contents encoded to nothing (length = 0) then we can skip this field entirely
+	if len(o.buf) == iLen+1 && o.buf[iLen] == 0 {
+		o.buf = o.buf[:iTag]
+	}
 }
 
 // Encode a *Marshaler.
@@ -539,8 +546,15 @@ func (o *Buffer) enc_ptr_struct_message(p *Properties, base unsafe.Pointer) {
 		return
 	}
 
+	iTag := len(o.buf)
 	o.buf = append(o.buf, p.tagcode...)
+	iLen := len(o.buf)
 	o.enc_len_struct(p.sprop, structp)
+
+	// if the contents encoded to nothing (length = 0) then we can skip this field entirely
+	if len(o.buf) == iLen+1 && o.buf[iLen] == 0 {
+		o.buf = o.buf[:iTag]
+	}
 }
 
 // Encode a slice of bools ([]bool) in packed format.
@@ -898,6 +912,7 @@ func (o *Buffer) enc_slice_ptr_struct_message(p *Properties, base unsafe.Pointer
 			return
 		}
 
+		// note: since this is an element of a slice we don't elide empty values, since they still serve to occupy a position in the slice
 		o.buf = append(o.buf, p.tagcode...)
 		o.enc_len_struct(p.sprop, structp)
 	}
@@ -938,6 +953,7 @@ func (o *Buffer) enc_array_ptr_struct_message(p *Properties, base unsafe.Pointer
 			return
 		}
 
+		// note: since this is an element of a slice we don't elide empty values, since they still serve to occupy a position in the slice
 		o.buf = append(o.buf, p.tagcode...)
 		o.enc_len_struct(p.sprop, structp)
 	}
@@ -1020,6 +1036,7 @@ func enc_struct_messages(o *Buffer, p *Properties, base unsafe.Pointer, n uint) 
 	for i := uintptr(0); i < nb; i += sz {
 		structp := unsafe.Pointer(uintptr(base) + i)
 
+		// note: since this is an element of a slice we don't elide empty values, since they still serve to occupy a position in the slice
 		o.buf = append(o.buf, p.tagcode...)
 		o.enc_len_struct(p.sprop, structp)
 	}
