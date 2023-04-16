@@ -594,7 +594,7 @@ func TestMarshalWithCustomValidation(t *testing.T) {
 	}
 	err = Unmarshal(strings.NewReader(js), &msg)
 	if err != nil {
-		t.Errorf("an unexpected error while unmarshaling from json: %v", err)
+		t.Errorf("an unexpected error while unmarshalling from json: %v", err)
 	}
 }
 
@@ -683,7 +683,7 @@ func TestMarshalUnsetRequiredFields(t *testing.T) {
 	}
 }
 
-var unmarshalingTests = []struct {
+var unmarshallingTests = []struct {
 	desc        string
 	unmarshaler Unmarshaler
 	json        string
@@ -831,14 +831,14 @@ var unmarshalingTests = []struct {
 	{"required bytes", Unmarshaler{}, `{"byts": []}`, &pb2.MsgWithRequiredBytes{Byts: []byte{}}},
 }
 
-func TestUnmarshaling(t *testing.T) {
-	for _, tt := range unmarshalingTests {
+func TestUnmarshalling(t *testing.T) {
+	for _, tt := range unmarshallingTests {
 		// Make a new instance of the type of our wanted object.
 		p := reflect.New(reflect.TypeOf(tt.pb).Elem()).Interface().(proto.Message)
 
 		err := tt.unmarshaler.Unmarshal(strings.NewReader(tt.json), p)
 		if err != nil {
-			t.Errorf("unmarshaling %s: %v", tt.desc, err)
+			t.Errorf("unmarshalling %s: %v", tt.desc, err)
 			continue
 		}
 
@@ -873,7 +873,7 @@ func TestUnmarshalNullObject(t *testing.T) {
 
 func TestUnmarshalNext(t *testing.T) {
 	// We only need to check against a few, not all of them.
-	tests := unmarshalingTests[:5]
+	tests := unmarshallingTests[:5]
 
 	// Create a buffer with many concatenated JSON objects.
 	var b bytes.Buffer
@@ -907,7 +907,7 @@ func TestUnmarshalNext(t *testing.T) {
 	}
 }
 
-var unmarshalingShouldError = []struct {
+var unmarshallingShouldError = []struct {
 	desc string
 	in   string
 	pb   proto.Message
@@ -925,8 +925,8 @@ var unmarshalingShouldError = []struct {
 	{"extension field for wrong message", `{"[jsonpb_test.name]": "value"}`, &pb2.Complex{}},
 }
 
-func TestUnmarshalingBadInput(t *testing.T) {
-	for _, tt := range unmarshalingShouldError {
+func TestUnmarshallingBadInput(t *testing.T) {
+	for _, tt := range unmarshallingShouldError {
 		err := UnmarshalString(tt.in, tt.pb)
 		if err == nil {
 			t.Errorf("expected error while parsing %q", tt.desc)
@@ -981,7 +981,7 @@ func TestAnyWithCustomResolver(t *testing.T) {
 	roundTrip := &anypb.Any{}
 	err = u.Unmarshal(bytes.NewReader([]byte(js)), roundTrip)
 	if err != nil {
-		t.Errorf("an unexpected error while unmarshaling any from JSON: %v", err)
+		t.Errorf("an unexpected error while unmarshalling any from JSON: %v", err)
 	}
 	if len(resolvedTypeUrls) != 2 {
 		t.Errorf("custom resolver was not invoked during marshaling")
@@ -989,7 +989,7 @@ func TestAnyWithCustomResolver(t *testing.T) {
 		t.Errorf("custom resolver was invoked with wrong URL: got %q, wanted %q", resolvedTypeUrls[1], "https://foobar.com/some.random.MessageKind")
 	}
 	if !proto.Equal(any, roundTrip) {
-		t.Errorf("message contents not set correctly after unmarshaling JSON: got %s, wanted %s", roundTrip, any)
+		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", roundTrip, any)
 	}
 }
 
@@ -1000,7 +1000,7 @@ func TestUnmarshalJSONPBUnmarshaler(t *testing.T) {
 		t.Errorf("an unexpected error while parsing into JSONPBUnmarshaler: %v", err)
 	}
 	if msg.RawJson != rawJson {
-		t.Errorf("message contents not set correctly after unmarshaling JSON: got %s, wanted %s", msg.RawJson, rawJson)
+		t.Errorf("message contents not set correctly after unmarshalling JSON: got %s, wanted %s", msg.RawJson, rawJson)
 	}
 }
 
@@ -1034,7 +1034,7 @@ func TestUnmarshalAnyJSONPBUnmarshaler(t *testing.T) {
 	}
 
 	if !proto.Equal(&got, &want) {
-		t.Errorf("message contents not set correctly after unmarshaling JSON: got %v, wanted %v", &got, &want)
+		t.Errorf("message contents not set correctly after unmarshalling JSON: got %v, wanted %v", &got, &want)
 	}
 }
 
@@ -1157,7 +1157,7 @@ var testMessageFD = func() []byte {
 	return buf.Bytes()
 }()
 
-// Test unmarshaling message containing unset required fields should produce error.
+// Test unmarshalling message containing unset required fields should produce error.
 func TestUnmarshalUnsetRequiredFields(t *testing.T) {
 	tests := []struct {
 		desc string
@@ -1258,7 +1258,7 @@ func TestUnmarshalUnsetRequiredFields(t *testing.T) {
 
 	for _, tc := range tests {
 		if err := UnmarshalString(tc.json, tc.pb); err == nil {
-			t.Errorf("%s: expected error while unmarshaling with unset required fields %s", tc.desc, tc.json)
+			t.Errorf("%s: expected error while unmarshalling with unset required fields %s", tc.desc, tc.json)
 		}
 	}
 }

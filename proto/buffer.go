@@ -114,7 +114,7 @@ func (b *Buffer) Marshal(m Message) error {
 
 // Unmarshal parses the wire-format message in the buffer and
 // places the decoded results in m.
-// It does not reset m before unmarshaling.
+// It does not reset m before unmarshalling.
 func (b *Buffer) Unmarshal(m Message) error {
 	err := UnmarshalMerge(b.Unread(), m)
 	b.idx = len(b.buf)
@@ -260,7 +260,7 @@ func (b *Buffer) DecodeStringBytes() (string, error) {
 }
 
 // DecodeMessage consumes a length-prefixed message from the buffer.
-// It does not reset m before unmarshaling.
+// It does not reset m before unmarshalling.
 func (b *Buffer) DecodeMessage(m Message) error {
 	v, err := b.DecodeRawBytes(false)
 	if err != nil {
@@ -272,7 +272,7 @@ func (b *Buffer) DecodeMessage(m Message) error {
 // DecodeGroup consumes a message group from the buffer.
 // It assumes that the start group marker has already been consumed and
 // consumes all bytes until (and including the end group marker).
-// It does not reset m before unmarshaling.
+// It does not reset m before unmarshalling.
 func (b *Buffer) DecodeGroup(m Message) error {
 	v, n, err := consumeGroup(b.buf[b.idx:])
 	if err != nil {

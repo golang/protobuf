@@ -1157,7 +1157,7 @@ func encodeDecode(t *testing.T, in, out proto.Message, msg string) {
 		t.Fatalf("failed marshaling %v: %v", msg, err)
 	}
 	if err := proto.Unmarshal(buf, out); err != nil {
-		t.Fatalf("failed unmarshaling %v: %v", msg, err)
+		t.Fatalf("failed unmarshalling %v: %v", msg, err)
 	}
 }
 
@@ -1456,7 +1456,7 @@ func TestJSON(t *testing.T) {
 		t.Fatalf("got %s, want %s", received, m)
 	}
 
-	// Test unmarshaling of JSON with symbolic enum name.
+	// Test unmarshalling of JSON with symbolic enum name.
 	const old = `{"count":4,"pet":["bunny","kitty"],"inner":{"host":"cauchy"},"bikeshed":"GREEN"}`
 	received.Reset()
 	if err := json.Unmarshal([]byte(old), received); err != nil {

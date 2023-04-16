@@ -55,7 +55,7 @@ type Unmarshaler struct {
 // they are unmarshaled from JSON. Messages that implement this should also
 // implement JSONPBMarshaler so that the custom format can be produced.
 //
-// The JSON unmarshaling must follow the JSON to proto specification:
+// The JSON unmarshalling must follow the JSON to proto specification:
 //	https://developers.google.com/protocol-buffers/docs/proto3#json
 //
 // Deprecated: Custom types should implement protobuf reflection instead.
@@ -104,7 +104,7 @@ func (u *Unmarshaler) UnmarshalNext(d *json.Decoder, m proto.Message) error {
 			return false
 		})
 		if !isEmpty {
-			// Perform unmarshaling into a newly allocated, empty message.
+			// Perform unmarshalling into a newly allocated, empty message.
 			mr = mr.New()
 
 			// Use a defer to copy all unmarshaled fields into the original message.

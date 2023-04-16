@@ -1432,7 +1432,7 @@ func (g *Generator) generateEnum(enum *EnumDescriptor) {
 }
 
 // The tag is a string like "varint,2,opt,name=fieldname,def=7" that
-// identifies details of the field for the protocol buffer marshaling and unmarshaling
+// identifies details of the field for the protocol buffer marshaling and unmarshalling
 // code.  The fields are:
 //	wire encoding
 //	protocol tag number
@@ -1743,7 +1743,7 @@ func (g *Generator) defaultConstantName(goMessageType, protoFieldName string) st
 //
 // Extension fields (and message sets) are however handled separately.
 //
-// simpleField - a field that is neiter weak nor oneof, possibly repeated
+// simpleField - a field that is neither weak nor oneof, possibly repeated
 // oneofField - field containing list of subfields:
 // - oneofSubField - a field within the oneof
 
@@ -2148,7 +2148,7 @@ func (g *Generator) generateCommonMethods(mc *msgCtx) {
 	// that allows getting access to the *InternalMessageInfo struct and then
 	// calling Unmarshal, Marshal, Merge, Size, and Discard directly on that.
 
-	// Wrapper for table-driven marshaling and unmarshaling.
+	// Wrapper for table-driven marshaling and unmarshalling.
 	g.P("func (m *", mc.goName, ") XXX_Unmarshal(b []byte) error {")
 	g.P("return xxx_messageInfo_", mc.goName, ".Unmarshal(m, b)")
 	g.P("}")

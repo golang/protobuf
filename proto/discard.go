@@ -11,11 +11,11 @@ import (
 // DiscardUnknown recursively discards all unknown fields from this message
 // and all embedded messages.
 //
-// When unmarshaling a message with unrecognized fields, the tags and values
+// When unmarshalling a message with unrecognized fields, the tags and values
 // of such fields are preserved in the Message. This allows a later call to
 // marshal to be able to produce a message that continues to have those
 // unrecognized fields. To avoid this, DiscardUnknown is used to
-// explicitly clear the unknown fields after unmarshaling.
+// explicitly clear the unknown fields after unmarshalling.
 func DiscardUnknown(m Message) {
 	if m != nil {
 		discardUnknown(MessageReflect(m))

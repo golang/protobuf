@@ -7,7 +7,7 @@
 //
 // Deprecated: See the "google.golang.org/protobuf/reflect/protoreflect" package
 // for how to obtain an EnumDescriptor or MessageDescriptor in order to
-// programatically interact with the protobuf type system.
+// programmatically interact with the protobuf type system.
 package descriptor
 
 import (

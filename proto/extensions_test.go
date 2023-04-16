@@ -210,7 +210,7 @@ func TestGetExtensionStability(t *testing.T) {
 		t.Fatalf("Unmarshal() failed: %s", err)
 	}
 	if !check(msg1) {
-		t.Errorf("GetExtension() not stable after unmarshaling")
+		t.Errorf("GetExtension() not stable after unmarshalling")
 	}
 }
 
@@ -485,7 +485,7 @@ func TestMarshalUnmarshalRepeatedExtension(t *testing.T) {
 		msg2 := new(pb2.OtherMessage)
 		err = proto.Unmarshal(b, msg2)
 		if err != nil {
-			t.Fatalf("[%s] Error unmarshaling message: %v", test.name, err)
+			t.Fatalf("[%s] Error unmarshalling message: %v", test.name, err)
 		}
 		e, err := proto.GetExtension(msg2, pb2.E_RComplex)
 		if err != nil {
@@ -565,7 +565,7 @@ func TestUnmarshalRepeatingNonRepeatedExtension(t *testing.T) {
 		msg2 := new(pb2.OtherMessage)
 		err := proto.Unmarshal(buf.Bytes(), msg2)
 		if err != nil {
-			t.Fatalf("[%s] Error unmarshaling message: %v", test.name, err)
+			t.Fatalf("[%s] Error unmarshalling message: %v", test.name, err)
 		}
 		e, err := proto.GetExtension(msg2, pb2.E_Complex)
 		if err != nil {

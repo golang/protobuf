@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // Package proto provides functionality for handling protocol buffer messages.
-// In particular, it provides marshaling and unmarshaling between a protobuf
+// In particular, it provides marshaling and unmarshalling between a protobuf
 // message and the binary wire format.
 //
 // See https://developers.google.com/protocol-buffers/docs/gotutorial for
@@ -39,7 +39,7 @@ type GeneratedMessage interface{}
 // Message is a protocol buffer message.
 //
 // This is the v1 version of the message interface and is marginally better
-// than an empty interface as it lacks any method to programatically interact
+// than an empty interface as it lacks any method to programmatically interact
 // with the contents of the message.
 //
 // A v2 message is declared in "google.golang.org/protobuf/proto".Message and
@@ -103,7 +103,7 @@ type Merger interface {
 }
 
 // RequiredNotSetError is an error type returned when
-// marshaling or unmarshaling a message with missing required fields.
+// marshaling or unmarshalling a message with missing required fields.
 type RequiredNotSetError struct {
 	err error
 }
