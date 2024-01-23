@@ -420,6 +420,7 @@ type Properties struct {
 	stype       reflect.Type      // set for struct types only
 	sprop       *StructProperties // set for struct types only
 	isMarshaler bool              // true if the type implements Marshaler and marshals/unmarshals itself
+	isOptional  bool
 
 	mtype    reflect.Type // set for map types only
 	mkeyprop *Properties  // set for map types only
@@ -517,8 +518,14 @@ func (p *Properties) Parse(s string) (IntEncoder, bool, error) {
 	}
 	p.Tag = uint32(tag)
 
-	// and we don't care about any other fields
-	// (if you don't mark slices/arrays/maps with ",rep" that's your own problem; this encoder always repeats those types)
+	for _, field := range fields[2:] {
+		switch field {
+		case "optional":
+			p.isOptional = true
+		// and we don't care about any other fields
+		// (if you don't mark slices/arrays/maps with ",rep" that's your own problem; this encoder always repeats those types)
+		}
+	}
 
 	return enc, false, nil
 }
@@ -702,6 +709,11 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				p.stype = t2
 			}
 
+			optional := ""
+			if p.isOptional {
+				optional = "optional "
+			}
+
 			switch t2.Kind() {
 			default:
 				return fmt.Errorf("protobuf3: no encoder function for %s -> %s", t1, t2.Name())
@@ -709,63 +721,63 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			case reflect.Bool:
 				p.enc = (*Buffer).enc_ptr_bool
 				p.dec = (*Buffer).dec_ptr_bool
-				p.asProtobuf = "bool"
+				p.asProtobuf = optional + "bool"
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.Int:
 				p.enc = (*Buffer).enc_ptr_int
 				p.dec = (*Buffer).dec_ptr_int
-				p.asProtobuf = int32_encoder_txt
+				p.asProtobuf = optional + int32_encoder_txt
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.Uint:
 				p.enc = (*Buffer).enc_ptr_uint
 				p.dec = (*Buffer).dec_ptr_int // signness doesn't matter when decoding. either the top bit is set or it isn't
-				p.asProtobuf = uint32_encoder_txt
+				p.asProtobuf = optional + uint32_encoder_txt
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.Int8:
 				p.enc = (*Buffer).enc_ptr_int8
 				p.dec = (*Buffer).dec_ptr_int8
-				p.asProtobuf = int32_encoder_txt
+				p.asProtobuf = optional + int32_encoder_txt
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.Uint8:
 				p.enc = (*Buffer).enc_ptr_uint8
 				p.dec = (*Buffer).dec_ptr_int8
-				p.asProtobuf = uint32_encoder_txt
+				p.asProtobuf = optional + uint32_encoder_txt
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.Int16:
 				p.enc = (*Buffer).enc_ptr_int16
 				p.dec = (*Buffer).dec_ptr_int16
-				p.asProtobuf = int32_encoder_txt
+				p.asProtobuf = optional + int32_encoder_txt
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.Uint16:
 				p.enc = (*Buffer).enc_ptr_uint16
 				p.dec = (*Buffer).dec_ptr_int16
-				p.asProtobuf = uint32_encoder_txt
+				p.asProtobuf = optional + uint32_encoder_txt
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.Int32:
 				p.enc = (*Buffer).enc_ptr_int32
 				p.dec = (*Buffer).dec_ptr_int32
-				p.asProtobuf = int32_encoder_txt
+				p.asProtobuf = optional + int32_encoder_txt
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.Uint32:
 				p.enc = (*Buffer).enc_ptr_uint32
 				p.dec = (*Buffer).dec_ptr_int32
-				p.asProtobuf = uint32_encoder_txt
+				p.asProtobuf = optional + uint32_encoder_txt
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
@@ -773,11 +785,11 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 				if p.WireType == WireBytes && t2 == time_Duration_type {
 					p.enc = (*Buffer).enc_ptr_time_Duration
 					p.dec = (*Buffer).dec_ptr_time_Duration
-					p.asProtobuf = "google.protobuf.Duration"
+					p.asProtobuf = optional + "google.protobuf.Duration"
 				} else {
 					p.enc = (*Buffer).enc_ptr_int64
 					p.dec = (*Buffer).dec_ptr_int64
-					p.asProtobuf = int64_encoder_txt
+					p.asProtobuf = optional + int64_encoder_txt
 					if p.valEnc == nil {
 						return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 					}
@@ -785,28 +797,28 @@ func (p *Properties) setEncAndDec(t1 reflect.Type, f *reflect.StructField, int_e
 			case reflect.Uint64:
 				p.enc = (*Buffer).enc_ptr_int64
 				p.dec = (*Buffer).dec_ptr_int64
-				p.asProtobuf = uint64_encoder_txt
+				p.asProtobuf = optional + uint64_encoder_txt
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.Float32:
 				p.enc = (*Buffer).enc_ptr_uint32 // can just treat them as bits
 				p.dec = (*Buffer).dec_ptr_int32
-				p.asProtobuf = "float"
+				p.asProtobuf = optional + "float"
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.Float64:
 				p.enc = (*Buffer).enc_ptr_int64 // can just treat them as bits
 				p.dec = (*Buffer).dec_ptr_int64
-				p.asProtobuf = "double"
+				p.asProtobuf = optional + "double"
 				if p.valEnc == nil {
 					return fmt.Errorf("protobuf3: %q %s cannot have wiretype %s", f.Name, t1, wire)
 				}
 			case reflect.String:
 				p.enc = (*Buffer).enc_ptr_string
 				p.dec = (*Buffer).dec_ptr_string
-				p.asProtobuf = "string"
+				p.asProtobuf = optional + "string"
 			case reflect.Struct:
 				p.stype = t2
 				p.sprop, err = getPropertiesLocked(t2)

@@ -40,6 +40,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"reflect"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -2072,5 +2073,240 @@ func TestReserved(t *testing.T) {
 }` {
 		t.Errorf("unexpected AsProtobuf result with reserved fields:\n%s\n", s)
 
+	}
+}
+
+type MsgWithOptionalFields struct {
+	s    *string  `protobuf:"bytes,1,optional"`
+	b    *bool    `protobuf:"varint,2,optional"`
+
+	vi32 *int32   `protobuf:"varint,3,optional"`
+	vu32 *uint32  `protobuf:"varint,4,optional"`
+	vi64 *int32   `protobuf:"varint,5,optional"`
+	vu64 *uint32  `protobuf:"varint,6,optional"`
+
+	fi32 *int32   `protobuf:"fixed32,7,optional"`
+	fu32 *uint32  `protobuf:"fixed32,8,optional"`
+	fi64 *int64   `protobuf:"fixed64,9,optional"`
+	fu64 *uint64  `protobuf:"fixed64,10,optional"`
+	ff32 *float32 `protobuf:"fixed32,11,optional"`
+	ff64 *float64 `protobuf:"fixed64,12,optional"`
+}
+
+func (*MsgWithOptionalFields) ProtoMessage()    {}
+func (m *MsgWithOptionalFields) String() string { return fmt.Sprintf("%+v", *m) }
+func (m *MsgWithOptionalFields) Reset()         { *m = MsgWithOptionalFields{} }
+
+type MsgWithoutOptionalFields struct {
+	s    string  `protobuf:"bytes,1"`
+	b    bool    `protobuf:"varint,2"`
+
+	vi32 int32   `protobuf:"varint,3"`
+	vu32 uint32  `protobuf:"varint,4"`
+	vi64 int32   `protobuf:"varint,5"`
+	vu64 uint32  `protobuf:"varint,6"`
+
+	fi32 int32   `protobuf:"fixed32,7"`
+	fu32 uint32  `protobuf:"fixed32,8"`
+	fi64 int64   `protobuf:"fixed64,9"`
+	fu64 uint64  `protobuf:"fixed64,10"`
+	ff32 float32 `protobuf:"fixed32,11"`
+	ff64 float64 `protobuf:"fixed64,12"`
+}
+
+func (*MsgWithoutOptionalFields) ProtoMessage()    {}
+func (m *MsgWithoutOptionalFields) String() string { return fmt.Sprintf("%+v", *m) }
+func (m *MsgWithoutOptionalFields) Reset()         { *m = MsgWithoutOptionalFields{} }
+
+func TestOptionalField(t *testing.T) {
+	m := MsgWithOptionalFields{}
+	f := protobuf3.AsProtobufFull(reflect.TypeOf(m))
+	t.Log("\n" + f)
+	r, _ := regexp.Compile(` = \d+;$`)
+	for _, line := range strings.Split(f, "\n") {
+		if r.MatchString(line) {
+			if !strings.Contains(line, "optional ") {
+				t.Errorf("Missing `optional` keyword: %s", line)
+			}
+		}
+	}
+
+	check(&m, &m, t)
+	var mb MsgWithOptionalFields
+	uncheck(&m, &mb, nil, t)
+	eq("mb", mb, m, t)
+
+	b, _ := protobuf3.Marshal(&m)
+	if len(b) != 0 {
+		t.Errorf("Marshalling optional fields pointing to nil: expect 0 bytes, got %x", b)
+	}
+
+	if true {
+		m1 := MsgWithoutOptionalFields{}
+
+		m.s = &m1.s
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.s = nil
+
+		m.b = &m1.b
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.b = nil
+
+		m.vi32 = &m1.vi32
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.vi32 = nil
+
+		m.vu32 = &m1.vu32
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.vu32 = nil
+
+		m.vi64 = &m1.vi64
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.vi64 = nil
+
+		m.vu64 = &m1.vu64
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.vu64 = nil
+
+		m.fi32 = &m1.fi32
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.fi32 = nil
+
+		m.fu32 = &m1.fu32
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.fu32 = nil
+
+		m.fi64 = &m1.fi64
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.fi64 = nil
+
+		m.fu64 = &m1.fu64
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.fu64 = nil
+
+		m.ff32 = &m1.ff32
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.ff32 = nil
+
+		m.ff64 = &m1.ff64
+		b, _ = protobuf3.Marshal(&m)
+		if len(b) == 0 {
+			t.Error("Marshalling optional field pointing to zero value: expect some bytes, got 0 bytes")
+		}
+		m.ff64 = nil
+	}
+
+	m2 := MsgWithoutOptionalFields{
+		s   : "abc",
+		b   : true,
+		vi32: 1,
+		vu32: 1,
+		vi64: 1,
+		vu64: 1,
+		fi32: 1,
+		fu32: 1,
+		fi64: 1,
+		fu64: 1,
+		ff32: 1.0,
+		ff64: 1.0,
+	}
+
+	if true {
+		m.s    = &m2.s
+		m.b    = &m2.b
+		m.vi32 = &m2.vi32
+		m.vu32 = &m2.vu32
+		m.vi64 = &m2.vi64
+		m.vu64 = &m2.vu64
+		m.fi32 = &m2.fi32
+		m.fu32 = &m2.fu32
+		m.fi64 = &m2.fi64
+		m.fu64 = &m2.fu64
+		m.ff32 = &m2.ff32
+		m.ff64 = &m2.ff64
+
+		check(&m, &m, t)
+		var mc MsgWithOptionalFields
+		uncheck(&m, &mc, nil, t)
+		m2_ := MsgWithoutOptionalFields{
+			s   : *mc.s,
+			b   : *mc.b,
+			vi32: *mc.vi32,
+			vu32: *mc.vu32,
+			vi64: *mc.vi64,
+			vu64: *mc.vu64,
+			fi32: *mc.fi32,
+			fu32: *mc.fu32,
+			fi64: *mc.fi64,
+			fu64: *mc.fu64,
+			ff32: *mc.ff32,
+			ff64: *mc.ff64,
+		}
+		eq("m2_", m2_, m2, t)
+
+		// Test backward compatibility -- message generated from struct with optional fields, can be unmarshal-ed as struct without optional fields
+		var m3 MsgWithoutOptionalFields
+		uncheck(&m, &m3, nil, t)
+		eq("m3", m3, m2, t)
+	}
+
+
+	if true {
+		check(&m2, &m2, t)
+		var m3 MsgWithoutOptionalFields
+		uncheck(&m2, &m3, nil, t)
+		eq("m3", m3, m2, t)
+
+		// Test backward compatibility -- message generated from struct without optional fields, can be unmarshal-ed as struct with optional fields
+		var mc MsgWithOptionalFields
+		uncheck(&m2, &mc, nil, t)
+		m2_ := MsgWithoutOptionalFields{
+			s   : *mc.s,
+			b   : *mc.b,
+			vi32: *mc.vi32,
+			vu32: *mc.vu32,
+			vi64: *mc.vi64,
+			vu64: *mc.vu64,
+			fi32: *mc.fi32,
+			fu32: *mc.fu32,
+			fi64: *mc.fi64,
+			fu64: *mc.fu64,
+			ff32: *mc.ff32,
+			ff64: *mc.ff64,
+		}
+		eq("m2_", m2_, m2, t)
 	}
 }
