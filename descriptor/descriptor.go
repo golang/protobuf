@@ -129,6 +129,7 @@ func deriveFileDescriptor(rawDesc []byte) *descriptorpb.FileDescriptorProto {
 	if err != nil {
 		panic(err)
 	}
+	defer zr.Close()
 	b, err := ioutil.ReadAll(zr)
 	if err != nil {
 		panic(err)

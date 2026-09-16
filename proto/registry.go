@@ -37,6 +37,7 @@ func RegisterFile(s filePath, d fileDescGZIP) {
 	if err != nil {
 		panic(fmt.Sprintf("proto: invalid compressed file descriptor: %v", err))
 	}
+	defer zr.Close()
 	b, err := ioutil.ReadAll(zr)
 	if err != nil {
 		panic(fmt.Sprintf("proto: invalid compressed file descriptor: %v", err))
